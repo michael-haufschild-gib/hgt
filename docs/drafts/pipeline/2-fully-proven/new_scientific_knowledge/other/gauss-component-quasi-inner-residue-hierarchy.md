@@ -2392,3 +2392,182 @@ Two things the proof makes precise, and both are load-bearing for the iteration:
 Remaining for step 2: the convolution half — stability under `B` and `B^(−2)`, for which the
 transfer estimates `sum_kernel_mul_spikeProfile_*_le` above supply the spike-to-uniform direction —
 and then the one-step estimate.
+
+## Pass 49 — the shape of the convolution half, and its first brick
+
+The missing half of step 2 is now reduced to one lattice estimate, and the estimate has been worked
+out.  Write the spike as the weight `B (n/r)^c` carried at the band frequencies `-n ± r`,
+`1 ≤ r ≤ N ≤ n/2`, and let `s = n + j` be the distance of the read frequency from the band centre.
+The harmonic convolution of the spike is
+
+```text
+Sp(j) = ∑_(r=1)^N ‖κ(j + n − ε r)‖ · B (n/r)^c ≤ K B n^c · T(s),
+T(s) = ∑_(r=1)^N 1 / ((1 + |s − r|) r^c).
+```
+
+**The estimate needed is `T(s) ≤ C_c (1 + log N) (1 + |s|)^(−c)`**, i.e.
+
+```text
+Sp(j) ≤ C_c K (1 + log n) · B · (n / (1 + |n + j|))^c
+```
+
+— *a spike of the same exponent `c` whose height is multiplied by `C K (1 + log n)`*.  That is the
+statement that closes the convolution half: `TwoPieceAmplitude` is preserved by a harmonic kernel,
+with the spike exponent unchanged and the height paying only a logarithm.
+
+Two remarks fix why the estimate has this shape and why a cruder one does not suffice.
+
+* The naive route — `(1 + |s|) ≤ (1 + |s − r|)(1 + r)`, hence
+  `(1+|s|)^c T(s) ≤ 2^c ∑_r (1 + |s − r|)^(c−1)` — gives `N^c`, not `log N`.  With the created spike
+  height `B ≍ A n^(−θ)` the transferred bulk mass would then be `A n^(2c−θ)`, and `2c < θ ≤ 1` fails
+  once the multiplier exponent has accumulated past `1/2`.  With the logarithm the requirement is
+  the card's own `c < θ`, which is what the exponent ladder maintains.
+* The logarithm is genuinely there: at `r ≍ s` the summand is `≍ 1/((1+|s−r|) s^c)` and summing the
+  harmonic factor over the range `s/2 < r ≤ 2s` gives `log s`.
+
+The proof splits at `s`: for `r ≤ s/2` the kernel is `≍ 1/s` and the head sum of `r^(−c)` is
+`O(s^(1−c))`; for `s/2 < r ≤ 2s` the weight is `≍ s^(−c)` and the harmonic factor contributes the
+logarithm; for `r > 2s` one has `1 + |s − r| ≥ r/2` and `r^(−(1+c)) ≤ (2s)^(−c) r^(−1)`, again a
+harmonic sum.  For `s ≤ 0` — the read frequency on the far side — no split is needed: weighted
+arithmetic–geometric mean gives `1 + |s| + r ≥ (1 + |s|)^c r^(1−c)` directly, hence
+`T(s) ≤ (1 + |s|)^(−c) ∑_r 1/r`.
+
+**Proved this pass** (`HTGeometry/SpikeConvolutionKernel.lean`, unconditional, axiom-clean):
+
+```text
+rpow_mul_rpow_le_add                 a^c b^(1−c) ≤ a + b
+sum_harmonic_rpow_neg_le_of_nonpos   the far side: ∑_r 1/((1+m+r) r^c) ≤ (1+m)^(−c) ∑_r 1/r
+```
+
+The band side — the three-range split — is the remaining brick, and with it the convolution half of
+step 2 and then the one-step estimate.
+
+## Pass 50 — the convolution half is proved: a harmonic kernel maps the spike to a spike
+
+The lattice estimate named in pass 49 is now proved, and with it the whole spike-to-spike direction
+of step 2.  Everything below is unconditional and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), in `RHTower/SpikeBandConvolution.lean`.
+
+The three-range split of `T(s) = ∑_(r=1)^N 1/((1 + |s − r|) r^c)`:
+
+```text
+sum_harmonic_window_le
+    ∑_(r=1)^(2s) 1/(1 + |s − r|) ≤ 2 (1 + log s)
+      -- the involution r ↦ s + 1 − r on [1, s] and the shift r ↦ r − s on (s, 2s]
+      -- both turn the window into a harmonic sum
+band_low_le   (2r ≤ s)
+    (1 + s)^c ∑ 1/((1 + |s − r|) r^c) ≤ 2 + 2/(1 − c)
+band_mid_le   (s < 2r, r ≤ 2s)
+    (1 + s)^c ∑ 1/((1 + |s − r|) r^c) ≤ 8 (1 + log (2N))
+band_high_le  (2s < r)
+    (1 + s)^c ∑ 1/((1 + |s − r|) r^c) ≤ 2 (1 + log N)
+sum_harmonic_rpow_neg_le
+    (1 + s)^c T(s) ≤ (2 + 2/(1−c)) + 8(1 + log 2N) + 2(1 + log N)
+```
+
+The middle range is where the logarithm is created and where the read frequency is pinned: the
+range is non-empty only if `s < 2N`, which is exactly what converts `log s` into `log N`.
+
+Combining the band split with the far-side estimate of pass 49 gives the estimate at an arbitrary
+integer read point, and hence the statement the card needs:
+
+```text
+spikeConvConst c N = (12 + 2/(1 − c)) (1 + log (2N + 2))
+sum_harmonic_rpow_neg_le_int
+    ∑_(r=1)^N 1/((1 + |x − r|) r^c) ≤ spikeConvConst c N / (1 + |x|)^c       (x ∈ Z)
+sum_kernel_mul_spikeProfile_pos_band_le
+sum_kernel_mul_spikeProfile_neg_band_le
+kernel_mul_spikeProfile_peak_band_le
+sum_kernel_mul_spikeProfile_band_le
+    ∑_(r=1)^N ‖κ(j − (−n ± r))‖ · spikeProfile B c n (−n ± r) + peak
+      ≤ 3 K · spikeConvConst c N · B (n / (1 + |n + j|))^c
+```
+
+**This is the convolution half of step 2**: a harmonic kernel `‖κ(l)‖ ≤ K/(1 + |l|)` carries the
+spike of `TwoPieceAmplitude A θ B c n` to a spike *of the same exponent `c`*, with height multiplied
+by `3 K (12 + 2/(1−c))(1 + log (2N + 2))` — a logarithm in the band width and nothing more.  Read
+together with pass 48's `sum_kernel_mul_spikeProfile_*_side_le` (the spike-to-bulk direction, used
+where the read frequency is far from the band) the spike part of the class is now closed under `B`
+and `B^(−2)` with constants independent of `n` apart from that logarithm; the multiplier half was
+closed in pass 48's addendum.
+
+Why the logarithm is the right loss, restated with the constants in hand: the created spike height
+is `B ≍ A n^(−θ)`, so after one convolution the height is `A n^(−θ) log n`, and the ladder condition
+the card maintains is `c < θ`, unaffected by a logarithm.  The naive route of pass 49 would have
+produced `N^c` and forced `2c < θ`, which fails once the accumulated multiplier exponent passes
+`1/2` — i.e. exactly at `m = 2`, the first case beyond the one already closed.
+
+**Remaining on this card:** the uniform half of the convolution closure (the corpus already owns
+`HTGeometry/HarmonicPowerConvolution.tsum_harmonicPowConv_le`, which gives
+`harmonic ∗ (1+|l|)^(−β) ≤ C (1+|j|)^(−γ)` for `1/2 < β ≤ 1`, `0 < γ < β`), then the assembled class
+statement, the one-step estimate `‖(R̃_n − a_(δ_n)) u‖ → 0` for `u` in the class, and the telescope
+of step 3 (already built).
+
+## Pass 51 — step 2's closure is complete: the two-piece class is invariant under the symbol algebra
+
+Everything the plan of pass 44 called "item 1" is now proved, unconditionally and axiom-clean.
+
+The missing regions of the spike transfer, in `RHTower/SpikeBandConvolution.lean`:
+
+```text
+kernel_far_le
+    2|l| ≤ |j|  ⟹  ‖κ(j − l)‖ ≤ 2K/(1 + |j|)
+sum_kernel_mul_spikeProfile_far_le
+    4n ≤ |j| :  the whole spike is read through its total mass only,
+      Σ ≤ 2K · B(3n^c + 2n/(1−c)) / (1 + |j|)
+spikeConvBulkConst c N = 30 · spikeConvConst c N + 6 + 4/(1−c)
+sum_kernel_mul_spikeProfile_two_piece_le
+    for every read frequency j and every 0 < θ ≤ 1,
+      Σ_band ‖κ(j − l)‖ · spikeProfile B c n l
+        ≤ spikeConvBulkConst c N · K · B · n^θ / (1 + |j|)^θ
+          + spikeProfile (3K · spikeConvConst c N · B) c n j
+```
+
+Three regions and three mechanisms.  Inside the band the pass-50 estimate delivers a spike of the
+same exponent.  Outside the band but within `|j| ≤ 4n` the same estimate is already bounded — there
+`n/(1 + |n+j|) ≤ 2` — and `(1+|j|)^θ ≤ 5n^θ` converts that constant into the bulk decay.  Beyond
+`4n` the read frequency is separated from the whole band by half its own distance, so only the
+spike's *total mass* `≍ Bn` is seen, and `n · (1+|j|)^(θ−1) ≤ n^θ` again converts it.  The exponent
+`n^θ` in the bulk height is exactly right: the class carries `B ≍ A n^(−θ)`, so the created bulk
+height is `≍ K A`, independent of `n`.
+
+The uniform half was already owned but only in `ℝ≥0∞` form; `HTGeometry/HarmonicPowerConvolution.lean`
+gains the real-valued statement the coefficient bounds consume:
+
+```text
+summable_harmonicPowConv        the convolution is summable for every positive exponent
+tsum_harmonicPowConv_real_le
+    Σ'_l 1/((1+|l|)^β (1+|j−l|)) ≤ 2^γ (2 Σ' intPowWeight (β+1−γ)) / (1+|j|)^γ
+```
+
+Assembling the two halves closes the class:
+
+```text
+bandRadius n = (n−1)/2,   spikeProfile B c n l = 0 outside Icc (−n − bandRadius n) (−n + bandRadius n)
+sum_Icc_symm_split         a symmetric integer interval is its centre plus the pairs at each distance
+tsum_harmonic_two_piece_le
+    TwoPieceAmplitude A θ B c n ĝ,  ‖κ(l)‖ ≤ K/(1+|l|),  0 < γ < θ ≤ 1
+      ⟹  Σ'_l K/(1+|l−j|) ‖ĝ(l)‖
+            ≤ (K A 2^γ (2W_(θ+1−γ)) + spikeConvBulkConst c N · K B n^γ) / (1+|j|)^γ
+              + spikeProfile (3K · spikeConvConst c N · B) c n j
+```
+
+and, at the operator level, in the new `RHTower/GaussTwoPieceInvariance.lean`:
+
+```text
+TwoPieceAmplitude.mul_symbol
+    sym measurable, real, |sym| ≤ Cb,  |ŝym(x)| ≤ K/(1+|x|),  0 < γ < θ ≤ 1
+      TwoPieceAmplitude A θ B c n û
+        ⟹ TwoPieceAmplitude (K A 2^γ (2W) + spikeConvBulkConst c N K B n^γ) γ
+                             (3K · spikeConvConst c N · B) c n  (sym · u)^
+```
+
+Together with pass 48's `TwoPieceAmplitude.mul_multiplier` — the Fourier-multiplier half, where the
+exponent *adds*, `c ↦ c + c'` — **the class is now closed under every factor of
+`R̃_n = B ∘ S̃ ∘ B^(−2) ∘ S̃* ∘ B`**, with constants independent of `n` up to the logarithm each
+convolution costs, which `log_div_le_rpow_div` (pass 37) converts into an arbitrarily small power.
+
+**Remaining on this card:** step 2's second half — the one-step estimate
+`‖(R̃_n − a_(δ_n)) u‖ → 0` for `u` in the class, of which the proved (T) is the spike-free case —
+and then step 3's telescope, which is already built
+(`HTGeometry/OperatorPowerTelescope.tendsto_norm_operator_pow_sub_zero`).

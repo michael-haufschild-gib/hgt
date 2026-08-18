@@ -253,6 +253,55 @@ mixtures, correlated histories, mass escape, label permutation, completion tails
 functional-equation orbits.  Earlier hard-core uniqueness remains open as a parallel Gate-II
 problem, but it no longer blocks Gate VI in the constructed fusion chamber.
 
+### Second selection chamber — quantized formation admission
+
+ULF-DFPM-6 supplies a different, now Lean-certified Gate-V/VI mechanism.  Let a native carrier
+space have:
+
+1. a formation power `x -> x^n`;
+2. a discrete charge scaling as `q(x^n)=n q(x)`;
+3. an admission topology in which `q` is locally constant away from the singular locus;
+4. cofinal formed powers converging to one target in that native topology.
+
+Then the target charge is zero.  Exact roots are unnecessary: once an approximate power enters one
+charge-stable neighborhood, approximation becomes exact divisibility.  The global sequential law
+is formalized as `charge_eq_zero_of_cofinal_approximatePowers`; its independent complex-loop
+realization is `windingNumber_eq_zero_of_unbounded_approximatePowers`.
+
+More importantly, source formation need not be preserved strictly by recovery.  ULF-DFPM-6 defines
+the typed interchange defect
+
+\[
+ d\!\left(\operatorname{rec}(p_k)^{n_k},
+   \operatorname{rec}(\mathsf F_k(p_k))\right).
+\]
+
+If recovered formed packets converge to a target and this defect tends to zero, observer powers
+converge to the same target; the charge vanishes.  This fusion is Lean-certified as
+`charge_eq_zero_of_recovered_formationInterchange`.  It identifies a mechanism rather than an
+object: asymptotic commutation of native formation with common recovery.
+
+This gives the field a sharper interpretation of four corpus phenomena without declaring them
+identical:
+
+- **hypertranscendence** can supply unbounded formation/prolongation depth, but not gap crossing;
+- **recurrence** is return in an observer topology, but selection needs recovery into the native
+  charge-stable topology;
+- **positivity** often supplies distance from the singular locus, but may quotient orientation or
+  phase and therefore cannot alone identify charge;
+- **no-gos** frequently prove that observer return, normalization, or completion does not control
+  the native admission gap.
+
+Functional-equation action is information-neutral here: it transports the charge chamber and its
+gap.  It does not generate the cofinal approximate powers.  The new minimal source theorem is
+therefore precise:
+
+> construct pre-zero formed powers of unbounded depth whose recovered error crosses the native
+> noninvertibility gap on every relevant contour or operator packet.
+
+This is weaker than exact root descent and stronger than observer recurrence.  It is now the main
+global formation/properness target alongside the exchangeability/thinning producer above.
+
 ## 8. Why this may explain route stagnation
 
 Many routes preserve one observer exit while silently changing formation species:

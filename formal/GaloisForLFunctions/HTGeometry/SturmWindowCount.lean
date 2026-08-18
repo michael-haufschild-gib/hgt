@@ -46,7 +46,7 @@ interval free of zeros of `g'' + γ² g` number at most `(b-a)γ/π`. -/
 theorem card_windows_le {g gd gdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
     (hh : ∀ t, h t = gdd t + γ ^ 2 * g t) (hhcont : Continuous h)
-    (hnoh : ∀ t ∈ Icc a b, h t ≠ 0)
+    (hnoh : ∀ t ∈ Ioo a b, h t ≠ 0)
     {k : ℕ} (p mid q : Fin k → ℝ)
     (hpa : ∀ i, a ≤ p i) (hqb : ∀ i, q i ≤ b)
     (hpm : ∀ i, p i < mid i) (hmq : ∀ i, mid i < q i)
@@ -59,8 +59,8 @@ theorem card_windows_le {g gd gdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ)
     intro i
     rcases sturm_window_dichotomy hγ hg hgd hh hhcont (hpm i) (hmq i) (hgp i) (hgm i) (hgq i)
       (hpos i) (hneg i) with ⟨ξ, hξ, hξ0⟩ | hlen
-    · exact absurd hξ0 (hnoh ξ ⟨le_trans (hpa i) (le_of_lt hξ.1),
-        le_trans (le_of_lt hξ.2) (hqb i)⟩)
+    · exact absurd hξ0 (hnoh ξ ⟨lt_of_le_of_lt (hpa i) hξ.1,
+        lt_of_lt_of_le hξ.2 (hqb i)⟩)
     · exact hlen
   have hsum := nsmul_le_of_disjoint_intervals k p q a b (π / γ) hab hpa hqb
     (fun i => le_of_lt (lt_trans (hpm i) (hmq i))) hdisj hlong

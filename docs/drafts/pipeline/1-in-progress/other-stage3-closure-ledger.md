@@ -4815,3 +4815,262 @@ HTGeometry/ImplicitRelativeFrequency.lean
     eqOn_rep_fst_of_mem_bohrHullKernel   on the fibre the coefficients return
     rank_quotient_le_of_regular_jets_rel rank_ℤ (Γ(p) ⧸ Γ(q)) ≤ 2n
 ```
+
+## Pass 99 — the implicit card's relative law, assembled
+
+Verified in scratch and built module by module (no umbrella builds):
+
+```text
+HTGeometry/LinearJet.lean                  iteratedDeriv_clm_comp_eqOn
+HTGeometry/CoefficientJetRelation.lean     coeffJetRelation, frozenRelation,
+                                           coeffJetRelation_jet_eq, contDiff_frozenRelation
+HTGeometry/HullComparisonMorphism.lean     hullMap and its compatibilities
+HTGeometry/CarrierRepresentativeRel.lean   carrier_eq_of_jet_eq_rel (+ local)
+HTGeometry/RelativeHullChartRank.lean      isClosed_bohrHullKernel,
+                                           exists_finite_closed_cover_subordinate_on,
+                                           and the covering hypothesis of the relative chart bound
+                                           weakened to the *fibre* — the cube lies there anyway
+HTGeometry/ImplicitRelativeFrequency.lean  eqOn_rep_fst_of_mem_bohrHullKernel,
+                                           rank_quotient_le_of_regular_jets_rel
+HTGeometry/ImplicitStripFrequencyLaw.lean  rank_quotient_le_of_implicit_strip_solution
+```
+
+all unconditional and axiom-clean.  The capstone:
+
+```text
+0 < r, 0 < ρ, r + ρ < R,
+Fv = (coefficients, solution) holomorphic and strip almost periodic on the strip,
+p its line restriction, q the coefficient component of p,
+0 < n, the joint relation vanishes along the jet of Fv on the strip,
+convex regions S i on which one functional dominates the frozen relation in the top jet,
+uniformly in the time, and every holomorphic solution of the frozen equation on the substrip having
+its jet at some sample time inside the corresponding region
+  ==>  rank_ℤ (Γ(p) ⧸ Γ(q)) ≤ 2n
+```
+
+Two design points that made it close:
+
+* the *covering* hypothesis of the relative chart bound only has to hold on the fibre.  The
+  parameter cube produced by `exists_continuous_hullParameter_rel` lies in the fibre, so the finite
+  closed cover only has to cover the fibre — which is closed, hence compact.  That is what lets the
+  atlas hypothesis speak about solutions of the *original* equation: off the fibre the coefficients
+  are different and the equation is a different one.
+* the equation is autonomous in the joint jet, so one carrier construction serves it; on the fibre
+  `coeffJetRelation` collapses to `frozenRelation` with the original coefficients.
+
+### Remaining on the implicit card
+
+`hatlasSol` — the card's `(9)`/`(12)`: every holomorphic solution of the frozen equation on the
+substrip has a regular jet at one of the sample times.  In the card this comes from minimality of the
+joint hull (§2) plus Ritt's separant step for the coefficient field.  Both halves are owned in the
+autonomous case (`exists_ne_zero_of_dense_translates`, `AutonomousStripSeparant`); what is left is
+their nonautonomous analogues and the construction of the dominance regions from `(5)`.
+
+## Pass 100 — SECOND PROMOTION: `almost-periodic-implicit-ade-relative-frequency-law` → stage 3
+
+Both halves of the card are single unconditional axiom-clean Lean theorems, and the card has moved
+to `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/other/`.
+
+```text
+rank_quotient_le_of_implicit_strip_separant          (7)/(8), with the atlas derived
+rank_quotient_le_of_implicit_strip_separant_closed   the same with the orbit hypotheses derived
+rank_quotient_divisor_le_of_implicit_strip_separant  (25)/(26)
+```
+
+New this pass:
+
+```text
+HTGeometry/FrozenRelationDominance.lean
+    jetMonomial, fderiv_frozenRelation (linear in the coefficients),
+    norm_fderiv_frozenRelation_sub_le,
+    exists_time_dominant_nbhd   a convex region and a reference functional dominating the derivative
+                                at every *nearby time*, not merely at the sample time
+HTGeometry/JointSeparant.lean
+    jointSeparant, jointSeparant_eq_sum, continuous_jointSeparant
+HTGeometry/ImplicitCarrierRegularity.lean
+    exists_joint_regular_time   minimality: no carrier point is everywhere singular
+    rank_quotient_le_of_implicit_strip_separant(_closed)
+    isBohrAlmostPeriodic_fst
+HTGeometry/ImplicitDivisorFrequency.lean
+    rank_quotient_le_of_le      relative rank is monotone along an inclusion of subgroups
+    not_eventually_rep_snd_eq_zero, continuous_divisorPairing_rep_snd
+    rank_quotient_divisor_le_of_implicit_strip_separant
+```
+
+Also: the covering hypothesis of `card_le_of_hull_charts_rel` and
+`rank_quotient_bohrHullFrequencies_le_of_charts_rel` was weakened to the *fibre*
+(`isClosed_bohrHullKernel`, `exists_finite_closed_cover_subordinate_on`), and the dominance
+hypotheses of the time-dependent local separation were weakened to hold only near the sample time —
+both are what make the atlas expressible in terms of the original equation.
+
+Two cards are now at stage 3.  Eighteen non-`ccm` cards remain; the work queue at the top of this
+file still describes them, with the correction that the covering-dimension / Pontryagin blocker
+listed for `archimedean-relative-prime-cocycle-curvature` is now removed as well.
+
+## Pass 101 — the Gauss card's convolution half is reduced to one lattice estimate
+
+The open core of `gauss-component-quasi-inner-residue-hierarchy` is now a single explicit statement:
+
+```text
+T(s) = ∑_(r=1)^N 1/((1 + |s − r|) r^c)   ≤   C_c (1 + log N) (1 + |s|)^(−c)
+```
+
+which says a harmonic convolution keeps a power spike's exponent and multiplies its height by a
+logarithm.  `HTGeometry/SpikeConvolutionKernel.lean` proves the far-side half
+(`sum_harmonic_rpow_neg_le_of_nonpos`, by weighted AM–GM `a^c b^(1−c) ≤ a + b`); the band side is the
+three-range split `r ≤ s/2`, `s/2 < r ≤ 2s`, `r > 2s`.
+
+Why the sharp form is needed rather than the easy one is recorded on the card: the naive
+`(1+|s|) ≤ (1+|s−r|)(1+r)` bound costs `N^c` instead of `log N`, which turns the iteration's
+requirement `c < θ` into `2c < θ` and breaks the exponent ladder past `c = 1/2`.
+
+## Pass 102 — two of the three band ranges
+
+`RHTower/SpikeBandConvolution.lean` (unconditional, axiom-clean):
+
+```text
+band_low_le    r ≤ s/2:   (1+s)^c · ∑ 1/((1+|s−r|) r^c) ≤ 2 + 2/(1−c)
+band_high_le   r > 2s:    (1+s)^c · ∑ 1/((1+|s−r|) r^c) ≤ 2 (1 + log N)
+```
+
+The middle range `s/2 < r ≤ 2s` — where the logarithm is produced — is the remaining piece: there
+the weight is comparable to `(s/2)^(−c)` and the harmonic factor sums to `log s`, and non-emptiness
+of the range forces `s < 2N`, which is what turns `log s` into `log N` in the final bound.
+
+## Pass 103 — the lattice estimate is proved; the spike is closed under harmonic convolution
+
+`RHTower/SpikeBandConvolution.lean`, all unconditional and axiom-clean:
+
+```text
+sum_harmonic_window_le   ∑_(r=1)^(2s) 1/(1 + |s − r|) ≤ 2 (1 + log s)
+band_mid_le              s/2 < r ≤ 2s: (1+s)^c ∑ ... ≤ 8 (1 + log 2N)
+sum_harmonic_rpow_neg_le      the three ranges combined
+sum_harmonic_rpow_neg_le_int  the same at an arbitrary integer read point x
+      ∑_(r=1)^N 1/((1 + |x − r|) r^c) ≤ (12 + 2/(1−c))(1 + log(2N+2)) / (1 + |x|)^c
+sum_kernel_mul_spikeProfile_band_le
+      a harmonic kernel maps spikeProfile B c n to spikeProfile (3K·spikeConvConst c N · B) c n
+```
+
+The window lemma is the mechanism: the involution `r ↦ s + 1 − r` on `[1, s]` and the shift
+`r ↦ r − s` on `(s, 2s]` both turn the moving weight `1/(1 + |s − r|)` into the harmonic sum
+`∑ 1/k`, so the logarithm is produced exactly once and the read frequency is pinned by
+`s < 2N` — non-emptiness of the middle range.
+
+This closes the convolution half of step 2 of the Gauss card in the spike direction.  What remains
+there: the uniform half (the corpus owns `HarmonicPowerConvolution.tsum_harmonicPowConv_le`), the
+assembled `TwoPieceAmplitude` closure statement, and the one-step estimate.
+
+## Pass 104 — the Gauss two-piece class is closed under the symbol algebra
+
+`RHTower/SpikeBandConvolution.lean`, `HTGeometry/HarmonicPowerConvolution.lean` and the new
+`RHTower/GaussTwoPieceInvariance.lean`, all unconditional and axiom-clean:
+
+```text
+kernel_far_le, sum_kernel_mul_spikeProfile_far_le      the region beyond 4n
+sum_kernel_mul_spikeProfile_two_piece_le               all three regions, any 0 < θ ≤ 1
+summable_harmonicPowConv, tsum_harmonicPowConv_real_le the uniform half, in real form
+bandRadius, spikeProfile_eq_zero_of_notMem, sum_Icc_symm_split
+tsum_harmonic_two_piece_le                             the class closure as a tsum bound
+TwoPieceAmplitude.mul_symbol                           the same at the operator level
+```
+
+The three regions of the spike transfer and why each is needed are recorded on the card (pass 51).
+The load-bearing point is that the created bulk height carries the factor `n^θ`, which cancels the
+`B ≍ A n^(−θ)` the class carries — so the constant is independent of `n`.
+
+Step 2's first half (invariance of the class under every factor of `R̃_n`) is therefore complete;
+what remains on the card is the one-step estimate and then the already-built telescope.
+
+## Pass 105 — prime-wold §5.1 and §5.5 are Lean-proved
+
+Two new modules and one extension, all unconditional and axiom-clean:
+
+```text
+RHTower/AcceleratedWoldType.lean      tendsto_mertensProduct_mul_ell2_expGauge   (§5.1)
+RHTower/AdelicIntertwinerSaturation.lean   the local algebra of λ_p(z) = (pz²−1)/(p−z²)
+RHTower/AdelicIntertwinerType.lean         the PNT bridge and the saturation conclusion (§5.5)
+```
+
+Two things worth keeping.  The equality locus `‖λ_p(z)‖ = 1 ⟺ ‖z‖ = 1` follows from the exact
+identity `‖pz²−1‖² − ‖p−z²‖² = (p²−1)(‖z‖⁴−1)` with no estimate at all.  And
+`tendsto_sum_primesBelow_log_div` — `(∑_{p<N} log p)/N → 1` in the `Nat.primesBelow` convention the
+Wold modules use — is the bridge from `PNTPlus.chebyshev_asymptotic_finsum`; it is reusable wherever
+a `primesBelow` sum needs the prime number theorem.
+
+Remaining on that card: §5.2's restatement, §5.3 (needs the corpus law `log B_x(c) = (|c|+o(1))ϑ(x)`),
+§5.4's Sonin depth matching, and §6's dictionary.
+
+## Pass 106 — prime-wold §5.2 and §5.3
+
+```text
+RHTower/AcceleratedWoldType.exp_exp_le_of_mul_ell2_ge        (17) in exact form
+RHTower/PrimeSquareScalarCompression.lean                    the whole of §5.3, and with it
+    (7), (8), (11), (12), (13) of the parent card
+    prime-square-deformed-reflection-line-superessential-fracture
+```
+
+The reusable pieces: `one_le_scalarCompressionRatio` / `scalarCompressionRatio_eq_one_iff` are a
+plain-real critical-line reporter (`N² − D² = P(P−1)x(x−2)` with `x = r + r⁻¹`), and
+`abs_log_scalarCompressionRatio_sub_log_le` is the two-rate local expansion — `O(u⁻¹)` from the
+numerator, `O(u²/P)` from the denominator — which is the shape every Euler-type local coefficient
+on this lane has.
+
+Also: splitting a long `nlinarith`/`field_simp` proof into named lemmas is what fixed the heartbeat
+overrun here; the whole-declaration budget, not any single tactic, was the binding constraint.
+
+## Pass 107 — prime-wold §5.4 and §6
+
+```text
+RHTower/SoninDepthMatching.lean            (18a)–(18e); the floor estimate is the whole content
+RHTower/AdelicIntertwinerType.lean         (21a) the ϑ-normalized Weyl rate, and
+                                           modularCharge_dictionary  (21), (21b), (21c)
+```
+
+Sections 2, 3, 4, 5.2, 5.3, 5.4, 5.5, 6 and 7 of that card are now Lean-proved; §5.1's pointwise
+statement is proved and only its compact-uniform version `(14a)`–`(14c)` is open, together with the
+two dictionary inputs `(19)`, `(20)` which belong to parent cards.
+
+## Pass 108 — prime-wold §5.1 compact-uniform; the card's own sections are complete
+
+`RHTower/AcceleratedWoldType.log_max_gauge_le` and
+`tendsto_mertensProduct_mul_ell2_zero_of_log_gauge_le` close `(14a)`–`(14c)` in the form that takes
+the parent's normal-convergence bound as its hypothesis.
+
+Every section of `prime-wold-accelerated-type-modular-drift-law` that the card proves itself is now
+Lean-proved.  The four remaining inputs — `(14a)`, `(18c)`, `(19)`, `(20)` — are parent-card or
+literature theorems, each appearing as an explicit hypothesis of the theorem that uses it, never as
+an axiom.  Deciding whether that is enough for stage 3 is the next judgement on this card: the
+honest reading is that it is not, because `(19)` and `(20)` are corpus theorems that could be
+formalized, and the card's headline `(21)` depends on them.
+
+## Pass 109 — prime-wold's dictionary inputs were already in the tree
+
+`(19)` and `(20)` did not need new mathematics: `log_norm_shellTransferCharacter` and
+`re_centeredXiAffineResidue_eq_shellTransferEntropy` are exactly them.  `RHTower/ModularChargeFourCharts.lean`
+assembles `shellReflectionRate_eq` and the two dictionary corollaries.
+
+Lesson repeated: search the tree for the *content* of a cited input before treating it as external.
+The card cited `(19)`/`(20)` to publication-ready preprints; both were already formalized under
+different names.
+
+## Pass 110 — prime-wold `(14b)`–`(14c)` on the tree's own objects
+
+`RHTower/WoldGaugeCompactUniform.lean` instantiates the abstract gauge bound at
+`finitePrimeGenusOnePolarizedPhase`, using the corpus's exact irregular-gauge factorization and the
+reflection identity.  The card's only remaining inputs are `(14a)` (normal convergence of the
+genus-one occupation product — a bound on the *raw* phase, uniform on compacts) and `(18c)`
+(Burnol–Sonin aperture rigidity); both now appear as hypotheses of the exact theorems that consume
+them, on the tree's own objects.
+
+## Pass 111 — dyadic-fermion `(14)` and `(16)`
+
+```text
+HTGeometry/ParityDigitAffinityExpansion.lean   the exact first-order cancellation
+                                               s − a/2 − b/2 = −½(√a − √b)²
+RHTower/CriticalPrimeProfileSum.lean           the critical sum as a Mertens prime window
+```
+
+The reusable discovery: `RHTower.tendsto_mertensPrimeWindow_div_log` is weak convergence of the
+prime log-density measure to Lebesgue measure on `[0,1]`, so *every* weighted prime Cesàro law of
+the form `∑_{p ≤ x} g(log p/log x)/p → ∫₀¹ g` is a one-line corollary once `g` is continuous on the
+closed unit interval.  That is what replaces the card's `(15)` partial-summation argument entirely.

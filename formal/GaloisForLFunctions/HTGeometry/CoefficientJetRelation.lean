@@ -77,7 +77,7 @@ theorem contDiff_frozenRelation (e : Fin N → Fin (n + 1) → ℕ) (c : Fin N �
     ContDiff ℂ (⊤ : ℕ∞) (frozenRelation e c) := by
   refine ContDiff.sum fun i _ => ?_
   refine ContDiff.mul contDiff_const ?_
-  exact ContDiff.finset_prod fun k _ =>
+  exact contDiff_prod fun k _ =>
     ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin (n + 1) => ℂ) k).contDiff).pow _
 
 theorem differentiable_frozenRelation (e : Fin N → Fin (n + 1) → ℕ) (c : Fin N → ℂ) :

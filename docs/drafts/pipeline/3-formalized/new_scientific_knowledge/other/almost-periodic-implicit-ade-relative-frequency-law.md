@@ -1,10 +1,26 @@
 # Almost-periodic implicit ADE relative-frequency law
 
 - **ID:** `almost-periodic-implicit-ade-relative-frequency-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / GENERAL HYPERTRANSCENDENCE LANDSCAPE
-- **Scientific status:** `[PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Novelty status:** provisional pending independent expert proof and literature review
+- **Formal modules:**
+  `formal/GaloisForLFunctions/HTGeometry/RelativeFrequencyDual.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/RelativeHullChartRank.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/HullComparisonMorphism.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ODEJetSeparationTimeDep.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ImplicitLipschitzConst.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/StripJetSeparationTimeDep.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/CarrierRepresentativeRel.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/LinearJet.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/CoefficientJetRelation.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/FrozenRelationDominance.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/JointSeparant.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ImplicitRelativeFrequency.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ImplicitStripFrequencyLaw.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ImplicitCarrierRegularity.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ImplicitDivisorFrequency.lean`.
 - **Statement:** A holomorphic uniformly almost-periodic solution of a finite implicit algebraic
   differential equation can add only finitely many rationally independent Bohr frequencies beyond
   the equation's almost-periodic coefficient field, even when the equation is singular and its
@@ -360,10 +376,14 @@ Primary adjacent sources:
 
 ## Lean status
 
-The current Lean tree has no Bohr hull, analytic implicit-equation/separant theory, covering
-dimension, Pontryagin exact sequence, or Poincare--Lelong distribution framework. No fragment would
-formalize the theorem's substantive content. The card cannot move to stage 3 until the whole claim
-is formalized unconditionally.
+`[LEAN-PROVED]`.  Both halves — the relative frequency law `(7)`/`(8)` and the divisor law
+`(25)`/`(26)` — are unconditional axiom-clean Lean theorems
+(`[propext, Classical.choice, Quot.sound]`).  See the closing section.
+
+The paragraph that stood here recorded the tree as having no Bohr hull, no analytic
+implicit-equation/separant theory, no covering dimension, no Pontryagin exact sequence and no
+Poincare--Lelong framework.  Every one of those is now owned, and the Pontryagin exact sequence
+turned out not to be needed at all.
 
 ## Gates
 
@@ -374,7 +394,7 @@ is formalized unconditionally.
 - [x] divisor relative-frequency corollary proved
 - [x] serious preliminary parent-theory and literature audit
 - [ ] independent expert proof and novelty audit
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization
 
 ## Lean progress — the dimension-theoretic core is proved
 
@@ -947,3 +967,86 @@ HTGeometry/ImplicitRelativeFrequency.lean     eqOn_rep_fst_of_mem_bohrHullKernel
 The bound obtained is `2n`, sharper than the card's `2m(n+1)`: the separation uses the jets of
 orders `0 … n−1` of the second component only, because the top jet is recovered from the relation
 wherever the separant dominates.
+
+## The card is closed: both halves are one unconditional Lean theorem each
+
+### `(7)`/`(8)` — the relative frequency law
+
+```text
+GaloisForLFunctions.rank_quotient_le_of_implicit_strip_separant_closed :
+  0 < r, 0 < ρ, r + ρ < R,
+  Fv = (coefficient tuple, solution) holomorphic and uniformly almost periodic on the strip,
+  its first component is the coefficient tuple A, whose restriction to the line is continuous,
+  p the line restriction of Fv, q the coefficient component of p,
+  0 < n,
+  the equation holds along the jet of Fv on the strip,
+  the separant is nonzero at some real time
+    ==>  rank_ℤ (Γ(p) ⧸ Γ(q)) ≤ 2n
+```
+
+with the bound `2n`, sharper than the card's `2m(n+1)`: the separation uses the jets of orders
+`0 … n−1` of the solution component only, the top jet being recovered from the equation wherever the
+separant dominates.  Uniform continuity and total boundedness of the two translation orbits are
+*derived*, not assumed.
+
+Three obstructions the card named were removed rather than formalized.
+
+**`(20)`–`(22)`: no Pontryagin exact sequence.**  The relative bound follows from the same cube
+argument as the absolute one, with the `ℚ`-linear coordinate package chosen to kill the rational
+span of `Γ(q)`.  Every character of the resulting parameter subgroup is then trivial on `Γ(q)`, so
+the cube it sweeps lies in the kernel of the coefficient projection, and charts injective *only
+there* suffice.  `RelativeFrequencyDual`, `RelativeHullChartRank`.
+
+Two facts make this work.  `linearIndependent_mkQ_of_int`: integral independence modulo a subgroup
+is rational independence modulo its rational span, because an element of that span has an integral
+multiple inside the subgroup.  And the *covering* hypothesis of the chart bound only has to hold on
+the fibre — which is closed, hence compact (`isClosed_bohrHullKernel`,
+`exists_finite_closed_cover_subordinate_on`).  That is what lets the atlas speak about solutions of
+the original equation: off the fibre the coefficients are different ones.
+
+**`(9)`–`(10)`: the carrier is vector valued.**  The equation is autonomous in the *joint* jet
+`(a(z), f(z), …, f^(n)(z))`, so the object to carry is the pair.  The Bohr and strip carrier
+apparatus is now general in the codomain, and `exists_carrier_representatives` applies to
+`Fv : ℂ → ℂ^(N+1)` with the joint relation `coeffJetRelation`.  On the fibre
+`eqOn_rep_fst_of_mem_bohrHullKernel` says the coefficients return, and `coeffJetRelation` collapses
+to `frozenRelation` with the original coefficients.
+
+**`(16)`: the implicit-function step with moving coefficients.**  Mathlib's ODE uniqueness is
+already stated for a nonautonomous field and asks only for a Lipschitz bound at each time.  What had
+to be added is that a *family* of relations shares one Lipschitz constant: the constant produced by
+the implicit function theorem depends only on the dominance datum, not on the relation
+(`implicitLipschitzConst`, `exists_lipschitz_implicit_const`).  Then
+`eqOn_of_line_jet_eq_implicit_local_timeDep` separates two solutions of the same moving equation from
+their jets at one time.
+
+**`(11)`–`(12)`: minimality.**  `jointSeparant` — the separant read on the joint jet — is a
+continuous family of functionals on the carrier (linear in the coefficients, hence a finite sum of
+coefficient values times monomial separants), equivariant for the flow of the line, and nonzero at
+the origin by `(5)`.  Since every orbit of the line is dense, `exists_ne_zero_of_dense_translates`
+gives regularity at *every* carrier point: `exists_joint_regular_time`.  The dominant convex regions
+are then built one per regular jet, valid at every nearby time, by `exists_time_dominant_nbhd`: the
+derivative of the frozen relation is linear in the coefficients, so on a bounded region a small
+change of the coefficients moves it by little, uniformly.
+
+### `(25)`/`(26)` — the divisor law
+
+```text
+GaloisForLFunctions.rank_quotient_divisor_le_of_implicit_strip_separant :
+  the same hypotheses, plus a nonzero solution and a continuous test function of compact support
+  inside the substrip
+    ==>  rank_ℤ ((Γ(q) ⊔ ⟨Bohr spectrum of  t ↦ ⟨Div (f(· + t·i)), φ⟩⟩) ⧸ Γ(q)) ≤ 2n
+```
+
+No point of the joint carrier has a representative whose solution component vanishes identically
+(`not_eventually_rep_snd_eq_zero`): it would vanish on the central line, so the carrier evaluation
+would vanish on a dense orbit and hence everywhere, forcing the solution to be zero.  The zero
+divisor of that component is therefore a continuous observable of the carrier
+(`continuous_divisorPairing_rep_snd`, resting on the Hurwitz-type continuity of the
+Poincaré–Lelong map proved for the autonomous card), and every frequency of a continuous observable
+is a frequency of the carrier.  Relative rank is monotone along an inclusion of subgroups
+(`rank_quotient_le_of_le`), so the divisor inherits the solution's bound.
+
+### What is *not* claimed
+
+The remaining open gate is the independent expert proof and novelty audit, which no amount of
+formalization settles.  The Lean development certifies the mathematics, not its priority.

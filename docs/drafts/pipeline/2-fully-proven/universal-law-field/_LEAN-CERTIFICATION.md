@@ -1768,3 +1768,76 @@ Repository lint reports six unrelated pre-existing umbrella-ownership failures a
 new module. The remaining RH gate is source formation: prove that literal pre-zero phase averaging
 commutes with one source-native deletion/thinning operation and that cofinal complete interchange
 work is bounded or conserved.
+
+## Session 2026-08-18 addition (polarized cross-effect formation)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-PCIM-1 | Boolean packet recovery; explicit triangular complement involution; exact raw-to-polarized Walsh fusion; complement/parity intertwining; bounded-arity factorization no-go | `HTGeometry.ConstitutivePolarizedCrossEffect` |
+
+Scratch elaboration, direct leaf elaboration, and one targeted leaf build pass. No umbrella,
+theorem-area, or project build was run. Module is wired into `HTGeometry.UniversalLawField` without
+building that umbrella. Seven audited declarations depend only on `propext`, `Classical.choice`,
+and `Quot.sound`. Repository lint reaches this module through the umbrella and reports only
+unrelated ownership failures from concurrent work. This certifies the finite formation/recovery
+mechanism and information-neutral functional-equation lift; it does not supply global selection.
+
+## Session 2026-08-18 addition (split-formation parallax mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-CPM-1 | Generated compressed comparison; ternary residual readout; four-formation coherence; exact resolving-family reconstruction; withheld-organ prediction; Hilbert/Parseval conservation; bounded repeated-work selection | `HTGeometry.ConstitutiveSplitFormationParallax` |
+
+Scratch elaboration, direct leaf elaboration, and targeted leaf build pass. No umbrella,
+theorem-area, or project build was run. Module is wired into `HTGeometry.UniversalLawField`
+without building that umbrella. Seven audited capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`; scoped forbidden-declaration scan is clean. Repository lint
+reports six unrelated pre-existing theorem-area ownership failures and no defect in this module.
+This is the first
+ULF mechanism here where the comparison defect is generated from the split formations and the
+complete ternary packet reconstructs the erased carrier law. Literal arithmetic formation and
+neutral-kernel identification remain open; no RH claim is made.
+
+## Session 2026-08-18 addition (source-selected Fock interaction mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SFIM-1 | Arithmetic power formation selects a canonical one-particle / Boolean many-particle / mixed-interaction filtration; exact three-layer reconstruction; perfect-power recovery; summable critical-wall Fock layers; forced nonsummable interaction carrier; bilateral interaction admission iff neutral grade | `HTGeometry.ConstitutiveRamificationFockExcessSelection` |
+
+Scratch elaboration, direct leaf elaboration, and one targeted leaf build pass. No umbrella,
+theorem-area, or project build was run. Module is wired into `HTGeometry.UniversalLawField`
+without building that umbrella. Five audited capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`; scoped forbidden-declaration scan is clean. This replaces an
+arbitrary Fock analogy by a source-selected formation law: prime and squarefree Boolean layers are
+summable at the ambient critical wall, so exact reconstruction forces all wall divergence into the
+mixed-exponent interaction layer. Remaining RH gate is one route-independent landing theorem from
+the physical functional-equation packet into bilateral admission of this interaction carrier; no
+RH claim is made.
+
+## Session 2026-08-18 addition (symmetric formation homology core)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TFIM-1-CORE | Canonical ternary formation quotient; symmetric inclusion--exclusion rank conservation; exact observer-created-overlap conservation; zero charge iff intersection preservation; pairwise-to-joint recovery criterion | `HTGeometry.ConstitutiveSymmetricFormationHomology` |
+
+Scratch elaboration, direct leaf elaboration, and one targeted leaf build pass. No umbrella,
+theorem-area, or project build was run. Module is wired into `HTGeometry.UniversalLawField`
+without building that umbrella. Four audited capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. This formalizes the route-independent formation-homology
+mechanism itself: failure of observer image formation to preserve an intersection is not merely a
+rank inequality but a conserved quotient charge. Reporter duality, Hodge realization, and
+Fisher-nullity remain Lean-open; no RH claim is made.
+
+## Session 2026-08-18 addition (amplified realization and subrank port selection)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TPAM-2 | Negative-index monotonicity under injective form-preserving realization; one-depth strict-subrank tensor selection; arbitrary-budget finite-witness selection; combined amplified port-budget capstone | `HTGeometry.ConstitutiveAmplifiedPortBudgetSelection` |
+
+Scratch elaboration, direct leaf elaboration, and one targeted leaf build pass. No umbrella,
+theorem-area, or project build was run. Five audited declarations depend only on `propext`,
+`Classical.choice`, and `Quot.sound`; scoped forbidden-declaration and diff checks are clean. The
+module is wired into `HTGeometry.UniversalLawField` without building that umbrella. This replaces
+the prior uniform-index requirement by a strictly weaker finite criterion: one form-preserving
+amplified realization whose target port budget is below the previous tensor rank forces positivity.
+Literal pre-divisor amplified Xi realization remains open; no RH claim is made.

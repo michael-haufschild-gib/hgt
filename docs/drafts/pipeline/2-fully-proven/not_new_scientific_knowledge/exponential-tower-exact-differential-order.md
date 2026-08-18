@@ -194,3 +194,95 @@ The completed xi function has finite order, whereas every nontrivial affine-expo
 1. W. K. Hayman, *The growth of solutions of algebraic differential equations*, Rend. Mat. Acc. Lincei 7 (1996), 67--73.
 2. L.-W. Liao and C.-C. Yang, *On the growth and factorization of entire solutions of algebraic differential equations*, Ann. Acad. Sci. Fenn. Math. 25 (2000), 73--84.
 3. S. Otsubo, *Minimal length of Liouville chain for solutions of an algebraic differential equation*, J. Math. Soc. Japan 32 (1980), 623--629, DOI `10.2969/jmsj/03240623`.
+
+## Formalization (in progress, 2026-08-18)
+
+### Half 1 — `ord_DA(F_n) = n`: **closed**
+
+`formal/GaloisForLFunctions/HTGeometry/AffineExponentialCascadeOrder.lean` closes the
+differential-order half of the theorem, unconditionally and for arbitrary complex parameters
+(the card's reality and positivity assumptions `a_j ∈ R`, `b_j, c_j > 0` are not needed; only
+`b_j ≠ 0` and `c_j ≠ 0` are).
+
+| Card step | Lean name |
+|---|---|
+| jet substitution for `f ↦ a·f + b` | `jetAffineSub` |
+| the jets of an affine postcomposition | `iteratedDeriv_const_mul_add_succ` |
+| order is preserved by affine postcomposition | `DifferentiallyAlgebraicOfOrder.const_mul_add`, `differentiallyAlgebraicOfOrder_const_mul_add_iff` |
+| **exact order is invariant under invertible affine postcomposition** | `exactDifferentialOrder_const_mul_add_iff` |
+| the card's maps `f_j(w) = a_j + b_j exp(c_j w)` | `affExp` |
+| absorbing the affine layers into the exponents | `affExpAlpha`, `affExpBeta`, `entireCascade_affExp` |
+| **`ord_DA(F_n) = n`** | `exactDifferentialOrder_affExpCascade` |
+
+The formal route replaces Steps 1–3 of the card (real-axis lexicographic domination, the triangular
+Jacobian induction, and the logarithmic-velocity realization) by a reduction: composing the affine
+layer of one map with the exponential of the next gives
+`exp(c_{j+1} b_j w + c_{j+1} a_j)`, so a cascade of affine-exponential maps is a *single* affine map
+applied to a cascade of pure maps `w ↦ exp(α w + β)`.  The corpus already owns the exact-order law
+for the latter (`GaloisForLFunctions.HTGeometry.exactDifferentialOrder_expAffineCascade`, proved by
+the scaled-model Jacobian, which is the Lean form of the card's triangular observability).  Only
+invariance of exact order under affine *post*composition was missing, and it is unconditional: the
+jets transform by `jetAffineSub`, whose inverse is the substitution for `(a⁻¹, -b/a)`, and
+`deriv_add_const`, `deriv_const_mul_field`, `iteratedDeriv_const_mul_field` need no regularity.
+
+In particular `E_1 = exp`, `E_{n+1} = exp ∘ E_n` is the case `a_j = 0`, `b_j = c_j = 1`, so
+`ord_DA(E_n) = n` is a specialization.
+
+### Half 2 — `cd_+(F_n) = n`: open, route fixed
+
+The composition-depth half is not yet formalized.  The corpus has no notion of positive lower order
+or of composition depth, and no Pólya growth-depth lemma.  What it *does* have is the geometric core
+of Pólya's estimate: `RHTower/PolyaCompositionGrowth.exists_le_norm_comp_of_analytic` bounds
+`f ∘ g` from below by the outer function's minimum-modulus floor on a circle, using only that the
+inner function runs from a small modulus at the origin to a large one somewhere on a ball.
+
+#### Done: the growth scale and the upper bound
+
+`formal/GaloisForLFunctions/HTGeometry/IteratedExponentialGrowthHeight.lean` and
+`formal/GaloisForLFunctions/HTGeometry/AffineExponentialCascadeGrowth.lean`.
+
+| Step | Lean name |
+|---|---|
+| the iterated-exponential scale and its monotonicity | `iterExp`, `iterExp_succ`, `iterExp_succ'`, `iterExp_monotone`, `iterExp_strictMono`, `iterExp_mono_index` |
+| one extra exponential beats every fixed power | `eventually_iterExp_rpow_lt` |
+| growth height at least / at most `k`; positive lower order | `GrowthHeightAtLeast`, `GrowthHeightAtMost`, `PositiveLowerOrder` |
+| **the two heights are incompatible one step apart** | `not_growthHeightAtLeast_succ_of_atMost` |
+| raising the exponent absorbs an additive constant | `eventually_iterExp_add_le` |
+| raising the exponent absorbs a multiplicative constant | `eventually_iterExp_mul_add_le` |
+| **`M(r, exp-cascade of length n) ≤ exp_n(r^C)`** | `exists_bound_entireCascade_expAffine`, `growthHeightAtMost_entireCascade_expAffine` |
+| **the same for the card's family** | `growthHeightAtMost_affExpCascade` |
+| **`F_n` has no growth height `n+1`** | `not_growthHeightAtLeast_affExpCascade` |
+
+`PositiveLowerOrder` is defined without `liminf`: `∃ δ > 0` with `M(r,f) ≥ exp(r^δ)` eventually.
+It already excludes polynomials, so "transcendental" need not be carried separately — this is the
+card's "polynomial and affine factors do not count".
+
+#### Remaining: the Pólya lower bound
+
+1. `CompositionDepthAtLeast F k` — some factorization `F = h_1 ∘ ⋯ ∘ h_m` into entire maps has at
+   least `k` factors of positive lower order; `cd_+(F) = n` is
+   `CompositionDepthAtLeast F n ∧ ¬ CompositionDepthAtLeast F (n+1)`.
+2. Lower bound `cd_+(F_n) ≥ n`: the displayed factorization; each `f_j` has order one, so
+   `PositiveLowerOrder (affExp a b c j)` is the explicit estimate at
+   `z = r·conj(c_j)/‖c_j‖`.
+3. **The gate.**  Two composition lemmas, both instances of the same Pólya estimate:
+   * `g` entire nonconstant, `GrowthHeightAtLeast h k` ⟹ `GrowthHeightAtLeast (g ∘ h) k`;
+   * `PositiveLowerOrder g`, `GrowthHeightAtLeast h k` ⟹ `GrowthHeightAtLeast (g ∘ h) (k+1)`.
+
+   The geometric half is already owned: `HTGeometry/PolyaConnectedTransfer.exists_le_norm_comp_of_floor`
+   turns "the inner function runs from modulus `≤ t` to modulus `≥ t` on a ball" plus "a floor for
+   `|g|` on the circle `|w| = t`" into a point where `|g(h z)|` meets that floor, and the image of a
+   ball under a continuous map is connected, so it meets every intermediate circle.
+
+   What is missing is a **quantitative** minimum-modulus floor.  `RHTower/EntireMinimumModulus`
+   produces a circle of radius `s ∈ [A,B]` with a floor `H^n · L` (and the log form
+   `exists_radius_log_norm_ge_of_analytic`), but `L` is existential: the statements record `0 < L`
+   only.  Inside the proof `L = ‖g 0‖ · exp(−2 log(M/‖g 0‖) · B/(R−B))` with `M ≈ M_f/(R'−R)^n + 1`,
+   which is the classical `min_{|w|=s} |f| ≥ M(R',f)^{−C}` bound.  Extending
+   `exists_radius_norm_ge_of_analytic` to expose that inequality — i.e. a floor of the form
+   `M(R',f)^{−C}·‖f 0‖^{C'}` — is the one piece of new infrastructure the composition-depth half
+   needs.  On the iterated-exponential scale a lost power is harmless: `M^{−C}` and `M` have the
+   same height.
+4. Then the induction over `List.Sublist` (head = outermost factor) gives
+   `CompositionDepthAtLeast F k → GrowthHeightAtLeast F k`, and
+   `not_growthHeightAtLeast_affExpCascade` closes `cd_+(F_n) ≤ n`.

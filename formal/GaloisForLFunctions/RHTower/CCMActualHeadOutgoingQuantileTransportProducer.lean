@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMActualHeadGammaWallOutgoingProducer
+import GaloisForLFunctions.RHTower.CCMActualHeadCompletedAutocorrelationProducer
 
 /-!
 # Monotone outgoing-polar transport on actual Gamma heads
@@ -391,5 +392,282 @@ theorem ccmRestrictedWeilActualHeadGammaWallOutgoingProducer_eq_quantileTranspor
     ring
   rw [hexp] at htransport
   linear_combination htransport
+
+theorem ccmActualHeadTranslationDefect_sub_eq_two_autocorrelationTransport
+    (s h : ℝ) (f : SoninL2) :
+    ccmActualHeadTranslationDefect s f - ccmActualHeadTranslationDefect h f =
+      2 * (ccmActualHeadSymmetricAutocorrelation h f -
+        ccmActualHeadSymmetricAutocorrelation s f) := by
+  rw [ccmActualHeadTranslationDefect_eq_norm_sub_symmetricAutocorrelation,
+    ccmActualHeadTranslationDefect_eq_norm_sub_symmetricAutocorrelation]
+  ring
+
+theorem ccmActualHeadSymmetricAutocorrelation_two_aperture_eq_zero
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) :
+    ccmActualHeadSymmetricAutocorrelation (2 * a.1) f.1 = 0 := by
+  have hdef := ccmActualHeadTranslationDefect_two_aperture a f
+  rw [ccmActualHeadTranslationDefect_eq_norm_sub_symmetricAutocorrelation,
+    show ‖(f.1 : SoninL2)‖ = ‖f‖ by rfl] at hdef
+  linarith
+
+theorem ccmActualHeadSymmetricAutocorrelation_eq_zero_of_two_aperture_le
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a)
+    {h : ℝ} (hh : 2 * a.1 ≤ h) :
+    ccmActualHeadSymmetricAutocorrelation h f.1 = 0 := by
+  rcases hh.eq_or_lt with heq | hlt
+  · rw [← heq]
+    exact ccmActualHeadSymmetricAutocorrelation_two_aperture_eq_zero a f
+  · have hdef :=
+      ccmActualHeadTranslationDefect_eq_two_norm_sq_of_two_aperture_lt a f hlt
+    rw [ccmActualHeadTranslationDefect_eq_norm_sub_symmetricAutocorrelation,
+      show ‖(f.1 : SoninL2)‖ = ‖f‖ by rfl] at hdef
+    linarith
+
+/-- Quantile overshoot past physical aperture contributes exactly zero to terminal
+autocorrelation current. -/
+theorem integral_quantileBoundary_to_twoAperture_autocorrelation_eq_zero_of_overshoot
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) (N : ℕ)
+    (hN : 2 * a.1 ≤ ccmOutgoingPrimeQuantileBoundary N) :
+    (∫ h in ccmOutgoingPrimeQuantileBoundary N..(2 * a.1),
+      Real.exp (h / 2) * ccmActualHeadSymmetricAutocorrelation h f.1) = 0 := by
+  rw [intervalIntegral.integral_symm]
+  have hzero :
+      (∫ h in (2 * a.1)..ccmOutgoingPrimeQuantileBoundary N,
+        Real.exp (h / 2) * ccmActualHeadSymmetricAutocorrelation h f.1) = 0 := by
+    calc
+      _ = ∫ h in (2 * a.1)..ccmOutgoingPrimeQuantileBoundary N, 0 := by
+        apply intervalIntegral.integral_congr
+        intro h hh
+        dsimp only
+        rw [ccmActualHeadSymmetricAutocorrelation_eq_zero_of_two_aperture_le
+          a f ((Set.uIcc_of_le hN ▸ hh).1)]
+        simp
+      _ = 0 := intervalIntegral.integral_zero
+  rw [hzero, neg_zero]
+
+/-- Transport-localized completed autocorrelation current. Prime and polar scalar masses have
+cancelled cellwise before summation. -/
+def ccmActualHeadOutgoingQuantileAutocorrelationCurrent
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) : ℝ :=
+  let N := Nat.floor (Real.exp (2 * a.1)) + 1
+  4 * ‖f‖ ^ 2 +
+    2 * (∑ n ∈ Finset.range N,
+      ∫ h in ccmOutgoingPrimeQuantileBoundary n..
+          ccmOutgoingPrimeQuantileBoundary (n + 1),
+        Real.exp (h / 2) *
+          (ccmActualHeadSymmetricAutocorrelation h f.1 -
+            ccmActualHeadSymmetricAutocorrelation (Real.log n) f.1)) +
+    2 * (∫ h in ccmOutgoingPrimeQuantileBoundary N..(2 * a.1),
+      Real.exp (h / 2) * ccmActualHeadSymmetricAutocorrelation h f.1)
+
+theorem ccmActualHeadOutgoingQuantileAutocorrelationCurrent_eq_cells_of_overshoot
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a)
+    (hN : 2 * a.1 ≤ ccmOutgoingPrimeQuantileBoundary
+      (Nat.floor (Real.exp (2 * a.1)) + 1)) :
+    ccmActualHeadOutgoingQuantileAutocorrelationCurrent a f =
+      4 * ‖f‖ ^ 2 +
+        2 * (∑ n ∈ Finset.range (Nat.floor (Real.exp (2 * a.1)) + 1),
+          ∫ h in ccmOutgoingPrimeQuantileBoundary n..
+              ccmOutgoingPrimeQuantileBoundary (n + 1),
+            Real.exp (h / 2) *
+              (ccmActualHeadSymmetricAutocorrelation h f.1 -
+                ccmActualHeadSymmetricAutocorrelation (Real.log n) f.1)) := by
+  unfold ccmActualHeadOutgoingQuantileAutocorrelationCurrent
+  dsimp only
+  rw [integral_quantileBoundary_to_twoAperture_autocorrelation_eq_zero_of_overshoot
+    a f (Nat.floor (Real.exp (2 * a.1)) + 1) hN]
+  ring
+
+/-- Actual outgoing producer as higher Gamma energy plus one quantile-localized current of the
+same physical-head autocorrelation. -/
+theorem ccmRestrictedWeilActualHeadGammaWallOutgoingProducer_eq_quantileAutocorrelation
+    (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) :
+    let f := ccmArchimedeanFormToAperture a u
+    ccmRestrictedWeilActualHeadGammaWallOutgoingProducer a u =
+      2 * gammaHardyPhaseRate 0 * ‖f‖ ^ 2 +
+        ccmActualHeadGammaHigherBinetModeEnergy (f : SoninL2) +
+        ccmActualHeadOutgoingQuantileAutocorrelationCurrent a f := by
+  let f := ccmArchimedeanFormToAperture a u
+  let N := Nat.floor (Real.exp (2 * a.1)) + 1
+  have hq := ccmRestrictedWeilActualHeadGammaWallOutgoingProducer_eq_quantileTransport a u
+  have hcell (n : ℕ) :
+      (∫ h in ccmOutgoingPrimeQuantileBoundary n..
+          ccmOutgoingPrimeQuantileBoundary (n + 1),
+        Real.exp (h / 2) *
+          (ccmActualHeadTranslationDefect (Real.log n) f.1 -
+            ccmActualHeadTranslationDefect h f.1)) =
+        2 * (∫ h in ccmOutgoingPrimeQuantileBoundary n..
+            ccmOutgoingPrimeQuantileBoundary (n + 1),
+          Real.exp (h / 2) *
+            (ccmActualHeadSymmetricAutocorrelation h f.1 -
+              ccmActualHeadSymmetricAutocorrelation (Real.log n) f.1)) := by
+    rw [show (fun h : ℝ => Real.exp (h / 2) *
+          (ccmActualHeadTranslationDefect (Real.log n) f.1 -
+            ccmActualHeadTranslationDefect h f.1)) =
+        fun h => 2 * (Real.exp (h / 2) *
+          (ccmActualHeadSymmetricAutocorrelation h f.1 -
+            ccmActualHeadSymmetricAutocorrelation (Real.log n) f.1)) by
+      funext h
+      rw [ccmActualHeadTranslationDefect_sub_eq_two_autocorrelationTransport]
+      ring,
+      intervalIntegral.integral_const_mul]
+  have hend :
+      (∫ h in ccmOutgoingPrimeQuantileBoundary N..(2 * a.1),
+        Real.exp (h / 2) *
+          (ccmActualHeadTranslationDefect (2 * a.1) f.1 -
+            ccmActualHeadTranslationDefect h f.1)) =
+        2 * (∫ h in ccmOutgoingPrimeQuantileBoundary N..(2 * a.1),
+          Real.exp (h / 2) * ccmActualHeadSymmetricAutocorrelation h f.1) := by
+    rw [show (fun h : ℝ => Real.exp (h / 2) *
+          (ccmActualHeadTranslationDefect (2 * a.1) f.1 -
+            ccmActualHeadTranslationDefect h f.1)) =
+        fun h => 2 * (Real.exp (h / 2) *
+          ccmActualHeadSymmetricAutocorrelation h f.1) by
+      funext h
+      rw [ccmActualHeadTranslationDefect_sub_eq_two_autocorrelationTransport,
+        ccmActualHeadSymmetricAutocorrelation_two_aperture_eq_zero]
+      ring,
+      intervalIntegral.integral_const_mul]
+  have hsum :
+      (∑ n ∈ Finset.range N,
+        ∫ h in ccmOutgoingPrimeQuantileBoundary n..
+            ccmOutgoingPrimeQuantileBoundary (n + 1),
+          Real.exp (h / 2) *
+            (ccmActualHeadTranslationDefect (Real.log n) f.1 -
+              ccmActualHeadTranslationDefect h f.1)) =
+        2 * (∑ n ∈ Finset.range N,
+          ∫ h in ccmOutgoingPrimeQuantileBoundary n..
+              ccmOutgoingPrimeQuantileBoundary (n + 1),
+            Real.exp (h / 2) *
+              (ccmActualHeadSymmetricAutocorrelation h f.1 -
+                ccmActualHeadSymmetricAutocorrelation (Real.log n) f.1)) := by
+    calc
+      _ = ∑ n ∈ Finset.range N,
+          2 * (∫ h in ccmOutgoingPrimeQuantileBoundary n..
+              ccmOutgoingPrimeQuantileBoundary (n + 1),
+            Real.exp (h / 2) *
+              (ccmActualHeadSymmetricAutocorrelation h f.1 -
+                ccmActualHeadSymmetricAutocorrelation (Real.log n) f.1)) := by
+            apply Finset.sum_congr rfl
+            intro n _
+            exact hcell n
+      _ = _ := by rw [Finset.mul_sum]
+  dsimp only at hq ⊢
+  unfold ccmActualHeadOutgoingQuantileAutocorrelationCurrent
+  dsimp only [f, N]
+  rw [hsum] at hq
+  dsimp only [N] at hend
+  rw [hend] at hq
+  rw [ccmActualHeadTranslationDefect_two_aperture] at hq
+  linear_combination hq
+
+theorem ccmRestrictedWeilSourceQuadratic_eq_quantileAutocorrelation
+    (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) :
+    let f := ccmArchimedeanFormToAperture a u
+    ccmRestrictedWeilSourceQuadratic a u =
+      2 * gammaHardyPhaseRate 0 * ‖f‖ ^ 2 +
+        ccmActualHeadGammaHigherBinetModeEnergy (f : SoninL2) +
+        ccmActualHeadOutgoingQuantileAutocorrelationCurrent a f := by
+  rw [← ccmRestrictedWeilActualHeadGammaWallOutgoingProducer_eq_sourceQuadratic]
+  exact ccmRestrictedWeilActualHeadGammaWallOutgoingProducer_eq_quantileAutocorrelation a u
+
+theorem quantileTerminalMass_eq_completedError_sub_threshold (T : ℝ) :
+    2 * Real.exp (T / 2) -
+        (2 + ccmOutgoingPrimeCumulative (Nat.floor (Real.exp T) + 1)) =
+      criticalMellinCompletedError T - 2 * (1 - Real.exp (-(T / 2))) := by
+  rw [ccmOutgoingPrimeCumulative_floor_exp_succ_eq_primeMass,
+    criticalMellinCompletedError_eq_polar_sub_primeMass,
+    Real.sinh_eq]
+  ring
+
+theorem quantileBoundary_le_terminal_iff_completedError_ge_threshold (T : ℝ) :
+    ccmOutgoingPrimeQuantileBoundary (Nat.floor (Real.exp T) + 1) ≤ T ↔
+      2 * (1 - Real.exp (-(T / 2))) ≤ criticalMellinCompletedError T := by
+  rw [← (div_le_div_iff_of_pos_right (by norm_num : (0 : ℝ) < 2)),
+    ← Real.exp_le_exp,
+    exp_half_ccmOutgoingPrimeQuantileBoundary,
+    ccmOutgoingPrimeCumulative_floor_exp_succ_eq_primeMass,
+    criticalMellinCompletedError_eq_polar_sub_primeMass,
+    Real.sinh_eq]
+  constructor <;> intro h <;> linarith
+
+theorem abs_ccmActualHeadSymmetricAutocorrelation_le_norm_sq
+    (h : ℝ) (f : SoninL2) :
+    |ccmActualHeadSymmetricAutocorrelation h f| ≤ ‖f‖ ^ 2 := by
+  have hdef0 : 0 ≤ ccmActualHeadTranslationDefect h f := by
+    unfold ccmActualHeadTranslationDefect
+    positivity
+  have hdef4 := ccmActualHeadTranslationDefect_le h f
+  rw [ccmActualHeadTranslationDefect_eq_norm_sub_symmetricAutocorrelation] at hdef0 hdef4
+  rw [abs_le]
+  constructor <;> linarith
+
+theorem quantileTerminalAutocorrelation_ge_neg_completedErrorExcess
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a)
+    (hN : ccmOutgoingPrimeQuantileBoundary
+        (Nat.floor (Real.exp (2 * a.1)) + 1) ≤ 2 * a.1) :
+    -(criticalMellinCompletedError (2 * a.1) -
+        2 * (1 - Real.exp (-((2 * a.1) / 2)))) * ‖f‖ ^ 2 ≤
+      ∫ h in ccmOutgoingPrimeQuantileBoundary
+          (Nat.floor (Real.exp (2 * a.1)) + 1)..(2 * a.1),
+        Real.exp (h / 2) * ccmActualHeadSymmetricAutocorrelation h f.1 := by
+  let b := ccmOutgoingPrimeQuantileBoundary
+    (Nat.floor (Real.exp (2 * a.1)) + 1)
+  let W : ℝ → ℝ := fun h => Real.exp (h / 2)
+  let C : ℝ → ℝ := fun h => ccmActualHeadSymmetricAutocorrelation h f.1
+  have hW : Continuous W := by
+    dsimp only [W]
+    fun_prop
+  have hC : Continuous C := by
+    dsimp only [C]
+    exact continuous_ccmActualHeadSymmetricAutocorrelation f.1
+  have hlo : IntervalIntegrable (fun h : ℝ => W h * (-‖f‖ ^ 2)) volume b (2 * a.1) :=
+    (hW.mul continuous_const).intervalIntegrable _ _
+  have hhi : IntervalIntegrable (fun h : ℝ => W h * C h) volume b (2 * a.1) :=
+    (hW.mul hC).intervalIntegrable _ _
+  have hmono :
+      (∫ h in b..(2 * a.1), W h * (-‖f‖ ^ 2)) ≤
+        ∫ h in b..(2 * a.1), W h * C h := by
+    apply intervalIntegral.integral_mono_on hN hlo hhi
+    intro h hh
+    have hcorr := abs_ccmActualHeadSymmetricAutocorrelation_le_norm_sq h f.1
+    rw [show ‖(f.1 : SoninL2)‖ = ‖f‖ by rfl] at hcorr
+    exact mul_le_mul_of_nonneg_left (abs_le.mp hcorr).1 (Real.exp_pos _).le
+  have hmass := integral_exp_half_quantileBoundary_to_eq_massMismatch
+    (2 * a.1) (Nat.floor (Real.exp (2 * a.1)) + 1)
+  have herror := quantileTerminalMass_eq_completedError_sub_threshold (2 * a.1)
+  change -(criticalMellinCompletedError (2 * a.1) -
+      2 * (1 - Real.exp (-((2 * a.1) / 2)))) * ‖f‖ ^ 2 ≤
+    ∫ h in b..(2 * a.1), W h * C h
+  calc
+    _ = (-‖f‖ ^ 2) *
+        (2 * Real.exp ((2 * a.1) / 2) -
+          (2 + ccmOutgoingPrimeCumulative
+            (Nat.floor (Real.exp (2 * a.1)) + 1))) := by rw [herror]; ring
+    _ = (-‖f‖ ^ 2) * (∫ h in b..(2 * a.1), W h) := by
+      rw [show (∫ h in b..(2 * a.1), W h) =
+          2 * Real.exp ((2 * a.1) / 2) -
+            (2 + ccmOutgoingPrimeCumulative
+              (Nat.floor (Real.exp (2 * a.1)) + 1)) by
+        simpa only [b, W] using hmass]
+    _ = (∫ h in b..(2 * a.1), W h * (-‖f‖ ^ 2)) := by
+      rw [← intervalIntegral.integral_const_mul]
+      apply intervalIntegral.integral_congr
+      intro h hh
+      ring
+    _ ≤ _ := hmono
+
+theorem quantileEndpointReserve_add_terminal_ge_completedErrorBarrier
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a)
+    (hN : ccmOutgoingPrimeQuantileBoundary
+        (Nat.floor (Real.exp (2 * a.1)) + 1) ≤ 2 * a.1) :
+    (4 - 2 * (criticalMellinCompletedError (2 * a.1) -
+        2 * (1 - Real.exp (-((2 * a.1) / 2))))) * ‖f‖ ^ 2 ≤
+      4 * ‖f‖ ^ 2 +
+        2 * (∫ h in ccmOutgoingPrimeQuantileBoundary
+            (Nat.floor (Real.exp (2 * a.1)) + 1)..(2 * a.1),
+          Real.exp (h / 2) * ccmActualHeadSymmetricAutocorrelation h f.1) := by
+  have h := quantileTerminalAutocorrelation_ge_neg_completedErrorExcess a f hN
+  linarith
 
 end RHTower

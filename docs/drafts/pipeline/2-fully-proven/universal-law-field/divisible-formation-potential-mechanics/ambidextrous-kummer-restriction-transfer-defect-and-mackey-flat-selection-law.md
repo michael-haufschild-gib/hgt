@@ -3,7 +3,7 @@
 - **ID:** ULF-DFPM-5
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / AMBIDEXTROUS FORMATION / EXACT ALGEBRAIC SELECTOR
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [RESTRICTION-INCLUSION FUSION] [CROSSED DEFECT COCYCLE] [JOINT RECONSTRUCTION] [FINITE WITNESS] [GLOBAL PROPERNESS] [RH-EQUIVALENT SPECIALIZATION] [SOURCE BIFLATNESS OPEN] [NO LEAN IN THIS PASS]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [RESTRICTION-INCLUSION FUSION] [CROSSED DEFECT COCYCLE] [JOINT RECONSTRUCTION] [FINITE WITNESS] [GLOBAL PROPERNESS] [RH-EQUIVALENT SPECIALIZATION] [SOURCE BIFLATNESS OPEN] [LEAN-FORMALIZED FINITE SELECTOR]
 
 ## 1. Mechanism
 
@@ -278,4 +278,20 @@ The theorem proves no source transfer-flatness, no root construction, and no RH.
 global analytic admission axiom by one exact finite-level formation law whose failure is completely
 reconstructed and topologically amplified.
 
-No Lean was written or built in this research pass.
+## 9. Lean formalization boundary
+
+Module `GaloisForLFunctions.HTGeometry.ConstitutiveAmbidextrousKummerSelection` certifies the
+unconditional finite selector:
+
+1. the doubling defect is exactly `-q` in `ZMod (2 * n)`;
+2. every nonzero integer charge has nonzero defect whenever `q.natAbs < n`;
+3. cofinal doubling-defect flatness is equivalent to `q = 0`;
+4. the defect preserves addition and negation.
+
+Scratch elaboration, direct leaf elaboration, and targeted leaf build pass.  `#print axioms` reports
+only `propext`, `Classical.choice`, and `Quot.sound`; no premise, `sorry`, added axiom, or unsafe
+declaration is used.  The leaf is wired into `UniversalLawField.lean`; that umbrella was not built.
+
+The crossed three-depth identity, regular-packet Calkin amplification, meromorphic divisor
+specialization, and source covariant-inclusion horizontalness are not claimed by this Lean leaf.
+The last item remains the source-genesis gate.

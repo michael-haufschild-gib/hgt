@@ -22,7 +22,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 variable {S : Finset ℂ} {C : ℂ → ℂ}
 
-private theorem contDiff_expCombo (S : Finset ℂ) (C : ℂ → ℂ) :
+theorem contDiff_expCombo (S : Finset ℂ) (C : ℂ → ℂ) :
     ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => ∑ y ∈ S, C y * Complex.exp (y * t)) := by
   refine ContDiff.sum (fun y _ => ?_)
   have hofReal : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => (t : ℂ)) := Complex.ofRealCLM.contDiff
@@ -30,12 +30,12 @@ private theorem contDiff_expCombo (S : Finset ℂ) (C : ℂ → ℂ) :
     simpa [smul_eq_mul] using hofReal.const_smul y
   simpa [smul_eq_mul] using (h1.cexp).const_smul (C y)
 
-/-- **The identity theorem.**  If the real part of an exponential polynomial has accumulating zeros,
-every coefficient vanishes. -/
-theorem coeff_eq_zero_of_accumZero {t₀ : ℝ}
-    (hreal : ∀ t : ℝ, (∑ y ∈ S, C y * Complex.exp (y * t)).im = 0)
-    (hacc : AccumZero (fun t => (∑ y ∈ S, C y * Complex.exp (y * t)).re) t₀) :
-    ∀ y ∈ S, C y = 0 := by
+/-- **Derivatives of a real exponential polynomial.**  The `n`-th derivative of the real part is the
+real part of the combination with coefficients multiplied by the `n`-th powers of the exponents. -/
+theorem iteratedDeriv_expCombo_eq_ofReal
+    (hreal : ∀ t : ℝ, (∑ y ∈ S, C y * Complex.exp (y * t)).im = 0) (n : ℕ) (t : ℝ) :
+    (∑ y ∈ S, C y * y ^ n * Complex.exp (y * t))
+      = ((iteratedDeriv n (fun s : ℝ => (∑ y ∈ S, C y * Complex.exp (y * s)).re) t : ℝ) : ℂ) := by
   set F : ℝ → ℂ := fun t => ∑ y ∈ S, C y * Complex.exp (y * t) with hF
   set f : ℝ → ℝ := fun t => (F t).re with hf
   have hFf : ∀ t, F t = ((f t : ℝ) : ℂ) := by
@@ -48,8 +48,6 @@ theorem coeff_eq_zero_of_accumZero {t₀ : ℝ}
   have hfsmooth : ContDiff ℝ (⊤ : ℕ∞) f := by
     rw [hf]
     exact Complex.reCLM.contDiff.comp hFsmooth
-  have hall := iteratedDeriv_eq_zero_of_accumZero hfsmooth hacc
-  -- the derivatives of the complex form are the real ones, cast
   have htrans : ∀ n : ℕ, iteratedDeriv n F = fun t => ((iteratedDeriv n f t : ℝ) : ℂ) := by
     intro n
     induction n with
@@ -64,21 +62,39 @@ theorem coeff_eq_zero_of_accumZero {t₀ : ℝ}
         rw [iteratedDeriv_succ]
         exact (hcd.differentiable (by simp) t).hasDerivAt
       exact (hd.ofReal_comp).deriv
-  -- hence every power moment of the shifted weights vanishes
+  have e1 : iteratedDeriv n F t = ∑ y ∈ S, C y * y ^ n * Complex.exp (y * t) :=
+    congrFun (iteratedDeriv_expCombo (S := S) C n) t
+  have e2 : iteratedDeriv n F t = ((iteratedDeriv n f t : ℝ) : ℂ) := congrFun (htrans n) t
+  rw [← e1, e2]
+
+/-- The real form: the `n`-th derivative of a real exponential polynomial. -/
+theorem iteratedDeriv_re_expCombo
+    (hreal : ∀ t : ℝ, (∑ y ∈ S, C y * Complex.exp (y * t)).im = 0) (n : ℕ) (t : ℝ) :
+    iteratedDeriv n (fun s : ℝ => (∑ y ∈ S, C y * Complex.exp (y * s)).re) t
+      = (∑ y ∈ S, C y * y ^ n * Complex.exp (y * t)).re := by
+  rw [iteratedDeriv_expCombo_eq_ofReal hreal n t, Complex.ofReal_re]
+
+/-- **The identity theorem.**  If the real part of an exponential polynomial has accumulating zeros,
+every coefficient vanishes. -/
+theorem coeff_eq_zero_of_accumZero {t₀ : ℝ}
+    (hreal : ∀ t : ℝ, (∑ y ∈ S, C y * Complex.exp (y * t)).im = 0)
+    (hacc : AccumZero (fun t => (∑ y ∈ S, C y * Complex.exp (y * t)).re) t₀) :
+    ∀ y ∈ S, C y = 0 := by
+  have hfsmooth : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => (∑ y ∈ S, C y * Complex.exp (y * t)).re) :=
+    Complex.reCLM.contDiff.comp (contDiff_expCombo S C)
+  have hall := iteratedDeriv_eq_zero_of_accumZero hfsmooth hacc
   have hmom : ∀ k : ℕ, ∑ y ∈ S, (C y * Complex.exp (y * t₀)) * y ^ k = 0 := by
     intro k
-    have e1 : iteratedDeriv k F t₀ = ∑ y ∈ S, C y * y ^ k * Complex.exp (y * t₀) :=
-      congrFun (iteratedDeriv_expCombo (S := S) C k) t₀
-    have e2 : iteratedDeriv k F t₀ = ((iteratedDeriv k f t₀ : ℝ) : ℂ) := congrFun (htrans k) t₀
-    have e3 : (∑ y ∈ S, C y * y ^ k * Complex.exp (y * t₀)) = 0 := by
-      rw [← e1, e2, hall k]
-      simp
-    rw [← e3]
+    have e3 : (∑ y ∈ S, C y * y ^ k * Complex.exp (y * t₀)).re = 0 := by
+      rw [← iteratedDeriv_re_expCombo hreal k t₀, hall k]
+    have e4 : (∑ y ∈ S, C y * y ^ k * Complex.exp (y * t₀)).im = 0 := by
+      rw [iteratedDeriv_expCombo_eq_ofReal hreal k t₀, Complex.ofReal_im]
+    have e5 : (∑ y ∈ S, C y * y ^ k * Complex.exp (y * t₀)) = 0 := Complex.ext e3 e4
+    rw [← e5]
     exact Finset.sum_congr rfl (fun y _ => by ring)
   intro y hy
   have hDy := coeff_eq_zero_of_forall_pow hmom y hy
   exact (mul_eq_zero.mp hDy).resolve_right (Complex.exp_ne_zero _)
-
 
 /-- **Isolated zeros.**  A nonzero exponential polynomial has no accumulation point of zeros. -/
 theorem not_accumZero_of_coeff_ne {t₀ : ℝ} {y₀ : ℂ} (hy₀ : y₀ ∈ S) (hC : C y₀ ≠ 0)

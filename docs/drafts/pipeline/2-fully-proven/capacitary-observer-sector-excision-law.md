@@ -1990,3 +1990,48 @@ Corollary A.3's identification of the sector with a left-translation-invariant s
 `L²(U(D))`; the identification of the fixed point with the path-space expectation `E_x[a^{τ_A}]`
 (`(11be)`, now unused); and Theorems D--K, which quantify the observer-excised union over this
 layer.
+
+## Lean progress -- Theorems D, E and the target mass of F
+
+Two new umbrella-wired, axiom-clean modules.
+
+`formal/GaloisForLFunctions/HTGeometry/CapacityReplicaUncertainty.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the `π`-weighted inner product, square mass, orthonormal observer family and sector projection | `piInner`, `piNormSq`, `IsPiOrthonormal`, `piProjection` |
+| **Parseval for the sector projection** | `piNormSq_piProjection` |
+| **the source pairings of a homogeneous sector have total square mass at most `K`** | `sum_sq_source_pairing_le` |
+| **`(11g)`**: the captured square mass is at most `cap²K/(1-a)²` | `sum_sq_transfer_le` |
+| **`(11h)`**: the reporter's square mass is at least the target mass | `measure_le_piNormSq` |
+| **`(11i)`, `(11j)`**: Bessel's best-approximation identity turns the capture ratio into a lower bound on the relative error of *every* sector element | `one_sub_le_relative_error` |
+
+`sum_sq_source_pairing_le` is the card's `∑_j|μ_j|² = ∬K_E dρ_A dρ_A ≤ K`, taken directly against
+the reproducing-kernel bound `|K_E(x,y)| ≤ K` that `SpectralResolventKernel` already supplies from
+`featureKernel_diag_eq_card_of_transitive`.  `sum_sq_transfer_le` is `(11g)` with the transfer
+`(5)` as its hypothesis, so `|1-aλ_j| ≥ 1-a` is the only spectral input.
+
+`one_sub_le_relative_error` is `(11j)` in the sharp form: for an arbitrary coefficient vector `c`
+the sector error expands as `(‖h‖² − ∑_j⟨h,φ_j⟩²) + ∑_j(c_j − ⟨h,φ_j⟩)²`, so Pythagoras is proved
+rather than quoted, and the bound holds for every sector element with no optimality hypothesis.
+
+`formal/GaloisForLFunctions/HTGeometry/CapacityNormalizedAccessibility.lean`:
+
+| Card item | Declaration |
+|---|---|
+| **`(11r)`**: the accessibility amplification `𝔄 = (1-a)h/cap` | `accessAmp` |
+| **`(11s)`**: it is non-negative, has unit `π`-mass, and equals `(1-a)/cap` on the target | `accessAmp_nonneg`, `sum_pi_accessAmp`, `accessAmp_of_mem` |
+| **`(11w)`**: Markov's inequality `π{𝔄 ≥ z} ≤ 1/z` | `measure_accessAmp_ge_le` |
+| **`(11v)`**: the first-entrance sandwich turns `−log(cap·𝔄/(1-a))` into two-sided complexity bounds | `complexity_sandwich` |
+| **`(11y)`, `(11z)`**: the accessibility likelihood of the target is `(1-a)π(A)/cap ∈ [1-a, 1]` | `accessLikelihood_target`, `accessLikelihood_target_mem_Icc` |
+
+`sum_pi_accessAmp` uses the capacity normalization `cap = (1-a)∫h dπ` -- the `(11bl)` total-mass
+identity, which `RenewalOccupationPotential.sum_stationary_occupationPotential` supplies for the
+linear reporter -- so the unit mean of `(11s)` is proved, not assumed.
+
+### What remains
+
+Corollary A.3's identification of the sector with a left-translation-invariant subspace of
+`L²(U(D))`; the identification of the fixed point with the path-space expectation `E_x[a^{τ_A}]`
+(`(11be)`, unused by any estimate); the relative-entropy half `(11aa)` of Theorem F, which needs the
+log-sum inequality; and Theorems G--K.

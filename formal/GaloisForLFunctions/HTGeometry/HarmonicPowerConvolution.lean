@@ -240,4 +240,68 @@ theorem tsum_harmonicPowConv_le (j : ℤ) {β γ : ℝ} (hβone : β ≤ 1)
         ∑' l : ℤ, intPowWeight (β + 1 - γ) l := add_le_add h₁ h₂
     _ = 2 * ∑' l : ℤ, intPowWeight (β + 1 - γ) l := (two_mul _).symm
 
+
+/-! ## The real-valued form -/
+
+/-- The harmonic power convolution is summable for every positive exponent. -/
+theorem summable_harmonicPowConv (j : ℤ) {β : ℝ} (hβ : 0 < β) :
+    Summable (fun l : ℤ => 1 / ((1 + |(l : ℝ)|) ^ β * (1 + |((j - l : ℤ) : ℝ)|))) := by
+  have hβ1 : (1 : ℝ) < β + 1 := by linarith
+  have hleft : Summable (fun l : ℤ => β / (β + 1) * (1 / (1 + |(l : ℝ)|) ^ (β + 1))) :=
+    (summable_one_div_one_add_abs_rpow hβ1).mul_left _
+  have hbase : Summable (fun l : ℤ => 1 / (β + 1) * (1 / (1 + |(l : ℝ)|) ^ (β + 1))) :=
+    (summable_one_div_one_add_abs_rpow hβ1).mul_left _
+  have hright : Summable
+      (fun l : ℤ => 1 / (β + 1) * (1 / (1 + |((j - l : ℤ) : ℝ)|) ^ (β + 1))) := by
+    have := (Equiv.subLeft j).summable_iff
+      (f := fun l : ℤ => 1 / (β + 1) * (1 / (1 + |(l : ℝ)|) ^ (β + 1)))
+    exact this.mpr hbase
+  refine Summable.of_nonneg_of_le (fun l => by positivity) (fun l => ?_) (hleft.add hright)
+  have hx : (1 : ℝ) ≤ 1 + |(l : ℝ)| := by
+    have := abs_nonneg ((l : ℝ)); linarith
+  have hy : (1 : ℝ) ≤ 1 + |((j - l : ℤ) : ℝ)| := by
+    have := abs_nonneg (((j - l : ℤ) : ℝ)); linarith
+  have hpt := powConv_pointwise_le hβ (by norm_num : (0 : ℝ) < 1) hx hy
+  rw [Real.rpow_one] at hpt
+  exact hpt
+
+/-- **Decay of the harmonic power convolution, in real form.**  The same statement as
+`tsum_harmonicPowConv_le` with both sides real. -/
+theorem tsum_harmonicPowConv_real_le (j : ℤ) {β γ : ℝ} (hβone : β ≤ 1)
+    (hγ0 : 0 < γ) (hγβ : γ < β) :
+    ∑' l : ℤ, 1 / ((1 + |(l : ℝ)|) ^ β * (1 + |((j - l : ℤ) : ℝ)|))
+      ≤ 2 ^ γ * (2 * (∑' x : ℤ, intPowWeight (β + 1 - γ) x).toReal)
+          / (1 + |(j : ℝ)|) ^ γ := by
+  have hβ0 : (0 : ℝ) < β := lt_trans hγ0 hγβ
+  have hWtop : (∑' x : ℤ, intPowWeight (β + 1 - γ) x) ≠ ⊤ :=
+    tsum_intPowWeight_ne_top (by linarith)
+  have hWof : ENNReal.ofReal ((∑' x : ℤ, intPowWeight (β + 1 - γ) x).toReal)
+      = ∑' x : ℤ, intPowWeight (β + 1 - γ) x := ENNReal.ofReal_toReal hWtop
+  have hWnn : (0 : ℝ) ≤ (∑' x : ℤ, intPowWeight (β + 1 - γ) x).toReal := ENNReal.toReal_nonneg
+  have hsummable := summable_harmonicPowConv j hβ0
+  have hjpos : (0 : ℝ) < (1 + |(j : ℝ)|) ^ γ := by
+    have := abs_nonneg ((j : ℝ))
+    exact Real.rpow_pos_of_pos (by linarith) γ
+  have h2γ : (0 : ℝ) < (2 : ℝ) ^ γ := Real.rpow_pos_of_pos (by norm_num) γ
+  have hRHSnn : (0 : ℝ) ≤ 2 ^ γ * (2 * (∑' x : ℤ, intPowWeight (β + 1 - γ) x).toReal)
+      / (1 + |(j : ℝ)|) ^ γ := by positivity
+  have hconv := tsum_harmonicPowConv_le j hβone hγ0 hγβ
+  have hofsum : ENNReal.ofReal
+      (∑' l : ℤ, 1 / ((1 + |(l : ℝ)|) ^ β * (1 + |((j - l : ℤ) : ℝ)|)))
+      = ∑' l : ℤ, ENNReal.ofReal
+        (1 / ((1 + |(l : ℝ)|) ^ β * (1 + |((j - l : ℤ) : ℝ)|))) :=
+    ENNReal.ofReal_tsum_of_nonneg (fun l => by positivity) hsummable
+  have hRHS : ENNReal.ofReal (2 ^ γ / (1 + |(j : ℝ)|) ^ γ) *
+      (2 * ∑' x : ℤ, intPowWeight (β + 1 - γ) x)
+      = ENNReal.ofReal (2 ^ γ * (2 * (∑' x : ℤ, intPowWeight (β + 1 - γ) x).toReal)
+          / (1 + |(j : ℝ)|) ^ γ) := by
+    have h2W : (2 : ℝ≥0∞) * (∑' x : ℤ, intPowWeight (β + 1 - γ) x)
+        = ENNReal.ofReal (2 * (∑' x : ℤ, intPowWeight (β + 1 - γ) x).toReal) := by
+      rw [ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), ENNReal.ofReal_ofNat, hWof]
+    rw [h2W, ← ENNReal.ofReal_mul (by positivity)]
+    congr 1
+    ring
+  rw [hofsum.symm, hRHS] at hconv
+  exact (ENNReal.ofReal_le_ofReal_iff hRHSnn).mp hconv
+
 end GaloisForLFunctions

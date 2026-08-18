@@ -4168,3 +4168,61 @@ This promotion added the entire quantitative layer, in nine new modules:
 logarithms is transcendental.
 
 Card moved to `docs/drafts/pipeline/3-formalized`.
+
+## `centralizer-centered-circuit-collision-and-design-barrier-law` (promoted)
+
+The card's Lean plan had items 1--3 done (Theorem A and the abstract half of Theorem B); the
+concrete replica data of `(19)`--`(21)`, the completed-phase bound `(14)`--`(16)`, and the ensemble
+criterion `(17)`--`(18)` were open.  Seven new modules close them.
+
+- `HTGeometry/SymmetricReplicaProjector` — the class-averaging projector `Π_sym`, self-adjoint and
+  idempotent, with `Tr Π_sym = binom(D+r-1, r)` obtained by counting content classes rather than by
+  the cycle-index identity.  No symmetric group appears in the definition.
+- `HTGeometry/ReplicaMomentPurity` — the moment `M_ν`, its trace and support, its purity as a
+  law-weighted double sum of squared replica overlaps, and Theorem C `(22)`, `(23)`, `(26)`, `(27)`.
+- `HTGeometry/ReplicaContentPermutation` — content classes are slot-permutation orbits, replica
+  powers preserve the symmetric vectors, and `Π_sym` is central for every replica power.
+- `HTGeometry/TwirlSeparationHouseholder` — monomial separation via `MvPolynomial.funext_set` on
+  the positive orthant, and Householder transitivity on real unit vectors.
+- `HTGeometry/CollectiveCentralBlock` — the block structure of the collective commutant from a
+  single root-of-unity diagonal unitary, and constancy of the replica trace pairing on the unit
+  sphere.
+- `HTGeometry/CollectiveTwirlIdentity` — the class-sum identity and `(21)`,
+  `(I − Π_{D,r}) M_ν = M_ν − Ω_{D,r}`, with no Haar measure and no representation theory.
+- `HTGeometry/CompletedPhaseReplicaMoment` — `|class| ≤ r!` from the orbit bound, hence `(15)` and
+  the completed-phase bound `(16)`.
+- `HTGeometry/CentralizerCenteredDesignBarrier` — the `*`-algebra closure of the commutant, the
+  sharp form of `(12)` (a central moment *equals* `Ω_{D,r}`), the conjugation invariance that places
+  `Ω_{D,r}` in every quenched centralizer, and the ensemble criterion `(17)`--`(18)`.
+
+Card moved to `docs/drafts/pipeline/3-formalized`.
+
+## `all-replica-incidence-normalized-local-word-leakage-law` (Casimir gap closed, not yet promoted)
+
+The card's named open item -- the lower half of `(16)`, `2D² I_Q ⪯ K|_Q`, at arbitrary replica
+order -- is now Lean-proved.  The card derives it from the least nonzero quadratic Casimir of
+`SU(D)` on the root lattice; the formalisation replaces that by an elementary argument that needs no
+root system, no highest-weight module and no invariant measure:
+
+- `HTGeometry/WeightCasimirGap` — the counting inequality: a nonzero decreasing zero-sum integer
+  vector has `∑ μ² + ∑_{a<b}(μ_a − μ_b) ≥ 2D`, proved by splitting into positive/zero/negative
+  blocks and bounding the ordered differences by `(D + z)A`.
+- `HTGeometry/MatrixUnitCasimir` — matrix-unit families, their Casimir, its centrality by index
+  cancellation, and the energy expansion `⟨Y, CY⟩ = ∑ ‖gen a b Y‖²`.
+- `HTGeometry/MatrixUnitWeightSystem` — pure weights, weight projections, and the fact that
+  generators shift weights by one step while the Casimir preserves them.
+- `HTGeometry/MatrixUnitCasimirGap` — a maximal weight in an eigenspace is annihilated by every
+  raising generator, its Casimir eigenvalue is the weight's own Casimir value, and the weight is
+  dominant; hence the abstract spectral gap.
+- `HTGeometry/CollectiveReplicaWeightGap` — the collective lift of a matrix unit on the replica
+  space is a matrix-unit family whose weight is the letter-count difference of the row and column
+  words.
+- `HTGeometry/FullPauliCasimirGap` — Pauli completeness `∑_q (P_q)_{ij}(P_q)_{kl} = D δ_{il}δ_{jk}`
+  from the sixteen-case single-qubit identity, hence `K = D · C`, hence `(16)`'s lower half.
+
+Auditing also corrected a stale claim on the card: `(18)` is *not* a Lean theorem.  Its three
+ingredients exist (`leak_ge_dim_sub`, `completedHermitianFamily_scaled_biTight`,
+`incidenceNormalized_leakage_ge`) but the `(19)` transfer between them -- the inverse-square-root
+normalisation and the image-subspace distance inequality -- is missing, and no scalar substitute
+exists because bounding the captured energy without it costs the upper Casimir constant
+`4|R|²(D²−1)` instead of `2D²`.  That transfer is the card's only remaining Lean work.

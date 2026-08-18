@@ -148,20 +148,26 @@ theorem hasSum_norm_sq_of_hasSum_smul {v : ℕ → evenSubspace} (hv : Orthonorm
   rw [inner_even_self_eq_norm_sq] at h
   exact Complex.hasSum_ofReal.mp h
 
+/-- The leakage operator acts on a convergent expansion of eigenvectors coefficientwise. -/
+theorem hasSum_leakage_apply {a : ℝ} {v : ℕ → evenSubspace}
+    {D : ℕ → ℝ} (hD : ∀ j, evenProlateLeakage a (v j) = ((D j : ℝ) : ℂ) • v j)
+    {x : ℕ → ℂ} {f : evenSubspace} (hf : HasSum (fun j : ℕ => x j • v j) f) :
+    HasSum (fun j : ℕ => (((D j : ℝ) : ℂ) * x j) • v j) (evenProlateLeakage a f) := by
+  have h := (evenProlateLeakage a).hasSum hf
+  have heq : (fun j : ℕ => evenProlateLeakage a (x j • v j))
+      = fun j : ℕ => (((D j : ℝ) : ℂ) * x j) • v j := by
+    funext j
+    rw [map_smul, hD j, smul_smul, mul_comm]
+  rw [heq] at h
+  exact h
+
 /-- **The leakage quadratic form along a convergent orthonormal expansion of eigenvectors.** -/
 theorem hasSum_leakage_of_hasSum_smul {a : ℝ} {v : ℕ → evenSubspace} (hv : Orthonormal ℂ v)
     {D : ℕ → ℝ} (hD : ∀ j, evenProlateLeakage a (v j) = ((D j : ℝ) : ℂ) • v j)
     {x : ℕ → ℂ} {f : evenSubspace} (hf : HasSum (fun j : ℕ => x j • v j) f) :
     HasSum (fun j : ℕ => D j * ‖x j‖ ^ 2)
       ((inner ℂ (evenProlateLeakage a f) f : ℂ).re) := by
-  have hBf : HasSum (fun j : ℕ => (((D j : ℝ) : ℂ) * x j) • v j) (evenProlateLeakage a f) := by
-    have h := (evenProlateLeakage a).hasSum hf
-    have heq : (fun j : ℕ => evenProlateLeakage a (x j • v j))
-        = fun j : ℕ => (((D j : ℝ) : ℂ) * x j) • v j := by
-      funext j
-      rw [map_smul, hD j, smul_smul, mul_comm]
-    rw [heq] at h
-    exact h
+  have hBf := hasSum_leakage_apply hD hf
   have h : HasSum (fun j : ℕ => (inner ℂ (evenProlateLeakage a f) (x j • v j) : ℂ))
       (inner ℂ (evenProlateLeakage a f) f) := (innerSL ℂ (evenProlateLeakage a f)).hasSum hf
   have hterm : ∀ j : ℕ, (inner ℂ (evenProlateLeakage a f) (x j • v j) : ℂ)

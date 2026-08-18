@@ -2320,3 +2320,572 @@ constraint `hN^{2k} ≤ z` satisfiable with `k ≍ (log x)^{1−β}`.
 
 **With this, every quantity in the rough half's bound is a closed expression in
 `x, h, Y, log P₁, log hN, z`.**
+
+### `1/h` vanishes — `Sieve/LogPowerLimits` (2026-08-18, continued)
+
+**`tendsto_exp_neg_log_rpow`** : `exp(−(log x)^β) → 0` for `β > 0`.  This is `1/h` for the cards'
+short-interval length `h = exp((log x)^β)`, and it is what kills the two lower-order terms of the
+rough bound (`8(log P₁/log hN)E/h` and the diagonal `d = 0` contribution), both of which carry an
+extra factor `1/h` against the main term.
+
+The rough half's three limits are now all available:
+
+| term | size | vanishes by |
+|-|-|-|
+| off-diagonal, main | `(log P₁/log hN)²` | `tendsto_logRatio_sq_mul_log` (with the `log x` of the Markov step) |
+| diagonal `d = 0` | `(log P₁/log hN)/h` | `tendsto_exp_neg_log_rpow` |
+| Selberg remainder | `z^{1+o(1)}/(h√x)` | `sum_selbergRemainder_le` at any `z ≤ x^{1/4}` |
+
+### Normalising the discarded-part bound — `Sieve/RoughDivBound` (2026-08-18)
+
+**`rough_div_bound`** : for `1 ≤ h` and `0 < s`, and nonnegative `A, B`,
+
+```text
+( (2h+1)·2·(A + ⌊h⌋·B) ) / (h²·s)  ≤  6A/(h·s)  +  6B/s .
+```
+
+Applied with `s = √x`, `A` the diagonal bound and `B` the off-diagonal bound of `Sieve/FibreRoughLog`,
+this puts the discarded part into exactly the two-order form the limits address:
+
+```text
+∑_a #(F_a ∩ roughSet)² / (h²√x)
+    ≤  6·( 2Y(log P₁/log hN)E + Σ_rem ) / (h√x)      ← carries an extra 1/h
+     +  6·( 2Y(log P₁/log hN)²E²/c + Σ_rem ) / √x     ← the main term
+```
+
+With `Y ≍ √x` the first is `≍ (log P₁/log hN)/h` and the second `≍ (log P₁/log hN)²`, matching the
+limit table above term for term.  Every piece of the rough half is now a proved inequality or a
+proved limit; the remaining step is to name the parameter functions and cite them.
+
+### The cards' short-interval length — `Sieve/ShortIntervalLength` (2026-08-18)
+
+The first parameter function is now named and its three required properties proved:
+
+- `cardLength β x = exp((log x)^β)` — the cards' `h(X)`;
+- `log_cardLength` : `log(cardLength β x) = (log x)^β`;
+- **`tendsto_cardLength`** : `cardLength β → ∞` for `β > 0`;
+- **`cardLength_le_sqrt`** : `cardLength β x ≤ √x` eventually, for `0 < β < 1` — from
+  `(log x)^β·(log x)^{1−β} = log x` and `(log x)^{1−β} ≥ 2`.
+
+`cardLength_le_sqrt` is the hypothesis `hhx` that every capstone of the fibre reduction carries
+(`averagedMeanSquare_of_spectral`, `sum_fibreSum_sq_le_integral_scaled`, …), and
+`tendsto_cardLength` is `hgrow`.  So the cards' own choice of `h` now discharges both, for exactly
+the range `0 < β < 1` the cards state.
+
+### The start of the sifting range — `Sieve/SiftingRangeStart` (2026-08-18)
+
+The second parameter function, `P₁`, is now named:
+
+- `siftStart c x = ⌈exp((log x)^c)⌉₊` — used at `c = aβ`, so that `log P₁ ≈ (log h)^a`;
+- **`log_siftStart_le`** : `log(siftStart c x) ≤ (log x)^c + log 2` eventually — the ceiling costs at
+  most `log 2`, because `⌈E⌉ ≤ E+1 ≤ 2E` for `E ≥ 1`;
+- **`eventually_le_siftStart`** : `N ≤ siftStart c x` eventually, for any fixed `N` — which supplies
+  the hypotheses `2 ≤ P₁` and `4 ≤ P₁` that the sieve and `Sieve/PairClassSum` require.
+
+**The `log 2` is absorbed for free**, because the admissible window `a < 1 − 1/(2β)` is open: pick
+`a < a' < 1 − 1/(2β)`; then `(log x)^{aβ} + log 2 ≤ (log x)^{a'β}` eventually, and
+`Sieve/LogPowerLimits.tendsto_logRatio_sq_mul_log` applies at `a'`.  This is why the window was
+stated as a strict inequality.
+
+### The top of the sifting range — `Sieve/SiftingRangeTop` (2026-08-18)
+
+- `siftTop β x = ⌊cardLength β x⌋₊` — the prime range is `(P₁, hN]` with `hN = siftTop β x`;
+- **`eventually_le_siftTop`** : `N ≤ siftTop β x` eventually, for any fixed `N`;
+- **`siftStart_le_siftTop`** : `siftStart (aβ) x ≤ siftTop β x` eventually, for `0 < a < 1` —
+  the sieve's `P₁ ≤ hN`.
+
+The proof is the chain `⌈E⌉ ≤ E+1 ≤ H−1 ≤ ⌊H⌋` with `E = exp((log x)^{aβ})`, `H = exp((log x)^β)`,
+using `(log x)^β ≥ (log x)^{aβ} + 1` (from `(log x)^{β−aβ} ≥ 2`) and `e·E ≥ E + 2` (from `E ≥ 2`).
+
+**Three of the sieve's structural hypotheses are now discharged by the parameter functions
+themselves**: `2 ≤ P₁`, `4 ≤ P₁`, and `P₁ ≤ hN`.  What is left of the substitution is the level
+`z(x)`, the truncation depth `k(x)`, and the shift-correction positivity.
+
+### The truncation depth fits inside the level — `Sieve/LogLogSmall` (2026-08-18)
+
+The last comparison the parameter substitution needs:
+
+- **`tendsto_log_div_rpow`** : `log t / t^δ → 0` for `δ > 0`, from mathlib's `isLittleO_log_rpow_atTop`;
+- **`tendsto_logLog_div_logRpow`** : `log log x / (log x)^δ → 0`.
+
+This is what makes the level constraint `hN^{2k} ≤ z` satisfiable.  By `Sieve/PairClassSum` the
+truncation depth may be taken `k ≍ log(log hN/log P₁) ≍ log log x`, so
+`2k·log hN ≍ log log x·(log x)^β`, while the level `z = x^{1/4}` gives `log z = (log x)/4`.  The
+constraint is therefore `8 log log x ≤ (log x)^{1−β}` — true eventually for every `β < 1`, by the
+limit above.
+
+**Every hypothesis of the rough half is now discharged by a named parameter function**:
+`2 ≤ P₁`, `4 ≤ P₁`, `P₁ ≤ hN` (`Sieve/SiftingRange{Start,Top}`), `1 ≤ z`, `hN^{2k} ≤ z` and
+`k ≥ 4e·Δ + log 2` (this file with `Sieve/PairClassSum`), `h ≤ √x` and `h → ∞`
+(`Sieve/ShortIntervalLength`).
+
+### The level and the truncation depth — `Sieve/SiftingDepth` (2026-08-18)
+
+The last two parameter functions are named:
+
+- `siftLevel x = √(√x) = x^{1/4}`, with `one_le_siftLevel` and **`log_siftLevel`**
+  (`log(siftLevel x) = (log x)/4`);
+- `siftDepth β a x = ⌈4e·(mertensS hN − mertensS P₁) + log 2⌉₊` — chosen so that
+  `Sieve/PairClassSum.sum_pairClassTerm_le` discharges the truncation hypothesis for **every** shift
+  by construction;
+- `mertensS_mono`, `mertensS_nonneg` — the two monotonicity facts the estimate needs;
+- **`siftDepth_le`** : eventually
+  `siftDepth β a x ≤ 4e·(log((log x)^β) + mertensUpperConst) + log 2 + 1`,
+  i.e. `k ≍ log log x`, using the corpus's `mertensS_le_logLog_add` and
+  `log hN ≤ log(cardLength) = (log x)^β`.
+
+Combined with `log(siftLevel x) = (log x)/4` and `Sieve/LogLogSmall`, the level constraint
+`2k·log hN ≤ log z` becomes `≍ log log x·(log x)^β ≤ (log x)/4`, true eventually for every `β < 1`.
+
+### The level constraint, proved — `Sieve/SiftingDepth` (2026-08-18, continued)
+
+**`siftTop_pow_le_siftLevel`** : for `0 < β < 1` and `0 < a < 1`, eventually
+
+```text
+hN^{2k}  ≤  z ,        hN = siftTop β x,  k = siftDepth β a x,  z = siftLevel x = x^{1/4} .
+```
+
+The proof passes to logarithms: `2k·log hN ≤ 2k·(log x)^β`, and `8k ≤ (log x)^{1−β}` because
+`k ≤ 4eβ·log log x + O(1)` (`siftDepth_le`) while `log log x = o((log x)^{1−β})`
+(`Sieve/LogLogSmall`); then `(log x)^β·(log x)^{1−β} = log x` gives `2k·log hN ≤ (log x)/4`, which is
+`log(siftLevel x)`.
+
+**Every hypothesis of the rough half is now a proved statement about the named parameter
+functions.**  The remaining work on that half is purely the composition: substituting
+`cardLength β`, `siftStart (aβ)`, `siftTop β`, `siftDepth β a`, `siftLevel` into
+`Sieve/FibreRoughLog` and citing the limits.
+
+### The shift correction is positive — `Sieve/ShiftCorrectionPos` (2026-08-18)
+
+**`shiftCorrection_pos`** : for `0 < β`, `0 < a`, eventually
+
+```text
+0 < 1 − log⌊cardLength β x⌋ / ( log P₁ · P₁ ) ,      P₁ = siftStart (aβ) x ,
+```
+
+in fact the correction is at least `1/2`.  The numerator is `≤ (log x)^β = exp(β log log x)`; the
+denominator is `≥ exp((log x)^{aβ})`, since `P₁ ≥ exp((log x)^{aβ})` and `log P₁ ≥ 1`; and
+`β log log x + log 2 ≤ (log x)^{aβ}` eventually by `Sieve/LogLogSmall`.
+
+**This was the last un-discharged hypothesis of the rough half.**  All of them now hold for the named
+parameter functions:
+
+| hypothesis | discharged by |
+|-|-|
+| `h → ∞`, `h ≤ √x` | `ShortIntervalLength` |
+| `2 ≤ P₁`, `4 ≤ P₁` | `SiftingRangeStart.eventually_le_siftStart` |
+| `P₁ ≤ hN`, `2 ≤ hN` | `SiftingRangeTop` |
+| `1 ≤ z`, `hN^{2k} ≤ z` | `SiftingDepth` |
+| `k ≥ e·∑_p a_p(d) + log 2`, every `d` | `SiftingDepth` (by construction) + `PairClassSum` |
+| shift correction `> 0` | this file |
+
+### The rough half is CLOSED — `Sieve/RoughPartLimit` (2026-08-18)
+
+```text
+tendsto_roughPart (hβ0 : 0 < β) (hβ1 : β < 1) (ha0 : 0 < a) (ha1 : a < 1) :
+    Tendsto (fun x => (2 * roughPartSum β a x) / (cardLength β x ^ 2 * √x)) atTop (𝓝 0)
+```
+
+where `roughPartSum β a x = ∑_{A ∈ outerBlock x h} #(innerFibre x h A ∩ roughSet P₁ hN ⌊√x+h⌋)²`
+with `h = cardLength β x = exp((log x)^β)`, `P₁ = siftStart (aβ) x = ⌈exp((log x)^{aβ})⌉`,
+`hN = siftTop β x = ⌊h⌋`.  `#print axioms` = `[propext, Classical.choice, Quot.sound]`.
+
+**This is the second hypothesis of `Sieve/FibreSplitLimit.averagedMeanSquare_of_split`, discharged
+for the named parameter functions and for every `0 < a < 1`, `0 < β < 1`.**  No gap condition is
+needed here — `hgap : 1 < 2β(1−a)` is only for the sharper `o(1/log Y)` form the cards consume.
+
+Supporting modules added:
+
+| module | content |
+|-|-|
+| `Sieve/ShiftCorrectionPos` | `shiftCorrection_ge_half`, `shiftCorrection_pos` |
+| `Sieve/SiftingRangeRatio` | `log_siftTop_ge`, `siftRatio`, `siftRatio_nonneg`, `tendsto_siftRatio` (`≍ (log x)^{−β(1−a)}`) |
+| `Sieve/RoughRemainderLimit` | `log_siftStart_ge`, `tendsto_selbergRemainder_div_sqrt` (`2z·6^{log z/log P₁}/√x → 0` at `z = x^{1/4}`) |
+| `Sieve/RoughPartArith` | `roughPart_diag_le`, `roughPart_offDiag_le`, `roughPart_div_le` — the crude collapse `≤ 72/h + 72/√x + 864L² + 24R/√x` given `L ≤ 1`, `E ≤ 3`, `c ≥ 1/2` |
+| `Sieve/RoughPartLimit` | `mertensErr_le_half`, `mertensErr_nonneg`, `roughPartSum`, `tendsto_roughPart` |
+
+**What is left is the smooth half only**: the first hypothesis of `averagedMeanSquare_of_split`,
+i.e. the fibre sums restricted to integers *having* a prime factor in `(P₁, hN]`.  That is where the
+`ω_P` factorisation (`Sieve/OmegaWeightedFactorisation`) and the spectral estimate
+(`Sieve/OmegaSpectralFibre`) apply.
+
+### The parameter accounting of the spectral side, done — and what it forces (2026-08-18)
+
+Scales: `M = B₀ = ⌊√x + h⌋ ≍ √x`, `δ = fibreWidth x h = log(1 + h/√x) ≍ h/√x`, `z₀ = Q = exp((log h)^{9/10})`,
+`z = h`, `W = mertensS z − mertensS z₀ ≍ (1/10) log log h`, `Ec = ∑_{n ≤ B₀}‖omegaCoeff‖²`.
+
+**The energy is `≍ M W²`, not `M Ω²`.**  `Sieve/OmegaEnergyBound.sum_normSq_omegaCoeff_Icc_le`:
+`Ec ≤ 8B₀·mertensS z + 8π(z) + 16π(z)² + 2W²B₀`, from the range Turán–Kubilius variance.  Using the
+uniform bound `ω_P(n) ≤ log B₀/log z₀` instead costs `(log x)^{2−9β/5}` and the accounting fails.
+
+**The two non-spectral terms of `omegaBudget` are already fine.**  Dividing by `W²h²√x`:
+
+| term | size | vanishes because |
+|-|-|-|
+| `204(|P|+1)²(√x+1)` | `≍ 816/W²` | `W → ∞` |
+| `2(h+1)(2h+1)(4(√x/2+h+1)mertensS z + 4π(z)+8π(z)²)` | `≍ 72 loglog h/W² + 96h²/(W²√x)` | `W ≍ loglog h`; `h = exp((log x)^β)`, `β < 1` |
+
+So **everything reduces to `∫_ℝ ‖K_δ‖²‖A_ω‖² = o(W²h²)`**.
+
+**Gallagher's split must be cut at `G ≍ M/h`, and the head must not use the mean value theorem.**
+With `α = (5π/2)Ec`, `β = β₀ + (5e/2)B₀Ec`, the dyadic split gives
+`2δ²(αG + β) + 4α/(π²G) + 4β/(3π²G²)`.  Dividing by `W²h²`:
+
+* `2δ²·(5e/2)B₀Ec ≍ 5e·(h²/x)·√x·√x W² = 5e h²W²` — **exactly the trivial bound**.  Gallagher plus
+  the mean value theorem reproduces the trivial estimate; the head `|w| ≤ G` must be estimated by
+  the ladder bound `β₀`, never by `affineMajorant_of_bound_at`'s constant term.
+* tail: `4α/(π²G) = o(W²h²)` iff `G ≫ √x/h²`; `4β/(3π²G²) = o(W²h²)` iff `G ≫ √x/h`.  So `G ≍ M/h`
+  — the exposé's split point `X/h`.
+* head: `2δ²β₀ = o(W²h²)` iff `β₀ = o(W²M²)`.
+
+**The trivial bound on the prime polynomial does not suffice.**  With `V_j = #P_j`, and
+`v_j = 1/stepMass_j`, `N_j = B₀/Q_j`, `#P_j ≍ stepMass_j·Q_j`,
+
+```text
+∑_j v_j V_j² N_j²  =  ∑_j (1/m_j)(m_j Q_j)²(B₀/Q_j)²  =  B₀² ∑_j m_j  =  B₀² W ,
+```
+
+so the harmonic split returns `W·B₀²W = W²B₀²` — the trivial size, with no gain.  **Cancellation is
+required, and it cannot be uniform on `|w| ≤ G`**, because at `w = 0` the prime polynomial *is* `#P_j`.
+
+**Hence the annulus split, with `w₀ ≍ log z`.**
+
+* `w₀ ≤ |w| ≤ G` : Route-T gives `V_j ≍ #P_j(1/(1+|w|) + 1/log Q_j) ≍ #P_j/log Q_j` once
+  `w₀ ≳ log Q_j`, so the same sum is `W²B₀²/log²Q` — a gain of `log²Q = (log h)^{9/5}`.
+* `|w| ≤ w₀` : the prime polynomial is bounded trivially and the **cofactor** is bounded by Lemma 2.3
+  for `μ`: `‖∑_{m ∈ D_j} μ(m)m^{2πiw}‖ ≤ N_j(log N_j)^{-A}`.  The step contributes
+  `2w₀·W ∑_j v_j V_j² N_j²(log N_j)^{-2A} = 2w₀ W²B₀²(log B₀)^{-2A}`, which is `o(W²B₀²)` for `A ≥ 1`
+  since `w₀ ≤ log x`.
+
+Both analytic inputs are already in the corpus: `Sieve/PrimeBlockTwistBound.exists_norm_primeBlockPoly_routeT_le`
+and `Sieve/RouteTMoebiusPowerSaving.exists_norm_LSeries_truncatedMoebius_dyadic_le_routeTPower`.
+
+**Next brick.**  A module `Sieve/LadderAnnulus` generalising `integral_normSq_ladderProductPoly_le`
+and `integral_normSq_ladderStep_le` from `Set.Icc (-W) W` to an arbitrary measurable subset, plus the
+low-frequency twin in which the *cofactor* carries the pointwise bound.
+
+### The annulus is built, and the Route-T exponent fixes the window (2026-08-18, continued)
+
+| module | content |
+|-|-|
+| `Sieve/OmegaEnergyBound` | `mertensS_nonneg'`, `sum_normSq_omegaCoeff_Ioc_le`, `sum_normSq_omegaCoeff_Icc_le` — the coefficient energy is `≍ B₀W²`, from the range Turán–Kubilius variance, not `B₀Ω²` |
+| `Sieve/LadderAnnulus` | `setIntegral_Icc_split`, `integral_normSq_ladderProductPoly_set_le` (the harmonic split over an arbitrary measurable frequency set), `integral_normSq_ladderStep_set_le` (prime bound on the set), **`integral_normSq_ladderStep_low_le`** (cofactor bound on the disc) |
+| `Sieve/OmegaWeightedAnnulusBound` | `integral_normSq_ladderProductPoly_annulus_le`, **`integral_normSq_omegaWeighted_annulus_le`** — the whole `(26)`–`(30)` layer with the window cut at `w₀` |
+| `Sieve/CofactorLowFreqBound` | `moebiusSharpBound`, `moebiusCoeff_mul_unitLogPhase_eq`, `logPoly_moebiusCoeff_eq_sum_moebiusTwist`, `sum_moebiusTwist_Icc_eq`, `moebiusSharpBound_nonneg`, **`exists_norm_logPoly_moebiusCoeff_Icc_le`** — exposé `(29)`–`(30)`: the cofactor polynomial on the low-frequency disc |
+
+The capstone now reads
+
+```text
+∫_{|w| ≤ G} ‖A_ω‖²
+  ≤ 2 (∑_j 1/v_j)(∑_j v_j [ V_j²(5π/2·G + 5e/2·⌊B₀/Q_j⌋)(B₀/Q_j+1) + Vlow_j² U_j² · 2w₀ ])
+    + 2 (defect)
+```
+
+with `V_j` bounding the prime polynomial on the annulus `w₀ ≤ |w| ≤ G`, `Vlow_j` bounding it on the
+disc (trivially, by `#P_j`), and `U_j` bounding the *cofactor* polynomial on the disc.
+
+**The low-frequency range closes with room to spare.**  `Sieve/CofactorLowFreqBound` gives
+`U_j ≤ 2·moebiusSharpBound(B₀/Q_j)`, and `moebiusSharpBound N = 3N e^{−c(log N)^{1/10}}/π + smoothWidth N + 1`
+with `smoothWidth N = N/exp((log N)^{1/20})`.  Writing `U_j = N_j s(N_j)`,
+
+```text
+2w₀ · W ∑_j v_j Vlow_j² U_j²  =  2w₀ W² B₀² s²  =  o(W²B₀²)   ⟺   w₀ s(N)² → 0 ,
+```
+
+and `s(N)² ≍ exp(−2(log N)^{1/20})` with `log N ≍ (log x)/2` beats every power of `log x`, so `w₀`
+may be taken as large as any fixed power of `log x`.  The admissible twist range of the contour bound
+is `|τ| ≤ (contourParam(N+H) − 5)/4 ≍ exp((log N)^{1/10})/4`, far larger still.
+
+**The annulus range is what the Route-T exponent constrains.**  `Sieve/VonMangoldtTwistPrimeEnvelope`
+gives `‖∑_{p ≤ K} p^{−iτ}‖ ≤ (Env(K) + 7e⁹)(1/log 2 + 1/log(K+1))` with
+
+```text
+Env(K)  ≍  K^{1−w(τ)/3}(E(τ) + log 2K)  +  K^{1+2w(τ)/3}(1 + log²K + E(τ))/(1+|τ|) ,
+```
+
+`w(τ)` the Route-T width, `w(τ) ≳ 1/(10 D_A Z^{9/10}(1+log Z)²)`, `Z = 2log(6|τ|+6)+1`
+(`Sieve/RouteTWidthExplicit.routeTWidthPolylogLower_le`).
+
+* the **height** term is harmless: for `|τ| ≥ w₀` with `w₀` a fixed power of `log x` it is
+  `≤ K/(log K)²` — this is exactly why the annulus is cut at a polylogarithmic `w₀`;
+* the **contour** term needs `w(τ)·log K → ∞`.  At the top of the annulus `|τ| ≍ G ≍ √x/h`, so
+  `Z ≍ log x` and `w ≍ (log x)^{−9/10}(log log x)^{−2}`.  With `log K = log Q = (log h)^γ = (log x)^{γβ}`
+  this is `(log x)^{γβ − 9/10}/(log log x)²`, which tends to infinity **iff `γβ > 9/10`**.
+
+Since `γ ≤ 1` (the sifting range must be non-empty: `Q ≤ z = h`), the §3 route with the corpus's
+present Route-T width closes exactly for
+
+```text
+β > 9/10 ,    γ ∈ (9/(10β), 1) ,    W = mertensS h − mertensS Q ≍ (1 − γ) log log h → ∞ .
+```
+
+The exposé's own threshold is `β > 20/27` because it uses the Vinogradov–Korobov exponent `2/3`
+rather than the corpus's `9/10`; lowering the corpus exponent to `2/3 + δ`, or running §4 (Lemmas
+2.5–2.6), is what moves the threshold down.  Nothing else in the chain changes.
+
+**Next bricks.**
+1. `V_j` on the annulus from `exists_norm_primeBlockPoly_routeT_le` plus `routeTTwistEnvelope_le_exp`:
+   a single inequality `V_j ≤ #P_j/(log Q_j)²` under the two conditions above.
+2. `Vlow_j = #P_j` — the trivial bound on `primeBlockPoly`.
+3. The Gallagher head/tail wrapper that uses `β₀` for `|w| ≤ G` and the affine majorant only above `G`
+   (the present `gallagher_split_integral_dyadic` applies the affine majorant at `T = G` as well,
+   whose constant term `(5e/2)B₀·Ec` alone already equals the trivial bound).
+4. The substitution.
+
+### CORRECTION: the cut `w₀` is not polylogarithmic, and the window it forces (2026-08-18)
+
+The previous section's claim that `w₀` may be a fixed power of `log x` is wrong.  Reading
+`Sieve/RouteTWidthExplicit.routeTTwistEnvelope_le_exp`, the height term of the envelope is
+
+```text
+C · 3K · exp(delta/3 · log 3K) · (1 + log²K + E(τ)) / (1 + |τ|) ,
+```
+
+so it is `≤ K/(log K)²` only once `|τ| ≳ K^{2w(τ)/3}(log K)²(1+log²K+E(τ))`.  With
+`w(τ) ≍ (log|τ|)^{-9/10}` and `K = Q_j`, `log K = (log x)^{γβ}`, at the top of the annulus
+`|τ| ≍ G ≍ √x/h` this is `K^{2w/3} = exp((log x)^{γβ − 9/10})`.  Hence
+
+```text
+τ_low ≍ exp((log x)^{γβ − 9/10}) ,     τ_high ≍ exp(c (log Q)^{10/9}) = exp(c (log x)^{10γβ/9}) .
+```
+
+The prime-sum saving lives **between** them: the contour term needs `w(τ)·log K → ∞`, i.e.
+`log|τ| ≪ (log K)^{10/9}` — an *upper* bound on `τ`, and the height term needs `|τ| ≥ τ_low`.
+
+Three constraints therefore fix the window.
+
+| constraint | source | requirement |
+|-|-|-|
+| the annulus reaches the Gallagher cut `G ≍ √x/h` | contour term at `|τ| = G` | `10γβ/9 > 1`, i.e. `γβ > 9/10` |
+| the disc is covered by the Möbius contour bound (`\|τ\| ≤ exp((log N)^{1/10})`, `log N ≍ (log x)/2`) | `Sieve/CofactorLowFreqBound` | `γβ − 9/10 < 1/10`, i.e. `γβ < 1` |
+| the disc's own cost `2w₀W²B₀²s²` vanishes, `s ≍ exp(−(log N)^{1/20})` | `Sieve/LadderAnnulus.integral_normSq_ladderStep_low_le` | `γβ − 9/10 < 1/20`, i.e. `γβ < 19/20` |
+
+```text
+9/10 < γβ < 19/20 ,     γ ≤ 1 ⟹ β > 9/10 ,     γ ∈ (9/(10β), 19/(20β)) ∩ (0,1] ≠ ∅ .
+```
+
+`W = mertensS h − mertensS Q ≍ (1 − γ) log log h → ∞`, so the Turán–Kubilius arrangement still has
+its weight.  **The §3 route in this corpus therefore proves the Möbius short-interval mean square for
+`h = exp((log x)^β)` with `9/10 < β < 1`** — one exponent short of the exposé's `β > 20/27`, the gap
+being exactly the difference between the corpus's Route-T width exponent `9/10` and Vinogradov–Korobov's
+`2/3`.
+
+Modules landed for this layer, all axiom-clean:
+
+| module | content |
+|-|-|
+| `Sieve/GallagherDyadicTail` (refactored) | **`gallagher_farTail_dyadic_le`** extracted from the old proof, and **`gallagher_split_integral_dyadic_head`** — the head paid by a supplied `β₀` instead of by the affine majorant.  `gallagher_split_integral_dyadic` keeps its statement. |
+| `Sieve/OmegaBudgetFromAnnulus` | `norm_primeBlockPoly_le_card` (the disc's trivial prime bound `Vlow_j`), **`integral_kernel_normSq_omegaWeighted_head_le`** |
+
+### The weight must be `1/(V_j·√T_j)`, not `1/stepMass_j` (2026-08-18)
+
+`Sieve/LadderHarmonicSplit.sum_stepMass_eq` makes `v_j = 1/stepMass_j` attractive, because then
+`∑_j 1/v_j` is exactly `W` for every subdivision.  But the *other* factor then needs
+`V_j ≤ √ε·stepMass_j·Q_j`, and comparing `#P_j` with `stepMass_j·Q_j` in that direction requires a
+**lower** bound on the harmonic mass of the primes of a thin interval `(Q_j, Q_j(1+η)]` — a
+short-interval prime count, unavailable unconditionally for small `η`.  Dyadic blocks would supply
+it from Mertens but make the ladder defect too large (`η = 1` gives a defect
+`≍ (log x)^{1−γβ}/W → ∞` after normalisation).
+
+The weights are free, and the optimal choice removes the difficulty entirely.  With
+`T_j := (5π/2·G + 5e/2·⌊B₀/Q_j⌋)(B₀/Q_j + 1)` and
+
+```text
+v_j  :=  1 / (V_j · √T_j) ,        so   (∑_j 1/v_j)(∑_j v_j V_j² T_j)  =  (∑_j V_j √T_j)² ,
+```
+
+and the comparison needed is now `#P_j/Q_j ≤ (1+η)·stepMass_j`, which is **trivial**: every `p` in
+the block satisfies `1/p ≥ 1/(Q_j(1+η))`.  Then
+
+```text
+∑_j V_j √T_j  ≲  √(5e/2) · ε · ∑_j #P_j · B₀/Q_j  ≤  √(5e/2) · ε (1+η) B₀ ∑_j stepMass_j
+              =  √(5e/2) · ε (1+η) B₀ W ,
+```
+
+so the annulus contributes `≲ ε² W² B₀²`, exactly the required `o(W²B₀²)`.  The same weight also
+handles the disc: its contribution is `2w₀(1+η)²B₀²W²s²`, `o(W²B₀²)` iff `w₀ s² → 0` as before.
+
+**Consequence:** the thin ladder stays thin (small `η`, so the defect is small), and no prime
+counting beyond Mertens is used anywhere in the spectral side.
+
+### The two-weight split and its explicit majorants — landed (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/BlockMassCompare` | `stepMass_nonneg`, `card_geomBlock_le_mul_stepMass`, **`sum_card_geomBlock_div_le`**: `∑_j #P_j·B/Q_j ≤ (1+η)·B·∑_{p∈P} 1/p`.  This single inequality replaces **every** short-interval prime count in the spectral side; its proof is that each `p` in the block is at most the block's right endpoint. |
+| `Sieve/OmegaWeightedAnnulusBound` (extended) | `ladderStepMVT`, `integral_normSq_omegaWeighted_annulus_aux`, `integral_normSq_omegaWeighted_annulus_optimal_le`, `integral_normSq_ladderProductPoly_annulus_two_le`, **`integral_normSq_omegaWeighted_annulus_optimal_two_le`** |
+| `Sieve/LadderStepMajorant` | `stepMVTMajorant`, `stepMVTMajorant_pos`, `ladderStepMVT_le_sq`, `sum_card_geomBlock_eq`, **`sum_stepMajorant_le`**; `discMajorant`, `discMajorant_pos`, `discMajorant_sq_ge`, **`sum_discMajorant_le`** |
+
+The spectral head bound is now a single inequality with *independent* weights on the two ranges —
+necessary, because the annulus's optimal weight makes the disc term diverge (it produces
+`∑_j #P_j² N_j ≍ B₀ h W/log h`, which is `h/log h` too large):
+
+```text
+∫_{|w| ≤ G} ‖A_ω‖²  ≤  2( (∑_j c_j)² + (∑_j d_j)² )  +  2·(ladder defect) ,
+    c_j ≥ V_j √T_j ,      d_j ≥ Vlow_j U_j √(2w₀) .
+```
+
+With the explicit choices `c_j = V_j·stepMVTMajorant`, `d_j = discMajorant`, and inputs
+`V_j ≤ ε·#P_j` (annulus, Route-T) and `U_j ≤ s·B₀/Q_j` (disc, `Sieve/CofactorLowFreqBound`):
+
+```text
+∑_j c_j  ≤  √(5π/2 + 5e/2) · ε · ( (1+η)B₀W + #P ) ,
+∑_j d_j  ≤  (√(2w₀)+1) · ( s(1+η)B₀W + #P + s∑_j B₀/Q_j + L ) ,
+```
+
+so the head is `≲ ε²B₀²W² + w₀s²B₀²W²` plus lower-order terms — exactly the two targets of the
+accounting, and `o(W²B₀²)` under `ε → 0` and `w₀s² → 0`.
+
+**What is left is the substitution alone**: choosing `x ↦ (β, γ, η, L, Q, w₀, G, A₀, B₀, ε, s)` in the
+window `9/10 < γβ < 19/20`, checking the hypotheses of
+`integral_normSq_omegaWeighted_annulus_optimal_two_le`, feeding
+`integral_kernel_normSq_omegaWeighted_head_le`, and closing `omegaBudget → 0`.
+
+### CORRECTION: the balanced smoothing width is unusable, and the fix (2026-08-18)
+
+`Sieve/VonMangoldtTwistPrimeEnvelope.routeTTwistEnvelope` balances the smoothing width at
+`D = (3K)^{w/3}`, which leaves the height term with a factor `(3K)^{2w/3}`.  The card claimed that
+factor "harmless in every application"; **that is false for this application.**  The annulus needs a
+bound at frequencies `|τ| ≳ (3K)^{2w/3}·polylog`, i.e. `|τ| ≥ exp(c(log x)^{β})` — a *power* of the
+ladder's top — whereas the disc's Möbius contour bound only reaches `|τ| ≤ exp((log N)^{1/10})` and
+its saving degrades like `exp(−c log N/(log|τ|)^9)`.  The two ranges then cannot meet for any
+`β > 19/100`, let alone `β > 9/10`.
+
+**The fix is to keep the smoothing width free and take it polylogarithmic.**
+`Sieve/VonMangoldtTwistScaledWidth.exists_norm_partialSum_vonMangoldtTwist_routeT_scaled` already
+exposes `D`; with `D = (log K)^4` the height term becomes `K·(log K)^{10}/|τ|` — pure `1/|τ|` decay
+up to a polylogarithm — and the desmoothing costs `K log(2K)/D = K(log K)^{-3}`, which is below the
+`ρ ≍ (log x)^{-2}` the accounting needs because `3γβ > 2`.  The annulus may then start at a
+**polylogarithmic** `w₀`, and the disc closes with room to spare.
+
+New modules, all axiom-clean:
+
+| module | content |
+|-|-|
+| `Sieve/VonMangoldtTwistScaledEnvelope` | `scaledHeightFactor`, `scaledTwistEnvelope`, `routeTUniformRegWidth_le_one`, `scaledTwistEnvelope_nonneg`, **`scaledTwistEnvelope_mono`**, `relScaledEnvelope`, **`scaledTwistEnvelope_eq_mul`**, `rpow_neg_le_exp_neg`, **`exists_norm_sum_primeTwist_scaled_le`** — Lemma 2.3, prime form, at a free smoothing width |
+| `Sieve/GeomBlockPrimesRange` | `mem_primesRange`, **`mem_geomBlock_primesRange`** — a ladder block of the designated range is exactly the primes of an interval, so the Route-T envelope applies to it |
+| `Sieve/PrimeBlockScaledBound` | **`exists_norm_primeBlockPoly_scaled_le`**: `‖primeBlockPoly B w‖ ≤ (4/log 2)(Env(max b 1) + 7e⁹)` |
+| `Sieve/ScaledEnvelopeEstimate` | `scaledHeightMajorant`, `scaledHeightFactor_le_majorant`, **`relScaledEnvelope_le`** — the relative envelope in elementary terms, with the width replaced by `routeTWidthPolylogLower` |
+| `Sieve/GeomBlockPrimeRho` | **`exists_norm_primeBlockPoly_geomBlock_le`**: `‖primeBlockPoly (geomBlock (primesRange z₀ z) Q (1+η) j) w‖ ≤ (4/log 2)((1+η)R + 7e⁹/Q)·Q(1+η)^j` — exactly the form `Sieve/LadderPrimeMajorant.primeStepMajorant_sq_ge` consumes |
+| `Sieve/LadderPrimeMajorant` | `primeStepMajorant`, `primeStepMajorant_pos`, **`primeStepMajorant_sq_ge`**, **`sum_primeStepMajorant_eq`** (geometric evaluation) |
+| `Sieve/CofactorLowFreqBound` (extended) | **`exists_norm_logPoly_moebiusCoeff_Icc_one_le`**, `geomCofactorBlockAt_one_eq`, **`exists_norm_logPoly_geomCofactorBlockAt_le`** — the disc bound `U_j` on the ladder's own cofactor blocks |
+
+**`V_j` and `U_j` are now both instantiated as Lean theorems on the ladder's own objects.**  What
+remains is the numerical substitution: choosing `x ↦ (β, γ, η, L, z₀, D, w₀, G, B₀, R, s)` and
+checking the elementary inequalities that `relScaledEnvelope_le` and `moebiusSharpBound` reduce to.
+
+### The chain is closed from the two analytic inputs to `omegaBudget` (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/SpectralHeadBound` | `primesRange_ladder_bounds`, **`integral_normSq_omegaWeighted_head_closed`** — the frequencies below the Gallagher cut, in closed form: a geometric sum for the annulus, the ladder's counting sum for the disc, plus the ladder defect |
+| `Sieve/OmegaBudgetClosed` | **`omegaBudget_le_of_head`** — the whole Route E budget from a bound below the cut |
+
+```text
+‖∑_{p∈P_j} p^{2πiw}‖ ≤ ρ Q_j          (annulus, Sieve/GeomBlockPrimeRho)
+‖∑_{m∈D_j} μ(m)m^{2πiw}‖ ≤ s B₀/Q_j   (disc, Sieve/CofactorLowFreqBound)
+        ⟹  ∫_{|w| ≤ G} ‖A_ω‖²  ≤  2[(ρ C₁ (L B₀ + Q((1+η)^L−1)/η))² + (∑_j discMajorant_j)²]
+                                    + 2·(ladder defect)                    (SpectralHeadBound)
+        ⟹  omegaBudget x h z₀ z ≤ (explicit)                               (OmegaBudgetClosed)
+        ⟹  AveragedMeanSquare μ hh                                         (OmegaSpectralFibre)
+```
+
+Every step above is an unconditional Lean theorem with `#print axioms` = `[propext, Classical.choice,
+Quot.sound]`.  **No structural gap remains.**  What is left is the numerical substitution: choose
+
+```text
+h = exp((log x)^β) ,  z₀ = ⌈exp((log x)^{γβ})⌉ ,  Q = z₀ ,  η = (log x)^{γβ−1} ,
+L = ⌊log(h/Q)/log(1+η)⌋ ,  z = ⌊Q(1+η)^L⌋ ,  B₀ = ⌊√x + h⌋ ,  D = (log 2h)^4 ,
+w₀ = (log x)^{10β+2} ,  G = B₀/h ,          9/10 < γβ < 1 ,  β < 1 ,  γ ≤ 1 ,
+```
+
+and check the elementary inequalities that `relScaledEnvelope_le` and `moebiusSharpBound` reduce to.
+
+### The substitution: parameters, and the non-spectral half of the budget — landed (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/SpectralParameters` | `ladderEta`, `ladderWidth`, `ladderSteps`, `ladderTop`, `gallagherCut`, `annulusStart`; `ladderEta_pos`, **`tendsto_ladderEta`**, `one_le_ladderWidth`, `eventually_siftStart_lt_cardLength`, **`ladderPow_le`**, `one_le_ladderSteps`, `ladderTop_bounds`, **`ladderPow_ge`**, `ladderTop_ge_quarter`, `ladderMassConst`, `ladderMass_ge`, **`ladderMass_lower`**, **`tendsto_ladderMass`**, `eventually_ladderTop_facts` |
+| `Sieve/NonSpectralBudget` | **`nonSpectral_div_le`** (the arithmetic collapse `≤ 3672/W² + 120m/W² + 480h²/(W²s)`), `card_primesLE_le`, `card_primesRange_le`, **`tendsto_cardLength_sq_div_sqrt`**, **`tendsto_nonSpectralBudget`** |
+
+With `hh = cardLength β`, `zlo = siftStart (γβ)`, `zhi = ladderTop β γ`, **four of the five
+hypotheses of `OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget` are now proved**:
+
+| hypothesis | discharged by |
+|-|-|
+| `hh x ≤ √x` | `ShortIntervalLength.cardLength_le_sqrt` |
+| `0 < hh x` | `cardLength_pos` |
+| `zlo x ≤ zhi x` | `SpectralParameters.eventually_ladderTop_facts` |
+| `0 < W` | `SpectralParameters.ladderMass_lower` (in fact `W ≥ ((β−γβ)/2)·log log x + 1`) |
+| the budget limit | **open — the spectral term only** |
+
+and the two non-spectral parts of the budget itself are proved to vanish
+(`tendsto_nonSpectralBudget`).  The ladder is fully specified: `Q = z₀ = ⌈exp((log x)^{γβ})⌉`,
+`η = (log x)^{γβ−1}`, `L = ⌊log(h/Q)/log(1+η)⌋`, `z = ⌊Q(1+η)^L⌋`, with `Q(1+η)^L ≤ h` and
+`Q(1+η)^L ≥ h/(1+η)`, so `h/4 ≤ z ≤ h`.
+
+### The disc side of the substitution is closed; the width comparisons are proved (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/RelMoebiusSharp` | `relMoebiusSharp`, **`moebiusSharpBound_eq_mul`**, `relMoebiusSharp_nonneg`, **`relMoebiusSharp_antitone`**, **`tendsto_relMoebiusSharp`**, **`exists_norm_logPoly_geomCofactorBlockAt_rel_le`** |
+| `Sieve/RouteTWidthAntitone` | **`routeTWidthPolylogLower_antitone`**, **`scaledHeightMajorant_le_of_le`** |
+
+`relMoebiusSharp N = 3e^{−c(log N)^{1/10}}/π + 1/smoothRatio N + 1/N` is antitone and vanishes, so a
+single value at the *shortest* cofactor block bounds every step:
+
+```text
+‖∑_{m ∈ D_j} μ(m)m^{2πiw}‖ ≤ relMoebiusSharp(N_min) · (B₀/Q_j) ,   N_min ≤ ⌊B₀/Q_j⌋ for all j,
+```
+
+which is exactly the `U_j ≤ s·B₀/Q_j` that `discMajorant_sq_ge` consumes, with `s = relMoebiusSharp N_min`
+and `N_min ≍ √x/h`, so `s ≍ exp(−c((log x)/2)^{1/10})` — beating every power of `log x`, hence
+`√w₀·s → 0` for the polylogarithmic `w₀`.
+
+`routeTLogHeightEnvelope t = 2 log(t+2) + 1` is explicit, so the width surrogate is antitone in the
+frequency and the height cost is bounded uniformly over the annulus by its value at the top:
+
+```text
+scaledHeightMajorant A τ ≤ 1/t₀ + log(3|σ|/2)/routeTWidthPolylogLower A σ   for t₀ ≤ |τ| ≤ |σ| .
+```
+
+**Remaining: the annulus `ρ` and the final assembly.**  `relScaledEnvelope_le` now has every input
+bounded uniformly; what is left is to package it into a single explicit `R`, feed
+`exists_norm_primeBlockPoly_geomBlock_le`, and compose with `SpectralHeadBound` and
+`OmegaBudgetClosed`.
+
+### `ρ` is explicit and the budget is composed (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/AnnulusRelBound` | `relScaledMajorant`, `relScaledMajorant_nonneg`, **`relScaledEnvelope_le_uniform`**, **`exists_norm_primeBlockPoly_geomBlock_rho_le`** |
+| `Sieve/OmegaBudgetExplicit` | `spectralHead`, **`omegaBudget_le_explicit`** |
+
+```text
+relScaledMajorant Ctot D Lx Hmaj μ q t₀ xmin
+  = Ctot·D²(Lx²/t₀ + Hmaj(e^{−μq} + 1/t₀²))/(2π) + (log 2 + Lx)/D + 2Lx/√xmin
+```
+
+is a uniform majorant for `relScaledEnvelope A delta Ctot D τ x` whenever `t₀ ≤ |τ| ≤ |σ|`,
+`xmin ≤ x`, `log x ≤ Lx`, `q ≤ log x`, `μ ≤ min delta (routeTWidthPolylogLower A τ)/2` and
+`Hmaj ≥ 1/t₀ + log(3|σ|/2)/routeTWidthPolylogLower A σ` — every one of which is now a proved
+monotonicity statement.  Feeding it to `exists_norm_primeBlockPoly_geomBlock_le` gives
+
+```text
+ρ = (4/log 2)·((1+η)·relScaledMajorant … + 7e⁹/Q) ,
+‖∑_{p ∈ P_j} p^{2πiw}‖ ≤ ρ·Q(1+η)^j     on the annulus.
+```
+
+`omegaBudget_le_explicit` then composes the cut-window head bound with the Gallagher split:
+
+```text
+omegaBudget x h z₀ z
+  ≤ 16√x( 2δ²·spectralHead + 4(5π/2·Ec)/(π²G) + 4(spectralHead + 5e/2·B₀·Ec)/(3π²G²) )
+    + 204(|P|+1)²(√x+1) + 2(h+1)(2h+1)(4(√x/2+h+1)·mertensS z + 4π(z) + 8π(z)²) ,
+spectralHead = 2[(ρ·C₁·(L·B₀ + Q((1+η)^L−1)/η))² + (∑_j discMajorant_j)²] + 2·(ladder defect) .
+```
+
+**Every quantity in that inequality is an elementary function of `x, h, Q, η, L, B₀, G, w₀, ρ, s`.**
+The whole remaining task is to substitute the parameter functions and check that the quotient by
+`W²h²√x` tends to zero — the non-spectral half of which is already done
+(`tendsto_nonSpectralBudget`).

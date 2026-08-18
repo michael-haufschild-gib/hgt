@@ -59,7 +59,7 @@ theorem finite_zeros_expPoly {S : Finset ℂ} {C : ℂ → ℂ} {a b : ℝ} {y�
     (hy₀ : y₀ ∈ S) (hC : C y₀ ≠ 0)
     (hreal : ∀ t : ℝ, (∑ y ∈ S, C y * Complex.exp (y * t)).im = 0) :
     {t : ℝ | t ∈ Icc a b ∧ (∑ y ∈ S, C y * Complex.exp (y * t)).re = 0}.Finite :=
-  finite_zeros_of_not_accumZero (fun t₀ _ => not_accumZero_of_coeff_ne hy₀ hC hreal)
+  finite_zeros_of_not_accumZero (fun _ _ => not_accumZero_of_coeff_ne hy₀ hC hreal)
 
 /-! ## No touching zeros where the Sturm expression is positive -/
 
@@ -92,19 +92,20 @@ theorem not_isLocalMax_of_sturm_pos {f fd fdd h : ℝ → ℝ} {γ t₀ : ℝ}
     · linarith
     · linarith
   -- and the maximum property fails just to the right
-  obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhdsWithin_iff.mp hevfd
+  rw [eventually_nhdsWithin_iff] at hevfd
+  obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhds_iff.mp hevfd
   obtain ⟨η, hη, hmaxball⟩ := Metric.eventually_nhds_iff.mp hmax
   set r : ℝ := min (δ / 2) (η / 2) with hr
   have hrpos : 0 < r := by rw [hr]; positivity
   have hmono : StrictMonoOn f (Icc t₀ (t₀ + r)) := by
     refine strictMonoOn_of_deriv_pos (convex_Icc _ _)
-      ((fun t => (hf t).continuousAt.continuousWithinAt) : ContinuousOn f (Icc t₀ (t₀ + r))) ?_
+      (fun t _ => (hf t).continuousAt.continuousWithinAt) ?_
     intro s hs
     rw [interior_Icc] at hs
     rw [(hf s).deriv]
     refine hball ?_ hs.1
     rw [Real.dist_eq, abs_of_pos (by linarith [hs.1])]
-    have : r ≤ δ / 2 := min_le_left _ _
+    have hrδ : r ≤ δ / 2 := min_le_left _ _
     linarith [hs.2]
   have hlt : f t₀ < f (t₀ + r) :=
     hmono (left_mem_Icc.mpr (by linarith)) (right_mem_Icc.mpr (by linarith)) (by linarith)

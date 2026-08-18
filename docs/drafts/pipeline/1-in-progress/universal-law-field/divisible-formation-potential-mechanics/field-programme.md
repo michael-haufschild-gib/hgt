@@ -3,7 +3,7 @@
 - **ID:** ULF-DFPM-FIELD
 - **Stage:** 1-in-progress
 - **Type:** FIELD PROGRAMME / SELECTION MECHANISM
-- **Status:** [MECHANISM, NOT OBJECT] [EXACT RH EQUIVALENCE PROVED] [SELECTION CORE LEAN-CERTIFIED] [SOURCE ROOT GENESIS OPEN]
+- **Status:** [MECHANISM, NOT OBJECT] [EXACT RH EQUIVALENCE PROVED] [SELECTION CORE LEAN-CERTIFIED] [APPROXIMATE FORMATION SELECTOR LEAN-CERTIFIED] [SOURCE GAP-CROSSING OPEN]
 
 ## 1. Core reinterpretation
 
@@ -232,15 +232,28 @@ holonomy exists for every charge, but its transfer defect is a crossed cocycle w
 doubling values reconstruct and select the charge.  The global Calkin obstruction is the regular
 packet amplification of this finite ambidextrous defect.
 
+Its finite selection core is now Lean-certified in
+`ConstitutiveAmbidextrousKummerSelection`: the doubling defect is `-q` modulo `2n`, is nonzero for
+every `n > |q|` when `q != 0`, and cofinal ambidextrous flatness is equivalent to zero charge.  This
+removes finite selection algebra from the open frontier.  What remains is the constitutive theorem
+that the literal pre-zero source is horizontal for covariant inclusion as well as restriction.
+
 This is an exact selection mechanism.  It is not an RH proof because source genesis of the roots is
 open.
 
 The abstract selection law is now Lean-certified in
 `ConstitutiveDivisibleFormationSelection`: power-additive integer charge plus unbounded effective
 formation roots implies zero charge, and the meromorphic specialization kills every finite divisor
-order.  The field frontier is therefore no longer selection algebra.  It is **effective root
-genesis on the original pre-zero base**.  Ramified covers and root stacks do not suffice because
-they retain divisor charge as isotropy rather than descend it.
+order.
+
+ULF-DFPM-6 strictly weakens the producer.  Exact roots are unnecessary.  If cofinally deep source
+powers enter one native charge-stable admission neighborhood of the transfer, discrete charge is
+exactly divisible by those depths and therefore zero.  This quantized-proximity theorem and its
+nonvanishing-loop/winding realization are Lean-certified in
+`ConstitutiveApproximateFormationSelection`.  The field frontier is therefore no longer exact root
+genesis.  It is **source-native approximate formation crossing the intrinsic noninvertibility
+gap**.  Ramified covers and root stacks still do not suffice because they retain divisor charge as
+isotropy rather than approximate an original-base carrier inside one admitted component.
 
 ## 4. Why this may be the sought higher theory
 
@@ -262,11 +275,19 @@ Euler-shell realization.  The hypertranscendence line remains a conjectural inte
 
 ## 5. Source-genesis programme
 
-The missing theorem is not “find a zero-free function.”  It is:
+The strongest producer would still be:
 
 > construct, from pre-target source operations, a coherent rational-depth formation envelope whose
 > image under the Euler-shell realization gives global roots of (R_{m,r}) on
 > (\Re s>1/2).
+
+But exact roots are no longer the minimal target.  ULF-DFPM-6 reduces it to:
+
+> on every nonvanishing contour, construct source-native powers of unbounded depth whose error is
+> strictly smaller than the transfer's native distance to the noninvertible locus.
+
+Charge stability upgrades that quantitative approximation to exact divisibility.  This is the
+current load-bearing global formation/properness problem.
 
 Candidate mechanisms to attack:
 
@@ -298,8 +319,10 @@ on (\sigma>1), or if it factors through an information-neutral common recovery k
 - [x] work-form contour conservation
 - [x] holomorphic-potential RH equivalence
 - [x] unbounded-divisibility RH selection theorem
+- [x] cofinal approximate-power/admission-gap selection theorem
 - [ ] pre-target construction of one nontrivial global root
 - [ ] coherent unbounded root tower
+- [ ] source-native cofinal powers crossing every local noninvertibility gap
 - [x] same-integral-doctrine root tower ruled out
 - [x] root-stack existence without base descent ruled out
 - [ ] effective trivial-inertia descent through common recovery

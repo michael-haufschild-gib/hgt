@@ -5,7 +5,7 @@
 - **Type:** UNIVERSAL INTERVENTION / FORMATION / DUALITY EXCHANGE LAW
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM, NOT ROUTE]
   [EXACT RECONSTRUCTION] [EXACT FUSION INTERTWINER] [BOUNDED-ARITY NO-GO]
-  [INFORMATION-NEUTRAL DUALITY] [NOT SELECTION] [NOT RH] [LEAN PENDING]`
+  [INFORMATION-NEUTRAL DUALITY] [LEAN FORMALIZED] [NOT SELECTION] [NOT RH]`
 
 ## 1. Setup
 
@@ -267,3 +267,8 @@ Formalize only the exact finite core:
 
 Reuse existing finite Bernoulli/Walsh infrastructure. No new probability or QFI formalization is
 required for this card.
+
+Formalized in
+`formal/GaloisForLFunctions/HTGeometry/ConstitutivePolarizedCrossEffect.lean`. Scratch
+elaboration, direct leaf elaboration, and targeted leaf build pass. Module is wired into
+`HTGeometry.UniversalLawField`; no umbrella, theorem-area, or project build was run.

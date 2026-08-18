@@ -84,15 +84,13 @@ theorem iUnion_dyadicAnnulus {W : ℝ} (hW : 0 < W) :
   · intro hw
     exact exists_dyadic_scale hW hw
 
-/-- **Gallagher's identity with a dyadically paid far tail.**  Under an affine symmetric
-mean-square majorant `α·T + β`, every frequency is paid by a mean square: the good range costs
-`2δ²(αW + β)` and the far tail `4α/(π²W) + 4β/(3π²W²)`.  No ℓ¹ coefficient mass occurs. -/
-theorem gallagher_split_integral_dyadic (a : ℕ → ℂ) (s : Finset ℕ) {δ W α β : ℝ}
+/-- **Gallagher's far tail, paid dyadically.**  Under an affine symmetric mean-square majorant
+`α·T + β` above the cut, the frequencies past the cut cost `4α/(π²W) + 4β/(3π²W²)`. -/
+theorem gallagher_farTail_dyadic_le (a : ℕ → ℂ) (s : Finset ℕ) {δ W α β : ℝ}
     (hδ : 0 < δ) (hW : 0 < W)
     (hG : ∀ T : ℝ, W ≤ T → (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2) ≤ α * T + β) :
-    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ 2)
-      ≤ 2 * δ ^ 2 * (α * W + β)
-        + (4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)) := by
+    (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
+      ≤ 4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2) := by
   have hpi := Real.pi_pos
   have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 :=
     integrable_gallagher_weight_mul hδ a s
@@ -100,18 +98,6 @@ theorem gallagher_split_integral_dyadic (a : ℕ → ℂ) (s : Finset ℕ) {δ W
     ((continuous_logPoly a s).norm).pow 2
   have hnnw : ∀ w : ℝ, 0 ≤ (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 := fun w =>
     mul_nonneg (fourier_triC_re_nonneg hδ w) (by positivity)
-  rw [gallagher_identity a s hδ]
-  rw [← integral_add_compl (measurableSet_Icc (a := -W) (b := W)) hF]
-  have hin : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-      ≤ 2 * δ ^ 2 * (α * W + β) := by
-    have hstep : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-        ≤ ∫ w in Set.Icc (-W) W, 2 * δ ^ 2 * ‖logPoly a s w‖ ^ 2 := by
-      refine setIntegral_mono_on hF.integrableOn
-        ((hcont.const_mul (2 * δ ^ 2)).integrableOn_Icc) measurableSet_Icc fun w _ => ?_
-      exact mul_le_mul_of_nonneg_right (fourier_triC_re_le_two_sq hδ w) (by positivity)
-    refine le_trans hstep ?_
-    rw [MeasureTheory.integral_const_mul]
-    exact mul_le_mul_of_nonneg_left (hG W le_rfl) (by positivity)
   have hfar : (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
       ≤ 4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2) := by
     have hsub : (Set.Icc (-W) W)ᶜ ⊆ {w : ℝ | W ≤ |w|} := by
@@ -237,6 +223,63 @@ theorem gallagher_split_integral_dyadic (a : ℕ → ℂ) (s : Finset ℕ) {δ W
       _ ≤ ∑' k : ℕ, (2 * α / (Real.pi ^ 2 * W) * ((1 : ℝ) / 2) ^ k
             + β / (Real.pi ^ 2 * W ^ 2) * ((1 : ℝ) / 4) ^ k) := htsum_le
       _ = 4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2) := htsum_eval
+  exact hfar
+
+/-- **Gallagher's identity with a dyadically paid far tail.**  Under an affine symmetric
+mean-square majorant `α·T + β`, every frequency is paid by a mean square: the good range costs
+`2δ²(αW + β)` and the far tail `4α/(π²W) + 4β/(3π²W²)`.  No ℓ¹ coefficient mass occurs. -/
+theorem gallagher_split_integral_dyadic (a : ℕ → ℂ) (s : Finset ℕ) {δ W α β : ℝ}
+    (hδ : 0 < δ) (hW : 0 < W)
+    (hG : ∀ T : ℝ, W ≤ T → (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2) ≤ α * T + β) :
+    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ 2)
+      ≤ 2 * δ ^ 2 * (α * W + β)
+        + (4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)) := by
+  have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 :=
+    integrable_gallagher_weight_mul hδ a s
+  have hcont : Continuous fun w : ℝ => ‖logPoly a s w‖ ^ 2 :=
+    ((continuous_logPoly a s).norm).pow 2
+  rw [gallagher_identity a s hδ]
+  rw [← integral_add_compl (measurableSet_Icc (a := -W) (b := W)) hF]
+  have hin : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
+      ≤ 2 * δ ^ 2 * (α * W + β) := by
+    have hstep : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
+        ≤ ∫ w in Set.Icc (-W) W, 2 * δ ^ 2 * ‖logPoly a s w‖ ^ 2 := by
+      refine setIntegral_mono_on hF.integrableOn
+        ((hcont.const_mul (2 * δ ^ 2)).integrableOn_Icc) measurableSet_Icc fun w _ => ?_
+      exact mul_le_mul_of_nonneg_right (fourier_triC_re_le_two_sq hδ w) (by positivity)
+    refine le_trans hstep ?_
+    rw [MeasureTheory.integral_const_mul]
+    exact mul_le_mul_of_nonneg_left (hG W le_rfl) (by positivity)
+  have hfar := gallagher_farTail_dyadic_le a s hδ hW hG
+  linarith
+
+/-- **Gallagher's identity with the head paid separately.**  The mean value theorem is sharp at the
+diagonal, so using it below the cut reproduces the trivial bound; a genuine estimate `β₀` for the
+frequencies below the cut must be supplied on its own, and the affine majorant used only above. -/
+theorem gallagher_split_integral_dyadic_head (a : ℕ → ℂ) (s : Finset ℕ) {δ W α β β₀ : ℝ}
+    (hδ : 0 < δ) (hW : 0 < W)
+    (hHead : (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2) ≤ β₀)
+    (hG : ∀ T : ℝ, W ≤ T → (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2) ≤ α * T + β) :
+    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ 2)
+      ≤ 2 * δ ^ 2 * β₀
+        + (4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)) := by
+  have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 :=
+    integrable_gallagher_weight_mul hδ a s
+  have hcont : Continuous fun w : ℝ => ‖logPoly a s w‖ ^ 2 :=
+    ((continuous_logPoly a s).norm).pow 2
+  rw [gallagher_identity a s hδ]
+  rw [← integral_add_compl (measurableSet_Icc (a := -W) (b := W)) hF]
+  have hin : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
+      ≤ 2 * δ ^ 2 * β₀ := by
+    have hstep : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
+        ≤ ∫ w in Set.Icc (-W) W, 2 * δ ^ 2 * ‖logPoly a s w‖ ^ 2 := by
+      refine setIntegral_mono_on hF.integrableOn
+        ((hcont.const_mul (2 * δ ^ 2)).integrableOn_Icc) measurableSet_Icc fun w _ => ?_
+      exact mul_le_mul_of_nonneg_right (fourier_triC_re_le_two_sq hδ w) (by positivity)
+    refine le_trans hstep ?_
+    rw [MeasureTheory.integral_const_mul]
+    exact mul_le_mul_of_nonneg_left hHead (by positivity)
+  have hfar := gallagher_farTail_dyadic_le a s hδ hW hG
   linarith
 
 /-- **The short-interval mean square, all frequencies paid by the mean value theorem.**  The far

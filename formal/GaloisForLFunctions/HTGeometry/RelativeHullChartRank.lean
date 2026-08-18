@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HullChartFrequencyRank
 import GaloisForLFunctions.HTGeometry.RelativeFrequencyDual
+import GaloisForLFunctions.HTGeometry.MinimalFlowJetVanishing
 
 /-!
 # The relative frequency rank of a phase carrier
@@ -119,6 +120,55 @@ theorem exists_continuous_hullParameter_rel (hf : UniformContinuous (fun x => f 
     rw [hφval t μ hμ, hzero]
     simp
 
+
+/-- The fibre is closed. -/
+theorem isClosed_bohrHullKernel (f : ℝ →ᵇ V) (W : Submodule ℚ ℝ) :
+    IsClosed (bohrHullKernel f W) := by
+  classical
+  have hrw : bohrHullKernel f W
+      = ⋂ μ : ℝ, {x : BohrHull f | IsBohrHullFrequency f μ → μ ∈ W → bohrHullChar f μ x = 1} := by
+    ext x
+    simp [bohrHullKernel, Set.mem_iInter]
+  rw [hrw]
+  refine isClosed_iInter fun μ => ?_
+  by_cases hμ : IsBohrHullFrequency f μ ∧ μ ∈ W
+  · have hset : {x : BohrHull f | IsBohrHullFrequency f μ → μ ∈ W → bohrHullChar f μ x = 1}
+        = (bohrHullChar f μ) ⁻¹' {1} := by
+      ext x
+      simp [hμ.1, hμ.2]
+    rw [hset]
+    exact isClosed_singleton.preimage (continuous_bohrHullChar f μ)
+  · have hset : {x : BohrHull f | IsBohrHullFrequency f μ → μ ∈ W → bohrHullChar f μ x = 1}
+        = Set.univ := by
+      ext x
+      simp only [Set.mem_setOf_eq, Set.mem_univ, iff_true]
+      intro h1 h2
+      exact absurd ⟨h1, h2⟩ hμ
+    rw [hset]
+    exact isClosed_univ
+
+/-- **A finite closed cover subordinate to an open cover of a compact subset.** -/
+theorem exists_finite_closed_cover_subordinate_on {X : Type*} [TopologicalSpace X] [T2Space X]
+    [RegularSpace X] {K : Set X} (hK : IsCompact K) {ι : Type*} (U : ι → Set X)
+    (hU : ∀ i, IsOpen (U i)) (hcov : ∀ x ∈ K, ∃ i, x ∈ U i) :
+    ∃ (M : ℕ) (idx : Fin M → ι) (F : Fin M → Set X),
+      (∀ j, IsClosed (F j)) ∧ (∀ j, F j ⊆ U (idx j)) ∧ ∀ x ∈ K, ∃ j, x ∈ F j := by
+  classical
+  haveI : CompactSpace ↥K := isCompact_iff_compactSpace.mp hK
+  obtain ⟨M, idx, F', hF'closed, hF'sub, hF'cov⟩ :=
+    HTGeometry.exists_finite_closed_cover_subordinate (X := ↥K)
+      (fun i => Subtype.val ⁻¹' U i) (fun i => (hU i).preimage continuous_subtype_val)
+      (fun x => by
+        obtain ⟨i, hi⟩ := hcov (x : X) x.2
+        exact ⟨i, hi⟩)
+  refine ⟨M, idx, fun j => Subtype.val '' F' j, fun j => ?_, fun j => ?_, fun x hx => ?_⟩
+  · have hcomp : IsCompact (F' j) := (hF'closed j).isCompact
+    exact (hcomp.image continuous_subtype_val).isClosed
+  · rintro _ ⟨y, hy, rfl⟩
+    exact hF'sub j hy
+  · obtain ⟨j, hj⟩ := hF'cov ⟨x, hx⟩
+    exact ⟨j, ⟨⟨x, hx⟩, hj, rfl⟩⟩
+
 /-- **The relative frequency-rank bound from a chart atlas.**  Charts injective only on the fibre
 bound the size of a frequency packet independent modulo the subspace. -/
 theorem card_le_of_hull_charts_rel (hf : UniformContinuous (fun x => f x))
@@ -128,7 +178,7 @@ theorem card_le_of_hull_charts_rel (hf : UniformContinuous (fun x => f x))
     (hind : LinearIndependent ℚ fun j => W.mkQ (lam j))
     (hlam : ∀ j, IsBohrHullFrequency f (lam j))
     {N k : ℕ} (F : Fin N → Set (BohrHull f)) (hFclosed : ∀ j, IsClosed (F j))
-    (hcover : ∀ x : BohrHull f, ∃ j, x ∈ F j)
+    (hcover : ∀ x ∈ bohrHullKernel f W, ∃ j, x ∈ F j)
     (E : Fin N → BohrHull f → EuclideanSpace ℝ (Fin k))
     (hEcont : ∀ j, ContinuousOn (E j) (F j))
     (hEinj : ∀ j, Set.InjOn (E j) (F j ∩ bohrHullKernel f W)) : r ≤ k := by
@@ -153,7 +203,7 @@ theorem card_le_of_hull_charts_rel (hf : UniformContinuous (fun x => f x))
     refine HTGeometry.eq_of_exp_pi_mul_I_eq hv hv' fun j => ?_
     rw [← hΨchar v j, ← hΨchar v' j, heq]
   refine HTGeometry.le_of_unitCube_charts (fun j => Ψ ⁻¹' F j)
-    (fun j => (hFclosed j).preimage hΨcont) (fun x _ => hcover (Ψ x))
+    (fun j => (hFclosed j).preimage hΨcont) (fun x _ => hcover (Ψ x) (hΨker x))
     (fun j v => E j (Ψ v)) ?_ ?_
   · intro j
     exact (hEcont j).comp hΨcont.continuousOn fun v hv => hv.1
@@ -171,7 +221,7 @@ theorem card_le_of_int_independent_mod (hf : UniformContinuous (fun x => f x))
     (hlam : ∀ j, IsBohrHullFrequency f (lam j))
     (hind : ∀ c : Fin r → ℤ, (∑ j, (c j : ℝ) * lam j) ∈ Γa → ∀ j, c j = 0)
     {N k : ℕ} (F : Fin N → Set (BohrHull f)) (hFclosed : ∀ j, IsClosed (F j))
-    (hcover : ∀ x : BohrHull f, ∃ j, x ∈ F j)
+    (hcover : ∀ x ∈ bohrHullKernel f (Submodule.span ℚ (Γa : Set ℝ)), ∃ j, x ∈ F j)
     (E : Fin N → BohrHull f → EuclideanSpace ℝ (Fin k))
     (hEcont : ∀ j, ContinuousOn (E j) (F j))
     (hEinj : ∀ j, Set.InjOn (E j)
@@ -188,7 +238,7 @@ theorem rank_quotient_bohrHullFrequencies_le_of_charts_rel
     [MeasurableSpace (BohrHull f)] [BorelSpace (BohrHull f)]
     (Γa : AddSubgroup ℝ)
     {N k : ℕ} (F : Fin N → Set (BohrHull f)) (hFclosed : ∀ j, IsClosed (F j))
-    (hcover : ∀ x : BohrHull f, ∃ j, x ∈ F j)
+    (hcover : ∀ x ∈ bohrHullKernel f (Submodule.span ℚ (Γa : Set ℝ)), ∃ j, x ∈ F j)
     (E : Fin N → BohrHull f → EuclideanSpace ℝ (Fin k))
     (hEcont : ∀ j, ContinuousOn (E j) (F j))
     (hEinj : ∀ j, Set.InjOn (E j)

@@ -1,11 +1,11 @@
 # Centralizer-centered circuit-collision and design-barrier law
 
 - **ID:** `centralizer-centered-circuit-collision-and-design-barrier-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3-formalized
 - **Type:** theorem / static-versus-completed transfer / norm no-go
 - **Parents:** `all-replica-static-centralizer-planar-separation-law.md`,
   `gate-walk-green-bellman-tropicalization-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY PROVISIONAL] [LEAN DEFERRED]`
+- **Status:** `[LEAN-PROVED] [FRONTIER ADVANCE] [NOVELTY PROVISIONAL]`
 - **Date:** 2026-08-10
 
 ## Public sentence
@@ -485,3 +485,118 @@ The construction of the concrete data: the symmetric projection `Π_sym` of `(19
 `Tr Π_sym = h_{D,r}`, the moment `M_ν` of `(20)` with its support projection, the twirl identity
 `(21)`, and the completed-phase Steinhaus moment `(14)`--`(16)`.  Everything the card states in
 `(3)`, `(4)`, `(9)`--`(12)` and `(22)`--`(28)` is now Lean-proved and axiom-clean.
+
+## Lean progress -- the concrete data, the twirl identity, and the ensemble bound
+
+Six new umbrella-wired, axiom-clean modules complete the card's Lean plan.  Every numbered
+statement of Theorems A--C and Corollary D, and every displayed equation of sections 2--4, is now a
+Lean theorem.
+
+`formal/GaloisForLFunctions/HTGeometry/SymmetricReplicaProjector.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the content class of an ordered replica coordinate, and its non-emptiness | `symClass`, `mem_symClass_iff`, `symClass_eq_of_index_eq`, `symClass_card_pos` |
+| a pure replica tensor depends only on the content | `finitePureTensorPower_congr` |
+| every content is realised by an ordered coordinate | `symTupleIndex_surjective` |
+| **`(19)`, the symmetric projection `Π_sym`**: class averaging, self-adjoint and idempotent | `symReplicaProjection`, `symReplicaProjection_conjTranspose`, `symReplicaProjection_mul_self` |
+| **`(19)`, `Tr Π_sym = h_{D,r} = binom(D+r-1, r)`** | `symReplicaProjection_trace` |
+| `Π_sym` fixes every pure replica tensor | `symReplicaProjection_mulVec_pure` |
+
+`formal/GaloisForLFunctions/HTGeometry/ReplicaMomentPurity.lean`:
+
+| Card item | Declaration |
+|---|---|
+| **`(20)`, the moment `M_ν`** of a finitely supported law on pure targets | `replicaMoment`, `replicaMoment_apply` |
+| it is Hermitian, carried by `Π_sym`, and has trace one | `replicaMoment_conjTranspose`, `symReplicaProjection_mul_replicaMoment`, `replicaMoment_trace` |
+| the purity as a law-weighted double sum of squared replica overlaps | `hsNormSq_replicaMoment` |
+| **the purity bound** `Tr(M_ν²) ≥ 1/N`, by dropping non-negative off-diagonal overlaps | `inv_card_le_hsNormSq_replicaMoment` |
+| `h_{D,r} > 0` | `choose_pos_of_nonempty` |
+| **`(22)`**: `‖M_ν − Ω_{D,r}‖²_HS ≥ 1/N − 1/h_{D,r}` | `hsNormSq_replicaMoment_sub_omega_ge` |
+| **`(23)`**: its square-root form | `sqrt_le_hsNormSq_replicaMoment_sub_omega` |
+| **`(26)`, sharp form**: a nontrivial raw target bound forces `N < a^r h_{D,r}` | `lt_smul_choose_of_capacity_bound` |
+| **`(27)`**: hence the barrier exceeds `sqrt((1−a^r)/N)` | `capacity_barrier_lt` |
+
+`formal/GaloisForLFunctions/HTGeometry/ReplicaContentPermutation.lean`:
+
+| Card item | Declaration |
+|---|---|
+| equal contents are equal letter counts | `count_symTupleIndex`, `symTupleIndex_eq_iff_card` |
+| **content classes are slot-permutation orbits** | `exists_perm_of_symTupleIndex_eq`, `symTupleIndex_comp_perm` |
+| symmetric vectors, and the projector's action on them | `IsClassConstant`, `isClassConstant_pure`, `symReplicaProjection_mulVec_of_classConstant` |
+| **every replica power preserves the symmetric vectors** | `isClassConstant_mulVec_replicaTensorPower` |
+| **`Π_sym` is central for replica powers** | `symReplicaProjection_commute` |
+
+`formal/GaloisForLFunctions/HTGeometry/TwirlSeparationHouseholder.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the monomial exponent of a replica coordinate, and its evaluation | `replicaExponent`, `replicaExponent_eq_iff`, `finsuppProd_replicaExponent` |
+| **monomial separation**: vanishing pure-tensor pairing forces vanishing class sums | `sum_symClass_eq_zero_of_forall_pos` |
+| **Householder transitivity**: a unitary carrying a basis vector to any real unit vector | `exists_unitary_mulVec_basis` |
+
+`formal/GaloisForLFunctions/HTGeometry/CollectiveCentralBlock.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the collective commutant `Π_{D,r}`'s range | `IsCollectiveCentral`, `isCollectiveCentral_symReplicaProjection` |
+| a replica power of a diagonal matrix is diagonal, with root-of-unity eigenvalues | `replicaTensorPower_diagonal`, `prod_ite_eq_pow_card` |
+| **block structure**: a collectively central operator vanishes off the content classes | `eq_zero_of_isCollectiveCentral` |
+| the replica projector of a one-copy vector and its unitary conjugation law | `replicaProjector`, `replicaProjector_mulVec` |
+| a replica power of a unitary is unitary | `replicaTensorPower_conjTranspose_mul` |
+| **the replica trace pairing is a unitary invariant** | `trace_mul_replicaProjector_mulVec` |
+| every unit vector is a diagonal phase times a Householder image of a basis vector | `exists_unitary_mulVec_basis_of_unit` |
+| **constancy**: the pairing is the same at every unit vector | `trace_mul_replicaProjector_eq_of_unit` |
+
+`formal/GaloisForLFunctions/HTGeometry/CollectiveTwirlIdentity.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the content-class row sums | `classRowSum`, `trace_mul_replicaProjector_eq_sum` |
+| **the class-sum identity**: each class sum is the class size times the common pairing | `sum_symClass_classRowSum` |
+| **the pairing with `Π_sym` is `h_{D,r}` times the common pairing** | `trace_mul_symReplicaProjection` |
+| the moment as a convex combination of replica projectors | `replicaMoment_eq_sum_smul`, `trace_mul_replicaMoment` |
+| **`(21)`**: `(I − Π_{D,r}) M_ν = M_ν − Ω_{D,r}` | `trace_mul_replicaMoment_eq_omega` |
+
+`formal/GaloisForLFunctions/HTGeometry/CompletedPhaseReplicaMoment.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a content class has at most `r!` members | `card_symClass_le_factorial` |
+| the replica weight factorizes over slots | `sum_prod_weight` |
+| **`(15)`**: the class-weighted replica sum is at most `r!` times the `r`-th power of the total weight | `sum_symClass_card_mul_prod_le` |
+| **`(14)`, `(16)`**: the completed-phase replica moment of a flat seed is at most `r!/D^r` | `completedPhaseReplicaMoment_le` |
+
+`formal/GaloisForLFunctions/HTGeometry/CentralizerCenteredDesignBarrier.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the collective commutant is a `*`-subalgebra | `isCollectiveCentral_conjTranspose`, `isCollectiveCentral_sub`, `isCollectiveCentral_smul` |
+| a vanishing Hilbert--Schmidt energy forces the zero matrix | `eq_zero_of_hsNormSq_eq_zero` |
+| **`Ω_{D,r}` lies in every quenched centralizer**: collective conjugation returns it | `replicaTensorPower_mul_conjTranspose`, `symReplicaProjection_conj` |
+| **`(12)`, sharp form**: a moment inside the collective commutant *is* `Ω_{D,r}` | `replicaMoment_eq_omega_of_isCollectiveCentral` |
+| **`(17)`, `(18)`**: the ensemble criterion with the signed centralizer-centered defect | `ensemble_shortcut_bound` |
+
+Three points where the formalisation is sharper than the card text.
+
+`(21)` is proved without a Haar integral over `U(D)`.  A diagonal unitary whose only nontrivial
+entry is a primitive `(r+1)`-st root of unity separates two coordinates whose contents differ in
+that letter, which gives the block structure; a Householder reflection composed with a diagonal
+phase carries a basis vector to any unit vector, which gives constancy of the pairing; and the
+resulting identity, tested on the strictly positive orthant, is a multivariate polynomial identity,
+so monomial separation pins every class sum.  No representation theory and no invariant measure is
+used.
+
+`(12)` becomes an equality rather than an implication: the card concludes that an exact design
+makes the physical and completed collision probabilities agree, and the Lean statement says that
+such a moment has no freedom at all -- it equals `Ω_{D,r}` exactly.
+
+`(14)`--`(16)` are proved from the class-size bound `|class| ≤ r!`, which is the orbit bound for the
+slot-permutation action, rather than from Steinhaus orthogonality: the phase-completed moment is the
+class-weighted replica sum, and replacing every class size by `r!` gives the multinomial estimate
+`(15)` directly.
+
+`#print axioms` on every declaration above: `propext`, `Classical.choice`, `Quot.sound` only.
+
+The card's `(29)` is not a theorem of this card: section 5's `C3` records it as the next
+load-bearing target with the verdict `[EXACT REPRESENTATION PROVED; QUANTITATIVE BOUND OPEN]`.

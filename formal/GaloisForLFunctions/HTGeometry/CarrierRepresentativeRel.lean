@@ -15,6 +15,8 @@ asked of the first component beyond that it is shared.
 
 open Set
 
+open scoped BoundedContinuousFunction
+
 namespace GaloisForLFunctions
 
 variable {σ r : ℝ}
@@ -80,11 +82,11 @@ theorem carrier_eq_of_jet_eq_local_rel {E₁ : Type*} [NormedAddCommGroup E₁] 
     (hcoef : Set.EqOn (fun z => (G z).1) (fun z => (H z).1) (verticalStrip σ r))
     {P : ℝ → (Fin (n + 1) → ℂ) → ℂ}
     {P' : ℝ → (Fin (n + 1) → ℂ) → ((Fin (n + 1) → ℂ) →L[ℂ] ℂ)} {S : Set (Fin (n + 1) → ℂ)}
-    (hS : Convex ℝ S)
-    (hPd : ∀ t, ∀ y ∈ S, HasFDerivWithinAt (P t) ((P' t y).restrictScalars ℝ) S y)
-    {L : (Fin (n + 1) → ℂ) →L[ℂ] ℂ} {C : ℝ} (hC : 0 ≤ C)
-    (hbound : ∀ t, ∀ y ∈ S, ‖P' t y - L‖ ≤ C)
+    (hS : Convex ℝ S) {L : (Fin (n + 1) → ℂ) →L[ℂ] ℂ} {C : ℝ} (hC : 0 ≤ C)
     (hdom : C < ‖partialCoeff L (Fin.last n)‖) {t₀ : ℝ}
+    (hPd : ∀ᶠ t : ℝ in nhds t₀, ∀ y ∈ S,
+      HasFDerivWithinAt (P t) ((P' t y).restrictScalars ℝ) S y)
+    (hbound : ∀ᶠ t : ℝ in nhds t₀, ∀ y ∈ S, ‖P' t y - L‖ ≤ C)
     (hGS : ∀ᶠ t : ℝ in nhds t₀, (fun k : Fin (n + 1) =>
       iteratedDeriv (k : ℕ) (fun z => (G z).2) ((σ : ℂ) + (t : ℂ) * Complex.I)) ∈ S)
     (hGP : ∀ᶠ t : ℝ in nhds t₀, P t (fun k : Fin (n + 1) =>
@@ -105,7 +107,7 @@ theorem carrier_eq_of_jet_eq_local_rel {E₁ : Type*} [NormedAddCommGroup E₁] 
   have hH2 : DifferentiableOn ℂ (fun z => (H z).2) (verticalStrip σ r) :=
     (ContinuousLinearMap.snd ℂ E₁ ℂ).differentiable.comp_differentiableOn hHdiff
   have hsecond : Set.EqOn (fun z => (G z).2) (fun z => (H z).2) (verticalStrip σ r) :=
-    eqOn_of_line_jet_eq_implicit_local_timeDep hRpos hn hG2 hH2 hS hPd hC hbound hdom
+    eqOn_of_line_jet_eq_implicit_local_timeDep hRpos hn hG2 hH2 hS hC hdom hPd hbound
       hGS hGP hHS hHP hjet
   have heq : Set.EqOn G H (verticalStrip σ r) := by
     intro z hz

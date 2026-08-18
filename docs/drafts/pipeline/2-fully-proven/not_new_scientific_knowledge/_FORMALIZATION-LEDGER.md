@@ -953,3 +953,29 @@ Built for `prime-zero-susceptibility-transverse` (now stage 3):
 - `rpow_frequency_independent_iff`, `mirrorRatio_frequency_independent_iff` — a power `n^{1−2β}`
   (times any nonzero frequency-independent factor) is independent of `n ≥ 2` exactly when `β = ½`.
 
+
+### `exponential-tower-exact-differential-order` — half closed (2026-08-18)
+
+The differential-order half `ord_DA(F_n) = n` is **done**, unconditionally and for arbitrary complex
+parameters: `HTGeometry/AffineExponentialCascadeOrder.lean`.  The route is not the card's (real-axis
+domination + triangular Jacobian + logarithmic velocities) but a reduction: composing the affine
+layer of one map with the exponential of the next turns a cascade of `w ↦ a_j + b_j exp(c_j w)` into
+*one* affine map applied to a cascade of `w ↦ exp(α w + β)`, and the corpus already owns
+`exactDifferentialOrder_expAffineCascade` for the latter.  The only missing input was invariance of
+exact order under affine **post**composition (`exactDifferentialOrder_const_mul_add_iff`), which is
+unconditional.
+
+The composition-depth half `cd_+(F_n) = n` is open.  New infrastructure landed for it:
+
+- `HTGeometry/IteratedExponentialGrowthHeight.lean` — `iterExp`, `GrowthHeightAtLeast`,
+  `GrowthHeightAtMost`, `PositiveLowerOrder` (liminf-free), and their incompatibility one step apart.
+- `HTGeometry/AffineExponentialCascadeGrowth.lean` — the two absorption lemmas on the
+  iterated-exponential scale and the upper bound `M(r,F_n) ≤ exp_n(r^C)`, hence
+  `not_growthHeightAtLeast_affExpCascade`.
+
+**The one gate left** is a *quantitative* minimum-modulus floor.  `RHTower/EntireMinimumModulus`
+already builds one — inside its proof, `L = ‖g 0‖·exp(−2 log(M/‖g 0‖)·B/(R−B))` — but only exports
+`0 < L`.  Exposing the classical `min_{|w|=s}|f| ≥ M(R',f)^{−C}` form would immediately give the
+Pólya growth-depth lemma through the already-owned
+`HTGeometry/PolyaConnectedTransfer.exists_le_norm_comp_of_floor`, and with it the composition-depth
+half of this card and of `asymptotically-exponential-algebraic-cascade-unit-cost`.

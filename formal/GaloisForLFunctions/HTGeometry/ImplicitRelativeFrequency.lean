@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.CarrierRepresentativeRel
 import GaloisForLFunctions.HTGeometry.RelativeHullChartRank
 import GaloisForLFunctions.HTGeometry.StripSolutionPhaseRank
 import GaloisForLFunctions.HTGeometry.ComplexJetEuclidean
+import GaloisForLFunctions.HTGeometry.LinearJet
 import GaloisForLFunctions.HTGeometry.MinimalFlowJetVanishing
 
 /-!
@@ -17,6 +18,8 @@ with varying coefficients, and the jets of the second component alone separate t
 -/
 
 open Set
+
+open scoped BoundedContinuousFunction
 
 namespace GaloisForLFunctions
 
@@ -106,16 +109,20 @@ theorem rank_quotient_le_of_regular_jets_rel {E₁ : Type*} [NormedAddCommGroup 
     {ι : Type*} {τ : ι → ℝ} {S : ι → Set (Fin (n + 1) → ℂ)}
     {L : ι → (Fin (n + 1) → ℂ) →L[ℂ] ℂ} {C : ι → ℝ}
     (hSopen : ∀ i, IsOpen (S i)) (hSconv : ∀ i, Convex ℝ (S i))
-    (hPd : ∀ i, ∀ t, ∀ y ∈ S i, HasFDerivWithinAt (P t) ((P' t y).restrictScalars ℝ) (S i) y)
-    (hC : ∀ i, 0 ≤ C i) (hbnd : ∀ i, ∀ t, ∀ y ∈ S i, ‖P' t y - L i‖ ≤ C i)
+    (hPd : ∀ i, ∀ᶠ t : ℝ in nhds (τ i), ∀ y ∈ S i,
+      HasFDerivWithinAt (P t) ((P' t y).restrictScalars ℝ) (S i) y)
+    (hC : ∀ i, 0 ≤ C i)
+    (hbnd : ∀ i, ∀ᶠ t : ℝ in nhds (τ i), ∀ y ∈ S i, ‖P' t y - L i‖ ≤ C i)
     (hdom : ∀ i, C i < ‖partialCoeff (L i) (Fin.last n)‖)
     (hrelrep : ∀ x ∈ bohrHullKernel p
         (Submodule.span ℚ ((bohrHullFrequencies q : AddSubgroup ℝ) : Set ℝ)),
       ∀ s : ℝ, P s (fun k : Fin (n + 1) =>
         iteratedDeriv (k : ℕ) (fun z => (rep x z).2) ((σ : ℂ) + (s : ℂ) * Complex.I)) = 0)
-    (hatlas : ∀ x : BohrHull p, ∃ i, (fun k : Fin (n + 1) =>
-      iteratedDeriv (k : ℕ) (fun z => (rep x z).2)
-        ((σ : ℂ) + ((τ i : ℝ) : ℂ) * Complex.I)) ∈ S i) :
+    (hatlas : ∀ x ∈ bohrHullKernel p
+        (Submodule.span ℚ ((bohrHullFrequencies q : AddSubgroup ℝ) : Set ℝ)),
+      ∃ i, (fun k : Fin (n + 1) =>
+        iteratedDeriv (k : ℕ) (fun z => (rep x z).2)
+          ((σ : ℂ) + ((τ i : ℝ) : ℂ) * Complex.I)) ∈ S i) :
     Module.rank ℤ ((bohrHullFrequencies p) ⧸
         ((bohrHullFrequencies q).addSubgroupOf (bohrHullFrequencies p)))
       ≤ ((n * 2 : ℕ) : Cardinal) := by
@@ -156,7 +163,8 @@ theorem rank_quotient_le_of_regular_jets_rel {E₁ : Type*} [NormedAddCommGroup 
     exact continuous_snd.comp hbase
   set U : ι → Set (BohrHull p) := fun i => {x | J i x ∈ S i} with hU
   have hUopen : ∀ i, IsOpen (U i) := fun i => (hSopen i).preimage (hJcont i)
-  have hUcov : ∀ x : BohrHull p, ∃ i, x ∈ U i := hatlas
+  have hUcov : ∀ x ∈ bohrHullKernel p
+      (Submodule.span ℚ ((bohrHullFrequencies q : AddSubgroup ℝ) : Set ℝ)), ∃ i, x ∈ U i := hatlas
   set Jlow : ι → BohrHull p → (Fin n → ℂ) := fun i x => fun k : Fin n =>
     iteratedDeriv (k : ℕ) (fun z => (rep x z).2) ((σ : ℂ) + ((τ i : ℝ) : ℂ) * Complex.I) with hJlow
   have hJlowcont : ∀ i, Continuous (Jlow i) := by
@@ -194,14 +202,17 @@ theorem rank_quotient_le_of_regular_jets_rel {E₁ : Type*} [NormedAddCommGroup 
       eventually_jet_mem (by linarith) (hd2 y) (hSopen i) hy
     refine carrier_eq_of_jet_eq_local_rel hrpos hpu hn
       ((hrepdiff x).mono hstripsub) ((hrepdiff y).mono hstripsub) hcoef
-      (hSconv i) (hPd i) (hC i) (hbnd i) (hdom i)
+      (hSconv i) (hC i) (hdom i) (hPd i) (hbnd i)
       hxev (Filter.Eventually.of_forall (hrelrep x hxK)) hyev
       (Filter.Eventually.of_forall (hrelrep y hyK)) (fun k => ?_)
       (fun t => (hrepline x t)) (fun t => (hrepline y t))
     exact congrFun hxy k
   -- a finite closed cover subordinate to the regular sets
   obtain ⟨M, idx, F, hFclosed, hFsub, hFcov⟩ :=
-    HTGeometry.exists_finite_closed_cover_subordinate U hUopen hUcov
+    exists_finite_closed_cover_subordinate_on
+      ((isClosed_bohrHullKernel p
+        (Submodule.span ℚ ((bohrHullFrequencies q : AddSubgroup ℝ) : Set ℝ))).isCompact)
+      U hUopen hUcov
   refine rank_quotient_bohrHullFrequencies_le_of_charts_rel hpu hptb (bohrHullFrequencies q)
     F hFclosed hFcov
     (fun j x => HTGeometry.complexJetToEuclidean n (Jlow (idx j) x)) (fun j => ?_) (fun j => ?_)

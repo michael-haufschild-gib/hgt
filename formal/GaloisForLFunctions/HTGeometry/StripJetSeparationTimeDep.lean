@@ -157,11 +157,10 @@ theorem eqOn_of_line_jet_eq_implicit_local_timeDep {g h : ℂ → ℂ} (hR : 0 <
     (hg : DifferentiableOn ℂ g (verticalStrip σ R)) (hh : DifferentiableOn ℂ h (verticalStrip σ R))
     {P : ℝ → (Fin (n + 1) → ℂ) → ℂ}
     {P' : ℝ → (Fin (n + 1) → ℂ) → ((Fin (n + 1) → ℂ) →L[ℂ] ℂ)} {S : Set (Fin (n + 1) → ℂ)}
-    (hS : Convex ℝ S)
-    (hPd : ∀ t, ∀ y ∈ S, HasFDerivWithinAt (P t) ((P' t y).restrictScalars ℝ) S y)
-    {L : (Fin (n + 1) → ℂ) →L[ℂ] ℂ} {C : ℝ} (hC : 0 ≤ C)
-    (hbound : ∀ t, ∀ y ∈ S, ‖P' t y - L‖ ≤ C)
+    (hS : Convex ℝ S) {L : (Fin (n + 1) → ℂ) →L[ℂ] ℂ} {C : ℝ} (hC : 0 ≤ C)
     (hdom : C < ‖partialCoeff L (Fin.last n)‖) {t₀ : ℝ}
+    (hPd : ∀ᶠ t : ℝ in nhds t₀, ∀ y ∈ S, HasFDerivWithinAt (P t) ((P' t y).restrictScalars ℝ) S y)
+    (hbound : ∀ᶠ t : ℝ in nhds t₀, ∀ y ∈ S, ‖P' t y - L‖ ≤ C)
     (hgS : ∀ᶠ t : ℝ in nhds t₀, (fun k : Fin (n + 1) =>
       iteratedDeriv (k : ℕ) g ((σ : ℂ) + (t : ℂ) * Complex.I)) ∈ S)
     (hgP : ∀ᶠ t : ℝ in nhds t₀, P t (fun k : Fin (n + 1) =>
@@ -174,11 +173,25 @@ theorem eqOn_of_line_jet_eq_implicit_local_timeDep {g h : ℂ → ℂ} (hR : 0 <
       = iteratedDeriv (k : ℕ) h ((σ : ℂ) + (t₀ : ℂ) * Complex.I)) :
     Set.EqOn g h (verticalStrip σ R) := by
   classical
-  have hbranch : ∀ t : ℝ, ∃ Φt : (Fin n → ℂ) → ℂ,
+  set Good : ℝ → Prop := fun t => ∃ Φt : (Fin n → ℂ) → ℂ,
       LipschitzWith (implicitLipschitzConst n L C) Φt ∧
-        ∀ y ∈ S, P t y = 0 → y (Fin.last n) = Φt (fun k : Fin n => y k.castSucc) := fun t =>
-    exists_lipschitz_implicit_const hS (hPd t) hC (hbound t) hdom
-  choose Φ hΦlip hΦval using hbranch
+        ∀ y ∈ S, P t y = 0 → y (Fin.last n) = Φt (fun k : Fin n => y k.castSucc) with hGood
+  have hgood : ∀ᶠ t : ℝ in nhds t₀, Good t := by
+    filter_upwards [hPd, hbound] with t h1 h2
+    exact exists_lipschitz_implicit_const hS h1 hC h2 hdom
+  set Φ : ℝ → (Fin n → ℂ) → ℂ := fun t => if h : Good t then h.choose else 0 with hΦdef
+  have hΦlip : ∀ᶠ t : ℝ in nhds t₀,
+      LipschitzWith (implicitLipschitzConst n L C) (Φ t) := by
+    filter_upwards [hgood] with t ht
+    rw [hΦdef]
+    simp only [dif_pos ht]
+    exact ht.choose_spec.1
+  have hΦval : ∀ᶠ t : ℝ in nhds t₀, ∀ y ∈ S, P t y = 0 →
+      y (Fin.last n) = Φ t (fun k : Fin n => y k.castSucc) := by
+    filter_upwards [hgood] with t ht
+    rw [hΦdef]
+    simp only [dif_pos ht]
+    exact ht.choose_spec.2
   have hODE : ∀ (u : ℂ → ℂ),
       (∀ᶠ t : ℝ in nhds t₀, (fun k : Fin (n + 1) =>
         iteratedDeriv (k : ℕ) u ((σ : ℂ) + (t : ℂ) * Complex.I)) ∈ S) →
@@ -187,11 +200,11 @@ theorem eqOn_of_line_jet_eq_implicit_local_timeDep {g h : ℂ → ℂ} (hR : 0 <
       ∀ᶠ t : ℝ in nhds t₀, iteratedDeriv n u ((σ : ℂ) + (t : ℂ) * Complex.I)
         = Φ t fun k : Fin n => iteratedDeriv (k : ℕ) u ((σ : ℂ) + (t : ℂ) * Complex.I) := by
     intro u huS huP
-    filter_upwards [huS, huP] with t hS' hP'
-    have hval := hΦval t _ hS' hP'
+    filter_upwards [huS, huP, hΦval] with t hS' hP' hval'
+    have hval := hval' _ hS' hP'
     simpa using hval
   exact eqOn_of_line_jet_eq_local_timeDep hR hn hg hh (S := Set.univ)
-    (Filter.Eventually.of_forall fun t => (hΦlip t).lipschitzOnWith)
+    (by filter_upwards [hΦlip] with t ht; exact ht.lipschitzOnWith)
     (hODE g hgS hgP) (hODE h hhS hhP)
     (Filter.Eventually.of_forall fun t => Set.mem_univ _)
     (Filter.Eventually.of_forall fun t => Set.mem_univ _) hjet

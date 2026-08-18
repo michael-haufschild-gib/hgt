@@ -85,7 +85,7 @@ length `h = exp((log x)^β)` of the Route E cards. -/
 theorem tendsto_exp_neg_log_rpow {β : ℝ} (hβ : 0 < β) :
     Tendsto (fun x : ℝ => Real.exp (-((Real.log x) ^ β))) atTop (𝓝 0) := by
   have hpow : Tendsto (fun x : ℝ => (Real.log x) ^ β) atTop atTop :=
-    (Real.tendsto_rpow_atTop hβ).comp Real.tendsto_log_atTop
+    (tendsto_rpow_atTop hβ).comp Real.tendsto_log_atTop
   exact Real.tendsto_exp_neg_atTop_nhds_zero.comp hpow
 
 end RHTower.Sieve

@@ -7,7 +7,7 @@
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [SYMMETRIC THREE-FORMATION LAW]`
   `[OBSERVER-CREATED OVERLAP] [EXACT RECOVERY CONSERVATION] [DUAL REPORTER]`
   `[POSITIVE HODGE CARRIER] [FOURTH-ORGAN FISHER PREDICTION]`
-  `[COFINAL PROPERNESS SELECTION] [LEAN OPEN: READ-ONLY AUDIT] [NOT RH]`
+  `[COFINAL PROPERNESS SELECTION] [LEAN CORE FORMALIZED] [HODGE/FISHER LEAN OPEN] [NOT RH]`
 - **Statement:** Three relation formations carry a canonical first homology.  Choosing one formation
   as an observer kernel identifies that homology with overlap created by observation, with excess
   joint recovery loss, with a dual reporter quotient, and with the exact missing rank of the fused
@@ -799,24 +799,27 @@ positivity, and recurrence are then consumers of the same charge, not independen
 
 ## 13. Lean status
 
-The Lean corpus was audited read-only before this card was promoted.  Existing infrastructure
-contains submodule sums/intersections, quotient spaces, `Submodule.finrank_sup_add_finrank_inf_eq`,
-orthogonal-complement identities, and finite-dimensional Gram kernels.  In particular,
-`HTGeometry/LinearFamilyDefectSupermodularity.lean` proves join preservation, lax intersection
-preservation, and the supermodularity inequality used by `(TFIM.13b)`.  Search found no existing
-declaration identifying its slack with a canonical quotient/homology, or packaging
-`(TFIM.1)--(TFIM.38)` with the observer-created-overlap equivalence.
+`GaloisForLFunctions.HTGeometry.ConstitutiveSymmetricFormationHomology` now certifies the
+route-independent algebraic core:
 
-Per the active research instruction, no Lean file was written and no Lean build was run for this
-card.  Formalization remains open.  Until a future Lean module closes it, this is paper-proved, not
-Lean-certified.
+1. the canonical distributivity quotient `FormationCharge`;
+2. the symmetric inclusion--exclusion rank conservation `(TFIM.6)`;
+3. exact observer-overlap rank conservation, identifying the charge rank with
+   `dim((L(W) cap L(Z))/L(W cap Z))`;
+4. vanishing charge iff image formation preserves the intersection;
+5. under pairwise injectivity, vanishing charge iff the fused observer is jointly injective.
+
+Scratch elaboration, direct leaf elaboration, and the targeted leaf build pass.  Axiom audit reports
+only `propext`, `Classical.choice`, and `Quot.sound`.  The module is imported by
+`HTGeometry.UniversalLawField`; that umbrella was not built.  Explicit chain-complex permutation
+isomorphisms, reporter duality, Hodge projector, and Fisher-nullity realization remain Lean-open.
 
 ## Gates
 
 - [x] 0 -> 1: source-pure mechanism, falsifiers, and corpus collision search
 - [x] 1 -> 2: complete coordinate-free paper proof and sharp countermodel
-- [ ] 2 -> 3: formalize symmetric complex, quotient equivalences, duality, Hodge carrier, and
-  Fisher-nullity theorem in Lean
+- [~] 2 -> 3: algebraic charge, overlap conservation, and joint-recovery criterion formalized;
+  explicit complex, duality, Hodge carrier, and Fisher-nullity theorem remain
 - [ ] 3 -> 4: publication paper and literal arithmetic three-formation realization
 
 ## Log

@@ -761,3 +761,256 @@ exactly the magnitude erasure the card attributes to scalarization.  Instantiati
 Note the contrast with `tendsto_mul_ell2_zero_of_log_le`: logarithm growing like `a_N^(-K)` gives
 type zero, logarithm growing like `N` gives type `e^(-γ)`.  Mertens' third theorem is what puts
 these two on opposite sides — `a_N^(-1) ∼ e^(γ) log N` is exponentially smaller than `N`.
+
+## Lean progress — §5.1 and §5.5 closed unconditionally
+
+Both are axiom-clean (`[propext, Classical.choice, Quot.sound]`) and wired into
+`GaloisForLFunctions.RHTower`.
+
+### §5.1 — the reflected Wold–Gamma gauge has type zero
+
+`RHTower/AcceleratedWoldType.lean`:
+
+```text
+one_add_exp_le                          1 + e^u ≤ 2 e^|u|
+tendsto_mertensProduct_mul_ell2_expGauge
+    a_N · ℓ₂ (exp (2t / a_N)) → 0        for every real t                       -- (13), (14)
+```
+
+The statement is symmetric in `t`, so the inverse gauge is the case `t ↦ −t`: the essential
+singularity `exp(2 Re t / a_x)` already present in Gamma is an *ordinary* one relative to the Wold
+boundary volume, and the accelerated scale does not see it.  This is exactly the shape
+`tendsto_mul_ell2_zero_of_log_le` consumes, with `K = 1` and `C = log 2 + 2|t|`: the crude bound
+`log(1 + e^u) ≤ log 2 + |u|` is all that the criterion needs.
+
+### §5.5 — the restricted adelic Weyl joining is already saturated
+
+Two new modules.  `RHTower/AdelicIntertwinerSaturation.lean` is the local algebra:
+
+```text
+intertwinerEigen p z = (p z² − 1) / (p − z²)                                    -- (18g)
+normSq_intertwiner_num, normSq_intertwiner_den   the two squared norms in re/im coordinates
+normSq_intertwiner_sub
+    ‖p z² − 1‖² − ‖p − z²‖² = (p² − 1)(‖z‖⁴ − 1)
+norm_intertwinerEigen_eq_one_iff
+    ‖λ_p(z)‖ = 1  ⟺  ‖z‖ = 1                                                    -- (18l)
+norm_intertwinerEigen_pos                         on the radial family the eigenvalue is nonzero
+log_intertwiner_ratio_bound                       the plain-real comparison with the pure power ρ²
+abs_log_norm_intertwinerEigen_sub_le
+    ‖z‖² = p^(2c),  0 < c < 1/2,  p ≥ 2
+      ⟹  |log ‖λ_p(z)‖ − 2c log p| ≤ 2 (1 − 2^(2c−1))^(−1) p^(2c−1)             -- (18h)
+```
+
+The equality locus is exact and needs no estimate: the identity
+`|pz²−1|² − |p−z²|² = (p²−1)(|z|⁴−1)` decides it outright.  The estimate `(18h)` is *uniform in the
+phase* `τ`: only `‖z‖² = p^{2c}` enters, never `Re z²`, because the four two-sided bounds
+`(pρ ∓ 1)² ≤ A`, `(p ∓ ρ)² ≤ B` already absorb the phase, and `ρ = p^{2c} < p` is what keeps the
+denominator away from zero.
+
+`RHTower/AdelicIntertwinerType.lean` is the global half:
+
+```text
+finsum_prime_log_eq_sum_primesBelow      the PNT finsum in Finset form
+tendsto_sum_primesBelow_log_div          (∑_{p < N} log p) / N → 1
+tendsto_sum_log_norm_intertwinerEigen_div
+    (∑_{p < N} log ‖λ_p(z_p)‖) / N → 2c                                         -- (18i)
+tendsto_mertensProduct_mul_ell2_intertwinerProduct
+    a_N · ℓ₂ (∏_{p < N} ‖λ_p(z_p)‖) → e^(−γ)
+tendsto_mertensProduct_mul_ell2_sqrt_intertwinerProduct
+    the same for the square root — the slope halves, the type does not
+eventually_lt_mertensProduct_mul_ell2_intertwiner
+    ∏_{p < N} ‖λ_p(z_p)‖ ≤ T_N²  ⟹  ∀ ε > 0 eventually  e^(−γ) − ε < a_N ℓ₂(T_N) -- (18j), (18k)
+```
+
+The defect sum is where `2c < 1` is used and where it is used only once: the local defects are
+`O(p^{−(1−2c)})`, and `∑_{p<N} p^{2c−1} ≤ ∑_{r≤N} r^{−(1−2c)} ≤ 1 + N^{2c}/(2c)` is `o(N)` exactly
+because the exponent is above `−1`.  The prime number theorem then converts the leading term
+`2c ∑_{p<N} log p` into `2c N`, and `tendsto_mertensProduct_mul_ell2_of_log_linear` — which is
+independent of the slope — returns the maximal type `e^(−γ)`.
+
+`(18k)` is stated with the *square* on the right because `‖T‖‖T⁻¹‖ ≤ max(‖T‖,‖T⁻¹‖)²`; the square
+root halves the slope and the saturation law does not notice, which is the card's "spherical
+normalization merely transfers that height to the complementary Iwahori record".
+
+**Remaining for stage 3:** §5.2's Wold-coordinate restatement `(16)`–`(17)` of the already-proved
+`(6)`, §5.3's scalar prime-square compression `(18)` (which needs the corpus law
+`log B_x(c) = (|c| + o(1)) ϑ(x)`), §5.4's Sonin depth matching `(18a)`–`(18e)`, and §6's four-chart
+modular-charge dictionary.
+
+## Lean progress — §5.2's Wold-coordinate form and §5.3 closed unconditionally
+
+### §5.2 — `(17)` read backwards
+
+`RHTower/AcceleratedWoldType.lean`:
+
+```text
+exp_exp_le_of_mul_ell2_ge
+    κ ≤ a · ℓ₂ (R)   ⟹   exp (exp (κ / a) − 1) − 1 ≤ R
+```
+
+This is `(17)` stripped to its mechanism and in exact rather than asymptotic form: an accelerated
+type at least `κ` forces the family to be an *exponential of an exponential* in `a_x^{-1}`.  Applied
+to `κ = 2 e^(−γ)|c| − ε` and the sewing family of `(6)` it is the card's displayed lower bound; the
+point the card makes — that this is not a Gamma-type factor, whose logarithm is only `O(1/a_x)` —
+is exactly the contrast with `tendsto_mertensProduct_mul_ell2_expGauge` of §5.1.
+
+### §5.3 — the scalar prime-square compression saturates
+
+`RHTower/PrimeSquareScalarCompression.lean`, unconditional and axiom-clean:
+
+```text
+one_le_scalarCompressionRatio, scalarCompressionRatio_eq_one_iff
+    the plain-real form of the local law, from  N² − D² = P(P−1)x(x−2)   with  x = r + r⁻¹
+betaLocal p c = (p (p^c + p^(−c)) − (p − 1)) / √((p + p^(2c))(p + p^(−2c)))
+one_le_betaLocal,  betaLocal_eq_one_iff
+    β_p(c) ≥ 1, with equality exactly at c = 0                                       -- (8)
+scalarCompA, scalarCompB, scalarComp_num_factor, scalarComp_den_factor
+    N = p u (1 + A),  D² = p² (1 + B)   with  u = p^c
+abs_log_scalarCompressionRatio_sub_log_le
+    |log (N/D) − log u| ≤ 4 u⁻¹ + 3 u² / (2 p)
+abs_log_betaLocal_sub_le
+    |log β_p(c) − c log p| ≤ 4 p^(−c) + (3/2) p^(2c−1)                               -- (11)
+tendsto_sum_log_betaLocal_div
+    (∑_{p < N} log β_p(c)) / N → c                                                   -- (12), (13)
+tendsto_mertensProduct_mul_ell2_betaProduct
+    a_N · ℓ₂ (∏_{p < N} β_p(c)) → e^(−γ)                                             -- (18)
+```
+
+The identity `N² − D² = p(p−1)x(x−2)` does the whole of `(7)`–`(8)`: `x = r + r⁻¹ ≥ 2` with equality
+only at `r = 1`, and `p^c = 1` only at `c = 0`.  For `(11)` the two relative defects have *different*
+rates — `A = O(p^{−c})` from the numerator, `B = O(p^{2c−1})` from the denominator — and both are
+summable against the primes below `N` to `o(N)`, the first because `c > 0` and the second because
+`2c < 1`.  That is the only place the strip condition `0 < |c| < 1/2` is used.  The saturation law
+then returns `e^(−γ)` for every drift, which is the card's "scalarization erases the magnitude".
+
+**Remaining for stage 3:** §5.1's compact-uniform version `(14a)`–`(14c)` (needs normal convergence
+of the genus-one occupation product), §5.4's Sonin depth matching `(18a)`–`(18e)`, and §6's
+four-chart modular-charge dictionary.
+
+## Lean progress — §5.4's depth matching and §6's dictionary
+
+### §5.4 — the Sonin aperture depth is fixed by the Wold first trace
+
+`RHTower/SoninDepthMatching.lean`, unconditional and axiom-clean:
+
+```text
+soninDepth a r = ⌊2 / (a log r)⌋                                                  -- (18a)
+soninDepth_bounds        0 ≤ 2/a − N_x log r < log r                             -- (18b)
+soninDepth_rpow_bounds
+    r^(−d) exp(2d/a) ≤ r^(N_x d) ≤ exp(2d/a)                                     -- (18d)
+norm_le_of_soninDepth_rigidity
+    C₁ r^(N_x d) ≤ ‖k‖ ≤ C₂ r^(N_x d)
+      ⟹ C₁ r^(−d) exp(2d/a) ≤ ‖k‖ ≤ C₂ exp(2d/a)                                -- (18e)
+```
+
+The whole of `(18d)` is the floor estimate `(18b)` exponentiated: because the residual is less than
+one step, the geometric escape and the reflected Wold–Gamma gauge differ by the *fixed* factor
+`r^(−d)`, uniformly in the cutoff.  `(18c)` — Burnol–Sonin aperture-type rigidity — enters only as
+the two-sided hypothesis of `norm_le_of_soninDepth_rigidity`, which is where the card's own
+citation sits.
+
+### §6 — the four charts
+
+`RHTower/AdelicIntertwinerType.lean`:
+
+```text
+tendsto_sum_log_norm_intertwinerEigen_div_theta
+    (∑_{p < N} log ‖λ_p(z_p)‖) / ϑ(N) → 2c                                        -- (21a)
+modularCharge_dictionary
+    r_shell = (2 Re ρ − 1) log 2,   ReRes = m_ρ c_ρ,
+    a_Hel = 2 e^(−γ) c_ρ,           r_Weyl = 2 c_ρ,     β_ρ = 2 Re ρ
+      ⟹  a_Hel = −(e^(−γ)/log 2) r_shell = (2 e^(−γ)/m_ρ) ReRes,
+          r_Weyl = −r_shell/log 2 = (2/m_ρ) ReRes = e^γ a_Hel = 1 − β_ρ           -- (21), (21b), (21c)
+```
+
+`(21a)` is `(18i)` renormalized by `ϑ` rather than by the cutoff, which is legitimate because
+`ϑ(N)/N → 1` and the limit is nonzero.  The dictionary itself is exactly the statement that the four
+coordinates determine one another; the two inputs it takes as given — the positive-shell rate `(19)`
+and the Xi Julia residue `(20)` — are the parent cards' theorems, and the two it now proves outright
+are `(6)` (`tendsto_mertensProduct_mul_ell2_reflectedSewing`) and `(18i)`.  The final line
+`r_Weyl = 1 − β_ρ` is the card's "the Weyl map pays exactly the modular retuning cost".
+
+**Remaining for stage 3:** §5.1's compact-uniform version `(14a)`–`(14c)`, which needs normal
+convergence of the genus-one occupation product; and the two dictionary inputs `(19)`, `(20)` in
+Lean, which belong to the positive-shell and Xi-Julia parents.
+
+## Lean progress — §5.1's compact-uniform form
+
+`RHTower/AcceleratedWoldType.lean`:
+
+```text
+log_max_gauge_le
+    1 ≤ C,  C⁻¹ ≤ |φ| ≤ C,  |t| ≤ M
+      ⟹ log (max (max |φ| e^(2t/a)) (max |φ|⁻¹ e^(−2t/a))) ≤ log C + 2M/a        -- (14c)
+tendsto_mertensProduct_mul_ell2_zero_of_log_gauge_le
+    log (1 + R_N) ≤ log C + 2M / a_N   ⟹   a_N · ℓ₂ (R_N) → 0                    -- (14)
+```
+
+`(14b)`'s unitary factor contributes nothing to either norm, so the comparison's two norms are the
+two entrywise maxima above; `(14a)`'s two-sided bound on the regularized occupation determinant
+enters exactly as the hypothesis `C⁻¹ ≤ |φ| ≤ C`, which is where the card's citation of normal
+convergence of the genus-one product sits.  With those two, `(14c)` is the elementary bound
+`max(C, e^{2M/a}) ≤ C e^{2M/a}`, and the second theorem turns it into accelerated type zero — the
+same criterion `(14)` uses pointwise.
+
+**Sections 2, 3, 4, 5.1, 5.2, 5.3, 5.4, 5.5, 6 and 7 of this card are now Lean-proved**, each
+unconditional and axiom-clean.  What the card still takes from its parents, and does not claim
+itself, is `(14a)` (normal convergence of the genus-one occupation product), `(18c)`
+(Burnol–Sonin aperture rigidity), `(19)` (the positive-shell reflection rate) and `(20)` (the Xi
+Julia current residue); each enters as an explicit hypothesis of the theorem that consumes it.
+
+## Lean progress — `(19)` and `(20)` are the tree's own theorems, and §6 is now unconditional
+
+The two inputs the dictionary was taking as hypotheses are already owned:
+
+```text
+HighExponentShellLeastAtomAsymptotic.log_norm_shellTransferCharacter
+    log ‖2^(1/2 − s)‖ = (1/2 − Re s) log 2
+XiHypertranscendentalModularResidueTransgression.re_centeredXiAffineResidue_eq_shellTransferEntropy
+    Re (−(ρ − 1/2) n) = n · (1/2 − Re ρ)
+```
+
+so `RHTower/ModularChargeFourCharts.lean` closes both and the dictionary with them:
+
+```text
+shellReflectionRate_eq
+    log ‖χ(1 − ρ̄)‖ − log ‖χ(ρ)‖ = (2 Re ρ − 1) log 2                              -- (19)
+modularCharge_dictionary_xi
+modularCharge_dictionary_xi_residue
+    a_Hel = −(e^(−γ)/log 2) r_shell = (2 e^(−γ)/n) Re Res_ρ,
+    r_Weyl = −r_shell/log 2 = (2/n) Re Res_ρ = e^γ a_Hel = 1 − β_ρ                -- (21), (21b), (21c)
+```
+
+`(19)` is the difference of the shell character's logarithmic moduli at `ρ` and at its
+functional-equation reflection — the corpus's `log ‖χ(s)‖ = (1/2 − Re s) log 2` evaluated twice —
+and `(20)` is the corpus's centered affine Xi residue at a divisor point of multiplicity `n`.  With
+those, every chart of §6 is a theorem of this tree.
+
+**Everything this card proves is now Lean-proved, unconditional and axiom-clean**, except the two
+literature/parent analytic inputs that appear as explicit hypotheses where they are used:
+`(14a)` (normal convergence of the genus-one occupation product, in `log_max_gauge_le`) and `(18c)`
+(Burnol–Sonin aperture rigidity, in `norm_le_of_soninDepth_rigidity`).
+
+## Lean progress — `(14b)`–`(14c)` for the tree's own occupation phase
+
+`RHTower/WoldGaugeCompactUniform.lean`:
+
+```text
+norm_finitePrimeGenusOnePolarizedPhase
+    ‖Φ^(1)_S(t)‖ = exp (2 Re t / ε_S) · ‖Φ^(0)_S(t)‖
+norm_finitePrimeGenusOnePolarizedPhase_neg
+    ‖Φ^(1)_S(−t)‖ = ‖Φ^(1)_S(t)‖⁻¹
+log_max_blockComparison_le
+    C⁻¹ ≤ ‖Φ^(1)_S(t)‖ ≤ C,  |Re t| ≤ M
+      ⟹ log (max (max ‖Φ^(1)_S(t)‖ e^(2 Re t/ε_S)) (max ‖Φ^(1)_S(t)‖⁻¹ e^(−2 Re t/ε_S)))
+            ≤ log C + 2M / ε_S                                                    -- (14b), (14c)
+```
+
+`(14b)` is a unitary factor tensored with the diagonal pair `(Φ^reg, exp(2t/a_x))`; the unitary
+contributes nothing to either norm, so the comparison's two norms are the two entrywise maxima
+above, and `(14c)` is the elementary bound `max(C, e^{2M/a}) ≤ C e^{2M/a}`.  The regularized entry
+`Φ^reg` is the *tangent-normalized* phase `Φ^(1)` — the one whose product converges — and the first
+identity records exactly how it differs from the raw genus-zero phase: by the irregular gauge
+`exp(2 Re t/ε_S)`, whose exponent blows up as `ε_S → 0`.  The only remaining input is `(14a)`, the
+two-sided compact bound on `Φ^(1)` itself, which is the parent's normal convergence of the
+genus-one product and appears here as the hypothesis `C⁻¹ ≤ ‖Φ^(1)_S(t)‖ ≤ C`.

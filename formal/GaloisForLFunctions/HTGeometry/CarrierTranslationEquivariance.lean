@@ -44,7 +44,8 @@ theorem eq_of_eqOn_translates {α : Type*} [TopologicalSpace α] [T2Space α] {f
   exact h t
 
 /-- Iterated derivatives of functions agreeing on an open set agree there. -/
-theorem eqOn_iteratedDeriv_of_eqOn {g h : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+theorem eqOn_iteratedDeriv_of_eqOn {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℂ E']
+    [CompleteSpace E'] {g h : ℂ → E'} {U : Set ℂ} (hU : IsOpen U)
     (hgh : Set.EqOn g h U) : ∀ k : ℕ, Set.EqOn (iteratedDeriv k g) (iteratedDeriv k h) U := by
   intro k
   induction k with
@@ -57,7 +58,7 @@ theorem eqOn_iteratedDeriv_of_eqOn {g h : ℂ → ℂ} {U : Set ℂ} (hU : IsOpe
         Filter.eventuallyEq_of_mem (hU.mem_nhds hz) ih
       rw [iteratedDeriv_succ, iteratedDeriv_succ, hev.deriv_eq]
 
-variable {f : ℝ →ᵇ ℂ} {r : ℝ}
+variable [NormedSpace ℂ E] [CompleteSpace E] {f : ℝ →ᵇ E} {r : ℝ}
 
 /-- A vertical strip is invariant under vertical translation. -/
 theorem mem_verticalStrip_add_I {z : ℂ} (hz : z ∈ verticalStrip σ r) (s : ℝ) :
@@ -69,7 +70,7 @@ theorem mem_verticalStrip_add_I {z : ℂ} (hz : z ∈ verticalStrip σ r) (s : �
 
 /-- **Representatives are translation equivariant.**  The representative of a translated carrier
 point is the translate of the representative. -/
-theorem rep_translate_eqOn (hr : 0 < r) {rep : BohrHull f → (ℂ → ℂ)}
+theorem rep_translate_eqOn (hr : 0 < r) {rep : BohrHull f → (ℂ → E)}
     (hrepdiff : ∀ x, DifferentiableOn ℂ (rep x) (verticalStrip σ r))
     (hrepline : ∀ (x : BohrHull f) (t : ℝ),
       rep x ((σ : ℂ) + (t : ℂ) * Complex.I) = bohrEval f (x + bohrIota f t))
@@ -92,7 +93,7 @@ theorem rep_translate_eqOn (hr : 0 < r) {rep : BohrHull f → (ℂ → ℂ)}
     abel
 
 /-- The jets of the representatives are translation equivariant along the line. -/
-theorem iteratedDeriv_rep_translate (hr : 0 < r) {rep : BohrHull f → (ℂ → ℂ)}
+theorem iteratedDeriv_rep_translate (hr : 0 < r) {rep : BohrHull f → (ℂ → E)}
     (hrepdiff : ∀ x, DifferentiableOn ℂ (rep x) (verticalStrip σ r))
     (hrepline : ∀ (x : BohrHull f) (t : ℝ),
       rep x ((σ : ℂ) + (t : ℂ) * Complex.I) = bohrEval f (x + bohrIota f t))
@@ -110,10 +111,10 @@ theorem iteratedDeriv_rep_translate (hr : 0 < r) {rep : BohrHull f → (ℂ → 
   ring
 
 /-- The representative of the origin of the carrier has the jets of the function itself. -/
-theorem iteratedDeriv_rep_zero {F : ℂ → ℂ} (hr : 0 < r)
+theorem iteratedDeriv_rep_zero {F : ℂ → E} (hr : 0 < r)
     (hF : DifferentiableOn ℂ F (verticalStrip σ r))
     (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
-    {rep : BohrHull f → (ℂ → ℂ)}
+    {rep : BohrHull f → (ℂ → E)}
     (hrepdiff : ∀ x, DifferentiableOn ℂ (rep x) (verticalStrip σ r))
     (hrepline : ∀ (x : BohrHull f) (t : ℝ),
       rep x ((σ : ℂ) + (t : ℂ) * Complex.I) = bohrEval f (x + bohrIota f t))

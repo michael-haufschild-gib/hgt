@@ -496,6 +496,139 @@ theorem tendsto_mertensProduct_mul_ell2_of_log_linear {S : ℕ → ℝ} {κ : �
     ring
   exact tendsto_mertensProduct_mul_ell2_of_tendsto hSpos hbig hsplit
 
+
+/-! ## The reflected Wold--Gamma gauge -/
+
+/-- `1 + e^u ≤ 2 e^{|u|}`, the crude two-sided bound behind the gauge estimate. -/
+theorem one_add_exp_le (u : ℝ) : 1 + Real.exp u ≤ 2 * Real.exp |u| := by
+  rcases le_or_gt 0 u with hu | hu
+  · rw [abs_of_nonneg hu]
+    have h1 : (1 : ℝ) ≤ Real.exp u := Real.one_le_exp hu
+    linarith
+  · rw [abs_of_neg hu]
+    have h1 : Real.exp u ≤ 1 := Real.exp_le_one_iff.mpr hu.le
+    have h2 : (1 : ℝ) ≤ Real.exp (-u) := Real.one_le_exp (by linarith)
+    linarith
+
+/-- **The reflected Wold--Gamma gauge has accelerated type zero.**  Its norm is `exp (2 t / a_N)`,
+an ordinary essential singularity relative to the Wold boundary volume, so the accelerated scale
+does not see it — for the gauge or for its inverse. -/
+theorem tendsto_mertensProduct_mul_ell2_expGauge (t : ℝ) :
+    Tendsto (fun N : ℕ => mertensPrimeProductBelow N *
+        ell2 (Real.exp (2 * t / mertensPrimeProductBelow N))) atTop (nhds 0) := by
+  have hpos : ∀ᶠ N : ℕ in atTop, 0 < mertensPrimeProductBelow N :=
+    Filter.Eventually.of_forall fun N => mertensPrimeProductBelow_pos N
+  have hle1 : ∀ᶠ N : ℕ in atTop, mertensPrimeProductBelow N ≤ 1 := by
+    have := tendsto_mertensPrimeProductBelow_zero.eventually
+      (eventually_le_nhds (show (0 : ℝ) < 1 by norm_num))
+    filter_upwards [this] with N hN using hN
+  refine tendsto_mul_ell2_zero_of_log_le hpos tendsto_mertensPrimeProductBelow_zero
+    (R := fun N => Real.exp (2 * t / mertensPrimeProductBelow N))
+    (fun N => (Real.exp_pos _).le) (C := Real.log 2 + 2 * |t|) (K := 1) (by positivity) ?_
+  filter_upwards [hpos, hle1] with N hN hN1
+  set a : ℝ := mertensPrimeProductBelow N with hadef
+  have hbound : Real.log (1 + Real.exp (2 * t / a)) ≤ Real.log 2 + |2 * t / a| := by
+    have h1 := one_add_exp_le (2 * t / a)
+    have h2 : Real.log (1 + Real.exp (2 * t / a)) ≤ Real.log (2 * Real.exp |2 * t / a|) :=
+      Real.log_le_log (by positivity) h1
+    rwa [Real.log_mul (by norm_num) (ne_of_gt (Real.exp_pos _)), Real.log_exp] at h2
+  refine le_trans hbound ?_
+  have habs : |2 * t / a| = 2 * |t| / a := by
+    rw [abs_div, abs_of_pos hN, abs_mul]
+    norm_num
+  rw [habs, pow_one]
+  have hkey : Real.log 2 + 2 * |t| / a ≤ (Real.log 2 + 2 * |t|) * a⁻¹ := by
+    rw [inv_eq_one_div, mul_one_div, le_div_iff₀ hN]
+    have hlog2 : (0 : ℝ) ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+    have hdiv : 2 * |t| / a * a = 2 * |t| := by field_simp
+    nlinarith [hdiv, hlog2, hN1]
+  exact hkey
+
+
+
+/-- **The accelerated type read backwards.**  A family whose accelerated invariant is at least `κ`
+at the cutoff is at least an exponential of an exponential in `a_N⁻¹` there — not a Gamma-type
+factor. -/
+theorem exp_exp_le_of_mul_ell2_ge {a R κ : ℝ} (ha : 0 < a) (hR : 0 ≤ R)
+    (h : κ ≤ a * ell2 R) : Real.exp (Real.exp (κ / a) - 1) - 1 ≤ R := by
+  have hdiv : κ / a ≤ ell2 R := by
+    rw [div_le_iff₀ ha]
+    linarith [h]
+  have hpos : (1 : ℝ) ≤ 1 + Real.log (1 + R) := one_le_one_add_log_one_add hR
+  have hstep : Real.exp (κ / a) ≤ 1 + Real.log (1 + R) := by
+    have := Real.exp_le_exp.mpr hdiv
+    rwa [ell2, Real.exp_log (by linarith)] at this
+  have hlog : Real.exp (κ / a) - 1 ≤ Real.log (1 + R) := by linarith
+  have hfin : Real.exp (Real.exp (κ / a) - 1) ≤ 1 + R := by
+    have := Real.exp_le_exp.mpr hlog
+    rwa [Real.exp_log (by linarith)] at this
+  linarith
+
+
+
+/-- **`(14c)`: the compact-uniform gauge bound.**  A comparison built from a unitary factor, an
+entry bounded above and below by `C` on the compact set, and the reflected Wold--Gamma gauge has
+logarithm at most `log C + 2M/a`, where `M` bounds the real part on the compact set. -/
+theorem log_max_gauge_le {C M a t φ : ℝ} (hC : 1 ≤ C) (ha : 0 < a)
+    (hφ1 : C⁻¹ ≤ |φ|) (hφ2 : |φ| ≤ C) (ht : |t| ≤ M) :
+    Real.log (max (max |φ| (Real.exp (2 * t / a))) (max |φ|⁻¹ (Real.exp (-(2 * t / a)))))
+      ≤ Real.log C + 2 * M / a := by
+  have hC0 : (0 : ℝ) < C := by linarith
+  have hM0 : (0 : ℝ) ≤ M := le_trans (abs_nonneg t) ht
+  have hMa : (0 : ℝ) ≤ 2 * M / a := by positivity
+  have hφ0 : (0 : ℝ) < |φ| := lt_of_lt_of_le (by positivity) hφ1
+  have hinv : |φ|⁻¹ ≤ C := by
+    rw [inv_le_comm₀ hφ0 hC0]
+    exact hφ1
+  have ht1 : 2 * t / a ≤ 2 * M / a := by
+    have : t ≤ M := le_trans (le_abs_self t) ht
+    gcongr
+  have ht2 : -(2 * t / a) ≤ 2 * M / a := by
+    have : -t ≤ M := le_trans (neg_le_abs t) ht
+    have hstep : -(2 * t / a) = 2 * (-t) / a := by ring
+    rw [hstep]
+    gcongr
+  have hexp1 : Real.exp (2 * t / a) ≤ Real.exp (2 * M / a) := Real.exp_le_exp.mpr ht1
+  have hexp2 : Real.exp (-(2 * t / a)) ≤ Real.exp (2 * M / a) := Real.exp_le_exp.mpr ht2
+  have hCexp : C ≤ C * Real.exp (2 * M / a) := by
+    nlinarith [Real.one_le_exp hMa, hC0]
+  have hexpC : Real.exp (2 * M / a) ≤ C * Real.exp (2 * M / a) := by
+    nlinarith [Real.exp_pos (2 * M / a), hC]
+  have hbound : max (max |φ| (Real.exp (2 * t / a))) (max |φ|⁻¹ (Real.exp (-(2 * t / a))))
+      ≤ C * Real.exp (2 * M / a) := by
+    refine max_le (max_le (le_trans hφ2 hCexp) (le_trans hexp1 hexpC))
+      (max_le (le_trans hinv hCexp) (le_trans hexp2 hexpC))
+  refine le_trans (Real.log_le_log (by positivity) hbound) (le_of_eq ?_)
+  rw [Real.log_mul (ne_of_gt hC0) (ne_of_gt (Real.exp_pos _)), Real.log_exp]
+
+/-- **`(14)` in compact-uniform form.**  A family whose logarithm obeys `(14c)` with a fixed
+constant has accelerated type zero. -/
+theorem tendsto_mertensProduct_mul_ell2_zero_of_log_gauge_le {C M : ℝ} (hC : 1 ≤ C) (hM : 0 ≤ M)
+    {R : ℕ → ℝ} (hR : ∀ N, 0 ≤ R N)
+    (hbd : ∀ᶠ N in atTop, Real.log (1 + R N)
+      ≤ Real.log C + 2 * M / mertensPrimeProductBelow N) :
+    Tendsto (fun N : ℕ => mertensPrimeProductBelow N * ell2 (R N)) atTop (nhds 0) := by
+  have hpos : ∀ᶠ N : ℕ in atTop, 0 < mertensPrimeProductBelow N :=
+    Filter.Eventually.of_forall fun N => mertensPrimeProductBelow_pos N
+  have hle1 : ∀ᶠ N : ℕ in atTop, mertensPrimeProductBelow N ≤ 1 := by
+    have := tendsto_mertensPrimeProductBelow_zero.eventually
+      (eventually_le_nhds (show (0 : ℝ) < 1 by norm_num))
+    filter_upwards [this] with N hN using hN
+  have hlogC : (0 : ℝ) ≤ Real.log C := Real.log_nonneg hC
+  refine tendsto_mul_ell2_zero_of_log_le hpos tendsto_mertensPrimeProductBelow_zero hR
+    (C := Real.log C + 2 * M) (K := 1) (by positivity) ?_
+  filter_upwards [hpos, hle1, hbd] with N hN hN1 hNb
+  refine le_trans hNb ?_
+  rw [pow_one]
+  have hinv : (1 : ℝ) ≤ (mertensPrimeProductBelow N)⁻¹ := (one_le_inv₀ hN).mpr hN1
+  have hsplit : (Real.log C + 2 * M) * (mertensPrimeProductBelow N)⁻¹
+      = Real.log C * (mertensPrimeProductBelow N)⁻¹
+        + 2 * M / mertensPrimeProductBelow N := by
+    field_simp
+  rw [hsplit]
+  nlinarith [hlogC, hinv]
+
+
 end
 
 end RHTower

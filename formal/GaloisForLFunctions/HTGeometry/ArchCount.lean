@@ -18,20 +18,22 @@ open Set Real
 
 namespace GaloisForLFunctions.HTGeometry
 
-/-- **Arch-length bound.**  Where the Sturm expression is positive, a positive arch of `g` is at
-least `π/γ` long. -/
+/-- **Arch-length bound.**  Where the Sturm expression is *nonnegative*, a positive arch of `g` is at
+least `π/γ` long.  Nonnegativity suffices: the comparison produces a point where the expression is
+strictly negative, which `0 ≤ h` already contradicts.  The weakening matters because it lets the
+bound apply on an interval where `g'' + γ² g` vanishes identically. -/
 theorem arch_length_ge {g gd gdd h : ℝ → ℝ} {γ a b p q : ℝ} (hγ : 0 < γ)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
     (hh : ∀ t, h t = gdd t + γ ^ 2 * g t)
-    (hhpos : ∀ t ∈ Icc a b, 0 < h t)
+    (hhpos : ∀ t ∈ Ioo a b, 0 ≤ h t)
     (hpa : a ≤ p) (hqb : q ≤ b) (hpq : p < q)
     (hgp : g p = 0) (hgq : g q = 0) (harch : ∀ t ∈ Ioo p q, 0 < g t) :
     π / γ ≤ q - p := by
   by_contra hcon
   push Not at hcon
   obtain ⟨ξ, hξ, hval⟩ := exists_sturm_neg hγ hg hgd hh hpq hcon hgp hgq harch
-  have hmem : ξ ∈ Icc a b :=
-    ⟨le_trans hpa (le_of_lt hξ.1), le_trans (le_of_lt hξ.2) hqb⟩
+  have hmem : ξ ∈ Ioo a b :=
+    ⟨lt_of_le_of_lt hpa hξ.1, lt_of_lt_of_le hξ.2 hqb⟩
   linarith [hhpos ξ hmem]
 
 /-! ## Disjoint intervals of a fixed minimal length -/
@@ -64,12 +66,12 @@ theorem nsmul_le_of_disjoint_intervals :
     push_cast
     linarith
 
-/-- **The arch count.**  Where the Sturm expression is positive on `[a,b]`, at most `(b-a)γ/π`
+/-- **The arch count.**  Where the Sturm expression is nonnegative on `[a,b]`, at most `(b-a)γ/π`
 pairwise disjoint positive arches of `g` fit inside. -/
 theorem card_arches_le {g gd gdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
     (hh : ∀ t, h t = gdd t + γ ^ 2 * g t)
-    (hhpos : ∀ t ∈ Icc a b, 0 < h t)
+    (hhpos : ∀ t ∈ Ioo a b, 0 ≤ h t)
     {n : ℕ} (p q : Fin n → ℝ)
     (hpa : ∀ k, a ≤ p k) (hqb : ∀ k, q k ≤ b) (hpq : ∀ k, p k < q k)
     (hgp : ∀ k, g (p k) = 0) (hgq : ∀ k, g (q k) = 0)
@@ -90,27 +92,27 @@ theorem card_arches_le {g gd gdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) 
   linarith
 
 
-/-- The mirrored arch-length bound: where the Sturm expression is negative, a negative arch of `g` is
-at least `π/γ` long. -/
+/-- The mirrored arch-length bound: where the Sturm expression is nonpositive, a negative arch of `g`
+is at least `π/γ` long. -/
 theorem arch_length_ge_neg {g gd gdd h : ℝ → ℝ} {γ a b p q : ℝ} (hγ : 0 < γ)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
     (hh : ∀ t, h t = gdd t + γ ^ 2 * g t)
-    (hhneg : ∀ t ∈ Icc a b, h t < 0)
+    (hhneg : ∀ t ∈ Ioo a b, h t ≤ 0)
     (hpa : a ≤ p) (hqb : q ≤ b) (hpq : p < q)
     (hgp : g p = 0) (hgq : g q = 0) (harch : ∀ t ∈ Ioo p q, g t < 0) :
     π / γ ≤ q - p := by
   by_contra hcon
   push Not at hcon
   obtain ⟨ξ, hξ, hval⟩ := exists_sturm_pos hγ hg hgd hh hpq hcon hgp hgq harch
-  have hmem : ξ ∈ Icc a b :=
-    ⟨le_trans hpa (le_of_lt hξ.1), le_trans (le_of_lt hξ.2) hqb⟩
+  have hmem : ξ ∈ Ioo a b :=
+    ⟨lt_of_le_of_lt hpa hξ.1, lt_of_lt_of_le hξ.2 hqb⟩
   linarith [hhneg ξ hmem]
 
 /-- The mirrored arch count. -/
 theorem card_arches_le_neg {g gd gdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
     (hh : ∀ t, h t = gdd t + γ ^ 2 * g t)
-    (hhneg : ∀ t ∈ Icc a b, h t < 0)
+    (hhneg : ∀ t ∈ Ioo a b, h t ≤ 0)
     {n : ℕ} (p q : Fin n → ℝ)
     (hpa : ∀ k, a ≤ p k) (hqb : ∀ k, q k ≤ b) (hpq : ∀ k, p k < q k)
     (hgp : ∀ k, g (p k) = 0) (hgq : ∀ k, g (q k) = 0)

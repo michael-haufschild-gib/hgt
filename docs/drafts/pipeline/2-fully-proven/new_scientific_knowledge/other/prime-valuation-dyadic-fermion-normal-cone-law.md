@@ -706,3 +706,54 @@ Unconditional, `[propext, Classical.choice, Quot.sound]`, wired into `GaloisForL
 The identity that makes `(8)` close is `1 - ab = (1 - sqrt(ab))(1 + sqrt(ab))`: the numerator product
 telescopes to `(1 - sqrt(ab))^(-1)` while the denominator product telescopes to
 `((1-a)(1-b))^(-1/2)`, and the two closed forms agree exactly.
+
+## Lean progress — the two analytic halves of `(14)` and `(16)`
+
+Both unconditional and axiom-clean, wired into their umbrellas.
+
+### `(14)` — the parity digit carries the whole quadratic defect
+
+`HTGeometry/ParityDigitAffinityExpansion.lean`:
+
+```text
+abs_log_one_add_taylor_le      |log(1+x) − x + x²/2| ≤ 4|x|³   for |x| ≤ 3/4
+abs_log_bitHellingerAffinity_zero_add_le
+    0 ≤ a, b ≤ 3/4  ⟹  |log H^bit_0(a,b) + ½ (√a − √b)²| ≤ 4 (a² + b²)
+```
+
+The first-order cancellation is exact and is the content of the estimate: with `s = √(ab)`,
+
+```text
+s − a/2 − b/2 = −½ (√a − √b)²,
+```
+
+so the linear terms of the three logarithms collect into the squared Hellinger displacement, and the
+second-order terms collect into `(a − b)²/4`.  At the prime radial family `a = p^(−1)`,
+`b = p^(−(1−2c))` this is exactly `(14)`, because `(√a − √b)² = (e^{u t_p} − 1)²/p`.
+
+### `(16)` — the critical prime sum is a Mertens prime window
+
+`RHTower/CriticalPrimeProfileSum.lean`:
+
+```text
+abs_exp_sub_one_le_mul      |e^x − 1| ≤ |x| e^{|x|}
+critProfile u t = (e^{ut} − 1)²/t   (zero at the origin)
+critProfile_le              critProfile u t ≤ u² e^{2|u|} t   on [0,1]
+continuousOn_critProfile    continuity on [0,1], the origin included
+mertensPrimeWindow_critProfile_div
+    ∑_{p ≤ N} (e^{u t_p} − 1)²/p  =  mertensPrimeWindow (critProfile u) N / log N
+tendsto_sum_critProfile
+    ∑_{p ≤ N} (e^{u t_p} − 1)²/p → ∫₀¹ (e^{ut} − 1)²/t dt = 2 Φ(u)
+```
+
+`(15)` — the weighted Cesàro law `(log x)^{−n} ∑_{p ≤ x} (log p)^n/p → 1/n` — is not needed
+separately: the corpus's `tendsto_mertensPrimeWindow_div_log` is the weak convergence of the whole
+prime measure `(1/log N) ∑_{p ≤ N} (log p/p) δ_{log p/log N}` to Lebesgue measure on `[0,1]`, of
+which `(15)` is the special case `g(t) = t^n`.  Applying it directly to the profile
+`g(t) = (e^{ut} − 1)²/t` gives `(16)` in one step, and the continuity of that profile at the origin
+— where the numerator vanishes to second order — is the only analytic input.
+
+**Remaining for `(11)`:** the dominated-convergence assembly, i.e. that the total remainder of
+`(14)` summed over the primes below the cutoff tends to zero; each term does, because at `c = 0`
+the two radial parameters coincide and both sides of `(14)` vanish, and `4(a² + b²) ≤ 8/p²` is a
+summable majorant.  Then `(12)` for the higher digits and `(13)`.

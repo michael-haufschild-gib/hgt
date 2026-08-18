@@ -589,3 +589,138 @@ verbatim; the card's own derivation from the least nonzero quadratic Casimir of 
 lattice is Lie-theoretic input mathlib does not carry.  Everything else on the card -- Theorem A,
 Theorem B, `(6)`, `(7)`, the upper half of `(16)`, `(23)`, `(24)`, Lemma D's engine, and now the
 one-replica lower half of `(16)` -- is Lean-proved and axiom-clean.
+
+### The remaining item, stated exactly
+
+Under the isomorphism `End(V^{⊗R}) ≅ End(V)^{⊗R}` the collective adjoint action is `Ad(U)^{⊗R}`,
+so with `W = End(V) = triv ⊕ ad` the whole space grades as `⊕_{S ⊆ R} ad^{⊗S}` and `K` restricted
+to `ad^{⊗S}` is the total Casimir of `|S|` adjoint factors.  The one-replica module
+`FinitePauliDepolarizing` already gives the single-factor value exactly:
+`sum_pauliCasimir_traceless` says `K = 2D²` on `ad`, i.e. `c = 2D²(id − Π_scalar)` on `W`.
+
+So the *only* open statement is:
+
+> for every `m ≥ 1`, every nonzero eigenvalue of the total Casimir on `ad^{⊗m}` is at least `2D²`.
+
+Equivalently: every nonzero dominant weight of `su(D)` lying in the root lattice has quadratic
+Casimir at least that of the highest root.  That is a weight-theoretic fact -- the dominance order
+puts the highest root below every other nonzero dominant root-lattice weight, and `⟨λ,λ+2ρ⟩` is
+monotone for that order -- and mathlib carries neither highest-weight theory for compact groups nor
+the Casimir eigenvalue formula.  Building it is the remaining Lean dependency of this card; nothing
+else on the card is open.
+
+The two-factor case is already tight, so no slack is available: for `su(2)` the spectrum of `K` on
+`ad ⊗ ad` is `{0, 2D², 3·2D²}` with `D = 2`, so any proof must produce the constant `2D²` exactly
+rather than an estimate.
+
+## Lean progress -- the lower half of `(16)` at every replica order
+
+The card's last open mathematical item is closed.  Six new umbrella-wired, axiom-clean modules
+prove that every nonzero eigenvalue of the full-Pauli collective Casimir is at least `2D²`, at every
+finite replica order and for every `D = 2^n`.
+
+`formal/GaloisForLFunctions/HTGeometry/WeightCasimirGap.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the Casimir value of a weight: sum of squares plus the sum of ordered differences | `weightCasimir` |
+| **the weight gap**: a nonzero decreasing zero-sum integer weight has Casimir value at least `2D` | `two_mul_card_le_weightCasimir` |
+
+`formal/GaloisForLFunctions/HTGeometry/MatrixUnitCasimir.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the coordinate inner product and square norm, and the adjoint law | `cinner`, `cnormSq`, `cinner_mulVec`, `cinner_self`, `cnormSq_eq_zero_iff` |
+| the bracket relations of a matrix-unit family and its quadratic Casimir | `IsMatrixUnitFamily`, `familyCasimir`, `familyCasimir_conjTranspose` |
+| **the Casimir is central**, by the index cancellation of the structure constants | `familyCasimir_commute` |
+| **the Casimir energy is the total family energy** | `cinner_familyCasimir` |
+
+`formal/GaloisForLFunctions/HTGeometry/MatrixUnitWeightSystem.lean`:
+
+| Card item | Declaration |
+|---|---|
+| one raising step of a weight, and its involutivity | `shiftWeight`, `shiftWeight_involutive` |
+| a weight system: diagonal Cartan, one-step shift, zero total weight | `IsWeightSystem` |
+| pure-weight vectors, weight projections, and the weight decomposition | `HasWeight`, `wproj`, `weightSet`, `sum_wproj` |
+| **a generator moves a pure weight by one step** | `hasWeight_mulVec` |
+| **the Casimir preserves pure weights** | `hasWeight_casimir` |
+
+`formal/GaloisForLFunctions/HTGeometry/MatrixUnitCasimirGap.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a strictly antitone integer ranking of the alphabet, and the induced weight functional | `alphaRank`, `alphaRank_lt`, `weightRank`, `weightRank_shiftWeight` |
+| **weight components of an eigenvector are eigenvectors** | `wproj_eigen` |
+| **the spectral gap**: every nonzero Casimir eigenvalue is at least twice the alphabet size | `casimir_eigenvalue_gap` |
+
+`formal/GaloisForLFunctions/HTGeometry/CollectiveReplicaWeightGap.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the one-copy matrix unit, its adjoint and its product law | `unitMatrix`, `unitMatrix_conjTranspose`, `unitMatrix_mul`, `unitMatrix_bracket` |
+| the letter counts of a replica word, and their total | `siteCount`, `siteCount_erase`, `sum_siteCount` |
+| the collective lift of a matrix unit | `collUnit`, `collUnit_apply`, `collUnit_conjTranspose`, `collUnit_bracket` |
+| **the Cartan lift is diagonal with the letter counts as entries** | `collUnit_diag` |
+| **a raising lift shifts the letter counts by one step** | `collUnit_shift` |
+| the vectorized collective family and its adjoint law | `collGen`, `collGen_apply`, `collGen_conjTranspose` |
+| **it is a matrix-unit family with a weight system** | `isMatrixUnitFamily_collGen`, `collWeight`, `isWeightSystem_collGen` |
+| **the collective Casimir gap** | `collectiveCasimir_eigenvalue_gap` |
+
+`formal/GaloisForLFunctions/HTGeometry/FullPauliCasimirGap.lean`:
+
+| Card item | Declaration |
+|---|---|
+| **single-qubit Pauli completeness** `∑_m (σ_m)_{ab}(σ_m)_{cd} = 2δ_{ad}δ_{bc}` | `sum_pauli1_entry_mul` |
+| its register and reindexed forms, with the factor `2^n` | `sum_pauliStr_entry_mul`, `sum_pauliMat_entry_mul` |
+| the collective commutator representation and its expansion in matrix units | `collRho`, `matrix_expand`, `collRho_expand`, `collRho_mul_expand` |
+| the identity label contributes nothing | `collRho_one`, `pauliMat_zero_eq_one` |
+| **`K = D · C`**: the full-Pauli Casimir is the matrix-unit Casimir scaled by the one-copy dimension | `fullPauliCasimir_eq_smul` |
+| **`(16)`, lower half**: every nonzero eigenvalue of `K` is at least `2D²`, at every replica order | `fullPauliCasimir_eigenvalue_gap` |
+
+The card derives the lower half of `(16)` from the least nonzero quadratic Casimir of `SU(D)` on the
+root lattice.  The formalisation replaces that Lie-theoretic input by an elementary three-step
+argument that mathlib can carry:
+
+1. **Highest weight without highest-weight theory.**  The Casimir commutes with every generator, so
+   each eigenspace is graded by the integer weights `count(row) − count(column)`.  Among the weights
+   realised in one eigenspace, a strictly antitone ranking functional has a maximiser, and a vector
+   of that weight is annihilated by every raising generator -- because its image would carry a
+   strictly larger rank inside the same eigenspace.
+
+2. **The eigenvalue is the weight's own Casimir value.**  For such a vector the bracket relation
+   `[E_ab, E_ba] = E_aa − E_bb` turns the energy of each lowering generator into the corresponding
+   ordered weight difference, so the Casimir eigenvalue is `∑_a μ_a² + ∑_{a<b}(μ_a − μ_b)` and the
+   weight is decreasing with zero total.
+
+3. **The gap is a counting inequality.**  For a nonzero decreasing zero-sum integer vector, the
+   squares contribute at least twice the positive mass `A`, and the ordered differences at least
+   `(D + z)A` where `z` counts the zeros; since `2A` is at least the number of nonzero entries, the
+   two contributions add to at least `2D`.
+
+No root system, no highest-weight module, and no invariant measure appears.  Step 1 uses only the
+commutation of the Casimir with the family, which is itself the index cancellation
+`familyCasimir_commute`.  Passing from the matrix-unit Casimir to the card's Pauli Casimir is the
+completeness relation `∑_q (P_q)_{ij}(P_q)_{kl} = D δ_{il} δ_{jk}`, proved from the sixteen-case
+single-qubit identity by taking products over the register.
+
+`#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound` only.
+
+### What remains on this card
+
+A correction to the previous entry, which recorded `(18)` as already formal.  Auditing the tree
+shows that `(18)` itself is *not* a Lean theorem: its ingredients are --
+`IncidenceLeakageDimensionLoss.leak_ge_dim_sub` for `(11)`,
+`CentralCasimirComplementHallExpansion.completedHermitianFamily_scaled_biTight` for the exactly
+bi-tight scaled family, and `UnitMassWordLeakage.incidenceNormalized_leakage_ge`, which consumes
+`(18)` as a hypothesis and produces `(23)` -- but the assembly between them is missing.
+
+That assembly is exactly `(19)`: with `B_q = K^{-1/2}A_q`, apply `(11)` to `U` and `K^{-1/2}V`, then
+transfer through `dist(K^{-1/2}x, K^{-1/2}V) ≤ ‖K^{-1/2}‖ dist(x, V)` and the operator-norm bound
+`‖K^{-1/2}‖² ≤ (2D²)^{-1}` on `Q`, which is what the eigenvalue gap above supplies.  The scalar route
+is not available: bounding the captured energy by `Tr(P_V K P_V)` costs the *upper* Casimir constant
+`4|R|²(D²−1)` instead of `2D²`, so the inverse-square-root normalisation is genuinely required.
+
+So the card's mathematical content is complete -- Theorem A, Theorem B, `(6)`, `(7)`, both halves of
+`(16)` at every replica order, `(23)`, `(24)` and Lemma D's engine are all Lean-proved -- and the
+only remaining Lean work is the continuous-functional-calculus transfer `(19)` that turns the
+now-proved gap into the leakage estimate `(18)`.
