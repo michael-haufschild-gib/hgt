@@ -1635,3 +1635,27 @@ SC_1 :  f ∈ K[s][T] monic in T with disc_T f a nonzero constant splits into mo
 
 Nothing else on this card is open.  When `SC_k` lands, `(4)` becomes unconditional with no further
 work here, and `(3)` follows by the generator bookkeeping already recorded.
+
+## Status (2026-08-18) — fully formalized except for the parent card's `(4)`
+
+The theorem of this card is Lean-proved, with a single hypothesis:
+
+```text
+GaloisForLFunctions.HTGeometry.criticalObservation_sup_postcritical_eq_criticalSourceFieldSup
+    (hfull : criticalGeometricMonodromy K m n = ⊤) :
+      criticalObservationField K m n
+        ⊔ adjoin K {postcriticalRawFieldElement K m n}
+        ⊔ adjoin K {postcriticalReciprocalFieldElement K m n}
+      = criticalSourceFieldSup K m n
+```
+
+`hfull` is exactly `(4)` of `projective-horizon-full-symmetric-monodromy`.  Nothing else on this
+card is open: the field-primitivity consequences (`CriticalGeometricFieldPrimitivity`,
+`CriticalSourcePrimitiveGenerator`, `CriticalFreeParameterPrimitivity`,
+`CriticalSourceEscapeTransport`) are all already unconditional given `hfull`.
+
+So this card moves to stage 3 the moment the parent card's `(4)` is closed; it needs no
+mathematics of its own.  The parent card records the remaining chain, which after this session is:
+nontrivial Schur inertia, the Schur reduction-degree count, and primitivity — the last of which now
+has its main input, `SCE_k`, proved in Lean
+(`GaloisForLFunctions.HTGeometry.rank_eq_one_of_isUnit_discr_mvPolynomial`).

@@ -516,3 +516,73 @@ remaining obstructions to a fully hypothesis-free statement of sections 4 and 5.
    `eq_of_two_dilation_invariance` produces the translation invariance, and
    `measure_setOf_ne_zero_eq_zero` / `measure_compl_xiRealDivisor_eq_zero` draw the divisor-support
    conclusion from the representation.
+
+## Lean progress — section 5's `(27)`–`(31)` closed, and section 4 reduced to one analytic `Prop`
+
+### Section 5 is now fully Lean-certified, unconditionally
+
+`formal/GaloisForLFunctions/RHTower/TwoDilationSpectralRepresentation.lean` (new)
+
+The missing step of section 5 was never the Bochner–Schwartz theorem — the tree already owned it
+(`HTGeometry/SchwartzPositiveMeasureRepresentation.lean`,
+`existsUnique_temperateSpectralRepresentation`: every jointly continuous nonnegative
+momentum-symmetric Schwartz form has exactly one positive temperate spectral measure) together with
+the whole downstream theta-null classification
+(`RHTower/HedenmalmUniversalPositiveFormClassification.lean`).  What was missing is precisely the
+mechanism the card asserts: getting **momentum symmetry out of two discrete dilations**.  That is
+now proved:
+
+- `DilationInvariant Q r` — equation `(25)`, invariance of the form under the translation by
+  `log r`.
+- `momentumSymmetric_of_two_dilation_invariance` — for multiplicatively independent integers
+  `r, s ≥ 2`, `(25)` for both scales implies `Q.MomentumSymmetric`.  Proof: the orbit
+  `t ↦ Q(T_t u, T_t v)` is differentiable at every point by the tree's
+  `hasDerivAt_translate_pair`, hence continuous, and `(25)` makes `log r` and `log s` periods of
+  it; `eq_of_two_dilation_invariance` (from `RHTower/TwoDilationDivisorMetric.lean`, itself using
+  the irrationality of `log r/log s` and density of the two-generator subgroup) forces the orbit to
+  be constant, so its derivative at `0` vanishes — and that derivative is exactly the
+  derivative-skew form of momentum symmetry.  No infinitesimal symmetry is assumed, which is the
+  card's point.
+- `existsUnique_temperateSpectralRepresentation_of_two_dilation` — equation `(27)`.
+- `apply_eq_integral_of_temperateSpectralRepresentation` — `(27)` in integral form,
+  `q(f,g) = ∫ f̂ ḡ dμ`.
+- `integral_normSq_eq_zero_of_null` — equation `(29)`.
+- `measure_compl_xiRealDivisor_eq_zero_of_null_source` — equation `(30)` in the a.e. form
+  `μ(Z_Ξ^R)ᶜ = 0`.
+- `existsUnique_temperateSpectralRepresentation_supported_realDivisor_of_two_dilation` — `(30)` in
+  the stronger support form, at the actual Hedenmalm theta source: the tree owns that source as a
+  Schwartz function with `𝓕(xiThetaSchwartzSource) = Ξ`
+  (`RHTower/XiCSchwartzRestriction.lean`), so `(28)` is not a hypothesis but a theorem
+  (`fourierTransformCLM_xiThetaSchwartzSource`).
+- `canonicalMeasure_atomic_of_two_dilation` — the two-dilation theta-null spectral measure is
+  purely atomic on the real `Ξ` divisor, which is the carrier statement `(31)` needs.
+- `exists_temperateSpectralRepresentation_theta_carried_by_xiRealDivisor` — the capstone chain
+  `(25) → (27) → (30)` at the theta source.
+
+All axiom-clean (`propext, Classical.choice, Quot.sound`).
+
+### Section 4: `(22)` reduced to `GridCancellationSurplus`
+
+Selberg's positive-proportion theorem is not yet in Lean, and it is not reachable from the tree's
+Hardy machinery (which caps at `N₀(T) ≫ T^{3/4−ε}`).  What is now Lean-certified is the complete
+reduction of `(22)` to a single analytic `Prop` about integrals of a real function:
+
+`formal/GaloisForLFunctions/HTGeometry/GridCancellationZeroCount.lean` (new)
+`formal/GaloisForLFunctions/RHTower/XiSuperlinearFromCancellation.lean` (new)
+
+- `exists_zero_of_abs_integral_lt` — the cancellation atom: `|∫_u^v f| < ∫_u^v|f|` forces an
+  interior zero of a continuous real `f`.
+- `exists_finset_zeros_card_mul_ge` — the grid count: absolute mass minus summed grid cancellation,
+  divided by the per-cell mass bound, is a lower bound for the number of distinct interior zeros.
+- `GridCancellationSurplus f` — the named remaining input.
+- `superlinearSamples_xiRealDivisor_of_grid_cancellation` — `GridCancellationSurplus f` implies
+  `SuperlinearSamples xiRealDivisor`, for any continuous `f` whose zeros are `Ξ`-zeros.
+- `superlinearSamples_xiRealDivisor_of_clamped_grid_cancellation` — with the two-sided clamp
+  `clampAt δ`, the per-cell bound is automatic (`Mx = δH`), so only two analytic inputs remain.
+- `xiSamplingIdealizer_collapse_of_grid_cancellation` — equation `(23)` with the Selberg citation
+  replaced by `GridCancellationSurplus`.
+
+The remaining analytic core, the scale bookkeeping showing why the grid device is the right target,
+the ruled-out routes (Hardy blow-up, Bochner positivity, Littlewood–Jensen, Levinson with a trivial
+mollifier) and the external frontier are recorded in
+`docs/drafts/pipeline/1-in-progress/selberg-superlinear-xi-density-programme.md`.

@@ -823,3 +823,79 @@ which lets `dirPoly_convPow` produce the `ℓ`-th power and `huxley_range_large_
 its large values.  **That bridge plus the `M₁`-range case analysis is the whole of the `T₂` join**;
 `Sieve/MatomakiTeravainenTypeIIAmplitudeCells` then closes the case, and `T₁`/`T₃` are the discrete
 mean value theorem and the trivial bound.
+
+## M2 groundwork: the two-window comparison kernel — `Sieve/PerronCompareKernel` (2026-08-18, 22:20)
+
+Lemma 3.1 and the §7 window comparison both integrate the *difference* of two Perron kernels, the
+short window against the long one renormalised.  Nothing in the corpus owned that object (searched:
+`MaynardMultiscaleReferenceTelescope.routeTNormalizedWidthPerronIntegral_sub_eq_kernelDefect` is a
+different, one-width defect), so it is now defined with its two branches:
+
+```text
+perronCompareKernel x h h₁ t
+  := ((x+h)^{1+it} − x^{1+it})/(1+it) − (h/h₁)·((x+h₁)^{1+it} − x^{1+it})/(1+it)
+
+norm_perronCompareKernel_le_length : ‖·‖ ≤ 2h
+norm_perronCompareKernel_le_div (hle : h ≤ h₁) (ht : t ≠ 0) : ‖·‖ ≤ 4(x+h₁)/|t|
+norm_perronCompareKernel_le_min : ‖·‖ ≤ min (2h) (4(x+h₁)/|t|)
+```
+
+Both branches come from `Sieve/PerronKernelBound`'s two bounds by the triangle inequality, the long
+branch using `h/h₁ ≤ 1`.  Three theorems, axiom-clean, wired.
+
+**What this does and does not give.**  It is the crude pair of bounds — enough to run the dyadic
+assembly of `Sieve/MixedMomentAssembly` on the *comparison* integral rather than on a single window,
+which is what Lemma 3.1 needs.  It does **not** yet capture the first-order cancellation
+`‖·‖ ≪ min(h, x/|t|)·min(1, h₁|t|/x)` that makes only the top of the `t`-range contribute; that
+sharper bound is the next step, and it is a Taylor-with-remainder estimate on `u ↦ u^{1+it}`.
+
+### Concurrency note
+
+`Sieve/MatomakiTeravainenTypeIIAmplitudeCells` (19:43) and
+`Sieve/MatomakiTeravainenTypeIISparseHalaszMontgomery` (19:47, containing
+`halaszMontgomery_blockPoly_finset_explicit` and `matomakiTeravainen_typeII_T1_sparse_energy`) are
+being written by **another session, building Prop 4.2's `T₁` and `T₂` on top of this session's
+`blockPoly`**.  To avoid collision this session has moved to the Perron/variance side (M2) and left
+the Type-II join to that lane.  Whoever resumes should check
+`grep -c matomakiTeravainen` before touching Prop 4.2.
+
+## `Sieve/PerronKernelIntegralForm`, and the sharp comparison bound's proof plan (2026-08-18, 22:40)
+
+```text
+perron_kernel_eq_intervalIntegral (x h t : ℝ) :
+  ((x+h)^{1+it} − x^{1+it})/(1+it) = ∫_x^{x+h} u^{it} du
+```
+
+extracted from the inline `integral_cpow` step of `norm_perron_kernel_le_length`, with no positivity
+hypotheses needed (`integral_cpow` at `r.re = 0` covers the whole interval).  Axiom-clean, wired.
+
+### The sharp comparison bound, and why it needs one more brick
+
+The first-order cancellation the window comparison needs is
+
+```text
+‖perronCompareKernel x h h₁ t‖ ≤ |t|·h·h₁ / x .
+```
+
+Its proof is the observation that **the comparison kernel annihilates every constant**: for any `c`,
+
+```text
+∫_x^{x+h}(u^{it} − c) du − (h/h₁)∫_x^{x+h₁}(u^{it} − c) du
+  = K(x,h,t) − c·h − (h/h₁)K(x,h₁,t) + (h/h₁)·c·h₁
+  = perronCompareKernel x h h₁ t ,
+```
+
+because `(h/h₁)·h₁ = h`.  Taking `c = x^{it}` and using `‖u^{it} − x^{it}‖ ≤ |t|(u−x)/x` for `u ≥ x`
+gives `‖·‖ ≤ |t|h²/(2x) + |t|hh₁/(2x) ≤ |t|hh₁/x` when `h ≤ h₁`.
+
+Two bricks are needed for this and neither is in the corpus (searched):
+
+1. **`intervalIntegrable` for `u ↦ u^{it}` on `[x, x+H]`**, so that `intervalIntegral.integral_sub`
+   can split off the constant.  A first attempt at this from `Complex.continuousAt_ofReal_cpow_const`
+   did not go through and was discarded rather than left as a `sorry`.
+2. **The Lipschitz estimate `‖u^{it} − x^{it}‖ ≤ |t|(u−x)/x` for `0 < x ≤ u`** — a mean-value bound on
+   `u ↦ u^{it}`, whose derivative has modulus `|t|/u ≤ |t|/x`.
+
+With those two, the sharp bound and hence `‖·‖ ≤ h·min(2, |t|h₁/x)` follow, and the `t`-integral of
+the comparison is concentrated on `|t| ≳ x/h₁` — which is exactly what makes Lemma 3.1's right-hand
+side `(log X)^{-2-ε}` rather than `O(1)`.

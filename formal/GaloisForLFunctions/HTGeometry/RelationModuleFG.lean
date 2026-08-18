@@ -160,4 +160,74 @@ theorem relationQuotient_subgroup_fg (S : Set F) (hS : S.Finite)
       mul_comm := relationQuotient_mul_comm S }
   exact subgroup_fg_of_commGroup_fg (relationQuotient_fg S hS) H
 
+/-- **A normal subgroup with a finite normal generating set has finitely generated image whenever
+that image is central.**  The image is a quotient of the relation module `N/⁅F, N⁆`, because
+`ψ⁅x, n⁆ = ⁅ψ x, ψ n⁆ = 1` once `ψ n` commutes with everything in the image.
+
+This is the finiteness engine for central extensions: if `Ĝ ↠ G` is a central extension whose
+kernel is the image of the relations of a finite presentation of `G`, the kernel is a finitely
+generated abelian group. -/
+theorem fg_map_of_central {H : Type*} [Group H] (S : Set F) (hS : S.Finite) (ψ : F →* H)
+    (hcomm : ∀ n ∈ normalClosure S, ∀ x : F, ψ n * ψ x = ψ x * ψ n) :
+    Group.FG ((normalClosure S).map ψ) := by
+  haveI : Group.FG (RelationQuotient S) := relationQuotient_fg S hS
+  have hcomm' : ⁅(⊤ : Subgroup F), normalClosure S⁆ ≤ ψ.ker := by
+    rw [commutator_le]
+    intro x _ n hn
+    have : ψ ⁅x, n⁆ = ⁅ψ x, ψ n⁆ := by
+      simp [commutatorElement_def, map_mul, map_inv]
+    rw [MonoidHom.mem_ker, this, commutatorElement_def, ← hcomm n hn x]
+    group
+  set χ : (normalClosure S) →* H := ψ.comp (normalClosure S).subtype with hχ
+  have hker : relationCommutator S ≤ χ.ker := by
+    intro k hk
+    rw [mem_subgroupOf] at hk
+    exact hcomm' hk
+  set χ' : RelationQuotient S →* H := QuotientGroup.lift (relationCommutator S) χ hker with hχ'
+  have hcompose : χ'.comp (QuotientGroup.mk' (relationCommutator S)) = χ :=
+    MonoidHom.ext fun _ => rfl
+  have h1 : Subgroup.map (QuotientGroup.mk' (relationCommutator S)) ⊤ = ⊤ :=
+    Subgroup.map_top_of_surjective _ (QuotientGroup.mk'_surjective _)
+  have h2 : Subgroup.map ((normalClosure S).subtype) ⊤ = normalClosure S := by
+    rw [← MonoidHom.range_eq_map]
+    exact (normalClosure S).range_subtype
+  have hrange : χ'.range = (normalClosure S).map ψ := by
+    rw [MonoidHom.range_eq_map]
+    calc Subgroup.map χ' ⊤
+        = Subgroup.map χ' (Subgroup.map (QuotientGroup.mk' (relationCommutator S)) ⊤) := by
+          rw [h1]
+      _ = Subgroup.map (χ'.comp (QuotientGroup.mk' (relationCommutator S))) ⊤ :=
+          Subgroup.map_map _ _ _
+      _ = Subgroup.map χ ⊤ := by rw [hcompose]
+      _ = Subgroup.map ψ (Subgroup.map ((normalClosure S).subtype) ⊤) :=
+          (Subgroup.map_map _ _ _).symm
+      _ = Subgroup.map ψ (normalClosure S) := by rw [h2]
+  haveI : Group.FG χ'.range := inferInstance
+  rw [← hrange]
+  infer_instance
+
+/-- Centrality of the image is enough. -/
+theorem fg_map_of_le_center {H : Type*} [Group H] (S : Set F) (hS : S.Finite) (ψ : F →* H)
+    (hcentral : (normalClosure S).map ψ ≤ Subgroup.center H) :
+    Group.FG ((normalClosure S).map ψ) := by
+  refine fg_map_of_central S hS ψ fun n hn x => ?_
+  have : ψ n ∈ Subgroup.center H := hcentral ⟨n, hn, rfl⟩
+  exact ((Subgroup.mem_center_iff).1 this (ψ x)).symm
+
+/-- **The kernel of a central extension of a finitely presented group is finitely generated.**
+If `ψ : F ↠ Ĝ` is onto, the composite `π ∘ ψ` has kernel the normal closure of a *finite* set of
+relators, and the kernel of `π` is central in `Ĝ`, then `ker π` is a finitely generated abelian
+group.
+
+Applied to `π : St(R) ↠ E(R)` this says that `K₂(R)` is finitely generated as soon as the Steinberg
+group admits a surjection from a group in which the relations of `E(R)` are finitely many. -/
+theorem fg_ker_of_central_extension {G H : Type*} [Group G] [Group H] (S : Set F) (hS : S.Finite)
+    (ψ : F →* G) (hψ : Function.Surjective ψ) (π : G →* H)
+    (hrel : normalClosure S = (π.comp ψ).ker) (hcentral : π.ker ≤ Subgroup.center G) :
+    Group.FG π.ker := by
+  have hkey : (normalClosure S).map ψ = π.ker := by
+    rw [hrel, ← MonoidHom.comap_ker π ψ, Subgroup.map_comap_eq_self_of_surjective hψ]
+  have := fg_map_of_le_center S hS ψ (by rw [hkey]; exact hcentral)
+  rwa [hkey] at this
+
 end GaloisForLFunctions.HTGeometry

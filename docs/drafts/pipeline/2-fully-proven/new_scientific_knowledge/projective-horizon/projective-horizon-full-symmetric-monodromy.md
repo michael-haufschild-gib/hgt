@@ -2183,3 +2183,97 @@ torus/slice bookkeeping and the final Kummer valuation                          
 
 With `SCE_k` in hand, `E5` of the endgame is now a Lean theorem, and the remaining obligations are
 the two geometry inputs `E1`, `E2` that the card already isolates, plus bookkeeping.
+
+## Lean progress — Jordan's criterion on the ACTUAL sheets
+
+`CriticalMonodromyJordan` states Jordan's theorem for the abstract occupation states; the actual
+monodromy group acts on `criticalGeometricSheet`, so the criterion is restated there.
+
+```text
+HTGeometry/CriticalGeometricMonodromyJordan.lean   (wired, axiom-clean)
+    finite_criticalGeometricSheet
+        the sheet set is finite (finite-dimensionality of the source over the observation field)
+    criticalGeometricMonodromy_eq_top_of_isPreprimitive_of_isSwap
+    criticalGeometricMonodromy_eq_top_of_isPreprimitive_of_reducedFibre_degree
+        ** primitivity + the Schur reduction-degree bound  ⟹  criticalGeometricMonodromy = ⊤ **
+```
+
+So `(4)` is now *exactly* two Lean statements away:
+
+```text
+(i)  Nontrivial (criticalSchurInertiaGroup K hm hn)                       -- E2, half one
+(ii) Nat.card (criticalGeometricSheet K m n)
+        ≤ (Set.range (criticalGeometricSheetToSchurReducedFibre K hm hn)).ncard + 1
+                                                                          -- E2, half two
+(iii) MulAction.IsPreprimitive (criticalGeometricMonodromy K m n)
+        (criticalGeometricSheet K m n)                                    -- E1 + E3..E7
+```
+
+Everything else in the chain is already unconditional in the tree: transitivity
+(`criticalGeometricMonodromy_isPretransitive`), the passage from the degree bound to a transposition
+(`exists_criticalGeometricMonodromy_isSwap_of_reducedFibre_degree`), the Jacobian/Schur-divisor
+identity (`criticalSourceReciprocalJacobian_det_eq_schurRamification`), the divisorial order-one
+statement (`addVal_criticalSchurJacobianDetElement_eq_one`), and now `SCE_k`
+(`rank_eq_one_of_isUnit_discr_mvPolynomial`), which is what `E5` consumes.
+
+### The remaining programme, in Lean terms
+
+```text
+(i)   Nontrivial Schur inertia.  The Jacobian determinant is a uniformizer of the source Schur
+      valuation ring (addVal_criticalSchurJacobianDetElement_eq_one), so the different of the
+      extension at that place is nontrivial, so the place ramifies, so inertia ≠ 1.  What must be
+      built is the ramification-theoretic bridge "different ≠ 1 ⟹ inertia ≠ 1" for the DVR already
+      constructed in CriticalSchurValuationDVR.
+
+(ii)  The degree count.  Generic corank one of the rectangular Schur divisor
+      (CriticalSchurGenericCorank) says the fold is simple, i.e. the reduction map on sheets is
+      injective except for one identified pair; that is exactly the stated `+ 1`.
+
+(iii) Primitivity.  This is E1 followed by E3–E7:
+        E1  the branch locus of J/O inside the chart is the Schur divisor — the Jacobian identity
+            above plus the statement that a place of O not below the Schur divisor is unramified in
+            J, which is the standard "étale where the Jacobian is a unit" criterion;
+        E3  the block field M is then unramified at every height-one prime of the chart ring;
+        E4  T-equivariance moves that to every height-one prime of the slice K[w₁..w_{L-2}];
+        E5  SCE_k  ⟹  M_S = O_S                                  ** now available in Lean **
+        E6  M ⊆ O' = O(c^{1/L}), cyclic, and v_m(c) = 1 forces M = O;
+        E7  the block system is trivial, so the action is primitive.
+```
+
+Steps `E4`, `E6` are valuation bookkeeping on objects the tree already builds
+(`CriticalRawCoordinateValuation`, `CriticalReciprocalCoordinateValuation`,
+`CriticalSourceKummerObstruction`, `TorusKummerExponents`); `E1` and `E3` are the ramification
+bridge that `(i)` also needs.  So the whole card reduces to **one** piece of infrastructure — the
+ramification dictionary for the Schur place — plus bookkeeping.
+
+### Reading of the three remaining obligations, for the next session
+
+**`Nontrivial (criticalSchurInertiaGroup K hm hn)`.**  The group is literally
+`(criticalNormalClosureSchurValuationSubring K hm hn).inertiaSubgroup (criticalObservationField K m n)`
+— mathlib's `ValuationSubring.inertiaSubgroup`.  mathlib carries no `|I| = e` statement, so the
+nontriviality must be produced directly: exhibit one nontrivial element of the decomposition group
+acting trivially on the residue field.  The tree already supplies the ingredients on the source
+side: `criticalSchurJacobianDetElement` is a uniformizer of the source Schur valuation ring
+(`addVal_criticalSchurJacobianDetElement_eq_one`, `irreducible_criticalSchurJacobianDetElement`),
+and `CriticalSchurValuationDVR` builds the DVR and the comparison
+`criticalNormalClosureSchurValuationSubring_comap_observation`.  The missing link is the standard
+"a uniformizer of the base has valuation `e > 1` upstairs ⟹ the residue map on the decomposition
+group is not injective", i.e. a ramification dictionary for one valuation subring of a normal
+extension.  Nothing about the horizon is involved; it is a general fact about
+`ValuationSubring.inertiaSubgroup` and should be built as its own reusable module.
+
+**The degree count.**  `finrank_ker_criticalSchurGenericMatrix_eq_one` (generic corank one) is
+already Lean.  What is needed is §3 of this card in Lean: at a generic point of the Schur divisor
+the conormal line determines the projective tangent pair `(U,V)`, `U(0) ≠ 0` and `V(0) ≠ 0`, so `U`
+and `V` are coprime and the syzygy `D₀V + E₀U = 0` forces `D₀ = E₀ = 0`, i.e. exactly two sheets
+meet.  That is the paper proof already written above; it is a computation with the low-degree
+polynomial pairs of `(5)`–`(10)`, not new mathematics.
+
+**Primitivity.**  `E1` needs the same ramification dictionary as the first item (a place where the
+Jacobian is a unit is unramified), `E3`–`E4` are formal consequences, `E5` is now
+`rank_eq_one_of_isUnit_discr_mvPolynomial`, and `E6`–`E7` are the Kummer valuation and the block
+bookkeeping, on objects the tree already builds.
+
+**Consequently the whole card, and with it `projective-horizon-one-step-postcritical-rigidity`,
+rests on one missing reusable module — the ramification dictionary for a valuation subring of a
+normal extension — plus the §3 conormal computation and bookkeeping.**

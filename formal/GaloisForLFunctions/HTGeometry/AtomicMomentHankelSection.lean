@@ -146,7 +146,7 @@ theorem exists_solve_atomicHankel {N J : ℕ} (w x : Fin N → ℝ) {lam : ℝ} 
     have hlow := hquad c
     rw [hMc] at hlow
     have hCS : (∑ i, c i * ξ i) ^ 2 ≤ (∑ i, c i ^ 2) * ∑ i, ξ i ^ 2 :=
-      sum_mul_sq_le_sq_mul_sq _ _ _
+      Finset.sum_mul_sq_le_sq_mul_sq Finset.univ c ξ
     have hdot : c ⬝ᵥ ξ = ∑ i, c i * ξ i := rfl
     rw [hdot] at hlow
     have hSc : 0 ≤ ∑ i, c i ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _

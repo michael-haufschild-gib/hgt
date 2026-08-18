@@ -3349,3 +3349,25 @@ where the middle step is Cauchy--Schwarz against the block averages plus
 `‖Hc‖ ‖c‖ ≥ c^* H c ≥ lambda ‖c‖^2` gives `‖Hc‖ ≥ lambda ‖c‖` — elementary, no spectral theory —
 hence invertibility with `‖c‖ ≤ ‖ξ‖/lambda`, and `|a_p| = |P_c(t_p)| ≤ sqrt J ‖c‖ ≤ 1` once
 `w(x) = o(1)` is small enough.
+
+### The linear-algebra core of Lemma 4 is proved
+
+`HTGeometry/AtomicMomentHankelSection.lean` (axiom-clean, wired) supplies the common generalization
+of two things the corpus already had — `RHTower.ccmAtomicMixedMomentHankel_posDef` (independent
+weights, but matrix order equal to the node count) and
+`HTGeometry.weightedMonomialGram_posDef` (redundant nodes, but the nodes themselves as weights):
+
+- `atomicHankel w x J = HTGeometry.momentHankelMatrix (RHTower.ccmAtomicMixedMoment w x) J` — the
+  order-`J` Hankel section of `N` independently weighted nodes, `J ≤ N` allowed;
+- `atomicHankel_isHermitian`, **`dotProduct_mulVec_atomicHankel`** —
+  `a ⬝ᵥ H *ᵥ a = ∑_r w_r (P_a(x_r))^2`, the weighted nodal polynomial energy;
+- **`atomicHankel_posDef`** — positive weights and at least `J` distinct nodes;
+- **`exists_solve_atomicHankel`** — from a uniform Rayleigh lower bound
+  `lam ∑ a_i^2 ≤ a ⬝ᵥ H *ᵥ a`, the system `H c = ξ` is solvable with
+  `lam^2 ∑ c_i^2 ≤ ∑ ξ_i^2`.  The proof is Cauchy--Schwarz on `c ⬝ᵥ (H *ᵥ c) = c ⬝ᵥ ξ`; no
+  spectral theory.
+
+What is left for Lemma 4 is the bridge `lam ≥ (block mass)/(J (2 K U)^2)`: apply
+`norm_le_of_block_averages` to the coefficient vector, Cauchy--Schwarz each block average against
+the block energy, and feed in the block masses from Lemma 2.  Then `|a_p| = |P_c(t_p)| ≤ √J ‖c‖ ≤ 1`
+once `w(x) = o(1)` is small enough, which is Lemma 4.

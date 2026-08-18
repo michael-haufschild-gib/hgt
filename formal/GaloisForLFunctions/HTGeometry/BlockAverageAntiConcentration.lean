@@ -20,57 +20,59 @@ open Polynomial
 namespace GaloisForLFunctions.HTGeometry
 
 /-- **A small weighted average forces a small value inside the node hull.** -/
-theorem exists_small_value_in_hull {a b : ℝ} {S : Finset ℝ} (hS : S.Nonempty)
-    (hSmem : ∀ t ∈ S, t ∈ Set.Icc a b) {w : ℝ → ℝ} (hw : ∀ t ∈ S, 0 < w t)
+theorem exists_small_value_in_hull {ι : Type*} [DecidableEq ι] {a b : ℝ} {S : Finset ι}
+    (hS : S.Nonempty) {node : ι → ℝ} (hSmem : ∀ r ∈ S, node r ∈ Set.Icc a b)
+    {w : ι → ℝ} (hw : ∀ r ∈ S, 0 < w r)
     {Q : ℝ → ℝ} (hQ : Continuous Q) {ε : ℝ}
-    (hsmall : |∑ t ∈ S, w t * Q t| ≤ ε * ∑ t ∈ S, w t) :
+    (hsmall : |∑ r ∈ S, w r * Q (node r)| ≤ ε * ∑ r ∈ S, w r) :
     ∃ s ∈ Set.Icc a b, |Q s| ≤ ε := by
   classical
-  have hW : 0 < ∑ t ∈ S, w t := Finset.sum_pos hw hS
-  set A : ℝ := (∑ t ∈ S, w t * Q t) / (∑ t ∈ S, w t) with hAdef
+  have hW : 0 < ∑ r ∈ S, w r := Finset.sum_pos hw hS
+  set A : ℝ := (∑ r ∈ S, w r * Q (node r)) / (∑ r ∈ S, w r) with hAdef
   have hA : |A| ≤ ε := by
     rw [hAdef, abs_div, abs_of_pos hW, div_le_iff₀ hW]
     exact hsmall
-  have hkey : ∑ t ∈ S, w t * Q t = A * ∑ t ∈ S, w t := by
+  have hkey : ∑ r ∈ S, w r * Q (node r) = A * ∑ r ∈ S, w r := by
     rw [hAdef, div_mul_cancel₀ _ (ne_of_gt hW)]
   -- some node has value at most `A`, and some node has value at least `A`
-  have hlow : ∃ t ∈ S, Q t ≤ A := by
+  have hlow : ∃ r ∈ S, Q (node r) ≤ A := by
     by_contra hcon
     simp only [not_exists, not_and, not_le] at hcon
-    have hlt : A * ∑ t ∈ S, w t < ∑ t ∈ S, w t * Q t := by
-      have hstep : ∀ t ∈ S, w t * A < w t * Q t := fun t ht =>
-        mul_lt_mul_of_pos_left (hcon t ht) (hw t ht)
-      calc A * ∑ t ∈ S, w t = ∑ t ∈ S, w t * A := by
+    have hlt : A * ∑ r ∈ S, w r < ∑ r ∈ S, w r * Q (node r) := by
+      have hstep : ∀ r ∈ S, w r * A < w r * Q (node r) := fun r hr =>
+        mul_lt_mul_of_pos_left (hcon r hr) (hw r hr)
+      calc A * ∑ r ∈ S, w r = ∑ r ∈ S, w r * A := by
             rw [Finset.mul_sum]
-            exact Finset.sum_congr rfl fun t _ => mul_comm A (w t)
-        _ < ∑ t ∈ S, w t * Q t := Finset.sum_lt_sum_of_nonempty hS hstep
+            exact Finset.sum_congr rfl fun r _ => mul_comm A (w r)
+        _ < ∑ r ∈ S, w r * Q (node r) := Finset.sum_lt_sum_of_nonempty hS hstep
     rw [hkey] at hlt
     exact lt_irrefl _ hlt
-  have hhigh : ∃ t ∈ S, A ≤ Q t := by
+  have hhigh : ∃ r ∈ S, A ≤ Q (node r) := by
     by_contra hcon
     simp only [not_exists, not_and, not_le] at hcon
-    have hlt : ∑ t ∈ S, w t * Q t < A * ∑ t ∈ S, w t := by
-      have hstep : ∀ t ∈ S, w t * Q t < w t * A := fun t ht =>
-        mul_lt_mul_of_pos_left (hcon t ht) (hw t ht)
-      calc ∑ t ∈ S, w t * Q t < ∑ t ∈ S, w t * A :=
+    have hlt : ∑ r ∈ S, w r * Q (node r) < A * ∑ r ∈ S, w r := by
+      have hstep : ∀ r ∈ S, w r * Q (node r) < w r * A := fun r hr =>
+        mul_lt_mul_of_pos_left (hcon r hr) (hw r hr)
+      calc ∑ r ∈ S, w r * Q (node r) < ∑ r ∈ S, w r * A :=
             Finset.sum_lt_sum_of_nonempty hS hstep
-        _ = A * ∑ t ∈ S, w t := by
+        _ = A * ∑ r ∈ S, w r := by
             rw [Finset.mul_sum]
-            exact Finset.sum_congr rfl fun t _ => mul_comm (w t) A
+            exact Finset.sum_congr rfl fun r _ => mul_comm (w r) A
     rw [hkey] at hlt
     exact lt_irrefl _ hlt
-  obtain ⟨t₁, ht₁S, ht₁⟩ := hlow
-  obtain ⟨t₂, ht₂S, ht₂⟩ := hhigh
-  have hAmem : A ∈ Set.uIcc (Q t₁) (Q t₂) := Set.mem_uIcc.mpr (Or.inl ⟨ht₁, ht₂⟩)
-  have himg : Set.uIcc (Q t₁) (Q t₂) ⊆ Q '' Set.uIcc t₁ t₂ :=
+  obtain ⟨r₁, hr₁S, hr₁⟩ := hlow
+  obtain ⟨r₂, hr₂S, hr₂⟩ := hhigh
+  have hAmem : A ∈ Set.uIcc (Q (node r₁)) (Q (node r₂)) :=
+    Set.mem_uIcc.mpr (Or.inl ⟨hr₁, hr₂⟩)
+  have himg : Set.uIcc (Q (node r₁)) (Q (node r₂)) ⊆ Q '' Set.uIcc (node r₁) (node r₂) :=
     intermediate_value_uIcc hQ.continuousOn
   obtain ⟨s, hs, hsA⟩ := himg hAmem
   refine ⟨s, ?_, ?_⟩
-  · have h1 := hSmem t₁ ht₁S
-    have h2 := hSmem t₂ ht₂S
-    have := Set.uIcc_subset_uIcc (Set.mem_uIcc.mpr (Or.inl ⟨h1.1, h1.2⟩))
+  · have h1 := hSmem r₁ hr₁S
+    have h2 := hSmem r₂ hr₂S
+    have hsub := Set.uIcc_subset_uIcc (Set.mem_uIcc.mpr (Or.inl ⟨h1.1, h1.2⟩))
       (Set.mem_uIcc.mpr (Or.inl ⟨h2.1, h2.2⟩)) hs
-    rwa [Set.uIcc_of_le (le_trans (hSmem t₁ ht₁S).1 (hSmem t₁ ht₁S).2)] at this
+    rwa [Set.uIcc_of_le (le_trans h1.1 h1.2)] at hsub
   · rw [hsA]
     exact hA
 
@@ -247,60 +249,58 @@ theorem realCoeffPoly_coeff {J : ℕ} (c : Fin J → ℝ) (k : Fin J) :
 /-! ### The anti-concentration bound -/
 
 /-- **Block-average anti-concentration.**  A complex polynomial of degree below `J` whose weighted
-average over each of `J` blocks — carried by `η`-separated sub-intervals of the unit interval — is
-at most `ε` has every coefficient bounded by an explicit multiple of `ε`. -/
-theorem norm_le_of_block_averages {J : ℕ} (hJ : 0 < J) {η : ℝ} (hη : 0 < η)
-    (a b : Fin J → ℝ)
+average over each of `J` blocks — whose nodes lie in `η`-separated sub-intervals of the unit
+interval — is at most `ε` has every coefficient bounded by an explicit multiple of `ε`. -/
+theorem norm_le_of_block_averages {ι : Type*} [DecidableEq ι] {J : ℕ} (hJ : 0 < J) {η : ℝ}
+    (hη : 0 < η) (a b : Fin J → ℝ)
     (hIcc : ∀ i : Fin J, ∀ t ∈ Set.Icc (a i) (b i), t ∈ Set.Icc (0:ℝ) 1)
     (hsep : ∀ i k : Fin J, i ≠ k → ∀ s ∈ Set.Icc (a i) (b i), ∀ u ∈ Set.Icc (a k) (b k),
       η ≤ |s - u|)
-    (S : Fin J → Finset ℝ) (hS : ∀ i, (S i).Nonempty)
-    (hSmem : ∀ i : Fin J, ∀ t ∈ S i, t ∈ Set.Icc (a i) (b i))
-    (w : Fin J → ℝ → ℝ) (hw : ∀ i : Fin J, ∀ t ∈ S i, 0 < w i t)
+    (node weight : ι → ℝ)
+    (S : Fin J → Finset ι) (hS : ∀ i, (S i).Nonempty)
+    (hSmem : ∀ i : Fin J, ∀ r ∈ S i, node r ∈ Set.Icc (a i) (b i))
+    (hw : ∀ i : Fin J, ∀ r ∈ S i, 0 < weight r)
     (v : Fin J → ℂ) {ε : ℝ}
     (havg : ∀ i : Fin J,
-      ‖∑ t ∈ S i, (w i t : ℂ) * ∑ k : Fin J, v k * ((t : ℝ) : ℂ) ^ (k : ℕ)‖
-        ≤ ε * ∑ t ∈ S i, w i t) (k : Fin J) :
+      ‖∑ r ∈ S i, (weight r : ℂ) * ∑ k : Fin J, v k * ((node r : ℝ) : ℂ) ^ (k : ℕ)‖
+        ≤ ε * ∑ r ∈ S i, weight r) (k : Fin J) :
     ‖v k‖ ≤ 2 * (((J : ℝ)) * (2 ^ (J - 1) / (η ^ (J - 1) * ((J - 1).factorial)))
       * unitCoeffConst J (k : ℕ)) * ε := by
   classical
   set Kc : ℝ := ((J : ℝ)) * (2 ^ (J - 1) / (η ^ (J - 1) * ((J - 1).factorial))) with hKcdef
-  -- the real and imaginary parts, as real polynomials
   set Qr : Polynomial ℝ := realCoeffPoly (fun k => (v k).re) with hQrdef
   set Qi : Polynomial ℝ := realCoeffPoly (fun k => (v k).im) with hQidef
-  have hsumre : ∀ (i : Fin J),
-      (∑ t ∈ S i, (w i t : ℂ) * ∑ k : Fin J, v k * ((t : ℝ) : ℂ) ^ (k : ℕ)).re
-        = ∑ t ∈ S i, w i t * Qr.eval t := by
+  have hpowcast : ∀ (t : ℝ) (k : Fin J),
+      ((t : ℝ) : ℂ) ^ (k : ℕ) = (((t ^ (k : ℕ) : ℝ)) : ℂ) := by
+    intro t k
+    push_cast
+    ring
+  have hsumre : ∀ i : Fin J,
+      (∑ r ∈ S i, (weight r : ℂ) * ∑ k : Fin J, v k * ((node r : ℝ) : ℂ) ^ (k : ℕ)).re
+        = ∑ r ∈ S i, weight r * Qr.eval (node r) := by
     intro i
     rw [Complex.re_sum]
-    refine Finset.sum_congr rfl fun t _ => ?_
-    have hinner : (∑ k : Fin J, v k * ((t : ℝ) : ℂ) ^ (k : ℕ)).re
-        = ∑ k : Fin J, (v k).re * t ^ (k : ℕ) := by
+    refine Finset.sum_congr rfl fun r _ => ?_
+    have hinner : (∑ k : Fin J, v k * ((node r : ℝ) : ℂ) ^ (k : ℕ)).re
+        = ∑ k : Fin J, (v k).re * (node r) ^ (k : ℕ) := by
       rw [Complex.re_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
-      have hpow : ((t : ℝ) : ℂ) ^ (k : ℕ) = (((t ^ (k : ℕ) : ℝ)) : ℂ) := by
-        push_cast
-        ring
-      rw [hpow, mul_comm, Complex.re_ofReal_mul, mul_comm]
+      rw [hpowcast, mul_comm, Complex.re_ofReal_mul, mul_comm]
     rw [Complex.re_ofReal_mul, hinner, hQrdef, realCoeffPoly_eval]
-  have hsumim : ∀ (i : Fin J),
-      (∑ t ∈ S i, (w i t : ℂ) * ∑ k : Fin J, v k * ((t : ℝ) : ℂ) ^ (k : ℕ)).im
-        = ∑ t ∈ S i, w i t * Qi.eval t := by
+  have hsumim : ∀ i : Fin J,
+      (∑ r ∈ S i, (weight r : ℂ) * ∑ k : Fin J, v k * ((node r : ℝ) : ℂ) ^ (k : ℕ)).im
+        = ∑ r ∈ S i, weight r * Qi.eval (node r) := by
     intro i
     rw [Complex.im_sum]
-    refine Finset.sum_congr rfl fun t _ => ?_
-    have hinner : (∑ k : Fin J, v k * ((t : ℝ) : ℂ) ^ (k : ℕ)).im
-        = ∑ k : Fin J, (v k).im * t ^ (k : ℕ) := by
+    refine Finset.sum_congr rfl fun r _ => ?_
+    have hinner : (∑ k : Fin J, v k * ((node r : ℝ) : ℂ) ^ (k : ℕ)).im
+        = ∑ k : Fin J, (v k).im * (node r) ^ (k : ℕ) := by
       rw [Complex.im_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
-      have hpow : ((t : ℝ) : ℂ) ^ (k : ℕ) = (((t ^ (k : ℕ) : ℝ)) : ℂ) := by
-        push_cast
-        ring
-      rw [hpow, mul_comm, Complex.im_ofReal_mul, mul_comm]
+      rw [hpowcast, mul_comm, Complex.im_ofReal_mul, mul_comm]
     rw [Complex.im_ofReal_mul, hinner, hQidef, realCoeffPoly_eval]
-  -- the sampled points
   have hsample : ∀ (Q : Polynomial ℝ), Q.degree < (J : ℕ) →
-      (∀ i : Fin J, |∑ t ∈ S i, w i t * Q.eval t| ≤ ε * ∑ t ∈ S i, w i t) →
+      (∀ i : Fin J, |∑ r ∈ S i, weight r * Q.eval (node r)| ≤ ε * ∑ r ∈ S i, weight r) →
       ∀ x ∈ Set.Icc (0:ℝ) 1, |Q.eval x| ≤ Kc * ε := by
     intro Q hdegQ hQavg x hx
     have hchoice : ∀ i : Fin J, ∃ s ∈ Set.Icc (a i) (b i), |Q.eval s| ≤ ε := by
@@ -320,14 +320,14 @@ theorem norm_le_of_block_averages {J : ℕ} (hJ : 0 < J) {η : ℝ} (hη : 0 < �
     have hres := abs_eval_le_of_separated_nodes hJ hη sr hsrinj hsrunit hsrsep Q hdegQ
       hsrsmall hx
     rw [hKcdef]
-    calc |Q.eval x|
-        ≤ ((J : ℝ)) * (2 ^ (J - 1) / (η ^ (J - 1) * ((J - 1).factorial))) * ε := hres
-      _ = ((J : ℝ)) * (2 ^ (J - 1) / (η ^ (J - 1) * ((J - 1).factorial))) * ε := rfl
-  have hravg : ∀ i : Fin J, |∑ t ∈ S i, w i t * Qr.eval t| ≤ ε * ∑ t ∈ S i, w i t := by
+    exact hres
+  have hravg : ∀ i : Fin J,
+      |∑ r ∈ S i, weight r * Qr.eval (node r)| ≤ ε * ∑ r ∈ S i, weight r := by
     intro i
     rw [← hsumre i]
     exact le_trans (Complex.abs_re_le_norm _) (havg i)
-  have himavg : ∀ i : Fin J, |∑ t ∈ S i, w i t * Qi.eval t| ≤ ε * ∑ t ∈ S i, w i t := by
+  have himavg : ∀ i : Fin J,
+      |∑ r ∈ S i, weight r * Qi.eval (node r)| ≤ ε * ∑ r ∈ S i, weight r := by
     intro i
     rw [← hsumim i]
     exact le_trans (Complex.abs_im_le_norm _) (havg i)
