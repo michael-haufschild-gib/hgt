@@ -3035,3 +3035,113 @@ piece `K_n` of the `∂̄` source (`rho = n/4`, `L = n/2`, `|Im| ≥ n`).  What 
 the closed half plane is Steps 1, 2 and 4: the smooth cutoff and `dbar (chi f) = f dbar chi`, the
 imaginary-direction partition of unity producing the compactly supported pieces, and the summation
 argument (locally uniform convergence, `dbar v = u`, `h = chi f - v` entire).
+
+### The Arakelyan step is closed for the data the card actually consumes
+
+The `∂̄` route of the previous section turned out to be unnecessary.  Andersson applies Arakelyan to
+`s^2 f(s)` where `f = F'/F` and `F` realizes the divisor; such an `f` is not an arbitrary function
+analytic near the half plane, it is a **Mittag-Leffler series with simple poles**, and for that data
+the approximation is termwise and elementary.
+
+Writing `s^2 = (s-a)(s+a) + a^2`,
+
+```text
+s^2 ( m/(s-a) - Q(s) )  =  m a^2/(s-a)  +  ( m (s+a) - s^2 Q(s) ) ,
+```
+
+the second bracket is already entire, and the single Cauchy kernel `m a^2/(s-a)` is handled by the
+truncated Laplace kernel — pushed left first when its pole is not already left of the disc used to
+control convergence.  Because the `n`-th approximation is good *both* on `Re s >= 1` and on a disc
+of radius `(‖a n‖ - 16)/8`, which grows without bound, the corrected series converges locally
+uniformly on the whole plane, so its sum is entire, while on the half plane the accumulated error is
+geometric.
+
+New Lean, on top of the three modules above:
+
+- `HalfPlaneGapApproximation.exists_entire_approx_single_kernel` — a single Cauchy kernel with pole
+  in `{Re < 1}` is entirely approximable on `{Re s >= 1} ∪ {‖s‖ <= rho}` whenever
+  `8 rho + 16 <= ‖a‖`.  The proof splits on whether the pole is already left of the disc (truncated
+  Laplace kernel directly) or has large imaginary part (pushed kernel), and the arithmetic
+  `|Re a| <= ‖a‖/8  ==>  |Im a| >= ‖a‖/2 >= rho + L + delta` closes the second case.
+- `HalfPlaneGapApproximation.exists_entire_approx_single_kernel_halfPlane` — the same on the half
+  plane alone, with no condition on the pole beyond `Re a < 1`.
+- **`MittagLefflerHalfPlaneApproximation.exists_entire_approx_sq_mittagLeffler`** — for poles
+  `a n -> infinity` with `Re (a n) < 1`, entire corrections `Q n` with the standard
+  `‖m n/(z - a n) - Q n z‖ <= 2^{-n}` bound on `ball 0 (‖a n‖/2)`, and every `eps > 0`, there is an
+  entire `G` with
+
+```text
+    || s^2 * ( sum_n ( m n/(s - a n) - Q n s ) ) - G(s) ||  <=  eps      for all  Re s >= 1 .
+```
+
+The corpus's own `MittagLefflerConstruction` supplies exactly this data for an arbitrary sequence of
+poles tending to infinity, and `MittagLefflerConvergence` supplies the head–tail machinery used for
+the local uniform convergence.
+
+What remains of Lemma 1 is the elementary Mellin step: from `|s^2 f - G| <= eps` on the closed half
+plane to `f = int_1^inf q(x) x^{-s} dx + entire` with `q = o(1)`, via the half-plane Cauchy
+representation and Riemann--Lebesgue.  What remains of Theorem 2 is the identification of `F'/F`
+with a Mittag-Leffler series up to an entire function, and what remains of Theorem 1 is the prime
+construction, Lemmas 2 and 4-7.
+
+### Exact remaining bricks, with the corpus assets for each
+
+**(A) `logDeriv` of the divisor realization is a Mittag-Leffler series.**
+
+`GaloisForLFunctions.weierstrassGenusFactorAt a n z = weierstrassE n (z / a n)` and
+`logDeriv (weierstrassE g) z = -z^g/(1-z)` (`WeierstrassFactorGenus.logDeriv_weierstrassE`), so
+
+```text
+logDeriv (fun z => weierstrassE n (z / a n)) z = (z / a n)^n / (z - a n)
+                                               = 1/(z - a n) + p_n(z) ,
+p_n(z) = ((z/a n)^n - 1)/(z - a n) = (1/(a n)^n) * sum_{j<n} z^j (a n)^{n-1-j}   (a polynomial).
+```
+
+So the factor's logarithmic derivative is exactly a Mittag-Leffler term with `m n = 1` and
+`Q n = -p_n`, and on `ball 0 (‖a n‖/2)` it is bounded by `2^{-n} * 2/‖a n‖`, which is the bound
+`exists_entire_approx_sq_mittagLeffler` consumes.
+
+The missing step is termwise differentiation of the product:
+
+```text
+logDeriv (weierstrassGenusProduct a) z = sum_n logDeriv (weierstrassGenusFactorAt a n) z ,
+```
+
+for `z` off the zeros.  The corpus already proves this shape twice —
+`PowerCanonicalProductLogDeriv.logDeriv_powerCanonicalProduct_eq_tsum` and
+`EllipticGammaConeSource.logDeriv_coneProduct_eq_tsum` — and
+`WeierstrassFactorizationTheorem.hasProdLocallyUniformlyOn_weierstrassGenusFactorAt` supplies the
+locally uniform convergence.  Then
+`logDeriv (divisorFunction a b) = logDeriv (product a) - logDeriv (product b)`.
+
+Note this also means the property recorded as `HelsonFactorizationProperty` should be narrowed to
+the divisor realizations the card actually feeds it: for a *general* `F` analytic and zero free near
+the closed half plane, `F'/F` has no global structure and Andersson's proof needs Arakelyan in full;
+for `F = divisorFunction a b` the Mittag-Leffler route above replaces it.
+
+**(B) The Mellin step of Lemma 1.**  From `|s^2 f - G| <= eps` on `Re s >= 1` with `G` entire, write
+`G(s) = G(0) + G'(0) s + s^2 H(s)` with `H` entire; then
+
+```text
+f = H + G(0)/s^2 + G'(0)/s + (s^2 f - G)/s^2 ,
+```
+
+`1/s = int_1^inf x^{-1} x^{-s} dx`, `1/s^2 = int_1^inf (log x / x) x^{-s} dx`, both with `o(1)`
+densities, and `phi := (s^2 f - G)/s^2` satisfies `|phi| <= eps/|s|^2` on the closed half plane.  For
+such a `phi`:
+
+```text
+q(x) := (1/2pi) int_R phi(1+it) x^{it} dt
+```
+
+is bounded by `(1/2pi) int |phi(1+it)| dt <= eps/2`, tends to `0` by Riemann--Lebesgue, and
+`int_1^inf q(x) x^{-s} dx = (1/2pi) int_R phi(1+it)/(s-1-it) dt = phi(s)` by Fubini plus the
+half-plane Cauchy representation.  The last is the only nonelementary input: prove it by the
+rectangle Cauchy formula (`RHTower.RectangleLocalCauchyFormula.rectIntegral_cauchyFormula_of_analyticOnNhd`)
+on `[1+eta, M] x [-R, R]`, letting `M -> infinity` (right edge dies by `|phi| <= C/|s|^2`), then
+`R -> infinity` (horizontal edges die by `int dx/(x^2+R^2) <= pi/(2R)`), then `eta -> 0` by
+continuity up to the line.
+
+**(C) Andersson's Theorem 1**, i.e. Lemmas 2 and 4-7: the short-interval prime supply in counting
+form and the Vandermonde/Cramer recursion.  This is the remaining large project and is independent
+of (A) and (B).

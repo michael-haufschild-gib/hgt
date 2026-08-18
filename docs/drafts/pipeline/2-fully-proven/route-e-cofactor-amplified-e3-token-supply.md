@@ -359,3 +359,11 @@ modules are wired into the `GaloisForLFunctions.RHTower` umbrella.
 
 Only `(6)`, the quantitative all-interval `E₃` supply — the shared Matomäki--Teräväinen input, whose
 large-prime mean square `(FS7)` is now also a corpus theorem (see the entry above).
+
+## Exponent retune `1.55 → 1.557` (2026-08-18)
+
+The all-interval `E₃` input is being formalised through Huxley's large-values theorem rather than
+Jutila's; see `../1-in-progress/matomaki-teravainen-e3-lean-programme.md`.  The resulting exponent
+is `1 + 44/79 = 1.55696…` instead of `1.55`, and the §6.1 (Heath-Brown identity + Bourgain) route at
+`1.615` is abandoned.  Nothing on this card depends on the value: the exponent enters only through a
+polylogarithmic factor in the displacement.

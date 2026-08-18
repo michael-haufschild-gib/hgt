@@ -531,3 +531,24 @@ off the paper, the corpus inventory against each input, and the decision to targ
 **The exponent is not load-bearing for this card**: it enters only through `(FS14)`'s
 `|Q_i − u_i| ≪ √(u_iℓ_i)(log u_i)^{1.55}`, and the Route E consequence depends only on `θ = 1/2`,
 so `1.55 → 1.615` costs nothing.
+
+## Exponent retune `1.55 → 1.557`, and the removal of Jutila/Bourgain (2026-08-18)
+
+The note above selecting Matomäki–Teräväinen's §6.1 (Heath-Brown identity, exponent `1.615`) over
+§5 (Harman's sieve, exponent `1.55`) is **superseded**.  §6.1 was chosen only to avoid Jutila's
+large-values estimate; that estimate turns out not to be needed at all.
+
+Huxley's large-values theorem `R ≪ GNV^{-2} + T G³N V^{-6}` — now Lean-proved unconditionally, see
+`../1-in-progress/matomaki-teravainen-e3-lean-programme.md` — already gives the paper's Lemma 4.1
+with `σ = 7/32 = 0.21875` at `θ = 2/11`, and its Remark 5.2 needs only `σ > 1/5 + 2ε`.  Re-running
+§5.3 with `7/32` in place of `49/206` gives `a > max(32/29, 88/79) = 88/79`, hence
+
+```text
+Theorem 1.2′ (target).  For all large x, (x, x + √x(log x)^{1+44/79}] contains E₃ numbers,
+                        1 + 44/79 = 123/79 = 1.55696… .
+```
+
+So `(FS14)` reads `|Q_i − u_i| ≪ √(u_iℓ_i)(log u_i)^{1.557} = u_i^{1/2}N^{o(1)}` — the same
+conclusion, since only the `u_i^{1/2}N^{o(1)}` form is used downstream.  Also note that §6.1 does
+**not** avoid Watt/Deshouillers–Iwaniec: its Type I sums are handled by §5.1.  The Harman route (§5)
+is therefore the one to formalise.

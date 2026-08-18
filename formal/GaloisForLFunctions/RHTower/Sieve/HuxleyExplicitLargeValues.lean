@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.HuxleyDirichletLargeValues
+import GaloisForLFunctions.RHTower.Sieve.SeparatedCount
 
 /-!
 # Huxley's large-values count with an explicit logarithm
@@ -9,39 +10,26 @@ namespace RHTower.Sieve
 open Finset
 open scoped InnerProductSpace
 
-/-- A `delta`-separated finite set confined to a range of length `Ttot` has at most
-`Ttot/delta + 1` points. -/
-theorem card_le_of_separated {delta Ttot : ℝ} (hdelta : 0 < delta) (hTtot : 0 ≤ Ttot)
+/-- A `delta`-separated finite set of reals whose pairwise distances are at most `Ttot` has at most
+`Ttot/delta + 1` points.  This is `Sieve.card_le_of_separated` with the anchor supplied by the
+minimum of the set. -/
+theorem card_le_of_pairwise_spread {delta Ttot : ℝ} (hdelta : 0 < delta) (hTtot : 0 ≤ Ttot)
     (S : Finset ℝ)
     (hsep : ∀ x ∈ S, ∀ y ∈ S, x ≠ y → delta ≤ |x - y|)
     (hspread : ∀ x ∈ S, ∀ y ∈ S, |x - y| ≤ Ttot) :
     ((S.card : ℝ)) ≤ Ttot / delta + 1 := by
+  classical
   rcases S.eq_empty_or_nonempty with hemp | hne
   · rw [hemp]
-    have : (0 : ℝ) ≤ Ttot / delta := div_nonneg hTtot hdelta.le
+    have h : (0 : ℝ) ≤ Ttot / delta := div_nonneg hTtot hdelta.le
     simp only [Finset.card_empty, Nat.cast_zero]
     linarith
-  · have hpos : 0 < S.card := Finset.card_pos.2 hne
-    obtain ⟨R, hcard⟩ : ∃ R, S.card = R + 1 := ⟨S.card - 1, by omega⟩
-    have hgrow : ∀ n : ℕ,
-        sepEnum S hcard delta 0 + (n : ℝ) * delta ≤ sepEnum S hcard delta n := by
-      intro n
-      induction n with
-      | zero => simp
-      | succ k ih =>
-        have hg := sepEnum_gap hcard hsep k
-        push_cast
-        linarith
-    have hspR := hspread (sepEnum S hcard delta R) (sepEnum_mem hcard delta (le_refl R))
-      (sepEnum S hcard delta 0) (sepEnum_mem hcard delta (Nat.zero_le R))
-    have hle : sepEnum S hcard delta R - sepEnum S hcard delta 0 ≤ Ttot :=
-      le_trans (le_abs_self _) hspR
-    have hR : (R : ℝ) * delta ≤ Ttot := by linarith [hgrow R]
-    have hRle : (R : ℝ) ≤ Ttot / delta := by
-      rw [le_div_iff₀ hdelta]
-      exact hR
-    rw [hcard]
-    push_cast
+  · refine card_le_of_separated (u := fun x : ℝ => x) (c := S.min' hne) hdelta hTtot hsep ?_
+    intro x hx
+    refine ⟨S.min'_le x hx, ?_⟩
+    have hmin : S.min' hne ∈ S := S.min'_mem hne
+    have h := hspread x hx (S.min' hne) hmin
+    have h2 : x - S.min' hne ≤ Ttot := le_trans (le_abs_self _) h
     linarith
 
 /-- **Huxley's large-values theorem with the logarithm made explicit.**  Since a `delta`-separated
@@ -61,7 +49,7 @@ theorem huxley_block_large_values_explicit {N : ℕ} (hN : 1 ≤ N) (c : ℕ →
         * (2 * D ^ 2 * (1 + 12 * Real.pi * (1 + Real.log (Ttot / delta + 1)) / delta)) := by
   have hbase := huxley_block_large_values hN c hdelta hV hTtot hD hc S hsep hspread hbig hthresh
   refine le_trans hbase ?_
-  have hcnt := card_le_of_separated hdelta hTtot S hsep hspread
+  have hcnt := card_le_of_pairwise_spread hdelta hTtot S hsep hspread
   have hone : (1 : ℝ) ≤ Ttot / delta + 1 := by
     have : (0 : ℝ) ≤ Ttot / delta := div_nonneg hTtot hdelta.le
     linarith

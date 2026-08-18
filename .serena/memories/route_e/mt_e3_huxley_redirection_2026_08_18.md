@@ -57,3 +57,33 @@ absorbable exactly when `G√N ≲ V²` (= Huxley's `V ≥ N^{3/4}`), and the `�
 `Sieve/JutilaLargeValues`, `Sieve/CriticalTruncationZeta`, `Sieve/GramEntryZetaBound`,
 `Sieve/AbelIncreasingWeight`, `Sieve/GallagherSumGeneral`, `Sieve/PowerFibreDivisorBound`,
 `Sieve/DivisorBound` all remain valid unconditional assets but are **off the critical path** now.
+
+## M4c CLOSED (same session)
+
+Lemma 4.1 is now Lean-proved unconditionally, at `σ = 7/32 − 5ε` (Remark 5.2 needs only `σ > 1/5`).
+
+- `Sieve/HuxleyDensityBound` — `huxley_threshold_of_rpow` (Huxley's `V ≥ N^{3/4}` becomes
+  `2400 D² ≤ N^{1/2−2σ}`; only `π > 3` is used), `huxley_block_two_term`
+  (`|S| ≤ (6594624·T·D⁶·N^{6σ−2} + 2D²N^{2σ})(1 + 12π(1+log(2T+1)))` — Huxley's two terms with
+  explicit constants).
+- `Sieve/HuxleyDensityHypothesis` — `lemma41_huxley`: `|S| ≤ T^{2σ−ε²/5}` for
+  `T^{9/11} ≤ N ≤ T^{1−ε}`, `5ε ≤ σ ≤ 7/32 − 5ε`, given three largeness hypotheses.
+- `Sieve/HuxleyDensityThreshold` — `exists_lemma41_largeness` (explicit `T₀ = max 1 (C^{1/z})`,
+  `z = ε²/2`, `C = 6594624 + D⁶ + 1 + 12π + 12π·3^z/z`, using `Real.log_le_rpow_div`),
+  `exists_lemma41_huxley` (the largeness hypotheses discharged).
+
+Lean traps met: `set X := …` leaves a let-binding whose defeq blows up `linarith`/`nlinarith` —
+`clear_value` after the `set` fixes it; `nlinarith` on rpow atoms times out, replace by
+`mul_le_mul_of_nonneg_right` + `linarith`; `gcongr` discharges the whole multiplicative chain of a
+five-factor product bound by itself.
+
+Next Lean target: **M4d = Proposition 4.2** (Type II estimate) — the `T₁/T₂/T₃` partition, the
+discrete mean value theorem for `M_j^{ℓ_j}`, Halász–Montgomery on `T₁`, Lemma 4.1 on `T₂`.
+
+## Deduplication caught
+
+`Sieve/SeparatedCount.card_le_of_separated` already existed in `RHTower.Sieve` (cell-index
+injection, more general). The first version written here collided and would have broken the
+umbrella; renamed to `card_le_of_pairwise_spread` and reproved as a wrapper. **Always run a
+`grep -rn "theorem <name>\b" --include='*.lean'` collision scan over every new declaration name
+before building the umbrella** — module-level `lake build` does not catch same-namespace clashes.

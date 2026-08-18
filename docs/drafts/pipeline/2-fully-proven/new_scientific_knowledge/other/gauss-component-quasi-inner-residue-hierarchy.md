@@ -2782,3 +2782,124 @@ applying `ofReal_norm_inner_le_tsum_fourierCoeff` and the coefficientwise identi
 3. telescope `⟪1, R^m1 − M^m1⟫ = Σ_(i<m) ⟪a_δ^(m-1-i), (R−M)(R^i1)⟫ → 0`;
 4. negative frequencies (pointwise-conjugation antiunitary, or a ℤ-indexed class);
 5. the logarithmic mean, copying `GaussDiagonalLogResidue.lean` from `m = 1`.
+
+## Pass 54 — formula (A) for the operator at every `m`: the card's named Lean gap is closed
+
+Four further modules, all unconditional, axiom-clean (`[propext, Classical.choice, Quot.sound]`),
+umbrella-wired, built.  Together with passes 52–53 they close the passage the card recorded under
+**"Not yet formalized"** — `⟪G^m e_n, e_n⟫ → gaussPrincipalDiagonalTerm` — for every `m`.
+
+### `RHTower/GaussRelativeIterate.lean`
+
+```text
+tendsto_zero_of_ofReal_tendsto_zero
+TwoPieceAmplitude.translate                          translation preserves the class
+twoPieceAmplitude_gaussPrimeScaleBlock_amplitudePow  `B a_δ^s` is in the class, spike 0
+tendsto_norm_inner_gaussPrincipalStep_sub_iterate_zero_of
+tendsto_norm_inner_gaussPrincipalStep_sub_iterate_zero
+    for every i < m:  ‖⟪a_δ^s, (R_I − M_I)(R_I^i 1)⟫‖ → 0
+```
+
+The second form instantiates `c₀ = 1/(8m)`, `ε = 1/(24m²)`; the single inequality the pairing needs,
+`c_X + c_Y + 1 < θ_X + θ_Y`, becomes
+
+```text
+2c₀ + 1/(2m) + i/m + (3i+2)ε < 1      (i ≤ m−1),
+```
+
+which at those values is `1 − 1/(4m) + (3m−1)/(24m²) < 1`, i.e. `3m − 1 < 6m`.
+
+### `RHTower/GaussRelativePower.lean`
+
+```text
+gaussMovingAmplitudeBlock_pow_inner        powers of the model are self-adjoint
+inner_gaussPrincipalStep_pow_sub_eq        the telescope, paired against the constant vector
+tendsto_inner_gaussPrincipalStep_pow_sub_amplitude
+    ⟪1, R_I^m 1⟫ − A_m(fract δ_I) → 0
+inner_gaussQuasiInnerG_pow_eq              ⟪e_n, G^r e_n⟫ = σ_n^r ⟪1, R_n^r 1⟫
+tendsto_norm_inner_gaussQuasiInnerG_pow_sub_amplitude_div
+    ‖⟪e_I, G^m e_I⟫ − σ_I^m A_m(fract δ_I)‖ / ‖σ_I^m‖ → 0        -- EQUATION (11), RELATIVE
+```
+
+### `RHTower/GaussConjugationSymmetry.lean` — the negative frequencies
+
+Pointwise conjugation is an antiunitary involution of `L²(ℝ/ℤ)` sending `e_j` to `e_(−j)`; every
+multiplication operator with a *real* symbol commutes with it, and so does the Gauss diagonal
+because `conj d_(−j) = d_j`.
+
+```text
+fourierCoeff_star                 fourierCoeff (star u) j = conj (fourierCoeff u (−j))
+lp_ext_fourierCoeff, fourierCoeff_fourierLp, star_fourierLp, inner_star_star, star_lp_smul
+star_lpBoundedMulCLM_real, star_gaussPrimeScaleBlock, star_gaussPrimeScaleInvSqBlock
+star_gaussDiagonalBlock, star_gaussDiagonalBlockStar
+star_gaussQuasiInnerG, star_gaussQuasiInnerG_pow
+inner_gaussQuasiInnerG_pow_neg    ⟪e_(−n), G^r e_(−n)⟫ = conj ⟪e_n, G^r e_n⟫
+exists_norm_gaussSampleValue_pow_mul_succ_le    ‖d_(n+1)‖^(2m)·(n+1) ≤ C  at every m
+norm_gaussStepScalar_conj_eq, conj_gaussStepScalar_pow_mul_amplitude
+```
+
+### `RHTower/GaussIterateLogResidue.lean` — the capstone
+
+```text
+tendsto_gaussFourierDiagonal_pow_logResidue  (2 ≤ m) :
+    (1/log N) Σ_(n<N) ( ⟪e_(n+1), G_full^m e_(n+1)⟫ + ⟪e_(−(n+1)), G_full^m e_(−(n+1))⟫ )
+        →  2 (p^m − 1)² / (m² log p)
+
+tendsto_gaussLocalDiagonal_pow_logResidue  (2 ≤ m) :
+    ((p−1)/p)^(2m) · the same logarithmic mean  →  gaussChannelResidue m p
+        =  2 (p−1)^(2m) (p^m − 1)² / (p^(2m) m² log p)
+```
+
+**That is formula (A), for the operator and at every `m ≥ 2`**; the case `m = 1` is
+`tendsto_gaussLocalDiagonal_logResidue` (pass 35).  The relative estimate puts the whole deviation
+behind the step scalar `(p|d_n|²)^m ≍ 1/n`, so the harmonic transfer
+(`tendsto_complexHarmonicWeighted_error_zero`) turns it into `o(log N)` partial sums; the negative
+frequency costs nothing because `G` commutes with conjugation and the model term is real.
+
+### Card state
+
+| Card step | status |
+|---|---|
+| (2)–(5), (7)–(9), (12), (13), §6, §7, `k`-independence | formalized |
+| (10), (11) absolute, all `m` | formalized |
+| (11) **relative**, all `m` | **formalized** |
+| (14) for the operator, all `m` | **formalized** |
+| **(A) for the operator, all `m`** | **formalized** |
+
+The card's named Lean gap — "the operator-theoretic identification of the Fourier diagonal,
+`⟨G^m e_n, e_n⟩ → gaussPrincipalDiagonalTerm`" — is closed.  What remains on the card is the
+*scientific* gate (independent expert audit), not a Lean gate.
+
+### Pass 54 addendum — an honest correction to the "Formalized" table, and the exact remaining gap
+
+The top "Formalized" table credits `§6 membership + measurability` to
+`memWeakSchattenClass_gaussComponentCriticalOperator` and
+`hasSchattenLogResidue_gaussComponentCriticalOperator`.  Those theorems are about
+`gaussComponentCriticalOperator`, which is a **realization**
+(`gaussPairedCriticalDiagonalOperator`, a diagonal operator with prescribed approximation numbers)
+— not about `G^m` itself.  The same holds for
+`gaussComponentCriticalPowerOperator = criticalDiagonalOperator 1 (gaussChannelResidue m p)`.
+
+So after pass 54 the exact Lean state of the card's headline
+`Tr_ω(|H_(m,k,p)|^(2m)) = (A)` is:
+
+| step | status |
+|---|---|
+| §1 source reduction `H_(m,k,p) → E_(m,k,p)` modulo trace class | **imported** (Connes–Consani) |
+| §2–§5, (7)–(13) | Lean |
+| (14) for the *operator* `G^m`, both frequencies, every `m` | **Lean (pass 34/35 for `m = 1`, pass 54 for `m ≥ 2`)** |
+| §6 weak `V_0`-modulation ⇒ `lim (1/log N) Σ_(j≤N) μ_j(G^m) = (15)` | **imported** (Lord–Sukochev–Zanin diagonal theorem) |
+| §7 local-factor restoration | Lean |
+| `L^(1,∞)` membership and measurability of a *realization* with those singular values | Lean |
+| `k`-independence, distinctness of components, positivity | Lean |
+
+The card therefore remains at stage 2.  The two remaining Lean targets, in order of size:
+
+1. **§6, the eigenvalue-comparison step.**  What is needed is the Lord–Sukochev–Zanin diagonal
+   formula: for a positive `T` weakly `V_0`-modulated with respect to an orthonormal basis
+   `(e_n)`, `Σ_(n<N) ⟪e_n, T e_n⟫ − Σ_(j<N) μ_j(T) = O(1)`.  One half is free — the Schur–Horn
+   majorization gives `Σ_(n<N)⟪e_n,Te_n⟫ ≤ Σ_(j<N) μ_j(T)` for positive `T` — so only the reverse
+   inequality needs the modulation hypothesis.  The corpus owns the Dixmier ideal
+   (`HTGeometry/DixmierIdeal.lean`) but nothing about modulated operators.
+2. **§1, the source reduction.**  Connes–Consani's one-prime decomposition, applied with
+   `ρ_∞` replaced by `ρ_∞^(m,k)`; the discarded terms are rapidly smoothing or finite rank.

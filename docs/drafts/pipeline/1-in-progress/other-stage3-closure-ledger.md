@@ -5158,3 +5158,22 @@ Two lessons worth keeping.
   cross-aperture rigidity, so `RHTower/SoninDepthApertureRigidity.lean`'s
   `norm_burnolExtendedSoninEvaluationVector_soninDepth_bounds` gives `(18e)` with no hypothesis.
   Both modules are axiom-clean and wired into `GaloisForLFunctions.RHTower`.
+
+- 2026-08-18 — `gauss-component-quasi-inner-residue-hierarchy` advanced substantially, **not yet
+  closed**. Formalized unconditionally and axiom-clean (`[propext, Classical.choice, Quot.sound]`),
+  all umbrella-wired: nine new modules
+  (`HTGeometry/FourierInnerCoefficientBound`, `RHTower/GaussSpikeDefectBand`,
+  `RHTower/GaussPairingDefect`, `RHTower/GaussClassStep`, `RHTower/GaussPairingOneStep`,
+  `RHTower/GaussRelativeIterate`, `RHTower/GaussRelativePower`,
+  `RHTower/GaussConjugationSymmetry`, `RHTower/GaussIterateLogResidue`) closing the card's named
+  Lean gap — the operator-theoretic identification `⟨G^m e_n, e_n⟩ → gaussPrincipalDiagonalTerm`
+  — at every `m`, and with it equation (11) in *relative* form, equation (14) for the operator, and
+  formula (A) at the diagonal level:
+  `tendsto_gaussLocalDiagonal_pow_logResidue (2 ≤ m) → gaussChannelResidue m p`.
+  Corrections recorded on the card: the earlier `m ≥ 2` plan (an `L²` one-step estimate on the
+  two-piece class, hence a generalization of (T)) targets a **false** statement; the correct object
+  is the *pairing*, which removes every operator norm of a normalized shifted block. The card's
+  own "Formalized" table over-credited §6: the weak-Schatten theorems there are about a
+  realization, not about `G^m`.
+  Remaining for closure: §6's Lord–Sukochev–Zanin diagonal formula for weakly modulated operators
+  (one half — Schur–Horn majorization — is free), and §1's Connes–Consani source reduction.

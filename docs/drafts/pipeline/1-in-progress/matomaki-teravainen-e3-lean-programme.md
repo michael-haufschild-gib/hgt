@@ -601,3 +601,77 @@ Two escapes to test, in order of promise:
 
 Neither escape is settled; the analysis above of the MVT failure is, and it rules out the naive
 route.
+
+## M4c CLOSED — Lemma 4.1 is Lean-proved unconditionally (2026-08-18)
+
+Two more modules complete the chain from Huxley's estimate to the paper's Lemma 4.1.
+
+### `Sieve/HuxleyDensityBound`
+
+```text
+huxley_threshold_of_rpow (h : 2400·D² ≤ N^{1/2−2σ}) :
+  (D²/N)(1 + 1536√(3N/4π)) ≤ (N^{−σ})²/3
+```
+— Huxley's `V ≥ N^{3/4+o(1)}` in the divisor-bounded normalisation.  Mechanism: `√(3/4π) ≤ 1/2`
+(only `π > 3` is needed), so the envelope is `≤ 800√N`, and `(D²/N)·800√N = 800D²N^{−1/2}`.
+
+```text
+huxley_block_two_term :
+  |S| ≤ (6594624·T·D⁶·N^{6σ−2} + 2·D²·N^{2σ})·(1 + 12π(1 + log(2T+1)))
+```
+— **Huxley's `T G³NV^{−6} + GNV^{−2}` with every constant explicit and no asymptotic notation**, for
+a one-separated `S` inside a range of length `2T` on which the block reaches `N^{−σ}`.  The proof is
+pure `rpow` bookkeeping against `A = N^{2σ}`: `V²A = 1`, `V⁴A² = 1`, `N^{6σ−2} = A³/N²`.
+
+### `Sieve/HuxleyDensityHypothesis`, `Sieve/HuxleyDensityThreshold`
+
+```text
+lemma41_huxley (heps : 0 < ε) (hepss : ε ≤ 1/1000) (hT1 : 1 ≤ T)
+    (hE : 6594624 ≤ T^{ε²}) (hL : 1 + 12π(1+log(2T+1)) ≤ T^{ε²})
+    (hD1 : 1 ≤ D) (hD6 : D⁶ ≤ T^{ε²})
+    (hNlo : T^{9/11} ≤ N) (hNhi : N ≤ T^{1−ε})
+    (hsl : 5ε ≤ σ) (hsh : σ ≤ 7/32 − 5ε)
+    (hthr : 2400 D² ≤ N^{1/2−2σ}) … :
+  |S| ≤ T^{2σ − ε²/5}
+
+exists_lemma41_largeness : ∃ T₀ ≥ 1, ∀ T ≥ T₀, the three largeness hypotheses hold
+exists_lemma41_huxley    : the same statement with `hE`, `hL`, `hD6` discharged
+```
+
+The exponent arithmetic is exactly as predicted:
+
+* `N^{6σ−2} ≤ T^{(9/11)(6σ−2)}` (antitone `rpow` in the base, `6σ−2 ≤ 0`), so the first term is
+  `≤ T^{3ε² + 1 + (9/11)(6σ−2)}`, and
+  `2σ − ε²/5 − (3ε² + 1 + (9/11)(6σ−2)) = (7 − 32σ)/11 − 3.2ε² ≥ 160ε/11 − 3.2ε² ≥ ε²`;
+* `N^{2σ} ≤ T^{(1−ε)2σ}`, so the second term is `≤ 2T^{2ε² + (1−ε)2σ}`, and
+  `2σ − ε²/5 − (2ε² + (1−ε)2σ) = 2σε − 2.2ε² ≥ 7.8ε² ≥ ε²`;
+* in both cases `T^{ε²} ≥ 6594624 ≥ 4` absorbs the factor `2` and the constants.
+
+`exists_lemma41_largeness` builds the threshold explicitly: with `z = ε²/2` and
+`C = 6594624 + D⁶ + 1 + 12π + 12π·3^z/z`, take `T₀ = max 1 (C^{1/z})`; then `T^z ≥ C` and
+`log(2T+1) ≤ 3^z T^z/z` (mathlib's `Real.log_le_rpow_div`) give all three.
+
+**Six theorems, all `#print axioms` clean, all wired.  Milestone M4c is closed** — with `σ = 7/32`
+in place of the paper's `49/206`, which Remark 5.2 permits.
+
+### Milestones after this session
+
+- [x] **M4** audit; **M4a** adapted-moment level set; **M4b′** Huxley's global estimate;
+      **M4c** Lemma 4.1 at `σ = 7/32 − 5ε`.
+- [ ] **M4d** *(new)* Proposition 4.2 (Type II estimate): the `T₁/T₂/T₃` partition, the discrete
+      mean value theorem for `M_j(1+it)^{ℓ_j}`, and Halász–Montgomery on `T₁`.  All three
+      ingredients are corpus-owned; this is assembly.
+- [ ] **M2** Lemma 3.1 (Perron/variance reduction).
+- [ ] **M3** §7 assembly (window comparison remains).
+- [ ] **M5** Prop 2.2 (Harman's sieve decomposition).
+- [ ] **M6/M7** Type I and Type I/II — **blocked on the Watt/Deshouillers–Iwaniec fork above**.
+- [ ] **M8** Theorem 1.2′ at exponent `≈ 1.557`; retune both Route E cards.
+
+### Deduplication (2026-08-18)
+
+`Sieve/SeparatedCount` already owned the counting core `card_le_of_separated` (a cell-index
+injection, more general than the ordering argument: any finite family in an interval of length `L`
+with pairwise separation `g` has at most `L/g + 1` members).  The version first written here was a
+name collision in `RHTower.Sieve` that would have broken the umbrella; it is now
+`card_le_of_pairwise_spread`, a three-line wrapper anchoring the corpus lemma at `S.min'`.
+A collision scan over all twenty-three new declarations found no other clash.

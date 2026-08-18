@@ -440,6 +440,24 @@ theorem exists_entire_approx_single_kernel {c a : ℂ} (ha : a.re < 1) {ρ : ℝ
     have := hgb s hs
     rwa [hdiracEval s] at this
 
+/-- A single Cauchy kernel with pole to the left of the line is entirely approximable on the closed
+half plane alone, with no condition on the pole beyond `Re a < 1`. -/
+theorem exists_entire_approx_single_kernel_halfPlane {c a : ℂ} (ha : a.re < 1) {ε : ℝ}
+    (hε : 0 < ε) :
+    ∃ g : ℂ → ℂ, Differentiable ℂ g ∧ ∀ s : ℂ, 1 ≤ s.re → ‖c * (s - a)⁻¹ - g s‖ ≤ ε := by
+  have hdiracInt : Integrable (fun _ : Unit => c) (Measure.dirac ()) := integrable_const c
+  have hdiracEval : ∀ s : ℂ,
+      (∫ _x : Unit, c / (s - a) ∂(Measure.dirac ())) = c * (s - a)⁻¹ := by
+    intro s
+    rw [integral_const]
+    simp [div_eq_mul_inv]
+  obtain ⟨g, hgd, hgb⟩ := exists_entire_approx_cauchyTransform (α := Unit) (Measure.dirac ())
+    (w := fun _ => a) (φ := fun _ => c) (δ := 1 - a.re) (by linarith) (fun _ => by linarith)
+    measurable_const hdiracInt hε
+  refine ⟨g, hgd, fun s hs => ?_⟩
+  have hb := hgb s hs
+  rwa [hdiracEval s] at hb
+
 end GaloisForLFunctions.HTGeometry
 
 end
