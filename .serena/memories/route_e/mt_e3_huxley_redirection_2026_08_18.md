@@ -191,3 +191,15 @@ Choices that make the discharge close (worked out, not guessed): `R = 500`, Mark
 and `#Bad₂ ≤ 0.054√x`, a small fraction of `#outerBlock ≍ √x`; and for `a ∉ Bad₂`,
 `∑_{fibre} μ² ≥ ϱL − 500 − L/500 − θ ≥ (1/2)ϱL` once `L ≥ h/4` is large.  Do **not** try `R ≍ 27`
 (the naive `R + L/R ≤ ϱL/4` choice) — it gives `#Bad₂ ≈ 3.9√x > #outerBlock`.
+
+## Second duplication caught (2026-08-18, 19:20)
+
+`Sieve/SquarefreeExceptional.card_large_le_of_sum_le` already IS the linear Markov inequality
+(`#{t ∈ S : θ ≤ f t} ≤ (∑_S f)/θ`, `f ≥ 0`).  A copy written in
+`Sieve/FibreSquarefreeIngredients` was a same-namespace collision and was removed.  **Run the
+collision scan BEFORE installing, not after** — `lake build` of the new module alone does not see the
+clash because it need not import the other file.
+
+Landed instead: `windowTail`, `windowTail_nonneg`, `windowTail_mono`, `fibreLen_le` — the two facts
+that let the per-fibre tail be replaced by the tail at the uniform length `⌈h⌉+1` so that
+`sum_block_comp_start_le` can aggregate it.

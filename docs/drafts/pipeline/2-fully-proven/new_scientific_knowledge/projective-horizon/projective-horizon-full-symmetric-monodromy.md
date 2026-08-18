@@ -2026,3 +2026,84 @@ finite product of copies of a field has rank one".
 Note what P5 avoids: no Galois descent, no constant-field theorem, no purity — local nilpotence is
 checked after base change to `F̄`, where the derivation is *forced* to be `d/dw` by the uniqueness
 of P1, and nilpotency of an element is detected in any faithful extension.
+
+## Lean progress — the `SCE_k` engine, part 1: seven more modules
+
+All wired into `GaloisForLFunctions.HTGeometry`, all axiom-clean.
+
+```text
+HTGeometry/LocallyNilpotentDerivationSlice.lean
+    derivationKernel, iterate_deriv_pow, exists_polynomial_of_iterate_eq_zero
+    aeval_slice_injective
+    bijective_aeval_of_locallyNilpotent, sliceAlgEquiv
+        ** SLICE THEOREM: a locally nilpotent derivation of a ℚ-algebra with D s = 1 makes the
+           algebra the polynomial ring (ker D)[s] **
+
+HTGeometry/TraceDualBasisSeparability.lean
+    traceDual, trace_mul_traceDual, eq_zero_of_trace_basis_mul_eq_zero
+    sum_mul_traceDual        ∑ᵢ eᵢ fᵢ = 1
+    mul_traceDual            b fᵢ = ∑ⱼ (e.repr (b eⱼ) i) fⱼ
+    derivation_eq_zero       ** a finite free algebra with unit discriminant has NO nonzero
+                                derivations over the base — uniqueness of derivation lifts **
+
+HTGeometry/EtaleDerivationLift.lean
+    sum_swap_traceDual       the separability identity as a swap of bilinear arguments
+    coeffDeriv, theta, theta_cocycle, phi, phi_key
+    liftDerivation           ** EXISTENCE: every derivation of the base lifts to a finite free
+                                algebra with unit discriminant (Hochschild coboundary, no tensor
+                                products) **
+    liftDerivation_algebraMap, derivation_ext
+
+HTGeometry/SectionIdempotent.lean
+    trace_traceDual_mul, dual_expansion, dual_expansion'
+    sectionIdem              ε := ∑ᵢ ψ(eᵢ) • fᵢ
+    trace_sectionIdem_mul    Tr(ε b) = ψ b
+    sectionIdem_mul          ** ε b = ψ b • ε **
+    apply_sectionIdem        ** ψ ε = 1  (apply ψ to ∑ eᵢ fᵢ = 1) **
+    sectionIdem_idem         ** hence ε² = ε **
+
+HTGeometry/ProductAlgebraDiscriminant.lean
+    isUnit_discr_of_isUnit_discr   unit-ness of the discriminant is basis-independent
+    trace_prod_apply, discr_prod_singleton   the trace form of A × B' is an orthogonal direct sum
+
+HTGeometry/SectionQuotientSplit.lean
+    sectionProdEquiv         ** B ≃ₐ[A] A × (B ⧸ (ε)) **
+    finite/torsionFree/finrank_sectionQuot
+    exists_basis_sectionQuot ** over a PID the complement is free of rank one less, with unit
+                                discriminant **
+
+HTGeometry/AffineLineEtaleSplit.lean
+    finSuccProdAlgEquiv, emptyAlgEquiv
+    nonempty_algEquiv_pi_of_isUnit_discr
+        ** over ANY algebraically closed field of characteristic zero, a finite free E[X]-algebra
+           with unit discriminant is isomorphic to E[X]ⁿ — the full splitting, not just the
+           connected case **
+```
+
+### The two discoveries that made this cheap, recorded
+
+1. **The section idempotent is elementary.**  It was expected that `ε² = ε` would have to be checked
+   fibre by fibre (the fibres are split, so `ε` is a coordinate idempotent there, and an infinite
+   base field then forces the identity).  That is unnecessary: `ε b = ψ b • ε` follows by expanding
+   `ε b` in the dual basis, and `ψ ε = 1` follows by applying `ψ` to `∑ᵢ eᵢ fᵢ = 1`.  Both are three
+   lines, and `ε² = ψ ε • ε = ε`.
+
+2. **`∂ ε = 0` for free.**  Differentiating `ε b = ψ b • ε` at `b = ε` gives `2 ε ∂ε = ∂ε`;
+   multiplying by `ε` gives `ε ∂ε = 0`, hence `∂ε = 0`.  So the derivation respects the idempotent
+   splitting with no further argument.  (Recorded for the next step; the splitting theorem above
+   makes it unnecessary in the end, since after splitting the derivation is *forced* to be the
+   componentwise `d/dw`.)
+
+### What remains of `SCE_k`
+
+```text
+polyDeriv                 d/dX as a Derivation R R[X] R[X]                       TODO (small)
+derivation_eq_zero, module form   Derivation A B M = 0 for any B-module M         TODO (small)
+locallyNilpotent           over an algebraically closed field: transport the lift through
+                           nonempty_algEquiv_pi_of_isUnit_discr, where the lift is forced by
+                           derivation_ext to be the componentwise derivative                TODO
+base-change compatibility  ∂̄ (1 ⊗ b) = 1 ⊗ ∂ b, by the module form of derivation_eq_zero   TODO
+SCE_k induction            MvPolynomial.finSuccEquiv, then: local nilpotence over F̄ ⟹ slice
+                           theorem ⟹ B = C[w] ⟹ C = B/wB is a domain, finite free of rank n
+                           over R with unit discriminant ⟹ induction                        TODO
+```

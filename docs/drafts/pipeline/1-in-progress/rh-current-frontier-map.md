@@ -42,9 +42,9 @@ route under corpus source-isogenies.
 | D2 | safe-line Euler deficit → analytically continued prime–Gamma trace → finite high-frequency ceiling → RH | Continue literal positive deficit through Euler wall and prove any finite uniform ceiling above frequency four. |
 | E | squarefree central Wold shell → explicit parity-coalesced/whole-anchor opposite-sign relation → physical Carleson and co-moving flux → Mertens cancellation → RH | Long-window Möbius fibre mean square and eventual occurrence of both signs in the same `sqrt(x) exp((log x)^(99/100))` window are Lean-proved. In all-interval `E_3`, Huxley closes Lemma 4.1; Type-II assembly and the Type-I fork remain. RH-bearing core is still unit load, interval Hall expansion, and co-moving flux for one fixed relation. |
 | G | Suzuki/CCM source → restricted-Weil Morse floor or one-sided Euler--Gamma/Carleman wall → aperture-dressed FE light completion → Hermite–Biehler orientation → RH | Floor: aperture-Morse exhaustion/boundary-rough exclusion. Coalescing: prove literal low-source cyclic mass above `1/113` is `o(r/log^2(1/r))`, or realize the forced opposite lower bound. Wall: compare prime-minus-regular-screw mass with negative light/holonomy. G-CE now has exact singular-graph debt, global lower wall, and one cofinal source-native finite self-adjoint boundary transport. Remaining core is cancellation or exclusion of that exact debt in uncompleted physical coordinates; debt zero is exactly RH. |
-| L | arithmetic Poisson/Green complex → source Green closure and harmonic complement → faithful cup-isometric Meyer comparison → positive Hodge block → critical line → RH | Construct the source-derived singular comparison identifying resolved boundary flatness with the fixed coefficient-faithful Burnol/Deninger physical landing before divisor specialization. Strict resolved chain provenance exists. The shared second-Cartier branch now has an exact pointed Krein boundary relation preserving coefficient, prime character, both orientations, and multiplicity. It admits every nonzero character; any criticality-producing completion must supply a nonlinear Xi-selected transverse anchor/polarization, since every nonzero complex-linear covariant anchor is formally impossible off line. |
+| L | arithmetic Poisson/Green complex → source Green closure and harmonic complement → faithful cup-isometric Meyer comparison → positive Hodge block → critical line → RH | Construct the source-derived singular comparison identifying resolved boundary flatness with the fixed coefficient-faithful Burnol/Deninger physical landing before divisor specialization. Strict resolved chain provenance exists. The shared second-Cartier branch now has an exact nonlinear Hermitian-incidence polarization preserving coefficient, prime character, both orientations, multiplicity, and positive selected Krein square. Because this shell is invariant for every nonzero character, next producer must impose source-natural two-sided orbit compactness/coercivity or an endpoint contraction excluding hyperbolic escape. |
 | O | restricted-Weil operator → canonical exact-ground Gamma--Slepian heads → completed actual-head autocorrelation producer → nonnegative floor → RH | Prime, polar, endpoint, and scalar masses cancel exactly, leaving higher-Gamma energy plus one signed boundary autocorrelation current. Sign that inseparable joint block cofinally on canonical heads. Unsigned cell absorption and every phase-free nonnegative chi-square separation are impossible; full constrained-sector spectrum, ground transfer, and exact producer identity are closed. |
-| P | primitive Euler/Burnol budget → completed Gamma--Julia four-orientation orbit → Wold-cubic regularization → selected-fibre signed conservation → RH | The first valid nonmultiplicative receiver is now formal: a one-vertical-line pointed Krein relation with nonzero null/nonradical ghost, exact Xi coefficient and multiplicity, orientation swap, and prime-character Krein isometry for every nonzero character. It does not force criticality. First open core is a source-derived nonlinear Xi-selected transverse anchor, boundary condition, or polarization that couples the reciprocal-star ghost leg to the unit leg without becoming a complex-linear section; Lean proves every nonzero linear covariant anchor forces unit modulus and hence cannot exist on a strict-right fibre. |
+| P | primitive Euler/Burnol budget → completed Gamma--Julia four-orientation orbit → Wold-cubic regularization → selected-fibre signed conservation → RH | Nonlinear Xi-selected polarization is now formal: the conserved Hermitian incidence `u star(a+b)=2 star(c)` cuts the pointed relation to an exact transverse shell, preserves both orientations/signs, prime transfer, coefficient, multiplicity, and positive actual-Xi Krein square, and is provably neither additive nor a complex submodule. It still admits every nonzero character. First open core is a source-derived physical compactness/coercivity/order law for its two-sided transfer orbit, or a literal endpoint-contraction identification that excludes reciprocal hyperbolic escape. |
 | Q | theta–Cassini source → separated finite prime–Gamma packet sign → transverse charge zero → RH | Produce nonnegative energy cofinally toward orientation vector. Null boundaries have hidden mixed incidence `-E/2`; diagonal budgets and adaptive complex phases cannot repair fusion. Alternative UQ-QC asks for finite pre-divisor quadratic-concentration budget. |
 | T | centered prime--Gamma source → detector/Mellin packet, Wold residual ODE, caustic-null true-prime Bessel cone, or sub-square-root massive chirp → RH | For every prescribed logarithmic retreat coefficient, some finite jet order gives an exact finite-atom/true-prime-quadrature RH receiver. Prove the signed bound for its remaining interior finite core; residual/sub-`3/2` and growing-Xi chirp branches remain. Every fixed finite radiation subtraction diverges and is retired. |
 | U | shifted-Xi Hankel first crossing → boundary-rough completed null ground → restricted-Weil positivity → RH | Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: off RH the least zero aperture has a genuine null ground absent from every strict smooth interior source. Exclude this completed-boundary state by a trace/quotient or whole-ground theorem. |
@@ -1509,10 +1509,14 @@ must reject positivity of either `G` or `-G`. The relation is provably not a gra
 
 Hostile completion audit is also formal. A complex-linear transverse anchor nonzero on the ghost
 and covariant from its reciprocal-star leg to the unit-anchor leg forces character norm one; hence
-no such anchor exists on a strict-right Xi fibre. **Open core:** construct a source-derived,
-Xi-selected nonlinear boundary condition/polarization or genuinely relational transversality law
-that couples those two legs without reducing to a complex-linear section. The bare Krein relation
-admits every nonzero character and therefore is a carrier producer, not RH. Ordinary Loewner
+no such anchor exists on a strict-right Xi fibre. The nonlinear replacement is now formal: the
+Hermitian incidence `u star(a+b)` is exactly conserved by every nonzero prime transfer, and its
+actual-Xi level shell admits forward/inverse orientations and both ghost signs, has a unique anchor
+on every nonzero-sum source fibre, is neither additive nor a complex submodule, has positive
+selected Krein square, and restores exact divisor multiplicity. **Open core:** prove a
+source-derived two-sided orbit compactness/coercivity/order law for this shell, or identify it with
+the literal endpoint contraction so reciprocal hyperbolic escape is excluded. The shell itself
+still admits every nonzero character and therefore is a carrier producer, not RH. Ordinary Loewner
 descent, linear reporting/sectioning, scalar/Krein endpoint correction, rank-one shorting, direct
 `det₂` welding, compression-monotone Ward budgets, and canonical BV signs are dead.
 
@@ -3964,11 +3968,12 @@ Highest-value research topics are those capable of supplying one of these consti
 - source-relative intersection/compressed-trace identities controlling Hermitian deviation sector;
 - noncommutative or singular mixing mechanisms that preserve reflection-odd horizontal class until
   annihilation, rather than radical-preserving normalization;
-- a source-derived nonlinear Xi-selected transverse boundary condition/polarization for Route P's
-  now-formal pointed Krein relation. The relation already retains exact coefficient, prime label,
-  both orientations, multiplicity, and a nonradical null ghost for every nonzero character. Linear
-  transverse sections are formally impossible off line, so the remaining law must be genuinely
-  nonlinear or relational;
+- source-natural two-sided orbit compactness/coercivity for Route P's now-formal nonlinear
+  Hermitian-incidence shell, or a coefficient-faithful identification of that shell with the
+  literal non-spectral endpoint contraction. The shell already retains exact coefficient, prime
+  label, both orientations/signs, multiplicity, and positive selected Krein square, but remains
+  invariant under every nonzero character; remaining law must exclude reciprocal hyperbolic
+  escape without inserting unit modulus;
 - completed moving-degree reverse-Bessel prime--Gamma window assembly converting half-log reserve
   and recovered Euler damping into cofinal pulse capital;
 - source-native theta--Cayley half-step transport neutralizing reflection weight before divisor

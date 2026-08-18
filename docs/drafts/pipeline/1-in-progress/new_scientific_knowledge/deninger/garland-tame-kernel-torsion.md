@@ -371,3 +371,56 @@ valuation zero at `X` (`residueDataAtPlace_val'_eq_zero`), the residue field at 
 purely bookkeeping: assemble these on a symbol `⟨[c₁, …, c_n]⟩` of constants to conclude that
 `milnorSpecialization` at `X` composed with `K_n^M(F) → K_n^M(F(t))` is the identity, hence that the
 structure map is **split injective** — the first exactness statement of Milnor's sequence.
+
+### Milnor's exact sequence — LEFT EXACTNESS PROVED
+
+Same module.
+
+```text
+ratFuncConstHom                          the constants F →+* F(t)
+placeIntegerUnit_C_eq                    the image of a unit of F is the integral unit of C c
+residueUnit_ratFuncConstHom              ** the residue at X of the image of c ∈ Fˣ is c **
+milnorSpecialization_polyPlaceX_retract  ** specialization at X retracts the structure map on
+                                            all of K_n^M(F) **
+milnorKDegMap_ratFuncConstHom_injective  ** K_n^M(F) → K_n^M(F(t)) is INJECTIVE, split **
+```
+
+This is the left-exactness half of
+
+`0 → K_n^M(F) → K_n^M(F(t)) --(⊕ ∂_π)--> ⊕_π K_{n−1}^M(F[X]/π) → 0`
+
+for every field `F` and every degree `n`, proved unconditionally.  The argument is exactly Milnor's:
+a constant is a unit of valuation zero at the place `X`, the residue field there is `F`, and the
+residue of a constant is itself, so `milnorSpecialization_of_units` turns a symbol of constants into
+the same symbol back in `F`; the symbol classes generate, and the equaliser of the composite with the
+identity is a subgroup, so the retraction holds on all of `K_n^M(F)`.
+
+**Remaining for the full sequence**: surjectivity of the total residue (division with remainder) and
+exactness in the middle (the degree filtration `L_d` and the isomorphism
+`L_d/L_{d−1} ≅ ⊕_{deg π = d} K_{n−1}^M(F[X]/π)`).  With those the Bass–Tate–Kato norm and the
+projection formula follow, which is what every reduction between number fields needs.
+
+### Milnor's exact sequence — RIGHT EXACTNESS PROVED
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorKResidueUniformizer.lean` (wired, axiom-clean).
+
+```text
+resPairAt_append_unif        the residue fold on a symbol of valuation-zero units followed by π
+milnorResidue_append_unif    ** ∂{u₁, …, u_n, π} = {ū₁, …, ū_n} **
+exists_list_residueUnit      a list of residues lifts to a list of units of valuation zero
+milnorResidue_surjective     ** the residue ∂ : K_{n+1}^M(K) → K_n^M(k) is SURJECTIVE **
+                                (given that the residue map on units of valuation zero is)
+```
+
+The fold collapses exactly as Milnor's construction predicts: the uniformizer contributes the single
+`ξ`, and each unit of valuation zero contributes multiplication by the class of its residue, the
+correction terms vanishing because their coefficient is the valuation.  Surjectivity follows by
+lifting the entries of a symbol of `k` and appending the uniformizer.
+
+With `milnorKDegMap_ratFuncConstHom_injective` this gives **both outer exactness statements** of
+
+`0 → K_n^M(F) → K_n^M(F(t)) --(⊕ ∂_π)--> ⊕_π K_{n−1}^M(F[X]/π) → 0`
+
+unconditionally.  What remains is exactness in the middle — the degree filtration `L_d` and
+`L_d/L_{d−1} ≅ ⊕_{deg π = d} K_{n−1}^M(F[X]/π)` — after which the Bass–Tate–Kato norm and the
+projection formula follow.

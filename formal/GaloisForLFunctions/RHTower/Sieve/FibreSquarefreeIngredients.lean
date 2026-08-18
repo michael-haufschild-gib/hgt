@@ -27,25 +27,6 @@ theorem windowTail_mono {t L L' R M : ℕ} (hL : L ≤ L') :
     Finset.card_le_card (Finset.filter_subset_filter _ hsub)
   exact_mod_cast this
 
-/-- **Markov's inequality for a nonnegative weight.** -/
-theorem card_large_le_of_sum_le {S : Finset ℕ} {f : ℕ → ℝ} {R θ : ℝ} (hθ : 0 < θ)
-    (hf : ∀ i ∈ S, 0 ≤ f i) (h : ∑ i ∈ S, f i ≤ R) :
-    (((S.filter (fun i => θ < f i)).card : ℕ) : ℝ) ≤ R / θ := by
-  classical
-  set B : Finset ℕ := S.filter (fun i => θ < f i) with hB
-  have hsub : B ⊆ S := Finset.filter_subset _ _
-  have hlow : (B.card : ℝ) * θ ≤ ∑ i ∈ B, f i := by
-    have hterm : ∀ i ∈ B, θ ≤ f i := by
-      intro i hi
-      exact (Finset.mem_filter.1 hi).2.le
-    calc (B.card : ℝ) * θ = ∑ _i ∈ B, θ := by
-          rw [Finset.sum_const, nsmul_eq_mul]
-      _ ≤ ∑ i ∈ B, f i := Finset.sum_le_sum hterm
-  have hrest : ∑ i ∈ B, f i ≤ ∑ i ∈ S, f i :=
-    Finset.sum_le_sum_of_subset_of_nonneg hsub (fun i hi _ => hf i hi)
-  rw [le_div_iff₀ hθ]
-  linarith
-
 /-- **Every fibre is short.**  The fibre above `a ≥ √x` has length at most `⌈h⌉ + 1`. -/
 theorem fibreLen_le {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {a : ℕ} (ha : a ∈ outerBlock x h) :
     fibreLen x h a ≤ ⌈h⌉₊ + 1 := by

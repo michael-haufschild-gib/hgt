@@ -1,10 +1,10 @@
 # G-CE zero-clock rate--boundary decoupling
 
 - **ID:** `g-ce-zero-clock-rate-boundary-decoupling`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** NO-GO / positive frontier classification
 - **Source:** marked clock--Sonin producer; G-CE finite self-adjoint boundary transport
-- **Status:** `[PAPER-PROVED]`; Lean pending
+- **Status:** `[LEAN-PROVED]`
 
 ## Exact claim
 
@@ -93,3 +93,14 @@ The collapsing odd port is not the singular graph debt. Debt is a zero-clock aff
 charge, whereas the odd port is a clock commutator and therefore annihilates the base clock. This
 typing obstruction survives arbitrary cofinal acceleration and the already-complete finite
 self-adjoint boundary transport.
+
+## Lean certificate
+
+Formalized unconditionally in
+`GaloisForLFunctions.RHTower.MobiusGammaXiMarkedClockBoundaryRateDecoupling`.
+
+The capstone theorem
+`exists_mobiusGammaXiMarkedZeroClockRate_boundaryTransport_debt` packages one strictly cofinal
+schedule carrying finite positive self-adjoint source heads, operator-norm and complete
+boundary-column transport, identically vanishing zero-clock marked rate, base-response convergence
+to the critical coefficient, singular budget convergence to `4+|d|^2`, and `d=0 ↔ RH`.

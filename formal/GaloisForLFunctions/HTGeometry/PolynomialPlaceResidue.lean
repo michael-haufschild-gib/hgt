@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.DedekindResidueFieldAtPlace
 import GaloisForLFunctions.HTGeometry.MilnorKResidueValuation
 import GaloisForLFunctions.HTGeometry.MilnorKResidueUnits
 import GaloisForLFunctions.HTGeometry.MilnorKDegFunctoriality
+import GaloisForLFunctions.HTGeometry.MilnorKResidueUniformizer
 import Mathlib.FieldTheory.RatFunc.Basic
 import Mathlib.RingTheory.Polynomial.Quotient
 
@@ -143,6 +144,38 @@ theorem residueFieldAtPlaceEquiv_residueUnit {r : R} (hr0 : r ≠ 0) (hr : r ∉
   rw [hval]
   exact residueFieldAtPlaceEquiv_residue K v r
 
+/-- **Every residue class at a finite place is the residue of an integral unit.** -/
+theorem residueDataAtPlace_residueUnit_surjective
+    (y : (ResidueField ((v.valuation K).valuationSubring))ˣ) :
+    ∃ a : Kˣ, (residueDataAtPlace K v).val' a = 0
+      ∧ (residueDataAtPlace K v).residueUnit a = y := by
+  obtain ⟨r, hr⟩ := residue_placeIntegerElt_surjective K v
+    ((y : ResidueField ((v.valuation K).valuationSubring)))
+  have hy0 : ((y : ResidueField ((v.valuation K).valuationSubring))) ≠ 0 := y.ne_zero
+  have hrmem : r ∉ v.asIdeal := by
+    intro hmem
+    refine hy0 ?_
+    rw [← hr]
+    refine (residueFieldAtPlaceEquiv K v).injective ?_
+    rw [residueFieldAtPlaceEquiv_residue, map_zero]
+    exact (Ideal.Quotient.eq_zero_iff_mem).2 hmem
+  have hr0 : r ≠ 0 := by
+    intro h
+    exact hrmem (h ▸ v.asIdeal.zero_mem)
+  refine ⟨placeIntegerUnit K hr0, residueDataAtPlace_val'_eq_zero K v hr0 hrmem, ?_⟩
+  refine Units.ext ?_
+  rw [ResidueData.residueUnit_of_mem_ker _ (placeIntegerUnit_mem_ker K v hr0 hrmem)]
+  show IsLocalRing.residue _ (placeIntegerElt K v r)
+    = ((y : (ResidueField ((v.valuation K).valuationSubring))ˣ) :
+        ResidueField ((v.valuation K).valuationSubring))
+  exact hr
+
+/-- **Milnor's residue at a finite place of a Dedekind domain is surjective.**  This is the
+right-exactness of the Gersten complex at its last term, with every side condition discharged. -/
+theorem milnorResidueAtPlace_surjective (n : ℕ) :
+    Function.Surjective (milnorResidue (residueDataAtPlace K v) (n + 1)) :=
+  milnorResidue_surjective _ (residueDataAtPlace_residueUnit_surjective K v) n
+
 end IntegralUnit
 
 /-! ## Constants at the place `X` -/
@@ -266,6 +299,16 @@ theorem milnorSpecialization_polyPlaceX_retract (n : ℕ) (x : MilnorKDeg F n) :
       exact residueUnit_ratFuncConstHom c
     rw [List.map_map, List.map_map, hfun, List.map_id]
   exact milnorKDeg_mem_of_gen (AddMonoidHom.eqLocus φ (AddMonoidHom.id _)) hsub x
+
+/-- **`K_n^M(F) → K_n^M(F(t))` is injective**, split by the specialization at `X`.  This is the
+left-exactness half of Milnor's sequence for a rational function field. -/
+theorem milnorKDegMap_ratFuncConstHom_injective (n : ℕ) :
+    Function.Injective (milnorKDegMap (ratFuncConstHom (F := F)) n) :=
+  Function.LeftInverse.injective
+    (g := fun y => milnorKDegMap (polyPlaceXResidueEquiv (F := F)).toRingHom n
+      (milnorSpecialization (residueDataAtPlace (RatFunc F)
+        (polyPlace (Polynomial.irreducible_X (R := F)))) n y))
+    (milnorSpecialization_polyPlaceX_retract (F := F) n)
 
 end ConstantsAtX
 

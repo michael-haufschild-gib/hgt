@@ -4412,3 +4412,29 @@ that make it close.**  No analytic input; every ingredient is an existing corpus
 completes step 1 with *no* hypotheses, after which the card needs only its marker supply
 (`Sieve/PrimeWindow`, already unconditional via Mertens) and the `MobiusReciprocalMarkerPrimeCapacity`
 passage from "most fibres good" to `(3)` at every `X`.
+
+### `Sieve/FibreSquarefreeIngredients` (2026-08-18)
+
+```text
+windowTail t L R M := ∑_{d ∈ [R+1, M]} #{n ∈ (t, t+L] | d² ∣ n}
+windowTail_nonneg, windowTail_mono (hL : L ≤ L') : windowTail t L R M ≤ windowTail t L' R M
+fibreLen_le (hx : 4 ≤ x) (hh : 0 ≤ h) (ha : a ∈ outerBlock x h) : fibreLen x h a ≤ ⌈h⌉ + 1
+```
+
+`windowTail_mono` is what lets the per-fibre tail be replaced by the tail at the uniform length
+`⌈h⌉+1`, so that `Sieve/FibreStartSeparation.sum_block_comp_start_le` can aggregate it over the
+outer block; `fibreLen_le` is the accompanying bound (real difference `h√x/a + 1 ≤ h + 1` for
+`a ≥ √x`).  Axiom-clean, wired.
+
+**Markov was already owned.**  `Sieve/SquarefreeExceptional.card_large_le_of_sum_le` is exactly the
+linear Markov inequality needed (`#{t ∈ S : θ ≤ f t} ≤ (∑_S f)/θ` for `f ≥ 0`); a duplicate written
+here was a same-namespace collision and has been removed.
+
+**Remaining for the squarefree-mass discharge** — four steps, all with named tools:
+1. `∑_{a ∈ outerBlock x h} windowTail (fibreStartIdx x a) (fibreLen x h a) 500 M'
+     ≤ 4 ∑_{y ∈ [⌈√x/2⌉, ⌈√x⌉]} windowTail (y−1) (⌈h⌉+1) 500 M'`
+   — `windowTail_mono` + `fibreLen_le` + `sum_block_comp_start_le`.
+2. reindex `y ↦ y−1` and enlarge to `Ico (⌈√x/2⌉−1) ⌈√x⌉`, then `sum_tail_divisor_count_le`.
+3. `Bad₂` from `card_large_le_of_sum_le` at `θ = 3h/40`.
+4. `squarefree_count_ge_trunc` at `R = 500`, `M' = ⌈√(x+h√x)⌉`, giving
+   `∑_{fibre} μ² ≥ ϱL − 500 − L/500 − θ ≥ (1/2)ϱL` for `L ≥ h/4` large.

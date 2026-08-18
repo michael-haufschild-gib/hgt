@@ -165,8 +165,9 @@ receiver.
   `sourceHorizontalSecondCartierKreinPolarizedBoundary_existsUnique`.
 - Actual Xi endpoint:
   `sourceHorizontalActualXiSecondCartierKreinHermitianPolarization_capstone`.
-- Status: scratch and production-file checks passed with `lake env lean`; exact leaf build and
-  axiom audit recorded below.
+- Verification: scratch and production-file checks passed with `lake env lean`; exact leaf
+  `lake build GaloisForLFunctions.RHTower.SourceHorizontalSecondCartierHermitianIncidencePolarization`
+  passed. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
