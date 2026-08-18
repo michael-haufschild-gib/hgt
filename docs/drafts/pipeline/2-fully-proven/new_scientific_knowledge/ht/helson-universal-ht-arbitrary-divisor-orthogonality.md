@@ -3262,3 +3262,90 @@ corollaries) was made on the way; `κ = 1` is what Lemma 1 consumes.
 | Theorem 1 (assembly by parts) | open |
 | Theorem 2 from Theorem 1 | open |
 | Theorem 5 from Theorem 2 (divisor surjectivity) | **Lean-proved** given the factorization property |
+
+## Andersson's Lemma 2 is unconditional in Lean
+
+`RHTower/Sieve/ShortIntervalThetaEveryWindow.lean` (axiom-clean, wired):
+
+The corpus already proves, by detector packing and *without* a short-interval PNT,
+
+```text
+RHTower.Sieve.eventually_routeT_detectorPacking_theta_mass_every_base :
+  701299/1000000 < alpha < 1  ==>  eventually  z^alpha/16384 < theta(z + z^alpha/2) - theta(z) .
+```
+
+Chaining that single window along `z_0 = y`, `z_{i+1} = z_i + z_i^alpha/2` and stopping at the last
+index inside `(y, y+L]` upgrades it to every window of every length:
+
+- `thetaChainSeq`, `thetaChainSeq_lower_linear`, `thetaChainSeq_tendsto` — the chain and its escape
+  to infinity;
+- **`exists_theta_window_lower`** — `∃X, ∀ y ≥ X, ∀ L ≥ 0`,
+  `(L - (y+L)^alpha)/8192 ≤ theta(y+L) - theta(y)`.  The telescoped masses are a fixed proportion
+  of the advance, and the advance misses the right endpoint by at most one step;
+- **`exists_theta_subwindow_lower`** — for `alpha < theta < 1`, `∃X, ∀ x ≥ X, ∀ 0 ≤ a ≤ b ≤ 1`,
+
+```text
+    ((b-a) - 2 x^{alpha-theta}) x^theta / 8192
+      ≤ theta(x + b x^theta) - theta(x + a x^theta) .
+```
+
+That is exactly Andersson's Lemma 2 in Chebyshev-mass form — the form his Lemma 4 consumes, since
+the linear system is weighted by `log p` — with `c = 1/8192` and `delta(x) = 2 x^{alpha-theta} → 0`.
+No zero-density input beyond what the corpus's Ingham detector chain already carries.
+
+### Toward Lemma 4
+
+`HTGeometry/LagrangeNodeBounds.lean` (axiom-clean, wired) adds the complex coefficient form of
+Lagrange interpolation: `eval_eq_sum_lagrange`, `norm_eval_le_of_nodes`, and
+`norm_coeff_le_of_nodes` — a polynomial of degree below the node count that is small at the nodes
+has small coefficients, with a constant read off the Lagrange basis.  The corpus already owns the
+*real value* form over separated nodes (`SeparatedNodeInterpolantBound.abs_eval_basis_le`,
+`abs_eval_interpolate_le_of_separated`), which is reused rather than reproved.
+
+Planned route to Lemma 4, replacing the compactness argument for the moment matrix by a quantitative
+one: the map `alpha ↦ (∑_i alpha_i ∑_{p ∈ B_i} t_p^{j-1} log p)_j` is injective with an explicit
+lower bound, because a polynomial whose average against each block measure is `≤ eps` has, by the
+intermediate value theorem, a point in each block where it is `≤ eps` in modulus; the blocks are
+separated, so the Lagrange bounds above force all its coefficients to be `O_J(eps)`.  Lemma 2
+supplies the block masses, and `w(x) = o(1)` then puts the solution inside the unit polydisc.
+
+### The anti-concentration engine for Lemma 4 is proved
+
+`HTGeometry/BlockAverageAntiConcentration.lean` (axiom-clean, wired):
+
+- **`exists_small_value_in_hull`** — if the weighted average of a continuous function over a finite
+  positively weighted node set is at most `eps` in modulus, the function takes a value of modulus at
+  most `eps` *inside* the node hull.  (The average lies between the extreme node values, so the
+  intermediate value theorem produces the point.)
+- `abs_coeff_le_of_nodes_real` — the real form of `norm_coeff_le_of_nodes`, transported along
+  `algebraMap ℝ ℂ`.
+- `unitFixedNodes`, `unitCoeffConst`, `abs_coeff_le_of_sup_unit` — a sup bound on `[0,1]` bounds
+  every coefficient, with the explicit fixed-node Lagrange constant.
+- `abs_eval_le_of_separated_nodes` — smallness at `η`-separated nodes in `[0,1]` gives the sup bound
+  `J · 2^{J-1}/(η^{J-1}(J-1)!) · eps` on `[0,1]`, via the corpus's
+  `SeparatedNodeInterpolantBound.abs_eval_interpolate_le_of_separated`.
+- **`norm_le_of_block_averages`** — a complex polynomial of degree `< J` whose weighted average over
+  each of `J` blocks carried by `η`-separated sub-intervals of `[0,1]` is at most `eps` has
+
+```text
+    ‖v k‖ ≤ 2 · ( J · 2^{J-1}/(η^{J-1}(J-1)!) · unitCoeffConst J k ) · eps
+```
+
+for every coefficient.  Real and imaginary parts are treated separately, since the intermediate
+value theorem is real.
+
+**Revised route to Lemma 4.**  Rather than solving the block system `∑_i α_i S_{i,j} = ξ_j` (whose
+matrix is the transpose of the map the bound above controls), take the coefficients themselves as
+unknowns: put `a_p := P_c(t_p)` for a polynomial `P_c` of degree `< J`.  The system becomes
+`H c = ξ` with the **Hankel moment matrix** `H_{j,k} = ∑_p t_p^{j+k} log p`, which is Hermitian and
+positive definite, so no transpose is involved.  Its least eigenvalue is bounded below by
+
+```text
+  c^* H c = ∑_p |P_c(t_p)|^2 log p  ≥  (block anti-concentration) ≥ lambda ‖c‖^2 ,
+```
+
+where the middle step is Cauchy--Schwarz against the block averages plus
+`norm_le_of_block_averages`, and `lambda` involves the block masses supplied by Lemma 2.  Then
+`‖Hc‖ ‖c‖ ≥ c^* H c ≥ lambda ‖c‖^2` gives `‖Hc‖ ≥ lambda ‖c‖` — elementary, no spectral theory —
+hence invertibility with `‖c‖ ≤ ‖ξ‖/lambda`, and `|a_p| = |P_c(t_p)| ≤ sqrt J ‖c‖ ≤ 1` once
+`w(x) = o(1)` is small enough.

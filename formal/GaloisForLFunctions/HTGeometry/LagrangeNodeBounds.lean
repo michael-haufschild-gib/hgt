@@ -34,9 +34,9 @@ theorem eval_eq_sum_lagrange {J : ℕ} (t : Fin J → ℂ) (ht : Function.Inject
   have hval : P.eval z
       = (Lagrange.interpolate (Finset.univ : Finset (Fin J)) t
           (fun i => P.eval (t i))).eval z := by
-    rw [hP]
+    rw [← hP]
   rw [hval, Lagrange.interpolate_apply]
-  rw [Polynomial.eval_finset_sum]
+  rw [Polynomial.eval_finsetSum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Polynomial.eval_mul, Polynomial.eval_C, Lagrange.basis]
   congr 1
@@ -72,8 +72,8 @@ theorem norm_coeff_le_of_nodes {J : ℕ} (t : Fin J → ℂ) (ht : Function.Inje
   have hcoeff : P.coeff j
       = ∑ i : Fin J, P.eval (t i) *
           (∏ k ∈ Finset.univ.erase i, Lagrange.basisDivisor (t i) (t k)).coeff j := by
-    conv_lhs => rw [← hP]
-    rw [Lagrange.interpolate_apply, Polynomial.finset_sum_coeff]
+    conv_lhs => rw [hP]
+    rw [Lagrange.interpolate_apply, Polynomial.finsetSum_coeff]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Lagrange.basis, Polynomial.coeff_C_mul]
   rw [hcoeff]

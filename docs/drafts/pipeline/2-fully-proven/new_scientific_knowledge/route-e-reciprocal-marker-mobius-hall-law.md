@@ -4489,3 +4489,244 @@ Either yields `ϱ ≥ 1/3`, which is all `hgap` needs (it was verified above wit
 composes with `fibre_squarefree_mass` and `card_fibre_bad_le` into step 1 **with no hypotheses at
 all**, and what remains on the card is the marker supply and the
 `MobiusReciprocalMarkerPrimeCapacity` passage.
+
+## The named brick and the side conditions are Lean (2026-08-18, later)
+
+### `Sieve/SquarefreeDensityBound`
+
+```text
+squarefreeDensity_ge : 3/8 ≤ squarefreeDensity
+```
+
+The corpus already owned `squarefreeDensity_eq : squarefreeDensity = 6/π²` (through
+`LSeries_moebius_eq_inv_riemannZeta` and `riemannZeta_two`), so the numeric bound is `π ≤ 4`.  The
+truncation route through `abs_sum_Icc_moebius_div_sq_sub_le` sketched above is therefore unnecessary.
+`squarefreeDensity_pos` was already owned by `Sieve/CoprimeSignDensity` — the collision scan caught
+the duplicate before installation this time.
+
+### `Sieve/FibreWindowTop`
+
+```text
+fibre_top_le_floor (hx : 4 ≤ x) (hh : 0 ≤ h) (ha : a ∈ outerBlock x h) :
+  fibreStartIdx x a + fibreLen x h a ≤ ⌊x + h√x⌋
+fibre_top_lt_sq : fibreStartIdx x a + fibreLen x h a < (⌈√(x + h√x)⌉ + 1)²
+```
+
+These are exactly the `hbig` and `hsq` side conditions of `fibre_squarefree_mass`, at
+`M = ⌊x+h√x⌋` and `M' = ⌈√(x+h√x)⌉`.  The first splits into `⌊(x+h√x)/a⌋ ≤ ⌊x+h√x⌋` (monotone floor,
+`a ≥ 1`) and `⌈x/a⌉ − 1 ≤ ⌊x⌋ ≤ ⌊x+h√x⌋`; the second follows from it plus
+`⌊T⌋ ≤ T = √T·√T ≤ ⌈√T⌉² < (⌈√T⌉+1)²`.
+
+### Constants, corrected once more
+
+With the *available* bound `ϱ ≥ 3/8`, `(1/2)ϱ ≥ 3/16 = 0.1875`, so `θ = h/20` is **too large**
+(`θ ≤ L/5 = 0.2L` already exceeds it).  The working choice is
+
+```text
+R = 5000 ,   θ = h/100 ,   M' = ⌈√(x+h√x)⌉ ,   M = ⌊x+h√x⌋ .
+```
+
+Then `fibreLen ≥ h/4` gives `θ ≤ 0.04L`, so `R + L/R + θ ≤ 5000 + 0.0002L + 0.04L ≤ (1/2)ϱL` once
+`L ≥ 33944`, and `fibreTailBudget/θ ≈ 0.04√x`, comfortably inside `#outerBlock ≍ √x`.
+
+### What is left for hypothesis-free step 1
+
+Only `hMM : ⌈√(x+h√x)⌉ ≤ ⌊x+h√x⌋` (immediate for large `x`) and `hgap` at the constants above,
+then the composition of `eventually_fibre_step_one` with `fibre_squarefree_mass` and
+`card_fibre_bad_le` at `D = squarefreeDensity`.  No further ingredient is missing.
+
+## CORRECTION — the integer-start gap this card records is STALE (2026-08-18, 20:20)
+
+**`Sieve/Step1Moebius.exists_card_le_good_add_moebius` already is step 1 of this card,
+unconditionally, over consecutive integer starts `Ico Y (Y+K)` with a fixed `L`.**  Its mean-square
+input is `Sieve/MoebiusMeanSquareRealForm.exists_sum_sq_real_moebius_Ico_le` — *"the mean square in
+real form, unconditionally"* — i.e. the corpus **does** own the integer-start Möbius mean square, in
+the very shape `Sieve/GoodStartMarkov.card_le_good_add_meanSquare` consumes.  Both are axiom-clean.
+
+So the header's claim that this card "needs the *integer-start* form `DyadicTranslates.dyadicMeanSquare`,
+and the one missing input for that is the low-frequency contour bound for the Ramaré-weighted
+cofactor" is **out of date**, and so is the fibre route developed in the sections above: it was built
+to get around a gap that had already been closed by a different chain.  Found with
+`scripts/formal_tools.py research`, which is what should have been run before opening that route.
+
+**What the fibre development is still good for.**  It is valid unconditional mathematics and stays in
+the tree: `Sieve/GoodStartVariableWindow` (step 1 at a start-dependent length),
+`Sieve/GoodStartFibreWindow`, `Sieve/FibreStepOne`, `Sieve/SquarefreeTailTruncate`
+(`squarefree_count_ge_trunc` — a genuine sharpening of the corpus's own tail lemma),
+`Sieve/FibreSquarefreeIngredients`, `Sieve/FibreTailAverage`, `Sieve/FibreSquarefreeMass`,
+`Sieve/FibreWindowTop`, `Sieve/SquarefreeDensityBound` (`3/8 ≤ ϱ`, from the corpus's own
+`squarefreeDensity_eq : ϱ = 6/π²`).  None of it is a duplicate; it simply is not the shortest path.
+The composition of `eventually_fibre_step_one` with `fibre_squarefree_mass` was **not installed**,
+because `Step1Moebius` already occupies that slot.
+
+### The actual remaining join
+
+`exists_card_le_good_add_moebius` currently has **no consumers**.  The card's chain past step 1 is
+also largely built:
+
+* `Sieve/MarkerBlockLower.card_markerBlockTargets_ge` — the block contributes `≥ #P·c` distinct targets;
+* `Sieve/MarkerSignFlip.card_markerBlockTargets_moebius` — the sign count of a block is the sign count
+  of its cofactors, so every Möbius difficulty about the targets is one about the cofactors;
+* `RHTower.MobiusReciprocalMarkerBlockCount.card_markerBlockTargets`;
+* `Sieve/SumCellMatching.exists_hall_injection_mertens` — the matching criterion with the marker block
+  counted by Mertens' second theorem;
+* `RHTower.MobiusReciprocalMarkerPrimeCapacity.reciprocalMarker_target_sign_flip`.
+
+So the card's remaining work is **the join**: choose the parameters `L, Y, K, J, R, Md, ε, W` in
+`exists_card_le_good_add_moebius` so that its two exceptional terms are below `K/2`, and feed the
+resulting good-start count into `card_markerBlockTargets_ge` / `MarkerSignFlip` to reach `(3)`.  That
+is a parameter-selection problem against named quantities (`blockCost`, `Bd N`, `contourParam`,
+`smoothWidth`), not a missing theorem.
+
+## CORRECTION TO THE CORRECTION, and step 1 is closed (2026-08-18, 20:40)
+
+The section above concluded that `Sieve/Step1Moebius.exists_card_le_good_add_moebius` supersedes the
+fibre route.  **That was wrong, and checking its rate is what shows it.**
+
+`Step1Moebius` is unconditional and does have the integer-start shape, but its mean-square input
+`Sieve/MoebiusMeanSquareRealForm.exists_sum_sq_real_moebius_Ico_le` runs through
+`blockCost L Y ε M₁ M₂ W = 2(M₁ log(1+L/Y) + M₂·2/(π²W)) + 2(εL+1)² log(1+ε)`
+with `M₁ = (B N · N)²` a **sup** bound and `M₂ = (⌊N⌋+1)² ≍ N²` the **trivial** bound.  The `M₂` term
+alone is `≍ N² exp(−(log N)^{1/10})` (because `W ≲ contourParam(N) ≍ exp((log N)^{1/10})`), while the
+target is `≍ L² = exp(2(log N)^{99/100})`.  Since `2 log N ≫ 2(log N)^{99/100}`, the bound exceeds what
+is needed by a factor `exp(2 log N − 2(log N)^{99/100} − (log N)^{1/10})` — astronomically useless at
+this card's parameters.  **That is exactly why `exists_card_le_good_add_moebius` has no consumers.**
+
+This is the same wall recorded earlier as "sup-bound Gallagher needs RH strength": `M₁ ≪ N·L` would be
+square-root cancellation for `logPoly μ` at low frequency.  The fibre route, which draws its rate from
+the *spectral* budget (`averagedMeanSquare_moebius`, genuinely `o(h²√x)`), is therefore the critical
+path after all.
+
+### `Sieve/FibreStepOneClosed` — step 1 with no hypotheses
+
+```text
+fibre_step_one_ceil_le (hT : 4 ≤ T) : ⌈√T⌉ ≤ ⌊T⌋
+
+eventually_fibre_step_one_closed (hε : 0 < ε) :
+  ∀ᶠ x in atTop,
+    #(outerBlock x h)
+      ≤ #{a ∈ outerBlock x h | both Möbius signs occur ≥ (3/16)·ϱ·fibreLen x h a times
+                                 in the fibre window}
+        + 1024·ε·√x/ϱ²
+        + fibreTailBudget x h 5000 ⌈√(x + h√x)⌉ / (h/100)
+```
+
+at `h = exp((log x)^{99/100})`, `ϱ = squarefreeDensity`.  **No hypotheses at all**: the first
+exceptional term is the Möbius fibre mean square (`averagedMeanSquare_moebius`), the second the
+squarefree truncation tail (`fibreTailBudget`), and the side conditions `hbig`, `hMM`, `hsq`, `hgap`
+are discharged by `fibre_top_le_floor`, `fibre_step_one_ceil_le`, `fibre_top_lt_sq` and
+`fibreLen_ge` + `squarefreeDensity_ge` at `R = 5000`, `θ = h/100`, with the largeness
+`h ≥ 200000` (`135776` is too tight by a hair — `0.1473·33944 = 4999.96 < 5000`).
+
+**Step 1 of this card is therefore closed unconditionally.**  What remains is the marker join:
+`Sieve/MarkerBlockLower.card_markerBlockTargets_ge` needs, for each marker prime `p`, a cofactor set
+`C p` of size `≥ (3/16)ϱL`; the markers are the **large** primes `p > √X` (so `a = n/p < √X` is the
+cofactor and `p` determines `a`), the starts are `⌈X/p⌉`, and the requirement is that the bad-start
+count be below `#P/2 ≍ √X/(2 log X)` — i.e. the good-start density must beat `1 − 1/(2 log X)`.  That
+is the next quantitative step, and it is a comparison between the two exceptional terms above and
+`√x/log x`.
+
+## The marker join: geometry settled, and the one quantitative requirement identified (2026-08-18, 21:00)
+
+### `Sieve/MarkerDominatesFibre`
+
+```text
+fibre_lt_marker (hx : 16 ≤ x) (hh : 0 ≤ h) (hhx : h ≤ √x)
+    (hpge : (3/2)√x ≤ p) (hrge : (3/2)√x ≤ r) (hb : b ∈ innerFibre x h p) : b < r
+```
+
+This settles the `hsmall` side condition of `Sieve/MarkerBlockLower.card_markerBlockTargets_ge`.
+Restricting the markers to the **upper** part of the outer block, `p ≥ (3/2)√x`, forces every fibre
+element to satisfy `b ≤ 2x/((3/2)√x) = (4/3)√x < (3/2)√x ≤ r`.  Without that restriction the
+condition genuinely fails: a marker just above `√x` has cofactors up to `√x + h`, which exceeds it.
+
+### How the join is meant to run
+
+Take `P := (outerBlock x h).filter (fun p => p.Prime ∧ (3/2)√x ≤ p)` and
+`C p := (innerFibre x h p).filter (fun b => μ b = σ')`.  Then
+
+* `hprime` holds by construction; `hpos` from `mem_innerFibre` (`1 ≤ b`); `hsmall` is
+  `fibre_lt_marker`;
+* `hc` with `c = (3/16)·ϱ·fibreLen x h p` is exactly the good-fibre conclusion of
+  `Sieve/FibreStepOneClosed.eventually_fibre_step_one_closed`;
+* the markers are the **large** primes and each determines its cofactor, so distinctness is free —
+  this is the card's `(4)`, and `RHTower.card_markerBlockTargets` supplies it;
+* `#P ≍ √x/log x` (primes in `[(3/2)√x, 2√x]`), each contributing `≍ (3/16)ϱh` targets, for a total
+  `≍ ϱ H/(6 log x)`, which is the card's `(3)`.
+
+### The one quantitative requirement
+
+For a positive proportion of `P` to be good, the exceptional count of
+`eventually_fibre_step_one_closed` must be below `#P/2 ≍ √x/(2 log x)`.  Its first term is
+`1024·ε·√x/ϱ²`, which for **fixed** `ε` is `≍ ε√x` — larger than `√x/log x` for every fixed `ε` once
+`x` is large.  So the join needs the Möbius fibre mean square with a **rate**:
+
+```text
+(∑_{a ∈ outerBlock} (∑_{fibre} μ)²) / (h²√x)  =  o(1/log x) ,
+```
+
+not merely `→ 0`.  `Sieve/MoebiusMeanSquare.averagedMeanSquare_moebius` is a bare `Tendsto … → 0`, so
+the rate has to be read off the chain that produces it — and it is there in closed form:
+`Sieve/OmegaBudgetExplicit.omegaBudget_le_explicit` ("the Route E budget in closed form") and
+`Sieve/OmegaBudgetLadderTail.omegaBudget_le_ladder_final` ("fully explicit, with both Gallagher
+regimes paid by the ladder"), feeding
+`Sieve/OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget`.  The budget is polylogarithmic
+in `log x`, so a `1/log x` saving is available; what is needed is a rate-carrying variant of
+`averagedMeanSquare_moebius` stating `budget/(h²√x) ≤ (log x)^{-A}` for some `A > 1`.
+
+**That is now the single remaining quantitative step on this card**, and it is a strengthening of an
+existing unconditional theorem, not a new estimate.
+
+## The rate is available, and it is `(log x)^{-1.1}` — the exact remaining refactor (2026-08-18, 21:20)
+
+`Sieve/BudgetLimit.tendsto_normalised_omegaBudget` bounds the normalised budget by
+`136·slope + 140·energy + 131·const + nonSpectral`, each a `Tendsto … → 0`.  Reading the sizes of the
+majorants (after this session's `ladderEta` retune) gives the actual rates:
+
+| majorant term | size | binding? |
+|-|-|-|
+| `rhoMajorant`: `(log x)^{12β−γβ−11.75}` | `≤ (log x)^{-0.65}` | no |
+| `rhoMajorant`: `(log x)^{5/4−β−γβ}` | `≤ (log x)^{-0.55}` | **binds `rhoMajorant`** |
+| `rhoMajorant`: the two `exp(−(log x)^{γβ})` terms | stretched-exponential | no |
+| `slopeMajorant`/`constMajorant`: `(budgetRhoBound·ladderSteps)²` | `≈ (log x)^{-1.1}` | **binds overall** |
+| `slopeMajorant`: `(log x)^{-1/4}/cardLength`, `…/√x` | `exp(−(log x)^{99/100})`, `x^{-1/2}` | no |
+| `constMajorant`: `(log x)^{-1/4}/W²`, `W ≈ (log x)^β` | `≈ (log x)^{-2.25}` | no |
+
+So the normalised budget is `≍ (log x)^{-1.1}`, because the annulus constant enters **squared** and its
+own rate is `(log x)^{-0.55}`.  Since `1.1 > 1`, this **is** `o(1/log x)` — exactly what the marker
+join needs, with `0.1` of margin in the exponent.
+
+### Why the rate cannot be avoided
+
+Three escapes were checked and all fail.
+
+1. *Shrink `h`.*  The exceptional term is `V/δ² = 1024ε√x/ϱ²` with `V = εh²√x` and `δ = ϱh/32` — the
+   `h` cancels, and the requirement `< #P/2 ≍ √x/(2 log x)` is also `h`-free.  No gain.
+2. *Drop the primality of the markers* and use all of `outerBlock` (where `#good ≥ (1−ε)√x` needs no
+   rate).  Then distinctness is lost: `card_markerBlockTargets` needs markers prime and above every
+   cofactor, and without it one is back to the Cauchy–Schwarz distinct-product bound whose loss is
+   recorded on the sign-law card.
+3. *Restrict the mean square to prime outer indices.*  Nonnegativity only gives
+   `∑_{p ∈ P} ≤ ∑_{a ∈ outerBlock}`, i.e. the same `1024ε√x/ϱ²` — not `ε·#P`.  Wrong direction.
+
+A diagonal choice `ε = 1/log x` is circular, because the threshold in `∀ε>0, ∀ᶠ x` depends on `ε`.
+Having a rate is precisely what removes that circularity.
+
+### The refactor
+
+Replace the four `Tendsto … → 0` statements feeding `tendsto_normalised_omegaBudget` by explicit
+eventual bounds `≤ (log x)^{-A}`:
+
+* `Sieve/RhoLimit.tendsto_rhoMajorant` → `rhoMajorant ≤ C(log x)^{-1/2}` (its binding exponent is
+  `5/4 − β − γβ ≤ −0.55`);
+* `Sieve/SlopeQuotientLimit.tendsto_slope_quotient` and
+  `Sieve/ConstQuotientLimit.tendsto_const_quotient` → `≤ C(log x)^{-1.1}`, the square of the above
+  dominating every other term;
+* `Sieve/EnergyQuotient` and `Sieve/NonSpectralBudget` → their own rates, still to be read off.
+
+Then `averagedMeanSquare_moebius` acquires a rate-carrying twin, and
+`eventually_fibre_step_one_closed` can be instantiated at `ε = (log x)^{-1.05}`, making the
+exceptional count `≍ √x(log x)^{-1.05} = o(√x/log x)` and closing the marker join.
+
+**This is now the whole remaining content of the card**: no new estimate, only the propagation of
+explicit rates through four majorant limits that are already proved to vanish.

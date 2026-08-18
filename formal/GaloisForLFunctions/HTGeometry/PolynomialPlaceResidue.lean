@@ -527,6 +527,77 @@ theorem polyResidueData_toTameData {π : Polynomial F} (hπ : Irreducible π) :
     (polyResidueData hπ).toTameData
       = tameDataOfValuation ((polyPlace hπ).valuation (RatFunc F)) := rfl
 
+/-- The two residue data at `π` — the one with a chosen uniformizer and the one with `π` itself —
+have the same residue on units of valuation zero. -/
+theorem polyResidueData_residueUnit_eq {π : Polynomial F} (hπ : Irreducible π)
+    {p : Polynomial F} (hp : p ≠ 0) (hpm : p ∉ Ideal.span {π}) :
+    (polyResidueData hπ).residueUnit (polyUnit hp)
+      = (residueDataAtPlace (RatFunc F) (polyPlace hπ)).residueUnit (polyUnit hp) := by
+  have hker1 : polyUnit hp ∈ ((polyResidueData hπ).val).ker := by
+    refine (polyResidueData hπ).val'_eq_zero_iff.1 ?_
+    exact residueDataAtPlace_val'_eq_zero (RatFunc F) (polyPlace hπ) hp hpm
+  have hker2 : polyUnit hp ∈ ((residueDataAtPlace (RatFunc F) (polyPlace hπ)).val).ker :=
+    placeIntegerUnit_mem_ker (RatFunc F) (polyPlace hπ) hp hpm
+  rw [ResidueData.residueUnit_of_mem_ker _ hker1,
+    ResidueData.residueUnit_of_mem_ker _ hker2]
+  rfl
+
+/-- **Every residue class at `π` is the residue of a polynomial of degree below `deg π`.**
+Division with remainder: reduce any representative modulo `π`. -/
+theorem exists_polyUnit_degree_lt {π : Polynomial F} (hπ : Irreducible π)
+    (y : (IsLocalRing.ResidueField
+      (((polyPlace hπ).valuation (RatFunc F)).valuationSubring))ˣ) :
+    ∃ (p : Polynomial F) (hp : p ≠ 0), p.natDegree < π.natDegree
+      ∧ (polyResidueData hπ).residueUnit (polyUnit hp) = y := by
+  obtain ⟨a, ha0, ha⟩ :=
+    residueDataAtPlace_residueUnit_surjective (RatFunc F) (polyPlace hπ) y
+  obtain ⟨r, hr⟩ := residue_placeIntegerElt_surjective (RatFunc F) (polyPlace hπ)
+    ((y : IsLocalRing.ResidueField
+      (((polyPlace hπ).valuation (RatFunc F)).valuationSubring)))
+  have hrmem : r ∉ Ideal.span {π} := by
+    intro hmem
+    refine y.ne_zero ?_
+    rw [← hr]
+    refine (residueFieldAtPlaceEquiv (RatFunc F) (polyPlace hπ)).injective ?_
+    rw [residueFieldAtPlaceEquiv_residue, map_zero]
+    exact (Ideal.Quotient.eq_zero_iff_mem).2 hmem
+  set p : Polynomial F := r % π with hpdef
+  have hpm : p ∉ Ideal.span {π} := by
+    intro hmem
+    refine hrmem ?_
+    have hsub : r - p ∈ Ideal.span {π} := by
+      rw [Ideal.mem_span_singleton, hpdef]
+      refine ⟨r / π, ?_⟩
+      rw [EuclideanDomain.mod_eq_sub_mul_div]
+      ring
+    have : r = (r - p) + p := by ring
+    rw [this]
+    exact Ideal.add_mem _ hsub hmem
+  have hp0 : p ≠ 0 := by
+    intro h
+    exact hpm (h ▸ Ideal.zero_mem _)
+  have hdeg : p.natDegree < π.natDegree := by
+    have hdlt : p.degree < π.degree := Polynomial.degree_mod_lt r hπ.ne_zero
+    exact Polynomial.natDegree_lt_natDegree hp0 hdlt
+  refine ⟨p, hp0, hdeg, ?_⟩
+  rw [polyResidueData_residueUnit_eq hπ hp0 hpm]
+  refine Units.ext ?_
+  have hker : polyUnit hp0 ∈ ((residueDataAtPlace (RatFunc F) (polyPlace hπ)).val).ker :=
+    placeIntegerUnit_mem_ker (RatFunc F) (polyPlace hπ) hp0 hpm
+  rw [ResidueData.residueUnit_of_mem_ker _ hker]
+  show IsLocalRing.residue _ (placeIntegerElt (RatFunc F) (polyPlace hπ) p)
+    = ((y : (IsLocalRing.ResidueField
+        (((polyPlace hπ).valuation (RatFunc F)).valuationSubring))ˣ) : _)
+  rw [← hr]
+  refine (residueFieldAtPlaceEquiv (RatFunc F) (polyPlace hπ)).injective ?_
+  rw [residueFieldAtPlaceEquiv_residue, residueFieldAtPlaceEquiv_residue]
+  refine (Ideal.Quotient.eq).2 ?_
+  show p - r ∈ (polyPlace hπ).asIdeal
+  rw [polyPlace_asIdeal, Ideal.mem_span_singleton, hpdef]
+  refine ⟨-(r / π), ?_⟩
+  rw [EuclideanDomain.mod_eq_sub_mul_div]
+  ring
+
 end ConstantsAtX
 
 end GaloisForLFunctions.HTGeometry

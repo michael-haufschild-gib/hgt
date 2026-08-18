@@ -216,3 +216,116 @@ The corpus has only `squarefreeDensity_nonneg'` and `squarefreeDensity_le_one`. 
 `SquarefreeCount.abs_sum_Icc_moebius_div_sq_sub_le` at `R = 4` (head `1 − 1/4 − 1/9 = 23/36`, error
 `≤ 1/4`, so `ϱ ≥ 7/18`), or from `ϱ ≥ 2 − π²/6` via mathlib's Basel sum.  `ϱ ≥ 1/3` suffices with
 `θ = h/40`.
+
+## The density brick was already there (2026-08-18, 20:00)
+
+`Sieve/SquarefreeCount.squarefreeDensity_eq : squarefreeDensity = 6/π²` already existed — so the
+numeric bound is just `π ≤ 4`, landed as `Sieve/SquarefreeDensityBound.squarefreeDensity_ge : 3/8 ≤ ϱ`.
+The `abs_sum_Icc_moebius_div_sq_sub_le` truncation route recorded earlier is unnecessary.
+`squarefreeDensity_pos` was already owned by `Sieve/CoprimeSignDensity` (third duplication caught,
+this time before installing).
+
+`Sieve/FibreWindowTop` (`fibre_top_le_floor`, `fibre_top_lt_sq`) supplies the `hbig`/`hsq` side
+conditions at `M = ⌊x+h√x⌋`, `M' = ⌈√(x+h√x)⌉`.
+
+**Constants, final:** `R = 5000`, `θ = h/100`.  With only `ϱ ≥ 3/8` available, `(1/2)ϱ ≥ 3/16`, so
+`θ = h/20 ≤ L/5` is too big — `h/100` gives `θ ≤ 0.04L` and closes at `L ≥ 33944`, with
+`fibreTailBudget/θ ≈ 0.04√x`.
+
+Left for hypothesis-free step 1: `hMM : ⌈√(x+h√x)⌉ ≤ ⌊x+h√x⌋` and `hgap`, then compose
+`eventually_fibre_step_one` + `fibre_squarefree_mass` + `card_fibre_bad_le` at `D = squarefreeDensity`.
+
+## CORRECTION: the integer-start Möbius mean square WAS already owned (2026-08-18, 20:20)
+
+`Sieve/MoebiusMeanSquareRealForm.exists_sum_sq_real_moebius_Ico_le` ("the mean square in real form,
+unconditionally") and `Sieve/Step1Moebius.exists_card_le_good_add_moebius` ("step 1 with the mean
+square supplied ... with no analytic hypothesis") already give the Hall card's step 1 over
+consecutive integer starts with fixed `L`.  Both axiom-clean.  **The Hall/growing-marker cards' stated
+gap — "needs the integer-start form, blocked on the Ramaré cofactor low-frequency bound" — is stale.**
+
+Consequence: the fibre route I built (variable-length step 1 → fibre windows → fibre mean square) was
+unnecessary.  It is valid and stays, but it is not the shortest path, and the composition
+`eventually_fibre_step_one` + `fibre_squarefree_mass` was NOT installed because `Step1Moebius`
+occupies that slot.
+
+**Lesson: run `scripts/formal_tools.py research` on the *gap the card names*, not only on the
+declaration names you are about to write.**  A card's "Lean status" prose can lag the tree by weeks.
+
+**The actual remaining work on the Hall card**: `exists_card_le_good_add_moebius` has no consumers.
+Choose `L, Y, K, J, R, Md, ε, W` so its two exceptional terms are `< K/2`, then feed the good-start
+count into `Sieve/MarkerBlockLower.card_markerBlockTargets_ge` and
+`Sieve/MarkerSignFlip.card_markerBlockTargets_moebius` (with
+`MobiusReciprocalMarkerPrimeCapacity.reciprocalMarker_target_sign_flip` and
+`Sieve/SumCellMatching.exists_hall_injection_mertens`) to reach `(3)`.  Parameter selection against
+`blockCost`, `Bd N`, `contourParam`, `smoothWidth` — not a missing theorem.
+
+## CORRECTION TO THE PREVIOUS CORRECTION (2026-08-18, 20:40)
+
+`Step1Moebius.exists_card_le_good_add_moebius` does NOT supersede the fibre route.  It is
+unconditional and has the right *shape*, but its rate is useless: `blockCost`'s second term is
+`M₂·2/(π²W)` with `M₂ = (⌊N⌋+1)² ≍ N²` (the trivial bound) and `W ≲ contourParam(N) ≍ exp((log N)^{1/10})`,
+so it is `≍ N²exp(−(log N)^{1/10})` against a target `≍ L² = exp(2(log N)^{99/100})`.  That is why it has
+no consumers.  **Always check the rate, not only the statement shape.**
+
+**The fibre route is the critical path, and step 1 is now CLOSED**:
+`Sieve/FibreStepOneClosed.eventually_fibre_step_one_closed` — no hypotheses, exceptional terms
+`1024ε√x/ϱ²` (spectral Möbius fibre mean square) plus `fibreTailBudget x h 5000 ⌈√(x+h√x)⌉/(h/100)`
+(squarefree tail).  Largeness `h ≥ 200000` (135776 is too tight by a hair).
+
+**Next**: the marker join.  Markers are the LARGE primes `p > √X` (cofactor `a = n/p < √X`, and `p`
+determines `a`, so distinctness is free); starts are `⌈X/p⌉`; `card_markerBlockTargets_ge` needs
+`#C p ≥ (3/16)ϱL` for `#P ≍ √X/log X` markers, so the bad-start count must be `< #P/2 ≍ √X/(2 log X)`.
+That is a comparison of the two exceptional terms above against `√x/log x`.
+
+## Marker join: geometry done, one rate needed (2026-08-18, 21:00)
+
+`Sieve/MarkerDominatesFibre.fibre_lt_marker` settles `hsmall` for
+`MarkerBlockLower.card_markerBlockTargets_ge`: markers must be taken in the UPPER part of the outer
+block (`p ≥ (3/2)√x`), else a marker just above `√x` has cofactors up to `√x + h` exceeding it.
+With `P = (outerBlock).filter (Prime ∧ (3/2)√x ≤ ·)` and `C p = (innerFibre x h p).filter (μ · = σ')`,
+`hprime`/`hpos`/`hsmall` are all discharged and `hc` is the good-fibre conclusion of
+`FibreStepOneClosed.eventually_fibre_step_one_closed`.  `#P ≍ √x/log x`, each giving `≍ (3/16)ϱh`
+targets, total `≍ ϱH/(6 log x)` = the card's `(3)`.
+
+**The single remaining quantitative step**: the exceptional count must be `< #P/2 ≍ √x/(2 log x)`, but
+the first exceptional term is `1024ε√x/ϱ²` with ε FIXED — bigger than `√x/log x` for every fixed ε.
+So the join needs `averagedMeanSquare_moebius` **with a rate**: `budget/(h²√x) = o(1/log x)`, i.e.
+`≤ (log x)^{-A}`, `A > 1`.  The rate is available in closed form from
+`OmegaBudgetExplicit.omegaBudget_le_explicit` and `OmegaBudgetLadderTail.omegaBudget_le_ladder_final`
+via `OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget`.  This is a strengthening of an
+existing unconditional theorem, not a new estimate.
+
+## The rate exists and is (log x)^{-1.1} (2026-08-18, 21:20)
+
+`tendsto_normalised_omegaBudget` = `136·slope + 140·energy + 131·const + nonSpectral`.  Sizes after the
+`ladderEta` retune: `rhoMajorant` binds at `(log x)^{5/4−β−γβ} ≤ (log x)^{-0.55}`; `slopeMajorant` and
+`constMajorant` are dominated by `(budgetRhoBound·ladderSteps)² ≈ (log x)^{-1.1}`; every other term is
+`exp(−(log x)^{99/100})`, `x^{-1/2}`, or `(log x)^{-2.25}`.  So the normalised budget is
+`≍ (log x)^{-1.1}`, which **is** `o(1/log x)` — with only 0.1 of margin.
+
+Three escapes from needing the rate were checked and all fail: shrinking `h` (the `h` cancels in
+`V/δ²`), dropping marker primality (loses `card_markerBlockTargets` distinctness, back to the
+sign-law card's Cauchy–Schwarz loss), restricting the mean square to primes (nonnegativity gives the
+wrong direction).  `ε = 1/log x` is circular because the threshold in `∀ε, ∀ᶠ x` depends on `ε`.
+
+**Remaining work on the Hall card**: give explicit `≤ (log x)^{-A}` forms to
+`RhoLimit.tendsto_rhoMajorant`, `SlopeQuotientLimit.tendsto_slope_quotient`,
+`ConstQuotientLimit.tendsto_const_quotient`, plus `EnergyQuotient` and `NonSpectralBudget`; then a
+rate-carrying `averagedMeanSquare_moebius` lets `eventually_fibre_step_one_closed` run at
+`ε = (log x)^{-1.05}`, giving exceptional count `o(√x/log x)` and closing the join.  No new estimate —
+only propagation of rates through majorants already proved to vanish.
+
+## Prop 4.2's T₂ case was already owned (2026-08-18, 21:40)
+
+`Sieve/MatomakiTeravainenTypeIIAmplitudeCells` (ten declarations) formalizes the amplitude-cell
+cancellation of MT Prop 4.2's `T₂` case abstractly and unconditionally.  Its `hcount` hypothesis
+(`#(cells i) ≤ C·T^{2min(σ₁,σ₂)−δ}`) **is** Lemma 4.1's conclusion, i.e. this session's
+`exists_lemma41_huxley` with `C = 1`, `δ = ε²/5`.  The two halves only need joining:
+instantiate `α := ℝ`, `F_j t := ‖blockPoly M_j c_j 1 t‖`, cells = the dyadic amplitude cells; `hF₁/hF₂`
+are definitional; `hcount` is Lemma 4.1 applied to the polynomial realising `min(σ₁,σ₂)` — for
+`σ₁ ≤ σ₂` to `M₁^ℓ` (a range polynomial of width `2^ℓ`, hence
+`HuxleyRangeLargeValues.huxley_range_large_values_uniform`), for `σ₂ < σ₁` to `M₂` (already dyadic).
+Remaining in `T₂`: the case split and the `ℓ`-selection arithmetic.  No new analytic estimate.
+
+Search the corpus with the *paper's lemma numbers and author names* too — `matomakiTeravainen` was a
+declaration prefix nobody had told me about.

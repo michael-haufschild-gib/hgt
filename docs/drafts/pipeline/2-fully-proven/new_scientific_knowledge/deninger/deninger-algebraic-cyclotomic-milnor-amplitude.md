@@ -910,3 +910,57 @@ that is a strict weakening of the headline.
    field at a finite place is `R ⧸ v.asIdeal`, *with* the compatibility that sends the residue of an
    element of `R` to its class mod `v`, plus surjectivity of `R` onto the residue classes.
 3. **Milnor's exact sequence** for `F(t)` and the Bass–Tate–Kato norm.
+
+## CORRECTION — 2026-08-18: `(4)` is NOT a blocker.  The card has exactly ONE remaining input
+
+The "Stage-3 gate audit" entry above named two blockers.  The second — "`(4)` needs homotopy theory
+mathlib does not have" — is **wrong**, and was wrong when written: it repeated this card's own older
+Lean-status text instead of checking the tree.  The corpus itself supplies the missing layer.
+
+### What the corpus already owns for `(4)`
+
+`deninger-character-shape-formality` is **at stage 3**, and the stage-3 cards
+`cdga-module-derived-tensor-layer` and `cdga-bar-construction` carry a 79-module commutative
+differential graded algebra stack.  Over a field of characteristic zero — which is where this card
+lives, its coefficients being `ℝ` — commutative DGAs model `E_∞`-algebras, which is exactly the
+reduction the formality card's own proof invokes.  Verified present and axiom-clean
+(`propext, Classical.choice, Quot.sound`):
+
+```text
+HTGeometry.freeExteriorCDGAHom, …_unique      (3): the free CDGA on degree-one generators is Λ*
+RHTower.deningerTorusFormality_isQuasiIso     (2)/(4) of the formality card, for the card's own
+                                              lattice filtration, with no choice left to make
+HTGeometry.relTensorCDGA                      the relative tensor product of algebras over a base
+HTGeometry.derivedBaseChange_zigZag           (5): both legs of the derived base change are
+                                              quasi-isomorphisms; (6) follows on cohomology
+```
+
+So the derived-tensor comparison `𝒞^M_{F,ℝ} ≃ 𝒦^M_{F,ℝ}` of this card's `(4)` is available, and its
+remaining content — that `𝒦^M_{F,ℝ}` *is* `H(ℝ ⊕ Σ_ar((F^×/μ_∞) ⊗ ℝ))` with square-zero positive
+degrees — is `(1)`+`(2)`+`(3)` plus `deningerGradedDegreeOne_mul_eq_zero`, all already here.
+
+### The card, assembled into one conditional theorem
+
+`formal/GaloisForLFunctions/RHTower/DeningerAlgebraicMilnorAmplitude.lean` (wired into the `RHTower`
+umbrella; axiom audit `propext, Classical.choice, Quot.sound`).
+
+```text
+deningerAlgebraicUnitRealification   ** (3), UNCONDITIONALLY **
+deningerAlgebraicMilnorAmplitude     ** (1) and (2) from the single classical hypothesis **
+deningerAlgebraicMilnorSquareZero    ** the square-zero conclusion of (4) **
+```
+
+`deningerAlgebraicMilnorAmplitude` takes exactly one hypothesis:
+
+```text
+for every number subfield K of F, every element of the degree-two tame kernel of K is torsion
+```
+
+and produces `(1)` and `(2)` in full.  Nothing else is assumed.
+
+### Consequence
+
+**The card is one classical input from stage 3, and that input is `K₂(𝒪_K) ⊗ ℚ = 0` — Borel's rank
+computation, equivalently Garland 1971.**  There is no second blocker.  Work on `E_∞` infrastructure
+for this card is finished; all remaining effort belongs to
+`garland-tame-kernel-torsion` / `k2-rank-divisibility-firewall`.

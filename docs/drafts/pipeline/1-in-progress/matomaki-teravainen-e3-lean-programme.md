@@ -718,3 +718,58 @@ The one interface still to build is the bridge from `blockPoly`/`rangeTerm` to t
 `dirPoly` (indices `Fin N`, phase `+it`), which `largeValues_dirPoly_finset` is stated over:
 `blockPoly N c σ t = dirPoly (2N−1) a (−t)` with `a n = c(n+1)·(n+1)^{−σ}` supported on
 `[N, 2N)`.  Everything else is assembly.
+
+## Prop 4.2's `T₂` case is ALREADY in the corpus (2026-08-18, 21:40)
+
+Found with `scripts/formal_tools.py research` — **`Sieve/MatomakiTeravainenTypeIIAmplitudeCells`**
+formalizes the amplitude-cell cancellation of Proposition 4.2's `T₂` case, abstractly and
+unconditionally:
+
+```text
+matomakiTeravainen_typeII_covered_amplitude_cells_energy
+    (hS : S ⊆ I.biUnion cells) (hM₁ : 1 ≤ M₁) (hM₂ : 1 ≤ M₂) (hT : T = M₁M₂) (hC : 0 ≤ C)
+    (hcount : ∀ i ∈ I, #(cells i) ≤ C·T^{2 min (σ₁ i) (σ₂ i) − δ})
+    (hF₁ : ∀ i ∈ I, ∀ q ∈ cells i, F₁ q ≤ 2M₁^{−σ₁ i})
+    (hF₂ : ∀ i ∈ I, ∀ q ∈ cells i, F₂ q ≤ 2M₂^{−σ₂ i}) :
+  ∑_{q ∈ S} F₁ q² F₂ q² ≤ #I · (16 C T^{−δ})
+```
+
+with `matomakiTeravainen_typeII_amplitude_cell_scale`, `…_cell_energy`,
+`…_cells_energy_comparable`, `…_comparable_uniform` and the covered-set variants — ten declarations,
+no disjointness of the cells required, so the `≪ (log T)²` cell count of the paper enters as `#I`.
+
+**Its `hcount` hypothesis is exactly Lemma 4.1's conclusion**, which this session closed as
+`Sieve/HuxleyDensityThreshold.exists_lemma41_huxley` (`|S| ≤ T^{2σ − ε²/5}`, i.e. `C = 1`,
+`δ = ε²/5`).  So the two halves of Prop 4.2's `T₂` case are both in the tree and only need joining.
+
+### The join, precisely
+
+Instantiate the cell lemma at `α := ℝ` (ordinates), `F_j t := ‖blockPoly M_j c_j 1 t‖`, and `cells i`
+the dyadic amplitude cells `T₂,σ₁,σ₂`.  For each cell:
+
+* `hF₁`, `hF₂` hold by the definition of the cell;
+* `hcount` comes from `exists_lemma41_huxley` applied to **whichever of the two polynomials realises
+  `min(σ₁,σ₂)`** — the paper's case split.  For `σ₁ ≤ σ₂` it is applied to `M₁(1+it)^ℓ` with `ℓ`
+  chosen so that `M₁^ℓ` lands in the admissible length window; that is a polynomial over a range of
+  multiplicative width `2^ℓ`, which is exactly what
+  `Sieve/HuxleyRangeLargeValues.huxley_range_large_values_uniform` was built for.  For `σ₂ < σ₁` it is
+  applied to `M₂` directly, whose support is already dyadic.
+
+So the remaining work in `T₂` is the case split plus the `ℓ`-selection arithmetic
+(`M₁^ℓ ∈ [T^{5/6−ε}, T^{1−ε/2}]`, possible because `M₁ ≤ T^{2/11+ε}` and consecutive powers of `M₁`
+cannot skip a window of multiplicative width `T^{1/6+ε/2}`).
+
+### Revised milestone list for Theorem 1.2
+
+- [x] **M4** Lemma 4.1 at `σ = 7/32 − 5ε` (`exists_lemma41_huxley`), and its general-range form.
+- [~] **M4d** Prop 4.2: the `T₂` cell cancellation is **owned**
+      (`MatomakiTeravainenTypeIIAmplitudeCells`); the `T₁` step has its discrete mean value theorem
+      (`DirichletFiniteSetLargeValues.largeValues_dirPoly_finset`, Ivić Thm 9.4) and
+      Halász–Montgomery; `T₃` is trivial.  **Remaining: the case split and the `ℓ`-selection.**
+- [ ] **M2** Lemma 3.1 (Perron/variance reduction) — `Sieve/PerronShortInterval` and
+      `Sieve/PerronWindowKernel` are the primitives.
+- [ ] **M5** Prop 2.2 (Harman sieve decomposition).
+- [ ] **M6/M7** Type I and Type I/II — the Watt/Deshouillers–Iwaniec fork.
+- [ ] **M8** Theorem 1.2′ at exponent `≈ 1.557`; retune both Route E cards.
+
+Nothing in the `T₂` half needs a new analytic estimate.

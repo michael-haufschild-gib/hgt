@@ -1,10 +1,10 @@
 # G-CE pre-scalar affine prime–polar–Γ producer
 
 - **ID:** g-ce-pre-scalar-affine-prime-polar-gamma-producer
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** source producer / affine pointed Hilbert carrier
 - **Route:** G-CE / CCM
-- **Status:** [PAPER-PROVED] [NOVELTY UNVERIFIED]
+- **Status:** [LEAN-PROVED] [NOVELTY UNVERIFIED]
 - **RH used:** no
 - **Computation used:** no
 
@@ -46,7 +46,7 @@ prime/polar/Γ carrier and no common source readout.
 [PAPER-PROVED] Let
 
 ~~~text
-K = C × EulerPositiveL2,
+K = WithLp 2 (C × EulerPositiveL2),
 J = WithLp 2 (MobiusClockSourceL2 × MobiusClockSourceL2).
 ~~~
 
@@ -148,6 +148,31 @@ division-free full-Euler charge with the Möbius clock commutator in one affine 
 Formalize the exact definitions and all six clauses above. Required new support is limited to
 strict positivity of the Euler probability, nonvanishing of its state weight, and nonvanishing of
 the pre-scalar Gamma source. No analytic infrastructure or assumed convergence is needed.
+
+## Lean certificate
+
+Module:
+
+~~~text
+GaloisForLFunctions.RHTower.MobiusGammaXiPreScalarAffinePrimePolarGammaProducer
+~~~
+
+Formal declarations include:
+
+- eulerPositiveProbability_pos;
+- eulerPositiveStateWeight_ne_zero;
+- eulerPositivePreScalarGammaSource_ne_zero;
+- mobiusGammaXiPreScalarPrimePolarGammaCharge;
+- inner_mobiusGammaXiPreScalarPrimePolarGammaCharge_probe;
+- mobiusGammaXiPreScalarPrimePolarGammaCharge_ne_zero;
+- mobiusGammaXiPreScalarAffineProducer;
+- exact charge-port, commutator-jet, joint-readout, and zero-clock laws;
+- premise-free canonical capstone
+  canonicalMobiusGammaXiPreScalarAffineProducer_closed.
+
+Lean forced the charge product to carry the L2 product norm via WithLp 2; the ordinary product max
+norm is not induced by a complex inner product. This strengthens the paper statement by fixing the
+unique lawful Hilbert geometry for its Pythagorean charge coordinates.
 
 ## Scope
 

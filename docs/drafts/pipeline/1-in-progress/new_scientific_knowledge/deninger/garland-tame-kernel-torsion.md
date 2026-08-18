@@ -507,3 +507,25 @@ With `milnorKDegMap_ratFuncConstHom_injective` the bottom of the filtration is t
 `K_n^M(F)`, and with `exists_mem_degreeFiltration` the filtration exhausts `K_n^M(F(t))`.  Every
 structural ingredient of Milnor's sequence is now formal except the graded-piece isomorphism
 `L_d/L_{d−1} ≅ ⊕_{deg π = d} K_{n−1}^M(F[X]/π)`.
+
+### Milnor's exact sequence — `π` as its own uniformizer, and degree-bounded lifting `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/PolynomialPlaceResidue.lean` (wired, axiom-clean).
+
+```text
+polyUnit_tameVal                  π has valuation exactly one at its own place
+polyResidueData hπ                ** the residue data at π with π ITSELF as uniformizer **
+polyResidueData_residueUnit_eq    it has the same residue as the chosen-uniformizer data
+exists_polyUnit_degree_lt         ** every residue class at π is the residue of a polynomial of
+                                     degree below deg π ** (division with remainder)
+```
+
+These are the two inputs the graded-piece surjectivity needs.  Milnor's residue depends on a choice
+of uniformizer, and the degree filtration argument only works when that choice is `π` itself: then
+the symbol `{u₁, …, u_{n−1}, π}` realising a given class of `F[X]/(π)` has *all* its entries of
+degree at most `deg π`, so it lies in `L_{deg π}`.  With `exists_polyUnit_degree_lt` the entries can
+moreover be taken of degree strictly below `deg π`.
+
+Combined with `milnorResidue_append_unif` this gives the surjectivity half of
+`L_d / L_{d−1} ≅ ⊕_{deg π = d} K_{n−1}^M(F[X]/π)`; the injectivity half is the section built from
+the specializations, and is what remains of Milnor's sequence.
