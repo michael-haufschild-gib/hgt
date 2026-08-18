@@ -3209,3 +3209,56 @@ What remains of brick (B) is the Mellin half: with
 Fubini gives `int_1^inf q(x) x^{-s} dx = (1/2π) int_R φ(1+it)/(s - 1 - it) dt = φ(s)` by the
 representation above, `‖q‖ <= C/2` by the envelope, and `q(x) -> 0` by Riemann--Lebesgue
 (`MeasureTheory.Integrable.tendsto_integral_exp_smul_cocompact`).
+
+## Andersson's Lemma 1 is now unconditional in Lean
+
+Three further modules close brick (B) and assemble the whole lemma.
+
+**`HTGeometry/HalfPlaneMellinRepresentation.lean`**
+
+- `mellinDensity φ x = (1/2π) ∫_R exp(i t log x) φ(1 + i t) dt`.
+- `integrable_boundary`, `norm_boundary_le` — the boundary values are dominated by `C/(1+t²)`.
+- `continuousOn_mellinIntegrand`, `integrable_mellinIntegrand` — joint continuity and product
+  integrability on `Ioi 1 × R` (envelope `x^{-Re s} · C/(1+t²)`), the hypothesis of Fubini.
+- **`integral_mellinDensity_eq`** — `∫_1^∞ q(x) x^{-s} dx = φ(s)` for `Re s > 1`, by Fubini,
+  `integral_Ioi_cpow_of_lt`, and `halfPlane_cauchy_representation`.
+- `norm_mellinDensity_le`, **`tendsto_mellinDensity_atTop`** — boundedness and, via
+  `Real.tendsto_integral_exp_smul_cocompact` with `w = -log x/(2π) → -∞`, the Riemann--Lebesgue
+  decay `q(x) → 0`.
+
+**`HTGeometry/AnderssonLemmaOne.lean`**
+
+- `differentiable_dslope_of_differentiable`, `integral_Ioi_inv_pow_cpow`
+  (`∫_1^∞ x^{-k} x^{-s} dx = 1/(s+k-1)`), `integrableOn_mellin_term`,
+  `aestronglyMeasurable_mellinDensity` (via `StronglyMeasurable.integral_prod_right'`).
+- **`exists_mellin_add_entire`** — if `(s²+s) f` is within `1` of an entire `G` on `Re s ≥ 1`, then
+
+```text
+  f(s) = int_1^inf q(x) x^{-s} dx + g(s)      (Re s > 1),
+```
+
+  with `g` entire, `q` bounded on `[1,∞)` and `q(x) → 0`.  The multiplier `s(s+1)` rather than `s²`
+  is the trick that keeps the correction elementary: partial fractions
+  `G/(s(s+1)) = H + A/s + B/(s+1)` (with `H = dslope (dslope N 0) (-1)` for
+  `N = G - A(s+1) - Bs`, `A = G(0)`, `B = -G(-1)`) and both `1/s` and `1/(s+1)` are Mellin
+  transforms of `1/x` and `1/x²`, which are `o(1)`.  With `s²` the second correction is `1/s²`,
+  whose density is `log x / x` and whose evaluation needs an integration by parts.
+- `analyticAt_logDeriv_divisorFunction` and
+  **`exists_mellin_add_entire_logDeriv_divisorFunction`** — the same conclusion for
+  `logDeriv (divisorFunction a b)`, unconditionally, for any zero and pole sequences tending to
+  infinity, nonzero, and lying in `{Re < 1}`.
+
+The `s² + κ s` generalization of `exists_entire_approx_sq_mittagLeffler` (and of the two Weierstrass
+corollaries) was made on the way; `κ = 1` is what Lemma 1 consumes.
+
+**Status of Andersson's chain**
+
+| Piece | State |
+|---|---|
+| Lemma 1 (Arakelyan + Mellin), for the card's data | **Lean-proved, unconditional** |
+| Lemma 2 (short-interval prime supply, counting form) | open |
+| Lemma 3 (Bagchi rounding) | **Lean-proved** (`UnimodularRounding`) |
+| Lemmas 4-7 (Vandermonde/Cramer system and the recursion) | open |
+| Theorem 1 (assembly by parts) | open |
+| Theorem 2 from Theorem 1 | open |
+| Theorem 5 from Theorem 2 (divisor surjectivity) | **Lean-proved** given the factorization property |

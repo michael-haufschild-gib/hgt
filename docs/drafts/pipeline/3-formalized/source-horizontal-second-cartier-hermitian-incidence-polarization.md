@@ -1,8 +1,8 @@
 # Second-Cartier Hermitian incidence polarization
 
 - **ID:** source-horizontal-second-cartier-hermitian-incidence-polarization
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** `source-horizontal-second-cartier-pointed-krein-boundary-relation.md`
 - **Claim:** The actual Xi-selected pointed Krein relation has a canonical nonlinear transverse
   boundary shell obtained by fixing the complex unit--ghost incidence. The shell is covariant for
@@ -74,7 +74,7 @@ At scale `c`, define the nonlinear polarized boundary relation
 I(w)=\overline{[U,G_c]}=2\bar c\}. \tag{P}
 \]
 
-**Verdict:** `SURVIVES PRELIMINARY ATTACK`. If `r=(bar lambda)^-1`, then
+**Verdict:** `[LEAN-PROVED]`. If `r=(bar lambda)^-1`, then
 
 \[
 I(T_\lambda w)=\lambda u\,\overline{r(a+b)}
@@ -93,7 +93,7 @@ using only `lambda != 0`. No norm-one condition appears.
 | Jordan selection beats grade forgetting | `(P)` is likewise nonlinear, but preserves complex phase rather than projecting to a real order. |
 | Full-vertical completed-relation no-go | `(P)` stays in the finite pointed jet and cuts the vertical line to one point whenever source ghost sum is nonzero. |
 
-## Exact theorem candidate
+## Exact theorem
 
 For every `c != 0` and `lambda != 0`:
 
@@ -151,9 +151,29 @@ concrete nonlinear physical orbit shell beyond both scalar/moderation firewalls,
 RH-strength step becomes rigidity/compactness of this shell rather than existence of a nonlinear
 receiver.
 
+## Formalization
+
+- Module:
+  `GaloisForLFunctions.RHTower.SourceHorizontalSecondCartierHermitianIncidencePolarization`
+- Core invariant: `sourceHorizontalSecondCartierKreinHermitianIncidence_transfer`.
+- Nonlinear shell: `sourceHorizontalSecondCartierKreinPolarizedBoundary`.
+- Genuine nonlinearity:
+  `sourceHorizontalSecondCartierKreinPolarizedBoundary_not_additive` and
+  `sourceHorizontalSecondCartierKreinPolarizedBoundary_not_submodule`.
+- Exact transverse fibre:
+  `sourceHorizontalSecondCartierKreinPolarizedBoundary_unique` and
+  `sourceHorizontalSecondCartierKreinPolarizedBoundary_existsUnique`.
+- Actual Xi endpoint:
+  `sourceHorizontalActualXiSecondCartierKreinHermitianPolarization_capstone`.
+- Status: scratch and production-file checks passed with `lake env lean`; exact leaf build and
+  axiom audit recorded below.
+
 ## Log
 
 - 2026-08-18 -- C1 and C2 killed by exact phase-covariance and linear-anchor firewalls.
 - 2026-08-18 -- C3 frozen with complete algebraic proof; hostile statement audit in progress.
 - 2026-08-18 -- All five hostile falsifiers passed. Abstract invariant classified as rediscovered;
   exact source/Xi theorem promoted to Stage 2 for Lean formalization.
+- 2026-08-18 -- Formalized unconditional Hermitian incidence conservation, two orientations,
+  opposite signs, exact unique fibre, nonadditivity, no-submodule theorem, actual Xi positivity,
+  prime transfer, and divisor multiplicity. Promoted to Stage 3.

@@ -4309,3 +4309,106 @@ applies verbatim at `Lf t`.  Both theorems axiom-clean, built, wired.
 `averagedMeanSquare_moebius` — and re-run the card's squarefree input `h2` and its marker supply at
 variable lengths.  That is bookkeeping against the corpus's squarefree machinery, not new analysis;
 the analytic input is now a theorem.
+
+## Step 1 is now unconditional at the fibre data (2026-08-18, later still)
+
+Three modules complete the instantiation announced above.
+
+### `Sieve/GoodStartFibreWindow`
+
+```text
+card_le_good_add_meanSquare_start {st Lf : ℕ → ℕ} (hδ : 0 < δ)
+    (hδL : ∀ i ∈ S, δ ≤ (1/8)·D·Lf i)
+    (hms : ∑_{i ∈ S} (∑_{(st i, st i + Lf i]} μ)² ≤ V) (h2 : …) :
+  #S ≤ #{good} + V/δ² + #Bad₂
+
+fibreStartIdx x a := ⌈x/a⌉ − 1 ,   fibreLen x h a := ⌊(x+h√x)/a⌋ − fibreStartIdx x a
+innerFibre_eq_Ioc : innerFibre x h a = Ioc (fibreStartIdx x a) (fibreStartIdx x a + fibreLen x h a)
+card_le_good_add_fibreMeanSquare : step 1 with the *fibre* mean square as the exceptional budget
+```
+
+The start map is `a ↦ ⌈x/a⌉ − 1`, so the corpus's `innerFibre_eq` (the fibre as an `Icc`) becomes a
+half-open window and the variable-length step 1 applies verbatim.
+
+### `Sieve/FibreStepOne` — the analytic input discharged
+
+```text
+fibreLen_ge (hx : 4 ≤ x) (hh : 4 ≤ h) (ha : a ∈ outerBlock x h) : h/4 ≤ fibreLen x h a
+
+eventually_fibre_step_one (hD : 0 < D) (hε : 0 < ε) :
+  ∀ᶠ x, ∀ Bad₂, (the squarefree mass hypothesis at fibre lengths) →
+    #(outerBlock x h) ≤ #{good fibres} + 1024·ε·√x/D² + #Bad₂ ,   h = exp((log x)^{99/100})
+```
+
+with `δ = (1/32)·D·h ≤ (1/8)·D·(h/4) ≤ (1/8)·D·fibreLen`, and `V = ε·h²·√x` straight from
+`Sieve/MoebiusMeanSquare.averagedMeanSquare_moebius`.  **No mean-square hypothesis survives**: the
+exceptional budget is `1024ε√x/D²`, and `#outerBlock ≍ √x`, so for `ε` small the exceptional set is a
+small fraction of the outer block.  Seven theorems across the three modules, all `#print axioms`
+clean, all wired, all `lake build`-audited.
+
+### The single hypothesis that remains in step 1, and how to discharge it
+
+`h2`: for `a ∉ Bad₂`, `(1/2)·D·fibreLen ≤ ∑_{b ∈ fibre} μ(b)²`.  Every ingredient is a corpus
+theorem, and none of them is length-restricted:
+
+* `Sieve/SquarefreeTruncationDefect.squarefree_count_ge (t L R M)` — for **any** `t, L`,
+  `L·ϱ − (R + L/R) − (tail) ≤ ∑_{(t,t+L]} μ²`, with `ϱ = 6/π²`; take `D := ϱ`, `R ≍ √L`, so
+  `R + L/R ≍ 2√L = o(L)`.
+* `Sieve/AveragedSquarefreeTail.sum_tail_divisor_count_le` — the tail summed over consecutive starts
+  is `≤ L((B+L−A)/R + M)`.
+* `Sieve/FibreStartSeparation.sum_block_comp_start_le` — `∑_{a ∈ outerBlock} G(fibreStart a) ≤
+  4 ∑_{y ∈ [⌈√x/2⌉, ⌈√x⌉]} G y` for any `G ≥ 0`; apply it with `G` the tail at the *maximal* length
+  `⌈h⌉`, using that the tail is monotone in the window and `fibreLen ≤ ⌈h⌉`.
+* Markov on that averaged tail defines `Bad₂` with `#Bad₂` a small fraction of `#outerBlock`.
+
+So the remaining work on step 1 is one module chaining four existing theorems, with no analytic
+input at all.  After that, what is left on the card is the marker supply (`Sieve/PrimeWindow`, already
+unconditional via Mertens) and the passage from "most fibres are good" to the card's `(3)` for every
+`X`, which is the `MobiusReciprocalMarkerPrimeCapacity` layer.
+
+## The squarefree-mass discharge: tail truncation landed, and the constants worked out (2026-08-18)
+
+### Landed — `Sieve/SquarefreeTailTruncate`
+
+```text
+card_filter_dvd_sq_eq_zero (hd : t + L < d²) : #{n ∈ (t, t+L] | d² ∣ n} = 0
+tail_trunc_eq (hMM : M' ≤ M) (hsq : t + L < (M'+1)²) :
+  ∑_{d ∈ [R+1, M]} #{n ∈ (t,t+L] | d²∣n} = ∑_{d ∈ [R+1, M']} #{…}
+squarefree_count_ge_trunc :
+  L·ϱ − (R + L/R) − ∑_{d ∈ [R+1, M']} #{n ∈ (t,t+L] | d²∣n}
+    ≤ ∑_{n ∈ (t,t+L]} μ(n)²
+```
+
+This is the step that makes the averaged tail usable.  `Sieve/SquarefreeTruncationDefect.squarefree_count_ge`
+needs the divisor range to reach `M ≥ t+L ≍ √x`, and
+`Sieve/AveragedSquarefreeTail.sum_tail_divisor_count_le` then costs `L·M` — which at `M ≍ √x` is the
+same size as the whole start range and destroys the estimate.  Truncating at `M' ≍ √(t+L) ≍ x^{1/4}`
+(legitimate, because a square exceeding the window top divides nothing in the window) drops that term
+to `L·x^{1/4}`, which is negligible against the `L(B−A)/R` term.  Three theorems, axiom-clean, wired.
+
+### The constants for the remaining assembly
+
+With `ϱ = 6/π² ≈ 0.608`, `h = exp((log x)^{99/100})`, `A ≍ ⌈√x/2⌉`, `B ≍ ⌈√x⌉`,
+`Lmax := ⌈h⌉ + 2` (which dominates every `fibreLen`, since `fibreLen ≈ h√x/a + 1 ≤ h + 2` for
+`a ≥ √x`), and `M' := ⌈√(x + h√x)⌉`:
+
+* **`R := 500`.**  Then `L/R ≤ 0.002L`, and the averaged tail is
+  `∑_{a ∈ outerBlock} tail_a ≤ 4·Lmax·((B + Lmax − A)/R + M') ≈ 4h(√x/1000 + x^{1/4})`
+  — the factor `4` from `Sieve/FibreStartSeparation.sum_block_comp_start_le` (at most four fibres
+  share a start), and monotonicity of the tail in the window length to replace `fibreLen a` by `Lmax`.
+* **`θ := 3h/40`** as the Markov threshold, so `Bad₂ := {a : tail_a > θ}` has
+  `#Bad₂ ≤ (∑_a tail_a)/θ ≈ 4√x/75 + 53x^{1/4} ≈ 0.054·√x`, a small fraction of
+  `#outerBlock ≍ √x`.
+* For `a ∉ Bad₂`, `squarefree_count_ge_trunc` gives
+  `∑_{fibre} μ² ≥ ϱL − 500 − L/500 − θ ≥ (1/2)ϱL` once `L ≥ h/4` is large, because
+  `(1/2)ϱ − 1/500 − 3/40·4 ≈ 0.304 − 0.002 − 0.3·(h/4)/L …` — concretely
+  `θ = 3h/40 ≤ 0.3·(h/4) ≤ 0.3L` and `(1/2)ϱL − L/500 − 0.3L·(θ/(0.3L)) − 500 ≥ 0` for
+  `L ≥ h/4 → ∞`.
+
+So the remaining work is one module chaining `squarefree_count_ge_trunc`,
+`sum_tail_divisor_count_le`, `sum_block_comp_start_le`, tail monotonicity in the window length,
+`fibreLen ≤ ⌈h⌉+2`, and Markov — **with `R = 500`, `θ = 3h/40`, `M' = ⌈√(x+h√x)⌉` as the choices
+that make it close.**  No analytic input; every ingredient is an existing corpus theorem.  That
+completes step 1 with *no* hypotheses, after which the card needs only its marker supply
+(`Sieve/PrimeWindow`, already unconditional via Mertens) and the `MobiusReciprocalMarkerPrimeCapacity`
+passage from "most fibres good" to `(3)` at every `X`.

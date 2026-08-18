@@ -310,3 +310,64 @@ For a number field of unit rank `r₁ + r₂ − 1 ≤ 1`, Dirichlet gives `𝒪
 this form, so the hypothesis is discharged by a single application of the unit theorem — no rank
 theory, no structure theorem, no decomposition bookkeeping.  The proof is one line: if
 `u = t·g^k` with `t` of order `n`, then `uⁿ = g^{kn} ∈ ⟨g⟩`.
+
+### Milnor's exact sequence for `F(t)` — first brick `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/PolynomialPlaceResidue.lean` (wired, axiom-clean).
+
+The programme card lists Milnor's sequence
+`0 → K_n^M(F) → K_n^M(F(t)) → ⊕_π K_{n−1}^M(F[X]/π) → 0`
+as the gateway to the Bass–Tate–Kato norm.  Its first requirement is that the residue targets can be
+*named*: the finite places of `F(t)` are the irreducible polynomials, and the residue field at `π`
+must be identified with `F[X]/(π)`.  That identification is now free, from
+`residueFieldAtPlaceEquiv`:
+
+```text
+polyPlace hπ                        the place of F(t) attached to an irreducible π
+polyPlaceResidueEquiv hπ            ** the residue field at π is F[X]/(π) **
+polyPlaceResidueEquiv_residue       and it sends the residue of p ∈ F[X] to p mod π
+polyPlaceXResidueEquiv              ** the residue field at X is F itself **
+polyPlaceXResidueEquiv_residue      ** the residue at X of a polynomial is its constant term **
+```
+
+The last two are the data the *specialization* retraction consumes: the splitting of
+`K_n^M(F) → K_n^M(F(t))` is the specialization at the place `X`, which on symbols of constants is the
+identity because a constant is a unit of valuation zero whose residue is itself.
+
+### Milnor's exact sequence — second brick: integral units are units of valuation zero `[PROVED]`
+
+Same module.
+
+```text
+placeIntegerUnit K hr0                 a nonzero r ∈ R, as a unit of K
+residueDataAtPlace_val'_eq_zero        ** r ∉ v.asIdeal  ⟹  its valuation at v is zero **
+```
+
+This is precisely the hypothesis that `milnorSpecialization_of_units` consumes: on a symbol all of
+whose entries are units of valuation zero the specialization is the symbol of the residues.  Applied
+at the place `X` of `F(t)`, where the residue field is `F` and the residue of a constant is that
+constant (`polyPlaceXResidueEquiv_residue`), this is the retraction that splits
+`K_n^M(F) → K_n^M(F(t))` — the first exactness statement of Milnor's sequence, and the mechanism
+behind the Bass–Tate–Kato norm.
+
+### Milnor's exact sequence — third brick: the residue of a constant at `X` `[PROVED]`
+
+Same module.
+
+```text
+placeIntegerUnit_mem_ker              an integral unit outside v is in the kernel of the valuation
+residueFieldAtPlaceEquiv_residueUnit  ** the ResidueData residue of an integral unit is its class
+                                         mod v ** — the bridge between the residue Milnor's
+                                         specialization uses and the ring-theoretic residue field
+polyPlaceResidueEquiv_residueUnit     the same in the polyPlace idiom
+C_notMem_span_X, C_ne_zero_of_unit
+polyPlaceXResidueEquiv_residueUnit_C  ** the residue at X of a constant is that constant **
+```
+
+All three ingredients of the specialization retraction are now in place: a constant is a unit of
+valuation zero at `X` (`residueDataAtPlace_val'_eq_zero`), the residue field at `X` is `F`
+(`polyPlaceXResidueEquiv`), and the residue of a constant is itself
+(`polyPlaceXResidueEquiv_residueUnit_C`).  With `milnorSpecialization_of_units` the remaining step is
+purely bookkeeping: assemble these on a symbol `⟨[c₁, …, c_n]⟩` of constants to conclude that
+`milnorSpecialization` at `X` composed with `K_n^M(F) → K_n^M(F(t))` is the identity, hence that the
+structure map is **split injective** — the first exactness statement of Milnor's sequence.

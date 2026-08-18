@@ -1,6 +1,7 @@
 import Mathlib
 import GaloisForLFunctions.HTGeometry.HalfPlaneMellinRepresentation
 import GaloisForLFunctions.RHTower.AnalyticDividedDifference
+import GaloisForLFunctions.HTGeometry.WeierstrassLogDerivMittagLeffler
 
 /-!
 # Andersson's Lemma 1
@@ -313,6 +314,48 @@ theorem exists_mellin_add_entire {f : ℂ → ℂ} {G : ℂ → ℂ}
     have hfac : s ^ 2 + s = s * (s + 1) := by ring
     rw [hsum, h0, hA1, hB1, hfs, hfac, hHval s hs0 hsn1]
     ring
+
+/-! ### Lemma 1 for the logarithmic derivative of a prescribed-divisor realization -/
+
+open GaloisForLFunctions in
+theorem analyticAt_logDeriv_divisorFunction {a b : ℕ → ℂ}
+    (ha : Tendsto (fun n => ‖a n‖) atTop atTop) (hane : ∀ n, a n ≠ 0)
+    (hb : Tendsto (fun n => ‖b n‖) atTop atTop) (hbne : ∀ n, b n ≠ 0)
+    (hare : ∀ n, (a n).re < 1) (hbre : ∀ n, (b n).re < 1) {z : ℂ} (hz : 1 ≤ z.re) :
+    AnalyticAt ℂ (logDeriv (divisorFunction a b)) z := by
+  have hPa : AnalyticAt ℂ (weierstrassGenusProduct a) z :=
+    (differentiable_weierstrassGenusProduct ha hane).analyticAt z
+  have hPb : AnalyticAt ℂ (weierstrassGenusProduct b) z :=
+    (differentiable_weierstrassGenusProduct hb hbne).analyticAt z
+  have hPane : weierstrassGenusProduct a z ≠ 0 :=
+    weierstrassGenusProduct_ne_zero_of_re ha hane hare hz
+  have hPbne : weierstrassGenusProduct b z ≠ 0 :=
+    weierstrassGenusProduct_ne_zero_of_re hb hbne hbre hz
+  have hFana : AnalyticAt ℂ (divisorFunction a b) z := hPa.div hPb hPbne
+  have hFne : divisorFunction a b z ≠ 0 := by
+    rw [divisorFunction]
+    exact div_ne_zero hPane hPbne
+  exact hFana.deriv.div hFana hFne
+
+open GaloisForLFunctions in
+/-- **Andersson's Lemma 1 for a prescribed-divisor realization**, unconditionally. -/
+theorem exists_mellin_add_entire_logDeriv_divisorFunction {a b : ℕ → ℂ}
+    (ha : Tendsto (fun n => ‖a n‖) atTop atTop) (hane : ∀ n, a n ≠ 0)
+    (hb : Tendsto (fun n => ‖b n‖) atTop atTop) (hbne : ∀ n, b n ≠ 0)
+    (hare : ∀ n, (a n).re < 1) (hbre : ∀ n, (b n).re < 1) :
+    ∃ (q : ℝ → ℂ) (g : ℂ → ℂ), Differentiable ℂ g ∧
+      Tendsto q atTop (nhds 0) ∧ (∃ M : ℝ, ∀ x : ℝ, 1 ≤ x → ‖q x‖ ≤ M) ∧
+      ∀ s : ℂ, 1 < s.re →
+        logDeriv (divisorFunction a b) s
+          = (∫ x in Ioi (1:ℝ), q x * (x : ℂ) ^ (-s)) + g s := by
+  obtain ⟨G, hGd, hGb⟩ :=
+    exists_entire_approx_sq_logDeriv_divisorFunction (1 : ℂ) ha hane hb hbne hare hbre
+      (ε := 1) one_pos
+  refine exists_mellin_add_entire
+    (fun z hz => analyticAt_logDeriv_divisorFunction ha hane hb hbne hare hbre hz) hGd ?_
+  intro s hs
+  have := hGb s hs
+  simpa using this
 
 end GaloisForLFunctions.HTGeometry
 

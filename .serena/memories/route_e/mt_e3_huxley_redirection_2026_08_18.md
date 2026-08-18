@@ -161,3 +161,33 @@ obstruction.
 a uniform Markov threshold `δ ≤ (1/8)D·Lf t` (take `δ = (1/16)Dh`).  `card_moebius_sign_ge` was
 already pointwise so it transfers verbatim.  What remains is instantiating at the fibre data and
 re-running the squarefree input and marker supply at variable lengths — bookkeeping, not analysis.
+
+## Hall-law card: step 1 unconditional at the fibre data (2026-08-18, 18:50)
+
+Landed `Sieve/GoodStartVariableWindow`, `Sieve/GoodStartFibreWindow`, `Sieve/FibreStepOne`
+(7 theorems, axiom-clean, wired, lake-build audited).  `eventually_fibre_step_one` has **no
+mean-square hypothesis**: the exceptional budget `1024ε√x/D²` comes straight from
+`averagedMeanSquare_moebius`, via `δ = (1/32)Dh` and `fibreLen ≥ h/4`.
+
+The one hypothesis left in step 1 is the squarefree mass `h2`.  Discharge plan (all four ingredients
+are existing corpus theorems, none length-restricted):
+`SquarefreeTruncationDefect.squarefree_count_ge` (any `t, L`; take `D = 6/π²`, `R ≍ √L`)
++ `AveragedSquarefreeTail.sum_tail_divisor_count_le`
++ `FibreStartSeparation.sum_block_comp_start_le` (the `≤ 4` start-sharing aggregation, applied to the
+tail at the maximal length `⌈h⌉`, using tail monotonicity in the window and `fibreLen ≤ ⌈h⌉`)
++ Markov to define `Bad₂`.
+One module, no analytic input.  Then only the marker supply (already unconditional via Mertens) and
+the "most fibres good ⟹ every `X`" passage remain.
+
+## Squarefree-mass discharge: the working constants (2026-08-18, 19:05)
+
+`Sieve/SquarefreeTailTruncate` landed (`card_filter_dvd_sq_eq_zero`, `tail_trunc_eq`,
+`squarefree_count_ge_trunc`).  **Why it was needed**: `squarefree_count_ge` forces the divisor range
+to `M ≥ t+L ≍ √x`, and `sum_tail_divisor_count_le` then pays `L·M ≍ L√x`, which is the size of the
+whole start range — fatal.  Truncating at `M' ≍ x^{1/4}` drops it to `L·x^{1/4}`.
+
+Choices that make the discharge close (worked out, not guessed): `R = 500`, Markov threshold
+`θ = 3h/40`, `Lmax = ⌈h⌉+2`, `M' = ⌈√(x+h√x)⌉`.  Then `∑_a tail_a ≤ 4·Lmax((B+Lmax−A)/500 + M')`
+and `#Bad₂ ≤ 0.054√x`, a small fraction of `#outerBlock ≍ √x`; and for `a ∉ Bad₂`,
+`∑_{fibre} μ² ≥ ϱL − 500 − L/500 − θ ≥ (1/2)ϱL` once `L ≥ h/4` is large.  Do **not** try `R ≍ 27`
+(the naive `R + L/R ≤ ϱL/4` choice) — it gives `#Bad₂ ≈ 3.9√x > #outerBlock`.
