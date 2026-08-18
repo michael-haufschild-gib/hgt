@@ -270,3 +270,72 @@ so a whole complement-lattice family is discarded at once.
 
 Remaining for this card: items 1--3 of the growth stability lemma (the admissible seed class and
 termwise differentiation of the Poincaré series), and the subgroup-rank induction itself.
+
+## Lean audit 2026-08-18 — the whole logical chain is already in the tree; two analytic
+## hypotheses remain
+
+A corpus audit shows this card's theorem is present in Lean, in Abe's own base-and-extension shape,
+with only two *analytic* obligations still carried as structure fields rather than proved:
+
+```text
+GaloisForLFunctions.HTGeometry.QuasiAbelianAutomorphicForms
+    AutomorphicFactor                        factor / normalized / cocycle / nowhereZero
+    AutomorphicFactor.JetAmpleEveryFiniteOrder
+        the exact predicate of this card: surjectivity onto every finite local Artin packet at
+        pairwise distinct quotient points, same fixed factor, every finite mixed jet order
+
+GaloisForLFunctions.HTGeometry.QuasiAbelianPoincareSeries
+    poincareTerm / poincareSeries / poincareSeriesEntire / poincareSeriesAutomorphicForm
+    poincareSeries_shift                      the fixed-factor automorphy law
+    lineEntire_poincareSeries_of_summableLocallyUniformly
+    hasSum_multiIndexJetEvalCLM_poincareTermEntire       termwise differentiation of the series
+    multiIndexJetEvalCLM_poincareSeriesEntire_eq_seed_of_powerZeros
+        **the base mechanism of this card**: a normally summable seed with an order-`m` power zero
+        at every nonzero translate has Poincare sum with exactly the seed's jet below order `m`
+
+GaloisForLFunctions.HTGeometry.QuasiAbelianGaussianFlatSeed
+    centeredComplexGaussian, GaussianFlatSeedData, gaussianFlatSeedData
+        damping = 1 − (1 − G)^m = G · Σ_(r<m)(1−G)^r, flat to order `m` at the centre
+
+GaloisForLFunctions.HTGeometry.QuasiAbelianIntegerLatticeSeparator
+    complexIntegerSinc, integerSincProduct, integerTranslateSine
+    exists_integerLatticePacketSeparator, flatIntegerLatticePacketSeparatorData
+        the explicit algebraic bump with an order-`m` zero at every undesired translate
+
+GaloisForLFunctions.HTGeometry.QuasiAbelianIntegerLatticePoincareInterpolation
+    AutomorphicFactor.jetAmpleEveryFiniteOrder_standardIntegerLattice
+        the rank-zero base case, **conditional only on**
+        AutomorphicFactor.GaussianFlatIntegerLatticeSeedsNormallySummable
+
+GaloisForLFunctions.HTGeometry.QuasiAbelianPositiveFactorJetAmple
+    AbePositiveFactorPresentation                (field `gaussianMajorant`)
+    AbePositiveFactorPresentation.jetAmpleEveryFiniteOrder
+
+GaloisForLFunctions.HTGeometry.QuasiAbelianDampedFactorExtension
+    AbeDampedFactorExtension                     (field `liftPacket`)
+    AbeDampedFactorExtension.jetAmpleEveryFiniteOrder      the subgroup-rank induction step
+    AbePositiveFactorTower, AbePositiveFactorTower.jetAmpleEveryFiniteOrder
+    AutomorphicFactor.IsAbePositiveTorusless
+    AutomorphicFactor.jetAmpleEveryFiniteOrder_of_isAbePositiveTorusless
+        **this card's statement**, for every factor with Abe's positive base-and-extension
+        presentation
+```
+
+So the *subgroup-rank induction is already Lean* — the card's "remaining: the subgroup-rank
+induction itself" is out of date.  What is genuinely still open, and is exactly the card's growth
+stability lemma, is:
+
+1. **`AbePositiveFactorPresentation.gaussianMajorant`** — a polynomial-Gaussian majorant, uniform on
+   compacta, for `ψ(γ)^(-1) · bump(· + γ) · damping(· + γ) · P(· + γ)` over `γ ∈ ℤ^d`.  All three
+   analytic ingredients are elementary and reachable: `bump` is built from `sin`/`sinc`, hence of
+   exponential type; `damping = G·Σ_(r<m)(1−G)^r` with `G` the centred Gaussian, so
+   `|damping(z+γ)| ≤ m(1+C_K)^(m-1) exp(−Σ_c σ_c (γ_c + a_c)²)` on a compact `K` because the lattice
+   is *real*; `P` is polynomial.  The only hypothesis needed on the factor is Abe's subquadratic
+   growth: `‖ψ(γ)^(-1)(x)‖ ≤ C_K e^(a‖γ‖)` uniformly on compacta.  This is items 1–3 of the card's
+   growth stability lemma, and it is the next concrete Lean target.
+2. **`AbeDampedFactorExtension.liftPacket`** — the damped packet lift of the induction step (the
+   card's `(5)`–`(7)`); item 4 of the growth stability lemma is already Lean
+   (`HTGeometry/DampedJetDecay`).
+3. The structure-theoretic input that a positive holomorphic line bundle on a torusless noncompact
+   quasi-Abelian variety has Abe's positive base-and-extension presentation
+   (`IsAbePositiveTorusless`).

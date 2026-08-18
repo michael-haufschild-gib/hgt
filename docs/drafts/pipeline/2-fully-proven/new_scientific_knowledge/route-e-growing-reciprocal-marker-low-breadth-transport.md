@@ -5707,3 +5707,11 @@ single explicit inequality, `Sieve/VonMangoldtTwistRouteTSharp`:
 
 for every `K >= e^9`, every smoothing width `0 < H <= K`, and every `|tau| >= tau_0`, with `w` the
 Route-T zero-free width and `W` the contour width.  All of it is axiom-clean and umbrella-wired.
+
+## Sign occupancy of the window is Lean (2026-08-18)
+
+`Sieve/MoebiusSignInWindow.exists_moebius_eq_in_window` proves, unconditionally, that for both
+signs the interval `[x, x + √x·exp((log x)^{99/100})]` contains an integer `m` with `μ(m) = s`.
+See the Hall-law card for the mechanism (multiplicativity on a coprime sign-class pair) and for the
+current build blockage in the `ladderEta` refactor.  This is the qualitative half of the marker
+supply; the quantitative count still needs the window-localised distinct-target bound.

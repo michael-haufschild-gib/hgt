@@ -2903,3 +2903,41 @@ The card therefore remains at stage 2.  The two remaining Lean targets, in order
    (`HTGeometry/DixmierIdeal.lean`) but nothing about modulated operators.
 2. **§1, the source reduction.**  Connes–Consani's one-prime decomposition, applied with
    `ρ_∞` replaced by `ρ_∞^(m,k)`; the discarded terms are rapidly smoothing or finite rank.
+
+## Pass 55 — §6 is elementary after all, and its first half is formalized
+
+The §6 step (from the *diagonal* logarithmic mean to the *singular-value* logarithmic mean) does
+**not** need the full Lord–Sukochev–Zanin `V`-modulated machinery.  With `P_M` the projection onto
+the first `M` basis vectors and `E_M² = Σ_(j≥M) ‖T b_j‖²`:
+
+```text
+lower :  Σ_(j<N) ⟨b_j, T b_j⟩ ≤ Σ_(n<N) s_n(T)                       (Ky Fan / bathtub)
+upper :  Σ_(n<N) s_n(T) ≤ Tr(P_M T P_M) + 2 √N · E_M                 (Cauchy–Schwarz)
+```
+
+and taking `M = ⌈N^(1+δ)⌉` gives `limsup ≤ (1+δ)R` for every `δ > 0` once
+`√N · E_(M(N)) = o(log N)`, which holds as soon as `E_M ≲ M^(δ'−1/2)` with `δ' < δ/(2(1+δ))`.
+Letting `δ → 0` gives the limit.  **The ε-slack the two-piece class carries is therefore harmless**:
+it only has to beat an arbitrarily small power, not a constant.
+
+### `RHTower/PositiveOperatorTraceComparison.lean` (new, unconditional, axiom-clean, wired, built)
+
+```text
+absOp_of_nonneg                      |T| = T for 0 ≤ T            (CFC.sqrt_mul_self)
+apply_svVec_of_nonneg                the greedy vectors are eigenvectors of a positive T
+re_inner_svVec_apply_of_nonneg       ⟨e_n, T e_n⟩ = s_n(T)
+hasSum_re_inner_apply_of_nonneg      ⟨x, T x⟩ = Σ_k s_k |⟨e_k, x⟩|²        (the SVD quadratic form)
+tsum_mul_le_sum_range_of_antitone    the bathtub inequality
+sum_re_inner_le_sum_singVal          **majorization**: for every orthonormal-with-zeros family and
+                                     every finite index set of cardinality ≤ N,
+                                     Σ ⟨g i, T (g i)⟩ ≤ Σ_(n<N) s_n(T)
+tsum_ofReal_re_inner_basis_eq_tsum_ofReal_singVal
+                                     **trace = Σ singular values** in `ℝ≥0∞`, for a positive
+                                     compact operator and any Hilbert basis
+```
+
+The majorization is the `lower` line above, with no modulation hypothesis of any kind.  What
+remains of §6 is the `upper` line (the `P_M` split, which needs only the two `ℝ≥0∞` double-sum
+identities `Σ_j ‖X b_j‖² = Σ_j ‖X* b_j‖²` and `Σ_n ‖X g_n‖² ≤ Σ_j ‖X b_j‖²`) and the analytic
+input `E_M ≲ M^(δ'−1/2)`, i.e. `‖G^m e_n‖ ≲ |n|^(δ'−1)`, which follows from
+`‖G^m e_n‖ = |σ_n|^m ‖R_n^m 1‖` and the two-piece class bound on `‖R_n^m 1‖`.

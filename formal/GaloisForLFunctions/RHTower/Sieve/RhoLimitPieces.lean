@@ -308,11 +308,12 @@ theorem eventually_siftStart_ge {c : ℝ} :
 theorem eventually_ladderSteps_poly {β γ : ℝ} (hβ0 : 0 < β) (hγ0 : 0 < γ) (hγ1 : γ < 1)
     (hγβ : γ * β < 1) :
     ∀ᶠ x : ℝ in atTop,
-      ((ladderSteps β γ x : ℕ) : ℝ) ≤ 2 * (Real.log x) ^ (2 * β + 1 - γ * β) := by
+      ((ladderSteps β γ x : ℕ) : ℝ) ≤ 2 * (Real.log x) ^ (2 * β + 5 / 4 - γ * β) := by
   filter_upwards [ladderSteps_le hβ0 hγ0 hγ1 hγβ, Filter.eventually_gt_atTop (1 : ℝ)]
     with x hL hx1
   have hlogx : (0 : ℝ) < Real.log x := Real.log_pos hx1
-  have hid : 2 * (Real.log x) ^ β / ladderEta β γ x = 2 * (Real.log x) ^ (2 * β + 1 - γ * β) := by
+  have hid : 2 * (Real.log x) ^ β / ladderEta β γ x
+      = 2 * (Real.log x) ^ (2 * β + 5 / 4 - γ * β) := by
     rw [ladderEta, div_eq_mul_inv, ← Real.rpow_neg hlogx.le, mul_assoc,
       ← Real.rpow_add hlogx]
     congr 2

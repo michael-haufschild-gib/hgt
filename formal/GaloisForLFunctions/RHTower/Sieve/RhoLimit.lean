@@ -15,37 +15,37 @@ noncomputable section
 /-- The majorant of the annulus constant times the number of steps. -/
 def rhoMajorant (A Ctot β γ x : ℝ) : ℝ :=
   (4 / Real.log 2)
-    * (2 * (512 * Ctot / 36 * (Real.log x) ^ (12 * β + 1 - γ * β - 13)
+    * (2 * (512 * Ctot / 36 * (Real.log x) ^ (12 * β + 5 / 4 - γ * β - 13)
         + 512 * Ctot * (1 + 40 * routeTZeroFreeDeltaEnvelopeConstant A) / 6
-            * ((Real.log x) ^ (10 * β + 3 - γ * β)
+            * ((Real.log x) ^ (10 * β + 13 / 4 - γ * β)
               * Real.exp (-((Real.log x) ^ ((γ * β - 9 / 10) / 4))))
         + 512 * Ctot * (1 + 40 * routeTZeroFreeDeltaEnvelopeConstant A) / 216
-            * (Real.log x) ^ (10 * β + 3 - γ * β - 26)
-        + 4 * (Real.log x) ^ (1 - β - γ * β)
-        + 4 * ((Real.log x) ^ (3 * β + 1 - γ * β)
+            * (Real.log x) ^ (10 * β + 13 / 4 - γ * β - 26)
+        + 4 * (Real.log x) ^ (5 / 4 - β - γ * β)
+        + 4 * ((Real.log x) ^ (3 * β + 5 / 4 - γ * β)
             * Real.exp (-((Real.log x) ^ (γ * β) / 2))))
       + 14 * Real.exp 9
-        * ((Real.log x) ^ (2 * β + 1 - γ * β) * Real.exp (-((Real.log x) ^ (γ * β)))))
+        * ((Real.log x) ^ (2 * β + 5 / 4 - γ * β) * Real.exp (-((Real.log x) ^ (γ * β)))))
 
 /-- **The majorant vanishes.** -/
 theorem tendsto_rhoMajorant {A Ctot β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1)
     (hγ0 : 0 < γ) (hγβ0 : 9 / 10 < γ * β) (hγβ1 : γ * β < 1) :
     Tendsto (fun x : ℝ => rhoMajorant A Ctot β γ x) atTop (𝓝 0) := by
-  have ha1 : 12 * β + 1 - γ * β - 13 < 0 := by nlinarith
-  have ha3 : 10 * β + 3 - γ * β - 26 < 0 := by nlinarith
-  have ha4 : 1 - β - γ * β < 0 := by nlinarith
+  have ha1 : 12 * β + 5 / 4 - γ * β - 13 < 0 := by nlinarith
+  have ha3 : 10 * β + 13 / 4 - γ * β - 26 < 0 := by nlinarith
+  have ha4 : 5 / 4 - β - γ * β < 0 := by nlinarith
   have hε : (0 : ℝ) < (γ * β - 9 / 10) / 4 := by linarith
   have hγβpos : (0 : ℝ) < γ * β := by linarith
   have t1 := (tendsto_rpow_log_of_neg ha1).const_mul (512 * Ctot / 36)
-  have t2 := (tendsto_rpow_log_mul_exp_neg (c := 10 * β + 3 - γ * β)
+  have t2 := (tendsto_rpow_log_mul_exp_neg (c := 10 * β + 13 / 4 - γ * β)
       (a := (γ * β - 9 / 10) / 4) hε).const_mul
     (512 * Ctot * (1 + 40 * routeTZeroFreeDeltaEnvelopeConstant A) / 6)
   have t3 := (tendsto_rpow_log_of_neg ha3).const_mul
     (512 * Ctot * (1 + 40 * routeTZeroFreeDeltaEnvelopeConstant A) / 216)
   have t4 := (tendsto_rpow_log_of_neg ha4).const_mul (4 : ℝ)
-  have hhalf : Tendsto (fun x : ℝ => (Real.log x) ^ (3 * β + 1 - γ * β)
+  have hhalf : Tendsto (fun x : ℝ => (Real.log x) ^ (3 * β + 5 / 4 - γ * β)
       * Real.exp (-((Real.log x) ^ (γ * β) / 2))) atTop (𝓝 0) := by
-    have h := tendsto_rpow_log_mul_exp_neg (c := 3 * β + 1 - γ * β)
+    have h := tendsto_rpow_log_mul_exp_neg (c := 3 * β + 5 / 4 - γ * β)
       (a := γ * β / 2) (by linarith)
     refine squeeze_zero' ?_ ?_ h
     · filter_upwards [Filter.eventually_gt_atTop (1 : ℝ)] with x hx1
@@ -73,10 +73,10 @@ theorem tendsto_rhoMajorant {A Ctot β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β
         nlinarith [hsplit, hbig2]
       have hexp : Real.exp (-((Real.log x) ^ (γ * β) / 2))
           ≤ Real.exp (-((Real.log x) ^ (γ * β / 2))) := Real.exp_le_exp.2 (by linarith)
-      have hp0 : (0 : ℝ) ≤ (Real.log x) ^ (3 * β + 1 - γ * β) := Real.rpow_nonneg hlogx.le _
+      have hp0 : (0 : ℝ) ≤ (Real.log x) ^ (3 * β + 5 / 4 - γ * β) := Real.rpow_nonneg hlogx.le _
       exact mul_le_mul_of_nonneg_left hexp hp0
   have t5 := hhalf.const_mul (4 : ℝ)
-  have t6 := (tendsto_rpow_log_mul_exp_neg (c := 2 * β + 1 - γ * β)
+  have t6 := (tendsto_rpow_log_mul_exp_neg (c := 2 * β + 5 / 4 - γ * β)
       (a := γ * β) hγβpos).const_mul (14 * Real.exp 9)
   have hsum := ((((t1.add t2).add t3).add t4).add t5)
   have hfin := (hsum.const_mul (2 : ℝ)).add t6
@@ -156,7 +156,7 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
   set T0 : ℝ := 2 * Real.pi * annulusStart β x with hT0def
   set Qx : ℝ := ((siftStart (γ * β) x : ℕ) : ℝ) with hQxdef
   set KA : ℝ := 1 + 40 * routeTZeroFreeDeltaEnvelopeConstant A with hKAdef
-  set Lm : ℝ := 2 * t ^ (2 * β + 1 - γ * β) with hLmdef
+  set Lm : ℝ := 2 * t ^ (2 * β + 5 / 4 - γ * β) with hLmdef
   have hEx0 : (0 : ℝ) < Ex := Real.exp_pos _
   have hHx0 : (0 : ℝ) < Hx := by
     rw [hHxdef]
@@ -167,7 +167,7 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
     positivity
   have hLm0 : (0 : ℝ) < Lm := by
     rw [hLmdef]
-    have : (0 : ℝ) < t ^ (2 * β + 1 - γ * β) := Real.rpow_pos_of_pos ht0 _
+    have : (0 : ℝ) < t ^ (2 * β + 5 / 4 - γ * β) := Real.rpow_pos_of_pos ht0 _
     linarith
   have hT0ge : 6 * t ^ (13 : ℝ) ≤ T0 := by
     rw [ht₀]
@@ -192,10 +192,10 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
     push_cast
     ring
   have hB1 : Ctot * Dx ^ 2 * (((t : ℝ) ^ β) ^ 2 / T0) / (2 * Real.pi) * Lm
-      ≤ 512 * Ctot / 36 * t ^ (12 * β + 1 - γ * β - 13) := by
+      ≤ 512 * Ctot / 36 * t ^ (12 * β + 5 / 4 - γ * β - 13) := by
     have h1 : Ctot * Dx ^ 2 * (((t : ℝ) ^ β) ^ 2 / T0) / (2 * Real.pi) * Lm
         ≤ Ctot * (256 * t ^ (8 * β)) * (t ^ (2 * β) / (6 * t ^ (13 : ℝ))) / 6
-          * (2 * t ^ (2 * β + 1 - γ * β)) := by
+          * (2 * t ^ (2 * β + 5 / 4 - γ * β)) := by
       have hp13 : (0 : ℝ) < t ^ (13 : ℝ) := Real.rpow_pos_of_pos ht0 _
       have hp2 : (0 : ℝ) < t ^ (2 * β) := Real.rpow_pos_of_pos ht0 _
       have hdiv : ((t : ℝ) ^ β) ^ 2 / T0 ≤ t ^ (2 * β) / (6 * t ^ (13 : ℝ)) := by
@@ -216,13 +216,13 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
           ≤ Ctot * (256 * t ^ (8 * β)) * (t ^ (2 * β) / (6 * t ^ (13 : ℝ))) / (2 * Real.pi) :=
         div_le_div_of_nonneg_right hstep1 (by positivity)
       have hfin := mul_le_mul_of_nonneg_right (le_trans hdivmono hstep2)
-        (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 1 - γ * β))
+        (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 5 / 4 - γ * β))
       rw [hLmdef]
       exact hfin
     refine h1.trans (le_of_eq ?_)
     have hp13 : (0 : ℝ) < t ^ (13 : ℝ) := Real.rpow_pos_of_pos ht0 _
-    have hcomb : t ^ (8 * β) * t ^ (2 * β) * t ^ (2 * β + 1 - γ * β) / t ^ (13 : ℝ)
-        = t ^ (12 * β + 1 - γ * β - 13) := by
+    have hcomb : t ^ (8 * β) * t ^ (2 * β) * t ^ (2 * β + 5 / 4 - γ * β) / t ^ (13 : ℝ)
+        = t ^ (12 * β + 5 / 4 - γ * β - 13) := by
       rw [rpow_comb ht0]
       congr 1
       ring
@@ -230,7 +230,7 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
     field_simp
     ring
   have hB2 : Ctot * Dx ^ 2 * (Hx * Ex) / (2 * Real.pi) * Lm
-      ≤ 512 * Ctot * KA / 6 * (t ^ (10 * β + 3 - γ * β)
+      ≤ 512 * Ctot * KA / 6 * (t ^ (10 * β + 13 / 4 - γ * β)
         * Real.exp (-(t ^ ((γ * β - 9 / 10) / 4)))) := by
     have hHE : Hx * Ex ≤ (KA * t ^ (2 : ℝ)) * Real.exp (-(t ^ ((γ * β - 9 / 10) / 4))) :=
       mul_le_mul hH hexp hEx0.le (by positivity)
@@ -251,18 +251,18 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
           * Real.exp (-(t ^ ((γ * β - 9 / 10) / 4)))) / (2 * Real.pi) :=
       div_le_div_of_nonneg_right hstep1 (by positivity)
     have hfin := mul_le_mul_of_nonneg_right (le_trans hdivmono hstep2)
-      (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 1 - γ * β))
+      (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 5 / 4 - γ * β))
     rw [hLmdef]
     refine hfin.trans (le_of_eq ?_)
-    have hcomb : t ^ (8 * β) * t ^ (2 : ℝ) * t ^ (2 * β + 1 - γ * β)
-        = t ^ (10 * β + 3 - γ * β) := by
+    have hcomb : t ^ (8 * β) * t ^ (2 : ℝ) * t ^ (2 * β + 5 / 4 - γ * β)
+        = t ^ (10 * β + 13 / 4 - γ * β) := by
       rw [rpow_comb3 ht0]
       congr 1
       ring
     rw [← hcomb]
     ring
   have hB3 : Ctot * Dx ^ 2 * (Hx * (1 / T0 ^ 2)) / (2 * Real.pi) * Lm
-      ≤ 512 * Ctot * KA / 216 * t ^ (10 * β + 3 - γ * β - 26) := by
+      ≤ 512 * Ctot * KA / 216 * t ^ (10 * β + 13 / 4 - γ * β - 26) := by
     have hp26 : (0 : ℝ) < t ^ (26 : ℝ) := Real.rpow_pos_of_pos ht0 _
     have hinv : 1 / T0 ^ 2 ≤ 1 / (36 * t ^ (26 : ℝ)) :=
       one_div_le_one_div_of_le (by positivity) hT0sq
@@ -284,28 +284,28 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
           * (1 / (36 * t ^ (26 : ℝ)))) / (2 * Real.pi) :=
       div_le_div_of_nonneg_right hstep1 (by positivity)
     have hfin := mul_le_mul_of_nonneg_right (le_trans hdivmono hstep2)
-      (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 1 - γ * β))
+      (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 5 / 4 - γ * β))
     rw [hLmdef]
     refine hfin.trans (le_of_eq ?_)
-    have hcomb : t ^ (8 * β) * t ^ (2 : ℝ) * t ^ (2 * β + 1 - γ * β) / t ^ (26 : ℝ)
-        = t ^ (10 * β + 3 - γ * β - 26) := by
+    have hcomb : t ^ (8 * β) * t ^ (2 : ℝ) * t ^ (2 * β + 5 / 4 - γ * β) / t ^ (26 : ℝ)
+        = t ^ (10 * β + 13 / 4 - γ * β - 26) := by
       rw [rpow_comb ht0]
       congr 1
       ring
     rw [← hcomb]
     field_simp
     ring
-  have hB4 : (Real.log 2 + t ^ β) / Dx * Lm ≤ 4 * t ^ (1 - β - γ * β) := by
+  have hB4 : (Real.log 2 + t ^ β) / Dx * Lm ≤ 4 * t ^ (5 / 4 - β - γ * β) := by
     have hnum : Real.log 2 + t ^ β ≤ 2 * t ^ β := by linarith
     have hnum0 : (0 : ℝ) ≤ Real.log 2 + t ^ β := by linarith
     have hDpos : (0 : ℝ) < t ^ (4 * β) := Real.rpow_pos_of_pos ht0 _
     have hdiv : (Real.log 2 + t ^ β) / Dx ≤ 2 * t ^ β / t ^ (4 * β) := by
       refine div_le_div₀ (by positivity) hnum hDpos hDge
     have hfin := mul_le_mul_of_nonneg_right hdiv
-      (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 1 - γ * β))
+      (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 5 / 4 - γ * β))
     rw [hLmdef]
     refine hfin.trans (le_of_eq ?_)
-    have hcomb : t ^ β * t ^ (2 * β + 1 - γ * β) / t ^ (4 * β) = t ^ (1 - β - γ * β) := by
+    have hcomb : t ^ β * t ^ (2 * β + 5 / 4 - γ * β) / t ^ (4 * β) = t ^ (5 / 4 - β - γ * β) := by
       rw [← Real.rpow_add ht0, ← Real.rpow_sub ht0]
       congr 1
       ring
@@ -313,7 +313,7 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
     field_simp
     ring
   have hB5 : 2 * t ^ β / Real.sqrt Qx * Lm
-      ≤ 4 * (t ^ (3 * β + 1 - γ * β) * Real.exp (-(t ^ (γ * β) / 2))) := by
+      ≤ 4 * (t ^ (3 * β + 5 / 4 - γ * β) * Real.exp (-(t ^ (γ * β) / 2))) := by
     have hsq : Real.exp (t ^ (γ * β) / 2) ≤ Real.sqrt Qx := by
       have h1 : Real.sqrt (Real.exp (t ^ (γ * β))) ≤ Real.sqrt Qx := Real.sqrt_le_sqrt hQge
       rwa [← Real.exp_half] at h1
@@ -324,17 +324,17 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
       rw [div_eq_mul_one_div]
       exact mul_le_mul_of_nonneg_left hinv (by positivity)
     have hfin := mul_le_mul_of_nonneg_right hdiv
-      (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 1 - γ * β))
+      (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 5 / 4 - γ * β))
     rw [hLmdef]
     refine hfin.trans (le_of_eq ?_)
-    have hcomb : t ^ β * t ^ (2 * β + 1 - γ * β) = t ^ (3 * β + 1 - γ * β) := by
+    have hcomb : t ^ β * t ^ (2 * β + 5 / 4 - γ * β) = t ^ (3 * β + 5 / 4 - γ * β) := by
       rw [← Real.rpow_add ht0]
       congr 1
       ring
     rw [← hcomb]
     ring
   have hB6 : 7 * Real.exp 9 / Qx * Lm
-      ≤ 14 * Real.exp 9 * (t ^ (2 * β + 1 - γ * β) * Real.exp (-(t ^ (γ * β)))) := by
+      ≤ 14 * Real.exp 9 * (t ^ (2 * β + 5 / 4 - γ * β) * Real.exp (-(t ^ (γ * β)))) := by
     have hinv : 1 / Qx ≤ Real.exp (-(t ^ (γ * β))) := by
       rw [Real.exp_neg, ← one_div]
       exact one_div_le_one_div_of_le (Real.exp_pos _) hQge
@@ -342,7 +342,7 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
       rw [div_eq_mul_one_div]
       exact mul_le_mul_of_nonneg_left hinv (by positivity)
     have hfin := mul_le_mul_of_nonneg_right hdiv
-      (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 1 - γ * β))
+      (by positivity : (0:ℝ) ≤ 2 * t ^ (2 * β + 5 / 4 - γ * β))
     rw [hLmdef]
     refine hfin.trans (le_of_eq ?_)
     ring
@@ -363,12 +363,12 @@ theorem eventually_rhoBound_mul_steps_le {A delta Ctot β γ : ℝ} (hβ0 : 9 / 
     rw [hRdef, relScaledMajorant, hExdef, hμxdef]
     ring
   have hRLm : R * Lm
-      ≤ 512 * Ctot / 36 * t ^ (12 * β + 1 - γ * β - 13)
-        + 512 * Ctot * KA / 6 * (t ^ (10 * β + 3 - γ * β)
+      ≤ 512 * Ctot / 36 * t ^ (12 * β + 5 / 4 - γ * β - 13)
+        + 512 * Ctot * KA / 6 * (t ^ (10 * β + 13 / 4 - γ * β)
             * Real.exp (-(t ^ ((γ * β - 9 / 10) / 4))))
-        + 512 * Ctot * KA / 216 * t ^ (10 * β + 3 - γ * β - 26)
-        + 4 * t ^ (1 - β - γ * β)
-        + 4 * (t ^ (3 * β + 1 - γ * β) * Real.exp (-(t ^ (γ * β) / 2))) := by
+        + 512 * Ctot * KA / 216 * t ^ (10 * β + 13 / 4 - γ * β - 26)
+        + 4 * t ^ (5 / 4 - β - γ * β)
+        + 4 * (t ^ (3 * β + 5 / 4 - γ * β) * Real.exp (-(t ^ (γ * β) / 2))) := by
     rw [hexpand]
     linarith [hB1, hB2, hB3, hB4, hB5]
   simp only [budgetRhoBound, ladderRho, rhoMajorant]

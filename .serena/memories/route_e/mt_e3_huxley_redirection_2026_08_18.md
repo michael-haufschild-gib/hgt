@@ -87,3 +87,45 @@ injection, more general). The first version written here collided and would have
 umbrella; renamed to `card_le_of_pairwise_spread` and reproved as a wrapper. **Always run a
 `grep -rn "theorem <name>\b" --include='*.lean'` collision scan over every new declaration name
 before building the umbrella** — module-level `lake build` does not catch same-namespace clashes.
+
+## Card-level status of the five Route E targets (2026-08-18)
+
+Read the cards' own "Lean progress" sections before doing anything in this lane.
+
+1. `route-e-forbidden-support-e3-stability` — the card states explicitly: "Every step this card
+   *proves* is now in Lean."  Its only unformalized content is the **quoted** MT Theorem 1.2
+   (`(FS4)`), plus `(FS7)`, which was closed earlier this session.  So the whole remaining debt is
+   the MT programme.
+2. `route-e-cofactor-amplified-e3-token-supply` — same: "What remains on this card: only `(6)`, the
+   quantitative all-interval E₃ supply".  `(7)`, `(9)` closed earlier this session.
+3. `route-e-coprime-square-root-mobius-product-sign-law` — its `(3)` and consequence are
+   **already unconditional Lean** (`Sieve/RouteEMoebiusUnconditional.route_e_sign_density_unconditional`,
+   `route_e_signClass_nonempty_unconditional`).  It stays Stage 2 only for the
+   representation/multiplicity programme, whose gate is an **explicitly open question**: is
+   `(#S)²/(X·balancedMomentConst y)` larger than the Brun–Titchmarsh count of the window?  Worked
+   out here: with `#S ≍ h√x`, `X ≍ x`, `balancedMomentConst ≍ log x`, the bound is `≍ h²/log x`
+   against `≍ h√x/log x`, so it needs `h ≳ √x` — the global Cauchy–Schwarz loses a factor `√x/h`.
+   Closing it requires the second moment of the balanced divisor function **localised to the
+   window**, i.e. an additive-divisor estimate.  Do not expect the existing global bound to work.
+4. `route-e-reciprocal-marker-mobius-hall-law` and
+5. `route-e-growing-reciprocal-marker-low-breadth-transport` — both need the **integer-start**
+   Möbius mean square `DyadicTranslates.dyadicMeanSquare`, while the corpus proves the **fibre**
+   normalisation `AveragedMeanSquare`.  **Do not try to close this through
+   `dyadicMeanSquare_le_gallagher`**: that route needs a *sup* bound `M₁` on
+   `‖logPoly μ (Icc 1 M) w‖²` for `|w| ≤ W`, and the arithmetic requirement works out to
+   `M₁ ≪ x·ℓ`, i.e. square-root cancellation for the Möbius polynomial at low frequency — RH
+   strength.  `CofactorLowFreqBound` only saves `exp(−c(log x)^{1/10})`, nowhere near.  The correct
+   route is the L²-in-frequency Gallagher that `FibreWindowBridge` already runs, re-normalised.
+   The qualitative half — both sign classes occupy the window — is now Lean
+   (`Sieve/MoebiusSignInWindow`, this session).
+
+## Concurrent-session hazard (2026-08-18, 17:50)
+
+`Sieve/SpectralParameters.lean` has **uncommitted** changes (`ladderEta` exponent moved to
+`γβ − β − 5/4`), which makes the committed `Sieve/RhoLimitPieces.eventually_ladderSteps_poly`
+(asserting `2β + 1 − γβ`; the true value is now `2β + 5/4 − γβ`) **false and red**.  Everything
+downstream — `Sieve/MoebiusMeanSquare`, `Sieve/RouteEMoebiusUnconditional`, and any new module
+importing them — cannot be built, and `lake build` has already deleted the stale oleans.  Do not
+repair it: the statement must be retuned together with its three consumers
+(`Sieve/SlopeQuotientLimit`, `Sieve/RhoLimit`, `Sieve/ConstQuotientLimit`), and that is the other
+session's refactor.  The Huxley/`Sieve/Huxley*` lane is unaffected and builds clean.

@@ -1872,3 +1872,157 @@ closed characteristic-zero field (sub-lemma stated above), `SCE_k` by constant-f
 (branch locus in the chart = the Schur divisor, the discriminant computation), `E2` (Schur inertia
 nontrivial and simple).  Then the torus/slice bookkeeping and the single Kummer valuation close `(4)`,
 and `projective-horizon-one-step-postcritical-rigidity` follows with no further work.
+
+## Lean progress — `SCE_1` is PROVED over EVERY algebraically closed field of characteristic zero
+
+The transfer sketched in the previous section is done.  Seven new modules, all wired into
+`GaloisForLFunctions.HTGeometry`, all `[propext, Classical.choice, Quot.sound]`:
+
+```text
+HTGeometry/AlgebraDiscriminantBaseChange.lean
+    lmul_baseChange            multiplication by 1 ⊗ x is the base change of multiplication by x
+    trace_tensor_one           ** the algebra trace commutes with base change **
+    discr_baseChange           ** discr A' (e.baseChange A') = algebraMap A A' (discr A e) **
+
+HTGeometry/SplitFiniteAlgebraDiscriminant.lean
+    trace_pi_apply, discr_pi_basisFun, exists_eval_of_algHom_pi
+    discr_ne_zero_iff_traceForm_nondegenerate   the basis-free reformulation
+    isReduced_of_traceForm_nondegenerate        nondegeneracy kills nilpotents
+    nonempty_algEquiv_pi_of_traceForm_nondegenerate
+    exists_algHom_family_of_discr_ne_zero
+        ** over an algebraically closed field, a finite algebra of rank n with nonzero
+           discriminant carries exactly n algebra maps to the field, jointly surjective **
+    discr_ne_zero_of_algHom_family              the converse
+
+HTGeometry/ComplexSplitFibresDiscriminant.lean
+    splitFibres_of_isUnit_discr       ** IsUnit (discr ℂ[X] e)  ⟹  SplitFibres B n **
+    nonempty_algHom_of_isUnit_discr
+    rank_eq_one_of_isUnit_discr       SCE_1 over ℂ, discriminant form
+
+HTGeometry/AlgebraicPointDescent.lean
+    nonempty_algHom_of_finiteType   ** Zariski's lemma as a descent principle: a nontrivial
+                                       finitely generated E-algebra maps to any algebraically
+                                       closed extension of E **
+    exists_ringHom_descent          ** a ring map A → Ω[X] compatible with E[X] descends to
+                                       A → K[X], when A is a finite E[X]-module **
+
+HTGeometry/PolynomialSubfieldDescent.lean
+    descentSubalgebra, descentBasis        the E[X]-span of a basis whose structure constants
+                                           descend, and its basis
+    descentBaseChangeEquiv                 ** K[X] ⊗[E[X]] B₀ ≅ B **
+    discr_descentBasis                     ** algebraMap E[X] K[X] (discr E[X] e₀) = discr K[X] e **
+    isUnit_of_isUnit_map                   a unit downstairs from a unit upstairs
+
+HTGeometry/DomainAlgHomRankOne.lean
+    rank_eq_one_of_algHom     ** a domain finite free over a domain with a section has rank one **
+
+HTGeometry/AffineLineSimplyConnectedEtale.lean
+    rank_eq_one_of_isUnit_discr_algClosed
+        ** SCE_1 : over ANY algebraically closed field of characteristic zero, a DOMAIN that is
+           finite free over K[X] with unit discriminant has rank one — the affine line has no
+           nontrivial connected finite étale cover, with no monogenicity assumption **
+```
+
+### The three devices that made the transfer work, recorded so no session re-derives them
+
+1. **The étale hypothesis must be a single ring element.**  `SplitFibres` (a family of complex
+   points over every parameter) does not transport along a ring homomorphism; `IsUnit (discr)`
+   does.  `SplitFiniteAlgebraDiscriminant` is exactly the dictionary between the two, and both of
+   its directions go through "the trace form is nondegenerate", which is basis-free — so no
+   change-of-basis determinant ever appears.
+
+2. **The domain hypothesis must never be transported.**  `B₀ ⊗ ℂ` being a domain is *geometric*
+   integrality and is a hard theorem.  It is not needed: over `ℂ` one only extracts a **`ℂ[X]`-algebra
+   map** (`nonempty_algHom_of_isUnit_discr`), which is a piece of data with finitely many
+   coefficients; that datum is descended, and the domain hypothesis is used only at the very end,
+   over `K`, by `rank_eq_one_of_algHom`.  This removes the need for any Lefschetz principle.
+
+3. **Zariski's lemma replaces the Nullstellensatz plumbing.**  To descend the map one does *not*
+   set up a polynomial system: the finitely many coefficients of the images of a module basis
+   generate a finitely generated `F`-subalgebra `R ⊆ ℂ`, the map factors through `R[X]` because a
+   basis generates, and `Nonempty (R →ₐ[F] K)` follows from "a field is a Jacobson ring" plus
+   `IsAlgClosed.lift`.  No degree bounds, no `MvPolynomial` ideals.
+
+A fourth, purely technical, trap: `haveI : Algebra R S := inferInstance` introduces an **opaque**
+local instance and silently breaks definitional equality with the global one, so `rw` with a
+base-change lemma fails with "did not find an occurrence" on a syntactically identical pattern.
+Never restate an instance that already resolves.
+
+### Status of the whole programme after this step
+
+```text
+SC_1  over any algebraically closed characteristic-zero field   DONE
+SC_k, monogenic form                                            DONE
+SCE_1 over ℂ                                                    DONE
+SCE_1 over any algebraically closed characteristic-zero field   DONE   <-- this session
+SCE_k (all of affine space)                                     OPEN
+E1  branch locus in the chart = the Schur divisor               OPEN
+E2  Schur inertia nontrivial and simple                         OPEN
+torus/slice bookkeeping and the final Kummer valuation          OPEN  (no new mathematics)
+```
+
+### `SCE_1` now also exposes the section itself
+
+`AffineLineSimplyConnectedEtale` was refactored so that the section is available **without** the
+domain hypothesis, since that is what the multivariable induction consumes:
+
+```text
+nonempty_algHom_of_isUnit_discr_algClosed
+    ** over ANY algebraically closed field of characteristic zero, a finite free K[X]-algebra with
+       unit discriminant admits a K[X]-algebra map to K[X] **
+rank_eq_one_of_isUnit_discr_algClosed          (the domain corollary)
+```
+
+## The route to `SCE_k`, decided and Galois-free
+
+Several routes were considered and only one survives without a large field-theoretic
+infrastructure.  Recorded in full so no session re-derives them.
+
+**Ruled out.**
+
+* *Restriction to a general line.*  Needs Bertini connectivity — the original blocker.
+* *Purity of the branch locus.*  Would be needed to turn "unramified in codimension one" into
+  "étale"; a deep theorem, and mathlib has none of it.
+* *Constant-field theorem via Galois descent* (`L ⊆ F̄(w)`, `L = (L ∩ F̄)(w)`).  Correct, and the
+  finite-Galois reduction is available (the coefficients of the section generate a finite extension
+  of `F`), but it needs the Galois correspondence for `F₂(w)/F(w)` and Galois descent for vector
+  spaces — several hundred lines of pure plumbing.
+* *Lifting idempotents from `B/wB` to `B`.*  Fails: `(w)` is neither nilpotent nor complete, and
+  lifting to `R[[w]]` gives no algebraicity.
+* *Topological argument over `ℂ^k`.*  Would need the several-variable holomorphic implicit function
+  theorem and a rebuild of the whole covering-space stack in `k` parameters.
+
+**The route to build: a locally nilpotent derivation with a slice.**
+
+For the inductive step write `A = R[w]` with `R = MvPolynomial (Fin (k-1)) K`, and let `B` be a
+domain, finite free of rank `n` over `A`, with `IsUnit (Algebra.discr A e)`.
+
+```text
+P1  separability idempotent.  With e a basis and f its dual basis for the trace form (invertible
+    Gram matrix, because the discriminant is a unit), p := Σ e_i ⊗ f_i ∈ B ⊗_A B satisfies
+    Σ e_i f_i = 1     and     (b ⊗ 1) p = (1 ⊗ b) p
+    — both are one-line computations with the trace form.  Consequence, by the classical
+    two-line argument: **every A-derivation of B is zero**, i.e. a lift of a derivation of A is
+    unique.
+P2  existence of the lift.  B is separable over A, hence formally smooth, so the derivation
+    d/dw of A lifts to an R-derivation ∂ of B with ∂ w = 1.
+P3  slice theorem.  If ∂ is a locally nilpotent derivation of a ℚ-algebra B and ∂ s = 1, then
+    B = (ker ∂)[s] and s is transcendental over ker ∂.  Elementary induction on the nilpotency
+    order, using b - (∂^N b) s^N / N!.
+P4  splitting form of SCE_1.  Over an algebraically closed field E of characteristic zero, a finite
+    free E[X]-algebra with unit discriminant is isomorphic to E[X]^n.  From the section already
+    proved: the trace form is nondegenerate, so the section is Tr(ε · —) for a unique ε; ε is
+    idempotent because it is idempotent in every fibre and E is infinite; split off and induct.
+P5  local nilpotence, then the induction.  With F = Frac R and F̄ its algebraic closure,
+    B ⊗_R F̄ ≅ F̄[w]^n by P4, and by P1 the derivation ∂ ⊗ 1 is the componentwise d/dw, which is
+    locally nilpotent; B embeds in B ⊗_R F̄ because B is free over R.  So ∂ is locally nilpotent on
+    B, P3 gives B = C[w] with C = ker ∂, hence C ≅ B/wB is a domain, finite free of rank n over R
+    with unit discriminant (base change of the discriminant), and the induction closes.
+```
+
+The base case `k = 0` is `exists_algHom_family_of_discr_ne_zero` together with "a domain that is a
+finite product of copies of a field has rank one".
+
+Note what P5 avoids: no Galois descent, no constant-field theorem, no purity — local nilpotence is
+checked after base change to `F̄`, where the derivation is *forced* to be `d/dw` by the uniqueness
+of P1, and nilpotency of an element is detected in any faithful extension.

@@ -4199,3 +4199,46 @@ single explicit inequality, `Sieve/VonMangoldtTwistRouteTSharp`:
 
 for every `K >= e^9`, every smoothing width `0 < H <= K`, and every `|tau| >= tau_0`, with `w` the
 Route-T zero-free width and `W` the contour width.  All of it is axiom-clean and umbrella-wired.
+
+## The card's `(2)`–`(3)` in nonemptiness form is now Lean — `Sieve/MoebiusSignInWindow` (2026-08-18)
+
+The card's target set is `T_σ(X) = {n ∈ (X, X+H] : μ(n) = σ}` with `H = √X·h(X)`,
+`h = exp((log X)^β)`, `1/2 < β < 1`.  Its **nonemptiness for both signs** — the qualitative half of
+`(3)` — now follows with no hypotheses from the corpus's own unconditional Möbius short-interval
+mean square, without going through the integer-start normalization at all:
+
+```text
+exists_moebius_eq_of_signClass_nonempty (hne : (coprimeSignClass x h s).Nonempty) :
+  ∃ m : ℕ, x ≤ m ∧ (m : ℝ) ≤ x + h·√x ∧ μ m = s
+
+exists_moebius_eq_in_window (hs : s = 1 ∨ s = -1) :
+  ∀ᶠ x in atTop, ∃ m : ℕ, x ≤ m ∧ (m : ℝ) ≤ x + cardLength (99/100) x · √x ∧ μ m = s
+
+exists_moebius_pos_and_neg_in_window :
+  ∀ᶠ x in atTop, both signs occur in the same interval
+```
+
+The mechanism is that a member of `coprimeSignClass x h s` is a *coprime* pair `(a,b)` with
+`x ≤ ab ≤ x + h√x` and `μ(a)μ(b) = s`, so multiplicativity gives `μ(ab) = s` and `ab` is an
+**integer** of the window carrying the prescribed sign — the passage from representations to
+physical integers that the card's `(4)` describes, at the level of a single token.
+`route_e_signClass_nonempty_unconditional` supplies the nonemptiness at
+`h = exp((log x)^{99/100})`, i.e. `β = 99/100`, which is inside the card's admissible range
+`1/2 < β < 1`.
+
+**What this does not give** is the card's quantitative `(3)`, `#T_σ(X) ≥ C·H/log X` for every fixed
+`C`.  That still needs the distinct-target count, i.e. the Cauchy–Schwarz passage
+`#distinct ≥ (#S)²/(second moment)` **localised to the window**; the corpus's
+`card_image_mul_ge_explicit` uses the global second moment over `[1,X]`, which loses a factor
+`≍ X/H`.  Localising it is the additive-divisor problem for the balanced divisor function, and is
+the same gate the sign-law card records against Brun–Titchmarsh.
+
+**Build status (2026-08-18).**  The module is `lake env lean` clean.  Its `lake build` audit is
+blocked by an unrelated red file in a concurrent refactor: `Sieve/SpectralParameters.ladderEta` has
+been changed to exponent `γβ − β − 5/4` while the committed
+`Sieve/RhoLimitPieces.eventually_ladderSteps_poly` still asserts the old `2β + 1 − γβ` (the true
+value is now `2β + 5/4 − γβ`), so that file and everything downstream of it — including
+`Sieve/MoebiusMeanSquare` and `Sieve/RouteEMoebiusUnconditional` — does not compile.  The statement,
+not the proof, has to be retuned, and its three consumers (`Sieve/SlopeQuotientLimit`,
+`Sieve/RhoLimit`, `Sieve/ConstQuotientLimit`) retuned with it.  **Not touched here**, since
+`SpectralParameters.lean` carries uncommitted changes from that session.

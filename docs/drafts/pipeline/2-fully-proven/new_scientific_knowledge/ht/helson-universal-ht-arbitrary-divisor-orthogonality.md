@@ -3145,3 +3145,67 @@ continuity up to the line.
 **(C) Andersson's Theorem 1**, i.e. Lemmas 2 and 4-7: the short-interval prime supply in counting
 form and the Vandermonde/Cramer recursion.  This is the remaining large project and is independent
 of (A) and (B).
+
+### Brick (A) is closed
+
+`HTGeometry/WeierstrassLogDerivMittagLeffler.lean` (axiom-clean, wired into the umbrella):
+
+- `hasDerivAt_weierstrassGenusFactorAt`, `logDeriv_weierstrassGenusFactorAt` —
+  `logDeriv (fun z => weierstrassFactor n (z / a n)) z = (z/a n)^n/(z - a n)`.
+- `weierstrassMittagLefflerCorrection a n z = -(sum_{j<n} z^j (a n)^{n-1-j})/(a n)^n`, entire, and
+  `logDeriv_weierstrassGenusFactorAt_eq` : `logDeriv (factor n) z = 1/(z - a n) - Q n z`.
+- `weierstrassMittagLefflerBound a n = 2^{-n} (2/‖a n‖)`, summable, and
+  `norm_weierstrassMittagLefflerTerm_le` on `ball 0 (‖a n‖/2)`.
+- `logDeriv_weierstrassGenusProduct_eq_tsum` — termwise logarithmic differentiation, via mathlib's
+  `logDeriv_tprod_eq_tsum` and the corpus's
+  `hasProdLocallyUniformlyOn_weierstrassGenusFactorAt`.
+- **`exists_entire_approx_sq_logDeriv_weierstrassGenusProduct`** and
+  **`exists_entire_approx_sq_logDeriv_divisorFunction`** — for every `eps > 0` there is an entire
+  `G` with
+
+```text
+    || s^2 * logDeriv (divisorFunction a b) s - G(s) ||  <=  eps      for all  Re s >= 1 ,
+```
+
+whenever both zero and pole sequences tend to infinity, are nonzero, and lie in `{Re < 1}`.
+
+`exists_entire_approx_sq_mittagLeffler` was generalized on the way: its bound hypothesis is now an
+arbitrary summable `u n` rather than `2^{-n}`.
+
+**This is Arakelyan's contribution to Andersson's Lemma 1, for exactly the data the card feeds it,
+proved unconditionally.**  What is left of Lemma 1 is brick (B), the Mellin step; what is left of
+Theorem 1 is brick (C), the prime construction.
+
+### Brick (B), first half: the half-plane Cauchy representation is closed
+
+`HTGeometry/HalfPlaneCauchyRepresentation.lean` (axiom-clean, wired):
+
+- `lineKernel φ s y = φ (1 + i y) / ((1 + i y) - s)`, `norm_lineKernel_le`, `integrable_lineKernel`
+  (envelope `C/(1+y^2)/(Re s - 1)` against `integrable_inv_one_add_sq`).
+- `norm_horizontal_edge_le`, `norm_vertical_edge_le` — the three moving edges of the square
+  `[1,R] x [-R,R]` are `O(1/R^2)` and `O(1/R)` respectively, from `‖φ‖ <= C/‖z‖^2`.
+- `tendsto_edgeBound` — `C/R^2/(R-a) * (k R) -> 0`.
+- **`halfPlane_cauchy_representation`** —
+
+```text
+  int_R  φ(1 + i y)/((1 + i y) - s)  dy  =  -2π φ(s)         (Re s > 1),
+```
+
+for `φ` analytic on `{Re s >= 1}` with `‖φ z‖ <= C/‖z‖^2` there.  The left edge of the square sits
+exactly on the line — legitimate because `φ` is analytic *on* the closed half plane, which is what
+`RHTower.rectIntegral_cauchyFormula_of_analyticOnNhd` needs — so no `eta -> 0` limit is required,
+and the single parameter `R -> infinity` suffices.
+
+Formalization note: a multi-line `calc` whose first line is `‖∫ y in a..b, f y` parses the integral
+across the line break and swallows the closing `‖`; write the step as a term
+(`exact le_trans this (le_of_eq (by ring))`) instead.
+
+What remains of brick (B) is the Mellin half: with
+
+```text
+  q(x) := (1/2π) int_R φ(1 + i t) x^{i t} dt ,
+```
+
+Fubini gives `int_1^inf q(x) x^{-s} dx = (1/2π) int_R φ(1+it)/(s - 1 - it) dt = φ(s)` by the
+representation above, `‖q‖ <= C/2` by the envelope, and `q(x) -> 0` by Riemann--Lebesgue
+(`MeasureTheory.Integrable.tendsto_integral_exp_smul_cocompact`).

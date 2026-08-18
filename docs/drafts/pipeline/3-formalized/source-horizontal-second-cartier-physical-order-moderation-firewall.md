@@ -1,8 +1,8 @@
 # Second-Cartier physical order/moderation firewall
 
 - **ID:** source-horizontal-second-cartier-physical-order-moderation-firewall
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `source-horizontal-bilateral-second-cartier-topology.md`
 - **Statement:** The nonzero quadratic Cartier class cannot be made both source-faithful and physically admissible by either conventional receiver class: every reduced multiplicative receiver erases the full two-orientation lattice, while every nonzero coefficient-faithful additive Hardy receiver is moderate exactly at unit character modulus and therefore never on a strict-right Xi fibre.
 
@@ -17,7 +17,7 @@ is simultaneously nonreduced and nonmultiplicative (or relation/Krein-jet valued
 
 - [x] 0 → 1 in-progress: source-pure statement; exact carrier and receiver classes fixed
 - [x] 1 → 2 fully-proven: dependency-closed proof below, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: Lean leaf, axiom audit, exact leaf build, umbrella wiring
+- [x] 2 → 3 formalized: Lean leaf, axiom audit, exact leaf build, umbrella wiring
 - [ ] 3 → 4 publication-ready: standalone exposition and external novelty audit
 
 ## Exact setup
@@ -103,30 +103,66 @@ For `λ=χ_p(ρ)` and a strict-right Xi divisor copy `ρ`, the exact prime chara
 `|χ_p(ρ)|=1 ↔ Re ρ=1/2`, contradicting `Re ρ>1/2`.  Hence no nonzero coefficient-faithful additive
 receiver moderates `G` on such a fibre.  `[PROVED HERE]`
 
+### C1.5 — retain nilpotents in a nonreduced ordered target
+
+**Conjecture.** Escape C1 by using a nonreduced ordered physical algebra.
+
+**Fail for simultaneous source positivity.** Reduction is not needed for the core sign collision.
+The forward-square presentation is `F²=G`, while the literal Gamma Hermitian presentation is
+`FR=-G`.  In any partially ordered additive ring, if a multiplicative receiver declares both
+images nonnegative, antisymmetry gives `image(G)=0`.  Therefore a receiver retaining `G` must reject
+at least one of the two source-derived positivity laws.  `[PROVED HERE]`
+
 ## Theorem — two-horn firewall
 
 For every strict-right Xi copy, prime label, and nonzero common coefficient:
 
 1. every reduced multiplicative physical receiver kills the complete literal source lattice `L`;
-2. no additive receiver carrying `F` and `R` to the two exact coefficient-faithful Hardy halves has
+2. even without reducedness, any ordered multiplicative receiver retaining `G` must make either
+   the forward-square or Gamma-Hermitian source presentation nonpositive;
+3. no additive receiver carrying `F` and `R` to the two exact coefficient-faithful Hardy halves has
    a moderate image of the nonzero quadratic class `G`.
 
-**Proof.** The first claim follows from the three displayed nilpotence laws and reducedness.  For
-the second, additivity forces the exact bilateral eigenfamily above; its sharp moderation criterion
-forces unit modulus, while the strict-right Xi inequality forces nonunit modulus.  No analytic or
-RH hypothesis occurs.  ∎ `[PROVED HERE]`
+**Proof.** The first claim follows from the three displayed nilpotence laws and reducedness.  The
+second is the antisymmetry consequence of `G ≥ 0` and `-G ≥ 0`.  For the third, additivity forces
+the exact bilateral eigenfamily above; its sharp moderation criterion forces unit modulus, while
+the strict-right Xi inequality forces nonunit modulus.  No analytic or RH hypothesis occurs.  ∎
+`[PROVED HERE]`
+
+## Lean certificate
+
+Module:
+`GaloisForLFunctions.RHTower.SourceHorizontalSecondCartierPhysicalOrderModerationNoGo`
+
+Capstones:
+
+- `sourceHorizontalSecondCartierPhysicalOrderModeration_orderFirewall`
+- `sourceHorizontalSecondCartierPhysicalOrderModeration_firewall`
+- `sourceHorizontalStrictRightXi_no_coefficientFaithful_secondCartier_moderation`
+- `deningerIntegralCartierSecondOrderedPhysicalization_not_bipositive_of_ghost_ne_zero`
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/RHTower/SourceHorizontalSecondCartierPhysicalOrderModerationNoGo.lean` — PASS
+- `lake build GaloisForLFunctions.RHTower.SourceHorizontalSecondCartierPhysicalOrderModerationNoGo` — PASS
+- capstone axioms — `propext`, `Classical.choice`, `Quot.sound` only
+- wired into `GaloisForLFunctions.RHTower`; umbrella intentionally not built
 
 ## No-go closure
 
 - **Exact killing mechanism:** reduced multiplication annihilates the nilpotent Cartier directions;
-  additive coefficient fidelity exposes unavoidable two-sided exponential growth off line.
+  before reduction, `F²=G` versus `FR=-G` forbids simultaneous physical positivity while retaining
+  `G`; additive coefficient fidelity exposes unavoidable two-sided exponential growth off line.
 - **Strongest positive survivor:** the literal rank-two lattice and nonzero `G` survive, but only in
   an infinitesimal nonreduced source carrier.  Any viable physical descent must retain that
   infinitesimal information while refusing the multiplicative/reduced and additive-Hardy horns.
 - **New insight:** source order and physical moderation are not one missing estimate.  They impose
   incompatible categorical requirements on this carrier.  The open core is now an explicitly
   nonreduced, nonlinear/relation-valued Xi-fibre receiver, not improved scalar domination.
-- **Status:** paper proof dependency-closed; exact external novelty unverified.
+- **Status:** formalized in
+  `GaloisForLFunctions.RHTower.SourceHorizontalSecondCartierPhysicalOrderModerationNoGo`;
+  exact leaf build passes; capstone axioms are only `propext`, `Classical.choice`, and `Quot.sound`;
+  exact external novelty unverified.
 
 ## Literature boundary
 
@@ -138,3 +174,5 @@ external source located in the bounded audit states it.  `[NOVELTY UNVERIFIED]`
 ## Log
 
 - 2026-08-18 — C0 failed as circular; C1 and C2 proved; two-horn firewall established on paper.
+- 2026-08-18 — formalized unconditionally; exact leaf built and wired into `RHTower.lean` without
+  building the umbrella.

@@ -1,19 +1,26 @@
 # RH frontier docs latest — 2026-08-18
 
-Authoritative corpus cutoff: commit `e83e6e4bfd9e20ecbd36da22315c8630cf37bdcd` plus declaration-level working-tree review.
+Authoritative docs updated:
+- docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+- docs/drafts/pipeline/1-in-progress/rh-route-literature-exchange-august-2026.md
 
-Updated:
-- `docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md` — 3983 lines, state map only, under 4000-line cap.
-- `docs/drafts/pipeline/1-in-progress/rh-route-literature-exchange-august-2026.md`.
-- `docs/drafts/pipeline/1-in-progress/matomaki-teravainen-e3-lean-programme.md`.
+Corpus cutoff: commit 7b49a9f6e81cbfee8f2c5226bf25c13917514561 plus declaration-level working-tree review.
+Main map is 3991 lines (must remain <=4000).
 
-Latest scientific reconciliation:
-- Route P: actual Xi conormal admission and transverse half-budget reporter `(-1,-1,B_P/4)` are closed; no linear reporter can be both source-budgeted and endpoint-dominating. Open core is nonlinear/order-indefinite endpoint-excess annihilation before scalar domination. New P-G210 card is only in-progress; no new Lean theorem yet.
-- CCM-UR: Volterra, Stirling, completed-current, and completed-source Laplace modules close full time-domain/Laplace weld and exact two-way all-epsilon producer equivalence. Only signed source lower/contractivity law remains. CCM-UR remains source-isogenous to CCM-FU, not a new route.
-- Helson: `HelsonStratumNull.lean` proves Haar-nullity of whole-plane continuable stratum unconditionally. With finite-Euler density, seam is dense-null and boundary-everywhere. Pong-type labelled field universality formal. Divisor surjectivity remains reduced to Andersson factorization; finite-pole half-plane approximation and unimodular rounding formal, full unbounded Arakelyan/Paley-Wiener core open. Helson remains opening/no-go, not route.
-- Route E: zeta/Dirichlet-row Gram bridge, general Gallagher transfer, both Perron kernel branches, and merged prefix/window integral are closed. Full Perron/variance/window comparison, Jutila derivative/fourth-moment averaging assembly, Heath-Brown/Type I, Bourgain Type II, and final (5.2) remain. RH core still fixed-relation unit Hall/load/co-moving flux.
-- Hardy: Fourier theta-source representation, sub-pi/2 decay, contour shift, inversion, and boundary blow-up declared. Working-tree `HardyTheorem.lean` does not yet declare final finite-zero contradiction/infinite-critical-zero theorem. Classical anchor only; no route-count change.
-- Projective-horizon algebra-spectrum additions close local chart mathematics through power-determinant nonvanishing and split-parameter separability; remaining general etale splitting is chart assembly, cover-lifting section algebraicity, and rank induction. No Xi source/endpoint.
-- No eleventh route. Live count remains C1,D2,E,G,L,O,P,Q,T,U plus CCM-FU; R terminal.
+New frontier facts folded:
+- Hardy theorem is complete in Lean: exists_Xi_zero_gt for every height; two positive zeros; Suzuki characteristic target has unconditional pole/nonanalyticity. Anchor only, no route.
+- Route E: Huxley closes Lemma 4.1 at sigma=7/32-5 epsilon; Jutila/Bourgain are off critical path; next Type-II Prop 4.2 assembly, Type I Watt/DI or alternative. Both Mobius signs occur in same eventual sqrt(x)*exp(log(x)^(99/100)) window. RH core remains fixed-relation unit Hall/load/co-moving flux.
+- Route G/G-CE: exact singular graph debt, sharp global lower wall/minimum budget 4+|d|^2, debt zero iff RH, and cofinal source-native finite self-adjoint boundary transport are Lean-proved. Open core is cancel/exclude debt in uncompleted physical coordinates.
+- Route O: actual-head autocorrelation producer exactly cancels endpoint/polar/cumulative-prime/scalar/first-Gamma masses and equals Q_a plus ground/tail identity. Open core is sign of joint higher-Gamma + signed boundary current. Phase-free coherent chi-square is impossible.
+- Route P: scalar/Krein indefinite endpoint annihilation closes negatively. Bilateral second-Cartier topology exists; reduced multiplicative receivers erase it and additive coefficient-faithful Hardy receiver is nonmoderate off line. Open core is nonreduced, nonmultiplicative, nonlinear/relation/Krein-jet physical receiver.
+- Route L: same second-Cartier firewall plus exact strict resolved provenance. Open core is singular source-to-existing Burnol/Deninger physical specialization before divisor selection. K2 finite-coefficient/reciprocity methods cannot prove integral rank (divisibility firewall); naive Garland building route is inapplicable.
+- Helson: prescribed-divisor Arakelyan-style log-derivative approximation closed via half-plane gap/pole-pushing/Mittag-Leffler/Weierstrass log derivative. Remaining Cauchy/Mellin representation and Andersson prime recursion.
+- Affine line algebraic simple connectedness over arbitrary algebraically closed char-0 field is Lean-proved; adjacent, no RH route.
+- No new independent route. Second-Cartier is a genuine new carrier internal to L/P; G-CE internal to G.
 
-Checks: `git diff --check` passed on three docs; no Lean builds run, per documentation-only instruction.
+No Lean builds were run. No subagents used.
+Concurrent-tail additions also folded:
+- MoebiusSignInWindow: both signs occur in one eventual sqrt(x)*exp(log(x)^(99/100)) window; qualitative point supply only.
+- HalfPlaneCauchyRepresentation currently formalizes boundary integrability and moving-edge estimates, not yet the final Cauchy representation capstone.
+- MilnorKUnitRankOne: unit-rank-at-most-one degree-two Milnor symbols are torsion; advances Euclidean tame-kernel lane but not Route L RH core.
+- AffineLineSimplyConnectedEtale: arbitrary algebraically closed char-0 affine-line connected finite-etale cover rank-one theorem; adjacent only.

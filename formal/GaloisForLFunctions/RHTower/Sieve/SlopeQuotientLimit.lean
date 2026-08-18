@@ -167,7 +167,7 @@ theorem eventually_steps_eta_sq_le {β γ : ℝ} (hβ0 : 0 < β) (hγ0 : 0 < γ)
     (hγβ : γ * β < 1) :
     ∀ᶠ x : ℝ in atTop,
       ((ladderSteps β γ x : ℕ) : ℝ) * (ladderEta β γ x) ^ 2
-        ≤ 2 * (Real.log x) ^ (γ * β - 1) := by
+        ≤ 2 * (Real.log x) ^ (γ * β - 5 / 4) := by
   filter_upwards [ladderSteps_le hβ0 hγ0 hγ1 hγβ, Filter.eventually_gt_atTop (1 : ℝ)]
     with x hL hx1
   have hlogx : (0 : ℝ) < Real.log x := Real.log_pos hx1
@@ -185,7 +185,7 @@ theorem eventually_steps_eta_sq_le {β γ : ℝ} (hβ0 : 0 < β) (hγ0 : 0 < γ)
 
 /-- The reciprocal step ratio, in powers of the logarithm. -/
 theorem inv_ladderEta_eq {β γ x : ℝ} (hx1 : 1 < x) :
-    1 / ladderEta β γ x = (Real.log x) ^ (β + 1 - γ * β) := by
+    1 / ladderEta β γ x = (Real.log x) ^ (β + 5 / 4 - γ * β) := by
   have hlogx : (0 : ℝ) < Real.log x := Real.log_pos hx1
   rw [ladderEta, one_div, ← Real.rpow_neg hlogx.le]
   congr 1
@@ -512,8 +512,8 @@ theorem eventually_slope_quotient_le {A delta Ctot β γ : ℝ} (hβ0 : 0 < β) 
     (M := Real.log ((⌊((budgetB β x : ℕ) : ℝ) * (1 + ladderEta β γ x)⌋₊ : ℕ) : ℝ)
       / Real.log ((siftStart (γ * β) x : ℕ) : ℝ))
     (sx := Real.sqrt x) (MB := (Real.log x) ^ (1 - γ * β))
-    (P1 := (Real.log x) ^ (γ * β - 1)) (P2 := (Real.log x) ^ (2 * β + 1 - γ * β))
-    (P3 := (Real.log x) ^ (β + 1 - γ * β))
+    (P1 := (Real.log x) ^ (γ * β - 5 / 4)) (P2 := (Real.log x) ^ (2 * β + 5 / 4 - γ * β))
+    (P3 := (Real.log x) ^ (β + 5 / 4 - γ * β))
     hQ1 hη hL1R hB1 hh1 hW2 hρ0 hρR hinvη hsx hBsx hM0 hM
     (Real.rpow_nonneg hlogx.le _) hLη hLpoly
     (le_of_eq (inv_ladderEta_eq (β := β) (γ := γ) hx1)) rfl

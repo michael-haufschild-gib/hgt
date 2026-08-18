@@ -549,3 +549,52 @@ the collisions among the `μ_j` put many poles on one orbit.  The Laurent-mass p
 What the card still needs in Lean: the sectorial Stirling expansion and the formal Laurent shift
 field of §4--§5, the Adamczewski--Dreyfus--Hardouin dichotomy, the product-field valuation `(6)`,
 and the holomorphic Bohr recurrence of §7.
+
+## Lean audit 2026-08-18 — what the tree already owns, and the one shared blocker
+
+Besides §3 (recorded above, `HTGeometry/ShiftOrbitMassObstruction`), the tree already owns most of
+what §6–§7 of this card consume, through the stage-3 parent
+`finite-real-shift-gamma-projective-boundary-law` and the stage-3 card
+`almost-periodic-implicit-ade-relative-frequency-law`:
+
+```text
+HTGeometry/AutonomousCarrierRegularity.lean
+  rank_bohrHullFrequencies_le_of_stripAnnihilator
+  rank_bohrHullFrequencies_le_of_strip_differential_equation
+      **the card's (9)**: a function holomorphic and uniformly almost periodic on a vertical strip
+      annihilated there by a nonzero *autonomous* algebraic differential equation has finite
+      rational Bohr-frequency rank
+HTGeometry/StripSolutionPhaseRankSharp.lean
+  rank_bohrSpectrum_le_of_autonomous_strip_solution, rank_bohrSpectrum_le_of_strip_solution_sharp
+HTGeometry/CarrierDivisorObservable.lean
+  rank_bohrSpectrum_divisor_le_of_stripAnnihilator
+      the divisor-observable form the card also claims
+HTGeometry/VerticalAlmostPeriodicDerivative.lean
+  isBohrAlmostPeriodic_line          restriction of a strip-almost-periodic function to the line
+HTGeometry/GammaProjectiveBoundary.lean
+  finiteProjectiveRelationCollapse   **the card's (8)→(29) step**: finite projective coefficient
+      limits turn translated finite relations into constant-coefficient limiting relations
+  the complete vertical asymptotics of digamma and polygamma
+      (norm_iteratedDeriv_digamma_vertical_le, iteratedDeriv_digamma_vertical_tendsto_zero,
+       Gamma_div_deriv_vertical_tendsto_zero, gammaBell and
+       gamma_iteratedDeriv_eq_gamma_mul_eval_gammaBell — the card's Bell identity (23))
+HTGeometry/GammaShiftShape / GammaShiftDatum / GammaShiftFinitePhase / GammaShiftZeta
+  the shape of (6), the datum, (19) and (21)
+HTGeometry/GammaJetSumDatum, ShiftedJetFieldDatum, GammaJetNormalFormDatum
+  the boundary datum of an arbitrary element of a *finite shifted* Gamma field
+```
+
+The remaining obligation is the same one that blocks
+`archimedean-relative-prime-cocycle-curvature`: the boundary-datum theorem for the shifted Gamma
+field currently assumes `NoIntegerRelation` on the shifts, i.e. that they are ℤ-independent together
+with `1`, whereas this card's product `G(s) = e^(αs)∏Γ(λ_j s + μ_j)` has **commensurable** scales —
+`n_j = Hλ_j ∈ ℕ` — so its shift orbit is the opposite extreme: every shift lies in one arithmetic
+progression, and integer relations are everywhere.  Separating the monomials therefore needs the
+complete Stirling signature (the card's §5 "no flat cancellation in the archimedean residue
+field"), i.e. the **all-orders Stirling/transseries model** of `ℂ(log s)((s^{-1}))`.
+
+That single analytic construction — the complete asymptotic expansion of `log Γ` in an upper
+sector with remainder, and the resulting injection of the differential field into the transseries
+field — is what §4–§6 of this card and the whole of
+`archimedean-relative-prime-cocycle-curvature` still need.  It is ledger blocker 3.  Everything
+downstream of it (§7's recurrence law, the Bohr rank bound, the divisor observable) is already Lean.

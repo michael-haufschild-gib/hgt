@@ -466,3 +466,63 @@ essential support of a differential rational function, for which the tree alread
 
 The other two named inputs remain imported paper steps: Wang--Yao's algebraic independence of
 incongruent Gamma translates and Hardouin--Singer's multiplicative dependence criterion.
+
+## Lean audit 2026-08-18 — the parent theorem is at stage 3; the exact blocker is isolated
+
+The parent this card invokes, `finite-real-shift-gamma-projective-boundary-law`, is **already at
+stage 3** (`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/gamma/`), with its whole
+chain unconditional and axiom-clean.  In particular the tree owns
+
+```text
+HTGeometry/GammaShiftZeta.lean
+  zeta_no_gammaShift_relation
+      On a vertical strip inside `Re s > 1`, zeta satisfies NO nontrivial differential relation
+      `∑_α F_α(s) ∏_i (ζ^(i)(s))^(e_αi) = 0` whose coefficients `F_α` carry a shifted-Gamma
+      boundary datum with `c_α ≠ 0`.  Built from: `isStripAlmostPeriodic_dirichlet`,
+      `isBohrAlmostPeriodic_line`, `linearIndependent_neg_log_firstPrimes` (the prime logarithms are
+      ℤ-independent members of the Bohr spectrum), `zeta_dirichlet_conv`.
+  dirichlet_no_gammaShift_relation, no_gammaShift_relation_of_infinite_rank
+HTGeometry/GammaShiftFinitePhase.lean
+  rank_finite_of_gammaShift_data                      equation (19)
+HTGeometry/ShiftedGammaFieldIndependence.lean
+  algebraicIndependent_gammaShiftMero                 **Theorem B**: Gamma translates with shifts
+      pairwise incongruent mod ℤ are algebraically independent over the field their logarithmic
+      derivatives generate.  This is the Wang–Yao / Hardouin–Singer content of this card's
+      "prime-log Gamma differential-coordinate law", **already unconditional Lean**.
+RHTower/WeldCircleFaithfulness.lean
+  primeLog_indep_mod_one                              the arithmetic collision input
+HTGeometry/PrincipalPartDifferentialOperator.lean
+  simplePoleDifferentialOperatorFamily_ne_finiteOrbitCoboundary
+HTGeometry/IndexTranslationRigidity.lean                the fixed-field law (12), algebraic core
+```
+
+### The exact blocker
+
+`HTGeometry/GammaJetNormalFormDatum.lean` supplies the boundary datum of an *arbitrary* element of
+the shifted Gamma field (`exists_hasShiftTubeDatum_jetGammaQuotient`) — the hypothesis
+`zeta_no_gammaShift_relation` consumes — but only under
+
+```text
+NoIntegerRelation lamf :  ∀ (n : Fin rr → ℤ) (m : ℤ),
+    (∑ k, n k · lam k) = m  →  ∀ k, n k = 0
+```
+
+i.e. the shifts together with `1` are ℤ-independent.  **This card's shift set is the rank-two
+lattice `Λ = ℤ log p + ℤ log q`, so every finite `E ⊂ Λ` with three or more elements carries an
+integer relation** (`log p + log q − (log p + log q) = 0`), and `NoIntegerRelation` fails, although
+`primeLog_indep_mod_one` does give the paper hypothesis `λ_i − λ_j ∉ ℤ`.
+
+`NoIntegerRelation` is used exactly to make the exponent functional `e ↦ ∑ e_i λ_i` separate
+distinct Gamma monomials.  Under pairwise incongruence alone, two distinct monomials can share
+`(degree, ω, b)` and their leading terms can cancel — e.g.
+`Γ(s+α)Γ(s+β)` and `Γ(s+α+β)Γ(s)` — so the datum has to be read from the **complete Stirling
+signature**, not from the leading shape.  That is the card's §"Finite Stirling-signature
+separation" (Vandermonde on the signed moments `M_k(e) = ∑_i e_i λ_i^k`), whose linear-algebra core
+is already available (`Matrix.eq_zero_of_forall_pow_sum_mul_pow_eq_zero`, and the repository's
+`PowerSumTorelli`).
+
+**So the single remaining Lean obligation of this card is the all-orders Stirling/transseries
+model**: the injection of the shifted Gamma jet field into `ℂ(log s)((s^{-1}))[Γ^{±1}]` giving every
+nonzero element a boundary datum from the first nonvanishing transseries coefficient, replacing
+`NoIntegerRelation` by pairwise incongruence.  This is ledger blocker 3, and it is shared with
+`finite-archimedean-gamma-product-boundary-law` §4–§6.  Everything else on this card is Lean.

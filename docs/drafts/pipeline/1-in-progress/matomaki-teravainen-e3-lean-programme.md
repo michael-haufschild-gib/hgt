@@ -675,3 +675,46 @@ with pairwise separation `g` has at most `L/g + 1` members).  The version first 
 name collision in `RHTower.Sieve` that would have broken the umbrella; it is now
 `card_le_of_pairwise_spread`, a three-line wrapper anchoring the corpus lemma at `S.min'`.
 A collision scan over all twenty-three new declarations found no other clash.
+
+## The general-range Huxley estimate — `Sieve/HuxleyRangeLargeValues` (2026-08-18)
+
+Proposition 4.2 applies Lemma 4.1 to `M₁(1+it)^ℓ`, whose support is `[M₁^ℓ, (2M₁)^ℓ)` — a range of
+multiplicative width `2^ℓ`, not a dyadic block.  The corpus's Huxley layer is dyadic-only
+(`dyadicDirRow`), so the estimate has to be extended.  The extension is a pigeonhole, not new
+analysis:
+
+```text
+rangeTerm c σ t n                 -- one term of a Dirichlet polynomial on the line σ
+sum_blockPoly_eq_range :
+  ∑_{j<J} blockPoly (A·2^j) c σ t = ∑_{n ∈ [A, A·2^J)} rangeTerm c σ t n
+exists_block_large (hJ : 1 ≤ J) :
+  V ≤ ‖∑_{n ∈ [A, A·2^J)} rangeTerm c σ t n‖ → ∃ j < J, V/J ≤ ‖blockPoly (A·2^j) c σ t‖
+huxley_range_large_values :
+  |S|·(V/J)² ≤ ∑_{j<J} (the dyadic bound at length A·2^j, threshold V/J)
+huxley_range_large_values_uniform :
+  |S|·(V/J)² ≤ J·(the dyadic bound at length A, threshold V/J)
+```
+
+The whole cost of a range of width `2^J` is therefore a factor `J` in the count and `J²` in the
+threshold — negligible against the `T^{ε²/5}` slack whenever `J ≪ 1`, which is exactly the regime
+Proposition 4.2 uses (`ℓ ≪ 1` there).  The last statement holds because every block bound is largest
+at the shortest block, so the sum is at most `J` copies of the bound at length `A`.
+
+Five theorems, all `#print axioms` clean, wired.
+
+### Next: M4d, Proposition 4.2
+
+Ingredients and their status:
+
+| Prop 4.2 step | tool | status |
+|-|-|-|
+| reduce to a one-spaced `T ⊆ U` | — | elementary |
+| `T₃` (both polynomials `< T^{-1}`) | trivial bound | elementary |
+| `T₁` (either polynomial `≥ M_j^{-10ε}`) | discrete mean value theorem for `M_j^{ℓ_j}` | **owned** — `Sieve/DirichletFiniteSetLargeValues.largeValues_dirPoly_finset` is Ivić's Theorem 9.4 |
+| `T₁` second half | Halász–Montgomery | **owned** — `Sieve/HalaszMontgomeryDyadic`, `Sieve/HuxleyLargeValues` |
+| `T₂` dyadic `(σ₁,σ₂)` partition | Lemma 4.1 | **owned** — `exists_lemma41_huxley`, and now its range form |
+
+The one interface still to build is the bridge from `blockPoly`/`rangeTerm` to the corpus's
+`dirPoly` (indices `Fin N`, phase `+it`), which `largeValues_dirPoly_finset` is stated over:
+`blockPoly N c σ t = dirPoly (2N−1) a (−t)` with `a n = c(n+1)·(n+1)^{−σ}` supported on
+`[N, 2N)`.  Everything else is assembly.

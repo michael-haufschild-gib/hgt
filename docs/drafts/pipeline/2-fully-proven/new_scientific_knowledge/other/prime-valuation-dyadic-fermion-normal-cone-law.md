@@ -891,3 +891,86 @@ summable_primePow_dyadic      ∑_p p^{−2^j} < ∞ for j ≥ 1                
 riemannZeta_eq_zero_iff_squarefree_eq_zero
     Re ρ > 1/2 ⟹ (ζ(ρ) = 0 ⟺ ζ(ρ)/ζ(2ρ) = 0)                                  -- (27)
 ```
+
+## Lean progress — `(13g)`–`(13n)`, `(17)`, `(18)`, `(19)`
+
+### The escaping ends and the reflection-doubled chart
+
+`RHTower/CoherentEscapeEnds.lean`:
+
+```text
+coherentExponent_neg_ge    Φ(−V) ≥ ½(1 − e^{−1})² log V        the half-normal end
+coherentExponent_pos_ge    Φ(u)  ≥ (e^{u/2} − 1)²/4            the rapid end
+primeScaleInner_cauchy     Cauchy–Schwarz for the prime-scale Gram form
+tendsto_coherentExponent_of_tendsto
+tendsto_coherentKernel_atTop, tendsto_coherentKernel_atBot   K(u,v) → 0        -- (13i)
+bicoherentKernel u v = K(u,v) K(−u,−v)
+bicoherentKernel_reflection        invariance under u ↦ −u                     -- (13h)
+bicoherentKernel_quadForm_nonneg   the doubled kernel is again positive        -- (13g)
+divProfile_rapidPairing            ⟨F_V, id⟩ = ∫₀¹ (e^{Vt} − 1) dt
+tendsto_rapidPairing_atTop         the rapid end has no distributional limit
+```
+
+The two lower bounds are the whole asymmetry of the card's three-face picture: the negative end
+diverges only logarithmically (so it survives as a *generalized* coherent functional), the positive
+end diverges like `e^{u/2}` (so it does not).  Cauchy–Schwarz — itself the two-point instance of the
+Gram positivity — upgrades the diagonal divergence to `K(u,v) → 0` for every fixed reference.
+
+### The generalized coherent boundary `(13j)`–`(13n)`
+
+`RHTower/HalfNormalCoherentBoundary.lean`:
+
+```text
+intervalIntegrable_divProfile_of_bounded    bounded quotients on (0,1] are integrable
+halfNormalPairing f V = ⟨F_{−V}, f⟩,  halfNormalFunctional f = ℓ_-(f) = −∫₀¹ f dt/t
+abs_halfNormalFunctional_le    |ℓ_-(f)| ≤ L    — continuity for the slope seminorm  -- (13k)
+abs_halfNormalPairing_sub_le   |⟨F_{−V}, f⟩ − ℓ_-(f)| ≤ L/V                          -- (13l)
+tendsto_halfNormalPairing      ⟨F_{−V}, f⟩ → ℓ_-(f)
+tendsto_exp_halfNormalPairing  ⟨e(F_{−V}), e(f)⟩ → e^{ℓ_-(f)}                        -- (13n)
+```
+
+The rate is exact and elementary rather than a dominated-convergence citation: the difference is
+`∫₀¹ e^{−Vt} f(t) dt/t`, whose integrand is bounded by `L e^{−Vt}`, so the whole difference is at
+most `L(1 − e^{−V})/V ≤ L/V`.
+
+### `(17)`
+
+`RHTower/WoldNormalScale.lean`:
+
+```text
+tendsto_woldNormalScale        e^{−γ} / (a_N log N) → 1
+tendsto_woldNormalCoordinate   (e^{−γ} c / a_N) / (c log N) → 1
+```
+
+### `(18)`, `(19)`
+
+`RHTower/HellingerCurvature.lean`:
+
+```text
+logAffinityKernel a μ c = log(1 + a e^{μc}) − ½log(1+a) − ½log(1 + a e^{2μc})
+hasDerivAt_logAffinityKernel
+logAffinityKernelDeriv_zero            the critical source is stationary
+hasDerivAt_logAffinityKernelDeriv      second derivative at 0 is −μ² a/(1+a)²
+log_bitHellingerAffinity_radial        log H^bit_{p,j}(c) = Λ_{q^{2^j},\,2^j log p}(c)
+log_geometricHellingerAffinity_radial  log H^geo_p(c) = −Λ_{−q,\,log p}(c)
+hasDerivAt_bitCurvature                −∂²_c log H^bit_{p,j}|₀ = 4^j (log p)² q^{2^j}/(1+q^{2^j})²  -- (19)
+hasDerivAt_geometricCurvature          −∂²_c log H^geo_p|₀   = (log p)² q/(1−q)²                    -- (18)
+```
+
+Both curvatures are the *same* universal kernel read at two parameter points: the digit at
+`a = q^{2^j}`, `μ = 2^j log p`, and the geometric law at the reflected point `a = −q`, `μ = log p`.
+That the second is the sum of the first over `j` is exactly `(20)`.
+
+### The one remaining analytic item
+
+`(13o)`, the exact half-normal scale `e^{Φ(−V)} ∼ √(e^γ V/2)`, is the only statement of this card
+not yet Lean-proved.  It reduces to the classical exponential-integral asymptotic
+
+```text
+Ein(a) = ∫₀^a (1 − e^{−s}) ds/s = γ + log a + E₁(a),      E₁(a) → 0,
+```
+
+equivalently to `∫₀^∞ e^{−s} log s ds = −γ` plus one improper integration by parts, since
+`2 Φ(−V) = 2 Ein(V) − Ein(2V)`.  Neither mathlib nor this tree owns that representation of `γ`
+(mathlib defines `γ` by `harmonic n − log n`), so it is a named missing analytic asset rather than
+a gap in the card's argument.
