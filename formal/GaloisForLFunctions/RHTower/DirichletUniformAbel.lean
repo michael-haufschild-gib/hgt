@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DirichletHalfPlane
 import GaloisForLFunctions.RHTower.DirichletAbscissa
+import GaloisForLFunctions.RHTower.DirichletBddHolo
 import GaloisForLFunctions.HTGeometry.MultivariableVitali
 
 /-!
@@ -132,6 +133,146 @@ theorem norm_dirichletPartialSum_sub_le {a : ℕ → ℂ} {C : ℝ}
     _ ≤ 2 * C * ((M : ℝ) + 1) ^ (-s.re) + 2 * C * (‖s‖ / s.re) * ((M : ℝ) + 1) ^ (-s.re) := by
         exact add_le_add hb1 hb2
     _ = 2 * C * (1 + ‖s‖ / s.re) * ((M : ℝ) + 1) ^ (-s.re) := by ring
+
+
+/-- The sum of a convergent ordinary Dirichlet series. -/
+noncomputable def dirichletSum (a : ℕ → ℂ) (s : ℂ) : ℂ :=
+  limUnder atTop fun N => dirichletPartialSum a N s
+
+theorem tendsto_dirichletSum {a : ℕ → ℂ} {s : ℂ} (h : DirichletConvergesAt a s) :
+    Tendsto (fun N => dirichletPartialSum a N s) atTop (𝓝 (dirichletSum a s)) := by
+  obtain ⟨L, hL⟩ := h
+  have : dirichletSum a s = L := hL.limUnder_eq
+  rw [this]
+  exact hL
+
+/-- The shifted coefficients of an ordinary Dirichlet series. -/
+private def shiftCoeff (a : ℕ → ℂ) (s₀ : ℂ) : ℕ → ℂ :=
+  fun n => a n * (((n : ℝ) + 1 : ℝ) : ℂ) ^ (-s₀)
+
+private theorem dirichletPartialSum_shiftCoeff (a : ℕ → ℂ) (s₀ s : ℂ) (N : ℕ) :
+    dirichletPartialSum (shiftCoeff a s₀) N (s - s₀) = dirichletPartialSum a N s := by
+  refine Finset.sum_congr rfl fun n _ => ?_
+  have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+  have hne : ((((n : ℝ) + 1 : ℝ)) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (ne_of_gt hpos)
+  rw [shiftCoeff, mul_assoc, ← Complex.cpow_add _ _ hne]
+  congr 2
+  ring
+
+/-- **The tail estimate after a shift.** -/
+theorem norm_dirichletSum_sub_partialSum_le {a : ℕ → ℂ} {s₀ : ℂ} {C : ℝ}
+    (hC : ∀ N, ‖dirichletPartialSum a N s₀‖ ≤ C) {s : ℂ} (hs : s₀.re < s.re)
+    (hconv : DirichletConvergesAt a s) (M : ℕ) :
+    ‖dirichletSum a s - dirichletPartialSum a M s‖
+      ≤ 2 * C * (1 + ‖s - s₀‖ / (s - s₀).re) * ((M : ℝ) + 1) ^ (-(s - s₀).re) := by
+  have hre : 0 < (s - s₀).re := by
+    rw [Complex.sub_re]; linarith
+  have hC' : ∀ N, ‖∑ n ∈ Finset.range N, shiftCoeff a s₀ n‖ ≤ C := by
+    intro N
+    have : ∑ n ∈ Finset.range N, shiftCoeff a s₀ n = dirichletPartialSum a N s₀ := by
+      refine Finset.sum_congr rfl fun n _ => rfl
+    rw [this]
+    exact hC N
+  have hblock : ∀ N, M ≤ N →
+      ‖dirichletPartialSum a N s - dirichletPartialSum a M s‖
+        ≤ 2 * C * (1 + ‖s - s₀‖ / (s - s₀).re) * ((M : ℝ) + 1) ^ (-(s - s₀).re) := by
+    intro N hMN
+    have h := norm_dirichletPartialSum_sub_le hC' hre (M := M) (N := N) hMN
+    rwa [dirichletPartialSum_shiftCoeff, dirichletPartialSum_shiftCoeff] at h
+  have hlim : Tendsto (fun N => ‖dirichletPartialSum a N s - dirichletPartialSum a M s‖) atTop
+      (𝓝 ‖dirichletSum a s - dirichletPartialSum a M s‖) :=
+    ((tendsto_dirichletSum hconv).sub tendsto_const_nhds).norm
+  refine le_of_tendsto hlim ?_
+  filter_upwards [eventually_ge_atTop M] with N hN
+  exact hblock N hN
+
+/-- **Locally uniform convergence to the right of a point of convergence.** -/
+theorem tendstoLocallyUniformlyOn_dirichletPartialSum {a : ℕ → ℂ} {s₀ : ℂ}
+    (h₀ : DirichletConvergesAt a s₀) :
+    TendstoLocallyUniformlyOn (dirichletPartialSum a) (dirichletSum a) atTop
+      {s : ℂ | s₀.re < s.re} := by
+  obtain ⟨C, hC⟩ := (isBounded_iff_forall_norm_le).1
+    (h₀.choose_spec.cauchySeq.isBounded_range)
+  have hCb : ∀ N, ‖dirichletPartialSum a N s₀‖ ≤ C := fun N => hC _ (Set.mem_range_self N)
+  rw [Metric.tendstoLocallyUniformlyOn_iff]
+  intro ε hε s₁ hs₁
+  have hs₁' : s₀.re < s₁.re := hs₁
+  set δ : ℝ := (s₁.re - s₀.re) / 2 with hδdef
+  have hδ : 0 < δ := by rw [hδdef]; linarith
+  set R : ℝ := ‖s₁ - s₀‖ + 1 with hRdef
+  have hR : 0 < R := by rw [hRdef]; positivity
+  set t : Set ℂ := {s : ℂ | s₀.re + δ < s.re ∧ ‖s - s₀‖ < R} with htdef
+  have htopen : IsOpen t := by
+    have h1 : IsOpen {s : ℂ | s₀.re + δ < s.re} :=
+      isOpen_lt continuous_const Complex.continuous_re
+    have h2 : IsOpen {s : ℂ | ‖s - s₀‖ < R} :=
+      isOpen_lt (continuous_id.sub continuous_const).norm continuous_const
+    exact h1.inter h2
+  have hs₁t : s₁ ∈ t := by
+    constructor
+    · rw [hδdef]; linarith
+    · rw [hRdef]; linarith
+  refine ⟨t, mem_nhdsWithin_of_mem_nhds (htopen.mem_nhds hs₁t), ?_⟩
+  -- the uniform tail bound on `t`
+  have hbound : ∀ M : ℕ, ∀ s ∈ t,
+      ‖dirichletSum a s - dirichletPartialSum a M s‖
+        ≤ 2 * |C| * (1 + R / δ) * ((M : ℝ) + 1) ^ (-δ) := by
+    intro M s hst
+    have hre : s₀.re < s.re := by
+      have := hst.1
+      linarith
+    have hconv : DirichletConvergesAt a s := tendsto_dirichlet_partialSum_of_re_lt h₀ hre
+    have hCb' : ∀ N, ‖dirichletPartialSum a N s₀‖ ≤ |C| := fun N =>
+      le_trans (hCb N) (le_abs_self C)
+    refine le_trans (norm_dirichletSum_sub_partialSum_le hCb' hre hconv M) ?_
+    have hsre : δ < (s - s₀).re := by
+      rw [Complex.sub_re]
+      have := hst.1
+      linarith
+    have hsn : ‖s - s₀‖ < R := hst.2
+    have hCa : (0:ℝ) ≤ 2 * |C| := by positivity
+    have hd : (0:ℝ) < (s - s₀).re := lt_trans hδ hsre
+    have h1 : ‖s - s₀‖ / (s - s₀).re ≤ R / δ := by
+      refine (div_le_div_iff₀ hd hδ).mpr ?_
+      nlinarith [norm_nonneg (s - s₀)]
+    have h2 : ((M : ℝ) + 1) ^ (-(s - s₀).re) ≤ ((M : ℝ) + 1) ^ (-δ) :=
+      Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+    have hnn : (0:ℝ) ≤ ((M : ℝ) + 1) ^ (-(s - s₀).re) := Real.rpow_nonneg (by positivity) _
+    have hfac : (0:ℝ) ≤ 1 + ‖s - s₀‖ / (s - s₀).re := by
+      have := div_nonneg (norm_nonneg (s - s₀)) hd.le
+      linarith
+    calc 2 * |C| * (1 + ‖s - s₀‖ / (s - s₀).re) * ((M : ℝ) + 1) ^ (-(s - s₀).re)
+        ≤ 2 * |C| * (1 + R / δ) * ((M : ℝ) + 1) ^ (-(s - s₀).re) := by
+          have hle : (1 + ‖s - s₀‖ / (s - s₀).re) ≤ 1 + R / δ := by linarith
+          exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hle hCa) hnn
+      _ ≤ 2 * |C| * (1 + R / δ) * ((M : ℝ) + 1) ^ (-δ) := by
+          have hpos : (0:ℝ) ≤ 2 * |C| * (1 + R / δ) := by positivity
+          exact mul_le_mul_of_nonneg_left h2 hpos
+  -- choose the cut
+  have htend : Tendsto (fun M : ℕ => 2 * |C| * (1 + R / δ) * ((M : ℝ) + 1) ^ (-δ)) atTop (𝓝 0) := by
+    have h := (tendsto_rpow_neg_nat_atTop hδ).comp (tendsto_add_atTop_nat 1)
+    have h' : Tendsto (fun M : ℕ => ((M : ℝ) + 1) ^ (-δ)) atTop (𝓝 0) := by
+      refine h.congr fun M => ?_
+      simp [Function.comp]
+    simpa using h'.const_mul (2 * |C| * (1 + R / δ))
+  obtain ⟨M₀, hM₀⟩ := ((htend.eventually (gt_mem_nhds hε)).and (eventually_ge_atTop 0)).exists
+  filter_upwards [eventually_ge_atTop M₀] with M hM s hst
+  rw [Complex.dist_eq]
+  refine lt_of_le_of_lt (hbound M s hst) ?_
+  refine lt_of_le_of_lt ?_ hM₀.1
+  have hmono : ((M : ℝ) + 1) ^ (-δ) ≤ ((M₀ : ℝ) + 1) ^ (-δ) := by
+    refine Real.rpow_le_rpow_of_nonpos (by positivity) ?_ (by linarith)
+    have : (M₀ : ℝ) ≤ (M : ℝ) := Nat.cast_le.mpr hM
+    linarith
+  have hpos : (0:ℝ) ≤ 2 * |C| * (1 + R / δ) := by positivity
+  exact mul_le_mul_of_nonneg_left hmono hpos
+
+/-- **The sum of a Dirichlet series is holomorphic to the right of any point of convergence.** -/
+theorem differentiableOn_dirichletSum {a : ℕ → ℂ} {s₀ : ℂ} (h₀ : DirichletConvergesAt a s₀) :
+    DifferentiableOn ℂ (dirichletSum a) {s : ℂ | s₀.re < s.re} :=
+  (tendstoLocallyUniformlyOn_dirichletPartialSum h₀).differentiableOn
+    (Filter.Eventually.of_forall fun N => (differentiable_dirichletPartialSum a N).differentiableOn)
+    (isOpen_lt continuous_const Complex.continuous_re)
 
 end GaloisForLFunctions.RHTower
 

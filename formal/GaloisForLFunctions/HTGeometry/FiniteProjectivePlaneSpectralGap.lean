@@ -1,6 +1,7 @@
 import Mathlib.Combinatorics.Configuration
 import Mathlib.LinearAlgebra.Projectivization.Cardinality
 import GaloisForLFunctions.HTGeometry.IncidenceDesignBound
+import GaloisForLFunctions.HTGeometry.IncidenceWeightedComplex
 
 /-!
 # Spectral gap for a finite projective plane
@@ -36,6 +37,20 @@ theorem projectiveIncidence_nonneg (p : P) (l : L) :
     0 ≤ projectiveIncidence (P := P) (L := L) p l := by
   simp only [projectiveIncidence]
   split_ifs <;> norm_num
+
+/-- The point-to-line weight in the empty link of the incidence weighted complex is precisely the
+projective-incidence matrix entry. This connects the rank-two spectral calculation to Garland's
+weighted-complex interface. -/
+theorem projectiveIncidence_linkGraph_empty_w_inl_inr [Fintype P] [Fintype L] (p : P) (l : L) :
+    ((incidenceWeightedComplex (P := P) (L := L)).linkGraph ∅).w (Sum.inl p) (Sum.inr l)
+      = projectiveIncidence (P := P) (L := L) p l := by
+  simpa only [projectiveIncidence] using incidenceWeightedComplex_linkGraph_empty_w_inl_inr p l
+
+/-- The reverse point-line weight in the empty link has the same projective-incidence value. -/
+theorem projectiveIncidence_linkGraph_empty_w_inr_inl [Fintype P] [Fintype L] (p : P) (l : L) :
+    ((incidenceWeightedComplex (P := P) (L := L)).linkGraph ∅).w (Sum.inr l) (Sum.inl p)
+      = projectiveIncidence (P := P) (L := L) p l := by
+  simpa only [projectiveIncidence] using incidenceWeightedComplex_linkGraph_empty_w_inr_inl p l
 
 theorem projectiveIncidence_row_sum [Fintype L] (p : P) :
     ∑ l, projectiveIncidence (P := P) (L := L) p l = (Configuration.lineCount L p : ℝ) := by

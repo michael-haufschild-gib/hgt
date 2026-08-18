@@ -24,7 +24,13 @@
   step 1 is the single theorem `Sieve.card_le_good_add_correlation`, whose only non-elementary
   hypothesis is a bound on the `L-1` shifted Moebius correlations `sum_n mu(n)mu(n+h)`; the
   mean-square input `(15)` is *derived* from it, not assumed, and the prime number theorem is not
-  used at all (the marker supply comes from Mertens via `Sieve/PrimeWindow.lean`)
+  used at all (the marker supply comes from Mertens via `Sieve/PrimeWindow.lean`); **update (2026-08-18):** the Moebius short-interval mean square is now an
+  unconditional theorem of this corpus (`Sieve/MoebiusMeanSquare.averagedMeanSquare_moebius`,
+  window `exp((log X)^{99/100})`) in the *fibre* normalization; this card, like
+  `ROUTE-E-RECIPROCAL-MARKER-HALL-001`, needs the *integer-start* form
+  `DyadicTranslates.dyadicMeanSquare`, and the one missing input for that is the low-frequency
+  contour bound for the Ramare-weighted cofactor polynomial --- see the Hall-law card for the
+  exact reduction
 
 ## Result
 

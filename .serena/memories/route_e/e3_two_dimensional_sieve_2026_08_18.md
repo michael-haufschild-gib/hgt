@@ -91,3 +91,45 @@ not shrink the MVT's `N∑|a|²` term.  It is a genuine Type II estimate — Wat
 - NEW `Sieve/MeanSquareLevelSplit` — `sq_le_levelSplit`, `integral_sq_le_levelSplit`: the dyadic
   level-set split `∫_E f² ≤ V₀²|E| + ∑_{j<J}(2^{j+1}V₀)²|{f ≥ 2^jV₀} ∩ E|`, the shape `(5.2)`
   consumes.  Axiom-clean, wired.
+
+## CORRECTION (same day, later): the deficit is NOT log log x
+The "exactly one log log x" claim recorded above is an artefact of the sharp-cutoff Perron kernel
+`≍ x/|t|` and the `≍ log log x` dyadic blocks.  With a smooth window in the multiplicative variable
+the block sum disappears entirely and the whole all-interval E₃ theorem reduces to ONE inequality:
+
+    (★)  ∫_{1 ≤ |t| ≤ T₀}|P₁(1+it)||P(1+it)|²dt  <  (1/2)·P₁(1)·P(1)² ,
+
+with the main term supplied by the long-window count (PNT on intervals of length ≍ x).  No Type II
+input is used in the reduction.
+
+Bounding |P₁| by its sup reduces (★) to a statement about the LARGE polynomial alone,
+`∫_{1≤|t|≤T₀}|P|² < (1/2)P(1)²`, which is FALSE by a factor ≍ 25: the near-diagonal prime-pair term
+`2T₀R^{-2}#{0<|p−p'| ≤ R/T₀} ≍ 4/(log R)²` is INDEPENDENT of h (shortening the window raises T₀ and
+lowers the pair range in exact proportion) and already exceeds `P(1)² ≍ 0.48/(log R)²`.  A Selberg
+majorant with transform in [-δ,δ] contributes `(1/δ)(2δ/(log R)²)` — the same irreducible term.  So
+no window, no h, no constant-chasing closes it.
+
+(★) itself is true with margin `≍ (P₁/log P₁)^{1/2} = (log x)^{0.55+o(1)}`: on |t| ≥ 1 the short
+polynomial has typical size `(P₁ log P₁)^{-1/2}`, not its sup.  All the loss is in the sup /
+Cauchy–Schwarz step.
+
+### The exact open core, after the L¹ level split
+    ∫_{S_V}|P|² ≤ (small const)·∫_{1≤|t|≤T₀}|P|²,   S_V = {t ∈ [1,T₀] : |P₁(1+it)| ≥ V ≍ P₁(1)}.
+`|S_V|/T₀ ≍ log P₁/P₁ = (log x)^{-1.1+o(1)}` IS provable (spaced-point large values:
+`RHTower.LargeValuesDpoly`, `RHTower.WellSpacedSubset`), but small measure does not bound the
+|P|²-mass: |P|² is spiky, its whole mass sits on a set of measure O(1) while |S_V| ≍ T₀(log x)^{-1.1}.
+The separation is arithmetic — that is the Type II content.
+
+### Dead routes for the open core (do not re-attempt)
+- adapted moments for P₁ (`Sieve/PrimePowerSupport`): `P₁^ℓ ≤ T₀` caps the saving at `T₀^{-0.09}`,
+  a power saving where BOUNDED measure is needed.
+- moments of `P₁^kP^j`, j ≥ 1: `R > T₀`, so the MVT length term `P₁^kR^j` cancels the gain.
+- Hölder with `∫|P|⁴`: that integral is T₀-independent while |S_V| ∝ T₀.
+- shifted-pair expansion of `∫|P₁P|²`: its near-diagonal term is T₀-independent and the same order
+  as the trivial `max|P₁|²∫|P|²`, so the 2-D sieve gives nothing here (it was decisive for (FS7)
+  only because there the competitor was the MVT, not a sup).
+
+### New Lean asset from this cycle
+`Sieve/MeanSquareLevelSplit.integral_mul_le_levelSplit` — the L¹ level split
+`∫_E f·g ≤ V₀∫_E g + M∫_{E∩{f≥V₀}} g` (0 ≤ f ≤ M, g ≥ 0, 0 ≤ V₀), the form (★) consumes; it does
+not square the short factor, unlike Cauchy–Schwarz.  Axiom-clean, wired.

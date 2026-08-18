@@ -169,6 +169,44 @@ theorem integral_sq_mul_le_levelSplit {E : Set ℝ} {f g : ℝ → ℝ}
   rw [MeasureTheory.integral_indicator (hmeasSet j), Measure.restrict_restrict (hmeasSet j)]
   rw [Set.inter_comm]
 
+/-- **The first-moment level split.**  The `L¹` companion of the mean-square split: a nonnegative
+weight against a bounded nonnegative factor is paid by the threshold on the small-value set and by
+the sup on the large-value set.  This is the form the mixed first moment `∫|P₁||P|²` consumes, and
+unlike Cauchy–Schwarz it does not square the short factor. -/
+theorem integral_mul_le_levelSplit {E : Set ℝ} {f g : ℝ → ℝ}
+    (hE : MeasurableSet E) (hmeas : Measurable f)
+    (hint : IntegrableOn (fun t => f t * g t) E) (hgint : IntegrableOn g E)
+    (hf0 : ∀ t, 0 ≤ f t) (hg0 : ∀ t, 0 ≤ g t)
+    {V₀ M : ℝ} (hV₀ : 0 ≤ V₀) (hM : ∀ t, f t ≤ M) :
+    (∫ t in E, f t * g t)
+      ≤ V₀ * (∫ t in E, g t) + M * (∫ t in E ∩ {t | V₀ ≤ f t}, g t) := by
+  classical
+  have hmeasSet : MeasurableSet {t : ℝ | V₀ ≤ f t} := measurableSet_le measurable_const hmeas
+  have hM0 : (0 : ℝ) ≤ M := le_trans (hf0 0) (hM 0)
+  have hindInt : IntegrableOn (Set.indicator {t : ℝ | V₀ ≤ f t} g) E := hgint.indicator hmeasSet
+  set G : ℝ → ℝ := fun t => V₀ * g t + M * Set.indicator {t | V₀ ≤ f t} g t with hG
+  have hGint : IntegrableOn G E := (hgint.const_mul _).add (hindInt.const_mul _)
+  have hpt : ∀ t ∈ E, f t * g t ≤ G t := by
+    intro t _
+    show f t * g t ≤ V₀ * g t + M * Set.indicator {t | V₀ ≤ f t} g t
+    by_cases hc : V₀ ≤ f t
+    · rw [Set.indicator_of_mem (show t ∈ {t : ℝ | V₀ ≤ f t} from hc) g]
+      have h1 : f t * g t ≤ M * g t := mul_le_mul_of_nonneg_right (hM t) (hg0 t)
+      have h2 : (0 : ℝ) ≤ V₀ * g t := mul_nonneg hV₀ (hg0 t)
+      linarith
+    · rw [Set.indicator_of_notMem (show t ∉ {t : ℝ | V₀ ≤ f t} from hc) g]
+      have h1 : f t ≤ V₀ := le_of_not_ge hc
+      have h2 : f t * g t ≤ V₀ * g t := mul_le_mul_of_nonneg_right h1 (hg0 t)
+      have h3 : (0 : ℝ) ≤ M * (0 : ℝ) := by positivity
+      simp only [mul_zero]
+      linarith
+  refine le_trans (setIntegral_mono_on hint hGint hE hpt) (le_of_eq ?_)
+  rw [hG, integral_add (hgint.const_mul _) (hindInt.const_mul _), integral_const_mul,
+    integral_const_mul]
+  congr 2
+  rw [MeasureTheory.integral_indicator hmeasSet, Measure.restrict_restrict hmeasSet,
+    Set.inter_comm]
+
 end
 
 end RHTower.Sieve

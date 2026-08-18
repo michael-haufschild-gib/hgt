@@ -1102,3 +1102,69 @@ Corpus assets that already exist for `SC_1(ℂ)`: `U0.HolomorphicIFT.holo_implic
 `Bottcher.EntirePolyGrowth.exists_polynomial_of_entire_polyGrowth`,
 mathlib's `IsCoveringMap.existsUnique_continuousMap_lifts`, and the pattern of
 `HTGeometry.SpectralPathCovering` (the same covering built over the unit interval).
+
+## Lean progress — `SC_1` is PROVED, unconditionally, over every algebraically closed field of characteristic zero
+
+Four new modules, all wired into `HTGeometry` and all axiom-clean
+(`[propext, Classical.choice, Quot.sound]`):
+
+```text
+HTGeometry/BivariateRootCovering.lean
+    biEval, biFibre, BiRootLocus, biRootProj
+    isLocalHomeomorph_biRootProj        the implicit-function chart on the root locus
+    isProperMap_biRootProj              uniform Cauchy bound on compacta
+    isCoveringMap_biRootProj            ** the root locus of a monic family with separable fibres
+                                           is a covering space of the parameter plane **
+
+HTGeometry/ComplexAffineLineSimplyConnected.lean
+    exists_continuous_biRoot            global section (ℂ simply connected + mathlib's lifting)
+    analyticAt_of_continuous_biRoot     the section is analytic (local uniqueness in the chart)
+    exists_polynomial_biRoot            it has polynomial growth, hence IS a polynomial
+    exists_monic_linear_factor
+    exists_multiset_prod_of_forall_separable   ** SC_1 over ℂ **
+
+HTGeometry/CountableFieldComplexEmbedding.lean
+    infinite_of_isTranscendenceBasis_complex
+    exists_algebraicIndependent_nat_complex
+    nonempty_ringHom_complex_of_countable      ** every countable characteristic-zero field
+                                                  embeds into ℂ **
+
+HTGeometry/BivariateSeparableResultant.lean
+    biResultant, separable_iff_resultant_ne_zero, biResultant_eval
+    exists_biResultant_eq_C             over an algebraically closed field, separable fibres
+                                        ⟺ the fibre resultant is a nonzero CONSTANT
+    forall_separable_of_biResultant_eq_C        the converse over any field
+    biResultant_map                     the fibre resultant commutes with any coefficient map
+
+HTGeometry/AffineLineSimplyConnected.lean
+    exists_map_eq_of_eval_mem_range     Lagrange descent
+    exists_isRoot_of_countable          the countable case, through ℂ
+    exists_isRoot_of_forall_separable
+    exists_multiset_prod_of_forall_separable_algClosed
+        ** SC_1 : over ANY algebraically closed field of characteristic zero, a monic
+           f ∈ K[X][X] with every fibre separable splits into monic linear factors **
+```
+
+The two devices that make the transfer work and are worth remembering: (i) "every fibre separable"
+is **equivalent to the fibre resultant being a nonzero constant**, and that form is preserved by
+*any* ring homomorphism, so the hypothesis transports to ℂ for free; (ii) the complex root branch
+descends again by **Lagrange interpolation** — it maps the image field into itself because that
+field is algebraically closed and the branch value is a root of a polynomial over it.
+
+### Next: `SC_k` by an elementary induction (no Bertini, no constant-extension theory)
+
+The multivariable case does **not** need the constant-field-extension/Gauss-valuation argument
+sketched in the programme.  With `B` a characteristic-zero domain and `A = B[w]`:
+
+```text
+f ∈ A[X] monic, res(f, ∂f) a unit
+  → over the algebraic closure 𝔽̄ of Frac(B), SC_1 splits f = ∏ (X - g_i), g_i ∈ 𝔽̄[w]
+  → disc(f) = ∏_{i<j}(g_i-g_j)^2 is a unit, so every g_i - g_j is a unit of 𝔽̄[w], i.e. a CONSTANT
+  → hence g_i = h + a_i with h = -(1/d)·(coefficient of X^{d-1}) ∈ A and a_i ∈ 𝔽̄
+  → so F(X) := f(X + h) has all coefficients constant in w, i.e. F ∈ B[X], monic, same resultant
+  → induction on the number of variables gives F = ∏ (X - b_i) with b_i ∈ B
+  → f(X) = F(X - h) = ∏ (X - h - b_i) splits over A.
+```
+
+Base case `B = K`: a monic polynomial over an algebraically closed field splits.  The whole
+induction is elementary once `SC_1` is available.

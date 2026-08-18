@@ -49,7 +49,15 @@
   windows, four-fold multiplicity, truncation machinery for both squarefree weights) is in
   `Sieve/PairFibre*.lean`, `Sieve/LogSumFromCount.lean`, `Sieve/Fibre*Separation.lean`,
   `Sieve/*MaximalWindow.lean`, `Sieve/RouteEAveraged.lean`;
-  Matomaki--Radziwill's Theorem 2 is needed only to lower `h` towards `log log x`
+  Matomaki--Radziwill's Theorem 2 is needed only to lower `h` towards `log log x`;
+  **update (2026-08-18): that input is now a theorem of this corpus.**  `Sieve/MoebiusMeanSquare.averagedMeanSquare_moebius` proves the Moebius short-interval
+  mean square unconditionally at `h = exp((log x)^{99/100})` (and for every `9/10 < beta < 1`),
+  and `Sieve/RouteEMoebiusUnconditional.route_e_sign_density_unconditional` /
+  `route_e_signClass_nonempty_unconditional` give the card's `(3)` and its consequence with no
+  hypotheses at that sub-square-root window.  Promoted as the Stage-3 child
+  `../../3-formalized/new_scientific_knowledge/matomaki-radziwill-moebius-short-interval-mean-square.md`.
+  This parent remains Stage 2 only for the representation/multiplicity programme, whose hard
+  gate is still the size comparison against Brun--Titchmarsh recorded above
 
 ## Statement
 

@@ -3117,3 +3117,88 @@ Landed since:
   `Ec/(B₀hW²) → 0`, majorised by `8·mertensS z/h + 16/B₀ + 64h/B₀ + 2/h`.
 
 Remaining: `αL/(B₀hW²) → 0` and `βL/(B₀²W²) → 0`.
+
+## The three normalised quotients, all vanishing
+
+- `Sieve/EnergyQuotientLimit.tendsto_energy_quotient` — `Ec/(B₀hW²) → 0`.
+- `Sieve/SlopeQuotientLimit.tendsto_slope_quotient` — `αL/(B₀hW²) → 0`, via the pure arithmetic
+  lemma `slope_quotient_arith` (annulus group → `(ρL)²` and `(ρ/η)²(h/B₀)`; cofactor group → five
+  polynomial quotients) plus `slopeMajorant`/`tendsto_slopeMajorant`.
+- `Sieve/ConstQuotientLimit.tendsto_const_quotient` — `βL/(B₀²W²) → 0`, via `const_annulus_le`,
+  `const_disc_le`, `const_cofactor_le`, `const_quotient_arith`, `const_bound_mono`,
+  `discInner`/`constMajorant`/`tendsto_constMajorant`.
+
+Two corrections found while assembling these.  In the cofactor group the sifting cutoff `Q` must be
+kept in the denominator of the `(ηB₀+(1+B₀)η)(2/(Qη))` and `B₀(2/(Q²η))` terms: dividing by `B₀²W²`
+instead of `B₀hW²` turns `6B₀/Q` into `6/Q`, and bounding `Q ≥ 1` there would leave
+`6(log x)^{1−γβ}/W² → ∞`.  And the number of ladder steps satisfies `1/η ≤ 2L` eventually
+(`eventually_inv_eta_le_steps`), which is what converts the `(ρ/η)²` of the annulus group into
+`(ρL)²`.
+
+Supporting limits added: `Sieve/PolyDecayLimits` (`tendsto_rpow_log_div_sqrt`,
+`tendsto_rpow_log_div_cardLength`, `tendsto_rpow_log_mul_cardLength_div_sqrt`,
+`tendsto_rpow_log_div_siftStart`), `Sieve/BudgetSRate.tendsto_rpow_log_mul_budgetS`.
+
+Remaining: assemble `budget_div_eq` + `spectral_terms_le` + the three quotient limits +
+`tendsto_nonSpectralBudget` into `omegaBudget/(W²h²√x) → 0`, then `AveragedMeanSquare`.
+
+## PROGRAMME OBJECTIVE MET — Matomäki–Radziwiłł is Lean-proved
+
+`Sieve/MoebiusMeanSquare.lean`:
+
+```lean
+theorem averagedMeanSquare_moebius :
+    AveragedMeanSquare (fun n : ℕ => ((ArithmeticFunction.moebius n : ℤ) : ℝ))
+      (cardLength (99 / 100))
+```
+
+unconditional, `#print axioms` = `[propext, Classical.choice, Quot.sound]`, no `sorry`.  The general
+form `averagedMeanSquare_moebius_cardLength` holds for every `9/10 < β < 1` together with a `γ`
+satisfying `0 < γ < 1` and `9/10 < γβ < 1`.  The window is `h = exp((log x)^β)`, far below every
+power of `x`.
+
+The final chain:
+
+1. `Sieve/BudgetLimit.tendsto_normalised_omegaBudget` — `omegaBudget/(W²h²√x) → 0`, assembled from
+   `budget_div_eq`, `spectral_terms_le`, `tendsto_slope_quotient`, `tendsto_energy_quotient`,
+   `tendsto_const_quotient`, `tendsto_nonSpectralBudget`.
+2. `OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget` converts it into the fibre mean
+   square.
+
+And Route E's Theorem `(3)` is now unconditional, `Sieve/RouteEMoebiusUnconditional.lean`:
+
+```lean
+theorem route_e_sign_density_unconditional {s : ℤ} (hs : s = 1 ∨ s = -1) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ x in atTop,
+      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+        ≤ coprimeSignClassCount x (cardLength (99 / 100) x) s
+          / (cardLength (99 / 100) x * Real.sqrt x * Real.log 2)
+
+theorem route_e_signClass_nonempty_unconditional {s : ℤ} (hs : s = 1 ∨ s = -1) :
+    ∀ᶠ x in atTop, (coprimeSignClass x (cardLength (99 / 100) x) s).Nonempty
+```
+
+(the two squarefree inputs come from `SquarefreeMaximalWindow.maximalWindowDevMeanSquare_moebius_sq`
+and `CoprimeMaximalWindow.maximalWindowDevMeanSquareAt_coprime`, both already unconditional in the
+corpus, routed through `FibreDevSeparation.averagedMeanSquareDensityAt_of_maximal`).
+
+## What the two reciprocal-marker cards still need
+
+Their step 1 is `Sieve/GoodStartMarkov.card_le_good_add_meanSquare`, whose input is
+`∑_{t ∈ S} (∑_{n ∈ (t, t+L]} μ(n))² ≤ V` over *consecutive integer starts* — the corpus's
+`DyadicTranslates.dyadicMeanSquare μ ℓ A B`.  That is a different object from the fibre mean square
+just proved: the fibre form averages over the multiplicative pair decomposition, the dyadic form over
+every integer start.
+
+The corpus already reduces the strongest shape to it:
+
+- `WindowPartialSum`, `MaximalDeviation`, `DyadicTranslates`, `MaximalWindowReduction` reduce
+  `MaximalWindowMeanSquare` to `dyadicMeanSquare` at `log₂ h` dyadic lengths;
+- `DyadicMeanSquareGallagher.dyadicMeanSquare_le_gallagher` and
+  `LinearMeanSquareGeneric.dyadicMeanSquare_le_largeValues` bound `dyadicMeanSquare` by an integral
+  of `‖logPoly μ [1,M]‖²` — of the **plain** Möbius polynomial.
+
+The gap is exactly the Ramaré step: the spectral budget of this programme controls the
+**Ω-weighted** polynomial `omegaWeightedMoebiusPoly`, and passing from it to the plain polynomial
+needs the Ramaré weight identity plus a sieve bound on the integers with no prime factor in the
+designated range.  `Sieve/RamareBlockSplit.lean` is where that lives.

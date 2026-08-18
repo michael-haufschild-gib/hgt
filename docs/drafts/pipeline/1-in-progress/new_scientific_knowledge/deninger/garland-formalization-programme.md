@@ -2177,3 +2177,29 @@ only `propext`, `Classical.choice`, and `Quot.sound`.
 **Boundary:** This discharges the rank-two link calculation only. The higher-rank spherical-building
 link spectra, Bruhat--Tits building, arithmetic quotient, and Layer B remain unformalized; no card
 is promoted.
+
+### Finite spherical-building infrastructure
+
+2026-08-18. `HTGeometry/FiniteSubmoduleLattice.lean` adds `submoduleFintype`: for any finite
+module, submodules inject into its finite powerset through their carriers. This is the missing
+finite-enumeration bridge needed to turn the existing abstract subspace building into a finite
+weighted complex. Module-only build and axiom audit pass (`propext`, `Classical.choice`,
+`Quot.sound`).
+
+### Finite weighted spherical-building flag complex
+
+2026-08-18. `HTGeometry/FiniteSphericalBuildingFlagComplex.lean` packages the finite enumeration
+of nonzero proper subspaces as the rank-filtered `WeightedComplex` used by Garland localization.
+Its top faces are precisely comparable flags with `finrank K V - 1` vertices;
+`finiteSphericalBuildingFlagComplex_face_card_le` reuses the existing flag-dimension theorem to
+prove that every face has at most that cardinality. Direct Lean check, module-only build, and axiom
+audit pass (`propext`, `Classical.choice`, `Quot.sound`).
+
+**Boundary:** This is a finite-complex packaging theorem. It does not yet identify all local links
+with finite spherical buildings or establish the higher-rank link spectral gaps; the arithmetic
+quotient and Layer B remain open, and no card is promoted.
+
+2026-08-18 addendum. `exists_mem_finiteSphericalBuildingFlagComplex_top` transports the existing
+complete-basis flag into the finite weighted complex: every nonzero finite-dimensional vector space
+has a top face of cardinality `finrank K V - 1`. This supplies the non-vacuity half of the finite
+flag-complex bridge; it does not supply the required local-link identifications or spectra.

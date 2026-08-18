@@ -2312,3 +2312,158 @@ Remaining on the card: **Andersson's** arbitrary-divisor continuation theorem, a
 proved here, that the noncontinuable phases have positive measure).  Both are analytic existence
 statements about the continuation of `Z_chi` past `Re s = 1`, and neither is reachable from the
 algebraic and descriptive-set-theoretic layers now in place.
+
+## THE ROUTE THAT CLOSES `Haar(M) = 0` WITHOUT BOHR'S THEOREM
+
+The Bohr programme recorded above (`sigma_u <= sigma_b`) is still open at its Tauberian step, and the
+previous section correctly flagged that a.s. divergence alone does not give non-continuability.
+There is a different route, and it is *shorter*, *unconditional*, and does not need Bohr's theorem,
+the Riesz-mean Tauberian step, Itô--Nisio, or the natural-boundary theorem.  It is recorded here in
+full because it is the plan the remaining sessions execute.
+
+### The mechanism
+
+Write the Euler logarithm as its prime layer plus its prime-power tail:
+
+```text
+log Z_chi(s)  =  G_chi(s) + H_chi(s) ,
+G_chi(s) = sum_p chi(p) p^{-s} ,
+H_chi(s) = sum_p sum_{k >= 2} chi(p)^k / (k p^{ks}) .
+```
+
+`H` converges **absolutely** on `Re s > 1/2` for every phase, and its second moment is bounded there
+by a constant (`E|H(sigma)|^2 <= sum_{p,k>=2} p^{-2k sigma} <= 2`), uniformly as `sigma` decreases to
+`1/2`.  `G` is a random Dirichlet series with genuinely **independent** coefficients, whose second
+moment `A(sigma) = sum_p p^{-2 sigma}` diverges as `sigma -> 1/2+`.
+
+If `chi` is continuable, `Z_chi = exp(G + H)` on `Re s > 1/2` (identity theorem, both sides
+meromorphic there and equal on `Re s > 1`), so `Z_chi` has no zero or pole in the open half plane
+and
+
+```text
+log |Z_chi(sigma)|  =  Re G_chi(sigma) + Re H_chi(sigma) ,     sigma in (1/2, 1) .
+```
+
+Meromorphy of `Z_chi` at the boundary point `1/2` gives an integer `m` (the local order) and
+constants `delta, B` with
+
+```text
+| Re G_chi(sigma) + Re H_chi(sigma) - m log(sigma - 1/2) |  <=  B      on (1/2, 1/2+delta).   (*)
+```
+
+`(*)` is invariant under modifying finitely many prime phases (a finite Euler correction is
+holomorphic and nonvanishing at `1/2`, since its zeros and poles sit on `Re s = 0`), so for each `m`
+the event `(*)` is a **tail event**; by the zero--one law exactly one `m0` has probability one.
+
+**`m0 = 0` by the cube-root identity.**  For a primitive cube root `w`,
+
+```text
+(G+H)_chi + (G+H)_{w chi} + (G+H)_{w^2 chi}
+   =  sum_p sum_{k >= 2, 3 | k} 3 chi(p)^k/(k p^{ks})
+   =  sum_p -Log(1 - chi(p)^3 p^{-3s}) ,
+```
+
+because `1 + w^k + w^{2k}` is `3` when `3 | k` and `0` otherwise — in particular the `k = 1` layer
+cancels **identically**.  The right side converges absolutely on `Re(3s) > 1`, i.e. on
+`Re s > 1/3`, so it is bounded near `sigma = 1/2`.  Adding three copies of `(*)` therefore forces
+`3 m0 log(sigma - 1/2)` to be bounded, i.e. `m0 = 0`.  (The rotation `chi -> w chi` is a translation
+of the compact phase group, so it preserves the measure and the a.s. value of `m`.)
+
+**The contradiction.**  With `m0 = 0`, `(*)` says `|Re G(sigma) + Re H(sigma)| <= B` on a set of
+measure `> 1 - 1/128`.  But the prime series is a Steinhaus sum with independent coefficients, so
+
+```text
+E[(Re G(sigma))^2] = A(sigma)/2 ,        E[(Re G(sigma))^4] <= E|G|^4 <= 2 A(sigma)^2 ,
+```
+
+and Paley--Zygmund (already formal) gives `P( (Re G)^2 > A/4 ) >= 1/32`, while Chebyshev on the
+uniformly bounded `H` gives `P(|Re H| > lambda) <= 2/lambda^2`.  Choosing `lambda` and then
+`sigma` with `A(sigma) > 4(B+lambda)^2` makes the three events meet, contradicting `|Re G + Re H|
+<= B`.  Hence `Haar(M) != 1`, and by the zero--one law `Haar(M) = 0`.
+
+Nothing in this chain is a classical input: it uses Kolmogorov's maximal inequality, Paley--Zygmund,
+the prime fourth moment, the divergence of `sum 1/p`, the identity theorem, and the cube-root
+factorisation.
+
+## Lean progress — Kolmogorov's maximal inequality and the convergence criterion
+
+Searched first (`research "Kolmogorov maximal inequality almost sure convergence independent random
+series partial sums"`): the corpus owns the zero--one law for a coordinatewise series and the
+divergence half, but no maximal inequality and no a.s. convergence.  Both are new.
+
+`HTGeometry/KolmogorovMaximalInequality.lean` (wired, axiom-clean):
+
+```text
+blockExtend a s y                     rebuild a product point from its restriction to a finite set
+indepFun_of_blockDependence           two functions reading disjoint finite coordinate blocks are
+                                          independent under any product probability measure
+firstPassage g lam n                  the first index at which the partial sums reach lam
+integral_crossTerm_eq_zero            the Abel cross term of the first-passage decomposition dies
+kolmogorov_maximal_inequality
+    lam^2 . P( max_{n <= N} ||S n|| >= lam )  <=  E ||S N||^2
+```
+
+`HTGeometry/IndependentCoordSeriesConvergence.lean` (wired, axiom-clean):
+
+```text
+integral_coordTerm_mul_conj           distinct centred coordinate terms are uncorrelated
+integral_normSq_coordPartialSum       E||S N||^2 = sum_{n<N} E||g n||^2
+shiftTerms g M                        the series with its first M terms deleted
+measure_tail_oscillation_le           P( the tail past M ever moves by lam ) <= lam^{-2} . tail
+measure_coordSeriesConverges_eq_one
+    **centred + bounded + mean-square summable  ==>  the series converges ALMOST EVERYWHERE**
+```
+
+The `blockExtend` device is what makes the independence input painless: "`U` reads only the block
+`s`" is the equation `U (blockExtend a s (s.restrict x)) = U x`, and `IndepFun.comp` then transports
+mathlib's coordinate independence through it.  No filtration, no conditional expectation, no
+stopping time appears anywhere.
+
+## Lean progress — Abel summation is uniform, so the sum is holomorphic
+
+`RHTower/DirichletUniformAbel.lean` (wired, axiom-clean).  The corpus had the *pointwise* Abel
+theorem only; the analytic use needs the uniform form, because a locally uniform limit of
+holomorphic functions is holomorphic while a pointwise limit need not be.
+
+```text
+norm_dirichletPartialSum_sub_le
+    || sum_{M <= n < N} a_n (n+1)^{-s} ||  <=  2C (1 + ||s||/Re s) (M+1)^{-Re s}
+dirichletSum a                        the sum, as a function
+tendsto_dirichletSum
+norm_dirichletSum_sub_partialSum_le   the same estimate after a shift to the point of convergence
+tendstoLocallyUniformlyOn_dirichletPartialSum
+differentiableOn_dirichletSum
+    **convergence at s0  ==>  the sum is holomorphic on Re s > Re s0**
+```
+
+Uniform convergence on a *whole* closed half plane is false in this generality — the factor `||s||`
+is unbounded — which is exactly why `sigma_u` is a strictly finer invariant than `sigma_c`, and why
+the bounded-part version is the right statement.
+
+## Lean progress — the prime series is almost surely holomorphic past the half line
+
+`RHTower/SteinhausPrimeHolomorphic.lean` (wired, axiom-clean).
+
+```text
+primeTermBound, norm_primeTerm_eq, integral_primeTerm
+summable_integral_normSq_primeTerm       sum_p p^{-2 sigma} < infinity for sigma > 1/2
+measure_coordSeriesConverges_primeTerm_eq_one
+    **sigma > 1/2  ==>  Haar { omega : sum_p p^{-sigma} X_p converges } = 1**
+primePhaseCoeff omega                    the same series in the dirichletPartialSum indexing
+dirichletPartialSum_primePhaseCoeff, convergesAt_primePhaseCoeff
+primeHolomorphicEvent                    convergence at every cut 1/2 + 1/(j+1)
+measure_primeHolomorphicEvent            it has full measure
+differentiableOn_dirichletSum_primePhaseCoeff
+    **almost surely G_chi is holomorphic on the whole half plane Re s > 1/2**
+primeShift, primeShift_injective, notMem_range_primeShift
+hasSum_primePhase_dirichletSum
+    **and on Re s > 1 it is the prime Euler sum  sum_p chi(p) p^{-s}**
+```
+
+With `SteinhausPrimeDivergence` this pins the almost-sure abscissa of convergence of the prime
+series at exactly `1/2`: divergence at every `sigma <= 1/2`, convergence at every `sigma > 1/2`.
+
+Remaining bricks on this route: the prime-power tail `H` with its uniform second-moment bound, the
+Euler logarithm identity `Z_chi = exp(G+H)` on `Re s > 1`, its extension to `Re s > 1/2` by the
+identity theorem, the singularity statement `(*)`, the cube-root cancellation, the rotation
+invariance of the phase measure, the limit moments of `G`, and the final Paley--Zygmund assembly.

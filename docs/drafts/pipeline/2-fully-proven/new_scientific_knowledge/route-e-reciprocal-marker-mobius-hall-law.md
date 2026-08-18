@@ -27,7 +27,20 @@
   (`Sieve/ShiftedCongruenceCount.lean`, `Sieve/JointCongruence*.lean`,
   `Sieve/TruncatedPair*.lean`) evaluates the shifted `mu^2` correlation unconditionally (the overlap kernel is exact; the trivial variance bound
   is attained);
-  the sole remaining input is Menon's unconditional 2026 Moebius mean-square theorem `(6)`
+  the sole remaining input is Menon's unconditional 2026 Moebius mean-square theorem `(6)`;
+  **update (2026-08-18):** the corpus now proves the Moebius short-interval mean square
+  unconditionally (`Sieve/MoebiusMeanSquare.averagedMeanSquare_moebius`, window
+  `exp((log X)^{99/100})`), but in the *fibre* normalization `AveragedMeanSquare`, i.e.
+  averaged over the balanced pair decomposition.  This card's step 1
+  (`Sieve/GoodStartMarkov.card_le_good_add_meanSquare`) needs the *integer-start* form
+  `sum_{t in S} (sum_{n in (t,t+L]} mu(n))^2 <= V`, the corpus's
+  `DyadicTranslates.dyadicMeanSquare`.  `Sieve/RamareBlockSplit` already reduces the plain
+  Moebius polynomial to the same geometric ladder of (prime block) x (cofactor block)
+  products that the spectral programme bounds, so the one missing analytic input is the
+  low-frequency contour bound for the Ramare-weighted cofactor
+  `sum_m mu(m)/(omega_P(m)+1) m^{-2 pi i w}` (the Omega normalization puts the weight
+  outside, leaving a plain Moebius cofactor, which is what `Sieve/CofactorLowFreqBound`
+  bounds)
 
 ## Statement
 

@@ -408,3 +408,126 @@ Heath-Brown's sparse mean value theorem, not another perturbative layer.
 This numerology is my own derivation from the card's parameters and the paper's stated `(5.2)`; the
 paper's Section 7 was not retrievable, so the constant bookkeeping above should be re-derived
 against the source before it is relied on in a write-up.
+
+## CORRECTION to the numerology above, and the exact obstruction (2026-08-18, later)
+
+The entry above says the deficit is "exactly one `log log x`, produced by the `≍ log log x` dyadic
+blocks".  **That is an artefact of the sharp-cutoff Perron kernel `≍ x/|t|` and is wrong for the
+right architecture.**  Redone with a smooth window the block sum disappears, and the deficit becomes
+a *bounded constant factor* — but an irreducible one.  Both halves of this correction matter, so
+both are recorded.
+
+### The right architecture: window comparison in the multiplicative variable
+
+Let `φ₁` be smooth, supported in `[0, δ]` with `δ = h/x`, `∫φ₁ = 1`; let `φ₂` be the same at width
+`Δ = 1/2`.  For a finite Dirichlet polynomial `A(s) = ∑ a_n n^{-s}` with `a_n ≥ 0`,
+
+```text
+∑_n (a_n/n) φ_i(log n − log x) = (1/2π) ∫_ℝ φ̂_i(t) x^{it} A(1+it) dt ,
+```
+
+so, since `φ̂₁(0) = φ̂₂(0) = 1`,
+
+```text
+(1/h)∑_{x<n≤x+h} a_n  ≥  ∑_n(a_n/n)φ₁(·)
+                       =  ∑_n(a_n/n)φ₂(·)  −  (1/2π)∫(φ̂₂−φ̂₁)(t)x^{it}A(1+it)dt .
+```
+
+The first term is the **long-window count**, evaluated by the prime number theorem on intervals of
+length `≍ x` — it is `≍ P₁(1)P(1)²`, the main term.  The difference `φ̂₂ − φ̂₁` vanishes at `t = 0`,
+is `O(1)` on `1 ≲ |t| ≲ T₀ = x/h`, and decays faster than any power beyond `T₀`.  **There is no
+dyadic-block accumulation**: the error is a single integral over `1 ≲ |t| ≲ T₀`.  So the whole
+theorem reduces to the single inequality
+
+```text
+(★)   ∫_{1 ≤ |t| ≤ T₀} |P₁(1+it)| · |P(1+it)|² dt  <  (1/2)·P₁(1)·P(1)² .
+```
+
+That reduction uses no Type II input at all and is the correct target for formalisation.
+
+### Why the available tools miss `(★)` by a bounded factor, and why it cannot be tuned away
+
+Bounding `|P₁(1+it)| ≤ P₁(1)` reduces `(★)` to a statement about the *large* prime polynomial alone:
+
+```text
+(★★)   ∫_{1 ≤ |t| ≤ T₀} |P(1+it)|² dt  <  (1/2) P(1)² .
+```
+
+With `P(1) = ∑_{R<p≤2R}1/p ≈ log 2/log R`, the right side is `≈ 0.24/(log R)²`.  The left side is
+the diagonal `2T₀/(R log R) = 2/(log R)²` (using `T₀/R = 1/log R`) **plus** the near-diagonal
+prime-pair term
+
+```text
+2T₀·R^{-2}·#{(p,p') : 0 < |p−p'| ≤ R/T₀}  ≈  4/(log R)² ,
+```
+
+which is **independent of `h`**: shortening the window raises `T₀` and lowers the pair range `R/T₀`
+in exact proportion.  So `(★★)` fails by a factor `≈ 25`, for *every* `h`, and no window, no
+Beurling–Selberg majorant and no constant-chasing repairs it — a Selberg majorant with transform
+supported in `[-δ,δ]` contributes `(1/δ)·(pair density 2δ/(log R)²) = 2/(log R)²`, the same
+irreducible term.
+
+### What is actually true, and the exact open core
+
+`(★)` itself is true with an enormous margin.  On `|t| ≥ 1` the short polynomial has typical size
+`(∑_{p≍P₁}p^{-2})^{1/2} = (P₁ log P₁)^{-1/2}`, not `P₁(1) ≍ 1/log P₁`; inserting the typical size
+gives a left side smaller than the right by a factor `≍ (P₁/log P₁)^{1/2} = (log x)^{0.55+o(1)}`.
+The loss is therefore entirely in replacing `|P₁|` by its supremum — equivalently, in Cauchy–Schwarz,
+which is off by the same factor.
+
+Splitting `(★)` at a level `V₀` (`Sieve/MeanSquareLevelSplit.integral_mul_le_levelSplit`, the `L¹`
+companion added for this purpose) leaves exactly one quantity:
+
+```text
+[OPEN CORE]   ∫_{S_V} |P(1+it)|² dt  ≤  (small constant) · ∫_{1≤|t|≤T₀}|P(1+it)|² dt ,
+              S_V := {t ∈ [1,T₀] : |P₁(1+it)| ≥ V} ,   V ≍ P₁(1).
+```
+
+`S_V` has relative measure `≍ log P₁/P₁ = (log x)^{-1.1+o(1)}` — provable from the spaced-point
+large-values inequality (`RHTower.LargeValuesDpoly`, `RHTower.WellSpacedSubset`) — but small
+*measure* does not bound the `|P|²`-mass, because `|P|²` is spiky: its whole mass `≍ 1/(log R)²`
+sits on a set of measure `O(1)`, while `|S_V| ≍ T₀(log x)^{-1.1}` is far larger.  Nothing
+measure-theoretic separates them; the separation is arithmetic.  **That is the Type II content, and
+this is the precise form in which the two E3 cards still need it.**
+
+Routes eliminated here, with reasons (do not re-attempt):
+- adapted-moment/Heath-Brown level sets for `P₁` (`Sieve/PrimePowerSupport`): the constraint
+  `P₁^ℓ ≤ T₀` caps the saving at `T₀^{-c}` with `c = 0.1/1.1`, a power saving where a *bounded*
+  measure is required;
+- the moment method on `P₁^k P^j`: `R > T₀`, so `P₁^kR^j > T₀` for every `j ≥ 1` and the mean value
+  theorem's length term cancels the gain;
+- Hölder with `∫|P|⁴`: `∫|P|⁴ ≍ 1/(log R)²` is `T₀`-independent while `|S_V| ∝ T₀`;
+- expanding `∫|P₁P|²` into a shifted-pair count: the near-diagonal term is `T₀`-independent and of
+  the same order as the trivial bound `max|P₁|²∫|P|²`, so the pair sieve gives nothing new here
+  (it was decisive for `(FS7)` because there the competitor was the mean value theorem, not a sup).
+
+## RETRACTION of both analyses above — the source was retrieved and read (2026-08-18, later still)
+
+The paper's text was obtained and read in full (arXiv:2207.05038, 26 pp.).  **Both numerology
+sections above analyse the wrong construction** and are superseded.
+
+The paper's §7 does not use `p₁p₂p₃` with two large *primes*.  It counts `p₁p₂n` with
+`p₁ ∼ P₁ = (log x)^{1.1}`, `p₂ ∼ √(x/P₁)/2`, and `n` weighted by **Harman's minorant `ρ⁻`** on
+`(√(x/P₁)/2, 4√(x/P₁)]`.  With that construction:
+
+- the window comparison is against `h₁ = x^{99/100}`, Perron is truncated at `T₀ = x^{1/1000}`, and
+  the range `(x/h, x(log x)^{10}]` *is* split dyadically into `≍ log log x` pieces — so the
+  dyadic-block count is real after all, and it is absorbed by the `(log x)^{-ε}` saving;
+- the long prime variable `P₂` is handled by the improved mean value theorem, giving exactly
+  `∫_{T₀}^{T}|P₂|² ≪ T/(√(x/P₁)log x) + (log x)^{-2} ≪ (T/(x/h))(log x)^{-2}` — **this is `(FS7)`,
+  and the corpus proof of it is on the paper's own path**;
+- Cauchy–Schwarz then pairs `|P₁P|` against `|P₂|` and leaves `(5.2)` for the pair
+  `(P₁, P)` with `P` the *minorant* polynomial.
+
+So the "irreducible factor ≈ 25" and the "`log log x` deficit" computed above both concern a
+construction the paper does not use; neither is an obstruction to the real argument.  The
+`(FS7)` closure and the `(7)`/`(9)` closure are unaffected — they are theorems.
+
+The formalisation of the quoted theorem now has its own card:
+`../1-in-progress/matomaki-teravainen-e3-lean-programme.md`, which carries the milestone list read
+off the paper, the corpus inventory against each input, and the decision to target the paper's §6.1
+(Heath-Brown's identity, exponent `1.615`) rather than §5 (Harman's sieve, exponent `1.55`), because
+§6.1 replaces Watt and Deshouillers–Iwaniec — hence Kuznetsov — by Bourgain's zero-density estimate.
+**The exponent is not load-bearing for this card**: it enters only through `(FS14)`'s
+`|Q_i − u_i| ≪ √(u_iℓ_i)(log u_i)^{1.55}`, and the Route E consequence depends only on `θ = 1/2`,
+so `1.55 → 1.615` costs nothing.

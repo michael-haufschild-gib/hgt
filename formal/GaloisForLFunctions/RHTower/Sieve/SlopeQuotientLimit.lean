@@ -252,7 +252,205 @@ open Filter Topology
 
 noncomputable section
 
-set_option maxHeartbeats 1600000 in
+/-- The arithmetic of the normalised ladder slope: the annulus group collapses to the step product,
+and the cofactor group to five polynomial quotients. -/
+theorem slope_quotient_arith {L B Q η ρ R h W M S sx MB P1 P2 P3 : ℝ}
+    (hQ1 : 1 < Q) (hη : 0 < η) (hL1 : 1 ≤ L) (hB1 : 1 ≤ B) (hh1 : 1 ≤ h)
+    (hW2 : 1 ≤ W ^ 2) (hρ0 : 0 ≤ ρ) (hρR : ρ ≤ R) (hinvη : 1 / η ≤ 2 * L)
+    (hsx : 0 < sx) (hsxB : sx ≤ B) (hM0 : 0 ≤ M) (hMB : M ≤ MB) (hMB0 : 0 ≤ MB)
+    (hLη : L * η ^ 2 ≤ 2 * P1) (hLpoly : L ≤ 2 * P2) (hinvηP : 1 / η ≤ P3)
+    (hSdef : S = L * ((1 + B) * η ^ 2 + 5) + 5 * h
+      + (η * B + (1 + B) * η) * (2 / (Q * η)) + B * (2 / (Q ^ 2 * η))) :
+    (4 * (5 * Real.pi / 2) * ρ ^ 2 * (2 * (L * Real.sqrt (B * h)) ^ 2 + 2 * (h / η) ^ 2)
+        + 2 * (5 * Real.pi / 2) * (M * S)) / (B * h * W ^ 2)
+      ≤ 20 * Real.pi * (R * L) ^ 2 * (1 + 4 * (h / B))
+        + 5 * Real.pi * (4 * (MB * P1 / h) + 10 * (MB * P2 / sx) + 5 * (MB / sx)
+          + 6 * (MB / h) + 2 * (MB * P3 / h)) := by
+  have hh0 : (0 : ℝ) < h := by linarith
+  have hB0 : (0 : ℝ) < B := by linarith
+  have hQ0 : (0 : ℝ) < Q := by linarith
+  have hBh : (0 : ℝ) < B * h := mul_pos hB0 hh0
+  have hW20 : (0 : ℝ) < W ^ 2 := by linarith
+  have hQη : (0 : ℝ) < Q * η := mul_pos hQ0 hη
+  have hQ2η : (0 : ℝ) < Q ^ 2 * η := mul_pos (pow_pos hQ0 2) hη
+  have hpi0 : (0 : ℝ) ≤ 20 * Real.pi := by positivity
+  have hS0 : (0 : ℝ) ≤ S := by
+    have h1 : (0 : ℝ) ≤ L * ((1 + B) * η ^ 2 + 5) :=
+      mul_nonneg (by linarith) (by
+        have := mul_nonneg (by linarith : (0:ℝ) ≤ 1 + B) (sq_nonneg η)
+        linarith)
+    have h2 : (0 : ℝ) ≤ (η * B + (1 + B) * η) * (2 / (Q * η)) :=
+      mul_nonneg (add_nonneg (mul_nonneg hη.le (by linarith))
+        (mul_nonneg (by linarith) hη.le)) (div_nonneg (by norm_num) hQη.le)
+    have h3 : (0 : ℝ) ≤ B * (2 / (Q ^ 2 * η)) :=
+      mul_nonneg (by linarith) (div_nonneg (by norm_num) hQ2η.le)
+    rw [hSdef]; linarith
+  rw [add_div]
+  have hhB : (0 : ℝ) ≤ h / B := div_nonneg hh0.le hB0.le
+  have hgroup1 : 4 * (5 * Real.pi / 2) * ρ ^ 2
+        * (2 * (L * Real.sqrt (B * h)) ^ 2 + 2 * (h / η) ^ 2) / (B * h * W ^ 2)
+      ≤ 20 * Real.pi * (R * L) ^ 2 * (1 + 4 * (h / B)) := by
+    have hsq : (L * Real.sqrt (B * h)) ^ 2 = L ^ 2 * (B * h) := by
+      rw [mul_pow, Real.sq_sqrt hBh.le]
+    rw [hsq]
+    have hid : 4 * (5 * Real.pi / 2) * ρ ^ 2 * (2 * (L ^ 2 * (B * h)) + 2 * (h / η) ^ 2)
+          / (B * h * W ^ 2)
+        = 20 * Real.pi * (ρ * L) ^ 2 / W ^ 2
+          + 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B) / W ^ 2 := by
+      field_simp
+      ring
+    rw [hid]
+    have hρL0 : (0 : ℝ) ≤ ρ * L := mul_nonneg hρ0 (by linarith)
+    have hρLR : ρ * L ≤ R * L := mul_le_mul_of_nonneg_right hρR (by linarith)
+    have hρL : (ρ * L) ^ 2 ≤ (R * L) ^ 2 := pow_le_pow_left₀ hρL0 hρLR 2
+    have hη0 : (0 : ℝ) ≤ ρ * (1 / η) := mul_nonneg hρ0 (div_nonneg zero_le_one hη.le)
+    have hρη : (ρ * (1 / η)) ^ 2 ≤ 4 * (R * L) ^ 2 := by
+      have h1 : ρ * (1 / η) ≤ 2 * (R * L) := by
+        have hstep : ρ * (1 / η) ≤ ρ * (2 * L) := mul_le_mul_of_nonneg_left hinvη hρ0
+        have he : ρ * (2 * L) = 2 * (ρ * L) := by ring
+        linarith [hstep, he, hρLR]
+      have h2 := pow_le_pow_left₀ hη0 h1 2
+      have h3 : (2 * (R * L)) ^ 2 = 4 * (R * L) ^ 2 := by ring
+      linarith [h2, h3]
+    have hp1 : 20 * Real.pi * (ρ * L) ^ 2 / W ^ 2 ≤ 20 * Real.pi * (R * L) ^ 2 := by
+      have hnum : 20 * Real.pi * (ρ * L) ^ 2 ≤ 20 * Real.pi * (R * L) ^ 2 :=
+        mul_le_mul_of_nonneg_left hρL hpi0
+      have hnn : (0 : ℝ) ≤ 20 * Real.pi * (ρ * L) ^ 2 := mul_nonneg hpi0 (sq_nonneg _)
+      have hstep : 20 * Real.pi * (ρ * L) ^ 2 / W ^ 2 ≤ 20 * Real.pi * (ρ * L) ^ 2 / 1 :=
+        div_le_div_of_nonneg_left hnn (by norm_num) hW2
+      rw [div_one] at hstep
+      linarith
+    have hp2 : 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B) / W ^ 2
+        ≤ 20 * Real.pi * (R * L) ^ 2 * (4 * (h / B)) := by
+      have hnum : 20 * Real.pi * (ρ * (1 / η)) ^ 2 ≤ 20 * Real.pi * (4 * (R * L) ^ 2) :=
+        mul_le_mul_of_nonneg_left hρη hpi0
+      have hval : 20 * Real.pi * (4 * (R * L) ^ 2) * (h / B)
+          = 20 * Real.pi * (R * L) ^ 2 * (4 * (h / B)) := by ring
+      have hmul := mul_le_mul_of_nonneg_right hnum hhB
+      have hnn : (0 : ℝ) ≤ 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B) :=
+        mul_nonneg (mul_nonneg hpi0 (sq_nonneg _)) hhB
+      have hstep : 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B) / W ^ 2
+          ≤ 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B) / 1 :=
+        div_le_div_of_nonneg_left hnn (by norm_num) hW2
+      rw [div_one] at hstep
+      linarith [hstep, hmul, hval]
+    have hrhs : 20 * Real.pi * (R * L) ^ 2 * (1 + 4 * (h / B))
+        = 20 * Real.pi * (R * L) ^ 2 + 20 * Real.pi * (R * L) ^ 2 * (4 * (h / B)) := by ring
+    linarith [hp1, hp2, hrhs]
+  have hcof : 2 * (5 * Real.pi / 2) * (M * S) / (B * h * W ^ 2)
+      ≤ 5 * Real.pi * (4 * (MB * P1 / h) + 10 * (MB * P2 / sx) + 5 * (MB / sx)
+        + 6 * (MB / h) + 2 * (MB * P3 / h)) := by
+    have hMS0 : (0 : ℝ) ≤ M * S := mul_nonneg hM0 hS0
+    have hstep : 2 * (5 * Real.pi / 2) * (M * S) / (B * h * W ^ 2)
+        ≤ 2 * (5 * Real.pi / 2) * (M * S) / (B * h) := by
+      refine div_le_div_of_nonneg_left ?_ hBh ?_
+      · exact mul_nonneg (by positivity) hMS0
+      · exact le_mul_of_one_le_right hBh.le hW2
+    refine hstep.trans ?_
+    have hid : 2 * (5 * Real.pi / 2) * (M * S) / (B * h)
+        = 5 * Real.pi * (M * (S / (B * h))) := by
+      field_simp
+    rw [hid]
+    have hSle : S ≤ 2 * L * η ^ 2 * B + 5 * L + 5 * h + 6 * B + 2 * B * (1 / η) := by
+      have hLη0 : (0 : ℝ) ≤ L * η ^ 2 := mul_nonneg (by linarith) (sq_nonneg η)
+      have h1 : L * ((1 + B) * η ^ 2 + 5) ≤ 2 * L * η ^ 2 * B + 5 * L := by
+        have hstep : (L * η ^ 2) * (1 + B) ≤ (L * η ^ 2) * (2 * B) :=
+          mul_le_mul_of_nonneg_left (by linarith) hLη0
+        calc L * ((1 + B) * η ^ 2 + 5) = (L * η ^ 2) * (1 + B) + 5 * L := by ring
+          _ ≤ (L * η ^ 2) * (2 * B) + 5 * L := by linarith
+          _ = 2 * L * η ^ 2 * B + 5 * L := by ring
+      have h2 : (η * B + (1 + B) * η) * (2 / (Q * η)) ≤ 6 * B := by
+        have hηB : η ≤ B * η := by
+          have := mul_le_mul_of_nonneg_right hB1 hη.le
+          linarith [this]
+        have hq : (2 : ℝ) / (Q * η) ≤ 2 / (1 * η) := by
+          refine div_le_div_of_nonneg_left (by norm_num) (by simpa using hη) ?_
+          have := mul_le_mul_of_nonneg_right hQ1.le hη.le
+          linarith [this]
+        have h3B : η * B + (1 + B) * η ≤ 3 * B * η := by
+          calc η * B + (1 + B) * η = 2 * (B * η) + η := by ring
+            _ ≤ 2 * (B * η) + B * η := by linarith [hηB]
+            _ = 3 * B * η := by ring
+        have hBη0 : (0 : ℝ) ≤ 3 * B * η :=
+          mul_nonneg (mul_nonneg (by norm_num) (by linarith)) hη.le
+        have hfin : (η * B + (1 + B) * η) * (2 / (Q * η)) ≤ (3 * B * η) * (2 / (1 * η)) :=
+          mul_le_mul h3B hq (div_nonneg (by norm_num) hQη.le) hBη0
+        have hval : (3 * B * η) * (2 / (1 * η)) = 6 * B := by field_simp; ring
+        linarith [hfin, hval]
+      have h3 : B * (2 / (Q ^ 2 * η)) ≤ 2 * B * (1 / η) := by
+        have hQ2 : (1 : ℝ) ≤ Q ^ 2 := by nlinarith [hQ1]
+        have hq : (2 : ℝ) / (Q ^ 2 * η) ≤ 2 / (1 * η) := by
+          refine div_le_div_of_nonneg_left (by norm_num) (by simpa using hη) ?_
+          have := mul_le_mul_of_nonneg_right hQ2 hη.le
+          linarith [this]
+        have hval : (2 : ℝ) / (1 * η) = 2 * (1 / η) := by field_simp
+        have hstep : B * (2 / (Q ^ 2 * η)) ≤ B * (2 / (1 * η)) :=
+          mul_le_mul_of_nonneg_left hq (by linarith)
+        have hval2 : B * (2 / (1 * η)) = 2 * B * (1 / η) := by rw [hval]; ring
+        linarith [hstep, hval2]
+      rw [hSdef]; linarith
+    have hSb : S / (B * h)
+        ≤ 2 * (L * η ^ 2) / h + 5 * (L / B) + 5 * (1 / B) + 6 * (1 / h)
+          + 2 * ((1 / η) / h) := by
+      have hdiv : S / (B * h) ≤ (2 * L * η ^ 2 * B + 5 * L + 5 * h + 6 * B + 2 * B * (1 / η))
+          / (B * h) := div_le_div_of_nonneg_right hSle hBh.le
+      refine hdiv.trans ?_
+      have hexp : (2 * L * η ^ 2 * B + 5 * L + 5 * h + 6 * B + 2 * B * (1 / η)) / (B * h)
+          = 2 * (L * η ^ 2) / h + 5 * (L / B) * (1 / h) + 5 * (1 / B) + 6 * (1 / h)
+            + 2 * ((1 / η) / h) := by
+        field_simp
+      rw [hexp]
+      have hLB : (0 : ℝ) ≤ 5 * (L / B) :=
+        mul_nonneg (by norm_num) (div_nonneg (by linarith) hB0.le)
+      have hone : 5 * (L / B) * (1 / h) ≤ 5 * (L / B) := by
+        have hinv1 : (1 : ℝ) / h ≤ 1 := by rw [div_le_one hh0]; linarith
+        exact mul_le_of_le_one_right hLB hinv1
+      linarith
+    have hpoly : 2 * (L * η ^ 2) / h + 5 * (L / B) + 5 * (1 / B) + 6 * (1 / h)
+          + 2 * ((1 / η) / h)
+        ≤ 4 * (P1 / h) + 10 * (P2 / sx) + 5 * (1 / sx) + 6 * (1 / h) + 2 * (P3 / h) := by
+      have hq1 : 2 * (L * η ^ 2) / h ≤ 4 * (P1 / h) := by
+        have h1 : (L * η ^ 2) / h ≤ (2 * P1) / h := div_le_div_of_nonneg_right hLη hh0.le
+        have h2 : (2 * P1) / h = 2 * (P1 / h) := by ring
+        have h3 : 2 * (L * η ^ 2) / h = 2 * ((L * η ^ 2) / h) := by ring
+        linarith [h1, h2, h3]
+      have hq2 : 5 * (L / B) ≤ 10 * (P2 / sx) := by
+        have hLsx : L / B ≤ L / sx := div_le_div_of_nonneg_left (by linarith) hsx hsxB
+        have hLnum : L / sx ≤ (2 * P2) / sx := div_le_div_of_nonneg_right hLpoly hsx.le
+        have h2 : (2 * P2) / sx = 2 * (P2 / sx) := by ring
+        linarith [hLsx, hLnum, h2]
+      have hq3 : 5 * (1 / B) ≤ 5 * (1 / sx) := by
+        have : (1 : ℝ) / B ≤ 1 / sx := div_le_div_of_nonneg_left zero_le_one hsx hsxB
+        linarith
+      have hq4 : 2 * ((1 / η) / h) ≤ 2 * (P3 / h) := by
+        have : (1 / η) / h ≤ P3 / h := div_le_div_of_nonneg_right hinvηP hh0.le
+        linarith
+      linarith [hq1, hq2, hq3, hq4]
+    have hSb0 : (0 : ℝ) ≤ S / (B * h) := div_nonneg hS0 hBh.le
+    have hcomb : M * (S / (B * h))
+        ≤ MB * (4 * (P1 / h) + 10 * (P2 / sx) + 5 * (1 / sx) + 6 * (1 / h)
+          + 2 * (P3 / h)) :=
+      mul_le_mul hMB (hSb.trans hpoly) hSb0 hMB0
+    have hval : MB * (4 * (P1 / h) + 10 * (P2 / sx) + 5 * (1 / sx) + 6 * (1 / h)
+          + 2 * (P3 / h))
+        = 4 * (MB * P1 / h) + 10 * (MB * P2 / sx) + 5 * (MB / sx) + 6 * (MB / h)
+          + 2 * (MB * P3 / h) := by ring
+    have := mul_le_mul_of_nonneg_left hcomb (by positivity : (0:ℝ) ≤ 5 * Real.pi)
+    rw [hval] at this
+    linarith [this]
+  linarith [hgroup1, hcof]
+
+end
+
+end RHTower.Sieve
+
+namespace RHTower.Sieve
+
+open Filter Topology
+
+noncomputable section
+
+set_option maxHeartbeats 1000000 in
 /-- **The normalised ladder slope is below its majorant.** -/
 theorem eventually_slope_quotient_le {A delta Ctot β γ : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1)
     (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ : γ * β < 1) (hCtot : 0 ≤ Ctot) :
@@ -278,231 +476,99 @@ theorem eventually_slope_quotient_le {A delta Ctot β γ : ℝ} (hβ0 : 0 < β) 
     with x hx1 hQ2 hη1 hL1 h2Q hh1 hW hρ0 hρR hinvη hM hLη hLpoly
   have hlogx : (0 : ℝ) < Real.log x := Real.log_pos hx1
   have hη : 0 < ladderEta β γ x := ladderEta_pos hx1
-  set Q : ℝ := ((siftStart (γ * β) x : ℕ) : ℝ) with hQdef
-  set η : ℝ := ladderEta β γ x with hηdef
-  set h : ℝ := cardLength β x with hhdef
-  set L : ℝ := ((ladderSteps β γ x : ℕ) : ℝ) with hLdef
-  set ρ : ℝ := budgetRho A delta Ctot β γ x with hρdef
-  set R : ℝ := budgetRhoBound A delta Ctot β γ x with hRdef
-  set W : ℝ := mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x) with hWdef
-  set B : ℝ := ((budgetB β x : ℕ) : ℝ) with hBdef
-  set t : ℝ := Real.log x with htdef
-  have hQ2R : (2 : ℝ) ≤ Q := by rw [hQdef]; exact_mod_cast hQ2
-  have hQ1 : (1 : ℝ) < Q := by linarith
-  have hQh : Q ≤ h := by linarith
-  have hle : Q * (1 + η) ^ (ladderSteps β γ x) ≤ h :=
-    ladderPow_le (by linarith) hQh hη
-  have hL1R : (1 : ℝ) ≤ L := by rw [hLdef]; exact_mod_cast hL1
-  have hBsx : Real.sqrt x ≤ B := sqrt_le_budgetB (β := β) x hh1
+  have hQ2R : (2 : ℝ) ≤ ((siftStart (γ * β) x : ℕ) : ℝ) := by exact_mod_cast hQ2
+  have hQ1 : (1 : ℝ) < ((siftStart (γ * β) x : ℕ) : ℝ) := by linarith
+  have hQh : ((siftStart (γ * β) x : ℕ) : ℝ) ≤ cardLength β x := by linarith
+  have hle := ladderPow_le (β := β) (γ := γ) (x := x) (by linarith) hQh hη
+  have hL1R : (1 : ℝ) ≤ ((ladderSteps β γ x : ℕ) : ℝ) := by exact_mod_cast hL1
+  have hBsx : Real.sqrt x ≤ ((budgetB β x : ℕ) : ℝ) := sqrt_le_budgetB (β := β) x hh1
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
   have hsx1 : (1 : ℝ) ≤ Real.sqrt x := by
     rw [show (1:ℝ) = Real.sqrt 1 by simp]
     exact Real.sqrt_le_sqrt (by linarith)
-  have hB1 : (1 : ℝ) ≤ B := by linarith
-  have hB0 : (0 : ℝ) < B := by linarith
-  have hh0 : (0 : ℝ) < h := by linarith
-  have hW2 : (1 : ℝ) ≤ W ^ 2 := by nlinarith [hW]
-  have hW20 : (0 : ℝ) < W ^ 2 := by linarith
-  have hden : (0 : ℝ) < B * h * W ^ 2 := mul_pos (mul_pos hB0 hh0) hW20
-  have hslope := ladderAffineSlope_le (B₀ := budgetB β x) (Q := Q) (η := η)
-    (hR := h) (ρ := ρ) hQ1 hη hη1 (L := ladderSteps β γ x) hle
-  refine (div_le_div_of_nonneg_right hslope hden.le).trans ?_
-  -- names for the two groups
-  set M : ℝ := Real.log ((⌊B * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q with hMdef
-  set S : ℝ := L * ((1 + B) * η ^ 2 + 5) + 5 * h
-      + (η * B + (1 + B) * η) * (2 / (Q * η)) + B * (2 / (Q ^ 2 * η)) with hSdef
-  have hM0 : (0 : ℝ) ≤ M := by
+  have hB1 : (1 : ℝ) ≤ ((budgetB β x : ℕ) : ℝ) := by linarith
+  have hB0 : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) := by linarith
+  have hh0 : (0 : ℝ) < cardLength β x := by linarith
+  have hW2 : (1 : ℝ) ≤ (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    nlinarith [hW]
+  have hden : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) * cardLength β x
+      * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 :=
+    mul_pos (mul_pos hB0 hh0) (by linarith)
+  have hslope := ladderAffineSlope_le (B₀ := budgetB β x)
+    (Q := ((siftStart (γ * β) x : ℕ) : ℝ)) (η := ladderEta β γ x) (hR := cardLength β x)
+    (ρ := budgetRho A delta Ctot β γ x) hQ1 hη hη1 (L := ladderSteps β γ x) hle
+  have hM0 : (0 : ℝ) ≤ Real.log ((⌊((budgetB β x : ℕ) : ℝ) * (1 + ladderEta β γ x)⌋₊ : ℕ) : ℝ)
+      / Real.log ((siftStart (γ * β) x : ℕ) : ℝ) := by
     refine div_nonneg (Real.log_nonneg ?_) (Real.log_nonneg (by linarith))
-    have h1 : (1 : ℕ) ≤ ⌊B * (1 + η)⌋₊ :=
+    have h1 : (1 : ℕ) ≤ ⌊((budgetB β x : ℕ) : ℝ) * (1 + ladderEta β γ x)⌋₊ :=
       Nat.one_le_floor_iff _ |>.2 (by nlinarith [hB1, hη.le])
     exact_mod_cast h1
-  have hQη : (0 : ℝ) < Q * η := mul_pos (by linarith) hη
-  have hQ2η : (0 : ℝ) < Q ^ 2 * η := mul_pos (pow_pos (by linarith) 2) hη
-  have hBh : (0 : ℝ) < B * h := mul_pos hB0 hh0
-  have hS0 : (0 : ℝ) ≤ S := by
-    have h1 : (0 : ℝ) ≤ L * ((1 + B) * η ^ 2 + 5) :=
-      mul_nonneg (by linarith) (by
-        have := mul_nonneg (by linarith : (0:ℝ) ≤ 1 + B) (sq_nonneg η)
-        linarith)
-    have h2 : (0 : ℝ) ≤ (η * B + (1 + B) * η) * (2 / (Q * η)) :=
-      mul_nonneg
-        (add_nonneg (mul_nonneg hη.le (by linarith)) (mul_nonneg (by linarith) hη.le))
-        (div_nonneg (by norm_num) hQη.le)
-    have h3 : (0 : ℝ) ≤ B * (2 / (Q ^ 2 * η)) :=
-      mul_nonneg (by linarith) (div_nonneg (by norm_num) hQ2η.le)
-    rw [hSdef]; linarith
-  -- the annulus group
-  have hsq : ((L : ℝ) * Real.sqrt (B * h)) ^ 2 = L ^ 2 * (B * h) := by
-    rw [mul_pow, Real.sq_sqrt hBh.le]
-  have hgroup1 : 4 * (5 * Real.pi / 2) * ρ ^ 2 * (2 * ((L : ℝ) * Real.sqrt (B * h)) ^ 2
-        + 2 * (h / η) ^ 2) / (B * h * W ^ 2)
-      ≤ 20 * Real.pi * (R * L) ^ 2 * (1 + 4 * (h / B)) := by
-    rw [hsq]
-    have hid : 4 * (5 * Real.pi / 2) * ρ ^ 2 * (2 * (L ^ 2 * (B * h)) + 2 * (h / η) ^ 2)
-          / (B * h * W ^ 2)
-        = 20 * Real.pi * (ρ * L) ^ 2 / W ^ 2
-          + 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B) / W ^ 2 := by
-      field_simp
-      ring
-    rw [hid]
-    have hpi0 : (0 : ℝ) ≤ 20 * Real.pi := by nlinarith [Real.pi_pos]
-    have hρL0 : (0 : ℝ) ≤ ρ * L := mul_nonneg hρ0 (by linarith)
-    have hρLR : ρ * L ≤ R * L := mul_le_mul_of_nonneg_right hρR (by linarith)
-    have hρL : (ρ * L) ^ 2 ≤ (R * L) ^ 2 := pow_le_pow_left₀ hρL0 hρLR 2
-    have hη0 : (0 : ℝ) ≤ ρ * (1 / η) := mul_nonneg hρ0 (div_nonneg zero_le_one hη.le)
-    have hρη : (ρ * (1 / η)) ^ 2 ≤ 4 * (R * L) ^ 2 := by
-      have h1 : ρ * (1 / η) ≤ 2 * (R * L) := by
-        have hstep : ρ * (1 / η) ≤ ρ * (2 * L) :=
-          mul_le_mul_of_nonneg_left (by linarith [hinvη]) hρ0
-        nlinarith [hstep, hρLR, hρL0]
-      have h2 := pow_le_pow_left₀ hη0 h1 2
-      have h3 : (2 * (R * L)) ^ 2 = 4 * (R * L) ^ 2 := by ring
-      linarith [h2, h3]
-    have hhB : (0 : ℝ) ≤ h / B := div_nonneg hh0.le hB0.le
-    have hRL0 : (0 : ℝ) ≤ (R * L) ^ 2 := sq_nonneg _
-    have hp1 : 20 * Real.pi * (ρ * L) ^ 2 / W ^ 2 ≤ 20 * Real.pi * (R * L) ^ 2 := by
-      have hnum : 20 * Real.pi * (ρ * L) ^ 2 ≤ 20 * Real.pi * (R * L) ^ 2 :=
-        mul_le_mul_of_nonneg_left hρL hpi0
-      have hnn : (0 : ℝ) ≤ 20 * Real.pi * (ρ * L) ^ 2 := mul_nonneg hpi0 (sq_nonneg _)
-      have hstep : 20 * Real.pi * (ρ * L) ^ 2 / W ^ 2 ≤ 20 * Real.pi * (ρ * L) ^ 2 / 1 :=
-        div_le_div_of_nonneg_left hnn (by norm_num) hW2
-      rw [div_one] at hstep
-      linarith
-    have hp2 : 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B)
-        ≤ 20 * Real.pi * (R * L) ^ 2 * (4 * (h / B)) := by
-      have hnum : 20 * Real.pi * (ρ * (1 / η)) ^ 2 ≤ 20 * Real.pi * (4 * (R * L) ^ 2) :=
-        mul_le_mul_of_nonneg_left hρη hpi0
-      have hval : 20 * Real.pi * (4 * (R * L) ^ 2) * (h / B)
-          = 20 * Real.pi * (R * L) ^ 2 * (4 * (h / B)) := by ring
-      have := mul_le_mul_of_nonneg_right hnum hhB
-      linarith [this, hval]
-    have hp2' : 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B) / W ^ 2
-        ≤ 20 * Real.pi * (R * L) ^ 2 * (4 * (h / B)) := by
-      have hnn : (0 : ℝ) ≤ 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B) :=
-        mul_nonneg (mul_nonneg hpi0 (sq_nonneg _)) hhB
-      have hstep : 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B) / W ^ 2
-          ≤ 20 * Real.pi * (ρ * (1 / η)) ^ 2 * (h / B) / 1 :=
-        div_le_div_of_nonneg_left hnn (by norm_num) hW2
-      rw [div_one] at hstep
-      linarith
-    have hrhs : 20 * Real.pi * (R * L) ^ 2 * (1 + 4 * (h / B))
-        = 20 * Real.pi * (R * L) ^ 2 + 20 * Real.pi * (R * L) ^ 2 * (4 * (h / B)) := by ring
-    linarith [hp1, hp2', hrhs]
-  -- the cofactor group
-  have hcof : 2 * (5 * Real.pi / 2) * (M * S) / (B * h * W ^ 2)
-      ≤ 5 * Real.pi * (4 * (1 / h)
-        + 10 * (t ^ (2 * β + 2 - 2 * (γ * β)) / Real.sqrt x)
-        + 5 * (t ^ (1 - γ * β) / Real.sqrt x)
-        + 6 * (t ^ (1 - γ * β) / h)
-        + 2 * (t ^ (β + 2 - 2 * (γ * β)) / h)) := by
-    have hMS0 : (0 : ℝ) ≤ M * S := mul_nonneg hM0 hS0
-    have hstep : 2 * (5 * Real.pi / 2) * (M * S) / (B * h * W ^ 2)
-        ≤ 2 * (5 * Real.pi / 2) * (M * S) / (B * h) := by
-      refine div_le_div_of_nonneg_left ?_ hBh ?_
-      · exact mul_nonneg (by nlinarith [Real.pi_pos]) hMS0
-      · nlinarith [hW2, hBh]
-    refine hstep.trans ?_
-    have hid : 2 * (5 * Real.pi / 2) * (M * S) / (B * h) = 5 * Real.pi * (M * (S / (B * h))) := by
-      field_simp
-      ring
-    rw [hid]
-    have hSb : S / (B * h)
-        ≤ 2 * (L * η ^ 2) / h + 5 * (L / B) + 5 * (1 / B) + 6 * (1 / h)
-          + 2 * ((1 / η) / h) := by
-      have hSle : S ≤ 2 * L * η ^ 2 * B + 5 * L + 5 * h + 6 * B + 2 * B * (1 / η) := by
-        have h1 : L * ((1 + B) * η ^ 2 + 5) ≤ 2 * L * η ^ 2 * B + 5 * L := by
-          nlinarith [hL1R, hB1, sq_nonneg η, hη]
-        have h2 : (η * B + (1 + B) * η) * (2 / (Q * η)) ≤ 6 * B := by
-          have hq : (2 : ℝ) / (Q * η) ≤ 2 / (1 * η) := by
-            refine div_le_div_of_nonneg_left (by norm_num) (by simpa using hη) ?_
-            nlinarith [hQ1, hη]
-          have h3B : η * B + (1 + B) * η ≤ 3 * B * η := by nlinarith [hB1, hη]
-          have hfin : (η * B + (1 + B) * η) * (2 / (Q * η)) ≤ (3 * B * η) * (2 / (1 * η)) := by
-            refine mul_le_mul h3B hq (div_nonneg (by norm_num) hQη.le)
-              (by nlinarith [hB1, hη.le])
-          have hval : (3 * B * η) * (2 / (1 * η)) = 6 * B := by field_simp; ring
-          linarith [hfin, hval]
-        have h3 : B * (2 / (Q ^ 2 * η)) ≤ 2 * B * (1 / η) := by
-          have hq : (2 : ℝ) / (Q ^ 2 * η) ≤ 2 / (1 * η) := by
-            refine div_le_div_of_nonneg_left (by norm_num) (by simpa using hη) ?_
-            nlinarith [hQ1, hη]
-          have hval : (2 : ℝ) / (1 * η) = 2 * (1 / η) := by field_simp
-          nlinarith [hq, hval, hB1]
-        rw [hSdef]; linarith
-      have hdiv : S / (B * h) ≤ (2 * L * η ^ 2 * B + 5 * L + 5 * h + 6 * B + 2 * B * (1 / η))
-          / (B * h) := div_le_div_of_nonneg_right hSle hBh.le
-      refine hdiv.trans ?_
-      have hexp : (2 * L * η ^ 2 * B + 5 * L + 5 * h + 6 * B + 2 * B * (1 / η)) / (B * h)
-          = 2 * (L * η ^ 2) / h + 5 * (L / B) * (1 / h) + 5 * (1 / B) + 6 * (1 / h)
-            + 2 * ((1 / η) / h) := by
-        field_simp
-        ring
-      rw [hexp]
-      have hLB : (0 : ℝ) ≤ 5 * (L / B) :=
-        mul_nonneg (by norm_num) (div_nonneg (by linarith) hB0.le)
-      have hone : 5 * (L / B) * (1 / h) ≤ 5 * (L / B) := by
-        have : (1 : ℝ) / h ≤ 1 := by
-          rw [div_le_one hh0]; linarith
-        nlinarith [hLB, this]
-      linarith
-    have hSb0 : (0 : ℝ) ≤ S / (B * h) := div_nonneg hS0 hBh.le
-    have hpoly : 2 * (L * η ^ 2) / h + 5 * (L / B) + 5 * (1 / B) + 6 * (1 / h)
-          + 2 * ((1 / η) / h)
-        ≤ 4 * t ^ (γ * β - 1) / h + 10 * t ^ (2 * β + 1 - γ * β) / Real.sqrt x
-          + 5 * (1 / Real.sqrt x) + 6 * (1 / h) + 2 * (t ^ (β + 1 - γ * β) / h) := by
-      have hq1 : 2 * (L * η ^ 2) / h ≤ 4 * t ^ (γ * β - 1) / h := by
-        refine div_le_div_of_nonneg_right ?_ hh0.le
-        linarith [hLη]
-      have hq2 : 5 * (L / B) ≤ 10 * t ^ (2 * β + 1 - γ * β) / Real.sqrt x := by
-        have hLsx : L / B ≤ L / Real.sqrt x :=
-          div_le_div_of_nonneg_left (by linarith) hsx hBsx
-        have hLnum : L / Real.sqrt x ≤ 2 * t ^ (2 * β + 1 - γ * β) / Real.sqrt x :=
-          div_le_div_of_nonneg_right hLpoly hsx.le
-        linarith [hLsx, hLnum]
-      have hq3 : 5 * (1 / B) ≤ 5 * (1 / Real.sqrt x) := by
-        have : (1 : ℝ) / B ≤ 1 / Real.sqrt x :=
-          div_le_div_of_nonneg_left zero_le_one hsx hBsx
-        linarith
-      have hq4 : 2 * ((1 / η) / h) ≤ 2 * (t ^ (β + 1 - γ * β) / h) := by
-        rw [inv_ladderEta_eq (β := β) (γ := γ) hx1]
-      linarith [hq1, hq2, hq3, hq4]
-    have hcomb : M * (S / (B * h))
-        ≤ t ^ (1 - γ * β) * (4 * t ^ (γ * β - 1) / h
-          + 10 * t ^ (2 * β + 1 - γ * β) / Real.sqrt x + 5 * (1 / Real.sqrt x)
-          + 6 * (1 / h) + 2 * (t ^ (β + 1 - γ * β) / h)) := by
-      refine mul_le_mul hM (hSb.trans hpoly) hSb0 (Real.rpow_nonneg hlogx.le _)
-    have hfinal : t ^ (1 - γ * β) * (4 * t ^ (γ * β - 1) / h
-          + 10 * t ^ (2 * β + 1 - γ * β) / Real.sqrt x + 5 * (1 / Real.sqrt x)
-          + 6 * (1 / h) + 2 * (t ^ (β + 1 - γ * β) / h))
-        = 4 * (1 / h) + 10 * (t ^ (2 * β + 2 - 2 * (γ * β)) / Real.sqrt x)
-          + 5 * (t ^ (1 - γ * β) / Real.sqrt x) + 6 * (t ^ (1 - γ * β) / h)
-          + 2 * (t ^ (β + 2 - 2 * (γ * β)) / h) := by
-      have e1 : t ^ (1 - γ * β) * t ^ (γ * β - 1) = 1 := by
-        rw [← Real.rpow_add hlogx]
-        norm_num
-      have e2 : t ^ (1 - γ * β) * t ^ (2 * β + 1 - γ * β) = t ^ (2 * β + 2 - 2 * (γ * β)) := by
-        rw [← Real.rpow_add hlogx]
-        congr 1
-        ring
-      have e3 : t ^ (1 - γ * β) * t ^ (β + 1 - γ * β) = t ^ (β + 2 - 2 * (γ * β)) := by
-        rw [← Real.rpow_add hlogx]
-        congr 1
-        ring
-      field_simp
-      nlinarith [e1, e2, e3]
-    have := mul_le_mul_of_nonneg_left hcomb (by positivity : (0:ℝ) ≤ 5 * Real.pi)
-    rw [hfinal] at this
-    linarith [this]
-  rw [slopeMajorant, ← hRdef, ← hLdef, ← hhdef, ← hBdef, ← htdef]
-  have hsplit : (4 * (5 * Real.pi / 2) * ρ ^ 2
-        * (2 * ((L : ℝ) * Real.sqrt (B * h)) ^ 2 + 2 * (h / η) ^ 2)
-      + 2 * (5 * Real.pi / 2) * (M * S)) / (B * h * W ^ 2)
-      = 4 * (5 * Real.pi / 2) * ρ ^ 2
-          * (2 * ((L : ℝ) * Real.sqrt (B * h)) ^ 2 + 2 * (h / η) ^ 2) / (B * h * W ^ 2)
-        + 2 * (5 * Real.pi / 2) * (M * S) / (B * h * W ^ 2) := by
-    rw [add_div]
-  rw [hsplit]
-  linarith [hgroup1, hcof]
+  have harith := slope_quotient_arith
+    (L := ((ladderSteps β γ x : ℕ) : ℝ)) (B := ((budgetB β x : ℕ) : ℝ))
+    (Q := ((siftStart (γ * β) x : ℕ) : ℝ)) (η := ladderEta β γ x)
+    (ρ := budgetRho A delta Ctot β γ x) (R := budgetRhoBound A delta Ctot β γ x)
+    (h := cardLength β x)
+    (W := mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x))
+    (M := Real.log ((⌊((budgetB β x : ℕ) : ℝ) * (1 + ladderEta β γ x)⌋₊ : ℕ) : ℝ)
+      / Real.log ((siftStart (γ * β) x : ℕ) : ℝ))
+    (sx := Real.sqrt x) (MB := (Real.log x) ^ (1 - γ * β))
+    (P1 := (Real.log x) ^ (γ * β - 1)) (P2 := (Real.log x) ^ (2 * β + 1 - γ * β))
+    (P3 := (Real.log x) ^ (β + 1 - γ * β))
+    hQ1 hη hL1R hB1 hh1 hW2 hρ0 hρR hinvη hsx hBsx hM0 hM
+    (Real.rpow_nonneg hlogx.le _) hLη hLpoly
+    (le_of_eq (inv_ladderEta_eq (β := β) (γ := γ) hx1)) rfl
+  refine (div_le_div_of_nonneg_right hslope hden.le).trans (harith.trans (le_of_eq ?_))
+  have e1 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (γ * β - 1) = 1 := by
+    rw [← Real.rpow_add hlogx]
+    norm_num
+  have e2 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (2 * β + 1 - γ * β)
+      = (Real.log x) ^ (2 * β + 2 - 2 * (γ * β)) := by
+    rw [← Real.rpow_add hlogx]
+    congr 1
+    ring
+  have e3 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (β + 1 - γ * β)
+      = (Real.log x) ^ (β + 2 - 2 * (γ * β)) := by
+    rw [← Real.rpow_add hlogx]
+    congr 1
+    ring
+  rw [slopeMajorant, e1, e2, e3]
+
+end
+
+end RHTower.Sieve
+
+namespace RHTower.Sieve
+
+open Filter Topology
+
+noncomputable section
+
+/-- **The normalised ladder slope vanishes.** -/
+theorem tendsto_slope_quotient {A delta Ctot β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1)
+    (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ0 : 9 / 10 < γ * β) (hγβ1 : γ * β < 1) (hCtot : 0 ≤ Ctot)
+    (hdelta : 0 < delta) :
+    Tendsto (fun x : ℝ =>
+        ladderAffineSlope (ladderSteps β γ x) (budgetB β x) ((siftStart (γ * β) x : ℕ) : ℝ)
+            (ladderEta β γ x) (budgetRho A delta Ctot β γ x)
+          / (((budgetB β x : ℕ) : ℝ) * cardLength β x
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2))
+      atTop (𝓝 0) := by
+  have hβ0' : (0 : ℝ) < β := by linarith
+  have hab : (0 : ℝ) < γ * β := by linarith
+  refine squeeze_zero' ?_ (eventually_slope_quotient_le hβ0' hβ1 hγ0 hγ1 hγβ1 hCtot)
+    (tendsto_slopeMajorant hβ0 hβ1 hγ0 hγ1 hγβ0 hγβ1 hCtot hdelta)
+  filter_upwards [Filter.eventually_gt_atTop (1 : ℝ), eventually_le_siftStart hab 2,
+    (tendsto_cardLength hβ0').eventually_ge_atTop (1 : ℝ)] with x hx1 hQ2 hh1
+  have hη : 0 < ladderEta β γ x := ladderEta_pos hx1
+  have hQ2R : (2 : ℝ) ≤ ((siftStart (γ * β) x : ℕ) : ℝ) := by exact_mod_cast hQ2
+  have hnum : (0 : ℝ) ≤ ladderAffineSlope (ladderSteps β γ x) (budgetB β x)
+      ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x) (budgetRho A delta Ctot β γ x) :=
+    ladderAffineSlope_nonneg (by linarith) hη.le
+  have hBsx : Real.sqrt x ≤ ((budgetB β x : ℕ) : ℝ) := sqrt_le_budgetB (β := β) x hh1
+  have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
+  have hB0 : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) := by linarith
+  have hh0 : (0 : ℝ) < cardLength β x := by linarith
+  exact div_nonneg hnum (by positivity)
 
 end
 
