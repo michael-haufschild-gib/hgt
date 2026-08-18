@@ -119,33 +119,41 @@ Module:
 Main declarations:
 
 - `sourceHorizontalSecondCartierKreinPolarizedGhostOrbit_energy`
+- `sourceHorizontalSecondCartierLiteralEndpointRadialEnergy_eq_positiveOrbitEnergy`
 - `sourceHorizontalSecondCartierKreinPolarizedGhostOrbitBounded_iff`
+- `sourceHorizontalActualXiSecondCartierKreinOrbitEnergy_eq_literalEndpointEnergy`
+- `sourceHorizontalActualXiSecondCartierKreinOrbitBounded_iff_endpointModerate`
 - `not_sourceHorizontalActualXiSecondCartierKreinPolarizedGhostOrbitBounded`
 - `tendsto_sourceHorizontalActualXiSecondCartierKreinPolarizedGhostOrbit_energy_atTop`
 - `everySourceHorizontalActualXiSecondCartierKreinPolarizedGhostOrbitBounded_iff_rh`
 - `sourceHorizontalActualXiSecondCartierKreinOrbitCoercivity_capstone`
 
-The capstone conjoins actual-fibre divergence with the exact support-fibre sum
+The exact endpoint bridge identifies `Q` with squared opposite Hardy eigen-coordinates; on the
+actual fibre its positive physical leg is literally the already-constructed Wold--BV endpoint
+descent with the same conormal coefficient, clock, divisor copy, and prime label.  Bounded `Q` is
+equivalent to moderation of that literal endpoint ghost.  The capstone conjoins actual-fibre
+divergence, endpoint non-moderation, and the exact support-fibre sum
 `xiSupportMultiplicity q.1.1 • ghost`, retaining every divisor copy.  `#print axioms` reports only
 `propext`, `Classical.choice`, and `Quot.sound` for all main declarations.  Exact leaf build passes.
 
 ## Endpoint consequence and remaining producer
 
-Any coefficient-faithful physical admission that sends this exact source orbit into one uniformly
-bounded literal endpoint-contraction fibre forces `|lambda_{p,q}|=1` by (2), hence
-`Re(q)=1/2`.  Applied to every Xi divisor this implies RH.
+The coefficient-faithful identification with the literal endpoint is now proved, not postulated.
+Its physical Hardy ghost is moderate exactly when `Q` is bounded, hence exactly when
+`|lambda_{p,q}|=1`.  On a retained strict-right fibre both properties are formally false.
 
-This is not yet that admission theorem.  Existing conormal short is diagonal after the complete
-four-orientation sum and records only `4|C|^2`; existing Hermitian incidence and Krein form record
-the invariant product of reciprocal legs.  Neither controls `Q`.  The surviving open core is now
-precise:
+What remains is not another coefficient identification.  Existing conormal short is diagonal after
+the complete four-orientation sum and records only `4|C|^2`; existing Hermitian incidence and Krein
+form record the invariant product of reciprocal legs.  Neither supplies physical order.  The
+surviving open core is now precise:
 
-> Construct from completed source geometry a coefficient- and multiplicity-faithful endpoint
-> admission whose fixed endpoint fibre bounds `Q` along the prime-transfer orbit.
+> Prove from completed source geometry that the already-identified literal endpoint ghost belongs
+> to a compact-circle distribution/order space for every retained Xi divisor.
 
-It need not be Loewner-positive or equivariant globally.  It must, however, see at least one of
-the two positive radial squares; any descent depending only on incidence, determinant, Krein form,
-or the existing scalar short is provably blind to (3).
+That theorem cannot be a redefinition: the present product-topology endpoint image is explicitly
+non-moderate off line.  It must add a genuine source-natural physical-order law.  Any descent
+depending only on incidence, determinant, Krein form, or the existing scalar short is provably
+blind to (3).
 
 ## No-go closure
 
@@ -166,6 +174,11 @@ or the existing scalar short is provably blind to (3).
   is RH-strength and false on every retained strict-right fibre.
 - Integral Cartier monodromy ⇒ physical eigenvalue one: **failed/overstrong**; it would erase the
   legitimate critical-line phase, while a radial version requires the missing same-fibre star law.
+- Compact theta divisor mode + Field-One half-density unitary ⇒ unit prime character:
+  **failed at the action weld**; the corpus proves nontrivial normalized prime translation does not
+  even remain in the fixed theta Hilbert fibre.  The finite-stage Field-One operator/source weld
+  acts on the dense even-Schwartz carrier but does not turn the Xi evaluation functional into a
+  nonzero eigenvector of that unitary.
 - Cubic/second-Casimir trace equality: **reduced** to positive orbit energy; source nilpotence alone
   does not identify its square with the physical square.
 - Positive orbit coercivity: **proved** by (1)--(3).
@@ -176,3 +189,6 @@ or the existing scalar short is provably blind to (3).
   explicit positive coercivity survivor.
 - 2026-08-18 — formalized exact energy, bounded-orbit classification, actual Xi-fibre divergence,
   RH firewall, and multiplicity-faithful capstone; exact leaf build and axiom audit pass.
+- 2026-08-18 — formalized coefficient-faithful equality with literal two-sided Hardy endpoint
+  energy and exact bounded-orbit iff endpoint-moderation bridge; off-line endpoint non-moderation
+  is now part of capstone.

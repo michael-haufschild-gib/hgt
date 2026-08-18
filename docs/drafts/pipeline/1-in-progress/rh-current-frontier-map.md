@@ -1514,10 +1514,18 @@ exact support-fibre multiplicity sum. Universal actual boundedness is proved equ
 Thus indefinite shell conservation not only fails to yield compactness: it contains an explicit
 reciprocal hyperbolic escape on every putative counterexample fibre.
 
-**Open core:** construct from completed source geometry a coefficient- and multiplicity-faithful
-fixed endpoint admission uniformly bounding this same `Q` along the prime-transfer orbit. Existing
-incidence, determinant, Krein form, and scalar short are formally blind to positive radial energy.
-Any claim that current shell compactness already supplies RH is now closed negatively. Ordinary Loewner
+The coefficient-faithful endpoint identification is also now formal. `Q` is exactly the sum of
+squared opposite Hardy eigen-coordinates, and on the actual fibre its physical leg is the existing
+Wold--BV endpoint descent with unchanged conormal coefficient, clock, divisor copy, and prime.
+Bounded `Q` is equivalent to compact-circle moderation of this literal endpoint ghost; both fail on
+every strict-right fibre.
+
+**Open core:** prove a genuinely new completed-source physical-order law placing that already
+identified endpoint ghost in the compact-circle distribution/moderation space for every Xi divisor.
+Product-topology continuity, Stokes-flatness, and coefficient-faithful descent do not imply this:
+the present endpoint image is explicitly non-moderate off line. Existing incidence, determinant,
+Krein form, and scalar short remain blind to positive radial energy. Any claim that current shell
+compactness already supplies RH is now closed negatively. Ordinary Loewner
 descent, linear reporting/sectioning, scalar/Krein endpoint correction, rank-one shorting, direct
 `det₂` welding, compression-monotone Ward budgets, and canonical BV signs are dead.
 
@@ -1562,7 +1570,8 @@ isometry, order firewall, and strict-right no-linear-transverse-anchor theorem;
 `SourceHorizontalSecondCartierHermitianIncidencePolarization.lean` constructs the invariant nonlinear shell and its positive actual-Xi selected square;
 `SourceHorizontalSecondCartierOrbitCoercivity.lean` proves exact positive orbit energy, sharp
 unit-modulus boundedness, actual strict-right Xi divergence, the universal-boundedness iff-RH
-firewall, and a divisor-multiplicity-faithful coercivity capstone;
+firewall, literal two-sided Hardy endpoint-energy identification, boundedness iff endpoint
+moderation, and a divisor-multiplicity-faithful coercivity/non-moderation capstone;
 completed conormal modules retain non-spectral alternative.
 
 ### Route Q — theta–Cassini boundary saturation
@@ -3965,10 +3974,10 @@ Highest-value research topics are those capable of supplying one of these consti
 - source-relative intersection/compressed-trace identities controlling Hermitian deviation sector;
 - noncommutative or singular mixing mechanisms that preserve reflection-odd horizontal class until
   annihilation, rather than radical-preserving normalization;
-- coefficient- and multiplicity-faithful fixed endpoint admission bounding positive radial energy
-  along Route P/L second-Cartier prime-transfer orbit. Lean proves exact orbit energy, boundedness
-  iff unit character, and strict-right Xi divergence; incidence, determinant, Krein form, and scalar
-  short cannot supply the bound;
+- completed-source physical-order theorem placing the already coefficient- and
+  multiplicity-faithful Route P/L endpoint ghost in compact-circle distribution space. Lean proves
+  its exact radial energy, boundedness iff endpoint moderation, and strict-right non-moderation;
+  incidence, determinant, Krein form, and scalar short cannot supply physical order;
 - completed moving-degree reverse-Bessel prime--Gamma window assembly converting half-log reserve
   and recovered Euler damping into cofinal pulse capital;
 - source-native theta--Cayley half-step transport neutralizing reflection weight before divisor

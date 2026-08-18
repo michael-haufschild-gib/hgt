@@ -8485,6 +8485,7 @@ import GaloisForLFunctions.RHTower.TraceHankelSequenceCone
 import GaloisForLFunctions.RHTower.PositiveOperatorDiagonalResidue
 import GaloisForLFunctions.RHTower.SingularValueLogMean
 import GaloisForLFunctions.RHTower.GaussTwoPieceL2Bound
+import GaloisForLFunctions.RHTower.GaussIterateNormBound
 import GaloisForLFunctions.RHTower.PositiveOperatorTraceComparison
 import GaloisForLFunctions.RHTower.TraceNorm
 import GaloisForLFunctions.RHTower.TraceNormBound
@@ -9488,6 +9489,7 @@ import GaloisForLFunctions.RHTower.XiRealAxisNonvanishing
 import GaloisForLFunctions.RHTower.XiRealChannelCofiniteHilbertReconstruction
 import GaloisForLFunctions.RHTower.XiRealDivisorSampling
 import GaloisForLFunctions.RHTower.XiSamplingIdealizerCollapse
+import GaloisForLFunctions.RHTower.XiSuperlinearFromCancellation
 import GaloisForLFunctions.RHTower.SamplingProgressionCriterion
 import GaloisForLFunctions.RHTower.XiRealTransverseQuartetSurgeryMatroidInvariance
 import GaloisForLFunctions.RHTower.XiReciprocalCliffordSquare
@@ -10251,3 +10253,4 @@ import GaloisForLFunctions.RHTower.Sieve.FibreWindowTop
 import GaloisForLFunctions.RHTower.Sieve.FibreStepOneClosed
 import GaloisForLFunctions.RHTower.Sieve.MarkerDominatesFibre
 import GaloisForLFunctions.RHTower.Sieve.PowerWindowSelect
+import GaloisForLFunctions.RHTower.Sieve.PerronCompareKernel

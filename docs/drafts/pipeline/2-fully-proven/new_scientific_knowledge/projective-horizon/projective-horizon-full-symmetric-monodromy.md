@@ -2107,3 +2107,79 @@ SCE_k induction            MvPolynomial.finSuccEquiv, then: local nilpotence ove
                            theorem ⟹ B = C[w] ⟹ C = B/wB is a domain, finite free of rank n
                            over R with unit discriminant ⟹ induction                        TODO
 ```
+
+## Lean progress — `SCE_k` IS PROVED.  Affine space is algebraically simply connected.
+
+The step the card identified as *"the single new piece of mathematics"* is done, unconditionally,
+over every algebraically closed field of characteristic zero, in the general (non-monogenic) form.
+
+```text
+HTGeometry/AffineSpaceEtaleRankOne.lean
+    hasEtaleRankOne_of_ringEquiv
+    hasEtaleRankOne_mvPolynomial
+    rank_eq_one_of_isUnit_discr_mvPolynomial
+        ** SCE_k : over an algebraically closed field of characteristic zero, a DOMAIN that is
+           finite free over MvPolynomial (Fin k) K with unit discriminant has rank one **
+```
+
+`[propext, Classical.choice, Quot.sound]`, like every module below it.
+
+### The full stack, in dependency order
+
+```text
+TraceDualBasisSeparability      dual basis, ∑ eᵢ fᵢ = 1, derivation_eq_zero   (uniqueness of lifts)
+EtaleModuleDerivation           the same, for derivations into any module     (uniqueness across
+                                                                               a base change)
+EtaleDerivationLift             liftDerivation                                (existence of lifts)
+SectionIdempotent               ε with Tr(ε b) = ψ b,  ε b = ψ b • ε,  ψ ε = 1,  ε² = ε
+ProductAlgebraDiscriminant      discr is basis-independent; discr (A × B') = discr B'
+SectionQuotientSplit            B ≃ A × (B ⧸ (ε)); over a PID the complement is again étale
+AffineLineEtaleSplit            B ≅ E[X]ⁿ for E algebraically closed          (full splitting)
+LocallyNilpotentDerivationSlice B = (ker D)[s] for a locally nilpotent D with a slice
+AffineLineEtaleLocallyNilpotent the lift of d/dX is locally nilpotent over an algebraically
+                                closed field
+PolynomialEtaleLocallyNilpotentDomain   ... and over any characteristic-zero domain
+PolynomialFibreQuotientBasis    the fibre B ⧸ (w) is finite free over R with
+                                discr = (discr upstairs).eval 0
+EtaleRankOnePolynomialStep      HasEtaleRankOne R → HasEtaleRankOne R[X]      (𝔸¹-invariance)
+AffineSpaceEtaleRankOne         the induction on the number of variables
+```
+
+### The mathematical route, recorded
+
+The inductive step is `𝔸¹`-invariance of finite étale covers, proved by a **locally nilpotent
+derivation with a slice** — no Galois descent, no constant-field theorem, no purity of the branch
+locus, and no several-variable complex analysis.
+
+```text
+B a domain, finite free of rank n over R[X] with unit discriminant, R a char-0 domain.
+1. The trace-dual basis makes B separable over R[X]: ∑ eᵢ fᵢ = 1 and b fᵢ = ∑ⱼ (repr) fⱼ.
+   Hence A-derivations of B vanish (uniqueness) and the Hochschild defect of "differentiate the
+   coordinates" is a coboundary (existence).  So d/dX lifts uniquely to ∂ on B, with ∂ w = 1.
+2. ∂ is locally nilpotent.  Base change to E = alg. closure of Frac R: there B ⊗ E[X] ≅ E[X]ⁿ by
+   the full splitting theorem, and by uniqueness the lift there is the componentwise d/dX, which
+   kills polynomials.  Nilpotency descends because b ↦ 1 ⊗ b is injective.
+3. Slice theorem: B = C[w] with C = ker ∂.
+4. Reduction mod w is an isomorphism C ≅ B ⧸ (w): surjective by the Taylor expansion, injective
+   because C c = X q forces c = 0.  So the fibre is a DOMAIN.
+5. The fibre is finite free of rank n over R with discriminant the value at 0 of the discriminant
+   upstairs, hence a unit.  Induction.
+```
+
+The full splitting theorem of step 2 is itself an induction on the rank: the section supplied by
+`AffineLineSimplyConnectedEtale` has an idempotent `ε = ∑ᵢ ψ(eᵢ) fᵢ` (elementary: `ε b = ψ b • ε`
+and `ψ ε = 1`), `B ≃ A × (B ⧸ (ε))`, and the complement is again finite free with unit
+discriminant.
+
+### What remains for the card
+
+```text
+SC_1, SC_k monogenic, SCE_1 over ℂ, SCE_1 over any alg. closed char-0 field   DONE
+SCE_k                                                                        DONE  <-- this session
+E1  branch locus in the chart = the Schur divisor (the discriminant computation)   OPEN
+E2  Schur inertia nontrivial and simple                                            OPEN
+torus/slice bookkeeping and the final Kummer valuation                             OPEN
+```
+
+With `SCE_k` in hand, `E5` of the endgame is now a Lean theorem, and the remaining obligations are
+the two geometry inputs `E1`, `E2` that the card already isolates, plus bookkeeping.

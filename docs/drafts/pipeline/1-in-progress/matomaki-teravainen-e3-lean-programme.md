@@ -773,3 +773,53 @@ cannot skip a window of multiplicative width `T^{1/6+ε/2}`).
 - [ ] **M8** Theorem 1.2′ at exponent `≈ 1.557`; retune both Route E cards.
 
 Nothing in the `T₂` half needs a new analytic estimate.
+
+## The `T₂` join: every piece is now named (2026-08-18, 22:00)
+
+### Landed — `Sieve/PowerWindowSelect`
+
+```text
+exists_pow_mem_window (hM : 1 < M) (hA : 1 < A) (hAB : A * M ≤ B) :
+  ∃ ℓ, 1 ≤ ℓ ∧ A ≤ M ^ ℓ ∧ M ^ ℓ ≤ B
+```
+
+This is the `ℓ`-selection of Proposition 4.2 — `M₁^ℓ ∈ [T^{5/6−ε}, T^{1−ε/2}]` — and it is exactly the
+statement that consecutive powers cannot skip a window whose multiplicative width is at least the
+base.  Proof: take the least `ℓ` with `A ≤ M^ℓ`; then `M^{ℓ−1} < A`, so `M^ℓ < A·M ≤ B`.  The
+hypothesis `A·M ≤ B` is the paper's `M₁ ≤ T^{1/6+ε/2}` in disguise; at `M₁ ≤ T^{2/11+ε}` it needs the
+window `[T^{5/6−ε}, T^{1−ε/2}]`, whose width `T^{1/6+ε/2}` **does** exceed `T^{2/11+ε}` only when
+`1/6 > 2/11`, which is false — so at the Harman value the paper's own window is used with the
+*sharper* `M₁ ≤ T^{2/11+ε/2}` bound, and the check is `2/11 + ε ≤ 1/6 + ε/2`… **this inequality is
+false (`2/11 = 0.1818 > 1/6 = 0.1667`)**, which is why the paper writes `1 ≤ ℓ ≪ 1` rather than
+claiming a single window: for `M₁` in the top part of its range one takes `ℓ = 1` and the polynomial
+`M₁` itself, and the window is entered by *choosing which of `M₁`, `M₁²` to use*.  The selection lemma
+above is the tool for that once the sub-window is fixed; the case analysis over `M₁`'s range is the
+remaining arithmetic.
+
+### The power of a block is a Dirichlet polynomial — already owned
+
+`Sieve/PrimePowerSupport.dirPoly_convPow`:
+
+```text
+dirPoly (N ^ ℓ) (convPow N ℓ a) t = (dirPoly N a t) ^ ℓ
+```
+
+So `M₁(1+it)^ℓ` **is** a Dirichlet polynomial with the convolution-power coefficients, and if `a` is
+supported on the dyadic block `(M₁, 2M₁]` then `convPow` is supported on `(M₁^ℓ, (2M₁)^ℓ]` — a range of
+multiplicative width `2^ℓ`, which is precisely the shape
+`Sieve/HuxleyRangeLargeValues.huxley_range_large_values_uniform` handles.
+
+### The one bridge still to build
+
+`dirPoly N a t = ∑_{n : Fin N} a n·exp(i t log(n+1))` is indexed by `1..N` with phase `+it`, while
+`blockPoly N c σ t = ∑_{n ∈ [N,2N)} c n·n^{−σ}·exp(−i t log n)` is `Ico`-indexed with phase `−it` and
+carries the `n^{−σ}` weight explicitly.  The bridge is
+
+```text
+blockPoly N c σ t = dirPoly (2N−1) a (−t) ,   a n = c (n+1)·(n+1)^{−σ}·1_{[N,2N)}(n+1)
+```
+
+which lets `dirPoly_convPow` produce the `ℓ`-th power and `huxley_range_large_values_uniform` bound
+its large values.  **That bridge plus the `M₁`-range case analysis is the whole of the `T₂` join**;
+`Sieve/MatomakiTeravainenTypeIIAmplitudeCells` then closes the case, and `T₁`/`T₃` are the discrete
+mean value theorem and the trivial bound.
