@@ -3503,6 +3503,9 @@ import GaloisForLFunctions.RHTower.HardyThetaSource
 import GaloisForLFunctions.RHTower.HardyZ
 import GaloisForLFunctions.RHTower.HardyPhaseCellCancellation
 import GaloisForLFunctions.RHTower.HardyZPhaseAsymptotic
+import GaloisForLFunctions.RHTower.ZetaChiHardyPhase
+import GaloisForLFunctions.RHTower.HardyZSmoothAFE
+import GaloisForLFunctions.RHTower.HardyZSmoothAFEReal
 import GaloisForLFunctions.RHTower.HardyZSignChange
 import GaloisForLFunctions.RHTower.HardyZThetaTrace
 import GaloisForLFunctions.RHTower.HarmonicLogMascheroni
@@ -6566,6 +6569,7 @@ import GaloisForLFunctions.RHTower.Sieve.MarkerCountUpper
 import GaloisForLFunctions.RHTower.Sieve.MarkerSignFlip
 import GaloisForLFunctions.RHTower.Sieve.MarkerSupplyMatching
 import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenLemma41ThresholdLoss
+import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenRaisedBlockCover
 import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenTypeIIAmplitudeCells
 import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenTypeIIAmplitudeCover
 import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenTypeIIPartition
@@ -8493,6 +8497,7 @@ import GaloisForLFunctions.RHTower.SingularValueLogMean
 import GaloisForLFunctions.RHTower.GaussTwoPieceL2Bound
 import GaloisForLFunctions.RHTower.GaussIterateNormBound
 import GaloisForLFunctions.RHTower.GaussColumnDecay
+import GaloisForLFunctions.RHTower.GaussChannelOperator
 import GaloisForLFunctions.RHTower.PositiveOperatorTraceComparison
 import GaloisForLFunctions.RHTower.TraceNorm
 import GaloisForLFunctions.RHTower.TraceNormBound
@@ -10265,3 +10270,5 @@ import GaloisForLFunctions.RHTower.Sieve.PerronCompareKernel
 import GaloisForLFunctions.RHTower.Sieve.PerronKernelIntegralForm
 import GaloisForLFunctions.RHTower.Sieve.CpowMulILipschitz
 import GaloisForLFunctions.RHTower.Sieve.PerronCompareSharp
+import GaloisForLFunctions.RHTower.Sieve.PerronCompareLowFreq
+import GaloisForLFunctions.RHTower.Sieve.MixedMomentWindowCompare

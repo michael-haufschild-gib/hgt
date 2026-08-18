@@ -975,3 +975,26 @@ and it is now unconditional.**
 Only the bookkeeping: Perron with the comparison kernel (`Sieve/PerronWindowKernel.perronPrefixIntegral_sub`
 merges the two prefix integrals), then the dyadic split of `Sieve/MixedMomentAssembly` run on the
 `min(2h, 2|t|hh₁/x)` weight instead of `min(x/t, h)`.  No further analytic input.
+
+## `Sieve/PerronCompareLowFreq` — the transition height is explicit (2026-08-18, 23:35)
+
+```text
+norm_perronCompareKernel_le_min3 (hle : h ≤ h₁) (ht : t ≠ 0) :
+  ‖perronCompareKernel x h h₁ t‖ ≤ min (min (2h) (2|t|hh₁/x)) (4(x+h₁)/|t|)
+
+norm_perronCompareKernel_le_of_low (hle : h ≤ h₁) (hlow : |t| ≤ δ·x/h₁) :
+  ‖perronCompareKernel x h h₁ t‖ ≤ 2·h·δ
+```
+
+The second is the statement that **the window comparison sees nothing below height `x/h₁`**: taking
+`δ` small makes the kernel uniformly `≤ 2hδ` there, so the whole `t`-integral of Lemma 3.1 is carried
+by `|t| ≳ x/h₁`, where the third branch `4(x+h₁)/|t|` then supplies the decay.  Two theorems,
+axiom-clean, wired.
+
+### Lemma 3.1's remaining step, in one line
+
+Feed the weight `min(min(2h, 2|t|hh₁/x), 4(x+h₁)/|t|)` into
+`Sieve/MixedMomentAssembly.integral_mixed_moment_perron_le` in place of `perronKernel`.  The
+assembly's dyadic split is already written and its hypotheses are the two affine mean-square
+majorants `(FS7)` supplies; only the weight changes, and the low-frequency branch removes the blocks
+below `x/h₁` that the old `min(x/t, h)` weight had to pay for.

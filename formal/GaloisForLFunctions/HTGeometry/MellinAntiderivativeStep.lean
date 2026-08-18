@@ -65,6 +65,201 @@ theorem integral_mellinStepKernel_snd {r : ℝ → ℂ} {μ : ℂ} {x : ℝ} (hx
     simp [Set.mem_inter_iff, Set.mem_Ioc]
   rw [hset, intervalIntegral.integral_of_le hx, MeasureTheory.integral_mul_const]
 
+theorem mellinStepKernel_eq_indicator_fst (r : ℝ → ℂ) (μ : ℂ) (t : ℝ) :
+    (fun x : ℝ => mellinStepKernel r μ x t)
+      = Set.indicator (Set.Ici t) (fun x : ℝ => r t * (x : ℂ) ^ (-μ - 1)) := by
+  classical
+  funext x
+  rw [mellinStepKernel]
+  by_cases h : t ≤ x
+  · rw [Set.indicator_of_mem (by exact h : t ∈ Set.Iic x),
+      Set.indicator_of_mem (by exact h : x ∈ Set.Ici t)]
+  · rw [Set.indicator_of_notMem (by simpa using h : t ∉ Set.Iic x),
+      Set.indicator_of_notMem (by simpa using h : x ∉ Set.Ici t)]
+
+theorem integral_mellinStepKernel_fst {r : ℝ → ℂ} {μ : ℂ} (hμ : 0 < μ.re) {t : ℝ} (ht : 1 < t) :
+    (∫ x in Set.Ioi (1:ℝ), mellinStepKernel r μ x t) = r t * ((t : ℂ) ^ (-μ) / μ) := by
+  classical
+  rw [mellinStepKernel_eq_indicator_fst r μ t,
+    MeasureTheory.setIntegral_indicator measurableSet_Ici]
+  have hset : Set.Ioi (1:ℝ) ∩ Set.Ici t = Set.Ici t := by
+    ext y
+    constructor
+    · exact fun h => h.2
+    · intro h
+      exact ⟨lt_of_lt_of_le ht h, h⟩
+  rw [hset, MeasureTheory.integral_Ici_eq_integral_Ioi, MeasureTheory.integral_const_mul,
+    integral_Ioi_cpow_tail hμ (lt_trans one_pos ht)]
+
+theorem norm_integral_mellinStepKernel_fst {r : ℝ → ℂ} {μ : ℂ} (hμ : 0 < μ.re) {t : ℝ}
+    (ht : 1 < t) :
+    (∫ x in Set.Ioi (1:ℝ), ‖mellinStepKernel r μ x t‖)
+      = ‖r t‖ * (t ^ (-μ.re) / μ.re) := by
+  classical
+  have hnorm : (fun x : ℝ => ‖mellinStepKernel r μ x t‖)
+      = Set.indicator (Set.Ici t) (fun x : ℝ => ‖r t‖ * x ^ (-μ.re - 1)) := by
+    funext x
+    rw [congrFun (mellinStepKernel_eq_indicator_fst r μ t) x]
+    by_cases h : t ≤ x
+    · rw [Set.indicator_of_mem (by exact h : x ∈ Set.Ici t),
+        Set.indicator_of_mem (by exact h : x ∈ Set.Ici t), norm_mul,
+        norm_cpow_eq_rpow_re_of_pos (lt_of_lt_of_le (lt_trans one_pos ht) h)]
+      congr 1
+    · rw [Set.indicator_of_notMem (by simpa using h : x ∉ Set.Ici t),
+        Set.indicator_of_notMem (by simpa using h : x ∉ Set.Ici t), norm_zero]
+  rw [hnorm, MeasureTheory.setIntegral_indicator measurableSet_Ici]
+  have hset : Set.Ioi (1:ℝ) ∩ Set.Ici t = Set.Ici t := by
+    ext y
+    constructor
+    · exact fun h => h.2
+    · intro h
+      exact ⟨lt_of_lt_of_le ht h, h⟩
+  have htpos : (0:ℝ) < t := lt_trans one_pos ht
+  have hlt : -μ.re - 1 < -1 := by linarith
+  rw [hset, MeasureTheory.integral_Ici_eq_integral_Ioi, MeasureTheory.integral_const_mul,
+    integral_Ioi_rpow_of_lt hlt htpos]
+  congr 1
+  have hexp : -μ.re - 1 + 1 = -μ.re := by ring
+  rw [hexp]
+  field_simp
+
+theorem continuousOn_ofReal_cpow (μ : ℂ) :
+    ContinuousOn (fun t : ℝ => (t : ℂ) ^ μ) (Set.Ioi (1:ℝ)) := by
+  intro t ht
+  have htpos : (0:ℝ) < t := lt_trans one_pos ht
+  exact (Complex.continuousAt_ofReal_cpow_const t μ (Or.inr (ne_of_gt htpos))).continuousWithinAt
+
+/-- A Mellin-integrable datum is measurable on the half line. -/
+theorem aestronglyMeasurable_of_mellin {r : ℝ → ℂ} {μ : ℂ}
+    (hint : IntegrableOn (fun t => r t * (t : ℂ) ^ (-μ)) (Set.Ioi (1:ℝ))) :
+    AEStronglyMeasurable r (volume.restrict (Set.Ioi (1:ℝ))) := by
+  have hc : AEStronglyMeasurable (fun t : ℝ => (t : ℂ) ^ μ) (volume.restrict (Set.Ioi (1:ℝ))) :=
+    (continuousOn_ofReal_cpow μ).aestronglyMeasurable measurableSet_Ioi
+  have hprod : AEStronglyMeasurable (fun t : ℝ => r t * (t : ℂ) ^ (-μ) * (t : ℂ) ^ μ)
+      (volume.restrict (Set.Ioi (1:ℝ))) := hint.1.mul hc
+  refine hprod.congr ?_
+  filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+  have htpos : (0:ℝ) < t := lt_trans one_pos ht
+  have hne : (t : ℂ) ≠ 0 := by
+    simpa using ne_of_gt htpos
+  rw [mul_assoc, ← Complex.cpow_add _ _ hne]
+  simp
+
+/-- A Mellin-integrable datum with nonnegative exponent is integrable on every bounded window. -/
+theorem integrableOn_Ioc_of_mellin {r : ℝ → ℂ} {μ : ℂ} (hμ : 0 ≤ μ.re)
+    (hint : IntegrableOn (fun t => r t * (t : ℂ) ^ (-μ)) (Set.Ioi (1:ℝ)))
+    {x : ℝ} (hx : 1 ≤ x) : IntegrableOn r (Set.Ioc 1 x) := by
+  have hsub : Set.Ioc (1:ℝ) x ⊆ Set.Ioi (1:ℝ) := fun y hy => hy.1
+  have hint' : IntegrableOn (fun t => r t * (t : ℂ) ^ (-μ)) (Set.Ioc 1 x) :=
+    hint.mono_set hsub
+  have hmeas : AEStronglyMeasurable r (volume.restrict (Set.Ioc (1:ℝ) x)) :=
+    (aestronglyMeasurable_of_mellin hint).mono_set hsub
+  refine MeasureTheory.Integrable.mono' (hint'.norm.const_mul (x ^ μ.re)) hmeas ?_
+  filter_upwards [self_mem_ae_restrict measurableSet_Ioc] with t ht
+  have htpos : (0:ℝ) < t := lt_trans one_pos ht.1
+  have hne : (t : ℂ) ≠ 0 := by simpa using ne_of_gt htpos
+  have hsplit : r t = r t * (t : ℂ) ^ (-μ) * (t : ℂ) ^ μ := by
+    rw [mul_assoc, ← Complex.cpow_add _ _ hne]
+    simp
+  conv_lhs => rw [hsplit]
+  rw [norm_mul, norm_cpow_eq_rpow_re_of_pos htpos, mul_comm (x ^ μ.re)]
+  exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (le_of_lt htpos) ht.2 hμ) (norm_nonneg _)
+
+theorem uncurry_mellinStepKernel_eq (r : ℝ → ℂ) (μ : ℂ) :
+    Function.uncurry (mellinStepKernel r μ)
+      = Set.indicator {p : ℝ × ℝ | p.2 ≤ p.1} (fun p => r p.2 * (p.1 : ℂ) ^ (-μ - 1)) := by
+  classical
+  funext p
+  by_cases h : p.2 ≤ p.1
+  · rw [Set.indicator_of_mem (by exact h : p ∈ {p : ℝ × ℝ | p.2 ≤ p.1})]
+    show mellinStepKernel r μ p.1 p.2 = _
+    rw [mellinStepKernel, Set.indicator_of_mem (by exact h : p.2 ∈ Set.Iic p.1)]
+  · rw [Set.indicator_of_notMem (by simpa using h : p ∉ {p : ℝ × ℝ | p.2 ≤ p.1})]
+    show mellinStepKernel r μ p.1 p.2 = _
+    rw [mellinStepKernel, Set.indicator_of_notMem (by simpa using h : p.2 ∉ Set.Iic p.1)]
+
+theorem aestronglyMeasurable_uncurry_mellinStepKernel {r : ℝ → ℂ} {μ : ℂ}
+    (hAE : AEStronglyMeasurable r (volume.restrict (Set.Ioi (1:ℝ)))) :
+    AEStronglyMeasurable (Function.uncurry (mellinStepKernel r μ))
+      ((volume.restrict (Set.Ioi (1:ℝ))).prod (volume.restrict (Set.Ioi (1:ℝ)))) := by
+  rw [uncurry_mellinStepKernel_eq]
+  refine MeasureTheory.AEStronglyMeasurable.indicator ?_
+    (measurableSet_le measurable_snd measurable_fst)
+  have hc : AEStronglyMeasurable (fun t : ℝ => (t : ℂ) ^ (-μ - 1))
+      (volume.restrict (Set.Ioi (1:ℝ))) :=
+    (continuousOn_ofReal_cpow (-μ - 1)).aestronglyMeasurable measurableSet_Ioi
+  exact (hAE.comp_snd).mul hc.comp_fst
+
+theorem integrable_uncurry_mellinStepKernel {r : ℝ → ℂ} {μ : ℂ} (hμ : 0 < μ.re)
+    (hint : IntegrableOn (fun t => r t * (t : ℂ) ^ (-μ)) (Set.Ioi (1:ℝ))) :
+    Integrable (Function.uncurry (mellinStepKernel r μ))
+      ((volume.restrict (Set.Ioi (1:ℝ))).prod (volume.restrict (Set.Ioi (1:ℝ)))) := by
+  classical
+  have hAE := aestronglyMeasurable_of_mellin hint
+  rw [MeasureTheory.integrable_prod_iff' (aestronglyMeasurable_uncurry_mellinStepKernel hAE)]
+  have hlt : (-μ - 1).re < -1 := by
+    simp only [Complex.sub_re, Complex.neg_re, Complex.one_re]
+    linarith
+  constructor
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+    have htpos : (0:ℝ) < t := lt_trans one_pos ht
+    have hkey : IntegrableOn (fun x : ℝ => r t * (x : ℂ) ^ (-μ - 1)) (Set.Ici t) := by
+      rw [integrableOn_Ici_iff_integrableOn_Ioi]
+      exact (integrableOn_Ioi_cpow_of_lt hlt htpos).const_mul (r t)
+    have hind : Integrable
+        (Set.indicator (Set.Ici t) (fun x : ℝ => r t * (x : ℂ) ^ (-μ - 1))) volume :=
+      (MeasureTheory.integrable_indicator_iff measurableSet_Ici).2 hkey
+    have : IntegrableOn
+        (Set.indicator (Set.Ici t) (fun x : ℝ => r t * (x : ℂ) ^ (-μ - 1))) (Set.Ioi (1:ℝ)) :=
+      hind.integrableOn
+    have hfun : (fun x : ℝ => Function.uncurry (mellinStepKernel r μ) (x, t))
+        = Set.indicator (Set.Ici t) (fun x : ℝ => r t * (x : ℂ) ^ (-μ - 1)) :=
+      mellinStepKernel_eq_indicator_fst r μ t
+    rw [hfun]
+    exact this
+  · have hcongr : (fun t : ℝ => ∫ x in Set.Ioi (1:ℝ),
+        ‖Function.uncurry (mellinStepKernel r μ) (x, t)‖)
+        =ᵐ[volume.restrict (Set.Ioi (1:ℝ))]
+        fun t : ℝ => (μ.re)⁻¹ * ‖r t * (t : ℂ) ^ (-μ)‖ := by
+      filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+      have htpos : (0:ℝ) < t := lt_trans one_pos ht
+      have h1 : (∫ x in Set.Ioi (1:ℝ), ‖Function.uncurry (mellinStepKernel r μ) (x, t)‖)
+          = ∫ x in Set.Ioi (1:ℝ), ‖mellinStepKernel r μ x t‖ := rfl
+      rw [h1, norm_integral_mellinStepKernel_fst hμ ht, norm_mul,
+        norm_cpow_eq_rpow_re_of_pos htpos]
+      have hre : (-μ).re = -μ.re := by simp
+      rw [hre]
+      field_simp
+    refine MeasureTheory.Integrable.congr ?_ hcongr.symm
+    exact hint.norm.const_mul _
+
+/-- **The Mellin step.**  For `Re μ > 0` the Mellin transform at `μ + 1` of the antiderivative
+`x ↦ ∫_1^x r` is `1/μ` times the Mellin transform of `r` at `μ`.  Proved by Fubini on the
+half-plane region `1 < t ≤ x`, so no regularity of `r` beyond integrability is used. -/
+theorem mellin_antiderivative_step {r : ℝ → ℂ} {μ : ℂ} (hμ : 0 < μ.re)
+    (hint : IntegrableOn (fun t => r t * (t : ℂ) ^ (-μ)) (Set.Ioi (1:ℝ))) :
+    μ * (∫ x in Set.Ioi (1:ℝ), (∫ t in (1:ℝ)..x, r t) * (x : ℂ) ^ (-μ - 1))
+      = ∫ t in Set.Ioi (1:ℝ), r t * (t : ℂ) ^ (-μ) := by
+  have hμ0 : μ ≠ 0 := by
+    intro h
+    rw [h] at hμ
+    simp at hμ
+  have hswap := MeasureTheory.integral_integral_swap (integrable_uncurry_mellinStepKernel hμ hint)
+  have hL : (∫ x in Set.Ioi (1:ℝ), ∫ t in Set.Ioi (1:ℝ), mellinStepKernel r μ x t)
+      = ∫ x in Set.Ioi (1:ℝ), (∫ t in (1:ℝ)..x, r t) * (x : ℂ) ^ (-μ - 1) := by
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
+    intro x hx
+    exact integral_mellinStepKernel_snd (le_of_lt hx)
+      (integrableOn_Ioc_of_mellin (le_of_lt hμ) hint (le_of_lt hx))
+  have hR : (∫ t in Set.Ioi (1:ℝ), ∫ x in Set.Ioi (1:ℝ), mellinStepKernel r μ x t)
+      = ∫ t in Set.Ioi (1:ℝ), μ⁻¹ * (r t * (t : ℂ) ^ (-μ)) := by
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
+    intro t ht
+    show (∫ x in Set.Ioi (1:ℝ), mellinStepKernel r μ x t) = μ⁻¹ * (r t * (t : ℂ) ^ (-μ))
+    rw [integral_mellinStepKernel_fst hμ ht]
+    field_simp
+  rw [← hL, hswap, hR, MeasureTheory.integral_const_mul, ← mul_assoc, mul_inv_cancel₀ hμ0, one_mul]
+
 end GaloisForLFunctions.HTGeometry
 
 end

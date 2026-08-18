@@ -262,3 +262,35 @@ So Phase A of the programme (Hardy phase + AFE) is **owned**, not open.  The rev
    Lean-certified: see the next section.
 3. **The mollified second moment** `∫_T^{2T}|ζM|² ≪ T` — still the crux, and now the only genuinely
    open analytic input.
+
+## Landed bricks 2 and 3 (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/HardyPhaseCellCancellation.lean`
+
+- `continuousAt_deriv_digamma_of_re_pos`, `continuous_deriv_gammaHardyPhaseRate` — the exact Hardy
+  phase curvature `θ''` is continuous (digamma is analytic on `Re > 0`, so its derivative is too).
+  This is the hypothesis the tree's first-derivative test needs and it was not previously available.
+- `hardyTwistPhase L τ = gammaHardyTheta τ − τ·L`, `hasDerivAt_hardyTwistPhase`,
+  `hasDerivAt_hardyTwistRate`.
+- `abs_integral_mul_cos_hardyTwistPhase_le` — **the atomic cell estimate**: for a weight with an
+  integrable derivative and a phase velocity bounded below by `m` on the cell,
+  `|∫_u^v g cos(θ(τ) − τL + φ)| ≤ |g u|/m + |g v|/m + ∫ (|g'|/m + |g|·|θ''|/m²)`.
+- `le_abs_gammaHardyPhaseRate_sub_of_le_conductor` — **nonstationarity below the conductor**: if
+  `L ≤ ½log(T/2π) − 2δ` and `33/(16T²) + π/(2T) ≤ δ`, then `|θ'(τ) − L| ≥ δ` for all `τ ≥ T`.
+- `abs_integral_cos_hardyTwistPhase_le` — the bare cell integral with unit weight:
+  `|∫_u^v cos(θ(τ) − τL + φ)| ≤ 2/δ + (v−u)(1/T² + π/(4T))/δ²`, with no arithmetic input at all.
+
+`formal/GaloisForLFunctions/RHTower/ZetaChiHardyPhase.lean`
+
+- `one_sub_linePt` — `1 − (½+iτ) = conj(½+iτ)`.
+- `zetaChi_line_eq_gammaHardyPhase_sq` — **the functional-equation factor on the critical line is
+  the square of the normalized Gamma phase**, `χ(½+iτ) = gammaHardyPhase τ ²`.
+- `zetaChi_line_eq_exp_neg_two_theta` — hence `χ(½+iτ) = exp(−2iθ(τ))`.
+- `exp_theta_mul_zetaChi_line` — `exp(iθ(τ))·χ(½+iτ) = exp(−iθ(τ))`: multiplying the two-series
+  AFE by `exp(iθ)` sends the direct edge to `exp(i(θ − τ log n))` and the reflected edge to
+  `exp(−i(θ − τ log n))`.  This is exactly the phase-gauge step that turns
+  `riemannZeta_line_eq_two_tsum_smoothAFE_dualWeight` into a real cosine/sine expansion of
+  `hardyZ`, and its terms are precisely what `abs_integral_mul_cos_hardyTwistPhase_le` consumes.
+
+All axiom-clean.  Next: the termwise real expansion of `hardyZ` (item 1 of the revised open list),
+then the mollified second moment.

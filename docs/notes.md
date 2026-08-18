@@ -1,268 +1,43 @@
-## The big picture that is emerging
-
-The eleven live routes are not eleven problems. The corpus has now proved, from at least five independent directions, that they terminate at one wall, and it has characterized that wall exactly:
-
-Positivity is free at the source and dies at finitization. Raw prime-side Gram/Hankel objects are unconditionally, cofinally positive (finiteVonMangoldtSuccessorPointedWeldGram_posSemidef). Every operation that makes them finite or comparable — factorial normalization (negative index two, rank-one repair impossible), principal subtraction, trace-class comparison (blocked because the Euler quadratic corner is provably noncompact), scalar/Fock completion (deletes every off-neutral germ), fixed-width transport, finite-stage truncation (the cofinal linear-relation defect is invisible at every finite stage) — is formally proved to destroy either the sign or the prime-label/reflection information. The five-lanes-one-wall formulation is the durable one: the regularization that makes the object finite is exactly what kills the positivity that was free before it.
-
-The carrier already exists; only its annihilation law is missing. SourceZeroHorizontalCarrier.lean constructs the reflection-odd, prime-labelled, multiplicity-exact horizontal class whose global vanishing is equivalent to RH, with both orientations retained. Route R's Cartier annihilation, Route L's Ω_{μ,Γ}(w₂₃) = 0, Route T's centered von Mangoldt cancellation, Route U's crossing exclusion, C1's real-spectrum theorem for the theta-source inverse B (with det₂(I+zB) = XiC(z)/XiC(0) now exact and Jordan-safe) — these are the same missing law in different coordinates. The map's own N/T unification (the C19–C28 boost-charge dictionary) shows even the two newest routes ride one conserved reciprocal mismatch. Consequently the four "shortest live chains" (R, L, T, U) all terminate in statements that are RH-equivalent: solving any of them is RH, not a step toward it.
-
-Why no estimate can cross. Two formal facts combine fatally for every inequality-based strategy. First, RH is the vanishing of a count and needs an unconditional upper bound, while every engine in the tree bounds counts from below; the zero-density moment ceiling (2−2σ)(2σ−1) is k-independent. Second, the amplitude gap: a lone off-line zero is a single coherent mode whose amplitude sits below every density-scale threshold, the criteria decompose termwise (no inter-zero cancellation exists to exploit — weil-carrier-is-sum-of-complex-squares), and the extremal configuration is a lone phase. All unconditional integer-specific cancellation we possess or could import (Matomäki–Radziwiłł, averaged Chowla, Halász) is density-scale. So the proof cannot be an estimate chain; it must be an exact identity plus created positivity.
-
-The Beurling firewall types the missing input. Route E's generalized-prime firewall proves the local Euler decomposition, PNT/Mertens windows, and any finite prime prefix cannot distinguish ℤ's primes from a Beurling system carrying the forbidden strict-half behavior (externally matching Diamond–Montgomery–Vorhauer's Beurling systems with good counting and bad zeros). 
-
-Since a Beurling system has the same raw positive cone and admits all the same generic regularizations, this yields a sharp corollary I don't think the corpus has stated in this form: the positivity-preserving finitization cannot be a purely functional-analytic construction — its existence must itself be an arithmetic theorem consuming structure Beurling systems lack. 
-
-There are exactly two known such structures: adelic self-duality of ℤ (Poisson summation / the theta functional equation, consumed at operator level — at divisor level it degenerates to conj ρ = 1−ρ, which provably gives no sign), and the additive-bilinear structure (Chowla-type correlations — the ℤ-shadow of the self-product C×C that powers the only RH-type proof ever completed, via the Hodge index theorem).
-
-## What the RH proof must be like
-
-Each clause is now backed by a formal no-go, so this is a specification, not a taste:
-
-1. An exact identity plus a created sign — never an inequality chain (amplitude gap, upper-bound asymmetry).
-2. Acting pre-scalarization, on prime-labelled, reflection-graded, multiplicity-exact data (every label-blind codiagonal is retired; the Zeta-23 audit shows even a genuine 2/3-density theorem dies at MeasuredIndexBlindness).
-3. Cofinal, not finite-stage (the descent defect is invisible at every finite truncation).
-4. With a positivity-preserving finitization — the route survives only if it names, up front, the step where sign survives regularization.
-5. Consuming ℤ-specific input (operator-level Poisson/FE, or bilinear correlations); any mechanism that would also work for Beurling systems is dead on arrival.
-6. Not factoring through divisor-level reflection symmetry (conjugation-symmetry-gives-no-positivity).
-
-This is precisely the shape of the function-field proof: created positivity (ampleness/Hodge index) of an intersection form on a self-product, consuming bilinear structure. The corpus's constraint fence independently re-derives that shape for ℤ.
-
-## The one open problem 
-
-Your own lane-elimination audit concluded "exactly one live object: the ultraviolet model," and everything built since (the carrier, T, U, N's terminalization) has confirmed rather than displaced it. Its four faces in the current tree: CCM-FU's open core (a prelimit cofinal noncompact family joining the four-unit Fisher corner to the continued Xi Ward column, provenance-preserving), C1's open core option 2 (positive CCM intersection/trace pairing with Hodge sign, identified with the Weil pairing), C1 option 1 (a source-derived symmetrizer making spec(B) real), and the carrier's annihilation law. One theorem fires all endpoints, which are already formalized and multiplicity-safe.
-
-The realistic chain, ordered so that every next step is strictly sub-RH until the wall is a single well-posed question:
-
-1. done (sub-RH, explicitly named by the map): close the Gauss quasi-inner telescope — stage-by-stage control of the propagated iterates R_n^i f inside the now-formal principal-step power telescope, then the logarithmic mean. This finishes the local Connes–Consani intersection law; it is hard analysis on explicit L²(ℝ/ℤ) operators with no RH content, and it is the only frontier item on the created-positivity mechanism where genuinely open, non-RH-equivalent mathematics remains.
-2. done (sub-RH): multi-place assembly into the actual intersection/Weil object on the corpus's rational Bruhat–Schwartz core — built label-faithfully, using the carrier constraints as design guardrails (this is where the corpus can do what the external CC program hasn't: keep prime labels and both reflection orientations alive through assembly).
-3. The wall, finally well-posed: Hodge sign of that one constructed pairing on the reflection-odd carrier. My best-shot conjecture for the mechanism: the counterterm must be the Poisson-dual image of the raw corner itself — a self-dual subtraction, so finitization is an exchange with the Fourier dual rather than a truncation, with the FE consumed at operator level where it is strictly stronger than reflection. And the firewall gives a cheap kill-test for every candidate: any proposed positivity proof must visibly break for Beurling systems. If a draft doesn't use Poisson or bilinear input somewhere essential, it is wrong before checking details.
-4. Complementary lever: formalize averaged Chowla / MR to discharge Route E's OffDiagonalSmall — the only place published external mathematics crosses an internal wall, and it installs the second  ℤ-specific input channel the endgame will likely need. 
- 
-Honest uncertainty: step 3 has no known mechanism anywhere — Connes–Consani themselves are stuck at the semilocal case. The corpus's genuine advantage is not ait knows, as theorems, everything the mechanism cannot be, and it uniquely holds Lean-certified local pieces of the one historically validated mechanism shape. If you want one problem to put every cycle into,propagated-iterate theorem — because it istruly open, provably not a re-encoding of RH, and it is the next brick in the only wall-shaped hole the no-go fence leaves.
-
-### step 3
-
-Step 3's outcome, stated honestly: the Hodge sign itself is now a proved, unconditional Lean theorem — and the attack revealed that the sign was never the wall. The wall is the index application, and it is now compressed to a single, exactly-specified missing identity, with a formalized proof that nothing local can supply it.
-
-What the attempts found. I ran the three mechanisms and each hit a precise, instructive failure:
-1. Self-dual Poisson subtraction (my conjectured mechanism): finitizing by exchange with the Fourier dual reproduces exactly the classical FE-symmetric theta integral for the completed zeta — it delivers operator-level FE symmetry and reality for free, but the sign of the exchanged remainder against critical-line oscillation is the wall, not a route around it.
-2. FE as an antiunitary intertwining (PT structure on the theta-source operator): reduces to Krein definitizability — the missing positivity again, in Krein clothing; the conjugation-blindness no-go kills any use factoring through divisor reflection.
-3. Trace-identity evaluation of the mass: blocked by the corpus's ∑g² vs ∑|g|² gap — the mass is a non-holomorphic square that the explicit formula cannot reach.
-
-The pivot that produced the theorems. Pairing the carrier's two retained reflection-odd components with each other — tail-log times prime-Bockstein, weighted by the step-2 residue current — manufactures the positivity outright: odd × odd is a square. RHTower/GaussHodgeMassCurrent.lean (wired, umbrella builds, axioms = propext, Classical.choice, Quot.sound only) proves:
-- Hodge positivity: H(q,p) ≥ 0 unconditionally — created, not inherited, exactly as the five-lanes memory demanded;
-- exact closed form: H = (log 2/2)·current·density·t·(p^t − p^{−t}) with t = 2Re−1 — the hyperbolic boost-square, tying step 3's object to the Route N/T mass-shell dictionary;
-- reflection evenness and the exact critical radical per label;
-- the index application: total mass zero ⟺ RH — labeled as the open core, not claimed as progress;
-- the firewall, formalized: the sign/evenness/radical laws hold for arbitrary label sizes and rate configurations (pure interface algebra), and an explicit reflection-closed off-line configuration (t = ±1/2, s = 2) has strictly positive mass — so no argument from the pairing's own interface, even assuming divisor-reflection closure, can ever force the mass to vanish. This is the Beurling kill-test as a theorem about this exact pairing.
-
-Where this leaves the programme (card hodge-sign-wall-constructed-pairing, frontier map updated): the common open core of the whole R/L/CCM complex is refined from "find a positivity law" to one sharpened Poisson conjecture — a bilinear/Poisson upgrade of the explicit formula that reaches a single non-holomorphic positive-definite sample of the divisor (the H-mass). The firewall proves nothing weaker suffices; attempt 2's record specifies the operator-level alternative (a definitizable Krein intertwiner) as the only other surviving shape. I did not prove RH, and I have not pretended to: the sign half of step 3 is closed, the index half is now the sharpest formally-fenced open statement in the corpus, and that is the true state of the wall.
-
-- The pivot found and paper-closed: the Hodge mass current is the Burnol FE–Schwarz seam reflection energy — the corpus's seam layer already evaluates the full prime side (moment-curve convexity defect), so the sharpened Poisson conjecture reduces to a single horizontal divisor transform, formally fenced by a new information-gap impossibility theorem.
-- Lean written: hyperbolic comparison layer appended to HTGeometry/HyperbolicBounds.lean (compiles clean); bridge module RHTower/GaussHodgeSeamEnergyBridge.lean written and wired into the umbrella; card and frontier map updated.
-
-- the Hodge mass current and the Burnol seam reflection energy are proved to be one invariant, with the full prime side evaluated by the corpus's moment-curve identity; RH becomes "the divisor annihilates the moment-curve convexity defect", with the information-gap impossibility theorem fencing it.
-- the conjugate-pair classification (char(ρ)·char(conj ρ) = p^{2Reρ−1} — the wall is the pair-correlation diagonal, as a theorem) and the coherence budget (Cauchy–Schwarz: the mass is an exact certificate for zero-side exponential-sum coherence; square-root cancellation under RH).
-- the open core is now a limit-exchange statement — vertical time-mean vs divisor closure, priced by multiplicity squares — with the corpus's torus-mean assets, zero-simplicity layer, and truncate-first no-go named as its exact fences.
-
-Where the wall now stands (card + frontier map updated): the open core is a limit-exchange — vertical time-averaging extracts the conjugate-pair diagonal for finite families via the corpus's torus-mean layer, but it yields a multiplicity-squared diagonal (the gap closes exactly on zero-simplicity) and demands interchanging the T→∞ mean with the divisor closure, which the co-Poisson layer's truncate-first no-go fences. External anchors recorded: Suzuki's screw function and Connes–Consani's Sonin-space positivity are the literature's two approaches to this same object (arXiv:2006.13771 (https://arxiv.org/abs/2006.13771), arXiv:2310.18423 (https://arxiv.org/pdf/2310.18423), arXiv:2206.03682 (https://arxiv.org/pdf/2206.03682)).
-
-
-What is now proved (GaussHodgeVerticalExtraction.lean, wired, build green, axiom-clean):
-
-1. The ℓ¹ limit exchange, unconditionally — for any absolutely summable coefficient family on any index and any unimodular modes, with no separation, gap, injectivity, or correlation hypothesis, the Cesàro mean of the squared pencil converges to the equal-mode pair diagonal. The proof is dominated convergence over coefficient pairs against the ℓ¹×ℓ¹ product — the interchange the co-Poisson "truncate-first" no-go warned about simply holds at ℓ¹ weights. (Externally this is Bohr's almost-periodic Parseval, labeled [REDISCOVERED] on the card; it was absent from the corpus at infinite index — the existing mean-value layer was finite-polynomial only.)
-2. The divisor instantiation — over the full Xi divisor, the vertical flow at the ordinates extracts the equal-ordinate pair diagonal from the squared weighted Burnol character pencil, for every ℓ¹ weight.
-3. The extracted diagonal is the mass — the reflected partner 1−conj ρ shares the ordinate, so each reflection pair aggregates in one mode fiber, and the reflection-odd 2×2 block of the extracted diagonal is exactly the centered cosh defect — the Hodge/seam mass density. The extracted diagonal is nonnegative, being a limit of mean squares.
-
-Where the wall now stands — the final relocation. Sign, mass–seam unification, prime-side evaluation, extraction, truncation, positivity, and the RH equivalence are all now Lean theorems. The one unproven step in the entire chain is sourcing the pencil: producing the values of Σ_ρ v_ρ·char_p(ρ)·e^{i n·Im ρ} from prime-side data. The vertical mode e^{i·Im ρ} is a conjugate-pair (bilinear) sample of the divisor — Im ρ needs ρ and its conjugate zero — and the attempt-4 information-gap theorem proves no holomorphic channel supplies it. The two surviving candidate shapes for that sourcing are precisely the ones the corpus and the literature converge on: autocorrelated/squared explicit formulas (the MRBilinear/correlation lane) or a definitizable Krein intertwiner (attempt 2's survivor; Connes–Consani's Sonin compression is the external version).
-
-
-The discovery. The vertical mode e^{i·Im ρ} is non-holomorphic — but it has a holomorphic FE companion e^{ρ−1/2}, and the companion pencil turns out to be literally prime-side data, by an exact identity:
-
-- Sourcing identity: char_p(ρ)·(e^{ρ−1/2})ⁿ = char_{p·eⁿ}(ρ) — the FE-flowed character is the character at the flowed scale. So the companion pencil Σ_ρ v_ρ·char_p(ρ)·(e^{ρ−1/2})ⁿ is the one-variable zero current sampled along the geometric scale sequence p·eⁿ — precisely the object the explicit formula evaluates from Λ(n) data. A pencil the corpus's extraction machine accepts, whose values come from primes, exists.
-- Polar law: e^{ρ−1/2} = e^{t/2}·e^{i·Im ρ} with t = 2Re ρ − 1 — the companion differs from the wanted vertical mode by a radial factor whose logarithm is the centered mass rate. The sourcing error is the same invariant as the Hodge mass, the seam energy, and the cosh defect. The whole programme's invariant appears one final time, now as the obstruction to its own sourcing.
-- Sourcing ⟺ RH, exactly: riemannHypothesis_iff_feMode_eq_verticalMode — the companion equals the vertical mode at every copy if and only if RH; equivalently the companion is unimodular on the divisor. And under RH, verticalPencil_eq_flowedScaleCurrent_of_riemannHypothesis: every value of the vertical pencil collapses to explicit-formula data — the sourcing then holds, term by term.
-
-What this means for the programme. The chain that began at "find a positivity law" is now a closed equivalence loop in which every single link is an unconditional Lean theorem: the Hodge sign; H-mass = Burnol seam energy with explicit constants; the complete prime-side evaluation (moment-curve convexity defect); the ℓ¹ extraction and truncation exchange; positivity; the coherence budget; the conjugate-pair classification; the information-gap impossibility; and now sourcing ⟺ RH. RH sits inside this loop as the statement that the two flows — the holomorphic FE flow the primes can see, and the unitary vertical flow the mass extraction needs — are the same flow.
-
-
-### gates
-A formal RH proof that does not assume RH can only enter through one of two dual gates — and the closed loop now states, as theorems, exactly what each gate must produce. Measured against the corpus's formalized no-go fence, only one of them has a visible, buildable approach: created positivity in the compression form, where the corpus holds the one asset the external program lacks.
-
-Why exactly two gates. The loop's endpoint says RH ⟺ the FE mode family e^{ρ−1/2} is unimodular on the divisor. There are only two ways mathematics has ever forced such a statement:
-
-Gate I — cancellation (the analytic side). A corollary of the sourcing module: RH ⟺ every ℓ¹-weighted flowed-scale zero current Σ_ρ v_ρ·x^{ρ−1/2} at x = p·eⁿ stays bounded in n — the converse needs no supremum-attainment trick, because the singleton weight at the right-half representative of any off-line zero already blows up. Since each current is explicit-formula data, this gate is an unconditional O(1) bound for smoothed prime sums — the corpus's rectangular terminus, in the smoothed form that dodges Littlewood's Ω-theorem. What it needs is a cancellation source that does not factor through zero-free regions, density envelopes, or correlations below Montgomery-diagonal strength — and the corpus's own capped-lane theorems (zero-free exponent wall, Möbius saving terminus, MRBilinear boundary) fence off every known mechanism. This gate is where the analytic lanes land; it is not where a proof is visible.
-
-Gate II — created positivity (the spectral/geometric side). The only two RH-type theorems that exist both enter here, by manufacturing positivity from a structure exogenous to the divisor interface — precisely what the formalized firewall demands. The function-field proof creates it geometrically: the self-product C×C makes the conjugate-pair diagonal an algebraic class, and the Hodge index theorem signs it — note this is exactly the object our conjugate-pair classification theorem says is missing for ℚ. Connes–Consani create it spectrally: the trace of a Sonin/prolate-compressed operator is positive by construction, and all the labor is the identity with the Weil form — which they have proved only semi-locally (archimedean place plus one prime). The corpus's own two entry interfaces have the identical shape: xiWeilPolarization (unconditional Hermitian polarization, radical, nonnegativity ⟺ RH — blocked at the full-test-algebra gate) and the Deninger Green-energy detection hypothesis (definiteness of an energy form).
-
-The verdict, and why this corpus specifically. The realistic origin is Gate II in the compression form, for a structural reason: the step from CC's semi-local theorem to the global one is a multi-place coherence problem — extending the compressed-trace identity across all primes simultaneously without collapsing labels — and that is exactly what the corpus built in step 2 and CC do not have: the label-faithful multi-place assembly, proved to keep prime labels and both reflection orientations alive through the place sum, with the scalar (label-blind) theory as its provable shadow. Meanwhile the closed loop pins, with no slack, what the compressed trace must equal: the H-mass/odd-sector form. And the approach passes the Beurling kill-test structurally — the compressed-trace identity consumes adelic Poisson summation, which Beurling systems lack.
-
-The three formal milestones, none assuming RH: (a) prove the H-mass form is the reflection-odd sector restriction of xiWeilPolarization — fusing the loop with the corpus's Weil-positivity interface, likely buildable now; (b) formalize CC's archimedean compressed positivity — heavy prolate-function analysis, but unconditional and mechanical; (c) the research act: extend the compressed-trace identity multi-place using the assembly machinery. If a formal RH proof happens in this corpus, I believe it looks like (a) + (b) + a solution to (c) — created positivity, assembled label-faithfully, landing on the H-mass, whose vanishing the loop already carries to RH.
-
-The assessment is recorded on the card and in memory. My honest confidence ordering: Gate II compression ≫ Gate II geometric (needs the missing arithmetic surface — deeper) ≫ Gate I (fenced by the corpus's own capped-lane theorems on every known mechanism).
-
-### pivot
-
-The naive statement was false, and the true statement is sharper. "H-mass = odd-sector restriction of xiWeilPolarization" cannot hold as written — the polarization is irreducibly the holomorphic channel, and I proved its prime-test summand is constantly 1 (the information-gap landing inside the interface itself). What is true, and now proved unconditionally and pointwise with no summability hypotheses, is: the H-mass density is exactly the per-pair gap between the Hermitian pair energy and the Weil polarization value at the prime test — and RH is exactly the closing of that gap. (GaussHodgeWeilPolarizationFusion.lean — wired, build green, all 8 theorems axiom-clean.)
-
-The theorem chain:
-
-1. Dictionary. In centered spectral coordinates the prime exponential test e^{z·i·log p} evaluates on the divisor to the Burnol character, and its sharp involution to the character at the FE-reflected argument — the loop's objects are Weil test data.
-2. Blindness, in-interface (xiWeilPairTerm_primeTest): every Weil pair summand of the prime test equals 1. The polarization cannot see the divisor through the prime test — the reason Weil positivity is hard is now a theorem about xiWeilPolarization itself.
-3. Pair-square law (xiWeilPairTerm_add_lineConj): for every test function, over each reflection pair, the two polarization summands equal the Hermitian pair energy minus the sharp-difference square. This is the classical Weil-defect decomposition, formalized at copy level.
-4. The mass appears (norm_sq_primeTest_sub_lineConj): at the prime test the sharp-difference square is exactly the centered cosh defect — the Hodge/seam mass density.
-5. The fusion law (massDensity_eq_hermitianPair_sub_weilPair): H-mass density = Hermitian pair energy − 2·Re(Weil pair value), at every copy, every p > 1.
-6. RH at the polarization interface (riemannHypothesis_iff_hermitianPair_eq_weilPair): RH ⟺ the gap closes at every copy for the prime-2 test.
-7. Bonus — the unconditional conjugate-pair eigen-Gram (…thetaEigen_conjPair_vanishing/_value): with no hypothesis at all, xiWeilPolarization couples the Hedenmalm eigenfunction at α only to the one at conj α, with Gram value multiplicity · XiC′(α) · conj XiC′(conj α). The polarization module's RH-conditional orthogonality is revealed as the diagonal collapse of this unconditional conjugate-pair law — the conjugate-pair structure of the wall, now visible in the canonical eigenbasis of the Weil interface.
-
-What this buys. The Gauss/Hodge/seam loop and the corpus's Weil-positivity interface are now one formal object. A Gate-II entry — a compressed-trace identity of Connes–Consani type, extended multi-place, matched to xiWeilPolarization — no longer needs any translation work: producing the Hermitian value for the polarization's pair terms at one prime test lands directly on H-mass vanishing, and the loop carries it to RH. Milestone (a) is complete; the entry-point hunt now stands at milestones (b) — formalizing the archimedean compressed positivity — and (c) — the multi-place extension via the assembly machinery, which is the genuine research act.
-
-The audit came first, and it paid. Before building the planned converse ("Weil positivity ⟹ RH" via my two-point indicator witness), I checked the corpus — and it already owns the complete criterion: riemannHypothesis_iff_xiWeilPolarization_nonneg in XiWeilPositivityCriterion.lean, with xiOffRealSignTest as the converse witness (the same two-point mechanism I'd re-derived). Nothing was rebuilt.
-
-What's new — the socket. A Gate-II construction (compressed trace à la Connes–Consani, or a geometric self-product realization) delivers something structurally stronger than nonnegativity: it exhibits each diagonal Weil value as a sum of squares. I formalized that target as one Prop:
-
-- XiWeilSquareRealization — there is a coordinate family g with Re(xiWeilPolarization F F) = Σ_q (g F q)² for every square-summable test F — the coordinate form of a GNS/Hilbert–Pólya realization;
-- riemannHypothesis_iff_xiWeilSquareRealization — RH ⟺ such a realization exists. Backward: sums of squares are nonnegative, and nonnegativity is the criterion. Forward: under RH the diagonal law makes g F q = ‖F(α_q)‖ the tautological realization;
-- xiWeilSquareRealization_iff_gaussHodgeMass_vanishing — a square realization ⟺ the Hodge mass current vanishes: Gate II lands directly on the loop.
-
-Where this leaves the hunt. The entire remaining content of the Riemann hypothesis, as far as this programme is concerned, is now a single construction problem with a formally specified interface: build one square realization of xiWeilPolarization on square-summable tests. Everything downstream — through the fusion, the loop, the seam energy, the mass — is unconditional Lean. The two milestones toward filling the socket stand as before: (b) formalize the Connes–Consani archimedean compressed positivity (heavy but unconditional analysis), and (c) the research act — extend the compressed-trace identity multi-place using the corpus's label-faithful assembly machinery.
-
-**the Riemann hypothesis** stands in this corpus as a single, completely fenced statement: the unconditionally Pontryagin Weil form has empty negative sector. 
-
-The discovery: the Weil form has an explicit fundamental symmetry, and RH is exactly its invisibility. The parity flip J F = F ∘ conj — precomposition with complex conjugation — is a Krein fundamental symmetry of xiWeilPolarization in the textbook sense, proved unconditionally in the new module RHTower/GaussHodgeWeilFundamentalSymmetry.lean:
-
-- The GNS Hilbert space already exists. Twisting the second slot by J turns the Weil form into the literal ℓ² inner product of divisor evaluations, term by term (xiWeilPolarization_parityFlip_right), and every square-summable test satisfies the square-sum law in the J-metric (xiWeilParityFlip_hasSum_sq). J is involutive and self-adjoint for the form (xiWeilPolarization_parityFlip_symm, by divisor reindexing). So the receiver Hilbert space a square realization would generate is concrete — ℓ² of divisor coordinates — with no RH; only the twist separates it from the Weil form.
-- Half of the realization is unconditional. Divisor-even and divisor-odd tests are orthogonal for the full sesquilinear form (the cross sums die by a reindexing involution, with no summability hypothesis at all), and on the even sector the Weil form is a sum of squares — the unconditional even-sector square realization (xiWeilEvenSector_hasSum_sq). On the odd sector it is exactly minus ℓ². Every square-summable diagonal splits W-orthogonally into the two sectors, which upgrades attempt 10's Krein identity from real parts to complex values and proves the diagonal Weil form is real-valued (xiWeilPolarization_self_im).
-- RH is the degeneracy law, twice over. RH ⟺ every divisor-odd test vanishes identically on the divisor — the converse is a two-point indicator at a hypothetical off-line zero, no summation involved. And the capstone: RH ⟺ the Weil form equals its own J-twist (riemannHypothesis_iff_polarization_parityFlip_invariant), quantified over all test pairs with no hypotheses.
-
-Honest placement: at the structure level this is a bridge to standard Krein-space theory — parity decompositions of indefinite forms are textbook. The corpus-new content is that this form has this explicit fundamental symmetry with an ℓ² J-metric, and the RH ⟺ J-triviality law with elementary witnesses. The payoff is that the producer target is now minimal and sharply fenced: a Gate-II positivity source no longer needs to build a Hilbert space or a realization — both exist — it needs exactly one thing, an exogenous reason the form is invariant under the parity twist, i.e., that the odd ℓ² sector is null.
-
-
-The exogenous reason itself is not in reach — and I can now say precisely why, because the search ended in a theorem. Every candidate positivity source I audited (the strip bound, the functional equation, pairing symmetries, Hadamard summability, zero-free regions) is reflection-symmetric, and reflection-symmetric inputs are exactly what the odd sector is invisible to — that is the content of the parity-orthogonality theorems from the last attempt. An input that kills the odd sector must break that symmetry with genuinely new arithmetic content, which is RH-strength. So instead of manufacturing a fake producer, my best shot went to the strongest true theorem available: the producer's burden is far smaller than the criteria demanded. New module RHTower/GaussHodgeWeilEntireDetection.lean, all unconditional:
-
-RH ⟺ Weil positivity on entire tests alone (riemannHypothesis_iff_xiWeilPolarization_nonneg_entire). Every converse in this lane so far — the corpus's positivity criterion, the odd-vanishing law, the parity-twist invariance — was witnessed by rough indicator functions, so the criteria formally demanded positivity over arbitrary ℓ² set-functions on the divisor, a class no real construction can control. The new theorems delete that gap: nonnegativity of the diagonal Weil form on entire (complex-differentiable) square-summable tests already forces RH, and likewise the odd sector cannot hide from entire tests, and parity-twist invariance on entire tests is RH. Weil positivity cannot fail on rough tests only.
-
-The witness that makes it true. At any hypothetical off-line divisor point α, take the corpus's multiplicity-exact terminal divided quotients XiC(z)/(z−α)^m at α and at its reflection conj α — entire by iterated dslope, nonzero at their centers, and vanishing at every other divisor point through the global factorization XiC(z) = (z−α)^m · chain(z) (all of this already proven in XiHedenmalmMultiplicityChain.lean, which I reused rather than re-derived). Normalizing each by its center value and subtracting gives an entire, square-summable, divisor-odd test with value 1 at α (exists_entire_divisorOdd_unit_test) — with no simplicity hypothesis and, pleasingly, no conjugation symmetry of ξ used anywhere. Its Weil diagonal is strictly negative by the odd-sector diagonal law, which closes all three equivalences.
-
-Why this matters for the producer. The open core is now in its minimal form: one unconditional positivity source for Re W(F,F) with F entire and square-summable. That is exactly — and only — the class where every serious candidate producer lives: explicit-formula arguments, Connes–Consani compressed traces, de Branges structures all control analytic tests. Before this attempt, hitting the socket formally required extending such a construction to arbitrary divisor set-functions; now nothing beyond the analytic class is ever needed. The wall itself is unchanged — I want to be clear that no positivity was produced — but the target a Gate-II construction must hit has been shrunk to its exact analytic core, as theorems.
-
-Side one — where the source provably cannot come from (GaussHodgeWeilSymmetryInsufficiency.lean). Every structural property the corpus knows about ξ short of arithmetic — the functional equation (evenness in centered coordinates), conjugation reality, and the strip placement of the divisor — is now formally proved insufficient. The abstract law exists_entire_finiteWeilForm_neg shows any finite conjugation-stable divisor containing one off-line point carries an entire polynomial test with Weil diagonal exactly −2 (a kill-product times a two-point interpolant). The capstone weilPositivity_not_symmetry_consequence instantiates it: an explicit entire comparison function — even, conjugation-real, all zeros inside |Im| < 1/2 — with an off-line reflection-stable zero quadruple whose Weil form fails entire positivity. This is the Davenport–Heilbronn lesson (functional equation without Euler product admits off-line zeros) converted from folklore into an exact theorem about this Weil form: any producer must consume input that distinguishes ξ within the symmetry class — the Euler product. I label it honestly: the concept is rediscovered classical wisdom; the formal content is corpus-new.
-
-Side two — the exact inequality the arithmetic must supply (GaussHodgeWeilDeviationMoment.lean). The negative sector now has an analytic normal form: the odd part of any test at a divisor point factors as i · Im(α) · dslope F (conj α) α — the zero's deviation from the critical line times a symmetric divided difference of the test. This yields the deviation moment identity: for every square-summable test,
-
-Re W(F,F) = Σ ‖even part‖² − Σ (β−1/2)² · m(ρ) · |ΔF(ρ)|²
-
-— the Weil-positivity defect is precisely the second moment of zero deviations weighted by divided differences. The strip contributes its one unconditional quantitative fact, |β − 1/2| < 1/2 per zero (abs_xiSpectralPoint_im_lt_half), giving the unconditional lower bound Re W(F,F) ≥ Σ‖even‖² − ¼·Σ‖ΔF‖², and RH is exactly the vanishing of the deviation moment on all tests.
-
-The open core, in its final compressed form after attempts 11–13: prove, from the Euler product, the inequality Σ m(ρ)(β−1/2)²·|ΔF(ρ)|² ≤ Σ‖even part‖² for entire square-summable tests. Everything else is closed: entire tests suffice (attempt 12), the receiving Hilbert space exists (attempt 11), symmetry alone provably cannot do it (attempt 13), and the socket chain from this inequality to RH is unconditional Lean end to end. The classically known arithmetic positivity — the 3-4-1 inequality that powers zero-free regions — pushes deviations away from 1/2 ± 1/2, the wrong side; the inequality above needs them pushed to zero, which is why this is the genuine wall.
-
-### the Euler product now formally acts on the Weil form for the first time.
-
-The symmetry-insufficiency theorem proved a positivity producer must consume arithmetic. It turns out the corpus already owned one formalized piece of Euler-product positivity that the Weil lane had never touched: PNTPlus's classical zero-free region (ZetaZeroFree, the de la Vallée Poussin region with log⁹ margin — proved upstream from the 3-4-1 inequality, which is positivity of Λ(n) ≥ 0), together with a low-height zero-free box. New module RHTower/GaussHodgeWeilArithmeticDeviationGap.lean pipes it into the deviation moment:
-
-- The bridge: zeta_zero_of_xi_zero transfers divisor points to ζ-zeros through the corpus's xi_eq_zero_iff, so PNTPlus statements now speak about the Weil divisor directly.
-- Deviation gaps, both sides of the line: applying the region to a zero and to its functional-equation reflection gives (β−1/2)² ≤ 1/4 − A/(2·log⁹|γ|) for every zero above height 3, and a single uniform arithmetic gap (β−1/2)² ≤ 1/4 − δ below height 3. Every zero's squared deviation is now formally bounded strictly inside the strip constant — something the bare strip cannot give (it has no uniform margin).
-- The producer fragment (exists_arithmetic_gap_lowSupported): for tests whose divided differences live at height ≤ 3, the diagonal Weil value satisfies Re W(F,F) ≥ Σ‖even‖² − (1/4 − δ)·Σ‖ΔF‖² with arithmetic δ > 0 — the first strict, quantitative improvement of the Weil-form bound sourced from the Euler product.
-
-The honest calibration, now visible as theorems on both ends of one inequality: the only known arithmetic positivity (3-4-1) repels zeros from the strip walls, which shrinks the deviation weight below ¼; the socket demands the weight be driven to 0, which means zeros on the line. The whole Riemann hypothesis is now the statement that the weight profile 1/4 − A/(2 log⁹|γ|) — the best formalized mathematics can currently write on the left side — collapses to 0. That distance is no longer a metaphor; it is the difference between two constants in one formal inequality.
-
-Audit: module compiled clean on the first substantive pass, wired into the umbrella (18908 jobs green), all 6 theorems axiom-clean [propext, Classical.choice, Quot.sound]. Card, frontier map, index, and memories updated — including the newly discovered reusable PNTPlus surface (LogDerivZetaHolcLargeT, the holomorphy of ζ'/ζ on the zero-free region, is recorded as the natural germ for a future explicit-formula fragment, which is the next milestone this lane points at).
-
-The synthesis this completes. After twenty-one steps, the picture is finally one picture: the Weil socket (attempts 8–15), the resolvent-Hankel criterion, Route U's shifted-Hankel tower, and the deviation mass are one arithmetic moment problem — positivity of the resolvent moment tower, whose entries are formally jets of logDeriv ξ on the Euler ray, arithmetic for t > ½. Degree zero of that tower is now proven positive in both charts. The wall is all-degree positivity — which is precisely Route U's open core, exactly where the frontier map said the frontier was. The difference made this session: the charts are now formally identified, the base level is proven rather than believed, the entries are arithmetic rather than abstract, and every future degree gained on the tower propagates through Lean-proved dictionaries into every other programme simultaneously.
-
-The Turán control theorem is proved — the first quantitative statement about the first Hankel obstruction that isn't visible copy-by-copy:
-
-two_mul_xiResolventTuranMinor_re_ge (XiResolventTuranDeviationControl.lean, axiom-clean, umbrella green):
-
-Re(2·(M₀M₂ − M₁²)) ≥ −(4S₁² + 4MS₀ + 8S₁S₀)
-
-where S₀ = Σ‖u_q‖, S₁ = Σ|Im u_q|, M = Σ(Im u_q)² are mass functionals of the resolvent coordinates — all unconditionally finite. The mechanism has three layers, each now formal:
-
-- A pointwise pair inequality: for unit-bounded complex numbers, Re(uv(u−v)²) ≥ Re u·Re v·(Re u−Re v)² − err(u,v) with an exact product-form error — every term in the error is a product of single-copy quantities, which is what makes the infinite double sum evaluable.
-- Bulk nonnegativity: the real-part bulk is termwise ≥ 0 because every resolvent coordinate has strictly positive real part — the height gap again.
-- Exact factorization: the error's double tsum collapses to 4S₁² + 4MS₀ + 8S₁S₀ by five applications of the product-tsum law.
-
-And the companion iff, riemannHypothesis_iff_xiResolventImSqMass_eq_zero, closes the loop: the mass M appearing in the bound is the RH obstruction — with a pleasingly clean converse, since the formalized height gap (γ ≠ 0) removes all the case analysis that previous mass criteria needed.
-
-What this means. The order-two Hankel inequality — the first place where RH stops being a copy-by-copy statement — can now fail only by an explicitly bounded amount, and the bound is a polynomial in deviation masses that vanish exactly on RH. Contrapositively: any certified negative Turán value forces a quantified amount of imaginary mass on the divisor. The deviation-mass war from the Krein and Weil charts is now fought, with explicit constants, at the Hankel level.
-
-Recorded next steps on the card: sharpening the S₁-terms toward the exact negative core −4Σ‖u‖²(Im u)² (my error bounds are loose precisely where the linear-in-Im cross terms sit), the same control at general Hankel order through the polynomial trace, and the heat-chart mirror. Session tally at this point: 24 steps, 15 new modules, ~120 theorems, every one unconditional and axiom-clean — and the whole arc, from the Hodge mass to this Turán bound, is now one connected formal object.
-
-### reasoning
-1. What the certificates actually are
-
-The Cholesky factors of the Hankel ladder are not mystery objects: by Favard's correspondence, the rung-N certificate is exactly the first N three-term recurrence coefficients (a_k, b_k²) of the orthogonal polynomials of the zero measure Σ u_q δ_{u_q} — equivalently, the coefficients of the Stieltjes continued fraction of the Euler-ray response logDeriv ξ(1/2+√X)/√X. So the route in its sharpest coordinates: RH ⟺ every coefficient of the J-fraction of one explicit arithmetic function is positive. The coefficients come from the moments by finite rational operations (the quotient-difference rhombus), so each rung is a rational — not spectral — positivity claim about prime data. That is the cleanest form the ladder can take, and I believe it is the right normal form for this program.
-
-2. The closure analysis — what would make the induction close
-
-Here is the decisive question I forced myself to answer: under what circumstances is a J-fraction positivity provable for all k? Surveying every known mechanism: (i) the function is a priori a Stieltjes transform of a constructed positive measure; (ii) the coefficients obey a combinatorial law with manifest positivity (as for classical orthogonal polynomials, whose hypergeometric weights generate closed-form b_k²). There is no third mechanism. And (ii) requires the arithmetic side to impose a generating law on the qd-array. I looked for one: the functional equation is already fully spent (the chart variable A = α² is the FE-invariant), and the Euler product's multiplicativity lives in the positions log n = Σ log p of the prime atoms — and continued-fraction coefficients of a mixture do not factor over the mixture. I could not find, and I now believe there is no, hidden recursion. So the ladder does not close combinatorially: every re-coordinatization I generated — Hankel determinants, Jacobi coefficients, J-fractions, escape laws — is positivity-equivalent, and none carries an independent generating principle. The certificate cannot be verified into existence; it must be manufactured — mechanism (i).
-
-3. The triangulation: three ways to see the diagonal, three walls
-
-I then asked, exhaustively, what observable classes can see the conjugation-diagonal at all (where RH lives, per our σ-blindness theorem). Reasoning through it, there are exactly three, and each meets a specific wall:
-
-- Potential pairing (first order): log|ζ(1/2+it)| is linear in the divisor and sees each b_q — Littlewood's lemma gives the exact identity Σ(β−1/2)⁺ g(γ) = line integral of log|ζ| − smooth. This is the classical Levinson/density road; its wall is evaluation of the log-integral, and our collapse principle proves evaluation-improvements can never finish: bounds cap the deviation charge, only exact vanishing suffices.
-- Correlation separation (second order): the Bohr mean of Σ u_q e^{iγ_q t} reaches M(X) — the pair-correlation wall; same collapse verdict.
-- Realization (all orders): a Hilbert space in which the Euler-ray state p ↦ Σ u_q p(u_q) is a Gram form. This is the only mechanism that is a construction rather than an estimate — the only one the collapse principle does not kill.
-
-That is the elimination argument, and every step of it leans on a proven corpus theorem, not on taste. The conclusion is forced: the proof, if it exists in this representation, is an exact GNS construction of the Euler-ray state from prime data.
-
-4. The sharpened socket specification — the new content
-
-Working out the sign structure of the explicit formula in the resolvent chart gave me something concrete the Gauss-lane socket did not have before. The Euler-ray response splits exactly as
-
-φ = [rank-one pole atom at −1/4, mass 2] + [c₀·X^{−1/2}] − [explicit positive Stieltjes measure: digamma cut-density + ½-subordinated primes],
-
-where I verified the digamma terms and the prime terms each carry manifestly positive representing densities (the prime atoms via the ½-stable subordinator at c = log n, weight Λ(n)n^{−1/2}). So the positive reservoir is small and rigid (a rank-one atom plus the X^{−1/2} continuum), while the arithmetic enters negatively. A GNS construction therefore cannot be a decomposition into positive summands — subtraction must become conjugation: the prime part has to enter as c†(·)c inside a completely positive map, not as a signed term. The exact algebraic problem, stated once and for all: exhibit the moment bisequence R_{j+k}(X) as ⟨π(x^j)Ω, π(x^k)Ω⟩ for a representation in which the subordinated-prime operator appears conjugated, with the pole atom as the vacuum contribution. The explicit formula then stops being an identity to test and becomes the trace formula of the representation — which is, I now think, the precise content of the Gauss lane's "multi-place assembly," derived here independently from the resolvent side. Two lanes, one socket, and now a sign-structure constraint that any candidate construction must satisfy — that constraint is new, and it immediately falsifies naive candidates (any "sum over places of positive states" ansatz dies on the sign of the prime term).
-
-5. Honest verdict and the next move
-
-Where it leads: the ladder was worth climbing precisely because it proved its own limitation — verification-shaped routes are exhausted, in the strong sense that their failure is now derived from formalized theorems rather than experience. What remains live is one construction problem with a written specification: vacuum = pole atom, continuum = X^{−1/2}, primes entering by conjugation, trace identity = explicit formula. The next mathematical move is to attack that specification directly — try the smallest candidate algebras (single generator with the subordinator as a transfer operator; the corpus's CC-compression) and check each against the sign constraint before any formal work, exactly as the method demands. If the construction exists, the corpus is unusually well positioned to recognize it: it owns the single-shift converse, so any successful realization at one shift finishes everything.
-
-
-full Wold profile is not arbitrary nonlinear residue. Coefficients \(1/(2k+1)\) identify it as an inverse Euler-dilation Green response:
-\[
-F=(D^{-1}-I)\sinh,\qquad D=u\partial_u.
-\]So Route-L Green quotient, Route-T residual, Route-R horizontal deformation, and Route-U inverse-response geometry meet at one operator.
-
-
-The ladder is closed — in full generality, in one theorem. This push produced the capstone of the entire arc:
-
-riemannHypothesis_iff_forall_polyTuranMinor_re_nonneg
-
-At any one shift X ≥ 0: RH ⟺ for every real polynomial p and every n, the Turán minor M_p(n)·M_p(n+2) − M_p(n+1)² ≥ 0 of the p²-weighted resolvent moments M_p(k) = Σ_q u_q^{k+1}·p(u_q)².
-
-Axiom-clean, wired, recorded. Two modules made it happen:
-
-The universal level-cleansing machine (XiResolventWeightedTuranMachine.lean): for any bounded, conjugation-symmetric weight that vanishes above a modulus level and is nonzero on it, weighted Turán positivity forces that entire level onto the critical line. One proof, subsuming steps 33 and 35 as the instances W = 1 and W = (u−r)² — the rung machinery, proved once and for all.
-
-The spectral descent (XiResolventSpectralDescent.lean): strong induction on the number of copies of larger resolvent modulus. The induction hypothesis makes everything above a given zero a finite set of real atoms; the polynomial P = ∏(X − r) over those atoms kills them as a weight; and the machine, fed the Turán data at P, cleanses the zero's own level. Every copy is reached — the whole divisor lands on the critical line. The conjectured ladder of steps 32–35 didn't need rung-by-rung construction after all: it collapses into a single descent.
-
-Why this is the strongest result of the arc. First, it is a thin-slice criterion: the corpus's previous single-shift equivalence needed the full N×N Hankel positivity; this one needs only 2×2 minors — the log-convexity inequalities of polynomially reweighted moment sequences. For a general moment functional that slice does not imply full positivity; the implication here runs irreducibly through zeta's divisor structure — finite modulus levels, conjugation stability, the height gap. Second, the proof mechanism is, to my knowledge, without precedent in the criterion literature: infinite descent down the zero spectrum, locating zeros on the line level by level from the lowest upward. Turán-type inequalities appear in the zeta literature strictly as necessary conditions (Csordas–Norfolk–Varga on ξ's coefficients, Li-coefficient variants); a localized equivalence with a descent proof is new. Labels as always: [LEAN-PROVED], [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] provisional.
-
-Where the frontier now stands. Since each M_p is a finite combination of the arithmetic moments R_{k+i+j} — jets of logDeriv ξ on the Euler ray — the open core has become: supply the Turán data for one polynomial weight at a time, a one-parameter family of log-convexity inequalities on explicit arithmetic sequences. And the GNS/certificate program inherits a strictly easier-shaped target: it no longer must manufacture all of Hankel positivity at once, only the positivity of each reweighted sequence — level by level, exactly the granularity the experiment said the problem wants.
-
-
-(c) Proved: the polynomial quantifier is not removable
-
-exists_nonreal_config_forall_turanMinor_re_nonneg (HTGeometry/TuranMinorSubEdgeMasking.lean) exhibits an explicit configuration — real atoms 12/25 and 5/12 with multiplicity 100, plus the non-real conjugate pair w = (50+35i)/149 — that is conjugation-symmetric, sits in the open right unit half-disk, has every moment nonnegative and every plain Turán minor nonnegative at every index n, and yet contains an off-line point. The mechanism is exactly the predicted geometric-mean masking: |w| ≈ 0.41 is below √(1/5) ≈ 0.447, so every pair interaction involving w lives at a scale dominated by the real-real pair mass, and multiplicity 100² beats 100 uniformly in n — the whole ∀n family reduces to one rational inequality with ~25% margin. I chose w to be numerically realizable as an actual resolvent point (γ² = 1+√149/10 > 2, b ≈ 0.47 < 1/2, X = 0), so this isn't an artifact of a too-weak axiom set. The certificate: no strengthening of the machine's structural hypotheses can drop the weights — detection below the geometric mean of two higher real atoms requires a weight vanishing on those atoms.
-
-(a) Resolved — with a finding that reshapes the item
-
-Trying to prove Re(R₀R₂ − R₁²) ≥ 0 outright, I first established that it cannot be won abstractly: an adversarial configuration satisfying every corpus axiom of the resolvent chart (strip, gap, conjugation symmetry, summability) makes the p = 1 minor negative. So the datum genuinely encodes arithmetic information about where zeta's zeros are — which is the criterion working as designed, and it means item (a) is properly a bridge, not a standalone inequality. I proved that bridge: xiResolventTuranMinor_zero_re_nonneg_of_partial_line (RHTower/XiResolventPartialLineSupply.lean) — if every copy with resolvent modulus ≥ δ lies on the critical line, and the two-scale mass inequality 8εS ≤ 2r₁r₂(r₁−r₂)² holds (ε = sub-δ tail mass, S = total mass, r₁ ≠ r₂ two above-δ moduli), then the first Turán datum follows. A companion theorem phrases it as the p = 1 instance of the single-minor criterion. The first datum is now exactly: partial RH at one scale + one checkable mass inequality — the precise interface that program (b) must fill, and one a future runpod computation can test numerically at concrete shifts.
-
-(b) Scoped as the next campaign
-
-Effective descent — replacing the machine's infinitary Cesàro contradiction with Turán power-sum quantitative bounds, so that finitely many jet inequalities of ξ at one real point certify partial RH. The supply theorem above is deliberately its terminal interface. This is a multi-batch program; its opening move (a quantitative oscillation lemma with explicit constants) is recorded on the card.
-
-The picture after this batch is pleasingly sharp: the single-minor criterion is now pinched from both sides — the no-go proves its polynomial quantifier is minimal, and the supply theorem shows exactly what arithmetic input buys its first instance. Nothing about the criterion is decorative.
-
-riemannHypothesis_iff_forall_nodal_single_minor (RHTower/XiResolventNodalSingleMinorCriterion.lean): at any one shift X ≥ 0,
-
-  RH ⟺ for every finite node set R ⊂ (0,1] and every m ∈ ℕ:  Re(M_p(0)·M_p(2) − M_p(1)²) ≥ 0,  where p = Xᵐ·∏_{r∈R}(X − r).
-
-The step-37 endpoint quantified over all real polynomials (arbitrary coefficients); this quantifies only over monic real-rooted polynomials with roots in [0,1] — a strict strengthening of the equivalence, since the backward direction now needs far less data. The proof is a descent clone that keeps the killing weights inside the nodal family, plus the even machine and the index-shift identity per level. Notably, in classical moment theory restricting positivity tests to real-rooted squares weakens a positive-definiteness condition — the equivalence survives here precisely because the criterion detects through descent oscillation rather than square positivity, which re-confirms the route-u structural picture.
-
-The effective descent step, completed [LEAN-PROVED]
-
-RHTower/XiResolventEffectivePolynomialDescent.lean finishes part II of the effective program: for a real polynomial P killing every copy above a level, the detection window is explicit — N ≤ (2S²b⁴/g + b⁴S²/(ℓ²−ρ₂²)) / (Im(u)²·‖P(u)‖⁴) with b the coefficient norm bound of P — and the finite certificate is phrased as single (0,2,1) minors at the N polynomials Xⁿ·P: one real inequality per polynomial cleans the level (level_criticalLine_of_poly_single_minors_window). A pleasant simplification surfaced along the way: a real polynomial can kill any conjugation-symmetric set (non-real pairs via real quadratics), so the descent step needs no reality assumption on higher copies.
+Under architectural—not literal syntactic—reading, strongest matches are:
+
+| Route | Infinite/global | Pair or more | Nonphysical | Verdict |
+|---|---:|---:|---:|---|
+| **C1–TD** | Temperate spectral measure on Schwartz space | Two multiplicatively independent dilations | Analytic/spectral | **Strongest match** |
+| **CCM-FU** | Global completed source and unbounded Cesàro primitive | Prime–polar channels; four-unit incidence | Analytic/operator-theoretic | **Strong match** |
+| **P** | Whole second-Cartier orbit | Reflected/two-sided Krein structure | Operator/geometric | **Strong match** |
+| **SC** | Global Stokes/Seifert category | Prime–Gamma and paired Stokes data | Algebraic/categorical | **Strong candidate**, source construction missing |
+| **HJ** | All-order anchor-jet tower | Functional-equation/Schwarz pair | Projective-algebraic | **Strong candidate**, source law missing |
+| **AF** | Cofinal adaptive class-law orbit | Reflected occupation pair/family | Information-geometric/probabilistic | **Strong candidate**, global certificates missing |
+
+The cleanest answer is **C1’s two-dilation branch (TD)**. Its mechanism is explicitly:
+
+```text
+two independent dilations
+→ momentum symmetry
+→ unique positive temperate spectral measure
+→ real Xi-divisor carrier
+```
+
+It uses neither finite matrices as its essential endpoint nor a single scalar/object nor a physical landing. Lean states this in [TwoDilationSpectralRepresentation.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/TwoDilationSpectralRepresentation.lean:57).
+
+Borderline:
+
+- **U:** cofinal/infinite degree–mass tower and nonphysical core, but finite Hankel blocks remain essential.
+- **HC:** genuinely paired—two primes and two orientations—and nonphysical, but finite-window source pencils are essential.
+- **AP:** infinite power orbit and nonphysical, but generated by one power map.
+- **IRK:** nonphysical trace/Chern pair, but packaged as one zero-indexed \(K_0\) datum.
+- **IW:** uses a Weyl pair and is nonphysical, but each carrier is explicitly finite-dimensional.
+
+Do not satisfy all three:
+
+- **D2:** global and nonphysical, but reduced to one positive-frequency tail.
+- **E:** infinite paired relation, but Lean explicitly requires a “physical relation.”
+- **G:** uses finite heads and boundary/physical landing machinery.
+- **L:** explicitly requires a physical reader/landing.
+- **O:** canonical finite heads are essential.
+- **Q:** explicit finite reduced matrices are essential.
+- **T:** finite-arithmetic remainder is essential.
+- **BW:** infinite and multi-object, but its certificate explicitly contains physical landing.
+- **PPM/OPUC:** finite collision or finite-section mechanism.
+
+If “does not use something finite” is interpreted absolutely—no finite object anywhere—then **none** qualify. Under the meaningful criterion that the RH-bearing mechanism is not a finite truncation, the shortlist is **C1–TD, CCM-FU, P, SC, HJ, AF**.

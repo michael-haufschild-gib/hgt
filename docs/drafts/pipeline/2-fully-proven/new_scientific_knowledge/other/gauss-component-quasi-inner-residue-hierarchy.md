@@ -2941,3 +2941,134 @@ remains of §6 is the `upper` line (the `P_M` split, which needs only the two `�
 identities `Σ_j ‖X b_j‖² = Σ_j ‖X* b_j‖²` and `Σ_n ‖X g_n‖² ≤ Σ_j ‖X b_j‖²`) and the analytic
 input `E_M ≲ M^(δ'−1/2)`, i.e. `‖G^m e_n‖ ≲ |n|^(δ'−1)`, which follows from
 `‖G^m e_n‖ = |σ_n|^m ‖R_n^m 1‖` and the two-piece class bound on `‖R_n^m 1‖`.
+
+## Lean status, fifty-sixth pass: section 6 is formalized — the actual operator's singular values
+
+Section 6 of the paper proof routes through the Lord–Sukochev–Zanin eigenvalue comparison theorem
+for weakly `V_0`-modulated operators.  That theorem is not in mathlib and is a substantial piece of
+noncommutative-integration machinery.  This pass **replaces it by an elementary two-scale
+compression argument** and formalizes the replacement in full, so that (15) now holds for the
+*actual* operator `G^m` and not only for a diagonal model with the right approximation numbers.
+
+### The elementary substitute for modulation theory
+
+For a positive compact `T` and a finite set `S` of basis indices, write `P_S` for the coordinate
+projection and `A = P_S T P_S`.  Then
+
+```text
+sum_(n<N) s_n(T) = sum_(n<N) <g_n, T g_n>            (g_n the greedy vectors)
+                 = sum_(n<N) <g_n, A g_n> + sum_(n<N) <g_n, (T-A) g_n>
+                 <= sum_(n<N) s_n(A) + sqrt(N) (sum_(n<N) ||(T-A) g_n||^2)^(1/2)
+                 <= sum_(j in S) <b_j, T b_j> + sqrt(2N) E_S,
+```
+
+with `E_S^2 = sum_(j notin S) ||T b_j||^2`.  The first inequality is Ky Fan majorization applied to
+the *compression*; the second is Cauchy–Schwarz plus Bessel for the self-adjoint remainder `T-A`,
+whose Hilbert–Schmidt mass is at most twice the off-`S` column mass.  Taking `S` the symmetric band
+of radius `M = ceil(N^(1+u))` and letting `u -> 0` after `N -> infinity` turns the diagonal
+logarithmic mean into the singular-value logarithmic mean, **provided** the columns satisfy
+`||T b_n|| <= C_rho |n|^(-1+rho)` for every `rho > 0`.
+
+Nothing here uses `V_0`-modulation, Cesàro operators, or the Calkin correspondence.
+
+### The column decay, and why the class machinery had to be reopened
+
+`G^m e_n = (p |d_n|^2)^m e_n (R_n^m 1)` exactly (this identity was already in the tree), and
+multiplication by the exponential monomial is an isometry, so
+
+```text
+||G^m e_n|| = (p |d_n|^2)^m ||R_n^m 1||.
+```
+
+`|d_n|^(2m) <~ 1/|n|` is the sampled-magnitude bound already owned.  What was missing was
+`||R_n^m 1|| <~ (1+|n|)^rho`.  The tied class propagates only to `r = m-1`, because the spike
+exponent `c_0 + r/m` must stay below `1 - 1/(2m)` for the *symbol* (convolution) steps.  The last
+step is unblocked by the observation that the outermost factor of `R_n = B S B^(-2) S* B` is the
+*bounded multiplication operator* `B`: its operator norm `sqrt(p)` suffices, so only the inner four
+factors need the class.  Those four impose the weaker constraint `c + 1/(2m) < 1`, which
+`c = c_0 + (m-1)/m` satisfies as soon as `c_0 < 1/(2m)`.  The resulting class for the inner part has
+bulk exponent `1 - (3m-1) eps` and spike exponent `c_0 + 1`, whose `L^2` mass is
+`<~ (1+I)^(2 c_0 + 2(3m-1) eps)` — an arbitrarily small power, since `c_0` and `eps` are free.
+
+### `RHTower/PositiveOperatorDiagonalResidue.lean`
+
+Generic operator theory, no arithmetic:
+
+- `basisTruncation`, `basisCompression` — the coordinate projection and the compression `P_S T P_S`,
+  with positivity, compactness and self-adjointness.
+- `sum_singVal_basisCompression_le` — the compression's singular values sum to at most the truncated
+  diagonal.
+- `tsum_ofReal_norm_sq_remainder_le` — `||T - P_S T P_S||_HS^2 <= 2 sum_(j notin S) ||T b_j||^2`.
+- `sum_sq_norm_apply_svVec_le` — Bessel for a self-adjoint operator against the greedy frame.
+- `sum_singVal_le_diagonal_add_tail` — the displayed comparison.
+
+### `RHTower/SingularValueLogMean.lean`
+
+- `tsum_tail_le_of_norm_apply_le` — a column family decaying like `|n|^(-1+delta)` has band tails
+  `<= K M^(-1+4 delta)`.
+- `tendsto_log_div_log_of_bounds` — a scale comparison in the logarithm passes to the ratio of
+  logarithms.
+- `sum_band_re_inner_le_sum_singVal` — Ky Fan on the symmetric band of cardinality `2M+1`.
+- `tendsto_sum_singVal_div_log_of_diagonal` — **the abstract theorem**: for a positive compact `T`
+  with a `Z`-indexed Hilbert basis, if the symmetric-band diagonal has logarithmic mean `L` and the
+  columns decay faster than every power below one, then `(1/log N) sum_(n<N) s_n(T) -> L`.
+
+### `RHTower/GaussTwoPieceL2Bound.lean`
+
+- `intNatAbsPowTotal`, `tsum_shift_int` — the integer power total and its translation invariance.
+- `tsum_sq_spikeProfile_le` — the spike band carries mass `B^2 I^(2c) Z(2c)` once `c > 1/2`.
+- `norm_sq_le_of_twoPieceAmplitude` — Parseval form: the class controls the `L^2` norm.
+
+### `RHTower/GaussIterateNormBound.lean`
+
+- `norm_le_of_tiedTwoPieceAmplitude` — the tied class gives `||u|| <= W (1+I)^rho` whenever
+  `2c - 2 theta <= 2 rho`.
+- `exists_gaussClass_principalStepInner` — the inner four factors of the principal step keep the
+  tied class, under the weaker constraint `c + 1/(2m) < 1` and with only `2 eps` of exponent loss.
+- `exists_norm_gaussPrincipalStep_pow_le` — **for every `rho > 0`**,
+  `||R_I^m 1|| <= C (1+I)^rho`.
+
+### `RHTower/GaussColumnDecay.lean`
+
+- `norm_star_lp`, `norm_gaussQuasiInnerG_pow_fourierLp_natAbs` — conjugation is isometric, so
+  negative frequencies are free.
+- `exists_norm_gaussQuasiInnerG_pow_fourierLp_le` — **for every `rho > 0`**,
+  `||G^m e_n|| <= C |n|^(-1+rho)`.
+
+### `RHTower/GaussChannelOperator.lean`
+
+- `isPositive_pow`, `isCompactOperator_pow` — powers of positive (resp. compact) operators.
+- `tendsto_norm_gaussSampleValue_cofinite`, `isCompactOperator_gaussDiagonalBlock`,
+  `isCompactOperator_gaussQuasiInnerG`, `isCompactOperator_gaussQuasiInnerGFull` — the diagonal
+  block has eigenvalues tending to zero, hence `G` is compact.
+- `gaussChannelOperator` — `((p-1)/p)^(2m) . G_full^m`, positive and compact.
+- `sum_Icc_eq_zero_add_sum_range` — the symmetric band is the zero mode plus the reflected pairs.
+- `tendsto_gaussChannelOperator_band_logMean` — the band diagonal has logarithmic mean
+  `gaussChannelResidue m p`.
+- `exists_norm_gaussChannelOperator_fourierBasis_le` — the column decay, transported.
+- `tendsto_sum_singVal_gaussChannelOperator` — **equation (15) for the actual operator**:
+  `(1/log N) sum_(n<N) mu_n(((p-1)/p)^(2m) G_full^m) -> 2 (p-1)^(2m) (p^m-1)^2/(p^(2m) m^2 log p)`.
+- `isDixmier_of_tendsto_logMean`, `isDixmier_gaussChannelOperator` — `L^(1,infinity)` membership.
+- `hasSchattenLogResidue_gaussChannelOperator` — **Connes measurability at order one with the
+  arithmetic residue as value**, i.e. formula (A) at the level of the reduced operator.
+
+All modules are `lake build`-green and `#print axioms` reports exactly
+`[propext, Classical.choice, Quot.sound]`; the hypotheses are `2 <= m`, a component label `k`, and a
+rational prime `p` — nothing else.
+
+### What section 6 no longer needs
+
+The card's paper proof of (15) used: the Sobolev boundedness of piecewise-smooth multipliers on
+`H^u(R/Z)` for `u < 1/2`; weak ideal Hölder; and the LSZ eigenvalue comparison theorem for weakly
+`V_0`-modulated operators.  **None of these are used in the Lean proof.**  The Lean route needs only
+Ky Fan majorization (owned), Bessel, Cauchy–Schwarz, and the column decay established above.  This
+is a strictly stronger statement than the paper's, since it produces the honest limit rather than
+membership plus measurability from a general principle.
+
+### Remaining on this card
+
+Only section 1, the Connes–Consani source reduction
+`|E_(m,k,p)|^(2m) ~ ((p-1)/p)^(2m) G^m` up to trace class, which is a *cited* classical input
+(Connes–Consani's one-prime decomposition of the Hankel operator `H = (1-P) M_(rho) P`) and not new
+content of this card.  It is recorded as a named classical input, in the same way the corpus records
+the classical inputs of the Manin-horizon and Hardy cards.

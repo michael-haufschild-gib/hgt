@@ -101,4 +101,23 @@ theorem finite_latticeIsometry_of_wellRounded {L : Submodule ℤ E} [DiscreteTop
     exact this
   exact Set.finite_coe_iff.1 (Finite.of_injective Φ hinj)
 
+omit [ProperSpace E] in
+/-- **A well-rounded lattice has an `ℝ`-basis of shortest vectors.**  Extracting a maximal
+independent subset of the shortest vectors does not change their span, which is everything. -/
+theorem exists_independent_spanning_latticeMinimalVectors {L : Submodule ℤ E} {m : ℝ}
+    (hwr : IsWellRounded L m) :
+    ∃ B ⊆ latticeMinimalVectors L m, LinearIndependent ℝ ((↑) : B → E) ∧
+      Submodule.span ℝ B = ⊤ := by
+  obtain ⟨B, hBsub, hspan, hind⟩ := exists_linearIndependent ℝ (latticeMinimalVectors L m)
+  exact ⟨B, hBsub, hind, by rw [hspan]; exact hwr⟩
+
+omit [ProperSpace E] in
+/-- Such a family is finite in a finite-dimensional space. -/
+theorem exists_finite_independent_spanning_latticeMinimalVectors [FiniteDimensional ℝ E]
+    {L : Submodule ℤ E} {m : ℝ} (hwr : IsWellRounded L m) :
+    ∃ B ⊆ latticeMinimalVectors L m, B.Finite ∧ LinearIndependent ℝ ((↑) : B → E) ∧
+      Submodule.span ℝ B = ⊤ := by
+  obtain ⟨B, hBsub, hind, hspan⟩ := exists_independent_spanning_latticeMinimalVectors hwr
+  exact ⟨B, hBsub, hind.setFinite, hind, hspan⟩
+
 end GaloisForLFunctions.HTGeometry
