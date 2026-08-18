@@ -1,11 +1,11 @@
 # All-replica incidence-normalized local-word leakage law
 
 - **ID:** `all-replica-incidence-normalized-local-word-leakage-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalised in Lean 4
 - **Type:** quantitative theorem / conditioning boundary / positive no-go survivor
 - **Parents:** `all-replica-one-step-local-pauli-hall-saturation-law.md`,
   `../3-formalized/all-replica-local-casimir-hall-expansion.md`
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NO LEAN DURING ACTIVE REFACTOR]`
+- **Status:** `[LEAN-PROVED] [FRONTIER ADVANCE] [NOVELTY PROVISIONAL]`
 - **Date:** 2026-08-10
 
 ## Public sentence
@@ -724,3 +724,132 @@ So the card's mathematical content is complete -- Theorem A, Theorem B, `(6)`, `
 `(16)` at every replica order, `(23)`, `(24)` and Lemma D's engine are all Lean-proved -- and the
 only remaining Lean work is the continuous-functional-calculus transfer `(19)` that turns the
 now-proved gap into the leakage estimate `(18)`.
+
+## Lean progress -- `(19)`, `(18)`, Lemma D and Theorem E: the card is closed
+
+Eight further umbrella-wired, axiom-clean modules complete the card.  `#print axioms` on every
+declaration below returns `propext`, `Classical.choice`, `Quot.sound` only.
+
+### The spectral upgrade: from an eigenvalue gap to an operator inequality
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralGapQuadraticForm.lean`
+
+| Card item | Declaration |
+|---|---|
+| the coordinate inner product is the Euclidean one | `cinner_eq_inner` |
+| **eigenvalue gap ⟹ form gap**: if every eigenvalue of a Hermitian `T` is `0` or `≥ g`, then `g‖z‖² ≤ ⟪z,Tz⟫` at every `z ⊥ ker T` | `cnormSq_le_of_eigenvalue_gap` |
+
+The proof expands `z` in `Matrix.IsHermitian.eigenvectorBasis`: the coefficients along kernel
+eigenvectors vanish because `z` is orthogonal to the kernel, and every surviving coefficient is
+weighted by an eigenvalue past `g`.  This is the step that converts `fullPauliCasimir_eigenvalue_gap`,
+which constrains eigenvalues one at a time, into a statement usable on a whole subspace.
+
+`formal/GaloisForLFunctions/HTGeometry/CoordinateInnerProductToolkit.lean`
+
+| Card item | Declaration |
+|---|---|
+| Hilbert--Schmidt energy is the total column square norm | `hsSqRe_eq_sum_col` |
+| **a vectorwise contraction rescales Hilbert--Schmidt energy**: `cnormSq(Mv) ≤ c·cnormSq v` for all `v` gives `hsSqRe(MY) ≤ c·hsSqRe Y` | `hsSqRe_mul_le` |
+| Pythagoras for a Hermitian idempotent | `cnormSq_split_of_hermitian_idem` |
+| **the Casimir form is the family energy**: `Re⟪v,Kv⟫ = ∑_q ‖A_q v‖²` | `cinner_casimir_re` |
+
+### `(19)`: transporting the target along the normalization
+
+`formal/GaloisForLFunctions/HTGeometry/ImageProjectionTrace.lean`
+
+| Card item | Declaration |
+|---|---|
+| the trace of an idempotent is the dimension of its range | `trace_eq_finrank_range` |
+| the orthogonal projector onto `R·V` | `imageProjection` |
+| it is a self-adjoint idempotent | `imageProjection_conjTranspose`, `imageProjection_mul_self` |
+| **the key annihilation** `(I-P_W)·R·P_V = 0` | `one_sub_imageProjection_mul` |
+| **transport costs no dimension**: `Tr P_W = Tr P_V` for invertible `R` | `imageProjection_trace` |
+
+This is the exact content of `(19)`.  The card phrases it as the distance inequality
+`dist(K^{-1/2}x, K^{-1/2}V) ≤ ‖K^{-1/2}‖ dist(x,V)`; in the matrix formulation the same fact is the
+pair "the complementary image projector annihilates `R P_V`" and "the image projector has the same
+trace", which is what the leakage bound actually consumes.
+
+`formal/GaloisForLFunctions/HTGeometry/ScaledCasimirCompletion.lean`
+
+| Card item | Declaration |
+|---|---|
+| the family completed by `√g` times its kernel projector | `scaledCompletedFamily` |
+| its Casimir is `g·P_N + K`, central, with trivial simultaneous kernel | `scaledCompletedFamily_casimir`, `_central`, `_commonKernel_eq_bot` |
+| **`(17)`**: the normalized completion is exactly bi-tight | `scaledCompletedFamily_biTight` |
+| the completed Casimir dominates `g` on the *whole* space | `scaledCompletedFamily_form_ge` |
+| **the operator-norm bound `‖K^{-1/2}‖² ≤ g^{-1}`** | `cnormSq_invSqrtScale_mulVec_le` |
+
+Completing with `√g·P_N` rather than `P_N` is what removes the restriction to `Q` from the norm
+bound: on the singlet sector the completed Casimir is `g` exactly, so the inverse square root is a
+uniform contraction by `g^{-1/2}` everywhere, and no separate `Q`-restriction has to be threaded
+through the leakage estimate.
+
+### `(18)`: the gap is a leakage budget
+
+`formal/GaloisForLFunctions/HTGeometry/NormalizedCasimirLeakage.lean`
+
+| Card item | Declaration |
+|---|---|
+| the Casimir of a Hermitian family is Hermitian | `matrixFamilyCasimir_isHermitian` |
+| `Kw = 0` puts `w` in the simultaneous kernel | `commonKernelProjection_mulVec_eq_self_of_casimir_zero` |
+| **eigenvalue gap ⟹ form gap off the simultaneous kernel** | `commonKernelProjection_form_ge_of_eigenvalue_gap` |
+| `P_N P_U = 0` is exactly `U ≤ Q` | `commonKernelProjection_mul_eq_zero_iff` |
+| **`(18)`, abstractly**: `g(dim U − dim V) ≤ ∑_q ‖(I−P_V)A_qP_U‖²_HS` | `hermitianCentralFamily_leak_ge_gap_mul_dim_sub` |
+
+`formal/GaloisForLFunctions/HTGeometry/AllReplicaPauliLeakageLaw.lean`
+
+| Card item | Declaration |
+|---|---|
+| **`(18)`**: `2D²(dim U − dim V) ≤ ∑_{q≠I} ‖(I−P_V)A_qP_U‖²_HS` at every replica order | `finiteAllReplicaFullPauli_leak_ge_dim_sub` |
+| **`(23)` from a synthesis, at any positive normalization** | `finiteAllReplicaFullPauli_incidenceNormalized_leakage_ge` |
+| **`(23)` at the label count `D²−1`** | `finiteAllReplicaFullPauli_leakage_budget` |
+
+The formal `(18)` is slightly stronger than the card's: the target projector `V` need not lie in
+`Q`.  Only the source condition `P_N P_U = 0` is used, to kill the adjoined kernel term.
+
+### Lemma D, in full
+
+`formal/GaloisForLFunctions/HTGeometry/LocalPauliUnitMassSynthesis.lean`
+
+| Card item | Declaration |
+|---|---|
+| enlarging the word set preserves a synthesis | `hasUnitMassSynthesis_mono` |
+| **`(22)` with word length added**: unit mass survives `ζ⁻¹(ab−ba)` from a length-`k` and a length-`l` factor into length `k+l` | `hasUnitMassSynthesis_bracket_of_mem` |
+| padding by the identity embeds shorter words among longer | `setPow_subset_setPow` |
+| **`(21)`**: the replicated commutator directions close under the bracket with the physical Pauli phase as the single coefficient | `replicaCommutatorMat_bracket` |
+| `\|ζ\| = 2` for anticommuting strings | `norm_pauliPhase_sub` |
+| **Lemma D, `(20)`**: every replicated Pauli direction of physical weight `w` is a unit-mass combination of words of length at most `w` | `replicaCommutatorMat_hasUnitMassSynthesis` |
+| **Lemma D at the uniform depth `n`** | `finiteReplicaFullPauliCommutatorMatrix_hasUnitMassSynthesis` |
+
+The word set is `G₂ = {I} ∪ {A_s : s ≠ 0, wt(s) ≤ 2}` and word length is the pointwise set power
+`G₂^k`.  Strong induction on physical Pauli weight uses the corpus's own decomposition
+`exists_pauliWeightTwo_anticommuting_decomposition` (a strictly lighter `t` and a weight-two `u`
+with `ω(t,u) = 1` and `t ⊕ u = s`), so the depth increases by exactly one per weight step and the
+final bound is `wt(s) ≤ n` -- the card's linear depth, retained.
+
+### Theorem E, unconditionally
+
+`formal/GaloisForLFunctions/HTGeometry/AllReplicaIncidenceNormalizedWordLeakage.lean`
+
+| Card item | Declaration |
+|---|---|
+| one index set serving every label at once | `exists_uniformUnitMassSynthesis` |
+| **Theorem E, `(23)`**, with no synthesis hypothesis | `finiteAllReplicaFullPauli_incidenceNormalized_wordLeakage` |
+
+Lemma D produces a separate index set per label; summing them over the label set and extending each
+coefficient family by zero off its own fibre gives one index set carrying every synthesis at once,
+with unit mass preserved.  Theorem E is then a statement with no hypotheses beyond `n ≥ 1`, the
+idempotency of the two projectors, self-adjointness of the source, and `P_N P_U = 0`:
+
+> there are coefficients `c_{q,w}` on words `W_{q,w}` of length at most `n` in the identity and the
+> replicated one- and two-local Pauli commutator directions, with `∑_w |c_{q,w}| = 1` and
+> `A_q = ∑_w c_{q,w} W_{q,w}` for every label, such that
+> `2D²(dim U − dim V)/(D²−1) ≤ (∑_q ∑_w |c_{q,w}| ‖(I−P_V)W_{q,w}P_U‖²_HS)/(D²−1)`.
+
+### Card status
+
+Closed.  Theorem A, Theorem B, `(6)`, `(7)`, Lemma C `(16)` (both halves, every replica order),
+`(17)`, `(18)`, `(19)`, Lemma D `(20)`--`(22)`, `(24)` and Theorem E `(23)` are all Lean-proved and
+axiom-clean.  Nothing on the card is open; the open items named in section 5 and section 7 are the
+card's forward conjecture, not part of its own statement.

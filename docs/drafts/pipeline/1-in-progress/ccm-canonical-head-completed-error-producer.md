@@ -466,3 +466,45 @@ The remaining hard theorem is now precise: sign the last displayed current on ca
 Gamma--Slepian heads cofinally while retaining the nonnegative vanishing head defect. Generic
 autocorrelation positivity, scalar pole domination, and splitting the higher-Gamma singularity are
 all forbidden pivots.
+
+## 2026-08-18 — coherent-chi-square budget is sign-impossible
+
+`[CONJECTURE C0 — FALSIFIED]` The proposed sufficient condition on canonical actual heads,
+
+```text
+2 Chi_coh(f) <= (2 gammaHardyPhaseRate(0)+4)||f||^2,
+```
+
+cannot hold for any nonzero head.  Gauss's exact quarter-digamma value gives
+
+```text
+2 gammaHardyPhaseRate(0)+4
+  = 4 - EulerGamma - 3 log 2 - pi/2 - log pi < 0.
+```
+
+The strict sign is symbolic: `EulerGamma>1/2`, `log 2>0.6931471803`, `pi>3`, and
+`log pi>0`.  But `Chi_coh(f)>=0`, so its doubled value cannot be bounded above by this
+strictly negative multiple of `||f||^2` when `f!=0`.  Canonical Gamma--Slepian ground heads
+are eventually nonzero because they converge to the nonzero exact restricted-Weil ground.
+Consequently the displayed inequality is eventually false, not eventually true.
+
+This also diagnoses why the coherent Cauchy--Schwarz completion cannot close Route O.  It retains
+prime--terminal autocorrelations inside `Chi_coh`, but then discards the phase between the Gamma
+translation increment and the coherent field.  Its source lower bound has a strictly negative
+scalar budget before `2 Chi_coh` is subtracted.
+
+`[POSITIVE SURVIVOR / OPEN CORE]` The lawful remaining target is the signed joint-block estimate
+
+```text
+GammaHigher(f) + 2 CompletedCoherentCurrent(f)
+  >= -(2 gammaHardyPhaseRate(0)+4)||f||^2
+```
+
+cofinally on canonical actual heads.  This is exactly source nonnegativity in the common-clock
+normal form and preserves increment--field phase.  Any route through a separate nonnegative norm
+cost, including `Chi_coh`, is now ruled out.
+
+Primary-source audit: Suzuki's 2026 screw-function framework leaves finite-interval operator
+convergence conjectural, while Connes--Consani--Moscovici's 2025 spectral-triple paper likewise
+leaves spectral/determinant convergence as the RH-bearing step.  Neither supplies the impossible
+coherent-chi-square inequality or a phase-free positivity mechanism.

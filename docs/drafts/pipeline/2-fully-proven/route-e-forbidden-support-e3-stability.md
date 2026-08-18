@@ -293,3 +293,49 @@ points to the mean square over the whole line).
 The card's own remaining elementary debt is separate and smaller: the unsigned squarefree harmonic
 estimates quoted in `(7)` and `(9)` (respectively `(FS7)`'s sieve input), which do not depend on the
 deep theorem and can be built independently.
+
+## The two-dimensional sieve half of `(FS7)` is built (2026-08-18)
+
+The card's `(FS7)` — the mean square of the large-prime Dirichlet polynomial,
+
+```text
+∫_{T₀}^{T} |P(1+it)|² dt  ≪  T/(R log x) + 1/(log x)² ,
+```
+
+was recorded here (and in the Serena memory `cards/route-e-e3-elementary-layer`) as unreachable
+because the corpus's Dirichlet mean value theorem cannot save a second logarithm.  **That diagnosis
+was about the wrong instrument.**  The saving does not come from a sharper mean value theorem; it
+comes from the *two-dimensional upper-bound sieve* applied to the off-diagonal pairs, exactly as the
+source's Section 5 does — and the corpus already owns that sieve, built for the
+Matomäki–Radziwiłł programme's rough half (`Sieve/RoughPairSieve`, `Sieve/RoughPairCount`).
+
+Five new unconditional modules turn it into the mean square:
+
+| module | content |
+|-|-|
+| `Sieve/PrimePairCount` | `not_dvd_of_prime_lt`, `primePair_subset_roughPair`, **`card_primePair_le`** — a prime above the sifting range carries no prime factor inside it, so the shifted rough-pair sieve counts prime pairs: `#{m ≤ Y : m, m+d prime, m > h} ≤ Y/((1/2)E²C(d)) + (Selberg remainder)`, with `E = exp(mertensS h − mertensS P₁)` and the singular series `C(d) = ∏_{p ∣ d, P₁<p≤h}(p−1)/p` |
+| `Sieve/PrimePairShiftSum` | `sum_inv_mul_pred_eq`, `sum_inv_mul_pred_le`, `sum_rangePrimes_inv_mul_pred_le`, `prod_dvd_iff_forall_dvd`, `prod_shiftCorrection_inv_eq`, **`sum_inv_shiftCorrection_le`** — `∑_{d ≤ K} 1/C(d) ≤ e·K`, by expanding the product over subsets, counting multiples, and reassembling into `∏_p(1 + 1/(p(p−1))) ≤ exp(∑_{n≥2} 1/(n(n−1))) = e`.  The telescoping `∑_{2≤n≤h} 1/(n(n−1)) = 1 − 1/h` is proved, not quoted |
+| `Sieve/PrimePairAverage` | `pairClass_div_le`, `pairBudget_le`, **`sum_card_primePair_le`** — the shift-uniform level budget (the pair class count never exceeds two) plus the singular-series average: `∑_{d≤K} #{pairs at shift d} ≤ 2e·K·Y/E² + K·(remainder)` |
+| `Sieve/PrimePairNeighbour` | **`sum_card_neighbour_le`** (a symmetric near-diagonal relation whose pairs differ by at most `K` has total count `≤ #s + 2∑_{d≤K}#{n ∈ s : n+d ∈ s}`), `exp_sub_one_le_three_mul`, `lt_mul_exp_of_log_sub_lt`, `le_add_of_log_close`, **`sum_logNeighbourCount_bigPrimeSet_le`** — the Gallagher neighbour count of a dyadic prime block is a shifted prime-pair count, because a multiplicative window of ratio `e^δ` at height `≤ 2R` has additive length `≤ 6Rδ` |
+| `Sieve/DyadicPrimeMeanSquare` | `sum_logNeighbourCount_sieve_le`, **`integral_normSq_dyadicPrimePoly_le`** — the mean square itself: `∫_{-W}^{W}‖∑_{R<p≤2R} p^{-1+2πiw}‖²dw ≤ (5/(4δ))(1/R²)(π(2R)−π(R) + 2(8e·K·R/E² + K·(remainder)))` whenever `2πδW ≤ 1`, `K ≥ 6Rδ`, `δ ≤ 1` |
+
+`#print axioms` on all seven named theorems: `[propext, Classical.choice, Quot.sound]`.  All five
+modules are wired into the `GaloisForLFunctions.RHTower` umbrella.
+
+Substituting `δ = 1/(2πW)` and `K = ⌈6Rδ⌉`, the first term is the diagonal `≍ W/(R log R)` and the
+second is `≍ 1/E² ≍ (log P₁/log h)²`, which is the card's `1/(log x)²` up to the `(log log)²` the
+Selberg level costs (the level constraint `h^{2k} ≤ z` with `k ≍ log log h` forces
+`log h ≍ log Y/log log Y`, hence `(log log)²/(log)²` rather than `1/(log)²`).  That loss is
+harmless: `(FS8)`'s second term becomes `(log x)^{-2.2}/log log x`, still `o((log x)^{-2-2ε})` for
+every `ε < 0.1`, which is all `(FS9)` needs.
+
+**So `(FS7)` is no longer a quoted external input.**  What remains between this card and stage 3 is
+the all-interval count `(FS4)` itself — the Perron/minorant assembly of Matomäki–Teräväinen's
+Theorem 1.2, whose Dirichlet-polynomial inputs are now the corpus's own.
+
+### Correction to the recorded no-go
+
+The line in "Lean progress" saying that `(FS7)` "genuinely needs the source's Section 5 sieve and is
+not reachable from the card text alone" is now superseded in its operative half: the Section 5 sieve
+is needed, and it is present.  The Serena memory `cards/route-e-e3-elementary-layer` carries a
+matching "do not re-attempt" note that no longer applies to `(FS7)`.

@@ -2889,3 +2889,204 @@ spectralHead = 2[(ρ·C₁·(L·B₀ + Q((1+η)^L−1)/η))² + (∑_j discMajor
 The whole remaining task is to substitute the parameter functions and check that the quotient by
 `W²h²√x` tends to zero — the non-spectral half of which is already done
 (`tendsto_nonSpectralBudget`).
+
+### OBSTRUCTION found in the composition: the affine majorant must come from the ladder (2026-08-18)
+
+Substituting into `omegaBudget_le_explicit` and dividing by `W²h²√x`, the Gallagher-tail term
+
+```text
+16√x · 4(spectralHead + (5e/2)B₀·Ec)/(3π²G²) / (W²h²√x)
+   =  64(spectralHead + (5e/2)B₀·Ec)/(3π²G²W²h²)
+```
+
+does **not** vanish: with `Ec ≍ 2B₀W²` (`sum_normSq_omegaCoeff_Icc_le`) and `G = B₀/h`, so `G²h² = B₀²`,
+the second summand is `64·5e B₀²W²/(3π²B₀²W²) = 320e/(3π²) ≈ 29`, a constant.  Enlarging `G` does not
+help: `ladderStepMVT_le_sq` needs `G ≤ B₀/Q_j` for every `j < L`, and the worst step `Q_{L−1} ≍ h/(1+η)`
+caps `G` at `B₀(1+η)/h`.
+
+**Diagnosis.**  `(5e/2)B₀·Ec` is the mean value theorem applied to the *whole* polynomial `A_ω` over
+`[1,B₀]`.  The exposé never does that: it applies the mean value theorem to each **cofactor**
+polynomial, of length `N_j = B₀/Q_j`, which is smaller by the factor `Q_j`.  The affine majorant fed
+to Gallagher's dyadic tail must therefore come from the ladder as well, and only above the height
+`T₀` at which the Route-T saving expires may the trivial mean value theorem be used.
+
+**Fix (no new mathematics, only a `T`-dependent step majorant).**
+`integral_normSq_omegaWeighted_annulus_optimal_two_le` already takes the cut `G` as a parameter, so
+instantiating it at each height `T` gives `∫_{|w| ≤ T}‖A_ω‖² ≤ 2[(∑_j c_j(T))² + (∑_j d_j)²] + 2·defect(T)`,
+provided the step majorant is generalised from `stepMVTMajorant` (which assumed `T ≤ B₀/Q_j`) to
+
+```text
+c_j(T) = ρ Q_j ( √((5π/2)·T·(N_j+1)) + √((5e/2)·N_j·(N_j+1)) ) ,
+```
+
+using `ladderStepMVT = (5π/2)T(N_j+1) + (5e/2)⌊N_j⌋(N_j+1) ≤ a² + b²` and `a²+b² ≤ (a+b)²`.  Then
+`(∑_j c_j(T))² ≤ 2(5π/2)T·ρ²(∑_j Q_j√(N_j+1))² + 2(5e/2)ρ²(∑_j Q_j N_j)²` is **affine in `T`**, with
+
+```text
+α₁ ≍ 10π ρ² B₀ h/η² ,      β₁ ≍ 10e ρ² L² B₀² .
+```
+
+Above `T₀` (the height at which the Route-T contour saving expires, `T₀ ≥ B₀` since `γβ > 9/10`) the
+trivial majorant `α₂T + β₂`, `α₂ = (5π/2)Ec`, `β₂ = (5e/2)B₀Ec`, is used.  The two regimes combine
+into a *single* affine majorant valid for all `T ≥ G`:
+
+```text
+α := α₁ + α₂ + β₂/T₀ ,    β := β₁         (for T ≥ T₀ : α₂T + β₂ ≤ (α₂ + β₂/T₀)T).
+```
+
+Dividing the Gallagher output `2δ²β₀ + 4α/(π²G) + 4β/(3π²G²)` by `W²h²` at `G = B₀/h`, `δ ≍ h/B₀`:
+
+| term | size | vanishes iff |
+|-|-|-|
+| `2δ²β₀` | `≍ ρ²L²h²` (β₀ = head) | `ρL = o(W)` |
+| `4α₁/(π²G)` | `≍ 40ρ²h²/(πη²)` | `ρ/η = o(W)` |
+| `4α₂/(π²G)` | `≍ (20/π)W²h` | always (`1/h → 0`) |
+| `4(β₂/T₀)/(π²G)` | `≤ (20e/π²)W²h` | always |
+| `4β₁/(3π²G²)` | `≍ (40e/3π²)ρ²L²h²` | `ρL = o(W)` |
+
+so the whole spectral term vanishes under the single condition **`ρ·max(L, 1/η) = o(W)`**, which the
+superpolylogarithmically small `ρ` satisfies with room to spare.
+
+### The obstruction is fixed (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/LadderStepAffine` | `stepAffineMajorant`, `stepAffineMajorant_pos`, **`stepAffineMajorant_sq_ge`** (valid at *every* height, via `(5π/2)T(N+1) + (5e/2)N(N+1) = a²+b² ≤ (a+b)²`), **`sum_stepAffineMajorant_sq_le`** (the single sum is affine in the height) |
+| `Sieve/LadderAffineMajorant` | `ladderDefectSum`, `ladderAffineSlope`, `ladderAffineConst`, **`integral_normSq_omegaWeighted_affine_le`**, **`affineMajorant_two_regime`** |
+| `Sieve/OmegaBudgetLadderTail` | **`integral_kernel_normSq_omegaWeighted_ladder_le`**, `ladderDefectSum_nonneg`, `ladderAffineSlope_nonneg`, `ladderAffineConst_nonneg`, **`omegaBudget_le_ladder_final`** |
+
+```text
+omegaBudget x h z₀ z
+  ≤ 16√x( 2δ²(αL·G + βL) + 4(αL + (5π/2)Ec + (5e/2)B₀Ec/T₀)/(π²G) + 4βL/(3π²G²) )
+    + (the two non-spectral terms, already proved to vanish)
+```
+
+with `αL = ladderAffineSlope L B₀ Q η ρ`, `βL = ladderAffineConst z₀ z L B₀ Q η ρ s w₀`, both
+nonnegative, both built from the ladder — so the Gallagher tail no longer carries `B₀·Ec/G²`.
+`#print axioms omegaBudget_le_ladder_final` = `[propext, Classical.choice, Quot.sound]`.
+
+Its hypotheses are exactly the two analytic inputs on the *fixed* ranges
+`|w| ∈ [w₀, T₀]` (annulus) and `|w| ≤ w₀` (disc), plus `Q = z₀`, `z = ⌊Q(1+η)^L⌋`, `B₀ = ⌊√x+h⌋`,
+`1 ≤ G ≤ T₀`, `0 ≤ w₀ ≤ G`, `1 ≤ L`, `0 < ρ`, `0 ≤ s`.
+
+### The master budget theorem (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/ContourParamMono` | `contourParam_mono`, `contourParam_ge`, `tendsto_contourParam` |
+| `Sieve/DiscBoundUniform` | **`exists_disc_bound_uniform`** — one admissibility check at the shortest cofactor block supplies the disc hypothesis for every step |
+| `Sieve/AnnulusBoundUniform` | **`exists_annulus_bound_uniform`** — the width and height cost at the top of the annulus serve for every frequency in it |
+| `Sieve/OmegaBudgetMaster` | `ladderRho`, **`exists_omegaBudget_master`** |
+
+`exists_omegaBudget_master` bounds `omegaBudget x h z₀ z` by a completely explicit expression whose
+hypotheses are **elementary inequalities among the parameters only** — no integral, no polynomial,
+no analytic input.  The remaining work is the substitution of the parameter functions and the limit.
+
+### The substitution is done: the budget inequality holds at the chosen parameters (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/LadderBlockFacts` | `ladderBlockTop_le/_ge`, `le_max_ladderBlock`, `max_ladderBlock_le`, `le_floor_cofactor` |
+| `Sieve/BudgetSubstitution` | `budgetB`, `budgetT`, `budgetNmin`, `budgetMu`, `budgetHmaj`, `budgetRho`, `budgetS`; `one_le_gallagherCut`, `gallagherCut_le_budgetT`, **`tendsto_gallagherCut`**, `tendsto_exp_quarter_div_rpow`, `eventually_rpow_log_le_exp`, **`annulusStart_le_gallagherCut`**, `tendsto_budgetNmin`, `tendsto_rpow_sub_log`, `tendsto_exp_rpow_div_rpow`, `eventually_gallagherCut_ge_exp`, **`eventually_annulus_admissible`**, **`exists_eventually_omegaBudget_le`** |
+
+```text
+∃ A delta Ctot, 0 < delta ∧ 0 < Ctot ∧ ∀ᶠ x,
+  omegaBudget x (cardLength β x) (siftStart (γβ) x) (ladderTop β γ x) ≤ EXPLICIT(A,delta,Ctot,β,γ,x)
+```
+
+All parameters are fixed: `h = exp((log x)^β)`, `z₀ = ⌈exp((log x)^{γβ})⌉`, `η = (log x)^{γβ−1}`,
+`L = ⌊log(h/z₀)/log(1+η)⌋`, `z = ⌊z₀(1+η)^L⌋`, `B₀ = ⌊√x+h⌋`, `G = B₀/h`, `T₀ = B₀`,
+`w₀ = (log x)^{10β+2}`, `D = (log 2h)^4`, `Lx = (log x)^β`, `q = log z₀`, `xmin = z₀`,
+`Nmin = ⌊G⌋`, `μ` and `Hmaj` at the top of the annulus.
+
+Every side condition is verified: the Gallagher cut is `≥ 1`, below `T₀`, and above the
+polylogarithmic annulus threshold (`annulusStart_le_gallagherCut`, via `exp(log x/4)` beating every
+power of `log x`); the shortest cofactor block is `≥ exp(log x/5)`, so the Möbius contour bound
+admits every frequency of the disc (`eventually_annulus_admissible`, via a stretched exponential
+beating every power).
+
+**What remains is the single limit** `EXPLICIT(x)/(W² h² √x) → 0`.
+
+### Parameter re-tuning forced by the ladder defect (2026-08-18)
+
+Computing `ladderAffineConst`'s defect part at the first choice `η = (log x)^{γβ−1}` gives
+
+```text
+2(5e/2)⌊B₀(1+η)⌋·ladderDefectSum / (B₀²W²)  ≍  (log B₀/log Q)·L·η² / W²
+   ≍ (log x)^{1−γβ}·(log x)^{β}·η / W²  =  (log x)^{β} / W²  →  ∞ ,
+```
+
+because `L ≍ (log x)^β/η`.  The exponent of `η` must therefore satisfy `η ≲ (log x)^{γβ−β−1}`, and
+with that choice the same quantity is `≍ 1/W² → 0`.  The annulus threshold must then satisfy
+`w₀ ≳ (log x)^{12β+1−γβ}`, which is below `(log x)^{13}` for every admissible pair.  So
+
+```text
+ladderEta β γ x := (log x)^{γβ − β − 1} ,      annulusStart β x := (log x)^{13} .
+```
+
+Both changed in `Sieve/SpectralParameters`; `Sieve/BudgetSubstitution` and the whole chain rebuild
+unchanged, and `exists_eventually_omegaBudget_le` remains axiom-clean.
+
+With these, `L ≍ (log x)^{1+2β−γβ}` and `ρ ≲ (log x)^{10β−13}`, so `ρL ≲ (log x)^{12β+1−γβ−13} → 0`
+and `ρ/(ηW) ≲ (log x)^{−β}/W → 0` — the two conditions the spectral limit needs.
+
+### The ladder's sums, bounded (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/LadderGeomSums` | **`sum_ladderEndpoint_le`** (`∑_j Q_j ≤ h/η`), **`sum_inv_ladderEndpoint_le`** (`≤ 2/(Qη)`), **`sum_inv_sq_ladderEndpoint_le`** (`≤ 2/(Q²η)`), **`sum_sqrt_ladderEndpoint_le`** (`≤ L√h`) |
+| `Sieve/LadderSumBounds` | **`sum_S1_le`**: `∑_j Q_j√(B₀/Q_j+1) ≤ L√(B₀h) + h/η`; **`sum_S2_le`**: `∑_j Q_j√((B₀/Q_j)(B₀/Q_j+1)) ≤ L·B₀ + h/η`; **`ladderDefect_inner_le`**: the defect's inner sum `≤ L((1+B₀)η²+5) + 5h + 2(ηB₀+(1+B₀)η)/(Qη) + 2B₀/(Q²η)` |
+
+Substituting these into `ladderAffineSlope` and `ladderAffineConst` and normalising by `W²h²√x`:
+
+```text
+ρ²S₁²/(B₀W²h) ≤ 2ρ²L²/W² + 2ρ²h/(η²B₀W²) ,      ρ²S₂²/(B₀²W²) ≤ 2ρ²L² /W² + 2ρ²h²/(η²B₀²W²) ,
+(defect)/(B₀W²) ≍ (log B₀/log Q)·L η²/W² = 1/W² ,
+```
+
+each of which vanishes under `ρL/W → 0` — the condition the parameter re-tuning secures.
+
+### Toward the limit: affine bounds, width bounds, polylog limits (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/LadderAffineBounds` | `ladderDefectSum_le`, **`ladderAffineSlope_le`**, **`ladderAffineConst_le`** — slope and constant in terms of `L, B₀, Q, η, ρ, s, w₀, h` alone |
+| `Sieve/WidthEnvelopeBounds` | `inv_routeTWidthPolylogLower_eq`, `routeTLogHeightEnvelope_le` (`≤ 10 + 2 log\|τ\|`), **`inv_routeTWidthPolylogLower_le`**, **`routeTWidthPolylogLower_ge`** |
+| `Sieve/BudgetWidthBounds` | `budgetZ = 18 + log x`, `budgetWinv`, `eventually_envelope_le`, **`eventually_budgetHmaj_le`**, **`eventually_budgetMu_ge`** |
+| `Sieve/SpectralParameters` (extended) | `log_one_add_ge_half` (from the corpus's `Sieve/BlockCount.log_one_add_ge`), **`ladderSteps_le`**: `L ≤ 2(log x)^β/η` |
+| `Sieve/PolylogLimits` | **`tendsto_rpow_log_mul_exp_neg`**, `tendsto_rpow_log_of_neg` |
+
+At the top of the annulus the frequency is `2πB₀ ≍ √x`, so the Route-T height envelope is at most
+`18 + log x` and
+
+```text
+budgetHmaj ≤ 1 + (1 + log x)·budgetWinv ,     budgetMu ≥ min(delta, 1/budgetWinv)/2 ,
+budgetWinv = 10 D_A (18+log x)^{9/10}(1 + log(18+log x))² .
+```
+
+Since `q = log z₀ ≥ (log x)^{γβ}` and `γβ > 9/10`, `μq ≳ (log x)^{γβ−9/10}/(log log x)² → ∞`, so the
+contour factor `e^{−μq}` beats every polylogarithm — which is what `tendsto_rpow_log_mul_exp_neg`
+converts into a limit.
+
+**Remaining: the six pieces of `ρ·L → 0`, then the seven normalised budget terms.**
+
+### `ρ·L → 0` is proved (2026-08-18)
+
+| module | content |
+|-|-|
+| `Sieve/RhoLimit` | `rpow_comb`, `rpow_comb3`, `rhoMajorant`, **`tendsto_rhoMajorant`**, **`eventually_rhoBound_mul_steps_le`**, **`tendsto_budgetRho_mul_steps`** |
+| `Sieve/RhoLimitPieces` (extended) | `eventually_ladderWidth_ge`, `eventually_budgetHmaj_poly`, `eventually_siftStart_ge`, `eventually_ladderSteps_poly` |
+
+The six pieces, with `t = log x`, `D ≤ 16t^{4β}`, `H ≤ K_A t²`, `t₀ = 2πt^{13}`, `L ≤ 2t^{2β+1−γβ}`,
+`Q ≥ exp(t^{γβ})`, `e^{−μq} ≤ exp(−t^{(γβ−9/10)/4})`:
+
+| piece | majorant | vanishes because |
+|-|-|-|
+| `Ctot D²Lx²/(2πt₀)·L` | `(512Ctot/36) t^{12β+1−γβ−13}` | `12β+1−γβ−13 < 0` |
+| `Ctot D²H e^{−μq}/(2π)·L` | `(512CtotK_A/6) t^{10β+3−γβ}e^{−t^{(γβ−9/10)/4}}` | stretched exponential |
+| `Ctot D²H/(2πt₀²)·L` | `(512CtotK_A/216) t^{10β+3−γβ−26}` | exponent `< 0` |
+| `(log2+Lx)/D·L` | `4 t^{1−β−γβ}` | `β, γβ > 9/10` |
+| `2Lx/√Q·L` | `4 t^{3β+1−γβ}e^{−t^{γβ}/2}` | stretched exponential |
+| `7e⁹/Q·L` | `14e⁹ t^{2β+1−γβ}e^{−t^{γβ}}` | stretched exponential |
+
+**`tendsto_budgetRho_mul_steps` is the single analytic condition the spectral limit needs.**

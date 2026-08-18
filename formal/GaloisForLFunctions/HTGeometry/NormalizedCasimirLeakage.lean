@@ -73,6 +73,32 @@ theorem commonKernelProjection_form_ge_of_eigenvalue_gap
         rw [cinner_mulVec, hermitianMatrixFamilyCommonKernelProjection_conjTranspose]
     _ = 0 := by rw [hz]; simp [cinner]
 
+/-- **The source condition is exactly orthogonality to the simultaneous kernel.**  A projector is
+annihilated by the kernel projector precisely when its range lies in the orthogonal complement of
+the simultaneous kernel. -/
+theorem commonKernelProjection_mul_eq_zero_iff (A : J → Matrix X X ℂ) (P : Matrix X X ℂ) :
+    hermitianMatrixFamilyCommonKernelProjection A * P = 0 ↔
+      ∀ x : EuclideanSpace ℂ X,
+        Matrix.toEuclideanLin P x ∈ (hermitianMatrixFamilyCommonKernel A)ᗮ := by
+  constructor
+  · intro h x
+    have hx : Matrix.toEuclideanLin (hermitianMatrixFamilyCommonKernelProjection A * P) x = 0 := by
+      rw [h]
+      simp
+    rw [toEuclideanLin_mul] at hx
+    simp only [LinearMap.coe_comp, Function.comp_apply] at hx
+    rw [hermitianMatrixFamilyCommonKernelProjection_apply] at hx
+    exact (Submodule.starProjection_apply_eq_zero_iff _).mp hx
+  · intro h
+    have hzero : Matrix.toEuclideanLin (hermitianMatrixFamilyCommonKernelProjection A * P)
+        = Matrix.toEuclideanLin (0 : Matrix X X ℂ) := by
+      rw [toEuclideanLin_mul, map_zero]
+      refine LinearMap.ext fun x => ?_
+      simp only [LinearMap.coe_comp, Function.comp_apply, LinearMap.zero_apply]
+      rw [hermitianMatrixFamilyCommonKernelProjection_apply]
+      exact (Submodule.starProjection_apply_eq_zero_iff _).mpr (h x)
+    exact Matrix.toEuclideanLin.injective hzero
+
 /-- **The gap is quantitative leakage.**  For a Hermitian family with central quadratic Casimir
 whose form gap off the simultaneous kernel is `g`, the total leakage of a source projector
 orthogonal to that kernel past an arbitrary target projector is at least `g` times the dimension

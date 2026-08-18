@@ -294,3 +294,28 @@ points to the mean square over the whole line).
 The card's own remaining elementary debt is separate and smaller: the unsigned squarefree harmonic
 estimates quoted in `(7)` and `(9)` (respectively `(FS7)`'s sieve input), which do not depend on the
 deep theorem and can be built independently.
+
+## The mean-square input of the shared all-interval theorem is now Lean (2026-08-18)
+
+This card's `(6)` is the quantitative form of Matomäki--Teräväinen's all-interval `E₃` theorem, the
+same external input as the sibling card `route-e-forbidden-support-e3-stability`.  One of its two
+Dirichlet-polynomial ingredients — the mean square of the large prime variable, `(FS7)` on the
+sibling card — is now an unconditional corpus theorem rather than a quotation.  The route is the
+*two-dimensional upper-bound sieve*, which the corpus already owned from the Matomäki--Radziwiłł
+programme (`Sieve/RoughPairSieve`, `Sieve/RoughPairCount`), specialised to prime pairs:
+
+`Sieve/PrimePairCount`, `Sieve/PrimePairShiftSum`, `Sieve/PrimePairAverage`,
+`Sieve/PrimePairNeighbour`, `Sieve/DyadicPrimeMeanSquare` — see the sibling card for the
+theorem-by-theorem table.  Capstone:
+
+```text
+integral_normSq_dyadicPrimePoly_le :
+  ∫_{-W}^{W} ‖∑_{R<p≤2R} p^{-1+2πiw}‖² dw
+    ≤ (5/(4δ))(1/R²)( π(2R)−π(R) + 2( 8e·K·R/E² + K·(Selberg remainder) ) )
+```
+
+for `2πδW ≤ 1`, `δ ≤ 1`, `K ≥ 6Rδ`, with `E = exp(mertensS h − mertensS P₁)`.  Axioms:
+`[propext, Classical.choice, Quot.sound]`.
+
+The card's own elementary debt — the unsigned squarefree harmonic estimates `(7)` and `(9)` — is
+untouched by this and is still open.

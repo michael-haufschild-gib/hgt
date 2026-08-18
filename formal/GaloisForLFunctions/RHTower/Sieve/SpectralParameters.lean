@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.Sieve.SiftingRangeRatio
 import GaloisForLFunctions.RHTower.Sieve.LogLogSmall
 import GaloisForLFunctions.RHTower.Sieve.AlmostPrimeGlobalCount
 import GaloisForLFunctions.RHTower.MobiusWholeAnchorGlobalTerminalCapacity
+import GaloisForLFunctions.RHTower.Sieve.BlockCount
 
 /-!
 # The parameters of the spectral estimate
@@ -18,8 +19,10 @@ open Filter Topology
 
 noncomputable section
 
-/-- The ratio of the ladder's steps. -/
-def ladderEta (β γ x : ℝ) : ℝ := (Real.log x) ^ (γ * β - 1)
+/-- The ratio of the ladder's steps.  The exponent is forced by the ladder defect: the defect
+contributes `(log B₀/log Q)·L·η²` to the affine constant, and `L ≍ (log x)^β/η`, so `η` must be
+below `(log x)^{γβ−β−1}` for that to be `O(1)` after normalisation. -/
+def ladderEta (β γ x : ℝ) : ℝ := (Real.log x) ^ (γ * β - β - 1)
 
 /-- The smoothing width of the twisted contour. -/
 def ladderWidth (β x : ℝ) : ℝ := (Real.log (2 * cardLength β x)) ^ 4
@@ -37,16 +40,17 @@ def ladderTop (β γ x : ℝ) : ℕ :=
 def gallagherCut (β x : ℝ) : ℝ :=
   ((⌊Real.sqrt x + cardLength β x⌋₊ : ℕ) : ℝ) / cardLength β x
 
-/-- The threshold above which the prime polynomial carries cancellation. -/
-def annulusStart (β x : ℝ) : ℝ := (Real.log x) ^ (10 * β + 2)
+/-- The threshold above which the prime polynomial carries cancellation.  The exponent must exceed
+`12β + 1 − γβ`, which is below `13` for every admissible pair. -/
+def annulusStart (β x : ℝ) : ℝ := (Real.log x) ^ (13 : ℝ)
 
 theorem ladderEta_pos {β γ x : ℝ} (hx : 1 < x) : 0 < ladderEta β γ x :=
   Real.rpow_pos_of_pos (Real.log_pos hx) _
 
-/-- **The step ratio vanishes.**  This is where `γβ < 1` is used. -/
-theorem tendsto_ladderEta {β γ : ℝ} (h : γ * β < 1) :
+/-- **The step ratio vanishes.** -/
+theorem tendsto_ladderEta {β γ : ℝ} (hβ0 : 0 < β) (h : γ * β < 1) :
     Tendsto (fun x : ℝ => ladderEta β γ x) atTop (𝓝 0) := by
-  have hδ : (0 : ℝ) < 1 - γ * β := by linarith
+  have hδ : (0 : ℝ) < 1 + β - γ * β := by linarith
   have hmaj := tendsto_log_rpow_neg hδ
   refine hmaj.congr' ?_
   filter_upwards [Filter.eventually_gt_atTop (1 : ℝ)] with x hx
@@ -142,7 +146,7 @@ theorem ladderPow_le {β γ x : ℝ} (hQ : 1 ≤ ((siftStart (γ * β) x : ℕ) 
 /-- The ladder has at least one step. -/
 theorem one_le_ladderSteps {β γ : ℝ} (hβ : 0 < β) (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ : γ * β < 1) :
     ∀ᶠ x : ℝ in atTop, 1 ≤ ladderSteps β γ x := by
-  have hzero := tendsto_ladderEta (β := β) (γ := γ) hγβ
+  have hzero := tendsto_ladderEta (β := β) (γ := γ) hβ hγβ
   filter_upwards [eventually_siftStart_lt_cardLength hβ hγ0 hγ1,
     eventually_le_siftStart (mul_pos hγ0 hβ) 1,
     Filter.eventually_gt_atTop (1 : ℝ),
@@ -273,7 +277,7 @@ theorem ladderMass_lower {β γ : ℝ} (hβ0 : 0 < β) (hγ0 : 0 < γ) (hγ1 : �
     (tendsto_rpow_atTop hab).comp Real.tendsto_log_atTop
   have hpowB : Tendsto (fun x : ℝ => (Real.log x) ^ β) atTop atTop :=
     (tendsto_rpow_atTop hβ0).comp Real.tendsto_log_atTop
-  have hzero := tendsto_ladderEta (β := β) (γ := γ) hγβ
+  have hzero := tendsto_ladderEta (β := β) (γ := γ) hβ0 hγβ
   filter_upwards [eventually_siftStart_lt_cardLength hβ0 hγ0 hγ1,
     eventually_le_siftStart hab 2,
     Filter.eventually_gt_atTop (1 : ℝ),
@@ -373,7 +377,7 @@ theorem eventually_ladderTop_facts {β γ : ℝ} (hβ0 : 0 < β) (hγ0 : 0 < γ)
       2 ≤ ladderTop β γ x ∧ ((ladderTop β γ x : ℕ) : ℝ) ≤ cardLength β x
         ∧ siftStart (γ * β) x ≤ ladderTop β γ x := by
   have hab : (0 : ℝ) < γ * β := mul_pos hγ0 hβ0
-  have hzero := tendsto_ladderEta (β := β) (γ := γ) hγβ
+  have hzero := tendsto_ladderEta (β := β) (γ := γ) hβ0 hγβ
   filter_upwards [eventually_siftStart_lt_cardLength hβ0 hγ0 hγ1,
     eventually_le_siftStart hab 1, Filter.eventually_gt_atTop (1 : ℝ),
     Tendsto.eventually_le_const (by norm_num : (0:ℝ) < 1) hzero,
@@ -386,6 +390,48 @@ theorem eventually_ladderTop_facts {β γ : ℝ} (hβ0 : 0 < β) (hγ0 : 0 < γ)
   refine ⟨?_, hbounds.2, hbounds.1⟩
   have hR : (2 : ℝ) ≤ ((ladderTop β γ x : ℕ) : ℝ) := by linarith [hquarter, hh8]
   exact_mod_cast hR
+
+/-- The logarithm of `1 + η` is at least `η/2` for `η ≤ 1`. -/
+theorem log_one_add_ge_half {η : ℝ} (hη : 0 < η) (hη1 : η ≤ 1) :
+    η / 2 ≤ Real.log (1 + η) := by
+  have hbase := log_one_add_ge (ε := η) hη.le
+  have hdiv : η / 2 ≤ η / (1 + η) :=
+    div_le_div_of_nonneg_left hη.le (by linarith) (by linarith)
+  linarith
+
+/-- The number of ladder steps, bounded. -/
+theorem ladderSteps_le {β γ : ℝ} (hβ0 : 0 < β) (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ : γ * β < 1) :
+    ∀ᶠ x : ℝ in atTop,
+      ((ladderSteps β γ x : ℕ) : ℝ) ≤ 2 * (Real.log x) ^ β / ladderEta β γ x := by
+  have hab : (0 : ℝ) < γ * β := mul_pos hγ0 hβ0
+  have hzero := tendsto_ladderEta (β := β) (γ := γ) hβ0 hγβ
+  filter_upwards [eventually_le_siftStart hab 1, Filter.eventually_gt_atTop (1 : ℝ),
+    Tendsto.eventually_le_const (by norm_num : (0:ℝ) < 1) hzero,
+    eventually_siftStart_lt_cardLength hβ0 hγ0 hγ1] with x hQ1 hx1 hη1 h2Q
+  have hlogx : 0 < Real.log x := Real.log_pos hx1
+  have hη : 0 < ladderEta β γ x := ladderEta_pos hx1
+  have hQ : (1 : ℝ) ≤ ((siftStart (γ * β) x : ℕ) : ℝ) := by exact_mod_cast hQ1
+  have hQ0 : (0 : ℝ) < ((siftStart (γ * β) x : ℕ) : ℝ) := by linarith
+  have hh0 : (0 : ℝ) < cardLength β x := cardLength_pos β x
+  have hlogr : (0 : ℝ) < Real.log (1 + ladderEta β γ x) := Real.log_pos (by linarith)
+  have hhalf := log_one_add_ge_half hη hη1
+  have hratio : Real.log (cardLength β x / ((siftStart (γ * β) x : ℕ) : ℝ))
+      ≤ (Real.log x) ^ β := by
+    rw [Real.log_div (ne_of_gt hh0) (ne_of_gt hQ0), log_cardLength]
+    have : (0 : ℝ) ≤ Real.log ((siftStart (γ * β) x : ℕ) : ℝ) := Real.log_nonneg hQ
+    linarith
+  have hfl : ((ladderSteps β γ x : ℕ) : ℝ)
+      ≤ Real.log (cardLength β x / ((siftStart (γ * β) x : ℕ) : ℝ))
+        / Real.log (1 + ladderEta β γ x) := by
+    rw [ladderSteps]
+    refine Nat.floor_le ?_
+    refine div_nonneg ?_ hlogr.le
+    refine Real.log_nonneg ?_
+    rw [le_div_iff₀ hQ0, one_mul]
+    linarith [h2Q, hQ0]
+  refine hfl.trans ?_
+  refine div_le_div₀ (by positivity) hratio (by linarith) hhalf |>.trans (le_of_eq ?_)
+  field_simp
 
 end
 

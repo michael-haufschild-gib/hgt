@@ -4197,7 +4197,7 @@ criterion `(17)`--`(18)` were open.  Seven new modules close them.
 
 Card moved to `docs/drafts/pipeline/3-formalized`.
 
-## `all-replica-incidence-normalized-local-word-leakage-law` (Casimir gap closed, not yet promoted)
+## `all-replica-incidence-normalized-local-word-leakage-law` (promoted to stage 3)
 
 The card's named open item -- the lower half of `(16)`, `2D² I_Q ⪯ K|_Q`, at arbitrary replica
 order -- is now Lean-proved.  The card derives it from the least nonzero quadratic Casimir of
@@ -4226,3 +4226,44 @@ ingredients exist (`leak_ge_dim_sub`, `completedHermitianFamily_scaled_biTight`,
 normalisation and the image-subspace distance inequality -- is missing, and no scalar substitute
 exists because bounding the captured energy without it costs the upper Casimir constant
 `4|R|²(D²−1)` instead of `2D²`.  That transfer is the card's only remaining Lean work.
+
+### `all-replica-incidence-normalized-local-word-leakage-law` — closed and promoted
+
+The `(19)` transfer named above is built, and with it `(18)`, Lemma D and Theorem E.  Eight more
+modules, all umbrella-wired and axiom-clean:
+
+- `HTGeometry/SpectralGapQuadraticForm` — the upgrade from an eigenvalue gap to an operator
+  inequality: if every eigenvalue of a Hermitian `T` is `0` or `≥ g` then `g‖z‖² ≤ ⟪z,Tz⟫` at every
+  `z ⊥ ker T`, by expanding in `Matrix.IsHermitian.eigenvectorBasis`.  This is the generic bridge
+  from the weight-theoretic gap to anything usable on a subspace, and is reusable for any Hermitian
+  family with a spectral gap.
+- `HTGeometry/CoordinateInnerProductToolkit` — Hilbert--Schmidt energy as total column square norm,
+  so a vectorwise contraction rescales it; Pythagoras for a Hermitian idempotent; and
+  `Re⟪v, Kv⟫ = ∑_q ‖A_q v‖²` for a Hermitian family.
+- `HTGeometry/ImageProjectionTrace` — the orthogonal projector onto the image of a projector's range
+  under an invertible matrix, its idempotency and self-adjointness, the annihilation
+  `(I − P_W) R P_V = 0`, and `Tr P_W = Tr P_V` via "trace of an idempotent is the rank of its range".
+  Transporting a target subspace along an invertible normalization costs no dimension.
+- `HTGeometry/ScaledCasimirCompletion` — completing a Hermitian family by `√g` times its kernel
+  projector.  The point of the scale factor: the completed Casimir is `g` exactly on the kernel, so
+  it dominates `g` on the *whole* space and the inverse square root is a uniform `g^{-1/2}`
+  contraction with no subspace restriction to thread through the estimate.
+- `HTGeometry/NormalizedCasimirLeakage` — the abstract `(18)`: a Hermitian family with central
+  Casimir and form gap `g` off its simultaneous kernel leaks at least `g` per lost dimension.  Also
+  `commonKernelProjection_mul_eq_zero_iff`, which is the legible form of the source condition
+  `U ≤ Q`.
+- `HTGeometry/AllReplicaPauliLeakageLaw` — the Pauli specialization `(18)` with `g = 2D²`, and
+  `(23)` at any positive normalization and at the label count `D²−1`.
+- `HTGeometry/LocalPauliUnitMassSynthesis` — Lemma D in full.  The word set is the pointwise set
+  power `G₂^k`, so word length is tracked; the bracket step adds exactly one to the length, and the
+  corpus's `exists_pauliWeightTwo_anticommuting_decomposition` supplies the weight drop, giving
+  depth `≤ wt(s) ≤ n`.  `‖ζ‖ = 2` comes from `pauliPhase_swap` plus `norm_pauliPhase`.
+- `HTGeometry/AllReplicaIncidenceNormalizedWordLeakage` — Theorem E with no synthesis hypothesis:
+  the per-label index sets are summed into one `Σ q, ι q` and each coefficient family extended by
+  zero off its fibre, which preserves unit mass.
+
+Two facts worth reusing.  First, the formal `(18)` is stronger than the card's: only the source
+projector has to lie in `Q`, because the adjoined kernel term is what needs killing and the target
+transport is exact.  Second, the constant is attained (for `su(2)` the spectrum of `K` on `ad ⊗ ad`
+is `{0, 2D², 3·2D²}`), so every step in the chain had to be exact -- which is why the normalization
+route, not a scalar estimate, is the only one that closes.
