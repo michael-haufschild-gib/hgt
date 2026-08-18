@@ -66,7 +66,7 @@
 - [ ] `prime-occupation-polarized-gamma-phase-survival`
 - [ ] `prime-tail-hedenmalm-wiener-hopf-transgression`
 - [ ] `prime-tail-reflection-folded-second-order-resolvent`
-- [ ] `prime-valuation-dyadic-fermion-normal-cone-law`
+- [x] `prime-valuation-dyadic-fermion-normal-cone-law` — 2026-08-18, `tendsto_criticalGeometricAffinity`, `tendsto_profileParityAffinity`, `coherentKernel_quadForm_nonneg`, `hasSum_dyadicFisher`, `tendsto_halfNormalExactScale`
 - [x] `prime-wold-accelerated-type-modular-drift-law` — 2026-08-18, `norm_finitePrimeGenusOnePolarizedPhase_two_sided` + `norm_burnolExtendedSoninEvaluationVector_soninDepth_bounds`
 - [ ] `projective-prime-weyl-leakage-fock-normal-cone`
 - [ ] `rational-coarse-graining-orbifold-tail-classification`
@@ -5177,3 +5177,38 @@ Two lessons worth keeping.
   realization, not about `G^m`.
   Remaining for closure: §6's Lord–Sukochev–Zanin diagonal formula for weakly modulated operators
   (one half — Schur–Horn majorization — is free), and §1's Connes–Consani source reduction.
+
+- 2026-08-18 — `prime-valuation-dyadic-fermion-normal-cone-law` closed and promoted to stage 3.
+  Every theorem the card states is now unconditional Lean.  New modules:
+  `HTGeometry/GeometricHellingerExpansion.lean` (the geometric affinity has the parity digit's
+  quadratic expansion, which is why `(12)` holds), `HTGeometry/DyadicFisherDecomposition.lean`
+  (`(20)`, telescoping), `RHTower/PrimeProfileWindowLimit.lean` (reusable: Mertens window at a
+  profile quotient, Tannery on the growing prime window, product-from-log-sum),
+  `RHTower/SquarefreeCriticalNormalCone.lean` (`(11)`, `(12)`, `(13)`, `(13b)`, `(22)`),
+  `RHTower/CoherentKernelChart.lean` (`(13c)`–`(13f)`: the kernel is the exponential of a Gram
+  kernel, hence positive definite via Schur), `RHTower/PrimeProfileFockLimit.lean` (`(13s)`,
+  `(13z)`), `RHTower/CriticalDefectMeasure.lean` (`(13aa)`–`(13ac)`),
+  `RHTower/CoherentEscapeEnds.lean` (`(13g)`–`(13i)` and the rapid end),
+  `RHTower/HalfNormalCoherentBoundary.lean` (`(13j)`–`(13n)`),
+  `RHTower/WoldNormalScale.lean` (`(17)`), `RHTower/HellingerCurvature.lean` (`(18)`, `(19)`),
+  `RHTower/DyadicEulerTelescope.lean` (`(23)`–`(27)`),
+  `RHTower/EulerMascheroniExponentialIntegral.lean` (new analytic asset: `∫₀^∞ e^{-t} log t = -γ`
+  and the Frullani representation `γ = ∫₀¹(1-e^{-t})dt/t - ∫₁^∞ e^{-t}dt/t`, hence
+  `Ein(a) - log a → γ`), `RHTower/HalfNormalExactScale.lean` (`(13o)`).  All axiom-clean and
+  umbrella-wired.
+
+- 2026-08-18 — `prime-modulated-weyl-idealizer-collapse-on-xi-sampling` advanced, **not** promoted.
+  `RHTower/XiSamplingIdealizerCollapse.lean` assembles `(23)` as a one-line instantiation of
+  Theorem A at the tree's own `locallyFiniteSamples_xiRealDivisor` and `symmetric_xiRealDivisor`,
+  so the whole of §4 is reduced to the single hypothesis `SuperlinearSamples xiRealDivisor`; and it
+  turns §7.1 and §7.2 from remarks into constructions — `preservesSamplingIdeal_singleton_firstOrder`
+  (a finite sampling set does not collapse) and `preservesSamplingIdeal_lattice_shift` together with
+  `not_superlinearSamples_lattice` (a linear-density lattice is locally finite and symmetric but not
+  superlinear, and its period shift preserves the sampling ideal).  The sharpness is therefore
+  Lean-proved: superlinearity cannot be weakened to Hardy–Littlewood's `N_0(T) ≫ T`.
+  **Two named classical theorems remain, neither owned by mathlib nor by this tree:**
+  (i) Selberg's positive-proportion theorem in the form `SuperlinearSamples xiRealDivisor`
+  (Hardy's theorem *is* owned, as `RHTower.exists_Xi_zero_gt`, and is not enough);
+  (ii) the Schwartz-kernel plus Bochner–Schwartz representation of a jointly continuous positive
+  translation-invariant sesquilinear form on `Schwartz(ℝ)` by a positive tempered measure, needed
+  for §5's `(27)`.  Everything on both sides of each is formalized.

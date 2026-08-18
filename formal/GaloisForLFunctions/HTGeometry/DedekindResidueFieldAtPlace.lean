@@ -149,4 +149,36 @@ theorem residue_placeIntegerElt_surjective :
 
 end AtPlace
 
+/-! ## Finite residue fields force a cyclotomic divisibility -/
+
+section CyclotomicDivisibility
+
+variable {R : Type*} [CommRing R]
+
+/-- **A prime with finite residue field divides `aⁿ − 1` for some `n > 0`, whenever it does not
+divide `a`.**  The residue of `a` is a nonzero element of a finite field, hence a root of unity.
+
+This is the arithmetic half of the cyclotomic engine for Milnor symbols: it guarantees that every
+prime not dividing `a` occurs in the factorisation of some `1 − aⁿ`, and `{a, 1 − aⁿ}` is always
+`n`-torsion. -/
+theorem exists_pow_sub_one_mem_of_finite_quotient (I : Ideal R) [I.IsMaximal]
+    [Finite (R ⧸ I)] {a : R} (ha : a ∉ I) :
+    ∃ n : ℕ, 0 < n ∧ a ^ n - 1 ∈ I := by
+  classical
+  have hne : (Ideal.Quotient.mk I a) ≠ 0 := fun h => ha ((Ideal.Quotient.eq_zero_iff_mem).1 h)
+  haveI : Finite ((R ⧸ I)ˣ) :=
+    Finite.of_injective (fun u : (R ⧸ I)ˣ => (u : R ⧸ I)) (fun _ _ h => Units.ext h)
+  obtain ⟨b, hb⟩ :=
+    ((Ideal.Quotient.maximal_ideal_iff_isField_quotient I).1 inferInstance).mul_inv_cancel hne
+  set u : (R ⧸ I)ˣ :=
+    ⟨Ideal.Quotient.mk I a, b, hb, by rw [mul_comm]; exact hb⟩ with hu
+  refine ⟨orderOf u, orderOf_pos u, ?_⟩
+  refine (Ideal.Quotient.eq_zero_iff_mem).1 ?_
+  have hval : ((u : (R ⧸ I)ˣ) : R ⧸ I) = Ideal.Quotient.mk I a := rfl
+  have hpow : (Ideal.Quotient.mk I a) ^ orderOf u = 1 := by
+    rw [← hval, ← Units.val_pow_eq_pow_val, pow_orderOf_eq_one, Units.val_one]
+  rw [map_sub, map_pow, map_one, hpow, sub_self]
+
+end CyclotomicDivisibility
+
 end GaloisForLFunctions.HTGeometry

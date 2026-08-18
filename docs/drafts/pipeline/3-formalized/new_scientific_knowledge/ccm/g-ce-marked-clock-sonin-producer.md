@@ -1,8 +1,8 @@
 # G-CE marked clock--Sonin producer
 
 - **ID:** `g-ce-marked-clock-sonin-producer`
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE / source producer
+- **Stage:** 3-formalized
+- **Type:** THEOREM / source producer
 - **Source:** G-CE singular graph wall; CCM one-corner incidence; signed Möbius source
 - **Statement:** Keep the two source orders `P_N D_{sigma,u}` and `D_{sigma,u} P_N` as orthogonal
   marks before scalarization. Their normalized two-port block is contractive, and its odd port is
@@ -18,8 +18,8 @@ It must not install `-I` on the scalar Ward value or select a Xi divisor.
 ## Gates
 
 - [x] 0 -> 1 in-progress: source-pure object, exact formulas, hostile tests fixed
-- [ ] 1 -> 2 fully-proven: dependency-closed paper proof and novelty audit
-- [ ] 2 -> 3 formalized: unconditional Lean theorem, targeted check/build/axiom audit
+- [x] 1 -> 2 fully-proven: dependency-closed paper proof and novelty audit
+- [x] 2 -> 3 formalized: unconditional Lean theorem, targeted check/build/axiom audit
 - [ ] 3 -> 4 publication-ready: standalone theorem/proof/Lean certificate/priority audit
 
 ## Frozen corpus frontier
@@ -161,8 +161,26 @@ scalar commutator cancellation, or a controller installed after `(7)` is insuffi
   seam `(7)`.
 - **New insight:** exact debt is singular amplification of a vanishing reflection-odd source port;
   it is not excess norm of the pre-scalar source.
-- **Status:** paper proof complete; Lean formalization pending.
+- **Status:** paper proof and Lean formalization complete.
+
+## Lean certificate
+
+Module:
+`GaloisForLFunctions.RHTower.MobiusGammaXiMarkedClockSoninProducer`.
+
+Formalized objects and laws:
+
+- bundled continuous-linear producer `mobiusClockSoninMarkedProducerCLM`;
+- exact even/odd Hadamard-port formulas;
+- exact marked-energy conservation;
+- source contraction and actual-source unit bound;
+- exact scalar-seam factorization through the odd vector port;
+- cofinal odd-port norm convergence on the actual Möbius source;
+- premise-free canonical capstone
+  `canonicalMobiusClockSoninMarkedProducer_closed`.
 
 ## Log
 
 - 2026-08-18 -- corpus-first and primary-literature audits; three candidates rejected; C4 frozen.
+- 2026-08-18 -- dependency-closed paper proof formalized; module check, target build, and axiom audit passed.
+

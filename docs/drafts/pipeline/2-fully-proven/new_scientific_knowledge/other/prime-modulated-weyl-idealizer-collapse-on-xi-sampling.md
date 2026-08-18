@@ -463,3 +463,56 @@ in this tree; neither is a claim of this card.
 2. **The Bochner--Schwartz theorem** for positive-definite tempered distributions, needed for the
    integral representation `(27)`. The two-dilation forcing that feeds it, and the null-constraint
    consequence that follows it, are both formalized above.
+
+## Lean progress — `(23)` assembled, and section 7's two sharpness constructions
+
+`formal/GaloisForLFunctions/RHTower/XiSamplingIdealizerCollapse.lean`, unconditional and
+axiom-clean (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+```text
+xiSamplingIdealizer_collapse
+    SuperlinearSamples xiRealDivisor,  0 ∈ F,  PreservesSamplingIdeal m Z_Xi^R F a
+      ⟹ ∀ h ∈ F, ∀ j ≤ m, (h ≠ 0 ∨ j ≠ 0) → a h j = 0                        -- (23)
+xiSamplingIdealizer_eq_polynomial_multiplier
+    the same operator acts on the quotient as multiplication by a 0 0
+
+-- §7.1: a finite sampling set does not collapse
+firstOrderPositionCoeff, preservesSamplingIdeal_singleton_firstOrder
+    on {0} the operator x ∂_x preserves the sampling ideal, with a 0 1 = X ≠ 0
+
+-- §7.2: superlinearity is the sharp mechanism
+latticeSamples h = h ℤ,  locallyFiniteSamples_lattice,  latticeSamples_symm
+shiftFailure_lattice_eq_empty      E_h = ∅ for the lattice period
+not_superlinearSamples_lattice     the lattice is locally finite, symmetric, not superlinear
+preservesSamplingIdeal_lattice_shift, latticeShiftCoeff_ne_zero
+    the shift by the period preserves the sampling ideal, with coefficient 1 ≠ 0 at h ≠ 0
+```
+
+`(23)` is now a one-line instantiation of Theorem A at the tree's own
+`locallyFiniteSamples_xiRealDivisor` and `symmetric_xiRealDivisor`, so **the whole of section 4 is
+reduced to the single hypothesis `SuperlinearSamples xiRealDivisor`** and nothing else.  Sections
+7.1 and 7.2 are now constructions rather than remarks: each hypothesis of Theorem A is shown
+necessary by an explicit operator that preserves the sampling ideal with a nonzero coefficient at a
+place the collapse would forbid.
+
+### The two named literature inputs, precisely stated
+
+Both are classical published theorems that neither mathlib nor this tree owns.  They are the only
+remaining obstructions to a fully hypothesis-free statement of sections 4 and 5.
+
+1. **Selberg's positive-proportion theorem** (1942; equivalently Levinson `1/3`, Conrey `2/5`), in
+   the exact form
+   ```text
+   SuperlinearSamples xiRealDivisor
+     ⟺  #{t ∈ [-T,T] : Ξ(t) = 0} / T → ∞
+   ```
+   Hardy's theorem is *not* enough and is already owned here (`RHTower.exists_Xi_zero_gt`); nor is
+   Hardy–Littlewood's `N_0(T) ≫ T`, because the lattice construction of §7.2 above is a locally
+   finite symmetric set with `N(T) ≍ T` on which the collapse genuinely fails.  Superlinearity is
+   therefore not a convenience: it is the exact strength needed, and the sharpness is now Lean-proved.
+2. **The Schwartz-kernel and Bochner–Schwartz theorems**, giving the integral representation `(27)`
+   of a jointly continuous positive translation-invariant sesquilinear form on `Schwartz(ℝ)` by a
+   positive tempered measure.  Everything on either side of that step is formalized:
+   `eq_of_two_dilation_invariance` produces the translation invariance, and
+   `measure_setOf_ne_zero_eq_zero` / `measure_compl_xiRealDivisor_eq_zero` draw the divisor-support
+   conclusion from the representation.
