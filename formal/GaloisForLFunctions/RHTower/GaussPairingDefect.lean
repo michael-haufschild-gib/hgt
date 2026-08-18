@@ -524,8 +524,8 @@ theorem tendsto_tsum_twoPiece_pairing_defect_zero (hm : 1 ≤ m) (k : Fin m) (p 
     (h1 : 1 < θP + θQ) (h2 : cP + 1 < σP + θQ) (h3 : cQ + 1 < σQ + θP)
     (h4 : cP + cQ + 1 < σP + σQ)
     (X Y : ℕ → ℤ → ℂ)
-    (hX : ∀ I : ℕ, TwoPieceAmplitude AP θP (BP / (1 + (I : ℝ)) ^ σP) cP I (X I))
-    (hY : ∀ I : ℕ, TwoPieceAmplitude AQ θQ (BQ / (1 + (I : ℝ)) ^ σQ) cQ I (Y I)) :
+    (hX : ∀ I : ℕ, 2 ≤ I → TwoPieceAmplitude AP θP (BP / (1 + (I : ℝ)) ^ σP) cP I (X I))
+    (hY : ∀ I : ℕ, 2 ≤ I → TwoPieceAmplitude AQ θQ (BQ / (1 + (I : ℝ)) ^ σQ) cQ I (Y I)) :
     Tendsto (fun I : ℕ => ∑' j : ℤ, ENNReal.ofReal
         (‖X I j‖ * ‖Y I j‖ * ‖gaussSampleRatioDefect k p j (I : ℤ)‖)) atTop (nhds 0) := by
   obtain ⟨K, hK, hKb⟩ := exists_norm_gaussSampleValue_pow_ratio_bound hm k p
@@ -629,9 +629,9 @@ theorem tendsto_tsum_twoPiece_pairing_defect_zero (hm : 1 ≤ m) (k : Fin m) (p 
   rw [add_zero, add_zero, add_zero] at hsum
   rw [ENNReal.tendsto_nhds_zero]
   intro ε hε
-  filter_upwards [ENNReal.tendsto_nhds_zero.mp hsum ε hε] with I hI
+  filter_upwards [ENNReal.tendsto_nhds_zero.mp hsum ε hε, eventually_ge_atTop 2] with I hI hI2
   exact le_trans (tsum_twoPiece_pairing_defect_le hm k p hK hKb hAP (hHP I) hAQ (hHQ I)
-    hcP hcQ hθP hθQ (hX I) (hY I)) hI
+    hcP hcQ hθP hθQ (hX I hI2) (hY I hI2)) hI
 
 end
 

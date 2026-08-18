@@ -2860,3 +2860,178 @@ closed sets; the corpus's `HalfPlaneRungeClosure` is compact-open only.  Formali
 therefore the single remaining task on this card, and it is a first-of-its-kind formalization in its
 own right.  The pieces already built here — the entire truncated-Laplace approximant with its
 exponential half-plane error, and the finite-pole case — are its elementary core.
+
+## An elementary proof architecture for Arakelyan on the closed half plane
+
+The source was re-read to fix the exact shape of the missing input.
+
+> **Andersson, Theorem 1.**  Let `f` be continuous on `Re s >= 1` and analytic for `Re s > 1`.
+> Then there are an entire `g` and a Helson zeta function with `f = zeta_chi'/zeta_chi + g` on
+> `Re s > 1`.
+>
+> **Andersson, Theorem 2.**  Let `f` be analytic and zero free on `Re s > 1` with `f'/f` extending
+> continuously to `Re s >= 1`.  Then `f = zeta_chi . g` on `Re s > 1` for some entire zero-free `g`.
+>
+> **Andersson, Lemma 1.**  Same hypothesis as Theorem 1; then `f = int_1^inf q(x)x^{-s}dx + g` with
+> `q = o(1)` and `g` entire.
+>
+> Its proof "applies the Arakelyan approximation theorem to the function `s^2 f(s)` on the half
+> plane `Re s >= 1`".
+
+So Lemma 1 = Arakelyan + an elementary Mellin step: with `G` entire and `|s^2 f - G| <= eps` on the
+half plane, write `G(s) = G(0) + G'(0)s + s^2 H(s)` with `H` entire; then
+
+```text
+f = H + G(0)/s^2 + G'(0)/s + (s^2 f - G)/s^2,
+```
+
+`1/s = int_1^inf x^{-1} x^{-s} dx` and `1/s^2 = int_1^inf (log x / x) x^{-s} dx` have `o(1)`
+densities, and the last term is `O(|s|^{-2})` on the half plane, hence `L^1` on the line and a
+Mellin transform of a bounded `o(1)` density by Mellin inversion plus Riemann--Lebesgue.
+
+For the divisor application the *analytic* case of Arakelyan suffices: the divisor is locally finite
+in `C`, so `F'/F` is analytic on an open horn neighbourhood of `Re s >= 1`, not merely continuous
+on it.
+
+### The architecture
+
+Write `E = {Re s >= 1}`.
+
+**Step 1 (cutoff).**  Choose a horn neighbourhood `Om'` of `E` with `Om' ⊆ Om`, bounded in the real
+direction, and a smooth `chi` with `chi = 1` on a neighbourhood of `E` and `supp chi ⊆ Om'`.  Then
+`u := f . dbar chi` is smooth, carried in a strip `{1 - 1 <= Re w <= 1}` disjoint from a
+neighbourhood of `E`, and `dbar(chi f) = u`.
+
+**Step 2 (cut the strip).**  With a smooth partition of unity in the imaginary variable, write
+`u = sum_n u_n` with `u_n` smooth, `supp u_n ⊆ K_n` compact and `K_n ⊆ {n <= |Im w| <= n+1}`.  Put
+`v_n := C(u_n)`, the Cauchy transform; `dbar v_n = u_n`, `v_n` is analytic off `K_n`, and `v_n` is
+the Cauchy transform of a *finite* measure carried in `{Re w < 1}`.
+
+**Step 3 (approximate each piece on `E` and on a growing disc).**  For each `n` produce an entire
+`p_n` with
+
+```text
+|v_n - p_n| <= eps 2^{-n}      on   E ∪ closedBall 0 (n/2).
+```
+
+**Step 4 (sum).**  `v := sum_n (v_n - p_n)` converges uniformly on `E` and uniformly on every
+compact subset of `C` (a fixed compact lies inside `closedBall 0 (n/2)` for all large `n`), hence
+locally uniformly on `C`; near any point only finitely many `u_n` are nonzero and the tail is a
+locally uniform limit of analytic functions, so `dbar v = u`.  Therefore
+
+```text
+h := chi f - v
+```
+
+is entire, and on `E` (where `chi = 1`) `|f - h| = |v| <= 2 eps`.
+
+### Step 3 is elementary
+
+The only nontrivial step is the simultaneous approximation on the *unbounded* `E` together with a
+*disc* on the other side.  It is elementary because of two facts.
+
+**(a) A far-left pole is handled by the truncated Laplace kernel on both sets at once.**  For
+`Re z < -rho` one has, for every `s` in `E ∪ closedBall 0 rho`,
+
+```text
+| 1/(s-z) - truncPole z T s |  =  |exp(-T(s-z))| / |s-z|  =  e^{-T Re(s-z)} / |s-z| ,
+```
+
+and `Re(s - z) >= min(1 - Re z, -rho - Re z) > 0` on both pieces, so the error is exponentially
+small in `T`, uniformly.  (`truncPole` and this estimate are already Lean theorems here:
+`HalfPlanePoleApproximation`, and the measure-superposition form in
+`HalfPlaneCauchyTransformApproximation`.)
+
+**(b) Any pole in `K_n` can be pushed far left in two uniform steps.**  For `z in K_n` one has
+`|Im z| >= n`, so `dist(z - L, closedBall 0 (n/2)) >= |Im z| - n/2 >= n/2` for every `L`, while
+`dist(z - L, E) = 1 - Re z + L > L`.  Hence a shift `L = n/2 - delta` satisfies
+`|z - (z-L)| < dist(z-L, E ∪ closedBall 0 (n/2))`, so the geometric expansion
+
+```text
+1/(s-z) = sum_k (z-z')^k / (s-z')^{k+1},        z' = z - L,
+```
+
+converges uniformly on `E ∪ closedBall 0 (n/2)` with ratio `<= (n/2-delta)/(n/2) < 1`, uniformly in
+`z in K_n`.  Two such steps put the pole at `Re z'' <= Re z - (n - 2delta) < -n/2`, i.e. in the
+regime of (a).  Poles of higher order are handled the same way, or by differentiating the kernel.
+
+Composing finitely many arbitrary-accuracy steps gives arbitrary accuracy, so Step 3 follows.
+
+### Consequences
+
+Nothing in this route uses Mergelyan, Runge for unbounded sets, Roth's fusion lemma, or Hörmander
+estimates.  The pieces needed in Lean are:
+
+| Piece | State |
+|---|---|
+| `truncPole` and its half-plane error bound | **done** |
+| entire approximation of a Cauchy transform on `E` | **done** |
+| the same on `E ∪ closedBall 0 rho` for far-left poles | small extension of the above |
+| geometric pole pushing, uniform in the pole over a compact | new, elementary |
+| smooth cutoff `chi` for a closed set inside an open set | mathlib |
+| Cauchy transform `dbarSolution` and `dbar (dbarSolution g) = g` | **corpus** (`DbarSolve`) |
+| sup bound `|C g| <= 3 r ||g||_inf` for `g` carried in a disc of radius `r` | corpus `lintegral_ball_norm_inv` gives it |
+| partition of unity in the imaginary variable | mathlib |
+| locally uniform limits: `dbar` of the sum | corpus `analyticOnNhd_of_dzbarAt_eq_zero` + Weierstrass |
+
+This replaces the earlier assessment that Arakelyan is a Mergelyan-scale obstruction.  It is not:
+for a *half plane*, with an *analytic* datum, the theorem is within reach of the machinery already
+in this tree.
+
+### Step 3 of the Arakelyan architecture is now Lean-proved
+
+Three modules were added, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`) and wired
+into `GaloisForLFunctions.HTGeometry`.
+
+**`HTGeometry/HalfPlaneCauchyTransformApproximation.lean`**
+
+- `truncPole_eq_shift`, `truncPole_zero_eq_intervalIntegral` — the truncated Laplace kernel as
+  `∫_0^T e^{-t z} dt`.
+- `norm_truncPole_zero_le`, `hasDerivAt_truncPole_zero`, `deriv_truncPole_zero`,
+  `norm_deriv_truncPole_zero_le`, `hasDerivAt_truncPole` — kernel and derivative bounds
+  `T e^{T max(0,-Re z)}` and `T^2 e^{T max(0,-Re z)}`.
+- `differentiable_truncCauchyTransform` — `s ↦ ∫ φ(x) truncPole (w x) T s dμ(x)` is entire whenever
+  the carrier's real parts are bounded above.
+- `norm_pole_sub_truncPole_le_of_re` — the error `e^{-T d}/d` from a lower bound `d` for
+  `Re (s - a)` alone.
+- `exists_entire_approx_cauchyTransform`, `exists_entire_approx_cauchyTransform_of_re_ge`,
+  `exists_entire_approx_cauchyTransform_halfPlane_union_ball` — entire approximation of a Cauchy
+  transform, on the closed half plane, on any set to the right of the carrier, and on
+  `{Re s ≥ 1} ∪ {‖s‖ ≤ ρ}` for a far-left carrier.
+
+**`HTGeometry/HalfPlanePolePushing.lean`**
+
+- `pushedKernel z z' N T` — the `N`-term geometric expansion of `1/(s-z)` about `z'`, each power of
+  the moved Cauchy kernel replaced by the same power of the truncated Laplace kernel; entire.
+- `norm_pow_sub_pow_le`, `inv_sub_sub_geomSum` (the exact remainder `(a/b)^N/(b-a)`).
+- `norm_inv_sub_pushedKernel_le` — the error bound
+
+```text
+  (M/d₂)^N / (d₂ - M)  +  N^2 (max 1 (2M/d₁))^N e^{-T d₁} / d₁ ,      M = |z - z'| ,
+```
+
+  with `d₁` a lower bound for `Re (s - z')` and `d₂` one for `|s - z'|`.  Separating the two is
+  what allows the moved pole to be far to the left of a disc while still close to it in norm.
+
+**`HTGeometry/HalfPlaneGapApproximation.lean`**
+
+- `differentiable_integral_kernel` — a reusable parametric-integral entirety criterion: uniformly
+  bounded entire kernels with uniformly bounded derivatives integrate to an entire function.
+- `hasDerivAt_pushedKernel`, `norm_pushedKernel_le`, `norm_deriv_pushedKernel_le`.
+- **`exists_entire_approx_cauchyTransform_gap`** — the two-piece theorem.  If
+
+```text
+  Re (w x) ≤ 1 - delta ,     rho + L + delta ≤ |Im (w x)| ,     1 + rho < L ,
+```
+
+  then for every `eps > 0` there is an entire `g` with
+
+```text
+  || ∫ φ(x)/(s - w x) dμ(x) - g(s) ||  ≤  eps      for every  s  with  Re s ≥ 1  or  ||s|| ≤ rho .
+```
+
+This is exactly Step 3 of the architecture above, with the carrier hypotheses satisfied by every
+piece `K_n` of the `∂̄` source (`rho = n/4`, `L = n/2`, `|Im| ≥ n`).  What remains for Arakelyan on
+the closed half plane is Steps 1, 2 and 4: the smooth cutoff and `dbar (chi f) = f dbar chi`, the
+imaginary-direction partition of unity producing the compactly supported pieces, and the summation
+argument (locally uniform convergence, `dbar v = u`, `h = chi f - v` entire).

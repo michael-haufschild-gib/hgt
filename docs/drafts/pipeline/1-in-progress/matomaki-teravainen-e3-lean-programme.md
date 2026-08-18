@@ -398,3 +398,206 @@ wired.  This is the paper's step 4 in the shape its step 3 uses.
   Harman's minorant, not a third prime); `(FS7)` confirmed to be exactly the paper's step 4;
   §6.1 selected as the Kuznetsov-free route; the exponent shown to be non-load-bearing for both
   Route E cards.
+
+## MAJOR REDIRECTION — Jutila and Bourgain are both removable (2026-08-18)
+
+**Everything above about needing Jutila's `[10, Theorem 9.10]` (or, on the §6.1 route, Bourgain's
+zero-density estimate) is superseded.  Huxley's large-values theorem alone suffices.**
+
+### What the paper actually uses
+
+The paper's proof of Lemma 4.1 is three lines; its content is Jutila's estimate at `k = 7`,
+
+```text
+|T| ≪ (NT)^{ε²/500} ( GN/V²  +  (GN/V²)^{-1/k}·G³NT/V⁶  +  (GN/V²)^{4k}·T/N^{2k} ) ,
+       G = ∑_{n∼N}|a_n|²/n² ,  V = N^{-σ} .
+```
+
+With `G = N^{-1+o(1)}`, `V = N^{-σ}` the three terms are `N^{2σ}`, `T N^{(6−2/k)σ−2}`,
+`T N^{(8σ−2)k}`, matching the paper's display exactly (this is how the transcription above was
+verified).  Jutila's **middle term has base `G³NT/V⁶`, which is precisely Huxley's second term**;
+the factor `(GN/V²)^{-1/k}` is Jutila's refinement of it.  Setting the base against the target
+`T^{2σ−ε²/5}` with `N ≥ T^{1−θ}`:
+
+```text
+1 + (1−θ)(6σ−2) ≤ 2σ   ⟺   σ ≤ (2θ−1)/(6θ−4) .
+```
+
+At the Harman-route value `θ = 2/11` this is **`σ ≤ 7/32 = 0.21875`**, and Jutila's extra factor
+buys only `49/206 = 0.23786`.  **Remark 5.2 needs merely `σ > 1/5 + 2ε`.**  So Huxley alone clears
+the threshold with room to spare, and the whole `k = 7` apparatus is unnecessary.
+
+### The cost, computed exactly
+
+Re-running §5.3 with `7/32` in place of `49/206`:
+
+| constraint | with `σ = 49/206` | with `σ = 7/32` |
+|-|-|-|
+| second bound `a > 6/(5+2σ)` | `103/94 = 1.0957` | `32/29 = 1.10345` |
+| first bound `a > 1/(1 − θ(1−2σ))`, `θ = 2/11` | `1/(1 − 108/1133) = 1.1053` | `88/79 = 1.11392` |
+| binding value of `a` | `1.1` | `88/79 ≈ 1.11392` |
+| `c = 1 + a` | `2.1` | `≈ 2.114` |
+| **all-interval `E₃` exponent `1 + a/2`** | **`1.55`** | **`≈ 1.557`** |
+
+So the two Route E cards retune `1.55 → 1.557`, not `1.55 → 1.615`.  **The §6.1 (Heath-Brown
+identity + Bourgain) detour is abandoned**: it was adopted only to avoid Jutila's dependency chain,
+and Jutila is no longer in the chain.  §6.1 does not even avoid Watt/Deshouillers–Iwaniec, because
+its Type I sums are "handled as before", i.e. by §5.1.
+
+### Huxley's theorem, and why the corpus was one lemma away
+
+Huxley's estimate in Kerr's normalisation (arXiv:1909.12075, Lemma 15, attributed to Huxley,
+*Large values of Dirichlet polynomials III*):
+
+```text
+|a_n| ≤ 1,  A ⊂ [0,T] well spaced,  |∑_{N≤n≤2N} a_n n^{it}| ≥ V on A,  V ≥ N^{3/4+o(1)}
+  ⟹  |A| ≪ N^{2+o(1)}/V² + T·N^{4+o(1)}/V⁶ .
+```
+
+Its proof is **exactly the corpus's local Huxley theorem plus a subdivision**:
+
+1. `Sieve/HuxleyLargeValues.huxley_local_large_values` gives, on a window of diameter `W`,
+   `K V² ≤ 2G(N + (12πN/δ)(1+log K))` **provided `G·B(N,U,W) ≤ V²/2`**, where
+   `B ≤ 214√W + 1536 N/√U` and `3U ≤ 4πN`.
+2. Taking `U = 4πN/3` makes `N/√U = √(3N/4π)`, so the `U`-endpoint of the envelope is absorbable
+   exactly when `G√N ≲ V²` — **this is Huxley's hypothesis `V ≥ N^{3/4}`** (with `G ≍ N`).
+3. The `√W` endpoint is then absorbable for `W ≍ V⁴/G²`, and the number of windows is `Ttot/W`,
+   producing `Ttot G³N/V⁶ + GN/V²` — Huxley's two terms.
+
+The corpus already owned step 1 (Kuzmin–Landau kernel + second-derivative envelope, both
+unconditional).  Only the subdivision was missing.
+
+### Landed — `Sieve/HuxleySubdivision`, `Sieve/HuxleyClosedLargeValues` (2026-08-18)
+
+```text
+card_le_of_window_bound (hmono : Monotone lam) (hW : 0 < W)
+    (hspread : ∀ r ≤ R, lam r − lam 0 ≤ Ttot)
+    (hlocal : ∀ j m, j+m ≤ R → lam (j+m) − lam j ≤ W → (m+1 : ℝ) ≤ C) :
+  (R+1 : ℝ) ≤ (⌊Ttot/W⌋₊ + 1)·C
+
+huxley_global_large_values … (hlamW : logDyadicLambda N W ≤ 1)
+    (hB : logDyadicSecondEnvelope N U W ≤ B) (habsorb : G·B ≤ V²/2) … :
+  (R+1)·V² ≤ (⌊Ttot/W⌋₊ + 1)·(2G(N + (12πN/δ)·∑_{i≤R} 1/(i+1)))
+
+huxley_large_values_closed (hthresh : G(1 + 1536√(3N/4π)) ≤ V²/3) … :
+  (R+1)·V² ≤ (Ttot·(1284G)²/V⁴ + 1)·(2G(N + (12πN/δ)·∑_{i≤R} 1/(i+1)))
+```
+
+plus `norm_dyadicDirRow : ‖dyadicDirRow N t‖ = √N` and `sq_le_of_large_value : V² ≤ N·G` (the
+Cauchy–Schwarz ceiling that makes the window automatically legal for the phase test, so no extra
+hypothesis is needed).  The subdivision lemma is purely combinatorial — fibres of
+`r ↦ ⌊(λ_r − λ_0)/W⌋` are index intervals of frequency spread `< W`, and there are `⌊Ttot/W⌋+1`
+of them.  All five `#print axioms` clean; both modules wired into the `RHTower` umbrella.
+
+`huxley_large_values_closed` **is Huxley's Lemma 15 with explicit constants**: dividing by `V²`,
+
+```text
+R + 1 ≤ 2G·N·(1 + 12π(1+log(R+1))/δ)·(1/V² + Ttot·(1284G)²/V⁶) ,
+```
+
+i.e. `R ≪ GN/V² + Ttot·G³N/V⁶` up to logarithms, with the threshold `G√N ≲ V²` as the only side
+condition.  This is the single large-values input the whole `E₃` programme needs.
+
+### Revised milestone list
+
+- **M4b′** — Huxley's global estimate: **landed** (above).  Jutila's `k`-th power interpolation,
+  the Gram/ζ bridge (`Sieve/CriticalTruncationZeta`, `Sieve/GramEntryZetaBound`), the fourth-moment
+  averaging and `Sieve/JutilaLargeValues` are **no longer on the critical path**; they remain as
+  unconditional corpus assets in case a sharper `σ` is ever wanted.
+- **M4c** — Lemma 4.1 at `σ = 7/32 − 10ε`: plumbing from `huxley_large_values_closed`
+  (measure→well-spaced-count, the `lam : ℕ → ℝ` global-gap interface, divisor-bounded coefficient
+  energy) plus the exponent arithmetic.  This is now the next Lean target.
+- The remaining genuinely hard external inputs are unchanged and unavoidable on either route:
+  **Lemma 3.4** (Heath-Brown's sparse mean value estimate) and **Lemma 3.5** (Watt /
+  Deshouillers–Iwaniec twisted fourth moments — the only place automorphic input enters), together
+  with **Prop 2.2** (Harman's sieve decomposition).
+
+### The Dirichlet-block interface — `Sieve/HuxleyFinsetLargeValues`,
+### `Sieve/HuxleyDirichletLargeValues`, `Sieve/HuxleyExplicitLargeValues` (2026-08-18)
+
+Three further modules turn the abstract count into the object Lemma 4.1 quantifies over.
+
+```text
+sepEnum S hcard delta           -- monotone enumeration of a finite set of reals, continued past
+                                -- the last point by an arithmetic progression of step delta
+sepEnum_of_le, sepEnum_mem, sepEnum_gap
+huxley_large_values_finset      -- the count for a finite delta-separated `S : Finset ℝ`
+
+blockCoeff N c sigma            -- the coefficient vector of the block, weighted by n^{-sigma}
+blockPoly  N c sigma t = ∑_{N ≤ n < 2N} c n · n^{-sigma} · e^{-i t log n}
+inner_dyadicDirRow_blockCoeff : ⟪dyadicDirRow N t, blockCoeff N c sigma⟫ = blockPoly N c sigma t
+norm_blockCoeff_sq            : ‖blockCoeff N c sigma‖² = ∑_{N ≤ n < 2N} ‖c n‖²(n^{-sigma})²
+norm_blockCoeff_one_sq_le     : ‖blockCoeff N c 1‖² ≤ D²/N       (for ‖c n‖ ≤ D)
+
+huxley_block_large_values (hthresh : (D²/N)(1 + 1536√(3N/4π)) ≤ V²/3) … :
+  |S|·V² ≤ (1648656·Ttot·D⁴/(N²V⁴) + 1)·(2D²(1 + 12π(1 + log|S|)/delta))
+
+card_le_of_separated : |S| ≤ Ttot/delta + 1
+huxley_block_large_values_explicit : the same with `log|S|` replaced by `log (Ttot/delta + 1)`
+```
+
+The last statement is **Lemma 4.1's engine, fully explicit**: dividing by `V²`, with `G = D²/N`,
+
+```text
+|S| ≤ 2D²·L·(1/V² + 1648656·Ttot·D⁴/(N²V⁶)) ,   L = 1 + 12π(1 + log(Ttot/delta + 1))/delta ,
+```
+
+which at `D = N^{o(1)}`, `delta = 1`, `Ttot = 2T`, `V = N^{-σ}` reads `N^{2σ} + T N^{6σ−2}` — the two
+Huxley terms.  Ten new theorems, all `#print axioms` clean, all wired.
+
+**What is left for Lemma 4.1 is exponent arithmetic only**, with no further analytic input:
+
+1. threshold: `(D²/N)(1 + 1536√(3N/4π)) ≤ N^{-2σ}/3` holds once `2256 D² ≤ N^{1/2−2σ}`, and
+   `1/2 − 2σ ≥ 1/16` for `σ ≤ 7/32`;
+2. second term: `2D²N^{2σ}L ≤ T^{2σ}·T^{−2σε}·(…)`, using `N ≤ T^{1−ε}` and `σ ≥ 5ε`;
+3. first term: `T·N^{6σ−2} ≤ T^{1+(9/11)(6σ−2)}` using `N ≥ T^{9/11}` and `6σ − 2 < 0`, and
+   `1 + (9/11)(6σ−2) − 2σ = (32/11)(σ − 7/32)`, so at `σ ≤ 7/32 − 5ε` the exponent is
+   `2σ − (160/11)ε`, leaving `≈ 14.5 ε` of room for `D⁶`, `L`, and the constants.
+
+## Open question: can Watt / Deshouillers–Iwaniec be removed from §5.1–§5.2? (2026-08-18)
+
+With Jutila and Bourgain gone, **Lemma 3.5 (Watt's and Deshouillers–Iwaniec's twisted fourth
+moments) is the only remaining automorphic input** — and §6.1 does *not* avoid it, since its Type I
+sums are "handled as before".  So this is now the decisive fork for the whole programme.
+
+Where it is used (§5.1, Type I).  After Cauchy–Schwarz against the amplifier `M = P₁^k`,
+
+```text
+∫_U |M₁|²|M₂|² ≤ M^{ε/10}(∫_U |M₂|⁴|M|²)^{1/2}(∫_U |M₁|⁴)^{1/2} ,
+```
+
+with `M₂` the long coefficient-`1` variable (`M₂ ≍ X/(P₁M₁)`, so `M₂ ≍ X^{1/2}` at the extreme
+`M₁ ≍ X^{1/2}`) and `M ≍ T^{1/10}` the `P₁`-smooth amplifier, whose sparsity
+`|supp M| ≤ M^{1−1/a+o(1)}` gives `∑|b_m|² ≪ M^{1+1/a}` — this is the *only* source of saving in the
+whole Type I estimate, and it is a saving of just `M^{−(1−1/a)/2} ≈ X^{−0.0045}`.
+
+**The plain mean value theorem is not merely lossy here, it fails by a full power of the amplifier.**
+Writing `∫_{−T}^{T}|M₂²M|² ≪ (T + M₂²M)·∑|c_ℓ|²` and `∑|c_ℓ|² ≈ M₂^{−2}M^{1/a−1}X^{o(1)}` gives
+
+```text
+MVT :  (T/M₂² + M)·M^{1/a−1}X^{o(1)} ,        DI :  (T/M₂²)·M^{1/a−1}X^{ε} ,
+```
+
+so the MVT carries the extra additive `M·M^{1/a−1} = M^{1/a}` — at `T = X`, `M₁ = 1` this turns the
+final Type I bound from `P₁·M^{(1/a−1)/2}` into `X^{1/2}M^{1/(2a)}`.  The reason is structural: at
+`T ≍ X` and length `M₂² ≍ X` the diagonal is the whole MVT, and only reflection (functional
+equation) beats it.  Shrinking `M` does not help — the loss term dominates for every `M > T/M₂²`,
+and `T/M₂² ≍ 1` at the extreme `M₁ ≍ X^{1/2}`.
+
+Two escapes to test, in order of promise:
+
+1. **Restrict the Type I range and pay the sieve.**  For `T ≤ M₂` the pointwise bound (3.2),
+   `|∑_{N<n≤N′}n^{−1−it}| ≪ 1/|t|`, already gives `∫_T^{2T}|M₁|²|M₂|² ≪ X^{o(1)}/T ≤ X^{−1/1000}` —
+   no moment estimate at all.  The hard range is only `T > M₂ ≍ X/(P₁M₁)`.  Since the two Route E
+   cards accept **any** fixed exponent, a Type I range much smaller than `M₁ ≤ X^{1/2+ε}` is
+   affordable; the cost is that Harman's sieve then leaves more Type II, i.e. a larger `θ` in
+   Remark 5.2, i.e. a larger `c`.  Quantifying that trade is the concrete next question.
+2. **Use Lemma 3.4 in place of Lemma 3.5.**  The paper itself notes (Remark 5.3) that Heath-Brown's
+   sparse mean value estimate can substitute for Deshouillers–Iwaniec in a related place.  Lemma 3.4
+   is stated for a *sparse* `M(s) = ∑_{m ∈ M}ε_m m^{−s}` against a dyadic `A(s)`, which is exactly
+   the shape here (`M` = the `P₁`-smooth amplifier, `A` = `M₂²`).  Its third term is deletable when
+   `N ≥ T^{2/3}` or `|M| ≤ T^{1/3}`, both satisfiable.  Heath-Brown's Theorem 4 rests on the double
+   large sieve and the divisor switching — hard, but **not automorphic**.
+
+Neither escape is settled; the analysis above of the MVT failure is, and it rules out the naive
+route.

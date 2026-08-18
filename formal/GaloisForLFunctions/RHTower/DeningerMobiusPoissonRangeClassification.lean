@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.DeningerDepletedPoisson
 import GaloisForLFunctions.RHTower.DeningerMobiusRightInverse
 import GaloisForLFunctions.RHTower.DeningerEvenPreimage
+import GaloisForLFunctions.RHTower.DeningerMeyerStrictEmbedding
 
 /-!
 # The exact Poisson range as a Möbius regularity domain
@@ -165,6 +166,11 @@ theorem deningerMobiusRegularDomain_existsUnique {h : DeningerExpSchwartz}
     exact deningerPoissonSource_injective (hg.trans (deningerPoissonSource_eq_of_ray
       (fun x hx => by rw [hf x hx.ne', deningerEvenPreimage_of_pos _ hx])).symm)
 
+/-- **`(12)`: Poisson incidence is exactly canonical Möbius regularity.** -/
+theorem deningerPoissonIncidence_iff (h : DeningerExpSchwartz) :
+    h ∈ Set.range deningerPoissonSource ↔ h ∈ DeningerMobiusRegularDomain := by
+  rw [deningerMobiusRegularDomain_eq_poissonRange]
+
 /-! ## The reflected two-collar graph -/
 
 /-- The Möbius-regular part `Γ_sec^{μ-reg}` of the reflected two-collar graph: the pairs `(h, Jh)`
@@ -195,6 +201,63 @@ theorem deningerReflectedGraphMuRegular_eq :
     · rw [deningerMobiusRegularDomain_eq_poissonRange, h1]
       exact ⟨f, rfl⟩
     · rw [h1, h2, deningerCollarExchange_poissonSource]
+
+/-! ## The regular domain in the nuclear Meyer topology -/
+
+/-- The maximal regular Möbius domain, read inside the Meyer source with its nuclear topology. -/
+def DeningerMobiusRegularDomainMeyer : Set DeningerMeyerSource :=
+  {h | DeningerMeyerSource.toSource h ∈ DeningerMobiusRegularDomain}
+
+theorem deningerMobiusRegularDomainMeyer_eq_range :
+    DeningerMobiusRegularDomainMeyer = Set.range deningerPoissonMeyerLM := by
+  ext h
+  rw [DeningerMobiusRegularDomainMeyer, Set.mem_setOf_eq,
+    deningerMobiusRegularDomain_eq_poissonRange]
+  constructor
+  · rintro ⟨f, hf⟩
+    refine ⟨f, DeningerMeyerSource.toSource.injective ?_⟩
+    rw [deningerPoissonMeyerLM_toSource, hf]
+  · rintro ⟨f, rfl⟩
+    exact ⟨f, rfl⟩
+
+theorem deningerPoissonMeyerRange_carrier :
+    ((LinearMap.range deningerPoissonMeyerLM : Submodule ℂ DeningerMeyerSource) :
+      Set DeningerMeyerSource) = DeningerMobiusRegularDomainMeyer := by
+  rw [deningerMobiusRegularDomainMeyer_eq_range]
+  ext h
+  exact LinearMap.mem_range
+
+/-- **`(8)`, first half: the maximal regular Möbius domain is closed in the nuclear Meyer
+topology.**  It is the image of the Poisson operator, which is closed because it is the preimage of
+the closed radial Poisson image under the continuous radial presentation. -/
+theorem deningerMobiusRegularDomainMeyer_isClosed :
+    IsClosed DeningerMobiusRegularDomainMeyer := by
+  rw [deningerMobiusRegularDomainMeyer_eq_range]
+  exact deningerPoissonMeyer_range_isClosed
+
+/-- The continuous inverse **is** the even Möbius transform: a member of `H_∩` extending the even
+Möbius preimage of a point of the regular domain is the value of the inverse there. -/
+theorem deningerPoissonMeyerRangeEquiv_symm_eq_mobiusExtension
+    (x : LinearMap.range deningerPoissonMeyerLM) (f : DeningerMeyerCap)
+    (hf : ∀ y : ℝ, y ≠ 0 →
+      ((f : DeningerMeyerCap) : 𝓢(ℝ, ℂ)) y
+        = deningerEvenPreimage
+            ((DeningerMeyerSource.toSource (x : DeningerMeyerSource) : DeningerExpSchwartz) :
+              𝓢(ℝ, ℂ)) y) :
+    deningerPoissonMeyerRangeEquiv.symm x = f := by
+  refine deningerPoissonMeyerLM_injective ?_
+  rw [deningerPoissonMeyerRangeEquiv_symm_coe x]
+  refine DeningerMeyerSource.toSource.injective ?_
+  rw [deningerPoissonMeyerLM_toSource]
+  refine (deningerPoissonSource_eq_of_ray (fun y hy => ?_)).symm
+  rw [hf y hy.ne', deningerEvenPreimage_of_pos _ hy]
+
+/-- **`(8)`, second half: the inverse `E𝔐_μ : 𝒟_μ → H_∩` is continuous** for the nuclear Meyer
+topology on the domain and the Schwartz topology on `H_∩`. -/
+theorem deningerMobiusRegularDomain_inverse_continuous :
+    Continuous (deningerPoissonMeyerRangeEquiv.symm :
+      LinearMap.range deningerPoissonMeyerLM → DeningerMeyerCap) :=
+  deningerPoissonMeyerRangeEquiv_symm_continuous
 
 end
 

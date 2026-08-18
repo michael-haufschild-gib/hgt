@@ -2571,3 +2571,214 @@ convolution costs, which `log_div_le_rpow_div` (pass 37) converts into an arbitr
 `‖(R̃_n − a_(δ_n)) u‖ → 0` for `u` in the class, of which the proved (T) is the spike-free case —
 and then step 3's telescope, which is already built
 (`HTGeometry/OperatorPowerTelescope.tendsto_norm_operator_pow_sub_zero`).
+
+## Pass 52 — correction of the `m ≥ 2` target: the estimate is a *pairing*, not a norm
+
+Passes 42/44/51 aimed the `m ≥ 2` route at the one-step estimate `‖(R̃_n − a_δ) u‖ → 0` for `u` in
+the two-piece class, and therefore at generalizing **(T)** to that class.  **That target is false**,
+and the two-piece machinery was being pointed at the wrong statement.
+
+### Why the `L²` one-step target fails
+
+Track the sizes through the iteration (`m = 2`, `u = R·1`).  `R^i 1` carries a spike at frequency
+`≈ −n` of exponent `i/m` and height `≍ log^L n / n`.  Then `(R − M)(R^{m-1}1)` carries a spike of
+exponent `1` and height `≍ log^L n / n`, whose `ℓ²` mass is
+
+```text
+H² n² Σ_r (1 + r)^(-2)  ≍  log^(2L) n,
+```
+
+bounded away from zero.  So the `L²` one-step error does not vanish at the top iterate, and no
+sharpening of the class can make it vanish.
+
+### What does vanish
+
+The spike sits at distance `≍ n` from frequency `0`, and only frequency `0` is ever read.  Pairing
+the spike against a vector with coefficients of size `1/(1+|j|)` costs a factor `1/n`:
+
+```text
+Σ_r (1/n) · H (n/r)^1  ≍  H log n → 0.
+```
+
+So the correct target is the **pairing**, and the master identity is entirely algebra the tree
+already owns:
+
+```text
+⟪e_n, G^r e_n⟫ = σ_n^r · ⟪1, R_n^r 1⟫              gaussQuasiInnerG_pow_fourierMulBlock
+⟪1, M_n^r 1⟫   = A_r(fract δ_n)                    fourierCoeff_gaussAmplitudeIterate_zero
+⟪1, R^r1 − M^r1⟫ = Σ_(i<r) ⟪a_δ^(r-1-i), (R−M)(R^i 1)⟫
+                                                   operator_pow_sub_eq_sum, M self-adjoint
+```
+
+with `σ_n = p d_n conj d_n` **outside**, so any `o(1)` on the pairing is already the relative form.
+
+### The split, moved onto the pairing by adjointness
+
+`R − M = B[S B^(-2)(S*−T)]B + B[(S−T^(-1))B^(-2)T]B`, and `B`, `B^(-2)` are self-adjoint while
+`⟪u, S w⟫ = ⟪S* u, w⟫` (`gaussShiftedBlockOf_inner`), so
+
+```text
+⟪g, (R−M)v⟫ = ⟪ B^(-2)S*(Bg) , (S*−T)(Bv) ⟫  +  ⟪ Bg , (S−T^(-1))(B^(-2)T(Bv)) ⟫ .
+```
+
+**No `‖S·‖` occurs anywhere**, so **(T) is not needed for this card at all** — it stays in the tree
+as an unconditional general-purpose estimate.  Both terms are
+`Σ_j ‖X̂(j)‖ ‖Ŷ(j)‖ ‖defect_j‖`, because both defect operators act coefficientwise
+(`norm_fourierCoeff_shiftedBlockOf_sub_rotation`).
+
+### New modules (unconditional, axiom-clean `[propext, Classical.choice, Quot.sound]`, wired)
+
+`HTGeometry/FourierInnerCoefficientBound.lean`
+
+```text
+norm_inner_le_tsum_fourierCoeff          ‖⟪u,v⟫‖ ≤ Σ_j ‖û(j)‖ ‖v̂(j)‖
+ofReal_norm_inner_le_tsum_fourierCoeff   the same in ℝ≥0∞
+```
+
+`RHTower/GaussSpikeDefectBand.lean` — the sharp exponent of the sampled ratio.
+
+```text
+norm_gaussSampleRatioDefect_le_shiftRatio   ‖D_j‖ ≤ ρ_j + 1
+gaussShiftRatio_sq_le_rpow                  ρ_j² ≤ (K n/|n+j|)^(1/m)
+    -- the exact m-th root of the uniform bound: ρ² = (ρ^(2m))^(1/m), no case split, no loss.
+    -- The corpus's gaussShiftRatio_sq_le_sqrt (exponent 1/2) is too lossy for m ≥ 4.
+norm_gaussSampleRatioDefect_sq_le_rpow      ‖D_j‖² ≤ 2 + 2 (K n)^(1/m)
+tsum_spikeProfile_sq_mul_defect_sq_le       Σ_l spike² ‖D_l‖² ≤ B² n^(2c)(2+2(Kn)^(1/m)) W(2c)
+```
+
+`RHTower/GaussPairingDefect.lean` — the pairing estimate itself.
+
+```text
+norm_gaussSampleRatioDefect_le_linear       ‖D_j‖ ≤ 3 + K·I/|I+j|          (from 2D ≤ D²+1)
+gaussTranslationL1PowDefectBound            Σ_j A/(1+|j|)^s ‖D_j‖
+tendsto_gaussTranslationL1PowDefectBound    → 0 for s > 1
+  ..._neg, ..._natAbs, ..._comp             along every escaping frequency sequence
+gaussBandDefectMass K I = 6I + 2KI(1+log I)
+tsum_band_defect_le                         Σ_(2|I+l|<I) ‖D_l‖ ≤ gaussBandDefectMass K I
+tsum_spikeProfile_mul_defect_le             a spike against anything bounded on the band
+tsum_twoPiece_pairing_defect_le             the four-term master bound
+tendsto_natCast_rpow_mul_bandMass_div_rpow  I^a · mass / (1+I)^b → 0   for a + 1 < b
+tendsto_tsum_twoPiece_pairing_defect_zero   THE ESTIMATE
+```
+
+The last one: for two families with two-piece profiles
+`A_P/(1+|j|)^θ_P + (B_P/(1+I)^σ_P)·spike(c_P)` and likewise `Q`,
+
+```text
+Σ_j ‖X̂(j)‖ ‖Ŷ(j)‖ ‖D_j(I)‖ → 0
+```
+
+whenever
+
+```text
+1 < θ_P + θ_Q,   c_P + 1 < σ_P + θ_Q,   c_Q + 1 < σ_Q + θ_P,   c_P + c_Q + 1 < σ_P + σ_Q.
+```
+
+The bulk×bulk piece is the new `ℓ¹` defect bound at the summed exponent; each of the three spike
+pieces is a spike height times the band mass `O(I log I)`.  The linear defect bound
+`‖D_j‖ ≤ 3 + K I/|I+j|` is what lets the `ℓ¹` estimate reuse the whole `ℓ²` skeleton
+(`tendsto_tsum_zero_of_dominated`, `intPowWeight`, `tendsto_tsum_farBandPower_zero`) unchanged.
+
+### The exponent budget, and why it closes
+
+Tie the spike-height exponent to the bulk exponent, `σ = θ`.  Then all four hypotheses follow from
+the single inequality `c_P + c_Q + 1 < θ_P + θ_Q`, and the invariant is maintained by
+
+```text
+symbol step (B, B^(-2)):   (A, θ, B̄, c) ↦ (C₁A + C₂B̄, θ − ε, C₃B̄, c)
+multiplier step (S, S*):   (A, θ, B̄, c) ↦ (K₁A, θ, K₂(2A + B̄), c + 1/(2m))
+```
+
+Both constants stay `I`-independent: in `mul_symbol` the created bulk mass
+`spikeConvBulkConst · K · B · I^γ` is `≍ B̄ log I · I^(γ−θ) = B̄ log I · I^(−ε)`, which is bounded,
+and the created spike height `3K spikeConvConst · B̄/(1+I)^θ` is `≤ C B̄/(1+I)^(θ−ε)` because
+`log(2+x) ≤ C_ε (1+x)^ε` (`log_div_le_rpow_div`).
+
+With `X = B^(-2)S*(Bg)` (2 symbol steps, 1 multiplier) and `Y = B(R^i 1)`, `i ≤ m−1`
+(3(m−1)+1 symbol steps, 2(m−1) multipliers):
+
+```text
+c_X = 1/(2m),  c_Y = (m−1)/m,  θ_X = 1 − 2ε,  θ_Y = 1 − (3m−2)ε
+c_X + c_Y + 1 = 2 − 1/(2m)  <  2 − 3mε = θ_X + θ_Y     ⟺   ε < 1/(6m²).
+```
+
+### Remaining on this card
+
+1. the class bookkeeping: `TwoPieceAmplitude.mono`, the `spikeConvConst ≤ C_ε(1+I)^ε` bound, and
+   the two step lemmas above, then the induction giving `R_I^i (fourierLp 2 0)` in the class for
+   `i ≤ m−1`;
+2. the two-regime multiplier bounds for the symbols of `S` and `S*` (feeding `mul_multiplier`):
+   off band `ρ ≤ √(1+2K)` (`gaussShiftRatio_sq_le_of_not_spike`), on band
+   `ρ ≤ (2K)^(1/(2m))(I/(1+|I+j|))^(1/(2m))`;
+3. assembly of `⟪1, R^m1 − M^m1⟫ → 0`, hence relative (11) at every `m`;
+4. negative frequencies — the pointwise-conjugation antiunitary `C` (`C R_i C = R_(−i)`,
+   `C M C = M`, `C 1 = 1`, `δ_(−i) = δ_i`), or a ℤ-indexed restatement of the class;
+5. then `GaussDiagonalLogResidue.lean` generalizes from `m = 1` verbatim — its inputs
+   `gaussPrincipalDiagonalTerm_logResidue`, `gaussLocalFactorWeight_mul_principalResidue`,
+   `inner_gaussQuasiInnerGFull_pow`, `exists_gaussComponentPrimeMagnitudeEnergy_bounds` are all
+   already stated for general `m`.
+
+## Pass 53 — the class bookkeeping and the one-step pairing bound are formalized
+
+Two more modules; both unconditional, axiom-clean (`[propext, Classical.choice, Quot.sound]`),
+umbrella-wired, built.
+
+### `RHTower/GaussClassStep.lean` — the tied class and its two steps
+
+The class is `TwoPieceAmplitude A θ (B/(1+I)^θ) c I`: the spike-height exponent is *tied* to the
+bulk exponent, which is what collapses the four hypotheses of the pairing estimate to the single
+inequality `c_P + c_Q + 1 < θ_P + θ_Q`.
+
+```text
+TwoPieceAmplitude.mono_const            monotone in both constants
+exists_spikeConvConst_le_rpow           spikeConvConst c (bandRadius I) ≤ C_ε (1+I)^ε
+exists_spikeConvBulkConst_le_rpow       the same for the bulk constant
+exists_gaussClass_symbol_step           (A,θ,B,c) ↦ (A',θ−ε,B',c) for any bounded real symbol
+                                        with harmonic Fourier decay
+gaussClass_multiplier_step              (A,θ,B,c) ↦ (K₁A, θ, K₂(2A+B), c+c') for any Fourier
+                                        multiplier with the two-regime bound
+gaussShiftRatio_le_of_not_spike         ρ ≤ √(1+2K)                         off the band
+gaussShiftRatio_le_of_spike             ρ ≤ (2K)^(1/(2m)) (I/(1+|I+l|))^(1/(2m))   on the band
+gaussClass_shiftedBlockDiag_step        S  keeps the class
+gaussClass_shiftedBlockOf_step          S* keeps the class
+norm_fourierCoeff_gaussPrimeScaleCircle_le
+exists_gaussClass_primeScale_step       B      keeps the class
+exists_gaussClass_primeScaleInvSq_step  B^(-2) keeps the class
+norm_fourierCoeff_fourierLp_zero, twoPieceAmplitude_fourierLp_zero
+exists_gaussClass_principalStep         R = B S B^(-2) S* B :  θ ↦ θ−3ε,  c ↦ c+1/m
+exists_gaussClass_principalStep_pow     the iterate:
+    c₀ + r/m < 1  →  3rε < 1  →  ∃ A B ≥ 0, ∀ I ≥ 2,
+      TwoPieceAmplitude A (1−3rε) (B/(1+I)^(1−3rε)) (c₀+r/m) I  (R_I^r (fourierLp 2 0))^
+```
+
+Both constants stay independent of the frequency: in `mul_symbol` the created bulk mass
+`spikeConvBulkConst · K · B · I^γ ≍ B log I · I^(−ε)` is bounded, and the created spike height
+`3K spikeConvConst · B/(1+I)^θ ≤ C B/(1+I)^(θ−ε)`.  That is the whole role of the `ε` drop.
+
+### `RHTower/GaussPairingOneStep.lean` — the split and its coefficientwise bound
+
+```text
+gaussPrincipalStep_sub_amplitude_eq
+    R v − M v = B[ S (B^(-2) ((S*−T)(Bv))) ] + B[ (S − T^(-1))(B^(-2)(T(Bv))) ]
+ofReal_norm_inner_gaussPrincipalStep_sub_le
+    ‖⟪g, (R−M)v⟫‖ ≤ Σ_j ‖(B^(-2)S*(Bg))^(j)‖ ‖(Bv)^(j)‖ ‖defect_j‖
+                  + Σ_j ‖(Bg)^(j)‖ ‖(B^(-2)T(Bv))^(j)‖ ‖defect_j‖
+```
+
+The second is obtained by moving `B`, `S`, `B^(-2)` onto the *left* slot with
+`gaussPrimeScaleBlock_inner`, `gaussShiftedBlockOf_inner`, `gaussPrimeScaleInvSqBlock_inner`, then
+applying `ofReal_norm_inner_le_tsum_fourierCoeff` and the coefficientwise identities
+`norm_fourierCoeff_shiftedBlockOf_sub_rotation`, `norm_fourierCoeff_shiftedBlockDiag_sub_rotationInv`.
+
+### Remaining on this card
+
+1. class membership of the three vectors the bound produces — `Bv` and `B^(-2)(T(Bv))` for
+   `v = R^i 1` (one more symbol step each, plus the observation that
+   `gaussTranslationBlock` preserves coefficient moduli), and `B^(-2)(S*(Bg))` for `g = a_δ^s`
+   (start from `norm_fourierCoeff_gaussPrimeScaleBlock_amplitudePow`, then one multiplier and one
+   symbol step);
+2. feed both into `tendsto_tsum_twoPiece_pairing_defect_zero` with
+   `ε < 1/(6m²)`, `c₀ < 1/(4m)`;
+3. telescope `⟪1, R^m1 − M^m1⟫ = Σ_(i<m) ⟪a_δ^(m-1-i), (R−M)(R^i1)⟫ → 0`;
+4. negative frequencies (pointwise-conjugation antiunitary, or a ℤ-indexed class);
+5. the logarithmic mean, copying `GaussDiagonalLogResidue.lean` from `m = 1`.

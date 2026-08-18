@@ -125,3 +125,20 @@ Decomposition:
    `N_{E/F} : K_n^M(E) → K_n^M(F)` is `-∂_∞ ∘ (section at the minimal polynomial)`; independence of
    the choice of generator is Kato's argument.  The projection formula `N ∘ res = [E:F]` then gives
    the reduction of the card's statement to any cofinal family of number fields.
+
+## Route audit — 2026-08-18
+
+The `garland-formalization-programme` card's chosen route (Garland's `p`-adic curvature method) has
+been audited against the literature and **does not close for this target**.  Garland's 1971
+`K₂`-finiteness theorem is an archimedean argument (Riemannian geometry and harmonic forms, giving
+`H²(SL_n(𝔬), ℝ) = 0` for `n > 6`); his 1973 building/spectral-gap theorem applies to **cocompact**
+lattices in `p`-adic groups, and `SL_n(𝒪_S)` is non-uniform (an `S`-arithmetic lattice is uniform iff
+the group is anisotropic, and `SL_n` is isotropic over every number field).  The cell stabilizers in
+the Bruhat–Tits building are infinite arithmetic groups, so the equivariant descent is an isotropy
+spectral sequence whose low rows are the very cohomology one wants to kill.
+
+Consequence for the decomposition above: items 3 and 4 (finite generation, rank vanishing) stay as
+they are, and there is no combinatorial shortcut past them.  Items 1 and 2 are unaffected — item 1
+(Tate for `ℚ`) is **done**.  The route-independent work that remains useful is Matsumoto's theorem,
+Milnor's exact sequence for `F(t)` with the Bass–Tate–Kato norm, and the localization identifying the
+Milnor tame kernel of `𝒪_S` with `K₂(𝒪_S)`.

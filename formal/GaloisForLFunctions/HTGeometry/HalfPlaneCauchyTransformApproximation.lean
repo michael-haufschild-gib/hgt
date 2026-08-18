@@ -352,6 +352,148 @@ theorem exists_entire_approx_cauchyTransform (μ : Measure α) {w : α → ℂ} 
     _ = A * c := integral_mul_const _ _
     _ ≤ ε := hTε.le
 
+/-! ### Approximation on a general set to the right of the carrier -/
+
+/-- The truncated Laplace kernel error, controlled by a lower bound for `Re (s - a)` alone.  This is
+what makes a *far left* pole approximable simultaneously on a right half plane and on a disc. -/
+theorem norm_pole_sub_truncPole_le_of_re {a s : ℂ} {T d : ℝ} (hT : 0 ≤ T) (hd : 0 < d)
+    (h : d ≤ (s - a).re) :
+    ‖(s - a)⁻¹ - truncPole a T s‖ ≤ Real.exp (-(T * d)) / d := by
+  have hre : (0:ℝ) < (s - a).re := lt_of_lt_of_le hd h
+  have hne : s - a ≠ 0 := by
+    intro h0
+    rw [h0] at hre
+    simp at hre
+  have hsa : s ≠ a := sub_ne_zero.mp hne
+  have hnorm : d ≤ ‖s - a‖ :=
+    le_trans h (le_trans (le_abs_self _) (Complex.abs_re_le_norm _))
+  rw [truncPole_of_ne hsa]
+  have hkey : (s - a)⁻¹ - (1 - Complex.exp (-(T : ℂ) * (s - a))) / (s - a)
+      = Complex.exp (-(T : ℂ) * (s - a)) / (s - a) := by
+    field_simp
+    ring
+  rw [hkey, norm_div, Complex.norm_exp]
+  have hexp : (-(T : ℂ) * (s - a)).re = -(T * (s - a).re) := by
+    simp [Complex.mul_re]
+  rw [hexp]
+  have hnum : Real.exp (-(T * (s - a).re)) ≤ Real.exp (-(T * d)) :=
+    Real.exp_le_exp.mpr (by nlinarith)
+  calc Real.exp (-(T * (s - a).re)) / ‖s - a‖ ≤ Real.exp (-(T * d)) / ‖s - a‖ := by
+        gcongr
+    _ ≤ Real.exp (-(T * d)) / d := by
+        gcongr
+
+/-- **Entire approximation of a Cauchy transform on any set lying to the right of the carrier.**
+If every point of `S` sees every carrier point at real distance at least `d > 0`, the Cauchy
+transform of `φ dμ` is uniformly approximable on `S` by entire functions. -/
+theorem exists_entire_approx_cauchyTransform_of_re_ge {α : Type*} [MeasurableSpace α]
+    (μ : Measure α) {w : α → ℂ} {φ : α → ℂ} {S : Set ℂ} {d : ℝ} (hd : 0 < d) (hS : S.Nonempty)
+    (hw : ∀ x, ∀ s ∈ S, d ≤ (s - w x).re) (hwm : Measurable w) (hφ : Integrable φ μ)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : ℂ → ℂ, Differentiable ℂ g ∧
+      ∀ s ∈ S, ‖(∫ x, φ x / (s - w x) ∂μ) - g s‖ ≤ ε := by
+  obtain ⟨s₀, hs₀⟩ := hS
+  have hcarrier : ∀ x, (w x).re ≤ s₀.re - d := by
+    intro x
+    have := hw x s₀ hs₀
+    rw [Complex.sub_re] at this
+    linarith
+  set A : ℝ := ∫ x, ‖φ x‖ ∂μ with hA
+  have hAnonneg : 0 ≤ A := integral_nonneg fun x => norm_nonneg _
+  have htend : Filter.Tendsto (fun T : ℝ => A * (Real.exp (-(T * d)) / d)) Filter.atTop
+      (nhds 0) := by
+    have h1 : Filter.Tendsto (fun T : ℝ => T * d) Filter.atTop Filter.atTop :=
+      Filter.tendsto_id.atTop_mul_const hd
+    have h2 : Filter.Tendsto (fun T : ℝ => -(T * d)) Filter.atTop Filter.atBot :=
+      Filter.tendsto_neg_atTop_atBot.comp h1
+    have h3 : Filter.Tendsto (fun T : ℝ => Real.exp (-(T * d))) Filter.atTop (nhds 0) :=
+      Real.tendsto_exp_atBot.comp h2
+    simpa using (h3.div_const d).const_mul A
+  obtain ⟨T, hTε, hT0⟩ :=
+    ((htend.eventually (gt_mem_nhds hε)).and (Filter.eventually_ge_atTop (0:ℝ))).exists
+  refine ⟨fun s => ∫ x, φ x * truncPole (w x) T s ∂μ,
+    differentiable_truncCauchyTransform μ hcarrier hwm hφ hT0, ?_⟩
+  intro s hs
+  set c : ℝ := Real.exp (-(T * d)) / d with hc
+  have hcnonneg : 0 ≤ c := div_nonneg (Real.exp_nonneg _) hd.le
+  have hred : ∀ x, d ≤ (s - w x).re := fun x => hw x s hs
+  have hdist : ∀ x, d ≤ ‖s - w x‖ := fun x =>
+    le_trans (hred x) (le_trans (le_abs_self _) (Complex.abs_re_le_norm _))
+  have hkerdiff : ∀ x, ‖(s - w x)⁻¹ - truncPole (w x) T s‖ ≤ c :=
+    fun x => norm_pole_sub_truncPole_le_of_re hT0 hd (hred x)
+  have hmeasker : Measurable fun x => truncPole (w x) T s := by
+    have heq : (fun x => truncPole (w x) T s) = fun x => truncPole 0 T (s - w x) := by
+      funext x
+      exact truncPole_eq_shift (w x) T s
+    rw [heq]
+    exact ((differentiable_truncPole 0 T).continuous.measurable).comp
+      (measurable_const.sub hwm)
+  have hmeasdiv : AEStronglyMeasurable (fun x => φ x / (s - w x)) μ := by
+    have heq : (fun x => φ x / (s - w x)) = fun x => φ x * (s - w x)⁻¹ := by
+      funext x
+      rw [div_eq_mul_inv]
+    rw [heq]
+    exact hφ.aestronglyMeasurable.mul ((measurable_const.sub hwm).inv).aestronglyMeasurable
+  have hint1 : Integrable (fun x => φ x / (s - w x)) μ := by
+    refine Integrable.mono' (hφ.norm.div_const d) hmeasdiv ?_
+    filter_upwards with x
+    rw [norm_div]
+    exact div_le_div_of_nonneg_left (norm_nonneg _) hd (hdist x)
+  have hint3 : Integrable (fun x => φ x * ((s - w x)⁻¹ - truncPole (w x) T s)) μ := by
+    refine Integrable.mono' (hφ.norm.mul_const c)
+      (hφ.aestronglyMeasurable.mul
+        (((measurable_const.sub hwm).inv).sub hmeasker).aestronglyMeasurable) ?_
+    filter_upwards with x
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg_left (hkerdiff x) (norm_nonneg _)
+  have hint2 : Integrable (fun x => φ x * truncPole (w x) T s) μ := by
+    have heq : (fun x => φ x * truncPole (w x) T s)
+        = fun x => φ x / (s - w x) - φ x * ((s - w x)⁻¹ - truncPole (w x) T s) := by
+      funext x
+      rw [div_eq_mul_inv, mul_sub]
+      ring
+    rw [heq]
+    exact hint1.sub hint3
+  have hsplit : (∫ x, φ x / (s - w x) ∂μ) - ∫ x, φ x * truncPole (w x) T s ∂μ
+      = ∫ x, φ x * ((s - w x)⁻¹ - truncPole (w x) T s) ∂μ := by
+    rw [← integral_sub hint1 hint2]
+    refine integral_congr_ae ?_
+    filter_upwards with x
+    rw [div_eq_mul_inv, mul_sub]
+  rw [hsplit]
+  calc ‖∫ x, φ x * ((s - w x)⁻¹ - truncPole (w x) T s) ∂μ‖
+      ≤ ∫ x, ‖φ x * ((s - w x)⁻¹ - truncPole (w x) T s)‖ ∂μ :=
+        norm_integral_le_integral_norm _
+    _ ≤ ∫ x, ‖φ x‖ * c ∂μ := by
+        refine integral_mono hint3.norm (hφ.norm.mul_const c) fun x => ?_
+        rw [norm_mul]
+        exact mul_le_mul_of_nonneg_left (hkerdiff x) (norm_nonneg _)
+    _ = A * c := integral_mul_const _ _
+    _ ≤ ε := hTε.le
+
+/-- **A far-left carrier is approximable simultaneously on the closed half plane and on a disc.**
+This is the two-piece approximation that drives the `∂̄` construction of an entire approximant on a
+closed half plane. -/
+theorem exists_entire_approx_cauchyTransform_halfPlane_union_ball {α : Type*} [MeasurableSpace α]
+    (μ : Measure α) {w : α → ℂ} {φ : α → ℂ} {ρ d : ℝ} (hd : 0 < d) (hρ : 0 ≤ ρ)
+    (hw : ∀ x, (w x).re ≤ -ρ - d) (hwm : Measurable w) (hφ : Integrable φ μ)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : ℂ → ℂ, Differentiable ℂ g ∧
+      ∀ s : ℂ, (1 ≤ s.re ∨ ‖s‖ ≤ ρ) → ‖(∫ x, φ x / (s - w x) ∂μ) - g s‖ ≤ ε := by
+  set S : Set ℂ := {s : ℂ | 1 ≤ s.re ∨ ‖s‖ ≤ ρ} with hSdef
+  have hS : S.Nonempty := ⟨1, Or.inl (by simp)⟩
+  have hwS : ∀ x, ∀ s ∈ S, d ≤ (s - w x).re := by
+    intro x s hs
+    rw [Complex.sub_re]
+    rcases hs with h | h
+    · linarith [hw x]
+    · have : -‖s‖ ≤ s.re := by
+        have := Complex.abs_re_le_norm s
+        cases abs_le.mp this with
+        | intro h1 _ => exact h1
+      linarith [hw x]
+  exact exists_entire_approx_cauchyTransform_of_re_ge μ hd hS hwS hwm hφ hε
+
 end GaloisForLFunctions.HTGeometry
 
 end

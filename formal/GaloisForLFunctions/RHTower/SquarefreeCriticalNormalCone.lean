@@ -353,7 +353,7 @@ theorem tendsto_sum_parityRemainder (u v : ℝ) :
         parityRemainder (u / Real.log N) (v / Real.log N) n) atTop (nhds 0) := by
   refine tendsto_finsetSum_Icc_zero summable_parityRemainderBound
     (fun n => by positivity) ?_ ?_
-  · filter_upwards [eventually_abs_drift_le u, eventually_abs_drift_le v] with N hu hv n
+  · filter_upwards [eventually_abs_drift_le u, eventually_abs_drift_le v] with N hu hv n _
     exact abs_parityRemainder_le hu hv n
   · intro n
     exact tendsto_parityRemainder_zero n (tendsto_drift_zero u) (tendsto_drift_zero v)
@@ -533,7 +533,7 @@ theorem tendsto_sum_geometricRemainder (u v : ℝ) :
         geometricRemainder (u / Real.log N) (v / Real.log N) n) atTop (nhds 0) := by
   refine tendsto_finsetSum_Icc_zero summable_parityRemainderBound
     (fun n => by positivity) ?_ ?_
-  · filter_upwards [eventually_abs_drift_le u, eventually_abs_drift_le v] with N hu hv n
+  · filter_upwards [eventually_abs_drift_le u, eventually_abs_drift_le v] with N hu hv n _
     exact abs_geometricRemainder_le hu hv n
   · intro n
     exact tendsto_geometricRemainder_zero n (tendsto_drift_zero u) (tendsto_drift_zero v)
@@ -584,6 +584,109 @@ theorem tendsto_higherDigitTail_one (u v : ℝ) :
     exact (Real.exp_pos _).ne'
   have := hg.div hp hne
   rwa [div_self hne] at this
+
+/-! ## `(22)`: the critical Fisher capacity -/
+
+theorem divProfile_sq : divProfile (fun t : ℝ => t ^ 2) = fun t : ℝ => t := by
+  funext t
+  rw [divProfile]
+  by_cases ht : t = 0
+  · simp [ht]
+  · rw [if_neg ht, sq, mul_div_assoc, div_self ht, mul_one]
+
+theorem fisherFactor_bounds {x : ℝ} (hx : 2 ≤ x) :
+    0 ≤ x⁻¹ / (1 - x⁻¹) ^ 2 - x⁻¹ ∧ x⁻¹ / (1 - x⁻¹) ^ 2 - x⁻¹ ≤ 8 / x ^ 2 := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hxm : (0 : ℝ) < x - 1 := by linarith
+  have hne : (1 : ℝ) - x⁻¹ ≠ 0 := by
+    have : (1 : ℝ) - x⁻¹ = (x - 1) / x := by field_simp
+    rw [this]
+    positivity
+  have hval : x⁻¹ / (1 - x⁻¹) ^ 2 - x⁻¹ = (2 * x - 1) / (x * (x - 1) ^ 2) := by
+    field_simp
+    ring
+  rw [hval]
+  refine ⟨div_nonneg (by linarith) (by positivity), ?_⟩
+  rw [div_le_div_iff₀ (by positivity) (by positivity)]
+  nlinarith [hx, hxm, hx0]
+
+/-- The correction between the geometric Fisher capacity and its leading prime term. -/
+def fisherCorrection (N n : ℕ) : ℝ :=
+  if n.Prime then
+    (Real.log n / Real.log N) ^ 2 * (((n : ℝ))⁻¹ / (1 - ((n : ℝ))⁻¹) ^ 2 - ((n : ℝ))⁻¹)
+  else 0
+
+theorem tendsto_sum_fisherCorrection :
+    Tendsto (fun N : ℕ => ∑ n ∈ Finset.Icc 0 N, fisherCorrection N n) atTop (nhds 0) := by
+  refine tendsto_finsetSum_Icc_zero (bound := fun n : ℕ => 8 / ((n : ℝ)) ^ 2) ?_
+    (fun n => by positivity) ?_ ?_
+  · have h : Summable (fun n : ℕ => 1 / ((n : ℝ)) ^ 2) :=
+      Real.summable_one_div_nat_pow.mpr (by norm_num)
+    refine (h.mul_left 8).congr (fun n => ?_)
+    rw [mul_one_div]
+  · filter_upwards [eventually_ge_atTop 2] with N hN n hn
+    rw [fisherCorrection]
+    split_ifs with hp
+    · have hn2 : 2 ≤ n := hp.two_le
+      have hnr : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn2
+      have hNr : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+      have hlogN : 0 < Real.log (N : ℝ) := Real.log_pos (by linarith)
+      have hlogn : 0 ≤ Real.log (n : ℝ) := Real.log_nonneg (by linarith)
+      have hle : Real.log (n : ℝ) ≤ Real.log (N : ℝ) := by
+        refine Real.log_le_log (by linarith) ?_
+        exact_mod_cast hn
+      have ht0 : 0 ≤ Real.log (n : ℝ) / Real.log (N : ℝ) := by positivity
+      have ht1 : Real.log (n : ℝ) / Real.log (N : ℝ) ≤ 1 := by
+        rw [div_le_one hlogN]; exact hle
+      obtain ⟨hf0, hf1⟩ := fisherFactor_bounds hnr
+      have ht2 : (Real.log (n : ℝ) / Real.log (N : ℝ)) ^ 2 ≤ 1 := by nlinarith
+      rw [abs_of_nonneg (mul_nonneg (sq_nonneg _) hf0)]
+      calc (Real.log (n : ℝ) / Real.log (N : ℝ)) ^ 2
+              * (((n : ℝ))⁻¹ / (1 - ((n : ℝ))⁻¹) ^ 2 - ((n : ℝ))⁻¹)
+          ≤ 1 * (((n : ℝ))⁻¹ / (1 - ((n : ℝ))⁻¹) ^ 2 - ((n : ℝ))⁻¹) :=
+            mul_le_mul_of_nonneg_right ht2 hf0
+        _ = ((n : ℝ))⁻¹ / (1 - ((n : ℝ))⁻¹) ^ 2 - ((n : ℝ))⁻¹ := one_mul _
+        _ ≤ 8 / ((n : ℝ)) ^ 2 := hf1
+    · have : (0 : ℝ) ≤ 8 / ((n : ℝ)) ^ 2 := by positivity
+      simpa using this
+  · intro n
+    simp only [fisherCorrection]
+    by_cases hp : n.Prime
+    · simp only [if_pos hp]
+      have hlim : Tendsto (fun N : ℕ => Real.log (n : ℝ) / Real.log (N : ℝ)) atTop (nhds 0) :=
+        tendsto_drift_zero (Real.log n)
+      have := ((hlim.pow 2).mul_const
+        (((n : ℝ))⁻¹ / (1 - ((n : ℝ))⁻¹) ^ 2 - ((n : ℝ))⁻¹))
+      simpa using this
+    · simp only [if_neg hp]
+      exact tendsto_const_nhds
+
+/-- **`(22)`.**  The critical normal-cone Fisher metric of the geometric prime-valuation sector is
+`1/2`: the `(log x)^{-2}`-normalized capacity of the primes below the cutoff converges. -/
+theorem tendsto_criticalFisherCapacity :
+    Tendsto (fun N : ℕ => ∑ n ∈ Finset.Icc 0 N,
+        (if n.Prime then
+          (Real.log n) ^ 2 * (((n : ℝ))⁻¹ / (1 - ((n : ℝ))⁻¹) ^ 2) / (Real.log N) ^ 2
+        else 0))
+      atTop (nhds (1 / 2)) := by
+  have hmain := tendsto_sum_divProfile (fun t : ℝ => t ^ 2) (by
+    rw [divProfile_sq]; exact continuous_id.continuousOn)
+  have hint : (∫ t in (0 : ℝ)..1, divProfile (fun t : ℝ => t ^ 2) t) = 1 / 2 := by
+    rw [divProfile_sq, integral_id]
+    norm_num
+  rw [hint] at hmain
+  have hcorr := tendsto_sum_fisherCorrection
+  have hcomb := hmain.add hcorr
+  rw [add_zero] at hcomb
+  refine hcomb.congr fun N => ?_
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [fisherCorrection]
+  by_cases hp : n.Prime
+  · rw [if_pos hp, if_pos hp, if_pos hp, div_pow]
+    ring
+  · rw [if_neg hp, if_neg hp, if_neg hp]
+    ring
 
 end
 

@@ -2224,3 +2224,92 @@ Direct checks, module-only builds, and `#print axioms` pass with only `propext`,
 **Boundary:** This closes only the rank-two *empty-link* identification. The local links required
 for higher-rank spherical buildings, the Bruhat--Tits/arithmetic quotient comparison, and Layer B
 remain open. No card is promoted.
+
+## ROUTE AUDIT — 2026-08-18: the selected route does not close, and why
+
+A literature check of the route table at the top of this card was run before adding new bricks.  It
+turns up a conflation that invalidates the chain as written.  Recording it here in full so that no
+later session spends months on Layers D1–D3 and C5 for this target.
+
+### The two different Garland theorems
+
+1. **Garland (1971), *A finiteness theorem for `K₂` of a number field*, Ann. of Math. 94.**  This is
+   the paper the parent card cites, and it does prove `K₂(𝒪_F)` finite.  Its method is
+   **archimedean**: Riemannian geometry and harmonic forms on the symmetric space, establishing
+   `H²(SL_n(𝔬), ℝ) = 0` for `n > 6`.  It is *not* the combinatorial building argument.
+2. **Garland (1973), *p-adic curvature and the cohomology of discrete subgroups of p-adic
+   groups*, Ann. of Math. 97.**  This is the combinatorial theorem Layer C formalizes: a spectral
+   gap on the links of a building forces `H^i(Γ, ℝ) = 0` for `i` below the rank.  Its hypothesis is
+   that `Γ` is a **cocompact** (uniform) lattice in the `p`-adic group; Casselman later removed the
+   residue-field size restriction, not the cocompactness one.
+
+The card's route table attributes the *1971 conclusion* to the *1973 method*.  They are different
+arguments.
+
+### Why the 1973 method cannot reach `SL_n(𝒪_S)`
+
+An `S`-arithmetic lattice is uniform **iff** the ambient group is anisotropic over the base field.
+`SL_n` (`n ≥ 2`) is isotropic over every number field, so `SL_n(𝒪_S)` is a **non-uniform** lattice.
+Concretely, on the Bruhat–Tits building of `SL_n(K_v)` the group `SL_n(𝒪_S)` does have finitely many
+orbits of cells, but the cell stabilizers are **infinite** — conjugates of `SL_n(𝒪)`.  Garland's
+averaging step, and the passage C5 from the complex to the group, both need finite stabilizers.
+Without them the descent is the isotropy spectral sequence
+
+```text
+E₁^{p,q} = ⊕_{σ ∈ Γ\X_p} H^q(Γ_σ, ℝ)  ⟹  H^{p+q}(Γ, ℝ),
+```
+
+whose `q = 1, 2` rows are `H^{1,2}` of the arithmetic stabilizers — exactly the groups the argument
+is supposed to kill.  The chain is circular at that point.
+
+There is no rescue by changing `S`: Layer A is free to choose the Dedekind domain, but every ring of
+`S`-integers of a number field gives an isotropic group, hence a non-uniform lattice.
+
+### What survives
+
+Layers C and D4 are **correct and unconditional theorems** and keep their value; they are simply not
+sufficient for this arithmetic target.
+
+- `HTGeometry/GarlandLocalization.lean` — the localization identities, the vanishing core,
+  `harmonic_eq_zero`, and `cocycle_eq_coboundary` for a finite weighted complex.  To my knowledge
+  this is the first formalization of Garland's method, and it is exactly the 1973 combinatorial
+  theorem in its finite-complex form.
+- `HTGeometry/WeightedGraphSpectralGap.lean`, `WeightedComplexLink.lean`,
+  `IncidenceDesignBound.lean`, `IncidenceWeightedComplex.lean`,
+  `FiniteProjectivePlaneSpectralGap.lean` — the weighted-graph spectral gap, the link interface, the
+  design identity and the exact rank-two gap `1 − √q/(q+1) > 2/3` for `q ≥ 7`.
+- All of Layer B (`SteinbergGroupPresentation.lean`, `SteinbergElementaryGroup.lean`, the torus and
+  Weyl calculus, `SteinbergWeylTriangle.lean`) is route-independent: **every** route to the target
+  needs Matsumoto's theorem to convert between the Milnor tame kernel that Layer A consumes and the
+  `K₂` of the ring that the cohomological input produces.
+
+What must be retired is only the claim in the route table that Garland's method is
+"combinatorial and linear-algebraic" *for this target*, and the plan items D1–D3 and C5 in the
+service of it.
+
+### The routes that actually exist, with their true costs
+
+| route | what it needs | verdict |
+|---|---|---|
+| Borel's stable cohomology of arithmetic groups (`H²(SL_n(𝔬), ℝ) = 0`), equivalently Garland 1971 | continuous cohomology of Lie groups, relative Lie-algebra cohomology, van Est, symmetric spaces, Borel–Serre for the non-uniform case, regularization of invariant forms | sound; multi-year |
+| Quillen finite generation + Borel rank zero | the `Q`-construction and `K`-theory spectra on top of the above | sound; strictly larger |
+| Soulé vanishing + Quillen–Lichtenbaum | étale cohomology of arithmetic schemes, Iwasawa theory, Bloch–Kato | sound; largest |
+| Bader–Sauer higher-Kazhdan restriction (`H^i_{ct}(G(ℝ)) ≅ H^i(Γ)` below the rank) | unitary representation theory, a Garland-type argument for Lie groups, and no general induction scheme for non-uniform lattices | sound; analytic, a repackaging of Borel |
+| cohomological-Laplacian sum-of-squares certificates (Kaluba–Nowak–Ozawa style) | a separate finite certificate per group; would have to be produced for `SL_n(𝒪_F)` for **every** number field `F`, and is a numerical certificate | not uniform in `F`; also excluded by the project's no-computation rule |
+
+None of these is short.  The honest status of the parent card is therefore **blocked on a classical
+theorem of Borel/Garland-1971 whose every published proof is analytic**, not "one combinatorial
+layer away".
+
+### What is still worth building, and is route-independent
+
+1. **Matsumoto's theorem** `K₂(F) ≅ K₂^M(F)`, and in particular injectivity of the Steinberg symbol
+   map `K₂^M(F) → K₂(F)`.  Needed by every route; purely algebraic; Layer B already carries the
+   Steinberg group, `K₂`, centrality, perfectness, the Weyl/torus calculus and the symbol.
+2. **Milnor's exact sequence** for `F(t)` and the **Bass–Tate–Kato norm** with the projection
+   formula.  Needed by every route; the residue maps it consumes are already built.
+3. **Localization** identifying the Milnor tame kernel of `𝒪_S` with `K₂(𝒪_S)`.
+
+Layer C and Layer D4 should be re-homed as what they are — a formalization of Garland's 1973
+vanishing theorem and the spectral gap of a rank-two spherical building — and not counted against
+this card.

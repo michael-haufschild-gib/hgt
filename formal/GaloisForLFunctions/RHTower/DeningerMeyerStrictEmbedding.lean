@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.DeningerExpWeightDeriv
 import GaloisForLFunctions.RHTower.DeningerMeyerTopology
+import GaloisForLFunctions.RHTower.DeningerDepletedPoisson
+import GaloisForLFunctions.RHTower.DeningerPoissonClosedRange
 import GaloisForLFunctions.RHTower.DeningerPoissonStrict
 import GaloisForLFunctions.RHTower.DeningerPoissonSource
 
@@ -116,6 +118,304 @@ theorem deningerExpMul_seminorm_le (c : ℝ) (k n : ℕ) (h : DeningerExpSchwart
     _ ≤ (n.choose j : ℝ) * |c| ^ j * ((Nat.factorial k : ℝ) * Q) :=
         mul_le_mul_of_nonneg_left hinner hcoef
     _ = (n.choose j : ℝ) * |c| ^ j * (Nat.factorial k : ℝ) * Q := by ring
+
+/-! ## Multiplication by the exponential weight, as a map to the Schwartz space -/
+
+/-- Multiplication by `e^{ct}`, as a linear map from the Meyer source to the Schwartz space. -/
+def deningerExpMulSchwartzLM (c : ℝ) : DeningerMeyerSource →ₗ[ℂ] 𝓢(ℝ, ℂ) :=
+  (Submodule.subtype DeningerExpSchwartz).comp
+    ((deningerExpMulLM c).comp DeningerMeyerSource.toSource.toLinearMap)
+
+@[simp]
+theorem deningerExpMulSchwartzLM_apply (c : ℝ) (h : DeningerMeyerSource) :
+    deningerExpMulSchwartzLM c h
+      = ((deningerExpMul c (DeningerMeyerSource.toSource h) : DeningerExpSchwartz) :
+          𝓢(ℝ, ℂ)) := rfl
+
+/-- The exponent set that the bound for one Schwartz seminorm uses. -/
+def deningerExpMulIndex (c : ℝ) (n : ℕ) : Finset (ℕ × ℕ) :=
+  (Finset.range (n + 1)).image fun j => (deningerExpMulExponent c, n - j)
+
+/-- The constant that the bound for one Schwartz seminorm uses. -/
+def deningerExpMulConst (c : ℝ) (k n : ℕ) : ℝ :=
+  ∑ j ∈ Finset.range (n + 1), (n.choose j : ℝ) * |c| ^ j * (Nat.factorial k : ℝ)
+
+theorem deningerExpMulConst_nonneg (c : ℝ) (k n : ℕ) : 0 ≤ deningerExpMulConst c k n := by
+  refine Finset.sum_nonneg fun j _ => ?_
+  positivity
+
+/-- **One Schwartz seminorm of `e^{ct}h` against a finite supremum of Meyer seminorms.** -/
+theorem deningerExpMulSchwartzLM_seminorm_le (c : ℝ) (k n : ℕ) (h : DeningerMeyerSource) :
+    SchwartzMap.seminorm ℂ k n (deningerExpMulSchwartzLM c h)
+      ≤ deningerExpMulConst c k n
+        * (deningerExpMulIndex c n).sup DeningerMeyerSource.seminorms h := by
+  set S : ℝ := (deningerExpMulIndex c n).sup DeningerMeyerSource.seminorms h with hS
+  have hSnn : 0 ≤ S := apply_nonneg _ _
+  refine le_trans (deningerExpMul_seminorm_le c k n (DeningerMeyerSource.toSource h)) ?_
+  rw [deningerExpMulConst, Finset.sum_mul]
+  refine Finset.sum_le_sum fun j hj => ?_
+  have hmem : (deningerExpMulExponent c, n - j) ∈ deningerExpMulIndex c n :=
+    Finset.mem_image.2 ⟨j, hj, rfl⟩
+  have hle : deningerMeyerSeminormFun ((deningerExpMulExponent c : ℕ) : ℝ) (n - j)
+      (DeningerMeyerSource.toSource h) ≤ S := by
+    have hsup := Finset.le_sup (f := DeningerMeyerSource.seminorms) hmem
+    simpa using hsup h
+  have hcoef : (0 : ℝ) ≤ (n.choose j : ℝ) * |c| ^ j * (Nat.factorial k : ℝ) := by positivity
+  exact mul_le_mul_of_nonneg_left hle hcoef
+
+/-- **Multiplication by `e^{ct}` is continuous from the Meyer source to the Schwartz space.** -/
+theorem deningerExpMulSchwartzLM_continuous (c : ℝ) :
+    Continuous (deningerExpMulSchwartzLM c) := by
+  refine WithSeminorms.continuous_of_isBounded DeningerMeyerSource.withSeminorms
+    (schwartz_withSeminorms ℂ ℝ ℂ) _ fun i => ?_
+  refine ⟨deningerExpMulIndex c i.2,
+    ⟨deningerExpMulConst c i.1 i.2, deningerExpMulConst_nonneg c i.1 i.2⟩, fun h => ?_⟩
+  exact deningerExpMulSchwartzLM_seminorm_le c i.1 i.2 h
+
+/-! ## The radial presentation of a Meyer cochain -/
+
+theorem deningerExpMul_zero (h : DeningerExpSchwartz) : deningerExpMul 0 h = h := by
+  refine Subtype.ext (SchwartzMap.ext fun t => ?_)
+  rw [deningerExpMul_apply, zero_mul, Real.exp_zero, Complex.ofReal_one, one_mul]
+
+/-- The family of all integer exponential weights of a Meyer cochain. -/
+def deningerRadialFamily (h : DeningerMeyerSource) : ∀ _ : ℤ, 𝓢(ℝ, ℂ) :=
+  fun s => deningerExpMulSchwartzLM ((s : ℤ) : ℝ) h
+
+theorem deningerRadialFamily_mem (h : DeningerMeyerSource) :
+    deningerRadialFamily h ∈ deningerRadialCompat := by
+  intro s t
+  show ((deningerExpMul ((s : ℤ) : ℝ) (DeningerMeyerSource.toSource h) : DeningerExpSchwartz) :
+      𝓢(ℝ, ℂ)) t
+    = Complex.exp ((s : ℂ) * t)
+      * ((deningerExpMul (((0 : ℤ) : ℝ)) (DeningerMeyerSource.toSource h) :
+          DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) t
+  rw [deningerExpMul_apply, deningerExpMul_apply]
+  have hzero : ((Real.exp (((0 : ℤ) : ℝ) * t) : ℝ) : ℂ) = 1 := by norm_num
+  rw [hzero, one_mul]
+  have hcast : ((Real.exp (((s : ℤ) : ℝ) * t) : ℝ) : ℂ) = Complex.exp ((s : ℂ) * t) := by
+    rw [Complex.ofReal_exp]
+    push_cast
+    ring_nf
+  rw [hcast]
+
+/-- **The radial presentation** `h ↦ (e^{st}h)_{s ∈ ℤ}` of the Meyer source. -/
+def deningerRadialLM : DeningerMeyerSource →ₗ[ℂ] deningerRadialCompat where
+  toFun h := ⟨deningerRadialFamily h, deningerRadialFamily_mem h⟩
+  map_add' h g := by
+    refine Subtype.ext ?_
+    funext s
+    exact (deningerExpMulSchwartzLM ((s : ℤ) : ℝ)).map_add h g
+  map_smul' c h := by
+    refine Subtype.ext ?_
+    funext s
+    exact (deningerExpMulSchwartzLM ((s : ℤ) : ℝ)).map_smul c h
+
+@[simp]
+theorem deningerRadialLM_apply (h : DeningerMeyerSource) (s : ℤ) :
+    ((deningerRadialLM h : deningerRadialCompat) : ∀ _ : ℤ, 𝓢(ℝ, ℂ)) s
+      = deningerExpMulSchwartzLM ((s : ℤ) : ℝ) h := rfl
+
+/-- **The radial presentation is continuous.** -/
+theorem deningerRadialLM_continuous : Continuous deningerRadialLM := by
+  refine Continuous.subtype_mk ?_ _
+  exact continuous_pi fun s => deningerExpMulSchwartzLM_continuous ((s : ℤ) : ℝ)
+
+/-! ## The Poisson operator into the Meyer source -/
+
+/-- The Poisson operator, with the Meyer topology on the target. -/
+def deningerPoissonMeyerLM : DeningerMeyerCap →ₗ[ℂ] DeningerMeyerSource :=
+  DeningerMeyerSource.toSource.symm.toLinearMap.comp deningerPoissonSourceLM
+
+@[simp]
+theorem deningerPoissonMeyerLM_toSource (f : DeningerMeyerCap) :
+    DeningerMeyerSource.toSource (deningerPoissonMeyerLM f) = deningerPoissonSource f := rfl
+
+theorem deningerPoissonMeyerLM_injective : Function.Injective deningerPoissonMeyerLM := by
+  intro f g hfg
+  exact deningerPoissonSource_injective (congrArg DeningerMeyerSource.toSource hfg)
+
+/-- **The radial presentation of a Poisson boundary is the radial Poisson datum.** -/
+theorem deningerRadialLM_poissonMeyer (f : DeningerMeyerCap) :
+    deningerRadialLM (deningerPoissonMeyerLM f) = deningerPoissonLM f := by
+  refine Subtype.ext ?_
+  funext s
+  refine SchwartzMap.ext fun t => ?_
+  rw [deningerRadialLM_apply, deningerExpMulSchwartzLM_apply, deningerExpMul_apply]
+  show ((Real.exp (((s : ℤ) : ℝ) * t) : ℝ) : ℂ)
+      * ((deningerPoissonSource f : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) t
+    = deningerPoissonWeight s ((f : DeningerMeyerCap) : 𝓢(ℝ, ℂ)) t
+  rw [deningerPoissonSource_apply, deningerPoissonWeight, deningerExpWeight]
+
+/-- **The Poisson image is closed in the nuclear Meyer topology.**  It is the preimage, under the
+continuous radial presentation, of the radial Poisson image, which the corpus already proves
+closed. -/
+theorem deningerPoissonMeyer_range_isClosed :
+    IsClosed (Set.range deningerPoissonMeyerLM) := by
+  have hset : Set.range deningerPoissonMeyerLM
+      = deningerRadialLM ⁻¹' (Set.range deningerPoissonLM) := by
+    ext h
+    constructor
+    · rintro ⟨f, rfl⟩
+      exact ⟨f, (deningerRadialLM_poissonMeyer f).symm⟩
+    · rintro ⟨f, hf⟩
+      refine ⟨f, ?_⟩
+      have hcomp := congrArg
+        (fun g : deningerRadialCompat => ((g : ∀ _ : ℤ, 𝓢(ℝ, ℂ)) 0)) hf
+      have hval : deningerExpMulSchwartzLM (((0 : ℤ) : ℝ)) h
+          = deningerPoissonSchwartz 0 ((f : DeningerMeyerCap) : 𝓢(ℝ, ℂ)) f.2 := hcomp.symm
+      have hzero : deningerExpMulSchwartzLM (((0 : ℤ) : ℝ)) h
+          = ((DeningerMeyerSource.toSource h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) := by
+        rw [deningerExpMulSchwartzLM_apply]
+        have h0 : (((0 : ℤ) : ℝ)) = (0 : ℝ) := by norm_num
+        rw [h0, deningerExpMul_zero]
+      apply DeningerMeyerSource.toSource.injective
+      refine Subtype.ext ?_
+      rw [deningerPoissonMeyerLM_toSource]
+      show ((deningerPoissonSource f : DeningerExpSchwartz) : 𝓢(ℝ, ℂ))
+        = ((DeningerMeyerSource.toSource h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ))
+      rw [← hzero, hval]
+      rfl
+  rw [hset]
+  exact deningerPoisson_range_isClosed.preimage deningerRadialLM_continuous
+
+/-! ## Strictness against the Meyer seminorms -/
+
+theorem exists_bound_schwartzSup_expMul (c : ℝ) (K₀ : Finset (ℕ × ℕ)) :
+    ∃ (T : Finset (ℕ × ℕ)) (C : ℝ), 0 ≤ C ∧ ∀ h : DeningerMeyerSource,
+      (K₀.sup (schwartzSeminormFamily ℂ ℝ ℂ)) (deningerExpMulSchwartzLM c h)
+        ≤ C * (T.sup DeningerMeyerSource.seminorms) h := by
+  classical
+  induction K₀ using Finset.induction with
+  | empty =>
+    refine ⟨∅, 0, le_refl 0, fun h => ?_⟩
+    simp
+  | insert a K₀ ha ih =>
+    obtain ⟨T, C, hC, hb⟩ := ih
+    refine ⟨T ∪ deningerExpMulIndex c a.2, C + deningerExpMulConst c a.1 a.2,
+      by have := deningerExpMulConst_nonneg c a.1 a.2; linarith, fun h => ?_⟩
+    set R : ℝ := ((T ∪ deningerExpMulIndex c a.2).sup DeningerMeyerSource.seminorms) h with hR
+    have hRnn : 0 ≤ R := apply_nonneg _ _
+    have hmono : (T.sup DeningerMeyerSource.seminorms) h ≤ R :=
+      (Finset.sup_mono (f := DeningerMeyerSource.seminorms) Finset.subset_union_left) h
+    have hmono' : ((deningerExpMulIndex c a.2).sup DeningerMeyerSource.seminorms) h ≤ R :=
+      (Finset.sup_mono (f := DeningerMeyerSource.seminorms) Finset.subset_union_right) h
+    have hcnn := deningerExpMulConst_nonneg c a.1 a.2
+    rw [Finset.sup_insert, Seminorm.sup_apply]
+    refine max_le ?_ ?_
+    · have hfam : (schwartzSeminormFamily ℂ ℝ ℂ a) (deningerExpMulSchwartzLM c h)
+          = SchwartzMap.seminorm ℂ a.1 a.2 (deningerExpMulSchwartzLM c h) := rfl
+      rw [hfam]
+      have h2 := le_trans (deningerExpMulSchwartzLM_seminorm_le c a.1 a.2 h)
+        (mul_le_mul_of_nonneg_left hmono' hcnn)
+      nlinarith
+    · have h1 := le_trans (hb h) (mul_le_mul_of_nonneg_left hmono hC)
+      nlinarith
+
+theorem exists_bound_sum_schwartzSup_expMul (S : Finset ℤ) (K₀ : Finset (ℕ × ℕ)) :
+    ∃ (T : Finset (ℕ × ℕ)) (C : ℝ), 0 ≤ C ∧ ∀ h : DeningerMeyerSource,
+      (∑ s ∈ S, (K₀.sup (schwartzSeminormFamily ℂ ℝ ℂ))
+          (deningerExpMulSchwartzLM ((s : ℤ) : ℝ) h))
+        ≤ C * (T.sup DeningerMeyerSource.seminorms) h := by
+  classical
+  induction S using Finset.induction with
+  | empty =>
+    refine ⟨∅, 0, le_refl 0, fun h => ?_⟩
+    simp
+  | insert a S ha ih =>
+    obtain ⟨T, C, hC, hb⟩ := ih
+    obtain ⟨T', C', hC', hb'⟩ := exists_bound_schwartzSup_expMul ((a : ℤ) : ℝ) K₀
+    refine ⟨T ∪ T', C + C', by linarith, fun h => ?_⟩
+    set R : ℝ := ((T ∪ T').sup DeningerMeyerSource.seminorms) h with hR
+    have hRnn : 0 ≤ R := apply_nonneg _ _
+    have hmono : (T.sup DeningerMeyerSource.seminorms) h ≤ R :=
+      (Finset.sup_mono (f := DeningerMeyerSource.seminorms) Finset.subset_union_left) h
+    have hmono' : (T'.sup DeningerMeyerSource.seminorms) h ≤ R :=
+      (Finset.sup_mono (f := DeningerMeyerSource.seminorms) Finset.subset_union_right) h
+    rw [Finset.sum_insert ha]
+    have h1 := le_trans (hb h) (mul_le_mul_of_nonneg_left hmono hC)
+    have h2 := le_trans (hb' h) (mul_le_mul_of_nonneg_left hmono' hC')
+    nlinarith
+
+theorem deningerPoissonSchwartz_eq_expMul (s : ℤ) (f : DeningerMeyerCap) :
+    deningerPoissonSchwartz s ((f : DeningerMeyerCap) : 𝓢(ℝ, ℂ)) f.2
+      = deningerExpMulSchwartzLM ((s : ℤ) : ℝ) (deningerPoissonMeyerLM f) := by
+  have h := congrArg (fun g : deningerRadialCompat => ((g : ∀ _ : ℤ, 𝓢(ℝ, ℂ)) s))
+    (deningerRadialLM_poissonMeyer f)
+  exact h.symm
+
+/-- **The Poisson operator is a strict morphism for the Meyer topology**: every Schwartz seminorm
+of a member of Meyer's space is bounded by finitely many Meyer seminorms of its Poisson sum. -/
+theorem deningerPoissonMeyer_strict (k n : ℕ) :
+    ∃ (T : Finset (ℕ × ℕ)) (C : ℝ), 0 ≤ C ∧ ∀ f : DeningerMeyerCap,
+      SchwartzMap.seminorm ℂ k n ((f : DeningerMeyerCap) : 𝓢(ℝ, ℂ))
+        ≤ C * (T.sup DeningerMeyerSource.seminorms) (deningerPoissonMeyerLM f) := by
+  obtain ⟨S, K, C, hC, hb⟩ := exists_bound_seminorm_radial k n
+  obtain ⟨T, C', hC', hb'⟩ := exists_bound_sum_schwartzSup_expMul S K
+  refine ⟨T, C * C', by positivity, fun f => ?_⟩
+  have hdata : deningerRadialData S K ((f : DeningerMeyerCap) : 𝓢(ℝ, ℂ)) f.2
+      = ∑ s ∈ S, (K.sup (schwartzSeminormFamily ℂ ℝ ℂ))
+          (deningerExpMulSchwartzLM ((s : ℤ) : ℝ) (deningerPoissonMeyerLM f)) := by
+    rw [deningerRadialData]
+    exact Finset.sum_congr rfl fun s _ => by rw [deningerPoissonSchwartz_eq_expMul]
+  have hstep := hb ((f : DeningerMeyerCap) : 𝓢(ℝ, ℂ)) f.2
+  rw [hdata] at hstep
+  have hnext := mul_le_mul_of_nonneg_left (hb' (deningerPoissonMeyerLM f)) hC
+  calc SchwartzMap.seminorm ℂ k n ((f : DeningerMeyerCap) : 𝓢(ℝ, ℂ))
+      ≤ C * ∑ s ∈ S, (K.sup (schwartzSeminormFamily ℂ ℝ ℂ))
+          (deningerExpMulSchwartzLM ((s : ℤ) : ℝ) (deningerPoissonMeyerLM f)) := hstep
+    _ ≤ C * (C' * (T.sup DeningerMeyerSource.seminorms) (deningerPoissonMeyerLM f)) := hnext
+    _ = C * C' * (T.sup DeningerMeyerSource.seminorms) (deningerPoissonMeyerLM f) := by ring
+
+/-! ## The inverse on the range is continuous -/
+
+theorem deningerMeyerCap_withSeminorms :
+    WithSeminorms ((schwartzSeminormFamily ℂ ℝ ℂ).comp
+      (Submodule.subtype DeningerMeyerCap)) :=
+  Topology.IsInducing.withSeminorms (schwartz_withSeminorms ℂ ℝ ℂ)
+    (f := Submodule.subtype DeningerMeyerCap) Topology.IsInducing.subtypeVal
+
+theorem deningerPoissonMeyerRange_withSeminorms :
+    WithSeminorms ((DeningerMeyerSource.seminorms).comp
+      (Submodule.subtype (LinearMap.range deningerPoissonMeyerLM))) :=
+  Topology.IsInducing.withSeminorms DeningerMeyerSource.withSeminorms
+    (f := Submodule.subtype (LinearMap.range deningerPoissonMeyerLM))
+    Topology.IsInducing.subtypeVal
+
+/-- The Poisson operator as a linear isomorphism onto its image in the Meyer source. -/
+noncomputable def deningerPoissonMeyerRangeEquiv :
+    DeningerMeyerCap ≃ₗ[ℂ] LinearMap.range deningerPoissonMeyerLM :=
+  LinearEquiv.ofInjective deningerPoissonMeyerLM deningerPoissonMeyerLM_injective
+
+theorem deningerPoissonMeyerRangeEquiv_symm_coe
+    (x : LinearMap.range deningerPoissonMeyerLM) :
+    deningerPoissonMeyerLM (deningerPoissonMeyerRangeEquiv.symm x)
+      = (x : DeningerMeyerSource) :=
+  congrArg (fun y : LinearMap.range deningerPoissonMeyerLM => (y : DeningerMeyerSource))
+    (deningerPoissonMeyerRangeEquiv.apply_symm_apply x)
+
+/-- **The inverse of the Poisson operator on its image is continuous for the Meyer topology.** -/
+theorem deningerPoissonMeyerRangeEquiv_symm_continuous :
+    Continuous (deningerPoissonMeyerRangeEquiv.symm :
+      LinearMap.range deningerPoissonMeyerLM → DeningerMeyerCap) := by
+  refine WithSeminorms.continuous_of_isBounded deningerPoissonMeyerRange_withSeminorms
+    deningerMeyerCap_withSeminorms
+    (deningerPoissonMeyerRangeEquiv.symm.toLinearMap) fun i => ?_
+  obtain ⟨T, C, hC, hb⟩ := deningerPoissonMeyer_strict i.1 i.2
+  refine ⟨T, ⟨C, hC⟩, fun x => ?_⟩
+  have hright : (T.sup ((DeningerMeyerSource.seminorms).comp
+        (Submodule.subtype (LinearMap.range deningerPoissonMeyerLM)))) x
+      = (T.sup DeningerMeyerSource.seminorms) (x : DeningerMeyerSource) := by
+    rw [← SeminormFamily.finset_sup_comp]
+    rfl
+  have hval := hb (deningerPoissonMeyerRangeEquiv.symm x)
+  rw [deningerPoissonMeyerRangeEquiv_symm_coe x] at hval
+  show SchwartzMap.seminorm ℂ i.1 i.2
+      ((deningerPoissonMeyerRangeEquiv.symm x : DeningerMeyerCap) : 𝓢(ℝ, ℂ))
+    ≤ C * (T.sup ((DeningerMeyerSource.seminorms).comp
+        (Submodule.subtype (LinearMap.range deningerPoissonMeyerLM)))) x
+  rw [hright]
+  exact hval
 
 end RHTower
 

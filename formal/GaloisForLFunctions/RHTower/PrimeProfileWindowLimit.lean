@@ -68,7 +68,7 @@ theorem tendsto_sum_divProfile (F : ℝ → ℝ)
 /-- **Tannery's theorem on the growing prime window.** -/
 theorem tendsto_finsetSum_Icc_zero {r : ℕ → ℕ → ℝ} {bound : ℕ → ℝ}
     (hsum : Summable bound) (hb0 : ∀ n, 0 ≤ bound n)
-    (hbd : ∀ᶠ N in atTop, ∀ n, |r N n| ≤ bound n)
+    (hbd : ∀ᶠ N in atTop, ∀ n, n ≤ N → |r N n| ≤ bound n)
     (hzero : ∀ n, Tendsto (fun N => r N n) atTop (nhds 0)) :
     Tendsto (fun N : ℕ => ∑ n ∈ Finset.Icc 0 N, r N n) atTop (nhds 0) := by
   classical
@@ -101,7 +101,7 @@ theorem tendsto_finsetSum_Icc_zero {r : ℕ → ℕ → ℝ} {bound : ℕ → �
     rw [hf]
     simp only
     split_ifs with h
-    · simpa using hN n
+    · simpa using hN n h
     · simpa using hb0 n
   have := tendsto_tsum_of_dominated_convergence (f := f) (g := fun _ : ℕ => (0 : ℝ))
     hsum hlim hbound

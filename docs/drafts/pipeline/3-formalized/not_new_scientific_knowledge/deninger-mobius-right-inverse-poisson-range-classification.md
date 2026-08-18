@@ -1,7 +1,7 @@
 # Möbius right inverse and exact Poisson-range classification
 
 - **ID:** `deninger-mobius-right-inverse-poisson-range-classification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** CLASSICAL MÖBIUS INPUT / PROJECT-SPECIFIC EXACT RANGE CLASSIFICATION
 - **Labels:**
   - `DAC_DENINGER_MOBIUS_POINTWISE_RIGHT_INVERSE`;
@@ -185,7 +185,8 @@ merely rename $M_\zeta$ and does not solve that problem.
   $Z(H_\cap)$ and Poisson reflection were already formalized. Right inversion is classical
   Dirichlet/Möbius calculus; `(7)` and `(11)` record its exact consequence for the already-fixed
   Route-L spaces.
-- **No Lean claim.** Lean corpus was inspected read-only during refactor.
+- **Lean claim, unconditional.** See the Lean status section below: `(3)`, `(4)`, `(7)`, `(8)`,
+  `(11)` and `(12)` are theorems with axiom audit `propext, Classical.choice, Quot.sound`.
 
 ## References
 
@@ -198,8 +199,89 @@ merely rename $M_\zeta$ and does not solve that problem.
 
 - [x] 0 → 1 in-progress: exact transform, convergence, and falsifiers fixed
 - [x] 1 → 2 fully-proven: dependency-closed proof `(1)`--`(12)`
-- [ ] 2 → 3 formalized: paused during Lean corpus refactor
+- [x] 2 → 3 formalized: every `[PROVED HERE]` statement is an unconditional Lean theorem
 - [ ] 3 → 4 publication-ready
+
+## Lean status — FORMALIZED, unconditional
+
+Two new modules, both wired into `GaloisForLFunctions.RHTower`, both checked with
+`lake env lean` and `lake build`; axiom audit for every declaration named below is exactly
+`propext, Classical.choice, Quot.sound`.  Nothing is assumed: no hypothesis, no `sorry`, no added
+axiom.
+
+### `formal/GaloisForLFunctions/RHTower/DeningerMobiusPoissonRangeClassification.lean`
+
+```text
+deningerLogPull_double_summable                 (3)  ∑_{m,n≥1} ‖H_h(mnx)‖ < ∞
+DeningerMobiusRegularDomain                     (6)  𝒟_μ
+mem_deningerMobiusRegularDomain_iff                  positive-ray form of membership
+deningerPoissonSource_eq_of_ray                      a regular Möbius preimage is a Poisson preimage
+deningerMobiusRegularDomain_eq_poissonRange     (7)  ** 𝒟_μ = Z(H_∩) **
+deningerMobiusRegularDomain_existsUnique             E𝔐_μ inverts Z on 𝒟_μ, uniquely
+deningerPoissonIncidence_iff                   (12)  Poisson incidence ⟺ E𝔐_μ h ∈ H_∩
+DeningerReflectedGraphMuRegular                (10)  Γ_sec^{μ-reg}
+DeningerPoissonBoundaryGraph                         {(Zf, Z ℱf) : f ∈ H_∩}
+deningerReflectedGraphMuRegular_eq             (11)  ** the two graphs are equal **
+DeningerMobiusRegularDomainMeyer                     𝒟_μ inside the nuclear Meyer source
+deningerMobiusRegularDomainMeyer_eq_range            it is the image of the Poisson operator
+deningerPoissonMeyerRange_carrier                    the same, as a submodule carrier
+deningerMobiusRegularDomainMeyer_isClosed       (8)  ** 𝒟_μ is closed in the Meyer topology **
+deningerPoissonMeyerRangeEquiv_symm_eq_mobiusExtension
+                                                     the continuous inverse *is* E𝔐_μ
+deningerMobiusRegularDomain_inverse_continuous  (8)  ** E𝔐_μ : 𝒟_μ → H_∩ is continuous **
+```
+
+`(2)` and `(4)` were already in the tree and are reused verbatim:
+`deningerMobiusRay_summable` (absolute convergence of `∑_n μ(n) H_h(nx)` on every positive ray) and
+`deningerMobius_rightInverse` (`∑_{m≥1} (𝔐_μ h)(mx) = H_h(x)`, the pointwise right inverse), in
+`RHTower/DeningerMobiusPreimage.lean` and `RHTower/DeningerMobiusRightInverse.lean`; the left
+inversion `𝔐_μ(Zf) = f` is `deningerMobiusPreimage_poissonSource` and the Meyer--Poisson reflection
+`J(Zf) = Z(ℱf)` is `deningerCollarExchange_poissonSource`, both in
+`RHTower/DeningerPoissonPreimage.lean`.  `J` is the corpus's `deningerCollarExchange`, whose
+defining formula `deningerCollarExchange_apply` is literally `(Jh)(t) = e^{-t}h(-t)`, i.e. `(9)`.
+
+### `formal/GaloisForLFunctions/RHTower/DeningerMeyerStrictEmbedding.lean`
+
+`(8)` is the only part of the card that is not purely algebraic: it asserts closedness and inverse
+continuity **for the nuclear Meyer topology**, while the corpus's strictness and closed-range
+theorems for `Z` were stated against the *radial* presentation (the family of all integer
+exponential weights, topologised inside a countable product of Schwartz spaces).  This module builds
+the missing bridge and is reusable well beyond this card.
+
+```text
+deningerMeyerSeminormFun_mono                   q_{A,n} increases with the exponent
+deningerExpMulExponent, deningerPow_mul_exp_le  ‖t‖^k e^{ct} ≤ k!·e^{⌈1+|c|⌉|t|}
+deningerExpMul_seminorm_le           ** p_{k,n}(e^{ct}h) ≤ Σ_j C(n,j)|c|^j k! q_{⌈1+|c|⌉,n-j}(h) **
+deningerExpMulSchwartzLM                        e^{ct}· as a map H_- → 𝒮(ℝ)
+deningerExpMulSchwartzLM_continuous  ** it is continuous for the Meyer topology **
+deningerRadialLM                                h ↦ (e^{st}h)_{s∈ℤ}, into the radial space
+deningerRadialLM_continuous          ** the radial presentation is continuous **
+deningerPoissonMeyerLM                          Z, with the Meyer topology on the target
+deningerRadialLM_poissonMeyer                   its radial presentation is the radial Poisson datum
+deningerPoissonMeyer_range_isClosed  ** Z(H_∩) is closed in the Meyer topology **
+exists_bound_schwartzSup_expMul, exists_bound_sum_schwartzSup_expMul
+deningerPoissonSchwartz_eq_expMul               the s-th radial datum of Zf is e^{st}·Zf
+deningerPoissonMeyer_strict          ** p_{k,n}(f) ≤ C·sup_T q(Zf): Z is strict for Meyer **
+deningerMeyerCap_withSeminorms, deningerPoissonMeyerRange_withSeminorms
+deningerPoissonMeyerRangeEquiv                  Z as an isomorphism onto its image
+deningerPoissonMeyerRangeEquiv_symm_continuous  ** the inverse is continuous **
+```
+
+The mechanism of the bridge is one estimate.  Multiplication by `e^{ct}` carries `H_-` into the
+Schwartz space, and Leibniz expands `D^n(e^{ct}h)` into `Σ_j C(n,j)|c|^j e^{ct} D^{n-j}h`; the power
+weight `‖t‖^k` is absorbed by `‖t‖^k ≤ k!e^{|t|}`, so one extra unit of Meyer exponent pays for both
+the power and the exponential factor.  Closedness then costs nothing: `Z(H_∩)` is the preimage,
+under the continuous radial presentation, of the already-proved closed radial Poisson image.
+Inverse continuity is the corpus's radial strictness `exists_bound_seminorm_radial` composed with
+the same estimate.
+
+### Scope, honestly
+
+What is formalized is exactly what the card proves.  The open core the card names — a continuous
+Gamma/co-Poisson Green--Stokes realization of the **singular regularity defect** of `(2)` on the
+full nuclear source, with a positive weight-one norm and real-Fourier covariance — is untouched
+here and remains open; the set-level range classification does not address it, as `§4.4` already
+records.
 
 ## Log
 
@@ -209,3 +291,8 @@ merely rename $M_\zeta$ and does not solve that problem.
 - 2026-08-08 — Novelty audit located classical Müntz/co-Poisson and Möbius-transform literature;
   relabeled the inversion theorem as not new scientific knowledge. Retained only its exact Route-L
   frontier consequence.
+- 2026-08-18 — **Stage 3.** Formalized `(3)`, `(7)`, `(8)`, `(11)`, `(12)` unconditionally in Lean,
+  reusing the tree's `(2)`, `(4)`, left inversion and Poisson reflection. Built the missing
+  Meyer-topology half of the strict closed embedding `Z : H_∩ → H_-`
+  (`DeningerMeyerStrictEmbedding.lean`), which the card's `(8)` needs and which the corpus had only
+  in the radial presentation.
