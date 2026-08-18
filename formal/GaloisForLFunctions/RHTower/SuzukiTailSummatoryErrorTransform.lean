@@ -267,6 +267,117 @@ theorem suzukiSourceHOne_eq_coupledErrorStieltjes
       = (x : ℂ)⁻¹ * suzukiCoupledErrorStieltjes ω x (fun t => suzukiSourceGOne ω (t / x)) := by
   rw [suzukiSourceHOne_eq_finite, suzukiSourceHOneFinite_eq_coupledErrorStieltjes hω hx]
 
+/-! ## The Mellin singularity boundary -/
+
+/-- Bochner integration of a complex-valued function against a countable weighted Dirac family. -/
+theorem integral_countableWeightedDirac_complex {w x : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
+    {f : ℝ → ℂ} (hint : Integrable f (HTGeometry.countableWeightedDirac w x)) :
+    ∫ y, f y ∂(HTGeometry.countableWeightedDirac w x) = ∑' n, ((w n : ℝ) : ℂ) * f (x n) := by
+  rw [HTGeometry.countableWeightedDirac] at hint ⊢
+  rw [integral_sum_measure hint]
+  refine tsum_congr fun n => ?_
+  rw [integral_smul_measure, integral_dirac, ENNReal.toReal_ofReal (hw n), Complex.real_smul]
+
+/-- Integrability of a complex-valued function against a countable weighted Dirac family. -/
+theorem integrable_countableWeightedDirac_complex {w x : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
+    {f : ℝ → ℂ} (hsum : Summable fun n => w n * ‖f (x n)‖) :
+    Integrable f (HTGeometry.countableWeightedDirac w x) := by
+  rw [HTGeometry.countableWeightedDirac]
+  refine integrable_sum_measure_iff.2
+    ⟨fun n => (integrable_dirac (f := f) (a := x n) (by simp)).smul_measure
+      ENNReal.ofReal_ne_top, ?_⟩
+  refine hsum.congr fun n => ?_
+  rw [integral_smul_measure, integral_dirac, ENNReal.toReal_ofReal (hw n), smul_eq_mul]
+
+theorem suzukiShiftedCoefficient_zero {ω : ℝ} (hω : 0 < ω) : suzukiShiftedCoefficient ω 0 = 0 := by
+  rw [suzukiShiftedCoefficient, Nat.cast_zero, Real.zero_rpow (ne_of_gt hω), zero_mul]
+
+/-- The Dirichlet series of the shifted Euler coefficients, in Mellin--Stieltjes form. -/
+theorem tsum_suzukiShiftedCoefficient_cpow {ω : ℝ} (hω : 0 < ω) {s : ℂ} (hs : 1 + ω < s.re) :
+    ∑' n : ℕ, ((suzukiShiftedCoefficient ω n : ℝ) : ℂ) * (n : ℂ) ^ (-s)
+      = riemannZeta (s - (ω : ℂ)) / riemannZeta (s + (ω : ℂ)) := by
+  have hsm : 1 < (s - (ω : ℂ)).re := by
+    simp only [Complex.sub_re, Complex.ofReal_re]
+    linarith
+  have hsp : 1 < (s + (ω : ℂ)).re := by
+    simp only [Complex.add_re, Complex.ofReal_re]
+    linarith
+  rw [← LSeries_suzukiShiftedCoefficient ω hsm hsp, LSeries]
+  refine tsum_congr fun n => ?_
+  rcases eq_or_ne n 0 with rfl | hn
+  · rw [LSeries.term_zero, suzukiShiftedCoefficient_zero hω]
+    simp
+  · rw [LSeries.term_of_ne_zero hn, Complex.cpow_neg, div_eq_mul_inv]
+
+/-- **Equation (8).**  The Mellin--Stieltjes transform of the atomic summatory measure is the
+shifted Euler quotient. -/
+theorem integral_suzukiShiftedAtomicMeasure_cpow {ω : ℝ} (hω : 0 < ω) {s : ℂ}
+    (hs : 1 + ω < s.re) :
+    ∫ t, (t : ℂ) ^ (-s) ∂(suzukiShiftedAtomicMeasure ω)
+      = riemannZeta (s - (ω : ℂ)) / riemannZeta (s + (ω : ℂ)) := by
+  have hsmRe : 1 < ((s.re : ℂ) - (ω : ℂ)).re := by
+    simp only [Complex.sub_re, Complex.ofReal_re]
+    linarith
+  have hspRe : 1 < ((s.re : ℂ) + (ω : ℂ)).re := by
+    simp only [Complex.add_re, Complex.ofReal_re]
+    linarith
+  have hsumC := LSeriesSummable_suzukiShiftedCoefficient ω hsmRe hspRe
+  have hnormEq : ∀ n : ℕ,
+      suzukiShiftedCoefficient ω n * ‖((n : ℝ) : ℂ) ^ (-s)‖
+        = ‖LSeries.term (fun n => ((suzukiShiftedCoefficient ω n : ℝ) : ℂ)) ((s.re : ℝ) : ℂ) n‖ := by
+    intro n
+    rcases eq_or_ne n 0 with rfl | hn
+    · rw [LSeries.term_zero, suzukiShiftedCoefficient_zero hω]
+      simp
+    · have hnpos : (0 : ℝ) < (n : ℝ) := by
+        have : 0 < n := Nat.pos_of_ne_zero hn
+        exact_mod_cast this
+      have hcast : ((n : ℕ) : ℂ) = (((n : ℕ) : ℝ) : ℂ) := by push_cast; ring
+      rw [LSeries.term_of_ne_zero hn, norm_div, hcast,
+        Complex.norm_cpow_eq_rpow_re_of_pos hnpos, Complex.norm_cpow_eq_rpow_re_of_pos hnpos,
+        Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (suzukiShiftedCoefficient_nonneg hω n)]
+      simp only [Complex.neg_re, Complex.ofReal_re]
+      rw [Real.rpow_neg hnpos.le, div_eq_mul_inv]
+  have hsum : Summable fun n : ℕ =>
+      suzukiShiftedCoefficient ω n * ‖((n : ℝ) : ℂ) ^ (-s)‖ := by
+    refine Summable.congr hsumC.norm ?_
+    intro n
+    exact (hnormEq n).symm
+  have hint : Integrable (fun t : ℝ => (t : ℂ) ^ (-s)) (suzukiShiftedAtomicMeasure ω) := by
+    rw [suzukiShiftedAtomicMeasure]
+    exact integrable_countableWeightedDirac_complex
+      (fun n => suzukiShiftedCoefficient_nonneg hω n) hsum
+  rw [suzukiShiftedAtomicMeasure] at hint ⊢
+  rw [integral_countableWeightedDirac_complex (fun n => suzukiShiftedCoefficient_nonneg hω n) hint]
+  exact tsum_suzukiShiftedCoefficient_cpow hω hs
+
+/-- **Equation (9).**  Beyond the unit point the main-term density has the exact Mellin pole at
+`s = 1 + ω`. -/
+theorem integral_Ioi_one_suzukiMainTermDensity_cpow {ω : ℝ} (_hω : 0 < ω) {s : ℂ}
+    (hs : 1 + ω < s.re) :
+    ∫ t in Ioi (1 : ℝ), (t : ℂ) ^ (-s) * ((suzukiMainTermDensity ω t : ℝ) : ℂ)
+      = ((suzukiEulerDensityConstant ω : ℝ) : ℂ) / (s - 1 - (ω : ℂ)) := by
+  have hre : ((ω : ℂ) - s).re < -1 := by
+    simp only [Complex.sub_re, Complex.ofReal_re]
+    linarith
+  have hpow := integral_Ioi_cpow_of_lt hre (c := (1 : ℝ)) one_pos
+  have hcongr : (∫ t in Ioi (1 : ℝ), (t : ℂ) ^ (-s) * ((suzukiMainTermDensity ω t : ℝ) : ℂ))
+      = ∫ t in Ioi (1 : ℝ), ((suzukiEulerDensityConstant ω : ℝ) : ℂ) *
+          (t : ℂ) ^ ((ω : ℂ) - s) := by
+    apply integral_congr_ae
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    have ht0 : (0 : ℝ) < t := lt_trans zero_lt_one ht
+    have hsplit : (t : ℂ) ^ ((ω : ℂ) - s) = (t : ℂ) ^ (ω : ℂ) * (t : ℂ) ^ (-s) := by
+      rw [sub_eq_add_neg, Complex.cpow_add _ _ (by exact_mod_cast ne_of_gt ht0)]
+    simp only [suzukiMainTermDensity]
+    rw [Complex.ofReal_mul, Complex.ofReal_cpow ht0.le, hsplit]
+    ring
+  rw [hcongr, integral_const_mul, hpow, Complex.ofReal_one, Complex.one_cpow,
+    neg_div, mul_neg, mul_one_div, ← div_neg]
+  congr 1
+  ring
+
 end
 
 end RHTower

@@ -1610,3 +1610,28 @@ which is exactly statement `(2)` of the parent card
 *entirely* reduced to that one: when full symmetric monodromy is discharged there,
 `criticalObservation_sup_postcritical_eq_criticalSourceFieldSup` becomes unconditional with no
 further work here.
+
+## Status (2026-08-18) — this card is one theorem away, and that theorem now has an elementary route
+
+`criticalObservation_sup_postcritical_eq_criticalSourceFieldSup` is `(4)` with the single premise
+`criticalGeometricMonodromy K m n = ⊤`.  That premise is statement `(2)` of
+`projective-horizon-full-symmetric-monodromy`, whose card now carries a complete elementary
+programme (section "PROGRAMME (2026-08-18)"): the torus `𝔾ₘ²` acting on the horizon chart makes the
+block cover a subfield of the cyclic extension `O(c^{1/L})`, `c = x_m y_n`, so the only new
+mathematics needed is
+
+```text
+SC_k :  affine space 𝔸^k over an algebraically closed field of characteristic zero has no
+        nontrivial connected finite étale cover,
+```
+
+in its field-theoretic form ("a finite extension of `K(u_1,…,u_k)` unramified at every height-one
+prime of `K[u_1,…,u_k]` is trivial"), which reduces by induction and Gauss valuations to the
+one-variable statement
+
+```text
+SC_1 :  f ∈ K[s][T] monic in T with disc_T f a nonzero constant splits into monic linear factors.
+```
+
+Nothing else on this card is open.  When `SC_k` lands, `(4)` becomes unconditional with no further
+work here, and `(3)` follows by the generator bookkeeping already recorded.
