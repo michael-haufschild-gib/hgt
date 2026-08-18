@@ -4131,3 +4131,40 @@ its shell-uniform bound), `RHTower.MassBesselPoincareMass` (`tendsto_dyadicPoinc
 All four Lean targets of the card are constructed and proved unconditionally; every declaration has
 axioms exactly `[propext, Classical.choice, Quot.sound]`.  Card moved to
 `docs/drafts/pipeline/3-formalized`.
+
+## baker-general-logarithms-inhomogeneous-extension -- PROMOTED to stage 3
+
+`GaloisForLFunctions.RHTower.bakerTheorem_holds : BakerTheorem` is closed: for every `n`, every
+choice of complex logarithms `λ` with `exp λᵢ` algebraic and `λ` `ℚ`-linearly independent, the
+family `1, λ₁, …, λₙ` is linearly independent over `algebraicClosure ℚ ℂ`.  Axioms exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+The construction, the commuting component algebra, the Siegel kernel, the multiplicity transport
+and the gap-free contour-Hermite terminal estimate were already in `RHTower/BakerGeneralProof`.
+This promotion added the entire quantitative layer, in nine new modules:
+
+- `PolynomialAuxiliaryExpansion` — the exact polynomial--exponential expansion of a full component
+  jet on the analytic curve, and its boundary bound as a finite house sum.
+- `PolynomialAuxiliaryScalarBounds` — `house_prod_pow_le`, the uniform eigenvalue bound
+  `eigenHouseBound`, the frequency radius, the geometric base `jetGrowthBase`, and the two closed
+  scalar majorants `jetScalarBound` and `jetHouseScalarBound`.
+- `PolynomialAuxiliaryScalarStep` — one extrapolation step whose only hypothesis is a scalar
+  inequality between those majorants.
+- `PolynomialAuxiliaryKernelTransition` — a rectangular box of jet zeros *is* a kernel vector, so
+  the stage state of the long extrapolation is a single kernel statement.
+- `PolynomialAuxiliaryHeightBounds` — the matrix height and, at the exact two-to-one column count,
+  the linear Siegel `coefficientBudget`.
+- `BakerGeneralParameters` — the parameter family `M_k = q^{2n+2}/2^k`, `S_k = q^{k+2}`,
+  `U = 2q^{2n+2}`, `V = q^{2n}`, radius `4q^{k+3}`, `J = 2n²`, with `2·rows = cols`; every base is
+  eventually below `exp q`, so every majorant is an exponential with a natural polynomial exponent.
+- `BakerGeneralStageSmallness` — the positive budget is `exp(C q^{2n+k+3})` against a decay exponent
+  `q^{2n+k+4}/2^{k+1}`: one full power of the parameter of slack, uniformly in `k ≤ J`.
+- `BakerGeneralIteration` — the staged kernel iteration.
+- `BakerGeneralCapstone` — the terminal majorant, its failure for large parameters, and
+  `SolvedRelation.false_of_long_extrapolation`, hence the capstone.
+
+`RHTower/BakerGeneralConsequences` adds the card's extension consequence
+`baker_linearForm_transcendental`: every nonzero algebraic-coefficient linear form in the
+logarithms is transcendental.
+
+Card moved to `docs/drafts/pipeline/3-formalized`.

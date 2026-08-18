@@ -25,7 +25,7 @@ open Metric Set
 
 open scoped BoundedContinuousFunction
 
-variable {f : ℝ →ᵇ ℂ}
+variable {V : Type*} [NormedAddCommGroup V] {f : ℝ →ᵇ V}
 
 /-- **An independent frequency packet is bounded by the dimension of a finite chart atlas.** -/
 theorem card_le_of_hull_charts (hf : UniformContinuous (fun x => f x))

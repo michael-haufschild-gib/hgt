@@ -1,7 +1,7 @@
 # Exponential--rational shadow bidegree law
 
 - **ID:** `exponential-rational-shadow-bidegree-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For a finite sum of distinct nonzero exponential modes plus a nonzero rational
   divisor correction, the minimal homogeneous linear differential order is one more than the
@@ -170,7 +170,8 @@ stage.  It does not rule out infinite-dimensional RH routes.
 - [x] Search exact and parent literature only after the proof survives.
 - [x] Apply the severe parent-theory gate: a short consequence of exponential-polynomial
   independence and rational logarithmic derivatives is a bridge even if exact wording is absent.
-- [ ] Inspect existing Lean exponential-sum/Vandermonde and meromorphic-divisor infrastructure.
+- [x] Inspect existing Lean exponential-sum/Vandermonde and meromorphic-divisor infrastructure.
+- [x] Complete the Lean formalization (2026-08-18)
 
 ## Scientific-novelty verdict
 
@@ -202,3 +203,180 @@ not merely calculate one finite LCLM.
   primitive polynomial coefficients.  Novelty failed: the result is an explicit Ore-algebra LCLM
   and rational-logarithmic-derivative calculation.  Promoted the complete proof to stage 2 as a
   bridge, not new scientific knowledge.
+- 2026-08-18 -- All four items formalized unconditionally in Lean 4 across six modules
+  (`RationalExponentialShadow`, `DerivEigenIndependence`, `LinearDifferentialOperatorSeparation`,
+  `ExponentialRationalMinimalOrder`, `RadicalDerivativeDivisibility` +
+  `RationalLogarithmicDerivativeRadical`, `ExponentialRationalLeadingDegree`,
+  `ExponentialModeAlgebraicIndependence`), all wired into the `HTGeometry` umbrella and
+  axiom-clean.  Two corrections to the paper proof were forced: the rigidity hypothesis must be
+  restricted to *constant* multipliers (the unrestricted form is false over `C(s)`), and Lemma 5
+  needs no transcendence theory — algebraic independence of the modes is linear independence of
+  their monomials, and each monomial is itself an eigenvector.  Promoted to stage 3.
+
+## Formalization (complete, 2026-08-18)
+
+`formal/GaloisForLFunctions/HTGeometry/RationalExponentialShadow.lean`
+(namespace `GaloisForLFunctions.RationalShadow`, wired into the `HTGeometry` umbrella, builds
+green, axiom-clean) closes **Lemma 1**.
+
+| Card step | Lean name |
+|---|---|
+| no nonzero rational function has a nonzero constant logarithmic derivative | `ratFuncCoordinateDerivation_ne_smul` |
+| its cross-multiplied form | `ratFuncCoordinateDerivation_smul_cross` |
+| one factor `D - λ` and its kernel | `shiftedDeriv`, `shiftedDeriv_eq_zero_iff` |
+| the monic annihilator `L_0(D) = ∏ (D - λ_i)` | `shiftedDerivProd` |
+| **Lemma 1**: `L_0(D) q = 0 ⟹ q = 0` | `eq_zero_of_shiftedDerivProd_eq_zero` |
+| **Lemma 1, contrapositive**: the shadow `h = L_0(D) q` is nonzero | `shiftedDerivProd_ne_zero` |
+
+The card's pole-order argument for Lemma 1 is replaced by a degree argument that also covers the
+polynomial case in one step: cross-multiplying `z' = μ z` gives
+`denom · num' - num · denom' = μ · num · denom`, and `Polynomial.degree_derivative_lt` makes the
+left side of strictly smaller degree than the right whenever `μ ≠ 0` and `z ≠ 0`.  The separate
+"rational solutions have no finite pole, hence are polynomials, hence vanish because `L_0(0) ≠ 0`"
+case split is then unnecessary.
+
+`formal/GaloisForLFunctions/HTGeometry/DerivEigenIndependence.lean`
+(namespace `GaloisForLFunctions.DerivEigen`) closes **Lemma 2**.
+
+| Card step | Lean name |
+|---|---|
+| eigenvectors with distinct eigenvalues are independent over the base | `linearIndependent_of_deriv_eigen` |
+| the minimal-relation induction | `eigen_sum_eq_zero_aux` |
+| **Lemma 2** over `C(s)`: `1, exp(λ_1 s), …, exp(λ_r s)` independent | `linearIndependent_expEigen_over_ratFunc` |
+
+`formal/GaloisForLFunctions/HTGeometry/LinearDifferentialOperatorSeparation.lean`
+(namespace `GaloisForLFunctions.LinDiffOp`) closes the step the card calls "Expanding `Af=0`".
+
+| Card step | Lean name |
+|---|---|
+| the operator `A = ∑_j c_j D^j` and its base and symbol versions | `linOp`, `linOpBase`, `symbolEval` |
+| `A E = (symbol at λ) · E` for an eigenvector | `linOp_eigen` (via `differentialJet_eigen`) |
+| `A` on a base element | `linOp_algebraMap` |
+| **`Af = 0 ⟹ Aq = 0` and `C_s(λ_i) = 0`** | `linOp_eq_zero_separation` |
+
+The formal route makes one structural simplification: since each `a_i` is a nonzero constant, the
+mode `a_i exp(λ_i s)` is itself an eigenvector with the same eigenvalue, so the coefficients `a_i`
+never need to be carried — the theorem is stated for the modes already scaled.
+
+The same module now also carries the operator/symbol dictionary that Lemma 4 needs:
+
+| Card step | Lean name |
+|---|---|
+| one linear factor of the symbol is one factor `a·D - b` of the operator | `linOpBase_linear_mul` |
+| the annihilator `L_0(D) = ∏_i (D - λ_i)` | `opList` |
+| its monic symbol `L_0(X) = ∏_i (X - λ_i)`, monic of degree `r`, with constant coefficients | `factorPoly`, `factorPoly_monic`, `factorPoly_natDegree`, `factorPoly_coeff_deriv` |
+| **the operator identity `∑_j (L_0)_j D^j = ∏_i (D - λ_i)`** | `linOpBase_factorPoly` |
+
+`formal/GaloisForLFunctions/HTGeometry/ExponentialRationalMinimalOrder.lean` (same namespace)
+closes **item 2**, the exact minimal homogeneous order.
+
+| Card step | Lean name |
+|---|---|
+| the symbol as a polynomial, its degree, value and coefficients | `symbolPoly`, `symbolPoly_natDegree_le`, `symbolPoly_eval`, `symbolPoly_coeff` |
+| a monic divisor of matching degree is the whole polynomial up to its leading scalar | `eq_C_leadingCoeff_mul_of_monic_dvd` |
+| **lower bound**: every annihilator of order `≤ r` is zero | `coeff_eq_zero_of_annihilates` |
+| **upper bound**: an explicit annihilator of order `r+1` | `exists_annihilator_succ` |
+
+Together with Lemma 1 this is the card's statement that the least homogeneous order is exactly
+`r + 1`.
+
+Two notes on the formal route.
+
+* The card builds the order-`r+1` annihilator from the reduced fraction `h′/h = B/A`.  That is not
+  needed for existence: `A = h`, `B = h′` already gives `A·h′ - B·h = 0`, so the symbol
+  `(h·X - h′)·L_0(X)` annihilates the carrier.  The reduced form is needed only for the *exact
+  leading coefficient* claim.
+* The lower bound is proved through the roots of the symbol rather than through polynomial
+  division: `Multiset.prod_X_sub_C_dvd_iff_le_roots` turns "the symbol vanishes at the `r` distinct
+  eigenvalues" directly into divisibility by the monic `∏_i (X - λ_i)`, and matching degrees then
+  force a scalar multiple.
+
+`formal/GaloisForLFunctions/HTGeometry/RadicalDerivativeDivisibility.lean`
+(namespace `GaloisForLFunctions.RadicalDeriv`) and
+`formal/GaloisForLFunctions/HTGeometry/RationalLogarithmicDerivativeRadical.lean`
+(namespace `GaloisForLFunctions.RationalShadow`) close **item 3** at the level of the rational
+shadow itself.
+
+| Card step | Lean name |
+|---|---|
+| a prime is never a factor of its own derivative, nor of a nonzero constant | `not_dvd_derivative_self`, `not_dvd_C` |
+| every prime factor of `N` divides `a` once `N ∣ a·N′` | `prime_dvd_of_dvd_mul_derivative` |
+| hence `radical N ∣ a` | `radical_dvd_of_dvd_mul_derivative` |
+| divisibility is tested on prime factors | `radical_dvd_of_forall_prime` |
+| `rad(N·M)` clears the logarithmic derivative | `dvd_radical_mul_wronskian` |
+| every clearing polynomial is a multiple of `rad(N·M)` | `radical_dvd_of_dvd_mul_wronskian` |
+| the shadow radical `rad(h) = rad(denom h · num h)` | `shadowRadical` |
+| cross-multiplied form of `a·h′ = b·h` | `cross_iff` |
+| **minimality**: every admissible `a` is divisible by `rad(h)` | `shadowRadical_dvd` |
+| **attainment**: `rad(h)` itself is admissible | `exists_cross_shadowRadical` |
+| `deg rad(h)` is a lower bound for `deg a` | `natDegree_shadowRadical_le` |
+| **`deg rad(h) = card(support(div h) ∩ C)`** | `natDegree_radical_eq_card_roots`, `natDegree_shadowRadical_eq_card_roots` |
+
+The card's residue argument ("at every zero or pole of multiplicity `m ≠ 0` the logarithmic
+derivative has a genuine simple pole") is replaced by an exact multiplicity computation valid over
+any field of characteristic zero: at a prime `p` of multiplicity `e ≥ 1`, writing `N = p^e·N₁` with
+`p ∤ N₁` gives `N′ = p^{e-1}·(e·p′·N₁ + p·N₁′)`, and the bracket is prime to `p` because `p ∤ e`
+(characteristic zero), `p ∤ p′` (degree), and `p ∤ N₁`.  Cancelling `p^{e-1}` leaves `p ∣ a·u` with
+`p ∤ u`.  The converse half is mathlib's `divRadical_dvd_wronskian_left`/`_right` together with
+`divRadical_mul` for the coprime pair `(denom h, num h)`.
+
+`formal/GaloisForLFunctions/HTGeometry/ExponentialRationalLeadingDegree.lean` (namespace
+`GaloisForLFunctions.LinDiffOp`) transports item 3 to the operator level, which is what the card
+actually asserts.
+
+| Card step | Lean name |
+|---|---|
+| the symbol of an annihilator is divisible by `L_0` | `factorPoly_dvd_symbolPoly` |
+| **Lemma 4's factorization** `C_s(X) = (c_{r+1}·X + t)·L_0(X)` | `symbolPoly_eq_linear_mul`, `linearTail` |
+| the resulting first-order relation `c_{r+1}·h′ = -t·h` | `leadingCoeff_mul_deriv_shadow` |
+| the leading coefficient of `(a·X - b)·L_0` is `a` | `coeff_linear_mul_factorPoly_top` |
+| any realisation of `h′/h` gives an order-`r+1` annihilator | `linOp_linear_mul_factorPoly_eq_zero` |
+| constants of `C(s)` are exactly `C` | `ratFunc_hconst` (via `ratFuncCoordinateDerivation_eq_zero_iff`) |
+| the abstract annihilator is the shifted-derivative product | `opList_map_algebraMap` |
+| polynomial coefficients stay polynomial under the factorization | `coeff_mem_range`, `symbolPoly_mem_range`, `factorPoly_mem_range` |
+| **every order-`r+1` polynomial-coefficient annihilator has `rad(h) ∣ c_{r+1}`** | `shadowRadical_dvd_leadingCoeff` |
+| **one exists with leading coefficient exactly `rad(h)`** | `exists_polynomial_annihilator_shadowRadical` |
+| **exact minimal leading degree** | `natDegree_shadowRadical_le_of_annihilates` |
+
+Two notes on this half.
+
+* The card's blanket rigidity hypothesis ("no nonzero rational function has a nonzero constant
+  logarithmic derivative") had to be *weakened* in `linOp_eq_zero_separation` and
+  `coeff_eq_zero_of_annihilates` before it could be instantiated over `C(s)`: the unrestricted form
+  `∀ μ ≠ 0, ∀ c ≠ 0, c′ ≠ μ·c` is false over `C(s)` (take `c = s`, `μ = 1/s`).  Only *constant* `μ`
+  is rigid, and only constant `μ` ever occurs — the multipliers are differences of eigenvalues.
+  Both statements now carry the hypothesis `μ′ = 0`.
+* Polynomiality of the tail `t` is not assumed but derived: the order-`r+1` symbol lies in the image
+  of `Polynomial.mapRingHom (algebraMap C[s] C(s))`, a subring, so all of its coefficients — and
+  hence `t = (C_s - c_{r+1}·X·L_0).coeff r` — are polynomials.
+
+`formal/GaloisForLFunctions/HTGeometry/ExponentialModeAlgebraicIndependence.lean` (namespace
+`GaloisForLFunctions.DerivEigen`) closes **item 4 (Lemma 5)**.
+
+| Card step | Lean name |
+|---|---|
+| powers and finite products of eigenvectors are eigenvectors | `deriv_pow_eigen`, `deriv_prod_eigen` |
+| every monomial in the modes is an eigenvector, of weight `⟨d, λ⟩` | `eigenWeight`, `deriv_monomialValue` |
+| **algebraic independence from rigid weight separation** | `algebraicIndependent_of_deriv_eigen` |
+| the weight of an exponent vector over `C` | `weightC`, `eigenWeight_algebraMap` |
+| `Z`-independent frequencies separate weights | `weightC_sub_ne_zero` |
+| `Q`-linear independence gives the `Z` form | `int_independent_of_rat_linearIndependent` |
+| **the modes are algebraically independent over `C(s)`** | `algebraicIndependent_expEigen_over_ratFunc` |
+| jets of a sum of modes | `differentialJet_sum`, `differentialJet_sum_eigen` |
+| translation of the polynomial variables is injective | `transSubst`, `transSubst_injective` |
+| **Vandermonde transfer to the jets** | `algebraicIndependent_jets` |
+| `L_0(D) f = h`, so the `r`-th jet is an affine combination of the lower ones | `linOp_factorPoly_carrier` |
+| **Lemma 5: the exact algebraic-differential order is `r`** | `exact_algebraic_differential_order` |
+
+The card's route through algebraic independence of `exp(λ_i s)` is replaced by the equivalent and
+purely algebraic statement that algebraic independence *is* linear independence of the monomials
+(`BigradedCorank.algebraicIndependent_iff_linearIndependent_monomialValue`, already owned by the
+corpus): each monomial `∏_i E_i^{d_i}` is again a derivation eigenvector, of eigenvalue
+`∑_i d_i λ_i`, so the corpus's `linearIndependent_of_deriv_eigen` applies verbatim once distinct
+exponent vectors are known to carry distinct weights — which is exactly `Q`-linear independence of
+the frequencies.  No transcendence input (Lindemann--Weierstrass, Ax, Kolchin--Ostrowski) is needed.
+The Vandermonde step uses the corpus's `matrixSubst_injective`; the affine part needed the new
+`transSubst_injective`.
+
+All four items of the candidate theorem are therefore closed unconditionally, with
+`#print axioms` reporting only `propext`, `Classical.choice`, `Quot.sound`.

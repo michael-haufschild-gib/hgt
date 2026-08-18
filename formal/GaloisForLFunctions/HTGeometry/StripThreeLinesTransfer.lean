@@ -48,7 +48,8 @@ theorem closure_hadamardStrip_subset {a b : ℝ} :
 
 /-- **Three-lines transfer.**  A bound on the central line of a strip, together with a bound on the
 whole substrip, gives a Hölder-interpolated bound on every narrower substrip. -/
-theorem norm_sub_le_of_line_bound {F : ℂ → ℂ} {σ R r r' M ε : ℝ}
+theorem norm_sub_le_of_line_bound {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+    [CompleteSpace E] {F : ℂ → E} {σ R r r' M ε : ℝ}
     (hr0 : 0 ≤ r) (hrr' : r < r') (hr'R : r' < R)
     (hεpos : 0 < ε) (hεM : ε ≤ 2 * M)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R))
@@ -59,7 +60,7 @@ theorem norm_sub_le_of_line_bound {F : ℂ → ℂ} {σ R r r' M ε : ℝ}
     ∀ z ∈ closedStrip σ r, ‖F (z + (s : ℂ) * Complex.I) - F (z + (t : ℂ) * Complex.I)‖
       ≤ ε * ((2 * M) / ε) ^ (r / r') := by
   classical
-  set G : ℂ → ℂ := fun z => F (z + (s : ℂ) * Complex.I) - F (z + (t : ℂ) * Complex.I) with hGdef
+  set G : ℂ → E := fun z => F (z + (s : ℂ) * Complex.I) - F (z + (t : ℂ) * Complex.I) with hGdef
   have hr'pos : 0 < r' := lt_of_le_of_lt hr0 hrr'
   have hMpos : 0 < 2 * M := lt_of_lt_of_le hεpos hεM
   -- holomorphy of the difference on the big strip
@@ -185,7 +186,8 @@ theorem norm_sub_le_of_line_bound {F : ℂ → ℂ} {σ R r r' M ε : ℝ}
 /-- **The line distance controls the strip distance.**  For every strip tolerance there is a line
 tolerance forcing it: uniform smallness of a translated difference on the central line propagates,
 by three lines, to uniform smallness on any narrower substrip. -/
-theorem exists_delta_strip_of_line {F : ℂ → ℂ} {σ R r r' M : ℝ}
+theorem exists_delta_strip_of_line {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+    [CompleteSpace E] {F : ℂ → E} {σ R r r' M : ℝ}
     (hr0 : 0 ≤ r) (hrr' : r < r') (hr'R : r' < R) (hMpos : 0 < M)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R))
     (hbound : ∀ z ∈ closedStrip σ r', ‖F z‖ ≤ M) :

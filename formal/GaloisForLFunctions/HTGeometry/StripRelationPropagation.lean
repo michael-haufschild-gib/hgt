@@ -20,11 +20,12 @@ open scoped BoundedContinuousFunction
 
 namespace GaloisForLFunctions
 
-variable {F : ℂ → ℂ} {σ R r : ℝ}
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+variable {F : ℂ → E} {σ R r : ℝ}
 
 /-- Locally uniform convergence of holomorphic functions passes to every iterated derivative. -/
 theorem tendstoLocallyUniformlyOn_iteratedDeriv {U : Set ℂ} (hU : IsOpen U)
-    {ι : Type*} {φ : Filter ι} {Fs : ι → ℂ → ℂ} {g : ℂ → ℂ}
+    {ι : Type*} {φ : Filter ι} {Fs : ι → ℂ → E} {g : ℂ → E}
     (hconv : TendstoLocallyUniformlyOn Fs g φ U)
     (hdiff : ∀ᶠ m in φ, DifferentiableOn ℂ (Fs m) U) : ∀ k : ℕ,
       TendstoLocallyUniformlyOn (fun m => iteratedDeriv k (Fs m)) (iteratedDeriv k g) φ U ∧
@@ -53,10 +54,10 @@ theorem tendstoLocallyUniformlyOn_iteratedDeriv {U : Set ℂ} (hU : IsOpen U)
 
 /-- **A polynomial differential relation passes to locally uniform limits.** -/
 theorem relation_of_tendstoLocallyUniformlyOn {U : Set ℂ} (hU : IsOpen U)
-    {ι : Type*} {φ : Filter ι} [φ.NeBot] {Fs : ι → ℂ → ℂ} {g : ℂ → ℂ}
+    {ι : Type*} {φ : Filter ι} [φ.NeBot] {Fs : ι → ℂ → E} {g : ℂ → E}
     (hconv : TendstoLocallyUniformlyOn Fs g φ U)
     (hdiff : ∀ᶠ m in φ, DifferentiableOn ℂ (Fs m) U)
-    {n : ℕ} {P : (Fin n → ℂ) → ℂ} (hP : Continuous P)
+    {n : ℕ} {P : (Fin n → E) → ℂ} (hP : Continuous P)
     (hrel : ∀ᶠ m in φ, ∀ z ∈ U, P (fun k => iteratedDeriv (k : ℕ) (Fs m) z) = 0) :
     ∀ z ∈ U, P (fun k => iteratedDeriv (k : ℕ) g z) = 0 := by
   intro z hz
@@ -77,9 +78,9 @@ theorem relation_of_tendstoLocallyUniformlyOn {U : Set ℂ} (hU : IsOpen U)
 /-- **Uniform limits of translates satisfy the same autonomous differential relation.** -/
 theorem relation_of_translate_limit (hr : r < R)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R))
-    {n : ℕ} {P : (Fin n → ℂ) → ℂ} (hP : Continuous P)
+    {n : ℕ} {P : (Fin n → E) → ℂ} (hP : Continuous P)
     (hrel : ∀ z ∈ verticalStrip σ R, P (fun k => iteratedDeriv (k : ℕ) F z) = 0)
-    {g : ℂ → ℂ} {τ : ℕ → ℝ}
+    {g : ℂ → E} {τ : ℕ → ℝ}
     (hconv : TendstoUniformlyOn (fun m z => F (z + (τ m : ℂ) * Complex.I)) g atTop
       (closedStrip σ r)) :
     ∀ z ∈ verticalStrip σ r, P (fun k => iteratedDeriv (k : ℕ) g z) = 0 := by
@@ -121,12 +122,12 @@ theorem relation_of_translate_limit (hr : r < R)
 
 /-- **The phase carrier is a family of solutions of the same autonomous relation.** -/
 theorem exists_solution_of_hull (hr : r < R) (hF : DifferentiableOn ℂ F (verticalStrip σ R))
-    {n : ℕ} {P : (Fin n → ℂ) → ℂ} (hP : Continuous P)
+    {n : ℕ} {P : (Fin n → E) → ℂ} (hP : Continuous P)
     (hrel : ∀ z ∈ verticalStrip σ R, P (fun k => iteratedDeriv (k : ℕ) F z) = 0)
-    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ ℂ)}
+    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ E)}
     (hGb : ∀ (τ : ℝ) (z : closedStrip σ r), Gb τ z = F ((z : ℂ) + (τ : ℂ) * Complex.I))
     (x : BohrHull Gb) :
-    ∃ g : ℂ → ℂ, DifferentiableOn ℂ g (verticalStrip σ r) ∧
+    ∃ g : ℂ → E, DifferentiableOn ℂ g (verticalStrip σ r) ∧
       (∀ z : closedStrip σ r, g (z : ℂ) = bohrEval Gb x z) ∧
         ∀ z ∈ verticalStrip σ r, P (fun k => iteratedDeriv (k : ℕ) g z) = 0 := by
   obtain ⟨g, τ, huniform, hgval⟩ := exists_translate_seq_of_hull hGb x

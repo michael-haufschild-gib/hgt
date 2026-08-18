@@ -1872,3 +1872,121 @@ The Neumann expansion of the resolvent itself and the `L^∞`-contractivity of M
 need the Markov operator on `X` rather than the kernel algebra; the transitive-action case `(8c)`,
 where the diagonal is constant and integrates to the trace `K-1`; and Corollary A.3's unitary-group
 instance.
+
+## Lean progress -- Theorems B and C
+
+Two new umbrella-wired, axiom-clean modules.
+
+`formal/GaloisForLFunctions/HTGeometry/ObserverExcisedUnion.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a state driven into the target tube by a word of length at most `s`, each step of probability at least `1/M` | `ReachableWithin` |
+| **the discounted path mass of one witness word**: a `k`-step path gives potential at least `(a/M)^k` | `le_hittingPotential_of_path` |
+| **`(9)`**: the low-complexity indicator is dominated by `(M/a)^s` times the potential | `one_le_pow_mul_hittingPotential` |
+| **Theorem B `(11)`**: the endpoint mass of the low-complexity event is at most `(M/a)^s` times the capacity term plus the positive part of the high-mode remainder | `measure_reachable_le` |
+
+`formal/GaloisForLFunctions/HTGeometry/ObserverComplementOrderParameter.lean`:
+
+| Card item | Declaration |
+|---|---|
+| reachability along positive-probability edges | `PositiveReach`, `positiveReach_of_mem` |
+| **`(11b)`, upper half**: no successful path shorter than `k` gives potential at most `a^{k+1}` | `hittingPotential_le_pow` |
+| **Theorem C `(11c)`**: the observer complement is at least the witness path mass minus the observer budget | `le_observerComplement` |
+| **Theorem C `(11d)`/`(11f)`**: and at most the length-limited mass minus the observer floor | `observerComplement_le` |
+| **Theorem C `(11e)`**: at a return it is at least one minus the observer budget | `one_sub_le_observerComplement_of_mem` |
+
+Both directions of `(11b)` are proved from the fixed-point equation alone, by induction on the path
+length: the lower bound keeps one witness edge out of the row sum, the upper bound uses that every
+positive-probability neighbour is itself one step further from the target.  No path space, hitting
+time or strong Markov property is used, so the estimates hold for the discounted harmonic
+characterisation directly.
+
+The observer projection enters only through the two pointwise bounds `proj x ≤ budget` and
+`floor ≤ proj x`, which is exactly what the pointwise form of `(6)` supplies; `(11)` accordingly
+contains no distance of the endpoint law from any reference.
+
+### What remains
+
+The Neumann expansion of the resolvent and the `L^∞`-contractivity of Markov powers, the
+transitive-action case `(8c)`, Corollary A.3's unitary-group instance, the identification of the
+fixed point with the path-space expectation `E_x[a^{τ_A}]`, and Theorem J's renewal linearisation.
+
+## Lean progress -- `(8b)`, `(8c)` and the dimension count of `(8e)`
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralResolventKernel.lean` (new, umbrella-wired,
+axiom-clean) closes the resolvent half of Corollary A.2.
+
+| Card item | Declaration |
+|---|---|
+| the `m`-th spectral power of a feature kernel, and its agreement with the kernel at `m = 0` | `spectralPowerKernel`, `spectralPowerKernel_zero` |
+| **every spectral power inherits the leverage bound** | `abs_spectralPowerKernel_le` |
+| the centred discounted resolvent kernel `(4)` | `spectralResolventKernel` |
+| **the Neumann expansion** `R_{E,a} = ∑_m a^m (spectral power)` | `spectralResolventKernel_eq_tsum` |
+| **`(8b)`**: `B_{E,a} ≤ L_E/(1−a)` | `abs_spectralResolventKernel_le` |
+| **`(8c)`**: a constant diagonal equals its own average, the trace of the centred projection | `featureKernel_diag_eq_card_of_const` |
+| **`(8e)`, the dimension count**: the real matrix-coefficient sector of a representation of complex dimension `N` has dimension at most `2N²+1` | `matrixCoefficientFamily`, `finrank_matrixCoefficientSector_le` |
+
+The formalisation removes an ingredient the paper proof quotes.  The card derives the summand bound
+from `L^∞`-contractivity of Markov powers; in the spectral form the weights sit on the *modes*, so
+the weighted reproducing Cauchy–Schwarz
+
+```text
+|∑_j λ_j^m φ_j(x)φ_j(y)|² ≤ (∑_j λ_j^{2m} φ_j(x)²)(∑_j φ_j(y)²) ≤ L_E²
+```
+
+gives every Neumann summand the same bound from `|λ_j| ≤ 1` alone.  No contractivity of the
+transition operator, and no `L^∞` theory, is used.  Each mode's geometric series converges because
+`|aλ_j| ≤ a < 1`, and the exchange with the finite mode sum is `hasSum_sum`.
+
+`(8e)` is now the counting statement it actually is: the sector is spanned by the constants together
+with the real and imaginary parts of the `N²` matrix entries, so `finrank_range_le_card` bounds its
+dimension by `2N²+1`; with `N = D^{2k}` this is `2D^{4k}+1`.
+
+### What remains
+
+The transitive-action hypothesis of `(8c)` itself — that a measure-preserving transitive symmetry
+makes the diagonal constant — and Corollary A.3's identification of the sector with a
+left-translation-invariant subspace of `L²(U(D))`; the identification of the fixed point with the
+path-space expectation `E_x[a^{τ_A}]`; and Theorem J's renewal linearisation.
+
+## Lean progress -- Theorem J, the renewal linearisation
+
+`formal/GaloisForLFunctions/HTGeometry/RenewalOccupationPotential.lean` (new, umbrella-wired,
+axiom-clean) proves Theorem J's linear reporter without a renewal decomposition.
+
+| Card item | Declaration |
+|---|---|
+| **`(11bc)`**: the discounted occupation operator `f ↦ 1_A + aPf` and its unique fixed point `g_{A,a}` | `occupationMap`, `lipschitzWith_occupationMap`, `occupationContracting`, `occupationPotential` |
+| the resolvent equation `(I-aP)g = 1_A` | `occupationPotential_fixed`, `occupationPotential_apply` |
+| `0 ≤ g_{A,a} ≤ (1-a)^{-1}` | `occupationPotential_bounds` |
+| a subsolution of a monotone contraction lies below its fixed point, a supersolution above it | `le_fixedPoint_of_le_map`, `fixedPoint_le_of_map_le` |
+| the first-entrance and occupation operators are monotone | `hittingMap_mono`, `occupationMap_mono` |
+| **`(11bd)`, upper half**: `h_A ≤ g_{A,a}` | `hittingPotential_le_occupationPotential` |
+| **`(11bd)`, lower half**: `(1-a) g_{A,a} ≤ h_A` | `one_sub_mul_occupationPotential_le_hittingPotential` |
+| **`(11bi)`, lower half**: `(a/M)^s ≤ g_{A,a}(x)` at a state reachable within `s` steps | `le_occupationPotential_of_reach` |
+| **`(11bi)`, upper half**: `g_{A,a}(x) ≤ a^{k+1}/(1-a)` when no successful word is shorter than `k` | `occupationPotential_le_pow_div` |
+| **`(11bf)`/`(11bh)`**: the reporter `Z_a(ν,A) = ∑_x ν(x) g_{A,a}(x)` sandwiches `∫ h_A dν` | `reporter_sandwich` |
+| **`(11bj)`**: `ν{C_ε ≤ s} ≤ (M/a)^s Z_a(ν,A_ε)` | `measure_reachable_le_reporter` |
+| **`(11bk)`**: equivalently `p (a/M)^s ≤ Z_a(ν,A_ε)` | `reporter_ge_of_measure` |
+| **`(11bl)`, eigenvector form**: `⟨1_A,φ⟩ = (1-aλ)⟨g_{A,a},φ⟩` for a self-adjoint chain | `sum_weighted_occupationPotential_eigen` |
+| **`(11bl)`, total mass**: `π(A) = (1-a)∫ g_{A,a} dπ` at a stationary law | `sum_stationary_occupationPotential` |
+
+The card derives `(11bd)` from the renewal identity `(11be)`, which needs a path measure and the
+strong Markov property.  The formalisation replaces that step by a comparison principle: a monotone
+contraction lies above each of its subsolutions and below each of its supersolutions, and the two
+comparisons `hittingMap g ≤ g` and `(1-a)g ≤ hittingMap ((1-a)g)` are one-line consequences of the
+resolvent equation and the ceiling `g ≤ (1-a)^{-1}`.  So the whole linear reporter -- `(11bc)`,
+`(11bd)`, `(11bf)`, `(11bh)`--`(11bl)` -- is unconditional in the finite-chain model, and `(11be)`
+is not used anywhere.
+
+`(11bi)` needs no new induction either: the two halves are the corresponding first-entrance bounds
+`le_hittingPotential_of_path` and `hittingPotential_le_pow` transported through the sandwich, which
+is exactly the card's "at the cost of one factor `1-a`".
+
+### What remains
+
+Corollary A.3's identification of the sector with a left-translation-invariant subspace of
+`L²(U(D))`; the identification of the fixed point with the path-space expectation `E_x[a^{τ_A}]`
+(`(11be)`, now unused); and Theorems D--K, which quantify the observer-excised union over this
+layer.

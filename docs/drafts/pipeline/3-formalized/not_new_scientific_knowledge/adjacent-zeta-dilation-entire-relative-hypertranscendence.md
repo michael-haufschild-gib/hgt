@@ -1,7 +1,7 @@
 # Adjacent zeta-dilation entire relative hypertranscendence
 
 - **ID:** `adjacent-zeta-dilation-entire-relative-hypertranscendence`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / `[BRIDGE]`
 - **Scientific status:** `[PAPER-PROVED] [CORPUS-NEW APPLICATION] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 - **Parents:** the publication-ready Omega-leading-echelon criterion; zeta--shell differential
@@ -211,8 +211,62 @@ rank-one conormal map cannot supply this law.
 - [x] entireness and inherited strict-right zero-freeness
 - [x] hostile significance downgrade
 - [ ] external specialist priority review, unnecessary unless theorem is used in a larger result
-- [ ] Lean formalization, deliberately deferred because the standalone theorem is a bridge
+- [x] Lean formalization complete (2026-08-18); see below
 
 ## Log
 
 - 2026-07-28 — proved the scalar entire relative-HT gate and downgraded it after hostile audit.
+
+## Formalization (2026-08-18)
+
+Two modules, both unconditional and axiom-clean (`#print axioms` reports only `propext`,
+`Classical.choice`, `Quot.sound`), wired into `GaloisForLFunctions.RHTower`.
+
+`formal/GaloisForLFunctions/RHTower/AdjacentDilationDifferentialFreeness.lean`
+(namespace `RHTower.AdjacentDilation`):
+
+| Card step | Lean name |
+|---|---|
+| the coefficient source `(1)` | `adjacentDilationCoeff` |
+| **Lemma 1**, grade bound | `adjacentDilationCoeff_cardFactors_lower` |
+| **Lemma 1**, equality case | `adjacentDilationCoeff_eq_prime_pow_of_cardFactors_eq`, `adjacentDilationCoeff_prime_pow` |
+| **Lemma 2**, `(3)` lower-layer vanishing | `primeDeriv_rotatedAdjacentJet_eq_zero_of_cardFactors_lt` |
+| **Lemma 2**, `(4)` leading point mass | `primeDeriv_rotatedAdjacentJet_eq_pointMass_of_cardFactors_eq` |
+| the unified zeta/adjacent family | `zetaAdjacentArithmetic` |
+| **Theorem 1**, jet rectangle | `zetaAdjacentJets_algebraicIndependent` |
+| **Theorem 1**, formal Dirichlet algebra | `zetaAdjacentArithmetic_differentialIndependent` |
+| **Theorem 1**, actual meromorphic carriers | `zetaAdjacentUpperEndCarrier_differentialIndependent`, `..._of_injective` |
+| **Theorem 1** for the card's family `{zeta} ∪ {C_m : m ≥ 2}` | `zetaAdjacentDilationUpperEnd_differentialIndependent` |
+
+`formal/GaloisForLFunctions/RHTower/AdjacentDilationZetaBase.lean` (same namespace):
+
+| Card step | Lean name |
+|---|---|
+| the base `K_zeta = C(s)<zeta>` | `zetaAdjoinField` |
+| **Corollary 2** | `adjacentDilationUpperEndCarrier_differentialIndependent_over_zeta` |
+| **Theorem 3**, coordinatewise nonzero base gauge | `adjacentDilationGauge_differentialIndependent_over_zeta` |
+| `(2)` the Dirichlet transform `C_m(s) = zeta(ms) - zeta((m+1)s)` | `lseries_adjacentDilationCoeff` (with `lseries_perfectPowerArith`) |
+| `(5)` the pole-cancelled entire representative and its entireness | `adjacentDilationEntire`, `differentiable_adjacentDilationEntire` |
+| the product formula away from the two cancelled poles | `adjacentDilationEntire_eq_product` |
+
+Three notes on the formal route.
+
+* Theorem 1 is an instance of the corpus's Ω-leading-echelon criterion
+  `RHTower.omegaLeadingJets_algebraicIndependent`: assigning level `m` to `c_m` and level one to
+  the zeta stream, Lemma 2 is exactly the criterion's lower-layer and leading-point-mass
+  hypotheses.  No new independence mechanism is introduced, which is what the card's hostile audit
+  already recorded.
+* Corollary 2 is the corpus's `differentialIndependent_sum_right_over_left_differentialAdjoin`, and
+  Theorem 3 is `differentialIndependent_mulBase_iff`; the card's triangular-jet argument is exactly
+  that lemma's proof, so it is cited rather than repeated.
+* Entireness is proved from `riemannZeta w = (w-1)⁻¹ + riemannZeta₀ w` with `riemannZeta₀` entire:
+  `A_m` is exhibited directly in the manifestly entire form
+  `((m+1)s-1)(1 + (ms-1) zeta₀(ms)) - (ms-1)(1 + ((m+1)s-1) zeta₀((m+1)s))`, and
+  `adjacentDilationEntire_eq_product` identifies it with the displayed product wherever both
+  factors are nonzero.
+
+Equation `(6)`, the strict-right zero-freeness for `m ≥ 12`, is **not** proved on this card — the
+card states it as inherited from the parent high-exponent adjacent-dilation zero-freeness result
+("Existing corpus zero-freeness additionally gives"), and the corresponding Lean provider is not
+present in the tree.  It is therefore recorded here as a citation, not as a formalized claim of
+this card, exactly as the paper card presents it.

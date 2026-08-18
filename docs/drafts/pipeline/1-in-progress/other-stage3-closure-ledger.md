@@ -4621,3 +4621,197 @@ solution, the projection onto the coefficient hull, and the *relative* rank boun
 (`not_injOn_unitCube`, `card_le_of_hull_charts`); what is missing is the relative form of the cube
 argument — a family of characters of the joint hull, independent modulo the coefficient hull's
 characters, produces a cube inside the kernel.
+
+## Pass 94 — the relative frequency-rank law (§4 of the implicit almost-periodic card)
+
+The card's §4 replaces Pontryagin's exact sequence `0 → dual(A) → dual(X) → dual(K) → 0` and the
+identity `dim K = rank dual(K)`.  Neither is needed: the *relative* rank bound follows from the same
+cube argument as the absolute one, with the parameter subgroup arranged to land in the fibre.
+
+```text
+HTGeometry/RelativeFrequencyDual.lean
+    exists_rat_linear_dual_general    an independent family of a ℚ-vector space extends to real
+                                      coordinates
+    exists_rat_linear_dual_rel        real coordinates killing a prescribed rational subspace
+    exists_nsmul_mem_of_mem_span_rat  an element of the rational span of a subgroup has an integral
+                                      multiple inside the subgroup
+    linearIndependent_mkQ_of_int      hence ℤ-independence modulo a subgroup is ℚ-independence
+                                      modulo its rational span
+HTGeometry/RelativeHullChartRank.lean
+    exists_continuous_hullParameter_of_dual
+        the parameter subgroup attached to any ℚ-linear coordinate package, with its characters
+        computed: bohrHullChar f γ (φ t) = exp(i ⟨v γ, t⟩)
+    bohrHullKernel f W                the fibre: the points where every character from W is trivial
+    exists_continuous_hullParameter_rel
+        the relative parameter subgroup lies in the fibre
+    card_le_of_hull_charts_rel        charts injective *only on the fibre* bound an independent
+                                      packet modulo the subgroup
+    card_le_of_int_independent_mod
+    rank_quotient_bohrHullFrequencies_le_of_charts_rel
+        rank_ℤ (Γ(f) ⧸ Γa) ≤ k
+```
+
+All unconditional and axiom-clean.  The mechanism: choose the `ℚ`-linear functional package to kill
+the rational span of `Γa`; then every character of the parameter subgroup is trivial on `Γa`, so the
+cube it sweeps out lies in the fibre — which is exactly the kernel of the projection onto the
+coefficient carrier.  No bound on `Γa` itself enters, which is the card's attack #1 (an infinite
+dimensional coefficient carrier is harmless).
+
+### What the implicit card still needs
+
+1. **A vector-valued carrier.**  The card's joint hull is the hull of the pair `(a, f)`, i.e. of an
+   `ℝ →ᵇ (Fin m → ℂ)`.  The corpus's `BohrHull` and `BohrLine` are already general in the codomain,
+   but `IsBohrHullFrequency`, `bohrHullChar`, `bohrHullFrequencies` and the four modules around them
+   (`BohrHullCharacter`, `BohrHullFrequency`, `BohrHullSeparation`, `BohrHullCharRealization`,
+   `BohrHullKroneckerHom`, `BohrHullDual`) are stated for `ℝ →ᵇ ℂ`.  None of their proofs uses the
+   codomain's complex structure — only `bohrCoefficient` does — so the layer generalizes; 73 modules
+   use those names, so the generalization must be done as new general declarations rather than an
+   in-place edit.
+2. **The nonautonomous implicit-function step.**  `StripJetSeparation.eqOn_of_line_jet_eq_implicit_local`
+   is stated for a relation `P : (Fin (n+1) → ℂ) → ℂ` with no `z`; the relative card needs
+   `P : ℂ × (Fin (n+1) → ℂ) → ℂ`, two solutions in the *same* fibre sharing the same coefficient.
+3. The assembly, which is then the same shape as the autonomous card's.
+
+## Pass 95 — the Bohr carrier layer is now valued in an arbitrary normed group
+
+The implicit almost-periodic card needs the *joint* hull of the coefficient tuple and the solution,
+i.e. the carrier of an `ℝ →ᵇ (Fin m → ℂ)`.  `BohrLine`, `BohrHull`, `bohrIota`, `bohrEval` and
+`compactSpace_bohrHull` were already general; the character/frequency/duality layer was stated for
+`ℝ →ᵇ ℂ` only.  None of its proofs uses the complex structure of the codomain — only the
+`bohrCoefficient` bridge does — so the layer has been generalized in place:
+
+```text
+BohrHullCharacter        IsBohrHullFrequency, bohrHullChar, continuous_bohrHullChar,
+                         bohrHullChar_add, bohrHullChar_zero, norm_bohrHullChar
+                         (the two bohrCoefficient theorems keep ℂ, in their own section)
+BohrHullPullback         dist_bohrIota, dist_add_bohrIota, norm_bohrEval_le, dist_bohrEval_le,
+                         bohrHullBC, isBohrAlmostPeriodic_comp_bohrIota
+BohrHullFrequency        isBohrHullFrequency_zero/neg/add, bohrHullFrequencies,
+                         isBohrHullFrequency_of_uniformContinuous_compare, observableBC,
+                         bohrSpectrum_observable_subset_bohrHullFrequencies
+                         (bohrSpectrum_subset_bohrHullFrequencies keeps ℂ)
+BohrHullCharCombination, BohrHullTorusQuotient, BohrHullKroneckerHom, BohrHullDual,
+BohrHullSeparation, BohrHullCharRealization, BohrHullParameterSubgroup,
+HullChartFrequencyRank, RelativeHullChartRank
+```
+
+`lake build GaloisForLFunctions.HTGeometry` succeeds after the change, so all 73 modules that use
+`bohrHullChar` / `IsBohrHullFrequency` / `bohrHullFrequencies` are unaffected — the generalization is
+source-compatible, the codomain being inferred from `f`.
+
+In `HullChartFrequencyRank` and `RelativeHullChartRank` the codomain variable is `V`, not `E`,
+because `E` is already the name of the chart family there.
+
+### The implicit card's remaining obligation
+
+Only the *nonautonomous* analytic layer is left:
+
+```text
+ODEJetSeparation      eq_of_jetVec_eq_at is stated for an autonomous field Φ : (Fin n → ℂ) → ℂ;
+                      the relative card needs Φ : ℝ → (Fin n → ℂ) → ℂ, uniformly Lipschitz in the
+                      jet, continuous in the time — mathlib's ODE uniqueness supports it
+StripJetSeparation    the same for eqOn_of_line_jet_eq and eqOn_of_line_jet_eq_implicit_local
+ImplicitLipschitzGraph  exists_lipschitz_implicit with a z-dependent relation
+```
+
+and then the assembly: the joint hull of `(a, f)`, the fibre `bohrHullKernel` over the coefficient
+subgroup, and the charts of the fibre, fed to `rank_quotient_bohrHullFrequencies_le_of_charts_rel`.
+
+## Pass 96 — the nonautonomous jet-separation layer
+
+The implicit card's `(16)` solves a relation whose coefficients move with the point of the strip.  The
+tree's separation layer was autonomous; it is now available with a time-dependent right-hand side,
+unconditionally and axiom-clean:
+
+```text
+HTGeometry/ODEJetSeparationTimeDep.lean
+    hasDerivAt_jetVec_timeDep
+    jetVec_eq_of_eq_at_timeDep, eq_of_jetVec_eq_at_timeDep
+    eventuallyEq_of_jetVec_eq_at_timeDep
+HTGeometry/ImplicitLipschitzConst.lean
+    implicitLipschitzConst n L C  = 2·((C + ∑_(k≠n) ‖∂_k L‖)·n / (‖∂_n L‖ − C))
+    exists_lipschitz_implicit_const
+        the implicit branch with its Lipschitz constant *named* — the constant depends only on the
+        dominance datum, not on the relation, which is what makes a moving family of relations share
+        one constant
+HTGeometry/StripJetSeparationTimeDep.lean
+    eqOn_of_line_jet_eq_timeDep
+    eqOn_of_line_jet_eq_implicit_timeDep
+        g, h holomorphic on the strip, both solving P t = 0 along the line inside one convex region
+        on which one fixed functional dominates in the top jet, with equal jets of orders 0 … n−1 at
+        one time  ⟹  EqOn g h on the strip
+```
+
+The point that makes this free: mathlib's `ODE_solution_unique_univ` is already stated for a
+*nonautonomous* field `v : ℝ → E → E` and asks only for a Lipschitz bound at each time — no
+regularity in the time whatsoever.  The corpus's autonomous version was using it with `fun _ => v`.
+
+### What is left on the implicit card
+
+The joint carrier and its fibre.  The relation is autonomous in the *composite* jet
+`(a(z), f(z), f'(z), …, f^(n)(z))`, so the object to carry is the vector-valued
+`F = (a_1, …, a_N, f)`, and `StripSolutionPhaseRank.exists_carrier_representatives` has to be
+available for a vector-valued `F`.  On the fibre `bohrHullKernel p (span ℚ Γ(a))` the coefficient
+component of every representative is `a` itself, so all the solutions there satisfy one and the same
+nonautonomous relation `P_a` — which is exactly the hypothesis
+`eqOn_of_line_jet_eq_implicit_timeDep` consumes.
+
+## Pass 97 — the strip carrier layer is now valued in a complex Banach space
+
+The implicit card's joint carrier is the hull of the *pair* `(a, f)`.  The relation is autonomous in
+the composite jet `(a(z), f(z), …, f^(n)(z))`, so the object to carry is a `ℂ^(N+1)`-valued
+holomorphic strip almost-periodic function.  The whole strip carrier construction has been
+generalized in place from `ℂ → ℂ` to `ℂ → E`, `E` a complex Banach space:
+
+```text
+VerticalAlmostPeriodicDerivative   IsStripAlmostPeriodicOn, IsStripAlmostPeriodic,
+                                   norm_deriv_sub_deriv_le_of_ball, isStripAlmostPeriodicOn_deriv,
+                                   isStripAlmostPeriodic_deriv/_iteratedDeriv,
+                                   isBohrAlmostPeriodic_line, continuous_line_restriction,
+                                   exists_return_sequence_jets
+StripAlmostPeriodicBounds          exists_bound_of_isStripAlmostPeriodicOn, exists_deriv_bound,
+                                   exists_lipschitzOnWith_closedStrip, norm_translate_sub_le
+StripThreeLinesTransfer            norm_sub_le_of_line_bound, exists_delta_strip_of_line
+                                   (mathlib's Hadamard three-lines is already Banach-valued)
+StripTranslateCurve                exists_strip_curve
+LineJetTransfer                    differentiableOn_iteratedDeriv_verticalStrip,
+                                   eqOn_of_eqOn_line, eqOn_of_eventuallyEq_line
+                                   (the `I^k` twist lemmas stay scalar — they multiply by `I`)
+JetSampleAtlas                     iteratedDeriv_sub_eqOn, norm_iteratedDeriv_sub_le
+StripHullHolomorphic               differentiableOn_of_tendstoUniformlyOn,
+                                   exists_translate_seq_of_hull, exists_holomorphic_of_hull
+StripRelationPropagation           relation_of_tendstoLocallyUniformlyOn,
+                                   relation_of_translate_limit, exists_solution_of_hull
+LineStripCarrier                   dist_line_le_dist_strip, dist_strip_lt_of_dist_line_lt,
+                                   exists_injective_line_to_strip
+CarrierRepresentative              bohrEval_strip_line, exists_holomorphic_rep,
+                                   norm_jet_sub_le_dist, continuous_jet_of_representatives
+StripSolutionPhaseRank             exists_carrier_representatives
+```
+
+The separation theorems (`carrier_eq_of_jet_eq`, `rank_le_of_strip_solution`,
+`rank_le_of_strip_jetAtlas`) stay scalar: they run a scalar ODE.  That is the right split — on the
+fibre of the coefficient projection it is the *scalar* component that has to be separated, by the
+nonautonomous implicit theorem of pass 96.
+
+## Pass 98 — the fibre of the coefficient projection, and the relative assembly
+
+```text
+HTGeometry/HullComparisonMorphism.lean
+    hullMap f g                       the comparison morphism of carriers attached to a uniformly
+                                      continuous comparison of translation distances
+    hullMap_bohrIota, hullMap_add, hullMap_zero, continuous_hullMap
+    bohrHullChar_hullMap              characters pull back along it
+    bohrEval_hullMap                  the evaluation commutes with it
+    hullMap_eq_zero_of_char_eq_one    a point killed by every character of the target is in the
+                                      kernel
+HTGeometry/LinearJet.lean
+    iteratedDeriv_clm_comp_eqOn       jets commute with a continuous linear map, hence the jets of a
+                                      component are the components of the jets
+HTGeometry/CarrierRepresentativeRel.lean
+    carrier_eq_of_jet_eq_rel, carrier_eq_of_jet_eq_local_rel
+HTGeometry/ImplicitRelativeFrequency.lean
+    uniformContinuous_bohrLine_fst
+    eqOn_rep_fst_of_mem_bohrHullKernel   on the fibre the coefficients return
+    rank_quotient_le_of_regular_jets_rel rank_ℤ (Γ(p) ⧸ Γ(q)) ≤ 2n
+```

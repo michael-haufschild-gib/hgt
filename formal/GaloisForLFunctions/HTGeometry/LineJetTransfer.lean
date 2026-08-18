@@ -17,6 +17,7 @@ open Filter Topology Metric Set
 
 namespace GaloisForLFunctions
 
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
 variable {σ R : ℝ}
 
 theorem mem_verticalStrip_line (hR : 0 < R) (σ t : ℝ) :
@@ -27,7 +28,7 @@ theorem mem_verticalStrip_line (hR : 0 < R) (σ t : ℝ) :
   simpa using hR
 
 /-- Holomorphy on the strip passes to every iterated derivative. -/
-theorem differentiableOn_iteratedDeriv_verticalStrip {g : ℂ → ℂ}
+theorem differentiableOn_iteratedDeriv_verticalStrip {g : ℂ → E}
     (hg : DifferentiableOn ℂ g (verticalStrip σ R)) :
     ∀ k : ℕ, DifferentiableOn ℂ (iteratedDeriv k g) (verticalStrip σ R) := by
   intro k
@@ -93,7 +94,7 @@ theorem convex_verticalStrip (σ R : ℝ) : Convex ℝ (verticalStrip σ R) := b
 
 /-- **Identity theorem on a strip.**  Two holomorphic functions agreeing on the central line agree
 on the whole strip. -/
-theorem eqOn_of_eqOn_line {g h : ℂ → ℂ} (hR : 0 < R)
+theorem eqOn_of_eqOn_line {g h : ℂ → E} (hR : 0 < R)
     (hg : DifferentiableOn ℂ g (verticalStrip σ R)) (hh : DifferentiableOn ℂ h (verticalStrip σ R))
     (hline : ∀ t : ℝ, g ((σ : ℂ) + (t : ℂ) * Complex.I) = h ((σ : ℂ) + (t : ℂ) * Complex.I)) :
     Set.EqOn g h (verticalStrip σ R) := by
@@ -130,7 +131,7 @@ theorem eqOn_of_eqOn_line {g h : ℂ → ℂ} (hR : 0 < R)
 section LocalIdentity
 
 /-- Identity theorem from agreement near one point of the central line. -/
-theorem eqOn_of_eventuallyEq_line {g h : ℂ → ℂ} (hR : 0 < R) {t₀ : ℝ}
+theorem eqOn_of_eventuallyEq_line {g h : ℂ → E} (hR : 0 < R) {t₀ : ℝ}
     (hg : DifferentiableOn ℂ g (verticalStrip σ R)) (hh : DifferentiableOn ℂ h (verticalStrip σ R))
     (hline : (fun t : ℝ => g ((σ : ℂ) + (t : ℂ) * Complex.I))
       =ᶠ[nhds t₀] fun t : ℝ => h ((σ : ℂ) + (t : ℂ) * Complex.I)) :

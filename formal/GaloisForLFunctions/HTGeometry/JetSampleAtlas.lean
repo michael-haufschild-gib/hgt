@@ -22,10 +22,11 @@ open scoped BoundedContinuousFunction
 
 namespace GaloisForLFunctions
 
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
 variable {σ R r ρ : ℝ}
 
 /-- Iterated derivatives of a difference, on an open strip. -/
-theorem iteratedDeriv_sub_eqOn {g h : ℂ → ℂ}
+theorem iteratedDeriv_sub_eqOn {g h : ℂ → E}
     (hg : DifferentiableOn ℂ g (verticalStrip σ R)) (hh : DifferentiableOn ℂ h (verticalStrip σ R)) :
     ∀ k : ℕ, Set.EqOn (iteratedDeriv k (fun w => g w - h w))
       (fun z => iteratedDeriv k g z - iteratedDeriv k h z) (verticalStrip σ R) := by
@@ -57,14 +58,14 @@ theorem iteratedDeriv_sub_eqOn {g h : ℂ → ℂ}
 /-- **The jet map is Lipschitz for the substrip sup-distance.**  Cauchy's estimate for derivatives
 bounds every jet coordinate difference of two holomorphic functions by their uniform distance on a
 slightly wider substrip. -/
-theorem norm_iteratedDeriv_sub_le {g h : ℂ → ℂ} {ε : ℝ} (hρ : 0 < ρ)
+theorem norm_iteratedDeriv_sub_le {g h : ℂ → E} {ε : ℝ} (hρ : 0 < ρ)
     (hr : r + ρ < R)
     (hg : DifferentiableOn ℂ g (verticalStrip σ R)) (hh : DifferentiableOn ℂ h (verticalStrip σ R))
     (hbound : ∀ z ∈ closedStrip σ (r + ρ), ‖g z - h z‖ ≤ ε) (k : ℕ) :
     ∀ z ∈ closedStrip σ r, ‖iteratedDeriv k g z - iteratedDeriv k h z‖
       ≤ (k.factorial : ℝ) * ε / ρ ^ k := by
   intro z hz
-  set G : ℂ → ℂ := fun w => g w - h w with hG
+  set G : ℂ → E := fun w => g w - h w with hG
   have hGdiff : DifferentiableOn ℂ G (verticalStrip σ R) := hg.sub hh
   have hballsub : closedBall z ρ ⊆ closedStrip σ (r + ρ) := by
     intro w hw

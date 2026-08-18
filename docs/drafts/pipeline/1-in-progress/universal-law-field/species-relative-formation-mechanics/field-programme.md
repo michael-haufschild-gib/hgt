@@ -175,22 +175,83 @@ gate may therefore be stated more intrinsically:
 This target contains the modular-bound route as one sufficient implementation but does not assume
 boundedness is the missing universal idea.
 
+ULF-SRFM-6 adds a different mechanism which survives the exact alternating-history no-go.  One
+functional-equation shift transports the two alternating phases for every parameter, and the
+two-slot orbit average is automatically permutation-invariant.  At three slots, however, descent
+from ordered slots to indistinguishable formation slots has exact defect
+`(p(E)-q(E))^2/2`.  More sharply, the same square is already the difference between adjacent-slot
+coincidence and coincidence after deleting one intermediate slot.  Thus commutation of phase
+averaging with one native thinning operation suffices; full exchangeability is not required.  The
+complete finite-reporter defect is nonnegative, reflection-invariant, and additive under
+independent formation depth; uniformly bounded global work is equivalent to equality of the
+reflected laws.  This closes the formation/properness implication in Lean without using a zero, but
+not its source premise.  Gate VI can now be attacked by proving either oriented germ annihilation
+or phase-averaging/thinning commutation from one literal source law; neither may be declared by the
+observer.
+
+The load-bearing identity is coordinate-free:
+
+`(p⊗p + q⊗q) - (p⊗q + q⊗p) = (p-q)⊗(p-q)`.
+
+It identifies the formation/thinning interchange defect as a rank-one tensor square.  Functional
+equation negates `p-q` but fixes the square; positive reporters evaluate it as squared response;
+jointly separating reporters reconstruct equality.  This is the first exact law in the programme
+which makes phase quotient, positivity, restriction, and reconstruction consequences of one
+formation factorization.
+
+### First mechanism kernel: polarized formation interchange
+
+The preceding theorem exposes a candidate set of field laws.  These are operations and
+interchanges, not a request for one universal object.
+
+1. **Polarization law.** A source involution produces a reflected pair `(p,q)` and an odd difference
+   `d=p-q`.
+2. **Formation law.** Repetition creates tensor words in the polarized states.
+3. **Restriction law.** Deletion/thinning changes which polarization occupies a retained slot.
+4. **Interchange law.** Difference between `same-polarization` and `alternating-polarization`
+   formation is exactly `d⊗d`.
+5. **Even-quotient law.** Reflection sends `d` to `-d` and therefore fixes `d⊗d`; positive/Gram
+   observers see an even square and lose coorientation by construction.
+6. **Recovery law.** Common recovery transports the tensor law naturally; a separating split
+   recovery reconstructs `d` up to the declared reflection, while a nonseparating recovery records
+   its exact lost quotient.
+7. **Properness law.** Independent formation depth adds the positive reporter work; bounded complete
+   work forces `d=0`.
+
+This suggests a higher, speculative extension.  For a source action with more than two phases or a
+nonlinear formation operation, replace `d⊗d` by its higher polarization/cross-effect tensors.
+Vanishing of every proper-face cross-effect with survival of an `n`-fold mixed tensor is the natural
+carrier of the corpus's irreducible interaction and hypertranscendental rank towers.  Unbounded HT
+complexity should mean that no finite cross-effect order exhausts the source formation law, not
+that one chosen observer space is noncompact.  Recurrence is then compactness of the phase-orbit
+quotient, while open lifted history is growth of the unsymmetrized tensor word.  This is a concrete
+research conjecture, not part of ULF-SRFM-6's proved theorem.
+
+Under this interpretation, many corpus no-gos have one common grammar: averaging, normalization,
+completion, or recovery is applied before the relevant formation/restriction interchange, so the
+odd direction is erased before its even cross-effect is generated.  The field invariant is the
+typed interchange defect and its formation-depth law—not a universal scalar and not necessarily a
+geometric curvature.
+
 ## 7. Immediate next theorem
 
-The next load-bearing result is no longer another properness theorem or another generic
-likelihood-bound criterion:
+The next load-bearing result is a source formation theorem, not another abstract properness lemma:
 
-> Construct the literal pre-zero source comparison on the reflected packet's oriented cofinal
-> transfer germ and prove that its global formation law forces the two directed germs to agree.
+> Construct the literal pre-zero functional-equation packet formation and prove that phase averaging
+> commutes with deletion/thinning of one unobserved formation slot; then derive bounded or conserved
+> complete thinning/permutation work from the same source composition law.
 
-ULF-FTGM-1 proves that the full directed germ is source-faithful and that functional equation
-exchanges its two components.  Equality of those components at every cofinal scale forces the
-neutral rate pair, but no present theorem makes that equality source-normal before Xi
-specialization.  ULF-SRFM-4 and ULF-SRFM-5 remain valid sufficient properness/modular
-implementations.  Required hostile tests include correlated histories, mass escape, label
-permutation, completion tails, and nonneutral functional-equation orbits. Earlier hard-core
-uniqueness remains open as a parallel Gate-II problem, but it no longer blocks Gate VI in the
-constructed fusion chamber.
+ULF-SRFM-6 proves that these two statements force equality of every separating reflected reporter.
+ULF-FTGM-1 supplies an independent cross-check: equality must also annihilate the oriented cofinal
+transfer germ.  A valid source theorem should therefore make the exchangeability defect and the
+oriented germ vanish together, or prove a conservation identity coupling them.  This is the next
+field-level fusion target.  It is stronger than choosing a modular bound and more specific than
+asking vaguely for source-native cancellation.
+
+Required hostile tests include chronological rather than indistinguishable slots, de Finetti
+mixtures, correlated histories, mass escape, label permutation, completion tails, and nonneutral
+functional-equation orbits.  Earlier hard-core uniqueness remains open as a parallel Gate-II
+problem, but it no longer blocks Gate VI in the constructed fusion chamber.
 
 ## 8. Why this may explain route stagnation
 
@@ -213,4 +274,9 @@ What is not yet constructed is a single source-normalized comparison doctrine sp
 
 ## 10. Formalization gate
 
-Only Stage-2 cards under `docs/drafts/pipeline/2-fully-proven/universal-law-field` are eligible for this programme's Lean work. ULF-SRFM-1 has no Lean implementation yet. Formalization must begin with the finite characterization and marking-isometry theorems; infinite-product singularity is a separate measure-theoretic module. No Stage-3 card may be created before unconditional, axiom-audited Lean closure and umbrella wiring.
+Only Stage-2 cards under `docs/drafts/pipeline/2-fully-proven/universal-law-field` are eligible for
+this programme's Lean work.  ULF-SRFM-6 is formalized and axiom-audited in
+`ConstitutiveExchangeableFormationSelection`; its umbrella import is wired without an umbrella
+build.  Remaining paper-only SRFM cards require the same scratch, leaf, targeted-build, and axiom
+discipline.  Infinite-product singularity is a separate measure-theoretic module.  No Stage-3 card
+may be created before unconditional, axiom-audited Lean closure and umbrella wiring.

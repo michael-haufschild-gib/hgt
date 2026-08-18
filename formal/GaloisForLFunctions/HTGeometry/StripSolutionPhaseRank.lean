@@ -20,7 +20,8 @@ open scoped BoundedContinuousFunction
 
 namespace GaloisForLFunctions
 
-variable {F : ℂ → ℂ} {σ R r ρ : ℝ} {n : ℕ}
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+variable {F : ℂ → E} {σ R r ρ : ℝ} {n : ℕ}
 
 /-- **The carrier of a strip almost periodic solution carries holomorphic representatives.**  The
 vertical translates form a bounded almost periodic curve in the sup-norm space of the substrip, the
@@ -28,12 +29,12 @@ line carrier embeds in the strip carrier, and each carrier point has a holomorph
 that agrees with the carrier evaluation and solves the same relation. -/
 theorem exists_carrier_representatives (hr : 0 < r) (hρ : 0 < ρ) (hrρ : r + ρ < R)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R)) (hap : IsStripAlmostPeriodic F σ R)
-    {f : ℝ →ᵇ ℂ} (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
+    {f : ℝ →ᵇ E} (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
     (hfu : UniformContinuous (fun x => f x))
-    {m : ℕ} {P : (Fin m → ℂ) → ℂ} (hPcont : Continuous P)
+    {m : ℕ} {P : (Fin m → E) → ℂ} (hPcont : Continuous P)
     (hrel : ∀ z ∈ verticalStrip σ R, P (fun k : Fin m => iteratedDeriv (k : ℕ) F z) = 0) :
-    ∃ (Gb : ℝ →ᵇ ((closedStrip σ (r + ρ)) →ᵇ ℂ)) (ν : BohrHull f → BohrHull Gb)
-      (rep : BohrHull f → (ℂ → ℂ)), Continuous ν ∧
+    ∃ (Gb : ℝ →ᵇ ((closedStrip σ (r + ρ)) →ᵇ E)) (ν : BohrHull f → BohrHull Gb)
+      (rep : BohrHull f → (ℂ → E)), Continuous ν ∧
         (∀ x, DifferentiableOn ℂ (rep x) (verticalStrip σ (r + ρ))) ∧
         (∀ (x : BohrHull f) (z : closedStrip σ (r + ρ)), rep x (z : ℂ) = bohrEval Gb (ν x) z) ∧
         (∀ (x : BohrHull f) (t : ℝ),
@@ -62,7 +63,7 @@ theorem exists_carrier_representatives (hr : 0 < r) (hρ : 0 < ρ) (hrρ : r + �
     refine (BoundedContinuousFunction.norm_le hMpos.le).mpr fun z => ?_
     rw [hGval t z]
     exact hbound _ (hsubstrip (mem_closedStrip_add_I σ (r + ρ) (z : ℂ) z.2 t))
-  set Gb : ℝ →ᵇ ((closedStrip σ (r + ρ)) →ᵇ ℂ) :=
+  set Gb : ℝ →ᵇ ((closedStrip σ (r + ρ)) →ᵇ E) :=
     BoundedContinuousFunction.mkOfBound ⟨G, hGcont⟩ (2 * M) (by
       intro x y
       have := dist_le_norm_add_norm (G x) (G y)
@@ -83,7 +84,7 @@ theorem exists_carrier_representatives (hr : 0 < r) (hρ : 0 < ρ) (hrρ : r + �
 /-- **The phase rank of a strip almost periodic solution of a differential relation.**  If every
 holomorphic solution of the relation on the substrip has a regular jet at one of finitely many sample
 times, the rational Bohr frequency rank of the line restriction is at most `2 |T| (n+1)`. -/
-theorem rank_le_of_strip_solution (hr : 0 < r) (hρ : 0 < ρ) (hrρ : r + ρ < R)
+theorem rank_le_of_strip_solution {F : ℂ → ℂ} (hr : 0 < r) (hρ : 0 < ρ) (hrρ : r + ρ < R)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R)) (hap : IsStripAlmostPeriodic F σ R)
     {f : ℝ →ᵇ ℂ} (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
     (hfu : UniformContinuous (fun x => f x)) (hftb : HasTotallyBoundedOrbit (fun x => f x))

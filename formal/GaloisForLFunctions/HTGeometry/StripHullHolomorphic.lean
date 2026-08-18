@@ -25,11 +25,12 @@ namespace GaloisForLFunctions
 
 open _root_.HTGeometry
 
-variable {F : ℂ → ℂ} {σ R r : ℝ}
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+variable {F : ℂ → E} {σ R r : ℝ}
 
 /-- **Uniform limits of vertical translates are holomorphic inside the substrip.** -/
 theorem differentiableOn_of_tendstoUniformlyOn (hr : r < R)
-    (hF : DifferentiableOn ℂ F (verticalStrip σ R)) {g : ℂ → ℂ} {τ : ℕ → ℝ}
+    (hF : DifferentiableOn ℂ F (verticalStrip σ R)) {g : ℂ → E} {τ : ℕ → ℝ}
     (hconv : TendstoUniformlyOn (fun n z => F (z + (τ n : ℂ) * Complex.I)) g atTop
       (closedStrip σ r)) :
     DifferentiableOn ℂ g (verticalStrip σ r) := by
@@ -51,12 +52,13 @@ theorem differentiableOn_of_tendstoUniformlyOn (hr : r < R)
   refine (hconv.mono hsub).tendstoLocallyUniformlyOn.differentiableOn ?_ (isOpen_verticalStrip σ r)
   exact Filter.Eventually.of_forall hdiff
 
+omit [NormedSpace ℂ E] in
 /-- **Every point of the strip carrier is a uniform limit of vertical translates.** -/
 theorem exists_translate_seq_of_hull
-    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ ℂ)}
+    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ E)}
     (hGb : ∀ (τ : ℝ) (z : closedStrip σ r), Gb τ z = F ((z : ℂ) + (τ : ℂ) * Complex.I))
     (x : BohrHull Gb) :
-    ∃ (g : ℂ → ℂ) (τ : ℕ → ℝ),
+    ∃ (g : ℂ → E) (τ : ℕ → ℝ),
       TendstoUniformlyOn (fun n z => F (z + (τ n : ℂ) * Complex.I)) g atTop (closedStrip σ r) ∧
         ∀ z : closedStrip σ r, g (z : ℂ) = bohrEval Gb x z := by
   classical
@@ -75,7 +77,7 @@ theorem exists_translate_seq_of_hull
     refine heval.congr fun n => ?_
     rw [hGval n]
   -- uniform convergence on the substrip
-  set g : ℂ → ℂ := fun z => if h : z ∈ closedStrip σ r then (bohrEval Gb x) ⟨z, h⟩ else 0 with hgdef
+  set g : ℂ → E := fun z => if h : z ∈ closedStrip σ r then (bohrEval Gb x) ⟨z, h⟩ else 0 with hgdef
   have hgval : ∀ z : closedStrip σ r, g (z : ℂ) = bohrEval Gb x z := by
     intro z
     rw [hgdef]
@@ -88,7 +90,7 @@ theorem exists_translate_seq_of_hull
       funext n z
       rw [hGb (τ n) z]
     rw [hrw]
-    have hgc : (g ∘ Subtype.val : closedStrip σ r → ℂ) = fun z => (bohrEval Gb x) z := by
+    have hgc : (g ∘ Subtype.val : closedStrip σ r → E) = fun z => (bohrEval Gb x) z := by
       funext z
       exact hgval z
     rw [hgc]
@@ -97,10 +99,10 @@ theorem exists_translate_seq_of_hull
 
 /-- **Every point of the strip carrier is a holomorphic function on the open substrip.** -/
 theorem exists_holomorphic_of_hull (hr : r < R) (hF : DifferentiableOn ℂ F (verticalStrip σ R))
-    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ ℂ)}
+    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ E)}
     (hGb : ∀ (τ : ℝ) (z : closedStrip σ r), Gb τ z = F ((z : ℂ) + (τ : ℂ) * Complex.I))
     (x : BohrHull Gb) :
-    ∃ g : ℂ → ℂ, DifferentiableOn ℂ g (verticalStrip σ r) ∧
+    ∃ g : ℂ → E, DifferentiableOn ℂ g (verticalStrip σ r) ∧
       ∀ z : closedStrip σ r, g (z : ℂ) = bohrEval Gb x z := by
   obtain ⟨g, τ, huniform, hgval⟩ := exists_translate_seq_of_hull hGb x
   exact ⟨g, differentiableOn_of_tendstoUniformlyOn hr hF huniform, hgval⟩

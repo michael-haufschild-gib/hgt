@@ -291,11 +291,11 @@ theorem selbergBoundingSum_roughPairSieve_ge (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 �
       Nat.primeFactors_prod fun p hp => hprime p (hu.1 hp)
     rw [← h1, ← h2]
     exact congrArg Nat.primeFactors hEq
+  set G : ℕ → ℝ := fun l =>
+    if (l : ℝ) ^ 2 ≤ z then
+      SelbergSieve.selbergTerms (roughPairSieve Y hP₁ h d hz).toBoundingSieve l else 0 with hG
   have hterm : ∀ t ∈ s.powerset.filter (fun t => t.card ≤ k),
-      (∏ p ∈ t, a p)
-        = (if (((∏ p ∈ t, p : ℕ)) : ℝ) ^ 2 ≤ z then
-            SelbergSieve.selbergTerms (roughPairSieve Y hP₁ h d hz).toBoundingSieve
-              (∏ p ∈ t, p) else 0) := by
+      (∏ p ∈ t, a p) = G (∏ p ∈ t, p) := by
     intro t ht
     rw [Finset.mem_filter, Finset.mem_powerset] at ht
     have hdvd : (∏ p ∈ t, p) ∣ rangePrimorial P₁ h := by
@@ -325,12 +325,14 @@ theorem selbergBoundingSum_roughPairSieve_ge (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 �
       calc (((∏ p ∈ t, p : ℕ)) : ℝ) ^ 2 ≤ (((h : ℝ)) ^ k) ^ 2 := hsq
         _ = ((h : ℝ)) ^ (2 * k) := by rw [← pow_mul]; ring_nf
         _ ≤ z := hlev
+    rw [hG]
+    simp only
     rw [if_pos hsize, selbergTerms_roughPairSieve Y hP₁ h d hz hdvd h0,
       Nat.primeFactors_prod fun p hp => hprime p (ht.1 hp)]
   have hkey : ∑ t ∈ s.powerset.filter (fun t => t.card ≤ k), ∏ p ∈ t, a p
       ≤ SelbergSieve.selbergBoundingSum (roughPairSieve Y hP₁ h d hz) := by
-    rw [SelbergSieve.selbergBoundingSum, Finset.sum_congr rfl hterm,
-      ← Finset.sum_image hinj]
+    show _ ≤ ∑ l ∈ (rangePrimorial P₁ h).divisors, G l
+    rw [Finset.sum_congr rfl hterm, ← Finset.sum_image hinj]
     refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
     · intro l hl
       rw [Finset.mem_image] at hl
@@ -346,6 +348,8 @@ theorem selbergBoundingSum_roughPairSieve_ge (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 �
       have hl0 : l ≠ 0 := by
         intro hc
         exact hl.2 (by rw [hc] at hl; exact zero_dvd_iff.1 hl.1)
+      rw [hG]
+      simp only
       split_ifs
       · exact selbergTerms_roughPairSieve_nonneg Y hP₁ h d hz hl.1 hl0
       · exact le_rfl

@@ -1,8 +1,8 @@
 # Baker's theorem for arbitrary algebraic logarithms, including the inhomogeneous extension
 
 - **ID:** `baker-general-logarithms-inhomogeneous-extension`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (Lean), `[LITERATURE]` / `[BRIDGE]`
+- **Stage:** 3 — formalised in Lean 4
+- **Type:** THEOREM (Lean), `[LEAN-PROVED]`
 - **Statement:** If `λ₁, …, λₙ ∈ ℂ` are `ℚ`-linearly independent and every `exp λᵢ` is algebraic, then `1, λ₁, …, λₙ` are linearly independent over `algebraicClosure ℚ ℂ`.
 
 ## Goal
@@ -625,3 +625,46 @@ the zero count is `q^{2n+J+4}/2^J` against a right-hand side of size
 `[OPEN CORE]`: the stagewise positive-budget bound `exp(C q^{2n+k+3})`, the resulting stage
 smallness, the iteration over `k ≤ J`, and the terminal contradiction against
 `repeatedFrequency_terminal_zero_inequality`.
+
+## Lean progress — the capstone is closed
+
+`RHTower/BakerGeneralProof/BakerGeneralStageSmallness.lean`, `BakerGeneralIteration.lean`,
+`BakerGeneralCapstone.lean` and `RHTower/BakerGeneralConsequences.lean` complete the proof.
+
+| Card item | Declaration |
+|---|---|
+| `stageOrder n q k ≤ q^{2n+2}`, `Σ_dir ν ≤ n q^{2n+2}` | `GeneralParameters.stageOrder_le`, `GeneralParameters.sum_nu_le` |
+| **the boundary majorant of a stage jet is `exp(C q^{2n+k+3})`** | `GeneralParameters.eventually_jetScalarBound_le_exp` |
+| **its conjugate majorant is `exp(C q^{2n+k+3})`** | `GeneralParameters.eventually_jetHouseScalarBound_le_exp` |
+| `(9)`: the Schwarz node ratio is at most `2/3` throughout the stage window | `GeneralParameters.node_ratio_le` |
+| geometric decay beats a fixed exponential | `GeneralParameters.decay_mul_exp_lt_one`, `GeneralParameters.eventually_lt_succ_pow` |
+| `(12)`: the stage decay exponent is `q^{2n+k+4}/2^{k+1}` | `GeneralParameters.decayExponent_mul` |
+| **`(9)`–`(12)`: uniform stage smallness** | `GeneralParameters.eventually_stageSmallness` |
+| **`5`: the long extrapolation, as a kernel iteration** | `GeneralParameters.polynomialAuxiliaryMatrix_kernel_iterate` |
+| `(8)`'s right-hand side, and its majorant | `GeneralParameters.terminalMajorant`, `GeneralParameters.terminalMajorant_le`, `GeneralParameters.sum_factorial_div_le` |
+| `(13)`: the terminal zero count is `q^{2n²+2n+4}/2^J` | `GeneralParameters.terminalExponent_mul` |
+| **`6`: the terminal estimate fails for every large structured parameter** | `GeneralParameters.eventually_terminalSmallness` |
+| **no solved relation exists** | `SolvedRelation.false_of_long_extrapolation` |
+| **the capstone: `BakerTheorem`** | `RHTower.bakerTheorem_holds` |
+| `7`: homogeneous independence | `RHTower.BakerTheorem.homogeneous` |
+| **`7`: every nonzero algebraic linear form in the logarithms is transcendental** | `RHTower.baker_linearForm_transcendental` |
+
+`#print axioms GaloisForLFunctions.RHTower.bakerTheorem_holds` reports exactly `propext`,
+`Classical.choice`, `Quot.sound`.  The statement is the frozen public surface: for every `n`, every
+choice of complex logarithms `λ` with `exp λᵢ` algebraic and `λ` `ℚ`-linearly independent, the
+family `1, λ₁, …, λₙ` is linearly independent over `algebraicClosure ℚ ℂ`.  No principal-branch
+restriction, no multiplicative-independence surrogate, no route premise and no imported Baker
+proposition appear anywhere in the chain.
+
+The card's `[OPEN CORE]` — the nonhomogeneous auxiliary polynomial together with a terminal zero
+estimate for exponential polynomials with distinct frequencies — is discharged by the
+contour-Hermite estimate `repeatedFrequency_terminal_zero_inequality`, whose right-hand side
+depends only on the upper frequency radius.  No frequency-gap denominator, and hence no
+`exp`-node Vandermonde, is used, so the argument is valid for chosen branches with multiplicatively
+dependent exponentials.
+
+## Gates
+
+- [x] 0 → 1 in-progress
+- [x] 1 → 2 fully-proven
+- [x] 2 → 3 formalized: exact Lean theorem, umbrella wiring, targeted checks, axiom audit, formal lint

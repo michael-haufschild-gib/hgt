@@ -16,7 +16,7 @@ open scoped BoundedContinuousFunction
 
 namespace GaloisForLFunctions
 
-variable {f : ℝ →ᵇ ℂ}
+variable {E : Type*} [NormedAddCommGroup E] {f : ℝ →ᵇ E}
 
 /-- **Every unimodular character of the frequency group is realised by a point of the hull.** -/
 theorem exists_bohrHull_char_eq (htb : HasTotallyBoundedOrbit (fun x => f x)) {ω : ℝ → ℂ}

@@ -3,7 +3,7 @@
 - **ID:** ULF-DFPM-1
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / EXACT RH EQUIVALENCE / SELECTION MECHANISM
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [UNCONDITIONAL EQUIVALENCE] [INTEGER-CHARGE CONSERVATION] [DIVISIBLE-LIFT SELECTION] [SOURCE ROOT GENESIS OPEN] [NO LEAN IN THIS PASS]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [UNCONDITIONAL EQUIVALENCE] [INTEGER-CHARGE CONSERVATION] [DIVISIBLE-LIFT SELECTION] [LEAN-FORMALIZED SELECTION CORE] [SOURCE ROOT GENESIS OPEN]
 
 ## 1. Setup
 
@@ -473,8 +473,22 @@ The corpus-level advance is their exact fusion with:
 
 ## 9. Formalization status
 
-No Lean was written or built in this research pass.  Exact shell factorization, zero-free shell
-units, ramification excess, and the source GNS parents already exist in the corpus.  A later Lean
-pass must formalize only after independent paper audit, and must not encode RH as an assumption;
-the acceptable target is the unconditional equivalence and the abstract divisor-divisibility
-lemma.
+The unconditional selection core is formalized in
+`GaloisForLFunctions.HTGeometry.ConstitutiveDivisibleFormationSelection`:
+
+1. an integer divisible by natural numbers of unbounded size is zero;
+2. for any monoid carrier and any integer charge additive under powers, roots at unbounded
+   formation depths force the carrier charge to vanish;
+3. meromorphic roots at unbounded depths force every finite pointwise meromorphic order to zero;
+4. one globally meromorphic root family annihilates the complete finite divisor.
+
+The proofs assume neither RH nor existence of a root.  Root existence is a quantified source
+premise, and the theorem proves its exact unconditional consequence.  Scratch elaboration, direct
+leaf elaboration, and targeted leaf build pass; the module is wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField` without building that umbrella.  Axiom audit
+reports only `propext`, `Classical.choice`, and `Quot.sound`; no axiom, `sorry`, or `admit` is added.
+
+The Euler-shell identification of the transfer divisor, the holomorphic-potential equivalence, and
+the source construction of effective roots remain separate.  Existing shell factorization and
+zero-free-unit modules supply much of the analytic parent infrastructure, but this card is not
+being relabelled fully formalized until those exact comparison statements are Lean-certified.

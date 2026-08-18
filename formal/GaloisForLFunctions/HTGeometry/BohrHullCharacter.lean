@@ -54,6 +54,13 @@ def toBC {E : Type*} [NormedAddCommGroup E] (f : ℝ → E) (hcont : Continuous 
 @[simp] theorem toBC_apply {E : Type*} [NormedAddCommGroup E] (f : ℝ → E) (hcont : Continuous f)
     (h : HasTotallyBoundedOrbit f) (x : ℝ) : toBC f hcont h x = f x := rfl
 
+/-- `mu` is a **frequency of the hull** of `f` when the exponential `t ↦ e^{iμt}` is uniformly
+continuous for the translation distance of `f`, hence extends to the hull. -/
+def IsBohrHullFrequency {E : Type*} [NormedAddCommGroup E] (f : ℝ →ᵇ E) (mu : ℝ) : Prop :=
+  UniformContinuous (fun t : BohrLine f => expChar mu t.val)
+
+section ComplexCoefficients
+
 variable {f : ℝ →ᵇ ℂ}
 
 /-- **The mode of `f` at a frequency is Lipschitz for the translation distance.** -/
@@ -84,11 +91,6 @@ theorem dist_expChar_mul_bohrCoefficient_le (hfa : HTGeometry.IsBohrAlmostPeriod
   rw [BohrLine.dist_eq, dist_comm]
   exact hd
 
-/-- `mu` is a **frequency of the hull** of `f` when the exponential `t ↦ e^{iμt}` is uniformly
-continuous for the translation distance of `f`, hence extends to the hull. -/
-def IsBohrHullFrequency (f : ℝ →ᵇ ℂ) (mu : ℝ) : Prop :=
-  UniformContinuous (fun t : BohrLine f => expChar mu t.val)
-
 /-- **Every frequency in the Bohr spectrum is a frequency of the hull.** -/
 theorem isBohrHullFrequency_of_bohrCoefficient_ne_zero
     (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x)) {mu : ℝ}
@@ -109,15 +111,19 @@ theorem isBohrHullFrequency_of_bohrCoefficient_ne_zero
   rw [inv_mul_eq_div, le_div_iff₀ hcpos]
   exact hkey
 
+end ComplexCoefficients
+
+variable {E : Type*} [NormedAddCommGroup E] {f : ℝ →ᵇ E}
+
 /-- The character of the Bohr hull attached to a frequency. -/
-def bohrHullChar (f : ℝ →ᵇ ℂ) (mu : ℝ) : BohrHull f → ℂ :=
+def bohrHullChar (f : ℝ →ᵇ E) (mu : ℝ) : BohrHull f → ℂ :=
   UniformSpace.Completion.extension (fun t : BohrLine f => expChar mu t.val)
 
 @[simp] theorem bohrHullChar_bohrIota {mu : ℝ} (hmu : IsBohrHullFrequency f mu) (t : ℝ) :
     bohrHullChar f mu (bohrIota f t) = expChar mu t :=
   UniformSpace.Completion.extension_coe hmu (BohrLine.of f t)
 
-theorem continuous_bohrHullChar (f : ℝ →ᵇ ℂ) (mu : ℝ) : Continuous (bohrHullChar f mu) :=
+theorem continuous_bohrHullChar (f : ℝ →ᵇ E) (mu : ℝ) : Continuous (bohrHullChar f mu) :=
   UniformSpace.Completion.continuous_extension
 
 /-- The extension is multiplicative: it is a character of the hull group. -/

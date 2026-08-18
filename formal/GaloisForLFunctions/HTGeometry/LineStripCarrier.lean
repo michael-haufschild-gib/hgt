@@ -23,16 +23,18 @@ open scoped BoundedContinuousFunction
 
 namespace GaloisForLFunctions
 
-variable {F : ℂ → ℂ} {σ R r r' M : ℝ}
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+variable {F : ℂ → E} {σ R r r' M : ℝ}
 
 theorem mem_closedStrip_center (σ r : ℝ) (hr : 0 ≤ r) : ((σ : ℂ)) ∈ closedStrip σ r := by
   show |((σ : ℂ)).re - σ| ≤ r
   simp [hr]
 
+omit [NormedSpace ℂ E] [CompleteSpace E] in
 /-- The line translation distance is dominated by the strip translation distance. -/
 theorem dist_line_le_dist_strip (hr : 0 ≤ r)
-    {f : ℝ →ᵇ ℂ} (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
-    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ ℂ)}
+    {f : ℝ →ᵇ E} (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
+    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ E)}
     (hGb : ∀ (τ : ℝ) (z : closedStrip σ r), Gb τ z = F ((z : ℂ) + (τ : ℂ) * Complex.I))
     (s t : ℝ) :
     dist (translateBC s f) (translateBC t f) ≤ dist (translateBC s Gb) (translateBC t Gb) := by
@@ -60,8 +62,8 @@ lines. -/
 theorem dist_strip_lt_of_dist_line_lt (hr0 : 0 ≤ r) (hrr' : r < r') (hr'R : r' < R)
     (hMpos : 0 < M) (hF : DifferentiableOn ℂ F (verticalStrip σ R))
     (hbound : ∀ z ∈ closedStrip σ r', ‖F z‖ ≤ M)
-    {f : ℝ →ᵇ ℂ} (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
-    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ ℂ)}
+    {f : ℝ →ᵇ E} (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
+    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ E)}
     (hGb : ∀ (τ : ℝ) (z : closedStrip σ r), Gb τ z = F ((z : ℂ) + (τ : ℂ) * Complex.I)) :
     ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ s t : ℝ,
       dist (translateBC s f) (translateBC t f) < δ →
@@ -114,8 +116,8 @@ theorem dist_strip_lt_of_dist_line_lt (hr0 : 0 ≤ r) (hrr' : r < r') (hr'R : r'
 theorem exists_injective_line_to_strip (hr0 : 0 ≤ r) (hrr' : r < r') (hr'R : r' < R)
     (hMpos : 0 < M) (hF : DifferentiableOn ℂ F (verticalStrip σ R))
     (hbound : ∀ z ∈ closedStrip σ r', ‖F z‖ ≤ M)
-    {f : ℝ →ᵇ ℂ} (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
-    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ ℂ)}
+    {f : ℝ →ᵇ E} (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
+    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ E)}
     (hGb : ∀ (τ : ℝ) (z : closedStrip σ r), Gb τ z = F ((z : ℂ) + (τ : ℂ) * Complex.I)) :
     ∃ ν : BohrHull f → BohrHull Gb, Continuous ν ∧ Function.Injective ν ∧
       ∀ t : ℝ, ν (bohrIota f t) = bohrIota Gb t := by
@@ -128,7 +130,7 @@ theorem exists_injective_line_to_strip (hr0 : 0 ≤ r) (hrr' : r < r') (hr'R : r
 
 /-- **A separating jet atlas on the strip carrier bounds the frequency rank of the line
 restriction.** -/
-theorem rank_le_of_strip_jetAtlas (hr0 : 0 ≤ r) (hrr' : r < r') (hr'R : r' < R)
+theorem rank_le_of_strip_jetAtlas {F : ℂ → ℂ} (hr0 : 0 ≤ r) (hrr' : r < r') (hr'R : r' < R)
     (hMpos : 0 < M) (hF : DifferentiableOn ℂ F (verticalStrip σ R))
     (hbound : ∀ z ∈ closedStrip σ r', ‖F z‖ ≤ M)
     {f : ℝ →ᵇ ℂ} (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))

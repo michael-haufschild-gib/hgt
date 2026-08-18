@@ -29,19 +29,22 @@ open HTGeometry
 
 noncomputable section
 
-variable {f : ℝ →ᵇ ℂ}
+variable {E : Type*} [NormedAddCommGroup E] [CompleteSpace E] {f : ℝ →ᵇ E}
 
-theorem dist_bohrIota (f : ℝ →ᵇ ℂ) (s t : ℝ) :
+omit [CompleteSpace E] in
+theorem dist_bohrIota (f : ℝ →ᵇ E) (s t : ℝ) :
     dist (bohrIota f s) (bohrIota f t) = dist (BohrLine.of f s) (BohrLine.of f t) :=
   UniformSpace.Completion.dist_eq _ _
 
-theorem dense_bohrIota_prod (f : ℝ →ᵇ ℂ) :
+omit [CompleteSpace E] in
+theorem dense_bohrIota_prod (f : ℝ →ᵇ E) :
     Dense (Set.range (bohrIota f) ×ˢ Set.range (bohrIota f)) := by
   have := (denseRange_bohrIota f).prodMap (denseRange_bohrIota f)
   simpa [DenseRange, Prod.map] using this
 
+omit [CompleteSpace E] in
 /-- The hull metric is invariant under translation by the image of the line. -/
-theorem dist_add_bohrIota (f : ℝ →ᵇ ℂ) (t : ℝ) (x y : BohrHull f) :
+theorem dist_add_bohrIota (f : ℝ →ᵇ E) (t : ℝ) (x y : BohrHull f) :
     dist (x + bohrIota f t) (y + bohrIota f t) = dist x y := by
   have h1 : Continuous fun p : BohrHull f × BohrHull f =>
       dist (p.1 + bohrIota f t) (p.2 + bohrIota f t) :=
@@ -58,7 +61,7 @@ theorem dist_add_bohrIota (f : ℝ →ᵇ ℂ) (t : ℝ) (x y : BohrHull f) :
     exact BohrLine.dist_add_right (BohrLine.of f s) (BohrLine.of f r) (BohrLine.of f t)
   exact congrFun (Continuous.ext_on (dense_bohrIota_prod f) h1 h2 heq) (x, y)
 
-theorem norm_bohrEval_le (f : ℝ →ᵇ ℂ) (x : BohrHull f) : ‖bohrEval f x‖ ≤ ‖f‖ := by
+theorem norm_bohrEval_le (f : ℝ →ᵇ E) (x : BohrHull f) : ‖bohrEval f x‖ ≤ ‖f‖ := by
   have hcl : IsClosed {z : BohrHull f | ‖bohrEval f z‖ ≤ ‖f‖} :=
     isClosed_le (continuous_bohrEval f).norm continuous_const
   have hsub : Set.range (bohrIota f) ⊆ {z : BohrHull f | ‖bohrEval f z‖ ≤ ‖f‖} := by
@@ -69,7 +72,7 @@ theorem norm_bohrEval_le (f : ℝ →ᵇ ℂ) (x : BohrHull f) : ‖bohrEval f x
   exact this (Set.mem_univ x)
 
 /-- The evaluation of the hull is `1`-Lipschitz. -/
-theorem dist_bohrEval_le (f : ℝ →ᵇ ℂ) (x y : BohrHull f) :
+theorem dist_bohrEval_le (f : ℝ →ᵇ E) (x y : BohrHull f) :
     dist (bohrEval f x) (bohrEval f y) ≤ dist x y := by
   have h1 : Continuous fun p : BohrHull f × BohrHull f =>
       dist (bohrEval f p.1) (bohrEval f p.2) :=
@@ -92,7 +95,7 @@ theorem dist_bohrEval_le (f : ℝ →ᵇ ℂ) (x y : BohrHull f) :
 variable (hf : UniformContinuous (fun x => f x))
 
 /-- The bounded continuous function described by a hull point. -/
-def bohrHullBC (f : ℝ →ᵇ ℂ) (hf : UniformContinuous (fun x => f x)) (x : BohrHull f) : ℝ →ᵇ ℂ :=
+def bohrHullBC (f : ℝ →ᵇ E) (hf : UniformContinuous (fun x => f x)) (x : BohrHull f) : ℝ →ᵇ E :=
   ⟨⟨fun t => bohrEval f (x + bohrIota f t),
       (continuous_bohrEval f).comp (continuous_const.add (continuous_bohrIota hf))⟩, by
     refine ⟨2 * ‖f‖, fun s t => ?_⟩
@@ -149,6 +152,7 @@ theorem bohrHull_ext {x y : BohrHull f}
   rw [hbc, dist_self] at this
   exact dist_eq_zero.mp this.symm
 
+omit [CompleteSpace E] in
 /-- **Every continuous observable of the hull pulls back to an almost-periodic function.** -/
 theorem isBohrAlmostPeriodic_comp_bohrIota (htb : HasTotallyBoundedOrbit (fun x => f x))
     {F : BohrHull f → ℂ} (hF : Continuous F) :

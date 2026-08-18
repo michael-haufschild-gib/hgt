@@ -105,7 +105,7 @@ theorem isFlatOn_zero (σ₀ : ℝ) :
 
 /-- Zero is uniformly almost periodic on every closed vertical strip. -/
 theorem isStripAlmostPeriodicOn_zero (σ r : ℝ) :
-    GaloisForLFunctions.IsStripAlmostPeriodicOn (fun _ => 0) σ r := by
+    GaloisForLFunctions.IsStripAlmostPeriodicOn (fun _ : ℂ => (0 : ℂ)) σ r := by
   intro ε hε
   refine ⟨1, zero_lt_one, fun a => ⟨a, ?_, ?_⟩⟩
   · exact ⟨le_rfl, le_add_of_nonneg_right zero_le_one⟩

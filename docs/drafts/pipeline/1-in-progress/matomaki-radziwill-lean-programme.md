@@ -1771,3 +1771,552 @@ so `l² ≤ level` holds outright once `h^{2k} ≤ level`, and in the applicatio
 `∑_{j > k} e_j(a) ≤ ∑_{j>k} A^j/j! ≤ (eA/k)^k` with `A = ∑_p a_p ≍ 2 log log x`, and `k ≫ eA`, so it
 is smaller than any power.  This replaces the fundamental lemma by an elementary tail bound on
 elementary symmetric functions.
+
+### The two-dimensional bounding sum is bounded below — `Sieve/PowersetTailBound` (2026-08-18)
+
+The fundamental-lemma step is done, and by a route that is simpler than either Rankin in the size
+variable or an elementary-symmetric-function expansion.
+
+- `sum_powerset_prod_eq` : `∑_{t ⊆ s} ∏_{p ∈ t} a_p = ∏_{p ∈ s}(a_p + 1)`;
+- **`sum_powerset_card_gt_le`** : **Rankin's trick in the cardinality variable** —
+  `∑_{|t| > k} ∏_{p∈t} a_p ≤ e^{-k} ∏_p (1 + e·a_p) ≤ exp(e·∑_p a_p − k)`, because
+  `e^{|t|}∏_{p∈t}a_p = ∏_{p∈t}(e a_p)` and `e^{|t|−k} ≥ 1` on the tail;
+- **`sum_powerset_card_le_ge`** : hence `∑_{|t| ≤ k} ∏_{p∈t}a_p ≥ (1/2)∏_p(1 + a_p)` as soon as
+  `k ≥ e·∑_p a_p + log 2`.
+
+Composed with the sieve, in `Sieve/RoughPairSieve`:
+
+- `selbergTerms_roughPairSieve_nonneg`;
+- **`selbergBoundingSum_roughPairSieve_ge`** :
+
+```text
+(1/2) ∏_{p ∈ (P₁,h]} ( c_p/(p − c_p) + 1 )  ≤  selbergBoundingSum (roughPairSieve …)
+```
+
+whenever `h^{2k} ≤ level` and `k ≥ e·∑_p a_p + log 2`.  A divisor with at most `k` prime factors is
+at most `h^k`, so the sieve's size restriction `l² ≤ level` is satisfied outright — no truncation
+argument is needed at all, only the cardinality tail bound above.
+
+In the application `level ≈ x^{1/2}` and `h = exp((log x)^β)` allow `k` up to `≍ (log x)^{1−β}`,
+while `∑_p a_p ≍ 2 log log x`, so the condition on `k` is met with enormous room.
+
+**Remaining on the sieve brick:** evaluate `∏_{p ∈ (P₁,h]}(1 + c_p/(p−c_p)) ≍ (log h/log P₁)²` by
+Mertens, and bound the Selberg remainder (`Sieve.rem_sum_le_of_const` is the corpus tool).  Both are
+elementary; the sieve-theoretic content is now finished.
+
+### The Euler product reduces to the *square* of Mertens — `Sieve/PairEulerFactor` (2026-08-18)
+
+The two-dimensional Euler product does not need a two-dimensional Mertens theorem.  Its local factor
+dominates the square of the classical one:
+
+- **`pairFactor_ge`** : for every prime `p ≥ 3`,
+
+```text
+(p/(p−1))² · (if p ∣ d then (p−1)/p else 1)  ≤  1 + c_p/(p − c_p) .
+```
+
+  Off the shift this is `p/(p−2) ≥ p²/(p−1)²`, i.e. `(p−1)² ≥ p(p−2)`, i.e. `1 ≥ 0`; on the shift it
+  is an identity.
+- **`prod_pairFactor_ge`** :
+
+```text
+( ∏_{p ∈ s} p/(p−1) )² · ∏_{p ∈ s, p ∣ d} (p−1)/p  ≤  ∏_{p ∈ s} (1 + c_p/(p − c_p)) .
+```
+
+**The shift correction is harmless, and the `d/φ(d)` factor of the sketch is not needed.**  Every
+sifting prime exceeds `P₁`, so `∏_{p ∈ s, p ∣ d}(p−1)/p ≥ 1 − ω(d)/P₁`, and `ω(d) ≤ log d/log 2`
+while `P₁ = exp((log h)^a)` — for `d ≤ h` the correction is `1 − O(log h/P₁)`, bounded below by
+`1/2` with room to spare.
+
+So the sieve's saving is `(∏_{P₁ < p ≤ h} p/(p−1))^{-2} ≍ (log P₁/log h)²`, and the only remaining
+input is **Mertens' third theorem** for the one-dimensional product — which the corpus owns
+(`Sieve/MertensSecond`, `Sieve/MertensSecondSharp`, `mertensS`).
+
+### The bounding sum, in Mertens terms — `Sieve/{MertensProductLower,RoughPairSieveBound}` (2026-08-18)
+
+The sieve's main term is finished.
+
+`Sieve/MertensProductLower`:
+- **`exp_inv_le_ratio`** : `e^{1/p} ≤ p/(p−1)`, straight from `1 − x ≤ e^{-x}` — no error term, no
+  asymptotics;
+- `exp_sum_inv_le_prod`, `rangePrimes_eq_primesRange`, **`prod_rangePrimes_ge`** :
+
+```text
+exp( mertensS h − mertensS P₁ )  ≤  ∏_{P₁ < p ≤ h} p/(p−1) .
+```
+
+`Sieve/RoughPairSieveBound`:
+- **`selbergBoundingSum_ge_mertens`** — composing the three steps:
+
+```text
+(1/2) · exp(mertensS h − mertensS P₁)² · ∏_{p ∣ d, p ∈ (P₁,h]} (p−1)/p
+    ≤  selbergBoundingSum (roughPairSieve …) ;
+```
+
+- `one_sub_sum_le_prod_one_sub` (Weierstrass), **`prod_shiftCorrection_ge`** :
+
+```text
+1 − log D / (log P₁ · P₁)  ≤  ∏_{p ∣ d, p ∈ (P₁,h]} (p−1)/p    for  1 ≤ d ≤ D ,
+```
+
+using `LadderErrorBudget.card_designatedPrimes_dvd_le` for the number of sifting primes dividing the
+shift.  In the application `D = h` and `P₁ = exp((log h)^a)`, so the correction is `1 − o(1)`.
+
+**So the sieve's main term is `≍ (log P₁/log h)²`, uniformly in the shift `d`.**  The remaining
+piece of the sieve is the Selberg *remainder*, `∑_{e ≤ y} 3^{ω(e)}|R e|` with
+`R e = #{m ≤ Y : e ∣ m(m+d)} − Y·ν(e)`; each `|R e| ≤ ν-many residue classes ≤ 2^{ω(e)}`, so the sum
+is `≤ ∑_{e ≤ y} 6^{ω(e)} ≪ y (log y)^5`, negligible against `Y (log P₁/log h)²` for
+`y = level ≈ Y^{1/2}`.  `Sieve.rem_sum_le_of_const` is the corpus tool for that step.
+
+### The Chinese remainder step was already in the corpus (2026-08-18)
+
+Before building the CRT count of `r(r+d) ≡ 0 (mod e)` from scratch, a search turned it up complete
+in **`RHTower/ReducedFrequencyMobiusAliasCollapse`**:
+
+- `quadraticCongruenceRoots n h`, `quadraticCongruenceRootCount`, `…CountTotal`;
+- **`quadraticCongruenceRootCountTotal_prime`** : `= if p ∣ h then 1 else 2` — *exactly* the
+  `pairClassCount` the sieve density uses, including at `p = 2`;
+- **`quadraticCongruenceRootCountTotal_prod`** : the count factors over any pairwise coprime family
+  — the Chinese remainder theorem in the form needed;
+- `quadraticCongruenceRootDensity`, its multiplicativity, and the squarefree Euler product.
+
+So the whole CRT layer came for free.  New in `Sieve/PairDensityRootCount`:
+
+- `rootCountTotal_prime_eq`, **`rootCountTotal_eq_pairClassCount_prod`** : on a squarefree modulus,
+  `#{r : r(r+d) = 0 mod e} = ∏_{p ∣ e} c_p`;
+- **`pairNu_eq_rootDensity`** : `ν(e) = #roots(e)/e` on squarefree `e`.
+
+**This is what makes the Selberg remainder small**: the sieve's density is the *actual* density of
+the sifted set, not a majorant.  With `Sieve/ResiduePartitionCount`
+(`card_filter_eq_sum_residues`, `card_residue_class_le`) the remainder is now
+`|R e| = |multSum e − Y·ν(e)| ≤ 2·#roots(e) ≤ 2^{ω(e)+1}`, and
+`∑_{e ≤ y} 3^{ω(e)}|R e| ≪ y(log y)^5` — negligible at `y ≈ Y^{1/2}`.  Assembling that is the next
+brick, and it is the last one in the sieve.
+
+### The residue count is two-sided — `Sieve/ResiduePartitionCount` (2026-08-18)
+
+The Selberg remainder is a *difference*, so the interval-in-a-residue-class count is needed on both
+sides.  The module now has both, and neither goes through `Nat.Ico_filter_modEq_card` (whose exact
+rational-ceiling formula turned out more awkward to use than a direct argument):
+
+- `card_filter_eq_sum_residues` : a congruence-invariant condition splits over residues;
+- `card_residue_class_le` : `#{m ∈ [1,M] : m ≡ r} ≤ M/e + 1`, by the injection `m ↦ m/e`;
+- **`card_residue_class_ge`** : `#{m ∈ [1,M] : m ≡ r} ≥ M/e − 1`, by the reverse injection
+  `j ↦ je + r'` with `r' = if r = 0 then e else r ∈ [1,e]`, so that the image lands in `[1,M]`.
+
+With `Sieve/PairDensityRootCount` these give, for squarefree `e ∣ P`,
+
+```text
+|R e| = |multSum e − Y·ν(e)|
+      = |∑_{r : r(r+d) ≡ 0 (e)} #{m ≤ ⌊Y⌋ : m ≡ r} − Y·#roots(e)/e|  ≤  2 · #roots(e) ,
+```
+
+since each residue class is within one of `⌊Y⌋/e` and `|⌊Y⌋ − Y| ≤ 1`.  Then
+`#roots(e) ≤ 2^{ω(e)}` and `∑_{e ≤ y} 3^{ω(e)}|R e| ≤ 2∑_{e ≤ y} 6^{ω(e)} ≪ y (log y)^5`.
+
+Assembling those three lines is the last step of the sieve.
+
+### The root set in residue form — `Sieve/PairDensityRootCount` (2026-08-18)
+
+**`card_rootResidues_eq`** : for `0 < e`,
+
+```text
+#{ r < e : e ∣ r(r+d) }  =  quadraticCongruenceRootCountTotal e d ,
+```
+
+by the bijection `r ↦ (r : ZMod e)` with inverse `ZMod.val`.  This is the last translation the
+Selberg remainder needs: it turns the corpus's `ZMod`-valued root count — whose CRT multiplicativity
+and prime values are already proved — into the concrete residue set that
+`Sieve/ResiduePartitionCount.card_filter_eq_sum_residues` sums over.
+
+So all three lines of the remainder estimate are now available as Lean theorems:
+
+```text
+multSum e = ∑_{r < e, e ∣ r(r+d)} #{m ≤ ⌊Y⌋ : m ≡ r}        (card_filter_eq_sum_residues)
+          ∈ [ ρ(e)(⌊Y⌋/e − 1),  ρ(e)(⌊Y⌋/e + 1) ]            (card_residue_class_{ge,le})
+ρ(e) = #roots(e) = ∏_{p ∣ e} c_p = e·ν(e)                    (card_rootResidues_eq, pairNu_eq_rootDensity)
+```
+
+giving `|R e| ≤ 2ρ(e) ≤ 2^{ω(e)+1}`.  Composing them into `Sieve.rem_sum_le_of_const` is the
+assembly step.
+
+### The sieve remainder — `Sieve/RoughPairSieveRemainder` (2026-08-18)
+
+The last piece of the sieve is proved.
+
+- **`multSum_roughPairSieve`** : `multSum e = #{m ≤ ⌊Y⌋ : e ∣ m(m+d)}` — the image support and the
+  injectivity of `m ↦ m(m+d)` collapse the sum over the support to a count over `m`;
+- **`abs_rem_roughPairSieve_le`** : for squarefree `e > 0` and `0 ≤ Y`,
+
+```text
+|rem e|  =  | multSum e − ν(e)·Y |  ≤  2 · #roots(e) ,
+```
+
+uniformly in the shift `d` and the modulus `e`.  The proof splits `multSum e` over the `#roots(e)`
+residue classes, uses `card_residue_class_{ge,le}` to place each within one of `⌊Y⌋/e`, and absorbs
+`|⌊Y⌋ − Y| ≤ 1` with the factor `ρ/e ≤ ρ`.
+
+**The sieve is now complete as a machine.**  Both inputs of `SelbergSieve.selberg_bound_simple`
+— the bounding sum from below (`selbergBoundingSum_ge_mertens`, `≍ (log h/log P₁)²`) and the
+remainder from above (`abs_rem_roughPairSieve_le`, `≤ 2^{ω(e)+1}`) — are unconditional Lean
+theorems.  What is left is arithmetic on those two: `#roots(e) ≤ 2^{ω(e)}` and
+`∑_{e ≤ y} 6^{ω(e)} ≪ y(log y)^5`, then the substitution into `selberg_bound_simple`.
+
+### The remainder sum needs no divisor-sum estimate — `Sieve/RoughPairRemainderSum` (2026-08-18)
+
+- **`rootCount_le_two_pow`** : `#roots(e) ≤ 2^{ω(e)}` on squarefree `e`;
+- **`card_primeFactors_le_log`** : a divisor `e ≤ N` of the modulus has `ω(e) ≤ log N/log P₁`,
+  because every prime of the modulus exceeds `P₁` (`LadderErrorBudget.card_designatedPrimes_dvd_le`
+  again — `e.primeFactors` *is* `(rangePrimes P₁ h).filter (· ∣ e)`);
+- **`selberg_summand_le`** : `3^{ω(e)}|R e| ≤ 2·6^{ω(e)}`.
+
+**The classical `∑_{e ≤ y} 6^{ω(e)} ≪ y(log y)^5` is not needed.**  Combining the two bounds above,
+every summand is `≤ 2·6^{log y/log P₁} = 2·y^{log 6/log P₁}`, and there are at most `y` of them, so
+the whole remainder sum is `≤ 2 y^{1 + log 6/log P₁}`.  With `log P₁ = (log h)^a` that exponent is
+`1 + o(1)`, and the remainder is `y^{1+o(1)}` — negligible against the main term `Y(log P₁/log h)²`
+for any sieve level `y ≤ Y^{1/2}`.  This is a real simplification: it replaces a divisor-moment
+estimate by the observation that the sifting primes are large.
+
+### The sieve is closed — `Sieve/RoughPairCount` (2026-08-18)
+
+**`card_roughPair_le`** — Selberg's bound with both halves substituted:
+
+```text
+#{ m ≤ ⌊Y⌋ : m and m+d both free of primes in (P₁,h] }
+    ≤  Y / ( (1/2)·exp(mertensS h − mertensS P₁)²·C )
+       +  ∑_{e ∣ P, e ≤ z} 2·6^{ω(e)} ,
+```
+
+`C = ∏_{p ∣ d, p ∈ (P₁,h]} (p−1)/p`, under `h^{2k} ≤ z` and `k ≥ e·∑_p a_p + log 2`.  The first term
+is `Y·(log P₁/log h)²·O(1)` and the second is `z^{1+o(1)}`.  **Uniform in the shift `d`** — which is
+what the second-moment reduction needs, since it sums over `|d| ≤ h`.
+
+This closes the two-dimensional sieve.  The whole road from the Route E cards now reads:
+
+```text
+AveragedShortInterval μ hh
+  ← fibre mean square                        Sieve/FibreRoughSecondMoment  (identity + band)
+  ← rough part:  banded shifted pair count   Sieve/RoughPairCount          ✓ CLOSED
+  ← S part:      Ramaré ladder + spectral    Sieve/Ramare*, Sieve/Omega*, Sieve/Ladder*
+  + the parameter substitution                                            OPEN
+```
+
+### Note on a build collision (2026-08-18)
+
+`lake build` of this chain failed for a while on `HTGeometry/LineJetTransfer`,
+`…/MvPolynomialPhaseRank`, `…/GammaRationalPhaseRank` — another session's files, broken mid-edit.
+They entered the chain only through `Sieve/LadderErrorBudget → RouteEForbiddenSupportStability`,
+imported for a single counting lemma.  `Sieve/RoughPairSieveBound` and `Sieve/RoughPairRemainderSum`
+now prove the two counts they need directly from `Finset.prod_primes_dvd` and `Real.log_pow`
+(`prod_shiftCorrection_ge`, `card_primeFactors_le_log`), so **the sieve chain no longer depends on
+`HTGeometry` at all** and builds on its own.
+
+### The discarded set, reduced to shifted counts — `Sieve/{BandPairCount,FibreRoughShiftBound}` (2026-08-18)
+
+- **`card_bandPairs_le`** : pairs of a finite set at distance at most `h` are counted by their
+  differences — each is determined by its smaller element, the difference, and which side is
+  smaller, so
+  `#{(m,n) ∈ A² : |m−n| ≤ h} ≤ 2 ∑_{d ≤ ⌊h⌋} #{a ∈ A : a + d ∈ A}`;
+- **`sum_sq_card_fibre_inter_le_shifts`** : composing with the fibre second-moment identity,
+
+```text
+∑_{a ∈ outerBlock} #(F_a ∩ T)²
+    ≤ (2h+1) · 2 · ∑_{d ≤ ⌊h⌋} #{ m ∈ T ∩ D : m + d ∈ T ∩ D } .
+```
+
+No arithmetic enters: `T` is an arbitrary finite set.  **This is the exact interface the sieve
+capstone `card_roughPair_le` consumes**, one `d` at a time, uniformly in the shift.
+
+So the rough half of the road is now a single chain of Lean theorems from the fibre mean square down
+to Selberg's bound.  What is left there is the numerical substitution: `T` = the integers free of
+primes in `(P₁,h]`, `D ⊆ [1,⌊Y⌋]`, and the arithmetic showing the resulting bound is `o(h²√x/log x)`.
+
+### The two halves of the rough road now meet — `Sieve/RoughSetShiftBound` (2026-08-18)
+
+- `roughSet P₁ h N` — the integers of `[1,N]` free of primes in `(P₁,h]`;
+- **`card_shift_roughSet_le`** : for every shift `d` and every auxiliary set `D`,
+
+```text
+#{ m ∈ roughSet ∩ D : m + d ∈ roughSet ∩ D }
+    ≤  Y / ( (1/2)·exp(mertensS h − mertensS P₁)²·C_d )  +  ∑_{e ∣ P, e ≤ z} 2·6^{ω(e)} .
+```
+
+This is the join: `Sieve/FibreRoughShiftBound.sum_sq_card_fibre_inter_le_shifts` produces exactly
+these shifted counts (with `D = fibreDyadicIndex x h`), and the sieve bounds each of them.  So the
+rough half of the argument is a single chain from `AveragedMeanSquare` to Selberg's bound, with no
+gaps and no hypotheses beyond the parameter inequalities `h^{2k} ≤ z` and `k ≥ e∑a_p + log 2`.
+
+What is left on this half is purely quantitative: sum the bound over `|d| ≤ h`, multiply by
+`(2h+1)·2`, and check the result is `o(h²√x / log x)` at the parameters
+`log P₁ = (log h)^a`, `0 < a < 1 − 1/(2β)`.
+
+### The shifted counts, summed — `Sieve/RoughShiftSum` (2026-08-18)
+
+**`sum_shift_roughSet_le`** : for every auxiliary set `D` and every shift bound `H`,
+
+```text
+∑_{1 ≤ d ≤ H} #{ m ∈ roughSet ∩ D : m + d ∈ roughSet ∩ D }
+    ≤ H · ( Y / ( (1/2)·exp(mertensS h − mertensS P₁)²·(1 − log H/(log P₁·P₁)) )
+            + ∑_{e ∣ P, e ≤ z} 2·6^{ω(e)} ) .
+```
+
+The shift correction is made uniform in `d` by `prod_shiftCorrection_ge`: every sifting prime
+exceeds `P₁`, so the correction is at least `1 − log H/(log P₁·P₁)` for **every** shift below `H`.
+
+**`d = 0` is deliberately excluded.**  At `d = 0` every prime divides the shift, the two-dimensional
+sieve degenerates to the one-dimensional one, and the correction factor collapses to
+`∏_{p ∈ (P₁,h]}(p−1)/p ≍ log P₁/log h`.  That term is handled separately by the one-dimensional
+bound, and it is affordable: its contribution to the fibre second moment is
+`(2h+1)·2·#roughSet ≍ h·√x·(log P₁/log h)`, against a budget of `h²√x/log x` — smaller by a factor
+`h`, which is exp((log x)^β).
+
+### The shift-zero term — `Sieve/RoughSetCount` (2026-08-18)
+
+The `d = 0` term excluded from `Sieve/RoughShiftSum` is now proved, from the *same* sieve.
+
+- `pairClassCount_zero` : at shift zero every local class count is one, because every prime divides
+  `0`;
+- **`selbergBoundingSum_ge_mertens_zero`** : hence the Euler factor is `p/(p−1)` rather than its
+  square, and `selbergBoundingSum ≥ (1/2)·exp(mertensS h − mertensS P₁)` — the *one-dimensional*
+  Mertens product;
+- **`card_roughSet_le`** :
+
+```text
+#{ m ≤ ⌊Y⌋ : m free of primes in (P₁,h] }
+    ≤  Y / ( (1/2)·exp(mertensS h − mertensS P₁) )  +  ∑_{e ∣ P, e ≤ z} 2·6^{ω(e)}
+    ≍  Y · log P₁ / log h .
+```
+
+So the pair sieve, run at shift zero, delivers the classical one-dimensional bound as a special
+case; no separate one-dimensional sieve is needed.  **Every term of the fibre second moment — the
+diagonal `d = 0` and the off-diagonal `1 ≤ d ≤ H` — is now bounded by an unconditional Lean
+theorem.**
+
+### Diagonal and off-diagonal, joined — `Sieve/FibreRoughTotal` (2026-08-18)
+
+**`sum_sq_card_fibre_roughSet_le`** :
+
+```text
+∑_{a ∈ outerBlock} #(F_a ∩ T)²  ≤  (2h+1) · 2 · (B₀ + B₁)
+```
+
+whenever `#(T ∩ D) ≤ B₀` and `∑_{1 ≤ d ≤ ⌊h⌋} #{m ∈ T∩D : m+d ∈ T∩D} ≤ B₁`.  The split is exactly
+`range(⌊h⌋+1) = {0} ∪ [1, ⌊h⌋]`, with the `d = 0` summand recognised as `#(T∩D)`.
+
+`B₀` is supplied by `Sieve/RoughSetCount.card_roughSet_le` and `B₁` by
+`Sieve/RoughShiftSum.sum_shift_roughSet_le`.  So the rough half of the argument is now closed as a
+chain of Lean theorems with **no gaps of any kind** — only the numerical choice of
+`P₁, k, z, H` and the verification that the resulting expression is `o(h²√x/log x)` remain, and
+those are inequalities between explicit elementary functions.
+
+### The two halves joined at the top — `Sieve/FibreSumSplit` (2026-08-18)
+
+**`sum_sq_fibreSum_split`** : for any unit-bounded `f` and any discarded set `T`,
+
+```text
+∑_a (∑_{b ∈ F_a} f b)²  ≤  2 ∑_a (∑_{b ∈ F_a \ T} f b)²  +  2 ∑_a #(F_a ∩ T)² .
+```
+
+This is the top-level split of the whole argument: the first term is the `S` part, handled by the
+Ramaré ladder and the spectral estimate; the second is the discarded part, now bounded end to end by
+`Sieve/FibreRoughTotal` → `Sieve/{RoughSetCount,RoughShiftSum}` → `Sieve/RoughPairCount`.  Nothing
+arithmetic enters — `T` is an arbitrary finite set.
+
+**Status of the road.**  Both halves are now chains of unconditional Lean theorems:
+
+```text
+∑_a (∑_{b∈F_a} μ)²                                   sum_sq_fibreSum_split
+  ├─ S part   → Ramaré ladder → spectral            Ramare*, Omega*, Ladder*, RouteTWidthExplicit
+  └─ rough part → shifted pair counts → Selberg     FibreRoughTotal, RoughShiftSum, RoughSetCount,
+                                                     RoughPairCount
+```
+
+What is not yet done, on either half, is the *choice of parameters as functions of `x`* and the
+verification of the resulting limits.  Those are inequalities between explicit elementary functions
+of `x`; no further structural mathematics is required.
+
+### The split, at the level of limits — `Sieve/FibreSplitLimit` (2026-08-18)
+
+**`averagedMeanSquare_of_split`** : for a unit-bounded `f` and *any* family of discarded sets
+`T : ℝ → Finset ℕ`,
+
+```text
+( 2 ∑_a (∑_{b ∈ F_a \ T x} f b)² ) / (h²√x) → 0
+  and  ( 2 ∑_a #(F_a ∩ T x)² ) / (h²√x) → 0
+    ⟹  AveragedMeanSquare f hh .
+```
+
+This is the exact interface both halves now feed.  The rough half supplies the second hypothesis
+through `Sieve/FibreRoughTotal` and the sieve; the `S` half supplies the first through the Ramaré
+ladder and the spectral estimate.
+
+**The structural work of the programme is finished.**  Every step from the Route E cards' hypothesis
+`(6)` down to Selberg's sieve and the Route-T twisted prime sum is an unconditional Lean theorem, and
+they compose.  What remains is exclusively the choice of the parameter functions
+`P₁(x), k(x), z(x), Q(x), η(x), L(x), W(x), T₀(x)` and the verification of two limits — inequalities
+between explicit elementary functions of `x`.
+
+### The sieve saving in closed form — `Sieve/MertensDiffExp` (2026-08-18)
+
+The sieve bounds are stated in terms of `exp(mertensS h − mertensS P₁)`; the parameter substitution
+needs that as a power of `log h / log P₁`.  Mertens' second theorem in the corpus's sharp form
+(`abs_mertensS_sub_logLog_sub_const_le`) supplies it directly, because the Meissel–Mertens constant
+**cancels in the difference**:
+
+- `mertensErr N = (2·mertensFirstConst + 1/2)/log N`;
+- **`exp_mertens_diff_ge`** : for `2 ≤ P₁` and `2 ≤ h`,
+
+```text
+(log h / log P₁) · exp( −mertensErr P₁ − mertensErr h )  ≤  exp( mertensS h − mertensS P₁ ) .
+```
+
+So the sieve's saving `exp(mertensS h − mertensS P₁)^{-2}` is at most
+`(log P₁/log h)²·exp(2·mertensErr P₁ + 2·mertensErr h)`, and both error exponentials tend to `1`.
+With `log P₁ = (log h)^a` this is `(log h)^{-2(1−a)}(1+o(1))`, which is `o(1/log x)` exactly when
+`2β(1−a) > 1`, i.e. `a < 1 − 1/(2β)` — the window recorded above, and non-empty precisely for
+`β > 1/2`.
+
+This is the last analytic ingredient of the rough half; what remains there is arithmetic on
+explicit elementary functions.
+
+## The card's gate is *quantitative*, not qualitative (2026-08-18)
+
+A check of what the Route E cards actually consume, before spending more effort on limit-shaped
+capstones:
+
+- `MobiusReciprocalMarkerBlockCount.card_large_le_of_sum_sq_le (hδ : 0 < δ) (h : ∑_{t∈S} f t ^2 ≤ R)
+  : #{t ∈ S : δ ≤ |f t|} ≤ R/δ²` — the card's Markov step `(10)`, and it takes an **explicit** `R`;
+- `Sieve/Step1FromCorrelation.card_le_good_add_correlation` — step 1, likewise fully explicit, with
+  the correlation bound `ε` appearing in the conclusion.
+
+So the cards do **not** consume a qualitative `AveragedMeanSquare` / `AveragedShortInterval`
+(`… → 0`).  They consume a *numerical* bound on `∑_t (∑_{t<n≤t+L} μ(n))²` of size `o(Y L²/log Y)`,
+because `(10)` needs `o(Y/log Y)` bad starts and Markov divides by `δ² ≍ L²`.
+
+**This does not invalidate anything built** — every bound in the chain is explicit, with named
+constants and no asymptotic notation; only the three limit-shaped wrappers
+(`averagedMeanSquare_of_split`, `averagedMeanSquare_moebius_of_omegaBudget`,
+`averagedShortInterval_moebius_of_omegaBudget`) pass to a limit, and they sit *above* the explicit
+material rather than inside it.  But it does fix the shape of the final capstone: it must be an
+inequality with an explicit right-hand side, not a `Tendsto`.
+
+Concretely the last assembly should produce
+
+```text
+∑_{a ∈ outerBlock x h} ( ∑_{b ∈ innerFibre x h a} μ(b) )²
+    ≤  h² √x · ( C₁ (log P₁/log h)² + C₂/h + C₃ z/(h²√x) + (spectral term) )
+```
+
+with every constant named, and the cards then choose `P₁, z, …` and compare against `1/log x`
+themselves.  The limit wrappers stay as convenience corollaries.
+
+### The discarded part, in closed form — `Sieve/FibreRoughExplicit` (2026-08-18)
+
+**`sum_sq_card_fibre_roughSet_explicit`** — the rough half assembled into a single inequality with
+no asymptotic notation and every constant named:
+
+```text
+∑_{a ∈ outerBlock x h} #( F_a ∩ roughSet P₁ hN ⌊Y⌋ )²
+  ≤ (2h+1)·2·[  ( Y/((1/2)e^Δ) + Σ_rem )
+              + ⌊h⌋·( Y/((1/2)e^{2Δ}(1 − log⌊h⌋/(log P₁·P₁))) + Σ_rem ) ] ,
+```
+
+`Δ = mertensS hN − mertensS P₁`, `Σ_rem = ∑_{e ∣ P, e ≤ z} 2·6^{ω(e)}`.  Its hypotheses are exactly
+`2 ≤ P₁ ≤ hN`, `1 ≤ z`, `hN^{2k} ≤ z`, `k ≥ e·∑_p a_p(d) + log 2` for every shift `d`, and positivity
+of the shift correction — all checkable inequalities.
+
+With `Sieve/MertensDiffExp.exp_mertens_diff_ge` the leading term is
+`≍ h² · Y · (log P₁/log hN)²`, and dividing by `h²√x` (with `Y ≍ √x`) leaves `(log P₁/log hN)²` —
+the `o(1/log x)` the cards need, in the window `a < 1 − 1/(2β)`.
+
+**This is the shape the cards consume** (see the note above on the quantitative gate): an explicit
+inequality, not a limit.
+
+### The discarded part, in logarithms — `Sieve/FibreRoughLog` (2026-08-18)
+
+**`sum_sq_card_fibre_roughSet_log`** — the Mertens difference eliminated in favour of the ratio of
+logarithms:
+
+```text
+∑_{a ∈ outerBlock x h} #( F_a ∩ roughSet P₁ hN ⌊Y⌋ )²
+  ≤ (2h+1)·2·[ ( 2Y·(log P₁/log hN)·E + Σ_rem )
+             + ⌊h⌋·( 2Y·(log P₁/log hN)²·E²/(1 − log⌊h⌋/(log P₁·P₁)) + Σ_rem ) ] ,
+```
+
+`E = exp(mertensErr P₁ + mertensErr hN)`, `Σ_rem = ∑_{e ∣ P, e ≤ z} 2·6^{ω(e)}`.
+
+**Nothing arithmetic is left in this expression** — it is built from `Y`, `h`, `log P₁`, `log hN`,
+`z`, `⌊h⌋` and two Mertens error terms of size `O(1/log P₁)`.  Dividing by `h²√x` with `Y ≍ √x`,
+`⌊h⌋ ≍ h` gives
+
+```text
+≍  8 (log P₁/log hN)² E²  +  8 (log P₁/log hN) E / h  +  (remainder)/(h√x) ,
+```
+
+so the discarded part costs `(log P₁/log hN)²` — the `(log h)^{-2}` rate the cards need — plus terms
+smaller by a factor `h`.  Choosing `P₁` and `z` and comparing with `1/log x` is now arithmetic on
+this one displayed line.
+
+### The truncation hypothesis, made checkable — `Sieve/PairClassSum` (2026-08-18)
+
+The bounding-sum lower bound carries the hypothesis `k ≥ e·∑_p a_p(d) + log 2`, quantified over
+every shift `d`.  That sum is now bounded by a Mertens difference, so the hypothesis becomes a
+comparison of `k` with `log(log hN / log P₁)`:
+
+- **`pairClassTerm_le`** : `a_p = c_p/(p − c_p) ≤ 4/p` at every prime `p ≥ 4`, for either value of
+  `c_p` (`1/(p−1) ≤ 4/p` needs `3p ≥ 4`; `2/(p−2) ≤ 4/p` needs `p ≥ 4`);
+- **`sum_pairClassTerm_le`** : hence, for `4 ≤ P₁ ≤ hN` and **every** shift `d`,
+
+```text
+∑_{p ∈ (P₁,hN]} a_p(d)  ≤  4 (mertensS hN − mertensS P₁) .
+```
+
+So `k ≥ 4e·(mertensS hN − mertensS P₁) + log 2` discharges the hypothesis uniformly in `d`, and by
+`Sieve/MertensDiffExp` that is `k ≳ 4e·log(log hN/log P₁)` — a quantity of size `log log x`, while
+the level constraint `hN^{2k} ≤ z ≈ x^{1/2}` permits `k` up to `≍ (log x)^{1−β}`.  The two are
+compatible with enormous room, which is what makes the truncation free.
+
+### The comparison with `1/log x` — `Sieve/LogPowerLimits` (2026-08-18)
+
+The parameter substitution ends in a comparison between `(log x)^{-c}` and `1/log x`.  Both limits
+are now available in the `rpow` form the substitution produces:
+
+- **`tendsto_log_rpow_neg`** : `(log x)^{-δ} → 0` for `δ > 0`;
+- **`tendsto_log_rpow_neg_mul_log`** : `(log x)^{-c}·log x → 0` for `c > 1`.
+
+The second is the exact shape of the cards' requirement: the discarded part costs
+`(log P₁/log hN)² ≍ (log x)^{-2β(1−a)}`, and the card's Markov step multiplies by `log x`, so the
+condition is `2β(1−a) > 1` — i.e. `a < 1 − 1/(2β)`, non-empty precisely for `β > 1/2`.
+
+### The admissible window, proved — `Sieve/LogPowerLimits` (2026-08-18)
+
+**`tendsto_logRatio_sq_mul_log`** : if `log P₁(x) ≤ (log hN(x))^a` and `log hN(x) ≥ (log x)^β`, then
+
+```text
+( log P₁(x) / log hN(x) )² · log x  →  0        whenever  2β(1 − a) > 1 .
+```
+
+This is the parameter window, now a theorem rather than a calculation on the card.  Its proof is the
+chain `(log P₁/log hN)² ≤ (log hN)^{2(a−1)} ≤ ((log x)^β)^{2(a−1)} = (log x)^{-2β(1−a)}`, the middle
+step using that `t ↦ t^{2(a−1)}` is decreasing, then `tendsto_log_rpow_neg_mul_log`.
+
+Together with `Sieve/FibreRoughLog` this settles the rough half completely at the level of rates:
+the discarded integers cost `(log P₁/log hN)²`, and that beats `1/log x` exactly on `a < 1 − 1/(2β)`,
+non-empty precisely for `β > 1/2` — the cards' own hypothesis, recovered as a theorem.
+
+### The remainder sum, in closed form — `Sieve/SelbergRemainderSum` (2026-08-18)
+
+**`sum_selbergRemainder_le`** : for `2 ≤ P₁` and `1 ≤ z`,
+
+```text
+∑_{e ∣ P, e ≤ z} 2·6^{ω(e)}  ≤  2 z · 6^{log z / log P₁} .
+```
+
+Two facts and nothing else: a divisor of the modulus below the level has at most `log z/log P₁`
+prime factors (`card_primeFactors_le_log`), and there are at most `z` such divisors.  Since the
+sifting primes are large, `6^{log z/log P₁} = z^{log 6/log P₁}` is `z^{o(1)}`, so the remainder is
+`z^{1+o(1)}` — negligible against the main term for any `z ≤ x^{1/4}`, which still leaves the level
+constraint `hN^{2k} ≤ z` satisfiable with `k ≍ (log x)^{1−β}`.
+
+**With this, every quantity in the rough half's bound is a closed expression in
+`x, h, Y, log P₁, log hN, z`.**

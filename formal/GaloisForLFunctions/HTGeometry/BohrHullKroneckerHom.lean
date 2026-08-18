@@ -18,7 +18,7 @@ namespace GaloisForLFunctions
 
 open Finset
 
-variable {f : ℝ →ᵇ ℂ}
+variable {E : Type*} [NormedAddCommGroup E] {f : ℝ →ᵇ E}
 
 /-- **Kronecker realization with relations.** -/
 theorem exists_bohrHull_char_eq_finset (htb : HasTotallyBoundedOrbit (fun x => f x))

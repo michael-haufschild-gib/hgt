@@ -6447,3 +6447,96 @@ R_n(y₀)²  ≤  C · c^{-2(n−m)} · R_m(y₀)² ,
 which at `n − m = 2` is the card's `λ^{-8}`.  **Remaining Lean work is bounded and explicit**: one
 module deriving `exists_bound_sharpExponent` from the four displayed ingredients, then substituting
 into the sharp ratio.  No further mathematics is needed.
+
+### The sharp exponent is formalized
+
+`RHTower/ProlateSharpExponentPower.lean` (axiom-clean, warning-free, wired):
+
+```lean
+theorem exists_bound_sharpExponent (m n : ℕ) (hmn : m < n) :
+    ∃ E : ℝ, ∀ᶠ a : ℝ in atTop,
+      2 * sharpCollarPhase n a - 2 * sharpCollarPhase m a
+        + sharpTransportUpper m n n a - sharpTransportLower m n m a
+        ≤ -(2 * ((n : ℝ) - (m : ℝ)) * Real.log (signedModeRadialBandwidth a)) + E
+```
+
+Supporting content:
+
+- `bandwidthEighthRoot`, `bandwidthEighthRoot_pow` — writing `c = r⁸` is the trick that keeps every
+  logarithm elementary: `log c = 8 log r` and `log r ≤ r` (from `Real.log_le_sub_one_of_pos`), so the
+  correction the oscillator law leaves is `4K/r`, below one as soon as `r ≥ 4K`.  No `isLittleO`, no
+  `log x / x^ε → 0` lemma is needed.
+- `log_inv_pairAnchorPoint` — `log(1/y₀) = ½ log c − log x₀`
+- **`eventually_sharpPhase_le`** — the phase term, from the two-sided oscillator law
+- **`exists_bound_eventually_scaleLogDiff`** — from `tendsto_pairAnchor_scaleLog`
+- **`exists_bound_eventually_integral_errorMajorant`** — the transport error is `O(1)`
+
+The error bound was the fiddly one, and the way through was to convert every occurrence into a
+*reciprocal bound* rather than manipulate quotients:
+
+```text
+1/y₀ ≤ √c ,      1/s ≤ 2c ,      1/√(y₀²−s) ≤ √c ,      y₀ ≤ x₀/√c ,
+```
+
+after which each of the three pieces of `integral_prolateBandErrorMajorant_le` is a product of
+nonnegative factors bounded by `O(c)`, and the `1/c` prefactor cancels.  The three reciprocal bounds
+come from `2 s ≤ y₀²` (the doubled turning condition, already eventual) and `c·s → 4k+1 ≥ 1`.
+
+**Remaining for claim (7):** combine with `eventually_prolateBand_sq_ratio_sharp`, converting
+`exp(−2(n−m) log c + E)` into `e^E·c^{-2(n−m)}` (via `Real.exp_nat_mul` and `Real.exp_log`) and
+bounding the collar-phase ratio `Ξ_m/Ξ_n`, which is `≤ Ξ_0/Ξ_{1/8}` by monotonicity of
+`bandEndpointPhase` in `s`.
+
+### Claim (7) at the amplitude level is formalized
+
+```lean
+theorem exists_bound_prolateBand_sq_ratio_power (m n : ℕ) (hmn : m < n) :
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ a : ℝ in atTop,
+      (signedModeRadialData a n).R (pairAnchorPoint m n a) ^ 2
+        ≤ C / signedModeRadialBandwidth a ^ (2 * (n - m))
+          * (signedModeRadialData a m).R (pairAnchorPoint m n a) ^ 2
+```
+
+Unconditional, axiom-clean.  At `n − m = 2` — the corpus indices of the card's adjacent scales
+`e_j = h_{4j}` and `e_{j+1} = h_{4j+4}` — this reads `c^{-4} = λ^{-8}`, which is claim `(7)`.
+
+The exponent is now **exact**, not the crude `c^{-3/4}` of the step-one ladder.  Two inputs
+completed it:
+
+- the collar-phase ratio `Ξ_m/Ξ_n ≤ 2√2`, which the corpus already had as
+  `bandEndpointPhase_le_two_sqrt_two_mul` (the integrand is trapped between `√(α²−s)` and `1` on the
+  collar, so admissible apertures give phases within an absolute factor);
+- `exp(−N log c + E) = e^E/c^N` via `Real.exp_nat_mul` and `Real.exp_log`, with
+  `N = 2(n−m) : ℕ` and `(N : ℝ) = 2((n:ℝ)−(m:ℝ))` by `Nat.cast_sub`.
+
+So the constant is explicit: `C = 4050π³ · 2√2 · e^E`.
+
+### Claim (7) at the leakage level is formalized
+
+`RHTower/ProlateSharpLeakageRatio.lean` (axiom-clean, wired):
+
+```lean
+theorem exists_bound_centre_sq_ratio_power (m n : ℕ) (hmn : m < n) :
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ a : ℝ in atTop,
+      (signedModeRadialData a n).R 0 ^ 2
+        ≤ C / signedModeRadialBandwidth a ^ (2 * (n - m)) * (signedModeRadialData a m).R 0 ^ 2
+
+theorem exists_bound_signedLeakage_ratio_power (m n : ℕ) (hmn : m < n) :
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ a : ℝ in atTop,
+      evenProlateSignedLeakage a m
+        ≤ C / signedModeRadialBandwidth a ^ (2 * (n - m)) * evenProlateSignedLeakage a n
+```
+
+**This is claim `(7)`**: `d_j/d_{j+1} = O(λ^{-8})`.  The card's `e_j = h_{4j}` and `e_{j+1} = h_{4j+4}`
+are corpus indices `2j` and `2j+2`, so `n − m = 2` and the power is `c^{-4} = λ^{-8}`.
+
+Both transfers below the anchor ratio are scale-agnostic, which is why the sharp power propagates
+without any new analysis:
+
+- **anchor → centre** uses only the Hermite quotient bounds `|q_k|/2 ≤ |ρ_k| ≤ 2|q_k|`, giving the
+  centre ratio with constant `16 q_m²/q_n²` times the anchor constant;
+- **centre → leakage** uses only the two-sided `eventually_signedLeakage_sharp_two_sided`, whose
+  `√c · R(0)²` normalisation is common to both rungs and cancels.
+
+The same theorem at `n − m = 1` is the `λ^{-4}` of the *parity* card's claim `(8)`, since `d_4` and
+`d_6` are corpus indices `2` and `3`.

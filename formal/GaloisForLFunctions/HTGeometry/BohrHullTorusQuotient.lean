@@ -24,13 +24,13 @@ open HTGeometry
 
 noncomputable section
 
-variable {f : ℝ →ᵇ ℂ}
+variable {E : Type*} [NormedAddCommGroup E] {f : ℝ →ᵇ E}
 
 /-- The joint character map attached to a finite frequency packet. -/
-def bohrHullCharPacket (f : ℝ →ᵇ ℂ) {ι : Type*} (lam : ι → ℝ) (x : BohrHull f) : ι → ℂ :=
+def bohrHullCharPacket (f : ℝ →ᵇ E) {ι : Type*} (lam : ι → ℝ) (x : BohrHull f) : ι → ℂ :=
   fun j => bohrHullChar f (lam j) x
 
-theorem continuous_bohrHullCharPacket (f : ℝ →ᵇ ℂ) {ι : Type*} [Fintype ι] (lam : ι → ℝ) :
+theorem continuous_bohrHullCharPacket (f : ℝ →ᵇ E) {ι : Type*} [Fintype ι] (lam : ι → ℝ) :
     Continuous (bohrHullCharPacket f lam) :=
   continuous_pi fun j => continuous_bohrHullChar f (lam j)
 

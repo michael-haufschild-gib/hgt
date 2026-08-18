@@ -54,6 +54,22 @@ Repository-wide lint passed before concurrent theorem-area changes. A later conc
 blocked only by unrelated newly owned modules not yet reachable from their own umbrellas; no LHSM
 reachability, forbidden-declaration, elaboration, or axiom error was reported.
 
+## Session 2026-08-18 additions (Law-History Differentials)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-LHSM-2 | Canonical local law-history differential, seven-term kernel--cokernel exactness, composite-rigidity classification, split cancellation, and finite index conservation | `HTGeometry.ConstitutiveLawHistoryDifferential` |
+| ULF-LHSM-3-CORE | Canonical higher transgression through an arbitrary interval transport; its kernel and cokernel are exactly the next law-history survivors | `HTGeometry.ConstitutiveLawHistoryHigherDifferential` |
+| ULF-LHSM-5-CORE | Finite diagonal Hodge normal form: exact stable-sector kernel, factored-response blindness, terminal selection, positive global gap, and unit-phase neutrality | `HTGeometry.ConstitutivePagewiseFormationSelection` |
+
+Both modules pass isolated scratch elaboration, direct leaf elaboration, and targeted module builds.
+They are wired into `HTGeometry.UniversalLawField`; umbrella build was deliberately not run. Axiom
+prints for all three capstones report only `propext`, `Classical.choice`, and `Quot.sound`. No `sorry`,
+`admit`, new `axiom`, `opaque`, or `unsafe` declaration occurs. Arbitrary finite-page packaging and
+the abstract orthogonal-flag/countable closed-range theorems remain paper-level and do not count as
+Lean-certified.  Each target leaf was built separately.  Imports are wired into
+`HTGeometry.UniversalLawField`; no umbrella build was run.
+
 ## Session 2026-08-10 addition (observer-overlap mechanics)
 
 | ID | Theorem | Lean module |
@@ -1726,3 +1742,29 @@ project build was run. All eight audited declarations depend only on `propext`,
 closes the algebraic fusion and global conditional selection mechanism. Constructing a literal
 pre-zero source-normal proper formation whose complete history is compact exactly at neutral grade
 remains the arithmetic formation burden; no RH claim is made.
+
+## Session 2026-08-18 addition (marked response realization and doctrine memory)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-MRRM-1 | Equal complete separating responses force equal synthesis kernels and a unique marked presentation equivalence; doctrine-memory loss decomposes exactly into unreachable and unobservable dimensions; tensor formation multiplies responses and bounds fused memory | `HTGeometry.ConstitutiveMarkedResponseRealization` |
+
+Scratch elaboration, direct leaf elaboration, and one targeted leaf build pass. No umbrella, area,
+or project build was run. Six audited capstones depend only on `propext`, `Classical.choice`, and
+`Quot.sound`. Module is wired into `HTGeometry.UniversalLawField` without building that umbrella.
+This closes finite-linear marked-presentation invariance, not categorical Morita invariance or the
+still-missing literal source response and selection transport.
+
+## Session 2026-08-18 addition (three-slot exchangeability descent and properness)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SRFM-6 | Coordinate-free rank-one formation-interchange tensor factorization; predicted positive linear-reporter square and zero locus; two-slot orbit blindness; exact three-slot and adjacent-versus-skipped thinning square defects; joint reporter reconstruction; reflection invariance; additive independent-depth work; bounded global work iff reflected-law equality | `HTGeometry.ConstitutiveExchangeableFormationSelection` |
+
+Scratch elaboration, direct leaf elaboration, and one targeted leaf build pass. No umbrella, area,
+or project build was run. Thirteen audited capstones depend only on `propext`, `Classical.choice`, and
+`Quot.sound`. Module is wired into `HTGeometry.UniversalLawField` without building that umbrella.
+Repository lint reports six unrelated pre-existing umbrella-ownership failures and no defect in the
+new module. The remaining RH gate is source formation: prove that literal pre-zero phase averaging
+commutes with one source-native deletion/thinning operation and that cofinal complete interchange
+work is bounded or conserved.

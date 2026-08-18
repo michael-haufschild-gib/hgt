@@ -22,7 +22,7 @@ open HTGeometry
 
 noncomputable section
 
-variable {f : ℝ →ᵇ ℂ}
+variable {E : Type*} [NormedAddCommGroup E] {f : ℝ →ᵇ E}
 
 /-- Distinct frequencies give distinct characters of the hull. -/
 theorem bohrHullChar_injective {mu nu : ℝ} (hmu : IsBohrHullFrequency f mu)

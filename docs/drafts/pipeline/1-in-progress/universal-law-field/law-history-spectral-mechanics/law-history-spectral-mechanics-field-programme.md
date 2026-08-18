@@ -8,7 +8,9 @@
   survives this history, not the sum of its local failures.
 - **Status:** [ACTIVE] [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS]
   [ROUTES EXCLUDED FROM FOUNDATIONS] [ULF-LHSM-1 LEAN CORE CLOSED]
-  [HIGHER SPECTRAL REALIZATION OPEN] [NOT RH]
+  [ULF-LHSM-2 FIRST DIFFERENTIAL LEAN-CERTIFIED]
+  [ULF-LHSM-3 HIGHER PAGE CORE LEAN-CERTIFIED]
+  [ULF-LHSM-4 GLOBAL PROPERNESS PAPER-CLOSED] [NOT RH]
 
 ## 1. Fields-medalist pivot
 
@@ -183,6 +185,59 @@ the total history is exact. They are paired by
 
 This kills the idea that local defect counts, signs, or energies can simply accumulate.
 
+ULF-LHSM-2 now constructs the general local differential behind this special cell. For composable
+linear laws `X -f-> Y -g-> Z`,
+
+\[
+ \partial_{f,g}:\ker g\longrightarrow\operatorname{coker}f,
+ \qquad y\longmapsto[y],
+ \tag{LHSM.4a}
+\]
+
+and the canonical kernel--cokernel sequence is exact. Its kernel is the new composite kernel modulo
+the old kernel; its cokernel is exactly the secondary-birth quotient
+`Y/(im f + ker g)`. Hence the first page differential, rather than only the final filtration, is
+now explicit. The composite is invertible exactly when `f` is injective, `g` is surjective, and
+`partial_(f,g)` is an equivalence.
+
+ULF-LHSM-3 closes the iteration law.  For an incoming law `a`, an interval transport `P`, and a
+later law `q`, a later-kernel class in `ker q cap im P` has the canonical higher transgression
+
+\[
+ d_P:\ker q\cap\operatorname{im}P
+ \longrightarrow
+ Y/(\operatorname{im}a+\ker P),
+ \qquad Py\longmapsto[y].
+ \tag{LHSM.4b}
+\]
+
+Its kernel is the next kernel survivor and its cokernel is the next cokernel survivor.  Iterating
+therefore gives a bounded two-row spectral machine whose stable page is the associated graded of
+both the total kernel and total cokernel.  This is the first exact fusion of local transgression,
+future-tail survival, and refactorization mechanics.
+
+ULF-LHSM-4 supplies the fourth, topological organ.  For closed-range Hilbert laws,
+
+\[
+ \operatorname{ran}(gf)\text{ closed}
+ \Longleftrightarrow
+ \operatorname{ran}f+\ker g\text{ closed}
+ \Longleftrightarrow
+ \operatorname{ran}\partial_{f,g}\text{ closed}.
+ \tag{LHSM.4c}
+\]
+
+Thus completion failure occurs at a definite transgression page.  A finite history is globally
+formation-proper exactly when every prefix transgression is strict.  Final closedness alone is too
+weak: a later zero law can hide a nonclosed earlier prefix.
+
+ULF-LHSM-5 closes the universal formation/selection mechanism.  The Hilbert page machine splits
+into orthogonal death layers and one stable sector.  The assembled page response has kernel exactly
+the stable page and is globally proper exactly when all page gaps have a uniform positive lower
+bound.  Any added response factoring through old page formation vanishes on the stable sector.  A
+new organ unlocks selection exactly when it supplies a response bounded below there.  Its finite
+diagonal Hodge normal form is Lean-certified; abstract countable assembly remains paper-proven.
+
 ## 5. Hostile conjecture loops
 
 ### Loop A -- sum all local obstructions
@@ -256,9 +311,9 @@ challenge births, or observer/admission doctrine. No priority claim is made for 
 
 ## 8. Open gates
 
-1. Construct the finite stable-history spectral sequence from coherent cofibres, not only its
-   linear `E_infinity` image filtration.
-2. Prove observer comparison: exact functors preserve pages; left/right exact observers have
+1. Finish Lean packaging of the arbitrary finite page family and its joint reconstruction; the
+   generic higher-page transition is already certified.
+2. Formalize ULF-LHSM-4 and prove observer comparison: exact functors preserve pages; left/right exact observers have
    one-sided page inequalities; nonexact observers create a derived exchange term.
 3. Extend refactorization to the factorization category and prove coherence for two independent
    insertions.
@@ -266,6 +321,9 @@ challenge births, or observer/admission doctrine. No priority claim is made for 
    homology.
 5. Require one source-normal mechanism to predict a withheld theorem in three structurally
    different non-route laboratories.
+6. Construct the literal pre-zero terminal response required by ULF-LHSM-5 and prove it is bounded
+   below on the stable arithmetic history; no post-zero route endpoint may be used as its
+   definition.
 
 ## Log
 
@@ -278,3 +336,14 @@ challenge births, or observer/admission doctrine. No priority claim is made for 
 - 2026-08-10 -- ULF-LHSM-1 Lean-certified; leaf build 8,700 jobs, Universal Law Field umbrella
   build 11,581 jobs, capstone axiom footprint limited to `propext`, `Classical.choice`, and
   `Quot.sound`.
+- 2026-08-18 -- ULF-LHSM-2 paper-closed the first general page differential. The seven-term
+  composition sequence simultaneously reconstructs future-tail kernel survival, secondary
+  carrier birth, split cancellation, composite invertibility, and finite index conservation.
+  The next gate is iteration/coherence of these local differentials, not another route endpoint.
+- 2026-08-18 -- ULF-LHSM-2 Lean-certified and umbrella-wired without an umbrella build.
+- 2026-08-18 -- ULF-LHSM-3 paper-closed the arbitrary higher transgression and stable-page joint
+  reconstruction law. Its generic page-derivation core is Lean-certified and umbrella-wired.
+- 2026-08-18 -- ULF-LHSM-4 paper-closed the closed-range transgression criterion and global
+  prefix-properness theorem, predicting the exact topology page where formation fails.
+- 2026-08-18 -- ULF-LHSM-5 paper-closed pagewise Hodge formation and stable-organ selection.  Its
+  finite diagonal normal form is Lean-certified and umbrella-wired without an umbrella build.

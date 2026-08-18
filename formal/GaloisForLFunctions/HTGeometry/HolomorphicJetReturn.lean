@@ -18,7 +18,8 @@ open Filter Topology
 namespace GaloisForLFunctions
 
 /-- Every iterated derivative of a function holomorphic on an open set is again holomorphic there. -/
-theorem differentiableOn_iteratedDeriv {U : Set ℂ} (hU : IsOpen U) {g : ℂ → ℂ}
+theorem differentiableOn_iteratedDeriv {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+    [CompleteSpace E] {U : Set ℂ} (hU : IsOpen U) {g : ℂ → E}
     (hg : DifferentiableOn ℂ g U) : ∀ j : ℕ, DifferentiableOn ℂ (iteratedDeriv j g) U
   | 0 => by simpa using hg
   | j + 1 => by

@@ -530,3 +530,119 @@ local preparation geometry while permitting permanent non-Haar locality.
 4. Green tail and one-witness bounds `(16)--(17)`;
 5. finite-mesh curve encoder and divergence lower bound `(18)--(21)`;
 6. composition with the eventual Lean version of the cubic static-local plateau.
+
+## Lean progress -- section 4, Theorem B's selection, and Theorem D's inequality
+
+Four new umbrella-wired, axiom-clean modules.
+
+`formal/GaloisForLFunctions/HTGeometry/GateRateDistortion.lean` -- **Theorem C in full**:
+
+| Card item | Declaration |
+|---|---|
+| Gibbs' inequality when the reference vanishes where the encoder does | `relEntropy_nonneg_of_absolutelyContinuous` |
+| the prior conditioned on the admissible set | `condLaw`, `condLaw_nonneg` |
+| **`(15)`**: `D(Q‖π(·\|G)) = D(Q‖π) + log π(G)` | `relEntropy_condLaw` |
+| **`(12)`, lower half**: every admissible encoder pays at least `-log π(G)` | `neg_log_mass_le_relEntropy` |
+| **`(12)`, attainment**: the conditioned prior pays exactly `-log π(G)`, so the infimum is a minimum | `relEntropy_condLaw_eq_neg_log` |
+| splitting a long word into its first `n` letters and the rest | `longWordEquiv`, `wordPrior_append` |
+| **the geometric length tail**: the prior mass of the words of length at least `n` is exactly `aⁿ` | `tsum_wordPrior_long` |
+| **`(16)`**: a set of long words is geometrically light, so the surprisal is at least `(s+1)log(1/a)` | `admissibleMass_le_of_long`, `le_neg_log_admissibleMass` |
+| **`(17)`**: one admissible witness word caps the surprisal | `neg_log_admissibleMass_le` |
+
+`formal/GaloisForLFunctions/HTGeometry/FirstShortestWordSelection.lean` -- **Theorem B's
+measurable selection**:
+
+| Card item | Declaration |
+|---|---|
+| the shortlex key: length first, then the encoding | `wordKey`, `wordKey_injective`, `length_le_of_wordKey_le` |
+| the first shortest qualifying word | `Qualifies`, `firstQualifying`, `firstQualifying_qualifies`, `wordKey_firstQualifying_le` |
+| **the selection cell**: the closed tube minus every earlier tube | `selectionCell`, `mem_selectionCell_iff`, `firstQualifying_eq_iff_mem_selectionCell` |
+| **it is Borel**, hence every fibre of the encoder is Borel | `measurableSet_selectionCell`, `preimage_firstQualifying`, `measurableSet_preimage_firstQualifying` |
+| **the encoder is measurable** into the discrete word space | `measurable_firstQualifying` |
+| **the length identity `\|w_*(x)\| = C_ε(x)`**, both zero when nothing qualifies | `wordComplexity`, `wordComplexity_eq_length_firstQualifying` |
+| hence the robust complexity is measurable | `measurable_wordComplexity` |
+
+`formal/GaloisForLFunctions/HTGeometry/GateCodebookDivergence.lean` -- **Theorem D's `(21)`**:
+
+| Card item | Declaration |
+|---|---|
+| the uniform law on a finite codebook | `hasSum_uniform` |
+| **maximum entropy**: a law on `N` atoms has entropy at most `log N`, so `(20)` bounds `H(W)` | `entropy_le_log_card` |
+| a law whose words are all long has expected length at least that length | `le_expectedLength` |
+| **`(21)`**: `D(q‖π_a) ≥ S log(M/a) − log N − log(1−a)` | `le_relEntropy_wordPrior_of_codebook` |
+
+`formal/GaloisForLFunctions/HTGeometry/CurveCodebook.lean` -- **Theorem D's `(19)`--`(20)`** and
+the encoder word law:
+
+| Card item | Declaration |
+|---|---|
+| a deterministic encoder with Borel fibres pushes a probability measure to a probability law on words | `hasSum_encoderLaw` |
+| **`(19)`--`(20)`**: a `v`-Lipschitz curve on `[0,W]` is reproduced within `ε+δ` by at most `⌈vW/δ⌉+1` shortest words, each of length at least the robust complexity at the wider radius | `exists_curve_codebook` |
+
+The mesh is the one already built for the plateau cluster (`plateauGridCount`,
+`plateauGridPoint`), so `(19)`'s count is literally `plateauGridCount W (δ/v)`.  The maximum-entropy
+bound is the conditioning identity `relEntropy_condLaw` at the constant reference: `D(q‖uniform)`
+is exactly `log N − H(q)`, so Gibbs *is* the max-entropy theorem.
+
+### What remains on this card
+
+Only the continuum joint layer.  `(10)` and Theorem D's `(20)` are stated with `I(X;W)`; for a
+**finite** request variable that is already
+`gateCost_eq_condEntropy_add_mutualInfo_add_relEntropy` (`DiscreteMutualInformation`), and for a
+deterministic encoder `I(X;W_*) = H(W_*)`, so the substantive content of `(10)` is
+`gateCost_eq_entropy_add_relEntropy` applied to the pushforward law `hasSum_encoderLaw`.  What is
+not yet formalized is the mutual information of a *continuum* request variable with a discrete word
+variable, together with the change of variables `E C_ε(X) = ∑_w q_*(w)\|w\|` that identifies the
+expected complexity with the expected word length of the pushforward law.
+
+## Lean progress -- Theorem B `(10)` is closed, and `(25)`
+
+Two further umbrella-wired, axiom-clean modules complete every displayed equation of sections 1--5.
+
+`formal/GaloisForLFunctions/HTGeometry/EncoderSelectionInformation.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a countable-codomain map is measurable, and change of variables through it | `measurable_of_countable_domain`, `integral_comp_encoder` |
+| **the conditional word law of a deterministic encoder**: the point mass at the encoded word | `detKernel`, `detKernel_nonneg`, `hasSum_detKernel` |
+| **it really is the conditional law**: its integral over a measurable state set is the joint mass | `setIntegral_detKernel` |
+| **its entropy vanishes at every state**, so the conditional entropy of the word given the state is zero | `entropy_detKernel`, `condEntropyEncoder`, `condEntropyEncoder_detKernel` |
+| **selection information** `I(X;W) = H(W) − H(W\|X)`, and `= H(W)` for a deterministic encoder | `selectionInfo`, `selectionInfo_eq_entropy` |
+| **the expected robust complexity is the expected word length of the word law** | `integral_wordComplexity_eq_expectedLength` |
+| **`(10)`**: `log(M/a)·E C_ε(X) = I(X;W_*) + D(q_*‖π_a) + log(1−a)` | `gateCost_firstQualifying` |
+
+`formal/GaloisForLFunctions/HTGeometry/WitnessWordDivergence.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the one-word codebook | `pointLaw`, `hasSum_pointLaw` |
+| it carries no selection information | `entropy_pointLaw` |
+| its synthesis divergence is the surprisal of that word | `relEntropy_pointLaw` |
+| **`(25)`**: `D(δ_{w₀}‖π_a) = −log(1−a) + \|w₀\|·log(M/a)` | `relEntropy_pointLaw_wordPrior` |
+
+`(10)` is now unconditional in the card's own sense: the request variable ranges over an arbitrary
+metric state space with a probability measure, the encoder is the first-shortest-word selector, and
+`I(X;W_*)` is the genuine `H(W) − H(W|X)` computed from the verified conditional kernel — not a
+notational identification.  The only hypotheses are the card's own: `C_ε` integrable, and the three
+summability conditions the cross-entropy identity consumes.
+
+### Card status
+
+Lean-plan items 1--5 are complete:
+
+1. `(1)`--`(2)` — `wordPrior`, `hasSum_wordPrior`;
+2. `(4)`--`(10)` — `gateCost_eq_entropy_add_relEntropy`,
+   `gateCost_eq_condEntropy_add_mutualInfo_add_relEntropy`, `gateCost_firstQualifying`;
+3. `(12)`--`(15)` — `relEntropy_condLaw`, `neg_log_mass_le_relEntropy`,
+   `relEntropy_condLaw_eq_neg_log`;
+4. `(16)`--`(17)` — `tsum_wordPrior_long`, `le_neg_log_admissibleMass`,
+   `neg_log_admissibleMass_le`;
+5. `(18)`--`(21)` — `exists_curve_codebook`, `entropy_le_log_card`,
+   `le_relEntropy_wordPrior_of_codebook`.
+
+Item 6 — the composition `(22)`--`(26)` with the full-scale continuous plateau — is the only
+residue, and by the card's own statement it is barred until the parent
+`cubic-phase-seeded-static-local-full-scale-plateau-law` passes the formal gate.  Every input that
+composition needs on *this* side is now formal: `(23)` is `entropy_le_log_card` at the mesh count
+`plateauGridCount`, `(24)` is `le_relEntropy_wordPrior_of_codebook`, and `(25)` is
+`relEntropy_pointLaw_wordPrior`.

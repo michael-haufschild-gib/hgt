@@ -554,3 +554,42 @@ two-design identity and its contraction, are internal to that proof.
 
 Theorem B (all-late common-time near-maximal state complexity) and Theorem C (one fixed pair stays
 hard continuously for doubly-exponential time).
+
+## Lean progress -- Theorem C, the continuous plateau
+
+`formal/GaloisForLFunctions/HTGeometry/ContinuousPlateauGrid.lean` (new, umbrella-wired,
+axiom-clean) proves Theorem C in the exact generality its proof uses: a uniform orbit speed, a
+positive radius gap, and a family of one-time smallness bounds.  Nothing about circuits,
+stabilizers or Pauli architecture enters, so the same theorem serves every card in the cluster
+whose late-time clause is a grid statement.
+
+| Card item | Declaration |
+|---|---|
+| `unitaryEvolution H t = unitaryEvolution (tH) 1` | `unitaryEvolution_eq_smul_time` |
+| **`(23)`--`(24)` in operator form**: `‖e^{-itH} − e^{-iuH}‖ ≤ ‖H‖·\|t−u\|` | `norm_unitaryEvolution_time_sub_le` |
+| the same on a state | `norm_unitaryEvolution_mulVec_time_sub_le` |
+| **uniform orbit speed** for a family of generators of norm at most `speed` on unit seeds | `dist_unitaryOrbit_le` |
+| the window grid `N_W = ⌈W·speed/γ⌉+1` and its points | `plateauGridCount`, `plateauGridPoint`, `one_le_plateauGridCount` |
+| every window time is within one mesh of a grid point | `exists_plateauGrid_near` |
+| **`(25)`**: a shortcut at radius `ε₋` at time `t` is a shortcut at radius `ε₊` at every time within `γ/speed` | `easySet_subset_of_speed` |
+| **`(19)`, union-bound form**: grid smallness on the good set gives whole-window hardness | `measureReal_forall_notMem_ge` |
+| **`(19)`**: from the late fixed-time bound, one time `T` beyond which *every* origin `A ≥ T` works | `exists_time_forall_interval_hard` |
+| **`(19)`--`(21)` assembled with the speed mesh** | `exists_time_forall_interval_hard_of_speed` |
+
+`measureReal_forall_notMem_ge` uses only monotonicity and subadditivity of the measure, so no
+measurability hypothesis on the shortcut events is needed: the bad set is covered by
+`Gᶜ ∪ ⋃ⱼ (G ∩ easy_{ε₊}(tⱼ))` and the complement bound comes from
+`1 = μ(univ) ≤ μ(bad) + μ(badᶜ)`.  The uniform speed `√m` of `(23)` is
+`opNorm_pauliCombination_le_sqrt_card` on the coefficient unit sphere.
+
+`(20)`--`(22)` are arithmetic consequences of the displayed grid count: with `speed = √m` and
+`γ = ε₊ − ε₋`, `plateauGridCount W (γ/√m) = ⌈W√m/γ⌉ + 1 = N_W`, so `N_W ≤ 2^{r/4}` is exactly the
+card's condition and `W = γ(2^{r/4} − 2)/√m` its inverse.
+
+### What remains
+
+Theorem B alone.  Its capture bound `(15)`--`(16)` is already the corpus theorem
+`measureReal_capture_le_return_add_two_rpow_of_design`; what `(13)` still needs is the angular
+equidistribution `(17)`, which is Theorem B of the parent card
+`fixed-shell-angular-dephasing-static-local-plateau-law`, together with the Portmanteau upper
+bound against the closed low-circuit event.

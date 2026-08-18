@@ -454,3 +454,34 @@ no spectral decomposition is needed.
 The construction of the concrete data: the symmetric projection `Π_sym` of `(19)` with
 `Tr Π_sym = h_{D,r}`, the moment `M_ν` of `(20)` with its support projection, and the twirl identity
 `(21)`.  Theorems A and B are untouched.
+
+## Lean progress -- Theorems A and B
+
+`formal/GaloisForLFunctions/HTGeometry/CentralizerCenteredTransfer.lean` (new, umbrella-wired,
+axiom-clean) proves Theorem A in full and every displayed equation of Theorem B that does not
+depend on the concrete replica data.
+
+| Card item | Declaration |
+|---|---|
+| a symmetric idempotent splits every vector orthogonally | `inner_selfAdjointIdempotent_complement_eq_zero` |
+| hence its complement is a contraction | `norm_sub_selfAdjointIdempotent_le` |
+| **`(3)`, first equality**: the defect pairs only against `(I-P)M` | `centralizerCentered_inner_eq_complement` |
+| **`(3)`, second equality**: and only against `(I-Π)M` for any kernel subspace | `centralizerCentered_inner_eq_subspace_complement` |
+| **`(3)`/`(10)`**: `⟨Ux,M⟩ − ⟨Px,M⟩ = ⟨(U−P)x, (I−P)M⟩` | `centralizerCentered_defect_eq` |
+| **`(4)`, first inequality** | `norm_centralizerCentered_defect_le` |
+| **`(4)`, second inequality/`(11)`**: `≤ ‖x‖·‖(I−Π)M‖` | `norm_centralizerCentered_defect_le_subspace` |
+| **`(12)`**: a target inside the kernel subspace has zero defect at every time | `centralizerCentered_defect_eq_zero` |
+| **`(9)`**: one word above threshold makes the scaled replica average at least one | `one_le_card_mul_inv_pow_mul_average` |
+
+The propagator enters only through the three algebraic facts its functional calculus supplies —
+`U P = P`, `P U = P` and `‖U y‖ = ‖y‖` — so `(5)` is a hypothesis rather than a step, and the same
+theorems apply to `e^{-itL_{H,r}}` on Hilbert–Schmidt space, to any spectral projection, and to any
+subspace `N ⊆ ker L`.  The key inequality `‖(I−P)M‖ ≤ ‖(I−Π)M‖` is proved by writing
+`(I−P)M = (I−P)(I−Π)M`, which uses only `PΠ = Π`.
+
+### What remains
+
+The construction of the concrete data: the symmetric projection `Π_sym` of `(19)` with
+`Tr Π_sym = h_{D,r}`, the moment `M_ν` of `(20)` with its support projection, the twirl identity
+`(21)`, and the completed-phase Steinhaus moment `(14)`--`(16)`.  Everything the card states in
+`(3)`, `(4)`, `(9)`--`(12)` and `(22)`--`(28)` is now Lean-proved and axiom-clean.

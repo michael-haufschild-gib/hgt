@@ -556,3 +556,36 @@ depolarizing identity gives `K = 2D²·id - 2D·tr(·)I` exactly, so `K` is exac
 traceless space.  The corpus already carries the Pauli basis, orthogonality, involution and
 tracelessness facts (`FiniteQubitPauliBasisLaw`) and the collective-Casimir centrality
 (`AllReplicaCollectivePauliCasimir`), so that specialization is the natural next step.
+
+### Addendum -- the one-replica lower half of `(16)`, exactly
+
+`formal/GaloisForLFunctions/HTGeometry/FinitePauliDepolarizing.lean` (new, umbrella-wired,
+axiom-clean) proves the elementary route the card names: at one replica the Casimir is not merely
+bounded below by `2D²` on `Q`, it *equals* `2D²` there.
+
+| Card item | Declaration |
+|---|---|
+| the single-qubit swap identity `∑_p p_{ab} p_{cd} = 2 δ_{ad} δ_{bc}` | `sum_boolPauliOption_entry_mul` |
+| its register form `∑_L (P_L)_{ru}(P_L)_{vc} = 2^n δ_{rc} δ_{uv}` | `sum_finitePauliMatrix_entry_mul` |
+| **the Pauli depolarizing identity** `∑_L P_L X P_L = 2^n (Tr X) I` — the exact one-design property of the full Pauli family | `sum_finitePauliMatrix_conj` |
+| the commutator action and its square `ad(P)²X = 2X − 2PXP` for an involution | `pauliAd`, `pauliAd_sq` |
+| **the full-Pauli Casimir at one replica**: `K X = 2D² X − 2D (Tr X) I` | `sum_pauliCasimir_eq` |
+| **`(16)`, lower half at one replica**: `K X = 2D² X` on the traceless operators | `sum_pauliCasimir_traceless` |
+
+The identity Pauli label contributes `ad(1) = 0`, so summing over *all* `4^n` labels is the same as
+summing over the `D²−1` nonidentity ones; that is what makes the depolarizing identity applicable
+without excising a label.  Since `N = ⋂_q ker A_q` is the scalar line and `Q = N^⊥` is the traceless
+space, `sum_pauliCasimir_traceless` is exactly `2D² I_Q = K|_Q`, with the sharp constant.
+
+The register form is proved by turning the label sum into a product of local sums
+(`Finset.prod_univ_sum` over `Fintype.piFinset`), so no representation theory and no root-lattice
+input is used at one replica.
+
+### What remains on this card
+
+The lower half of `(16)` for a general replica set `R`.  The collective generator
+`∑_{j∈R} P_q^{(j)}` is not an involution, so the depolarizing route above does not transfer
+verbatim; the card's own derivation from the least nonzero quadratic Casimir of `SU(D)` on the root
+lattice is Lie-theoretic input mathlib does not carry.  Everything else on the card -- Theorem A,
+Theorem B, `(6)`, `(7)`, the upper half of `(16)`, `(23)`, `(24)`, Lemma D's engine, and now the
+one-replica lower half of `(16)` -- is Lean-proved and axiom-clean.

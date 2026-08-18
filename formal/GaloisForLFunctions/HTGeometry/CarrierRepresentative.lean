@@ -22,7 +22,8 @@ open scoped BoundedContinuousFunction
 
 namespace GaloisForLFunctions
 
-variable {F : ℂ → ℂ} {σ R r : ℝ}
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+variable {F : ℂ → E} {σ R r : ℝ}
 
 theorem mem_closedStrip_line (hr : 0 ≤ r) (σ : ℝ) (t : ℝ) :
     ((σ : ℂ) + (t : ℂ) * Complex.I) ∈ closedStrip σ r := by
@@ -31,12 +32,13 @@ theorem mem_closedStrip_line (hr : 0 ≤ r) (σ : ℝ) (t : ℝ) :
   rw [this]
   simpa using hr
 
+omit [NormedSpace ℂ E] in
 /-- The strip evaluation of the image of a line-carrier point, read on the central line, is the
 line evaluation. -/
 theorem bohrEval_strip_line (hr : 0 ≤ r)
-    {f : ℝ →ᵇ ℂ} (_hfu : UniformContinuous (fun x => f x))
+    {f : ℝ →ᵇ E} (_hfu : UniformContinuous (fun x => f x))
     (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
-    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ ℂ)}
+    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ E)}
     (hGb : ∀ (τ : ℝ) (z : closedStrip σ r), Gb τ z = F ((z : ℂ) + (τ : ℂ) * Complex.I))
     {ν : BohrHull f → BohrHull Gb} (hν : Continuous ν)
     (hνι : ∀ t : ℝ, ν (bohrIota f t) = bohrIota Gb t) (t : ℝ) (x : BohrHull f) :
@@ -60,15 +62,15 @@ theorem bohrEval_strip_line (hr : 0 ≤ r)
 /-- **Every line-carrier point has a holomorphic representative solving the relation.** -/
 theorem exists_holomorphic_rep (hr : r < R) (hr0 : 0 ≤ r)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R))
-    {n : ℕ} {P : (Fin n → ℂ) → ℂ} (hP : Continuous P)
+    {n : ℕ} {P : (Fin n → E) → ℂ} (hP : Continuous P)
     (hrel : ∀ z ∈ verticalStrip σ R, P (fun k => iteratedDeriv (k : ℕ) F z) = 0)
-    {f : ℝ →ᵇ ℂ} (hfu : UniformContinuous (fun x => f x))
+    {f : ℝ →ᵇ E} (hfu : UniformContinuous (fun x => f x))
     (hf : ∀ x : ℝ, f x = F ((σ : ℂ) + (x : ℂ) * Complex.I))
-    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ ℂ)}
+    {Gb : ℝ →ᵇ ((closedStrip σ r) →ᵇ E)}
     (hGb : ∀ (τ : ℝ) (z : closedStrip σ r), Gb τ z = F ((z : ℂ) + (τ : ℂ) * Complex.I))
     {ν : BohrHull f → BohrHull Gb} (hν : Continuous ν)
     (hνι : ∀ t : ℝ, ν (bohrIota f t) = bohrIota Gb t) (x : BohrHull f) :
-    ∃ g : ℂ → ℂ, DifferentiableOn ℂ g (verticalStrip σ r) ∧
+    ∃ g : ℂ → E, DifferentiableOn ℂ g (verticalStrip σ r) ∧
       (∀ z : closedStrip σ r, g (z : ℂ) = bohrEval Gb (ν x) z) ∧
       (∀ t : ℝ, g ((σ : ℂ) + (t : ℂ) * Complex.I) = bohrEval f (x + bohrIota f t)) ∧
         ∀ z ∈ verticalStrip σ r, P (fun k => iteratedDeriv (k : ℕ) g z) = 0 := by
@@ -126,9 +128,9 @@ variable {ρ : ℝ}
 functions given by bounded continuous functions on a substrip have jets differing by at most the
 Cauchy factor times the sup-distance of those functions. -/
 theorem norm_jet_sub_le_dist (hρ : 0 < ρ) (hr : r + ρ < R)
-    {g h : ℂ → ℂ} (hgdiff : DifferentiableOn ℂ g (verticalStrip σ R))
+    {g h : ℂ → E} (hgdiff : DifferentiableOn ℂ g (verticalStrip σ R))
     (hhdiff : DifferentiableOn ℂ h (verticalStrip σ R))
-    {u v : (closedStrip σ (r + ρ)) →ᵇ ℂ}
+    {u v : (closedStrip σ (r + ρ)) →ᵇ E}
     (hgval : ∀ z : closedStrip σ (r + ρ), g (z : ℂ) = u z)
     (hhval : ∀ z : closedStrip σ (r + ρ), h (z : ℂ) = v z)
     (k : ℕ) : ∀ z ∈ closedStrip σ r,
@@ -143,9 +145,9 @@ end JetContinuity
 
 /-- Continuity of a jet coordinate along a family of representatives. -/
 theorem continuous_jet_of_representatives (hρ : 0 < ρ) (hrpos : 0 < r) (_hlt : r < r + ρ)
-    {f : ℝ →ᵇ ℂ} {Gb : ℝ →ᵇ ((closedStrip σ (r + ρ)) →ᵇ ℂ)}
+    {f : ℝ →ᵇ E} {Gb : ℝ →ᵇ ((closedStrip σ (r + ρ)) →ᵇ E)}
     {ν : BohrHull f → BohrHull Gb} (hν : Continuous ν)
-    {rep : BohrHull f → (ℂ → ℂ)}
+    {rep : BohrHull f → (ℂ → E)}
     (hrepdiff : ∀ x, DifferentiableOn ℂ (rep x) (verticalStrip σ (r + ρ)))
     (hrepval : ∀ (x : BohrHull f) (z : closedStrip σ (r + ρ)),
       rep x (z : ℂ) = bohrEval Gb (ν x) z)

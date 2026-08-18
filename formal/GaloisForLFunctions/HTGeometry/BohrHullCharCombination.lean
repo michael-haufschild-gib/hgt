@@ -84,7 +84,7 @@ section Hull
 
 open HTGeometry
 
-variable {f : ℝ →ᵇ ℂ}
+variable {E : Type*} [NormedAddCommGroup E] {f : ℝ →ᵇ E}
 
 theorem isBohrHullFrequency_intCombination {k : ℕ} {b : Fin k → ℝ}
     (hb : ∀ i, IsBohrHullFrequency f (b i)) (n : Fin k → ℤ) :

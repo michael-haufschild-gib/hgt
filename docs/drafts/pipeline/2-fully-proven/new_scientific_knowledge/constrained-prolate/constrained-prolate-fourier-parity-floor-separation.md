@@ -4129,3 +4129,58 @@ bounded one.  The three now read:
 
 so `exp` of the exponent is `O(c^{-2(n-m)+ε})` for every `ε > 0`: the sharp per-step ratio, at the
 canonical family, with every ingredient a theorem in the tree.
+
+## The `lambda^{-4}` rate in claim (8) is formalized
+
+`exists_bound_signedLeakage_ratio_power` (`RHTower/ProlateSharpLeakageRatio.lean`, axiom-clean):
+
+```lean
+theorem exists_bound_signedLeakage_ratio_power (m n : ℕ) (hmn : m < n) :
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ a : ℝ in atTop,
+      evenProlateSignedLeakage a m
+        ≤ C / signedModeRadialBandwidth a ^ (2 * (n - m)) * evenProlateSignedLeakage a n
+```
+
+Index bookkeeping: this card's `d_4` and `d_6` sit at Hermite rungs `4` and `6`, i.e. at corpus
+signed indices `2` and `3`.  So `n − m = 1` and the power is `c^{-2} = λ^{-4}` — exactly the rate
+asserted in `(8)`,
+
+```text
+mu_+/mu_-  ~  [13 A_4/(11 A_6)] lambda^{-4} .
+```
+
+The qualitative half of `(8)` (`mu_+/mu_- → 0`) and the whole of `(9)` were already Lean-proved as
+`tendsto_constrainedProlateParity_ratio_zero` and `constrainedProlateParity_separation`; this
+supplies the missing rate.
+
+Still open on this card: the constants `8/11` and `8/13` of `(5)`–`(6)`, and the gap bound `(10)`.
+
+### Correction: `(5)`, `(6)` and `(10)` were already formalized
+
+A note added above said the constants `8/11`, `8/13` and the gap bound `(10)` were still open.  That
+was wrong — it was written without searching the corpus.  All three are Lean-proved and axiom-clean
+in `RHTower/ProlateNegativeSectorLadder.lean`:
+
+```text
+constrainedProlatePositive_ground_ratio_tendsto   (5)   root / D 1  →  8/11
+constrainedProlateNegative_ground_ratio_tendsto   (6)   root / D 1  →  8/13
+constrainedProlateNegative_gap_ratio_tendsto      (10)  (D 1 − root)/D 1  →  5/13
+constrainedProlatePositive_gap_ratio_tendsto            the positive-sector partner, 3/11
+```
+
+together with `constrainedProlateParity_normalized_ratio_tendsto` and
+`constrainedProlatePositive_spectralGap_eventually`.
+
+**So this card's claims are complete:**
+
+| claim | status |
+|---|---|
+| `(5)` `mu_+/d_4 → 8/11` | `constrainedProlatePositive_ground_ratio_tendsto` |
+| `(6)` `mu_-/d_6 → 8/13` | `constrainedProlateNegative_ground_ratio_tendsto` |
+| `(8)` `mu_+/mu_- → 0` | `tendsto_constrainedProlateParity_ratio_zero` |
+| `(8)` rate `lambda^{-4}` | `exists_bound_signedLeakage_ratio_power` at `n − m = 1` |
+| `(9)` `mu_+ < mu_-`, `mu_- − mu_+ ~ mu_-` | `constrainedProlateParity_separation` |
+| `(10)` `liminf ≥ 5/13` | `constrainedProlateNegative_gap_ratio_tendsto` (the limit *is* `5/13`) |
+
+The `O(lambda^{-7})` eigenvector rate quoted at the end of the Theorem section is the parent card's
+claim `(4)`, audited there.

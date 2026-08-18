@@ -91,29 +91,29 @@ theorem sum_mul_pow_eq_zero {S : Finset ℂ} {C : ℂ → ℂ}
   simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one] at this
   exact this.symm
 
-/-- **Characters with distinct exponents are independent.**  A vanishing finite combination of
-`t ↦ e^{y t}` over distinct complex `y` has all coefficients zero. -/
-theorem exp_coeff_eq_zero {S : Finset ℂ} {C : ℂ → ℂ}
-    (h : ∀ t : ℝ, ∑ y ∈ S, C y * Complex.exp (y * t) = 0) : ∀ y ∈ S, C y = 0 := by
+/-- **Lagrange interpolation kills the moments.**  If every power moment of a finite family of
+weights over distinct complex nodes vanishes, the weights vanish. -/
+theorem coeff_eq_zero_of_forall_pow {S : Finset ℂ} {D : ℂ → ℂ}
+    (h : ∀ k : ℕ, ∑ y ∈ S, D y * y ^ k = 0) : ∀ y ∈ S, D y = 0 := by
   classical
   intro y₀ hy₀
   set p : Polynomial ℂ := ∏ y ∈ S.erase y₀, (Polynomial.X - Polynomial.C y) with hp
-  have hev : ∑ y ∈ S, C y * p.eval y = 0 := by
-    have hexp : ∀ y : ℂ, C y * p.eval y
-        = ∑ i ∈ Finset.range (p.natDegree + 1), p.coeff i * (C y * y ^ i) := by
+  have hev : ∑ y ∈ S, D y * p.eval y = 0 := by
+    have hexp : ∀ y : ℂ, D y * p.eval y
+        = ∑ i ∈ Finset.range (p.natDegree + 1), p.coeff i * (D y * y ^ i) := by
       intro y
       rw [Polynomial.eval_eq_sum_range, Finset.mul_sum]
       exact Finset.sum_congr rfl (fun i _ => by ring)
     rw [Finset.sum_congr rfl (fun y (_ : y ∈ S) => hexp y), Finset.sum_comm]
     refine Finset.sum_eq_zero (fun i _ => ?_)
-    rw [← Finset.mul_sum, sum_mul_pow_eq_zero h i, mul_zero]
-  have hzero : ∀ y ∈ S.erase y₀, C y * p.eval y = 0 := by
+    rw [← Finset.mul_sum, h i, mul_zero]
+  have hzero : ∀ y ∈ S.erase y₀, D y * p.eval y = 0 := by
     intro y hy
-    have : p.eval y = 0 := by
+    have hpy : p.eval y = 0 := by
       rw [hp, Polynomial.eval_prod]
       exact Finset.prod_eq_zero hy (by simp)
-    rw [this, mul_zero]
-  have hsplit : ∑ y ∈ S, C y * p.eval y = C y₀ * p.eval y₀ := by
+    rw [hpy, mul_zero]
+  have hsplit : ∑ y ∈ S, D y * p.eval y = D y₀ * p.eval y₀ := by
     rw [← Finset.add_sum_erase S _ hy₀, Finset.sum_eq_zero hzero, add_zero]
   rw [hsplit] at hev
   have hne : p.eval y₀ ≠ 0 := by
@@ -122,6 +122,12 @@ theorem exp_coeff_eq_zero {S : Finset ℂ} {C : ℂ → ℂ}
     simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_ne_zero]
     exact fun hcon => (Finset.ne_of_mem_erase hy) hcon.symm
   exact (mul_eq_zero.mp hev).resolve_right hne
+
+/-- **Characters with distinct exponents are independent.**  A vanishing finite combination of
+`t ↦ e^{y t}` over distinct complex `y` has all coefficients zero. -/
+theorem exp_coeff_eq_zero {S : Finset ℂ} {C : ℂ → ℂ}
+    (h : ∀ t : ℝ, ∑ y ∈ S, C y * Complex.exp (y * t) = 0) : ∀ y ∈ S, C y = 0 :=
+  coeff_eq_zero_of_forall_pow (fun k => sum_mul_pow_eq_zero h k)
 
 /-! ## The unfolding is well defined -/
 

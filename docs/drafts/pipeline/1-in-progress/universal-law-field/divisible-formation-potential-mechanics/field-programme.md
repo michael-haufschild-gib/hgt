@@ -3,7 +3,7 @@
 - **ID:** ULF-DFPM-FIELD
 - **Stage:** 1-in-progress
 - **Type:** FIELD PROGRAMME / SELECTION MECHANISM
-- **Status:** [MECHANISM, NOT OBJECT] [EXACT RH EQUIVALENCE PROVED] [SOURCE ROOT GENESIS OPEN]
+- **Status:** [MECHANISM, NOT OBJECT] [EXACT RH EQUIVALENCE PROVED] [SELECTION CORE LEAN-CERTIFIED] [SOURCE ROOT GENESIS OPEN]
 
 ## 1. Core reinterpretation
 
@@ -234,6 +234,13 @@ packet amplification of this finite ambidextrous defect.
 
 This is an exact selection mechanism.  It is not an RH proof because source genesis of the roots is
 open.
+
+The abstract selection law is now Lean-certified in
+`ConstitutiveDivisibleFormationSelection`: power-additive integer charge plus unbounded effective
+formation roots implies zero charge, and the meromorphic specialization kills every finite divisor
+order.  The field frontier is therefore no longer selection algebra.  It is **effective root
+genesis on the original pre-zero base**.  Ramified covers and root stacks do not suffice because
+they retain divisor charge as isotropy rather than descend it.
 
 ## 4. Why this may be the sought higher theory
 

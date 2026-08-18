@@ -867,3 +867,83 @@ equivariant for the hull flow: `Φ_t (x + bohrIota f s) = Φ_(t+s) (x)`, because
 
 `exists_ne_zero_of_dense_translates` yields `(9)`, the last hypothesis of
 `rank_bohrSpectrum_le_of_autonomous_strip_solution`.
+
+## Lean progress — §4 is replaced by a relative cube argument, and the carrier layer is vector valued
+
+Three obstructions the card named have been removed.
+
+### `(20)`–`(22)`: no Pontryagin exact sequence is needed
+
+The relative rank bound follows from the *same* cube argument as the absolute one, with the
+parameter subgroup arranged to land in the fibre:
+
+```text
+HTGeometry/RelativeFrequencyDual.lean
+    exists_rat_linear_dual_general     an independent family of a ℚ-vector space extends to real
+                                       coordinates
+    exists_rat_linear_dual_rel         real coordinates killing a prescribed rational subspace
+    exists_nsmul_mem_of_mem_span_rat   an element of the rational span of a subgroup has an integral
+                                       multiple inside the subgroup
+    linearIndependent_mkQ_of_int       hence ℤ-independence modulo a subgroup is ℚ-independence
+                                       modulo its rational span
+HTGeometry/RelativeHullChartRank.lean
+    bohrHullKernel f W                 the fibre: the carrier points where every character coming
+                                       from `W` is trivial
+    exists_continuous_hullParameter_rel  the parameter subgroup lies in the fibre
+    card_le_of_hull_charts_rel         charts injective *only on the fibre* bound an independent
+                                       frequency packet modulo the subgroup
+    rank_quotient_bohrHullFrequencies_le_of_charts_rel
+        rank_ℤ (Γ(X) ⧸ Γa) ≤ k
+```
+
+The mechanism: choose the `ℚ`-linear coordinate package to kill the rational span of `Γa`; then every
+character of the parameter subgroup is trivial on `Γa`, so the cube it sweeps lies in `K = ker π`.
+**No bound on `Γa` itself enters** — which is exactly the card's attack #1, an infinite-dimensional
+coefficient carrier.  Neither Pontryagin duality nor the identity `dim K = rank dual(K)` is used.
+
+### `(9)`–`(10)`: the carrier is now valued in a complex Banach space
+
+The joint hull of `(a, f)` is the carrier of an `ℝ →ᵇ ℂ^(N+1)`.  The whole Bohr and strip carrier
+apparatus, previously stated for scalar functions, is now general in the codomain:
+
+```text
+BohrHullCharacter, BohrHullPullback, BohrHullFrequency, BohrHullCharCombination,
+BohrHullTorusQuotient, BohrHullKroneckerHom, BohrHullDual, BohrHullSeparation,
+BohrHullCharRealization, BohrHullParameterSubgroup, HullChartFrequencyRank
+    IsBohrHullFrequency, bohrHullChar, bohrHullFrequencies, exists_bohrHull_char_eq,
+    bohrHullChar_separates, exists_continuous_hullParameter, card_le_of_hull_charts
+VerticalAlmostPeriodicDerivative, StripAlmostPeriodicBounds, StripThreeLinesTransfer,
+StripTranslateCurve, LineJetTransfer, JetSampleAtlas, StripHullHolomorphic,
+StripRelationPropagation, LineStripCarrier, StripSolutionPhaseRank
+    IsStripAlmostPeriodic, exists_strip_curve, exists_holomorphic_of_hull,
+    relation_of_translate_limit, exists_carrier_representatives
+```
+
+`lake build GaloisForLFunctions.HTGeometry` succeeds after the change, so the ~130 modules that use
+these names are unaffected: the generalization is source-compatible.
+
+The relation of the card is *autonomous in the composite jet* `(a(z), f(z), …, f^(n)(z))`, so the
+object to carry is the pair, and the propagation `(10)` is the existing relation propagation applied
+to it.
+
+### `(16)`: the implicit-function step with varying coefficients
+
+```text
+HTGeometry/ODEJetSeparationTimeDep.lean       nonautonomous ODE uniqueness for the jet vector
+HTGeometry/ImplicitLipschitzConst.lean        the implicit branch with its Lipschitz constant named:
+                                              it depends only on the dominance datum, so a moving
+                                              family of relations shares one constant
+HTGeometry/StripJetSeparationTimeDep.lean     eqOn_of_line_jet_eq_implicit_timeDep and its local form
+HTGeometry/CarrierRepresentativeRel.lean      carrier_eq_of_jet_eq_rel and its local form: two
+                                              carrier points whose representatives share the first
+                                              component are separated by the jets of the second
+HTGeometry/HullComparisonMorphism.lean        hullMap, its character and evaluation compatibilities,
+                                              and hullMap_eq_zero_of_char_eq_one
+HTGeometry/ImplicitRelativeFrequency.lean     eqOn_rep_fst_of_mem_bohrHullKernel — on the fibre the
+                                              coefficients return — and the assembled bound
+                                              rank_quotient_le_of_regular_jets_rel
+```
+
+The bound obtained is `2n`, sharper than the card's `2m(n+1)`: the separation uses the jets of
+orders `0 … n−1` of the second component only, because the top jet is recovered from the relation
+wherever the separant dominates.

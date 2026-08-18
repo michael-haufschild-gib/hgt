@@ -125,13 +125,14 @@ formal/GaloisForLFunctions/HTGeometry/IntervalSeparation.lean
 formal/GaloisForLFunctions/HTGeometry/SturmComparisonArch.lean
 formal/GaloisForLFunctions/HTGeometry/ArchCount.lean
 formal/GaloisForLFunctions/HTGeometry/SturmWindowCount.lean
+formal/GaloisForLFunctions/HTGeometry/AccumulationZeros.lean
+formal/GaloisForLFunctions/HTGeometry/ExpPolyIsolatedZeros.lean
 ```
 
 ## Open
 
-* Finiteness and alternation of the zero set of an exponential polynomial on a compact interval —
-  the real-analyticity input identified above. With it, the descent step proved here iterates to a
-  full Pólya-type bound; without it, the effective count does not close by this route.
+* Compactness bookkeeping: from isolated zeros (now proved) to finitely many on `[a,b]`, and the
+  assembly of the alternating window family that the descent consumes. No analytic input remains.
 
 ## The Sturm engine
 
@@ -186,17 +187,40 @@ where `L_j = D² − 2β_jD + (β_j²+γ_j²)` removes the `j`-th conjugate pair
 is scaled by `(λ−β_j)² + γ_j² ≠ 0`, and the recursion bottoms out at a real exponential sum, counted
 by `laguerre_zeroList_length_le`).
 
-**Verdict on the effective count.** The counting side is finished; the obstruction is elsewhere. To
-run the descent one must first know the *structure* of the zero set of `f` on `[a,b]` — that it is
-finite, and that the arches alternate so that windows can be formed. Both are real-analyticity facts
-(zeros of a nonzero real-analytic function are isolated; a compact interval therefore carries
-finitely many), requiring an identity-theorem argument for exponential polynomials and a
-real-analyticity API for `t ↦ e^{βt}cos(γt)` that neither mathlib nor the corpus supplies.
+## The structural input, without real-analyticity
 
-That is a different project from the Sturm/counting work, and the effective count is retired from
-this thread pending it. **The criterion itself is unaffected**: `le_iff_forall_separating_interval`
-is exact and usable whenever the hump structure is known, and the count above bounds it explicitly
-wherever the Sturm expression keeps one sign.
+The descent needs to know that the zero set of `f` on `[a,b]` is discrete. That looked like a
+real-analyticity project; it is not. Rolle suffices.
+
+**Accumulation forces all derivatives to vanish.** Write `AccumZero f t₀` for "zeros of `f`
+accumulate at `t₀`". If `f` is smooth then
+
+```
+  iteratedDeriv_eq_zero_of_accumZero :  AccumZero f t₀ → ∀ n, iteratedDeriv n f t₀ = 0
+```
+
+`AccumulationZeros`. The engine is `accumZero_deriv`: between `t₀` and a nearby zero, Rolle gives a
+zero of `f'` **strictly closer** to `t₀`, so accumulation propagates from `f` to `f'`, and continuity
+turns accumulation into vanishing at each stage. No analyticity, no identity theorem, no power
+series.
+
+**Identity theorem for exponential polynomials.** Differentiating an exponential polynomial
+multiplies each coefficient by its exponent, so the vanishing derivatives at `t₀` are exactly the
+power moments of the weights `C y · e^{y t₀}` over the distinct nodes `y`; Lagrange interpolation
+(`coeff_eq_zero_of_forall_pow`, factored out of `exp_coeff_eq_zero`) forces those weights, hence the
+coefficients, to vanish:
+
+```
+  coeff_eq_zero_of_accumZero :  (im part ≡ 0) → AccumZero (re ∘ F) t₀ → ∀ y ∈ S, C y = 0
+```
+
+`ExpPolyIsolatedZeros`, with the contrapositive `not_accumZero_of_coeff_ne` and the concrete
+punctured-neighbourhood form `exists_punctured_zero_free`.
+
+So the zeros of a nonzero exponential polynomial are isolated, and the structural hypothesis of the
+Sturm descent is available. What remains between here and a full Pólya bound is the passage from
+"isolated" to "finitely many on a compact interval" and the assembly of the alternating window
+family — bookkeeping over a compactness argument, with no further analytic input needed.
 * Whether a nonnegative exponential polynomial with mixed real and imaginary exponents is always a
   sum of Hermitian squares `∑ G_l G_l^*` with exponents in the half-set. The one-pair extremal
   `2e^{βt}(1−cos γt) = 4|sinh((β+iγ)t/2)|²` and `cosh(at) − cos(bt) = 2|sinh(t(a+ib)/2)|²` both are;

@@ -4417,3 +4417,570 @@ turned an `O(c)` bound (useless) into `O(c^{-1/4})`.
 
 The constant is explicit: `K = 2(1+N/2)W/(πδ) + 1` with `N = sharpInteriorLimit n + 1`,
 `W = ∫|W_{2n}|`, and `δ` the pairing floor.
+
+## Audit of claim (4)'s rate
+
+The `O(lambda^{-7})` statement is formal, but as a theorem about the **Fuchs model**, not yet about
+the true prolate family:
+
+```text
+ConstrainedProlateFullDistanceRate.ccm_normalized_ground_distance_isBigO
+    hypotheses: A : ℕ → ℝ positive, C ≥ 1, hgrow : ∀ j, A 2 ≤ C^j * A (j+2),
+                the two Hermite coordinate limits, summability and the Bessel bound
+    conclusion: the normalized ground-vector distance is O(lambda^{-7})
+```
+
+Here `ccmFuchsScale A lam j = fuchsRate (A j) (4j) lam`, i.e. the model `A_j λ^{8j+1} e^{-4πλ²}`.
+The qualitative statement at the true family is already unconditional
+(`constrainedProlateEven_ground_distance_tendsto_zero`, `constrainedProlateFull_ground_distance_tendsto_zero`).
+
+**What instantiating the rate at the true family needs.**  The hypothesis `hgrow` is exactly a
+*uniform-in-index* form of the leakage ratio: the tail argument needs `d_1/d_{j+1} ≤ C^j λ^{-8j}`,
+whereas `exists_bound_signedLeakage_ratio_power` supplies, for each fixed pair,
+
+```text
+d_m ≤ C(m,n) / c^{2(n−m)} · d_n .
+```
+
+So the single remaining item is the dependence of `C(m,n)` on the pair: it must be shown to grow at
+most geometrically, `C(m,n) ≤ C₀^{n−m}`.  Tracking that means following the `n`-dependence of the
+exponent remainder `E` of `exists_bound_sharpExponent` and of the Hermite-quotient constants
+`16 q_m²/q_n²` in `exists_bound_centre_sq_ratio_power` — a bookkeeping task on constants that are
+already explicit, not new mathematics.
+
+## Claim (4) with its rate is formalized at the true family
+
+The audit above was wrong about what the rate needs.  `min_norm_lp_normalize_sub_twoModeSeed_eventually_le`
+— the *general* lemma behind the CCM wrapper — does **not** take `hgrow`.  It takes only
+
+```text
+hstruct : 0 ≤ D 0 < D 1 < D 2  and  ∀ j, D 2 ≤ D (j+2)        (monotonicity)
+hrate   : |lam · D 1 / (D 2 − D 1)| ≤ K (lam^7)⁻¹              (indices 1 and 2 only)
+```
+
+`hgrow` appears only inside `ccm_struct`, which is how the *Fuchs model* discharges `hstruct`.  At
+the true family `hstruct` is immediate from `ladderEnvelope_evenProlateSignedLeakage` (`nonneg`,
+`mono`, two `lt_succ`), so **no index-uniform constant is needed at all**.
+
+`RHTower/ProlateTrueFamilyDistanceRate.lean` (axiom-clean, warning-free, wired):
+
+```lean
+theorem exists_bound_evenProlateLadder_tail_rate :
+    ∃ K : ℝ, 0 < K ∧ ∀ᶠ a : ℝ in atTop,
+      |a * evenProlateSignedLeakage a 2
+          / (evenProlateSignedLeakage a 4 - evenProlateSignedLeakage a 2)| ≤ K * (a ^ 7)⁻¹
+
+theorem constrainedProlateEven_ground_distance_isBigO :
+    ∃ K : ℝ, 0 < K ∧ (the normalized ground-vector distance) =O[atTop] fun lam => (lam ^ 7)⁻¹
+```
+
+The arithmetic that produces the exponent `7`: in the positive Fourier sector
+`D lam j = evenProlateSignedLeakage lam (2j)`, so `D 1` and `D 2` are the signed indices `2` and `4`,
+`n − m = 2`, and the sharp leakage ratio gives `d_2 ≤ C c^{-4} d_4`.  With `c = 2πλ²` that is
+`C (2π)^{-4} λ^{-8}`, and the factor `λ` in the numerator leaves `λ^{-7}`.  The gap `D 2 − D 1` is at
+least `D 2 / 2` once `2C ≤ c^4`, which holds as soon as `c ≥ 2C+1` because `c ≤ c⁴` for `c ≥ 1`.
+
+**So claim `(4)` — including its rate — is now unconditional at the true prolate family.**
+
+## Stage-3 audit of this folder
+
+Every numbered claim of the three cards now has an unconditional, axiom-clean Lean theorem **about
+the secular formulation**:
+
+| card | claim | theorem |
+|---|---|---|
+| ground state | `(4)` `O(λ^{-7})` | `constrainedProlateEven_ground_distance_isBigO` |
+| ground state | `(5)` `→ 8/11` | `constrainedProlatePositive_ground_ratio_tendsto` |
+| ground state | `(6)` `liminf ≥ 3/11` | `constrainedProlatePositive_gap_ratio_tendsto` |
+| ground state | `(7)` gap for every `c < 3/11` | `constrainedProlatePositive_spectralGap_eventually` |
+| spectral ladder | `(7)` `d_j/d_{j+1} = O(λ^{-8})` | `exists_bound_signedLeakage_ratio_power` at `n−m = 2` |
+| spectral ladder | `(8)` depth ratio | `constrainedProlateEven_depth_ratio_tendsto` |
+| parity floor | `(5)`, `(6)`, `(10)` | the four ground/gap ratio theorems |
+| parity floor | `(8)` rate, `(9)` | `exists_bound_signedLeakage_ratio_power`, `constrainedProlateParity_separation` |
+
+**What blocks the move to stage 3 is one bridge, and it is identified.**  The cards phrase their
+conclusions about the *operator* — the compression of `B_lambda = I − T_lambda²` to the
+zero-integral hyperplane — while every theorem above is proved for the *secular* formulation.  The
+equivalence is formalized, in both directions, in
+`RHTower/ConstrainedProlateOperatorIdentification.lean`:
+
+```text
+secularVector_lp_orthogonal / secularVector_lp_form_eigen        forward
+infiniteSecular_eq_zero_of_constrained_eigen                     converse
+```
+
+but a grep of the tree finds **no use of these three theorems anywhere**: they are stated for an
+abstract diagonal `d` with constraint coordinates `ℓ`, and have never been instantiated at
+`constrainedProlateLeakage a` on `constrainedProlateSubspace a`.
+
+So the remaining task for the whole folder is a single instantiation: feed
+`constrainedProlateLeakage_apply_mode` (the operator is diagonal in the constrained modes, with
+eigenvalues `constrainedProlateLeakageValue`) and the constraint coordinates into
+`ConstrainedProlateOperatorIdentification`, obtaining
+
+```text
+the lowest eigenvalue of constrainedProlateLeakage a  =  infiniteSecularRoot (D a) (ℓ a)
+```
+
+after which every theorem in the table transfers verbatim to the operator phrasing and all three
+cards are stage-3 ready.  **Until that is proved, the cards stay at stage 2** — the theorems are real
+but they are about the secular model, not yet about `B_lambda` itself.
+
+### The tools the bridge will use
+
+The instantiation is not blocked on missing analysis — the corpus already owns everything it needs:
+
+```text
+HTGeometry/GreedySingularValues.lean
+    svVec, svVal, apply_svVec              greedy singular vectors and values
+HTGeometry/SVDExpansion.lean
+    hasSum_inner_svVec_smul_apply          T x = ∑ ⟨eₙ,x⟩ • T eₙ            (SVD expansion)
+    hasSum_svd                             T x = ∑ sₙ⟨eₙ,x⟩ • fₙ
+    apply_eq_zero_of_forall_inner_svVec_energyOp
+                                           completeness of the greedy family for T itself
+    svVec_live_injective, sum_inner_svVec_sq_le
+RHTower/ConstrainedProlateOperator.lean
+    evenProlateConcentration, evenProlateLeakage, evenProlateLeakage_apply_mode
+    constrainedProlateLeakage, constrainedProlateLeakage_eq_compression
+    constrainedProlateLeakage_sub_identity_isCompact
+RHTower/ConstrainedProlateConstrainedSpectrum.lean
+    constrainedProlateMode, constrainedProlateLeakageValue,
+    constrainedProlateLeakage_apply_mode   the compressed operator is diagonal in its own SVD
+RHTower/ConstrainedProlateBesselBound.lean
+    orthonormal_nonzero_evenProlateSignedModes
+RHTower/ConstrainedProlateOperatorIdentification.lean
+    the abstract equivalence, both directions
+```
+
+So the bridge is: express `constrainedProlateLeakage a` in the Slepian coordinates of
+`evenProlateLeakage a` (diagonal, eigenvalues `evenProlateLeakageValue a n`, constraint coordinates
+`evenProlateConstraintCoord a n`), use the SVD completeness above to see that those coordinates
+exhaust the even subspace, and apply `ConstrainedProlateOperatorIdentification` to conclude
+
+```text
+constrainedProlateLeakageValue a 0  =  infiniteSecularRoot (fun j => evenProlateSignedLeakage a (2*j))
+                                                            (fun j => ‖evenProlateConstraintCoord a (2*j)‖) .
+```
+
+`constrainedProlateLeakageValue` is currently used nowhere outside its defining module — that grep
+is the precise measure of what is missing.
+
+### Bridge, brick 1: the concentration operator is injective
+
+`RHTower/ConstrainedProlateConcentrationInjective.lean` (axiom-clean, wired):
+
+```lean
+theorem evenProlateConcentration_injective_on_timeLimited
+    {a : ℝ} (ha : 0 < a) {f : evenSubspace} (hf : f ∈ evenTimeLimitedSubspace a)
+    (hCf : evenProlateConcentration a f = 0) : f = 0
+```
+
+Since `evenProlateConcentration a = (evenTimeBandFourier a)† ∘ evenTimeBandFourier a`, its quadratic
+form is `‖evenTimeBandFourier a f‖²`; `ContinuousLinearMap.adjoint_inner_left` turns `C f = 0` into
+`⟨T f, T f⟩ = 0`, and `evenTimeBandFourier_injective_on_timeLimited` finishes.
+
+This is what makes the greedy singular family **complete** on the time-limited carrier: by
+`apply_eq_zero_of_forall_inner_svVec_energyOp`, a vector orthogonal to every greedy vector is killed
+by the operator, and injectivity turns "killed" into "zero".
+
+**Brick 2** (next): the same for the *compressed* operator on `constrainedProlateSubspace a`.  It
+follows from brick 1 once the compressed quadratic form is identified with the ambient one on the
+subspace — for `x` in the subspace, `⟨P C x, x⟩ = ⟨C x, x⟩`, because `C x − P C x ⊥ K`.  The mathlib
+name for that step is the one piece of friction: `Submodule.inner_orthogonalProjection_left_eq_right`
+does not exist under that name, so it must be routed through
+`Submodule.sub_orthogonalProjection_mem_orthogonal`.
+
+**Brick 3**: express the compressed operator in the Slepian coordinates and instantiate
+`ConstrainedProlateOperatorIdentification`, giving
+`constrainedProlateLeakageValue a 0 = infiniteSecularRoot (D a) (ℓ a)`.
+
+### Bridge, brick 2: the compressed operator is injective too
+
+```lean
+theorem constrainedProlateConcentration_injective {a : ℝ} (ha : 0 < a)
+    {x : constrainedProlateSubspace a}
+    (hx : constrainedProlateConcentration a x = 0) : x = 0
+```
+
+Axiom-clean, in the same module.  The projection step is
+`Submodule.inner_orthogonalProjectionOnto_eq_of_mem_right` — that is the correct mathlib name for
+`⟨P u, v⟩ = ⟨u, v⟩` when `v` lies in the subspace; the guess recorded above
+(`inner_orthogonalProjection_left_eq_right`) does not exist, and no detour through
+`sub_orthogonalProjection_mem_orthogonal` is needed.
+
+With bricks 1 and 2 the greedy singular family of `constrainedProlateConcentration a` is complete on
+`constrainedProlateSubspace a`: `apply_eq_zero_of_forall_inner_svVec_energyOp` sends a vector
+orthogonal to every greedy vector to the kernel, and the kernel is trivial.
+
+**Brick 3** is the last one: express the compressed operator in Slepian coordinates and instantiate
+`ConstrainedProlateOperatorIdentification`, giving
+
+```text
+constrainedProlateLeakageValue a 0 = infiniteSecularRoot (fun j => evenProlateSignedLeakage a (2*j))
+                                                          (fun j => ‖evenProlateConstraintCoord a (2*j)‖) .
+```
+
+### Brick 3, specified exactly
+
+Reading `ConstrainedProlateOperatorIdentification.lean` in full settles what brick 3 is.  Its
+theorems are stated **entirely in `ℓ²` coordinates** — they never mention `constrainedProlateSubspace a`
+or the operator:
+
+```text
+secularVector_lp_orthogonal      ⟨ℓ, v⟩ = 0                       in lp 2
+secularVector_lp_form_eigen      ∑ d_j v_j w_j = μ₀ ∑ v_j w_j      for every w ⊥ ℓ
+infiniteSecular_eq_zero_of_constrained_eigen
+                                 d_j v_j = μ v_j + c ℓ_j  ∧  ⟨ℓ,v⟩ = 0  ∧  v ≠ 0  ⟹  F(μ) = 0
+```
+
+So brick 3 is a **coordinate isomorphism**, not a further analytic estimate:
+
+```text
+constrainedProlateSubspace a  ≃  {v ∈ lp 2 : ∑ ℓ_j v_j = 0}
+```
+
+carrying `constrainedProlateLeakage a` to the diagonal `d_j = evenProlateSignedLeakage a (2j)` and
+the constraint functional to `ℓ_j = ‖evenProlateConstraintCoord a (2j)‖`.  Its ingredients:
+
+1. the Slepian family is orthonormal — `orthonormal_nonzero_evenProlateSignedModes`;
+2. it is **complete** on the time-limited carrier — this is what bricks 1 and 2 supply, via
+   `apply_eq_zero_of_forall_inner_svVec_energyOp` plus triviality of the kernel;
+3. `evenProlateLeakage_apply_mode` makes the operator diagonal in that family;
+4. the constraint coordinates are `evenProlateConstraintCoord`.
+
+Both directions the cards need then follow: the secular vector's coefficients give a constrained
+vector with Rayleigh quotient `infiniteSecularRoot` (so `constrainedProlateLeakageValue a 0 ≤` it),
+and the greedy minimiser's coordinates satisfy the span-form eigen-system, so by the converse
+direction plus `infiniteSecular_other_root_ge` it *is* the ground root.
+
+That is the whole remaining content of the folder, and it is bounded: no new analysis, one
+isomorphism.
+
+### Brick 3a: completeness and liveness, in the form a Hilbert basis wants
+
+Two more theorems in `RHTower/ConstrainedProlateConcentrationInjective.lean` (axiom-clean, wired):
+
+```lean
+theorem constrainedProlateMode_complete {a : ℝ} (ha : 0 < a)
+    {x : constrainedProlateSubspace a}
+    (hx : ∀ n, (inner ℂ (constrainedProlateMode a n) x : ℂ) = 0) : x = 0
+
+theorem constrainedProlateConcentrationValue_ne_zero {a : ℝ} (ha : 0 < a) (n : ℕ)
+    (hunit : ‖constrainedProlateMode a n‖ = 1) :
+    constrainedProlateConcentrationValue a n ≠ 0
+```
+
+The first is the **density hypothesis** `HilbertBasis.mk` needs: a vector orthogonal to every
+constrained mode lies in the kernel by `apply_eq_zero_of_forall_inner_svVec`, and the kernel is
+trivial by brick 2.  The second says no singular value dies — a vanishing value would put a unit
+greedy vector in that same trivial kernel.  Liveness matters because the corpus's orthonormality and
+`norm_svVec_of_ne_zero` are conditioned on it.
+
+Two mechanical notes for whoever writes brick 3b:
+
+- the greedy lemmas must be applied with the instance arguments spelled out,
+  `@ContinuousLinearMap.apply_eq_zero_of_forall_inner_svVec (constrainedProlateSubspace a)
+  (…).normedAddCommGroup (…).innerProductSpace (constrainedProlateSubspace_completeSpace a) …`,
+  exactly as `norm_constrainedProlateMode_of_value_ne_zero` does — instance search does not find
+  `InnerProductSpace ℂ ↥(constrainedProlateSubspace a)` on its own;
+- `apply_svVec` takes **no** `CompleteSpace` argument, unlike the others in that family;
+- positivity is supplied as `(constrainedProlateConcentration_isPositive a).re_inner_nonneg_right`,
+  not `.2`, whose `reApplyInnerSelf` form has the arguments the other way round.
+
+**Brick 3b** is now the whole remainder: assemble `HilbertBasis.mk` from orthonormality (live modes)
+and `constrainedProlateMode_complete`, transport `constrainedProlateLeakage` to the diagonal and the
+constraint to `ℓ`, and read off
+`constrainedProlateLeakageValue a 0 = infiniteSecularRoot (D a) (ℓ a)` from
+`ConstrainedProlateOperatorIdentification`.
+
+### Correction: which family the coordinate isomorphism uses
+
+The description of brick 3b above named the wrong family.  The transfer theorems are stated for
+
+```text
+d_j = evenProlateSignedLeakage a (2j)          the UNCONSTRAINED Slepian leakage values
+ℓ_j = ‖evenProlateConstraintCoord a (2j)‖      their constraint coordinates
+```
+
+so the coordinate isomorphism must be built from the **unconstrained** modes
+`evenProlateConcentrationMode a n` on `evenTimeLimitedSubspace a`, with the constraint appearing as
+the hyperplane `∑ ℓ_j v_j = 0` inside `ℓ²`.  The compressed modes `constrainedProlateMode a n` are a
+*different* family — the greedy vectors of the already-compressed operator — so bricks 2 and 3a serve
+the simplicity/minimiser side of the argument, not the coordinate side.
+
+A second structural point that changes the shape of the construction.  On the whole even subspace
+`evenProlateConcentration a = T†T` genuinely **has a kernel** (everything whose time-limited part
+dies), so liveness of the singular values is false there and `constrainedProlateConcentrationValue_ne_zero`
+has no unconstrained analogue.  What is true, and is what brick 1 gives, is that the kernel meets the
+time-limited carrier only in zero.  Hence:
+
+```text
+the live modes form a Hilbert basis of  evenTimeLimitedSubspace a,  not of  evenSubspace.
+```
+
+So the construction is indexed by the live indices, and the two facts it needs are:
+
+1. every live mode lies in the carrier — `evenProlateConcentrationMode_mem_timeLimited_of_value_ne_zero`;
+2. a carrier vector orthogonal to every mode is zero — `apply_eq_zero_of_forall_inner_svVec` for
+   `evenProlateConcentration a`, followed by `evenProlateConcentration_injective_on_timeLimited`
+   (brick 1).
+
+Point 2 is the exact analogue of `constrainedProlateMode_complete` and is the next thing to write;
+point 1 is already in the corpus.  With those, `HilbertBasis.mkOfOrthogonalEqBot` gives the basis,
+`evenProlateLeakage_apply_mode` makes the operator diagonal in it, and
+`ConstrainedProlateOperatorIdentification` closes the bridge.
+
+### Brick 3b, point 2 is proved
+
+```lean
+theorem evenProlateConcentrationMode_complete_on_timeLimited {a : ℝ} (ha : 0 < a)
+    {x : evenSubspace} (hx : x ∈ evenTimeLimitedSubspace a)
+    (horth : ∀ n, (inner ℂ (evenProlateConcentrationMode a n) x : ℂ) = 0) : x = 0
+```
+
+Axiom-clean, wired.  Unlike the compressed case this one needs **no** `@` instance spelling:
+`evenSubspace` carries its instances by unification, only `↥(constrainedProlateSubspace a)` does not.
+
+So both hypotheses of the Hilbert basis on the carrier are now in hand — point 1
+(`evenProlateConcentrationMode_mem_timeLimited_of_value_ne_zero`) was already in the corpus, point 2
+is the theorem above.  What remains is the assembly itself:
+
+```text
+HilbertBasis.mkOfOrthogonalEqBot  on  evenTimeLimitedSubspace a,  indexed by the live modes
+  ⟹ an isometry  evenTimeLimitedSubspace a ≃ lp (fun _ => ℂ) 2
+  ⟹ evenProlateLeakage_apply_mode makes the operator the diagonal d
+  ⟹ the constraint functional becomes ℓ
+  ⟹ ConstrainedProlateOperatorIdentification gives
+       constrainedProlateLeakageValue a 0 = infiniteSecularRoot (D a) (ℓ a)
+```
+
+The remaining friction is bookkeeping, not mathematics: the modes live in `evenSubspace` and must be
+re-typed as elements of `↥(evenTimeLimitedSubspace a)`, and the index set must be restricted to the
+live indices (the kernel of the concentration operator on the whole even subspace is genuinely
+nonzero — only its intersection with the carrier is trivial).
+
+### The Slepian Hilbert basis exists
+
+`RHTower/ProlateSlepianBasis.lean` (axiom-clean, warning-free, wired):
+
+```lean
+def slepianLiveIndex (a : ℝ) : Type := {n : ℕ // evenProlateConcentrationValue a n ≠ 0}
+def slepianCarrierMode (a : ℝ) (n : slepianLiveIndex a) : evenTimeLimitedSubspace a
+theorem orthonormal_slepianCarrierMode {a : ℝ} (ha : 0 < a) : Orthonormal ℂ (slepianCarrierMode a)
+theorem slepianCarrierMode_orthogonal_eq_bot {a : ℝ} (ha : 0 < a) :
+    (Submodule.span ℂ (Set.range (slepianCarrierMode a)))ᗮ = ⊥
+def slepianCarrierBasis (a : ℝ) (ha : 0 < a) :
+    HilbertBasis (slepianLiveIndex a) ℂ (evenTimeLimitedSubspace a)
+theorem slepianCarrierBasis_apply (a : ℝ) (ha : 0 < a) (n : slepianLiveIndex a) :
+    slepianCarrierBasis a ha n = slepianCarrierMode a n
+```
+
+**This is the coordinate system the whole bridge was missing.**  Indexing by the *live* modes is what
+makes it work: dead greedy vectors are literally `0`
+(`ContinuousLinearMap.svVec_eq_zero_of_svVal_eq_zero`), so orthogonality to the live family already
+gives orthogonality to the whole greedy family and
+`evenProlateConcentrationMode_complete_on_timeLimited` applies — no separate treatment of the dead
+indices is needed, and the awkwardness feared above evaporates.
+
+Two practical notes:
+
+- `↥(evenTimeLimitedSubspace a)` needs its `NormedAddCommGroup` and `InnerProductSpace` instances
+  declared explicitly (they are now, at the top of the module); without them `ᗮ` does not even
+  elaborate on submodules of it;
+- `HilbertBasis.mkOfOrthogonalEqBot` takes the orthonormality as an ordinary argument, not as a
+  projection: `Orthonormal` unfolds to an `And`, so `hv.mkOfOrthogonalEqBot` fails.
+
+What remains for the folder: transport `evenProlateLeakage` through `slepianCarrierBasis.repr` to
+the diagonal `d`, the constraint functional to `ℓ`, and apply
+`ConstrainedProlateOperatorIdentification`.
+
+### The *signed* Slepian basis — the one the transfer theorems actually use
+
+Checking `evenProlateConstraintCoord` showed the previous module used the wrong family again:
+
+```text
+evenProlateConstraintCoord a n = ⟪1_{[-a,a]}, evenProlateSignedMode a n⟫
+evenProlateSignedLeakage  a n = 1 − evenProlateSignedValue a n ²
+```
+
+so the coordinates are those of the **signed** family `sgVec (evenTimeBandFourier a)`, eigenvectors
+of `T` itself — not `svVec (T†T)`.  `RHTower/ProlateSignedSlepianBasis.lean` (axiom-clean,
+warning-free, wired) builds the right one:
+
+```lean
+def signedLiveIndex (a : ℝ) : Type := {n : ℕ // evenProlateSignedValue a n ≠ 0}
+def signedCarrierMode (a : ℝ) (n : signedLiveIndex a) : evenTimeLimitedSubspace a
+theorem orthonormal_signedCarrierMode (a : ℝ) : Orthonormal ℂ (signedCarrierMode a)
+theorem signedCarrierMode_orthogonal_eq_bot {a : ℝ} (ha : 0 < a) :
+    (Submodule.span ℂ (Set.range (signedCarrierMode a)))ᗮ = ⊥
+def signedCarrierBasis (a : ℝ) (ha : 0 < a) :
+    HilbertBasis (signedLiveIndex a) ℂ (evenTimeLimitedSubspace a)
+```
+
+The signed route is if anything cleaner than the concentration route: brick 1's injectivity is stated
+for `evenTimeBandFourier` itself, which is exactly what `apply_eq_zero_of_forall_inner_sgVec`
+produces, so no `T†T` detour is needed.  Dead signed vectors are zero via
+`sgVec_eq_zero_of_orthSup_eq_zero` composed with `abs_sgVal`, so the live index set suffices.
+
+Two mechanical notes:
+
+- `signedLiveIndex` is a `def`, so `(m : ℕ)` coercion does **not** fire on its elements; write `m.1`;
+- symmetry of `evenTimeBandFourier` is
+  `ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp (adjoint_evenTimeBandFourier a)` — the corpus
+  idiom, used throughout `ConstrainedProlateSignedSpectrum`.
+
+What remains: transport `evenProlateLeakage` through `signedCarrierBasis.repr` to the diagonal `d`,
+the constraint functional to `ℓ`, and apply `ConstrainedProlateOperatorIdentification`.
+
+### Diagonality was already proved — do not rebuild it
+
+`ConstrainedProlateSignedSpectrum.lean:77,87` already contains
+
+```lean
+theorem evenProlateConcentration_apply_signedMode (a : ℝ) (n : ℕ) :
+    evenProlateConcentration a (evenProlateSignedMode a n)
+      = ((evenProlateSignedValue a n ^ 2 : ℝ) : ℂ) • evenProlateSignedMode a n
+
+theorem evenProlateLeakage_apply_signedMode (a : ℝ) (n : ℕ) :
+    evenProlateLeakage a (evenProlateSignedMode a n)
+      = ((1 - evenProlateSignedValue a n ^ 2 : ℝ) : ℂ) • evenProlateSignedMode a n
+```
+
+i.e. the leakage operator is already known to be diagonal in the signed family with the card's `d`.
+So of the four ingredients of the coordinate isomorphism, three are now in place —
+orthonormality, completeness (`signedCarrierBasis`), and diagonality — and only the constraint
+coordinate identity and the final instantiation remain.
+
+Method note, recorded because it caused a wasted build: a `grep` run from the repository root rather
+than from `formal/` silently matches nothing, and "no output" then reads as "not in the corpus".
+Every corpus search must be run from `formal/` (or with absolute paths), and a negative result should
+be confirmed by a positive control before concluding a theorem is missing.
+
+### The constraint in coordinates
+
+`RHTower/ProlateConstraintCoordinateExpansion.lean` (axiom-clean, warning-free, wired):
+
+```lean
+theorem hasSum_inner_evenCentralIndicator {a : ℝ} (ha : 0 < a) (x : evenTimeLimitedSubspace a) :
+    HasSum (fun n : signedLiveIndex a =>
+        (signedCarrierBasis a ha).repr x n * evenProlateConstraintCoord a n.1)
+      (inner ℂ (evenCentralIndicator a) ((x : evenTimeLimitedSubspace a) : evenSubspace))
+
+theorem mem_constrainedProlateSubspace_iff_tsum {a : ℝ} (ha : 0 < a)
+    (x : evenTimeLimitedSubspace a) :
+    ((x : evenTimeLimitedSubspace a) : evenSubspace) ∈ constrainedProlateSubspace a
+      ↔ (∑' n : signedLiveIndex a,
+          (signedCarrierBasis a ha).repr x n * evenProlateConstraintCoord a n.1) = 0
+```
+
+**The zero-integral hyperplane is now literally the coordinate hyperplane `∑ ℓ_n v_n = 0`** — the
+form the transfer theorems assume.  The proof is one application of `HilbertBasis.hasSum_repr`
+followed by the continuous functional `innerSL ℂ (evenCentralIndicator a) ∘L subtypeL`, which is
+linear (not conjugate-linear) in mathlib's convention, so it passes through the sum directly; the
+term identity `f (signedCarrierMode a n) = evenProlateConstraintCoord a n.1` is `rfl`, since that is
+how the constraint coordinate is defined.
+
+**Status of the coordinate isomorphism.**  All four ingredients are now proved:
+
+| ingredient | theorem |
+|---|---|
+| orthonormality | `orthonormal_signedCarrierMode` |
+| completeness | `signedCarrierBasis` |
+| diagonality | `evenProlateLeakage_apply_signedMode` (already in the corpus) |
+| constraint = `ℓ` | `mem_constrainedProlateSubspace_iff_tsum` |
+
+What is left is the assembly: read `constrainedProlateLeakageValue a 0` as the minimum of the
+quadratic form over the coordinate hyperplane and apply
+`ConstrainedProlateOperatorIdentification` in both directions.
+
+### What the assembly still has to reconcile: sector and index type
+
+Two mismatches remain between the coordinate system just built and the transfer theorems, and both
+are indexing, not analysis.
+
+**1. Fourier sector.**  The transfer theorems use
+`D a j = evenProlateSignedLeakage a (2j)` and `ℓ a j = ‖evenProlateConstraintCoord a (2j)‖`, i.e.
+only the *even* signed indices — because the cards' positive sector is
+`H_λ^+ = closure span{h_{4j,λ}}`, and signed index `2j` is Hermite rung `4j`.  So the card's `mu_+`
+is the ground eigenvalue of the compression restricted to that sector, while
+`constrainedProlateLeakageValue a 0` is the minimum over the *whole* constrained subspace.  The
+assembly therefore needs the parity splitting of `constrainedProlateSubspace a` into its
+positive- and negative-Fourier parts, with `mu_±` the ground value on each.
+
+**2. Index type.**  `infiniteSecularRoot` consumes `ℕ`-indexed sequences, whereas
+`signedCarrierBasis` is indexed by `signedLiveIndex a = {n // evenProlateSignedValue a n ≠ 0}`.  The
+two agree exactly when every signed value is live, which is true precisely on the carrier — but the
+identification still has to be transported along the inclusion `signedLiveIndex a ↪ ℕ`.
+
+Neither is a gap in the mathematics: the forward direction is already visible in coordinates.  For
+the secular vector `v`, the eigen-relation `d_j v_j = μ₀ v_j + ℓ_j` and the constraint
+`∑ ℓ_j v_j = 0` give
+
+```text
+∑ d_j v_j²  =  μ₀ ∑ v_j²  +  ∑ ℓ_j v_j  =  μ₀ ∑ v_j² ,
+```
+
+so the vector synthesised from `v` through `signedCarrierBasis.repr.symm` lies in the constrained
+subspace and has Rayleigh quotient exactly `μ₀`.  That is the `≤` half; the `≥` half is the converse
+direction of `ConstrainedProlateOperatorIdentification` applied to the coordinates of the greedy
+minimiser, together with `infiniteSecular_other_root_ge`.
+
+So the assembly is: parity splitting, index transport, then those two half-arguments.
+
+### The Rayleigh identity — the `≤` half in coordinates
+
+`RHTower/ConstrainedProlateSecularRayleigh.lean` (axiom-clean, warning-free, wired):
+
+```lean
+theorem tsum_mul_secularVector_sq_eq (h01 : d 0 < d 1) (h12 : d 1 < d 2)
+    (hd2 : ∀ j, d 2 ≤ d (j + 2)) (hsum : Summable fun j => ℓ j ^ 2)
+    (hℓ0 : ℓ 0 ≠ 0) (hℓ1 : ℓ 1 ≠ 0) :
+    (∑' j, d j * v j * v j) = infiniteSecularRoot d ℓ * ∑' j, v j * v j
+```
+
+where `v = secularVector d ℓ (infiniteSecularRoot d ℓ)`.
+
+The proof is two lines, and the reason is worth recording: `secularVector_lp_form_eigen` may be
+tested against **any** `ℓ²` vector annihilated by the constraint — and the secular vector is itself
+such a vector, by `memℓp_secularVector` and `secularVector_constraint`.  Testing the weak
+eigen-equation against its own solution turns it into the Rayleigh identity with no further work.  I
+had expected to have to redo the `∑ d_j v_j² = μ₀ ∑ v_j² + ∑ ℓ_j v_j` computation by hand.
+
+This is the `≤` half in coordinates: whatever Hilbert basis diagonalises the leakage with sequence
+`d` and constraint coordinates `ℓ`, the vector synthesised from `v` lies in the constraint hyperplane
+and has Rayleigh quotient exactly `infiniteSecularRoot d ℓ`, so the constrained ground eigenvalue is
+at most the secular root.  Combined with `signedCarrierBasis` and
+`mem_constrainedProlateSubspace_iff_tsum`, only the parity splitting and the index transport stand
+between this and the operator statement.
+
+### Index transport: not needed — the basis is `ℕ`-indexed
+
+The corpus already proves **`evenProlateSignedValue_ne_zero ha n`**
+(`ProlateIndexedJointSpectrum.lean:86`): at a positive aperture *every* signed value is nonzero, by
+the shell-vector argument (a vanishing value would force the carrier to be finite dimensional).  So
+the live index type is all of `ℕ`, and the "index transport" listed as remaining work above simply
+does not arise.
+
+`RHTower/ProlateSignedNatBasis.lean` (axiom-clean, warning-free, wired):
+
+```lean
+def signedNatMode (a : ℝ) (ha : 0 < a) (n : ℕ) : evenTimeLimitedSubspace a
+theorem orthonormal_signedNatMode {a : ℝ} (ha : 0 < a) : Orthonormal ℂ (signedNatMode a ha)
+theorem signedNatMode_orthogonal_eq_bot {a : ℝ} (ha : 0 < a) :
+    (Submodule.span ℂ (Set.range (signedNatMode a ha)))ᗮ = ⊥
+def signedNatBasis (a : ℝ) (ha : 0 < a) : HilbertBasis ℕ ℂ (evenTimeLimitedSubspace a)
+theorem signedNatBasis_apply (a : ℝ) (ha : 0 < a) (n : ℕ) :
+    signedNatBasis a ha n = signedNatMode a ha n
+theorem hasSum_inner_evenCentralIndicator_nat {a : ℝ} (ha : 0 < a) (x : evenTimeLimitedSubspace a) :
+    HasSum (fun n : ℕ => (signedNatBasis a ha).repr x n * evenProlateConstraintCoord a n)
+      (inner ℂ (evenCentralIndicator a) ((x : evenTimeLimitedSubspace a) : evenSubspace))
+```
+
+With every index live the completeness proof also shortens: no case split on dead modes is needed,
+since orthogonality to the whole family is immediate from membership in the range.
+
+**Both obstacles named in the previous entry are now resolved or removed**: the index type is `ℕ`,
+and what is left of the assembly is the Fourier-parity splitting — restricting to the even signed
+sublattice `n = 2j`, which is the card's positive sector `H_λ^+` — plus the two half-arguments, whose
+coordinate content is `tsum_mul_secularVector_sq_eq` (the `≤` half) and
+`infiniteSecular_eq_zero_of_constrained_eigen` with `infiniteSecular_other_root_ge` (the `≥` half).

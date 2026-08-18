@@ -28,6 +28,8 @@ namespace GaloisForLFunctions
 
 open _root_.HTGeometry
 
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+
 /-- The open vertical strip of half-width `R` around the abscissa `σ`. -/
 def verticalStrip (σ R : ℝ) : Set ℂ := {z : ℂ | |z.re - σ| < R}
 
@@ -37,23 +39,24 @@ theorem isOpen_verticalStrip (σ R : ℝ) : IsOpen (verticalStrip σ R) := by
   exact (isOpen_Iio).preimage ((Complex.continuous_re.sub continuous_const).abs)
 
 /-- Almost periodicity of `F` uniformly on the closed vertical substrip of half-width `r`. -/
-def IsStripAlmostPeriodicOn (F : ℂ → ℂ) (σ r : ℝ) : Prop :=
+def IsStripAlmostPeriodicOn (F : ℂ → E) (σ r : ℝ) : Prop :=
   ∀ ε : ℝ, 0 < ε → ∃ L : ℝ, 0 < L ∧ ∀ a : ℝ, ∃ τ ∈ Set.Icc a (a + L),
     ∀ z : ℂ, |z.re - σ| ≤ r → ‖F (z + (τ : ℂ) * Complex.I) - F z‖ ≤ ε
 
 /-- Almost periodicity on every closed substrip strictly inside the open strip of half-width `R`. -/
-def IsStripAlmostPeriodic (F : ℂ → ℂ) (σ R : ℝ) : Prop :=
+def IsStripAlmostPeriodic (F : ℂ → E) (σ R : ℝ) : Prop :=
   ∀ r : ℝ, r < R → IsStripAlmostPeriodicOn F σ r
 
+omit [CompleteSpace E] in
 /-- **Cauchy's estimate for an almost period.**  If the translated difference is bounded by `ε` on a
 closed disc of radius `ρ`, the derivative of the difference at the centre is at most `ε / ρ`. -/
-theorem norm_deriv_sub_deriv_le_of_ball {F : ℂ → ℂ} {S : Set ℂ} (hS : IsOpen S)
+theorem norm_deriv_sub_deriv_le_of_ball {F : ℂ → E} {S : Set ℂ} (hS : IsOpen S)
     (hF : DifferentiableOn ℂ F S) {τ ε ρ : ℝ} (hρ : 0 < ρ) {z : ℂ}
     (hball : Metric.closedBall z ρ ⊆ S)
     (hballτ : ∀ w ∈ Metric.closedBall z ρ, w + (τ : ℂ) * Complex.I ∈ S)
     (hb : ∀ w ∈ Metric.closedBall z ρ, ‖F (w + (τ : ℂ) * Complex.I) - F w‖ ≤ ε) :
     ‖deriv F (z + (τ : ℂ) * Complex.I) - deriv F z‖ ≤ ε / ρ := by
-  set G : ℂ → ℂ := fun w => F (w + (τ : ℂ) * Complex.I) - F w with hG
+  set G : ℂ → E := fun w => F (w + (τ : ℂ) * Complex.I) - F w with hG
   have hshift : ∀ w ∈ Metric.closedBall z ρ,
       DifferentiableAt ℂ (fun u : ℂ => F (u + (τ : ℂ) * Complex.I)) w := by
     intro w hw
@@ -87,9 +90,10 @@ theorem abs_re_sub_le_dist (w z : ℂ) : |w.re - z.re| ≤ dist w z := by
   rw [Complex.sub_re] at h
   rwa [dist_eq_norm]
 
+omit [CompleteSpace E] in
 /-- **The derivative of a strip-almost-periodic holomorphic function is strip almost periodic**, on
 any slightly narrower substrip. -/
-theorem isStripAlmostPeriodicOn_deriv {F : ℂ → ℂ} {σ R r ρ : ℝ} (hρ : 0 < ρ)
+theorem isStripAlmostPeriodicOn_deriv {F : ℂ → E} {σ R r ρ : ℝ} (hρ : 0 < ρ)
     (hrρ : r + ρ < R) (_hr : 0 ≤ r)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R))
     (hap : IsStripAlmostPeriodicOn F σ (r + ρ)) :
@@ -124,13 +128,14 @@ theorem isStripAlmostPeriodicOn_deriv {F : ℂ → ℂ} {σ R r ρ : ℝ} (hρ :
     _ = ε := by field_simp
 
 /-- Holomorphy on the strip passes to the derivative. -/
-theorem differentiableOn_deriv_verticalStrip {F : ℂ → ℂ} {σ R : ℝ}
+theorem differentiableOn_deriv_verticalStrip {F : ℂ → E} {σ R : ℝ}
     (hF : DifferentiableOn ℂ F (verticalStrip σ R)) :
     DifferentiableOn ℂ (deriv F) (verticalStrip σ R) :=
   ((hF.analyticOnNhd (isOpen_verticalStrip σ R)).deriv).differentiableOn
 
+omit [CompleteSpace E] in
 /-- **Strip almost periodicity passes to the derivative.** -/
-theorem isStripAlmostPeriodic_deriv {F : ℂ → ℂ} {σ R : ℝ}
+theorem isStripAlmostPeriodic_deriv {F : ℂ → E} {σ R : ℝ}
     (hF : DifferentiableOn ℂ F (verticalStrip σ R)) (hap : IsStripAlmostPeriodic F σ R) :
     IsStripAlmostPeriodic (deriv F) σ R := by
   intro r hr
@@ -143,7 +148,7 @@ theorem isStripAlmostPeriodic_deriv {F : ℂ → ℂ} {σ R : ℝ}
     exact isStripAlmostPeriodicOn_deriv hρ hsum hpos hF (hap _ hsum)
 
 /-- Every iterated derivative is holomorphic and strip almost periodic. -/
-theorem isStripAlmostPeriodic_iteratedDeriv {F : ℂ → ℂ} {σ R : ℝ}
+theorem isStripAlmostPeriodic_iteratedDeriv {F : ℂ → E} {σ R : ℝ}
     (hF : DifferentiableOn ℂ F (verticalStrip σ R)) (hap : IsStripAlmostPeriodic F σ R) :
     ∀ n : ℕ, DifferentiableOn ℂ (iteratedDeriv n F) (verticalStrip σ R) ∧
       IsStripAlmostPeriodic (iteratedDeriv n F) σ R := by
@@ -157,9 +162,10 @@ theorem isStripAlmostPeriodic_iteratedDeriv {F : ℂ → ℂ} {σ R : ℝ}
       rw [iteratedDeriv_succ]
       exact ⟨differentiableOn_deriv_verticalStrip hd, isStripAlmostPeriodic_deriv hd ha⟩
 
+omit [NormedSpace ℂ E] [CompleteSpace E] in
 /-- The restriction to the central line of a strip almost periodic function is Bohr almost
 periodic. -/
-theorem isBohrAlmostPeriodic_line {F : ℂ → ℂ} {σ R : ℝ} (hR : 0 < R)
+theorem isBohrAlmostPeriodic_line {F : ℂ → E} {σ R : ℝ} (hR : 0 < R)
     (hap : IsStripAlmostPeriodic F σ R) :
     IsBohrAlmostPeriodic (fun t : ℝ => F ((σ : ℂ) + (t : ℂ) * Complex.I)) := by
   intro ε hε
@@ -176,8 +182,9 @@ theorem isBohrAlmostPeriodic_line {F : ℂ → ℂ} {σ R : ℝ} (hR : 0 < R)
     ring
   rwa [hrw] at h
 
+omit [CompleteSpace E] in
 /-- The restriction of a holomorphic function on the strip to the central line is continuous. -/
-theorem continuous_line_restriction {F : ℂ → ℂ} {σ R : ℝ} (hR : 0 < R)
+theorem continuous_line_restriction {F : ℂ → E} {σ R : ℝ} (hR : 0 < R)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R)) :
     Continuous fun t : ℝ => F ((σ : ℂ) + (t : ℂ) * Complex.I) := by
   have hline : ∀ t : ℝ, ((σ : ℂ) + (t : ℂ) * Complex.I) ∈ verticalStrip σ R := by
@@ -193,7 +200,7 @@ theorem continuous_line_restriction {F : ℂ → ℂ} {σ R : ℝ} (hR : 0 < R)
   exact ContinuousAt.comp (x := t) hd.continuousAt hcont.continuousAt
 
 /-- **One return sequence for the function and all its derivatives on the central line.** -/
-theorem exists_return_sequence_jets {F : ℂ → ℂ} {σ R : ℝ} (hR : 0 < R)
+theorem exists_return_sequence_jets {F : ℂ → E} {σ R : ℝ} (hR : 0 < R)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R)) (hap : IsStripAlmostPeriodic F σ R) (n : ℕ) :
     ∃ T : ℕ → ℝ, Tendsto T atTop atTop ∧
       ∀ (k : Fin n) (x : ℝ),

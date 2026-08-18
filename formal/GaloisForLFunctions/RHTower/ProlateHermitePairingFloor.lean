@@ -17,7 +17,7 @@ open Set Filter Topology MeasureTheory
 namespace RHTower
 
 /-- An even Hermite function has vanishing derivative at the origin. -/
-theorem deriv_hermiteFun_zero {n : ℕ} (hn : Even n) : deriv (hermiteFun n) 0 = 0 := by
+theorem deriv_hermiteFun_at_zero_of_even {n : ℕ} (hn : Even n) : deriv (hermiteFun n) 0 = 0 := by
   have hfun : (fun y : ℝ => hermiteFun n (-y)) = hermiteFun n := funext (even_hermiteFun hn)
   have hneg : HasDerivAt (fun z : ℝ => -z) (-1 : ℝ) 0 := (hasDerivAt_id (0 : ℝ)).neg
   have hcomp : HasDerivAt (fun y : ℝ => hermiteFun n (-y))
@@ -33,7 +33,7 @@ theorem hermiteFun_zero_ne_zero {n : ℕ} (hn : Even n) : hermiteFun n 0 ≠ 0 :
   intro h0
   rcases hermiteFun_nontrivial n 0 with h | h
   · exact h h0
-  · exact h (deriv_hermiteFun_zero hn)
+  · exact h (deriv_hermiteFun_at_zero_of_even hn)
 
 /-- **The normalised even Hermite function is the limit oscillator profile at its rung.** -/
 theorem hermiteFun_div_eq_oscProfile {n : ℕ} (hn : Even n) :
@@ -48,7 +48,7 @@ theorem hermiteFun_div_eq_oscProfile {n : ℕ} (hn : Even n) :
     rw [oscPotential, hermiteRungP]
     field_simp
   · field_simp
-  · rw [deriv_hermiteFun_zero hn]
+  · rw [deriv_hermiteFun_at_zero_of_even hn]
     simp
 
 /-- **The limiting window pairing is nonzero.** -/

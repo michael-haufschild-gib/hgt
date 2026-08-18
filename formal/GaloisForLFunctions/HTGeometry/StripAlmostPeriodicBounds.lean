@@ -20,6 +20,8 @@ open Filter Topology Metric Set
 
 namespace GaloisForLFunctions
 
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+
 /-- The closed vertical substrip of half-width `r`. -/
 def closedStrip (σ r : ℝ) : Set ℂ := {z : ℂ | |z.re - σ| ≤ r}
 
@@ -31,9 +33,10 @@ theorem isClosed_closedStrip (σ r : ℝ) : IsClosed (closedStrip σ r) := by
 theorem closedStrip_subset_verticalStrip {σ r R : ℝ} (h : r < R) :
     closedStrip σ r ⊆ verticalStrip σ R := fun _ hz => lt_of_le_of_lt hz h
 
+omit [NormedSpace ℂ E] [CompleteSpace E] in
 /-- **A strip almost periodic function is bounded on the substrip.**  Every point is moved into a
 compact window by an almost period, where continuity supplies a bound. -/
-theorem exists_bound_of_isStripAlmostPeriodicOn {F : ℂ → ℂ} {σ r : ℝ}
+theorem exists_bound_of_isStripAlmostPeriodicOn {F : ℂ → E} {σ r : ℝ}
     (hFcont : ContinuousOn F (closedStrip σ r)) (hap : IsStripAlmostPeriodicOn F σ r) :
     ∃ M : ℝ, ∀ z ∈ closedStrip σ r, ‖F z‖ ≤ M := by
   obtain ⟨L, hL, hdense⟩ := hap 1 one_pos
@@ -77,7 +80,8 @@ theorem exists_bound_of_isStripAlmostPeriodicOn {F : ℂ → ℂ} {σ r : ℝ}
       linarith [hτmem.2]
   have hb := hτ z hz
   have hbound := hM₀ _ hzK
-  calc ‖F z‖ = ‖F (z + (τ : ℂ) * Complex.I) - (F (z + (τ : ℂ) * Complex.I) - F z)‖ := by ring_nf
+  calc ‖F z‖ = ‖F (z + (τ : ℂ) * Complex.I) - (F (z + (τ : ℂ) * Complex.I) - F z)‖ := by
+        rw [sub_sub_cancel]
     _ ≤ ‖F (z + (τ : ℂ) * Complex.I)‖ + ‖F (z + (τ : ℂ) * Complex.I) - F z‖ := norm_sub_le _ _
     _ ≤ M₀ + 1 := add_le_add hbound hb
 
@@ -91,8 +95,9 @@ theorem convex_closedStrip (σ r : ℝ) : Convex ℝ (closedStrip σ r) := by
   rw [hset]
   exact (convex_halfSpace_re_le _).inter (convex_halfSpace_re_ge _)
 
+omit [CompleteSpace E] in
 /-- **A strip almost periodic holomorphic function has bounded derivative on every substrip.** -/
-theorem exists_deriv_bound {F : ℂ → ℂ} {σ R r : ℝ} (hr : r < R)
+theorem exists_deriv_bound {F : ℂ → E} {σ R r : ℝ} (hr : r < R)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R)) (hap : IsStripAlmostPeriodic F σ R) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ z ∈ closedStrip σ r, ‖deriv F z‖ ≤ M := by
   set r' : ℝ := (r + R) / 2 with hr'def
@@ -126,8 +131,9 @@ theorem exists_deriv_bound {F : ℂ → ℂ} {σ R r : ℝ} (hr : r < R)
       exact hM₀ w (hball (sphere_subset_closedBall hw))
   exact le_trans hcauchy (le_max_left _ _)
 
+omit [CompleteSpace E] in
 /-- **A strip almost periodic holomorphic function is Lipschitz on every substrip.** -/
-theorem exists_lipschitzOnWith_closedStrip {F : ℂ → ℂ} {σ R r : ℝ} (hr : r < R)
+theorem exists_lipschitzOnWith_closedStrip {F : ℂ → E} {σ R r : ℝ} (hr : r < R)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R)) (hap : IsStripAlmostPeriodic F σ R) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ z ∈ closedStrip σ r, ∀ w ∈ closedStrip σ r,
       ‖F z - F w‖ ≤ M * ‖z - w‖ := by
@@ -153,9 +159,10 @@ theorem exists_lipschitzOnWith_closedStrip {F : ℂ → ℂ} {σ R r : ℝ} (hr 
   intro z hz w hw
   exact (convex_closedStrip σ r).norm_image_sub_le_of_norm_hasFDerivWithin_le hdiff hnorm hw hz
 
+omit [CompleteSpace E] in
 /-- Vertical translates of a strip almost periodic holomorphic function move Lipschitz-continuously
 in the parameter, uniformly on the substrip. -/
-theorem norm_translate_sub_le {F : ℂ → ℂ} {σ R r : ℝ} (hr : r < R)
+theorem norm_translate_sub_le {F : ℂ → E} {σ R r : ℝ} (hr : r < R)
     (hF : DifferentiableOn ℂ F (verticalStrip σ R)) (hap : IsStripAlmostPeriodic F σ R) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ (τ τ' : ℝ), ∀ z ∈ closedStrip σ r,
       ‖F (z + (τ : ℂ) * Complex.I) - F (z + (τ' : ℂ) * Complex.I)‖ ≤ M * |τ - τ'| := by

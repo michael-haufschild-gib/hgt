@@ -22,7 +22,7 @@ open scoped BoundedContinuousFunction
 
 namespace GaloisForLFunctions
 
-variable {f : ℝ →ᵇ ℂ}
+variable {V : Type*} [NormedAddCommGroup V] {f : ℝ →ᵇ V}
 
 /-- A rationally independent finite family of reals admits a `ℚ`-linear functional package sending
 it to the standard basis of `ℝ^r`. -/

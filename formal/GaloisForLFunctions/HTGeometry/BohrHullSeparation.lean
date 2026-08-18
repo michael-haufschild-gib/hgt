@@ -18,7 +18,7 @@ namespace GaloisForLFunctions
 
 open HTGeometry
 
-variable {f : ℝ →ᵇ ℂ}
+variable {E : Type*} [NormedAddCommGroup E] {f : ℝ →ᵇ E}
 
 /-- **Frequency characters separate the points of the hull.** -/
 theorem bohrHullChar_separates (hf : UniformContinuous (fun x => f x))
