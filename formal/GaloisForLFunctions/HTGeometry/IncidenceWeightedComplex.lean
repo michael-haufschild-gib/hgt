@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.WeightedComplexLink
+import GaloisForLFunctions.HTGeometry.IncidenceDesignBound
 import Mathlib.Data.Fintype.Powerset
 import Mathlib.Data.Fintype.Sum
 
@@ -46,6 +47,30 @@ theorem incidenceWeightedComplex_top_containing_pair {p : P} {l : L} {s : Finset
   subst p'
   subst l'
   exact ⟨hp'l', hs'⟩
+
+/-- No face of an incidence complex contains two distinct point vertices. -/
+theorem incidenceWeightedComplex_not_isFace_inl_inl_of_ne (p p' : P) (hne : p ≠ p') :
+    ¬ (incidenceWeightedComplex (P := P) (L := L)).IsFace {Sum.inl p, Sum.inl p'} := by
+  rintro ⟨s, hs, hsub⟩
+  obtain ⟨q, l, -, hs'⟩ := mem_incidenceWeightedComplex_top_iff.mp hs
+  have hp : Sum.inl p ∈ s := hsub (by simp)
+  have hp' : Sum.inl p' ∈ s := hsub (by simp)
+  rw [hs'] at hp hp'
+  have hpq : p = q := by simpa using hp
+  have hp'q : p' = q := by simpa using hp'
+  exact hne (hpq.trans hp'q.symm)
+
+/-- No face of an incidence complex contains two distinct line vertices. -/
+theorem incidenceWeightedComplex_not_isFace_inr_inr_of_ne (l l' : L) (hne : l ≠ l') :
+    ¬ (incidenceWeightedComplex (P := P) (L := L)).IsFace {Sum.inr l, Sum.inr l'} := by
+  rintro ⟨s, hs, hsub⟩
+  obtain ⟨p, q, -, hs'⟩ := mem_incidenceWeightedComplex_top_iff.mp hs
+  have hl : Sum.inr l ∈ s := hsub (by simp)
+  have hl' : Sum.inr l' ∈ s := hsub (by simp)
+  rw [hs'] at hl hl'
+  have hlq : l = q := by simpa using hl
+  have hl'q : l' = q := by simpa using hl'
+  exact hne (hlq.trans hl'q.symm)
 
 /-- The induced face weight of a point-line pair is the incidence indicator. -/
 theorem incidenceWeightedComplex_m_pair (p : P) (l : L) :
@@ -115,6 +140,48 @@ theorem incidenceWeightedComplex_linkGraph_empty_w_inr_inl (p : P) (l : L) :
     simp [or_comm]
   rw [hpair]
   exact incidenceWeightedComplex_m_pair p l
+
+/-- Same-side point weights in the empty link vanish. -/
+theorem incidenceWeightedComplex_linkGraph_empty_w_inl_inl (p p' : P) :
+    ((incidenceWeightedComplex (P := P) (L := L)).linkGraph ∅).w (Sum.inl p) (Sum.inl p') = 0 := by
+  by_cases h : p = p'
+  · subst p'
+    rw [WeightedComplex.linkGraph_w_eq, if_pos (Or.inl rfl)]
+  · rw [WeightedComplex.linkGraph_w_eq, if_neg (by simp [h])]
+    simpa only [Finset.insert_empty] using
+      (WeightedComplex.m_eq_zero_of_not_isFace (incidenceWeightedComplex (P := P) (L := L))
+        (incidenceWeightedComplex_not_isFace_inl_inl_of_ne p p' h))
+
+/-- Same-side line weights in the empty link vanish. -/
+theorem incidenceWeightedComplex_linkGraph_empty_w_inr_inr (l l' : L) :
+    ((incidenceWeightedComplex (P := P) (L := L)).linkGraph ∅).w (Sum.inr l) (Sum.inr l') = 0 := by
+  by_cases h : l = l'
+  · subst l'
+    rw [WeightedComplex.linkGraph_w_eq, if_pos (Or.inl rfl)]
+  · rw [WeightedComplex.linkGraph_w_eq, if_neg (by simp [h])]
+    simpa only [Finset.insert_empty] using
+      (WeightedComplex.m_eq_zero_of_not_isFace (incidenceWeightedComplex (P := P) (L := L))
+        (incidenceWeightedComplex_not_isFace_inr_inr_of_ne l l' h))
+
+/-- The empty link of the incidence weighted complex is exactly its bipartite incidence graph. -/
+theorem incidenceWeightedComplex_linkGraph_empty_eq_incidenceGraph :
+    (incidenceWeightedComplex (P := P) (L := L)).linkGraph ∅ =
+      incidenceGraph (fun p : P => fun l : L => if p ∈ l then 1 else 0)
+        (fun p l => by split_ifs <;> norm_num) := by
+  ext u v
+  cases u with
+  | inl p =>
+    cases v with
+    | inl p' =>
+      simpa [incidenceGraph, incW] using incidenceWeightedComplex_linkGraph_empty_w_inl_inl p p'
+    | inr l =>
+      simpa [incidenceGraph, incW] using incidenceWeightedComplex_linkGraph_empty_w_inl_inr p l
+  | inr l =>
+    cases v with
+    | inl p =>
+      simpa [incidenceGraph, incW] using incidenceWeightedComplex_linkGraph_empty_w_inr_inl p l
+    | inr l' =>
+      simpa [incidenceGraph, incW] using incidenceWeightedComplex_linkGraph_empty_w_inr_inr l l'
 
 end
 

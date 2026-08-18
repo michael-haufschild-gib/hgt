@@ -1,7 +1,7 @@
 # Bounded homogeneous seam coupling has a rigid half-log trace
 
 - **ID:** `suzuki-bounded-seam-half-log-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / ASYMPTOTIC-INTEGRATION BRIDGE
 - **Scientific status:** `[PROVED HERE] [PARENT THEORY] [NOT AN RH PROOF]`
 - **Parent theory:** asymptotic integration for Banach-space linear ordinary differential
@@ -232,10 +232,13 @@ finite prime adjacency and bounded polar--Gamma multiplication are innocent; the
 logarithmic remainder is the only surviving scale-gap mechanism.
 
 This is parent theory, not claimed new scientific knowledge. The formal tree still lacks the
-literal logarithmic Dirichlet remainder and completed Suzuki seam carrier. Formalizing only
-`U'=B U` with `B in L1` would certify a generic ODE theorem while leaving `(20)` untouched, so no
-Lean module is added at this stage. Formalization becomes source-bearing after the exact remainder
-lift supplies the hypotheses of `(11)`--`(12)`.
+literal logarithmic Dirichlet remainder and completed Suzuki seam carrier, so `(20)` is untouched by
+what follows. What is formalized below is not the generic statement "`U'=B U` with `B in L1` has a
+limit": it is the exact system `(2)` with its bounded operator coupling, from which the conjugated
+equation `(11)`, the integrable bound `(9)`, the trace `(3)`, and the terminal dichotomy `(4)` are
+derived, together with an explicit scalar solution showing the nonzero-trace alternative is
+realized.  Formalization becomes source-bearing for `(20)` only after the exact remainder lift
+supplies the hypotheses of `(11)`--`(12)`.
 
 Comparison sources include the classical Levinson asymptotic-integration line and its modern
 Banach-space extensions; see P. N. Nesterov, *Asymptotic integration of certain differential
@@ -243,6 +246,37 @@ equations in Banach space*, Model. Anal. Inform. Sist. 24 (2017), 596--614, and 
 D. Guzzetti, and D. Masoero, *Asymptotic solutions for linear ODEs with not-necessarily
 meromorphic coefficients*, J. Differential Equations (2025). The elementary `L1` perturbation
 proved above is strictly simpler than those parent results.
+
+## 6. Lean formalization
+
+Module: `formal/GaloisForLFunctions/HTGeometry/BoundedSeamHalfLogRigidity.lean`.
+
+The hypotheses `(1)`--`(2)` are packaged as the structure `HTGeometry.BoundedSeamData`: a Banach
+carrier `X`, a base `L₀ > 0`, an onset beyond which `(2)` holds, a uniform operator bound `C`, a
+continuous profile `F`, and the equation `(2L) • F L + T L (F L) = ∫_{L₀}^L F`.  Neither
+commutativity, self-adjointness, positivity, finite dimension, diagonalizability *nor even strong
+continuity* of `T` is used: only the uniform bound enters the proof.
+
+| Card statement | Lean declaration |
+|---|---|
+| `Y' = F` and the conjugation `(10)` | `primitive`, `halfLog`, `hasDerivAt_primitive` |
+| the exact conjugated equation `(11)` | `hasDerivAt_halfLog` |
+| the integrable bound `(9)` | `norm_halfLog_deriv_le`, `perturbationRate_le_majorant`, `integral_perturbationMajorant_le` |
+| boundedness of `U` (Gronwall step) | `norm_halfLog_le_two_mul` |
+| existence of the limit `(13)` | `integrableOn_halfLogDeriv`, `halfLogLimit`, `tendsto_halfLog` |
+| the backward bound `(14)` | `norm_halfLog_sub_le`, `norm_halfLog_threshold_le`, `norm_halfLogLimit_ge` |
+| terminal vanishing when the trace is zero | `halfLog_eq_zero_of_threshold`, `primitive_eq_zero_of_threshold`, `profile_eq_zero_of_threshold` |
+| `(15)`--`(17)`, the trace `(3)` | `sqrt_smul_profile_eq`, `norm_traceRemainder_le`, `tendsto_traceRemainder`, `tendsto_sqrt_smul_profile` |
+| the dichotomy `(4)` | `halfLog_trace_dichotomy` |
+| sharpness of the nonzero-trace alternative | `sharpProfile`, `sharpSeam`, `tendsto_sharpSeam_trace` |
+
+The Gronwall step of §2 is replaced by a maximum-point bootstrap on `[L₁,L]`: the terminal threshold
+`threshold = max (L₀+1) (max onset (2C+1))` makes the tail mass of the majorant `C/(2t²)` at most
+`1/4`, which bounds `‖U‖` by `2‖U(L₁)‖` and simultaneously gives the two-sided conclusion.  The
+sharpness witness is the zero-coupling profile `t^{-1/2} + 4 max(0, 2-t)` on `[1,∞)` with onset `2`;
+its half-logarithmic trace is `1`, so the theorem is not vacuous on the nonzero branch.
+
+`#print axioms` reports `[propext, Classical.choice, Quot.sound]` for every declaration above.
 
 ## Gates
 
@@ -254,6 +288,7 @@ proved above is strictly simpler than those parent results.
 - [x] finite prime adjacency included without commutativity assumptions
 - [x] nonlocal-remainder limitation stated
 - [x] nonconormal high-frequency escape retained as a kill condition
+- [x] 2 -> 3: formalized; see `## 6. Lean formalization`
 - [ ] prove the exact Suzuki remainder lift `(20)`
 - [ ] deduce trace-zero terminal vanishing for the completed source
 - [ ] prove corona no-return

@@ -269,26 +269,6 @@ theorem suzukiSourceHOne_eq_coupledErrorStieltjes
 
 /-! ## The Mellin singularity boundary -/
 
-/-- Bochner integration of a complex-valued function against a countable weighted Dirac family. -/
-theorem integral_countableWeightedDirac_complex {w x : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
-    {f : ℝ → ℂ} (hint : Integrable f (HTGeometry.countableWeightedDirac w x)) :
-    ∫ y, f y ∂(HTGeometry.countableWeightedDirac w x) = ∑' n, ((w n : ℝ) : ℂ) * f (x n) := by
-  rw [HTGeometry.countableWeightedDirac] at hint ⊢
-  rw [integral_sum_measure hint]
-  refine tsum_congr fun n => ?_
-  rw [integral_smul_measure, integral_dirac, ENNReal.toReal_ofReal (hw n), Complex.real_smul]
-
-/-- Integrability of a complex-valued function against a countable weighted Dirac family. -/
-theorem integrable_countableWeightedDirac_complex {w x : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
-    {f : ℝ → ℂ} (hsum : Summable fun n => w n * ‖f (x n)‖) :
-    Integrable f (HTGeometry.countableWeightedDirac w x) := by
-  rw [HTGeometry.countableWeightedDirac]
-  refine integrable_sum_measure_iff.2
-    ⟨fun n => (integrable_dirac (f := f) (a := x n) (by simp)).smul_measure
-      ENNReal.ofReal_ne_top, ?_⟩
-  refine hsum.congr fun n => ?_
-  rw [integral_smul_measure, integral_dirac, ENNReal.toReal_ofReal (hw n), smul_eq_mul]
-
 theorem suzukiShiftedCoefficient_zero {ω : ℝ} (hω : 0 < ω) : suzukiShiftedCoefficient ω 0 = 0 := by
   rw [suzukiShiftedCoefficient, Nat.cast_zero, Real.zero_rpow (ne_of_gt hω), zero_mul]
 
@@ -346,10 +326,11 @@ theorem integral_suzukiShiftedAtomicMeasure_cpow {ω : ℝ} (hω : 0 < ω) {s : 
     exact (hnormEq n).symm
   have hint : Integrable (fun t : ℝ => (t : ℂ) ^ (-s)) (suzukiShiftedAtomicMeasure ω) := by
     rw [suzukiShiftedAtomicMeasure]
-    exact integrable_countableWeightedDirac_complex
+    exact HTGeometry.integrable_complex_countableWeightedDirac
       (fun n => suzukiShiftedCoefficient_nonneg hω n) hsum
   rw [suzukiShiftedAtomicMeasure] at hint ⊢
-  rw [integral_countableWeightedDirac_complex (fun n => suzukiShiftedCoefficient_nonneg hω n) hint]
+  rw [HTGeometry.integral_complex_countableWeightedDirac
+    (fun n => suzukiShiftedCoefficient_nonneg hω n) hint]
   exact tsum_suzukiShiftedCoefficient_cpow hω hs
 
 /-- **Equation (9).**  Beyond the unit point the main-term density has the exact Mellin pole at

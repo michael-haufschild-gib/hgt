@@ -2467,3 +2467,101 @@ Remaining bricks on this route: the prime-power tail `H` with its uniform second
 Euler logarithm identity `Z_chi = exp(G+H)` on `Re s > 1`, its extension to `Re s > 1/2` by the
 identity theorem, the singularity statement `(*)`, the cube-root cancellation, the rotation
 invariance of the phase measure, the limit moments of `G`, and the final Paley--Zygmund assembly.
+
+## Lean progress — the Euler logarithm splits, and the tail layer is bounded in probability
+
+`HTGeometry/EulerLogTail.lean` (wired, axiom-clean).
+
+```text
+logTail z = -log(1-z) - z          the quadratic tail of the Euler logarithm
+hasSum_logTail                     logTail z = sum_{k >= 2} z^k / k
+norm_logTail_le                    ||logTail z|| <= ||z||^2 / (2(1-||z||))
+cubeRootUnit_sq, cubeRootUnit_pow_three, one_add_cubeRootUnit_add_sq
+cubeRootUnit_pow_sum               1 + w^n + (w^2)^n  =  3 if 3 | n, else 0
+neg_log_cube_sum                   the three rotated logarithms reassemble log(1 - z^3)
+logTail_cube_sum                   **logTail z + logTail(wz) + logTail(w^2 z) = -log(1 - z^3)**
+```
+
+`HTGeometry/HelsonLogTailSum.lean` (wired, axiom-clean).
+
+```text
+rpow_two_neg_half_le               2^{-1/2} <= 3/4
+norm_prime_cpow_le_three_quarters  so ||p^{-s}|| <= 3/4 on Re s >= 1/2
+norm_logTail_prime_le              ||logTail(chi_p p^{-s})|| <= 2 p^{-2 Re s}
+helsonLogTail chi s                the absolutely convergent layer sum_p logTail(chi_p p^{-s})
+summable_helsonLogTail, differentiableOn_logTail_prime
+differentiableOn_helsonLogTail     **holomorphic on Re s > 1/2, for EVERY phase**
+norm_neg_log_le, helsonCubeLog, norm_cube_prime_le, summable_helsonCubeLog
+norm_helsonCubeLog_le              the cube remainder is bounded on Re s >= 1/2
+helsonLogTail_cube                 **the three rotated tail layers sum to the cube remainder**
+summable_prime_layer
+hasProd_helsonEuler_exp            **the Euler product is exp(prime layer + tail layer)**
+```
+
+`RHTower/SteinhausLogTailMoment.lean` (wired, axiom-clean).
+
+```text
+X_pow_eq, integral_X_eq_zero       a nontrivial Steinhaus character averages to zero
+tailTerm a t                       the tail contribution of one prime, as a coordinate function
+integral_tailTerm                  **each tail term is CENTRED** — every layer of logTail carries
+                                       a nontrivial character p^k with k >= 2
+helsonPhaseOf, logTailCoordTerm, logTailBound, tailMomentBound
+integral_normSq_logTailPartial     E ||tail partial sum||^2 <= 4 sum_n n^{-2}, uniformly in sigma
+hasSum_logTailCoordTerm, tendsto_logTailPartial, measurable_logTailSum
+measure_re_logTail_gt              **P( |Re H(sigma)| > lambda ) <= 4 C / lambda^2, uniformly**
+```
+
+The point of the last line is exactly the separation the whole argument rests on: the tail layer is
+*pointwise* of size `sum_p p^{-2 sigma}`, which diverges at the half line, but its *second moment*
+is bounded there, because its terms sit on distinct coordinates and are centred.  All the divergence
+lives in the linear prime layer.
+
+## Lean progress — the boundary logarithmic envelope, and the rotation
+
+`HTGeometry/MeromorphicBoundaryLog.lean` (wired, axiom-clean).
+
+```text
+convex_halfPlane_re_gt, isOpen_halfPlane_re_gt, isConnected_halfPlane_re_gt
+eventuallyEq_of_eq_on_abscissa
+    the identity theorem: a function meromorphic on the plane which equals a nonvanishing
+    holomorphic function on Re s > 1 equals it on a punctured neighbourhood of every point of
+    Re s > 1/2
+exists_boundary_log_bound
+    **F meromorphic on C, E holomorphic on Re s > 1/2, F = exp E on Re s > 1
+      ==>  there are m in Z and delta, B > 0 with
+           | Re E(sigma) - m log(sigma - 1/2) | <= B     on (1/2, 1/2 + delta)**
+```
+
+The proof compares two local models of `F` — the exponential model, valid on a punctured
+neighbourhood of every interior point, and the meromorphic normal form `(s-1/2)^m g(s)` at the
+boundary point — and observes that both are continuous on the open half disc, so they agree there,
+not merely off a discrete set.
+
+`RHTower/SteinhausPhaseRotation.lean` (wired, axiom-clean).
+
+```text
+rot3, map_rot3                     t |-> t + 1/3 (mod 1) preserves Lebesgue measure on [0,1]
+cexp_two_pi_I_div_three            e^{2 pi i/3} = cubeRootUnit
+rotOmega, map_rotOmega             **the coordinatewise rotation preserves the Steinhaus measure**
+measure_preimage_rotOmega
+X_rotOmega                         **and multiplies every prime character by the cube root**
+```
+
+## Lean progress — anti-concentration of the real part
+
+`RHTower/SteinhausPrimeRealMoment.lean` (wired, axiom-clean).
+
+```text
+integral_dpoly_sq                  **isotropy: E[S^2] = 0 for indices above one**
+integral_re_sq_steinhausPrimePoly  hence E[(Re S_N)^2] = (1/2) sum_{p<N} p^{-2 sigma}
+integral_re_pow_four_le            E[(Re S_N)^4] <= 2 (sum_{p<N} p^{-2 sigma})^2
+measure_re_steinhausPrimePoly_gt
+    **P( (Re S_N)^2 > A_N / 4 ) >= 1/32**            (Paley--Zygmund with C = 8)
+exists_sigma_primeSum_gt, exists_primeSum_gt_nhds
+    A_N(sigma) exceeds any level for a suitable cut, uniformly on a right neighbourhood of 1/2
+```
+
+Isotropy is the new ingredient: `E[X_n X_m] = E[X_{nm}] = 0` whenever `n, m >= 2`, so the
+*unconjugated* second moment vanishes and the real part carries exactly half the energy.  Without it
+the Paley--Zygmund bound would control `|S_N|`, which the boundary estimate does not see — the
+boundary estimate constrains only `Re(G + H)`.

@@ -36,6 +36,17 @@ structure WeightedGraph (V : Type*) where
 
 namespace WeightedGraph
 
+/-- Weighted graphs are determined by their edge-weight function. -/
+@[ext] theorem ext {V : Type*} {G H : WeightedGraph V}
+    (h : ∀ u v, G.w u v = H.w u v) : G = H := by
+  cases G with
+  | mk gw gsym gnon gdiag =>
+    cases H with
+    | mk hw hsym hnon hdiag =>
+      have hwh : gw = hw := funext fun u => funext fun v => h u v
+      subst hw
+      rfl
+
 variable {V : Type*} [Fintype V] (G : WeightedGraph V)
 
 /-- The mass of a vertex: the total weight of the edges at it. -/

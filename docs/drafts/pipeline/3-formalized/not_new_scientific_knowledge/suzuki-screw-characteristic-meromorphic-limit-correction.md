@@ -1,7 +1,7 @@
 # Suzuki's screw characteristic limit must be meromorphic, not entire-compact
 
 - **ID:** `suzuki-screw-characteristic-meromorphic-limit-correction`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / ROUTE CORRECTION / `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
@@ -103,6 +103,34 @@ projective ground-vector comparison in the growing Mellin topology.
 The proof is Rolle's theorem plus the elementary fact that an ordinary locally uniform limit of
 entire functions is entire. It is a necessary source correction but not new scientific knowledge.
 
+## Lean formalization
+
+Modules: `formal/GaloisForLFunctions/RHTower/SuzukiCharacteristicEntireLimitNoGo.lean` (already in
+the tree) and `formal/GaloisForLFunctions/RHTower/SuzukiCharacteristicMeromorphicLimit.lean` (new).
+
+| Card statement | Lean declaration |
+|---|---|
+| a critical point with `X ≠ 0` is a pole of `R` | `RHTower.not_analyticAt_suzukiXiCharacteristicTarget_of_deriv_eq_zero` |
+| two distinct positive real `X`-zeros force such a point (Rolle) | `RHTower.exists_pole_suzukiXiCharacteristicTarget_of_two_positive_real_XiC_zeros` |
+| the ordinary all-compact convergence is impossible | `RHTower.not_suzukiXiCharacteristicLimitWall`, `RHTower.not_suzukiHolomorphicGaugeCharacteristicLimitWall` |
+| under RH the target is not entire | `RHTower.not_analyticOnNhd_suzukiXiCharacteristicTarget_of_riemannHypothesis` |
+| the corrected topology `(6)` | `RHTower.SuzukiXiMeromorphicCharacteristicLimitWall` |
+| the corrected limit still implies RH | `RHTower.suzukiXiMeromorphicCharacteristicLimitWall_implies_riemannHypothesis` |
+| Hurwitz existence on a pole-free disc | `RHTower.eventually_exists_zero_closedBall_of_tendstoLocallyUniformlyOn`, `RHTower.mem_closed_of_tendstoLocallyUniformlyOn` |
+
+Two remarks on the pole gate.  First, the *conclusion* the card draws from the pole — impossibility
+of the entire-compact limit — is Lean-certified unconditionally, by a route that does not use
+Hardy's theorem at all: the wall implies RH, RH supplies two distinct positive real centered zeros,
+Rolle supplies the critical point, and the pole contradicts the wall's own analyticity clause.
+Second, the literal statement "the target has an unconditional real pole" is Lean-certified as the
+implication from its classical supply: `Hardy's theorem → two distinct positive real zeros →`
+`exists_pole_suzukiXiCharacteristicTarget_of_two_positive_real_XiC_zeros`.  Hardy's theorem itself
+(infinitely many real zeros of `ξ(1/2+it)`) is neither in mathlib nor in this tree; it is the only
+step of this card's paper proof that is not Lean-internal, and no conclusion of the card depends on
+it.
+
+`#print axioms` reports `[propext, Classical.choice, Quot.sound]` for every declaration above.
+
 ## Gates
 
 - [x] unconditional pole of the proposed target proved
@@ -110,5 +138,7 @@ entire functions is entire. It is a necessary source correction but not new scie
 - [x] corrected meromorphic topology stated
 - [x] corrected implication to RH checked at multiple zeros
 - [x] separation from the CCM entire-determinant lane recorded
+- [x] 2 -> 3: formalized; see `## Lean formalization`
+- [ ] Lean proof of Hardy's theorem (the classical supply for the literal pole statement)
 - [ ] meromorphic convergence on pole-free compacta
 - [ ] RH

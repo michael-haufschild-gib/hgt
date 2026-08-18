@@ -1,5 +1,11 @@
 # Matomäki–Radziwiłł in Lean — the shared Route-E analytic gate
 
+> **STATUS: OBJECTIVE MET (2026-08-18).**  Matomäki–Radziwiłł is Lean-proved and
+> unconditional; see
+> `../3-formalized/new_scientific_knowledge/matomaki-radziwill-moebius-short-interval-mean-square.md`.
+> What remains below is the *scoping* of a separate follow-on programme (the integer-start
+> normalisation needed by the two reciprocal-marker cards), not of this one.
+
 - **ID:** `MR-LEAN-PROGRAMME-001`
 - **Stage:** 1-in-progress
 - **Type:** FORMALIZATION PROGRAMME (infrastructure for several stage-2 cards)
@@ -3202,3 +3208,62 @@ The gap is exactly the Ramaré step: the spectral budget of this programme contr
 **Ω-weighted** polynomial `omegaWeightedMoebiusPoly`, and passing from it to the plain polynomial
 needs the Ramaré weight identity plus a sieve bound on the integers with no prime factor in the
 designated range.  `Sieve/RamareBlockSplit.lean` is where that lives.
+
+## The integer-start route, scoped and costed
+
+`Sieve/LinearMeanSquareBounded.lean` (built, axiom-clean) carries the whole linear mean-square chain
+of `LinearMeanSquareGeneric` for coefficients of size `C` instead of `1`:
+`blockCostGC L ε C G = 2G + 2C²(εL+1)²log(1+ε)`, up to
+
+```lean
+theorem dyadicMeanSquare_le_bound (f : ℕ → ℝ) {C : ℝ} (hC0 : 0 ≤ C) (hf : ∀ n, |f n| ≤ C) … :
+    dyadicMeanSquare f ℓ A B
+      ≤ ((A : ℝ) * (1 + ε) ^ K') * ((K' : ℝ) * blockCostGC (ℓ : ℝ) ε C G)
+```
+
+This is what the `ω`-weighted Möbius coefficients need: `‖omegaCoeff P n‖ = |μ(n)|·ω_P(n)` and
+`Sieve/LadderErrorBudget.card_designatedPrimes_dvd_le` gives `ω_P(n) ≤ log B₀ / log Q ≍ (log x)^{1−γβ}`
+— polylogarithmic, not one.
+
+The Turán–Kubilius transfer is also already in the corpus
+(`Sieve/RoughCountTuran.sum_sq_card_primeFactorsIn_Icc_le`, `sum_card_primeFactorsIn_Icc_le`):
+
+```text
+∑_{n ≤ M} (ω_P(n) − W)²  ≤  M·W + 2|P|·W ,
+W²·dyadicMeanSquare μ ℓ A B ≤ 2·dyadicMeanSquare (μ·ω_P) ℓ A B + 4ℓ²·(M·W + 2|P|·W) ,
+```
+
+and the second term, divided by `W²ℓ²K`, is `≍ 1/W → 0`.
+
+### The one obstruction, exactly
+
+With `A ≍ √x/2`, `K ≍ √x/2`, `ℓ = h`, `C ≍ (log x)^{1−γβ}` the two costs impose
+
+```text
+G/(W²h²)  ≪  ε  ≪  W/C = W (log x)^{γβ−1} ,
+```
+
+so the route needs the budget quotient to decay like a **power** of `log x`, not merely to vanish.
+It does not: `constMajorant`'s third group carries the term `10e·4/W²`, coming from
+`M·(L·η²) = (log x)^{1−γβ} · 2(log x)^{γβ−1} = 2`, and `1/W² ≍ 1/(log log x)²` is not `≪
+(log x)^{γβ−1}`.
+
+The fix is a parameter change, not new mathematics: the ladder step ratio has slack.  Replacing
+
+```text
+ladderEta β γ x = (log x)^(γβ − β − 1)   by   (log x)^(γβ − β − 1 − κ)
+```
+
+multiplies `L` by `(log x)^κ` and divides `M·L·η²` by `(log x)^κ`.  At `κ = 1/4` and the admissible
+window `9/10 < β < 1`, `9/10 < γβ < 1`:
+
+| quantity | exponent bound | needs |
+|-|-|-|
+| `ρ·L` | `< −0.65` | `< 0` ✓ |
+| `(log2+Lx)/D · L` | `< −0.55` | `< 0` ✓ |
+| `M·L·η²` | `−0.25` | `< 0` ✓ |
+| `G/(W²h²)` vs `W(log x)^{γβ−1}` | `−0.25` vs `> −0.1` | `γβ > 3/4` ✓ |
+
+so every limit of this programme survives, and the budget quotient becomes `O((log x)^{−1/4})`,
+which is what the integer-start route needs.  The refactor touches `SpectralParameters`,
+`RhoLimitPieces`, `RhoLimit`, `SlopeQuotientLimit`, `ConstQuotientLimit` — exponent bookkeeping only.

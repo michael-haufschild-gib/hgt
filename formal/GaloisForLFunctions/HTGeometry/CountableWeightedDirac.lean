@@ -115,4 +115,25 @@ theorem countableWeightedDirac_const_mul {c : ℝ} (hc : 0 ≤ c) (w x : ℕ →
   refine tsum_congr fun n => ?_
   rw [ENNReal.ofReal_mul hc, mul_assoc]
 
+/-- **Integrability of a complex-valued function against a countable weighted Dirac family.** -/
+theorem integrable_complex_countableWeightedDirac {w x : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
+    {f : ℝ → ℂ} (hsum : Summable fun n => w n * ‖f (x n)‖) :
+    Integrable f (countableWeightedDirac w x) := by
+  rw [countableWeightedDirac]
+  refine integrable_sum_measure_iff.2
+    ⟨fun n => (integrable_dirac (f := f) (a := x n) (by simp)).smul_measure
+      ENNReal.ofReal_ne_top, ?_⟩
+  refine hsum.congr fun n => ?_
+  rw [integral_smul_measure, integral_dirac, ENNReal.toReal_ofReal (hw n), smul_eq_mul]
+
+/-- **Bochner integration of a complex-valued function against a countable weighted Dirac
+family.** -/
+theorem integral_complex_countableWeightedDirac {w x : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
+    {f : ℝ → ℂ} (hint : Integrable f (countableWeightedDirac w x)) :
+    ∫ y, f y ∂(countableWeightedDirac w x) = ∑' n, ((w n : ℝ) : ℂ) * f (x n) := by
+  rw [countableWeightedDirac] at hint ⊢
+  rw [integral_sum_measure hint]
+  refine tsum_congr fun n => ?_
+  rw [integral_smul_measure, integral_dirac, ENNReal.toReal_ofReal (hw n), Complex.real_smul]
+
 end HTGeometry

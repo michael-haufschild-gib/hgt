@@ -1,7 +1,7 @@
 # Suzuki's completed tail is exactly the shifted-Euler summatory error transform
 
 - **ID:** `suzuki-tail-is-exact-summatory-error-transform`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `suzuki-euler-pole-archimedean-moment-annihilation.md`
 - **Statement:** After subtracting the positive main term dictated by the leading shifted-Euler
@@ -129,6 +129,29 @@ transform `(5)` without first locating those poles.
 
 `[NOT NEW SCIENTIFIC KNOWLEDGE]` The theorem is Stieltjes summation plus an exact vanishing moment.
 It gives the correct surviving arithmetic object but is a routine parent-theory reduction.
+
+## Lean formalization
+
+Module: `formal/GaloisForLFunctions/RHTower/SuzukiTailSummatoryErrorTransform.lean`
+(with the complex-valued countable Dirac integration lemmas added to
+`formal/GaloisForLFunctions/HTGeometry/CountableWeightedDirac.lean`).
+
+| Card statement | Lean declaration |
+|---|---|
+| `(1)`-`(2)` coefficients, summatory, main term, error | `suzukiShiftedCoefficient`, `RHTower.suzukiShiftedSummatoryReal`, `RHTower.suzukiMainTermReal`, `RHTower.suzukiCoupledErrorReal` |
+| `dA_ω = ∑ₙ c_ω(n) δₙ` is the Stieltjes measure of `A_ω` | `RHTower.suzukiShiftedAtomicMeasure`, `RHTower.suzukiShiftedAtomicMeasure_Ioc` |
+| `dM_ω = r_ω t^ω dt` is the Stieltjes measure of `M_ω` | `RHTower.integral_suzukiMainTermDensity_Ioc` |
+| `(6)` atomic integral is the truncated sum | `RHTower.integral_suzukiShiftedAtomicMeasure_Ioc` |
+| `(4)`/`(7)` vanishing main-term contribution | `RHTower.integral_rpow_mul_suzukiSourceGOne_eq_zero`, `RHTower.integral_suzukiMainTermDensity_mul_suzukiSourceGOne_eq_zero` |
+| `(5)` exact error-transform identity | `RHTower.suzukiSourceHOneFinite_eq_coupledErrorStieltjes`, `RHTower.suzukiSourceHOne_eq_coupledErrorStieltjes` |
+| `(8)` Mellin--Stieltjes transform of `dA_ω` | `RHTower.integral_suzukiShiftedAtomicMeasure_cpow` |
+| `(9)` Mellin pole of the main density | `RHTower.integral_Ioi_one_suzukiMainTermDensity_cpow` |
+
+The causal source is the corpus's literal `suzukiSourceHOne`/`suzukiSourceHOneFinite`, and the signed
+Stieltjes integral against `dE_ω` is `RHTower.suzukiCoupledErrorStieltjes`, defined as the difference
+of the two Stieltjes integrals whose measures are identified above.
+
+`#print axioms` reports `[propext, Classical.choice, Quot.sound]` for every declaration above.
 
 ## Gates
 

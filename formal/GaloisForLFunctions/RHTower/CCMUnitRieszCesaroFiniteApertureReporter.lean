@@ -649,11 +649,11 @@ theorem integral_mul_unitRieszCesaroApertureKernel {t : ℝ} (ht : 0 < t) :
       ((t - s) * unitRieszCesaroTestSecondDeriv t s) s := by
     intro s
     have hlin : HasDerivAt (fun x : ℝ => t - x) (-1) s := by
-      simpa using (hasDerivAt_const s t).sub (hasDerivAt_id s)
+      simpa using (hasDerivAt_id s).const_sub t
     have h := (hlin.mul (hasDerivAt_unitRieszCesaroTestDeriv t s)).add
       (hasDerivAt_unitRieszCesaroTest t s)
-    convert h using 1
-    ring
+    simp only [Pi.mul_def, Pi.add_def] at h
+    exact h.congr_deriv (by ring)
   have hint : (∫ s in (0 : ℝ)..t, (t - s) * unitRieszCesaroTestSecondDeriv t s) = 0 := by
     have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt (a := (0 : ℝ)) (b := t)
       (fun x _ => hΦ x)
@@ -685,17 +685,19 @@ theorem integral_sq_mul_unitRieszCesaroApertureKernel {t : ℝ} (ht : 0 < t) :
       ((t - s) ^ 2 * unitRieszCesaroTestSecondDeriv t s - 2 * unitRieszCesaroTest t s) s := by
     intro s
     have hlin : HasDerivAt (fun x : ℝ => t - x) (-1) s := by
-      simpa using (hasDerivAt_const s t).sub (hasDerivAt_id s)
+      simpa using (hasDerivAt_id s).const_sub t
     have hsq : HasDerivAt (fun x : ℝ => (t - x) ^ 2) (2 * (t - s) * (-1)) s := by
-      have h := hlin.pow 2
-      convert h using 1
-      push_cast
-      ring
+      have h := hlin.mul hlin
+      simp only [Pi.mul_def] at h
+      have hfun : (fun i : ℝ => (t - i) * (t - i)) = fun x : ℝ => (t - x) ^ 2 := by
+        funext x; ring
+      rw [hfun] at h
+      exact h.congr_deriv (by ring)
     have htwo : HasDerivAt (fun x : ℝ => 2 * (t - x)) (2 * (-1)) s := hlin.const_mul 2
     have h := (hsq.mul (hasDerivAt_unitRieszCesaroTestDeriv t s)).add
       (htwo.mul (hasDerivAt_unitRieszCesaroTest t s))
-    convert h using 1
-    ring
+    simp only [Pi.mul_def, Pi.add_def] at h
+    exact h.congr_deriv (by ring)
   have hsplit : (∫ s in (0 : ℝ)..t,
         ((t - s) ^ 2 * unitRieszCesaroTestSecondDeriv t s - 2 * unitRieszCesaroTest t s)) = 0 := by
     have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt (a := (0 : ℝ)) (b := t)

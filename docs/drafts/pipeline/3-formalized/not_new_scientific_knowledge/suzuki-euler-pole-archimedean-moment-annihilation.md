@@ -1,7 +1,7 @@
 # Suzuki completion annihilates the positive Euler main pole
 
 - **ID:** `suzuki-euler-pole-archimedean-moment-annihilation`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[PROVED HERE; SEARCH/BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** Suzuki's shifted-Xi Mellin kernel;
   `suzuki-archimedean-primitive-forced-sign-change.md`
@@ -132,10 +132,33 @@ fully canceled remainder without locating its singularities first.
 published Mellin factorization.  It is a useful Tauberian obstruction but not new analytic number
 theory.
 
+## Lean formalization
+
+Module: `formal/GaloisForLFunctions/RHTower/SuzukiEulerPoleArchimedeanMomentAnnihilation.lean`.
+
+The kernel is the corpus's literal Suzuki kernel `suzukiSourceG` (Suzuki (2012), equation (204)) and
+its literal once-integrated primitive `suzukiSourceGOne` (equation (a202)); the archimedean factor is
+`suzukiArchimedeanFactor s = s(s-1)π^{-s/2}Γ(s/2)/2`.
+
+| Card statement | Lean declaration |
+|---|---|
+| `(4)` residue of `C_ω` at `s₀ = 1+ω` | `RHTower.tendsto_sub_mul_suzukiEulerQuotient` |
+| `(5)` simple zero of `G_ω`, exact form | `RHTower.suzukiArchimedeanQuotient_eq_sub_mul`, `RHTower.suzukiArchimedeanQuotient_eq_zero` |
+| `(5)` leading coefficient `1/(2γ(1+2ω))` | `RHTower.tendsto_suzukiArchimedeanQuotient_div_sub` |
+| `(6)` completed finite limit | `RHTower.tendsto_suzukiArchimedeanQuotient_mul_suzukiEulerQuotient`, `RHTower.tendsto_suzukiArchimedeanQuotient_mul_suzukiEulerQuotient_xi_ratio` |
+| `(7)` archimedean moment annihilation | `RHTower.hasMellin_suzukiCanonicalG_at_eulerPole`, `RHTower.mellin_suzukiSourceG_at_eulerPole` |
+| `(8)` primitive moment annihilation | `RHTower.hasMellin_suzukiIntegratedG_at_eulerPole`, `RHTower.mellin_suzukiSourceGOne_at_eulerPole`, `RHTower.integral_rpow_mul_suzukiSourceGOne_eq_zero` |
+
+The existing corpus Mellin theorems converge only on `1+ω < Re s`; the boundary point `s = 1+ω`
+itself is established here directly from the explicit Gamma-ratio transform, which is what makes the
+annihilation statement a theorem rather than a limit.
+
+`#print axioms` reports `[propext, Classical.choice, Quot.sound]` for every declaration above.
+
 ## Gates
 
 - [x] 0 -> 1: positive-main-term proposal and completion zero isolated.
 - [x] 1 -> 2: residues, moment annihilation, and completed finite value proved on paper.
-- [ ] 2 -> 3: no Lean formalization selected; the open content is a bound for the canceled
-  all-prime remainder.
+- [x] 2 -> 3: formalized; see `## Lean formalization`.  The open content remains a bound for
+  the canceled all-prime remainder.
 - [ ] 3 -> 4: no scientific-novelty claim.

@@ -1,7 +1,7 @@
 # Suzuki's archimedean primitive has a forced sign change below the half shift
 
 - **ID:** `suzuki-archimedean-primitive-forced-sign-change`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[PROVED HERE; SEARCH/BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** Suzuki's explicit shifted-Xi Mellin kernel;
   `../../3-formalized/not_new_scientific_knowledge/shifted-euler-prime-orbit-pf2-failure.md`
@@ -115,9 +115,43 @@ rigidity.
 `[NOT NEW SCIENTIFIC KNOWLEDGE]` The endpoint expansions are direct integrations of Suzuki's
 published kernel asymptotics.  The result is a route-local bridge and not new analysis.
 
+## Lean formalization
+
+Modules:
+
+- `formal/GaloisForLFunctions/HTGeometry/EndpointIntegralAsymptotics.lean` — the two endpoint
+  transfer laws for a primitive: `HTGeometry.tendsto_rpow_mul_intervalIntegral_nhdsGT_zero`
+  (divergent endpoint, `α < -1`) and `HTGeometry.tendsto_rpow_mul_intervalIntegral_nhdsLT`
+  (convergent endpoint, `β > -1`).
+- `formal/GaloisForLFunctions/RHTower/SuzukiRealKernelForm.lean` — the real form of the literal
+  kernel and its primitive (`RHTower.ofReal_suzukiRealSourceG`,
+  `RHTower.ofReal_suzukiRealSourceGOne`), the complete beta value
+  `RHTower.suzukiRealBetaTail_zero`, the endpoint rate of the incomplete-beta tail
+  `RHTower.tendsto_suzukiRealBetaTail_nhdsLT_one`, and interval integrability of the weighted
+  kernel `RHTower.intervalIntegrable_suzukiRealSourceGWeighted`.
+- `formal/GaloisForLFunctions/RHTower/SuzukiArchimedeanPrimitiveSignChange.lean` — the endpoint
+  expansions and the sign change.
+
+| Card statement | Lean declaration |
+|---|---|
+| `(2)` `g_ω(y) ∼ A_ω (1-y)^{ω-1}`, `A_ω=(2π)^ω/Γ(ω)` | `RHTower.tendsto_suzukiRealSourceG_div_rpow_nhdsLT_one` |
+| `(3)` `g_ω(y) ∼ -B_ω y^{ω-1}`, `B_ω=4ωπ^{ω-1/2}Γ(3/2-ω)` | `RHTower.tendsto_suzukiRealSourceG_div_rpow_nhdsGT_zero` |
+| `(4)` `g_ω^{⟨1⟩}(x) ∼ -B_ω/(1/2-ω) x^{ω-1}` | `RHTower.tendsto_suzukiRealSourceGOne_div_rpow_nhdsGT_zero` |
+| `(5)` `g_ω^{⟨1⟩}(x) ∼ A_ω/ω (1-x)^ω` | `RHTower.tendsto_suzukiRealSourceGOne_div_rpow_nhdsLT_one` |
+| negative near `0`, positive near `1` | `RHTower.exists_suzukiRealSourceGOne_neg`, `RHTower.exists_suzukiRealSourceGOne_pos` |
+| forced sign change on `(0,1)` | `RHTower.suzukiRealSourceGOne_sign_change`, `RHTower.suzukiSourceGOne_sign_change` |
+
+The endpoint expansions `(2)` and `(3)` are quoted in the card from Suzuki's published kernel
+asymptotics; in Lean they are *proved* from the literal kernel `suzukiSourceG` (Suzuki (2012),
+equation (204)), so the sign change rests on no imported asymptotic.  The constant `B_ω` is obtained
+from the Euler beta value `Γ(3/2-ω)Γ(ω)/Γ(3/2)` and `Γ(3/2) = √π/2`.
+
+`#print axioms` reports `[propext, Classical.choice, Quot.sound]` for every declaration above.
+
 ## Gates
 
 - [x] 0 -> 1: archimedean one-sign proposal and endpoint falsifier isolated.
 - [x] 1 -> 2: both asymptotics and forced sign change proved on paper.
-- [ ] 2 -> 3: no Lean formalization selected; the open theorem is the all-prime cancellation law.
+- [x] 2 -> 3: formalized; see `## Lean formalization`.  The open theorem remains the all-prime
+  cancellation law.
 - [ ] 3 -> 4: no scientific-novelty claim.

@@ -22,7 +22,7 @@ noncomputable section
 /-- The ratio of the ladder's steps.  The exponent is forced by the ladder defect: the defect
 contributes `(log B₀/log Q)·L·η²` to the affine constant, and `L ≍ (log x)^β/η`, so `η` must be
 below `(log x)^{γβ−β−1}` for that to be `O(1)` after normalisation. -/
-def ladderEta (β γ x : ℝ) : ℝ := (Real.log x) ^ (γ * β - β - 1)
+def ladderEta (β γ x : ℝ) : ℝ := (Real.log x) ^ (γ * β - β - 5 / 4)
 
 /-- The smoothing width of the twisted contour. -/
 def ladderWidth (β x : ℝ) : ℝ := (Real.log (2 * cardLength β x)) ^ 4
@@ -50,7 +50,7 @@ theorem ladderEta_pos {β γ x : ℝ} (hx : 1 < x) : 0 < ladderEta β γ x :=
 /-- **The step ratio vanishes.** -/
 theorem tendsto_ladderEta {β γ : ℝ} (hβ0 : 0 < β) (h : γ * β < 1) :
     Tendsto (fun x : ℝ => ladderEta β γ x) atTop (𝓝 0) := by
-  have hδ : (0 : ℝ) < 1 + β - γ * β := by linarith
+  have hδ : (0 : ℝ) < 5 / 4 + β - γ * β := by linarith
   have hmaj := tendsto_log_rpow_neg hδ
   refine hmaj.congr' ?_
   filter_upwards [Filter.eventually_gt_atTop (1 : ℝ)] with x hx

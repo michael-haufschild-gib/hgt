@@ -48,6 +48,13 @@ theorem m_mono {τ τ' : Finset V} (h : τ ⊆ τ') : X.m τ' ≤ X.m τ := by
   rw [Finset.mem_filter] at hs ⊢
   exact ⟨hs.1, h.trans hs.2⟩
 
+/-- A nonface has zero induced weight. -/
+theorem m_eq_zero_of_not_isFace {τ : Finset V} (hτ : ¬ X.IsFace τ) : X.m τ = 0 := by
+  unfold m
+  apply Finset.sum_eq_zero
+  intro s hs
+  exact False.elim (hτ ⟨s, (Finset.mem_filter.1 hs).1, (Finset.mem_filter.1 hs).2⟩)
+
 /-- The vertices excluded from the link of `σ`: `σ` itself, and the diagonal. -/
 private def linkExcluded (σ : Finset V) (u u' : V) : Prop := u = u' ∨ u ∈ σ ∨ u' ∈ σ
 

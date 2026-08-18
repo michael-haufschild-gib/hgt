@@ -52,6 +52,15 @@ theorem projectiveIncidence_linkGraph_empty_w_inr_inl [Fintype P] [Fintype L] (p
       = projectiveIncidence (P := P) (L := L) p l := by
   simpa only [projectiveIncidence] using incidenceWeightedComplex_linkGraph_empty_w_inr_inl p l
 
+/-- The empty link of the projective-plane incidence complex is its full bipartite incidence graph. -/
+theorem projectiveIncidence_linkGraph_empty_eq_incidenceGraph [Fintype P] [Fintype L] :
+    (incidenceWeightedComplex (P := P) (L := L)).linkGraph ∅ =
+      incidenceGraph (projectiveIncidence (P := P) (L := L))
+        (projectiveIncidence_nonneg (P := P) (L := L)) := by
+  rw [incidenceWeightedComplex_linkGraph_empty_eq_incidenceGraph]
+  ext u v
+  cases u <;> cases v <;> simp [incidenceGraph, incW, projectiveIncidence]
+
 theorem projectiveIncidence_row_sum [Fintype L] (p : P) :
     ∑ l, projectiveIncidence (P := P) (L := L) p l = (Configuration.lineCount L p : ℝ) := by
   classical
@@ -128,6 +137,15 @@ theorem projectivePlane_incidenceGraph_hasSpectralGap
   · intro p p'
     exact projectiveIncidence_design (P := P) (L := L) p p'
 
+/-- Garland's empty-link graph for a finite projective plane has the projective-plane design gap. -/
+theorem projectivePlane_incidenceWeightedComplex_linkGraph_empty_hasSpectralGap
+    [Fintype P] [Fintype L] [Configuration.ProjectivePlane P L] :
+    ((incidenceWeightedComplex (P := P) (L := L)).linkGraph ∅).HasSpectralGap
+      (1 - Real.sqrt (((Configuration.ProjectivePlane.order P L : ℝ) + 1) - 1)
+        / ((Configuration.ProjectivePlane.order P L : ℝ) + 1)) := by
+  rw [projectiveIncidence_linkGraph_empty_eq_incidenceGraph]
+  exact projectivePlane_incidenceGraph_hasSpectralGap (P := P) (L := L)
+
 theorem finiteField_projectivePlane_card {K : Type*} [Field K] [Fintype K] [DecidableEq K] :
     Nat.card (ℙ K (Fin 3 → K)) = Nat.card K ^ 2 + Nat.card K + 1 := by
   rw [Projectivization.card_of_finrank K (Fin 3 → K) (Module.finrank_fin_fun K)]
@@ -168,6 +186,15 @@ theorem finiteField_projectivePlane_incidenceGraph_hasSpectralGap
     add_sub_cancel_right] using
     projectivePlane_incidenceGraph_hasSpectralGap
       (P := ℙ K (Fin 3 → K)) (L := ℙ K (Fin 3 → K))
+
+/-- The rank-two spherical-building gap in the `WeightedComplex` link interface. -/
+theorem finiteField_projectivePlane_incidenceWeightedComplex_linkGraph_empty_hasSpectralGap
+    {K : Type*} [Field K] [Fintype K] [DecidableEq K] :
+    WeightedGraph.HasSpectralGap
+      ((incidenceWeightedComplex (P := ℙ K (Fin 3 → K)) (L := ℙ K (Fin 3 → K))).linkGraph ∅)
+      (1 - Real.sqrt (Nat.card K : ℝ) / ((Nat.card K : ℝ) + 1)) := by
+  rw [projectiveIncidence_linkGraph_empty_eq_incidenceGraph]
+  exact finiteField_projectivePlane_incidenceGraph_hasSpectralGap
 
 /-- For `q ≥ 7`, the rank-two spherical-building gap is strictly above Garland's `2 / 3`
 threshold. -/

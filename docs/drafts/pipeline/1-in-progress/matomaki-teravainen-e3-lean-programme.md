@@ -185,6 +185,78 @@ missing was purely the fibre count, and only for the unrestricted support.
 moment bound and Montgomery's `GN/V²`; combining the two and checking the parameter arithmetic in
 `T^{1-ε/10} ≥ N ≥ T^{9/11-10ε}`, `5ε ≤ σ ≤ 49/206−5ε` is **M4b**.
 
+### The exponent is a free parameter — Remark 5.2 (2026-08-18)
+
+The paper's Remark 5.2 states the dependence explicitly: **if Proposition 4.2 holds with any `σ` in
+place of `49/206` and any `θ` in place of `2/11`, subject only to**
+
+```text
+1/5 + 2ε ≤ σ ≤ 1/2 ,        c = 1 + 1/(1 − θ(1 − 2σ) − ε) ,
+```
+
+then Theorem 2.1 holds with that `c` (and `a ∈ [c−1−ε², c−1]`).  Since `θ ≤ 1/2` and `1−2σ ≤ 1`,
+`c ∈ [2,3]` always.  **For the two Route E cards any finite `c` is as good as `2.1`**, because the
+all-interval exponent `1 + a/2` enters them only through a polylogarithmic factor in the
+displacement.  So the lane does not need Jutila's sharp `σ = 49/206`; it needs *some* unconditional
+Proposition 4.2 with `σ > 1/5`.
+
+**But `σ > 1/5` is a real threshold, and neither corpus tool alone reaches it.**  With
+`G = ∑_{n∼N}|a_n|²/n² ≍ (log N)^{O(1)}/N` and `V = N^{-σ}`, in the range `N ≥ T^{2/3}`:
+
+| tool | gives | needs |
+|-|-|-|
+| Montgomery (`ℓ = 1`) | `T·N^{2σ−1}`, worst at `N = T^{2/3}`: `T^{(1+4σ)/3}` | `σ ≥ 1/2` |
+| pure `ℓ`-th moment (`Sieve/PowerFibreDivisorBound`) | `N^{2σℓ+ℓ²ε}`, and `N^{2σℓ} ≥ T^{4σ(1−ε/5)}` for `ℓ ≥ 2` | `ℓ = 1` |
+
+So the two endpoints fail and Jutila's *interpolation* between them is exactly what is required.
+
+### All of Jutila's ingredients are corpus-owned
+
+| Jutila ingredient | corpus status |
+|-|-|
+| Halász–Montgomery / Schur duality | **owned** — `Sieve/AlmostOrthogonality.sum_norm_inner_sq_le_of_schur`, `Sieve/LargeSieveDuality` |
+| `k`-th power energy with general support + fibre bound | **owned** — `Sieve/PrimePowerSupport.sum_normSq_convPow_le_of_support` |
+| divisor bound `d(n) ≪_ε n^ε` for the fibre count | **owned** — `Sieve/DivisorBound` (landed here) |
+| Kuzmin–Landau and second-derivative bounds for the Gram entries `∑_{n∼N}n^{iτ}` | **owned** — `Sieve/HuxleyLargeValues`, `Sieve/MaynardKuzminLandauFactor.norm_LSeries_zetaDyadicBlock_le_over_height` |
+| **the fourth moment of `ζ` on the critical line** | **owned** — `RHTower.exists_integral_Icc_norm_riemannZeta_line_pow_four_le_polylog`, packaged as `Sieve/SmoothAFEZetaSquareInghamCriticalMomentPolylog.exists_inghamCriticalZetaFourthMoment_dyadic_le_polylog`: `∫_{Icc N (2N)}‖ζ(1/2+it)‖⁴dt ≤ C·N(1+log N)⁴` |
+
+The last atom — the passage from the Gram entry to zeta — is now **landed** as
+`Sieve/CriticalTruncationZeta` (2026-08-18).  It needed no approximate functional equation: PNT+
+already carries the sharp Euler–Maclaurin representation `Zeta0EqZeta` together with the integral
+bound `ZetaBnd_aux1`, and specialising them to `s = 1/2 + it` gives
+
+```text
+norm_sum_range_criticalPt_le (hN : 1 ≤ N) (ht : 2 ≤ |t|) :
+  ‖∑_{n ≤ N} n^{-1/2-it}‖ ≤ ‖ζ(1/2+it)‖ + N^{1/2}/|t| + N^{-1/2}/2 + 4|t|·N^{-1/2} .
+```
+
+Every term but `‖ζ‖` is elementary, so partial summation turns the Gram entry `∑_{n∼N}n^{iτ}` into
+`N^{1/2}‖ζ(1/2+iτ)‖` plus elementary error, which the fourth moment then averages.  Axiom-clean,
+wired.
+
+**Revised M4b:** Jutila's estimate = Halász–Montgomery on the `k`-th power, with the off-diagonal
+Gram entries paid by the fourth moment of `ζ` through Cauchy–Schwarz, and the fibre count paid by
+the divisor bound.  Every input above is unconditional and in the tree.
+
+### The two endpoints of Jutila, in count form — `Sieve/JutilaLargeValues` (2026-08-18)
+
+```text
+card_largeValues_pow_div_le_divisorBounded (hε : 0 < ε) (N k) (hNk : 2 ≤ N^k) (a) … :
+  R + 1 ≤ (T + 4N^k(1+log N^k))·(1/δ + 2 log N^k)
+            · ((C_ε (N^k)^ε)^k · (∑_m‖a m‖²)^k) / V^{2k}
+```
+
+for every `k`, obtained by applying the corpus's Montgomery count
+(`Sieve/DirichletLargeValuesL1.card_largeValues_div_le`) to the `k`-fold convolution
+`convPow N k a` — length `N^k`, energy paid by the divisor bound through
+`Sieve/PowerFibreDivisorBound`.  At `k = 1` this *is* the Montgomery endpoint, so the single
+statement carries both ends of Jutila's interpolation with `k` free.  Axiom-clean, wired.
+
+**What remains of M4b is exactly the interpolation**: the middle term of Jutila's estimate, obtained
+by paying the off-diagonal Gram entries with the fourth moment of `ζ` through
+`Sieve/CriticalTruncationZeta` rather than by the trivial diagonal.  Both of its inputs are now
+corpus theorems.
+
 ## Milestones
 
 - [x] **M1** Lemma 3.3 in general form (improved MVT) — **landed**, `Sieve/ImprovedMeanValue`.
@@ -194,7 +266,8 @@ moment bound and Montgomery's `GN/V²`; combining the two and checking the param
 - [ ] **M5** Prop 2.2 for the Λ-version of §6.1 (Heath-Brown identity + dyadic splitting).
 - [ ] **M6** §6.1 Type I case.
 - [x] **M4a** the adapted-moment (Jutila) level-set bound for divisor-bounded coefficients — **landed**, `Sieve/PowerFibreDivisorBound`.
-- [ ] **M4b** Lemma 4.1 from Jutila at `k = 7`; **M4c** Proposition 4.2 (Type II estimate).
+- [ ] **M4b** Jutila's estimate: Halász–Montgomery on the `k`-th power + fourth moment of `ζ` + divisor bound.  Needs the exponential-sum/zeta passage.
+- [ ] **M4c** Proposition 4.2 for *some* `σ > 1/5` (the sharp `49/206` is not needed).
 - [ ] **M7** §6.1 Type II case (the Bourgain input).
 - [ ] **M8** `(5.2)′` and the retuned Theorem 1.2′; retune both Route E cards `1.55 → 1.615`.
 
