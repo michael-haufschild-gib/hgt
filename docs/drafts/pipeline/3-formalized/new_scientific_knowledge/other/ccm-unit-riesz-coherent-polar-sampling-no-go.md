@@ -1,9 +1,9 @@
 # CCM unit-Riesz coherent polar sampling no-go
 
 - **ID:** `ccm-unit-riesz-coherent-polar-sampling-no-go`
-- **Stage:** 2-fully-proven on paper; Lean module proved and wired
+- **Stage:** 3-formalized
 - **Type:** NO-GO + exact positive survivor / cross-route operator classification
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED, UNCONDITIONAL] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/CCMUnitRieszCoherentPolarSamplingNoGo.lean`
 - **Parent:** `ccm-unit-riesz-exponential-coherent-trace`
 
@@ -195,3 +195,22 @@ and T_N preserves the signed prime-minus-polar completed trace.  (14)
 
 Then prove the arithmetic completed source has the required cofinal graph bound. A transport
 controlled only by bare polar `L2` mass is now formally excluded.
+
+## Index of the formalization
+
+Modules: `RHTower/CCMUnitRieszCoherentPolarSamplingNoGo.lean`,
+`RHTower/CCMUnitRieszCoherentGeneratorSampling.lean`.  All declarations are unconditional;
+`#print axioms` returns only `propext, Classical.choice, Quot.sound`.
+
+| Card item | Lean declaration |
+|---|---|
+| `(2)` four-lag packet in the source span | `unitExponentialThirdDifferenceResponse`, `unitExponentialThirdDifferenceResponse_eq_gramPacket` |
+| `(3)` moment cancellations | `unitExponentialThirdDifferenceResponse_eq_zero_of_le`, `unitExponentialThirdDifferenceResponse_eq_zero_of_ge` |
+| `(4)` piecewise law | `unitExponentialThirdDifferenceResponse_eq_first`, `unitExponentialThirdDifferenceResponse_eq_middle`, `unitExponentialThirdDifferenceResponse_eq_last` |
+| `(5)` node values and sup bound | `unitExponentialThirdDifferenceResponse_at_leftNode`, `unitExponentialThirdDifferenceResponse_at_firstNode`, `unitExponentialThirdDifferenceResponse_at_secondNode`, `unitExponentialThirdDifferenceResponse_at_rightNode`, `abs_unitExponentialThirdDifferenceResponse_le` |
+| `(6)`, `(7)` polar energy bound | `unitExponentialThirdDifferencePolarEnergy_eq_interval`, `unitExponentialThirdDifferencePolarEnergy_nonneg`, `unitExponentialThirdDifferencePolarEnergy_le` |
+| `(8)`, `(9)` explicit scale | `exists_unitExponentialThirdDifference_fixedSample_gt_polarEnergy` |
+| `(10)` the no-go | `no_unitExponentialCoherent_fixedSample_polarDomination` |
+| `(11)` source-Gram quadratic | `unitExponentialThirdDifferenceSourceGram_eq`, `unitExponentialThirdDifferenceSourceGram_pos` |
+| `(12)` graph-energy law | `unitExponentialThirdDifference_first_graphDensity`, `unitExponentialThirdDifference_middle_graphDensity`, `unitExponentialThirdDifference_last_graphDensity`, `unitExponentialThirdDifferenceGeneratorEnergy_eq_sourceGram` |
+| `(13)` fixed-sample representation | `unitExponentialThirdDifference_fixedSample_eq_sourceGram`, `unitExponentialThirdDifference_fixedSample_eq_generatorEnergy` |

@@ -1,9 +1,9 @@
 # CCM unit-Riesz / aperture-resolvent source weld
 
 - **ID:** `ccm-unit-riesz-aperture-resolvent-weld`
-- **Stage:** `2-fully-proven/new_scientific_knowledge`
+- **Stage:** `3-formalized/new_scientific_knowledge`
 - **Type:** EXACT LITERAL-SOURCE COMPOSITION / ROUTE COLLAPSE
-- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED, UNCONDITIONAL] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Routes:** `CCM-UR`, `CCM-FU`, `Route O`, `Route G`, `CCM-HG`, `CCM-GS`, `CCM-EP`
 - **Parents:** `ccm-unit-riesz-completed-source-stieltjes-weld`,
   `ccm-critical-mellin-aperture-resolvent-law`
@@ -177,3 +177,26 @@ Module is wired into `GaloisForLFunctions.RHTower`.
 
 - 2026-08-16 — derived exact Volterra cancellation and ray/full-resolvent normalization; proved
   literal source weld and pointwise orientation in Lean.
+
+## Index of the formalization
+
+Modules: `RHTower/CCMUnitRieszApertureResolventWeld.lean`,
+`RHTower/CCMUnitRieszApertureResolventEpsilonTransfer.lean`.  All declarations are unconditional;
+`#print axioms` returns only `propext, Classical.choice, Quot.sound`.
+
+| Card item | Lean declaration |
+|---|---|
+| `(3)` completed-error Volterra law | `criticalMellinNormalizedChebyshevError_eq_apertureError` |
+| `(4)` finite unit-Riesz Stieltjes test | `unitRieszCompletedSourceResponse_eq_errorIntegral` |
+| `(5)`, `(6)` Volterra cancellation | `unitRieszCompletedSourceResponse_eq_chebyshevRayIntegral` |
+| `(7)` logarithmic substitution | `unitRieszChebyshevRayIntegral_eq_primeIntegral` |
+| `(8)` elementary `0 < y ≤ 1` tail | `integral_chebyshevHalfWeight_zero_one` |
+| `(9)` ray/full-resolvent normalization | `unitRieszChebyshevRayIntegral_eq_fullResolvent` |
+| `(1)` exact composition | `unitRieszCompletedSourceResponse_eq_apertureResolvent`, `unitRieszCompletedSourceResponse_re_eq_apertureResolvent` |
+| `(10)` pointwise orientation law | `unitRieszCompletedSourceResponse_re_ge_iff_apertureResolvent_le` |
+| §4 all-`epsilon` order equivalence | `unitRiesz_lowerLaw_iff_apertureResolvent_subpower` |
+| §4 uniform normalized remainder | `unitRieszApertureResolventRemainder_normalized_eq`, `abs_unitRieszApertureResolventRemainder_normalized_le` |
+
+The two remaining gates (`prove common source-sector estimate`, `compose estimate with existing RH
+endpoint`) are the open arithmetic frontier the card explicitly does **not** claim; every statement
+the card proves is formalized.

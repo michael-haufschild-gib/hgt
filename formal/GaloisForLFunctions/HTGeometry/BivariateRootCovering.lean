@@ -105,13 +105,13 @@ theorem biIFTData_mem_source {f : ℂ[X][X]} (q : BiRootLocus f)
     (q : ℂ × ℂ) ∈ (biIFTData q hsep).toOpenPartialHomeomorph.source :=
   ImplicitFunctionData.pt_mem_toOpenPartialHomeomorph_source _
 
-/-- **The root projection is a local homeomorphism** as soon as every fibre is separable. -/
-theorem isLocalHomeomorph_biRootProj {f : ℂ[X][X]}
-    (hsep : ∀ s : ℂ, (biFibre f s).Separable) :
-    IsLocalHomeomorph (biRootProj (f := f)) := by
+/-- **A chart of the root projection at a point where the fibre is separable.** -/
+theorem exists_chart_biRootProj {f : ℂ[X][X]} (e : BiRootLocus f)
+    (hsepe : (biFibre f e.1.1).Separable) :
+    ∃ φ : OpenPartialHomeomorph (BiRootLocus f) ℂ,
+      e ∈ φ.source ∧ biRootProj (f := f) = φ := by
   classical
-  intro e
-  let ψ := (biIFTData e (hsep e.1.1)).toOpenPartialHomeomorph
+  let ψ := (biIFTData e hsepe).toOpenPartialHomeomorph
   let baseTarget : ℂ → ℂ × ℂ := fun s => (0, s)
   have hbaseTarget : Continuous baseTarget := continuous_const.prodMk continuous_id
   have hambient : Continuous (fun q : BiRootLocus f => (q : ℂ × ℂ)) := continuous_subtype_val
@@ -123,7 +123,7 @@ theorem isLocalHomeomorph_biRootProj {f : ℂ[X][X]}
     have h1 := congrArg Prod.fst hright
     have h2 := congrArg Prod.snd hright
     rw [show ψ (ψ.symm (baseTarget s)) = (biEval f (ψ.symm (baseTarget s)),
-        (ψ.symm (baseTarget s)).1) from biIFTData_apply e (hsep e.1.1) _] at h1 h2
+        (ψ.symm (baseTarget s)).1) from biIFTData_apply e hsepe _] at h1 h2
     exact ⟨h1, h2⟩
   let liftRoot : ∀ s, targetPred s → BiRootLocus f :=
     fun s hs => ⟨ψ.symm (baseTarget s), (hsymm_spec s hs).1⟩
@@ -132,7 +132,7 @@ theorem isLocalHomeomorph_biRootProj {f : ℂ[X][X]}
   let target : Set ℂ := baseTarget ⁻¹' ψ.target
   have hpsi_eq : ∀ q : BiRootLocus f, ψ (q : ℂ × ℂ) = baseTarget (biRootProj q) := by
     intro q
-    rw [biIFTData_apply e (hsep e.1.1)]
+    rw [biIFTData_apply e hsepe]
     exact Prod.ext q.2 rfl
   have hmapSource : ∀ q ∈ source, biRootProj q ∈ target := by
     intro q hq
@@ -183,7 +183,13 @@ theorem isLocalHomeomorph_biRootProj {f : ℂ[X][X]}
       continuousOn_invFun := hcontInv
       open_source := ψ.open_source.preimage hambient
       open_target := ψ.open_target.preimage hbaseTarget }
-  exact ⟨chart, biIFTData_mem_source e (hsep e.1.1), rfl⟩
+  exact ⟨chart, biIFTData_mem_source e hsepe, rfl⟩
+
+/-- **The root projection is a local homeomorphism** as soon as every fibre is separable. -/
+theorem isLocalHomeomorph_biRootProj {f : ℂ[X][X]}
+    (hsep : ∀ s : ℂ, (biFibre f s).Separable) :
+    IsLocalHomeomorph (biRootProj (f := f)) :=
+  fun e => exists_chart_biRootProj e (hsep _)
 
 /-! ### Properness and the covering property -/
 

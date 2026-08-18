@@ -2746,3 +2746,117 @@ the recursion of Lemmas 4-7                                       -- long but el
 
 Nothing here is conditional on an unproved conjecture; the whole chain is classical mathematics with
 a long formalization cost, and the working mode is to build it.
+
+## Lean progress — the consumer end of the Andersson chain
+
+`HTGeometry/HelsonPrescribedDivisor.lean` (wired, axiom-clean).
+
+```text
+HelsonFactorizationProperty
+    Andersson's Theorem 2, recorded as a named property:
+      F analytic and zero free on a neighbourhood of Re s >= 1
+        ==>  F = zeta_chi . g  on Re s > 1, with g entire and zero free
+divisorFunction_analyticAt_of_re_le      the realized divisor function is analytic on Re s >= 1
+divisorFunction_ne_zero_of_re_le         and nonvanishing there, because the divisor is to the left
+exists_continuable_phase_with_prescribed_divisor
+    ** given Andersson's factorization, EVERY prescribed divisor is realized:
+       there is a phase chi in continuableStratum whose continuation has exactly that divisor **
+```
+
+So the divisor half of the card is now a single named classical property away from being formal.
+Both ends are unconditional: the Weierstrass realization of an arbitrary divisor
+(`PrescribedDivisorRealization`, already in the corpus) and the passage from the factorization to
+membership in `continuableStratum` with the right order at every point.  What remains is Andersson's
+Theorem 2 itself, i.e. Theorem 1, i.e. Lemmas 1-7 of the plan above.
+
+## Lean progress — two Andersson bricks: the rounding lemma and half-plane pole approximation
+
+`HTGeometry/UnimodularRounding.lean` (wired, axiom-clean).
+
+```text
+exists_first_hit_one       moving from inside the disc along a nonzero direction, there is a FIRST
+                               time at which the unit circle is reached
+exists_reduce_free         with more free coefficients than the dimension, the coefficient vector
+                               moves along the kernel until one more coefficient reaches the circle
+exists_rounding_of_card_le radial rounding of at most `d` interior coefficients
+exists_unimodular_rounding **Bagchi's Lemma 4.1 / Andersson's Lemma 3:**
+                               ||sum b_j x_j - sum a_j x_j|| <= (dim) . max ||x_j||,  |b_j| = 1
+```
+
+`HTGeometry/HalfPlanePoleApproximation.lean` (wired, axiom-clean).
+
+```text
+truncPole a T              the truncated Laplace transform (1 - e^{-T(s-a)})/(s-a)
+differentiable_truncPole   it is ENTIRE — the apparent singularity at `a` is removable
+norm_pole_sub_truncPole_le ||1/(s-a) - truncPole a T s|| <= e^{-T(1 - Re a)}/(1 - Re a)
+                               uniformly on the CLOSED half plane Re s >= 1
+exists_truncPole_approx
+exists_entire_approx_finite_poles
+    ** a finite sum of simple poles lying strictly left of Re s = 1 is uniformly approximable, on
+       the whole closed half plane, by an entire function **
+```
+
+This last statement is Arakelyan's theorem in the case the corpus can reach elementarily, and it
+identifies the mechanism: a simple pole to the left of the line is the Laplace transform
+`int_0^inf e^{-t(s-a)} dt` there, and truncating the integral leaves an entire function with an
+exponentially small error on the half plane.  Uniform approximation on the *closed unbounded* half
+plane is what separates this from the corpus's compact-open Runge results
+(`HalfPlaneRungeClosure`), and it is exactly the shape Andersson's Lemma 1 consumes.
+
+### Why the elementary route does not yet reach the full Lemma 1 — recorded so it is not retried
+
+Three shortcuts were checked and each fails for a precise reason:
+
+1. **Termwise Mellin.**  `1/(s-a) = int_1^inf x^{a-1} x^{-s} dx` with `Re a < 1`, so each polar term
+   *is* a Mellin transform of an `o(1)` function.  But the Mittag-Leffler corrections needed to make
+   `sum_a m_a/(s-a)` converge are polynomials in `s`, and a polynomial is not the Mellin transform of
+   an `o(1)` function (it does not vanish as `Re s -> +inf`).  Grouping the corrections into the
+   entire remainder does not help: their sum diverges.
+2. **Corrections by other poles.**  Replacing the polynomial corrections by combinations of poles at
+   auxiliary points `a + i h` (which *are* Mellin transforms) works analytically — the `k`-th
+   difference gives `u_a(x) = x^{a-1}(1-x^h)^k` with `sup_x |u_a| <= 2^{-k}` for `|h| <= e delta/(2k)`
+   — but it pollutes the divisor with the auxiliary poles, and the residues there do not cancel.
+3. **A cut-off kernel.**  `u_a(x) = x^{a-1} 1_{x >= X_a}` has Mellin transform `X_a^{a-s}/(s-a)`,
+   with **no** auxiliary poles and `sup |u_a| = X_a^{-(1 - Re a)}` arbitrarily small.  The resulting
+   `q` is `o(1)` and the series converges on `Re s > 1`; but its continuation to the left diverges
+   term by term, so it does not exhibit the required entire remainder.
+
+So the polynomial corrections are unavoidable and the entire function that removes them is exactly
+what Arakelyan's theorem supplies.  The finite-pole case above shows the mechanism; the remaining
+content is the passage to infinitely many poles, uniformly on the closed half plane.
+
+### Sharpened statement of the irreducible core
+
+Two further routes were worked out in detail and both terminate at the same theorem.
+
+**Smooth-cutoff Laplace approximants.**  Replacing the hard truncation by a smooth cutoff `w`
+supported in `[0, 2T]` and equal to `1` on `[0,T]`, the approximant
+`g_a(s) = int_0^{2T} w(t) e^{-t(s-a)} dt` is entire and, after `k` integrations by parts, the error
+obeys `|1/(s-a) - g_a(s)| <= C_k e^{-T(1-Re a)} / |s-a|^k` on `Re s >= 1`.  With `k = 2` the error
+family is not merely small but **`L^1` on the line `Re s = 1`**, since
+`int_R dt/|1+it-a|^2 = pi/(1-Re a)`.  That is exactly the hypothesis under which the Mellin
+representation of Lemma 1 is elementary — Riemann--Lebesgue plus the half-plane Cauchy formula, no
+Arakelyan.
+
+**Why that still does not close it.**  Writing `A_a` for the primitive of the error vanishing at
+`+infinity`, the product `prod_a exp(m_a A_a)` has divisor `D` and converges on `Re s >= 1`, and its
+logarithmic derivative is the small `L^1` remainder.  But each factor is
+`(s-a)^{m_a} exp(-m_a G_a(s))` with `G_a` an entire primitive of `g_a`, and `G_a` grows like
+`e^{2T|s|}` to the left, so the product does not converge off the half plane and the realized
+function does not continue.  Making the product converge globally forces `G_a` to be close to the
+Taylor polynomial of `log(s-a)` on compacts, while making the error `L^1` forces `G_a` to be close
+to the truncated-Laplace primitive on the half plane.  **One entire `G_a` doing both is precisely
+uniform approximation on a set of the form `K union {Re s >= 1}`** — Arakelyan's theorem.
+
+So the irreducible core of this card is:
+
+> **Arakelyan's approximation theorem** for closed sets `E ⊆ C` whose complement in the sphere is
+> connected and locally connected — at minimum for `E = {Re s >= 1}` and for
+> `E = K ∪ {Re s >= 1}` with `K` compact: every function continuous on `E` and analytic on its
+> interior is a uniform limit on `E` of entire functions.
+
+Neither mathlib nor this corpus has Arakelyan, Mergelyan, or a general Runge theorem for unbounded
+closed sets; the corpus's `HalfPlaneRungeClosure` is compact-open only.  Formalizing Arakelyan is
+therefore the single remaining task on this card, and it is a first-of-its-kind formalization in its
+own right.  The pieces already built here — the entire truncated-Laplace approximant with its
+exponential half-plane error, and the finite-pole case — are its elementary core.

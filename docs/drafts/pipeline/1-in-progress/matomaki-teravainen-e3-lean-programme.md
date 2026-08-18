@@ -291,31 +291,36 @@ to be supplied there is a derivative bound for `‖ζ‖⁴` on the critical lin
 
 **What remains of M4b is the averaging step**: the middle term of Jutila's estimate, obtained
 by paying the off-diagonal Gram entries with the fourth moment of `ζ` through
-`Sieve/CriticalTruncationZeta` rather than by the trivial diagonal.  Both of its inputs are now
-corpus theorems.
+`Sieve/CriticalTruncationZeta` rather than by the trivial diagonal. The zeta Gram bridge and general
+Gallagher transfer are corpus theorems; derivative control for `‖ζ‖⁴` and the assembled averaging
+estimate remain.
 
-### The Perron kernel's decay branch — `Sieve/PerronKernelBound` (2026-08-18)
+### Both Perron branches and the merged window integral (2026-08-18)
 
 ```text
 norm_perron_kernel_le_div (hx : 0 < x) (hh : 0 < h) (ht : t ≠ 0) :
   ‖((x+h)^{1+it} − x^{1+it})/(1+it)‖ ≤ 2(x+h)/|t|
+norm_perron_kernel_le_length (hx : 0 < x) (hh : 0 < h) (t : ℝ) :
+  ‖((x+h)^{1+it} − x^{1+it})/(1+it)‖ ≤ h
+perronPrefixIntegral_sub :
+  prefixIntegral(B) - prefixIntegral(A) = integral(perronPoly * windowKernel(A,B))
 ```
 
-This is the branch `Sieve/MixedMomentAssembly` consumes through `perronKernel_le_div`: on the
-one-line the two powers have modulus `x+h` and `x`, and `|1+it| ≥ |t|`.  The complementary branch
-`‖K‖ ≤ h`, needed near `t = 0`, is the integral representation `K = ∫_x^{x+h}u^{it}du` and is still
-open.  Axiom-clean, wired.
+`Sieve/PerronKernelBound` proves the decay branch, the integral-representation length branch, and
+their `min` combination. `Sieve/PerronWindowKernel` merges the two prefix integrals from
+`PerronShortInterval` into one integral against the window kernel. Full variance reduction and the
+paper's short/long-window comparison still remain. Axiom-clean, wired.
 
 ## Milestones
 
 - [x] **M1** Lemma 3.3 in general form (improved MVT) — **landed**, `Sieve/ImprovedMeanValue`.
 - [ ] **M2** Lemma 3.1: the Perron/variance reduction to `(5.2)`, with explicit constants.
-- [~] **M3** §7 assembly: **steps 3+5 landed** (`Sieve/MixedMomentAssembly`), and the Perron kernel's decay branch landed (`Sieve/PerronKernelBound`); the window comparison (step 1) remains.
+- [~] **M3** §7 assembly: **steps 3+5 landed** (`Sieve/MixedMomentAssembly`); both Perron kernel branches and the merged-window integral landed (`Sieve/PerronKernelBound`, `Sieve/PerronWindowKernel`); the full window comparison remains.
 - [x] **M4** Audit done (below).  Jutila is assemblable from corpus parts; the missing atom was the divisor bound, now **landed**.
 - [ ] **M5** Prop 2.2 for the Λ-version of §6.1 (Heath-Brown identity + dyadic splitting).
 - [ ] **M6** §6.1 Type I case.
 - [x] **M4a** the adapted-moment (Jutila) level-set bound for divisor-bounded coefficients — **landed**, `Sieve/PowerFibreDivisorBound`.
-- [ ] **M4b** Jutila's estimate: Halász–Montgomery on the `k`-th power + fourth moment of `ζ` + divisor bound.  Needs the exponential-sum/zeta passage.
+- [~] **M4b** Jutila's estimate: exponential-sum/zeta Gram passage and general Gallagher transfer landed; derivative control and fourth-moment averaging assembly remain.
 - [ ] **M4c** Proposition 4.2 for *some* `σ > 1/5` (the sharp `49/206` is not needed).
 - [ ] **M7** §6.1 Type II case (the Bourgain input).
 - [ ] **M8** `(5.2)′` and the retuned Theorem 1.2′; retune both Route E cards `1.55 → 1.615`.

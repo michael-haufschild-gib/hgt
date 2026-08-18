@@ -52,8 +52,49 @@ theorem analyticAt_of_continuous_biRoot {f : ℂ[X][X]}
   set e : BiRootLocus f := ⟨(s₀, g s₀), hmem⟩ with he
   obtain ⟨r, hr, hrs, hrroot⟩ :=
     HolomorphicIFT.holo_implicit (analyticAt_biEval f (s₀, g s₀)) (hroot s₀)
-      (by simpa using biRootLocus_partial_ne hsep e)
+      (by simpa using biRootLocus_partial_ne e (hsep _))
   obtain ⟨φ, hφmem, hφeq⟩ := isLocalHomeomorph_biRootProj hsep e
+  obtain ⟨U, hU, hUeq⟩ : ∃ U : Set (ℂ × ℂ), IsOpen U ∧
+      φ.source = (fun q : BiRootLocus f => (q : ℂ × ℂ)) ⁻¹' U := by
+    have := φ.open_source
+    rw [isOpen_induced_iff] at this
+    obtain ⟨U, hU, hUeq⟩ := this
+    exact ⟨U, hU, hUeq.symm⟩
+  have hmemU : (s₀, g s₀) ∈ U := by
+    have : e ∈ φ.source := hφmem
+    rwa [hUeq] at this
+  have hev1 : ∀ᶠ s in 𝓝 s₀, (s, g s) ∈ U :=
+    (continuous_id.prodMk hg).continuousAt.preimage_mem_nhds (hU.mem_nhds hmemU)
+  have hev2 : ∀ᶠ s in 𝓝 s₀, (s, r s) ∈ U := by
+    have hrc : ContinuousAt r s₀ := hr.continuousAt
+    have : ContinuousAt (fun s => (s, r s)) s₀ := continuousAt_id.prodMk hrc
+    exact this.preimage_mem_nhds (hU.mem_nhds (by rw [hrs]; exact hmemU))
+  have hgr : ∀ᶠ s in 𝓝 s₀, g s = r s := by
+    filter_upwards [hev1, hev2, hrroot] with s h1 h2 h3
+    have hq1 : (s, g s) ∈ BiRootLocus f := hroot s
+    have hq2 : (s, r s) ∈ BiRootLocus f := h3
+    have hs1 : (⟨(s, g s), hq1⟩ : BiRootLocus f) ∈ φ.source := by rw [hUeq]; exact h1
+    have hs2 : (⟨(s, r s), hq2⟩ : BiRootLocus f) ∈ φ.source := by rw [hUeq]; exact h2
+    have : (⟨(s, g s), hq1⟩ : BiRootLocus f) = ⟨(s, r s), hq2⟩ := by
+      apply φ.injOn hs1 hs2
+      have h1' : (φ : BiRootLocus f → ℂ) ⟨(s, g s), hq1⟩ = s := by
+        rw [← hφeq]; rfl
+      have h2' : (φ : BiRootLocus f → ℂ) ⟨(s, r s), hq2⟩ = s := by
+        rw [← hφeq]; rfl
+      rw [h1', h2']
+    exact congrArg (fun q : BiRootLocus f => (q : ℂ × ℂ).2) this
+  exact hr.congr (Filter.EventuallyEq.symm hgr)
+
+/-- The same, needing separability only at the point. -/
+theorem analyticAt_of_continuous_biRoot_at {f : ℂ[X][X]} {g : ℂ → ℂ} (hg : Continuous g)
+    (hroot : ∀ s, biEval f (s, g s) = 0) (s₀ : ℂ)
+    (hsep0 : (biFibre f s₀).Separable) : AnalyticAt ℂ g s₀ := by
+  have hmem : (s₀, g s₀) ∈ BiRootLocus f := hroot s₀
+  set e : BiRootLocus f := ⟨(s₀, g s₀), hmem⟩ with he
+  obtain ⟨r, hr, hrs, hrroot⟩ :=
+    HolomorphicIFT.holo_implicit (analyticAt_biEval f (s₀, g s₀)) (hroot s₀)
+      (by simpa using biRootLocus_partial_ne e hsep0)
+  obtain ⟨φ, hφmem, hφeq⟩ := exists_chart_biRootProj e hsep0
   obtain ⟨U, hU, hUeq⟩ : ∃ U : Set (ℂ × ℂ), IsOpen U ∧
       φ.source = (fun q : BiRootLocus f => (q : ℂ × ℂ)) ⁻¹' U := by
     have := φ.open_source

@@ -10,8 +10,8 @@ facet lattice in that quotient.  Forgetting them produces a literal facet certif
 integral lattice class is still injective, because injectivity after a further quotient implies
 injectivity before it.
 
-Hence every ambient dimension admitting an active palette admits a quasi-Abelian palette, and the
-intrinsic dimensions satisfy `qaDim ≤ aqaDim`.
+Hence every ambient dimension that carries an active palette also carries a quasi-Abelian
+palette, and the intrinsic dimensions satisfy `qaDim ≤ aqaDim`.
 -/
 
 open Finset

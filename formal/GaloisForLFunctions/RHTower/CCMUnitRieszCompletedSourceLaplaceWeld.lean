@@ -360,4 +360,212 @@ theorem unitRieszStirlingConvolution_laplace {z : ℂ} (hz : 0 < z.re) :
       measurable_unitRieszStirlingCorrection hbnd]
   ring
 
+/-! ## The weld -/
+
+theorem unitRieszWeld_ne_zero {z : ℂ} (hz : 0 < z.re) :
+    z ≠ 0 ∧ z + 1 ≠ 0 ∧ z + 3 / 2 ≠ 0 ∧ z + 1 / 2 ≠ 0 := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro h; rw [h] at hz; simp at hz
+  · intro h
+    have hre : (z + 1).re = 0 := by rw [h]; simp
+    simp only [Complex.add_re, Complex.one_re] at hre
+    linarith
+  · intro h
+    have hre : (z + 3 / 2).re = 0 := by rw [h]; simp
+    have h32 : ((3 : ℂ) / 2).re = 3 / 2 := by norm_num
+    simp only [Complex.add_re, h32] at hre
+    linarith
+  · intro h
+    have hre : (z + 1 / 2).re = 0 := by rw [h]; simp
+    have h12 : ((1 : ℂ) / 2).re = 1 / 2 := by norm_num
+    simp only [Complex.add_re, h12] at hre
+    linarith
+
+theorem regularizedCriticalMellinDefect_eq_explicit {z : ℂ} (hz : 0 < z.re) :
+    RHTower.regularizedCriticalMellinDefect z =
+      1 / z + 1 / (z + 1) + deriv riemannZeta (z + 1) / riemannZeta (z + 1) := by
+  rw [regularizedCriticalMellinDefect_eq_continued hz, continuedCriticalMellinDefect,
+    logDeriv_apply]
+
+/-- The source-free correction factors through the aperture multiplier. -/
+theorem unitRieszCompletedSourceCorrection_eq {z : ℂ} (hz : 0 < z.re) :
+    unitRieszCompletedSourceCorrection z =
+      unitRieszCompletedSourceMultiplier z *
+        (riemannZeta (z + 1) / (z + 1) ^ 2 - 1 / z - 1 / (z + 1)) := by
+  have h1 := unitRieszPoleFilledCoefficient_eq_original hz
+  rw [show (1 : ℂ) + z = z + 1 from by ring] at h1
+  have h2 := unitRieszPoleFilledCoefficient_eq_completedSource z
+  rw [h1, regularizedCriticalMellinDefect_eq_explicit hz] at h2
+  linear_combination -h2
+
+theorem unitRieszCompletedSourceMultiplier_eq_pair {z : ℂ} (hz : 0 < z.re) :
+    3 * (z + ((1 : ℝ) : ℂ))⁻¹ - 3 * (z + ((3 / 2 : ℝ) : ℂ))⁻¹ =
+      unitRieszCompletedSourceMultiplier z := by
+  obtain ⟨hz0, hz1, hz32, hz12⟩ := unitRieszWeld_ne_zero hz
+  have h32' : (3 : ℂ) + z * 2 ≠ 0 := fun h => hz32 (by linear_combination h / 2)
+  have hw : ((3 : ℂ) + z * 2) * ((3 : ℂ) + z * 2)⁻¹ = 1 := mul_inv_cancel₀ h32'
+  rw [unitRieszCompletedSourceMultiplier]
+  push_cast
+  field_simp
+  linear_combination -hw
+
+/-- **The literal completed-source response transforms to the aperture multiplier times the
+critical-Mellin defect.** -/
+theorem unitRieszCompletedSourceResponse_laplace_eq_defect {z : ℂ} (hz : 0 < z.re) :
+    (∫ t in Ioi (0 : ℝ), Complex.exp (-(z * (t : ℂ))) * unitRieszCompletedSourceResponse t) =
+      unitRieszCompletedSourceMultiplier z * RHTower.regularizedCriticalMellinDefect z := by
+  obtain ⟨hz0, hz1, hz32, hz12⟩ := unitRieszWeld_ne_zero hz
+  have hLS : LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) (1 + z) =
+      -deriv riemannZeta (z + 1) / riemannZeta (z + 1) := by
+    have h := vonMangoldtPrimeLaplaceChannelComplex_eq_logDeriv hz
+    rw [vonMangoldtPrimeLaplaceChannelComplex] at h
+    rw [show (1 : ℂ) + z = z + 1 from by ring]
+    exact h
+  obtain ⟨D, hD⟩ : ∃ D : ℂ, deriv riemannZeta (z + 1) / riemannZeta (z + 1) = D := ⟨_, rfl⟩
+  rw [unitRieszCompletedSourceResponse_laplace hz, unitRieszCompletedCurrent_laplace hz,
+    hLS, regularizedCriticalMellinDefect_eq_explicit hz, unitRieszCompletedSourceMultiplier]
+  rw [show -deriv riemannZeta (z + 1) / riemannZeta (z + 1) = -D from by
+    rw [← hD]; ring, hD]
+  have h32' : (3 : ℂ) + z * 2 ≠ 0 := fun h => hz32 (by linear_combination h / 2)
+  have h12' : (1 : ℂ) + z * 2 ≠ 0 := fun h => hz12 (by linear_combination h / 2)
+  have hw32 : ((3 : ℂ) + z * 2) * ((3 : ℂ) + z * 2)⁻¹ = 1 := mul_inv_cancel₀ h32'
+  have hw12 : ((1 : ℂ) + z * 2) * ((1 : ℂ) + z * 2)⁻¹ = 1 := mul_inv_cancel₀ h12'
+  push_cast
+  field_simp
+  linear_combination hw32 + (D * z * (1 + z) * (((3 : ℂ) + z * 2)⁻¹)) * hw12 +
+    (D * z * (1 + z) * (((1 : ℂ) + z * 2)⁻¹)) * hw32
+
+/-- **The Stirling convolution transforms to the source-free correction.** -/
+theorem unitRieszStirlingConvolution_laplace_eq_correction {z : ℂ} (hz : 0 < z.re) :
+    (∫ t in Ioi (0 : ℝ),
+        Complex.exp (-(z * (t : ℂ))) * ((unitRieszStirlingConvolution t : ℝ) : ℂ)) =
+      unitRieszCompletedSourceCorrection z := by
+  rw [unitRieszStirlingConvolution_laplace hz, unitRieszStirlingCorrection_laplace hz,
+    unitRieszCompletedSourceMultiplier_eq_pair hz,
+    unitRieszCompletedSourceCorrection_eq hz,
+    show (1 : ℂ) + z = z + 1 from by ring]
+
+/-- The literal completed-source response is real. -/
+theorem unitRieszCompletedSourceResponse_ofReal_re {t : ℝ} (ht : 0 ≤ t) :
+    unitRieszCompletedSourceResponse t =
+      (((unitRieszCompletedSourceResponse t).re : ℝ) : ℂ) := by
+  rw [unitRieszCompletedSourceResponse_eq_volterra ht]
+  simp
+
+/-- The time-domain unit-Riesz Markov--virial coefficient: the literal completed-source response
+plus the source-free Stirling convolution. -/
+def unitRieszMarkovVirialCoefficient (t : ℝ) : ℝ :=
+  (unitRieszCompletedSourceResponse t).re + unitRieszStirlingConvolution t
+
+/-- **Equation (26).**  The unit-Riesz coefficient transform is the Laplace transform of the
+completed-source response plus the Stirling convolution. -/
+theorem unitRieszMarkovVirialCoefficient_laplace {z : ℂ} (hz : 0 < z.re) :
+    (∫ t in Ioi (0 : ℝ),
+        Complex.exp (-(z * (t : ℂ))) * ((unitRieszMarkovVirialCoefficient t : ℝ) : ℂ)) =
+      unitRieszPoleFilledCoefficient z := by
+  have hbndC := unitRieszCompletedCurrent_linear_bound
+  have hbndS := unitRieszStirlingCorrection_linear_bound
+  have hiR : IntegrableOn
+      (fun t : ℝ => Complex.exp (-(z * (t : ℂ))) * unitRieszCompletedSourceResponse t)
+      (Ioi (0 : ℝ)) volume := by
+    have hi1 := integrableOn_Ioi_cexp_mul_expVolterra (b := 3 / 2) (by norm_num) hz
+      measurable_unitRieszCompletedCurrent hbndC
+    have hi2 := integrableOn_Ioi_cexp_mul_expVolterra (b := 1) (by norm_num) hz
+      measurable_unitRieszCompletedCurrent hbndC
+    have h1c : IntegrableOn
+        (fun t : ℝ => 3 * (Complex.exp (-(z * (t : ℂ))) *
+          ((∫ h in Ioc (0 : ℝ) t,
+            Real.exp (-(3 / 2 * (t - h))) * unitRieszCompletedCurrent h : ℝ) : ℂ)))
+        (Ioi (0 : ℝ)) volume := hi1.const_mul 3
+    have h2c : IntegrableOn
+        (fun t : ℝ => (3 / 2 : ℂ) * (Complex.exp (-(z * (t : ℂ))) *
+          ((∫ h in Ioc (0 : ℝ) t,
+            Real.exp (-(1 * (t - h))) * unitRieszCompletedCurrent h : ℝ) : ℂ)))
+        (Ioi (0 : ℝ)) volume := hi2.const_mul _
+    refine (h1c.sub h2c).congr_fun ?_ measurableSet_Ioi
+    intro t ht
+    show 3 * (Complex.exp (-(z * (t : ℂ))) *
+          ((∫ h in Ioc (0 : ℝ) t,
+            Real.exp (-(3 / 2 * (t - h))) * unitRieszCompletedCurrent h : ℝ) : ℂ)) -
+        (3 / 2 : ℂ) * (Complex.exp (-(z * (t : ℂ))) *
+          ((∫ h in Ioc (0 : ℝ) t,
+            Real.exp (-(1 * (t - h))) * unitRieszCompletedCurrent h : ℝ) : ℂ)) =
+      Complex.exp (-(z * (t : ℂ))) * unitRieszCompletedSourceResponse t
+    rw [unitRieszCompletedSourceResponse_eq_volterra (le_of_lt ht)]
+    push_cast
+    ring
+  have hiS : IntegrableOn
+      (fun t : ℝ => Complex.exp (-(z * (t : ℂ))) *
+        ((unitRieszStirlingConvolution t : ℝ) : ℂ)) (Ioi (0 : ℝ)) volume := by
+    have hi1 := integrableOn_Ioi_cexp_mul_expVolterra (b := 1) (by norm_num) hz
+      measurable_unitRieszStirlingCorrection hbndS
+    have hi2 := integrableOn_Ioi_cexp_mul_expVolterra (b := 3 / 2) (by norm_num) hz
+      measurable_unitRieszStirlingCorrection hbndS
+    have h1c : IntegrableOn
+        (fun t : ℝ => 3 * (Complex.exp (-(z * (t : ℂ))) *
+          ((∫ s in Ioc (0 : ℝ) t,
+            Real.exp (-(1 * (t - s))) * unitRieszStirlingCorrection s : ℝ) : ℂ)))
+        (Ioi (0 : ℝ)) volume := hi1.const_mul 3
+    have h2c : IntegrableOn
+        (fun t : ℝ => 3 * (Complex.exp (-(z * (t : ℂ))) *
+          ((∫ s in Ioc (0 : ℝ) t,
+            Real.exp (-(3 / 2 * (t - s))) * unitRieszStirlingCorrection s : ℝ) : ℂ)))
+        (Ioi (0 : ℝ)) volume := hi2.const_mul 3
+    refine (h1c.sub h2c).congr_fun ?_ measurableSet_Ioi
+    intro t ht
+    show 3 * (Complex.exp (-(z * (t : ℂ))) *
+          ((∫ s in Ioc (0 : ℝ) t,
+            Real.exp (-(1 * (t - s))) * unitRieszStirlingCorrection s : ℝ) : ℂ)) -
+        3 * (Complex.exp (-(z * (t : ℂ))) *
+          ((∫ s in Ioc (0 : ℝ) t,
+            Real.exp (-(3 / 2 * (t - s))) * unitRieszStirlingCorrection s : ℝ) : ℂ)) =
+      Complex.exp (-(z * (t : ℂ))) * ((unitRieszStirlingConvolution t : ℝ) : ℂ)
+    rw [unitRieszStirlingConvolution_eq (le_of_lt ht)]
+    push_cast
+    ring
+  have hpt : ∀ t ∈ Ioi (0 : ℝ),
+      Complex.exp (-(z * (t : ℂ))) * ((unitRieszMarkovVirialCoefficient t : ℝ) : ℂ) =
+        Complex.exp (-(z * (t : ℂ))) * unitRieszCompletedSourceResponse t +
+          Complex.exp (-(z * (t : ℂ))) * ((unitRieszStirlingConvolution t : ℝ) : ℂ) := by
+    intro t ht
+    rw [unitRieszMarkovVirialCoefficient, Complex.ofReal_add,
+      ← unitRieszCompletedSourceResponse_ofReal_re (le_of_lt ht)]
+    ring
+  rw [setIntegral_congr_fun measurableSet_Ioi hpt, integral_add hiR hiS,
+    unitRieszCompletedSourceResponse_laplace_eq_defect hz,
+    unitRieszStirlingConvolution_laplace_eq_correction hz,
+    unitRieszPoleFilledCoefficient_eq_completedSource z]
+
+/-- **Equation (27).**  The source-free correction is a negative shift: the unit-Riesz
+coefficient never exceeds the literal completed-source response. -/
+theorem unitRieszMarkovVirialCoefficient_le_response {t : ℝ} (ht : 0 ≤ t) :
+    unitRieszMarkovVirialCoefficient t ≤ (unitRieszCompletedSourceResponse t).re := by
+  have h := unitRieszStirlingConvolution_nonpos ht
+  rw [unitRieszMarkovVirialCoefficient]
+  linarith
+
+/-- **Equation (28).**  The two open producer lower laws are the same statement, with no loss of
+exponent in either direction. -/
+theorem unitRieszProducer_equivalence {ε : ℝ} (hε : 0 ≤ ε) :
+    (∃ C : ℝ, ∀ t : ℝ, 0 ≤ t →
+        -(C * Real.exp ((-1 / 2 + ε) * t)) ≤ unitRieszMarkovVirialCoefficient t) ↔
+      (∃ C' : ℝ, ∀ t : ℝ, 0 ≤ t →
+        -(C' * Real.exp ((-1 / 2 + ε) * t)) ≤
+          (unitRieszCompletedSourceResponse t).re) := by
+  constructor
+  · rintro ⟨C, hC⟩
+    exact ⟨C, fun t ht => le_trans (hC t ht) (unitRieszMarkovVirialCoefficient_le_response ht)⟩
+  · rintro ⟨C', hC'⟩
+    refine ⟨C' + 48, fun t ht => ?_⟩
+    have hr := abs_unitRieszStirlingConvolution_le_exp ht
+    have hrl : -(48 * Real.exp (-t / 2)) ≤ unitRieszStirlingConvolution t := by
+      have h := (abs_le.mp hr).1
+      linarith
+    have hexp : Real.exp (-t / 2) ≤ Real.exp ((-1 / 2 + ε) * t) := by
+      rw [Real.exp_le_exp]
+      nlinarith
+    have h0 : (0 : ℝ) < Real.exp ((-1 / 2 + ε) * t) := Real.exp_pos _
+    rw [unitRieszMarkovVirialCoefficient]
+    nlinarith [hC' t ht, hrl, hexp]
+
 end GaloisForLFunctions.RHTower

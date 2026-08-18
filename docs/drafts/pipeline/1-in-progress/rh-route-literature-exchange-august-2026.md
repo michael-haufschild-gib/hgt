@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`a7be0e560974d76d8c1656c8870c2197c3c05f06` on 18 August, plus declaration-level review of current working tree. Historical `Active-tree Lean` wording records former provenance; current
+`e83e6e4bfd9e20ecbd36da22315c8630cf37bdcd` on 18 August, plus declaration-level review of current working tree. Historical `Active-tree Lean` wording records former provenance; current
 scientific verdict follows declaration content and synopsis below rather than former cutoff labels.
 Scientific
 comparison follows declaration content rather than module placement.
@@ -26,11 +26,11 @@ comparison and theorem provenance, not chronological status.
 | CCM-FU | Whole completed Guinand–Weil source matrix equals published restricted-Weil matrix entrywise. Centered response is blind through second order; cubic Loewner clock moment is first transverse jet and equals Xi-screw Green curvature. Linear growth of one Cesàro primitive of the literal third-grade source implies RH, strictly admitting oscillatory sources outside every fixed pointwise subcubic envelope. | No located theorem proves this averaged prime-minus-polar cancellation. Classical Abel/explicit-formula theory explains receiver but does not supply the Cesàro-linear source bound. |
 | C1 | Fixed theta inverse realizes Xi divisor with multiplicity. Raw critical-feature lattice budget is impossible by factor `324`; corrected budget gives a sharp 75% receiver but is between one half and one times off-line energy and vanishes iff RH. | Existing Fredholm/de Branges/Weil theory neither makes this inverse real-spectral nor constructs the needed pre-divisor critical-line projector or centered arithmetic covariance. |
 | D2 | On every fixed polynomial frequency horizon, safe-line zeta bound is O_B(log x/log log x) and deficit is at least log log log x minus O_B(1); quarter deficit transfers to every real unit-disc twist. | Pretentious and zero-free-region literature supplies safe-line inputs, not continuation of positive source through Euler wall to finite completed high-frequency ceiling. |
-| E | Lean proves the repaired whole budget after explicit spectral substitution and obtains unconditional Möbius fibre mean square for every `h=exp((log x)^beta)`, `9/10<beta<1`, plus Route-E coprime sign density/nonemptiness. | Matomäki--Teräväinen's all-interval `E_3` machinery can still strengthen physical supply. No located theorem gives the final unit Carleson/Hall and co-moving-flux law for the fixed relation. |
+| E | Lean proves the repaired whole budget, unconditional long-window Möbius fibre mean square and sign density, plus new zeta/Dirichlet-row Gram, general Gallagher, two-branch Perron-kernel, and merged-window integral bricks for the all-interval `E_3` programme. | Matomäki--Teräväinen can still supply full Perron/variance, Jutila averaging, Heath--Brown/Type I, Bourgain Type II, and final assembly. No located theorem gives final unit Carleson/Hall and co-moving flux for the fixed relation. |
 | G | High assistance is formally source-cyclic. New G-CE form annihilates the positive shifted-Euler main term and identifies completed Suzuki primitive exactly with pole-subtracted all-prime summatory error; the characteristic endpoint is corrected to meromorphic topology. | No located theorem proves source-defined nonexpansive continuation of the coupled floor/Möbius error to divisor charge. Aperture-Morse exhaustion, source-cyclic mass, and completed wall Schur comparison remain separate. |
 | L | Scalar descent on completed one-leg graph is exactly constant-profile descent; fixed-coordinate Hilbert--Schmidt encoding is impossible. Tate descent now proves rational real Milnor amplitude has only degrees 0 and 1. | Surviving route must retain integral/adelic/extension data and prove critical-scale arithmetic discontinuity, carrier change, Calderón Green extension, and cup-isometric Hodge comparison. |
 | O | Source quadratic is exactly corrected finite-aperture CCM symbol averaged against actual canonical-head Fourier density. Full constrained-sector operator ground/spectrum/gaps and vector transfer are closed. Unsigned cell cost diverges, and phase-free coherent chi-square budget is impossible because Gamma--polar scalar reserve is negative. | Need sign of inseparable joint symbol average. External PSWF/screw theory supplies no source-specific signed order; pointwise symbol positivity is sufficient but stronger than required. |
-| P | Completed Gamma/polar two-leg descent, nonlinear source-grade selection, and actual Xi-fibre conormal admission are Lean-proved. Finite Green--Stokes co-short conservation identifies admitted Wold plus endpoint with twice the literal four-orientation short. Burnol top-jet provenance and multiplicity are exact. Every linear admitted reporter has cofinal character `(8/3)|c|²(-a+b+2d)`; existing compensated budget is exactly blind vector `(1,-1,1)`. | Hahn--Jordan minimality, total-variation contraction, BV quasi-isomorphic pushforward, and generic Krein shorting are external. No located result supplies this arithmetic co-short law or character classification. Open producer is a source-budgeted character transverse to `-a+b+2d=0`; ordinary Loewner/equivariant admission remains RH-equivalent internally. |
+| P | Completed Gamma/polar two-leg descent, nonlinear selection, actual Xi-fibre conormal admission, and a transverse source-budgeted reporter are Lean-proved. Reporter `(-1,-1,B_P/4)` is exact positive Euler--Wold compression defect plus budget-calibrated endpoint leg; it tends to half source budget and preserves multiplicity. No linear reporter can be both source-budgeted and endpoint-dominating. | Hahn--Jordan minimality, BV quasi-isomorphic pushforward, and generic Krein shorting are external. No located result supplies this arithmetic Xi co-short, budget calibration, or linear firewall. Open producer is nonlinear/order-indefinite annihilation of endpoint excess before scalar domination; ordinary Loewner/equivariant admission remains RH-equivalent internally. |
 | Q | Null-boundary diagonal energies vanish while mixed incidence tends `-E/2`; complex scalar phases cannot repair target-aligned fusion. Off-line conjugate pair has zero signed mass but divergent quadratic concentration at transverse wall. | Produce cofinal nonnegative source recurrence, or construct finite pre-divisor quadratic-energy budget dominating Q and U boundary profiles. Classical moment/phase/diagonal theory supplies neither. |
 | T | For every prescribed logarithmic retreat coefficient, a sufficiently high finite jet gives exact RH criterion through finite atom/true-prime quadrature; annular transfer is bounded. Every fixed finite radiation subtraction has exact divergent scale `sqrt(X)/(log X)^(2m+2)`. | Prove signed bound for remaining interior finite core; alternatives remain residual/sub-`3/2`, growing-Xi chirp, or genuinely moving-degree reverse-Bessel assembly. |
 | U | Exact onto `2*pi` scaling identifies full CCM form; even and odd prime walls are invisible. Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: false-RH least null ground is outside every strict smooth interior source. | Exclude completed-boundary rough first contact through trace/quotient or whole-ground coercivity. Literature offers no such source-relative boundary theorem. |
@@ -397,9 +397,12 @@ modules close the former Laplace/residue/Landau endpoint in Lean. The newest fin
 reporter proves unique sign wall in `(0,log 16)`, its limit `log 16`, and exact moments;
 `CCMUnitRieszApertureResolventEpsilonTransfer.lean` proves the all-epsilon source/resolvent order
 equivalence, and `CCMUnitRieszCoherentGeneratorSampling.lean` identifies fixed sampling with
-generator graph energy. Remaining Stirling-convolution and source-Laplace weld cards are formal
-backlog, not additional scientific gates; `CCMUnitRieszVolterraLaplace.lean` now supplies their
-generic exponential-convolution Fubini lemma. CCM-UR is source-isogenous to
+generator graph energy. The formal weld is now closed:
+`CCMUnitRieszStirlingLaplace.lean`, `CCMUnitRieszCompletedCurrentLaplace.lean`, and
+`CCMUnitRieszCompletedSourceLaplaceWeld.lean` prove the literal two-exponential Volterra response,
+both arithmetic Laplace transforms, nonpositive exponentially small Stirling correction, exact
+Markov--virial transform, and two-way all-epsilon producer equivalence without exponent loss.
+CCM-UR is source-isogenous to
 CCM-FU rather than an independent route. Its only scientific gap is upstream: prove the signed
 source lower/contractivity law that activates the already-formal resolvent criterion. Affine
 blindness and the exact fast/slow covariance calculation still exclude reporter-only reversal or
@@ -3705,11 +3708,15 @@ clock.  Actual Burnol top-jet provenance and support-fibre multiplicity are reta
 This closes admission but exposes exact budget blindness. Every reporter `(a,b,d)` on admitted
 Euler, Wold, and endpoint channels has cofinal character `(8/3)|c|²(-a+b+2d)`. Existing
 compensated primitive-budget energy is literally reporter `(1,-1,1)`, lying in the zero-character
-plane. Hence its convergence to zero cannot control nonzero endpoint response. First open theorem
-is a source-budgeted reporter transverse to `-a+b+2d=0`; the obvious complete-positive transverse
-reporter already overspends. Repeating transport, selection, abstract shorting, or positive-order
-algebra cannot close route. Ordinary Loewner/equivariant admission, scalar contractivity,
-matrix-complete restriction, and post-divisor passivity remain insufficient or RH-equivalent.
+plane. A new reporter `(-1,-1,B_P/4)` is the positive post-compression defect plus a universal
+budget-calibrated endpoint fraction. Its character is `B_P/2`, it tends to half source budget, lies
+strictly inside budget cofinally, and preserves actual Xi multiplicity. Thus transverse budgeted
+existence is closed. A universal firewall proves no linear reporter can also dominate endpoint,
+whose response overspends source budget cofinally. First open theorem is nonlinear/order-indefinite
+annihilation of endpoint excess before scalar domination. Repeating linear reporting, transport,
+abstract shorting, or positive-order algebra cannot close route. Ordinary Loewner/equivariant
+admission, scalar contractivity, matrix-complete restriction, and post-divisor passivity remain
+insufficient or RH-equivalent.
 External supercritical Thorin theory is only a safe control case.
 
 P-G176 removes “prove target capacity” from legitimate producer research: the universal target
@@ -5757,13 +5764,21 @@ tails, real-part second moment equal to half the diagonal, a fourth-moment bound
 positive-probability real excursions. This makes the probabilistic half-plane sharp but does not
 prove a natural boundary or deterministic noncontinuability, and therefore does not supply the
 missing canonical Xi wall.
-`HelsonEulerExponent.lean` also makes the continuation obstruction source-exact: on the full-measure
-prime-holomorphic event, any phase admitting meromorphic continuation across the half line has
-`|Re E_omega(sigma)-m log(sigma-1/2)|<=B` near the boundary. The exponent is measurable through a
-`limsup` and equals the holomorphic value on the convergence event. What remains is the tail-event/
-anti-concentration assembly proving that continuation stratum has measure zero, then the
-deterministic coefficient-faithful Xi intertwiner. The envelope alone is not a natural-boundary
-theorem.
+`HelsonEulerExponent.lean` makes the continuation obstruction source-exact, and
+`HelsonStratumNull.lean` completes the formerly missing assembly: the bounded-above/bounded-below
+envelope events are finite-modification tail events; zero--one plus one-sided real-part
+anti-concentration proves the whole-plane continuable stratum has Haar measure zero. Together with
+the already-formal density of finite Euler modifications, the seam is dense-null,
+boundary-everywhere, and invisible to every continuous finite-prime readout. This does not prove an
+almost-sure natural boundary and does not construct deterministic completed-Xi transport.
+The independent divisor-universality side is now isolated exactly. `HelsonPrescribedDivisor.lean`
+proves that Andersson's factorization property implies realization of every locally finite signed
+divisor left of `Re(s)=1`, preserving meromorphic order pointwise. `UnimodularRounding.lean` closes
+Bagchi's rounding lemma, while `HalfPlanePoleApproximation.lean` uniformly approximates every
+finite pole packet on the entire closed half plane by an entire function. The missing literature
+import is Andersson's full infinite-divisor factorization, whose irreducible formal core is
+unbounded Arakelyan approximation plus the Paley--Wiener/Mellin representation—not the consumer or
+finite-pole geometry.
 `RieszTauberian.lean` now closes conditional inversion algebra: bounded endpoint logarithmic Riesz
 means and uniform short-block increment `epsilon` imply
 `||A(N)||<=2B/log(M/N)+epsilon`. Missing input is analytic increment control with useful uniform
@@ -6175,11 +6190,14 @@ formalized. Exact absent literature packages are:
 - Burnol's evaluator/co-Poisson completeness and exact dual systems;
 - the concrete Suzuki, CCM, Inoue, Deninger, Groskin, and Burnol/semilocal theorems named above.
 
-Full Li, Nyman–Beurling, Hardy, and theta-at-infinity formalizations improve corpus completeness but
-do not narrow a live source premise beyond an equivalent positivity, density, or closure wall. They
-are therefore secondary to the concrete operator/carrier imports. Yang's unconditional strict
-subspace inclusions sharpen Nyman–Beurling geometry but do not change this ordering. Colombeau
-remains low priority: no located unconditional theorem improves a route's first open core.
+Hardy's classical lane is now partly formal in a different, theta-Fourier architecture: exact
+critical-line transform, sub-`pi/2` exponential decay, contour shift, Fourier inversion, and theta
+boundary blow-up are declarations in `HardyThetaFourier.lean` and working-tree
+`HardyTheorem.lean`. The final finite-zero contradiction and infinitely-many-critical-zeros
+declaration are not yet present. Completing it would add an unconditional divisor anchor, not
+narrow a live RH source premise. Full Li, Nyman–Beurling, and theta-at-infinity formalizations are
+likewise secondary to concrete operator/carrier imports. Yang's strict subspace inclusions and
+Colombeau criteria do not change this ordering.
 
 ## 4. Retired routes and external SOTA
 
@@ -6384,10 +6402,10 @@ External material should be imported only where it shortens a current first open
    harmonic comparison. For P, pre-Xi negative Euler third jet and positive Wold counterterm now
    fit primitive budget, while one-leg positive and signed splits overspend. Completed Gamma/polar
    two-leg descent, intrinsic Hahn--Jordan selection, and actual Xi-fibre conormal admission are
-   now formal. For P, work only on a source-budgeted reporter transverse to the proved blind plane
-   `-a+b+2d=0`. Existing compensated budget is exactly `(1,-1,1)` and blind; complete-positive
-   transverse conservation overspends. Generic cyclic homology, Loewner order, or abstract
-   shorting still restates receiver.
+   now formal. For P, transverse source-budgeted reporter existence is closed by
+   `(-1,-1,B_P/4)`, while every linear budgeted reporter is proved unable to dominate endpoint.
+   Work only on nonlinear/order-indefinite source annihilation of endpoint excess before scalar
+   domination. Generic cyclic homology, Loewner order, or abstract shorting still restates receiver.
 7. **Route O / CCM-BS — sign canonical ground heads.** Signed parity clocks, constrained-ground
    sector spectrum/vector convergence, arbitrary-accuracy reduction, and canonical exact-ground
    head convergence are formal. Prove corrected completed CCM symbol has nonnegative average
@@ -6417,9 +6435,10 @@ External material should be imported only where it shortens a current first open
     Schatten-one, and its entire `det₂` has explicit symmetric real reciprocal source zeros.
     Its forced zero at `1` rules out Xi, normalized Xi, and every pointwise scalar weld. Exact
     nonpointwise Julia coupling, compression-order reversal, and coefficient/multiplicity-faithful
-    completed Xi transport and non-spectral conormal admission are formal. Prove a source-budgeted
-    conormal character transverse to the classified blind plane. Do not revisit trace-class landing,
-    scalar functional calculus, fixed-node reweighting, or amplitude-eight repair.
+    completed Xi transport, non-spectral conormal admission, and transverse half-budget reporter
+    are formal. Linear budgeted endpoint domination is impossible; seek nonlinear/order-indefinite
+    endpoint-excess annihilation before scalarization. Do not revisit trace-class landing, scalar
+    functional calculus, fixed-node reweighting, or amplitude-eight repair.
 13. **TC-HS — half-step transport.** Formalize paper defect/reflection theorem, then construct
     source-native half-step or density neutralizing reflection coefficient before divisor reading.
 14. **Moving-degree reverse-Bessel — completed-source assembly.** Gamma half-log reserve, moving
@@ -6463,9 +6482,10 @@ Current Lean corpus changes route frontiers, but not route count or RH status.
   and intrinsic pre-compression Hahn--Jordan selection are closed, preserving BV endpoint, `k^2`
   depth, labels, orientations, multiplicity, and both order-one residuals. Actual Xi-fibre
   conormal admission is now exact, including finite Wold/endpoint co-short conservation and Burnol
-  provenance. Existing compensated budget is exactly blind character `(1,-1,1)` in plane
-  `-a+b+2d=0`. Open core is a source-budgeted transverse character. Ordinary Loewner/equivariant
-  admission remains an RH-equivalent receiver.
+  provenance. Existing compensated budget is exactly blind character `(1,-1,1)`. Reporter
+  `(-1,-1,B_P/4)` is transverse and converges to half source budget, but no linear budgeted reporter
+  can dominate endpoint. Open core is nonlinear/order-indefinite endpoint-excess annihilation
+  before scalarization. Ordinary Loewner/equivariant admission remains an RH-equivalent receiver.
 - T analytic detector chain ends in fixed-gap zero-density below 7/10, and moving Gabriel geometry
   has exact 31/10 coefficient with 7/100 room. Actual critical fourth, mollifier, detector-error,
   and translated Gaussian budgets have polylogarithmic cost. One threshold supplies every upper
@@ -6567,14 +6587,14 @@ CCM-RF has an exact Lean RH endpoint and CCM-UR an exact Lean source weld, but n
 signed source producer; both share CCM-FU's completed current and therefore do not increase
 independent route count. Causal-Pick quotient and diagonal-Fock constructions are exact receivers,
 not routes.
-The Helson/Bohr opening has nevertheless advanced: sharp integrability of the Riesz `1/w^2` kernel,
-its truncated-log Mellin pair, positive-average formula, and conditional Tauberian bound are formal.
-The Steinhaus prime series now has the sharp probabilistic half-plane package—almost-sure
-holomorphy above `1/2`, divergence on/below it, phase rotation, holomorphic Euler-log tail, and
-exact real moments—and continuable phases obey a precise logarithmic boundary envelope. Tail-event
-anti-concentration/natural-boundary assembly and deterministic completed-Xi transport remain open.
-Missing source theorem is uniform analytic short-block increment control, plus completed
-coefficient-faithful Xi intertwiner; these prevent promotion to independent route.
+The Helson/Bohr opening has nevertheless advanced. The Steinhaus prime series has the sharp
+probabilistic half-plane package, and tail-event anti-concentration now proves unconditionally that
+the whole-plane continuable stratum is Haar-null; finite Euler modification makes it dense, so the
+continuation seam is boundary-everywhere. Pong-type labelled differential-field universality is
+also formal. Andersson divisor surjectivity is reduced to one named factorization property;
+unimodular rounding and finite-pole closed-half-plane approximation are formal, but full unbounded
+Arakelyan/Paley--Wiener factorization remains. Deterministic coefficient-faithful completed-Xi
+transport and uniform analytic short-block increment control still prevent promotion to a route.
 Sonin three-grade algebra now strengthens CCM-HG without changing that classification: compressed
 commutator is internal defect plus polarized leakage, exact resolvent correction factors through
 one edge commutator, and scalar observability deficit is paid by relative negative index. Closed

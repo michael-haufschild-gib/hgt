@@ -1014,3 +1014,57 @@ identity records exactly how it differs from the raw genus-zero phase: by the ir
 `exp(2 Re t/ε_S)`, whose exponent blows up as `ε_S → 0`.  The only remaining input is `(14a)`, the
 two-sided compact bound on `Φ^(1)` itself, which is the parent's normal convergence of the
 genus-one product and appears here as the hypothesis `C⁻¹ ≤ ‖Φ^(1)_S(t)‖ ≤ C`.
+
+## Lean progress — `(14a)` and `(18c)` closed; the card is unconditional end to end
+
+The two inputs that were still entering as explicit hypotheses are now theorems of this tree.  Both
+new modules are axiom-clean (`[propext, Classical.choice, Quot.sound]`) and wired into
+`GaloisForLFunctions.RHTower`.
+
+### `(14a)` — the genus-one occupation phase is compact-uniformly bounded, uniformly in the aperture
+
+`RHTower/GenusOneOccupationCompactBound.lean`:
+
+```text
+reflectedPrimaryLogDefect z = log ‖E₁(z)‖ − log ‖E₁(−z)‖        E₁(z) = (1−z) e^z
+reflectedPrimaryLogDefect_eq        = log‖1−z‖ − log‖1+z‖ + 2 Re z
+abs_reflectedPrimaryLogDefect_le               ‖z‖ ≤ 1/4  ⟹  |E| ≤ 110 ‖z‖³
+abs_reflectedPrimaryLogDefect_le_of_sep        the crude bound at the finitely many small indices
+occupationSmoothIndex, occupationSmoothIndex_injective
+nomeMonomial_eq_inv_occupationSmoothIndex      q^ν = 1 / n(ν),  n(ν) the S-smooth integer
+abs_reflectedPrimaryLogDefect_smooth_le        |E(t/n)| ≤ A(R,δ) / n³   for every n ≥ 1
+norm_finitePrimeGenusOnePolarizedPhase_two_sided
+    ‖t‖ ≤ R,  δ ≤ ‖t ∓ n‖ for every n ≥ 1
+      ⟹  e^(−C(R,δ)) ≤ ‖Φ^(1)_S(t)‖ ≤ e^(C(R,δ))     for every finite prime set S
+log_blockComparisonGauge_le                    -- (14c)
+tendsto_mertensProduct_mul_ell2_blockComparisonGauge
+    a_N · ℓ₂ (gauge of the comparison (14b)) → 0    -- §5.1's compact-uniform conclusion
+```
+
+The mechanism is that the *reflected* logarithmic defect of the genus-one primary factor is cubic
+at the origin: its linear term cancels against the tangent counterterm and its quadratic term
+cancels by reflection, leaving `2 (Re z) ‖z‖² + O(‖z‖³)`.  Because the occupation monomials of the
+inverse-prime nome family are exactly the reciprocals of the *distinct* `S`-smooth integers, that
+cubic majorant is dominated by `∑_{n ≥ 1} n^(−3)` **independently of `S`** — the finitely many
+indices below `4R` being absorbed into the same `A/n³` shape by the crude separation bound.  No
+limit, no normal-convergence citation, and no hypothesis is needed: the bound is a single explicit
+constant valid for every finite aperture at once.
+
+### `(18c)` — the aperture rigidity is the tree's own cross-aperture theorem
+
+`RHTower/SoninDepthApertureRigidity.lean`:
+
+```text
+norm_burnolExtendedSoninEvaluationVector_soninDepth_bounds
+    0 < a,  1 < r,  0 < a_x,  1/2 < Re w < 1
+      ⟹ ‖k_{w,a}‖ · r^(−d) exp(2d/a_x) ≤ ‖k_{w, r^(−N_x) a}‖
+                                      ≤ (C_w/√2) a^(−d) exp(2d/a_x),
+        d = |Re w − 1/2|,  N_x = soninDepth a_x r = ⌊2/(a_x log r)⌋
+```
+
+`(18c)` was already owned by the tree as `norm_burnolExtendedSoninEvaluationVector_geometric_lower`
+and `..._geometric_upper` — the cross-aperture self-testing bound whose exponent is the horizontal
+displacement of `w`.  Feeding those two into `norm_le_of_soninDepth_rigidity` under the
+source-defined depth schedule discharges the hypothesis outright, so `(18e)` holds with no citation.
+
+**Every theorem this card proves is now Lean-proved, unconditional and axiom-clean.**

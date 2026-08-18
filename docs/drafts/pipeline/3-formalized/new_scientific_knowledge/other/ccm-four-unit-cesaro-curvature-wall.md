@@ -1,9 +1,9 @@
 # CCM four-unit Cesàro curvature wall
 
 - **ID:** `ccm-four-unit-cesaro-curvature-wall`
-- **Stage:** `2-fully-proven/new_scientific_knowledge`
+- **Stage:** `3-formalized/new_scientific_knowledge`
 - **Type:** EXACT REPORTER TRANSPORT / SIGNED TWO-CHANNEL LIFT / MERGER BOUNDARY
-- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED, UNCONDITIONAL] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Routes:** `CCM-FU`, `CCM-UR`, `CCM-HG`, `CCM-EP`, `G`, `O`, `CCM-GS`
 - **Parent:** `ccm-unit-riesz-completed-source-stieltjes-weld`
 
@@ -272,8 +272,53 @@ not solution of remaining arithmetic orientation estimate.
 - literal Stieltjes test `(1)` and endpoint vanishing;
 - completed-error integration-by-parts identity `(2)`.
 
-`CCMUnitRieszFUCurvatureTransport.lean` now formalizes the literal FU source identity, first and
-second integrations by parts, exact curvature transport, and endpoint coefficient.  The existing
-curvature leaf formalizes `(4)--(21)`.  `CCMUnitRieszHankelBoundaryPulse.lean` formalizes the
+`CCMUnitRieszFUCurvatureTransport.lean` formalizes the literal FU source identity, first and
+second integrations by parts, exact curvature transport, and endpoint coefficient.
+`CCMUnitRieszCesaroCurvature.lean` formalizes the derivative algebra `(4)`, `(6)`--`(8)`, `(11)`,
+the limiting two-channel kernel `(14)`, `(18)`, `(19)`, and the two-unit obstruction `(20)`.
+`CCMUnitRieszCesaroFiniteApertureReporter.lean` formalizes the finite-aperture reporter itself:
+the normalized transport `(9)`, the reporter kernel `(10)`, strict monotonicity `(12)`, the unique
+moving sign wall and its four-unit limit `(13)`, the fixed-lag limit `(14)`, the exact moments
+`(15)`--`(17)`, and the iff form of `(20)`--`(21)`.
+`CCMUnitRieszHankelBoundaryPulse.lean` formalizes the
 fast/slow leak profiles, scalar pulse, four-unit square slack, and operator-covariance obstruction.
 All statements are unconditional; no hypothesis stands in for the literal `E`, `q_b`, or `Q_b`.
+
+## 10. Index of the formalization
+
+All declarations are unconditional; `#print axioms` returns only
+`propext, Classical.choice, Quot.sound`.
+
+Modules: `RHTower/CCMUnitRieszCompletedSourceWeld.lean`,
+`RHTower/CCMUnitRieszCesaroCurvature.lean`,
+`RHTower/CCMUnitRieszFUCurvatureTransport.lean`,
+`RHTower/CCMUnitRieszCesaroFiniteApertureReporter.lean`,
+`RHTower/CCMUnitRieszHankelBoundaryPulse.lean`.
+
+| Card item | Lean declaration |
+|---|---|
+| `(1)` literal test, endpoint vanishing | `unitRieszCompletedSourceTest_eq_kernel`, `unitRieszCompletedSourceTest_endpoint` |
+| `(2)` exact literal response | `unitRieszCompletedSourceResponse_eq_errorIntegral`, `unitRieszCompletedSourceResponse_eq_twoMomentIntegral` |
+| `(3)` literal FU cumulative source | `ccmGuinandWeilThirdGradeCumulativeMeasurable`, `ccmCesaroPrimitive` |
+| `(4)` cubic renormalization `g_t = F_t/w` | `unitRieszThirdGrade_mul_cesaroTest` |
+| `(5)` two integrations by parts | `unitRieszCesaro_actualSource_firstIntegrationByParts`, `unitRieszCesaro_actualSource_secondIntegrationByParts`, `unitRieszCompletedSource_eq_FUCesaroCurvature` |
+| `(6)` endpoint coefficient | `unitRieszCesaroTestDeriv_endpoint`, `unitRieszCompletedSource_eq_FUCesaroCurvature_explicitEndpoint` |
+| `(7)`, `(8)` `P`, `R` and `g_t''` | `unitRieszCesaroSlowPolynomial`, `unitRieszCesaroFastPolynomial`, `unitRieszCesaroTestSecondDeriv_eq_polynomials` |
+| `(9)` normalized reporter transport | `unitRieszCesaro_normalizedTransport` |
+| `(10)` finite-aperture reporter kernel | `unitRieszCesaroApertureKernel`, `unitRieszCesaroApertureKernel_eq_secondDeriv` |
+| `(11)` reduced ratio | `unitRieszCesaroFast_div_slow`, `unitRieszCesaroFast_div_slow_eq_ratio` |
+| `(12)` strict monotonicity `1 → 4` | `unitRieszCesaroRatio_strictMonoOn`, `unitRieszCesaroRatio_zero`, `one_lt_unitRieszCesaroRatio`, `unitRieszCesaroRatio_lt_four`, `tendsto_unitRieszCesaroRatio_atTop` |
+| `(13)` unique moving sign wall | `unitRieszCesaroApertureKernel_pos_iff`, `unitRieszCesaroApertureKernel_neg_iff`, `exists_unique_unitRieszCesaroWall`, `unitRieszCesaroWall`, `unitRieszCesaroWall_eq`, `unitRieszCesaroWall_pos`, `unitRieszCesaroWall_lt_log_sixteen`, `tendsto_unitRieszCesaroWall` |
+| `(14)` fixed-lag limit `K_t → K_∞` | `tendsto_unitRieszCesaroApertureKernel` |
+| `(15)` mass `3/64` | `integral_unitRieszCesaroApertureKernel` |
+| `(16)` vanishing first moment | `integral_mul_unitRieszCesaroApertureKernel` |
+| `(17)` strictly negative second moment | `integral_sq_mul_unitRieszCesaroApertureKernel`, `integral_sq_mul_unitRieszCesaroApertureKernel_neg` |
+| `(18)` two-channel lift | `unitRieszCesaroCurvatureKernel_eq_fast_sub_slow`, `unitRieszCesaroCurvatureKernel_eq_factored` |
+| `(19)` masses and barycentres | `integral_unitRieszCesaroFastLeakDensity`, `integral_unitRieszCesaroSlowLeakDensity`, `integral_mul_unitRieszCesaroFastLeakDensity`, `integral_mul_unitRieszCesaroSlowLeakDensity`, `unitRieszCesaro_twoChannel_mass_barycenter` |
+| four-unit wall | `unitRieszCesaroCurvatureKernel_pos_iff`, `unitRieszCesaroCurvatureKernel_neg_iff`, `unitRieszCesaroCurvatureKernel_fourUnitWall` |
+| `(20)`, `(21)` two-unit autocorrelation obstruction | `unitRieszCompletedSourceTestDeriv_zero_eq`, `unitRieszCompletedSourceTestDeriv_zero_re_pos`, `unitRieszCompletedSourceTestDeriv_zero_re_pos_iff` |
+
+## 11. Log
+
+- 2026-08-18 — finite-aperture reporter module added; `(9)`, `(10)`, `(12)`–`(17)` and the iff form
+  of `(20)`–`(21)` formalized; card promoted to stage 3.

@@ -1,9 +1,9 @@
 # Active quasi-Abelian palettes classify finite full HT constraint geometry
 
 - **ID:** `active-quasi-abelian-palette-exact-ht-dimension-classification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / ACTION-RELATIVE HT DIMENSION CLASSIFICATION
-- **Scientific status:** `[PROVED HERE] [FORMALIZED FINITE CORE] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
 - **Statement:** The intrinsic analytic dimension of a finite full Stanley--Reisner HT constraint
   geometry is governed by quasi-Abelian facet quotients in which every structural facet lattice is
   faithful on the quotient by the maximal compact complex subtorus.
@@ -257,9 +257,9 @@ Open:
 - [x] prove nonsplit compact-kernel finite capacity
 - [x] prove torusless all-order packet interpolation
 - [x] prove `htDim=aqaDim`
-- [ ] separate or collapse `qaDim`, `aqaDim`, and `ppDim`
+- [ ] separate or collapse `qaDim`, `aqaDim`, and `ppDim` (reduced: see the collapse locus below)
 - [ ] complete primary-literature novelty audit
-- [ ] full Lean formalization of every promoted theorem surface
+- [x] full Lean formalization of every promoted theorem surface
 
 ## Lean progress — the compact-kernel finite-capacity hypothesis is discharged
 
@@ -291,3 +291,144 @@ relative function field over `Mer(X/B)` and uses only finitely many base coeffic
 not the capacity argument built on it.
 
 The other open gate, separating or collapsing `qaDim`, `aqaDim` and `ppDim`, is untouched.
+
+## Lean formalization — the promoted theorem surface is complete
+
+**New modules.**
+
+```text
+formal/GaloisForLFunctions/HTGeometry/ActiveQuotientSplitModel.lean
+formal/GaloisForLFunctions/HTGeometry/ActiveQuasiAbelianPaletteHierarchy.lean
+formal/GaloisForLFunctions/HTGeometry/ToruslessActiveCollapse.lean
+```
+
+They join the modules that already carried the rest of the surface:
+`FiniteShadowCapacity`, `FiniteShadowCapacitySpectrum`, `CompactKernelFunctionFieldCapacity`,
+`ActiveQuasiAbelianPalette`, `QuasiAbelianDampedFactorExtension`,
+`QuasiAbelianPositiveFactorJetAmple`, `QuasiAbelianAutomorphicBaire`,
+`QuasiAbelianFacetPaletteCompletion`, `QuasiAbelianFacetRealization`.
+
+**1. The ambient-noncompact full-orbit conjecture is false.**
+
+```text
+splitCompactLattice, splitCompactLattice_injective, splitCompactLattice_snd
+ambientFaithful_not_activeFaithful_not_free
+    the cyclic lattice of an infinite-order element of the compact factor is injective in the
+    ambient group, is annihilated by the active quotient, and carries no differentially free
+    observable orbit
+zsmul_irrationalCircleClass_eq_zero_iff, ellipticShadowPoint
+splitElliptic_ambientFaithful_activeTrivial
+    a concrete witness in the group underlying `E x C*`: the class of an irrational translation
+    of the compact factor
+```
+
+**2. The proper compact-kernel finite-capacity theorem.**
+
+```text
+Scheme.Hom.functionField_trdeg_lt_aleph0
+properRelativeFunctionField_int_not_differentialIndependent
+abelianVarietyTranslationFunctionField_intOrbit_not_differentialIndependent
+not_differentialIndependent_cyclicOrbit_of_finitePalette
+```
+
+**3. Every finite capacity occurs in the split model, and only finite ones.**
+
+```text
+splitModel_capacity_spectrum
+    for every `n`: a palette of `n` differentially independent sources, capacity `n` realized by
+    every invertible recombination, no free family of `n + 1` observations, and no free complete
+    cyclic orbit drawn from that palette
+capacity_spectrum_free, finiteShadow_realizes_capacity_of_subring_map_eq_one
+```
+
+**4. The general active-quotient principle.**
+
+```text
+activeQuotient_injective_of_fullOrbitFree_of_kernelCyclic_not
+activeQuotient_injective_of_fullOrbitFree_of_properKernelFunctionField
+activeQuasiAbelianFacetLattice_injective_of_abelianKernelTranslations
+```
+
+**5. All-order fixed-factor jet interpolation on torusless quasi-Abelian groups.**
+
+```text
+AbeDampedFactorExtension.jetAmpleEveryFiniteOrder
+AbePositiveFactorTower.jetAmpleEveryFiniteOrder
+AutomorphicFactor.jetAmpleEveryFiniteOrder_of_isAbePositiveTorusless
+```
+
+**6. The exact active dimension equality (8) and the hierarchy (9).**
+
+```text
+activeQuasiAbelianPaletteDimension_eq_fullHTEntireDimension
+activeQuasiAbelianDimension_eq_hypertranscendenceDimension
+exact_dimension_hierarchy_of_realizability_reductions
+```
+
+**7. The exact finite-shadow rank core.**
+
+```text
+differentialIndependent_matrixLinearForms_iff_rowIndependent
+finiteShadow_moreObservablesThanSources_not_differentialIndependent
+finiteShadow_fullRank_realizes_capacity
+not_differentialIndependent_of_finitePalette
+```
+
+**8. Inequality (6), `qaDim <= aqaDim`, now a construction rather than a hypothesis.**
+
+```text
+ActiveQuasiAbelianFacetPresentation.toQuasiAbelianFacetCertificate
+ActiveQuasiAbelianFacetPresentation.latticeClass_injective
+    active faithfulness implies ambient faithfulness, since injectivity after a further quotient
+    implies injectivity before it
+QuasiAbelianPalette, quasiAbelianPaletteDimension
+ActiveQuasiAbelianPalette.toQuasiAbelianPalette
+quasiAbelianPaletteDimension_le_activeQuasiAbelianPaletteDimension
+```
+
+## The collapse locus of `qaDim` and `aqaDim`
+
+The separation gate is now reduced to one geometric question, and the reduction is Lean-proved.
+
+```text
+injective_of_ker_eq_bot
+activeFaithful_iff_faithful_of_compactShadow_eq_bot
+ActiveQuasiAbelianFacetPresentation.activeQuotient_injective_of_compactShadow_eq_bot
+quasiAbelianPaletteDimension_eq_activeQuasiAbelianPaletteDimension_of_lift
+```
+
+On a facet presentation with trivial compact complex shadow the active quotient is injective, so
+active faithfulness of the integral facet lattice is *equivalent* to faithfulness in the full
+period quotient.  The periodic-pencil quotient `C*` is torusless, so on the whole periodic-pencil
+class the two conditions agree and the two dimensions collapse.
+
+Therefore `qaDim(Delta) < aqaDim(Delta)` can only happen if every quasi-Abelian palette of `Delta`
+in dimension `qaDim(Delta)` has a facet whose period quotient carries a positive-dimensional
+compact complex subtorus meeting the facet lattice.  Producing or excluding such a complex is the
+whole of the remaining separation question; nothing else is left in it.
+
+## Verification
+
+- `lake env lean` passes on each new module;
+- `lake build` passes for `GaloisForLFunctions.HTGeometry.ActiveQuasiAbelianPaletteHierarchy`,
+  `GaloisForLFunctions.HTGeometry.ActiveQuotientSplitModel`, and
+  `GaloisForLFunctions.HTGeometry.ToruslessActiveCollapse`;
+- `#print axioms` for every declaration named above reports only `propext`, `Classical.choice`
+  and `Quot.sound`;
+- all three new modules are imported by `GaloisForLFunctions.HTGeometry`;
+- `scripts/formal_tools.py lint` reports no proof debt and no unreachable module in this chain.
+
+## Remaining named inputs
+
+The exact dimension equality keeps two global geometric operations as explicit hypotheses,
+exactly as the sibling necessity card does: full-HT period extraction (`extract`) and the
+localized Stanley--Reisner/Baire assembly (`assemble`).  Its analytic premise — all-order facet
+jet ampleness — is *not* a hypothesis: it is discharged inside the palette from each facet's
+positive Abe tower.
+
+## Log
+
+- 2026-08-18 -- Lean formalization gate closed and card promoted to stage 3.  The falsification of
+  the ambient-faithfulness conjecture, the concrete split elliptic witness, the split-model
+  capacity spectrum, and the constructive inequality `qaDim <= aqaDim` are new; the separation
+  gate is reduced to the existence of a minimal palette with a nontrivial compact facet shadow.

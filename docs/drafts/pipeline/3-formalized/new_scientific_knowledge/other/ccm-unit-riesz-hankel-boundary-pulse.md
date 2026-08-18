@@ -1,9 +1,9 @@
 # CCM unit-Riesz Hankel boundary pulse and covariance obstruction
 
 - **ID:** `ccm-unit-riesz-hankel-boundary-pulse`
-- **Stage:** `2-fully-proven/new_scientific_knowledge`
+- **Stage:** `3-formalized/new_scientific_knowledge`
 - **Type:** EXACT HANKEL TRACE LAW / OPERATOR-COVARIANCE NO-GO / ROUTE TRIAGE
-- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED, UNCONDITIONAL] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Routes:** `CCM-HG`, `CCM-EP`, `CCM-UR`, `CCM-FU`, `G`, `O`, `CCM-GS`
 - **Parent:** `ccm-four-unit-cesaro-curvature-wall`
 
@@ -166,3 +166,22 @@ Verdict: `SURVIVES INTERNAL HOSTILE AUDIT` as sharp route classification, not RH
 - four-unit normalization and exact square slack `(8)`;
 - coefficient positivity, determinant identity `(11)`, strict negativity, and failure of
   `Matrix.PosSemidef` for literal `Fin 2` compression.
+
+## 7. Index of the formalization
+
+Modules: `RHTower/CCMUnitRieszHankelBoundaryPulse.lean`,
+`RHTower/CCMUnitRieszCesaroCurvature.lean`.  All declarations are unconditional; `#print axioms`
+returns only `propext, Classical.choice, Quot.sound`.
+
+| Card item | Lean declaration |
+|---|---|
+| `(1)` canonical leak pair | `unitRieszFastLeakProfile`, `unitRieszSlowLeakProfile`, `leakDensity_unitRieszFastLeakProfile`, `leakDensity_unitRieszSlowLeakProfile`, `leakProfile_unitRieszFast`, `leakProfile_unitRieszSlow`, `unitRieszCesaroCurvatureKernel_eq_fast_sub_slow` |
+| `(2)` masses and first moments | `integral_unitRieszCesaroFastLeakDensity`, `integral_unitRieszCesaroSlowLeakDensity`, `integral_mul_unitRieszCesaroFastLeakDensity`, `integral_mul_unitRieszCesaroSlowLeakDensity`, `unitRieszCesaro_twoChannel_mass_barycenter` |
+| `(3)` generic exponential Hankel gap | `hankelGapProfile_of_leakDensity_exp` |
+| `(4)` specializations | `hankelGapProfile_unitRieszFast`, `hankelGapProfile_unitRieszSlow` |
+| `(5)` pulse and strict positivity | `unitRieszBoundaryPulse_eq`, `unitRieszBoundaryPulse_pos` |
+| `(6)` global bound and equality at `2 log 2` | `unitRieszBoundaryPulse_le`, `unitRieszBoundaryPulse_at_two_log_two` |
+| `(7)` four-unit normalization | `unitRieszFourUnitBoundaryPulse_eq` |
+| `(8)` exact square slack | `poleBoundaryTrace_sub_unitRieszFourUnitBoundaryPulse`, `unitRieszFourUnitBoundaryPulse_lt_pole` |
+| `(9)` output-cutoff coefficients | `unitRieszFastBoundaryCoefficient_pos`, `unitRieszSlowBoundaryCoefficient_pos` |
+| `(10)`, `(11)` covariance obstruction | `unitRieszBoundaryCovarianceCore_twoPoint_det`, `unitRieszBoundaryCovarianceCore_twoPoint_det_neg`, `unitRieszBoundaryCovarianceMatrix_det`, `unitRieszBoundaryCovarianceMatrix_not_posSemidef` |

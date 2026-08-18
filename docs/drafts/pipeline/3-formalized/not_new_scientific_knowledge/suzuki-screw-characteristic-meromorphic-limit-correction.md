@@ -106,7 +106,12 @@ entire functions is entire. It is a necessary source correction but not new scie
 ## Lean formalization
 
 Modules: `formal/GaloisForLFunctions/RHTower/SuzukiCharacteristicEntireLimitNoGo.lean` (already in
-the tree) and `formal/GaloisForLFunctions/RHTower/SuzukiCharacteristicMeromorphicLimit.lean` (new).
+the tree), `formal/GaloisForLFunctions/RHTower/SuzukiCharacteristicMeromorphicLimit.lean` (new), and
+the unconditional Hardy chain
+`formal/GaloisForLFunctions/RHTower/JacobiThetaBoundaryLimits.lean`,
+`formal/GaloisForLFunctions/RHTower/HardyThetaSource.lean`,
+`formal/GaloisForLFunctions/RHTower/HardyThetaFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/HardyTheorem.lean` (new).
 
 | Card statement | Lean declaration |
 |---|---|
@@ -117,17 +122,35 @@ the tree) and `formal/GaloisForLFunctions/RHTower/SuzukiCharacteristicMeromorphi
 | the corrected topology `(6)` | `RHTower.SuzukiXiMeromorphicCharacteristicLimitWall` |
 | the corrected limit still implies RH | `RHTower.suzukiXiMeromorphicCharacteristicLimitWall_implies_riemannHypothesis` |
 | Hurwitz existence on a pole-free disc | `RHTower.eventually_exists_zero_closedBall_of_tendstoLocallyUniformlyOn`, `RHTower.mem_closed_of_tendstoLocallyUniformlyOn` |
+| Hardy's theorem: `Ξ` has real zeros above every height | `RHTower.exists_Xi_zero_gt` |
+| two distinct positive real `ΞC`-zeros, unconditionally | `RHTower.exists_two_distinct_positive_real_XiC_zeros` |
+| **the target has an unconditional real pole** (statement `(3)`–`(5)`) | `RHTower.exists_pole_suzukiXiCharacteristicTarget` |
+| the target is not entire, unconditionally | `RHTower.not_analyticOnNhd_suzukiXiCharacteristicTarget` |
 
-Two remarks on the pole gate.  First, the *conclusion* the card draws from the pole — impossibility
-of the entire-compact limit — is Lean-certified unconditionally, by a route that does not use
-Hardy's theorem at all: the wall implies RH, RH supplies two distinct positive real centered zeros,
-Rolle supplies the critical point, and the pole contradicts the wall's own analyticity clause.
-Second, the literal statement "the target has an unconditional real pole" is Lean-certified as the
-implication from its classical supply: `Hardy's theorem → two distinct positive real zeros →`
-`exists_pole_suzukiXiCharacteristicTarget_of_two_positive_real_XiC_zeros`.  Hardy's theorem itself
-(infinitely many real zeros of `ξ(1/2+it)`) is neither in mathlib nor in this tree; it is the only
-step of this card's paper proof that is not Lean-internal, and no conclusion of the card depends on
-it.
+Both readings of the pole gate are now Lean-internal.  The *conclusion* the card draws from the
+pole — impossibility of the entire-compact limit — has a route that does not use Hardy's theorem at
+all: the wall implies RH, RH supplies two distinct positive real centered zeros, Rolle supplies the
+critical point, and the pole contradicts the wall's own analyticity clause.  The *literal*
+statement "the target has an unconditional real pole" is now certified outright, because Hardy's
+theorem itself is proved here.
+
+Hardy's theorem is built from the theta source of the completed zeta transform.  With
+`hardySource u = (e^{u/4}(θ(i e^u) − 1) − e^{−u/4})/2` on the strip `|Im u| < π/2`:
+`fourier_hardySource` identifies `𝓕 hardySource (t/4π) = Λ(1/2 + it)`; a contour shift
+(`norm_completedZeta_critical_le`) gives exponential decay of `Λ` on the critical line at every
+rate below `π/4`, hence `fourier_hardySource_line` and Fourier inversion
+(`hardySource_line_eq_integral`) on every horizontal line of the strip.  The completed zeta
+transform in Fourier coordinates is the real density `hardyXiDensity w = −2Ξ(4πw)/((4πw)²+1/4)`,
+even in `w`.  If `Ξ` were one-signed on a half-line, the density would be one-signed on the tail;
+the vertical values `hardySource (iy)` are then symmetric `cosh` moments of the density, bounded by
+`17` near the boundary through the Jacobi theta transformation
+(`norm_hardySource_axis_le`), and Fatou's lemma in the height `y ↑ π/2` converts that into the
+exponential moment `∫ e^{π²|w|}|density| < ∞`
+(`integrable_exp_pi_sq_mul_abs_hardyXiDensity`).  That moment bounds the source on the whole strip,
+contradicting the boundary blow-up at `log 2 + iπ/2`
+(`tendsto_norm_hardySource_logTwo_atTop`), which comes from the `θ(w) ≍ ‖w‖^{-1/2}` divergence at
+the cusp.  Hence `Ξ` changes sign above every height, and continuity gives a zero
+(`exists_Xi_zero_gt`).
 
 `#print axioms` reports `[propext, Classical.choice, Quot.sound]` for every declaration above.
 
@@ -139,6 +162,6 @@ it.
 - [x] corrected implication to RH checked at multiple zeros
 - [x] separation from the CCM entire-determinant lane recorded
 - [x] 2 -> 3: formalized; see `## Lean formalization`
-- [ ] Lean proof of Hardy's theorem (the classical supply for the literal pole statement)
+- [x] Lean proof of Hardy's theorem (`RHTower.exists_Xi_zero_gt`, unconditional)
 - [ ] meromorphic convergence on pole-free compacta
 - [ ] RH

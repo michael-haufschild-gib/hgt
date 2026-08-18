@@ -1,9 +1,9 @@
 # CCM unit-Riesz exponential coherent trace
 
 - **ID:** `ccm-unit-riesz-exponential-coherent-trace`
-- **Stage:** 2-fully-proven on paper; Lean module proved and wired
+- **Stage:** 3-formalized
 - **Type:** THEOREM / cross-route source identification
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED, UNCONDITIONAL] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/CCMUnitRieszExponentialCoherentTrace.lean`
 - **Parent:** `ccm-unit-riesz-aperture-resolvent-weld`
 
@@ -133,3 +133,19 @@ and the bound survives prime-log crowding and N -> infinity.
 
 Failure of such a comparison must be classified by an exact leverage/crowding obstruction rather
 than by another scalar source reformulation.
+
+## Index of the formalization
+
+Module: `RHTower/CCMUnitRieszExponentialCoherentTrace.lean`.  All declarations are unconditional;
+`#print axioms` returns only `propext, Classical.choice, Quot.sound`.
+
+| Card item | Lean declaration |
+|---|---|
+| `(1)` coherent overlaps and distances | `integrable_unitExponentialCoherentState_mul`, `integral_unitExponentialCoherentState_mul`, `unitExponentialCoherentDistanceSq_eq` |
+| `(2)` literal prime weight | `unitApertureCriticalPrimeWeight_eq_coherentDistance` |
+| `(3)` positive coherent energy | `unitRieszVonMangoldtRenewal_eq_coherentPrimeEnergy` |
+| exact staircase identity | `chebyshevPsi_scaled_eq_vonMangoldt_indicator`, `integral_scaledChebyshevPsi_layerWeight` |
+| layer-cake normalization | `unitRieszVonMangoldtRenewal_eq_scaledPsiLayerEnergy`, `integral_chebyshevPsi_halfWeight_eq_scaledLayerEnergy` |
+| `(4)` continuous polar energy | `unitRieszCoherentPolarEnergy_eq` |
+| `(5)` trace discrepancy | `criticalMellinChebyshevResolventSource_log_nat_eq_coherentDefect`, `criticalMellinChebyshevResolventSource_log_nat_eq_coherentPrime_sub_polar` |
+| `(6)` two-lag determinant | `unitExponentialIncrementKernel_eq_gram`, `unitExponentialIncrementKernel_twoByTwoDet_eq`, `unitExponentialIncrementKernel_twoByTwoDet_pos` |

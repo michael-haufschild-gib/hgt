@@ -1,9 +1,9 @@
 # CCM unit-Riesz / completed-source Stieltjes weld
 
 - **ID:** `ccm-unit-riesz-completed-source-stieltjes-weld`
-- **Stage:** `2-fully-proven/new_scientific_knowledge`
+- **Stage:** `3-formalized/new_scientific_knowledge`
 - **Type:** EXACT SOURCE WELD / ROUTE COLLAPSE / PRODUCER REORIENTATION
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED, UNCONDITIONAL] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Routes:** `CCM-UR`, `CCM-FU`, with source interfaces to `G`, `HG`, `GS`, `EP`
 - **Parents:** `ccm-unit-riesz-markov-virial-landau-law`,
   `ccm-fu-third-grade-cesaro-completeness`, `CriticalMellinFourCoordinateCollapseUniversalityLaw`
@@ -290,7 +290,7 @@ or `(28)`.  This is not a priority proof.  Status remains `[NOVELTY UNVERIFIED]`
 
 Verdict: `SURVIVES PRELIMINARY ATTACK`; significant route reorientation, not RH closure.
 
-## 8. Lean plan
+## 8. Lean plan (executed)
 
 Formalize a new unconditional leaf with:
 
@@ -302,6 +302,48 @@ Formalize a new unconditional leaf with:
 - finite-floor correction `(10)` and its exact strict sign/bounds `(21)`;
 - abstract positive-convolution sign and negligible-error lower-bound transfer used by `(28)`.
 
-The measure-valued identity `(26)` may be formalized in a second leaf if current Bochner/Stieltjes
-Laplace infrastructure cannot express it without importing unrelated measure theory.  No abstract
-premise may be relabeled as the literal source weld.
+The measure-valued identity `(26)` is formalized in the separate leaf
+`CCMUnitRieszCompletedSourceLaplaceWeld.lean`.  It needs no Stieltjes--Laplace measure theory: both
+kernels are finite combinations of pure decaying exponentials, so the weld runs through the single
+exponential-kernel Laplace convolution law of `CCMUnitRieszVolterraLaplace.lean`.  No abstract
+premise is relabeled as the literal source weld.
+
+## 9. Index of the formalization
+
+Modules: `RHTower/CCMUnitRieszCompletedSourceWeld.lean`,
+`RHTower/CCMUnitRieszVolterraLaplace.lean`,
+`RHTower/CCMUnitRieszStirlingLaplace.lean`,
+`RHTower/CCMUnitRieszCompletedCurrentLaplace.lean`,
+`RHTower/CCMUnitRieszCompletedSourceLaplaceWeld.lean`.  All declarations are unconditional;
+`#print axioms` returns only `propext, Classical.choice, Quot.sound`.
+
+The measure-valued form of `(26)` is formalized without importing Stieltjes--Laplace measure
+theory: the two-exponential aperture kernel and the completed-error test kernel are finite
+combinations of pure decaying exponentials, so the whole weld runs through one general
+exponential-kernel Laplace convolution law proved by a Fubini interchange over the causal wedge.
+
+| Card item | Lean declaration |
+|---|---|
+| `(1)`, `(2)` literal completed current | `RHTower.criticalMellinCompletedError`, `criticalMellinStieltjesPairing` |
+| `(4)` Laplace transform of `dnu` | `unitRieszCompletedCurrent_laplace` (with `RHTower.regularizedCriticalMellinDefect_eq_continued`) |
+| `(5)`, `(6)` unit-Riesz transform | `unitRieszCompletedSourceMultiplier`, `unitRieszPoleFilledCoefficient` |
+| `(7)` exact algebraic split | `unitRieszPoleFilledCoefficient_eq_completedSource`, `unitRieszPoleFilledCoefficient_eq_original` |
+| `(8)`, `(9)` pole-filled correction | `unitRieszCompletedSourceCorrection`, `analyticAt_unitRieszCompletedSourceCorrection`, `unitRieszCompletedSourceCorrection_eq` |
+| multiplier analyticity, zero-freeness | `analyticAt_unitRieszCompletedSourceMultiplier`, `unitRieszCompletedSourceMultiplier_ne_zero` |
+| `(10)` explicit inverse correction | `unitRieszStirlingCorrection`, `unitRieszStirlingCorrection_eq_factored` |
+| `(11)`, `(12)` `L[a] = A` | `unitRieszStirlingHead_laplace`, `unitRieszStirlingCorrection_laplace` |
+| `(13)` positive aperture kernel | `unitRieszCompletedSourceKernel_nonneg`, `unitRieszCompletedSourceKernel_le` |
+| `(14)` the convolution `r = k * a` | `unitRieszStirlingConvolution`, `unitRieszStirlingConvolution_eq` |
+| `(15)`–`(21)` strict sign and two-sided bounds | `unitRieszStirlingCorrection_le`, `unitRieszStirlingCorrection_neg`, `unitRieszStirlingCorrection_lower` |
+| `(22)` `r ≤ 0` | `unitRieszStirlingConvolution_nonpos` |
+| `(23)` `|r(t)| ≤ 3e^{-t}(t²/2+4t)` | `abs_unitRieszStirlingConvolution_le` |
+| `(24)` all-`epsilon` negligibility | `abs_unitRieszStirlingConvolution_le_exp` (uniform constant `48` at rate `1/2`) |
+| `(25)` completed-source Stieltjes convolution | `unitRieszCompletedSourceResponse`, `unitRieszCompletedSourceResponse_eq_volterra` |
+| `(26)` the time-domain weld | `unitRieszMarkovVirialCoefficient`, `unitRieszMarkovVirialCoefficient_laplace`, `unitRieszCompletedSourceResponse_laplace_eq_defect`, `unitRieszStirlingConvolution_laplace_eq_correction` |
+| `(27)` `I ≤ J` | `unitRieszMarkovVirialCoefficient_le_response` |
+| `(28)` producer equivalence | `unitRieszProducer_equivalence` |
+| general tool: exponential Laplace convolution | `integral_Ioi_expVolterra_laplace`, `integrableOn_Ioi_cexp_mul_expVolterra` |
+
+## 10. Log
+
+- 2026-08-18 — Laplace weld formalized end to end; card promoted to stage 3.

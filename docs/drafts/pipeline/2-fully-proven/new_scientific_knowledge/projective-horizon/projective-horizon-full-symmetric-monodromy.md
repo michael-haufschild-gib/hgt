@@ -1399,3 +1399,476 @@ separability of *every* fibre, but the chart only has it on `U = {disc(p) ≠ 0}
 `biRootLocus_partial_ne` only uses separability *at the point in question*, and the Cauchy root
 bound gives properness over any compact subset of `U`.  Add these as new declarations rather than
 weakening the landed ones, which `ComplexAffineLineSimplyConnected` consumes in their global form.
+
+**Step 3 preparation, done.**  `biRootLocus_partial_ne`, `biIFTData`, `biIFTData_apply` and
+`biIFTData_mem_source` in `BivariateRootCovering.lean` now take separability *at the point of the
+root locus* rather than at every parameter, which is what an "on `U`" covering statement needs;
+`isLocalHomeomorph_biRootProj` and `isCoveringMap_biRootProj` keep their global hypotheses and
+simply feed `hsep _`.
+
+**A better route for step 3, recorded.**  Rather than an "on `U`" covering statement for the root
+locus, apply
+`Bottcher.isCoveringMap_of_isProperMap_of_isLocalHomeomorph` to `AlgSpec.proj B` itself:
+
+* `IsLocalHomeomorph (proj B)` — at each `χ₀`, the chart `toPlane θ` is a homeomorphism of
+  `proj⁻¹(U)` onto `biRootProj⁻¹(U)` (bijection from `bijOn_eval_fibre`, inverse continuous from
+  `continuousOn_of_toPlane_eq`), and `biRootProj` is a local homeomorphism at each point of that
+  set because `biIFTData` now only needs separability *at the point*.
+* `IsProperMap (proj B)` — by **Tychonoff**, with no reference to charts at all: for compact
+  `K ⊆ ℂ`, every `b ∈ B` is integral over `ℂ[X]`, so the Cauchy root bound makes `|χ b|` bounded
+  uniformly over `proj⁻¹(K)`; hence `proj⁻¹(K)` embeds into a product of closed discs, and it is
+  closed there because being a ring homomorphism is a pointwise-closed condition.  A closed subset
+  of a compact product is compact.
+
+This is much cheaper than restricting the root-locus covering to an open set.
+
+`HTGeometry/AlgebraSpectrumClosed.lean` (wired, axiom-clean):
+
+```text
+AlgSpec.instT2Space
+AlgSpec.isClosed_range_algSpec_coe   ** being a ℂ-algebra homomorphism is a pointwise-closed
+                                        condition, so the complex-point space is closed in B → ℂ **
+```
+
+That is the harder half of the Tychonoff properness argument; what remains of it is the uniform
+Cauchy bound `|χ b| ≤ C_b(K)` on `proj⁻¹(K)`, which is `Bottcher.norm_root_le_of_monic` applied to
+a monic relation for `b` over `ℂ[X]` (available because `B` is finite over `ℂ[X]`, so every element
+is integral).
+
+`HTGeometry/AlgebraSpectrumProper.lean` and `HTGeometry/AlgebraSpectrumBijection.lean`
+(wired, axiom-clean):
+
+```text
+AlgSpec.norm_apply_le_of_monic   the Cauchy bound at a complex point, from a monic relation
+AlgSpec.isProperMap_proj         ** the projection of the complex-point space is PROPER **
+                                    (Tychonoff: closed inside a product of closed discs)
+AlgSpec.bijOn_toPlane            ** the chart is a BIJECTION from proj⁻¹(U) onto the part of the
+                                    root locus above U **
+```
+
+So the two halves of `Bottcher.isCoveringMap_of_isProperMap_of_isLocalHomeomorph` are now in
+different states: properness is **done**, and the local homeomorphism needs only the transport of
+`isLocalHomeomorph_biRootProj` (which now takes separability *at a point*) through the homeomorphism
+assembled from `bijOn_toPlane` + `continuousOn_of_toPlane_eq`.
+
+### The one remaining step of the covering property, written out
+
+The inverse chart is available concretely: with
+`T := {z | z ∈ BiRootLocus p ∧ z.1 ∈ U}` and `hbij := bijOn_toPlane …`, set
+
+```lean
+Ψ : ℂ × ℂ → AlgSpec B := fun z => if h : z ∈ T then (hbij.2.2 h).choose else χ₀
+```
+
+Then `∀ z ∈ T, Ψ z ∈ proj B ⁻¹' U` and `∀ z ∈ T, toPlane θ (Ψ z) = z` hold by `choose_spec`
+(unfold with `simp only [hΨ, dif_pos hz]`, not `rw`), and `ContinuousOn Ψ T` is exactly
+`continuousOn_of_toPlane_eq hgen Ψ …`.  This is verified.
+
+What is left is bookkeeping only: assemble `toPlane θ` and `Ψ` into an
+`OpenPartialHomeomorph (AlgSpec B) ℂ` whose source is a neighbourhood of `χ₀` on which `proj` is
+injective — take the `toPlane`-preimage of the source of the root-locus chart at `toPlane θ χ₀`
+supplied by `isLocalHomeomorph_biRootProj`'s construction (which now only needs separability at
+that point) — giving `IsLocalHomeomorph (proj B)`, and then
+
+```text
+Bottcher.isCoveringMap_of_isProperMap_of_isLocalHomeomorph
+    (isLocalHomeomorph …) AlgSpec.isProperMap_proj   ⟹   IsCoveringMap (AlgSpec.proj B)
+```
+
+after which steps 4–6 of the plan above run exactly as in `ComplexAffineLineSimplyConnected`.
+
+## Lean progress — the covering property of the complex-point space is PROVED
+
+`HTGeometry/AlgebraSpectrumCovering.lean` (wired, axiom-clean), and a small refactor of
+`BivariateRootCovering.lean` (`exists_chart_biRootProj`, the root-locus chart at a point where the
+fibre is separable; `isLocalHomeomorph_biRootProj` is now a one-line corollary):
+
+```text
+AlgSpec.isLocalHomeomorph_proj_of_chart   the partial homeomorphism at one point, assembled from
+                                          bijOn_toPlane, continuousOn_of_toPlane_eq and
+                                          exists_chart_biRootProj
+AlgSpec.isLocalHomeomorph_proj
+AlgSpec.isCoveringMap_proj
+    ** the space of complex points of a finite ℂ[X]-algebra is a COVERING SPACE of the parameter
+       line, given at each point a θ, a monic relation p, and an open U with: θ generating over U,
+       every fibre of p over U separable, and every fibre of proj over U of cardinality
+       p.natDegree **
+```
+
+This is the hard topological core of `SCE_1`.  What is left of `SCE_1` is:
+
+```text
+(a) hypothesis producer: B free étale over ℂ[X] (every fibre split) ⟹ the chart data at each point.
+    θ from LocalNakayamaMonogenic at 𝔪_s (the fibre ℂⁿ is monogenic); p := the characteristic
+    polynomial of θ on the free module B, so aeval θ p = 0 by Cayley–Hamilton and p is monic of
+    degree n; U := {disc p ≠ 0}, which contains s because A_{𝔪_s}[θ] = B_{𝔪_s}; generation over U
+    by clearing one denominator per module generator; the fibre cardinality is n by hypothesis.
+(b) the section: IsCoveringMap.existsUnique_continuousMap_lifts against the identity of ℂ.
+(c) the section is an algebra map into ℂ[X]: for each b, s ↦ σ(s) b is analytic (on each U it is
+    q(s,t)/g(s) with t the analytic root branch) and of polynomial growth by
+    AlgSpec.norm_apply_le_of_monic, hence a polynomial —
+    Bottcher.exists_polynomial_of_entire_polyGrowth.
+(d) split off the resulting idempotent and induct on the rank.
+```
+
+`HTGeometry/AlgebraCharpoly.lean` (wired, axiom-clean) supplies the monic relation of step (a):
+
+```text
+algCharpoly A θ          the characteristic polynomial of multiplication by θ
+algCharpoly_monic
+aeval_algCharpoly        ** Cayley–Hamilton for a finite free algebra: aeval θ (algCharpoly A θ) = 0 **
+```
+
+So of step (a) only the Nakayama/denominator-clearing half is left: from
+`Algebra.adjoin A_{𝔪_s} {θ} = ⊤` (`LocalNakayamaMonogenic` applied to the fibre `ℂⁿ`, which is
+monogenic because `ℂ` is infinite) produce `g ∈ ℂ[X]` with `g(s) ≠ 0` and
+`g • bᵢ = aeval θ qᵢ` for the finitely many module generators `bᵢ`, then take
+`U := {disc(algCharpoly) ≠ 0} ∩ {g ≠ 0}`.
+
+### Step (a) without any localization — use Cramer instead of Nakayama
+
+`LocalNakayamaMonogenic` is not actually needed for the chart data, and neither is the localization
+API.  Fix an `A`-basis `e` of `B` (`A = ℂ[X]`, `B` free of rank `n`) and, for `θ ∈ B`, let
+
+```text
+M(θ) := the matrix expressing 1, θ, …, θ^{n-1} in the basis e
+g(θ) := det M(θ)  ∈ A
+```
+
+Cramer's rule `adj M · M = (det M) • 1` gives, with no hypotheses at all,
+
+```text
+g(θ) • e_i = aeval θ q_i ,      q_i := Σ_j (adj M(θ))_{ij} X^j ,
+```
+
+hence `g(θ) • b = aeval θ q_b` for every `b`, which is exactly the generation datum the chart needs
+with `U ⊆ {g(θ) ≠ 0}`.  And `g(θ)(s) ≠ 0` holds as soon as `θ` has `n` distinct values on the fibre
+at `s` (Vandermonde), which can be arranged because the fibre is `ℂⁿ` and `B` surjects onto it.
+
+So step (a) is: pick `θ` whose fibre values at `s` are distinct; take
+`p := algCharpoly ℂ[X] θ` (monic, degree `n`, `aeval θ p = 0` by `aeval_algCharpoly`); take
+`U := {g(θ) ≠ 0} ∩ {disc p ≠ 0}`, an open set containing `s`.  Separability of the fibres of `p`
+over `U` and the fibre cardinality are then immediate.  No Nakayama, no localization.
+
+`HTGeometry/PowerMatrixCramer.lean` (wired, axiom-clean) delivers the generation datum:
+
+```text
+powerMatrix e θ                 the coordinate matrix of 1, θ, …, θ^(n-1) in a basis e
+det_powerMatrix_smul_basis      Cramer: det • e i = Σ_j (adj) j i · θ^j
+exists_aeval_of_det_smul        ** det (powerMatrix e θ) • b = aeval θ q for every b **
+```
+
+Combined with `AlgebraCharpoly`, step (a) of `SCE_1` is now reduced to two elementary facts about a
+single parameter `s`: that some `θ ∈ B` has `n` distinct values on the fibre (the fibre is `ℂⁿ` and
+`B` surjects onto it), and that then `det (powerMatrix e θ)(s) ≠ 0` (Vandermonde) and
+`disc(algCharpoly θ)(s) ≠ 0`.  Take `U` to be the intersection of the two nonvanishing loci.
+
+(The Vandermonde half of step (a) needs no new module: `Matrix.det_vandermonde_ne_zero_iff` is
+exactly it — verified against this toolchain.)
+
+## Session ledger — modules landed for this card
+
+```text
+BivariateRootCovering          ComplexAffineLineSimplyConnected   CountableFieldComplexEmbedding
+BivariateSeparableResultant    AffineLineSimplyConnected          AffineSpaceSimplyConnected
+LocalNakayamaMonogenic         AlgebraSpectrumTopology            AlgebraSpectrumFibre
+AlgebraSpectrumChart           AlgebraSpectrumClosed              AlgebraSpectrumProper
+AlgebraSpectrumBijection       AlgebraSpectrumCovering            AlgebraCharpoly
+PowerMatrixCramer
+```
+
+All sixteen are wired into `GaloisForLFunctions.HTGeometry`, pass the formal lint gate, and use only
+`[propext, Classical.choice, Quot.sound]`.  The two headline theorems are
+
+```text
+exists_multiset_prod_of_forall_separable_algClosed   SC_1  (𝔸¹ algebraically simply connected)
+hasEtaleSplitting_mvPolynomial                       SC_k  (monogenic form)
+```
+
+and the hard topological core of the general case is `AlgSpec.isCoveringMap_proj`.
+
+### The immediate next Lean target
+
+Everything for `SCE_1` step (a) is in place except one link, which is the next thing to build:
+
+```text
+det (powerMatrix e θ) evaluated at s ≠ 0   ⟺   1, θ, …, θ^(n-1) is a basis of the fibre B/𝔪_s B
+```
+
+Route: `B/𝔪_s B` is `ℂⁿ` with the `n` points of `proj⁻¹{s}` as coordinates (that is the fibre
+hypothesis of `SCE`), so in those coordinates the specialisation of `powerMatrix e θ` is
+`Vandermonde (χ_1 θ, …, χ_n θ)` times the (invertible) change of basis from `e` to the coordinate
+basis.  `Matrix.det_vandermonde_ne_zero_iff` then gives the nonvanishing exactly when `θ` separates
+the fibre, and a separating `θ` exists because `B` surjects onto the fibre and `ℂ` is infinite.
+
+With that link, step (a) is complete, `AlgSpec.isCoveringMap_proj` applies with no hypotheses beyond
+"`B` is free of rank `n` over `ℂ[X]` and every fibre has `n` complex points", and steps (b)–(d)
+finish `SCE_1`.
+
+**Cleaner proof of that link, to use.**  Do not go through a change of basis to Vandermonde.
+Instead: `det (powerMatrix e θ)` specialises as `(powerMatrix e θ).det.eval s =
+det ((powerMatrix e θ).map (evalRingHom s))` by `RingHom.map_det`, and the specialised matrix is the
+coordinate matrix of `1, θ, …, θ^(n-1)` in the base-changed basis of the fibre.  If its determinant
+vanished, those powers would be linearly dependent over `ℂ` in the fibre, giving a nonzero
+`r ∈ ℂ[X]` of degree `< n` with `r(θ) = 0` there; applying the `n` algebra maps gives
+`r(χ_i θ) = 0` for `n` distinct values `χ_i θ` (`SplitAlgebraSeparation`), so `r` has `n` roots —
+impossible.  Only the base change of a basis is needed, no Vandermonde computation.
+
+`HTGeometry/SplitAlgebraSeparation.lean`, `HTGeometry/SeparatingPowerIndependence.lean` and
+`HTGeometry/PowerDeterminantNonvanishing.lean` (all wired, axiom-clean) finish the mathematics of
+step (a):
+
+```text
+exists_separating_of_surjective        a separating element exists in a split finite algebra
+linearIndependent_pow_of_separating    its powers are independent (Vandermonde)
+det_powerMatrix_map_ne_zero            ** hence det (powerMatrix e θ) does not vanish at the
+                                          parameter **
+```
+
+### What the assembly of step (a) still needs
+
+Take `U := {s | (det (powerMatrix e θ)).eval s ≠ 0 ∧ (biResultant p).eval s ≠ 0}`, open, with
+`p := algCharpoly ℂ[X] θ`.  Membership of `proj χ₀` in the first set is
+`det_powerMatrix_map_ne_zero`; in the second it is separability of `biFibre p (proj χ₀)`, through
+`separable_iff_resultant_ne_zero` and `biResultant_eval`.  The one fact still to prove is
+
+```text
+biFibre (algCharpoly ℂ[X] θ) s  =  ∏_i (X - C (χ_i θ))        (χ_i the n points of the fibre)
+```
+
+— the characteristic polynomial of multiplication by `θ` specialises to the characteristic
+polynomial on the fibre, which is split with roots the `χ_i θ`.  With it, separability at `proj χ₀`
+is immediate from the distinctness of the `χ_i θ`, and the generation datum is
+`exists_aeval_of_det_smul` rewritten through `Algebra.smul_def`.  Then `hchart` is complete and
+`AlgSpec.isCoveringMap_proj` applies.
+
+**Correction — the charpoly specialisation is not needed either.**  Separability of
+`biFibre p (proj χ₀)` does not require identifying it with `∏ (X - C (χ_i θ))`.  It is enough that
+it is monic of degree `n` and has `n` distinct roots, and both are immediate:
+
+* monic of degree `n`: `algCharpoly_monic` and `biFibre_natDegree`;
+* each `χ_i θ` is a root: apply `χ_i` to `aeval θ p = 0` and use `AlgSpec.apply_aeval`, which gives
+  `biEval p (proj χ_i, χ_i θ) = 0`, i.e. `(biFibre p (proj χ₀)).eval (χ_i θ) = 0`;
+* the `χ_i θ` are pairwise distinct by `exists_separating_of_surjective`.
+
+Then `Bottcher.separable_of_distinct_roots` (already in this tree: a degree-`N` complex polynomial
+with `N` distinct roots is separable) closes it.  So **step (a) needs no new mathematics at all** —
+only the assembly of `AlgebraCharpoly`, `PowerMatrixCramer`, `SplitAlgebraSeparation`,
+`PowerDeterminantNonvanishing`, `BivariateSeparableResultant` and `Bottcher.separable_of_distinct_roots`
+into the single `hchart` hypothesis of `AlgSpec.isCoveringMap_proj`.
+
+`HTGeometry/SplitParameterSeparability.lean` (wired, axiom-clean):
+
+```text
+separable_biFibre_of_separating   ** the monic degree-n relation specialises to a separable
+                                     polynomial at a parameter whose fibre separates θ **
+```
+
+### The `hchart` assembly, fully determined
+
+Take `θ` separating the fibre at `s₀ := proj χ₀`, `p := algCharpoly ℂ[X] θ`, `g := det (powerMatrix e θ)`
+and `U := {s | g.eval s ≠ 0}` (open).  Then:
+
+* `aeval θ p = 0`, `p.Monic`, `p.natDegree = n` — `AlgebraCharpoly` and the rank of `e`;
+* `s₀ ∈ U` — `det_powerMatrix_map_ne_zero` with `φ = evalRingHom s₀`, whose `hcomm` hypothesis is
+  `AlgSpec.apply_algebraMap`;
+* the generation datum on `U` with the *same* `g` for every `b` — `exists_aeval_of_det_smul`
+  through `Algebra.smul_def`;
+* separability on **all** of `U`, not just at `s₀`: at any `s ∈ U` the generation datum makes
+  `AlgSpec.toPlane_injOn` apply, so the `n` points of the fibre over `s` (which exist by the
+  cardinality hypothesis) take pairwise distinct values on `θ`; then
+  `separable_biFibre_of_separating`.
+
+The only bookkeeping is converting a set of `ncard = n` into an indexed family `Fin n → AlgSpec B`.
+
+`HTGeometry/SplitFibrePointsDistinct.lean` (wired, axiom-clean): `injective_of_surjective_family`
+— a jointly surjective family of complex points is pairwise distinct.
+
+**Hypothesis shape to use for the assembly** (decided, so no session re-derives it).  Package the
+étale/split-fibre input as one statement:
+
+```lean
+hsplit : ∀ s : ℂ, ∃ χ : Fin n → AlgSpec B,
+    (∀ i, AlgSpec.proj B (χ i) = s) ∧
+    Function.Surjective (fun b : B => fun i => χ i b) ∧
+    {χ' : AlgSpec B | AlgSpec.proj B χ' = s} = Set.range χ
+```
+
+The cardinality condition of `hchart` then follows from `injective_of_surjective_family` and
+`Set.ncard_range_of_injective`, and the separating element at each `s ∈ U` from
+`exists_separating_of_surjective`, so no separate `hcard` hypothesis is needed.
+
+`HTGeometry/SplitFibresPackage.lean` (wired, axiom-clean):
+
+```text
+SplitFibres B n                 the packaged étale/split hypothesis
+ncard_fibre_of_splitFibres      ** it supplies the fibre-cardinality clause of hchart **
+```
+
+**Remaining Lean obligations of the assembly** (pure execution, nothing to discover):
+
+```text
+exists_chart_of_splitFibres (hn : 1 ≤ n) (e : Module.Basis (Fin n) ℂ[X] B)
+    (h : SplitFibres B n) (χ₀ : AlgSpec B) : <the hchart existential>
+  θ  := exists_separating_of_surjective applied to the family at s₀ := proj χ₀
+  p  := algCharpoly ℂ[X] θ ;  p.natDegree = n needs LinearMap.charpoly_natDegree together with
+        Module.finrank_eq_card_basis e
+  g  := (powerMatrix e θ).det ;  U := {s | g.eval s ≠ 0}, open since eval is continuous
+  s₀ ∈ U            det_powerMatrix_map_ne_zero, hcomm from AlgSpec.apply_algebraMap
+  generation on U   exists_aeval_of_det_smul, rewritten by Algebra.smul_def
+  separability on U at each s: the generation datum gives AlgSpec.toPlane_injOn, so the family at s
+                    has distinct θ-values; then separable_biFibre_of_separating
+  cardinality       ncard_fibre_of_splitFibres
+```
+
+With `exists_chart_of_splitFibres`, `AlgSpec.isCoveringMap_proj` becomes unconditional for any
+finite free `ℂ[X]`-algebra with split fibres, and `SCE_1` continues with steps (b)–(d).
+
+## Lean progress — `SCE_1` steps (a) and (b) are DONE
+
+```text
+HTGeometry/SplitFibreChartData.lean   (wired, axiom-clean)
+    exists_chart_of_splitFibres           the chart datum, assembled
+    isCoveringMap_proj_of_splitFibres     ** the complex-point space of a finite free ℂ[X]-algebra
+                                             with split fibres IS a covering space of the parameter
+                                             line — no chart hypothesis, unconditional **
+HTGeometry/SplitFibreSection.lean     (wired, axiom-clean)
+    exists_continuous_section_of_splitFibres   ** and it admits a global continuous section **
+```
+
+### Step (c), and the one lemma it needs
+
+For each `b`, `s ↦ σ(s) b` has polynomial growth by `AlgSpec.norm_apply_le_of_monic`, so by
+`Bottcher.exists_polynomial_of_entire_polyGrowth` it is a polynomial **once it is known to be
+entire**.  Analyticity is local and comes from the chart: on the chart `U` at a point, with its
+`θ_U` and `p_U`, the composite `s ↦ (σ s) θ_U` is a *continuous* root branch of `p_U`, hence
+analytic — this is `analyticAt_of_continuous_biRoot`, whose proof already uses separability only at
+the point in question, so it needs restating with `hsep` on `U` instead of on all of `ℂ`.  Then
+`(σ s) b = biEval q_b (s, (σ s) θ_U) / g(s)` is analytic on `U` by `eval_eq_of_gen`.
+
+So step (c) needs exactly one new declaration: the "on `U`" form of
+`analyticAt_of_continuous_biRoot`.  Everything else is already proved.
+
+**Step (c)'s one lemma is now in.**  `ComplexAffineLineSimplyConnected.analyticAt_of_continuous_biRoot_at`
+— a continuous root branch is analytic at any point where the specialised polynomial is separable
+(separability at that single point suffices; the proof already only used it there).  So step (c) is:
+on the chart `U` at a point, `s ↦ (σ s) θ_U` is analytic by this lemma, `(σ s) b` is then analytic
+by `eval_eq_of_gen`, the growth bound is `AlgSpec.norm_apply_le_of_monic`, and
+`Bottcher.exists_polynomial_of_entire_polyGrowth` turns it into a polynomial.  Step (d) then splits
+off the resulting `ℂ[X]`-algebra map and inducts on the rank.
+
+## Lean progress — `SCE_1` steps (a), (b), (c) are DONE
+
+```text
+HTGeometry/SectionValueAnalytic.lean      analyticAt_section_apply
+HTGeometry/SectionValuePolynomial.lean    exists_polynomial_section_apply
+HTGeometry/SplitFibreAlgHom.lean
+    nonempty_algHom_of_splitFibres
+        ** a finite free ℂ[X]-algebra all of whose fibres are split admits a ℂ[X]-algebra
+           homomorphism to ℂ[X] — unconditional **
+```
+
+### Step (d), the last one, and its elementary proof
+
+For the endgame only the connected case is needed:
+
+```text
+B a DOMAIN, free of rank n over ℂ[X], every fibre split  ⟹  n = 1.
+```
+
+Proof.  `ψ : B →ₐ[ℂ[X]] ℂ[X]` from step (c) is surjective (it fixes the base).  If `n ≥ 2` its
+kernel is nonzero; pick `0 ≠ k ∈ ker ψ`.  Because `B` is a domain, `k` satisfies a monic relation
+over `ℂ[X]` with **nonzero constant term** — start from the characteristic polynomial and, while the
+constant term vanishes, write `r = X · r'` and cancel `k` in `k · r'(k) = 0`.  Applying `ψ` to that
+relation kills every term but the constant one, giving `a₀ = 0`, a contradiction.  Hence `ker ψ = 0`,
+`ψ` is an isomorphism, and `n = 1`.
+
+No Krull dimension, no rank comparison — just cancellation in a domain.
+
+## Lean progress — `SCE_1` over ℂ is PROVED
+
+```text
+HTGeometry/MonicRelationNonzeroConstant.lean   exists_monic_coeff_zero_ne_zero
+HTGeometry/ComplexAffineLineSimplyConnectedGeneral.lean
+    rank_eq_one_of_splitFibres
+        ** a DOMAIN, finite free over ℂ[X], all of whose fibres are split, has rank one **
+```
+
+That is the general (non-monogenic) simple connectedness of the complex affine line — the form an
+abstract étale cover can be fed to, which the monogenic `SC_k` could not be.
+
+### Transfer of `SCE_1` to a general algebraically closed characteristic-zero field
+
+The same device as for `SC_1` works, with `Algebra.discr` in the role the fibre resultant played
+there.  The point is that the hypothesis must be put in a form preserved by *any* ring
+homomorphism:
+
+```text
+"every fibre of B is split"  ⟺  Algebra.discr K[X] e  has no zero in K
+                             ⟺  (K algebraically closed)  it is a nonzero CONSTANT
+```
+
+and a nonzero constant discriminant transports along any embedding.  So: the `n³` structure
+constants of `B` in a basis generate a countable algebraically closed subfield `K₀ ⊆ K`
+(`CountableFieldComplexEmbedding`), `B` descends to `K₀`, embeds into `ℂ`, and the constancy of the
+discriminant carries the split-fibre hypothesis with it.  `rank_eq_one_of_splitFibres` then gives
+rank one over `ℂ`, hence over `K₀`, hence over `K`.
+
+The one new ingredient is the equivalence above, i.e. "the fibre of a finite free algebra at `s` is
+split iff the discriminant does not vanish at `s`", over an algebraically closed field of
+characteristic zero.
+
+**The sub-lemma to build next, stated precisely.**
+
+```text
+K algebraically closed of characteristic zero, C a finite free K-algebra with basis b of size n.
+    (∃ χ : Fin n → C →ₐ[K] K, jointly surjective and exhausting Hom)   ⟺   Algebra.discr K b ≠ 0
+```
+
+Forward: the `n` maps give `C ≅ Kⁿ`, whose trace form in the coordinate basis is the identity, so
+the discriminant is a nonzero square of a change-of-basis determinant.  Backward: a nonvanishing
+discriminant makes the trace form nondegenerate, so `C` is étale over `K`, and over an algebraically
+closed field `Algebra.FormallyEtale.equivPiOfIsSepClosed` splits it into `n` copies.  mathlib
+supplies both halves — `Algebra.discr_isUnit_of_basis` /`Algebra.discr_not_zero_of_basis` one way and
+`Algebra.Etale.iff_exists_algEquiv_prod` with `equivPiOfIsSepClosed` the other.
+
+With it, `SplitFibres B n ⟺ (Algebra.discr ℂ[X] e).eval s ≠ 0 for all s ⟺ that discriminant is a
+nonzero constant`, and the transfer of `SCE_1` to any algebraically closed characteristic-zero field
+runs exactly as `AffineLineSimplyConnected` did for `SC_1`.
+
+## Session ledger (final) — 29 modules landed for this card
+
+```text
+BivariateRootCovering                 ComplexAffineLineSimplyConnected
+CountableFieldComplexEmbedding        BivariateSeparableResultant
+AffineLineSimplyConnected             AffineSpaceSimplyConnected
+LocalNakayamaMonogenic                AlgebraSpectrumTopology
+AlgebraSpectrumFibre                  AlgebraSpectrumChart
+AlgebraSpectrumClosed                 AlgebraSpectrumProper
+AlgebraSpectrumBijection              AlgebraSpectrumCovering
+AlgebraCharpoly                       PowerMatrixCramer
+SplitAlgebraSeparation                SeparatingPowerIndependence
+PowerDeterminantNonvanishing          SplitParameterSeparability
+SplitFibrePointsDistinct              SplitFibresPackage
+SplitFibreChartData                   SplitFibreSection
+SectionValueAnalytic                  SectionValuePolynomial
+SplitFibreAlgHom                      MonicRelationNonzeroConstant
+ComplexAffineLineSimplyConnectedGeneral
+```
+
+All wired into `GaloisForLFunctions.HTGeometry`, all `[propext, Classical.choice, Quot.sound]`.
+
+**Unconditional headline theorems.**
+
+```text
+exists_multiset_prod_of_forall_separable_algClosed   SC_1  over any algebraically closed field of
+                                                           characteristic zero
+hasEtaleSplitting_mvPolynomial                       SC_k  monogenic form
+rank_eq_one_of_splitFibres                           SCE_1 over ℂ — the general, non-monogenic form
+```
+
+**Remaining to `criticalGeometricMonodromy = ⊤`:** the `SCE_1` transfer to a general algebraically
+closed characteristic-zero field (sub-lemma stated above), `SCE_k` by constant-field descent, `E1`
+(branch locus in the chart = the Schur divisor, the discriminant computation), `E2` (Schur inertia
+nontrivial and simple).  Then the torus/slice bookkeeping and the single Kummer valuation close `(4)`,
+and `projective-horizon-one-step-postcritical-rigidity` follows with no further work.

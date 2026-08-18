@@ -1,9 +1,9 @@
 # Unit-Riesz outgoing charge as Suzuki Green curvature
 
 - **ID:** `ccm-unit-riesz-suzuki-green-producer-classification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** CROSS-ROUTE EXACT SOURCE WELD / RH-EQUIVALENT PRODUCER CLASSIFICATION
-- **Scientific status:** `[PAPER PROOF CLOSED] [LEAN FORMALIZED]`
+- **Scientific status:** `[PAPER PROOF CLOSED] [LEAN FORMALIZED, UNCONDITIONAL]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [EXTERNAL PRIORITY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parents:** `ccm-unit-riesz-coherent-outgoing-charge-hankel`,
   `ccm-unit-riesz-log-lattice-rh-criterion`, Suzuki explicit screw criterion,
@@ -141,3 +141,23 @@ forces boundedness with a source-determined noncanonical constant.
 - 2026-08-16 -- Identified forced reporter `exp(-u/2)-exp(-u)` as Green kernel for outgoing charge.
 - 2026-08-16 -- Derived exact Suzuki codiagonal decomposition and cancellation of affine base data.
 - 2026-08-16 -- Proved RH implies uniform outgoing bound; combined with analytic endpoint to obtain equivalence.
+
+## Index of the formalization
+
+Module: `RHTower/CCMUnitRieszSuzukiGreenProducerClassification.lean` (namespace `RHTower`).
+All declarations are unconditional; `#print axioms` returns only
+`propext, Classical.choice, Quot.sound`.
+
+| Card item | Lean declaration |
+|---|---|
+| forced reporter `F_H` and its jets | `unitRieszSuzukiReporter`, `unitRieszSuzukiReporter_H`, `unitRieszSuzukiReporterDeriv_H`, `hasDerivAt_unitRieszSuzukiReporter`, `hasDerivAt_unitRieszSuzukiReporterDeriv` |
+| prime-atom matching | `unitRieszSuzuki_prime_term`, `unitRieszSuzuki_prime_sum` |
+| completed source at integer aperture | `unitRieszSuzuki_completedSource_log_nat` |
+| Xi-screw Green decomposition | `unitRieszSuzukiGreen`, `unitRieszSuzuki_completedSource_eq_green`, `unitRieszSuzukiGreen_eq_raw` |
+| affine-codiagonal cancellation | `integral_unitRieszSuzukiReporterSecond`, `integral_sub_base_mul_unitRieszSuzukiReporterSecond` |
+| uniform screw-functional bound | `abs_integral_suzukiPsi_mul_unitRieszSuzukiReporterSecond_le`, `abs_unitRieszSuzukiGreen_le_of_suzuki_bound` |
+| exact polar cancellation | `unitRieszSuzukiPolarCorrection_eq`, `abs_unitRieszSuzukiPolarCorrection_le` |
+| uniform Gamma remainder bound | `ccmPublishedArchimedeanDensity_le_unitRieszSuzukiBase`, `abs_unitRieszSuzukiArchCorrection_le` |
+| outgoing charge as Green curvature | `unitRieszSuzuki_outgoing_eq_green` |
+| RH implies the uniform bound | `exists_log_nat_bound_criticalMellinChebyshevResolventSource_of_riemannHypothesis` |
+| the RH equivalences | `riemannHypothesis_iff_unitRieszCriticalResolventLogNatBounded`, `riemannHypothesis_iff_unitRieszCriticalResolventBounded`, `riemannHypothesis_iff_unitRieszCompletedOutgoingEnergyBounded` |

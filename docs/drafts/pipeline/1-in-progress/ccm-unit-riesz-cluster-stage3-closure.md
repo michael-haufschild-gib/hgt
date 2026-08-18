@@ -1,7 +1,7 @@
 # CCM unit-Riesz cluster — stage-3 closure programme
 
 - **ID:** `ccm-unit-riesz-cluster-stage3-closure`
-- **Stage:** `1-in-progress`
+- **Stage:** `1-in-progress` — **CLOSED 2026-08-18**
 - **Type:** FORMALIZATION PROGRAMME
 - **Scope:** the seven `ccm-*` cards in
   `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other`
@@ -83,3 +83,35 @@ The only genuinely new analytic input is `L[a](z) = A(z)`, i.e.
 ## Log
 
 - 2026-08-18 — audit written; three cards already complete, four work items opened.
+
+## Closure (2026-08-18)
+
+All seven cards are at `3-formalized/new_scientific_knowledge/other`.  Seven new modules, all
+wired into `GaloisForLFunctions.RHTower`, all unconditional
+(`#print axioms` = `propext, Classical.choice, Quot.sound`):
+
+```text
+RHTower/CCMUnitRieszCesaroFiniteApertureReporter.lean     W1  (four-unit Cesàro card)
+RHTower/CCMUnitRieszApertureResolventEpsilonTransfer.lean W2  (aperture-resolvent card)
+RHTower/CCMUnitRieszCoherentGeneratorSampling.lean        W3  (polar sampling no-go card)
+RHTower/CCMUnitRieszVolterraLaplace.lean                  W5' (reusable exponential-kernel
+                                                               Laplace convolution law)
+RHTower/CCMUnitRieszStirlingLaplace.lean                  W4/W5
+RHTower/CCMUnitRieszCompletedCurrentLaplace.lean          W5
+RHTower/CCMUnitRieszCompletedSourceLaplaceWeld.lean       W5
+```
+
+### Reusable assets produced
+
+- `integral_Ioi_expVolterra_laplace` / `integrableOn_Ioi_cexp_mul_expVolterra`: the half-line
+  Laplace convolution law for a decaying exponential kernel against any measurable source of at
+  most linear growth, proved by a Fubini interchange over the causal wedge with the product
+  majorant `exp(-σt/2) · C(1+h)exp(-σh/2)`.  This is what makes Stieltjes--Laplace measure theory
+  unnecessary whenever the kernel is a finite combination of pure exponentials.
+- `integral_Ioi_cexp_neg_mul_linear` / `..._linear_shift` (complex and real): the first
+  exponential moment `∫_0^∞ u e^{-wu} du = 1/w²`, obtained as the `b = 0`, `φ = 1` case of the
+  convolution law rather than by an improper FTC.
+- `unitRieszStirlingHead_laplace`: `L[exp(-t) Σ_{n ≤ exp t}(t - log n)](z) = ζ(1+z)/(1+z)²`.
+- `unitRieszCompletedCurrent_laplace`: `L[exp(-h/2) E(h)](z) = 2/z - 2/(z+1) - LSeries Λ (1+z)/(z+1/2)`.
+- `setIntegral_Ioi_of_vanishing_lt` / `integrableOn_Ioc_of_vanishing_Ioo`: the half-line split for
+  atoms whose switch-on point is *closed* (the value at the switch-on point need not vanish).

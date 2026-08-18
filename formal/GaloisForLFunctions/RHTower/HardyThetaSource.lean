@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.JacobiThetaBoundaryLimits
 import GaloisForLFunctions.RHTower.XiThetaCriticalTrace
+import GaloisForLFunctions.RHTower.StripHorizontalShift
 
 /-!
 # The Hardy source: the logarithmic theta tail on its strip of holomorphy
@@ -16,7 +17,7 @@ completion.
 
 namespace RHTower
 
-open Complex Filter Topology HurwitzZeta
+open Complex Filter Topology MeasureTheory HurwitzZeta
 
 open scoped Real
 
@@ -146,15 +147,9 @@ theorem xiThetaLogSource_eq_hardySource {a : ℝ} (ha : 0 < a) :
   rw [xiThetaLogSource_eq_positiveFormula ha, xiThetaPositiveFormula, hardySource, hexp,
     ← jacobiTheta_I_mul_ofReal hpos]
   have h4 : cexp ((a : ℂ) / 4) = ((Real.exp (a / 4) : ℝ) : ℂ) := by
-    rw [← Complex.ofReal_exp]
-    congr 1
-    push_cast
-    ring
+    rw [show ((a : ℂ) / 4) = ((a / 4 : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_exp]
   have h4' : cexp (-(a : ℂ) / 4) = ((Real.exp (-a / 4) : ℝ) : ℂ) := by
-    rw [← Complex.ofReal_exp]
-    congr 1
-    push_cast
-    ring
+    rw [show (-(a : ℂ) / 4) = ((-a / 4 : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_exp]
   rw [h4, h4']
   ring
 
@@ -167,7 +162,7 @@ theorem differentiableAt_hardySource {u : ℂ} (hu : u ∈ hardyStrip) :
   have hθ : DifferentiableAt ℂ jacobiTheta (I * cexp u) :=
     differentiableAt_jacobiTheta (im_I_mul_exp_pos hu)
   have hcomp : DifferentiableAt ℂ (fun z : ℂ => jacobiTheta (I * cexp z)) u :=
-    hθ.comp u hmap
+    DifferentiableAt.comp (g := jacobiTheta) (f := fun z : ℂ => I * cexp z) u hθ hmap
   have h1 : DifferentiableAt ℂ (fun z : ℂ => cexp (z / 4)) u := by
     exact (differentiable_exp.differentiableAt).comp u (by fun_prop)
   have h2 : DifferentiableAt ℂ (fun z : ℂ => cexp (-z / 4)) u := by
@@ -264,19 +259,20 @@ theorem norm_hardySource_le {c : ℝ} (hc0 : 0 ≤ c) (hc : c < π / 2) {u : ℂ
     have hnorm1 : ‖cexp (v / 4)‖ = Real.exp (v.re / 4) := by
       rw [Complex.norm_exp]
       congr 1
-      simp [Complex.div_re]
-      ring
+      simp
     have hnorm2 : ‖cexp (-v / 4)‖ = Real.exp (-(v.re / 4)) := by
       rw [Complex.norm_exp]
       congr 1
-      simp [Complex.div_re, Complex.neg_re]
+      simp [Complex.neg_re]
       ring
     have hsplit : ‖hardySource v‖
         ≤ (Real.exp (v.re / 4) * ‖jacobiTheta (I * cexp v) - 1‖ + Real.exp (-(v.re / 4))) / 2 := by
       rw [hardySource, norm_div, Complex.norm_two]
-      refine div_le_div_of_nonneg_right ?_ (by norm_num) |>.trans_eq rfl
-      refine le_trans (norm_sub_le _ _) ?_
-      rw [norm_mul, hnorm1, hnorm2]
+      have hnum : ‖cexp (v / 4) * (jacobiTheta (I * cexp v) - 1) - cexp (-v / 4)‖
+          ≤ Real.exp (v.re / 4) * ‖jacobiTheta (I * cexp v) - 1‖ + Real.exp (-(v.re / 4)) := by
+        refine le_trans (norm_sub_le _ _) ?_
+        rw [norm_mul, hnorm1, hnorm2]
+      linarith [hnum]
     -- the double-exponential factor is bounded
     have hquad : Real.exp v.re * Real.cos c ≥ v.re ^ 2 / 4 * Real.cos c := by
       nlinarith [exp_sq_le hvre, hcos]
@@ -287,9 +283,8 @@ theorem norm_hardySource_le {c : ℝ} (hc0 : 0 ≤ c) (hc : c < π / 2) {u : ℂ
         have hstep : π * (Real.exp v.re * Real.cos c) ≥ π * (v.re ^ 2 / 4 * Real.cos c) := by
           nlinarith [Real.pi_pos, hquad]
         have hfinal : v.re / 2 - π * (v.re ^ 2 / 4 * Real.cos c) ≤ 1 / (4 * π * Real.cos c) := by
-          rw [ge_iff_le, ← sub_nonneg] at *
           have hprod : 0 < 4 * π * Real.cos c := by positivity
-          rw [le_div_iff₀ hprod] at *
+          rw [le_div_iff₀ hprod]
           nlinarith [sq_nonneg (1 - π * Real.cos c * v.re), Real.pi_pos, hcos]
         linarith
       linarith
@@ -341,13 +336,14 @@ theorem integrable_hardySource_line {c : ℝ} (hc0 : 0 ≤ c) (hc : c < π / 2) 
     have hcont : ContinuousOn hardySource hardyStrip := by
       intro z hz
       exact ((differentiableAt_hardySource hz).continuousAt).continuousWithinAt
-    refine ContinuousAt.continuous fun a => ?_
+    refine continuous_iff_continuousAt.2 fun a => ?_
     have hmem : ((a : ℂ) + (c : ℂ) * I) ∈ hardyStrip := by
       rw [mem_hardyStrip]
       simp [Complex.add_im, Complex.ofReal_im, Complex.mul_im]
       rw [abs_of_nonneg hc0]
       exact hc
-    exact ((differentiableAt_hardySource hmem).continuousAt).comp (by fun_prop)
+    exact ContinuousAt.comp (g := hardySource) (f := fun a : ℝ => (a : ℂ) + (c : ℂ) * I)
+      (x := a) ((differentiableAt_hardySource hmem).continuousAt) (by fun_prop)
   refine Integrable.mono' (g := fun a : ℝ => hardySourceBound c * Real.exp (-(1 / 4 * |a|)))
     ?_ hmeas ?_
   · exact (integrable_exp_neg_mul_abs' (by norm_num)).const_mul _

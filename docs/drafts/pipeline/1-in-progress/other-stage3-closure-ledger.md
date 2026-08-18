@@ -27,8 +27,8 @@
 
 ## Closure queue (50 at start; checked entries closed during this pass)
 
-- [ ] `abelian-multiplication-tail-manin-horizon`
-- [ ] `active-quasi-abelian-palette-exact-ht-dimension-classification`
+- [x] `abelian-multiplication-tail-manin-horizon`
+- [x] `active-quasi-abelian-palette-exact-ht-dimension-classification`
 - [x] `additive-heat-aperture-shifted-zeta-echo-ladder`
 - [x] `additive-heat-aperture-zeta-zero-echo`
 - [ ] `all-depth-compatible-pair-face-differential-matroid`
@@ -67,7 +67,7 @@
 - [ ] `prime-tail-hedenmalm-wiener-hopf-transgression`
 - [ ] `prime-tail-reflection-folded-second-order-resolvent`
 - [ ] `prime-valuation-dyadic-fermion-normal-cone-law`
-- [ ] `prime-wold-accelerated-type-modular-drift-law`
+- [x] `prime-wold-accelerated-type-modular-drift-law` — 2026-08-18, `norm_finitePrimeGenusOnePolarizedPhase_two_sided` + `norm_burnolExtendedSoninEvaluationVector_soninDepth_bounds`
 - [ ] `projective-prime-weyl-leakage-fock-normal-cone`
 - [ ] `rational-coarse-graining-orbifold-tail-classification`
 - [x] `scalar-differential-inversive-core-projective-law`
@@ -5074,3 +5074,87 @@ The reusable discovery: `RHTower.tendsto_mertensPrimeWindow_div_log` is weak con
 prime log-density measure to Lebesgue measure on `[0,1]`, so *every* weighted prime Cesàro law of
 the form `∑_{p ≤ x} g(log p/log x)/p → ∫₀¹ g` is a one-line corollary once `g` is continuous on the
 closed unit interval.  That is what replaces the card's `(15)` partial-summation argument entirely.
+
+## Pass 112 — the Manin-horizon and active-palette cards
+
+Both are closed and promoted to Stage 3.
+
+`abelian-multiplication-tail-manin-horizon`.  The whole chain `(2)`--`(9)` is Lean-proved.  New
+modules: `AffineZariskiClosureOver` (a full affine Zariski closure operator over a coefficient
+ring, mirroring the Kolchin one: Galois connection, universal property, idempotence, arbitrary
+intersections, finite unions, and `ZariskiDenseOver` with its monotonicity),
+`ManinKernelKolchinClosure` (the closure of a Zariski-dense torsion tower is the Manin kernel, in
+set and subgroup form; the constant-point locus is Kolchin closed, which is Corollary D),
+`ManinMapQuotientCoordinates` (translation fixed fields are derivation-closed, so invariant
+coordinates generate a differential subfield of them; a map whose fibres are the orbits detects
+exactly the invariant functions), `AbelianTailUniversalScaling` (integer rescaling of a
+differentially independent palette, the canonical `v ↦ m v` automorphism, and its naturality —
+the no-hair theorem), `AbelianManinHorizonNoHair`, `AbelianManinHorizonTheorem`,
+`AbelianVarietyMultiplicationGaloisLevel` (each multiplication level is the torsion deck fixed
+field, from the degree data), and `AbelianVarietyManinHorizonTail` (the end-to-end statement on
+the actual function field of an Abelian variety).
+
+The reusable discovery: the free differential parametrisation
+`differentialIndependentAdjoinAlgEquiv` already in the tree makes *any* "dynamics on a free
+differential field is universal" argument a two-line naturality check — build the endomorphism by
+conjugating the labelled equivalence, and prove intertwining by `IntermediateField.adjoin_algHom_ext`
+on jets.  `differentialAdjoin_range_zsmul` is the only extra ingredient, and its content is just
+that a nonzero base scalar is invertible.
+
+`active-quasi-abelian-palette-exact-ht-dimension-classification`.  New modules:
+`ActiveQuotientSplitModel` (the ambient-faithfulness conjecture is false, with a concrete witness
+in the group underlying `E × ℂ*`, plus the split-model capacity spectrum),
+`ActiveQuasiAbelianPaletteHierarchy` (`qaDim ≤ aqaDim` as an actual forgetful construction, not a
+hypothesis), and `ToruslessActiveCollapse`.
+
+The reusable discovery: the separation question `qaDim < aqaDim` is now *only* about compact
+shadows.  On a facet presentation with trivial compact shadow the active quotient is injective, so
+the active condition is equivalent to plain faithfulness; the periodic-pencil quotient `ℂ*` is
+torusless, so the two invariants agree on the whole pencil class.  A separating complex must have
+*every* minimal quasi-Abelian palette carrying a positive-dimensional compact facet subtorus that
+meets the facet lattice.
+
+## 2026-08-18 pass — the CCM unit-Riesz cluster is closed
+
+The seven `ccm-*` cards left in `2-fully-proven/new_scientific_knowledge/other` are now all at
+stage 3:
+
+```text
+ccm-unit-riesz-exponential-coherent-trace            (already complete; audited)
+ccm-unit-riesz-hankel-boundary-pulse                 (already complete; audited)
+ccm-unit-riesz-suzuki-green-producer-classification  (already complete; audited)
+ccm-unit-riesz-coherent-polar-sampling-no-go         + CCMUnitRieszCoherentGeneratorSampling
+ccm-unit-riesz-aperture-resolvent-weld               + CCMUnitRieszApertureResolventEpsilonTransfer
+ccm-four-unit-cesaro-curvature-wall                  + CCMUnitRieszCesaroFiniteApertureReporter
+ccm-unit-riesz-completed-source-stieltjes-weld       + CCMUnitRieszVolterraLaplace,
+                                                       CCMUnitRieszStirlingLaplace,
+                                                       CCMUnitRieszCompletedCurrentLaplace,
+                                                       CCMUnitRieszCompletedSourceLaplaceWeld
+```
+
+Programme card with the full audit and the reusable-asset list:
+`1-in-progress/ccm-unit-riesz-cluster-stage3-closure.md`.
+
+Two lessons worth keeping.
+
+1. *Three of the seven cards were already fully formalized.*  The audit that established this — read
+   the card's numbered equations, dump every `theorem` signature in the named module, match them
+   one by one — took a fraction of the time the formalization of the remaining four did.  Do it
+   first, always.
+2. *A "measure-valued Laplace identity" is usually not one.*  The completed-source weld card
+   flagged `(26)` as possibly needing Bochner/Stieltjes--Laplace infrastructure.  It does not: both
+   kernels in the weld are finite combinations of pure decaying exponentials, so the whole identity
+   follows from one exponential-kernel convolution law
+   (`integral_Ioi_expVolterra_laplace`) proved by a single Fubini interchange over the causal
+   wedge.  Before importing measure-theoretic machinery, check whether the kernel is elementary.
+
+- 2026-08-18 — `prime-wold-accelerated-type-modular-drift-law` closed and promoted to stage 3.  The
+  two remaining inputs were discharged, not assumed: `(14a)` is now
+  `RHTower/GenusOneOccupationCompactBound.lean`'s
+  `norm_finitePrimeGenusOnePolarizedPhase_two_sided` — an explicit two-sided bound on the
+  tangent-normalized reflected occupation phase on `‖t‖ ≤ R`, `dist(t, ±ℕ_{≥1}) ≥ δ`, *uniform in
+  the finite prime aperture*, obtained from the cubic vanishing of the reflected primary-factor log
+  defect and the reciprocal-cube mass of the smooth-index injection; and `(18c)` is the tree's own
+  cross-aperture rigidity, so `RHTower/SoninDepthApertureRigidity.lean`'s
+  `norm_burnolExtendedSoninEvaluationVector_soninDepth_bounds` gives `(18e)` with no hypothesis.
+  Both modules are axiom-clean and wired into `GaloisForLFunctions.RHTower`.
