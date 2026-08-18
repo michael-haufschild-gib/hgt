@@ -4958,6 +4958,11 @@ import GaloisForLFunctions.RHTower.ProlateSectorConstrainedGround
 import GaloisForLFunctions.RHTower.ProlateSectorConstrainedSpectrum
 import GaloisForLFunctions.RHTower.ProlateSectorOperatorSpectrum
 import GaloisForLFunctions.RHTower.ProlateSectorSynthesisIsometry
+import GaloisForLFunctions.RHTower.ProlateSectorGroundLaws
+import GaloisForLFunctions.RHTower.ProlateSectorDepthSpectrum
+import GaloisForLFunctions.RHTower.ProlateNegativeTrueFamilyDistanceRate
+import GaloisForLFunctions.RHTower.ProlateSectorSpectralGap
+import GaloisForLFunctions.RHTower.ProlateConstrainedOperatorLaws
 import GaloisForLFunctions.RHTower.ProlateSeparationBound
 import GaloisForLFunctions.RHTower.ProlateSeparationLimit
 import GaloisForLFunctions.RHTower.ProlateSeparationLowerBound
@@ -5871,10 +5876,14 @@ import GaloisForLFunctions.RHTower.Sieve.PolylogLimits
 import GaloisForLFunctions.RHTower.Sieve.BudgetRhoBound
 import GaloisForLFunctions.RHTower.Sieve.RhoLimit
 import GaloisForLFunctions.RHTower.Sieve.BudgetTermSplit
-import GaloisForLFunctions.RHTower.Sieve.BudgetScaleLimitsPieces
+import GaloisForLFunctions.RHTower.Sieve.BudgetScaleLimits
+import GaloisForLFunctions.RHTower.Sieve.BudgetSRate
+import GaloisForLFunctions.RHTower.Sieve.EnergyQuotientLimitPieces
 import GaloisForLFunctions.RHTower.Sieve.RhoLimit
 import GaloisForLFunctions.RHTower.Sieve.BudgetTermSplit
 import GaloisForLFunctions.RHTower.Sieve.BudgetScaleLimits
+import GaloisForLFunctions.RHTower.Sieve.BudgetSRate
+import GaloisForLFunctions.RHTower.Sieve.EnergyQuotientLimit
 import GaloisForLFunctions.RHTower.Sieve.LogPolyProductScale
 import GaloisForLFunctions.RHTower.Sieve.PrimePhaseShift
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevKappaOneCoeff
@@ -7947,6 +7956,7 @@ import GaloisForLFunctions.RHTower.SuzukiEquationTwoFour
 import GaloisForLFunctions.RHTower.SuzukiExplicitScrewRegularKernel
 import GaloisForLFunctions.RHTower.SuzukiExplicitScrewZeroSeries
 import GaloisForLFunctions.RHTower.SuzukiExteriorFeshbachPruning
+import GaloisForLFunctions.RHTower.SuzukiEulerPoleArchimedeanMomentAnnihilation
 import GaloisForLFunctions.RHTower.SuzukiExteriorHardyAmplitudes
 import GaloisForLFunctions.RHTower.SuzukiExteriorPoleTomography
 import GaloisForLFunctions.RHTower.SuzukiExteriorRiggedRealization
@@ -10106,3 +10116,6 @@ import GaloisForLFunctions.RHTower.Sieve.PrimePairShiftSum
 import GaloisForLFunctions.RHTower.Sieve.PrimePairAverage
 import GaloisForLFunctions.RHTower.Sieve.PrimePairNeighbour
 import GaloisForLFunctions.RHTower.Sieve.DyadicPrimeMeanSquare
+import GaloisForLFunctions.RHTower.Sieve.ElementaryHarmonicBounds
+import GaloisForLFunctions.RHTower.Sieve.CoprimeSquarefreeHarmonic
+import GaloisForLFunctions.RHTower.RouteECofactorUnsignedMass

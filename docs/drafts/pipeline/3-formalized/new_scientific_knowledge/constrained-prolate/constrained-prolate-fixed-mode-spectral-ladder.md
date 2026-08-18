@@ -1,9 +1,9 @@
 # The constrained prolate fixed-mode spectral ladder
 
 - **ID:** `constrained-prolate-fixed-mode-spectral-ladder`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`, provisional pending
+- **Stage:** 3 — formalized in Lean 4
+- **Type:** THEOREM (paper) / THEOREM (Lean)
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`, provisional pending
   independent proof and literature review; `[NOT AN RH PROOF]`
 - **Parent:** `constrained-prolate-two-mode-ground-state.md`
 - **Statement:** Every fixed low eigenvalue of the positive-even prolate leakage operator compressed
@@ -573,7 +573,11 @@ adjacent law `(9)` (its two-mode and leakage-side forms are already formalized i
 - [ ] independent proof review
 - [ ] independent literature review
 - [ ] true finite-prime Weil spectral-ladder transfer
-- [ ] Lean analytic-operator/asymptotic infrastructure
+- [x] Lean analytic-operator/asymptotic infrastructure
+- [x] operator bridge at EVERY depth: existence and uniqueness of the constrained
+  eigenvalue in each gap, `(8)`, `(9)`, `(10)`--`(11)` as unconditional Lean theorems
+  about the compression of `B_lambda` itself (`ProlateSectorDepthSpectrum`,
+  `ProlateConstrainedOperatorLaws`) — see the STAGE 3 section
 
 ## Lean progress — the oscillator-ladder pin, and what the prolate-to-Hermite gate now needs
 
@@ -6540,3 +6544,75 @@ without any new analysis:
 
 The same theorem at `n − m = 1` is the `λ^{-4}` of the *parity* card's claim `(8)`, since `d_4` and
 `d_6` are corpus indices `2` and `3`.
+
+## STAGE 3 — the whole ladder is a theorem about the compressed operator
+
+The parent card's stage-3 audit named one obstruction for the whole folder: the theorems were about
+the *secular* formulation, not about the compression of `B_lambda = I − T_lambda²` to the
+zero-integral hyperplane.  That bridge is now closed in both directions **at every depth**, not only
+at the ground.
+
+### The depth-`k` bridge
+
+`formal/GaloisForLFunctions/RHTower/ProlateSectorDepthSpectrum.lean` (wired, axiom-clean):
+
+```lean
+def sectorDepthCoeff (a : ℝ) (σ : ℕ → ℕ) (k j : ℕ) : ℝ           -- v_j = ell_j/(d_j − mu_k)
+
+theorem depthSecular_eq_zero_of_constrained_eigen        -- the converse, in coordinates
+theorem exists_constrained_coordinates_of_isSectorConstrainedEigen
+theorem depthSecular_eq_zero_of_isSectorConstrainedEigen -- the converse, for the sector
+theorem isSectorConstrainedEigen_depth                   -- the forward direction
+theorem eventually_exists_sectorDepthEigen_positive
+theorem eventually_sectorDepthEigen_unique_positive
+```
+
+Three things generalize from the first gap, and none of them needs new analysis.
+
+* **Coordinate extraction.**  Testing the weak compressed eigen-equation against the elementary
+  two-term constrained vectors `ell_k e_i − ell_i e_k` produces a real coordinate sequence with
+  `(d_j − mu) x_j = c·ell_j` and `Σ ell_j x_j = 0`.  This uses only the index-`1` normalization and
+  no gap data at all, so it is isolated as its own theorem and reused verbatim at every depth.
+* **The converse.**  `depthSecular d ell k mu` *is* the constraint pairing
+  `Σ_j ell_j·v_j(mu)` (`depthSecular_eq_tsum_mul_secularVector`), so the collapse of the constraint
+  to the secular function is read at depth `k` from a tail floor and `mu < d_{k+2}` alone.  The
+  poles are avoided by `sectorLeakage_sub_ne_zero_of_mem_gap`, which is pure ordering bookkeeping.
+* **The forward direction.**  The depth-`k` secular coordinates are eventually square-summable
+  (`LadderEnvelope.ccm_depth_summable_secularVector_sq`), so they synthesise an honest vector of the
+  even carrier; its leakage defect has constraint coordinates exactly `ell`, hence annihilates every
+  constrained vector of the sector.
+
+### The card's claims, at the operator
+
+`formal/GaloisForLFunctions/RHTower/ProlateConstrainedOperatorLaws.lean` names the depth-`k`
+constrained eigenvalue `positiveSectorDepthValue a k` and collects the laws:
+
+| claim | Lean theorem |
+|---|---|
+| `(2)` exactly one constrained eigenvalue in `(d_k, d_{k+1})`, for every fixed `k` | `positiveSectorDepthValue_laws k` (first component: existence **and** uniqueness) |
+| `(7)` `d_j/d_{j+1} = O(lambda^{-8})` | `exists_bound_signedLeakage_ratio_power` at `n − m = 2` |
+| `(8)` `mu_k/d_{k+1} → theta_k` | `positiveSectorDepthValue_laws k` (second component) |
+| `(9)` adjacent law `mu_{k+1}/mu_k · d_{k+1}/d_{k+2} → theta_{k+1}/theta_k` | `positiveSectorDepthValue_adjacent_ratio_tendsto k` |
+| `(10)`–`(11)` eigenvector limit and orthogonality | `positiveSectorDepthValue_eigenvector_laws k` (bundled with the existence of the eigenvector), from `constrainedProlateEven_operator_depth_eigenvector_coeff k` |
+| `(13)` `mu_0/d_1 → 8/11`, `mu_1/d_2 → 176/211`, `mu_1/mu_0 ~ (242/211)(d_2/d_1)` | `constrainedProlateEven_ground_ratio_tendsto`, `constrainedProlateEven_first_ratio_tendsto`, `constrainedProlateEven_adjacent_ground_ratio_tendsto` |
+| `(3)` `ell_j → a_j` | `tendsto_norm_evenProlateConstraintCoord_atTop` |
+| `(4)` `a_j² = a_0² q_j` | `constrainedProlateHermiteWeight`/`Coordinate` evaluations |
+| `(5)` `theta_k = Q_k/Q_{k+1}` | `constrainedProlateHermiteTheta` |
+
+`constrainedProlateEven_operator_depth_eigenvector_coeff k` is the operator form of `(10)`–`(11)`:
+the coefficients of the constrained eigenvector against the sector's orthonormal prolate family are
+*exactly* the depth-`k` secular coordinates (an orthonormal-expansion identity, not an
+approximation), their oriented normalization converges in `ell²` to `−hermiteContrastUnit k`, and
+the limit family is orthonormal — which is `(11)`.
+
+### The index bookkeeping is itself a theorem
+
+The card writes the positive sector as `span{h_{4j,lambda}}` while the corpus indexes the signed
+family by decreasing `|chi|`.  The identification "corpus signed index `n` ↔ Hermite rung `2n`" is
+not a convention here: it is pinned by `exists_rate_abs_signedModeRadialBandwidth_mul_s_sub_rung`
+(`|c·s_n − (4n+1)| ≤ K c^{-1/4}`, so rung `2n`) and confirmed on the constraint side by the proved
+coordinate limits, whose targets are the Hermite origin values `|h_{4j}(0)|` in the positive sector
+and `|h_{4j+2}(0)|` in the negative one.
+
+Every declaration named above is unconditional with axioms
+`[propext, Classical.choice, Quot.sound]`.

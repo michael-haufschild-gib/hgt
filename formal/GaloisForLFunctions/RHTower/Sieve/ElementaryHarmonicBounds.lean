@@ -96,6 +96,120 @@ theorem sum_inv_sqrt_dvd_le {M p : ℕ} (hp : 1 ≤ p) :
   field_simp
   nlinarith [hsp2, Real.sqrt_nonneg (M : ℝ)]
 
+/-- **The harmonic mass of the multiples of `p`.** -/
+theorem sum_inv_dvd_le {M p : ℕ} (hp : 1 ≤ p) (hM : 1 ≤ M) :
+    ∑ n ∈ (Finset.Icc 1 M).filter (fun n => p ∣ n), 1 / (n : ℝ)
+      ≤ (1 + Real.log (M : ℝ)) / (p : ℝ) := by
+  classical
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp
+  have hM1 : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hlogM : (0 : ℝ) ≤ Real.log (M : ℝ) := Real.log_nonneg hM1
+  rw [sum_filter_dvd_eq hp (fun n => 1 / (n : ℝ))]
+  rcases Nat.eq_zero_or_pos (M / p) with hzero | hpos
+  · rw [hzero, Finset.Icc_eq_empty (by omega), Finset.sum_empty]
+    positivity
+  · have hterm : ∀ k ∈ Finset.Icc 1 (M / p),
+        1 / ((p * k : ℕ) : ℝ) = (1 / (p : ℝ)) * (1 / (k : ℝ)) := by
+      intro k _
+      rw [Nat.cast_mul]
+      field_simp
+    rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum]
+    have hbase : ∑ k ∈ Finset.Icc 1 (M / p), 1 / (k : ℝ)
+        ≤ 1 + Real.log ((M / p : ℕ) : ℝ) := by
+      have := Aux.sum_inv_le_log (M / p) hpos
+      simpa [one_div] using this
+    have hmono : Real.log ((M / p : ℕ) : ℝ) ≤ Real.log (M : ℝ) := by
+      refine Real.log_le_log (by exact_mod_cast hpos) ?_
+      exact_mod_cast Nat.div_le_self M p
+    have hchain : ∑ k ∈ Finset.Icc 1 (M / p), 1 / (k : ℝ) ≤ 1 + Real.log (M : ℝ) := by
+      linarith [hbase, hmono]
+    have hgoal : (1 / (p : ℝ)) * ∑ k ∈ Finset.Icc 1 (M / p), 1 / (k : ℝ)
+        ≤ (1 / (p : ℝ)) * (1 + Real.log (M : ℝ)) :=
+      mul_le_mul_of_nonneg_left hchain (by positivity)
+    have heq : (1 / (p : ℝ)) * (1 + Real.log (M : ℝ)) = (1 + Real.log (M : ℝ)) / (p : ℝ) := by
+      field_simp
+    linarith [hgoal, heq.le, heq.ge]
+
+/-- The telescoping sum `∑_{1 ≤ j ≤ J} (1/j − 1/(j+1)) = 1 − 1/(J+1)`. -/
+theorem sum_telescope_inv (J : ℕ) :
+    ∑ j ∈ Finset.Icc 1 J, (1 / (j : ℝ) - 1 / ((j : ℝ) + 1)) = 1 - 1 / ((J : ℝ) + 1) := by
+  induction J with
+  | zero => simp
+  | succ m ih =>
+    rw [Finset.sum_Icc_succ_top (by omega), ih]
+    have hm0 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
+    have hm1 : (0 : ℝ) < (m : ℝ) + 2 := by positivity
+    have hcast : ((m + 1 : ℕ) : ℝ) = (m : ℝ) + 1 := by push_cast; ring
+    rw [hcast, show ((m : ℝ) + 1 + 1) = (m : ℝ) + 2 from by ring]
+    field_simp
+    ring
+
+/-- **The reciprocal squares of the odd numbers above one sum to at most `1/4`.** -/
+theorem sum_inv_sq_odd_le {s : Finset ℕ} (hs : ∀ d ∈ s, 3 ≤ d ∧ ¬ 2 ∣ d) :
+    ∑ d ∈ s, 1 / ((d : ℝ)) ^ 2 ≤ 1 / 4 := by
+  classical
+  set t : Finset ℕ := s.image (fun d => (d - 1) / 2) with ht
+  have hrec : ∀ d ∈ s, 2 * ((d - 1) / 2) + 1 = d := by
+    intro d hd
+    obtain ⟨h3, hodd⟩ := hs d hd
+    omega
+  have hinj : Set.InjOn (fun d => (d - 1) / 2) s := by
+    intro a ha b hb hab
+    have h1 := hrec a ha
+    have h2 := hrec b hb
+    simp only at hab
+    omega
+  have hmapped : ∑ d ∈ s, 1 / ((d : ℝ)) ^ 2
+      = ∑ j ∈ t, 1 / (((2 * j + 1 : ℕ) : ℝ)) ^ 2 := by
+    rw [ht, Finset.sum_image hinj]
+    refine Finset.sum_congr rfl fun d hd => ?_
+    rw [hrec d hd]
+  set J : ℕ := s.sup id with hJ
+  have hsubset : t ⊆ Finset.Icc 1 J := by
+    intro j hj
+    rw [ht, Finset.mem_image] at hj
+    obtain ⟨d, hd, rfl⟩ := hj
+    obtain ⟨h3, hodd⟩ := hs d hd
+    have hdJ : d ≤ J := Finset.le_sup (f := id) hd
+    rw [Finset.mem_Icc]
+    omega
+  have hterm : ∀ j ∈ Finset.Icc 1 J,
+      1 / (((2 * j + 1 : ℕ) : ℝ)) ^ 2 ≤ (1 / 4) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1)) := by
+    intro j hj
+    rw [Finset.mem_Icc] at hj
+    have hj1 : (1 : ℝ) ≤ (j : ℝ) := by exact_mod_cast hj.1
+    have hj0 : (0 : ℝ) < (j : ℝ) := by linarith
+    have hcast : (((2 * j + 1 : ℕ)) : ℝ) = 2 * (j : ℝ) + 1 := by push_cast; ring
+    rw [hcast]
+    rw [div_le_iff₀ (by positivity)]
+    have hexpand : (1 / 4 : ℝ) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1)) * (2 * (j : ℝ) + 1) ^ 2
+        = (2 * (j : ℝ) + 1) ^ 2 / (4 * (j : ℝ) * ((j : ℝ) + 1)) := by
+      field_simp
+      ring
+    rw [hexpand, le_div_iff₀ (by positivity)]
+    nlinarith [hj0]
+  have hnn : ∀ j ∈ Finset.Icc 1 J, (0 : ℝ) ≤ (1 / 4) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1)) := by
+    intro j hj
+    rw [Finset.mem_Icc] at hj
+    have hj1 : (1 : ℝ) ≤ (j : ℝ) := by exact_mod_cast hj.1
+    have hj0 : (0 : ℝ) < (j : ℝ) := by linarith
+    have : 1 / ((j : ℝ) + 1) ≤ 1 / (j : ℝ) :=
+      one_div_le_one_div_of_le hj0 (by linarith)
+    linarith
+  have hstep : ∑ j ∈ t, 1 / (((2 * j + 1 : ℕ) : ℝ)) ^ 2
+      ≤ ∑ j ∈ Finset.Icc 1 J, (1 / 4) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1)) := by
+    refine le_trans (Finset.sum_le_sum (fun j hj => hterm j (hsubset hj))) ?_
+    exact Finset.sum_le_sum_of_subset_of_nonneg hsubset (fun j hj _ => hnn j hj)
+  have hval : ∑ j ∈ Finset.Icc 1 J, (1 / 4 : ℝ) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1))
+      = (1 / 4) * (1 - 1 / ((J : ℝ) + 1)) := by
+    rw [← Finset.mul_sum, sum_telescope_inv]
+  have hle : (1 / 4 : ℝ) * (1 - 1 / ((J : ℝ) + 1)) ≤ 1 / 4 := by
+    have : (0 : ℝ) < (J : ℝ) + 1 := by positivity
+    have h1 : (0 : ℝ) < 1 / ((J : ℝ) + 1) := by positivity
+    nlinarith [h1]
+  rw [hmapped]
+  linarith [hstep, hval.le, hval.ge, hle]
+
 end
 
 end RHTower.Sieve

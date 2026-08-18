@@ -19,7 +19,7 @@ constraint pairing to the secular function is then read at depth `k` through
 
 noncomputable section
 
-open Filter Set
+open Filter Set Topology
 open scoped InnerProduct InnerProductSpace
 
 namespace RHTower

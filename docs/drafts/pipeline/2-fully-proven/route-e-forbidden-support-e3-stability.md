@@ -339,3 +339,72 @@ The line in "Lean progress" saying that `(FS7)` "genuinely needs the source's Se
 not reachable from the card text alone" is now superseded in its operative half: the Section 5 sieve
 is needed, and it is present.  The Serena memory `cards/route-e-e3-elementary-layer` carries a
 matching "do not re-attempt" note that no longer applies to `(FS7)`.
+
+## Source located, and the unique remaining core identified (2026-08-18)
+
+`arXiv:2207.05038` is **Matomäki–Teräväinen, "Almost primes in almost all short intervals II"**.  Its
+Theorem 1.1 is the `E₂`/almost-all statement at interval length `(log x)^{2.1}` with
+`(log x)^{1.09} < p₁ ≤ (log x)^{1.1}`; **Theorem 1.2 is the bonus all-interval statement**
+
+> for sufficiently large `x`, the interval `(x, x + √x(log x)^{1.55}]` contains `E₃` numbers,
+
+proved (per the paper's own remark) "by following the proof of Theorem 1.1 very closely".  So the
+card's `(FS4)` is quoted correctly, and both theorems rest on the *same* new estimate.
+
+### The numerology, redone here
+
+Write `A(s) = P₁(s)P(s)²` with `P₁(s) = ∑_{p ≍ P₁} p^{-s}`, `P(s) = ∑_{p ≍ R} p^{-s}`, and the
+parameters of `(FS1)`.  The count's main term is `≍ h/((log P₁)(log x)²) ≍ √x(log x)^{-0.45}/log log x`.
+Estimating the transform error by the trivial sup bound on the short polynomial,
+`max_t |P₁(1+it)| ≤ ∑_{p ≍ P₁} 1/p ≍ 1/log P₁ ≍ 1/log log x`, together with the *proved* `(FS7)`
+`∫_{|t| ≤ U}|P(1+it)|²dt ≪ U/(R log x) + 1/(log x)²`, gives for the sharp-cutoff kernel `≍ x/|t|`
+
+```text
+∑_{U dyadic ∈ [T₀,T]} (x/U)·max|P₁|·∫_{|t| ≍ U}|P|²
+   ≍ (1/log log x)·[ (x/(R log x))·#{dyadic blocks} + x/(T₀(log x)²) ]
+   ≍ (1/log log x)·[ 2√x(log x)^{-0.45}·log log x + h/(log x)² ] ,
+```
+
+because `T/T₀ = R/T₀ ≍ log x`, so there are `≍ log log x` dyadic blocks.  The first bracket term is
+`≍ √x(log x)^{-0.45}`, i.e. **exactly `log log x` times the main term**.  So:
+
+- the mean value theorem plus `(FS7)` leaves a deficit of precisely one `log log x`;
+- `(5.2)`'s stated saving `∫_{T₀}^{T}|P₁P|²dt ≪ (T/(x/h))(log X)^{-2-ε/10}` supplies `(\log x)^{-ε/10}`,
+  which covers that `log log x` with room to spare.
+
+That is the whole role of the paper's new Type II estimate for this card, and it is **the unique
+remaining analytic input**: `(FS7)` is now a corpus theorem, and the perturbative layer `(FS5)`,
+`(FS6)`, `(FS8)`–`(FS14)` was already formalized.
+
+### Why `(5.2)` cannot be cheapened
+
+- No pointwise cancellation in `P₁`.  `log P₁ = 1.1 log log x`, so cancellation in `∑_{p ≍ P₁}p^{-it}`
+  uniformly for `|t| ≤ T ≍ √x` is far outside every zero-free region (Vinogradov–Korobov needs
+  `log P ≫ (log X)^{2/3+δ}`).
+- No gain from the mean value theorem on the product.  `P₁P` has length `P₁R ≍ √x(log x)^{0.55} ≫ T`,
+  so the mean value theorem is diagonal-dominated and returns `≍ 1/(log P₁ log R)`, which is *worse*
+  than `max|P₁|²·∫|P|²`.
+- Shrinking the dyadic range does not help: the mean value theorem's `N∑|a_n|²` term is independent
+  of the block length once the block is shorter than the polynomial.
+
+So `(5.2)` genuinely requires a mean value theorem with a saving beyond the diagonal — Watt's
+theorem, Deshouillers–Iwaniec, or Heath-Brown's mean value theorem for *sparse* Dirichlet
+polynomials, which is the tool the paper's abstract singles out as its innovation.
+
+### Consequence for the Lean plan
+
+The card's remaining gate is now a single named estimate rather than "the all-interval theorem":
+
+```text
+(5.2)   ∫_{T₀}^{T} |P₁(1+it)P(1+it)|² dt  ≪  (T h/x)·(log x)^{-2-ε/10} .
+```
+
+Everything else on the route — the Perron short-interval formula
+(`Sieve/PerronShortInterval.norm_sum_Icc_sub_sum_Icc_sub_perronInterval_le`, already unconditional
+and sharp), the mean value theorem (`Sieve/GallagherAlmostDiagonal`), and `(FS7)`
+(`Sieve/DyadicPrimeMeanSquare`) — is corpus-owned.  The next milestone in this lane is therefore
+Heath-Brown's sparse mean value theorem, not another perturbative layer.
+
+This numerology is my own derivation from the card's parameters and the paper's stated `(5.2)`; the
+paper's Section 7 was not retrievable, so the constant bookkeeping above should be re-derived
+against the source before it is relied on in a write-up.

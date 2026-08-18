@@ -28,8 +28,9 @@ Target cards:
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, dependency audit complete
 - [ ] 1 → 2 fully-proven: not applicable; six source cards already carry complete paper proofs
-- [ ] 2 → 3 formalized: concrete unconditional Lean capstones, `lake build` green, lint and axiom
-  audits pass
+- [x] 2 → 3 formalized: concrete unconditional Lean capstones, `lake build` green, lint and axiom
+  audits pass — ALL SIX target cards are now in
+  `3-formalized/new_scientific_knowledge/constrained-prolate/` (see the closing log entry)
 - [ ] 3 → 4 publication-ready: outside current goal
 
 ## Approach
@@ -440,3 +441,70 @@ projective/trace-class/determinant consequences.
   `Classical.choice`, and `Quot.sound`.  This closes the actual ground-spectrum upper bound to
   within one logarithm of Fuchs's sharp prefactor; matching lower bound, logarithm removal, and
   fixed higher-mode identification remain open.
+
+## CLOSED — all six target cards are at stage 3
+
+The last three of the six, `constrained-prolate-two-mode-ground-state`,
+`constrained-prolate-fixed-mode-spectral-ladder` and
+`constrained-prolate-fourier-parity-floor-separation`, are now in
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/constrained-prolate/`.  The other three
+were promoted earlier.
+
+### What the last step actually was
+
+Not the analytic bottleneck this card predicted.  By the time the three spectral cards were audited
+again, the two "true-operator inputs" they were gated on had already been discharged
+unconditionally, for the actual `P_a F P_a` block:
+
+```text
+tendsto_norm_evenProlateConstraintCoord_atTop            ell_j(lambda) -> |h_{4j}(0)|
+tendsto_norm_evenProlateConstraintCoord_negative_atTop   ell_j(lambda) -> |h_{4j+2}(0)|
+ladderEnvelope_evenProlateSignedLeakage                  the Fourier-even leakage ladder
+ladderEnvelope_evenProlateSignedLeakage_negative         the Fourier-odd leakage ladder
+exists_bound_signedLeakage_ratio_power                   d_m <= C c^{-2(n-m)} d_n, the sharp power
+```
+
+The Fuchs identification was not formalized and is not needed: the ladder interface consumes only
+nonnegativity, monotonicity, a strict step, a vanishing consecutive ratio and a vanishing
+aperture-weighted tail — no sharp constant `A_n` and no matching two-sided power.
+
+What was genuinely missing was the **operator bridge**: every law was a theorem about the secular
+formulation, and none of it had been instantiated at the compression of `B_lambda = I − T_lambda²`
+to the zero-integral hyperplane.  The closing session built it.
+
+### New modules
+
+```text
+RHTower/ProlateSectorGroundLaws.lean          uniqueness of the constrained ground value; the
+                                              two-mode and parity floor laws in operator form
+RHTower/ProlateSectorDepthSpectrum.lean       the depth-k bridge: coordinate extraction from a
+                                              constrained sector eigenvector, the depth-k converse,
+                                              the depth-k eigenvector, existence and uniqueness of
+                                              the constrained eigenvalue in every gap
+RHTower/ProlateSectorSpectralGap.lean         Rayleigh value = eigenvalue; ground floor over the
+                                              whole constrained spectrum; the dichotomy
+                                              "ground value or at least d_1"; the quantified gaps
+RHTower/ProlateNegativeTrueFamilyDistanceRate.lean
+                                              the odd-sector O(lambda^{-7}) eigenvector rate, in
+                                              coordinates and at the operator
+RHTower/ProlateConstrainedOperatorLaws.lean   mu_+, mu_-, mu_k named as operator quantities, and
+                                              every card law restated with no hypotheses
+```
+
+All wired into `GaloisForLFunctions.RHTower`, warning-free, axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+### Two corrections worth keeping
+
+1. **The recorded operator gap statements were vacuous.**
+   `eventually_sectorConstrainedEigen_gap_positive` / `_negative` quantify over competing
+   constrained eigenvalues *inside the first spectral gap*, where the secular root is unique — so
+   their hypotheses are contradictory.  The cards' `(6)`--`(7)` and `(10)` are about the *next*
+   constrained eigenvalue, which sits in the next gap.  The repair is the dichotomy
+   `eventually_sectorConstrainedEigen_dichotomy_positive`: every constrained sector eigenvalue is
+   either the ground value or at least `d_1`.  It needs no new analysis — testing the weak
+   compressed equation against the eigenvector itself makes its Rayleigh value its own eigenvalue.
+2. **The parity card's eigenvector rate was mis-attributed** to the parent card's `(4)`, which is
+   the *even* sector.  The odd-sector rate is now proved in its own right, and the same sharp
+   leakage ratio at `n − m = 2` (corpus signed indices `3` and `5`) supplies the same
+   `lambda^{-7}`.

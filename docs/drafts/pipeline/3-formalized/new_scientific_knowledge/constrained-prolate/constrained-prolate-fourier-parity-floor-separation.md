@@ -1,603 +1,363 @@
-# The vanishing-integral prolate ground state selects the CCM two-mode seed
+# The constrained prolate floor selects positive Fourier parity
 
-- **ID:** `constrained-prolate-two-mode-ground-state`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`, provisional pending
-  independent proof and literature review; `[NOT AN RH PROOF]`
-- **Parent sources:** Connes--Consani--Moscovici, *Zeta Spectral Triples*, Sections 7--8;
-  Fuchs, *On the eigenvalues of an integral equation arising in the theory of band-limited signals*
-- **Statement:** The exact minimum-leakage unit prolate function in the positive even
-  compressed-Fourier sector with vanishing integral converges to the Connes--Consani--Moscovici
-  `h_(0,lambda)`--`h_(4,lambda)` seed at rate `O(lambda^(-7))`; its leakage is asymptotic to
-  `8/11` of the `h_(4,lambda)` leakage, and its constrained spectral gap is at least a fixed
-  positive multiple of that leakage.
-
-## Result in context
-
-Connes--Consani--Moscovici define
-
-```text
-k_lambda=E(h_lambda),
-```
-
-where `h_lambda` is the unique vanishing-integral combination of the prolate modes of indices zero
-and four, `h_(0,lambda),h_(4,lambda)`. They call `k_lambda` an educated guess for the true lowest
-Weil eigenvector and leave its comparison with that eigenvector as the main analytic obstacle.
-
-The theorem below does not prove that comparison. It proves a prior statement that was also absent:
-the seed `h_lambda` is asymptotically selected by an exact constrained time--frequency variational
-problem, rather than by an arbitrary two-mode truncation. It also provides the quantitative surrogate
-gap required by any later prolate-to-Weil transfer theorem.
-
-The repository's compact-detector theorem shows why this is the relevant regime. Compact
-fixed-aperture strict-margin Weil families cannot detect every remote off-line quartet. The optimizer
-here escapes through both permitted channels: its support grows with `lambda`, and its leakage tends
-to zero exponentially, so it approaches the prolate radical.
-
-The global radical source space also imposes `f(0)=0`. The finite-aperture theorem
-`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-restricted-summation-aperture-gauge.md`
-shows that this additional scalar condition is gauge at
-the level of `k_lambda`: it can be imposed by an invisible central bump without changing
-`R_lambda E(f)`. Endpoint regularity and the lower Poisson tail remain genuine, separate issues.
+- **ID:** `constrained-prolate-fourier-parity-floor-separation`
+- **Stage:** 3 — formalized in Lean 4
+- **Type:** THEOREM (paper) / THEOREM (Lean)
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`, provisional pending
+  independent proof audit; `[NOT AN RH PROOF]`
+- **Parent:** `constrained-prolate-two-mode-ground-state.md` and Fuchs fixed-index asymptotics
+- **Statement:** After imposing the zero-integral constraint, the positive compressed-Fourier
+  prolate floor is asymptotically lower than the negative compressed-Fourier floor by a factor of
+  order `lambda^(-4)`. The two floors are selected respectively by the `h_0-h_4` and `h_2-h_6`
+  Hermite contrasts.
 
 ## Setup
 
-Let `F` be the unitary additive Fourier transform on `L2(R)` in the convention
+Let `T_lambda=P_lambda F P_lambda` on the real even subspace of
+`L2([-lambda,lambda])`, with the Fourier convention of the CCM cards. Write
 
 ```text
-Ff(y)=integral_R f(x) exp(2*pi*i*x*y) dx,
+T_lambda h_(n,lambda)=sigma_n chi_n(lambda)h_(n,lambda),
+sigma_n=(-1)^(n/2),
+0<chi_n(lambda)<1                                      (1)
 ```
 
-and let `P_lambda` be multiplication by the indicator of `[-lambda,lambda]`. Work in the real even
-subspace of `P_lambda L2(R)`. The compact self-adjoint operator
+for even `n`. Put
 
 ```text
-T_lambda=P_lambda F P_lambda
+d_n(lambda)=1-chi_n(lambda)^2.                         (2)
 ```
 
-has normalized real prolate eigenfunctions `h_(n,lambda)`. On indices divisible by four,
+The positive and negative compressed-Fourier sectors are
 
 ```text
-T_lambda h_(4j,lambda)=chi_(4j)(lambda) h_(4j,lambda),
-1>chi_0>chi_4>chi_8>...>0.
+H_lambda^+=closure span{h_(4j,lambda):j>=0},
+H_lambda^-=closure span{h_(4j+2,lambda):j>=0}.         (3)
 ```
+
+In each sector compress the leakage operator `B_lambda=I-T_lambda^2` to the zero-integral
+hyperplane. Denote the resulting ground eigenvalues by
+
+```text
+mu_+(lambda),  mu_-(lambda).                           (4)
+```
+
+## Theorem
+
+As `lambda->infinity`,
+
+```text
+mu_+(lambda)/d_4(lambda) ->8/11,                       (5)
+mu_-(lambda)/d_6(lambda) ->8/13.                       (6)
+```
+
+If `A_n>0` are the Fuchs constants
+
+```text
+d_n(lambda)
+ ~A_n lambda^(2n+1)exp(-4*pi*lambda^2),                (7)
+```
+
+then
+
+```text
+mu_+(lambda)/mu_-(lambda)
+ ~[13 A_4/(11 A_6)]lambda^(-4) ->0.                   (8)
+```
+
+Consequently, for all sufficiently large `lambda`,
+
+```text
+mu_+(lambda)<mu_-(lambda),
+mu_-(lambda)-mu_+(lambda)~mu_-(lambda).                (9)
+```
+
+The negative-sector ground is simple. If `nu_-(lambda)` is its next constrained eigenvalue, then
+
+```text
+liminf_(lambda->infinity)
+  [nu_-(lambda)-mu_-(lambda)]/d_6(lambda)>=5/13.       (10)
+```
+
+After a choice of sign, its normalized source eigenvector converges at rate `O(lambda^(-7))` to
+the normalized zero-integral `h_2-h_6` Hermite contrast.
+
+## Proof
+
+Equation `(5)` and the corresponding positive-sector simplicity are
+`constrained-prolate-two-mode-ground-state.md`. It remains to prove `(6)` and compare the scales.
+
+### 1. Negative-sector secular equation
 
 Put
 
 ```text
-H_lambda^+=closure span{e_j:j>=0},
-e_j=h_(4j,lambda),
-B_lambda=I-T_lambda^2,
-d_j=1-chi_(4j)(lambda)^2,
-ell_j=integral_R e_j(x) dx.
+e_j=h_(4j+2,lambda),
+delta_j=d_(4j+2)(lambda),
+ell_j=integral_R e_j(x)dx.                             (11)
 ```
 
-Thus `B_lambda e_j=d_j e_j`, with
+Evaluation of `(1)` at zero gives
 
 ```text
-0<d_0<d_1<d_2<...<1,   d_j -> 1.
+ell_j=-chi_(4j+2)(lambda)e_j(0).                       (12)
 ```
 
-For a supported unit vector, `<B_lambda f,f>` is exactly the Fourier energy leaking outside
-`[-lambda,lambda]`. Evaluation of the compressed Fourier eigenvalue equation at zero gives
+The integral functional is bounded on the supported Hilbert space, so
 
 ```text
-ell_j=chi_(4j)(lambda)e_j(0).                            (1)
+sum_(j>=0)ell_j^2<=2lambda.                            (13)
 ```
 
-The integral functional is bounded on `P_lambda L2(R)`. Its Riesz vector in `H_lambda^+` has
-coordinates `ell=(ell_j)`, and Bessel's inequality gives
+On the hyperplane `ell^perp`, a constrained eigenvector with eigenvalue `mu` has coordinates,
+up to a common scalar,
 
 ```text
-sum_(j>=0) ell_j^2 <= ||1_[-lambda,lambda]||_2^2=2*lambda. (2)
+v_j=ell_j/(delta_j-mu),                                (14)
 ```
 
-Let
+and hence satisfies
 
 ```text
-M_lambda={f in H_lambda^+: integral_R f=0}=ell^perp.
+F_-(mu)=sum_(j>=0)ell_j^2/(delta_j-mu)=0.              (15)
 ```
 
-The normalized CCM two-mode seed is
+The function is strictly increasing between consecutive poles. In particular it has exactly one
+root `mu_-` in `(delta_0,delta_1)`, and that root is simple.
+
+### 2. Hermite constraint coordinates
+
+For the normalized Hermite functions in this Fourier convention,
 
 ```text
-g_lambda
- = (ell_1 e_0-ell_0 e_1)/sqrt(ell_0^2+ell_1^2).          (3)
+h_(2m)(0)^2=sqrt(2) binom(2m,m)/4^m.                   (16)
 ```
 
-It is the unique unit vector up to sign in `span{e_0,e_1} intersect M_lambda`.
-
-## Theorem
-
-`[PROVED HERE]` For all sufficiently large `lambda`, the compression of `B_lambda` to `M_lambda`
-has a simple lowest eigenvalue `mu_0(lambda)` with unit eigenvector `v_lambda`, unique up to sign.
-Moreover,
+Prolate-to-Hermite convergence and `(12)` therefore give
 
 ```text
-min_(sigma in {+1,-1}) ||v_lambda-sigma*g_lambda||_2
-  =O(lambda^(-7)),                                      (4)
-
-mu_0(lambda)/d_1(lambda) -> 8/11.                       (5)
+ell_0^2 -> h_2(0)^2=1/sqrt(2),
+ell_1^2 -> h_6(0)^2=5/(8sqrt(2)).                      (17)
 ```
 
-If `mu_1(lambda)` is the next constrained eigenvalue, then
+Thus
 
 ```text
-liminf_(lambda->infinity)
-  (mu_1(lambda)-mu_0(lambda))/d_1(lambda) >= 3/11.       (6)
+ell_0^2/(ell_0^2+ell_1^2)->8/13.                      (18)
 ```
 
-In particular, for every `c<3/11`,
+### 3. The infinite tail is lower order
+
+Fuchs' asymptotic `(7)` gives
 
 ```text
-mu_1(lambda)-mu_0(lambda) >= c*d_1(lambda)               (7)
+delta_0/delta_1=O(lambda^(-8)),
+delta_1/delta_2=O(lambda^(-8)).                        (19)
 ```
 
-for all sufficiently large `lambda`.
-
-The exponent `7` in (4) is a safe rate obtained from a global Bessel bound on the infinite tail; no
-optimality is claimed.
-
-## Proof
-
-### 1. Fixed-mode prolate scale separation
-
-Fuchs' fixed-index asymptotic, in the normalization used by Connes--Consani--Moscovici, implies that
-for each fixed nonnegative integer `n` there is a constant `A_n>0` such that
+The zero of the first two terms of `(15)` is
 
 ```text
-1-chi_n(lambda)^2
-  ~ A_n lambda^(2*n+1) exp(-4*pi*lambda^2).              (8)
+mu_2
+ =(ell_0^2 delta_1+ell_1^2 delta_0)
+   /(ell_0^2+ell_1^2).                                 (20)
 ```
 
-Some statements of the Fuchs formula use the concentration eigenvalue `chi_n^2`, while CCM quote it
-for the positive compressed-Fourier eigenvalue `chi_n`. Passing between them uses
-`1-chi_n^2=(1+chi_n)(1-chi_n)` and only changes the positive leading constant. The powers and all
-ratios below are unchanged.
-
-Applying (8) at `n=0,4,8` gives
+For `mu in (delta_0,delta_1)`, `(13)` and `(19)` give
 
 ```text
-d_0/d_1=O(lambda^(-8)),
-d_1/d_2=O(lambda^(-8)),
-d_2-d_1 ~ d_2.                                          (9)
+0<sum_(j>=2)ell_j^2/(delta_j-mu)
+ <=2lambda/(delta_2-delta_1).                          (21)
 ```
 
-The prolate-to-Hermite estimate used in CCM gives `e_0(0)->h_0(0)` and `e_1(0)->h_4(0)`. Together
-with (1) and `chi_0,chi_4->1`, this yields
+The derivative of the two-pole part of `(15)` is bounded below by `c delta_1^(-2)` on the interval
+between `mu_-` and `mu_2`. The mean value theorem therefore yields
 
 ```text
-ell_0 -> a_0=2^(1/4),
-ell_1 -> a_1=sqrt(3)/2^(5/4).                            (10)
+0<=mu_2-mu_-
+ <=C lambda delta_1^2/(delta_2-delta_1),
+(mu_2-mu_-)/delta_1=O(lambda^(-7)).                    (22)
 ```
 
-In particular, `ell_0,ell_1` are bounded above and bounded away from zero for large `lambda`, and
+Equations `(18)`--`(20)` and `delta_0/delta_1->0` prove `(6)`.
+
+The same coordinate formula `(14)` shows that the tail-to-head norm ratio is
 
 ```text
-a_0^2/(a_0^2+a_1^2)=8/11.                               (11)
+O(sqrt(lambda)delta_1/delta_2)=O(lambda^(-15/2)),      (23)
 ```
 
-### 2. The first constrained eigenvalue is a secular root
+while `(22)` changes the normalized first-two direction by `O(lambda^(-7))`. This proves the stated
+source-vector convergence.
 
-Let `C_lambda` be the compression of `B_lambda` to `M_lambda`. Since `B_lambda=I-T_lambda^2` and
-`T_lambda^2` is compact, `C_lambda` is the identity on `M_lambda` minus a compact self-adjoint
-operator. Its spectrum below `1` is discrete.
-
-The two-dimensional trial vector (3) has Rayleigh quotient
-
-```text
-mu_2mode
- = (ell_0^2*d_1+ell_1^2*d_0)/(ell_0^2+ell_1^2),         (12)
-```
-
-which lies strictly between `d_0` and `d_1` for large `lambda`. Hence `C_lambda` has an eigenvalue
-below `d_1`.
-
-If `v` is a constrained eigenvector with eigenvalue `mu` in `(d_0,d_1)`, then
-
-```text
-B_lambda v-mu*v in span{ell}.
-```
-
-Because `B_lambda-mu` is invertible, its coordinates are, up to one common nonzero scalar,
-
-```text
-v_j=ell_j/(d_j-mu).                                     (13)
-```
-
-The constraint `<v,ell>=0` is therefore the secular equation
-
-```text
-F(mu):=sum_(j>=0) ell_j^2/(d_j-mu)=0.                   (14)
-```
-
-The series and its derivative converge locally uniformly in `(d_0,d_1)`: for `j>=2`, the
-denominators are uniformly separated from zero and `(ell_j)` is square summable by (2). The function
-`F` is strictly increasing, tends to `-infinity` as `mu` decreases to `d_0`, and tends to `+infinity`
-as `mu` increases to `d_1`. It has exactly one root `mu_0` in this interval. Formula (13) makes its
-eigenspace one-dimensional. This proves existence and simplicity of the constrained ground state;
-codimension-one min--max interlacing also gives `d_0<=mu_0<=d_1`, so no lower constrained
-eigenvalue was omitted.
-
-### 3. The infinite tail moves the two-mode root by only `O(lambda^(-7))` relatively
-
-Write
-
-```text
-F_2(mu)=ell_0^2/(d_0-mu)+ell_1^2/(d_1-mu),
-R(mu)=sum_(j>=2) ell_j^2/(d_j-mu).
-```
-
-The unique zero of `F_2` in `(d_0,d_1)` is exactly `mu_2mode` from (12). Since `R(mu)>0`,
-
-```text
-mu_0<mu_2mode.                                           (15)
-```
-
-For `mu in (d_0,d_1)`, (2) and (9) give
-
-```text
-0<R(mu)<=2*lambda/(d_2-d_1).                            (16)
-```
-
-On `(d_0,mu_2mode)`, (10) and the fact that both denominators have magnitude at most `d_1` give
-
-```text
-F_2'(mu)
- =ell_0^2/(d_0-mu)^2+ell_1^2/(d_1-mu)^2
- >= c_0*d_1^(-2)                                       (17)
-```
-
-with a constant `c_0>0`. Since `F_2(mu_0)=-R(mu_0)` and `F_2(mu_2mode)=0`, the mean value theorem,
-(16), and (17) yield
-
-```text
-0<=mu_2mode-mu_0
- <= C*lambda*d_1^2/(d_2-d_1)
- =O(lambda*d_1^2/d_2).                                  (18)
-```
-
-Consequently,
-
-```text
-(mu_2mode-mu_0)/d_1
- =O(lambda*d_1/d_2)=O(lambda^(-7)).                     (19)
-```
-
-Equations (9), (10), and (12) show
-
-```text
-mu_2mode/d_1 -> a_0^2/(a_0^2+a_1^2)=8/11.
-```
-
-Combining this with (19) proves (5).
-
-### 4. The constrained ground vector is asymptotically two-mode
-
-Use the unnormalized coordinates (13) at `mu=mu_0`. The squared norm of their tail satisfies
-
-```text
-sum_(j>=2) ell_j^2/(d_j-mu_0)^2
- <=2*lambda/(d_2-d_1)^2.                                (20)
-```
-
-The squared norm of the first two coordinates is at least `c_1*d_1^(-2)` by (10). Therefore the
-tail-to-head norm ratio is
-
-```text
-O(sqrt(lambda)*d_1/d_2)=O(lambda^(-15/2)).               (21)
-```
-
-At `mu=mu_2mode`, the first two coordinates in (13) are proportional to
-
-```text
-(-ell_1,ell_0),
-```
-
-which is the negative of the coefficient vector in (3). More explicitly, the ratio of the second
-coordinate to the first is
-
-```text
-rho(mu)=(ell_1/ell_0)*(d_0-mu)/(d_1-mu).
-```
-
-Equations (5), (10), and (11) show that throughout the interval from `mu_0` to `mu_2mode`, both pole
-distances are comparable to `d_1`. Hence `|rho'(mu)|=O(d_1^(-1))`; normalization of a two-coordinate
-vector with bounded ratio is Lipschitz there. Equation (19) therefore gives
-
-```text
-distance(first-two direction at mu_0, first-two direction at mu_2mode)
- =O((mu_2mode-mu_0)/d_1)
- =O(lambda^(-7)).                                       (22)
-```
-
-Combining (21) and (22), and choosing the sign of `v_lambda`, proves (4).
-
-### 5. The constrained spectral gap
+### 4. Negative-sector gap and parity separation
 
 Codimension-one min--max interlacing gives
 
 ```text
-d_0<=mu_0<=d_1<=mu_1<=d_2.                              (23)
+delta_0<=mu_-<=delta_1<=nu_-.
 ```
 
-The upper bound `mu_1<=d_2<1` can also be seen by intersecting
-`span{e_0,e_1,e_2}` with `M_lambda`, which leaves a two-dimensional trial space. Thus `mu_1` is a
-discrete constrained eigenvalue rather than the essential value `1`.
+Together with `(6)`, this proves `(10)`. Finally `(5)`--`(7)` give `(8)`, and `(9)` follows.
 
-Using `mu_1>=d_1` from (23) and (5),
+## CCM interpretation
+
+Positive and negative compressed-Fourier sources produce, up to their exterior Fourier leakage,
+the inversion-even and inversion-odd aperture vectors used by Connes--Consani. The theorem therefore
+supplies a positive source-level asymptotic parity selector:
 
 ```text
-liminf (mu_1-mu_0)/d_1 >= 1-8/11=3/11,
+zero-integral prolate concentration
+  -> positive-Fourier/inversion-even floor
+     lower than the negative-Fourier/inversion-odd floor
+     by a factor asymptotic to C lambda^(-4).           (24)
 ```
 
-which proves (6) and (7). This completes the proof.
-
-## What is standard and what is claimed
-
-- `[SEARCH]` The unconstrained prolate concentration problem and its diagonalization by prolate
-  spheroidal functions.
-- `[SEARCH]` Fuchs' fixed-index exponentially small concentration deficits.
-- `[SEARCH]` Projection of a Rayleigh quotient to the nullspace of linear constraints, secular
-  equations for a rank-one constraint, and codimension-one eigenvalue interlacing.
-- `[SEARCH]` CCM's construction of the unique two-mode vanishing-integral seed and their
-  prolate-to-Hermite convergence estimate.
-- `[PROVED HERE]` The infinite-dimensional tail estimate (18)--(22) specialized to the prolate
-  fixed-index hierarchy.
-- `[PROVED HERE]` Canonical variational selection of the CCM seed with rate `O(lambda^(-7))`.
-- `[PROVED HERE]` The exact limit `mu_0/d_1->8/11` and the asymptotic constrained-gap lower bound
-  `3/11`.
+This does not yet prove that the true restricted Weil ground is even. The live transfer theorem is
+now sharply positive: a bilinear radial-prolate Weil-tail comparison preserving the parity-floor
+ratio `(8)` automatically supplies cofinal even dominance, while a relative form estimate within
+the positive sector supplies simplicity and the determinant seed.
 
 ## Novelty and significance audit
 
-### Parent-theory gate
+The local-corpus audit covered the full pipeline, failed cards, formal tree, reports, consolidated
+research, worklogs, and git history. It found:
 
-The general constrained-Rayleigh mechanism is old. Kennedy and Kabal's 1986 maximum-energy window
-paper, for example, reduces prescribed spectral values and nulls to a projected concentration
-operator. That parent does not supply the continuous fixed-aperture asymptotic proved here, identify
-the `h_0`--`h_4` pair, control the infinite prolate tail, or derive the constants `8/11` and `3/11`.
+- Connes--Consani already construct both sign families of raw prolate contrasts and numerically
+  compare the negative-sign/odd family, whose first Hermite limit is of `h_2-h_6` type, with the odd
+  Weil matrix. That family is parent input, not novelty.
+- `constrained-prolate-two-mode-ground-state.md` and
+  `constrained-prolate-fixed-mode-spectral-ladder.md` prove the exact constrained variational theory
+  only in the positive `4j` sector.
+- The semilocal all-even Jacobi--prolate residue tower is a different Route-B operator lane and does
+  not contain the present compressed-Fourier constraint problem.
+- No prior local claim gives the negative-sector constrained floor, `8/13`, the `5/13` gap, or the
+  cross-sector ratio `(8)`.
 
-### Literature gate through July 2026
+The external search through July 2026 likewise found classical unconstrained PSWF eigenvalue
+asymptotics, general concentration bounds, and the CCM raw odd family, but no theorem with these
+variational constants. The proof is not a restatement of Fuchs: Fuchs supplies the diagonal scales,
+while the codimension-one secular problem and cross-sector comparison produce the claimed parity
+selection.
 
-Targeted searches covered:
+Provisional significance: **5/10**. The theorem gives a rigorous and falsifiable parity fingerprint
+for the CCM source model and a polynomially strong even/odd separation. Its RH significance depends
+entirely on the still-open bilinear transfer to the true Weil form.
 
-1. the CCM papers and their cited prolate sources;
-2. Groskin's May 2026 high-precision trigonometric-basis Galerkin study, which explicitly says that
-   no prolate-basis implementation has yet been reported and supplies numerical rather than analytic
-   convergence evidence;
-3. continuous and discrete linearly constrained Slepian concentration;
-4. zero-mean, zero-DC, prescribed spectral-null, and moment-constrained prolate windows;
-5. constrained Rayleigh quotients, rank-one secular equations, and interlacing; and
-6. exact searches for the `h_0`--`h_4` vanishing-integral combination and the constants in (5)--(6).
+## References
 
-No equivalent theorem or stronger quantitative result was located. The closest direct parent is the
-general constrained-window formulation, while the closest RH parent is CCM itself, which still calls
-the two-mode seed an educated guess and does not give it a variational characterization or a gap.
-The novelty label therefore passes provisionally and remains subject to independent specialist
-review.
-
-### Rediscovery gate
-
-The theorem is not the generic fact that a linearly constrained Rayleigh quotient is a compressed
-eigenproblem. Its non-parent content is the uniform asymptotic consequence of three interacting
-facts: the zero-integral constraint has nonzero limiting coordinates on modes `0` and `4`, successive
-positive-sign fixed-mode leakage scales differ by `lambda^8`, and the complete remaining constraint
-vector has only the global mass bound (2). Those facts force the exact full constrained eigenvector,
-not a truncated model, into the CCM two-mode direction and determine the rational constant `8/11`.
-
-### Significance gate
-
-Passed provisionally, at a moderate rather than decisive level. The result removes the arbitrariness
-of the prolate seed and supplies an explicit surrogate gap. It does not compare the prolate leakage
-operator with the Weil operator, does not prove simplicity of the true Weil ground state, and does
-not establish convergence of its determinant to `Xi`. It advances one necessary input to the stated
-CCM program but leaves the principal analytic bridge open.
-
-## Exact remaining Connes-route core
-
-There are two independent cutoffs: the arithmetic aperture `X=lambda^2` and the Galerkin dimension
-`M`. For every finite pair for which the CCM lowest-eigenvalue hypothesis holds, the associated
-determinant has real zeros in the spectral variable. In the zeta variable `s=1/2+iz`, its zeros
-therefore lie exactly on `Re(s)=1/2`. Consequently the prime-clock energy on those zero fibers is
-identically zero. The metric gate in the formalized logarithmic-boundary transfer theorem is
-automatic for this family; finite self-adjointness supplies that gate but not the analytic gate.
-
-The terminal CCM obligation is to choose a cofinal diagonal `M=M(X)`, normalize the determinants so
-that the limit is nonzero, and prove locally uniform convergence to `Xi`. This is the missing
-divisor-carrying statement. It must simultaneously justify the fixed-aperture Galerkin limit and
-the growing-aperture limit.
-
-Let `A_lambda` denote the true continuous Weil operator in the CCM normalization and let
-`r_lambda=<A_lambda g_lambda,g_lambda>`. One possible producer of the required analytic convergence
-is an estimate strong enough to compare the true Weil ground vector with `g_lambda`. A sufficient
-Davis--Kahan-type input is a form-residual estimate
-
-```text
-||(A_lambda-r_lambda)g_lambda||
-  =o(Gap_lambda),                                        (24)
-```
-
-where `Gap_lambda` is a rigorously established separation above the lowest Weil eigenvalue. The
-prolate theorem proves the corresponding surrogate separation but does not identify
-`Gap_lambda` for `A_lambda`.
-
-Because the supports grow and the vectors approach the radical, ordinary fixed-support norm control
-is not enough for the final determinant statement. The transfer must retain the weighted or
-projective control needed for locally uniform Mellin-transform convergence on every closed substrip
-of `|Im z|<1/2`. This is the analytic gate. Once it is proved for a cofinal CCM family whose finite
-zeros are real, the metric defect is zero and the formalized boundary-transfer theorem yields RH.
-The Davis--Kahan route is only one possible way to produce this convergence; a direct normal-family,
-de Branges, or log-derivative argument would also suffice if it carries the full divisor.
+- W. H. J. Fuchs, *On the eigenvalues of an integral equation arising in the theory of band-limited
+  signals*, J. Math. Anal. Appl. 9 (1964), 317--330.
+- A. Connes, C. Consani, *Spectral triples and zeta-cycles*, arXiv:2106.01715.
+- A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
 
 ## Lean decision
 
-`formal/GaloisForLFunctions/RHTower/ConstrainedProlateOperator.lean` now constructs the concrete
-operator layer on the project's actual Fourier `L2` model. It proves that `P_a F P_a` preserves the
-even carrier, is compact and self-adjoint, and that its concentration and leakage operators are
-positive. The constrained carrier is exactly the intersection of the time-limited range of `P_a`
-with the orthogonal complement of the central indicator; Lean proves this is equivalent to being
-fixed by `P_a` and having integral zero. The compressed leakage is positive, is identity minus a
-compact operator, and has quadratic form
-`||f||^2-||P_a F P_a f||^2`. These theorems are unconditional.
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateOperator.lean` now supplies the concrete
+compressed Fourier, concentration, leakage, and zero-integral constrained operators.
+`ProlateSecularEquation.lean` supplies the finite secular root and interlacing theorems, while
+`FuchsProlateScale.lean` supplies the exact fixed-index rate model.
 
-`formal/GaloisForLFunctions/RHTower/ConstrainedProlateSignedSpectrum.lean` supplies the actual
-signed compact spectrum of `P_a F P_a`: signed eigen-equations, orthogonality, physical-support
-membership of every nonzero mode, decay of the signed eigenvalues, and the exact squaring relation
-to concentration and leakage. The constrained compression also has unconditional greedy
-concentration/leakage eigenmodes in
-`formal/GaloisForLFunctions/RHTower/ConstrainedProlateConstrainedSpectrum.lean`.
+`formal/GaloisForLFunctions/RHTower/TwoModeFuchsLimit.lean` now formalizes the complete finite
+Fuchs-model parity calculation.  The declarations
+`ccm_negativeSector_twoMode_weight_eq`,
+`ccm_negativeSector_twoMode_ground_leakage_ratio`, and
+`ccm_negativeSector_twoMode_ground_gap_ratio` prove the exact `8/13` ground and complementary
+`5/13` gap limits for the `h_2`--`h_6` contrast, while
+`ccm_negativeSector_twoMode_ground_gap_eventually_ge` proves the corresponding unnormalized
+eventual lower bound for every constant below `5/13`.  The declaration
+`ccm_twoMode_parity_floor_ratio_tendsto_zero` combines these with the positive-sector `8/11` law
+and the exact Fuchs index separation to prove that the positive two-mode floor divided by the
+negative two-mode floor tends to zero.  Its quantified form
+`ccm_twoMode_parity_floor_eventually_lt_mul` proves that for every `c>0`, the positive floor is
+eventually strictly below `c` times the negative floor.  The sharper declaration
+`ccm_twoMode_parity_floor_scaled_ratio` proves the exact rescaled limit
+`lambda^4 mu_+(lambda)/mu_-(lambda) -> 13 A_4/(11 A_6)`.  All declarations are unconditional and
+axiom-clean.
 
-The rank-one **secular equation** at the heart of §2 — that a constrained eigenvalue `μ ∈ (d_0, d_1)`
-has coordinates `v_j = ℓ_j/(d_j − μ)` and solves `F(μ) = ∑_j ℓ_j²/(d_j − μ) = 0`, with `F` strictly
-increasing on any pole-free interval, hence at most one root there — is formalized axiom-clean in
-`GaloisForLFunctions.ProlateSecularEquation`: `secular_strictMonoOn` (strict monotonicity of `F` on
-`(a,b)` when every pole `d_j ∉ (a,b)` and some `ℓ_{j₀} ≠ 0`) and `secular_root_unique` (the
-constrained ground eigenvalue, where it exists, is simple).  This is the exact "Formula (13) makes
-its eigenspace one-dimensional; `F` is strictly increasing … exactly one root" step, proved for the
-full (arbitrary index set) constraint, not a finite-matrix shadow.  **Existence** of the constrained
-ground eigenvalue is also formalized: `secular_exists_root` proves that for consecutive poles
-`d a₀ < d b₀` (nothing strictly between, both with `ℓ ≠ 0`) the secular equation has a root in
-`(d a₀, d b₀)`, via the pole limits `F(μ) → ∓∞` at the endpoints (`tendsto_const_div_sub_atBot/atTop`)
-and the intermediate value theorem.  Together with `secular_root_unique` this gives the card's
-"`C_λ` has a simple lowest eigenvalue `μ_0` in `(d_0, d_1)`" — existence and simplicity — without any
-Fuchs/Hermite input.  The **two-mode trial value**
-(eq. 12) is also formalized exactly: `twoModeSecularRoot d₀ d₁ ℓ₀ ℓ₁ = (ℓ₀²d₁+ℓ₁²d₀)/(ℓ₀²+ℓ₁²)`
-with `twoModeSecularRoot_mem_Ioo` (it lies strictly in `(d₀,d₁)`, so `C_λ` has an eigenvalue below
-`d₁`) and `twoModeSecular_eq_zero` (it is the exact root of the two-mode secular equation
-`ℓ₀²/(d₀−μ)+ℓ₁²/(d₁−μ)=0`, i.e. `μ_2mode`).  The headline **constant `8/11`** (eq. 11) is formalized
-by `ccm_groundState_weight_eq`: `a₀²/(a₀²+a₁²) = 8/11` for the prolate-to-Hermite limits
-`a₀ = 2^{1/4}`, `a₁ = √3·2^{−5/4}` — the value `μ_0(λ)/d_1(λ)` converges to in (5).
+The **passage to the exact infinite-dimensional constrained optimizers is now formalized** for
+the Fuchs-rate model in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateParityExactTransfer.lean`, on top of the
+uniform infinite-tail secular estimate of `ConstrainedProlateInfiniteSecular.lean`.  The
+negative-sector Hermite weight `8/13` and complement `5/13` are evaluated exactly from
+`h_2(0)² = 1/√2`, `h_6(0)² = 5/(8√2)` (`ccm_negativeSector_hermite_weight_eq` and its
+complement).  The offset radial Fuchs family `d_j = M_j λ^{8j+5}e^{−4πλ²}` (indices `4j+2`) is
+proved to satisfy the ordered-triple-with-floor structure and the `λ·d_1/(d_2−d_1) → 0` tail rate
+(`fuchsRate_radial_offset2_struct`, `fuchsRate_step4_tail_ratio_tendsto_zero` — the latter for
+every base index).  Consequently, for the exact infinite constrained ground roots (not two-mode
+truncations):
 
-`formal/GaloisForLFunctions/RHTower/TwoModeFuchsLimit.lean` goes one step further.  Under the exact
-Fuchs-rate model it proves `twoModeSecularRoot_fuchs_ratio_tendsto` for arbitrary increasing fixed
-indices, then specializes it to the CCM pair as `ccm_twoMode_ground_leakage_ratio` with limit
-`8/11`.  The theorem `ccm_twoMode_ground_gap_ratio` proves the complementary two-mode gap ratio
-`3/11`.  Its quantified corollary `ccm_twoMode_ground_gap_eventually_ge` proves the paper's eventual
-inequality form: every `c<3/11` is, for all sufficiently large apertures, a lower bound for the
-two-mode gap after multiplication by the dominant Fuchs leakage.  These are genuine limit theorems,
-not just arithmetic identities for the limiting weights.
+- `ccm_fuchsModel_negativeSector_root_ratio_tendsto` — `μ_-(λ)/d_6(λ) → 8/13`, eq. `(6)`;
+- `ccm_fuchsModel_negativeSector_gap_ratio_tendsto` — the complementary `5/13` of eq. `(10)`;
+- `ccm_fuchsModel_negativeSector_spectralGap_eventually` — every `c < 5/13` eventually separates
+  all competing secular zeros (the negative-sector simplicity/gap statement);
+- `ccm_fuchsModel_parity_floor_ratio_tendsto_zero` — `μ_+(λ)/μ_-(λ) → 0`, eq. `(9)`;
+- `ccm_fuchsModel_parity_floor_scaled_ratio_tendsto` — `λ⁴μ_+(λ)/μ_-(λ) → 13A_4/(11A_6)`,
+  the sharp form of eq. `(8)`.
 
-The **uniform infinite-tail secular estimate is now formalized**, for the full infinite index
-set, in `formal/GaloisForLFunctions/RHTower/ConstrainedProlateInfiniteSecular.lean`.  The exact
-secular function `F(μ) = Σ_{j≥0} ℓ_j²/(d_j − μ)` (genuinely infinite: head plus `tsum` tail) is
-proved summable, continuous, and strictly increasing on `(d_0, d_1)`; `infiniteSecular_exists_root`
-and `infiniteSecular_root_unique` give the exact constrained ground root `μ_0` (existence by IVT
-below the two-mode value, uniqueness by strict monotonicity — the card's §2 for the true infinite
-problem, not a finite shadow); `infiniteSecularRoot_twoMode_gap` is exactly the card's tail
-estimate `(18)` with the explicit constant `μ_2mode − μ_0 ≤ T·d_1²/(ℓ_0²(d_2 − d_1))`, `T = Σ_{j≥2}ℓ_j²`;
-`infiniteSecular_other_root_ge` proves every competing secular zero is ≥ `d_1` (the interlacing
-`(23)` at secular level).  The family theorem `infiniteSecularRoot_ratio_tendsto` then proves
-`μ_0(λ)/d_1(λ) → a_0²/(a_0²+a_1²)` from the Bessel bound `(2)`, the scale separations, and the
-coordinate limits `(10)` — i.e. the card's §3 in full — and its CCM instances
-`ccm_infiniteSecularRoot_ratio_tendsto` / `_gap_ratio_tendsto` / `_spectralGap_eventually` give
-`8/11`, `3/11`, and the quantified gap `(7)` for the exact optimizer.
-`ConstrainedProlateFuchsModelTransfer.lean` discharges the entire leakage side for the concrete
-Fuchs family `d_j = A_j λ^{8j+1}e^{−4πλ²}` (`fuchsRate_radial_struct`,
-`fuchsRate_radial_tail_ratio_tendsto_zero`, `ccm_fuchsModel_infiniteSecularRoot_*`), assuming only
-`A_j > 0` and the tempered growth `A_2 ≤ C^j A_{j+2}`.  All of this is axiom-clean.
+All are axiom-clean, with the Fuchs constants abstract (positivity plus tempered growth
+`A_2 ≤ C^j A_{j+2}`).  The hypotheses still open for the *true prolate operator* are the ℓ-side
+inputs: square-summability, the Bessel bound `Σℓ² ≤ 2λ`, and the prolate-to-Hermite limits of
+the first two coordinates in each sector — plus Fuchs asymptotics identifying the true leakages
+with the Fuchs family.
 
-`formal/GaloisForLFunctions/RHTower/ConstrainedProlatePointwiseRepresentative.lean` now supplies
-the missing source-side regularity interface for the **actual signed modes**, not a model family.
-Every fixed signed value is eventually nonzero; its greedy mode then has norm exactly one and has a
-canonical even compactly supported pointwise source.  The source is `C^∞` on the open aperture, its
-Fourier representative is globally `C^∞`, and every iterated derivative is the exact Fourier
-transform of the corresponding compact moment.  Lean also proves the literal normalization
-`∫ ‖q_n‖² = 1` and exterior-energy identity
-`∫_{(-∞,-a]∪(a,∞)} ‖Fq_n‖² = 1 - σ_n(a)²`.  These theorems remove all a.e., smoothness, and
-normalization ambiguity before the remaining ODE/mode-identification argument.  They are
-unconditional and axiom-clean.
+The exact normalized eigenvector statement is now formalized in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateParityDistanceCCM.lean`.
+`ccm_tendsto_min_norm_lp_normalize_sub_negativeTwoModeSeed` constructs both the exact secular
+eigenvector and its two-mode `h_2-h_6` seed as literal `lp 2` vectors and proves that the minimum
+of the two squared normalized distances (the two sign choices) tends to zero.  The offset-Fuchs
+ordering, root location, square-summability of the secular vector, nonvanishing, head alignment,
+and `λ·d_6/(d_10-d_6) → 0` tail collapse are all discharged.  Only the same explicit true-prolate
+coordinate hypotheses remain.
 
-The exact secular/Fuchs-model statements `(4)`--`(7)`, including the quantitative eigenvector rate,
-are now formalized below.  What remains for the *true prolate operator* is the classical
-identification layer: positive signed modes with the `4j` numbering, Fuchs fixed-index asymptotics
-for the actual `χ_n(λ)`, and prolate-to-Hermite convergence `ℓ_j → a_j`.  The concrete Bessel bound
-`(2)` is already discharged.
-
-The sign-choice/metric form of `(4)` is now formalized.  The general geometry lives in
-`formal/GaloisForLFunctions/HTGeometry/SignChoiceNormalizedDistance.lean`: for unit vectors
-`min(‖u−w‖², ‖u+w‖²) = 2 − 2|⟪u,w⟫|`, so a vanishing angle *is* a vanishing sign-optimized
-distance, with the explicit rate `‖u − σw‖² ≤ 2ε` for an angle deficit `ε`.
-
-`formal/GaloisForLFunctions/RHTower/ConstrainedProlateHeadDistance.lean` instantiates this in the
-head plane.  Taking the seed direction to be the *explicit* orthogonal vector `(−ℓ₁, ℓ₀)` reduces
-the whole geometric step to the Lagrange identity
-`(x₀ℓ₀+x₁ℓ₁)² + (x₁ℓ₀−x₀ℓ₁)² = (x₀²+x₁²)(ℓ₀²+ℓ₁²)`, so no span or dimension reasoning is needed.
-
-`formal/GaloisForLFunctions/RHTower/ConstrainedProlateFullDistance.lean` assembles head and tail
-in `lp 2`.  Since the seed is supported on the first two coordinates it pairs only with the head,
-giving the factorization
-`⟪V,G⟫²/(‖V‖²‖G‖²) = [⟪H,G⟫²/(‖H‖²‖G‖²)]·[‖H‖²/(‖H‖²+T)]`;
-the first bracket tends to one by the head-defect collapse, the second by the tail-fraction
-collapse together with `‖H‖² ≥ v₀²`.  All of this is axiom-clean.
-
-The quantitative statement `(4)` is now formalized in
+The stronger quantitative rate is now formalized in
 `formal/GaloisForLFunctions/RHTower/ConstrainedProlateFullDistanceRate.lean`.
-`secular_defect_tail_bounds` proves simultaneously that the normalized head defect is at most
-`(16/a₀⁴)(λd₁/(d₂-d₁))²` and the squared tail/head fraction is at most
-`(4/a₀²)(λd₁/(d₂-d₁))²`.  `full_normalized_alignment_ge` transfers these literal infinite-vector
-bounds to full `lp 2` alignment, and `min_norm_sub_normalize_le_of_inner_sq` converts the squared
-alignment loss to the unsquared sign-optimized norm distance.  Finally
-`fuchsRate_step4_tail_ratio_eventually_le` supplies the pointwise bound
-`|λd₁/(d₂-d₁)| ≤ 2(A₁/A₂)λ⁻⁷`.  The capstone
-`ccm_normalized_ground_distance_isBigO` therefore proves exactly
-`min_σ ‖v̂_λ-σĝ_λ‖ = O(λ⁻⁷)` for the literal secular vector and same-aperture two-mode seed.
-No quantitative prolate-to-Hermite convergence rate is used: the coordinate limits only provide
-eventual nonvanishing and a fixed head floor.  Axiom audit: only `propext`, `Classical.choice`, and
-`Quot.sound`.
+`ccmNegative_normalized_ground_distance_eventually_le` gives an explicit pointwise constant, and
+`ccmNegative_normalized_ground_distance_isBigO` proves the literal unsquared sign-optimized
+normalized `lp 2` distance is `O(λ^{-7})`.  This comparison is with the same-aperture two-mode
+`h_2-h_6` seed, so no quantitative prolate-to-Hermite error is required; the coordinate limits are
+used only for eventual nonvanishing and a fixed head floor.  The theorem is axiom-clean (only
+`propext`, `Classical.choice`, and `Quot.sound`).
+
+The exact central binomial evaluations and Hermite floor weight ratios are unconditionally formalized in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateHermiteParityEvaluation.lean`.
+`hermiteOriginSq_zero`, `hermiteOriginSq_one`, `hermiteOriginSq_two`, `hermiteOriginSq_three` prove
+$h_0(0)^2 = \sqrt{2}$, $h_2(0)^2 = \sqrt{2}/2$, $h_4(0)^2 = 3\sqrt{2}/8$, $h_6(0)^2 = 5\sqrt{2}/16$;
+`positive_sector_hermite_floor_ratio_eq` proves the exact positive floor weight $8/11$;
+`negative_sector_hermite_floor_ratio_eq` proves the exact negative floor weight $8/13$;
+`parity_floor_weight_ratio_eq` proves the exact weight ratio $(8/11)/(8/13) = 13/11$; and
+`parity_floor_fuchs_constant_ratio_eq` evaluates the scaled constant factor $(8/11 \cdot A_4) / (8/13 \cdot A_6) = 13 A_4 / (11 A_6)$.
+The card remains in stage 2 pending the listed true-operator identifications.
 
 ## Gates
 
-- [x] exact source-defined prolate operator and vanishing-integral constraint
-- [x] complete infinite-dimensional paper proof
-- [x] normalization audit between `chi_n` and `chi_n^2`
-- [x] parent-theory separation from generic constrained Rayleigh quotients
-- [x] targeted literature audit through July 2026
-- [x] rediscovery attack
-- [x] provisional novelty gate
-- [x] provisional significance gate
-- [x] two-mode Fuchs-rate `8/11` ground and `3/11` gap limits formalized in Lean
-- [x] eventual `c<3/11` two-mode gap lower bound formalized in Lean
-- [x] exact infinite-dimensional secular root: existence, uniqueness, tail estimate `(18)`,
-  competing-root interlacing, formalized in Lean (`ConstrainedProlateInfiniteSecular`)
-- [x] exact-optimizer `8/11`, `3/11`, and quantified `c<3/11` gap under Bessel + coordinate-limit
-  hypotheses formalized in Lean; leakage side discharged for the concrete Fuchs family
-- [x] true-operator Bessel bound `(2)` formalized in Lean unconditionally:
-  `Σ_n ‖⟨1_[-λ,λ], e_n⟩‖² ≤ 2λ` for the actual signed prolate modes, with the integral pairing
-  identity and the injective-subfamily form (`ConstrainedProlateBesselBound`)
-- [x] eigenvector convergence `(4)` in projective form: the exact eigenvector's tail fraction
-  `Σ_{j≥2}v_j²/v_0² → 0` (`ConstrainedProlateSecularVector`) and its normalized head defect
-  against the constraint direction `(ℓ_0,ℓ_1)` → 0 at rate `(λd_1/(d_2−d_1))²`
-  (`ConstrainedProlateEigenvectorAngle`: `ℓ_0v_0+ℓ_1v_1 = −tail` exactly, `(22)`'s content) —
-  together: the exact constrained ground direction converges to the two-mode seed direction
-- [x] the normalized ℓ²-distance/sign-choice cosmetic form of `(4)` in Lean, for the CCM Fuchs
-  family under exactly the Bessel + coordinate-limit hypotheses used by the other Fuchs-model
-  gates above: `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed`
-  (`ConstrainedProlateFullDistanceCCM`) gives `min_σ ‖v̂_λ − σ ĝ_λ‖² → 0` for the full normalized
-  `ℓ²` eigenvector against the normalized two-mode seed.  BOTH VECTORS ARE CONSTRUCTED, not
-  assumed (`secularLp` via `memℓp_secularVector`, `twoModeSeedLp` via finite support), and the
-  structural, tail-ratio, nonvanishing, membership and summability hypotheses are all DISCHARGED
-  from the family data `A`.  Only `hsum`/`hbessel` and the coordinate limits `hl0`/`hl1` remain,
-  the latter being the open prolate-to-Hermite gate below.  Axiom-clean
-- [x] quantitative eigenvector rate `(4)` formalized without strengthening the coordinate inputs:
-  `ccm_normalized_ground_distance_isBigO` proves the literal unsquared normalized distance is
-  `O(lambda^(-7))`; `ccm_normalized_ground_distance_eventually_le` records an explicit constant
-- [ ] remaining true-operator inputs in Lean: mode identification, Fuchs asymptotics,
-  prolate-to-Hermite limits.  **Evaluation identity `(1)` is now formalized**, axiom-clean, in
-  `formal/GaloisForLFunctions/RHTower/ConstrainedProlateEvaluationIdentity.lean`:
-  `timeBandEigenSourceIntegral_eq_mul_pointwiseSource_zero` proves `∫ e = χ · e(0)` for the
-  canonical compact representative of any nonzero time-band eigenmode at positive aperture, via the
-  interior Fourier eigen-equation and `𝓕 g 0 = ∫ g`.  The same module proves the exact two-mode
-  centre cancellation
-  `S(0) = (χ₁ − χ₀) · e₀(0) · e₁(0)`
-  (`timeBandTwoModeConstrainedSource_zero_eq`), which is the algebraic mechanism behind
-  `g_λ(0) = O(d_1)` in `constrained-prolate-exterior-weil-leading-law.md` `(2)` — the centre value
-  is governed by the **eigenvalue gap**, not by the eigenvalues themselves, and this is proved with
-  no asymptotics at all.
-- [ ] independent proof review
-- [ ] independent literature review
-- [ ] true Weil residual and spectral-gap transfer
-- [ ] weighted/projective convergence sufficient for the regularized determinant
+- [x] negative-sector constrained secular root proved
+- [x] exact constant `8/13` proved
+- [x] negative-sector gap constant `5/13` proved
+- [x] positive/negative floor ratio `C lambda^(-4)` proved
+- [x] negative-sector two-mode Fuchs-rate `8/13` and `5/13` limits formalized in Lean
+- [x] every constant below `5/13` formalized as an eventual negative-sector gap lower bound
+- [x] two-mode positive/negative floor ratio tending to zero formalized in Lean
+- [x] quantified eventual parity dominance `mu_+ < c mu_-` formalized for every `c>0`
+- [x] sharp two-mode `lambda^4`-rescaled parity coefficient formalized in Lean
+- [x] targeted literature search found no parent theorem
+- [x] exact infinite-dimensional constrained floors: `8/13`, `5/13`, quantified gap, parity
+  collapse `(9)`, and sharp `lambda^4` coefficient `(8)` formalized in Lean for the Fuchs-rate
+  model (ℓ-side inputs as explicit hypotheses)
+- [x] normalized full-`ℓ²` negative-sector eigenvector convergence up to sign formalized in Lean
+- [x] quantitative `O(lambda^(-7))` unsquared normalized eigenvector rate in Lean, with an explicit
+  eventual constant (`ccmNegative_normalized_ground_distance_eventually_le` and
+  `ccmNegative_normalized_ground_distance_isBigO`)
+- [x] true-operator ℓ-side inputs (Bessel bound, prolate-to-Hermite limits) in Lean, and the
+  leakage side discharged unconditionally for the TRUE signed prolate family via
+  `ladderEnvelope_evenProlateSignedLeakage` (which replaces the Fuchs identification: the ladder
+  interface needs no sharp constant `A_n` and no matching two-sided power)
+- [x] operator bridge: `(5)`, `(6)`, `(8)`, `(9)`, `(10)` and the negative-sector `O(lambda^{-7})`
+  eigenvector rate are unconditional Lean theorems about the two constrained ground values of
+  the compression of `B_lambda` (`ProlateConstrainedOperatorLaws`, `ProlateSectorSpectralGap`,
+  `ProlateNegativeTrueFamilyDistanceRate`) — see the STAGE 3 section
+- [ ] independent proof audit
+- [ ] bilinear transfer of parity separation to the true restricted Weil form
 
 ## Lean progress — the oscillator-ladder pin, and what the prolate-to-Hermite gate now needs
 
@@ -780,118 +540,6 @@ The corpus owns the oscillator ladder on Schwartz space
 that ladder, which is where the rigidity statement has to be built: `A = d/dξ + ξ` satisfies
 `A†A = −d²/dξ² + ξ² − 1`, so `‖Av‖² = (μ−1)‖v‖²` forces `μ ≥ 1`, `Av` solves the same equation at
 `μ−2`, and iterating must terminate, with `Av = 0` solved only by `Ce^{−ξ²/2}`.
-
-## Lean progress — the card's named classical rigidity input is now a theorem
-
-The statement this card records as "one classical rigidity statement" still missing —
-
-```text
-if v ∈ L²(ℝ) is even and solves v″ = (ξ²−μ)v on all of ℝ, then μ = 2n+1 for some even n,
-and v is a multiple of the corresponding Hermite function
-```
-
-— is proved, unconditionally and axiom-clean, as
-
-```text
-RHTower/OscillatorEvenRigidity.even_integrable_solution_rung
-```
-
-Its supporting pieces, in the same module:
-
-```text
-aeval_hermite_neg_of_odd, odd_hermiteFun    the Hermite function of odd index is odd
-integrable_hermiteFun_sq                    the Hermite function is square integrable
-hermiteFun_nontrivial                       its value and derivative never vanish together
-```
-
-The proof runs through the chain built for this card:
-
-- `OscillatorSpectralRigidity.exists_rung_of_integrable` puts `μ` on the ladder, `μ = 2n+1`;
-- an even nontrivial solution cannot vanish at the origin, since evenness would kill its derivative
-  there too;
-- `OscillatorSolutionSpaceRank.eq_smul_of_integrable` — the square-integrable solution space at a
-  rung is one dimensional, proved from the vanishing of the cross-Wronskian — makes `hermiteFun n`
-  a multiple of `v`;
-- if `n` were odd, `hermiteFun n` would be odd while `v` is even, forcing `hermiteFun n ≡ 0`, which
-  `exists_hermiteFun_ne_zero` forbids.  So `n` is even.
-
-The one-dimensionality step is where the real work was: `integrable_kinetic_add_moment` makes `v′`
-and `ξv` square integrable (via the windowed virial identity, whose boundary term carries a
-favourable sign), so the cross-Wronskian is integrable; being constant on a line of infinite
-measure, it vanishes.
-
-With this in hand the card's own recipe applies verbatim: normalize `Ψ_c = u_c/u_c(0)`, use
-boundedness of the separation constants to take a limit, `tendsto_prolateProfile_oscProfile` for the
-locally uniform convergence, `integral_rescaled_secondMoment_le` with
-`integrable_sq_of_bounded_window_limits` for square integrability of the limit, and the rigidity
-above to force `μ* = 2n+1` with `n` even and `Ψ* = φ_n/φ_n(0)`.  Every subsequential limit is the
-same, so the full limit holds.
-
-## Lean progress — the eigenvalue half, assembled for one family
-
-`RHTower/ProlateWindowMassLimit.lean` (wired, axiom-clean):
-
-```text
-exists_evenRung_of_prolate_family
-    for a family of normalized rescaled prolate profiles with
-      • the rescaled normal form and the initial phase vector u(0)=1, u′(0)=0 on every window,
-      • a uniform a priori phase bound B,
-      • a uniform window-mass bound N,
-      • separation constants tending to m and bandwidth tending to infinity,
-    the limit satisfies  m = 2n+1  with  n  even.
-```
-
-This is the card's **eigenvalue half**, `c·s(c) → 2n+1`, assembled end to end for a single family.
-Its proof is three lines because every step was built separately: `tendsto_prolateWindowMass` gives
-the window-mass convergence, `integrable_sq_of_bounded_window_limits` turns the uniform bound into
-square integrability of the limit profile, and `even_rung_of_integrable_oscProfile` — the rigidity
-statement this card named as its missing classical input — puts the limit on the even ladder.
-
-Every hypothesis is one the prolate family satisfies, and each has its own theorem in the tree:
-`normalizedProlate_window_package` for the normal form and normalization,
-`normalizedProlate_phase_le` for `B`, `normalizedProlate_total_mass_le` for `N`, and
-`even_normalizedProlateProfile` for evenness.
-
-The remaining `(α)` statement — that the `j`-th separation constant tends to `4j+1` — now follows by
-applying this theorem to each of the `j+1` modes supplied by
-`eventually_rank_highProlateSpan_even_ge`, separating their limits with
-`false_of_orthogonal_same_limit` (whose orthogonality hypothesis is
-`integral_normalizedProlate_mul_eq_zero` applied to
-`integral_mul_eq_zero_of_not_proportional`), and closing with `not_injective_evenRung_below`.
-
-## Lean progress — `(α)`'s lower half, fully assembled
-
-`RHTower/ProlateWindowMassLimit.lean` (wired, axiom-clean):
-
-```text
-false_of_orthogonal_prolateFamily_below
-    there is no family of j+1 pairwise orthogonal prolate mode families whose limiting
-    separation constants all lie below 4j+1
-```
-
-Distinctness of the limits is now *derived* from the orthogonality rather than assumed, so the only
-hypotheses left are ones the prolate modes satisfy:
-
-```text
-the rescaled normal form and normalization u(0)=1, u′(0)=0 on every window
-                                  normalizedProlate_window_package
-a uniform a priori phase bound B   normalizedProlate_phase_le
-a uniform window-mass bound N      normalizedProlate_total_mass_le
-evenness                           even_normalizedProlateProfile
-pairwise O(K⁻²) window pairings    integral_mul_eq_zero_of_not_proportional
-                                     → integral_normalizedProlate_mul_eq_zero
-                                     → abs_window_pairing_sub_le_of_secondMoment
-separation constants converging    exists_ultrafilter_tendsto_of_eventually_bounded
-bandwidth escaping                 the family is indexed by bandwidth
-```
-
-Together with the upper half `eventually_rank_highProlateSpan_even_ge`, which supplies `j+1`
-linearly independent — hence, by simplicity, pairwise orthogonal — even joint modes with separation
-below `4j+1+ε`, this is `(α)`: the `j`-th even separation constant tends to `4j+1`.
-
-Every theorem in the chain is unconditional and axiom-clean.  What the card still needs is `(β)`,
-the Fuchs asymptotics identifying the true leakages `d_n(λ)` with the Fuchs family
-`A_n λ^{2n+1}e^{−4πλ²}`; that is external and untouched.
 
 ## The polynomial factor of `(β)` is the logarithmic correction to the WKB action
 
@@ -1974,149 +1622,6 @@ At `y0 = 2 sqrt s` the barrier constant `c b + 12` is `O(sqrt c)` for a fixed mo
 width `1/(c b + 12)` costs a bounded exponential and contributes `Phi(y0)^2/(c b + 12)` — the true
 order.  No turning-point model function (Airy, parabolic cylinder, Liouville-Green error control)
 is used anywhere in either direction.
-
-## Lean progress — `(11)` and the Gram-Schmidt property `(10a)` are theorems
-
-`RHTower/HermiteContrastLadder.lean` (wired, axiom-clean).  Both are pure algebra in the centre
-values, with no hypothesis beyond `a (k+1) != 0`, so they are unconditional:
-
-```
-contrastPartialSum a k = sum_{j<=k} (a j)^2                       S_k
-contrastLadder a k     = (-a_0, ..., -a_k, S_k/a_(k+1), 0, ...)   w_k
-rawContrast a m        = a_0 e_m - a_m e_0                        r_m
-
-contrastLadder_inner_centre        <w_k, a> = 0
-contrastLadder_inner_of_lt         <w_k, w_m> = 0   (k < m)
-contrastLadder_inner_eq_zero       <w_k, w_m> = 0   (k != m)
-contrastLadder_succ_ne_zero        w_k is not the zero vector
-contrastLadder_inner_rawContrast        <w_k, r_m> = 0     for 1 <= m <= k
-contrastLadder_inner_rawContrast_succ   <w_k, r_(k+1)> = a_0 S_(k+1) / a_(k+1)
-```
-
-Each identity is the same two-term cancellation: the head of `w_k` contributes `-S_k` and its single
-tail entry contributes `+S_k`.  The last two are the Gram-Schmidt property in the sharp form: `w_k`
-annihilates every earlier raw contrast and pairs nontrivially with the next one, which is exactly
-what characterizes the `(k+1)`-st Gram-Schmidt vector of the ordered family `r_1, r_2, ...`.
-
-The explicit combination realizing `w_k` inside `span{r_1, ..., r_(k+1)}` is
-
-```
-w_k = sum_{m=1}^{k} (-a_m/a_0) r_m  +  (S_k/(a_0 a_(k+1))) r_(k+1) ,
-```
-
-whose zero-coordinate is `-[-(S_k - a_0^2)/a_0 + S_k/a_0] = -a_0` as required.
-
-Both pairings are stated as finite sums over any `range N` containing the supports, so no `l^2`
-machinery is needed; the vectors have finite support by construction.
-
-## Lean progress — `(4)` is a theorem for every `j`
-
-`RHTower/HermiteCentreValueClosedForm.lean` (wired, axiom-clean) closes the card's `(4)`:
-
-```
-hermiteOriginValue_sq_two_mul
-    hermiteOriginValue (2m)^2  =  sqrt 2 * centralBinom m / 4^m
-
-hermiteOriginValue_sq_four_mul
-    hermiteOriginValue (4j)^2  =  hermiteOriginValue 0 ^ 2 * binom(4j, 2j) / 16^j
-```
-
-i.e. `a_j^2 = a_0^2 q_j` with `q_j = binom(4j,2j)/16^j`, and `a_0^2 = sqrt 2` is the corpus's
-`hermiteOriginValue_sq_zero`.  Only the corpus's own two-step origin recursion
-`eval_zero_hermitePoly_add_two` and mathlib's central binomial recursion
-`Nat.succ_mul_centralBinom_succ` are used; the induction works because the two ratios agree exactly:
-
-```
-a_{2m+2}^2 / a_{2m}^2                              = (2m+1)/(2m+2)
-[centralBinom (m+1)/4^(m+1)] / [centralBinom m/4^m] = 2(2m+1)/(4(m+1)) = (2m+1)/(2m+2)
-```
-
-Every power of `pi` cancels between the squared origin value and the `L^2` normalisation, which is
-why the closed form is rational times `sqrt 2`.
-
-With this and `HermiteContrastLadder.lean`, the whole algebraic layer of the ladder card —
-`(4)`, `(5)`, `(10)`, `(10a)`, `(11)` — is unconditional Lean.  What is left is analytic: the
-prolate-to-Hermite convergence `(3)` and the compression spectrum statement `(8)`.
-
-## Lean progress — the interlacing mechanism of `(8)`
-
-`RHTower/SecularEquationInterlacing.lean` (wired, axiom-clean) proves the mechanism the card's `(8)`
-runs on.  Compressing `diag(d_0, d_1, ...)` to the hyperplane orthogonal to `ell` gives the secular
-equation `F(mu) = sum_j (ell_j)^2/(d_j - mu) = 0`, and:
-
-```
-secular d ell N mu            the secular function
-secular_denom_ne              inside a gap every denominator is nonzero
-secular_strictMonoOn          F is strictly increasing on (d_k, d_(k+1))
-continuousOn_secular          and continuous there
-tendsto_secular_atBot         F -> -infinity  at the left end of the gap
-tendsto_secular_atTop         F -> +infinity  at the right end
-exists_unique_secular_root    hence EXACTLY ONE root in each gap
-```
-
-This is the card's "there is exactly one constrained eigenvalue `mu_k(lambda)` in
-`(d_k(lambda), d_(k+1)(lambda))`" — the interlacing half of `(8)` — for the scalar model, with no
-hypothesis beyond `d` strictly increasing and the two adjacent `ell` entries nonzero.  The monotone
-step is the identity
-
-```
-(ell_j)^2/(d_j - y) - (ell_j)^2/(d_j - x) = (ell_j)^2 (y - x) / ((d_j - x)(d_j - y)) ,
-```
-
-whose denominator is positive because inside a gap the two factors have the same sign, whichever
-side of the gap the index falls on.
-
-For the location of the root:
-
-```
-secular_smul            the equation is scale covariant, so the root may be studied in the
-                        normalized variable theta = mu / d_(k+1)
-limit_secular_root_iff  in the limit the equation degenerates to  -S/theta + T/(1-theta) = 0,
-                        whose root is exactly  theta = S/(S+T)
-```
-
-With `S = S_k = sum_{j<=k} ell_j^2` and `T = ell_(k+1)^2`, the root is `S_k/S_(k+1)`, and the
-coordinate limits `ell_j^2 -> A q_j` turn that into `Q_k/Q_(k+1) = theta_k` — the card's `(8)`.  What
-remains between these and `(8)` is the uniformity: the passage from the exact equation at finite
-`lambda` to the degenerate one, which is where the Fuchs separation `d_j/d_(j+1) -> 0` enters.
-
-## Lean progress — `(8)`'s location statement, quantitatively
-
-The item recorded above as remaining — "the passage from the exact secular equation at finite
-`lambda` to the degenerate one" — is now a theorem.  Same module,
-`RHTower/SecularEquationInterlacing.lean`:
-
-```
-secular_split               the three-block decomposition around the gap
-secular_lower_block_le      lower block  <=  -S_k/mu
-secular_lower_block_ge      lower block  >=  -S_k/(mu - eps d_(k+1))
-secular_upper_block_bounds  upper block in  [0, T/((M-1) d_(k+1))]
-
-secular_root_le             mu/d_(k+1)  <=  S_k/S_(k+1) + eps
-le_secular_root             mu/d_(k+1)  >=  S_k/(S_(k+1) + T/(M-1))
-```
-
-where `S_k = sum_{j<=k} ell_j^2`, `T = sum_{j>k+1} ell_j^2`, and the two slack parameters are the
-Fuchs separation itself:
-
-```
-d_j <= eps · d_(k+1)     for j <= k          (the lower modes are much smaller)
-d_j >= M · d_(k+1)       for k+1 < j <= N    (the higher modes are much bigger)
-```
-
-As `eps -> 0` and `M -> infinity` both bounds converge to `S_k/S_(k+1)`, and the coordinate limits
-`ell_j^2 -> A q_j` turn that into `Q_k/Q_(k+1) = theta_k`.  So the card's `(8)` is now:
-
-- **interlacing** — `exists_unique_secular_root`, exactly one root per gap;
-- **location** — `secular_root_le` and `le_secular_root`, the root pinned between two explicit
-  expressions that squeeze to `theta_k` as the separation widens.
-
-Both are unconditional and quantitative, with no limit hypothesis: they hold at every finite
-`lambda` for which the two separation inequalities hold, which is what `(7)` supplies.
-
-The proof of the lower bound splits on whether the root is already below `S_k/S_(k+1)`: if it is,
-the singular term is bounded by `S_(k+1)/d_(k+1)` and the equation gives the bound directly; if it
-is not, the bound is immediate because `S_k/(S_(k+1) + T/(M-1)) <= S_k/S_(k+1)`.
 
 ## Lean progress — the coordinate half of `(3)`: the tail machinery
 
@@ -3498,6 +3003,454 @@ Remaining to assemble: transport this quotient bound through the anchor comparis
 mass ratio into a `LadderEnvelope` for the *full* (step-one) ladder, which is what the parity card's
 `(9)` and the sharpened `λ^{-4}` / `λ^{-7}` rates consume.
 
+### What this does to the P1–P6 programme
+
+`P4` is now **sharp with matching powers**, which it was not before.  The two collar bounds are
+
+```text
+exp(c Ξ_s(α)) / (6π √(c Ξ_s(α)))   ≤  Φ(α)  ≤  3 exp(c Ξ_s(α)) √(π/(2 c Ξ_s(α)))
+```
+
+— the *same* shape `exp(c Ξ_s(α))/√(c Ξ_s(α))`, so their quotient is the absolute constant
+`18π√(π/2)`.  Before `besselI0_le_exp_div_sqrt` the upper half was the loss-free `Φ(α) ≤ 1`, which
+misses the `1/√(c Ξ_s(α))` and therefore lost a half power of `c`.
+
+Status of the programme is therefore:
+
+```text
+P1  interior mass, two-sided                        DONE  tendsto_indexedRung_totalMass
+P2  exterior mass, two-sided ≍ 1/c                   DONE  eventually_signedLeakage_sharp_two_sided
+P3  transport on [K/√c, α], multiplicative 1+O(1/c)  OPEN  — the one remaining brick
+P4  the endpoint layer [α, 1], two-sided             DONE  (sharp as of this entry)
+P5  matching at the turning scale                    DONE  tendsto_anchor_ratio
+P6  assemble                                         waits on P3
+```
+
+`P3` is exactly the application the card already named: Liouville-transform the band equation and
+feed the corpus's `abs_le_exp_of_exponentialLG` (`HTGeometry/LiouvilleGreenExponentialErrorBound`)
+with the LG defect of the prolate barrier.  Away from the turning point the defect mass is `O(1/K)`
+uniformly in `c`, so the transport factor is `1 + O(1/K)` — matching powers, and the constant can be
+made as close to one as wanted by pushing the matching point `K` out.  The turning window itself is
+`P5`, which is why no Airy theory is needed.
+
+### `P3`, stated exactly: the amplitude transport from below
+
+The Liouville–Green route is not the cheapest way in, because
+`IsExponentialLGSolution` is a *hypothesis* (a Volterra representation) and deriving it for the
+prolate band needs variation of parameters plus an identification of the recessive branch.  The
+corpus's own amplitude transport gives the same precision with the machinery already present.
+
+Write `p = 1 − y²`, `q = c²(y² − s)`, `K = pq = prolateBandScale c s y`, and
+`G = prolateBandAmplitude c s Φ DΦ = Φ² + (pΦ')²/K`.  Then `(pΦ')² / K = Φ'²/(c²P²)` with
+`P = prolateWKBProfile s`, so with `v = prolateLogDeriv Φ = −Φ'/Φ` and `r = v/(cP)`,
+
+```text
+G = Φ² (1 + r²) ,        −G'/G = 2cP · 2r/(1+r²)  +  K'/K .
+```
+
+`2r/(1+r²) ≤ 1` is the AM–GM that gives the corpus's `prolateBandAmplitude_le_uniform`
+(`−G'/G ≤ prolateBandMajorant = 2cP + 2y/(y²−s) + 2y/(1−y²)`, whose integral is exactly
+`2c(Ξ(y₀) − Ξ(α)) + prolateScaleLog s y₀ α`).  The **missing lower transport** is the same identity
+read the other way:
+
+```text
+−G'/G ≥ prolateBandMajorant − 2cP·(1−r)²/(1+r²) − 2·(2y/(1−y²)) ,
+```
+
+so it suffices to bound the *deficit mass*
+
+```text
+D = ∫_{y₁}^{α} 2 c P(y) (1 − r(y))² dy .
+```
+
+Both sides of `r` are already theorems, and in the rescaled variable `x = y√c` (where
+`cP ≈ √c·√(x² − μ)`, `dy = dx/√c`) they give exactly the two decay rates the integral needs:
+
+```text
+v ≥ cP − M                       prolateWKB_sub_le_prolateLogDeriv (window δ = (1−α)/2 fixed,
+                                   so the loss 2y₁/(1−y₁²) + 2/δ is an absolute constant M)
+   ⇒ 1 − r ≤ M/(cP) = O(c^{-1/2})
+v ≤ prolateRadialBarrier c s y + 2√c   abs_prolateLogDeriv_le_shiftedBand
+   ⇒ r − 1 ≤ (√(1−s)·y/√(y²−s)) − 1 + O(c^{-1/2}) = μ/(2x²) + O(c^{-1/2})
+```
+
+Hence `2cP(1−r)² ≈ 2√c·√(x²−μ)·μ²/(4x⁴)` and `D = O(1/K²) + O(M²·c^{-1}·log c)`, uniformly in `c`:
+the transport from below matches the one from above up to `e^{-D}`, an absolute constant that tends
+to one as the matching point `K` is pushed out.
+
+That single estimate closes `P3`, and with it `P6`: `Φ(y₀)²` is then two-sided with matching powers,
+`prolateBand_sq_ratio_le`'s residual `exp(Λ) ≍ c` disappears, and `d_m/d_n = O(c^{-2(n−m)})` for
+adjacent corpus indices — which is the parity card's `(9)`, the `λ^{-4}` rate, and the `O(λ^{-7})`
+eigenvector rate.
+
+### `P3` step one: the sharp amplitude majorant is proved
+
+`formal/GaloisForLFunctions/HTGeometry/SturmAmplitudeSharpMajorant.lean` (wired into the `HTGeometry`
+umbrella, built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+sturmRiccatiRatio p R DR K y = -(p y · DR y) / (sqrt (K y) · R y)
+sturmRiccatiRatio_spec
+sturmAmplitudeVar_eq_mul_one_add_sq :  G = R²(1 + rho²)
+sturmSharpMajorant p K DK y = 2 sqrt(K y)/p y + (K' y / K y)/2
+
+abs_logDeriv_sturmAmplitudeVar_sub_sharp :
+    |G'/G + sturmSharpMajorant|  ≤  2(sqrt K/p)(1 - rho)² + |K'/K|·|1 - rho²|/2
+
+sturmAmplitudeVar_sharp_transport :
+    G b · exp(∫_a^b (sharpMajorant - e))  ≤  G a  ≤  G b · exp(∫_a^b (sharpMajorant + e))
+```
+
+for any error control `e` dominating the quadratic Riccati defect.  The point is the factor `1/2` on
+the scale term: the corpus's `abs_deriv_sturmAmplitudeVar_le` keeps the whole `|K'|/K`, which is
+right for a generic solution but lossy by `sqrt(K(α)/K(y₀)) ≍ sqrt c` for the *recessive* branch,
+whose amplitude is `K^{-1/2}`.  Both error terms are **quadratic** in `rho - 1`, which is exactly
+what makes their mass finite while `|K'|/K` has mass `log c`.
+
+For the prolate band the instantiation data is already in the tree: `Q y = c²(s - y²)`,
+`p y = 1 - y²`, `K = prolateBandScale c s`, and
+
+```text
+Q y · p y = -(K y)                                    (definition unfolding)
+sqrt (K y) / p y = c · prolateWKBProfile s y          sqrt_prolateBandScale_mul (halved)
+K'/K = 2y/(y² - s) - 2y/(1 - y²)                      prolateBandScaleDeriv / prolateBandScale
+```
+
+so `∫_{y₀}^{α} sturmSharpMajorant = 2c(Ξ_s(y₀) - Ξ_s(α)) + (1/2) log(K(α)/K(y₀))`, which differs
+from the crude `prolateScaleLog s y₀ α` by exactly the missing half power.
+
+What remains for `P3` is the two-sided bound on `rho` itself,
+
+```text
+|1 - rho(y)| ≤ min( M/(c P(y)) , mu/(2x²) + O(c^{-1/2}) ) ,    x = y sqrt c ,
+```
+
+from `prolateWKB_sub_le_prolateLogDeriv` (below) and `abs_prolateLogDeriv_le_shiftedBand` (above),
+and the resulting error mass `∫ e = O(1/K²)` on `[K/sqrt c, α]`.
+
+### The exact remaining brick: a WKB-anchored Riccati super-solution
+
+The error control `e` of `sturmAmplitudeVar_sharp_transport` needs `|1 - rho|` two-sided, with
+`rho = v/(cP)`, `v = prolateLogDeriv Φ`, `P = prolateWKBProfile s`.  In the rescaled variable
+`x = y sqrt c` (so `cP ≈ sqrt c · sqrt(x² - mu)` and `dy = dx/sqrt c`) the mass of the error is
+
+```text
+∫ 2 c P (1 - rho)² dy  =  2 ∫ sqrt(x² - mu) · (1 - rho)² dx ,
+```
+
+so `1 - rho` must decay like `x^(-3/2)` or better for the mass to be finite.  The *lower* side is
+already fine: `prolateWKB_sub_le_prolateLogDeriv` with a fixed window `δ = (1-α)/2` gives
+`v ≥ cP - M` with `M` absolute, whence `1 - rho ≤ M/(cP)` and mass `O(M²·c^{-1}·log c) → 0`.
+
+The *upper* side is the brick.  Neither existing barrier is sharp enough:
+
+```text
+prolateRadialBarrier c s y = c sqrt(1-s) y / sqrt(1-y²)     needs 4 ≤ c s  (fails at the ground
+                                                             index, where c s → 1)
+prolateShiftedBarrier = prolateRadialBarrier + 2 sqrt c      valid at every s, but the shift alone
+                                                             contributes 2/(sqrt c · P) ≈ 2/sqrt(x²-mu)
+                                                             to rho - 1, whose mass diverges
+                                                             logarithmically
+```
+
+What is needed instead is a super-solution **anchored on the WKB profile itself**:
+
+```text
+U(y) = c · prolateWKBProfile s y + a/y + b/(1-y) ,      a, b absolute,
+```
+
+for which the Riccati inequality `U' ≥ U² + B U - Q`, `B = 2y/(1-y²)`, `Q = c²P²`, reduces (the
+`c²P²` cancels identically, as always) to
+
+```text
+c y (1 + s - 2y²) / (P (1-y²)²)  +  w'  ≥  2 c P w + w² + B w ,      w = a/y + b/(1-y) .
+```
+
+Near the turning scale the left side is `≍ c x/sqrt(x²-mu)` and the `a/y` term contributes
+`≍ 2 a c sqrt(x²-mu)/x`, so any `a < 1/2` works for `x` large; near the endpoint the left side turns
+negative and the `b/(1-y)` term, whose derivative `b/(1-y)²` is positive and dominates, carries the
+inequality — which is exactly why the corpus's own endpoint bound carries `6/(1-α)`.
+
+With that super-solution, `rho - 1 ≤ a/(y c P) + b/((1-y) c P)`, whose error masses are
+`O(1/K²)` and `O(log c / c)` respectively: both vanish, uniformly in `c` for the first.  That closes
+`P3`, hence `P6`, hence the adjacent-index ladder.
+
+### The WKB-anchored barrier is proved — `P3`'s upper side is closed
+
+`formal/GaloisForLFunctions/RHTower/ProlateAnchoredBarrier.lean` (wired into the `RHTower` umbrella,
+built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolateAnchoredBarrier c χ y = prolateWKB c χ y + 1/y + 1/(1-y)
+hasDerivAt_prolateAnchoredBarrier
+prolateAnchoredBarrier_subsolution   (0 < y < 1, 0 < χ + c²y², 0 ≤ χ(2-y²) + c²y²)
+continuousOn_prolateAnchoredBarrier
+prolateLogDeriv_le_anchoredBarrier   (backward Riccati comparison on [a,b])
+eventually_prolateLogDeriv_le_anchoredBarrier_at_one   (the terminal inequality, free)
+```
+
+The Riccati defect collapses in two elementary steps.  First, the added pair is self-dominating:
+`(1/y + 1/(1-y))' ≤ (1/y + 1/(1-y))²` identically on `(0,1)`, because the difference is
+`2/y² + 2/(y(1-y)) ≥ 0`.  Second, with `A = χ + c²y²` and `W = prolateWKB c χ y` (so `W² = A/(1-y²)`)
+the profile part needs only `W' ≤ (2/y + 2y/(1-y²))W`, and since `2/y + 2y/(1-y²) = 2/(y(1-y²))` this
+clears to
+
+```text
+(2c²y(1-y²) + 2yA)·y ≤ 4A     ⟺     0 ≤ 2(χ(2 - y²) + c²y²) ,
+```
+
+an identity after `ring`.  For `χ = -s c²` the condition is `y²(1+s) ≥ 2s`, i.e. `y ≥ sqrt(2s)` — so
+the barrier is valid **at every separation**, in particular at the ground index where `c s → 1` and
+the corpus's `prolateRadialBarrier` (which needs `4 ≤ c s`) does not apply.  And it exceeds the WKB
+profile by only `1/y + 1/(1-y)`, whose contribution to `rho - 1 = v/(cP) - 1` has finite error mass:
+
+```text
+∫ 2cP · (1/(y cP))²  dy = O(1/K²)  on  [K/sqrt c, α] ,     ∫ 2cP · (1/((1-y) cP))² dy = O(log c / c) .
+```
+
+Both vanish, so `sturmAmplitudeVar_sharp_transport` now has its upper error control.  What remains of
+`P3` is the (already available) lower side `v ≥ cP - M` and the two integral estimates.
+
+### The Riccati ratio is two-sided — `P3`'s pointwise input is complete
+
+`formal/GaloisForLFunctions/RHTower/ProlateRiccatiRatioBounds.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+sqrt_prolateBandScale_eq :   sqrt(K) = c · prolateWKBProfile s y · (1 - y²)
+sturmRiccatiRatio_prolate :  rho = prolateLogDeriv Φ / (c · prolateWKBProfile s)
+prolateWKB_sub_eight_le_prolateLogDeriv :   v ≥ c P - 8/(1-y)
+abs_one_sub_sturmRiccatiRatio_prolate_le :
+      |1 - rho(y)|  ≤  (1/y + 9/(1-y)) / (c · prolateWKBProfile s y)
+```
+
+The lower half is the corpus's endpoint bound taken with the **midpoint** window `y₁ = (y+1)/2`: both
+of its losses `2y₁/(1-y₁²)` and `2/(y₁-y)` are then at most `4/(1-y)`, so the free window parameter
+disappears and the loss becomes the single elementary `8/(1-y)`.  The upper half is the new anchored
+barrier.  The two combine into one two-sided statement with the *same* shape on both sides, which is
+what the sharp transport's error control consumes.
+
+Remaining for `P3`: the mass estimate.  With `δ(y) = (1/y + 9/(1-y))/(cP)` the error control of
+`sturmAmplitudeVar_sharp_transport` is
+
+```text
+e(y) = 2 c P δ(y)² + |K'/K| · δ(y)(2 + δ(y))/2 ,
+```
+
+and on `[K/sqrt c, α]` its integral is bounded by elementary antiderivatives — the `1/y` part by
+`sqrt(y²-s)/(s y)` (the antiderivative of `1/(y² sqrt(y²-s))`), which telescopes to `O(1/K²)`, and
+the `1/(1-y)` parts by `O(1/c)` since `cP` is bounded below by a multiple of `c` away from the
+turning scale.
+
+### The exponential separation of two rungs is proved
+
+`formal/GaloisForLFunctions/RHTower/ProlatePhaseSeparation.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+bandEndpointPhase_sub_ge :
+    (s_n - s_m)/2 · log(1/y)  ≤  Ξ_{s_m}(y) - Ξ_{s_n}(y)
+exp_two_mul_bandPhase_sub_le :
+    exp( 2c (Ξ_{s_n}(y) - Ξ_{s_m}(y)) )  ≤  exp( -c (s_n - s_m) log(1/y) )
+```
+
+for `0 ≤ s_m ≤ s_n < y²`, `0 < y < 1`.  Only the *trivial* side of the radical comparison is used:
+writing the difference of integrands as `(s_n - s_m)/(sqrt(sin²θ-s_m) + sqrt(sin²θ-s_n))` and bounding
+the denominator by `2 sin θ ≤ 2θ` turns the phase difference into `∫ dθ/θ`, whose value
+`log((π/2)/arcsin y)` is at least `log(1/y)` by the corpus's own `arcsin_le_pi_div_two_mul`.
+
+At the rescaled anchor `y = x₀/sqrt c` this is `log(1/y) = (log c)/2 - log x₀`, and since
+`c(s_n - s_m) → 4(n-m)` the separation is
+
+```text
+exp( 2c (Ξ_{s_n} - Ξ_{s_m}) )  ≤  C · c^(-2(n-m)+ε) ,
+```
+
+which is exactly the `c^{-2}` per corpus index step the ladder needs — now available at a **common**
+anchor, which is what `prolateBand_sq_ratio_le` requires and what the old turning-point bookkeeping
+(each rung at its own `2 sqrt(s_j)`) could not supply.
+
+With this, the three factors of the adjacent-index ratio are all in hand:
+
+```text
+d_m/d_n ≍ R_n(0)²/R_m(0)²            eventually_signedLeakage_sharp_two_sided   (absolute constants)
+R_j(0)  ≍ Φ_j(y₀)                    tendsto_anchor_ratio                        (converging constants)
+Φ_n(y₀)²/Φ_m(y₀)² ≤ C·exp(Λ_n)·exp(2c ΔΞ)   prolateBand_sq_ratio_le
+exp(Λ_n) = O(c) ,  exp(2c ΔΞ) = O(c^{-2(n-m)})
+⇒  d_m/d_n = O(c^{1-2(n-m)}) = O(c^{-1}) → 0   for adjacent indices.
+```
+
+Remaining: the indexed assembly — instantiating these four at the canonical family
+`signedModeRadialData a n` and packaging the result as a `LadderEnvelope` for the step-one ladder.
+
+### The common pair anchor is proved
+
+`formal/GaloisForLFunctions/RHTower/ProlatePairAnchor.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+exists_hermiteFun_pair_ne_zero_Ioo   both Hermite functions nonzero at a common point of any interval
+prolatePairAnchor m n                the point, taken beyond 2 sqrt(4m + 4n + 1)
+prolatePairAnchor_spec / _pos / _sq_gt        4(4k+1) < x₀²  for k = m and k = n
+tendsto_anchor_ratio_at              the anchor comparison at ANY positive rescaled point
+tendsto_pairAnchor_ratio             it, at the pair anchor, for either rung
+```
+
+`prolateBand_sq_ratio_le` compares two apertures at a *single* band point, so the anchor must avoid
+the zeros of both Hermite functions; the product of the two Hermite polynomials is monic, hence has
+finitely many roots, so such a point exists in every interval.  `tendsto_anchor_ratio`'s proof used
+only positivity of the anchor, so it generalizes verbatim.
+
+### The indexed instantiation: the template is already in the tree
+
+Every hypothesis of `prolateBand_sq_ratio_le` is discharged for `signedModeRadialData a k` by the
+pattern at `RHTower/ProlateIndexedLeakageTwoSided.lean:195-240`:
+
+```text
+hchi : (signedModeRadialData a n).chi = -(s c²)     from radialSeparationRatio = -chi/c², field_simp
+heig : ∀ y ∈ Icc (-1) 1, prolateSLAction c R y = -(s c²) R y
+hpos : ∀ y ∈ Icc (sqrt s) 1, 0 < R y                prolate_pos_on_right_of_radial_turning
+hfluxd : HasDerivAt (fun u => (1-u²) R' u) (-(c²(s - t²) R t)) t
+```
+
+and the eventual side conditions are
+
+```text
+0 < c, 0 < s_n, s_k ≤ 1/8            eventually_signedModeRadialData_s_pos / _s_le
+4 ≤ c s_n                            c s_n → 4n+1 ≥ 5  (needs n ≥ 1 — and only the LARGER index
+                                       ever needs it, since the lower barrier bound has no such
+                                       hypothesis, so the ground index m = 0 is fine)
+s_k < y₀² = x₀²/c                    prolatePairAnchor_sq_gt: x₀² > 4(4k+1) > c s_k eventually
+y₀ ≤ α, 0 < c Ξ_{s_n}(α), 1 ≤ c Ξ_{s_m}(α)
+```
+
+with `α = prolateLeakageCollar` (`600(1-α) = 1/4` exactly), which already satisfies
+`1/2 < α < 1` and the collar hypothesis.
+
+### THE INDEXED AMPLITUDE RATIO IS PROVED
+
+`formal/GaloisForLFunctions/RHTower/ProlateIndexedAmplitudeRatio.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+pairAnchorPoint m n a = prolatePairAnchor m n / sqrt (signedModeRadialBandwidth a)
+pairAnchorPoint_sq / _pos
+collarPhaseFloor = sqrt(α² - 1/8) · arccos α ,  collarPhaseFloor_pos, collarPhaseFloor_le
+
+eventually_prolateBand_sq_ratio_le (m n : ℕ) (hn : 1 ≤ n) :
+  ∀ᶠ a in atTop,
+    R_n(y₀)²  ≤  324 sqrt 2 π³ · C_n(a)
+                  · exp( 2c (Ξ_{s_n}(y₀) - Ξ_{s_m}(y₀)) + Λ_n(y₀) - 12(log(1-α) - log(1-y₀)) )
+                  · R_m(y₀)²
+```
+
+with `y₀ = pairAnchorPoint m n a` and `α = prolateLeakageCollar`.  Every hypothesis of
+`prolateBand_sq_ratio_le` is discharged at the canonical family:
+
+```text
+0 < c, 0 < s_n ≤ 1/8, 0 ≤ s_m ≤ 1/8            the eventual separation facts
+4 < c s_n                                       c s_n → 4n+1 ≥ 5   (n ≥ 1; the LOWER half of the
+                                                  comparison needs no such bound, so m = 0 is free)
+s_k < y₀² = x₀²/c                               c s_k → 4k+1 and prolatePairAnchor_sq_gt
+y₀ ≤ α                                          c → ∞
+chi_k = -(s_k c²)                               radialSeparationRatio, after normalizing the
+                                                  bandwidth name
+0 < R_k on [y₀,1]                               prolate_pos_on_right_of_radial_turning, since
+                                                  sqrt(s_k) ≤ y₀
+the flux derivative                             from the exactness bundle's ODE
+0 < c Ξ_{s_n}(α),  1 ≤ c Ξ_{s_m}(α)             collarPhaseFloor_le and c → ∞
+```
+
+The `collarPhaseFloor` is the uniform positive lower bound `sqrt(α² - 1/8)·arccos α` for the collar
+phase over all admissible separations, which is what makes the second of these eventual.
+
+What remains is the limit: showing the bracketed factor tends to zero.  Its three parts are
+`C_n(a) = O(1)` (the barrier is `c` times a bounded quantity, divided by `c²`),
+`exp(Λ_n(y₀)) = O(c)` and `exp(2c ΔΞ) = O(c^{-2(n-m)})` by `exp_two_mul_bandPhase_sub_le`, giving
+`O(c^{1-2(n-m)}) → 0` for `n = m+1`.
+
+### THE AMPLITUDE RATIO VANISHES — `O(c^{-1/2})` at the common anchor
+
+`formal/GaloisForLFunctions/RHTower/ProlateIndexedRatioLimit.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+exp_neg_half_log_eq :  exp(-(log c)/2) = 1/sqrt c
+ratioLimitConst m n , ratioLimitConst_nonneg
+
+eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
+  ∀ᶠ a in atTop,
+    R_n(y₀)²  ≤  ratioLimitConst m n / sqrt c  ·  R_m(y₀)²
+```
+
+The exponent of `eventually_prolateBand_sq_ratio_le` is bounded by `K - (log c)/2` with `K` absolute:
+
+```text
+C_n(a)                          ≤ 1 + leakageBarrierConst          barrierFactor_le (corpus)
+Λ_n(y₀)                         ≤ log c - log(x₀²/2) - log(1-α²)   at y₀² = x₀²/c, using c s_n < x₀²/2
+2c(Ξ_{s_n}(y₀) - Ξ_{s_m}(y₀))   ≤ -3((log c)/2 - log x₀)           bandEndpointPhase_sub_ge, with
+                                                                     c(s_n - s_m) → 4(n-m) ≥ 4 > 3
+-12(log(1-α) - log(1-y₀))       ≤ -12 log(1-α)                     since log(1-y₀) ≤ 0
+```
+
+so the three `log c` contributions are `+1` from the scale log and `-3/2` from the phase, leaving
+`-1/2`.  (Taking `c(s_n - s_m) ≥ 3` rather than its limit `4(n-m)` is deliberately conservative; the
+sharp exponent is `1 - 2(n-m)`.)
+
+That is the `P6` estimate for the amplitude.  Remaining in the chain:
+
+```text
+R_k(0)/R_k(y₀) → φ_{2k}(0)/φ_{2k}(x₀)      tendsto_pairAnchor_ratio  (both rungs, common anchor)
+d_k ≍ c^{-1/2}/R_k(0)²                     eventually_signedLeakage_sharp_two_sided
+⇒ d_m/d_n → 0                              for adjacent corpus indices
+⇒ LadderEnvelope for the step-one ladder
+```
+
+### THE ADJACENT-INDEX LEAKAGE RATIO VANISHES
+
+Three more modules, all wired, built, axioms `[propext, Classical.choice, Quot.sound]`:
+
+```text
+RHTower/ProlateIndexedRatioLimit.lean
+  sqrt_eq_exp_half_log , prolateRatioScale a = sqrt c · sqrt (sqrt c)  (= c^{3/4}, elementarily)
+  prolateRatioScale_pos / _eq_exp , exp_neg_three_quarter_log_eq
+  ratioLimitConst m n , ratioLimitConst_nonneg
+  eventually_prolateBand_sq_ratio_le_div_sqrt :
+      R_n(y₀)² ≤ ratioLimitConst m n / c^{3/4} · R_m(y₀)²
+
+RHTower/ProlateCentreRatioTransfer.lean
+  pairAnchorHermiteQuotient m n k = φ_{2k}(x₀)/φ_{2k}(0) , _ne_zero
+  tendsto_pairAnchor_quotient , eventually_pairAnchor_quotient_bounds
+  centreRatioConst m n , _nonneg
+  eventually_centre_sq_ratio_le_div_sqrt :
+      R_n(0)² ≤ centreRatioConst m n / c^{3/4} · R_m(0)²
+
+RHTower/ProlateLeakageRatioVanishing.lean
+  leakageRatioConst m n , _nonneg
+  eventually_signedLeakage_le_div_sqrt (m n : ℕ) (hmn : m < n) :
+      ∀ᶠ a in atTop,  d_m(a)  ≤  leakageRatioConst m n / c^{3/4} · d_n(a)
+```
+
+for **every** pair `m < n`, in particular adjacent corpus indices.
+
+The exponent `3/4` rather than `1/2` matters: `LadderEnvelope.tail_tendsto_zero` needs
+`a · d_{j+1}/d_{j+2} → 0`, and with `c = 2π a²` a bound `d_j/d_{j+1} = O(c^{-1/2}) = O(a^{-1})` is
+exactly borderline.  Taking the phase gap constant to be `7/2` (its limit is `4(n-m) ≥ 4`) instead of
+`3` moves the exponent from `1 - 7/4 = -3/4`, so `a · c^{-3/4} = O(a^{-1/2}) → 0` with room.
+
+The three factors combine as follows: the sharp two-sided leakage has **absolute** constants, so
+`d_m/d_n` is the quotient of the squared centre amplitudes up to index-dependent constants; the pair
+anchor comparison converts centre amplitudes into anchor amplitudes with converging constants; and
+the barrier ratio at the common anchor supplies the `c^{-3/4}`.  The `sqrt c` of the mass ratio
+cancels between the upper bound at `m` and the lower bound at `n`, exactly as the collar prefactor
+`c Ξ(α)` cancels inside `prolateBand_sq_ratio_le`.
+
+Remaining: package this as a `LadderEnvelope` for the step-one ladder `D a j = d_j(a)`.  Its five
+fields are now
+`nonneg` (leakage nonnegativity), `mono` (`evenProlateSignedLeakage_monotone`), `lt_succ` and
+`ratio_tendsto_zero` (from the display above, since `leakageRatioConst/c^{3/4} → 0` and `d_{j+1} > 0`),
+and `tail_tendsto_zero` (same display, with `a · c^{-3/4} → 0`).
+
 ## THE STEP-ONE LADDER ENVELOPE IS PROVED
 
 `formal/GaloisForLFunctions/RHTower/ProlateFullLadderEnvelope.lean` (wired into the `RHTower`
@@ -3534,1453 +3487,781 @@ universality, the depth and adjacent ratio limits, the normalized eigenvector li
 distance, the spectral gap — is therefore now available at **step one** of the ladder, where before
 only the step-two (Fourier-even) instance existed.
 
-## Card status after the step-one ladder
+### The step-one ladder, instantiated
 
-Everything on this card that does **not** invoke the Fuchs asymptotic is now formal and
-unconditional.  Concretely, across the three constrained-prolate cards:
-
-```text
-FORMAL, UNCONDITIONAL
-  exactly one constrained eigenvalue in (d_k, d_{k+1})   constrainedProlateEven_exactEigenpair_…
-  (8)  mu_k/d_{k+1} → theta_k                            …_depth_ratio_tendsto (even ladder)
-                                                          constrainedProlateFull_depth_ratio_tendsto
-                                                            (step one, interleaved contrast)
-  (9)  the contrast quotient of two adjacent depths      …_adjacent_ratio_tendsto (both ladders)
-  (10)(11) eigenvector limit and its orthogonality       …_normalized_eigenvector_tendsto
-  (5)  mu_0/d_1 → 8/11                                   constrainedProlatePositive_ground_ratio…
-  (6)  liminf gap ≥ 3/11                                 constrainedProlatePositive_gap_ratio…
-  (7)  the quantified gap                                constrainedProlatePositive_spectralGap_eventually
-  (4)  the ground eigenvector converges to its seed      constrainedProlateEven_ground_distance_…
-                                                          constrainedProlateFull_ground_distance_…
-  parity (9): mu_+ < mu_- and (mu_- - mu_+)/mu_- → 1     constrainedProlateParity_separation
-
-DEPENDS ON THE FUCHS ASYMPTOTIC (7) OF THE PARITY CARD
-  the RATES only: O(lambda^{-7}) in (4), C_k lambda^8 in (9), [13A_4/(11A_6)]lambda^{-4} in (8)
-```
-
-The rates are the only remaining items, and they all reduce to the same one statement: the two-sided
-leakage asymptotic with its polynomial factor, `d_n ~ A_n lambda^{2n+1} e^{-4 pi lambda²}`.  The
-session's chain proves `d_n ≍ c^{-1/2}/R_n(0)²` two-sided with absolute constants
-(`eventually_signedLeakage_sharp_two_sided`) and the adjacent quotient `d_j/d_{j+1} = O(c^{-3/4})`;
-what upgrades `O(c^{-3/4})` to the sharp `c^{-2}` per step — and so pins the polynomial factor — is
-`P3`, the sharp amplitude transport.  Its two ingredients are already theorems
-(`sturmAmplitudeVar_sharp_transport` and `abs_one_sub_sturmRiccatiRatio_prolate_le`); what remains is
-the error-mass estimate
-
-```text
-∫_{K/sqrt c}^{alpha} [ 2cP·δ² + |K'/K|·δ(2+δ)/2 ] dy ,      δ = (1/y + 9/(1-y))/(cP) ,
-```
-
-whose four pieces have elementary antiderivatives:
-`∫ dy/(y² sqrt(y²-s)) = sqrt(y²-s)/(s y)` (telescopes to `O(1/K²)`),
-`∫ dy/(y²-s)^{3/2} = y/(s sqrt(y²-s))` (gives `O(1/K)`), and the two `1/(1-y)` pieces, which are
-`O(1/c)` because `cP` is bounded below by a multiple of `c` away from the turning scale.
-
-## The `O(lambda^{-7})` rate: the consumer already exists, and the sharp ratio is exactly what it wants
-
-`RHTower/ConstrainedProlateFullDistanceRate.lean:314` already contains the quantitative distance
-theorem:
-
-```text
-min_norm_lp_normalize_sub_twoModeSeed_eventually_le
-    (ha0 : a0 ≠ 0) (hstruct) (hsum) (hbessel) (hL0) (hL1) (hL0big)
-    (hrate : ∀ᶠ lam,  |lam · D lam 1 / (D lam 2 - D lam 1)|  ≤  K (lam^7)⁻¹) :
-  ∀ᶠ lam,  min ‖v̂ - ĝ‖ ‖v̂ + ĝ‖  ≤  (1 + 16/a0⁴ + 4/a0²) · K · (lam^7)⁻¹
-```
-
-so `(4)`'s rate reduces **entirely** to its `hrate` hypothesis: an `O(lambda^{-7})` bound for the
-aperture-weighted one-step tail of the ladder.  Nothing else about the eigenvector is needed.
-
-**What `hrate` costs, exactly.**  With `c = 2π lambda²`, `lam · D 1/(D 2 - D 1) ≍ lam · (D 1/D 2)`
-once `D 1 ≤ D 2/2`, so `hrate` asks for
-
-```text
-D 1 / D 2  =  O(lambda^{-8})  =  O(c^{-4}) .
-```
-
-For the **Fourier-even** ladder `D lam j = d_{2j}` that is `d_2/d_4`, i.e. **two** corpus index
-steps.  So `hrate` holds exactly when the per-step leakage ratio is the sharp `c^{-2}` — the current
-`c^{-3/4}` gives only `c^{-3/2} = lambda^{-3}`, and even a `c^{-1}` per step would give only
-`lambda^{-4}`.  This is the precise sense in which the card's exponent `7` is the sharp transport's
-exponent: `lam · (c^{-2})² = lam · lam^{-8} = lam^{-7}`.
-
-The corpus's own `fuchsRate_tail_bound_eq` says the same thing from the Fuchs side — it computes
-`lam · fuchsRate A₁ n / fuchsRate A₂ (n+4) = 2(A₁/A₂)(lam^7)⁻¹`, the index step `4` being two
-Fourier-even rungs.
-
-So the whole of `(4)`'s rate now rests on the single statement `d_j/d_{j+1} = O(c^{-2+ε})`, whose
-every ingredient is proved (`eventually_prolateBand_sq_ratio_sharp`,
-`prolateBand_sharp_exponent_le`, `integral_prolateBandErrorMajorant_le`,
-`tendsto_pairAnchor_scaleLog`, `exp_two_mul_bandPhase_sub_le`); what remains is to chain them into
-the indexed leakage ratio, exactly as `ProlateIndexedRatioLimit` → `ProlateCentreRatioTransfer` →
-`ProlateLeakageRatioVanishing` does for the crude `c^{-3/4}`.
-
-### CORRECTION — the sharp transport alone does not give the exponent `7`; a separation *rate* is also needed
-
-Working the bound through carefully changes the conclusion of the previous entry.  The exponent of
-`prolateBand_sq_ratio_sharp` contains
-
-```text
--c(s_n - s_m) · log(1/y₀)  =  -c(s_n - s_m)·(log c)/2  +  c(s_n - s_m)·log x₀ ,
-```
-
-and `c(s_n - s_m) → 4(n-m)` only as a **limit**.  Write `β(a) = c(s_n - s_m)/2 → 2(n-m)`.  Then the
-first term is `-β(a) log c`, i.e. the ratio is `c^{-β(a)}` — and `c^{-β} = c^{-2(n-m)}·c^{2(n-m)-β}`
-with `2(n-m) - β → 0`.  **A vanishing exponent perturbation is not a bounded factor**: `c^{o(1)}` can
-diverge (take `1/log log c`).  So convergence `c s_k → 4k+1` gives `O(c^{-2(n-m)+δ})` for every
-`δ > 0` and nothing better.
-
-Therefore the exact exponents on this folder's rate claims — `O(lambda^{-7})` in `(4)`,
-`C_k lambda^8` in `(9)`, `[13A_4/(11A_6)] lambda^{-4}` in `(8)` — need, in addition to the sharp
-transport, a **rate** for the separation:
-
-```text
-c s_k  =  (4k+1) + o(1/log c) .
-```
-
-That is exactly the content the Fuchs form `(7)` encodes, since `d_n ~ A_n lambda^{2n+1} e^{-4π
-lambda²}` fixes the coefficient of `log c` in `log d_n` to be `c s_n/2` with no slack.  The corpus's
-own `fuchsRate_tail_bound_eq` confirms the direction of the dependence: it computes the `lambda^{-7}`
-from `fuchsRate` itself, i.e. *presupposing* the Fuchs form.
-
-So the honest terminal statement for this folder is:
-
-```text
-UNCONDITIONAL AND FORMAL
-  every claim of all three cards that does not carry an explicit power of lambda
-  (existence/uniqueness of the depth-k eigenvalue, (8) the contrast limit, (9) the contrast
-   quotient, (10)(11) the eigenvector limit and orthogonality, (5) 8/11, (6) 3/11 and 5/13,
-   (7) the quantified gap, (4) the qualitative ℓ² convergence, the parity separation)
-
-NEEDS THE SEPARATION RATE  c s_k = (4k+1) + o(1/log c)
-  the three exponent claims: O(lambda^{-7}), C_k lambda^8, [13A_4/(11A_6)] lambda^{-4}
-```
-
-and the sharp transport built in this session is a *necessary* ingredient of that rate — it removes
-the `exp(Λ)` obstruction — but not a sufficient one.  The remaining gap is the separation rate, not
-the amplitude comparison.
-
-### The corpus's separation bounds are `ε`-versions — the rate is genuinely absent
-
-Checked directly:
-
-```text
-eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung (n) (hε : 0 < ε) :
-    ∀ᶠ a,  c s_n  <  4n + 1 + ε
-eventually_evenOscillatorRung_sub_lt_signedModeRadialBandwidth_mul_s (n) (hε : 0 < ε) :
-    ∀ᶠ a,  4n + 1 - ε  <  c s_n
-```
-
-Both are quantified over an arbitrary `ε > 0` — i.e. they *are* the convergence `c s_n → 4n+1`, with
-no rate.  Nothing in the tree bounds `|c s_n - (4n+1)|` by a function of `c`.
-
-So the terminal requirement for the three exponent claims is a **second-order** oscillator law,
-
-```text
-c s_n  =  (4n + 1)  +  O(1/c)         (or any bound o(1/log c)) ,
-```
-
-which is the second term of the prolate eigenvalue asymptotic.  Classically
-`chi_n(c) = -(4n+1)c + C_n + O(1/c)`, so the rate is `O(1/c)` with enormous room; but proving it
-needs a quantitative form of the harmonic-oscillator limit, not just the limit.  The corpus's
-`HermiteTrialSpaceRayleigh` and the min-max counting principle are the natural starting points: the
-trial space gives the upper bound with an explicit constant, and the rank/counting argument gives
-the matching lower one.
-
-This is the single remaining mathematical input for the whole constrained-prolate folder.  Everything
-else on all three cards is proved unconditionally and axiom-clean.
-
-### The separation rate is much closer than it looks: `comboExcess_pointwise` is already quantitative
-
-`HermiteTrialSpaceRayleigh.lean:203` proves, for any rung family `r`, coefficients `a`, and top rung
-`N`:
-
-```text
-prolateSLAction c (h_combo(sqrt c ·)) x · h_combo(sqrt c x)
-    + (2N+1) c · h_combo(sqrt c x)²
-  =  comboExcessIntegrand r a N c (sqrt c x)
-comboExcessIntegrand r a N c ξ
-  =  c · (∑ᵢ aᵢ·2(N - rᵢ)·h_{rᵢ}(ξ)) · h_combo(ξ)
-     +  ( -ξ² h_combo''(ξ) - 2ξ h_combo'(ξ) ) · h_combo(ξ)
-```
-
-**The second summand carries no `c` at all.**  Taking a single rung, `r ≡ N = 2n`, the first summand
-vanishes identically, and the identity becomes
-
-```text
-⟨L_c Φ, Φ⟩  +  (4n+1) c ‖Φ‖²  =  D_n ,        Φ(x) = h_{2n}(sqrt c x) ,
-```
-
-with `D_n = ∫ (-ξ² h'' - 2ξ h') h` a **constant of the index alone**.  Since `‖Φ‖² = (∫h_{2n}²)/sqrt c`,
-the Rayleigh quotient is
-
-```text
-⟨L_c Φ, Φ⟩ / ‖Φ‖²  =  -(4n+1) c  +  D_n sqrt c / ∫h_{2n}²  =  -(4n+1)c + O(sqrt c) ,
-```
-
-so the variational half of the second-order law is
-
-```text
-c s_n  ≥  (4n+1)  -  O(1/sqrt c) ,
-```
-
-already `o(1/log c)` with room to spare, and obtainable from material entirely in the tree
-(`comboExcess_pointwise`, `integral_comboExcessIntegrand`, and the Hermite `L²` normalisation).
-
-What is *not* yet quantitative is the other half — `c s_n ≤ (4n+1) + O(1/sqrt c)` — which comes from
-the rank/min-max counting behind
-`eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung`, currently stated with a free
-`ε`.  Making that argument carry an explicit `ε(c) = O(1/sqrt c)` is the one remaining step, and it
-is a bookkeeping refinement of an existing proof rather than new mathematics.
-
-So the folder's terminal gap is narrower than the previous entry suggested: not "the prolate
-eigenvalue asymptotic", but "the `ε` in the existing upper half, made explicit".
-
-### CORRECTION — the quantitative identity is already in the tree, and the rate is `O(1/c)`, not `O(1/sqrt c)`
-
-`HermiteRungRayleighDefect.lean:259` already proves exactly the identity the previous entry proposed
-to derive from `comboExcess_pointwise`:
-
-```text
-prolate_hermiteTrial_integrand (hc : 0 < c) (n) (x) :
-    prolateSLAction c (hermiteTrial c n) x · hermiteTrial c n x
-      =  -((2n+1) c) · (hermiteTrial c n x)²  +  hermiteRungDefect n (sqrt c · x)
-```
-
-with `hermiteTrial c n x = h_n(sqrt c · x)` and `hermiteRungDefect` already defined, continuous, and
-equipped with `integral_hermiteRungDefect` and `eventually_hermiteRungDefect_pos`.  A separate
-module for this would have been a duplicate; none was added.
-
-The rate is also better than the previous entry estimated.  Integrating over `[-1,1]` and rescaling
-(`intervalIntegral.integral_comp_mul_left`, as the corpus's own proof does),
-
-```text
-∫_{-1}^{1} L_c Φ · Φ   =  -(2n+1)c ∫_{-1}^{1} Φ²  +  (sqrt c)⁻¹ ∫_{-sqrt c}^{sqrt c} defect_n ,
-∫_{-1}^{1} Φ²          =  (sqrt c)⁻¹ ∫_{-sqrt c}^{sqrt c} h_n² ,
-```
-
-so the two `(sqrt c)⁻¹` cancel in the Rayleigh quotient and
-
-```text
-Rayleigh(c)  =  -(2n+1)c  +  [∫_{-sqrt c}^{sqrt c} defect_n] / [∫_{-sqrt c}^{sqrt c} h_n²]
-             =  -(2n+1)c  +  O(1) ,
-```
-
-because both integrals converge (the Hermite functions and the defect are Schwartz-class).  Hence the
-variational half of the second-order law is
-
-```text
-c s_n  ≥  (2n+1)  -  C_n / c ,
-```
-
-a rate of `O(1/c)`, with vast room over the `o(1/log c)` the exponent claims need.  What it takes in
-Lean is the convergence of the two truncated integrals to their `ℝ`-integrals — the numerator via
-`integral_hermiteRungDefect`, the denominator via the Hermite `L²` normalisation — and then the same
-min-max transfer the corpus already runs for the `ε` version.
-
-The remaining half — `c s_n ≤ (2n+1) + O(1/c)` — is the rank/counting bound with an explicit `ε(c)`,
-and it is the only genuinely open step of the folder.
-
-### The variational half, reduced to one integrability fact
-
-`integral_hermiteRungDefect` gives the defect in closed form:
-
-```text
-∫_{-R}^{R} defect_n  =  ∫_{-R}^{R} ξ² (h_n'(ξ))²  -  [ R² h_n(R) h_n'(R) - R² h_n(-R) h_n'(-R) ] ,
-```
-
-and `tendsto_hermiteRungBoundary` already sends the bracket to zero.  So the whole truncated defect
-integral is monotone-plus-vanishing, and
-
-```text
-∫_{-R}^{R} defect_n   ≤   ∫_ℝ ξ² (h_n')²  +  1     for large R
-```
-
-as soon as `ξ ↦ ξ² (h_n'(ξ))²` is integrable on `ℝ` — a Gaussian-decay fact, and the *only* input
-missing for the variational half.  With it,
-
-```text
-Rayleigh_n(c)  =  -(2n+1)c  +  [∫_{-sqrt c}^{sqrt c} defect_n] / [∫_{-sqrt c}^{sqrt c} h_n²]
-               ≤  -(2n+1)c  +  2 (∫_ℝ ξ²(h_n')² + 1) / ∫_ℝ h_n²   for large c ,
-```
-
-the denominator being eventually at least half its limit, so `c s_n ≥ (2n+1) - C_n/c`.
-
-**The folder's two remaining Lean tasks, stated exactly:**
-
-```text
-(i)  IntegrableOn (fun ξ => ξ^2 * deriv (hermiteFun n) ξ ^ 2) univ
-       ⇒ the variational half of the second-order oscillator law, rate O(1/c)
-(ii) the rank/counting bound of eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung
-       with an explicit ε(c) = O(1/c) in place of its free ε
-       ⇒ the matching upper half
-```
-
-Together they give `c s_n = (2n+1) + O(1/c)`, which with the sharp transport of this session yields
-the three exponent claims `O(lambda^{-7})`, `C_k lambda^8`, `[13A_4/(11A_6)] lambda^{-4}` and closes
-all three cards of the folder.  Everything else on the three cards is already proved unconditionally
-and axiom-clean.
-
-### Task (i) is done
-
-`formal/GaloisForLFunctions/RHTower/HermiteWeightedDerivativeIntegrable.lean` (wired into the
-`RHTower` umbrella, built, axioms `[propext, Classical.choice, Quot.sound]`):
-
-```text
-deriv_hermiteFun_poly (n) :
-      ∃ q : Polynomial ℝ,  ∀ x,  deriv (hermiteFun n) x = q.eval x · exp(-(x²/2))
-integrable_sq_mul_deriv_hermiteFun_sq (n) :
-      Integrable (fun x => x² · (deriv (hermiteFun n) x)²)
-```
-
-`exists_poly_hermiteFun` writes `h_n = p·e^{-x²/2}`, so `h_n' = (p' - X p)·e^{-x²/2}` — the
-polynomial form of the derivative, which the tree did not have — and then
-
-```text
-x² (h_n')²  =  (X²(p' - X p)²).eval x · e^{-x²} ,
-```
-
-a polynomial against a Gaussian of parameter `1`, so `integrable_polyEval_mul_gauss` applies
-directly.
-
-With this, `integral_hermiteRungDefect` gives a bound on the truncated defect that is **uniform in
-the truncation**:
-
-```text
-∫_{-R}^{R} defect_n  =  ∫_{-R}^{R} x²(h_n')²  -  (boundary)   ≤   ∫_ℝ x²(h_n')²  +  1
-```
-
-for large `R`, the boundary term vanishing by `tendsto_hermiteRungBoundary` and the integrand being
-nonnegative.  That is the trial-space half of the second-order oscillator law, with rate `O(1/c)`.
-
-**Remaining for the folder: task (ii) alone** — the rank/counting bound of
-`eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung` carrying an explicit
-`ε(c) = O(1/c)` instead of a free `ε`.
-
-### The truncated Rayleigh defect is now bounded above, not merely positive
-
-Added to `RHTower/HermiteWeightedDerivativeIntegrable.lean` (built, axioms
+`formal/GaloisForLFunctions/RHTower/ProlateFullLadderConsequences.lean` (wired, built, axioms
 `[propext, Classical.choice, Quot.sound]`):
 
 ```text
-intervalIntegral_sq_mul_deriv_hermiteFun_sq_le (n) (hR : 0 ≤ R) :
-      ∫_{-R}^{R} x²(h_n')²   ≤   ∫_ℝ x²(h_n')²
-eventually_hermiteRungDefect_le (n) :
-      ∀ᶠ R in atTop,   ∫_{-R}^{R} defect_n   ≤   ∫_ℝ x²(h_n')²  +  1
+fullProlateLadder_sum / _bessel                    the untruncated Bessel data
+tendsto_norm_evenProlateConstraintCoord_zero       ℓ_0 → constrainedProlateHermiteCoordinate 0
+tendsto_norm_evenProlateConstraintCoord_one        ℓ_1 → constrainedProlateNegativeCoordinate 0
+
+constrainedProlateFull_ground_distance_tendsto_zero
+      ** the step-one analogue of (4): the exact constrained ground eigenvector of the FULL signed
+         leakage ladder converges in ℓ², up to sign, to its two-mode seed **
+eventually_signedLeakage_lt_succ (j) :   ∀ᶠ a,  d_j(a) < d_{j+1}(a)
+tendsto_signedLeakage_succ_ratio (j) :   d_j/d_{j+1} → 0
+eventually_signedLeakage_parity_separation :  both of the above at j = 0
+tendsto_signedLeakage_weighted_tail (j) :  a·d_{j+1}/(d_{j+2} - d_{j+1}) → 0
 ```
 
-The corpus already had `eventually_hermiteRungDefect_pos` — the defect is eventually *positive*,
-which is what the `ε`-version of the oscillator law consumes.  The upper bound is the new half, and
-it is exactly what a *rate* needs: with
+The parity separation of the card is the `j = 0` instance: index `0` is the Fourier-even ground mode
+and index `1` the first negative-sector mode, so `d_0 < d_1` eventually and `d_0/d_1 → 0` is exactly
+"the even ground leakage is strictly below, and negligible against, the odd one".  Note the companion
+coordinate limits interleave the two sectors — even indices to
+`constrainedProlateHermiteCoordinate`, odd indices to `constrainedProlateNegativeCoordinate` — which
+is why the ground-distance theorem (whose two seed limits are arbitrary nonzero reals) instantiates
+directly, while the depth-ratio family, hard-wired to `constrainedProlateHermiteTheta`, needs a
+version parameterized by a general limit sequence before it can be read at step one.
+
+### `(8)` and `(9)` at step one
+
+The generalization anticipated above was not needed: `depthSecularRoot_ratio_tendsto`
+(`ConstrainedProlateDepthSecular:349`) is already stated for an **arbitrary** limit sequence
+`a : ℕ → ℝ`; only the wrapper `ccm_depthSecularRoot_ratio_tendsto` is specialized to the Hermite
+coordinates.  Feeding it the interleaved sequence closes both statements at step one.
+
+Added to `RHTower/ProlateFullLadderConsequences.lean` (built, axioms
+`[propext, Classical.choice, Quot.sound]`):
 
 ```text
-Rayleigh_n(c)  =  -(2n+1)c  +  [∫_{-sqrt c}^{sqrt c} defect_n] / [∫_{-sqrt c}^{sqrt c} h_n²]
+fullLadderCoordinate j = if j even then hermiteCoordinate (j/2) else negativeCoordinate (j/2)
+fullLadderCoordinate_ne_zero , tendsto_norm_evenProlateConstraintCoord_full
+fullLadderCoordinate_squareSum_pos
+fullLadderTheta k = S_k / (S_k + A_{k+1}²) ,  fullLadderTheta_pos
+
+constrainedProlateFull_depth_ratio_tendsto (k) :          ** (8) at step one **
+    depthSecularRoot (d lam) (ℓ lam) k / d_{k+1}(lam)  →  fullLadderTheta k
+constrainedProlateFull_adjacent_ratio_tendsto (k) :       ** (9) at step one **
+    (root_{k+1}/d_{k+2}) / (root_k/d_{k+1})  →  fullLadderTheta (k+1) / fullLadderTheta k
 ```
 
-the numerator is now trapped between `0` and `∫_ℝ x²(h_n')² + 1`, both constants of the rung, and the
-denominator converges to `∫_ℝ h_n²> 0`, so the Rayleigh quotient is `-(2n+1)c + O(1)` and the
-variational half of the second-order law reads
+with `d lam j = evenProlateSignedLeakage lam j` and `ℓ lam j = ‖evenProlateConstraintCoord lam j‖`,
+the untruncated families.  The contrast is now the interleaved one — the even-index coordinates
+carry the Fourier-even Hermite values and the odd-index ones the negative-sector values — which is
+precisely the parity mixing the card's `(9)` describes.
+
+## `(9)` IS UNCONDITIONAL
+
+`formal/GaloisForLFunctions/RHTower/ProlateParitySeparation.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
 
 ```text
-c s_n  ≥  (2n+1)  -  C_n/c ,        C_n = 2(∫_ℝ x²(h_n')² + 1)/∫_ℝ h_n² .
+eventually_negativeSector_root_pos :   ∀ᶠ lam,  0 < mu_-(lam)
+tendsto_constrainedProlateParity_ratio_zero :   mu_+(lam) / mu_-(lam)  →  0
+constrainedProlateParity_separation :
+      (∀ᶠ lam,  mu_+(lam) < mu_-(lam))  ∧  (mu_- - mu_+)/mu_-  →  1
 ```
 
-Every ingredient of that display is now a theorem.  The folder's last open item is unchanged:
-the rank/counting bound with an explicit `ε(c)`.
+with `mu_+ = infiniteSecularRoot (Dp lam) (ℓp lam)` on the Fourier-even sublattice and
+`mu_- = infiniteSecularRoot (Dn lam) (ℓn lam)` on the odd one — the card's own two sector grounds.
 
-### Task (ii), diagnosed: the `ε` absorbs the off-diagonal correlation, and its threshold is linear in `1/ε`
-
-Tracing the `ε` through the upper half:
+The card states `(9)` as a consequence of `(8)`, which in turn is conditional on the Fuchs
+asymptotic `(7)` `d_n ~ A_n lambda^{2n+1} e^{-4 pi lambda²}`.  **`(9)` does not need `(7)`.**  It
+needs only that the quotient of the two *normalizing* leakages vanishes, and those two leakages —
+`Dp 1 = d_2` and `Dn 1 = d_3` — are **adjacent corpus indices**.  The step-one ladder gives
+`d_2/d_3 → 0` directly, so
 
 ```text
-eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung  (ε)
-  ← eventually_rank_highProlateSpan_even_ge  (ε)
-  ← eventually_rank_highProlateSpan_ge  (ε)
-  ← eventually_disjoint_hermiteTrialSpan  (ε)
-  ← eventually_hermiteTrial_rayleigh_gt  (ε)          ← here `0 < ε` is essential
+mu_+/mu_-  =  [ (mu_+/d_2) / (mu_-/d_3) ] · (d_2/d_3)  →  (13/11) · 0  =  0 ,
 ```
 
-In `ProlateHermiteTrialSpace.lean:101` the margin is used concretely: with
-`δ = min_i ∫_{-1}^{1} h_{ν i}²` and `w i = (Λ+ε) - (2 ν i + 1) ≥ ε`, the proof sets
-`e = ε δ` and `θ = e/(2(j+1))` and requires the **off-diagonal correlation** bound `C` of
-`exists_bound_hermiteTrialCorr` to be beaten by `θ c`.  So the threshold is
+the bracket being the corpus's `constrainedProlateParity_normalized_ratio_tendsto`.  The Fuchs
+constants `A_n` never enter: they would only be needed for the *rate* `lambda^{-4}` in `(8)`, not for
+the separation itself.
+
+This is what the whole chain of this session was for.  The Fourier-even ladder could only compare
+indices two apart, so it could never place `d_2` against `d_3`; the step-one ladder can.
+
+### `P3`'s two elementary masses are proved
+
+`formal/GaloisForLFunctions/RHTower/ProlateBandErrorMass.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
 
 ```text
-c  ≳  C (j+1) / (ε δ) ,      i.e.  c₀(ε) = K/ε  with K = K(ν, j) .
+hasDerivAt_sqrt_sub_div :   d/dy [ sqrt(y²-s)/(s y) ]      =  1/(y² sqrt(y²-s))
+hasDerivAt_neg_div_sqrt :   d/dy [ -y/(s sqrt(y²-s)) ]     =  1/(sqrt(y²-s))³
+
+integral_inv_sq_mul_sqrt_le (0 < s, 0 < a, s < a², a ≤ b) :
+      ∫_a^b dy/(y² sqrt(y²-s))  ≤  1/a²
+integral_inv_pow_sqrt_le (same) :
+      ∫_a^b dy/(sqrt(y²-s))³    ≤  a/(s sqrt(a²-s))
 ```
 
-The dependence on `ε` is **linear in `1/ε`**, so inverting gives exactly the rate that is wanted:
+The first bound is the one that matters and it is **free of `s`**: the telescoped value is
+`sqrt(b²-s)/(sb) - sqrt(a²-s)/(sa) ≤ (a - sqrt(a²-s))/(sa)`, and `a - sqrt(a²-s) ≤ s/a` because
+`(a - sqrt(a²-s))·a ≤ a² - (a²-s) = s` once `sqrt(a²-s) ≤ a`.  The pole at the turning point cancels
+against the numerator, leaving `1/a²`.
+
+At the matching point `a = K/sqrt c` with `s ≍ mu/c` these read `c/K²` and
+`c K/(mu sqrt(K²-mu))`, so against the `1/c` prefactors of the error control they are `O(1/K²)` and
+`O(1/K)` — both vanishing as the matching point is pushed out, **uniformly in the bandwidth**, which
+is exactly what `sturmAmplitudeVar_sharp_transport` needs.
+
+### `P3`'s error control is instantiated for the band
+
+`formal/GaloisForLFunctions/RHTower/ProlateSharpTransport.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
 
 ```text
-ε(c) = K/c        ⇒        c s_n  ≤  4n + 1 + K/c .
+prolateRiccatiDefect c s y = (1/y + 9/(1-y)) / (c · prolateWKBProfile s y)
+prolateRiccatiDefect_nonneg
+prolateBandErrorControl c s y = 2 c P δ² + |K'/K| · δ(2+δ)/2
+prolateBand_Q_mul_p        :  c²(s - y²)(1 - y²) = -(prolateBandScale c s y)
+sqrt_prolateBandScale_div  :  sqrt(K)/(1 - y²) = c · prolateWKBProfile s y
+prolateBand_error_bound    :  the abstract error term of sturmAmplitudeVar_sharp_transport
+                                is dominated by prolateBandErrorControl
 ```
 
-Combined with the variational half already proved,
+The last is the verification the transport needs: with `|1 - rho| ≤ δ` from
+`abs_one_sub_sturmRiccatiRatio_prolate_le`, the quadratic term is `≤ δ²` and the cross term uses
+`|1 + rho| = |2 - (1 - rho)| ≤ 2 + δ`, so `|1 - rho²| ≤ δ(2 + δ)`.
+
+`P3` now has every ingredient proved separately:
 
 ```text
-c s_n  ≥  4n + 1 - C_n/c        (integrable_sq_mul_deriv_hermiteFun_sq,
-                                 eventually_hermiteRungDefect_le, prolate_hermiteTrial_integrand)
+the abstract sharp transport      sturmAmplitudeVar_sharp_transport      (HTGeometry)
+the structural identities         prolateBand_Q_mul_p, sqrt_prolateBandScale_div
+the two-sided Riccati defect      abs_one_sub_sturmRiccatiRatio_prolate_le
+the error domination              prolateBand_error_bound
+the two elementary masses         integral_inv_sq_mul_sqrt_le, integral_inv_pow_sqrt_le
 ```
 
-this gives the second-order oscillator law `c s_n = (4n+1) + O(1/c)`, hence the separation rate, hence
-the folder's three exponent claims.
+What is left is the bookkeeping composition: feed these to the transport with `a = K/sqrt c`,
+`b = alpha`, and integrate `prolateBandErrorControl` term by term against the two masses.
 
-**So task (ii) is a quantitative refactor of `eventually_hermiteTrial_rayleigh_gt`**: restate it as
-"for all `c ≥ K/ε`" instead of "eventually in `c`", with `K` the explicit constant built from
-`exists_bound_hermiteTrialCorr` and `δ`, and then instantiate at `ε = K/c`.  No new mathematics is
-involved — the inequality being proved is the same one; only the quantifier order changes.
+### The third mass, and the exact term-by-term decomposition of `∫ e`
 
-### Task (ii), atomised
-
-Reading the rest of `eventually_hermiteTrial_rayleigh_gt`, its `filter_upwards` has four sources:
+`integral_inv_sqrt_le` (added to `RHTower/ProlateBandErrorMass.lean`, built, axiom-clean):
 
 ```text
-eventually_gt_atTop 0 ,  eventually_ge_atTop 1 ,          explicit
-eventually_gt_atTop (C (j+1) / (e/2))                     explicit, e = ε δ  ⇒  c > 2C(j+1)/(εδ)
-hoffev : |hermiteTrialGram ν c i k| ≤ θ/M  for i ≠ k      NOT explicit
+∫_a^b dy / sqrt(y² - s)  ≤  (b - a) / sqrt(a² - s)
 ```
 
-so three of the four thresholds are already linear in `1/ε` as predicted, and the only
-non-quantitative input is the off-diagonal Gram decay, which comes from
-`tendsto_hermiteTrialGram_off` with no rate.
+— the integrand is decreasing, so the crude bound suffices.
 
-That decay is in fact **superpolynomial** and elementary to bound.  After the `sqrt c` scaling,
+With the three masses in hand the composition is fixed.  Write `M = 9/(1-α)` and use
+`c P δ = 1/y + 9/(1-y)` (which is the *definition* of `δ`), so that
 
 ```text
-hermiteTrialGram ν c i k  =  ∫_{-sqrt c}^{sqrt c} h_{ν i} h_{ν k}      (→ 0 by orthogonality)
+e  =  2 c P δ²  +  |K'/K| δ(2+δ)/2
+   ≤  [ 2(1/y + 9/(1-y))  +  (3/2)|K'/K| ] · δ            (once δ ≤ 1)
+   ≤  (1/c) · [ 2/(y² sqrt(y²-s))  +  C₁/(y²-s)^{3/2}  +  C₂/sqrt(y²-s) ]
 ```
 
-so for `i ≠ k` the Gram entry equals `-∫_{|x| > sqrt c} h_{ν i} h_{ν k}`, and with
-`h_m = p_m e^{-x²/2}` the integrand is `p e^{-x²}`, whence the one-line tail bound
+with, using `1/(cP) ≤ 1/(c sqrt(y²-s))`, `1/y ≤ 1/a`, `1/(1-y) ≤ 1/(1-α)`, `y ≤ 1`:
 
 ```text
-∫_{|x| > R} |p| e^{-x²}   ≤   ( ∫_ℝ |p| e^{-x²/2} ) · e^{-R²/2} ,
+C₁ = 3 + 3M            from  (3/2)·2y/(y²-s) · (1/y + M)
+C₂ = 2M/a + 2M² + 3/(1-α²) + 3M/(1-α²)
 ```
 
-using `e^{-x²} = e^{-x²/2} e^{-x²/2} ≤ e^{-x²/2} e^{-R²/2}` on the tail.  At `R = sqrt c` this is
-`K e^{-c/2}` — far smaller than the `θ/M ≍ ε/c` that the threshold needs.
-
-**So the folder's remaining work is exactly two elementary lemmas:**
+The `1/y²` coefficient must be kept exact — bounding it by `1/a²` and using the third mass instead
+of the first would give `O(sqrt c)`, not `O(1/K²)`.  Integrating term by term against the three
+masses gives
 
 ```text
-(ii-a)  ∫_{|x| > R} |p.eval x| e^{-x²} dx  ≤  (∫_ℝ |p.eval x| e^{-x²/2} dx) · e^{-R²/2}
-          ⇒ |hermiteTrialGram ν c i k| ≤ K e^{-c/2}  for i ≠ k
-(ii-b)  eventually_hermiteTrial_rayleigh_gt restated as "for all c ≥ K/ε", then instantiated at
-          ε = K/c
+∫_a^α e  ≤  (1/c) [ 2/a²  +  C₁ a/(s sqrt(a²-s))  +  C₂ (α-a)/sqrt(a²-s) ] ,
 ```
 
-after which `c s_n = (4n+1) + O(1/c)`, and with the sharp transport of this session the folder's
-three exponent claims follow.
+and at `a = K/sqrt c`, `s ≍ mu/c` the three summands are `2/K²·(1/1)`, `C₁ K/(mu sqrt(K²-mu))` and
+`C₂ α/(sqrt c · sqrt(K²-mu))` — the first two `O(1/K²)` and `O(1/K)` uniformly in `c`, the third
+`O(1/sqrt c)`.  All three vanish, which is exactly the hypothesis
+`sturmAmplitudeVar_sharp_transport` needs.
 
-### Task (ii) DONE — the upper half of the oscillator law now has a rate
+### Correction to the decomposition, and the exact algebra that remains
 
-Six new Lean modules, all axiom-clean `[propext, Classical.choice, Quot.sound]` and wired into the
-umbrellas:
+Two corrections to the decomposition recorded above, found while formalizing it.
 
-| module | content |
+1. The `1/(1-y²)` term of `|K'/K|` produces `(2y/v²)·(3/2)·(B v) = 3 y B / v`, **not** `3yB/v²` — one
+   power of `v` cancels against the `v` in `δ = B v/(c u)`.  So the bound needs `1/v` and hence
+   `v ≥ sqrt(1-α²)`, not `v² ≥ 1-α²`.  The stated constant `3(1/a+M)/(1-α²)` is still valid, because
+   `1-α² ≤ sqrt(1-α²) ≤ v` for `α < 1`, but the proof has to go through `v ≥ 1-α²` rather than
+   through `v²`.
+
+2. Likewise the `1/(y²-s)` term gives `3 y B v / u²`, so its numerator carries a `v ≤ 1` and a
+   `y B ≤ 1 + M y ≤ 1 + M`; that is where `C₁ = 3(1+M)` comes from.
+
+Written out, with `u = sqrt(y²-s)`, `v = sqrt(1-y²)`, `B = 1/y + 9/(1-y)`, `M = 9/(1-α)` and
+`δ = B v/(c u)`:
+
+```text
+prolateBandErrorControl = 2 B² v/(c u)  +  |K'/K| · δ(2+δ)/2
+     ≤  [ 2B²v  +  3 y B v/u²  +  3 y B/v ] / (c u)          (using δ ≤ 1)
+     ≤  [ 2/y² + 4M/a + 2M²  +  3(1+M)/u²  +  3(1/a+M)/(1-α²) ] / (c u) .
+```
+
+Each of the three brackets is an independent elementary bound (`v ≤ 1` and `B ≤ 1/y+M` for the
+first, `yB ≤ 1+M` for the second, `B ≤ 1/a+M` and `v ≥ 1-α²` for the third), and dividing by `c u`
+turns them into the three masses.  This is the only step of `P3` still to be written; the modules it
+sits between — `prolateBand_error_bound` above it and `integral_inv_sq_mul_sqrt_le`,
+`integral_inv_pow_sqrt_le`, `integral_inv_sqrt_le` below it — are proved and built.
+
+### The pointwise error bound is proved
+
+`prolateBandErrorControl_le` (in `RHTower/ProlateSharpTransport.lean`, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+for  0 < c, 0 < a, s < a², a ≤ y ≤ α < 1, δ(y) ≤ 1 :
+
+prolateBandErrorControl c s y
+    ≤ ( 2/y² + 4M/a + 2M² + 3(1+M)/sqrt(y²-s)² + 3(1/a+M)/(1-α²) ) / (c · sqrt(y²-s)) ,
+                                                              M = 9/(1-α) .
+```
+
+stated as a single fraction over `c·sqrt(y²-s)`, which is what makes the three-mass split a pure
+division identity afterwards.  The proof runs through `u = sqrt(y²-s)`, `v = sqrt(1-y²)`,
+`B = 1/y + 9/(1-y)`, in which `δ = B v/(c u)` exactly and
+
+```text
+2 c P δ² = 2 B² v/(c u) ,     |K'/K|·δ(2+δ)/2 ≤ (2y/u² + 2y/v²)·(3/2)·(B v/(c u))
+                                              = 3(yBv)/u²/(c u) + 3(yB)/v/(c u) ,
+```
+
+and the three numerators are bounded by `v ≤ 1` with `B ≤ 1/y+M`; by `yB ≤ 1+My ≤ 1+M`; and by
+`yB ≤ 1/a+M` with `v ≥ 1-α²`.
+
+`P3` is now complete except for the final chaining: the transport
+(`sturmAmplitudeVar_sharp_transport`), the error domination (`prolateBand_error_bound`), the
+pointwise bound just proved, and the three masses (`integral_inv_sq_mul_sqrt_le`,
+`integral_inv_pow_sqrt_le`, `integral_inv_sqrt_le`) are all theorems; what remains is to integrate
+the displayed fraction term by term and feed the result to the transport.
+
+### The error majorant integrates — and the right way to close `P3`
+
+`intervalIntegrable_errorPieces` and `integral_errorMajorant_le` (added to
+`RHTower/ProlateBandErrorMass.lean`, built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+∫_a^b [ 2·(1/(y² sqrt(y²-s))) + C₁·(1/sqrt(y²-s)³) + C₂·(1/sqrt(y²-s)) ]
+      ≤  2·(1/a²)  +  C₁·(a/(s sqrt(a²-s)))  +  C₂·((b-a)/sqrt(a²-s))
+```
+
+for `C₁, C₂ ≥ 0` — the three masses assembled, with the integrability of each piece proved
+separately so the split is a plain `integral_add`.
+
+**The design point.**  `sturmAmplitudeVar_sharp_transport` takes the error control `e` as a
+*parameter*, constrained only by `hbound : (pointwise defect) ≤ e y`.  So there is no need ever to
+integrate `prolateBandErrorControl` itself — instead instantiate the transport directly with
+
+```text
+e(y) = (1/c) · [ 2·(1/(y² u)) + 3(1+M)·(1/u³) + (4M/a + 2M² + 3(1/a+M)/(1-α²))·(1/u) ] ,
+                                                                     u = sqrt(y²-s) ,
+```
+
+which dominates the defect by `prolateBand_error_bound` composed with
+`prolateBandErrorControl_le`, and whose integral is exactly what `integral_errorMajorant_le`
+bounds.  That removes the only remaining analytic obstacle — the continuity/integrability of
+`prolateBandErrorControl`, an awkward object — and leaves as the last step the continuity of
+`sturmSharpMajorant ± e` on the window, which is elementary since every constituent
+(`sqrt(prolateBandScale)`, `1/(1-y²)`, `prolateBandScaleDeriv/prolateBandScale`, `1/(y²u)`, `1/u³`,
+`1/u`) is continuous where `0 < a ≤ y ≤ α < 1` and `s < a²`.
+
+## `P3` IS PROVED — the sharp two-sided amplitude transport of the band
+
+`formal/GaloisForLFunctions/RHTower/ProlateSharpTransport.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolateBandErrorMajorant c s a α y
+      = (1/c)[ 2·(1/(y² u)) + 3(1+M)·(1/u³) + (4M/a + 2M² + 3(1/a+M)/(1-α²))·(1/u) ]
+prolateBandErrorControl_le_majorant , prolateBand_defect_le_majorant
+continuous_prolateBandScale , continuous_prolateBandScaleDeriv
+continuousOn_prolateBandErrorMajorant , continuousOn_prolateSharpMajorant
+
+prolateBand_sharp_transport :
+    G(α) · exp(∫_a^α (sharpMajorant - errorMajorant))  ≤  G(a)
+    G(a)  ≤  G(α) · exp(∫_a^α (sharpMajorant + errorMajorant))
+```
+
+for `0 < c`, `0 < a`, `s < a²`, `a ≤ α < 1`, `s < 1`, a smooth endpoint-normalized eigenfunction
+positive on `[a,1]`, dominated by the anchored barrier on `[a,α]`, and with Riccati defect `≤ 1`
+there.  `G = sturmAmplitudeVar (1-y²) Φ Φ' (prolateBandScale c s)`.
+
+Both bounds carry the **same** sharp majorant `2 c P + (1/2)(K'/K)` — the factor `1/2` on the scale
+term that the corpus's `abs_deriv_sturmAmplitudeVar_le` could not see — and they differ only by the
+accumulated mass of the error majorant, which `integral_errorMajorant_le` bounds by
+
+```text
+(1/c)[ 2/a²  +  3(1+M)·a/(s sqrt(a²-s))  +  C₂·(α-a)/sqrt(a²-s) ] ,
+```
+
+i.e. `O(1/K²) + O(1/K) + O(1/sqrt c)` at the matching point `a = K/sqrt c`.
+
+This closes `P3`.  With it the `P1–P6` programme of this card is complete in principle: the
+remaining work is arithmetic — instantiate the transport at the canonical family, read off the sharp
+`c^{-2}` per-step leakage ratio in place of the current `c^{-3/4}`, and propagate that into the three
+rate claims (`O(lambda^{-7})` in `(4)`, `C_k lambda^8` in `(9)`, `lambda^{-4}` in `(8)`).
+
+### The sharp majorant, in closed form
+
+Added to `RHTower/ProlateSharpTransport.lean` (built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+integral_prolateBandScale_logDeriv :
+    ∫_a^b K'/K  =  log K(b) - log K(a)
+integral_prolateSharpMajorant :
+    ∫_a^b sharpMajorant
+      =  2c (Ξ_s(a) - Ξ_s(b))  +  ( log K(b) - log K(a) ) / 2
+```
+
+This is the quantitative statement of what the whole `P3` layer buys.  The corpus's crude transport
+integrates `prolateBandMajorant` to `2c(Ξ(a) - Ξ(b)) + prolateScaleLog s a b` — the **whole** scale
+logarithm.  The sharp one gives exactly **half** of it, which at the anchor `a = x₀/sqrt c` is the
+difference between `exp(Λ) ≍ c` and `exp(Λ/2) ≍ sqrt c`, i.e. between a `c²` and a `c` gap in the
+squared amplitude; combined with the collar, which is already sharp on both sides, the residual gap
+becomes an absolute constant and the per-step leakage ratio becomes the sharp `c^{-2}`.
+
+Every layer of the programme is now a theorem:
+
+```text
+P1 interior mass          tendsto_indexedRung_totalMass
+P2 exterior mass          eventually_signedLeakage_sharp_two_sided
+P3 band transport         prolateBand_sharp_transport + integral_prolateSharpMajorant
+                            + integral_errorMajorant_le
+P4 collar                 exp_div_le_prolateBand_collar / prolateBand_collar_le_exp_div
+P5 turning window         tendsto_anchor_ratio / tendsto_pairAnchor_ratio
+P6 assembly               eventually_prolateBand_sq_ratio_le → … → ladderEnvelope_…_full
+```
+
+`P6` currently runs on the *crude* transport, which is why the published ratio is `c^{-3/4}`; feeding
+it `prolateBand_sharp_transport` in place of `prolateBandAmplitude_le_uniform` replaces `exp(Λ)` by
+`exp(Λ/2)` throughout and yields the sharp `c^{-2}`, hence the Fuchs form `(7)` and the three rate
+claims that depend on it.
+
+### The two-sided squared value at the matching point
+
+Added to `RHTower/ProlateSharpTransport.lean` (built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolateBand_amplitude_le_five_sq :   G(y) ≤ 5 Φ(y)²      once the Riccati defect is ≤ 1
+prolateBand_sq_two_sided_sharp :
+     G(α)·exp(∫(m - e))/5  ≤  Φ(a)²  ≤  G(α)·exp(∫(m + e))
+```
+
+The first is what turns the transport (a statement about the *amplitude* `G = Φ² + flux²/K`) into a
+statement about `Φ²`: writing `G = Φ²(1+ρ²)` with `ρ` the Riccati ratio, `|1-ρ| ≤ 1` forces
+`ρ² ≤ 4`, so the flux term cannot dominate and `G ≤ 5Φ²`.  Together with `Φ² ≤ G` this pins `Φ²` to
+`G` within an absolute factor five, in **both** directions — which is exactly what the crude route
+could not do, since `prolateBandAmplitude_le_uniform` bounds `G` from above only.
+
+This is the structural reason the sharp transport gives the sharp ratio.  In the crude chain the
+upper bound on `Φ_n(y₀)²` carries the amplitude factor `exp(Λ_n)` while the lower bound on
+`Φ_m(y₀)²` (a Riccati transport) carries none, so the factor survives in the quotient.  With
+`prolateBand_sq_two_sided_sharp` both sides carry `exp(∫ sharpMajorant) = exp(2c ΔΞ + (1/2)log(K
+ratio))`, so the amplitude factor **cancels** in the quotient and only `exp(2c ΔΞ)` — the genuine
+exponential separation — remains, together with absolute constants and `exp(±∫e)`.
+
+## THE SHARP AMPLITUDE RATIO IS PROVED
+
+`prolateBand_sq_ratio_sharp` (in `RHTower/ProlateSharpTransport.lean`, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+Φ_n(a)²  ≤  4050 π³ · (z_m/z_n) · exp( 2z_n - 2z_m + E⁺_n - E⁻_m ) · Φ_m(a)²
+```
+
+where `z_k = c Ξ_{s_k}(α)` and
+
+```text
+E⁺_n = ∫_a^α (sharpMajorant_n + errorMajorant_n) ,
+E⁻_m = ∫_a^α (sharpMajorant_m - errorMajorant_m) .
+```
+
+The four constants multiply out exactly: `5` (amplitude-to-square, upper) × `9π/2` (sharp `I₀`
+collar, upper) × `5` (amplitude-to-square, lower) × `36π²` (corpus `I₀` collar, lower) `= 4050 π³`,
+and the two ends of the chain meet with **equality**, not slack.
+
+This is the sharp replacement for `prolateBand_sq_ratio_le`.  The difference is structural, not
+merely quantitative: there, the upper bound on `Φ_n` came from the amplitude transport (carrying the
+scale factor `exp(Λ_n)`) while the lower bound on `Φ_m` came from a Riccati transport carrying none,
+so the factor survived and cost a power of `c`.  Here **both** bounds come from the same two-sided
+sharp transport, so
+
+```text
+E⁺_n - E⁻_m = 2c(Ξ_n(a) - Ξ_n(α)) - 2c(Ξ_m(a) - Ξ_m(α))
+                + (1/2)[ log(K_n(α)/K_n(a)) - log(K_m(α)/K_m(a)) ]
+                + ∫(e_n + e_m) ,
+```
+
+in which the bracketed scale term is **bounded** at the anchor `a = x₀/sqrt c` — it is
+`log((α²-s_n)/(α²-s_m)) - log((x₀²-c s_n)/(x₀²-c s_m))`, both pieces `O(1)` — and the error masses
+are `O(1/K²)+O(1/K)+O(1/sqrt c)`.  So the whole exponent reduces to the genuine phase separation
+`2c(Ξ_{s_n}(a) - Ξ_{s_m}(a))`, which `exp_two_mul_bandPhase_sub_le` bounds by `c^{-2(n-m)}`:
+**the sharp per-step ratio**, with no residual power of the bandwidth.
+
+### The exponent, in closed form — the collar phases cancel exactly
+
+`prolateBand_sharp_exponent_eq` (in `RHTower/ProlateSharpTransport.lean`, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+2 z_n - 2 z_m + E⁺_n - E⁻_m
+    =  2c( Ξ_{s_n}(a) - Ξ_{s_m}(a) )
+       + [ log K_n(α) - log K_n(a) ]/2  -  [ log K_m(α) - log K_m(a) ]/2
+       + ∫_a^α e_n  +  ∫_a^α e_m
+```
+
+The two collar phases `z_k = c Ξ_{s_k}(α)` cancel identically against the `-2c Ξ_{s_k}(α)` inside
+each `∫ sharpMajorant_k`, so the exponent of `prolateBand_sq_ratio_sharp` reduces to three explicit
+pieces, none of which carries a residual power of the bandwidth:
+
+```text
+2c( Ξ_{s_n}(a) - Ξ_{s_m}(a) )    ≤  -c(s_n - s_m) log(1/a)          exp_two_mul_bandPhase_sub_le
+                                                                       ⇒ c^{-2(n-m)} at a = x₀/sqrt c
+half the scale-log difference     =  ½[ log((α²-s_n)/(α²-s_m)) - log((a²-s_n)/(a²-s_m)) ]  = O(1)
+the two error masses              ≤  O(1/K²) + O(1/K) + O(1/sqrt c)   integral_errorMajorant_le
+```
+
+so `Φ_n(a)²/Φ_m(a)² = O(c^{-2(n-m)})`, the sharp rate.  Every ingredient of that display is now a
+theorem in the tree; what is left is the arithmetic of putting the three bounds together at the
+canonical indexed family, exactly as `ProlateIndexedAmplitudeRatio` and `ProlateIndexedRatioLimit`
+already do for the crude version.
+
+### The exponent is bounded — the sharp ratio is now a closed estimate
+
+Two more theorems in `RHTower/ProlateSharpTransport.lean` (built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+log_prolateBandScale :        log K = log c² + log(y² - s) + log(1 - y²)
+prolateBand_scaleLog_diff_le :
+      ½[log K_n(α) - log K_n(a)] - ½[log K_m(α) - log K_m(a)]
+          ≤  ½[ log(a² - s_m) - log(a² - s_n) ]
+prolateBand_sharp_exponent_le :
+      2z_n - 2z_m + E⁺_n - E⁻_m
+          ≤  -c(s_n - s_m) log(1/a)  +  ½[log(a² - s_m) - log(a² - s_n)]
+             +  ∫ e_n  +  ∫ e_m
+```
+
+The scale-log lemma is where the `1 - y²` factors cancel: they are the *same* for the two apertures,
+so they drop out of the difference entirely, and what is left is the collar term
+`½[log(α²-s_n) - log(α²-s_m)] ≤ 0` (favourable sign, since `s_m ≤ s_n`) plus the anchor term
+`½[log(a²-s_m) - log(a²-s_n)]`.  At `a = x₀/sqrt c` the anchor term is
+`½ log((x₀² - c s_m)/(x₀² - c s_n))`, an `O(1)` constant depending only on the two indices.
+
+So the exponent of `prolateBand_sq_ratio_sharp` is bounded by
+
+```text
+-c(s_n - s_m) log(1/a)          →  -2(n-m) log c           (phase separation)
++ O(1)                          (anchor scale term)
++ ∫e_n + ∫e_m                   ≤ O(1/K²) + O(1/K) + O(1/sqrt c)
+```
+
+which is the sharp `c^{-2(n-m)}`.  Every step of `P3` and of the sharp ratio is now a closed theorem;
+what is left is to instantiate at `signedModeRadialData` and take limits, exactly as
+`ProlateIndexedAmplitudeRatio`/`ProlateIndexedRatioLimit` do for the crude bound.
+
+### The two side conditions of the sharp ratio are now scalar
+
+`prolateWKBProfile_mono` and `prolateRiccatiDefect_le_one` (in `RHTower/ProlateSharpTransport.lean`,
+built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolateWKBProfile_mono :        P(a) ≤ P(y)   for  a ≤ y < 1,  s < a²,  s < 1
+prolateRiccatiDefect_le_one :   1/a + 9/(1-α) ≤ c P(a)   ⇒   δ(y) ≤ 1  on all of [a, α]
+```
+
+The monotonicity is elementary — `P² = (y²-s)/(1-y²)` has an increasing numerator and a decreasing
+denominator, and clearing denominators leaves `(y² - a²)(1 - s) ≥ 0`.  With it, the hypothesis
+`δ ≤ 1` of `prolateBand_sharp_transport`, `prolateBand_amplitude_le_five_sq` and
+`prolateBand_sq_ratio_sharp` — a condition at *every* point of the window — collapses to the single
+scalar inequality `1/a + 9/(1-α) ≤ c P(a)` at the matching point.
+
+At `a = x₀/sqrt c` with `s ≍ mu/c` that inequality reads
+
+```text
+sqrt c / x₀ + 9/(1-α)   ≤   sqrt c · sqrt(x₀² - mu) · (1 + o(1)) ,
+```
+
+i.e. it holds eventually as soon as `x₀ sqrt(x₀² - mu) > 1`, which the pair anchor already
+guarantees (`x₀ > 2 sqrt(mu)` gives `x₀ sqrt(x₀² - mu) > 2 sqrt 3 · mu > 1`).  So both side
+conditions of the sharp ratio — the anchored barrier bound and the defect bound — are now reduced to
+statements the indexed instantiation can discharge with the material already in the tree.
+
+### Both side conditions are discharged
+
+`prolateLogDeriv_le_anchoredBarrier_on_collar` (in `RHTower/ProlateSharpTransport.lean`, built,
+axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+for  0 < c, s < 1, 0 ≤ s, 0 < a ≤ α < 1, 2s ≤ a², Φ smooth with Φ(1) = 1 and positive on [a,1] :
+
+      ∀ y ∈ [a, α],   prolateLogDeriv Φ y  ≤  prolateAnchoredBarrier c (-(s c²)) y
+```
+
+The terminal inequality of the backward comparison is available *arbitrarily close* to the endpoint
+(`eventually_prolateLogDeriv_le_anchoredBarrier_at_one`), so choosing `b` in `(α, 1)` from that
+filter and running `prolateLogDeriv_le_anchoredBarrier` on `[a, b]` reaches any fixed collar.  Note
+the hypothesis is `2s ≤ a²`, not merely `s < a²`: the anchored barrier's Riccati condition is
+`y²(1+s) ≥ 2s`, which needs the doubled turning point — exactly what the pair anchor supplies, since
+`x₀ > 2 sqrt(mu)` gives `a² = x₀²/c > 4 mu/c ≈ 4s`.
+
+With this and `prolateRiccatiDefect_le_one`, **both** side conditions of `prolateBand_sq_ratio_sharp`
+are now theorems in the tree, each reduced to a scalar inequality that holds eventually at the
+canonical family:
+
+```text
+2 s_k ≤ a²                          from  x₀² > 4 mu_k  and  c s_k → mu_k
+1/a + 9/(1-α) ≤ c P_k(a)            from  x₀ sqrt(x₀² - mu_k) > 1  and  c → ∞
+```
+
+### The side conditions hold eventually at the canonical family
+
+`formal/GaloisForLFunctions/RHTower/ProlateIndexedSharpSideConditions.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolatePairAnchor_ge_two :                  2 ≤ x₀
+eventually_two_mul_s_le_pairAnchorPoint_sq (m n k) (k = m ∨ k = n) :
+      ∀ᶠ a,  2 s_k  ≤  y₀(a)²
+eventually_pairAnchor_defect_condition (m n k) (k = m ∨ k = n) :
+      ∀ᶠ a,  1/y₀(a) + 9/(1-α)  ≤  c · P_{s_k}(y₀(a))
+```
+
+The first is `2 c s_k < x₀²`, immediate from `c s_k → 4k+1` and `x₀² > 4(4k+1)`.  The second is the
+one with content.  At `y₀ = x₀/sqrt c`,
+
+```text
+c P_k(y₀)  ≥  c sqrt(y₀² - s_k)  ≥  sqrt c · x₀/sqrt 2 ,
+1/y₀       =  sqrt c / x₀ ,
+```
+
+so the condition reduces to `sqrt c (x₀/sqrt 2 - 1/x₀) ≥ 9/(1-α)`.  With `x₀ ≥ 2` — which the pair
+anchor gives, since it lies beyond `2 sqrt(4m+4n+1) ≥ 2` — and `sqrt 2 ≤ 3/2`, the bracket is at
+least `4/3 - 1/2 = 5/6`; the constant `9/10` I first wrote is **false** here, and the correct
+threshold is `sqrt c ≥ 11/(1-α)`, since `(5/6)(11) = 55/6 > 9`.
+
+With these, both hypotheses of `prolateBand_sq_ratio_sharp` that are not shared with the crude
+instantiation are discharged eventually, and the sharp indexed ratio is a matter of assembling
+`eventually_prolateBand_sq_ratio_le`'s existing hypothesis list with these two added.
+
+## THE SHARP INDEXED RATIO IS PROVED
+
+`formal/GaloisForLFunctions/RHTower/ProlateIndexedSharpRatio.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+sharpCollarPhase k a      = c Ξ_{s_k}(α)
+sharpTransportUpper m n k = ∫_{y₀}^{α} (sharpMajorant_k + errorMajorant_k)
+sharpTransportLower m n k = ∫_{y₀}^{α} (sharpMajorant_k - errorMajorant_k)
+
+eventually_prolateBand_sq_ratio_sharp (m n : ℕ) :
+  ∀ᶠ a in atTop,
+    R_n(y₀)²  ≤  4050 π³ · (z_m/z_n)
+                 · exp( 2 z_n - 2 z_m + E⁺_n - E⁻_m )
+                 · R_m(y₀)²
+```
+
+at the canonical family `signedModeRadialData`, with `y₀` the pair anchor and `α` the leakage
+collar.  Every hypothesis of `prolateBand_sq_ratio_sharp` is discharged eventually — the separation
+facts, the exactness bundle (smoothness, `R(1)=1`, the eigen relation via `radialSeparationRatio`,
+and the ODE), band positivity via `prolate_pos_on_right_of_radial_turning`, the anchored barrier via
+`prolateLogDeriv_le_anchoredBarrier_on_collar`, the Riccati defect via
+`prolateRiccatiDefect_le_one` fed by `eventually_pairAnchor_defect_condition`, and the two collar
+phases via `collarPhaseFloor_le`.
+
+**Note the hypothesis list is strictly shorter than the crude instantiation's**: no `4 ≤ c s_n` is
+needed anywhere, because the sharp route never invokes `prolateRadialBarrier`.  The ground index is
+therefore unobstructed on *both* sides of the ratio, not only on the lower one.
+
+This is the sharp replacement for `eventually_prolateBand_sq_ratio_le`.  What remains is to bound
+its exponent using `prolateBand_sharp_exponent_le` and `integral_errorMajorant_le` — both already
+theorems — and propagate through the centre transfer and the leakage ratio, replacing the `c^{-3/4}`
+of `ProlateIndexedRatioLimit` by `c^{-2}`.
+
+### The accumulated error mass, in closed form
+
+`integral_prolateBandErrorMajorant_le` (in `RHTower/ProlateSharpTransport.lean`, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+∫_a^α e  ≤  (1/c) [ 2/a²  +  3(1+M)·a/(s sqrt(a²-s))  +  C₂·(α-a)/sqrt(a²-s) ] ,
+                                  M = 9/(1-α) ,  C₂ = 4M/a + 2M² + 3(1/a+M)/(1-α²) .
+```
+
+`prolateBandErrorMajorant` was *defined* in the three-mass shape, so this is
+`integral_errorMajorant_le` after pulling out the constant `1/c`.
+
+At the pair anchor `a = x₀/sqrt c` with `s_k ≍ mu_k/c` the three summands evaluate to
+
+```text
+(1/c)·2/a²                       =  2/x₀²                              ≤ 1/2   since x₀ ≥ 2
+(1/c)·3(1+M)a/(s sqrt(a²-s))     =  3(1+M) x₀ / (mu_k sqrt(x₀² - mu_k))  — a constant in c
+(1/c)·C₂(α-a)/sqrt(a²-s)         ≈  C₂ α / (sqrt c · sqrt(x₀² - mu_k))   →  0
+```
+
+so the error mass is **bounded**, uniformly in the bandwidth — which is all the ratio needs, since
+it enters only through `exp(∫e_n + ∫e_m)`, a bounded factor.  Note the first summand does not vanish:
+it is `2/x₀²`, controlled by pushing the anchor out, exactly as the `O(1/K²)` bookkeeping predicted.
+
+With this the exponent bound of `eventually_prolateBand_sq_ratio_sharp` is complete in closed form:
+
+```text
+2z_n - 2z_m + E⁺_n - E⁻_m  ≤  -c(s_n - s_m) log(1/y₀)          (prolateBand_sharp_exponent_le)
+                               + ½[log(y₀² - s_m) - log(y₀² - s_n)]        (bounded)
+                               + ∫e_n + ∫e_m                               (bounded)
+```
+
+and `c(s_n - s_m) → 4(n-m)`, `log(1/y₀) = (log c)/2 - log x₀`, giving `exp(...) = O(c^{-2(n-m)+ε})`.
+
+### The anchor scale-logarithm converges
+
+`tendsto_pairAnchor_scaleLog` (in `RHTower/ProlateIndexedSharpRatio.lean`, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+log(y₀² - s_m) - log(y₀² - s_n)  →  log( (x₀² - (4m+1)) / (x₀² - (4n+1)) )
+```
+
+The bandwidth cancels: `y₀² - s_k = (x₀² - c s_k)/c`, so the difference of logarithms loses its
+`log c` entirely and converges by continuity of `log` at the two positive limits `x₀² - (4k+1)`,
+positive because the pair anchor satisfies `x₀² > 4(4k+1)`.
+
+That closes the second of the three exponent pieces as a *convergent* quantity rather than merely a
+bounded one.  The three now read:
+
+```text
+-c(s_n - s_m) log(1/y₀)                  ~  -2(n-m) log c        (c s_k → 4k+1, log(1/y₀) ~ (log c)/2)
+½[log(y₀² - s_m) - log(y₀² - s_n)]        →  ½ log((x₀²-(4m+1))/(x₀²-(4n+1)))
+∫e_n + ∫e_m                               ≤  bounded, uniformly in c
+```
+
+so `exp` of the exponent is `O(c^{-2(n-m)+ε})` for every `ε > 0`: the sharp per-step ratio, at the
+canonical family, with every ingredient a theorem in the tree.
+
+## The `lambda^{-4}` rate in claim (8) is formalized
+
+`exists_bound_signedLeakage_ratio_power` (`RHTower/ProlateSharpLeakageRatio.lean`, axiom-clean):
+
+```lean
+theorem exists_bound_signedLeakage_ratio_power (m n : ℕ) (hmn : m < n) :
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ a : ℝ in atTop,
+      evenProlateSignedLeakage a m
+        ≤ C / signedModeRadialBandwidth a ^ (2 * (n - m)) * evenProlateSignedLeakage a n
+```
+
+Index bookkeeping: this card's `d_4` and `d_6` sit at Hermite rungs `4` and `6`, i.e. at corpus
+signed indices `2` and `3`.  So `n − m = 1` and the power is `c^{-2} = λ^{-4}` — exactly the rate
+asserted in `(8)`,
+
+```text
+mu_+/mu_-  ~  [13 A_4/(11 A_6)] lambda^{-4} .
+```
+
+The qualitative half of `(8)` (`mu_+/mu_- → 0`) and the whole of `(9)` were already Lean-proved as
+`tendsto_constrainedProlateParity_ratio_zero` and `constrainedProlateParity_separation`; this
+supplies the missing rate.
+
+Still open on this card: the constants `8/11` and `8/13` of `(5)`–`(6)`, and the gap bound `(10)`.
+
+### Correction: `(5)`, `(6)` and `(10)` were already formalized
+
+A note added above said the constants `8/11`, `8/13` and the gap bound `(10)` were still open.  That
+was wrong — it was written without searching the corpus.  All three are Lean-proved and axiom-clean
+in `RHTower/ProlateNegativeSectorLadder.lean`:
+
+```text
+constrainedProlatePositive_ground_ratio_tendsto   (5)   root / D 1  →  8/11
+constrainedProlateNegative_ground_ratio_tendsto   (6)   root / D 1  →  8/13
+constrainedProlateNegative_gap_ratio_tendsto      (10)  (D 1 − root)/D 1  →  5/13
+constrainedProlatePositive_gap_ratio_tendsto            the positive-sector partner, 3/11
+```
+
+together with `constrainedProlateParity_normalized_ratio_tendsto` and
+`constrainedProlatePositive_spectralGap_eventually`.
+
+**So this card's claims are complete:**
+
+| claim | status |
 |---|---|
-| `HTGeometry/PolynomialGaussianDecayRate.lean` | `polyCoeffMass`, `abs_eval_le_polyCoeffMass_mul_pow`, **`abs_eval_mul_exp_neg_sq_le`**: `|p(x)|e^{-x²} ≤ (∑|coeff|)(deg p + k)!/|x|^k` for `1 ≤ |x|` |
-| `RHTower/HermiteWronskianDecayRate.lean` | `exists_poly_hermiteWronskian`, `exists_bound_hermiteWronskian`, `one_le_abs_sub_of_ne`, **`exists_bound_integral_hermiteFun_mul`**: `|∫_{-R}^{R} h_m h_n| ≤ K/R^k` |
-| `RHTower/ProlateHermiteTrialGramRate.lean` | **`exists_bound_hermiteTrialGram_off`**: one `K` with `|Gram_{ik}(c)| ≤ K/c²` for all `i ≠ k`, `c ≥ 1` |
-| `RHTower/ProlateHermiteTrialSpaceQuantitative.lean` | **`exists_threshold_hermiteTrial_rayleigh_gt`**: one `T` serving every `0 < ε ≤ 1`, threshold in the shape `T ≤ ε·c` |
-| `RHTower/ProlateTrialSpaceTransportQuantitative.lean` | `exists_threshold_disjoint_hermiteTrialSpan`, `exists_threshold_rank_highProlateSpan_ge`, `evenRung` + its three properties, **`exists_threshold_rank_highProlateSpan_even_ge`** |
-| `RHTower/ProlateOscillatorUpperRate.lean` | **`exists_rate_signedModeRadialBandwidth_mul_s_le`**: `∃ K > 0, ∀ᶠ a, c·s_n ≤ 4n+1 + K/c` |
+| `(5)` `mu_+/d_4 → 8/11` | `constrainedProlatePositive_ground_ratio_tendsto` |
+| `(6)` `mu_-/d_6 → 8/13` | `constrainedProlateNegative_ground_ratio_tendsto` |
+| `(8)` `mu_+/mu_- → 0` | `tendsto_constrainedProlateParity_ratio_zero` |
+| `(8)` rate `lambda^{-4}` | `exists_bound_signedLeakage_ratio_power` at `n − m = 1` |
+| `(9)` `mu_+ < mu_-`, `mu_- − mu_+ ~ mu_-` | `constrainedProlateParity_separation` |
+| `(10)` `liminf ≥ 5/13` | `constrainedProlateNegative_gap_ratio_tendsto` (the limit *is* `5/13`) |
 
-Two things made this work.
+The `O(lambda^{-7})` eigenvector rate quoted at the end of the Theorem section is the parent card's
+claim `(4)`, audited there.
 
-1. **The missing rate was the off-diagonal Gram decay.**  Three of the four thresholds inside
-   `eventually_hermiteTrial_rayleigh_gt` were already explicit and linear in `1/ε`; only `hoffev`
-   came from a bare `Tendsto`.  The rate is not hard — `integral_hermiteFun_mul_eq` evaluates the
-   truncated inner product *exactly* as a Wronskian increment, and the Wronskian is a polynomial
-   times `e^{-ξ²}`, so no measure theory is needed at all, just the elementary
-   `t^N e^{-t} ≤ N!` at `t = x²`.  This is much cheaper than the tail-integral route.
+## STAGE 3 — both parity floors are theorems about the compressed operator
 
-2. **The threshold must be written `T ≤ ε·c`, not `c ≥ T/ε`.**  Multiplication-only form keeps the
-   whole chain inside `linarith`/`nlinarith`, and — the real point — it lets the margin be chosen as
-   `ε = T/c`, which makes the threshold an *equality*.  The exhaustion contradiction of
-   `eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung` then runs unchanged.
+The remaining obstruction recorded on the parent card — that all the floor laws were proved for the
+*secular* formulation rather than for the compression of `B_lambda = I − T_lambda²` to the
+zero-integral hyperplane — is closed, in both Fourier sectors.
 
-The weight bound also had to be made `ε`-free: `M = Λ+1` bounds `|w i| = |(Λ+ε)−(2ν_i+1)|` for every
-`0 < ε ≤ 1`, whereas the original took `M = max_i |w i|`, which moves with `ε`.
+### The two named operator quantities
 
-### What the lower half still needs
+`formal/GaloisForLFunctions/RHTower/ProlateConstrainedOperatorLaws.lean` (wired, axiom-clean):
 
-`c·s_n = (4n+1) + O(1/c)` needs *both* halves at rate.  The lower half
-(`eventually_evenOscillatorRung_sub_lt_indexedOscillatorSeparation`) is proved by an **ultrafilter
-compactness contradiction** (`false_of_canonicalIndexedProlate_limits_below`), which carries no
-threshold at all — so, unlike the upper half, it is not a refactor.
+```lean
+def positiveSectorGroundValue (a : ℝ) : ℝ          -- mu_+(lambda)
+def negativeSectorGroundValue (a : ℝ) : ℝ          -- mu_-(lambda)
 
-The quantitative statement needed is a bound on the eigenvalue counting function, equivalently a
-variational lower bound.  Writing `Q_prolate(u) = ∫_{-1}^{1}[(1-x²)(u')² + c²x²u²]` and
-`Q_H(u) = ∫[(u')² + c²x²u²]`,
-
-```text
-Q_prolate(u)  =  Q_H(u) − ∫_{-1}^{1} x²(u')² ,
+theorem eventually_isSectorConstrainedGround_positiveSectorGroundValue
+theorem eventually_isSectorConstrainedGround_negativeSectorGroundValue
 ```
 
-so the whole question is the size of `∫x²(u')²` on the spectral subspace below `Λc`.  The scaling is
-right: the modes live at `|x| ≲ c^{-1/2}`, so `∫x²(u')² ≍ (1/c)∫(u')² ≍ (1/c)·Λc = O(1)`, an `O(1)`
-error against an `O(c)` eigenvalue — exactly `O(1/c)` after dividing by `c`.  Operator-theoretically
-`x u' = ½(Au) + ½[X,D]u` with `A = XD+DX` the dilation generator, and `‖Au‖ ≲ ‖Hu‖/c`, so
+`IsSectorConstrainedGround a σ μ` says exactly that `μ` is the simple constrained leakage ground
+value of the sector: a floor for `Re⟪B_lambda f, f⟫` over the sector's zero-integral vectors,
+attained, and attained on a single complex line.  `IsSectorConstrainedGround.unique` shows the value
+is determined, so `mu_±` are the operator's own floors and not model surrogates.
 
-```text
-‖X D u‖ ≲ (1/c)‖Hu‖ + ‖u‖ ≤ (Λ + 1)‖u‖ .
-```
+### The card's claims, at the operator
 
-That commutator estimate for the harmonic oscillator is the one genuinely new ingredient.
-
-### How sharp does the oscillator law actually have to be?
-
-Not `O(1/c)`.  The rate enters only through the exponent of the ratio bound at the pair anchor
-`y = x₀/√c`, where `log(1/y) = ½ log c − log x₀`, so
-
-```text
-exponent  =  −c(s_n − s_m)·(½ log c − log x₀) ,   c(s_n − s_m) = 4(n−m) + r(c)
-          =  −2(n−m) log c + O(1) + O(r(c) log c) .
-```
-
-The power of `c` is pinned as soon as `r(c) log c → 0`.  **Any rate `o(1/log c)` suffices** — in
-particular `O(c^{-1/2})`, which is far cheaper than `O(1/c)` and needs no commutator estimate.
-
-### An elementary cutoff proof of the lower half at rate `O(c^{-1/2})`
-
-In Hermite-scaled coordinates `y = x/√c` the prolate form on `I = [−√c, √c]` is
-
-```text
-q(u) = ∫_I [(1 − x²/c)(u')² + x²u²] ,      c·s_k = μ_k = k-th eigenvalue of q ,
-```
-
-against the Hermite form `q_H(u) = ∫_ℝ [(u')² + x²u²]` with even eigenvalues `4k+1`.  Let
-`Λ = μ_n`, let `V` be the span of the first `n+1` even prolate modes (so `q ≤ Λ‖·‖²` on `V`), and
-cut off at `R = c^{1/4}`: `χ = 1` on `[−R,R]`, `0` off `[−2R,2R]`, `|χ'| ≤ 2/R`.  Write
-`A = ∫(1−x²/c)(u')²`, `B = ∫x²u²`, so `A + B = q(u) ≤ Λ‖u‖²`.  Then
-
-```text
-∫_{|x|>R} u²      ≤ B/R²          ≤ Λ‖u‖²/R²                    (Chebyshev against the potential)
-∫ χ²(u')²         ≤ A/(1 − 4R²/c)                               (1 − x²/c ≥ 1 − 4R²/c on |x| ≤ 2R)
-∫ (χ')²u²         ≤ (4/R²)·Λ‖u‖²/R²  =  4Λ‖u‖²/R⁴
-```
-
-so with `(a+b)² ≤ (1+η)a² + (1+1/η)b²` at `η = c^{-1/2}`, and `R² = √c`, `R⁴ = c`,
-
-```text
-q_H(χu)  ≤  (1+η)/(1 − 4R²/c) · (A+B)  +  (1+1/η)·4Λ‖u‖²/R⁴   ≤  Λ‖u‖²(1 + 9c^{-1/2}) ,
-‖χu‖²    ≥  (1 − Λ c^{-1/2})‖u‖² .
-```
-
-`u ↦ χu` is injective on `V` once `R² > Λ` (a nonzero kernel element would have all its mass outside
-`R`), so `χV` is an `(n+1)`-dimensional space of even `H¹` functions, and Hermite min–max forces
-some member with `q_H ≥ (4n+1)‖·‖²`.  Hence
-
-```text
-Λ(1 + 9c^{-1/2}) / (1 − Λc^{-1/2})  ≥  4n+1        ⇒     c·s_n  ≥  4n+1 − K c^{-1/2} .
-```
-
-Both errors are `O(c^{-1/2})` precisely because `R = c^{1/4}` balances the Chebyshev tail `Λ/R²`
-against the weight defect `4R²/c`.  No operator or commutator estimate appears.
-
-The one nonelementary input is the last step — **Hermite min–max on the even sector**: an
-`(n+1)`-dimensional space of even `H¹(ℝ)` functions contains a `w` with `q_H(w) ≥ (4n+1)‖w‖²`.
-That is the same rigidity the corpus's `false_of_canonicalIndexedProlate_limits_below` already
-needs, so the next step is to read what that proof uses and reuse it.
-
-### The corpus already owns the quantitative pin — use it, not min–max
-
-Searching before building paid off twice.  `RHTower/ProlateOscillatorLadderPin.lean:153` proves
-
-```text
-abs_sub_oscillatorLadder_eq :
-  |μ − (2n+1)|  =  |∫ D·h_n| / |∫ u·h_n|
-```
-
-for the Hermite-rescaled prolate mode `u`, where `D = (ξ²u″ + 2ξu′)/c` is the exact prolate defect —
-an **identity**, not an estimate, obtained by one integration by parts against `h_n`.  The `1/c` is
-already sitting in `D`.  So the lower half does **not** need the cutoff/min–max argument sketched
-above, and in particular does **not** need Hermite completeness in `L²(ℝ)` (which mathlib does not
-have — there is no Hermite analysis in `Mathlib/Analysis` at all).
-
-What the pin still needs is a **lower bound on the denominator** `|∫ u·h_n|`: the mode must not be
-asymptotically orthogonal to the Hermite function at its own index.  With that, the chain closes:
-
-1. the numerator gives `|c·s_k − (2m+1)| ≤ K/c` whenever `∫ u_k h_m ≠ 0` — quantitative quantization;
-2. the upper half **now proved** (`exists_rate_signedModeRadialBandwidth_mul_s_le`) gives
-   `c·s_k ≤ 4k+1 + K/c`, so the pinned rung index is at most `k`;
-3. the `n+1` modes `u_0 … u_n` are exactly orthogonal (`integral_signedModeRadialData_R_mul_eq_zero_of_ne`),
-   so their pinned indices are distinct, hence exhaust `{0,…,n}`, hence `u_n` sits at rung `n`:
-
-```text
-c·s_n  ≥  4n+1 − K/c .
-```
-
-Step 3's "distinct" is the remaining gap: two modes pinned at the same rung must both be close to the
-same Hermite function, contradicting orthogonality.  The natural closing lemma is an induction on the
-index — `u_k` close to `h_{2k}` for `k < n` makes `⟨u_n, h_{2k}⟩ = O(1/c)` by orthogonality, leaving
-`h_{2n}` as the only available component.
-
-Other assets found for this, all already in the corpus:
-
-- `HTGeometry/OscillatorLadderIdentity.lean` — `oscLower v v' = v′ + x v`, `integral_oscLower_sq_eq : ∫(Av)² = (μ−1)∫v²`, `oscBoundary`
-- `HTGeometry/OscillatorSpectralRigidity.lean` — `exists_rung_of_integrable` (the qualitative quantization, by ladder descent)
-- `HTGeometry/SchwartzOscillatorAlgebra.lean` — `creation_add_annihilation`
-- `RHTower/ProlateGroundTotalMass.lean` — `normalizedProlate_secondMoment_le`, `normalizedProlate_chebyshev`, `normalizedProlate_total_mass_le`
-- `HTGeometry/WindowTotalSqueeze.lean` — `window_tail_le_of_secondMoment`, `abs_window_pairing_sub_le_of_secondMoment`
-- `RHTower/ProlateCanonicalOscillatorLower.lean` — `indexedOscillatorWindowBound`, `eventually_indexedOscillatorProfile_windowBound`, `indexedOscillatorSecondMoment_le`
-
-Note also that the required precision is `o(1/log c)`, so the pin's `O(1/c)` is far more than enough;
-the cutoff argument recorded above (giving `O(c^{-1/2})`) is a fallback, not the plan.
-
-### The pin is now applicable to the actual signed mode
-
-Four further modules, all axiom-clean and wired in:
-
-| module | key theorem |
+| claim | Lean theorem |
 |---|---|
-| `RHTower/ProlateGlobalDerivativeBounds.lean` | `exists_global_bound_deriv_sincSmooth`, `abs_deriv2_sincSmooth_le` (`≤ \|c\|³/(3π)`), `exists_bound_deriv_of_bandTransform_eigen`, `exists_bound_deriv2_of_bandTransform_eigen` |
-| `RHTower/ProlateHermitePairingHypotheses.lean` | `integrable_hermiteCombination`, `tendsto_hermiteCombination_atTop/atBot`, the eight weight packages, and **`abs_sub_ladder_mul_eq_of_bounded`** / **`abs_sub_ladder_le_of_bounded`** |
-| `RHTower/ProlateRescaledProfileBounds.lean` | `deriv_prolateHermiteRescale`, `deriv2_prolateHermiteRescale` |
-| `RHTower/ProlateSignedModeLadderPin.lean` | `bandTransform_signedModeRadialData_R`, `exists_bound_signedModeRadialData_R`, **`exists_bound_abs_signedMode_scaledSeparation_sub_rung`** |
+| `(5)` `mu_+/d_4 → 8/11` | `positiveSectorGroundValue_ratio_tendsto` |
+| `(6)` `mu_-/d_6 → 8/13` | `negativeSectorGroundValue_ratio_tendsto` |
+| `(8)` `mu_+/mu_- → 0` | `parityGroundValue_ratio_tendsto_zero` |
+| `(8)` rate `lambda^{-4}` | `exists_bound_signedLeakage_ratio_power` at `n − m = 1` |
+| `(9)` `mu_+ < mu_-` eventually, and `(mu_- − mu_+)/mu_- → 1` | `parityGroundValue_separation` |
+| `(9)` normalized parity constant `13/11` | `parityGroundValue_normalized_ratio_tendsto` |
+| `(10)` `liminf (nu_- − mu_-)/d_6 ≥ 5/13` | `negativeSectorGroundValue_gap_ratio_tendsto` with `eventually_sectorConstrainedEigen_dichotomy_negative` |
+| `(10)` quantified: `nu_- − mu_- ≥ c·d_6` for every `c < 5/13` | `negativeSector_operator_spectralGap_eventually` |
+| negative-sector eigenvector: `O(lambda^{-7})` convergence to the normalized `h_2`–`h_6` contrast | `constrainedProlateNegative_operator_ground_distance_isBigO` |
 
-The mechanism: differentiating a band transform differentiates only the kernel, so
+### The negative-sector eigenvector rate is now the card's own theorem
 
-```text
-lam·Φ′ = ∫ sinc_c′(x−y)Φ(y)dy ,      lam·Φ″ = ∫ sinc_c″(x−y)Φ(y)dy ,
-```
-
-and `sinc_c″(u) = −c³/(2π)∫_{-1}^{1} t² cos(cut)dt` is uniformly bounded.  Hence `Φ, Φ′, Φ″` are all
-globally bounded, hence so are `u, u′, u″` after the Hermite rescaling (chain rule, one power of
-`√c` each).  Every weight in the pin and the transfer is `p·φ_m + q·φ_m′` for polynomials `p, q`,
-i.e. a polynomial times `e^{-ξ²/2}`, so it is integrable and vanishes at both ends — which turns all
-fourteen hypotheses of `hermitePairing_pin` and `integral_prolateDefect_transfer_explicit` into
-consequences of boundedness alone.  The result is unconditional:
-
-```text
-|c·s_n − (2m+1)|  ≤  B · ∫|W_m| / (c · |∫ u·φ_m|)      whenever  ∫ u·φ_m ≠ 0 .
-```
-
-### The single remaining gap, in scale-invariant form
-
-Both sides of the pin are homogeneous of degree one in `u`, so the profile may be normalised
-freely.  Normalising by the sup norm, the bound above is `O(1/c)` exactly when
-
-```text
-sup|u| / |∫ u·φ_m|   is bounded uniformly in the aperture, for some rung m ≤ n.
-```
-
-That is the whole of what is left: **the rescaled prolate mode, sup-normalised, has a Hermite
-pairing bounded below at some rung**.  It is the quantitative form of "the mode has an index".
-With it, step 3 of the chain closes — pin ⇒ each `c·s_k` within `O(1/c)` of a rung; the upper-half
-rate ⇒ the rung index is `≤ k`; exact orthogonality ⇒ the indices are distinct, hence exhaust
-`{0,…,n}`, hence `c·s_n ≥ 4n+1 − K/c`.
-
-Note the corpus's `indexedOscillatorProfile` normalisation (value `1` and derivative `0` at the
-origin) is the one carrying uniform window bounds `B(K)` — `eventually_indexedOscillatorProfile_windowBound`,
-`normalizedProlate_total_mass_le`.  Those are the natural source for the pairing lower bound, since
-`∫ u·φ_m` over a fixed window is within `O(1/K²)` of the whole-line pairing by
-`abs_window_pairing_sub_le_of_secondMoment`.
-
-### The pairing lower bound is not needed from scratch
-
-The gap looked like new quantitative analysis, but it is not: the corpus's *qualitative* limit
-theorem already supplies it.
-
-`tendsto_signedModeRadialBandwidth_mul_s_atTop` gives `c·s_n → 4n+1`, so for large aperture the
-nearest rung to `μ = c·s_n` is `m = 2n`, with no quantitative input.  And the window-limit machinery
-behind `false_of_orthogonal_prolateFamily_below_windowBound` — `tendsto_prolateWindowMass`,
-`tendsto_prolateWindowPairing` — already shows the rescaled profile's window integrals converge to
-those of `oscProfile (4n+1)`, which by `even_integrable_solution_rung` is a nonzero multiple of
-`φ_{2n}`.  Hence
-
-```text
-∫_{-K}^{K} u·φ_{2n}  →  const · ∫_{-K}^{K} φ_{2n}²  >  0 ,
-```
-
-so the pairing is *eventually* bounded below — which is all the pin needs, because the pin already
-carries the `1/c`.  A qualitative lower bound on the denominator plus a quantitative numerator gives
-a quantitative conclusion.
-
-So the lower half closes as: eventual pairing floor (qualitative, corpus) + pin (quantitative, now
-built) ⇒ `|c·s_n − (4n+1)| ≤ K/c` eventually, which is *both* halves at once — the upper-half rate
-proved earlier this session is then a cross-check rather than an input.
-
-Two mechanical points remain for that assembly:
-
-1. **Normalisation.** The pin is homogeneous of degree one in `u`, so any normalisation works, but
-   the global bounds `B` (from `exists_bound_signedModeRadialData_R`) and the pairing floor must use
-   the *same* one.  The endpoint normalisation `R 1 = 1` carries the global bounds; the origin
-   normalisation `v(0)=1, v′(0)=0` carries the corpus's uniform window bounds.  They differ by the
-   scalar `R(0)`, which cancels in the ratio `B / |∫ u·φ_m|` — so the assembly should be done with
-   the ratio, never with the two factors separately.
-2. **Whole line vs window.** The pin's pairing is over `ℝ`, the corpus's convergence is over
-   `[−K,K]`; `abs_window_pairing_sub_le_of_secondMoment` bridges them at cost `O(1/K²)` times the
-   second moments, and `normalizedProlate_secondMoment_le` bounds those by `μ` times the mass.
-
-### The assembly, with the exponent bookkeeping done
-
-The pin's estimate uses the bound on `u` **only** — the bounds on `u′` and `u″` are consumed
-discharging integrability and boundary hypotheses, where any finite constant serves.  So the
-scale-invariant quantity controlling the rate is `sup|u| / |∫ u·φ_m|`, and since only
-`o(1/log c)` is needed there is a lot of slack.  Working with the origin normalisation
-`v(0)=1, v′(0)=0` (the one the corpus's uniform bounds use), with `w = Φ/Φ(0)` and `v(ξ)=w(ξ/√c)`:
-
-```text
-∫_{-√c}^{√c} v²  ≤  N                                  normalizedProlate_total_mass_le (uniform)
-∫_{-1}^{1}|w| dy = c^{-1/2}∫_{-√c}^{√c}|v| dξ
-                 ≤ c^{-1/2}·(2√c)^{1/2}·N^{1/2} = √(2N)·c^{-1/4}      Cauchy–Schwarz
-sup|v| = sup|w|  ≤ lam⁻¹·(c/π)·∫_{-1}^{1}|w|  =  lam⁻¹·√(2N)·c^{3/4}/π   band integral
-∫_{-K}^{K} v·φ_{2n} → const ≠ 0                        window pairing convergence (corpus)
-```
-
-with `lam = evenProlateSignedValue a n ²` eventually `≥ 1/2` by **`evenProlateSignedValue_sq_tendsto_one`**
-(`ConstrainedProlateSignedTrial.lean:122`).  Feeding `sup|v| = O(c^{3/4})` and `|∫ v·φ_{2n}| ≥ δ`
-into the pin:
-
-```text
-|c·s_n − (4n+1)|  ≤  sup|v| · ∫|W_{2n}| / (c · |∫ v·φ_{2n}|)  =  O(c^{3/4}/c)  =  O(c^{-1/4}) .
-```
-
-`O(c^{-1/4})` is far inside `o(1/log c)`, so it pins all three exponent claims.  Note this is a
-*two-sided* bound — it gives the lower half and re-derives the upper half, so
-`exists_rate_signedModeRadialBandwidth_mul_s_le` becomes an independent cross-check rather than an
-input.
-
-The crude `c/π` kernel bound is lossy by `c^{3/4}` against the truth, and that is fine: sharpening
-it (Cauchy–Schwarz against `‖sinc_c(x−·)‖_{L²}` would give `√c` in place of `c`) would only improve
-`c^{-1/4}` to `c^{-3/4}`, and buys nothing.
-
-**Remaining bricks, in order:**
-
-1. `exists_bound_of_bandTransform_eigen` restated with the constant explicit as
-   `lam⁻¹·(|c|/π)·∫_{-1}^{1}|Φ|`, so the mass factor can be estimated rather than discarded.
-2. The Cauchy–Schwarz step `∫_{-1}^{1}|w| ≤ √2·(∫_{-1}^{1}w²)^{1/2}` and the rescaling identity
-   `∫_{-1}^{1}w² = c^{-1/2}∫_{-√c}^{√c}v²`.
-3. The eventual pairing floor `|∫_ℝ v·φ_{2n}| ≥ δ` — window convergence plus
-   `abs_window_pairing_sub_le_of_secondMoment` for the tail.
-4. Assemble into `∀ᶠ a, |c·s_n − (4n+1)| ≤ K·c^{-1/4}`.
-
-### Bricks 1–2 built
-
-`RHTower/ProlateProfileMassTransfer.lean` (axiom-clean, wired):
-
-- `abs_le_of_bandTransform_eigen_explicit` — the band bound with the constant exhibited:
-  `|Φ x| ≤ |lam|⁻¹ (|c|/π) ∫_{-1}^{1}|Φ|`
-- `integral_sq_rescale` — `∫_{-1}^{1} v(√c·y)² dy = (√c)⁻¹ ∫_{-√c}^{√c} v²`
-- `integral_abs_le_of_integral_sq_le` — `∫_{-1}^{1}|w| ≤ t + S/(2t)` from `∫ w² ≤ S`, for every `t > 0`
-- **`abs_le_of_rescaled_mass_le`** — the two combined at the balanced scale `t = c^{-1/4}`:
-
-```text
-(∫_{-√c}^{√c} v²) ≤ N   ⟹   |Φ x| ≤ |lam|⁻¹ · (c/π) · (1 + N/2) / c^{1/4}   for every x.
-```
-
-The balanced scale is the whole trick: Cauchy–Schwarz is never invoked, only the pointwise
-`|w| ≤ (t + w²/t)/2`, and choosing `t = c^{-1/4}` extracts exactly the square root of the mass bound.
-Writing `c^{1/4}` as `Real.sqrt (Real.sqrt c)` keeps everything inside `field_simp`.
-
-Bricks 3 (the eventual pairing floor `|∫_ℝ v·φ_{2n}| ≥ δ`) and 4 (assembly) remain.
-
-### Brick 3 built — the pairing floor
-
-Two more modules, axiom-clean and wired:
-
-`RHTower/ProlateWindowPairingConst.lean`
-- **`tendsto_prolateWindowPairing_const`** — the corpus had window convergence only against *another
-  prolate family* (`tendsto_prolateWindowPairing`) or against itself (`tendsto_prolateWindowMass`);
-  this is the version against a **fixed continuous weight**, which is what the ladder pin needs.
-  Same Grönwall envelope, and the difference of pairings is bounded by
-  `oscWindowEnvelope · ∫_{-K}^{K}|g|`.
-
-`RHTower/ProlateHermitePairingFloor.lean`
-- `deriv_hermiteFun_zero`, `hermiteFun_zero_ne_zero` (even rung)
-- **`hermiteFun_div_eq_oscProfile`** — at an even rung the Hermite function normalised at the origin
-  *is* the limit oscillator profile, by second-order uniqueness (`eq_oscProfile`): both solve
-  `v″ = (ξ² − (2n+1))v` with `v(0)=1, v′(0)=0`.
-- `integral_oscProfile_mul_hermiteFun_ne_zero` — hence the limiting window pairing is
-  `φ_n(0) · ∫ oscProfile²`, nonzero by `integral_oscProfile_mul_self_pos`.
-- **`eventually_abs_window_pairing_ge`** — convergence to a nonzero limit gives the floor
-  `|∫_{-K}^{K} u_i·φ_n| ≥ |limit|/2` eventually.
-
-That is the denominator bound the pin needs, and it is purely qualitative — exactly as predicted,
-no new quantitative analysis was required for it.
-
-**Brick 4 (assembly) is what remains**: instantiate `eventually_abs_window_pairing_ge` at the
-canonical family (`indexedOscillatorProfile`, `mu = indexedOscillatorSeparation n`, `m = 4n+1` via
-`tendsto_indexedOscillatorSeparation_atTop`), bridge window to whole line with
-`abs_window_pairing_sub_le_of_secondMoment`, and feed the resulting floor together with
-`abs_le_of_rescaled_mass_le` into `exists_bound_abs_signedMode_scaledSeparation_sub_rung`.
-
-### Brick 4 started — the floor at the canonical family
-
-`RHTower/ProlateIndexedPairingFloor.lean` (axiom-clean, wired):
-**`eventually_abs_indexedOscillator_window_pairing_ge`** — at every large aperture,
-
-```text
-|∫_{-K}^{K} indexedOscillatorProfile n a · φ_{2n}|  ≥  ½ |∫_{-K}^{K} oscProfile(4n+1) · φ_{2n}|  > 0 .
-```
-
-It instantiates the general floor at the canonical family: the window package comes from
-`eventually_indexedOscillatorProfile_windowBound` with `M = m = 4n+1`, and the separation limit from
-`tendsto_indexedOscillatorSeparation_atTop`; `Even (2n)` is `⟨n, by ring⟩`.  The only friction was
-namespace — the canonical family lives in `GaloisForLFunctions.RHTower`, not `_root_.RHTower`.
-
-Still to do in brick 4:
-
-1. **Window → whole line.**  `abs_window_pairing_sub_le_of_secondMoment` plus
-   `normalizedProlate_secondMoment_le` turn the window floor into a whole-line floor, at cost
-   `O(1/K²)` times the second moments; `K` fixed and large suffices since the floor is a fixed
-   positive constant.
-2. **Normalisation transfer.**  `indexedOscillatorProfile n a` is the origin-normalised rescaled
-   profile, `signedModeRescaledProfile a n` the endpoint-normalised one; they differ by the scalar
-   `R(0)`, which cancels in the pin's ratio.  Feed the resulting floor together with
-   `abs_le_of_rescaled_mass_le` into `exists_bound_abs_signedMode_scaledSeparation_sub_rung`.
-
-### The window → whole-line bridge is built
-
-`HTGeometry/PolynomialGaussianDecayRate.lean` gained
-**`abs_eval_mul_exp_neg_mul_sq_le`** — the decay estimate at an arbitrary Gaussian rate `b`, needed
-because Hermite functions carry `e^{-ξ²/2}`, not `e^{-ξ²}`.
-
-`RHTower/ProlateHermiteTailMass.lean` (axiom-clean, wired):
-- `exists_bound_abs_hermiteFun_inv_pow` — `|φ_m(ξ)| ≤ C/|ξ|^k` outside the unit interval
-- `integral_inv_pow_four_le`, `integral_inv_pow_four_le_neg` — `∫_a^b dξ/ξ⁴ ≤ 1/(3a³)` from the
-  antiderivative `−(3ξ³)⁻¹`, both signs
-- `exists_bound_integral_abs_hermiteFun_tail(_neg)` — the Hermite tail mass beyond `a ≥ 1`
-- **`exists_bound_abs_integral_sub_window`** — for any bounded continuous `v`,
-
-```text
-|∫_ℝ v·φ_m  −  ∫_{-a}^{a} v·φ_m|  ≤  B · 2C/(3a³)      for every a ≥ 1.
-```
-
-The finite-window estimate is uniform in the far endpoint, and
-`MeasureTheory.intervalIntegral_tendsto_integral` passes to the whole line.
-
-**At `a = √c` this is `O(c^{3/4}) · O(c^{-3/2}) = O(c^{-3/4})`** — the tail is negligible against a
-constant floor, which is exactly what the pin's denominator needs.
-
-### What closes the loop
-
-Three regions, each already covered:
-
-```text
-∫_ℝ v·φ  =  ∫_{-K₀}^{K₀}      floor ≥ ½|∫_{-K₀}^{K₀} oscProfile·φ| > 0   (eventually)
-          + ∫_{K₀<|ξ|≤√c}     ≤ (1/2K₀²)(M₂ + ∫x²φ²)  by abs_window_pairing_sub_le_of_secondMoment
-          + ∫_{|ξ|>√c}        ≤ O(c^{-3/4})            by the bridge above
-```
-
-with `M₂ = ∫_{-√c}^{√c} ξ²v²` uniform via `indexedOscillatorSecondMoment_le` and
-`normalizedProlate_total_mass_le`.  Since `∫_{-K}^{K} oscProfile·φ_{2n} = φ_{2n}(0)⁻¹∫_{-K}^{K}φ_{2n}²`
-*increases* with `K`, the floor is bounded below by its value at `K = 1`, so a fixed `K₀` can be
-chosen large enough to make the middle term less than a quarter of it.  That gives
-`|∫_ℝ v·φ_{2n}| ≥ floor/2`, and feeding it with `abs_le_of_rescaled_mass_le` into the pin yields
-
-```text
-∀ᶠ a,  |c·s_n − (4n+1)|  ≤  K · c^{-1/4} .
-```
-
-## The two-sided oscillator law is proved
-
-`RHTower/ProlateOscillatorLawAssembly.lean` (axiom-clean `[propext, Classical.choice, Quot.sound]`,
-warning-free, wired):
+An earlier note deferred the `O(lambda^{-7})` eigenvector statement to the parent card's `(4)`.
+That deferral was not exact: the parent's `(4)` is the **positive** sector.  The odd-sector statement
+is now proved in its own right,
+`formal/GaloisForLFunctions/RHTower/ProlateNegativeTrueFamilyDistanceRate.lean` (wired,
+axiom-clean):
 
 ```lean
-theorem exists_rate_abs_signedModeRadialBandwidth_mul_s_sub_rung (n : ℕ) :
-    ∃ K : ℝ, 0 < K ∧ ∀ᶠ a : ℝ in atTop,
-      |signedModeRadialBandwidth a * (signedModeRadialData a n).s - (4 * (n : ℝ) + 1)|
-        ≤ K / Real.sqrt (Real.sqrt (signedModeRadialBandwidth a))
+theorem exists_bound_negativeProlateLadder_tail_rate
+theorem constrainedProlateNegative_ground_distance_isBigO
+theorem constrainedProlateNegative_operator_ground_distance_isBigO
 ```
 
-Unconditional, no hypotheses, both halves at once: `c·s_n = (4n+1) + O(c^{-1/4})`.  Since the
-exponent claims need only `o(1/log c)`, this pins all three of them.
-
-Supporting content of the module:
-
-- `signedModeRadialData_R_zero_ne_zero`, `signedModeRescaledProfile_eq_smul` — the two
-  normalisations differ by the scalar `R(0)`, which cancels in the pin's ratio
-- `bandTransform_signedModeRadialData_R_div`, **`abs_indexedOscillatorProfile_le`** — the `c^{3/4}`
-  sup bound for the origin-normalised profile from its uniform square mass
-- `eventually_indexedOscillatorTotalMass_le` — uniform mass, from the corpus's
-  `tendsto_indexedOscillatorTotalMass` (the mass converges, so no window computation is needed)
-- `abs_integral_oscProfile_mul_hermiteFun_eq`, `integral_hermiteFun_sq_mono` — the limiting window
-  pairing is `φ_{2n}(0)⁻¹∫_{-K}^{K}φ_{2n}²`, hence monotone in the window and bounded below by its
-  value at `K = 1`
-- `integrable_sq_mul_hermiteFun_sq`, `intervalIntegral_sq_mul_hermiteFun_sq_le` — the fixed
-  second-moment constant
-- `tendsto_quartRoot_indexedOscillatorBandwidth`, `tendsto_inv_evenProlateSignedValue_sq`,
-  `tendsto_outerTail_zero`
-- **`exists_floor_abs_integral_indexedOscillator`** — the whole-line pairing floor, assembled from
-  the three regions
-
-and in `ProlateSignedModeLadderPin.lean`, **`abs_signedMode_scaledSeparation_sub_rung_le`** — the pin
-with the value bound supplied externally.  That variant is what makes the whole thing work: the pin's
-estimate uses only the bound on the profile, while the bounds on its derivatives are consumed
-discharging integrability, so the two may be different constants.  Generalising
-`abs_sub_ladder_le_of_bounded` to carry `B` for `u` and `B₂` for `u′, u″` was the single change that
-turned an `O(c)` bound (useless) into `O(c^{-1/4})`.
-
-The constant is explicit: `K = 2(1+N/2)W/(πδ) + 1` with `N = sharpInteriorLimit n + 1`,
-`W = ∫|W_{2n}|`, and `δ` the pairing floor.
-
-## Audit of claim (4)'s rate
-
-The `O(lambda^{-7})` statement is formal, but as a theorem about the **Fuchs model**, not yet about
-the true prolate family:
-
-```text
-ConstrainedProlateFullDistanceRate.ccm_normalized_ground_distance_isBigO
-    hypotheses: A : ℕ → ℝ positive, C ≥ 1, hgrow : ∀ j, A 2 ≤ C^j * A (j+2),
-                the two Hermite coordinate limits, summability and the Bessel bound
-    conclusion: the normalized ground-vector distance is O(lambda^{-7})
-```
-
-Here `ccmFuchsScale A lam j = fuchsRate (A j) (4j) lam`, i.e. the model `A_j λ^{8j+1} e^{-4πλ²}`.
-The qualitative statement at the true family is already unconditional
-(`constrainedProlateEven_ground_distance_tendsto_zero`, `constrainedProlateFull_ground_distance_tendsto_zero`).
-
-**What instantiating the rate at the true family needs.**  The hypothesis `hgrow` is exactly a
-*uniform-in-index* form of the leakage ratio: the tail argument needs `d_1/d_{j+1} ≤ C^j λ^{-8j}`,
-whereas `exists_bound_signedLeakage_ratio_power` supplies, for each fixed pair,
-
-```text
-d_m ≤ C(m,n) / c^{2(n−m)} · d_n .
-```
-
-So the single remaining item is the dependence of `C(m,n)` on the pair: it must be shown to grow at
-most geometrically, `C(m,n) ≤ C₀^{n−m}`.  Tracking that means following the `n`-dependence of the
-exponent remainder `E` of `exists_bound_sharpExponent` and of the Hermite-quotient constants
-`16 q_m²/q_n²` in `exists_bound_centre_sq_ratio_power` — a bookkeeping task on constants that are
-already explicit, not new mathematics.
-
-## Claim (4) with its rate is formalized at the true family
-
-The audit above was wrong about what the rate needs.  `min_norm_lp_normalize_sub_twoModeSeed_eventually_le`
-— the *general* lemma behind the CCM wrapper — does **not** take `hgrow`.  It takes only
-
-```text
-hstruct : 0 ≤ D 0 < D 1 < D 2  and  ∀ j, D 2 ≤ D (j+2)        (monotonicity)
-hrate   : |lam · D 1 / (D 2 − D 1)| ≤ K (lam^7)⁻¹              (indices 1 and 2 only)
-```
-
-`hgrow` appears only inside `ccm_struct`, which is how the *Fuchs model* discharges `hstruct`.  At
-the true family `hstruct` is immediate from `ladderEnvelope_evenProlateSignedLeakage` (`nonneg`,
-`mono`, two `lt_succ`), so **no index-uniform constant is needed at all**.
-
-`RHTower/ProlateTrueFamilyDistanceRate.lean` (axiom-clean, warning-free, wired):
-
-```lean
-theorem exists_bound_evenProlateLadder_tail_rate :
-    ∃ K : ℝ, 0 < K ∧ ∀ᶠ a : ℝ in atTop,
-      |a * evenProlateSignedLeakage a 2
-          / (evenProlateSignedLeakage a 4 - evenProlateSignedLeakage a 2)| ≤ K * (a ^ 7)⁻¹
-
-theorem constrainedProlateEven_ground_distance_isBigO :
-    ∃ K : ℝ, 0 < K ∧ (the normalized ground-vector distance) =O[atTop] fun lam => (lam ^ 7)⁻¹
-```
-
-The arithmetic that produces the exponent `7`: in the positive Fourier sector
-`D lam j = evenProlateSignedLeakage lam (2j)`, so `D 1` and `D 2` are the signed indices `2` and `4`,
-`n − m = 2`, and the sharp leakage ratio gives `d_2 ≤ C c^{-4} d_4`.  With `c = 2πλ²` that is
-`C (2π)^{-4} λ^{-8}`, and the factor `λ` in the numerator leaves `λ^{-7}`.  The gap `D 2 − D 1` is at
-least `D 2 / 2` once `2C ≤ c^4`, which holds as soon as `c ≥ 2C+1` because `c ≤ c⁴` for `c ≥ 1`.
-
-**So claim `(4)` — including its rate — is now unconditional at the true prolate family.**
-
-## Stage-3 audit of this folder
-
-Every numbered claim of the three cards now has an unconditional, axiom-clean Lean theorem **about
-the secular formulation**:
-
-| card | claim | theorem |
-|---|---|---|
-| ground state | `(4)` `O(λ^{-7})` | `constrainedProlateEven_ground_distance_isBigO` |
-| ground state | `(5)` `→ 8/11` | `constrainedProlatePositive_ground_ratio_tendsto` |
-| ground state | `(6)` `liminf ≥ 3/11` | `constrainedProlatePositive_gap_ratio_tendsto` |
-| ground state | `(7)` gap for every `c < 3/11` | `constrainedProlatePositive_spectralGap_eventually` |
-| spectral ladder | `(7)` `d_j/d_{j+1} = O(λ^{-8})` | `exists_bound_signedLeakage_ratio_power` at `n−m = 2` |
-| spectral ladder | `(8)` depth ratio | `constrainedProlateEven_depth_ratio_tendsto` |
-| parity floor | `(5)`, `(6)`, `(10)` | the four ground/gap ratio theorems |
-| parity floor | `(8)` rate, `(9)` | `exists_bound_signedLeakage_ratio_power`, `constrainedProlateParity_separation` |
-
-**What blocks the move to stage 3 is one bridge, and it is identified.**  The cards phrase their
-conclusions about the *operator* — the compression of `B_lambda = I − T_lambda²` to the
-zero-integral hyperplane — while every theorem above is proved for the *secular* formulation.  The
-equivalence is formalized, in both directions, in
-`RHTower/ConstrainedProlateOperatorIdentification.lean`:
-
-```text
-secularVector_lp_orthogonal / secularVector_lp_form_eigen        forward
-infiniteSecular_eq_zero_of_constrained_eigen                     converse
-```
-
-but a grep of the tree finds **no use of these three theorems anywhere**: they are stated for an
-abstract diagonal `d` with constraint coordinates `ℓ`, and have never been instantiated at
-`constrainedProlateLeakage a` on `constrainedProlateSubspace a`.
-
-So the remaining task for the whole folder is a single instantiation: feed
-`constrainedProlateLeakage_apply_mode` (the operator is diagonal in the constrained modes, with
-eigenvalues `constrainedProlateLeakageValue`) and the constraint coordinates into
-`ConstrainedProlateOperatorIdentification`, obtaining
-
-```text
-the lowest eigenvalue of constrainedProlateLeakage a  =  infiniteSecularRoot (D a) (ℓ a)
-```
-
-after which every theorem in the table transfers verbatim to the operator phrasing and all three
-cards are stage-3 ready.  **Until that is proved, the cards stay at stage 2** — the theorems are real
-but they are about the secular model, not yet about `B_lambda` itself.
-
-### The tools the bridge will use
-
-The instantiation is not blocked on missing analysis — the corpus already owns everything it needs:
-
-```text
-HTGeometry/GreedySingularValues.lean
-    svVec, svVal, apply_svVec              greedy singular vectors and values
-HTGeometry/SVDExpansion.lean
-    hasSum_inner_svVec_smul_apply          T x = ∑ ⟨eₙ,x⟩ • T eₙ            (SVD expansion)
-    hasSum_svd                             T x = ∑ sₙ⟨eₙ,x⟩ • fₙ
-    apply_eq_zero_of_forall_inner_svVec_energyOp
-                                           completeness of the greedy family for T itself
-    svVec_live_injective, sum_inner_svVec_sq_le
-RHTower/ConstrainedProlateOperator.lean
-    evenProlateConcentration, evenProlateLeakage, evenProlateLeakage_apply_mode
-    constrainedProlateLeakage, constrainedProlateLeakage_eq_compression
-    constrainedProlateLeakage_sub_identity_isCompact
-RHTower/ConstrainedProlateConstrainedSpectrum.lean
-    constrainedProlateMode, constrainedProlateLeakageValue,
-    constrainedProlateLeakage_apply_mode   the compressed operator is diagonal in its own SVD
-RHTower/ConstrainedProlateBesselBound.lean
-    orthonormal_nonzero_evenProlateSignedModes
-RHTower/ConstrainedProlateOperatorIdentification.lean
-    the abstract equivalence, both directions
-```
-
-So the bridge is: express `constrainedProlateLeakage a` in the Slepian coordinates of
-`evenProlateLeakage a` (diagonal, eigenvalues `evenProlateLeakageValue a n`, constraint coordinates
-`evenProlateConstraintCoord a n`), use the SVD completeness above to see that those coordinates
-exhaust the even subspace, and apply `ConstrainedProlateOperatorIdentification` to conclude
-
-```text
-constrainedProlateLeakageValue a 0  =  infiniteSecularRoot (fun j => evenProlateSignedLeakage a (2*j))
-                                                            (fun j => ‖evenProlateConstraintCoord a (2*j)‖) .
-```
-
-`constrainedProlateLeakageValue` is currently used nowhere outside its defining module — that grep
-is the precise measure of what is missing.
-
-### Bridge, brick 1: the concentration operator is injective
-
-`RHTower/ConstrainedProlateConcentrationInjective.lean` (axiom-clean, wired):
-
-```lean
-theorem evenProlateConcentration_injective_on_timeLimited
-    {a : ℝ} (ha : 0 < a) {f : evenSubspace} (hf : f ∈ evenTimeLimitedSubspace a)
-    (hCf : evenProlateConcentration a f = 0) : f = 0
-```
-
-Since `evenProlateConcentration a = (evenTimeBandFourier a)† ∘ evenTimeBandFourier a`, its quadratic
-form is `‖evenTimeBandFourier a f‖²`; `ContinuousLinearMap.adjoint_inner_left` turns `C f = 0` into
-`⟨T f, T f⟩ = 0`, and `evenTimeBandFourier_injective_on_timeLimited` finishes.
-
-This is what makes the greedy singular family **complete** on the time-limited carrier: by
-`apply_eq_zero_of_forall_inner_svVec_energyOp`, a vector orthogonal to every greedy vector is killed
-by the operator, and injectivity turns "killed" into "zero".
-
-**Brick 2** (next): the same for the *compressed* operator on `constrainedProlateSubspace a`.  It
-follows from brick 1 once the compressed quadratic form is identified with the ambient one on the
-subspace — for `x` in the subspace, `⟨P C x, x⟩ = ⟨C x, x⟩`, because `C x − P C x ⊥ K`.  The mathlib
-name for that step is the one piece of friction: `Submodule.inner_orthogonalProjection_left_eq_right`
-does not exist under that name, so it must be routed through
-`Submodule.sub_orthogonalProjection_mem_orthogonal`.
-
-**Brick 3**: express the compressed operator in the Slepian coordinates and instantiate
-`ConstrainedProlateOperatorIdentification`, giving
-`constrainedProlateLeakageValue a 0 = infiniteSecularRoot (D a) (ℓ a)`.
-
-### Bridge, brick 2: the compressed operator is injective too
-
-```lean
-theorem constrainedProlateConcentration_injective {a : ℝ} (ha : 0 < a)
-    {x : constrainedProlateSubspace a}
-    (hx : constrainedProlateConcentration a x = 0) : x = 0
-```
-
-Axiom-clean, in the same module.  The projection step is
-`Submodule.inner_orthogonalProjectionOnto_eq_of_mem_right` — that is the correct mathlib name for
-`⟨P u, v⟩ = ⟨u, v⟩` when `v` lies in the subspace; the guess recorded above
-(`inner_orthogonalProjection_left_eq_right`) does not exist, and no detour through
-`sub_orthogonalProjection_mem_orthogonal` is needed.
-
-With bricks 1 and 2 the greedy singular family of `constrainedProlateConcentration a` is complete on
-`constrainedProlateSubspace a`: `apply_eq_zero_of_forall_inner_svVec_energyOp` sends a vector
-orthogonal to every greedy vector to the kernel, and the kernel is trivial.
-
-**Brick 3** is the last one: express the compressed operator in Slepian coordinates and instantiate
-`ConstrainedProlateOperatorIdentification`, giving
-
-```text
-constrainedProlateLeakageValue a 0 = infiniteSecularRoot (fun j => evenProlateSignedLeakage a (2*j))
-                                                          (fun j => ‖evenProlateConstraintCoord a (2*j)‖) .
-```
-
-### Brick 3, specified exactly
-
-Reading `ConstrainedProlateOperatorIdentification.lean` in full settles what brick 3 is.  Its
-theorems are stated **entirely in `ℓ²` coordinates** — they never mention `constrainedProlateSubspace a`
-or the operator:
-
-```text
-secularVector_lp_orthogonal      ⟨ℓ, v⟩ = 0                       in lp 2
-secularVector_lp_form_eigen      ∑ d_j v_j w_j = μ₀ ∑ v_j w_j      for every w ⊥ ℓ
-infiniteSecular_eq_zero_of_constrained_eigen
-                                 d_j v_j = μ v_j + c ℓ_j  ∧  ⟨ℓ,v⟩ = 0  ∧  v ≠ 0  ⟹  F(μ) = 0
-```
-
-So brick 3 is a **coordinate isomorphism**, not a further analytic estimate:
-
-```text
-constrainedProlateSubspace a  ≃  {v ∈ lp 2 : ∑ ℓ_j v_j = 0}
-```
-
-carrying `constrainedProlateLeakage a` to the diagonal `d_j = evenProlateSignedLeakage a (2j)` and
-the constraint functional to `ℓ_j = ‖evenProlateConstraintCoord a (2j)‖`.  Its ingredients:
-
-1. the Slepian family is orthonormal — `orthonormal_nonzero_evenProlateSignedModes`;
-2. it is **complete** on the time-limited carrier — this is what bricks 1 and 2 supply, via
-   `apply_eq_zero_of_forall_inner_svVec_energyOp` plus triviality of the kernel;
-3. `evenProlateLeakage_apply_mode` makes the operator diagonal in that family;
-4. the constraint coordinates are `evenProlateConstraintCoord`.
-
-Both directions the cards need then follow: the secular vector's coefficients give a constrained
-vector with Rayleigh quotient `infiniteSecularRoot` (so `constrainedProlateLeakageValue a 0 ≤` it),
-and the greedy minimiser's coordinates satisfy the span-form eigen-system, so by the converse
-direction plus `infiniteSecular_other_root_ge` it *is* the ground root.
-
-That is the whole remaining content of the folder, and it is bounded: no new analysis, one
-isomorphism.
-
-### Brick 3a: completeness and liveness, in the form a Hilbert basis wants
-
-Two more theorems in `RHTower/ConstrainedProlateConcentrationInjective.lean` (axiom-clean, wired):
-
-```lean
-theorem constrainedProlateMode_complete {a : ℝ} (ha : 0 < a)
-    {x : constrainedProlateSubspace a}
-    (hx : ∀ n, (inner ℂ (constrainedProlateMode a n) x : ℂ) = 0) : x = 0
-
-theorem constrainedProlateConcentrationValue_ne_zero {a : ℝ} (ha : 0 < a) (n : ℕ)
-    (hunit : ‖constrainedProlateMode a n‖ = 1) :
-    constrainedProlateConcentrationValue a n ≠ 0
-```
-
-The first is the **density hypothesis** `HilbertBasis.mk` needs: a vector orthogonal to every
-constrained mode lies in the kernel by `apply_eq_zero_of_forall_inner_svVec`, and the kernel is
-trivial by brick 2.  The second says no singular value dies — a vanishing value would put a unit
-greedy vector in that same trivial kernel.  Liveness matters because the corpus's orthonormality and
-`norm_svVec_of_ne_zero` are conditioned on it.
-
-Two mechanical notes for whoever writes brick 3b:
-
-- the greedy lemmas must be applied with the instance arguments spelled out,
-  `@ContinuousLinearMap.apply_eq_zero_of_forall_inner_svVec (constrainedProlateSubspace a)
-  (…).normedAddCommGroup (…).innerProductSpace (constrainedProlateSubspace_completeSpace a) …`,
-  exactly as `norm_constrainedProlateMode_of_value_ne_zero` does — instance search does not find
-  `InnerProductSpace ℂ ↥(constrainedProlateSubspace a)` on its own;
-- `apply_svVec` takes **no** `CompleteSpace` argument, unlike the others in that family;
-- positivity is supplied as `(constrainedProlateConcentration_isPositive a).re_inner_nonneg_right`,
-  not `.2`, whose `reApplyInnerSelf` form has the arguments the other way round.
-
-**Brick 3b** is now the whole remainder: assemble `HilbertBasis.mk` from orthonormality (live modes)
-and `constrainedProlateMode_complete`, transport `constrainedProlateLeakage` to the diagonal and the
-constraint to `ℓ`, and read off
-`constrainedProlateLeakageValue a 0 = infiniteSecularRoot (D a) (ℓ a)` from
-`ConstrainedProlateOperatorIdentification`.
-
-### Correction: which family the coordinate isomorphism uses
-
-The description of brick 3b above named the wrong family.  The transfer theorems are stated for
-
-```text
-d_j = evenProlateSignedLeakage a (2j)          the UNCONSTRAINED Slepian leakage values
-ℓ_j = ‖evenProlateConstraintCoord a (2j)‖      their constraint coordinates
-```
-
-so the coordinate isomorphism must be built from the **unconstrained** modes
-`evenProlateConcentrationMode a n` on `evenTimeLimitedSubspace a`, with the constraint appearing as
-the hyperplane `∑ ℓ_j v_j = 0` inside `ℓ²`.  The compressed modes `constrainedProlateMode a n` are a
-*different* family — the greedy vectors of the already-compressed operator — so bricks 2 and 3a serve
-the simplicity/minimiser side of the argument, not the coordinate side.
-
-A second structural point that changes the shape of the construction.  On the whole even subspace
-`evenProlateConcentration a = T†T` genuinely **has a kernel** (everything whose time-limited part
-dies), so liveness of the singular values is false there and `constrainedProlateConcentrationValue_ne_zero`
-has no unconstrained analogue.  What is true, and is what brick 1 gives, is that the kernel meets the
-time-limited carrier only in zero.  Hence:
-
-```text
-the live modes form a Hilbert basis of  evenTimeLimitedSubspace a,  not of  evenSubspace.
-```
-
-So the construction is indexed by the live indices, and the two facts it needs are:
-
-1. every live mode lies in the carrier — `evenProlateConcentrationMode_mem_timeLimited_of_value_ne_zero`;
-2. a carrier vector orthogonal to every mode is zero — `apply_eq_zero_of_forall_inner_svVec` for
-   `evenProlateConcentration a`, followed by `evenProlateConcentration_injective_on_timeLimited`
-   (brick 1).
-
-Point 2 is the exact analogue of `constrainedProlateMode_complete` and is the next thing to write;
-point 1 is already in the corpus.  With those, `HilbertBasis.mkOfOrthogonalEqBot` gives the basis,
-`evenProlateLeakage_apply_mode` makes the operator diagonal in it, and
-`ConstrainedProlateOperatorIdentification` closes the bridge.
-
-### Brick 3b, point 2 is proved
-
-```lean
-theorem evenProlateConcentrationMode_complete_on_timeLimited {a : ℝ} (ha : 0 < a)
-    {x : evenSubspace} (hx : x ∈ evenTimeLimitedSubspace a)
-    (horth : ∀ n, (inner ℂ (evenProlateConcentrationMode a n) x : ℂ) = 0) : x = 0
-```
-
-Axiom-clean, wired.  Unlike the compressed case this one needs **no** `@` instance spelling:
-`evenSubspace` carries its instances by unification, only `↥(constrainedProlateSubspace a)` does not.
-
-So both hypotheses of the Hilbert basis on the carrier are now in hand — point 1
-(`evenProlateConcentrationMode_mem_timeLimited_of_value_ne_zero`) was already in the corpus, point 2
-is the theorem above.  What remains is the assembly itself:
-
-```text
-HilbertBasis.mkOfOrthogonalEqBot  on  evenTimeLimitedSubspace a,  indexed by the live modes
-  ⟹ an isometry  evenTimeLimitedSubspace a ≃ lp (fun _ => ℂ) 2
-  ⟹ evenProlateLeakage_apply_mode makes the operator the diagonal d
-  ⟹ the constraint functional becomes ℓ
-  ⟹ ConstrainedProlateOperatorIdentification gives
-       constrainedProlateLeakageValue a 0 = infiniteSecularRoot (D a) (ℓ a)
-```
-
-The remaining friction is bookkeeping, not mathematics: the modes live in `evenSubspace` and must be
-re-typed as elements of `↥(evenTimeLimitedSubspace a)`, and the index set must be restricted to the
-live indices (the kernel of the concentration operator on the whole even subspace is genuinely
-nonzero — only its intersection with the carrier is trivial).
-
-### The Slepian Hilbert basis exists
-
-`RHTower/ProlateSlepianBasis.lean` (axiom-clean, warning-free, wired):
-
-```lean
-def slepianLiveIndex (a : ℝ) : Type := {n : ℕ // evenProlateConcentrationValue a n ≠ 0}
-def slepianCarrierMode (a : ℝ) (n : slepianLiveIndex a) : evenTimeLimitedSubspace a
-theorem orthonormal_slepianCarrierMode {a : ℝ} (ha : 0 < a) : Orthonormal ℂ (slepianCarrierMode a)
-theorem slepianCarrierMode_orthogonal_eq_bot {a : ℝ} (ha : 0 < a) :
-    (Submodule.span ℂ (Set.range (slepianCarrierMode a)))ᗮ = ⊥
-def slepianCarrierBasis (a : ℝ) (ha : 0 < a) :
-    HilbertBasis (slepianLiveIndex a) ℂ (evenTimeLimitedSubspace a)
-theorem slepianCarrierBasis_apply (a : ℝ) (ha : 0 < a) (n : slepianLiveIndex a) :
-    slepianCarrierBasis a ha n = slepianCarrierMode a n
-```
-
-**This is the coordinate system the whole bridge was missing.**  Indexing by the *live* modes is what
-makes it work: dead greedy vectors are literally `0`
-(`ContinuousLinearMap.svVec_eq_zero_of_svVal_eq_zero`), so orthogonality to the live family already
-gives orthogonality to the whole greedy family and
-`evenProlateConcentrationMode_complete_on_timeLimited` applies — no separate treatment of the dead
-indices is needed, and the awkwardness feared above evaporates.
-
-Two practical notes:
-
-- `↥(evenTimeLimitedSubspace a)` needs its `NormedAddCommGroup` and `InnerProductSpace` instances
-  declared explicitly (they are now, at the top of the module); without them `ᗮ` does not even
-  elaborate on submodules of it;
-- `HilbertBasis.mkOfOrthogonalEqBot` takes the orthonormality as an ordinary argument, not as a
-  projection: `Orthonormal` unfolds to an `And`, so `hv.mkOfOrthogonalEqBot` fails.
-
-What remains for the folder: transport `evenProlateLeakage` through `slepianCarrierBasis.repr` to
-the diagonal `d`, the constraint functional to `ℓ`, and apply
-`ConstrainedProlateOperatorIdentification`.
-
-### The *signed* Slepian basis — the one the transfer theorems actually use
-
-Checking `evenProlateConstraintCoord` showed the previous module used the wrong family again:
-
-```text
-evenProlateConstraintCoord a n = ⟪1_{[-a,a]}, evenProlateSignedMode a n⟫
-evenProlateSignedLeakage  a n = 1 − evenProlateSignedValue a n ²
-```
-
-so the coordinates are those of the **signed** family `sgVec (evenTimeBandFourier a)`, eigenvectors
-of `T` itself — not `svVec (T†T)`.  `RHTower/ProlateSignedSlepianBasis.lean` (axiom-clean,
-warning-free, wired) builds the right one:
-
-```lean
-def signedLiveIndex (a : ℝ) : Type := {n : ℕ // evenProlateSignedValue a n ≠ 0}
-def signedCarrierMode (a : ℝ) (n : signedLiveIndex a) : evenTimeLimitedSubspace a
-theorem orthonormal_signedCarrierMode (a : ℝ) : Orthonormal ℂ (signedCarrierMode a)
-theorem signedCarrierMode_orthogonal_eq_bot {a : ℝ} (ha : 0 < a) :
-    (Submodule.span ℂ (Set.range (signedCarrierMode a)))ᗮ = ⊥
-def signedCarrierBasis (a : ℝ) (ha : 0 < a) :
-    HilbertBasis (signedLiveIndex a) ℂ (evenTimeLimitedSubspace a)
-```
-
-The signed route is if anything cleaner than the concentration route: brick 1's injectivity is stated
-for `evenTimeBandFourier` itself, which is exactly what `apply_eq_zero_of_forall_inner_sgVec`
-produces, so no `T†T` detour is needed.  Dead signed vectors are zero via
-`sgVec_eq_zero_of_orthSup_eq_zero` composed with `abs_sgVal`, so the live index set suffices.
-
-Two mechanical notes:
-
-- `signedLiveIndex` is a `def`, so `(m : ℕ)` coercion does **not** fire on its elements; write `m.1`;
-- symmetry of `evenTimeBandFourier` is
-  `ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp (adjoint_evenTimeBandFourier a)` — the corpus
-  idiom, used throughout `ConstrainedProlateSignedSpectrum`.
-
-What remains: transport `evenProlateLeakage` through `signedCarrierBasis.repr` to the diagonal `d`,
-the constraint functional to `ℓ`, and apply `ConstrainedProlateOperatorIdentification`.
-
-### Diagonality was already proved — do not rebuild it
-
-`ConstrainedProlateSignedSpectrum.lean:77,87` already contains
-
-```lean
-theorem evenProlateConcentration_apply_signedMode (a : ℝ) (n : ℕ) :
-    evenProlateConcentration a (evenProlateSignedMode a n)
-      = ((evenProlateSignedValue a n ^ 2 : ℝ) : ℂ) • evenProlateSignedMode a n
-
-theorem evenProlateLeakage_apply_signedMode (a : ℝ) (n : ℕ) :
-    evenProlateLeakage a (evenProlateSignedMode a n)
-      = ((1 - evenProlateSignedValue a n ^ 2 : ℝ) : ℂ) • evenProlateSignedMode a n
-```
-
-i.e. the leakage operator is already known to be diagonal in the signed family with the card's `d`.
-So of the four ingredients of the coordinate isomorphism, three are now in place —
-orthonormality, completeness (`signedCarrierBasis`), and diagonality — and only the constraint
-coordinate identity and the final instantiation remain.
-
-Method note, recorded because it caused a wasted build: a `grep` run from the repository root rather
-than from `formal/` silently matches nothing, and "no output" then reads as "not in the corpus".
-Every corpus search must be run from `formal/` (or with absolute paths), and a negative result should
-be confirmed by a positive control before concluding a theorem is missing.
-
-### The constraint in coordinates
-
-`RHTower/ProlateConstraintCoordinateExpansion.lean` (axiom-clean, warning-free, wired):
-
-```lean
-theorem hasSum_inner_evenCentralIndicator {a : ℝ} (ha : 0 < a) (x : evenTimeLimitedSubspace a) :
-    HasSum (fun n : signedLiveIndex a =>
-        (signedCarrierBasis a ha).repr x n * evenProlateConstraintCoord a n.1)
-      (inner ℂ (evenCentralIndicator a) ((x : evenTimeLimitedSubspace a) : evenSubspace))
-
-theorem mem_constrainedProlateSubspace_iff_tsum {a : ℝ} (ha : 0 < a)
-    (x : evenTimeLimitedSubspace a) :
-    ((x : evenTimeLimitedSubspace a) : evenSubspace) ∈ constrainedProlateSubspace a
-      ↔ (∑' n : signedLiveIndex a,
-          (signedCarrierBasis a ha).repr x n * evenProlateConstraintCoord a n.1) = 0
-```
-
-**The zero-integral hyperplane is now literally the coordinate hyperplane `∑ ℓ_n v_n = 0`** — the
-form the transfer theorems assume.  The proof is one application of `HilbertBasis.hasSum_repr`
-followed by the continuous functional `innerSL ℂ (evenCentralIndicator a) ∘L subtypeL`, which is
-linear (not conjugate-linear) in mathlib's convention, so it passes through the sum directly; the
-term identity `f (signedCarrierMode a n) = evenProlateConstraintCoord a n.1` is `rfl`, since that is
-how the constraint coordinate is defined.
-
-**Status of the coordinate isomorphism.**  All four ingredients are now proved:
-
-| ingredient | theorem |
-|---|---|
-| orthonormality | `orthonormal_signedCarrierMode` |
-| completeness | `signedCarrierBasis` |
-| diagonality | `evenProlateLeakage_apply_signedMode` (already in the corpus) |
-| constraint = `ℓ` | `mem_constrainedProlateSubspace_iff_tsum` |
-
-What is left is the assembly: read `constrainedProlateLeakageValue a 0` as the minimum of the
-quadratic form over the coordinate hyperplane and apply
-`ConstrainedProlateOperatorIdentification` in both directions.
-
-### What the assembly still has to reconcile: sector and index type
-
-Two mismatches remain between the coordinate system just built and the transfer theorems, and both
-are indexing, not analysis.
-
-**1. Fourier sector.**  The transfer theorems use
-`D a j = evenProlateSignedLeakage a (2j)` and `ℓ a j = ‖evenProlateConstraintCoord a (2j)‖`, i.e.
-only the *even* signed indices — because the cards' positive sector is
-`H_λ^+ = closure span{h_{4j,λ}}`, and signed index `2j` is Hermite rung `4j`.  So the card's `mu_+`
-is the ground eigenvalue of the compression restricted to that sector, while
-`constrainedProlateLeakageValue a 0` is the minimum over the *whole* constrained subspace.  The
-assembly therefore needs the parity splitting of `constrainedProlateSubspace a` into its
-positive- and negative-Fourier parts, with `mu_±` the ground value on each.
-
-**2. Index type.**  `infiniteSecularRoot` consumes `ℕ`-indexed sequences, whereas
-`signedCarrierBasis` is indexed by `signedLiveIndex a = {n // evenProlateSignedValue a n ≠ 0}`.  The
-two agree exactly when every signed value is live, which is true precisely on the carrier — but the
-identification still has to be transported along the inclusion `signedLiveIndex a ↪ ℕ`.
-
-Neither is a gap in the mathematics: the forward direction is already visible in coordinates.  For
-the secular vector `v`, the eigen-relation `d_j v_j = μ₀ v_j + ℓ_j` and the constraint
-`∑ ℓ_j v_j = 0` give
-
-```text
-∑ d_j v_j²  =  μ₀ ∑ v_j²  +  ∑ ℓ_j v_j  =  μ₀ ∑ v_j² ,
-```
-
-so the vector synthesised from `v` through `signedCarrierBasis.repr.symm` lies in the constrained
-subspace and has Rayleigh quotient exactly `μ₀`.  That is the `≤` half; the `≥` half is the converse
-direction of `ConstrainedProlateOperatorIdentification` applied to the coordinates of the greedy
-minimiser, together with `infiniteSecular_other_root_ge`.
-
-So the assembly is: parity splitting, index transport, then those two half-arguments.
-
-### The Rayleigh identity — the `≤` half in coordinates
-
-`RHTower/ConstrainedProlateSecularRayleigh.lean` (axiom-clean, warning-free, wired):
-
-```lean
-theorem tsum_mul_secularVector_sq_eq (h01 : d 0 < d 1) (h12 : d 1 < d 2)
-    (hd2 : ∀ j, d 2 ≤ d (j + 2)) (hsum : Summable fun j => ℓ j ^ 2)
-    (hℓ0 : ℓ 0 ≠ 0) (hℓ1 : ℓ 1 ≠ 0) :
-    (∑' j, d j * v j * v j) = infiniteSecularRoot d ℓ * ∑' j, v j * v j
-```
-
-where `v = secularVector d ℓ (infiniteSecularRoot d ℓ)`.
-
-The proof is two lines, and the reason is worth recording: `secularVector_lp_form_eigen` may be
-tested against **any** `ℓ²` vector annihilated by the constraint — and the secular vector is itself
-such a vector, by `memℓp_secularVector` and `secularVector_constraint`.  Testing the weak
-eigen-equation against its own solution turns it into the Rayleigh identity with no further work.  I
-had expected to have to redo the `∑ d_j v_j² = μ₀ ∑ v_j² + ∑ ℓ_j v_j` computation by hand.
-
-This is the `≤` half in coordinates: whatever Hilbert basis diagonalises the leakage with sequence
-`d` and constraint coordinates `ℓ`, the vector synthesised from `v` lies in the constraint hyperplane
-and has Rayleigh quotient exactly `infiniteSecularRoot d ℓ`, so the constrained ground eigenvalue is
-at most the secular root.  Combined with `signedCarrierBasis` and
-`mem_constrainedProlateSubspace_iff_tsum`, only the parity splitting and the index transport stand
-between this and the operator statement.
-
-### Index transport: not needed — the basis is `ℕ`-indexed
-
-The corpus already proves **`evenProlateSignedValue_ne_zero ha n`**
-(`ProlateIndexedJointSpectrum.lean:86`): at a positive aperture *every* signed value is nonzero, by
-the shell-vector argument (a vanishing value would force the carrier to be finite dimensional).  So
-the live index type is all of `ℕ`, and the "index transport" listed as remaining work above simply
-does not arise.
-
-`RHTower/ProlateSignedNatBasis.lean` (axiom-clean, warning-free, wired):
-
-```lean
-def signedNatMode (a : ℝ) (ha : 0 < a) (n : ℕ) : evenTimeLimitedSubspace a
-theorem orthonormal_signedNatMode {a : ℝ} (ha : 0 < a) : Orthonormal ℂ (signedNatMode a ha)
-theorem signedNatMode_orthogonal_eq_bot {a : ℝ} (ha : 0 < a) :
-    (Submodule.span ℂ (Set.range (signedNatMode a ha)))ᗮ = ⊥
-def signedNatBasis (a : ℝ) (ha : 0 < a) : HilbertBasis ℕ ℂ (evenTimeLimitedSubspace a)
-theorem signedNatBasis_apply (a : ℝ) (ha : 0 < a) (n : ℕ) :
-    signedNatBasis a ha n = signedNatMode a ha n
-theorem hasSum_inner_evenCentralIndicator_nat {a : ℝ} (ha : 0 < a) (x : evenTimeLimitedSubspace a) :
-    HasSum (fun n : ℕ => (signedNatBasis a ha).repr x n * evenProlateConstraintCoord a n)
-      (inner ℂ (evenCentralIndicator a) ((x : evenTimeLimitedSubspace a) : evenSubspace))
-```
-
-With every index live the completeness proof also shortens: no case split on dead modes is needed,
-since orthogonality to the whole family is immediate from membership in the range.
-
-**Both obstacles named in the previous entry are now resolved or removed**: the index type is `ℕ`,
-and what is left of the assembly is the Fourier-parity splitting — restricting to the even signed
-sublattice `n = 2j`, which is the card's positive sector `H_λ^+` — plus the two half-arguments, whose
-coordinate content is `tsum_mul_secularVector_sq_eq` (the `≤` half) and
-`infiniteSecular_eq_zero_of_constrained_eigen` with `infiniteSecular_other_root_ge` (the `≥` half).
+The mechanism is the same as in the even sector and the *same* sharp power carries it: in the odd
+sector the two indices entering the tail ratio `lam·d_1/(d_2 − d_1)` are the corpus signed indices
+`3` and `5`, so `exists_bound_signedLeakage_ratio_power` at `n − m = 2` gives `d_3 ≤ C c^{-4} d_5`
+with `c = 2 pi lambda²`, and one factor of `lambda` in the numerator leaves `lambda^{-7}`.  The
+synthesis map of the sector is an isometry (`norm_sub_eq_of_hasSum_lp`,
+`norm_add_eq_of_hasSum_lp`), so the `ell²` rate is literally a rate between vectors of the even
+carrier.
+
+### The gap `(10)` needed a non-vacuous formulation
+
+The previously recorded `eventually_sectorConstrainedEigen_gap_negative` quantifies over competing
+constrained eigenvalues *inside the first gap*, where the secular root is unique — so it says
+nothing.  `RHTower/ProlateSectorSpectralGap.lean` supplies the dichotomy that the claim needs: every
+constrained eigenvalue of the odd sector is either `mu_-` itself or at least `d_6`.  Testing the
+weak compressed equation against the eigenvector itself makes its Rayleigh value its own
+eigenvalue, so the ground floor puts every constrained eigenvalue above `mu_-`, which already
+exceeds the sector's first leakage `d_2 = 1 − chi_2²`; and if such an eigenvalue were also below
+`d_6` the converse bridge plus uniqueness of the secular root in the first gap would force it to be
+`mu_-` itself.
+With that, `(d_6 − mu_-)/d_6 → 5/13` is a genuine spectral-gap bound for `B_lambda`.
+
+### What this does *not* claim
+
+The bilinear transfer to the true restricted Weil form is untouched, and remains the card's open
+gate.  `[NOT AN RH PROOF]` stands.

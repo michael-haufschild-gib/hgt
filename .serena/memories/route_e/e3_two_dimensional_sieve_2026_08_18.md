@@ -42,3 +42,20 @@ Another Claude session owns the `omegaBudget`/spectral limit lane of
 `matomaki-radziwill-lean-programme.md` (files `Budget*`, `Ladder*`, `OmegaBudget*`,
 `SpectralParameters`, `PolylogLimits`, `AnnulusBoundUniform`, `DiscBoundUniform`,
 `ContourParamMono`, `WidthEnvelopeBounds`).  Do not edit those.
+
+## Second batch (same day): the cofactor card's `(7)`/`(9)` are CLOSED
+- `Sieve/ElementaryHarmonicBounds` — `two_mul_sqrt_succ_sub_two_le_sum`, `sum_filter_dvd_eq`,
+  `sum_inv_sqrt_dvd_le`, `sum_inv_dvd_le`, `sum_telescope_inv`, `sum_inv_sq_odd_le`.
+  NOTE: the upper bound `∑_{n≤M}n^{-1/2} ≤ 2√M` already existed as `RHTower.sum_one_div_sqrt_le`
+  (in `RHTower/PrimeMassLowerBound.lean`, namespace `RHTower`, not `RHTower.Sieve`) — reused.
+- `Sieve/CoprimeSquarefreeHarmonic` — `sum_coprime_ge`, `sum_notSquarefree_le`,
+  `sum_inv_coprime_squarefree_ge` (`≥ (log M)/8 − 7/8`),
+  `sum_inv_sqrt_coprime_squarefree_ge` (`≥ √M/4 − 2`), under `2 ∣ Q` and `∑_{p∣Q}1/p ≤ 5/8`.
+- `RHTower/RouteECofactorUnsignedMass` — parity balance for an arbitrary weight antitone above 1
+  (`CofactorParity.sum_oddBase_two_mul_le_sum_parityClass`), `oddBase_eq_coprime_squarefree`,
+  and the capstones `sum_inv_parityClass_ge`, `sum_inv_sqrt_parityClass_ge`.
+
+Mechanism: `1/2 (prime 2) + 1/8 (band Mertens mass) + 1/4 (odd reciprocal squares) < 1`.
+Useful reusable facts found on the way: `Aux.log_le_sum_inv`, `Aux.sum_inv_le_log` (PNT+
+`Sieve/AuxResults`, namespace `Aux`); `Nat.Ioc_filter_dvd_card_eq_div`; `Finset.sum_union_inter`
+(there is NO `Finset.sum_biUnion_le_sum_of_nonneg` — proved locally as `sum_biUnion_le_of_nonneg`).

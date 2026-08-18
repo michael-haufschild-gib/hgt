@@ -319,3 +319,43 @@ for `2πδW ≤ 1`, `δ ≤ 1`, `K ≥ 6Rδ`, with `E = exp(mertensS h − merte
 
 The card's own elementary debt — the unsigned squarefree harmonic estimates `(7)` and `(9)` — is
 untouched by this and is still open.
+
+## The elementary debt `(7)` and `(9)` is CLOSED (2026-08-18)
+
+Both unsigned squarefree harmonic estimates are now unconditional Lean theorems, so the card's own
+elementary layer is complete and nothing but the shared all-interval theorem remains.
+
+`RHTower.sum_inv_parityClass_ge` — **`(9)`** — and `RHTower.sum_inv_sqrt_parityClass_ge` — **`(7)`**:
+for a band `B` of primes with `2 ∉ B` and Mertens mass `∑_{p ∈ B} 1/p ≤ 1/8`, and either sign
+`σ = ±1`,
+
+```text
+(1/16)·log⌊T/2⌋ − 7/16  ≤  ∑_{t ∈ parityClass B σ T} 1/t ,
+(1/8)·√⌊T/2⌋   − 1      ≤  ∑_{t ∈ parityClass B σ T} 1/√t .
+```
+
+The card's band `(log U)^{a₀} ≤ p ≤ 2(log U)^{a₁}` with `a₁ = 1.1`, `a₀ ≥ 1.1 − 10⁻⁴` has Mertens
+mass `log(a₁/a₀) + o(1) ≈ 9·10⁻⁵`, far below `1/8`, so the hypothesis is satisfied for large `U`.
+
+### How it is proved
+
+| module | content |
+|-|-|
+| `Sieve/ElementaryHarmonicBounds` | **`two_mul_sqrt_succ_sub_two_le_sum`** (`2√(M+1) − 2 ≤ ∑_{n≤M} n^{-1/2}`, telescoping; the matching upper bound `≤ 2√M` was already `RHTower.sum_one_div_sqrt_le`), `sum_filter_dvd_eq` (the multiples of `p` reindexed by their cofactor), **`sum_inv_sqrt_dvd_le`** (`≤ 2√M/p`), **`sum_inv_dvd_le`** (`≤ (1+log M)/p`), `sum_telescope_inv`, **`sum_inv_sq_odd_le`** (`∑ 1/d² ≤ 1/4` over any set of odd `d ≥ 3`, from `1/(2j+1)² ≤ (1/4)(1/j − 1/(j+1))`) |
+| `Sieve/CoprimeSquarefreeHarmonic` | `sum_biUnion_le_of_nonneg`, `notCoprime_subset_biUnion`, **`sum_coprime_ge`**, `notSquarefree_subset_biUnion`, `sum_inv_sq_coveringPrimes_le`, `sum_notSquarefree_le`, **`sum_inv_coprime_squarefree_ge`** (`≥ (log M)/8 − 7/8`), **`sum_inv_sqrt_coprime_squarefree_ge`** (`≥ √M/4 − 2`), both under `∑_{p ∣ Q} 1/p ≤ 5/8` and `2 ∣ Q` |
+| `RHTower/RouteECofactorUnsignedMass` | **`CofactorParity.sum_oddBase_two_mul_le_sum_parityClass`** — the parity balance generalised from the harmonic weight to an arbitrary weight antitone above `1`, which is what lets the same pairing serve `(7)`; `bandModulus`, `primeFactors_bandModulus_subset`, `sum_inv_primeFactors_bandModulus_le`, **`coprime_bandModulus_iff`**, **`oddBase_eq_coprime_squarefree`** (the pairing's source set *is* the squarefree set coprime to `2∏_{p∈B}p`), and the two capstones |
+
+The mechanism is one inclusion–exclusion, used twice: an integer not coprime to `Q` is a multiple of
+a prime factor of `Q`, and the multiples of `p` carry at most `1/p` of the mass; a non-squarefree
+integer coprime to an even `Q` is a multiple of the square of an odd prime, and the odd reciprocal
+squares sum to at most `1/4`.  With `1/2 + 1/8 + 1/4 < 1` both constants survive.  No sieve, no
+prime number theorem, no Mertens estimate for the *sifted* set is used — only the hypothesis that
+the band's own Mertens mass is small, which is the card's own `∏(1+p^{-1})^{-1} ≍ 1`.
+
+`#print axioms` on all ten named theorems: `[propext, Classical.choice, Quot.sound]`.  All three
+modules are wired into the `GaloisForLFunctions.RHTower` umbrella.
+
+### What remains on this card
+
+Only `(6)`, the quantitative all-interval `E₃` supply — the shared Matomäki--Teräväinen input, whose
+large-prime mean square `(FS7)` is now also a corpus theorem (see the entry above).

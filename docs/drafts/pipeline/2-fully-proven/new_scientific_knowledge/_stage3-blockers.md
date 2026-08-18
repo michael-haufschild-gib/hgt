@@ -560,3 +560,40 @@ supply.  The honest residue is therefore:
 That is a non-degeneracy statement about one function against one fixed Gaussian weight — no
 derivative estimate, no ODE asymptotics, no expansion — and it is the last thing these three cards
 need.
+
+## RESOLVED for the three prolate spectral cards — they are at stage 3
+
+`constrained-prolate-two-mode-ground-state`, `constrained-prolate-fixed-mode-spectral-ladder` and
+`constrained-prolate-fourier-parity-floor-separation` have been promoted to
+`3-formalized/new_scientific_knowledge/constrained-prolate/`.  With them the whole
+`constrained-prolate/` folder is at stage 3 and the `Scope` line above no longer applies to it.
+
+**The two open inputs recorded above are closed, and one of them was never needed.**
+
+1. **prolate-to-Hermite limits** — closed, unconditionally, for the actual `P_a F P_a` block:
+   `tendsto_norm_evenProlateConstraintCoord_atTop j` and its odd-sector partner prove
+   `‖⟪1_{[-a,a]}, e_{2j}⟫‖ → |h_{4j}(0)|` and `‖⟪1_{[-a,a]}, e_{2j+1}⟫‖ → |h_{4j+2}(0)|`.
+2. **Fuchs identification** — *not* formalized, and not required.  The constrained transfer
+   consumes the leakage family only through the `LadderEnvelope` interface (nonnegativity,
+   monotonicity, a strict step, a vanishing consecutive ratio, a vanishing aperture-weighted tail).
+   `ladderEnvelope_evenProlateSignedLeakage` and `..._negative` supply it for the true signed
+   family, and `exists_bound_signedLeakage_ratio_power` supplies the sharp power `c^{-2(n-m)}`.
+   No constant `A_n` and no matching two-sided power appear anywhere in the chain.
+
+The quasimode/non-degeneracy residue described in the sections above — "a lower bound on
+`|⟨u, φₙ⟩|` for the matching index `n`" — was therefore an obstruction on a *route*, not on the
+cards.  The route that closed them instead is the sharp WKB action plus the two-sided amplitude
+transport, which yields the ladder envelope and the sharp per-step ratio directly.
+
+**What the last step actually was.**  Every card law had been proved for the *secular* formulation;
+none had been instantiated at the compression of `B_lambda = I − T_lambda²` to the zero-integral
+hyperplane.  That bridge is now complete in both directions and at every depth
+(`RHTower/ProlateSectorDepthSpectrum`, `ProlateSectorSpectralGap`, `ProlateSectorGroundLaws`,
+`ProlateNegativeTrueFamilyDistanceRate`, `ProlateConstrainedOperatorLaws`).  See
+`1-in-progress/constrained-prolate-stage3-lean-closure.md` for the module-level record, including
+two corrections: the previously recorded operator gap statements were vacuous, and the parity card's
+eigenvector rate had been mis-attributed to the even sector.
+
+Dunster's uniform radial-PSWF Bessel expansion remains unbuilt, but it now gates **no** card in this
+scope: the three radial cards were promoted earlier by other routes, and the three spectral cards
+never needed it.

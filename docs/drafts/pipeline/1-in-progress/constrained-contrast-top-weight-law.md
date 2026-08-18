@@ -242,7 +242,7 @@ for a growing-depth `(WT17)`.
 ## 8. Both parity sectors, unified
 
 The negative compressed-Fourier sector runs over prolate indices `4j + 2` and its recorded constants
-are `8/13` and `5/13` (`2-fully-proven/new_scientific_knowledge/constrained-prolate-fourier-parity-floor-separation.md`,
+are `8/13` and `5/13` (`3-formalized/new_scientific_knowledge/constrained-prolate/constrained-prolate-fourier-parity-floor-separation.md`,
 formalized as `ccm_negativeSector_hermite_weight_eq`).  Those are the depth-zero values of the
 **same** law: writing
 
