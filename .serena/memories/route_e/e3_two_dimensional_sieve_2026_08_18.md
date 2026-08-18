@@ -59,3 +59,35 @@ Mechanism: `1/2 (prime 2) + 1/8 (band Mertens mass) + 1/4 (odd reciprocal square
 Useful reusable facts found on the way: `Aux.log_le_sum_inv`, `Aux.sum_inv_le_log` (PNT+
 `Sieve/AuxResults`, namespace `Aux`); `Nat.Ioc_filter_dvd_card_eq_div`; `Finset.sum_union_inter`
 (there is NO `Finset.sum_biUnion_le_sum_of_nonneg` — proved locally as `sum_biUnion_le_of_nonneg`).
+
+## The source is located and the unique remaining core is named (2026-08-18)
+`arXiv:2207.05038` = Matomäki–Teräväinen, **"Almost primes in almost all short intervals II"**.
+Theorem 1.1 is the `E₂`/almost-all statement at `(log x)^{2.1}`; **Theorem 1.2** is the all-interval
+bonus: `(x, x+√x(log x)^{1.55}]` contains an `E₃` number, proved "by following the proof of
+Theorem 1.1 very closely".  Section 7 was not retrievable via ar5iv (document truncated).
+
+### Numerology (my own derivation — re-derive before relying on it)
+With `A = P₁P²`, main term `≍ h/((log P₁)(log x)²) ≍ √x(log x)^{-0.45}/log log x`.  Using only the
+trivial `max|P₁| ≍ 1/log log x` and the now-proved `(FS7)`, the sharp-cutoff error is
+`≍ √x(log x)^{-0.45}` — **exactly `log log x` times the main term**, the `log log` coming from the
+`≍ log log x` dyadic blocks in `[T₀, T]` (`T/T₀ = R/T₀ ≍ log x`).  `(5.2)`'s `(log x)^{-ε/10}`
+covers it.  So the **unique remaining analytic input for both E3 cards** is
+
+    (5.2)   ∫_{T₀}^{T}|P₁(1+it)P(1+it)|²dt ≪ (T h/x)(log x)^{-2-ε/10}.
+
+Why it cannot be cheapened: no pointwise cancellation in `P₁` (`log P₁ = 1.1 log log x`, far outside
+any zero-free region for `|t| ≤ √x`); the MVT on the product `P₁P` is diagonal-dominated (length
+`P₁R ≫ T`) and gives `1/(log P₁ log R)`, worse than `max|P₁|²∫|P|²`; shrinking the dyadic block does
+not shrink the MVT's `N∑|a|²` term.  It is a genuine Type II estimate — Watt / Deshouillers–Iwaniec
+/ Heath-Brown sparse MVT.
+
+### Corpus assets for that next milestone (read before building)
+- `Sieve/PerronShortInterval.norm_sum_Icc_sub_sum_Icc_sub_perronInterval_le` — sharp two-cutoff
+  truncated Perron for a short interval, unconditional, error `B·N^σ(5(1+log M)+4(1+log N))/(πT)`.
+- `Sieve/Maynard*` — a large-values layer: `huxley_heathBrown_grouped_large_values`,
+  `montgomery_heathBrown_grouped_large_values_finset`, weighted/windowed variants.
+- `Sieve/DirichletMeasureLargeValues` — `volume_largeValues_le` (Chebyshev level-set measure),
+  `integral_norm_dirPoly_halasz`; `Sieve/DirichletLargeValuesL1` — `card_largeValues_div_le`.
+- NEW `Sieve/MeanSquareLevelSplit` — `sq_le_levelSplit`, `integral_sq_le_levelSplit`: the dyadic
+  level-set split `∫_E f² ≤ V₀²|E| + ∑_{j<J}(2^{j+1}V₀)²|{f ≥ 2^jV₀} ∩ E|`, the shape `(5.2)`
+  consumes.  Axiom-clean, wired.

@@ -238,7 +238,7 @@ theorem integral_crossTerm_eq_zero (a : ∀ m, X m) (hg : ∀ n, Measurable (g n
   set V : (∀ m, X m) → ℂ :=
     fun x => coordPartialSum g N x - coordPartialSum g n x with hVdef
   have hUmeas : Measurable U :=
-    Measurable.indicator (Complex.measurable_conj.comp (measurable_coordPartialSum g hg n)) hA
+    Measurable.indicator (continuous_star.measurable.comp (measurable_coordPartialSum g hg n)) hA
   have hVmeas : Measurable V :=
     (measurable_coordPartialSum g hg N).sub (measurable_coordPartialSum g hg n)
   have hUblock : ∀ x, U (blockExtend a (Finset.range n) ((Finset.range n).restrict x)) = U x := by
@@ -329,8 +329,8 @@ theorem kolmogorov_maximal_inequality (a : ∀ m, X m) (hg : ∀ n, Measurable (
       refine integrable_of_norm_le_real μ ?_
         (C := 2 * ((∑ k ∈ Finset.range n, c k) *
           ((∑ k ∈ Finset.range N, c k) + (∑ k ∈ Finset.range n, c k)))) fun x => ?_
-      · exact ((((Complex.measurable_conj.comp (hSmeas n)).mul
-          ((hSmeas N).sub (hSmeas n))).re).const_mul 2)
+      · exact (Complex.measurable_re.comp ((continuous_star.measurable.comp (hSmeas n)).mul
+          ((hSmeas N).sub (hSmeas n)))).const_mul 2
       · have hb1 : ‖(starRingEnd ℂ) (S n x)‖ ≤ ∑ k ∈ Finset.range n, c k := by
           rw [RCLike.norm_conj]; exact hSbound n x
         have hb2 : ‖S N x - S n x‖ ≤ (∑ k ∈ Finset.range N, c k)
@@ -353,13 +353,24 @@ theorem kolmogorov_maximal_inequality (a : ∀ m, X m) (hg : ∀ n, Measurable (
           + (∫ x in firstPassage g lam n,
               2 * ((starRingEnd ℂ) (S n x) * (S N x - S n x)).re ∂ν)
           + ∫ x in firstPassage g lam n, ‖S N x - S n x‖ ^ 2 ∂ν := by
-      rw [← integral_add (hint1.add hint2) hint3, ← integral_add hint1 hint2]
-      exact setIntegral_congr_fun (hA n) fun x _ => hdec x
+      have e1 : ∫ x in firstPassage g lam n, ‖S N x‖ ^ 2 ∂ν
+          = ∫ x in firstPassage g lam n,
+              ((‖S n x‖ ^ 2 + 2 * ((starRingEnd ℂ) (S n x) * (S N x - S n x)).re)
+                + ‖S N x - S n x‖ ^ 2) ∂ν :=
+        setIntegral_congr_fun (hA n) fun x _ => hdec x
+      have hint12 : IntegrableOn (fun x => ‖S n x‖ ^ 2
+          + 2 * ((starRingEnd ℂ) (S n x) * (S N x - S n x)).re) (firstPassage g lam n) ν :=
+        hint1.add hint2
+      rw [e1, integral_add
+        (f := fun x => ‖S n x‖ ^ 2 + 2 * ((starRingEnd ℂ) (S n x) * (S N x - S n x)).re)
+        (g := fun x => ‖S N x - S n x‖ ^ 2) hint12 hint3,
+        integral_add (f := fun x => ‖S n x‖ ^ 2)
+        (g := fun x => 2 * ((starRingEnd ℂ) (S n x) * (S N x - S n x)).re) hint1 hint2]
     have hcross : ∫ x in firstPassage g lam n,
         2 * ((starRingEnd ℂ) (S n x) * (S N x - S n x)).re ∂ν = 0 := by
       rw [integral_const_mul]
       have hI : Integrable (fun x => (starRingEnd ℂ) (S n x) * (S N x - S n x)) ν := by
-        refine integrable_of_norm_le μ ((Complex.measurable_conj.comp (hSmeas n)).mul
+        refine integrable_of_norm_le μ ((continuous_star.measurable.comp (hSmeas n)).mul
           ((hSmeas N).sub (hSmeas n)))
           (C := (∑ k ∈ Finset.range n, c k) *
             ((∑ k ∈ Finset.range N, c k) + (∑ k ∈ Finset.range n, c k))) fun x => ?_
@@ -367,20 +378,27 @@ theorem kolmogorov_maximal_inequality (a : ∀ m, X m) (hg : ∀ n, Measurable (
         have hnn : (0:ℝ) ≤ ∑ k ∈ Finset.range n, c k := le_trans (norm_nonneg (S n x)) (hSbound n x)
         exact mul_le_mul (hSbound n x)
           ((norm_sub_le _ _).trans (add_le_add (hSbound N x) (hSbound n x))) (norm_nonneg _) hnn
-      rw [integral_re hI.restrict, integral_crossTerm_eq_zero g μ a hg hbdd hmean lam hn]
+      have hre : ∫ x in firstPassage g lam n,
+          ((starRingEnd ℂ) (S n x) * (S N x - S n x)).re ∂ν
+          = (∫ x in firstPassage g lam n,
+              ((starRingEnd ℂ) (S n x) * (S N x - S n x)) ∂ν).re := by
+        have := integral_re (𝕜 := ℂ) (hI.restrict (s := firstPassage g lam n))
+        simpa using this
+      rw [hre, integral_crossTerm_eq_zero g μ a hg hbdd hmean lam hn]
       simp
     have hlow : lam ^ 2 * (ν (firstPassage g lam n)).toReal
         ≤ ∫ x in firstPassage g lam n, ‖S n x‖ ^ 2 ∂ν := by
       have hconst : ∫ _x in firstPassage g lam n, lam ^ 2 ∂ν
           = (ν (firstPassage g lam n)).toReal * lam ^ 2 := by
-        rw [setIntegral_const]
-        rfl
-      rw [← hconst]
-      refine le_trans (le_of_eq ?_) (setIntegral_mono_on (integrableOn_const_of_measure_ne_top
-        (by exact measure_ne_top ν _)) hint1 (hA n) fun x hx => ?_)
-      · rw [hconst]; ring
-      · have := hx.2
-        nlinarith [norm_nonneg (S n x), this]
+        rw [setIntegral_const, smul_eq_mul, measureReal_def]
+      have hmono : ∫ _x in firstPassage g lam n, lam ^ 2 ∂ν
+          ≤ ∫ x in firstPassage g lam n, ‖S n x‖ ^ 2 ∂ν := by
+        refine setIntegral_mono_on (integrableOn_const (C := lam ^ 2)
+          (by exact measure_ne_top ν _)) hint1 (hA n) fun x hx => ?_
+        have h2 : lam ≤ ‖S n x‖ := hx.2
+        nlinarith [norm_nonneg (S n x)]
+      rw [hconst] at hmono
+      linarith
     have hpos : 0 ≤ ∫ x in firstPassage g lam n, ‖S N x - S n x‖ ^ 2 ∂ν :=
       setIntegral_nonneg (hA n) fun x _ => by positivity
     rw [hsplit, hcross]

@@ -3090,3 +3090,30 @@ The six pieces, with `t = log x`, `D ≤ 16t^{4β}`, `H ≤ K_A t²`, `t₀ = 2�
 | `7e⁹/Q·L` | `14e⁹ t^{2β+1−γβ}e^{−t^{γβ}}` | stretched exponential |
 
 **`tendsto_budgetRho_mul_steps` is the single analytic condition the spectral limit needs.**
+
+## Normalised budget: the split and the energy term
+
+`Sieve/BudgetTermSplit.budget_div_eq` splits the substituted budget divided by `W²h²√x` into four
+groups, and `spectral_terms_le` collapses the three spectral groups into three quotients:
+
+```
+32δ²(αL·G+βL)/(W²h²) + 64(αL + (5π/2)Ec + (5e/2)B₀Ec/T₀)/(π²G·W²h²) + 64βL/(3π²G²W²h²)
+  ≤ 136·αL/(B₀hW²) + 140·Ec/(B₀hW²) + 131·βL/(B₀²W²)
+```
+
+using only `δ ≤ h/√x`, `G·h = B₀`, `T₀ = B₀`, `B₀² ≤ 4x`, `W ≥ 1`, `π ≥ 3`, `e ≤ 3`.
+
+Landed since:
+
+- `Sieve/BudgetScaleLimits` — `tendsto_cardLength_div_budgetB` (`h/B₀ → 0`),
+  `tendsto_inv_cardLength`, and `eventually_inv_eta_le_steps` (`1/η ≤ 2L` eventually, so
+  `ρ/η ≤ 2ρL → 0`).
+- `Sieve/BudgetSRate` — `eventually_log_rpow_le_scaled`, `eventually_budgetS_le`
+  (`budgetS ≤ 3exp(−(log x)^{1/40})`), `tendsto_rpow_log_mul_budgetS` (any power of the logarithm
+  against the Möbius majorant vanishes).  The cutoff is `budgetNmin ≥ exp(log x/5)`, so all three
+  summands of `relMoebiusSharp` are stretched exponentials in `log x`.
+- `Sieve/EnergyQuotientLimit` — `sqrt_le_budgetB`, `tendsto_inv_budgetB`,
+  `tendsto_mertensS_div_cardLength`, and `tendsto_energy_quotient`: the middle quotient
+  `Ec/(B₀hW²) → 0`, majorised by `8·mertensS z/h + 16/B₀ + 64h/B₀ + 2/h`.
+
+Remaining: `αL/(B₀hW²) → 0` and `βL/(B₀²W²) → 0`.

@@ -154,6 +154,23 @@ theorem finiteField_projectivePlane_incidenceGraph_hasSpectralGap
     projectivePlane_incidenceGraph_hasSpectralGap
       (P := ℙ K (Fin 3 → K)) (L := ℙ K (Fin 3 → K))
 
+/-- For `q ≥ 7`, the rank-two spherical-building gap is strictly above Garland's `2 / 3`
+threshold. -/
+theorem finiteField_projectivePlane_gap_gt_two_thirds
+    {K : Type*} [Field K] [Fintype K] [DecidableEq K] (hK : 7 ≤ Nat.card K) :
+    (2 : ℝ) / 3 < 1 - Real.sqrt (Nat.card K : ℝ) / ((Nat.card K : ℝ) + 1) := by
+  have hq : (7 : ℝ) ≤ (Nat.card K : ℝ) := by exact_mod_cast hK
+  have hq0 : 0 ≤ (Nat.card K : ℝ) := by linarith
+  have hq1 : 0 < (Nat.card K : ℝ) + 1 := by linarith
+  have hsqrt : Real.sqrt (Nat.card K : ℝ) ^ 2 = (Nat.card K : ℝ) := Real.sq_sqrt hq0
+  have hsq : (3 * Real.sqrt (Nat.card K : ℝ)) ^ 2 < ((Nat.card K : ℝ) + 1) ^ 2 := by
+    nlinarith
+  have hroot : 3 * Real.sqrt (Nat.card K : ℝ) < (Nat.card K : ℝ) + 1 :=
+    (sq_lt_sq₀ (by positivity) (by linarith)).mp hsq
+  have hfrac : Real.sqrt (Nat.card K : ℝ) / ((Nat.card K : ℝ) + 1) < (1 : ℝ) / 3 :=
+    (div_lt_iff₀ hq1).2 (by nlinarith)
+  nlinarith
+
 end
 
 end GaloisForLFunctions.HTGeometry

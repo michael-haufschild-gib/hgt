@@ -2156,3 +2156,24 @@ delta = W1 H W1^{-1} . W2 H W2^{-1} . H^{-1} ,   W1 = w_jk(-1) ,  W2 = w_ik(-1) 
 so `delta` is a commutator-like expression in the Weyl elements; its value is the cocycle of the
 Weyl-group extension, which is the content of Matsumoto's theorem rather than a consequence of the
 relations proved so far.
+
+## Layer D4 — rank-two spherical-building spectral gap, PROVED
+
+2026-08-18. `HTGeometry/FiniteProjectivePlaneSpectralGap.lean` formalizes the complete
+point-line spectral calculation for the finite spherical building of type `A₂`.
+
+- `projectiveIncidence_design` proves from Mathlib's projective-plane construction that point-line
+  incidence is a symmetric `2`-design.
+- `projectivePlane_incidenceGraph_hasSpectralGap` applies the existing abstract design theorem.
+- `finiteField_projectivePlane_order` identifies the plane order with `|𝔽_q|` without assuming the
+  count; `finiteField_projectivePlane_incidenceGraph_hasSpectralGap` yields the exact gap
+  `1 - √q / (q + 1)`.
+- `finiteField_projectivePlane_gap_gt_two_thirds` proves the strict Garland threshold for every
+  finite field of cardinality at least `7`.
+
+Verification: direct `lake env lean`, module-only `lake build`, and `#print axioms` all pass with
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**Boundary:** This discharges the rank-two link calculation only. The higher-rank spherical-building
+link spectra, Bruhat--Tits building, arithmetic quotient, and Layer B remain unformalized; no card
+is promoted.
