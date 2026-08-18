@@ -847,3 +847,66 @@ the torsion of the tame kernel of an arbitrary number field — Garland's finite
 Quillen finite generation with Borel's rank computation.  What has changed is that the *shape* of
 the remaining input is now visible in Lean: `milnorKDegTwo_torsion_of_tameKernel_torsion` consumes
 exactly one hypothesis, and for `Q` that hypothesis is now a theorem.
+
+## Stage-3 gate audit — 2026-08-18: the card has TWO research-scale blockers, not one
+
+A stage-3 attempt was made and the gate does not open.  Recording exactly why, with the literature
+check, so the next session does not repeat the search.
+
+### Blocker 1 — `(1)`, and the route that was planned for it is unsound
+
+The Lean chain is unchanged and correct: everything on the near side of `(1)` is unconditional, and
+`deningerMilnorRealVanishing_of_tameKernelTorsion` consumes exactly *"the degree-two tame kernel of
+every number field is torsion"*.  For `F = ℚ` that hypothesis is now a theorem
+(`milnorKDegTwo_rat_torsion`, Tate's computation, formalized here), so `(1)` and `(2)` hold
+unconditionally over `ℚ`.  For an arbitrary number field it is Garland's finiteness theorem.
+
+The programme card `garland-formalization-programme` selected Garland's *p-adic curvature* method
+for it, on the grounds that it is "combinatorial and linear-algebraic".  **That route does not
+close**, and the reason is recorded in full on that card and on `garland-tame-kernel-torsion`:
+
+- Garland's 1971 `K₂`-finiteness theorem is an **archimedean** argument (Riemannian geometry and
+  harmonic forms, `H²(SL_n(𝔬), ℝ) = 0` for `n > 6`), not the building argument.
+- Garland's 1973 building/spectral-gap theorem has **cocompactness** of the lattice as a hypothesis.
+  An `S`-arithmetic lattice is uniform iff the group is anisotropic; `SL_n` is isotropic over every
+  number field, so `SL_n(𝒪_S)` is non-uniform, its cell stabilizers in the Bruhat–Tits building are
+  infinite arithmetic groups, and the equivariant descent is an isotropy spectral sequence whose
+  low rows are exactly the cohomology one is trying to kill.
+
+A literature sweep (August 2026) found **no** elementary or algebraic proof of rank zero for
+`K₂(𝒪_F)`: every published route is Borel's stable cohomology of arithmetic groups (equivalently
+Garland 1971), Quillen finite generation with Borel's rank computation, Soulé with
+Quillen–Lichtenbaum, or the recent Bader–Sauer higher-Kazhdan restriction theorem — all analytic.
+Sum-of-squares certificates for cohomological Laplacians are not uniform in `F` and are excluded by
+the project's no-computation rule.
+
+So `(1)` is blocked on a classical theorem whose formalization is a multi-year analytic project, and
+the corpus's Layer C and Layer D4 — which *are* correct, and are to my knowledge the first
+formalization of Garland's 1973 method — do not reach it.
+
+### Blocker 2 — `(4)` needs homotopy theory mathlib does not have
+
+Independently of `(1)`, the card's `(4)` is an equivalence of `E_∞`-algebras obtained by derived base
+change along `DAC_CHARACTER_SHAPE_FORMALITY`.  Mathlib has no `E_∞`-algebras, no `∞`-categories and
+no derived tensor product of ring spectra, so `(4)` cannot even be *stated*.  Only its closing
+assertion — that products of two degree-one classes vanish — is formalized
+(`deningerGradedDegreeOne_mul_eq_zero`).
+
+### What the card does own, unconditionally
+
+`(3)` in full (`deningerRealificationTorsionEquiv`), `(2)` in degrees `0` and `1`
+(`deningerMilnorDegZeroRealEquiv`, `deningerMilnorDegOneRealEquiv`), the whole reduction chain of
+`(1)` down to the tame kernel, Tate's theorem giving `(1)` and `(2)` outright for `F = ℚ`
+(`deningerRationalMilnorRealVanishing`, `deningerRationalMilnorAmplitude`), and the square-zero
+consequence of `(4)`.  **Do not** promote the card by replacing its statement with the `F = ℚ` case:
+that is a strict weakening of the headline.
+
+### The route-independent work that is worth doing next
+
+1. **Matsumoto's theorem** `K₂(F) ≅ K₂^M(F)` — needed on *every* route, purely algebraic, and Layer B
+   already carries the Steinberg group, `K₂`, centrality, perfectness and the symbol.
+2. **Localization** identifying the Milnor tame kernel of `𝒪_S` with `K₂(𝒪_S)`.
+   `HTGeometry/DedekindResidueFieldAtPlace.lean` (landed 2026-08-18) is the first brick: the residue
+   field at a finite place is `R ⧸ v.asIdeal`, *with* the compatibility that sends the residue of an
+   element of `R` to its class mod `v`, plus surjectivity of `R` onto the residue classes.
+3. **Milnor's exact sequence** for `F(t)` and the Bass–Tate–Kato norm.

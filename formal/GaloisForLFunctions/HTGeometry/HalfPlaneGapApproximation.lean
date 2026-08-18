@@ -377,6 +377,69 @@ theorem exists_entire_approx_cauchyTransform_gap {α : Type*} [MeasurableSpace �
       _ = A * c := integral_mul_const _ _
       _ ≤ ε := hfinal
 
+/-! ### A single Cauchy kernel -/
+
+/-- **A single Cauchy kernel with pole off the half plane is entirely approximable on the half
+plane together with a disc**, as soon as the pole is far enough out compared with the disc.  Either
+the pole already lies to the left of the disc, and the truncated Laplace kernel works directly, or
+its imaginary part is large, and the pushed kernel works. -/
+theorem exists_entire_approx_single_kernel {c a : ℂ} (ha : a.re < 1) {ρ : ℝ} (hρ : 0 ≤ ρ)
+    (hbig : 8 * ρ + 16 ≤ ‖a‖) {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : ℂ → ℂ, Differentiable ℂ g ∧
+      ∀ s : ℂ, (1 ≤ s.re ∨ ‖s‖ ≤ ρ) → ‖c * (s - a)⁻¹ - g s‖ ≤ ε := by
+  have hdiracInt : Integrable (fun _ : Unit => c) (Measure.dirac ()) := integrable_const c
+  have hdiracEval : ∀ s : ℂ,
+      (∫ _x : Unit, c / (s - a) ∂(Measure.dirac ())) = c * (s - a)⁻¹ := by
+    intro s
+    rw [integral_const]
+    simp [div_eq_mul_inv]
+  by_cases hleft : a.re ≤ -ρ - 1
+  · obtain ⟨g, hgd, hgb⟩ :=
+      exists_entire_approx_cauchyTransform_halfPlane_union_ball (α := Unit)
+        (Measure.dirac ()) (w := fun _ => a) (φ := fun _ => c)
+        (ρ := ρ) (d := 1) one_pos hρ (fun _ => by linarith) measurable_const hdiracInt hε
+    refine ⟨g, hgd, fun s hs => ?_⟩
+    have := hgb s hs
+    rwa [hdiracEval s] at this
+  · rw [not_le] at hleft
+    set δ : ℝ := 1 - a.re with hδdef
+    have hδ : 0 < δ := by rw [hδdef]; linarith
+    set L : ℝ := ‖a‖ / 4 with hLdef
+    have hanorm : (16 : ℝ) ≤ ‖a‖ := by linarith
+    have hL : 1 + ρ < L := by
+      rw [hLdef]
+      linarith
+    have hreabs : |a.re| ≤ ‖a‖ / 8 := by
+      refine abs_le.mpr ⟨by linarith, by linarith⟩
+    have hsq : (a.re) ^ 2 ≤ (‖a‖ / 8) ^ 2 := by
+      have h1 : |a.re| ^ 2 = (a.re) ^ 2 := sq_abs _
+      calc (a.re) ^ 2 = |a.re| ^ 2 := h1.symm
+        _ ≤ (‖a‖ / 8) ^ 2 := by
+            refine pow_le_pow_left₀ (abs_nonneg _) hreabs 2
+    have hnormsq : ‖a‖ ^ 2 = (a.re) ^ 2 + (a.im) ^ 2 := by
+      rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+      ring
+    have himsq : (‖a‖ / 2) ^ 2 ≤ (a.im) ^ 2 := by
+      have h64 : (‖a‖ / 8) ^ 2 = ‖a‖ ^ 2 / 64 := by ring
+      have h4 : (‖a‖ / 2) ^ 2 = ‖a‖ ^ 2 / 4 := by ring
+      nlinarith [hnormsq, hsq, h64, h4, sq_nonneg (a.im)]
+    have him : ‖a‖ / 2 ≤ |a.im| := by
+      have h1 : (0:ℝ) ≤ ‖a‖ / 2 := by positivity
+      have h2 : |a.im| ^ 2 = (a.im) ^ 2 := sq_abs _
+      nlinarith [abs_nonneg a.im, himsq, h2]
+    have hcar2 : ρ + L + δ ≤ |a.im| := by
+      refine le_trans ?_ him
+      rw [hLdef, hδdef]
+      linarith
+    obtain ⟨g, hgd, hgb⟩ :=
+      exists_entire_approx_cauchyTransform_gap (α := Unit)
+        (Measure.dirac ()) (w := fun _ => a) (φ := fun _ => c)
+        (ρ := ρ) (δ := δ) (L := L) hρ hδ hL (fun _ => by rw [hδdef]; linarith)
+        (fun _ => hcar2) measurable_const hdiracInt hε
+    refine ⟨g, hgd, fun s hs => ?_⟩
+    have := hgb s hs
+    rwa [hdiracEval s] at this
+
 end GaloisForLFunctions.HTGeometry
 
 end

@@ -3391,7 +3391,9 @@ import GaloisForLFunctions.RHTower.GaussRatioPowerMovingTranslation
 import GaloisForLFunctions.RHTower.GaussRatioWeightedDefect
 import GaloisForLFunctions.RHTower.GaussReciprocalCharacterAdmission
 import GaloisForLFunctions.RHTower.GaussRelativeDiagonal
+import GaloisForLFunctions.RHTower.GaussRelativeIterate
 import GaloisForLFunctions.RHTower.GaussRelativeOneStep
+import GaloisForLFunctions.RHTower.GaussRelativePower
 import GaloisForLFunctions.RHTower.GaussRotationIsTranslation
 import GaloisForLFunctions.RHTower.GaussSampleIntegerLattice
 import GaloisForLFunctions.RHTower.GaussSampleQuantitativeRatio
@@ -4089,6 +4091,7 @@ import GaloisForLFunctions.RHTower.PrimeProfileWindowLimit
 import GaloisForLFunctions.RHTower.SquarefreeCriticalNormalCone
 import GaloisForLFunctions.RHTower.CriticalDefectMeasure
 import GaloisForLFunctions.RHTower.CoherentKernelChart
+import GaloisForLFunctions.RHTower.PrimeProfileFockLimit
 import GaloisForLFunctions.RHTower.DyadicEulerTelescope
 import GaloisForLFunctions.RHTower.MertensSecondRealVariable
 import GaloisForLFunctions.RHTower.AdjointCellQuotientScale
@@ -10204,3 +10207,4 @@ import GaloisForLFunctions.RHTower.Sieve.HuxleyClosedLargeValues
 import GaloisForLFunctions.RHTower.Sieve.HuxleyFinsetLargeValues
 import GaloisForLFunctions.RHTower.Sieve.HuxleyDirichletLargeValues
 import GaloisForLFunctions.RHTower.Sieve.HuxleyExplicitLargeValues
+import GaloisForLFunctions.RHTower.Sieve.HuxleyDensityBound

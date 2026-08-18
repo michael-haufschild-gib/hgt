@@ -757,3 +757,137 @@ which `(15)` is the special case `g(t) = t^n`.  Applying it directly to the prof
 `(14)` summed over the primes below the cutoff tends to zero; each term does, because at `c = 0`
 the two radial parameters coincide and both sides of `(14)` vanish, and `4(a² + b²) ≤ 8/p²` is a
 summable majorant.  Then `(12)` for the higher digits and `(13)`.
+
+## Lean progress — `(11)`–`(13b)`, `(13s)`, `(13aa)`–`(13ac)`, `(20)`, `(22)`, `(23)`–`(27)`
+
+All unconditional and axiom-clean (`[propext, Classical.choice, Quot.sound]`), wired into their
+umbrellas.
+
+### Reusable prime-window infrastructure
+
+`RHTower/PrimeProfileWindowLimit.lean`:
+
+```text
+divProfile F t = F t / t            (zero at the origin)
+tendsto_sum_divProfile
+    ∑_{p ≤ N} F(log p / log N) / p  →  ∫₀¹ F(t) dt/t
+    for every F whose quotient extends continuously to [0,1]
+tendsto_finsetSum_Icc_zero          Tannery on the growing prime window
+tendsto_prod_Icc_of_tendsto_sum_log a positive window product is exp of its window log-sum
+```
+
+`tendsto_sum_divProfile` is the corpus's Mertens weak convergence
+(`tendsto_mertensPrimeWindow_div_log`) read at the profile `F t / t`; it is the single analytic
+input behind every all-prime limit below, and it replaces the card's `(15)` entirely.
+
+### The geometric affinity has the parity digit's quadratic expansion
+
+`HTGeometry/GeometricHellingerExpansion.lean`:
+
+```text
+abs_log_geometricHellingerAffinity_add_le
+    0 ≤ a,b ≤ 3/4  ⟹  |log H^geo(a,b) + ½ (√a − √b)²| ≤ 4 (a² + b²)
+```
+
+The mechanism is the same first-order cancellation `√(ab) − a/2 − b/2 = −½(√a − √b)²` that governs
+the parity digit, so the two affinities agree to second order — this is *why* `(12)` holds, and it
+makes `(13)` provable without ever interchanging the `p`- and `j`-products.
+
+### `(11)`, `(12)`, `(13)`, `(13b)`
+
+`RHTower/SquarefreeCriticalNormalCone.lean`:
+
+```text
+radialNome c n = n^{-(1-2c)}
+sq_sqrt_radialNome_sub    (√q_{p,0} − √q_{p,c})² = (e^{c log p} − e^{d log p})² / p
+radialNome_le             |c| ≤ 1/8 ⟹ q ≤ 3/4        (the Taylor window)
+sq_radialNome_le          |c| ≤ 1/8 ⟹ q² ≤ p^{−3/2}  (the Tannery majorant)
+coherentKernel u v = exp(−½ ∫₀¹ (e^{ut} − e^{vt})² dt/t)
+tendsto_criticalParityAffinity     ∏_{p ≤ N} H^bit_{p,0}(c_N,d_N) → K(u,v)   -- (11), (13b)
+tendsto_criticalGeometricAffinity  ∏_{p ≤ N} H^geo_p(c_N,d_N)     → K(u,v)   -- (13)
+tendsto_higherDigitTail_one        their ratio → 1                          -- (12)
+tendsto_criticalFisherCapacity     (log N)^{-2} ∑_{p<N} (log p)² p^{-1}/(1-p^{-1})² → 1/2  -- (22)
+```
+
+`(12)` is stated as the ratio because the finite prime product commutes with the per-prime digit
+factorization `(8)`: `∏_{p≤x} ∏_{j≥1} H^bit_{p,j} = (∏_{p≤x} H^geo_p)/(∏_{p≤x} H^bit_{p,0})`.
+
+`(22)` splits as the Mertens window of `t ↦ t²` (giving `∫₀¹ t dt = 1/2`) plus a Tannery-vanishing
+correction `t_p²((1-p^{-1})^{-2} − 1)p^{-1} = O(t_p²/p²)`.
+
+### The positive coherent chart `(13c)`–`(13f)`
+
+`RHTower/CoherentKernelChart.lean`:
+
+```text
+primeScaleInner u v = ∫₀¹ (e^{ut}−1)(e^{vt}−1) dt/t
+primeScaleInner_eq           = Φ(u) + Φ(v) − ½‖F_u − F_v‖²  (polarization)
+primeScaleInner_self         ‖F_u‖² = 2 Φ(u)
+coherentKernel_eq_exp_neg_half_dist                                   -- (13d)
+coherentKernel_eq_exp_inner  K(u,v) = e^{−Φ(u)} e^{−Φ(v)} e^{⟨F_u,F_v⟩}
+primeScaleInner_quadForm_nonneg   the Gram kernel is positive semidefinite
+hadamardPow_posSemidef            Schur powers stay positive semidefinite
+coherentKernel_quadForm_nonneg    ∑_{i,j} c_i K(u_i,u_j) c_j ≥ 0      -- (13e)
+```
+
+`(13e)` is formalized in its *content*: the kernel is the exponential of a Gram kernel damped by the
+diagonal, hence positive definite — which is exactly what "`K(u,v) = ⟨Exp F_u, Exp F_v⟩` for
+exponential vectors in `Γ_s(𝔥)`" asserts.  The Gram positivity is the literal statement that
+`∑_{i,j} c_i c_j ⟨F_{u_i},F_{u_j}⟩ = ∫₀¹ (∑_i c_i F_{u_i})² dt/t ≥ 0`, and the exponential step is
+Schur's theorem applied to the Hadamard powers plus the exponential series.
+
+### The prime-profile theorem `(13s)`, `(13z)`
+
+`RHTower/PrimeProfileFockLimit.lean`:
+
+```text
+profileNome f N n = n^{-1} e^{2 f(log n / log N)}
+IsScaleProfile f L        continuity on [0,1] and |f(t)| ≤ L t  (the card's 𝓕₀)
+profileNome_le_exp        q_{p,x}(f) ≤ p^{−7/8}   once  16 L ≤ log x
+sq_sqrt_profileNome_sub   the displacement is (e^{f(t_p)} − e^{g(t_p)})² / p
+continuousOn_divProfile_profileCoherent   (e^f − e^g)²/t extends continuously by zero
+tendsto_profileParityAffinity
+    ∏_{p ≤ N} H^bit_{p,0}(f,g) → exp(−½ ∫₀¹ (e^{f(t)} − e^{g(t)})² dt/t)     -- (13s)
+profileParityAffinity_linear   the radial family is the linear profile
+profileVector_log_one_add      G_{log(1+εφ)} = εφ                            -- (13z)
+```
+
+The uniform bound is the point: `|f(t)| ≤ L t` turns `e^{2f(t_p)}` into `p^{2L/\log x}`, so once the
+cutoff dominates the slope *every* prime below it sits inside the Taylor window at once — no
+"finitely many small primes" exception is needed.
+
+### The defect measure `(13aa)`–`(13ac)`
+
+`RHTower/CriticalDefectMeasure.lean`:
+
+```text
+reflectionAnomaly_eq          (e^x−1)² − (e^{−x}−1)² = 4 sinh x (cosh x − 1)
+reflectionAnomaly_eq_zero_iff the anomaly vanishes exactly at x = 0
+profileReflection_rigid       κ_{f,0} = κ_{−f,0} pointwise ⟹ f ≡ 0            -- (13ab)
+coherentExponent_lt_of_pos    Φ(−u) < Φ(u) for u > 0
+coherentExponent_reflection_eq_iff   Φ(u) = Φ(−u) ⟺ u = 0
+```
+
+### `(20)` and `(23)`–`(27)`
+
+`HTGeometry/DyadicFisherDecomposition.lean`:
+
+```text
+dyadicVariance_step   r/(1−r)² = r/(1+r)² + 4r²/(1−r²)²
+hasSum_dyadicFisher   q/(1−q)² = ∑_{j≥0} 4^j q^{2^j}/(1+q^{2^j})²             -- (20)
+```
+
+The identity is a telescoping induction: `(1+r)² − (1−r)² = 4r` is the whole content, and the
+remainder `4^J q^{2^J}/(1−q^{2^J})²` vanishes by the ratio test on the doubly exponential majorant.
+
+`RHTower/DyadicEulerTelescope.lean`:
+
+```text
+tendsto_prod_one_add_cpow     Euler's binary product over ℂ
+tendsto_prod_one_add_primePow ∏_{j<J}(1 + p^{−2^j s}) → (1 − p^{−s})^{−1}      -- (23)
+hasProd_one_add_primePow      ∏_p (1 + p^{−2^j s}) = ζ(2^j s)/ζ(2^{j+1} s)     -- (24), (25)
+not_summable_primeReciprocal  ∑_p 1/p = ∞                                      -- (26)
+summable_primePow_dyadic      ∑_p p^{−2^j} < ∞ for j ≥ 1                       -- (26)
+riemannZeta_eq_zero_iff_squarefree_eq_zero
+    Re ρ > 1/2 ⟹ (ζ(ρ) = 0 ⟺ ζ(ρ)/ζ(2ρ) = 0)                                  -- (27)
+```

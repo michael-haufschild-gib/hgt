@@ -142,3 +142,30 @@ they are, and there is no combinatorial shortcut past them.  Items 1 and 2 are u
 (Tate for `ℚ`) is **done**.  The route-independent work that remains useful is Matsumoto's theorem,
 Milnor's exact sequence for `F(t)` with the Bass–Tate–Kato norm, and the localization identifying the
 Milnor tame kernel of `𝒪_S` with `K₂(𝒪_S)`.
+
+## Landed 2026-08-18 — the residue field at a finite place, named and compatible
+
+`formal/GaloisForLFunctions/HTGeometry/DedekindResidueFieldAtPlace.lean` (wired into the
+`HTGeometry` umbrella; `lake env lean` and module build clean; axiom audit for all declarations is
+`propext, Classical.choice, Quot.sound`).
+
+The tree had this chain inlined once, inside the proof that the residue fields of a number ring are
+finite.  It is now a named isomorphism **with its compatibility**, which is what any computation with
+the residue or the specialization of Milnor `K`-theory at a finite place needs — in particular the
+localization step that the decomposition above still owes.
+
+```text
+quotientEquivIdealResidueField      R ⧸ I ≅ κ(I) for a maximal ideal
+placeLocalizationAlgEquiv           Localization.AtPrime v.asIdeal ≅ₐ[R] valuationSubringAtPrime K v
+placeValuationSubringCongr          the two presentations of the valuation subring agree
+placeResidueChain                   κ(v.asIdeal) ≅ ResidueField (valuation subring at v)
+residueFieldAtPlaceEquiv            ** κ(v) ≅ R ⧸ v.asIdeal **
+algebraMap_mem_valuationSubringAtPlace, placeIntegerElt
+residueFieldAtPlaceEquiv_residue    ** it sends the residue of r ∈ R to r mod v **
+residue_placeIntegerElt_surjective  ** every residue class at a finite place comes from R **
+```
+
+The compatibility is the point: without it the isomorphism is inert.  It is proved by pushing
+`algebraMap R κ(v.asIdeal) r` through the chain — `IsScalarTower` into the localization,
+`ResidueField.map_residue` twice, `AlgEquiv.commutes` for the localization comparison, and
+`Subtype.ext` for the subring congruence, which is the identity on underlying elements.
