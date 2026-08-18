@@ -5212,3 +5212,27 @@ Two lessons worth keeping.
   (ii) the Schwartz-kernel plus Bochner–Schwartz representation of a jointly continuous positive
   translation-invariant sesquilinear form on `Schwartz(ℝ)` by a positive tempered measure, needed
   for §5's `(27)`.  Everything on both sides of each is formalized.
+
+### 2026-08-18 — `prime-modulated-weyl-idealizer-collapse-on-xi-sampling`: section 5 closed, section 4 reduced
+
+- **Section 5 `(27)`–`(31)`: CLOSED unconditionally.**  New module
+  `formal/GaloisForLFunctions/RHTower/TwoDilationSpectralRepresentation.lean`.  The tree already
+  owned Bochner–Schwartz in the Schwartz-form category
+  (`HTGeometry/SchwartzPositiveMeasureRepresentation.lean`) and the whole theta-null classification
+  (`RHTower/HedenmalmUniversalPositiveFormClassification.lean`); the genuinely missing step was
+  `momentumSymmetric_of_two_dilation_invariance` — two multiplicatively independent integer
+  dilations force momentum symmetry, via differentiability of the translation orbit plus density of
+  the two-generator period group.  Capstones at the actual Hedenmalm theta source:
+  `existsUnique_temperateSpectralRepresentation_supported_realDivisor_of_two_dilation`,
+  `canonicalMeasure_atomic_of_two_dilation`,
+  `exists_temperateSpectralRepresentation_theta_carried_by_xiRealDivisor`.  Axiom-clean.
+- **Section 4 `(22)`: NOT closed; reduced to one analytic `Prop`.**  New modules
+  `HTGeometry/GridCancellationZeroCount.lean` and `RHTower/XiSuperlinearFromCancellation.lean`
+  prove `GridCancellationSurplus f → SuperlinearSamples xiRealDivisor` for any continuous `f` whose
+  zeros are `Xi`-zeros, plus the clamped variant in which the per-cell bound is automatic, plus
+  `(23)` with the Selberg citation replaced by that `Prop`.  The remaining analytic core, the ruled
+  out routes and the identification of the single crux (the mollified second moment
+  `∫_T^{2T}|ζM|² ≪ T`) are in
+  `docs/drafts/pipeline/1-in-progress/selberg-superlinear-xi-density-programme.md`.
+- **Card status:** stays in `2-fully-proven`.  Sections 1–3, 5–7 are Lean-certified; section 4's
+  `(22)` is the one open item.

@@ -1,10 +1,10 @@
 # G-CE coefficient-faithful affine boundary renormalization
 
 - **ID:** g-ce-coefficient-faithful-affine-boundary-renormalization
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** exact source comparison / boundary rigidity
 - **Route:** G-CE inside Route G / CCM
-- **Status:** [PAPER-PROVED] [LEAN-PENDING] [NOVELTY-PLAUSIBLE]
+- **Status:** [LEAN-PROVED] [NOVELTY-PLAUSIBLE]
 - **RH used:** no
 - **Computation used:** no
 
@@ -127,12 +127,29 @@ renormalized finite positive completions converge to budget `4+|d|^2`, and reduc
 four is equivalent to RH itself. Boundary renormalization closes the bridge but cannot remove the
 graph leg.
 
-## Lean plan
+## Lean certificate
 
-1. Define the actual moving zero-clock affine packet and normalized readout.
-2. Prove exact completed-trace normalization.
-3. Define canonical complementary renormalization and prove `(3)--(5)`.
-4. Reuse the source-native finite self-adjoint schedule to prove `(6)--(7)` with no premises.
-5. Add a premise-free capstone combining nonzero marked provenance, exact finite comparison,
-   transport to `d`, zero-limit/RH classification, and exact `4+|d|^2` budget.
+Module:
 
+~~~text
+GaloisForLFunctions.RHTower.MobiusGammaXiPreScalarAffineBoundaryRenormalization
+~~~
+
+Lean proves:
+
+1. actual moving zero-clock affine packet and normalized readout;
+2. exact completed-trace normalization;
+3. canonical complementary renormalization and exact laws `(3)--(5)`;
+4. nonzero charge plus identically zero odd-port provenance at every finite stage;
+5. source-native cofinal transport `(6)` and zero-limit/RH classification `(7)`;
+6. fixed-four global wall positivity iff RH;
+7. premise-free capstone
+   `exists_mobiusGammaXiPreScalarAffineCoefficientFaithfulBoundaryRenormalization`.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/RHTower/MobiusGammaXiPreScalarAffineBoundaryRenormalization.lean` passed;
+- targeted `lake build GaloisForLFunctions.RHTower.MobiusGammaXiPreScalarAffineBoundaryRenormalization` passed;
+- axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`;
+- no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in module;
+- module is imported by `GaloisForLFunctions.RHTower` umbrella.

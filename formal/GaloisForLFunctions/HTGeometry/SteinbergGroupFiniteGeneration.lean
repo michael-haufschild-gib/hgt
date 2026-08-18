@@ -1,6 +1,7 @@
-import GaloisForLFunctions.HTGeometry.SteinbergGroupPresentation
+import GaloisForLFunctions.HTGeometry.SteinbergElementaryGroup
 import Mathlib.Algebra.Ring.Subring.Basic
 import Mathlib.GroupTheory.Finiteness
+import Mathlib.RingTheory.Finiteness.Defs
 
 /-!
 # The Steinberg group of a finitely generated ring is finitely generated
@@ -113,16 +114,49 @@ theorem steinbergGroup_fg [Finite n] (T : Set R) (hTfin : T.Finite)
     exact this g.i g.j g.hij
   exact Group.fg_iff.2 ⟨steinbergGens T', hHtop, steinbergGens_finite (hTfin.insert 1)⟩
 
+/-- A set spanning a ring as a `ℤ`-module generates it as a ring. -/
+theorem subring_closure_eq_top_of_span_eq_top {s : Set R} (hs : Submodule.span ℤ s = ⊤) :
+    Subring.closure s = ⊤ := by
+  have key : ∀ x ∈ Submodule.span ℤ s, x ∈ Subring.closure s := by
+    intro x hx
+    induction hx using Submodule.span_induction with
+    | mem y hy => exact Subring.subset_closure hy
+    | zero => exact zero_mem _
+    | add a b _ _ ha hb => exact add_mem ha hb
+    | smul c a _ ha => exact zsmul_mem ha c
+  exact top_le_iff.1 fun x _ => key x (by rw [hs]; trivial)
+
+/-- **The Steinberg group of a ring that is finitely generated as an abelian group is finitely
+generated.**  This covers the ring of integers of a number field and every ring of `S`-integers. -/
+theorem steinbergGroup_fg_of_moduleFinite [Finite n] (hR : Module.Finite ℤ R)
+    (hthird : ∀ i j : n, ∃ k : n, k ≠ i ∧ k ≠ j) : Group.FG (SteinbergGroup R n) := by
+  obtain ⟨T, hT⟩ := hR.fg_top
+  exact steinbergGroup_fg (T : Set R) T.finite_toSet
+    (subring_closure_eq_top_of_span_eq_top hT) hthird
+
 /-- With at least three indices a third index is always available. -/
 theorem exists_third_index [Fintype n] [DecidableEq n] (hcard : 3 ≤ Fintype.card n) (i j : n) :
     ∃ k : n, k ≠ i ∧ k ≠ j := by
   classical
   have hcard2 : ({i, j} : Finset n).card ≤ 2 := by
     simpa using Finset.card_insert_le i ({j} : Finset n)
-  have hlt : ({i, j} : Finset n).card < Finset.univ.card := by
+  have hlt : ({i, j} : Finset n).card < (Finset.univ : Finset n).card := by
     rw [Finset.card_univ]
     omega
   obtain ⟨k, _, hk⟩ := Finset.exists_mem_notMem_of_card_lt_card hlt
   refine ⟨k, ?_, ?_⟩ <;> simp only [Finset.mem_insert, Finset.mem_singleton] at hk <;> tauto
+
+section Elementary
+
+variable {R : Type*} [CommRing R] {n : Type*} [DecidableEq n] [Fintype n]
+
+/-- **The elementary group of a ring that is finitely generated as an abelian group is finitely
+generated**, being the image of the Steinberg group. -/
+theorem elementaryGroup_fg (hR : Module.Finite ℤ R)
+    (hthird : ∀ i j : n, ∃ k : n, k ≠ i ∧ k ≠ j) : Group.FG (elementaryGroup R n) := by
+  haveI : Group.FG (SteinbergGroup R n) := steinbergGroup_fg_of_moduleFinite hR hthird
+  exact Group.fg_range _
+
+end Elementary
 
 end GaloisForLFunctions.HTGeometry

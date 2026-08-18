@@ -157,3 +157,71 @@ of length `X = T^θ` and Möbius-type coefficients, mesh `H ≍ 1/log T`, window
 - 2026-08-18 — created in 1-in-progress.  Grid-cancellation reduction Lean-certified
   (`GridCancellationZeroCount.lean`, `XiSuperlinearFromCancellation.lean`); target reduced to
   `GridCancellationSurplus`; dead ends recorded; (S1)–(S3) named as the open analytic core.
+
+## The Gram-point route does not benefit from the superlinear-only slack (2026-08-18)
+
+The classical alternative to the grid device is the Gram-point route.  With `θ(g_n) = nπ`, the AFE
+gives `(−1)^n Z(g_n) = 2 + (oscillating terms in m ≥ 2)`, so `∑_{n≤N}(−1)^n Z(g_n) ≈ 2N` — a pure
+diagonal main term, much softer than any cancellation estimate.  Put
+`A = {n ≤ N : (−1)^n Z(g_n) > 0}`.  Cauchy–Schwarz against `∑ |Z(g_n)|² ≪ N log T` gives
+`|A| ≫ N/log T ≍ T`.
+
+But the conversion of `A` into zeros is parity-locked: `Z(g_n)` has sign `(−1)^n` for `n ∈ A`, so a
+sign change is detected only between two elements of `A` at odd distance, and disjoint such pairs
+exist in quantity only once `|A| > N/2`.  If `A` were exactly the even integers, `Z` would be
+nonnegative at every Gram point and no zero would be detected at all.  So the Gram route needs a
+**proportion above one half** at Gram points — an explicit-constant statement — and therefore gains
+nothing from the three relaxations listed at the top of this card.
+
+The grid device has no threshold: any cancellation defect `1 − Bsum/L ≫ 1/ω(1)` suffices.  That is
+why the Lean reduction is built on the grid device and not on Gram points.
+
+## The single crux
+
+In both routes the irreducible input is the **mollified second moment on the critical line**
+```text
+∫_T^{2T} |ζ(1/2+it) M(1/2+it)|² dt ≪ T,   M(s) = ∑_{m≤X} μ(m) m^{-s} P(log(X/m)/log X),
+```
+with `X = T^θ`.  It is what flattens the log factor and makes both `Mx` (grid) and
+`∑|Z(g_n)M|²` (Gram) comparable to the number of cells / Gram points.  Without it every route
+stalls at `N₀(T) ≫ T`.  The tree owns the mollifier's own second moment
+(`RHTower/Sieve/InghamMollifierSecondMoment.lean`, upper bound `O(X + V log X)`) and the
+critical-line fourth moment of `ζ` with polylog budgets, but not the product moment.  **Next brick:
+`∫_T^{2T}|ζ M|² dt ≪ T` for `X = T^θ`, `θ < 1/2`, built from the tree's smooth AFE
+(`SmoothAFEZetaExact.lean`) and Dirichlet mean-value machinery (`Sieve/DirichletMVT.lean`,
+`Sieve/DirichletMeanValue.lean`, `DpolyBallFloor.lean`).**
+
+Available and already Lean-certified for the cancellation half of (S2): the continuous
+first-derivative test (van der Corput, `k = 1`) in both global and interval-local form,
+`GaloisForLFunctions.HTGeometry.abs_integral_mul_cos_phase_le` and
+`abs_integral_mul_cos_phase_le_on` in `HTGeometry/NonstationaryPhaseLowerBound.lean`.  The Hardy
+phase has `θ''(t) = 1/(2t) > 0`, so the hypotheses apply directly to each twisted cell integral.
+
+## Asset inventory for the crux (verified 2026-08-18)
+
+- `RHTower/Sieve/DirichletMVT.lean` — `dirichlet_meanValue_complex`:
+  `|∫_0^T |F|² − T ∑_{n<N}|a_n|²| ≤ 4N(1+log N)∑|a_n|²` for `F(t) = ∑_{n<N}a_n n^{it}`.  Error
+  `O(N log N)`; the sharp Montgomery–Vaughan `O(N)` is **not** owned (needs a Hilbert inequality at
+  the frequencies `log n`).  For `ζM` through the AFE the effective length is `X·√T`, so the
+  usable range is `X ≪ √T/log T` — comfortably inside `θ < 1/2`.
+- `RHTower/Sieve/InghamMollifierSecondMoment.lean` — the mollifier alone:
+  `∫_{-T}^{T}|M_X(1/2+it)|²dt ≤ 5πe·X + (5π/2)(1+log X)T`.
+- `RHTower/SmoothAFEZetaExact.lean` — exact Gaussian smooth AFE:
+  `riemannZeta_line_eq_smoothAFEZetaMellin_sub_dual_sub_residue`, with the left edge still an exact
+  reflected Mellin integral (`smoothAFEZetaDualMellinAt`); `SmoothAFEZetaDirichletExpansion` expands
+  the right edge.  This is the AFE the product moment must be built on.
+- `RHTower/HardyZ.lean`, `RHTower/HardyZPhaseAsymptotic.lean` — exact polar decomposition
+  `ζ(1/2+it) = e^{-iθ(t)}Z(t)` (`riemannZeta_line_eq_exp_neg_theta_mul_hardyZ`,
+  `exp_theta_mul_riemannZeta_line_eq_hardyZ`).
+- `HTGeometry/NonstationaryPhaseLowerBound.lean` — the first-derivative test, global and
+  interval-local.
+- `RHTower/MeanValueBridge.lean` — `jensen_avg_log`, `jensen_avg_log_sq` (`⨍ log g ≤ ½ log ⨍ g²`),
+  and `RHTower/JensenMeanLog.lean` — `integral_log_le_length_mul_log_mean`; these are the Levinson
+  concavity steps, kept in case the Levinson route is revisited.
+- `RHTower/EntireWeightedLittlewoodRectangle.lean`, `EntireWeightedLittlewoodLeftClosure.lean` —
+  Littlewood's lemma for entire functions on rectangles, with left-edge zeros allowed; the Levinson
+  route's contour input, already owned.
+
+What is missing is exactly the **product main term**: the asymptotic (not merely bounded)
+evaluation of `∫_T^{2T}|ζ(1/2+it)M(1/2+it)|²dt` with Möbius-times-polynomial coefficients.  That is
+Conrey's computation and is the next brick.

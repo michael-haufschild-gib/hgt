@@ -158,6 +158,7 @@ theorem mobiusGammaXiPreScalarAffineBoundaryRenormalization_fourUnit_iff_rh :
     have hzero : mobiusGammaXiCoupledErrorSingularGraphDebt = 0 :=
       mobiusGammaXiCoupledErrorSingularGraphDebt_eq_zero_iff_rh.mpr hRH
     rw [hzero]
+    norm_num
 
 /-- Premise-free capstone: exact finite comparison, cofinal transport, and RH endpoint. -/
 theorem exists_mobiusGammaXiPreScalarAffineCoefficientFaithfulBoundaryRenormalization :

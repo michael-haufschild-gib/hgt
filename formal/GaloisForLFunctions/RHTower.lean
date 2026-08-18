@@ -10259,3 +10259,4 @@ import GaloisForLFunctions.RHTower.Sieve.MarkerDominatesFibre
 import GaloisForLFunctions.RHTower.Sieve.PowerWindowSelect
 import GaloisForLFunctions.RHTower.Sieve.PerronCompareKernel
 import GaloisForLFunctions.RHTower.Sieve.PerronKernelIntegralForm
+import GaloisForLFunctions.RHTower.Sieve.CpowMulILipschitz
