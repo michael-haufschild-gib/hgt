@@ -4242,3 +4242,70 @@ value is now `2β + 5/4 − γβ`), so that file and everything downstream of it
 not the proof, has to be retuned, and its three consumers (`Sieve/SlopeQuotientLimit`,
 `Sieve/RhoLimit`, `Sieve/ConstQuotientLimit`) retuned with it.  **Not touched here**, since
 `SpectralParameters.lean` carries uncommitted changes from that session.
+
+## The red lane is repaired, and step 1 now accepts the fibre windows (2026-08-18, later)
+
+### The `ladderEta` propagation, completed
+
+`Sieve/SpectralParameters` moved `ladderEta` from `(log x)^{γβ−β−1}` to `(log x)^{γβ−β−5/4}`
+(commit `0794a9200`, 15:07) without propagating.  Since `ladderSteps ≤ 2(log x)^β/ladderEta`, the true
+bound is `2(log x)^{2β+5/4−γβ}`, so `Sieve/RhoLimitPieces.eventually_ladderSteps_poly` was *false* and
+the whole chain below it — `Sieve/MoebiusMeanSquare`, `Sieve/RouteEMoebiusUnconditional` — did not
+compile.  The forced retune is `1 → 5/4` throughout, propagated here across four files:
+
+| file | change |
+|-|-|
+| `Sieve/RhoLimitPieces` | `eventually_ladderSteps_poly`: exponent `2β+1−γβ → 2β+5/4−γβ` |
+| `Sieve/RhoLimit` | `Lm` and all six `rhoMajorant` exponents bump by `1/4`; `tendsto_rhoMajorant`'s negativity checks still hold with room (`12β−γβ−11.75 < 0`, `5/4−β−γβ < 0` since `β,γβ > 9/10`) |
+| `Sieve/SlopeQuotientLimit` | `eventually_steps_eta_sq_le` (`γβ−1 → γβ−5/4`), `inv_ladderEta_eq` (`β+1−γβ → β+5/4−γβ`), `P1/P2/P3`, and `slopeMajorant`; the product `MB·P1` is now `(log x)^{−1/4}` instead of `1`, so that majorant term carries an extra vanishing factor |
+| `Sieve/ConstQuotientLimit` | the same three parameters, `discInner`, `constMajorant`, and the `MB·P1` term (whose tendsto witness becomes `(log x)^{−1/4}·(1/W²)`) |
+
+`lake build GaloisForLFunctions.RHTower.Sieve.MoebiusMeanSquare` now succeeds.  The whole Möbius
+chain is axiom-clean again, and `Sieve/MoebiusSignInWindow` (this card's `(2)`–`(3)` in nonemptiness
+form) is **`lake build`-audited**, not merely `lake env lean` checked.
+
+### Why the integer-start form does not follow from the fibre form — three routes closed
+
+1. **Sup-bound Gallagher** (`Sieve/DyadicMeanSquareGallagher.dyadicMeanSquare_le_gallagher`): the
+   arithmetic requirement is `M₁ ≪ x·ℓ` for `M₁ = sup_{|w| ≤ W}‖logPoly μ (Icc 1 M) w‖²`, i.e.
+   square-root cancellation for the Möbius polynomial at low frequency.  `Sieve/CofactorLowFreqBound`
+   saves only `exp(−c(log x)^{1/10})`.  **RH strength; dead.**
+2. **Fibre ⟹ fixed-length integer start.**  The fibre above `a` *is* an integer-start window: it
+   starts at `⌈x/a⌉` and has length `≈ h√x/a ∈ [h/2, h]`, and `a ↦ ⌈x/a⌉` is surjective onto
+   `[⌈√x/2⌉, ⌈√x⌉]` because `|d(x/a)/da| = x/a² ≤ 1` on `a ≥ √x`.  But the length **varies with the
+   start**, and a fixed-length sub-window's sum is not controlled by the fibre sum.  Writing
+   `∑_{(z,z+ℓ]} = ∑_{fibre} − ∑_{(z+ℓ, fibre end]}` needs the *maximal* window at `z+ℓ`, which is
+   what one is trying to prove.  **Circular; dead as stated.**
+3. **Multiplicative ⟹ additive window.**  Same obstruction: a multiplicative window of ratio `1+δ`
+   at `z` is an additive window of length `zδ`, which varies over a dyadic block.  **Dead.**
+
+The corpus's implication runs the other way — `Sieve/FibreStartSeparation.averagedMeanSquare_of_maximal`
+and `Sieve/MoebiusMaximalWindow.maximalWindowMeanSquare_of_firstMoment` go
+maximal-window ⟹ fibre — and the unconditional Möbius input is produced in the *fibre* normalisation
+by the spectral route, bypassing the maximal window entirely.
+
+### The way around: step 1 at a variable window length — `Sieve/GoodStartVariableWindow`
+
+The obstruction is not in the mathematics but in the *shape* of this card's step 1, which fixes one
+`L` for every start.  The fibre form supplies a window per start, so step 1 was generalised:
+
+```text
+card_le_good_add_bad_var {Lf : ℕ → ℕ} :
+  (∀ t ∈ S, t ∉ Bad₁ → |∑_{(t, t+Lf t]} μ| ≤ (1/8)D·Lf t) →
+  (∀ t ∈ S, t ∉ Bad₂ → (1/2)D·Lf t ≤ ∑_{(t, t+Lf t]} μ²) →
+    #S ≤ #{good starts} + #Bad₁ + #Bad₂
+
+card_le_good_add_meanSquare_var (hδ : 0 < δ) (hδL : ∀ t ∈ S, δ ≤ (1/8)D·Lf t)
+    (hms : ∑_{t ∈ S} (∑_{(t, t+Lf t]} μ)² ≤ V) … :
+  (#S : ℝ) ≤ #{good starts} + V/δ² + #Bad₂
+```
+
+The uniform Markov threshold `δ` replaces the fixed `(1/8)DL`: with `Lf t ∈ [h/2, h]` one takes
+`δ = (1/16)D·h ≤ (1/8)D·Lf t` for every start.  `card_moebius_sign_ge` was already pointwise, so it
+applies verbatim at `Lf t`.  Both theorems axiom-clean, built, wired.
+
+**What remains for this card**: instantiate `card_le_good_add_meanSquare_var` at the fibre data —
+`S` = the fibre starts `⌈x/a⌉`, `Lf` = the fibre lengths, `V` from
+`averagedMeanSquare_moebius` — and re-run the card's squarefree input `h2` and its marker supply at
+variable lengths.  That is bookkeeping against the corpus's squarefree machinery, not new analysis;
+the analytic input is now a theorem.

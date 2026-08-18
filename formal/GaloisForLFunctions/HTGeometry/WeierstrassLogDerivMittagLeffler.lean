@@ -169,12 +169,13 @@ theorem logDeriv_weierstrassGenusProduct_eq_tsum {a : ℕ → ℂ}
   exact tsum_congr fun n => logDeriv_weierstrassGenusFactorAt_eq hane n (hz n)
 
 /-- **The Arakelyan step for the logarithmic derivative of a Weierstrass product.** -/
-theorem exists_entire_approx_sq_logDeriv_weierstrassGenusProduct {a : ℕ → ℂ}
+theorem exists_entire_approx_sq_logDeriv_weierstrassGenusProduct {a : ℕ → ℂ} (κ : ℂ)
     (ha : Tendsto (fun n => ‖a n‖) atTop atTop) (hane : ∀ n, a n ≠ 0)
     (hare : ∀ n, (a n).re < 1) {ε : ℝ} (hε : 0 < ε) :
     ∃ G : ℂ → ℂ, Differentiable ℂ G ∧
-      ∀ s : ℂ, 1 ≤ s.re → ‖s ^ 2 * logDeriv (weierstrassGenusProduct a) s - G s‖ ≤ ε := by
-  obtain ⟨G, hGd, hGb⟩ := exists_entire_approx_sq_mittagLeffler (a := a) (m := fun _ => 1)
+      ∀ s : ℂ, 1 ≤ s.re →
+        ‖(s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct a) s - G s‖ ≤ ε := by
+  obtain ⟨G, hGd, hGb⟩ := exists_entire_approx_sq_mittagLeffler (a := a) (m := fun _ => 1) κ
     (Q := weierstrassMittagLefflerCorrection a) (u := weierstrassMittagLefflerBound a)
     ha hare (differentiable_weierstrassMittagLefflerCorrection a)
     (summable_weierstrassMittagLefflerBound ha)
@@ -199,17 +200,18 @@ theorem weierstrassGenusProduct_ne_zero_of_re {a : ℕ → ℂ}
   linarith
 
 /-- **The Arakelyan step for the logarithmic derivative of a prescribed-divisor realization.** -/
-theorem exists_entire_approx_sq_logDeriv_divisorFunction {a b : ℕ → ℂ}
+theorem exists_entire_approx_sq_logDeriv_divisorFunction {a b : ℕ → ℂ} (κ : ℂ)
     (ha : Tendsto (fun n => ‖a n‖) atTop atTop) (hane : ∀ n, a n ≠ 0)
     (hb : Tendsto (fun n => ‖b n‖) atTop atTop) (hbne : ∀ n, b n ≠ 0)
     (hare : ∀ n, (a n).re < 1) (hbre : ∀ n, (b n).re < 1) {ε : ℝ} (hε : 0 < ε) :
     ∃ G : ℂ → ℂ, Differentiable ℂ G ∧
-      ∀ s : ℂ, 1 ≤ s.re → ‖s ^ 2 * logDeriv (divisorFunction a b) s - G s‖ ≤ ε := by
+      ∀ s : ℂ, 1 ≤ s.re →
+        ‖(s ^ 2 + κ * s) * logDeriv (divisorFunction a b) s - G s‖ ≤ ε := by
   obtain ⟨Ga, hGad, hGab⟩ :=
-    exists_entire_approx_sq_logDeriv_weierstrassGenusProduct ha hane hare (ε := ε / 2)
+    exists_entire_approx_sq_logDeriv_weierstrassGenusProduct κ ha hane hare (ε := ε / 2)
       (by linarith)
   obtain ⟨Gb, hGbd, hGbb⟩ :=
-    exists_entire_approx_sq_logDeriv_weierstrassGenusProduct hb hbne hbre (ε := ε / 2)
+    exists_entire_approx_sq_logDeriv_weierstrassGenusProduct κ hb hbne hbre (ε := ε / 2)
       (by linarith)
   refine ⟨fun s => Ga s - Gb s, hGad.sub hGbd, fun s hs => ?_⟩
   have hlog : logDeriv (divisorFunction a b) s
@@ -221,15 +223,15 @@ theorem exists_entire_approx_sq_logDeriv_divisorFunction {a b : ℕ → ℂ}
       ((differentiable_weierstrassGenusProduct hb hbne) s)
     exact this
   rw [hlog]
-  have hsplit : s ^ 2 * (logDeriv (weierstrassGenusProduct a) s
+  have hsplit : (s ^ 2 + κ * s) * (logDeriv (weierstrassGenusProduct a) s
         - logDeriv (weierstrassGenusProduct b) s) - (Ga s - Gb s)
-      = (s ^ 2 * logDeriv (weierstrassGenusProduct a) s - Ga s)
-        - (s ^ 2 * logDeriv (weierstrassGenusProduct b) s - Gb s) := by ring
+      = ((s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct a) s - Ga s)
+        - ((s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct b) s - Gb s) := by ring
   rw [hsplit]
-  calc ‖(s ^ 2 * logDeriv (weierstrassGenusProduct a) s - Ga s)
-          - (s ^ 2 * logDeriv (weierstrassGenusProduct b) s - Gb s)‖
-      ≤ ‖s ^ 2 * logDeriv (weierstrassGenusProduct a) s - Ga s‖
-        + ‖s ^ 2 * logDeriv (weierstrassGenusProduct b) s - Gb s‖ := norm_sub_le _ _
+  calc ‖((s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct a) s - Ga s)
+          - ((s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct b) s - Gb s)‖
+      ≤ ‖(s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct a) s - Ga s‖
+        + ‖(s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct b) s - Gb s‖ := norm_sub_le _ _
     _ ≤ ε / 2 + ε / 2 := add_le_add (hGab s hs) (hGbb s hs)
     _ = ε := by ring
 

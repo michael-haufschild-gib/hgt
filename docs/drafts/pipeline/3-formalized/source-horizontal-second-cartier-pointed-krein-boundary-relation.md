@@ -121,6 +121,9 @@ For every `c≠0` and `λ≠0`:
 9. swap of the two source orientations preserves the relation and the form and commutes with both transfers.
 10. any antisymmetric additive order on the jet rejects simultaneous nonnegativity of `G_c` and
     `-G_c`; otherwise antisymmetry would force the retained nonzero ghost to vanish.
+11. any complex-linear transverse anchor nonzero on `G` and covariant from the reciprocal-star
+    source leg to the unit-anchor leg forces `|lambda|=1`; consequently no such linear completion
+    exists on a strict-right Xi fibre.
 
 For the actual Xi endpoint scale and `λ=χ_p(ρ)`, the scale and character are nonzero. The canonical
 ghost lift therefore supplies the same nonzero null/nonradical block on every support copy, and
@@ -193,6 +196,9 @@ graph closure is imported. The paper proof is dependency-closed. `[PAPER-PROVED]
   `sourceHorizontalSecondCartierPointedKrein_actual_ghost_null_not_radical`,
   `sourceHorizontalSecondCartierPointedKrein_actual_primeTransfer_form`, and
   `sourceHorizontalSecondCartierPointedKrein_actual_relation_primeTransfer_covariant`.
+- Sharp next-boundary certificates:
+  `sourceHorizontalSecondCartierPointedKrein_anchor_covariance_norm_eq_one` and
+  `sourceHorizontalSecondCartierPointedKrein_strictRight_no_linear_transverse_anchor`.
 - Direct source check:
   `lake env lean GaloisForLFunctions/RHTower/SourceHorizontalSecondCartierPointedKreinBoundaryRelation.lean`
 - Exact leaf build:
@@ -209,3 +215,6 @@ Status: `[FORMALIZED]`.
   Stage 2.
 - 2026-08-18 — Generic relation, Xi coefficient/prime/multiplicity specialization, order firewall,
   axiom audit, exact leaf build, and umbrella wiring completed; promoted to Stage 3.
+- 2026-08-18 — Hostile follow-up proved every nonzero complex-linear transverse anchor is unitary
+  and therefore impossible on a strict-right Xi fibre. Remaining selector must be nonlinear or
+  genuinely relational, not a disguised linear section.

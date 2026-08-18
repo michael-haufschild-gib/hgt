@@ -281,4 +281,125 @@ theorem frullani_eq_eulerMascheroni :
     integral_exp_neg_mul_log] at hunion
   linarith
 
+/-! ## The exponential-integral asymptotic `Ein(a) = γ + log a + o(1)` -/
+
+/-- The exponential integral `Ein(a) = ∫₀^a (1 - e^{-s}) ds/s`. -/
+noncomputable def ein (a : ℝ) : ℝ := ∫ s in (0 : ℝ)..a, einProfile s
+
+theorem intervalIntegrable_exp_neg_div {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    IntervalIntegrable (fun t : ℝ => Real.exp (-t) / t) volume a b := by
+  refine ContinuousOn.intervalIntegrable ?_
+  rw [Set.uIcc_of_le hab]
+  exact ((Real.continuous_exp.comp continuous_neg).continuousOn).div continuousOn_id
+    (fun t ht => ne_of_gt (lt_of_lt_of_le ha ht.1))
+
+theorem intervalIntegrable_one_div_pos {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    IntervalIntegrable (fun t : ℝ => 1 / t) volume a b := by
+  refine ContinuousOn.intervalIntegrable ?_
+  rw [Set.uIcc_of_le hab]
+  exact continuousOn_const.div continuousOn_id (fun t ht => ne_of_gt (lt_of_lt_of_le ha ht.1))
+
+theorem intervalIntegrable_einProfile_pos {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    IntervalIntegrable einProfile volume a b := by
+  refine ContinuousOn.intervalIntegrable ?_
+  rw [Set.uIcc_of_le hab]
+  have hquot : ContinuousOn (fun t : ℝ => (1 - Real.exp (-t)) / t) (Set.Icc a b) :=
+    (continuousOn_const.sub
+      ((Real.continuous_exp.comp continuous_neg).continuousOn)).div continuousOn_id
+      (fun t ht => ne_of_gt (lt_of_lt_of_le ha ht.1))
+  refine hquot.congr fun t ht => ?_
+  rw [einProfile, if_neg (ne_of_gt (lt_of_lt_of_le ha ht.1))]
+
+theorem ein_eq {a : ℝ} (ha : 1 ≤ a) :
+    ein a = frullaniHead + Real.log a - ∫ s in (1 : ℝ)..a, Real.exp (-s) / s := by
+  have hsplit : ein a = frullaniHead + ∫ s in (1 : ℝ)..a, einProfile s := by
+    rw [ein, frullaniHead]
+    exact (intervalIntegral.integral_add_adjacent_intervals
+      (intervalIntegrable_einProfile (by norm_num)) (intervalIntegrable_einProfile_pos
+        zero_lt_one ha)).symm
+  have htail : (∫ s in (1 : ℝ)..a, einProfile s)
+      = Real.log a - ∫ s in (1 : ℝ)..a, Real.exp (-s) / s := by
+    have hcongr : (∫ s in (1 : ℝ)..a, einProfile s)
+        = ∫ s in (1 : ℝ)..a, (1 / s - Real.exp (-s) / s) := by
+      refine intervalIntegral.integral_congr fun t ht => ?_
+      rw [Set.uIcc_of_le ha] at ht
+      have ht0 : (0 : ℝ) < t := lt_of_lt_of_le zero_lt_one ht.1
+      rw [einProfile, if_neg (ne_of_gt ht0)]
+      ring
+    rw [hcongr, intervalIntegral.integral_sub (intervalIntegrable_one_div_pos zero_lt_one ha)
+      (intervalIntegrable_exp_neg_div zero_lt_one ha),
+      integral_one_div_of_pos zero_lt_one (lt_of_lt_of_le zero_lt_one ha)]
+    rw [div_one]
+  rw [hsplit, htail]
+  ring
+
+theorem integrableOn_exp_neg_div_Ioi_ge {a : ℝ} (ha : 1 ≤ a) :
+    IntegrableOn (fun t : ℝ => Real.exp (-t) / t) (Set.Ioi a) volume :=
+  integrableOn_exp_neg_div_Ioi_one.mono_set (Set.Ioi_subset_Ioi ha)
+
+theorem abs_integral_exp_neg_div_Ioi_le {a : ℝ} (ha : 1 ≤ a) :
+    |∫ t in Set.Ioi a, Real.exp (-t) / t| ≤ Real.exp (-a) := by
+  have hbd : ∀ t ∈ Set.Ioi a, ‖Real.exp (-t) / t‖ ≤ Real.exp (-t) := by
+    intro t ht
+    have ht0 : (0 : ℝ) < t := lt_of_lt_of_le zero_lt_one (le_of_lt (lt_of_le_of_lt ha ht))
+    have ht1 : (1 : ℝ) ≤ t := le_of_lt (lt_of_le_of_lt ha ht)
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), div_le_iff₀ ht0]
+    nlinarith [Real.exp_pos (-t)]
+  have h1 : ‖∫ t in Set.Ioi a, Real.exp (-t) / t‖
+      ≤ ∫ t in Set.Ioi a, ‖Real.exp (-t) / t‖ :=
+    MeasureTheory.norm_integral_le_integral_norm _
+  have h2 : (∫ t in Set.Ioi a, ‖Real.exp (-t) / t‖) ≤ ∫ t in Set.Ioi a, Real.exp (-t) := by
+    refine MeasureTheory.integral_mono_of_nonneg
+      (MeasureTheory.ae_restrict_of_forall_mem measurableSet_Ioi fun t _ => norm_nonneg _)
+      (integrableOn_exp_neg_Ioi_one.mono_set (Set.Ioi_subset_Ioi ha))
+      (MeasureTheory.ae_restrict_of_forall_mem measurableSet_Ioi hbd)
+  rw [integral_exp_neg_Ioi] at h2
+  rw [Real.norm_eq_abs] at h1
+  linarith
+
+theorem integral_exp_neg_div_Icc_eq {a : ℝ} (ha : 1 ≤ a) :
+    (∫ s in (1 : ℝ)..a, Real.exp (-s) / s)
+      = frullaniTail - ∫ t in Set.Ioi a, Real.exp (-t) / t := by
+  have hsplit : Set.Ioc (1 : ℝ) a ∪ Set.Ioi a = Set.Ioi (1 : ℝ) :=
+    Set.Ioc_union_Ioi_eq_Ioi ha
+  have hdisj : Disjoint (Set.Ioc (1 : ℝ) a) (Set.Ioi a) := by
+    rw [Set.disjoint_left]
+    intro x hx hx'
+    exact absurd hx' (not_lt.mpr hx.2)
+  have hIoc : IntegrableOn (fun t : ℝ => Real.exp (-t) / t) (Set.Ioc (1 : ℝ) a) volume := by
+    have h := intervalIntegrable_exp_neg_div zero_lt_one ha
+    rwa [intervalIntegrable_iff_integrableOn_Ioc_of_le ha] at h
+  have hunion := MeasureTheory.setIntegral_union (μ := volume)
+    (f := fun t : ℝ => Real.exp (-t) / t) hdisj measurableSet_Ioi hIoc
+    (integrableOn_exp_neg_div_Ioi_ge ha)
+  rw [hsplit] at hunion
+  have hval : (∫ s in Set.Ioc (1 : ℝ) a, Real.exp (-s) / s)
+      = ∫ s in (1 : ℝ)..a, Real.exp (-s) / s :=
+    (intervalIntegral.integral_of_le ha).symm
+  rw [hval] at hunion
+  rw [frullaniTail]
+  linarith
+
+/-- **The exponential-integral asymptotic.**  `Ein(a) - log a → γ`. -/
+theorem tendsto_ein_sub_log :
+    Tendsto (fun a : ℝ => ein a - Real.log a) atTop (nhds Real.eulerMascheroniConstant) := by
+  have hkey : ∀ a : ℝ, 1 ≤ a → ein a - Real.log a
+      = Real.eulerMascheroniConstant + ∫ t in Set.Ioi a, Real.exp (-t) / t := by
+    intro a ha
+    rw [ein_eq ha, integral_exp_neg_div_Icc_eq ha, ← frullani_eq_eulerMascheroni]
+    ring
+  have htail : Tendsto (fun a : ℝ => ∫ t in Set.Ioi a, Real.exp (-t) / t) atTop (nhds 0) := by
+    refine squeeze_zero_norm' (a := fun a : ℝ => Real.exp (-a)) ?_ ?_
+    · filter_upwards [eventually_ge_atTop (1 : ℝ)] with a ha
+      rw [Real.norm_eq_abs]
+      exact abs_integral_exp_neg_div_Ioi_le ha
+    · have := Real.tendsto_exp_atBot.comp tendsto_neg_atTop_atBot
+      simpa [Function.comp_def] using this
+  have hlim := (tendsto_const_nhds (x := Real.eulerMascheroniConstant)
+    (f := atTop (α := ℝ))).add htail
+  rw [add_zero] at hlim
+  refine hlim.congr' ?_
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with a ha
+  exact (hkey a ha).symm
+
 end RHTower

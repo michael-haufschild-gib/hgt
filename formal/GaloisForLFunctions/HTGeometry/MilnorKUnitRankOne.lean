@@ -130,8 +130,9 @@ theorem milnorSym2_isTorsion_of_torsion_mul_zpow {U : Subgroup Fˣ} {g : Fˣ}
 def symbolSubgroup (U : Subgroup Fˣ) : AddSubgroup (MilnorKDeg F 2) :=
   AddSubgroup.closure {y | ∃ a ∈ U, ∃ b ∈ U, y = milnorSym2 F a b}
 
-/-- The units whose symbol against a fixed `b` lands in `T`, as a subgroup. -/
-private def leftStab (T : AddSubgroup (MilnorKDeg F 2)) (b : Fˣ) : Subgroup Fˣ where
+/-- **The units whose symbol against a fixed `b` lands in `T`** form a subgroup, because the left
+slot of the symbol is a homomorphism. -/
+def leftStab (T : AddSubgroup (MilnorKDeg F 2)) (b : Fˣ) : Subgroup Fˣ where
   carrier := {a | milnorSym2 F a b ∈ T}
   one_mem' := by
     show milnorSym2 F 1 b ∈ T
@@ -148,8 +149,9 @@ private def leftStab (T : AddSubgroup (MilnorKDeg F 2)) (b : Fˣ) : Subgroup Fˣ
     rw [milnorSym2_inv_left]
     exact T.neg_mem hx
 
-/-- The units whose symbol against a fixed `a` lands in `T`, as a subgroup. -/
-private def rightStab (T : AddSubgroup (MilnorKDeg F 2)) (a : Fˣ) : Subgroup Fˣ where
+/-- **The units whose symbol against a fixed `a` lands in `T`** form a subgroup, because the right
+slot of the symbol is a homomorphism. -/
+def rightStab (T : AddSubgroup (MilnorKDeg F 2)) (a : Fˣ) : Subgroup Fˣ where
   carrier := {b | milnorSym2 F a b ∈ T}
   one_mem' := by
     show milnorSym2 F a 1 ∈ T
@@ -252,5 +254,13 @@ theorem symbolSubgroup_le_torsion_of_torsion_mul_zpow {U : Subgroup Fˣ} {g : F�
     symbolSubgroup F U ≤ torsionAddSubgroup (MilnorKDeg F 2) :=
   closure_milnorSym2_le_torsion_of_rank_le_one F
     (forall_pow_mem_zpowers_of_torsion_mul_zpow F hU)
+
+@[simp]
+theorem mem_leftStab {T : AddSubgroup (MilnorKDeg F 2)} {b a : Fˣ} :
+    a ∈ leftStab F T b ↔ milnorSym2 F a b ∈ T := Iff.rfl
+
+@[simp]
+theorem mem_rightStab {T : AddSubgroup (MilnorKDeg F 2)} {a b : Fˣ} :
+    b ∈ rightStab F T a ↔ milnorSym2 F a b ∈ T := Iff.rfl
 
 end GaloisForLFunctions.HTGeometry

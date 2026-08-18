@@ -212,3 +212,66 @@ lattice of Steinberg relations available inside `⟨G⟩`, so the criterion read
 
 which is §2's bridge at finite level.  This is the sharpest formulation the corpus now owns, it is
 entirely elementary, and it is the statement any future elementary proof has to establish.
+
+## 7. The reduction is now sharp: single symbols, dependence, and the subtraction identity `[PROVED]`
+
+Same module.  Three further theorems bring the target down to its irreducible core.
+
+```text
+milnorKDegTwo_le_torsion_iff_symbols     ** K₂^M(F) is torsion  ⟺  every single symbol {a,b} is **
+milnorSym2_mem_torsion_of_dependent      ** aᵐbⁿ = 1 with m ≠ 0  ⟹  {a,b} is torsion **
+subUnit, milnorSym2_sub_identity         ** {a,b} = {a/b, b − a} + {−1, b} **
+```
+
+- The first is the exhaustion in its most usable form: the stage machinery collapses, because a
+  two-element stage already contains an arbitrary symbol.
+- The second disposes of every **multiplicatively dependent** pair in one line — `m·{a,b} = {aᵐ,b}
+  = {b⁻ⁿ,b} = −n·{b,b}` and `{b,b} = {−1,b}` is killed by two — with no structure theory.  It
+  subsumes the rank-at-most-one theorem for a single symbol.
+- The third is the Steinberg relation at `x = a/b` expanded in both slots.  It is *the* Euclidean
+  move: it trades `{a,b}` for a symbol whose second entry is the remainder `b − a`.
+
+**So the entire remaining content of `rank K₂(𝒪_F) = 0` is: for a multiplicatively independent pair
+`a, b` in a number field, `{a,b}` is torsion.**  Everything else in the card's `(1)` is now formal.
+The subtraction identity is the only known engine for attacking such a pair, and over `ℤ` iterating
+it terminates because `|b − a| < max(|a|,|b|)` can be arranged; over a field with two or more
+archimedean places no size function decreases, which is the precise obstruction recorded in
+`garland-tame-kernel-torsion`.
+
+## 8. The cyclotomic engine `[PROVED]`
+
+Same module.  The reduction of §7 leaves one statement — `{a,b}` torsion for multiplicatively
+independent `a, b`.  There is an unconditional, elementary supply of torsion symbols that attacks
+exactly that, and it is now formal.
+
+```text
+milnorSym2_zpow_oneSub_isTorsion   ** n·{a, 1 − aⁿ} = 0 **   (Steinberg at aⁿ, left slot ℤ-linear)
+milnorSym2_zpow_oneSub_mem_torsion  hence {a, 1 − aⁿ} is torsion for n ≠ 0
+leftStab, rightStab, mem_leftStab, mem_rightStab
+torsionPartners a                   ** {b : {a,b} is torsion} is a SUBGROUP of Fˣ **
+oneSub_zpow_mem_torsionPartners     1 − aⁿ is always a torsion partner of a
+milnorKDegTwo_le_torsion_iff_torsionPartners
+                                    K₂^M(F) is torsion ⟺ torsionPartners a = ⊤ for every a
+symbolSubgroup_top
+milnorKDegTwo_closure_of_generating ** symbols of any generating set of Fˣ generate K₂^M(F) **
+milnorKDegTwo_le_torsion_of_generating   torsion is decided on any generating set
+```
+
+### The engine, and exactly where it stalls
+
+`torsionPartners a` is a subgroup containing `1 − aⁿ` for every `n ≠ 0`.  Over a Dedekind domain with
+finite residue fields this is a genuine induction: for a prime `π ∤ a` the residue `ā` has finite
+order `n` in the finite group `κ(π)^×`, so `π ∣ aⁿ − 1`, and `1 − aⁿ` factors as a unit times primes
+all of which divide `aⁿ − 1`.  If all but one of those factors is already known to be a torsion
+partner, the subgroup property delivers the last one.
+
+Worked over `ℚ` with `a = 2`: `1−2² = −3` gives `{2,3}`; `1−2³ = −7` gives `{2,7}`;
+`1−2⁴ = −3·5` then gives `{2,5}`; `1−2⁸ = −3·5·17` gives `{2,17}`; `1−2¹⁰ = −3·11·31` gives
+`{2,11}`, and so on — every odd prime is reached because `2` has finite order modulo it.
+
+**Where it stalls**: when `aⁿ − 1` has *two or more* primitive prime divisors at the same level `n`,
+the relation only makes their **sum** a torsion partner, not each separately.  Separating them
+requires relations from a different base `a`, and whether the resulting system of relations spans is
+precisely the exceptional-unit spanning question of §2.  So the engine reduces `rank K₂ = 0` to a
+concrete, finite-level **linear-algebra-over-ℚ question about `S`-unit equations**, with no analysis
+anywhere in sight — which is the strongest formulation this card can currently support.

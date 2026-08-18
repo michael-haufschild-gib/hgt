@@ -4097,6 +4097,8 @@ import GaloisForLFunctions.RHTower.PrimeProfileFockLimit
 import GaloisForLFunctions.RHTower.CoherentEscapeEnds
 import GaloisForLFunctions.RHTower.HalfNormalCoherentBoundary
 import GaloisForLFunctions.RHTower.HellingerCurvature
+import GaloisForLFunctions.RHTower.EulerMascheroniExponentialIntegral
+import GaloisForLFunctions.RHTower.HalfNormalExactScale
 import GaloisForLFunctions.RHTower.WoldNormalScale
 import GaloisForLFunctions.RHTower.DyadicEulerTelescope
 import GaloisForLFunctions.RHTower.MertensSecondRealVariable
@@ -10223,3 +10225,4 @@ import GaloisForLFunctions.RHTower.Sieve.HuxleyDensityHypothesis
 import GaloisForLFunctions.RHTower.Sieve.HuxleyDensityThreshold
 import GaloisForLFunctions.RHTower.Sieve.MoebiusSignInWindow
 import GaloisForLFunctions.RHTower.Sieve.HuxleyRangeLargeValues
+import GaloisForLFunctions.RHTower.Sieve.GoodStartVariableWindow

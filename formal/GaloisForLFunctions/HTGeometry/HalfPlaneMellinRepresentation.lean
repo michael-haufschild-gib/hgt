@@ -184,6 +184,54 @@ theorem integral_mellinDensity_eq {φ : ℂ → ℂ} {C : ℝ}
     exact_mod_cast Real.pi_ne_zero
   field_simp
 
+theorem norm_exp_mul_I_mul_real (t u : ℝ) : ‖Complex.exp ((t : ℂ) * I * (u : ℂ))‖ = 1 := by
+  rw [Complex.norm_exp]
+  have hre : ((t : ℂ) * I * (u : ℂ)).re = 0 := by simp [Complex.mul_re]
+  rw [hre, Real.exp_zero]
+
+/-- The density is bounded, uniformly in `x`. -/
+theorem norm_mellinDensity_le (φ : ℂ → ℂ) (x : ℝ) :
+    ‖mellinDensity φ x‖ ≤ (1 / (2 * Real.pi)) * ∫ (t : ℝ), ‖φ ((1 : ℂ) + (t : ℂ) * I)‖ := by
+  have hpi : (0:ℝ) < 2 * Real.pi := by positivity
+  have hc : ‖(1 / (2 * Real.pi) : ℂ)‖ = 1 / (2 * Real.pi) := by
+    rw [norm_div, norm_one, Complex.norm_mul, Complex.norm_ofNat, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos Real.pi_pos]
+  rw [mellinDensity, norm_mul, hc]
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  refine le_trans (norm_integral_le_integral_norm _) ?_
+  refine le_of_eq (integral_congr_ae (Filter.Eventually.of_forall fun t => ?_))
+  simp only [norm_mul, norm_exp_mul_I_mul_real, one_mul]
+
+/-- **Riemann–Lebesgue: the density vanishes at infinity.** -/
+theorem tendsto_mellinDensity_atTop (φ : ℂ → ℂ) :
+    Tendsto (fun x : ℝ => mellinDensity φ x) atTop (nhds 0) := by
+  have hpi : (0:ℝ) < 2 * Real.pi := by positivity
+  have hRL := Real.tendsto_integral_exp_smul_cocompact (fun v : ℝ => φ ((1 : ℂ) + (v : ℂ) * I))
+  have hlog : Tendsto (fun x : ℝ => -(Real.log x)) atTop atBot :=
+    Filter.tendsto_neg_atTop_atBot.comp Real.tendsto_log_atTop
+  have hw : Tendsto (fun x : ℝ => -(Real.log x) / (2 * Real.pi)) atTop atBot :=
+    hlog.atBot_div_const hpi
+  have hw' : Tendsto (fun x : ℝ => -(Real.log x) / (2 * Real.pi)) atTop (Filter.cocompact ℝ) :=
+    hw.mono_right atBot_le_cocompact
+  have hcomp := hRL.comp hw'
+  have heq : ∀ x : ℝ,
+      (∫ (v : ℝ), (Real.fourierChar (-(v * (-(Real.log x) / (2 * Real.pi))))) •
+          φ ((1 : ℂ) + (v : ℂ) * I))
+        = ∫ (v : ℝ), Complex.exp ((v : ℂ) * I * (Real.log x : ℂ)) * φ ((1 : ℂ) + (v : ℂ) * I) := by
+    intro x
+    refine integral_congr_ae (Filter.Eventually.of_forall fun v => ?_)
+    simp only [Circle.smul_def, Real.fourierChar_apply, smul_eq_mul]
+    congr 2
+    push_cast
+    field_simp
+  have hcomp' : Tendsto (fun x : ℝ =>
+      ∫ (v : ℝ), Complex.exp ((v : ℂ) * I * (Real.log x : ℂ)) * φ ((1 : ℂ) + (v : ℂ) * I))
+      atTop (nhds 0) := by
+    refine hcomp.congr fun x => ?_
+    exact heq x
+  have := hcomp'.const_mul (1 / (2 * Real.pi) : ℂ)
+  simpa [mellinDensity] using this
+
 end GaloisForLFunctions.HTGeometry
 
 end

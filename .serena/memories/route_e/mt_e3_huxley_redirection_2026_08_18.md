@@ -129,3 +129,35 @@ importing them — cannot be built, and `lake build` has already deleted the sta
 repair it: the statement must be retuned together with its three consumers
 (`Sieve/SlopeQuotientLimit`, `Sieve/RhoLimit`, `Sieve/ConstQuotientLimit`), and that is the other
 session's refactor.  The Huxley/`Sieve/Huxley*` lane is unaffected and builds clean.
+
+## RED LANE REPAIRED (2026-08-18, 18:30) — supersedes the hazard note above
+
+The `ladderEta` propagation is done.  `Sieve/SpectralParameters` had moved `ladderEta` to
+`(log x)^{γβ−β−5/4}` (commit `0794a9200`) without updating consumers, leaving
+`Sieve/RhoLimitPieces.eventually_ladderSteps_poly` FALSE.  The forced retune `1 → 5/4` was propagated
+across four files: `RhoLimitPieces` (the exponent), `RhoLimit` (`Lm` + six `rhoMajorant` exponents),
+`SlopeQuotientLimit` (`eventually_steps_eta_sq_le`, `inv_ladderEta_eq`, `P1/P2/P3`, `slopeMajorant`),
+`ConstQuotientLimit` (same three parameters, `discInner`, `constMajorant`).  Two structural side
+effects: the product `MB·P1` becomes `(log x)^{−1/4}` instead of `1`, so the corresponding majorant
+term gains a vanishing factor and needs `tendsto_rpow_log_of_neg`; and every negativity check in
+`tendsto_rhoMajorant`/`tendsto_slopeMajorant` still holds with room because `β, γβ > 9/10`.
+`lake build …Sieve.MoebiusMeanSquare` succeeds; the whole Möbius chain is axiom-clean again.
+
+If `ladderEta` moves again, the same six exponent strings are the ones to bump, and the `MB·P1`
+term is the only non-mechanical spot.
+
+## The integer-start gate: three dead routes and the live one
+
+Dead: (1) sup-bound Gallagher (`dyadicMeanSquare_le_gallagher`) needs `M₁ ≪ x·ℓ`, i.e. square-root
+cancellation for `logPoly μ` at low frequency — RH strength; `CofactorLowFreqBound` saves only
+`exp(−c(log x)^{1/10})`.  (2) fibre ⟹ fixed-length integer start: the fibre above `a` *is* an
+integer-start window at `⌈x/a⌉` (and `a ↦ ⌈x/a⌉` is surjective onto `[⌈√x/2⌉, ⌈√x⌉]` since
+`x/a² ≤ 1` for `a ≥ √x`), but its length varies in `[h/2, h]`, and peeling to a fixed length needs
+the maximal window at the peeled start — circular.  (3) multiplicative ⟹ additive window: same
+obstruction.
+
+**Live route: make the card's step 1 accept a start-dependent length.**  Landed as
+`Sieve/GoodStartVariableWindow` — `card_le_good_add_bad_var`, `card_le_good_add_meanSquare_var`, with
+a uniform Markov threshold `δ ≤ (1/8)D·Lf t` (take `δ = (1/16)Dh`).  `card_moebius_sign_ge` was
+already pointwise so it transfers verbatim.  What remains is instantiating at the fibre data and
+re-running the squarefree input and marker supply at variable lengths — bookkeeping, not analysis.

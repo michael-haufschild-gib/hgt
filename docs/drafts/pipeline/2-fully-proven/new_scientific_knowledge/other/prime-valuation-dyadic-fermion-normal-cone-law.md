@@ -683,7 +683,7 @@ the theorem surface.
 - [x] preliminary external collision search
 - [ ] independent probability/information-geometry audit
 - [ ] independent analytic-number-theory audit
-- [ ] formalize dependency-closed algebraic core in Lean
+- [x] formalize dependency-closed algebraic core in Lean — 2026-08-18, every theorem of the card
 - [ ] construct squarefree source-to-exceptional-reporter comparison
 - [ ] prove Xi conormal and multiplicity-jet conservativity
 
@@ -961,16 +961,47 @@ Both curvatures are the *same* universal kernel read at two parameter points: th
 `a = q^{2^j}`, `μ = 2^j log p`, and the geometric law at the reflected point `a = −q`, `μ = log p`.
 That the second is the sum of the first over `j` is exactly `(20)`.
 
-### The one remaining analytic item
+### `(13o)`: the exact half-normal scale, and the Frullani representation of `γ`
 
-`(13o)`, the exact half-normal scale `e^{Φ(−V)} ∼ √(e^γ V/2)`, is the only statement of this card
-not yet Lean-proved.  It reduces to the classical exponential-integral asymptotic
+The last statement of the card needed one analytic asset that neither mathlib nor this tree owned:
+the integral representation of the Euler–Mascheroni constant.  Mathlib defines `γ` by
+`harmonic n − log n`; it is now also available here as an exponential integral.
+
+`RHTower/EulerMascheroniExponentialIntegral.lean`:
 
 ```text
-Ein(a) = ∫₀^a (1 − e^{−s}) ds/s = γ + log a + E₁(a),      E₁(a) → 0,
+integral_exp_neg_mul_log        ∫₀^∞ e^{−t} log t dt = −γ
+einProfile, frullaniHead        C₁ = ∫₀¹ (1 − e^{−t}) dt/t
+frullaniTail                    C₂ = ∫₁^∞ e^{−t} dt/t
+integral_exp_neg_mul_log_head   ∫₀¹ e^{−t} log t dt = −C₁
+integral_exp_neg_mul_log_tail   ∫₁^∞ e^{−t} log t dt =  C₂
+frullani_eq_eulerMascheroni     C₁ − C₂ = γ
+ein a = ∫₀^a (1 − e^{−s}) ds/s
+ein_eq                          Ein(a) = C₁ + log a − ∫₁^a e^{−s} ds/s
+tendsto_ein_sub_log             Ein(a) − log a → γ
 ```
 
-equivalently to `∫₀^∞ e^{−s} log s ds = −γ` plus one improper integration by parts, since
-`2 Φ(−V) = 2 Ein(V) − Ein(2V)`.  Neither mathlib nor this tree owns that representation of `γ`
-(mathlib defines `γ` by `harmonic n − log n`), so it is a named missing analytic asset rather than
-a gap in the card's argument.
+`∫₀^∞ e^{−t} log t dt = −γ` is mathlib's `Γ'(1) = −γ` compared with mathlib's derivative of the
+Gamma *integral* — the two functions agree on the right half plane, so their derivatives at `1`
+agree, and the Mellin derivative is literally that integral.  The two half-line evaluations are
+fundamental-theorem computations for the primitives `(e^{−t} − 1) log t` on `[0,1]` and
+`−e^{−t} log t` on `[1,∞)`; the shifted primitive on the head is what removes the singularity of
+`∫ e^{−t} dt/t` at the origin, and it is exactly the step that produces `γ`.
+
+`RHTower/HalfNormalExactScale.lean`:
+
+```text
+scaledEinProfile, integral_scaledEinProfile   ∫₀¹ (1 − e^{−Vt}) dt/t = Ein(V)
+coherentExponent_neg_eq        2 Φ(−V) = 2 Ein(V) − Ein(2V)
+tendsto_coherentExponent_neg_sub_log
+                               2 Φ(−V) − log V → γ − log 2
+tendsto_halfNormalExactScale   e^{Φ(−V)} / √(e^γ V/2) → 1                        -- (13o)
+```
+
+The algebraic identity behind it is `(e^{−x} − 1)² = 2(1 − e^{−x}) − (1 − e^{−2x})`, and the scaling
+`∫₀¹ (1 − e^{−Vt}) dt/t = Ein(V)` is one change of variables.
+
+**Every theorem this card proves is now Lean-proved, unconditional and axiom-clean**
+(`[propext, Classical.choice, Quot.sound]`).  What remains open are the card's own declared research
+gates — the squarefree source-to-exceptional-reporter comparison and Xi conormal/multiplicity-jet
+conservativity — which the card explicitly does not claim, and the two independent expert audits.

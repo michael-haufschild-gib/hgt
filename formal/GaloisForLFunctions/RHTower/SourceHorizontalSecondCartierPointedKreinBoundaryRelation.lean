@@ -387,6 +387,33 @@ theorem sourceHorizontalSecondCartierPointedKrein_jetTransfer_swap_commute
     sourceHorizontalSecondCartierKreinSourceTransfer,
     sourceHorizontalSecondCartierKreinJetSwap] <;> ring
 
+/-- A complex-linear transverse anchor cannot turn the reciprocal-star ghost leg into the unit
+anchor leg unless the transfer character is unitary.  This is the sharp boundary between the
+constructed multivalued relation and the already-impossible single-valued linear reporter. -/
+theorem sourceHorizontalSecondCartierPointedKrein_anchor_covariance_norm_eq_one
+    {lam : ℂ} (hlam : lam ≠ 0)
+    (A : SourceHorizontalBilateralSecondJetSource →ₗ[ℂ] ℂ)
+    (hA : A sourceHorizontalBilateralSecondJetGhost ≠ 0)
+    (hcov : A (sourceHorizontalSecondCartierKreinSourceTransfer lam
+        sourceHorizontalBilateralSecondJetGhost) =
+      lam * A sourceHorizontalBilateralSecondJetGhost) :
+    ‖lam‖ = 1 := by
+  have hsource : sourceHorizontalSecondCartierKreinSourceTransfer lam
+        sourceHorizontalBilateralSecondJetGhost =
+      (star lam)⁻¹ • sourceHorizontalBilateralSecondJetGhost := by
+    ext <;> simp [sourceHorizontalSecondCartierKreinSourceTransfer,
+      sourceHorizontalBilateralSecondJetGhost] <;> ring
+  rw [hsource, map_smul] at hcov
+  simp only [smul_eq_mul] at hcov
+  have hcoeff : (star lam)⁻¹ = lam := mul_right_cancel₀ hA hcov
+  have hmul : star lam * lam = 1 := by
+    calc
+      star lam * lam = star lam * (star lam)⁻¹ := by rw [hcoeff]
+      _ = 1 := mul_inv_cancel₀ (star_ne_zero.mpr hlam)
+  have hnorm := congrArg norm hmul
+  simp only [norm_mul, norm_star, norm_one] at hnorm
+  nlinarith [norm_nonneg lam]
+
 /-! ## Actual Xi-selected coefficient-faithful relation -/
 
 def sourceHorizontalActualXiSecondCartierKreinScale
@@ -576,6 +603,33 @@ theorem sourceHorizontalSecondCartierPointedKrein_actual_ghost_not_bipositive
       0 ≤ -sourceHorizontalActualXiSecondCartierKreinGhost x u q r N) := by
   exact sourceHorizontalSecondCartierPointedKrein_ghost_not_bipositive
     (sourceHorizontalSecondCartierPointedKrein_actual_scale_ne_zero q hkappa hr N hjet)
+
+/-- On a strict-right Xi fibre no nonzero complex-linear anchor can intertwine the ghost's
+reciprocal-star source action with the unit anchor action.  Thus the surviving producer is
+genuinely relational: completing it by a linear physical section would already force criticality. -/
+theorem sourceHorizontalSecondCartierPointedKrein_strictRight_no_linear_transverse_anchor
+    (q : XiRightZeroCopy) (p : Nat.Primes) :
+    ¬ ∃ A : SourceHorizontalBilateralSecondJetSource →ₗ[ℂ] ℂ,
+      A sourceHorizontalBilateralSecondJetGhost ≠ 0 ∧
+        A (sourceHorizontalSecondCartierKreinSourceTransfer
+            (sourceHorizontalActualXiSecondCartierKreinPrimeCharacter q p)
+            sourceHorizontalBilateralSecondJetGhost) =
+          sourceHorizontalActualXiSecondCartierKreinPrimeCharacter q p *
+            A sourceHorizontalBilateralSecondJetGhost := by
+  rintro ⟨A, hA, hcov⟩
+  have hnorm :
+      ‖sourceHorizontalActualXiSecondCartierKreinPrimeCharacter q p‖ = 1 :=
+    sourceHorizontalSecondCartierPointedKrein_anchor_covariance_norm_eq_one
+      (sourceHorizontalSecondCartierPointedKrein_actual_primeCharacter_ne_zero q p)
+      A hA hcov
+  have hline := (norm_bilateralHalfDensityCharacter_eq_one_iff p.2.two_le
+    (q.1.1 : XiDivisorSupport)).1 hnorm
+  have hright : 1 / 2 < ((q.1.1 : XiDivisorSupport) : ℂ).re := by
+    have hcenter := xiRightCenteredZero_re_pos q
+    rw [xiRightCenteredZero_eq_support_sub_half, Complex.sub_re] at hcenter
+    norm_num at hcenter ⊢
+    linarith
+  exact (ne_of_gt hright) hline
 
 /-- **Producer capstone.** Literal completed Xi coefficient enters a genuinely multivalued
 pointed Krein relation.  Its sole vertical freedom is the unit anchor; the quadratic source ghost
