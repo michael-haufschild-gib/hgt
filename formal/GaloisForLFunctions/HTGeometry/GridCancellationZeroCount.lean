@@ -1,5 +1,6 @@
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Tactic
 
 /-!
@@ -103,19 +104,18 @@ theorem exists_zero_of_abs_integral_lt {f : ℝ → ℝ} {u v : ℝ} (huv : u �
 
 /-! ## The grid count -/
 
-/-- **Grid cancellation zero count.**  If the absolute mass of `f` on `[a, a + N H]` exceeds the
-total cancellation `Bsum` of its signed integrals over the uniform grid of mesh `H`, then `f` has
-at least `(L - Bsum) / Mx` distinct interior zeros, where `Mx` bounds the absolute mass carried by
-a single cell. -/
-theorem exists_finset_zeros_card_mul_ge {f : ℝ → ℝ} {a H : ℝ} {N : ℕ} {L Bsum Mx : ℝ}
-    (hH : 0 < H) (hf : ContinuousOn f (Icc a (a + (N : ℝ) * H)))
-    (hL : L ≤ ∫ t in a..(a + (N : ℝ) * H), |f t|)
-    (hB : ∑ j ∈ Finset.range N,
-        |∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), f t| ≤ Bsum)
-    (hMx : ∀ j ∈ Finset.range N,
-        (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ≤ Mx) :
-    ∃ Zs : Finset ℝ, (∀ x ∈ Zs, x ∈ Ioo a (a + (N : ℝ) * H) ∧ f x = 0) ∧
-      L - Bsum ≤ (Zs.card : ℝ) * Mx := by
+/-- **The grid extraction.**  The cells that carry an interior zero carry the whole surplus of
+absolute mass over the summed cancellation: on a cell without an interior zero the two masses
+coincide, so what is left over is supported on the cells that do contain a zero, and those zeros are
+distinct because the cells are disjoint. -/
+theorem exists_grid_zero_cells {f : ℝ → ℝ} {a H : ℝ} {N : ℕ}
+    (hH : 0 < H) (hf : ContinuousOn f (Icc a (a + (N : ℝ) * H))) :
+    ∃ S : Finset ℕ, S ⊆ Finset.range N ∧ ∃ Zs : Finset ℝ,
+      Zs.card = S.card ∧ (∀ x ∈ Zs, x ∈ Ioo a (a + (N : ℝ) * H) ∧ f x = 0) ∧
+      (∫ t in a..(a + (N : ℝ) * H), |f t|)
+        ≤ (∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|)
+          + ∑ j ∈ Finset.range N,
+              |∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), f t| := by
   classical
   obtain ⟨g, hgeq⟩ : ∃ g : ℕ → ℝ, ∀ j : ℕ, g j = a + (j : ℝ) * H := ⟨_, fun _ => rfl⟩
   have hgsucc : ∀ j : ℕ, g (j + 1) = a + ((j : ℝ) + 1) * H := by
@@ -173,7 +173,7 @@ theorem exists_finset_zeros_card_mul_ge {f : ℝ → ℝ} {a H : ℝ} {N : ℕ} 
       have h2 : g i < φ i := hPi.1.1
       rw [hij] at h2
       linarith
-  refine ⟨S.image φ, ?_, ?_⟩
+  refine ⟨S, Finset.filter_subset _ _, S.image φ, Finset.card_image_of_injOn hinj, ?_, ?_⟩
   · intro x hx
     obtain ⟨j, hj, rfl⟩ := Finset.mem_image.mp hx
     obtain ⟨hjr, -⟩ := Finset.mem_filter.mp hj
@@ -182,34 +182,19 @@ theorem exists_finset_zeros_card_mul_ge {f : ℝ → ℝ} {a H : ℝ} {N : ℕ} 
     refine ⟨Ioo_subset_Ioo ?_ ?_ hmem, hfz⟩
     · rw [← hg0]; exact hgmono (Nat.zero_le j)
     · rw [← hgN]; exact hgmono (by omega : j + 1 ≤ N)
-  · rw [Finset.card_image_of_injOn hinj]
-    have hSbound : ∑ j ∈ S, (∫ t in (g j)..(g (j + 1)), |f t|) ≤ (S.card : ℝ) * Mx := by
-      have hb : ∀ j ∈ S, (∫ t in (g j)..(g (j + 1)), |f t|) ≤ Mx := by
-        intro j hj
-        obtain ⟨hjr, -⟩ := Finset.mem_filter.mp hj
-        rw [hgeq j, hgsucc j]
-        exact hMx j hjr
-      simpa [nsmul_eq_mul] using Finset.sum_le_card_nsmul S _ Mx hb
-    have hrest : ∑ j ∈ (Finset.range N).filter (fun j =>
+  · have hrest : ∑ j ∈ (Finset.range N).filter (fun j =>
         ¬ (|∫ t in (g j)..(g (j + 1)), f t| < ∫ t in (g j)..(g (j + 1)), |f t|)),
-        (∫ t in (g j)..(g (j + 1)), |f t|) ≤ Bsum := by
+        (∫ t in (g j)..(g (j + 1)), |f t|)
+        ≤ ∑ j ∈ Finset.range N, |∫ t in (g j)..(g (j + 1)), f t| := by
       have h1 : ∀ j ∈ (Finset.range N).filter (fun j =>
           ¬ (|∫ t in (g j)..(g (j + 1)), f t| < ∫ t in (g j)..(g (j + 1)), |f t|)),
           (∫ t in (g j)..(g (j + 1)), |f t|) ≤ |∫ t in (g j)..(g (j + 1)), f t| := by
         intro j hj
         exact not_lt.mp (Finset.mem_filter.mp hj).2
-      have h2 := Finset.sum_le_sum h1
-      have h3 : ∑ j ∈ (Finset.range N).filter (fun j =>
-          ¬ (|∫ t in (g j)..(g (j + 1)), f t| < ∫ t in (g j)..(g (j + 1)), |f t|)),
-          |∫ t in (g j)..(g (j + 1)), f t|
-          ≤ ∑ j ∈ Finset.range N, |∫ t in (g j)..(g (j + 1)), f t| := by
-        refine Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) ?_
-        intro j _ _
-        exact abs_nonneg _
-      have h4 : ∑ j ∈ Finset.range N, |∫ t in (g j)..(g (j + 1)), f t| ≤ Bsum := by
-        refine le_trans (le_of_eq (Finset.sum_congr rfl fun j _ => ?_)) hB
-        rw [hgeq j, hgsucc j]
-      linarith
+      refine le_trans (Finset.sum_le_sum h1) ?_
+      refine Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) ?_
+      intro j _ _
+      exact abs_nonneg _
     have hsplit : ∑ j ∈ Finset.range N, (∫ t in (g j)..(g (j + 1)), |f t|)
         = (∑ j ∈ S, ∫ t in (g j)..(g (j + 1)), |f t|)
           + ∑ j ∈ (Finset.range N).filter (fun j =>
@@ -217,10 +202,73 @@ theorem exists_finset_zeros_card_mul_ge {f : ℝ → ℝ} {a H : ℝ} {N : ℕ} 
               ∫ t in (g j)..(g (j + 1)), |f t| := by
       rw [hSdef]
       exact (Finset.sum_filter_add_sum_filter_not _ _ _).symm
-    have hgoal : L ≤ (S.card : ℝ) * Mx + Bsum := by
-      calc L ≤ ∫ t in a..(a + (N : ℝ) * H), |f t| := hL
-        _ = ∑ j ∈ Finset.range N, (∫ t in (g j)..(g (j + 1)), |f t|) := hsum.symm
-        _ ≤ (S.card : ℝ) * Mx + Bsum := by rw [hsplit]; exact add_le_add hSbound hrest
+    have hconvS : (∑ j ∈ S, ∫ t in (g j)..(g (j + 1)), |f t|)
+        = ∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t| :=
+      Finset.sum_congr rfl fun j _ => by rw [hgeq j, hgsucc j]
+    have hconvB : (∑ j ∈ Finset.range N, |∫ t in (g j)..(g (j + 1)), f t|)
+        = ∑ j ∈ Finset.range N, |∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), f t| :=
+      Finset.sum_congr rfl fun j _ => by rw [hgeq j, hgsucc j]
+    rw [← hsum, hsplit, ← hconvS, ← hconvB]
     linarith
+
+/-- **Grid cancellation zero count, uniform-cell form.**  If the absolute mass of `f` on
+`[a, a + N H]` exceeds the total cancellation `Bsum` of its signed integrals over the uniform grid
+of mesh `H`, then `f` has at least `(L - Bsum) / Mx` distinct interior zeros, where `Mx` bounds the
+absolute mass carried by a single cell. -/
+theorem exists_finset_zeros_card_mul_ge {f : ℝ → ℝ} {a H : ℝ} {N : ℕ} {L Bsum Mx : ℝ}
+    (hH : 0 < H) (hf : ContinuousOn f (Icc a (a + (N : ℝ) * H)))
+    (hL : L ≤ ∫ t in a..(a + (N : ℝ) * H), |f t|)
+    (hB : ∑ j ∈ Finset.range N,
+        |∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), f t| ≤ Bsum)
+    (hMx : ∀ j ∈ Finset.range N,
+        (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ≤ Mx) :
+    ∃ Zs : Finset ℝ, (∀ x ∈ Zs, x ∈ Ioo a (a + (N : ℝ) * H) ∧ f x = 0) ∧
+      L - Bsum ≤ (Zs.card : ℝ) * Mx := by
+  obtain ⟨S, hSsub, Zs, hcard, hmem, hineq⟩ := exists_grid_zero_cells hH hf
+  refine ⟨Zs, hmem, ?_⟩
+  have hSbound : (∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|)
+      ≤ (S.card : ℝ) * Mx := by
+    have hb : ∀ j ∈ S,
+        (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ≤ Mx :=
+      fun j hj => hMx j (hSsub hj)
+    simpa [nsmul_eq_mul] using Finset.sum_le_card_nsmul S _ Mx hb
+  rw [hcard]
+  linarith
+
+/-- **Grid cancellation zero count, mean-square form.**  Replacing the per-cell maximum by the sum
+of squares of the cell masses gives a count controlled by an `L²` quantity, which is what a
+mean-value theorem supplies. -/
+theorem sub_le_sqrt_card_mul_of_grid {f : ℝ → ℝ} {a H : ℝ} {N : ℕ} {L Bsum Q : ℝ}
+    (hH : 0 < H) (hf : ContinuousOn f (Icc a (a + (N : ℝ) * H)))
+    (hL : L ≤ ∫ t in a..(a + (N : ℝ) * H), |f t|)
+    (hB : ∑ j ∈ Finset.range N,
+        |∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), f t| ≤ Bsum)
+    (hQ : ∑ j ∈ Finset.range N,
+        (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2 ≤ Q) :
+    ∃ Zs : Finset ℝ, (∀ x ∈ Zs, x ∈ Ioo a (a + (N : ℝ) * H) ∧ f x = 0) ∧
+      L - Bsum ≤ Real.sqrt ((Zs.card : ℝ) * Q) := by
+  obtain ⟨S, hSsub, Zs, hcard, hmem, hineq⟩ := exists_grid_zero_cells hH hf
+  refine ⟨Zs, hmem, ?_⟩
+  have hnonneg : ∀ j : ℕ,
+      (0 : ℝ) ≤ (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2 :=
+    fun j => sq_nonneg _
+  have hQS : (∑ j ∈ S,
+      (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2) ≤ Q :=
+    le_trans (Finset.sum_le_sum_of_subset_of_nonneg hSsub fun j _ _ => hnonneg j) hQ
+  have hcard0 : (0 : ℝ) ≤ (S.card : ℝ) := Nat.cast_nonneg _
+  have hcs : (∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2
+      ≤ (S.card : ℝ) *
+        ∑ j ∈ S, (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2 :=
+    sq_sum_le_card_mul_sum_sq
+  have h1 : (∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2
+      ≤ (S.card : ℝ) * Q :=
+    le_trans hcs (mul_le_mul_of_nonneg_left hQS hcard0)
+  have h2 : (∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|)
+      ≤ Real.sqrt ((S.card : ℝ) * Q) := by
+    have hb := Real.sqrt_le_sqrt h1
+    rw [Real.sqrt_sq_eq_abs] at hb
+    exact le_trans (le_abs_self _) hb
+  rw [hcard]
+  linarith
 
 end GaloisForLFunctions.HTGeometry

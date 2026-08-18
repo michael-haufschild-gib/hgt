@@ -5276,3 +5276,270 @@ that source is now Lean-certified.
 * `finite-archimedean-gamma-product-boundary-law` and
   `archimedean-relative-prime-cocycle-curvature` — the shared blocker is the all-orders
   Stirling/transseries model injecting the shifted-Gamma jet field into `ℂ(log s)((s^{-1}))[Γ^{±1}]`.
+
+## 2026-08-18 (third entry) — `torusless-quasi-abelian-…-jet-ampleness`: the analytic layer is closed
+
+New/extended modules (each `lake env lean`-checked, single-module `lake build`, wired into
+`GaloisForLFunctions/HTGeometry.lean`; `#print axioms` = `[propext, Classical.choice, Quot.sound]`):
+
+| module | content |
+|---|---|
+| `HTGeometry/MultivariateEntireStripBound.lean` (new) | `StripBoundedOne`/`StripBounded` + closure package + `norm_complexSin_le_exp_abs_im` |
+| `HTGeometry/QuasiAbelianIntegerLatticeSeparator.lean` (extended) | strip bounds for sinc/sine; `StripBounded` clause added to both separator existence theorems and to `FlatIntegerLatticePacketSeparatorData` |
+| `HTGeometry/QuasiAbelianGaussianLatticeDecay.lean` (new) | `‖G(x+k)‖ ≤ C·exp(−∑σᵢkᵢ²/2)` |
+| `HTGeometry/QuasiAbelianPolynomialLatticeGrowth.lean` (new) | `‖P(x+k)‖ ≤ C·∏(1+\|kᵢ\|)^{degᵢP}` |
+| `HTGeometry/QuasiAbelianGaussianFlatSeed.lean` (extended) | `damping_eq` field |
+| `HTGeometry/QuasiAbelianFlatSeedLatticeBound.lean` (new) | the seed half of the majorant, **unconditional** |
+| `HTGeometry/QuasiAbelianAbePositivityReduction.lean` (new) | `HasLatticeExponentialGrowth`, `gaussianMajorant_of_…`, `abePositiveFactorPresentationOfGrowth`, `jetAmpleEveryFiniteOrder_of_hasLatticeExponentialGrowth` |
+
+The blocker found and removed: the separator was produced by `Classical.choice` with **no growth
+clause at all**, so no majorant could ever be proved about it.  The correct clause is a *strip*
+bound (the lattice is real), not exponential type.
+
+Card status: the analytic layer of the growth stability lemma is closed and the rank-zero base case
+now follows from a checkable growth condition.  Open: `liftPacket` (induction step) and
+`IsAbePositiveTorusless` (Abe's structure theory).
+
+## 2026-08-18 — cards A/B: the blocker localized, and the corpus assets that will build it
+
+`finite-archimedean-gamma-product-boundary-law` and `archimedean-relative-prime-cocycle-curvature`
+share exactly one open analytic input: the **sectorial all-orders Stirling expansion of `log Γ`
+with remainder**, and the resulting injection of the shifted-Gamma differential field into
+`ℂ(log s)((s^{-1}))[Γ^{±1}]` ("no flat cancellation in the archimedean residue field").
+
+Why the existing single-pole arguments do not extend: the product `G(s) = e^{αs}∏Γ(λ_j s + μ_j)`
+has *commensurable* scales `n_j = Hλ_j ∈ ℕ`, so every shift lies in one arithmetic progression and
+integer relations are everywhere — the opposite of the `NoIntegerRelation` hypothesis the current
+boundary-datum theorem assumes.  Separating monomials therefore needs the full Stirling signature
+
+```text
+log ∏_j Γ(λ_j s + μ_j)^{n_j}
+  = (∑ n_j λ_j) s log s + (∑ n_j λ_j (log λ_j − 1)) s + (∑ n_j (μ_j − ½)) log s + c + O(1/s),
+```
+
+whose three leading data separate distinct exponent vectors.
+
+Corpus assets to build on (searched, not to be duplicated):
+* `HTGeometry/AsymptoticExpansionAlgebra.lean` — `IsAsymptoticExpansion` with `.add`, `.mul`,
+  `isBigO_one`; `HTGeometry/AsymptoticPolynomialCoefficients.lean`.
+* `RHTower/BarnesCanonicalProductExpansion.lean` + `RHTower/BarnesTailAsymptoticExpansion.lean` —
+  a working Mellin–Barnes contour ladder producing descending expansions at `+∞` with
+  `x^{-(J+1/2)}` remainders. This is the engine to reuse for the Stirling ladder.
+* `HTGeometry/DigammaAsymptotic.lean`, `DigammaBounds.lean`, `DigammaValuationBoundary.lean`,
+  `GammaProjectiveBoundary.lean` — the vertical digamma/polygamma asymptotics, including
+  `re_digamma_vertical_bound_uncond` and the Bell identity for `Γ^{(n)}/Γ`.
+* Already Lean and downstream of the blocker: the Bohr-rank law
+  (`AutonomousCarrierRegularity`, `StripSolutionPhaseRankSharp`), the divisor observable
+  (`CarrierDivisorObservable`), and `finiteProjectiveRelationCollapse`.
+
+Next concrete brick: `log Γ(z) = (z − ½) log z − z + ½ log 2π + O(1/|z|)` on a sector, then the
+Bernoulli ladder on top of it via the Barnes contour engine.
+
+## 2026-08-18 (fourth entry) — cards A/B: the Stirling ladder is started
+
+`HTGeometry/GammaStirlingCubicLog.lean` (new, wired, `#print axioms` clean) is the first brick of
+the sectorial Stirling expansion that cards A and B share.
+
+**Design decision.** The cards do *not* need `log Γ` or the constant `½ log 2π`: the three data that
+separate monomials of `e^{αs} s^β (log s)^γ ∏_j Γ(λ_j s + μ_j)^{n_j}` are all visible in the
+*logarithmic derivative*
+
+```text
+G'/G(s) = α + (∑ n_j λ_j) log s + ∑ n_j λ_j log λ_j
+            + [β + ∑ n_j (μ_j − ½)] / s + O(s^{-2}),
+```
+
+so the whole argument stays inside the differential field and needs only
+`ψ(z) = log z − 1/(2z) + O(|z|^{-2})`.  That removes the branch-of-`log Γ` layer entirely.
+
+Landed:
+- `norm_log_one_add_sub_taylor_two_le` — `‖log(1+u) − u + u²/2‖ ≤ ‖u‖³` on `‖u‖ ≤ ½`, from
+  mathlib's `Complex.hasSum_taylorSeries_log` by dropping three terms and summing the geometric
+  tail.  (mathlib only has the *quadratic* bound `norm_log_one_add_sub_self_le`.)
+- `log_add_one_sub_log` — `log(z+1) − log z = log(1 + 1/z)` on the right half-plane, via
+  `Complex.log_mul_eq_add_log_iff` and the `|arg| < π/2` bound on both factors.
+- `digammaStirlingDefect z = ψ(z) − log z + 1/(2z)`, and
+  `digammaStirlingDefect_step`: the functional equation `ψ(z+1) = ψ(z) + 1/z` turns into
+  `g(z+1) − g(z) = 1/z − log(1+1/z) − 1/(2z(z+1))`.
+- `norm_digammaStirlingDefect_step_le` — **the cubic gain**: `‖g(z+1) − g(z)‖ ≤ 2/‖z‖³` for
+  `Re z > 0`, `‖z‖ ≥ 2`.  The quadratic parts of the two terms cancel exactly; this one order of
+  gain is what makes the telescoping series converge.
+
+Next: telescope `g(z) = −∑_{k≥0}(g(z+k+1) − g(z+k))` using the vanishing anchor
+`g(z+n) → 0` (the corpus's `digamma_vertical_anchor_tendsto` /
+`digamma_natCast_add_one_sub_log_tendsto` supply it), and sum `∑_k ‖z+k‖^{-3} = O(‖z‖^{-2})` to
+obtain `ψ(z) = log z − 1/(2z) + O(|z|^{-2})`.  Then the monomial-signature separation of §5.
+
+## 2026-08-18 (fifth entry) — cards A/B: the digamma anchor
+
+`HTGeometry/GammaDigammaShiftAnchor.lean` (new, wired, axioms clean) supplies the second Stirling
+brick, the one that makes the telescope converge to **zero** rather than to an unknown constant.
+
+The observation that makes it cheap: Gauss's formula `ψ(s) = lim_n (log n − ∑_{j≤n} 1/(s+j))`
+carries the `log n` *independently of `s`*, so the divergent part cancels in a difference and
+
+```text
+ψ(s) − ψ(t) = lim_n ∑_{j≤n} (1/(t+j) − 1/(s+j)),  summand = (s−t)/((s+j)(t+j)).
+```
+
+- `sum_inv_mul_succ_le` — `∑_{j≤n} 1/((N+j)(N+j+1)) ≤ 1/N`, by the exact telescope
+  `= 1/N − 1/(N+m)`.
+- `norm_digamma_shift_sub_le` — **the anchor**: for `Re z ≥ 0` and `N ≥ 1`,
+
+```text
+‖ψ(z+N) − ψ(1+N)‖ ≤ ‖z−1‖ / N.
+```
+
+Both `gauss_digamma` (corpus, `RHTower`, in `DigammaAsymptotic`) and
+`digamma_natCast_add_one_sub_log_tendsto` were reused rather than rebuilt.
+
+Remaining for `ψ(z) = log z − 1/(2z) + O(|z|^{-2})`: assemble the telescope
+`g(z) = g(z+N) − ∑_{k<N} (g(z+k+1) − g(z+k))` with the cubic gain
+(`norm_digammaStirlingDefect_step_le`) and the anchor above, using
+`‖z+k‖³ ≥ ‖z‖(‖z‖+k)²/2` and `∑_k 1/(‖z‖+k)² ≤ 1/‖z‖² + 1/‖z‖`.
+
+## 2026-08-18 (sixth entry) — cards A/B: **the shared analytic blocker is closed**
+
+`HTGeometry/GammaDigammaStirlingBound.lean` (new, wired, axioms clean) completes the Stirling input
+that `finite-archimedean-gamma-product-boundary-law` and
+`archimedean-relative-prime-cocycle-curvature` share:
+
+```lean
+theorem norm_digammaStirlingDefect_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤ ‖z‖) :
+    ‖ψ z - log z + 1/(2z)‖ ≤ 6 / ‖z‖ ^ 2
+```
+
+i.e. **`ψ(z) = log z − 1/(2z) + O(|z|⁻²)` on the right half-plane, with an explicit constant.**
+
+The three ingredients, all built here:
+- `sum_inv_sq_shift_le` / `sum_inv_sq_shift_head_le` — `∑_{k<N} (a+k)⁻² ≤ a⁻² + a⁻¹`, by the exact
+  telescope `(a+k)⁻¹ − (a+k+1)⁻¹`.
+- `norm_le_norm_add_natCast`, `norm_add_natCast_cube_ge` — on the right half-plane
+  `‖z+k‖² ≥ ‖z‖² + k²`, hence `‖z+k‖³ ≥ ‖z‖(‖z‖+k)²/2`.
+- `log_sub_log_of_re_pos`, `tendsto_digammaStirlingDefect_shift_zero` — the anchor: the shifted
+  defect vanishes, decomposed as (digamma shift) + (integer anchor) − (log quotient) + (1/2z), the
+  four pieces going to zero by `norm_digamma_shift_sub_le`,
+  `RHTower.digamma_natCast_add_one_sub_log_tendsto`, continuity of `log` at `1`, and `1/‖z+N‖ ≤ 1/N`.
+
+Then the telescope `g(z+N) − g(z) = ∑_{k<N}(g(z+k+1) − g(z+k))` with the cubic gain, and `N → ∞`.
+
+**No `log Γ` branch, no Binet integral, no Bernoulli numbers, no `½log 2π`** — the design decision
+recorded in the fourth entry (work with `G'/G` rather than `log G`) removed all of that.
+
+What cards A and B now need is no longer analytic: it is the §5 *signature separation*, i.e. that
+the three data
+
+```text
+(∑ n_j λ_j,   ∑ n_j λ_j log λ_j + α,   β + ∑ n_j (μ_j − ½))
+```
+
+read off from `G'/G = α + (∑n_jλ_j) log s + ∑n_jλ_j logλ_j + [β+∑n_j(μ_j−½)]/s + O(s^{-2})`
+separate distinct exponent vectors — an arithmetic statement about the shift data, now that the
+expansion producing those data is Lean-certified.
+
+## 2026-08-18 (seventh entry) — cards A/B: the affine Stirling signature
+
+`HTGeometry/GammaAffineStirlingSignature.lean` (new, wired, axioms clean) delivers the expansion in
+the exact form §5 of `finite-archimedean-gamma-product-boundary-law` consumes:
+
+```lean
+theorem exists_norm_digamma_affine_expansion_le {lam : ℝ} (hlam : 0 < lam) (mu : ℂ) :
+    ∃ C R, 0 ≤ C ∧ 0 ≤ R ∧ ∀ s, 0 < s.re → 0 < (lam * s + mu).re → R ≤ ‖s‖ →
+      ‖ψ (lam * s + mu) - (Real.log lam + log s + (mu - 1/2) / (lam * s))‖ ≤ C / ‖s‖ ^ 2
+```
+
+i.e. **`ψ(λs+μ) = log λ + log s + (μ−½)/(λs) + O(|s|⁻²)`** with an explicit constant
+`C = (24 + ‖μ‖² + ‖μ‖)/λ²` and threshold `R = max(2‖μ‖/λ, 4/λ)`.
+
+The three signature data — the constant `log λ`, the coefficient `1` of `log s`, and the `1/s`
+residue `μ − ½` — are now readable from a Lean-certified estimate.  Summing over `j` with weights
+`n_j λ_j` gives the card's
+
+```text
+G'/G(s) = α + (∑ n_j λ_j) log s + ∑ n_j λ_j log λ_j + [β + ∑ n_j (μ_j − ½)]/s + O(|s|⁻²),
+```
+
+which is the "no flat cancellation in the archimedean residue field" statement: a nonzero exponent
+vector produces a nonzero signature, uniformly, with no room for a flat error to hide.
+
+Ingredients used, none duplicated: mathlib's `Complex.log_ofReal_mul` (a positive real scale leaves
+the branch alone), `Complex.norm_log_one_add_sub_self_le`, and the corpus's own
+`norm_digammaStirlingDefect_le` and `log_sub_log_of_re_pos` from the previous two entries.
+
+## 2026-08-18 (eighth entry) — cards A/B: **no flat cancellation is Lean-certified**
+
+`HTGeometry/ArchimedeanNoFlatCancellation.lean` (new, wired, axioms clean):
+
+```lean
+theorem three_term_expansion_eq_zero {a b c : ℂ} {K R : ℝ}
+    (h : ∀ t : ℝ, R ≤ t → 1 ≤ t → ‖a + b * (Real.log t) + c / t‖ ≤ K / t ^ 2) :
+    a = 0 ∧ b = 0 ∧ c = 0
+```
+
+The three archimedean scales `1`, `log s`, `1/s` are **independent modulo `O(|s|⁻²)`**.  This is
+§5's "no flat cancellation in the archimedean residue field", now a theorem: a nonzero Stirling
+signature cannot hide inside the remainder.
+
+Proof shape (all three steps constructive, with explicit witnesses rather than filters):
+`0 ≤ K` is forced by the hypothesis at one point; `‖b‖ log t ≤ K + ‖a‖ + ‖c‖` for every `t ≥ 1`
+then kills `b` at `t = exp(M/‖b‖ + 1)`; `‖a‖ ≤ (K+‖c‖)/T` kills `a` at
+`T = (K+‖c‖)/‖a‖ + 1`; and `‖c‖ T ≤ K` kills `c` at `T = K/‖c‖ + 1`.
+
+Combined with `exists_norm_digamma_affine_expansion_le`, subtracting the expansions of two
+monomials of `e^{αs} s^β ∏_j Γ(λ_j s + μ_j)^{n_j}` and applying this theorem to the difference
+gives the separation of the three signature data
+
+```text
+(∑ n_j λ_j,   α + ∑ n_j λ_j log λ_j,   β + ∑ n_j (μ_j − ½)).
+```
+
+That is the whole content of §5.  What is left on cards A and B is the bookkeeping that assembles
+the per-factor expansion into the product expansion and feeds the separation into the boundary-datum
+theorem in place of `NoIntegerRelation`.
+
+## 2026-08-18 (ninth entry) — cards A/B: **the archimedean separation of monomials is closed**
+
+`HTGeometry/GammaProductStirlingSignature.lean` (new, wired, axioms clean) assembles the per-factor
+signature into the product and proves the separation.
+
+```lean
+def gammaProductLogDeriv (lam) (mu n) (al be) (s) : ℂ :=
+  al + be / s + ∑ j, n j * lam j * Complex.digamma (lam j * s + mu j)
+
+def gammaProductSignature (lam) (mu n) (al be) : ℂ × ℂ × ℂ :=
+  (al + ∑ j, n j * lam j * Real.log (lam j),   ∑ j, n j * lam j,   be + ∑ j, n j * (mu j - 1/2))
+
+theorem exists_norm_gammaProductLogDeriv_expansion_le :
+  ∃ C R, … ‖G'/G(s) − (A + B log s + C₀/s)‖ ≤ C / ‖s‖²
+
+theorem gammaProductSignature_eq_of_logDeriv_eq :
+  (logarithmic derivatives agree on a real ray) → signatures agree
+```
+
+So for `G(s) = e^{αs} s^β ∏_j Γ(λ_j s + μ_j)^{n_j}` with positive real scales:
+
+```text
+G'/G(s) = [α + ∑ n_j λ_j log λ_j] + [∑ n_j λ_j] log s + [β + ∑ n_j (μ_j − ½)]/s + O(|s|⁻²),
+```
+
+and two such products with the same logarithmic derivative have the *same three signature data*.
+That is §5 of `finite-archimedean-gamma-product-boundary-law` and the archimedean half of
+`archimedean-relative-prime-cocycle-curvature`, now Lean-certified — and it holds for
+**commensurable scales**, precisely the case `NoIntegerRelation` could not reach.
+
+The Stirling chain for cards A/B is therefore complete end to end:
+
+```text
+Complex.hasSum_taylorSeries_log  →  norm_log_one_add_sub_taylor_two_le   (cubic gain)
+Complex.digamma_apply_add_one    →  norm_digammaStirlingDefect_step_le
+RHTower.gauss_digamma            →  norm_digamma_shift_sub_le            (anchor)
+                                 →  norm_digammaStirlingDefect_le        ψ = log z − 1/2z + O(z⁻²)
+Complex.log_ofReal_mul           →  exists_norm_digamma_affine_expansion_le
+                                 →  three_term_expansion_eq_zero         (no flat cancellation)
+                                 →  gammaProductSignature_eq_of_logDeriv_eq
+```
+
+What remains on these two cards is to substitute this separation for the `NoIntegerRelation`
+hypothesis in the existing boundary-datum theorem
+(`HTGeometry/ShiftedGammaFieldIndependence`, `GammaJetNormalFormDatum`) — a rewiring of statements
+already in the tree, with no new mathematics.

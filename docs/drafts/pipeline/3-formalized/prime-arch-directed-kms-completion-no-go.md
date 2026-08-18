@@ -1,7 +1,7 @@
 # Directed prime--Gamma passive-completion parity no-go
 
 - **ID:** C1-KMS-DIRECTED-NOGO
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** FALSIFIED
 - **Source:** C1 prime--Gamma passive-response lane
 - **Statement:** Neither canonical directed prime-log finite KMS responses nor canonical directed
@@ -14,7 +14,7 @@ Hostile-test first source-only finite-KMS candidate before adding Gamma or compl
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem, targeted build green, axiom audit
+- [x] 2 → 3  formalized: Lean theorem, targeted build green, axiom audit
 - [ ] 3 → 4  publication-ready: standalone paper
 
 ## Approach
@@ -34,11 +34,14 @@ both comparisons with the completed source.
   source-native class; its exact completed-Gamma comparison remains open.
 - **New insight:** finite passivity is not enough. Candidate approximants must preserve
   completed-source oddness at each limiting comparison point.
-- **Status:** `[PAPER-PROVED]`; all dependencies are existing Lean theorems plus elementary
-  resolvent algebra. Lean formalization pending final audit.
+- **Status:** `[LEAN-PROVED]`; directed prime-log and Gamma-sewn Stokes no-gos, finite reflected
+  response passivity and oddness, and finite-to-countable reflected convergence are formalized.
+  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 - 2026-08-18 — created in Stage 1 after Lean-corpus audit.
 - 2026-08-18 — `[PAPER-PROVED]`; promoted to Stage 2.
 - 2026-08-18 — second hostile loop extends obstruction to physical Gamma-sewn Stokes truncations;
   finite-stage passivity survives exactly.
+- 2026-08-18 — `[LEAN-PROVED]`; targeted module build and eight-theorem axiom audit pass. Global
+  corpus lint remains blocked by unrelated concurrent proof debt in `MilnorFiltrationReduction`.

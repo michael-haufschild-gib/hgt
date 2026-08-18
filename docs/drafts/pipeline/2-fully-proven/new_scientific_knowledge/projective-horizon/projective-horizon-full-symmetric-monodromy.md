@@ -2931,3 +2931,165 @@ reduction fibres have ≤ 2 members               root-congruence count + §3   
 
 so the single remaining mathematical obligation on this card is the middle line of the last block:
 that each fibre of `criticalGeometricSheetToSchurReducedFibre` has at most two members.
+
+## Lean progress — the collision tangent, and corank one at the residue field
+
+Two more modules, built.
+
+```text
+HTGeometry/CriticalFibreCollisionTangent.lean
+    exists_coeff_ne_zero, mem_maximalIdeal_of_irreducible
+    exists_not_C_pow_dvd
+    exists_maximal_C_pow_dvd_pair          the common uniformizer power of a polynomial pair
+    X_pow_dvd_of_C_mul                     cancel a nonzero constant from a horizon divisibility
+    map_residue_eq_zero_iff
+    exists_reduced_tangent_of_congruent
+        ** two distinct points of one critical fibre over a DVR agreeing modulo the maximal
+           ideal give a NONZERO low tangent pair over the residue field, satisfying the
+           linearized compatibility relation at the reduced point **
+
+HTGeometry/SquareMatrixCorankOne.lean
+    finrank_ker_mulVecLin_eq_one_of_det_eq_zero
+    finrank_ker_mulVecLin_map_eq_one
+        ** det = 0 with one surviving cofactor  ⟹  corank one over EVERY extension field **
+```
+
+The first is §3's missing bridge: a collision at the special fibre *is* a vertical tangent at the
+reduced point, which is exactly what `criticalFibre_eq_of_shared_coprime_tangent` consumes.  The
+proof subtracts the two compatibility relations,
+
+```text
+X^(m+n) ∣ D (p₂ + Q) + (p₁ + P) E + D E ,
+```
+
+divides by the largest common power of a uniformizer — which kills the quadratic term, since the
+common power is at least one — and reduces.
+
+The second removes the mismatch of fields.  Generic corank one
+(`finrank_ker_criticalSchurGenericMatrix_eq_one`) lives on the function field of the Schur divisor,
+while a collision tangent lives in the residue field of the *upper* Schur place.  Both of its
+hypotheses are determinantal, so they transport along the field map, and the corank stays one where
+the tangent actually is.  The proof pattern is the one already used for the generic statement,
+extracted as a general theorem so no session re-derives it.
+
+### What remains, stated exactly
+
+```text
+(D1) all collision tangents lie in the kernel of the base-changed Schur matrix    corpus wiring
+(D2) hence any two are proportional; isCoprime_of_low_tangent_unique gives coprimality
+(D3) criticalFibre_eq_of_shared_coprime_tangent  ⟹  ONE non-singleton reduction fibre
+(D4) that fibre has ≤ 2 members                  root count + tame rigidity
+(P)  §4 steps 4a–4b: block system, block cover of the torus chart
+```
+
+`(D4)` is where the tame-inertia modules pay: with `(D3)` the unique non-singleton fibre is a single
+inertia orbit, cyclicity makes its stabiliser normal, faithfulness makes it trivial, and the
+root-congruence count then bounds the fibre by `1 + v(𝔇) = 2`.
+
+## Lean progress — the tangent is a kernel vector, and the conormal obstructs lifting
+
+Three more modules, all built.
+
+```text
+HTGeometry/FaithfulSingleOrbitFree.lean
+    eq_one_of_forall_smul_eq
+    eq_one_of_smul_eq_of_unique_nontrivial_orbit
+        ** one nontrivial orbit + commutative + faithful ⟹ that orbit is FREE **
+    natCard_orbit_eq_natCard_of_free
+
+HTGeometry/LowTangentJacobianKernel.lean
+    dvd_reciprocal_of_low_tangent            V ≡ -Y²U to the horizon
+    jacobian_mulVec_eq_zero_of_low_tangent
+        ** a low tangent IS a kernel vector of criticalReciprocalJacobian **
+    coeff_vec_ne_zero
+    low_tangent_unique_of_finrank_ker_eq_one
+        ** corank one ⟹ any two low tangents have proportional raw components **
+
+HTGeometry/ConormalLiftObstruction.lean
+    dvd_of_mul_reciprocal, coeff_mul_eq_zero_of_low
+    conormal_eq_zero_of_lifts
+        ** a liftable observation deformation is killed by the conormal of the tangent **
+```
+
+`LowTangentJacobianKernel` closes the gap between generic corank one and coprimality: its last
+theorem is precisely the uniqueness hypothesis of `isCoprime_of_low_tangent_unique`.  The proof is
+the identity `V ≡ -Y²U`, obtained by multiplying the tangent relation by `Y` and using `AY ≡ 1`;
+since `V` has degree below `n`, the coefficients of `-Y²U` in degrees `n … n+m-1` vanish, and those
+are the rows of the Jacobian.
+
+`ConormalLiftObstruction` supplies §2's missing half.  It shows the conormal functional of the
+tangent annihilates every liftable deformation — it *is* the first-order equation of the branch.
+The proof multiplies the lifting relation by `V`, substitutes `AV ≡ -UY`, cancels the invertible
+`Y`, and reads the coefficient at `m+n-1`, where the low-times-low term cannot contribute.
+
+### The remaining step, stated exactly
+
+Two ramified states over one observation have conormals `λ_p`, `λ_q`, each annihilating its own
+liftable deformations.  What is still needed is that these two hyperplanes coincide:
+
+```text
+(C1) lift_p = ker λ_p          dimension count: corank one gives dim (im T) = L-1,
+                               and exists_conormal_ne_zero gives λ_p ≠ 0
+(C2) lift_p = lift_q           both equal the tangent hyperplane of the irreducible Schur
+                               divisor at its generic point
+```
+
+`(C2)` is where the irreducibility of the Schur divisor (`criticalSchurTailIdeal_isPrime`, already
+Lean) enters: at a generic — hence smooth — point of an irreducible divisor there is a single
+tangent hyperplane, so two conormals through it are proportional.  With that,
+`conormal_determines_tangent_smul` scales the two tangents to the same `(U, V)`, and
+`criticalFibre_eq_of_shared_coprime_tangent` finishes §3.
+
+## The definitive route map for `(R)` and `(D)`, after exhausting the local theory
+
+`RootCongruenceValuationCount` was rewritten with narrow imports (build time 427s → 2.4s) and
+strengthened to the sharp count
+
+```text
+card_congruent_roots_le_addVal_eval_derivative
+    ** #{roots congruent to x} ≤ v(f'(x)) **
+```
+
+so a collision class of size `k` forces the derivative to vanish to order at least `k - 1`.  With
+that in hand the whole of `(R)` and `(D)` collapses to ONE scalar.  Let `A` be the observation Schur
+DVR, `B` the integral closure of `A` in the source, `α` a local generator (which exists:
+`DedekindOrderMonogenic.exists_adjoin_eq_top_of_dedekind_finite`), and `p = minpoly_A α`.  Then
+
+```text
+D - #(distinct reductions) = Σ_Q f_Q (e_Q - 1) = v_A(disc p) = v_A(N_{S/O}(p'(α)))
+```
+
+and a single non-singleton reduction fibre of size `2` is exactly `v_A(disc p) = 1`.  Therefore
+
+```text
+v_A(disc p) = 1   ⟹   one ramified prime, e = 2, f = 1, |collisionSupport| = 2
+              ⟹   (R) and (D) together.
+```
+
+**What the corpus supplies, and what it does not.**  `addVal_criticalSchurJacobianDetElement_eq_one`
+gives `v_{Q₀}(Jac) = 1` — the order of the Jacobian at the *source* Schur place.  Passing to
+`v_A(disc)` needs both of
+
+```text
+(i)  (Jac) = 𝔇_{B/A}      "the different of a complete intersection is the Jacobian ideal"
+(ii) f_{Q₀} = 1           "the Schur divisor maps 1-1 to the branch"      = §3
+```
+
+and `v_A(N(Jac)) = Σ_Q f_Q v_Q(Jac) = f_{Q₀}` shows that `(ii)` is *not* implied by any amount of
+ramification bookkeeping — it is the irreducible geometric content, exactly as the card's §3 says.
+
+**A negative result, so that no session repeats the search.**  The tame different formula
+(`DifferentExponentTame.addVal_generator_differentIdeal`, corpus) does not shortcut this: it needs a
+*generator of the different* as input, and its residue hypothesis `hres` is `f = 1` itself.  Corank
+one does not shortcut it either: corank one holds at a cusp, so it bounds the embedding dimension of
+the collision class but not its length; the length is second-order data, and the second-order datum
+is precisely `v(Jac) = 1`.
+
+**Both remaining items are general theorems worth having on their own.**  `(i)` is a mathlib gap —
+`Mathlib/RingTheory/DedekindDomain/Different.lean` carries only the monogenic case
+(`conductor_mul_differentIdeal`), and there is no Fitting-ideal or Kähler bridge in either mathlib
+or this corpus beyond the monogenic normal form
+(`ConstraintRelativity.MonogenicKaehler.annihilator_kaehler`) and the principal-symbol identity
+(`GeneralKaehlerPrincipalSymbol.polynomialKaehlerCoefficientIdeal_eq_jacobianMinorIdeal`).  Those
+two are the ends of the bridge; the middle — `𝔇 = Fitting₀(Ω_{B/A})` for a finite flat
+complete intersection — is what must be built.

@@ -205,4 +205,39 @@ theorem nzList_class_mem_reducedFiltration {d : ℕ} (hd : 1 ≤ d) (hn : 1 ≤ 
             · exact hrestdeg r (by rw [hsplit]; simp [h1])
             · exact hrestdeg r (by rw [hsplit]; simp [h2])
 
+/-- The entries of a symbol of polynomial units can be given by an explicit list of polynomials. -/
+theorem exists_nzList {d : ℕ} :
+    ∀ l : List (RatFunc F)ˣ, (∀ a ∈ l, polyDegLe (F := F) d a) →
+      ∃ ps : List (NZPoly F), nzList ps = l ∧ ∀ p ∈ ps, p.1.natDegree ≤ d := by
+  intro l
+  induction l with
+  | nil => exact fun _ => ⟨[], rfl, by simp⟩
+  | cons a t ih =>
+      intro hl
+      obtain ⟨ps, hps, hdeg⟩ := ih (fun b hb => hl b (by simp [hb]))
+      obtain ⟨p, hp, hple, hap⟩ := hl a (by simp)
+      refine ⟨⟨p, hp⟩ :: ps, ?_, ?_⟩
+      · rw [nzList_cons, hps]
+        exact congrArg (fun u => u :: t) hap.symm
+      · intro r hr
+        rcases List.mem_cons.1 hr with rfl | hr'
+        · exact hple
+        · exact hdeg r hr'
+
+/-- **Milnor's degree filtration consists of reduced classes.** -/
+theorem degreeFiltration_le_reducedFiltration {d : ℕ} (hd : 1 ≤ d) (hn : 1 ≤ n) :
+    degreeFiltration (F := F) d n ≤ reducedFiltration (F := F) d n := by
+  refine (AddSubgroup.closure_le _).2 ?_
+  rintro x ⟨s, hs, rfl⟩
+  obtain ⟨ps, hps, hdeg⟩ := exists_nzList (d := d) s.val
+    (fun a ha => by
+      obtain ⟨p, hp, hle, hap⟩ := hs a ha
+      exact ⟨p, hp, hle, hap⟩)
+  have hlen : (nzList ps).length = n := by rw [hps]; exact s.property
+  have hcast : milnorClassDeg (RatFunc F) n s
+      = milnorClassDeg (RatFunc F) n ⟨nzList ps, hlen⟩ :=
+    congrArg (milnorClassDeg (RatFunc F) n) (Subtype.ext hps.symm)
+  rw [SetLike.mem_coe, hcast]
+  exact nzList_class_mem_reducedFiltration hd hn (nzTotal ps) ps le_rfl hdeg hlen
+
 end GaloisForLFunctions.HTGeometry

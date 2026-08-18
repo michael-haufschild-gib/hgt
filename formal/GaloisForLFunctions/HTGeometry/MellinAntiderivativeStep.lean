@@ -258,6 +258,18 @@ theorem mellin_antiderivative_step {r : ℝ → ℂ} {μ : ℂ} (hμ : 0 < μ.re
     field_simp
   rw [← hL, hswap, hR, MeasureTheory.integral_const_mul, ← mul_assoc, mul_inv_cancel₀ hμ0, one_mul]
 
+/-- The Mellin integrand of the antiderivative is itself integrable. -/
+theorem integrableOn_antideriv_mellin {r : ℝ → ℂ} {μ : ℂ} (hμ : 0 < μ.re)
+    (hint : IntegrableOn (fun t => r t * (t : ℂ) ^ (-μ)) (Set.Ioi (1:ℝ))) :
+    IntegrableOn (fun x : ℝ => (∫ t in (1:ℝ)..x, r t) * (x : ℂ) ^ (-μ - 1))
+      (Set.Ioi (1:ℝ)) := by
+  have h := (integrable_uncurry_mellinStepKernel hμ hint).integral_prod_left
+  refine h.congr ?_
+  filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with x hx
+  show (∫ t in Set.Ioi (1:ℝ), mellinStepKernel r μ x t)
+    = (∫ t in (1:ℝ)..x, r t) * (x : ℂ) ^ (-μ - 1)
+  exact integral_mellinStepKernel_snd (le_of_lt hx)
+
 /-- **Iterated Mellin step.**  For a chain of antiderivatives `r (j+1) x = ∫_1^x r j`, the Mellin
 transform of `r 0` at `s` is the rising factorial `s(s+1)⋯(s+j-1)` times the transform of `r j`
 at `s + j`. -/

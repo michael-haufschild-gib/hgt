@@ -251,3 +251,78 @@ so the two open inputs of Layer F are now exactly:
 2. **`K₂(n,𝒪)` is central in `St_n(𝒪)`** — the corpus has `KTwo_mem_center` for elements whose word
    avoids an index, which is the *stable* statement; a fixed `n` needs van der Kallen's range, or
    the colimit `St(R) = colim St_n(R)` has to be built.
+
+### F5. The topological input of Macbeath's presentation theorem `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SimplyConnectedCovering.lean` (wired, axiom-clean).
+
+```text
+isCoveringMap_injective_of_simplyConnected
+    ** a covering map onto a SIMPLY CONNECTED, locally path-connected base, with connected total
+       space, is INJECTIVE **
+```
+
+The identity of the base lifts to a section `s` (mathlib's
+`IsCoveringMap.existsUnique_continuousMap_lifts`), and `s ∘ p` is a lift of `p` through `p` agreeing
+with the identity at a point, hence equals the identity by uniqueness of lifts
+(`IsCoveringMap.eq_of_comp_eq`).
+
+This is exactly the step of **Macbeath's theorem** where simple connectivity forces the developing
+covering to be trivial, so the group presented by the overlaps of a fundamental open set is the
+group itself.  What Macbeath still needs is the *construction* of that covering — the quotient
+`(Γ̃ × V)/∼` of the presented group times the fundamental open set — and the verification that the
+natural map to `X` is a covering map.
+
+### Survey of what mathlib already supplies for this layer
+
+Checked before building, so that nothing is duplicated:
+
+```text
+IsCoveringMap, IsCoveringMapOn, IsEvenlyCovered            Topology/Covering/Basic
+IsCoveringMap.eq_of_comp_eq                                uniqueness of lifts on a connected domain
+IsCoveringMap.exists_path_lifts, liftPath, liftHomotopy    path and homotopy lifting
+IsCoveringMap.monodromy, monodromyPerm                     the monodromy action on a fibre
+IsCoveringMap.existsUnique_continuousMap_lifts             ** the lifting criterion for a simply
+                                                              connected, locally path-connected
+                                                              source **
+IsQuotientCoveringMap, fiberEquivGroup, toPermFiber        Topology/Covering/Quotient
+IsQuotientCoveringMap.fundamentalGroupEquiv                π₁ of the base of a simply connected
+                                                           quotient covering ≅ the deck group
+Subgroup.fg_of_index_ne_zero                               Schreier's lemma
+```
+
+Missing from mathlib and therefore still to be built for this layer: the developing covering of a
+group action, Macbeath's presentation theorem itself, Reidemeister–Schreier for *finite
+presentability*, and Siegel's finiteness property for the arithmetic action.
+
+### F6. Macbeath's presentation — the group, the surjection, and the criterion `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MacbeathPresentation.lean` (wired, axiom-clean).
+
+```text
+macbeathRels V        the relators s_a · s_b · s_{ab}⁻¹ for triple overlaps V ∩ a·V ∩ ab·V ≠ ∅
+MacbeathGroup V       the presented group
+macbeathRels_lift     the relators really are relations in the acting group
+macbeathHom           ** the canonical homomorphism MacbeathGroup V → G **
+macbeathHom_surjective    surjective, by the generation lemma closure_meetSet_eq_top
+macbeathRels_finite       finitely many overlaps ⟹ finitely many relators
+isFinitelyPresented_macbeathGroup
+                      ** finitely many overlaps ⟹ MacbeathGroup V is FINITELY PRESENTED **
+meetSet_finite_of_properlyDiscontinuousSMul
+                      a properly discontinuous action with a relatively compact fundamental open set
+                      has finitely many overlaps
+isFinitelyPresented_of_macbeathHom_injective
+isFinitelyPresented_of_properlyDiscontinuousSMul
+                      ** THE CRITERION: a properly discontinuous cocompact action whose Macbeath
+                         homomorphism is injective makes the group finitely presented **
+```
+
+The whole finite-presentation layer is now reduced to **one** statement:
+
+> `macbeathHom V` is injective when `X` is simply connected and `V` is connected.
+
+Its proof is the developing covering: build `Y = (MacbeathGroup V × V)/∼` with the quotient
+topology, show the natural map `Y → X` is a covering map, and apply
+`isCoveringMap_injective_of_simplyConnected` (already proved) — simple connectivity of `X` makes the
+covering injective, which is exactly the injectivity of `macbeathHom`.  That construction is the
+next brick.

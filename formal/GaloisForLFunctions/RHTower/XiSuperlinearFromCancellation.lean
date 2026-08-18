@@ -156,6 +156,54 @@ theorem superlinearSamples_xiRealDivisor_of_clamped_grid_cancellation
       ≤ δ * ((a + ((j : ℝ) + 1) * H) - (a + (j : ℝ) * H)) := this
     _ = δ * H := by ring
 
+/-! ## The mean-square form -/
+
+/-- **The mean-square grid-cancellation input.**  The per-cell maximum is replaced by the sum of
+squares of the cell masses, which is what a mean-value theorem supplies. -/
+def GridCancellationMeanSquareSurplus (f : ℝ → ℝ) : Prop :=
+  ∀ c : ℝ, ∃ (a H : ℝ) (N : ℕ) (L Bsum Q : ℝ),
+    0 < H ∧ 0 ≤ a ∧ 1 ≤ a + (N : ℝ) * H ∧ 0 ≤ L - Bsum ∧
+    L ≤ (∫ t in a..(a + (N : ℝ) * H), |f t|) ∧
+    (∑ j ∈ Finset.range N,
+      |∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), f t|) ≤ Bsum ∧
+    (∑ j ∈ Finset.range N,
+      (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2) ≤ Q ∧
+    c * (a + (N : ℝ) * H) * Q < (L - Bsum) ^ 2
+
+/-- **Reduction of `(22)` to mean-square grid cancellation.** -/
+theorem superlinearSamples_xiRealDivisor_of_meanSquare_grid_cancellation
+    (f : ℝ → ℝ) (hf : Continuous f) (hfz : ∀ t : ℝ, f t = 0 → Xi t = 0)
+    (h : GridCancellationMeanSquareSurplus f) :
+    SuperlinearSamples xiRealDivisor := by
+  intro c
+  obtain ⟨a, H, N, L, Bsum, Q, hH, ha, hT, hLB, hL, hB, hQ, hgain⟩ := h c
+  obtain ⟨Zs, hZmem, hZcard⟩ := sub_le_sqrt_card_mul_of_grid hH hf.continuousOn hL hB hQ
+  refine ⟨a + (N : ℝ) * H, hT, ?_⟩
+  have hQ0 : (0 : ℝ) ≤ Q :=
+    le_trans (Finset.sum_nonneg fun j _ => sq_nonneg _) hQ
+  have hcardQ : (0 : ℝ) ≤ (Zs.card : ℝ) * Q := by positivity
+  have hsq : (L - Bsum) ^ 2 ≤ (Zs.card : ℝ) * Q := by
+    have h1 : (L - Bsum) ^ 2 ≤ (Real.sqrt ((Zs.card : ℝ) * Q)) ^ 2 := by
+      have := Real.sqrt_nonneg ((Zs.card : ℝ) * Q)
+      nlinarith [hZcard, hLB]
+    rwa [Real.sq_sqrt hcardQ] at h1
+  have hQpos : 0 < Q := by
+    rcases lt_or_eq_of_le hQ0 with hlt | heq
+    · exact hlt
+    · exfalso
+      rw [← heq] at hsq hgain
+      simp at hsq hgain
+      nlinarith [hsq, hgain]
+  have hlt : c * (a + (N : ℝ) * H) * Q < (Zs.card : ℝ) * Q := lt_of_lt_of_le hgain hsq
+  have hfinal : c * (a + (N : ℝ) * H) < (Zs.card : ℝ) := lt_of_mul_lt_mul_right hlt hQ0
+  have hcount : Zs.card ≤ samplingCount xiRealDivisor (a + (N : ℝ) * H) := by
+    refine card_le_samplingCount_xiRealDivisor Zs ?_
+    intro x hx
+    obtain ⟨hmem, hzero⟩ := hZmem x hx
+    refine ⟨abs_le.mpr ⟨?_, hmem.2.le⟩, hfz x hzero⟩
+    linarith [hmem.1]
+  exact lt_of_lt_of_le hfinal (by exact_mod_cast hcount)
+
 /-! ## `(23)` from grid cancellation -/
 
 /-- **`(23)` with the literature input replaced by grid cancellation.**  Every coefficient of a

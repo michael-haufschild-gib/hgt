@@ -9181,3 +9181,10 @@ single explicit inequality, `Sieve/VonMangoldtTwistRouteTSharp`:
 
 for every `K >= e^9`, every smoothing width `0 < H <= K`, and every `|tau| >= tau_0`, with `w` the
 Route-T zero-free width and `W` the contour width.  All of it is axiom-clean and umbrella-wired.
+
+### The Halász gate is tracked on its own card (2026-08-18)
+
+The missing Möbius input for this card is the shared gate of three stage-2 cards and is tracked at
+`../../1-in-progress/moebius-halasz-log-saving-programme.md`, with the ingredient table and the
+first brick (`RHTower/ZetaNearOneLineBound`, the growth bound just left of the one-line) recorded
+there.

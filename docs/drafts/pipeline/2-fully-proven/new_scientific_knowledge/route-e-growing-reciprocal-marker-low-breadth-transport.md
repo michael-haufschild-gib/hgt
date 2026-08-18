@@ -5765,3 +5765,56 @@ majorants underneath it are already explicit closed forms (`RhoLimit.rhoMajorant
 `(log x)^{5/4-β-γβ}`, squared by the annulus constant; at `β, γβ > 9/10` that is past `(log x)^{-1.1}`.
 Converting those three `Tendsto … (𝓝 0)` statements into explicit majorant inequalities is the whole
 of the remaining work for step 1.
+
+### The gate is Halász for `μ`, not bookkeeping — the Ramaré diagonal is `1/W` (2026-08-18)
+
+Correcting the previous entry's last paragraph. Converting the three majorant limits into explicit
+inequalities would **not** close step 1, because the rate they are hiding is not a power of `log x`.
+
+Trace the corpus chain: `MoebiusMeanSquare.averagedMeanSquare_moebius` ⟵
+`OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget` (a pointwise squeeze) ⟵
+`BudgetLimit.tendsto_normalised_omegaBudget`, which squeezes the normalised budget by
+`136·slope + 140·energy + 131·const + nonSpectral`. The first three are powers of `log x`. The
+fourth is not: `NonSpectralBudget.nonSpectral_div_le` bounds it by
+
+```
+3672/W² + 120·m/W² + 480·h²/(W²·√x),        m = mertensS(zhi),  W = mertensS(zhi) − mertensS(zlo)
+```
+
+and with `zlo = exp((log x)^{γβ})`, `zhi = exp((log x)^β)` one has `m ≍ β·log log x` and
+`W ≍ (β−γβ)·log log x`, so the middle term is `≍ 1/((β−γβ)²·log log x)`. **The corpus's Möbius
+short-interval mean square therefore has rate `Θ(1/log log x)`, not `(log x)^{-A}`.**
+
+That term is the Ramaré normalisation loss, and it is structural, not slack: the Ramaré identity
+divides by `W = ∑_{zlo<p≤zhi} 1/p`, its `L²` diagonal costs one factor `1/W`, and `W ≤ log log x +
+O(1)` for any admissible prime range. Even exploiting the weight `1/(ω_P(m)+1)` non-trivially
+would only reach `1/(log log x)³`. No choice of `β, γ, zlo, zhi` inside this decomposition reaches a
+power of `log x`.
+
+**What the card actually needs.** Its input `(6)` is Menon's `(log log L)²/(log L)² + (log log
+Y)⁴/(log Y)²`, i.e. the square of `log log L/log L`. That factor is the Halász bound for `μ`: the
+pretentious distance satisfies `D(μ, n^{it}; N)² = ∑_{p≤N}(1 + Re p^{-it})/p ≥ (2−o(1)) log log N`
+uniformly in `t`, and Halász converts `M = min_t D²` into `(1+M)e^{-M}`, which is where the power of
+`log` — unreachable from Ramaré alone — comes from. Step 2's Markov step needs exactly `ε = o(1/log
+Y)`, since a dyadic marker block carries `≍ √x/log x` primes and the reciprocal map has `O_K(1)`
+fibres; no re-tuning of the threshold or of `K` avoids this.
+
+**So the single gate on this card is a Halász-type bound for the Möbius Dirichlet polynomial**, fed
+into the existing spectral chain in place of the trivial `|μ| ≤ 1` coefficient bound. The corpus
+already owns Halász mean-value infrastructure — `Sieve/HalaszMeanSquare.integral_norm_dirPoly_halasz_on`,
+`Sieve/DirichletPolyAffineMeanSquare.integral_norm_dirPoly_halasz_affine`,
+`Sieve/HalaszDichotomyInstance.halaszDampedBound` — but not the pretentious-distance lower bound for
+`μ` that turns it into a `1/log` saving. That lower bound, and its insertion into the omega budget,
+is the work.
+
+The long-range Möbius savings the corpus owns (`Sieve/MoebiusKappaTwoRate`,
+`Sieve/MoebiusSavingKappaTwo`, exponent `1/3` and `log^{-2}` contours) do **not** substitute: at
+window `exp((log x)^{99/100})` the zero-free-region error `x·exp(−c(log x)^{1/3})` dwarfs the window
+itself.
+
+### The Halász gate is tracked on its own card (2026-08-18)
+
+The missing Möbius input for this card is the shared gate of three stage-2 cards and is tracked at
+`../../1-in-progress/moebius-halasz-log-saving-programme.md`, with the ingredient table and the
+first brick (`RHTower/ZetaNearOneLineBound`, the growth bound just left of the one-line) recorded
+there.

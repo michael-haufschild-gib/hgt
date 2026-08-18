@@ -12,9 +12,10 @@ real part.  The directed prime-log KMS limit has strictly negative real part, wh
 Gamma-sewn Stokes limit has strictly positive real part.  Neither family can converge pointwise to
 the completed response.
 
-The positive survivor is exact: source-native finite passivity is unconditional, but a candidate
-for completed comparison must impose the missing reflected/Hermitian completion before taking its
-thermodynamic limit.
+The parity survivor is exact: source-native finite passivity is unconditional, and completed
+comparison requires reflected/Hermitian completion before the thermodynamic limit.  This parity
+repair is not sufficient: the later critical-mass and positive-supercarrier no-gos show that its
+raw positive carrier still cannot represent the completed seam germ.
 -/
 
 open Complex Filter Topology
@@ -263,17 +264,23 @@ def gammaSewnMobiusApertureStokesReflectedFiniteResponse
     (F : Finset (Nat.Primes × ℕ)) (z : ℂ) : ℂ :=
   ∑ pk ∈ F, gammaSewnMobiusApertureStokesReflectedAtom (1 / 2) z pk
 
-/-- Every canonical finite reflected source response is passive at the centered no-go point. -/
-theorem gammaSewnMobiusApertureStokesReflectedFiniteResponse_noGoPoint_im_nonpos
-    (F : Finset (Nat.Primes × ℕ)) :
-    (gammaSewnMobiusApertureStokesReflectedFiniteResponse
-      F primeArchDirectedPassiveNoGoPoint).im ≤ 0 := by
+/-- Every canonical finite reflected source response is passive on the upper half-plane. -/
+theorem gammaSewnMobiusApertureStokesReflectedFiniteResponse_im_nonpos
+    (F : Finset (Nat.Primes × ℕ)) {z : ℂ} (hz : 0 < z.im) :
+    (gammaSewnMobiusApertureStokesReflectedFiniteResponse F z).im ≤ 0 := by
   rw [gammaSewnMobiusApertureStokesReflectedFiniteResponse, Complex.im_sum]
   exact Finset.sum_nonpos fun pk _ =>
     gammaSewnMobiusApertureStokesReflectedAtom_im_nonpos
       (s := (1 / 2 : ℝ)) (by norm_num)
-      (z := primeArchDirectedPassiveNoGoPoint)
-      (by norm_num [primeArchDirectedPassiveNoGoPoint]) pk
+      (z := z) hz pk
+
+/-- Closed specialization of finite reflected passivity at the centered comparison point. -/
+theorem gammaSewnMobiusApertureStokesReflectedFiniteResponse_noGoPoint_im_nonpos
+    (F : Finset (Nat.Primes × ℕ)) :
+    (gammaSewnMobiusApertureStokesReflectedFiniteResponse
+      F primeArchDirectedPassiveNoGoPoint).im ≤ 0 := by
+  exact gammaSewnMobiusApertureStokesReflectedFiniteResponse_im_nonpos F
+    (by norm_num [primeArchDirectedPassiveNoGoPoint])
 
 /-- Reflected finite stages preserve the centered oddness absent from directed stages. -/
 theorem gammaSewnMobiusApertureStokesReflectedFiniteResponse_neg
@@ -292,7 +299,27 @@ theorem gammaSewnMobiusApertureStokesReflectedFiniteResponse_neg
       rw [Finset.sum_neg_distrib]
 
 /-- Canonical reflected finite responses converge pointwise to the source-native reflected
-response at the centered no-go point.  No completed-source comparison is asserted. -/
+response throughout the upper half-plane.  No completed-source comparison is asserted. -/
+theorem gammaSewnMobiusApertureStokesReflectedFiniteResponse_tendsto
+    {z : ℂ} (hz : 0 < z.im) :
+    Tendsto
+      (fun F : Finset (Nat.Primes × ℕ) =>
+        gammaSewnMobiusApertureStokesReflectedFiniteResponse F z)
+      atTop
+      (nhds (gammaSewnMobiusApertureStokesReflectedResponse
+        (1 / 2) z)) := by
+  have hsum := summable_gammaSewnMobiusApertureStokesReflectedAtom
+    (s := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
+    (z := z) hz
+  have hresponse : HasSum
+      (gammaSewnMobiusApertureStokesReflectedAtom
+        (1 / 2) z)
+      (gammaSewnMobiusApertureStokesReflectedResponse
+        (1 / 2) z) := by
+    simpa only [gammaSewnMobiusApertureStokesReflectedResponse] using hsum.hasSum
+  exact hresponse
+
+/-- Closed centered-point specialization of reflected finite-to-countable convergence. -/
 theorem gammaSewnMobiusApertureStokesReflectedFiniteResponse_tendsto_noGoPoint :
     Tendsto
       (fun F : Finset (Nat.Primes × ℕ) =>
@@ -301,17 +328,8 @@ theorem gammaSewnMobiusApertureStokesReflectedFiniteResponse_tendsto_noGoPoint :
       atTop
       (nhds (gammaSewnMobiusApertureStokesReflectedResponse
         (1 / 2) primeArchDirectedPassiveNoGoPoint)) := by
-  have hsum := summable_gammaSewnMobiusApertureStokesReflectedAtom
-    (s := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
-    (z := primeArchDirectedPassiveNoGoPoint)
+  exact gammaSewnMobiusApertureStokesReflectedFiniteResponse_tendsto
     (by norm_num [primeArchDirectedPassiveNoGoPoint])
-  have hresponse : HasSum
-      (gammaSewnMobiusApertureStokesReflectedAtom
-        (1 / 2) primeArchDirectedPassiveNoGoPoint)
-      (gammaSewnMobiusApertureStokesReflectedResponse
-        (1 / 2) primeArchDirectedPassiveNoGoPoint) := by
-    simpa only [gammaSewnMobiusApertureStokesReflectedResponse] using hsum.hasSum
-  exact hresponse
 
 end
 

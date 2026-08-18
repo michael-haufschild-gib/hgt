@@ -28,8 +28,28 @@ theorem unitCoeffConst_le_sum {J : ℕ} (k : Fin J) :
   exact Finset.single_le_sum (f := fun j : Fin J => unitCoeffConst J (j : ℕ))
     (fun j _ => unitCoeffConst_nonneg J (j : ℕ)) (Finset.mem_univ k)
 
+/-- The constant polynomial `1` shows the zeroth Lagrange coefficient constant is at least one. -/
+theorem one_le_unitCoeffConst_zero {J : ℕ} (hJ : 0 < J) : 1 ≤ unitCoeffConst J 0 := by
+  have hdeg : (1 : Polynomial ℝ).degree < (J : ℕ) := by
+    rw [Polynomial.degree_one]
+    exact_mod_cast hJ
+  have hB : ∀ x ∈ Set.Icc (0:ℝ) 1, |Polynomial.eval x (1 : Polynomial ℝ)| ≤ 1 := by
+    intro x _
+    simp
+  have h := abs_coeff_le_of_sup_unit (J := J) (1 : Polynomial ℝ) hdeg hB 0
+  simpa using h
+
 theorem unitCoeffConstSum_nonneg (J : ℕ) : 0 ≤ unitCoeffConstSum J :=
   Finset.sum_nonneg fun k _ => unitCoeffConst_nonneg J (k : ℕ)
+
+/-- The Lagrange coefficient constant is strictly positive. -/
+theorem unitCoeffConstSum_pos {J : ℕ} (hJ : 0 < J) : 0 < unitCoeffConstSum J := by
+  rw [unitCoeffConstSum]
+  refine lt_of_lt_of_le zero_lt_one ?_
+  have hmem : (⟨0, hJ⟩ : Fin J) ∈ (Finset.univ : Finset (Fin J)) := Finset.mem_univ _
+  refine le_trans (one_le_unitCoeffConst_zero hJ) ?_
+  refine Finset.single_le_sum (f := fun k : Fin J => unitCoeffConst J (k : ℕ))
+    (fun k _ => unitCoeffConst_nonneg J (k : ℕ)) hmem
 
 /-- **The Rayleigh floor.**  Block masses at least `m` force the weighted nodal energy to dominate
 the squared coefficient vector. -/

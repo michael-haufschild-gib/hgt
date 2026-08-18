@@ -1,8 +1,8 @@
 # Scaled completed-Xi cross-fiber natural transformation
 
 - **ID:** deninger-scaled-xi-cross-fiber
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** Connes--Consani Scaling Site family; standard quotient functoriality; internal Big-Witt centered-mark comparison
 - **Statement:** Half-scaling pullback induces an algebra equivalence from completed-Xi cohomology to the quotient by the half-scaled Xi source, transports every centered theta fiber at `alpha` isomorphically to the target fiber at `2 alpha`, and intertwines Big-Witt Frobenius with the transported reporter.
 
@@ -17,7 +17,7 @@ unsupported identification of every scaled target with the original completed-Xi
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem, targeted `lake build` green, axiom audit PASS
+- [x] 2 → 3  formalized: Lean theorem, targeted `lake build` green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Literature prerequisite
@@ -95,10 +95,18 @@ target quotient changes exactly so the transported eigenvector exists.
 - **New insight:** arithmetic Frobenius becomes horizontal only after the analytic receiver is
   treated as a scaling family.  Identifying the scaled receiver back with the fixed completed-Xi
   quotient is precisely the forbidden divisor-stability step.
-- **Status:** internal Lean corpus and primary literature audited; `[PROVED HERE]`; ready for Lean.
+- **Status:** internal Lean corpus and primary literature audited; `[PROVED HERE]`; formalized by
+  `deningerEntire_scalingCover_quotientFunctoriality`,
+  `completedXiScaledTwoCrossFiberEquiv`, and
+  `deningerBigWitt_completedXi_scaledTwo_crossFiberNaturalTransformation`.  Direct-file Lean and
+  targeted module builds pass.  Axiom audit reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.  No umbrella build was run.
 
 ## Log
 
 - 2026-08-18 — created in 1-in-progress after corpus and Scaling Site audits.
 - 2026-08-18 — three conjecture/failure loops completed; hostile dependency audit closed the
   family-valued theorem; moved to 2-fully-proven before Lean formalization.
+- 2026-08-18 — literature prerequisite formalized first, then cross-fibre equivalence and
+  Big-Witt naturality square; scratch, direct-file Lean, targeted builds, proof-debt scan, and axiom
+  audit passed; moved to 3-formalized and wired into the RHTower umbrella without building it.

@@ -3477,3 +3477,139 @@ now both formal — the continuous half is `mellin_antiderivative_step` at `mu =
 half is `mellin_sourcePartialSum_eq_LSeries` — and `mellin_iterated_step` performs the `j`-fold
 integration that Theorem 1 needs, with the rising factorial `s(s+1)...(s+j-1)` appearing exactly as
 in Andersson.
+
+## Lean progress — Theorem 1's analytic identity is proved, and the recursion has its engine
+
+Four more modules, all wired and axiom-clean.
+
+`HTGeometry/TruncatedPowerAntiderivative.lean` — the algebra of repeated integration of jumps.
+
+```text
+truncPow c j            = indicator [c, ∞) of (t - c)^j / j!    (the j-fold antiderivative of a jump)
+truncPow_zero_step      level 0 is the unit jump at c
+intervalIntegrable_truncPow, intervalIntegrable_truncPow_ofReal
+integral_truncPow       ∫_1^y truncPow c j = truncPow c (j+1) y          (1 ≤ c, 1 ≤ y)
+truncPowSum S node a j  a finite superposition of jumps, j times integrated
+truncPowSum_zero        level 0 is the summatory function ∑_{node ≤ y} a
+integral_truncPowSum    ∫_1^y (level j) = level (j+1)
+truncPow_shift          (y-c)_+^j/j! = ∑_{m ≤ j} (y-x)^{j-m}/(j-m)! · (x-c)_+^m/m!    (c ≤ x ≤ y)
+truncPowSum_shift       the same for a superposition: the state at y is a finite Taylor combination
+                        of the levels at x
+```
+
+`truncPowSum_shift` is precisely the **state-transition law of Andersson's recursion**: if every jump
+so far lies left of the window base `x`, the vector of levels at the right endpoint `y` is the
+explicit lower-triangular Taylor image of the vector of levels at `x`, with entries
+`(y-x)^{j-m}/(j-m)!`.  The new jumps inside the window enter as the moment vector that Lemma 4/5
+prescribes.
+
+`HTGeometry/JumpProfileLevels.lean` — the concrete remainder chain.
+
+```text
+iteratedAntideriv q j            the j-fold antiderivative of a continuous datum, based at 1
+continuous_iteratedAntideriv     every level is continuous (FTC at the right endpoint)
+arithProfile a j y               ∑_{n ≤ y} a n (y-n)^j / j!, an infinite arithmetic source
+arithProfile_zero                level 0 is ∑_{n ≤ y} a n
+integral_arithProfile            ∫_1^y (level j) = level (j+1)
+arithJumpProfile q a j           iteratedAntideriv q (j+1) + arithProfile a j     ( = r_{j+1} )
+arithJumpProfile_zero            level 0 is  ∫_1^y q + ∑_{n ≤ y} a n              ( = r_1 )
+integral_arithJumpProfile        the chain identity ∫_1^y r_j = r_{j+1}
+```
+
+`RHTower/StepProfileMellinLSeries.lean` (extended)
+
+```text
+abs_re_sourcePartialSum_le, abs_im_sourcePartialSum_le, complexPartialSum_split
+integrableOn_complexPartialSum
+mellin_complexPartialSum_eq_LSeries
+    ‖∑_{m ≤ N} b m‖ ≤ C N^theta, 0 < Re s, theta < Re s, L-series summable
+      ==>  s ∫_1^∞ ( ∑_{m ≤ x} b m ) x^{-s-1} dx = LSeries b s
+```
+
+Complex coefficients are reduced to the corpus's real Abel-tail theorem by splitting into real and
+imaginary partial sums; this is what the character source `chi(n) Lambda(n)` needs.
+
+`RHTower/AnderssonRemainderRepresentation.lean`
+
+```text
+mellin_arithJumpProfile_zero
+    s ∫_1^∞ r_1(x) x^{-s-1} dx  =  ∫_1^∞ q x^{-s} dx  +  LSeries a s
+mellin_arithJumpProfile_iterate
+    ∫_1^∞ r_1 x^{-s} = ( prod_{i<j} (s+i) ) ∫_1^∞ r_{j+1} x^{-(s+j)}
+mellin_representation_iterated
+    ∫_1^∞ q(x) x^{-s} dx + LSeries a s
+      = s (s+1) ⋯ (s+j) ∫_1^∞ r_{j+1}(x) x^{-s-j-1} dx
+```
+
+That last statement **is** the analytic identity of Andersson's Theorem 1, unconditionally in Lean,
+for an arbitrary continuous datum `q` and an arbitrary arithmetic source `a` with polynomially
+bounded partial sums.  Its hypotheses are exactly the integrability of each level — which is what
+Lemma 7 (`|r_j(x)| ≪_j x^{j theta}`) supplies once the character has been constructed.
+
+### What remains on the Andersson chain
+
+```text
+Lemma 4 at the prime window   instantiate rayleigh_lower_of_blocks + exists_unimodular_window_moments
+                              with nodes t_p = (x + x^th - p)/x^th and weights log p, the blocks and
+                              masses coming from exists_theta_subwindow_lower
+Lemma 6                       one window step: truncPowSum_shift gives the transition, Lemma 4/5 the
+                              correction, and the new state is bounded by the rounding error
+Lemma 7                       the induction over the window sequence x_{k+1} = x_k + x_k^theta
+Theorem 1                     Lemma 7 discharges the integrability hypotheses of
+                              mellin_representation_iterated, then let j grow to continue f - g
+Theorem 2, divisor surjectivity  the consumer end, already formal modulo Theorem 1
+```
+
+## Lean progress — Lemma 6, the window step, is proved
+
+`HTGeometry/JumpProfileLevels.lean` (extended)
+
+```text
+arithProfile_window
+    for 1 <= x <= y,
+      level_j(y) = sum_{m <= j} (y-x)^{j-m}/(j-m)! * level_m(x)
+                     + sum_{x < n <= y} a n (y-n)^j / j!
+updateWindow a S c          replace the source on a window
+arithProfile_updateWindow_base   window values do not disturb the levels at the base point
+arithProfile_updateWindow_step   the level at y after an assignment on (x, y]
+```
+
+`HTGeometry/UnimodularWindowMoments.lean` (extended)
+
+```text
+exists_unimodular_window_moments_complex
+    a Rayleigh floor `lam` for the nodal moment matrix and a target `zeta` with
+    J * sum_j ‖2 zeta_j‖^2 <= lam^2
+      ==> unimodular b with  ‖ sum_r b_r w_r t_r^j  -  zeta_j ‖ <= J * C   for every j
+```
+
+A complex target is reached by solving the real system twice and taking the half-sum of the two
+unit-bounded polynomials, which is again a disc coefficient; the rounding lemma then makes the
+coefficients unimodular.
+
+`HTGeometry/WindowAssignmentStep.lean`
+
+```text
+windowAssign p b w        the source supported on the node family, with phase b and weight w
+sum_windowAssign          its window sum is the finite sum over the node family
+windowTaylor a x y j      the Taylor image of the levels at x
+windowTarget a x y j      = -(j!/(y-x)^j) * windowTaylor,  the moment the window must realize
+windowNode p x y          the nodes normalized to [0,1]
+windowNode_mem_Icc        they do lie in [0,1]
+exists_window_phases
+    nodes p injective inside (x, y], weights bounded by C, a Rayleigh floor lam for their moment
+    matrix, and  J * sum_j ‖2 windowTarget_j‖^2 <= lam^2
+      ==>  there are unimodular phases b with, for every j < J,
+             ‖ level_j( updateWindow a window (windowAssign p b w) )(y) ‖
+                 <= ( (y-x)^j / j! ) * (J * C)
+```
+
+This is Andersson's Lemma 6 in quantitative form and it is unconditional: the whole Taylor image of
+the previous state is cancelled by the window moments, and what survives is exactly the rounding
+error of Lemma 5, scaled by the window's own factor `Delta^j / j!`.  The three inputs it consumes —
+the Hankel solvability (Lemma 4), the rounding (Lemma 5) and the jump algebra (repeated integration)
+— are all already Lean-proved, so the step is a theorem, not an interface.
+
+What Lemma 7 still needs is the *arithmetic* side of Lemma 4: the Rayleigh floor `lam` for the
+moment matrix of the primes in `(x, x + x^theta]` with weights `log p`, which is
+`rayleigh_lower_of_blocks` fed by `exists_theta_subwindow_lower`.

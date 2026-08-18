@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 18 August 2026, commit
-`9f81eb328b1d87de4e40d2e4f4010f4efac20b76`, plus declaration-index review of Lean working-tree
+`8e041d41030ea424b7bb6dcd18dc5644347ef6de`, plus declaration-index review of Lean working-tree
 sources. Scientific status below comes only from Lean declarations, dependencies, theorem docstrings,
 and explicit gap/no-go markers. Pipeline cards and papers are not evidence for this map.
 
@@ -37,17 +37,17 @@ terminal as independent producer.
 | Architecture | Proved chain | First open core |
 |---|---|---|
 | CCM-FU | completed Guinand--Weil third-grade source -> Xi-screw Green -> second-Abel continuation -> RH | Linear growth of one Cesaro primitive of literal third-grade prime-minus-polar cumulative source. |
-| C1 | theta/prime--Gamma source -> Weil/Connes positive form or real spectral realization -> RH | Derive positive form or exhaustive real spectral measure from source, not postulated reflection positivity. |
-| D2 | continued prime--arch trace -> one-sided anti-Herglotz/finite ceiling -> RH | Uniform source control of sole positive-frequency tail above proved central band. |
+| C1 | corrected theta/prime--Gamma source -> Weil/Connes form or real spectral realization -> RH | Construct a source-derived non-dominating or signed correction before final positivity; raw positive/passive Stokes completion is impossible. |
+| D2 | continued prime--arch trace -> one-sided anti-Herglotz/finite ceiling -> RH | Source control of sole positive-frequency tail by a reflected signed/non-dominating law; canonical directed passive limits are impossible. |
 | E | squarefree Wold source -> exact integer-pair incidence -> unit-load Hall transport with moving flux -> RH | All-interval Hall/load and co-moving flux for one source-fixed physical relation encoded by exact Ramaré incidence. |
-| G | Suzuki/Mobius/Gamma source -> marked pre-scalar boundary carrier -> wall orientation -> RH | Compare normalized zero-mode readout with transported escaped coefficient before scalar erasure. |
-| L | completed Green/BV/Big-Witt source -> singular Calderon--Witt comparison -> physical reader -> RH | Bounded square-summable all-prime restriction whose radical is exactly arithmetic boundaries and whose target is existing physical landing. |
+| G | Suzuki/Mobius/Gamma source -> marked pre-scalar boundary carrier -> exact Ward landing -> wall orientation -> RH | Independent source law forcing the already-transported Ward coefficient to vanish or have the required signed order. |
+| L | completed Green/BV/Big-Witt source -> singular Calderon--Witt comparison -> physical reader -> RH | Same-fibre bounded square-summable all-prime restriction whose radical is exactly arithmetic boundaries and whose target is existing physical landing. |
 | O | exact restricted-Weil operator -> canonical true-ground heads -> coherent signed producer -> nonnegative floor -> RH | Sign of cancellation-preserving coherent finite-head producer, equivalently eventual reverse-prime control on canonical actual heads. |
 | P | source-horizontal second-Cartier orbit -> radial Krein energy -> endpoint moderation -> RH | Produce endpoint order globally before divisor selection; finite circle measure after Xi selection and literal scalar short are formally ruled out. |
 | Q | continued Hurwitz/Cauchy source -> exterior positive-frequency paired kernel -> orientation zero -> RH | Passivity/PSD of explicit finite reduced prime--Gamma matrices on exterior positive poles. |
-| T | finite Xi-Taylor/theta-tail source -> exact reflection bridge -> raw core-current bound -> RH | Joint upper estimate for combined top-row plus surviving finite-translation remainder at same cutoff/depth. |
-| U | shifted hard-edge source -> cofinal shifted Hankel tail or first-contact exclusion -> RH | Uniform cofinal source positivity excluding completed-boundary rough null ground. |
-| HC | two-prime/Cayley source -> quantized horizontal collision charge -> strict sub-two bound -> RH | Absolute source estimate below indivisible collision quantum for coefficient-faithful finite-window carrier. |
+| T | finite Xi-Taylor/theta-tail source -> exact reflection bridge -> raw core-current bound -> RH | Joint upper estimate for combined top-row plus surviving finite-translation remainder; in the endpoint specialization, pure short Möbius-block cancellation. |
+| U | shifted hard-edge source -> cofinal shifted Hankel tail or first-contact exclusion -> RH | Non-scalar source mechanism excluding the exact nonintegrable strict-frontier quotient, or uniform cofinal tail order. |
+| HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Absolute subquantum estimate or source-first prime-summability for the literal paired Gamma-six determinant current. |
 
 Many exact source criteria below are formal equivalences with RH. Rewriting RH as positivity,
 boundedness, passivity, flatness, or collision absence advances nothing unless corpus also supplies an
@@ -101,18 +101,27 @@ floor convergence; exact finite Schur reduction; prime--arch reflection-positive
 saturation, and self-adjoint vacuum each equivalent to RH (`PrimeArchConnesReflectionMain.lean`);
 two independent dilations force momentum symmetry; positive temperate representation is unique;
 theta-null representation is atomic and carried by real Xi divisor
-(`TwoDilationSpectralRepresentation.lean`).
+(`TwoDilationSpectralRepresentation.lean`). The canonical reflected critical Stokes source already
+has excessive zeroth mass (`not_gammaSewnMobiusApertureStokesCriticalMomentIdentification`), and no
+finite positive measure dominating that raw carrier can represent the completed seam germ
+(`not_gammaSewnMobiusApertureStokesCriticalPositiveSupercarrierCompletion`).
 
 **Open core.** Derive from fixed theta/prime--Gamma source, before divisor selection, one of:
 
-1. reflection-positive form on source-dense class exhausting full Weil space;
-2. positive two-dilation representation with comparison exhausting complete Xi divisor, not merely
-   already-real part;
-3. self-adjoint vacuum realization of normalized completed moments.
+1. corrected reflection form on a source-dense class exhausting full Weil space;
+2. a source-derived carrier which deletes or reweights raw Stokes atoms before final positivity, or
+   introduces a signed negative correction and proves the corrected realization exhaustive;
+3. self-adjoint vacuum realization of corrected normalized completed moments.
 
 Bare positivity, saturation, or self-adjoint realization is circular: Lean classifies each as
-RH-equivalent. C1 is global class-space architecture; O selects restricted ground and Q restricts to
-exterior Cauchy packets. Their open producers differ.
+RH-equivalent. More strongly, passive positive completion retaining the canonical raw atoms is now
+formally impossible. The exact survivor is non-domination:
+`criticalStokes_not_le_of_completedSeamMomentGerm_eq_compactMarkov`. Reflection repairs parity but
+not normalization, and the first-moment excess also rules out a constant positive counterterm. TD
+therefore survives only as a real-divisor receiver; its stated raw-positive/passive source handoff is
+terminal. C1 remains live only through a genuinely corrected, signed/indefinite, or non-dominating
+class-space construction. O selects restricted ground and Q restricts to exterior Cauchy packets;
+their producers differ.
 
 ### D2 — continued prime--arch one-sided tail
 
@@ -122,15 +131,24 @@ condition to one positive-frequency tail beyond a proved central band.
 
 **Proved.** Unconditional sign on `|Re z| <= 161/40`; source-pure verified band through radius four;
 under any verified-height band only positive tail remains; any finite upper ceiling proves RH and is
-equivalent to RH; non-RH forces arbitrarily high positive spikes.
+equivalent to RH; non-RH forces arbitrarily high positive spikes. At the fixed centered point `I/4`,
+the completed response has zero real part while canonical directed prime-log KMS and subcritical
+Stokes limits have incompatible strict real signs. Hence neither directed passive family can
+converge to the completed prime--Gamma source
+(`PrimeArchDirectedPassiveParityNoGo.lean`). Reflected finite Stokes response restores exact odd
+parity and passivity, but the C1 positive-supercarrier theorem blocks positive normalization that
+retains all raw atoms.
 
 Formal sources: `PrimeArchEndpointFrequencyAccretivity.lean`,
 `PrimeArchVerifiedHeightAccretivity.lean`, `PrimeArchSourceUpperBoundGate.lean`.
 
 **Open core.** Prove finite upper control, or stronger anti-Herglotz sign, for literal continued
-positive-frequency source tail above radius four from independent source passivity/continuation.
+positive-frequency source tail above radius four from an independent reflected signed or
+non-dominating continuation law.
 Analytic continuation, central band, reflected negative tail, and countable reduction are closed.
 Scalar ceiling itself is exact RH, so viable advance must be stronger source order upstream.
+Canonical directed KMS/Stokes passivity and positive passive completion are closed detours, not
+candidate producers.
 
 ### E — squarefree Wold Hall transport
 
@@ -143,9 +161,11 @@ Gibbs cost.
 **Proved.** Two-or-more-large-prime remainder; positive valuation-depth tail; prime-anchor capacity;
 opposite-sign supply; every fixed off-normal Wold tail; finite Wold readers; patch seams as exact
 coboundary; finite differential-algebraic Euler germs cannot select free infinite prime-clock orbit;
-unconditional Step 1 Hall supply (`eventually_fibre_step_one_closed`); exact Type-II cancellation,
-cell/family energy, covered-set forms, and covered Type-II power saving
-(`MatomakiTeravainenTypeIIAmplitudeCells.lean`); exact ordinary integer-pair incidence
+unconditional Step 1 Hall supply with growing squarefree truncation
+(`eventually_fibre_step_one_growing`, `eventually_fibre_step_one_positive`); sharp aggregate fibre
+tail with no truncation-level term (`sum_fibre_windowTail_le_budget_sharp`); exact Type-II
+cancellation, cell/family energy, raised-threshold loss, dyadic cover, covered-set forms, and covered
+Type-II power saving (`MatomakiTeravainenTypeIIAmplitudeCells.lean`); exact ordinary integer-pair incidence
 (`RouteERamareIntegerIncidence.lean`).
 
 **Open core.** Construct/extract one exact relation on ordinary squarefree integers directly from
@@ -165,8 +185,10 @@ support valuation depth is fixed; hard axis is all-prime breadth.
 
 **Architecture.** Source current is retained before scalarization as affine carrier containing
 completed prime--polar--Gamma charge and marked odd clock jet. It is transported to
-Suzuki/restricted-Weil boundary receiver. RH follows if coefficient-faithful boundary
-renormalization makes escaped coefficient pay zero-mode debt with correct orientation.
+Suzuki/restricted-Weil boundary receiver. Coefficient-faithful affine boundary renormalization now
+lands exactly on the continued Ward coefficient and on every actual-head base entry. RH follows
+from a source law forcing that transported coefficient to vanish, equivalently from the classified
+four-unit orientation.
 
 **Proved.** Source-native affine producer retaining charge and source orders; canonical probe
 detects nonzero charge; zero-clock jet vanishes while charge survives; positive-clock packet retains
@@ -177,14 +199,17 @@ Hessian; universal domination RH-equivalent; scalar cancellation reduces to RH o
 erasure; actual multiplicity-faithful Euler--Wold transverse reporter converges to half primitive
 budget and eventually lies strictly inside budget, while no linear reporter can both remain
 source-budgeted and dominate literal endpoint
-(`SourceHorizontalEulerWoldTransverseDefectBudgetReporter.lean`).
+(`SourceHorizontalEulerWoldTransverseDefectBudgetReporter.lean`). Exact finite-depth boundary
+landing, base-entry comparison, forced complementary correction, and premise-free cofinal transport
+are closed (`MobiusGammaXiPreScalarAffineBoundaryRenormalization.lean`); its four-unit positivity is
+equivalent to RH.
 
-**Open core.** Construct pre-scalar boundary comparison transporting prime label, multiplicity, and
-escaped coefficient; compare it to normalized zero-mode debt; exclude universal erasure; and prove
-favorable signed inequality on actual wall/ground state. More floor identities, positive scalar
-shadows, or zero-clock commutators cannot close route because Lean separates surviving charge from
-vanishing jet. Transverse half-budget reporter closes source occurrence but also proves missing
-endpoint comparison must be nonlinear or distinct-channel, not another linear budget reporter.
+**Open core.** Derive from literal source, independently of Xi-divisor selection, a nonlinear or
+distinct-channel law forcing the already-transported Ward coefficient to vanish or to satisfy the
+favorable signed wall order. Construction of a pre-scalar comparison is no longer open. More floor
+identities, positive scalar shadows, zero-clock commutators, or another linear budget reporter cannot
+close route: Lean separates surviving charge from vanishing jet and classifies the final four-unit
+scalar endpoint as RH itself.
 
 ### L — Deninger/Green/Cartier singular boundary comparison
 
@@ -202,18 +227,22 @@ radical=kernel (`DeningerGreenFormPullbackTransport.lean`); continuous packet re
 square summability; singular Gamma transgression whose sewing cost beats every finite Rees order
 (`DeningerCalderonWittSingularGammaTransgression.lean`); physical residue/minimal-boundary critical
 line classification with prime and multiplicity provenance
-(`MobiusThetaSourceDaggerMinimalBoundaryLaw.lean`).
+(`MobiusThetaSourceDaggerMinimalBoundaryLaw.lean`); centered prime-mark Xi fibres and injective
+right-half Frobenius orbit; genuine scaled-Xi cross-fibre quotient equivalence and Big-Witt
+naturality (`DeningerBigWittScaledXiCrossFiberNaturalTransformation.lean`).
 
 **Open core.** Construct source-derived bounded square-summable continuous all-prime restriction
 such that common kernel is exactly arithmetic boundary subspace, target-zero component is existing
 physical landing, reader kills resulting boundaries, prime/depth/multiplicity survive, and
-construction precedes divisor. Equivalently: prove radical-identification for continuous Green
-restriction together with physical-landing comparison.
+construction precedes divisor. Equivalently: prove same-fibre radical identification for continuous
+Green restriction together with the fixed physical singular landing. Cross-fibre naturality is now
+closed, but deliberately varies the analytic receiver and therefore cannot replace this theorem.
 
 **Closed detours.** Residue-factored packet cannot classify boundaries unless middle cohomology is
 already trivial; cofinite unit-normalized packet floor forbids square summability; generic mapping
 cones/Koszul exactness merely relocate or erase `K_n`; finite Rees completion cannot match
-exponential sewing singularity.
+exponential sewing singularity; Frobenius is base change inside one fibre, and finite right-half
+preperiodicity is impossible.
 
 ### O — exact restricted-Weil ground and canonical actual heads
 
@@ -311,7 +340,11 @@ at fixed cutoff top row tends to zero but translation survivor tends to conserve
 residue; between depths every top-row change transfers oppositely into survivor; combined remainder
 equals raw current minus returned prefix and is depth-independent; joint selector controls
 prefix/top interface; conditional capstone isolates one combined-remainder estimate; favorable
-coherent product-fibre base and unavoidable corrected joint seam are exact.
+coherent product-fibre base and unavoidable corrected joint seam are exact. In the separate
+Maynard/AFE specialization, direct and dual AFE edges, endpoint-long zeta/log atoms, contour
+coefficient absorption, and unconditional endpoint-long Möbius exclusion are closed; remaining
+endpoint obstruction is isolated as short Möbius-block cancellation
+(`MaynardEndpointMobiusConcentration.lean`).
 
 Formal sources: `XiCTaylorThetaTailCoreCurrentCapstone.lean`,
 `XiCTaylorThetaTailProductFiberHermitianCollapse.lean`.
@@ -320,6 +353,8 @@ Formal sources: `XiCTaylorThetaTailCoreCurrentCapstone.lean`,
 `canonicalThetaTailCoreFiniteArithmeticRemainderCurrent` at same cutoff and depth as prefix selector,
 retaining cancellation between top-row and translation pieces. More top-row decay is dead work:
 survivor conserves exactly what row loses. Separate absolute-value bounds destroy sign.
+For current Maynard specialization, this is pure short Möbius-block cancellation strong enough to
+discharge joint current estimate; zeta/log endpoint control is no longer open.
 
 Finite-Hermite contour, critical mass/Dirichlet cone, co-moving mass cone, and sharp spacelike
 summability are alternative formal receivers/partial decompositions. Current most concrete single
@@ -340,8 +375,13 @@ fast positive recession schedules with divergent spread exist; non-RH first zero
 completion-boundary rough null vector absent from strict smooth interior; no scalar counterterm
 renormalizes interior and physical Kelvin charts together; every occupied strict terminal-frontier
 rung carries exact adaptive source price, and non-RH produces such source-priced strict renewal
-events above every mass threshold (`XiShiftedHankelStrictFrontierCurvatureRenewal.lean`). Thus
-cofinal producer admission is closed; favorable sign/exclusion is not.
+events above every mass threshold (`XiShiftedHankelStrictFrontierCurvatureRenewal.lean`). Exact
+strict-frontier numerator is continuous/integrable while its Christoffel quotient is not locally
+integrable; local integrability at every occupied strict frontier is equivalent to RH
+(`XiShiftedStrictFrontierSourceWallIntegrabilityGate.lean`). Non-RH strict frontiers are cofinal but
+cannot choose an arbitrarily delayed schedule: they lie inside explicit parabolic degree horizon
+(`XiShiftedTerminalFrontierParabolicSynchronization.lean`). Thus cofinal producer admission and
+degree--mass synchronization are closed; favorable sign/exclusion is not.
 
 Formal sources: `XiShiftedReciprocalHankelTailCriterion.lean`,
 `XiShiftedCanonicalAdmissionAdaptiveArithmeticSourceDegreeConnection.lean`,
@@ -350,9 +390,10 @@ Formal sources: `XiShiftedReciprocalHankelTailCriterion.lean`,
 `XiShiftedHardEdgePrimeGammaKelvinTwoChartNoGo.lean`.
 
 **Open core.** Prove uniform cofinal tail positivity/order for explicit source Hankel matrices, or
-construct non-scalar boundary trace/quotient excluding rough first-contact ground. Proof must
-synchronize degree with mass/aperture and control upper rate, not fixed-degree limits or positivity
-along self-selected recession schedule.
+construct a non-scalar source mechanism that annihilates strict-frontier numerator/excludes its
+endogenous admission zero before nonintegrable quotient forms. Generic numerator regularity,
+arbitrary schedule delay, scalar counterterms, fixed-degree limits, and positivity along a
+self-selected recession schedule are closed or insufficient.
 
 ### HC — horizontal-collision quantum
 
@@ -375,7 +416,11 @@ information loss converges to collision charge; eventual loss `<2` proves RH; Wa
 normalization gives stronger uniform quantum; coefficient-faithful exterior contours detect same
 boundary quantum; full exterior prime-Cayley source pencil retains both adjacent orientations and
 dephases exactly to multiplicity-square packet energy, with RH equivalent to that finite source
-energy tending to zero (`XiHorizontalCollisionWardGreenExteriorSourceCarrier.lean`).
+energy tending to zero (`XiHorizontalCollisionWardGreenExteriorSourceCarrier.lean`). A second exact
+receiver retains prime labels through a multiplicity-faithful Gauss--Hodge current: finite-window
+prime summability is equivalent to zero collision charge, global/natural-height summability is
+equivalent to RH, and current equals literal Euler derivative of paired Gamma-six suspension
+determinant (`XiHorizontalCollisionGaussHodgePrimeCurrent.lean`).
 
 Formal sources: `XiHorizontalCollisionChargeEndpoint.lean`,
 `XiReflectionSelfIntersectionCharge.lean`,
@@ -386,9 +431,11 @@ Formal sources: `XiHorizontalCollisionChargeEndpoint.lean`,
 `HedenmalmCoefficientFaithfulExteriorSourceContour.lean`,
 `HedenmalmExteriorSourceThetaBoundaryGap.lean`.
 
-**Open core.** Prove from finite coefficient-faithful prime--Gamma source carrier, before divisor
-specialization, an absolute strict-subquantum bound for source excess/information loss on all late
-windows. Normalized `o(N(T))` is insufficient: bound must cross integer quantum two.
+**Open core.** Prove from coefficient-faithful prime--Gamma source, before divisor specialization,
+either an absolute strict-subquantum bound for source excess/information loss on all late windows or
+prime-summability of the literal paired Gamma-six suspension determinant current. Normalized
+`o(N(T))` is insufficient: first branch must cross integer quantum two, while second must be an
+upstream source estimate rather than already RH-equivalent global summability.
 
 HC is genuinely new architecture because mechanism is source-resolution loss versus quantized
 reflection incidence, not positivity of classical explicit formula. Global strict-two law is itself
@@ -404,7 +451,13 @@ source handoff is built independently of zero tested.
 `WeldWeylMultiplicity.lean` proves primitive order-`2^k` Weyl commutation forces `2^k` divisibility;
 internal Weyl model on actual undoubled SEM hole space gives one RH rung; models at all or cofinal
 depths force RH. Open theorem: construct Weyl actions internally from arithmetic source. Auxiliary
-tensor factors are forbidden because they manufacture divisibility.
+tensor factors are forbidden because they manufacture divisibility. Independently, finite
+shift--Weyl operations preserving full real-Xi sampling nullspace collapse to zero-shift polynomial
+multipliers under superlinear real sampling; Lean reduces that sampling input to explicit
+grid-cancellation or mean-square grid-cancellation surplus (`XiSuperlinearFromCancellation.lean`).
+This is rigidity against local finite descent, not an RH route: it acts only on already-real Xi
+divisor and supplies no off-line exhaustion. A successor must be boundary-completed, nonlocal, or
+genuinely all-prime.
 
 ### AP — Arakelov power orbit
 
@@ -446,12 +499,6 @@ comparison. Current code is endpoint, not approximation theorem.
 compatibility at Xi zero iff critical line; global law iff RH. Open theorem: global source
 projective reflection law before divisor selection. This is adjacent to Q but currently receiver.
 
-### TD — two-dilation theta-null representation
-
-`TwoDilationSpectralRepresentation.lean` gives unique positive temperate measure and real-divisor
-support for theta-null two-dilation form. Missing theorem is exhaustive comparison with full Xi
-divisor. Until exhaustion, TD is C1 subarchitecture, not independent route.
-
 ### BW — barrelled prime-depth Wold selection
 
 `PrimeDepthBVWoldBarrelledSourceSelector.lean` proves a Banach--Steinhaus null-orbit principle and
@@ -463,18 +510,6 @@ Open theorem: construct global completed barrelled-source certificate from liter
 source. Current structure names genuine source obligations rather than replacing them by a scalar
 summability predicate, but no unconditional global witness exists. BW remains candidate adjacent to
 L/P.
-
-### AF — adaptive Fisher contiguity selection
-
-`SourceHorizontalAdaptiveFisherCofinalContiguitySelection.lean` proves reflected adaptive prime
-occupation has unbounded Jeffreys work off neutral grade; finite source laws with absolute continuity
-cannot support asymptotically perfect separating tests; and actual convergent abelian class laws
-supply contiguity. A coefficient-faithful adaptive scale-orbit certificate forces centered rate zero,
-and certificates on all multiplicity-resolved Xi copies prove RH.
-
-Open theorem: construct those adaptive class-law scale-orbit certificates globally from source,
-before choosing Xi copy. The certificate is more source-specific than bare orbit boundedness but
-remains zero-indexed until global handoff is built.
 
 ## Terminal and retired mechanisms
 

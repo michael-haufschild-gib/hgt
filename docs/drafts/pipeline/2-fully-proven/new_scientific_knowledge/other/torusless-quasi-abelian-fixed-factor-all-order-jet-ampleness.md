@@ -432,3 +432,47 @@ polynomial part of `polynomialGaussianLatticeWeight`.
 So items 1, 2 and 3 of the growth stability lemma are Lean-certified.  What remains for
 `gaussianMajorant` is the bounded `geom` factor of the damping and the assembly, plus the
 factor-side input supplied by Abe's positivity.
+
+### `HTGeometry/QuasiAbelianFlatSeedLatticeBound.lean` (new) — the seed half, unconditional
+
+- `polynomialGaussianLatticeWeight_eq` — the weight splits as
+  `(∏_i (1+|k_i|)^{A_i}) · exp(-∑_i σ_i k_i²)`.
+- `damping_eq` field added to `GaussianFlatSeedData` (supplied by `rfl` in the constructor), giving
+  `damping_apply_eq : damping(z) = 1 - (1 - G(z))^m` pointwise.
+- `norm_damping_le` — `‖1-(1-g)^m‖ ≤ ‖g‖ · ∑_{r<m}(1+‖g‖)^r` from the finite geometric identity.
+- `exists_norm_damping_lattice_le` — the damping inherits the Gaussian decay:
+  `‖damping(x+k)‖ ≤ C · exp(-∑_i (σ_i/2) k_i²)` uniformly on compacta.
+- `exists_norm_flatGaussianSeed_lattice_le` — **the seed half of the growth stability lemma, with
+  no hypothesis on the automorphic factor**:
+
+```text
+‖(bump · damping · P)(x + k)‖ ≤ C · polynomialGaussianLatticeWeight (deg P) (σ/2) k.
+```
+
+### `HTGeometry/QuasiAbelianAbePositivityReduction.lean` (new) — the base case is closed
+
+The `gaussianMajorant` field of `AbePositiveFactorPresentation` was an *unverified analytic
+assertion*.  It is now **derived** from a single primitive, checkable growth condition:
+
+```lean
+def AutomorphicFactor.HasLatticeExponentialGrowth (ψ) : Prop :=
+  ∀ K, IsCompact K → ∃ C a, 0 ≤ C ∧ 0 ≤ a ∧ ∀ k x ∈ K,
+    ‖(ψ.factor (latticeEquiv k)).1 x)⁻¹‖ ≤ C * exp (a * ∑ i, |k i|)
+```
+
+- `exp_mul_sum_natAbs_le` — half of the Gaussian absorbs any exponential:
+  `e^{a∑|k_i|}·e^{-∑k_i²/2} ≤ e^{d a²}·e^{-∑k_i²/4}`, from `a t - t²/4 ≤ a²` coordinatewise.
+- `gaussianMajorant_of_hasLatticeExponentialGrowth` — the majorant, at `σ = 1`,
+  `A_i = deg_i P`, `decay_i = 1/4`.
+- `abePositiveFactorPresentationOfGrowth` — the presentation is now *constructible*.
+- `AutomorphicFactor.jetAmpleEveryFiniteOrder_of_hasLatticeExponentialGrowth` — **the card's
+  statement at the rank-zero base**, for every factor satisfying the growth condition, with
+  `#print axioms = [propext, Classical.choice, Quot.sound]`.
+
+### Remaining on this card
+
+1. `AbeDampedFactorExtension.liftPacket` — the damped packet lift of the subgroup-rank induction
+   step (item 4 of the growth stability lemma is already Lean, in `HTGeometry/DampedJetDecay`).
+2. `AutomorphicFactor.IsAbePositiveTorusless` — Abe's structure theory: that a positive holomorphic
+   line bundle on a torusless noncompact quasi-Abelian variety admits the positive
+   base-and-extension presentation.  This is the geometric input; the analytic input is now closed.

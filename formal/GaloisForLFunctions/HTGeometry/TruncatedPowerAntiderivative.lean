@@ -184,6 +184,54 @@ theorem integral_truncPowSum {ι : Type*} {S : Finset ι} {node : ι → ℝ} {a
   rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_ofReal,
     integral_truncPow (hnode i hi) hy j]
 
+/-- **Taylor shift of a truncated power.**  Once the node is passed, the level-`j` truncated power
+at `y` is the finite Taylor expansion of the levels at an intermediate point `x`. -/
+theorem truncPow_shift {c x y : ℝ} (hcx : c ≤ x) (hxy : x ≤ y) (j : ℕ) :
+    truncPow c j y
+      = ∑ m ∈ Finset.range (j + 1),
+          ((y - x) ^ (j - m) / (((j - m).factorial : ℕ) : ℝ)) * truncPow c m x := by
+  have hcy : c ≤ y := le_trans hcx hxy
+  have hfacj : (0:ℝ) < (j.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos j
+  have hbin : (y - c) ^ j
+      = ∑ m ∈ Finset.range (j + 1), (x - c) ^ m * (y - x) ^ (j - m) * (j.choose m : ℝ) := by
+    have hsum : y - c = (x - c) + (y - x) := by ring
+    rw [hsum, add_pow]
+  rw [truncPow_of_le hcy, hbin, Finset.sum_div]
+  refine Finset.sum_congr rfl fun m hm => ?_
+  have hmj : m ≤ j := Nat.lt_succ_iff.1 (Finset.mem_range.1 hm)
+  have hfacm : (0:ℝ) < (m.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos m
+  have hfacjm : (0:ℝ) < (((j - m).factorial : ℕ) : ℝ) := by
+    exact_mod_cast Nat.factorial_pos (j - m)
+  have hchoose : ((j.choose m : ℕ) : ℝ) * (m.factorial : ℝ) * (((j - m).factorial : ℕ) : ℝ)
+      = (j.factorial : ℝ) := by
+    exact_mod_cast congrArg (fun n : ℕ => (n : ℝ)) (Nat.choose_mul_factorial_mul_factorial hmj)
+  rw [truncPow_of_le hcx]
+  field_simp
+  linear_combination ((x - c) ^ m * (y - x) ^ (j - m)) * hchoose
+
+/-- **Taylor shift of a superposition of jumps.**  If every node lies left of `x`, the level-`j`
+superposition at `y` is determined by the levels at `x`. -/
+theorem truncPowSum_shift {ι : Type*} {S : Finset ι} {node : ι → ℝ} {a : ι → ℂ} {x y : ℝ}
+    (hnode : ∀ i ∈ S, node i ≤ x) (hxy : x ≤ y) (j : ℕ) :
+    truncPowSum S node a j y
+      = ∑ m ∈ Finset.range (j + 1),
+          (((y - x) ^ (j - m) / (((j - m).factorial : ℕ) : ℝ) : ℝ) : ℂ)
+            * truncPowSum S node a m x := by
+  rw [truncPowSum]
+  have hterm : ∀ i ∈ S, a i * ((truncPow (node i) j y : ℝ) : ℂ)
+      = ∑ m ∈ Finset.range (j + 1),
+          (((y - x) ^ (j - m) / (((j - m).factorial : ℕ) : ℝ) : ℝ) : ℂ)
+            * (a i * ((truncPow (node i) m x : ℝ) : ℂ)) := by
+    intro i hi
+    rw [truncPow_shift (hnode i hi) hxy j]
+    push_cast
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun m _ => ?_
+    ring
+  rw [Finset.sum_congr rfl hterm, Finset.sum_comm]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  rw [truncPowSum, Finset.mul_sum]
+
 end GaloisForLFunctions.HTGeometry
 
 end

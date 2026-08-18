@@ -625,3 +625,161 @@ bring any two entries of degree `d` next to each other, and `twoSlot_polyUnit_re
 them.  What remains for the generation lemma — `L_d = L_{d−1} + ⟨{p₁,…,p_{n−1}, π}⟩` — is the
 bookkeeping induction on the number of entries of degree exactly `d`, after which the injectivity of
 the graded map, and with it Milnor's exact sequence, follows from the surjectivity already proved.
+
+### Milnor's exact sequence — THE GENERATION LEMMA `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorReducedFiltration.lean` and
+`formal/GaloisForLFunctions/HTGeometry/MilnorFiltrationReduction.lean` (wired, axiom-clean).
+
+```text
+reducedFiltration d n                    classes of symbols whose first entry has degree ≤ d and
+                                         whose remaining entries have degree < d
+mem_reducedFiltration_of_forall_lt       all entries below d
+mem_reducedFiltration_of_move            the distinguished entry may sit anywhere — move it to the
+                                         front, at the cost of a sign
+
+NZPoly, nzUnit, nzList, nzTotal          a symbol given by nonzero polynomials, and the SUM OF THE
+                                         DEGREES of its entries
+polyUnit_injective                       polynomial units determine their polynomials
+natDegree_lt_of_polyDegLt                hence the degree of an entry is well defined
+nzList_class_mem_reducedFiltration       ** EVERY symbol of polynomials of degree ≤ d is reduced **
+exists_nzList                            the entries of a symbol of polynomial units come from an
+                                         explicit list of polynomials
+degreeFiltration_le_reducedFiltration    ** L_d consists of reduced classes **
+```
+
+The induction is on `nzTotal`, the sum of the degrees of the entries: with two entries of degree `d`
+one is moved next to the other (`milnorClassDeg_move`, anticommutativity) and the division move
+`twoSlot_polyUnit_reduce` replaces the pair by symbols whose two distinguished entries have total
+degree `< 2d`, so the sum strictly drops and the strong induction closes.
+
+This is **Milnor's generation lemma**, the hard combinatorial half of exactness in the middle.  What
+is left of the whole sequence is only the *section*: that a reduced class whose residues at the
+places of degree `d` all vanish already lies in `L_{d−1}`.
+
+### Milnor's exact sequence — the section's relations `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorLiftUniqueness.lean`,
+`.../MilnorLiftAtPlace.lean`, `.../MilnorSectionMultiplicative.lean` (wired, axiom-clean).
+
+```text
+polyUnit_degree_lt_unique   ** the lift of a residue class below deg π is UNIQUE ** — two such
+                               polynomials differ by a multiple of π of degree below deg π
+polyResidueField, liftPoly  the canonical lift, with no choices at all
+liftPoly_ne_zero, liftPoly_natDegree_lt, liftPoly_residue, liftPoly_eq_of_residue_eq
+lowTwoSlot d                two-slot classes with BOTH entries of degree below d
+twoSlot_lift_mul            ** MULTIPLICATIVITY of the section modulo the lower stage: if
+                               u·v ≡ w (mod π) with u, v, w of degree < d = deg π, then
+                               {u,π} + {v,π} − {w,π} has both entries of every leftover symbol of
+                               degree < d **
+add_eq_one_of_dvd           ** two lifts summing to 1 modulo π sum to 1 EXACTLY ** — no room for a
+                               correction term below deg π
+twoSlot_lift_steinberg      ** the STEINBERG relation for the section **
+```
+
+Uniqueness of the lift is what makes the section canonical: the reduction map from the nonzero
+polynomials of degree below `deg π` to `κ(π)ˣ` is a bijection, so `{lift ȳ₁, …, lift ȳ_n, π}`
+involves no choice.  The two relations of Milnor `K`-theory then hold for it — multiplicativity
+modulo `L_{d−1}` by the sum-splitting identity applied to `w + π·h = u·v`, and Steinberg on the nose
+because the lifts of `ȳ` and `1 − ȳ` add up to `1` exactly.
+
+**Remaining for the whole sequence**: assemble these into the homomorphism
+`⊕_{deg π = d} K_{n−1}^M(κ(π)) → L_d / L_{d−1}` and check it inverts the residue.
+
+### Milnor's exact sequence — THE SECTION IS BUILT AND INVERTS THE RESIDUE `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorSectionMap.lean` (wired, axiom-clean), on top of the
+residue-to-quotient bridges added to `MilnorLiftUniqueness.lean`.
+
+```text
+residueFieldEquiv_polyUnit        the residue of a polynomial unit, read in F[X]/(π): every residue
+                                  computation becomes a computation in the quotient ring
+dvd_sub_of_residueUnit_eq         equal residues ⟹ π divides the difference
+dvd_add_sub_one_of_residueUnit    lifts of ȳ and 1 − ȳ add to 1 modulo π
+dvd_mul_sub_of_residueUnit        the product of two lifts agrees modulo π with the lift of the
+                                  product
+
+liftUnit, sectionSymbol           the canonical lifts, followed by π
+sectionSymbol_steinberg           ** the STEINBERG relation is killed — on the nose **
+sectionSymbol_mul                 ** MULTILINEARITY is killed modulo L_{d−1} **
+sectionFree, sectionFree_kills_relations
+sectionMap                        ** MILNOR'S SECTION K_n^M(F[X]/π) → K_{n+1}^M(F(t)) / L_{deg π−1},
+                                     as an honest group homomorphism **
+polyResidue_degreeFiltration_eq_zero, residueQuot
+                                  the residue at π descends to that quotient
+milnorResidue_append_unif'        the residue of a symbol ending in the uniformizer, with the length
+                                  supplied by an equation
+milnorResidue_sectionSymbol       ∂_π{lift ȳ₁, …, lift ȳ_n, π} = {ȳ₁, …, ȳ_n}
+residueQuot_sectionMap            ** ∂_π ∘ s_π = id — THE RESIDUE INVERTS THE SECTION **
+```
+
+So `s_π` is injective, `∂_π` is split surjective on `L_{deg π}/L_{deg π − 1}`, and every ingredient
+of Milnor's exact sequence is formal and unconditional.  What remains is only the bookkeeping that
+assembles the individual `s_π` into the inverse of the total residue on `L_d/L_{d−1}`: split the
+leading entry of a reduced generator into irreducible factors, note that the remaining entries are
+already their own canonical lifts (uniqueness), and sum over the finitely many places of degree `d`
+at which a given class has nonzero residue.
+
+### Milnor's exact sequence — `L_d` is the sum of the ranges of the sections `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorSectionMap.lean` (extended) and
+`formal/GaloisForLFunctions/HTGeometry/MilnorClassProduct.lean` (wired, axiom-clean).
+
+```text
+sectionFreeAt, sectionMapAt, residueQuotAt     the section and the residue with the stage of the
+                                               filtration named separately, so that sections at
+                                               DIFFERENT places land in the SAME quotient
+residueQuotAt_sectionMapAt                     ∂_π ∘ s_π = id
+milnorResidue_sectionSymbol_of_ne              ** ∂_{π'} ∘ s_π = 0 for π' ≠ π of the same degree **
+residueQuotAt_sectionMapAt_of_ne               the same, for the maps
+eq_liftUnit_residue, map_liftUnit_residue      a polynomial unit of degree < deg π IS the canonical
+                                               lift of its own residue
+class_cons_eq_sectionSymbol                    ** a reduced generator with leading entry π is, up to
+                                                  sign, a section symbol **
+nzProd, class_cons_nzProd                      the leading entry splits into its factors
+sectionRange                                   the range of the section at a place of degree d
+class_cons_mem_pred                            all entries of degree < d ⟹ previous stage
+mk_class_cons_mem_iSup                         ** a reduced generator lands in the sum of the ranges
+                                                  of the sections ** — pick one irreducible factor
+                                                  of the leading entry: degree d forces the cofactor
+                                                  to be constant, otherwise both factors drop below d
+degreeFiltration_map_le_iSup                   ** the image of L_d in K^M_{n+1}(F(t))/L_{d−1} is
+                                                  contained in the sum of the ranges of the s_π **
+```
+
+With `∂_π ∘ s_π = id` and `∂_{π'} ∘ s_π = 0` this makes the sum of the ranges **direct**, so the
+total residue is injective on `L_d/L_{d−1}` — the last statement of Milnor's exact sequence.  What
+remains is the finite-sum bookkeeping that turns an element of the supremum into a finite sum of
+section values and reads off each component with its own residue.
+
+### MILNOR'S EXACT SEQUENCE IS COMPLETE `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorGradedInjectivity.lean` (wired, axiom-clean).
+
+```text
+degPlace F d                          the places of degree d: the MONIC irreducibles of that degree
+degPlace_not_associated               distinct monic irreducibles are non-associated
+placeSection, placeResidue            Milnor's section and the residue at such a place
+placeResidue_placeSection             ∂_π ∘ s_π = id
+placeResidue_placeSection_of_ne       ∂_{π'} ∘ s_π = 0 for π' ≠ π
+eq_zero_of_placeResidue_eq_zero       ** THE SUM OF THE RANGES OF THE SECTIONS IS DIRECT: an element
+                                         with vanishing residue at every place of degree d is 0 **
+mem_degreeFiltration_pred_of_residues_zero
+                                      ** EXACTNESS IN THE MIDDLE: a class of L_d whose residues at
+                                         all places of degree d vanish already lies in L_{d−1} **
+```
+
+With
+
+* `milnorKDegMap_ratFuncConstHom_injective` — left exactness,
+* `milnorResidueAtPlace_surjective` and `exists_mem_degreeFiltrationOnlyAt_milnorResidue_eq` —
+  right exactness and surjectivity of every graded piece,
+* `degreeFiltration_le_reducedFiltration` and `degreeFiltration_map_le_iSup` — the generation lemma,
+* `mem_degreeFiltration_pred_of_residues_zero` — exactness in the middle,
+
+**Milnor's exact sequence**
+
+`0 → K_n^M(F) → K_n^M(F(t)) --(⊕ ∂_π)--> ⊕_π K_{n−1}^M(F[X]/π) → 0`
+
+is formal and unconditional for every field `F` and every degree `n`.  The Bass–Tate–Kato norm and
+the projection formula are now reachable from it.
