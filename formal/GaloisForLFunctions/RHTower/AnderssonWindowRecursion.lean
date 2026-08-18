@@ -127,6 +127,161 @@ theorem exists_window_step (J : ℕ) (hJ : 0 < J) {α θ : ℝ}
   rw [hyx] at this
   exact this
 
+/-! ## The window sequence -/
+
+/-- The window endpoints `x_{k+1} = x_k + x_k^θ`. -/
+def windowSeq (θ x₀ : ℝ) : ℕ → ℝ
+  | 0 => x₀
+  | (k + 1) => windowSeq θ x₀ k + (windowSeq θ x₀ k) ^ θ
+
+theorem windowSeq_zero (θ x₀ : ℝ) : windowSeq θ x₀ 0 = x₀ := rfl
+
+theorem windowSeq_succ (θ x₀ : ℝ) (k : ℕ) :
+    windowSeq θ x₀ (k + 1) = windowSeq θ x₀ k + (windowSeq θ x₀ k) ^ θ := rfl
+
+theorem windowSeq_ge {θ x₀ : ℝ} (hx₀ : 0 < x₀) (k : ℕ) : x₀ ≤ windowSeq θ x₀ k := by
+  induction k with
+  | zero => exact le_of_eq (windowSeq_zero θ x₀).symm
+  | succ k ih =>
+      rw [windowSeq_succ]
+      have hz : (0:ℝ) < windowSeq θ x₀ k := lt_of_lt_of_le hx₀ ih
+      have hpos : (0:ℝ) < (windowSeq θ x₀ k) ^ θ := Real.rpow_pos_of_pos hz θ
+      linarith
+
+theorem windowSeq_pos {θ x₀ : ℝ} (hx₀ : 0 < x₀) (k : ℕ) : 0 < windowSeq θ x₀ k :=
+  lt_of_lt_of_le hx₀ (windowSeq_ge hx₀ k)
+
+theorem windowSeq_le_succ {θ x₀ : ℝ} (hx₀ : 0 < x₀) (k : ℕ) :
+    windowSeq θ x₀ k ≤ windowSeq θ x₀ (k + 1) := by
+  rw [windowSeq_succ]
+  have hpos : (0:ℝ) < (windowSeq θ x₀ k) ^ θ :=
+    Real.rpow_pos_of_pos (windowSeq_pos hx₀ k) θ
+  linarith
+
+theorem windowSeq_mono {θ x₀ : ℝ} (hx₀ : 0 < x₀) : Monotone (windowSeq θ x₀) := by
+  refine monotone_nat_of_le_succ ?_
+  exact windowSeq_le_succ hx₀
+
+theorem windowSeq_lower_linear {θ x₀ : ℝ} (hx₀ : 1 ≤ x₀) (hθ : 0 ≤ θ) (k : ℕ) :
+    x₀ + (k : ℝ) ≤ windowSeq θ x₀ k := by
+  have hx₀0 : (0:ℝ) < x₀ := lt_of_lt_of_le zero_lt_one hx₀
+  induction k with
+  | zero => simp [windowSeq_zero]
+  | succ k ih =>
+      rw [windowSeq_succ]
+      have hone : (1:ℝ) ≤ (windowSeq θ x₀ k) ^ θ := by
+        refine Real.one_le_rpow ?_ hθ
+        exact le_trans hx₀ (windowSeq_ge hx₀0 k)
+      push_cast
+      linarith
+
+theorem windowSeq_ge_index {θ x₀ : ℝ} (hx₀ : 1 ≤ x₀) (hθ : 0 ≤ θ) (k : ℕ) :
+    (k : ℝ) ≤ windowSeq θ x₀ k := by
+  have := windowSeq_lower_linear hx₀ hθ k
+  linarith
+
+theorem windowSeq_tendsto {θ x₀ : ℝ} (hx₀ : 1 ≤ x₀) (hθ : 0 ≤ θ) :
+    Filter.Tendsto (windowSeq θ x₀) Filter.atTop Filter.atTop := by
+  have hlin : Filter.Tendsto (fun k : ℕ => x₀ + (k : ℝ)) Filter.atTop Filter.atTop := by
+    exact Filter.tendsto_atTop_add_const_left _ x₀ tendsto_natCast_atTop_atTop
+  exact Filter.tendsto_atTop_mono (fun k => windowSeq_lower_linear hx₀ hθ k) hlin
+
+/-! ## The recursive construction of the source -/
+
+/-- The source after one window assignment. -/
+def windowUpdate (θ : ℝ) (a : ℕ → ℂ) (x : ℝ)
+    (b : Fin (windowPrimes x (x + x ^ θ)).card → ℂ) : ℕ → ℂ :=
+  updateWindow a (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊)
+    (windowAssign (windowPrimeIndex x (x + x ^ θ)) b (windowPrimeWeight x θ))
+
+/-- A phase assignment is good when it is unimodular and keeps every level small at the right
+endpoint of the window. -/
+def WindowGood (J : ℕ) (θ : ℝ) (a : ℕ → ℂ) (x : ℝ)
+    (b : Fin (windowPrimes x (x + x ^ θ)).card → ℂ) : Prop :=
+  (∀ r, ‖b r‖ = 1) ∧
+    ∀ j : ℕ, j < J → ‖arithProfile (windowUpdate θ a x b) j (x + x ^ θ)‖
+      ≤ ((x ^ θ) ^ j / ((j.factorial : ℕ) : ℝ)) * ((J : ℝ) * Real.log (x + x ^ θ))
+
+open scoped Classical in
+/-- The source after `k` windows. -/
+noncomputable def stepSource (J : ℕ) (θ x₀ : ℝ) : ℕ → (ℕ → ℂ)
+  | 0 => fun _ => 0
+  | (k + 1) =>
+      if h : ∃ b, WindowGood J θ (stepSource J θ x₀ k) (windowSeq θ x₀ k) b then
+        windowUpdate θ (stepSource J θ x₀ k) (windowSeq θ x₀ k) h.choose
+      else stepSource J θ x₀ k
+
+theorem stepSource_zero (J : ℕ) (θ x₀ : ℝ) : stepSource J θ x₀ 0 = fun _ => 0 := rfl
+
+open scoped Classical in
+theorem stepSource_succ (J : ℕ) (θ x₀ : ℝ) (k : ℕ) :
+    stepSource J θ x₀ (k + 1) =
+      if h : ∃ b, WindowGood J θ (stepSource J θ x₀ k) (windowSeq θ x₀ k) b then
+        windowUpdate θ (stepSource J θ x₀ k) (windowSeq θ x₀ k) h.choose
+      else stepSource J θ x₀ k := rfl
+
+/-- Values at integers already passed are never revised. -/
+theorem stepSource_succ_apply_of_le (J : ℕ) (θ x₀ : ℝ) (k : ℕ) {n : ℕ}
+    (hn : (n : ℝ) ≤ windowSeq θ x₀ k) :
+    stepSource J θ x₀ (k + 1) n = stepSource J θ x₀ k n := by
+  classical
+  rw [stepSource_succ]
+  by_cases h : ∃ b, WindowGood J θ (stepSource J θ x₀ k) (windowSeq θ x₀ k) b
+  · rw [dif_pos h, windowUpdate, updateWindow]
+    have hnot : n ∉ Finset.Ioc ⌊windowSeq θ x₀ k⌋₊
+        ⌊windowSeq θ x₀ k + (windowSeq θ x₀ k) ^ θ⌋₊ := by
+      intro hmem
+      have h1 : ⌊windowSeq θ x₀ k⌋₊ < n := (Finset.mem_Ioc.1 hmem).1
+      have h2 : n ≤ ⌊windowSeq θ x₀ k⌋₊ := Nat.le_floor hn
+      omega
+    rw [if_neg hnot]
+  · rw [dif_neg h]
+
+/-- The construction stabilizes: later stages agree at integers already passed. -/
+theorem stepSource_stable (J : ℕ) {θ x₀ : ℝ} (hx₀ : 0 < x₀) {n k : ℕ} (m : ℕ) (hkm : k ≤ m)
+    (hn : (n : ℝ) ≤ windowSeq θ x₀ k) :
+    stepSource J θ x₀ m n = stepSource J θ x₀ k n := by
+  induction m with
+  | zero =>
+      have : k = 0 := Nat.le_zero.1 hkm
+      rw [this]
+  | succ m ih =>
+      rcases Nat.lt_or_ge k (m + 1) with hlt | hge
+      · have hkm' : k ≤ m := Nat.lt_succ_iff.1 hlt
+        have hle : (n : ℝ) ≤ windowSeq θ x₀ m :=
+          le_trans hn (windowSeq_mono hx₀ hkm')
+        rw [stepSource_succ_apply_of_le J θ x₀ m hle, ih hkm']
+      · have : k = m + 1 := le_antisymm hkm hge
+        rw [this]
+
+/-- The limiting source. -/
+noncomputable def anderssonSource (J : ℕ) (θ x₀ : ℝ) : ℕ → ℂ :=
+  fun n => stepSource J θ x₀ n n
+
+theorem anderssonSource_eq (J : ℕ) {θ x₀ : ℝ} (hx₀ : 1 ≤ x₀) (hθ : 0 ≤ θ) {n k : ℕ}
+    (hn : (n : ℝ) ≤ windowSeq θ x₀ k) :
+    anderssonSource J θ x₀ n = stepSource J θ x₀ k n := by
+  have hx₀0 : (0:ℝ) < x₀ := lt_of_lt_of_le zero_lt_one hx₀
+  rw [anderssonSource]
+  rcases Nat.le_total k n with hkn | hnk
+  · exact stepSource_stable J hx₀0 n hkn hn
+  · have hself : (n : ℝ) ≤ windowSeq θ x₀ n := windowSeq_ge_index hx₀ hθ n
+    exact (stepSource_stable J hx₀0 k hnk hself).symm
+
+/-- At a window endpoint the limiting source has the same levels as the finite stage. -/
+theorem arithProfile_anderssonSource (J : ℕ) {θ x₀ : ℝ} (hx₀ : 1 ≤ x₀) (hθ : 0 ≤ θ) (j k : ℕ) :
+    arithProfile (anderssonSource J θ x₀) j (windowSeq θ x₀ k)
+      = arithProfile (stepSource J θ x₀ k) j (windowSeq θ x₀ k) := by
+  have hx₀0 : (0:ℝ) < x₀ := lt_of_lt_of_le zero_lt_one hx₀
+  have hpos : 0 < windowSeq θ x₀ k := windowSeq_pos hx₀0 k
+  rw [arithProfile, arithProfile]
+  refine Finset.sum_congr rfl fun n hn => ?_
+  have hle : (n : ℝ) ≤ windowSeq θ x₀ k := by
+    have h1 : n ≤ ⌊windowSeq θ x₀ k⌋₊ := (Finset.mem_Icc.1 hn).2
+    have h2 : (n : ℝ) ≤ (⌊windowSeq θ x₀ k⌋₊ : ℝ) := by exact_mod_cast h1
+    exact le_trans h2 (Nat.floor_le (le_of_lt hpos))
+  rw [anderssonSource_eq J hx₀ hθ hle]
+
 end RHTower.Sieve
 
 end

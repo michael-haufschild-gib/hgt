@@ -598,3 +598,50 @@ sector with remainder, and the resulting injection of the differential field int
 field — is what §4–§6 of this card and the whole of
 `archimedean-relative-prime-cocycle-curvature` still need.  It is ledger blocker 3.  Everything
 downstream of it (§7's recurrence law, the Bohr rank bound, the divisor observable) is already Lean.
+
+## Lean status 2026-08-18 (second pass) — the Stirling ladder at order one is Lean-certified
+
+The card's §4–§5 blocker ("the all-orders Stirling/transseries model") has been attacked directly.
+The following are now in the tree, `lake build`-green, `#print axioms` = `[propext,
+Classical.choice, Quot.sound]`:
+
+```text
+HTGeometry/GammaStirlingCubicLog.lean
+  norm_log_one_add_sub_taylor_two_le    ‖log(1+u) − u + u²/2‖ ≤ ‖u‖³  on ‖u‖ ≤ ½
+  log_add_one_sub_log                   log(z+1) − log z = log(1+1/z) on Re z > 0
+  digammaStirlingDefect, norm_digammaStirlingDefect_step_le
+                                        ‖g(z+1) − g(z)‖ ≤ 2/‖z‖³  (the cubic gain)
+HTGeometry/GammaDigammaShiftAnchor.lean
+  sum_inv_mul_succ_le, norm_digamma_shift_sub_le
+                                        ‖ψ(z+N) − ψ(1+N)‖ ≤ ‖z−1‖/N  (the anchor)
+HTGeometry/GammaDigammaStirlingBound.lean
+  norm_digammaStirlingDefect_le         ψ(z) = log z − 1/(2z) + O(|z|⁻²), explicit constant
+HTGeometry/GammaAffineStirlingSignature.lean
+  exists_norm_digamma_affine_expansion_le
+                                        ψ(λs+μ) = log λ + log s + (μ−½)/(λs) + O(|s|⁻²)
+HTGeometry/ArchimedeanNoFlatCancellation.lean
+  three_term_expansion_eq_zero          1, log s, 1/s independent modulo O(|s|⁻²)
+HTGeometry/GammaProductStirlingSignature.lean
+  gammaProductLogDeriv, gammaProductSignature
+  exists_norm_gammaProductLogDeriv_expansion_le, gammaProductSignature_eq_of_logDeriv_eq
+HTGeometry/GammaJetNormalFormSeparation.lean
+  ShiftExponentSeparating, shiftExponentSeparating_of_noIntegerRelation
+  exists_hasShiftTubeDatum_jetGammaNormalForm_of_separating
+```
+
+Two structural gains for this card:
+
+1. **No `log Γ` is needed.**  Working with `G'/G` instead of `log G` removes the branch, the Binet
+   integral and the constant `½ log 2π` entirely; only `ψ` enters.
+2. **`NoIntegerRelation` is no longer a hypothesis of the boundary-datum theorem.**  It is used in
+   exactly one place, and only for the differences of the actual exponent vectors; the abstracted
+   hypothesis `ShiftExponentSeparating` is strictly weaker and *can* hold for the commensurable
+   scales `λ_j = n_j/H` of this card, which is precisely where `NoIntegerRelation` fails.
+
+**What is left, stated exactly.**  In the normal form the scales are all `1`, so the order-one
+signature contributes one new number, `∑_k e_k λ_k`, exactly rather than mod `ℤ`.  Two linear
+conditions do not determine an exponent vector in `ℕ^{rr}`.  The card's §5 needs the residues at
+`1/s^m` for `m = 1 … rr`, i.e. the finite-order ladder
+`ψ(s+λ) = log s + ∑_{m≤M} P_m(λ)/s^m + O(|s|^{-(M+1)})`; those give the power sums
+`∑_k e_k λ_k^m`, and Vandermonde on distinct `λ_k` then determines `e`.  The order-one case above
+is the base of that induction and supplies its telescope, anchor and independence principle.

@@ -130,4 +130,54 @@ theorem isFinitelyPresented_of_properlyDiscontinuousSMul [ConnectedSpace X]
   isFinitelyPresented_of_macbeathHom_injective hVopen hVne hcover
     (meetSet_finite_of_properlyDiscontinuousSMul hVK hK) hinj
 
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
+/-- The overlap set is symmetric. -/
+theorem inv_mem_meetSet {V : Set X} {g : G} (h : g ∈ meetSet V) : g⁻¹ ∈ meetSet V := by
+  obtain ⟨x, hx1, hx2⟩ := h
+  obtain ⟨y, hy, rfl⟩ := hx1
+  refine ⟨y, ?_, hy⟩
+  have : g⁻¹ • (g • y) ∈ g⁻¹ • V := smul_mem_smul_set hx2
+  simpa using this
+
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
+/-- **The defining relation of Macbeath's group**, read in the presented group. -/
+theorem macbeathOf_mul (V : Set X) (a b c : meetSet (G := G) V)
+    (habc : (a : G) * (b : G) = (c : G))
+    (hov : (((a : G) • V) ∩ (((a : G) * (b : G)) • V) ∩ V).Nonempty) :
+    macbeathOf V a * macbeathOf V b = macbeathOf V c := by
+  have hmem : (FreeGroup.of a * FreeGroup.of b * (FreeGroup.of c)⁻¹) ∈ macbeathRels (G := G) V :=
+    ⟨a, b, c, habc, hov, rfl⟩
+  have hq : (QuotientGroup.mk (FreeGroup.of a * FreeGroup.of b * (FreeGroup.of c)⁻¹) :
+      MacbeathGroup (G := G) V) = 1 :=
+    (QuotientGroup.eq_one_iff _).2 (Subgroup.subset_normalClosure hmem)
+  rw [QuotientGroup.mk_mul, QuotientGroup.mk_mul, QuotientGroup.mk_inv, mul_inv_eq_one] at hq
+  exact hq
+
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
+/-- **The generator at the identity is the identity.** -/
+theorem macbeathOf_one {V : Set X} (hVne : V.Nonempty) :
+    macbeathOf V ⟨(1 : G), one_mem_meetSet hVne⟩ = 1 := by
+  have hov : (((1 : G) • V) ∩ (((1 : G) * (1 : G)) • V) ∩ V).Nonempty := by
+    obtain ⟨x, hx⟩ := hVne
+    exact ⟨x, ⟨by simpa using hx, by simpa using hx⟩, hx⟩
+  have h := macbeathOf_mul V ⟨(1 : G), one_mem_meetSet hVne⟩ ⟨(1 : G), one_mem_meetSet hVne⟩
+    ⟨(1 : G), one_mem_meetSet hVne⟩ (by simp) hov
+  have h2 : macbeathOf V ⟨(1 : G), one_mem_meetSet hVne⟩
+      * macbeathOf V ⟨(1 : G), one_mem_meetSet hVne⟩
+      = macbeathOf V ⟨(1 : G), one_mem_meetSet hVne⟩ * 1 := by
+    rw [mul_one]; exact h
+  exact mul_left_cancel h2
+
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
+/-- **The generator at an inverse is the inverse generator.** -/
+theorem macbeathOf_inv {V : Set X} (hVne : V.Nonempty) (g : meetSet (G := G) V) :
+    macbeathOf V ⟨((g : G))⁻¹, inv_mem_meetSet g.2⟩ = (macbeathOf V g)⁻¹ := by
+  have hov : (((g : G) • V) ∩ (((g : G) * ((g : G))⁻¹) • V) ∩ V).Nonempty := by
+    obtain ⟨x, hx1, hx2⟩ := g.2
+    exact ⟨x, ⟨hx1, by simpa using hx2⟩, hx2⟩
+  have h := macbeathOf_mul V g ⟨((g : G))⁻¹, inv_mem_meetSet g.2⟩
+    ⟨(1 : G), one_mem_meetSet hVne⟩ (by simp) hov
+  rw [macbeathOf_one hVne] at h
+  exact eq_inv_of_mul_eq_one_right h
+
 end GaloisForLFunctions.HTGeometry

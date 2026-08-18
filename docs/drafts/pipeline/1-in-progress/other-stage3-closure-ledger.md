@@ -5543,3 +5543,108 @@ What remains on these two cards is to substitute this separation for the `NoInte
 hypothesis in the existing boundary-datum theorem
 (`HTGeometry/ShiftedGammaFieldIndependence`, `GammaJetNormalFormDatum`) — a rewiring of statements
 already in the tree, with no new mathematics.
+
+## 2026-08-18 (tenth entry) — cards A/B: `NoIntegerRelation` removed from the boundary datum
+
+`HTGeometry/GammaJetNormalFormSeparation.lean` (new, wired, axioms clean).
+
+Inspecting `exists_hasShiftTubeDatum_jetGammaNormalForm` shows `NoIntegerRelation lamf` — *no*
+nonzero integer combination of the shifts is an integer — is used in exactly **one** place, to show
+the dominant class is a singleton, and only for the differences of the actual exponent vectors.
+Abstracting that use:
+
+```lean
+def ShiftExponentSeparating (lamf : Fin rr → ℝ) (ee : Fin Mm → Fin rr → ℕ) : Prop :=
+  ∀ (α β : Fin Mm) (m : ℤ),
+    (∑ k, (ee α k : ℤ)) = ∑ k, (ee β k : ℤ) →
+    (∑ k, (((ee α k : ℤ) - (ee β k : ℤ)) : ℝ) * lamf k) = (m : ℝ) → α = β
+
+theorem exists_hasShiftTubeDatum_jetGammaNormalForm_of_separating … (hsep : ShiftExponentSeparating lamf ee) …
+theorem shiftExponentSeparating_of_noIntegerRelation (hindep) (hee : Injective ee) : ShiftExponentSeparating lamf ee
+```
+
+This is a strict generalization: the old hypothesis is the special case, and injectivity of `ee` is
+no longer needed as a separate assumption.  Crucially `ShiftExponentSeparating` **can hold for
+commensurable scales** — the case `λ_j = n_j/H` of the card, where `NoIntegerRelation` is false by
+construction — because it only constrains the finitely many exponent vectors that actually occur.
+
+This is the socket the Stirling signature plugs into: `gammaProductSignature_eq_of_logDeriv_eq`
+supplies the extra separating datum `∑_k e_k λ_k log λ_k` that `NoIntegerRelation` never saw.
+
+Remaining on cards A/B: exhibit `ShiftExponentSeparating` for the card's actual shift data from the
+signature separation — an arithmetic step about `log λ_k` for commensurable `λ_k`, on top of two
+theorems both now in the tree.
+
+## 2026-08-18 (eleventh entry) — correction: cards A/B need the *finite-order* Stirling ladder
+
+The ninth and tenth entries said what remains on cards A/B is "an arithmetic step".  Working it out
+shows that is **wrong**, and the correction matters, so it is recorded rather than quietly fixed.
+
+In the card's normal form the Gamma factors are `Γ(s + λ_k)^{e_k}`: every *scale* is `1` and the
+`λ_k` appear as *shifts*.  Feeding that into `gammaProductSignature` gives
+
+* `log s` coefficient `= ∑_k e_k`  — this is the datum `d` the coarse boundary datum already has;
+* constant `= α`, because `log λ = log 1 = 0` — **no new information**;
+* `1/s` residue `= β + ∑_k e_k (λ_k − ½)`.
+
+So the Stirling signature contributes exactly one genuinely new number, `∑_k e_k λ_k`, and its value
+is *exact* rather than only-mod-`ℤ` (the coarse datum sees `a + ∑ e_k λ_k` with `a ∈ ℤ` unknown).
+That is a real gain — it is why `NoIntegerRelation` can be dropped — but two linear conditions
+(`∑ e_k` and `∑ e_k λ_k`) cannot pin down an exponent vector in `ℕ^{rr}` for `rr > 2`.
+
+What does pin it down is the **finite-order ladder**: `ψ(s+λ) = log s + ∑_{m=1}^{M} P_m(λ)/s^m +
+O(|s|^{-(M+1)})` with `P_m` of degree `m` and leading coefficient `(−1)^{m+1}/m`.  Reading the
+`1/s^m` residues for `m = 1 … rr` gives the power sums `∑_k e_k λ_k^m` by a triangular change of
+basis, and a Vandermonde argument on distinct `λ_k` then determines `e` uniquely.  This is exactly
+the card's §5 "complete Stirling signature".
+
+So the correct statement of what remains on cards A and B is: **extend the Stirling ladder from
+order 1 to arbitrary finite order `M`**, then read off the power sums and invert the Vandermonde.
+The three-term instalment already landed is the `M = 1` case and supplies all the machinery the
+induction needs — the telescope, the anchor, and the no-flat-cancellation principle generalize to
+`M` terms with the Bernoulli recursion replacing the single cubic gain.
+
+`ShiftExponentSeparating` (tenth entry) remains the right socket: it is what the ladder will feed.
+
+## 2026-08-18 (twelfth entry) — cards A/B: the two routes to the finite-order separation
+
+Working out the ladder shows the remaining obstruction precisely, and that there are two routes.
+Recording both so the next session starts from the analysis rather than redoing it.
+
+### Route 1 — the finite-order Stirling ladder (the card's own §5)
+
+Target: `∀ M, ∃ c : Fin M → ℂ, ∃ K R, ∀ z, Re z > 0 → R ≤ ‖z‖ →
+‖ψ z − log z + ∑_{m<M} c m / z^(m+1)‖ ≤ K / ‖z‖^(M+1)`.
+
+Note this is an **existence** statement in the coefficients — the Bernoulli numbers need never be
+computed.  The induction is the one already built at `M = 1`:
+
+* one-step difference `h_M(z+1) − h_M(z)`, with `ψ(z+1) − ψ(z) = 1/z`,
+  `log(z+1) − log z = ∑_{m≥1} (−1)^{m+1}/(m z^m)` and
+  `1/(z+1)^m − 1/z^m = −m/z^{m+1} + O(z^{-(m+2)})`;
+* the coefficient `c_m` is *determined* by cancelling the order-`z^{-(m+1)}` term — the system is
+  triangular because adding `c_m/z^m` moves only that order and below;
+* then the same telescope + anchor as at `M = 1`, with `∑_k ‖z+k‖^{-(M+2)} = O(‖z‖^{-(M+1)})`.
+
+Substituting `w = s + λ` then gives `ψ(s+λ) = log s + ∑_m P_m(λ)/s^m + O(s^{-(M+1)})` with `P_m` of
+degree `m` and leading coefficient `(−1)^{m+1}/m`, so the residues at `1/s^m`, `m = 1 … rr`, give
+the power sums `∑_k e_k λ_k^m` by a triangular change of basis, and Vandermonde on distinct `λ_k`
+determines `e`.  The independence of `1, log s, 1/s, …, 1/s^M` modulo `O(s^{-(M+1)})` generalizes
+`three_term_expansion_eq_zero` by the same three-step argument.
+
+### Route 2 — residues instead of asymptotics
+
+`ψ` has a simple pole with residue `−1` at every nonpositive integer, so `∑_k e_k ψ(s + λ_k)` has a
+simple pole at `s = −λ_k − n` with residue `−e_k` **whenever the `λ_k` are pairwise incongruent
+mod `ℤ`** — which is exactly the hypothesis `hincong` already carried by the tree's theorems.  So
+the exponent vector is recoverable from the polar data of `G'/G`, with no asymptotics at all.
+
+Route 2 is much shorter but does **not** by itself discharge `ShiftExponentSeparating`, because that
+predicate is about which summands share a *boundary datum* `(d, ω, b)`, and with commensurable
+scales distinct exponent vectors genuinely can share one.  Discharging it needs the datum itself
+refined to carry the exact `∑_k e_k λ_k` (the card's §6 "product-field valuation"), which is what
+Route 1 supplies.  Route 2 is therefore the right tool for the *uniqueness* half of the card and
+Route 1 for the *separation* half.
+
+Neither is blocked; both are multi-stage builds.  Route 1's `M = 1` case, its telescope, its anchor
+and its independence principle are all already in the tree.

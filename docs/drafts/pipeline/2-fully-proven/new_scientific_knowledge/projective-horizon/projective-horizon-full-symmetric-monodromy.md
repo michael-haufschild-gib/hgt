@@ -3093,3 +3093,79 @@ or this corpus beyond the monogenic normal form
 (`GeneralKaehlerPrincipalSymbol.polynomialKaehlerCoefficientIdeal_eq_jacobianMinorIdeal`).  Those
 two are the ends of the bridge; the middle — `𝔇 = Fitting₀(Ω_{B/A})` for a finite flat
 complete intersection — is what must be built.
+
+## Correction — one half of the Jacobian–different bridge is ALREADY in the tree
+
+A further search (the ninth time the corpus turned out to own what looked missing) finds
+
+```text
+HTGeometry/JacobianKaehlerAnnihilator.lean
+    LinearMap.det_smul_mem_range          the determinant of an endomorphism kills its cokernel
+    repr_cotangentComplex_relationCotangent
+        the presentation differential is the coordinate matrix of the cotangent-complex map
+    jacobian_smul_kaehler_eq_zero
+        ** for a square presentation with identity relation-to-variable matching, the presentation
+           Jacobian annihilates every relative Kähler differential **
+```
+
+with *no* regular-sequence, smoothness, domain or finiteness hypothesis.  It is stated over
+mathlib's `Algebra.PreSubmersivePresentation`, so `(Jac) ⊆ Ann(Ω) = 𝔇` is done.  My
+`SquareMatrixCokernelAnnihilator` is the matrix-level twin of its first lemma; it is kept because
+the corank-one theorem below is stated for matrices, but no session should build either again.
+
+**So only the reverse inclusion was ever missing**, and that is exactly what corank one supplies:
+over a discrete valuation ring, Smith normal form (`SmithNormalFormDVR.exists_smithNormalForm`,
+also already in the tree) makes the elementary divisors a divisibility chain, corank one of the
+reduction leaves exactly one non-unit among them, and then
+
+```text
+Ann (coker M) = (largest elementary divisor) = (det M) .
+```
+
+Reading that at the Schur place gives `𝔇 = (Jac)`, hence `v(𝔇) = v(Jac) = 1`, hence — through the
+already-landed `ramificationIdx_eq_two_of_derivative_uniformizer` — `e = 2`, which is `(R)`.
+
+The one step still to write for that chain is `Ω ≅ coker (Jacobian matrix)`, which follows from
+mathlib's `Algebra.Extension.exact_cotangentComplex_toKaehler` together with the corpus's
+`repr_cotangentComplex_relationCotangent` and surjectivity of `relationCotangent`: exactness gives
+`Ω = coker (cotangentComplex)`, and the relations generate the conormal module, so the range of the
+cotangent complex is the range of the Jacobian matrix.
+
+## Lean progress — the reverse inclusion of the Jacobian–different bridge is PROVED
+
+```text
+HTGeometry/CorankOneCokernelDeterminant.lean          (built)
+    mem_range_diagonal_mulVecLin_iff, mem_annihilator_coker_diagonal_iff
+    prod_associated_of_unique_nonunit, annihilator_coker_diagonal_eq_span_det
+    mulVec_left_cancel, mem_annihilator_coker_iff, annihilator_coker_eq_of_unit_equiv
+    residue_eq_zero_iff_not_isUnit
+    annihilator_coker_eq_span_det_of_corank_one
+        ** over a DVR, corank one of the reduction ⟹ Ann (coker M) = (det M) **
+```
+
+Together with the corpus's `jacobian_smul_kaehler_eq_zero` (the forward inclusion) this is the
+complete statement "the different of a square presentation is the Jacobian ideal", at any place
+where the reduced Jacobian has corank one.  The proof uses three things the tree already owned —
+`SmithNormalFormDVR.exists_smithNormalForm`, `Matrix.rank_diagonal`, and the divisibility chain —
+so the only genuinely new content is the diagonal annihilator and the invariance of the annihilator
+under equivalence of matrices.
+
+### The `(R)` route, now fully explicit
+
+```text
+(a) Ω ≅ coker (Jacobian matrix)     mathlib exact_cotangentComplex_toKaehler + surjectivity of
+                                    relationCotangent, which is three lines from mathlib's
+                                    Extension.Cotangent.span_eq_top_of_span_eq_ker
+(b) the critical fibre as a PreSubmersivePresentation over the observation Schur DVR
+(c) that presentation's Jacobian = criticalReciprocalJacobian
+(d) corank one at the Schur place   corpus, transported by SquareMatrixCorankOne
+(e) v(Jac) = 1                      corpus ✓
+⟹  𝔇 = (Jac),  v(𝔇) = 1,  e = 2  =  (R)
+```
+
+`(b)` is the remaining construction and its shape is concrete: `m + n` variables
+`a_0 … a_{m-1}, b_0 … b_{n-1}`, and `m + n` relations `f_k` = the coefficient of `X^k` in
+`(A + P)(B + Q) - 1`, which is square as `PreSubmersivePresentation` requires.  Its Jacobian is the
+Sylvester-type block matrix `[T(Y) | T(A)]`, whose determinant reduces by Schur complement to the
+`m × m` `criticalReciprocalJacobian` already in the tree — the elimination of `b`, which is
+determined by `a` through `B ≡ A⁻¹`.

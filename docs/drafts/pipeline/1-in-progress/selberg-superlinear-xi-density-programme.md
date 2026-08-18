@@ -831,3 +831,59 @@ weight summable.
 | 6 | evaluate `∑_{j ≤ X/e, (e,j)=1} μ(j) log(X/(ej))/j` | open |
 
 Step 6 is the only remaining item of the entire programme.
+
+## Landed brick 26: the logarithmic Möbius sum against the harmonic floor (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LogMoebiusHarmonicFloor.lean`
+
+- `harmonicFloorMoebiusSum_eq_one_real` — the tree's exact Möbius inversion of the polar unit,
+  `∑_{d ≤ N} μ(d) H_{⌊N/d⌋}/d = 1` (`RHTower.harmonicFloorMoebiusSum_eq_one`, already owned), cast
+  from `ℚ` to `ℝ`.
+- `sum_moebius_log_div_eq_one_sub_error` — **the exact identity**
+  ```
+  ∑_{d ≤ N} (μ(d)/d) log(N/d)  =  1 − ∑_{d ≤ N} (μ(d)/d)( H_{⌊N/d⌋} − log(N/d) ).
+  ```
+
+The whole content of step 6 is now isolated in one error sum, with no estimate yet made.  Note the
+crude route through it is *not* enough: bounding `|μ(d)| ≤ 1` and `|H_{⌊N/d⌋} − log(N/d)| ≤ 1+log 2`
+termwise gives only `O(log N)`, whereas Graham needs `O(1)`.  The `O(1)` requires the cancellation
+of `μ` against the harmonic-floor defect — which is exactly the Barban–Vehov content, and is what
+remains.
+
+### Ledger
+
+Everything from this error sum upwards — Graham steps 1–5, the coefficient estimate's three ranges,
+the mollified second moment reduction, the Hardy-`Z` AFE and its cell bounds, the grid count, and
+`SuperlinearSamples xiRealDivisor → (23)` — is Lean-certified and axiom-clean.  The single open item
+is the `O(1)` bound for
+```
+∑_{d ≤ N} (μ(d)/d)( H_{⌊N/d⌋} − log(N/d) ).
+```
+
+## Landed brick 27: the pointwise harmonic-floor defect (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HarmonicFloorDefect.lean`
+
+- `two_mul_natDiv_mul_ge` — `N ≤ 2 ⌊N/d⌋ d` for `1 ≤ d ≤ N`.
+- `abs_harmonic_floor_defect_le` — **the pointwise defect bound**
+  ```
+  | H_{⌊N/d⌋} − log(N/d) − γ | ≤ 2/⌊N/d⌋      for 1 ≤ d ≤ N,
+  ```
+  combining the tree's `HTGeometry.abs_harmonic_sub_log_sub_eulerMascheroni_le`
+  (`|H_n − log n − γ| ≤ 1/n`, already owned) with the floor defect of the logarithm,
+  `log(N/d) − log⌊N/d⌋ ≤ 1/⌊N/d⌋` (from `log x ≤ x − 1` and `N/d − ⌊N/d⌋ < 1`).
+
+### Step 6 is now a two-line assembly
+
+Writing the error sum of brick 26 as `γ ∑_{d≤N} μ(d)/d + ∑_{d≤N}(μ(d)/d) R_d` with
+`R_d = H_{⌊N/d⌋} − log(N/d) − γ`:
+
+* the first term is bounded by `γ` — the tree owns `|∑_{d≤N} μ(d)/d| ≤ 1`
+  (`RHTower.abs_sum_moebius_div_le_one`);
+* the second is bounded termwise by brick 27 plus `two_mul_natDiv_mul_ge`:
+  `|R_d| ≤ 2/⌊N/d⌋ ≤ 4d/N`, so `|(μ(d)/d) R_d| ≤ 4/N`, and there are `N` terms — total `≤ 4`.
+
+Hence `|∑_{d≤N}(μ(d)/d) log(N/d)| ≤ 1 + γ + 4`, an explicit `O(1)`.  Note this **is** the `O(1)`
+the earlier note said the crude route could not reach: the crude route bounded the log-floor defect
+by `log 2` and summed `1/d`; the sharp bound `1/⌊N/d⌋ ≤ 2d/N` cancels the `1/d` instead.  Only the
+`γ`-term needs Möbius cancellation, and that is exactly `abs_sum_moebius_div_le_one`.

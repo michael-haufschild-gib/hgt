@@ -234,3 +234,110 @@ routed through the exact identity instead of the variance.
 The Halász lane above is not wasted — `exists_primeCosPlusSum_ge_logLog` is the sharpest uniform
 unpretentiousness statement in the corpus and is the right input if a Halász argument is wanted
 later — but it is no longer the critical path. **This card's target is now the Ramaré swap.**
+
+## The Turán–Kubilius step is replaced (2026-08-18)
+
+Two modules, unconditional, axiom-clean, wired into `GaloisForLFunctions.RHTower`.
+
+### `Sieve/FibreRamareSplit`
+
+```
+fibreRamareSieveError h z r lam                       -- the uniform per-fibre sieve error
+abs_fibreSum_sub_ramare_le                            -- one fibre's Ramaré defect
+sum_sq_fibreSum_moebius_le_ramare_add_rough           -- ∑ A² ≤ 2∑R² + 2·#outer·E²
+```
+
+### `Sieve/FibreNonRoughSpectral` — the replacement itself
+
+```
+nonRoughMoebius P n = if (primeFactorsIn P n).Nonempty then μ n else 0
+
+sum_sq_fibreSum_moebius_le_nonRough_spectral (hx : 4 ≤ x) (hh0 : 0 ≤ h) (hhx : h ≤ √x)
+    (hz : 2 ≤ z) (hr : Even r) (hlam : 1 ≤ lam) :
+  ∑_a (∑_{b ∈ fibre} μ b)²
+    ≤ 2·(8√x·∫‖logWindowSum (nonRoughMoebius (primesLE z)) (fibreIndex x h) (fibreWidth x h) u‖² du
+         + 102(√x + 1))
+      + 2·#outerBlock·(fibreRamareSieveError h z r lam)²
+```
+
+This is the analogue of `Sieve/OmegaSpectralFibre.sum_sq_fibreSum_moebius_le_omegaSpectral` with
+**no `1/W²` in front of the spectral term and no variance behind it**. Three facts make it work:
+
+1. The split at the rough integers is exact and costs no Cauchy–Schwarz — the fibre sum of `μ`
+   minus its non-rough part is literally the rough sum, bounded by the rough *count*.
+2. That count is Brun's pure sieve, `Sieve/RoughCount.card_rough_Ioc_le`, already owned.
+3. The restricted weight is still unit-bounded, so the coefficient-general bridge
+   `Sieve/ScaledFibreBridge.sum_fibreSum_sq_le_integral_scaled` carries it to the spectral side with
+   no change of constants — the bridge never needed the weight to be `μ·ω_P`.
+
+**The rough error enters squared.** With `E ≍ (h+2)·C/log z` and `#outerBlock ≍ √x`, the rough
+contribution to the normalised mean square is `2E²/h² ≍ C²/(log z)²`. Taking
+`z = exp((log x)^{3/5})` gives `(log x)^{-6/5}`, comfortably `o(1/log x)`, while
+`log z/log h = (log x)^{-39/100} → 0` keeps the sieve level legitimate. Contrast the
+Turán–Kubilius term, which is `1/W ≥ 1/(log log x + O(1))` at every parameter choice.
+
+### What remains on this card
+
+The spectral term must be bounded by the existing majorants. `logWindowSum` factors as
+`logWindowKernel × Dirichlet polynomial` (`Sieve/LogWindowPlancherel`), so the remaining chain is:
+
+- factor the `nonRoughMoebius` polynomial through the Ramaré bilinear form — the corpus owns
+  `Sieve/RamarePhaseBilinear.ramareCofactorCoeff` and
+  `Sieve/RamareSquareMultiple.logPoly_moebius_eq_ramare_add_rough` for exactly this;
+- run the existing prime × cofactor large-values machinery on it, whose three majorants
+  (`rhoMajorant`, `slopeMajorant`, `constMajorant`) are already powers of `log x` past
+  `(log x)^{-1.1}`;
+- assemble the analogue of `Sieve/BudgetLimit.tendsto_normalised_omegaBudget` with an explicit
+  `(log x)^{-A}`, `A > 1`, and feed it to `Sieve/FibreStepOnePositive.eventually_fibre_step_one_growing`.
+
+That last step is what promotes the two reciprocal-marker cards; the coprime-sign card additionally
+needs the window pushed towards `log log x`, which the same chain supplies once the exponent
+constraint `β > 9/10` is traced to whichever majorant imposes it.
+
+## The chain now reaches the majorant machinery (2026-08-18)
+
+Two more modules, unconditional, axiom-clean, wired.
+
+### `Sieve/FibreNonRoughKernel`
+
+Plancherel (`LogWindowPlancherel.integral_normSq_logWindowSum_eq`) puts the previous bound in the
+shape the corpus's majorants consume:
+
+```
+sum_sq_fibreSum_moebius_le_nonRough_kernel :
+  ∑_a (∑_{b ∈ fibre} μ b)²
+    ≤ 16√x · ∫ ‖logWindowKernel (fibreWidth x h) w‖² · ‖logPoly (nonRoughMoebius (primesLE z)) (fibreIndex x h) w‖² dw
+      + 204(√x + 1) + 2·#outerBlock·(fibreRamareSieveError h z r lam)²
+```
+
+### `Sieve/NonRoughRamareBilinear`
+
+```
+logPoly_nonRoughMoebius_eq_ramare (P s : Finset ℕ) (w : ℝ) :
+  logPoly (nonRoughMoebius P) s w
+    = ∑_{p ∈ P} ∑_{n ∈ s, p ∣ n} (μ n · e(w log n)) / ω_P(n)
+```
+
+An **identity, with no error term**: restricting `μ` to integers carrying a designated prime factor
+removes precisely the rough term of Ramaré's decomposition, so the restricted polynomial *is* the
+bilinear form. This is what makes the restricted weight the right object — it is unit-bounded, so
+the fibre bridge carries it, and it factors over designated prime times cofactor, so the
+large-values machinery applies. Combining gives
+`sum_sq_fibreSum_moebius_le_ramareBilinear_kernel`, the full chain with no `1/W²` anywhere.
+
+### Side-by-side with the old chain
+
+| | `OmegaSpectralFibre` (Turán–Kubilius) | `NonRoughRamareBilinear` (exact Ramaré) |
+|---|---|---|
+| left side | `(mertensS z − mertensS z₀)² · ∑_a (∑ μ)²` | `∑_a (∑ μ)²` — no `W²` |
+| polynomial weight | `μ · ω_P`, bounded by `W` | `nonRoughMoebius`, bounded by `1` |
+| error term | Turán–Kubilius variance, linear ⇒ `1/W` | sieve density, **squared** ⇒ `1/(log z)²` |
+| best achievable rate | `1/log log x` | `(log x)^{-6/5}` at `z = exp((log x)^{3/5})` |
+
+### What remains
+
+Bound `∫ ‖kernel‖²‖bilinear‖²` by the existing prime × cofactor majorants — the same
+`rhoMajorant` / `slopeMajorant` / `constMajorant` route `Sieve/BudgetLimit` already runs, but
+applied to the `1/ω_P`-weighted cofactor (`Sieve/RamarePhaseBilinear.ramareCofactorCoeff`) instead
+of the `ω_P`-weighted one. Then assemble the explicit `(log x)^{-A}`, `A > 1`, and feed it to
+`Sieve/FibreStepOnePositive.eventually_fibre_step_one_growing`.

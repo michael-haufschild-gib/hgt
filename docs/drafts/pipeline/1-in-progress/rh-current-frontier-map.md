@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 18 August 2026, commit
-`8e041d41030ea424b7bb6dcd18dc5644347ef6de`, plus declaration-index review of Lean working-tree
+`37d4ac1435fecbadd754c67d4ad51ff62e0ec740`, plus declaration-index review of Lean working-tree
 sources. Scientific status below comes only from Lean declarations, dependencies, theorem docstrings,
 and explicit gap/no-go markers. Pipeline cards and papers are not evidence for this map.
 
@@ -529,6 +529,8 @@ Closure applies to named mechanism, not every future use of similar objects.
 | M | Gamma--Jacobi reader complete; anchored cofinal flatness is RH. | Receiver only. |
 | N | Response equality, endpoint contractivity, or bounded polar work is RH-equivalent. | Shared receiver for L/P/G. |
 | R | Intrinsic producer category empty; every surviving external interface RH-equivalent. | Quartic amplitude, singular cap, and physical landing remain reusable receivers. |
+| TD/C1 raw positive completion | Four raw reflected critical Stokes atoms already exceed completed zeroth mass; no finite positive supercarrier dominating them can equal completed seam germ. | Any representing carrier must delete/reweight raw atoms or introduce signed negative correction before final positivity. |
+| AF class-law scale-orbit | Convergent abelian class-law certificate exists iff centered rate is zero; global certificates on all Xi copies exist iff RH. | Terminal rigidity/selection theorem; successor must change interface to singular/infinite-action or genuinely global aggregate law. |
 | direct prime Ising | Raw/scalar-normalized finite balanced tree partitions cannot converge locally uniformly to XiC; rank growth forces scale collapse. | Only singular critical rescaling outside fixed modal closure could be new. |
 | compact Thorin/Markov | Compact Thorin and Markov representations are RH-equivalent; canonical measure unique; theta-likelihood candidate not infinitely divisible. | Upstream positive source measure only, not alternative canonical measure. |
 
@@ -543,6 +545,15 @@ Closure applies to named mechanism, not every future use of similar objects.
 `RouteRHyperbolicGaugeQuarticPhysicalProducer.lean` constructs unconditional quartic landing and
 proves quadratic comparison no-go. R contributed novel architecture/invariants, but no intrinsic
 producer survives. It is closed negatively as RH route.
+
+### TD/C1 and AF exact closures
+
+`GammaSewnMobiusApertureStokesPositiveCompletionNoGo.lean` closes TD/C1's canonical
+raw-positive/passive handoff and proves exact non-domination survivor. It does not close corrected
+signed/indefinite C1 class-space architecture. `SourceHorizontalAdaptiveFisherGlobalClassLawProducer.lean`
+constructs neutral source certificate, proves certificate existence exactly at centered rate zero,
+and proves global all-Xi-copy producer equivalent to RH. AF is therefore closed as independent
+copywise convergent class-law mechanism, not promoted to live route.
 
 ### Cross-cutting formal no-go laws
 
@@ -560,6 +571,8 @@ Corpus proves insufficient:
 - linear reflection cancellation as substitute for quadratic reflection incidence;
 - fixed-degree positive limits as control of degree-matched cofinal diagonal;
 - scalar counterterms for incompatible interior/boundary charts;
+- positive Hermitian completion preserving or dominating an overmassive canonical raw carrier;
+- copywise convergent abelian class-law certificates away from neutral rate;
 - source symmetry as proof every orbit point is fixed.
 
 Any successor must retain infinite source provenance, mixed incidence, non-scalar boundary
@@ -579,6 +592,14 @@ Functional equation and Schwarz reflection supply two orientations. Norms, squar
 positive Markov transport, diagonal energies, and scalar moments often erase difference. Successful
 receivers retain reflection-odd current, mixed incidence, prime phase, signed transgression,
 non-equivariant Cayley depth, or projective monodromy/Chern charge.
+
+### Positive completion can fail before spectral geometry
+
+TD/C1 supplies a sharp mass firewall: reflection can repair parity while canonical raw carrier
+already overspends completed zeroth mass. Adding positive sectors only worsens defect. Therefore
+"find a larger positive space" is not a neutral move; successors must alter source atoms or
+introduce signed cancellation before any final positive quotient. D2's directed-passivity no-go
+shows same issue at a fixed centered response point.
 
 ### Quantized obstructions beat normalized asymptotics
 
@@ -632,7 +653,8 @@ Open cores fall into six classes:
 4. **Mixed-incidence control:** preserve cross terms diagonal energies erase (E, Q, HC, T).
 5. **Cofinal synchronization:** one estimate uniform in moving degree/aperture/height
    (CCM-FU, E, O, T, U).
-6. **Source-native internal dynamics:** endomorphism, Weyl action, projective module, Stokes category,
+6. **Source-native internal dynamics:** endomorphism, Weyl action, projective module, corrected
+   Stokes category,
    or monodromy on actual arithmetic carrier before divisor selection (IW, AP, SC, PPM, IRK, OPUC,
    HJ).
 
@@ -647,11 +669,12 @@ is:
 
 1. Can third-grade Guinand--Weil cumulative source have linearly bounded primitive without zero-free
    input?
-2. Can positive-frequency prime--arch trace be controlled by source passivity stronger than its
-   RH-equivalent scalar ceiling?
+2. Can positive-frequency prime--arch trace be controlled by a reflected signed/non-dominating
+   source law after canonical directed passivity and raw-positive completion have failed?
 3. What exact squarefree relation realizes Ramaré incidence with unit all-interval Hall load and
    co-moving flux?
-4. Can marked Gamma renormalization compare escaped coefficient to zero-mode debt pre-scalar?
+4. What independent nonlinear/distinct-channel source law forces already-transported Ward
+   coefficient to vanish or acquire favorable wall order?
 5. Can all-prime Green restriction be square-summable with common kernel exactly arithmetic
    boundary and target existing physical landing?
 6. Is completed CCM symbol nonnegative on every canonical actual-head density?
@@ -660,9 +683,10 @@ is:
 8. Why is explicit positive-frequency reduced Cauchy kernel PSD on every exterior finite packet?
 9. What joint estimate controls T depth-invariant top-row/translation remainder without splitting
    cancellation?
-10. What uniform degree--mass law proves shifted reciprocal Hankel tail positivity or excludes rough
-    first contact?
-11. Can two-prime source excess be bounded absolutely below collision quantum two?
+10. What source mechanism excludes exact nonintegrable strict-frontier Christoffel quotient or
+    proves shifted reciprocal Hankel tail positivity inside proved parabolic horizon?
+11. Can two-prime source excess be bounded absolutely below collision quantum two, or can literal
+    paired Gamma-six determinant current be proved prime-summable upstream?
 12. Can arithmetic source construct internal dyadic Weyl pair on actual undoubled hole space?
 13. Can source globalize Arakelov power, Coxeter, prime-power collision, irrational-rotation `K_0`,
     paraorthogonal phase, or Hurwitz projective reflection before divisor selection?

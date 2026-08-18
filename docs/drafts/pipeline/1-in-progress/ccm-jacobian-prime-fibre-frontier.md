@@ -25,8 +25,18 @@ Both coordinate quotient maps are onto, hence the descended map is onto.  Its va
 `T>0` force `n=0`, while the first coordinate would force `f_p=1`; the diagonal prime is not
 one in the away-prime local-unit product.  Therefore the descended map is not injective.
 
+## Formal status
+
+Formalized and target-built:
+
+- `CCMConnesConsaniArithmeticJacobianPrimeFibre.lean`: literal prime mapping torus, Frobenius deck relation, and proof that the older quotient-product candidate is a proper non-injective receiver.
+- `CCMConnesConsaniZetaCycleCompletedXiNaturality.lean`: exact zeta-cycle/completed-Xi spectral-fiber comparison, prime-cover fiber equivalence, and dyadic Big-Witt/prime-cover naturality.
+
+All capstones are closed. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Open core after formalisation
 
-Construct the spectral comparison from the actual twisted fibre.  Any receiver factoring through
-the closure quotient is provably blind to the horizontal Frobenius class and cannot be the desired
-global source endomorphism before zero selection.
+Construct a global map from the full adelic arithmetic-Jacobian source into the completed-Xi
+cohomological receiver. It must retain the nonzero horizontal Frobenius class and therefore cannot
+factor through the collapsed quotient-product candidate. At the proven spectral level, prime covers
+preserve the centered Xi label exactly; they do not induce `alpha -> p * alpha`.

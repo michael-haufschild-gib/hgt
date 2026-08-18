@@ -326,3 +326,93 @@ topology, show the natural map `Y → X` is a covering map, and apply
 `isCoveringMap_injective_of_simplyConnected` (already proved) — simple connectivity of `X` makes the
 covering injective, which is exactly the injectivity of `macbeathHom`.  That construction is the
 next brick.
+
+### F7. The developing space of Macbeath's construction `[PROVED so far]`
+
+`formal/GaloisForLFunctions/HTGeometry/MacbeathDevelopingSpace.lean` (wired, axiom-clean).
+
+```text
+macbeathOf                a generator of Macbeath's group (added to MacbeathPresentation)
+DevSheet V                one copy of V for each element of Macbeath's group — the SIGMA type, so
+                          that the sheet index is automatically discrete
+DevRel V                  ** the gluing move: the copy at g is glued to the copy at g·s_γ along the
+                             overlap, by x ↦ γ⁻¹·x **
+DevSpace V                the developed space, as a Quot of the gluing relation
+devSheetMap, devSheetMap_respects, devMap
+                          ** the map to X, [g, x] ↦ macbeathHom g · x **
+continuous_devMap         continuous
+devMap_surjective         surjective, since the translates of V cover
+devSmul, devSmul_one, devSmul_mul, continuous_devSmul
+                          ** Macbeath's group acts on the developed space by left multiplication on
+                             the sheet index **
+devMap_devSmul            ** the map to X is EQUIVARIANT through macbeathHom **
+```
+
+The topology on the sheets is handled by taking a **sigma type** rather than a product with a
+discrete group, so no topology has to be put on `MacbeathGroup V` at all.
+
+What remains for Macbeath's theorem is the local structure: that `devMap` is a covering map, with the
+explicit description of `devMap ⁻¹' (γ·V)` as a disjoint union of sheets.  Injectivity of
+`macbeathHom` then follows by reading off the fibre, using
+`isCoveringMap_injective_of_simplyConnected`.
+
+### F8. The gluing relation is ALREADY an equivalence, and Macbeath modulo the covering property `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MacbeathPresentation.lean` (extended) and
+`formal/GaloisForLFunctions/HTGeometry/MacbeathOneStep.lean` (wired, axiom-clean).
+
+```text
+inv_mem_meetSet     the overlap set is symmetric
+macbeathOf_mul      ** s_γ · s_δ = s_{γδ} ** under the triple-overlap hypothesis
+macbeathOf_one      ** s_1 = 1 **
+macbeathOf_inv      ** s_{γ⁻¹} = s_γ⁻¹ **
+
+DevOneStep V        the ONE-STEP relation: q is p moved by a single γ ∈ S
+devRel_le_devOneStep
+devOneStep_refl / _symm / _trans      reflexivity is s_1 = 1, symmetry is s_{γ⁻¹} = s_γ⁻¹, and
+                                      TRANSITIVITY IS EXACTLY MACBEATH'S RELATION — the common
+                                      point of the two moves supplies the triple overlap
+devOneStep_equivalence                ** the one-step relation is an equivalence relation **
+devSpace_mk_eq_iff                    ** two sheets have the same class exactly when a SINGLE group
+                                         element relates them **
+
+macbeathHom_injective_of_devMap_injective
+                    ** injectivity of the developing map forces injectivity of macbeathHom **:
+                    a g in the kernel has its sheet glued to the identity sheet, so g = s_γ⁻¹ with
+                    γ⁻¹ = macbeathHom g = 1, whence g = s_1 = 1
+macbeathHom_injective_of_isCoveringMap
+                    ** MACBEATH'S THEOREM, modulo the covering property **
+```
+
+The structural point is `devSpace_mk_eq_iff`: the gluing relation does not need its transitive
+closure, because Macbeath's defining relations are exactly what makes one-step composition work.
+This is what turns the developed space into something whose points can be read off.
+
+**What is left for the whole finite-presentation layer**: that `devMap` is a covering map, and that
+the developed space is connected.  Everything else — generation, the presentation, finiteness of the
+presentation, the developing space, the action, the one-step description, the transfer of
+injectivity, and the simply-connected covering theorem — is formal and unconditional.
+
+### F9. The sheets of the developing space `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MacbeathSheets.lean` (wired, axiom-clean).
+
+```text
+devSpace_mk_eq_mk_of_macbeathHom_eq
+      ** sheets with the same image under macbeathHom SEPARATE POINTS **: if [h,y] = [h',y'] and
+         macbeathHom h = macbeathHom h', then h = h' and y = y' — because the connecting γ satisfies
+         macbeathHom h · γ = macbeathHom h', so γ = 1 and s_1 = 1
+sheetImage V h O
+      the image in the developed space of a subset of V, on the sheet at h
+preimage_sheetImage
+      its Quot-preimage, computed from the one-step description
+isOpen_sheetImage
+      ** the image of an OPEN subset of V on a sheet is OPEN ** — the preimage is, on each sheet
+         index, a union over γ of the preimages of O ∩ V under x ↦ γ⁻¹·x, and those are open
+         because the action is by homeomorphisms
+```
+
+With these, the even covering of `macbeathHom(h₀) · V` is completely described: the preimage is the
+disjoint union of the sheets at the `h` with `macbeathHom h = macbeathHom h₀`, each sheet is open,
+each is mapped bijectively and openly onto the base set, and the sheets are pairwise disjoint.  The
+only remaining step of the covering property is packaging that data into a `Trivialization`.

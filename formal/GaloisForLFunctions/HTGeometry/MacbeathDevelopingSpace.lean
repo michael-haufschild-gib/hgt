@@ -39,6 +39,7 @@ abbrev DevSpace (V : Set X) : Type _ := Quot (DevRel (G := G) V)
 def devSheetMap (V : Set X) (p : DevSheet (G := G) V) : X :=
   macbeathHom V p.1 • (p.2 : X)
 
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
 theorem devSheetMap_respects (V : Set X) {p q : DevSheet (G := G) V} (h : DevRel V p q) :
     devSheetMap V p = devSheetMap V q := by
   cases h with
@@ -50,6 +51,7 @@ theorem devSheetMap_respects (V : Set X) {p q : DevSheet (G := G) V} (h : DevRel
 def devMap (V : Set X) : DevSpace (G := G) V → X :=
   Quot.lift (devSheetMap V) (fun _ _ h => devSheetMap_respects V h)
 
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
 @[simp]
 theorem devMap_mk (V : Set X) (p : DevSheet (G := G) V) :
     devMap V (Quot.mk _ p) = macbeathHom V p.1 • (p.2 : X) := rfl
@@ -71,5 +73,50 @@ theorem devMap_surjective {V : Set X} (hcover : ⋃ g : G, g • V = (univ : Set
   obtain ⟨v, hv, rfl⟩ := hg
   obtain ⟨gt, hgt⟩ := macbeathHom_surjective hVopen hVne hcover g
   exact ⟨Quot.mk _ ⟨gt, ⟨v, hv⟩⟩, by rw [devMap_mk, hgt]⟩
+
+/-- Macbeath's group acts on the developed space by left multiplication on the sheet index. -/
+def devSmul (V : Set X) (h : MacbeathGroup (G := G) V) :
+    DevSpace (G := G) V → DevSpace (G := G) V :=
+  Quot.lift (fun p : DevSheet (G := G) V => Quot.mk _ (⟨h * p.1, p.2⟩ : DevSheet (G := G) V))
+    (by
+      rintro _ _ ⟨g, γ, x, y, hxy⟩
+      refine Quot.sound ?_
+      have := DevRel.move (V := V) (h * g) γ x y hxy
+      rwa [mul_assoc] at this)
+
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
+@[simp]
+theorem devSmul_mk (V : Set X) (h : MacbeathGroup (G := G) V) (p : DevSheet (G := G) V) :
+    devSmul V h (Quot.mk _ p) = Quot.mk _ (⟨h * p.1, p.2⟩ : DevSheet (G := G) V) := rfl
+
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
+theorem devSmul_one (V : Set X) (y : DevSpace (G := G) V) : devSmul V 1 y = y := by
+  refine Quot.inductionOn y ?_
+  intro p
+  rw [devSmul_mk, one_mul]
+
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
+theorem devSmul_mul (V : Set X) (h k : MacbeathGroup (G := G) V) (y : DevSpace (G := G) V) :
+    devSmul V (h * k) y = devSmul V h (devSmul V k y) := by
+  refine Quot.inductionOn y ?_
+  intro p
+  rw [devSmul_mk, devSmul_mk, devSmul_mk, mul_assoc]
+
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
+/-- **The map to `X` is equivariant** for the action of Macbeath's group through `macbeathHom`. -/
+theorem devMap_devSmul (V : Set X) (h : MacbeathGroup (G := G) V) (y : DevSpace (G := G) V) :
+    devMap V (devSmul V h y) = macbeathHom V h • devMap V y := by
+  refine Quot.inductionOn y ?_
+  intro p
+  rw [devSmul_mk, devMap_mk, devMap_mk, map_mul, mul_smul]
+
+omit [ContinuousConstSMul G X] in
+theorem continuous_devSmul (V : Set X) (h : MacbeathGroup (G := G) V) :
+    Continuous (devSmul (G := G) V h) := by
+  refine continuous_quot_lift _ ?_
+  refine continuous_sigma ?_
+  intro g
+  show Continuous (fun a : V => Quot.mk _ (⟨h * g, a⟩ : DevSheet (G := G) V))
+  exact continuous_quot_mk.comp (continuous_sigmaMk (i := h * g))
 
 end GaloisForLFunctions.HTGeometry
