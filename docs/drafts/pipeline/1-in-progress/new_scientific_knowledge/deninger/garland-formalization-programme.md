@@ -2203,3 +2203,24 @@ quotient and Layer B remain open, and no card is promoted.
 complete-basis flag into the finite weighted complex: every nonzero finite-dimensional vector space
 has a top face of cardinality `finrank K V - 1`. This supplies the non-vacuity half of the finite
 flag-complex bridge; it does not supply the required local-link identifications or spectra.
+
+### D4 interface closure — projective-plane gap as a Garland link theorem
+
+2026-08-18. The rank-two spectral theorem is now attached to the actual `WeightedComplex.linkGraph`
+interface used by `GarlandLocalization`, not merely to a separately defined incidence graph.
+
+- `HTGeometry/WeightedGraphSpectralGap.lean` adds extensionality by edge weights, and
+  `HTGeometry/WeightedComplexLink.lean` proves that every nonface has induced weight zero.
+- `HTGeometry/IncidenceWeightedComplex.lean` defines the pure unit-weighted incidence complex,
+  proves its empty link is exactly `incidenceGraph`, including the same-side zero weights.
+- `HTGeometry/FiniteProjectivePlaneSpectralGap.lean` proves
+  `finiteField_projectivePlane_incidenceWeightedComplex_linkGraph_empty_hasSpectralGap`, with the
+  exact gap `1 - sqrt(q)/(q+1)`; the existing strict `2/3` threshold theorem therefore applies in
+  the Garland link interface.
+
+Direct checks, module-only builds, and `#print axioms` pass with only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+**Boundary:** This closes only the rank-two *empty-link* identification. The local links required
+for higher-rank spherical buildings, the Bruhat--Tits/arithmetic quotient comparison, and Layer B
+remain open. No card is promoted.

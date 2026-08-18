@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.SteinhausLogTailMoment
 import GaloisForLFunctions.HTGeometry.MeromorphicBoundaryLog
 import GaloisForLFunctions.HTGeometry.HelsonZetaEulerProduct
+import GaloisForLFunctions.HTGeometry.HelsonStratumMeasurable
 
 /-!
 # The Euler exponent of a random Helson zeta, and its boundary envelope
@@ -212,6 +213,121 @@ theorem dirichletSum_sub_of_finiteModification {ω ω' : Omega}
   calc ‖primePhaseCoeff ω n - primePhaseCoeff ω' n‖ * ((n : ℝ) + 1) ^ (-σ)
       ≤ 2 * ((n : ℝ) + 1) ^ (-σ) := mul_le_mul_of_nonneg_right hc1 hpos
     _ ≤ 2 * ((n : ℝ) + 1) ^ (-(1 / 2 : ℝ)) := by linarith
+
+
+/-- The tail layer changes by a fixed finite sum. -/
+theorem helsonLogTail_sub_of_finiteModification {ω ω' : Omega}
+    (hfin : {n : ℕ | ω n ≠ ω' n}.Finite) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ σ : ℝ, 1 / 2 < σ →
+      ‖helsonLogTail (helsonPhaseOf ω) ((σ : ℝ) : ℂ)
+        - helsonLogTail (helsonPhaseOf ω') ((σ : ℝ) : ℂ)‖ ≤ C := by
+  classical
+  set S : Set Nat.Primes := {p : Nat.Primes | helsonPhaseOf ω p ≠ helsonPhaseOf ω' p} with hSdef
+  have hSfin : S.Finite := by
+    refine Set.Finite.subset (hfin.preimage (f := fun p : Nat.Primes => (p : ℕ))
+      (Set.injOn_of_injective (fun p q h => Subtype.ext h))) fun p hp => ?_
+    by_contra hc
+    exact hp (helsonPhaseOf_eq_of_coord_eq (not_not.mp hc))
+  refine ⟨2 * (hSfin.toFinset.card : ℝ), by positivity, ?_⟩
+  intro σ hσ
+  have hre : (((σ : ℝ) : ℂ)).re = σ := Complex.ofReal_re σ
+  have hσ' : 1 / 2 < (((σ : ℝ) : ℂ)).re := by rw [hre]; exact hσ
+  have hs1 := summable_helsonLogTail (norm_helsonPhaseOf_le ω) hσ'
+  have hs2 := summable_helsonLogTail (norm_helsonPhaseOf_le ω') hσ'
+  rw [helsonLogTail, helsonLogTail, ← hs1.tsum_sub hs2]
+  have hvanish : ∀ p ∉ hSfin.toFinset,
+      logTail (helsonPhaseOf ω p * ((p : ℕ) : ℂ) ^ (-((σ : ℝ) : ℂ)))
+        - logTail (helsonPhaseOf ω' p * ((p : ℕ) : ℂ) ^ (-((σ : ℝ) : ℂ))) = 0 := by
+    intro p hp
+    have heq : helsonPhaseOf ω p = helsonPhaseOf ω' p := by
+      by_contra hc
+      exact hp (hSfin.mem_toFinset.mpr hc)
+    rw [heq, sub_self]
+  rw [tsum_eq_sum hvanish]
+  refine le_trans (norm_sum_le _ _) ?_
+  have hterm : ∀ p ∈ hSfin.toFinset,
+      ‖logTail (helsonPhaseOf ω p * ((p : ℕ) : ℂ) ^ (-((σ : ℝ) : ℂ)))
+        - logTail (helsonPhaseOf ω' p * ((p : ℕ) : ℂ) ^ (-((σ : ℝ) : ℂ)))‖ ≤ 2 := by
+    intro p _
+    have hbnd : ∀ ω'' : Omega,
+        ‖logTail (helsonPhaseOf ω'' p * ((p : ℕ) : ℂ) ^ (-((σ : ℝ) : ℂ)))‖ ≤ 1 := by
+      intro ω''
+      refine le_trans (norm_logTail_prime_le (norm_helsonPhaseOf_le ω'') p (le_of_lt hσ')) ?_
+      rw [hre]
+      have hp2 : (2 : ℝ) ≤ ((p : ℕ) : ℝ) := by exact_mod_cast p.2.two_le
+      have h1 : ((p : ℕ) : ℝ) ^ (-(2 * σ)) ≤ (2 : ℝ) ^ (-(2 * σ)) :=
+        Real.rpow_le_rpow_of_nonpos (by norm_num) hp2 (by linarith)
+      have h2 : (2 : ℝ) ^ (-(2 * σ)) ≤ (2 : ℝ) ^ (-(1 : ℝ)) :=
+        Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+      have h3 : (2 : ℝ) ^ (-(1 : ℝ)) = 1 / 2 := by
+        rw [Real.rpow_neg_one]
+        norm_num
+      rw [h3] at h2
+      linarith
+    calc ‖logTail (helsonPhaseOf ω p * ((p : ℕ) : ℂ) ^ (-((σ : ℝ) : ℂ)))
+          - logTail (helsonPhaseOf ω' p * ((p : ℕ) : ℂ) ^ (-((σ : ℝ) : ℂ)))‖
+        ≤ ‖logTail (helsonPhaseOf ω p * ((p : ℕ) : ℂ) ^ (-((σ : ℝ) : ℂ)))‖
+          + ‖logTail (helsonPhaseOf ω' p * ((p : ℕ) : ℂ) ^ (-((σ : ℝ) : ℂ)))‖ := norm_sub_le _ _
+      _ ≤ 2 := by linarith [hbnd ω, hbnd ω']
+  refine le_trans (Finset.sum_le_sum hterm) ?_
+  rw [Finset.sum_const, nsmul_eq_mul]
+  ring_nf
+  exact le_refl _
+
+/-- **Finite modification changes the Euler exponent by a bounded amount, uniformly past the half
+line.** -/
+theorem exists_bound_eulerExponentRe_sub {ω ω' : Omega} (hfin : {n : ℕ | ω n ≠ ω' n}.Finite)
+    (hω : ω ∈ primeHolomorphicEvent) (hω' : ω' ∈ primeHolomorphicEvent) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ σ : ℝ, 1 / 2 < σ → |eulerExponentRe σ ω - eulerExponentRe σ ω'| ≤ C := by
+  obtain ⟨C₁, hC₁0, hC₁⟩ := dirichletSum_sub_of_finiteModification hfin hω hω'
+  obtain ⟨C₂, hC₂0, hC₂⟩ := helsonLogTail_sub_of_finiteModification hfin
+  refine ⟨C₁ + C₂, by linarith, fun σ hσ => ?_⟩
+  rw [eulerExponentRe_eq hω hσ, eulerExponentRe_eq hω' hσ]
+  have hsplit : (helsonExponent ω ((σ : ℝ) : ℂ)).re - (helsonExponent ω' ((σ : ℝ) : ℂ)).re
+      = (dirichletSum (primePhaseCoeff ω) ((σ : ℝ) : ℂ)
+          - dirichletSum (primePhaseCoeff ω') ((σ : ℝ) : ℂ)).re
+        + (helsonLogTail (helsonPhaseOf ω) ((σ : ℝ) : ℂ)
+          - helsonLogTail (helsonPhaseOf ω') ((σ : ℝ) : ℂ)).re := by
+    simp only [helsonExponent, Complex.add_re, Complex.sub_re]
+    ring
+  rw [hsplit]
+  have h1 : |(dirichletSum (primePhaseCoeff ω) ((σ : ℝ) : ℂ)
+      - dirichletSum (primePhaseCoeff ω') ((σ : ℝ) : ℂ)).re| ≤ C₁ :=
+    le_trans (Complex.abs_re_le_norm _) (hC₁ σ hσ)
+  have h2 : |(helsonLogTail (helsonPhaseOf ω) ((σ : ℝ) : ℂ)
+      - helsonLogTail (helsonPhaseOf ω') ((σ : ℝ) : ℂ)).re| ≤ C₂ :=
+    le_trans (Complex.abs_re_le_norm _) (hC₂ σ hσ)
+  have habs := abs_add_le (dirichletSum (primePhaseCoeff ω) ((σ : ℝ) : ℂ)
+      - dirichletSum (primePhaseCoeff ω') ((σ : ℝ) : ℂ)).re
+    (helsonLogTail (helsonPhaseOf ω) ((σ : ℝ) : ℂ)
+      - helsonLogTail (helsonPhaseOf ω') ((σ : ℝ) : ℂ)).re
+  linarith
+
+
+/-! ### The continuation event is measurable and finite-modification invariant -/
+
+theorem measurable_phaseTorusOf : Measurable phaseTorusOf := by
+  refine measurable_pi_lambda _ fun p => ?_
+  exact Measurable.subtype_mk (measurable_X (p : ℕ))
+
+theorem measurableSet_contEvent : MeasurableSet contEvent :=
+  measurable_phaseTorusOf measurableSet_continuableStratum
+
+theorem contEvent_invariant {ω ω' : Omega} (hfin : {n : ℕ | ω n ≠ ω' n}.Finite) :
+    ω ∈ contEvent ↔ ω' ∈ contEvent := by
+  have key : ∀ x y : Omega, {n : ℕ | x n ≠ y n}.Finite → x ∈ contEvent → y ∈ contEvent := by
+    intro x y hxy hx
+    refine mem_continuableStratum_of_finite_ne hx ?_
+    refine Set.Finite.subset (hxy.preimage (f := fun p : Nat.Primes => (p : ℕ))
+      (Set.injOn_of_injective (fun p q h => Subtype.ext h))) fun p hp => ?_
+    by_contra hc
+    exact hp (by
+      show ((phaseTorusOf y p : ℂ)) = ((phaseTorusOf x p : ℂ))
+      exact (helsonPhaseOf_eq_of_coord_eq (not_not.mp hc)).symm)
+  have hsymm : {n : ℕ | ω' n ≠ ω n}.Finite := by
+    refine hfin.subset fun n hn => ?_
+    exact fun hc => hn hc.symm
+  exact ⟨key ω ω' hfin, key ω' ω hsymm⟩
 
 end GaloisForLFunctions.RHTower
 

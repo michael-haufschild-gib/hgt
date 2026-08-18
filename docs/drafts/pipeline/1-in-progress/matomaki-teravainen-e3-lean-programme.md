@@ -252,7 +252,27 @@ for every `k`, obtained by applying the corpus's Montgomery count
 `Sieve/PowerFibreDivisorBound`.  At `k = 1` this *is* the Montgomery endpoint, so the single
 statement carries both ends of Jutila's interpolation with `k` free.  Axiom-clean, wired.
 
-**What remains of M4b is exactly the interpolation**: the middle term of Jutila's estimate, obtained
+### The Gram entry against `ζ` — `Sieve/AbelIncreasingWeight`, `Sieve/GramEntryZetaBound` (2026-08-18)
+
+```text
+norm_sum_mul_le_of_bounded_partial_mono :
+  ‖∑_{i<n} (w i : ℂ)·g i‖ ≤ 2·B·w(n−1)      (w ≥ 0 nondecreasing, all prefixes of g ≤ B)
+
+norm_sum_expSum_le_zeta (M) (ht : 2 ≤ |t|) :
+  ‖∑_{n<M} n^{-it}‖ ≤ 2·(‖ζ(1/2+it)‖ + M^{1/2}/|t| + 1/2 + 4|t|)·(M−1)^{1/2}
+```
+
+The corpus's `Sieve/AbelInequality` had Dirichlet's test only for a *nonincreasing* weight; the
+Gram entry needs the opposite monotonicity, since `n^{-it} = n^{1/2}·n^{-1/2-it}`.  Summing by
+parts against the increasing `n^{1/2}` reduces the entry to the critical-line prefixes, which
+`Sieve/CriticalTruncationZeta` compares with `ζ`.  Supporting: `criticalPrefixBound`,
+`norm_sum_range_criticalPt_prefix_le` (uniform over all prefixes, with the `n = 0` and `n = 1`
+degeneracies handled through `0^s = 0`), `weighted_criticalPt_eq`.  Axiom-clean, wired.
+
+**This is the analytic heart of Jutila's interpolation**: every term but `‖ζ‖` is elementary, and
+`‖ζ‖` is exactly what the corpus's fourth moment averages.
+
+**What remains of M4b is the averaging step**: the middle term of Jutila's estimate, obtained
 by paying the off-diagonal Gram entries with the fourth moment of `ζ` through
 `Sieve/CriticalTruncationZeta` rather than by the trivial diagonal.  Both of its inputs are now
 corpus theorems.

@@ -1168,3 +1168,48 @@ f ∈ A[X] monic, res(f, ∂f) a unit
 
 Base case `B = K`: a monic polynomial over an algebraically closed field splits.  The whole
 induction is elementary once `SC_1` is available.
+
+## Lean progress — `SC_k` in monogenic form is PROVED
+
+`HTGeometry/AffineSpaceSimplyConnected.lean` (wired, axiom-clean):
+
+```text
+HasEtaleSplitting B          every monic f ∈ B[X] with IsUnit (resultant f (derivative f))
+                             splits into monic linear factors
+hasEtaleSplitting_of_isAlgClosed      the base case
+exists_constant_shift        ** over an algebraically closed field of characteristic zero, all
+                                roots of a monic two-variable polynomial with separable fibres are
+                                one fixed polynomial plus constants **
+hasEtaleSplitting_polynomial ** the property passes from B to B[X] **
+hasEtaleSplitting_of_ringEquiv
+hasEtaleSplitting_mvPolynomial
+    ** SC_k : over an algebraically closed field of characteristic zero, a monic polynomial over
+       a polynomial ring in k variables whose resultant against its derivative is a UNIT splits
+       into monic linear factors **
+```
+
+The mechanism of `exists_constant_shift` is worth recording: separability of *every* fibre forces
+each difference of two roots to have no zero, hence (algebraically closed base) to be a constant;
+so the roots are `h + a_i` with `h = -(1/d)·(subleading coefficient)` and `a_i` constants, and
+translating by `h` produces a polynomial with one fewer variable.
+
+### The remaining gap, stated exactly
+
+`SC_k` as proved is the **monogenic** form: it needs the cover presented as `A[X]/(p)` with
+`res(p, p')` a *unit*.  The block cover of the endgame is étale over `A = K[w₁,…,w_{L-2}]`, but a
+monogenic model with unit resultant is exactly the statement that its integral closure is generated
+by one element, which does not follow formally.  So the endgame needs the **general** form:
+
+```text
+SCE_k :  B a finite free algebra of rank n over MvPolynomial (Fin k) K, K algebraically closed of
+         characteristic zero, with Algebra.discr a unit  ⟹  B ≅ A^n  (equivalently, a connected
+         such B has rank 1).
+```
+
+Note what does *not* work, so no session repeats it: taking a generic primitive element
+`θ = Σ t_i b_i` (even after adjoining the `t_i` as new variables) makes the discriminant a nonzero
+polynomial but never a unit — its vanishing locus is a hyperplane arrangement — because for a
+*split* cover the good generators are precisely the locally constant ones.  Monogenicity of an
+étale algebra over a polynomial ring is therefore equivalent to, not weaker than, what is being
+proved; a genuinely different argument is required for `SCE_1`, and the induction of
+`hasEtaleSplitting_polynomial` then carries it to all `k`.

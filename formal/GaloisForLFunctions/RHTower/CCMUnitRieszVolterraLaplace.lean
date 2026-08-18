@@ -274,4 +274,113 @@ theorem integral_Ioi_expVolterra_laplace
       (fun h hh => integral_expVolterraIntegrand_fst hb hz hh)
   rw [← hL, hswap, hR, MeasureTheory.integral_const_mul]
 
+/-! ## The first exponential moment on the half line -/
+
+/-- The first moment of the half-line exponential: `∫_0^∞ u exp(-w u) du = 1/w²`.  This is the
+`b = 0`, `φ = 1` case of the Volterra convolution law. -/
+theorem integral_Ioi_cexp_neg_mul_linear {w : ℂ} (hw : 0 < w.re) :
+    (∫ u in Ioi (0 : ℝ), Complex.exp (-(w * (u : ℂ))) * (u : ℂ)) = 1 / w ^ 2 := by
+  have hbnd : ∀ h : ℝ, 0 < h → |(1 : ℝ)| ≤ 1 * (1 + h) := by
+    intro h hh
+    rw [abs_one]
+    linarith
+  have hL1 := integral_Ioi_expVolterra_laplace (b := 0) le_rfl hw
+    (φ := fun _ : ℝ => (1 : ℝ)) (C := 1) measurable_const hbnd
+  have hinner : ∀ t : ℝ, t ∈ Ioi (0 : ℝ) →
+      Complex.exp (-(w * (t : ℂ))) *
+          ((∫ h in Ioc (0 : ℝ) t, Real.exp (-(0 * (t - h))) * (1 : ℝ) : ℝ) : ℂ) =
+        Complex.exp (-(w * (t : ℂ))) * (t : ℂ) := by
+    intro t ht
+    have hval : (∫ h in Ioc (0 : ℝ) t, Real.exp (-(0 * (t - h))) * (1 : ℝ)) = t := by
+      simp only [zero_mul, neg_zero, Real.exp_zero, mul_one]
+      rw [MeasureTheory.setIntegral_const]
+      have ht0 : (0 : ℝ) ≤ t := le_of_lt ht
+      simp [Real.volume_real_Ioc, ht0]
+    rw [hval]
+  rw [setIntegral_congr_fun measurableSet_Ioi hinner] at hL1
+  have hright : (∫ h in Ioi (0 : ℝ), Complex.exp (-(w * (h : ℂ))) * ((1 : ℝ) : ℂ)) = 1 / w := by
+    have hcast : ∀ h : ℝ, Complex.exp (-(w * (h : ℂ))) * ((1 : ℝ) : ℂ) =
+        Complex.exp (-(w * (h : ℂ))) := by
+      intro h; simp
+    rw [setIntegral_congr_fun measurableSet_Ioi (fun h _ => hcast h),
+      integral_Ioi_cexp_neg_mul_shift hw 0]
+    simp
+  rw [hright] at hL1
+  rw [hL1]
+  have hzero : ((0 : ℝ) : ℂ) = 0 := Complex.ofReal_zero
+  rw [hzero, add_zero]
+  have hwne : w ≠ 0 := by
+    intro h
+    rw [h] at hw
+    simp at hw
+  field_simp
+
+/-- Integrability of the shifted first-moment exponential integrand. -/
+theorem integrableOn_Ioi_cexp_neg_mul_linear_shift
+    {w : ℂ} (hw : 0 < w.re) {L : ℝ} (hL : 0 ≤ L) :
+    IntegrableOn (fun v : ℝ => Complex.exp (-(w * (v : ℂ))) * ((v - L : ℝ) : ℂ))
+      (Ioi L) volume := by
+  have hmaj : IntegrableOn (fun v : ℝ => (1 / (w.re / 2)) * Real.exp (-(w.re / 2 * v)))
+      (Ioi L) volume :=
+    (integrableOn_Ioi_rexp_neg_mul (by linarith) L).const_mul _
+  refine Integrable.mono' hmaj (by fun_prop) ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with v hv
+  have hvL : L < v := hv
+  have hv0 : (0 : ℝ) ≤ v := le_trans hL hvL.le
+  rw [norm_mul, Complex.norm_exp, Complex.norm_real, Real.norm_eq_abs]
+  have hre : (-(w * (v : ℂ))).re = -(w.re * v) := by simp [Complex.mul_re]
+  rw [hre, abs_of_nonneg (by linarith : (0 : ℝ) ≤ v - L)]
+  have hsplit : Real.exp (-(w.re * v)) =
+      Real.exp (-(w.re / 2 * v)) * Real.exp (-(w.re / 2 * v)) := by
+    rw [← Real.exp_add]; congr 1; ring
+  have hmom : v * Real.exp (-(w.re / 2 * v)) ≤ 1 / (w.re / 2) :=
+    mul_exp_neg_le_inv (by linarith) hv0
+  have hpos : (0 : ℝ) < Real.exp (-(w.re / 2 * v)) := Real.exp_pos _
+  rw [hsplit]
+  nlinarith [hmom, hpos, hL, hvL]
+
+/-- The shifted first exponential moment. -/
+theorem integral_Ioi_cexp_neg_mul_linear_shift {w : ℂ} (hw : 0 < w.re) (L : ℝ) :
+    (∫ v in Ioi L, Complex.exp (-(w * (v : ℂ))) * ((v - L : ℝ) : ℂ)) =
+      Complex.exp (-(w * (L : ℂ))) / w ^ 2 := by
+  have h := integral_Ioi_translate L
+    (fun v : ℝ => Complex.exp (-(w * (v : ℂ))) * ((v - L : ℝ) : ℂ))
+  rw [← h]
+  have hpt : ∀ u : ℝ, u ∈ Ioi (0 : ℝ) →
+      Complex.exp (-(w * ((L + u : ℝ) : ℂ))) * ((L + u - L : ℝ) : ℂ) =
+        Complex.exp (-(w * (L : ℂ))) * (Complex.exp (-(w * (u : ℂ))) * (u : ℂ)) := by
+    intro u _
+    rw [show ((L + u - L : ℝ) : ℂ) = (u : ℂ) from by push_cast; ring]
+    rw [show Complex.exp (-(w * ((L + u : ℝ) : ℂ))) =
+        Complex.exp (-(w * (L : ℂ))) * Complex.exp (-(w * (u : ℂ))) from by
+      rw [← Complex.exp_add]; congr 1; push_cast; ring]
+    ring
+  rw [setIntegral_congr_fun measurableSet_Ioi hpt, MeasureTheory.integral_const_mul,
+    integral_Ioi_cexp_neg_mul_linear hw]
+  rw [div_eq_mul_inv, div_eq_mul_inv]
+  ring
+
+/-- The real shifted first exponential moment. -/
+theorem integral_Ioi_rexp_neg_mul_linear_shift {c : ℝ} (hc : 0 < c) (L : ℝ) :
+    (∫ v in Ioi L, Real.exp (-(c * v)) * (v - L)) = Real.exp (-(c * L)) / c ^ 2 := by
+  have hcc : (0 : ℝ) < ((c : ℂ)).re := by simpa using hc
+  have hcomplex := integral_Ioi_cexp_neg_mul_linear_shift hcc L
+  have hcast : ∀ v : ℝ, ((Real.exp (-(c * v)) * (v - L) : ℝ) : ℂ) =
+      Complex.exp (-((c : ℂ) * (v : ℂ))) * ((v - L : ℝ) : ℂ) := by
+    intro v
+    rw [Complex.ofReal_mul, Complex.ofReal_exp]
+    congr 2
+    push_cast
+    ring
+  have hint : ((∫ v in Ioi L, Real.exp (-(c * v)) * (v - L) : ℝ) : ℂ) =
+      ∫ v in Ioi L, Complex.exp (-((c : ℂ) * (v : ℂ))) * ((v - L : ℝ) : ℂ) := by
+    rw [← integral_complex_ofReal]
+    exact setIntegral_congr_fun measurableSet_Ioi fun v _ => hcast v
+  have hgoal : ((∫ v in Ioi L, Real.exp (-(c * v)) * (v - L) : ℝ) : ℂ) =
+      ((Real.exp (-(c * L)) / c ^ 2 : ℝ) : ℂ) := by
+    rw [hint, hcomplex]
+    push_cast
+    ring
+  exact_mod_cast hgoal
+
 end GaloisForLFunctions.RHTower

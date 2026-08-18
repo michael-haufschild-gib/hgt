@@ -291,6 +291,80 @@ theorem exists_primeSum_gt_nhds (M : ℝ) :
   rw [Metric.mem_ball, Real.dist_eq, abs_of_nonneg (by linarith)]
   linarith
 
+
+/-! ### The sign symmetry -/
+
+theorem steinhausPrimePoly_rotHalf (σ : ℝ) (N : ℕ) (ω : Omega) :
+    steinhausPrimePoly σ N (rotOmegaBy (1 / 2) ω) = -steinhausPrimePoly σ N ω := by
+  rw [steinhausPrimePoly, steinhausPrimePoly, ← Finset.sum_neg_distrib]
+  refine Finset.sum_congr rfl fun p hp => ?_
+  rw [X_rotOmega_half (prime_of_mem_primeSet hp)]
+  ring
+
+/-- **Half the escape probability sits on each side.** -/
+theorem measure_re_steinhausPrimePoly_pos (σ : ℝ) (N : ℕ)
+    (hpos : 0 < ∑ p ∈ primeSet N, ((p : ℝ) ^ (-(2 * σ)))) :
+    (1 : ℝ) / 64 ≤ (steinhausMeasure {ω | (∑ p ∈ primeSet N, ((p : ℝ) ^ (-(2 * σ)))) / 4
+        < ((steinhausPrimePoly σ N ω).re) ^ 2 ∧ 0 < (steinhausPrimePoly σ N ω).re}).toReal
+      ∧ (1 : ℝ) / 64 ≤ (steinhausMeasure {ω | (∑ p ∈ primeSet N, ((p : ℝ) ^ (-(2 * σ)))) / 4
+        < ((steinhausPrimePoly σ N ω).re) ^ 2 ∧ (steinhausPrimePoly σ N ω).re < 0}).toReal := by
+  classical
+  set A : ℝ := ∑ p ∈ primeSet N, ((p : ℝ) ^ (-(2 * σ))) with hAdef
+  set Up : Set Omega := {ω | A / 4 < ((steinhausPrimePoly σ N ω).re) ^ 2
+    ∧ 0 < (steinhausPrimePoly σ N ω).re} with hUpdef
+  set Um : Set Omega := {ω | A / 4 < ((steinhausPrimePoly σ N ω).re) ^ 2
+    ∧ (steinhausPrimePoly σ N ω).re < 0} with hUmdef
+  have hmeasRe : Measurable fun ω : Omega => (steinhausPrimePoly σ N ω).re :=
+    Complex.measurable_re.comp (measurable_steinhausPrimePoly σ N)
+  have hUpmeas : MeasurableSet Up :=
+    (measurableSet_lt measurable_const (hmeasRe.pow_const 2)).inter
+      (measurableSet_lt measurable_const hmeasRe)
+  have hUmmeas : MeasurableSet Um :=
+    (measurableSet_lt measurable_const (hmeasRe.pow_const 2)).inter
+      (measurableSet_lt hmeasRe measurable_const)
+  -- the rotation exchanges the two sides
+  have hpre : rotOmegaBy (1 / 2) ⁻¹' Up = Um := by
+    ext ω
+    simp only [Set.mem_preimage, hUpdef, hUmdef, Set.mem_setOf_eq,
+      steinhausPrimePoly_rotHalf σ N ω, Complex.neg_re]
+    constructor
+    · rintro ⟨h1, h2⟩
+      exact ⟨by nlinarith [h1], by linarith⟩
+    · rintro ⟨h1, h2⟩
+      exact ⟨by nlinarith [h1], by linarith⟩
+  have heq : steinhausMeasure Um = steinhausMeasure Up := by
+    rw [← hpre, measure_preimage_rotOmegaBy (by norm_num) (by norm_num) hUpmeas]
+  -- the two sides are disjoint and exhaust the escape event
+  have hdisj : Disjoint Up Um := by
+    refine Set.disjoint_left.mpr fun ω h1 h2 => ?_
+    have := h1.2
+    have := h2.2
+    linarith
+  have hunion : Up ∪ Um = {ω : Omega | A / 4 < ((steinhausPrimePoly σ N ω).re) ^ 2} := by
+    ext ω
+    simp only [Set.mem_union, hUpdef, hUmdef, Set.mem_setOf_eq]
+    constructor
+    · rintro (⟨h1, _⟩ | ⟨h1, _⟩) <;> exact h1
+    · intro h1
+      rcases lt_trichotomy ((steinhausPrimePoly σ N ω).re) 0 with hlt | heq0 | hgt
+      · exact Or.inr ⟨h1, hlt⟩
+      · exfalso
+        rw [heq0] at h1
+        norm_num at h1
+        linarith
+      · exact Or.inl ⟨h1, hgt⟩
+  have hbase := measure_re_steinhausPrimePoly_gt σ N hpos
+  have hsum : steinhausMeasure Up + steinhausMeasure Um
+      = steinhausMeasure {ω : Omega | A / 4 < ((steinhausPrimePoly σ N ω).re) ^ 2} := by
+    rw [← hunion, measure_union hdisj hUmmeas]
+  have hfin1 : steinhausMeasure Up ≠ ⊤ := measure_ne_top _ _
+  have hfin2 : steinhausMeasure Um ≠ ⊤ := measure_ne_top _ _
+  have htoReal : (steinhausMeasure Up).toReal + (steinhausMeasure Um).toReal
+      = (steinhausMeasure {ω : Omega | A / 4 < ((steinhausPrimePoly σ N ω).re) ^ 2}).toReal := by
+    rw [← ENNReal.toReal_add hfin1 hfin2, hsum]
+  have hequal : (steinhausMeasure Um).toReal = (steinhausMeasure Up).toReal := by rw [heq]
+  constructor <;> [skip; rw [hequal]] <;> linarith [hbase, htoReal, hequal]
+
 end GaloisForLFunctions.RHTower
 
 end

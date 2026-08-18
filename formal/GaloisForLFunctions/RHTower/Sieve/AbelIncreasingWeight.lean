@@ -18,10 +18,10 @@ open Finset
 /-- **Abel's inequality for a nondecreasing nonnegative weight.** -/
 theorem norm_sum_mul_le_of_bounded_partial_mono (n : ℕ) (w : ℕ → ℝ) (g : ℕ → ℂ) {B : ℝ}
     (hw0 : 0 ≤ w 0) (hmono : ∀ i, w i ≤ w (i + 1))
-    (hB : ∀ k, ‖∑ i ∈ Finset.range k, g i‖ ≤ B) :
+    (hB : ∀ k, k ≤ n → ‖∑ i ∈ Finset.range k, g i‖ ≤ B) :
     ‖∑ i ∈ Finset.range n, ((w i : ℝ) : ℂ) * g i‖ ≤ 2 * B * w (n - 1) := by
   classical
-  have hB0 : 0 ≤ B := le_trans (norm_nonneg _) (hB 0)
+  have hB0 : 0 ≤ B := le_trans (norm_nonneg _) (hB 0 (Nat.zero_le n))
   have hwmono : ∀ i j : ℕ, i ≤ j → w i ≤ w j := by
     intro i j hij
     induction j with
@@ -38,7 +38,7 @@ theorem norm_sum_mul_le_of_bounded_partial_mono (n : ℕ) (w : ℕ → ℝ) (g :
   refine le_trans (norm_sub_le _ _) ?_
   have h1 : ‖((w (n - 1) : ℝ) : ℂ) * ∑ i ∈ Finset.range n, g i‖ ≤ w (n - 1) * B := by
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hwn]
-    exact mul_le_mul_of_nonneg_left (hB n) hwn
+    exact mul_le_mul_of_nonneg_left (hB n le_rfl) hwn
   have h2 : ‖∑ i ∈ Finset.range (n - 1),
       (((w (i + 1) : ℝ) : ℂ) - ((w i : ℝ) : ℂ)) * ∑ j ∈ Finset.range (i + 1), g j‖
       ≤ w (n - 1) * B - w 0 * B := by
@@ -46,13 +46,14 @@ theorem norm_sum_mul_le_of_bounded_partial_mono (n : ℕ) (w : ℕ → ℝ) (g :
     have hterm : ∀ i ∈ Finset.range (n - 1),
         ‖(((w (i + 1) : ℝ) : ℂ) - ((w i : ℝ) : ℂ)) * ∑ j ∈ Finset.range (i + 1), g j‖
           ≤ (w (i + 1) - w i) * B := by
-      intro i _
+      intro i hi
+      rw [Finset.mem_range] at hi
       rw [norm_mul]
       have hdiff : ‖((w (i + 1) : ℝ) : ℂ) - ((w i : ℝ) : ℂ)‖ = w (i + 1) - w i := by
         rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs,
           abs_of_nonneg (by linarith [hmono i])]
       rw [hdiff]
-      exact mul_le_mul_of_nonneg_left (hB (i + 1)) (by linarith [hmono i])
+      exact mul_le_mul_of_nonneg_left (hB (i + 1) (by omega)) (by linarith [hmono i])
     refine le_trans (Finset.sum_le_sum hterm) ?_
     rw [← Finset.sum_mul]
     have hts : ∑ i ∈ Finset.range (n - 1), (w (i + 1) - w i) = w (n - 1) - w 0 :=

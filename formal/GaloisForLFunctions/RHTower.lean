@@ -10166,3 +10166,4 @@ import GaloisForLFunctions.RHTower.Sieve.PowerFibreDivisorBound
 import GaloisForLFunctions.RHTower.Sieve.CriticalTruncationZeta
 import GaloisForLFunctions.RHTower.Sieve.JutilaLargeValues
 import GaloisForLFunctions.RHTower.Sieve.AbelIncreasingWeight
+import GaloisForLFunctions.RHTower.Sieve.GramEntryZetaBound
