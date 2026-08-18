@@ -4438,3 +4438,54 @@ here was a same-namespace collision and has been removed.
 3. `Bad₂` from `card_large_le_of_sum_le` at `θ = 3h/40`.
 4. `squarefree_count_ge_trunc` at `R = 500`, `M' = ⌈√(x+h√x)⌉`, giving
    `∑_{fibre} μ² ≥ ϱL − 500 − L/500 − θ ≥ (1/2)ϱL` for `L ≥ h/4` large.
+
+## All four discharge steps are Lean — `Sieve/FibreTailAverage`, `Sieve/FibreSquarefreeMass` (2026-08-18)
+
+```text
+sum_fibre_windowTail_le (hx : 4 ≤ x) (hh : 0 ≤ h) :
+  ∑_{a ∈ outerBlock x h} windowTail (fibreStartIdx x a) (fibreLen x h a) R M
+    ≤ 4 ∑_{y ∈ [⌈√x/2⌉, ⌈√x⌉]} windowTail (y−1) (⌈h⌉+1) R M
+
+sum_shift_windowTail_le (hA : 1 ≤ A) (hR : 1 ≤ R) (hAB : A−1 ≤ B+L) :
+  ∑_{y ∈ [A,B]} windowTail (y−1) L R M ≤ L·((B + L − (A−1))/R + M)
+
+fibreTailBudget x h R M' := 4(⌈h⌉+1)·((⌈√x⌉ + (⌈h⌉+1) − (⌈√x/2⌉−1))/R + M')
+sum_fibre_windowTail_le_budget : ∑_a windowTail … ≤ fibreTailBudget x h R M'
+card_fibre_bad_le (hθ : 0 < θ) :
+  #{a ∈ outerBlock x h : θ ≤ windowTail …} ≤ fibreTailBudget x h R M' / θ
+
+fibre_squarefree_mass (hbig …) (hMM : M' ≤ M) (hsq …)
+    (hgap : ∀ a, R + fibreLen/R + θ ≤ (1/2)·ϱ·fibreLen) :
+  ∀ a ∈ outerBlock x h, windowTail … ≤ θ →
+    (1/2)·ϱ·fibreLen x h a ≤ ∑_{b ∈ innerFibre x h a} μ(b)²
+```
+
+Step 1 uses `windowTail_mono` + `fibreLen_le` + `sum_block_comp_start_le`; step 2 reindexes
+`y ↦ y−1` through `Finset.sum_image` and enlarges to `Ico (A−1) B` before
+`sum_tail_divisor_count_le`; step 3 is the corpus's own `card_large_le_of_sum_le`; step 4 is
+`squarefree_count_ge_trunc` at the fibre window, via `innerFibre_eq_Ioc`.  Seven theorems, axiom-clean,
+wired, `lake build`-audited.
+
+### Revised constants
+
+`R = 500`, `M' = ⌈√(x+h√x)⌉`, `M = ⌊x+h√x⌋`, and **`θ = h/20`** (not `3h/40`, which is too tight):
+with `fibreLen ≥ h/4`, `θ ≤ h/20 ≤ L/5` gives
+`R + L/R + θ ≤ 500 + 0.002L + 0.2L ≤ (1/2)ϱL` once `L ≥ 4902`, and
+`fibreTailBudget/θ ≈ 0.08√x + 80x^{1/4}`, a small fraction of `#outerBlock ≍ √x`.
+
+### The one brick still missing for step 1 with no hypotheses
+
+A **numeric lower bound for `squarefreeDensity`**.  The corpus owns
+`squarefreeDensity_nonneg'` and `squarefreeDensity_le_one` but no positive lower bound, and `hgap`
+needs one.  Two routes, both short:
+
+* `Sieve/SquarefreeCount.abs_sum_Icc_moebius_div_sq_sub_le (hR : 1 ≤ R)` gives
+  `|∑_{d ≤ R} μ(d)/d² − ϱ| ≤ 1/R`; at `R = 4` the head is `1 − 1/4 − 1/9 = 23/36` and the bound
+  gives `ϱ ≥ 23/36 − 1/4 = 7/18 ≈ 0.389`.
+* Or `ϱ ≥ 1 − ∑_{d ≥ 2} 1/d² = 2 − π²/6 ≈ 0.355` from mathlib's Basel sum.
+
+Either yields `ϱ ≥ 1/3`, which is all `hgap` needs (it was verified above with `ϱ ≥ 0.6`; at
+`ϱ ≥ 1/3` take `θ = h/40` and the same argument closes).  After that brick, `eventually_fibre_step_one`
+composes with `fibre_squarefree_mass` and `card_fibre_bad_le` into step 1 **with no hypotheses at
+all**, and what remains on the card is the marker supply and the
+`MobiusReciprocalMarkerPrimeCapacity` passage.

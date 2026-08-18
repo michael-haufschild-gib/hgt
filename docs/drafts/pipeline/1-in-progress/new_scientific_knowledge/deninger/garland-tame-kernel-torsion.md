@@ -424,3 +424,86 @@ With `milnorKDegMap_ratFuncConstHom_injective` this gives **both outer exactness
 unconditionally.  What remains is exactness in the middle — the degree filtration `L_d` and
 `L_d/L_{d−1} ≅ ⊕_{deg π = d} K_{n−1}^M(F[X]/π)` — after which the Bass–Tate–Kato norm and the
 projection formula follow.
+
+### Milnor's exact sequence — the residue is surjective at every finite place, and the degree
+### filtration is compatible with the residues `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/PolynomialPlaceResidue.lean` (wired, axiom-clean).
+
+```text
+residueDataAtPlace_residueUnit_surjective  every residue class at a finite place of a Dedekind
+                                           domain is the residue of an integral unit
+milnorResidueAtPlace_surjective            ** ∂ : K_{n+1}^M(K) → K_n^M(κ(v)) is SURJECTIVE at every
+                                              finite place, every side condition discharged **
+polyUnit hp                                a nonzero polynomial, as a unit of F(t)
+notMem_span_of_natDegree_lt                deg p < deg π  ⟹  π ∤ p
+polyUnit_val'_eq_zero_of_natDegree_lt      hence p is a unit of valuation zero at π
+milnorResidue_eq_zero_of_natDegree_lt      ** ∂_π kills every symbol whose entries all have degree
+                                              below deg π **
+```
+
+The last item is the compatibility that makes the degree filtration of Milnor's proof work:
+`∂_π(L_d) = 0` whenever `deg π > d`.  With left exactness, right exactness, and this compatibility
+in hand, what remains of the sequence is the identification of the graded pieces
+`L_d/L_{d−1} ≅ ⊕_{deg π = d} K_{n−1}^M(F[X]/π)`.
+
+### Milnor's exact sequence — the degree filtration `[PROVED]`
+
+Same module.
+
+```text
+closure_polyUnit_eq_top                  ** the nonzero polynomials generate (F(t))ˣ **
+degreeFiltration d n                     L_d ⊆ K_n^M(F(t)): symbols of polynomials of degree ≤ d
+degreeFiltration_mono                    the filtration is increasing
+milnorResidue_degreeFiltration_eq_zero   ** ∂_π(L_d) = 0 whenever deg π > d **
+```
+
+`closure_polyUnit_eq_top` is the reason the filtration is exhaustive: every unit of `F(t)` is a
+ratio of nonzero polynomials, so every symbol decomposes by bilinearity into symbols of polynomials
+and therefore lies in some `L_d`.  With the filtration, its compatibility with the residues, and the
+two outer exactness statements already proved, the only remaining ingredient of Milnor's sequence is
+the identification of the graded pieces
+
+`L_d / L_{d−1} ≅ ⊕_{deg π = d} K_{n−1}^M(F[X]/π)`,
+
+whose surjectivity is division with remainder and whose injectivity is the construction of a section
+out of the specializations.
+
+### Slot-wise generation in every degree `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorKSlotGeneration.lean` (wired, axiom-clean).
+
+```text
+milnorClassDeg_one_of_eq          a symbol with a 1 in some slot has vanishing class
+milnorClassDeg_inv_of_eq          inverting one slot negates the class
+milnorClassDeg_mem_of_generating  ** if a subgroup of K_n^M(K) contains the classes of all symbols
+                                     with entries in a generating set of Kˣ, it contains every
+                                     symbol class **
+```
+
+This is the degree-`n` analogue of the degree-two `symbolSubgroup_closure_le`, proved by a double
+induction: peel the entries of the symbol from the left, and at each slot use that
+`b ↦ {…, b, …}` is a homomorphism, so the set of admissible entries is a subgroup containing the
+generating set, hence everything.
+
+Its immediate consequence is that **Milnor's degree filtration is exhaustive**: the nonzero
+polynomials generate `(F(t))ˣ` (`closure_polyUnit_eq_top`), so every symbol class of `K_n^M(F(t))`
+is a class of a *polynomial* symbol and therefore lies in some `L_d`.
+
+### Milnor's exact sequence — the filtration is exhaustive and its bottom is `K_n^M(F)` `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/PolynomialPlaceResidue.lean` (wired, axiom-clean).
+
+```text
+exists_common_degree_bound        a finite list of polynomial units has a common degree bound
+degreeFiltrationUnion             the union of the filtration, as a subgroup
+exists_mem_degreeFiltration       ** every class of K_n^M(F(t)) lies in some L_d **
+polyUnit_of_natDegree_le_zero     a polynomial unit of degree zero is the image of a unit of F
+exists_list_constUnits            a list of such lifts to a list of units of F
+degreeFiltration_zero_le_range    ** L_0 ⊆ image of K_n^M(F) **
+```
+
+With `milnorKDegMap_ratFuncConstHom_injective` the bottom of the filtration is therefore a copy of
+`K_n^M(F)`, and with `exists_mem_degreeFiltration` the filtration exhausts `K_n^M(F(t))`.  Every
+structural ingredient of Milnor's sequence is now formal except the graded-piece isomorphism
+`L_d/L_{d−1} ≅ ⊕_{deg π = d} K_{n−1}^M(F[X]/π)`.

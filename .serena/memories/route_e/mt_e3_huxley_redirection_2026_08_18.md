@@ -203,3 +203,16 @@ clash because it need not import the other file.
 Landed instead: `windowTail`, `windowTail_nonneg`, `windowTail_mono`, `fibreLen_le` — the two facts
 that let the per-fibre tail be replaced by the tail at the uniform length `⌈h⌉+1` so that
 `sum_block_comp_start_le` can aggregate it.
+
+## All four squarefree-discharge steps landed (2026-08-18, 19:40)
+
+`Sieve/FibreTailAverage` (`sum_fibre_windowTail_le`, `sum_shift_windowTail_le`) and
+`Sieve/FibreSquarefreeMass` (`fibreTailBudget`, `sum_fibre_windowTail_le_budget`,
+`card_fibre_bad_le`, `fibre_squarefree_mass`).  Revised constants: `R = 500`, `θ = h/20`
+(`3h/40` is too tight), `M' = ⌈√(x+h√x)⌉`, `M = ⌊x+h√x⌋`.
+
+**The one brick left for hypothesis-free step 1: a numeric lower bound for `squarefreeDensity`.**
+The corpus has only `squarefreeDensity_nonneg'` and `squarefreeDensity_le_one`.  Get it from
+`SquarefreeCount.abs_sum_Icc_moebius_div_sq_sub_le` at `R = 4` (head `1 − 1/4 − 1/9 = 23/36`, error
+`≤ 1/4`, so `ϱ ≥ 7/18`), or from `ϱ ≥ 2 − π²/6` via mathlib's Basel sum.  `ϱ ≥ 1/3` suffices with
+`θ = h/40`.

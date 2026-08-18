@@ -36,7 +36,7 @@ open Algebra
 
 section PiTrace
 
-variable {K ι : Type*} [Field K] [Fintype ι] [DecidableEq ι]
+variable {K ι : Type*} [CommRing K] [Fintype ι] [DecidableEq ι]
 
 /-- The algebra trace of a finite product of copies of a field is the sum of the coordinates. -/
 theorem trace_pi_apply (x : ι → K) : Algebra.trace K (ι → K) x = ∑ i, x i := by
@@ -58,6 +58,12 @@ theorem discr_pi_basisFun : Algebra.discr K (Pi.basisFun K ι) = 1 := by
     · intro hi
       exact absurd (Finset.mem_univ i) hi
   rw [h, Matrix.det_one]
+
+end PiTrace
+
+section PiField
+
+variable {K ι : Type*} [Field K] [Fintype ι] [DecidableEq ι]
 
 /-- **Every `K`-algebra homomorphism out of a finite product of copies of `K` is a coordinate.** -/
 theorem exists_eval_of_algHom_pi (g : (ι → K) →ₐ[K] K) : ∃ i, ∀ x : ι → K, g x = x i := by
@@ -124,7 +130,7 @@ theorem exists_eval_of_algHom_pi (g : (ι → K) →ₐ[K] K) : ∃ i, ∀ x : �
   · intro hi'
     exact absurd (Finset.mem_univ i) hi'
 
-end PiTrace
+end PiField
 
 section SplitAlgebra
 

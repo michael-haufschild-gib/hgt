@@ -10236,3 +10236,6 @@ import GaloisForLFunctions.RHTower.Sieve.GoodStartFibreWindow
 import GaloisForLFunctions.RHTower.Sieve.FibreStepOne
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeTailTruncate
 import GaloisForLFunctions.RHTower.Sieve.FibreSquarefreeIngredients
+import GaloisForLFunctions.RHTower.Sieve.FibreTailAverage
+import GaloisForLFunctions.RHTower.Sieve.FibreSquarefreeMass
+import GaloisForLFunctions.RHTower.Sieve.SquarefreeDensityBound
