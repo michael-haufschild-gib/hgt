@@ -225,3 +225,40 @@ phase has `θ''(t) = 1/(2t) > 0`, so the hypotheses apply directly to each twist
 What is missing is exactly the **product main term**: the asymptotic (not merely bounded)
 evaluation of `∫_T^{2T}|ζ(1/2+it)M(1/2+it)|²dt` with Möbius-times-polynomial coefficients.  That is
 Conrey's computation and is the next brick.
+
+## Major correction to the plan: the AFE and the Riemann–Siegel phase are already owned (2026-08-18)
+
+A deeper audit changes the shape of the programme substantially.  The classical sharp-cutoff AFE
+does **not** have to be built.
+
+- **The AFE.**  `RHTower/SmoothAFEZetaDualReflection.lean`,
+  `riemannZeta_line_eq_two_tsum_smoothAFE_dualWeight`:
+  ```
+  ζ(½+iτ) = ∑_{n≥1} n^{-(½+iτ)} · smoothAFECutoff (n/x)
+          + ∑_{n≥1} zetaChi(½+iτ) · n^{(½+iτ)-1} · smoothAFEZetaDualWeight τ (n·x)
+          − smoothAFEZetaShiftedPoleResidue (½+iτ) x
+  ```
+  exact, unconditional, for every `x > 0`.  73 `SmoothAFEZeta*` modules support it, including the
+  dual-weight tail bound `exists_norm_smoothAFEZetaDualWeight_le_inv`, the weight-freezing cost
+  `exists_norm_smoothAFEZetaDualSeriesWeightError_le`, and `zetaChi` modulus/derivative bounds
+  (`SmoothAFEZetaChi*`).  This is exactly the input the cancellation estimate needs: two absolutely
+  convergent Dirichlet series with smooth weights.
+- **The Riemann–Siegel phase.**  `RHTower/HardyZPhaseAsymptotic.lean` owns the branch-free global
+  phase `gammaHardyTheta τ = ∫_0^τ gammaHardyPhaseRate`, with
+  `hasDerivAt_gammaHardyTheta` (`θ' = gammaHardyPhaseRate`), the explicit first-order law
+  `gammaHardyPhaseRate_sub_log_conductor_bound`:
+  `|θ'(t) − ½log(t/2π)| ≤ 33/(16t²) + π/(2t)`, the exact second jet
+  `deriv_deriv_gammaHardyTheta` with `abs_deriv_gammaHardyPhaseRate_le`:
+  `|θ''(t)| ≤ 1/t² + π/(4t)`, strict convexity on `[0,∞)`, and
+  `exp_theta_mul_riemannZeta_line_eq_hardyZ` (`e^{iθ(τ)}ζ(½+iτ) = hardyZ τ`, real).
+
+So Phase A of the programme (Hardy phase + AFE) is **owned**, not open.  The revised open list is:
+
+1. **Z-side AFE.**  Convert the two-series AFE into a real expansion of `hardyZ` using
+   `zetaChi(½+iτ) = e^{-2iθ(τ)}`, giving
+   `hardyZ τ = ∑_n n^{-1/2}( w₁(n/x)·cos(θ(τ) − τ log n) + Re[w₂(τ, n x) e^{-i(θ(τ) − τ log n)}] ) + R(τ)`.
+   Mechanical, needs only the corpus's phase-gauge identities.
+2. **Cell cancellation.**  Apply the first-derivative test term by term.  The atomic estimate is now
+   Lean-certified: see the next section.
+3. **The mollified second moment** `∫_T^{2T}|ζM|² ≪ T` — still the crux, and now the only genuinely
+   open analytic input.

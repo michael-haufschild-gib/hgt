@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 18 August 2026, commit
-`18c92e9f10d8ebcb9ba1fb43a3e22487ceecea95`, plus declaration-index review of Lean working-tree
+`9f81eb328b1d87de4e40d2e4f4010f4efac20b76`, plus declaration-index review of Lean working-tree
 sources. Scientific status below comes only from Lean declarations, dependencies, theorem docstrings,
 and explicit gap/no-go markers. Pipeline cards and papers are not evidence for this map.
 
@@ -43,7 +43,7 @@ terminal as independent producer.
 | G | Suzuki/Mobius/Gamma source -> marked pre-scalar boundary carrier -> wall orientation -> RH | Compare normalized zero-mode readout with transported escaped coefficient before scalar erasure. |
 | L | completed Green/BV/Big-Witt source -> singular Calderon--Witt comparison -> physical reader -> RH | Bounded square-summable all-prime restriction whose radical is exactly arithmetic boundaries and whose target is existing physical landing. |
 | O | exact restricted-Weil operator -> canonical true-ground heads -> coherent signed producer -> nonnegative floor -> RH | Sign of cancellation-preserving coherent finite-head producer, equivalently eventual reverse-prime control on canonical actual heads. |
-| P | source-horizontal second-Cartier orbit -> radial Krein energy -> endpoint moderation -> RH | Produce endpoint moderation from source before divisor selection; boundedness itself is RH-equivalent. |
+| P | source-horizontal second-Cartier orbit -> radial Krein energy -> endpoint moderation -> RH | Produce endpoint order globally before divisor selection; finite circle measure after Xi selection and literal scalar short are formally ruled out. |
 | Q | continued Hurwitz/Cauchy source -> exterior positive-frequency paired kernel -> orientation zero -> RH | Passivity/PSD of explicit finite reduced prime--Gamma matrices on exterior positive poles. |
 | T | finite Xi-Taylor/theta-tail source -> exact reflection bridge -> raw core-current bound -> RH | Joint upper estimate for combined top-row plus surviving finite-translation remainder at same cutoff/depth. |
 | U | shifted hard-edge source -> cofinal shifted Hankel tail or first-contact exclusion -> RH | Uniform cofinal source positivity excluding completed-boundary rough null ground. |
@@ -174,13 +174,17 @@ odd jet; exact scalar readout/ports (`MobiusGammaXiPreScalarAffinePrimePolarGamm
 first Xi Livsic defect and persistent Suzuki leakage floor (`SuzukiXiFirstDefectJetSource.lean`);
 unique Gamma/Euler boundary renormalization; coefficient-faithful Wold domination of boundary
 Hessian; universal domination RH-equivalent; scalar cancellation reduces to RH or universal source
-erasure.
+erasure; actual multiplicity-faithful Euler--Wold transverse reporter converges to half primitive
+budget and eventually lies strictly inside budget, while no linear reporter can both remain
+source-budgeted and dominate literal endpoint
+(`SourceHorizontalEulerWoldTransverseDefectBudgetReporter.lean`).
 
 **Open core.** Construct pre-scalar boundary comparison transporting prime label, multiplicity, and
 escaped coefficient; compare it to normalized zero-mode debt; exclude universal erasure; and prove
 favorable signed inequality on actual wall/ground state. More floor identities, positive scalar
 shadows, or zero-clock commutators cannot close route because Lean separates surviving charge from
-vanishing jet.
+vanishing jet. Transverse half-budget reporter closes source occurrence but also proves missing
+endpoint comparison must be nonlinear or distinct-channel, not another linear budget reporter.
 
 ### L — Deninger/Green/Cartier singular boundary comparison
 
@@ -252,12 +256,22 @@ Xi divisor forces unbounded escape. Source theorem bounding actual orbits would 
 unit character; every strict-right actual Xi orbit unbounded with energy tending to infinity;
 endpoint moderation iff bounded orbit; universal actual-orbit boundedness iff RH
 (`SourceHorizontalSecondCartierOrbitCoercivity.lean`); bilateral non-scalar admission/topology;
-completed conormal base residue and Cauchy-cube Gram; primitive base trace budget below one.
+finite positive circle moments are moderate, no finite circle measure represents any occupied
+strict-right literal endpoint, universal representability is RH-equivalent, and no scalar multiple
+of the literal non-spectral conormal short bounds actual radial energy
+(`SourceHorizontalSecondCartierCompactCircleFirewall.lean`);
+completed conormal base residue and Cauchy-cube Gram; primitive base trace budget below one;
+strictly positive radial source work and exact positive-gain equality between Ward anomaly energy
+and radial work (`HedenmalmThetaAnomalyWardRadialSourceWorkBridge.lean`); Gamma-six shell Green
+moments agree coefficientwise with Wold prime-clock moments, while equality of reflected shell
+responses is exactly critical-line condition (`SourceHorizontalShellGreenPrimeClockProfile.lean`).
 
-**Open core.** Derive endpoint moderation/order from literal completed source before divisor
-selection while retaining coefficient and multiplicity. Universal boundedness itself is not usable:
-Lean classifies it as RH-equivalent. Indefinite conservation, determinant, Krein form, or compactness
-does not bound reciprocal radial orbit. Orbit theorem is formal, not pending paper/scratch work.
+**Open core.** Derive endpoint moderation/order globally from literal completed source before divisor
+selection while retaining coefficient and multiplicity. Universal boundedness and universal finite
+circle representability are RH-equivalent. Post-selected compact positive-measure admission is
+impossible on every strict-right copy, and the literal static conormal short admits no uniform orbit
+budget. Viable producer must therefore be pre-divisor and source-natural; indefinite conservation,
+determinant, Krein form, compactness language, or scalar shorting cannot supply it.
 
 ### Q — Hurwitz/Cauchy source orientation
 
@@ -324,7 +338,10 @@ adaptive Jacobi differences reduce to diagonal connection; every fixed pair and 
 eventually ordered; fixed-degree positivity does not control prescribed cofinal diagonal; arbitrarily
 fast positive recession schedules with divergent spread exist; non-RH first zero contact is genuine
 completion-boundary rough null vector absent from strict smooth interior; no scalar counterterm
-renormalizes interior and physical Kelvin charts together.
+renormalizes interior and physical Kelvin charts together; every occupied strict terminal-frontier
+rung carries exact adaptive source price, and non-RH produces such source-priced strict renewal
+events above every mass threshold (`XiShiftedHankelStrictFrontierCurvatureRenewal.lean`). Thus
+cofinal producer admission is closed; favorable sign/exclusion is not.
 
 Formal sources: `XiShiftedReciprocalHankelTailCriterion.lean`,
 `XiShiftedCanonicalAdmissionAdaptiveArithmeticSourceDegreeConnection.lean`,
@@ -356,13 +373,16 @@ converges to collision charge; RH iff source excess tends to zero; eventual exce
 three-depth Cayley pencil retains prime labels, both orientations, multiplicity, and source phase;
 information loss converges to collision charge; eventual loss `<2` proves RH; Ward--Green
 normalization gives stronger uniform quantum; coefficient-faithful exterior contours detect same
-boundary quantum.
+boundary quantum; full exterior prime-Cayley source pencil retains both adjacent orientations and
+dephases exactly to multiplicity-square packet energy, with RH equivalent to that finite source
+energy tending to zero (`XiHorizontalCollisionWardGreenExteriorSourceCarrier.lean`).
 
 Formal sources: `XiHorizontalCollisionChargeEndpoint.lean`,
 `XiReflectionSelfIntersectionCharge.lean`,
 `XiHorizontalCollisionTwoPrimeCesaroCarrier.lean`,
 `XiHorizontalCollisionPrimeCayleyInformationLoss.lean`,
 `XiHorizontalCollisionWardGreenCayleyQuantum.lean`,
+`XiHorizontalCollisionWardGreenExteriorSourceCarrier.lean`,
 `HedenmalmCoefficientFaithfulExteriorSourceContour.lean`,
 `HedenmalmExteriorSourceThetaBoundaryGap.lean`.
 
@@ -431,6 +451,30 @@ projective reflection law before divisor selection. This is adjacent to Q but cu
 `TwoDilationSpectralRepresentation.lean` gives unique positive temperate measure and real-divisor
 support for theta-null two-dilation form. Missing theorem is exhaustive comparison with full Xi
 divisor. Until exhaustion, TD is C1 subarchitecture, not independent route.
+
+### BW — barrelled prime-depth Wold selection
+
+`PrimeDepthBVWoldBarrelledSourceSelector.lean` proves a Banach--Steinhaus null-orbit principle and
+packages exact completed-source certificate: barrelled completion, null cofinal orbit, pointwise
+bounded continuous readouts, coefficient preservation, and physical landing. One certificate forces
+critical-line placement; a global producer proves RH.
+
+Open theorem: construct global completed barrelled-source certificate from literal prime-depth BV/Wold
+source. Current structure names genuine source obligations rather than replacing them by a scalar
+summability predicate, but no unconditional global witness exists. BW remains candidate adjacent to
+L/P.
+
+### AF — adaptive Fisher contiguity selection
+
+`SourceHorizontalAdaptiveFisherCofinalContiguitySelection.lean` proves reflected adaptive prime
+occupation has unbounded Jeffreys work off neutral grade; finite source laws with absolute continuity
+cannot support asymptotically perfect separating tests; and actual convergent abelian class laws
+supply contiguity. A coefficient-faithful adaptive scale-orbit certificate forces centered rate zero,
+and certificates on all multiplicity-resolved Xi copies prove RH.
+
+Open theorem: construct those adaptive class-law scale-orbit certificates globally from source,
+before choosing Xi copy. The certificate is more source-specific than bare orbit boundedness but
+remains zero-indexed until global handoff is built.
 
 ## Terminal and retired mechanisms
 
@@ -576,7 +620,8 @@ is:
 5. Can all-prime Green restriction be square-summable with common kernel exactly arithmetic
    boundary and target existing physical landing?
 6. Is completed CCM symbol nonnegative on every canonical actual-head density?
-7. What source moderation law bounds second-Cartier radial orbit while retaining multiplicity?
+7. What pre-divisor completed-source law forces moderation of the literal second-Cartier endpoint,
+   despite the proved post-selected finite-measure and scalar-short firewalls?
 8. Why is explicit positive-frequency reduced Cauchy kernel PSD on every exterior finite packet?
 9. What joint estimate controls T depth-invariant top-row/translation remainder without splitting
    cancellation?

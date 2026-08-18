@@ -3371,3 +3371,32 @@ What is left for Lemma 4 is the bridge `lam ≥ (block mass)/(J (2 K U)^2)`: app
 `norm_le_of_block_averages` to the coefficient vector, Cauchy--Schwarz each block average against
 the block energy, and feed in the block masses from Lemma 2.  Then `|a_p| = |P_c(t_p)| ≤ √J ‖c‖ ≤ 1`
 once `w(x) = o(1)` is small enough, which is Lemma 4.
+
+### Lemma 4's analytic content is proved
+
+`HTGeometry/BlockRayleighLowerBound.lean` (axiom-clean, wired) closes the bridge:
+
+- `unitCoeffConstSum`, `unitCoeffConst_le_sum` — the aggregate fixed-node constant.
+- **`rayleigh_lower_of_blocks`** — with blocks whose nodes lie in `η`-separated sub-intervals of
+  `[0,1]` and whose masses are at least `m`,
+
+```text
+   m / ( J (2 K U)^2 ) * ∑_k c_k^2  ≤  ∑_r w_r (P_c(x_r))^2 ,
+   K = J 2^{J-1}/(η^{J-1}(J-1)!) ,   U = ∑_k unitCoeffConst J k .
+```
+
+  The proof takes `eps = sqrt(E/m)` with `E` the total energy: Cauchy--Schwarz makes every block
+  average at most `eps` times its mass exactly because the mass is at least `m`, so
+  `norm_le_of_block_averages` applies and bounds each coefficient by `2 K U eps`.  No maximum over
+  blocks is needed.
+- **`exists_unit_polynomial_solution`** — a Rayleigh floor `lam` and a target with
+  `J ∑_k ξ_k^2 ≤ lam^2` give `c` with `H c = ξ` and `|P_c(t)| ≤ 1` for every `t ∈ [0,1]`.
+
+That is the analytic content of Andersson's Lemma 4: the interpolation system is solvable inside the
+unit polydisc.  The block anti-concentration lemma was generalized on the way from `Finset ℝ` blocks
+to blocks indexed by an arbitrary type with a node map, which is the form the prime window needs.
+
+Remaining on the chain: instantiating this at the prime window (Lemma 4 proper), Lemma 5 (rounding
+the solution to unimodular values with `exists_unimodular_rounding`), Lemma 6 (the induction step),
+Lemma 7 (the recursion `|r_j(x)| ≪_j x^{j theta}`), Theorem 1 (integration by parts and analytic
+continuation) and Theorem 2.

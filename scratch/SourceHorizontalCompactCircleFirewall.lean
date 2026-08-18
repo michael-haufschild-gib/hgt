@@ -4,15 +4,16 @@ import GaloisForLFunctions.HTGeometry.PureSingularCarrierTrichotomy
 open Complex Filter Topology MeasureTheory
 open GaloisForLFunctions.HTGeometry
 
-attribute [local instance]
-  GaloisForLFunctions.HTGeometry.instMeasurableSpaceCircle_galoisForLFunctions
-
 namespace RHTower
 
 noncomputable section
 
+abbrev SourceHorizontalHTCircleMeasure :=
+  @Measure Circle
+    GaloisForLFunctions.HTGeometry.instMeasurableSpaceCircle_galoisForLFunctions
+
 theorem circleMeasureMomentZ_bilateralModerate
-    (mu : Measure Circle) [IsFiniteMeasure mu] :
+    (mu : SourceHorizontalHTCircleMeasure) [IsFiniteMeasure mu] :
     bilateralModerate (circleMeasureMomentZ mu) := by
   refine ⟨mu.real Set.univ, 0, fun e => ?_⟩
   simp only [pow_zero, mul_one]
@@ -27,7 +28,7 @@ theorem circleMeasureMomentZ_bilateralModerate
 def SourceHorizontalActualXiEndpointCompactCircleRepresentation
     (x u : ℝ) (q : XiRightZeroCopy) (r : ℝ) (N : ℕ)
     (p : Nat.Primes) : Prop :=
-  ∃ mu : Measure Circle, IsFiniteMeasure mu ∧
+  ∃ mu : SourceHorizontalHTCircleMeasure, IsFiniteMeasure mu ∧
     ∀ e : ℤ,
       circleMeasureMomentZ mu e =
         (sourceHorizontalActualXiEndpointSecondJetHardyDescent x u q r N p
@@ -48,6 +49,28 @@ theorem not_sourceHorizontalActualXiEndpointCompactCircleRepresentation
         sourceHorizontalBilateralSecondJetGhost := funext heq
   rw [← hfun]
   exact circleMeasureMomentZ_bilateralModerate mu
+
+theorem not_exists_sourceHorizontalActualXiLiteralConormalShort_orbit_budget
+    {x u r : ℝ} (q : XiRightZeroCopy)
+    (hkappa : routePTwoPrimeJuliaWardNonlocalCoupling x u ≠ 0) (hr : r ≠ 0)
+    (N : ℕ) (hjet : 0 < sourceHorizontalWoldBVGreenStokesEndpointThirdJet N)
+    (p : Nat.Primes) :
+    ¬ ∃ C : ℝ, ∀ n : ℕ,
+      sourceHorizontalSecondCartierKreinPositiveOrbitEnergy
+          (sourceHorizontalSecondCartierKreinPolarizedGhostOrbit
+            (sourceHorizontalActualXiSecondCartierKreinPrimeCharacter q p)
+            (sourceHorizontalActualXiSecondCartierKreinScale x u q r N) n) ≤
+        C * sourceHorizontalLiteralConormalShort
+          (sourceHorizontalActualXiConormalCoefficient x u q r) := by
+  rintro ⟨C, hC⟩
+  have hescape :=
+    tendsto_sourceHorizontalActualXiSecondCartierKreinPolarizedGhostOrbit_energy_atTop
+      q hkappa hr N hjet p
+  obtain ⟨n, hn⟩ :=
+    (hescape.eventually_gt_atTop
+      (C * sourceHorizontalLiteralConormalShort
+        (sourceHorizontalActualXiConormalCoefficient x u q r))).exists
+  exact (not_lt_of_ge (hC n)) hn
 
 end
 

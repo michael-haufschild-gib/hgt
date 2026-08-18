@@ -9,15 +9,18 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`16e2c6363cecc6b7628a389c0abd9a01deb998fd` on 18 August, plus declaration-level working-tree review. Historical `Active-tree Lean` wording records former provenance; current
-scientific verdict follows declaration content and synopsis below rather than former cutoff labels.
+`9f81eb328b1d87de4e40d2e4f4010f4efac20b76` on 18 August, plus declaration-level working-tree review. Historical `Active-tree Lean` wording records former provenance. Current
+formal route status is maintained in `rh-current-frontier-map.md`; detailed sections below are a
+literature-exchange record and may retain older intermediate formulations. External literature was
+not re-audited during the present Lean-only refresh.
 Scientific
 comparison follows declaration content rather than module placement.
 ## Current exchange synopsis
 
-Current live count is ten lettered architectures plus CCM-FU; Route R is terminalized. Exact
-`2*pi` scaling now identifies U with full CCM restricted-Weil positivity, so live architecture
-count is not a claim of source-independent endpoints.
+Current live count is ten lettered architectures plus CCM-FU and newly separated HC
+(horizontal-collision quantum); Route R is terminalized. Exact `2*pi` scaling identifies U with
+full CCM restricted-Weil positivity, so live architecture count is not a claim of source-independent
+endpoints.
 This synopsis is authoritative for present Lean frontier. Detailed sections below supply external
 comparison and theorem provenance, not chronological status.
 
@@ -26,16 +29,18 @@ comparison and theorem provenance, not chronological status.
 | CCM-FU | Whole completed Guinand–Weil source matrix equals published restricted-Weil matrix entrywise. Centered response is blind through second order; cubic Loewner clock moment is first transverse jet and equals Xi-screw Green curvature. Linear growth of one Cesàro primitive of the literal third-grade source implies RH, strictly admitting oscillatory sources outside every fixed pointwise subcubic envelope. | No located theorem proves this averaged prime-minus-polar cancellation. Classical Abel/explicit-formula theory explains receiver but does not supply the Cesàro-linear source bound. |
 | C1 | Fixed theta inverse realizes Xi divisor with multiplicity. Raw critical-feature lattice budget is impossible by factor `324`; corrected budget gives a sharp 75% receiver but is between one half and one times off-line energy and vanishes iff RH. | Existing Fredholm/de Branges/Weil theory neither makes this inverse real-spectral nor constructs the needed pre-divisor critical-line projector or centered arithmetic covariance. |
 | D2 | On every fixed polynomial frequency horizon, safe-line zeta bound is O_B(log x/log log x) and deficit is at least log log log x minus O_B(1); quarter deficit transfers to every real unit-disc twist. | Pretentious and zero-free-region literature supplies safe-line inputs, not continuation of positive source through Euler wall to finite completed high-frequency ceiling. |
-| E | Reciprocal-marker analytic exceptional budget, squarefree-tail Markov bound, good-fibre squarefree lower law, and `6/pi^2>=3/8` are Lean-proved. Final eventual constants/capstone composition remains before unconditional Step 1; final Hall/load/flux remains RH-bearing. Huxley closes all-interval `E_3` Lemma 4.1. | Next analytic milestone is Type-II Proposition 4.2 assembly; Type I still needs Watt/Deshouillers--Iwaniec, sparse mean value, or sieve redesign. No external theorem gives all-subinterval unit Hall/load/co-moving flux for fixed relation. |
+| E | Step 1 Hall supply is unconditional; exact Type-II amplitude-cell power saving and exact Ramaré ordinary integer-pair incidence are Lean-proved. Remaining producer is all-interval unit Hall/load plus co-moving cutoff flux for one source-fixed physical relation. | No located external theorem gives this joint source-fixed relation theorem. |
 | G | Scalar cancellation is RH or universal opposite-controller erasure; zero-clock commutator rate is decoupled from debt. Working-tree Lean constructs lawful pre-scalar affine prime--polar--Gamma charge plus marked jet with premise-free capstone. | Need coefficient-faithful boundary renormalization comparing normalized zero-mode readout with transported escaped coefficient. Aperture-Morse exhaustion, source-cyclic mass, and completed wall comparison remain separate. |
-| L | Strict resolved-Xi provenance and nonlinear second-Cartier shell are formal. Paper proves exact positive radial orbit energy, bounded iff unit character; strict-right Xi fibres escape geometrically. | Need singular source-to-fixed-Burnol/Deninger specialization whose fixed endpoint fibre bounds radial orbit energy while preserving coefficient/multiplicity. Stagewise K2 advances do not supply this comparison. |
-| O | Exact actual-head autocorrelation producer cancels endpoint, polar, cumulative-prime, scalar, and first-Gamma masses, leaving higher Gamma plus signed boundary current. It equals source quadratic and ground plus tail. | Need sign of this inseparable joint block. External PSWF/screw theory gives no source-specific signed order; unsigned and phase-free chi-square reductions are formally impossible. |
-| P | Pointed Krein relation and nonlinear Hermitian shell retain coefficient, orientations/signs, prime character, multiplicity, and positive selected square. Paper classifies its radial transfer orbit: bounded iff unit character; strict-right fibres escape. | Need coefficient- and multiplicity-faithful endpoint admission uniformly bounding this positive radial energy. Shell invariants and scalar short are formally/paper-proved blind to it. |
-| Q | Null-boundary diagonal energies vanish while mixed incidence tends `-E/2`; complex scalar phases cannot repair target-aligned fusion. Off-line conjugate pair has zero signed mass but divergent quadratic concentration at transverse wall. | Produce cofinal nonnegative source recurrence, or construct finite pre-divisor quadratic-energy budget dominating Q and U boundary profiles. Classical moment/phase/diagonal theory supplies neither. |
-| T | For every prescribed logarithmic retreat coefficient, a sufficiently high finite jet gives exact RH criterion through finite atom/true-prime quadrature; annular transfer is bounded. Every fixed finite radiation subtraction has exact divergent scale `sqrt(X)/(log X)^(2m+2)`. | Prove signed bound for remaining interior finite core; alternatives remain residual/sub-`3/2`, growing-Xi chirp, or genuinely moving-degree reverse-Bessel assembly. |
-| U | Exact onto `2*pi` scaling identifies full CCM form; even and odd prime walls are invisible. Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: false-RH least null ground is outside every strict smooth interior source. | Exclude completed-boundary rough first contact through trace/quotient or whole-ground coercivity. Literature offers no such source-relative boundary theorem. |
+| L | Strict resolved provenance, Big-Witt ghost transgression, singular Gamma transgression, and nonnegative continuous restriction Green form are Lean-proved. Remaining theorem is bounded square-summable all-prime restriction whose common kernel is exactly arithmetic boundaries and whose target is existing physical landing. | Located comparison machinery does not supply this radical-identification/physical-landing theorem. |
+| O | Canonical finite Gamma--Slepian heads are selected from true restricted-Weil ground and converge to it. Reverse-prime control is exactly sign of several cancellation-preserving coherent completed producers. | Need sign of this inseparable joint block; seed construction/profile exhaustion is no longer frontier. |
+| P | Second-Cartier radial orbit coercivity is Lean-formal: bounded iff unit character, strict-right actual Xi orbits escape. Ward anomaly energy is exact positive-gain multiple of radial source work. | Need source endpoint moderation before divisor selection; universal boundedness is already RH-equivalent. |
+| Q | Orientation vector lies in exterior positive-frequency paired Cauchy closure; four-block source kernel reduces to one explicit real positive-frequency kernel. Finite reduced-matrix passivity is exactly RH. | Need independent source proof of that finite kernel PSD; diagonal budgets lose mixed incidence `-E/2`. |
+| T | Exact finite-arithmetic bridge shows top-row decay is offset by finite-translation survivor; combined remainder is depth-independent raw current minus returned prefix. | Need one joint bound on combined remainder at same cutoff/depth; further top-row decay alone cannot advance route. |
+| U | Source-only fixed-shift Hankel tail criterion is exact RH. Cofinal strict-frontier source admission is closed: non-RH gives arbitrarily late source-priced renewal events. | Need favorable uniform tail sign or non-scalar exclusion of boundary-rough first contact, not fixed-degree recession. |
+| HC | Two-prime and exterior Cayley source pencils retain prime labels, both orientations, multiplicity, and horizontal phase. Dephased energy converges to exact integer collision/reflection charge; absolute sub-two bound proves RH. | Need arithmetic evaluation giving strict subquantum finite-source bound. |
 
-No newly audited module instantiates an eleventh lettered route. Six CCM openings are now
+No newly audited module instantiates an eleventh lettered route. HC is unlettered and independent.
+Six CCM openings are now
 separately visible but not complete routes: CCM-HG asks for a literal completed-Xi source profile
 with four-unit order in the now-constructed boundary relative trace; CCM-GS asks for true-ground
 cofinal separating margin coupled to prime-log crowding and reduced-resolvent/Mellin control;

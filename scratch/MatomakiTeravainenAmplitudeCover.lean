@@ -261,7 +261,16 @@ theorem matomakiTeravainen_typeII_T2_dyadic_cover_power_saving
   have hamp₂ : ∀ ij ∈ I, ∀ q ∈ cells ij, F₂ q ≤ 2 * M₂ ^ (-sigma₂ ij) := by
     intro ij _hij q hq
     exact (matomakiTeravainenAmplitudeCell_upper hM₁ hM₂ hV₁ hV₂ ij hq).2
-  exact matomakiTeravainen_typeII_covered_amplitude_cells_power_saving hcover hT0
-    hM₁.le hM₂.le hK hT hsigma₁ hsigma₂ hmu hC hcount hF₁0 hF₂0 hamp₁ hamp₂ hbudget
+  apply matomakiTeravainen_typeII_covered_amplitude_cells_power_saving
+    (I := I) (cells := cells) (S := S) (F₁ := F₁) (F₂ := F₂)
+    (T := T) (M₁ := M₁) (M₂ := M₂) (K := K) (delta := delta) (C := C)
+    (mu := mu) (sigma₁ := sigma₁) (sigma₂ := sigma₂)
+    hcover hT0 hM₁.le hM₂.le hK hT hsigma₁ hsigma₂ hmu hC
+  · exact hcount
+  · exact hF₁0
+  · exact hF₂0
+  · exact hamp₁
+  · exact hamp₂
+  · exact hbudget
 
 end RHTower.Sieve

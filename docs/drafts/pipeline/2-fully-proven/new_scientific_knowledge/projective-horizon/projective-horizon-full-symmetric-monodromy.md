@@ -2435,3 +2435,42 @@ the tree already defines.  The steps, in order, each a separate lemma:
 Every named module in `4c`–`4e` already exists; `4d` is the theorem proved this session.  So `(P)`
 is bookkeeping over existing assets plus `4a`–`4b`, which are pure group theory and the definition
 of the block cover.
+
+## Correction — §2 and §3 are almost entirely Lean already
+
+A third search of the tree (this is the third time the corpus turned out to own what looked
+missing; search first, always) shows §2 and §3 are formalized as general lemmas:
+
+```text
+conormal_determines_tangent, conormal_determines_tangent_smul   (ConormalTangentDetermination)
+      §2: the conormal line determines the projective tangent pair
+syzygy_of_shared_tangent, eq_zero_of_tangent_syzygy             (TrailingDegreeSyzygy)
+exists_cofactor_of_syzygy                                        (ProjectiveHorizonConormalPairing)
+      §3 (10)–(11): Euclid on the syzygy
+criticalFibre_eq_of_shared_coprime_tangent                       (CriticalFibreSharedTangentRigidity)
+      ** §3's conclusion: two states of one critical fibre with the same COPRIME nonzero vertical
+         tangent pair are equal — the whole of §3 modulo coprimality **
+tangent_relation_of_common_factor, dvd_of_mul_dvd_of_coeff_zero_ne_zero  (HorizonTruncationCancel)
+      dividing the truncated tangent relation by a factor invertible at the origin
+criticalSchurGeneric_ker_coord_zero_ne_zero                      (CriticalSchurKernelLeadingCoefficient)
+      §3: U(0) ≠ 0
+finrank_ker_criticalSchurGenericMatrix_eq_one                    (CriticalSchurGenericCorank)
+      §3: generic corank one
+```
+
+The only two general steps that were genuinely absent are now Lean
+(`HTGeometry/CriticalSchurTangentConstantTerm.lean`, wired):
+
+```text
+criticalReciprocalInfinitesimal_coeff_zero_ne_zero
+      ** §3 step 3b: V(0) ≠ 0, since dY = −(Y² dX) **
+isCoprime_of_low_tangent_unique
+      ** §3 step 3c: a low tangent pair with nonzero constant terms, unique up to scale, is
+         COPRIME — a common factor divides the relation out, and uniqueness forces it to be a unit **
+```
+
+So §3 is complete as a chain of general lemmas.  What is left for `(D)` is **wiring**: instantiate
+the uniqueness hypothesis of `isCoprime_of_low_tangent_unique` from
+`finrank_ker_criticalSchurGenericMatrix_eq_one`, and apply
+`criticalFibre_eq_of_shared_coprime_tangent` to two sheets with the same Schur reduction.  No new
+mathematics.

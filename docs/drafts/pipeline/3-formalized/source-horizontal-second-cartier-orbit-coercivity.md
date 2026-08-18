@@ -145,15 +145,18 @@ Its physical Hardy ghost is moderate exactly when `Q` is bounded, hence exactly 
 What remains is not another coefficient identification.  Existing conormal short is diagonal after
 the complete four-orientation sum and records only `4|C|^2`; existing Hermitian incidence and Krein
 form record the invariant product of reciprocal legs.  Neither supplies physical order.  The
-surviving open core is now precise:
+follow-up compact-circle firewall proves more: every finite positive circle-measure moment family
+is moderate, no such measure represents an occupied strict-right endpoint, and no scalar multiple
+of the literal conormal short bounds its radial energy.  The surviving open core is now precise:
 
-> Prove from completed source geometry that the already-identified literal endpoint ghost belongs
-> to a compact-circle distribution/order space for every retained Xi divisor.
+> Prove globally from completed source geometry, before Xi selection, that the already-identified
+> literal endpoint ghost belongs to a moderate physical-order space for every Xi divisor.
 
-That theorem cannot be a redefinition: the present product-topology endpoint image is explicitly
-non-moderate off line.  It must add a genuine source-natural physical-order law.  Any descent
-depending only on incidence, determinant, Krein form, or the existing scalar short is provably
-blind to (3).
+That theorem cannot be a post-selected witness or redefinition: the present endpoint is explicitly
+non-moderate off line, and exact finite positive-measure representation there is now formally
+impossible.  It must be a genuine pre-divisor source-natural law whose contradiction excludes the
+off-line fibre.  Any descent depending only on incidence, determinant, Krein form, or the existing
+scalar short is provably blind to (3).
 
 ## No-go closure
 

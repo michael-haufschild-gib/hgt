@@ -195,3 +195,59 @@ finite-coefficient information can substitute.  So the two halves are:
 
 Neither is Borel's analysis.  Borel's theorem remains the target of the user's directive and stays
 on the programme, but this route reaches the *card's* requirement without it.
+
+### F3. Generation from a fundamental open set
+
+`formal/GaloisForLFunctions/HTGeometry/GroupActionGeneration.lean`.
+
+```text
+meetSet V                 {g | (g • V) ∩ V ≠ ∅}
+closure_meetSet_eq_top    ** on a CONNECTED space, an open V whose translates cover generates:
+                             ⟪meetSet V⟫ = ⊤ **
+```
+
+The proof is the two-open-sets argument: the translates by the generated subgroup form an open set
+`A`, the remaining translates an open set `B`; a point of `A ∩ B` exhibits `h⁻¹g ∈ meetSet V`, so
+`A ∩ B = ∅`; connectedness and `A ≠ ∅` give `B = ∅`.
+
+Together with proper discontinuity — for compact `K`, only finitely many `g` have `g • K ∩ K ≠ ∅` —
+this is the finite-generation half of reduction theory, with **no** simplicial machinery.  The
+finite-*presentation* half needs Macbeath's refinement (simple connectivity turns the triple
+intersections into a complete set of relations); that is the next target.
+
+### F4. Finite presentability, and the central-kernel theorem
+
+`formal/GaloisForLFunctions/HTGeometry/FinitePresentationIndependence.lean`
+
+```text
+map_normalClosure_le            f(⟪S⟫^F) ≤ ⟪f S⟫^H
+ker_eq_normalClosure_of_lifts   the abstract core: mutual lifts α, β over the identity of G turn one
+                                finite relator set into another
+exists_finite_relators          ** B. H. Neumann: finite presentability does not depend on the
+                                   chosen finitely generated free presentation **
+```
+
+`formal/GaloisForLFunctions/HTGeometry/FinitelyPresentedCentralKernel.lean`
+
+```text
+IsFinitelyPresented                          the definition
+exists_freeGroup_surjection                  a f.g. group is a quotient of a f.g. free group
+Group.fg_of_isFinitelyPresented              FP ⟹ FG
+isFinitelyPresented_relators                 relators are finite for EVERY f.g. free presentation
+fg_ker_of_central_of_isFinitelyPresented     ** a central extension of a finitely presented group
+                                                by a finitely generated group has finitely generated
+                                                kernel **
+```
+
+With `steinbergGroup_fg_of_moduleFinite` this is the complete reduction:
+
+```text
+E_n(𝒪) finitely presented  +  K₂(n, 𝒪) ≤ Z(St_n(𝒪))     ⟹     K₂(n, 𝒪) finitely generated
+```
+
+so the two open inputs of Layer F are now exactly:
+
+1. **`E_n(𝒪)` is finitely presented** — Behr's theorem; the reduction-theory burden.
+2. **`K₂(n,𝒪)` is central in `St_n(𝒪)`** — the corpus has `KTwo_mem_center` for elements whose word
+   avoids an index, which is the *stable* statement; a fixed `n` needs van der Kallen's range, or
+   the colimit `St(R) = colim St_n(R)` has to be built.

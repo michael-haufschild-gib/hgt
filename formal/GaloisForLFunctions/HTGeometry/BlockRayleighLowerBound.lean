@@ -171,6 +171,56 @@ theorem rayleigh_lower_of_blocks {N J : ℕ} (hJ : 0 < J) {η m : ℝ} (hη : 0 
     rw [hz0, mul_zero]
     exact hE0
 
+/-- **The interpolation system has a solution inside the unit polydisc.**  This is the analytic
+content of Andersson's Lemma 4: a Rayleigh floor for the nodal energy and a small enough target
+produce a polynomial bounded by one on the unit interval whose weighted moments hit the target. -/
+theorem exists_unit_polynomial_solution {N J : ℕ} (hJ : 0 < J) {lam : ℝ} (hlam : 0 < lam)
+    (x w : Fin N → ℝ)
+    (hquad : ∀ a : Fin J → ℝ, lam * (∑ i, a i ^ 2) ≤ a ⬝ᵥ (atomicHankel w x J).mulVec a)
+    (ξ : Fin J → ℝ) (hξ : (J : ℝ) * (∑ k, ξ k ^ 2) ≤ lam ^ 2) :
+    ∃ c : Fin J → ℝ, (atomicHankel w x J).mulVec c = ξ ∧
+      ∀ t ∈ Set.Icc (0:ℝ) 1, |Polynomial.eval t (Polynomial.ofFn J c)| ≤ 1 := by
+  classical
+  obtain ⟨c, hc, hcbound⟩ := exists_solve_atomicHankel w x hlam hquad ξ
+  refine ⟨c, hc, ?_⟩
+  intro t ht
+  have hev : Polynomial.eval t (Polynomial.ofFn J c) = ∑ k : Fin J, c k * t ^ (k : ℕ) := by
+    rw [Polynomial.ofFn_eq_sum_monomial, Polynomial.eval_finsetSum]
+    exact Finset.sum_congr rfl fun k _ => by rw [Polynomial.eval_monomial]
+  have habs : |∑ k : Fin J, c k * t ^ (k : ℕ)| ≤ ∑ k : Fin J, |c k| := by
+    refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ => ?_)
+    rw [abs_mul]
+    have hpow : |t ^ (k : ℕ)| ≤ 1 := by
+      rw [abs_pow, abs_of_nonneg ht.1]
+      exact pow_le_one₀ ht.1 ht.2
+    calc |c k| * |t ^ (k : ℕ)| ≤ |c k| * 1 :=
+          mul_le_mul_of_nonneg_left hpow (abs_nonneg _)
+      _ = |c k| := by ring
+  have hCS : (∑ k : Fin J, |c k|) ^ 2 ≤ (J : ℝ) * ∑ k : Fin J, c k ^ 2 := by
+    have h := Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset (Fin J))
+      (fun k => |c k|) (fun _ => (1:ℝ))
+    simp only [mul_one, one_pow, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+      nsmul_eq_mul, sq_abs] at h
+    calc (∑ k : Fin J, |c k|) ^ 2 ≤ (∑ k : Fin J, c k ^ 2) * (J : ℝ) := h
+      _ = (J : ℝ) * ∑ k : Fin J, c k ^ 2 := by ring
+  have hcsum : lam ^ 2 * (∑ k, c k ^ 2) ≤ ∑ k, ξ k ^ 2 := hcbound
+  have hJ0 : (0:ℝ) < (J : ℝ) := by exact_mod_cast hJ
+  have hfinal : (∑ k : Fin J, |c k|) ^ 2 ≤ 1 := by
+    have h1 : (J : ℝ) * ∑ k : Fin J, c k ^ 2 ≤ (J : ℝ) * ((∑ k, ξ k ^ 2) / lam ^ 2) := by
+      refine mul_le_mul_of_nonneg_left ?_ hJ0.le
+      rw [le_div_iff₀ (by positivity)]
+      calc (∑ k, c k ^ 2) * lam ^ 2 = lam ^ 2 * ∑ k, c k ^ 2 := by ring
+        _ ≤ ∑ k, ξ k ^ 2 := hcsum
+    have h2 : (J : ℝ) * ((∑ k, ξ k ^ 2) / lam ^ 2) ≤ 1 := by
+      rw [mul_div_assoc'] at *
+      rw [div_le_one (by positivity)]
+      exact hξ
+    exact hCS.trans (h1.trans h2)
+  have hnn : 0 ≤ ∑ k : Fin J, |c k| := Finset.sum_nonneg fun k _ => abs_nonneg _
+  rw [hev]
+  refine habs.trans ?_
+  nlinarith [hfinal, hnn]
+
 end GaloisForLFunctions.HTGeometry
 
 end

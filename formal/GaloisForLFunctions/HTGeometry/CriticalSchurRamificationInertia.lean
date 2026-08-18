@@ -94,4 +94,25 @@ theorem criticalGeometricMonodromy_eq_top_of_ramification_of_degree_of_isPreprim
   exact criticalGeometricMonodromy_eq_top_of_isPreprimitive_of_isSwap K
     (Nat.zero_lt_of_lt hm) (Nat.zero_lt_of_lt hn) hprim τ hτswap hτmem
 
+/-- **The endgame in collision form.**  Ramification at the Schur place, at most two colliding
+sheets, and primitivity give full symmetric monodromy. -/
+theorem criticalGeometricMonodromy_eq_top_of_ramification_of_collision_of_isPreprimitive
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 1 < m) (hn : 1 < n)
+    (hram : 2 ≤ Ideal.ramificationIdxIn
+      (IsLocalRing.maximalIdeal (CriticalSchurNormalBaseRing K
+        (Nat.zero_lt_of_lt hm) (Nat.zero_lt_of_lt hn)))
+      (CriticalSchurNormalIntegralClosure K (Nat.zero_lt_of_lt hm) (Nat.zero_lt_of_lt hn)))
+    (hcollision :
+      (collisionSupport (criticalGeometricSheetToSchurReducedFibre K hm hn)).ncard ≤ 2)
+    (hprim : MulAction.IsPreprimitive (criticalGeometricMonodromy K m n)
+      (criticalGeometricSheet K m n)) :
+    criticalGeometricMonodromy K m n = ⊤ := by
+  haveI := nontrivial_criticalSchurInertiaGroup_of_ramificationIdx K
+    (Nat.zero_lt_of_lt hm) (Nat.zero_lt_of_lt hn) hram
+  obtain ⟨τ, hτswap, hτmem⟩ :=
+    exists_criticalGeometricMonodromy_isSwap_of_collisionSupport_ncard_le_two K hm hn hcollision
+  exact criticalGeometricMonodromy_eq_top_of_isPreprimitive_of_isSwap K
+    (Nat.zero_lt_of_lt hm) (Nat.zero_lt_of_lt hn) hprim τ hτswap hτmem
+
 end GaloisForLFunctions.HTGeometry

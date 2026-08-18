@@ -899,3 +899,79 @@ Two bricks are needed for this and neither is in the corpus (searched):
 With those two, the sharp bound and hence `‖·‖ ≤ h·min(2, |t|h₁/x)` follow, and the `t`-integral of
 the comparison is concentrated on `|t| ≳ x/h₁` — which is exactly what makes Lemma 3.1's right-hand
 side `(log X)^{-2-ε}` rather than `O(1)`.
+
+## `Sieve/CpowMulILipschitz` — the Lipschitz brick for the sharp comparison bound (2026-08-18, 23:00)
+
+```text
+norm_cpow_mul_I_sub_le (hx : 0 < x) (hu : x ≤ u) :
+  ‖u^{it} − x^{it}‖ ≤ |t|(u − x)/x
+```
+
+Chord below arc, then `log(u/x) ≤ (u−x)/x`.  Built by reusing
+`HTGeometry.HalfPlaneMellinRepresentation.cpow_ofReal_mul_I` for the `cpow → exp` passage and
+mathlib's `Real.norm_exp_I_mul_ofReal_sub_one_le` for the chord.  Axiom-clean, wired.  **Build cost
+219 s** — the `HTGeometry` import chain is heavy; a lighter route would inline the three-line
+`cpow_def_of_ne_zero`/`ofReal_log` unfolding instead.
+
+Three near-duplications were avoided here by searching first:
+`QuantumAlg.Util.Complex.norm_exp_ofReal_mul_I_sub_one_le` (one-point chord),
+`HTGeometry.TorsionPolygonRecurrenceShadowing.norm_exp_ofReal_mul_I_sub_le` (two-point chord, too
+heavy to import), and `HTGeometry.HalfPlaneMellinRepresentation.cpow_ofReal_mul_I`.  A from-scratch
+FTC proof of the chord bound had already been written and checked before the search found these; it
+was discarded.
+
+### What is left for the sharp comparison bound
+
+Only **interval-integrability of `u ↦ u^{it}` on `[x, x+H]` for `0 < x`**, so that
+`intervalIntegral.integral_sub` can split off the constant in
+
+```text
+∫_x^{x+h}(u^{it} − c)du − (h/h₁)∫_x^{x+h₁}(u^{it} − c)du = perronCompareKernel x h h₁ t ,
+```
+
+the identity holding for every `c` because `(h/h₁)·h₁ = h`.  With `c = x^{it}` and
+`norm_cpow_mul_I_sub_le` this yields
+
+```text
+‖perronCompareKernel x h h₁ t‖ ≤ |t|h²/(2x) + |t|hh₁/(2x) ≤ |t|·h·h₁/x    (h ≤ h₁),
+```
+
+hence `‖·‖ ≤ h·min(2, |t|h₁/x)`, which concentrates Lemma 3.1's `t`-integral on `|t| ≳ x/h₁`.
+Integrability follows from continuity of `u ↦ u^{it}` on `(0,∞)` via `cpow_ofReal_mul_I` and
+`Complex.continuous_exp`; it is the single remaining step of this brick.
+
+## The sharp comparison bound is CLOSED — `Sieve/PerronCompareSharp` (2026-08-18, 23:20)
+
+```text
+intervalIntegrable_cpow_mul_I (hx : 0 < x) (hH : 0 ≤ H) :
+  IntervalIntegrable (fun u => u^{it}) volume x (x+H)
+
+perron_kernel_sub_const (hx : 0 < x) (hH : 0 ≤ H) :
+  ((x+H)^{1+it} − x^{1+it})/(1+it) = ∫_x^{x+H}(u^{it} − x^{it}) du + x^{it}·H
+
+norm_perronCompareKernel_le_sharp (hx : 0 < x) (hh : 0 < h) (hh₁ : 0 < h₁) (hle : h ≤ h₁) :
+  ‖perronCompareKernel x h h₁ t‖ ≤ 2·|t|·h·h₁ / x
+```
+
+The mechanism is the constant annihilation: `perron_kernel_sub_const` writes each kernel as
+"variation + `x^{it}`·length", and the renormalisation `(h/h₁)·h₁ = h` makes the two `x^{it}` terms
+cancel exactly.  What survives is the variation of `u^{it}` across each window, bounded by
+`Sieve/CpowMulILipschitz.norm_cpow_mul_I_sub_le`.  Integrability comes from
+`Complex.continuousAt_ofReal_cpow_const` at `Or.inr (u ≠ 0)` — the `Or.inl` branch is `0 < (t·I).re`,
+which is false here, and that mis-step cost one build cycle.
+
+Combined with `norm_perronCompareKernel_le_length` this gives
+
+```text
+‖perronCompareKernel x h h₁ t‖ ≤ min (2h) (2|t|hh₁/x) ,
+```
+
+so the comparison integral is concentrated on `|t| ≳ x/h₁`: below that height the two windows agree
+to first order and cancel.  **This is the analytic heart of Lemma 3.1 and of §7's window comparison,
+and it is now unconditional.**
+
+### What M2 (Lemma 3.1) still needs
+
+Only the bookkeeping: Perron with the comparison kernel (`Sieve/PerronWindowKernel.perronPrefixIntegral_sub`
+merges the two prefix integrals), then the dyadic split of `Sieve/MixedMomentAssembly` run on the
+`min(2h, 2|t|hh₁/x)` weight instead of `min(x/t, h)`.  No further analytic input.
