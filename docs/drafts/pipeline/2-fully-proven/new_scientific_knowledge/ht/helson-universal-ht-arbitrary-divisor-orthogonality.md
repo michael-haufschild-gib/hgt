@@ -2565,3 +2565,184 @@ Isotropy is the new ingredient: `E[X_n X_m] = E[X_{nm}] = 0` whenever `n, m >= 2
 *unconjugated* second moment vanishes and the real part carries exactly half the energy.  Without it
 the Paley--Zygmund bound would control `|S_N|`, which the boundary estimate does not see — the
 boundary estimate constrains only `Re(G + H)`.
+
+## Lean progress — `Haar(M) = 0` IS PROVED, UNCONDITIONALLY
+
+`RHTower/HelsonEulerExponent.lean` and `RHTower/HelsonStratumNull.lean` (wired, axiom-clean:
+`[propext, Classical.choice, Quot.sound]`).
+
+```text
+phaseTorusOf omega                  the random phase as a point of the phase torus
+helsonExponent omega s              E_omega(s) = prime layer + tail layer
+differentiableOn_helsonExponent     holomorphic on Re s > 1/2, almost surely
+hasProd_helsonExponent              the Euler product is exp(E_omega) on Re s > 1
+contEvent                           the event that the phase is continuable
+exists_boundary_bound
+    ** continuable  ==>  | Re E_omega(sigma) - m log(sigma - 1/2) | <= B  near the half line **
+eulerExponentRe                     a measurable version of Re E_omega, via limsup
+exists_bound_eulerExponentRe_sub    finite modification changes it by a bounded amount
+measurableSet_contEvent, contEvent_invariant
+
+cutSeq k = 1/2 + 1/(k+1)
+negEvent, posEvent                  bounded above / below along the cut sequence
+measure_negEvent_eq_zero_or_one     both are TAIL EVENTS
+measure_posEvent_eq_zero_or_one
+contEvent_inter_subset              ** the envelope covers the continuation stratum:
+                                         m >= 0 gives the upper half, m <= 0 the lower **
+primeRe, tendsto_steinhausPrimePoly, eulerExponentRe_split
+contradiction_of_envelope           ** no fixed one-sided envelope holds with probability
+                                         above 1 - 1/256 **
+measure_contEvent_eq_zero           ** Haar { omega : Z_chi continues } = 0 **
+circlePhase, circleUniform, primeRestrict, map_phaseTorusOf
+measure_continuableStratum_eq_zero
+    ** the same statement on the phase torus itself:
+         (prod_p uniform)(continuableStratum) = 0 **
+```
+
+### The mechanism, exactly
+
+Continuation is only visible at the boundary through a *logarithmic envelope*: if `Z_chi` continues
+meromorphically past `Re s = 1/2` then, `Z_chi = exp(E_chi)` there by the identity theorem, so
+`Z_chi` has no zero or pole in the open half plane, and its meromorphic normal form at the boundary
+point gives an integer `m` with
+
+```text
+Re E_chi(sigma) = m log(sigma - 1/2) + O(1) .
+```
+
+The integer `m` is unknown and cannot be eliminated by any linear combination of nearby values —
+the second difference in `log(sigma - 1/2)` kills the `m` term but also kills the divergence of the
+variance, because the increment of the prime series over a bounded logarithmic scale has bounded
+second moment.  The resolution is to *split the envelope by sign*: `m >= 0` makes `Re E` bounded
+**above** along the cut sequence, `m <= 0` bounded **below**, and each of those two conditions is a
+tail event — finite modification changes `Re E` by a bounded amount, uniformly on `Re s >= 1/2`.  So
+one of the two has probability one, and the corresponding **one-sided** anti-concentration bound for
+the prime layer contradicts it.  The one-sided bound is the half-turn phase symmetry
+`X_p -> -X_p`, which is measure preserving and exchanges the two sides of the escape event.
+
+### What this closes
+
+| statement | status |
+|---|---|
+| labelled differential-field universality | formal |
+| Pong's conclusion for `Z_chi`, `Phi_(chi,psi)` | formal, unconditional |
+| density, codensity, `boundary(M) = Omega`, no continuous factorization | formal, unconditional |
+| `Haar(M) in {0,1}` | formal, unconditional |
+| a.s. divergence of the prime series left of the half line | formal, unconditional |
+| **`Haar(M) = 0`  (Saksman--Webb/Seip input)** | **formal, unconditional** |
+| divisor surjectivity (Andersson Thm 5) | open |
+
+Two of the card's three named classical inputs are therefore no longer inputs: Pong's theorem and
+Saksman--Webb's almost-sure meromorphic abscissa are both Lean theorems in this tree, proved from
+scratch.  Only Andersson's arbitrary-divisor construction remains.
+
+The route used none of the machinery the earlier plan expected: no Bohr theorem, no Riesz-mean
+Tauberian step, no Perron contour, no three-series theorem, no Itô--Nisio, no natural-boundary
+theorem, no Mertens-type upper bound on `sum_p p^{-2 sigma}`.  What it used instead: Kolmogorov's
+maximal inequality (built here), Kolmogorov's convergence criterion (built here), uniform Abel
+summation (built here), the identity theorem for meromorphic functions, Paley--Zygmund, the prime
+fourth moment, and two measure-preserving phase rotations.
+
+## THE ANDERSSON INPUT — exact statement, exact proof chain, exact corpus audit
+
+Read from the source (arXiv:2408.15713v1, 12 pages).  Recording it in full because it is the only
+input left on this card and it is a multi-session build.
+
+### What is actually needed
+
+The card consumes Theorem 5 with `U = C`:
+
+> **Theorem 5 (Andersson).**  Let `U ⊆ C` be open connected containing `Re s > 1`, and let
+> `Z ⊂ U ∩ {Re s < 1}` be any signed multiset without limit points on `U ∪ (1+iR)`.  Then there is a
+> completely multiplicative unimodular `chi` such that `zeta_chi` continues meromorphically from
+> `Re s > 1` to `U` with prescribed poles and zeros with the given multiplicities from `Z`.
+
+"Admissible" therefore means exactly: **no limit points in `U ∪ (1+iR)`** — for `U = C` this is
+"locally finite in the plane", which is what the card says.  There is no density or Blaschke
+condition.
+
+For the card only the `U = C` case is needed, and only through the following weaker route, which
+avoids Andersson's Theorem 3 (maximal domains, Mittag-Leffler with essential singularities) entirely:
+
+```text
+Theorem 1  ==>  Theorem 2  ==>  divisor surjectivity.
+```
+
+`Theorem 2`: if `f` is analytic and zero-free on `Re s > 1` and `f'/f` extends continuously to
+`Re s >= 1`, then `f = zeta_chi . g` for some Helson `chi` and some entire zero-free `g`.  Given the
+target divisor `D`, realize it by a meromorphic `F` on the plane (the corpus already owns this, see
+below); `F` is analytic and zero-free on a neighbourhood of `Re s >= 1` because `D` has no limit
+point on `1+iR`; Theorem 2 gives `F = zeta_chi . g`, so `zeta_chi = F/g` is meromorphic on the plane
+with divisor exactly `D`, because `g` is entire and zero-free.  That is the surjectivity statement.
+
+### The proof chain of Theorem 1
+
+```text
+f(s) = zeta'_chi(s)/zeta_chi(s) + g(s)   on Re s > 1,   g entire,
+   for every f continuous on Re s >= 1 and analytic on Re s > 1.
+```
+
+with `r_1(x) = int_1^x q + sum_{n<=x} chi(n) Lambda(n)` and `r_{j+1}(x) = int_1^x r_j`:
+
+| step | content | status |
+|---|---|---|
+| Lemma 1 | `f = int_1^inf q(x) x^{-s} dx + g`, `q = o(1)`, `g` entire | **Arakelyan + Paley--Wiener** |
+| Lemma 2 | `pi(x+bx^th) - pi(x+ax^th) >= c(b-a-delta(x)) x^th / log x` | Hoheisel, counting form |
+| Lemma 3 | rounding: `\|\|sum b_j x_j - sum a_j x_j\|\| <= d max\|\|x_j\|\|` with `\|b_j\|=1` | Bagchi Lemma 4.1 |
+| Lemma 4 | Vandermonde/Cramer solution of a `J x J` system over primes in `[x, x+x^th)` | uses Lemma 2 |
+| Lemma 5 | Lemma 3 + Lemma 4: unimodular phases realizing prescribed moments | |
+| Lemma 6 | one recursion step keeping `\|r_j(x_k)\| <= ((J+1)/(j-1)!) x_k^{(j-1)th} log x_k` | |
+| Lemma 7 | the full recursion: `\|r_j(x)\| <<_j x^{j th}` for every `j` | |
+| Theorem 1 | integrate `f_0 - zeta'/zeta = s int_1^inf r_1 x^{-s-1}` by parts `j` times | |
+
+The one genuinely external analytic input is **Arakelyan's uniform approximation theorem** on the
+closed half plane `Re s >= 1` (Lemma 1), used to subtract an entire function so that the remainder
+is `O(\|s\|^{-2})` there; after that the Mellin representation is a Hardy-class/Paley--Wiener step
+(Bochkov--Romanov, Lemma 2 of J. Funct. Anal. 282 (2022) 109398).
+
+### Corpus audit for this chain
+
+Already owned, verified by `formal_tools.py research`:
+
+```text
+HTGeometry/WeierstrassFactorizationTheorem.lean
+    weierstrassGenusProduct, differentiable_weierstrassGenusProduct,
+    weierstrassGenusProduct_eq_zero_iff       -- Weierstrass with INCREASING genus, arbitrary zeros
+HTGeometry/PrescribedDivisorRealization.lean
+    divisorFunction a b, meromorphicOn_divisorFunction,
+    meromorphicOrderAt_divisorFunction        -- a meromorphic function with a prescribed divisor
+RHTower/Sieve/PrimeWindowBrunTitchmarsh.lean  -- the upper bound needed for prime-power sparsity
+RHTower/Sieve/RouteTFixedShortIntervalPrimeSupply.lean
+    exists_threshold_routeT_prime_in_fixed_window
+        -- unconditional: a prime in EVERY (x, x + x^{71/100}]
+RHTower/Sieve/InghamUniformDetectorMellinQuantitativeThetaMass.lean
+    eventually_inghamRouteTBuffered_theta_window_gt_quarter_width
+        -- theta(x+2H) - theta(x) > H/4, but only along the detector centres
+```
+
+So the Weierstrass/divisor end of the argument is **already formal**, and the short-interval
+prime supply exists unconditionally in the *existence* form.  What Lemma 2 needs is the *counting*
+form `pi(x+h) - pi(x) >> h/log x` for `h = x^theta`, uniformly in the base point.  The corpus's
+quantitative theta-mass bound is of exactly the right shape but is stated along a sequence of
+detector centres; extending it to every base point is the first concrete gap.
+
+Missing entirely from mathlib and from the corpus:
+
+```text
+Arakelyan's approximation theorem on a closed half plane          -- the hard core
+the Paley--Wiener/Hardy representation f = int_1^inf q x^{-s} dx  -- moderate
+Bagchi's rounding lemma (Lemma 3)                                 -- self-contained, tractable
+the recursion of Lemmas 4-7                                       -- long but elementary
+```
+
+### Order of attack
+
+1. Lemma 3 (rounding) — self-contained finite-dimensional convexity, no analytic input.
+2. The divisor-surjectivity consumer, from a *hypothesis* shaped exactly like Theorem 2, so that the
+   two ends of the argument are formal and only the middle remains.
+3. Lemma 2 in the counting form, from the corpus's Ingham/Mellin detector chain.
+4. Lemmas 4-7, the recursion.
+5. Lemma 1: the Paley--Wiener step, then Arakelyan.
+
+Nothing here is conditional on an unproved conjecture; the whole chain is classical mathematics with
+a long formalization cost, and the working mode is to build it.

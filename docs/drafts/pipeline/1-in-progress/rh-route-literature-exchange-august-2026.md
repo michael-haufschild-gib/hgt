@@ -30,7 +30,7 @@ comparison and theorem provenance, not chronological status.
 | G | High assistance is formally source-cyclic. New G-CE form annihilates the positive shifted-Euler main term and identifies completed Suzuki primitive exactly with pole-subtracted all-prime summatory error; the characteristic endpoint is corrected to meromorphic topology. | No located theorem proves source-defined nonexpansive continuation of the coupled floor/Möbius error to divisor charge. Aperture-Morse exhaustion, source-cyclic mass, and completed wall Schur comparison remain separate. |
 | L | Scalar descent on completed one-leg graph is exactly constant-profile descent; fixed-coordinate Hilbert--Schmidt encoding is impossible. Tate descent now proves rational real Milnor amplitude has only degrees 0 and 1. | Surviving route must retain integral/adelic/extension data and prove critical-scale arithmetic discontinuity, carrier change, Calderón Green extension, and cup-isometric Hodge comparison. |
 | O | Source quadratic is exactly corrected finite-aperture CCM symbol averaged against actual canonical-head Fourier density. Full constrained-sector operator ground/spectrum/gaps and vector transfer are closed. Unsigned cell cost diverges, and phase-free coherent chi-square budget is impossible because Gamma--polar scalar reserve is negative. | Need sign of inseparable joint symbol average. External PSWF/screw theory supplies no source-specific signed order; pointwise symbol positivity is sufficient but stronger than required. |
-| P | Completed Gamma/polar two-leg descent and nonlinear source-grade selection are Lean-proved. Finite-atomic Hahn--Jordan residuals retain exact Euler `k^2` action and Wold regulator as reconstructing legs, strictly preserve variation erased by compression, keep BV/multiplicity/four orientations, and transport the compensated corner into primitive budget. | Hahn--Jordan minimality and total-variation contraction are classical; recent BV pushforward work retains residual observables through a deformation retract. No located result supplies arithmetic Xi-fibre admission of this residual pair into Route P's non-spectral conormal contraction. Generic Loewner/equivariant admission is already RH-equivalent internally. |
+| P | Completed Gamma/polar two-leg descent, nonlinear source-grade selection, and actual Xi-fibre conormal admission are Lean-proved. Finite Green--Stokes co-short conservation identifies admitted Wold plus endpoint with twice the literal four-orientation short. Burnol top-jet provenance and multiplicity are exact. Every linear admitted reporter has cofinal character `(8/3)|c|²(-a+b+2d)`; existing compensated budget is exactly blind vector `(1,-1,1)`. | Hahn--Jordan minimality, total-variation contraction, BV quasi-isomorphic pushforward, and generic Krein shorting are external. No located result supplies this arithmetic co-short law or character classification. Open producer is a source-budgeted character transverse to `-a+b+2d=0`; ordinary Loewner/equivariant admission remains RH-equivalent internally. |
 | Q | Null-boundary diagonal energies vanish while mixed incidence tends `-E/2`; complex scalar phases cannot repair target-aligned fusion. Off-line conjugate pair has zero signed mass but divergent quadratic concentration at transverse wall. | Produce cofinal nonnegative source recurrence, or construct finite pre-divisor quadratic-energy budget dominating Q and U boundary profiles. Classical moment/phase/diagonal theory supplies neither. |
 | T | For every prescribed logarithmic retreat coefficient, a sufficiently high finite jet gives exact RH criterion through finite atom/true-prime quadrature; annular transfer is bounded. Every fixed finite radiation subtraction has exact divergent scale `sqrt(X)/(log X)^(2m+2)`. | Prove signed bound for remaining interior finite core; alternatives remain residual/sub-`3/2`, growing-Xi chirp, or genuinely moving-degree reverse-Bessel assembly. |
 | U | Exact onto `2*pi` scaling identifies full CCM form; even and odd prime walls are invisible. Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: false-RH least null ground is outside every strict smooth interior source. | Exclude completed-boundary rough first contact through trace/quotient or whole-ground coercivity. Literature offers no such source-relative boundary theorem. |
@@ -3697,13 +3697,20 @@ both completed residues, BV endpoint, four orientations, and actual Xi-copy mult
 selector before grade forgetting. Its Euler negative and Wold positive parts reconstruct the
 current; pre-compression variation tends to `4/3`, post-compression variation tends to zero with
 strict loss at every clock; selected physical corner plus signed BV energy equals compensated
-energy inside primitive budget. First open theorem is source-natural Xi-fibre physical admission
-identifying this unrecompressed residual pair with the literal non-spectral conormal contraction/
-positive selected corner used by the RH endpoint. Repeating transport, Jordan selection, one-leg
-residue, Schur, or positive-order algebra cannot close route. Ordinary Loewner/equivariant
-admission, scalar contractivity, matrix-complete restriction, and post-divisor passivity are
-formally insufficient or RH-equivalent. External supercritical Thorin theory is only a safe
-control case.
+energy inside primitive budget. Source-natural Xi-fibre physical admission is now exact.  The
+actual multiplicity-split Burnol/Gamma--Julia coordinate has short `S(c)=4|c|²`; Euler and Wold
+legs shorten separately, and admitted Wold plus literal endpoint equals `2S(c)` at every finite
+clock.  Actual Burnol top-jet provenance and support-fibre multiplicity are retained.
+
+This closes admission but exposes exact budget blindness. Every reporter `(a,b,d)` on admitted
+Euler, Wold, and endpoint channels has cofinal character `(8/3)|c|²(-a+b+2d)`. Existing
+compensated primitive-budget energy is literally reporter `(1,-1,1)`, lying in the zero-character
+plane. Hence its convergence to zero cannot control nonzero endpoint response. First open theorem
+is a source-budgeted reporter transverse to `-a+b+2d=0`; the obvious complete-positive transverse
+reporter already overspends. Repeating transport, selection, abstract shorting, or positive-order
+algebra cannot close route. Ordinary Loewner/equivariant admission, scalar contractivity,
+matrix-complete restriction, and post-divisor passivity remain insufficient or RH-equivalent.
+External supercritical Thorin theory is only a safe control case.
 
 P-G176 removes “prove target capacity” from legitimate producer research: the universal target
 trace-capacity law is equivalent to RH. The required source-to-Xi theorem must make that inequality
@@ -6376,10 +6383,11 @@ External material should be imported only where it shortens a current first open
    critical-scale arithmetic Calderón Green intermediate extension and faithful cup-isometric
    harmonic comparison. For P, pre-Xi negative Euler third jet and positive Wold counterterm now
    fit primitive budget, while one-leg positive and signed splits overspend. Completed Gamma/polar
-   two-leg descent and intrinsic Hahn--Jordan selection are now formal. For P, work only on
-   source-natural Xi-fibre physical admission of the unrecompressed Euler/Wold residual pair into
-   literal non-spectral conormal/selected-corner endpoint. Generic cyclic homology, Loewner order,
-   or abstract shorting still restates receiver.
+   two-leg descent, intrinsic Hahn--Jordan selection, and actual Xi-fibre conormal admission are
+   now formal. For P, work only on a source-budgeted reporter transverse to the proved blind plane
+   `-a+b+2d=0`. Existing compensated budget is exactly `(1,-1,1)` and blind; complete-positive
+   transverse conservation overspends. Generic cyclic homology, Loewner order, or abstract
+   shorting still restates receiver.
 7. **Route O / CCM-BS — sign canonical ground heads.** Signed parity clocks, constrained-ground
    sector spectrum/vector convergence, arbitrary-accuracy reduction, and canonical exact-ground
    head convergence are formal. Prove corrected completed CCM symbol has nonnegative average
@@ -6409,8 +6417,8 @@ External material should be imported only where it shortens a current first open
     Schatten-one, and its entire `det₂` has explicit symmetric real reciprocal source zeros.
     Its forced zero at `1` rules out Xi, normalized Xi, and every pointwise scalar weld. Exact
     nonpointwise Julia coupling, compression-order reversal, and coefficient/multiplicity-faithful
-    completed Xi transport are formal. Prove independent source budget/order law or pursue
-    non-spectral conormal contraction. Do not revisit trace-class landing,
+    completed Xi transport and non-spectral conormal admission are formal. Prove a source-budgeted
+    conormal character transverse to the classified blind plane. Do not revisit trace-class landing,
     scalar functional calculus, fixed-node reweighting, or amplitude-eight repair.
 13. **TC-HS — half-step transport.** Formalize paper defect/reflection theorem, then construct
     source-native half-step or density neutralizing reflection coefficient before divisor reading.
@@ -6453,9 +6461,11 @@ Current Lean corpus changes route frontiers, but not route count or RH status.
   Complete-positive and canonical signed split budgets overspend. Literal negative Euler cubic leg
   plus positive Wold counterterm fits primitive budget; independent completed Gamma/polar descent
   and intrinsic pre-compression Hahn--Jordan selection are closed, preserving BV endpoint, `k^2`
-  depth, labels, orientations, multiplicity, and both order-one residuals. Open core is
-  source-natural Xi-fibre admission of this pair into the literal non-spectral conormal
-  contraction. Ordinary Loewner/equivariant admission remains an RH-equivalent receiver.
+  depth, labels, orientations, multiplicity, and both order-one residuals. Actual Xi-fibre
+  conormal admission is now exact, including finite Wold/endpoint co-short conservation and Burnol
+  provenance. Existing compensated budget is exactly blind character `(1,-1,1)` in plane
+  `-a+b+2d=0`. Open core is a source-budgeted transverse character. Ordinary Loewner/equivariant
+  admission remains an RH-equivalent receiver.
 - T analytic detector chain ends in fixed-gap zero-density below 7/10, and moving Gabriel geometry
   has exact 31/10 coefficient with 7/100 room. Actual critical fourth, mollifier, detector-error,
   and translated Gaussian budgets have polylogarithmic cost. One threshold supplies every upper

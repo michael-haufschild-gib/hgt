@@ -77,32 +77,32 @@ theorem biRootLocus_eval (f : ℂ[X][X]) (q : BiRootLocus f) :
   rw [biEval_eq_eval_biFibre] at h
   exact h
 
-theorem biRootLocus_partial_ne {f : ℂ[X][X]}
-    (hsep : ∀ s : ℂ, (biFibre f s).Separable) (q : BiRootLocus f) :
+theorem biRootLocus_partial_ne {f : ℂ[X][X]} (q : BiRootLocus f)
+    (hsep : (biFibre f q.1.1).Separable) :
     (fderiv ℂ (biEval f) (q.1.1, q.1.2)) (0, 1) ≠ 0 := by
   rw [biEval_partial_snd]
-  exact (hsep q.1.1).eval₂_derivative_ne_zero (RingHom.id ℂ) (biRootLocus_eval f q)
+  exact hsep.eval₂_derivative_ne_zero (RingHom.id ℂ) (biRootLocus_eval f q)
 
 /-! ### The implicit-function chart -/
 
 /-- Implicit-function data at a point of the root locus. -/
-noncomputable def biIFTData {f : ℂ[X][X]}
-    (hsep : ∀ s : ℂ, (biFibre f s).Separable) (q : BiRootLocus f) :
+noncomputable def biIFTData {f : ℂ[X][X]} (q : BiRootLocus f)
+    (hsep : (biFibre f q.1.1).Separable) :
     ImplicitFunctionData ℂ (ℂ × ℂ) ℂ ℂ := by
   have cdf : ContDiffAt ℂ ω (biEval f) q.1 := (analyticAt_biEval f q.1).contDiffAt
   have hω : (ω : WithTop ℕ∞) ≠ 0 := by decide
   have if₂ : (fderiv ℂ (biEval f) q.1 ∘L (.inr ℂ ℂ ℂ)).IsInvertible :=
     HolomorphicIFT.clm_invertible_of_apply_one_ne
-      (by simpa using biRootLocus_partial_ne hsep q)
+      (by simpa using biRootLocus_partial_ne q hsep)
   exact cdf.hasStrictFDerivAt hω |>.implicitFunctionDataOfProdDomain if₂
 
-theorem biIFTData_apply {f : ℂ[X][X]}
-    (hsep : ∀ s : ℂ, (biFibre f s).Separable) (q : BiRootLocus f) (v : ℂ × ℂ) :
-    (biIFTData hsep q).toOpenPartialHomeomorph v = (biEval f v, v.1) := rfl
+theorem biIFTData_apply {f : ℂ[X][X]} (q : BiRootLocus f)
+    (hsep : (biFibre f q.1.1).Separable) (v : ℂ × ℂ) :
+    (biIFTData q hsep).toOpenPartialHomeomorph v = (biEval f v, v.1) := rfl
 
-theorem biIFTData_mem_source {f : ℂ[X][X]}
-    (hsep : ∀ s : ℂ, (biFibre f s).Separable) (q : BiRootLocus f) :
-    (q : ℂ × ℂ) ∈ (biIFTData hsep q).toOpenPartialHomeomorph.source :=
+theorem biIFTData_mem_source {f : ℂ[X][X]} (q : BiRootLocus f)
+    (hsep : (biFibre f q.1.1).Separable) :
+    (q : ℂ × ℂ) ∈ (biIFTData q hsep).toOpenPartialHomeomorph.source :=
   ImplicitFunctionData.pt_mem_toOpenPartialHomeomorph_source _
 
 /-- **The root projection is a local homeomorphism** as soon as every fibre is separable. -/
@@ -111,7 +111,7 @@ theorem isLocalHomeomorph_biRootProj {f : ℂ[X][X]}
     IsLocalHomeomorph (biRootProj (f := f)) := by
   classical
   intro e
-  let ψ := (biIFTData hsep e).toOpenPartialHomeomorph
+  let ψ := (biIFTData e (hsep e.1.1)).toOpenPartialHomeomorph
   let baseTarget : ℂ → ℂ × ℂ := fun s => (0, s)
   have hbaseTarget : Continuous baseTarget := continuous_const.prodMk continuous_id
   have hambient : Continuous (fun q : BiRootLocus f => (q : ℂ × ℂ)) := continuous_subtype_val
@@ -123,7 +123,7 @@ theorem isLocalHomeomorph_biRootProj {f : ℂ[X][X]}
     have h1 := congrArg Prod.fst hright
     have h2 := congrArg Prod.snd hright
     rw [show ψ (ψ.symm (baseTarget s)) = (biEval f (ψ.symm (baseTarget s)),
-        (ψ.symm (baseTarget s)).1) from biIFTData_apply hsep e _] at h1 h2
+        (ψ.symm (baseTarget s)).1) from biIFTData_apply e (hsep e.1.1) _] at h1 h2
     exact ⟨h1, h2⟩
   let liftRoot : ∀ s, targetPred s → BiRootLocus f :=
     fun s hs => ⟨ψ.symm (baseTarget s), (hsymm_spec s hs).1⟩
@@ -132,7 +132,7 @@ theorem isLocalHomeomorph_biRootProj {f : ℂ[X][X]}
   let target : Set ℂ := baseTarget ⁻¹' ψ.target
   have hpsi_eq : ∀ q : BiRootLocus f, ψ (q : ℂ × ℂ) = baseTarget (biRootProj q) := by
     intro q
-    rw [biIFTData_apply hsep e]
+    rw [biIFTData_apply e (hsep e.1.1)]
     exact Prod.ext q.2 rfl
   have hmapSource : ∀ q ∈ source, biRootProj q ∈ target := by
     intro q hq
@@ -183,7 +183,7 @@ theorem isLocalHomeomorph_biRootProj {f : ℂ[X][X]}
       continuousOn_invFun := hcontInv
       open_source := ψ.open_source.preimage hambient
       open_target := ψ.open_target.preimage hbaseTarget }
-  exact ⟨chart, biIFTData_mem_source hsep e, rfl⟩
+  exact ⟨chart, biIFTData_mem_source e (hsep e.1.1), rfl⟩
 
 /-! ### Properness and the covering property -/
 

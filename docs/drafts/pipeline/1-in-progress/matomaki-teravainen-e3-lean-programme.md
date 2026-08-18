@@ -272,16 +272,45 @@ degeneracies handled through `0^s = 0`), `weighted_criticalPt_eq`.  Axiom-clean,
 **This is the analytic heart of Jutila's interpolation**: every term but `‖ζ‖` is elementary, and
 `‖ζ‖` is exactly what the corpus's fourth moment averages.
 
+### The discrete-to-integral transfer, generalised — `Sieve/GallagherSumGeneral` (2026-08-18)
+
+```text
+sum_abs_le_gallagher_general (hδ : 0 < δ) (hderiv : ∀ x, HasDerivAt f (f' x) x) (hcont' : Continuous f')
+    (hgap : ∀ i, lam i + δ ≤ lam (i+1)) (hA : A ≤ lam 0 − δ/2) (R) :
+  ∑_{r ≤ R} |f(λ_r)| ≤ δ^{-1}∫_A^{λ_R+δ/2}|f| + ∫_A^{λ_R+δ/2}|f'|
+```
+
+`Sieve/GallagherSum` had this only for an exponential sum; the averaging step of Jutila needs it for
+`‖ζ(1/2+i·)‖`-type functions.  Both ingredients were already corpus theorems — the pointwise Sobolev
+bound `Sieve/GallagherSobolev.gallagher_sobolev` and the window disjointness
+`Sieve/WindowDisjointness.sum_window_le` — so only the composition was missing.  Axiom-clean, wired.
+
+Applying it to `f = ‖ζ(1/2+i·)‖⁴` and integrating against
+`exists_inghamCriticalZetaFourthMoment_dyadic_le_polylog` is the averaging step; the one input still
+to be supplied there is a derivative bound for `‖ζ‖⁴` on the critical line.
+
 **What remains of M4b is the averaging step**: the middle term of Jutila's estimate, obtained
 by paying the off-diagonal Gram entries with the fourth moment of `ζ` through
 `Sieve/CriticalTruncationZeta` rather than by the trivial diagonal.  Both of its inputs are now
 corpus theorems.
 
+### The Perron kernel's decay branch — `Sieve/PerronKernelBound` (2026-08-18)
+
+```text
+norm_perron_kernel_le_div (hx : 0 < x) (hh : 0 < h) (ht : t ≠ 0) :
+  ‖((x+h)^{1+it} − x^{1+it})/(1+it)‖ ≤ 2(x+h)/|t|
+```
+
+This is the branch `Sieve/MixedMomentAssembly` consumes through `perronKernel_le_div`: on the
+one-line the two powers have modulus `x+h` and `x`, and `|1+it| ≥ |t|`.  The complementary branch
+`‖K‖ ≤ h`, needed near `t = 0`, is the integral representation `K = ∫_x^{x+h}u^{it}du` and is still
+open.  Axiom-clean, wired.
+
 ## Milestones
 
 - [x] **M1** Lemma 3.3 in general form (improved MVT) — **landed**, `Sieve/ImprovedMeanValue`.
 - [ ] **M2** Lemma 3.1: the Perron/variance reduction to `(5.2)`, with explicit constants.
-- [~] **M3** §7 assembly: **steps 3+5 landed** (`Sieve/MixedMomentAssembly`); step 1–2 (window comparison + Perron) open.
+- [~] **M3** §7 assembly: **steps 3+5 landed** (`Sieve/MixedMomentAssembly`), and the Perron kernel's decay branch landed (`Sieve/PerronKernelBound`); the window comparison (step 1) remains.
 - [x] **M4** Audit done (below).  Jutila is assemblable from corpus parts; the missing atom was the divisor bound, now **landed**.
 - [ ] **M5** Prop 2.2 for the Λ-version of §6.1 (Heath-Brown identity + dyadic splitting).
 - [ ] **M6** §6.1 Type I case.

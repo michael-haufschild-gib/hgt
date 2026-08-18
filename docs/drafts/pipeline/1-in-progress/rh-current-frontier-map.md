@@ -44,7 +44,7 @@ route under corpus source-isogenies.
 | G | Suzuki/CCM source → restricted-Weil Morse floor or one-sided Euler--Gamma/Carleman wall → aperture-dressed FE light completion → Hermite–Biehler orientation → RH | Floor: aperture-Morse exhaustion/boundary-rough exclusion. Coalescing: prove literal low-source cyclic mass above `1/113` is `o(r/log^2(1/r))`, or realize the forced opposite lower bound. Wall: compare prime-minus-regular-screw mass with negative light/holonomy. New G-CE subarchitecture rewrites completed primitive exactly as a pole-subtracted all-prime summatory-error transform; its core is source-defined nonexpansive pole-to-divisor continuation preserving coupled floor/Möbius cancellation. |
 | L | arithmetic Poisson/Green complex → source Green closure and harmonic complement → faithful cup-isometric Meyer comparison → positive Hodge block → critical line → RH | Construct the source-derived arithmetic Calderón intermediate extension and its closed Lagrangian boundary relation at the critical `x^(1/2)` scale. Scalar descent on the completed one-leg graph is exactly constant-profile descent. Operator-valued fixed-coordinate divisor encoding is also impossible when reciprocal-mass continuity lands in Hilbert--Schmidt topology. A survivor must retain a proved arithmetic-discontinuous critical-scale invariant, change the carrier before completion, or leave the Hilbert--Schmidt class. |
 | O | restricted-Weil operator → canonical exact-ground Gamma--Slepian heads → inseparable completed CCM symbol average → nonnegative floor → RH | Source quadratic is exactly the corrected finite-aperture symbol averaged against actual head Fourier density. Prove this signed average nonnegative on canonical heads. Unsigned cell absorption diverges, and phase-free coherent chi-square separation is impossible because its Gamma--polar scalar budget is strictly negative. Full constrained-sector operator spectrum and ground-vector transfer are closed. |
-| P | primitive Euler/Burnol budget → completed Gamma--Julia four-orientation orbit → Wold-cubic regularization → selected-fibre signed conservation → RH | Completed two-leg descent and nonlinear/non-spectral selection are closed. Intrinsic pre-compression Hahn--Jordan residuals preserve every prime label and Euler `k²` depth, retain Euler and Wold as reconstructing legs with limits `-2/3` and `+2/3`, strictly retain variation lost by linear compression, preserve Xi multiplicity/BV endpoint/four orientations, and carry the compensated physical corner below primitive budget cofinally. First open core: prove source-natural Xi-fibre physical admission identifying this selected residual action with the literal non-spectral conormal contraction used by the RH endpoint. Ordinary Loewner/equivariant admission is already RH-equivalent. |
+| P | primitive Euler/Burnol budget → completed Gamma--Julia four-orientation orbit → Wold-cubic regularization → selected-fibre signed conservation → RH | Completed two-leg descent, nonlinear selection, and source-natural Xi-fibre conormal admission are closed. At every finite clock the admitted Wold short plus literal endpoint response equals twice the actual four-orientation conormal short; Burnol top-jet provenance and analytic-multiplicity fibre sum are exact. Every linear Euler/Wold/endpoint reporter has cofinal character `(8/3)|c|²(-a+b+2d)`. Existing compensated primitive-budget reporter is exactly blind vector `(1,-1,1)`. First open core: construct a source-budgeted reporter transverse to `-a+b+2d=0`; complete-positive transverse reporters already overspend. Ordinary Loewner/equivariant admission remains RH-equivalent. |
 | Q | theta–Cassini source → separated finite prime–Gamma packet sign → transverse charge zero → RH | Produce nonnegative energy cofinally toward orientation vector. Null boundaries have hidden mixed incidence `-E/2`; diagonal budgets and adaptive complex phases cannot repair fusion. Alternative UQ-QC asks for finite pre-divisor quadratic-concentration budget. |
 | T | centered prime--Gamma source → detector/Mellin packet, Wold residual ODE, caustic-null true-prime Bessel cone, or sub-square-root massive chirp → RH | For every prescribed logarithmic retreat coefficient, some finite jet order gives an exact finite-atom/true-prime-quadrature RH receiver. Prove the signed bound for its remaining interior finite core; residual/sub-`3/2` and growing-Xi chirp branches remain. Every fixed finite radiation subtraction diverges and is retired. |
 | U | shifted-Xi Hankel first crossing → boundary-rough completed null ground → restricted-Weil positivity → RH | Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: off RH the least zero aperture has a genuine null ground absent from every strict smooth interior source. Exclude this completed-boundary state by a trace/quotient or whole-ground theorem. |
@@ -1415,13 +1415,34 @@ every clock. Prime labels, prime-power `k²`, analytic multiplicity, four orient
 endpoint defect survive. The selected physical corner converts the signed BV split into the
 already-proved compensated energy, which enters primitive budget cofinally.
 
-New open core is narrower: prove source-natural **Xi-fibre physical admission** identifying this
-canonical residual pair—without recompressing it—with the literal non-spectral conormal
-contraction/positive selected corner required by Route P's RH endpoint. This cannot be ordinary
-Loewner-continuous or equivariant descent; corpus firewalls make those global versions
-RH-equivalent. Rank-one shorting, direct `det₂` welding, compression-monotone Ward budgets,
-ordinary positive pre-divisor conservation, and canonical BV signs remain dead. Curvature lane
-still needs finite uniform high-tail ceiling.
+Source-natural **Xi-fibre physical admission is now closed** without recompression.  For the actual
+multiplicity-split Burnol/Gamma--Julia conormal coefficient `c`, its literal four-orientation short
+is `S(c)=4|c|²`.  Negative Euler and positive Wold Hahn--Jordan legs shorten separately.  At every
+finite clock,
+
+```text
+admittedWold(c,N) + endpointResponse(c,q,N) = 2 S(c).
+```
+
+The first term is exactly BV interior energy and the second is exactly BV endpoint ghost energy.
+Positive-aperture Burnol nested-window tomography supplies `c`, and support-fibre summation restores
+analytic multiplicity.  Thus no fitted divisor scalar or generic Loewner admission remains hidden.
+
+The new obstruction is classified exactly.  Every real linear reporter with coefficients
+`(a,b,d)` on admitted Euler, Wold, and endpoint channels has cofinal character
+
+```text
+(8/3)|c|²(-a+b+2d).
+```
+
+For nonzero `c`, the blind plane is precisely `-a+b+2d=0`.  Existing compensated primitive-budget
+energy is exactly reporter `(1,-1,1)`, hence is blind; this explains its zero limit while endpoint
+response stays nonzero.  New open core is a **source-budgeted transverse character**: construct an
+arithmetic reporter with `-a+b+2d != 0` whose bound survives actual Xi-fibre admission.  The obvious
+complete-positive transverse reporter is excluded by the finite overspend firewall.  Ordinary
+Loewner-continuous/equivariant descent, rank-one shorting, direct `det₂` welding,
+compression-monotone Ward budgets, positive pre-divisor conservation, and canonical BV signs remain
+dead. Curvature lane still needs finite uniform high-tail ceiling.
 
 More cluster estimates, seed/source-window construction, target support identification, scalar
 capacity, or multiplicity normalization are closed work.
@@ -1449,6 +1470,9 @@ source grading and independent two-leg completed residue transport;
 literature boundary; `SourceHorizontalEulerWoldJordanResidualSelection.lean` proves the exact
 nonlinear source selector, strict residual-information retention, separate order-one limits,
 coefficient/multiplicity/BV fidelity, and selected primitive-budget identity;
+`SourceHorizontalEulerWoldJordanConormalCoShortAdmission.lean` proves actual Burnol/Xi conormal
+admission, finite co-short conservation, multiplicity restoration, complete cofinal-character
+classification, and exact blindness of the existing compensated budget;
 completed conormal modules retain non-spectral alternative.
 
 ### Route Q — theta–Cassini boundary saturation
@@ -3885,10 +3909,10 @@ Highest-value research topics are those capable of supplying one of these consti
 - source-relative intersection/compressed-trace identities controlling Hermitian deviation sector;
 - noncommutative or singular mixing mechanisms that preserve reflection-odd horizontal class until
   annihilation, rather than radical-preserving normalization;
-- source-natural Xi-fibre admission of the now-formal nonlinear/non-spectral Euler--Wold Jordan
-  residual pair into the literal conormal contraction used by the RH endpoint. The selector itself
-  is closed: it preserves `k^2`, BV endpoint, four orientations, actual multiplicity, and both
-  order-one legs, while linear compression strictly loses their variation and tends to zero;
+- a source-budgeted conormal character transverse to `-a+b+2d=0` on the now-formal admitted
+  Euler/Wold/endpoint triple. Xi-fibre admission, Burnol provenance, multiplicity, and finite
+  co-short conservation are closed; existing compensated reporter `(1,-1,1)` is proved exactly
+  blind, while complete-positive transverse conservation overspends;
 - completed moving-degree reverse-Bessel prime--Gamma window assembly converting half-log reserve
   and recovered Euler damping into cofinal pulse capital;
 - source-native theta--Cayley half-step transport neutralizing reflection weight before divisor
@@ -3985,7 +4009,9 @@ Latest corpus narrows, but does not add, routes. E's repaired whole budget, para
 head density; unsigned absorption and phase-free coherent chi-square separation are dead. P now has
 selected-fibre Krein descent, a lawful pre-Xi negative Euler third-jet budget, formal completed
 Gamma/polar two-leg Xi descent, and a canonical nonlinear/non-spectral Hahn--Jordan physical
-selector retaining both order-one legs and entering primitive budget. Its remaining core is
-source-natural Xi-fibre admission of that residual pair into the endpoint's literal non-spectral
-conormal contraction; generic Loewner/equivariant admission is already RH-equivalent. G gains the G-CE exact summatory-error carrier and corrected meromorphic characteristic receiver, but still lacks source-defined nonexpansive continuation/ground orientation; this is a new G mechanism, not a new route. Standard adelic sewing saturates rather than selects, leaving source-modular base
+selector retaining both order-one legs and entering primitive budget. Actual Xi-fibre admission is
+now exact: finite Wold short plus endpoint equals twice literal conormal short, with Burnol source
+provenance and multiplicity. The existing compensated budget is exactly the blind cofinal character
+`(1,-1,1)`; remaining core is a source-budgeted character transverse to its classified blind plane.
+Generic Loewner/equivariant admission remains RH-equivalent. G gains the G-CE exact summatory-error carrier and corrected meromorphic characteristic receiver, but still lacks source-defined nonexpansive continuation/ground orientation; this is a new G mechanism, not a new route. Standard adelic sewing saturates rather than selects, leaving source-modular base
 change as a Route-V candidate. L and T retain their stated cores. No route proves or disproves RH.

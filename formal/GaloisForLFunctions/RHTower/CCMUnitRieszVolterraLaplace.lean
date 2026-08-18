@@ -383,4 +383,34 @@ theorem integral_Ioi_rexp_neg_mul_linear_shift {c : ℝ} (hc : 0 < c) (L : ℝ) 
     ring
   exact_mod_cast hgoal
 
+/-- Integrability of the Laplace integrand of an exponential-kernel Volterra convolution. -/
+theorem integrableOn_Ioi_cexp_mul_expVolterra
+    {b : ℝ} (hb : 0 ≤ b) {z : ℂ} (hz : 0 < z.re) {φ : ℝ → ℝ} {C : ℝ}
+    (hφ : Measurable φ) (hbnd : ∀ h : ℝ, 0 < h → |φ h| ≤ C * (1 + h)) :
+    IntegrableOn (fun t : ℝ => Complex.exp (-(z * (t : ℂ))) *
+        ((∫ h in Ioc (0 : ℝ) t, Real.exp (-(b * (t - h))) * φ h : ℝ) : ℂ))
+      (Ioi (0 : ℝ)) volume := by
+  have hw₁ : IntegrableOn (fun t : ℝ => Real.exp (-(z.re / 2 * t))) (Ioi (0 : ℝ)) volume :=
+    integrableOn_Ioi_rexp_neg_mul (by linarith) 0
+  have hw₂ : IntegrableOn
+      (fun h : ℝ => |C| * ((1 + h) * Real.exp (-(z.re / 2 * h)))) (Ioi (0 : ℝ)) volume :=
+    integrableOn_Ioi_linear_exp_majorant hz
+  have hmeas : AEStronglyMeasurable (Function.uncurry (expVolterraIntegrand b z φ))
+      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) :=
+    (measurable_uncurry_expVolterraIntegrand b z hφ).aestronglyMeasurable
+  have hbound : ∀ᵐ p ∂((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))),
+      ‖Function.uncurry (expVolterraIntegrand b z φ) p‖ ≤
+        Real.exp (-(z.re / 2 * p.1)) * (|C| * ((1 + p.2) * Real.exp (-(z.re / 2 * p.2)))) := by
+    rw [Measure.prod_restrict]
+    refine (ae_restrict_iff' (measurableSet_Ioi.prod measurableSet_Ioi)).mpr ?_
+    filter_upwards with p hp
+    exact norm_expVolterraIntegrand_le hb hz hbnd hp.1 hp.2
+  have hprod : Integrable (Function.uncurry (expVolterraIntegrand b z φ))
+      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) :=
+    Integrable.mono' (hw₁.mul_prod hw₂) hmeas hbound
+  have hleft := hprod.integral_prod_left
+  refine hleft.congr ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+  exact integral_expVolterraIntegrand_snd hφ ht
+
 end GaloisForLFunctions.RHTower
