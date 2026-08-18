@@ -262,3 +262,45 @@ backreaction, and collapse stability remain outside the model.
 - 2026-08-03 — closed the exact extremal physical scan in `BesselOrderPhysicalScan`: affine order
   transport, multiplication by the nonzero entire DA Good prefactor, and the physical prefactor
   identity are all Lean-proved.
+
+## Lean progress — the growth contradiction, in the classification's own output shape
+
+`GaloisForLFunctions.HTGeometry.BesselOrderDreyfusNormalForm` packages §3--§4 into exactly the shape
+Dreyfus's theorem outputs, unconditionally and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`):
+
+```text
+DreyfusProgressionNormalForm x₀ f
+    ∀ x ≥ x₀, ∃ ell ≥ 1, the sequence n ↦ f (x + ell·n) has a finite rational-exponential
+    representation
+not_dreyfusProgressionNormalForm_realModifiedBesselKOrder
+    ¬ DreyfusProgressionNormalForm 1 (K_·(s))
+not_dreyfusProgressionNormalForm_realModifiedBesselOrderIntensity
+    ¬ DreyfusProgressionNormalForm 3 (y ↦ K_y(s) K_(y−2)(s))
+not_differentiallyAlgebraic_realModifiedBesselKOrder_of_classification
+not_differentiallyAlgebraic_realModifiedBesselOrderIntensity_of_classification
+    for any notion of differential algebraicity for which the classification holds, neither
+    function is differentially algebraic
+```
+
+The last two make the reduction machine-checked: the card's theorem now follows from the single
+arrow "differentially algebraic solution of a rational linear shift equation ⟹ normal form", with
+every other step — entire order dependence, the recurrence, positivity, the symmetric-square system,
+the scalar annihilator, the progression growth bound `(9)`, the factorial lower bounds `(10)`,
+`(11)`, and the physical-scan transfer — already unconditional in the tree.
+
+### Why the classification cannot be bypassed
+
+The Riccati reduction is the natural candidate and does not work.  Setting `r(ν) = y(ν+1)/y(ν)`,
+the recurrence `(3)` becomes the first-order rational shift equation `r(ν) = 2ν/s + 1/r(ν−1)`, and
+`r` is differentially algebraic whenever `y` is, because the shift preserves `ℂ(ν)`.  The corpus
+already excludes a *rational* `r` (the rational-Riccati obligation).  But the step from "not
+rational" to "not differentially algebraic" is exactly the classification again: differential
+algebraicity by itself carries no growth information — `exp (exp z)` satisfies `y y'' = y y' + (y')²`
+and has infinite order — so the growth bound `(9)` can only come from the shift equation, which is
+what the classification converts into structure.
+
+The remaining obligation is therefore the classification theorem itself, and it rests on
+parameterized difference Galois theory, of which mathlib has no part: there is no Picard--Vessiot
+theory in mathlib, differential or difference.  That foundation, not any assembly step, is what this
+card is waiting on.

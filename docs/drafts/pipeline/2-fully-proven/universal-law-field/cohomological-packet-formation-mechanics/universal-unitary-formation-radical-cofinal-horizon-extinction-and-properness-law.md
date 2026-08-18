@@ -113,6 +113,49 @@ through which **every** equivariant positive-unitary reporter must pass.  It may
 additional nonunitary or nonnormal directions; `(UFR.3)` is the universal forced kernel, not a
 claim that every remaining action is unitarizable.
 
+### Theorem 2.3 -- off-unit spectral erasure and full algebraic quotient
+
+Suppose a real source mode is semisimple:
+
+\[
+ Tv=\lambda v.
+ \tag{UFR.9a}
+\]
+
+If `|lambda|!=1`, every equivariant positive-unitary reporter kills it:
+
+\[
+ \boxed{r(v)=0.}
+ \tag{UFR.9b}
+\]
+
+Indeed, equivariance and norm conservation give
+
+\[
+ \|r(v)\|=\|Ur(v)\|=\|r(Tv)\|
+ =|\lambda|\,\|r(v)\|,
+\]
+
+so the norm vanishes.  Define
+
+\[
+ \mathcal R_T^{\rm alg}
+ =\mathcal R_T+
+ \operatorname{span}\{v:Tv=\lambda v,\ |\lambda|\ne1\}.
+ \tag{UFR.9c}
+\]
+
+Then every equivariant positive-unitary reporter kills `R_T^alg` and factors uniquely through
+
+\[
+ \boxed{V/\mathcal R_T^{\rm alg}.}
+ \tag{UFR.9d}
+\]
+
+Thus positivity erases both nilpotent lineage attached to the unit spectrum and semisimple radial
+modes away from the unit spectrum.  Only unit-modulus semisimple algebraic history can survive this
+forced quotient.  This does not assert that every remaining mode admits a Hilbert realization.
+
 ## 3. Cofinal primitive extinction
 
 Let `b_n,p_n in V` be boundary and primitive histories satisfying
@@ -237,7 +280,7 @@ One mechanism now controls four distinct organs:
 | Organ | Exact law |
 |---|---|
 | cohomological exactification | `Delta` turns a primitive into a boundary and lowers formation degree |
-| positive/unitary observation | every reporter factors through `V/R_T` |
+| positive/unitary observation | every reporter factors through `V/R_T^alg` |
 | cofinal topology | every finite horizon is exactified at a later stage |
 | source action/properness | retaining the migrating horizon costs `1+2N` |
 
@@ -265,7 +308,7 @@ The new field cannot identify exact formation with unitary time evolution.  They
 laws:
 
 1. exact formation is unipotent/degree-lowering and creates boundaries;
-2. positive recurrence is semisimple and sees only the quotient `(UFR.8)`;
+2. positive recurrence is semisimple and sees only the algebraic unitary quotient `(UFR.9d)`;
 3. global source geometry retains erased history through a grading action with compact sublevels;
 4. selection must prove that a physical nonneutral class is forced into the dichotomy `(UFR.19)`.
 
@@ -284,35 +327,38 @@ These are consequences of one law mechanism rather than renamed route outputs.
 
 The abstract selector is now exact:
 
-> **Physical formation-dichotomy bridge.** Before zero specialization, every physical off-centre
-> defect must be represented either by a finite-depth exact formation boundary or by a normalized
-> migrating horizon in the source-depth graph, while the physical realization is both nonzero
-> positive-unitary and finite-action.
+> **Physical algebraic-formation bridge.** Before zero specialization, every physical defect lands
+> in one jointly recoverable packet whose unitary leg intertwines its source multiplier and whose
+> exact-history leg carries the source-depth proper action.  A defect erased by the unitary leg must
+> remain as a finite boundary, a migrating horizon, or an expanding off-unit orbit in the proper
+> exact-history leg.
 
-If this bridge is proved, `(UFR.18)` excludes every off-centre defect.  Unlike bilateral admission
-or real-boundary exhaustion, the contradiction is generated upstream by exactification plus source
-properness.  The bridge is not yet proved for the literal Xi source, so this card claims no RH
-theorem.
+For the prime-radial receiver, an off-centre defect has positive real multiplier
+`lambda=p^(2 Re rho-1)!=1`.  Theorem 2.3 erases its unitary leg.  Finite boundaries are erased by
+Theorem 3.1, migrating horizons violate `(UFR.18)`, and a reflected off-unit scale orbit violates the
+already Lean-proved expanding-orbit properness law.  Hence the bridge would exclude every
+off-centre defect.  The bridge is not yet proved for the literal Xi source, so this card claims no
+RH theorem.
 
 The next research problem is no longer “find another source-native scalar.”  It is:
 
 \[
  \boxed{
- \text{construct the literal Xi formation filtration and prove that its physical defect is a
- boundary-or-horizon class for that filtration}.}
+ \text{construct the literal Xi formation filtration and place its physical defect in the jointly
+ recoverable algebraic-unitary formation packet}.}
  \tag{UFR.20}
 \]
 
 ## 8. Sharp boundaries
 
 1. Indefinite/Krein reporters can retain unipotent directions; Theorem 2.1 is positive-Hilbert.
-2. `R_T` is only the universally forced kernel.  Further directions may be erased by a particular
-   reporter.
+2. `R_T^alg` is only the algebraically forced kernel.  Further directions may be erased by a
+   particular reporter.
 3. A finite cutoff can retain a top cokernel class.  The theorem concerns compatibility under later
    exact formation.
 4. Properness uses the source-generated depth grading and codiagonal.  Arbitrary unweighted Hilbert
    completions need not retain either.
-5. The theorem does not prove that every Xi defect is a boundary-or-horizon class.
+5. The theorem does not construct the jointly recoverable Xi formation packet.
 6. No claim is made that hypertranscendence alone supplies the bridge `(UFR.20)`.
 
 ## 9. Lean certification
@@ -326,10 +372,11 @@ Lean proves:
 1. the finite-unipotent formation submodule and radical `(UFR.2)--(UFR.3)`;
 2. exact intertwining of every displacement power `(UFR.7)`;
 3. radical annihilation `(UFR.6)`;
-4. existence and uniqueness of the quotient factor `(UFR.8)--(UFR.9)`;
-5. cofinal primitive extinction `(UFR.11)`;
-6. reporter vanishing when cofinal boundaries span `(UFR.12)`;
-7. the exact migrating-horizon work formula `(UFR.17)`.
+4. off-unit eigenmode erasure `(UFR.9b)` and full algebraic radical `(UFR.9c)`;
+5. existence and uniqueness of both forced quotient factors `(UFR.8)--(UFR.9)` and `(UFR.9d)`;
+6. cofinal primitive extinction `(UFR.11)`;
+7. reporter vanishing when cofinal boundaries span `(UFR.12)`;
+8. the exact migrating-horizon work formula `(UFR.17)`.
 
 The imported formation-depth modules already Lean-certify compact graph sublevels, coercivity, and
 adaptive-escape exclusion.  No `sorry`, `admit`, project axiom, `opaque`, `unsafe`, or computation

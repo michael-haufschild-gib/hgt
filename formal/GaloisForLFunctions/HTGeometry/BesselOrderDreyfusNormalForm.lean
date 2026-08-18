@@ -39,10 +39,11 @@ theorem not_dreyfusProgressionNormalForm_realModifiedBesselOrderIntensity {s : �
       (fun y => realModifiedBesselKOrder s y * realModifiedBesselKOrder s (y - 2)) := by
   intro h
   obtain ⟨ell, hell, hrep⟩ := h 3 le_rfl
-  refine realModifiedBesselOrderIntensity_not_rationalExponentialPeriodicProgression
-    (x := 3) hs le_rfl hell ?_
-  refine hrep.imp fun m hm => ?_
-  exact hm
+  have harg : ∀ n : ℕ, (3 : ℝ) + ((ell * n : ℕ) : ℝ) - 2 = 3 - 2 + ((ell * n : ℕ) : ℝ) := by
+    intro n; ring
+  simp only [harg] at hrep
+  exact realModifiedBesselOrderIntensity_not_rationalExponentialPeriodicProgression
+    (x := 3) hs le_rfl hell hrep
 
 /-- **The reduction.**  Whatever notion of differential algebraicity the classification theorem is
 stated for, once it delivers the normal form the Bessel order carrier is not differentially

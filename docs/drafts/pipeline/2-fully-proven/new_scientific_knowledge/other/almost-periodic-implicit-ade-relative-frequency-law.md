@@ -506,3 +506,364 @@ nonvanishing separant on `F_j` into the injective jet chart `E j : BohrHull f �
 owns `RealAnalyticImplicit`, `U0.HolomorphicIFT` and
 `StripJetSeparation.eqOn_of_line_jet_eq_implicit_local` for that — together with the passage from
 the strip-holomorphic carrier to `ℝ →ᵇ ℂ`.
+
+### §3 `(15)`–`(16)`: local injectivity becomes injectivity on a closed piece
+
+The order-sharp step — "passing to a closed shrinking and measuring each regular chart in the smooth
+jet hypersurface is what recovers a bound depending only on the differential order" — is now a
+theorem, unconditional and axiom-clean:
+
+```text
+exists_finite_closed_cover_injOn
+    X compact regular, E injective near every point
+      ==>  a finite closed cover on each piece of which E is injective
+exists_finite_closed_cover_chart_injOn
+    the same with one chart chosen per point: a finite closed cover with one injective chart
+    per piece
+```
+
+This is exactly what turns the implicit-function theorem's *local* uniqueness into the *global*
+injectivity of `E_j` on `F_j` that `(16)` asserts and that
+`GaloisForLFunctions.card_le_of_hull_charts` consumes.  Without it the observation map `(13)` only
+gives an embedding into `ℂ^(m(n+1))` with `m` the number of samples, i.e. a bound depending on the
+cover; with it each piece embeds by a single full jet.
+
+The refinement is the same compactness argument as `(12)` and `(15)`, applied a second time: the
+neighbourhoods on which the chart is injective form an open cover, and a finite closed refinement
+subordinate to it makes the chart injective on each closed piece.
+
+What remains on this card is now the analytic input alone: the implicit-function theorem solving
+`P = 0` as `y^(n) = Phi(y, …, y^(n-1))` near a jet with nonvanishing separant, local uniqueness for
+that explicit equation, and the identity theorem — the tree owns `RealAnalyticImplicit`,
+`U0.HolomorphicIFT` and `StripJetSeparation.eqOn_of_line_jet_eq_implicit_local` — together with the
+passage from the strip-holomorphic carrier to `ℝ →ᵇ ℂ`.
+
+### The analytic implicit-function step was already owned
+
+The obligation recorded above as "the analytic implicit function theorem producing the injective jet
+chart" is met.  `GaloisForLFunctions.eqOn_of_line_jet_eq_implicit_local`
+(`HTGeometry/StripJetSeparation.lean`, axiom-clean) is exactly `(14)`--`(16)`:
+
+```text
+eqOn_of_line_jet_eq_implicit_local :
+  g, h holomorphic on the strip, both solving P = 0 near the sample time t₀ inside a convex region
+  S on which P is dominant in the top jet (C < ‖∂P/∂Y_n‖ with ‖P' − L‖ ≤ C on S),
+  and with equal jets of orders 0 … n−1 at t₀
+    ⟹ EqOn g h on the whole strip
+```
+
+It is proved the way the card describes: the dominant top derivative gives the explicit Lipschitz
+branch `y^(n) = Φ(y, …, y^(n−1))` (`ImplicitLipschitzGraph.exists_lipschitz_implicit`), the line
+restriction turns it into a Lipschitz ODE in the real parameter with an isometric twist, ODE
+uniqueness makes the jet at one point determine the restriction, and the identity theorem promotes
+that to the strip.
+
+`HTGeometry/RegularChartInjectivity.lean` packages it as the `InjOn` hypothesis the frequency-rank
+theorem consumes:
+
+```text
+injOn_lineJet_of_implicit_dominant
+    the lower-jet map at t₀ is injective on any family of strip solutions determined by their
+    strip restriction
+injOn_lineJet_of_implicit_dominant_subset
+    hence on every piece of a cover
+```
+
+So of the analytic obligations this card listed, only the passage from a strip-holomorphic uniformly
+almost-periodic `f` to the `ℝ →ᵇ ℂ` Bohr carrier remains — the minimal annihilating polynomial and
+its separant enter only through the dominance hypothesis `C < ‖∂P/∂Y_n‖`, which is what the
+separant's nonvanishing on the piece supplies.
+
+### The carrier passage is owned too, and the sharp route is now assemblable
+
+The last analytic obligation, the passage from a strip-holomorphic uniformly almost-periodic `F` to
+the `ℝ →ᵇ ℂ` Bohr carrier, is also already in the tree:
+
+```text
+VerticalAlmostPeriodicDerivative.isBohrAlmostPeriodic_line
+    the restriction of a strip almost-periodic function to the central line is Bohr almost periodic
+StripAlmostPeriodicBounds.exists_bound_of_isStripAlmostPeriodicOn
+    a strip almost-periodic function is bounded on every substrip
+BohrBochnerEquivalence.uniformContinuous_of_isBohrAlmostPeriodic
+BohrBochnerEquivalence.isBohrAlmostPeriodic_iff_hasTotallyBoundedOrbit
+    the two hypotheses of the frequency-rank theorem, from Bohr almost periodicity
+StripSolutionPhaseRank.exists_carrier_representatives
+    every carrier point has a holomorphic representative on the substrip solving the same relation
+StripSolutionPhaseRank.rank_le_of_strip_solution
+    the non-sharp bound  rank_ℤ Γ(f) ≤ 2 · #T · (n+1),  #T the number of atlas charts
+```
+
+So the corpus already owns the card's route `(13)` — the combined observation map — with a bound
+depending on the number of samples.  What the sharp bound `(19)` needs, and what the passes above
+supply, is the *closed-cover* route with one full jet per piece:
+
+```text
+exists_ne_zero_of_exists_ne_zero        §2 (8)–(9): minimality removes the singular stratum
+exists_finite_closed_regular_cover      §3 (10)–(12), (15): a finite closed cover, one regular
+                                        sample time per piece
+injOn_lineJet_of_implicit_dominant      (16): the *lower*-jet map at that time is injective
+complexJetToEuclidean                   ℂ^n as ℝ^(2n), continuous and injective
+card_le_of_hull_charts                  the frequency-rank bound from a closed cover with charts
+```
+
+The chain is complete in the exponent: `injOn_lineJet_of_implicit_dominant` separates by the jets of
+orders `0 … n−1` only — the top jet is recovered from the relation — so the chart lands in
+`ℂ^n ≅ ℝ^(2n)`, and `card_le_of_hull_charts` reads `2n`.  That is exactly why the bound is `2n` and
+not `2(n+1)`: the dominance hypothesis `C < ‖∂P/∂Y_n‖` is what lets the last coordinate be dropped.
+
+What remains is the transport of the per-piece charts through `exists_carrier_representatives`, i.e.
+instantiating `card_le_of_hull_charts` with `E j = complexJetToEuclidean n ∘ (lower jet of rep · at
+τ_j)`.
+
+## The order-sharp bound `(19)` is proved
+
+`GaloisForLFunctions.HTGeometry.StripSolutionPhaseRankSharp` closes the quantitative statement,
+unconditionally and axiom-clean (`[propext, Classical.choice, Quot.sound]`):
+
+```text
+rank_le_of_strip_solution_sharp :
+  F holomorphic and uniformly almost periodic on the strip,
+  f its line restriction as an element of ℝ →ᵇ ℂ,
+  P (F, F', …, F^(n)) = 0 on the strip,
+  and a family of convex regular regions S i on which P is dominant in the top jet
+    (‖P' − L i‖ ≤ C i < ‖∂P/∂Y_n at L i‖),
+  such that every holomorphic solution on the substrip has its jet at some sample time τ i inside
+  the corresponding S i
+  ==>  rank_ℤ Γ(f) ≤ 2n
+rank_le_of_regular_jets_sharp :  the same at the carrier level
+```
+
+This is `(19)`, with the bound depending only on the differential order.  The tree's earlier
+`rank_le_of_strip_solution` gives `2 · #T · (n+1)` — the combined-observation-map route `(13)`,
+whose bound grows with the atlas.  The sharp route is the card's own: the regular sets
+`U i = {x : jet of x at τ i lies in S i}` are open and cover the carrier, a finite closed cover
+subordinate to them exists by compactness and regularity, and on each closed piece the *single*
+jet at that piece's own sample time separates.
+
+Two points of the proof are where the exponent comes from.
+
+* Separation uses `carrier_eq_of_jet_eq_local` with the jets of orders `0 … n−1` only; the top jet
+  is recovered from the relation because it is dominant there.  So the chart is the **lower** jet,
+  landing in `ℂ^n ≅ ℝ^(2n)` through `complexJetToEuclidean`.
+* Injectivity is needed only *on each closed piece*, which is what
+  `exists_finite_closed_cover_subordinate` supplies, and that is exactly the hypothesis shape of
+  `card_le_of_hull_charts`.  Without the closed cover the bound would carry the atlas size.
+
+Combined with `(4)` — the identification of the hull's character group with the frequency group —
+this is the card's finite-frequency law with the sharp constant.
+
+### `(4)`: the bound is on the frequency group of `f` itself
+
+```text
+rank_le_of_addSubgroup_le
+    rank is monotone under inclusion of subgroups of ℝ
+rank_bohrSpectrum_le_of_strip_solution_sharp
+    rank_ℤ ⟨Bohr spectrum of f⟩  ≤  2n
+```
+
+The identification `(4)` needs only one inclusion, and the tree already had it:
+`BohrHullFrequency.closure_bohrSpectrum_le_bohrHullFrequencies` puts the group generated by the Bohr
+spectrum inside the character group of the hull, for any Bohr almost-periodic `f`, and Bohr almost
+periodicity is `isBohrAlmostPeriodic_of_hasTotallyBoundedOrbit` applied to the hypothesis already
+present.  Rank monotonicity then transports the `2n` bound from the hull's character group to the
+frequency group of `f`.
+
+So the card's quantitative statement — the additive group generated by the frequencies of a
+holomorphic uniformly almost-periodic solution of an order-`n` algebraic differential relation, with
+the separant nonvanishing somewhere on every carrier point, has rational rank at most `2n` — is now
+one unconditional axiom-clean Lean theorem:
+`GaloisForLFunctions.rank_bohrSpectrum_le_of_strip_solution_sharp`.
+
+Its hypotheses are exactly the card's setting: `F` holomorphic and strip almost periodic, `f` its
+line restriction, the relation `P = 0` on the strip, and a family of convex regions on which `P` is
+dominant in the top jet meeting the jet of every solution at some sample time — which is `(9)`, the
+statement that no carrier point is everywhere singular, in quantitative form.
+
+### §1 was already owned, and the bridge to the quantitative hypothesis is now proved
+
+`GaloisForLFunctions.AutonomousSeparant` (axiom-clean, wired) is `(5)`--`(6)`:
+
+```text
+AutonomousAnnihilator f n P            P annihilates f, top jet as the polynomial variable
+exists_minimal_autonomousAnnihilator   a degree-minimal nonzero annihilator exists
+separant_not_autonomousAnnihilator     in characteristic zero the separant of a degree-minimal
+                                       equation cannot annihilate: it is nonzero of strictly
+                                       smaller top-jet degree
+exists_minimal_with_separant           Ritt's separant step: a minimal equation with genuinely
+                                       present top derivative whose separant does not annihilate f
+```
+
+`HTGeometry/DominantNeighborhood.lean` supplies the missing bridge to the quantitative dominance
+hypothesis used by the frequency-rank theorem:
+
+```text
+exists_convex_dominant_nbhd
+    P' continuous at y₀ and its k-th partial coefficient nonzero
+      ==>  an open convex ball S ∋ y₀ and C ≥ 0 with  ‖P' y − P' y₀‖ ≤ C on S  and
+           C < ‖∂P/∂Y_k at y₀‖
+exists_convex_dominant_nbhd_with_ref   the same with the reference map named
+```
+
+Take `C = ‖∂P/∂Y_n‖/2` and `S` a ball on which continuity of `P'` keeps it within `C` of its centre
+value; balls are open and convex.  This is what turns "the separant does not vanish at this jet"
+into the datum `(S i, L i, C i)` that `rank_le_of_strip_solution_sharp` consumes, one region per
+regular point.
+
+With this the card's chain is Lean-proved end to end at the level of its four sections:
+`(5)`--`(6)` by `exists_minimal_with_separant`, `(8)`--`(9)` by `exists_ne_zero_of_exists_ne_zero`,
+`(10)`--`(16)` by `exists_finite_closed_regular_cover` and `injOn_lineJet_of_implicit_dominant`, and
+`(19)`, `(4)` by `rank_bohrSpectrum_le_of_strip_solution_sharp`.  What is not yet mechanised is the
+*translation* between the two encodings of the relation — §1's
+`Polynomial (MvPolynomial (Fin n) ℂ)` with `Polynomial.derivative` as separant, and §4's
+`P : (Fin (n+1) → ℂ) → ℂ` with `partialCoeff (P' y) (Fin.last n)` — together with the fact that a
+polynomial relation is `C¹` with continuous derivative, which is what
+`exists_convex_dominant_nbhd` needs.
+
+### The two encodings of the relation are identified
+
+`GaloisForLFunctions.HTGeometry.AutonomousJetRelation` (unconditional, axiom-clean) closes the
+translation between §1's storage of the relation and §3--§4's use of it:
+
+```text
+jetRelation n P y
+    = eval of P with the coefficients at the lower jets y_0 … y_(n−1) and the variable at y_n
+autonomousAnnihilator_iff_jetRelation
+    the stored notion of annihilation is exactly vanishing of jetRelation along the jet of f
+hasDerivAt_jetRelation_last
+    ∂/∂y_n of the relation, with the lower jets fixed, is the stored separant:
+    d/dx (eval₂ (eval v) x P) = eval₂ (eval v) x (derivative P)
+exists_minimal_jetRelation_separant
+    Ritt's step in the jet-function language: a minimal relation whose separant is nonzero at some
+    point of the solution's jet curve
+```
+
+`hasDerivAt_jetRelation_last` is the identification that matters: "the separant does not annihilate"
+and "the top partial derivative of the relation does not vanish" are the same statement, so
+`exists_minimal_with_separant` feeds `exists_convex_dominant_nbhd` directly, producing the convex
+dominant region at the regular jet.
+
+The chain of the card is therefore complete in Lean at every step:
+
+```text
+(5)–(6)    exists_minimal_with_separant, exists_minimal_jetRelation_separant
+           hasDerivAt_jetRelation_last, exists_convex_dominant_nbhd
+(8)–(9)    exists_ne_zero_of_exists_ne_zero
+(10)–(16)  exists_finite_closed_regular_cover, exists_finite_closed_cover_subordinate,
+           injOn_lineJet_of_implicit_dominant
+(19), (4)  rank_le_of_strip_solution_sharp, rank_bohrSpectrum_le_of_strip_solution_sharp
+```
+
+What has not been mechanised is a single top-level statement quantifying over `f` alone: the
+frequency-rank theorem takes the dominant-region family as an argument, and assembling it from
+`exists_convex_dominant_nbhd` at each regular jet requires the Fréchet differentiability of
+`jetRelation n P` in all `n+1` variables with continuous derivative — true because it is a
+polynomial map, but not yet written in that form.
+
+### The relation is smooth, and its top partial derivative is the separant
+
+The last piece of the §1-to-§4 bridge is proved, unconditionally and axiom-clean:
+
+```text
+contDiff_mvEval                        evaluating a multivariate polynomial at a moving point is
+                                       smooth (induction on the polynomial)
+jetRelation_eq_sum                     the relation as a finite sum over the support
+contDiff_jetRelation                   the relation is smooth in the full jet
+differentiable_jetRelation, continuous_fderiv_jetRelation
+jetRelation_update_last                fixing the lower jets leaves the univariate relation
+partialCoeff_fderiv_jetRelation_last
+    partialCoeff (fderiv (jetRelation n P) y) (Fin.last n) = jetRelation n (derivative P) y
+```
+
+The last identity is the one the card's argument turns on: the top partial coefficient of the
+derivative of the evaluated relation *is* the evaluated separant.  It is proved by differentiating
+the composite along the line through `y` in the last coordinate two ways — by the chain rule through
+`fderiv`, and by `hasDerivAt_jetRelation_last` — and using uniqueness of the derivative.
+
+With `continuous_fderiv_jetRelation` supplying the continuity hypothesis of
+`exists_convex_dominant_nbhd`, and this identity supplying its nonvanishing hypothesis from Ritt's
+separant step, the dominant convex region at each regular jet is now constructible from the card's
+own data.  Every ingredient of the card is a Lean theorem; what is not yet written is the single
+top-level statement that runs the whole chain from `f` to `rank_ℤ Γ(f) ≤ 2n` in one theorem.
+
+## The card's theorem, in one Lean statement
+
+```text
+GaloisForLFunctions.rank_bohrSpectrum_le_of_autonomous_strip_solution :
+  F holomorphic and uniformly almost periodic on the strip of half-width R about σ,
+  f its restriction to the central line as an element of ℝ →ᵇ ℂ,
+  Pp an autonomous differential polynomial of order n annihilating F on the strip,
+  and every holomorphic solution of the same relation on the substrip having its separant nonzero
+  at some real time
+    ==>  rank_ℤ ⟨Bohr spectrum of f⟩ ≤ 2n
+```
+
+unconditional, axiom-clean (`[propext, Classical.choice, Quot.sound]`).
+
+The dominant convex regions are no longer an input: they are constructed inside the proof, one for
+each regular jet, by `exists_convex_dominant_nbhd` applied at that jet — its continuity hypothesis
+from `continuous_fderiv_jetRelation`, its nonvanishing hypothesis from
+`partialCoeff_fderiv_jetRelation_last`, which says the top partial coefficient of the derivative of
+the evaluated relation *is* the evaluated separant.  The index set is the pairs (regular jet, sample
+time), and the atlas hypothesis is exactly the regularity assumption `(9)`.
+
+So the remaining hypothesis is the card's `(9)`: no carrier point is everywhere singular.  In the
+card that is derived from minimality of `Pp` (§1) plus minimality of the hull flow (§2), and both
+halves are Lean theorems — `exists_minimal_with_separant` / `exists_minimal_jetRelation_separant`
+for the first, `exists_ne_zero_of_exists_ne_zero` for the second.  What is not yet mechanised is
+their combination for *this* relation: that the separant of a minimal annihilator, viewed as a
+continuous functional on the carrier, is somewhere nonzero on every hull point, which is `(8)`–`(9)`
+instantiated at `Φ_t (g) = jetRelation n (derivative Pp) (jet g at t)`.
+
+### `(9)` in the form the hull provides
+
+```text
+exists_ne_zero_of_dense_translates
+    Φ an equivariant continuous family of functionals for a flow given as an explicit family of maps
+    with dense orbits, nonvanishing somewhere  ==>  nonvanishing everywhere
+```
+
+This is the version `(8)`--`(9)` needs on the Bohr hull, where the flow is
+`T t x = x + bohrIota f t` and no group action instance is involved.  Density of every orbit is the
+tree's `CarrierTranslationEquivariance.denseRange_bohrIota_add` — the translates of *any* carrier
+point by the line are dense — which is minimality of the hull flow.
+
+Instantiating it at `Φ_t (x) = jetRelation n (derivative Pp) (jet of rep x at t)` needs one property
+of the carrier representatives that `exists_carrier_representatives` does not currently record:
+translation equivariance,
+
+```text
+rep (x + bohrIota f s) z = rep x (z + s·i)   on the substrip,
+```
+
+which is true by construction — the representatives are `bohrEval Gb (ν x)` and `ν` is a hull
+morphism — but is not among the conclusions the existing theorem returns.  Adding it there is the
+one remaining edit; with it, `Φ` is equivariant, `hx₀` is `exists_minimal_jetRelation_separant` at
+`f` itself, and `(9)` follows, discharging the last hypothesis of
+`rank_bohrSpectrum_le_of_autonomous_strip_solution`.
+
+### Carrier representatives are translation equivariant
+
+The property named above as the last remaining edit is proved, and without touching
+`exists_carrier_representatives`: it follows from the two conclusions that theorem already returns.
+
+```text
+GaloisForLFunctions.eqOn_rep_add_bohrIota :
+  rep holomorphic on the substrip, with rep x (σ + t·i) = bohrEval f (x + bohrIota f t)
+    ==>  EqOn (rep (x + bohrIota f s)) (fun z => rep x (z + s·i)) on the substrip
+```
+
+On the central line it is `bohrIota_add` — translating the carrier point by `s` and evaluating at
+`t` is evaluating at `t + s` — and the identity theorem
+(`LineJetTransfer.eqOn_of_eventuallyEq_line`) promotes the line equality to the whole strip, since
+both sides are holomorphic there and the strip is connected.
+
+With this, the family `Φ_t (x) = jetRelation n (derivative Pp) (jet of rep x at σ + t·i)` is
+equivariant for the hull flow: `Φ_t (x + bohrIota f s) = Φ_(t+s) (x)`, because the jets of
+`rep (x + bohrIota f s)` at `σ + t·i` are the jets of `rep x` at `σ + (t+s)·i`.  Together with
+
+* continuity of `Φ_t` — `continuous_jet_of_representatives` composed with `contDiff_jetRelation`,
+* density of every hull orbit — `denseRange_bohrIota_add`,
+* nonvanishing at one point — `exists_minimal_jetRelation_separant` at `f` itself,
+
+`exists_ne_zero_of_dense_translates` yields `(9)`, the last hypothesis of
+`rank_bohrSpectrum_le_of_autonomous_strip_solution`.

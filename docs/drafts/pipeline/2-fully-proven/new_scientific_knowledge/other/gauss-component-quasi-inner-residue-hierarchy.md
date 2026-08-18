@@ -2365,3 +2365,30 @@ the origin only grows, while on the near side it is `−n + r` with `r ≤ n/2`,
 `S̃`, `S̃*` with constants independent of `n`, and then the one-step estimate
 `‖(R̃_n − a_(δ_n)) u‖ → 0` for `u` in the class — and step 3, which is already built
 (`HTGeometry/OperatorPowerTelescope.tendsto_norm_operator_pow_sub_zero`).
+
+### Pass 48 addendum — the class is stable under the Fourier multipliers
+
+The multiplier half of step 2's closure is proved, unconditionally and axiom-clean:
+
+```text
+half_le_natAbs_of_mem_band   inside the band 2|n+j| < n the frequency satisfies |j| ≥ n/2
+one_le_spikeBase             inside the band the spike base n/(1 + |n+j|) is at least 1  (n ≥ 2)
+TwoPieceAmplitude.mul_multiplier
+    ‖ρ_j‖ ≤ K₁ in the bulk,  ‖ρ_j‖ ≤ K₂ (n/(1 + |n+j|))^(c')  inside the band
+      ==>  TwoPieceAmplitude A θ B c n g
+           ⟹ TwoPieceAmplitude (K₁ A) θ (K₂ (A/(1 + n/2)^θ + B)) (c + c') n (ρ · g)
+```
+
+Two things the proof makes precise, and both are load-bearing for the iteration:
+
+* the multiplier's exponent **adds** to the spike exponent, `c ↦ c + c'`.  With
+  `ρ_j ≍ (n/|n+j|)^(1/(2m))` and two multiplier factors in
+  `R̃_n = B ∘ S̃ ∘ B^(-2) ∘ S̃* ∘ B`, one application costs `1/m`, so the class survives with `c < 1`
+  for fewer than `m` applications — exactly the length of the telescope the card runs;
+* the uniform mass **inside the band** does not stay uniform: it is absorbed into the spike, with
+  height `A/(1 + n/2)^θ`, because inside the band `|j| ≥ n/2` makes the uniform bound there small.
+  This is why the class has to be two-piece rather than a uniform bound with a moving constant.
+
+Remaining for step 2: the convolution half — stability under `B` and `B^(−2)`, for which the
+transfer estimates `sum_kernel_mul_spikeProfile_*_le` above supply the spike-to-uniform direction —
+and then the one-step estimate.

@@ -63,16 +63,18 @@ corpus's current unconditional range and are worth banking separately.
   `∫_0^∞|∑_{x<n≤x+h}a(n)|²dx ≪ (c₂²/c₁)X∫|A(y)|² min(h²/(c₁²X²), 1/y²) dy`.
   **NOT NEEDED for these cards** — see "Lemma 2.2 is bypassed" below.
 - **Lemma 2.3 (Vinogradov–Korobov twisted sums).** `∑_{n≤x}λ(n)n^{it} ≪ x exp(-log x/(log(x+|t|))^{2/3+δ})`
-  and the prime analogue.  **This is a hard prerequisite, and the corpus does not have it** — see
-  "The Vinogradov–Korobov prerequisite" below.
+  and the prime analogue.  **DONE (2026-08-18)** at the Route-T exponent `9/10`:
+  `Sieve/VonMangoldtTwistUniformHeight.exists_norm_partialSum_vonMangoldtTwist_routeT_uniform` and
+  `Sieve/VonMangoldtTwistPrimeEnvelope.exists_norm_sum_primeTwist_routeT_le`.
 - **Lemma 2.4 (mean value theorem).** `∫_{-T}^{T}|∑_{n≤N}a(n)n^{it}|²dt ≪ (T+N)∑|a(n)|²`.
   **CORPUS** — `Sieve/DirichletIntegralBound.integral_normSq_dirPoly_le` and the symmetric form
   `Sieve/LogPolyDirPoly.integral_Icc_normSq_dirPoly_symm_le`.
 - **Lemma 2.5 (large values for prime polynomials).** `|E| ≪ (V² log T)^{1+log T/log P}`.
-  Open; the corpus's sixth-moment layer (`Sieve/DirichletSixthMoment*.lean`) is the same device at a
-  fixed exponent and should generalise to the `k`-th power used here.
+  **DONE (2026-08-18)** — `Sieve/DirichletPowerMeasure.volume_largeValues_pow_symm_le_of_prime_support`,
+  the sixth-moment device at a free exponent, with the prime-supported fibre bound `k^k`.
 - **Lemma 2.6 (Halász–Montgomery).** `∫_E|∑_{n≤N}a(n)n^{it}|²dt ≪ (N+|E|T^{1/2}log T)∑|a(n)|²`.
-  Open.
+  **DONE (2026-08-18)** — `Sieve/DyadicSecondEnvelopeClosed.halaszMontgomery_dyadic_explicit`,
+  discrete form on a dyadic block, with explicit constants.
 - **Lemma 7.1 (Halász–Montgomery for prime polynomials).** Open; needed only for general `f`, not
   for `μ`.
 - **Turán–Kubilius** `∑_{X≤n≤2X}(ω_P(n)-W(P))² ≪ X W(P)`. **CORPUS** — `Sieve/TuranKubilius.lean`
@@ -573,3 +575,1199 @@ Route 1 reuses the corpus's `zetaChi` and Route-T zeta machinery and is the reco
 that the first-order Euler--Maclaurin alone gives only `N/|u| + u²`, which is useless for the Gram
 row: the crossover with the trivial bound `N` sits at `N^{2/3}`, and the off-diagonal then costs
 `R·N`.  The square-root saving is genuinely needed.
+
+### Lemma 2.6 is closed — and most of it was already in the corpus (2026-08-18)
+
+A search before building found that the entire two-regime phase analysis is already formalised:
+
+* `Sieve/KuzminLandau.kuzminLandau_band` and `Sieve/KuzminLandauInterval.kuzminLandau_interval`
+  — the Kuzmin--Landau inequality, discrete and sample-point forms;
+* `Sieve/SecondDerivativeTest.second_derivative_test'` — `‖S‖ ≤ 8Nh√λ + 12/√λ`;
+* `Sieve/HuxleyLogPhase` — both regimes for the logarithmic phase on a dyadic block, with the
+  exact envelopes `logDyadicLambda`, `logDyadicSecondBound`, `logDyadicSecondEnvelope`;
+* `Sieve/HuxleyDyadicRow` — the dyadic Dirichlet row `dyadicDirRow` and its Gram entries;
+* `Sieve/HuxleyLargeValues.sum_norm_inner_dyadicDirRow_le_huxley` — the Gram **row** bound
+  `N + (12πN/δ)H_K + K·B`;
+* `Sieve/AlmostOrthogonality.sum_norm_inner_sq_le_of_schur` — the duality principle.
+
+What was missing was only the composition without the absorption hypothesis of
+`huxley_local_large_values`, and the closed form of the envelope.
+
+    RHTower/Sieve/HalaszMontgomeryDyadic.lean
+      halaszMontgomery_dyadic                   `∑_r|⟪φ_r,a⟫|² ≤ (N + (12πN/δ)H_K + K·B)‖a‖²`
+      halaszMontgomery_dyadic_log               with `H_K ≤ 1 + log K`
+
+    RHTower/Sieve/DyadicSecondEnvelopeClosed.lean
+      logDyadicLambda_eq                        `λ(t) = t/(8πN²)`
+      logDyadicSecondEnvelope_le                **`B(N,U,T) ≤ 214√T + 1536·N/√U`** — the
+                                                exponent-pair `(1/2,1/2)` shape, by squaring both
+                                                endpoints against `3 < π ≤ 4`
+      halaszMontgomery_dyadic_explicit          **Lemma 2.6**:
+                                                `∑_r|⟪φ_r,a⟫|²
+                                                  ≤ (N + (12πN/δ)(1+log K)
+                                                      + K(1 + 214√T + 1536N/√U))·‖a‖²`
+
+This is the exposé's `(N + |E|T^{1/2}log T)` with the log attached to the diagonal term instead of
+the off-diagonal one, and with `U` a free resonance threshold (`3U ≤ 4πN`) that a large-values
+argument optimises.  Lemma 7.1 is needed only for a general multiplicative `f`, not for `μ`, so it
+does not gate these cards.
+
+All declarations unconditional, umbrella-wired, oleans built, axiom-clean.
+
+### Remaining
+
+Milestones A--D: the Matomäki--Radziwiłł ladder itself, carried quantitatively so the final rate is
+Menon's `(log L)^{-2+o(1)}`.  Every named lemma of §2 that the `μ` case uses is now a Lean theorem:
+2.3 (both forms), 2.4 (corpus), 2.5, 2.6.
+
+### Lemma 2.5 in the exposé's balanced form (2026-08-18)
+
+    RHTower/Sieve/DirichletPowerBalanced.lean
+      volume_largeValues_prime_balanced       choosing `k` with `N^k ≤ T` collapses the mean-value
+                                              factor and gives
+                                              `|{|F| ≥ V} ∩ [−T,T]| ≤ 10T(1+log T)(kG/V²)^k`,
+                                              `G = ∑|a_n|²`.  The whole length dependence now sits
+                                              in `k ≈ log T/log N`, and the measure decays
+                                              geometrically as soon as `V² > kG`
+
+### Corpus inventory for this lane — read before building anything else
+
+A survey on 2026-08-18 found that the exponential-sum machinery behind Lemmas 2.5/2.6 was already
+complete, and that a Kusmin--Landau build was about to be duplicated.  What the corpus owns:
+
+    Sieve/KuzminLandau, Sieve/KuzminLandauInterval      Kusmin--Landau, discrete + sample-point
+    Sieve/SecondDerivativeTest, Sieve/KthDerivativeTest the derivative tests
+    Sieve/HuxleyLogPhase                                both regimes for `-(t/2π)log x` on `[N,2N)`
+    Sieve/HuxleyDyadicRow, Sieve/HuxleyLargeValues      the dyadic row and its Gram row
+    Sieve/AlmostOrthogonality                           the duality principle
+    Sieve/RamareWeight, RamareDecomposition, RamareEnergy   the bilinear factorisation, energy-free
+    Sieve/MaximalWindowReduction, MaximalWindowDyadic   maximal window → dyadic mean squares
+    Sieve/MRFibreReduction, MRFromCorrelations,
+      MRFromUniformCorrelations                         the two entry interfaces
+    Sieve/ZetaLineRate.norm_riemannZeta_line_rate_clean `ζ(1+it) ≪ log t/loglog t`
+    Sieve/RouteTZetaZeroFree                            the `κ = 9/10` region
+
+Also recorded: chasing `ζ(it) ≪ |t|^{1/2}` for the Gram row is a dead end — it only covers
+`N ≫ |u|^{1+ε}`, whereas the binding regime is `|u|^{1/2} < N ≤ |u|`, which is exactly what the
+second-derivative test handles.  (The exact identities `|Γ(iy)|² = π/(y sinh πy)` and
+`|Γ(1/2−iy)|² = π/cosh πy` do give `|ζ(it)| = π^{−1/2}√(y tanh πy)|ζ(1+it)|` cheaply, should it be
+wanted elsewhere.)
+
+### Remaining
+
+The assembly only: exposé §§3--5 and MR §§4--7 (Milestones A--D), carried quantitatively.
+Milestone A is now fully unblocked — Lemmas 2.1, 2.3, 2.4 and Turán--Kubilius are all theorems.
+
+### The Plancherel interface for the three cards (2026-08-18)
+
+The cards' own object is now connected to the spectral side, so the whole remaining problem is one
+statement about a single integral.
+
+    RHTower/Sieve/FibreWindowBridge.lean
+      fibreIndex, innerFibre_subset_fibreIndex
+      card_filter_log_eq_le_one                 at most one integer has a prescribed logarithm
+      logWindowSum_eq_sum_filter                the window sum as a filtered sum
+      norm_fibreSum_sub_logWindowSum_le         **the fibre sum is the logarithmic window sum at
+                                                `log(x/a)`, up to one coefficient**: the fibre is the
+                                                closed window `[u, u+δ]` and `logWindowSum` the
+                                                half-open `(u, u+δ]`, and only the lower endpoint
+                                                can carry an integer
+      fibreLogStart, fibreLogStart_separated    the sample points are `1/(2√x)`-separated, because
+                                                `log(a'/a) ≥ 1 − a/a' ≥ 1/a' ≥ 1/(2√x)`
+      exp_fibreLogStart{,_le}, exp_fibreWidth
+      norm_logWindowSum_osc_le                  the window sum moves by at most `5` across one
+                                                separation cell (`e^{lam} ≤ 1 + 2·lam` for
+                                                `lam ≤ 1/2`, `e^{u_a} ≤ √x`, `e^δ ≤ 2` when `h ≤ √x`)
+      sum_fibreSum_sq_le_integral               **`∑_a(∑_{fibre}f)² ≤ 8√x·∫‖S‖² + 102(√x+1)`**
+      averagedMeanSquare_of_spectral            **the interface**: if
+                                                `(∫_ℝ‖logWindowSum f (fibreIndex x h) (fibreWidth x h) u‖²du)/h² → 0`
+                                                then `AveragedMeanSquare f hh`
+
+`Sieve/LogWindowDiscreteTransfer.norm_logWindowSum_sub_le` was made public (it was `private`); no
+other change to existing files.
+
+### Remaining — one statement
+
+Composing `averagedMeanSquare_of_spectral` with
+`LogWindowPlancherel.integral_normSq_logWindowSum_eq` and `normSq_logWindowKernel_le_min`, the three
+`route-e-*` cards are now equivalent to
+
+```text
+∫_ℝ min( δ² , (πw)^{-2} ) · | ∑_{n ≤ M} μ(n) n^{-2πiw} |² dw  =  o(δ²M²) ,
+     M ≍ √x ,   δ = log(1 + h/√x) ≍ h/M ,   h → ∞ .
+```
+
+The accounting: the far range `|w| > W` costs `M/W + M²/W²` by dyadic annuli against the mean value
+theorem, which is `o(δ²M²) = o(h²)` for `W = M/(εh)` with `ε → 0`; the near range needs
+`∫_{|w| ≤ W}|A(w)|²dw = o(M²)`, an `o(1)` saving over the mean value theorem.  That saving is
+exactly Matomäki--Radziwiłł, and it is what Lemmas 2.3/2.5/2.6 plus the Ramaré factorisation
+(`Sieve/Ramare*`) supply.  **Note that the existing `dyadicMeanSquare_le_dyadicTail` route cannot
+be used as-is**: it asks for an affine majorant `∫_{|w|≤T}|A|² ≤ αT + β` with `α = o(M)`, which is
+false for the full polynomial — the factorisation has to enter before the mean value theorem.
+
+### The reduction is now a single affine majorant (2026-08-18, continued)
+
+Two corrections and one further composition.
+
+**The index set had to shrink.**  `fibreIndex` was `Icc 1 ⌊x + h√x⌋₊`, of length `≍ x`; but every
+outer factor is `≥ √x`, so every fibre element is `≤ (x + h√x)/√x = √x + h`.  With the long index set
+the interface is true but vacuous — the trivial size of `∫‖S‖²` would be `≍ h²x`, not `≍ h²`.
+`fibreIndex x h` is now `Icc 1 ⌊√x + h⌋₊` and `innerFibre_subset_fibreIndex` carries the proof.
+
+**Composed with Gallagher's dyadic tail** (`Sieve/GallagherDyadicTail.gallagher_split_integral_dyadic`,
+already in the corpus):
+
+    RHTower/Sieve/FibreWindowBridge.lean
+      averagedMeanSquare_of_gallagherBudget   `AveragedMeanSquare f hh` holds as soon as there are
+                                              `W, α, β` with
+                                              `∫_{|w| ≤ T}|A(w)|² ≤ α T + β`  for all `T ≥ W`, and
+                                              `( 2δ²(αW + β) + 4α/(π²W) + 4β/(3π²W²) ) / h² → 0`
+
+So the three `route-e-*` cards are now **exactly equivalent** to producing an affine mean-square
+majorant for the Möbius Dirichlet polynomial of length `M = ⌊√x + h⌋`:
+
+```text
+∫_{|w| ≤ T} | ∑_{n ≤ M} μ(n) n^{-2πiw} |² dw  ≤  α·T + β        (T ≥ W),
+     with   β = o(M²)   and   α = O(M) ,   W chosen in  (M/h², M) .
+```
+
+Accounting, with `δ = fibreWidth x h ≍ h/M`: the term `2δ²β = 2h²β/M²` is the binding one and forces
+`β = o(M²)`; with `W = M/h` the other three terms are `4h²W/M·(α/M) = O(h)`, `4α/(π²W) = O(h)` and
+`4β/(3π²W²) = O(h²β/M²)`.  Montgomery–Vaughan gives `β ≍ M²` exactly (`∑_n|a_n|²·n`), so the whole
+remaining content is an `o(1)` saving over the mean value theorem — which is Matomäki–Radziwiłł, and
+what the Ramaré factorisation together with Lemmas 2.3/2.5/2.6 supplies.
+
+### Remaining
+
+Produce that affine majorant.  The route is the Ramaré factorisation (`Sieve/Ramare*`) followed by
+the two-regime split: on the set where the prime factor is small use Lemma 2.3, and on its
+complement — whose measure Lemma 2.5 bounds — use Lemma 2.6.  Every ingredient is a theorem; what is
+left is the choice of the prime ranges and the assembly.
+
+### The frontier is now one named object (2026-08-18, continued)
+
+The Ramaré lane was already carried much further than the "Lean progress" section recorded:
+
+* `Sieve/RamareBilinearMeanSquare.integral_Icc_normSq_logPoly_moebius_le_bilinear` —
+  `∫_{|w|≤T}‖A_μ‖² ≤ 2∫_{|w|≤T}‖B‖² + 4T·E²` with `B(w) = ∑_{p∈P} μ(p)p^{2πiw}G_p(w)`;
+* `Sieve/RamarePrimeOffDiagonal.integral_normSq_ramareBilinear_eq` — the exact diagonal/off-diagonal
+  split, `∫‖B‖² = ∑_p ∫‖G_p‖² + ramarePrimeOffDiagonal P M W`;
+* `Sieve/RamarePrimeOffDiagonal.integral_Icc_normSq_logPoly_moebius_le_primeOffDiagonal` — the
+  diagonal is inside the budget (Ramaré preserves the coefficient energy), so
+
+```text
+∫_{|w| ≤ T} |A_μ(w)|² dw
+  ≤ (1+δ)(10TM + εM² + ramarePrimeOffDiagonal P M T)
+    + 2(1+1/δ)(12TM + (1+5e/2)εM²) .
+```
+
+    RHTower/Sieve/FibreWindowBridge.lean
+      logPoly_moebius_congr                     the two Möbius coefficient normalisations agree
+      averagedShortInterval_moebius_of_affineMajorant
+                                                the Route E gate in the corpus's own normalisation
+
+So the two lanes now compose literally, and the whole remaining content of the three
+`route-e-*` cards is:
+
+```text
+ramarePrimeOffDiagonal P M T  ≤  α'·T + β'      (T ≥ W),   β' = o(M²) ,
+```
+
+for a designated prime set `P` satisfying the standing conditions of
+`integral_Icc_normSq_logPoly_moebius_le_primeOffDiagonal` (`#P ≤ M`, harmonic mass
+`A ≥ 15e/(2ε)`, `∑_{p∈P}M/p² ≤ εM`, `∑_{p∈P}1/p² ≤ 2ε/(5e)`).  The trivial Cauchy--Schwarz bound
+`|OD| ≤ #P·∑_p∫‖G_p‖²` is over budget by the factor `#P`, which is exactly why the oscillation of
+`p^{2πiw}\overline{q^{2πiw}}` over prime pairs has to be used — Lemma 2.6 with the frequencies
+`log(p/q)`.
+
+### Remaining
+
+One estimate: the affine majorant for `ramarePrimeOffDiagonal`.  The route is to replace the
+`p`-dependent cofactor `G_p` by a common `G` over a dyadic prime range `P ⊂ [Q, 2Q]` (so that
+`M/p ≍ M/Q` uniformly), turning `B` into `P(w)·G(w)`, and then to split by the level set of the
+prime polynomial `P(w)`: below the threshold use Lemma 2.3, above it use Lemma 2.5 for the measure
+and Lemma 2.6 on it.  `Sieve/DirichletProductSplit` and `Sieve/DirichletConvSplit` already carry the
+threshold split for a factorised polynomial.
+
+### The baseline off-diagonal bound, and why it cannot be enough (2026-08-18, continued)
+
+    RHTower/Sieve/RamareOffDiagonalTrivial.lean
+      integrableOn_normSq_ramareCofactorPoly
+      abs_ramarePrimeOffDiagonal_le             **`|OD| ≤ (#P − 1)·∑_p ∫_{|w|≤W}‖G_p‖²`**, by the
+                                                arithmetic--geometric mean on each pair and the
+                                                identity `∑_p ∑_{q≠p}(I_p + I_q)/2 = (#P−1)∑_p I_p`.
+                                                No oscillation is used
+      integral_Icc_normSq_logPoly_moebius_le_trivialOffDiagonal
+                                                composing with the diagonal budget:
+                                                `∫_{|w|≤T}|A_μ|² ≤ (1+δ)(1+#P)(10TM + εM²)
+                                                  + 2(1+1/δ)(12TM + (1+5e/2)εM²)`,
+                                                an unconditional affine majorant
+
+With this the whole chain is a Lean theorem end to end — `averagedShortInterval_moebius_of_affineMajorant`
+accepts it — and the *only* deficiency is the size of the intercept.  The accounting is decisive:
+the standing hypothesis `15e/(2ε) ≤ ∑_{p∈P}1/p = A` forces `ε ≥ 15e/(2A)`, while `#P ≥ A·min P`,
+so
+
+```text
+#P · ε  ≥  (A · min P) · 15e/(2A)  =  15e · (min P)/2  ≥  15e ,
+```
+
+i.e. the intercept is `≥ 40 M²` no matter how the designated primes are chosen.  The oscillation of
+`p^{2πiw}\overline{q^{2πiw}}` is therefore not a refinement but the entire mechanism, and the
+`(#P)` in `abs_ramarePrimeOffDiagonal_le` is the exact size of the saving that must be produced.
+
+### Remaining
+
+Replace `abs_ramarePrimeOffDiagonal_le` by an estimate that uses the prime-pair oscillation: Lemma
+2.6 with the frequencies `log(p/q)`, after the cofactors have been made `p`-independent over a
+prime range narrow enough that `M/p` is essentially constant.  A single dyadic range cannot do both
+(narrow ⇒ small harmonic mass), which is exactly why Matomäki--Radziwiłł run the ladder
+`P^{(0)},…,P^{(L)}` of Milestone D.
+
+### The exposé's §4 mechanism at a free exponent (2026-08-18, continued)
+
+    RHTower/Sieve/DirichletPowerProductSplit.lean
+      integral_normSq_mul_le_of_pow             the threshold split with a free-exponent bound on
+                                                the exceptional set:
+                                                `V^{2k}∫|F|²|G|² ≤ V^{2k+2}∫|F|² + (sup|F|)²(sup|G|)²·A`
+                                                whenever `V^{2k}·|{|G| ≥ V}| ≤ A`
+      integral_normSq_mul_le_pow_prime_support  instantiated by Lemma 2.5, on `(0,T]`
+      integral_normSq_mul_symm_le_pow_prime_support
+                                                the same on `[-T,T]`, which is the range the
+                                                Ramaré/Gallagher chain works on
+
+For a prime-supported second factor the exceptional term is
+`(T + 4M^k(1 + log M^k))·k^k·(∑|b|²)^k` — no power of the length — so the exponent may be chosen
+against `log T / log M`.  This is the exposé's §4 mechanism: below the threshold the prime factor is
+replaced by `V`, above it the exceptional set is too small for the trivial size to matter.
+
+`integral_normSq_mul_split_symm` was already in the corpus (`Sieve/DirichletSymmSplit`); only the
+free-exponent composition was missing.
+
+### Remaining
+
+The device now applies to any genuine *product* `F·G`.  What the Ramaré form
+`B(w) = ∑_{p∈P}μ(p)p^{2πiw}G_p(w)` is missing is exactly that: the cofactor `G_p` depends on `p`
+through both the condition `p ∤ m` and the range `m ≤ M/p`.  Making it `p`-independent needs a prime
+range narrow enough that `M/p` is essentially constant, which conflicts with the harmonic-mass
+requirement `∑_{p∈P}1/p ≥ 15e/(2ε)` — the tension that the ladder `P^{(0)},…,P^{(L)}` resolves.
+
+### The block structure that unlocks the product (2026-08-18, continued)
+
+Two facts, both now Lean theorems, resolve where the `p`-dependence of the Ramaré cofactor actually
+comes from.
+
+    RHTower/Sieve/FibreWindowBridge.lean
+      fibreDyadicIndex, fibreDyadicIndex_subset
+      innerFibre_subset_fibreDyadicIndex        **every fibre lies in `[√x/2, √x + h]`** — a block of
+                                                ratio at most four, not an initial segment.  The
+                                                outer factor is in `[√x, 2√x]`, so `b ≥ x/a ≥ √x/2`
+                                                and `b ≤ (x + h√x)/a ≤ √x + h`
+
+    RHTower/Sieve/RamareCofactorBlock.lean
+      ramareCofactorSet_subset_common           **if the integers lie in `[A,B]` and the designated
+                                                primes in `(Q, 2Q]`, every cofactor lies in the
+                                                single block `[A/(2Q), B/Q]`** — endpoints
+                                                independent of `p`
+
+So over a block the cofactor polynomials `G_p` are supported in *one* common index set and differ
+from a single polynomial `G` only by the terms with `p ∣ m`; the `ℓ²` cost of that correction is
+`∑_{p∈P}#{m ≤ B/Q : p ∣ m} ≍ (B/Q)·∑_{p∈P}1/p`, which is inside the budget.  Over an initial
+segment `[1,M]` the cofactor range `[1, M/p]` moves with `p` by a factor two and no such comparison
+is available — that was the real obstruction, and the reduction already supplies the block for free.
+
+**The remaining design question** is the width of the prime range.  A dyadic range `(Q,2Q]` gives a
+common cofactor block but harmonic mass only `≍ log 2/log Q`, whereas
+`integral_Icc_normSq_logPoly_moebius_le_primeOffDiagonal` needs `∑_{p∈P}1/p ≥ 15e/(2ε)`.  A wide
+range `[P₁,P₂]` has mass `≍ log(log P₂/log P₁)` but splits into `≍ log P₂` dyadic blocks, and
+`∫|B|² ≤ J∑_j∫|B_j|²` costs that `J`.  The Ramaré form does split additively over sub-ranges of `P`
+(the coefficient `ramareCofactorCoeff P` depends on `P` but not on `p`), so the split itself is
+free; what is not free is the Cauchy–Schwarz over `j`.  Resolving that trade-off is precisely the
+ladder `P^{(0)},…,P^{(L)}` of MR §§4–7.
+
+### Correction: blocking alone does not make the cofactor `p`-independent (2026-08-18, continued)
+
+The previous entry overstated the gain.  Over a block `[A, B]` with `p ∈ (Q, 2Q]` the cofactor set
+is `[A/p, B/p]`, which lies inside the common block `[A/(2Q), B/Q]` but differs from it by a
+*constant fraction* of its length: `A/p` sweeps all of `[A/(2Q), A/Q)` as `p` runs over the dyadic
+range.  So `G_p` and a single `G` differ by a polynomial of comparable length, and the `ℓ²`
+correction is not negligible.  What blocking buys is that all the cofactor ranges are *comparable*,
+not that they are equal.
+
+The correct quantitative statement is that the discrepancy is proportional to the **relative width
+of the prime range**:
+
+    RHTower/Sieve/RamareCofactorBlock.lean
+      card_Icc_cast_le                          a cast-friendly cardinality bound for `Icc`
+      mem_ramareCofactorSet_iff                 `m ∈ ramareCofactorSet S p ↔ p·m ∈ S`
+      ramareCofactorSet_subset_common           the common block over a dyadic prime range
+      card_cofactor_gap_le                      **for `p ∈ (Q, Q(1+η)]` the cofactor set differs
+                                                from the fixed block `[A₀/(Q(1+η)), B₀/Q]` by at
+                                                most `(A₀+B₀)η/Q + 4` elements** — the two moving
+                                                endpoints each sweep an interval of relative
+                                                width `η`
+
+So the product structure costs `η` and the harmonic mass costs `1/η`-many blocks; balancing those
+two is the content of the ladder, not a bookkeeping detail.  This is the honest statement of the
+frontier and replaces the "blocking unlocks the product" claim of the previous entry.
+
+### The `p`-independence, quantified (2026-08-18, continued)
+
+    RHTower/Sieve/RamareCofactorBlock.lean
+      logPoly_sub_eq_sdiff                      changing the index set of a Dirichlet polynomial
+                                                changes it by the symmetric difference only
+      integral_Icc_normSq_logPoly_sub_le        **the `ℓ²` cost of a change of index set**:
+                                                `∫_{|w|≤W}‖logPoly a U − logPoly a V‖²
+                                                  ≤ 2(5πW/2 + 5eM/2)(|U\V| + |V\U|)`
+                                                for `‖a‖ ≤ 1`, via `SupportMeanSquare`
+      card_multiples_le                         the multiples of `p` in a block number
+                                                at most `b/p + 1`
+      card_cofactor_symmDiff_le                 **the full gap**: for `p ∈ (Q, Q(1+η)]`,
+                                                `|C \ {m ∈ cofactorSet | ¬p∣m}|
+                                                   ≤ (A₀+B₀)η/Q + 4 + (B₀/Q + 1)`
+
+Composing the last two: replacing every cofactor polynomial `G_p` by the single polynomial over the
+common block costs, in mean square,
+
+```text
+∑_{p ∈ P} ∫_{|w| ≤ W} ‖G_p − G‖²  ≤  2(5πW/2 + 5eM/2) · #P · ( (A₀+B₀)η/Q + B₀/Q + 5 ) .
+```
+
+With `A₀ ≍ B₀ ≍ Y` (the fibre block), `#P ≍ ηQ/log Q` and the budget `εY²`, the `η`-term is
+`≍ W η²Y/log Q + η²Y²/log Q` and the multiples term `≍ ηY²/log Q` — both inside the budget once
+`η → 0`.  So the product structure is available at a cost `O(η)`, while the harmonic mass of a
+range of relative width `η` is `≍ η/log Q`, so `1/η`-many such ranges are needed to reach
+`15e/(2ε)`.  **That is the ladder's trade-off, now with both sides proved.**
+
+### Remaining
+
+Assemble: choose the ranges `P^{(0)},…,P^{(L)}` and the corresponding `η`, apply
+`integral_normSq_mul_symm_le_pow_prime_support` on each, and sum.  Every ingredient is now an
+unconditional Lean theorem; what is left is the choice of parameters and the summation.
+
+### The ladder itself (2026-08-18, continued)
+
+    RHTower/Sieve/RamareBlockSplit.lean
+      ramareBlock, continuous_ramareBlock
+      ramareBilinear_eq_sum_blocks              **the bilinear form splits additively over any
+                                                partition of the designated primes** — the Ramaré
+                                                coefficient depends on `P` but not on the individual
+                                                prime, so only the outer sum is split
+      integral_normSq_ramareBilinear_le_blocks  Cauchy--Schwarz over the blocks:
+                                                `∫‖B‖² ≤ #I · ∑_i ∫‖B_i‖²`
+      geomBlock, geomBlock_subset               the `j`-th block of a ratio-`r` ladder from `Q`
+      geomBlock_pairwiseDisjoint
+      geomBlock_biUnion_eq                      **the ladder covers `(Q, Q r^L]`** — for each prime
+                                                the block index is the least `j` with
+                                                `p ≤ Q r^{j+1}`, and it is `< L`
+      integral_normSq_ramareBilinear_le_geomLadder
+                                                `∫‖B‖² ≤ L · ∑_{j<L} ∫‖B_j‖²` for a geometric
+                                                prime range `(Q, Q r^L]`
+
+So the ladder is now a Lean object: a geometric partition of the designated primes into `L` blocks
+of ratio `r`, with the assembly cost exactly `L`.  Combined with the previous entry, a block of
+ratio `r = 1 + η` has cofactor discrepancy `O(η)` and harmonic mass `≍ η/log Q`, while the ladder
+costs `L ≍ (log(r^L))/η`.
+
+### Remaining
+
+Choose `Q`, `r = 1+η` and `L` against `ε` and the budget, and discharge the per-block estimate with
+`integral_normSq_mul_symm_le_pow_prime_support`.  All the structural theorems are in place; what is
+left is the parameter optimisation.
+
+### One block, as a product (2026-08-18, continued)
+
+    RHTower/Sieve/RamareBlockSplit.lean
+      primeBlockPoly, continuous_primeBlockPoly
+      integral_normSq_ramareBlock_le_product    **one block is a product up to the cofactor
+                                                discrepancy**:
+                                                `∫‖B_j‖² ≤ 2∫‖P_j·G‖²
+                                                  + 2·#P_j·∑_{p∈P_j}∫‖G_p − G‖²`
+
+    RHTower/Sieve/RamareCofactorBlock.lean
+      norm_ramareCofactorCoeff_le_one           `‖μ(m)/(ω_P(m)+1)‖ ≤ 1`
+      integral_normSq_cofactor_sub_common_le    **the discrepancy of one prime**: for
+                                                `p ∈ (Q, Q(1+η)]` and `Q ≥ 1`,
+                                                `∫_{|w|≤W}‖G_p − G‖²
+                                                  ≤ 2(5πW/2 + 5eM/2)((1+M)η/Q + M/Q + 5)`,
+                                                with `G` the polynomial over the common block
+                                                `[1/(Q(1+η)), M/Q]`
+
+The chain inside a block is therefore complete and unconditional: the block is a product plus an
+error, the error is `O(η + 1/Q)` per prime, and the product is handled by
+`integral_normSq_mul_symm_le_pow_prime_support` (Lemma 2.5 inside the threshold split).
+
+### Remaining
+
+Only the parameter choice.  The per-block budget reads
+
+```text
+∫‖B_j‖² ≤ 2∫‖P_j·G‖² + 4·#P_j²·(5πW/2 + 5eM/2)·((1+M)η/Q + M/Q + 5) ,
+```
+
+and the ladder multiplies the sum of these by `L`.  Choosing `Q`, `η` and `L` against `ε`, `W ≍ M/h`
+and the budget `εM²` — and feeding the product term through the threshold split — closes the three
+`route-e-*` cards.  Every inequality in the chain is now an unconditional Lean theorem; what is left
+is arithmetic on the parameters.
+
+### The ladder, assembled (2026-08-18, continued)
+
+    RHTower/Sieve/RamareBlockSplit.lean
+      geomCofactorBlock                         the common cofactor block of the `j`-th step
+      integral_normSq_ramareBlock_geom_le       **one ladder step, as a product plus an explicit
+                                                error**: the `j`-th prime range has relative width
+                                                `η` about `Q_j = Q(1+η)^j`, so
+                                                `∫‖B_j‖² ≤ 2∫‖P_j·G_j‖²
+                                                   + 4·#P_j²·(5πW/2 + 5eM/2)((1+M)η/Q_j + M/Q_j + 5)`
+      integral_normSq_ramareBilinear_le_ladder_assembled
+                                                **the whole bilinear mean square, over the ladder**:
+                                                the same bound summed over `j < L` and multiplied
+                                                by `L`
+
+Every quantity in that final inequality is explicit: `L`, `#P_j`, `Q_j = Q(1+η)^j`, `η`, `W`, `M`,
+and the single integral `∫‖P_j·G_j‖²` of a narrow prime polynomial against one cofactor polynomial.
+The structural half of MR §§4--7 is therefore complete and unconditional.
+
+### Remaining
+
+Two purely quantitative steps.
+
+1. `∫_{|w|≤W}‖P_j·G_j‖²` — the product of a prime-supported polynomial with a bounded-coefficient
+   one.  `Sieve/DirichletPowerProductSplit.integral_normSq_mul_symm_le_pow_prime_support` bounds it
+   once the two are written as `dirPoly`s; the `logPoly`/`dirPoly` dictionary is
+   `Sieve/LogPolyDirPoly`.
+2. The parameter choice: `Q`, `η`, `L` against `ε`, `W ≍ M/h` and the budget `εM²`, together with
+   the prime counts `#P_j` (Chebyshev) and the harmonic mass `∑_{p∈P}1/p ≥ 15e/(2ε)` that
+   `integral_Icc_normSq_logPoly_moebius_le_primeOffDiagonal` requires.
+
+### Step 1 of the two: the product term (2026-08-18, continued)
+
+    RHTower/Sieve/LogPolyProductScale.lean
+      integral_Icc_comp_scale                   the substitution `t = 2πw` on a symmetric interval,
+                                                for an arbitrary integrand
+      logPoly_restrict                          restricting the index set of a Gallagher polynomial
+                                                is a zero extension of its coefficients — so a
+                                                polynomial over a finite set of primes is one over
+                                                `Icc 1 N`
+      integral_Icc_normSq_logPoly_mul_eq        **the mean square of a product of Gallagher
+                                                polynomials is the rescaled Dirichlet one**
+      integral_Icc_normSq_logPoly_mul_le_pow_prime_support
+                                                **the threshold split for a product of Gallagher
+                                                polynomials at a free exponent**, with the
+                                                prime-supported factor's exceptional set measured
+                                                by Lemma 2.5
+
+So the term `∫_{|w|≤W}‖P_j·G_j‖²` of the assembled ladder is now bounded by an explicit expression:
+`V^{2k}` times it is at most `(2π)^{-1}(V^{2k+2}·(mean square of the cofactor factor)
+ + (sup)²(sup)²·2(2πW + 4N₂^k(1+log N₂^k))·k^k·(∑|b|²)^k)`.
+
+### Remaining
+
+Only the parameter choice: `Q`, `η`, `L`, `k` and `V` against `ε`, `W ≍ M/h` and the budget `εM²`,
+together with the prime counts `#P_j` (Chebyshev) and the harmonic-mass condition
+`∑_{p∈P}1/p ≥ 15e/(2ε)`.  Every inequality feeding into that arithmetic is an unconditional Lean
+theorem.
+
+### The parameter accounting kills the naive ordering — and the fix (2026-08-18, continued)
+
+Doing the arithmetic on `integral_normSq_ramareBilinear_le_ladder_assembled` before optimising the
+parameters shows it **cannot** close.  With `P` the primes of `(Q, P₂]`, `Q_j = Q(1+η)^j`,
+`#P_j ≍ ηQ_j/log Q_j` and `L ≍ log P₂/η`, the error part of that bound is
+
+```text
+L·∑_j 4#P_j²·(3W + 7M)·(M(1+η)/Q_j + 5)  ≍  28 M² P₂ / log P₂ ,
+```
+
+which is never `o(M²)`.  The culprit is the ordering: `integral_normSq_ramareBlock_le_product`
+applies Cauchy--Schwarz over `p` *inside* each block, producing `#P_j²`, and then the ladder
+multiplies the whole thing — errors included — by `L`.
+
+The fix is to pay the block count only on the product terms and to treat the discrepancy as a
+single global error:
+
+    RHTower/Sieve/RamareBlockSplit.lean
+      ramareLadderError, continuous_ramareLadderError
+      ramareBilinear_eq_ladder_add_error        **`B = ∑_{j<L} P_j·G_j + E`**, with `E` the total
+                                                discrepancy of the ladder
+      integral_normSq_ramareBilinear_le_ladder_error
+                                                **`∫‖B‖² ≤ 2L·∑_j ∫‖P_j·G_j‖² + 2∫‖E‖²`** — the
+                                                block count multiplies only the products
+
+`integral_normSq_ramareBilinear_le_ladder_assembled` remains true and is kept as the baseline, but
+the route to `o(M²)` goes through the separated form.
+
+### Remaining
+
+Bound `∫_{|w|≤W}‖E‖²` by the mean value theorem applied to `E` as a *single* Dirichlet polynomial —
+its coefficient at `N` is `∑_{p ∣ N, p ∈ P} ±μ(p)c_{N/p}` over the discrepancy sets, so its `ℓ²`
+mass is `≪ (log N/log Q)·∑_{p∈P}|D_p|`, one power of `#P` rather than two.  Then the parameter
+choice.
+
+### The accounting closes — with `M/Q²`, not `M/Q` (2026-08-18, continued)
+
+Redoing the parameter arithmetic on the *separated* form found a second, decisive slack.  The
+multiples term of `card_cofactor_symmDiff_le` was stated as `B₀/Q`, but the multiples of `p` in a
+block of length `B₀/Q` number `≍ B₀/(Q·p)`, and `p > Q`, so the truth is `B₀/Q²`.  That single power
+of `Q` is what decides the whole estimate:
+
+```text
+∑_{j,p} #(gap)  ≍  η·M·log(P₂/Q)/log Q  +  M/(Q log Q)  +  #P ,
+```
+
+where the first term now carries a factor `η` (it is `∑_j #P_j·Mη/Q_j ≍ ∑_j η²M/log Q_j`), the
+second is the sharpened multiples term, and the third the additive constants.  With `η` at our
+disposal the first term is `o(M log Q/log²M)` for `η = (log M)^{-2}`, which is exactly what the
+mean value theorem on `E` needs — whereas with `M/Q` the term had no `η` and no choice of
+parameters could work.
+
+Both `card_cofactor_symmDiff_le` and `integral_normSq_cofactor_sub_common_le` now carry `B₀/Q²`, and
+the change is propagated through `integral_normSq_ramareBlock_geom_le` and
+`integral_normSq_ramareBilinear_le_ladder_assembled`.
+
+With `log Q = (log M)^{0.9}`, `log P₂ = (log M)^{0.95}`, `η = (log M)^{-2}` and hence
+`L ≍ (log M)^{2.95}`, the error side is `o(M²)`.  The product side needs
+`∑_{j<L} ∫‖P_j·G_j‖² = o(M²/(log M)^{2.95})`, which is what the threshold split with Lemma 2.5
+supplies.
+
+### Remaining
+
+1. `∫_{|w|≤W}‖E‖²` by the mean value theorem on `E` as a single Dirichlet polynomial of length
+   `≤ M(1+η)` (the products `p·m` stay below `M(1+η)` because `m ≤ M/Q_j` and `p ≤ Q_j(1+η)`), with
+   `ℓ²` mass `≪ (log M/log Q)·∑_{j,p}#(gap)`.
+2. The product side, and the final parameter substitution.
+
+### Every summand of the bilinear form is a Gallagher polynomial (2026-08-18, continued)
+
+    RHTower/Sieve/PrimePhaseShift.lean
+      primeShiftCoeff                           `n ↦ [p ∣ n]·μ(p)·c(n/p)`
+      moebiusPhase_mul_logPoly                  **`μ(p)p^{2πiw}·∑_{m∈S}c_m m^{2πiw}
+                                                  = ∑_{n ∈ pS} μ(p)c_{n/p} n^{2πiw}`** — multiplying
+                                                by a prime phase shifts the index set
+      primeShiftCoeff_eq_zero, norm_primeShiftCoeff_le
+
+This is what makes the mean value theorem applicable to the ladder error *as a whole*: `E` is a sum
+of Gallagher polynomials over the shifted sets `p·(C_j \ U_p)`, all contained in `[1, M(1+η)]`
+because `m ≤ M/Q_j` and `p ≤ Q_j(1+η)`.  Extending each by zero to `Icc 1 ⌊M(1+η)⌋` (via
+`Sieve/LogPolyProductScale.logPoly_restrict`) exhibits `E` as a single Gallagher polynomial whose
+coefficient at `n` is `∑_{p ∣ n, p ∈ P} ±μ(p)c_{n/p}` — one power of `#P`, not two.
+
+### Remaining
+
+1. Assemble that coefficient identity and bound its `ℓ²` mass by
+   `(number of designated prime divisors of n) · ∑_{j,p}#(gap)`, then apply
+   `Sieve/SupportMeanSquare.integral_Icc_normSq_logPoly_le_energy`.
+2. The product side, and the final parameter substitution
+   (`log Q = (log M)^{0.9}`, `log P₂ = (log M)^{0.95}`, `η = (log M)^{-2}`, `L ≍ (log M)^{2.95}`).
+
+### The mean value theorem for a sum of shifted polynomials (2026-08-18, continued)
+
+    RHTower/Sieve/PrimePhaseShift.lean
+      sum_logPoly_eq                            a sum of Gallagher polynomials over a common index
+                                                set is one, with the coefficients added
+      sum_normSq_overlap_coeff_le               **the `ℓ²` mass of a sum of unit-coefficient
+                                                polynomials**: if every index is hit at most `K`
+                                                times then
+                                                `∑_n‖∑_i [n ∈ S_i] a_i(n)‖² ≤ K·∑_i #(S_i ∩ [1,N])`
+                                                — *one* power of the number of summands, by
+                                                `‖A_n‖² ≤ K‖A_n‖ ≤ K·#{i : n ∈ S_i}` and double
+                                                counting
+      integral_Icc_normSq_sum_logPoly_le        **the mean square of a sum of Gallagher
+                                                polynomials**: `≤ (5πW/2 + 5eN/2)·K·∑_i #(S_i)`
+
+This is the estimate the corrected accounting needs.  Applied to the ladder error, the summands are
+the shifted sets `p·(C_j \ U_p)` (`Sieve/PrimePhaseShift.moebiusPhase_mul_logPoly`), every index
+`n ≤ M(1+η)` is hit once per designated prime dividing it — so `K ≤ log(M(1+η))/log Q` — and
+`∑_{j,p}#(C_j \ U_p)` is the gap sum already bounded by `card_cofactor_symmDiff_le`.  Cauchy--Schwarz
+over the primes is never used, which is exactly the factor `#P` that the naive route lost.
+
+### Remaining
+
+1. Instantiate `integral_Icc_normSq_sum_logPoly_le` at the ladder error: the index family is
+   `(j, p)`, the sets are `p·(C_j \ U_p)`, and `K` is the count of designated prime divisors.
+2. The product side, and the final parameter substitution.
+
+### The ladder error is a prime-shifted family (2026-08-18, continued)
+
+    RHTower/Sieve/PrimePhaseShift.lean
+      integral_Icc_normSq_primeShift_family_le  **the mean square of `∑_i μ(p_i)p_i^{2πiw}·
+                                                ∑_{m∈D_i}c_m m^{2πiw}`**:
+                                                `≤ (5πW/2 + 5eN/2)·K·∑_i #D_i`, with `K` the
+                                                overlap count of the shifted sets.  No
+                                                Cauchy--Schwarz over `i` anywhere
+
+    RHTower/Sieve/RamareCofactorBlock.lean
+      cofactorFilter_subset_common              the filtered cofactor set sits inside the common
+                                                block (extracted from the discrepancy proof)
+
+    RHTower/Sieve/RamareBlockSplit.lean
+      ramareLadderError_eq_neg_sum              **`E = −∑_{j,p} μ(p)p^{2πiw}·
+                                                logPoly c (C_j \ U_p)`** — the discrepancy is
+                                                exactly the polynomial over the gap sets
+
+So `E` is literally an instance of the prime-shifted family: `i = (j,p)`, `D_i = C_j \ U_p`, and the
+`ℓ²` mass is `K·∑_{j,p}#(C_j \ U_p)`, both factors already bounded
+(`K ≤ log(M(1+η))/log Q` from the count of designated prime divisors,
+`∑_{j,p}#(C_j \ U_p)` from `card_cofactor_symmDiff_le`).
+
+### Remaining
+
+1. Flatten the double sum over `(j, p)` into a single index set and apply
+   `integral_Icc_normSq_primeShift_family_le` — the side conditions are that `p·m ≤ M(1+η)`
+   (already available: `m ≤ M/Q_j` and `p ≤ Q_j(1+η)`) and the divisor count `K`.
+2. The product side, and the final parameter substitution.
+
+### Step 1 closed: the ladder error's mean square (2026-08-18, continued)
+
+    RHTower/Sieve/RamareBlockSplit.lean
+      ladderGapSet, ladderIndex                 the `(step, prime)` gap sets and the flattened
+                                                index set `(range L).sigma (geomBlock …)`
+      ramareLadderError_eq_flat                 **`E = −∑_{x ∈ ladderIndex} μ(p_x)p_x^{2πiw}·
+                                                logPoly c (gap_x)`**
+      integral_normSq_ramareLadderError_le      **`∫_{|w|≤W}‖E‖² ≤ (5πW/2 + 5eN/2)·K·
+                                                ∑_x #(gap_x)`**, where `N` bounds the shifted
+                                                products `p·m` and `K` the overlap count
+
+That is item 1 of the two remaining steps, in the exact form the accounting asked for: one power of
+`K` (the number of designated prime divisors of an index, `≤ log N/log Q`) and one power of the
+total gap size (bounded by `card_cofactor_symmDiff_le`).  Cauchy--Schwarz over the primes never
+appears.
+
+### Remaining
+
+The product side and the final parameter substitution: `N = ⌊M(1+η)⌋`, `K ≤ log N/log Q`,
+`log Q = (log M)^{0.9}`, `log P₂ = (log M)^{0.95}`, `η = (log M)^{-2}`, `L ≍ (log M)^{2.95}`, and
+`∑_{j<L}∫‖P_j·G_j‖²` through `Sieve/LogPolyProductScale.integral_Icc_normSq_logPoly_mul_le_pow_prime_support`.
+
+### Both side conditions discharged (2026-08-18, continued)
+
+    RHTower/Sieve/RamareBlockSplit.lean
+      ladderGap_image_subset                    **every shifted index stays below `M(1+η)`** — a
+                                                cofactor of the `j`-th step is `≤ M/Q_j` and its
+                                                prime `≤ Q_j(1+η)`
+      ladderIndex_filter_card_le                **the overlap count is at most the number of
+                                                designated primes dividing the index** — the steps
+                                                are disjoint, so a prime determines its step and
+                                                `x ↦ p_x` is injective on the fibre
+      integral_normSq_ramareLadderError_le_divisorCount
+                                                the ladder error with both side conditions
+                                                discharged: `N = ⌊M(1+η)⌋` and the only remaining
+                                                input is a bound `K` on `#{p ∈ P : p ∣ n}`
+
+### Remaining
+
+1. `#{p ∈ P : p ∣ n} ≤ log n / log Q` (the designated primes exceed `Q` and their product divides
+   `n`), and the gap sum `∑_x #(ladderGapSet …)` from `card_cofactor_symmDiff_le`.
+2. The product side, and the final parameter substitution.
+
+## The proof skeleton, taken from the source (2026-08-18)
+
+Séminaire Bourbaki 1119 (Soundararajan, June 2016), *The Liouville function in short intervals
+[after Matomäki and Radziwiłł]*, arXiv:1606.08021.  Its §3 is a **complete, self-contained proof**
+of the short-interval mean square for `h ≥ exp((log X)^{3/4})`, and §4 extends it to
+`h ≥ exp(10(log log X)^{10/9})`.  Both use only Lemmas 2.1–2.6, every one of which this corpus
+already owns.  The programme is therefore no longer open-ended: it is the assembly of §3, then §4.
+
+### The §3 argument, step by step
+
+Ranges.  `P` = the primes in `[exp((log h)^{9/10}), h]`; `P_j` = the primes of `P` in the *dyadic*
+block `(2^j E, 2^{j+1} E]`, `E = exp((log h)^{9/10})`, `0 ≤ j ≤ J = ⌊(log h − (log h)^{9/10})/log 2⌋`.
+Two constraints fix this choice: every `p ∈ P` must be `≤ h` (so the cofactor polynomial has length
+`≥ X/h`, which is what makes the mean value theorem efficient), and every `p ∈ P` must exceed
+`exp((log X)^{2/3+δ})` (so Lemma 2.3 applies) — `(log h)^{9/10} ≥ (log X)^{27/40}` and `27/40 > 2/3`.
+
+1. **(20)–(21) the weighted polynomial.**  `A(y) = ∑_n a(n)n^{iy}` with `a(n) = λ(n)ω_P(n)` on
+   `[X,2X]`, written as `∑_j ∑_{p∈P_j} ∑_{X/P_{j+1} ≤ m ≤ 2X/P_j} λ(p)p^{iy}λ(m)m^{iy}`.
+   The weight is `ω_P` — Turán–Kubilius — **not** Ramaré's `1/ω_P`.  For `λ` the factorisation is
+   exact; for `μ` the cofactor sum carries the extra condition `p ∤ m`, again exactly.
+2. **(22)–(24) removing the weight.**  `∑_{X≤n≤2X}(ω_P(n) − W(P))² ≪ X W(P)`,
+   `W(P) = ∑_{p∈P} 1/p ∼ (1/10) log log h`, so
+   `W(P)² ∫(∑_{x<n≤x+h}λ)² ≪ ∫(∑ λω_P)² + X h² W(P)`, and Lemma 2.2 converts the second factor
+   into `(X/W(P)²)∫|A(y)|² min(h²/X², 1/y²) dy + Xh²/W(P)`.
+3. **(25) the tail `|y| > X`** is `≪ W(P)²` by dyadic splitting and Lemma 2.4.
+4. **(26)–(27) Cauchy–Schwarz over the blocks, with harmonic weights.**
+   `|A(y)|² ≤ (∑_j 1/log P_j)(∑_j log P_j |∑_{p∈P_j}p^{iy}|² |∑_m λ(m)m^{iy}|²)`,
+   and `∑_j 1/log P_j ≪ W(P)`, giving `∫ ≪ W(P)² max_j I_j` with
+   `I_j = (log P_j)² ∫_{-X}^{X} |∑_{p∈P_j}p^{iy}|² |∑_m λ(m)m^{iy}|² min(h²/X², 1/y²) dy`.
+5. **(28) `log P_j ≤ |y| ≤ X`.**  Lemma 2.3 gives `∑_{p∈P_j} p^{iy} ≪ (P_j/log P_j)(1/(1+|y|) +
+   1/log P_j)`; splitting the `y`-integral at `X/h` and dyadically above it and using Lemma 2.4
+   gives `I_j ≪ h²/(log P_j)²`.
+6. **(29)–(30) `|y| ≤ log P_j`.**  Lemma 2.3 applied to the *cofactor* sum gives
+   `∑_m λ(m)m^{iy} ≪ (X/P_j)(log X)^{-10}`, and the prime sum is bounded trivially:
+   contribution `≪ h²(log X)^{-19}`.
+7. **Conclusion.**  `∫_X^{2X}(∑_{x<n≤x+h}λ(n))² dx ≪ Xh²((log h)^{-9/5} + W(P)^{-1} + h^{-2})
+   ≪ Xh²/log log h`.
+
+### Where the rate comes from, and what still separates this from the cards
+
+The *good* term is `(log h)^{-9/5}` — essentially Menon's `(log h)^{-2}`.  The bottleneck is the
+`1/W(P) ≍ 1/log log h` produced by the Turán–Kubilius step 2.  MR's own arrangement (exposé §6,
+(51)) replaces that weight by a restriction to `S` = integers with a prime factor in `P`, whose
+sieve loss is `X/(log h)^{1/10}` — the density of integers with no prime factor in
+`[exp((log h)^{9/10}), h]`.  So:
+
+| arrangement | rate |
+|-|-|
+| §3/§4 as written (Turán–Kubilius weight) | `1/log log h` |
+| §6 (restriction to `S`) | `(log h)^{-1/10}` |
+| the good term inside both | `(log h)^{-9/5}` |
+| what the three cards need | `o(1/log Y)`, i.e. `(log h)^{-1/β}` with `log h = (log Y)^β` |
+| Menon 2026 | `(log log L)²/(log L)²` |
+
+The sieve loss of a *single* range `[P_1, h]` is `≍ log P_1/log h`, so no choice of `P_1` inside a
+single range beats `1/log h`; the cards need `o(1/log Y) = o((log h)^{-1/β})` with `1/β < 2`.
+Closing the gap between `(log h)^{-1/10}` and `(log h)^{-2}` is exactly Menon's refinement, and it
+must come from treating the non-`S` integers with cancellation rather than trivially.
+
+### Consequence for the Lean plan
+
+Milestone A is now **the assembly of §3**, in the Gallagher/Plancherel shape this corpus already
+consumes: `Sieve/FibreWindowBridge.averagedMeanSquare_of_spectralPoly` asks for exactly
+`(1/h²)∫_ℝ ‖logWindowKernel δ w‖²‖logPoly μ (fibreIndex x h) w‖² dw → 0` with `δ = fibreWidth x h`,
+which *is* the exposé's `∫|A(y)|² min(h²/X², 1/y²) dy` after `X ↦ M = ⌊√x + h⌋`.  So the affine
+majorant is no longer the interface to aim at — the spectral one is, and it matches the source.
+
+The Ramaré ladder built up to now (`Sieve/Ramare*`, `Sieve/LadderErrorBudget`) is the §6
+arrangement, not the §3 one; it stays, because §6 is where the rate is improved, but §3 is the
+shorter road to a first unconditional short-interval theorem and is built on the *same* Lemmas
+2.3–2.6.
+
+### The §3 brick list
+
+| step | Lean status |
+|-|-|
+| Lemma 2.1 Plancherel | `Sieve/LogWindowPlancherel` ✓ |
+| Lemma 2.2 Saffari–Vaughan | not needed — the corpus window is already multiplicative ✓ |
+| Lemma 2.3 twisted `λ`/`μ` and prime sums | `Sieve/RouteTMoebiusPowerSaving`, `Sieve/VonMangoldtTwistPrimeEnvelope` ✓ |
+| Lemma 2.4 mean value theorem | `Sieve/DirichletIntegralBound`, `Sieve/SupportMeanSquare` ✓ |
+| Lemma 2.5 large values, free exponent | `Sieve/DirichletPower{Convolution,PrimeSupport,Measure}` ✓ |
+| Lemma 2.6 Halász–Montgomery | `Sieve/HalaszMontgomeryDyadic`, `Sieve/DyadicSecondEnvelopeClosed` ✓ |
+| Turán–Kubilius `(22)` | `Sieve/TuranKubilius.sum_omegaCount_variance_le` ✓ |
+| `(20)`–`(21)` the `ω_P`-weighted factorisation | **to build** |
+| `(26)`–`(27)` harmonic Cauchy–Schwarz over dyadic blocks | **to build** |
+| `(28)` the `y`-split and its mean-value estimates | **to build** |
+| `(29)`–`(30)` the small-`y` range | **to build** |
+| the assembly | **to build** |
+
+### Milestone A, front half — landed (2026-08-18)
+
+Steps `(20)`–`(24)` of the exposé are now unconditional Lean theorems, and the whole short-interval
+input of the three Route E cards is reduced to a spectral bound on the **`ω_P`-weighted** Möbius
+polynomial — the object that factors exactly.
+
+| module | content |
+|-|-|
+| `Sieve/OmegaWeightedFactorisation` | `omegaWeightedMoebiusPoly`, `omegaWeightedMoebiusPoly_eq_sum` (double counting), **`omegaWeightedMoebiusPoly_eq_bilinear`** — the factorisation `∑_n μ(n)ω_P(n)n^{2πiw} = ∑_{p∈P} μ(p)p^{2πiw}·∑_{m, p∤m} μ(m)m^{2πiw}`, **exact, with no error term**, the indices whose cofactor still carries `p` vanishing because `pm` is not squarefree; `omegaWeightedMoebiusPoly_eq_blocks` splits it over any partition of `P` |
+| `Sieve/TuranKubiliusRange` | `primesRange z₀ z`, `card_primeFactorsIn_primesRange` (the range count is the difference of two initial-segment counts), `sum_inv_primesRange` (harmonic mass `= mertensS z − mertensS z₀`), **`sum_variance_primesRange_le`** — Turán–Kubilius for a *range* of primes |
+| `Sieve/WeightRemovalFibre` | `sq_sum_le_weighted_add_variance` (undoing an arbitrary weight on one index set), `card_outer_of_mem_innerFibre_le` (each index lies in `≤ 2h+1` fibres), **`sum_sq_fibreSum_le_weighted`** — the averaged cost, with `g` an arbitrary real weight |
+| `Sieve/OmegaWeightTransfer` | `fibreDyadicIndex_eq_Ioc`, `sum_variance_fibreDyadicIndex_le`, **`sum_sq_fibreSum_le_omegaWeighted`** — step `(22)`–`(24)` for the corpus's fibre objects |
+| `Sieve/ScaledFibreBridge` | `logWindowSum_div`, **`sum_fibreSum_sq_le_integral_scaled`** — the fibre→window bridge for a weight of arbitrary size `B` (the corpus version assumed `|f| ≤ 1`, and `μ·ω_P` is not unit bounded) |
+| `Sieve/OmegaSpectralFibre` | `logPoly_omegaWeighted_eq`, **`sum_sq_fibreSum_moebius_le_omegaSpectral`**, `omegaBudget`, **`averagedMeanSquare_moebius_of_omegaBudget`**, **`averagedShortInterval_moebius_of_omegaBudget`** |
+
+The capstone, with every constant explicit and no asymptotic notation:
+
+```text
+(S(z) − S(z₀))² · ∑_a (∑_{b ∈ F_a} μ(b))²
+  ≤ 16√x ∫_ℝ ‖K_δ(w)‖² ‖A_ω(w)‖² dw
+    + 204 (|P| + 1)² (√x + 1)
+    + 2(h+1)(2h+1)( 4(√x/2 + h + 1) S(z) + 4π(z) + 8π(z)² ) ,
+```
+
+`δ = fibreWidth x h`, `P = primesRange z₀ z`, `A_ω = omegaWeightedMoebiusPoly P (fibreIndex x h)`.
+
+At the parameters of the argument (`z = h`, `log z₀ = (log h)^{9/10}`, so `S(z) − S(z₀) ≍ (1/10)
+log log h`) the last two lines divided by `(S(z) − S(z₀))² h² √x` are `≍ 1/(log h)²(log log h)²` and
+`≍ 1/log log h` respectively — both vanish, and the second is exactly the `1/W(P)` bottleneck the
+skeleton section above identifies.
+
+**What is left of Milestone A** is the estimate of the spectral integral itself: steps `(26)`–`(30)`,
+i.e. the harmonic Cauchy–Schwarz over dyadic prime blocks and the two `y`-ranges.  The factorisation
+those steps consume is `omegaWeightedMoebiusPoly_eq_blocks`; the estimates they consume are Lemmas
+2.3 and 2.4, both already in the corpus.
+
+### The parameter analysis of `(26)`–`(30)` in the corpus's own objects (2026-08-18)
+
+`Sieve/HarmonicCauchySchwarz` is landed: `normSq_sum_le_weighted`, `normSq_sum_mul_le_weighted` —
+`‖∑_i F_i‖² ≤ (∑_i 1/v_i)(∑_i v_i‖F_i‖²)` for arbitrary positive weights.  The choice of `v` is what
+decides whether the split costs the *number* of blocks or their *harmonic mass*, and the corpus's
+blocks are not the exposé's, so the analysis has to be redone here.  It was, and it closes.
+
+**Blocks must be thin, and the weights must be harmonic-mass reciprocals.**  The exposé's blocks are
+dyadic, so `∑_j 1/log P_j ≍ W(P)` with `v_j = log P_j`.  The corpus's ladder (`geomBlock P Q (1+η) j`)
+is thin, ratio `1 + η`, so `v_j = log Q_j` would cost `L/log Q`, not `W(P)`.  With `v_j` the
+reciprocal of the block's harmonic mass — `v_j ≍ 1/η` — one gets `∑_j 1/v_j = W(P)` for *any*
+subdivision.  Use that.
+
+**The enlarged support, and why the error is harmless.**  Making the cofactor range depend only on
+the block, not on the prime, changes the polynomial's coefficients from `μ(n)ω_P(n)` to
+
+    c(n) = ∑_j ∑_{p ∈ B_j, p ∣ n, n/p ∈ D_j} μ(p)μ(n/p) ,   D_j = [M₀/Q_{j+1}, M₁/Q_j] ,
+
+and `c(n) = μ(n)ω_P(n)` for every **squarefree** `n ∈ [M₀, M₁]`.  The discrepancy `e = c − μ·ω_P` is
+supported on
+
+* `n ∈ [M₀, M₁]` divisible by `p²` for some designated `p` — at most `M₁ ∑_{p ∈ P} 1/p² ≤ M₁/E`;
+* `n ∈ (M₀/(1+η), M₀) ∪ (M₁, M₁(1+η)]` — at most `2M₁η + 2`;
+
+and `|e(n)| ≤ ω_P(n) ≤ log M₁ / log E`, because designated primes exceed `E`
+(`Sieve/LadderErrorBudget.card_designatedPrimes_dvd_le`).  **Do not bound `|e(n)|` by `|P|`** — that
+is `≍ h/log h` and makes the accounting fail by a power of `h`; the divisor-count bound is what makes
+it work.
+
+**The two constraints on `η`, and the exponent they force.**  Write `log h = (log x)^β`,
+`log E = (log h)^{9/10}`, `δ = fibreWidth ≍ h/M₁`, `M₁ ≍ √x`.
+
+| constraint | source | requirement |
+|-|-|-|
+| `δ²·M₁·∑_n|e(n)|² = o(W²h²)` | the enlarged-support error | `η ≪ W²(log E/log M₁)² ≍ (log x)^{9β/5−2}` |
+| `L·h²/(log Q)⁴ = o(W η h²)`, `L ≍ W/η` | summing `(28)` over the thin blocks | `η ≫ (log Q)^{-2} = (log x)^{-9β/5}` |
+
+The two are compatible exactly when `18β/5 > 2`, i.e. **`β > 5/9`** — the same threshold as the
+exposé's good term `(log h)^{-9/5}`, which is the arithmetic reason it appears.  So the §3 route, run
+in the corpus's own thin-block objects, reaches every `β > 5/9`, and the cards' range `β ∈ (1/2, 1)`
+is covered above `5/9` by the *spectral* estimate.
+
+**What still blocks the cards is not the spectral estimate.**  At `β > 5/9` the spectral side gives
+`(log h)^{-9/5}`, which is `o(1/log Y)` when `9β/5 > 1` — true.  The obstruction is the
+Turán–Kubilius loss `1/W(P) ≍ 1/log log h` in `omegaBudget`, and the sieve loss `(log h)^{-1/10}` of
+the §6 arrangement that replaces it.  Both are *arithmetic* losses in removing the weight, not
+analytic ones.  Closing them is Menon's refinement and is the last milestone.
+
+### Next bricks, in order
+
+1. `geomCofactorBlockTwoSided M₀ M₁ Q η j := Icc ⌈M₀/(Q(1+η)^{j+1})⌉₊ ⌊M₁/(Q(1+η)^j)⌋₊`, and the
+   product polynomial `∑_j primeBlockPoly (geomBlock P Q (1+η) j) · logPoly μ (D_j)`.
+2. The coefficient comparison `c(n) = μ(n)ω_P(n)` on squarefree `n ∈ [M₀, M₁]`, and the two support
+   bounds above for `e`.
+3. `∑_n |e(n)|² ≤ (log M₁/log E)²(M₁/E + 2M₁η + 2)`, then the mean value theorem for `∫‖K_δ‖²‖E‖²`.
+4. The harmonic split with `v_j` = reciprocal block harmonic mass.
+5. `(28)`: the `y`-split for one block, from Lemma 2.3 and the mean value theorem.
+6. `(29)`–`(30)`: the range `|y| ≤ log Q_j`, trivially.
+
+### Milestone A, the spectral side — assembled (2026-08-18, continued)
+
+Bricks 1, 2, 4, 5 of the list above are Lean theorems, and the whole `(26)`–`(28)` layer is now a
+single statement.
+
+| module | content |
+|-|-|
+| `Sieve/TwoSidedCofactorBlock` | `geomCofactorBlockAt`, `ladderGapSetAt`, `card_ladderGapSetAt_le`, `sum_card_ladderGapSetAt_le` — the cofactor block and its gap budget over a two-sided range of indices, which is what the fibres need (they live on a dyadic block, not an initial segment) |
+| `Sieve/LadderProductDefect` | `cofactorFilter_subset_common_at`, `moebiusCoeff`, `ladderProductPoly`, `ladderProductDefect`, **`ladderProductPoly_sub_omegaWeighted_eq`** (the weighted polynomial *is* the ladder of genuine products minus one prime-shifted family), `ladderIndex_filter_card_le_gen`, `ladderGapSetAt_image_subset`, **`integral_normSq_ladderProductDefect_le_closed`** |
+| `Sieve/HarmonicCauchySchwarz` | `normSq_sum_le_weighted`, `normSq_sum_mul_le_weighted` |
+| `Sieve/LadderHarmonicSplit` | `stepMass`, **`sum_stepMass_eq`** (the step masses add to the harmonic mass of `P` for *every* subdivision — the reason thin blocks are free), `normSq_ladderProductPoly_le`, `integral_normSq_ladderProductPoly_le` |
+| `Sieve/LadderBlockMeanSquare` | **`integral_normSq_ladderStep_le`** (one step: a pointwise bound on the prime polynomial times the mean value theorem for the cofactor polynomial), `card_geomCofactorBlockAt_le` |
+| `Sieve/OmegaWeightedLadderBound` | `continuous_*`, `integral_normSq_omegaWeighted_le_split`, **`integral_normSq_omegaWeighted_le`** |
+
+The capstone:
+
+```text
+∫_{|w| ≤ W} ‖A_ω(w)‖² dw
+  ≤ 2 (∑_j 1/v_j)(∑_j v_j · V_j² · (5π/2·W + 5e/2·⌊B₀/Q_j⌋)(B₀/Q_j + 1))
+    + 2 (5π/2·W + 5e/2·⌊B₀(1+η)⌋)( log⌊B₀(1+η)⌋/log Q · ∑_j (Q_j η + 1)((A₀+B₀)η/Q_j + 5 + B₀/Q_j²) )
+```
+
+for every positive weight family `v` and every `V` bounding `‖∑_{p ∈ P_j} μ(p)p^{2πiw}‖` on the
+window.  **The only analytic input left in the spectral side is `V`** — that is Lemma 2.3, already
+proved in the corpus (`Sieve/VonMangoldtTwistPrimeEnvelope`, `Sieve/RouteTMoebiusPowerSaving`).
+Everything else is explicit in `A₀, B₀, Q, η, L, W`.
+
+Remaining for Milestone A:
+1. instantiate `V j` from the Route-T twisted prime-sum layer, and `v j = 1/stepMass`;
+2. pass from `∫_{|w| ≤ W}` to the Gallagher-weighted `∫_ℝ ‖K_δ‖²‖·‖²` that `omegaBudget` holds, via
+   `Sieve/GallagherDyadicTail.gallagher_split_integral_dyadic`;
+3. the range `|w| ≤ log Q_j`, exposé `(29)`–`(30)`;
+4. the parameter substitution (`η` inside the window `(log x)^{-9β/5} ≪ η ≪ (log x)^{9β/5−2}`).
+
+### Milestone A — the chain is closed except for the parameter arithmetic (2026-08-18, continued)
+
+Three further modules complete the *structure* of the §3 proof in Lean.
+
+| module | content |
+|-|-|
+| `Sieve/PrimeBlockTwistBound` | `unitLogPhase_eq_cpow`, `primeTwist_eq_unitLogPhase`, `moebiusPhase_prime_eq_neg_primeTwist`, `primeBlockPoly_eq_neg_sum`, `sum_primeTwist_range_eq`, `norm_primeBlockPoly_le_of_range`, **`exists_norm_primeBlockPoly_routeT_le`** — the prime polynomial of a ladder step *is* the twisted prime sum `−∑_{p ∈ (a,b]} p^{2πiw}`, so the Route-T (Vinogradov–Korobov) envelope bounds it directly.  **This is the single analytic input of the whole argument, and it is now connected.** |
+| `Sieve/AffineMajorantFromHeight` | `integral_normSq_logPoly_mono`, **`affineMajorant_of_bound_at`** — Gallagher's split needs a majorant at *every* height, while a cancellation estimate only holds up to the height its analytic input allows.  Below that height the mean square is monotone; above it the mean value theorem is already affine with the right slope.  One bound at `T₀` therefore suffices. |
+| `Sieve/OmegaBudgetFromLadder` | `omegaCoeff`, `logPoly_omegaCoeff_eq`, `energy_omegaCoeff_le`, **`integral_kernel_normSq_omegaWeighted_le`** — the Gallagher-weighted spectral integral, which is exactly the integral inside `omegaBudget`, from a ladder bound at one height |
+
+The chain that the three Route E cards now rest on, end to end and unconditional:
+
+```text
+AveragedShortInterval μ hh                                   ← averagedShortInterval_moebius_of_omegaBudget
+  ← omegaBudget → 0                                          ← OmegaSpectralFibre
+  ← ∫_ℝ ‖K_δ‖²‖A_ω‖² small                                    ← integral_kernel_normSq_omegaWeighted_le
+  ← ∫_{|w| ≤ T₀} ‖A_ω‖² ≤ β₀                                  ← integral_normSq_omegaWeighted_le
+  ← ‖∑_{p ∈ P_j} p^{2πiw}‖ ≤ V j                              ← exists_norm_primeBlockPoly_routeT_le  ✓ PROVED
+  + the parameter substitution                                ← OPEN
+```
+
+**What is open is now exactly two things, and neither is structural:**
+
+1. *The parameter arithmetic.*  Choose `A₀ = ⌈√x/2⌉`, `B₀ = ⌊√x + h⌋`, `z₀ = exp((log h)^{9/10})`,
+   `z = h`, `Q = z₀`, `L` and `η` inside the window `(log x)^{-9β/5} ≪ η ≪ (log x)^{9β/5−2}`,
+   `T₀` at the height the Route-T envelope still saves at, `W = M/h`, `v j = 1/stepMass`, and verify
+   the resulting limit.  This is asymptotic analysis of `routeTTwistEnvelope`, not new mathematics.
+2. *The rate.*  Even when 1 is done, the arrangement gives `1/log log h` (Turán–Kubilius) and the
+   §6 arrangement gives `(log h)^{-1/10}`; the cards need `(log h)^{-1/β}` with `β > 1/2`.  That gap
+   is Menon's refinement and is the last milestone.  It is an *arithmetic* loss in removing the
+   weight, not an analytic one — the spectral side already delivers `(log h)^{-9/5}`.
+
+### The Route-T envelope made elementary — `Sieve/RouteTWidthExplicit` (2026-08-18, continued)
+
+The parameter substitution cannot be done against `routeTTwistEnvelope` as stated, because its
+exponents contain `routeTUniformRegWidth`, which is not an elementary expression.  It is needed only
+through two consequences, and both are now proved:
+
+- `routeTUniformRegWidth_le_delta_half` : the width is at most `delta/2` (upper exponent);
+- **`routeTWidthPolylogLower`**, `routeTWidthPolylogLower_pos`, **`routeTWidthPolylogLower_le`** :
+  the width is at least `1/(10 D_A Z^{9/10}(1 + log Z)²)` with `Z = 2 log(6|τ| + 6) + 1`, for
+  `|τ| ≥ 16π/3`, from `RouteTZetaAsymptotics.routeTZeroFreeDelta_polylog_lower`;
+- `routeTTwistHeightFactor_le_explicit` : the same substitution in the height factor;
+- `rpow_one_sub_eq`, `rpow_one_add_eq`, and **`routeTTwistEnvelope_le_exp`** :
+
+```text
+routeTTwistEnvelope A delta C τ x
+  ≤ C·( 3x·exp(−(min(delta, κ(τ))/6)·log 3x)·(H(τ) + log 2x)
+      + 3x·exp((delta/3)·log 3x)·(1 + (log x)² + H(τ))/(1+|τ|) )
+    + 2√x·log x ,
+```
+
+`κ(τ) = routeTWidthPolylogLower A τ ≍ 1/((log|τ|)^{9/10}(log log|τ|)²)`.  Everything is elementary:
+the saving is the exponential `exp(−c·log x/((log|τ|)^{9/10}(log log|τ|)²))`, which beats every power
+of `log x` exactly when `log x ≫ (log|τ|)^{9/10}·polylog` — the arithmetic reason the ladder must
+start at `Q = exp((log h)^{9/10})` and the reason the range `β > 5/9` appears.
+
+This is the last piece of *machinery* before the parameter substitution itself; what remains there is
+choosing the parameters as functions of `x` and verifying one limit.
+
+## The rate obstruction is now pinned down exactly (2026-08-18)
+
+Two *lower bounds on the loss* of the two standard arrangements, both elementary, both fatal for the
+Route E cards.  They are recorded because they close off routes, not because they are hard.
+
+**1. The Turán–Kubilius arrangement cannot beat `1/log log h`.**  Its cost divided by the trivial
+size is `≍ (variance sum)/(W(P)²√x)`, and Turán–Kubilius gives variance `≍ |D|·W(P)`, so the loss is
+`≍ 1/W(P)`.  Since `ω_P` is Poisson of mean `W(P)`, its relative standard deviation is `W(P)^{-1/2}`
+and the square of that is irreducible for *any* weight of this shape.  And `W(P) ≤ log log h`,
+because the designated primes must lie **below `h`** — otherwise the cofactor polynomial is shorter
+than the window `T = M/h` and the mean value theorem loses.  So the loss is `≥ 1/log log h`.
+
+**2. The restriction arrangement (MR §6) cannot beat `1/log h`.**  Its cost is the density of
+integers with no designated prime factor, which for `P` = primes in `[P₁, h]` is `≍ log P₁/log h`,
+minimised at `P₁ = 2` where Mertens gives `≍ e^{-γ}/log h`.
+
+The cards need `o(1/log Y)` with `log h = (log Y)^β`, `β < 1`.  `1/log h = (log Y)^{-β}` is *larger*
+than `1/log Y`.  **So both standard arrangements fail for every `β < 1`, and no choice of parameters
+rescues either.**  The integers carrying no designated prime factor must be treated with
+cancellation, not discarded — that is the whole content of the missing refinement.
+
+**Why the obvious repair does not work either.**  Every `n ≤ M` is either `M^{1/u}`-smooth (density
+`ρ(u) ≈ u^{-u}`, which beats every power of `log M` at `u = (log M)^{1/10}`) or has a prime factor
+above `M^{1/u}`, to which the Route-T twisted bound applies.  But a prime `p > h` cannot be used for
+the *product* structure: the step's contribution is `V_j²·T·(M/Q_j)` with `V_j ≍ Q_j·E_j`, so `Q_j`
+appears with a **net positive** power and the ladder sum is `≍ T·M·R₂·E²/η²`, which for `R₂` up to
+`M` exceeds the target by a factor `M/h`.  This is exactly MR's remark that the primes must lie
+below `h`.  Large primes are therefore usable only through *large values* (exposé §4's set `Q`),
+never through a pointwise bound.
+
+## The cited source could not be located (2026-08-18)
+
+The three cards attribute `(6)` to "Menon's Theorem 1.1 (2026)".  Searches of arXiv for a paper with
+that rate — `(log log L)²/(log L)² + (log log Y)⁴/(log Y)²` — returned nothing; the neighbouring
+literature (Matomäki–Radziwiłł 2016 and *Multiplicative functions in short intervals II*,
+arXiv:2007.04290, the Bourbaki exposé arXiv:1606.08021, Matomäki–Radziwiłł–Tao, and the
+divisor-bounded and higher-uniformity papers) carries rates of the form `(log h)^{-δ}` with `δ`
+small, or power-saving statements about the *exceptional set* rather than the rate.
+
+This does not change what has to be proved — the required statement is unambiguous, and the shape
+`(log log L)²/(log L)²` is exactly the Halász bound for `μ` at scale `L`, i.e. optimal for the
+method.  It changes only the plan: the input has to be **derived here**, not transcribed from a
+source.  Anyone continuing this lane should treat `(6)` as an open target of this project, and
+should not spend further time looking for the citation.
+
+## The rate obstruction dissolves: a route that closes for exactly `β > 1/2` (2026-08-18)
+
+The two lower bounds recorded above are correct but they bound the wrong things, and the second one
+in particular rests on a step of the exposé that is itself lossy.  Redoing that step gives an
+architecture that reaches the cards' requirement for every `β ∈ (1/2, 1)`.
+
+### The crude step, and what it costs
+
+Exposé `(51)` bounds the contribution of the integers *outside* `S` by
+`∫_X^{2X} h·(∑_{x<n≤x+h, n ∉ S} 1) dx = h²·#S^c`, i.e. it applies Cauchy–Schwarz with the **window
+length** before integrating.  Doing the second moment directly instead,
+
+```text
+∫_Y^{2Y} ( ∑_{x < n ≤ x+L, n ∉ S} 1 )² dx
+  = ∑_{m,n ∉ S, |m−n| < L} (L − |m−n|)
+  ≤ L ( #S^c + ∑_{0<|d|<L} #{m ≤ 2Y : m ∉ S and m+d ∉ S} ) ,
+```
+
+and the shifted count is a two-dimensional sieve: for `S^c` = integers with no prime factor in
+`[P₁, h]` it is `≪ Y·(log P₁/log h)²·(d/φ(d))`.  So
+
+```text
+∫_Y^{2Y} ( ∑_{x<n≤x+L, n ∉ S} 1 )² dx  ≪  L·Y·(log P₁/log h)  +  L²·Y·(log P₁/log h)² ,
+```
+
+against a trivial size `L²Y`.  **The loss is the density squared, not the density.**  That single
+factor is the difference between `1/log h` and `(log h)^{-2}` — exactly the gap between MR's stated
+rate and the rate the cards need.
+
+### The arrangement must be Ramaré, not Turán–Kubilius
+
+With `S` defined by "has a prime factor in `P`", the decomposition of `∑_{n ∈ S}` is **Ramaré's
+identity**, which is exact and carries no weight-removal cost at all (`Sieve/RamareWeight`,
+`sum_eq_ramare_add_rough` — the remainder is *precisely* `S^c`).  The `ω_P` weight of exposé §3 is
+what forces the `1/W(P) ≍ 1/log log h` loss; the `1/ω_P` weight has no such loss.  So the ladder
+built earlier this session (`Sieve/Ramare*`, `Sieve/LadderErrorBudget`, `Sieve/PrimePhaseShift`) is
+the right arrangement, and the `ω_P` layer is the wrong one for the *rate* (it remains correct, and
+is the shorter road to a first theorem).
+
+### The parameter window
+
+Put `log P₁ = (log h)^a`, `log h = (log Y)^β`.  The cards need every contribution `o(1/log Y)`.
+
+| contribution | size | requirement |
+|-|-|-|
+| rough part, second moment | `(log h)^{2a−2}` | `2 − 2a > 1/β`, i.e. `a < 1 − 1/(2β)` |
+| `S` part, spectral | `(log P_j)^{-2A}` at threshold `V_j = P_j/(log P_j)^A` | any `a > 0`, by taking `A` large |
+
+The second row is the point.  In exposé §4 the threshold is `P_j/(log P_j)²` and the saving is
+`(log P_j)^{-2}`, but `2` is an arbitrary choice: Lemma 2.5 bounds the exceptional set by
+`(V² log T)^{1 + log T/log P}`, and the constraint that made §4 work was only `|E_j| ≪ X^{3/7+ε}`.
+With `V_j = (log P_j)^A` that constraint reads `2A log log X ≲ (log h)^a`, so `A` may be taken as
+large as `(log X)^{aβ}/log log X` — a *power of log*, not a constant.  The spectral saving is
+therefore effectively unconstrained, and imposes no lower bound on `a`.
+
+So the admissible range is `0 < a < 1 − 1/(2β)`, which is **non-empty exactly when `β > 1/2`** —
+precisely the card's hypothesis `1/2 < β < 1`, and precisely the place where the card's own
+arithmetic `2β > 1` enters.  That coincidence is the check that this is the right route.
+
+### Consequences for the build
+
+1. The `ω_P` layer (`OmegaWeighted*`, `TuranKubilius*`, `WeightRemoval*`) stays — it is a complete,
+   independent road to a first unconditional short-interval theorem at rate `1/log log h`, and every
+   spectral module it feeds (`Ladder*`, `HarmonicCauchySchwarz`, `RouteTWidthExplicit`) is shared.
+2. The road to the **cards** goes through the Ramaré ladder instead, and needs two new things:
+   - **the shifted rough-pair count** `#{m ≤ Y : m, m+d both free of primes in [P₁,h]} ≪ Y(log P₁/log h)²·d/φ(d)` — a two-dimensional sieve, for which the corpus already has `Sieve/ShiftedCongruenceCount`, `Sieve/JointCongruence*`, `Sieve/TruncatedPair*` and the Selberg/Brun–Titchmarsh layer in `PNTPlus`;
+   - **the exceptional-set layer of exposé §4** at a free threshold exponent `A`, from `Sieve/DirichletPower{Convolution,PrimeSupport,Measure}` (Lemma 2.5, already free-exponent) and `Sieve/HalaszMontgomeryDyadic` (Lemma 2.6).
+3. This derivation is my own and is not checked against a source; the §4 exceptional-set accounting
+   at a free threshold is the step most worth re-deriving before it is formalised.
+
+### The rough second moment, in the corpus's own fibres — `Sieve/FibreRoughSecondMoment` (2026-08-18)
+
+The first brick of the new road is built, and it is sharper than the sketch above.
+
+- **`sum_sq_card_fibre_inter_eq`** : `∑_a #(F_a ∩ T)² = ∑_{m,n ∈ T ∩ D} K(m,n)` — an *identity*, for
+  any set `T`, against the fibre kernel `K(m,n) = #{a : m, n ∈ F_a}`;
+- **`fibre_kernel_band_width`** : if `m` and `n` share a fibre then `max − min ≤ h` (not `2h`): the
+  same outer factor gives `a·max ≤ x + h√x` and `a·min ≥ x` with `a ≥ √x`, so the gap is at most
+  `h√x/a ≤ h`;
+- `fibreDyadicIndex_ge`, and **`sum_sq_card_fibre_inter_le_band`** :
+
+```text
+∑_{a ∈ outerBlock} #(F_a ∩ T)²  ≤  (2h + 1) · #{ (m,n) ∈ (T ∩ D)² : |m − n| ≤ h } .
+```
+
+So the entire cost of discarding `T` is its **banded shifted pair count**, and nothing else.  With
+`T` the integers free of primes in `[P₁, h]` this is the two-dimensional sieve
+`∑_{|d| ≤ h} #{m : m, m+d both free of primes in [P₁,h]} ≪ h·M·(log P₁/log h)²`, which is the
+`(log h)^{-2}` the cards need.  **The remaining arithmetic input on this road is exactly that sieve
+bound** — no analytic input at all.
+
+### The shifted-rough-pair sieve, set up — `Sieve/RoughPairSieve` (2026-08-18)
+
+The remaining arithmetic input is now a `SelbergSieve` instance in the corpus, using the
+Selberg machinery vendored in `PNTPlus/Mathlib/NumberTheory/Sieve/` (whose one-dimensional
+instantiation `BrunTitchmarsh.primeInterSieve` is the template).
+
+- `rangePrimes P₁ h`, `rangePrimorial P₁ h`, `squarefree_prod_of_prime`,
+  `rangePrimorial_squarefree` — the sifting modulus;
+- `pairClassCount d p = if p ∣ d then 1 else 2`, **`pairNu d`** = the multiplicative density
+  `ν(n) = (∏_{p ∣ n} pairClassCount d p)/n`, with `pairNu_isMultiplicative`,
+  `pairNu_apply_prime`, `pairNu_pos_of_prime`, `pairNu_lt_one_of_prime` (below one at every prime
+  `≥ 3`, which is why the range must start at `P₁ ≥ 2`);
+- `mem_of_prime_dvd_prod`, `shiftMul_injOn`, **`roughPairSieve`**, **`siftedSum_roughPairSieve`**.
+
+**The support is the image `m ↦ m(m+d)`, not `m`.**  `BoundingSieve` sifts its support by
+coprimality with the modulus, so sieving the *pair* means putting the products in the support; the
+map is injective on `m ≥ 1`, so the sifted sum is exactly
+
+```text
+#{ m ≤ Y : no prime of (P₁, h] divides m, and none divides m + d } ,
+```
+
+and with that support `multSum e = #{m ≤ Y : e ∣ m(m+d)} ≈ Y·ν(e)`, so `ν` is the true density and
+the Selberg remainder stays small.  Getting this wrong — keeping `m` in the support while using the
+two-dimensional `ν` — would leave a correct but vacuous bound, because the remainder would absorb
+everything.
+
+**Remaining on this brick:** the lower bound `S = selbergBoundingSum ≫ (log h/log P₁)²` for the
+two-dimensional Selberg terms, and the remainder sum, giving
+
+```text
+#{m ≤ Y : m, m+d both free of primes in (P₁,h]}  ≪  Y (log P₁/log h)² · d/φ(d) .
+```
+
+The one-dimensional analogue in `BrunTitchmarsh.boudingSum_ge` (`S ≥ log z/2`) is the model.
+
+### The Selberg terms of the pair sieve, and the shape of the remaining work (2026-08-18)
+
+**`selbergTerms_roughPairSieve`** : for every squarefree `l` dividing the modulus,
+
+```text
+g(l) = ∏_{p ∣ l} c_p / (p − c_p) ,       c_p = pairClassCount d p ∈ {1, 2} .
+```
+
+(The duplicate squarefreeness lemma I had written was dropped in favour of the corpus's
+`Sieve.prodDistinctPrimes_squarefree`.)
+
+**Why `selbergBoundingSum_ge_sum_div` cannot be used directly.**  That lemma — the corpus's route to
+`S ≥ log z/2` in the one-dimensional case — requires `CompletelyMultiplicative s.nu`.  `pairNu` is
+multiplicative but **not** completely multiplicative: `prodPrimeFactors` gives `ν(p^k) = c_p/p^k`,
+whereas complete multiplicativity would need `(c_p/p)^k`.  The file's own commented-out "Proposed
+generalisation" is precisely the statement that would cover this case.  So the two-dimensional
+bounding-sum lower bound has to be proved here.
+
+**The shape of that proof, and the two facts it needs.**  Since the modulus is squarefree, only
+squarefree `l` occur, and the untruncated sum is the Euler product
+
+```text
+∑_{l ∣ P} g(l) = ∏_{p ∣ P} (1 + c_p/(p − c_p))  ≍  (log h / log P₁)² ,
+```
+
+by Mertens.  The truncation `l² ≤ level` is removed by Rankin's trick:
+
+```text
+∑_{l ∣ P, l > L} g(l) ≤ L^{-δ} ∏_{p ∣ P} (1 + p^δ c_p/(p − c_p)) ,
+```
+
+and at `δ = 1/log h` every `p^δ ≤ e`, so the product is at most `(log h/log P₁)^{2e}` while
+`L^{-δ} = exp(−log L/log h)`.  In the application `L = √level ≈ x^{1/4}` and `h = exp((log x)^β)`, so
+`log L/log h ≍ (log x)^{1−β}` and the tail is smaller than any power — the truncation is free.  This
+is the fundamental lemma in the only form the argument needs, and it is the next brick.
+
+Two inputs it will draw on, both already in the corpus: Mertens' second theorem
+(`Sieve/MertensSecond`, `mertensS`) for the Euler product, and `Sieve.rem_sum_le_of_const` for the
+Selberg remainder.
+
+### The Euler product of the bounding sum — `Sieve/SquarefreeDivisorProduct` (2026-08-18)
+
+- **`sum_divisors_prod_primes_eq`** : the divisors of a product of distinct primes are indexed by the
+  subsets of those primes — a bijection `t ↦ ∏_{p ∈ t} p` with inverse `l ↦ l.primeFactors`;
+- **`sum_divisors_prod_primes_eq_prod`** : `∑_{l ∣ ∏_{p∈s}p} ∏_{p ∣ l} a p = ∏_{p ∈ s} (a p + 1)`;
+- in `Sieve/RoughPairSieve`, **`sum_selbergTerms_roughPairSieve`** :
+
+```text
+∑_{l ∣ P} g(l) = ∏_{p ∈ (P₁, h]} ( c_p/(p − c_p) + 1 )  ≍ (log h / log P₁)² .
+```
+
+So the *untruncated* two-dimensional bounding sum is now an explicit Euler product.  What is left of
+this brick is (i) evaluating that product by Mertens and (ii) showing the truncation `l² ≤ level`
+costs nothing.
+
+**Route for (ii), decided.**  Rankin's trick is *not* the cheapest way here.  For a lower bound it
+suffices to restrict to divisors with at most `k` prime factors: every such `l` satisfies `l ≤ h^k`,
+so `l² ≤ level` holds outright once `h^{2k} ≤ level`, and in the application
+`level ≈ x^{1/2}`, `h = exp((log x)^β)` give `k` up to `≍ (log x)^{1−β}`.  The discarded part is
+`∑_{j > k} e_j(a) ≤ ∑_{j>k} A^j/j! ≤ (eA/k)^k` with `A = ∑_p a_p ≍ 2 log log x`, and `k ≫ eA`, so it
+is smaller than any power.  This replaces the fundamental lemma by an elementary tail bound on
+elementary symmetric functions.

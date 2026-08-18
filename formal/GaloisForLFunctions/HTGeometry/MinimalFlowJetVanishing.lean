@@ -128,4 +128,77 @@ theorem exists_finite_closed_regular_cover {X Y : Type*} [TopologicalSpace X] [C
     exists_finite_closed_cover_subordinate (fun i : ι => {x : X | Φ i x ≠ 0}) hUopen hreg
   exact ⟨M, idx, F, hFclosed, hFcov, fun j x hx => hFsub j hx⟩
 
+
+/-! ### Refining a cover until a locally injective map is injective on each piece -/
+
+/-- **A locally injective map is injective on each piece of a finite closed cover.**  On a compact
+regular space, a map injective near every point becomes injective on every piece of a suitable
+finite closed cover.  This is what upgrades a chart that separates points only locally into one
+that separates them on a whole closed piece. -/
+theorem exists_finite_closed_cover_injOn {X Y : Type*} [TopologicalSpace X] [CompactSpace X]
+    [RegularSpace X] (E : X → Y)
+    (hloc : ∀ x : X, ∃ V : Set X, IsOpen V ∧ x ∈ V ∧ Set.InjOn E V) :
+    ∃ (M : ℕ) (F : Fin M → Set X), (∀ j, IsClosed (F j)) ∧ (∀ x, ∃ j, x ∈ F j) ∧
+      ∀ j, Set.InjOn E (F j) := by
+  classical
+  choose V hVopen hVmem hVinj using hloc
+  obtain ⟨M, idx, F, hFclosed, hFsub, hFcov⟩ :=
+    exists_finite_closed_cover_subordinate V hVopen (fun x => ⟨x, hVmem x⟩)
+  exact ⟨M, F, hFclosed, hFcov, fun j => (hVinj (idx j)).mono (hFsub j)⟩
+
+/-- The same, with a per-piece chart: a family of maps each injective near every point of the piece
+where it is used becomes a finite closed cover with one injective chart per piece. -/
+theorem exists_finite_closed_cover_chart_injOn {X Y : Type*} [TopologicalSpace X] [CompactSpace X]
+    [RegularSpace X] {ι : Type*} (E : ι → X → Y)
+    (hloc : ∀ x : X, ∃ (i : ι) (V : Set X), IsOpen V ∧ x ∈ V ∧ Set.InjOn (E i) V) :
+    ∃ (M : ℕ) (idx : Fin M → ι) (F : Fin M → Set X),
+      (∀ j, IsClosed (F j)) ∧ (∀ x, ∃ j, x ∈ F j) ∧ ∀ j, Set.InjOn (E (idx j)) (F j) := by
+  classical
+  choose i V hVopen hVmem hVinj using hloc
+  obtain ⟨M, sel, F, hFclosed, hFsub, hFcov⟩ :=
+    exists_finite_closed_cover_subordinate V hVopen (fun x => ⟨x, hVmem x⟩)
+  exact ⟨M, fun j => i (sel j), F, hFclosed, hFcov, fun j => (hVinj (sel j)).mono (hFsub j)⟩
+
+
+/-! ### The same for a flow given by an explicit translation family -/
+
+/-- **Minimality with the flow given as a family of maps.**  No algebraic structure on the
+parameter is needed: a family of maps whose orbits are dense, together with an equivariant
+continuous family of functionals, propagates nonvanishing from one point to all. -/
+theorem exists_ne_zero_of_dense_translates {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    [T1Space Y] [Zero Y] {ι G : Type*} (Φ : ι → X → Y) (T : G → X → X)
+    (hcont : ∀ i, Continuous (Φ i))
+    (hequiv : ∀ (g : G) (i : ι), ∃ j, ∀ x, Φ i (T g x) = Φ j x)
+    (hdense : ∀ x : X, Dense (Set.range fun g : G => T g x))
+    {x₀ : X} (hx₀ : ∃ i, Φ i x₀ ≠ 0) : ∀ x : X, ∃ i, Φ i x ≠ 0 := by
+  classical
+  set Z : Set X := {x : X | ∀ i, Φ i x = 0} with hZ
+  have hZclosed : IsClosed Z := isClosed_setOf_forall_eq_zero Φ hcont
+  have hZinv : ∀ (g : G), ∀ x ∈ Z, T g x ∈ Z := by
+    intro g x hx i
+    obtain ⟨j, hj⟩ := hequiv g i
+    rw [hj x]
+    exact hx j
+  have hZempty : Z = ∅ := by
+    by_contra hne
+    obtain ⟨z, hz⟩ := Set.nonempty_iff_ne_empty.mpr hne
+    have horb : (Set.range fun g : G => T g z) ⊆ Z := by
+      rintro _ ⟨g, rfl⟩
+      exact hZinv g z hz
+    have huniv : (Set.univ : Set X) ⊆ Z := by
+      have hd := hdense z
+      rw [dense_iff_closure_eq] at hd
+      rw [← hd]
+      exact hZclosed.closure_subset_iff.mpr horb
+    obtain ⟨i, hi⟩ := hx₀
+    exact hi (huniv (Set.mem_univ x₀) i)
+  intro x
+  by_contra hcon
+  have hxZ : x ∈ Z := by
+    intro i
+    by_contra hne
+    exact hcon ⟨i, hne⟩
+  rw [hZempty] at hxZ
+  exact hxZ
+
 end GaloisForLFunctions.HTGeometry

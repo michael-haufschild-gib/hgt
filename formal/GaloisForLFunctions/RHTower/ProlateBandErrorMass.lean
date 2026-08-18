@@ -185,6 +185,68 @@ theorem integral_inv_sqrt_le {s a b : ℝ} (ha : 0 < a) (has : s < a ^ 2)
     ring
   rwa [hval] at hle
 
+
+theorem intervalIntegrable_errorPieces {s a b : ℝ} (ha : 0 < a) (has : s < a ^ 2) (hab : a ≤ b) :
+    IntervalIntegrable (fun y : ℝ => 1 / (y ^ 2 * Real.sqrt (y ^ 2 - s))) volume a b ∧
+      IntervalIntegrable (fun y : ℝ => 1 / Real.sqrt (y ^ 2 - s) ^ 3) volume a b ∧
+      IntervalIntegrable (fun y : ℝ => 1 / Real.sqrt (y ^ 2 - s)) volume a b := by
+  have hmem : ∀ y ∈ uIcc a b, 0 < y ∧ s < y ^ 2 := by
+    intro y hy
+    rw [uIcc_of_le hab] at hy
+    have hya : a ≤ y := hy.1
+    have hy0 : 0 < y := lt_of_lt_of_le ha hya
+    exact ⟨hy0, by nlinarith [hya, ha]⟩
+  have hsqrt : ContinuousOn (fun y : ℝ => Real.sqrt (y ^ 2 - s)) (uIcc a b) :=
+    Real.continuous_sqrt.comp_continuousOn ((continuousOn_pow 2).sub continuousOn_const)
+  have hne : ∀ y ∈ uIcc a b, Real.sqrt (y ^ 2 - s) ≠ 0 := by
+    intro y hy
+    obtain ⟨_, hys⟩ := hmem y hy
+    exact (Real.sqrt_pos.2 (by linarith)).ne'
+  refine ⟨?_, ?_, ?_⟩
+  · refine (ContinuousOn.div continuousOn_const ((continuousOn_pow 2).mul hsqrt)
+      fun y hy => ?_).intervalIntegrable
+    obtain ⟨hy0, hys⟩ := hmem y hy
+    have h1 : (0 : ℝ) < y ^ 2 := by positivity
+    have h2 : 0 < Real.sqrt (y ^ 2 - s) := Real.sqrt_pos.2 (by linarith)
+    exact (mul_pos h1 h2).ne'
+  · refine (ContinuousOn.div continuousOn_const (hsqrt.pow 3) fun y hy => ?_).intervalIntegrable
+    obtain ⟨_, hys⟩ := hmem y hy
+    have h2 : 0 < Real.sqrt (y ^ 2 - s) := Real.sqrt_pos.2 (by linarith)
+    exact (pow_pos h2 3).ne'
+  · exact (ContinuousOn.div continuousOn_const hsqrt hne).intervalIntegrable
+
+/-- **The full error majorant integrates to the three masses.** -/
+theorem integral_errorMajorant_le {s a b C₁ C₂ : ℝ} (hs : 0 < s) (ha : 0 < a) (has : s < a ^ 2)
+    (hab : a ≤ b) (hC₁ : 0 ≤ C₁) (hC₂ : 0 ≤ C₂) :
+    (∫ y in a..b, (2 * (1 / (y ^ 2 * Real.sqrt (y ^ 2 - s)))
+        + C₁ * (1 / Real.sqrt (y ^ 2 - s) ^ 3) + C₂ * (1 / Real.sqrt (y ^ 2 - s))))
+      ≤ 2 * (1 / a ^ 2) + C₁ * (a / (s * Real.sqrt (a ^ 2 - s)))
+        + C₂ * ((b - a) / Real.sqrt (a ^ 2 - s)) := by
+  obtain ⟨hi1, hi2, hi3⟩ := intervalIntegrable_errorPieces ha has hab
+  have hsplit : (∫ y in a..b, (2 * (1 / (y ^ 2 * Real.sqrt (y ^ 2 - s)))
+        + C₁ * (1 / Real.sqrt (y ^ 2 - s) ^ 3) + C₂ * (1 / Real.sqrt (y ^ 2 - s))))
+      = 2 * (∫ y in a..b, 1 / (y ^ 2 * Real.sqrt (y ^ 2 - s)))
+        + C₁ * (∫ y in a..b, 1 / Real.sqrt (y ^ 2 - s) ^ 3)
+        + C₂ * (∫ y in a..b, 1 / Real.sqrt (y ^ 2 - s)) := by
+    rw [intervalIntegral.integral_add ((hi1.const_mul 2).add (hi2.const_mul C₁))
+      (hi3.const_mul C₂), intervalIntegral.integral_add (hi1.const_mul 2) (hi2.const_mul C₁),
+      intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul,
+      intervalIntegral.integral_const_mul]
+  rw [hsplit]
+  have h1 : (∫ y in a..b, 1 / (y ^ 2 * Real.sqrt (y ^ 2 - s))) ≤ 1 / a ^ 2 :=
+    integral_inv_sq_mul_sqrt_le hs ha has hab
+  have h2 : (∫ y in a..b, 1 / Real.sqrt (y ^ 2 - s) ^ 3) ≤ a / (s * Real.sqrt (a ^ 2 - s)) :=
+    integral_inv_pow_sqrt_le hs ha has hab
+  have h3 : (∫ y in a..b, 1 / Real.sqrt (y ^ 2 - s)) ≤ (b - a) / Real.sqrt (a ^ 2 - s) :=
+    integral_inv_sqrt_le ha has hab
+  have hm1 : 2 * (∫ y in a..b, 1 / (y ^ 2 * Real.sqrt (y ^ 2 - s))) ≤ 2 * (1 / a ^ 2) := by
+    linarith [h1]
+  have hm2 : C₁ * (∫ y in a..b, 1 / Real.sqrt (y ^ 2 - s) ^ 3)
+      ≤ C₁ * (a / (s * Real.sqrt (a ^ 2 - s))) := mul_le_mul_of_nonneg_left h2 hC₁
+  have hm3 : C₂ * (∫ y in a..b, 1 / Real.sqrt (y ^ 2 - s))
+      ≤ C₂ * ((b - a) / Real.sqrt (a ^ 2 - s)) := mul_le_mul_of_nonneg_left h3 hC₂
+  linarith [hm1, hm2, hm3]
+
 end GaloisForLFunctions.RHTower
 
 end

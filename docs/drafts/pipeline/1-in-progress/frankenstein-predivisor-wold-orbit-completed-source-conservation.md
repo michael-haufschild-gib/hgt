@@ -2,7 +2,7 @@
 
 - **ID:** P-G211
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** CONJECTURE / EXACT RH-EQUIVALENT FIREWALL
 - **Source:** Cross-corpus CCM/Gamma source polarization + Route-P Burnol colligation + Wold/Julia orbit
 - **Statement:** The literal two-variable completed-source orbit current is a positive output
   channel of an independently defined primitive Euler colligation: before either Xi residue is
@@ -71,10 +71,24 @@ pole variables, and four Julia orientations remain explicit.
 3. **Use post-Gamma coherent shorting.** Falsified by
    `routePPrimitiveGammaResolvedWoldPacket_not_trace_le_coherentNormSq`: coherent report is zero
    while hidden Gram trace is positive.
-4. **Current live attack.** Build a pre-residue bilateral Julia dilation in an indefinite completed
-   Gamma/polar carrier, then prove its positive physical corner is paid by an independently
-   positive discarded-shift/defect Gram before Hilbert compression. If source construction merely
-   names `budget-current`, imports a Xi-side order premise, or loses residue landing, reject it.
+4. **Bilateral positive completion.** Failed as budget producer. The exact unshifted residual
+   kernel has a rank-one shared-ghost decomposition `credit - ghost`; adding that ghost makes the
+   kernel positive, but the required credit grows with horizontal grade and is not controlled by
+   primitive Euler budget. Four functional-equation/Schwarz orientations remain indefinite.
+5. **Literal pre-divisor operator order.** Fully audited and formalized as a firewall. Local
+   Loewner order passes through the selected residue by trace closedness, while every retained
+   strict-right divisor eventually overspends primitive Euler budget. Thus both global local-order
+   and positive Gram-remainder conservation are equivalent to RH, not weaker source lemmas.
+6. **Genuine source conservation.** Proved independently: each prime-clock Wold atom is an exact
+   ordinary-prime BV Green--Stokes boundary, with all labels and coefficients retained. Their
+   finite sum obeys exact source conservation and converges to inverse-Euler Green profile. The
+   positive endpoint defect exists before divisor selection.
+7. **Current live attack.** Construct coefficient-faithful selected-residue descent preserving the
+   specific BV endpoint defect. It cannot be ordinary Loewner-continuous descent, since the
+   pre-divisor firewall proves that operation equivalent to RH. Required novelty is a signed or
+   Krein source conservation whose selected physical corner becomes positive only after the Xi
+   fibre is imposed. If it merely names `budget-current`, imports Xi-side order, or loses residue
+   landing, reject it.
 
 ## Exact falsifiers
 
@@ -97,3 +111,14 @@ compatibility and this four-orientation source identity are the novelty-bearing 
 
 - 2026-08-18 — Stage-1 exact conservation conjecture frozen; first signed-orbit compensation
   attempt failed and pivoted to positive source-channel dilation.
+- 2026-08-18 — Formalized exact bilateral shared-ghost decomposition and proved both two-sheet and
+  four-orientation residual kernels remain indefinite. Positive completion needs an uncontrolled
+  grade-dependent credit.
+- 2026-08-18 — Formalized literal pre-divisor `2 x 2` orbit/budget operators, punctured-neighbourhood
+  Loewner order, Gram-remainder conservation, residue descent, eventual failure on every retained
+  strict-right Xi copy, and equivalence of both global source laws with RH in
+  `FrankensteinPreDivisorWoldOrbitCompletedSourceOrderFirewall.lean`.
+- 2026-08-18 — Formalized coefficient-faithful prime-labelled BV Green--Stokes realization of every
+  Wold atom, finite conservation, cofinal inverse-Euler limit, and strict positive endpoint defect
+  in `SourceHorizontalWoldBVGreenStokesConservation.lean`. Exact open core is now selected-fibre
+  signed-to-positive descent, not source conservation or completed bounds.

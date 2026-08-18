@@ -212,3 +212,33 @@ packetization gate.
   architecture.  Paper/Lean theorem:
   `universal-unitary-formation-radical-cofinal-horizon-extinction-and-properness-law.md` /
   `ConstitutiveUnitaryFormationRadical.lean`.
+- 2026-08-18 — hostile spectral extension closed the semisimple gap: every real formation
+  eigenmode with `|lambda| != 1` is also killed by an equivariant unitary reporter.  The full
+  algebraically forced kernel is now the sum of off-unit eigenspaces and finite-unipotent
+  displacements, and every positive-unitary reporter factors uniquely through its quotient.  This
+  places radial off-centre characters and nilpotent recovery lineage under one formation law while
+  keeping graded exact-history properness as the nonerased companion doctrine.
+- 2026-08-18 — replaced the remaining “positive reporter” choice by a functorial derived
+  mechanism.  Formation intertwiners descend to the forced quotient `Q(V,T)=V/R_T`, identity and
+  composition hold, and `Q` is not left exact.  In the canonical Jordan extension the old unit
+  head maps to zero in `H_0` but is recovered exactly as the connecting image of the new primitive
+  in `H_1`; the same visible-head/next-boundary law holds for falling-factorial translation
+  packets.  Coupled to `Phi(h_N)=1+2N`, nonzero repeated heads either persist as marked derived
+  history with unbounded action or vanish in the cofinal positive quotient.  This is a genuine
+  conservation law across positivity, cohomology, prolongation, and properness, formalized in
+  `ConstitutiveUnitaryReflectionPersistence.lean`.  Remaining gate is no longer “find a better
+  reporter”: construct the literal pre-zero Xi packet as a jointly recoverable pair of positive
+  quotient and marked derived history, then prove its admitted physical history has finite source
+  action.
+- 2026-08-18 — pivoted from reporter repair to tensor-family selection.  For every finite Hermitian
+  packet, Kronecker formation fuses signs by
+  `p(H⊗K)=pHpK+qHqK` and `q(H⊗K)=pHqK+qHpK`.  Repeated formation conserves
+  total active rank `(p+q)^d` and signature `(p-q)^d`; if `p,q>0`, negative index at depth `d+1`
+  exceeds `d`, so every bounded-index sublevel has finite depth.  Consequently a uniform index
+  budget across all tensor degrees is equivalent to `q=0`.  This replaces local positivity hunting
+  by a global formation law: construct literal source tensor formation plus a degree-independent
+  source index budget, and positivity follows automatically.  Paper/Lean theorem:
+  `tensor-formation-inertia-conservation-amplification-and-global-selection-law.md` /
+  `TensorPolarizationAmplification.lean`.  Conditional RH gate: identify existing Xi/Krein
+  negative index with this source formation family and prove the uniform budget before divisor
+  specialization.

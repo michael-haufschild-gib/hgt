@@ -6401,3 +6401,49 @@ whose four pieces have elementary antiderivatives:
 `∫ dy/(y² sqrt(y²-s)) = sqrt(y²-s)/(s y)` (telescopes to `O(1/K²)`),
 `∫ dy/(y²-s)^{3/2} = y/(s sqrt(y²-s))` (gives `O(1/K)`), and the two `1/(1-y)` pieces, which are
 `O(1/c)` because `cP` is bounded below by a multiple of `c` away from the turning scale.
+
+## The `lambda^{-8}` separation is now unblocked
+
+The two-sided oscillator law is proved (`RHTower/ProlateOscillatorLawAssembly.lean`,
+`exists_rate_abs_signedModeRadialBandwidth_mul_s_sub_rung`):
+
+```text
+∃ K > 0, ∀ᶠ a,  |c·s_n − (4n+1)|  ≤  K / c^{1/4} .
+```
+
+Index bookkeeping: the card's `e_j = h_{4j,λ}` sits at Hermite rung `4j`, i.e. at *corpus* signed
+index `2j` (the corpus indexes even rungs by `c·s_n → 4n+1`).  So claim `(7)`,
+`d_j/d_{j+1} = O(λ^{-8}) = O(c^{-4})`, is the corpus ratio between indices `m = 2j` and `n = 2j+2`,
+i.e. exactly `c^{-2(n−m)}` at `n − m = 2`.
+
+Session 1's `prolateBand_sharp_exponent_le` already puts the sharp exponent in precisely the form the
+oscillator law completes:
+
+```text
+exponent  ≤  −c(s_n − s_m)·log(1/y₀)
+             + (log(y₀² − s_m) − log(y₀² − s_n))/2
+             + ∫ errorMajorant_n + ∫ errorMajorant_m
+```
+
+At the pair anchor `y₀ = x₀/√c`, `log(1/y₀) = ½ log c − log x₀`, and the oscillator law gives
+`c(s_n − s_m) ≥ 4(n−m) − K'/c^{1/4}`, so
+
+```text
+−c(s_n − s_m) log(1/y₀)  ≤  −2(n−m) log c + 4(n−m) log x₀ + K'(½log c − log x₀)/c^{1/4} ,
+```
+
+and the last term vanishes.  The middle term converges by `tendsto_pairAnchor_scaleLog` (the `log c`
+cancels between the two rungs — that cancellation is why the *difference* is `O(1)` while each
+scale-log separately grows).  The two error integrals are `O(1)` by
+`integral_prolateBandErrorMajorant_le`: at `y₀ = x₀/√c` its three pieces are respectively
+`(1/c)(2c/x₀²)`, `(1/c)·O(c)` and `(1/c)·O(√c)·O(√c)`, all bounded.
+
+Hence `exponent ≤ −2(n−m) log c + O(1)` and `eventually_prolateBand_sq_ratio_sharp` gives
+
+```text
+R_n(y₀)²  ≤  C · c^{-2(n−m)} · R_m(y₀)² ,
+```
+
+which at `n − m = 2` is the card's `λ^{-8}`.  **Remaining Lean work is bounded and explicit**: one
+module deriving `exists_bound_sharpExponent` from the four displayed ingredients, then substituting
+into the sharp ratio.  No further mathematics is needed.

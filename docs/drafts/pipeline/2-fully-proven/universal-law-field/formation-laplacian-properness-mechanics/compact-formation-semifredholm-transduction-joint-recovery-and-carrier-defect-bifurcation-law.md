@@ -5,7 +5,7 @@
 - **Type:** UNIVERSAL FORMATION / GLOBAL PROPERNESS / JOINT RECONSTRUCTION THEOREM
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM, NOT ROUTE]`
   `[COMPACT-COFINAL FUSION] [EXPLICIT JOINT RECOVERY] [CARRIER--DEFECT SPLIT]`
-  `[FUNCTIONAL-EQUATION NEUTRALITY] [LEAN PENDING] [NOT RH]`
+  `[FUNCTIONAL-EQUATION NEUTRALITY] [CORE LEAN-FORMALIZED] [NOT RH]`
 - **Parents:**
   `source-response-laplacian-properness-pluecker-and-adaptive-escape-law.md`,
   `../primitive-formation-rigidity-mechanics/finite-type-prime-formation-faithful-compact-nonproper-and-infinite-boundary-interception-law.md`,
@@ -472,12 +472,18 @@ Only after this gate is closed may compactness of the defect be used as a select
 
 ## 12. Formal status
 
-The paper proof is dependency-closed. Per project policy, it is not counted as fully certified
-until Lean formalization is added under `HTGeometry/UniversalLawField` and the module is wired into
-the umbrellas. Existing Lean inputs already cover compact operators bounded below only on
-finite-dimensional subspaces, compact-distance bounds for Sonin corners, and the packet FE
-information isometry. The new formal delta is Theorem 3.1 plus the explicit left inverse
-`(CST.13)` and carrier--defect Theorem 6.1.
+The core global mechanism is formalized in
+`formal/GaloisForLFunctions/HTGeometry/ConstitutiveCompactCofinalFusion.lean` and wired into
+`HTGeometry/UniversalLawField`. Lean proves:
+
+1. necessity and sufficiency in Theorem 3.1;
+2. existence of the bounded common recovery kernel in Theorem 4.1;
+3. quantitative joint bounded-below recovery;
+4. exact lift of any invertible functional-equation coordinate action through that kernel;
+5. carrier--defect recovery independently of the scalar defect coordinate.
+
+The compact-ideal distance identities `(CST.15)--(CST.19)` remain paper-only, so this card stays in
+Stage 2 rather than being promoted wholesale.
 
 ## Gates
 
@@ -489,7 +495,7 @@ information isometry. The new formal delta is Theorem 3.1 plus the explicit left
 - [x] FE/recovery information neutrality proved;
 - [x] three-organ fusion and fourth-organ prediction stated;
 - [x] sharp noncompact/infinite-rank countermodels supplied;
-- [ ] Lean formalization and umbrella wiring;
+- [x] core Lean formalization and umbrella wiring;
 - [ ] literal pre-zero Calkin frame-coverage producer;
 - [ ] source-derived selected defect compactness;
 - [ ] RH consequence.
@@ -499,3 +505,5 @@ information isometry. The new formal delta is Theorem 3.1 plus the explicit left
 - 2026-08-12 — exact compact--cofinal fusion classification, joint recovery, carrier--defect
   bifurcation, and FE neutrality proved. Essential norm versus global properness separated;
   Calkin frame coverage isolated as fourth-organ prediction.
+- 2026-08-18 — Theorems 3.1 and 4.1, functional-equation recovery neutrality, and structural
+  carrier--defect recovery formalized in Lean and wired into the universal-law-field umbrella.

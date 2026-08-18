@@ -327,4 +327,85 @@ theorem kernel_mul_spikeProfile_peak_le {c : ℝ} (hc0 : 0 < c) {K B : ℝ} (hK 
   refine le_trans (mul_le_mul hker (spikeProfile_peak_le hB hc0 n)
     (spikeProfile_nonneg hB n _) (by positivity)) (le_of_eq rfl)
 
+
+/-! ### The class is stable under a Fourier multiplier with a two-regime bound -/
+
+/-- Inside the band the frequency is far from the origin. -/
+theorem half_le_natAbs_of_mem_band {n : ℕ} {j : ℤ}
+    (hj : 2 * ((((n : ℤ) + j).natAbs : ℝ)) < (n : ℝ)) : (n : ℝ) / 2 ≤ (j.natAbs : ℝ) := by
+  have htri : (n : ℝ) ≤ (((n : ℤ) + j).natAbs : ℝ) + (j.natAbs : ℝ) := by
+    have h : (n : ℤ).natAbs ≤ ((n : ℤ) + j).natAbs + j.natAbs := by omega
+    have hcast : ((n : ℤ).natAbs : ℝ) ≤ ((((n : ℤ) + j).natAbs : ℝ)) + (j.natAbs : ℝ) := by
+      exact_mod_cast h
+    rwa [Int.natAbs_natCast] at hcast
+  linarith
+
+/-- Inside the band the spike base exceeds one. -/
+theorem one_le_spikeBase {n : ℕ} (hn : 2 ≤ n) {j : ℤ}
+    (hj : 2 * ((((n : ℤ) + j).natAbs : ℝ)) < (n : ℝ)) :
+    (1 : ℝ) ≤ (n : ℝ) / (1 + (((n : ℤ) + j).natAbs : ℝ)) := by
+  have hn2 : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hden : (0 : ℝ) < 1 + (((n : ℤ) + j).natAbs : ℝ) := by positivity
+  rw [le_div_iff₀ hden]
+  linarith
+
+/-- **The two-piece class is stable under a Fourier multiplier.**  A multiplier bounded in the bulk
+and by the spike profile inside the band keeps the class, at the cost of adding the multiplier's
+exponent to the spike exponent and moving the uniform mass of the band into the spike. -/
+theorem TwoPieceAmplitude.mul_multiplier {A θ B c c' K₁ K₂ : ℝ} {n : ℕ} {g : ℤ → ℂ}
+    (hA : 0 ≤ A) (hθ : 0 ≤ θ) (hc0 : 0 < c)
+    (hK₁ : 0 ≤ K₁) (hK₂ : 0 ≤ K₂) (hn : 2 ≤ n)
+    (hg : TwoPieceAmplitude A θ B c n g) (ρ : ℤ → ℂ)
+    (hρbulk : ∀ j : ℤ, ¬ (2 * ((((n : ℤ) + j).natAbs : ℝ)) < (n : ℝ)) → ‖ρ j‖ ≤ K₁)
+    (hρband : ∀ j : ℤ, 2 * ((((n : ℤ) + j).natAbs : ℝ)) < (n : ℝ) →
+      ‖ρ j‖ ≤ K₂ * ((n : ℝ) / (1 + (((n : ℤ) + j).natAbs : ℝ))) ^ c') :
+    TwoPieceAmplitude (K₁ * A) θ (K₂ * (A / (1 + (n : ℝ) / 2) ^ θ + B)) (c + c') n
+      (fun j => ρ j * g j) := by
+  intro j
+  by_cases hband : 2 * ((((n : ℤ) + j).natAbs : ℝ)) < (n : ℝ)
+  · set u : ℝ := (n : ℝ) / (1 + (((n : ℤ) + j).natAbs : ℝ)) with hu
+    have hu1 : (1 : ℝ) ≤ u := one_le_spikeBase hn hband
+    have hu0 : (0 : ℝ) < u := by linarith
+    have hjfar : (n : ℝ) / 2 ≤ (j.natAbs : ℝ) := half_le_natAbs_of_mem_band hband
+    have huni : A / (1 + (j.natAbs : ℝ)) ^ θ ≤ A / (1 + (n : ℝ) / 2) ^ θ := by
+      have hpos : (0 : ℝ) < (1 + (n : ℝ) / 2) ^ θ := by positivity
+      refine div_le_div_of_nonneg_left hA hpos ?_
+      exact Real.rpow_le_rpow (by positivity) (by linarith) hθ
+    have hgj : ‖g j‖ ≤ A / (1 + (n : ℝ) / 2) ^ θ + B * u ^ c := by
+      have h := hg j
+      rw [spikeProfile, if_pos hband] at h
+      linarith
+    have hρj : ‖ρ j‖ ≤ K₂ * u ^ c' := hρband j hband
+    have hexp : u ^ c' ≤ u ^ (c + c') := Real.rpow_le_rpow_of_exponent_le hu1 (by linarith)
+    have hexp2 : u ^ c * u ^ c' = u ^ (c + c') := by
+      rw [← Real.rpow_add hu0]
+    have hprod : ‖ρ j * g j‖ ≤ (K₂ * u ^ c') * (A / (1 + (n : ℝ) / 2) ^ θ + B * u ^ c) := by
+      rw [norm_mul]
+      refine mul_le_mul hρj hgj (norm_nonneg _) (by positivity)
+    have hAterm : K₂ * u ^ c' * (A / (1 + (n : ℝ) / 2) ^ θ)
+        ≤ K₂ * (A / (1 + (n : ℝ) / 2) ^ θ) * u ^ (c + c') := by
+      have hnn : (0 : ℝ) ≤ K₂ * (A / (1 + (n : ℝ) / 2) ^ θ) := by positivity
+      nlinarith [hexp, hnn]
+    have hBterm : K₂ * u ^ c' * (B * u ^ c) = K₂ * B * u ^ (c + c') := by
+      rw [← hexp2]; ring
+    have hfinal : (K₂ * u ^ c') * (A / (1 + (n : ℝ) / 2) ^ θ + B * u ^ c)
+        ≤ K₂ * (A / (1 + (n : ℝ) / 2) ^ θ + B) * u ^ (c + c') := by
+      nlinarith [hAterm, hBterm]
+    rw [spikeProfile, if_pos hband, ← hu]
+    have hpos : (0 : ℝ) ≤ K₁ * A / (1 + (j.natAbs : ℝ)) ^ θ := by positivity
+    linarith [hprod, hfinal]
+  · have hgj : ‖g j‖ ≤ A / (1 + (j.natAbs : ℝ)) ^ θ := by
+      have h := hg j
+      rw [spikeProfile, if_neg hband] at h
+      linarith
+    have hρj : ‖ρ j‖ ≤ K₁ := hρbulk j hband
+    have hprod : ‖ρ j * g j‖ ≤ K₁ * (A / (1 + (j.natAbs : ℝ)) ^ θ) := by
+      rw [norm_mul]
+      refine mul_le_mul hρj hgj (norm_nonneg _) hK₁
+    rw [spikeProfile, if_neg hband]
+    have hrw : K₁ * (A / (1 + (j.natAbs : ℝ)) ^ θ) = K₁ * A / (1 + (j.natAbs : ℝ)) ^ θ := by
+      ring
+    rw [hrw] at hprod
+    linarith
+
 end RHTower

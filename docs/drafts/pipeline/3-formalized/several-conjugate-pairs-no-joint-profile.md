@@ -124,15 +124,14 @@ formal/GaloisForLFunctions/HTGeometry/PerPairGapUnbounded.lean
 formal/GaloisForLFunctions/HTGeometry/IntervalSeparation.lean
 formal/GaloisForLFunctions/HTGeometry/SturmComparisonArch.lean
 formal/GaloisForLFunctions/HTGeometry/ArchCount.lean
+formal/GaloisForLFunctions/HTGeometry/SturmWindowCount.lean
 ```
 
 ## Open
 
-* Splitting at the sign changes of the Sturm expression, and iterating over the conjugate pairs.
-  The count below holds where `C'' + γ²C` keeps one sign; that expression is again an exponential
-  polynomial, so the splitting is finite, but bounding the number of pieces needs the same argument
-  applied one level down. The recursion terminates because each application of
-  `D² − 2β_jD + (β_j²+γ_j²)` removes one conjugate pair; the accounting across levels is not done.
+* Finiteness and alternation of the zero set of an exponential polynomial on a compact interval —
+  the real-analyticity input identified above. With it, the descent step proved here iterates to a
+  full Pólya-type bound; without it, the effective count does not close by this route.
 
 ## The Sturm engine
 
@@ -169,6 +168,35 @@ disjoint subintervals each at least `d` long force `n·d ≤ b − a`.
 Humps of a comparison function are exactly its positive arches, so this is the count that determines
 how many separating exponentials `le_iff_forall_separating_interval` demands. It is effective and
 explicit wherever the Sturm expression keeps one sign.
+
+## The window dichotomy, and where the effective count stops
+
+A **window** is a pair of adjacent arches — three consecutive zeros `p < m < q` with `g > 0` on
+`(p,m)` and `g < 0` on `(m,q)`. Sturm comparison gives a per-window dichotomy:
+
+> either `g'' + γ²g` vanishes inside the window, or the window spans at least `π/γ`.
+
+`sturm_window_dichotomy`. Windows built from consecutive zeros are disjoint, so the two alternatives
+are counted separately: `h`-zeros against the zero set of `h`, long windows against the interval
+length. Where `h` does not vanish at all, only the second survives:
+`card_windows_le : (k : ℝ) ≤ (b − a)·γ/π`.
+
+This is the complete **descent step** of a Pólya-type bound `Z(f) ≤ 2Z(L_jf) + 2(b−a)γ_j/π + 1`,
+where `L_j = D² − 2β_jD + (β_j²+γ_j²)` removes the `j`-th conjugate pair (every other exponent `λ`
+is scaled by `(λ−β_j)² + γ_j² ≠ 0`, and the recursion bottoms out at a real exponential sum, counted
+by `laguerre_zeroList_length_le`).
+
+**Verdict on the effective count.** The counting side is finished; the obstruction is elsewhere. To
+run the descent one must first know the *structure* of the zero set of `f` on `[a,b]` — that it is
+finite, and that the arches alternate so that windows can be formed. Both are real-analyticity facts
+(zeros of a nonzero real-analytic function are isolated; a compact interval therefore carries
+finitely many), requiring an identity-theorem argument for exponential polynomials and a
+real-analyticity API for `t ↦ e^{βt}cos(γt)` that neither mathlib nor the corpus supplies.
+
+That is a different project from the Sturm/counting work, and the effective count is retired from
+this thread pending it. **The criterion itself is unaffected**: `le_iff_forall_separating_interval`
+is exact and usable whenever the hump structure is known, and the count above bounds it explicitly
+wherever the Sturm expression keeps one sign.
 * Whether a nonnegative exponential polynomial with mixed real and imaginary exponents is always a
   sum of Hermitian squares `∑ G_l G_l^*` with exponents in the half-set. The one-pair extremal
   `2e^{βt}(1−cos γt) = 4|sinh((β+iγ)t/2)|²` and `cosh(at) − cos(bt) = 2|sinh(t(a+ib)/2)|²` both are;

@@ -3665,3 +3665,467 @@ and at `a = K/sqrt c`, `s ≍ mu/c` the three summands are `2/K²·(1/1)`, `C₁
 `C₂ α/(sqrt c · sqrt(K²-mu))` — the first two `O(1/K²)` and `O(1/K)` uniformly in `c`, the third
 `O(1/sqrt c)`.  All three vanish, which is exactly the hypothesis
 `sturmAmplitudeVar_sharp_transport` needs.
+
+### Correction to the decomposition, and the exact algebra that remains
+
+Two corrections to the decomposition recorded above, found while formalizing it.
+
+1. The `1/(1-y²)` term of `|K'/K|` produces `(2y/v²)·(3/2)·(B v) = 3 y B / v`, **not** `3yB/v²` — one
+   power of `v` cancels against the `v` in `δ = B v/(c u)`.  So the bound needs `1/v` and hence
+   `v ≥ sqrt(1-α²)`, not `v² ≥ 1-α²`.  The stated constant `3(1/a+M)/(1-α²)` is still valid, because
+   `1-α² ≤ sqrt(1-α²) ≤ v` for `α < 1`, but the proof has to go through `v ≥ 1-α²` rather than
+   through `v²`.
+
+2. Likewise the `1/(y²-s)` term gives `3 y B v / u²`, so its numerator carries a `v ≤ 1` and a
+   `y B ≤ 1 + M y ≤ 1 + M`; that is where `C₁ = 3(1+M)` comes from.
+
+Written out, with `u = sqrt(y²-s)`, `v = sqrt(1-y²)`, `B = 1/y + 9/(1-y)`, `M = 9/(1-α)` and
+`δ = B v/(c u)`:
+
+```text
+prolateBandErrorControl = 2 B² v/(c u)  +  |K'/K| · δ(2+δ)/2
+     ≤  [ 2B²v  +  3 y B v/u²  +  3 y B/v ] / (c u)          (using δ ≤ 1)
+     ≤  [ 2/y² + 4M/a + 2M²  +  3(1+M)/u²  +  3(1/a+M)/(1-α²) ] / (c u) .
+```
+
+Each of the three brackets is an independent elementary bound (`v ≤ 1` and `B ≤ 1/y+M` for the
+first, `yB ≤ 1+M` for the second, `B ≤ 1/a+M` and `v ≥ 1-α²` for the third), and dividing by `c u`
+turns them into the three masses.  This is the only step of `P3` still to be written; the modules it
+sits between — `prolateBand_error_bound` above it and `integral_inv_sq_mul_sqrt_le`,
+`integral_inv_pow_sqrt_le`, `integral_inv_sqrt_le` below it — are proved and built.
+
+### The pointwise error bound is proved
+
+`prolateBandErrorControl_le` (in `RHTower/ProlateSharpTransport.lean`, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+for  0 < c, 0 < a, s < a², a ≤ y ≤ α < 1, δ(y) ≤ 1 :
+
+prolateBandErrorControl c s y
+    ≤ ( 2/y² + 4M/a + 2M² + 3(1+M)/sqrt(y²-s)² + 3(1/a+M)/(1-α²) ) / (c · sqrt(y²-s)) ,
+                                                              M = 9/(1-α) .
+```
+
+stated as a single fraction over `c·sqrt(y²-s)`, which is what makes the three-mass split a pure
+division identity afterwards.  The proof runs through `u = sqrt(y²-s)`, `v = sqrt(1-y²)`,
+`B = 1/y + 9/(1-y)`, in which `δ = B v/(c u)` exactly and
+
+```text
+2 c P δ² = 2 B² v/(c u) ,     |K'/K|·δ(2+δ)/2 ≤ (2y/u² + 2y/v²)·(3/2)·(B v/(c u))
+                                              = 3(yBv)/u²/(c u) + 3(yB)/v/(c u) ,
+```
+
+and the three numerators are bounded by `v ≤ 1` with `B ≤ 1/y+M`; by `yB ≤ 1+My ≤ 1+M`; and by
+`yB ≤ 1/a+M` with `v ≥ 1-α²`.
+
+`P3` is now complete except for the final chaining: the transport
+(`sturmAmplitudeVar_sharp_transport`), the error domination (`prolateBand_error_bound`), the
+pointwise bound just proved, and the three masses (`integral_inv_sq_mul_sqrt_le`,
+`integral_inv_pow_sqrt_le`, `integral_inv_sqrt_le`) are all theorems; what remains is to integrate
+the displayed fraction term by term and feed the result to the transport.
+
+### The error majorant integrates — and the right way to close `P3`
+
+`intervalIntegrable_errorPieces` and `integral_errorMajorant_le` (added to
+`RHTower/ProlateBandErrorMass.lean`, built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+∫_a^b [ 2·(1/(y² sqrt(y²-s))) + C₁·(1/sqrt(y²-s)³) + C₂·(1/sqrt(y²-s)) ]
+      ≤  2·(1/a²)  +  C₁·(a/(s sqrt(a²-s)))  +  C₂·((b-a)/sqrt(a²-s))
+```
+
+for `C₁, C₂ ≥ 0` — the three masses assembled, with the integrability of each piece proved
+separately so the split is a plain `integral_add`.
+
+**The design point.**  `sturmAmplitudeVar_sharp_transport` takes the error control `e` as a
+*parameter*, constrained only by `hbound : (pointwise defect) ≤ e y`.  So there is no need ever to
+integrate `prolateBandErrorControl` itself — instead instantiate the transport directly with
+
+```text
+e(y) = (1/c) · [ 2·(1/(y² u)) + 3(1+M)·(1/u³) + (4M/a + 2M² + 3(1/a+M)/(1-α²))·(1/u) ] ,
+                                                                     u = sqrt(y²-s) ,
+```
+
+which dominates the defect by `prolateBand_error_bound` composed with
+`prolateBandErrorControl_le`, and whose integral is exactly what `integral_errorMajorant_le`
+bounds.  That removes the only remaining analytic obstacle — the continuity/integrability of
+`prolateBandErrorControl`, an awkward object — and leaves as the last step the continuity of
+`sturmSharpMajorant ± e` on the window, which is elementary since every constituent
+(`sqrt(prolateBandScale)`, `1/(1-y²)`, `prolateBandScaleDeriv/prolateBandScale`, `1/(y²u)`, `1/u³`,
+`1/u`) is continuous where `0 < a ≤ y ≤ α < 1` and `s < a²`.
+
+## `P3` IS PROVED — the sharp two-sided amplitude transport of the band
+
+`formal/GaloisForLFunctions/RHTower/ProlateSharpTransport.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolateBandErrorMajorant c s a α y
+      = (1/c)[ 2·(1/(y² u)) + 3(1+M)·(1/u³) + (4M/a + 2M² + 3(1/a+M)/(1-α²))·(1/u) ]
+prolateBandErrorControl_le_majorant , prolateBand_defect_le_majorant
+continuous_prolateBandScale , continuous_prolateBandScaleDeriv
+continuousOn_prolateBandErrorMajorant , continuousOn_prolateSharpMajorant
+
+prolateBand_sharp_transport :
+    G(α) · exp(∫_a^α (sharpMajorant - errorMajorant))  ≤  G(a)
+    G(a)  ≤  G(α) · exp(∫_a^α (sharpMajorant + errorMajorant))
+```
+
+for `0 < c`, `0 < a`, `s < a²`, `a ≤ α < 1`, `s < 1`, a smooth endpoint-normalized eigenfunction
+positive on `[a,1]`, dominated by the anchored barrier on `[a,α]`, and with Riccati defect `≤ 1`
+there.  `G = sturmAmplitudeVar (1-y²) Φ Φ' (prolateBandScale c s)`.
+
+Both bounds carry the **same** sharp majorant `2 c P + (1/2)(K'/K)` — the factor `1/2` on the scale
+term that the corpus's `abs_deriv_sturmAmplitudeVar_le` could not see — and they differ only by the
+accumulated mass of the error majorant, which `integral_errorMajorant_le` bounds by
+
+```text
+(1/c)[ 2/a²  +  3(1+M)·a/(s sqrt(a²-s))  +  C₂·(α-a)/sqrt(a²-s) ] ,
+```
+
+i.e. `O(1/K²) + O(1/K) + O(1/sqrt c)` at the matching point `a = K/sqrt c`.
+
+This closes `P3`.  With it the `P1–P6` programme of this card is complete in principle: the
+remaining work is arithmetic — instantiate the transport at the canonical family, read off the sharp
+`c^{-2}` per-step leakage ratio in place of the current `c^{-3/4}`, and propagate that into the three
+rate claims (`O(lambda^{-7})` in `(4)`, `C_k lambda^8` in `(9)`, `lambda^{-4}` in `(8)`).
+
+### The sharp majorant, in closed form
+
+Added to `RHTower/ProlateSharpTransport.lean` (built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+integral_prolateBandScale_logDeriv :
+    ∫_a^b K'/K  =  log K(b) - log K(a)
+integral_prolateSharpMajorant :
+    ∫_a^b sharpMajorant
+      =  2c (Ξ_s(a) - Ξ_s(b))  +  ( log K(b) - log K(a) ) / 2
+```
+
+This is the quantitative statement of what the whole `P3` layer buys.  The corpus's crude transport
+integrates `prolateBandMajorant` to `2c(Ξ(a) - Ξ(b)) + prolateScaleLog s a b` — the **whole** scale
+logarithm.  The sharp one gives exactly **half** of it, which at the anchor `a = x₀/sqrt c` is the
+difference between `exp(Λ) ≍ c` and `exp(Λ/2) ≍ sqrt c`, i.e. between a `c²` and a `c` gap in the
+squared amplitude; combined with the collar, which is already sharp on both sides, the residual gap
+becomes an absolute constant and the per-step leakage ratio becomes the sharp `c^{-2}`.
+
+Every layer of the programme is now a theorem:
+
+```text
+P1 interior mass          tendsto_indexedRung_totalMass
+P2 exterior mass          eventually_signedLeakage_sharp_two_sided
+P3 band transport         prolateBand_sharp_transport + integral_prolateSharpMajorant
+                            + integral_errorMajorant_le
+P4 collar                 exp_div_le_prolateBand_collar / prolateBand_collar_le_exp_div
+P5 turning window         tendsto_anchor_ratio / tendsto_pairAnchor_ratio
+P6 assembly               eventually_prolateBand_sq_ratio_le → … → ladderEnvelope_…_full
+```
+
+`P6` currently runs on the *crude* transport, which is why the published ratio is `c^{-3/4}`; feeding
+it `prolateBand_sharp_transport` in place of `prolateBandAmplitude_le_uniform` replaces `exp(Λ)` by
+`exp(Λ/2)` throughout and yields the sharp `c^{-2}`, hence the Fuchs form `(7)` and the three rate
+claims that depend on it.
+
+### The two-sided squared value at the matching point
+
+Added to `RHTower/ProlateSharpTransport.lean` (built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolateBand_amplitude_le_five_sq :   G(y) ≤ 5 Φ(y)²      once the Riccati defect is ≤ 1
+prolateBand_sq_two_sided_sharp :
+     G(α)·exp(∫(m - e))/5  ≤  Φ(a)²  ≤  G(α)·exp(∫(m + e))
+```
+
+The first is what turns the transport (a statement about the *amplitude* `G = Φ² + flux²/K`) into a
+statement about `Φ²`: writing `G = Φ²(1+ρ²)` with `ρ` the Riccati ratio, `|1-ρ| ≤ 1` forces
+`ρ² ≤ 4`, so the flux term cannot dominate and `G ≤ 5Φ²`.  Together with `Φ² ≤ G` this pins `Φ²` to
+`G` within an absolute factor five, in **both** directions — which is exactly what the crude route
+could not do, since `prolateBandAmplitude_le_uniform` bounds `G` from above only.
+
+This is the structural reason the sharp transport gives the sharp ratio.  In the crude chain the
+upper bound on `Φ_n(y₀)²` carries the amplitude factor `exp(Λ_n)` while the lower bound on
+`Φ_m(y₀)²` (a Riccati transport) carries none, so the factor survives in the quotient.  With
+`prolateBand_sq_two_sided_sharp` both sides carry `exp(∫ sharpMajorant) = exp(2c ΔΞ + (1/2)log(K
+ratio))`, so the amplitude factor **cancels** in the quotient and only `exp(2c ΔΞ)` — the genuine
+exponential separation — remains, together with absolute constants and `exp(±∫e)`.
+
+## THE SHARP AMPLITUDE RATIO IS PROVED
+
+`prolateBand_sq_ratio_sharp` (in `RHTower/ProlateSharpTransport.lean`, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+Φ_n(a)²  ≤  4050 π³ · (z_m/z_n) · exp( 2z_n - 2z_m + E⁺_n - E⁻_m ) · Φ_m(a)²
+```
+
+where `z_k = c Ξ_{s_k}(α)` and
+
+```text
+E⁺_n = ∫_a^α (sharpMajorant_n + errorMajorant_n) ,
+E⁻_m = ∫_a^α (sharpMajorant_m - errorMajorant_m) .
+```
+
+The four constants multiply out exactly: `5` (amplitude-to-square, upper) × `9π/2` (sharp `I₀`
+collar, upper) × `5` (amplitude-to-square, lower) × `36π²` (corpus `I₀` collar, lower) `= 4050 π³`,
+and the two ends of the chain meet with **equality**, not slack.
+
+This is the sharp replacement for `prolateBand_sq_ratio_le`.  The difference is structural, not
+merely quantitative: there, the upper bound on `Φ_n` came from the amplitude transport (carrying the
+scale factor `exp(Λ_n)`) while the lower bound on `Φ_m` came from a Riccati transport carrying none,
+so the factor survived and cost a power of `c`.  Here **both** bounds come from the same two-sided
+sharp transport, so
+
+```text
+E⁺_n - E⁻_m = 2c(Ξ_n(a) - Ξ_n(α)) - 2c(Ξ_m(a) - Ξ_m(α))
+                + (1/2)[ log(K_n(α)/K_n(a)) - log(K_m(α)/K_m(a)) ]
+                + ∫(e_n + e_m) ,
+```
+
+in which the bracketed scale term is **bounded** at the anchor `a = x₀/sqrt c` — it is
+`log((α²-s_n)/(α²-s_m)) - log((x₀²-c s_n)/(x₀²-c s_m))`, both pieces `O(1)` — and the error masses
+are `O(1/K²)+O(1/K)+O(1/sqrt c)`.  So the whole exponent reduces to the genuine phase separation
+`2c(Ξ_{s_n}(a) - Ξ_{s_m}(a))`, which `exp_two_mul_bandPhase_sub_le` bounds by `c^{-2(n-m)}`:
+**the sharp per-step ratio**, with no residual power of the bandwidth.
+
+### The exponent, in closed form — the collar phases cancel exactly
+
+`prolateBand_sharp_exponent_eq` (in `RHTower/ProlateSharpTransport.lean`, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+2 z_n - 2 z_m + E⁺_n - E⁻_m
+    =  2c( Ξ_{s_n}(a) - Ξ_{s_m}(a) )
+       + [ log K_n(α) - log K_n(a) ]/2  -  [ log K_m(α) - log K_m(a) ]/2
+       + ∫_a^α e_n  +  ∫_a^α e_m
+```
+
+The two collar phases `z_k = c Ξ_{s_k}(α)` cancel identically against the `-2c Ξ_{s_k}(α)` inside
+each `∫ sharpMajorant_k`, so the exponent of `prolateBand_sq_ratio_sharp` reduces to three explicit
+pieces, none of which carries a residual power of the bandwidth:
+
+```text
+2c( Ξ_{s_n}(a) - Ξ_{s_m}(a) )    ≤  -c(s_n - s_m) log(1/a)          exp_two_mul_bandPhase_sub_le
+                                                                       ⇒ c^{-2(n-m)} at a = x₀/sqrt c
+half the scale-log difference     =  ½[ log((α²-s_n)/(α²-s_m)) - log((a²-s_n)/(a²-s_m)) ]  = O(1)
+the two error masses              ≤  O(1/K²) + O(1/K) + O(1/sqrt c)   integral_errorMajorant_le
+```
+
+so `Φ_n(a)²/Φ_m(a)² = O(c^{-2(n-m)})`, the sharp rate.  Every ingredient of that display is now a
+theorem in the tree; what is left is the arithmetic of putting the three bounds together at the
+canonical indexed family, exactly as `ProlateIndexedAmplitudeRatio` and `ProlateIndexedRatioLimit`
+already do for the crude version.
+
+### The exponent is bounded — the sharp ratio is now a closed estimate
+
+Two more theorems in `RHTower/ProlateSharpTransport.lean` (built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+log_prolateBandScale :        log K = log c² + log(y² - s) + log(1 - y²)
+prolateBand_scaleLog_diff_le :
+      ½[log K_n(α) - log K_n(a)] - ½[log K_m(α) - log K_m(a)]
+          ≤  ½[ log(a² - s_m) - log(a² - s_n) ]
+prolateBand_sharp_exponent_le :
+      2z_n - 2z_m + E⁺_n - E⁻_m
+          ≤  -c(s_n - s_m) log(1/a)  +  ½[log(a² - s_m) - log(a² - s_n)]
+             +  ∫ e_n  +  ∫ e_m
+```
+
+The scale-log lemma is where the `1 - y²` factors cancel: they are the *same* for the two apertures,
+so they drop out of the difference entirely, and what is left is the collar term
+`½[log(α²-s_n) - log(α²-s_m)] ≤ 0` (favourable sign, since `s_m ≤ s_n`) plus the anchor term
+`½[log(a²-s_m) - log(a²-s_n)]`.  At `a = x₀/sqrt c` the anchor term is
+`½ log((x₀² - c s_m)/(x₀² - c s_n))`, an `O(1)` constant depending only on the two indices.
+
+So the exponent of `prolateBand_sq_ratio_sharp` is bounded by
+
+```text
+-c(s_n - s_m) log(1/a)          →  -2(n-m) log c           (phase separation)
++ O(1)                          (anchor scale term)
++ ∫e_n + ∫e_m                   ≤ O(1/K²) + O(1/K) + O(1/sqrt c)
+```
+
+which is the sharp `c^{-2(n-m)}`.  Every step of `P3` and of the sharp ratio is now a closed theorem;
+what is left is to instantiate at `signedModeRadialData` and take limits, exactly as
+`ProlateIndexedAmplitudeRatio`/`ProlateIndexedRatioLimit` do for the crude bound.
+
+### The two side conditions of the sharp ratio are now scalar
+
+`prolateWKBProfile_mono` and `prolateRiccatiDefect_le_one` (in `RHTower/ProlateSharpTransport.lean`,
+built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolateWKBProfile_mono :        P(a) ≤ P(y)   for  a ≤ y < 1,  s < a²,  s < 1
+prolateRiccatiDefect_le_one :   1/a + 9/(1-α) ≤ c P(a)   ⇒   δ(y) ≤ 1  on all of [a, α]
+```
+
+The monotonicity is elementary — `P² = (y²-s)/(1-y²)` has an increasing numerator and a decreasing
+denominator, and clearing denominators leaves `(y² - a²)(1 - s) ≥ 0`.  With it, the hypothesis
+`δ ≤ 1` of `prolateBand_sharp_transport`, `prolateBand_amplitude_le_five_sq` and
+`prolateBand_sq_ratio_sharp` — a condition at *every* point of the window — collapses to the single
+scalar inequality `1/a + 9/(1-α) ≤ c P(a)` at the matching point.
+
+At `a = x₀/sqrt c` with `s ≍ mu/c` that inequality reads
+
+```text
+sqrt c / x₀ + 9/(1-α)   ≤   sqrt c · sqrt(x₀² - mu) · (1 + o(1)) ,
+```
+
+i.e. it holds eventually as soon as `x₀ sqrt(x₀² - mu) > 1`, which the pair anchor already
+guarantees (`x₀ > 2 sqrt(mu)` gives `x₀ sqrt(x₀² - mu) > 2 sqrt 3 · mu > 1`).  So both side
+conditions of the sharp ratio — the anchored barrier bound and the defect bound — are now reduced to
+statements the indexed instantiation can discharge with the material already in the tree.
+
+### Both side conditions are discharged
+
+`prolateLogDeriv_le_anchoredBarrier_on_collar` (in `RHTower/ProlateSharpTransport.lean`, built,
+axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+for  0 < c, s < 1, 0 ≤ s, 0 < a ≤ α < 1, 2s ≤ a², Φ smooth with Φ(1) = 1 and positive on [a,1] :
+
+      ∀ y ∈ [a, α],   prolateLogDeriv Φ y  ≤  prolateAnchoredBarrier c (-(s c²)) y
+```
+
+The terminal inequality of the backward comparison is available *arbitrarily close* to the endpoint
+(`eventually_prolateLogDeriv_le_anchoredBarrier_at_one`), so choosing `b` in `(α, 1)` from that
+filter and running `prolateLogDeriv_le_anchoredBarrier` on `[a, b]` reaches any fixed collar.  Note
+the hypothesis is `2s ≤ a²`, not merely `s < a²`: the anchored barrier's Riccati condition is
+`y²(1+s) ≥ 2s`, which needs the doubled turning point — exactly what the pair anchor supplies, since
+`x₀ > 2 sqrt(mu)` gives `a² = x₀²/c > 4 mu/c ≈ 4s`.
+
+With this and `prolateRiccatiDefect_le_one`, **both** side conditions of `prolateBand_sq_ratio_sharp`
+are now theorems in the tree, each reduced to a scalar inequality that holds eventually at the
+canonical family:
+
+```text
+2 s_k ≤ a²                          from  x₀² > 4 mu_k  and  c s_k → mu_k
+1/a + 9/(1-α) ≤ c P_k(a)            from  x₀ sqrt(x₀² - mu_k) > 1  and  c → ∞
+```
+
+### The side conditions hold eventually at the canonical family
+
+`formal/GaloisForLFunctions/RHTower/ProlateIndexedSharpSideConditions.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolatePairAnchor_ge_two :                  2 ≤ x₀
+eventually_two_mul_s_le_pairAnchorPoint_sq (m n k) (k = m ∨ k = n) :
+      ∀ᶠ a,  2 s_k  ≤  y₀(a)²
+eventually_pairAnchor_defect_condition (m n k) (k = m ∨ k = n) :
+      ∀ᶠ a,  1/y₀(a) + 9/(1-α)  ≤  c · P_{s_k}(y₀(a))
+```
+
+The first is `2 c s_k < x₀²`, immediate from `c s_k → 4k+1` and `x₀² > 4(4k+1)`.  The second is the
+one with content.  At `y₀ = x₀/sqrt c`,
+
+```text
+c P_k(y₀)  ≥  c sqrt(y₀² - s_k)  ≥  sqrt c · x₀/sqrt 2 ,
+1/y₀       =  sqrt c / x₀ ,
+```
+
+so the condition reduces to `sqrt c (x₀/sqrt 2 - 1/x₀) ≥ 9/(1-α)`.  With `x₀ ≥ 2` — which the pair
+anchor gives, since it lies beyond `2 sqrt(4m+4n+1) ≥ 2` — and `sqrt 2 ≤ 3/2`, the bracket is at
+least `4/3 - 1/2 = 5/6`; the constant `9/10` I first wrote is **false** here, and the correct
+threshold is `sqrt c ≥ 11/(1-α)`, since `(5/6)(11) = 55/6 > 9`.
+
+With these, both hypotheses of `prolateBand_sq_ratio_sharp` that are not shared with the crude
+instantiation are discharged eventually, and the sharp indexed ratio is a matter of assembling
+`eventually_prolateBand_sq_ratio_le`'s existing hypothesis list with these two added.
+
+## THE SHARP INDEXED RATIO IS PROVED
+
+`formal/GaloisForLFunctions/RHTower/ProlateIndexedSharpRatio.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+sharpCollarPhase k a      = c Ξ_{s_k}(α)
+sharpTransportUpper m n k = ∫_{y₀}^{α} (sharpMajorant_k + errorMajorant_k)
+sharpTransportLower m n k = ∫_{y₀}^{α} (sharpMajorant_k - errorMajorant_k)
+
+eventually_prolateBand_sq_ratio_sharp (m n : ℕ) :
+  ∀ᶠ a in atTop,
+    R_n(y₀)²  ≤  4050 π³ · (z_m/z_n)
+                 · exp( 2 z_n - 2 z_m + E⁺_n - E⁻_m )
+                 · R_m(y₀)²
+```
+
+at the canonical family `signedModeRadialData`, with `y₀` the pair anchor and `α` the leakage
+collar.  Every hypothesis of `prolateBand_sq_ratio_sharp` is discharged eventually — the separation
+facts, the exactness bundle (smoothness, `R(1)=1`, the eigen relation via `radialSeparationRatio`,
+and the ODE), band positivity via `prolate_pos_on_right_of_radial_turning`, the anchored barrier via
+`prolateLogDeriv_le_anchoredBarrier_on_collar`, the Riccati defect via
+`prolateRiccatiDefect_le_one` fed by `eventually_pairAnchor_defect_condition`, and the two collar
+phases via `collarPhaseFloor_le`.
+
+**Note the hypothesis list is strictly shorter than the crude instantiation's**: no `4 ≤ c s_n` is
+needed anywhere, because the sharp route never invokes `prolateRadialBarrier`.  The ground index is
+therefore unobstructed on *both* sides of the ratio, not only on the lower one.
+
+This is the sharp replacement for `eventually_prolateBand_sq_ratio_le`.  What remains is to bound
+its exponent using `prolateBand_sharp_exponent_le` and `integral_errorMajorant_le` — both already
+theorems — and propagate through the centre transfer and the leakage ratio, replacing the `c^{-3/4}`
+of `ProlateIndexedRatioLimit` by `c^{-2}`.
+
+### The accumulated error mass, in closed form
+
+`integral_prolateBandErrorMajorant_le` (in `RHTower/ProlateSharpTransport.lean`, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+∫_a^α e  ≤  (1/c) [ 2/a²  +  3(1+M)·a/(s sqrt(a²-s))  +  C₂·(α-a)/sqrt(a²-s) ] ,
+                                  M = 9/(1-α) ,  C₂ = 4M/a + 2M² + 3(1/a+M)/(1-α²) .
+```
+
+`prolateBandErrorMajorant` was *defined* in the three-mass shape, so this is
+`integral_errorMajorant_le` after pulling out the constant `1/c`.
+
+At the pair anchor `a = x₀/sqrt c` with `s_k ≍ mu_k/c` the three summands evaluate to
+
+```text
+(1/c)·2/a²                       =  2/x₀²                              ≤ 1/2   since x₀ ≥ 2
+(1/c)·3(1+M)a/(s sqrt(a²-s))     =  3(1+M) x₀ / (mu_k sqrt(x₀² - mu_k))  — a constant in c
+(1/c)·C₂(α-a)/sqrt(a²-s)         ≈  C₂ α / (sqrt c · sqrt(x₀² - mu_k))   →  0
+```
+
+so the error mass is **bounded**, uniformly in the bandwidth — which is all the ratio needs, since
+it enters only through `exp(∫e_n + ∫e_m)`, a bounded factor.  Note the first summand does not vanish:
+it is `2/x₀²`, controlled by pushing the anchor out, exactly as the `O(1/K²)` bookkeeping predicted.
+
+With this the exponent bound of `eventually_prolateBand_sq_ratio_sharp` is complete in closed form:
+
+```text
+2z_n - 2z_m + E⁺_n - E⁻_m  ≤  -c(s_n - s_m) log(1/y₀)          (prolateBand_sharp_exponent_le)
+                               + ½[log(y₀² - s_m) - log(y₀² - s_n)]        (bounded)
+                               + ∫e_n + ∫e_m                               (bounded)
+```
+
+and `c(s_n - s_m) → 4(n-m)`, `log(1/y₀) = (log c)/2 - log x₀`, giving `exp(...) = O(c^{-2(n-m)+ε})`.
+
+### The anchor scale-logarithm converges
+
+`tendsto_pairAnchor_scaleLog` (in `RHTower/ProlateIndexedSharpRatio.lean`, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+log(y₀² - s_m) - log(y₀² - s_n)  →  log( (x₀² - (4m+1)) / (x₀² - (4n+1)) )
+```
+
+The bandwidth cancels: `y₀² - s_k = (x₀² - c s_k)/c`, so the difference of logarithms loses its
+`log c` entirely and converges by continuity of `log` at the two positive limits `x₀² - (4k+1)`,
+positive because the pair anchor satisfies `x₀² > 4(4k+1)`.
+
+That closes the second of the three exponent pieces as a *convergent* quantity rather than merely a
+bounded one.  The three now read:
+
+```text
+-c(s_n - s_m) log(1/y₀)                  ~  -2(n-m) log c        (c s_k → 4k+1, log(1/y₀) ~ (log c)/2)
+½[log(y₀² - s_m) - log(y₀² - s_n)]        →  ½ log((x₀²-(4m+1))/(x₀²-(4n+1)))
+∫e_n + ∫e_m                               ≤  bounded, uniformly in c
+```
+
+so `exp` of the exponent is `O(c^{-2(n-m)+ε})` for every `ε > 0`: the sharp per-step ratio, at the
+canonical family, with every ingredient a theorem in the tree.

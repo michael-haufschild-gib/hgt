@@ -4254,3 +4254,370 @@ exactly one direction: an `F`-fixed element of the image is the image of an `F`-
 `MultiplicationTailFixedField.iInf_differentialTranslationFixedField_eq_kolchinClosure`.  What is
 left is Theorem A's finite étale Galois description `(1)` and the logarithmic-derivative quotient
 `(4)` — both scheme-level.
+
+## Pass 80 — the Bessel card's reduction is machine-checked
+
+`HTGeometry/BesselOrderDreyfusNormalForm.lean` states the classification's output shape and proves,
+unconditionally, that neither Bessel carrier has it:
+
+```text
+DreyfusProgressionNormalForm x₀ f
+not_dreyfusProgressionNormalForm_realModifiedBesselKOrder
+not_dreyfusProgressionNormalForm_realModifiedBesselOrderIntensity
+not_differentiallyAlgebraic_..._of_classification     the reduction, for any DA predicate
+```
+
+So `bessel-order-intensity-hypertranscendence` is exactly one arrow from closure, and that arrow is
+Dreyfus's classification.  The Riccati bypass was checked and fails for a structural reason worth
+recording: `r = ρy/y` satisfies a first-order rational shift equation and is DA whenever `y` is, and
+the tree already excludes rational `r`, but "not rational ⟹ not DA" *is* the classification —
+differential algebraicity alone gives no growth bound (`exp (exp z)` satisfies `y y'' = y y' + (y')²`
+and has infinite order), so the shift equation is what supplies `(9)`.
+
+mathlib has no Picard–Vessiot theory, differential or difference; that foundation is what this card
+waits on, not any assembly step.
+
+### Pass 78 addendum — multiplier stability of the two-piece class
+
+```text
+TwoPieceAmplitude.mul_multiplier :
+  ρ bounded by K₁ in the bulk and by K₂ (n/(1+|n+j|))^(c') in the band
+  ⟹ the class is preserved with A ↦ K₁A, B ↦ K₂(A/(1+n/2)^θ + B), c ↦ c + c'
+```
+
+The exponent adds — one application of `R̃_n` costs `1/m` with `ρ_j ≍ (n/|n+j|)^(1/(2m))` and two
+multiplier factors, so the class survives with `c < 1` for the length of the card's telescope — and
+the uniform mass inside the band is absorbed into the spike, which is the reason the class cannot be
+a uniform bound with a moving constant.
+
+## Pass 82 — local injectivity becomes injectivity on a closed piece
+
+`HTGeometry/MinimalFlowJetVanishing.lean` gains the second compactness refinement, closing
+`(15)`–`(16)` of the two almost-periodic cards:
+
+```text
+exists_finite_closed_cover_injOn        E injective near every point of a compact regular space
+                                        ⟹ a finite closed cover with E injective on each piece
+exists_finite_closed_cover_chart_injOn  the same with one chart chosen per point
+```
+
+This is what turns the implicit-function theorem's local uniqueness into the global injectivity of
+`E_j` on `F_j` that `card_le_of_hull_charts` consumes; without it the observation map only embeds
+the hull in `ℂ^(m(n+1))` with `m` the number of samples, so the dimension bound would depend on the
+cover rather than on the differential order.
+
+## Pass 83 — the analytic IFT chart was already owned; sixth stale gap
+
+`StripJetSeparation.eqOn_of_line_jet_eq_implicit_local` is exactly `(14)`–`(16)` of the two
+almost-periodic cards: strip-holomorphic solutions of an implicit relation dominant in the top jet,
+with equal lower jets at a sample time, agree on the whole strip.  It is proved through
+`ImplicitLipschitzGraph.exists_lipschitz_implicit` (the explicit Lipschitz branch), the twisted line
+ODE, ODE uniqueness and the identity theorem — the card's own chain.
+
+`HTGeometry/RegularChartInjectivity.lean` packages it as the `Set.InjOn` hypothesis of
+`card_le_of_hull_charts`:
+
+```text
+injOn_lineJet_of_implicit_dominant, injOn_lineJet_of_implicit_dominant_subset
+```
+
+That is the sixth stale gap found this session.  Of the analytic obligations those two cards list,
+only the strip-to-`ℝ →ᵇ ℂ` carrier passage remains; the separant enters only through the dominance
+hypothesis `C < ‖∂P/∂Y_n‖`.
+
+## Pass 84 — the carrier passage was owned; `ℂ^n` as `ℝ^(2n)`
+
+Seventh stale gap: the strip-to-`ℝ →ᵇ ℂ` passage is
+`VerticalAlmostPeriodicDerivative.isBohrAlmostPeriodic_line` together with
+`StripAlmostPeriodicBounds.exists_bound_of_isStripAlmostPeriodicOn` and the two Bochner
+equivalences; `StripSolutionPhaseRank.rank_le_of_strip_solution` even assembles the *non-sharp*
+frequency-rank bound `2·#T·(n+1)` from them.
+
+`HTGeometry/ComplexJetEuclidean.lean` adds the last piece of glue for the *sharp* `2n` route:
+
+```text
+complexJetToEuclidean n : (Fin n → ℂ) → EuclideanSpace ℝ (Fin (n*2))
+continuous_complexJetToEuclidean, injective_complexJetToEuclidean
+injOn_complexJetToEuclidean_comp, continuousOn_complexJetToEuclidean_comp
+```
+
+The exponent is right because `injOn_lineJet_of_implicit_dominant` separates by the jets of orders
+`0 … n−1` only — the top jet is recovered from the dominant relation — so the chart lands in
+`ℂ^n ≅ ℝ^(2n)` and `card_le_of_hull_charts` reads `2n`, not `2(n+1)`.
+
+Remaining for the two almost-periodic cards: transport the per-piece charts through
+`exists_carrier_representatives` and instantiate `card_le_of_hull_charts`.
+
+## Pass 85 — the order-sharp frequency-rank theorem
+
+`HTGeometry/StripSolutionPhaseRankSharp.lean` proves `(19)` of both almost-periodic cards:
+
+```text
+rank_le_of_regular_jets_sharp     carrier level:  rank_ℤ Γ(f) ≤ 2n
+rank_le_of_strip_solution_sharp   from a strip almost-periodic holomorphic solution of P = 0 with a
+                                  family of dominant regular regions covering the carrier
+```
+
+unconditional and axiom-clean.  This replaces the tree's `rank_le_of_strip_solution`, whose bound
+`2·#T·(n+1)` grows with the atlas, by one depending only on the differential order.
+
+The mechanism is the closed-cover route assembled over passes 75, 82, 83 and 84: the regular sets
+are open and cover the carrier; `exists_finite_closed_cover_subordinate` gives a finite closed
+refinement; on each closed piece the single jet at that piece's own sample time separates, by
+`carrier_eq_of_jet_eq_local`, using orders `0 … n−1` only because the top jet is recovered from the
+dominant relation; `complexJetToEuclidean` turns that chart into one valued in `ℝ^(2n)`; and
+`card_le_of_hull_charts` reads the bound off the closed cover.
+
+### Pass 85 addendum — the bound reaches the frequency group of `f`
+
+```text
+rank_le_of_addSubgroup_le                     rank monotone under inclusion of subgroups of ℝ
+rank_bohrSpectrum_le_of_strip_solution_sharp  rank_ℤ ⟨Bohr spectrum of f⟩ ≤ 2n
+```
+
+`(4)` needed only `BohrHullFrequency.closure_bohrSpectrum_le_bohrHullFrequencies`, already in the
+tree, plus rank monotonicity.  The card's quantitative law is therefore a single unconditional
+axiom-clean theorem whose hypotheses are the card's own setting.
+
+## Pass 86 — §1 was owned (eighth stale gap), and the dominance bridge
+
+`AutonomousSeparant.exists_minimal_with_separant` is `(5)`–`(6)` of the almost-periodic cards:
+Ritt's separant step, already in the tree, axiom-clean.
+
+`HTGeometry/DominantNeighborhood.lean` adds the bridge from its qualitative conclusion to the
+quantitative hypothesis of the frequency-rank theorem:
+
+```text
+exists_convex_dominant_nbhd :
+  P' continuous at y₀, k-th partial coefficient nonzero
+  ⟹ an open convex ball S ∋ y₀ and C ≥ 0 with ‖P' y − P' y₀‖ ≤ C on S and C < ‖∂P/∂Y_k‖
+```
+
+`C = ‖∂P/∂Y_n‖/2` and a ball where continuity keeps `P'` within `C` of its centre value.
+
+All four sections of both cards are now Lean-proved.  The residue is the translation between the
+two encodings of the relation — §1's `Polynomial (MvPolynomial (Fin n) ℂ)` with
+`Polynomial.derivative` as separant versus §4's `P : (Fin (n+1) → ℂ) → ℂ` with
+`partialCoeff (P' y) (Fin.last n)` — plus continuity of the derivative of a polynomial relation.
+
+## Pass 87 — the two encodings of the autonomous relation are identified
+
+`HTGeometry/AutonomousJetRelation.lean`:
+
+```text
+jetRelation n P y                       the relation as a function of the full jet
+autonomousAnnihilator_iff_jetRelation   the stored annihilation is vanishing of jetRelation
+hasDerivAt_jetRelation_last             ∂/∂y_n of the relation is the stored separant
+exists_minimal_jetRelation_separant     Ritt's step in the jet-function language
+```
+
+`hasDerivAt_jetRelation_last` is the point: "the separant does not annihilate" and "the top partial
+derivative does not vanish" are the same statement, so `exists_minimal_with_separant` feeds
+`exists_convex_dominant_nbhd` directly.
+
+Every step of both almost-periodic cards is now a Lean theorem.  What remains is one top-level
+assembly quantifying over `f` alone, which needs Fréchet differentiability of `jetRelation n P` in
+all `n+1` variables with continuous derivative — true because it is a polynomial map, not yet
+written in that form.
+
+## Pass 88 — the relation is smooth and its top partial is the separant
+
+`HTGeometry/AutonomousJetRelation.lean`:
+
+```text
+contDiff_mvEval, contDiff_jetRelation, continuous_fderiv_jetRelation
+partialCoeff_fderiv_jetRelation_last :
+  partialCoeff (fderiv (jetRelation n P) y) (Fin.last n) = jetRelation n (derivative P) y
+```
+
+The identity is proved by differentiating along the line through `y` in the last coordinate two
+ways — chain rule through `fderiv`, and `hasDerivAt_jetRelation_last` — and using uniqueness.
+
+`continuous_fderiv_jetRelation` supplies the continuity hypothesis of `exists_convex_dominant_nbhd`
+and the identity supplies its nonvanishing hypothesis from Ritt's separant step, so the dominant
+convex region at each regular jet is constructible from the card's own data.  Every ingredient of
+the two almost-periodic cards is now a Lean theorem; the top-level single statement from `f` to
+`rank_ℤ Γ(f) ≤ 2n` is the only thing not yet written.
+
+## Pass 89 — the almost-periodic law in one statement
+
+```text
+rank_bohrSpectrum_le_of_autonomous_strip_solution :
+  F holomorphic and strip almost periodic, annihilated by an autonomous differential polynomial of
+  order n, every solution on the substrip regular at some time
+  ⟹ rank_ℤ ⟨Bohr spectrum of f⟩ ≤ 2n
+```
+
+unconditional, axiom-clean.  The dominant convex regions are constructed inside the proof rather
+than assumed: one per regular jet, from `exists_convex_dominant_nbhd` with continuity from
+`continuous_fderiv_jetRelation` and nonvanishing from `partialCoeff_fderiv_jetRelation_last`.  The
+index set is (regular jet, sample time) and the atlas hypothesis is exactly `(9)`.
+
+Remaining on the two almost-periodic cards: deriving `(9)` for this relation from §1 and §2, i.e.
+instantiating `exists_ne_zero_of_exists_ne_zero` at
+`Φ_t (g) = jetRelation n (derivative Pp) (jet g at t)` and feeding it the minimal annihilator.
+
+## Pass 90 — minimality with the flow as an explicit family
+
+```text
+exists_ne_zero_of_dense_translates :
+  Φ equivariant continuous, flow given as maps T g with dense orbits, nonvanishing somewhere
+  ⟹ nonvanishing everywhere
+```
+
+No group-action instance needed, which is what the Bohr hull requires (`T t x = x + bohrIota f t`);
+density of every orbit is `CarrierTranslationEquivariance.denseRange_bohrIota_add`.
+
+The single remaining edit for the two almost-periodic cards: record translation equivariance of the
+carrier representatives, `rep (x + bohrIota f s) z = rep x (z + s·i)`, among the conclusions of
+`StripSolutionPhaseRank.exists_carrier_representatives`.  It holds by construction (the
+representatives are `bohrEval Gb (ν x)` with `ν` a hull morphism) but is not currently returned.
+With it, `Φ_t (x) = jetRelation n (derivative Pp) (jet of rep x at t)` is equivariant, `hx₀` is
+`exists_minimal_jetRelation_separant` at `f`, and `(9)` follows — discharging the last hypothesis of
+`rank_bohrSpectrum_le_of_autonomous_strip_solution`.
+
+## Pass 91 — carrier representatives are translation equivariant
+
+```text
+eqOn_rep_add_bohrIota :
+  EqOn (rep (x + bohrIota f s)) (fun z => rep x (z + s·i)) on the substrip
+```
+
+derived from the conclusions `exists_carrier_representatives` already returns, so no edit to that
+theorem was needed: on the line it is `bohrIota_add`, and `eqOn_of_eventuallyEq_line` promotes the
+line equality to the strip.
+
+This makes `Φ_t (x) = jetRelation n (derivative Pp) (jet of rep x at σ + t·i)` equivariant for the
+hull flow.  With continuity (`continuous_jet_of_representatives` + `contDiff_jetRelation`), density
+of every orbit (`denseRange_bohrIota_add`) and nonvanishing at `f`
+(`exists_minimal_jetRelation_separant`), `exists_ne_zero_of_dense_translates` gives `(9)`.
+
+## Pass 92 — the autonomous almost-periodic card's main theorem is closed; the divisor half is opened
+
+`GaloisForLFunctions.HTGeometry.AutonomousStripSeparant` (new) relativises Ritt's separant step to a
+strip and reads it on the central line:
+
+```text
+StripAnnihilator σ R F n P          P annihilates F along its jet at every point of the strip
+exists_minimal_stripAnnihilator     a degree-minimal nonzero strip annihilator exists
+separant_not_stripAnnihilator       in characteristic zero its separant does not annihilate
+differentiableOn_mvEval_comp        polynomial evaluation at holomorphic coordinates is holomorphic
+differentiableOn_jetRelation_jets   hence the relation along a holomorphic jet is holomorphic
+eqZero_of_eqZero_line               a holomorphic function vanishing on the central line vanishes
+exists_minimal_strip_separant_line  ⟹ a minimal equation whose separant is nonzero at a REAL time
+```
+
+The last step is the identity theorem: `separant_not_stripAnnihilator` only gives a point of the
+strip, and the carrier is built from the line, so the nonvanishing has to be moved to the line.
+
+`GaloisForLFunctions.HTGeometry.AutonomousCarrierRegularity` (new) then runs the card's §2–§4:
+
+```text
+exists_carrier_separant_ne_zero
+    Φ_t (x) = jetRelation n D (jet of rep x at σ + t·i) is continuous in x, equivariant
+    (Φ_t (x + bohrIota f s) = Φ_(s+t) (x), by iteratedDeriv_rep_translate), and nonzero at the
+    origin of the carrier (iteratedDeriv_rep_zero); exists_ne_zero_of_dense_translates gives (9)
+rank_bohrHullFrequencies_le_of_stripAnnihilator
+rank_bohrHullFrequencies_le_of_strip_differential_equation
+rank_bohrSpectrum_le_of_strip_differential_equation
+rank_bohrSpectrum_observable_le_of_strip_differential_equation
+```
+
+all unconditional and axiom-clean.  The closed form is the card's own statement with nothing left
+over:
+
+```text
+0 < R, F holomorphic on the strip, F strip almost periodic, f its line restriction,
+0 < n, some nonzero P annihilates F on the strip, no nonzero annihilator is free of the top jet
+  ==>  rank_ℤ ⟨Bohr spectrum of f⟩ ≤ 2n
+```
+
+Uniform continuity and total boundedness of the orbit are no longer hypotheses
+(`isBohrAlmostPeriodic_line`, `uniformContinuous_of_isBohrAlmostPeriodic`,
+`hasTotallyBoundedOrbit_of_isBohrAlmostPeriodic`), the substrip is chosen inside the proof, and the
+Borel structure on the carrier is `borel _`.
+
+`HTGeometry/CarrierRepTranslation.lean` from pass 91 was removed: `CarrierTranslationEquivariance`
+already owned `rep_translate_eqOn`, `iteratedDeriv_rep_translate` and `iteratedDeriv_rep_zero`.
+
+### What is left on the card: §5, the divisor law
+
+`rank_bohrSpectrum_observable_le_of_strip_differential_equation` is the card's own closing sentence —
+every continuous translation-equivariant observable of the carrier inherits the bound.  What is not
+yet Lean is that the zero-divisor map *is* such an observable, i.e. that
+
+```text
+x ↦ ∑ (zeros a of rep x) (order a) · φ(a)
+```
+
+is continuous on the carrier for every continuous compactly supported `φ` inside the substrip.  That
+is the classical Hurwitz statement, and the corpus already owns every ingredient:
+
+```text
+AnalyticBallFinsetFactorization.exists_finset_zeroFree_factorization
+    peeling: an analytic function on a ball, nonzero somewhere, is a finite product of linear
+    factors carrying its zeros times a nonvanishing analytic factor
+DiscZeroFactorization.circleIntegral_weighted_logDeriv_eq_powerSum
+    the weighted argument principle on a disc, unconditionally: the power sums of the enclosed zeros
+    are the weighted logarithmic-derivative contour integrals
+PolynomialMinimumModulus.sum_multiplicity_mul_log_le
+    a Jensen-free uniform bound on the total multiplicity in a ball
+Complex.norm_deriv_le_of_forall_mem_sphere_norm_le
+circleIntegral.norm_integral_le_of_norm_le_const
+    the two estimates that make the contour integral continuous under uniform convergence
+```
+
+Route: the count in a disc is `(2πi)⁻¹ ∮ logDeriv`, which is continuous in the function for the
+uniform topology near the circle and integer-valued, hence locally constant; zeros of a nearby
+function therefore stay in small discs around the zeros of the limit with the same total
+multiplicity, which is exactly continuity of the pairing.
+
+## Pass 93 — FIRST PROMOTION: `almost-periodic-autonomous-ade-finite-frequency-law` → stage 3
+
+Both halves of the card are now single unconditional axiom-clean Lean theorems, and the card has
+been moved to `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/other/`.
+
+```text
+rank_bohrSpectrum_le_of_strip_differential_equation        (4)
+rank_bohrSpectrum_divisor_le_of_stripAnnihilator           (23)
+rank_bohrSpectrum_observable_le_of_strip_differential_equation
+rank_bohrHullFrequencies_le_of_strip_differential_equation
+```
+
+The divisor half required the **continuity of the Poincaré–Lelong divisor map** — the one classical
+input the card cited as standard and the tree did not own.  It is now proved from the corpus's
+factorization theory, with no new axioms:
+
+```text
+HTGeometry/ZeroDivisorCount.lean
+    zeroMult, zeroMult_of_factorization, analyticOrderAt_finset_prod_pow
+    exists_zeroSet_circleIntegral_logDeriv   the argument principle: ∮ f'/f = 2πi·(zero count)
+    zeroSumBall, exists_nat_zeroSumBall
+    exists_eps_norm_logDeriv_sub_le          Cauchy estimate ⟹ f'/f uniformly close on the circle
+    exists_eps_zeroSumBall_eq                integer + continuous ⟹ the count is locally constant
+HTGeometry/DivisorPairing.lean
+    divisorPairing f φ = ∑ᶠ a, (order of f at a)·φ(a)
+    finite_zeros_of_isCompact, exists_separating_radius, exists_local_zeroSet
+    continuousAt_divisorPairing              the divisor pairing is continuous in the parameter
+    divisorPairing_congr
+HTGeometry/CarrierDivisorObservable.lean
+    not_eventually_rep_eq_zero               no carrier representative vanishes identically
+    continuous_divisorPairing_rep            the pairing is a continuous carrier observable
+    eqOn_rep_bohrIota                        along the line it is the divisor of the translates
+    rank_bohrSpectrum_divisor_le_of_stripAnnihilator
+```
+
+Reusable well beyond this card: the argument principle in the intrinsic form
+"contour integral of the logarithmic derivative = total multiplicity of the enclosed zeros", the
+local constancy of that count, and Hurwitz-type continuity of the zero divisor.
+
+### Next target
+
+`almost-periodic-implicit-ade-relative-frequency-law` — the nonautonomous/relative version of the
+same theorem.  It needs, beyond what is now owned: the joint hull of the coefficient tuple and the
+solution, the projection onto the coefficient hull, and the *relative* rank bound
+`rank(Γ(a,f)/Γ(a)) ≤ 2m(n+1)` for the kernel of that projection.  The corpus already owns
+`hasTotallyBoundedOrbit_prod` and the cube/character machinery
+(`not_injOn_unitCube`, `card_le_of_hull_charts`); what is missing is the relative form of the cube
+argument — a family of characters of the joint hull, independent modulo the coefficient hull's
+characters, produces a cube inside the kernel.

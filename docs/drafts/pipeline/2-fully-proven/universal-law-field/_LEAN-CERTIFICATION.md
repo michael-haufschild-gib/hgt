@@ -1713,3 +1713,16 @@ Scratch and tree foreground elaboration pass. Targeted leaf build creates every 
 declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`. Module is wired into
 `HTGeometry.UniversalLawField`. This closes literal source genealogy and global cofinal
 formation/properness. Physical Xi-to-global-admission landing remains open; no RH claim is made.
+
+## Session 2026-08-18 addition (anti-equivariant descent formation)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-AEDM-1 | Coordinate-free reversible blind-action freezing; reflection-pair differential-defect conservation; blind descended-clock extinction; marked-parity anti-equivariance transport; constant-family properness obstruction; global compact-history neutrality selection | `HTGeometry.AntiEquivariantDescentFormation` |
+
+Scratch elaboration, direct leaf elaboration, and targeted leaf build pass. No umbrella, area, or
+project build was run. All eight audited declarations depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. Module is wired into `HTGeometry.UniversalLawField`. This
+closes the algebraic fusion and global conditional selection mechanism. Constructing a literal
+pre-zero source-normal proper formation whose complete history is compact exactly at neutral grade
+remains the arithmetic formation burden; no RH claim is made.

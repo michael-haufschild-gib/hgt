@@ -541,3 +541,87 @@ and expose Gelfond--Schneider as the two-logarithm corollary/compatibility theor
   `Classical.choice`, and `Quot.sound`; module is wired into `RHTower.lean`.
   `[OPEN CORE]`: complete uniform quantitative full-jet bounds and the staged extrapolation that
   supplies enough terminal zeros to contradict the gap-free terminal zero estimate.
+
+## Lean progress — the quantitative layer
+
+The construction, the algebra and the terminal zero estimate were already formalized (see the log
+below).  What was missing was everything quantitative: the analytic size of a component jet, the
+size of its conjugates, the Siegel budget, the parameter family, and the staged comparison.  Six new
+modules supply that layer, all umbrella-wired, `lake build`-clean and axiom-clean.
+
+`RHTower/BakerGeneralProof/PolynomialAuxiliaryExpansion.lean` — the exact analytic formula:
+
+| Card item | Declaration |
+|---|---|
+| coefficient of the `k`-th additive-lowering term of an iterated constant component | `SolvedRelation.jetLoweringCoeff` |
+| value of `Y₀^b ∏ Yᵢ^{mᵢ}` on the analytic curve | `SolvedRelation.auxiliaryFunction_additivePowerMonomial` |
+| exact value of one canonical component-jet monomial | `SolvedRelation.auxiliaryFunction_componentJetMonomial` |
+| **exact finite expansion of a full component jet** | `SolvedRelation.polynomialComponentJetAuxiliaryFunction_expansion` |
+| its explicit finite boundary bound on a closed disc | `SolvedRelation.jetAnalyticBound`, `SolvedRelation.norm_polynomialComponentJetAuxiliaryFunction_le` |
+
+`RHTower/BakerGeneralProof/PolynomialAuxiliaryScalarBounds.lean` — houses of the algebraic factors:
+
+| Card item | Declaration |
+|---|---|
+| a uniformly bounded family has geometrically bounded weighted products | `house_prod_pow_le` |
+| uniform house bound for every component eigenvalue on a bounded exponent box | `SolvedRelation.eigenHouseBound`, `SolvedRelation.house_componentEigenvalue_le` |
+| the frequency radius `‖ω_t‖ ≤ V Σᵢ‖λᵢ‖` | `SolvedRelation.norm_exponentialFrequency_le` |
+| one geometric base controlling every jet coefficient | `SolvedRelation.jetGrowthBase`, `SolvedRelation.house_jetLoweringCoeff_le`, `SolvedRelation.house_nonconstantEigenProduct_le` |
+| **closed scalar majorant for the boundary size of a jet** | `SolvedRelation.jetScalarBound`, `SolvedRelation.jetAnalyticBound_le_scalar` |
+| **closed scalar majorant for its conjugates** | `SolvedRelation.jetHouseScalarBound`, `SolvedRelation.polynomialComponentJetHouseBound_le_scalar` |
+
+`RHTower/BakerGeneralProof/PolynomialAuxiliaryScalarStep.lean` — the extrapolation step with every
+analytic and arithmetic quantity replaced by its closed majorant:
+`SolvedRelation.polynomialComponentJetAuxiliaryFunction_eq_zero_one_step_scalar`.
+
+`RHTower/BakerGeneralProof/PolynomialAuxiliaryKernelTransition.lean` — the stage state as a kernel:
+
+| Card item | Declaration |
+|---|---|
+| **a rectangular box of exact jet zeros is a kernel vector** | `SolvedRelation.polynomialAuxiliaryMatrix_mulVec_eq_zero_of_component_box_zero` |
+| shrinking the box or the sample range preserves the kernel | `SolvedRelation.polynomialAuxiliaryMatrix_kernel_mono` |
+| **one long-extrapolation transition** | `SolvedRelation.polynomialAuxiliaryMatrix_kernel_extrapolate` |
+
+`RHTower/BakerGeneralProof/PolynomialAuxiliaryHeightBounds.lean` — the Siegel input:
+
+| Card item | Declaration |
+|---|---|
+| closed scalar majorant for one matrix entry | `SolvedRelation.auxiliaryEntryScalarBound`, `SolvedRelation.house_polynomialAuxiliaryEntry_le` |
+| the matrix height | `SolvedRelation.polynomialAuxiliaryHeight_le` |
+| `1 ≤ c₁` for the explicit Siegel constant | `one_le_siegelConstant` |
+| **`(2)`: at the exact two-to-one column count the Siegel exponent is one** | `SolvedRelation.coefficientBudget`, `SolvedRelation.exists_polynomial_auxiliary_coefficients_budget` |
+
+`RHTower/BakerGeneralProof/BakerGeneralParameters.lean` — the parameter family:
+
+| Card item | Declaration |
+|---|---|
+| `J = 2n²`, `M_k = q^{2n+2}/2^k`, `S_k = q^{k+2}`, `U = 2q^{2n+2}`, `V = q^{2n}`, radius `4q^{k+3}` | `iterationLength`, `stageOrder`, `stageSampleCount`, `additiveWidth`, `exponentWidth`, `stageRadius` |
+| **columns are exactly twice the rows** | `dimension_double` |
+| every halving is exact on the structured subfamily | `structuredBase`, `two_mul_stageOrder_succ_structured` |
+| polynomial bases are eventually below `exp` of the parameter | `eventually_const_pow_le_exp`, `pow_le_exp_mul`, `le_exp_self` |
+| the growth base is polynomial in the parameter | `jetGrowthBase_stage_le` |
+| **the matrix entry majorant is `exp(C q^{2n+3})`** | `exists_eventually_entryScalarBound_le_exp` |
+| **the Siegel coefficient budget is `exp(C q^{2n+3})`** | `exists_eventually_coefficientBudget_le_exp` |
+
+### Parameter audit for the formalized family
+
+The exponents used in Lean differ from those in the paper proof above, deliberately: the paper's
+`A = q^{2n+1}`, `B = q`, `U = 2q^{2n+1}`, `V = q^{2n-1}` make the stagewise decay exceed the
+positive budget by a factor `q^{1}` only after the logarithmic factors are tracked exactly.  The
+formalization instead bounds every polynomial base crudely by `exp(q)`, which converts `log q` into
+`q`, and so needs one further power of the parameter of slack.  Setting
+
+```text
+M₀ = q^(2n+2),  S₀ = q^2,  S_k = q^(k+2),  U = 2q^(2n+2),  V = q^(2n),  radius_k = 4 q^(k+3)
+```
+
+keeps the exact two-to-one ratio `2 · S₀ M₀^n = U V^n` (both sides `2q^{2n²+2n+2}`), gives node
+ratio `≤ 2/3` at every stage, and produces
+decay exponent `M_{k+1} S_k = q^{2n+k+4}/2^{k+1}` against a positive budget `O(q^{2n+k+3})` —
+a full power of the parameter of slack at every stage, uniformly in `k ≤ J`.  At the terminal stage
+the zero count is `q^{2n+J+4}/2^J` against a right-hand side of size
+`O(q^{2n+J+2} + q^{2n²+2n+3})`, which closes for `J = 2n²`.
+
+`[OPEN CORE]`: the stagewise positive-budget bound `exp(C q^{2n+k+3})`, the resulting stage
+smallness, the iteration over `k ≤ J`, and the terminal contradiction against
+`repeatedFrequency_terminal_zero_inequality`.

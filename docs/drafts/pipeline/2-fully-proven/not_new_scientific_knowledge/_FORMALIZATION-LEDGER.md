@@ -149,6 +149,21 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `arbitrary-finite-quartet-passport-realization` | five new `RHTower` modules: `CoshPolynomialQuasiPeriod`, `EnvelopeJetAgreement`, `QuartetSymmetryJets`, `QuartetPassportRealizer`, `QuartetPassportCapstone`; also records that `exists_scalar_add_simultaneousFlatPolynomial_pos_real_on_imaginaryAxis` is vacuous as stated |
 | 2026-08-17 | `prime-arch-exact-finite-positive-atomic-block-rh` | new `HTGeometry/FiniteAtomicCubature.lean` (Carathéodory cubature: a limit of convex combinations of a compact `K ⊆ ℝ^N` is a combination of `≤ N+1` points; mathlib lacks compactness of convex hulls of compact sets) and `RHTower/PrimeArchExactAtomicBlock.lean` |
 | 2026-08-18 | `xi-logderivative-real-boundary-divisor-measure` | new `HTGeometry/BoundaryCauchyKernel.lean`, `HTGeometry/WeightedAtomHilbert.lean`, `RHTower/RealBoundaryDivisorLimit.lean`, `RHTower/XiRealBoundaryDivisorMeasure.lean` (general Schwarz-real boundary divisor limit; Xi specialisation; weighted-atom Hilbert space with unitary translation; the limitation isolated as `↔ RiemannHypothesis` plus an explicit blind conjugate pair) |
+| 2026-08-18 | `horizontal-entry-charge-transfer` | new `HTGeometry/HorizontalChargeTransfer.lean` (abstract multiset charge algebra: both charges even and nonnegative, `O = 0 ↔ on-line` under self-duality, the split `C − N = O + M`, and the collision transfer `(4r+2, r²−r) → (0, r²+3r+2)`; supersedes the card's own "no Lean declaration" note, and is not a wrapper — the pre-existing Xi module lacks `M`, the split, and the collision arithmetic) |
+| 2026-08-18 | `projective-horizon-rectangular-schur-caustic` | new `HTGeometry/ProjectiveHorizonSchurCausticDivisor.lean` on top of the pre-existing `ProjectiveHorizonSchurCaustic.lean`: the `y₀^{2m}` row scaling (4), the Jacobi–Trudi transpose identification, the identity-block form of the full differential (5), and properness of the divisor via a unipotent jet point plus a Hensel-built truncated square root (replaces the card's appeal to a Pascal determinant) |
+| 2026-08-18 | `semilocal-prolate-defect-triangular-determinant-blindness` | three new modules: `HTGeometry/StrictlyLoweringFiltration.lean` (filtration nilpotence + adapted-basis strict triangularity + `det(1+zB)=1`), `HTGeometry/TriangularKernelDeterminant.lean` (strictly triangular HS kernel ⟹ `det₂ = det₁ ≡ 1` for **every** `z`, termwise), `HTGeometry/QuasinilpotentLowering.lean` (spectrum `{0}` for a compact lowering operator, proved by a geometric power bound + total boundedness instead of Riesz perturbation theory) |
+| 2026-08-18 | `bigraded-corank-dss-cross` | new `HTGeometry/BigradedCorankLattice.lean` (§A object + Prop A1 in both parametrisations + relation-lattice quotient reading; §B `U=0` column and `F_q` collapse; the `corank^{(1,0)} = ∞` floor from `linearIndependent_log_primes`) on top of the pre-existing §G anchor.  Records a correction: A1's `⟹` needs "full rank" read as linear independence of the monomials, not merely infinite span dimension |
+| 2026-08-18 | `corank-seam-invariant` | new `HTGeometry/CorankSeamInvariant.lean` — both Lean targets: `corank(Λ_ff)=1` from a surjective degree map, and `corank=∞` over `ℚ` from the trivial prime-log relation lattice; plus the graded ladder and the level-separation witness `√2` (ℚ-linearly independent, algebraically dependent) |
+| 2026-08-18 | `prime-density-local-unitary-zero-blindness` | new `RHTower/PrimeDensityLocalUnitary.lean` — the twist is a phase unitary (reuses `lpPhaseUnitary`), is *local* by complete multiplicativity + unique factorization, and the amplitude factors across an arbitrary prime bipartition (Schmidt rank one).  No infinite tensor model needed, contrary to the card's gate note; reuses the corpus `rankOneProj` |
+| 2026-08-18 | `paired-euler-algebraic-closure-gap` | new `RHTower/PairedEulerPoleSeparation.lean` — the private boundary pole `2πi/log p`, its residue `1/log p` via the slope form of the derivative, regularity of every other and every reflected tangent there, and the conclusion that no finite combination of paired Euler tangents equals `2s−1` on the strip.  Uses an explicit interior approach sequence instead of an identity-theorem step |
+| 2026-08-18 | `fe-orbit-quotient-half-trace-moments` | new `RHTower/FEOrbitQuotientMoments.lean` — the quotient divisor carries `m` not `2m` (via `analyticOrderAt_comp` at a simple square), the orbit total is `2m`, the log-coefficient series `ℓ_k` (branch-free: the logarithm is defined as the sum of branch logs and proved to exponentiate to the product), and the dictionary `T_k = −2k(−1)^k ℓ_k`.  Reuses the corpus `xiSquaredSeamEntireQuotient` |
+| 2026-08-18 | `erosion-cocycle-reducibility` | new `RHTower/EulerCocycleReducibility.lean` — the observable dichotomy (`σ > ½`), the transfer dichotomy (`σ ≥ ½`, the named Tier-A target) and the **full** Parseval-form Theorem 19a including the `k`-sum.  Reuses the corpus `burnolSummable_prime_one_div_mul_log_sq` and `burnolNotSummable_prime_one_div` |
+| 2026-08-18 | `archimedean-sampling-total-variation-defect` | new `HTGeometry/SamplingDefectTotalVariation.lean` (general order-zero defect = total mass, by inner regularity + Urysohn; sample-supported measures pair to zero) and `RHTower/ArchimedeanSamplingDefect.lean` (the theta measure, closedness of the prime-power logarithms, defect = `M_θ = Λ₀(1/2)`, the explicit `2e^{−2π}log 2` bound, and the completion doubling) |
+| 2026-08-18 | `hd1-p1-hadamard-finite-part` | new `RHTower/XiHadamardFinitePart.lean` — the uncentered genus-one log derivative `ξ'/ξ(s)=∑_ρ[(ρ−½)⁻¹−(ρ−s)⁻¹]`, its Hadamard normalization at the origin, the absolutely summable double family and its two fiberings, the atlas expansion `−ξ'/ξ=∑_k P_k s^{k−1}`, `P_k=∑_ρ ρ^{−k}` for `k≥2`, divergence of `∑_ρ‖ρ‖⁻¹`, and the exact finite part `P₁ = Λ₀(0) = (γ−log 4π)/2+1`.  Reuses `XiC_eq_constant_mul_canonicalProduct` and `logDeriv_XiC_eq_relativeResolventTrace`; needs no Riemann–von Mangoldt count |
+| 2026-08-18 | `critical-point-interpolation-ht-field-blindness-speiser` | new `RHTower/OrderOneFixedDivisorRigidity.lean` (general order-≤1 fixed-divisor rigidity through the first main theorem — no minimum modulus) and `RHTower/SpeiserCriticalPacketGauge.lean` (positive real-even multiplier `1+Q²` built directly on the packet, so the card's squared-orbit detour and its `a ≠ 0` restriction both drop; polynomial gauges keep the order-one envelope; the exponential gauge keeps the divisor and shifts `F'/F` by `Q'` but is forced back to exp-affine inside the cage).  Items 1–2 of the HT list are the corpus `differentialAdjoin_range_mulBase_eq` / `differentialIndependent_mulBase_iff` |
+| 2026-08-18 | `quadratic-subtype-canonical-divisor-equivalence` (partial) | new `HTGeometry/CountableDivisorConvergenceExponent.lean` — the entire converse direction for an **arbitrary index type**: bucket summability criterion, exponent of convergence zero, genus-zero product convergence, the three-bucket estimate, and `∑ log(1+r/‖a i‖) = o((log r)²)`.  Closes sub-task 1 of the card's resumption plan; the remaining gap is the order of the product at each divisor point |
+| 2026-08-18 | `quadratic-subtype-canonical-divisor-equivalence` (partial, cont.) | new `HTGeometry/EntireQuotientNormalForm.lean` (equal divisors ⟹ entire nonvanishing quotient, the general form of the corpus's `xiHadamardQuotient` construction) and `HTGeometry/EntireZeroDivisorIndex.lean` (the zero divisor indexed with multiplicity: local finiteness, avoidance of the origin, fiber cardinality); plus the genus-zero product's analyticity, non-vanishing and **divisor** in `CountableDivisorConvergenceExponent.lean`.  One bookkeeping identity (`divisorIdxCount` = the finsum divisor mass) remains before the forward direction closes |
+| 2026-08-18 | `quadratic-subtype-canonical-divisor-equivalence` | **closed.**  New `HTGeometry/QuadraticSubtypeHadamard.lean` completes the forward direction: the zero-copy count of a disc *is* its divisor mass (`divisorIdxCount_eq`), so Jensen gives `SublogDensityIdx`; the genus-zero product over the zero divisor realizes it exactly; and the quotient is constant by a value-distribution argument (first main theorem + Poisson + Borel–Carathéodory) with no minimum-modulus estimate.  Supporting bricks: `EntireQuotientNormalForm.lean` (now also the monomial split) and `QuotientProximityBound.lean` (`proximity_quotient_le`, moved out of RHTower to remove duplication) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -206,6 +221,80 @@ directly.  None of these is blocked by open mathematics.
 - `centered-ksgns-covariance-pythagoras` — blocked on a **Hilbert C\*-module / Paschke–KSGNS
   layer**, which mathlib does not have at all.  This is the largest single missing library named so
   far in this folder.
+
+## Blocking-infrastructure analysis (2026-08-18 pass)
+
+Each entry names the *exact* missing theorem and the route, so the next pass builds rather than
+re-diagnoses.
+
+0. **Hadamard factorization at order ≤ 1 — NOT a blocker; the corpus already owns it.**
+   *Corrected 2026-08-18.*  `RHTower/XiHadamardGrowth.lean` closes the construction unconditionally:
+   `xiHadamardQuotient_constant` (via `entire_log_affine_of_proximity_isLittleO_sq` fed by
+   `xiHadamardQuotient_proximity_isLittleO_sq`, with evenness killing the linear term through
+   `xiHadamardQuotient_deriv_zero`) and hence
+   `XiC_eq_constant_mul_canonicalProduct : XiC = (fun _ => XiC 0) * xiCanonicalProduct`,
+   axiom-clean.  The route taken there is the *proximity* one — a little-o bound on the Nevanlinna
+   proximity function — so no Cartan/Boutroux minimum modulus and no Poisson–Jensen differentiation
+   was ever needed.  Downstream consumers should import `RHTower.XiHadamardGrowth` (or
+   `RHTower.XiRelativeResolventTrace`, which already exposes
+   `logDeriv_XiC_eq_relativeResolventTrace`) rather than re-deriving anything.
+   Related unconditional assets found in the same pass: `RHTower.xi_zeroCount_growth`
+   (`N(r) = O(r log r)` for the ξ divisor in `B(2,r)`, i.e. the Riemann–von Mangoldt *bound* — the
+   sharp asymptotic is still absent, but the bound alone settles every dyadic-tail estimate),
+   `RHTower.xiSpectralPoint_inv_sq_summable`, `RHTower.not_summable_inv_norm_xiSpectralPoint`,
+   `RHTower.four_lt_norm_xiSpectralPoint`.
+   The superseded diagnosis follows, kept only because it records what mathlib carries.
+
+0'. **(superseded)** Hadamard factorization at order ≤ 1 — the largest single lever.  The corpus already has the
+   whole construction for `ξ` in `RHTower/XiHadamardFactorization.lean`: the multiplicity-exact
+   canonical product (`xiCanonicalProduct`), its divisor match with `XiC`, the entire zero-free
+   quotient (`xiHadamardQuotient`), its evenness, and an entire logarithm
+   (`xiHadamardQuotient_has_log`).  The single missing step is
+   `xiHadamardQuotient_constant_of_log_reBound`'s hypothesis: a real-part bound
+   `Re L(z) ≤ C(1+|z|)^a`, `a < 2`, for the entire logarithm.  Given it,
+   `HTGeometry.exists_linear_of_ne_zero_of_growth` finishes, and evenness kills the linear term.
+   The bound needs a **lower** bound on `|xiCanonicalProduct|`, i.e. a minimum-modulus estimate —
+   classically **Cartan/Boutroux**: for `a_1,…,a_n` and `H > 0`, outside discs of total radius `2H`
+   one has `|∏(z−a_k)| > (H/e)^n`.  That is the brick to build.  The alternative route that avoids
+   it entirely is **Poisson–Jensen**: differentiate `p+1` times to get
+   `(f′/f)^{(p)} = −p!·Σ_k (z−a_k)^{−p−1}` using only an *upper* bound on `log|f|` on circles plus
+   the Jensen boundary estimate, then integrate back.  **Mathlib already carries the ingredients for
+   this second route** — checked 2026-08-18:
+   `Mathlib/Analysis/Complex/JensenFormula.lean` has the Herglotz–Riesz (Poisson–Jensen) kernel
+   average `circleAverage_re_herglotzRieszKernel_mul_log`, the Jensen formula
+   `MeromorphicOn.circleAverage_log_norm` / `AnalyticOnNhd.circleAverage_log_norm`, and the divisor
+   bound `AnalyticOnNhd.sum_divisor_le`; `Mathlib/Analysis/Complex/BorelCaratheodory.lean` converts
+   a real-part bound to a modulus bound; `Mathlib/Analysis/Complex/Harmonic/Poisson.lean` has the
+   Poisson formula.  (`Mathlib/Analysis/Complex/Hadamard.lean` is the *three-lines* theorem, not
+   factorization.)  So the build is: Poisson–Jensen ⇒ `(ξ′/ξ)′(z) = −Σ_ρ (z−ρ)^{−2}` by letting the
+   boundary term vanish on a radius sequence, then Liouville on the entire difference.  No
+   Cartan/Boutroux minimum modulus is needed.  Either route unblocks:
+   `hd1-p1-hadamard-finite-part`, `critical-point-interpolation-ht-field-blindness-speiser`
+   (order-one fixed-divisor rigidity), `quadratic-subtype-canonical-divisor-equivalence`, and the
+   order-one rigidity family generally.
+1. **Riemann–von Mangoldt `N(T+1) − N(T) = O(log T)`.**  Every corpus statement currently carries the
+   zero count as a hypothesis (`…_of_zeroCountBound`).  Route: Jensen (corpus
+   `AnalyticOnNhd.sum_divisor_le`) on the disc `|s − (2+iT)| ≤ 4`, with the `exp(−πT/4)` Gamma factor
+   cancelling between `max|ξ|` on the disc and `|ξ(2+iT)|`; needs two-sided Stirling for `Γ` on
+   vertical strips, plus `|ζ(2+it)| ≥ ζ(4)/ζ(2)` from the Euler product.  Unblocks
+   `gamma-tail-law-shifted-square-tests`, `bounded-support-weil-critical-tail-uniqueness`, the
+   `…_of_zeroCountBound` family, and the divergence half of `hd1-p1-hadamard-finite-part`.
+2. **Kolmogorov three-series.**  Absent from mathlib (only Doob/martingale machinery is present).
+   Route: partial sums of independent mean-zero `L²` terms form an `L²`-bounded martingale, so
+   `MeasureTheory.Submartingale.ae_tendsto_limitProcess` gives the sufficient half; the converse
+   needs Kolmogorov's maximal inequality.  Unblocks `critical-line-abscissa-of-convergence` (whose
+   elementary core is already `RHTower.EulerCocycle.summable_observableCoeffSq_iff`).
+3. **Lerch's formula** `ζ_H′(0,a) = log Γ(a) − ½log 2π`.  In neither mathlib nor the corpus.
+   Unblocks the `Γ = ζ-reg det` half of `gamma-module-construction`.
+4. **Lipshitz diagonal D-finiteness** + torus-closure dimension — `G3-corank-dichotomy`.
+5. **Differentiation under the Gamma integral with log powers** + Bell-polynomial `Γ^{(t)}` —
+   `friable-moment-ladder-finite-dim` Theorem A (its Theorem B is a one-liner).
+6. **Several-complex-variables currents** (Poincaré–Lelong, wedge of `dd^c log|F|`) —
+   `euler-shift-pair-incidence-resultant` Theorem E only; A–D are elementary and already reachable.
+7. **Reproducing-kernel Pontryagin spaces** — `euler-pick-node-window-nonlocality`.  The `≤`
+   direction is trivial; the `≥` direction genuinely needs density of kernel sections in an RKPS,
+   and the determinant/polarization shortcut fails (the sign of the leading minors is not controlled
+   by nonvanishing alone).
 
 ## Known blocking infrastructure (shared across several cards)
 

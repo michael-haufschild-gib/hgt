@@ -95,6 +95,79 @@ theorem unitaryFormationRadical_le_reporter_ker
   exact finiteUnipotentFormationSubmodule_le_reporterDisplacement_ker
     T r U hintertwine hv
 
+/-- A real eigenmode whose multiplier is off the unit circle is invisible to a unitary reporter. -/
+theorem unitaryReporter_kills_offUnit_eigenvector
+    (T : V ≃ₗ[ℝ] V) (r : V →ₗ[ℝ] H) (U : H ≃ₗᵢ[ℝ] H)
+    (hintertwine : ∀ v, r (T v) = U (r v))
+    (v : V) (lam : ℝ) (heigen : T v = lam • v) (hoff : |lam| ≠ 1) :
+    r v = 0 := by
+  have hUr : U (r v) = lam • r v := by
+    rw [← hintertwine, heigen, map_smul]
+  have hnorm : ‖r v‖ = |lam| * ‖r v‖ := by
+    calc
+      ‖r v‖ = ‖U (r v)‖ := (U.norm_map (r v)).symm
+      _ = ‖lam • r v‖ := congrArg norm hUr
+      _ = |lam| * ‖r v‖ := by rw [norm_smul, Real.norm_eq_abs]
+  have hprod : (1 - |lam|) * ‖r v‖ = 0 := by
+    nlinarith
+  rcases mul_eq_zero.mp hprod with hlam | hv
+  · exfalso
+    apply hoff
+    linarith
+  · exact norm_eq_zero.mp hv
+
+/-- Span of all real off-unit formation eigenmodes. -/
+def offUnitFormationEigenspaceSpan (T : V ≃ₗ[ℝ] V) : Submodule ℝ V :=
+  Submodule.span ℝ {v | ∃ lam : ℝ, |lam| ≠ 1 ∧ T v = lam • v}
+
+/-- Forced algebraic kernel: finite-unipotent displacements plus off-unit eigenmodes. -/
+def algebraicUnitaryFormationRadical (T : V ≃ₗ[ℝ] V) : Submodule ℝ V :=
+  unitaryFormationRadical T ⊔ offUnitFormationEigenspaceSpan T
+
+/-- Every equivariant positive-unitary reporter kills the full algebraic formation radical. -/
+theorem algebraicUnitaryFormationRadical_le_reporter_ker
+    (T : V ≃ₗ[ℝ] V) (r : V →ₗ[ℝ] H) (U : H ≃ₗᵢ[ℝ] H)
+    (hintertwine : ∀ v, r (T v) = U (r v)) :
+    algebraicUnitaryFormationRadical T ≤ r.ker := by
+  rw [algebraicUnitaryFormationRadical, sup_le_iff]
+  refine ⟨unitaryFormationRadical_le_reporter_ker T r U hintertwine, ?_⟩
+  rw [offUnitFormationEigenspaceSpan]
+  apply Submodule.span_le.mpr
+  intro v hv
+  obtain ⟨lam, hoff, heigen⟩ := hv
+  change r v = 0
+  exact unitaryReporter_kills_offUnit_eigenvector T r U hintertwine v lam heigen hoff
+
+/-- Canonical factor through the full forced algebraic unitary quotient. -/
+def algebraicUnitaryReporterFactor
+    (T : V ≃ₗ[ℝ] V) (r : V →ₗ[ℝ] H) (U : H ≃ₗᵢ[ℝ] H)
+    (hintertwine : ∀ v, r (T v) = U (r v)) :
+    V ⧸ algebraicUnitaryFormationRadical T →ₗ[ℝ] H :=
+  Submodule.liftQ (algebraicUnitaryFormationRadical T) r
+    (algebraicUnitaryFormationRadical_le_reporter_ker T r U hintertwine)
+
+@[simp] theorem algebraicUnitaryReporterFactor_mk
+    (T : V ≃ₗ[ℝ] V) (r : V →ₗ[ℝ] H) (U : H ≃ₗᵢ[ℝ] H)
+    (hintertwine : ∀ v, r (T v) = U (r v)) (v : V) :
+    algebraicUnitaryReporterFactor T r U hintertwine
+        (Submodule.Quotient.mk v) = r v := by
+  exact Submodule.liftQ_apply _ _ _
+
+/-- The full algebraic unitary factor is unique. -/
+theorem algebraicUnitaryReporterFactor_unique
+    (T : V ≃ₗ[ℝ] V) (r : V →ₗ[ℝ] H) (U : H ≃ₗᵢ[ℝ] H)
+    (hintertwine : ∀ v, r (T v) = U (r v))
+    (s : V ⧸ algebraicUnitaryFormationRadical T →ₗ[ℝ] H)
+    (hs : s.comp (Submodule.mkQ (algebraicUnitaryFormationRadical T)) = r) :
+    s = algebraicUnitaryReporterFactor T r U hintertwine := by
+  apply LinearMap.ext
+  intro q
+  refine Submodule.Quotient.induction_on (algebraicUnitaryFormationRadical T) q ?_
+  intro v
+  rw [algebraicUnitaryReporterFactor_mk]
+  have hv := LinearMap.congr_fun hs v
+  simpa [Submodule.mkQ_apply] using hv
+
 /-- Canonical factor of an equivariant unitary reporter through formation semisimplification. -/
 def unitaryReporterSemisimpleFactor
     (T : V ≃ₗ[ℝ] V) (r : V →ₗ[ℝ] H) (U : H ≃ₗᵢ[ℝ] H)

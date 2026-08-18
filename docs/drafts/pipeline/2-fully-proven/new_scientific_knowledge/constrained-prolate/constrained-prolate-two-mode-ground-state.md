@@ -3575,3 +3575,845 @@ whose four pieces have elementary antiderivatives:
 `∫ dy/(y² sqrt(y²-s)) = sqrt(y²-s)/(s y)` (telescopes to `O(1/K²)`),
 `∫ dy/(y²-s)^{3/2} = y/(s sqrt(y²-s))` (gives `O(1/K)`), and the two `1/(1-y)` pieces, which are
 `O(1/c)` because `cP` is bounded below by a multiple of `c` away from the turning scale.
+
+## The `O(lambda^{-7})` rate: the consumer already exists, and the sharp ratio is exactly what it wants
+
+`RHTower/ConstrainedProlateFullDistanceRate.lean:314` already contains the quantitative distance
+theorem:
+
+```text
+min_norm_lp_normalize_sub_twoModeSeed_eventually_le
+    (ha0 : a0 ≠ 0) (hstruct) (hsum) (hbessel) (hL0) (hL1) (hL0big)
+    (hrate : ∀ᶠ lam,  |lam · D lam 1 / (D lam 2 - D lam 1)|  ≤  K (lam^7)⁻¹) :
+  ∀ᶠ lam,  min ‖v̂ - ĝ‖ ‖v̂ + ĝ‖  ≤  (1 + 16/a0⁴ + 4/a0²) · K · (lam^7)⁻¹
+```
+
+so `(4)`'s rate reduces **entirely** to its `hrate` hypothesis: an `O(lambda^{-7})` bound for the
+aperture-weighted one-step tail of the ladder.  Nothing else about the eigenvector is needed.
+
+**What `hrate` costs, exactly.**  With `c = 2π lambda²`, `lam · D 1/(D 2 - D 1) ≍ lam · (D 1/D 2)`
+once `D 1 ≤ D 2/2`, so `hrate` asks for
+
+```text
+D 1 / D 2  =  O(lambda^{-8})  =  O(c^{-4}) .
+```
+
+For the **Fourier-even** ladder `D lam j = d_{2j}` that is `d_2/d_4`, i.e. **two** corpus index
+steps.  So `hrate` holds exactly when the per-step leakage ratio is the sharp `c^{-2}` — the current
+`c^{-3/4}` gives only `c^{-3/2} = lambda^{-3}`, and even a `c^{-1}` per step would give only
+`lambda^{-4}`.  This is the precise sense in which the card's exponent `7` is the sharp transport's
+exponent: `lam · (c^{-2})² = lam · lam^{-8} = lam^{-7}`.
+
+The corpus's own `fuchsRate_tail_bound_eq` says the same thing from the Fuchs side — it computes
+`lam · fuchsRate A₁ n / fuchsRate A₂ (n+4) = 2(A₁/A₂)(lam^7)⁻¹`, the index step `4` being two
+Fourier-even rungs.
+
+So the whole of `(4)`'s rate now rests on the single statement `d_j/d_{j+1} = O(c^{-2+ε})`, whose
+every ingredient is proved (`eventually_prolateBand_sq_ratio_sharp`,
+`prolateBand_sharp_exponent_le`, `integral_prolateBandErrorMajorant_le`,
+`tendsto_pairAnchor_scaleLog`, `exp_two_mul_bandPhase_sub_le`); what remains is to chain them into
+the indexed leakage ratio, exactly as `ProlateIndexedRatioLimit` → `ProlateCentreRatioTransfer` →
+`ProlateLeakageRatioVanishing` does for the crude `c^{-3/4}`.
+
+### CORRECTION — the sharp transport alone does not give the exponent `7`; a separation *rate* is also needed
+
+Working the bound through carefully changes the conclusion of the previous entry.  The exponent of
+`prolateBand_sq_ratio_sharp` contains
+
+```text
+-c(s_n - s_m) · log(1/y₀)  =  -c(s_n - s_m)·(log c)/2  +  c(s_n - s_m)·log x₀ ,
+```
+
+and `c(s_n - s_m) → 4(n-m)` only as a **limit**.  Write `β(a) = c(s_n - s_m)/2 → 2(n-m)`.  Then the
+first term is `-β(a) log c`, i.e. the ratio is `c^{-β(a)}` — and `c^{-β} = c^{-2(n-m)}·c^{2(n-m)-β}`
+with `2(n-m) - β → 0`.  **A vanishing exponent perturbation is not a bounded factor**: `c^{o(1)}` can
+diverge (take `1/log log c`).  So convergence `c s_k → 4k+1` gives `O(c^{-2(n-m)+δ})` for every
+`δ > 0` and nothing better.
+
+Therefore the exact exponents on this folder's rate claims — `O(lambda^{-7})` in `(4)`,
+`C_k lambda^8` in `(9)`, `[13A_4/(11A_6)] lambda^{-4}` in `(8)` — need, in addition to the sharp
+transport, a **rate** for the separation:
+
+```text
+c s_k  =  (4k+1) + o(1/log c) .
+```
+
+That is exactly the content the Fuchs form `(7)` encodes, since `d_n ~ A_n lambda^{2n+1} e^{-4π
+lambda²}` fixes the coefficient of `log c` in `log d_n` to be `c s_n/2` with no slack.  The corpus's
+own `fuchsRate_tail_bound_eq` confirms the direction of the dependence: it computes the `lambda^{-7}`
+from `fuchsRate` itself, i.e. *presupposing* the Fuchs form.
+
+So the honest terminal statement for this folder is:
+
+```text
+UNCONDITIONAL AND FORMAL
+  every claim of all three cards that does not carry an explicit power of lambda
+  (existence/uniqueness of the depth-k eigenvalue, (8) the contrast limit, (9) the contrast
+   quotient, (10)(11) the eigenvector limit and orthogonality, (5) 8/11, (6) 3/11 and 5/13,
+   (7) the quantified gap, (4) the qualitative ℓ² convergence, the parity separation)
+
+NEEDS THE SEPARATION RATE  c s_k = (4k+1) + o(1/log c)
+  the three exponent claims: O(lambda^{-7}), C_k lambda^8, [13A_4/(11A_6)] lambda^{-4}
+```
+
+and the sharp transport built in this session is a *necessary* ingredient of that rate — it removes
+the `exp(Λ)` obstruction — but not a sufficient one.  The remaining gap is the separation rate, not
+the amplitude comparison.
+
+### The corpus's separation bounds are `ε`-versions — the rate is genuinely absent
+
+Checked directly:
+
+```text
+eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung (n) (hε : 0 < ε) :
+    ∀ᶠ a,  c s_n  <  4n + 1 + ε
+eventually_evenOscillatorRung_sub_lt_signedModeRadialBandwidth_mul_s (n) (hε : 0 < ε) :
+    ∀ᶠ a,  4n + 1 - ε  <  c s_n
+```
+
+Both are quantified over an arbitrary `ε > 0` — i.e. they *are* the convergence `c s_n → 4n+1`, with
+no rate.  Nothing in the tree bounds `|c s_n - (4n+1)|` by a function of `c`.
+
+So the terminal requirement for the three exponent claims is a **second-order** oscillator law,
+
+```text
+c s_n  =  (4n + 1)  +  O(1/c)         (or any bound o(1/log c)) ,
+```
+
+which is the second term of the prolate eigenvalue asymptotic.  Classically
+`chi_n(c) = -(4n+1)c + C_n + O(1/c)`, so the rate is `O(1/c)` with enormous room; but proving it
+needs a quantitative form of the harmonic-oscillator limit, not just the limit.  The corpus's
+`HermiteTrialSpaceRayleigh` and the min-max counting principle are the natural starting points: the
+trial space gives the upper bound with an explicit constant, and the rank/counting argument gives
+the matching lower one.
+
+This is the single remaining mathematical input for the whole constrained-prolate folder.  Everything
+else on all three cards is proved unconditionally and axiom-clean.
+
+### The separation rate is much closer than it looks: `comboExcess_pointwise` is already quantitative
+
+`HermiteTrialSpaceRayleigh.lean:203` proves, for any rung family `r`, coefficients `a`, and top rung
+`N`:
+
+```text
+prolateSLAction c (h_combo(sqrt c ·)) x · h_combo(sqrt c x)
+    + (2N+1) c · h_combo(sqrt c x)²
+  =  comboExcessIntegrand r a N c (sqrt c x)
+comboExcessIntegrand r a N c ξ
+  =  c · (∑ᵢ aᵢ·2(N - rᵢ)·h_{rᵢ}(ξ)) · h_combo(ξ)
+     +  ( -ξ² h_combo''(ξ) - 2ξ h_combo'(ξ) ) · h_combo(ξ)
+```
+
+**The second summand carries no `c` at all.**  Taking a single rung, `r ≡ N = 2n`, the first summand
+vanishes identically, and the identity becomes
+
+```text
+⟨L_c Φ, Φ⟩  +  (4n+1) c ‖Φ‖²  =  D_n ,        Φ(x) = h_{2n}(sqrt c x) ,
+```
+
+with `D_n = ∫ (-ξ² h'' - 2ξ h') h` a **constant of the index alone**.  Since `‖Φ‖² = (∫h_{2n}²)/sqrt c`,
+the Rayleigh quotient is
+
+```text
+⟨L_c Φ, Φ⟩ / ‖Φ‖²  =  -(4n+1) c  +  D_n sqrt c / ∫h_{2n}²  =  -(4n+1)c + O(sqrt c) ,
+```
+
+so the variational half of the second-order law is
+
+```text
+c s_n  ≥  (4n+1)  -  O(1/sqrt c) ,
+```
+
+already `o(1/log c)` with room to spare, and obtainable from material entirely in the tree
+(`comboExcess_pointwise`, `integral_comboExcessIntegrand`, and the Hermite `L²` normalisation).
+
+What is *not* yet quantitative is the other half — `c s_n ≤ (4n+1) + O(1/sqrt c)` — which comes from
+the rank/min-max counting behind
+`eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung`, currently stated with a free
+`ε`.  Making that argument carry an explicit `ε(c) = O(1/sqrt c)` is the one remaining step, and it
+is a bookkeeping refinement of an existing proof rather than new mathematics.
+
+So the folder's terminal gap is narrower than the previous entry suggested: not "the prolate
+eigenvalue asymptotic", but "the `ε` in the existing upper half, made explicit".
+
+### CORRECTION — the quantitative identity is already in the tree, and the rate is `O(1/c)`, not `O(1/sqrt c)`
+
+`HermiteRungRayleighDefect.lean:259` already proves exactly the identity the previous entry proposed
+to derive from `comboExcess_pointwise`:
+
+```text
+prolate_hermiteTrial_integrand (hc : 0 < c) (n) (x) :
+    prolateSLAction c (hermiteTrial c n) x · hermiteTrial c n x
+      =  -((2n+1) c) · (hermiteTrial c n x)²  +  hermiteRungDefect n (sqrt c · x)
+```
+
+with `hermiteTrial c n x = h_n(sqrt c · x)` and `hermiteRungDefect` already defined, continuous, and
+equipped with `integral_hermiteRungDefect` and `eventually_hermiteRungDefect_pos`.  A separate
+module for this would have been a duplicate; none was added.
+
+The rate is also better than the previous entry estimated.  Integrating over `[-1,1]` and rescaling
+(`intervalIntegral.integral_comp_mul_left`, as the corpus's own proof does),
+
+```text
+∫_{-1}^{1} L_c Φ · Φ   =  -(2n+1)c ∫_{-1}^{1} Φ²  +  (sqrt c)⁻¹ ∫_{-sqrt c}^{sqrt c} defect_n ,
+∫_{-1}^{1} Φ²          =  (sqrt c)⁻¹ ∫_{-sqrt c}^{sqrt c} h_n² ,
+```
+
+so the two `(sqrt c)⁻¹` cancel in the Rayleigh quotient and
+
+```text
+Rayleigh(c)  =  -(2n+1)c  +  [∫_{-sqrt c}^{sqrt c} defect_n] / [∫_{-sqrt c}^{sqrt c} h_n²]
+             =  -(2n+1)c  +  O(1) ,
+```
+
+because both integrals converge (the Hermite functions and the defect are Schwartz-class).  Hence the
+variational half of the second-order law is
+
+```text
+c s_n  ≥  (2n+1)  -  C_n / c ,
+```
+
+a rate of `O(1/c)`, with vast room over the `o(1/log c)` the exponent claims need.  What it takes in
+Lean is the convergence of the two truncated integrals to their `ℝ`-integrals — the numerator via
+`integral_hermiteRungDefect`, the denominator via the Hermite `L²` normalisation — and then the same
+min-max transfer the corpus already runs for the `ε` version.
+
+The remaining half — `c s_n ≤ (2n+1) + O(1/c)` — is the rank/counting bound with an explicit `ε(c)`,
+and it is the only genuinely open step of the folder.
+
+### The variational half, reduced to one integrability fact
+
+`integral_hermiteRungDefect` gives the defect in closed form:
+
+```text
+∫_{-R}^{R} defect_n  =  ∫_{-R}^{R} ξ² (h_n'(ξ))²  -  [ R² h_n(R) h_n'(R) - R² h_n(-R) h_n'(-R) ] ,
+```
+
+and `tendsto_hermiteRungBoundary` already sends the bracket to zero.  So the whole truncated defect
+integral is monotone-plus-vanishing, and
+
+```text
+∫_{-R}^{R} defect_n   ≤   ∫_ℝ ξ² (h_n')²  +  1     for large R
+```
+
+as soon as `ξ ↦ ξ² (h_n'(ξ))²` is integrable on `ℝ` — a Gaussian-decay fact, and the *only* input
+missing for the variational half.  With it,
+
+```text
+Rayleigh_n(c)  =  -(2n+1)c  +  [∫_{-sqrt c}^{sqrt c} defect_n] / [∫_{-sqrt c}^{sqrt c} h_n²]
+               ≤  -(2n+1)c  +  2 (∫_ℝ ξ²(h_n')² + 1) / ∫_ℝ h_n²   for large c ,
+```
+
+the denominator being eventually at least half its limit, so `c s_n ≥ (2n+1) - C_n/c`.
+
+**The folder's two remaining Lean tasks, stated exactly:**
+
+```text
+(i)  IntegrableOn (fun ξ => ξ^2 * deriv (hermiteFun n) ξ ^ 2) univ
+       ⇒ the variational half of the second-order oscillator law, rate O(1/c)
+(ii) the rank/counting bound of eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung
+       with an explicit ε(c) = O(1/c) in place of its free ε
+       ⇒ the matching upper half
+```
+
+Together they give `c s_n = (2n+1) + O(1/c)`, which with the sharp transport of this session yields
+the three exponent claims `O(lambda^{-7})`, `C_k lambda^8`, `[13A_4/(11A_6)] lambda^{-4}` and closes
+all three cards of the folder.  Everything else on the three cards is already proved unconditionally
+and axiom-clean.
+
+### Task (i) is done
+
+`formal/GaloisForLFunctions/RHTower/HermiteWeightedDerivativeIntegrable.lean` (wired into the
+`RHTower` umbrella, built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+deriv_hermiteFun_poly (n) :
+      ∃ q : Polynomial ℝ,  ∀ x,  deriv (hermiteFun n) x = q.eval x · exp(-(x²/2))
+integrable_sq_mul_deriv_hermiteFun_sq (n) :
+      Integrable (fun x => x² · (deriv (hermiteFun n) x)²)
+```
+
+`exists_poly_hermiteFun` writes `h_n = p·e^{-x²/2}`, so `h_n' = (p' - X p)·e^{-x²/2}` — the
+polynomial form of the derivative, which the tree did not have — and then
+
+```text
+x² (h_n')²  =  (X²(p' - X p)²).eval x · e^{-x²} ,
+```
+
+a polynomial against a Gaussian of parameter `1`, so `integrable_polyEval_mul_gauss` applies
+directly.
+
+With this, `integral_hermiteRungDefect` gives a bound on the truncated defect that is **uniform in
+the truncation**:
+
+```text
+∫_{-R}^{R} defect_n  =  ∫_{-R}^{R} x²(h_n')²  -  (boundary)   ≤   ∫_ℝ x²(h_n')²  +  1
+```
+
+for large `R`, the boundary term vanishing by `tendsto_hermiteRungBoundary` and the integrand being
+nonnegative.  That is the trial-space half of the second-order oscillator law, with rate `O(1/c)`.
+
+**Remaining for the folder: task (ii) alone** — the rank/counting bound of
+`eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung` carrying an explicit
+`ε(c) = O(1/c)` instead of a free `ε`.
+
+### The truncated Rayleigh defect is now bounded above, not merely positive
+
+Added to `RHTower/HermiteWeightedDerivativeIntegrable.lean` (built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+intervalIntegral_sq_mul_deriv_hermiteFun_sq_le (n) (hR : 0 ≤ R) :
+      ∫_{-R}^{R} x²(h_n')²   ≤   ∫_ℝ x²(h_n')²
+eventually_hermiteRungDefect_le (n) :
+      ∀ᶠ R in atTop,   ∫_{-R}^{R} defect_n   ≤   ∫_ℝ x²(h_n')²  +  1
+```
+
+The corpus already had `eventually_hermiteRungDefect_pos` — the defect is eventually *positive*,
+which is what the `ε`-version of the oscillator law consumes.  The upper bound is the new half, and
+it is exactly what a *rate* needs: with
+
+```text
+Rayleigh_n(c)  =  -(2n+1)c  +  [∫_{-sqrt c}^{sqrt c} defect_n] / [∫_{-sqrt c}^{sqrt c} h_n²]
+```
+
+the numerator is now trapped between `0` and `∫_ℝ x²(h_n')² + 1`, both constants of the rung, and the
+denominator converges to `∫_ℝ h_n²> 0`, so the Rayleigh quotient is `-(2n+1)c + O(1)` and the
+variational half of the second-order law reads
+
+```text
+c s_n  ≥  (2n+1)  -  C_n/c ,        C_n = 2(∫_ℝ x²(h_n')² + 1)/∫_ℝ h_n² .
+```
+
+Every ingredient of that display is now a theorem.  The folder's last open item is unchanged:
+the rank/counting bound with an explicit `ε(c)`.
+
+### Task (ii), diagnosed: the `ε` absorbs the off-diagonal correlation, and its threshold is linear in `1/ε`
+
+Tracing the `ε` through the upper half:
+
+```text
+eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung  (ε)
+  ← eventually_rank_highProlateSpan_even_ge  (ε)
+  ← eventually_rank_highProlateSpan_ge  (ε)
+  ← eventually_disjoint_hermiteTrialSpan  (ε)
+  ← eventually_hermiteTrial_rayleigh_gt  (ε)          ← here `0 < ε` is essential
+```
+
+In `ProlateHermiteTrialSpace.lean:101` the margin is used concretely: with
+`δ = min_i ∫_{-1}^{1} h_{ν i}²` and `w i = (Λ+ε) - (2 ν i + 1) ≥ ε`, the proof sets
+`e = ε δ` and `θ = e/(2(j+1))` and requires the **off-diagonal correlation** bound `C` of
+`exists_bound_hermiteTrialCorr` to be beaten by `θ c`.  So the threshold is
+
+```text
+c  ≳  C (j+1) / (ε δ) ,      i.e.  c₀(ε) = K/ε  with K = K(ν, j) .
+```
+
+The dependence on `ε` is **linear in `1/ε`**, so inverting gives exactly the rate that is wanted:
+
+```text
+ε(c) = K/c        ⇒        c s_n  ≤  4n + 1 + K/c .
+```
+
+Combined with the variational half already proved,
+
+```text
+c s_n  ≥  4n + 1 - C_n/c        (integrable_sq_mul_deriv_hermiteFun_sq,
+                                 eventually_hermiteRungDefect_le, prolate_hermiteTrial_integrand)
+```
+
+this gives the second-order oscillator law `c s_n = (4n+1) + O(1/c)`, hence the separation rate, hence
+the folder's three exponent claims.
+
+**So task (ii) is a quantitative refactor of `eventually_hermiteTrial_rayleigh_gt`**: restate it as
+"for all `c ≥ K/ε`" instead of "eventually in `c`", with `K` the explicit constant built from
+`exists_bound_hermiteTrialCorr` and `δ`, and then instantiate at `ε = K/c`.  No new mathematics is
+involved — the inequality being proved is the same one; only the quantifier order changes.
+
+### Task (ii), atomised
+
+Reading the rest of `eventually_hermiteTrial_rayleigh_gt`, its `filter_upwards` has four sources:
+
+```text
+eventually_gt_atTop 0 ,  eventually_ge_atTop 1 ,          explicit
+eventually_gt_atTop (C (j+1) / (e/2))                     explicit, e = ε δ  ⇒  c > 2C(j+1)/(εδ)
+hoffev : |hermiteTrialGram ν c i k| ≤ θ/M  for i ≠ k      NOT explicit
+```
+
+so three of the four thresholds are already linear in `1/ε` as predicted, and the only
+non-quantitative input is the off-diagonal Gram decay, which comes from
+`tendsto_hermiteTrialGram_off` with no rate.
+
+That decay is in fact **superpolynomial** and elementary to bound.  After the `sqrt c` scaling,
+
+```text
+hermiteTrialGram ν c i k  =  ∫_{-sqrt c}^{sqrt c} h_{ν i} h_{ν k}      (→ 0 by orthogonality)
+```
+
+so for `i ≠ k` the Gram entry equals `-∫_{|x| > sqrt c} h_{ν i} h_{ν k}`, and with
+`h_m = p_m e^{-x²/2}` the integrand is `p e^{-x²}`, whence the one-line tail bound
+
+```text
+∫_{|x| > R} |p| e^{-x²}   ≤   ( ∫_ℝ |p| e^{-x²/2} ) · e^{-R²/2} ,
+```
+
+using `e^{-x²} = e^{-x²/2} e^{-x²/2} ≤ e^{-x²/2} e^{-R²/2}` on the tail.  At `R = sqrt c` this is
+`K e^{-c/2}` — far smaller than the `θ/M ≍ ε/c` that the threshold needs.
+
+**So the folder's remaining work is exactly two elementary lemmas:**
+
+```text
+(ii-a)  ∫_{|x| > R} |p.eval x| e^{-x²} dx  ≤  (∫_ℝ |p.eval x| e^{-x²/2} dx) · e^{-R²/2}
+          ⇒ |hermiteTrialGram ν c i k| ≤ K e^{-c/2}  for i ≠ k
+(ii-b)  eventually_hermiteTrial_rayleigh_gt restated as "for all c ≥ K/ε", then instantiated at
+          ε = K/c
+```
+
+after which `c s_n = (4n+1) + O(1/c)`, and with the sharp transport of this session the folder's
+three exponent claims follow.
+
+### Task (ii) DONE — the upper half of the oscillator law now has a rate
+
+Six new Lean modules, all axiom-clean `[propext, Classical.choice, Quot.sound]` and wired into the
+umbrellas:
+
+| module | content |
+|---|---|
+| `HTGeometry/PolynomialGaussianDecayRate.lean` | `polyCoeffMass`, `abs_eval_le_polyCoeffMass_mul_pow`, **`abs_eval_mul_exp_neg_sq_le`**: `|p(x)|e^{-x²} ≤ (∑|coeff|)(deg p + k)!/|x|^k` for `1 ≤ |x|` |
+| `RHTower/HermiteWronskianDecayRate.lean` | `exists_poly_hermiteWronskian`, `exists_bound_hermiteWronskian`, `one_le_abs_sub_of_ne`, **`exists_bound_integral_hermiteFun_mul`**: `|∫_{-R}^{R} h_m h_n| ≤ K/R^k` |
+| `RHTower/ProlateHermiteTrialGramRate.lean` | **`exists_bound_hermiteTrialGram_off`**: one `K` with `|Gram_{ik}(c)| ≤ K/c²` for all `i ≠ k`, `c ≥ 1` |
+| `RHTower/ProlateHermiteTrialSpaceQuantitative.lean` | **`exists_threshold_hermiteTrial_rayleigh_gt`**: one `T` serving every `0 < ε ≤ 1`, threshold in the shape `T ≤ ε·c` |
+| `RHTower/ProlateTrialSpaceTransportQuantitative.lean` | `exists_threshold_disjoint_hermiteTrialSpan`, `exists_threshold_rank_highProlateSpan_ge`, `evenRung` + its three properties, **`exists_threshold_rank_highProlateSpan_even_ge`** |
+| `RHTower/ProlateOscillatorUpperRate.lean` | **`exists_rate_signedModeRadialBandwidth_mul_s_le`**: `∃ K > 0, ∀ᶠ a, c·s_n ≤ 4n+1 + K/c` |
+
+Two things made this work.
+
+1. **The missing rate was the off-diagonal Gram decay.**  Three of the four thresholds inside
+   `eventually_hermiteTrial_rayleigh_gt` were already explicit and linear in `1/ε`; only `hoffev`
+   came from a bare `Tendsto`.  The rate is not hard — `integral_hermiteFun_mul_eq` evaluates the
+   truncated inner product *exactly* as a Wronskian increment, and the Wronskian is a polynomial
+   times `e^{-ξ²}`, so no measure theory is needed at all, just the elementary
+   `t^N e^{-t} ≤ N!` at `t = x²`.  This is much cheaper than the tail-integral route.
+
+2. **The threshold must be written `T ≤ ε·c`, not `c ≥ T/ε`.**  Multiplication-only form keeps the
+   whole chain inside `linarith`/`nlinarith`, and — the real point — it lets the margin be chosen as
+   `ε = T/c`, which makes the threshold an *equality*.  The exhaustion contradiction of
+   `eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung` then runs unchanged.
+
+The weight bound also had to be made `ε`-free: `M = Λ+1` bounds `|w i| = |(Λ+ε)−(2ν_i+1)|` for every
+`0 < ε ≤ 1`, whereas the original took `M = max_i |w i|`, which moves with `ε`.
+
+### What the lower half still needs
+
+`c·s_n = (4n+1) + O(1/c)` needs *both* halves at rate.  The lower half
+(`eventually_evenOscillatorRung_sub_lt_indexedOscillatorSeparation`) is proved by an **ultrafilter
+compactness contradiction** (`false_of_canonicalIndexedProlate_limits_below`), which carries no
+threshold at all — so, unlike the upper half, it is not a refactor.
+
+The quantitative statement needed is a bound on the eigenvalue counting function, equivalently a
+variational lower bound.  Writing `Q_prolate(u) = ∫_{-1}^{1}[(1-x²)(u')² + c²x²u²]` and
+`Q_H(u) = ∫[(u')² + c²x²u²]`,
+
+```text
+Q_prolate(u)  =  Q_H(u) − ∫_{-1}^{1} x²(u')² ,
+```
+
+so the whole question is the size of `∫x²(u')²` on the spectral subspace below `Λc`.  The scaling is
+right: the modes live at `|x| ≲ c^{-1/2}`, so `∫x²(u')² ≍ (1/c)∫(u')² ≍ (1/c)·Λc = O(1)`, an `O(1)`
+error against an `O(c)` eigenvalue — exactly `O(1/c)` after dividing by `c`.  Operator-theoretically
+`x u' = ½(Au) + ½[X,D]u` with `A = XD+DX` the dilation generator, and `‖Au‖ ≲ ‖Hu‖/c`, so
+
+```text
+‖X D u‖ ≲ (1/c)‖Hu‖ + ‖u‖ ≤ (Λ + 1)‖u‖ .
+```
+
+That commutator estimate for the harmonic oscillator is the one genuinely new ingredient.
+
+### How sharp does the oscillator law actually have to be?
+
+Not `O(1/c)`.  The rate enters only through the exponent of the ratio bound at the pair anchor
+`y = x₀/√c`, where `log(1/y) = ½ log c − log x₀`, so
+
+```text
+exponent  =  −c(s_n − s_m)·(½ log c − log x₀) ,   c(s_n − s_m) = 4(n−m) + r(c)
+          =  −2(n−m) log c + O(1) + O(r(c) log c) .
+```
+
+The power of `c` is pinned as soon as `r(c) log c → 0`.  **Any rate `o(1/log c)` suffices** — in
+particular `O(c^{-1/2})`, which is far cheaper than `O(1/c)` and needs no commutator estimate.
+
+### An elementary cutoff proof of the lower half at rate `O(c^{-1/2})`
+
+In Hermite-scaled coordinates `y = x/√c` the prolate form on `I = [−√c, √c]` is
+
+```text
+q(u) = ∫_I [(1 − x²/c)(u')² + x²u²] ,      c·s_k = μ_k = k-th eigenvalue of q ,
+```
+
+against the Hermite form `q_H(u) = ∫_ℝ [(u')² + x²u²]` with even eigenvalues `4k+1`.  Let
+`Λ = μ_n`, let `V` be the span of the first `n+1` even prolate modes (so `q ≤ Λ‖·‖²` on `V`), and
+cut off at `R = c^{1/4}`: `χ = 1` on `[−R,R]`, `0` off `[−2R,2R]`, `|χ'| ≤ 2/R`.  Write
+`A = ∫(1−x²/c)(u')²`, `B = ∫x²u²`, so `A + B = q(u) ≤ Λ‖u‖²`.  Then
+
+```text
+∫_{|x|>R} u²      ≤ B/R²          ≤ Λ‖u‖²/R²                    (Chebyshev against the potential)
+∫ χ²(u')²         ≤ A/(1 − 4R²/c)                               (1 − x²/c ≥ 1 − 4R²/c on |x| ≤ 2R)
+∫ (χ')²u²         ≤ (4/R²)·Λ‖u‖²/R²  =  4Λ‖u‖²/R⁴
+```
+
+so with `(a+b)² ≤ (1+η)a² + (1+1/η)b²` at `η = c^{-1/2}`, and `R² = √c`, `R⁴ = c`,
+
+```text
+q_H(χu)  ≤  (1+η)/(1 − 4R²/c) · (A+B)  +  (1+1/η)·4Λ‖u‖²/R⁴   ≤  Λ‖u‖²(1 + 9c^{-1/2}) ,
+‖χu‖²    ≥  (1 − Λ c^{-1/2})‖u‖² .
+```
+
+`u ↦ χu` is injective on `V` once `R² > Λ` (a nonzero kernel element would have all its mass outside
+`R`), so `χV` is an `(n+1)`-dimensional space of even `H¹` functions, and Hermite min–max forces
+some member with `q_H ≥ (4n+1)‖·‖²`.  Hence
+
+```text
+Λ(1 + 9c^{-1/2}) / (1 − Λc^{-1/2})  ≥  4n+1        ⇒     c·s_n  ≥  4n+1 − K c^{-1/2} .
+```
+
+Both errors are `O(c^{-1/2})` precisely because `R = c^{1/4}` balances the Chebyshev tail `Λ/R²`
+against the weight defect `4R²/c`.  No operator or commutator estimate appears.
+
+The one nonelementary input is the last step — **Hermite min–max on the even sector**: an
+`(n+1)`-dimensional space of even `H¹(ℝ)` functions contains a `w` with `q_H(w) ≥ (4n+1)‖w‖²`.
+That is the same rigidity the corpus's `false_of_canonicalIndexedProlate_limits_below` already
+needs, so the next step is to read what that proof uses and reuse it.
+
+### The corpus already owns the quantitative pin — use it, not min–max
+
+Searching before building paid off twice.  `RHTower/ProlateOscillatorLadderPin.lean:153` proves
+
+```text
+abs_sub_oscillatorLadder_eq :
+  |μ − (2n+1)|  =  |∫ D·h_n| / |∫ u·h_n|
+```
+
+for the Hermite-rescaled prolate mode `u`, where `D = (ξ²u″ + 2ξu′)/c` is the exact prolate defect —
+an **identity**, not an estimate, obtained by one integration by parts against `h_n`.  The `1/c` is
+already sitting in `D`.  So the lower half does **not** need the cutoff/min–max argument sketched
+above, and in particular does **not** need Hermite completeness in `L²(ℝ)` (which mathlib does not
+have — there is no Hermite analysis in `Mathlib/Analysis` at all).
+
+What the pin still needs is a **lower bound on the denominator** `|∫ u·h_n|`: the mode must not be
+asymptotically orthogonal to the Hermite function at its own index.  With that, the chain closes:
+
+1. the numerator gives `|c·s_k − (2m+1)| ≤ K/c` whenever `∫ u_k h_m ≠ 0` — quantitative quantization;
+2. the upper half **now proved** (`exists_rate_signedModeRadialBandwidth_mul_s_le`) gives
+   `c·s_k ≤ 4k+1 + K/c`, so the pinned rung index is at most `k`;
+3. the `n+1` modes `u_0 … u_n` are exactly orthogonal (`integral_signedModeRadialData_R_mul_eq_zero_of_ne`),
+   so their pinned indices are distinct, hence exhaust `{0,…,n}`, hence `u_n` sits at rung `n`:
+
+```text
+c·s_n  ≥  4n+1 − K/c .
+```
+
+Step 3's "distinct" is the remaining gap: two modes pinned at the same rung must both be close to the
+same Hermite function, contradicting orthogonality.  The natural closing lemma is an induction on the
+index — `u_k` close to `h_{2k}` for `k < n` makes `⟨u_n, h_{2k}⟩ = O(1/c)` by orthogonality, leaving
+`h_{2n}` as the only available component.
+
+Other assets found for this, all already in the corpus:
+
+- `HTGeometry/OscillatorLadderIdentity.lean` — `oscLower v v' = v′ + x v`, `integral_oscLower_sq_eq : ∫(Av)² = (μ−1)∫v²`, `oscBoundary`
+- `HTGeometry/OscillatorSpectralRigidity.lean` — `exists_rung_of_integrable` (the qualitative quantization, by ladder descent)
+- `HTGeometry/SchwartzOscillatorAlgebra.lean` — `creation_add_annihilation`
+- `RHTower/ProlateGroundTotalMass.lean` — `normalizedProlate_secondMoment_le`, `normalizedProlate_chebyshev`, `normalizedProlate_total_mass_le`
+- `HTGeometry/WindowTotalSqueeze.lean` — `window_tail_le_of_secondMoment`, `abs_window_pairing_sub_le_of_secondMoment`
+- `RHTower/ProlateCanonicalOscillatorLower.lean` — `indexedOscillatorWindowBound`, `eventually_indexedOscillatorProfile_windowBound`, `indexedOscillatorSecondMoment_le`
+
+Note also that the required precision is `o(1/log c)`, so the pin's `O(1/c)` is far more than enough;
+the cutoff argument recorded above (giving `O(c^{-1/2})`) is a fallback, not the plan.
+
+### The pin is now applicable to the actual signed mode
+
+Four further modules, all axiom-clean and wired in:
+
+| module | key theorem |
+|---|---|
+| `RHTower/ProlateGlobalDerivativeBounds.lean` | `exists_global_bound_deriv_sincSmooth`, `abs_deriv2_sincSmooth_le` (`≤ \|c\|³/(3π)`), `exists_bound_deriv_of_bandTransform_eigen`, `exists_bound_deriv2_of_bandTransform_eigen` |
+| `RHTower/ProlateHermitePairingHypotheses.lean` | `integrable_hermiteCombination`, `tendsto_hermiteCombination_atTop/atBot`, the eight weight packages, and **`abs_sub_ladder_mul_eq_of_bounded`** / **`abs_sub_ladder_le_of_bounded`** |
+| `RHTower/ProlateRescaledProfileBounds.lean` | `deriv_prolateHermiteRescale`, `deriv2_prolateHermiteRescale` |
+| `RHTower/ProlateSignedModeLadderPin.lean` | `bandTransform_signedModeRadialData_R`, `exists_bound_signedModeRadialData_R`, **`exists_bound_abs_signedMode_scaledSeparation_sub_rung`** |
+
+The mechanism: differentiating a band transform differentiates only the kernel, so
+
+```text
+lam·Φ′ = ∫ sinc_c′(x−y)Φ(y)dy ,      lam·Φ″ = ∫ sinc_c″(x−y)Φ(y)dy ,
+```
+
+and `sinc_c″(u) = −c³/(2π)∫_{-1}^{1} t² cos(cut)dt` is uniformly bounded.  Hence `Φ, Φ′, Φ″` are all
+globally bounded, hence so are `u, u′, u″` after the Hermite rescaling (chain rule, one power of
+`√c` each).  Every weight in the pin and the transfer is `p·φ_m + q·φ_m′` for polynomials `p, q`,
+i.e. a polynomial times `e^{-ξ²/2}`, so it is integrable and vanishes at both ends — which turns all
+fourteen hypotheses of `hermitePairing_pin` and `integral_prolateDefect_transfer_explicit` into
+consequences of boundedness alone.  The result is unconditional:
+
+```text
+|c·s_n − (2m+1)|  ≤  B · ∫|W_m| / (c · |∫ u·φ_m|)      whenever  ∫ u·φ_m ≠ 0 .
+```
+
+### The single remaining gap, in scale-invariant form
+
+Both sides of the pin are homogeneous of degree one in `u`, so the profile may be normalised
+freely.  Normalising by the sup norm, the bound above is `O(1/c)` exactly when
+
+```text
+sup|u| / |∫ u·φ_m|   is bounded uniformly in the aperture, for some rung m ≤ n.
+```
+
+That is the whole of what is left: **the rescaled prolate mode, sup-normalised, has a Hermite
+pairing bounded below at some rung**.  It is the quantitative form of "the mode has an index".
+With it, step 3 of the chain closes — pin ⇒ each `c·s_k` within `O(1/c)` of a rung; the upper-half
+rate ⇒ the rung index is `≤ k`; exact orthogonality ⇒ the indices are distinct, hence exhaust
+`{0,…,n}`, hence `c·s_n ≥ 4n+1 − K/c`.
+
+Note the corpus's `indexedOscillatorProfile` normalisation (value `1` and derivative `0` at the
+origin) is the one carrying uniform window bounds `B(K)` — `eventually_indexedOscillatorProfile_windowBound`,
+`normalizedProlate_total_mass_le`.  Those are the natural source for the pairing lower bound, since
+`∫ u·φ_m` over a fixed window is within `O(1/K²)` of the whole-line pairing by
+`abs_window_pairing_sub_le_of_secondMoment`.
+
+### The pairing lower bound is not needed from scratch
+
+The gap looked like new quantitative analysis, but it is not: the corpus's *qualitative* limit
+theorem already supplies it.
+
+`tendsto_signedModeRadialBandwidth_mul_s_atTop` gives `c·s_n → 4n+1`, so for large aperture the
+nearest rung to `μ = c·s_n` is `m = 2n`, with no quantitative input.  And the window-limit machinery
+behind `false_of_orthogonal_prolateFamily_below_windowBound` — `tendsto_prolateWindowMass`,
+`tendsto_prolateWindowPairing` — already shows the rescaled profile's window integrals converge to
+those of `oscProfile (4n+1)`, which by `even_integrable_solution_rung` is a nonzero multiple of
+`φ_{2n}`.  Hence
+
+```text
+∫_{-K}^{K} u·φ_{2n}  →  const · ∫_{-K}^{K} φ_{2n}²  >  0 ,
+```
+
+so the pairing is *eventually* bounded below — which is all the pin needs, because the pin already
+carries the `1/c`.  A qualitative lower bound on the denominator plus a quantitative numerator gives
+a quantitative conclusion.
+
+So the lower half closes as: eventual pairing floor (qualitative, corpus) + pin (quantitative, now
+built) ⇒ `|c·s_n − (4n+1)| ≤ K/c` eventually, which is *both* halves at once — the upper-half rate
+proved earlier this session is then a cross-check rather than an input.
+
+Two mechanical points remain for that assembly:
+
+1. **Normalisation.** The pin is homogeneous of degree one in `u`, so any normalisation works, but
+   the global bounds `B` (from `exists_bound_signedModeRadialData_R`) and the pairing floor must use
+   the *same* one.  The endpoint normalisation `R 1 = 1` carries the global bounds; the origin
+   normalisation `v(0)=1, v′(0)=0` carries the corpus's uniform window bounds.  They differ by the
+   scalar `R(0)`, which cancels in the ratio `B / |∫ u·φ_m|` — so the assembly should be done with
+   the ratio, never with the two factors separately.
+2. **Whole line vs window.** The pin's pairing is over `ℝ`, the corpus's convergence is over
+   `[−K,K]`; `abs_window_pairing_sub_le_of_secondMoment` bridges them at cost `O(1/K²)` times the
+   second moments, and `normalizedProlate_secondMoment_le` bounds those by `μ` times the mass.
+
+### The assembly, with the exponent bookkeeping done
+
+The pin's estimate uses the bound on `u` **only** — the bounds on `u′` and `u″` are consumed
+discharging integrability and boundary hypotheses, where any finite constant serves.  So the
+scale-invariant quantity controlling the rate is `sup|u| / |∫ u·φ_m|`, and since only
+`o(1/log c)` is needed there is a lot of slack.  Working with the origin normalisation
+`v(0)=1, v′(0)=0` (the one the corpus's uniform bounds use), with `w = Φ/Φ(0)` and `v(ξ)=w(ξ/√c)`:
+
+```text
+∫_{-√c}^{√c} v²  ≤  N                                  normalizedProlate_total_mass_le (uniform)
+∫_{-1}^{1}|w| dy = c^{-1/2}∫_{-√c}^{√c}|v| dξ
+                 ≤ c^{-1/2}·(2√c)^{1/2}·N^{1/2} = √(2N)·c^{-1/4}      Cauchy–Schwarz
+sup|v| = sup|w|  ≤ lam⁻¹·(c/π)·∫_{-1}^{1}|w|  =  lam⁻¹·√(2N)·c^{3/4}/π   band integral
+∫_{-K}^{K} v·φ_{2n} → const ≠ 0                        window pairing convergence (corpus)
+```
+
+with `lam = evenProlateSignedValue a n ²` eventually `≥ 1/2` by **`evenProlateSignedValue_sq_tendsto_one`**
+(`ConstrainedProlateSignedTrial.lean:122`).  Feeding `sup|v| = O(c^{3/4})` and `|∫ v·φ_{2n}| ≥ δ`
+into the pin:
+
+```text
+|c·s_n − (4n+1)|  ≤  sup|v| · ∫|W_{2n}| / (c · |∫ v·φ_{2n}|)  =  O(c^{3/4}/c)  =  O(c^{-1/4}) .
+```
+
+`O(c^{-1/4})` is far inside `o(1/log c)`, so it pins all three exponent claims.  Note this is a
+*two-sided* bound — it gives the lower half and re-derives the upper half, so
+`exists_rate_signedModeRadialBandwidth_mul_s_le` becomes an independent cross-check rather than an
+input.
+
+The crude `c/π` kernel bound is lossy by `c^{3/4}` against the truth, and that is fine: sharpening
+it (Cauchy–Schwarz against `‖sinc_c(x−·)‖_{L²}` would give `√c` in place of `c`) would only improve
+`c^{-1/4}` to `c^{-3/4}`, and buys nothing.
+
+**Remaining bricks, in order:**
+
+1. `exists_bound_of_bandTransform_eigen` restated with the constant explicit as
+   `lam⁻¹·(|c|/π)·∫_{-1}^{1}|Φ|`, so the mass factor can be estimated rather than discarded.
+2. The Cauchy–Schwarz step `∫_{-1}^{1}|w| ≤ √2·(∫_{-1}^{1}w²)^{1/2}` and the rescaling identity
+   `∫_{-1}^{1}w² = c^{-1/2}∫_{-√c}^{√c}v²`.
+3. The eventual pairing floor `|∫_ℝ v·φ_{2n}| ≥ δ` — window convergence plus
+   `abs_window_pairing_sub_le_of_secondMoment` for the tail.
+4. Assemble into `∀ᶠ a, |c·s_n − (4n+1)| ≤ K·c^{-1/4}`.
+
+### Bricks 1–2 built
+
+`RHTower/ProlateProfileMassTransfer.lean` (axiom-clean, wired):
+
+- `abs_le_of_bandTransform_eigen_explicit` — the band bound with the constant exhibited:
+  `|Φ x| ≤ |lam|⁻¹ (|c|/π) ∫_{-1}^{1}|Φ|`
+- `integral_sq_rescale` — `∫_{-1}^{1} v(√c·y)² dy = (√c)⁻¹ ∫_{-√c}^{√c} v²`
+- `integral_abs_le_of_integral_sq_le` — `∫_{-1}^{1}|w| ≤ t + S/(2t)` from `∫ w² ≤ S`, for every `t > 0`
+- **`abs_le_of_rescaled_mass_le`** — the two combined at the balanced scale `t = c^{-1/4}`:
+
+```text
+(∫_{-√c}^{√c} v²) ≤ N   ⟹   |Φ x| ≤ |lam|⁻¹ · (c/π) · (1 + N/2) / c^{1/4}   for every x.
+```
+
+The balanced scale is the whole trick: Cauchy–Schwarz is never invoked, only the pointwise
+`|w| ≤ (t + w²/t)/2`, and choosing `t = c^{-1/4}` extracts exactly the square root of the mass bound.
+Writing `c^{1/4}` as `Real.sqrt (Real.sqrt c)` keeps everything inside `field_simp`.
+
+Bricks 3 (the eventual pairing floor `|∫_ℝ v·φ_{2n}| ≥ δ`) and 4 (assembly) remain.
+
+### Brick 3 built — the pairing floor
+
+Two more modules, axiom-clean and wired:
+
+`RHTower/ProlateWindowPairingConst.lean`
+- **`tendsto_prolateWindowPairing_const`** — the corpus had window convergence only against *another
+  prolate family* (`tendsto_prolateWindowPairing`) or against itself (`tendsto_prolateWindowMass`);
+  this is the version against a **fixed continuous weight**, which is what the ladder pin needs.
+  Same Grönwall envelope, and the difference of pairings is bounded by
+  `oscWindowEnvelope · ∫_{-K}^{K}|g|`.
+
+`RHTower/ProlateHermitePairingFloor.lean`
+- `deriv_hermiteFun_zero`, `hermiteFun_zero_ne_zero` (even rung)
+- **`hermiteFun_div_eq_oscProfile`** — at an even rung the Hermite function normalised at the origin
+  *is* the limit oscillator profile, by second-order uniqueness (`eq_oscProfile`): both solve
+  `v″ = (ξ² − (2n+1))v` with `v(0)=1, v′(0)=0`.
+- `integral_oscProfile_mul_hermiteFun_ne_zero` — hence the limiting window pairing is
+  `φ_n(0) · ∫ oscProfile²`, nonzero by `integral_oscProfile_mul_self_pos`.
+- **`eventually_abs_window_pairing_ge`** — convergence to a nonzero limit gives the floor
+  `|∫_{-K}^{K} u_i·φ_n| ≥ |limit|/2` eventually.
+
+That is the denominator bound the pin needs, and it is purely qualitative — exactly as predicted,
+no new quantitative analysis was required for it.
+
+**Brick 4 (assembly) is what remains**: instantiate `eventually_abs_window_pairing_ge` at the
+canonical family (`indexedOscillatorProfile`, `mu = indexedOscillatorSeparation n`, `m = 4n+1` via
+`tendsto_indexedOscillatorSeparation_atTop`), bridge window to whole line with
+`abs_window_pairing_sub_le_of_secondMoment`, and feed the resulting floor together with
+`abs_le_of_rescaled_mass_le` into `exists_bound_abs_signedMode_scaledSeparation_sub_rung`.
+
+### Brick 4 started — the floor at the canonical family
+
+`RHTower/ProlateIndexedPairingFloor.lean` (axiom-clean, wired):
+**`eventually_abs_indexedOscillator_window_pairing_ge`** — at every large aperture,
+
+```text
+|∫_{-K}^{K} indexedOscillatorProfile n a · φ_{2n}|  ≥  ½ |∫_{-K}^{K} oscProfile(4n+1) · φ_{2n}|  > 0 .
+```
+
+It instantiates the general floor at the canonical family: the window package comes from
+`eventually_indexedOscillatorProfile_windowBound` with `M = m = 4n+1`, and the separation limit from
+`tendsto_indexedOscillatorSeparation_atTop`; `Even (2n)` is `⟨n, by ring⟩`.  The only friction was
+namespace — the canonical family lives in `GaloisForLFunctions.RHTower`, not `_root_.RHTower`.
+
+Still to do in brick 4:
+
+1. **Window → whole line.**  `abs_window_pairing_sub_le_of_secondMoment` plus
+   `normalizedProlate_secondMoment_le` turn the window floor into a whole-line floor, at cost
+   `O(1/K²)` times the second moments; `K` fixed and large suffices since the floor is a fixed
+   positive constant.
+2. **Normalisation transfer.**  `indexedOscillatorProfile n a` is the origin-normalised rescaled
+   profile, `signedModeRescaledProfile a n` the endpoint-normalised one; they differ by the scalar
+   `R(0)`, which cancels in the pin's ratio.  Feed the resulting floor together with
+   `abs_le_of_rescaled_mass_le` into `exists_bound_abs_signedMode_scaledSeparation_sub_rung`.
+
+### The window → whole-line bridge is built
+
+`HTGeometry/PolynomialGaussianDecayRate.lean` gained
+**`abs_eval_mul_exp_neg_mul_sq_le`** — the decay estimate at an arbitrary Gaussian rate `b`, needed
+because Hermite functions carry `e^{-ξ²/2}`, not `e^{-ξ²}`.
+
+`RHTower/ProlateHermiteTailMass.lean` (axiom-clean, wired):
+- `exists_bound_abs_hermiteFun_inv_pow` — `|φ_m(ξ)| ≤ C/|ξ|^k` outside the unit interval
+- `integral_inv_pow_four_le`, `integral_inv_pow_four_le_neg` — `∫_a^b dξ/ξ⁴ ≤ 1/(3a³)` from the
+  antiderivative `−(3ξ³)⁻¹`, both signs
+- `exists_bound_integral_abs_hermiteFun_tail(_neg)` — the Hermite tail mass beyond `a ≥ 1`
+- **`exists_bound_abs_integral_sub_window`** — for any bounded continuous `v`,
+
+```text
+|∫_ℝ v·φ_m  −  ∫_{-a}^{a} v·φ_m|  ≤  B · 2C/(3a³)      for every a ≥ 1.
+```
+
+The finite-window estimate is uniform in the far endpoint, and
+`MeasureTheory.intervalIntegral_tendsto_integral` passes to the whole line.
+
+**At `a = √c` this is `O(c^{3/4}) · O(c^{-3/2}) = O(c^{-3/4})`** — the tail is negligible against a
+constant floor, which is exactly what the pin's denominator needs.
+
+### What closes the loop
+
+Three regions, each already covered:
+
+```text
+∫_ℝ v·φ  =  ∫_{-K₀}^{K₀}      floor ≥ ½|∫_{-K₀}^{K₀} oscProfile·φ| > 0   (eventually)
+          + ∫_{K₀<|ξ|≤√c}     ≤ (1/2K₀²)(M₂ + ∫x²φ²)  by abs_window_pairing_sub_le_of_secondMoment
+          + ∫_{|ξ|>√c}        ≤ O(c^{-3/4})            by the bridge above
+```
+
+with `M₂ = ∫_{-√c}^{√c} ξ²v²` uniform via `indexedOscillatorSecondMoment_le` and
+`normalizedProlate_total_mass_le`.  Since `∫_{-K}^{K} oscProfile·φ_{2n} = φ_{2n}(0)⁻¹∫_{-K}^{K}φ_{2n}²`
+*increases* with `K`, the floor is bounded below by its value at `K = 1`, so a fixed `K₀` can be
+chosen large enough to make the middle term less than a quarter of it.  That gives
+`|∫_ℝ v·φ_{2n}| ≥ floor/2`, and feeding it with `abs_le_of_rescaled_mass_le` into the pin yields
+
+```text
+∀ᶠ a,  |c·s_n − (4n+1)|  ≤  K · c^{-1/4} .
+```
+
+## The two-sided oscillator law is proved
+
+`RHTower/ProlateOscillatorLawAssembly.lean` (axiom-clean `[propext, Classical.choice, Quot.sound]`,
+warning-free, wired):
+
+```lean
+theorem exists_rate_abs_signedModeRadialBandwidth_mul_s_sub_rung (n : ℕ) :
+    ∃ K : ℝ, 0 < K ∧ ∀ᶠ a : ℝ in atTop,
+      |signedModeRadialBandwidth a * (signedModeRadialData a n).s - (4 * (n : ℝ) + 1)|
+        ≤ K / Real.sqrt (Real.sqrt (signedModeRadialBandwidth a))
+```
+
+Unconditional, no hypotheses, both halves at once: `c·s_n = (4n+1) + O(c^{-1/4})`.  Since the
+exponent claims need only `o(1/log c)`, this pins all three of them.
+
+Supporting content of the module:
+
+- `signedModeRadialData_R_zero_ne_zero`, `signedModeRescaledProfile_eq_smul` — the two
+  normalisations differ by the scalar `R(0)`, which cancels in the pin's ratio
+- `bandTransform_signedModeRadialData_R_div`, **`abs_indexedOscillatorProfile_le`** — the `c^{3/4}`
+  sup bound for the origin-normalised profile from its uniform square mass
+- `eventually_indexedOscillatorTotalMass_le` — uniform mass, from the corpus's
+  `tendsto_indexedOscillatorTotalMass` (the mass converges, so no window computation is needed)
+- `abs_integral_oscProfile_mul_hermiteFun_eq`, `integral_hermiteFun_sq_mono` — the limiting window
+  pairing is `φ_{2n}(0)⁻¹∫_{-K}^{K}φ_{2n}²`, hence monotone in the window and bounded below by its
+  value at `K = 1`
+- `integrable_sq_mul_hermiteFun_sq`, `intervalIntegral_sq_mul_hermiteFun_sq_le` — the fixed
+  second-moment constant
+- `tendsto_quartRoot_indexedOscillatorBandwidth`, `tendsto_inv_evenProlateSignedValue_sq`,
+  `tendsto_outerTail_zero`
+- **`exists_floor_abs_integral_indexedOscillator`** — the whole-line pairing floor, assembled from
+  the three regions
+
+and in `ProlateSignedModeLadderPin.lean`, **`abs_signedMode_scaledSeparation_sub_rung_le`** — the pin
+with the value bound supplied externally.  That variant is what makes the whole thing work: the pin's
+estimate uses only the bound on the profile, while the bounds on its derivatives are consumed
+discharging integrability, so the two may be different constants.  Generalising
+`abs_sub_ladder_le_of_bounded` to carry `B` for `u` and `B₂` for `u′, u″` was the single change that
+turned an `O(c)` bound (useless) into `O(c^{-1/4})`.
+
+The constant is explicit: `K = 2(1+N/2)W/(πδ) + 1` with `N = sharpInteriorLimit n + 1`,
+`W = ∫|W_{2n}|`, and `δ` the pairing floor.
