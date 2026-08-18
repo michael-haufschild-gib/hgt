@@ -339,3 +339,96 @@ stability lemma, is:
 3. The structure-theoretic input that a positive holomorphic line bundle on a torusless noncompact
    quasi-Abelian variety has Abe's positive base-and-extension presentation
    (`IsAbePositiveTorusless`).
+
+## Lean status 2026-08-18 (second pass) — the growth stability lemma, items 1 and 2
+
+The audit above identified `AbePositiveFactorPresentation.gaussianMajorant` as the next concrete
+target and noted that the separator data is obtained by choice and therefore carries no growth
+clause.  Two of the three analytic ingredients are now Lean-certified, and the missing growth clause
+has been added to the separator construction itself.
+
+### The correct growth notion is a *strip* bound, not exponential type
+
+The Poincaré series is over the **real** lattice `ℤ^d ⊂ ℂ^d`.  Translating a compact set by a
+lattice vector moves only the real parts; the imaginary parts stay inside one fixed polystrip.  So
+the right growth clause for the algebraic bump is not "exponential type" but
+
+```text
+StripBounded f  :  ∀ V, ∃ C ≥ 0, ∀ x with |Im (x_c)| ≤ V for all c,  ‖f(x)‖ ≤ C,
+```
+
+a *uniform* bound along the entire lattice.  Abe's bump satisfies it, because both of its building
+blocks do: `|sin(u+iv)| ≤ e^{|v|}` has no real growth at all, and the normalized sinc inherits the
+same bound outside the unit disc while being continuous — hence bounded — inside it.  Consequently
+the whole decay of the majorant has to come from the Gaussian damping, and it does.
+
+### `HTGeometry/MultivariateEntireStripBound.lean` (new)
+
+- `norm_complexSin_le_exp_abs_im` — the elementary strip bound for `Complex.sin`.  (The same
+  estimate is `HTGeometry.norm_csin_le_exp_abs_im` in `WaveTraceSpectrum`, but that module imports
+  all of Mathlib and so cannot be a base dependency of the quasi-Abelian chain.)
+- `StripBoundedOne`, `StripBounded` — the one-variable and multivariate classes.
+- `stripBounded_of_apply_eq_const`, `StripBounded.mul`, `.pow`, `.add`, `.sub`, `.smul`,
+  `.finsetProd`, `.finsetSum` — the full closure package.
+
+### `HTGeometry/QuasiAbelianIntegerLatticeSeparator.lean` (extended)
+
+- `stripBoundedOne_sinPi`, `stripBoundedOne_complexIntegerSinc` — the two one-variable bounds.
+- `stripBounded_coordinateEntire`, `stripBounded_integerSincProduct`,
+  `stripBounded_integerTranslateSine` — transported to the multivariate factors.
+- `exists_integerLatticePacketSeparator` now also asserts `StripBounded separator`.
+- `exists_flatIntegerLatticePacketSeparator` now also asserts `StripBounded bump`, proved from
+  `bump = 1 - (1 - (c⁻¹ • separator)^m)^m` by the closure package.
+- `FlatIntegerLatticePacketSeparatorData` carries the new field `bump_stripBounded`, so the
+  canonical chosen separator used by the majorant now exposes its growth clause.
+
+This is **item 1** of the card's growth stability lemma (the admissible seed class), and it is
+strictly stronger than the card's paper formulation: no exponential factor is needed at all.
+
+### `HTGeometry/QuasiAbelianGaussianLatticeDecay.lean` (new)
+
+- `norm_centeredComplexGaussian_apply` — `‖G(x)‖ = exp(-∑ σ_i (u_i² - v_i²))` with `u, v` the real
+  and imaginary parts of `x - centre`.
+- `exists_coordinate_bound_of_isCompact` — compact sets have uniformly bounded coordinates.
+- `exists_norm_centeredComplexGaussian_lattice_le` — **the decay half**: for every compact `K`
+  there is a `C` with
+
+```text
+‖G(x + k)‖ ≤ C · exp(-∑_i (σ_i/2) k_i²)      for all x ∈ K and all k ∈ ℤ^d,
+```
+
+proved from `(k + t)² ≥ k²/2 - t²` with `t` the compact-uniform real offset.  This is **item 2**
+of the growth stability lemma.
+
+All new declarations report `#print axioms … = [propext, Classical.choice, Quot.sound]`.
+
+### What is left for `gaussianMajorant`
+
+1. The polynomial factor: `‖P(x + k)‖ ≤ C_K ∏_i (1 + |k_i|)^{deg P}` — elementary, still to write.
+2. The `geom` factor of the damping: bounded along the lattice, since `‖G(x+k)‖` is bounded and
+   `geom = ∑_{r<m} (1 - G)^r`.
+3. Assembling 1, 2, the strip bound and the Gaussian decay into
+   `polynomialGaussianLatticeWeight`, and absorbing the factor's own `ψ(γ)⁻¹` contribution — the
+   only remaining factor-dependent input, which is precisely what Abe's *positivity* of the
+   presentation supplies (it is a property of the presentation, not an extra assumption).
+
+### `HTGeometry/QuasiAbelianPolynomialLatticeGrowth.lean` (new) — item 3
+
+- `exists_norm_mvPolynomial_eval_le` — coefficientwise:
+  `‖eval y P‖ ≤ (∑_{a ∈ supp} |coeff a P|) · ∏_i (1 + ‖y_i‖)^{deg_i P}`, using
+  `MvPolynomial.monomial_le_degreeOf` and the exact extension of the monomial product from
+  `a.support` to all coordinates (the missing exponents are zero, so it is an *equality*, not an
+  inequality).
+- `exists_norm_mvPolynomial_lattice_le` — along the lattice: for every compact `K` there is a `C`
+  with
+
+```text
+‖P(x + k)‖ ≤ C · ∏_i (1 + |k_i|)^{deg_i P}      for all x ∈ K and all k ∈ ℤ^d,
+```
+
+from `1 + ‖x_i + k_i‖ ≤ (1 + R)(1 + |k_i|)`.  The exponent vector `A_i = deg_i P` is exactly the
+polynomial part of `polynomialGaussianLatticeWeight`.
+
+So items 1, 2 and 3 of the growth stability lemma are Lean-certified.  What remains for
+`gaussianMajorant` is the bounded `geom` factor of the damping and the assembly, plus the
+factor-side input supplied by Abe's positivity.

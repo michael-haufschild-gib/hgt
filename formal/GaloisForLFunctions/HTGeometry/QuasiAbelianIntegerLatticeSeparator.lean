@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MultivariateEntireVanishingPower
+import GaloisForLFunctions.HTGeometry.MultivariateEntireStripBound
 import GaloisForLFunctions.HTGeometry.QuasiAbelianAutomorphicForms
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
@@ -172,6 +173,77 @@ theorem integerTranslateSine_target_ne_zero {d : ℕ}
   apply mul_left_cancel₀ hpi
   simpa only [mul_comm] using hk
 
+/-! ## Strip bounds for the explicit factors -/
+
+theorem stripBoundedOne_sinPi :
+    StripBoundedOne (fun z : ℂ => Complex.sin ((Real.pi : ℂ) * z)) := by
+  intro V
+  refine ⟨Real.exp (Real.pi * |V|), (Real.exp_pos _).le, fun z hz => ?_⟩
+  have him : ((Real.pi : ℂ) * z).im = Real.pi * z.im := by simp [Complex.mul_im]
+  refine le_trans (norm_complexSin_le_exp_abs_im _) (Real.exp_le_exp.mpr ?_)
+  rw [him, abs_mul, abs_of_nonneg Real.pi_pos.le]
+  exact mul_le_mul_of_nonneg_left (le_trans hz (le_abs_self V)) Real.pi_pos.le
+
+theorem stripBoundedOne_complexIntegerSinc : StripBoundedOne complexIntegerSinc := by
+  intro V
+  obtain ⟨M, hM0, hM⟩ : ∃ M : ℝ, 0 ≤ M ∧ ∀ z ∈ Metric.closedBall (0 : ℂ) 1,
+      ‖complexIntegerSinc z‖ ≤ M := by
+    have hcont : ContinuousOn complexIntegerSinc (Metric.closedBall (0 : ℂ) 1) :=
+      differentiable_complexIntegerSinc.continuous.continuousOn
+    obtain ⟨M, hM⟩ := (isCompact_closedBall (0 : ℂ) 1).exists_bound_of_continuousOn hcont
+    exact ⟨max M 0, le_max_right _ _, fun z hz => le_trans (hM z hz) (le_max_left _ _)⟩
+  refine ⟨max M (Real.exp (Real.pi * |V|) / Real.pi), le_max_of_le_left hM0, fun z hz => ?_⟩
+  by_cases hz1 : ‖z‖ ≤ 1
+  · refine le_trans (hM z ?_) (le_max_left _ _)
+    simpa [Metric.mem_closedBall, dist_zero_right] using hz1
+  · rw [not_le] at hz1
+    have hzne : z ≠ 0 := by
+      intro h
+      rw [h] at hz1
+      simp at hz1
+      linarith
+    have hpine : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+    have hne : (Real.pi : ℂ) * z ≠ 0 := mul_ne_zero hpine hzne
+    have hval : complexIntegerSinc z
+        = Complex.sin ((Real.pi : ℂ) * z) / ((Real.pi : ℂ) * z) := by
+      rw [complexIntegerSinc, dslope_of_ne _ hne, slope_def_field]
+      rw [Complex.sin_zero, sub_zero, sub_zero]
+    refine le_trans (le_of_eq (by rw [hval])) (le_trans ?_ (le_max_right _ _))
+    rw [norm_div, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg Real.pi_pos.le]
+    have hnum : ‖Complex.sin ((Real.pi : ℂ) * z)‖ ≤ Real.exp (Real.pi * |V|) := by
+      have him : ((Real.pi : ℂ) * z).im = Real.pi * z.im := by simp [Complex.mul_im]
+      refine le_trans (norm_complexSin_le_exp_abs_im _) (Real.exp_le_exp.mpr ?_)
+      rw [him, abs_mul, abs_of_nonneg Real.pi_pos.le]
+      exact mul_le_mul_of_nonneg_left (le_trans hz (le_abs_self V)) Real.pi_pos.le
+    have hden : Real.pi ≤ Real.pi * ‖z‖ := by nlinarith [Real.pi_pos, hz1]
+    have hdenpos : (0 : ℝ) < Real.pi * ‖z‖ := by nlinarith [Real.pi_pos, hz1]
+    rw [div_le_div_iff₀ hdenpos Real.pi_pos]
+    nlinarith [hnum, hden, Real.pi_pos, (Real.exp_pos (Real.pi * |V|)).le, norm_nonneg z]
+
+theorem stripBounded_coordinateEntire {d : ℕ} {phi : ℂ → ℂ} (hphi : Differentiable ℂ phi)
+    (hsb : StripBoundedOne phi) (c : Fin d) (a : Fin d → ℂ) :
+    StripBounded (coordinateEntire phi hphi c a) := by
+  intro V
+  obtain ⟨C, hC0, hC⟩ := hsb (V + |(a c).im|)
+  refine ⟨C, hC0, fun x hx => ?_⟩
+  rw [coordinateEntire_apply]
+  refine hC _ ?_
+  have him : (x c - a c).im = (x c).im - (a c).im := by simp
+  rw [him]
+  have h1 : |(x c).im - (a c).im| ≤ |(x c).im| + |(a c).im| := abs_sub _ _
+  linarith [hx c]
+
+theorem stripBounded_integerSincProduct {d : ℕ} (a : Fin d → ℂ) :
+    StripBounded (integerSincProduct a) :=
+  StripBounded.finsetProd _ _ fun c _ =>
+    stripBounded_coordinateEntire differentiable_complexIntegerSinc
+      stripBoundedOne_complexIntegerSinc c a
+
+theorem stripBounded_integerTranslateSine {d : ℕ} (c : Fin d) (a : Fin d → ℂ) :
+    StripBounded (integerTranslateSine c a) :=
+  stripBounded_coordinateEntire _ stripBoundedOne_sinPi c a
+
 /-- **Abe integer-lattice packet separator.** For any selected packet point there is one explicit
 line-entire source nonzero at that point and zero at every other packet translate, including every
 nontrivial integer translate of the selected point. -/
@@ -182,6 +254,7 @@ theorem exists_integerLatticePacketSeparator
     (target : I) :
     ∃ separator : MultivariateEntire d,
       separator.1 (w target) ≠ 0 ∧
+      StripBounded separator ∧
       ∀ (j : I) (k : Fin d → ℤ),
         (j ≠ target ∨ k ≠ 0) →
           separator.1 (w j + integerCastVector k) = 0 := by
@@ -197,13 +270,16 @@ theorem exists_integerLatticePacketSeparator
     multivariateEntireFinsetProd Finset.univ fun j : Other =>
       integerTranslateSine (coord j) (w j.1)
   let separator := multivariateEntireMul (integerSincProduct (w target)) otherProduct
-  refine ⟨separator, ?_, ?_⟩
+  refine ⟨separator, ?_, ?_, ?_⟩
   · rw [show separator.1 (w target) =
         (integerSincProduct (w target)).1 (w target) * otherProduct.1 (w target) by rfl,
       integerSincProduct_center, one_mul]
     apply Finset.prod_ne_zero_iff.mpr
     intro j hj
     exact integerTranslateSine_target_ne_zero (coord j) (w j.1) (w target) (hcoord j)
+  · exact StripBounded.mul (stripBounded_integerSincProduct (w target))
+      (StripBounded.finsetProd _ _ fun j _ =>
+        stripBounded_integerTranslateSine (coord j) (w j.1))
   · intro j k hjk
     rcases eq_or_ne j target with rfl | hj
     · have hk : k ≠ 0 := by simpa using hjk
@@ -225,7 +301,7 @@ theorem exists_integerLatticePacketSeparatorPower
       ∀ (j : I) (k : Fin d → ℤ) (a : Fin d →₀ ℕ),
         (j ≠ target ∨ k ≠ 0) → Finsupp.degree a < m →
           multiIndexJetEvalCLM (w j + integerCastVector k) a separatorPower = 0 := by
-  obtain ⟨separator, htarget, hzero⟩ :=
+  obtain ⟨separator, htarget, hstrip, hzero⟩ :=
     exists_integerLatticePacketSeparator w hdistinct target
   let one : MultivariateEntire d := mvPolynomialMultivariateEntire 1
   refine ⟨multivariateEntireMul (multivariateEntirePow separator m) one, ?_, ?_⟩
@@ -257,6 +333,7 @@ theorem exists_flatIntegerLatticePacketSeparator
     (target : I) (m : ℕ) (_hm : 0 < m) :
     ∃ bump normalized geom : MultivariateEntire d,
       bump.1 (w target) = 1 ∧
+      StripBounded bump ∧
       bump = multivariateEntireMul (multivariateEntirePow normalized m) geom ∧
       (∀ (j : I) (k : Fin d → ℤ),
         (j ≠ target ∨ k ≠ 0) →
@@ -269,7 +346,7 @@ theorem exists_flatIntegerLatticePacketSeparator
         (j ≠ target ∨ k ≠ 0) → Finsupp.degree a < m →
           multiIndexJetEvalCLM (w j + integerCastVector k) a
             (multivariateEntireMul bump P) = 0) := by
-  obtain ⟨separator, htarget, hzero⟩ :=
+  obtain ⟨separator, htarget, hstrip, hzero⟩ :=
     exists_integerLatticePacketSeparator w hdistinct target
   let one : MultivariateEntire d := mvPolynomialMultivariateEntire 1
   let normalized : MultivariateEntire d := (separator.1 (w target))⁻¹ • separator
@@ -319,7 +396,10 @@ theorem exists_flatIntegerLatticePacketSeparator
     ext x
     have h := congrArg (fun f : MultivariateEntire d ↦ f.1 x) (hbumpFactor one)
     simpa [hone] using h
-  refine ⟨bump, normalized, geom, hbumpTarget, hbumpEq, ?_, ?_, ?_⟩
+  have hone_sb : StripBounded one := stripBounded_of_apply_eq_const hone
+  have hbump_sb : StripBounded bump :=
+    hone_sb.sub (((hone_sb.sub ((hstrip.smul ((separator.1 (w target))⁻¹)).pow m)).pow m))
+  refine ⟨bump, normalized, geom, hbumpTarget, hbump_sb, hbumpEq, ?_, ?_, ?_⟩
   · intro j k hjk
     change (separator.1 (w target))⁻¹ *
       separator.1 (w j + integerCastVector k) = 0
@@ -361,6 +441,7 @@ structure FlatIntegerLatticePacketSeparatorData
   normalized : MultivariateEntire d
   geom : MultivariateEntire d
   bump_target : bump.1 (w target) = 1
+  bump_stripBounded : StripBounded bump
   factorization :
     bump = multivariateEntireMul (multivariateEntirePow normalized m) geom
   normalized_zero : ∀ (j : I) (k : Fin d → ℤ),
@@ -383,9 +464,9 @@ theorem nonempty_flatIntegerLatticePacketSeparatorData
     (hdistinct : PairwiseDistinctModulo (standardIntegerLattice d) w)
     (target : I) (m : ℕ) (hm : 0 < m) :
     Nonempty (FlatIntegerLatticePacketSeparatorData w target m) := by
-  obtain ⟨bump, normalized, geom, hbump, hfactor, hzero, hpreserve, hkill⟩ :=
+  obtain ⟨bump, normalized, geom, hbump, hstrip, hfactor, hzero, hpreserve, hkill⟩ :=
     exists_flatIntegerLatticePacketSeparator w hdistinct target m hm
-  exact ⟨⟨bump, normalized, geom, hbump, hfactor, hzero, hpreserve, hkill⟩⟩
+  exact ⟨⟨bump, normalized, geom, hbump, hstrip, hfactor, hzero, hpreserve, hkill⟩⟩
 
 /-- Canonical choice of the explicit separator, used only to name its analytically estimated
 Poincare seeds.  Every mathematical property is exposed by the bundled fields above. -/

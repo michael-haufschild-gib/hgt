@@ -48,6 +48,8 @@ structure GaussianFlatSeedData {d : ℕ} (center : Fin d → ℂ) (m : ℕ) wher
   geom : MultivariateEntire d
   gaussian_center : gaussian.1 center = 1
   damping_center : damping.1 center = 1
+  damping_eq : damping = mvPolynomialMultivariateEntire 1 -
+    multivariateEntirePow (mvPolynomialMultivariateEntire 1 - gaussian) m
   factorization : damping = multivariateEntireMul gaussian geom
   preserves_target : ∀ (P : MultivariateEntire d) (a : Fin d →₀ ℕ),
     Finsupp.degree a < m →
@@ -89,7 +91,7 @@ def gaussianFlatSeedDataOfUnitValue {d m : ℕ}
         rw [← hgeom]
         ring
       _ = G.1 x * ∑ r ∈ Finset.range m, (1 - G.1 x) ^ r := by ring
-  refine ⟨G, damping, geom, hG, hdamping, hfactor, ?_⟩
+  refine ⟨G, damping, geom, hG, hdamping, rfl, hfactor, ?_⟩
   intro P a ha
   have hvanish := multiIndexJetEvalCLM_mul_pow_eq_zero_of_degree_lt
     complement P center hcomplement a ha

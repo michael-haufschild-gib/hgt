@@ -50,8 +50,7 @@ theorem norm_mellinStepKernel (r : ℝ → ℂ) (μ : ℂ) {x t : ℝ} (hx : 0 <
     simp [Complex.sub_re, Complex.neg_re]
   · rw [Set.indicator_of_notMem h, Set.indicator_of_notMem h, norm_zero]
 
-theorem integral_mellinStepKernel_snd {r : ℝ → ℂ} {μ : ℂ} {x : ℝ} (hx : 1 ≤ x)
-    (hr : IntegrableOn r (Set.Ioc 1 x)) :
+theorem integral_mellinStepKernel_snd {r : ℝ → ℂ} {μ : ℂ} {x : ℝ} (hx : 1 ≤ x) :
     (∫ t in Set.Ioi (1:ℝ), mellinStepKernel r μ x t)
       = (∫ t in (1:ℝ)..x, r t) * (x : ℂ) ^ (-μ - 1) := by
   classical
@@ -148,7 +147,7 @@ theorem aestronglyMeasurable_of_mellin {r : ℝ → ℂ} {μ : ℂ}
 /-- A Mellin-integrable datum with nonnegative exponent is integrable on every bounded window. -/
 theorem integrableOn_Ioc_of_mellin {r : ℝ → ℂ} {μ : ℂ} (hμ : 0 ≤ μ.re)
     (hint : IntegrableOn (fun t => r t * (t : ℂ) ^ (-μ)) (Set.Ioi (1:ℝ)))
-    {x : ℝ} (hx : 1 ≤ x) : IntegrableOn r (Set.Ioc 1 x) := by
+    {x : ℝ} : IntegrableOn r (Set.Ioc 1 x) := by
   have hsub : Set.Ioc (1:ℝ) x ⊆ Set.Ioi (1:ℝ) := fun y hy => hy.1
   have hint' : IntegrableOn (fun t => r t * (t : ℂ) ^ (-μ)) (Set.Ioc 1 x) :=
     hint.mono_set hsub
@@ -250,7 +249,6 @@ theorem mellin_antiderivative_step {r : ℝ → ℂ} {μ : ℂ} (hμ : 0 < μ.re
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
     intro x hx
     exact integral_mellinStepKernel_snd (le_of_lt hx)
-      (integrableOn_Ioc_of_mellin (le_of_lt hμ) hint (le_of_lt hx))
   have hR : (∫ t in Set.Ioi (1:ℝ), ∫ x in Set.Ioi (1:ℝ), mellinStepKernel r μ x t)
       = ∫ t in Set.Ioi (1:ℝ), μ⁻¹ * (r t * (t : ℂ) ^ (-μ)) := by
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
@@ -259,6 +257,39 @@ theorem mellin_antiderivative_step {r : ℝ → ℂ} {μ : ℂ} (hμ : 0 < μ.re
     rw [integral_mellinStepKernel_fst hμ ht]
     field_simp
   rw [← hL, hswap, hR, MeasureTheory.integral_const_mul, ← mul_assoc, mul_inv_cancel₀ hμ0, one_mul]
+
+/-- **Iterated Mellin step.**  For a chain of antiderivatives `r (j+1) x = ∫_1^x r j`, the Mellin
+transform of `r 0` at `s` is the rising factorial `s(s+1)⋯(s+j-1)` times the transform of `r j`
+at `s + j`. -/
+theorem mellin_iterated_step {r : ℕ → ℝ → ℂ} {s : ℂ} (hs : 0 < s.re)
+    (hrec : ∀ j : ℕ, ∀ x ∈ Set.Ioi (1:ℝ), r (j + 1) x = ∫ t in (1:ℝ)..x, r j t)
+    (hint : ∀ j : ℕ, IntegrableOn (fun t => r j t * (t : ℂ) ^ (-(s + j))) (Set.Ioi (1:ℝ)))
+    (j : ℕ) :
+    (∫ x in Set.Ioi (1:ℝ), r 0 x * (x : ℂ) ^ (-s))
+      = (∏ i ∈ Finset.range j, (s + i)) *
+        ∫ x in Set.Ioi (1:ℝ), r j x * (x : ℂ) ^ (-(s + j)) := by
+  induction j with
+  | zero => simp
+  | succ j ih =>
+    have hjre : 0 < (s + (j : ℂ)).re := by
+      have : ((j : ℂ)).re = (j : ℝ) := by simp
+      rw [Complex.add_re, this]
+      have : (0:ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
+      linarith
+    have hstep := mellin_antiderivative_step (r := r j) (μ := s + (j : ℂ)) hjre (hint j)
+    have hcongr : (∫ x in Set.Ioi (1:ℝ), (∫ t in (1:ℝ)..x, r j t) * (x : ℂ) ^ (-(s + (j : ℂ)) - 1))
+        = ∫ x in Set.Ioi (1:ℝ), r (j + 1) x * (x : ℂ) ^ (-(s + ((j + 1 : ℕ) : ℂ))) := by
+      refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
+      intro x hx
+      have hexp : -(s + (j : ℂ)) - 1 = -(s + ((j + 1 : ℕ) : ℂ)) := by
+        push_cast
+        ring
+      show (∫ t in (1:ℝ)..x, r j t) * (x : ℂ) ^ (-(s + (j : ℂ)) - 1)
+        = r (j + 1) x * (x : ℂ) ^ (-(s + ((j + 1 : ℕ) : ℂ)))
+      rw [hexp, hrec j x hx]
+    rw [hcongr] at hstep
+    rw [ih, ← hstep, Finset.prod_range_succ]
+    ring
 
 end GaloisForLFunctions.HTGeometry
 

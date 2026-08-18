@@ -5236,3 +5236,43 @@ Two lessons worth keeping.
   `docs/drafts/pipeline/1-in-progress/selberg-superlinear-xi-density-programme.md`.
 - **Card status:** stays in `2-fully-proven`.  Sections 1–3, 5–7 are Lean-certified; section 4's
   `(22)` is the one open item.
+
+## 2026-08-18 (second entry) — `gauss-component-quasi-inner-residue-hierarchy` section 6 closed
+
+Section 6 (equation (15)) is now Lean-certified for the **actual** operator, replacing the paper's
+appeal to the Lord–Sukochev–Zanin eigenvalue comparison theorem for weakly `V_0`-modulated operators
+by an elementary two-scale compression argument.
+
+New modules (all `lake build` green, `#print axioms` = `[propext, Classical.choice, Quot.sound]`,
+all wired into `GaloisForLFunctions/RHTower.lean`):
+
+| module | content |
+|---|---|
+| `RHTower/PositiveOperatorDiagonalResidue.lean` | `sum_singVal_le_diagonal_add_tail`: `∑_{n<N} s_n(T) ≤ ∑_{j∈S}⟨b_j,T b_j⟩ + √(2N)·E_S` |
+| `RHTower/SingularValueLogMean.lean` | `tendsto_sum_singVal_div_log_of_diagonal`: band diagonal log-mean + column decay `≲|n|^{-1+δ}` ⟹ singular-value log-mean |
+| `RHTower/GaussTwoPieceL2Bound.lean` | `norm_sq_le_of_twoPieceAmplitude`: Parseval from the two-piece amplitude class |
+| `RHTower/GaussIterateNormBound.lean` | `exists_gaussClass_principalStepInner`, `exists_norm_gaussPrincipalStep_pow_le`: `‖R_I^m 1‖ ≤ C(1+I)^ρ` for every `ρ>0` |
+| `RHTower/GaussColumnDecay.lean` | `exists_norm_gaussQuasiInnerG_pow_fourierLp_le`: `‖G^m e_n‖ ≤ C|n|^{-1+ρ}` |
+| `RHTower/GaussChannelOperator.lean` | `gaussChannelOperator`, `tendsto_sum_singVal_gaussChannelOperator`, `isDixmier_gaussChannelOperator`, `hasSchattenLogResidue_gaussChannelOperator` |
+
+The key unlock was noticing that the outermost factor of `R_n = B S B^{-2} S* B` is a *bounded
+multiplication operator*, so only the inner four factors need the tied class — and those obey the
+weaker constraint `c + 1/(2m) < 1`, which the `(m-1)`-st iterate satisfies.
+
+Card status: section 1 (the Connes–Consani one-prime Hankel decomposition) remains a **cited
+classical input**, as declared in the card's own "Source boundary".  Everything the card adds over
+that source is now Lean-certified.
+
+### Remaining across the four `other` cards
+
+* `gauss-component-quasi-inner-residue-hierarchy` — §1 Connes–Consani source reduction (cited).
+* `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness` — the growth stability lemma
+  (`AbePositiveFactorPresentation.gaussianMajorant`), the damped packet lift
+  (`AbeDampedFactorExtension.liftPacket`), and Abe's structure theory (`IsAbePositiveTorusless`).
+  The first of these needs exponential-type bounds for `complexIntegerSinc` and
+  `integerTranslateSine` — the separator data is currently obtained by choice and carries no growth
+  clause, so the clause has to be added to `FlatIntegerLatticePacketSeparatorData` and proved for
+  the explicit sinc/sine construction.
+* `finite-archimedean-gamma-product-boundary-law` and
+  `archimedean-relative-prime-cocycle-curvature` — the shared blocker is the all-orders
+  Stirling/transseries model injecting the shifted-Gamma jet field into `ℂ(log s)((s^{-1}))[Γ^{±1}]`.

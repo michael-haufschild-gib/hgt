@@ -4730,3 +4730,53 @@ exceptional count `≍ √x(log x)^{-1.05} = o(√x/log x)` and closing the mark
 
 **This is now the whole remaining content of the card**: no new estimate, only the propagation of
 explicit rates through four majorant limits that are already proved to vanish.
+
+### Step 1's squarefree half is closed at rate `(log x)^{-2}` (2026-08-18)
+
+Three new modules, all axiom-clean (`[propext, Classical.choice, Quot.sound]`) and wired into
+`GaloisForLFunctions.RHTower`.
+
+**What was wrong.** `Sieve/AveragedSquarefreeTail.sum_tail_divisor_count_le` bounds the averaged
+truncation tail by `L·((B+L-A)/R + M)`. The `+M` is the `+1` defect of
+`#{n ∈ (A,B+L] : d²∣n} ≤ (B+L-A)/d² + 1`, paid once for each of the `M-R` divisors. Instantiated at
+the fibre data (`L = ⌈h⌉+1`, `B = ⌈√x⌉`, `M' = ⌈√(x+h√x)⌉ ≍ √x`) that term alone contributes
+`≍ 400√x` exceptional fibres after the Markov division by `θ = h/100` — more than the outer block
+itself, at every `R`. This is what the earlier `R ≍ 27` attempt was really failing on;
+`Sieve/SquarefreeMaximalWindow.sum_tail_divisor_count_le_sqrt` improves `M` to `√(B+L)` but keeps an
+additive term.
+
+**The fix.** After the double count over starts, anchor the multiple count at the origin:
+`#{n ∈ (0,N] : d²∣n} = ⌊N/d²⌋ ≤ N/d²` exactly, no defect (`Nat.Ioc_filter_dvd_card_eq_div`). Hence
+
+- `Sieve/AveragedSquarefreeTailSharp.sum_tail_divisor_count_le_sharp : … ≤ L(B+L)/R`,
+
+with no dependence on the truncation level at all. `Sieve/FibreTailSharp` aggregates it to
+`fibreTailBudgetSharp x h R = 4(⌈h⌉+1)(⌈√x⌉+⌈h⌉+1)/R` and Markov-divides
+(`card_fibre_bad_le_sharp`).
+
+**Why this matters for the marker join.** The join in step 2 discards bad fibres from a dyadic block
+carrying `≍ √x/log x` marker primes, so the exceptional set must be `o(√x/log x)` — a constant
+fraction of `√x` is useless. With the sharp budget the squarefree exceptional count is `≍ √x/R`, and
+the squarefree-mass hypothesis `R + L/R + θ ≤ (1/2)ϱL` permits any `R` below a fixed fraction of the
+window length `h = exp((log x)^{99/100})`, which exceeds every power of `log x`. Taking
+`R = ⌈(log x)³⌉ + 100` gives
+
+```
+Sieve/FibreStepOnePositive.eventually_fibre_step_one_growing (hε : 0 < ε) :
+  ∀ᶠ x in atTop,
+    #outerBlock ≤ #good + 1024·ε·√x/ϱ² + √x/(log x)²
+```
+
+unconditionally. `card_outerBlock_ge : √x - 1 ≤ #outerBlock` is proved alongside, and
+`eventually_fibre_step_one_positive` records the corollary `(3/4)√x ≤ #good` at `ε = 10⁻⁵`.
+
+**The one remaining gate on this card.** The squarefree half is now `√x/(log x)²`, strictly better
+than the join needs. The Möbius half is `1024·ε·√x/ϱ²`, where `ε` is any tolerance the corpus's
+`Sieve/MoebiusMeanSquare.averagedMeanSquare_moebius` eventually achieves. Since that theorem is
+stated as `Tendsto … (𝓝 0)`, it supplies each fixed `ε` but no rate, and a fixed `ε` gives only a
+constant fraction of `√x`. What is needed is an explicit `≤ (log x)^{-A}` with `A > 1`. The
+majorants underneath it are already explicit closed forms (`RhoLimit.rhoMajorant`,
+`SlopeQuotientLimit.slopeMajorant`, `ConstQuotientLimit.constMajorant`) whose dominant term is
+`(log x)^{5/4-β-γβ}`, squared by the annulus constant; at `β, γβ > 9/10` that is past `(log x)^{-1.1}`.
+Converting those three `Tendsto … (𝓝 0)` statements into explicit majorant inequalities is the whole
+of the remaining work for step 1.

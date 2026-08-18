@@ -3400,3 +3400,80 @@ Remaining on the chain: instantiating this at the prime window (Lemma 4 proper),
 the solution to unimodular values with `exists_unimodular_rounding`), Lemma 6 (the induction step),
 Lemma 7 (the recursion `|r_j(x)| ≪_j x^{j theta}`), Theorem 1 (integration by parts and analytic
 continuation) and Theorem 2.
+
+### Lemma 5 is proved in coordinate-free form
+
+`HTGeometry/UnimodularMomentApproximation.lean` (wired, axiom-clean).
+
+```text
+exists_unimodular_moment_approx
+    v : Fin N -> Fin J -> C   a family of moment vectors, |v r j| <= C
+    a : Fin N -> C            arbitrary coefficients in the closed unit disc
+  ==> exists b : Fin N -> C with |b r| = 1 for every r and
+        | sum_r b r * v r j  -  sum_r a r * v r j |  <=  J * C   for every j
+```
+
+This is Andersson's Lemma 5 (= Bagchi's rounding Lemma 4.1 applied to the moment map): the disc
+coefficients produced by Lemma 4 may be replaced by *unimodular* ones — which is what a Helson
+character requires at a prime — at the cost of an error controlled by the dimension `J` times the
+size of one moment vector.  The proof feeds `exists_unimodular_rounding` (corpus) with the
+`J`-dimensional sup-normed space `Fin J -> C`, whose `finrank` is `J`.
+
+## Lean progress — the analytic skeleton of Theorem 1
+
+Three modules, all wired and axiom-clean, which turn the Mellin representation of Lemma 1 into the
+iterated representation that Theorem 1 integrates by parts.
+
+`HTGeometry/MellinAntiderivativeStep.lean`
+
+```text
+mellinStepKernel r mu x t                    the Fubini kernel  1_{t <= x} r(t) x^{-mu-1}
+integral_Ioi_cpow_tail                       int_{x > t} x^{-mu-1} dx = t^{-mu}/mu   (Re mu > 0)
+aestronglyMeasurable_of_mellin               r is measurable as soon as r(t) t^{-mu} is integrable
+integrableOn_Ioc_of_mellin                   and integrable on every bounded window
+integrable_uncurry_mellinStepKernel          the kernel is product-integrable
+mellin_antiderivative_step
+    Re mu > 0,  r(t) t^{-mu} integrable on (1,inf)
+      ==>  mu * int_1^inf ( int_1^x r ) x^{-mu-1} dx  =  int_1^inf r(t) t^{-mu} dt
+mellin_iterated_step
+    r (j+1) x = int_1^x r j   for every j and every x > 1, each level Mellin-integrable at s+j
+      ==>  int_1^inf r_0 x^{-s} dx
+             = ( prod_{i < j} (s+i) ) * int_1^inf r_j(x) x^{-(s+j)} dx
+```
+
+The step is proved by **Fubini on the region `1 < t <= x`**, not by integration by parts.  That is
+essential here: the first antiderivative in Andersson's chain is `int_1^x q + psi_chi(x)`, which is
+a *step* function, so it has no derivative at the primes and the parts formula is unavailable.  The
+Fubini route needs nothing beyond integrability.
+
+`HTGeometry/StepProfileMellinTransform.lean`
+
+```text
+iUnion_unitWindow                 the windows [k+1, k+2) partition [1, inf)
+pairwise_disjoint_unitWindow      and are pairwise disjoint
+floor_eq_of_mem_unitWindow        the floor is constant on each window
+abs_profile_floor_le              |R(floor x)| <= C (x^theta + 1)   for x >= 1, both signs of theta
+integrableOn_stepProfile          the step profile is Mellin-integrable for Re s > max(0, theta)
+mellin_stepProfile_eq_tsum
+    |R N| <= C N^theta,  0 < Re s,  theta < Re s
+      ==>  s * int_1^inf R(floor x) x^{-s-1} dx
+             = sum_k R(k+1) ( (k+1)^{-s} - (k+2)^{-s} )
+```
+
+`RHTower/StepProfileMellinLSeries.lean`
+
+```text
+mellin_sourcePartialSum_eq_LSeries
+    partial sums of b bounded by C N^theta, 0 < Re s, theta < Re s, L-series summable
+      ==>  s * int_1^inf ( sum_{m <= x} b m ) x^{-s-1} dx  =  LSeries b s
+```
+
+The last one is the integral (Mellin) form of Abel summation; it is obtained by matching the window
+decomposition above against the corpus's increment-series form `abelTailSeries_sourcePartialSum`,
+so no summation-by-parts argument is repeated.
+
+Consequence for Theorem 1: with `r_1 = int_1^x q + psi_chi` the two halves of the base identity are
+now both formal — the continuous half is `mellin_antiderivative_step` at `mu = s`, the arithmetic
+half is `mellin_sourcePartialSum_eq_LSeries` — and `mellin_iterated_step` performs the `j`-fold
+integration that Theorem 1 needs, with the rising factorial `s(s+1)...(s+j-1)` appearing exactly as
+in Andersson.

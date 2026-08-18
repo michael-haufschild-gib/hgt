@@ -294,3 +294,162 @@ So Phase A of the programme (Hardy phase + AFE) is **owned**, not open.  The rev
 
 All axiom-clean.  Next: the termwise real expansion of `hardyZ` (item 1 of the revised open list),
 then the mollified second moment.
+
+## Landed bricks 4 and 5: the Hardy-`Z` smooth AFE, complex and real (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/HardyZSmoothAFE.lean`
+
+- `exp_neg_half_log`, `cpow_neg_linePt`, `cpow_linePt_sub_one` — the exact splitting
+  `n^{-(½+iτ)} = (√n)⁻¹ exp(−iτ log n)` and its reflected partner.
+- `exp_theta_mul_cpow_neg_linePt`, `exp_neg_theta_mul_cpow_linePt_sub_one` — multiplying by
+  `exp(±iθ(τ))` produces exactly `hardyTwistPhase (log n) τ = θ(τ) − τ log n`.
+- `hardyZ_eq_two_tsum_smoothAFE` — **the Gaussian smooth AFE for Hardy's `Z`**, exact and
+  unconditional for every cutoff scale `x > 0`:
+  ```
+  Z(τ) = ∑_{n≥1} (√n)⁻¹ exp( i(θ(τ) − τ log n) ) · smoothAFECutoff(n/x)
+       + ∑_{n≥1} (√n)⁻¹ exp(−i(θ(τ) − τ log n) ) · smoothAFEZetaDualWeight τ (n·x)
+       − exp(iθ(τ)) · smoothAFEZetaShiftedPoleResidue(½+iτ) x
+  ```
+
+`formal/GaloisForLFunctions/RHTower/HardyZSmoothAFEReal.lean`
+
+- `norm_natSucc_cpow_neg_linePt`, `smoothAFEDirectWeightedSeries_summable` — absolute summability
+  of the direct edge, from the tree's `exists_norm_smoothAFECutoff_le_neg_rpow` at exponent `1`
+  against the `3/2`-power majorant.  (The dual edge already had
+  `smoothAFEZetaDualWeightedSeries_summable`.)
+- `re_ofReal_mul_exp_I_mul`, `re_ofReal_mul_exp_neg_I_mul` — the real part of a twisted phase term.
+- `hardyZ_eq_two_tsum_smoothAFE_real` — **the real form**: both edges are twisted Hardy
+  cosine/sine series with real weights,
+  ```
+  Z(τ) = ∑_n (√n)⁻¹ ( cos(θ−τ log n)·Re w₁ − sin(θ−τ log n)·Im w₁ )
+       + ∑_n (√n)⁻¹ ( cos(θ−τ log n)·Re w₂ + sin(θ−τ log n)·Im w₂ ) − Re(residue).
+  ```
+  Every term is now exactly of the shape `g(τ)·cos(θ(τ) − τL + φ)` that
+  `abs_integral_mul_cos_hardyTwistPhase_le` consumes (`sin t = cos(t − π/2)`).
+
+All axiom-clean.  Item 1 of the revised open list is therefore **done**.  What remains is item 2
+(summing the cell estimates over `n`, which needs the `τ`-derivative bounds of the two weights —
+the tree has `SmoothAFEZetaDualWeightHeightDerivative` and `SmoothAFEZetaChiShift*DerivativeBound`
+for exactly this) and item 3, the mollified second moment.
+
+## Landed bricks 6 and 7 (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/HardyTwistCellCombination.lean`
+
+- `continuous_hardyTwistPhase`, `intervalIntegrable_cos_hardyTwistPhase`,
+  `intervalIntegrable_sin_hardyTwistPhase`.
+- `abs_integral_hardyTwistCombination_le` — the cell bound for a real combination
+  `a·cos(θ(τ) − τL) + b·sin(θ(τ) − τL)` with `τ`-independent coefficients:
+  `≤ (|a| + |b|)·(2/δ + (v−u)(1/T² + π/(4T))/δ²)`.  The sine is handled by the quarter-period shift
+  `sin t = cos(t − π/2)`, so no second oscillatory estimate is needed.
+- `abs_integral_afeTerm_le` — the same bound for one AFE term with amplitude `c ≥ 0` and a
+  `τ`-independent complex weight `w`: `≤ c(|Re w| + |Im w|)·(cell bound)`.  This is exactly the
+  direct edge of `hardyZ_eq_two_tsum_smoothAFE_real`, whose weight `smoothAFECutoff (n/x)` does not
+  depend on `τ`.
+
+`formal/GaloisForLFunctions/HTGeometry/IntervalIntegralTsumBound.lean`
+
+- `abs_intervalIntegral_tsum_le` — **termwise cell bound**: if each term is integrable on the cell,
+  the termwise absolute masses are summable, and each term's cell integral is bounded by a summable
+  `B n`, then `|∫_u^v ∑' n, F n| ≤ ∑' n, B n`.  Built on mathlib's
+  `hasSum_integral_of_summable_integral_norm`.  This is the interchange step that converts the
+  per-term cancellation estimates of the AFE into a bound on the cell integral of `Z` itself.
+
+Both axiom-clean, wired, built individually.
+
+### Immediate next step
+
+Instantiate `abs_intervalIntegral_tsum_le` on the direct edge of
+`hardyZ_eq_two_tsum_smoothAFE_real` with `B n = (√n)⁻¹(|Re w₁| + |Im w₁|)·(cell bound)` from
+`abs_integral_afeTerm_le`; the summability of `B` is the same `3/2`-power majorant already used in
+`smoothAFEDirectWeightedSeries_summable`, and the per-term integrability is continuity.  The dual
+edge additionally needs the `τ`-derivative of `smoothAFEZetaDualWeight`, for which the tree owns
+`SmoothAFEZetaDualWeightHeightDerivative` and `SmoothAFEZetaChiShift*DerivativeBound`; that turns
+`abs_integral_mul_cos_hardyTwistPhase_le` (weighted form) into the dual-edge cell bound.  After
+that, only the mollified second moment remains.
+
+## Landed brick 8: the direct edge, cell by cell (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/HardyZDirectEdgeCellBound.lean`
+
+- `directEdgeTerm x n τ` — the `n`-th term of the direct edge of
+  `hardyZ_eq_two_tsum_smoothAFE_real`, and `continuous_directEdgeTerm`.
+- `abs_directEdgeTerm_le` — `|term| ≤ (√n)⁻¹(|Re w₁| + |Im w₁|)` pointwise.
+- `summable_directEdge_absMass` — the termwise absolute masses over a cell are summable, via
+  `exists_norm_smoothAFECutoff_le_neg_rpow` at exponent `1` and the `3/2`-power majorant.  This
+  discharges the hard hypothesis of the interchange.
+- `abs_integral_directEdge_le` — **any summable family of per-term cell bounds bounds the cell
+  integral of the whole direct edge.**
+- `abs_integral_directEdgeTerm_le` — the per-term bound below the conductor, in exactly that form.
+
+So the direct edge is complete: below the conductor every term gains `2/δ + (v−u)·O(1/T)/δ²`, and
+the sum converges absolutely.
+
+### What the dual edge still needs
+
+`smoothAFEZetaDualWeight τ Y` depends on `τ`, so its cell integral needs the **weighted** estimate
+`abs_integral_mul_cos_hardyTwistPhase_le` with `g(τ) = (Re or Im) smoothAFEZetaDualWeight τ (n x)`
+and `g'` its height derivative.  The tree already owns that derivative:
+`RHTower/SmoothAFEZetaDualWeightHeightDerivative.lean` and the `SmoothAFEZetaChiShift*Bound`
+family.  That is the next brick, after which only the mollified second moment remains.
+
+## Landed brick 9: the frozen dual edge (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/HardyZFrozenDualEdgeCellBound.lean`
+
+The dual weight depends on the height, so the constant-weight estimate does not apply to it
+directly.  Rather than build the missing continuity of the weight's height derivative, the route
+taken is the one the tree already priced: **freeze the weight**.
+
+- `dualEdgeTermAt x u n τ` — the `n`-th dual-edge term with the weight frozen at height `u`; taking
+  `u = τ` recovers the genuine term.
+- `continuous_dualEdgeTermAt`, `abs_dualEdgeTermAt_le`.
+- `summable_dualEdgeAt_absMass` — summability of the termwise absolute masses over a cell, from
+  `exists_norm_smoothAFEZetaDualWeight_le_inv` (`‖dualWeight u Y‖ ≤ K(1+|u|)/Y`) and the
+  `3/2`-power majorant.
+- `abs_integral_frozenDualEdge_le` — the frozen dual edge obeys the termwise interchange bound.
+- `abs_integral_dualEdgeTermAt_le` — the per-term cell bound below the conductor, via
+  `abs_integral_hardyTwistCombination_le` with `a = Re w`, `b = Im w`.
+
+The freezing cost is already owned:
+`exists_norm_smoothAFEZetaDualSeriesWeightError_le` gives, for `4 ≤ τ`, `4 ≤ u`, `0 < x`,
+```
+‖∑ₙ (n+1)^{s−1}( dualWeight τ ((n+1)x) − dualWeight u ((n+1)x) )‖ ≤ (A/x)·|τ−u|·majorant(3/2),
+```
+and `‖exp(−iθ(τ))‖ = 1`, so the real dual edge differs from its frozen version by at most
+`(A/x)·|τ−u|·M` pointwise.  On a cell of length `H` frozen at its left endpoint that is `≤ (A/x)HM`,
+contributing `≤ (A/x)H²M` to the cell integral.
+
+### Next brick
+
+The freezing transfer itself: `|dualEdge(τ) − ∑ₙ dualEdgeTermAt x a n τ| ≤ (A/x)|τ−a|·M`, obtained
+by taking real parts of the owned complex freezing bound through `re_ofReal_mul_exp_neg_I_mul` and
+`exp_neg_theta_mul_cpow_linePt_sub_one`.  Then the two edges combine into a cell bound for `Z`
+itself, and the remaining input is the mollified second moment.
+
+## Landed brick 10: the freezing transfer (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/HardyZDualEdgeFreezing.lean`
+
+- `summable_dualEdgeTermAt` — the frozen dual edge is summable at every height.
+- `dualEdgeTermAt_sub_eq_re` — the difference between the genuine and the frozen dual-edge term is
+  exactly the real part of `exp(−iθ(τ))·(n+1)^{s−1}·(w_τ − w_u)`, via
+  `exp_neg_theta_mul_cpow_linePt_sub_one` and `re_ofReal_mul_exp_neg_I_mul`.
+- `abs_tsum_dualEdge_sub_frozen_le` — **the freezing transfer**: there is `A ≥ 0` with, for
+  `0 < x`, `4 ≤ τ`, `4 ≤ u`,
+  ```
+  |∑ₙ dualEdgeTermAt x τ n τ − ∑ₙ dualEdgeTermAt x u n τ| ≤ (A/x)·|τ − u|·majorant(3/2).
+  ```
+  Proof: the tree's complex frozen-series bound, multiplied by the unit-modulus phase
+  `exp(−iθ(τ))` (`‖exp(−iθ)‖ = 1` since the exponent is purely imaginary) and pushed through
+  `Complex.reCLM.map_tsum`.
+
+All axiom-clean.  Both edges of the real Hardy-`Z` smooth AFE now have complete cell machinery:
+the direct edge directly, the dual edge after freezing at the cell's left endpoint with an
+explicitly priced error.
+
+### State of the open list
+
+1. Z-side AFE — **done** (bricks 4, 5).
+2. Cell estimates and their summation — **done** (bricks 3, 6, 7, 8, 9, 10).
+3. The mollified second moment `∫_T^{2T}|ζM|² ≪ T` — **open**, and now the only remaining input.

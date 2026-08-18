@@ -98,4 +98,58 @@ theorem exists_mem_degreeFiltration_milnorResidue_eq {π : Polynomial F} (hπ : 
   obtain ⟨x, hx, hxy⟩ := hmem
   exact ⟨x, hx, hxy⟩
 
+/-- Two non-associated irreducibles do not divide each other. -/
+theorem notMem_span_of_not_associated {π π' : Polynomial F} (hπ : Irreducible π)
+    (hπ' : Irreducible π') (h : ¬ Associated π π') : π ∉ Ideal.span {π'} := by
+  intro hmem
+  rw [Ideal.mem_span_singleton] at hmem
+  exact h (hπ'.associated_of_dvd hπ hmem).symm
+
+/-- The part of `L_{deg π}` whose residues vanish at every *other* place of degree `deg π`. -/
+noncomputable def degreeFiltrationOnlyAt {π : Polynomial F} (_hπ : Irreducible π) (n : ℕ) :
+    AddSubgroup (MilnorKDeg (RatFunc F) (n + 1)) :=
+  degreeFiltration (F := F) π.natDegree (n + 1) ⊓
+    ⨅ p : {q : Polynomial F // Irreducible q ∧ q.natDegree = π.natDegree ∧ ¬ Associated π q},
+      (milnorResidue (residueDataAtPlace (RatFunc F) (polyPlace p.2.1)) (n + 1)).ker
+
+/-- **The graded map of Milnor's filtration is onto its `π`-component, with all other components of
+the same degree zero.**  Every class of `K_n^M(F[X]/π)` is the residue at `π` of a class of
+`L_{deg π}` whose residue at every other irreducible of degree `deg π` vanishes. -/
+theorem exists_mem_degreeFiltrationOnlyAt_milnorResidue_eq {π : Polynomial F}
+    (hπ : Irreducible π) (n : ℕ) (y : MilnorKDeg (IsLocalRing.ResidueField
+      (((polyPlace hπ).valuation (RatFunc F)).valuationSubring)) n) :
+    ∃ x ∈ degreeFiltrationOnlyAt hπ n, milnorResidue (polyResidueData hπ) (n + 1) x = y := by
+  have hmem : y ∈ AddSubgroup.map (milnorResidue (polyResidueData hπ) (n + 1))
+      (degreeFiltrationOnlyAt hπ n) := by
+    refine milnorKDeg_mem_of_gen _ (fun s => ?_) y
+    obtain ⟨l, hdeg, hval, hmap⟩ := exists_list_polyUnit_degree_lt hπ s.val
+    have hprop : s.val.length = n := s.property
+    have hlen : l.length = n := by rw [← hprop, ← hmap, List.length_map]
+    subst hlen
+    have hentries : ∀ a ∈ l ++ [(polyResidueData hπ).unif], ∃ (p : Polynomial F) (hp : p ≠ 0),
+        p.natDegree ≤ π.natDegree ∧ a = polyUnit hp := by
+      intro a ha
+      rcases List.mem_append.1 ha with ha' | ha'
+      · obtain ⟨p, hp, hplt, hap⟩ := hdeg a ha'
+        exact ⟨p, hp, le_of_lt hplt, hap⟩
+      · rw [List.mem_singleton] at ha'
+        exact ⟨π, hπ.ne_zero, le_rfl, by rw [ha', polyResidueData_unif]⟩
+    refine ⟨milnorClassDeg (RatFunc F) (l.length + 1)
+      ⟨l ++ [(polyResidueData hπ).unif], by simp⟩, ⟨?_, ?_⟩, ?_⟩
+    · exact AddSubgroup.subset_closure ⟨_, hentries, rfl⟩
+    · refine AddSubgroup.mem_iInf.2 fun q => ?_
+      obtain ⟨q, hq, hqdeg, hqass⟩ := q
+      refine milnorResidue_eq_zero_of_not_dvd hq (l.length + 1) _ ?_
+      intro a ha
+      rcases List.mem_append.1 ha with ha' | ha'
+      · obtain ⟨p, hp, hplt, hap⟩ := hdeg a ha'
+        exact ⟨p, hp, notMem_span_of_natDegree_lt hp (hqdeg ▸ hplt), hap⟩
+      · rw [List.mem_singleton] at ha'
+        exact ⟨π, hπ.ne_zero, notMem_span_of_not_associated hπ hq hqass,
+          by rw [ha', polyResidueData_unif]⟩
+    · rw [milnorResidue_append_unif (polyResidueData hπ) l hval]
+      exact congrArg (milnorClassDeg _ l.length) (Subtype.ext hmap)
+  obtain ⟨x, hx, hxy⟩ := hmem
+  exact ⟨x, hx, hxy⟩
+
 end GaloisForLFunctions.HTGeometry

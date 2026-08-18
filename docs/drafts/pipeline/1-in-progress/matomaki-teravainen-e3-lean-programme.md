@@ -998,3 +998,34 @@ Feed the weight `min(min(2h, 2|t|hh₁/x), 4(x+h₁)/|t|)` into
 assembly's dyadic split is already written and its hypotheses are the two affine mean-square
 majorants `(FS7)` supplies; only the weight changes, and the low-frequency branch removes the blocks
 below `x/h₁` that the old `min(x/t, h)` weight had to pay for.
+
+## `Sieve/MixedMomentWindowCompare` — Lemma 3.1's weight is now the comparison kernel (2026-08-18)
+
+The substitution flagged as the last step of M2 is done. The new module defines
+
+```
+windowCompareKernel x h h₁ t₀ t = min (min (2h) (2|t|hh₁/x)) (4(x+h₁)/max |t| t₀)
+```
+
+— the three-branch majorant of `perronCompareKernel`, with the decaying branch's denominator floored
+at `t₀` so the weight is globally continuous (`continuous_windowCompareKernel`). Four structural
+facts and two moment bounds:
+
+- `norm_perronCompareKernel_le_windowCompareKernel` — it majorizes the Perron window difference for
+  `|t| ≥ t₀`, so it is a legitimate replacement for `perronKernel` in the assembly;
+- `windowCompareKernel_le_div` — above `t₀` it decays like `4(x+h₁)/t`, which is exactly the
+  hypothesis `G t ≤ C/t` of `HTGeometry.integral_norm_mul_norm_mul_kernel_le` at `C = 4(x+h₁)`;
+- `windowCompareKernel_le_of_low` — below `δx/h₁` it never exceeds `2hδ`;
+- `integral_lowRange_windowCompare_le`, `integral_dyadicRange_windowCompare_le`, and the total
+  `integral_mixed_moment_windowCompare_le` over `[0, t₀2^M]`.
+
+What changed mathematically. The single-window kernel `min(x/t, h)` equals `h` at `t = 0`, so the
+low range had to be handled by subtracting the main term by hand. The comparison kernel vanishes
+linearly at `t = 0` — the two windows' main terms cancel identically — so the low range is bounded
+by `2hδ` times a Cauchy–Schwarz product of the two mean-square majorants at height `t₀`, with
+`δ = t₀h₁/x`. No main-term subtraction appears anywhere in the chain. The dyadic range is unchanged
+apart from the constant `x → 4(x+h₁)`.
+
+M2 (Lemma 3.1) is closed as far as the analytic weight is concerned: every hypothesis of
+`integral_mixed_moment_windowCompare_le` is one of the two affine mean-square majorants, and `(FS7)`
+supplies both.

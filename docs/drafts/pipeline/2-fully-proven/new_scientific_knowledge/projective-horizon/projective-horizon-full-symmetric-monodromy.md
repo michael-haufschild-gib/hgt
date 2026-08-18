@@ -2703,3 +2703,231 @@ Two ways out, either of which closes `(R)`:
 
 Route (a) with `DifferentOrderOneSimpleFold` is preferred: it yields `e = 2` on the nose, hence
 `|I| = 2`, hence the swap criterion needs only the collision bound `(D)`.
+
+## Lean progress — `E1` is PROVED: the branch locus is contained in the Jacobian divisor
+
+Two modules landed and built.
+
+```text
+HTGeometry/RamificationIndexTwoFromDerivative.lean
+    mem_pow_sub_one_aeval_derivative                p'(x) ∈ Q^(e-1)
+    ramificationIdx_eq_two_of_derivative_uniformizer
+        ** p'(x) ∈ Q, ∉ Q², ∉ Q^e  ⟹  e = 2 **
+HTGeometry/UnramifiedAwayFromDerivative.lean
+    differentIdeal_dvd_span_aeval_derivative        𝔇 ∣ (p'(x))
+    isUnramifiedAt_of_aeval_derivative_notMem
+        ** p'(x) ∉ P  ⟹  P is unramified over the base   =  E1 **
+    aeval_derivative_mem_of_not_isUnramifiedAt      the contrapositive
+```
+
+Both need only that `x` generates the extension of fraction fields — no monogenicity of the
+integral closure, no conductor computation, no localization of the different.  The obstruction
+recorded in the previous section is therefore removed: `dvd_differentIdeal_iff` supplies the
+"ramified ⟺ divides the different" direction, and `aeval_derivative_mem_differentIdeal` supplies
+`𝔇 ∣ (p'(x))` for free.
+
+### Correction — `(D)` is NOT wiring, and the reason is a count
+
+Re-reading the collision criterion against §3 shows the earlier reading of `(D)` was too
+optimistic.  `criticalFibre_eq_of_shared_coprime_tangent` proves *two states with the same coprime
+tangent are equal*; that gives at most one **ramified point** of the reduced fibre.  But
+
+```text
+|collisionSupport| = Σ_{Q ramified above the Schur place} e_Q · f_Q
+```
+
+so `collisionSupport ≤ 2` needs, beyond §3's uniqueness, both `e = 2` and `f = 1` at that point.
+Three sheets with one reduction is not excluded by any tangent argument — three points of a line
+are still collinear — so a genuine count is unavoidable.  This is recorded so that no session
+re-attempts `(D)` as pure wiring.
+
+### The count, and why it is elementary after all
+
+Let `x` be a primitive element of the source over the observation field, `p` its minimal
+polynomial, and `x_σ = σ(x)` for the `D` sheets `σ`, all integral at the Schur place `w` of the
+normal closure.  Then
+
+```text
+p'(x_σ) = Π_{τ ≠ σ} (x_σ − x_τ)                     Splits.eval_root_derivative  (mathlib)
+```
+
+Two sheets collide after reduction exactly when `w(x_σ − x_τ) > 0`, and a single such factor
+already makes `w(p'(x_σ)) > 0`.  Hence
+
+```text
+|collisionSupport| ≤ #{σ : w(p'(x_σ)) ≠ 0} ≤ Σ_σ w(p'(x_σ)) = w(Π_σ p'(x_σ)) = w(disc p) .
+```
+
+So `(D)` reduces to the single scalar statement `w(disc p) ≤ 2`, which is
+`addVal_criticalSchurJacobianDetElement_eq_one` (source divisorial order one) transported through
+`e(w / source Schur place)`.  No fibre-by-fibre decomposition of the geometric fibre into primes is
+needed, and neither `f = 1` nor §3 is needed separately: the discriminant bound subsumes both.
+
+This is the route to build.  The general half is a DVR statement about split polynomials, with no
+reference to the horizon at all.
+
+## The exact obstruction to `(R)`+`(D)`, and the mathlib gap that closes it
+
+Chasing the count to the end shows the two obligations are one, and that neither the different nor
+the discriminant can settle it alone.  Write `A` for the observation Schur DVR, `B` for the
+integral closure of `A` in the source, `Q₀` for the Schur prime of `B`, `W` for the integral closure
+in the normal closure, `w` for the chosen place of `W`, `I` for its inertia group, and
+
+```text
+t := e(w / Q₀) ,     e(Q₀ / A) = 2 ,     |I| = e(w / A) = 2t .
+```
+
+The corpus owns `v_{Q₀}(𝔇_{B/A}) = 1` (`addVal_criticalSchurJacobianDetElement_eq_one`), and
+mathlib owns transitivity of the different
+(`differentIdeal_eq_differentIdeal_mul_differentIdeal`).  Combining them gives
+
+```text
+w(𝔇_{W/A}) = w(𝔇_{W/B}) + t = (t − 1) + t = 2t − 1 = |I| − 1 ,
+```
+
+an identity for **every** `t`.  So the different is exactly uninformative about `t`, and so is the
+discriminant, which is its norm.  Neither §3 nor a tangent argument helps: three sheets sharing a
+reduction is a statement about `e`, not about tangents.
+
+**What does settle it is that tame inertia is cyclic.**  `I` acts faithfully on the sheets
+(`criticalSchurInertiaAction_injective`, already Lean) and every `I`-orbit lies inside one fibre of
+the reduction (`criticalSchurInertia_residue_smul`, already Lean), whose size is bounded by
+`1 + t` through the derivative count
+(`RootCongruenceValuationCount.addVal_eval_derivative_ne_zero_of_root_congruent`).  If `I` is
+cyclic, its subgroups are totally ordered, so the faithfulness forces some point to have trivial
+stabiliser, i.e. an orbit of full size `|I| = 2t`.  Then
+
+```text
+2t ≤ 1 + t   ⟹   t = 1   ⟹   |I| = 2   and   |collisionSupport| ≤ 2 .
+```
+
+That is `(R)` and `(D)` at once.
+
+### The mathlib gap, and an elementary quotient-free proof
+
+`Mathlib/RingTheory/Valuation/RamificationGroup.lean` defines only the decomposition and inertia
+subgroups; higher ramification groups are an explicit `TODO`, and "tame inertia is cyclic" is
+absent.  The corpus does not have it either.  The usual proof runs through the filtration
+`G_i / G_{i+1} ↪ k⁺`; the following avoids the filtration entirely.
+
+Let `π` be a uniformizer, `g` an automorphism of finite order `N` acting trivially on the residue
+field, and suppose `v(g π − π) ≥ 2`.  Every `g^j` then also satisfies `v(g^j π − π) ≥ 2` (induction,
+using that an automorphism preserves `v`), so with `gπ − π = c π^i`, `i = v(gπ−π)`, `c` a unit,
+
+```text
+g^j (c π^i) = (g^j c) (g^j π)^i ≡ c π^i        (mod π^{i+1})
+g^N π − π = Σ_{j<N} g^j (g π − π) ≡ N · c π^i  (mod π^{i+1})
+```
+
+and `g^N = 1` forces `N c ∈ 𝔪`, hence `N ∈ 𝔪` — impossible when the residue field has
+characteristic zero.  So `g π = π`, the ratio character `g ↦ (g π)/π mod 𝔪` is injective into
+`k^×`, and a finite subgroup of `k^×` is cyclic.
+
+Residual triviality also gives `W = A[π]` (`UniformizerPowerBasis.uniformizerPowBasis`), which turns
+`g π = π` into `g = 1`, closing the injectivity.  The whole argument is elementary and belongs in
+`HTGeometry` as a general theorem, independent of the horizon.
+
+## Correction — cyclicity is used through "unique subgroup of each order", not through ordering
+
+The previous section justified `t = 1` by "subgroups of a cyclic group are totally ordered".  That
+is false: `ℤ/6` has subgroups of orders `2` and `3` with trivial intersection, and it acts
+faithfully on `2 + 3` points with no free orbit.  The correct use of cyclicity is different, and
+sharper.
+
+Write `Stab(σ) = I ∩ σHσ^{-1}` for the stabiliser of a sheet.  Faithfulness of the inertia action
+(`criticalSchurInertiaAction_injective`) says `⋂_σ Stab(σ) = 1`, since the kernel of the action of
+`I` on `G/H` is `I ∩ core(H)`.  Now:
+
+* a sheet over an unramified prime has `Stab(σ) = I`;
+* a sheet over the Schur prime has `|Stab(σ)| = e(w / Q₀) = t`.
+
+In a **cyclic** group there is exactly one subgroup of each order, so all the stabilisers of the
+second kind coincide — conjugation by the decomposition group preserves order, hence fixes the
+subgroup.  Therefore `⋂_σ Stab(σ)` is that single subgroup of order `t`, and faithfulness gives
+`t = 1`.  Equivalently: every stabiliser has index `1` or `2` in `I`, so every stabiliser contains
+the unique subgroup of index two, which must then be trivial.
+
+### What is genuinely irreducible: `f_{Q₀} = 1`
+
+A separate check settles what the different and the discriminant can and cannot see.  With `α`
+generating the source order over the observation Schur DVR,
+
+```text
+v_A(disc) = v_A(N_{S/O}(p'(α))) = Σ_Q f_Q · v_Q(𝔇_{B/A}) = f_{Q₀} · 1 = f_{Q₀}
+```
+
+while the conductor–discriminant identity reads `Σ_Q f_Q (e_Q − 1) = v_A(disc)`, i.e.
+`f_{Q₀} = f_{Q₀}`.  So no amount of different or discriminant bookkeeping constrains `f_{Q₀}`: the
+residue degree of the Schur place over the branch place is **irreducible extra content**, and it is
+exactly the card's sentence "the Schur divisor maps 1–1 to the branch".
+
+That content is §3, and §3 alone: `criticalFibre_eq_of_shared_coprime_tangent` applied over the
+residue field of the *upper* Schur place says all colliding sheets carry one and the same reduced
+state, which forces both "one ramified prime" and `f_{Q₀} = 1` at once — `f_{Q₀}` distinct residue
+embeddings would produce `f_{Q₀}` distinct ramified reduced states.
+
+**Corrected division of labour.**
+
+```text
+f_{Q₀} = 1 and a unique ramified prime      §3, wiring of existing lemmas        (D) part 1
+e_{Q₀} = 2                                  Jacobian order one + tameness        (R)
+|collisionSupport| = e·f = 2                orbit/prime correspondence           (D) part 2
+```
+
+and the tame-inertia development below is what makes the last line usable, by pinning `e(w/Q₀) = 1`
+so that the upper place does not multiply the count.
+
+## Lean progress — TAME INERTIA IS CYCLIC, and the collision bound it powers
+
+Three more modules, all built, all with narrow imports (each under two seconds).
+
+```text
+HTGeometry/TameInertiaRigidity.lean
+    addVal_smul                                   an automorphism preserves the valuation
+    dvd_of_mem_maximalIdeal, dvd_smul_self
+    sq_dvd_smul_pow_sub                           the second-order condition passes to powers
+    smul_uniformizer_eq_self_of_sq_dvd
+        ** π² ∣ gπ − π  ⟹  gπ = π **              (no wild inertia in residue char 0)
+    smul_eq_self_of_smul_uniformizer_eq_self
+        ** gπ = π  ⟹  g is the identity **        (tame rigidity)
+
+HTGeometry/TameInertiaCyclic.lean
+    ratioElt, smul_eq_mul_ratioElt, ratioElt_unique, isUnit_ratioElt
+    ratioElt_mul                                  ratioElt π (gh) = ratioElt π g · g·ratioElt π h
+    residueRatioHom : Γ →* ResidueField W         the tame ratio character
+    residueRatioHom_injective
+    isCyclic_of_tame
+        ** a finite group acting faithfully on a DVR by ring automorphisms, trivially on a
+           residue field of characteristic zero, is CYCLIC **
+
+HTGeometry/CyclicCollisionOrderBound.lean
+    exists_eq_of_ncard_le_two
+    sq_smul_eq_self_of_fibre_le_two               every square acts trivially
+    natCard_le_two_of_isCyclic
+        ** faithful + cyclic + fibres of size ≤ 2  ⟹  the group has ≤ 2 elements **
+```
+
+`Mathlib/RingTheory/Valuation/RamificationGroup.lean` carries only the decomposition and inertia
+subgroups and leaves the higher filtration as a `TODO`, so none of this was available; the corpus
+did not have it either.  The proof deliberately avoids the filtration: with `gπ − π = u π^k`,
+
+```text
+g^N π − π = Σ_{j<N} g^j (gπ − π) ≡ N · u π^k   (mod π^{k+1})
+```
+
+and `g^N = 1` forces `π ∣ N`, impossible in residue characteristic zero.  Every step is a
+divisibility — no valuation sums, no quotient groups, no completeness, no Hensel.
+
+**What this buys the card.**  The three inputs of the endgame now read
+
+```text
+Γ = criticalSchurInertiaGroup acts on the upper Schur valuation ring    (corpus)
+the action is faithful on sheets                criticalSchurInertiaAction_injective   (corpus)
+inertia fixes residues                          criticalSchurInertia_residue_smul      (corpus)
+inertia is therefore cyclic                     isCyclic_of_tame                       (NEW)
+reduction fibres have ≤ 2 members               root-congruence count + §3             (open)
+|I| ≤ 2, hence a transposition                  natCard_le_two_of_isCyclic             (NEW)
+```
+
+so the single remaining mathematical obligation on this card is the middle line of the last block:
+that each fibre of `criticalGeometricSheetToSchurReducedFibre` has at most two members.

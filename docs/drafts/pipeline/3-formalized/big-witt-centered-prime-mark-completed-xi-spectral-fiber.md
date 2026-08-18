@@ -1,8 +1,8 @@
 # Big-Witt centered-prime-mark / completed-Xi spectral-fiber comparison
 
 - **ID:** big-witt-centered-mark-xi-fiber
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** internal Lean corpus audit; Borger big-Witt Frobenius; Deninger completed-Xi spectrum
 - **Statement:** Big-Witt Frobenius is vertical on the centered-prime-mark reporter of every completed-Xi theta fiber, and its orbit on every right-half fiber is injective.
 
@@ -17,7 +17,7 @@ admission, RH, or new axiom.
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem, `lake build` green, axiom/lint audit PASS
+- [x] 2 → 3  formalized: Lean theorem, targeted `lake build` green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Exact objects
@@ -100,10 +100,16 @@ completed-Xi spectral fibers.
 - **New insight:** equality `u_(p^m)(s(alpha)) = u_p(s(m alpha))` is representation-ambiguous.
   Only the left side is induced by source Frobenius.  Treating the right side as Xi fiber motion is
   the precise unsupported step.
-- **Status:** internal and current-primary-literature audits complete; `[PROVED HERE]` with no open
-  paper dependency; pending Lean name verification and formalization.
+- **Status:** internal and current-primary-literature audits complete; `[PROVED HERE]`; formalized as
+  `deningerBigWitt_centeredPrimeMark_completedXiSpectralFiberComparison` in
+  `DeningerBigWittCenteredPrimeMarkXiFiberComparison.lean`.  Direct-file Lean and targeted module
+  build pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Static
+  proof-debt and diff checks pass for this module.  Repository-global lint remains red only on
+  unrelated concurrently added modules not yet reachable from their umbrellas.
 
 ## Log
 
 - 2026-08-18 — created in 1-in-progress after Lean-first corpus search and three conjecture audits.
 - 2026-08-18 — hostile proof audit passed; moved to 2-fully-proven as `[PROVED HERE]`.
+- 2026-08-18 — scratch proof, direct-file Lean, targeted module build, and axiom audit passed;
+  moved to 3-formalized and wired into `GaloisForLFunctions.RHTower` umbrella without building it.

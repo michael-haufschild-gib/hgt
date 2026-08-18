@@ -57,7 +57,7 @@ theorem exists_lemma41_huxley_raised
       have hcount := hbase T (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ)
         (anchoredCoeff (N ^ ell) (convPow N ell a))
         (raisedDyadicBlockLargeSet S N A ell a rho r)
-        hT (hN r) (by positivity) (hNlo r) (hNhi r) (hsl r) (hsh r)
+        hT (hN r) (by norm_num) (hNlo r) (hNhi r) (hsl r) (hsh r)
         (hthr r) (hc r)
         (by
           intro x hx y hy hxy
@@ -74,5 +74,6 @@ theorem exists_lemma41_huxley_raised
     _ = (ell + 1 : ℝ) * T ^ (2 * (rho + kappa) - eps ^ 2 / 5) := by
       rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
       push_cast
+      rfl
 
 end RHTower.Sieve
