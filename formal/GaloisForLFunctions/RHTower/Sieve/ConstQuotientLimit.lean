@@ -393,8 +393,8 @@ noncomputable section
 def discInner (β γ x : ℝ) : ℝ :=
   6 * ((Real.log x) ^ (13 / 2 : ℝ) * budgetS β x)
     + 6 * ((Real.log x) ^ (13 / 2 : ℝ) * (cardLength β x / Real.sqrt x))
-    + 6 * ((Real.log x) ^ (13 / 2 + (2 * β + 1 - γ * β)) * budgetS β x)
-    + 6 * ((Real.log x) ^ (13 / 2 + (2 * β + 1 - γ * β)) / Real.sqrt x)
+    + 6 * ((Real.log x) ^ (13 / 2 + (2 * β + 5 / 4 - γ * β)) * budgetS β x)
+    + 6 * ((Real.log x) ^ (13 / 2 + (2 * β + 5 / 4 - γ * β)) / Real.sqrt x)
 
 /-- The explicit majorant of the normalised ladder constant. -/
 def constMajorant (A delta Ctot β γ x : ℝ) : ℝ :=
@@ -402,11 +402,11 @@ def constMajorant (A delta Ctot β γ x : ℝ) : ℝ :=
       * (1 + 4 * (cardLength β x / Real.sqrt x) ^ 2)
     + 2 * (discInner β γ x) ^ 2
     + 10 * Real.exp 1
-        * (4 * (1 / (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
-          + 10 * ((Real.log x) ^ (2 * β + 2 - 2 * (γ * β)) / Real.sqrt x)
+        * (4 * ((Real.log x) ^ (-(1 / 4) : ℝ) / (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+          + 10 * ((Real.log x) ^ (2 * β + 9 / 4 - 2 * (γ * β)) / Real.sqrt x)
           + 5 * ((Real.log x) ^ (1 - γ * β) * (cardLength β x / Real.sqrt x))
           + 6 * ((Real.log x) ^ (1 - γ * β) / ((siftStart (γ * β) x : ℕ) : ℝ))
-          + 2 * ((Real.log x) ^ (β + 2 - 2 * (γ * β)) / ((siftStart (γ * β) x : ℕ) : ℝ)))
+          + 2 * ((Real.log x) ^ (β + 9 / 4 - 2 * (γ * β)) / ((siftStart (γ * β) x : ℕ) : ℝ)))
 
 /-- The window length is negligible against the square root of the outer scale. -/
 theorem tendsto_cardLength_div_sqrt {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
@@ -421,8 +421,8 @@ theorem tendsto_discInner {β γ : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
     (6 : ℝ)
   have h2 := (tendsto_rpow_log_mul_cardLength_div_sqrt hβ0 hβ1 (13 / 2 : ℝ)).const_mul (6 : ℝ)
   have h3 := (tendsto_rpow_log_mul_budgetS (β := β)
-    (c := (13 / 2 + (2 * β + 1 - γ * β) : ℝ)) hβ0 hβ1).const_mul (6 : ℝ)
-  have h4 := (tendsto_rpow_log_div_sqrt (13 / 2 + (2 * β + 1 - γ * β))).const_mul (6 : ℝ)
+    (c := (13 / 2 + (2 * β + 5 / 4 - γ * β) : ℝ)) hβ0 hβ1).const_mul (6 : ℝ)
+  have h4 := (tendsto_rpow_log_div_sqrt (13 / 2 + (2 * β + 5 / 4 - γ * β))).const_mul (6 : ℝ)
   have := ((h1.add h2).add h3).add h4
   simpa [discInner] using this
 
@@ -459,19 +459,28 @@ theorem tendsto_constMajorant {A delta Ctot β γ : ℝ} (hβ0 : 9 / 10 < β) (h
       filter_upwards [hmass.eventually_ge_atTop (1 : ℝ)] with x hx
       nlinarith [hx]
     exact hpow.const_div_atTop 1
-  have hc1 := tendsto_rpow_log_div_sqrt (2 * β + 2 - 2 * (γ * β))
+  have hlogq : Tendsto (fun x : ℝ => (Real.log x) ^ (-(1 / 4) : ℝ)) atTop (𝓝 0) :=
+    tendsto_rpow_log_of_neg (by norm_num)
+  have hW' : Tendsto (fun x : ℝ =>
+      (Real.log x) ^ (-(1 / 4) : ℝ)
+        / (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2) atTop (𝓝 0) := by
+    have h := hlogq.mul hW
+    simp only [mul_zero] at h
+    refine h.congr fun x => ?_
+    rw [mul_one_div]
+  have hc1 := tendsto_rpow_log_div_sqrt (2 * β + 9 / 4 - 2 * (γ * β))
   have hc2 := tendsto_rpow_log_mul_cardLength_div_sqrt hβ0' hβ1 (1 - γ * β)
   have hc3 := tendsto_rpow_log_div_siftStart hab (1 - γ * β)
-  have hc4 := tendsto_rpow_log_div_siftStart hab (β + 2 - 2 * (γ * β))
+  have hc4 := tendsto_rpow_log_div_siftStart hab (β + 9 / 4 - 2 * (γ * β))
   have hcof : Tendsto (fun x : ℝ =>
       10 * Real.exp 1
-        * (4 * (1 / (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
-          + 10 * ((Real.log x) ^ (2 * β + 2 - 2 * (γ * β)) / Real.sqrt x)
+        * (4 * ((Real.log x) ^ (-(1 / 4) : ℝ) / (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+          + 10 * ((Real.log x) ^ (2 * β + 9 / 4 - 2 * (γ * β)) / Real.sqrt x)
           + 5 * ((Real.log x) ^ (1 - γ * β) * (cardLength β x / Real.sqrt x))
           + 6 * ((Real.log x) ^ (1 - γ * β) / ((siftStart (γ * β) x : ℕ) : ℝ))
-          + 2 * ((Real.log x) ^ (β + 2 - 2 * (γ * β)) / ((siftStart (γ * β) x : ℕ) : ℝ))))
+          + 2 * ((Real.log x) ^ (β + 9 / 4 - 2 * (γ * β)) / ((siftStart (γ * β) x : ℕ) : ℝ))))
       atTop (𝓝 0) := by
-    have hsum := ((((hW.const_mul (4:ℝ)).add (hc1.const_mul (10:ℝ))).add
+    have hsum := ((((hW'.const_mul (4:ℝ)).add (hc1.const_mul (10:ℝ))).add
       (hc2.const_mul (5:ℝ))).add (hc3.const_mul (6:ℝ))).add (hc4.const_mul (2:ℝ))
     have := hsum.const_mul (10 * Real.exp 1)
     simpa using this
@@ -640,8 +649,8 @@ theorem eventually_const_quotient_le {A delta Ctot β γ : ℝ} (hβ0 : 0 < β) 
     (W := mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x))
     (M := Real.log ((⌊((budgetB β x : ℕ) : ℝ) * (1 + ladderEta β γ x)⌋₊ : ℕ) : ℝ)
       / Real.log ((siftStart (γ * β) x : ℕ) : ℝ))
-    (MB := (Real.log x) ^ (1 - γ * β)) (P1 := (Real.log x) ^ (γ * β - 1))
-    (P2 := (Real.log x) ^ (2 * β + 1 - γ * β)) (P3 := (Real.log x) ^ (β + 1 - γ * β))
+    (MB := (Real.log x) ^ (1 - γ * β)) (P1 := (Real.log x) ^ (γ * β - 5 / 4))
+    (P2 := (Real.log x) ^ (2 * β + 5 / 4 - γ * β)) (P3 := (Real.log x) ^ (β + 5 / 4 - γ * β))
     (B' := ((⌊((budgetB β x : ℕ) : ℝ) * (1 + ladderEta β γ x)⌋₊ : ℕ) : ℝ))
     (V := Real.sqrt (2 * annulusStart β x) + 1) (s := budgetS β x)
     hQ1 hη hη1 hL1R hB1 hh1 hW hρ0 hρR hinvη hM0 hM (Real.rpow_nonneg hlogx.le _)
@@ -655,34 +664,36 @@ theorem eventually_const_quotient_le {A delta Ctot β γ : ℝ} (hβ0 : 0 < β) 
     (W := mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x))
     (V := Real.sqrt (2 * annulusStart β x) + 1) (s := budgetS β x)
     (R := budgetRhoBound A delta Ctot β γ x)
-    (MB := (Real.log x) ^ (1 - γ * β)) (P1 := (Real.log x) ^ (γ * β - 1))
-    (P2 := (Real.log x) ^ (2 * β + 1 - γ * β)) (P3 := (Real.log x) ^ (β + 1 - γ * β))
+    (MB := (Real.log x) ^ (1 - γ * β)) (P1 := (Real.log x) ^ (γ * β - 5 / 4))
+    (P2 := (Real.log x) ^ (2 * β + 5 / 4 - γ * β)) (P3 := (Real.log x) ^ (β + 5 / 4 - γ * β))
     (sx := Real.sqrt x) (Vm := 3 * (Real.log x) ^ (13 / 2 : ℝ))
     hB1 hh1 hsx hBsx hs0 hL1R
     (by linarith [Real.sqrt_nonneg (2 * annulusStart β x)])
     (annulusStart_sqrt_le (β := β) ht1) (Real.rpow_nonneg hlogx.le _)
     (Real.rpow_nonneg hlogx.le _) hLpoly
   refine hmono.trans (le_of_eq ?_)
-  have e1 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (γ * β - 1) = 1 := by
-    rw [← Real.rpow_add hlogx]
-    norm_num
-  have e2 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (2 * β + 1 - γ * β)
-      = (Real.log x) ^ (2 * β + 2 - 2 * (γ * β)) := by
+  have e1 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (γ * β - 5 / 4)
+      = (Real.log x) ^ (-(1 / 4) : ℝ) := by
     rw [← Real.rpow_add hlogx]
     congr 1
     ring
-  have e3 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (β + 1 - γ * β)
-      = (Real.log x) ^ (β + 2 - 2 * (γ * β)) := by
+  have e2 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (2 * β + 5 / 4 - γ * β)
+      = (Real.log x) ^ (2 * β + 9 / 4 - 2 * (γ * β)) := by
+    rw [← Real.rpow_add hlogx]
+    congr 1
+    ring
+  have e3 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (β + 5 / 4 - γ * β)
+      = (Real.log x) ^ (β + 9 / 4 - 2 * (γ * β)) := by
     rw [← Real.rpow_add hlogx]
     congr 1
     ring
   have e4 : (3 : ℝ) * (Real.log x) ^ (13 / 2 : ℝ)
         * (2 * budgetS β x + 2 * (cardLength β x / Real.sqrt x)
-          + budgetS β x * (2 * (Real.log x) ^ (2 * β + 1 - γ * β))
-          + 2 * (Real.log x) ^ (2 * β + 1 - γ * β) / Real.sqrt x)
+          + budgetS β x * (2 * (Real.log x) ^ (2 * β + 5 / 4 - γ * β))
+          + 2 * (Real.log x) ^ (2 * β + 5 / 4 - γ * β) / Real.sqrt x)
       = discInner β γ x := by
-    have e5 : (Real.log x) ^ (13 / 2 : ℝ) * (Real.log x) ^ (2 * β + 1 - γ * β)
-        = (Real.log x) ^ (13 / 2 + (2 * β + 1 - γ * β)) := by
+    have e5 : (Real.log x) ^ (13 / 2 : ℝ) * (Real.log x) ^ (2 * β + 5 / 4 - γ * β)
+        = (Real.log x) ^ (13 / 2 + (2 * β + 5 / 4 - γ * β)) := by
       rw [← Real.rpow_add hlogx]
     rw [discInner, ← e5]
     ring

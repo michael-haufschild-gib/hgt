@@ -195,11 +195,11 @@ theorem inv_ladderEta_eq {β γ x : ℝ} (hx1 : 1 < x) :
 def slopeMajorant (A delta Ctot β γ x : ℝ) : ℝ :=
   20 * Real.pi * (budgetRhoBound A delta Ctot β γ x * ((ladderSteps β γ x : ℕ) : ℝ)) ^ 2
       * (1 + 4 * (cardLength β x / ((budgetB β x : ℕ) : ℝ)))
-    + 5 * Real.pi * (4 * (1 / cardLength β x)
-        + 10 * ((Real.log x) ^ (2 * β + 2 - 2 * (γ * β)) / Real.sqrt x)
+    + 5 * Real.pi * (4 * ((Real.log x) ^ (-(1 / 4) : ℝ) / cardLength β x)
+        + 10 * ((Real.log x) ^ (2 * β + 9 / 4 - 2 * (γ * β)) / Real.sqrt x)
         + 5 * ((Real.log x) ^ (1 - γ * β) / Real.sqrt x)
         + 6 * ((Real.log x) ^ (1 - γ * β) / cardLength β x)
-        + 2 * ((Real.log x) ^ (β + 2 - 2 * (γ * β)) / cardLength β x))
+        + 2 * ((Real.log x) ^ (β + 9 / 4 - 2 * (γ * β)) / cardLength β x))
 
 /-- **The majorant of the normalised ladder slope vanishes.** -/
 theorem tendsto_slopeMajorant {A delta Ctot β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1)
@@ -223,18 +223,17 @@ theorem tendsto_slopeMajorant {A delta Ctot β γ : ℝ} (hβ0 : 9 / 10 < β) (h
     have h := (hsq.const_mul (20 * Real.pi)).mul hone
     simpa using h
   have h1 := (tendsto_rpow_log_div_cardLength (β := β) hβ0' 0)
-  have h1' : Tendsto (fun x : ℝ => 1 / cardLength β x) atTop (𝓝 0) :=
-    tendsto_inv_cardLength hβ0'
-  have h2 := tendsto_rpow_log_div_sqrt (2 * β + 2 - 2 * (γ * β))
+  have h1' := tendsto_rpow_log_div_cardLength (β := β) hβ0' (-(1 / 4) : ℝ)
+  have h2 := tendsto_rpow_log_div_sqrt (2 * β + 9 / 4 - 2 * (γ * β))
   have h3 := tendsto_rpow_log_div_sqrt (1 - γ * β)
   have h4 := tendsto_rpow_log_div_cardLength (β := β) hβ0' (1 - γ * β)
-  have h5 := tendsto_rpow_log_div_cardLength (β := β) hβ0' (β + 2 - 2 * (γ * β))
+  have h5 := tendsto_rpow_log_div_cardLength (β := β) hβ0' (β + 9 / 4 - 2 * (γ * β))
   have hsecond : Tendsto (fun x : ℝ =>
-      5 * Real.pi * (4 * (1 / cardLength β x)
-        + 10 * ((Real.log x) ^ (2 * β + 2 - 2 * (γ * β)) / Real.sqrt x)
+      5 * Real.pi * (4 * ((Real.log x) ^ (-(1 / 4) : ℝ) / cardLength β x)
+        + 10 * ((Real.log x) ^ (2 * β + 9 / 4 - 2 * (γ * β)) / Real.sqrt x)
         + 5 * ((Real.log x) ^ (1 - γ * β) / Real.sqrt x)
         + 6 * ((Real.log x) ^ (1 - γ * β) / cardLength β x)
-        + 2 * ((Real.log x) ^ (β + 2 - 2 * (γ * β)) / cardLength β x))) atTop (𝓝 0) := by
+        + 2 * ((Real.log x) ^ (β + 9 / 4 - 2 * (γ * β)) / cardLength β x))) atTop (𝓝 0) := by
     have hsum := ((((h1'.const_mul (4:ℝ)).add (h2.const_mul (10:ℝ))).add
       (h3.const_mul (5:ℝ))).add (h4.const_mul (6:ℝ))).add (h5.const_mul (2:ℝ))
     have := hsum.const_mul (5 * Real.pi)
@@ -518,16 +517,18 @@ theorem eventually_slope_quotient_le {A delta Ctot β γ : ℝ} (hβ0 : 0 < β) 
     (Real.rpow_nonneg hlogx.le _) hLη hLpoly
     (le_of_eq (inv_ladderEta_eq (β := β) (γ := γ) hx1)) rfl
   refine (div_le_div_of_nonneg_right hslope hden.le).trans (harith.trans (le_of_eq ?_))
-  have e1 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (γ * β - 1) = 1 := by
-    rw [← Real.rpow_add hlogx]
-    norm_num
-  have e2 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (2 * β + 1 - γ * β)
-      = (Real.log x) ^ (2 * β + 2 - 2 * (γ * β)) := by
+  have e1 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (γ * β - 5 / 4)
+      = (Real.log x) ^ (-(1 / 4) : ℝ) := by
     rw [← Real.rpow_add hlogx]
     congr 1
     ring
-  have e3 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (β + 1 - γ * β)
-      = (Real.log x) ^ (β + 2 - 2 * (γ * β)) := by
+  have e2 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (2 * β + 5 / 4 - γ * β)
+      = (Real.log x) ^ (2 * β + 9 / 4 - 2 * (γ * β)) := by
+    rw [← Real.rpow_add hlogx]
+    congr 1
+    ring
+  have e3 : (Real.log x) ^ (1 - γ * β) * (Real.log x) ^ (β + 5 / 4 - γ * β)
+      = (Real.log x) ^ (β + 9 / 4 - 2 * (γ * β)) := by
     rw [← Real.rpow_add hlogx]
     congr 1
     ring

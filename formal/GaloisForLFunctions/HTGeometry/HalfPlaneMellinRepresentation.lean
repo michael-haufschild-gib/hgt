@@ -94,8 +94,9 @@ theorem continuousOn_mellinIntegrand (φ : ℂ → ℂ) (hφ : ∀ z : ℂ, 1 �
     have hslit : ((z.1 : ℝ) : ℂ) ∈ Complex.slitPlane := by
       refine Or.inl ?_
       simpa using by linarith
-    exact ((Complex.continuousAt_log hslit).comp
-      (Complex.continuous_ofReal.continuousAt.comp continuousAt_fst)).continuousWithinAt
+    have h1 : ContinuousAt (fun w : ℝ × ℝ => ((w.1 : ℝ) : ℂ)) z :=
+      (Complex.continuous_ofReal.comp continuous_fst).continuousAt
+    exact (h1.clog hslit).continuousWithinAt
   have hexp : ContinuousOn
       (fun z : ℝ × ℝ => Complex.exp (Complex.log ((z.1 : ℝ) : ℂ) * ((z.2 : ℂ) * I - s)))
       (Ioi (1:ℝ) ×ˢ (univ : Set ℝ)) := by
@@ -109,8 +110,79 @@ theorem continuousOn_mellinIntegrand (φ : ℂ → ℂ) (hφ : ∀ z : ℂ, 1 �
     exact hz.1
   have hxne : ((z.1 : ℝ) : ℂ) ≠ 0 := by
     simpa using ne_of_gt (by linarith : (0:ℝ) < z.1)
-  simp only [Function.uncurry]
+  simp only [Function.uncurry, Pi.mul_apply]
   rw [Complex.cpow_def_of_ne_zero hxne]
+
+theorem integrable_mellinIntegrand {φ : ℂ → ℂ} {C : ℝ}
+    (hφ : ∀ z : ℂ, 1 ≤ z.re → AnalyticAt ℂ φ z)
+    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ 2)
+    {s : ℂ} (hs : 1 < s.re) :
+    Integrable (Function.uncurry fun (x : ℝ) (t : ℝ) =>
+        φ ((1 : ℂ) + (t : ℂ) * I) * (x : ℂ) ^ ((t : ℂ) * I - s))
+      ((volume.restrict (Ioi (1:ℝ))).prod volume) := by
+  have hms : (volume.restrict (Ioi (1:ℝ))).prod (volume : Measure ℝ)
+      = (volume.prod volume).restrict (Ioi (1:ℝ) ×ˢ (univ : Set ℝ)) := by
+    rw [← Measure.prod_restrict, Measure.restrict_univ]
+  have henv : Integrable fun t : ℝ => C / (1 + t ^ 2) := by
+    have heq : (fun t : ℝ => C / (1 + t ^ 2)) = fun t : ℝ => C * (1 + t ^ 2)⁻¹ := by
+      funext t
+      field_simp
+    rw [heq]
+    exact integrable_inv_one_add_sq.const_mul C
+  rw [hms]
+  refine Integrable.mono'
+    (g := fun z : ℝ × ℝ => z.1 ^ (-s.re) * (C / (1 + z.2 ^ 2))) ?_ ?_ ?_
+  · rw [← hms]
+    exact Integrable.mul_prod (integrableOn_Ioi_rpow_of_lt (by linarith) one_pos) henv
+  · exact (continuousOn_mellinIntegrand φ hφ s).aestronglyMeasurable
+      (measurableSet_Ioi.prod MeasurableSet.univ)
+  · filter_upwards [ae_restrict_mem (measurableSet_Ioi.prod MeasurableSet.univ)] with z hz
+    have hz1 : (1:ℝ) < z.1 := by
+      rw [Set.mem_prod] at hz
+      exact hz.1
+    have hzpos : (0:ℝ) < z.1 := by linarith
+    have hre : ((z.2 : ℂ) * I - s).re = -s.re := by simp
+    simp only [Function.uncurry]
+    rw [norm_mul, norm_cpow_eq_rpow_re_of_pos hzpos, hre, mul_comm]
+    exact mul_le_mul_of_nonneg_left (norm_boundary_le hbound z.2)
+      (Real.rpow_nonneg hzpos.le _)
+
+/-- **The Mellin representation.** -/
+theorem integral_mellinDensity_eq {φ : ℂ → ℂ} {C : ℝ}
+    (hφ : ∀ z : ℂ, 1 ≤ z.re → AnalyticAt ℂ φ z)
+    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ 2)
+    {s : ℂ} (hs : 1 < s.re) :
+    (∫ x in Ioi (1:ℝ), mellinDensity φ x * (x : ℂ) ^ (-s)) = φ s := by
+  have hrw : (∫ x in Ioi (1:ℝ), mellinDensity φ x * (x : ℂ) ^ (-s))
+      = (1 / (2 * Real.pi) : ℂ) *
+        ∫ x in Ioi (1:ℝ), ∫ (t : ℝ), φ ((1:ℂ) + (t:ℂ) * I) * (x : ℂ) ^ ((t : ℂ) * I - s) := by
+    rw [← MeasureTheory.integral_const_mul]
+    refine setIntegral_congr_fun measurableSet_Ioi ?_
+    intro x hx
+    have hxpos : (0:ℝ) < x := lt_trans one_pos hx
+    exact mellinDensity_mul_cpow hxpos s
+  have hswap := MeasureTheory.integral_integral_swap (integrable_mellinIntegrand hφ hbound hs)
+  have hinner : ∀ t : ℝ,
+      (∫ x in Ioi (1:ℝ), φ ((1:ℂ) + (t:ℂ) * I) * (x : ℂ) ^ ((t : ℂ) * I - s))
+        = -(lineKernel φ s t) := by
+    intro t
+    have hlt : ((t : ℂ) * I - s).re < -1 := by
+      have : ((t : ℂ) * I - s).re = -s.re := by simp
+      rw [this]
+      linarith
+    rw [MeasureTheory.integral_const_mul, integral_Ioi_cpow_of_lt hlt one_pos]
+    have hone : ((1:ℝ) : ℂ) ^ ((t : ℂ) * I - s + 1) = 1 := by
+      rw [Complex.ofReal_one, Complex.one_cpow]
+    rw [hone]
+    have hden : (t : ℂ) * I - s + 1 = ((1:ℂ) + (t:ℂ) * I) - s := by ring
+    rw [hden, lineKernel]
+    ring
+  rw [hrw, hswap]
+  simp_rw [hinner]
+  rw [MeasureTheory.integral_neg, halfPlane_cauchy_representation hφ hbound hs]
+  have hpi : (Real.pi : ℂ) ≠ 0 := by
+    exact_mod_cast Real.pi_ne_zero
+  field_simp
 
 end GaloisForLFunctions.HTGeometry
 

@@ -254,4 +254,31 @@ theorem integral_exp_neg_mul_log_tail :
   rw [frullaniTail]
   linarith
 
+/-! ## The Frullani identity for the Euler–Mascheroni constant -/
+
+theorem integrableOn_log_mul_exp_Ioc :
+    IntegrableOn (fun t : ℝ => Real.log t * Real.exp (-t)) (Set.Ioc (0 : ℝ) 1) volume := by
+  have h := intervalIntegrable_log_mul_exp (a := (0 : ℝ)) (b := 1)
+  rwa [intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num)] at h
+
+/-- **The Frullani representation of `γ`.**  `γ = ∫₀¹ (1 - e^{-t}) dt/t - ∫₁^∞ e^{-t} dt/t`. -/
+theorem frullani_eq_eulerMascheroni :
+    frullaniHead - frullaniTail = Real.eulerMascheroniConstant := by
+  have hsplit : Set.Ioc (0 : ℝ) 1 ∪ Set.Ioi (1 : ℝ) = Set.Ioi (0 : ℝ) :=
+    Set.Ioc_union_Ioi_eq_Ioi (by norm_num)
+  have hdisj : Disjoint (Set.Ioc (0 : ℝ) 1) (Set.Ioi (1 : ℝ)) := by
+    rw [Set.disjoint_left]
+    intro x hx hx'
+    exact absurd hx' (not_lt.mpr hx.2)
+  have hunion := MeasureTheory.setIntegral_union (μ := volume)
+    (f := fun t : ℝ => Real.log t * Real.exp (-t)) hdisj measurableSet_Ioi
+    integrableOn_log_mul_exp_Ioc integrableOn_log_mul_exp_Ioi_one
+  rw [hsplit] at hunion
+  have hIoc : (∫ t in Set.Ioc (0 : ℝ) 1, Real.log t * Real.exp (-t))
+      = ∫ t in (0 : ℝ)..1, Real.log t * Real.exp (-t) :=
+    (intervalIntegral.integral_of_le (by norm_num)).symm
+  rw [hIoc, integral_exp_neg_mul_log_head, integral_exp_neg_mul_log_tail,
+    integral_exp_neg_mul_log] at hunion
+  linarith
+
 end RHTower

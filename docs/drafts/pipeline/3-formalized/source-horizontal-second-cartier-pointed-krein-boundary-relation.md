@@ -1,8 +1,8 @@
 # Pointed second-Cartier Krein boundary relation
 
 - **ID:** source-horizontal-second-cartier-pointed-krein-boundary-relation
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** `source-horizontal-second-cartier-physical-order-moderation-firewall.md`
 - **Statement:** The literal rank-two second-Cartier source admits a controlled multivalued boundary relation into a nondegenerate indefinite three-coordinate jet: its nonzero quadratic ghost is null but not radical, both orientations and their coefficients are retained, the vertical fibre is exactly the one-dimensional unit line, and every nonzero prime character acts by a Krein-isometric source-covariant transfer.
 
@@ -17,7 +17,7 @@ multiplicity.
 
 - [x] 0 → 1 in-progress: exact source, relation, form, transfer, falsifiers, and passport fixed
 - [x] 1 → 2 fully-proven: dependency-closed proof and hostile audit
-- [ ] 2 → 3 formalized: exact unconditional Lean theorem, axiom audit, exact leaf build, umbrella
+- [x] 2 → 3 formalized: exact unconditional Lean theorem, axiom audit, exact leaf build, umbrella
 - [ ] 3 → 4 publication-ready: standalone proof and independent novelty review
 
 ## Internal and external frontier
@@ -119,6 +119,8 @@ For every `c≠0` and `λ≠0`:
 7. `(v,w)∈R_c` implies `(S_λv,T_λw)∈R_c`;
 8. `T_λ U=λU` and `T_λ G_c=(\bar λ)^{-1}G_c`, so the prime character and its reciprocal-star mate are retained without Euclidean moderation;
 9. swap of the two source orientations preserves the relation and the form and commutes with both transfers.
+10. any antisymmetric additive order on the jet rejects simultaneous nonnegativity of `G_c` and
+    `-G_c`; otherwise antisymmetry would force the retained nonzero ghost to vanish.
 
 For the actual Xi endpoint scale and `λ=χ_p(ρ)`, the scale and character are nonzero. The canonical
 ghost lift therefore supplies the same nonzero null/nonradical block on every support copy, and
@@ -175,8 +177,35 @@ All five falsifiers were applied to the displayed formulas:
 No same-fibre star equality, RH criterion, scalar positivity, bilateral moderation, or completed
 graph closure is imported. The paper proof is dependency-closed. `[PAPER-PROVED]`
 
+## Lean certificate
+
+- Module:
+  `GaloisForLFunctions.RHTower.SourceHorizontalSecondCartierPointedKreinBoundaryRelation`
+- Main theorem:
+  `sourceHorizontalSecondCartierPointedKrein_actual_capstone`
+- Exact order firewall:
+  `sourceHorizontalSecondCartierPointedKrein_actual_ghost_not_bipositive`
+- Structural certificates:
+  `sourceHorizontalSecondCartierPointedKrein_form_hermitian`,
+  `sourceHorizontalSecondCartierPointedKrein_form_nondegenerate`,
+  `sourceHorizontalSecondCartierPointedKrein_form_indefinite`,
+  `sourceHorizontalSecondCartierPointedKrein_relation_not_graph`,
+  `sourceHorizontalSecondCartierPointedKrein_actual_ghost_null_not_radical`,
+  `sourceHorizontalSecondCartierPointedKrein_actual_primeTransfer_form`, and
+  `sourceHorizontalSecondCartierPointedKrein_actual_relation_primeTransfer_covariant`.
+- Direct source check:
+  `lake env lean GaloisForLFunctions/RHTower/SourceHorizontalSecondCartierPointedKreinBoundaryRelation.lean`
+- Exact leaf build:
+  `lake build GaloisForLFunctions.RHTower.SourceHorizontalSecondCartierPointedKreinBoundaryRelation`
+- Axiom audit for all preceding certificates: only `propext`, `Classical.choice`, and `Quot.sound`.
+- Umbrella wired in `GaloisForLFunctions/RHTower.lean`; umbrella build deliberately not run.
+
+Status: `[FORMALIZED]`.
+
 ## Log
 
 - 2026-08-18 — C1 and C2 killed by exact corpus theorems; C3 frozen for hostile proof audit.
 - 2026-08-18 — C3 survived all stated falsifiers; dependency-closed paper theorem promoted to
   Stage 2.
+- 2026-08-18 — Generic relation, Xi coefficient/prime/multiplicity specialization, order firewall,
+  axiom audit, exact leaf build, and umbrella wiring completed; promoted to Stage 3.

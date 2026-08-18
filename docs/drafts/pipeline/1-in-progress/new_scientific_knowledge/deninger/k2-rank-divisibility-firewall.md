@@ -174,3 +174,41 @@ why it is not contradicted.
 
 - 2026-08-18 — Card opened.  Firewall proved and formalized; Moore/Tate/Iwasawa route excluded;
   exceptional-unit spanning frozen as the replacement bridge with its open core.
+
+## 6. The stage-by-stage criterion — the firewall broken, one stage at a time `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorKStageCriterion.lean` (wired into the `HTGeometry`
+umbrella; axiom audit for all declarations `propext, Classical.choice, Quot.sound`).
+
+The firewall says the mod-`m` theory cannot decide whether `K₂^M(F)` is torsion, because a directed
+union of infinite cyclic groups can be `ℚ`.  Its converse says finite generation restores
+decidability.  `K₂^M(F)` **is** such a directed union, and every stage **is** finitely generated —
+so the obstruction dissolves stage by stage:
+
+```text
+symbolStage G                                    = symbolSubgroup (closure G),  G : Finset Fˣ
+symbolStage_fg, symbolStage_addGroup_fg          ** every stage is finitely generated **
+milnorKDegTwo_le_torsion_iff_stages              K₂^M(F) is torsion iff every stage is
+symbolStage_le_torsion_iff_no_int_quotient       ** a stage is torsion iff it has no ℤ-quotient **
+milnorKDegTwo_le_torsion_iff_no_stage_int_quotient
+                                                 ** K₂^M(F) is torsion  ⟺  no stage surjects onto ℤ **
+symbolStage_mono
+milnorKDegTwo_le_torsion_of_cofinal_stages       ** a cofinal family of stages suffices **
+```
+
+The last item is the formal counterpart of the freedom the exceptional-unit formulation of §2 uses:
+to control a symbol one may enlarge the set of units until enough Steinberg relations `{g, 1−g} = 0`
+are available.
+
+### What this changes
+
+`rank K₂(𝒪_F) = 0` — an analytic theorem of Borel, equivalently Garland 1971 — is now equivalent, in
+Lean, to a statement about a **directed system of finitely generated abelian groups**, each decided
+by its `ℤ`-quotients.  The rank of the stage `symbolStage G` is `binom(|G|, 2)` minus the rank of the
+lattice of Steinberg relations available inside `⟨G⟩`, so the criterion reads:
+
+> for a cofinal family of finite `G ⊆ Fˣ`, the Steinberg vectors `g ∧ (1−g)` available inside
+> `⟨G⟩` must span `Λ²(⟨G⟩ ⊗ ℚ)`.
+
+which is §2's bridge at finite level.  This is the sharpest formulation the corpus now owns, it is
+entirely elementary, and it is the statement any future elementary proof has to establish.

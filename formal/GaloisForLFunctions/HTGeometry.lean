@@ -5001,6 +5001,7 @@ import GaloisForLFunctions.HTGeometry.MilmanExtremePoints
 import GaloisForLFunctions.HTGeometry.MilnorKAlgebraicReduction
 import GaloisForLFunctions.HTGeometry.MilnorKDegFunctoriality
 import GaloisForLFunctions.HTGeometry.MilnorKDegTwoSymbol
+import GaloisForLFunctions.HTGeometry.MilnorKStageCriterion
 import GaloisForLFunctions.HTGeometry.MilnorKTateEuclid
 import GaloisForLFunctions.HTGeometry.MilnorKTateFiltration
 import GaloisForLFunctions.HTGeometry.RationalPadicResidue
