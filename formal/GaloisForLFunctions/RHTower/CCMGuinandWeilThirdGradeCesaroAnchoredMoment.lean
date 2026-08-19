@@ -21,6 +21,33 @@ open _root_.RHTower
 def ccmGuinandWeilThirdGradeCesaroErrorKernel (H h : ℝ) : ℝ :=
   (96 - 64 * h / H) / h ^ 4
 
+/-- Moving triangular source weight whose negative derivative is the anchored error kernel. -/
+def ccmGuinandWeilThirdGradeCesaroTriangularWeight (H h : ℝ) : ℝ :=
+  ccmGuinandWeilThirdGradeWeight h * (1 - h / H)
+
+/-- The anchored kernel is exactly the outgoing derivative of the moving triangular source
+weight.  This is the differential identity that keeps prime and polar channels coupled. -/
+theorem hasDerivAt_ccmGuinandWeilThirdGradeCesaroTriangularWeight
+    {H h : ℝ} (hh : h ≠ 0) :
+    HasDerivAt (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)
+      (-ccmGuinandWeilThirdGradeCesaroErrorKernel H h) h := by
+  have hw := hasDerivAt_ccmGuinandWeilThirdGradeWeight hh
+  have hg : HasDerivAt (fun x : ℝ => 1 - x / H) (-1 / H) h := by
+    have hg0 := (hasDerivAt_const (x := h) (c := (1 : ℝ))).sub
+      ((hasDerivAt_id (x := h)).div_const H)
+    have hfun : ((fun _ : ℝ => (1 : ℝ)) - fun x => id x / H) =
+        fun x => 1 - x / H := by
+      funext x
+      rfl
+    rw [hfun] at hg0
+    apply hg0.congr_deriv
+    ring
+  apply (hw.mul hg).congr_deriv
+  unfold ccmGuinandWeilThirdGradeWeightDeriv
+    ccmGuinandWeilThirdGradeWeight ccmGuinandWeilThirdGradeCesaroErrorKernel
+  field_simp [hh]
+  ring
+
 /-- Anchored signed completed-error moment.  The anchoring retains the lower-wall coefficient. -/
 def ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment (b H : ℝ) : ℝ :=
   ∫ h in b..H,
@@ -239,6 +266,72 @@ theorem integral_ccmGuinandWeilThirdGradeCesaroErrorKernel
     exact hc.intervalIntegrable
   rw [intervalIntegral.integral_sub hfourInt hthreeInt, hfour, hthree]
   field_simp [hb.ne', hH.ne']
+  ring
+
+/-- **Pre-scalar triangular source law.**  The anchored completed-error moment is already one
+literal finite prime-minus-polar window.  Its moving triangular test is positive, vanishes at the
+upper wall, and retains prime--polar cancellation before any completed-error scalarization. -/
+theorem ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_eq_primePolarTriangularWindow
+    {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
+    ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H =
+      ccmGuinandWeilPrimePolarWeightedWindow b H
+        (ccmGuinandWeilThirdGradeCesaroTriangularWeight H) := by
+  have hH : 0 < H := hb.trans_le hbH
+  have hderiv : ∀ x ∈ Set.Icc b H,
+      HasDerivAt (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)
+        (-ccmGuinandWeilThirdGradeCesaroErrorKernel H x) x := by
+    intro x hx
+    exact hasDerivAt_ccmGuinandWeilThirdGradeCesaroTriangularWeight
+      (ne_of_gt (hb.trans_le hx.1))
+  have hcont : ContinuousOn
+      (fun x : ℝ => -ccmGuinandWeilThirdGradeCesaroErrorKernel H x)
+      (Set.Icc b H) := by
+    intro x hx
+    unfold ccmGuinandWeilThirdGradeCesaroErrorKernel
+    exact (((continuousAt_const.sub
+      ((continuousAt_const.mul continuousAt_id).div_const H)).div
+        (continuousAt_id.pow 4)
+        (pow_ne_zero 4 (ne_of_gt (hb.trans_le hx.1)))).neg).continuousWithinAt
+  have hint : IntervalIntegrable
+      (fun x : ℝ => -ccmGuinandWeilThirdGradeCesaroErrorKernel H x)
+      volume b H := by
+    have hcU : ContinuousOn
+        (fun x : ℝ => -ccmGuinandWeilThirdGradeCesaroErrorKernel H x)
+        (Set.uIcc b H) := by
+      simpa only [Set.uIcc_of_le hbH] using hcont
+    exact hcU.intervalIntegrable
+  have hflux := ccmGuinandWeilPrimePolarWeightedWindow_eq_completedErrorFlux
+    hb hbH hderiv hint hcont
+  rw [hflux]
+  simp only [ccmGuinandWeilThirdGradeCesaroTriangularWeight,
+    div_self hH.ne', sub_self, mul_zero, zero_mul, sub_zero]
+  rw [ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment]
+  rw [ccmGuinandWeilThirdGradeWeight]
+  rw [← integral_ccmGuinandWeilThirdGradeCesaroErrorKernel hb hbH]
+  let K := ccmGuinandWeilThirdGradeCesaroErrorKernel H
+  let E := criticalMellinCompletedError
+  have hKcont : ContinuousOn K (Set.uIcc b H) := by
+    have hcneg : ContinuousOn (fun x : ℝ => -K x) (Set.uIcc b H) := by
+      simpa only [Set.uIcc_of_le hbH, K] using hcont
+    have hc := hcneg.neg
+    have heq : (-fun x : ℝ => -K x) = K := by
+      funext x
+      simp only [Pi.neg_apply, neg_neg]
+    rw [heq] at hc
+    exact hc
+  have hKint : IntervalIntegrable K volume b H := hKcont.intervalIntegrable
+  have hEint := intervalIntegrable_criticalMellinCompletedError_on_Icc hbH
+  have hKEint : IntervalIntegrable (fun h => K h * E h) volume b H := by
+    exact hEint.mul_continuousOn hKcont |>.congr fun h _ => by ring
+  change (∫ h in b..H, K h * (E b - E h)) =
+    (∫ h in b..H, K h) * E b + ∫ h in b..H, E h * -K h
+  rw [show (fun h : ℝ => K h * (E b - E h)) =
+      fun h => E b * K h - K h * E h by funext h; ring]
+  rw [intervalIntegral.integral_sub (hKint.const_mul _) hKEint]
+  rw [intervalIntegral.integral_const_mul]
+  rw [show (fun h : ℝ => E h * -K h) =
+      fun h => -(K h * E h) by funext h; ring]
+  rw [intervalIntegral.integral_neg]
   ring
 
 /-- **Anchored positive-kernel law.**  Normalizing the literal FU Cesàro primitive by its moving

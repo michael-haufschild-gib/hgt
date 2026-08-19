@@ -321,3 +321,39 @@ Let `g = bernoulli'PowerSeries ℚ`, `f_i = rescale L_i g`, `h = ∏_i f_i = beu
    `e_j(L₁²,…,L_r²)` in the field; each `L_i²` is then a root of a monic polynomial over it, and
    each `L_i` a root of `X² − L_i²`.  With `stieltjesField_le_logField` this gives the §2′
    transcendence-degree identity.
+
+### C3 — §2′ CLOSED (2026-08-19)
+
+New module `formal/GaloisForLFunctions/HTGeometry/StieltjesPowerSumRecovery.lean` (wired into the
+`HTGeometry` umbrella, olean built, axioms clean).  The repaired §2′ is now an unconditional Lean
+theorem.  Contents, in proof order:
+
+- `bernoulliSeries_deriv_id` — `X·g′ = g·(1 + X − g)` for `g = bernoulli'PowerSeries A` over any
+  ℚ-algebra domain, from mathlib's `bernoulli'PowerSeries_mul_exp_sub_one` by differentiating,
+  multiplying by `X`, and cancelling the non-zero-divisor `exp − 1`;
+- `X_mul_deriv_rescale`, `rescale_bernoulliSeries_deriv_id`, `X_mul_deriv_prod` — the rescaled and
+  product forms (`X·(∏f)′ = (∏f)·(∑u)` when each `X·f_i′ = f_i·u_i`);
+- `blockGen`, `coeff_blockGen`, `scaledFactor_eq_rescale`, `beurlingBlock_eq_prod`, `blockQ`,
+  **`X_mul_deriv_beurlingBlock`** — the Laurent block satisfies `X·h′ = h·Q`;
+- `coeff_blockQ`, `coeff_blockQ_zero`, `coeff_blockQ_of_two_le` — `Q` has zero constant term and
+  `Q_m = −(B⁺_m/m!)·p_m` for `m ≥ 2`;
+- `coeff_zero_beurlingBlock`, `beurlingBlock_recursion` — the coefficient recursion
+  `k·a_k = ∑_{j<k} a_j q_{k−j}`;
+- `qVal`, `blockCoeffVal_recursion`, `prod_mem_stieltjesField`,
+  `blockCoeffVal_mem_stieltjesField`, **`qVal_mem_stieltjesField`** — every `q_m` is a rational
+  polynomial in the Laurent coefficients, hence lies in the Laurent-coefficient field;
+- `bernoulli_two_mul_ne_zero` (from mathlib's `hasSum_zeta_nat`: the positive sum forces
+  `B_{2k} ≠ 0`), `qVal_of_two_le`, **`sum_pow_even_mem_stieltjesField`** — every *even* power sum
+  `∑_i L_i^{2m}` lies in the Laurent-coefficient field;
+- `negSq`, `aeval_psum_negSq`, `aeval_psum_negSq_mem`, **`aeval_esymm_negSq_mem`** — Newton's
+  identities (`MvPolynomial.mul_esymm_eq_sum`) applied to the family `−L_i²`, whose power sums are
+  exactly the even power sums up to sign;
+- `vieta_negSq` (`Multiset.prod_X_add_C_eq_sum_esymm`), **`isAlgebraic_sq_over_stieltjesField`**,
+  **`isAlgebraic_log_over_stieltjesField`** — each `L_i` is algebraic over the Laurent-coefficient
+  field;
+- **`trdeg_stieltjesField_eq_logField`** — §2′:
+  `trdeg_ℚ {Laurent coefficients of ζ_S} = trdeg_ℚ ℚ(L₁,…,L_r)`, for every multiplier system with
+  `∏ L_i ≠ 0`.
+
+REMAINING for C3: §2 `trdeg = 1` (instantiate the corpus's Hermite–Lindemann), §2″ (instantiate
+the corpus's Gelfond–Schneider), §4 (no P-recurrence).

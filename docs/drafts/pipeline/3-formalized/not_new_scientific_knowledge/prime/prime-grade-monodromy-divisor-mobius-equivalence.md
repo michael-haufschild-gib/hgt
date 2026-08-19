@@ -1,7 +1,7 @@
 # Prime-grade monodromy is exactly divisor Möbius data
 
 - **ID:** `prime-grade-monodromy-divisor-mobius-equivalence`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized
 - **Type:** theorem (paper), `[BRIDGE]`
 - **Statement:** The complete residue/monodromy field of the grade-one prime logarithmic source is
   the Möbius transform of the zeta divisor along positive-integer dilations.  The inverse Lambert
@@ -136,3 +136,28 @@ factor through:
 The next admissible object is therefore a non-residue pairing between the weighted coefficient-ray
 class and the global divisor, invariant under finite Euler units but not reconstructed from either
 projection separately.
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+`formal/GaloisForLFunctions/RHTower/GradeMonodromyInversion.lean` together with the corpus's
+continued prime-log current; every declaration axiom-clean
+(`propext, Classical.choice, Quot.sound`).
+
+| Card item | Lean declaration |
+|---|---|
+| the grade-one prime source `Q(s) = ∑_p (log p) p^{-s}` and its convergence | `primeGradeSource`, `summable_primeGradeSourceTerm` |
+| the prime-power grade family and its two-scale summability | `primeGradeFamily`, `summable_primeGradeFamily` |
+| **eq. (1), the Lambert decomposition `A(s) = ∑_k Q(ks)`** | `lSeries_vonMangoldt_eq_tsum_primeGradeSource` |
+| the Möbius pair regrouping `∑_{(r,k)} μ(r) F(rk) = F(1)` | `tsum_moebius_pair` (with `sum_divisors_moebius_eq`) |
+| geometric decay of the dilated source, and pair summability | `norm_primeGradeSource_dilate_le`, `summable_moebiusGradePair` |
+| **eq. (2), the Möbius inversion `Q(s) = ∑_r μ(r) A(rs)`** | `primeGradeSource_eq_tsum_moebius_lSeries` |
+| the continued grade-one source on `Re s > 1/2` | `primeGradeSource_eq_continuation` (corpus `xiPrimeLogDirichletContinuation`) |
+| **eqs. (3)–(4), `Res_{s=ρ} Q = −m` at every zero right of the critical line** | `primeGradeMonodromy_zero_residue` (corpus `xiPrimeLogDirichletContinuation_zero_residue`) |
+| only the undilated term is singular there: `A(r·)` is holomorphic for `r ≥ 2` | `differentiableAt_lSeries_vonMangoldt_dilate` |
+| **eq. (5), the exact mutual inversion of the two transforms** | `gradeMonodromyTransform`, `gradeLambertTransform`, `gradeLambertTransform_gradeMonodromyTransform`, `tsum_gradePairFamily` |
+| finite Euler-unit invariance of the monodromy field | `finitePrimeEulerUnit`, `differentiable_finitePrimeEulerUnit`, `tendsto_finitePrimeEulerUnit_residue`, `tendsto_residue_add_finitePrimeEulerUnit` |
+
+The inversion (5) is proved for an arbitrary locally finite dilation datum, so it is exactly the
+statement that the two maps `ν ↦ M_Q` and `M_Q ↦ ν` are mutually inverse on the divisor data
+relevant to zeta; the divisor identity `∑_{r ∣ m} μ(r) = [m = 1]` is the whole mechanism, as the
+card states.

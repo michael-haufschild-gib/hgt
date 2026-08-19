@@ -685,3 +685,46 @@ chain finite rank → spectrum → operator at every order `p`.
 What remains for the card at general `p` is only the *quantitative* half -- Simon's
 `‖R_p(A)‖₁ ≤ c_p‖A‖_p^p`, which upgrades the disc-level determinant to an entire function -- and it
 is independent of both the algebraic content and this identification.
+
+## Lean progress -- the normalized-logarithm half of `(DC)`'s necessity
+
+The necessity direction of `(DC)` has two halves: continuity of `det_p` on the Schatten class, and
+the argument that *the polynomial factor converges* -- "the normalized holomorphic logarithm forces
+convergence of every coefficient of `P_n`; the finite-dimensional polynomial space is closed".  The
+second half is now formal, unconditionally and independently of any Schatten-class analysis.
+
+`formal/GaloisForLFunctions/HTGeometry/BoundedDegreePolynomialLimit.lean` (new, umbrella-wired,
+axioms = `propext`/`Classical.choice`/`Quot.sound`)
+
+| Card item | Declaration |
+|---|---|
+| the interpolant of a limiting sample vector, and its degree bound | `lagrangeLimitPoly`, `natDegree_lagrangeLimitPoly_le` |
+| a bounded-degree polynomial is its own interpolant | `eq_lagrangeLimitPoly_of_natDegree_le` |
+| **values converge to the values of the limit polynomial** | `tendsto_eval_of_tendsto_samples` |
+| **and so does every coefficient** | `tendsto_coeff_of_tendsto_samples` |
+
+This is "the finite-dimensional polynomial space is closed", in the only form the argument needs: a
+polynomial of degree at most `J` is a *linear* function of its values at `J+1` fixed nodes, so
+convergence of those values is convergence in the space.  The corpus already owned the linear
+recovery (`coeff_eq_sum_gaussianLagrange`, `gaussianLagrangeNodes`), so only the limit statement was
+new.
+
+`formal/GaloisForLFunctions/HTGeometry/NormalizedPolynomialFactorLimit.lean` (new, umbrella-wired,
+axiom-clean)
+
+| Card item | Declaration |
+|---|---|
+| the antiderivative normalized to vanish at the origin | `normalizedAntiderivative`, `coeff_normalizedAntiderivative_zero`, `coeff_normalizedAntiderivative_succ`, `natDegree_normalizedAntiderivative_le` |
+| **the normalized polynomial factor converges** | `exists_limit_of_tendsto_derivative_samples` |
+
+This is the "normalized holomorphic logarithm" step, with the logarithm eliminated: `exp` is not
+injective, so the values of `exp P_n` do not determine `P_n`, but the *logarithmic derivative*
+`P_n' = (exp P_n)'/(exp P_n)` does, and the normalization `P_n(0) = 0` recovers `P_n` from `P_n'`.
+So convergence of the logarithmic derivatives at `p` fixed nodes forces coefficientwise convergence
+of the polynomial factors, and the limit is a polynomial with the same degree bound and the same
+normalization -- which is exactly the statement that the fibre `exp J_{<p}` is closed.
+
+What remains for `(DC)` is only the *analytic* half: continuity of `det_p` on the Schatten class,
+i.e. Simon's `‖R_p(A)‖₁ ≤ c_p‖A‖_p^p`.  At `p = 2` the corpus already owns it
+(`EntireDet2HilbertSchmidtContinuity.tendsto_entireDet2_of_hsNorm_sub_tendsto_zero`), so the `p = 2`
+case of `(DC)` is now complete on both halves.

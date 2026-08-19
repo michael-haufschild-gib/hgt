@@ -1525,3 +1525,147 @@ So the first jet module of the Bessel order module is a non-split self-extension
 identities of the matrix equation reduce to the two scalar compatibility identities that the degree
 count at infinity refutes.  This is the isomonodromy obstruction in its standard matrix formulation,
 which is the form the parameterized classification consumes.
+
+## Lean progress — the obstruction is intrinsic to the difference module
+
+```text
+MatrixLogarithmicDerivative
+  matrixDeriv_mul                    the matrix Leibniz rule for an arbitrary finite index type
+  matrixDeriv_invOf                  the derivative of an inverse
+  logDerivMatrix                     **Kolchin's logarithmic derivative `ℓδ g = g′ g⁻¹`**
+  logDerivMatrix_mul                 the crossed-homomorphism law
+                                     `ℓδ (g h) = ℓδ g + g (ℓδ h) g⁻¹`
+  logDerivMatrix_invOf, logDerivMatrix_eq_zero_iff
+IsomonodromyGaugeInvariance
+  isomonodromy_gauge_mul             **a gauge `σ(T) A = A' T` carries a connection to a connection**
+                                     (proved with `T` cleared, so no invertibility is needed)
+  isomonodromy_of_gauge              and back, when the gauge is invertible
+BesselOrderIntrinsicObstruction
+  ratShift_deriv                     **the unit shift commutes with the rational coordinate
+                                     derivation** — transported through the faithful embedding of
+                                     `ℂ(X)` into the meromorphic field
+  matrixDeriv_besselOrderCompanion
+  besselOrder_no_gauge_delta_structure
+                                     **no system gauge equivalent to the Bessel order companion
+                                     over `ℂ(ν)` admits a connection**
+```
+
+So the obstruction belongs to the difference module, not to the companion basis: it is the intrinsic
+statement a parameterized classification consumes.  All axiom-clean.
+
+## Lean progress — a constant Galois group forces a connection
+
+`GaloisForLFunctions.HTGeometry.ConstantGaloisConnection`
+
+```text
+map_invOf                              a ring hom commutes with matrix inversion
+logDerivMatrix_map                     `ℓδ` is natural for a ring endomorphism commuting with `δ`
+logDerivMatrix_map_eq_self             **a constant Galois matrix fixes the logarithmic
+                                       derivative**: `Y ↦ Y g` with `δg = 0` contributes
+                                       `Y (ℓδ g) Y⁻¹ = 0` to the crossed-homomorphism law
+exists_base_logDerivMatrix_of_galois_constant
+                                       **if every Galois matrix is constant and the invariants of
+                                       the Galois action are the base, then `ℓδ Y` has entries in
+                                       the base** — the system carries a connection
+```
+
+This is the direction of the parameterized translation that turns "the parameterized Galois group is
+conjugate to its constant points" into isomonodromy.  Combined with the intrinsic obstruction, the
+card's remaining gap is now exactly: (i) Cassidy's classification, which produces the conjugating
+element, and (ii) the parameterized Galois correspondence supplying `R^G = K`.
+
+## Lean progress — the Galois correspondence is (almost) already owned
+
+A corpus search found that the tree already contains the Galois correspondence in torsor form:
+
+```text
+PositiveDimensionalInvariantGeneration
+  AffineTorsorCoaction.coinvariant_eq_range      coinvariants of an affine torsor are the base
+                                                 field, by faithfully-flat descent
+  PointSeparatingTorsorAction.fixedByPoints_eq_range
+                                                 elements fixed by every separating rational point
+                                                 are the base scalars
+AffineRationalPointSeparation
+  affineVarietyPointEvaluation_jointlyInjective  the Nullstellensatz supplies the separating points
+  AffineTorsorCoaction.fixedByPresentedPoints_eq_range
+```
+
+These are stated for a torsor whose total object is a **field**.  A Picard--Vessiot ring is not a
+field — only `σ`-simple, hence a finite product of domains — so the missing piece was the same
+statement over a coefficient ring:
+
+`GaloisForLFunctions.HTGeometry.RingTorsorCoinvariance`
+
+```text
+coinvariant_eq_range_of_canonical   **coinvariance over a coefficient ring**: for a canonical
+                                    torsor map carrying the left embedding to the left embedding
+                                    and the right embedding to the coaction, the elements whose
+                                    coaction is the left embedding are exactly the base scalars
+```
+
+Faithful flatness of a nonzero algebra over a field is automatic and mathlib's descent equalizer is
+already stated for an arbitrary commutative ring, so the field proof carries over.
+
+**Revised remaining gap for the card.**  Item (ii), the parameterized Galois correspondence
+`R^G = K`, is now essentially owned: what is left of it is the *instantiation* — building the
+canonical torsor map for the Picard--Vessiot ring out of `tensorDecompositionEquiv`
+(`R ⊗_C E ≅ R ⊗_K R`) and the base change `R ⊗_K (K ⊗_C E) ≅ R ⊗_C E`.  Item (i), Cassidy's
+classification, is untouched.
+
+## Lean progress — joint injectivity of the torsor points over a coefficient ring
+
+`PointSeparatingTorsorAction.fixedByPoints_eq_range` *assumes* joint injectivity of the rational
+point evaluations, and `AffineRationalPointSeparation` supplies it only when the coefficients of the
+tensor product form a field.  A Picard--Vessiot ring is not a field, so the missing half is the
+injectivity with coefficients in the ring:
+
+`GaloisForLFunctions.HTGeometry.TorsorPointSeparation`
+
+```text
+pointAlgHom E χ                             evaluation of the torsor coordinates at a point
+torsorPointHom E b hgen hindep χ            the `R`-algebra map `A → R` attached to a point,
+                                            through the torsor decomposition `R ⊗_C E ≅ A`
+eq_zero_of_forall_torsorPointHom_eq_zero    **an element of `A` killed by every point is zero**
+eq_of_forall_torsorPointHom_eq              hence the point evaluations are jointly injective
+```
+
+Mechanism: expand the element against a `C`-basis of `E` through the decomposition, then apply
+point separation with module coefficients (`PointsSeparateModule`), which needs `E` reduced and
+finitely generated over the algebraically closed constant field — both already established for the
+Picard--Vessiot torsor (`SigmaConstantsReduced`).
+
+With `A = R ⊗_K R` and the two embeddings of an element of `R`, this says an element fixed by every
+specialization lies in the equalizer of the two embeddings, which is the base field
+(`TensorSquareEqualizer`).  Item (ii) of the card's remaining gap is therefore complete as
+mathematics; what is left of it is threading the concrete instance setup of the Picard--Vessiot
+construction.
+
+## Lean progress — Cassidy for `sl₂`, graded case
+
+The last piece of new mathematics the card needs is Cassidy's classification of Zariski-dense
+differential algebraic subgroups of `SL₂`.  Its computational heart is now proved.
+
+`GaloisForLFunctions.HTGeometry.CassidySl2Graded`
+
+```text
+eq_span_singleton_of_mul_mem_range   **two nonzero `k`-subspaces of a field whose product lands in
+                                     `k` are both `k`-lines** — divide two elements of `V` by a
+                                     common element of `W` and the ratio is in `k`
+sl2E, sl2F, sl2H                     the standard `sl₂` matrices
+sl2_bracket_smul_E_F                 the root bracket `[v e, w f] = (v w) h`
+sl2Diag v                            the conjugator `diag(1, v)`
+sl2Diag_conj_E/F/H                   its action: `v e ↦ e`, `w f ↦ (v w) f`, `h ↦ h`
+graded_cassidy_sl2                   **the graded case of Cassidy's classification**: a graded
+                                     `k`-Lie subalgebra of `sl₂(U)` with both root spaces nonzero has
+                                     `k`-lines as root spaces, and conjugating by `diag(1, v₀)`
+                                     normalises it to `sl₂(k)`
+```
+
+Two points worth recording.  Closure under the root bracket is what forces `V·W ⊆ k`, since
+`[v e, w f] = (v w) h` and the toral part is `k h`.  And the normalising conjugation needs no square
+root — `diag(1, v₀)` suffices, where the usual `diag(λ, λ⁻¹)` would demand `λ² = v₀⁻¹` — so the
+statement holds over an arbitrary field, not only an algebraically closed one.
+
+What remains of Cassidy is the reduction of the general case to the graded one: producing a torus,
+i.e. showing that a Zariski-dense differential algebraic subalgebra can be conjugated so that it is
+graded by the diagonal.

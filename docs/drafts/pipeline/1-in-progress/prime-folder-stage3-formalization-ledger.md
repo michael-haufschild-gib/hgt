@@ -314,3 +314,39 @@ split `tsum_vonMangoldtLSeriesTerm_eq_primeLog_add_higherValuation` and the regr
 (3)–(4) the residue law `Res_{s₀} Q = −∑_r μ(r) ν(r s₀)/r` from the continuation, using
 `logDeriv_iteratedDeriv_residue_of_zero` (residue of a logarithmic derivative = analytic order);
 (6) invariance under finite Euler-unit changes.
+
+### 2026-08-19 (cont.) — Lambert decomposition landed; grade-monodromy analytic side already owned
+
+`RHTower/GradeMonodromyInversion.lean` now also proves:
+
+- `tsum_moebius_pair` — the general Möbius pair regrouping `∑_{(r,k)} μ(r) F(rk) = F(1)`;
+- `primeGradeSource` and `summable_primeGradeSourceTerm`;
+- `primeGradeFamily`, `summable_primeGradeFamily` (from the corpus two-scale bound
+  `summable_primeLog_mul_inv_rpow_mul_add`);
+- **`lSeries_vonMangoldt_eq_tsum_primeGradeSource`** — the card's Lambert decomposition (1),
+  `A(s) = ∑_k Q((k+1)s)` on `Re s > 1`.
+
+Corpus search then showed the card's analytic side (3)–(4) is largely **already formalized**:
+`RHTower.xiPrimeLogDirichletContinuation` is the continued grade-one current on `Re s > 1/2`,
+`xiPrimeLogDirichletCriticalContinuation_zero_residue` gives residue `−m` at critical-line zeros,
+`neg_logDeriv_zeta_zero_residue` gives the residue of `−ζ'/ζ`, and
+`xiPrimeLogHigherValuationCriticalContinuation_differentiableAt_zeta_zero` gives holomorphy of the
+higher grades.  What remains for the card: the Möbius inversion (2) as a Dirichlet-series identity
+(the summability estimate `|Q(ms)| ≤ C 2^{-(m-1)σ}` plus `tsum_moebius_pair`), the residue law (3)
+in Möbius form, and the finite-Euler-unit invariance (6).
+
+## 2026-08-19 — grade-monodromy card CLOSED (card 15)
+
+`RHTower/GradeMonodromyInversion.lean` now carries the whole card: the Lambert decomposition (1),
+the Möbius inversion (2), the residue law (3)–(4) (re-exported from the corpus's continued
+prime-log current, with the new lemma that dilations `r ≥ 2` are holomorphic in the strip), the
+exact mutual inversion (5) for an arbitrary locally finite datum, and finite Euler-unit invariance.
+
+Card `prime-grade-monodromy-divisor-mobius-equivalence` promoted to
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`.
+Stage-2 prime folder: 21 cards remaining.
+
+Search paid off again: `xiPrimeLogDirichletContinuation_zero_residue`
+(`XiHeatCassiniWoldZetaPoleCarrier.lean`) already proved the card's (3)–(4) for every zero right of
+the critical line, and `xiPrimeLogDirichlet_eq_tsum_primeLog_div_cpow` identified the corpus current
+with the card's `Q`.

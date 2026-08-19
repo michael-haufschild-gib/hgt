@@ -1705,3 +1705,93 @@ ray-constancy after normalisation, measurability on the whole shell, and nullity
 of the simple-spectrum cone.  The capstone consumes only the two that remain -- analyticity of the
 phase on the cone and its nonconstancy on every open patch of it, the latter being Theorem A -- and
 delivers `(17)` for the actual spectral action rather than for an abstract phase.
+
+## Lean progress -- Theorem A reduced to a two-point check, and Theorem B assembled
+
+Four further modules (umbrella-wired, `lake build` green, axioms =
+`propext`/`Classical.choice`/`Quot.sound`) close the analyticity item of Theorem B and reduce
+Theorem A -- the boxed `(6)` -- to a finite, checkable condition on the ensemble.
+
+`formal/GaloisForLFunctions/HTGeometry/SortedEigenbranchAnalytic.lean`
+
+| Card item | Declaration |
+|---|---|
+| a root of the characteristic relation of a Hermitian matrix is one of its eigenvalues | `exists_eigenvalue_eq_of_charpolyDet_eq_zero` |
+| the real restriction of a holomorphic branch is real-analytic | `realEmbed`, `analyticAt_re_comp_realEmbed` |
+| analytic eigenvalue branches of the ensemble at a simple point | `exists_analyticBranches_spectralEnsemble` |
+| **the sorted spectrum is real-analytic at a simple point** | `analyticAt_sortedEnsembleSpectrum` |
+| **hence so is the spectral action** | `analyticAt_sortedSpectralAction` |
+
+The identification of the canonical increasing labelling with the analytic branches is the whole
+content: each branch value is a root of the characteristic relation, hence an eigenvalue; the
+eigenvalues are pairwise separated at the base point; and the sorted coordinate is continuous, so
+the branch cannot jump between them.  No perturbation theory and no branch-tracking is needed.
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralActionPhaseAnalytic.lean`
+
+| Card item | Declaration |
+|---|---|
+| the square root is analytic on the positive axis (`exp ∘ (log/2)`) | `analyticAt_rsqrt` |
+| the norm, its inverse and the normalisation are analytic away from the origin | `analyticAt_norm`, `analyticAt_normInv`, `analyticAt_normalise` |
+| a nonvanishing discriminant is a simple spectrum | `injective_eigenvalues_of_disc_ne_zero` |
+| **the phase is analytic on the simple-spectrum cone** | `analyticOnNhd_spectralActionPhase` |
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralActionNonconstancy.lean`
+
+| Card item | Declaration |
+|---|---|
+| the canonically labelled spectrum and action are homogeneous of degree one | `sortedEnsembleSpectrum_smul`, `sortedSpectralAction_smul` |
+| **the symmetrised quadratic defect `(14)`** | `jointActionDefect`, `jointActionDefectProduct`, `rename_sumMap_jointActionDefectProduct` |
+| it descends to a polynomial in the shell coordinates | `exists_shellPoly_jointActionDefectProduct` |
+| **Theorem A from one witness**: nonconstancy on every open patch | `exists_ne_spectralActionPhase_of_witness` |
+| **Theorem B from one witness**: angular dephasing `(17)` | `tendsto_integral_exp_sortedSpectralAction_zero_of_witness` |
+
+This is the card's own proof of Theorem A, formalised: constancy on a patch plus homogeneity gives
+`(13)`, symmetrising over labellings gives `(14)`, which then vanishes on a nonempty open set and
+hence identically -- so one coefficient vector at which *no* labelling satisfies `(13)` refutes
+constancy on every patch at once.  The symmetrisation reuses the joint-ring machinery built for the
+transversality card (`jointAction`, `rename_sumAlgEquiv`, `exists_shellPoly_of_isSymmetric_over`).
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralActionWitness.lean`
+
+| Card item | Declaration |
+|---|---|
+| **the two-point witness criterion** | `exists_witness_of_disjoint_actionRatio` |
+| **angular dephasing from two coefficient vectors** | `tendsto_integral_exp_sortedSpectralAction_zero_of_disjoint` |
+
+The witness is quantified over the constant level `b`, but a single *pair* of coefficient vectors
+suffices: if the squared action-to-energy ratios realised at `θ₁` and at `θ₂` are disjoint lists,
+then no level can be reached at both, so every level is missed at one of them.  Theorem A is
+therefore now a finite check on the ensemble -- exhibit two Hamiltonians in the family whose
+labelled action ratios are disjoint -- rather than an analytic statement.
+
+What remains for Theorem A is exactly that check for the card's path-local Pauli ensemble, which is
+the content of Lemma A2 (branchwise quadratic-rate rigidity) together with Lemma A1's
+endpoint-complete witness chart.
+
+## Lean progress -- the energy form of the witness, matching the extension capstone
+
+The nonconstancy criterion of the previous section asks for a coefficient vector at which no
+labelling satisfies `(∑ⱼkⱼλⱼ)² = b²∑ₐθₐ²`, in the *coefficient* energy; the quadratic-rate rigidity
+capstone `exists_mem_real_endpointComplete_quadraticRate_ne_zero` produces one at which no labelling
+satisfies `(∑ⱼkⱼλⱼ)² = κ∑ⱼλⱼ²`, in the *spectral* energy.  For the card's ensemble the two agree,
+because the setup `(2)` normalises the family to be orthonormal in the trace pairing.  That bridge
+is now formal.
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralEnergyWitnessBridge.lean` (new, umbrella-wired,
+axioms = `propext`/`Classical.choice`/`Quot.sound`)
+
+| Card item | Declaration |
+|---|---|
+| **the setup `(2)` normalisation**: for a trace-orthonormal family, `Tr H(θ)² = c ∑ₐθₐ²` | `sum_sq_eigenvalues_of_orthonormal` |
+| **the energy-form witness is a coordinate-form witness** | `exists_witness_of_energy_witness` |
+| **angular dephasing `(17)` from an energy-form witness** | `tendsto_integral_exp_sortedSpectralAction_zero_of_energy_witness` |
+
+So Theorem B now consumes exactly the object Theorem A's extension capstone produces: a real
+parameter at which the quadratic-rate relation fails for every labelling and every rate.  With
+`sum_sq_eigenvalues_of_orthonormal` the trace normalisation is not an extra hypothesis but the
+card's own `D^{-1}Tr H(θ)² = 1`, read at a general coefficient vector.
+
+What remains for Theorem A on the card's ensemble is the physical embedding named in the earlier
+section -- transporting the six chart coordinates of the one-qubit extension into the `m = 12n-9`
+shell parameters -- after which the extension capstone supplies the witness directly.

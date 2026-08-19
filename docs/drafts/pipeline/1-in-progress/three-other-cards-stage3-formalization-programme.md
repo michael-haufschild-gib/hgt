@@ -896,3 +896,84 @@ reduce to the two scalar ones already refuted.
 Next on the critical path (all searched, none present in the tree): the parameterized Galois
 correspondence linking non-splitting of the jet tower to growth of the differential transcendence
 degree, and Cassidy's classification for `SL₂`.
+
+
+## Card 1 — the obstruction is intrinsic
+
+`MatrixLogarithmicDerivative` (Kolchin's `ℓδ` with the crossed-homomorphism law),
+`IsomonodromyGaugeInvariance` (a gauge carries a connection to a connection — proved with `T`
+cleared, so the identity needs no invertibility), and `BesselOrderIntrinsicObstruction`
+(`ratShift_deriv`: the unit shift commutes with the rational derivation, transported through the
+meromorphic embedding; hence `besselOrder_no_gauge_delta_structure`).
+
+Result: **no system gauge equivalent to the Bessel order companion over `ℂ(ν)` admits a
+connection** — the obstruction is a property of the difference module.
+
+Searched before building each of these; `ratShiftEquivBy` exists as a ring automorphism but carries
+no derivation-commutation lemma, and the tree had no gauge invariance for difference modules.
+
+
+## Card 1 — the constant-Galois direction
+
+`ConstantGaloisConnection.exists_base_logDerivMatrix_of_galois_constant`: if every Galois matrix
+`Y⁻¹ φ(Y)` is `δ`-constant and the invariants of the Galois action are the base, then `ℓδ Y` has
+entries in the base — the system is isomonodromic.
+
+Mechanism: the crossed-homomorphism law for `ℓδ` makes the contribution of a constant Galois matrix
+vanish, so `ℓδ Y` is Galois invariant.
+
+This closes the *translation* half of the endgame.  What remains: Cassidy's classification (which
+produces the conjugating element making the Galois matrices constant) and the parameterized Galois
+correspondence (which supplies `R^G = K`).  Searched before building; neither the naturality of `ℓδ`
+nor this statement existed in the tree.
+
+
+## Card 1 — the Galois correspondence was already in the tree
+
+Searching before building paid off twice more.  A draft of "points of the torsor separate ⟹
+invariants are the base" was **discarded unbuilt**: the tree already has
+`PositiveDimensionalInvariantGeneration.AffineTorsorCoaction.coinvariant_eq_range` (faithfully-flat
+descent), `PointSeparatingTorsorAction.fixedByPoints_eq_range`, and
+`AffineRationalPointSeparation` (Nullstellensatz points).
+
+The one genuine gap was that those are stated for a torsor over a **field**, and a Picard--Vessiot
+ring is not one.  `RingTorsorCoinvariance.coinvariant_eq_range_of_canonical` supplies the
+coefficient-ring form; mathlib's descent equalizer already covers commutative rings, and faithful
+flatness over a field is automatic.
+
+Next step for item (ii): instantiate it — build the canonical torsor map for the PV ring from
+`tensorDecompositionEquiv` (`R ⊗_C E ≅ R ⊗_K R`) together with
+`Algebra.TensorProduct.cancelBaseChange` (`R ⊗_K (K ⊗_C E) ≅ R ⊗_C E`), and check the two embedding
+conditions.  Item (i), Cassidy for `SL₂`, remains untouched.
+
+
+## Card 1 — correction, and joint injectivity over a ring
+
+**Correction to the previous entry.**  The module discarded last turn was *not* a duplicate.  The
+corpus's `fixedByPoints_eq_range` **assumes** joint injectivity of the point evaluations;
+`AffineRationalPointSeparation` proves that injectivity only for field coefficients.  Since a
+Picard--Vessiot ring is not a field, the injectivity with ring coefficients was genuinely missing.
+It is now `TorsorPointSeparation.eq_zero_of_forall_torsorPointHom_eq_zero` /
+`eq_of_forall_torsorPointHom_eq`.
+
+Lean note: the concrete `A = R ⊗_K R` form of the statement fails to elaborate when
+`Algebra C (R ⊗_K R)` is taken as a free instance — the synthesized `IsScalarTower` then refers to a
+different algebra structure.  The abstract-`A` form avoids this; the concrete instantiation should be
+done where the Picard--Vessiot objects are concrete, not with free instance variables.
+
+
+## Card 1 — Cassidy for `sl₂`, graded case proved
+
+`CassidySl2Graded`:
+
+* `eq_span_singleton_of_mul_mem_range` — two nonzero `k`-subspaces of a field whose product lands in
+  `k` are `k`-lines.  This is the computational heart: bracket closure `[v e, w f] = (v w) h` forces
+  `V·W ⊆ k`, and then dividing by a common element of `W` puts ratios in `k`.
+* `graded_cassidy_sl2` — a graded `k`-Lie subalgebra of `sl₂(U)` with both root spaces nonzero is
+  conjugated to `sl₂(k)` by `diag(1, v₀)`.
+
+Worth remembering: the normalisation needs **no square root**.  The textbook conjugator
+`diag(λ, λ⁻¹)` requires `λ² = v₀⁻¹`; `diag(1, v₀)` does the same job over any field.
+
+Remaining for Cassidy: reduce the general case to the graded one — produce a torus, i.e. conjugate a
+Zariski-dense differential algebraic subalgebra so that it is graded by the diagonal.

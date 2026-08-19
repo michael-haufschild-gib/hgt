@@ -1,13 +1,13 @@
 # Fixed-shell spectral transversality controls onset and locality forces a hardening cone
 
 - **ID:** `fixed-shell-transversality-onset-hardening-cone-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalised in Lean 4
 - **Type:** theorem / quantitative fixed-shell onset / robust complexity propagation
 - **Parents:** `fixed-shell-angular-dephasing-static-local-plateau-law.md`,
   `stabilizer-seeded-static-local-double-exponential-plateau-law.md`
 - **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE]
   [REPLICA VARIATION ALGEBRA LEAN-PROVED] [ABSTRACT OPERATOR CONE LEAN-PROVED]
-  [TRANSVERSALITY LEAN DEFERRED]
+  [TRANSVERSALITY LEAN-PROVED] [ONSET AND CONE LEAN-PROVED]
   [FINITE-SIZE ONSET ONLY] [BROWN-SCALE FIRST-ORDER ROUTE RETIRED]`
 - **Date:** 2026-08-08
 
@@ -1713,3 +1713,57 @@ semialgebraic stratification, and no genericity appeal is used anywhere.
 With `(18a)` (`exists_toSphere_spectralDiscriminant_sublevel_le`), `(13)`
 (`exists_small_transversalityTail`), Theorem C's assembly (`OnsetProbabilityAssembly`,
 `GridUnionOnset`) and now `(18b)`, the transversality half of the card is Lean-complete.
+
+## Stage 3 -- the complete Lean correspondence
+
+Every claim the card designates as formalizable is now Lean-certified, unconditionally and with
+axiom audit `propext`, `Classical.choice`, `Quot.sound` throughout.  The two closing modules are
+
+`formal/GaloisForLFunctions/HTGeometry/TransversalityDephasingBound.lean`
+
+| Card item | Declaration |
+|---|---|
+| per-term nonstationary-phase bounds sum against an aggregate derivative budget | `sum_good_bound_le` |
+| **`(17)`**: deviation `≤ Q_r(ζ,g) + B\|t\|⁻¹(g⁻¹+g⁻²)` | `norm_integral_sub_diagonal_le_transversalityTail` |
+| the remainder vanishes at large frequency | `tendsto_transversality_remainder` |
+
+`formal/GaloisForLFunctions/HTGeometry/TransversalityTailPowerLaw.lean`
+
+| Card item | Declaration |
+|---|---|
+| the union of finitely many sublevel sets costs the sum of their bounds | `toSphere_exists_sublevel_le` |
+| **`(18c)`**: `Q_r(ζ,g) ≤ A₀ζ^{α₀} + Σ_k A_k g^{α_k}` | `exists_toSphere_transversalityTail_le` |
+
+The `(17)` statement is the card's exactly: the discarded region costs one copy of its measure
+(Theorem A's unit coefficient mass, `replica_variation_le_one`), and the good-region terms cost
+`B/|t|` times `(g⁻¹+g⁻²)` with `B` an *aggregate* derivative budget rather than a per-character
+constant -- which is what `sum_good_bound_le` records.  `(18c)` is the sum of `(18a)` and `(18b)`
+after the union over the finite character set, which by subadditivity costs the sum of the
+individual bounds.
+
+### The full correspondence
+
+| Card statement | Lean declaration | Module |
+|---|---|---|
+| `(7)` replica multinomial expansion | `complexFidelityReplicaMultiplicityExpansion` | `FidelityReplicaCharacterCoefficientLaw` |
+| `(9)` **Theorem A**, unit total variation | `sum_norm_complexReplicaMultiplicityAmplitude_eq_pow`, `replica_variation_le_one` | `TracelessReplicaDyadicActionShellLaw`, `UnitCoefficientVariation` |
+| `(13)` the vanishing transversality tail | `exists_small_transversalityTail` | `SublevelVanishing` |
+| `(17a)`, `(17c)` the phase field and its bounds | `inner_phaseField_eq_one`, `norm_phaseField_le`, `abs_trace_le_of_phaseFieldDeriv` | `NonstationaryPhaseVectorField` |
+| `(17b)` nonstationary phase on the sphere | `integral_toSphere_euclideanDivergence_eq_zero`, `abs_oscillatory_le` | `SphereDivergence`, `NonstationaryPhaseSphere` |
+| `(17)` **Theorem B** | `norm_integral_sub_diagonal_le_transversalityTail` | `TransversalityDephasingBound` |
+| `(18a)` discriminant sublevel power law | `exists_toSphere_spectralDiscriminant_sublevel_le` | `SpectralDiscriminantPolynomial` |
+| `(18b)` gradient sublevel power law | `exists_toSphere_sublevel_le_shellCriticality` | `ShellCriticalityDomination` |
+| `(18c)` the tail power law | `exists_toSphere_transversalityTail_le` | `TransversalityTailPowerLaw` |
+| `(24)` **Theorem C**, the onset bound | `measureReal_le_of_capture_split` | `OnsetProbabilityAssembly` |
+| `(25)` the complementary reading | `one_sub_le_measureReal_compl` | `OnsetProbabilityAssembly` |
+| `(29)` **Corollary D**, continuous blocks | `one_sub_le_measureReal_of_grid` | `GridUnionOnset` |
+| `(31)`, `(32)` **Theorem E**, the hardening cone | `lt_add_uniformSimComplexity_of_lt_approxComplexity`, `sub_uniformSimComplexity_lt_approxComplexity`, `approxComplexity_evolved_le_add` | `StateOrbitHardeningCone` |
+| `(31)` operator-norm form | `unitaryCircuitWordSeparated_autonomous_backward_cone` | `AutonomousWordComplexityConeLaw` |
+
+`(35)`, `(36)` and `(37)` are not formalized and are not meant to be: `(36)` packages a *cited*
+lattice-simulation gate-cost bound into an asymptotic statement, `(35)` is its input, and `(37)` is
+a summary table.  The card's own frontier item 4 fixes the formalization target as the finite-size
+claims `(9)`, `(24)` and `(31)`; all three are proved, together with every intermediate boxed
+statement.
+
+The earlier "What remains" sections of this card are superseded by the table above.

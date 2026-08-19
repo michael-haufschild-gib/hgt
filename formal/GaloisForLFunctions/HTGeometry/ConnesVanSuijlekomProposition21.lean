@@ -174,42 +174,6 @@ theorem connesVanSuijlekomP21_quotient_nonnegative_monomial_eq_pow
   rw [LaurentPolynomial.T_pow]
   norm_num
 
-/-- Evaluation at the quotient Laurent-variable unit agrees with the quotient
-class on every nonnegative Laurent monomial. -/
-theorem connesVanSuijlekomP21_eval_nonnegative_term
-    {N : ℕ} (a : Fin (N + 1) → ℝ) (z : ℂ) (k : ℕ) :
-    LaurentPolynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
-      (connesVanSuijlekomP21QuotientXUnit a)
-      (LaurentPolynomial.C z * LaurentPolynomial.T (k : ℤ)) =
-      Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
-        (LaurentPolynomial.C z * LaurentPolynomial.T (k : ℤ)) := by
-  rw [LaurentPolynomial.eval₂_C_mul_T_n, map_mul,
-    connesVanSuijlekomP21_quotient_mk_C_eq_algebraMap,
-    connesVanSuijlekomP21_quotient_nonnegative_monomial_eq_pow]
-  rfl
-
-/-- The literal source Laurent generator vanishes when evaluated at the
-quotient Laurent-variable unit. -/
-theorem connesVanSuijlekomP21_eval_generator_eq_zero
-    {N : ℕ} (a : Fin (N + 1) → ℝ) :
-    LaurentPolynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
-      (connesVanSuijlekomP21QuotientXUnit a)
-      (connesVanSuijlekomP21Generator a) = 0 := by
-  rw [connesVanSuijlekomP21Generator, map_sum]
-  calc
-    ∑ j, LaurentPolynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
-        (connesVanSuijlekomP21QuotientXUnit a)
-        (LaurentPolynomial.C (a j : ℂ) * LaurentPolynomial.T (j : ℤ)) =
-        ∑ j, Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
-          (LaurentPolynomial.C (a j : ℂ) * LaurentPolynomial.T (j : ℤ)) := by
-      apply Finset.sum_congr rfl
-      intro j _
-      exact connesVanSuijlekomP21_eval_nonnegative_term a (a j : ℂ) (j : ℕ)
-    _ = Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
-        (connesVanSuijlekomP21Generator a) := by
-      rw [connesVanSuijlekomP21Generator, map_sum]
-    _ = 0 := connesVanSuijlekomP21_quotient_generator_eq_zero a
-
 /-- Every term in the inverse relation is polynomial in the quotient
 Laurent-variable class. -/
 theorem connesVanSuijlekomP21_quotient_inverse_tail_term_mem_adjoin
@@ -354,6 +318,64 @@ theorem connesVanSuijlekomP21_polynomial_coeff
   rw [connesVanSuijlekomP21Polynomial]
   exact Polynomial.ofFn_coeff_eq_val_of_lt _ i.isLt
 
+/-- Evaluation at the quotient Laurent-variable unit agrees with the quotient
+class on every nonnegative Laurent monomial. -/
+theorem connesVanSuijlekomP21_eval_nonnegative_term
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (z : ℂ) (k : ℕ) :
+    LaurentPolynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
+      (connesVanSuijlekomP21QuotientXUnit a)
+      (LaurentPolynomial.C z * LaurentPolynomial.T (k : ℤ)) =
+      Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+        (LaurentPolynomial.C z * LaurentPolynomial.T (k : ℤ)) := by
+  rw [LaurentPolynomial.eval₂_C_mul_T_n, map_mul,
+    connesVanSuijlekomP21_quotient_mk_C_eq_algebraMap,
+    connesVanSuijlekomP21_quotient_nonnegative_monomial_eq_pow]
+  rfl
+
+/-- The literal source Laurent generator vanishes when evaluated at the
+quotient Laurent-variable unit. -/
+theorem connesVanSuijlekomP21_eval_generator_eq_zero
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    LaurentPolynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
+      (connesVanSuijlekomP21QuotientXUnit a)
+      (connesVanSuijlekomP21Generator a) = 0 := by
+  rw [connesVanSuijlekomP21Generator, map_sum]
+  calc
+    ∑ j, LaurentPolynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
+        (connesVanSuijlekomP21QuotientXUnit a)
+        (LaurentPolynomial.C (a j : ℂ) * LaurentPolynomial.T (j : ℤ)) =
+        ∑ j, Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+          (LaurentPolynomial.C (a j : ℂ) * LaurentPolynomial.T (j : ℤ)) := by
+      apply Finset.sum_congr rfl
+      intro j _
+      exact connesVanSuijlekomP21_eval_nonnegative_term a (a j : ℂ) (j : ℕ)
+    _ = Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+        (connesVanSuijlekomP21Generator a) := by
+      rw [connesVanSuijlekomP21Generator, map_sum]
+    _ = 0 := connesVanSuijlekomP21_quotient_generator_eq_zero a
+
+/-- The source polynomial presentation vanishes at the quotient Laurent-variable
+class. -/
+theorem connesVanSuijlekomP21_quotient_polynomial_eval_eq_zero
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    Polynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
+      (connesVanSuijlekomP21QuotientX a)
+      (connesVanSuijlekomP21Polynomial a) = 0 := by
+  have h := connesVanSuijlekomP21_eval_generator_eq_zero a
+  rw [← connesVanSuijlekomP21_toLaurent_polynomial,
+    LaurentPolynomial.eval₂_toLaurent] at h
+  exact h
+
+/-- The normalized monic source polynomial vanishes at the quotient
+Laurent-variable class. -/
+theorem connesVanSuijlekomP21_quotient_monic_polynomial_eval_eq_zero
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    Polynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
+      (connesVanSuijlekomP21QuotientX a)
+      (Polynomial.C ((a (Fin.last N) : ℂ)⁻¹) * connesVanSuijlekomP21Polynomial a) = 0 := by
+  rw [Polynomial.eval₂_mul, Polynomial.eval₂_C,
+    connesVanSuijlekomP21_quotient_polynomial_eval_eq_zero, mul_zero]
+
 /-- A nonzero final source coefficient gives the exact polynomial degree. -/
 theorem connesVanSuijlekomP21_polynomial_natDegree
     {N : ℕ} (a : Fin (N + 1) → ℝ) (hN : a (Fin.last N) ≠ 0) :
@@ -383,6 +405,236 @@ theorem connesVanSuijlekomP21_polynomial_monic_normalized
     simpa using hcoeff
   rw [hcoeffN]
   field_simp
+
+/-- The explicit Laurent inverse formula for a polynomial root whose constant
+coefficient is nonzero. -/
+theorem connesVanSuijlekomP21_adjoin_root_mul_inverse
+    (f : ℂ[X]) (hf0 : f.coeff 0 ≠ 0) :
+    AdjoinRoot.root f *
+      (-((algebraMap ℂ (AdjoinRoot f)) ((f.coeff 0)⁻¹)) *
+        Polynomial.aeval (AdjoinRoot.root f) f.divX) = 1 := by
+    let c : AdjoinRoot f := (algebraMap ℂ (AdjoinRoot f)) (f.coeff 0)
+    let cInv : AdjoinRoot f := (algebraMap ℂ (AdjoinRoot f)) ((f.coeff 0)⁻¹)
+    change AdjoinRoot.root f *
+      (-cInv * Polynomial.aeval (AdjoinRoot.root f) f.divX) = 1
+    have hroot : Polynomial.aeval (AdjoinRoot.root f) f = 0 := by
+      rw [AdjoinRoot.aeval_eq, AdjoinRoot.mk_self]
+    have hsplit := congrArg (Polynomial.aeval (AdjoinRoot.root f))
+      (Polynomial.divX_mul_X_add f)
+    rw [map_add, Polynomial.aeval_C, Polynomial.aeval_mul,
+      Polynomial.aeval_X, hroot] at hsplit
+    have hprod : Polynomial.aeval (AdjoinRoot.root f) f.divX * AdjoinRoot.root f = -c := by
+      simpa [c] using eq_neg_of_add_eq_zero_left hsplit
+    have hscalar : cInv * c = 1 := by
+      simp [c, cInv, ← map_mul, inv_mul_cancel₀ hf0]
+    calc
+      AdjoinRoot.root f *
+          (-cInv *
+            Polynomial.aeval (AdjoinRoot.root f) f.divX) =
+          -cInv * (Polynomial.aeval (AdjoinRoot.root f) f.divX * AdjoinRoot.root f) := by ring
+      _ = -cInv * (-c) := by rw [hprod]
+      _ = cInv * c := by ring
+      _ = 1 := hscalar
+
+/-- A root of a complex polynomial with nonzero constant coefficient is a unit
+in its adjunction algebra. This realizes Laurent evaluation at that root. -/
+def connesVanSuijlekomP21AdjoinRootUnit (f : ℂ[X]) (hf0 : f.coeff 0 ≠ 0) :
+    (AdjoinRoot f)ˣ where
+  val := AdjoinRoot.root f
+  inv := -((algebraMap ℂ (AdjoinRoot f)) ((f.coeff 0)⁻¹)) *
+    Polynomial.aeval (AdjoinRoot.root f) f.divX
+  val_inv := connesVanSuijlekomP21_adjoin_root_mul_inverse f hf0
+  inv_val := by
+    rw [mul_comm]
+    exact connesVanSuijlekomP21_adjoin_root_mul_inverse f hf0
+
+/-- The constant coefficient of the polynomial presentation is its first
+source coefficient. -/
+theorem connesVanSuijlekomP21_polynomial_coeff_zero
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    (connesVanSuijlekomP21Polynomial a).coeff 0 = (a 0 : ℂ) := by
+  simpa using connesVanSuijlekomP21_polynomial_coeff a (0 : Fin (N + 1))
+
+/-- The source polynomial root is a unit under corrected clause (2)'s nonzero
+constant-coefficient hypothesis. -/
+def connesVanSuijlekomP21PolynomialRootUnit
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) :
+    (AdjoinRoot (connesVanSuijlekomP21Polynomial a))ˣ :=
+  connesVanSuijlekomP21AdjoinRootUnit (connesVanSuijlekomP21Polynomial a) (by
+    rw [connesVanSuijlekomP21_polynomial_coeff_zero]
+    exact_mod_cast ha0)
+
+/-- Laurent evaluation at the unit root of the source polynomial. -/
+def connesVanSuijlekomP21LaurentToPolynomialRoot
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) :
+    LaurentPolynomial ℂ →ₐ[ℂ] AdjoinRoot (connesVanSuijlekomP21Polynomial a) where
+  toRingHom := LaurentPolynomial.eval₂ (AdjoinRoot.of (connesVanSuijlekomP21Polynomial a))
+    (connesVanSuijlekomP21PolynomialRootUnit a ha0)
+  commutes' z := by
+    change LaurentPolynomial.eval₂ (AdjoinRoot.of (connesVanSuijlekomP21Polynomial a))
+      (connesVanSuijlekomP21PolynomialRootUnit a ha0) (LaurentPolynomial.C z) = _
+    simp [AdjoinRoot.algebraMap_eq]
+
+/-- The source Laurent relation vanishes at its polynomial root. -/
+theorem connesVanSuijlekomP21_laurent_to_polynomial_root_generator
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) :
+    connesVanSuijlekomP21LaurentToPolynomialRoot a ha0
+      (connesVanSuijlekomP21Generator a) = 0 := by
+  rw [← connesVanSuijlekomP21_toLaurent_polynomial]
+  change LaurentPolynomial.eval₂ (AdjoinRoot.of (connesVanSuijlekomP21Polynomial a))
+    (connesVanSuijlekomP21PolynomialRootUnit a ha0)
+    (Polynomial.toLaurent (connesVanSuijlekomP21Polynomial a)) = 0
+  rw [LaurentPolynomial.eval₂_toLaurent]
+  exact AdjoinRoot.eval₂_root _
+
+/-- The quotient Laurent algebra maps back to the polynomial-root algebra. -/
+def connesVanSuijlekomP21QuotientToPolynomialRoot
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) :
+    connesVanSuijlekomP21Quotient a →ₐ[ℂ] AdjoinRoot (connesVanSuijlekomP21Polynomial a) :=
+  Ideal.Quotient.liftₐ (connesVanSuijlekomP21Ideal a)
+    (connesVanSuijlekomP21LaurentToPolynomialRoot a ha0) (by
+      intro f hf
+      rw [connesVanSuijlekomP21Ideal, Ideal.mem_span_singleton'] at hf
+      obtain ⟨g, rfl⟩ := hf
+      rw [map_mul, connesVanSuijlekomP21_laurent_to_polynomial_root_generator]
+      exact mul_zero _)
+
+/-- The root algebra maps to the Laurent quotient by sending its root to the
+Laurent-variable class. -/
+def connesVanSuijlekomP21PolynomialRootToQuotient
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    AdjoinRoot (connesVanSuijlekomP21Polynomial a) →ₐ[ℂ]
+      connesVanSuijlekomP21Quotient a :=
+  AdjoinRoot.liftAlgHom (connesVanSuijlekomP21Polynomial a)
+    (Algebra.ofId ℂ (connesVanSuijlekomP21Quotient a))
+    (connesVanSuijlekomP21QuotientX a) (by
+      simpa using connesVanSuijlekomP21_quotient_polynomial_eval_eq_zero a)
+
+/-- The root-to-quotient map sends the adjoined root to `X`. -/
+theorem connesVanSuijlekomP21_polynomial_root_to_quotient_root
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    connesVanSuijlekomP21PolynomialRootToQuotient a
+      (AdjoinRoot.root (connesVanSuijlekomP21Polynomial a)) =
+      connesVanSuijlekomP21QuotientX a := by
+  rw [connesVanSuijlekomP21PolynomialRootToQuotient, AdjoinRoot.liftAlgHom_root]
+
+/-- The quotient-to-root map sends `X` to the adjoined polynomial root. -/
+theorem connesVanSuijlekomP21_quotient_to_polynomial_root_x
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) :
+    connesVanSuijlekomP21QuotientToPolynomialRoot a ha0
+      (connesVanSuijlekomP21QuotientX a) =
+      AdjoinRoot.root (connesVanSuijlekomP21Polynomial a) := by
+  change ((connesVanSuijlekomP21QuotientToPolynomialRoot a ha0).comp
+    (Ideal.Quotient.mkₐ ℂ (connesVanSuijlekomP21Ideal a))) (LaurentPolynomial.T 1) = _
+  rw [show (connesVanSuijlekomP21QuotientToPolynomialRoot a ha0).comp
+      (Ideal.Quotient.mkₐ ℂ (connesVanSuijlekomP21Ideal a)) =
+        connesVanSuijlekomP21LaurentToPolynomialRoot a ha0 by
+      apply Ideal.Quotient.liftₐ_comp]
+  change LaurentPolynomial.eval₂ (AdjoinRoot.of (connesVanSuijlekomP21Polynomial a))
+    (connesVanSuijlekomP21PolynomialRootUnit a ha0) (LaurentPolynomial.T 1) = _
+  rw [show (1 : ℤ) = (1 : ℕ) by norm_num, LaurentPolynomial.eval₂_T_n]
+  simp [connesVanSuijlekomP21PolynomialRootUnit, connesVanSuijlekomP21AdjoinRootUnit]
+
+/-- The two polynomial/Laurent maps compose to the identity on the quotient. -/
+theorem connesVanSuijlekomP21_polynomial_root_quotient_composite
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) :
+    (connesVanSuijlekomP21PolynomialRootToQuotient a).comp
+      (connesVanSuijlekomP21QuotientToPolynomialRoot a ha0) =
+      AlgHom.id ℂ (connesVanSuijlekomP21Quotient a) := by
+  apply AlgHom.ext_of_adjoin_eq_top
+    (show Algebra.adjoin ℂ {connesVanSuijlekomP21QuotientX a} = ⊤ by
+      exact connesVanSuijlekomP21_quotient_adjoin_eq_top a ha0)
+  intro x hx
+  rw [Set.mem_singleton_iff.mp hx, AlgHom.comp_apply,
+    connesVanSuijlekomP21_quotient_to_polynomial_root_x,
+    connesVanSuijlekomP21_polynomial_root_to_quotient_root]
+  rfl
+
+/-- The two polynomial/Laurent maps compose to the identity on the root
+algebra. -/
+theorem connesVanSuijlekomP21_quotient_polynomial_root_composite
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) :
+    (connesVanSuijlekomP21QuotientToPolynomialRoot a ha0).comp
+      (connesVanSuijlekomP21PolynomialRootToQuotient a) =
+      AlgHom.id ℂ (AdjoinRoot (connesVanSuijlekomP21Polynomial a)) := by
+  ext
+  simp only [AlgHom.comp_apply, AlgHom.id_apply]
+  rw [connesVanSuijlekomP21_polynomial_root_to_quotient_root,
+    connesVanSuijlekomP21_quotient_to_polynomial_root_x]
+
+/-- Exact polynomial presentation of the corrected Laurent quotient. -/
+def connesVanSuijlekomP21PolynomialRootEquivQuotient
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) :
+    AdjoinRoot (connesVanSuijlekomP21Polynomial a) ≃ₐ[ℂ]
+      connesVanSuijlekomP21Quotient a where
+  __ := connesVanSuijlekomP21PolynomialRootToQuotient a
+  invFun := connesVanSuijlekomP21QuotientToPolynomialRoot a ha0
+  left_inv x := by
+    change connesVanSuijlekomP21QuotientToPolynomialRoot a ha0
+      (connesVanSuijlekomP21PolynomialRootToQuotient a x) = x
+    exact DFunLike.congr_fun (connesVanSuijlekomP21_quotient_polynomial_root_composite a ha0) x
+  right_inv x := by
+    change connesVanSuijlekomP21PolynomialRootToQuotient a
+      (connesVanSuijlekomP21QuotientToPolynomialRoot a ha0 x) = x
+    exact DFunLike.congr_fun (connesVanSuijlekomP21_polynomial_root_quotient_composite a ha0) x
+
+/-- The nonzero final source coefficient makes the polynomial presentation
+nonzero. -/
+theorem connesVanSuijlekomP21_polynomial_ne_zero
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (hN : a (Fin.last N) ≠ 0) :
+    connesVanSuijlekomP21Polynomial a ≠ 0 := by
+  intro hP
+  have hcoeff := connesVanSuijlekomP21_polynomial_coeff a (Fin.last N)
+  rw [hP] at hcoeff
+  simp at hcoeff
+  exact hN (by exact_mod_cast hcoeff.symm)
+
+/-- The Laurent quotient carries the transported power basis generated by its
+Laurent-variable class. -/
+noncomputable def connesVanSuijlekomP21QuotientPowerBasis
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) (hN : a (Fin.last N) ≠ 0) :
+    PowerBasis ℂ (connesVanSuijlekomP21Quotient a) :=
+  (AdjoinRoot.powerBasis (connesVanSuijlekomP21_polynomial_ne_zero a hN)).map
+    (connesVanSuijlekomP21PolynomialRootEquivQuotient a ha0)
+
+/-- The transported power-basis generator is exactly the source quotient class
+of `X`. -/
+theorem connesVanSuijlekomP21_quotient_power_basis_gen
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) (hN : a (Fin.last N) ≠ 0) :
+    (connesVanSuijlekomP21QuotientPowerBasis a ha0 hN).gen =
+      connesVanSuijlekomP21QuotientX a := by
+  rw [connesVanSuijlekomP21QuotientPowerBasis, PowerBasis.map_gen,
+    AdjoinRoot.powerBasis_gen]
+  change connesVanSuijlekomP21PolynomialRootToQuotient a
+    (AdjoinRoot.root (connesVanSuijlekomP21Polynomial a)) = _
+  exact connesVanSuijlekomP21_polynomial_root_to_quotient_root a
+
+/-- The transported power basis has the source degree. -/
+theorem connesVanSuijlekomP21_quotient_power_basis_dim
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) (hN : a (Fin.last N) ≠ 0) :
+    (connesVanSuijlekomP21QuotientPowerBasis a ha0 hN).dim = N := by
+  rw [connesVanSuijlekomP21QuotientPowerBasis, PowerBasis.map_dim,
+    AdjoinRoot.powerBasis_dim, connesVanSuijlekomP21_polynomial_natDegree a hN]
+
+/-- The literal source monomials `1,X,…,X^(N-1)` as a basis of the corrected
+Laurent quotient. -/
+noncomputable def connesVanSuijlekomP21QuotientMonomialBasis
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) (hN : a (Fin.last N) ≠ 0) :
+    Module.Basis (Fin N) ℂ (connesVanSuijlekomP21Quotient a) :=
+  (connesVanSuijlekomP21QuotientPowerBasis a ha0 hN).basis.reindex
+    (finCongr (connesVanSuijlekomP21_quotient_power_basis_dim a ha0 hN))
+
+/-- Each vector in the corrected quotient basis is literally the indicated
+source Laurent monomial class. -/
+theorem connesVanSuijlekomP21_quotient_monomial_basis_apply
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) (hN : a (Fin.last N) ≠ 0)
+    (i : Fin N) :
+    connesVanSuijlekomP21QuotientMonomialBasis a ha0 hN i =
+      Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T (i : ℤ)) := by
+  rw [connesVanSuijlekomP21QuotientMonomialBasis, Module.Basis.reindex_apply,
+    PowerBasis.basis_eq_pow, connesVanSuijlekomP21_quotient_power_basis_gen,
+    finCongr_symm_apply, Fin.val_cast,
+    ← connesVanSuijlekomP21_quotient_nonnegative_monomial_eq_pow]
 
 /-- The canonical involution of the source Laurent algebra: conjugate
 coefficients and reverse the Laurent exponent. -/
@@ -751,6 +1003,25 @@ theorem connesVanSuijlekomP21_nonzero_kernel_tail_ne_zero
     change (a (Fin.last N).rev : ℂ) = ε * (a (Fin.last N) : ℂ) at hcoeff
     simpa [hlast] using hcoeff
   exact connesVanSuijlekomP21_nonzero_kernel_head_ne_zero c hG hRank a hker ha hhead
+
+/-- Corrected Proposition 2.1(2). With the missing nonzero-kernel-vector
+premise restored, the literal Laurent classes `1,X,…,X^(N-1)` form a complex
+basis of the source quotient. -/
+theorem connesVanSuijlekomP21_corrected_clauseTwo
+    {N : ℕ} (c : ℕ → ℝ)
+    (hG : (connesVanSuijlekomRealToeplitz N c).PosSemidef)
+    (hRank : (connesVanSuijlekomRealToeplitz N c).rank = N)
+    (a : Fin (N + 1) → ℝ)
+    (hker : connesVanSuijlekomRealToeplitz N c *ᵥ (fun j => (a j : ℂ)) = 0)
+    (ha : a ≠ 0) :
+    ∃ b : Module.Basis (Fin N) ℂ (connesVanSuijlekomP21Quotient a),
+      ∀ i : Fin N, b i =
+        Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T (i : ℤ)) := by
+  have ha0 := connesVanSuijlekomP21_nonzero_kernel_head_ne_zero c hG hRank a hker ha
+  have hN := connesVanSuijlekomP21_nonzero_kernel_tail_ne_zero c hG hRank a hker ha
+  refine ⟨connesVanSuijlekomP21QuotientMonomialBasis a ha0 hN, ?_⟩
+  intro i
+  exact connesVanSuijlekomP21_quotient_monomial_basis_apply a ha0 hN i
 
 end
 

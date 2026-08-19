@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`81157bdd42c6f61321348d9392c3314bdd5ee790` on 19 August, plus declaration-level working-tree
+`bbd5e87e756375f16ae5710fc52d14db7e419330` on 19 August, plus declaration-level working-tree
 review. Historical `Active-tree Lean` wording records former provenance. Current
 formal route status is maintained in `rh-current-frontier-map.md`; detailed sections below are a
 literature-exchange record and may retain older intermediate formulations. External literature was
@@ -28,16 +28,16 @@ comparison and theorem provenance, not chronological status.
 
 | Route | Corpus-only frontier contribution now established | What external SOTA still offers |
 |---|---|---|
-| CCM-FU | Whole completed Guinand–Weil source matrix equals published restricted-Weil matrix entrywise. Exact signed FU symbol is `-3a²/(32(a+1)(2a+1))`, detects every non-affine critical-Mellin mode, and retains a source-wall jet that vanishes cofinally. Midpoint polar–prime codiagonal is exactly half the completed-error square. Linear growth of one Cesàro primitive still implies RH. | No located theorem proves the Cesàro-linear prime-minus-polar cancellation. Signed-region cancellation, vertical hiding, and lower-wall escape are no longer gaps. |
+| CCM-FU | Whole completed Guinand–Weil source matrix equals published restricted-Weil matrix entrywise. Exact signed FU symbol and midpoint polar–prime codiagonal are closed. Linear Cesàro gate is now exactly uniform boundedness of one signed anchored moment with explicit strictly positive kernel `(96-64h/H)/h^4`. | No located theorem proves this weighted prime-minus-polar cancellation. Kernel positivity does not orient signed completed error. |
 | C1 | Fixed theta inverse realizes Xi divisor with multiplicity, but canonical reflected Stokes carrier already overspends completed zeroth mass. Lean closes every finite positive supercarrier dominating those raw atoms. Exact survivor requires deletion/reweighting or signed negative correction before final positivity. | Existing Fredholm/de Branges/Weil theory neither supplies that corrected source carrier nor makes it exhaustive before divisor selection. |
 | D2 | Fixed-band reduction remains exact. At `I/4`, canonical directed prime-log KMS and directed Stokes passive responses have strict real signs incompatible with the zero real part of completed response; reflected response repairs parity but positive raw-carrier completion still fails normalization. | Pretentious and zero-free-region literature supplies safe-line inputs, not a reflected signed/non-dominating continuation law controlling completed positive tail. |
-| E | Growing-truncation Step 1, sharp aggregate fibre tail, Type-II cover, exact Ramaré incidence, both-sign half-power marker supply, and joint-omega/Section-4 analytic budget assemblies are Lean-proved. Divisor control removes both fatal cardinality losses; normalized variance, equal-weight short blocks, vanishing slope row, disc/annulus/nonexceptional rows, long-range vanishing mesh, target reach, divergent harmonic mass, and ladder coverage are discharged. Direct three-four-one analysis now gives Möbius multiplicative distance `(log log z-log log|t|)/4-C` with no cutoff-frequency coupling. Abel summation from unweighted tail-prime cancellation to reciprocal-weighted tail control is exact, but its uniform partial-sum saving remains a premise. Remaining producer is one fixed Ramaré-supported relation with relation-specific subinterval Hall, unit load, co-moving cutoff flux, and Gibbs cost. | No located external theorem gives this joint source-fixed relation theorem; analytic budgets, phase separation, and cardinal supply alone do not define adjacency. |
+| E | Growing-truncation Step 1, Type-II cover, exact Ramaré incidence, both-sign half-power marker supply, and joint-omega/Section-4 budgets are Lean-proved. Prime-range Abel arithmetic now reduces tail control to an explicit Route-T envelope-at-block-top comparison. Remaining producer is one fixed Ramaré-supported relation with relation-specific subinterval Hall, unit load, co-moving cutoff flux, and Gibbs cost. | No located external theorem gives this joint source-fixed relation theorem; improved tail adapters still do not define adjacency. |
 | G | Pre-scalar affine Ward landing is exact. Squarefree Möbius channel is a genuine coisometric signed projection with Schur contraction, exact causal transform, reciprocal completed Ward connection, and exponential moving boundary layer. The prelimit misses RH-bearing weighted width by exactly `1/2`; full mass forces unbounded scaled aperture. Four-unit positivity and the full half-unit moment tower are each exactly RH. | Need coefficient-faithful unbounded moving-aperture pointed residue/graph-domain landing and pole-to-divisor covariance producing favorable four-unit order. |
-| L | Strict resolved provenance, singular Gamma/Big-Witt transgression, exact completed multiplicity jets for literal windows, and cosine-closed lower-jet annihilation for general compact co-Poisson seeds are Lean-proved. Closed-space zeroth-jet orthogonality now detects exactly the zeta divisor. Current finite-jet work derives the pointwise first logarithmic Mellin kernel, but not its dominated integrated evaluator or bounded completion. Remaining gates are bounded higher-jet/closure completeness and then the source-derived singular comparison to the existing coefficient-faithful physical landing. | Located comparison machinery does not supply either completed higher-jet closure or this fixed physical-landing theorem. Finite quaternionic real descent remains parity-obstructed. |
+| L | Strict resolved provenance, singular Gamma/Big-Witt transgression, multiplicity-jet annihilation, and closed-space zeroth-jet detection are Lean-proved. Literal first Sonine logarithmic Mellin jet now differentiates under integral and is a bounded continuous evaluator on every strict right tail. Remaining gates are arbitrary multiplicity-jet completed closure, then source-derived singular comparison to existing coefficient-faithful physical landing. | Located comparison machinery does not supply higher-jet closure or fixed physical-landing theorem. Finite quaternionic real descent remains parity-obstructed. |
 | O | Canonical finite Gamma--Slepian heads are selected from true restricted-Weil ground and converge to it. Reverse-prime control is exactly sign of several cancellation-preserving coherent completed producers. High-height reciprocal-square divisor tails are now quantitatively closed. | Need sign of the inseparable finite/low-height true-ground block; seed construction, profile exhaustion, and remote-tail control are no longer frontier. |
 | P | Second-Cartier radial orbit coercivity is Lean-formal. Genuine reflected shell descent converges to endpoint energy, all regular reflection-pair extractors are excluded off line, and Route N capacity excess is exactly the same radial-work invariant. | Need singular/projective pre-divisor source moderation with one orbit-depth-independent energy budget; universal boundedness and every regular extractor are RH-equivalent. |
-| Q | Orientation vector lies in exterior positive-frequency paired Cauchy closure; four-block source kernel reduces to one explicit real positive-frequency kernel. On real regular points it is exactly a positive diagonal congruence of the confluent Loewner kernel of the square-descended Xi seam-log germ. The full divisor Cauchy transform and safe Schwarz-paired Euler poles are complete on their stated vector classes. Finite reduced-matrix passivity is exactly RH. | Need independent source proof of that finite kernel PSD; completeness and Loewner identification exhaust receivers but do not prove sign, and diagonal budgets lose mixed incidence `-E/2`. |
-| T | Exact finite-arithmetic bridge shows top-row decay is offset by finite-translation survivor; combined remainder is depth-independent raw current minus returned prefix. Separate Maynard/AFE chain closes endpoint-long zeta/log atoms and isolates pure short Möbius-block cancellation. | Need joint bound on combined remainder, concretely the remaining Möbius-block cancellation in current endpoint specialization. |
+| Q | Orientation vector lies in exact Euler-safe paired closure, already generated by countable Gaussian-rational poles. Finite packet quadratic is the double sum of one explicit scalar paired value kernel, and rational-pole passivity is exactly RH. | Need independent continued prime–Gamma source proof of finite kernel PSD; countable receiver exhaustion and scalar evaluation do not prove sign. |
+| T | Exact finite-arithmetic bridge shows top-row decay is offset by finite-translation survivor; combined remainder is depth-independent. Matching two-regime/polylog twist-envelope upper bounds and initial prime-range Abel arithmetic are closed. | Need scheduled envelope-versus-block-top estimate, then signed short Möbius-block cancellation sufficient for joint remainder bound. |
 | U | Source-only fixed-shift Hankel tail criterion is exact RH. Strict-frontier numerator is regular but exact quotient is nonintegrable; all-frontier local integrability is RH. Non-RH frontier is cofinal inside proved parabolic degree horizon. | Need non-scalar source mechanism excluding endogenous frontier zero or favorable uniform tail order, not generic regularity or schedule delay. |
 | HC | Two-prime/exterior Cayley and Gauss--Hodge prime-current receivers retain labels, orientations, multiplicity, and phase. Strict sub-two loss and global prime-summability are exact RH endpoints; determinant current has literal paired Gamma-six source identification. New finite charging law shows every spoiled simple critical ordinate consumes at least one reflected off-line pair. | Need upstream arithmetic subquantum estimate or prime-summability for that literal determinant current; charging alone gives no off-line upper bound. |
 | SV2 | Literal Suzuki energy space has self-adjoint boundary-phase extensions and exact entire real-zero characteristics. Fixed phases `0,pi` give a literal pole-compatible projective characteristic, uniformly bounded in the upper half-plane; canonical apertures have an unconditional cofinal locally uniform subsequential limit. Deficiency vectors are literal completed restricted-Weil covariance sources solving the finite shifted resolvent equations. Reflection exchanges the two channels, so one covariance--resolvent Fourier carrier generates the pair; actual covariance also realizes the nonnegative coalescing tangent. The global Xi Livsic pair maps projectively to the v2 target without division. | Need identify that normal-family limit with the global Xi projective target on a finite chart containing every Xi zero, then prove reciprocal-chart convergence and eventual zero-freeness at target poles. |
@@ -78,12 +78,12 @@ Current candidate count is ten. MSC is narrowed; PCS, SEC, and BPC are new:
   `[z0,1)` forces RH. Missing is precisely that source-derived continuation, without importing a
   zero-free/radius premise. The endpoint `1` is not included in the hypothesis.
 
-Latest Lean-only review gives no new first-open-producer theorem for CCM-FU, D2, P, Q, T, or U. C1's
-new trace-class propagation and CCM's finite cyclotomic-integrality/semilocal covariance theorems close
-supporting gates only. E gains joint-omega/Section-4 analytic assemblies without its fixed relation;
-L gains exact completed multiplicity jets and cosine-closed lower-jet annihilation but still lacks
-bounded closure and physical descent; O gains high-height reciprocal-square tail laws without
-ground sign; HC gains a finite singleton-fibre charging inequality without an off-line upper bound.
+Latest Lean-only review changes no live/candidate count. CCM-FU now has an exact positive-kernel
+anchored-moment open core; L has bounded first-jet completion but not arbitrary multiplicity closure
+or physical descent; Q has complete countable rational-pole receiver exhaustion but no source PSD;
+T has a narrower scheduled envelope subgate before signed block cancellation; E gains same analytic
+adapter without its fixed relation. O retains high-height tail control without ground sign; HC
+retains finite charging without off-line upper bound.
 SV2 now fixes its aperture schedule, phase pair, projective normalization, literal covariance
 source, and local compactness;
 its producer has narrowed to global target identification and pole-chart propagation.
@@ -120,7 +120,22 @@ fixed-rate shortcuts. None is a hidden live route because none currently has bot
 source occurrence and an RH endpoint. External SOTA for these mechanisms was not re-audited in this
 Lean-only refresh.
 
-Current Lean delta adds no route or candidate to those counts. It contributes four important
+Newest Lean delta adds no route or candidate. `GradeMonodromyInversion.lean` is genuinely
+non-classical, infinite, and nonphysical: Möbius grade and Lambert dilation transforms invert each
+other, reconstructing von Mangoldt current from grade-one prime source in `Re(s)>1`; current
+working tree also gives converse Möbius-weighted dilated-`LSeries` formula with geometric control.
+It remains a
+pre-route because completed prime--Gamma continuation, reflected orientation, and RH landing are
+absent. `PrimeClockEnergyDivergence.lean` blocks bounded scalar all-prime clock completion at every
+nonzero frequency. `HalfLineExponentialGram.lean` and working-tree
+`HalfLineExponentialDistance.lean`/`HalfLineExponentialCoDistance.lean` give exact Cauchy
+Gram/distance/co-distance geometry without arithmetic
+occurrence. `HedenmalmThetaOrdinaryL2PreQuasiExclusion.lean` closes ordinary-`L2` positive pre-quasi
+realization, while Bessel jet nonsplitting is intrinsic under every rational system gauge. Exact dyadic Hardy
+second-moment lower bound is now formal but does not exclude off-line zeros. External literature
+was not re-audited for these Lean-only results, so no priority claim is made.
+
+Earlier current-cutoff Lean delta adds no route or candidate to those counts. It contributes four important
 classifications. First, `XiGlobalMeixnerShapeLandau.lean` gives an exact Gamma--Meixner
 continuation criterion; completely-monotone and radial-Hankel-PSD extension to every positive shape
 are now separately equivalent to RH. Its coefficients are built from the Xi divisor, so it is a

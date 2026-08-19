@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.EulerFisherCurvature
 import GaloisForLFunctions.HTGeometry.SmoothNumbers
 import GaloisForLFunctions.HTGeometry.ZetaMomentFunctionalEquation
 import GaloisForLFunctions.RHTower.XiPrimeLogHigherValuationHalfPlane
+import GaloisForLFunctions.RHTower.XiHeatCassiniWoldZetaPoleCarrier
 import Mathlib
 
 /-!
@@ -16,7 +17,7 @@ an arbitrary locally finite datum: the two transforms
 are mutually inverse, by the divisor identity `∑_{r ∣ m} μ(r) = [m = 1]`.
 -/
 
-open ArithmeticFunction Filter
+open ArithmeticFunction Filter Topology
 open scoped ArithmeticFunction.zeta ArithmeticFunction.Moebius
 
 namespace RHTower
@@ -364,6 +365,297 @@ theorem lSeries_vonMangoldt_eq_tsum_primeGradeSource {s : ℂ} (hs : 1 < s.re) :
       ring
     rw [hpow]
   rw [LSeries, hregroup, hstep, hcomm, tsum_congr hgrade]
+
+/-! ### Möbius inversion of the grade-one source -/
+
+/-- The absolute prime-log mass at abscissa `σ`. -/
+def primeLogMass (σ : ℝ) : ℝ := ∑' p : Nat.Primes, Real.log ((p : ℕ) : ℝ) * ((p : ℕ) : ℝ) ^ (-σ)
+
+theorem summable_primeLogMassTerm {σ : ℝ} (hσ : 1 < σ) :
+    Summable fun p : Nat.Primes => Real.log ((p : ℕ) : ℝ) * ((p : ℕ) : ℝ) ^ (-σ) := by
+  have hlog : Summable fun n : ℕ => |Real.log (n : ℝ)| ^ 1 * (n : ℝ) ^ (-σ) :=
+    summable_abs_log_natCast_pow_mul_rpow_neg 1 σ hσ
+  have hlogp : Summable fun p : Nat.Primes =>
+      |Real.log ((p : ℕ) : ℝ)| ^ 1 * (((p : ℕ) : ℝ)) ^ (-σ) :=
+    hlog.comp_injective (i := fun p : Nat.Primes => (p : ℕ)) Subtype.coe_injective
+  refine hlogp.congr fun p => ?_
+  rw [pow_one, abs_of_nonneg (Real.log_natCast_nonneg _)]
+
+theorem primeLogMass_nonneg (σ : ℝ) : 0 ≤ primeLogMass σ := by
+  refine tsum_nonneg fun p => ?_
+  have h1 : (0 : ℝ) ≤ Real.log ((p : ℕ) : ℝ) := Real.log_natCast_nonneg _
+  have h2 : (0 : ℝ) < (((p : ℕ) : ℝ)) ^ (-σ) := by
+    have hp0 : (0 : ℝ) < ((p : ℕ) : ℝ) := by exact_mod_cast p.2.pos
+    exact Real.rpow_pos_of_pos hp0 _
+  positivity
+
+/-- **Geometric decay of the dilated grade-one source.** -/
+theorem norm_primeGradeSource_dilate_le {s : ℂ} (hs : 1 < s.re) (m : ℕ) (hm : 1 ≤ m) :
+    ‖primeGradeSource ((m : ℂ) * s)‖ ≤ primeLogMass s.re * (2 : ℝ) ^ (-((m : ℝ) - 1) * s.re) := by
+  have hσ : 1 < s.re := hs
+  have hmre : ((m : ℂ) * s).re = (m : ℝ) * s.re := by
+    simp
+  have hsummable : Summable fun p : Nat.Primes =>
+      (Real.log ((p : ℕ) : ℝ) : ℂ) * ((p : ℕ) : ℂ) ^ (-((m : ℂ) * s)) := by
+    refine summable_primeGradeSourceTerm ?_
+    rw [hmre]
+    have hm1 : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+    nlinarith
+  refine (norm_tsum_le_tsum_norm ?_).trans ?_
+  · refine Summable.of_norm ?_
+    simpa using hsummable.norm
+  · have hterm : ∀ p : Nat.Primes,
+        ‖(Real.log ((p : ℕ) : ℝ) : ℂ) * ((p : ℕ) : ℂ) ^ (-((m : ℂ) * s))‖
+          ≤ (Real.log ((p : ℕ) : ℝ) * ((p : ℕ) : ℝ) ^ (-s.re))
+            * (2 : ℝ) ^ (-((m : ℝ) - 1) * s.re) := by
+      intro p
+      have hp0 : (0 : ℝ) < ((p : ℕ) : ℝ) := by exact_mod_cast p.2.pos
+      have hp2 : (2 : ℝ) ≤ ((p : ℕ) : ℝ) := by exact_mod_cast p.2.two_le
+      have hnorm : ‖(Real.log ((p : ℕ) : ℝ) : ℂ) * ((p : ℕ) : ℂ) ^ (-((m : ℂ) * s))‖
+          = Real.log ((p : ℕ) : ℝ) * ((p : ℕ) : ℝ) ^ (-((m : ℝ) * s.re)) := by
+        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+          abs_of_nonneg (Real.log_natCast_nonneg _), Complex.norm_natCast_cpow_of_pos p.2.pos]
+        congr 2
+        rw [Complex.neg_re, hmre]
+      rw [hnorm]
+      have hsplit : ((p : ℕ) : ℝ) ^ (-((m : ℝ) * s.re))
+          = ((p : ℕ) : ℝ) ^ (-s.re) * ((p : ℕ) : ℝ) ^ (-((m : ℝ) - 1) * s.re) := by
+        rw [← Real.rpow_add hp0]
+        congr 1
+        ring
+      have hmono : ((p : ℕ) : ℝ) ^ (-((m : ℝ) - 1) * s.re)
+          ≤ (2 : ℝ) ^ (-((m : ℝ) - 1) * s.re) := by
+        have hm1 : (0 : ℝ) ≤ (m : ℝ) - 1 := by
+          have : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+          linarith
+        have hexp : -((m : ℝ) - 1) * s.re ≤ 0 := by nlinarith
+        exact Real.rpow_le_rpow_of_nonpos (by norm_num) hp2 hexp
+      rw [hsplit, mul_assoc]
+      have hnn : (0 : ℝ) ≤ Real.log ((p : ℕ) : ℝ) := Real.log_natCast_nonneg _
+      have hnn2 : (0 : ℝ) < ((p : ℕ) : ℝ) ^ (-s.re) := Real.rpow_pos_of_pos hp0 _
+      refine mul_le_mul_of_nonneg_left ?_ hnn
+      exact mul_le_mul_of_nonneg_left hmono hnn2.le
+    have hmaj : Summable fun p : Nat.Primes =>
+        (Real.log ((p : ℕ) : ℝ) * ((p : ℕ) : ℝ) ^ (-s.re)) * (2 : ℝ) ^ (-((m : ℝ) - 1) * s.re) :=
+      (summable_primeLogMassTerm hσ).mul_right _
+    calc (∑' p : Nat.Primes, ‖(Real.log ((p : ℕ) : ℝ) : ℂ) * ((p : ℕ) : ℂ) ^ (-((m : ℂ) * s))‖)
+        ≤ ∑' p : Nat.Primes,
+            (Real.log ((p : ℕ) : ℝ) * ((p : ℕ) : ℝ) ^ (-s.re))
+              * (2 : ℝ) ^ (-((m : ℝ) - 1) * s.re) := by
+          refine Summable.tsum_le_tsum hterm ?_ hmaj
+          refine Summable.of_norm ?_
+          simpa using hsummable.norm
+      _ = primeLogMass s.re * (2 : ℝ) ^ (-((m : ℝ) - 1) * s.re) := by
+          rw [primeLogMass, ← tsum_mul_right]
+
+theorem summable_geometric_pnat {σ : ℝ} (hσ : 0 < σ) :
+    Summable fun r : ℕ+ => (2 : ℝ) ^ (-(((r : ℕ) : ℝ) - 1) * σ) := by
+  have hbase : (0 : ℝ) < (2 : ℝ) ^ (-σ) := Real.rpow_pos_of_pos (by norm_num) _
+  have hlt : (2 : ℝ) ^ (-σ) < 1 := by
+    refine Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)
+  have hgeo : Summable fun n : ℕ => ((2 : ℝ) ^ (-σ)) ^ n :=
+    summable_geometric_of_lt_one hbase.le hlt
+  have hsub : Summable fun r : ℕ+ => ((2 : ℝ) ^ (-σ)) ^ ((r : ℕ) - 1) := by
+    have hcomp : Summable fun r : ℕ+ => ((2 : ℝ) ^ (-σ)) ^ (((r : ℕ) - 1 : ℕ)) := by
+      refine hgeo.comp_injective (i := fun r : ℕ+ => ((r : ℕ) - 1 : ℕ)) ?_
+      intro a b hab
+      simp only at hab
+      have ha : 1 ≤ (a : ℕ) := a.property
+      have hb : 1 ≤ (b : ℕ) := b.property
+      exact PNat.coe_injective (by omega)
+    exact hcomp
+  refine hsub.congr fun r => ?_
+  have hr1 : 1 ≤ (r : ℕ) := r.property
+  rw [← Real.rpow_natCast ((2 : ℝ) ^ (-σ)) ((r : ℕ) - 1), ← Real.rpow_mul (by norm_num)]
+  congr 1
+  have hcast : (((r : ℕ) - 1 : ℕ) : ℝ) = ((r : ℕ) : ℝ) - 1 := by
+    have : (1 : ℕ) ≤ (r : ℕ) := hr1
+    push_cast [Nat.cast_sub this]
+    ring
+  rw [hcast]
+  ring
+
+/-- **Möbius inversion (2).**  The grade-one prime source is the Möbius transform of the von
+Mangoldt current along the dilation ray. -/
+theorem summable_moebiusGradePair {s : ℂ} (hs : 1 < s.re) :
+    Summable fun x : ℕ+ × ℕ+ =>
+      (moebius (x.1 : ℕ) : ℂ) * primeGradeSource ((((x.1 : ℕ) * (x.2 : ℕ) : ℕ) : ℂ) * s) := by
+  have hσ : (0 : ℝ) < s.re := by linarith
+  have hgeo := summable_geometric_pnat hσ
+  have hmaj : Summable fun x : ℕ+ × ℕ+ =>
+      (primeLogMass s.re * (2 : ℝ) ^ (-(((x.1 : ℕ) : ℝ) - 1) * s.re))
+        * (2 : ℝ) ^ (-(((x.2 : ℕ) : ℝ) - 1) * s.re) := by
+    refine Summable.mul_of_nonneg (hgeo.mul_left (primeLogMass s.re)) hgeo ?_ ?_
+    · intro r
+      have h1 : 0 ≤ primeLogMass s.re := primeLogMass_nonneg s.re
+      have h2 : (0 : ℝ) < (2 : ℝ) ^ (-(((r : ℕ) : ℝ) - 1) * s.re) :=
+        Real.rpow_pos_of_pos (by norm_num) _
+      positivity
+    · intro k
+      have h2 : (0 : ℝ) < (2 : ℝ) ^ (-(((k : ℕ) : ℝ) - 1) * s.re) :=
+        Real.rpow_pos_of_pos (by norm_num) _
+      exact h2.le
+  refine Summable.of_norm (hmaj.of_nonneg_of_le (fun x => norm_nonneg _) (fun x => ?_))
+  have hrk1 : 1 ≤ (x.1 : ℕ) * (x.2 : ℕ) := Nat.one_le_iff_ne_zero.mpr (by positivity)
+  have hbound := norm_primeGradeSource_dilate_le hs ((x.1 : ℕ) * (x.2 : ℕ)) hrk1
+  have hmoe : ‖((moebius (x.1 : ℕ) : ℤ) : ℂ)‖ ≤ 1 := by
+    have := ArithmeticFunction.moebius_apply_of_squarefree (n := (x.1 : ℕ))
+    rcases Int.abs_le_one_iff.mp (ArithmeticFunction.abs_moebius_le_one (n := (x.1 : ℕ)))
+      with h | h | h <;> rw [h] <;> simp
+  have hsplit : (2 : ℝ) ^ (-((((x.1 : ℕ) * (x.2 : ℕ) : ℕ) : ℝ) - 1) * s.re)
+      ≤ (2 : ℝ) ^ (-(((x.1 : ℕ) : ℝ) - 1) * s.re) * (2 : ℝ) ^ (-(((x.2 : ℕ) : ℝ) - 1) * s.re) := by
+    rw [← Real.rpow_add (by norm_num)]
+    refine Real.rpow_le_rpow_of_exponent_le (by norm_num) ?_
+    have hr1 : (1 : ℝ) ≤ ((x.1 : ℕ) : ℝ) := by exact_mod_cast x.1.property
+    have hk1 : (1 : ℝ) ≤ ((x.2 : ℕ) : ℝ) := by exact_mod_cast x.2.property
+    have hprod : (((x.1 : ℕ) * (x.2 : ℕ) : ℕ) : ℝ) = ((x.1 : ℕ) : ℝ) * ((x.2 : ℕ) : ℝ) := by
+      push_cast
+      ring
+    rw [hprod]
+    nlinarith [hσ, hr1, hk1, mul_nonneg (sub_nonneg.mpr hr1) (sub_nonneg.mpr hk1)]
+  calc ‖(moebius (x.1 : ℕ) : ℂ) * primeGradeSource ((((x.1 : ℕ) * (x.2 : ℕ) : ℕ) : ℂ) * s)‖
+      = ‖((moebius (x.1 : ℕ) : ℤ) : ℂ)‖
+        * ‖primeGradeSource ((((x.1 : ℕ) * (x.2 : ℕ) : ℕ) : ℂ) * s)‖ := by
+        rw [norm_mul]
+    _ ≤ 1 * (primeLogMass s.re * (2 : ℝ) ^ (-((((x.1 : ℕ) * (x.2 : ℕ) : ℕ) : ℝ) - 1) * s.re)) := by
+        refine mul_le_mul hmoe hbound (norm_nonneg _) (by norm_num)
+    _ ≤ (primeLogMass s.re * (2 : ℝ) ^ (-(((x.1 : ℕ) : ℝ) - 1) * s.re))
+        * (2 : ℝ) ^ (-(((x.2 : ℕ) : ℝ) - 1) * s.re) := by
+        rw [one_mul, mul_assoc]
+        refine mul_le_mul_of_nonneg_left hsplit (primeLogMass_nonneg s.re)
+
+theorem tsum_succPNat {f : ℕ+ → ℂ} : ∑' k : ℕ, f (Nat.succPNat k) = ∑' p : ℕ+, f p := by
+  have hbij : Function.Bijective (fun k : ℕ => Nat.succPNat k) := by
+    constructor
+    · intro a b hab
+      have := congrArg (fun p : ℕ+ => (p : ℕ)) hab
+      simpa using this
+    · intro p
+      refine ⟨(p : ℕ) - 1, ?_⟩
+      have hp : 1 ≤ (p : ℕ) := p.property
+      refine PNat.coe_injective ?_
+      simp [Nat.succPNat]
+      omega
+  exact (Equiv.ofBijective _ hbij).tsum_eq f
+
+/-- **Möbius inversion (2).**  The grade-one prime source is the Möbius transform of the von
+Mangoldt current along the dilation ray. -/
+theorem primeGradeSource_eq_tsum_moebius_lSeries {s : ℂ} (hs : 1 < s.re) :
+    primeGradeSource s
+      = ∑' r : ℕ+, (moebius (r : ℕ) : ℂ)
+          * LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) (((r : ℕ) : ℂ) * s) := by
+  classical
+  have hsummable := summable_moebiusGradePair hs
+  have hpair := tsum_moebius_pair (F := fun m : ℕ => primeGradeSource ((m : ℂ) * s)) hsummable
+  have hone : primeGradeSource (((1 : ℕ) : ℂ) * s) = primeGradeSource s := by
+    norm_num
+  rw [hone] at hpair
+  rw [← hpair]
+  have hprod : (∑' x : ℕ+ × ℕ+,
+        (moebius (x.1 : ℕ) : ℂ) * primeGradeSource ((((x.1 : ℕ) * (x.2 : ℕ) : ℕ) : ℂ) * s))
+      = ∑' (r : ℕ+) (k : ℕ+),
+        (moebius (r : ℕ) : ℂ) * primeGradeSource ((((r : ℕ) * (k : ℕ) : ℕ) : ℂ) * s) :=
+    hsummable.tsum_prod' (fun r => hsummable.prod_factor r)
+  rw [hprod]
+  refine tsum_congr fun r => ?_
+  have hrs : 1 < (((r : ℕ) : ℂ) * s).re := by
+    have hr1 : (1 : ℝ) ≤ ((r : ℕ) : ℝ) := by exact_mod_cast r.property
+    have hre : (((r : ℕ) : ℂ) * s).re = ((r : ℕ) : ℝ) * s.re := by simp
+    rw [hre]
+    nlinarith
+  have hlam := lSeries_vonMangoldt_eq_tsum_primeGradeSource hrs
+  rw [hlam, ← tsum_mul_left]
+  have hshift : ∀ k : ℕ,
+      (moebius (r : ℕ) : ℂ) * primeGradeSource (((k : ℂ) + 1) * (((r : ℕ) : ℂ) * s))
+        = (moebius (r : ℕ) : ℂ)
+          * primeGradeSource ((((r : ℕ) * ((Nat.succPNat k : ℕ+) : ℕ) : ℕ) : ℂ) * s) := by
+    intro k
+    congr 2
+    push_cast [Nat.succPNat_coe]
+    ring
+  rw [tsum_congr hshift]
+  exact (tsum_succPNat (f := fun k : ℕ+ =>
+    (moebius (r : ℕ) : ℂ) * primeGradeSource ((((r : ℕ) * (k : ℕ) : ℕ) : ℂ) * s))).symm
+
+/-! ### The monodromy of the continued grade-one source -/
+
+theorem primeGradeSource_eq_xiPrimeLogDirichlet {s : ℂ} (hs : 1 < s.re) :
+    primeGradeSource s = xiPrimeLogDirichlet s := by
+  rw [xiPrimeLogDirichlet_eq_tsum_primeLog_div_cpow hs, primeGradeSource]
+  refine tsum_congr fun p => ?_
+  rw [Complex.cpow_neg, div_eq_mul_inv]
+
+theorem primeGradeSource_eq_continuation {s : ℂ} (hs : 1 < s.re) :
+    primeGradeSource s = xiPrimeLogDirichletContinuation s := by
+  rw [primeGradeSource_eq_xiPrimeLogDirichlet hs, xiPrimeLogDirichletContinuation_eq hs]
+
+/-- **(3)–(4) The grade-one prime monodromy at a strip zero.**  At every zeta zero to the right of
+the critical line the continued grade-one source has residue exactly minus the multiplicity: the
+higher prime-power grades are holomorphic there. -/
+theorem primeGradeMonodromy_zero_residue {rho : ℂ} (hrho : 1 / 2 < rho.re)
+    (hzeta : riemannZeta rho = 0) :
+    ∃ m : ℕ, 1 ≤ m ∧
+      Tendsto (fun s : ℂ => (s - rho) * xiPrimeLogDirichletContinuation s)
+        (𝓝[≠] rho) (𝓝 (-(m : ℂ))) :=
+  xiPrimeLogDirichletContinuation_zero_residue hrho hzeta
+
+/-- A finite prime Dirichlet polynomial: the effect of changing finitely many Euler factors. -/
+def finitePrimeEulerUnit (S : Finset Nat.Primes) (c : Nat.Primes → ℂ) (s : ℂ) : ℂ :=
+  ∑ p ∈ S, c p * ((p : ℕ) : ℂ) ^ (-s)
+
+theorem differentiable_finitePrimeEulerUnit (S : Finset Nat.Primes) (c : Nat.Primes → ℂ) :
+    Differentiable ℂ (finitePrimeEulerUnit S c) := by
+  unfold finitePrimeEulerUnit
+  refine Differentiable.fun_sum fun p _ => ?_
+  have hp0 : (((p : ℕ) : ℂ)) ≠ 0 := Nat.cast_ne_zero.mpr p.2.ne_zero
+  exact Differentiable.const_mul (differentiable_id.neg.const_cpow (Or.inl hp0)) (c p)
+
+/-- **(6) Finite Euler-unit invariance.**  A finite prime Dirichlet polynomial contributes no
+residue, so the grade-one monodromy field descends through finite Euler-unit equivalence. -/
+theorem tendsto_finitePrimeEulerUnit_residue (S : Finset Nat.Primes) (c : Nat.Primes → ℂ)
+    (rho : ℂ) :
+    Tendsto (fun s : ℂ => (s - rho) * finitePrimeEulerUnit S c s) (𝓝[≠] rho) (𝓝 0) := by
+  have hcont : Tendsto (fun s : ℂ => finitePrimeEulerUnit S c s) (𝓝[≠] rho)
+      (𝓝 (finitePrimeEulerUnit S c rho)) :=
+    ((differentiable_finitePrimeEulerUnit S c).continuous.tendsto rho).mono_left nhdsWithin_le_nhds
+  have hlin := tendsto_sub_self_punctured_zero rho
+  simpa using hlin.mul hcont
+
+/-- **The monodromy is unchanged by finite Euler units.** -/
+theorem tendsto_residue_add_finitePrimeEulerUnit {F : ℂ → ℂ} {rho L : ℂ}
+    (hF : Tendsto (fun s : ℂ => (s - rho) * F s) (𝓝[≠] rho) (𝓝 L))
+    (S : Finset Nat.Primes) (c : Nat.Primes → ℂ) :
+    Tendsto (fun s : ℂ => (s - rho) * (F s + finitePrimeEulerUnit S c s)) (𝓝[≠] rho) (𝓝 L) := by
+  have hunit := tendsto_finitePrimeEulerUnit_residue S c rho
+  have hsum := hF.add hunit
+  rw [add_zero] at hsum
+  refine hsum.congr fun s => ?_
+  ring
+
+/-- **Only the undilated Möbius term is singular in the strip.**  For every dilation `r ≥ 2` the
+dilated von Mangoldt current is holomorphic at every point of the open right strip, so the grade
+monodromy at such a point is the single term `−ν(s₀)`. -/
+theorem differentiableAt_lSeries_vonMangoldt_dilate {s₀ : ℂ} (hs₀ : 1 / 2 < s₀.re) {r : ℕ}
+    (hr : 2 ≤ r) :
+    DifferentiableAt ℂ
+      (fun s : ℂ => LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) ((r : ℂ) * s)) s₀ := by
+  have hr2 : (2 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
+  have hre : 1 < (((r : ℂ)) * s₀).re := by
+    have hval : (((r : ℂ)) * s₀).re = (r : ℝ) * s₀.re := by simp
+    rw [hval]
+    nlinarith
+  have habs1 : LSeries.abscissaOfAbsConv (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
+      ≤ ((1 : ℝ) : EReal) := by
+    refine LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable fun y hy => ?_
+    exact ArithmeticFunction.LSeriesSummable_vonMangoldt (by simpa using hy)
+  have habs : LSeries.abscissaOfAbsConv (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
+      < (((r : ℂ) * s₀).re : EReal) :=
+    lt_of_le_of_lt habs1 (by exact_mod_cast hre)
+  have hbase : DifferentiableAt ℂ
+      (LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) ((r : ℂ) * s₀) :=
+    (LSeries_analyticOnNhd (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)))
+      ((r : ℂ) * s₀) habs |>.differentiableAt
+  exact hbase.comp s₀ (differentiable_id.const_mul _ s₀)
 
 end
 

@@ -5376,3 +5376,22 @@ it is what makes route (b)'s truncation requirement read `log z ≲ (log|t|)^{1+
 Remaining for MR's Lemma 2 as one statement: substitute `routeTUniformRegWidth_le_polylog` and
 `routeTWidthPolylogLower` into the two regimes of `routeTTwistEnvelope`, producing the `ρ` that
 `Sieve/PrimeRangeTwistTail.exists_abs_sum_cos_div_primesRange_le_routeT` consumes.
+
+### Milestone C, brick 64 — the envelope with both regimes explicit (2026-08-19)
+
+`Sieve/RouteTWidthUpper` extended (axiom-clean, sorry-free, wired).
+
+| theorem | statement |
+|-|-|
+| `routeTTwistEnvelope_le_two_sided` | given `L ≤ routeTUniformRegWidth A delta (3\|τ\|/2) ≤ U`, the envelope is bounded with `(3x)^{1−L/3}` in the contour regime and `(3x)^{1+2U/3}` in the truncation regime |
+| **`routeTTwistEnvelope_le_polylog`** | the instance at `L = min delta (routeTWidthPolylogLower A τ)/2` (corpus, `routeTUniformRegWidth_ge`) and `U = 1/(routeTWidthUpperConst·(log\|τ\|/log 2)^{9/10})` (brick 63), for `16π/3 ≤ \|τ\|` |
+
+The corpus's `routeTTwistEnvelope_le_explicit` bounds *both* regimes at once and replaces the
+truncation exponent by the flat `delta/3`; `_le_two_sided` keeps the two regimes independent, which
+is what lets the truncation exponent be the polylogarithm rather than a constant.
+
+**Process note.**  The first attempt at `_le_polylog` timed out at 900 s.  The cause was two missing
+imports (`RouteTWidthExplicit`, `VonMangoldtTwistPrimeEnvelope`): with `routeTTwistEnvelope` and
+`routeTTwistHeightFactor` unresolved, `autoImplicit` turned them into metavariables and `congr`/
+`field_simp` searched over them.  With the imports added and the statement written so the exponents
+match `_le_two_sided` syntactically (`1 − m/2/3`, `1 + 2·(1/K·…)/3`), the proof is a single `exact`.
