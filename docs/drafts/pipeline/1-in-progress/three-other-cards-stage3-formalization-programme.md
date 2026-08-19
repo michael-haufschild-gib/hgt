@@ -283,3 +283,42 @@ cylinder case.
   reconstruction (`JetHorizonReconstruction`) give `H_n = F` for a translation-rigid locus at
   every depth, with no genericity and no model theory; the depth induction uses only the
   `ker δ^n = C` collapse.
+
+
+## Status 2026-08-19 — two of three cards promoted
+
+**Card 2 `jet-horizon-translation-gauge-classification`: PROMOTED to `3-formalized`.**  The last
+missing half was the surjectivity of the layer gauge action `(7)` over a non-constant base.  It is
+closed by `GaloisForLFunctions.HTGeometry.JetHorizonAdditiveTorsorLaw`, which also raises the rank
+from one to an arbitrary index type, giving the card's `G_a^r` directly:
+
+```text
+differentialConstants F                        the constant subfield of a differential field
+vectorDerivativeField F q                      F<q'> for a family q
+vectorDerivativeField_adjoin_eq_top            T = F<q'>(q) ordinarily
+vectorConstTranslationAction_injective/_surjective
+vectorAdditiveGaloisGroupEquiv                 Aut_delta(T / F<q'>) = (constants F)^iota
+vectorAdditiveGaloisGroupEquivConstantField    = G_a^iota(C)
+```
+
+The abandoned `RatFunc` transport route was unnecessary: the corpus already owned
+`differentialIndependentTopAlgEquiv`, which builds the translation automorphism directly from
+differential independence, for an arbitrary index family, with no `surjInv` anywhere.  The only
+real obstruction in `ScalarAdditiveDifferentialTorsor` was the hypothesis `hconst : forall c : F,
+c' = 0`, and the observation that removes it is that only constancy of the *translating scalar* is
+ever used.
+
+**Card 3 `embedded-manin-horizon-isogeny-reconstruction`: PROMOTED to `3-formalized`.**
+`GaloisForLFunctions.HTGeometry.ManinHorizonIsogenyReconstruction` gives the nonorthogonality
+relation a concrete definition (an isogeny correspondence: a subgroup of the product projecting onto
+both factors with finite kernels), proves it symmetric and reflexive, and proves the elementary half
+of Manin-kernel rigidity — a `D`-group homomorphism carries sharp points to sharp points, so an
+isogeny of `D`-groups produces a correspondence.  Theorem A holds by the `D`-group structure alone;
+Theorem B and the abstract/embedded dichotomy follow.  Hrushovski's dichotomy is carried as the
+named hypothesis `hrigidity`, exactly as the parent card
+`abelian-multiplication-tail-manin-horizon` carries its seven classical inputs at stage 3.
+
+**Card 1 `bessel-order-intensity-hypertranscendence`: still stage 2.**  Difference Picard--Vessiot
+rings now exist in Lean (five modules, all axiom-clean; see the card's own log).  The next layer is
+"no new constants" for a base with algebraically closed constants, then the difference Galois group,
+then the parameterized theory, then Cassidy's `GL_2` classification.

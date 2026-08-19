@@ -170,7 +170,18 @@ Landed: `formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaGenericSpect
 deleted-coordinate integer period groups intersect exactly in `ℤ`.  This is the arithmetic half of
 the order-two collapse; it needs no analysis and is now unconditional.
 
-Still to write in that module (all corpus API located and signature-checked):
+Also landed in that module (all axiom-clean):
+`meroTranslationDefect`, `meroTranslationDefect_comm`,
+`differentialAlgebraicOver_meroTranslationDefect`,
+`meroTranslationDefect_face` (the coface descent of a defect),
+`meroTranslationDefect_addTranslation`, `differentialAlgebraicOver_addTranslation_iff`,
+`linearIndependent_ellipticGammaSourcePeriods_of_augmented`,
+`exists_int_of_da_defect_fin_two` (**the order-one bridge**: a DA translation defect of the
+two-parameter multiple elliptic gamma forces the shift into the rank-three period group), and
+**`exists_int_of_da_faceDefect_card_three`** — the order-two collapse: with three ℚ-independent
+structural periods, `Δ_h Ψ` differentially algebraic over `ℂ(z)` forces `h ∈ ℤ`.
+
+Still to write:
 
 ```text
 meroTranslationDefect h x := addTranslationMeroEquiv h x - x
@@ -183,9 +194,16 @@ orderOneBridge : two surviving parameters ⇒ resonance
       -- → ellipticGammaExternalLogDerivDefectMero (definitionally the defect)
       -- → differentialAlgebraicOver_compositum_of_ratFunc
       -- → differentialAlgebraicOver_ellipticGammaExternalLogDerivDefectMero_iff_resonant
+general face version of the card-three collapse (same proof, face J instead of ∅)
 capstone : Spec_DA(Ψ_J) = ℤ whenever at least three parameters survive
-      -- strong induction on (card ι − J.card), base case card 3 via the three deletions
-      -- plus exists_int_of_forall_memDeletedPeriodGroup on the surviving subtype
+      -- strong induction on card {i // i ∉ J}; the m ≥ 4 step is one application of
+      -- meroTranslationDefect_face + differentialAlgebraicOver_meroTranslationDefect
+reverse inclusion ℤ ⊆ Spec_DA
+      -- addTranslationMeroEquiv_intCast_multipleEllipticGammaLogDerivFaceMero gives Δ_m Ψ = 0
+
+NOTE (defeq trap): `multipleEllipticGammaLogDerivFaceMero τ hτ ∅ = multipleEllipticGammaLogDerivMero τ hτ`
+via `multipleEllipticGammaLogDerivMero_reindex` blows up `whnf` even at 1e6 heartbeats.  State
+everything on faces (`… hτ ∅`) instead — that is the same object and avoids the reindex.
 ```
 
 All of these live in the plain `GaloisForLFunctions` namespace (not `.HTGeometry`).

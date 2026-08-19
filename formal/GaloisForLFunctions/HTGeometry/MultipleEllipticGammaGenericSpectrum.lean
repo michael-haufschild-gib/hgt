@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MultipleEllipticGammaFaceHierarchy
+import GaloisForLFunctions.HTGeometry.FacePacketDisplacementFreeness
 import GaloisForLFunctions.HTGeometry.MultipleEllipticGammaHypertranscendence
 import GaloisForLFunctions.HTGeometry.EllipticGammaTranslationAnomalyRationalBase
 import GaloisForLFunctions.HTGeometry.TranslationStableDifferentialAlgebraicity
@@ -179,66 +180,95 @@ theorem linearIndependent_ellipticGammaSourcePeriods_of_augmented {ι : Type*} (
   have := hind.comp _ hf
   rwa [hcomp] at this
 
+
+/-! ## Faces: restriction of the period independence and the surviving cardinality -/
+
+theorem linearIndependent_augmentedPeriods_face {ι : Type} [Fintype ι] [DecidableEq ι]
+    (τ : ι → ℂ) (hind : LinearIndependent ℚ (augmentedPeriods τ)) (J : Finset ι) :
+    LinearIndependent ℚ (augmentedPeriods (multipleEllipticGammaFaceParameters τ J)) := by
+  have hf : Function.Injective (Option.map (Subtype.val : {i : ι // i ∉ J} → ι)) :=
+    Option.map_injective Subtype.val_injective
+  have hcomp : (augmentedPeriods τ) ∘ (Option.map (Subtype.val : {i : ι // i ∉ J} → ι))
+      = augmentedPeriods (multipleEllipticGammaFaceParameters τ J) := by
+    funext i
+    cases i with
+    | none => rfl
+    | some x => rfl
+  have hres := hind.comp _ hf
+  rwa [hcomp] at hres
+
+theorem card_not_mem_eq {ι : Type} [Fintype ι] [DecidableEq ι] (J : Finset ι) :
+    Fintype.card {i : ι // i ∉ J} = Fintype.card ι - J.card := by
+  have h1 : Fintype.card {i : ι // i ∈ J} = J.card := by simp
+  have h2 := Fintype.card_subtype_compl (fun i : ι => i ∈ J)
+  omega
+
+theorem card_not_mem_insert {ι : Type} [Fintype ι] [DecidableEq ι] (J : Finset ι) {q : ι}
+    (hq : q ∉ J) :
+    Fintype.card {i : ι // i ∉ insert q J} + 1 = Fintype.card {i : ι // i ∉ J} := by
+  have hJ : J.card ≤ Fintype.card ι := Finset.card_le_univ J
+  have hins : (insert q J).card = J.card + 1 := Finset.card_insert_of_notMem hq
+  have hle : (insert q J).card ≤ Fintype.card ι := Finset.card_le_univ _
+  rw [card_not_mem_eq, card_not_mem_eq, hins] at *
+  omega
+
 /-! ## The order-two spectrum collapse -/
 
-/-- **Order-two collapse.**  With three `ℚ`-independent structural periods, a differentially
-algebraic translation defect of the multiple elliptic gamma logarithmic derivative forces the shift
-to be an integer. -/
+/-- **Order-two collapse on a face.**  If exactly three structural periods survive a face and the
+augmented period family is `ℚ`-independent, then a differentially algebraic translation defect of
+the face coordinate forces the shift to be an integer. -/
 theorem exists_int_of_da_faceDefect_card_three {ι : Type} [Fintype ι] [DecidableEq ι]
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
-    (hind : LinearIndependent ℚ (augmentedPeriods τ)) (hcard : Fintype.card ι = 3)
-    {h : ℂ}
+    (hind : LinearIndependent ℚ (augmentedPeriods τ)) (J : Finset ι)
+    (hcard : Fintype.card {i : ι // i ∉ J} = 3) {h : ℂ}
     (hDA : DifferentialAlgebraicOver (RatFunc ℂ)
-      (meroTranslationDefect h (multipleEllipticGammaLogDerivFaceMero τ hτ ∅))) :
+      (meroTranslationDefect h (multipleEllipticGammaLogDerivFaceMero τ hτ J))) :
     ∃ n : ℤ, h = (n : ℂ) := by
-  have hne : Nonempty ι := Fintype.card_pos_iff.mp (by omega)
+  classical
+  have hne : Nonempty {i : ι // i ∉ J} := Fintype.card_pos_iff.mp (by omega)
   obtain ⟨q₀⟩ := hne
-  refine exists_int_of_forall_memDeletedPeriodGroup (q₀ := q₀) τ hind ?_
+  refine exists_int_of_forall_memDeletedPeriodGroup (q₀ := q₀)
+    (multipleEllipticGammaFaceParameters τ J)
+    (linearIndependent_augmentedPeriods_face τ hind J) ?_
   intro q
-  -- the face `{q}` leaves two parameters
   have hDAface : DifferentialAlgebraicOver (RatFunc ℂ)
-      (meroTranslationDefect h (multipleEllipticGammaLogDerivFaceMero τ hτ {q})) := by
-    have hstep := meroTranslationDefect_face τ hτ ∅ (q := q) (by simp) h
-    rw [show insert q (∅ : Finset ι) = ({q} : Finset ι) by simp] at hstep
-    rw [← hstep]
-    exact differentialAlgebraicOver_meroTranslationDefect (τ q) hDA
-  -- identify the surviving two-element parameter family
-  have hsub : Fintype.card {i : ι // i ∉ ({q} : Finset ι)} = 2 := by
-    have hcompl : Fintype.card {i : ι // i ∈ ({q} : Finset ι)} = 1 := by
-      simp
-    have := Fintype.card_subtype_compl (fun i : ι => i ∈ ({q} : Finset ι))
+      (meroTranslationDefect h
+        (multipleEllipticGammaLogDerivFaceMero τ hτ (insert (q : ι) J))) := by
+    rw [← meroTranslationDefect_face τ hτ J q.2 h]
+    exact differentialAlgebraicOver_meroTranslationDefect (τ (q : ι)) hDA
+  have hsub : Fintype.card {i : ι // i ∉ insert (q : ι) J} = 2 := by
+    have hstep := card_not_mem_insert J q.2
     omega
-  obtain ⟨e⟩ : Nonempty ({i : ι // i ∉ ({q} : Finset ι)} ≃ Fin 2) :=
+  obtain ⟨e⟩ : Nonempty ({i : ι // i ∉ insert (q : ι) J} ≃ Fin 2) :=
     ⟨Fintype.equivFinOfCardEq hsub⟩
-  set j : ι := (e.symm 0 : ι) with hj
-  set k : ι := (e.symm 1 : ι) with hk
-  have hjq : j ≠ q := by
-    have := (e.symm 0).2
-    simpa [hj] using this
-  have hkq : k ≠ q := by
-    have := (e.symm 1).2
-    simpa [hk] using this
+  set j : ι := (e.symm 0 : ι) with hjdef
+  set k : ι := (e.symm 1 : ι) with hkdef
+  have hjmem : j ∉ insert (q : ι) J := (e.symm 0).2
+  have hkmem : k ∉ insert (q : ι) J := (e.symm 1).2
+  have hjJ : j ∉ J := fun hc => hjmem (Finset.mem_insert_of_mem hc)
+  have hkJ : k ∉ J := fun hc => hkmem (Finset.mem_insert_of_mem hc)
+  have hjq : j ≠ (q : ι) := fun hc => hjmem (by rw [hc]; exact Finset.mem_insert_self _ _)
+  have hkq : k ≠ (q : ι) := fun hc => hkmem (by rw [hc]; exact Finset.mem_insert_self _ _)
   have hjk : j ≠ k := by
     intro hcon
-    have : e.symm 0 = e.symm 1 := Subtype.ext hcon
-    have := e.symm.injective this
+    have hsub2 : e.symm 0 = e.symm 1 := Subtype.ext hcon
+    have := e.symm.injective hsub2
     exact absurd this (by decide)
   have hjpos : 0 < (τ j).im := hτ j
   have hkpos : 0 < (τ k).im := hτ k
-  -- rewrite the face coordinate as the two-parameter object
-  have hreindex : multipleEllipticGammaLogDerivFaceMero τ hτ {q}
+  have hreindex : multipleEllipticGammaLogDerivFaceMero τ hτ (insert (q : ι) J)
       = multipleEllipticGammaLogDerivMero ![τ j, τ k]
         (by
           intro i
           fin_cases i
           · exact hjpos
           · exact hkpos) := by
-    have hface : multipleEllipticGammaLogDerivFaceMero τ hτ {q}
+    have hface : multipleEllipticGammaLogDerivFaceMero τ hτ (insert (q : ι) J)
         = multipleEllipticGammaLogDerivMero
-            (multipleEllipticGammaFaceParameters τ {q}) (fun i => hτ i) := rfl
+            (multipleEllipticGammaFaceParameters τ (insert (q : ι) J)) (fun i => hτ i) := rfl
     rw [hface]
     have hre := multipleEllipticGammaLogDerivMero_reindex e.symm
-      (multipleEllipticGammaFaceParameters τ ({q} : Finset ι)) (fun i => hτ i)
+      (multipleEllipticGammaFaceParameters τ (insert (q : ι) J)) (fun i => hτ i)
     rw [← hre]
     congr 1
     funext i
@@ -246,21 +276,150 @@ theorem exists_int_of_da_faceDefect_card_three {ι : Type} [Fintype ι] [Decidab
   rw [hreindex] at hDAface
   obtain ⟨a, b, n, hval⟩ := exists_int_of_da_defect_fin_two (τ j) (τ k) hjpos hkpos
     (linearIndependent_ellipticGammaSourcePeriods_of_augmented τ hind hjk) _ hDAface
-  -- package as a deleted period group membership
-  classical
-  refine ⟨a, Function.update (Function.update (fun _ : ι => (0 : ℤ)) j n) k b, ?_, ?_⟩
-  · rw [Function.update_of_ne (Ne.symm hkq), Function.update_of_ne (Ne.symm hjq)]
+  set jκ : {i : ι // i ∉ J} := ⟨j, hjJ⟩ with hjκ
+  set kκ : {i : ι // i ∉ J} := ⟨k, hkJ⟩ with hkκ
+  have hjκq : jκ ≠ q := fun hc => hjq (congrArg Subtype.val hc)
+  have hkκq : kκ ≠ q := fun hc => hkq (congrArg Subtype.val hc)
+  have hjκk : jκ ≠ kκ := by
+    simp only [hjκ, hkκ, ne_eq, Subtype.mk.injEq]
+    exact hjk
+  refine ⟨a, Function.update (Function.update (fun _ : {i : ι // i ∉ J} => (0 : ℤ)) jκ n) kκ b,
+    ?_, ?_⟩
+  · rw [Function.update_of_ne (Ne.symm hkκq), Function.update_of_ne (Ne.symm hjκq)]
   · rw [hval]
-    have hsum : ∑ i : ι,
-        ((Function.update (Function.update (fun _ : ι => (0 : ℤ)) j n) k b i : ℤ) : ℂ) * τ i
+    have hsum : ∑ i : {i : ι // i ∉ J},
+        ((Function.update (Function.update (fun _ : {i : ι // i ∉ J} => (0 : ℤ)) jκ n) kκ b i :
+            ℤ) : ℂ) * multipleEllipticGammaFaceParameters τ J i
         = (n : ℂ) * τ j + (b : ℂ) * τ k := by
-      rw [Finset.sum_eq_add_of_mem j k (Finset.mem_univ j) (Finset.mem_univ k) hjk ?_]
-      · rw [Function.update_of_ne hjk, Function.update_self, Function.update_self]
+      rw [Finset.sum_eq_add_of_mem jκ kκ (Finset.mem_univ jκ) (Finset.mem_univ kκ) hjκk ?_]
+      · rw [Function.update_of_ne hjκk, Function.update_self, Function.update_self]
+        rfl
       · intro c _ hc
         rw [Function.update_of_ne hc.2, Function.update_of_ne hc.1]
         simp
     rw [hsum]
     ring
+
+/-! ## The generic all-order spectrum -/
+
+/-- **The generic multiple-elliptic-gamma translation spectrum, upper half.**  Whenever at least
+three structural periods survive the face, a differentially algebraic translation defect forces
+the shift to be an integer. -/
+theorem exists_int_of_da_faceDefect {ι : Type} [Fintype ι] [DecidableEq ι]
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
+    (hind : LinearIndependent ℚ (augmentedPeriods τ)) :
+    ∀ (m : ℕ), 3 ≤ m → ∀ (J : Finset ι), Fintype.card {i : ι // i ∉ J} = m →
+      ∀ {h : ℂ}, DifferentialAlgebraicOver (RatFunc ℂ)
+        (meroTranslationDefect h (multipleEllipticGammaLogDerivFaceMero τ hτ J)) →
+      ∃ n : ℤ, h = (n : ℂ) := by
+  intro m
+  induction m using Nat.strong_induction_on with
+  | _ m ih =>
+    intro hm J hJ h hDA
+    rcases eq_or_lt_of_le hm with hm3 | hm4
+    · exact exists_int_of_da_faceDefect_card_three τ hτ hind J (by omega) hDA
+    · have hne : Nonempty {i : ι // i ∉ J} := Fintype.card_pos_iff.mp (by omega)
+      obtain ⟨q⟩ := hne
+      have hDAface : DifferentialAlgebraicOver (RatFunc ℂ)
+          (meroTranslationDefect h
+            (multipleEllipticGammaLogDerivFaceMero τ hτ (insert (q : ι) J))) := by
+        rw [← meroTranslationDefect_face τ hτ J q.2 h]
+        exact differentialAlgebraicOver_meroTranslationDefect (τ (q : ι)) hDA
+      have hcard := card_not_mem_insert J q.2
+      exact ih (m - 1) (by omega) (by omega) (insert (q : ι) J) (by omega) hDAface
+
+/-- **Integer shifts are in the spectrum.**  Every integer translation fixes the face
+coordinate, so its defect vanishes and is trivially differentially algebraic. -/
+theorem differentialAlgebraicOver_meroTranslationDefect_intCast {ι : Type} [Fintype ι]
+    [DecidableEq ι] (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (J : Finset ι) (n : ℤ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (meroTranslationDefect (n : ℂ) (multipleEllipticGammaLogDerivFaceMero τ hτ J)) := by
+  have hfix := addTranslationMeroEquiv_intCast_multipleEllipticGammaLogDerivFaceMero τ hτ J n
+  have hzero : meroTranslationDefect (n : ℂ) (multipleEllipticGammaLogDerivFaceMero τ hτ J)
+      = 0 := by
+    rw [meroTranslationDefect, hfix, sub_self]
+  rw [hzero]
+  have h0 : (0 : meroField (Set.univ : Set ℂ)) = algebraMap (RatFunc ℂ) _ 0 := by simp
+  rw [h0]
+  exact HTGeometry.differentialAlgebraicOver_algebraMap _
+
+/-- **The exact generic spectrum.**  With at least three surviving `ℚ`-independent structural
+periods, the differentially algebraic translation spectrum of the multiple elliptic gamma
+logarithmic derivative is exactly `ℤ`. -/
+theorem da_meroTranslationDefect_iff_int {ι : Type} [Fintype ι] [DecidableEq ι]
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
+    (hind : LinearIndependent ℚ (augmentedPeriods τ)) (J : Finset ι)
+    (hcard : 3 ≤ Fintype.card {i : ι // i ∉ J}) (h : ℂ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+        (meroTranslationDefect h (multipleEllipticGammaLogDerivFaceMero τ hτ J))
+      ↔ ∃ n : ℤ, h = (n : ℂ) := by
+  constructor
+  · intro hDA
+    exact exists_int_of_da_faceDefect τ hτ hind (Fintype.card {i : ι // i ∉ J}) hcard J rfl hDA
+  · rintro ⟨n, rfl⟩
+    exact differentialAlgebraicOver_meroTranslationDefect_intCast τ hτ J n
+
+/-- The empty face is the full hierarchy coordinate. -/
+theorem multipleEllipticGammaLogDerivFaceMero_empty {ι : Type} [Fintype ι] [DecidableEq ι]
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) :
+    multipleEllipticGammaLogDerivFaceMero τ hτ ∅ = multipleEllipticGammaLogDerivMero τ hτ := by
+  let e : {i : ι // i ∉ (∅ : Finset ι)} ≃ ι :=
+    { toFun := fun i => i.1
+      invFun := fun i => ⟨i, by simp⟩
+      left_inv := fun i => rfl
+      right_inv := fun i => rfl }
+  have hre := multipleEllipticGammaLogDerivMero_reindex e τ hτ
+  rw [← hre]
+  unfold multipleEllipticGammaLogDerivFaceMero
+  congr 1
+  funext k
+
+/-- **The exact generic spectrum of the multiple elliptic gamma logarithmic derivative.**
+For at least three `ℚ`-independent structural periods,
+
+```text
+Spec_DA(Ψ_r) = { h : Δ_h Ψ_r is differentially algebraic over ℂ(z) } = ℤ .
+```
+-/
+theorem da_meroTranslationDefect_multipleEllipticGamma_iff_int {ι : Type} [Fintype ι]
+    [DecidableEq ι] (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
+    (hind : LinearIndependent ℚ (augmentedPeriods τ)) (hcard : 3 ≤ Fintype.card ι) (h : ℂ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+        (meroTranslationDefect h (multipleEllipticGammaLogDerivMero τ hτ))
+      ↔ ∃ n : ℤ, h = (n : ℂ) := by
+  have hface : Fintype.card {i : ι // i ∉ (∅ : Finset ι)} = Fintype.card ι := by
+    rw [card_not_mem_eq]
+    simp
+  have := da_meroTranslationDefect_iff_int τ hτ hind ∅ (by omega) h
+  rwa [multipleEllipticGammaLogDerivFaceMero_empty] at this
+
+/-- **Every nonintegral translation defect is hypertranscendental.** -/
+theorem hypertranscendentalOver_meroTranslationDefect_of_not_int {ι : Type} [Fintype ι]
+    [DecidableEq ι] (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
+    (hind : LinearIndependent ℚ (augmentedPeriods τ)) (hcard : 3 ≤ Fintype.card ι) {h : ℂ}
+    (hnot : ¬ ∃ n : ℤ, h = (n : ℂ)) :
+    HypertranscendentalOver (RatFunc ℂ)
+      (meroTranslationDefect h (multipleEllipticGammaLogDerivMero τ hτ)) := by
+  intro hDA
+  exact hnot ((da_meroTranslationDefect_multipleEllipticGamma_iff_int τ hτ hind hcard h).mp hDA)
+
+/-- **The logarithmic derivative is hypertranscendental.**  Its translation spectrum is a proper
+subgroup of `ℂ`, so it cannot itself be differentially algebraic. -/
+theorem hypertranscendentalOver_multipleEllipticGammaLogDerivMero_of_card {ι : Type} [Fintype ι]
+    [DecidableEq ι] (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
+    (hind : LinearIndependent ℚ (augmentedPeriods τ)) (hcard : 3 ≤ Fintype.card ι) :
+    HypertranscendentalOver (RatFunc ℂ) (multipleEllipticGammaLogDerivMero τ hτ) := by
+  intro hDA
+  have hne : Nonempty ι := Fintype.card_pos_iff.mp (by omega)
+  obtain ⟨i₀⟩ := hne
+  have hnot : ¬ ∃ n : ℤ, τ i₀ = (n : ℂ) := by
+    rintro ⟨n, hn⟩
+    have hzero : (τ i₀).im = 0 := by rw [hn]; simp
+    have := hτ i₀
+    rw [hzero] at this
+    exact lt_irrefl 0 this
+  exact hypertranscendentalOver_meroTranslationDefect_of_not_int τ hτ hind hcard hnot
+    (differentialAlgebraicOver_meroTranslationDefect (τ i₀) hDA)
 
 end
 

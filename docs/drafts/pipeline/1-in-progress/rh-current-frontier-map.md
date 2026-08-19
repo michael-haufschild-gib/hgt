@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 19 August 2026, commit
-`f5844561598ffba3d02fb5e207a5e9fcc5baef1d`, plus declaration-index review of current Lean
+`3bf1afd82ade20192c69a299aad557ce6fbf7b56`, plus declaration-index review of current Lean
 working-tree sources. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified as corpus source, not claimed build-audited in
@@ -263,6 +263,7 @@ four-unit boundary norm open
 (`MobiusSignedChannelIncidencePaperCertificate.lean`,
 `MobiusSignedSchurComplexMultiplier.lean`,
 `MobiusSquarefreeReciprocalProjectivePaperCertificate.lean`,
+`MobiusSignedSchurTransferPaper.lean`,
 `MobiusSchurBoundaryPaperCertificate.lean`,
 `MobiusChannelCriticalMassEscapePaperCertificate.lean`,
 `MobiusCriticalExponentialBoundaryLayerPaperCertificate.lean`).
@@ -645,7 +646,9 @@ Formal sources: `MobiusCoupledFeatureIncidence.lean`,
 `MobiusSignedChannelIncidencePaperCertificate.lean`,
 `MobiusSignedSchurComplexMultiplier.lean`,
 `MobiusSquarefreeReciprocalProjectivePaperCertificate.lean`,
-`MobiusCenteredSchurBoundary.lean`, `MobiusCausalSourceLimit.lean`,
+`MobiusSignedSchurTransferPaper.lean`, `MobiusCenteredSchurBoundary.lean`,
+`MobiusWeightedMertensVector.lean`, `MobiusCenteredMertensLimit.lean`,
+`MobiusCausalSourceLimit.lean`,
 `MobiusChannelCriticalMassEscapePaperCertificate.lean`,
 `MobiusCriticalBoundaryLayerQuantiles.lean`,
 `MobiusCriticalExponentialBoundaryLayerPaperCertificate.lean`.
@@ -696,10 +699,74 @@ SV2 is an exact corrected receiver with no producer, hence candidate rather than
   `GammaMeixnerAbelCoronaProbe.lean` construct exact Gamma-affine prime lanes and a singular Abel
   corona detector. They expose source coefficients and boundary singularity but have no Xi landing
   or RH endpoint.
-- New generic `HTGeometry` factorization, horizon, channel-rigidity, and moment modules have no
-  current `RHTower` import or declaration ending in `RiemannHypothesis`; they are infrastructure,
-  not hidden RH routes. New sieve mean-value/Halasz--Montgomery modules similarly have no direct RH
-  endpoint beyond their use in source estimates.
+- The new archimedean Gamma-field chain proves a monomial valuation boundary law, finite Gamma
+  product hypertranscendence, and absence of any nontrivial differential relation for zeta jets with
+  coefficients in the prime-log shifted Gamma field
+  (`ArchimedeanGammaFieldBoundaryLaw.lean`,
+  `ArchimedeanGammaProductHypertranscendence.lean`, `ZetaPrimeLogGammaField.lean`). This is a strong
+  firewall against finite differential-algebraic prime--Gamma closure. It narrows finite-germ
+  variants adjacent to E/G/AF. The multiple-elliptic-Gamma chain strengthens the same rigidity:
+  with at least three surviving rationally independent structural periods, a translation defect is
+  differentially algebraic exactly for integer shifts
+  (`MultipleEllipticGammaGenericSpectrum.lean`, working-tree extension). Neither result orients a
+  completed source or yields an RH endpoint.
+- The critical-horizon Schur chain now supplies integral sheet lifts, the unique ramified prime,
+  corank-one singular-sheet conormal geometry, exact sheet degree, and one common reduced-fibre
+  point supporting every collision. Full symmetric monodromy then follows once that fibre is at
+  most two-to-one and the actual action is primitive. It also shows the resulting source extension
+  has no intermediate field under full monodromy (`CriticalSchurUniqueRamifiedPrime.lean`,
+  `CriticalSheetSingularity.lean`, `CriticalSheetFixedConormal.lean`,
+  `CriticalSchurUniqueCollisionPoint.lean`, `CriticalSchurCollisionSupportFibre.lean`,
+  `CriticalGeometricDegreeExact.lean`, `CriticalGeometricFieldPrimitivity.lean`). This is a genuine
+  non-classical internal-dynamics mechanism that could feed PPM/IRK/HJ. It is not yet an RH route:
+  corpus has neither the remaining two-to-one fibre bound with unconditional arithmetic
+  primitivity/source occurrence nor a coefficient-faithful Xi-divisor handoff.
+- Differential horizon modules identify every finite positive-jet gauge with the constant
+  translation stabilizer, prove depth-independent rigidity when the locus is translation-rigid and
+  the field has no primitive of one, and now reconstruct the entire differential field from any
+  positive derivative horizon on a translation-rigid locus. On an additive cylinder, each lost jet layer is
+  exactly a vector-group torsor; for a commutative `D`-group the horizon stabilizer is its sharp
+  subgroup (`JetHorizonReconstruction.lean`, `JetHorizonAdditiveTorsorLaw.lean`,
+  `DGroupHorizonStabilizer.lean`). The Manin-horizon reconstruction theorem still takes the
+  nonorthogonality-to-isogeny direction as a named Hrushovski-dichotomy premise
+  (`ManinHorizonIsogenyReconstruction.lean`). No arithmetic `D`-group, unconditional dichotomy
+  specialization, or Xi landing exists, so this is a pre-route mechanism, not a live/candidate
+  route. It indicates a possible singular/infinite-action successor to AF.
+- The corpus now contains an unconditional existence theory for Picard--Vessiot rings of invertible
+  linear difference systems: sigma-simple quotient, invertible fundamental matrix, field of
+  constants, and rank bound for solution spaces (`DifferenceSystemPicardVessiot.lean`,
+  `DifferenceSolutionSpace.lean`). This opens a genuine non-classical difference-Galois carrier for
+  global shift monodromy, potentially adjacent to AF/AP/IRK. No literal prime--Gamma difference
+  system, source-selected Galois invariant, or implication to critical-line placement is present,
+  so it remains pre-route infrastructure rather than a ninth candidate.
+- Finite quantum-channel diamond contraction and Markovian return recovery are now exact, including
+  ancilla-assisted information-loss and inverse-word incidence reflection
+  (`QuantumChannelDiamond.lean`, `MarkovianReturnRecovery.lean`). Exact return is rigid: every
+  intermediate channel is unitary conjugation, the semigroup is periodic, and incidence counts are
+  palindromic (`ChannelInverseRigidity.lean`, `MarkovianExactReturn.lean`). Thus genuinely
+  dissipative exact-return variants are closed. Approximate-return information loss remains a
+  paired, non-scalar mechanism potentially relevant to HC or a successor to J, but no prime--Gamma
+  channel, collision quantum comparison, or RH endpoint is instantiated.
+- Semidefinite Caratheodory--Fejer data now have exact finite unit-circle atomic factorization, and
+  order-two determinant completion has faithful recovery of its missing trace coordinate
+  (`CaratheodoryFejerPSDtoAtomicFactorization.lean`,
+  `RegularizedDeterminantTraceRecovery.lean`). These close abstract realization/completion adapters
+  for OPUC/C1/O, not source orientation or ground sign. `MicroSpectrumMomentAssembly.lean` further
+  proves arbitrary moments below Schatten order can be hidden in arbitrarily small finite spectral
+  energy, warning that low finite moments cannot control the next critical order.
+- Siegel reduction/finiteness and damped quasi-abelian Poincare normal convergence are now formal
+  (`SiegelFiniteness.lean`, `QuasiAbelianDampedNormalConvergence.lean`). They supply finite
+  identifications and locally normal aggregate carriers, but no completed-zeta source specialization
+  or RH reader. They therefore do not revive AP or AF.
+- Polynomial-matrix quadratic-rate relations now have a generic nonflatness obstruction: one
+  complex counterexample forces failure somewhere in every nonempty real parameter open set
+  (`QuadraticRateMatrixObstruction.lean`). This rules out a locally universal fixed quadratic-rate
+  spectral labeling but does not exclude singular loci or provide HC's arithmetic collision bound.
+- New sieve mean-value, divisor-moment, exceptional-set, and Halasz--Montgomery modules close exact
+  analytic adapters used in long chains (`Sieve/DivisorMomentMeanSquare.lean`,
+  `Sieve/HalaszMontgomeryIntegral.lean`, `Sieve/Section4Core.lean`). Their capstones retain explicit
+  mean-square/exceptional-set premises; they neither define E's fixed relation nor prove T's pure
+  short Möbius-block cancellation.
 
 ## Terminal and retired mechanisms
 
@@ -862,6 +929,15 @@ singular or meromorphic boundary landing. MSC has the carrier but lacks pointed 
 SV2 has the corrected meromorphic endpoint but lacks source approximants. Neither can be reduced to
 a finite positive object or a single scalar response without hitting a proved firewall.
 
+Critical Schur monodromy, difference Picard--Vessiot, differential/Manin horizons, and quantum
+return recovery sit one layer earlier. Lean has constructed their internal dynamics, rigidity, or
+reconstruction theorem, but not an arithmetic source occurrence plus critical-line reader. They are
+therefore real possible source architectures, not counted RH candidates. Their shared open core is
+an arithmetic specialization theorem: build the actual prime--Gamma/Mobius action globally, prove
+its nontrivial invariant before choosing a zero, and show that invariant excludes an off-line Xi
+divisor. Exact-return unitarity, jet-translation gauge, and finite differential-algebraic spectrum
+already specify which naive specializations cannot work.
+
 ## Fundamental nature of remaining problems
 
 Open cores fall into six classes:
@@ -916,6 +992,9 @@ is:
     satisfy a source-derived four-unit covariance bound?
 14. Can source-defined real-zero characteristics converge on one predeclared pole-free domain
     containing the full Xi divisor, as required by corrected Suzuki v2?
+15. Can critical Schur monodromy, a difference Picard--Vessiot group, a Manin-horizon sharp group, or
+    approximate quantum-return loss be instantiated on the literal completed arithmetic source and
+    coupled coefficient-faithfully to Xi before divisor selection?
 
 Until one is answered, endpoint reformulations, finite real-zero models, seed asymptotics, diagonal
 moment inequalities, or scalar transport identities do not move formal RH frontier.

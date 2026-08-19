@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`f5844561598ffba3d02fb5e207a5e9fcc5baef1d` on 19 August, plus declaration-level working-tree
+`3bf1afd82ade20192c69a299aad557ce6fbf7b56` on 19 August, plus declaration-level working-tree
 review. Historical `Active-tree Lean` wording records former provenance. Current
 formal route status is maintained in `rh-current-frontier-map.md`; detailed sections below are a
 literature-exchange record and may retain older intermediate formulations. External literature was
@@ -60,6 +60,26 @@ Latest Lean-only review gives no new first-open-producer theorem for D2, O, Q, T
 new trace-class propagation and CCM's finite integrality/semilocal covariance theorems close
 supporting gates only. External SOTA was not re-audited for MSC, SV2, or these Lean additions; no
 literature-priority claim is made here.
+
+New `HTGeometry` declarations also expose pre-route mechanism families without changing that count.
+Critical-horizon Schur geometry now reaches unique ramification, singular-sheet corank one, exact
+degree, and one common reduced-fibre collision point; only the two-to-one fibre bound, actual
+primitivity/source occurrence, and arithmetic Xi handoff remain before this can feed PPM/IRK/HJ.
+Differential horizons now reconstruct a translation-rigid field from any positive jet depth and
+identify additive-cylinder layers as vector torsors; Manin reconstruction still takes one
+Hrushovski-dichotomy direction as a premise and has no completed-zeta specialization. Difference
+Picard--Vessiot rings and solution-space rank bounds now exist unconditionally, opening a
+difference-Galois carrier adjacent to AF/AP/IRK but with no literal arithmetic system or RH reader.
+Quantum diamond-return recovery gives a paired non-scalar information-loss reflection potentially
+useful to HC or a successor to J; exact return is forced unitary, so dissipative exact recurrence is
+closed, and no prime--Gamma channel or collision comparison exists. Exact
+Caratheodory--Fejer atomic factorization, determinant trace-coordinate recovery, Siegel finiteness,
+and quasi-abelian normal convergence are adapters, not source producers. The prime-log Gamma-field
+hypertranscendence chain, exact integer spectrum of generic multiple-elliptic-Gamma translation
+defects, and generic quadratic-rate nonflatness instead close broad finite differential-algebraic or
+fixed-rate shortcuts. None is a hidden live route because none currently has both literal arithmetic
+source occurrence and an RH endpoint. External SOTA for these mechanisms was not re-audited in this
+Lean-only refresh.
 
 Two former candidates are now terminal as stated. TD's raw-positive/passive C1 handoff is excluded
 by `GammaSewnMobiusApertureStokesPositiveCompletionNoGo.lean`; only a non-dominating reweighting or

@@ -905,3 +905,51 @@ exactly `(17)`; the remaining work is supplying the two ingredient families for 
 spectral data, not any further analysis.
 
 Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+## Lean progress -- the discriminant is a polynomial, and `(18a)` (2026-08-19)
+
+The corollary's remaining input was named on this card as
+
+> "What the corollary still needs from the geometry is the identification of the discriminant as a
+> nonzero homogeneous polynomial of an explicit degree in the shell coordinates."
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralDiscriminantPolynomial.lean` (new, umbrella-wired,
+axiom-clean) supplies exactly that, for an arbitrary Hermitian family `P₁, …, P_N` and its
+Hamiltonian `H(θ) = ∑ θ_a P_a`.
+
+| Card item | Declaration |
+|---|---|
+| the Hamiltonian at a coefficient vector, and its Hermiticity | `spectralEnsembleMatrix`, `isHermitian_spectralEnsembleMatrix` |
+| the same Hamiltonian over the polynomial ring in `θ` | `spectralGenericMatrix` |
+| the Hankel matrix of its power traces, and the discriminant as its determinant | `spectralTraceHankel`, `spectralDiscriminantC` |
+| **the power-trace Hankel matrix is `VᵀV`, so its determinant is the squared Vandermonde** | `det_powerSum_hankel` |
+| **reality**: coefficientwise conjugation transposes the generic matrix, so the determinant has real coefficients | `mapMatrix_conj_spectralGenericMatrix`, `map_conj_spectralDiscriminantC`, `map_spectralDiscriminantPoly` |
+| **`Disc` as a real multivariate polynomial in `θ`** | `spectralDiscriminantPoly` |
+| **homogeneous of degree `D(D−1)`** | `spectralDiscriminantDegree`, `isHomogeneous_spectralDiscriminantPoly` |
+| **it evaluates to `∏_{i<j}(E_i(θ) − E_j(θ))²`**, hence is nonnegative | `eval_spectralDiscriminantPoly`, `spectralDiscriminantPoly_nonneg` |
+| **it is a nonzero polynomial** as soon as one member of the family has simple spectrum | `spectralDiscriminantPoly_ne_zero` |
+| **`(18a)`**: `σ{Disc ≤ ε} ≤ C ε^{1/(D(D−1))}` | `exists_toSphere_spectralDiscriminant_sublevel_le` |
+
+The construction deliberately avoids the discriminant of the characteristic polynomial and the
+semialgebraic machinery: the entry `Tr H(θ)^{i+j}` is visibly a polynomial in `θ` of degree `i+j`,
+so every permutation term of the determinant has the *same* degree `∑_i (σ(i) + i) = D(D−1)` and
+homogeneity is immediate; and the Hankel matrix is `VᵀV` for the Vandermonde matrix of the
+spectrum, so the determinant is `(det V)²`, which is the product of the squared eigenvalue
+differences.  Reality is Hermiticity: conjugating coefficients transposes the generic matrix, and
+transposition fixes every trace.
+
+Composed with `exists_toSphere_sublevel_le` this closes `(18a)` unconditionally, with the exponent
+`1/(D(D−1))` explicit.  The one hypothesis is the card's own: the family must contain a
+simple-spectrum member, which is exactly the sentence "Disc is a nonzero polynomial on it because
+the local family contains a simple-spectrum member".
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+### What `(18b)` still needs
+
+`(18b)` bounds the sublevel sets of `h_k = ‖∇_S φ_k‖²`, which is *not* polynomial in `θ` -- the
+eigenvalues are algebraic, not rational, functions of the coefficients.  The polynomial-slicing
+route above therefore does not apply verbatim.  Two routes remain: eliminate the eigenvalues to
+get a polynomial in `θ` whose zero set contains the critical locus, or drop the power law and prove
+only the boxed limit `(13)`, which follows from continuity of `h_k` on `{Disc ≥ ζ}` together with
+the fixed-shell nonflatness statement that its zero set is shell-null.
