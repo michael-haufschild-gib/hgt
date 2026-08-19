@@ -496,3 +496,34 @@ So the only structural item left in the Galois correspondence is the module deco
 tensor square; the specialisation is then base change along a `C`-point
 (`exists_algHom_of_finiteType_of_isAlgClosed`).  That construction, and then items (2), (3), (4),
 are what remain.
+
+
+## Card 1 — the torsor decomposition is built
+
+`TorsorDecomposition` closes the structural item: `R ⊗_C E ≅ A` from generation plus independence,
+with the injectivity coming from a general lemma (a linear map sending a basis to an independent
+family is injective).  Both hypotheses are supplied for the Picard–Vessiot tensor square by
+`adjoin_tensor_comparison_eq_top` and `basisIndependentOver_of_constants`.
+
+The Galois correspondence is now an assembly step: decompose, take a `C`-point
+(`exists_algHom_of_finiteType_of_isAlgClosed`), base change to a specialisation, and read off the
+automorphism with `DifferenceSpecialization`.  Then items (2) `G_m` converse, (3) `GL_2`, and
+(4) Dreyfus's normal form remain.
+
+
+## Card 1 — the Galois-correspondence chain is complete as general lemmas
+
+`TorsorPointSpecialization` supplies `specializationOfPoint`, the base change of a `C`-point along
+the torsor decomposition, with its two computation rules (identity on the base, evaluation on the
+constants).  The full chain now exists as general lemmas:
+
+    exists_tensor_comparison_matrix  →  Z constant, invertible
+    adjoin_tensor_comparison_eq_top  →  generation
+    basisIndependentOver_of_constants →  independence
+    tensorDecompositionEquiv          →  R ⊗_K R ≅ R ⊗_C E
+    exists_algHom_of_finiteType_of_isAlgClosed → a C-point of E
+    specializationOfPoint             →  R ⊗_K R → R, identity on the left copy
+    rightComponent(_commutes, _fundamental) → the difference automorphism
+
+What remains for the correspondence is instantiation bookkeeping at the concrete Picard–Vessiot
+data, then items (2) `G_m` converse, (3) `GL_2`, (4) Dreyfus's normal form.

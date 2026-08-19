@@ -874,3 +874,48 @@ matrix by an invertible matrix.
 What is left of the Galois correspondence is the *existence* of enough such specialisations, which
 is the torsor module decomposition `R (x)_K R = R (x)_C E` (all of whose ingredients are now in the
 tree) composed with the Nullstellensatz point of `NullstellensatzPoint`.
+
+## Lean progress — the torsor decomposition
+
+`GaloisForLFunctions.HTGeometry.TorsorDecomposition`, unconditional and axiom-clean:
+
+```text
+injective_of_basis_map_linearIndependent
+    a linear map carrying a basis to a linearly independent family is injective
+tensorDecompositionHom E : R (x)_C E ->a[R] A     the canonical map
+tensorDecompositionHom_surjective                 from generation of A over R by E
+tensorDecompositionHom_injective                  from R-independence of a C-basis of E
+tensorDecompositionEquiv                          **R (x)_C E = A**
+```
+
+This is the structural item the Galois correspondence was waiting on.  For a Picard--Vessiot ring
+and its tensor square both hypotheses are already in the tree: generation is
+`adjoin_tensor_comparison_eq_top`, and the independence is `basisIndependentOver_of_constants`,
+which derives it from `sigma`-simplicity rather than assuming it.
+
+With `DifferenceSpecialization` and `NullstellensatzPoint`, the chain is now: decompose
+`R (x)_K R = R (x)_C E`; take a `C`-point of `E`; base change along it to get a specialisation
+`R (x)_K R -> R` fixing the left copy; its right component is a difference `K`-automorphism of `R`
+carrying the fundamental matrix to `Y . psi(Z)`.
+
+## Lean progress — specialising the torsor at a point
+
+`GaloisForLFunctions.HTGeometry.TorsorPointSpecialization`, unconditional and axiom-clean:
+
+```text
+pointBaseChange E chi                  base change of a C-point along the decomposition
+specializationOfPoint E b hgen hindep chi : A ->a[R] R
+                                       **the specialisation attached to a point**
+specializationOfPoint_algebraMap       it is the identity on the base
+specializationOfPoint_coe              it evaluates the constants at the point
+```
+
+This is the assembly step.  For a Picard--Vessiot ring and its tensor square: `TorsorDecomposition`
+gives `R (x)_K R = R (x)_C E`; `NullstellensatzPoint` gives a `C`-point of `E`;
+`specializationOfPoint` base changes along it to a map `R (x)_K R -> R` which is the identity on the
+left copy and evaluates the comparison matrix at the point; and
+`DifferenceSpecialization.rightComponent` turns that into a difference `K`-automorphism of `R`
+carrying the fundamental matrix to `Y . chi(Z)`.
+
+Every step of that chain is now Lean-proved.  What is left of the correspondence is only the
+bookkeeping that instantiates the general lemmas at the concrete Picard--Vessiot data.

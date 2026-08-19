@@ -97,6 +97,71 @@ def PrimeArchBernsteinCollarContinuation : Prop :=
     (∀ t : ℝ, z₀ ≤ t → t < 1 → (t : ℂ) ∈ U) ∧
     F =ᶠ[nhds ((z₀ : ℝ) : ℂ)] primeArchEndpointBernsteinSusceptibility
 
+theorem analyticOnNhd_susceptibility {R : ℝ}
+    (hR : PrimeArchEndpointBernsteinAbelCriticalRadius R) :
+    AnalyticOnNhd ℂ primeArchEndpointBernsteinSusceptibility (Metric.ball 0 R) := by
+  refine analyticOnNhd_realSeriesSum hR.1 fun s hs0 hsR => ?_
+  refine (hR.2.1 s hs0 hsR).congr fun n => ?_
+  rw [abs_of_nonneg (primeArchEndpointBernsteinPurity_nonneg n)]
+
+/-- **(4) The collar transfer.**  A coherent holomorphic continuation of the susceptibility germ
+through the positive real collar implies the Riemann hypothesis. -/
+theorem riemannHypothesis_of_collarContinuation
+    (h : PrimeArchBernsteinCollarContinuation) : RiemannHypothesis := by
+  obtain ⟨U, F, z₀, hUopen, hFan, hz₀0, hz₀r, hUseg, hFagree⟩ := h
+  obtain ⟨R, ⟨hRlow, hRle, hRcrit, hRHiff⟩, -⟩ :=
+    existsUnique_primeArchEndpointBernsteinAbelCriticalRadius
+  by_contra hnot
+  have hRne : R ≠ 1 := fun hc => hnot (hRHiff.mpr hc)
+  have hR1 : R < 1 := lt_of_le_of_ne hRle hRne
+  have hz₀R : z₀ < R := lt_trans hz₀r hRlow
+  have hRU : ((R : ℝ) : ℂ) ∈ U := hUseg R (le_of_lt hz₀R) hR1
+  obtain ⟨ζ, hζ, hζU⟩ := Metric.isOpen_iff.mp hUopen _ hRU
+  have hfan := analyticOnNhd_susceptibility hRcrit
+  -- the interior endpoint of the propagation segment
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = R - (min ζ (R - z₀)) / 2 := ⟨_, rfl⟩
+  have hminpos : 0 < min ζ (R - z₀) := lt_min hζ (by linarith)
+  have hcR : c < R := by rw [hc]; linarith
+  have hz₀c : z₀ ≤ c := by
+    rw [hc]
+    have h1 : min ζ (R - z₀) ≤ R - z₀ := min_le_right _ _
+    linarith
+  have hcζ : R - c < ζ := by
+    rw [hc]
+    have h1 : min ζ (R - z₀) ≤ ζ := min_le_left _ _
+    linarith
+  -- propagate the agreement along the real segment
+  have hVopen : IsOpen (U ∩ Metric.ball (0 : ℂ) R) := hUopen.inter Metric.isOpen_ball
+  have hseg : ∀ t : ℝ, t ∈ Set.Icc z₀ c → ((t : ℝ) : ℂ) ∈ U ∩ Metric.ball (0 : ℂ) R := by
+    intro t ht
+    refine ⟨hUseg t ht.1 (by linarith [ht.2]), ?_⟩
+    rw [Metric.mem_ball, dist_zero_right, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (le_trans hz₀0 ht.1)]
+    linarith [ht.2]
+  have hprop : F =ᶠ[nhds ((c : ℝ) : ℂ)] primeArchEndpointBernsteinSusceptibility :=
+    eventuallyEq_of_segment hVopen (hFan.mono Set.inter_subset_left)
+      (hfan.mono Set.inter_subset_right) hz₀c hseg hFagree
+  -- transfer to a two-sided neighbourhood of the boundary point
+  set C : Set ℂ := Metric.ball ((R : ℝ) : ℂ) ζ ∩ Metric.ball (0 : ℂ) R with hC
+  have hCconv : Convex ℝ C := (convex_ball _ _).inter (convex_ball _ _)
+  have hcC : ((c : ℝ) : ℂ) ∈ C := by
+    constructor
+    · rw [Metric.mem_ball, Complex.dist_eq,
+        show ((c : ℝ) : ℂ) - ((R : ℝ) : ℂ) = (((c - R : ℝ)) : ℂ) by push_cast; ring,
+        Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by linarith)]
+      linarith
+    · rw [Metric.mem_ball, dist_zero_right, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (le_trans hz₀0 hz₀c)]
+      exact hcR
+  have hEqC : Set.EqOn F primeArchEndpointBernsteinSusceptibility C :=
+    (hFan.mono (fun z hz => hζU hz.1)).eqOn_of_preconnected_of_eventuallyEq
+      (hfan.mono Set.inter_subset_right) hCconv.isPreconnected hcC hprop
+  -- this is a continuation across the boundary point
+  refine not_continuesAcross_susceptibility hRcrit ⟨F, hFan _ hRU, ?_⟩
+  rw [eventually_nhdsWithin_iff]
+  filter_upwards [Metric.ball_mem_nhds ((R : ℝ) : ℂ) hζ] with w hw hw2
+  exact hEqC ⟨hw, hw2⟩
+
 end
 
 end RHTower

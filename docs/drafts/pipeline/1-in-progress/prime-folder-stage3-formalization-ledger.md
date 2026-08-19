@@ -23,7 +23,7 @@
 | 1 | `prime-arch-bernstein-half-order-pringsheim-singularity` | todo |
 | 2 | `prime-arch-bernstein-legendre-double-source-kernel` | **stage 3** |
 | 3 | `prime-arch-bernstein-mobius-pullback-gutzmer-law` | **stage 3** |
-| 4 | `prime-arch-bernstein-pringsheim-collar-transfer` | todo |
+| 4 | `prime-arch-bernstein-pringsheim-collar-transfer` | **stage 3** |
 | 5 | `prime-arch-explicit-circle-state-reflection-law` | todo |
 | 6 | `prime-arch-moment-pole-residue-pinch-law` | todo |
 | 7 | `prime-arch-shifted-sector-circle-valuation-cone` | todo |
@@ -62,6 +62,7 @@
 |---|---|---|
 | 2026-08-19 | `prime-coshift-eigenline-regularized-boundary-complex` | `RHTower/PrimeCoShiftModel.lean`, `RHTower/PrimeCoShiftRowGraph.lean`, `RHTower/PrimeCoShiftBoundaryComplex.lean` |
 | 2026-08-19 | `prime-coshift-row-boundary-trace-nonclosable` | `RHTower/PrimeCoShiftRowGraph.lean` |
+| 2026-08-19 | `prime-arch-bernstein-pringsheim-collar-transfer` | `RHTower/PrimeArchBernsteinPringsheimCollar.lean`, `HTGeometry/VivantiPringsheim.lean`, `HTGeometry/SegmentAnalyticContinuation.lean` |
 | 2026-08-19 | `prime-arch-bernstein-legendre-double-source-kernel` | `RHTower/BernsteinLegendreDoubleSourceKernel.lean` |
 | 2026-08-19 | `prime-arch-bernstein-mobius-pullback-gutzmer-law` | `RHTower/PrimeArchBernsteinMobiusPullback.lean`, `RHTower/PrimeArchBernsteinMobiusPullbackSource.lean`, `HTGeometry/AntidiagonalRegrouping.lean`, `HTGeometry/GutzmerPowerSeries.lean` |
 | 2026-08-19 | `prime-coshift-row-orthogonal-spectral-gap` | `RHTower/PrimeCoShiftKernelProjection.lean`, `RHTower/PrimeCoShiftSpectralGap.lean`, `HTGeometry/CommutingProjectionIntersectionEnergy.lean`, `HTGeometry/AdjointTransverseLowerBound.lean` |

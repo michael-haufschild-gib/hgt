@@ -1,11 +1,10 @@
 # Prime--archimedean Bernstein Pringsheim collar transfer
 
 - **ID:** `prime-arch-bernstein-pringsheim-collar-transfer`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** top-down RH bridge / analytic-continuation criterion
 - **Status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Lean status:** paper theorem; the exact radius theorem is formalized, while the general
-  Vivanti--Pringsheim step is not present in the Lean corpus
+- **Lean status:** fully formalized — see the 2026-08-19 section
 
 ## Setup
 
@@ -178,3 +177,49 @@ meromorphic** continuation; isolated integer-order poles are allowed. This stric
 holomorphic hypothesis in the present card.  The source-side value relation
 `prime-arch-moment-pole-residue-pinch-law.md` identifies the corresponding ordinary moment pole,
 its residue `-R` times multiplicity, and the exact nonzero coefficient `A(B^{-2})`.
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+All five formalization targets are met.  `#print axioms` on each capstone reports only
+`propext, Classical.choice, Quot.sound`.
+
+**New reusable infrastructure** (mathlib has neither statement)
+
+| Statement | Lean declaration |
+|---|---|
+| the analytic-continuation predicate | `GaloisForLFunctions.HTGeometry.ContinuesAcross` |
+| the sum of a real power series is analytic on its disk | `analyticOnNhd_realSeriesSum` |
+| the shifted (Taylor) coefficients `b_k = ∑_n C(n,k) a_n r^{n-k}` and their Tonelli laws | `shiftedCoeff`, `summable_shiftedCoeff`, `tsum_shiftedCoeff`, `summable_of_summable_shiftedCoeff`, `hasSum_shiftedCoeff_complex` |
+| **Vivanti--Pringsheim** | `GaloisForLFunctions.HTGeometry.not_continuesAcross_of_nonneg` (`HTGeometry/VivantiPringsheim.lean`) |
+| analytic continuation along a real segment, via a convex tube | `GaloisForLFunctions.HTGeometry.eventuallyEq_of_segment` (`HTGeometry/SegmentAnalyticContinuation.lean`) |
+
+**The card** — `formal/GaloisForLFunctions/RHTower/PrimeArchBernsteinPringsheimCollar.lean`
+
+| Card item | Lean declaration |
+|---|---|
+| the complex susceptibility germ `χ(z) = ∑_n Π_n z^n`, eq. (1) | `primeArchEndpointBernsteinSusceptibility` |
+| eq. (2), the real Abel radius is the complex radius | `summable_susceptibility_of_norm_lt`, `not_summable_susceptibility_of_lt_norm` |
+| `χ` is analytic on the unconditional disk | `analyticOnNhd_susceptibility` |
+| Pringsheim singularity at `R_A` | `not_continuesAcross_susceptibility` |
+| eq. (3), the collar hypothesis | `PrimeArchBernsteinCollarContinuation` |
+| **eq. (4), collar ⟹ RH** | `riemannHypothesis_of_collarContinuation` |
+
+The collar predicate is stated exactly as in the card: one open `U`, one holomorphic `F` on `U`,
+a real base point `z₀ < r₀ = 250000/251001` at which `F` agrees with the germ, and containment of
+the whole positive real collar `[z₀, 1)` in `U`.  The endpoint `t = 1` is not required anywhere,
+and the circularity firewall is preserved: `F` is an arbitrary externally supplied holomorphic
+function, never the susceptibility series itself.
+
+The unconditional narrow-collar interface `250000/251001 < R_A ≤ 1` and `RH ↔ R_A = 1` is the
+pre-existing `existsUnique_primeArchEndpointBernsteinAbelCriticalRadius`.
+
+## Gates
+
+- [x] complex radius identified from the formal real critical-radius interface
+- [x] Pringsheim collar implication proved on paper
+- [x] endpoint `t=1` removed from the hypothesis
+- [x] concrete double-source provider interface identified
+- [x] circularity firewall stated
+- [x] general Pringsheim theorem formalized in Lean
+- [ ] independent prime--Gamma collar continuation  *(declared future research)*
+- [ ] RH  *(declared future research)*

@@ -686,6 +686,7 @@ import GaloisForLFunctions.RHTower.CCMCliffordWeilProduct
 import GaloisForLFunctions.RHTower.CCMCentralBinomialIntegrality
 import GaloisForLFunctions.RHTower.CCMLambertCoefficientIntegrality
 import GaloisForLFunctions.RHTower.CCMLambertRadicalIntegrality
+import GaloisForLFunctions.RHTower.CCMCyclotomicLambertIntegrality
 import GaloisForLFunctions.RHTower.CCMClosedXiConformalKreinLaw
 import GaloisForLFunctions.RHTower.VorosPowerSumClosedForm
 import GaloisForLFunctions.RHTower.XiCentralTailLaw
@@ -10605,3 +10606,5 @@ import GaloisForLFunctions.RHTower.MobiusPrelimitLaplaceIdentity
 import GaloisForLFunctions.RHTower.Sieve.JointLadderDefectDivisor
 import GaloisForLFunctions.RHTower.Sieve.JointSchedule
 import GaloisForLFunctions.RHTower.Sieve.JointSpectralDivisor
+import GaloisForLFunctions.RHTower.PrimeArchBernsteinPringsheimCollar
+import GaloisForLFunctions.RHTower.Sieve.JointNonSpectral

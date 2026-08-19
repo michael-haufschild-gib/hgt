@@ -3,6 +3,7 @@ import Mathlib.RingTheory.RootsOfUnity.Complex
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.GaussSum
 import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
+import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
 # Cyclotomic containment for the literal CCM Lambert radicals
@@ -20,6 +21,7 @@ assumption occurs in this module.
 -/
 
 open scoped BigOperators
+open PowerSeries
 
 namespace RHTower
 
@@ -304,6 +306,145 @@ theorem ccmNatSquareRoot_cyclotomicInteger {n : ℕ} {z : ℂ}
         exact hacyc.mul hbcyc
       · rw [eq_neg_of_add_eq_zero_left h]
         exact (hacyc.mul hbcyc).neg
+
+/-- Every finite harmonic source summand is nonnegative. -/
+theorem ccmFiniteSemilocalHarmonicTerm_nonneg (ell m k : ℕ) :
+    0 ≤ ccmFiniteSemilocalHarmonicTerm ell m k := by
+  unfold ccmFiniteSemilocalHarmonicTerm
+  positivity
+
+/-- The finite CCM harmonic coefficient is nonnegative. -/
+theorem ccmFiniteSemilocalHarmonic_nonneg (ell m : ℕ) :
+    0 ≤ ccmFiniteSemilocalHarmonic ell m := by
+  unfold ccmFiniteSemilocalHarmonic
+  exact Finset.sum_nonneg fun _ _ => ccmFiniteSemilocalHarmonicTerm_nonneg ell m _
+
+/-- The integral source coefficient in CCM equation (51) is nonnegative. -/
+theorem ccmFiniteSemilocalSigma_nonneg (ell m : ℕ) :
+    0 ≤ ccmFiniteSemilocalSigma ell m := by
+  unfold ccmFiniteSemilocalSigma
+  positivity
+
+/-- The CCM equation-(53) radicand is not merely integral: it is a natural
+number, represented here inside `ℚ`. -/
+theorem ccmLambertRadicand_eq_natCast (ell i j : ℕ) :
+    ∃ n : ℕ, ccmLambertRadicand ell i j = (n : ℚ) := by
+  obtain ⟨a, ha⟩ := ccmFiniteSemilocalSigma_integral ell i
+  obtain ⟨b, hb⟩ := ccmFiniteSemilocalSigma_integral ell j
+  have hab0 : 0 ≤ a * b := by
+    have hnonneg : 0 ≤ ccmLambertRadicand ell i j := by
+      unfold ccmLambertRadicand
+      exact mul_nonneg (ccmFiniteSemilocalSigma_nonneg ell i)
+        (ccmFiniteSemilocalSigma_nonneg ell j)
+    rw [ccmLambertRadicand, ha, hb] at hnonneg
+    exact_mod_cast hnonneg
+  refine ⟨(a * b).toNat, ?_⟩
+  calc
+    ccmLambertRadicand ell i j = (a : ℚ) * (b : ℚ) := by
+      rw [ccmLambertRadicand, ha, hb]
+    _ = ((a * b : ℤ) : ℚ) := by norm_num
+    _ = (((a * b).toNat : ℕ) : ℚ) := by
+      exact_mod_cast (Int.toNat_of_nonneg hab0).symm
+
+/-- Exact CCM equation-(55) radical gate: every complex square root occurring
+in a literal equation-(53) coefficient lies in `ℤ^cyc`. -/
+theorem ccmLambertRadical_cyclotomicInteger (ell i j : ℕ) (z : ℂ)
+    (hz : z ^ 2 = (ccmLambertRadicand ell i j : ℂ)) :
+    CCMCyclotomicInteger z := by
+  obtain ⟨n, hn⟩ := ccmLambertRadicand_eq_natCast ell i j
+  have hzn : z ^ 2 = (n : ℂ) := by
+    rw [hz, hn]
+    norm_num
+  exact ccmNatSquareRoot_cyclotomicInteger hzn
+
+/-- A complex number is dyadically cyclotomic-integral when multiplication by
+some power of `2` lands in the concrete ring `ℤ^cyc`. -/
+def CCMDyadicCyclotomicInteger (z : ℂ) : Prop :=
+  ∃ d : ℕ, CCMCyclotomicInteger ((2 : ℂ) ^ d * z)
+
+theorem CCMCyclotomicInteger.two : CCMCyclotomicInteger (2 : ℂ) := by
+  rw [show (2 : ℂ) = 1 + 1 by norm_num]
+  exact CCMCyclotomicInteger.one.add CCMCyclotomicInteger.one
+
+theorem CCMCyclotomicInteger.pow {z : ℂ} (hz : CCMCyclotomicInteger z) (n : ℕ) :
+    CCMCyclotomicInteger (z ^ n) := by
+  induction n with
+  | zero => simpa using CCMCyclotomicInteger.one
+  | succ n ih =>
+      rw [pow_succ]
+      exact ih.mul hz
+
+theorem CCMDyadicCyclotomicInteger.add {x y : ℂ}
+    (hx : CCMDyadicCyclotomicInteger x) (hy : CCMDyadicCyclotomicInteger y) :
+    CCMDyadicCyclotomicInteger (x + y) := by
+  obtain ⟨d, hd⟩ := hx
+  obtain ⟨e, he⟩ := hy
+  refine ⟨d + e, ?_⟩
+  have hleft : CCMCyclotomicInteger ((2 : ℂ) ^ e * ((2 : ℂ) ^ d * x)) :=
+    (CCMCyclotomicInteger.two.pow e).mul hd
+  have hright : CCMCyclotomicInteger ((2 : ℂ) ^ d * ((2 : ℂ) ^ e * y)) :=
+    (CCMCyclotomicInteger.two.pow d).mul he
+  rw [pow_add, mul_add]
+  simpa [mul_assoc, mul_comm, mul_left_comm] using hleft.add hright
+
+theorem ccmDyadicCyclotomicInteger_sum {ι : Type*} (s : Finset ι) (f : ι → ℂ)
+    (hf : ∀ a ∈ s, CCMDyadicCyclotomicInteger (f a)) :
+    CCMDyadicCyclotomicInteger (∑ a ∈ s, f a) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => exact ⟨0, by simpa using CCMCyclotomicInteger.zero⟩
+  | insert a s ha ih =>
+      rw [Finset.sum_insert ha]
+      exact (hf a (Finset.mem_insert_self _ _)).add
+        (ih (fun b hb => hf b (Finset.mem_insert_of_mem hb)))
+
+theorem ccmLambertEntrySummand_dyadicCyclotomic (ell i j : ℕ) (z : ℂ)
+    (hz : CCMCyclotomicInteger z) :
+    CCMDyadicCyclotomicInteger (ccmLambertEntrySummand ell i j z) := by
+  refine ⟨2 * ell + i + j, ?_⟩
+  rw [ccmLambertEntrySummand, mul_div_cancel₀]
+  · exact (((CCMCyclotomicInteger.root CCMRootOfUnity.one).neg.pow _).mul
+      (CCMCyclotomicInteger.two.mul ccmSqrtTwo_cyclotomicInteger)).mul hz
+  · exact pow_ne_zero _ (by norm_num)
+
+/-- Every literal finite divisor coefficient in CCM equation (53) belongs to
+`ℤ^cyc[1/2]`, provided the displayed radical choices are cyclotomic. -/
+theorem ccmLambertEntryCoefficient_dyadicCyclotomic (i j n : ℕ) (rad : ℕ → ℂ)
+    (hrad : ∀ ell, CCMCyclotomicInteger (rad ell)) :
+    CCMDyadicCyclotomicInteger (ccmLambertEntryCoefficient i j n rad) := by
+  unfold ccmLambertEntryCoefficient
+  apply ccmDyadicCyclotomicInteger_sum
+  intro ell _
+  split_ifs with hdiv
+  · exact ccmLambertEntrySummand_dyadicCyclotomic ell i j (rad ell) (hrad ell)
+  · exact ⟨0, by simpa using CCMCyclotomicInteger.zero⟩
+
+/-- The unconditional form of CCM equation (55): no choice of a complex
+square-root branch can escape the cyclotomic ring. -/
+theorem ccmLambertEntryCoefficient_literal_dyadicCyclotomic (i j n : ℕ) (rad : ℕ → ℂ)
+    (hrad : ∀ ell, (rad ell) ^ 2 = (ccmLambertRadicand ell i j : ℂ)) :
+    CCMDyadicCyclotomicInteger (ccmLambertEntryCoefficient i j n rad) := by
+  apply ccmLambertEntryCoefficient_dyadicCyclotomic
+  intro ell
+  exact ccmLambertRadical_cyclotomicInteger ell i j (rad ell) (hrad ell)
+
+/-- The formal coefficient system of the literal CCM equation-(53) Lambert
+series.  This is a formal power series; no convergence assertion is smuggled
+into the arithmetic containment theorem. -/
+def ccmLambertEntrySeries (i j : ℕ) (rad : ℕ → ℂ) : ℂ⟦X⟧ :=
+  PowerSeries.mk fun n => ccmLambertEntryCoefficient i j n rad
+
+theorem ccmLambertEntrySeries_coeff (i j n : ℕ) (rad : ℕ → ℂ) :
+    (ccmLambertEntrySeries i j rad).coeff n = ccmLambertEntryCoefficient i j n rad :=
+  by rw [ccmLambertEntrySeries, coeff_mk]
+
+/-- The full formal Lambert system has coefficientwise containment in
+`ℤ^cyc[1/2]` under its literal square-root equations. -/
+theorem ccmLambertEntrySeries_coeff_literal_dyadicCyclotomic (i j n : ℕ) (rad : ℕ → ℂ)
+    (hrad : ∀ ell, (rad ell) ^ 2 = (ccmLambertRadicand ell i j : ℂ)) :
+    CCMDyadicCyclotomicInteger ((ccmLambertEntrySeries i j rad).coeff n) := by
+  rw [ccmLambertEntrySeries_coeff]
+  exact ccmLambertEntryCoefficient_literal_dyadicCyclotomic i j n rad hrad
 
 end
 

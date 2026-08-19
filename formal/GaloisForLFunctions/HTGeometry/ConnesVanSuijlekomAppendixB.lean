@@ -621,6 +621,42 @@ theorem connesVanSuijlekomB2_extreme_rays_iff
   rw [connesVanSuijlekomB2_isExtremeRay_source_iff_target,
     connesVanSuijlekomB2_target_extreme_iff_psd_extreme_and_halfSpace]
 
+/-- The printed first clause of Proposition B.3 cannot hold as written: the singular positive
+matrix `μ(1,2,1)` has `a > 0` but does not span an extreme ray of `C₊`. -/
+theorem connesVanSuijlekomB3_clause_i_counterexample :
+    (connesVanSuijlekomB2Mu 1 2 1).PosSemidef ∧
+      (connesVanSuijlekomB2Mu 1 2 1) *ᵥ (![1, 0, -1] : Fin 3 → ℝ) = 0 ∧
+        ¬ IsExtremeRay connesVanSuijlekomB2SourceCone ((1, 2, 1) : ℝ × ℝ × ℝ) := by
+  have hpsd : (connesVanSuijlekomB2Mu 1 2 1).PosSemidef := by
+    apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
+    · show (connesVanSuijlekomB2Mu 1 2 1)ᴴ = connesVanSuijlekomB2Mu 1 2 1
+      ext i j
+      fin_cases i <;> fin_cases j <;> simp [connesVanSuijlekomB2Mu,
+        Matrix.conjTranspose_apply]
+    · intro x
+      have hx : x = (![x 0, x 1, x 2] : Fin 3 → ℝ) := by
+        funext i
+        fin_cases i <;> rfl
+      rw [hx]
+      have hsq1 : 0 ≤ (x 0 + x 1 + x 2) ^ 2 := sq_nonneg _
+      have hsq2 : 0 ≤ (x 1) ^ 2 := sq_nonneg _
+      simp [connesVanSuijlekomB2Mu, dotProduct, Matrix.mulVec, Fin.sum_univ_three]
+      nlinarith
+  refine ⟨hpsd, ?_, ?_⟩
+  · ext i
+    fin_cases i <;> simp [connesVanSuijlekomB2Mu, Matrix.mulVec, dotProduct,
+      Fin.sum_univ_three]
+  · intro hExtreme
+    have hTargetExtreme :
+        IsExtremeRay connesVanSuijlekomB2TargetCone
+          (connesVanSuijlekomB2RhoMap ((1, 2, 1) : ℝ × ℝ × ℝ)) :=
+      connesVanSuijlekomB2_isExtremeRay_source_iff_target _ |>.mp hExtreme
+    have hdet : 0 < (connesVanSuijlekomB2RhoMap ((1, 2, 1) : ℝ × ℝ × ℝ)).det := by
+      rw [Matrix.det_fin_two]
+      simp [connesVanSuijlekomB2RhoMap, connesVanSuijlekomB2Rho]
+    exact connesVanSuijlekomB2_target_not_extreme_of_det_pos _ hTargetExtreme.1.1
+      hTargetExtreme.1.2 hdet hTargetExtreme
+
 end
 
 end GaloisForLFunctions.HTGeometry

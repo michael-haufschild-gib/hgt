@@ -17,7 +17,7 @@ conditional reduction, not as formalization of the cited capstone.
 |---|---|---|---|---|
 | 1 | Deninger, [Theorem 2.13](https://arxiv.org/abs/2204.02714) | No functorial real-valued Weil cohomology satisfying property 2.12, using a quaternionic Artin representation with odd central multiplicity. | `[LEAN-PROVED]` `DeningerQ8ActualGroupRepresentation.lean` gives a literal `QuaternionGroup 2 →* Module.End ℂ (ℂ × ℂ)` action, and `DeningerQ8ArtinGaloisRealization.lean` transports it through any field-Galois identification `G ≃ Q8`, proving degree eight and the right-half Euler-product facts. `DeningerArtinCentralParityNoGo.lean` formalizes final parity contradiction conditional on root number and descent inputs. | Formalize arithmetic witness itself: explicit finite Galois quaternion number field and its root number `-1`; then real-representation classification supplying even multiplicity from real descent and property 2.12 instantiation. Current Galois transport is not number-field or root-number realization. |
 | 2 | Connes--van Suijlekom, [Corollary 1.1 and Theorem 1.2](https://arxiv.org/abs/2511.23257) | A rank-`n` PSD Toeplitz `(n+1)`-matrix has a kernel polynomial with all roots on the circle; its distributional continuous simple-even-ground analogue has only real Fourier zeros. | `[LEAN-PROVED]` `CaratheodoryFejerPSDtoAtomicFactorization.lean` gives the reverse same-level finite truncated-Herglotz/Carathéodory--Fejér realization for every normalized Hermitian PSD `T_N`: `exists_atomic_caratheodoryFejer_psd_factorization`. The pre-existing atomic Gram and kernel-root modules provide its factorization-to-root successor. `TruncatedConvolutionOddGroundRealZeros.lean` remains only an odd smooth-kernel analogue. | Extract rank-many/distinct support from the finite atomic realization for the sharp corank-one statement; then build distributions, form closure, lower-bounded self-adjoint realization, and the simple isolated **even** ground required by Theorem 1.2. |
-| 3 | Connes--Consani--Moscovici, [Theorem 6.6 and Lemma 5.5](https://arxiv.org/abs/2403.01247) | Literal one-prime Gamma--Euler measure has finite Jacobi/characteristic data in `Z[1/sqrt 2]` after `q=1/p`; central-binomial integrality controls rank-one harmonic coefficients. | `SoninSemilocalFinitePrimeMeasure.lean` formalizes finite-prime Euler-density/moment data. `CCMCentralBinomialIntegrality.lean` proves Lemma 5.5. `CCMLambertRadicalIntegrality.lean` proves algebraic integrality of each literal radical; `CCMLambertCoefficientIntegrality.lean` packages the full finite equation-(53) coefficient and proves dyadic algebraic integrality. | Formalize sharper cyclotomic containment `sqrt (sigma(ell,i) sigma(ell,j)) ∈ Z^cyc`, intersection argument, and finite characteristic-polynomial `q`-series proof of Theorem 5.6. Algebraic integrality alone does not prove cyclotomic-localized coefficient ring. |
+| 3 | Connes--Consani--Moscovici, [Theorem 6.6 and Lemma 5.5](https://arxiv.org/abs/2403.01247) | Literal one-prime Gamma--Euler measure has finite Jacobi/characteristic data in `Z[1/sqrt 2]` after `q=1/p`; central-binomial integrality controls rank-one harmonic coefficients. | `[LEAN-PROVED]` `CCMCentralBinomialIntegrality.lean` proves Lemma 5.5. `CCMCyclotomicLambertIntegrality.lean` now proves the literal equation-(55) gate: every complex radical with square `sigma(ell,i)*sigma(ell,j)` is a concrete cyclotomic integer, and every literal equation-(53) coefficient belongs to `Z^cyc[1/2]`; it packages the whole coefficient system as a formal Lambert series. | Formalize CCM's intersection argument and the finite characteristic-polynomial/measure argument of Theorem 5.6. Coefficientwise containment alone does not identify `Q(sqrt 2) ∩ Z^cyc[1/2]` or prove the measure theorem. |
 | 4 | Burnol, [Theorems 3.1--3.3](https://arxiv.org/abs/math/0203120) | Multiplicity-indexed zeta evaluator systems have stated aperture-dependent completeness/minimality, closed co-Poisson complement, and critical two-jet correction. | `BurnolCoPoissonCosineClosedZeroAnnihilator.lean` identifies raw and cosine-closed source spaces. `BurnolCoPoissonCosineClosedZeroJetDetection.lean` proves exact closed-space zeroth-jet detection: its Riesz evaluator is orthogonal to literal cosine source iff `zeta(w)=0`. General lower Xi jets are algebraically packaged in `BurnolCoPoissonCosineClosedLowerJetSystem.lean`. | Formalize literal `L_a`, `K_a`, bounded higher-jet family, `Y_a^perp = P_a`, aperture threshold completeness/minimality, and `a=1` two-jet deletion. Closed zeroth-jet detection is not those higher completeness claims. |
 
 ## Execution order
@@ -34,11 +34,11 @@ conditional reduction, not as formalization of the cited capstone.
 
 ## Immediate active claim
 
-`CCMCentralBinomialIntegrality.lean` now proves literal Lemma 5.5(i)--(iii), and
-`CCMLambertRadicalIntegrality.lean` proves the square-root factor algebraically integral.  The
-next CCM target is genuinely cyclotomic: containment in the cyclotomic integer ring and equation
-(53)'s full Lambert coefficient.  In parallel, the Deninger parity spine is closed as described
-above.  Neither result assumes RH, a spectral limit, or a numerical calculation.
+`CCMCyclotomicLambertIntegrality.lean` now closes CCM's literal cyclotomic radical gate and the
+full formal equation-(53) coefficient system.  The next CCM target is the paper's separate
+intersection/finite-characteristic-polynomial argument in Theorem 5.6, not a reproof of the
+already closed coefficientwise containment.  In parallel, the Deninger parity spine is closed as
+described above.  Neither result assumes RH, a spectral limit, or a numerical calculation.
 
 ## 2026-08-19 Q8 and finite Toeplitz advances
 
@@ -193,3 +193,27 @@ Thus no density or unproved higher differentiation is hidden in the result.
 This completes the literal **closed cosine zeroth-jet detection** component.  It does not prove
 the higher-jet closure/complement system of Burnol Theorems 3.1--3.3; the all-order bounded
 `L_a`-jet family and the `L_a/K_a/P_a` aperture theorem remain the exact open core.
+
+## 2026-08-19 exact CCM cyclotomic Lambert gate
+
+`[LEAN-PROVED]` `CCMCyclotomicLambertIntegrality.lean` now formalizes the literal arithmetic
+claim used at CCM equation `(55)`.  `CCMCyclotomicInteger z` is the concrete complex model of
+`Z^cyc`: a finite `Z`-linear combination of roots of unity.  The new theorem
+`ccmLambertRadical_cyclotomicInteger` states that every complex `z` satisfying
+
+```lean
+z ^ 2 = (ccmLambertRadicand ell i j : ℂ)
+```
+
+belongs to that ring.  The proof is unconditional: finite harmonic positivity plus Lemma 5.5
+make the radicand a natural number; a quadratic Gauss sum gives a cyclotomic square root of every
+prime (with the exact `I` correction in the negative-sign case); strong induction through a prime
+divisor handles every natural radicand and both square-root branches.
+
+The theorem `ccmLambertEntrySeries_coeff_literal_dyadicCyclotomic` packages the **entire formal
+equation-(53) Lambert series**, coefficient by coefficient, in `Z^cyc[1/2]`.  This is stronger
+than the earlier algebraic-integrality result and has an axiom audit containing only Lean's
+standard `propext`, `Classical.choice`, and `Quot.sound`.
+
+It does not prove CCM Theorem 5.6: the remaining literal frontier is the intersection
+`Q(sqrt 2) ∩ Z^cyc[1/2]`, followed by the finite characteristic-polynomial and measure argument.

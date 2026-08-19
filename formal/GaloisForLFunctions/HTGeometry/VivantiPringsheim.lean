@@ -290,6 +290,32 @@ theorem ofReal_le_radius {c : ℕ → ℂ} {T : ℝ}
   refine (h (t : ℝ) t.coe_nonneg htT).congr fun n => ?_
   rw [FormalMultilinearSeries.ofScalars_norm]
 
+/-- The sum of a real power series is analytic on its disk of absolute convergence. -/
+theorem analyticOnNhd_realSeriesSum {a : ℕ → ℝ} {R : ℝ} (hR : 0 < R)
+    (hconv : ∀ s : ℝ, 0 ≤ s → s < R → Summable (fun n => |a n| * s ^ n)) :
+    AnalyticOnNhd ℂ (realSeriesSum a) (Metric.ball 0 R) := by
+  set p : FormalMultilinearSeries ℂ ℂ ℂ :=
+    FormalMultilinearSeries.ofScalars ℂ (fun n => (a n : ℂ)) with hp
+  have hpsum : p.sum = realSeriesSum a := by
+    funext z
+    rw [FormalMultilinearSeries.sum, realSeriesSum]
+    exact tsum_congr fun n => by
+      rw [hp, FormalMultilinearSeries.ofScalars_apply_eq]
+      simp [smul_eq_mul]
+  have hprad : ENNReal.ofReal R ≤ p.radius := by
+    refine ofReal_le_radius fun s hs0 hsR => ?_
+    refine (hconv s hs0 hsR).congr fun n => ?_
+    rw [Complex.norm_real, Real.norm_eq_abs]
+  have hpradpos : 0 < p.radius := lt_of_lt_of_le (by simpa using hR) hprad
+  have h1 := (p.hasFPowerSeriesOnBall hpradpos).analyticOnNhd
+  rw [hpsum] at h1
+  intro z hz
+  refine h1 z ?_
+  rw [Metric.mem_eball, edist_zero_right]
+  refine lt_of_lt_of_le ?_ hprad
+  rw [← ofReal_norm_eq_enorm]
+  exact ENNReal.ofReal_lt_ofReal_iff_of_nonneg (norm_nonneg z) |>.mpr (by simpa using hz)
+
 /-- **Vivanti--Pringsheim.**  A power series with nonnegative real coefficients and finite positive
 radius of convergence `R` does not continue analytically across its positive real boundary point. -/
 theorem not_continuesAcross_of_nonneg {a : ℕ → ℝ} (ha : ∀ n, 0 ≤ a n) {R : ℝ} (hR : 0 < R)
