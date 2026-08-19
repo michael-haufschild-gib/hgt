@@ -124,3 +124,34 @@ Stirling asymptotics, no zeta convexity bound and no Phragmén–Lindelöf step 
 Card `prime-screen-bounded-observable-almost-periodicity` promoted to
 `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`.  Stage-2 prime folder:
 27 cards remaining.
+
+## 2026-08-19 — prime-support flag-path Hodge cofactors (card 25)
+
+New Lean modules (all `lake env lean` clean, wired into their umbrellas, axiom-clean):
+
+- `HTGeometry/PathLaplacianRootedCofactor.lean` — the path incidence matrix, its root-normalized
+  partial-sum potential (an explicit integral inverse of the root-reduced incidence matrix, so the
+  reduced determinant is a unit of `ℤ`), the weighted Hodge Laplacian, **every rooted cofactor
+  equals the product of the edge conductances**, the sum over roots, the Dirichlet energy identity,
+  the constant radical, and the diagonal gauge that conjugates every twisted flag-path differential
+  to the untwisted one (phase blindness of a chamber).
+- `HTGeometry/CycleTwistedTorsion.lean` — the twisted cycle differential on `ZMod (n+1)`, the
+  rigidity lemma that only the identity and the cyclic shift can contribute to the determinant,
+  the torsion formula `det d_u = (-1)^{n+1} ∏w (Hol − 1)`, the Hodge determinant
+  `∏ c · ‖1 − Hol‖²`, and the acyclicity criterion `det = 0 ↔ Hol = 1`.
+- `RHTower/PrimeSupportFlagPathHodge.lean` — the marked deformation `M_n(t) = n(1−t)^{n−1}` as the
+  sum of rooted cofactors, its order-`(n−1)` boundary derivative `n(−1)^{n−1}(n−1)!`, the positive
+  prime monomial holonomy `exp(−i z log N_m)` with `N_m > 1` and its centred-critical-line
+  localization, and the finite squarefree Euler product as source-apartment torsion together with
+  its half-plane acyclicity.
+
+Technique notes: the matrix-tree theorem is not needed — an explicit integer integrator gives the
+unit determinant; `Fin n` has no `NatCast`/`CommRing` in this toolchain, so the cyclic index model
+is `ZMod (n+1)` with the sign of the shift transferred from `sign_finRotate` through
+`Equiv.Perm.sign_permCongr`; `(-1 : ℤˣ) ^ n` uses `Int.instUnitsPow`, which is defeq but not
+syntactically the monoid power, so `Units.val_pow_eq_pow_val` must be applied by `exact`, not `rw`.
+
+Card `prime-support-ht-horizon-hodge-cofactor-law` promoted to
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`; its three remaining
+unchecked gates are the open Quillen–Ward conjecture (14), explicitly not a proved theorem.
+Stage-2 prime folder: 26 cards remaining.

@@ -1,7 +1,7 @@
 # Prime-support boundary jets are rooted HT-horizon Hodge cofactors
 
 - **ID:** `prime-support-ht-horizon-hodge-cofactor-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / HT HORIZON HODGE BRIDGE
 - **Scientific status:** `[PROVED HERE] [CLASSICAL MATRIX-TREE PARENT] [NOT AN RH PROOF]`
 - **Parents:**
@@ -191,7 +191,62 @@ Hodge-corona-to-Hardy identification.
 - [x] apartment-cycle torsion and Hodge determinant computed
 - [x] positive prime monomial holonomy localized to the centered critical line
 - [x] finite squarefree Euler product realized as source apartment torsion
-- [ ] construct the Gamma-completed cofinal determinant line
+- [x] every proved statement of this card formalized unconditionally in Lean 4
+- [ ] construct the Gamma-completed cofinal determinant line (open research; not a proved theorem)
 - [x] finite determinant-line/Fisher curvature identity proved in the successor card
-- [ ] identify its harmonic corona class with `ell_E` in the Hardy metric
-- [ ] prove `(14)` and RH
+- [ ] identify its harmonic corona class with `ell_E` in the Hardy metric (open research)
+- [ ] prove `(14)` and RH (open research)
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+Every `[PROVED HERE]` statement of this card is now formalized unconditionally; the trailing
+`[CONJECTURE — PRIME-APARTMENT QUILLEN–WARD DESCENT]` and its two gates are open research and are
+deliberately not part of the formal content.  All declarations are axiom-clean
+(`propext, Classical.choice, Quot.sound`).
+
+**The rooted flag-path Hodge cofactor** —
+`formal/GaloisForLFunctions/HTGeometry/PathLaplacianRootedCofactor.lean`
+
+| Card item | Lean declaration |
+|---|---|
+| the flag-path difference operator `d`, `(d f) j = f_{j+1} - f_j` | `pathDifferential` |
+| root-normalized potential (the explicit integrator inverting `d`) | `pathPotential`, `reducedPathIntegrator` |
+| the weighted Hodge Laplacian `L_n(t) = a d^* d`, eq. (3) | `pathLaplacian` |
+| the rooted (row/column deleted) Laplacian `L_n(t)^{(r)}` | `rootedPathLaplacian` |
+| **eq. (4): `det L_n(t)^{(r)} = (1-t)^{n-1}` for every root** | `det_rootedPathLaplacian` |
+| **eq. (5): the sum of the rooted cofactors is the marked deformation** | `sum_det_rootedPathLaplacian` |
+| eq. (6): the Dirichlet energy identity | `star_dotProduct_pathLaplacian_mulVec` |
+| radical of the form is exactly the constant line | `pathLaplacian_form_eq_zero_iff`, `pathDifferential_mulVec_eq_zero_iff` |
+| eq. (8): the twisted differential `(d_u f) j = f_{j+1} - u_j f_j` | `twistedPathDifferential` |
+| the recursive vertex gauge `g_1 = 1`, `g_{j+1} = u_j g_j` | `pathGauge`, `pathGauge_succ` |
+| **the gauge conjugates the twisted differential to the untwisted one** | `twistedPathDifferential_mul_diagonal`, `reducedTwistedPathDifferential_mul_diagonal` |
+| the exact gauge factor of a twisted rooted determinant | `det_reducedTwistedPathDifferential` |
+| **phase blindness: unimodular transports leave every rooted cofactor unchanged** | `det_rootedTwistedPathLaplacian_of_unimodular` |
+
+The determinant is computed without the matrix-tree theorem: partial-sum potentials give an
+explicit integral inverse of the root-reduced incidence matrix, so its determinant is a unit of
+`ℤ`, hence its square is `1`, and `L^{(r)} = a · D_rᵀ D_r` gives `a^{n}` directly.
+
+**The minimal phase-bearing successor** —
+`formal/GaloisForLFunctions/HTGeometry/CycleTwistedTorsion.lean`
+
+| Card item | Lean declaration |
+|---|---|
+| eq. (9): the twisted cycle differential and its holonomy | `cycleDifferential`, `cycleHolonomy` |
+| only the identity and the cyclic shift contribute | `perm_eq_subRight_of_forall`, `sign_subRight_one_cycleIndex` |
+| **eq. (10): `det d_u = unit · ∏ w · (Hol − 1)`** | `det_cycleDifferential` |
+| **eq. (11): `det(d_u^* d_u) = ∏ c · |1 − Hol|²`** | `det_conjTranspose_mul_cycleDifferential`, `det_cycleHodge_of_conductances` |
+| twisted cohomology is nonzero exactly at holonomy one | `det_cycleDifferential_eq_zero_iff` |
+
+**The prime-support specialization** —
+`formal/GaloisForLFunctions/RHTower/PrimeSupportFlagPathHodge.lean`
+
+| Card item | Lean declaration |
+|---|---|
+| the marked deformation `M_n(t) = n(1-t)^{n-1}` | `primeSupportDeformation`, `primeSupportDeformationPoly` |
+| **eqs. (4)–(5) in prime-support form** | `primeSupportDeformation_eq_sum_det_rootedPathLaplacian`, `det_rootedPathLaplacian_flag` |
+| **eq. (7): `M_n^{(n-1)}(1) = n(-1)^{n-1}(n-1)!`** | `eval_iterate_derivative_primeSupportDeformationPoly` |
+| eq. (12): `Hol_m(z) = exp(-i z log N_m)` for a positive packet | `prod_primeCharacter_pow_eq_primeMonomialHolonomy`, `one_lt_prod_prime_pow` |
+| **eq. (12): a positive prime monomial holonomy is trivial only on the centred critical line** | `im_eq_zero_of_primeMonomialHolonomy_eq_one`, `im_eq_zero_of_det_cycleDifferential_eq_zero` |
+| **eq. (13): the finite squarefree Euler product is the source-apartment torsion** | `det_cycleDifferential_squarefree_factor`, `prod_det_cycleDifferential_squarefree` |
+| finite acyclicity in the open right half plane | `det_cycleDifferential_squarefree_ne_zero` |

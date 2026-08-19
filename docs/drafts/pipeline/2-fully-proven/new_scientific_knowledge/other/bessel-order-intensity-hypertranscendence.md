@@ -1226,3 +1226,68 @@ the additive group forces a nonzero linear differential operator to kill the coo
 (`CassidyAdditiveEvaluated`), and the multiplicative relation subgroups are the preimages of the
 additive ones under the logarithmic derivative (`LogDerivRelationSubgroup`).  What is missing is the
 converse on the multiplicative side and the `GL_2` case.
+
+## Lean progress — reducedness of the Galois coordinate algebra, unconditionally
+
+The Galois correspondence needed the coordinate algebra of the difference Galois group to be
+reduced, so that its points separate.  In the literature that is Cartier's theorem (a commutative
+Hopf algebra over a characteristic-zero field is reduced).  It is now obtained instead from a
+general algebra theorem, proved here because mathlib does not have it:
+
+`GaloisForLFunctions.HTGeometry.TensorProductAlgClosedReduced`
+
+```text
+exists_basis_tmul_repr                      every element of `M ⊗_k N` is a finite sum of tensors
+                                            against basis vectors of `N`
+isReduced_tensorProduct_of_finiteType       over an algebraically closed field, reduced finitely
+                                            generated algebras have reduced tensor product
+isReduced_tensorProduct_of_isAlgClosed      the same without finite generation
+```
+
+`GaloisForLFunctions.HTGeometry.TensorProductCharZeroReduced`
+
+```text
+isReduced_tensorProduct_field_of_isSeparable   a finite separable field extension stays reduced
+                                               after any field base change
+isReduced_tensorProduct_of_isSeparable         and after any reduced base change
+isReduced_tensorProduct_algebraicClosure       an algebraic closure stays reduced after any reduced
+                                               base change, in characteristic zero
+isReduced_tensorProduct_of_charZero            **in characteristic zero the tensor product of two
+                                               reduced algebras is reduced**
+```
+
+The last is the statement that a reduced algebra over a characteristic-zero field is geometrically
+reduced.  The proof runs through the algebraic closure: a finitely generated subalgebra of the
+algebraic closure is a finite separable field extension; a finite separable extension keeps a
+reduced base reduced (expand a nilpotent tensor against a basis and specialise at each prime of the
+base, where unramifiedness applies); over the algebraic closure itself points separate, which
+settles the reduced-times-reduced case there; and the original tensor product embeds into that base
+change.
+
+`GaloisForLFunctions.HTGeometry.SigmaConstantsReduced` applies it:
+
+```text
+isReduced_tensorSquare_of_isSigmaSimple        `R ⊗_K R` is reduced for `σ`-simple `R` over a
+                                               characteristic-zero field
+isReduced_subalgebra_tensorSquare
+eq_zero_of_forall_algHom_eq_zero_tensorSquare  **points of the Galois-group coordinate algebra
+                                               separate**
+```
+
+All declarations report `#print axioms` = `[propext, Classical.choice, Quot.sound]`.
+
+Remaining on this card: the `G_m` converse and the `GL_2` case of Cassidy's classification, and
+Dreyfus's normal form with its analytic realization.
+
+## Lean progress — the characteristic-zero primitive obstruction
+
+`GaloisForLFunctions.HTGeometry.PrimitiveNilpotentCharZero`
+
+```text
+tmul_self_ne_zero                        over a field, a nonzero vector has nonzero self-tensor
+eq_zero_of_isNilpotent_of_primitive      **a nilpotent primitive element of a characteristic-zero
+                                         algebra vanishes**
+```
+
+Multiplying the binomial expansion of `Δ (x ^ n)` by `x ^ (n-2) ⊗ 1` kills every term except the
+first-order one, which is `n · (x^{n-1} ⊗ x^{n-1})`.

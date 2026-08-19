@@ -106,3 +106,65 @@ Item 1 needs `|σ| < 1` from the Herglotz/Cayley construction (corpus `CayleySch
 Item 2 needs the parent Herglotz full-translation freeness (corpus
 `HerglotzFullTranslationFreeness.lean`) transported through the rational substitution `φ`, the
 Cayley map and `exp`.
+
+### C2 progress (2026-08-19, session 1 continued) — the analytic `H²(D)` layer is built
+Six new modules, all wired into `GaloisForLFunctions.HTGeometry`, oleans built, axioms clean:
+
+- `HTGeometry/HardyDiskGutzmer.lean` — `hasSum_circleAverage_normSq`: **Gutzmer's identity**
+  `(2π)⁻¹∫‖f(re^{iθ})‖² dθ = ∑ ‖aₖ‖² r^{2k}` for any power series on a ball, via uniform convergence
+  of the partial sums (builds on the corpus's `circleAverage_normSq_partialSum`).
+- `HTGeometry/HardyDiskSpace.lean` — `diskCoeff` (canonical Taylor coefficients),
+  `coeff_eq_diskCoeff`, `hasSum_circleAverage_normSq_diskCoeffOn`,
+  `summable_diskCoeff_sq_of_circleAverage_le` (the `H²` criterion, from a left neighbourhood of
+  `r = 1`); the coefficient model `HardyDisk = lp (fun _ : ℕ => ℂ) 2`, `hardyFun`, `hardySeries`,
+  `diskCoeff_hardyFun`, `differentiableOn_hardyFun`, `circleAverage_hardyFun_le`.
+- `HTGeometry/HardyDiskMultiplier.lean` — `diskCoeff_congr` (locality), `hardyDisk_ext`,
+  `DiskMultiplier`, `circleAverage_mul_le`, `hardyMul` (**the bounded multiplication operator**,
+  norm ≤ sup bound), `hardyFun_hardyMul`, `DiskMultiplier.mul/one`, `diskShift`, `hardyMul_mul`,
+  `hardyMul_one`, `hardyMul_comm`, `hardyMul_congr`.
+- `HTGeometry/HardyDiskCyclic.lean` — `hardyOne`, `hardyOf`, `polyMultiples`, `cyclicSubspace`,
+  `shift_pow_hardyOne`, `cyclicSubspace_hardyOne = ⊤`, `hardyMul_surjective`,
+  `topologicalClosure_map_eq_top`, `polyMultiples_map`, and
+  **`cyclicSubspace_hardyOf_eq_top`: an invertible bounded analytic function is a cyclic vector**
+  (this is `[O] = H²(D)`; no Beurling needed).
+- `HTGeometry/HardyDiskBlaschke.lean` — `blaschkeFactor`, `blaschkeProd`, `FiniteBlaschke`
+  (analytic on a ball of radius `2 − bound > 1`), `norm_fn_le_one` (via the corpus's
+  `finite_blaschke_schur`), `norm_fn_eq_one` (unimodular on the circle), `toMultiplier`,
+  `polyExtend`, and **`norm_hardyMul_blaschke`: multiplication by a finite Blaschke product is an
+  isometry of `H²(D)`** (Gutzmer at `r = 1` on polynomials, then continuity).
+- `HTGeometry/HardyDiskModelSpace.lean` — `hardyKernel` (Szegő kernel) with the reproducing
+  property, `singleBlaschke`, **`range_hardyMul_singleBlaschke`: `range M_{b_a} = (ℂ ∙ k_a)ᗮ`**
+  (the hard `⊇` direction via `dslope` + the `H²` criterion), and
+  **`finrank_orthogonal_range_singleBlaschke = 1`**, plus
+  **`cyclicSubspace_blaschke_mul`: `[B·O] = B·H²(D)`** for a cyclic `O`.
+
+REMAINING for C2:
+1. `dim (H² ⊖ B·H²) = deg B` for `deg > 1` — induction peeling one Blaschke factor, needing the
+   orthogonal splitting `(T V)ᗮ = (range T)ᗮ ⊕ T(Vᗮ)` for an isometry `T`.
+2. Item 1 of the card: the concrete carrier `O = exp(σ)` with `|σ| < 1` from the Herglotz/Cayley
+   construction (`CayleySchur.lean`), giving `O, O⁻¹ ∈ H^∞` and hence a `DiskMultiplier` pair.
+3. Item 2: differential algebraic independence of `{O ∘ τ_t}` — transport of the corpus's
+   `HerglotzFullTranslationFreeness` through the rational substitution `φ`, the Cayley map and
+   `exp`.
+4. Item 3: instantiate `differentialAdjoin_range_pow_baseGauge_eq` (already proved, in
+   `KreinIndexEscapeStratification.lean`) for the disk translates.
+
+### C2 statements 1 and 4 COMPLETE (2026-08-19)
+`HardyDiskModelDimension.lean` (orthogonal splitting for an isometry, `finrank_orthogonal_map_add`,
+`finrank_orthogonal_range_blaschkeOf : dim (H² ⊖ B·H²) = deg B`) and
+`HardyCyclicityGaugeBlindness.lean` (`expMultiplier`, `cyclicSubspace_expCarrier`,
+capstone `hardyCyclicityDefect`) close statements 1 and 4 = equations (16) and (7).
+All wired, oleans built, axioms clean.
+
+REMAINING for C2: statements 2 and 3.
+- The corpus's Herglotz freeness is
+  `herglotz_fullTranslationCauchyFamilyFreeness_denseResidual` in
+  `HTGeometry/HerglotzFullTranslationFreeness.lean`, stated in the **analytic**
+  `FamilyDifferentiallyAlgebraicOn` language on `commonUpperTranslationDomain` — the convenient
+  form for transport.
+- Statement 2 needs three transport lemmas: (a) rational substitution `z = φ(w)`;
+  (b) post-composition with the Cayley map `c` (rational invertible); (c) `exp` (via the
+  logarithmic derivative and a differential-transcendence-degree count).
+- Statement 3 then follows from `differentialAdjoin_range_pow_baseGauge_eq` once the orbit and the
+  rational gauge `B ∘ τ_t` are realized in a differential field (do it in the `z`-coordinate, where
+  `τ_t` is `z ↦ z + t` and `B ∘ τ_t` is a rational function of `z`).

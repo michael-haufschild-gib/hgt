@@ -10613,6 +10613,7 @@ import GaloisForLFunctions.RHTower.Sieve.JointBudgetMaster
 import GaloisForLFunctions.RHTower.SuzukiV2SphericalConvergence
 import GaloisForLFunctions.RHTower.SuzukiTaV2ProjectiveCharacteristic
 import GaloisForLFunctions.RHTower.SuzukiTaCovarianceReflection
+import GaloisForLFunctions.RHTower.SuzukiTaCoalescingCovarianceTangent
 import GaloisForLFunctions.RHTower.MobiusRHDecayMoment
 import GaloisForLFunctions.RHTower.Sieve.Section4BlockMaster
 import GaloisForLFunctions.RHTower.Sieve.Section4Master
@@ -10641,3 +10642,5 @@ import GaloisForLFunctions.RHTower.PrimeScreenAlmostPeriodicNoGo
 import GaloisForLFunctions.RHTower.Sieve.JointLongRange
 import GaloisForLFunctions.RHTower.XiReciprocalTranslationSeamNormLaw
 import GaloisForLFunctions.RHTower.XiRadialJensenSchurCapacity
+import GaloisForLFunctions.RHTower.PrimeSupportFlagPathHodge
+import GaloisForLFunctions.RHTower.XiGlobalMeixnerShapeLandau

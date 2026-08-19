@@ -701,3 +701,28 @@ consumes, and it matches `jetOperator`.
 Classification side now: additive case owned and evaluated; multiplicative relation subgroups
 identified as preimages under `logDeriv`.  Missing: the multiplicative converse and `GL_2`.
 Plus reducedness (Cartier) and Dreyfus's normal form with its analytic realization.
+
+
+## Card 1 — reducedness closed without Cartier
+
+The route through Cartier's theorem is abandoned; it is not needed.  What the Galois correspondence
+wants is `IsReduced` for a subalgebra of `R ⊗_K R`, and that follows from a general theorem now
+proved in the tree:
+
+* `TensorProductAlgClosedReduced` — over an algebraically closed field, reduced ⊗ reduced is
+  reduced (points separate, after expanding against a basis of the second factor);
+* `TensorProductCharZeroReduced` — `isReduced_tensorProduct_of_charZero`: in characteristic zero,
+  reduced ⊗ reduced is reduced.  Route: finitely generated subalgebras of the algebraic closure are
+  finite separable field extensions; finite separable extensions keep a reduced base reduced via
+  `Algebra.FormallyUnramified.isReduced_of_field` at each prime; then descend.
+  No transcendence basis and no separably-generated theory is needed — that plan was longer than
+  necessary.
+* `SigmaConstantsReduced` — the application: `R ⊗_K R` reduced for `σ`-simple `R`, hence every
+  subalgebra reduced, hence points of the Galois coordinate algebra separate.
+
+Also landed: `PrimitiveNilpotentCharZero` (a nilpotent primitive element of a characteristic-zero
+algebra vanishes) — the Cartier-style obstruction, kept because it is the natural statement about
+primitives and is reusable.
+
+Remaining on card 1: the `G_m` converse, the `GL_2` case of Cassidy, Dreyfus's normal form and its
+analytic realization.

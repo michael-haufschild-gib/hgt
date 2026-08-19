@@ -231,3 +231,55 @@ and stage 3 remains unavailable until the complete unconditional statement is fo
 - 2026-07-11 -- Downgraded after the novelty attack: the Hardy defect mechanism is classical
   Beurling/inner--outer theory, so the exact HT coupling is a route-exclusion bridge rather than new
   scientific knowledge.
+
+## Lean status update (2026-08-19) — statements 1 and 4 are formalized
+
+The "Lean status" section above is superseded.  An analytic `H²(D)` layer has been built from
+scratch and statements `1` and `4` (equations `(16)` and `(7)`) are now unconditional Lean
+theorems.  All new declarations `#print axioms` to `propext, Classical.choice, Quot.sound` only.
+Modules (all in `formal/GaloisForLFunctions/HTGeometry/`, wired into the `HTGeometry` umbrella):
+
+- `HardyDiskGutzmer.lean` — `hasSum_circleAverage_normSq`: **Gutzmer's identity** on every ball,
+  by passing to the limit in the corpus's `circleAverage_normSq_partialSum`.
+- `HardyDiskSpace.lean` — `diskCoeff` (canonical Taylor coefficients at `0`),
+  `coeff_eq_diskCoeff`, `hasSum_circleAverage_normSq_diskCoeffOn`, the `H²` criterion
+  `summable_diskCoeff_sq_of_circleAverage_le`, the coefficient model
+  `HardyDisk = lp (fun _ : ℕ => ℂ) 2`, `hardyFun`, `hardySeries`, `diskCoeff_hardyFun`,
+  `differentiableOn_hardyFun`, `circleAverage_hardyFun_le`.
+- `HardyDiskMultiplier.lean` — `diskCoeff_congr`, `hardyDisk_ext`, `DiskMultiplier`,
+  `circleAverage_mul_le`, and `hardyMul`: **multiplication by a bounded analytic function is a
+  bounded operator on `H²(D)` of norm at most the sup bound**, with `hardyFun_hardyMul`,
+  `hardyMul_mul`, `hardyMul_one`, `hardyMul_comm`, `hardyMul_congr`.
+- `HardyDiskCyclic.lean` — `hardyOne`, `hardyOf`, `polyMultiples`, `cyclicSubspace`,
+  `cyclicSubspace_hardyOne = ⊤`, `hardyMul_surjective`, `polyMultiples_map`, and
+  **`cyclicSubspace_hardyOf_eq_top`: an invertible bounded analytic function is cyclic.**
+  (No Beurling factorization is needed: multiplication by an invertible `H^∞` function is a
+  topological isomorphism of `H²`, so it carries a dense set to a dense set.)
+- `HardyDiskBlaschke.lean` — `blaschkeFactor`, `blaschkeProd`, `FiniteBlaschke` (analytic on a ball
+  of radius `2 − bound > 1`), boundedness via the corpus's `finite_blaschke_schur`,
+  `norm_fn_eq_one` (unimodular on the circle), and **`norm_hardyMul_blaschke`: multiplication by a
+  finite Blaschke product is an isometry of `H²(D)`** (Gutzmer at `r = 1` on polynomials, extended
+  by continuity).
+- `HardyDiskModelSpace.lean` — the Szegő kernel `hardyKernel` with its reproducing property,
+  **`range_hardyMul_singleBlaschke : range M_{b_a} = (ℂ ∙ k_a)ᗮ`** (the hard inclusion via
+  `dslope` and the `H²` criterion), `finrank_orthogonal_range_singleBlaschke = 1`, and
+  **`cyclicSubspace_blaschke_mul`: `[B·O] = B·H²(D)` for cyclic `O`** — equation `(16)`.
+- `HardyDiskModelDimension.lean` — `orthogonal_map_eq_sup` (the orthogonal splitting
+  `(T V)ᗮ = (range T)ᗮ ⊕ T(Vᗮ)` for an isometry `T`), `finrank_orthogonal_map_add`, and
+  **`finrank_orthogonal_range_blaschkeOf : dim (H² ⊖ B·H²) = deg B`** — equation `(7)`, with
+  multiplicities, by peeling one Blaschke factor at a time.
+- `HardyCyclicityGaugeBlindness.lean` — `expMultiplier` (the carrier `O = exp σ` for `‖σ‖ < 1`,
+  with `O⁻¹ = exp(−σ)` also bounded), `cyclicSubspace_expCarrier` (statement `1`), and the
+  capstone **`hardyCyclicityDefect`**: `[O] = H²(D)`, `[B·O] = B·H²(D)`, and
+  `dim (H²(D) ⊖ [B·O]) = k` — statement `4` in full.
+
+REMAINING for 2 -> 3:
+- statement `2`, differential algebraic independence of the parabolic orbit `{O ∘ τ_t}`: transport
+  of the corpus's `HerglotzFullTranslationFreeness` through the rational substitution `φ`, the
+  Cayley map, and `exp`;
+- statement `3`, `P_N(G_B) = P_N(O)` at every power level: the general theorem
+  `differentialAdjoin_range_pow_baseGauge_eq` is already proved (in
+  `HTGeometry/KreinIndexEscapeStratification.lean`); what remains is the concrete realization of
+  the disk translates and the rational gauge `B ∘ τ_t` inside the corpus's differential-field
+  framework (via the coordinate `z = φ(w)`, where `τ_t` becomes `z ↦ z + t` and `B ∘ τ_t` becomes
+  a rational function of `z`).

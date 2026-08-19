@@ -9,7 +9,7 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 |---|---|---|---|
 | 1 | xi-determinant-logarithmic-singular-value-law | open | |
 | 2 | xi-gamma-shape-completely-monotone-rh | open | |
-| 3 | xi-global-meixner-shape-landau-rh | open | |
+| 3 | xi-global-meixner-shape-landau-rh | Lean done | HTGeometry/GeneralDirichletLandau, RHTower/XiGlobalMeixnerShapeLandau |
 | 4 | xi-hedenmalm-local-algebra-rank-census | Lean done | HTGeometry/PolynomialQuotientMultiplicationRank, HTGeometry/GcdDerivativeDistinctRoots, HTGeometry/HermiteBiehlerPairRankCensus, HTGeometry/FiniteMomentDivisorReconstruction, RHTower/XiHedenmalmLocalAlgebraRankCensus |
 | 5 | xi-orientation-euler-safe-paired-cauchy-completeness | open | |
 | 6 | xi-outer-euler-modulus-first-prime-seam-antialignment | Lean done | RHTower/XiOuterEulerModulusPrimeSeamAntialignment |

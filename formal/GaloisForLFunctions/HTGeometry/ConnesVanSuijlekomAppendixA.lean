@@ -14,6 +14,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 open MeasureTheory intervalIntegral
+open scoped Convolution
 
 /-- The `b`-independent matrix `μ` of Appendix A, Lemma A.1. -/
 def connesVanSuijlekomA1Mu (n m : ℤ) : ℝ :=
@@ -621,6 +622,225 @@ theorem connesVanSuijlekomA2_alpha_sin_coefficient (n : ℤ) :
     rw [connesVanSuijlekomA2Alpha]
     ring, intervalIntegral.integral_const_mul, hraw]
   ring
+
+/-- The complex Fourier coefficient of the periodic kernel is exactly the
+diagonal symbol appearing in Appendix A.2. -/
+theorem connesVanSuijlekomA2_alpha_complex_coefficient (n : ℤ) :
+    (∫ x in (0 : ℝ)..1,
+      (connesVanSuijlekomA2Alpha x : ℂ) *
+        Complex.exp (-2 * Real.pi * Complex.I * (n : ℂ) * (x : ℂ))) =
+      (connesVanSuijlekomA2Diagonal n : ℂ) := by
+  have hcos := connesVanSuijlekomA2_alpha_cos_coefficient n
+  have hsin := connesVanSuijlekomA2_alpha_sin_coefficient n
+  rw [show (fun x : ℝ =>
+      (connesVanSuijlekomA2Alpha x : ℂ) *
+        Complex.exp (-2 * Real.pi * Complex.I * (n : ℂ) * (x : ℂ))) =
+      fun x => (connesVanSuijlekomA2Alpha x : ℂ) *
+        (Real.cos (2 * Real.pi * (n : ℝ) * x) - Complex.I * Real.sin (2 * Real.pi * (n : ℝ) * x)) by
+    funext x
+    rw [show (-2 * Real.pi * Complex.I * (n : ℂ) * (x : ℂ)) =
+      (-(2 * Real.pi * (n : ℝ) * x) : ℂ) * Complex.I by
+      push_cast
+      ring, Complex.exp_mul_I]
+    rw [Complex.cos_neg, Complex.sin_neg]
+    rw [show (2 * (Real.pi : ℂ) * ((n : ℝ) : ℂ) * (x : ℂ)) =
+      ((2 * Real.pi * (n : ℝ) * x : ℝ) : ℂ) by
+      norm_cast]
+    rw [Complex.ofReal_cos, Complex.ofReal_sin]
+    ring]
+  rw [show (fun x : ℝ => (connesVanSuijlekomA2Alpha x : ℂ) *
+      (Real.cos (2 * Real.pi * (n : ℝ) * x) - Complex.I * Real.sin (2 * Real.pi * (n : ℝ) * x))) =
+      fun x => (connesVanSuijlekomA2Alpha x * Real.cos (2 * Real.pi * (n : ℝ) * x) : ℂ) -
+        Complex.I * (connesVanSuijlekomA2Alpha x * Real.sin (2 * Real.pi * (n : ℝ) * x) : ℂ) by
+    funext x
+    push_cast
+    ring]
+  have hcos' : (∫ x in (0 : ℝ)..1,
+      (connesVanSuijlekomA2Alpha x : ℂ) *
+        (Real.cos (2 * Real.pi * (n : ℝ) * x) : ℂ)) =
+      (connesVanSuijlekomA2Diagonal n : ℂ) := by
+    rw [show (fun x : ℝ => (connesVanSuijlekomA2Alpha x : ℂ) *
+        (Real.cos (2 * Real.pi * (n : ℝ) * x) : ℂ)) =
+        fun x => (connesVanSuijlekomA2Alpha x * Real.cos (2 * Real.pi * (n : ℝ) * x) : ℂ) by
+      funext x
+      push_cast
+      ring]
+    calc
+      _ = ∫ x in (0 : ℝ)..1,
+          ((connesVanSuijlekomA2Alpha x * Real.cos (2 * Real.pi * (n : ℝ) * x) : ℝ) : ℂ) := by
+            apply intervalIntegral.integral_congr
+            intro x _
+            push_cast
+            ring
+      _ = _ := by rw [intervalIntegral.integral_ofReal, hcos]
+  have hsin' : (∫ x in (0 : ℝ)..1,
+      (connesVanSuijlekomA2Alpha x : ℂ) *
+        (Real.sin (2 * Real.pi * (n : ℝ) * x) : ℂ)) = 0 := by
+    rw [show (fun x : ℝ => (connesVanSuijlekomA2Alpha x : ℂ) *
+        (Real.sin (2 * Real.pi * (n : ℝ) * x) : ℂ)) =
+        fun x => (connesVanSuijlekomA2Alpha x * Real.sin (2 * Real.pi * (n : ℝ) * x) : ℂ) by
+      funext x
+      push_cast
+      ring]
+    calc
+      _ = ∫ x in (0 : ℝ)..1,
+          ((connesVanSuijlekomA2Alpha x * Real.sin (2 * Real.pi * (n : ℝ) * x) : ℝ) : ℂ) := by
+            apply intervalIntegral.integral_congr
+            intro x _
+            push_cast
+            ring
+      _ = _ := by rw [intervalIntegral.integral_ofReal, hsin]; simp
+  rw [intervalIntegral.integral_sub]
+  · rw [intervalIntegral.integral_const_mul, hcos', hsin']
+    simp
+  all_goals
+    apply Continuous.intervalIntegrable
+    simp [connesVanSuijlekomA2Alpha]
+    fun_prop
+
+/-- The source kernel, periodized on the additive circle of length one. -/
+def connesVanSuijlekomA2AlphaCircle : AddCircle (1 : ℝ) → ℂ :=
+  AddCircle.liftIoc 1 0 fun x => (connesVanSuijlekomA2Alpha x : ℂ)
+
+/-- The Fourier coefficients of the periodized source kernel are the entries of `D`. -/
+theorem connesVanSuijlekomA2_alphaCircle_fourierCoeff (n : ℤ) :
+    fourierCoeff connesVanSuijlekomA2AlphaCircle n =
+      (connesVanSuijlekomA2Diagonal n : ℂ) := by
+  rw [connesVanSuijlekomA2AlphaCircle, fourierCoeff_liftIoc_eq,
+    fourierCoeffOn_eq_integral]
+  norm_num
+  rw [show (fun x : ℝ => (starRingEnd ℂ)
+      (Complex.exp (2 * Real.pi * Complex.I * (n : ℂ) * (x : ℂ))) *
+      (connesVanSuijlekomA2Alpha x : ℂ)) =
+      fun x => (connesVanSuijlekomA2Alpha x : ℂ) *
+        Complex.exp (-2 * Real.pi * Complex.I * (n : ℂ) * (x : ℂ)) by
+    funext x
+    rw [← Complex.exp_conj]
+    simp only [map_mul, Complex.conj_ofReal, Complex.conj_I]
+    have htwo : (starRingEnd ℂ) (2 : ℂ) = 2 := by
+      rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.conj_ofReal]
+    have hn : (starRingEnd ℂ) (n : ℂ) = n := by
+      rw [show (n : ℂ) = ((n : ℝ) : ℂ) by norm_cast, Complex.conj_ofReal]
+    rw [htwo, hn]
+    ring_nf]
+  exact connesVanSuijlekomA2_alpha_complex_coefficient n
+
+/-- Haar convolution by the periodized source kernel acts on every Fourier mode by the
+corresponding source diagonal entry. -/
+theorem connesVanSuijlekomA2_alphaCircle_convolution_fourier (n : ℤ) :
+    connesVanSuijlekomA2AlphaCircle ⋆[ContinuousLinearMap.mul ℂ ℂ,
+      AddCircle.haarAddCircle] fourier n =
+      fun x => (connesVanSuijlekomA2Diagonal n : ℂ) * fourier n x := by
+  funext x
+  have harg (u v : AddCircle (1 : ℝ)) :
+      fourier n (u + v) = fourier n u * fourier n v := by
+    simp only [fourier_apply, zsmul_add, AddCircle.toCircle_add, Circle.coe_mul]
+  have hinv (u : AddCircle (1 : ℝ)) :
+      fourier n u * fourier (-n) u = (1 : ℂ) := by
+    rw [← fourier_add]
+    norm_num
+  have hchar (u v : AddCircle (1 : ℝ)) :
+      fourier n v = fourier n u * fourier (-n) (u - v) := by
+    calc
+      fourier n v = (fourier n (u - v) * fourier (-n) (u - v)) * fourier n v := by
+        rw [hinv]
+        ring
+      _ = (fourier n (u - v) * fourier n v) * fourier (-n) (u - v) := by ring
+      _ = fourier n ((u - v) + v) * fourier (-n) (u - v) := by rw [harg]
+      _ = fourier n u * fourier (-n) (u - v) := by rw [sub_add_cancel]
+  rw [convolution_mul_swap]
+  rw [show (fun t : AddCircle (1 : ℝ) =>
+      connesVanSuijlekomA2AlphaCircle (x - t) * fourier n t) =
+      fun t => fourier n x *
+        (connesVanSuijlekomA2AlphaCircle (x - t) * fourier (-n) (x - t)) by
+    funext t
+    rw [hchar x t]
+    ring, MeasureTheory.integral_const_mul]
+  rw [show (fun a : AddCircle (1 : ℝ) =>
+      connesVanSuijlekomA2AlphaCircle (x - a) * fourier (-n) (x - a)) =
+      fun a => (fun u => connesVanSuijlekomA2AlphaCircle u * fourier (-n) u) (x - a) by
+    rfl]
+  rw [integral_sub_left_eq_self
+    (fun u : AddCircle (1 : ℝ) => connesVanSuijlekomA2AlphaCircle u * fourier (-n) u)
+    AddCircle.haarAddCircle x]
+  have hcoeff : (∫ u : AddCircle (1 : ℝ),
+      connesVanSuijlekomA2AlphaCircle u * fourier (-n) u ∂AddCircle.haarAddCircle) =
+      (connesVanSuijlekomA2Diagonal n : ℂ) := by
+    rw [show (fun u : AddCircle (1 : ℝ) =>
+        connesVanSuijlekomA2AlphaCircle u * fourier (-n) u) =
+        fun u => fourier (-n) u • connesVanSuijlekomA2AlphaCircle u by
+      funext u
+      simp only [smul_eq_mul]
+      ring]
+    exact connesVanSuijlekomA2_alphaCircle_fourierCoeff n
+  rw [hcoeff]
+  ring
+
+/-- The periodized source kernel is continuous on the circle. -/
+theorem connesVanSuijlekomA2_alphaCircle_continuous :
+    Continuous connesVanSuijlekomA2AlphaCircle := by
+  apply AddCircle.liftIoc_zero_continuous
+  · simp [connesVanSuijlekomA2Alpha]
+  · have h : Continuous fun x : ℝ => (connesVanSuijlekomA2Alpha x : ℂ) := by
+      unfold connesVanSuijlekomA2Alpha
+      fun_prop
+    exact h.continuousOn
+
+/-- A finite Fourier polynomial on the period-one additive circle. -/
+def connesVanSuijlekomA2FourierPolynomial (s : Finset ℤ) (c : ℤ → ℂ) :
+    AddCircle (1 : ℝ) → ℂ :=
+  fun x => ∑ n ∈ s, c n * fourier n x
+
+/-- The diagonal `D` applied to a finite Fourier polynomial. -/
+def connesVanSuijlekomA2DiagonalFourierPolynomial (s : Finset ℤ) (c : ℤ → ℂ) :
+    AddCircle (1 : ℝ) → ℂ :=
+  fun x => ∑ n ∈ s, c n * (connesVanSuijlekomA2Diagonal n : ℂ) * fourier n x
+
+/-- On every finite Fourier polynomial, Haar convolution by `α` is exactly the diagonal
+operator `D` from Lemma A.2(ii). -/
+theorem connesVanSuijlekomA2_alphaCircle_convolution_fourierPolynomial
+    (s : Finset ℤ) (c : ℤ → ℂ) :
+    connesVanSuijlekomA2AlphaCircle ⋆[ContinuousLinearMap.mul ℂ ℂ,
+      AddCircle.haarAddCircle] connesVanSuijlekomA2FourierPolynomial s c =
+      connesVanSuijlekomA2DiagonalFourierPolynomial s c := by
+  have hAlpha : Continuous connesVanSuijlekomA2AlphaCircle :=
+    connesVanSuijlekomA2_alphaCircle_continuous
+  funext x
+  rw [convolution_mul]
+  rw [show (fun t : AddCircle (1 : ℝ) =>
+      connesVanSuijlekomA2AlphaCircle t *
+        connesVanSuijlekomA2FourierPolynomial s c (x - t)) =
+      fun t => ∑ n ∈ s,
+        connesVanSuijlekomA2AlphaCircle t * (c n * fourier n (x - t)) by
+    funext t
+    simp only [connesVanSuijlekomA2FourierPolynomial]
+    rw [Finset.mul_sum]]
+  rw [MeasureTheory.integral_finsetSum]
+  · rw [show (fun n : ℤ => ∫ t : AddCircle (1 : ℝ),
+        connesVanSuijlekomA2AlphaCircle t * (c n * fourier n (x - t))
+          ∂AddCircle.haarAddCircle) =
+      fun n => c n * ∫ t : AddCircle (1 : ℝ),
+        connesVanSuijlekomA2AlphaCircle t * fourier n (x - t)
+          ∂AddCircle.haarAddCircle by
+      funext n
+      rw [show (fun t : AddCircle (1 : ℝ) =>
+          connesVanSuijlekomA2AlphaCircle t * (c n * fourier n (x - t))) =
+          fun t => c n * (connesVanSuijlekomA2AlphaCircle t * fourier n (x - t)) by
+        funext t
+        ring, MeasureTheory.integral_const_mul]]
+    simp only [connesVanSuijlekomA2DiagonalFourierPolynomial]
+    apply Finset.sum_congr rfl
+    intro n hn
+    rw [show (∫ t : AddCircle (1 : ℝ),
+        connesVanSuijlekomA2AlphaCircle t * fourier n (x - t)
+          ∂AddCircle.haarAddCircle) =
+        (connesVanSuijlekomA2Diagonal n : ℂ) * fourier n x by
+      exact congrFun (connesVanSuijlekomA2_alphaCircle_convolution_fourier n) x]
+    ring
+  · intro n hn
+    apply Continuous.integrable_of_hasCompactSupport
+    · exact hAlpha.mul (by fun_prop)
+    · exact isCompact_univ.of_isClosed_subset (isClosed_tsupport _) (Set.subset_univ _)
 
 end
 
