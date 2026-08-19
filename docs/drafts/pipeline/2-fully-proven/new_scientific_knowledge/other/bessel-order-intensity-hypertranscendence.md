@@ -988,3 +988,50 @@ With `ParameterizedDifferenceGalois` (the constants form a differential field, a
 Galois matrix has entries there) this is the ring-theoretic layer of the parameterized theory.  What
 remains on that side is the `sigma`-`delta` coordinate ring of a fundamental matrix, whose
 construction mirrors `DifferenceCoordinateRing` with the jet variables carrying the derived action.
+
+## Lean progress — existence of a parameterized Picard--Vessiot ring
+
+`GaloisForLFunctions.HTGeometry.ParameterizedPicardVessiotExistence`, unconditional and axiom-clean:
+
+```text
+exists_parameterizedPicardVessiot_of_fundamentalMatrix
+    **a nontrivial sigma-delta ring carrying an invertible fundamental solution matrix has a doubly
+    simple quotient in which the matrix is still an invertible fundamental solution, and on which
+    the two descended operators commute**
+```
+
+This is the parameterized analogue of `exists_picardVessiot_of_fundamentalMatrix`, and it is the
+ring in which the parameterized difference Galois group lives.  By
+`ParameterizedDifferenceGalois.galoisMatrix_deriv_mem_sigmaConstants` its Galois matrix has entries
+in the constants of the difference operator, and those constants are closed under the derivation, so
+the group is a *differential* algebraic group -- exactly the structure Cassidy's classification acts
+on.
+
+## Lean progress — the difference action on the differential coordinate ring
+
+A corpus search found that the differential polynomial ring over a *differential* coefficient field
+already exists: `GaloisForLFunctions.DifferentialPolynomialOver` builds
+`differentialPolynomialCoeffDerivation` and `differentialPolynomialOverDerivation`, the total
+derivation which differentiates coefficients and shifts jets.  That is the ring the parameterized
+theory needs; only the difference operator was missing.
+
+`GaloisForLFunctions.HTGeometry.SigmaJetCoordinateRing`, unconditional and axiom-clean:
+
+```text
+jetCoordDeriv K n              the total derivation of the differential coordinate ring
+systemRow A p                  the row (A X)_{i j} of the system
+sigmaJetCoordHom sigma A       **the difference action**: on a jet variable it is the corresponding
+                               jet of the system row
+sigmaJetCoordHom_C, _X         its values on constants and jets
+sigmaJetCoordHom_commutes      **it commutes with the derivation**
+```
+
+The value on a jet variable is forced rather than chosen: commutation with the derivation requires
+`sigma (delta^k X_{i j}) = delta^k ((A X)_{i j})`, and taking that as the definition makes the
+commutation proof a generator check plus one induction, with no Leibniz combinatorics.  The two
+composites are twisted derivations agreeing on constants and on jets.
+
+With `ParameterizedPicardVessiotExistence` this is the concrete input the abstract parameterized
+existence theorem was missing.  What remains on that side is invertibility of the action, which is
+the same matrix computation as `DifferenceCoordinateRing.sigmaCoordEquiv` transported through the
+jets.

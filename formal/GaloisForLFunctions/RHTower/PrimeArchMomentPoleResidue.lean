@@ -316,12 +316,24 @@ theorem tendsto_endpointResolvent_residue {u : ℂ} (hu : u ≠ 0) :
     rw [Finset.sum_congr rfl hterm, Finset.sum_const, nsmul_eq_mul]
     have hcard : (Ffin.card : ℂ) = ((endpointFibre u).ncard : ℂ) := by
       rw [hFfindef, Set.ncard_eq_toFinset_card (endpointFibre u) hFfin]
-    rw [hcard, hp]
-    field_simp
-    ring
+    rw [hcard, hp, div_eq_mul_inv]
+    have hkey : (v - u⁻¹) * (1 - u * v)⁻¹ = -u⁻¹ := by
+      rw [← div_eq_mul_inv, div_eq_iff hden]
+      field_simp
+      ring
+    calc (v - u⁻¹) * (((endpointFibre u).ncard : ℂ)
+          * ((primeArchEndpointHausdorffRadius : ℂ) * u * (1 - u * v)⁻¹))
+        = ((v - u⁻¹) * (1 - u * v)⁻¹)
+          * (((endpointFibre u).ncard : ℂ) * ((primeArchEndpointHausdorffRadius : ℂ) * u)) := by
+          ring
+      _ = (-u⁻¹)
+          * (((endpointFibre u).ncard : ℂ) * ((primeArchEndpointHausdorffRadius : ℂ) * u)) := by
+          rw [hkey]
+      _ = -((primeArchEndpointHausdorffRadius : ℂ) * ((endpointFibre u).ncard : ℂ)) := by
+          field_simp
   -- the remaining finite part is continuous at the pole
   have hcont : ContinuousAt (fun v => ∑ q ∈ Sfin \ Ffin, resolventTerm v q) p := by
-    refine continuousAt_finset_sum _ fun q hq => ?_
+    refine tendsto_finsetSum _ fun q hq => ?_
     have hqnot : q ∉ endpointFibre u := by
       intro hmem
       exact (Finset.mem_sdiff.mp hq).2 (by rw [hFfindef, Set.Finite.mem_toFinset]; exact hmem)
@@ -336,9 +348,10 @@ theorem tendsto_endpointResolvent_residue {u : ℂ} (hu : u ≠ 0) :
     refine ContinuousAt.div continuousAt_const ?_ hden
     exact continuousAt_const.sub (continuousAt_const.mul continuousAt_id)
   have hsubp : Tendsto (fun v : ℂ => v - p) (nhdsWithin p {p}ᶜ) (𝓝 0) := by
-    have : Tendsto (fun v : ℂ => v - p) (𝓝 p) (𝓝 0) := by
-      simpa using (continuous_id.sub continuous_const).tendsto p
-    exact this.mono_left nhdsWithin_le_nhds
+    have hc : Tendsto (fun v : ℂ => v - p) (𝓝 p) (𝓝 (p - p)) :=
+      (continuous_id.sub continuous_const).tendsto p
+    rw [sub_self] at hc
+    exact hc.mono_left nhdsWithin_le_nhds
   have hzero1 : Tendsto (fun v => (v - p) * (∑ q ∈ Sfin \ Ffin, resolventTerm v q))
       (nhdsWithin p {p}ᶜ) (𝓝 0) := by
     have h2 : Tendsto (fun v => ∑ q ∈ Sfin \ Ffin, resolventTerm v q)
@@ -348,7 +361,8 @@ theorem tendsto_endpointResolvent_residue {u : ℂ} (hu : u ≠ 0) :
   have hzero2 : Tendsto
       (fun v => (v - p) * (∑' q : (Sᶜ : Set XiZeroCopy), resolventTerm v (q : XiZeroCopy)))
       (nhdsWithin p {p}ᶜ) (𝓝 0) := by
-    refine squeeze_zero_norm' ?_ ?_
+    refine squeeze_zero_norm' (a := fun v : ℂ => ‖v - p‖ * (2 * ∑' q : XiZeroCopy,
+      ‖xiZeroCopyReciprocalSquare q‖)) ?_ ?_
     · filter_upwards [nhdsWithin_le_nhds (Metric.ball_mem_nhds p (by norm_num : (0:ℝ) < 1))]
         with v hv
       have hvn : ‖v - p‖ < 1 := by
@@ -376,6 +390,61 @@ theorem tendsto_endpointResolvent_residue {u : ℂ} (hu : u ≠ 0) :
     ring
   refine Tendsto.congr' (EventuallyEq.symm hcongr) ?_
   simpa using (tendsto_const_nhds.add (hzero1.add hzero2))
+
+/-! ### The reflection laws and the positivity characterization -/
+
+/-- **(9)** Functional-equation reflection leaves the centered reciprocal square unchanged. -/
+theorem xiCentralReciprocalSquare_reflect (ρ : ℂ) :
+    xiCentralReciprocalSquare (1 - ρ) = xiCentralReciprocalSquare ρ := by
+  rw [xiCentralReciprocalSquare, xiCentralReciprocalSquare]
+  rw [show (1 : ℂ) - ρ - 1 / 2 = -(ρ - 1 / 2) by ring, inv_neg, neg_pow]
+  ring
+
+/-- The reciprocal square of a centered coordinate is positive real exactly on the critical
+line. -/
+theorem xiCentralReciprocalSquare_pos_iff {ρ : ℂ} (hρ : ρ - 1 / 2 ≠ 0) :
+    ((xiCentralReciprocalSquare ρ).im = 0 ∧ 0 < (xiCentralReciprocalSquare ρ).re)
+      ↔ ρ.re = 1 / 2 := by
+  set w : ℂ := ρ - 1 / 2 with hw
+  set z : ℂ := w⁻¹ with hz
+  have hzne : z ≠ 0 := inv_ne_zero hρ
+  have hnormpos : 0 < Complex.normSq w := Complex.normSq_pos.mpr hρ
+  have hre : (xiCentralReciprocalSquare ρ).re = z.im ^ 2 - z.re ^ 2 := by
+    rw [xiCentralReciprocalSquare, ← hw, ← hz]
+    simp [Complex.neg_re, pow_two, Complex.mul_re]
+  have him : (xiCentralReciprocalSquare ρ).im = -(2 * (z.re * z.im)) := by
+    rw [xiCentralReciprocalSquare, ← hw, ← hz]
+    simp [Complex.neg_im, pow_two, Complex.mul_im]
+    ring
+  have hzre : z.re = w.re / Complex.normSq w := by rw [hz, Complex.inv_re]
+  have hwre : w.re = ρ.re - 1 / 2 := by
+    rw [hw]
+    simp
+  constructor
+  · rintro ⟨h1, h2⟩
+    rw [him] at h1
+    rw [hre] at h2
+    have hz0 : z.re = 0 := by
+      rcases mul_eq_zero.mp (by linarith : z.re * z.im = 0) with h | h
+      · exact h
+      · exfalso; rw [h] at h2; nlinarith [sq_nonneg z.re]
+    have : w.re = 0 := by
+      rw [hzre, div_eq_zero_iff] at hz0
+      rcases hz0 with h | h
+      · exact h
+      · exact absurd h hnormpos.ne'
+    rw [hwre] at this
+    linarith
+  · intro hρre
+    have hw0 : w.re = 0 := by rw [hwre, hρre]; ring
+    have hz0 : z.re = 0 := by rw [hzre, hw0]; simp
+    have hzim : z.im ≠ 0 := by
+      intro hc
+      exact hzne (Complex.ext hz0 hc)
+    refine ⟨by rw [him, hz0]; ring, ?_⟩
+    rw [hre, hz0]
+    have : 0 < z.im ^ 2 := by positivity
+    linarith
 
 end
 

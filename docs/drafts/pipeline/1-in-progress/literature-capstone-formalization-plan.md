@@ -238,3 +238,23 @@ The still-open, non-negotiable formal steps are: construct its number field, pro
 identify its Galois group with `QuaternionGroup 2`, then formalize the local epsilon-factor product
 showing that the attached two-dimensional Artin representation has root number `-1`.  The existing
 Artin pullback and parity contradiction can compose only after those three facts are proved.
+
+## 2026-08-19 literal Q8 radical-coordinate lift system
+
+`[LEAN-PROVED]` `DeningerQ8RootNumberNegOneRadicalLifts.lean` formalizes the exact field-generic
+algebra that a construction of the documented witness must realize.  Given
+`x² = 5`, `y² = 41`, and `z² = (5+x)(41+6y)`, the explicit candidate lifts
+
+```text
+I(z) = 2x(41+6y)/z,
+J(z) = xy(5+x)/z
+```
+
+square to `(5-x)(41+6y)` and `(5+x)(41-6y)`, respectively.  The corresponding two composite
+top-radical coordinates are proved to differ by a literal minus sign.  This is the source-level
+quaternion relation, with every denominator independently proved nonzero from the defining
+quadratic relations.
+
+It remains deliberately below a Galois claim: an `AdjoinRoot` construction must prove the three
+required nonsquare facts, install these coordinates as ring equivalences, prove normality and count
+all eight automorphisms.  The epsilon-factor calculation remains a further independent gate.

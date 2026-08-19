@@ -4401,3 +4401,118 @@ and `ω → ∞` once the energy is inserted) and the constant row, which is the
 | constant `48·β₀/(B₀²(W_PW_Q)²)` | open — this **is** the §4 estimate, `Sieve/Section4Master` at the schedule |
 | cardinalities | **closed** (`tendsto_jointRoundingRow`) |
 | joint variance | **closed** (`tendsto_jointVarianceRow`) |
+
+### Milestone B, brick 47 — the slope row is CLOSED; one row left (2026-08-19)
+
+`Sieve/JointSlopeRow` (axiom-clean, sorry-free, wired).
+
+```text
+jointSlope_quotient_le :
+  48·(5π/2 + 5e/2·(B₀/T₀))·Ec / ((√x/h)·(W_PW_Q)²·h²)
+    ≤ (480π/h + 960e/ω)·X ,    X = (1/W_Q + 1/W_P + 1/(W_PW_Q)) + #P#Q/(W_PW_Q√x) + 1
+
+tendsto_jointSlopeMajorant : the right side → 0   (first factor → 0, second → 1)
+tendsto_jointSlopeRow      : the slope row → 0
+```
+
+Two things had to be right.  The denominator collapses exactly — `(√x/h)·h² = h·√x` — and the
+energy must enter at its **true** size: with `hEc` from `energy_jointOmegaCoeff_le_variance` and
+`B₀ ≤ 2√x`, the majorant `Ec ≤ 4X(W_PW_Q)²√x` holds *with the two sides matching term by term*.
+
+The divisor bound `Bd ≤ (log x)²` is **not** usable in this row, unlike in the rounding row: the
+`5e·h/ω` half of the prefactor would leave `(log x)^4/(log x)^{β/2} → ∞`.  The ratio bound
+`B₀/T₀ ≤ 2h/ω` is where the low expiry height of brick 37 pays off — it is exactly
+`B₀ ≤ 2√x` after `T₀ = (√x/h)·ω` is substituted.
+
+### Budget status
+
+| row | status |
+|-|-|
+| slope | **closed** — `tendsto_jointSlopeRow` |
+| constant `48·β₀/(B₀²(W_PW_Q)²)` | open — this **is** the §4 estimate, `Sieve/Section4Master` at the schedule |
+| cardinalities | **closed** — `tendsto_jointRoundingRow` |
+| joint variance | **closed** — `tendsto_jointVarianceRow` |
+
+Three of four rows are Lean limits.  The remaining row is the whole content of §4, and every
+ingredient it needs is already an unconditional theorem in the tree; what is left is to instantiate
+`Sieve/Section4Master` at the schedule and check the six margins of the numerology table of
+brick 44.
+
+### The constant row: what it reduces to, and what of it is already corpus (2026-08-19)
+
+The one open row is `48·β₀/(B₀²(W_PW_Q)²) → 0` with `β₀` from
+`Sieve/Section4Master.integral_normSq_jointOmegaPoly_le_master`:
+
+```text
+   β₀  =  2·(∑_j 1/u_j)·(∑_j u_j·J_j)  +  2·Dshort ,      u_j = 1/stepMass_j ,
+```
+
+so `∑_j 1/u_j = W_P` by `Sieve/LadderHarmonicSplit.sum_stepMass_eq`, and the row splits in two.
+
+**The short-ladder defect half is already corpus arithmetic.**  The gap sum inside
+`integral_normSq_jointLadderProductDefect_le_divisor` is *literally* the corpus's
+`Sieve/LadderAffineMajorant.ladderDefectSum L B₀ Q η` — the `A₀ = 1` instance matches term for term
+— so `Sieve/LadderAffineBounds.ladderDefectSum_le` applies verbatim:
+
+```text
+  ladderDefectSum L B₀ Q η
+    ≤ (log⌊B₀(1+η)⌋/log Q)·( L((1+B₀)η² + 5) + 5hR + (ηB₀ + (1+B₀)η)(2/(Qη)) + B₀(2/(Q²η)) ) .
+```
+
+Note also that `Sieve/ConstQuotientLimit.eventually_const_quotient_le` — the arithmetic half of the
+corpus's own constant-row limit — is stated with `0 < β`, **not** `9/10 < β`; only the final
+`tendsto_const_quotient` needs the Route-T exponent, and only through `budgetRho`.  So the
+defect-half of the constant row is exponent-free corpus machinery.
+
+**The per-block half is the genuinely new work.**  Per short block `j`, `section4_block_master`
+gives `J_j` as five pieces, each of which needs a bound uniform in `j`, against the target
+`ε·stepMass_j²·B₀²·W_Q²`:
+
+| piece | bound needed | margin from the brick-44 table |
+|-|-|-|
+| disc: `(#B_j)²·2(∑1/v)(∑ v_k (#Q_k)² Idisc_k)` | `ε stepMass_j²B₀²W_Q²` | `exp(−2c(log B₁)^{1/10})·2w₀` beats every power of `𝓁` |
+| disc + annulus defect: `(#B_j)²·4·Dfct_j` | same | `ladderDefectSum` again, at the long ladder |
+| non-exceptional: `VP_j²·Enonexc_j` | same | `V_j = #B_j/𝓁^{β/2}` gives `ε = 𝓁^{−β/2}` |
+| annulus main: `(#B_j)²·2(∑1/v)(∑ v_k V_k² Iann_k)` | same | `ρ² ≤ ε W_Q 𝓁^{−(a+b+20)}`, and `ρ` beats every power of `𝓁` |
+| annulus HM cross | same | `x^{1/4+o(1)}` against `x^{1/2−o(1)}` |
+
+All five margins were verified on paper in brick 44 and none is tight.
+
+### Milestone B, brick 48 — the step-mass/cardinality comparison, and the non-exceptional numerology (2026-08-19)
+
+`Sieve/StepMassCard` (axiom-clean, wired) — the two-sided comparison every per-block estimate needs,
+since the estimates are stated per block and then weighted by `1/stepMass_j`:
+
+```text
+   stepMass_j·(Q(1+η)^j)  ≤  #B_j  ≤  stepMass_j·(Q(1+η)^{j+1}) .
+```
+
+### The non-exceptional piece, worked out exactly
+
+Writing `Pj0 = Q(1+η)^j` for the step's left endpoint, `B₁ = ⌊B₀/Pj0⌋`, `V_j = #B_j/K` for the
+threshold and `E_j ≤ CE·B₁·W_Q² + CR` for the cofactor energy (`CR` collecting the `π(z_Q)` terms,
+which are `j`-independent), the non-exceptional term of `section4_block_master` is
+
+```text
+  V_j²·Enonexc_j
+    ≤ (stepMass_j·Pj0(1+η)/K)²·(5π/2·T₀ + 5e/2·B₀/Pj0)·(CE·(B₀/Pj0)W_Q² + CR)
+    =  stepMass_j²(1+η)²/K² · [ (5π/2)T₀·CE·B₀W_Q²·Pj0 + (5π/2)T₀·CR·Pj0²
+                                + (5e/2)CE·B₀²W_Q² + (5e/2)CR·B₀·Pj0 ] ,
+```
+
+and dividing by the target `stepMass_j²·B₀²·W_Q²` the four brackets become
+
+| term | value at the schedule | bound |
+|-|-|-|
+| `(5π/2)T₀·CE·Pj0/B₀` | `T₀Pj0/B₀ ≤ (√x/h)ω·h/√x = ω` | `(5π/2)CE·ω` |
+| `(5π/2)T₀·CR·Pj0²/(B₀²W_Q²)` | `≤ ωh/(√x W_Q²)` | vanishes |
+| `(5e/2)CE` | constant | constant |
+| `(5e/2)CR·Pj0/(B₀W_Q²)` | `≤ CR·h/(√x W_Q²)` | vanishes (`CR = x^{o(1)}`) |
+
+so `ε ≍ (1+η)²·C·ω/K²`.  **This fixes the threshold: `K = ω = (log x)^{β/2}`**, giving
+`ε ≍ C/ω = C(log x)^{−β/2} → 0`.  The two `Pj0 ≤ h` uses are the only place the constraint
+`P_j ≤ h` enters the non-exceptional half, and it holds by construction
+(`ladderTop β (1/2) x ≤ cardLength β x`).
+
+The same calculation, run at `T₀ = B₀` instead of `T₀ = (√x/h)ω`, gives `ε ≍ P_j/K²` and forces
+`K ≍ √P_j` — which is the obstruction brick 37 removed.

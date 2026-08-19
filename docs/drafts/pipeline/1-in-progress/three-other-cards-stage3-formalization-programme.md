@@ -560,3 +560,34 @@ commuting descended operators.  That is the parameterized analogue of the differ
 Next on that side: the `σ`-`δ` coordinate ring of a fundamental matrix (mirror of
 `DifferenceCoordinateRing`, with the jet variables carrying the derived action `σ(δ^k X) =
 δ^k((A X))`).  Then the parameterized Galois group, Cassidy's `GL_2` case, and Dreyfus's normal form.
+
+
+## Card 1 — parameterized PV existence
+
+`ParameterizedPicardVessiotExistence` gives the σδ analogue of the abstract PV existence theorem:
+a nontrivial σδ-ring with an invertible fundamental matrix has a doubly simple quotient keeping that
+matrix, with commuting descended operators.
+
+The parameterized ring-theoretic layer is now: σδ-ideals and their maximal ones, the descended
+derivation, doubly simple quotients, existence with a fundamental matrix, and the fact that the
+Galois matrix has entries in a differential field of constants.
+
+Remaining: the concrete σδ-coordinate ring (so the abstract existence applies to a given system);
+reducedness of the constants algebra (Cartier); the `G_m` converse; the `GL_2` case; Dreyfus's
+normal form.
+
+
+## Card 1 — the σδ-coordinate ring
+
+Corpus finding: `GaloisForLFunctions.DifferentialPolynomialOver` already builds the differential
+polynomial ring over a *differential* coefficient field with its total derivation
+(`differentialPolynomialOverDerivation`).  Only the difference operator was missing.
+
+`SigmaJetCoordinateRing` adds it: `sigmaJetCoordHom σ A` with `σ (δ^k X_ij) = δ^k ((A X)_ij)`, and
+`sigmaJetCoordHom_commutes` proving it commutes with the derivation — a generator check plus one
+induction, no Leibniz combinatorics, because the definition is the forced one.
+
+Remaining on that side: invertibility of the action (the `DifferenceCoordinateRing.sigmaCoordEquiv`
+computation transported through the jets), then localization at the determinant and the
+parameterized Galois group.  Plus reducedness (Cartier), the `G_m` converse, `GL_2`, and Dreyfus's
+normal form.

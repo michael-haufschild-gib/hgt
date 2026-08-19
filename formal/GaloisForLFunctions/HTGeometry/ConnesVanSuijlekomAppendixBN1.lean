@@ -67,6 +67,33 @@ theorem connesVanSuijlekomB1_rootMinus_equation (c : ℝ) :
   simp only [connesVanSuijlekomB1RootMinus, connesVanSuijlekomB1Discriminant] at hsq ⊢
   nlinarith
 
+private theorem connesVanSuijlekomB1_root_sum (c : ℝ) :
+    connesVanSuijlekomB1RootPlus c + connesVanSuijlekomB1RootMinus c = -(c + 1) := by
+  simp only [connesVanSuijlekomB1RootPlus, connesVanSuijlekomB1RootMinus]
+  ring
+
+private theorem connesVanSuijlekomB1_root_product (c : ℝ) :
+    connesVanSuijlekomB1RootPlus c * connesVanSuijlekomB1RootMinus c = -2 := by
+  have hsq := Real.sq_sqrt (connesVanSuijlekomB1_discriminant_pos c).le
+  simp only [connesVanSuijlekomB1RootPlus, connesVanSuijlekomB1RootMinus,
+    connesVanSuijlekomB1Discriminant] at hsq ⊢
+  nlinarith
+
+private theorem connesVanSuijlekomB1_even_quadratic_factor (c x : ℝ) :
+    x ^ 2 + (c + 1) * x - 2 =
+      (x - connesVanSuijlekomB1RootPlus c) * (x - connesVanSuijlekomB1RootMinus c) := by
+  have hsum := connesVanSuijlekomB1_root_sum c
+  have hprod := connesVanSuijlekomB1_root_product c
+  linear_combination x * hsum - hprod
+
+private theorem connesVanSuijlekomB1_even_root_eq_plus_or_minus {c x : ℝ}
+    (hx : x ^ 2 + (c + 1) * x - 2 = 0) :
+    x = connesVanSuijlekomB1RootPlus c ∨ x = connesVanSuijlekomB1RootMinus c := by
+  rw [connesVanSuijlekomB1_even_quadratic_factor] at hx
+  rcases mul_eq_zero.mp hx with hplus | hminus
+  · exact Or.inl (sub_eq_zero.mp hplus)
+  · exact Or.inr (sub_eq_zero.mp hminus)
+
 private theorem connesVanSuijlekomB1_sqrt_discriminant_sq (c : ℝ) :
     (Real.sqrt (connesVanSuijlekomB1Discriminant c)) ^ 2 =
       connesVanSuijlekomB1Discriminant c := by
@@ -146,6 +173,104 @@ theorem connesVanSuijlekomB1_normalized_even_eigenvector
     connesVanSuijlekomB1EvenVector, Matrix.mulVec, dotProduct, Fin.sum_univ_three]
   all_goals nlinarith
 
+private theorem connesVanSuijlekomB1_normalized_eigenvector_even_of_ne_one
+    {c l : ℝ} {v : Fin 3 → ℝ}
+    (hEig : connesVanSuijlekomB1NormalizedMatrix c *ᵥ v = l • v) (hl : l ≠ 1) :
+    v 0 = v 2 := by
+  have h0 := congrFun hEig 0
+  have h2 := congrFun hEig 2
+  simp [connesVanSuijlekomB1NormalizedMatrix, Matrix.mulVec, dotProduct,
+    Fin.sum_univ_three] at h0 h2
+  have hdiff : (1 - l) * (v 0 - v 2) = 0 := by
+    linear_combination h0 - h2
+  have hfactor : 1 - l ≠ 0 := sub_ne_zero.mpr (Ne.symm hl)
+  exact sub_eq_zero.mp ((mul_eq_zero.mp hdiff).resolve_left hfactor)
+
+private theorem connesVanSuijlekomB1_normalized_nonunit_eigenvector_parameter
+    {c l : ℝ} {v : Fin 3 → ℝ} (hv : v ≠ 0)
+    (hEig : connesVanSuijlekomB1NormalizedMatrix c *ᵥ v = l • v) (hl : l ≠ 1) :
+    ∃ x : ℝ, v = v 0 • connesVanSuijlekomB1EvenVector x ∧
+      x ^ 2 + (c + 1) * x - 2 = 0 ∧ l = -x - 1 := by
+  have hEven := connesVanSuijlekomB1_normalized_eigenvector_even_of_ne_one hEig hl
+  have h0 := congrFun hEig 0
+  have h1 := congrFun hEig 1
+  simp [connesVanSuijlekomB1NormalizedMatrix, Matrix.mulVec, dotProduct,
+    Fin.sum_univ_three] at h0 h1
+  have hv0 : v 0 ≠ 0 := by
+    intro hv0
+    apply hv
+    have hv2 : v 2 = 0 := by linarith [hEven]
+    have hv1 : v 1 = 0 := by rw [hv0, hv2] at h0; linarith
+    funext i
+    fin_cases i <;> simp [hv0, hv1, hv2]
+  let x : ℝ := v 1 / v 0
+  have hscale : v = v 0 • connesVanSuijlekomB1EvenVector x := by
+    ext i
+    fin_cases i
+    · simp [connesVanSuijlekomB1EvenVector]
+    · simp only [connesVanSuijlekomB1EvenVector, Pi.smul_apply, smul_eq_mul]
+      dsimp [x]
+      field_simp
+    · simp [connesVanSuijlekomB1EvenVector, hEven]
+  have hlx : l = -x - 1 := by
+    dsimp [x]
+    field_simp
+    nlinarith
+  have hquad : x ^ 2 + (c + 1) * x - 2 = 0 := by
+    rw [← hEven] at h1
+    rw [hlx] at h1
+    dsimp [x] at h1 ⊢
+    field_simp [hv0] at h1 ⊢
+    nlinarith
+  exact ⟨x, hscale, hquad, hlx⟩
+
+/-- Every complex zero of the finite numerator lies on the real axis. -/
+def ConnesVanSuijlekomB1AllRootsReal (F : ℂ → ℂ) : Prop :=
+  ∀ z : ℂ, F z = 0 → z.im = 0
+
+private theorem connesVanSuijlekomB1_normalized_unit_eigenvector_numerator_allRootsReal
+    {c : ℝ} {v : Fin 3 → ℝ} (hv : v ≠ 0)
+    (hEig : connesVanSuijlekomB1NormalizedMatrix c *ᵥ v = 1 • v) :
+    ConnesVanSuijlekomB1AllRootsReal (connesVanSuijlekomB1FourierNumerator v) := by
+  have h0 := congrFun hEig 0
+  simp [connesVanSuijlekomB1NormalizedMatrix, Matrix.mulVec, dotProduct,
+    Fin.sum_univ_three] at h0
+  have hsum : v 0 + v 1 + v 2 = 0 := by linarith
+  intro z hz
+  rw [connesVanSuijlekomB1FourierNumerator_expand] at hz
+  rw [hsum] at hz
+  have hz' : ((v 2 - v 0 : ℝ) : ℂ) * z = v 1 := by
+    linear_combination hz
+  have hcoef : v 2 - v 0 ≠ 0 := by
+    intro hzero
+    have hv1 : v 1 = 0 := by
+      have := congrArg Complex.re hz'
+      simp [hzero] at this
+      exact_mod_cast this
+    apply hv
+    have hv02 : v 0 = 0 := by linarith
+    funext i
+    fin_cases i <;> simp [hv02, hv1, hzero]
+  have him := congrArg Complex.im hz'
+  simp [Complex.mul_im] at him
+  exact (mul_eq_zero.mp (by nlinarith : (v 2 - v 0) * z.im = 0)).resolve_left hcoef
+
+theorem connesVanSuijlekomB1_rootPlus_eigenvector (c : ℝ) :
+    connesVanSuijlekomB1NormalizedMatrix c *ᵥ
+      connesVanSuijlekomB1EvenVector (connesVanSuijlekomB1RootPlus c) =
+        (-connesVanSuijlekomB1RootPlus c - 1) •
+          connesVanSuijlekomB1EvenVector (connesVanSuijlekomB1RootPlus c) :=
+  connesVanSuijlekomB1_normalized_even_eigenvector
+    (connesVanSuijlekomB1_rootPlus_equation c)
+
+theorem connesVanSuijlekomB1_rootMinus_eigenvector (c : ℝ) :
+    connesVanSuijlekomB1NormalizedMatrix c *ᵥ
+      connesVanSuijlekomB1EvenVector (connesVanSuijlekomB1RootMinus c) =
+        (-connesVanSuijlekomB1RootMinus c - 1) •
+          connesVanSuijlekomB1EvenVector (connesVanSuijlekomB1RootMinus c) :=
+  connesVanSuijlekomB1_normalized_even_eigenvector
+    (connesVanSuijlekomB1_rootMinus_equation c)
+
 /-- Appendix B.1's reduction of a nonzero off-diagonal source matrix to `M(c)`,
 up to a nonzero scalar and a scalar identity shift. -/
 theorem connesVanSuijlekomB1_affine_reduction (a₀ a₁ b₁ : ℝ) (hb : b₁ ≠ 0) :
@@ -174,9 +299,14 @@ def connesVanSuijlekomB1FourierNumerator (v : Fin 3 → ℝ) (s : ℂ) : ℂ :=
     (v 1 : ℂ) * (-1 - s) * (1 - s) +
       (v 2 : ℂ) * (-1 - s) * (0 - s)
 
-/-- Every complex zero of the finite numerator lies on the real axis. -/
-def ConnesVanSuijlekomB1AllRootsReal (F : ℂ → ℂ) : Prop :=
-  ∀ z : ℂ, F z = 0 → z.im = 0
+/-- A nonzero eigenvector for an eigenvalue that is least or greatest among all
+real eigenvalues.  This is the finite meaning of ``extremal eigenvalue'' in
+Appendix B.1. -/
+def ConnesVanSuijlekomB1IsExtremalEigenvector
+    (M : Matrix (Fin 3) (Fin 3) ℝ) (v : Fin 3 → ℝ) (l : ℝ) : Prop :=
+  v ≠ 0 ∧ M *ᵥ v = l • v ∧
+    ((∀ l' w, w ≠ 0 → M *ᵥ w = l' • w → l ≤ l') ∨
+      ∀ l' w, w ≠ 0 → M *ᵥ w = l' • w → l' ≤ l)
 
 theorem connesVanSuijlekomB1FourierNumerator_expand (v : Fin 3 → ℝ) (s : ℂ) :
     connesVanSuijlekomB1FourierNumerator v s =
