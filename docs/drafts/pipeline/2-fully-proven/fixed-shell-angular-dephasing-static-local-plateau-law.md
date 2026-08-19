@@ -1370,3 +1370,115 @@ ingredients are all proved (`exists_endpointComplete_twoQubit_witness`,
 `exists_mem_dense_forall_layerReducedTransition_ne_zero`); what remains is their composition, which
 needs the eigenvector family of the coupled extension to be continuous at the chosen coupling --
 the content of `LocalExtensionChartProbeContinuity`.
+
+## Lean progress -- the germ/chart eigenvector identification (2026-08-19)
+
+The induction step of Lemma A1 is proved for the canonical eigenvector *germs* of the split family
+(`eventually_forall_layerGerm_endpoint_ne_zero`), while the openness and genericity arguments live
+on the *chart* eigenvectors (`LocalExtensionEigenbranchChart.adjugateColumn`).  The two are the
+same object on the anchor-star line, and that is now formal.
+
+`formal/GaloisForLFunctions/HTGeometry/AnchorStarAdjugateTransfer.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| for one attached qubit the anchor star *is* the exchange matrix | `anchorStarLayerEdge_bool` |
+| the chart characteristic matrix on the anchor-star line is the affine one | `characteristicMatrix_anchorStar` |
+| **the chart eigenvector on the anchor-star line is the split-family germ** | `adjugateColumn_anchorStar` |
+| **endpoint completeness of the chart eigenvectors at all small nonzero coupling** | `eventually_forall_chartAdjugate_endpoint_ne_zero` |
+
+Both sides are adjugate columns of the same characteristic matrix, so the identification is an
+equality of matrices followed by `adjugate`; the two dictionary entries it needs are
+`layeredEnergy E (boolShift z) = layerSplitEnergy E z` and
+`layerMatrixCoupling M (anchorStarLayerEdge false) = layerCrossPerturbation M`, the second because
+for a single attached qubit the anchor star is the exchange matrix.
+
+With this, the induction step's two halves are in the same language:
+
+* endpoint completeness holds at some chart point (`eventually_forall_chartAdjugate_endpoint_ne_zero`),
+* it is open there (`eventually_forall_layerReducedTransition_ne_zero` applied to
+  `C.adjugateColumn`, continuous by `LocalExtensionEigenbranchChart.adjugateColumn_analyticAt`),
+* and maximal projectivity is dense
+  (`tracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure`),
+
+so `exists_mem_dense_forall_layerReducedTransition_ne_zero` intersects them.  What remains is that
+intersection, stated in the tensor-tree architecture's own coordinates.
+
+## Lean progress -- the intersection, in the chart's coordinates (2026-08-19)
+
+`formal/GaloisForLFunctions/HTGeometry/ChartEndpointGenericIntersection.lean` (new,
+umbrella-wired, axiom-clean) states and proves the induction step of Lemma A1 in the chart's own
+coordinates.
+
+| Card item | Declaration |
+|---|---|
+| **a chart point at which every ordered pair is endpoint visible** | `exists_chartPoint_endpointComplete` |
+| **the induction step of Lemma A1**: every dense set of chart parameters contains one at which the extended system is still endpoint complete | `exists_mem_dense_chartAdjugate_endpointComplete` |
+
+The first theorem intersects two eventualities along the real anchor-star line: endpoint
+completeness at all small nonzero coupling
+(`eventually_forall_chartAdjugate_endpoint_ne_zero`) and membership in the chart near zero
+(`LocalExtensionEigenbranchChart.eventually_anchorStar_mem`, pulled back along the real embedding).
+The second adds openness -- the canonical eigenvectors are analytic on the chart, so endpoint
+visibility is open -- and meets any dense set.
+
+This is the card's own description of the step:
+
+> "a nonempty open set meets a dense set, so the extended witness exists"
+
+now as a Lean theorem, with the openness and the completeness point both supplied rather than
+assumed.  The remaining transport is from the chart's parameter space to the tensor-tree
+architecture's real coordinate space, where
+`tracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure` provides the dense set.
+
+## Lean progress -- eigenbranches over an arbitrary parameter space (2026-08-19)
+
+The transport of the induction step to the tensor-tree architecture's own coordinate space needs an
+eigenvector family that is defined and continuous there.  The corpus's parametric eigenbranch
+engine (`analyticMatrixFamily_eigenvalueBranch`) is stated at a *diagonal* base point, which the
+chart point is not.  A Hermitian matrix with simple spectrum is unitarily diagonal, and the
+characteristic relation is invariant under unitary conjugation, so the engine applies after
+conjugating the family -- and returns branches of the original family.
+
+`formal/GaloisForLFunctions/HTGeometry/GeneralParametricEigenbranch.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| entrywise analyticity assembles, and every entry of an analytic family is analytic | `analyticAt_matrix_of_entries`, `analyticAt_matrix_entry` |
+| **the characteristic relation is invariant under unitary conjugation** | `matrixCharpolyRelation_unitary_conj` |
+| **analytic eigenvalue branches at a unitarily diagonalisable simple point**, over any complex Banach parameter space | `exists_analyticBranch_of_unitaryDiagonal` |
+| **the canonical eigenvectors are analytic there** | `analyticAt_generalAdjugateColumn` |
+
+That removes the last restriction on the parameter space: over the real coordinate space of the
+tensor-tree architecture's traceless local Hamiltonian submodule -- complexified -- an analytic
+Hamiltonian family with simple spectrum at a point has analytic canonical eigenvectors there, so
+`eventually_forall_layerReducedTransition_ne_zero` gives openness of endpoint visibility and
+`exists_mem_dense_forall_layerReducedTransition_ne_zero` intersects it with
+`tracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure`.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+## Lean progress -- the intersection in arbitrary coordinates (2026-08-19)
+
+`formal/GaloisForLFunctions/HTGeometry/GeneralEndpointGenericIntersection.lean` (new,
+umbrella-wired, axiom-clean) states the induction step of Lemma A1 over an arbitrary parameter
+space, with no reference to the one-qubit extension chart.
+
+| Card item | Declaration |
+|---|---|
+| the canonical eigenvector attached to an eigenvalue branch | `endpointEigenvector` |
+| **the induction step over an arbitrary parameter space**: if the eigenvalue branches are analytic at a base point where every ordered pair is endpoint visible, every dense set of parameters contains one at which every ordered pair is still visible | `exists_mem_dense_endpointComplete_of_analyticBranches` |
+
+Its three inputs are all supplied by theorems now in the corpus:
+
+* the branches at a unitarily diagonalisable simple point -- `exists_analyticBranch_of_unitaryDiagonal`;
+* the base point where every ordered pair is visible -- `exists_chartPoint_endpointComplete`
+  (through `adjugateColumn_anchorStar`, which identifies the chart eigenvectors with the split-family
+  germs, and `eventually_forall_layerGerm_endpoint_ne_zero`);
+* the dense set -- `tracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure`.
+
+So the induction step no longer depends on the shape of the parameter space: it holds wherever the
+Hamiltonian family is analytic and the spectrum is simple at the base point, which is exactly the
+setting of the tensor-tree architecture's traceless local Hamiltonian submodule.

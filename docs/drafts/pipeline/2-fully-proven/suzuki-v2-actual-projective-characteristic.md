@@ -1,7 +1,7 @@
 # Suzuki v2 actual projective characteristic
 
 - **Stage:** 2-fully-proven
-- **Status:** unconditional paper theorem; Lean target active
+- **Status:** unconditional paper theorem; formalized in Lean
 - **Source:** actual finite-aperture Suzuki characteristics at extension angles `0` and `pi`
 - **Claimed novelty:** removes the arbitrary one-angle exponential gauge and constructs the
   pole-compatible v2 family directly from two self-adjoint characteristic coordinates
@@ -79,9 +79,11 @@ Consequently `F_a` is holomorphic throughout the upper half-plane.  Moreover
 ```
 
 because `|1-theta_a|<=2`.  Bound is independent of aperture, shift, prime cutoff, and
-extension spectrum.  Montel therefore supplies a locally uniformly convergent subsequence of
-the literal `F_a` family on every upper-half-plane compact exhaustion.  This is unconditional
-existence of actual projective characteristic limits; target identification is separate.
+extension spectrum.  On every ball compactly contained in the upper half-plane, Montel therefore
+supplies a uniformly convergent subsequence of the literal `F_a` family.  In particular, the
+canonical cofinal aperture schedule has such a subsequence on a fixed compact ball.  This is
+unconditional existence of actual projective characteristic limits; target identification is
+separate.
 
 ## Theorem C: exact v2 target chart
 
@@ -131,3 +133,23 @@ the actual convergent normal family without assuming it.
 - Common source normalization cancels identically.
 - Normal-family compactness is proved from the actual all-angle theorem, not assumed.
 - No claim is made that compactness alone identifies the Xi target.
+
+## Lean realization
+
+Formal module:
+
+```text
+formal/GaloisForLFunctions/RHTower/SuzukiTaV2ProjectiveCharacteristic.lean
+```
+
+It proves, for the literal `suzukiTaCharacteristic` family:
+
+- exact `0`/`pi` pencil coordinates and actual all-angle reality;
+- strict Schur control for the actual Livsic quotient;
+- global meromorphicity and upper-half-plane holomorphy of `F_a`;
+- the sharp denominator gap and aperture-uniform norm bound;
+- an unconditional canonical cofinal Montel subsequence of actual `F_a`;
+- the division-free Xi projective identity retaining the Xi divisor.
+
+No theorem assumes convergence to the Xi target.  Target identification remains exactly the
+RH-bearing source problem stated in (8).

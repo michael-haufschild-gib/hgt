@@ -819,3 +819,58 @@ the Galois group.  With `exists_tensor_comparison_matrix`, `adjoin_tensor_compar
 `exists_constant_coeff_mem_sigmaIdeal`, the comparison matrix `Z` lives in a finitely generated
 algebra of constants over `C`, and `exists_matrix_point_of_finiteType` specialises it to an element
 of `GL_n(C)` -- a point of the difference Galois group.
+
+## Lean progress — linear disjointness of constants, and a cross-module audit
+
+`GaloisForLFunctions.HTGeometry.SigmaConstantsDisjointness`, unconditional and axiom-clean:
+
+```text
+basisIndependentOver_of_constants
+    **constants linearly independent over the base constants are linearly independent over the
+    base** -- the zero-ideal case of the sigma-ideal theorem
+exists_nonzero_constant_span_mem_of_sigmaIdeal
+    a nonzero sigma-ideal meets the constant span nontrivially
+```
+
+Linear disjointness of the constants is therefore not an extra hypothesis of the torsor
+decomposition: it is a consequence of `sigma`-simplicity of the base, by the same minimal-support
+argument.  This is the last ingredient of the module isomorphism `R (x)_K R = R (x)_C E`.
+
+**Cross-module audit.**  All twenty-five modules added for these three cards were imported into a
+single file together and every capstone re-elaborated side by side with no conflict:
+`vectorAdditiveGaloisGroupEquivConstantField`, `embeddedManinHorizon_nonorthogonal_iff_isogenous`,
+`exists_picardVessiot_system`, `exists_picardVessiot_no_new_constants`,
+`exists_eq_algebraMap_of_isSigmaSimple`, `galoisRepresentation_injective`,
+`exists_tensor_comparison_matrix`, `adjoin_tensor_comparison_eq_top`,
+`exists_constant_coeff_mem_sigmaIdeal`, `basisIndependentOver_of_constants`,
+`exists_matrix_point_of_finiteType`, `besselOrderOperator_no_factorization`,
+`besselOrder_no_hyperexponential_solution`, `quotientDifferential_commutesDeriv`,
+`logDerivRelationSubgroup_eq_comap`.
+
+**Corpus asset for the analytic side.**  `HTGeometry.LinearOdeBohrSpectrum.bohrSpectrum_finite_of_linearOde`
+already proves that an almost-periodic solution of a nontrivial constant-coefficient linear
+differential equation has finite Bohr spectrum -- the exponential-polynomial shape Dreyfus's normal
+form asserts.  That is the entry point for item (4) and should be used rather than rebuilt.
+
+## Lean progress — from a point of the group to a Galois element
+
+`GaloisForLFunctions.HTGeometry.DifferenceSpecialization`, unconditional and axiom-clean:
+
+```text
+rightComponent psi                  the right component of a specialisation of the tensor square
+rightComponent_commutes             **it commutes with the difference operator** as soon as the
+                                    specialisation does
+rightComponent_fundamental          **it moves the fundamental matrix by the specialised comparison
+                                    matrix**: rightComponent psi (Y) = Y . psi(Z)
+isUnit_det_specialization           **the specialised comparison matrix is invertible**
+rightComponent_eq_of_map_eq         and it determines the right component on the fundamental matrix
+```
+
+This is the whole bridge from a point of the difference Galois group to an element of it: a
+`K`-algebra map `R (x)_K R -> R` restricting to the identity on the left copy has a right component
+which is a `K`-algebra endomorphism of `R`, commutes with `sigma`, and multiplies the fundamental
+matrix by an invertible matrix.
+
+What is left of the Galois correspondence is the *existence* of enough such specialisations, which
+is the torsor module decomposition `R (x)_K R = R (x)_C E` (all of whose ingredients are now in the
+tree) composed with the Nullstellensatz point of `NullstellensatzPoint`.

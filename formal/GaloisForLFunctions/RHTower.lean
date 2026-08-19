@@ -10596,6 +10596,7 @@ import GaloisForLFunctions.RHTower.PrimeArchBernsteinMobiusPullbackSource
 import GaloisForLFunctions.RHTower.Sieve.JointBudgetTermSplit
 import GaloisForLFunctions.RHTower.Sieve.JointBudgetMaster
 import GaloisForLFunctions.RHTower.SuzukiV2SphericalConvergence
+import GaloisForLFunctions.RHTower.SuzukiTaV2ProjectiveCharacteristic
 import GaloisForLFunctions.RHTower.MobiusRHDecayMoment
 import GaloisForLFunctions.RHTower.Sieve.Section4BlockMaster
 import GaloisForLFunctions.RHTower.Sieve.Section4Master
@@ -10603,3 +10604,4 @@ import GaloisForLFunctions.RHTower.BernsteinLegendreDoubleSourceKernel
 import GaloisForLFunctions.RHTower.MobiusPrelimitLaplaceIdentity
 import GaloisForLFunctions.RHTower.Sieve.JointLadderDefectDivisor
 import GaloisForLFunctions.RHTower.Sieve.JointSchedule
+import GaloisForLFunctions.RHTower.Sieve.JointSpectralDivisor

@@ -456,3 +456,43 @@ the ideal correspondence to `C`-points of the Galois group is no longer missing.
    is a `logDeriv` relation subgroup) — elimination in `DCF_0`;
 3. the `GL_2` case of Cassidy's classification;
 4. Dreyfus's normal form and its analytic realization (periodic meromorphic constants).
+
+
+## Card 1 — assembled state and the next construction
+
+`SigmaConstantsDisjointness` shows linear disjointness of the constants follows from
+`sigma`-simplicity, so all ingredients of the torsor module isomorphism `R ⊗_K R ≅ R ⊗_C E` are now
+present:
+
+* `exists_tensor_comparison_matrix` — `Z` exists, invertible, with constant entries;
+* `adjoin_tensor_comparison_eq_top` — `Z`'s entries and `1/det Z` generate `R ⊗_K R` over `R ⊗ 1`;
+* `basisIndependentOver_of_constants` — a `C`-basis of the constants stays `R`-independent;
+* `exists_constant_coeff_mem_sigmaIdeal` — the `sigma`-ideal correspondence;
+* `exists_matrix_point_of_finiteType` — the Galois group has `C`-points.
+
+**Next construction**: assemble these into the module isomorphism `R ⊗_K R ≅ R ⊗_C E` (spanning plus
+independence gives an `R`-basis of constants), then specialise at a `C`-point to obtain the
+`K`-algebra map `R ⊗_K R → R` whose right component is a difference automorphism of `R`.  That is
+`R^G = K`, the Galois correspondence.
+
+A cross-module audit imported all twenty-five new modules together and re-elaborated every capstone;
+no conflicts.
+
+For item (4), `LinearOdeBohrSpectrum.bohrSpectrum_finite_of_linearOde` is the corpus entry point:
+an almost-periodic solution of a nontrivial constant-coefficient linear ODE has finite Bohr
+spectrum, which is the exponential-polynomial shape Dreyfus's normal form asserts.
+
+
+## Card 1 — the specialisation bridge
+
+`DifferenceSpecialization` supplies the bridge from a point of the Galois group to an element of it:
+`rightComponent` of a specialisation `R ⊗_K R → R` fixing the left copy is a `K`-algebra
+endomorphism, commutes with `σ` when the specialisation does, and sends `Y` to `Y · ψ(Z)` with
+`ψ(Z)` invertible.
+
+So the only structural item left in the Galois correspondence is the module decomposition
+`R ⊗_K R ≅ R ⊗_C E` — spanning (`adjoin_tensor_comparison_eq_top`) plus independence
+(`basisIndependentOver_of_constants`) give a `C`-basis of constants that is an `R`-basis of the
+tensor square; the specialisation is then base change along a `C`-point
+(`exists_algHom_of_finiteType_of_isAlgClosed`).  That construction, and then items (2), (3), (4),
+are what remain.

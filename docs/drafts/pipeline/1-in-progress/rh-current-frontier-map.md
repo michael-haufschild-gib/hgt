@@ -7,8 +7,8 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 19 August 2026, commit
-`75e602643a98088a96425e3f4c150e403e60c272`, plus declaration-index review of current Lean
-working-tree sources. Scientific status below comes only from Lean declarations, dependencies,
+`116f12c32e816937967075f6937aa9accf336cf5`, plus declaration-index review of current Lean
+working-tree changes. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified as corpus source, not claimed build-audited in
 this documentation-only pass.
@@ -32,8 +32,8 @@ RH and its negation remain unproved.
 
 Formal corpus currently supports thirteen live architectures:
 `CCM-FU, C1, D2, E, G, L, O, P, Q, T, U, HC`, and newly promoted
-**SV2 (Suzuki spherical characteristic convergence)**. Eight corpus-born receiver/source-mechanism
-candidates remain: `SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS`. Routes R, IW, and AP are terminal as independent
+**SV2 (Suzuki spherical characteristic convergence)**. Nine corpus-born receiver/source-mechanism
+candidates remain: `SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS, SEC`. Routes R, IW, and AP are terminal as independent
 producers. Latest additions close important intermediate premises, but do not close any route's
 final open producer and prove neither RH nor its negation.
 
@@ -51,11 +51,11 @@ final open producer and prove neither RH nor its negation.
 | T | finite Xi-Taylor/theta-tail source -> exact reflection bridge -> raw core-current bound -> RH | Joint upper estimate for combined top-row plus surviving finite-translation remainder; in the endpoint specialization, pure short Möbius-block cancellation. |
 | U | shifted hard-edge source -> cofinal shifted Hankel tail or first-contact exclusion -> RH | Non-scalar source mechanism excluding the exact nonintegrable strict-frontier quotient, or uniform cofinal tail order. |
 | HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Absolute subquantum estimate or source-first prime-summability for the literal paired Gamma-six determinant current. |
-| SV2 | literal Suzuki energy space -> self-adjoint extension -> entire real-zero finite-aperture characteristic -> corrected two-chart spherical limit -> RH | Source-fix a cofinal aperture/phase family and prove finite-chart convergence on all Xi zeros plus reciprocal-chart convergence and eventual zero-freeness at poles. |
+| SV2 | literal Suzuki energy space -> paired self-adjoint characteristics -> bounded projective normal family -> global Xi projective target -> corrected two-chart spherical limit -> RH | Identify the canonical cofinal subsequential limit with the divisor-faithful global target, then extend convergence over the full finite chart and reciprocal pole chart. |
 
 Latest corpus changes promote SV2 because its actual finite-aperture characteristic, self-adjoint
-spectrum, entire Fourier realization, and real-zero law are now formal. They add PCS as a genuinely
-infinite all-prime operator candidate. They narrow `C1, E, G, L, O, HC` without closing their first
+spectrum, entire Fourier realization, and real-zero law are now formal. They add PCS and SEC as
+genuinely infinite nonphysical candidates. They narrow `C1, E, G, L, O, HC` without closing their first
 producers. The first open producer of `CCM-FU, D2, P, Q, T, U` is unchanged. In particular, the
 half-unit Mertens tower is exactly RH rather than a producer; high-height reciprocal-square Xi tails
 are closed but do not orient O's true ground; new joint-omega sieve budgets do not define E's fixed
@@ -138,7 +138,11 @@ finite positive measure dominating that raw carrier can represent the completed 
 The one-prime trace-class propagation step is also closed abstractly: a trace-class, finite-rank,
 Hilbert--Schmidt-factorized, or nuclear remainder changes every positive modulus power only by a
 Schatten-one operator (`ConnesConsaniTraceClassReduction.lean`). This does not construct the literal
-one-prime remainder or orient the resulting spectrum.
+one-prime remainder or orient the resulting spectrum. The generic Vivanti--Pringsheim theorem is
+now formal: a nonnegative-coefficient power series with finite positive radius cannot continue
+through its positive boundary point (`VivantiPringsheim.lean`). No Lean theorem yet instantiates
+its hypotheses on the completed Bernstein/Xi source or turns that generic singularity into the
+required corrected spectral orientation.
 
 **Open core.** Derive from fixed theta/prime--Gamma source, before divisor selection, one of:
 
@@ -219,11 +223,13 @@ and master assemblies. Their capstones correctly retain the normalized joint-bud
 annular saving, cofactor-mean, and defect estimates as hypotheses
 (`Sieve/JointOmegaFactorisation.lean`, `Sieve/JointOmegaSpectral.lean`,
 `Sieve/JointOmegaBudgetFromLadder.lean`, `Sieve/Section4Master.lean`). Thus the analytic accounting
-needed after a relation is supplied is formal. The working-tree divisor repair replaces the fatal
+needed after a relation is supplied is formal. The latest divisor repair replaces the fatal
 crude `#Q` ladder-defect coefficient by `(log B0/log RQ+1)^2`
 (`Sieve/JointLadderDefectDivisor.lean`). `Sieve/JointSchedule.lean` fixes the short/long prime
-ranges, common ladder ratio, Gallagher cut, expiry height, and eventual range disjointness. None of
-these theorems chooses adjacency or supplies the co-moving parity flux.
+ranges, common ladder ratio, Gallagher cut, expiry height, and eventual range disjointness.
+`Sieve/JointSpectralDivisor.lean` carries the divisor bound through the joint spectral/fibre bridge,
+replacing its fatal cardinality-squared rounding loss by a polylogarithmic bound. None of these
+theorems chooses adjacency or supplies the co-moving parity flux.
 
 **Open core.** Construct/extract one exact relation on ordinary squarefree integers directly from
 factorization data represented by Ramaré incidence, fixed independently of observed Möbius
@@ -291,7 +297,7 @@ At the causal boundary, Lean now identifies the critical Mertens transform exact
 (`MobiusCriticalLaplaceIdentity.lean`, `MobiusWeightedMomentZeroFree.lean`,
 `MobiusHalfUnitMomentTower.lean`, `MobiusRHDecayMoment.lean`). The positive-shift prelimit supplies
 an exact centered causal transform and turns one weighted prelimit moment into one zero-free
-half-plane (`MobiusPrelimitLaplaceIdentity.lean`, current working-tree source), but its unconditional
+half-plane (`MobiusPrelimitLaplaceIdentity.lean`), but its unconditional
 domain has only widths `alpha<2*omega`. Reaching the critical line needs
 `alpha<1/2+2*omega`, leaving an exact invariant deficit `1/2`
 (`MobiusPrelimitSafeWidth.lean`). Prime-aperture analysis is equally sharp:
@@ -340,7 +346,7 @@ algebraic source span lies in the same lower-jet annihilator
 `BurnolCoPoissonCosineClosedLowerJetSystem.lean`). These are coefficient-faithful source laws, not
 only raw zero annihilation. On the closed cosine-stable source space, zeroth-jet orthogonality is
 now equivalent to `zeta(w)=0`; one literal symmetric subwindow gives the reverse detection
-(`BurnolCoPoissonCosineClosedZeroJetDetection.lean`, current working-tree source). They do not prove
+(`BurnolCoPoissonCosineClosedZeroJetDetection.lean`). They do not prove
 boundedness of the higher-jet evaluator on the completed Hilbert source, higher-jet
 closure/aperture-complement completeness, or the physical descent.
 
@@ -597,7 +603,7 @@ then
 ```
 
 Every spoiled simple critical ordinate consumes at least one reflected off-line pair
-(`HorizontalSingletonFiberCharging.lean`, current working-tree source). This sharpens the finite
+(`HorizontalSingletonFiberCharging.lean`). This sharpens the finite
 incidence census but does not upper-bound the off-line term and therefore does not change HC's
 producer.
 
@@ -623,10 +629,12 @@ RH-equivalent; progress must be upstream arithmetic evaluation/cancellation of f
 ### SV2 — Suzuki energy-space spherical characteristic convergence
 
 **Architecture.** The literal Suzuki energy space at aperture `a` carries a symmetric minimal
-derivative with one-dimensional deficiency spaces. A boundary phase selects a self-adjoint
-extension. Its exact entire Fourier characteristic has only real zeros. A source-predeclared
-cofinal family of these characteristics is to converge to Suzuki's meromorphic Xi target in two
-charts of the Riemann sphere; closedness of the real axis then forces every centered Xi zero real.
+derivative with one-dimensional deficiency spaces. Boundary phases select self-adjoint extensions,
+and their exact entire Fourier characteristics have only real zeros. The fixed phase pair `0,pi`
+forms a pole-compatible projective characteristic. A canonical cofinal aperture family is compact
+in an upper-half-plane holomorphic chart. Identifying its limit with the divisor-faithful global Xi
+projective pair and extending to the reciprocal chart would satisfy the spherical wall; closedness
+of the real axis would then force every centered Xi zero real.
 
 **Proved.** Lean now constructs the minimal derivative, normalized deficiency vectors, every
 boundary-phase self-adjoint extension, and canonical spectral vector. The complex eigenspace is
@@ -650,15 +658,21 @@ Its genuine poles make all-plane ordinary compact-open convergence impossible. L
 formalizes the correct spherical atlas: ordinary convergence on a preconnected finite chart
 containing the whole Xi divisor, reciprocal convergence on an infinity chart, and eventual
 zero-freeness of the approximants on compacta in that infinity chart. This wall implies RH
-(`SuzukiV2SphericalConvergence.lean`).
+(`SuzukiV2SphericalConvergence.lean`). `SuzukiTaV2ProjectiveCharacteristic.lean` now closes the
+previous family-selection and local compactness gaps. It builds the literal two-angle quotient,
+proves it meromorphic globally, holomorphic and aperture-uniformly bounded in the upper half-plane,
+chooses the canonical apertures `a_n=n+1`, and obtains a cofinal subsequence converging uniformly on
+a fixed compact upper-half-plane ball to a holomorphic limit. It also proves the cross-multiplied,
+division-free identity between the global Xi Livsic pair and the v2 projective target.
 
-**Open core.** Choose apertures, boundary phases, and any required source normalization before
-examining zeros, with apertures cofinal, and prove that the resulting actual Suzuki
-characteristics satisfy the two-chart spherical wall. The finite chart must retain every Xi zero;
-the reciprocal chart must carry each target pole with eventual compact zero-freeness. Actual
-real-zero approximants now exist, so approximation construction and self-adjointness are closed.
-Only source-selected cofinal spherical convergence remains. The old all-plane entire wall stays
-terminal and cannot be repaired by finite holomorphic exponential gauges.
+**Open core.** Prove that the canonical normal-family limit is the global Xi projective target,
+not an arbitrary bounded holomorphic subsequential limit, and propagate that identification over a
+finite chart containing every Xi zero. Then establish reciprocal-chart convergence and eventual
+compact zero-freeness at every target pole. Aperture schedule, phase pair, projective normalization,
+upper-half-plane denominator control, and local subsequential compactness are closed. The missing
+step is coefficient-faithful global limit identification plus the pole chart, not construction of
+real-zero approximants. The old all-plane entire wall stays terminal and cannot be repaired by
+finite holomorphic exponential gauges.
 
 ## Corpus-born candidate openings
 
@@ -788,6 +802,33 @@ right-half zero-free endpoint `rh_iff_xi_ne_zero_right` gives RH after the stand
 transfer. PCS is therefore a genuine new infinite nonphysical candidate, not a live route and not
 a reformulation of classical finite spectral approximation.
 
+### SEC — prime-seam one-ended coherence
+
+**Architecture.** The canonical FE--Schwarz seam charge is a complex label on the infinite prime
+set. Put one fixed, source-predeclared preconnected one-ended graph on those primes. If only
+finitely many graph edges see a change of seam value, end reconstruction makes the seam eventually
+constant; its proved cofinal decay then kills that constant, and one zero seam forces the divisor
+onto the critical line. This is an infinite graph-coherence route, not a finite spectral or positive
+measure route.
+
+**Proved.** Canonical prime seams decay to zero cofinally throughout the open critical strip, and a
+single prime seam vanishes exactly when `Re(rho)=1/2` (`XiPrimeSeamCoherenceCollapse.lean`,
+`HeatAperturePrimeSeamReflection.lean`). Arbitrary-label one-ended reconstruction now proves finite
+edge variation implies eventual constancy without any finite-value hypothesis
+(`ArbitraryLabelEndReconstruction.lean`). Combining them,
+`XiPrimeSeamOneEndedCollapse.lean` proves that finite seam variation on any infinite preconnected
+finite-boundary one-ended prime graph forces `Re(rho)=1/2`. On the increasing prime ray, eventual
+equality of consecutive seam values already suffices. This is strictly weaker in form than demanding
+all prime seams equal, whose global Xi version is already exactly RH.
+
+**Open core.** Construct one graph from completed arithmetic source data, independently of Xi
+divisors, prove it is preconnected and finite-boundary one-ended, and prove the canonical seam has
+finite edge variation on that same graph for every Xi zero copy. The prime-ray specialization asks
+for eventual consecutive equality and is a sharp endpoint, not yet a producer. No Lean theorem
+derives either variation law from prime--Gamma coefficients. SEC is therefore a genuine new
+infinite nonphysical candidate, but not live; arbitrary choice of a graph after inspecting a seam
+would be circular.
+
 ## Formal advances that do not change route count
 
 - `CCMCentralBinomialIntegrality.lean`, `CCMLambertRadicalIntegrality.lean`, and
@@ -864,10 +905,18 @@ a reformulation of classical finite spectral approximation.
   `DifferenceTensorTorsor.lean`, `ParameterizedDifferenceGalois.lean`,
   `DifferenceOperatorFactorization.lean`). `SigmaIdealConstantCoefficients.lean` adds the
   minimal-support engine producing nonzero constant-coefficient elements in sigma-ideals, the
-  algebraic input for a tensor-square torsor correspondence. This is a genuine non-classical
+  algebraic input for a tensor-square torsor correspondence. `NullstellensatzPoint.lean` closes a
+  further algebraic gap: every nontrivial finite-type algebra over algebraically closed constants
+  has a constant-valued point, and an invertible comparison matrix specializes to an invertible
+  matrix over those constants. `SigmaConstantsDisjointness.lean` derives linear disjointness of
+  constants from sigma-simplicity and proves a nonzero sigma-ideal meets the constant span
+  nontrivially. `DifferenceSpecialization.lean` turns a sigma-compatible tensor-square point into a
+  base endomorphism commuting with the difference operator and moving the fundamental matrix by an
+  invertible specialized comparison matrix. Thus the formal Galois torsor has actual matrix points and faithful constant
+  contraction rather than only an ideal-theoretic avatar. This is a genuine non-classical
   carrier adjacent to AF/AP/IRK, but no literal prime--Gamma difference system, source-selected
   invariant, or critical-line reader exists. It remains pre-route infrastructure rather than a
-  ninth candidate.
+  tenth candidate.
 - Finite quantum-channel diamond contraction and Markovian return recovery are now exact, including
   ancilla-assisted information-loss and inverse-word incidence reflection
   (`QuantumChannelDiamond.lean`, `MarkovianReturnRecovery.lean`). Exact return is rigid: every
@@ -884,19 +933,35 @@ a reformulation of classical finite spectral approximation.
   `FiniteRegularizedDeterminantOrder.lean`, `RegularizedDeterminantForgetting.lean`,
   `PencilDeterminantCompletion.lean`). These close finite OPUC/C1/O realization and completion
   adapters, not source Toeplitz sections, cofinal convergence, orientation, or ground sign.
+  `ConnesVanSuijlekomAppendixB.lean` additionally identifies its three-parameter source cone with
+  the exact positive-semidefinite half-space image and preserves and reflects extreme rays under
+  that coordinate map. This is finite cone geometry, not a source-selected Xi extremal ray.
   `MicroSpectrumMomentAssembly.lean` still warns that lower finite moments can hide in arbitrarily
   small spectral energy.
 - Siegel reduction/finiteness and damped quasi-abelian Poincare normal convergence are now formal
   (`SiegelFiniteness.lean`, `QuasiAbelianDampedNormalConvergence.lean`). They supply finite
   identifications and locally normal aggregate carriers, but no completed-zeta source specialization
   or RH reader. They therefore do not revive AP or AF.
+- `ArbitraryLabelEndReconstruction.lean` removes the finite-label hypothesis from one-ended
+  coherence reconstruction: on an infinite preconnected finite-boundary one-ended graph, any
+  arbitrary-type label with finitely many changing edges is constant off a finite vertex set. This
+  strengthens a global-coherence receiver, but the corpus supplies no literal completed-arithmetic
+  graph whose finite variation or end value yields an RH orientation; it is not a new route.
 - Polynomial-matrix quadratic-rate relations now have endpoint-complete extension charts, exact
   six-real-coordinate physical leaf charts, and a shell-global nonflatness/orbit-escape capstone:
   one simple-spectrum witness forces failure inside every nonempty real open set of interaction
   coefficients (`TheoremAExtensionCapstone.lean`, `PhysicalChartCoordinates.lean`,
-  `ShellQuadraticRateGlobalisation.lean`, `SpanCoordinateJunction.lean`, current working-tree
-  extensions). This supplies finite spectral transversality potentially useful to HC/SV2/OPUC, but
-  has no arithmetic specialization or Xi endpoint and cannot replace a cofinal source law.
+  `ShellQuadraticRateGlobalisation.lean`, `SpanCoordinateJunction.lean`).
+  `AnchorStarAdjugateTransfer.lean` identifies the full-chart adjugate eigenvectors on
+  the anchor-star line with the split-family germs and transfers germ endpoint completeness to all
+  sufficiently small nonzero couplings. `ChartEndpointGenericIntersection.lean` then proves a
+  complete chart point exists and every dense parameter set meets the endpoint-complete locus.
+  `GeneralParametricEigenbranch.lean` removes the diagonal-base restriction: any analytic finite
+  matrix family at a unitarily diagonalizable simple point has analytic eigenvalue branches and
+  analytic canonical adjugate eigenvectors.
+  This supplies finite spectral transversality potentially
+  useful to HC/SV2/OPUC, but has no arithmetic specialization or Xi endpoint and cannot replace a
+  cofinal source law.
 - New sieve mean-value, divisor-moment, exceptional-set, and Halasz--Montgomery modules close exact
   analytic adapters used in long chains (`Sieve/DivisorMomentMeanSquare.lean`,
   `Sieve/HalaszMontgomeryIntegral.lean`, `Sieve/Section4Core.lean`). Their capstones retain explicit
@@ -905,22 +970,30 @@ a reformulation of classical finite spectral approximation.
 - `PrimeArchBernsteinMobiusPullback.lean` and
   `PrimeArchBernsteinMobiusPullbackSource.lean` remove finite Bernstein coefficients from the
   prime--arch moment germ, identify the pullback with a two-torus Gutzmer susceptibility, and give
-  an exact continued prime--arch trace source formula. The working-tree
+  an exact continued prime--arch trace source formula.
   `BernsteinLegendreDoubleSourceKernel.lean` now proves the full bivariate-moment Bernstein row
   kernel, its Legendre coefficient identity, conjugate-reflection quadratic factorization, positive
   first branch point, and—under non-RH—equality of that pinch radius with the attained prime--arch
   Abel critical radius. This improves the C1/OPUC source interface and precisely locates the
   false-RH singularity, but supplies no unconditional sign, convergence, or RH handoff.
-- `EulerSquarefreeDyadicStateFactorization.lean` (current working-tree source) proves the unique
+- `EulerSquarefreeDyadicStateFactorization.lean` proves the unique
   squarefree-times-square mass identity, constructs normalized Euler and signed-squarefree pointed
   states, builds the exact Möbius-phase arithmetic unitary, and proves coordinatewise tensor-state
-  factorization `U e_sigma = s_sigma tensor e_(2 sigma)`. This is a genuine source-side paired
-  decomposition adjacent to E/MSC, but contains no Xi, divisor, boundary landing, or RH implication;
-  it does not create another route.
-- `VivantiPringsheim.lean` (current working-tree source) presently proves nonnegative shifted
-  coefficients and the Tonelli/binomial resummation identities. The advertised positive-boundary
-  singularity theorem is not yet a declaration, so it cannot yet be used to turn the Bernstein
-  branch point into a C1/OPUC obstruction.
+  factorization `U e_sigma = s_sigma tensor e_(2 sigma)`.
+  `EulerSquarefreeDyadicLogTransport.lean` transports the logarithmic observable across that same
+  unitary with no core-domain premise and proves the convergent pointed-current law
+  `b_sigma = a_sigma + 2 b_(2 sigma)`. This is a genuine infinite, signed, paired source
+  decomposition adjacent to E/MSC, now preserving its logarithmic current as well as its state, but
+  it contains no Xi divisor, completed boundary landing, or RH implication; it does not create
+  another route. `EulerSquarefreeDyadicLogMoments.lean` further proves convergence of every
+  logarithmic moment and the pointwise dyadic product identities through order two. Its advertised
+  summed second-moment and variance-additivity capstones are not yet declarations, so current
+  route credit stops at those inputs.
+- `VivantiPringsheim.lean` now proves the full positive-boundary theorem: a power series with
+  nonnegative real coefficients and finite positive radius has no analytic continuation across its
+  positive real boundary point. This closes the generic analytic lemma. The corpus still has no
+  theorem applying its convergence/divergence hypotheses to the completed Bernstein/Xi series or
+  deriving the C1/OPUC source orientation from that singularity, so route status does not change.
 
 ## Terminal and retired mechanisms
 
@@ -1061,12 +1134,13 @@ are mostly closed; arithmetic order on selected state remains.
 Fixed degree/aperture/packet/source quotient often behaves well while failure moves diagonally. U
 gives explicit countermodel and actual escape schedules. T shows refinement transfers current
 rather than removing it. MSC proves mass escapes beyond every fixed compact synthesis and that full
-retention forces unbounded scaled aperture; SV2 requires simultaneous finite and reciprocal chart
-control. Cofinal argument needs synchronized estimate, not iterated pointwise limits.
+retention forces unbounded scaled aperture. SV2 now has a canonical cofinal projective normal family
+but still needs global target identification and reciprocal-chart control. Cofinal argument needs
+synchronized estimate, not iterated pointwise limits.
 
 ### Singular boundary is not removable technicality
 
-L, G, P, U, O, SV2, and PCS reach completion boundary where smooth interior misses state. Gamma
+L, G, P, U, O, SV2, PCS, and SEC reach completion boundary where smooth interior misses state. Gamma
 sewing beats finite Rees order; Kelvin charts cannot share scalar renormalization; first contact can
 be rough; an ordinary index can cancel simultaneous kernel/cokernel birth. Needed objects are
 relative, graph-valued, nonlocal, multi-chart, or non-scalar. L's exact lower jets show that even
@@ -1089,11 +1163,13 @@ already exist; only source estimate remains. IW and AP were hostile tests of thi
 terminal: IW's operation is exactly the desired divisibility, while AP's genuine source reporter
 cannot act on fixed completed-Xi receiver.
 
-MSC, SV2, and PCS form a second non-classical family: infinite paired/operator source followed by a
+MSC, SV2, PCS, and SEC form a second non-classical family: infinite paired/operator/graph source followed by a
 singular, meromorphic, or homological boundary landing. MSC has the carrier but lacks pointed
-divisor covariance. SV2 now has actual entire real-zero characteristics and lacks only source-fixed
-cofinal two-chart convergence. PCS has an exact all-prime graph, spectral gap, and divisor boundary
-complex but lacks a secondary class capable of seeing homology whose ordinary index is zero. None
+divisor covariance. SV2 now has actual entire real-zero characteristics, a canonical paired
+projective family, and local cofinal compactness; it lacks global target identification and the
+reciprocal pole chart. PCS has an exact all-prime graph, spectral gap, and divisor boundary
+complex but lacks a secondary class capable of seeing homology whose ordinary index is zero. SEC
+has an exact end-coherence collapse but lacks a source-fixed graph and finite-variation law. None
 can be reduced to one finite positive object or one scalar response without hitting a proved
 firewall.
 
@@ -1120,7 +1196,8 @@ Open cores fall into six classes:
 5. **Cofinal synchronization:** one estimate uniform in moving degree/aperture/height
    (CCM-FU, E, O, T, U, SV2).
 6. **Source-native internal dynamics:** projective module, corrected Stokes category, or monodromy
-   on actual arithmetic carrier before divisor selection (SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS).
+   on actual arithmetic carrier before divisor selection (SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS,
+   SEC).
    Abstract Weyl existence, Arakelov power pullback, all-plane entire Suzuki convergence, and finite
    real quaternionic descent are classified terminal in their stated architectures.
 
@@ -1160,14 +1237,17 @@ is:
 13. Can the concrete Möbius signed-channel feature cross its exact half-unit continuation deficit,
     pointed residue/graph-domain wall, and unbounded-aperture requirement to satisfy a source-derived
     four-unit covariance bound?
-14. Which source-predeclared cofinal apertures, phases, and normalizations make the actual Suzuki
-    characteristics converge in both spherical charts while retaining the full Xi divisor?
+14. What source identity forces the canonical Suzuki projective normal-family limit to equal the
+    global Xi Livsic/projective target, and how does that identity propagate through the reciprocal
+    pole chart?
 15. Can critical Schur monodromy, a difference Picard--Vessiot group, a Manin-horizon sharp group, or
     approximate quantum-return loss be instantiated on the literal completed arithmetic source and
     coupled coefficient-faithfully to Xi before divisor selection?
 16. What completed reflection-sensitive secondary class detects prime co-shift divisor homology
     despite its identically zero ordinary Fredholm index, and why must that class exclude homology
     throughout `1/2<Re(s)<1`?
+17. Which fixed arithmetic graph on primes is one-ended and makes the canonical FE--Schwarz seam
+    have finite edge variation for every Xi divisor, without choosing edges from the observed seam?
 
 Until one is answered, endpoint reformulations, finite real-zero models, seed asymptotics, diagonal
 moment inequalities, or scalar transport identities do not move formal RH frontier.

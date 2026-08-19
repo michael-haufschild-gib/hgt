@@ -4275,3 +4275,101 @@ With this, **both** places where the crude `#Q` appeared are repaired — the no
 term by the Turán–Kubilius energy (`Sieve/OmegaQEnergy`), and the short-ladder defect by the divisor
 bound.  Nothing in the lane now carries a factor larger than a power of the logarithm except the
 polynomials' own lengths.
+
+### Milestone B, brick 44 — the schedule, and a large reuse (2026-08-19)
+
+`Sieve/JointSchedule` (axiom-clean, wired).  The design decision that shortens the remaining work
+most: **both designated ranges are instances of the corpus's own ladder parameters**
+`Sieve/SpectralParameters.{ladderEta, ladderSteps, ladderTop}`, at two different exponent pairs.
+
+| range | corpus instance | base | top | ratio | mass |
+|-|-|-|-|-|-|
+| short `P` | `(β, 1/2)` | `siftStart (β/2) x` | `ladderTop β (1/2) x` | `𝓁^{−β/2−5/4}` | `(β/2)log 𝓁` |
+| long `Q` | `(b, a/b)`, `9/10 < a < b < 1` | `siftStart a x` | `ladderTop b (a/b) x` | `𝓁^{a−b−5/4}` | `(b−a)log 𝓁` |
+
+so `tendsto_ladderMass`, `eventually_ladderTop_facts`, `ladderTop_bounds`, `ladderSteps_le` and
+`GeomBlockPrimesRange.mem_geomBlock_primesRange` all apply **verbatim** to each range.  The
+independent choice `η = 𝓁^{-10}` I had first derived is unnecessary: the corpus's `𝓁^{−β/2−5/4}`
+already satisfies the gap-budget constraint `η = o(𝓁^{-(β/2+3−2a)})` whenever `a > 7/8`, and
+`a > 9/10` is forced anyway by Lemma 2.3.
+
+Landed:
+
+* `jointCut c β x = √x / h`, `jointExpiry c β x = jointCut · 𝓁^{β/2}` — the two genuinely new
+  parameters (the cut makes `δ·Wc ≤ 1`; the expiry height is the *low* one of brick 37);
+* `jointShortSet`, `jointLongSet`, and for each: primality, the lower bound, and
+  **`jointShortSet_range` / `jointLongSet_range`** (the covering hypothesis `geomBlock_biUnion_eq`
+  wants, immediate from the top being a floor);
+* **`eventually_jointSets_disjoint`** — from `ladderTop β (1/2) x ≤ cardLength β x = exp(𝓁^β)` and
+  `siftStart a x ≥ exp(𝓁^a)` with `β < a`;
+* `jointShortSet_mass`, `jointLongSet_mass` (via `sum_inv_primesRange`), and
+  **`tendsto_jointShortMass`**, **`tendsto_jointLongMass`**, `eventually_jointMass_pos` — both
+  harmonic masses tend to infinity.
+
+That discharges the fourth row of the budget table (the joint Turán–Kubilius variance, whose
+quotient is `≍ 4(1/W_P + 1/W_Q) + 8#P#Q/(W_PW_Q√x)`) and half of the third.
+
+### The verified numerology at this schedule
+
+Written out in full before any of it was formalised, and each line checked against the estimates
+already proved:
+
+| quantity | at the schedule | requirement | margin |
+|-|-|-|-|
+| short defect, gap sum | `L_P B₀η_P² + 5h + 2B₀/R_P + 5L_P + B₀/(R_P²η_P)` | `o(√x/polylog)` | `B₀/R_P = √x·exp(−𝓁^{β/2})` dominates, and `exp` beats every polylog |
+| long defect (per block) | `(T₀+B₁)·polylog·[gap sum_j]` | `o(B₁²)` | `T₀ ≤ B₁·𝓁^{β/2}`, so it reduces to `[gap sum_j] = o(B₁/polylog)` |
+| non-exceptional | `V_j²·𝓁^{β/2}·B₁²W_Q²` | `ε·stepMass_j²B₀²W_Q²` | threshold `V_j = #B_j/𝓁^{β/2}` gives `ε = 𝓁^{−β/2}` |
+| exceptional, main | `𝓁^{a+b+20}ρ²B₁²` | `ε B₁²W_Q` | `ρ = exp(−c𝓁^{a−9/10}/(log𝓁)²)` beats every power of `𝓁` |
+| exceptional, HM cross | `𝓁^{a+21}ρ²·|E_j|·√T₀·B₁·exp(𝓁^b)` | `ε B₁²W_Q` | `x^{1/4+o(1)}` against `x^{1/2−o(1)}` |
+| disc | `𝓁^{b−a}B₁²·exp(−2c(log B₁)^{1/10})·2w₀` | `ε B₁²W_Q` | the low-frequency saving beats every power of `𝓁` |
+
+Every margin is comfortable; nothing is tight.  What is left is to write these six lines as Lean
+limits at the schedule and feed them through `Sieve/Section4Master` and
+`Sieve/JointBudgetMaster.jointOmegaBudget_le`.
+
+### Milestone B, brick 45 — the THIRD place `#Q` was fatal, and the divisor-bound chain (2026-08-19)
+
+Instantiating the budget table at the schedule of brick 44 exposed the last one.  The fibre bridge
+`Sieve/ScaledFibreBridge.sum_fibreSum_sq_le_integral_scaled` pays a rounding error `102·B²·(√x+1)`
+where `B` is a **global sup bound** for the weight, and `Sieve/JointOmegaSpectral` supplies
+`B = (#P+1)(#Q+1)`.  Dividing the resulting budget term by `(W_PW_Q)²h²√x`:
+
+```text
+   204·B²·(√x+1) / ((W_PW_Q)²h²√x)  ≍  (#P·#Q)²/h²  ≍  exp(2(log x)^b)/(log x)^{2β+2b}  →  ∞ .
+```
+
+The `#P` half is harmless (`#P ≍ h/(log x)^β`, so it cancels `h²`); the `#Q` half is not, because
+the long range sits at `exp((log x)^b)` with `b > 9/10`, far above the window.
+
+Same repair, third time: the fibre sums and the window sums only ever touch indices in `[1,B₀]`
+(`Sieve/FibreWindowBridge.innerFibre_subset_fibreIndex`), and there both designated counts obey the
+divisor bound, so
+
+```text
+   |μ(n)·ω_P(n)·ω_Q(n)|  ≤  (log B₀/log R_P)·(log B₀/log R_Q)  ≍  (log x)^{2−β/2−a} ,
+```
+
+a power of the logarithm.  `Sieve/JointSpectralDivisor` (axiom-clean, wired) carries the whole
+reduction with that bound as a parameter:
+
+| name | content |
+|-|-|
+| `jointOmegaWeightR P Q N` | the joint weight cut off outside `[1,N]` |
+| **`abs_jointOmegaWeightR_le`** | the divisor bound, uniform in `n` |
+| `logWindowSum_jointOmegaWeightR` | the cut-off changes neither the window sum nor the fibre sums |
+| **`sum_sq_fibreSum_moebius_le_jointSpectralD`** | the spectral reduction with `Bd` as a parameter |
+| `jointOmegaBudgetD` | the budget with the rounding error carried by `Bd` |
+| **`averagedMeanSquare_moebius_of_jointOmegaBudgetD`** | the gate |
+| **`jointOmegaBudgetD_le`** | the master, spectral part replaced |
+
+**All three appearances of the crude `#Q` are now repaired**, and the pattern was the same each
+time: the estimate only sees indices below `B₀`, and there `ω_Q` is a power of the logarithm, never
+a power of `x`.
+
+* non-exceptional Lemma 2.4 — Turán–Kubilius **energy** (`Sieve/OmegaQEnergy`);
+* short-ladder defect — **divisor bound** (`Sieve/JointLadderDefectDivisor`);
+* fibre-bridge rounding error — **divisor bound** (`Sieve/JointSpectralDivisor`).
+
+The lane now carries no factor larger than a power of the logarithm anywhere except the
+polynomials' own lengths.  The remaining work is the six limits of the numerology table, fed through
+`Sieve/Section4Master` and `jointOmegaBudgetD_le`.

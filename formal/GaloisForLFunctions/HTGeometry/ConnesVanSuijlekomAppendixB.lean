@@ -270,6 +270,13 @@ private theorem connesVanSuijlekomB2_offDiag_eq (Q : Matrix (Fin 2) (Fin 2) ℝ)
   have h := congrFun (congrFun hQ.isHermitian.eq 1) 0
   simpa [Matrix.conjTranspose_apply] using h.symm
 
+private theorem connesVanSuijlekomB2_matrix_fin_two_eq
+    {A B : Matrix (Fin 2) (Fin 2) ℝ}
+    (h00 : A 0 0 = B 0 0) (h01 : A 0 1 = B 0 1)
+    (h10 : A 1 0 = B 1 0) (h11 : A 1 1 = B 1 1) : A = B := by
+  rw [Matrix.eta_fin_two A, Matrix.eta_fin_two B]
+  simp [h00, h01, h10, h11]
+
 /-- A positive semidefinite `2 × 2` matrix with positive determinant remains positive
 semidefinite after removing a nonzero small multiple of `E₀₀`. -/
 private theorem connesVanSuijlekomB2_sub_det_half_e00_posSemidef
@@ -285,31 +292,37 @@ private theorem connesVanSuijlekomB2_sub_det_half_e00_posSemidef
     nlinarith
   have heps : (Q.det / (2 * Q 1 1)) * Q 1 1 = Q.det / 2 := by
     field_simp
-    ring
   apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
   · show (Q - (Q.det / (2 * Q 1 1)) • connesVanSuijlekomB2E00)ᴴ =
       Q - (Q.det / (2 * Q 1 1)) • connesVanSuijlekomB2E00
     ext i j
     fin_cases i <;> fin_cases j <;>
       simp [connesVanSuijlekomB2E00, Matrix.conjTranspose_apply,
-        hQ.isHermitian.eq, h10]
+        h10]
   · intro v
     have hv : v = (![v 0, v 1] : Fin 2 → ℝ) := by
       funext i
       fin_cases i <;> rfl
     rw [hv]
-    have hsq : 0 ≤ (Q 1 1 * v 0 + Q 0 1 * v 1) ^ 2 := sq_nonneg _
+    have hsq : 0 ≤ (Q 1 1 * v 1 + Q 0 1 * v 0) ^ 2 := sq_nonneg _
     have hterm : 0 ≤ (Q.det / 2) * (v 0) ^ 2 := by
       exact mul_nonneg (by linarith) (sq_nonneg _)
     have hprod : 0 ≤ Q 1 1 *
         (star (![v 0, v 1] : Fin 2 → ℝ) ⬝ᵥ
           ((Q - (Q.det / (2 * Q 1 1)) • connesVanSuijlekomB2E00) *ᵥ
             (![v 0, v 1] : Fin 2 → ℝ))) := by
-      simp only [star_trivial]
-      simp [connesVanSuijlekomB2E00, dotProduct, Matrix.mulVec, Fin.sum_univ_two,
-        Matrix.det_fin_two, h10]
-      nlinarith
-    exact nonneg_of_mul_nonneg_left hprod h11pos
+      have hid : Q 1 1 *
+          (star (![v 0, v 1] : Fin 2 → ℝ) ⬝ᵥ
+            ((Q - (Q.det / (2 * Q 1 1)) • connesVanSuijlekomB2E00) *ᵥ
+              (![v 0, v 1] : Fin 2 → ℝ))) =
+          (Q 1 1 * v 1 + Q 0 1 * v 0) ^ 2 + (Q.det / 2) * (v 0) ^ 2 := by
+        simp [connesVanSuijlekomB2E00, dotProduct, Matrix.mulVec, Fin.sum_univ_two,
+          Matrix.det_fin_two, h10]
+        field_simp
+        ring
+      rw [hid]
+      exact add_nonneg hsq hterm
+    nlinarith
 
 private theorem connesVanSuijlekomB2_target_not_extreme_of_det_pos
     (Q : Matrix (Fin 2) (Fin 2) ℝ) (hQ : Q.PosSemidef)
@@ -347,7 +360,7 @@ private theorem connesVanSuijlekomB2_target_not_extreme_of_det_pos
   have hrzero : r = 0 := by
     have hentry := congrFun (congrFun hBscale 1) 1
     simp [connesVanSuijlekomB2E00] at hentry
-    rcases mul_eq_zero.mp hentry.symm with hrzero | hQzero
+    rcases hentry with hrzero | hQzero
     · exact hrzero
     · linarith
   have hBzero : ε • connesVanSuijlekomB2E00 = 0 := by
@@ -355,6 +368,130 @@ private theorem connesVanSuijlekomB2_target_not_extreme_of_det_pos
   have hentry := congrFun (congrFun hBzero 0) 0
   simp [connesVanSuijlekomB2E00] at hentry
   exact hεpos.ne' hentry
+
+private theorem connesVanSuijlekomB2_psd_summand_mulVec_zero
+    (B C Q : Matrix (Fin 2) (Fin 2) ℝ) (hB : B.PosSemidef) (hC : C.PosSemidef)
+    (hsum : B + C = Q) (w : Fin 2 → ℝ) (hw : Q *ᵥ w = 0) :
+    B *ᵥ w = 0 ∧ C *ᵥ w = 0 := by
+  have hBnonneg : 0 ≤ star w ⬝ᵥ (B *ᵥ w) := hB.dotProduct_mulVec_nonneg w
+  have hCnonneg : 0 ≤ star w ⬝ᵥ (C *ᵥ w) := hC.dotProduct_mulVec_nonneg w
+  have hsumzero : star w ⬝ᵥ (B *ᵥ w) + star w ⬝ᵥ (C *ᵥ w) = 0 := by
+    calc
+      star w ⬝ᵥ (B *ᵥ w) + star w ⬝ᵥ (C *ᵥ w) =
+          star w ⬝ᵥ ((B + C) *ᵥ w) := by
+            simp [add_mulVec]
+            ring
+      _ = star w ⬝ᵥ (Q *ᵥ w) := by rw [hsum]
+      _ = 0 := by rw [hw]; simp
+  have hBzero : star w ⬝ᵥ (B *ᵥ w) = 0 := by linarith
+  have hCzero : star w ⬝ᵥ (C *ᵥ w) = 0 := by linarith
+  exact ⟨hB.dotProduct_mulVec_zero_iff w |>.mp hBzero,
+    hC.dotProduct_mulVec_zero_iff w |>.mp hCzero⟩
+
+private theorem connesVanSuijlekomB2_psd_rowcol_zero_of_diag_zero
+    (B : Matrix (Fin 2) (Fin 2) ℝ) (hB : B.PosSemidef) (h00 : B 0 0 = 0) :
+    B 0 1 = 0 ∧ B 1 0 = 0 := by
+  let e0 : Fin 2 → ℝ := ![1, 0]
+  have hdot : star e0 ⬝ᵥ (B *ᵥ e0) = 0 := by
+    simp [e0, dotProduct, Matrix.mulVec, Fin.sum_univ_two, h00]
+  have hvec : B *ᵥ e0 = 0 := hB.dotProduct_mulVec_zero_iff e0 |>.mp hdot
+  have h10 : B 1 0 = 0 := by
+    have h := congrFun hvec 1
+    simpa [e0, Matrix.mulVec, dotProduct, Fin.sum_univ_two] using h
+  have h01 : B 0 1 = 0 := by
+    have h := congrFun (congrFun hB.isHermitian.eq 0) 1
+    simpa [Matrix.conjTranspose_apply, h10] using h.symm
+  exact ⟨h01, h10⟩
+
+private theorem connesVanSuijlekomB2_psd_summand_eq_smul_of_det_zero
+    (B C Q : Matrix (Fin 2) (Fin 2) ℝ) (hB : B.PosSemidef) (hC : C.PosSemidef)
+    (hQ : Q.PosSemidef) (hsum : B + C = Q) (hdet : Q.det = 0) (hQne : Q ≠ 0) :
+    ∃ r : ℝ, 0 ≤ r ∧ B = r • Q := by
+  have hQ10 : Q 1 0 = Q 0 1 := connesVanSuijlekomB2_offDiag_eq Q hQ
+  by_cases hQ00 : Q 0 0 = 0
+  · have hQ01 : Q 0 1 = 0 := by
+      rw [Matrix.det_fin_two, hQ10, hQ00] at hdet
+      nlinarith [sq_nonneg (Q 0 1)]
+    have hQ11ne : Q 1 1 ≠ 0 := by
+      intro hQ11
+      apply hQne
+      ext i j
+      fin_cases i <;> fin_cases j <;> simp [hQ00, hQ01, hQ10, hQ11]
+    have hQ11nonneg : 0 ≤ Q 1 1 := hQ.diag_nonneg
+    have hB00nonneg : 0 ≤ B 0 0 := hB.diag_nonneg
+    have hC00nonneg : 0 ≤ C 0 0 := hC.diag_nonneg
+    have hsum00 := congrFun (congrFun hsum 0) 0
+    have hB00 : B 0 0 = 0 := by
+      simp [hQ00] at hsum00
+      linarith
+    have hBrows := connesVanSuijlekomB2_psd_rowcol_zero_of_diag_zero B hB hB00
+    refine ⟨B 1 1 / Q 1 1, div_nonneg (hB.diag_nonneg) hQ11nonneg, ?_⟩
+    apply connesVanSuijlekomB2_matrix_fin_two_eq
+    · simp [hB00, hQ00]
+    · simp [hBrows.1, hQ01]
+    · simp [hBrows.2, hQ10, hQ01]
+    · simp only [Matrix.smul_apply, smul_eq_mul]
+      field_simp
+  · have hQ00nonneg : 0 ≤ Q 0 0 := hQ.diag_nonneg
+    have hQ00pos : 0 < Q 0 0 := lt_of_le_of_ne hQ00nonneg (Ne.symm hQ00)
+    let w : Fin 2 → ℝ := ![-Q 0 1, Q 0 0]
+    have hQvec : Q *ᵥ w = 0 := by
+      ext i
+      fin_cases i
+      · simp [w, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+        ring
+      · rw [Matrix.det_fin_two, hQ10] at hdet
+        simp [w, Matrix.mulVec, dotProduct, Fin.sum_univ_two, hQ10]
+        linarith
+    have hBvec :=
+      (connesVanSuijlekomB2_psd_summand_mulVec_zero B C Q hB hC hsum w hQvec).1
+    have hB10 : B 1 0 = B 0 1 := connesVanSuijlekomB2_offDiag_eq B hB
+    have hBrow0 := congrFun hBvec 0
+    have hBrow1 := congrFun hBvec 1
+    simp [w, Matrix.mulVec, dotProduct, Fin.sum_univ_two] at hBrow0 hBrow1
+    rw [hB10] at hBrow1
+    have hdet' : Q 0 0 * Q 1 1 = (Q 0 1) ^ 2 := by
+      rw [Matrix.det_fin_two, hQ10] at hdet
+      nlinarith
+    have hBsq : B 1 1 * (Q 0 0) ^ 2 = B 0 0 * (Q 0 1) ^ 2 := by
+      linear_combination Q 0 0 * hBrow1 + Q 0 1 * hBrow0
+    have hB11mul : B 1 1 * Q 0 0 = B 0 0 * Q 1 1 := by
+      apply mul_right_cancel₀ hQ00
+      calc
+        (B 1 1 * Q 0 0) * Q 0 0 = B 1 1 * (Q 0 0) ^ 2 := by ring
+        _ = B 0 0 * (Q 0 1) ^ 2 := hBsq
+        _ = B 0 0 * (Q 0 0 * Q 1 1) := by rw [hdet']
+        _ = (B 0 0 * Q 1 1) * Q 0 0 := by ring
+    have hB00eq : B 0 0 = (B 0 0 / Q 0 0) * Q 0 0 := by
+      field_simp
+    have hB01eq : B 0 1 = (B 0 0 / Q 0 0) * Q 0 1 := by
+      field_simp
+      linarith [hBrow0]
+    have hB10eq : B 1 0 = (B 0 0 / Q 0 0) * Q 1 0 := by
+      rw [hB10, hQ10]
+      exact hB01eq
+    have hB11eq : B 1 1 = (B 0 0 / Q 0 0) * Q 1 1 := by
+      field_simp
+      linarith [hB11mul]
+    refine ⟨B 0 0 / Q 0 0, div_nonneg (hB.diag_nonneg) hQ00nonneg, ?_⟩
+    apply connesVanSuijlekomB2_matrix_fin_two_eq
+    · simpa only [Matrix.smul_apply, smul_eq_mul] using hB00eq
+    · simpa only [Matrix.smul_apply, smul_eq_mul] using hB01eq
+    · simpa only [Matrix.smul_apply, smul_eq_mul] using hB10eq
+    · simpa only [Matrix.smul_apply, smul_eq_mul] using hB11eq
+
+private theorem connesVanSuijlekomB2_psd_extreme_of_det_zero
+    (Q : Matrix (Fin 2) (Fin 2) ℝ) (hQ : Q.PosSemidef)
+    (hdet : Q.det = 0) (hQne : Q ≠ 0) :
+    IsExtremeRay connesVanSuijlekomB2PsdCone Q := by
+  refine ⟨hQ, hQne, ?_⟩
+  intro B C hB hC hsum
+  obtain ⟨r, hr, hBscale⟩ :=
+    connesVanSuijlekomB2_psd_summand_eq_smul_of_det_zero B C Q hB hC hQ hsum hdet hQne
+  obtain ⟨s, hs, hCscale⟩ :=
+    connesVanSuijlekomB2_psd_summand_eq_smul_of_det_zero C B Q hC hB hQ
+      (by simpa [add_comm] using hsum) hdet hQne
+  exact ⟨r, s, hr, hs, hBscale, hCscale⟩
 
 /-- The compression in source-parameter coordinates. -/
 def connesVanSuijlekomB2RhoMap (p : ℝ × ℝ × ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
@@ -447,6 +584,42 @@ theorem connesVanSuijlekomB2_isExtremeRay_source_iff_target (p : ℝ × ℝ × �
       · apply connesVanSuijlekomB2_rhoMap_injective
         rw [connesVanSuijlekomB2_rhoMap_smul]
         exact hvs
+
+private theorem connesVanSuijlekomB2_target_extreme_det_eq_zero
+    (Q : Matrix (Fin 2) (Fin 2) ℝ)
+    (hExtreme : IsExtremeRay connesVanSuijlekomB2TargetCone Q) : Q.det = 0 := by
+  have hQ : Q.PosSemidef := hExtreme.1.1
+  have hH : connesVanSuijlekomB2HalfSpace Q := hExtreme.1.2
+  by_contra hdetne
+  have hdetpos : 0 < Q.det :=
+    lt_of_le_of_ne hQ.det_nonneg (Ne.symm hdetne)
+  exact connesVanSuijlekomB2_target_not_extreme_of_det_pos Q hQ hH hdetpos hExtreme
+
+/-- The extreme rays of the PSD cone that lie in `H` are precisely the extreme rays of
+`S(E)₊ ∩ H` in the Appendix-B coordinates. -/
+theorem connesVanSuijlekomB2_target_extreme_iff_psd_extreme_and_halfSpace
+    (Q : Matrix (Fin 2) (Fin 2) ℝ) :
+    IsExtremeRay connesVanSuijlekomB2TargetCone Q ↔
+      IsExtremeRay connesVanSuijlekomB2PsdCone Q ∧ connesVanSuijlekomB2HalfSpace Q := by
+  constructor
+  · intro hExtreme
+    exact ⟨connesVanSuijlekomB2_psd_extreme_of_det_zero Q hExtreme.1.1
+      (connesVanSuijlekomB2_target_extreme_det_eq_zero Q hExtreme) hExtreme.2.1,
+      hExtreme.1.2⟩
+  · rintro ⟨hPsdExtreme, hH⟩
+    refine ⟨⟨hPsdExtreme.1, hH⟩, hPsdExtreme.2.1, ?_⟩
+    intro B C hB hC hsum
+    exact hPsdExtreme.2.2 B C hB.1 hC.1 hsum
+
+/-- **Appendix B, Lemma B.2(iii).**  Under `ρ`, the extreme rays of `C₊` map exactly to
+the extreme rays of `S(E)₊` contained in the source's half-space `H`. -/
+theorem connesVanSuijlekomB2_extreme_rays_iff
+    (p : ℝ × ℝ × ℝ) :
+    IsExtremeRay connesVanSuijlekomB2SourceCone p ↔
+      IsExtremeRay connesVanSuijlekomB2PsdCone (connesVanSuijlekomB2RhoMap p) ∧
+        connesVanSuijlekomB2HalfSpace (connesVanSuijlekomB2RhoMap p) := by
+  rw [connesVanSuijlekomB2_isExtremeRay_source_iff_target,
+    connesVanSuijlekomB2_target_extreme_iff_psd_extreme_and_halfSpace]
 
 end
 
