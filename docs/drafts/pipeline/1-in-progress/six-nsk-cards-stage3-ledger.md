@@ -168,3 +168,35 @@ REMAINING for C2: statements 2 and 3.
 - Statement 3 then follows from `differentialAdjoin_range_pow_baseGauge_eq` once the orbit and the
   rational gauge `B ∘ τ_t` are realized in a differential field (do it in the `z`-coordinate, where
   `τ_t` is `z ↦ z + t` and `B ∘ τ_t` is a rational function of `z`).
+
+### C3 started (2026-08-19) — and a PROOF ERROR found in the card's §2′
+New module `HTGeometry/StieltjesCorankTrdeg.lean` (wired, olean built, axioms clean):
+`blockCoeffVal`, `stieltjesVal`, `logField`, `stieltjesField`, `stieltjesField_le_logField`,
+`beurlingBlock_one_coeff`, `stieltjesVal_single` (the exact `γ_k = B⁺_k L^{k−1}/k!` of §2),
+`stieltjesField_single_eq` and `trdeg_stieltjesField_single` (the corank-one collapse, exact).
+
+**Finding.**  §2′ claims the Laurent coefficients `a_k` recover `e_1,…,e_r`.  False for `r ≥ 3`:
+`h(x)/h(−x) = e^x` makes `log h(x) − x/2` even, so
+`ℚ(a_1,a_2,…) = ℚ(p_1, p_2, p_4, p_6, …)` — no odd power sums.  Concretely
+`a_3 = e_1 e_2 / 24` (the `e_3` terms cancel exactly).
+**Repair (verified, recorded on the card):** the even power sums are the power sums of the squares
+`L_i²`, so Newton's identities give every `e_j(L²)`; hence each `L_i²`, and therefore each `L_i`,
+is algebraic over the Laurent-coefficient field.  With `stieltjesField_le_logField` this gives the
+§2′ transcendence-degree identity, with no positivity and without needing `1/e_r`.
+
+Remaining C3 work: (1) formalize the repaired §2′ (`PowerSeries.log`, evenness, `B_{2k} ≠ 0`, then
+mathlib's `MvPolynomial.mul_esymm_eq_sum`); (2) Hermite–Lindemann for `trdeg = 1`;
+(3) Gelfond–Schneider for §2″; (4) Hölder/D-finite for §4.  mathlib has `PowerSeries.log`,
+`MvPolynomial.psum`, Newton's identities; it does NOT have Lindemann, Gelfond–Schneider, or
+`B_{2k} ≠ 0`.
+
+### C1 started (2026-08-19) — Lemma F and the assembly step CLOSED
+New module `RHTower/HardyFourthMomentSignChange.lean` (wired, olean built, axioms clean):
+`cube_integral_sq_le` (the interpolation inequality `(∫f²)³ ≤ (∫|f|)²(∫f⁴)`),
+`exists_sign_bracket_of_fourth_moment_gap`,
+`exists_riemannZeta_line_zero_of_hardyZ_fourth_moment_gap` (the card's assembly),
+`exists_integral_hardyZ_pow_four_dyadic_le_polylog` (**Lemma F**, from the corpus's already-proved
+`exists_integral_Icc_norm_riemannZeta_line_pow_four_le_polylog`).
+NOTE: the corpus turned out to contain ~60 `SmoothAFEZeta*` modules and a full `Sieve/Ingham*`
+lane, so C1 is far ahead of what its own Gate-5 log said.  Remaining: Lemma C (second-moment lower
+bound) and Lemma E (the `O(T^{3/4})` first moment of `Z`), then the dyadic `N₀(T) ≥ c log T`.

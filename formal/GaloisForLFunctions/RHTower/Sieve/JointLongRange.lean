@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.Sieve.FreeEtaLadder
-import GaloisForLFunctions.RHTower.Sieve.JointSchedule
+import GaloisForLFunctions.RHTower.Sieve.RoughRemainderLimit
+import GaloisForLFunctions.RHTower.Sieve.ShortIntervalLength
+import GaloisForLFunctions.RHTower.Sieve.GeomBlockPrimesRange
 
 /-!
 # The long designated range at its own ratio
@@ -227,6 +229,47 @@ theorem tendsto_jointLongMassF {a b : ℝ} (ha0 : 0 < a) (hab : a < b) :
     rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
     push_cast; ring
   linarith [hmass, hL1, hL2, hval1.le, hval1.ge, hval2.le, hval2.ge, hlog4.le, hlog4.ge]
+
+/-- **The long ladder's base lies below its top, eventually.** -/
+theorem eventually_siftStart_le_jointLongTopF {a b : ℝ} (ha0 : 0 < a) (hab : a < b) :
+    ∀ᶠ x : ℝ in atTop, siftStart a x ≤ jointLongTopF a b x := by
+  have hba : (0 : ℝ) < b - a := by linarith
+  have hpowa : Tendsto (fun x : ℝ => (Real.log x) ^ a) atTop atTop :=
+    (tendsto_rpow_atTop ha0).comp Real.tendsto_log_atTop
+  have hpowba : Tendsto (fun x : ℝ => (Real.log x) ^ (b - a)) atTop atTop :=
+    (tendsto_rpow_atTop hba).comp Real.tendsto_log_atTop
+  filter_upwards [eventually_jointLongTopF_ge_quarter ha0 hab,
+    Real.tendsto_log_atTop.eventually_ge_atTop (1 : ℝ),
+    hpowa.eventually_ge_atTop (4 : ℝ), hpowba.eventually_ge_atTop (2 : ℝ)]
+    with x hq hlog1 hpa4 hpba2
+  have hlog0 : (0 : ℝ) < Real.log x := by linarith
+  have hsplit : (Real.log x) ^ b = (Real.log x) ^ a * (Real.log x) ^ (b - a) := by
+    rw [← Real.rpow_add hlog0]
+    ring_nf
+  have hgap : (Real.log x) ^ a + 4 ≤ (Real.log x) ^ b := by
+    rw [hsplit]; nlinarith [hpa4, hpba2]
+  set E : ℝ := Real.exp ((Real.log x) ^ a) with hE
+  have hE5 : (5 : ℝ) ≤ E := by
+    have := Real.add_one_le_exp ((Real.log x) ^ a)
+    rw [← hE] at this
+    linarith
+  have hexp4 : (5 : ℝ) ≤ Real.exp 4 := by
+    have := Real.add_one_le_exp (4 : ℝ)
+    linarith
+  have hgrow : E * 5 ≤ Real.exp ((Real.log x) ^ b) := by
+    have h1 : Real.exp ((Real.log x) ^ a + 4) ≤ Real.exp ((Real.log x) ^ b) :=
+      Real.exp_le_exp.2 hgap
+    rw [Real.exp_add, ← hE] at h1
+    nlinarith [h1, hexp4, Real.exp_pos ((Real.log x) ^ a)]
+  have hceil : ((siftStart a x : ℕ) : ℝ) ≤ E + 1 := by
+    rw [siftStart, ← hE]
+    exact le_of_lt (Nat.ceil_lt_add_one (Real.exp_pos _).le)
+  have hcl : cardLength b x = Real.exp ((Real.log x) ^ b) := rfl
+  have hfin : ((siftStart a x : ℕ) : ℝ) ≤ cardLength b x / 4 := by
+    rw [hcl, le_div_iff₀ (by norm_num : (0:ℝ) < 4)]
+    nlinarith [hceil, hgrow, hE5]
+  have : ((siftStart a x : ℕ) : ℝ) ≤ ((jointLongTopF a b x : ℕ) : ℝ) := le_trans hfin hq
+  exact_mod_cast this
 
 end
 

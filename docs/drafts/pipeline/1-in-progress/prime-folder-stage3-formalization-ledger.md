@@ -155,3 +155,28 @@ Card `prime-support-ht-horizon-hodge-cofactor-law` promoted to
 `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`; its three remaining
 unchecked gates are the open Quillen–Ward conjecture (14), explicitly not a proved theorem.
 Stage-2 prime folder: 26 cards remaining.
+
+## 2026-08-19 — prime–Laplace / Gamma-clock pair (cards 13, 14)
+
+One new module closes both cards:
+`RHTower/PrimeLaplaceGammaJetIncidence.lean` (`lake env lean` clean, wired into
+`GaloisForLFunctions.RHTower`, axiom-clean).
+
+Contents: the Gamma–Meixner weight `w_θ(p) = cosh(2 log p)^{-θ/2}` with its two-sided comparison to
+`p^{-θ}`; the prime-supported Dirichlet coefficients and the sharp abscissa `(1-θ)/2` (AM–GM in
+place of Cauchy–Schwarz); the raw jets as `LSeries` of the `(-log n)^j`-twisted coefficients;
+Hilbert–Schmidt finiteness of every finite clock in the factorial metric; joint faithfulness (via
+`analyticOrderAt = ⊤` ⇒ local vanishing ⇒ half-plane vanishing ⇒ Dirichlet uniqueness); the exact
+coherent-jet Fock column norm `w_θ(p) p^{-2x₀} e^{(log p)²}` and its unboundedness (the colimit
+no-go); the unit source translation `S a = p^{-1} a` with `F_{Sa}(z) = F_a(z+1)`; the Taylor descent
+of shifted jets; the exact descent anomaly as the omitted factorial tail; the adjacent-resolution
+Bianchi law; and the reflected time-one Euler seam vector with its translate identity.
+
+Reusable inputs found by search: mathlib's `LSeries_iteratedDeriv`, `LSeries_analyticOnNhd`,
+`LSeries_eventually_eq_zero_iff'`, `Complex.hasSum_taylorSeries_on_ball`, and the corpus lemma
+`RHTower.summable_abs_log_natCast_pow_mul_rpow_neg`.
+
+Cards `prime-laplace-gamma-jet-incidence-phase-transition` and
+`prime-laplace-gamma-clock-descent-anomaly` promoted to
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`.
+Stage-2 prime folder: 24 cards remaining.

@@ -413,3 +413,39 @@ S1, S2 entirely. Historical notes retained:
   every logarithmic cut: its terminal jet is the nonvanishing cut exponential times the explicit
   order-`m` theta moment.  Thus boundary covariance preserves, but does not constrain,
   multiplicity.  It is still not an RH proof or a source estimate.
+
+## Gate 5 progress log (2026-08-19) — Lemma F and the assembly step are CLOSED
+
+New module `formal/GaloisForLFunctions/RHTower/HardyFourthMomentSignChange.lean` (wired into
+`RHTower.lean`, olean built, `#print axioms` clean).  It installs the card's *final* (session-2)
+architecture — the Hölder chain — in place of the two-term sup chain that the card itself proved
+cannot close.
+
+- `sq_integral_sq_le_integral_abs_mul_integral_abs_cube` — `(∫f²)² ≤ (∫|f|)(∫|f|³)`, from
+  Cauchy–Schwarz with `g = √|f|`, `h = |f|√|f|`;
+- `sq_integral_abs_cube_le` — `(∫|f|³)² ≤ (∫f²)(∫f⁴)`, from Cauchy–Schwarz with `g = |f|`,
+  `h = f²`;
+- **`cube_integral_sq_le`** — the interpolation inequality `(∫f²)³ ≤ (∫|f|)²(∫f⁴)`, i.e. exactly
+  `∫|f| ≥ (∫f²)^{3/2}/(∫f⁴)^{1/2}`, over an arbitrary measure;
+- **`exists_sign_bracket_of_fourth_moment_gap`** — a continuous `f` on `[α,β]` with
+  `S ≤ ∫f²`, `∫f⁴ ≤ F` and `(∫f)²·F < S³` must change sign (no sign change ⟹ `∫|f| = |∫f|` ⟹
+  contradiction with the interpolation inequality);
+- **`exists_riemannZeta_line_zero_of_hardyZ_fourth_moment_gap`** — the assembly: the three moment
+  estimates produce an actual zero of `ζ` on the critical line inside the window, via the existing
+  `exists_riemannZeta_line_zero_of_hardyZ_sign_bracket`;
+- `hardyZ_pow_four_eq_norm_pow_four` and
+  **`exists_integral_hardyZ_pow_four_dyadic_le_polylog`** — **Lemma F**:
+  `∫_N^{2N} Z⁴ ≤ C·N·(1+log N)⁴`, unconditional, obtained from the corpus's already-proved
+  `exists_integral_Icc_norm_riemannZeta_line_pow_four_le_polylog`.
+
+Status of the ordered chain after this session:
+
+| Step | State |
+|---|---|
+| (a) van der Corput derivative tests (S3) | DONE (`VanDerCorput*.lean`) |
+| (b) Hardy `Z`, phase, sign change, first jets | DONE (`HardyZ*.lean`) |
+| (c) smooth AFE (Lemma A) | largely built (`SmoothAFEZeta*.lean`, `HardyZSmoothAFEReal.lean`) |
+| (d) Lemma F — fourth moment | **DONE** (`exists_integral_hardyZ_pow_four_dyadic_le_polylog`) |
+| (d') Lemma C — second-moment lower bound `∫Z² ≥ ½T log T` | OPEN |
+| (e) Lemma E — `\|∫Z\| = O(T^{3/4})` | OPEN |
+| (f) assembly + dyadic `N₀(T) ≥ c log T` | assembly **DONE**; the dyadic corollary waits on (d'), (e) |

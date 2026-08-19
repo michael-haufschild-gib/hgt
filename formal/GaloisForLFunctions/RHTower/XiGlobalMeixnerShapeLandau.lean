@@ -170,48 +170,48 @@ theorem xiGammaShapeFrequency_nonneg (p : Nat.Primes) : 0 ≤ xiGammaShapeFreque
 
 /-! ## Convergence on the safe shape half plane -/
 
-theorem summable_logSq_rpow_two :
-    Summable (fun n : ℕ => (Real.log n ^ 2 * (1 : ℝ)) * (n : ℝ) ^ (-(2 : ℝ))) := by
-  apply GaloisForLFunctions.HTGeometry.summable_logSq_mul_rpow (σ := 2) (g := fun _ => 1)
+theorem summable_logSq_rpow {σ : ℝ} (hσ : 1 < σ) :
+    Summable (fun n : ℕ => (Real.log n ^ 2 * (1 : ℝ)) * (n : ℝ) ^ (-σ)) := by
+  apply GaloisForLFunctions.HTGeometry.summable_logSq_mul_rpow (σ := σ) (g := fun _ => 1)
   have h : (fun n : ℕ => (((1 : ℝ) : ℝ) : ℂ)) = (1 : ℕ → ℂ) := by funext n; simp
   rw [h, LSeries.abscissaOfAbsConv_one]
   simp only [Complex.ofReal_re]
-  exact_mod_cast (by norm_num : (1 : ℝ) < 2)
+  exact_mod_cast hσ
 
-/-- **Safe convergence.**  The global Gamma-shape trace converges absolutely at shape `2`, hence
-throughout `Re z > 1`. -/
-theorem summable_xiGammaShapeTwist_two :
+/-- **Safe convergence.**  The global Gamma-shape trace converges absolutely at every real shape
+above one. -/
+theorem summable_xiGammaShapeTwist {σ : ℝ} (hσ : 1 < σ) :
     Summable (GaloisForLFunctions.HTGeometry.gdTwistTerm
-      xiGammaShapeCoefficient xiGammaShapeFrequency 2 0) := by
+      xiGammaShapeCoefficient xiGammaShapeFrequency σ 0) := by
+  have hσ0 : (0 : ℝ) ≤ σ := by linarith
   have hmaj : Summable (fun p : Nat.Primes =>
-      2 * xiReciprocalHermitianMass *
-        ((Real.log (p : ℕ) ^ 2 * (1 : ℝ)) * ((p : ℕ) : ℝ) ^ (-(2 : ℝ)))) := by
-    exact ((summable_logSq_rpow_two.subtype {p : ℕ | p.Prime}).mul_left _)
+      (2 : ℝ) ^ (σ / 2) * xiReciprocalHermitianMass *
+        ((Real.log (p : ℕ) ^ 2 * (1 : ℝ)) * ((p : ℕ) : ℝ) ^ (-σ))) :=
+    (((summable_logSq_rpow hσ).subtype {p : ℕ | p.Prime}).mul_left _)
   refine Summable.of_nonneg_of_le (fun p => ?_) (fun p => ?_) hmaj
   · exact GaloisForLFunctions.HTGeometry.gdTwistTerm_nonneg
-      xiGammaShapeCoefficient_nonneg xiGammaShapeFrequency_nonneg 2 0 p
+      xiGammaShapeCoefficient_nonneg xiGammaShapeFrequency_nonneg σ 0 p
   · have hp1 : 1 < (p : ℕ) := p.prop.one_lt
     have hple := xiSeamDivisorCoefficient_le hp1
-    have hexp := exp_neg_xiMeixnerFrequency_le (le_of_lt hp1) (by norm_num : (0:ℝ) ≤ 2)
-    have hAnn : 0 ≤ xiSeamDivisorCoefficient (p : ℕ) := xiSeamDivisorCoefficient_nonneg _
-    have hexpnn : 0 ≤ Real.exp (-(2 * xiMeixnerFrequency (p : ℕ))) := (Real.exp_pos _).le
+    have hexp := exp_neg_xiMeixnerFrequency_le (le_of_lt hp1) hσ0
+    have hexpnn : 0 ≤ Real.exp (-(σ * xiMeixnerFrequency (p : ℕ))) := (Real.exp_pos _).le
     have hMnn : 0 ≤ xiReciprocalHermitianMass := by
       rw [xiReciprocalHermitianMass]
       exact tsum_nonneg (fun q => by positivity)
-    have hlogsq : 0 ≤ Real.log ((p : ℕ) : ℝ) ^ 2 := sq_nonneg _
-    have hrpow : 0 ≤ ((p : ℕ) : ℝ) ^ (-(2 : ℝ)) := Real.rpow_nonneg (by positivity) _
-    have htwo : (2 : ℝ) ^ ((2 : ℝ) / 2) = 2 := by
-      rw [show (2 : ℝ) / 2 = (1 : ℝ) by norm_num, Real.rpow_one]
     rw [GaloisForLFunctions.HTGeometry.gdTwistTerm, pow_zero, mul_one,
       xiGammaShapeCoefficient, xiGammaShapeFrequency]
-    calc xiSeamDivisorCoefficient (p : ℕ) * Real.exp (-(2 * xiMeixnerFrequency (p : ℕ)))
+    calc xiSeamDivisorCoefficient (p : ℕ) * Real.exp (-(σ * xiMeixnerFrequency (p : ℕ)))
         ≤ (Real.log ((p : ℕ) : ℝ) ^ 2 * xiReciprocalHermitianMass) *
-            ((2 : ℝ) ^ ((2 : ℝ) / 2) * ((p : ℕ) : ℝ) ^ (-(2 : ℝ))) := by
+            ((2 : ℝ) ^ (σ / 2) * ((p : ℕ) : ℝ) ^ (-σ)) := by
           apply mul_le_mul hple hexp hexpnn
           positivity
-      _ = 2 * xiReciprocalHermitianMass *
-            ((Real.log ((p : ℕ) : ℝ) ^ 2 * (1 : ℝ)) * ((p : ℕ) : ℝ) ^ (-(2 : ℝ))) := by
-          rw [htwo]; ring
+      _ = (2 : ℝ) ^ (σ / 2) * xiReciprocalHermitianMass *
+            ((Real.log ((p : ℕ) : ℝ) ^ 2 * (1 : ℝ)) * ((p : ℕ) : ℝ) ^ (-σ)) := by ring
+
+theorem summable_xiGammaShapeTwist_two :
+    Summable (GaloisForLFunctions.HTGeometry.gdTwistTerm
+      xiGammaShapeCoefficient xiGammaShapeFrequency 2 0) :=
+  summable_xiGammaShapeTwist (by norm_num)
 
 /-! ## Divergence forced by one off-line divisor point -/
 

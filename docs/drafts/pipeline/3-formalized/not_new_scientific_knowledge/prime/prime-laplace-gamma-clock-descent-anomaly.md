@@ -1,9 +1,9 @@
 # Prime--Laplace unit translation has the exact Gamma clock descent anomaly
 
 - **ID:** `prime-laplace-gamma-clock-descent-anomaly`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / FINITE COMPARISON SQUARE / HT-TO-RH BRIDGE
-- **Scientific status:** `[PROVED HERE] [NOT FORMALIZED]
+- **Scientific status:** `[PROVED HERE] [FORMALIZED]
   [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `prime-laplace-gamma-jet-incidence-phase-transition.md` and
   `../../1-in-progress/source-anomaly-boundary-colligation-field.md`
@@ -145,6 +145,32 @@ Taylor's theorem, derivative evaluation of Dirichlet series, and the tail formul
 The result is bridge infrastructure.  Its value is that the proposed HT-to-RH comparison now has
 an exact finite source operation, observation, shadow, anomaly, and Bianchi current.
 
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+`formal/GaloisForLFunctions/RHTower/PrimeLaplaceGammaJetIncidence.lean`, axiom-clean
+(`propext, Classical.choice, Quot.sound`).
+
+| Card item | Lean declaration |
+|---|---|
+| eq. (1), the weighted prime–Laplace transform and its convergence | `primeLaplaceCoeff`, `lSeriesSummable_primeLaplaceCoeff` |
+| eq. (2), the source operation `(S a)_p = p^{-1} a_p` | `primeSourceShift` (with `summable_primeSourceShift`) |
+| **eq. (3), `F_{S a}(z) = F_a(z+1)` identically** | `lSeries_primeSourceShift` |
+| eq. (4), the finite raw-jet observation `J_N` | `primeLaplaceJet`, `iteratedDeriv_primeLaplace_eq` |
+| eq. (5), the Gamma clock translation shadow `E_N` | `gammaClockShadowSum` (the corpus `gammaClockTranslation` coefficient `1/(j-i)!`) |
+| **eq. (6), Taylor descent of the shifted jets** | `hasSum_taylor_primeLaplaceJet` |
+| eq. (7), the descent anomaly `α_N = E_N J_N − J_N S` | `primeLaplaceDescentAnomaly` |
+| **eq. (8), the anomaly is exactly the omitted Taylor tail** | `primeLaplaceDescentAnomaly_eq`, `primeLaplaceDescentAnomaly_eq_neg_tail` |
+| **eqs. (9)–(10), the adjacent-resolution Bianchi law with the rank-one factorial boundary transfer** | `primeLaplaceDescentAnomaly_bianchi` |
+| eq. (11), the comparison square commutes up to `α_N` | the two theorems above read together |
+| eqs. (12)–(13), the reflected time-one Euler seam and its jet | `reflectedEulerVector`, `summable_reflectedEulerVector`, `primeSeamTransform`, `lSeries_reflectedEulerVector` |
+
+The Hilbert–Schmidt and faithfulness inputs quoted from the parent incidence card are formalized in
+the same module (`summable_primeJetColumnFactorialNormSq`,
+`eq_zero_of_forall_iteratedDeriv_eq_zero`).  The Bianchi law is proved directly from the shadow
+sums — the analytic tails cancel — so it holds for every coefficient vector, matching the abstract
+corpus identity `finiteExponentialGammaAnomaly_bianchi` for finite exponential sources.
+
 ## Gates
 
 - [x] construct the exact prime source translation
@@ -153,4 +179,6 @@ an exact finite source operation, observation, shadow, anomaly, and Bianchi curr
 - [x] identify its adjacent-resolution Bianchi boundary
 - [x] specialize to the reflected time-one seam
 - [x] replace exact-descent failure by the complete finite comparison skeleton
-- [ ] formalize when the zero-orbit comparison consumes this skeleton
+- [x] formalize the translation law, the Taylor descent, the exact anomaly and the Bianchi current
+  unconditionally in Lean 4
+- [ ] formalize when the zero-orbit comparison consumes this skeleton (open research)

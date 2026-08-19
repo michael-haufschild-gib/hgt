@@ -8,7 +8,7 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 | # | Card | State | Lean modules |
 |---|---|---|---|
 | 1 | xi-determinant-logarithmic-singular-value-law | open | |
-| 2 | xi-gamma-shape-completely-monotone-rh | open | |
+| 2 | xi-gamma-shape-completely-monotone-rh | partial: complete monotonicity, Hankel positivity, exp counterexample done; CM-extension⇒RH still needs the Hausdorff/Bernstein consumer | RHTower/XiGammaShapeCompleteMonotonicity |
 | 3 | xi-global-meixner-shape-landau-rh | Lean done | HTGeometry/GeneralDirichletLandau, RHTower/XiGlobalMeixnerShapeLandau |
 | 4 | xi-hedenmalm-local-algebra-rank-census | Lean done | HTGeometry/PolynomialQuotientMultiplicationRank, HTGeometry/GcdDerivativeDistinctRoots, HTGeometry/HermiteBiehlerPairRankCensus, HTGeometry/FiniteMomentDivisorReconstruction, RHTower/XiHedenmalmLocalAlgebraRankCensus |
 | 5 | xi-orientation-euler-safe-paired-cauchy-completeness | open | |
@@ -23,6 +23,18 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 | 14 | xi-unit-euler-pole-affine-section-translated-bezoutian | open | |
 | 15 | xi-theta-square-rate-hardy-reader | open | |
 
+## Remaining infrastructure to build
+
+| Card | Missing classical input |
+|---|---|
+| 1 | Riemann–von Mangoldt asymptotic in operator form; compact-operator singular values, Schatten ideals, `det_2` |
+| 2 | Bernstein/Hausdorff consumer: CM function on `(0,∞)` ⇒ Hausdorff source ⇒ summability at every positive shape |
+| 5 | meromorphic Cauchy-transform completeness on the Xi `ell^2` carrier |
+| 11 | Nevanlinna–Pick extension for Caratheodory functions on a half plane |
+| 13 | real hyperelliptic topology: genus, real components, Harnack bound |
+| 14 | Hadamard factorization for even entire functions of order `< 1` (genus zero) |
+| 15 | right half-plane Hardy space `H^2` and the Laplace Paley–Wiener unitary |
+
 ## Reusable corpus assets found
 
 - `HTGeometry/CoherenceEndReconstruction.lean` — finite-boundary one-ended reconstruction.
@@ -33,3 +45,8 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 - `RHTower/SlabGermResidueTransport.lean` — contour power moments = multiplicity divisor moments.
 - `RHTower/XiGuinandWeilRectanglePeeling.lean` — weighted rectangle argument principle for `XiC`.
 - `RHTower/SchattenCriticalAsymptotic.lean`, `SoninEulerFiniteL2Lower.lean` — Schatten/Calkin layer.
+- `HTGeometry/HausdorffMomentTheorem.lean` — Hausdorff moment theorem with uniqueness.
+- `HTGeometry/GeneralDirichletLandau.lean` (NEW) — Landau for general Dirichlet series, Taylor
+  expansion at a safe centre, complete monotonicity, radial Hankel positivity.
+- `HTGeometry/SchwarzPickEstimate.lean` (NEW) — sharp Schwarz–Pick displacement, narrow-sector
+  Schur lemma.

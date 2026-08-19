@@ -639,7 +639,59 @@ theorem q8J_ICandidate :
   field_simp [q8TopX_ne_zero, q8TopY_ne_zero, hr, q8TopRoot_ne_zero]
   ring
 
+theorem q8C_rat (q : ℚ) : q8C (q : K3) = q := by
+  change q8C (algebraMap ℚ K3 q) = algebraMap ℚ K3 q
+  exact q8C.map_rat_algebraMap q
+
+theorem q8C_topX :
+    q8C deningerQ8RootNumberNegOneTopX = deningerQ8RootNumberNegOneTopX := by
+  unfold deningerQ8RootNumberNegOneTopX
+  rw [q8C_of]
+
+theorem q8C_topY :
+    q8C deningerQ8RootNumberNegOneTopY = deningerQ8RootNumberNegOneTopY := by
+  unfold deningerQ8RootNumberNegOneTopY
+  rw [q8C_of]
+
+theorem q8C_JThenI :
+    q8C (deningerQ8RootNumberNegOneJThenI
+      deningerQ8RootNumberNegOneTopX deningerQ8RootNumberNegOneTopY
+        deningerQ8RootNumberNegOneTopRoot) =
+      -deningerQ8RootNumberNegOneJThenI
+        deningerQ8RootNumberNegOneTopX deningerQ8RootNumberNegOneTopY
+          deningerQ8RootNumberNegOneTopRoot := by
+  unfold deningerQ8RootNumberNegOneJThenI
+    deningerQ8RootNumberNegOneSConj deningerQ8RootNumberNegOneR
+  simp only [map_div₀, map_mul, map_add, map_sub, q8C_topY, q8C_root,
+    q8C_topX]
+  have h2 : q8C (2 : K3) = 2 := by
+    change q8C ((2 : ℚ) : K3) = (2 : K3)
+    exact q8C_rat 2
+  have h5 : q8C (5 : K3) = 5 := by
+    change q8C ((5 : ℚ) : K3) = (5 : K3)
+    exact q8C_rat 5
+  have h6 : q8C (6 : K3) = 6 := by
+    change q8C ((6 : ℚ) : K3) = (6 : K3)
+    exact q8C_rat 6
+  have h41 : q8C (41 : K3) = 41 := by
+    change q8C ((41 : ℚ) : K3) = (41 : K3)
+    exact q8C_rat 41
+  rw [h2, h5, h6, h41]
+  ring
+
+/-- The literal lifts satisfy the quaternion anti-commutation relation. -/
+theorem q8I_comp_q8J_eq_q8C_comp_q8J_comp_q8I :
+    q8I.comp q8J = q8C.comp (q8J.comp q8I) := by
+  letI : CharZero K3 :=
+    charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
+  apply q8End_eq_of_topRoot
+  change q8I (q8J deningerQ8RootNumberNegOneTopRoot) =
+    q8C (q8J (q8I deningerQ8RootNumberNegOneTopRoot))
+  rw [q8J_root, q8I_JCandidate, q8I_root, q8J_ICandidate, q8C_JThenI]
+  exact deningerQ8RootNumberNegOne_lifted_composites_anticommute
+    deningerQ8RootNumberNegOne_topX_sq
+    deningerQ8RootNumberNegOne_topY_sq q8TopRoot_radical_relation
+
 end
 
 end RHTower
-

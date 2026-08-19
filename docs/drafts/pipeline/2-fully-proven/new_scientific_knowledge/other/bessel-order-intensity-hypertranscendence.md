@@ -1291,3 +1291,53 @@ eq_zero_of_isNilpotent_of_primitive      **a nilpotent primitive element of a ch
 
 Multiplying the binomial expansion of `Δ (x ^ n)` by `x ^ (n-2) ⊗ 1` kills every term except the
 first-order one, which is `n · (x^{n-1} ⊗ x^{n-1})`.
+
+## Lean progress — the parameterized (isomonodromy) obstruction
+
+The rational-Riccati obstruction already in the tree is the *irreducibility* obstruction for the
+rank-two order module.  The obstruction the parameterized classification actually consumes is the
+*isomonodromy* one: whether the module carries a compatible derivation over `ℂ(ν)`, i.e. whether
+`∂K_ν(s)/∂ν = P(ν) K_ν(s) + Q(ν) K_{ν+1}(s)` for rational `P, Q`.  Equivalently, whether there is
+`B ∈ gl₂(ℂ(ν))` with `σ(B) A - A B = δA` for the companion matrix `A` of the order recurrence.
+
+This is now settled unconditionally and negatively, in three new modules.
+
+`GaloisForLFunctions.HTGeometry.RatFuncShiftDegree`
+
+```text
+shiftDelta                                   the finite difference `p(X+1) - p(X)`
+natDegree_shiftDelta, leadingCoeff_shiftDelta
+                                             it has degree `deg p - 1` and leading coefficient
+                                             `deg p` times that of `p`
+shiftDiffNum_spec                            the numerator of `f(X+1) - f(X)` in the reduced
+                                             presentation has degree `deg num + deg den - 1`
+intDegree_ratShift_sub                       **the unit shift drops the degree at infinity by
+                                             exactly one**, for `deg f ≠ 0`
+intDegree_ratShift_sub_le_of_intDegree_zero  and by at least two when `deg f = 0` and `f` is not
+                                             constant
+```
+
+`GaloisForLFunctions.HTGeometry.RatFuncShiftDegreeCalculus` — the degree bookkeeping
+(`intDegree_ratShift`, `intDegree_add_le_of_le`, `intDegree_mul_le_of_le`,
+`intDegree_add_eq_left`, `ratShift_sub_le`, `ratShift_two_sub_le`).
+
+`GaloisForLFunctions.HTGeometry.BesselOrderIsomonodromyObstruction`
+
+```text
+orderShiftCoeff c                            the shift coefficient `c (X + 1)`
+besselOrder_no_rational_delta_structure      **the order recurrence has no rational compatible
+                                             derivation** for `c ≠ 0`
+orderBessel_no_rational_delta_structure      existential form
+modifiedBesselOrder_no_rational_delta_structure
+                                             physical specialization `c = 2 / s`, `s > 0`
+```
+
+The proof is a degree count at infinity.  The first compatibility identity makes the trace
+`P + σP + b σQ` shift invariant, hence constant, which bounds `deg (b σQ)` by `max 0 (deg P)`.
+Subtracting `b` times the first identity from the second gives `σ²Q - Q + b (P - σP) = c`.  Since
+the shift difference drops the degree by exactly one, the second summand has degree exactly `deg P`
+whenever `deg P ≠ 0`, while the first has degree at most `max 0 (deg P) - 2`; the sum can never have
+degree zero.  When `deg P = 0` both summands have negative degree and again the sum cannot be a
+nonzero constant.
+
+Every declaration reports `#print axioms` = `[propext, Classical.choice, Quot.sound]`.

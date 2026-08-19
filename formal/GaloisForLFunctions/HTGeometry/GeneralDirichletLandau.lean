@@ -351,6 +351,16 @@ theorem gdSeries_completelyMonotone (ha : ∀ j, 0 ≤ a j) (hlam : ∀ j, 0 ≤
 
 /-! ## Radial Hankel positivity -/
 
+theorem summable_gdTwistTerm_of_le (ha : ∀ j, 0 ≤ a j) (hlam : ∀ j, 0 ≤ lam j)
+    {σ₁ σ : ℝ} (hsum : Summable (gdTwistTerm a lam σ₁ 0)) (hle : σ₁ ≤ σ) :
+    Summable (gdTwistTerm a lam σ 0) := by
+  refine Summable.of_nonneg_of_le (gdTwistTerm_nonneg ha hlam σ 0) (fun j => ?_) hsum
+  rw [gdTwistTerm, gdTwistTerm, pow_zero, mul_one]
+  refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (ha j)
+  nlinarith [hlam j]
+
+
+
 /-- The real general Dirichlet series. -/
 def gdRealSeries (a lam : ι → ℝ) (σ : ℝ) : ℝ := ∑' j, gdTwistTerm a lam σ 0 j
 
@@ -377,53 +387,42 @@ theorem gdRealSeries_hankel_nonneg (ha : ∀ j, 0 ≤ a j) (hlam : ∀ j, 0 ≤ 
       ring
     rw [hsplit]
     ring
+  have hgsum : ∀ i j : Fin n, Summable (fun p : ι =>
+      (c i * Real.exp (-(θ i * lam p))) * (c j * Real.exp (-(θ j * lam p))) * a p) := by
+    intro i j
+    refine ((hsummable i j).mul_left (c i * c j)).congr (fun p => ?_)
+    rw [gdTwistTerm, pow_zero, mul_one]
+    have hsplit : Real.exp (-((θ i + θ j) * lam p)) =
+        Real.exp (-(θ i * lam p)) * Real.exp (-(θ j * lam p)) := by
+      rw [← Real.exp_add]; congr 1; ring
+    rw [hsplit]; ring
+  have hrowsummable : ∀ i : Fin n, Summable (fun p : ι => ∑ j,
+      (c i * Real.exp (-(θ i * lam p))) * (c j * Real.exp (-(θ j * lam p))) * a p) := by
+    intro i
+    induction (Finset.univ : Finset (Fin n)) using Finset.induction with
+    | empty => simp
+    | insert b t hb ih => simpa [Finset.sum_insert hb] using (hgsum i b).add ih
   have hswap : ∑ i, ∑ j, c i * gdRealSeries a lam (θ i + θ j) * c j =
       ∑' p : ι, (∑ i, c i * Real.exp (-(θ i * lam p))) ^ 2 * a p := by
-    have hstep : ∀ i j : Fin n, c i * gdRealSeries a lam (θ i + θ j) * c j =
-        ∑' p : ι, (c i * Real.exp (-(θ i * lam p))) * (c j * Real.exp (-(θ j * lam p))) * a p :=
-      hexpand
     calc ∑ i, ∑ j, c i * gdRealSeries a lam (θ i + θ j) * c j
         = ∑ i, ∑ j, ∑' p : ι,
-            (c i * Real.exp (-(θ i * lam p))) * (c j * Real.exp (-(θ j * lam p))) * a p := by
-          exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => hstep i j
+            (c i * Real.exp (-(θ i * lam p))) * (c j * Real.exp (-(θ j * lam p))) * a p :=
+          Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => hexpand i j
+      _ = ∑ i, ∑' p : ι, ∑ j,
+            (c i * Real.exp (-(θ i * lam p))) * (c j * Real.exp (-(θ j * lam p))) * a p :=
+          Finset.sum_congr rfl fun i _ => (Summable.tsum_finsetSum (fun j _ => hgsum i j)).symm
       _ = ∑' p : ι, ∑ i, ∑ j,
-            (c i * Real.exp (-(θ i * lam p))) * (c j * Real.exp (-(θ j * lam p))) * a p := by
-          rw [Summable.tsum_finsetSum]
-          · exact Finset.sum_congr rfl fun i _ => (Summable.tsum_finsetSum (fun j _ =>
-              (((hsummable i j).mul_left (c i * c j)).congr (fun p => by
-                rw [gdTwistTerm, pow_zero, mul_one]
-                have hsplit : Real.exp (-((θ i + θ j) * lam p)) =
-                    Real.exp (-(θ i * lam p)) * Real.exp (-(θ j * lam p)) := by
-                  rw [← Real.exp_add]; congr 1; ring
-                rw [hsplit]; ring)))).symm
-          · intro i _
-            refine Summable.of_nonneg_of_le (fun p => ?_) (fun p => le_refl _) ?_
-            · exact le_of_eq rfl
-            · exact (Finset.univ.summable_sum (fun j _ =>
-                (((hsummable i j).mul_left (c i * c j)).congr (fun p => by
-                  rw [gdTwistTerm, pow_zero, mul_one]
-                  have hsplit : Real.exp (-((θ i + θ j) * lam p)) =
-                      Real.exp (-(θ i * lam p)) * Real.exp (-(θ j * lam p)) := by
-                    rw [← Real.exp_add]; congr 1; ring
-                  rw [hsplit]; ring))))
+            (c i * Real.exp (-(θ i * lam p))) * (c j * Real.exp (-(θ j * lam p))) * a p :=
+          (Summable.tsum_finsetSum (fun i _ => hrowsummable i)).symm
       _ = ∑' p : ι, (∑ i, c i * Real.exp (-(θ i * lam p))) ^ 2 * a p := by
           refine tsum_congr (fun p => ?_)
-          rw [sq, Finset.sum_mul, ← Finset.sum_mul]
-          exact Finset.sum_congr rfl fun i _ => by
-            rw [Finset.mul_sum, Finset.sum_mul]
-            exact Finset.sum_congr rfl fun j _ => by ring
+          rw [sq, Finset.sum_mul_sum, Finset.sum_mul]
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [Finset.sum_mul]
   rw [hswap]
-  exact tsum_nonneg (fun p => by positivity)
+  exact tsum_nonneg (fun p => mul_nonneg (sq_nonneg _) (ha p))
 
 /-! ## Landau's summability transfer -/
-
-theorem summable_gdTwistTerm_of_le (ha : ∀ j, 0 ≤ a j) (hlam : ∀ j, 0 ≤ lam j)
-    {σ₁ σ : ℝ} (hsum : Summable (gdTwistTerm a lam σ₁ 0)) (hle : σ₁ ≤ σ) :
-    Summable (gdTwistTerm a lam σ 0) := by
-  refine Summable.of_nonneg_of_le (gdTwistTerm_nonneg ha hlam σ 0) (fun j => ?_) hsum
-  rw [gdTwistTerm, gdTwistTerm, pow_zero, mul_one]
-  refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (ha j)
-  nlinarith [hlam j]
 
 set_option maxHeartbeats 2000000 in
 /-- **Landau's summability transfer for general Dirichlet series.**  A nonnegative general

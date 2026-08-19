@@ -120,7 +120,7 @@ theorem tendsto_jointSlopeMajorant {c β a b : ℝ} (hc0 : 0 < c) (hβ0 : 0 < β
             + 1)) atTop (𝓝 0) := by
   have hβ2 : (0 : ℝ) < β / 2 := by linarith
   have hWP := tendsto_jointShortMass hβ0 hβ1
-  have hWQ := tendsto_jointLongMass hb0 ha0 hab hb1
+  have hWQ := tendsto_jointLongMass ha0 hab
   have hinvP : Tendsto (fun x : ℝ => 1 / Joint.mass (jointShortSet β x)) atTop (𝓝 0) := by
     refine (hWP.inv_tendsto_atTop).congr fun x => ?_
     rw [Pi.inv_apply, ← one_div]
@@ -192,7 +192,7 @@ theorem tendsto_jointSlopeRow {c β a b : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (h�
           * scaledLength c β x ^ 2)) atTop (𝓝 0) := by
   have hβ2 : (0 : ℝ) < β / 2 := by linarith
   have hWP := tendsto_jointShortMass hβ0 hβ1
-  have hWQ := tendsto_jointLongMass hb0 ha0 hab hb1
+  have hWQ := tendsto_jointLongMass ha0 hab
   refine squeeze_zero' ?_ ?_ (tendsto_jointSlopeMajorant hc0 hβ0 hβ1 hb0 hb1 ha0 hab hβb)
   · filter_upwards [Filter.eventually_gt_atTop (1 : ℝ), hWP.eventually_gt_atTop 0,
       hWQ.eventually_gt_atTop 0] with x hx1 hP0 hQ0
@@ -218,7 +218,7 @@ theorem tendsto_jointSlopeRow {c β a b : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (h�
     positivity
   · filter_upwards [Filter.eventually_ge_atTop (4 : ℝ), hWP.eventually_gt_atTop 0,
       hWQ.eventually_gt_atTop 0, (tendsto_scaledLength hc0 hβ0).eventually_ge_atTop (1 : ℝ),
-      scaledLength_le_sqrt hc1 hβ0 hβ1, eventually_jointSets_disjoint hβ0 hβ1 hb0 hβa]
+      scaledLength_le_sqrt hc1 hβ0 hβ1, eventually_jointSets_disjoint hβ0 hβ1 hβa]
       with x hx4 hP0 hQ0 hh1 hslsx hdisj
     have hx1 : (1 : ℝ) < x := by linarith
     have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)

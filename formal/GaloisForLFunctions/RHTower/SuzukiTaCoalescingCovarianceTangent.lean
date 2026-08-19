@@ -256,6 +256,16 @@ theorem suzukiTaCovariance_constant_energy_pos
     0 < ‖v‖ ^ 2 := hnorm
     _ = ((↑‖v‖ : ℂ) ^ 2).re := hpow_re.symm
 
+/-- Positivity of Suzuki's completed covariance forces the source-faithful
+coalescing rate to have the physically correct sign. -/
+theorem suzukiTaPositionResolventTangent_nonneg
+    (a : SuzukiPositiveAperture) :
+    0 ≤ suzukiTaPositionResolventTangent a := by
+  rw [suzukiTaPositionResolventTangent, positionResolventTangent]
+  exact div_nonneg
+    ((suzukiWeilIntervalCovariance_isPositive a).re_inner_nonneg_right _)
+    (le_of_lt (suzukiTaCovariance_constant_energy_pos a))
+
 /-- Actual Suzuki covariance has the model-free coalescing tangent, with no
 unrealized operator premise left. -/
 theorem tendsto_one_sub_suzukiTaCoalescingDefect_rate

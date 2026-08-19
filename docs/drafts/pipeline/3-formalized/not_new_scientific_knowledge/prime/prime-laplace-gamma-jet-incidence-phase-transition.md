@@ -1,9 +1,9 @@
 # Prime--Laplace data enter every finite Gamma jet clock but not its factorial Fock colimit
 
 - **ID:** `prime-laplace-gamma-jet-incidence-phase-transition`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / HT-TO-RH INCIDENCE / COMPLETION NO-GO
-- **Scientific status:** `[PROVED HERE] [NOT FORMALIZED]
+- **Scientific status:** `[PROVED HERE] [FORMALIZED]
   [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `meixner-root-prime-laplace-value-frame.md` and
   `gamma-factorial-fock-polarization-boundary-charge.md`
@@ -183,12 +183,39 @@ Derivative evaluation of Dirichlet series, Hilbert--Schmidt row maps, coherent-s
 Dirichlet-series uniqueness are classical.  The result is classified as bridge infrastructure.
 Its value is the exact separation between finite HT incidence and cofinal RH topology.
 
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+`formal/GaloisForLFunctions/RHTower/PrimeLaplaceGammaJetIncidence.lean`, axiom-clean
+(`propext, Classical.choice, Quot.sound`).
+
+| Card item | Lean declaration |
+|---|---|
+| eq. (1), the Gamma–Meixner weight `w_θ(p) = cosh(2 log p)^{-θ/2}` | `meixnerPrimeWeight` |
+| the two-sided comparison `p^{-θ} ≤ w_θ(p) ≤ 2^{θ/2} p^{-θ}` | `meixnerPrimeWeight_le`, `meixnerPrimeWeight_ge` |
+| eq. (2), the weighted prime–Laplace transform | `primeLaplaceCoeff` and its `LSeries` |
+| **eq. (3), absolute convergence for `Re z > (1-θ)/2`** | `lSeriesSummable_primeLaplaceCoeff`, `abscissaOfAbsConv_primeLaplaceCoeff_le` |
+| eq. (4), the raw jet coordinates `F_a^{(j)}(x₀)` | `iteratedDeriv_primeLaplace_eq`, `primeLaplaceJet` |
+| eq. (5), the factorial jet metric; eq. (6) column norms | `primeJetColumnFactorialNormSq` |
+| **eq. (6), every finite clock is Hilbert–Schmidt** | `summable_primeJetColumnFactorialNormSq` |
+| **eqs. (7)–(8), joint faithfulness of all finite clocks** | `eq_zero_of_forall_iteratedDeriv_eq_zero` |
+| eqs. (9)–(11), the exact coherent-jet Fock column norm `w_θ(p) p^{-2x₀} e^{(log p)²}` | `primeFockColumnNormSq`, `tsum_primeJetColumn_eq_primeFockColumnNormSq` |
+| **eq. (12), the Fock colimit no-go: the column norms are unbounded** | `not_bddAbove_primeFockColumnNormSq` |
+| eq. (13), translation covariance `jet_{x₀+1} = E jet_{x₀}` | `hasSum_taylor_primeLaplaceJet` |
+
+Faithfulness is proved through the analytic order at the base point: all raw derivatives vanishing
+forces `analyticOrderAt = ⊤`, hence local vanishing, hence vanishing on the convex convergence
+half plane, and Dirichlet-coefficient uniqueness then kills the prime vector.  The Hilbert–Schmidt
+bound uses the corpus lemma `summable_abs_log_natCast_pow_mul_rpow_neg`; the Fock column norm is
+the exponential series `∑_j (log p)^{2j}/j! = e^{(log p)²}`.
+
 ## Gates
 
-- [x] construct the prime--Laplace-to-raw-jet incidence
-- [x] prove every finite clock map is Hilbert--Schmidt
+- [x] construct the prime–Laplace-to-raw-jet incidence
+- [x] prove every finite clock map is Hilbert–Schmidt
 - [x] prove joint faithfulness of all finite clocks
 - [x] compute the exact factorial Fock column norm
 - [x] disprove boundedness of the naive cofinal map at every positive shape
 - [x] replace it by a projective/relative-graph trace target
-- [ ] formalize only when the projective trace topology is fixed
+- [x] formalize the incidence, the Hilbert–Schmidt bound, faithfulness, the coherent-jet column
+  norm and the colimit no-go unconditionally in Lean 4

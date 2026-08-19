@@ -84,10 +84,6 @@ theorem tendsto_jointCards_div_sqrt {β a b : ℝ} (hβ0 : 0 < β) (hβ1 : β < 
   have hγ0 : (0 : ℝ) < 1 / 2 := by norm_num
   have hγ1 : (1 : ℝ) / 2 < 1 := by norm_num
   have hγβ : (1 : ℝ) / 2 * β < 1 := by nlinarith
-  have hδ0 : (0 : ℝ) < a / b := div_pos ha0 hb0
-  have hδ1 : a / b < 1 := (div_lt_one hb0).2 hab
-  have habb : a / b * b = a := div_mul_cancel₀ a (ne_of_gt hb0)
-  have hδβ : a / b * b < 1 := by rw [habb]; linarith
   have hmaj := (tendsto_cardLength_sq_div_sqrt hb0 hb1).const_mul (4 : ℝ)
   rw [mul_zero] at hmaj
   refine squeeze_zero' ?_ ?_ hmaj
@@ -97,7 +93,7 @@ theorem tendsto_jointCards_div_sqrt {β a b : ℝ} (hβ0 : 0 < β) (hβ1 : β < 
   · filter_upwards [Real.tendsto_log_atTop.eventually_ge_atTop (1 : ℝ),
       Filter.eventually_gt_atTop (1 : ℝ),
       eventually_ladderTop_facts hβ0 hγ0 hγ1 hγβ,
-      eventually_ladderTop_facts hb0 hδ0 hδ1 hδβ] with x hlog1 hx1 hshort hlong
+      jointLongTopF_le ha0 hab] with x hlog1 hx1 hshort hlong
     have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
     have hcb : (1 : ℝ) ≤ cardLength b x := by
       rw [cardLength]
@@ -109,7 +105,7 @@ theorem tendsto_jointCards_div_sqrt {β a b : ℝ} (hβ0 : 0 < β) (hβ1 : β < 
       linarith [hshort.2.1]
     have hQ : ((jointLongSet a b x).card : ℝ) ≤ 2 * cardLength b x := by
       refine (card_primesRange_le _ _).trans ?_
-      linarith [hlong.2.1]
+      linarith [hlong]
     have hP0 : (0 : ℝ) ≤ ((jointShortSet β x).card : ℝ) := Nat.cast_nonneg _
     have hQ0 : (0 : ℝ) ≤ ((jointLongSet a b x).card : ℝ) := Nat.cast_nonneg _
     have hprod : ((jointShortSet β x).card : ℝ) * ((jointLongSet a b x).card : ℝ)
@@ -133,7 +129,7 @@ theorem tendsto_jointVarianceRow {c β a b : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) 
       / ((Joint.mass (jointShortSet β x) * Joint.mass (jointLongSet a b x)) ^ 2
           * scaledLength c β x ^ 2 * Real.sqrt x)) atTop (𝓝 0) := by
   have hWP := tendsto_jointShortMass hβ0 hβ1
-  have hWQ := tendsto_jointLongMass hb0 ha0 hab hb1
+  have hWQ := tendsto_jointLongMass ha0 hab
   have hinvP : Tendsto (fun x : ℝ => 1 / Joint.mass (jointShortSet β x)) atTop (𝓝 0) := by
     refine (hWP.inv_tendsto_atTop).congr fun x => ?_
     rw [Pi.inv_apply, ← one_div]
@@ -277,7 +273,7 @@ theorem tendsto_jointRoundingRow {c β a b : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) 
     rw [div_mul_cancel₀ a (ne_of_gt hb0)]; exact ha0
   have hβ20 : (0 : ℝ) < 1 / 2 * β := by linarith
   have hWP := tendsto_jointShortMass hβ0 hβ1
-  have hWQ := tendsto_jointLongMass hb0 ha0 hab hb1
+  have hWQ := tendsto_jointLongMass ha0 hab
   have hmaj := (tendsto_rpow_log_div_scaledLength_sq hc0 hβ0 (4 : ℝ)).const_mul (408 : ℝ)
   rw [mul_zero] at hmaj
   refine squeeze_zero' ?_ ?_ hmaj

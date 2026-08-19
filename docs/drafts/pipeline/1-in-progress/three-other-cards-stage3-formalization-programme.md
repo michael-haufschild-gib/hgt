@@ -726,3 +726,27 @@ primitives and is reusable.
 
 Remaining on card 1: the `G_m` converse, the `GL_2` case of Cassidy, Dreyfus's normal form and its
 analytic realization.
+
+
+## Card 1 — the isomonodromy obstruction is closed
+
+The classification consumes two obstructions for the rank-two order module: irreducibility (no
+rational Riccati solution — already in the tree) and non-isomonodromy (no rational compatible
+derivation).  The second is now proved:
+
+* `RatFuncShiftDegree` — the finite difference of a polynomial has degree `deg p - 1` with leading
+  coefficient `deg p · lead p`; hence the unit shift difference of a rational function drops the
+  degree at infinity by **exactly** one when the degree is nonzero, and by at least two when the
+  degree is zero and the function is nonconstant.
+* `RatFuncShiftDegreeCalculus` — the "zero or bounded" degree calculus (`intDegree 0 = 0` is larger
+  than a negative degree, so plain `≤ max` lemmas are unusable).
+* `BesselOrderIsomonodromyObstruction` — `besselOrder_no_rational_delta_structure`.
+
+Mechanism: the first compatibility identity forces the trace `P + σP + b σQ` to be shift invariant,
+hence constant; that bounds `deg (b σQ)`.  The combination `σ²Q - Q + b (P - σP) = c` then has one
+summand of exactly degree `deg P` and the other of degree at most `max 0 (deg P) - 2`, so it can
+never be a nonzero constant.
+
+Remaining on card 1: Cassidy for `SL₂` (Zariski-dense proper differential algebraic subgroups are
+conjugate to the constant points), the parameterized Galois correspondence step "solution
+differentially algebraic ⟹ parameterized group proper", and the analytic realization.

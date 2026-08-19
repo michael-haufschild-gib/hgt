@@ -1204,3 +1204,149 @@ This is `(18b)` with the construction abstracted into three checkable properties
 polynomial `G`: it is nonzero, its evaluation scales as `G(tθ) = t^d G(θ)`, and it factors as
 `G(θ) = g(θ) · h_k(θ)` with `g` continuous on the shell.  Nothing analytic remains -- the
 Łojasiewicz inequality the card offered as the alternative route is not used anywhere.
+
+## Lean progress -- the criticality criterion in the coordinates
+
+`formal/GaloisForLFunctions/HTGeometry/ShellCriticalityCriterion.lean` (new, umbrella-wired,
+axiom-clean) instantiates the implicit-derivative relation on the coordinate lines of the shell,
+which is the form the elimination consumes.
+
+| Card item | Declaration |
+|---|---|
+| the coordinate line through a point and its derivative | `hasDerivAt_coordinate_line` |
+| **the criticality criterion**: if a quantity satisfies a polynomial relation with polynomial coefficients and its derivative along the `i`-th coordinate line is the tangential-criticality value `φ(θ)·θ_i`, then `∑_n ∂_i c_n(θ) φ(θ)^n + (∑_n n c_n(θ) φ(θ)^{n−1}) φ(θ) θ_i = 0` | `shell_criticality_relation` |
+
+The chain rule for a multivariate polynomial along a curve was already in the corpus
+(`hasDerivAt_mvPolynomial_eval_curve_real`, `HTGeometry/PolynomialZeroSetDimension`), so this
+module only combines it with `polyCurve_relation` and the coordinate-line derivative; nothing was
+reproved.
+
+This is the polynomial expression `Q(θ, y)` referred to in the elimination plan, now formal: the
+left-hand side is a polynomial in the coordinates and in the action value, and it vanishes exactly
+at the critical points.  Feeding its square-sum over the coordinate directions to
+`actionValueProduct`, reading the result through `exists_shellPoly_of_isSymmetric`, and applying
+`exists_toSphere_sublevel_le_of_shellPoly` is `(18b)`.
+
+## Lean progress -- the real shell polynomial
+
+The shell polynomial produced by the trace representation lives over `ℂ`, because the traces of
+matrix powers do; the sublevel machinery needs a *real* polynomial.  A complex polynomial with real
+values at every real point has real coefficients, and that is now formal.
+
+`formal/GaloisForLFunctions/HTGeometry/RealValuedComplexPolynomial.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the coefficientwise imaginary part, and the real/imaginary split of a complex polynomial | `imagCoeffPart`, `coeff_imagCoeffPart`, `split_realCoeffPart` |
+| the value of the split at a real point | `eval_split` |
+| **real values force conjugation-invariant coefficients** | `map_conj_of_real_valued` |
+| **hence a real polynomial representing the same function** | `exists_realPoly_of_real_valued` |
+| **the real shell polynomial of a symmetric spectral function** | `exists_realShellPoly_of_isSymmetric` |
+
+The split is coefficientwise, so no induction over monomials is needed: evaluating it at a real
+point separates the real and imaginary parts, reality kills the imaginary polynomial pointwise, and
+`MvPolynomial.funext` over `ℝ` makes it the zero polynomial.  The corpus's `realCoeffPart` and
+`map_realCoeffPart` are reused; only the imaginary half was missing.
+
+With `exists_realShellPoly_of_isSymmetric`, every symmetric real function of the shell spectrum is
+now a real polynomial in the shell coordinates, which is the exact input of
+`exists_toSphere_sublevel_le_of_shellPoly`.
+
+## Lean progress -- the polynomial relation of the shell spectral action
+
+`formal/GaloisForLFunctions/HTGeometry/ShellActionRelation.lean` (new, umbrella-wired,
+axiom-clean) instantiates the elimination at the actual shell family, producing the hypothesis the
+criticality criterion consumes.
+
+| Card item | Declaration |
+|---|---|
+| the spectral action at one labelling of the shell spectrum | `shellSpectralAction` |
+| the coefficients of the symmetrised labelled action polynomial, as real shell polynomials | `exists_realShellCoeff_labeledActionPoly` |
+| **the polynomial relation**: for every labelling and every coordinate vector, `∑_n c_n(θ) φ_k(θ)^n = 0` with each `c_n` a real polynomial in the coordinates | `exists_shellRelation_labeledAction` |
+| **the criticality criterion for the spectral action**: one polynomial family, common to every labelling and every coordinate vector, whose vanishing expresses the vanishing of the tangential gradient | `exists_shell_criticality_polynomial` |
+
+The relation comes from `eval_map_labeledActionPoly` -- the action value at a labelling is a root of
+the symmetrised polynomial -- read through `exists_realShellPoly_of_isSymmetric` for the
+coefficients, with `Polynomial.eval_eq_sum_range'` supplying a single uniform degree bound.
+
+So the card's `(18b)` route is now instantiated end to end except for the final step: form the
+square-sum over coordinate directions of the criticality expression, symmetrise it over labellings
+with `actionValueProduct`, read it as a real shell polynomial, and check that this polynomial is
+nonzero, scales with a fixed degree, and factors through `h_k` -- at which point
+`exists_toSphere_sublevel_le_of_shellPoly` gives the power law.
+
+## Lean progress -- the criticality square sum
+
+`formal/GaloisForLFunctions/HTGeometry/CriticalitySquareSum.lean` (new, umbrella-wired,
+axiom-clean) packages the criticality expressions of all coordinate directions into a single
+polynomial in the auxiliary variable over the coordinate ring -- the object the symmetrisation over
+labellings consumes.
+
+| Card item | Declaration |
+|---|---|
+| the criticality expression in one direction, as a polynomial in the auxiliary variable | `criticalityPoly` |
+| the sum of their squares over all directions | `criticalitySquareSum` |
+| their evaluations at a coordinate vector and an action value | `eval_map_criticalityPoly`, `eval_map_criticalitySquareSum` |
+| **the square sum vanishes at a critical point** | `eval_map_criticalitySquareSum_eq_zero_of_forall` |
+
+Composed with `exists_shell_criticality_polynomial`, this says: at any coordinate vector where the
+tangential gradient of the spectral action vanishes, the square sum evaluates to zero at the action
+value.  That is exactly the vanishing hypothesis of `eval₂_actionValueProduct_eq_zero`, so
+symmetrising the square sum over labellings produces a symmetric spectral function vanishing at
+every critical point -- and `exists_realShellPoly_of_isSymmetric` turns it into the real shell
+polynomial that `exists_toSphere_sublevel_le_of_shellPoly` consumes.
+
+## Lean progress -- symmetric spectral functions over the coordinate ring
+
+The symmetrised criticality expression is symmetric in the eigenvalue variables but its
+coefficients live in the coordinate ring, not in the reals, so the earlier shell-polynomial theorem
+does not apply directly.  Newton inversion holds over any `ℚ`-algebra, and the coordinate ring is
+one, so the same route works.
+
+`formal/GaloisForLFunctions/HTGeometry/ShellSymmetricOverCoordinates.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| **the shell polynomial of a symmetric spectral function with coordinate-ring coefficients** | `exists_shellPoly_of_isSymmetric_over` |
+
+The proof substitutes the power sums by the real trace polynomials of the family -- themselves
+produced by `exists_realShellPoly_of_isSymmetric` applied to `MvPolynomial.psum` -- and matches the
+two sides through `MvPolynomial.eval₂_comp_left`, so no algebra-instance juggling is needed.
+
+This is the missing type-level link: `actionValueProduct` of the criticality square sum lives
+exactly in `MvPolynomial (Fin D) (MvPolynomial (Fin N) ℝ)`, is symmetric by
+`isSymmetric_actionValueProduct`, and therefore is now a single real polynomial in the shell
+coordinates.
+
+## Lean progress -- the critical-locus shell polynomial
+
+`formal/GaloisForLFunctions/HTGeometry/CriticalLocusShellPolynomial.lean` (new, umbrella-wired,
+axiom-clean) assembles the whole elimination into the object the transversality tail needs.
+
+| Card item | Declaration |
+|---|---|
+| **a real shell polynomial vanishing on the critical locus**, together with the polynomial relation satisfied by every labelled spectral action | `exists_criticalLocusShellPoly` |
+
+The construction is exactly the card's "eliminate the eigenvalues" route, now complete:
+
+1. the labelled spectral actions are the roots of a polynomial whose coefficients are real shell
+   polynomials (`exists_shellRelation_labeledAction`);
+2. differentiating that relation along each coordinate line, with Euler's relation fixing the radial
+   part, turns tangential criticality into the vanishing of an explicit polynomial expression in the
+   coordinates and the action value (`shell_criticality_relation`);
+3. squaring and summing over the directions packages those expressions into one polynomial in the
+   auxiliary variable (`criticalitySquareSum`);
+4. multiplying its values over all labellings gives a symmetric spectral function with
+   coordinate-ring coefficients (`actionValueProduct`, `isSymmetric_actionValueProduct`);
+5. Newton inversion over the coordinate ring, with the power sums replaced by the real trace
+   polynomials of the family, makes it a single real polynomial `G` in the shell coordinates
+   (`exists_shellPoly_of_isSymmetric_over`);
+6. and at a critical point the factor belonging to that labelling vanishes, so `G` does
+   (`eval_map_criticalitySquareSum_eq_zero_of_forall`).
+
+`(18b)` is now: `G ≠ 0`, `G` scales with a fixed degree, and `G` factors as a continuous function
+times `h_k` -- at which point `exists_toSphere_sublevel_le_of_shellPoly` gives the power law.  The
+first two are properties of the explicit polynomial above; the third is where the eigenbranch
+differentiability of the spectral action enters, the same input the parent card's Theorem A needs.

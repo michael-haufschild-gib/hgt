@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.HTGeometry.LpDiagonalMultiplier
 
 /-!
 # Connes--van Suijlekom, Appendix A: literal truncation matrix
@@ -38,6 +39,81 @@ quadratic form has been identified with `connesVanSuijlekomA1QEntry`. -/
 theorem connesVanSuijlekomA1_qEntry_eq (b : ℝ) (n m : ℤ) :
     connesVanSuijlekomA1QEntry b n m =
       2 * (if n = m then 1 else 0) + b * connesVanSuijlekomA1Mu n m := rfl
+
+/-- Integral of an integer Fourier cosine over one period. -/
+theorem connesVanSuijlekomA1_integer_cos_integral (k : ℤ) :
+    (∫ x in (0 : ℝ)..1, Real.cos (2 * Real.pi * (k : ℝ) * x)) =
+      if k = 0 then 1 else 0 := by
+  by_cases hk : k = 0
+  · subst k
+    norm_num
+  rw [if_neg hk]
+  have hκ : 2 * Real.pi * (k : ℝ) ≠ 0 := by
+    exact mul_ne_zero (mul_ne_zero (by norm_num) Real.pi_ne_zero) (by exact_mod_cast hk)
+  let F : ℝ → ℝ := fun x => Real.sin (2 * Real.pi * (k : ℝ) * x) /
+    (2 * Real.pi * (k : ℝ))
+  have hF : ∀ x : ℝ, HasDerivAt (𝕜 := ℝ) F
+      (Real.cos (2 * Real.pi * (k : ℝ) * x)) x := by
+    intro x
+    dsimp [F]
+    have harg : HasDerivAt (𝕜 := ℝ) (fun y : ℝ => 2 * Real.pi * (k : ℝ) * y)
+        (2 * Real.pi * (k : ℝ)) x := by
+      exact hasDerivAt_const_mul _
+    have hs := (Real.hasDerivAt_sin (2 * Real.pi * (k : ℝ) * x)).comp x harg
+    convert! hs.div_const (2 * Real.pi * (k : ℝ)) using 1
+    field_simp [hκ]
+  have hInt : (∫ x in (0 : ℝ)..1, Real.cos (2 * Real.pi * (k : ℝ) * x)) = F 1 - F 0 := by
+    apply integral_eq_sub_of_hasDerivAt
+    · intro x _
+      exact hF x
+    · exact (by fun_prop : Continuous fun x : ℝ =>
+        Real.cos (2 * Real.pi * (k : ℝ) * x)).intervalIntegrable 0 1
+  rw [hInt]
+  dsimp [F]
+  have hsin : Real.sin (2 * Real.pi * (k : ℝ)) = 0 := by
+    rw [show 2 * Real.pi * (k : ℝ) = (k : ℝ) * (2 * Real.pi) by ring]
+    simpa using Real.sin_add_int_mul_two_pi 0 k
+  simp [hsin]
+
+/-- Orthogonality of the source sine frequency against every integer sine mode. -/
+theorem connesVanSuijlekomA1_sinOne_integral (k : ℤ) :
+    (∫ x in (0 : ℝ)..1,
+      Real.sin (2 * Real.pi * (k : ℝ) * x) * Real.sin (2 * Real.pi * x)) =
+      if k = 1 then 1 / 2 else if k = -1 then -(1 / 2) else 0 := by
+  rw [show (fun x : ℝ =>
+      Real.sin (2 * Real.pi * (k : ℝ) * x) * Real.sin (2 * Real.pi * x)) =
+      fun x => (Real.cos (2 * Real.pi * ((k - 1 : ℤ) : ℝ) * x) -
+        Real.cos (2 * Real.pi * ((k + 1 : ℤ) : ℝ) * x)) / 2 by
+    funext x
+    rw [show 2 * Real.pi * ((k - 1 : ℤ) : ℝ) * x =
+        2 * Real.pi * (k : ℝ) * x - 2 * Real.pi * x by
+        push_cast
+        ring,
+      show 2 * Real.pi * ((k + 1 : ℤ) : ℝ) * x =
+        2 * Real.pi * (k : ℝ) * x + 2 * Real.pi * x by
+        push_cast
+        ring,
+      Real.cos_sub, Real.cos_add]
+    ring, intervalIntegral.integral_div]
+  have hcontMinus : Continuous (fun x : ℝ =>
+      Real.cos (2 * Real.pi * ((k - 1 : ℤ) : ℝ) * x)) := by
+    fun_prop
+  have hcontPlus : Continuous (fun x : ℝ =>
+      Real.cos (2 * Real.pi * ((k + 1 : ℤ) : ℝ) * x)) := by
+    fun_prop
+  rw [intervalIntegral.integral_sub (hcontMinus.intervalIntegrable (μ := volume) 0 1)
+    (hcontPlus.intervalIntegrable (μ := volume) 0 1),
+    connesVanSuijlekomA1_integer_cos_integral (k - 1),
+    connesVanSuijlekomA1_integer_cos_integral (k + 1)]
+  by_cases hkOne : k = 1
+  · subst k
+    norm_num
+  by_cases hkNegOne : k = -1
+  · subst k
+    norm_num
+  have hminus : k - 1 ≠ 0 := by omega
+  have hplus : k + 1 ≠ 0 := by omega
+  simp [hkOne, hkNegOne, hminus, hplus]
 
 theorem connesVanSuijlekomA1_mu_center_block :
     (fun i j : Fin 3 => connesVanSuijlekomA1Mu ((i : ℤ) - 1) ((j : ℤ) - 1)) =
@@ -841,6 +917,183 @@ theorem connesVanSuijlekomA2_alphaCircle_convolution_fourierPolynomial
     apply Continuous.integrable_of_hasCompactSupport
     · exact hAlpha.mul (by fun_prop)
     · exact isCompact_univ.of_isClosed_subset (isClosed_tsupport _) (Set.subset_univ _)
+
+/-- The diagonal symbol in Lemma A.2 is uniformly bounded by two. -/
+theorem connesVanSuijlekomA2_norm_diagonal_le_two (n : ℤ) :
+    ‖(connesVanSuijlekomA2Diagonal n : ℂ)‖ ≤ 2 := by
+  by_cases hnNeg : n = -1
+  · subst n
+    norm_num [connesVanSuijlekomA2Diagonal]
+  by_cases hnOne : n = 1
+  · subst n
+    norm_num [connesVanSuijlekomA2Diagonal]
+  by_cases hnZero : n = 0
+  · subst n
+    norm_num [connesVanSuijlekomA2Diagonal]
+  rw [connesVanSuijlekomA2Diagonal, if_neg hnNeg, if_neg hnOne]
+  have hnatPos : 0 < n.natAbs := Int.natAbs_pos.mpr hnZero
+  have hnatNeOne : n.natAbs ≠ 1 := by
+    intro h
+    rcases Int.natAbs_eq_iff.mp h with h' | h'
+    · exact hnOne h'
+    · exact hnNeg h'
+  have hnat : 2 ≤ n.natAbs := by omega
+  have hnatR : (2 : ℝ) ≤ (n.natAbs : ℝ) := by exact_mod_cast hnat
+  have hnatZ : (2 : ℤ) ≤ |n| := by
+    rw [← Int.natCast_natAbs]
+    exact_mod_cast hnat
+  have habs : (2 : ℝ) ≤ |(n : ℝ)| := by exact_mod_cast hnatZ
+  have hsq : (4 : ℝ) ≤ (n : ℝ) ^ 2 := by
+    have hsqabs : (4 : ℝ) ≤ |(n : ℝ)| ^ 2 := by nlinarith
+    simpa only [sq_abs] using hsqabs
+  have hdenNonpos : 1 - (n : ℝ) ^ 2 ≤ 0 := by linarith
+  have hdenAbs : (1 : ℝ) ≤ |1 - (n : ℝ) ^ 2| := by
+    rw [abs_of_nonpos hdenNonpos]
+    linarith
+  rw [Complex.norm_real, Real.norm_eq_abs, abs_div,
+    abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
+  rw [div_le_iff₀ (lt_of_lt_of_le zero_lt_one hdenAbs)]
+  nlinarith
+
+/-- The bounded `L²` completion of the diagonal operator in Lemma A.2. -/
+def connesVanSuijlekomA2DiagonalL2 :
+    Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) →L[ℂ]
+      Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
+  (fourierBasis (T := (1 : ℝ))).repr.toContinuousLinearEquiv.symm.toContinuousLinearMap ∘L
+    GaloisForLFunctions.lpDiagonalCLM (C := 2)
+      (fun n : ℤ => (connesVanSuijlekomA2Diagonal n : ℂ))
+      (by norm_num) (by intro n; exact connesVanSuijlekomA2_norm_diagonal_le_two n) ∘L
+    (fourierBasis (T := (1 : ℝ))).repr.toContinuousLinearEquiv.toContinuousLinearMap
+
+/-- The bounded completion retains the source diagonal values on every Fourier basis vector. -/
+theorem connesVanSuijlekomA2_diagonalL2_fourierLp (j : ℤ) :
+    connesVanSuijlekomA2DiagonalL2 (fourierLp 2 j) =
+      (connesVanSuijlekomA2Diagonal j : ℂ) • fourierLp 2 j := by
+  have hbasis : (fourierLp (T := (1 : ℝ)) 2 j :
+      Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) =
+      (fourierBasis (T := (1 : ℝ))) j := by
+    rw [coe_fourierBasis]
+  have hsingle : lp.single (E := fun _ : ℤ => ℂ) 2 j
+      (connesVanSuijlekomA2Diagonal j : ℂ) =
+      (connesVanSuijlekomA2Diagonal j : ℂ) • lp.single (E := fun _ : ℤ => ℂ) 2 j (1 : ℂ) := by
+    rw [← lp.single_smul]
+    congr 1
+    rw [smul_eq_mul, mul_one]
+  rw [hbasis, connesVanSuijlekomA2DiagonalL2]
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
+    ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.coe_toContinuousLinearEquiv]
+  rw [HilbertBasis.repr_self, GaloisForLFunctions.lpDiagonalCLM_single, hsingle, map_smul]
+  congr 1
+  simp
+
+/-- A finite Fourier polynomial as an `L²` vector. -/
+def connesVanSuijlekomA2FourierPolynomialLp (s : Finset ℤ) (c : ℤ → ℂ) :
+    Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
+  ∑ n ∈ s, c n • fourierLp 2 n
+
+/-- The diagonal image of a finite Fourier polynomial as an `L²` vector. -/
+def connesVanSuijlekomA2DiagonalFourierPolynomialLp (s : Finset ℤ) (c : ℤ → ℂ) :
+    Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
+  ∑ n ∈ s, (c n * (connesVanSuijlekomA2Diagonal n : ℂ)) • fourierLp 2 n
+
+/-- The bounded `L²` completion agrees with the diagonal formula on every finite polynomial. -/
+theorem connesVanSuijlekomA2_diagonalL2_fourierPolynomial
+    (s : Finset ℤ) (c : ℤ → ℂ) :
+    connesVanSuijlekomA2DiagonalL2 (connesVanSuijlekomA2FourierPolynomialLp s c) =
+      connesVanSuijlekomA2DiagonalFourierPolynomialLp s c := by
+  rw [connesVanSuijlekomA2FourierPolynomialLp,
+    connesVanSuijlekomA2DiagonalFourierPolynomialLp, map_sum]
+  apply Finset.sum_congr rfl
+  intro n hn
+  rw [map_smul, connesVanSuijlekomA2_diagonalL2_fourierLp, smul_smul]
+
+/-- The finite Fourier polynomial packaged as a continuous map. -/
+def connesVanSuijlekomA2FourierPolynomialContinuousMap (s : Finset ℤ) (c : ℤ → ℂ) :
+    C(AddCircle (1 : ℝ), ℂ) :=
+  ⟨connesVanSuijlekomA2FourierPolynomial s c, by
+    unfold connesVanSuijlekomA2FourierPolynomial
+    fun_prop⟩
+
+/-- The finite Fourier polynomial as an `L²` vector through its actual periodic function. -/
+def connesVanSuijlekomA2FourierPolynomialToLp (s : Finset ℤ) (c : ℤ → ℂ) :
+    Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
+  ContinuousMap.toLp 2 AddCircle.haarAddCircle ℂ
+    (connesVanSuijlekomA2FourierPolynomialContinuousMap s c)
+
+theorem connesVanSuijlekomA2_fourierPolynomialToLp_eq
+    (s : Finset ℤ) (c : ℤ → ℂ) :
+    connesVanSuijlekomA2FourierPolynomialToLp s c =
+      connesVanSuijlekomA2FourierPolynomialLp s c := by
+  rw [connesVanSuijlekomA2FourierPolynomialToLp, connesVanSuijlekomA2FourierPolynomialLp]
+  have hcm : connesVanSuijlekomA2FourierPolynomialContinuousMap s c =
+      ∑ n ∈ s, c n • fourier n := by
+    ext x
+    simp only [connesVanSuijlekomA2FourierPolynomialContinuousMap, ContinuousMap.coe_mk,
+      connesVanSuijlekomA2FourierPolynomial]
+    rw [ContinuousMap.sum_apply]
+    simp_rw [ContinuousMap.smul_apply, smul_eq_mul]
+  rw [hcm, map_sum]
+  apply Finset.sum_congr rfl
+  intro n hn
+  rw [map_smul]
+
+/-- The diagonal finite Fourier polynomial packaged as a continuous map. -/
+def connesVanSuijlekomA2DiagonalFourierPolynomialContinuousMap
+    (s : Finset ℤ) (c : ℤ → ℂ) : C(AddCircle (1 : ℝ), ℂ) :=
+  ⟨connesVanSuijlekomA2DiagonalFourierPolynomial s c, by
+    unfold connesVanSuijlekomA2DiagonalFourierPolynomial
+    fun_prop⟩
+
+/-- The diagonal finite Fourier polynomial as an `L²` vector through its actual function. -/
+def connesVanSuijlekomA2DiagonalFourierPolynomialToLp (s : Finset ℤ) (c : ℤ → ℂ) :
+    Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
+  ContinuousMap.toLp 2 AddCircle.haarAddCircle ℂ
+    (connesVanSuijlekomA2DiagonalFourierPolynomialContinuousMap s c)
+
+theorem connesVanSuijlekomA2_diagonalFourierPolynomialToLp_eq
+    (s : Finset ℤ) (c : ℤ → ℂ) :
+    connesVanSuijlekomA2DiagonalFourierPolynomialToLp s c =
+      connesVanSuijlekomA2DiagonalFourierPolynomialLp s c := by
+  rw [connesVanSuijlekomA2DiagonalFourierPolynomialToLp,
+    connesVanSuijlekomA2DiagonalFourierPolynomialLp]
+  have hcm : connesVanSuijlekomA2DiagonalFourierPolynomialContinuousMap s c =
+      ∑ n ∈ s, (c n * (connesVanSuijlekomA2Diagonal n : ℂ)) • fourier n := by
+    ext x
+    simp only [connesVanSuijlekomA2DiagonalFourierPolynomialContinuousMap, ContinuousMap.coe_mk,
+      connesVanSuijlekomA2DiagonalFourierPolynomial]
+    rw [ContinuousMap.sum_apply]
+    simp_rw [ContinuousMap.smul_apply, smul_eq_mul]
+  rw [hcm, map_sum]
+  apply Finset.sum_congr rfl
+  intro n hn
+  rw [map_smul]
+
+/-- The bounded `L²` operator is the extension of the genuine Haar-convolution formula on
+every finite Fourier polynomial. -/
+theorem connesVanSuijlekomA2_diagonalL2_extends_convolution
+    (s : Finset ℤ) (c : ℤ → ℂ) :
+    connesVanSuijlekomA2DiagonalL2 (connesVanSuijlekomA2FourierPolynomialToLp s c) =
+      connesVanSuijlekomA2DiagonalFourierPolynomialToLp s c := by
+  rw [connesVanSuijlekomA2_fourierPolynomialToLp_eq,
+    connesVanSuijlekomA2_diagonalL2_fourierPolynomial,
+    connesVanSuijlekomA2_diagonalFourierPolynomialToLp_eq]
+
+/-- The completed diagonal operator is uniquely determined among bounded `L²` operators by the
+Haar-convolution values on the Fourier modes. -/
+theorem connesVanSuijlekomA2_diagonalL2_unique
+    (T : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) →L[ℂ]
+      Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))))
+    (h : ∀ n : ℤ, T (fourierLp 2 n) =
+      (connesVanSuijlekomA2Diagonal n : ℂ) • fourierLp 2 n) :
+    T = connesVanSuijlekomA2DiagonalL2 := by
+  apply ContinuousLinearMap.ext_on
+    (show Dense (Submodule.span ℂ (Set.range (fourierLp (T := (1 : ℝ)) 2)) :
+      Set (Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) ) by
+      rw [dense_iff_closure_eq, ← Submodule.topologicalClosure_coe,
+        span_fourierLp_closure_eq_top (T := (1 : ℝ)) (p := 2) (by simp)]
+      rfl)
+  rintro _ ⟨n, rfl⟩
+  rw [h n, connesVanSuijlekomA2_diagonalL2_fourierLp]
 
 end
 

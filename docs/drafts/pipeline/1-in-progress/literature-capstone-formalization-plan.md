@@ -311,3 +311,27 @@ proof obligation is arithmetic, not eliminant algebra: install the already-verif
 coordinates as field automorphisms, prove their quaternion multiplication table and normality, and
 only then attach the Artin representation.  The global epsilon-factor/root-number calculation
 remains independent after that.
+
+## 2026-08-19 literal quaternion automorphisms of the documented field
+
+`[LEAN-PROVED]` `DeningerQ8RootNumberNegOneAutomorphisms.lean` installs the two radical lift
+formulas as actual bijective ring endomorphisms of the literal degree-eight field.  The proof uses
+the previously closed primitive equality `Q(z)=K`: maps agreeing on the final radical agree on the
+whole field.  It then proves, without an assumed Galois action,
+
+```text
+I² = J² = C,   C² = 1,   I J = C J I,
+```
+
+where `C(z) = -z` and the maps fix `Q`.  The anti-commutation proof is coefficient-faithful: its
+only nontrivial input is the already formalized equality of the two explicit composite radical
+coordinates with opposite signs.  Targeted `lake env lean`, leaf `lake build`, and axiom audits
+passed; listed axioms are only `propext`, `Classical.choice`, and `Quot.sound`.  The leaf is wired
+into `GaloisForLFunctions.RHTower`; no umbrella build was run.
+
+`[OPEN CORE]` These relations exhibit an eight-candidate quaternion subgroup but do not by
+themselves prove its elements distinct, exhaust all `Q`-automorphisms, or establish normality.
+The next exact field-theoretic target is an injective `QuaternionGroup 2` action into the actual
+automorphism group, followed by the degree-eight automorphism-count criterion for `IsGalois`.
+The source's global Artin epsilon-factor calculation remains a separate, presently unformalized
+analytic-arithmetic theorem.

@@ -120,3 +120,81 @@ this identity (the finite truncations have no `s=1` pole / no `γ_E`).
   So the theorem is "the truncation Stieltjes problem **is** the prime-log transcendence problem rung-for-rung,"
   not merely a reduction. The exponential column (`γ_E`, archimedean) is the separate `relative-exponential-apex`
   conjunct (finite truncations have no `s=1` pole). BRIDGE.
+
+## §2′ CORRECTION (2026-08-19) — the stated proof of the corank identity is wrong; the theorem survives with a different argument
+
+While formalizing §2′ the following was found and verified.
+
+**The gap.**  §2′ argues: "the Laurent coefficients of `ζ_S` generate `ℚ(e_1,…,e_r)` (`a_0 = 1`,
+`a_1 = ½e_1`, … recover `e_1,…,e_r`)".  That recovery claim is **false for `r ≥ 3`**.  Write
+`h(x) = x/(1−e^{−x}) = ∑_k B⁺_k x^k/k!` and `A(s) = ∏_i h(sL_i) = ∑_k a_k s^k`.  Then
+
+* `h(x)/h(−x) = e^x`, so `log h(x) − x/2` is an **even** function of `x`;
+* hence `log A(s) = (s/2)·p_1 + ∑_{k≥1} f_{2k} s^{2k} p_{2k}` with `f_{2k} = B_{2k}/(2k·(2k)!)`,
+  where `p_m = ∑_i L_i^m`;
+* since `a_0 = 1`, the coefficient fields of `A` and `log A` coincide, so
+  **`ℚ(a_1, a_2, a_3, …) = ℚ(p_1, p_2, p_4, p_6, …)`** — the *odd* power sums `p_3, p_5, …` never
+  appear.
+
+Explicitly, at level three (using `B⁺_3 = 0`, `B⁺_2/2! = 1/12`, `B⁺_1/1! = 1/2`):
+
+```text
+a_3 = (1/24)·∑_{i≠j} L_i² L_j + (1/8)·e_3
+    = (1/24)(p_1 p_2 − p_3) + (1/8) e_3
+    = (1/24)(e_1 e_2 − 3e_3) + (1/8) e_3
+    = e_1 e_2 / 24,
+```
+
+so `e_3` cancels exactly and is **not** recoverable from `a_0, a_1, a_2, a_3`.
+
+**The repair.**  The conclusion of §2′ is nevertheless true, by a different route.  The Laurent
+coefficients are `a_k/e_r`, so the generated field contains `a_0/e_r = 1/e_r`, hence `e_r`, hence
+every `a_k`; therefore it contains
+
+```text
+ℚ(p_1, p_2, p_4, p_6, …).
+```
+
+Now `{p_2, p_4, p_6, …}` are exactly the power sums of the squares `M_i = L_i²`, so by Newton's
+identities in characteristic zero the field contains every elementary symmetric function
+`e_j(M_1,…,M_r)`.  Consequently each `M_i = L_i²` is a root of the monic polynomial
+`∏_j (X − M_j)` whose coefficients lie in the field, so each `L_i²` — and hence each `L_i` — is
+**algebraic over the Laurent-coefficient field**.  With the inclusion in the other direction
+(`stieltjesField_le_logField`, formalized) this gives
+
+```text
+trdeg_ℚ {Laurent coefficients of ζ_S} = trdeg_ℚ ℚ(L_1,…,L_r),
+```
+
+which is the §2′ identity.  Note the repaired proof needs only the even power sums and Newton's
+identities; it does **not** need `1/e_r` at all, and it does not need any positivity of the `L_i`.
+The one nontrivial input is `B_{2k} ≠ 0` for the levels used (classical; not currently in mathlib).
+
+## Lean status (2026-08-19)
+
+`formal/GaloisForLFunctions/HTGeometry/StieltjesCorankTrdeg.lean` (wired into the `HTGeometry`
+umbrella, olean built, `#print axioms` clean) formalizes:
+
+- `blockCoeffVal`, `stieltjesVal` — the Laurent block coefficients and the Laurent coefficients
+  `a_k / ∏_i L_i` of the truncated Euler zeta, evaluated at a multiplier-log family, on top of the
+  corpus's `beurlingBlock` (`HTGeometry/SymmetricBlockAlgebraicIndependence.lean`);
+- `logField`, `stieltjesField`, `stieltjesVal_mem_logField`,
+  **`stieltjesField_le_logField`** — every Laurent coefficient lies in `ℚ(L_1,…,L_r)` (one half of
+  §2′, in full generality);
+- `beurlingBlock_one_coeff`, `blockCoeffVal_single`,
+  **`stieltjesVal_single`** — the exact corank-one formula `γ_k = B⁺_k L^{k−1}/k!` of §2;
+- `stieltjesVal_single_two`, `logField_le_stieltjesField_single`,
+  **`stieltjesField_single_eq`** and **`trdeg_stieltjesField_single`** — the corank-one collapse:
+  with one multiplier the Laurent-coefficient field *equals* the multiplier-log field, so the two
+  transcendence degrees agree.  (This is §2 in exact, unconditional form; the further claim
+  `trdeg = 1` is the separate statement that `log q` is transcendental, i.e. Hermite–Lindemann,
+  which is not in mathlib.)
+
+REMAINING for 2 -> 3:
+1. the repaired §2′ in general: `p_{2k} ∈ stieltjesField` (via `PowerSeries.log`, the evenness of
+   `log h(x) − x/2`, and `B_{2k} ≠ 0`) and then Newton's identities
+   (`MvPolynomial.mul_esymm_eq_sum`, in mathlib) applied to the squares;
+2. §2 `trdeg = 1`: Hermite–Lindemann (`e^α` transcendental for algebraic `α ≠ 0`) — mathlib has
+   only `NumberTheory/Transcendental/Lindemann/AnalyticalPart.lean`;
+3. §2″: Gelfond–Schneider — not in mathlib;
+4. §4: `ζ` is not D-finite (Hölder) and the D-finite ⇔ P-recursive dictionary.
