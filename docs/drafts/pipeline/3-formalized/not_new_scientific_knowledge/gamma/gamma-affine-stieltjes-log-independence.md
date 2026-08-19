@@ -1,7 +1,7 @@
 # §G Factor — γ-Affine Structure of Generalized Stieltjes Constants
 
 - **ID:** gamma-affine-stieltjes-log-independence
-- **Stage:** 2-fully-proven (not new scientific knowledge; reopened from 5-failed/free-beurling-stieltjes-realization.md, closed 2026-07-12)
+- **Stage:** 3-formalized (not new scientific knowledge; reopened from 5-failed/free-beurling-stieltjes-realization.md, closed 2026-07-12)
 - **Type:** CANDIDATE THEOREM — structural fact + open independence question
 - **Source:** Turing id=1879, id=1880; correction of Wheeler's 5-failed card (2026-06-24)
 - **Parent cards:** bigraded-corank-dss-cross.md §G; corank-arithmeticity-not-cardinality.md

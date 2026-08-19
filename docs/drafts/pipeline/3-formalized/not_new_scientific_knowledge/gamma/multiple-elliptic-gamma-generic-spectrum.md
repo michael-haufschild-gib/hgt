@@ -1,7 +1,7 @@
 # Generic Multiple Elliptic Gamma Hypertranscendence and Spectrum
 
 - **ID:** multiple-elliptic-gamma-generic-spectrum
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper) / OPEN-PROBLEM RESOLUTION CANDIDATE
 - **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — contingent on independent audit of the order-one elliptic-gamma theorem
 - **Statement:** For rationally independent periods, every multiple elliptic gamma function is hypertranscendental. Its logarithmic derivative undergoes a sharp spectral transition: order one has the rank-three DA translation spectrum, while every higher order has exact spectrum `Z`. Equivalently, for order at least two every nonintegral shift quotient is hypertranscendental.

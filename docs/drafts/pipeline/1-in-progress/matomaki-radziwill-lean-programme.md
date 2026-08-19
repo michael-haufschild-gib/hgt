@@ -4067,3 +4067,170 @@ it), the `(#B)²·V_k²·I_k` term is the exceptional one.
    `averagedMeanSquare_moebius_of_jointOmegaBudget`.
 
 No new analytic input remains anywhere in the lane.
+
+### Milestone B, bricks 29–33 — the assembly, and the last analytic input located (2026-08-19)
+
+| module | content |
+|-|-|
+| `Sieve/Section4Assembly` | **`integral_Icc_normSq_logPoly_le_support_bound`** (Lemma 2.4 at a general coefficient bound — the long-weighted cofactor is bounded by `#Q`, not by `1`), **`integral_normSq_jointOmegaPoly_le`** — the joint polynomial over the short ladder, with the per-step bound as a parameter |
+| `Sieve/JointOmegaBudgetFromLadder` | `jointOmegaCoeff`, `logPoly_jointOmegaCoeff_eq`, `energy_jointOmegaCoeff_le`, **`integral_kernel_normSq_jointOmega_le`** — the Gallagher-weighted spectral integral of the joint polynomial from a bound at one height.  `AffineMajorantFromHeight` and `GallagherDyadicTail` are both coefficient-generic, so this is a short mirror of `OmegaBudgetFromLadder` |
+| `Sieve/SetIntegralBlockSplit` (extended) | **`setIntegral_normSq_mul_split_exceptional_set`** — the §4 split over an arbitrary measurable part of the window |
+| `Sieve/Section4BlockFull` (extended) | `shortExceptionalOn`, **`section4_block_full_on`** — one block of §4 on an arbitrary measurable part |
+| `Sieve/Section4DiscAnnulus` | `windowAnnulus`, `abs_ge_of_mem_windowAnnulus`, **`section4_block_disc`**, **`section4_block_disc_ann`** |
+
+### Why the disc is not negligible, and what handles it
+
+Lemma 2.3 needs `|τ| ≥ τ₀`, so §4 runs on the annulus `w₀ ≤ |w| ≤ W` only.  On the disc the trivial
+bound is **not** enough: it contributes `σ_j²M²W_Q²` per short block, whose weighted sum is
+`W_P²M²W_Q²` — the trivial total.  What saves it is the *cofactor*: on the disc the innermost
+polynomial is a Möbius sum of length `M/(P_jQ_k) = M^{1-o(1)}`, and the corpus already owns its
+low-frequency bound,
+
+```text
+Sieve/CofactorLowFreqBound.exists_norm_logPoly_moebiusCoeff_Icc_le :
+  ‖logPoly moebiusCoeff (Icc a b) w‖ ≤ moebiusSharpBound (a−1) + moebiusSharpBound b ,
+```
+
+whose saving is `exp(−c(log N)^{1/10})` — better than every power of log, uniformly over a frequency
+range larger than every power of log.  Feeding it through `section4_block_disc` (which is
+`setIntegral_normSq_omegaWeighted_le_blocks` with **trivial** `Vk` and this `Ik`) gives
+`W_P²M²W_Q²·exp(−2c(log M)^{1/10})·2w₀ = o(M²W_P²W_Q²)`.
+
+### `Vk` on the annulus is already a corpus theorem
+
+`Sieve/GeomBlockPrimeRho.exists_norm_primeBlockPoly_geomBlock_le` bounds the prime polynomial of the
+`j`-th step of a ladder over `primesRange z₀ z` by `(4/log 2)((1+η)ρ + 7e⁹/Q)·(Q(1+η)^j)` whenever
+`τ₀ ≤ |2πw|`, with `ρ` any bound for the relative scaled Route-T envelope.  Applied to the **long**
+ladder (`z₀ = ⌊exp((log x)^a)⌋`, `a > 9/10`) this is exactly the `Vk` of `section4_block_full_on`.
+
+**Consequence: every analytic input of milestone B is now either proved in this session or already a
+corpus theorem.**  Lemma 2.1 (Plancherel), 2.3 (Route-T), 2.4 (mean value, at a general coefficient
+bound), 2.5 (level-set measure at a free power), 2.6 (integral Halász–Montgomery), the low-frequency
+cofactor bound, the joint Turán–Kubilius transfer, the two-variable factorisation, the two harmonic
+splits, the two ladder defects, and the Gallagher tail.  What is left is **only** the parameter
+substitution: choosing `P(x), Q(x), R, η, L, V_P, k, v, u, w₀, W, T₀` as functions of `x` and
+verifying one limit — the joint-weight mirror of `Sieve/BudgetSubstitution`,
+`Sieve/BudgetRhoBound`, `Sieve/BudgetLimit` and `Sieve/ScaledBudget{Substitution,Limit}`.
+
+### Milestone B, bricks 34–35 — the disc closed, and `Vk` located as a corpus theorem (2026-08-19)
+
+| module | content |
+|-|-|
+| `Sieve/Section4ExceptionalCofactor` (extended) | **`setIntegral_normSq_logPoly_shortExceptionalOn_le`** — the same closed cofactor bound over the exceptional set of an arbitrary *part* of the window (the exceptional set of a part sits inside that of the whole, and the integrand is nonnegative) |
+| `Sieve/Section4DiscCofactor` | `setIntegral_disc_normSq_logPoly_le`, **`exists_setIntegral_disc_normSq_logPoly_moebius_le`** — the disc's cofactor mean square, `≤ (moebiusSharpBound(a−1) + moebiusSharpBound b)²·2w₀`, from `Sieve/CofactorLowFreqBound` |
+
+**`Vk` needs no new work at all.**  `Sieve/AnnulusBoundUniform.exists_annulus_bound_uniform` already
+states exactly the hypothesis `section4_block_full_on` wants — a bound on
+`‖primeBlockPoly (geomBlock (primesRange z₀ z) Q (1+η) j) w‖`, **uniform over `j ∈ range L` and over
+`w ∈ Icc (-T₀) T₀ \ Icc (-w₀) w₀`** — and that set is definitionally the `windowAnnulus w₀ T₀` of
+`Sieve/Section4DiscAnnulus`:
+
+```text
+  ‖primeBlockPoly (geomBlock (primesRange z₀ z) Q (1+η) j) w‖
+    ≤ (4/log 2)·((1+η)·relScaledMajorant Ctot D Lx Hmaj μ q (2πw₀) xmin + 7e⁹/Q)·(Q(1+η)^j) .
+```
+
+Applied to the **long** ladder (`z₀ = ⌈exp((log x)^a)⌉`, `9/10 < a < b < 1`) this is `Vk`.
+
+### Milestone B: the complete dependency graph, after this session
+
+```text
+AveragedMeanSquare μ h
+  ← averagedMeanSquare_moebius_of_jointOmegaBudget            JointOmegaSpectral      ✓
+  ← jointOmegaBudget → 0
+      ├ non-spectral parts (cardinalities, joint variance)     JointFibreTransfer      ✓
+      └ 16√x·∫‖K_δ‖²‖A_PQ‖²
+          ← integral_kernel_normSq_jointOmega_le               JointOmegaBudgetFromLadder ✓
+          ← ∫_{|w|≤T₀}‖A_PQ‖² ≤ β₀
+              ← integral_normSq_jointOmegaPoly_le              Section4Assembly        ✓
+                  ├ short ladder defect                        JointLadderProduct      ✓
+                  └ per short block j:  section4_block_disc_ann Section4DiscAnnulus     ✓
+                      ├ disc:   section4_block_disc             Section4DiscAnnulus     ✓
+                      │           └ Ik: exists_setIntegral_disc_normSq_logPoly_moebius_le ✓
+                      └ annulus: section4_block_full_on         Section4BlockFull       ✓
+                          ├ non-exceptional: Lemma 2.4          Section4Assembly        ✓
+                          └ exceptional:
+                              ├ Vk: exists_annulus_bound_uniform  (corpus)              ✓
+                              ├ Ik: setIntegral_normSq_logPoly_shortExceptionalOn_le    ✓
+                              │       (Lemma 2.6 ∘ Lemma 2.5)
+                              └ long ladder defect              LadderProductDefect (corpus) ✓
+  + the parameter substitution                                                          OPEN
+```
+
+Every node marked ✓ is an unconditional, axiom-clean Lean theorem.  The single open node is the
+parameter substitution — the joint-weight mirror of `Sieve/BudgetSubstitution`,
+`Sieve/BudgetRhoBound`, `Sieve/BudgetLimit`, `Sieve/ScaledBudgetSubstitution` and
+`Sieve/ScaledBudgetLimit`, at the schedule of the parameter table above.
+
+### Milestone B, brick 36 — a correctness fix in the non-exceptional half (2026-08-19)
+
+`Sieve/OmegaQEnergy` (axiom-clean, wired).  Applying Lemma 2.4 to the long-weighted cofactor
+`∑_m μ(m)ω_Q(m)m^{iw}` through the *coefficient bound* `‖omegaQCoeff Q m‖ ≤ #Q` is not merely lossy,
+it is fatal: `#Q ≍ exp((log x)^b)/(log x)^b` is of the size of the long primes themselves, whereas the
+target carries only `W(Q)² ≍ (log log x)²`.  What Lemma 2.4 actually needs is the **energy**:
+
+```text
+sum_normSq_omegaQCoeff_Ioc_le (hq : q₀ ≤ q₁) (hab : a ≤ b) :
+  ∑_{n ∈ (a,b]} ‖μ(n)ω_Q(n)‖²
+    ≤ 2(4(b−a)·S(q₁) + 4π(q₁) + 8π(q₁)²) + 2(b−a)·W(Q)²
+
+integral_Icc_normSq_omegaWeighted_le_energy (ha : 1 ≤ a) (hW : 1 ≤ W) :
+  ∫_{|w| ≤ W} ‖∑_{n ∈ [a,b]} μ(n)ω_Q(n) n^{iw}‖²
+    ≤ (5π/2·W + 5e/2·b) · ∑_{n ∈ (a−1,b]} ‖μ(n)ω_Q(n)‖²
+```
+
+The pointwise step is `c² ≤ 2(c − W)² + 2W²`, i.e. `(c − 2W)² ≥ 0`, and the variance is the corpus's
+`Sieve/TuranKubiliusRange.sum_variance_primesRange_le`.  `integral_Icc_normSq_logPoly_le_support_bound`
+of `Sieve/Section4Assembly` remains correct and is the right tool for the *short-ladder defect*,
+where the crude `#Q` is affordable because the defect is already `x^{-Θ(1)}` smaller than the target.
+
+### Milestone B, bricks 37–40 — the budget reduced to five numbers (2026-08-19)
+
+A structural obstruction in the corpus's budget arithmetic had to be removed first.
+`Sieve/BudgetTermSplit.spectral_terms_le` fixes the expiry height at `T₀ = B₀`, and §4 **cannot**
+supply a mean-square bound there: at height `B₀` the non-exceptional term's ratio to the target is
+
+```text
+   VP_j²·(5π/2·B₀ + 5e/2·B₁)·energy / (stepMass_j²·B₀²·W_Q²)  ≍  P_j/(log P_j)² ,
+```
+
+so the cancellation threshold of `(35)` would have to be `≍ √P_j` rather than `π(P_j)/log P_j`.
+The fix is that `T₀ ≥ B₀` is **not** what the Gallagher split needs — only `T₀ ≫ B₀/h` is:
+
+```text
+   (the term T₀ enters)  ≍  B₀/(T₀·h) → 0   ⟺   T₀ ≫ B₀/h .
+```
+
+Re-running the non-exceptional ratio at `T₀ = (B₀/h)·ω` gives `P_j·ω/(K_j²·h) + K_j^{-2}`, which
+vanishes for `ω → ∞` with `ω ≪ (log P_j)²` — e.g. `ω = (log x)^{β/2}` against
+`log P_j ≥ (log x)^{β/2}`.  So the whole lane works at a *low* expiry height.
+
+| module | content |
+|-|-|
+| `Sieve/JointBudgetTermSplit` | **`affineMajorant_of_bound_at'`** — the affine majorant at a *free* expiry height, converting the mean value theorem's constant `5e/2·M·E` into the slope `5e/2·(M/T₀)·E·T`; **`joint_spectral_terms_le`** — the three Gallagher terms at a cut `Wc` with `δ·Wc ≤ 1`, bounded by `3α/Wc + 3β₀/Wc²` |
+| `Sieve/JointOmegaBudgetFromLadder` (extended) | **`energy_jointOmegaCoeff_le_variance`** — the joint coefficient energy at its true size `≍ (length)·(W_PW_Q)²`, from the joint Turán–Kubilius variance (the earlier `energy_jointOmegaCoeff_le` pays the crude `Ω = #P·#Q`); **`integral_kernel_normSq_jointOmega_le'`** — the final Gallagher form |
+| `Sieve/JointBudgetMaster` | **`jointOmegaBudget_le`** — the whole budget with the spectral part replaced; **`geomCofactorBlockAt_one_eq`** — with `A₀ = 1` (which the fibre index forces) every cofactor block of every ladder is an initial segment `Icc 1 ⌊B₀/(R(1+η)^j)⌋` |
+
+The budget is now an expression in **five numbers**:
+
+```text
+jointOmegaBudget x h P Q
+  ≤ 16√x·( 3·(5π/2 + 5e/2·B₀/T₀)·Ec / Wc  +  3·β₀/Wc² )
+    + 204·((#P+1)(#Q+1))²·(√x+1)
+    + 2(h+1)(2h+1)·( B₀·W_PW_Q·(W_P+W_Q+1) + 2·W_PW_Q·#P·#Q ) ,
+```
+
+`Ec` the coefficient energy, `β₀` the §4 mean square at the expiry height `T₀`, `Wc` the Gallagher
+cut.  Dividing by `(W_PW_Q)²h²√x` and taking `Wc = B₀/h`, `T₀ = (B₀/h)·ω`, `Ec ≤ C·B₀(W_PW_Q)²`:
+
+| term | value | vanishes because |
+|-|-|-|
+| slope | `48·C·(5π/2 + 5e h/(2ω))/h` | `h → ∞` and `ω → ∞` |
+| constant | `48·β₀/(B₀²(W_PW_Q)²)` | the §4 estimate `β₀ = o(B₀²W_P²W_Q²)` |
+| cardinalities | `204((#P+1)(#Q+1))²(√x+1)/((W_PW_Q)²h²√x)` | `#P·#Q = x^{o(1)}` |
+| joint variance | `≍ 4(1/W_P + 1/W_Q) + 8#P#Q/(W_PW_Q√x)` | `W_P, W_Q → ∞` |
+
+**Only the second row is still open**, and it is exactly the §4 estimate whose every ingredient is
+already proved.  What remains is: instantiate the schedule, sum the per-block bounds of
+`Sieve/Section4DiscAnnulus` over the short ladder via `Sieve/Section4Assembly`, and verify the four
+limits above.

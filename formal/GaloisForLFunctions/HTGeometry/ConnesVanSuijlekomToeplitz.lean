@@ -160,6 +160,42 @@ theorem connesVanSuijlekom_corollary_1_1
         exact circleToeplitzGram_kernel_polynomial_roots_on_unitCircle_of_rank_eq
           cn hcn hcn0 hGnorm hRanknorm xi hkernorm hxi hw
 
+/-- The real Toeplitz matrix used in Proposition 2.2, embedded in `ℂ` for
+the corpus's Hermitian matrix API. -/
+def connesVanSuijlekomRealToeplitz (N : ℕ) (c : ℕ → ℝ) :
+    Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ :=
+  circleToeplitzGram N (fun q : ℤ => (c q.natAbs : ℂ))
+
+theorem connesVanSuijlekomRealMoment_isHermitian (c : ℕ → ℝ) :
+    IsHermitianMoment (fun q : ℤ => (c q.natAbs : ℂ)) := by
+  intro r
+  simp
+
+/-- **Connes--van Suijlekom, Proposition 2.2.**
+
+For a positive real Toeplitz matrix of rank `N`, every zero of the polynomial
+attached to a real kernel vector lies on the unit circle. -/
+theorem connesVanSuijlekom_proposition_2_2
+    {N : ℕ} (c : ℕ → ℝ)
+    (hG : (connesVanSuijlekomRealToeplitz N c).PosSemidef)
+    (hRank : (connesVanSuijlekomRealToeplitz N c).rank = N)
+    (a : Fin (N + 1) → ℝ)
+    (hker : connesVanSuijlekomRealToeplitz N c *ᵥ (fun j => (a j : ℂ)) = 0) :
+    ∀ {w : ℂ},
+      w ∈ (finiteToeplitzKernelPolynomial (fun j => (a j : ℂ))).roots → ‖w‖ = 1 := by
+  let cm : ℤ → ℂ := fun q => (c q.natAbs : ℂ)
+  have hcm : IsHermitianMoment cm := by
+    exact connesVanSuijlekomRealMoment_isHermitian c
+  have hG' : (circleToeplitzGram N cm).PosSemidef := by
+    simpa [connesVanSuijlekomRealToeplitz, cm] using hG
+  have hRank' : (circleToeplitzGram N cm).rank = N := by
+    simpa [connesVanSuijlekomRealToeplitz, cm] using hRank
+  have hker' : circleToeplitzGram N cm *ᵥ (fun j => (a j : ℂ)) = 0 := by
+    simpa [connesVanSuijlekomRealToeplitz, cm] using hker
+  intro w hw
+  exact connesVanSuijlekom_corollary_1_1 cm hcm hG' hRank'
+    (fun j => (a j : ℂ)) hker' hw
+
 end
 
 end GaloisForLFunctions.HTGeometry

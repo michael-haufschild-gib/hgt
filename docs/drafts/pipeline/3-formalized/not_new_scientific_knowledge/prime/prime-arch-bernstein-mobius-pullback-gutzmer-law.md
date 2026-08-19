@@ -1,11 +1,10 @@
 # Prime--archimedean Bernstein Möbius-pullback Gutzmer law
 
 - **ID:** `prime-arch-bernstein-mobius-pullback-gutzmer-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** exact value relation / source reformulation
 - **Status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Lean status:** paper theorem; the Bernstein pencil, moment germ, and Gutzmer infrastructure are
-  formalized separately
+- **Lean status:** fully formalized — see the 2026-08-19 section
 
 ## One-source Möbius pullback
 
@@ -247,3 +246,53 @@ a norm that is now closed rather than open.  Its deficit from radial Jensen mass
 the global reflection energy.  The double Gutzmer `L^2` identity remains useful source geometry,
 but any RH-bearing transfer must couple it to an adjoint, absolute-value, trace-norm, or polar
 channel rather than seek another holomorphic extremizer.
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+Every proved equation of this card is now Lean-proved, with no added analytic hypothesis: each
+statement carries exactly the convergence condition the card itself states ("wherever the displayed
+series and composition converge", "for every nonnegative `r` in the common domain of convergence").
+`#print axioms` on each capstone reports only `propext, Classical.choice, Quot.sound`.
+
+**New reusable infrastructure**
+
+| Statement | Lean declaration |
+|---|---|
+| antidiagonal regrouping of a summable family on `ℕ × ℕ` | `GaloisForLFunctions.HTGeometry.tsum_sum_antidiagonal`, `summable_sum_antidiagonal` (`HTGeometry/AntidiagonalRegrouping.lean`) |
+| Gutzmer's identity from an absolutely convergent coefficient series | `GaloisForLFunctions.HTGeometry.hasSum_gutzmer_of_summable_norm` (`HTGeometry/GutzmerPowerSeries.lean`) |
+
+**The card** — `formal/GaloisForLFunctions/RHTower/PrimeArchBernsteinMobiusPullback.lean` and
+`.../PrimeArchBernsteinMobiusPullbackSource.lean`
+
+| Card item | Lean declaration |
+|---|---|
+| `b_{n,i}`, `P_n(w)`, eq. (1) | `bernsteinCoefficient`, `bernsteinCoefficientTransform` (pre-existing) |
+| `∑_i w^i B_{n,i}(X) = (1+(w-1)X)^n` | `bernstein_smul_sum` |
+| eq. (4) | `bernsteinCoefficientTransform_eq_binomial` |
+| `M(v) = ∑_k m_k v^k`, eq. (2) | `bernsteinMomentGerm` |
+| eq. (5), the negative-binomial double sum | `pencilFamily`, `hasSum_pencilFamily_fiber`, `summable_pencilFamily`, `sum_antidiagonal_pencilFamily` |
+| **eq. (3), the Möbius-pullback law** | `tsum_bernsteinPencil_eq_mobiusPullback` |
+| `Π_n`, `χ(t)`, eq. (6) | `bernsteinCoefficientPurity` (pre-existing) |
+| eq. (7), finite Parseval on the `w` circle | `bernsteinCoefficientPurity_eq_circleMean` |
+| **eq. (8), the double Gutzmer susceptibility** | `hasSum_purity_doubleCircleMean` (with `hasSum_inner_gutzmer`) |
+| `B(s,w)` | `bernsteinPencilGenerating` |
+| eq. (9), the square-root coordinate | `bernsteinMomentGerm_primeArch`, `bernsteinMomentGerm_primeArch_neg` (evenness) |
+| **eq. (10), the prime--Gamma pullback** | `tsum_bernsteinPencil_primeArch` |
+| `continuedPrimeArchSourceRelativeTrace(z) = -z · normalizedPrimeArchMomentGerm(z)` | `continuedPrimeArchSourceRelativeTrace_eq` |
+| eq. (11)--(12), `B_+(u) = \|1-u\|+\|u\|` and its attainment | `poleSurfaceRadius`, `norm_affine_le_poleSurfaceRadius`, `exists_norm_affine_eq_poleSurfaceRadius` |
+| eq. (13)--(14), the reflected pinch radius | `pole_ne_zero_of_norm_lt`, `exists_pole_at_poleSurfaceRadius` |
+
+The uniform coefficient control needed for `(8)` is `pencilBound`, `summable_pencilBound` and
+`summable_norm_bernsteinCoefficientTransform`: on the `w` circle `‖P_n(w)‖ ≤ ∑_{k≤n} C(n,k)|m_k|2^k`,
+and that majorant is summable against `ρ^n` exactly when `∑_k |m_k| (2ρ/(1-ρ))^k` converges.
+
+## Gates
+
+- [x] Möbius-pullback generating identity proved on paper
+- [x] double Gutzmer susceptibility formula proved on paper
+- [x] prime--Gamma source specialization identified
+- [x] atom pole surface and reflected pinch identified
+- [x] theta cumulant warning established from the formal corpus
+- [x] Lean formalization
+- [ ] source-only `L2` or single-valued meromorphic collar theorem  *(declared future research)*
+- [ ] RH  *(declared future research)*

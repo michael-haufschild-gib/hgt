@@ -953,3 +953,37 @@ route above therefore does not apply verbatim.  Two routes remain: eliminate the
 get a polynomial in `θ` whose zero set contains the critical locus, or drop the power law and prove
 only the boxed limit `(13)`, which follows from continuity of `h_k` on `{Disc ≥ ζ}` together with
 the fixed-shell nonflatness statement that its zero set is shell-null.
+
+## Lean progress -- the assembly of Theorem C and Corollary D (2026-08-19)
+
+Every *ingredient* of Theorem C was already in the corpus (the soft-filter loss `(26)`, the capture
+floor `(27)`, the filtered coefficient mass `(27a)`, the permutation floor `(27b)`, the three steps
+of `(28)`, and the collision Markov bound).  What was missing was the assembly: how the capture
+floor plus a split of each integral becomes the two-term probability bound `(24)`, and how the
+finite grid becomes `(29)`.  Two new modules, umbrella-wired and axiom-clean, supply exactly that.
+
+`formal/GaloisForLFunctions/HTGeometry/OnsetProbabilityAssembly.lean`
+
+| Card item | Declaration |
+|---|---|
+| **integrating the capture floor**: a margin dominated on the event by a finite sum of non-negative observables is dominated by the total of their integrals | `mul_measureReal_le_of_capture` |
+| **`(24)`**: with each integral split into a diagonal part and a deviation, and each family summing to the margin times a small number, the event has measure at most the sum of those numbers | `measureReal_le_of_capture_split` |
+| **`(25)`**: the complementary reading, with the exceptional event removed by a union bound | `one_sub_le_measureReal_compl` |
+
+`formal/GaloisForLFunctions/HTGeometry/GridUnionOnset.lean`
+
+| Card item | Declaration |
+|---|---|
+| a finite union of uniformly small events, with the grid size the only loss | `measureReal_iUnion_le_card_mul` |
+| **`(29)`**: the continuous-block bound -- the good event contains the grid-good intersection with the non-exceptional event, so its probability is `≥ 1 − 1/L − N_W 2^{-r/2} − q` | `one_sub_le_measureReal_of_grid` |
+
+The two statements are deliberately free of the shell, the spectrum and the circuit alphabet: they
+take a finite family of non-negative integrable observables, a capture margin, a split of the
+integrals, and (for the block form) a grid and an exceptional event.  Composing them with
+`capture_floor_le_inner_pow` for the floor, with
+`norm_integral_sub_diagonal_le_measureReal_add` for the split, with
+`fidelityReplicaPermutationFloor_le_factorial_mul_sum_sq_pow`, `factorial_mul_pow_le_half_pow`,
+`pow_le_two_rpow_of_log_le` and `count_mul_half_pow_le` for the diagonal total, and with
+`card_filter_collision_gt_mul_le` for the exceptional mass, is Theorem C and Corollary D.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.

@@ -38,8 +38,7 @@ theorem memLp_cexp_kernel {z : ℂ} (hz : 0 < z.re) :
     exp_neg_integrableOn_Ioi 0 (by linarith)
   refine hint.congr_fun (fun t _ => ?_) measurableSet_Ioi
   rw [norm_cexp_neg_mul_ofReal, pow_two, ← Real.exp_add]
-  congr 1
-  ring
+  ring_nf
 
 /-- The transform converges absolutely on the open right half plane. -/
 theorem integrableOn_causalKernel {g : ℝ → ℂ}
@@ -99,6 +98,81 @@ theorem memLp_expDecay {σ : ℝ} (hσ : 0 < σ) :
     congr 1
     ring
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), mul_pow, hexp2]
+
+/-! ## Holomorphy -/
+
+set_option maxHeartbeats 1000000 in
+/-- **The causal transform of a square-integrable boundary function is complex differentiable on
+the open right half plane.** -/
+theorem hasDerivAt_causalTransform {g : ℝ → ℂ}
+    (hg : MemLp g 2 (volume.restrict (Ioi (0 : ℝ)))) {z : ℂ} (hz : 0 < z.re) :
+    HasDerivAt (causalTransform g)
+      (∫ t in Ioi (0 : ℝ), -((t : ℂ) * Complex.exp (-z * (t : ℂ)) * g t)) z := by
+  set σ : ℝ := z.re / 2 with hσdef
+  have hσ : 0 < σ := by rw [hσdef]; linarith
+  have hgnorm : MemLp (fun t : ℝ => ‖g t‖) 2 (volume.restrict (Ioi (0 : ℝ))) := hg.norm
+  have hboundInt : Integrable
+      (fun t : ℝ => (2 / σ) * Real.exp (-(σ / 2) * t) * ‖g t‖)
+      (volume.restrict (Ioi (0 : ℝ))) := by
+    have h := (memLp_expDecay hσ).integrable_mul hgnorm
+    exact h.congr (Filter.Eventually.of_forall fun t => rfl)
+  have hmeasF : ∀ᶠ x : ℂ in nhds z,
+      AEStronglyMeasurable (fun t : ℝ => Complex.exp (-x * (t : ℂ)) * g t)
+        (volume.restrict (Ioi (0 : ℝ))) := by
+    filter_upwards with x
+    exact ((Complex.continuous_exp.comp
+      (continuous_const.mul Complex.continuous_ofReal)).aestronglyMeasurable).mul hg.1
+  have hInt := integrableOn_causalKernel hg hz
+  have hmeasF' : AEStronglyMeasurable
+      (fun t : ℝ => -((t : ℂ) * Complex.exp (-z * (t : ℂ)) * g t))
+      (volume.restrict (Ioi (0 : ℝ))) := by
+    refine AEStronglyMeasurable.neg ?_
+    exact ((Complex.continuous_ofReal.mul (Complex.continuous_exp.comp
+      (continuous_const.mul Complex.continuous_ofReal))).aestronglyMeasurable).mul hg.1
+  have hdom : ∀ᵐ t : ℝ ∂(volume.restrict (Ioi (0 : ℝ))), ∀ x ∈ Metric.ball z σ,
+      ‖-((t : ℂ) * Complex.exp (-x * (t : ℂ)) * g t)‖
+        ≤ (2 / σ) * Real.exp (-(σ / 2) * t) * ‖g t‖ := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht x hx
+    have ht0 : (0 : ℝ) ≤ t := le_of_lt ht
+    have hxre : σ ≤ x.re := by
+      have h1 : |x.re - z.re| ≤ ‖x - z‖ := by
+        have := Complex.abs_re_le_norm (x - z)
+        simpa using this
+      have h2 : ‖x - z‖ < σ := by
+        rw [← Complex.dist_eq]
+        exact Metric.mem_ball.mp hx
+      have h3 := abs_lt.mp (lt_of_le_of_lt h1 h2)
+      have h4 := h3.1
+      rw [hσdef] at h4 ⊢
+      linarith
+    exact norm_deriv_kernel_le hσ hxre ht0 (g t)
+  have hderiv : ∀ᵐ t : ℝ ∂(volume.restrict (Ioi (0 : ℝ))), ∀ x ∈ Metric.ball z σ,
+      HasDerivAt (fun y : ℂ => Complex.exp (-y * (t : ℂ)) * g t)
+        (-((t : ℂ) * Complex.exp (-x * (t : ℂ)) * g t)) x := by
+    filter_upwards with t x _
+    have h1 : HasDerivAt (fun y : ℂ => -y * (t : ℂ)) (-(t : ℂ)) x := by
+      have h0 : HasDerivAt (fun y : ℂ => (-(t : ℂ)) * y) ((-(t : ℂ)) * 1) x :=
+        (hasDerivAt_id x).const_mul (-(t : ℂ))
+      refine (h0.congr_deriv (by ring)).congr_of_eventuallyEq ?_
+      filter_upwards with y
+      ring
+    have h2 := h1.cexp
+    have h3 : HasDerivAt (fun y : ℂ => Complex.exp (-y * (t : ℂ)))
+        (-((t : ℂ) * Complex.exp (-x * (t : ℂ)))) x := h2.congr_deriv (by ring)
+    have h4 := h3.mul_const (g t)
+    exact h4.congr_deriv (by ring)
+  have hmain := hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (F := fun (x : ℂ) (t : ℝ) => Complex.exp (-x * (t : ℂ)) * g t)
+    (F' := fun (x : ℂ) (t : ℝ) => -((t : ℂ) * Complex.exp (-x * (t : ℂ)) * g t))
+    (bound := fun t : ℝ => (2 / σ) * Real.exp (-(σ / 2) * t) * ‖g t‖)
+    (Metric.ball_mem_nhds z hσ) hmeasF hInt hmeasF' hdom hboundInt hderiv
+  exact hmain.2
+
+/-- **The causal transform is holomorphic on the open right half plane.** -/
+theorem differentiableOn_causalTransform {g : ℝ → ℂ}
+    (hg : MemLp g 2 (volume.restrict (Ioi (0 : ℝ)))) :
+    DifferentiableOn ℂ (causalTransform g) {z : ℂ | 0 < z.re} := fun _z hz =>
+  ((hasDerivAt_causalTransform hg hz).differentiableAt).differentiableWithinAt
 
 end
 

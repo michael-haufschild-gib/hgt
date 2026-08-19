@@ -12,8 +12,7 @@ open Finset
 
 namespace GaloisForLFunctions.HTGeometry
 
-variable {α : Type*} [AddCommGroup α] [UniformSpace α] [IsUniformAddGroup α]
-  [CompleteSpace α] [T2Space α]
+variable {α : Type*} [AddCommGroup α] [UniformSpace α] [IsUniformAddGroup α] [T2Space α]
 
 /-- **Antidiagonal regrouping.** -/
 theorem tsum_sum_antidiagonal {T : ℕ × ℕ → α} (hT : Summable T) :
@@ -34,5 +33,19 @@ theorem tsum_sum_antidiagonal {T : ℕ × ℕ → α} (hT : Summable T) :
         rw [tsum_fintype, Finset.sum_coe_sort]
     _ = ∑' x : Σ n : ℕ, Finset.HasAntidiagonal.antidiagonal n, T (x.2 : ℕ × ℕ) := hsigma.symm
     _ = ∑' p : ℕ × ℕ, T p := hprod
+
+omit [T2Space α] in
+/-- The antidiagonal sums of a summable family are summable. -/
+theorem summable_sum_antidiagonal {T : ℕ × ℕ → α} (hT : Summable T) :
+    Summable fun n : ℕ => ∑ p ∈ Finset.HasAntidiagonal.antidiagonal n, T p := by
+  have hsig : Summable fun x : Σ n : ℕ, Finset.HasAntidiagonal.antidiagonal n =>
+      T (x.2 : ℕ × ℕ) :=
+    (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd (A := ℕ)).summable_iff.mpr hT
+  have hfib : ∀ n : ℕ,
+      Summable fun p : Finset.HasAntidiagonal.antidiagonal n => T (p : ℕ × ℕ) := fun n =>
+    (hasSum_fintype _).summable
+  have h := hsig.sigma' hfib
+  refine h.congr fun n => ?_
+  rw [tsum_fintype, Finset.sum_coe_sort]
 
 end GaloisForLFunctions.HTGeometry

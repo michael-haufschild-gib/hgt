@@ -33,22 +33,22 @@ theorem windowAnnulus_subset (w₀ W : ℝ) : windowAnnulus w₀ W ⊆ Set.Icc (
   Set.sdiff_subset
 
 /-- Every frequency of the annulus is bounded away from the origin. -/
-theorem abs_ge_of_mem_windowAnnulus {w₀ W w : ℝ} (hw₀ : 0 ≤ w₀) (hw : w ∈ windowAnnulus w₀ W) :
+theorem abs_ge_of_mem_windowAnnulus {w₀ W w : ℝ} (hw : w ∈ windowAnnulus w₀ W) :
     w₀ ≤ |w| := by
   by_contra hcon
-  push_neg at hcon
-  exact hw.2 (Set.mem_Icc.2 ⟨by cases abs_cases w with
+  have hlt : |w| < w₀ := not_le.1 hcon
+  refine hw.2 (Set.mem_Icc.2 ⟨?_, ?_⟩)
+  · cases abs_cases w with
     | inl h => linarith [h.1, h.2]
-    | inr h => linarith [h.1, h.2], by
-    cases abs_cases w with
+    | inr h => linarith [h.1, h.2]
+  · cases abs_cases w with
     | inl h => linarith [h.1, h.2]
-    | inr h => linarith [h.1, h.2]⟩)
+    | inr h => linarith [h.1, h.2]
 
 /-- **The disc half of a short block.**  Both prime factors are bounded trivially; the saving is in
 the cofactor, whose mean square over the disc is the parameter `Ik`. -/
 theorem section4_block_disc {B Q : Finset ℕ} {A₁ B₁ : ℕ}
-    {R η W w₀ : ℝ} (hR : 0 < R) (hη : 0 ≤ η) {L : ℕ} (hL : 1 ≤ L)
-    (hw₀ : 0 ≤ w₀) (hwW : w₀ ≤ W)
+    {R η W w₀ : ℝ} (hR : 0 < R) (hη : 0 ≤ η) {L : ℕ} (hL : 1 ≤ L) (hwW : w₀ ≤ W)
     (hQprime : ∀ q ∈ Q, q.Prime)
     (hQrange : ∀ q ∈ Q, R < (q : ℝ) ∧ (q : ℝ) ≤ R * (1 + η) ^ L)
     (v : ℕ → ℝ) (hv : ∀ k ∈ Finset.range L, 0 < v k) (Ik : ℕ → ℝ)
@@ -87,7 +87,7 @@ theorem section4_block_disc {B Q : Finset ℕ} {A₁ B₁ : ℕ}
   exact hstep1.trans (mul_le_mul_of_nonneg_left hchain (sq_nonneg _))
 
 /-- **One short block, disc plus annulus.** -/
-theorem section4_block_disc_ann {B Q : Finset ℕ} {A₁ B₁ : ℕ} {R η W w₀ : ℝ} (hwW : w₀ ≤ W)
+theorem section4_block_disc_ann {B Q : Finset ℕ} {A₁ B₁ : ℕ} {W w₀ : ℝ} (hwW : w₀ ≤ W)
     {Ddisc Dann : ℝ}
     (hdisc : (∫ w in Set.Icc (-w₀) w₀,
         ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2) ≤ Ddisc)

@@ -1,7 +1,7 @@
 # Gamma damping crosses the prime-log half-weight only through nonadditive covariance
 
 - **ID:** `gamma-damped-stationary-prime-log-covariance-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** the archimedean Gamma characteristic, the Euler-log prime-power Herglotz carrier,

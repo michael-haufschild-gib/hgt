@@ -142,3 +142,35 @@ This closes the dyadic algebraic-integrality component of the paper's finite coe
 It does **not** establish equation `(55)`, cyclotomic-integer containment of the radical, the
 intersection `Q(sqrt 2) ∩ Z^cyc[1/2]`, or Theorem 5.6(ii)--(iii). Those remain distinct literal
 CCM targets.
+
+## 2026-08-19 general Burnol compact-source lower zero jets
+
+`[LEAN-PROVED]` `BurnolCoPoissonGeneralSeedCompletedZeroJets.lean` removes the former
+logarithmic-subwindow restriction from the source-side lower-jet law.  A literal
+`BurnolCoPoissonSource` has a seed supported in `[b,b⁻¹]`; the formal proof derives eventual
+zero at both Mellin ends, applies Mathlib's dominated Mellin differentiation theorem throughout
+the strip, and obtains holomorphy of the source Mellin factor.  Therefore, at every selected
+right-half Xi divisor, the complete zeta factor forces every jet below its exact multiplicity to
+vanish.  The theorem is transported to the actual Sonine evaluator, then to both literal branches
+of every cosine-closed co-Poisson generator via the reciprocal-seed landing.
+
+This is stronger than the previous single-subwindow statement and is coefficient-faithful to the
+literal source definition.  It still does **not** prove Burnol Theorems 3.1--3.2: extending
+higher-jet annihilation from generators to the topological closure requires bounded higher-jet
+evaluators, and identifying their common kernel with `P_a` requires the paper's aperture
+completeness/minimality argument.  Neither step is claimed here.
+
+## 2026-08-19 cosine-closed algebraic zero-jet system
+
+`[LEAN-PROVED]` `BurnolCoPoissonCosineClosedLowerJetSystem.lean` packages the literal result at
+the correct algebraic scope.  For every selected right-half Xi divisor and every jet below its
+exact multiplicity, `burnolCoPoissonLowerXiJetAnnihilator` is a genuine complex submodule of the
+actual extended Sonine carrier.  It retains a local analytic germ as part of membership, so the
+closure argument cannot silently use an unproved differentiation theorem.  The theorem
+`burnolCoPoissonAlgebraicSourceSpace_le_lowerXiJetAnnihilator` proves that **every finite linear
+combination** of literal co-Poisson sources and their cosine images belongs to this submodule.
+
+This is the full cosine-closed algebraic lower-jet system, unconditional and source-faithful.  It
+is not the Hilbert-space closure/complement equality in Burnol's Theorems 3.1--3.2: that exact
+remaining step is a uniform boundedness theorem for all higher jet evaluators on literal `L_a`,
+followed by the paper's `L_a/K_a/P_a` aperture-completeness argument.

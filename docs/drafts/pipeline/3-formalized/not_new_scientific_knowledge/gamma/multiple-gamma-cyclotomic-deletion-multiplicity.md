@@ -1,7 +1,7 @@
 # Multiple-Gamma deletion retains cyclotomic orbit multiplicity
 
 - **ID:** `multiple-gamma-cyclotomic-deletion-multiplicity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / DEPENDENT-PERIOD HOSTILE TEST
 - **Scientific status:** `[PAPER-PROVED] [POSITIVE CORPUS BRIDGE]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE] [UNCONDITIONAL LEAN PROOF OPEN AT ANALYTIC PARENT]`

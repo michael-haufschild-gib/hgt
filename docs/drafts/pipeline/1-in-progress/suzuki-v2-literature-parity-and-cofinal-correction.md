@@ -1,6 +1,6 @@
 # Suzuki v2 literature parity and cofinal correction
 
-**Status:** paper proof frozen; Lean formalization in progress  
+**Status:** all eleven labeled v2 results formalized in Lean; corrected pole-free cofinal convergence remains open  
 **Primary source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
 arXiv:2606.09096v2, 17 August 2026.
 
@@ -14,17 +14,17 @@ not count as a formalization of a source theorem.
 
 The v2 paper has five theorems, two corollaries, three lemmas, and one proposition.
 
-| Source result | Exact Lean status before this card |
+| Source result | Exact Lean status |
 |---|---|
 | Theorem 1.1, `A_a` is the Friedrichs extension of `B_a=D^*G_aD` | Closed by the literal form/operator construction in `SuzukiWeilFriedrichsOperator`, the exact graph inclusion in `SuzukiFriedrichsExtension`, and the form-core theorem in `SuzukiDirichletFormCore`. |
 | Corollary 1.2, smooth-core Rayleigh infimum and form closure | Closed by `SuzukiRayleighInfimum`. |
 | Theorem 1.3, continuity of `a \mapsto \lambda_a` | Closed by `SuzukiGroundEnergyContinuity`. |
 | Theorem 1.4, small-aperture positivity, sharp asymptotic, simplicity, evenness | Closed by `SuzukiSmallApertureTheoremOneFour`. |
-| Theorem 1.5, deficiency-index extension characteristic is entire, spectral, and real-zeroed | Actual energy Hilbert space and deficiency dimensions are closed by `SuzukiTaHilbertSpace` and `SuzukiTaDeficiencyIndices`; energy-space symmetry and the source characteristic/self-adjoint-extension capstone are missing. |
-| Corollary 1.6, v2 compact-open limit to `xi/(xi+xi')` implies RH | Missing. Existing `SuzukiCharacteristicEntireLimitNoGo` formalizes the different v1 target. |
+| Theorem 1.5, deficiency-index extension characteristic is entire, spectral, and real-zeroed | Closed on the actual energy Hilbert space. `SuzukiTaSymmetry` proves source-core symmetry; `SuzukiTaCharacteristicRealization` constructs the literal von Neumann extensions; `SuzukiTaSpectralEigenspace` proves every complex adjoint eigenspace is the canonical Riesz line; `SuzukiTaCharacteristicZeros` proves exact zero/eigenvalue equivalence and reality; `SuzukiTaCharacteristicEntire` proves Suzuki's physical Fourier formula and entireness. |
+| Corollary 1.6, v2 compact-open limit to `xi/(xi+xi')` implies RH | Closed by `suzukiV2CharacteristicLimitWall_implies_riemannHypothesis`. The same module proves the literal premise impossible and isolates the corrected pole-free meromorphic survivor. |
 | Lemma 3.1, `B_a \subset A_a` | Closed by `suzukiDirichletScrewOperator_le_weilFriedrichsOperator`. |
 | Proposition 4.1, compact `H^log(I) \hookrightarrow L^2(I)` | Closed by `SuzukiHlogCompactEmbedding`. |
-| Lemma 6.1, symmetry of the actual derivative on `H(T_a)` | Missing. |
+| Lemma 6.1, symmetry of the actual derivative on `H(T_a)` | Closed by `suzukiTaSmoothCoreIDeriv_symmetric`, using the actual restricted Weil form and physical embedding. |
 | Lemma 6.2, deficiency indices `(1,1)` | Closed by `suzukiTaShiftedDerivativePMap_deficiencyIndices`; its proof repairs the norm-continuity gap in the paper by identifying shifted-range closures with explicit moment hyperplanes. |
 
 ## Paper proof A: Lemma 6.1 without an adjoint-domain shortcut
@@ -139,6 +139,32 @@ statement.  The surviving cofinal problem is necessarily meromorphic convergence
 domains (or spherical convergence), together with source-faithful boundary transport.  That
 survivor remains RH-bearing.
 
+## Lean realization and verification
+
+The new dependency-closed realization consists of:
+
+- `HTGeometry/VonNeumannDeficiency.lean`: closure/adjoint decomposition, boundary pairing,
+  one-dimensional unitary extension, and self-adjointness.
+- `RHTower/SuzukiTaSymmetry.lean`: actual `H(T_a)` derivative symmetry (Lemma 6.1).
+- `RHTower/SuzukiTaCharacteristicRealization.lean`: normalized actual deficiency vectors,
+  boundary family, self-adjoint extensions, and canonical spectral Riesz vectors.
+- `RHTower/SuzukiTaSpectralEigenspace.lean`: exact complex shifted-range closure and
+  one-dimensional adjoint eigenspaces for every spectral parameter.
+- `RHTower/SuzukiTaCharacteristicZeros.lean`: exact characteristic-zero/eigenvalue equivalence
+  and real-zero theorem.
+- `RHTower/SuzukiTaCharacteristicEntire.lean`: literal physical Fourier formula and entireness.
+- `RHTower/SuzukiV2CharacteristicTarget.lean`: exact v2 target, conditional Corollary 1.6,
+  unconditional pole obstruction, and corrected meromorphic implication.
+- `RHTower/SuzukiV2SphericalConvergence.lean`: exact pole-free finite-chart convergence and the
+  two-chart spherical formulation, including compactwise eventual zero-freeness in the reciprocal
+  chart; spherical convergence formally implies the corrected meromorphic wall and RH.
+
+All eight modules pass direct `lake env lean` checks.  Fresh targeted `.olean` builds pass for the
+dependency roots and capstones; both theorem-area umbrellas import the new modules without an
+umbrella build.  Representative `#print axioms` checks report only `propext`, `Classical.choice`,
+and `Quot.sound`.  No declaration in these modules contains `sorry`, `admit`, a project `axiom`,
+`opaque`, or `unsafe`.
+
 ## Heavy-conjecture loop
 
 1. **C1 — literal entire compact-open convergence on all `C`: falsified.**  The unconditional
@@ -148,4 +174,3 @@ survivor remains RH-bearing.
 3. **C3 — locally uniform convergence on a pole-free domain retaining every Xi zero: survives.**
    It is analytically coherent and still implies RH by local Hurwitz transfer.  Constructing this
    source-locked convergence is the corrected hard frontier.
-

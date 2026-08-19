@@ -1,7 +1,7 @@
 # Gamma--Meixner Abel kernels detect the actual Mertens corona class
 
 - **ID:** `gamma-meixner-abel-mertens-corona-probe`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / HT SOURCE-TOPOLOGY BRIDGE
 - **Scientific status:** `[PROVED HERE] [NOT FORMALIZED] [BRIDGE]
   [NOT NEW SCIENTIFIC KNOWLEDGE]`

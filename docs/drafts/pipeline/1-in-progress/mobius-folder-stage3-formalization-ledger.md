@@ -13,7 +13,7 @@
 |---|---|---|---|
 | 1 | `mobius-squarefree-reciprocal-projective-transfer` | (1)-(6), (7a)-(7b) | **DONE** |
 | 2 | `mobius-critical-exponential-boundary-layer-law` | (1)-(3), (5)-(8), (12)-(15) | **DONE** |
-| 3 | `mobius-half-unit-exponential-moment-rh-law` | S2 (5)-(7), S3 (8)-(12), S5 (18)-(21) | open |
+| 3 | `mobius-half-unit-exponential-moment-rh-law` (SS2, SS3(ii->i), SS5(18),(21) DONE) | S2 (5)-(7), S3 (8)-(12), S5 (18)-(21) | open |
 | 4 | `mobius-channel-critical-mass-escape-law` | (4)-(12), S5 (14)-(15) | **DONE** |
 | 5 | `mobius-schur-centered-boundary-limit-law` | (3)-(5), (11)-(17) | **DONE** |
 | 6 | `mobius-schur-causal-critical-graph-limit-law` | (5)-(7), (13)-(17) | **DONE** |
@@ -128,3 +128,37 @@ analytic `liGenerator`.
 
 `RHTower/MobiusLogarithmicJetLiGenerator.lean` gives the jet identity and
 `liGenerator_not_holonomic_unconditional`.
+
+
+## Card 3 status
+
+Landed and axiom-clean:
+
+* `RHTower/CausalL2LaplaceHolomorphy.lean` — the causal Laplace transform of an `L²` boundary
+  function converges absolutely and is holomorphic on the open right half plane
+  (`integrableOn_causalKernel`, `hasDerivAt_causalTransform`, `differentiableOn_causalTransform`).
+* `RHTower/MobiusCriticalLaplaceIdentity.lean` — card equation `(3)`:
+  `causalTransform_criticalMertensVector : causalTransform m_0 w = 1/(w zeta(1+w))` for
+  `Re w > 0`, by Tonelli against `int_{log n}^inf e^{-wt} dt = n^{-w}/w`.
+* `RHTower/MobiusWeightedMomentZeroFree.lean` — `WeightedMertensMoment` (`M(alpha)`),
+  `weightedMertensMoment_zero` (card equation `(2)`), and **Section 2**:
+  `zeta_ne_zero_of_weightedMertensMoment` — one weight gives one zero-free half plane, by the
+  identity theorem applied to `F(z) * zetaPoleUnit(1+z-alpha) - 1` on the convex half plane.
+* `RHTower/MobiusHalfUnitMomentTower.lean` — **Section 3, `(ii) -> (i)`**:
+  `riemannHypothesis_of_forall_weightedMertensMoment`.
+* `RHTower/MobiusPrelimitSafeWidth.lean` — **Section 5**: `norm_mobiusWeightedTail_le_of_lt`,
+  `memLp_weighted_centeredMertensVector` (equation `(18)`: safe width exactly `2 omega`), and
+  `prelimit_missing_width` (equation `(21)`).
+
+Remaining:
+
+1. **Section 3, `(i) -> (ii)`.**  Route (all inputs already in the corpus):
+   `riemannHypothesis_implies_mobiusMertensAllStrictHalfPowerBound` gives
+   `|M(N)| <= C (N+1)^{1/2+delta}`; the exact Abel identity
+   `HTGeometry.sum_mul_weight_eq` with weight `w i = i^{-1}` writes
+   `m_0(N) = S(N)/N + sum_{1<=j<N} S(j+1)/(j(j+1))`; the tail of that series is
+   `O(N^{-1/2+delta})` by `j^{-3/2+delta} <= N^{-1/2+delta/2} j^{-1-delta/2}`; the limit constant
+   is zero because `memLp_criticalMertensVector` already puts `m_0` in `L²`; hence
+   `|m_0(t)| <= C e^{-(1/2-delta)t}` and `M(alpha)` holds for every `alpha < 1/2`.
+2. **Section 5, equation `(19)`.**  The prelimit Laplace identity `(16)` by the same Tonelli
+   computation with weight `1+2 omega`, then the Section 2 argument verbatim.

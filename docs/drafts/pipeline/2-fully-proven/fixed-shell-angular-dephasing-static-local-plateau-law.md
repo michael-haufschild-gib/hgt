@@ -1170,3 +1170,93 @@ Its hypotheses are now exactly the card's: `3 ≤ card`, a simple old spectrum w
 gaps, and an endpoint-complete eigenvector family.  Its conclusion is `(14)`, the symmetrised
 labeling obstruction, nonzero somewhere on the extension chart.  Nothing about charts, shifts or
 channels is assumed any more -- all three are constructed.
+
+## Correction: `∑ᵢ λᵢ² = Tr(H²)` is NOT a mathlib gap, and the rate need not be a variable
+
+An earlier entry on this card recorded:
+
+> "the order-two case is a genuine mathlib gap requiring either the second Newton identity for the
+> characteristic polynomial or Schur triangulation, neither of which is available"
+
+Schur triangulation **is** available (`exists_schur_triangulation`, `trace_pow_eq_sum_diag`,
+`det_of_upperTriangular`), and it settles the identity outright for a *simple root packet*, at
+every exponent.  `formal/GaloisForLFunctions/HTGeometry/RootPacketPowerSum.lean` (new,
+umbrella-wired, axiom-clean):
+
+| Item | Declaration |
+|---|---|
+| the characteristic values of a Schur triangulation are its diagonal entries | `det_scalar_sub_eq_prod_diag` |
+| **`∑ᵢ λᵢ^k = Tr(M^k)` for a simple root packet**, indexed by `Fin n` | `sum_pow_rootPacket_eq_trace_pow_fin` |
+| the same for any finite index type | `sum_pow_rootPacket_eq_trace_pow` |
+
+No Newton identity is used.  The characteristic polynomial of a triangulation is the product of its
+diagonal linear factors, so every member of the packet is a diagonal entry; a packet of `n`
+*distinct* values inside a family of `n` diagonal entries forces both families to have the same
+image, and summing over that image gives the identity.
+
+The consequence is a simplification of the whole globalisation step.  `formal/…/ChartFieldOrbitBridge.lean`:
+
+| Card item | Declaration |
+|---|---|
+| **at a chart point the card's obstruction and the corpus's agree** | `fieldQuadraticRateOrbitValue_chart` |
+| **the chart escape in corpus form**, at a *constant* rate | `exists_chart_fieldQuadraticRateOrbitValue_ne_zero` |
+
+Because `∑ λᵢ² = Tr(H²)` on the packet, the card's rate `b² Q(H) = (b²/D) Tr(H²)` is the *constant*
+multiple `b²/D` of the corpus's rate carrier `∑ λᵢ²`.  So the variable-rate refactor, while proved
+and more general (`VariableRateMatrixObstruction`, `VariableRateAnalyticEscape`,
+`SymmetricDescentBaseChange`), is not needed at this step: the existing **constant-rate** pullback
+machinery -- `quadraticRateObstructionPullback`,
+`exists_eval_quadraticRateObstructionPullback_ne_zero_of_analyticBranchEscape`,
+`exists_mem_eval_quadraticRateObstructionPullback_ne_zero` -- applies to the chart obstruction
+unchanged.
+
+### What remains for Theorem A
+
+Only the coordinate bridge: express the local-extension chart's parameter space
+`(Bool → ℂ) × Matrix Bool Bool ℂ` as `ℂ^6`, and `localExtensionMatrix` on it as a polynomial matrix
+family, so that `exists_chart_fieldQuadraticRateOrbitValue_ne_zero` feeds
+`eval_quadraticRateObstructionPullback`.  The family is *affine* in those six coordinates, so this
+is a direct construction with no analysis in it.
+
+## Lean progress -- Theorem A closed on the extension architecture (2026-08-19)
+
+The coordinate bridge is built, and with it Theorem A is complete on the one-qubit extension
+architecture: from Lemma A1's output alone, the fixed-shell nonflatness statement holds at real
+parameters.  Two new modules, umbrella-wired and axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/LocalExtensionPolynomialFamily.lean`
+
+| Card item | Declaration |
+|---|---|
+| the coordinate labelling of the chart parameter space -- one variable per local shift, one per edge entry | `chartVar`, `chartCoord`, `chartCoord_shift`, `chartCoord_edge` |
+| **the chart Hamiltonian as a matrix of polynomials in those coordinates** | `genericLocalExtensionMatrix` |
+| **it evaluates to the chart Hamiltonian** | `map_genericLocalExtensionMatrix` |
+| **the complex witness**: the labeling-orbit obstruction pulled back through the characteristic coefficients is a nonzero polynomial | `exists_eval_localExtensionPullback_ne_zero` |
+| **`(6)` on the extension architecture**: inside every nonempty open set of real chart parameters there is a point at which no relabeling of the quadratic-rate relation holds, for any simple root packet there | `exists_mem_real_localExtension_quadraticRate_ne_zero` |
+
+`formal/GaloisForLFunctions/HTGeometry/TheoremAExtensionCapstone.lean`
+
+| Card item | Declaration |
+|---|---|
+| **Theorem A on the extension architecture, from Lemma A1's output alone** | `exists_mem_real_endpointComplete_quadraticRate_ne_zero` |
+
+The capstone's hypotheses are exactly the card's: `3 ≤ card`, a simple old spectrum with distinct
+ordered gaps (`hE`, `hgap`), and an endpoint-complete eigenvector family (`hpsi`).  Everything else
+is constructed inside it: the covering Hermitian probe, hence the transition channel; an admissible
+split shift, hence the base point; the common eigenbranch chart; the polynomial family in the six
+chart coordinates; and the pullback of the labeling orbit through the characteristic coefficients.
+Its conclusion is `(6)` at real parameters -- a constant projective spectral action on an open
+patch would give the relation on that patch, and this says no such patch exists.
+
+The route ended up *shorter* than the plan on this card, because `∑ λᵢ² = Tr(H²)` turned out to be
+provable (see the correction above): no variable rate, no free rate variable, no Newton identity.
+
+### What remains
+
+Transport of the architecture: the card's ensemble is the fixed shell `H(θ) = ∑ θ_a P_a` on
+`S^{m-1}`, and the statement above is on the chart coordinates of the one-qubit extension.  What is
+still needed is that the fixed shell *contains* the extension architecture -- i.e. the physical
+embedding of the six chart coordinates into the `m = 12n-9` shell parameters -- together with the
+induction that supplies `hE`, `hgap`, `hpsi` at each stage from
+`exists_endpointComplete_twoQubit_witness` (base), `eventually_forall_layerGerm_endpoint_ne_zero`
+(step) and `exists_mem_dense_forall_layerReducedTransition_ne_zero` (intersection).

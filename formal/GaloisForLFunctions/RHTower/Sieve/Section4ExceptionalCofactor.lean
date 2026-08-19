@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.Section4BlockFull
 import GaloisForLFunctions.RHTower.Sieve.Section4ExceptionalMeasure
+import GaloisForLFunctions.RHTower.Sieve.Section4DiscAnnulus
 
 /-!
 # The innermost cofactor on the exceptional set
@@ -65,6 +66,37 @@ theorem setIntegral_normSq_logPoly_shortExceptional_le (a : ℕ → ℂ) {B D : 
     nlinarith [h1, h2, h3]
   have := mul_le_mul_of_nonneg_left hEV hC0
   linarith [this]
+
+/-- **The innermost cofactor over the exceptional set of a *part* of the window.**  The exceptional
+set of a part is contained in that of the whole window, and the integrand is nonnegative. -/
+theorem setIntegral_normSq_logPoly_shortExceptionalOn_le (a : ℕ → ℂ) {B D : Finset ℕ}
+    {NA ND k : ℕ} (hBprime : ∀ p ∈ B, p.Prime) (hB : B ⊆ Finset.Icc 1 NA) (hND : 1 ≤ ND)
+    (hD : D ⊆ Finset.Icc 1 ND) (hk : 1 ≤ k) {W VP Ω : ℝ} (hW : 0 ≤ W) (hVP : 0 < VP)
+    (hΩ : 0 ≤ Ω) (ha : ∀ n, ‖a n‖ ≤ Ω)
+    {S : Set ℝ} (hSs : S ⊆ Set.Icc (-W) W) :
+    (∫ w in shortExceptionalOn S B VP, ‖logPoly a D w‖ ^ 2)
+      ≤ (2 * Real.pi)⁻¹
+        * ((2 * (ND : ℝ)
+            + (((Nat.log 2 ND : ℝ) + 1) * (214 * Real.sqrt (2 * (2 * Real.pi * W)))
+                + 3072 * (ND : ℝ))
+              * (2 * (((2 * Real.pi * W)
+                    + 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ)))
+                  * ((k : ℝ) ^ k * (B.card : ℝ) ^ k)) / VP ^ (2 * k)))
+          * (Ω ^ 2 * (D.card : ℝ))) := by
+  classical
+  have hsub : shortExceptionalOn S B VP ⊆ shortExceptional B W VP := by
+    intro w hw
+    exact ⟨hSs hw.1, hw.2⟩
+  have hcont : Continuous fun w : ℝ => ‖logPoly a D w‖ ^ 2 :=
+    (((continuous_logPoly a D).norm).pow 2)
+  have hmono : (∫ w in shortExceptionalOn S B VP, ‖logPoly a D w‖ ^ 2)
+      ≤ ∫ w in shortExceptional B W VP, ‖logPoly a D w‖ ^ 2 := by
+    refine MeasureTheory.setIntegral_mono_set
+      ((hcont.integrableOn_Icc (a := -W) (b := W)).mono_set
+        (shortExceptional_subset B W VP)) ?_ (Filter.Eventually.of_forall hsub)
+    exact Filter.Eventually.of_forall fun w => by positivity
+  exact hmono.trans
+    (setIntegral_normSq_logPoly_shortExceptional_le a hBprime hB hND hD hk hW hVP hΩ ha)
 
 end
 

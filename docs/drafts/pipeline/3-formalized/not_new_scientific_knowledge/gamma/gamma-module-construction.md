@@ -1,7 +1,7 @@
 # The Γ-module M_∞ — the archimedean Euler factor as a rank-1 polynomial-multiplier difference module
 
 - **ID:** gamma-module-construction
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / CONSTRUCTION — Door grade **BRIDGE** (Source A alone; the weld is where it turns native)
 - **Priority:** FOUNDATIONAL (the Source-A object of the completed constraint module `M_Λ=M_∞⊗M_ζ`)
 - **Source:** the Hölder-recentering (Source A = Γ; `00-foundations` N1⁺); `#90 §64` (`Γ_ℝ(s+2)=(s/2π)Γ_ℝ(s)`,
@@ -61,12 +61,10 @@ diagonal section; the FE `Λ(s)=Λ(1−s)` acts on it. `M_∞` is the rigorous a
 - [x] 1 → 2 fully-proven: recurrence (multiplier `s/2π`) and connection (digamma) **proved + verified ≥30
   digits**; `Γ_ℝ` = **inverse** ζ-reg det via **Lerch** (`det_ζ(N+s/2)=√2π/Γ(s/2)`; import, verified ≥35
   digits); `M_Λ=M_∞⊗M_ζ` diagonal `=Λ`; `F_q` degeneration. Grade BRIDGE (Source A alone).
-- [ ] 2 → 3 formalized: Lean anchors **DONE** for the scalar Gamma recurrence and connection compatibility:
-  `gammaReal_shift_two`, `digamma_half_add_one`, and `gammaRealLogConnection_shift_compat` in
-  `formal/GaloisForLFunctions/RHTower/ArchimedeanGamma.lean`, with split certificate
-  `../3-formalized/archimedean-gamma-shift-connection.md`. Remaining Lean targets are the full rank-one
-  `(σ∞, ∂s)` module packaging, the Lerch inverse-ζ-reg-det import
-  `Γ(a)·exp(−ζ_H'(0,a))=√2π`, and the completed object `M_Λ`.
+- [x] 2 → 3 formalized: rank-one `(σ∞, ∂s)` module `archimedeanGammaModule`, connection
+  `logDeriv_Gammaℝ`, Lerch `deriv_hurwitzZetaEM_zero` with `Gamma_mul_zetaRegDet`, and the completed
+  object `completedZetaModule` with `completedZetaModule_gen_eq`; `lake build` green; axioms clean.
+  See "Lean certification (complete)" below.
 - [ ] 3 → 4 publication-ready: "the archimedean Euler factor as a polynomial-multiplier difference module."
 
 ## Cross-references
@@ -113,3 +111,76 @@ The scalar recurrence/connection part of Result (1)-(2) is already Lean-backed b
 `formal/GaloisForLFunctions/RHTower/ArchimedeanGamma.lean` and audited in `scripts/check_axioms.sh`.
 The parent ticket remains in `2-fully-proven` because the full rank-one module construction,
 Lerch inverse determinant import, and completed-object wiring are not formalized as Lean theorems.
+
+## Lean certification (complete)
+
+Four new modules, all wired into their umbrellas, all `lake build` green, every declaration below
+depending only on `propext`, `Classical.choice`, `Quot.sound`:
+
+| Module | Contents |
+|---|---|
+| `formal/GaloisForLFunctions/HTGeometry/EulerMaclaurinSecondOrder.lean` | second-order Euler-Maclaurin summation with the periodic `B₂` kernel |
+| `formal/GaloisForLFunctions/HTGeometry/BinetLogGamma.lean` | Binet's first formula for `log Γ` |
+| `formal/GaloisForLFunctions/HTGeometry/LerchHurwitzDerivative.lean` | the Hurwitz continuation, Lerch's formula, the ζ-regularized determinant |
+| `formal/GaloisForLFunctions/RHTower/ArchimedeanGammaModule.lean` | `M_∞`, `M_ζ`, `M_Λ`, the multiplier dichotomy |
+
+### (1) Difference structure — the polynomial multiplier
+
+- `gammaReal_shift_two` (already owned): `Γ_ℝ(s+2) = (s/2π)·Γ_ℝ(s)`.
+- `archimedeanGammaModule` — the rank-one datum itself, with generator `Γ_ℝ`, shift `s ↦ s+2`,
+  multiplier `s/(2π)`, connection `gammaRealLogConnection`, domain `{Re s > 0}`; the structure
+  `RankOneShiftDiffDatum` carries shift-stability, nonvanishing, differentiability, the multiplier
+  identity and the connection identity as fields, so the datum cannot be built without all five.
+- `archimedeanGammaModule_mult_polynomial`, `archimedeanGammaModule_mult_natDegree` — the multiplier
+  is the evaluation of a polynomial of degree exactly one.
+
+### (2) Differential structure — the rank-one connection
+
+- `logDeriv_Gammaℝ` : `∂_s log Γ_ℝ(s) = −½ log π + ½ ψ(s/2)` for `Re s > 0`.  **This closes the
+  card's item (2)**; the corpus previously owned only the shift-compatibility of the connection
+  coefficient (`gammaRealLogConnection_shift_compat`), not the identification with `∂_s log Γ_ℝ`.
+- supporting: `differentiableAt_Gammaℝ`, `Gammaℝ_ne_zero`, `half_re`, `half_ne_negNat`.
+
+### The multiplier dichotomy (#131)
+
+- `logDeriv_archimedeanGammaModule_mult` : `∂_s log a(s) = 1/s` for `s ≠ 0` — the Hölder obstruction.
+- `logDeriv_const` : a constant multiplier has vanishing logarithmic derivative.
+- `archimedeanGammaModule_mult_not_const` : hence `a(s)` is **not** constant — the archimedean place
+  is on the non-CC side of the divide.
+
+### (3) `Γ_ℝ` = INVERSE ζ-regularized determinant — Lerch, proved from scratch
+
+Mathlib has neither Lerch's formula nor `ζ'(0)`, so the whole chain is new corpus infrastructure.
+The route runs through one integral kernel `K(a) = ∫_0^∞ P₂(x)(x+a)^{-2}dx`, `P₂(x) = ({x}²−{x})/2`:
+
+| Step | Lean name |
+|---|---|
+| second-order Euler-Maclaurin, `∑_{m≤N} f(m) = ∫_0^N f + (f(0)+f(N))/2 − ∫_0^N P₂ f''` | `euler_maclaurin_second_order`, `euler_maclaurin_second_order_real` |
+| the periodic `B₂` kernel: bounded by `1/8`, vanishing at integers | `bernoulliHalfPer`, `abs_bernoulliHalfPer_le`, `bernoulliHalfPer_natCast` |
+| Binet: `log Γ(a) = (a−½) log a − a + ½ log(2π) − K(a)` | `log_Gamma_eq_binet`, `Gamma_eq_binet_exp` |
+| the `√(2π)` enters through Stirling and Euler's Gauss product | `tendsto_stirlingCorrection`, `tendsto_gaussLogSeq`, `tendsto_shiftLogTerm` |
+| the Euler-Maclaurin continuation of `ζ_H(s,a)` | `hurwitzZetaEM` |
+| it *is* the spectral series `∑_{n≥0}(n+a)^{-s}` on `Re s > 1` | `hurwitzZetaEM_eq_tsum` |
+| the continuation integral is continuous at `s = 0` (dominated convergence) | `continuousAt_emKernel_zero` |
+| **Lerch**: `ζ_H'(0,a) = log Γ(a) − ½ log(2π)` | `hasDerivAt_hurwitzZetaEM_zero_lerch`, `deriv_hurwitzZetaEM_zero` |
+| `det_ζ(N+a) = exp(−ζ_H'(0,a)) = √(2π)/Γ(a)` — the **inverse** determinant, as the repair note requires | `zetaRegDet`, `zetaRegDet_eq` |
+| the one-sided ladder `Γ(a)·det_ζ(N+a) = √(2π)` | `Gamma_mul_zetaRegDet` |
+| `Γ_ℝ(s)·det_ζ(N+s/2) = π^{−s/2}√(2π)` | `Gammaℝ_mul_zetaRegDet`, `archimedeanGammaModule_gen_mul_zetaRegDet` |
+
+The direction is the corrected one: `Γ_ℝ` is `π^{−s/2}√(2π)` times the **inverse** of the
+regularized determinant, matching the repair note and the universal "local Euler factor = inverse
+determinant" law.
+
+### (4) The completed object `M_Λ`
+
+- `RankOneShiftDiffDatum.tensor` — the tensor of two rank-one data: multipliers multiply,
+  connections add, generators multiply.
+- `completedZetaModule = archimedeanGammaModule.tensor zetaModule` (`M_Λ = M_∞ ⊗ M_ζ`).
+- `completedZetaModule_gen_eq` : the diagonal section is `Λ(s) = Γ_ℝ(s)·ζ(s) = completedRiemannZeta s`.
+- `completedZetaModule_mult`, `completedZetaModule_conn`, `completedZetaModule_domain`.
+- `completedZetaModule_functional_equation` : `Λ(1−s) = Λ(s)`.
+
+### Not formalized
+
+The Door-5 remark (over `F_q` there is no archimedean place, so the completed module degenerates to
+`M_ζ`) is a statement about a different geometry, not a theorem about the objects this card builds.

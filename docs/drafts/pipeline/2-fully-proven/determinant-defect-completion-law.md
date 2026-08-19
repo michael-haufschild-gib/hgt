@@ -565,3 +565,47 @@ be constructed on Schatten-`p` -- the spectral side of which is already formal a
 `MicroSpectrumMomentAssembly.exists_multiset_moment_realization`.
 
 Axiom audit for all listed declarations: `propext`, `Classical.choice`, `Quot.sound`.
+
+## Lean progress -- the regularized determinant at every order
+
+The card's opening display
+
+`log det(I − zA) = −∑_{j ≥ 1} Tr(A^j) z^j / j`,   "exactly the tail `j ≥ p` extends"
+
+is now formal at every order, not only at `p = 2`.  Two new modules, umbrella-wired and
+axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/FiniteRegularizedDeterminantOrder.lean`
+
+| Card item | Declaration |
+|---|---|
+| the scalar tail `∑_{k ≥ g+1} w^k/k = −log(1−w) − ∑_{k=1}^{g} w^k/k` | `tsum_pow_div_add_succ`, `exp_neg_tsum_pow_div_add_succ` |
+| **`det_{g+1}(1 + zM) = det(1 + zM)·exp(∑_{k=1}^{g} (−z)^k Tr(M^k)/k)`** | `finiteDetOrder` |
+| at order two it is the corpus determinant | `finiteDetOrder_one` |
+| the Schur product form -- a product of scalar primary factors of genus `g` | `finiteDetOrder_eq_prod` |
+| stability under reindexing | `finiteDetOrder_submatrix` |
+| **the trace-series identity at every order**: `exp(−∑_{k ≥ g+1} z^k Tr(M^k)/k) = det_{g+1}(1 − zM)` | `exp_neg_traceSeries_eq_finiteDetOrder_neg_fin`, `exp_neg_traceSeries_eq_finiteDetOrder_neg` |
+
+`formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantForgetting.lean`
+
+| Card item | Declaration |
+|---|---|
+| **the exponent vanishes to order `g+1`**: it is `z^{g+1}` times a series in `z`, so no trace below order `g+1` occurs in it | `traceSeries_eq_pow_mul` |
+| **the determinant forgets the first `g` power traces**: two matrices whose power traces agree from order `g+1` on have the same order-`g+1` regularized determinant | `finiteDetOrder_neg_eq_of_traceTail_eq` |
+
+The second theorem is the card's *forgetting* half, stated exactly: `det_p` is a function of the
+tail `Tr(A^p), Tr(A^{p+1}), …` alone, so `Tr(A), …, Tr(A^{p-1})` are genuinely absent from it -- and
+that is what makes them the fibre coordinates of the completion.  The proof is the exponential
+formula and nothing else; the previously available `g = 1` case is the `finiteDetOrder_one`
+instance.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+### What the general-`p` completion still needs
+
+The *analytic* half: `det_p` on the Schatten-`p` ideal, i.e. Simon's `det_p(1+A) = det₁(1 + R_p(A))`
+with `‖R_p(A)‖₁ ≤ c_p ‖A‖_p^p`, so that the finite-order determinant above extends continuously.
+The spectral half is complete at every order
+(`MicroSpectrumMomentAssembly.exists_multiset_moment_realization` for sufficiency, and the two
+theorems above for the forgetting), and the whole law is closed at `p = 2` in the card's
+multivariable form.

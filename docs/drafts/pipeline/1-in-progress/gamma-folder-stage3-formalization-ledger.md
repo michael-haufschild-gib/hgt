@@ -252,3 +252,29 @@ Everything reduces to one integral kernel `K(a) = ∫_{Ioi 0} P₂(x)(x+a)^{-2} 
    in `s` (slope of `−s(s+1)K(s)` at 0 is `−K(0)`), so dominated convergence suffices:
    `ζ_H'(0,a) = (a−½) log a − a − K(a)`.
 4. **Lerch** = (2) + (3).  Then `Γ(a)·exp(−ζ_H'(0,a)) = √(2π)` and the card's inverse-determinant form.
+
+## C5 CLOSED — the gamma folder is drained (8/8 at stage 3)
+
+`gamma-module-construction` promoted.  Four new modules:
+
+- `HTGeometry/EulerMaclaurinSecondOrder.lean` — `euler_maclaurin_second_order` (+ real form), the
+  periodic `B₂` kernel `bernoulliHalfPer` with its `1/8` bound and integer vanishing, and the two
+  cellwise integrations by parts.  Reusable: this is the first general Euler-Maclaurin in the corpus
+  (the pre-existing `EulerMaclaurinSawtooth`/`SawtoothIBP` are specialised to `x^{-s-1}` on `[1,N]`).
+- `HTGeometry/BinetLogGamma.lean` — `log_Gamma_eq_binet`, `Gamma_eq_binet_exp`, and the three limits
+  (`tendsto_gaussLogSeq`, `tendsto_stirlingCorrection`, `tendsto_shiftLogTerm`).
+- `HTGeometry/LerchHurwitzDerivative.lean` — `hurwitzZetaEM`, `hurwitzZetaEM_eq_tsum`,
+  `continuousAt_emKernel_zero`, `hasDerivAt_hurwitzZetaEM_zero_lerch`, `deriv_hurwitzZetaEM_zero`,
+  `zetaRegDet`, `zetaRegDet_eq`, `Gamma_mul_zetaRegDet`, `Gammaℝ_mul_zetaRegDet`, plus the reusable
+  `integrableOn_Ioi_shift_rpow_neg`.
+- `RHTower/ArchimedeanGammaModule.lean` — `RankOneShiftDiffDatum` + `tensor`,
+  `archimedeanGammaModule`, `zetaModule`, `completedZetaModule`, `logDeriv_Gammaℝ`, and the
+  multiplier dichotomy.
+
+Notes for reuse:
+- Mathlib has **no** `ζ'(0)` and no Lerch formula; `√(2π)` must come from
+  `Stirling.tendsto_stirlingSeq_sqrt_pi` combined with `Real.GammaSeq_tendsto_Gamma`.
+- The derivative at `s = 0` of the Euler-Maclaurin continuation needs only *continuity* of the
+  kernel integral there, because the prefactor `s(s+1)` already vanishes — use
+  `hasDerivAt_iff_tendsto_slope`, not differentiation under the integral sign.
+- `Complex.digamma_def : digamma = logDeriv Gamma` is the bridge for the connection coefficient.

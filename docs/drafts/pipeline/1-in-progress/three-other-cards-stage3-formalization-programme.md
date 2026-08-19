@@ -373,3 +373,43 @@ which Cassidy's classification of differential algebraic subgroups of `GL_2` has
 Remaining, unchanged: the torsor property and Galois correspondence (needs semilinear tensor
 products, which mathlib lacks); the parameterized Picard--Vessiot ring; Cassidy's classification;
 Dreyfus's normal form.
+
+
+## Card 1 — the tensor square
+
+`DifferenceTensorTorsor` removes the obstacle recorded above as "needs semilinear tensor products,
+which mathlib lacks".  The difference operator on `R ⊗_K R` is built directly with
+`TensorProduct.liftAddHom`: the map `x ⊗ y ↦ σx ⊗ σy` is additive in each variable and satisfies
+the descent condition `σ(a·x) ⊗ σy = σx ⊗ σ(a·y)` because the twist is by an automorphism of `K`,
+so it factors through the tensor product over `K` even though it is not `K`-bilinear.  Ring
+multiplicativity follows by double `TensorProduct.induction_on`, and the inverse is the same
+construction for `σ⁻¹`.
+
+With that in place, `exists_tensor_comparison_matrix` gives the torsor comparison matrix.  The
+remaining half of the torsor property is that `R ⊗_K R` is generated over `R ⊗ 1` by the entries of
+`Z` and `1/det Z`, together with `σ`-simplicity of `R ⊗_K R`.
+
+**Umbrella hygiene.**  A full scan of the 161 declarations added for these three cards against every
+other `GaloisForLFunctions.HTGeometry` file found two genuine collisions (`tensorShiftHom` in
+`CDGATensorShiftHom`, `tensorShiftEquiv` in `CDGARelTensorDescent`); the new declarations were
+renamed to `differenceTensorHom` / `differenceTensorEquiv`.  No collisions remain.
+
+
+## Card 1 — corpus finding that changes the remaining plan
+
+`DifferentialHopfPrimitive.nonzero_additiveHopfIdeal_exists_finite_jet_linear_relation` is already
+in the tree: every nonzero additive differential Hopf ideal in characteristic zero contains a
+nonzero finite constant-coefficient linear combination of jets.  That is **Cassidy's classification
+of differential algebraic subgroups of `G_a`**, in coordinate-ideal form.  `AffineExponentialSubgroups`
+owns `additiveRelation_isHopfIdeal` and `torusRelation_isHopfIdeal`; `DGroupBasicInstances` owns
+`multiplicativeDGroup`.
+
+So the plan's item "Cassidy's classification" is only partly missing.  What is missing is the
+multiplicative transfer (a differential algebraic subgroup of `G_m` is cut out by a linear
+differential operator in the logarithmic derivative, by pushing the additive result through
+`logDeriv`) and the `GL_2` case.
+
+New modules this round: `TensorSquareEqualizer` (the equalizer of the two embeddings into the tensor
+square is the base field; a trivial comparison matrix collapses the Picard--Vessiot ring) and
+`QuotientDerivation` (a derivation descends to the quotient by a differential ideal, and the
+descended `sigma` and `delta` still commute).

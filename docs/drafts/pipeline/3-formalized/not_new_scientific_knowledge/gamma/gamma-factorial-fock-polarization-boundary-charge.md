@@ -1,7 +1,7 @@
 # Gamma's opposite-variance jet clocks have a canonical factorial Fock polarization
 
 - **ID:** `gamma-factorial-fock-polarization-boundary-charge`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / POSITIVE SOURCE METRIC / BOUNDARY CHARGE
 - **Scientific status:** `[PROVED HERE] [NOT FORMALIZED]
   [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
