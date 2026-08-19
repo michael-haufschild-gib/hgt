@@ -791,3 +791,45 @@ start the ideal theory, which mathlib does not have at all:
 Next in this layer: the Zorn existence step (a chain of radical differential ideals has a radical
 differential union, still not finitely generated), then the characteristic-set argument that a
 prime radical differential ideal in a differential polynomial ring is finitely generated.
+
+
+## Card 1 — Ritt's basis theorem reduced to the prime case
+
+`RadicalDifferentialIdealZorn` supplies the Zorn half (`exists_maximal_not_radDiffFG`: a chain of
+radical differential ideals has a radical differential supremum which is still not finitely
+generated, because a finite generating set already lies in one member), and
+`RittBasisPrimeReduction` combines it with the primality step:
+
+```text
+radDiffFG_of_prime_radDiffFG
+    if every prime radical differential ideal is finitely generated as a radical differential
+    ideal, so is every radical differential ideal
+```
+
+What remains of Ritt--Raudenbush is exactly the prime case: a prime radical differential ideal of a
+differential polynomial ring is finitely generated.  That is the characteristic-set / Ritt-reduction
+argument; the corpus already owns the ranking layer (`DifferentialPolynomialRank`).
+
+
+## Card 1 — the shift span
+
+`BesselOrderShiftSpan` upgrades the analytic isomonodromy theorem: every integer shift
+`K_{ν+n}(s)` lies in the `ℂ(ν)`-span of `K_ν(s)` and `K_{ν+1}(s)` (two-directional recurrence,
+`Int.induction_on` on the pair), hence
+
+**`∂K_ν(s)/∂ν` is not a rational combination of any finite family of integer shifts.**
+
+
+## Card 1 — the separant
+
+`DifferentialSeparant.exists_separant_decomposition`: for a scalar differential polynomial `A` of
+order `n`, `δA = S_A · y_{n+1} + B` with `ord B ≤ n`, where `S_A = ∂A/∂y_n`.
+
+Proof device worth reusing: to induct over a differential polynomial of bounded order, present it as
+`rename Subtype.val A'` for `A' : MvPolynomial {p // p.2 ≤ n} K` via
+`MvPolynomial.supported_eq_range_rename`; then `MvPolynomial.induction_on`'s `mul_X` case only ever
+meets variables of order at most `n`, which is exactly the bookkeeping the direct induction fails to
+maintain.
+
+Next: the initial (leading coefficient in the leader), pseudo-division by `A` and by `δ^k A`, the
+Ritt reduction algorithm, and hence the prime case of Ritt's basis theorem.

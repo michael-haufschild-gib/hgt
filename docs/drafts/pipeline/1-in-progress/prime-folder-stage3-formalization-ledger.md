@@ -207,3 +207,35 @@ leakage (its (8)–(11)), the involution `S_p` and the complementary amplitudes 
 Möbius Fourier spectrum and Plancherel (23)–(26), the natural-cone Gram (29), CRT tensorization
 (31)–(32), and the profinite tail-sector theorem (§6, which needs Haar measure on `Ẑ`,
 independence, and Borel–Cantelli).
+
+### 2026-08-19 (cont.) — deformed reflection type landed
+
+`RHTower/PrimeSquareDeformedReflectionType.lean` (clean, wired, axiom-clean) adds the cofinal type
+of the deformed card: the two-sided sandwich `p^c/4 ≤ β_p(c) ≤ 3 p^c`, the logarithmic type
+`log β_p(c)/log p → |c|`, a reusable weighted Cesàro transfer over `Nat.primesBelow`
+(`tendsto_weighted_prime_average`), the card's (12) `log B_N(c)/θ(N) → |c|`, and — via the corpus
+PNT form `tendsto_sum_primesBelow_log_div` — the linear rate `log B_N(c)/N → |c|`, i.e. (17).
+
+The only piece of `prime-square-deformed-reflection-line-superessential-fracture` still missing is
+the §5 scale comparison (14)–(18): it needs `∏_{p<N}(1−1/p) ≍ 1/log N`, i.e. **Mertens' second
+theorem in upper-bound form**.  The corpus already owns Mertens' first theorem
+(`RHTower.mertens_first_prime`, `∑_{p≤N} log p/p = log N + O(1)`); the remaining step is Abel
+summation from it.  Everything else in that card is formalized.
+
+## 2026-08-19 — prime Fisher superspace blindness (card 10)
+
+`RHTower/PrimeFisherSuperspaceBlindness.lean` (clean, wired, axiom-clean) completes the card on top
+of the pre-existing `ProjectiveFisherBlindness.lean`: the concrete Dirichlet coherent state of a
+completely multiplicative unimodular phase, its `ζ(2σ)` norm, its `n^{-2σ}/ζ(2σ)` Born law, Born
+and Fisher blindness to the phases, the non-membership of the constant vector in `ℓ²`, the even
+reality-symmetric quartet multiplier, and the two-dimensional conformal cancellation of the
+massless Wheeler–DeWitt equation.
+
+The decisive step no longer quotes the literature: the corpus's own formalization of Andersson's
+Theorem 2 (`exists_continuable_phase_with_prescribed_multiplicities`) supplies a unimodular phase
+whose Helson zeta continuation has a simple zero at any prescribed `0 < Re ρ < 1` while the
+coherent state keeps exactly the untwisted Born and Fisher data.
+
+Card `prime-fisher-superspace-unimodular-phase-blindness` promoted to
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`.
+Stage-2 prime folder: 23 cards remaining.

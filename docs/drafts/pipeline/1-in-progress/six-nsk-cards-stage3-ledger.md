@@ -200,3 +200,47 @@ New module `RHTower/HardyFourthMomentSignChange.lean` (wired, olean built, axiom
 NOTE: the corpus turned out to contain ~60 `SmoothAFEZeta*` modules and a full `Sieve/Ingham*`
 lane, so C1 is far ahead of what its own Gate-5 log said.  Remaining: Lemma C (second-moment lower
 bound) and Lemma E (the `O(T^{3/4})` first moment of `Z`), then the dyadic `N₀(T) ≥ c log T`.
+
+### C2 COMPLETE (2026-08-19) — statements 1, 2, 3, 4 all formalized
+
+Three new modules (all wired into `GaloisForLFunctions.HTGeometry`, oleans built, axioms clean:
+`propext, Classical.choice, Quot.sound`).
+
+`HTGeometry/HardyCyclicityOrbitFreeness.lean` — **statement 2**.
+- `realShiftConfiguration`, `mem_commonUpperTranslationDomain_of_im_pos` (for real translations the
+  common upper domain is the whole open upper half plane);
+- `cayleyToUpper_eq_mobius` (`φ` in Mobius normal form with `(a,b,c,d) = (i,i,−1,1)`, det `2i`);
+- `not_familyDifferentiallyAlgebraicOn_parabolicOrbit` — transport of translation freeness through
+  the change of variable `z = φ(w)` by `not_familyDifferentiallyAlgebraicOn_comp_mobius`;
+- `outerCarrier_parabolicOrbitFreeness_denseResidual` — the residual capstone: every finite family
+  of distinct real parabolic translates of the bounded outer carrier is differentially
+  algebraically independent over the rational functions.
+The Cayley-exponential half of the transport was ALREADY in the corpus
+(`not_familyDifferentiallyAlgebraicOn_cayleyOuter`, `..._outerCauchyTranslates` in
+`CayleyOuterFamilyGauge.lean`), as were `cayleyToUpper`/`cayleyToDisc`/`parabolicAut`/`outerCarrier`
+(`ParabolicOuterOrbitLimit.lean`, `ParabolicCayleyAutomorphism.lean`).
+
+`HTGeometry/HardyCyclicityPowerFieldInvariance.lean` — **statement 3**.
+- the disc chart: `isPreconnected_openDisc`, `openDisc_nonempty`, `openDisc_infinite`;
+- `analyticMero` (an analytic function as an element of `Bottcher.meroField openDisc`),
+  `analyticMero_mul`, and `analyticMero_eq_ratfuncToMero` (**rational realization**: an analytic
+  `f` with `Q·f = P` on the chart is the image of `P/Q` under `ℂ(w) ↪ M`);
+- `parabolicNumPoly`/`parabolicDenPoly` and `parabolicAut_eq_div`: `τ_t(w) = ((2i−t)w+t)/(−tw+2i+t)`;
+- `blaschkeFactorNumPoly`/`blaschkeFactorDenPoly`, `eval_blaschkeFactorDenPoly_mul`,
+  `blaschkeFactorNumPoly_ne_zero`, and the products `blaschkeOrbitNumPoly`/`blaschkeOrbitDenPoly`,
+  `eval_blaschkeOrbit_mul`, `blaschkeOrbitRat`, `blaschkeOrbitRat_ne_zero`;
+- analyticity of both orbits on the disc, `carrierOrbitMero`, `gaugedOrbitMero`,
+  `blaschkeOrbitMero_eq_ratfunc`;
+- **`gaugedOrbit_differentialAdjoin_pow_eq`** — equation (6): `P_N(G_B) = P_N(O)` for every finite
+  Blaschke product and every `N`, and **`gaugedOrbit_differentialIndependent_iff`**.
+
+`HTGeometry/HardyCyclicityCarrierCapstone.lean` — the four statements for ONE object.
+- `carrierExponent`, `differentiableOn_carrierExponent`, `norm_carrierExponent_lt_one`,
+  `carrierMultiplier` (the carrier `O = exp σ` as a `DiskMultiplier`, `‖σ‖ < 1`);
+- `expWeightedMeasure_ne_zero`;
+- **`hardyCyclicityGaugeBlindness_carrier`**: for a dense residual set of exponential parameters the
+  single carrier `O` satisfies statement 1 (`[O] = H²(D)`), statement 2 (maximal parabolic
+  differential freeness), statement 3 (`P_N(B·O) = P_N(O)` for every `B`, `N`) and statement 4
+  (`[B·O] = B·H²(D)` with defect exactly `deg B`).
+
+C2 is ready for stage 3.

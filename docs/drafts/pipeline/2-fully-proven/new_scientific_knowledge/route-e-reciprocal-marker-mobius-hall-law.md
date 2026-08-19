@@ -4991,3 +4991,40 @@ averagedMeanSquare_moebius_of_omegaBudget` reduces `AveragedMeanSquare` to the s
 `∫_ℝ ‖K_δ(w)‖²‖A_ω(w)‖² dw`, and `A_ω` is the `ω_P`-weighted Möbius polynomial that factors exactly
 (`OmegaWeightedFactorisation.omegaWeightedMoebiusPoly_eq_bilinear`).  So the remaining work is
 exactly milestone B's steps `(26)`–`(40)` and nothing else.
+
+## The joint `ω_P·ω_Q` route does NOT lift the exponent — and what does (2026-08-19)
+
+The attempt to reach `1/2 < β ≤ 9/10` by the Soundararajan-exposé §4 arrangement (joint weight
+`ω_P(n)·ω_Q(n)`, short range `P`, long range `Q`, Route-T pointwise bound on the long primes) is
+**barred at exactly the same exponent**.  The chain, derived in full in
+`docs/drafts/pipeline/1-in-progress/matomaki-radziwill-lean-programme.md` (entry "Milestone B — the
+NO-GO"):
+
+```text
+   expiry height  T₀ = x^{1/2−o(1)}            (Gallagher cut δ·Wc ≤ 1 plus the slope row)
+   short primes   log P_j ≤ (log x)^β(1+o(1))  (else the mean-value threshold is not polylog)
+   moment method  k ≥ log T₀/log P_j ≥ (log x)^{1−β}/2
+   prime density  |E_j| ≥ exp(k·log log P_j) = exp(Θ((log x)^{1−β}·log log x))
+   only saving    ρ² = exp(−Θ((log x)^{a−κ})),  a < 1,  κ = 9/10
+   ⟹ β > κ .
+```
+
+It is not a tuning failure: three of the five lines are the fibre width, the prime density and the
+Gallagher cut.  With Vinogradov–Korobov (`κ = 2/3`) the same arrangement would give `β > 2/3`, still
+not `1/2`.
+
+**Matomäki–Radziwiłł do not use a proved pointwise bound.**  In arXiv:1501.04585 the frequency line
+is partitioned as `[T₀,T] = T₁ ∪ … ∪ T_J ∪ U` where `t ∈ T_j` iff `j` is the *smallest* index with
+`|Q_{v,H_j}(1+it)| ≤ e^{−α_j v/H_j}` for all `v` — the pointwise smallness is the **definition** of
+`T_j`, so the saving is free; the work moves to `U`, handled by Halász's theorem and large values.
+The prime ranges are iterated, `P_j = exp(j^{4j}(log Q₁)^{j−1}log P₁)`, `Q_j = exp(j^{4j+2}(log Q₁)^j)`,
+with `[P₁,Q₁] ⊆ [1,h]`, and their Proposition gives
+
+```text
+   ∫_{(log X)^{1/15}}^{T}|F(1+it)|²dt ≪ (T/(X/Q₁) + 1)·((log Q₁)^{1/3}/P₁^{1/6−η} + (log X)^{−1/50})
+```
+
+against the trivial `T/X + 1`.  Since this card's gate is the *qualitative* `AveragedMeanSquare`, the
+`(log X)^{−1/50}` is far more than enough, and it holds for **every** `h → ∞` — in particular for all
+`0 < β < 1`.  The Lean route to `1/2 < β < 1` is therefore that architecture ("Milestone C" in the
+programme card), not the joint-weight one.

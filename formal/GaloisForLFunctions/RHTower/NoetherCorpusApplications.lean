@@ -3,13 +3,18 @@ import GaloisForLFunctions.RHTower.DeningerFailureNerveMixedDaggerCoboundary
 import GaloisForLFunctions.RHTower.DeningerOneSidedFramedMateCurvatureTransgression
 import GaloisForLFunctions.RHTower.DeningerPlaceCountable
 import GaloisForLFunctions.RHTower.DeningerRestrictedPrimeGluing
+import GaloisForLFunctions.RHTower.DirectionalQuantumReturnGeometryLaw
 import GaloisForLFunctions.RHTower.MobiusFixedTokenReservoirConservation
+import GaloisForLFunctions.RHTower.PermutationInvariantQubitClockRealization
 import GaloisForLFunctions.RHTower.RankOnePolarizedExchangeCurvature
+import GaloisForLFunctions.RHTower.RouteRHyperbolicGaugePolarReductionNoGo
+import GaloisForLFunctions.RHTower.RouteRHyperbolicGaugeQuarticPhysicalProducer
 import GaloisForLFunctions.RHTower.SuzukiCriticalRootedBianchiCofinalNoGo
 import GaloisForLFunctions.RHTower.VonMangoldtGammaClockDescent
 import GaloisForLFunctions.RHTower.XiCayleyFockOrderSpaceConservation
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailPhaseAdaptedProuhetPacket
 import GaloisForLFunctions.RHTower.XiSourceCayleyOrderSpaceConservationLaw
+import GaloisForLFunctions.RHTower.XiSourceBoundaryOrientationConservation
 import GaloisForLFunctions.RHTower.XiWoldPoissonBivariateConormal
 
 /-!
@@ -24,6 +29,8 @@ noncomputable section
 
 namespace RHTower
 
+open Complex Filter Set
+open scoped Topology
 open GaloisForLFunctions.HTGeometry
 
 /-! ## Second-Noether identities -/
@@ -146,6 +153,86 @@ theorem noetherFirst_exponentialGaugeBoxCharge (k : ℕ) :
       · simpa only [Complex.ofReal_one, one_mul, zero_add] using
           Complex.exp_ne_zero (Complex.I * (theta : ℂ))
       · exact Complex.exp_ne_zero _)
+
+/-- Hyperbolic gauge flow preserves its quartic physical energy exactly. -/
+theorem noetherFirst_routeRHyperbolicQuarticEnergy
+    (a : ℝ) (z : RouteRHyperbolicSourcePlane) :
+    routeRHyperbolicInvariantQuarticEnergy (routeRHyperbolicSourceGauge a z) =
+      routeRHyperbolicInvariantQuarticEnergy z :=
+  routeRHyperbolicInvariantQuarticEnergy_gauge a z
+
+/-- The invariant hyperbolic energy cannot be compressed into any quadratic charge. -/
+theorem noetherObstruction_routeRInvariantEnergyNotQuadratic :
+    ¬ ∃ Q : QuadraticForm ℝ RouteRHyperbolicSourcePlane,
+      ∀ z, Q z = routeRHyperbolicInvariantQuarticEnergy z :=
+  routeRHyperbolicInvariantQuarticEnergy_not_quadratic
+
+/-- The tempting fixed-polar energy is not a conserved hyperbolic gauge charge. -/
+theorem noetherObstruction_routeRFixedPolarEnergy :
+    ¬ ∀ a z, routeRFixedPolarEnergy (routeRHyperbolicSourceGauge a z) =
+      routeRFixedPolarEnergy z :=
+  routeRFixedPolarEnergy_not_gaugeInvariant
+
+/-- Permuting uniform qubit sites preserves the clock energy. -/
+theorem noetherFirst_uniformQubitPermutationEnergy
+    (T : ℝ) (n : ℕ) (e : Equiv.Perm (Fin n)) (S : Finset (Fin n)) :
+    ParityForecast.uniformQubitFieldEnergy T n (S.map e.toEmbedding) =
+      ParityForecast.uniformQubitFieldEnergy T n S :=
+  ParityForecast.uniformQubitFieldEnergy_permutation_invariant T n e S
+
+/-- Common translation leaves every directional quantum-return record unchanged. -/
+theorem noetherFirst_directionalReturnTranslation
+    {I V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+    (energy : I → V) (shift : V) :
+    ∀ i j time,
+      directionalPairReturnRecord (fun k => energy k + shift) i j time =
+        directionalPairReturnRecord energy i j time :=
+  directionalPairReturnRecord_translation_invariant energy shift
+
+/-- Reflection followed by common translation leaves directional return records unchanged. -/
+theorem noetherFirst_directionalReturnReflection
+    {I V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+    (energy : I → V) (shift : V) :
+    ∀ i j time,
+      directionalPairReturnRecord (fun k => -energy k + shift) i j time =
+        directionalPairReturnRecord energy i j time :=
+  directionalPairReturnRecord_inversion_invariant energy shift
+
+/-- Common energy translation preserves the full temporal difference module. -/
+theorem noetherFirst_temporalModuleTranslation
+    {I V : Type*} [AddCommGroup V] [Module ℝ V]
+    (energy : I → V) (shift : V) :
+    jointTemporalModule (fun i => energy i + shift) = jointTemporalModule energy :=
+  jointTemporalModule_translation_invariant energy shift
+
+/-- Energy reflection and translation preserve the full temporal difference module. -/
+theorem noetherFirst_temporalModuleReflection
+    {I V : Type*} [AddCommGroup V] [Module ℝ V]
+    (energy : I → V) (shift : V) :
+    jointTemporalModule (fun i => -energy i + shift) = jointTemporalModule energy :=
+  jointTemporalModule_inversion_invariant energy shift
+
+/-- Xi nearby-cycle, divisor, and reflected-source currents share one closed orientation charge. -/
+theorem noetherFirst_xiSourceBoundaryOrientation (rho : ℂ) :
+    let m := (analyticOrderAt xi rho).toNat
+    Tendsto
+        (fun w : ℂ =>
+          w⁻¹ * (depthSuccessorNearbyCycle (rho - 1 / 2) m w⁻¹ - 1))
+        (𝓝[≠] 0)
+        (𝓝 (-((rho - 1 / 2) * (m : ℂ)))) ∧
+      Tendsto
+        (fun s : ℂ => (s - rho) * xiExceptionalAffineDivisorCurrent s)
+        (𝓝[≠] rho)
+        (𝓝 (-((rho - 1 / 2) * (m : ℂ)))) ∧
+      (-((rho - 1 / 2) * (m : ℂ))).re =
+        (m : ℝ) / (2 * Real.log 2) *
+          (Real.log ‖shellTransferCharacter rho‖ -
+            Real.log ‖shellTransferCharacter (1 - star rho)‖) ∧
+      sourceCayleyTransverseRate 1 rho =
+        -(Real.log ‖shellTransferCharacter rho‖ -
+            Real.log ‖shellTransferCharacter (1 - star rho)‖) /
+          Real.log 2 :=
+  xiDepthNearby_sourceBoundaryOrientationConservation rho
 
 /-! ## Algebraic Noether applications -/
 

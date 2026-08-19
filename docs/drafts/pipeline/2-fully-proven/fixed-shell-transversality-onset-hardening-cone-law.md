@@ -1511,3 +1511,123 @@ level and the polynomial level meet.
 With these, the criticality expression can be written directly on the joint ring -- the auxiliary
 variable replaced by `jointAction`, the coefficients renamed in -- and its homogeneity assembled
 from `IsHomogeneous.add` and `IsHomogeneous.mul` alone.
+
+## Lean progress -- the criticality expression is homogeneous on the joint ring
+
+`formal/GaloisForLFunctions/HTGeometry/JointCriticalityHomogeneous.lean` (new, umbrella-wired,
+axiom-clean) writes the corrected criticality expression on the joint ring and computes its degree.
+
+| Card item | Declaration |
+|---|---|
+| a degree-zero homogeneous polynomial is constant, so its partial derivatives vanish | `eq_C_of_isHomogeneous_zero`, `pderiv_eq_zero_of_isHomogeneous_zero` |
+| the norm-square polynomial has degree two | `isHomogeneous_normSqPoly` |
+| the criticality expression on the joint ring | `jointCriticality` |
+| **it is homogeneous of degree `M + 1`** | `isHomogeneous_jointCriticality` |
+
+The two terms carry degrees `(M − n − 1) + 2 + n` and `(M − n) + (n − 1) + 2`, both `M + 1`, and the
+computation has exactly two boundary cases, each of which makes its term vanish rather than break
+the grading:
+
+* at `n = M` the coefficient `c_M` is homogeneous of degree zero, hence constant, so its partial
+  derivative is zero -- this is why `eq_C_of_isHomogeneous_zero` is needed;
+* at `n = 0` the scalar factor `n` is zero.
+
+Both are genuine features of the construction, not artefacts: the top coefficient of a monic
+polynomial is a constant, and the derivative of the constant term contributes nothing.
+
+With the degree in hand, `eval₂_smul_of_joint_isHomogeneous` gives the scaling of the symmetrised
+product, which is the `hGscale` hypothesis of `exists_toSphere_sublevel_le_of_shellPoly`.
+
+## Lean progress -- the symmetrised criticality product is homogeneous
+
+`formal/GaloisForLFunctions/HTGeometry/JointCriticalProduct.lean` (new, umbrella-wired,
+axiom-clean) completes the graded construction.
+
+| Card item | Declaration |
+|---|---|
+| the sum over the coordinate directions of the squared criticality expressions, on the joint ring | `jointCriticalitySquareSum`, `isHomogeneous_jointCriticalitySquareSum` |
+| the product over all labellings of the spectrum | `jointCriticalProduct` |
+| **the symmetrised criticality product is homogeneous**, of degree `\|S_D\| · 2(M+1)` | `isHomogeneous_jointCriticalProduct` |
+| **its evaluation scales by that power** under simultaneous scaling of the coordinates and the spectrum | `eval_jointCriticalProduct_smul` |
+
+Because the construction now lives on the joint variable set, the homogeneity of the product is
+`IsHomogeneous.prod` applied to `IsHomogeneous.pow` applied to
+`isHomogeneous_jointCriticality` -- no bespoke bigraded reasoning at all, which is the payoff of
+the change of setting recorded two entries above.
+
+The scaling statement is literally the `hGscale` hypothesis of
+`exists_toSphere_sublevel_le_of_shellPoly`, once the joint product is identified with the shell
+polynomial `G` of `exists_criticalLocusShellPolyHom`.  That identification -- the two constructions
+agree because both are the symmetrisation of the same criticality expression -- is what remains,
+together with `G ≠ 0` and the factorisation through `h_k`.
+
+## Lean progress -- the criticality product is invariant under relabelling
+
+`formal/GaloisForLFunctions/HTGeometry/JointCriticalSymmetry.lean` (new, umbrella-wired,
+axiom-clean) supplies the symmetry that lets the joint construction descend to the shell
+coordinates.
+
+| Card item | Declaration |
+|---|---|
+| relabelling fixes the coordinate variables | `rename_sumMap_rename_inr` |
+| and translates the labelling of the spectral action | `rename_sumMap_jointAction` |
+| so the criticality expression translates | `rename_sumMap_jointCriticality` |
+| and its square sum too | `rename_sumMap_jointCriticalitySquareSum` |
+| **the product over all labellings is invariant** | `rename_sumMap_jointCriticalProduct` |
+
+The relabelling acts as `Sum.map τ id`: it permutes the spectral variables and fixes the
+coordinates, so the shell coefficients -- which are renamed in along `Sum.inr` -- are untouched,
+while the spectral actions are permuted among themselves.  The product over `S_D` is then invariant
+by the same group-translation reindexing used for `labeledActionPoly`.
+
+Together with `isHomogeneous_jointCriticalProduct` and `eval_jointCriticalProduct_smul` this gives
+the joint object all three properties needed downstream: it is symmetric in the spectrum, so it
+descends to a real shell polynomial; it is homogeneous, so its evaluation scales by a fixed power;
+and it vanishes on the critical locus.  What is left is to run the descent and to establish that the
+resulting polynomial is nonzero and factors through `h_k`.
+
+## Lean progress -- the descent to the shell coordinates
+
+`formal/GaloisForLFunctions/HTGeometry/JointDescent.lean` (new, umbrella-wired, axiom-clean) runs
+the descent: from the joint ring back to a single real polynomial in the shell coordinates.
+
+| Card item | Declaration |
+|---|---|
+| the equivalence intertwines relabelling of the spectral variables with relabelling of the outer ones | `rename_sumAlgEquiv` |
+| hence the descended criticality product is symmetric | `isSymmetric_sumAlgEquiv_jointCriticalProduct` |
+| **the shell polynomial of the criticality product**: its value at a coordinate vector is the joint product evaluated there and at the spectrum that vector determines | `exists_shellPoly_jointCriticalProduct` |
+
+So the construction is now available in both pictures at once: as a homogeneous polynomial on the
+joint variable set, where its degree and its scaling are visible, and as a real polynomial in the
+shell coordinates, where the sublevel bound applies -- with the two linked by an explicit identity
+of values.
+
+What remains for `(18b)` is the transport of the scaling across that identity -- for which the
+symmetric-scaling lemma must be stated with a general coefficient homomorphism rather than over the
+reals -- together with `G ≠ 0` and the factorisation through `h_k`.
+
+## Lean progress -- the shell polynomial scales
+
+`formal/GaloisForLFunctions/HTGeometry/ShellPolyScaling.lean` (new, umbrella-wired, axiom-clean)
+transports the joint scaling law across the descent.
+
+| Card item | Declaration |
+|---|---|
+| **the spectral scaling with a general coefficient homomorphism**: for a symmetric polynomial over any `ℚ`-algebra, the value at the spectrum of a scaled Hermitian matrix is the value at the scaled spectrum | `eval₂_symmetric_eigenvalues_smul` |
+| **the shell polynomial of the criticality product scales by a fixed power** | `eval_shellPoly_jointCriticalProduct_smul` |
+
+The general-coefficient form is needed because the descent evaluates the symmetric polynomial with
+coefficients in the coordinate ring, not in the reals; the proof is the same power-sum argument,
+with `eval₂` in place of `eval`.  The transport then reads:
+
+```text
+  G(tθ) = ⟨joint product⟩(spec(tθ), tθ)          (descent identity)
+        = ⟨joint product⟩(t · spec(θ), tθ)        (symmetric spectral scaling)
+        = t^d · ⟨joint product⟩(spec(θ), θ)       (joint homogeneity)
+        = t^d · G(θ)                              (descent identity).
+```
+
+That is the second of the three properties `(18b)` needs, and it is the one that required the whole
+graded apparatus: `G` is produced by an existential, so its scaling could only be established
+through the explicit joint construction it descends from.  What is left is `G ≠ 0` and the
+factorisation `G = g · h_k`.

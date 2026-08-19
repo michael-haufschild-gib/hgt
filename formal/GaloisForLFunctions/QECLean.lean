@@ -13,5 +13,6 @@ Provenance, licensing, and the `native_decide` trust map:
 `QECLean/PROVENANCE.md`.
 -/
 import GaloisForLFunctions.QECLean.Foundations.Foundations
+import GaloisForLFunctions.QECLean.NoetherCorpusApplications
 import GaloisForLFunctions.QECLean.RepetitionCode.RepetitionCode
 import GaloisForLFunctions.QECLean.Stabilizer.Stabilizer

@@ -86,3 +86,11 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
   expansion at a safe centre, complete monotonicity, radial Hankel positivity.
 - `HTGeometry/SchwarzPickEstimate.lean` (NEW) — sharp Schwarz–Pick displacement, narrow-sector
   Schur lemma.
+- `HTGeometry/HorizontalModulusDerivative.lean` (NEW) — horizontal modulus derivative and its
+  monotonicity criterion, valid across the divisor.
+- `HTGeometry/CompletelyMonotoneTower.lean` (NEW) — a completely monotone function on `(0,∞)` has
+  alternating forward differences of every order, so its arithmetic samples are Hausdorff
+  completely monotone.  This is step (i) of the card-2 converse.
+- `RHTower/XiCauchyTransformCompleteness.lean` (NEW) — the Cauchy transform of a square-summable
+  divisor vector is holomorphic off the divisor, decays vertically, and is killed by a vanishing
+  real part on any ball.

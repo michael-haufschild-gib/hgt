@@ -4896,3 +4896,246 @@ non-spectral rows, exactly as predicted — they see only the two endpoints.
 designated ranges must be disjoint, i.e. `β < a`.  So this arrangement proves the mean square for
 `1/2 < β < a` with `9/10 < a < b < 1` free; at `a = 0.92, b = 0.95` that is `1/2 < β < 0.92`, which
 together with the corpus's existing `9/10 < β < 1` covers the card's full range `1/2 < β < 1`.
+
+### Milestone B, brick 58 — the five per-block pieces get their analytic inputs (2026-08-19)
+
+Five small modules, all axiom-clean, sorry-free and wired, closing the last gaps between the
+abstract per-block majorants of bricks 49–53 and the corpus's analytic theorems.
+
+| module | content |
+|-|-|
+| `Sieve/LadderDefectOnParts` | **`setIntegral_normSq_ladderProductDefect_le_closed_on`** — the long ladder's defect over *any* part of the window, from the closed bound over the whole window (`setIntegral_mono_set` on a continuous nonnegative integrand).  `Sieve/Section4BlockMaster` needs it twice, for the disc and for the exceptional annulus |
+| `Sieve/Section4DiscRel` | **`exists_setIntegral_disc_normSq_geomCofactorBlockAt_rel_le`** — the disc mean square of a ladder step's cofactor in the *relative* form `(relMoebiusSharp Nmin · B₁/Q_k)²·2w₀`, so the long block's scale cancels |
+| `Sieve/GeomBlockCardBound` | **`card_geomBlock_le_endpoint`** — a ladder step is no larger than its right endpoint |
+| `Sieve/Section4DiscSum` | **`sum_card_sq_mul_discBound_le`** — the disc sum over the long ladder; the block scale cancels term by term, leaving `L_Q·(1+η_Q)²B₁²S²·2w₀` |
+| `Sieve/Section4AnnCofactor` | **`setIntegral_normSq_cofactor_annulus_le`** — Halász–Montgomery for the step's cofactor over the exceptional annulus, with every step-dependent quantity majorised by a step-free one |
+| `Sieve/Section4AnnSum` | **`sum_annulus_terms_le`** — the annulus sum over the long ladder |
+
+### Milestone B — the NO-GO: this arrangement cannot go below `β = κ` (2026-08-19)
+
+Writing the annulus sum out at the schedule exposes a constraint that no choice of parameters inside
+this architecture satisfies.  Let `𝓁 = log x`, `κ` the zero-free-region width exponent carried by
+`Sieve/RouteTZetaAsymptotics` (`κ = 9/10`; `κ = 2/3` would be Vinogradov–Korobov), `h = exp(𝓁^β)`.
+
+**The chain.**
+
+1. *The expiry height is `x^{1/2−o(1)}`.*  The Gallagher cut obeys `δ·Wc ≤ 1` with `δ = h/√x`, so
+   `Wc ≤ √x/h`; the slope row is `48(5π/2 + 5eB₀/(2T₀))B₀/(Wc·h²)`, which vanishes only for
+   `Wc ≳ √x/h²` **and** `T₀ ≫ Wc`.  Hence `log T₀ = 𝓁/2 − O(𝓁^β)`.
+
+2. *The short primes obey `log P_j ≤ 𝓁^β(1+o(1))`.*  The non-exceptional term of one short block is
+   `V_j²·∫_{|w|≤T₀}‖G_j‖²  ≈  V_j²(T₀ + B₁ⱼ)B₁ⱼW_Q²`, and against the per-block target
+   `ε·n_j²B₁ⱼ²W_Q²` (`n_j = #B_j`) it forces the threshold ratio
+
+   ```text
+      K_j²  :=  (n_j/V_j)²  ≥  (1 + T₀/B₁ⱼ)/ε  =  (1 + P_jω/h)/ε .
+   ```
+
+   So `P_j ≫ h` makes `log K_j ≍ log(P_j/h)` instead of `≍ log log x`.
+
+3. *The moment method needs `k ≥ log T₀/log P_j`.*  Lemma 2.5
+   (`Sieve/Section4ExceptionalMeasure.volume_blockExceptional_le`) gives
+
+   ```text
+      |E_j|  ≤  (T₀ + 4·NA^k(1 + log NA^k))·k^k·n_j^k / V_j^{2k}
+             =  (T₀ + 4NA^k(1+k·log NA))·k^k·K_j^{2k} / n_j^k ,
+   ```
+
+   whose first summand is `< 1` only when `k·log n_j ≥ log T₀`, i.e. `k ≥ 𝓁^{1−β}/2` by 1 and 2.
+
+4. *The second summand costs `exp(k·log(NA/n_j))`, and `NA/n_j ≥ log P_j` by prime density.*  So
+
+   ```text
+      |E_j|  ≥  exp( k·log log P_j )  ≥  exp( (β/2)·𝓁^{1−β}·log 𝓁 ) .
+   ```
+
+5. *The only saving available against `|E_j|` is `ρ²`.*  On the exceptional set the short prime
+   polynomial is bounded trivially, and Halász–Montgomery's second term
+   `3072·N_D·|E_j|` is exactly `3072×` the trivial bound, so the annulus term is
+
+   ```text
+      n_j²·L_Q²·ρ²·|E_j|·B₁ⱼ²   against   ε·n_j²B₁ⱼ²W_Q² ,
+   ```
+
+   i.e. `ρ²·|E_j| = o(polylog)` is required, with
+   `ρ² = exp(−2·log R_Q·routeTWidth(T₀)) = exp(−Θ(𝓁^{a−κ}))`, `a < 1` the long-prime exponent.
+
+**Conclusion.** `𝓁^{1−β}·log 𝓁 ≲ 𝓁^{a−κ} < 𝓁^{1−κ}` forces `β > κ`.  With the corpus's `κ = 9/10`
+this is exactly the range the corpus already proves, so **the joint `ω_P·ω_Q` arrangement with a
+pointwise Route-T saving on the long primes gains nothing over the single-weight route.**  It is not
+a tuning failure: steps 2 and 4 are prime density and the Gallagher cut, and step 1 is the fibre
+width, so no choice of `R_P, η_P, L_P, R_Q, η_Q, L_Q, K, ω, w₀, W, T₀, k` escapes.
+
+This *derives* the ceiling `(log x)^{−2(β−κ)}` recorded on the marker card for the single-weight
+route, now for the joint arrangement and for the **qualitative** statement, not merely for a rate.
+
+### What the no-go says the repair must be
+
+The barrier enters at step 3, through `k ≥ log T₀/log P_j` with a **single** short range `P` used at
+**every** frequency.  Matomäki–Radziwiłł's actual device is a *frequency-adapted* family: on the
+annulus `|w| ≍ T'` one uses a Ramaré decomposition whose short primes satisfy `log P ≍ log T'`, so
+`k = O(1)` and `|E| ` is a polylogarithm — after which `ρ` need only beat a polylogarithm, which the
+Route-T envelope does comfortably.  The cost is that the identity
+`f(n) = ω_P(n)^{-1}∑_{p∈P, p|n} f(p)f(n/p)` must be applied once per frequency range, with its own
+discarded set (integers with no prime factor in that range) each time, and the discarded sets must be
+summed over the ranges.
+
+**Concretely, the next design (Milestone C) is:** scales `L_1 < … < L_I` with
+`P^{(i)} = (exp(L_{i−1}), exp(L_i)]`, frequency annuli `A_i = {T_{i−1} < |w| ≤ T_i}` with
+`log T_i ≍ L_i`, and on `A_i` the Ramaré identity at `P^{(i)}` together with the long range `Q`.
+The top annulus `|w| ∈ (T_I, T₀]` needs `L_I ≍ 𝓁`, i.e. short primes of size `x^{Θ(1)}`, which are
+available (the only cap on the short range is `#P·#Q = o(√x)` from the joint variance row, i.e.
+`log z ≤ 𝓁/2 − 𝓁^b`), and whose harmonic mass still grows because the range spans
+`log log`-many scales.
+
+Everything already built stays: the per-block masters, the five pieces, the two ladders, the
+budget rows and the schedule are all parametric in `(R_P, η_P, L_P, W, T₀)` and are re-used verbatim
+once the single window `Set.Icc (-W) W` is replaced by the annulus family.
+
+### Milestone C — the actual Matomäki–Radziwiłł architecture, read off the source (2026-08-19)
+
+The no-go above says the saving on the long primes cannot be a *proved pointwise bound*.  Reading
+Matomäki–Radziwiłł (arXiv:1501.04585, the corrected arXiv version) shows why: **in their proof the
+pointwise smallness is a DEFINITION, not a theorem.**  The frequency line is partitioned by *which*
+prime polynomial happens to be small, and the hard case is the set where none is.
+
+**Their parameters** (§2, eq. (2)–(4)):
+
+```text
+   Q₁ ≤ exp(√log X),   P₁ ≥ (log Q₁)^{40/η},   [P₁,Q₁] ⊆ [1,h],   η ∈ (0,1/6)
+   P_j = exp( j^{4j}   (log Q₁)^{j−1} log P₁ )
+   Q_j = exp( j^{4j+2} (log Q₁)^{j}          )
+   J   = largest j with Q_j ≤ exp((log X)^{1/2})
+   S   = { X ≤ n ≤ 2X : n has a prime factor in every [P_j,Q_j], j ≤ J }
+```
+
+so `log P_j` grows like `(log Q₁)^j` — **iterated**, not a single pair of ranges.  The two structural
+conditions are `(log log Q_j)/(log P_{j−1} − 1) ≤ η/4^j` (ranges not too far apart) and
+`log P_j ≥ (8/j²)·... log Q_{j−1} + 16 log j` (not too close).
+
+**Their frequency partition** (§8, eq. (20)–(21)).  With
+`H_j := P_j^{1/6−η}/(log Q₁)^{1/3}`, `α_j := 1/4 − η(1 + 2^{−j})`, and
+
+```text
+   Q_{v,H_j}(s) := ∑_{P_j ≤ q ≤ Q_j, e^{v/H_j} ≤ q ≤ e^{(v+1)/H_j}} f(q)/q^s ,
+   I_j          := { v : ⌊H_j log P_j⌋ ≤ v ≤ H_j log Q_j } ,
+```
+
+they set `[T₀,T] = T₁ ∪ … ∪ T_J ∪ U`, `T₀ = (log X)^{1/15}`, where **`t ∈ T_j` iff `j` is the
+smallest index with `|Q_{v,H_j}(1+it)| ≤ e^{−α_j v/H_j}` for every `v ∈ I_j`**, and `t ∈ U` if no `j`
+works.  The exponent `α_j ≈ 1/4` makes this a *power* saving `|Q_v| ≤ q^{−1/4+}` on a narrow
+multiplicative interval of width `e^{1/H_j}` — nothing like a zero-free-region bound.
+
+**Their main estimate** (§8):
+
+```text
+   ∫_{(log X)^{1/15}}^{T} |F(1+it)|² dt
+      ≪ ( T/(X/Q₁) + 1 )·( (log Q₁)^{1/3}/P₁^{1/6−η}  +  (log X)^{−1/50} ) ,
+```
+
+against the mean-value-theorem "trivial bound" `T/X + 1`.  The two summands are exactly the two
+halves of the argument: `T₁ ∪ … ∪ T_J` gives `(log Q₁)^{1/3}/P₁^{1/6−η}`, and `U` gives
+`(log X)^{−1/50}`.
+
+**The three devices the Milestone-B architecture does not have.**
+
+1. *The saving on `T_j` is free.*  Ramaré at range `j` turns `F` into `∑_v Q_{v,H_j}·R_{v,H_j}`, and
+   `|Q_{v,H_j}| ≤ e^{−α_j v/H_j}` **by the definition of `T_j`**, leaving only a mean value theorem
+   for `R_{v,H_j}`:
+   `E_j ≪ H_j log Q_j ∑_{v∈I_j} e^{−2α_j v/H_j} ∫_{T_j}|R_{v,H_j}(1+it)|²dt`.
+
+2. *The `ℓ`-th power lengthening.*  For `j > 1` the cofactor `R_{v,H_j}` (length `Xe^{−v/H_j}`) is too
+   short against the integration length `X/h`.  Minimality of `j` says some narrow polynomial at
+   range `j−1` is **large**, `≥ V`; multiplying `R` by `(that polynomial)^ℓ/V^ℓ` lengthens it to `≈ X/h`
+   at no cost.  Conditions (2) and (3) on `[P_j,Q_j]` are exactly what makes some `ℓ` land on `X/h`
+   without the moment of the `ℓ`-th power growing.
+
+3. *`U` is handled by Halász, not by a zero-free region.*  `|U| = O(T^{1/2−ε})`, so the integral is a
+   sum over `O(T^{1/2−ε})` well-spaced points; Halász's large-value estimate handles `|M(1+it)|²`,
+   Halász's theorem on multiplicative functions gives `|M(1+it)| ≪ (log X)^{−δ}` (this is where
+   `f` real / `μ` not pretentious enters), and a **Halász-type large-value estimate for
+   prime-supported coefficients** recovers the last logarithm.
+
+**Consequence for the five cards.**  The gate is `AveragedMeanSquare`, a bare `o(1)`, and MR's
+Proposition gives `(log X)^{−1/50}` — far more than enough — for `h = exp((log X)^β)` with **any**
+`β > 0`, indeed for any `h → ∞`.  So the route to `1/2 < β < 1` is Milestone C, not Milestone B.
+
+**Everything Milestone B built survives and is needed**: the Ramaré block splits, the two ladder
+defects, the mean value theorems at general coefficient bounds, the exceptional-measure and
+Halász–Montgomery layers, the Gallagher/Plancherel reduction, the fibre transfer, the budget rows.
+What changes is the *selection rule*: a single `(P,Q)` pair with a proved pointwise bound is replaced
+by an iterated family `[P_j,Q_j]` with the pointwise bound as the defining property of `T_j`.
+
+**Next concrete steps.**
+1. Port MR's Parseval bound (their Lemma 14) into the corpus's fibre normalisation, or check that
+   `Sieve/LogWindowPlancherel` + `Sieve/GallagherDyadicTail` already deliver
+   `∫_{T₀}^{X/h}|A(1+it)|² + max_{T≥X/h}(X/(hT))∫_T^{2T}|A|²`.
+2. Build the iterated range family `[P_j,Q_j]` and the set `S`, with the sieve bound for its
+   complement (`Sieve/RoughPairSieve`, `Sieve/HarmanMinorant` are already in the tree).
+3. Build `T_j`, `U`, and the measure bound `|U| ≪ T^{1/2−ε}`.
+4. `j = 1` first: with `J = 1` the whole `T_j` half is one Ramaré split plus one mean value theorem,
+   and MR note that for `h = X^ε` and `f = μ` even `U` needs no work.  That is the smallest complete
+   instance of the architecture and the right first Lean target.
+
+### Milestone C — the exact lemma list, and why `κ = 9/10` is enough for it (2026-08-19)
+
+Reading §3 and §8.3 of arXiv:1501.04585 removes the two things that were still unclear.
+
+**(i) The `U` half uses a SECOND, much LARGER prime range.**  §8.3 applies the Ramaré/Buchstab split
+a second time, with
+
+```text
+   P = exp((log X)^{1−1/48}),   Q = exp(log X/log log X),   H = (log X)^{1/48} ,
+```
+
+i.e. primes of size `exp((log X)^{1−1/48})`, **far above `h`**.  This is legitimate on `U` because
+there the estimate is not `V²·∫|cofactor|²` (a mean value theorem, which is what forced
+`log P ≤ (log x)^β` in the Milestone-B no-go) but a sum of *pointwise* bounds over well-spaced
+points.  With `log P ≈ (log X)^{1−1/48}` the moment method's exponent is
+`k ≈ log T/log P ≈ (log X)^{1/48}`, and the resulting large-value count is
+`|T_L| ≪ exp((log X)^{1/48+o(1)})` — a genuinely small set.  **This is exactly the step the
+Milestone-B architecture has no analogue of, and it is what defeats the `β > κ` barrier.**
+
+**(ii) The pretentious input is Granville–Soundararajan's Lemma 2, and it needs the zero-free region
+only qualitatively.**  For real-valued multiplicative `f : ℕ → [−1,1]`, any fixed `A`, and
+`1 ≤ |α| ≤ x^A`,
+
+```text
+   D(f, p^{iα}; x) ≥ (1/(2√3) − ε)·√(log log x) + O(1) ,
+```
+
+proved by `2D(f,p^{iα}) ≥ D(1,p^{2iα})` and then discarding all primes below
+`exp((log x)^{2/3+ε})`: on the *remaining* range `∑1/p = (1/3 − ε)log log x + O(1)`, while
+`∑_{y<p≤x}p^{−1−2iα} = O(1)` by the zero-free region.  **Only the second fact uses the zero-free
+region, and only qualitatively.**  With the corpus's exponent `κ = 9/10` the cutoff becomes
+`exp((log x)^{9/10+ε})` and the surviving harmonic mass is `(1/10 − ε)log log x`, so
+
+```text
+   D(f, p^{iα}; x)² ≥ (1/40 − ε)·log log x + O(1)
+```
+
+— a worse constant, the same theorem.  **So `κ = 9/10` is enough for Milestone C.**  The corpus's
+`RHTower/MoebiusPretentiousGap.exists_primeCosPlusSum_ge_logLog` (`D² ≥ log log x − 11 log log|τ| − C`)
+is the wrong shape and must be replaced by the Granville–Soundararajan form, which is uniform up to
+`|α| ≤ x^A`.
+
+**The lemma list, with corpus status.**
+
+| MR | statement | corpus |
+|-|-|-|
+| Lemma 1 | Halász: `|F(σ+it)| ≪ x^{1−σ}(M e^{−M} + 1/T₀ + log log x/log x)`, `M = min_{|t₀|≤T₀}D(f,p^{it+it₀};x)²` | `Sieve/Halasz{GhsMasterBound,PerronAssembly,GlobalIntegralBound,…}` — audit |
+| Lemma 2 | the Granville–Soundararajan distance bound above | **to build** (κ = 9/10 version) |
+| Lemma 3 | Halász for the Buchstab cofactor `R(s) = ∑ f(n)n^{−s}/(#{p∈[P,Q]:p|n}+1)`: `|R(1+it)| ≪ (log Q/log P)(…) ≪ (log X)^{−1/16+o(1)}` for `t ∈ [(log X)^{1/16}, X^A]` | **to build** (Lemma 1 + Lemma 2 + Lemma 5) |
+| Lemma 5 | comparison of the non-multiplicative `1/(ω+1)` weight to a completely multiplicative `g` | **to build** |
+| Lemma 8 | large-value count for a prime polynomial (moment method) | `Sieve/PrimePowerSupport.volume_largeValues_pow_symm_le_of_prime_support`, `Sieve/Section4ExceptionalMeasure` |
+| Lemma 9 | mean value over well-spaced points: `∑_{t∈T}|R|² ≪ (N + |T|√T log 2T)∑|a_n|²` | `Sieve/HalaszMontgomeryIntegral`, `Sieve/DyadicSecondEnvelopeClosed` |
+| Lemma 11 | Halász-type large values for **prime-supported** coefficients | `Sieve/HalaszPrimeSavingBound` — audit |
+| Lemma 12 | Ramaré/Buchstab split + Cauchy–Schwarz over narrow blocks | `Sieve/{RamareBlockSplit, LadderHarmonicSplit, LadderProductDefect, Section4QSide}` ✓ |
+| Parseval | Lemma 14 | `Sieve/{LogWindowPlancherel, GallagherDyadicTail}` ✓ (different normalisation) |
+
+**The single most important structural point for the Lean build.**  The corpus's
+`Sieve/Section4QSide.setIntegral_normSq_omegaWeighted_le_blocks` takes the per-block pointwise bound
+`hVk : ∀ k, ∀ w ∈ E, ‖primeBlockPoly (geomBlock …) w‖ ≤ Vk k` **as a hypothesis over an arbitrary
+measurable set `E`**.  Instantiating `E := T₁` — the set on which every narrow block is small —
+discharges `hVk` by `Set.mem_setOf` alone.  Nothing about Route-T, zero-free regions, or `ρ` is
+needed on `T₁`; the whole analytic burden moves to `U`, where the tools are Lemmas 1–3, 8, 9, 11.

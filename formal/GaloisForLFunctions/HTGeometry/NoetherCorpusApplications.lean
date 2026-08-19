@@ -21,13 +21,16 @@ import GaloisForLFunctions.HTGeometry.KleinGordonExactConservation
 import GaloisForLFunctions.HTGeometry.LongitudinalTransverseFormationMechanics
 import GaloisForLFunctions.HTGeometry.MarkedHalfCharacterDualityLaw
 import GaloisForLFunctions.HTGeometry.MarkedVariationDynamics
+import GaloisForLFunctions.HTGeometry.MultipleGammaPeriodActionRankLaw
 import GaloisForLFunctions.HTGeometry.NoetherNormalizationKrullDim
 import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.CrossedModule
 import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.CyclicActionNoether
 import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.CyclicGaugeHolonomyMasterAction
+import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.GaugeSpectralFlow
 import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.SplitLInfinityObserverExtension
 import GaloisForLFunctions.HTGeometry.ProjectiveAffineChartIncidenceDimension
 import GaloisForLFunctions.HTGeometry.StaticCircuitTwoMemoryOrthogonalityLaw
+import GaloisForLFunctions.HTGeometry.FiniteLawRelationWallSynchronization
 
 /-!
 # Noether applications across the reusable corpus
@@ -354,6 +357,51 @@ theorem noetherObstruction_delayedExchangeReporter :
     ¬ ReporterStrictExchangePromotionExists delayedExchangeLeft delayedExchangeRight
       (pairedReporter (unitReporter : DelayedExchangeState → Unit) delayedExchangeReporter) :=
   delayedExchange_unitPair_conservation_veto
+
+/-- A unitary change of target coordinates preserves the Gram charge of every linear law. -/
+theorem noetherFirst_gramOperatorUnitaryInvariant
+    {V W : Type*} [NormedAddCommGroup V] [NormedAddCommGroup W]
+    [InnerProductSpace ℂ V] [InnerProductSpace ℂ W]
+    [CompleteSpace V] [CompleteSpace W]
+    (U : W ≃ₗᵢ[ℂ] W) (A : V →L[ℂ] W) :
+    gramOperator ((U : W →L[ℂ] W).comp A) = gramOperator A :=
+  gramOperator_leftUnitary_invariant U A
+
+/-- Integral period action conserves excess plus isotropy under source-basis symmetry. -/
+theorem noetherFirst_periodActionSourceBasisInvariant
+    {N : ℕ} {V : Type*} [AddCommGroup V]
+    (p : IntegralPeriodSource N →+ V)
+    (e : IntegralPeriodSource N ≃+ IntegralPeriodSource N) (d : ℕ) :
+    integralPeriodExcess (p.comp e.toAddMonoidHom) d +
+        integralPeriodKernelRank (p.comp e.toAddMonoidHom) =
+      integralPeriodExcess p d + integralPeriodKernelRank p :=
+  periodActionConservation_sourceBasisInvariant p e d
+
+/-- Integral period action conserves excess plus isotropy under target-coordinate symmetry. -/
+theorem noetherFirst_periodActionTargetCoordinatesInvariant
+    {N : ℕ} {V W : Type*} [AddCommGroup V] [AddCommGroup W]
+    [Module ℝ V] [Module ℝ W]
+    (p : IntegralPeriodSource N →+ V) (e : V ≃ₗ[ℝ] W) (d : ℕ) :
+    integralPeriodExcess (e.toAddEquiv.toAddMonoidHom.comp p) d +
+        integralPeriodKernelRank (e.toAddEquiv.toAddMonoidHom.comp p) =
+      integralPeriodExcess p d + integralPeriodKernelRank p :=
+  periodActionConservation_targetCoordinatesInvariant p e d
+
+/-- On the flat Hessian, the crossing tensor is invariant under every unitary gauge jet. -/
+theorem noetherFirst_flatCrossingFormGaugeInvariant
+    {𝕜 E : Type*} [RCLike 𝕜]
+    [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (U : E ≃ₗᵢ[𝕜] E)
+    (Hdot K : Module.End 𝕜 E) (x y : E) :
+    _root_.HTGeometry.NomologicalHomotopyGeometry.GaugeSpectralFlow.crossingForm
+        (_root_.HTGeometry.NomologicalHomotopyGeometry.GaugeSpectralFlow.gaugeDerivative
+          U 0 Hdot K) (U x) (U y) =
+      _root_.HTGeometry.NomologicalHomotopyGeometry.GaugeSpectralFlow.crossingForm Hdot x y := by
+  apply _root_.HTGeometry.NomologicalHomotopyGeometry.GaugeSpectralFlow.crossingForm_gauge_invariant
+  · intro a b
+    simp
+  · simp
+  · simp
 
 /-! ## Algebraic Noether applications -/
 

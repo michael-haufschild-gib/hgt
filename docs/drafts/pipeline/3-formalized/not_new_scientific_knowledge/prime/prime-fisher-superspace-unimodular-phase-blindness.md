@@ -1,10 +1,11 @@
 # Prime Fisher superspace is blind to unimodular Euler phases and therefore to the zero divisor
 
 - **ID:** `prime-fisher-superspace-unimodular-phase-blindness`
-- **Stage:** 2-fully-proven / Lean core verified
+- **Stage:** 3-formalized
 - **Type:** THEOREM / TERMINAL NO-GO FOR THE METRIC-ONLY RH REFORMULATION
 - **Source:** `zeta-fisher-superspace-global-negative-curvature`; separate from RHTower Routes A--D
-- **Lean:** `formal/GaloisForLFunctions/RHTower/ProjectiveFisherBlindness.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/ProjectiveFisherBlindness.lean`,
+  `formal/GaloisForLFunctions/RHTower/PrimeFisherSuperspaceBlindness.lean`
 
 ## Statement
 
@@ -208,3 +209,29 @@ law.
 mathematically real and globally hyperbolic, but it does not carry to a proof of RH. It dies exactly
 at the passage from projective probability geometry to the phase-sensitive, distributional scalar
 section whose divisor is the RH object.
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+`formal/GaloisForLFunctions/RHTower/PrimeFisherSuperspaceBlindness.lean`, on top of the existing
+`RHTower/ProjectiveFisherBlindness.lean`; all declarations axiom-clean
+(`propext, Classical.choice, Quot.sound`).  The open source conjecture of §6 is deliberately not
+formalized: it is the open problem the card isolates.
+
+| Card item | Lean declaration |
+|---|---|
+| the coherent state `Ψ_{χ,s}` of a completely multiplicative unimodular phase | `dirichletCoherentState` (with `phaseChar`) |
+| eq. (1), `‖Ψ_{χ,s}‖² = ζ(2σ)` | `tsum_norm_sq_dirichletCoherentState` |
+| eq. (2), the Born law `n^{-2σ}/ζ(2σ)` | `bornProbability_dirichletCoherentState_eq` |
+| eq. (3), the twist is a fixed diagonal unitary | `dirichletCoherentState_eq_twist` |
+| **eqs. (2)–(4), Born and Fisher blindness to the phases** | `bornProbability_dirichletCoherentState`, `bornVariance_dirichletCoherentState` (abstract core: `bornProbability_phase_twist`, `bornExpectation_phase_twist`, `bornVariance_phase_twist`) |
+| eq. (5)–§2, a Helson zeta with a prescribed off-line zero | `exists_phase_fisher_blind_with_prescribed_zero`, built on the corpus formalization of Andersson's Theorem 2 (`exists_continuable_phase_with_prescribed_multiplicities`) |
+| **the exact point of death (6)–(7): identical Fisher data, different divisor** | `exists_phase_fisher_blind_with_prescribed_zero` (all four conclusions together) |
+| `Ω = (1,1,…) ∉ ℓ²`, so the scalar projection is not a bounded observable | `not_summable_constant_state` |
+| §4, the even reality-symmetric quartet multiplier and its zero set | `quartetMultiplier`, `quartetMultiplier_even`, `quartetMultiplier_conj`, `quartetMultiplier_eq_zero_iff` |
+| eqs. (8)–(9), two-dimensional conformal cancellation of the massless equation | `conformalLaplacian`, `conformalLaplacian_eq_zero_iff`, `conformalLaplacian_eq_zero_iff_flat` |
+
+The off-line zero is produced unconditionally inside the corpus rather than quoted from the
+literature: the prescribed-divisor sequences are `ρ − nI` (zeros) and `−1 − (n+1)I` (poles), and the
+resulting Helson zeta continuation has a simple zero at every `ρ` with `0 < Re ρ < 1`, in
+particular to the right of the critical line, while its coherent state has exactly the Born law and
+Fisher variance of the untwisted zeta state.

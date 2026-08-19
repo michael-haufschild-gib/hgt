@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 19 August 2026, commit
-`27258d06f5a7b90a5f3f4d8fc5a45902d4a4db01`, plus declaration-index review of current Lean
+`eea714302f9b33e175c1d507345b96d821da75d4`, plus declaration-index review of current Lean
 working-tree changes. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified as corpus source, not claimed build-audited in
@@ -53,10 +53,15 @@ final open producer and prove neither RH nor its negation.
 | HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Absolute subquantum estimate or source-first prime-summability for the literal paired Gamma-six determinant current. |
 | SV2 | literal Suzuki energy space -> paired self-adjoint characteristics -> bounded projective normal family -> global Xi projective target -> corrected two-chart spherical limit -> RH | Identify the canonical cofinal subsequential limit with the divisor-faithful global target, then extend convergence over the full finite chart and reciprocal pole chart. |
 
-Latest corpus changes promote SV2 because its actual finite-aperture characteristic, self-adjoint
-spectrum, entire Fourier realization, and real-zero law are now formal. They add PCS, SEC, and BPC
-as genuinely infinite nonphysical candidates. They narrow `C1, E, G, L, O, HC` without closing their first
-producers. The first open producer of `CCM-FU, D2, P, Q, T, U` is unchanged. In particular, the
+Latest corpus changes strengthen SV2's literal paired mechanism: reflection exchanges its two
+deficiency channels, both channels come from one covariance--resolvent Fourier carrier, and actual
+Suzuki covariance realizes the source-faithful coalescing tangent with the correct nonnegative
+sign. They narrow `E`'s long-range analytic budget and `Q`'s Cauchy completeness, and complete the
+legacy degree-eight field's Galois identification as `Q8`. They do not close any first producer.
+No additional live route or candidate is promoted at this cutoff. The new Gamma--Meixner Landau
+criterion is an exact global RH receiver built from the Xi divisor, while prime-Laplace jets,
+prime-support cycle Hodge theory, and prime-square Fourier strata are genuine non-classical
+source/pre-route mechanisms whose completed Xi handoffs do not yet exist. In particular, the
 half-unit Mertens tower is exactly RH rather than a producer; high-height reciprocal-square Xi tails
 are closed but do not orient O's true ground; new joint-omega sieve budgets do not define E's fixed
 relation or prove T's short Möbius block estimate.
@@ -138,11 +143,14 @@ finite positive measure dominating that raw carrier can represent the completed 
 The one-prime trace-class propagation step is also closed abstractly: a trace-class, finite-rank,
 Hilbert--Schmidt-factorized, or nuclear remainder changes every positive modulus power only by a
 Schatten-one operator (`ConnesConsaniTraceClassReduction.lean`). This does not construct the literal
-one-prime remainder or orient the resulting spectrum. The generic Vivanti--Pringsheim theorem is
-now formal: a nonnegative-coefficient power series with finite positive radius cannot continue
-through its positive boundary point (`VivantiPringsheim.lean`). No Lean theorem yet instantiates
-its hypotheses on the completed Bernstein/Xi source or turns that generic singularity into the
-required corrected spectral orientation.
+one-prime remainder or orient the resulting spectrum. The translated reciprocal-seam norm has its
+unique minimum at zero; preservation at one nonzero translation and boundedness of the whole orbit
+each imply RH (`XiReciprocalTranslationSeamNormLaw.lean`). The radial Jensen mass gap is exactly
+reflection energy and Schur-capacity saturation is equivalent to RH
+(`XiRadialJensenSchurCapacity.lean`). These are complete spectral receivers, not corrected source
+realizations. The Vivanti--Pringsheim theorem is now instantiated on a completed prime--Gamma
+Bernstein susceptibility in candidate BPC below. That gives a distinct continuation-to-RH route,
+not C1's missing signed/non-dominating spectral carrier.
 
 **Open core.** Derive from fixed theta/prime--Gamma source, before divisor selection, one of:
 
@@ -236,10 +244,15 @@ cancellation, and the nonexceptional block estimate are now formal
 `Sieve/Section4AnnPiece.lean`, `Sieve/Section4NonExcPiece.lean`). Remaining budget rows still retain
 explicit analytic hypotheses. `Sieve/FreeEtaLadder.lean` also removes fixed-step bookkeeping by
 proving exact nonovershoot, one-step top reach, and a harmonic-mass lower bound for a free-ratio
-geometric ladder. Working-tree `Sieve/JointLongRange.lean` installs that free ratio in the actual
-long designated prime range, proving eventual base admissibility, target reach, and ladder coverage.
-None of these theorems
-chooses adjacency or supplies the co-moving parity flux.
+geometric ladder. `Sieve/JointLongRange.lean` installs that free ratio in the actual long designated
+prime range: its mesh tends to zero, the top eventually reaches at least one quarter of target,
+harmonic mass diverges, base lies below top, and the ladder covers the range. The geometric
+block-cardinality, defect-on-parts, Section-4 disc-relative/summed, and annulus-cofactor/summed laws
+carry these controls through the remaining analytic decomposition
+(`Sieve/GeomBlockCardBound.lean`, `Sieve/LadderDefectOnParts.lean`,
+`Sieve/Section4DiscRel.lean`, `Sieve/Section4DiscSum.lean`,
+`Sieve/Section4AnnCofactor.lean`, `Sieve/Section4AnnSum.lean`). None chooses adjacency or supplies
+the co-moving parity flux.
 
 **Open core.** Construct/extract one exact relation on ordinary squarefree integers directly from
 factorization data represented by Ramaré incidence, fixed independently of observed Möbius
@@ -380,16 +393,19 @@ preperiodicity is impossible. A finite real-descended quaternionic cohomology re
 order-equals-multiplicity real symplectic realization is contradictory. The explicit two-dimensional
 `Q8` symplectic generator exists. The literal first and second quadratic fields now have proved
 irreducibility and degrees, the degree-eight radical has an exact polynomial certificate, and the
-candidate conjugation lifts anti-commute on the top radical. These algebraic closures still do not
-supply the missing arithmetic root-number identification, normality/Galois-group theorem, or
-cohomological landing
+candidate conjugation lifts anti-commute on the top radical. Eight explicit automorphisms now prove
+that legacy radical field Galois over `Q`, and its Galois group is identified with
+`QuaternionGroup 2` (`DeningerQ8RootNumberNegOneGalois.lean`,
+`DeningerQ8RootNumberNegOneGaloisIdentification.lean`). These algebraic closures still do not
+supply a root-number certificate or cohomological landing
 (`DeningerQuaternionicMultiplicityParity.lean`, `DeningerArtinCentralParityNoGo.lean`).
-**Audit correction (2026-08-19):** the Lean field currently carrying the legacy
-`DeningerQ8RootNumberNegOne` prefix is formally a degree-eight Galois `Q8` field, but its
-root-number-minus-one attribution is not source-authenticated.  The literature witness to which
-the parity no-go applies is instead Serre's root field of
-`X^8 - 205 X^6 + 13940 X^4 - 378225 X^2 + 3404025`; its root-number claim still needs a genuine
-epsilon-factor formalization.
+The separate Serre witness now has a literal degree-eight radical tower: its top radicand is proved
+nonsquare and its normalized generator satisfies exactly
+`X^8 - 205 X^6 + 13940 X^4 - 378225 X^2 + 3404025`
+(`SerreQ8RootNumberNegOneTopRadicand.lean`, `SerreQ8RootNumberNegOnePolynomial.lean`). Lean has not
+yet identified this Serre top field as Galois `Q8` or formalized its global Artin epsilon factor.
+Thus the authenticated root-number-minus-one input, not construction of a degree-eight radical or
+the legacy `Q8` group calculation, is the remaining arithmetic gate in this terminal detour.
 
 ### O — exact restricted-Weil ground and canonical actual heads
 
@@ -511,12 +527,19 @@ mixed incidence dominates separately positive diagonal energies. On real regular
 continued prime--arch source is real, and the reduced paired source kernel is exactly the positive
 diagonal congruence of the confluent Loewner matrix of the square-descended Xi seam-log germ
 (`XiPositivePairedRealLoewnerSeam.lean`). Thus positivity, inertia, rank, and nullity are the same
-Loewner problem; this identifies the boundary geometry but does not prove its sign.
+Loewner problem; this identifies the boundary geometry but does not prove its sign. The full
+square-summable divisor Cauchy transform is holomorphic off the divisor, decays vertically, and is
+complete: if its real part vanishes on one regular ball, the transform and every multiplicity-fibre
+sum vanish (`XiCauchyTransformCompleteness.lean`). For Schwarz-fixed fibre-constant vectors, real
+pairings with all safe Euler-pole Schwarz pairs are already total
+(`XiEulerSafePairedCompleteness.lean`). Receiver exhaustion is therefore no longer a plausible
+missing step; neither theorem supplies passivity of the source matrices.
 
 Formal sources: `XiHurwitzOrientationSeparatedSourceReconstruction.lean`,
 `XiHurwitzOrientationExteriorCauchyClosure.lean`,
 `XiHurwitzOrientationPositivePairedSource.lean`,
 `XiPositivePairedRealLoewnerSeam.lean`,
+`XiCauchyTransformCompleteness.lean`, `XiEulerSafePairedCompleteness.lean`,
 `XiHurwitzOrientationSharpNonnegativeConeDistance.lean`,
 `XiHurwitzOrientationBoundaryMixedIncidence.lean`.
 
@@ -692,7 +715,14 @@ division-free identity between the global Xi Livsic pair and the v2 projective t
 `SuzukiTaCovarianceSource.lean` further identifies each abstract Riesz deficiency vector with the
 literal completed restricted-Weil covariance applied to `exp(+-x)`, places that density in the
 actual finite Friedrichs-operator domain, and proves its exact shifted resolvent equation. Thus the
-finite source vector is no longer a choice or abstract representative.
+finite source vector is no longer a choice or abstract representative. Literal interval reflection
+commutes with covariance and its Riesz inverse, exchanges the two deficiency channels, and turns the
+physical Fourier minus channel at `z` into the plus channel at `-z`. Hence the phase pair is generated
+by one reflected covariance--resolvent Fourier carrier (`SuzukiTaCovarianceReflection.lean`). The
+coalescing even/odd covariance vectors have exact norm-square energies; positive Suzuki covariance
+forces the source-faithful position-resolvent tangent nonnegative, and actual covariance realizes
+the model-free coalescing tangent with no abstract operator premise
+(`SuzukiTaCoalescingCovarianceTangent.lean`).
 
 **Open core.** Prove that the canonical normal-family limit is the global Xi projective target,
 not an arbitrary bounded holomorphic subsequential limit, and propagate that identification over a
@@ -700,8 +730,9 @@ finite chart containing every Xi zero. Then establish reciprocal-chart convergen
 compact zero-freeness at every target pole. Aperture schedule, phase pair, projective normalization,
 upper-half-plane denominator control, and local subsequential compactness are closed. The missing
 step is coefficient-faithful global limit identification plus the pole chart, not construction of
-real-zero approximants. The old all-plane entire wall stays terminal and cannot be repaired by
-finite holomorphic exponential gauges.
+real-zero approximants, phase-pair provenance, reflection compatibility, or tangent sign. The old
+all-plane entire wall stays terminal and cannot be repaired by finite holomorphic exponential
+gauges.
 
 ## Corpus-born candidate openings
 
@@ -892,6 +923,78 @@ continuation producer is absent.
 
 ## Formal advances that do not change route count
 
+- `XiGlobalMeixnerShapeLandau.lean` constructs a nonnegative Gamma--Meixner shape trace and proves
+  that holomorphic continuation of its safe germ to `Re(z)>0` is equivalent to RH. Its safe real
+  trace is completely monotone with positive Hankel moment forms
+  (`XiGammaShapeCompleteMonotonicity.lean`, `HTGeometry/CompletelyMonotoneTower.lean`). This is not
+  a new producer: every coefficient is `xiSeamDivisorCoefficient`, hence already formed from the
+  complete Xi divisor. A new route would first need an equal trace constructed from pre-divisor
+  prime--Gamma data in its safe region and a source continuation theorem not equivalent to the
+  desired zero exclusion.
+- `PrimeLaplaceGammaJetIncidence.lean` supplies a genuine all-prime, nonphysical source interface:
+  every finite raw derivative clock is jointly faithful, each finite jet observation is
+  Hilbert--Schmidt, prime translation has an exact Taylor-descent anomaly equal to the omitted
+  factorial tail, and adjacent resolutions satisfy a Bianchi law. The coherent factorial/Fock
+  column is nevertheless unbounded at every positive shape. Thus finite Gamma jets cannot be
+  silently assembled into a bounded infinite observer. No completed Xi landing or RH endpoint is
+  present, so this is pre-route infrastructure adjacent to G/L/BPC rather than an eleventh
+  candidate.
+- `PrimeSupportFlagPathHodge.lean` gives a second non-classical pre-route. Prime-support deformation
+  is a sum of rooted path-Laplacian cofactors; a one-edge cycle has the local squarefree Euler factor
+  as torsion; finite squarefree Euler products are products of those torsions; and nonempty positive
+  prime-power cycle torsion can vanish only at zero centered height. But every finite source
+  apartment is acyclic for `Re(s)>0`. Paths carry no phase; cycles are the first phase-bearing
+  object, and any RH route must construct a completed/infinite cycle or secondary class from source
+  rather than infer it from finite Euler apartments. This sharpens PCS/SEC/HC design without yet
+  supplying their missing Xi handoff.
+- `PrimeSquareFourierStrata.lean` computes the exact unit, valuation-one, and zero Fourier strata on
+  `ZMod(p^2)` and proves the critically normalized reflected coefficient is at least one, with
+  equality exactly at zero radial drift. This is a local paired reflection detector potentially
+  useful to HC/PPM/IRK; corpus has no global source occurrence or divisor comparison, so it is not a
+  route.
+- `XiUnitEulerPoleAffineSection.lean` shows translated decompletion has residue `1-2c`, so the unit
+  Euler residue selects exactly the untranslated affine fibre; nonnegativity of its translated
+  Hermitian Bezoutian forces that selected fibre onto the critical line. This is a sharp C1/Q/G
+  affine receiver. Corpus does not produce its global Bezoutian positivity from prime--Gamma
+  source, so it neither changes those open cores nor creates a route.
+- `HardyFourthMomentSignChange.lean` formalizes the fourth-moment sign-change mechanism and turns
+  the three Hardy-Z moment estimates into an actual critical-line zeta zero; it also gives the
+  unconditional dyadic `O(T log^4 T)` fourth moment. This proves critical-line zeros, not absence of
+  off-line zeros. Separately, the Hardy-disk cyclicity chain proves exact model-space defect equal
+  to finite Blaschke degree, but also a decisive blindness law: the same bounded outer carrier can
+  be multiplied by an arbitrary finite inner factor while cyclicity and every power-level
+  differential-adjoin field fail to determine that inserted zero data
+  (`HTGeometry/HardyCyclicityGaugeBlindness.lean`,
+  `HTGeometry/HardyCyclicityPowerFieldInvariance.lean`,
+  `HTGeometry/HardyCyclicityOrbitFreeness.lean`). Working-tree
+  `HTGeometry/HardyCyclicityCarrierCapstone.lean` realizes all failures simultaneously on one
+  concrete bounded outer carrier: a residual family has maximally free parabolic orbit while every
+  finite Blaschke defect remains possible with the same power-field data. Hardy cyclicity or
+  maximal differential-field genericity alone is therefore not a faithful Xi-divisor producer.
+- The Bessel/difference-Galois lane is now sharply delimited. Modified-Bessel order recurrence has
+  a meromorphic two-solution system, but its order derivative is not a rational Bessel combination
+  and no rational compatible derivation exists, including the physical specialization `c=2/s`
+  (`HTGeometry/BesselOrderMeromorphicIsomonodromy.lean`,
+  `HTGeometry/BesselOrderIsomonodromyObstruction.lean`). A viable parameterized difference-Galois
+  successor must use a non-rational or singular differential structure and still construct a
+  literal prime--Gamma occurrence plus Xi reader.
+- Generic shell/Noether, Schatten, and Stieltjes modules close reusable adapters, not RH source
+  laws. Finite spectral actions are algebraic over symmetric shell coordinates, critical loci lie
+  in explicit polynomial hypersurfaces, and source sublevel bounds follow from nonzero shell
+  polynomials. Order-`p` spectral determinants converge inside reciprocal spectral radius and
+  forget precisely lower traces; corank-one Stieltjes and multiplier-log fields coincide
+  (`HTGeometry/ShellSublevelCapstone.lean`, `HTGeometry/NoetherCorpusApplications.lean`,
+  `HTGeometry/SchattenSpectralDeterminant.lean`, `HTGeometry/StieltjesCorankTrdeg.lean`). None
+  selects the arithmetic parameter, proves completed-source sign, or supplies cofinal control.
+- Working-tree `HTGeometry/ConnesVanSuijlekomProposition21.lean` gives a literal `N=1`
+  counterexample to Proposition 2.1(2) as printed: its hypotheses admit the zero kernel vector, for
+  which the claimed one-monomial quotient spanning statement is false. Positive survivor is exact:
+  under the Toeplitz hypotheses every nonzero real kernel vector has nonzero leading coefficient,
+  hence a nonzero Laurent generator. Any C1/OPUC use must add nonzero-vector/nondegeneracy data.
+- The radical-differential-ideal, reduced tensor-product, and Ritt prime-reduction files now close
+  broad algebraic foundations, while working-tree `HTGeometry/RittBasisPrimeReduction.lean` only
+  reduces finite generation to the prime case. No arithmetic specialization or Xi endpoint occurs;
+  these do not revive AF/AP or create a route.
 - `CCMCentralBinomialIntegrality.lean`, `CCMLambertRadicalIntegrality.lean`, and
   `CCMLambertCoefficientIntegrality.lean` close central-binomial divisibility, radical
   integrality, and dyadic algebraic integrality of every literal finite equation-(53) Lambert
@@ -1151,7 +1254,7 @@ Closure applies to named mechanism, not every future use of similar objects.
 | AF class-law scale-orbit | Convergent abelian class-law certificate exists iff centered rate is zero; global certificates on all Xi copies exist iff RH. | Terminal rigidity/selection theorem; successor must change interface to singular/infinite-action or genuinely global aggregate law. |
 | weighted-Mertens half-unit tower as producer | One exponent gives one zero-free half-plane, but the full tower `0<=alpha<1/2` is exactly RH; it cannot be invoked as an upstream estimate. | Exact causal transform, one-moment transfer, and invariant half-unit prelimit deficit guide MSC/G aperture research. |
 | Suzuki v2 entire characteristic wall | Displayed target has an unavoidable pole, so no all-plane locally uniform limit of entire real-zero characteristics exists; finite holomorphic exponential gauges do not remove it. | Actual entire real-zero Suzuki characteristics now exist; live SV2 uses the corrected two-chart spherical wall. |
-| Deninger finite quaternionic real descent | Quaternionic anti-linear square `-1` forces even complex multiplicity, but root number `-1` forces odd central order; order-equals-multiplicity real symplectic realization is impossible. | Literal `QuaternionGroup 2` symplectic representation, and a separate legacy degree-eight `Q8` radical field with anti-commuting lifts are formal. The authenticated Serre root-number-minus-one field is `X^8 - 205X^6 + 13940X^4 - 378225X^2 + 3404025`; its literal radical tower, Galois proof, and epsilon calculation remain. |
+| Deninger finite quaternionic real descent | Quaternionic anti-linear square `-1` forces even complex multiplicity, but root number `-1` forces odd central order; order-equals-multiplicity real symplectic realization is impossible. | Legacy radical field is proved degree eight, Galois, with group `Q8`. Separate Serre polynomial now has literal degree-eight radical realization. Serre-field Galois/`Q8` identification and global Artin epsilon-factor calculation remain; even if supplied, they certify the parity obstruction rather than revive finite real descent. |
 | direct prime Ising | Raw/scalar-normalized finite balanced tree partitions cannot converge locally uniformly to XiC; rank growth forces scale collapse. | Only singular critical rescaling outside fixed modal closure could be new. |
 | compact Thorin/Markov | Compact Thorin and Markov representations are RH-equivalent; canonical measure unique; theta-likelihood candidate not infinitely divisible. | Upstream positive source measure only, not alternative canonical measure. |
 
@@ -1229,6 +1332,17 @@ Corpus proves insufficient:
 - completed Xi from a bounded continuous compact prime-torus screen or finite-measure screen
   expectation: its signal is Bohr almost periodic, while Xi decays vertically and is nonzero at the
   center;
+- bounded coherent infinite observation obtained by stacking all finite factorially normalized
+  prime-Laplace Gamma jets: every finite row is Hilbert--Schmidt but the Fock column norms are
+  unbounded;
+- finite prime-support path/apartment Hodge theory as a right-half divisor detector: paths are
+  phase-blind and every finite positive prime apartment is acyclic there; a completed cycle or
+  secondary class is indispensable;
+- Hardy cyclicity, model-space codimension, or the differential field generated by all power-level
+  observations as a faithful zero selector: arbitrary finite Blaschke inner gauges change the zero
+  defect while leaving the outer carrier and power-field data admissible;
+- rational isomonodromic derivation of the modified-Bessel order recurrence: the compatibility
+  equations have no such derivation, including the physical positive-argument specialization;
 - source symmetry as proof every orbit point is fixed.
 
 Any successor must retain infinite source provenance, mixed incidence, non-scalar boundary
@@ -1317,6 +1431,17 @@ continuation through that collar. None can be reduced to one finite positive obj
 response without hitting a proved
 firewall.
 
+Three newest pre-routes reinforce that taxonomy rather than extend route count. Prime-Laplace
+Gamma jets are an infinite paired clock with exact translation anomaly/Bianchi curvature, but the
+coherent observer is unbounded. Prime-support Hodge theory says phase begins at cycles rather than
+paths and finite positive-prime apartments are acyclic. Prime-square Fourier strata give a local
+two-level reflection law whose equality detects zero radial drift. These mechanisms are genuinely
+corpus-born and non-classical; what they lack is not an abstract endpoint but a source-derived
+completed/infinite assembly carrying their local invariant into an Xi-divisor exclusion. The
+Gamma--Meixner Landau trace lies at the opposite end: its global endpoint is exact, but its
+coefficients are divisor-built. A viable new architecture could emerge only by joining one of the
+source pre-routes to such a complete receiver without importing the divisor in the join.
+
 Critical Schur monodromy, difference Picard--Vessiot, differential/Manin horizons, and quantum
 return recovery sit one layer earlier. Lean has constructed their internal dynamics, rigidity, or
 reconstruction theorem, but not an arithmetic source occurrence plus critical-line reader. They are
@@ -1396,6 +1521,15 @@ is:
 18. Can the continued prime--Gamma/Mobius expression be analytically continued through the full
     Bernstein susceptibility collar without importing a zero-free region or an equivalent radius
     bound?
+19. Can the finite prime-Laplace Gamma-clock Bianchi system be completed in a graph/domain topology
+    that controls its provably unbounded Fock column and lands coefficient-faithfully in an Xi
+    receiver?
+20. What completed or infinite prime-support cycle/secondary class survives the proved acyclicity
+    of every finite positive-prime apartment and couples its Euler torsion to the Xi divisor before
+    choosing a zero?
+21. Is there a pre-divisor prime--Gamma trace equal to the safe Gamma--Meixner shape germ, with a
+    continuation law stronger than the divisor-built Landau criterion rather than another exact RH
+    restatement?
 
 Until one is answered, endpoint reformulations, finite real-zero models, seed asymptotics, diagonal
 moment inequalities, or scalar transport identities do not move formal RH frontier.

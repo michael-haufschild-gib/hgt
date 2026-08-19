@@ -283,3 +283,49 @@ REMAINING for 2 -> 3:
   the disk translates and the rational gauge `B ∘ τ_t` inside the corpus's differential-field
   framework (via the coordinate `z = φ(w)`, where `τ_t` becomes `z ↦ z + t` and `B ∘ τ_t` becomes
   a rational function of `z`).
+
+## Lean status update (2026-08-19b) — statements 2 and 3 are formalized; the card is complete
+
+All four statements of the theorem are now unconditional Lean theorems, and a single capstone
+asserts all four for one and the same concrete carrier.  Every new declaration `#print axioms` to
+`propext, Classical.choice, Quot.sound` only.
+
+- `formal/GaloisForLFunctions/HTGeometry/HardyCyclicityOrbitFreeness.lean` — **statement 2**.
+  `realShiftConfiguration` and `mem_commonUpperTranslationDomain_of_im_pos` (for real translations
+  the common upper domain is the whole open upper half plane); `cayleyToUpper_eq_mobius`
+  (`φ(w) = i(1+w)/(1−w)` in Mobius normal form, coefficients `(i, i, −1, 1)`, determinant `2i`);
+  `not_familyDifferentiallyAlgebraicOn_parabolicOrbit` (transport of the half-plane translation
+  freeness through the change of variable `z = φ(w)`); and the capstone
+  `outerCarrier_parabolicOrbitFreeness_denseResidual`: for every infinite-support base measure and
+  strictly positive integrable density, a dense residual set of bounded exponential parameters
+  makes every finite family of distinct real parabolic translates `{O ∘ τ_t}` differentially
+  algebraically independent over `ℂ(w)`.
+
+- `formal/GaloisForLFunctions/HTGeometry/HardyCyclicityPowerFieldInvariance.lean` — **statement 3**,
+  equation `(6)`.  The disc is set up as an analytic chart (`isPreconnected_openDisc`,
+  `openDisc_nonempty`, `openDisc_infinite`); `analyticMero` realizes an analytic function as an
+  element of the meromorphic differential field of the chart, and
+  `analyticMero_eq_ratfuncToMero` identifies an analytic function satisfying `Q·f = P` with the
+  image of `P/Q ∈ ℂ(w)`.  The parabolic automorphism is put in Mobius normal form,
+  `parabolicAut_eq_div : τ_t(w) = ((2i − t)w + t)/(−t w + (2i + t))`, and one Blaschke factor
+  composed with it is `(N_t − a D_t)/(D_t − conj a · N_t)`; the numerator factor is nonzero because
+  its vanishing would force `a = 1`.  The gauge `q_t = B ∘ τ_t` is therefore a nonzero element of
+  the base field, and `differentialAdjoin_range_pow_baseGauge_eq` gives
+  `gaugedOrbit_differentialAdjoin_pow_eq : P_N(G_B) = P_N(O)` for every finite Blaschke product `B`
+  and every `N`, together with `gaugedOrbit_differentialIndependent_iff`.
+
+- `formal/GaloisForLFunctions/HTGeometry/HardyCyclicityCarrierCapstone.lean` — the unified
+  statement.  `carrierExponent`, `differentiableOn_carrierExponent`, `norm_carrierExponent_lt_one`
+  and `carrierMultiplier` realize `O = exp σ` with `‖σ‖ < 1` as a bounded analytic multiplier of
+  `H²(D)`; `expWeightedMeasure_ne_zero` supplies the strict positivity of `Im m`.  The capstone
+  `hardyCyclicityGaugeBlindness_carrier` states, for a dense residual set of exponential
+  parameters and one and the same carrier `O`:
+  statement `1` (`[O] = H²(D)`), statement `2` (maximal parabolic differential freeness),
+  statement `3` (`P_N(B·O) = P_N(O)` for every `B` and every `N`), and statement `4`
+  (`[B·O] = B·H²(D)` with cyclicity defect exactly `deg B`).
+
+Nothing in the theorem is left unformalized.
+
+## Gates (updated 2026-08-19)
+
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean
