@@ -527,3 +527,36 @@ constants).  The full chain now exists as general lemmas:
 
 What remains for the correspondence is instantiation bookkeeping at the concrete Picard–Vessiot
 data, then items (2) `G_m` converse, (3) `GL_2`, (4) Dreyfus's normal form.
+
+
+## Card 1 — points separate
+
+`PointsSeparate` adds `eq_zero_of_forall_algHom_eq_zero`: on a reduced finite-type algebra over an
+algebraically closed field, an element killed by every point is zero (Nullstellensatz + Jacobson).
+
+The route to `R^G = K` is therefore complete as general lemmas, with one remaining input:
+reducedness of the constants algebra `E` — in characteristic zero this is Cartier's theorem for the
+Galois group scheme, and it is the next thing to build or to carry as a named classical input.
+
+Then items (2) `G_m` converse, (3) `GL_2`, (4) Dreyfus's normal form remain.
+
+
+## Card 1 — separation with module coefficients
+
+`PointsSeparateModule` upgrades separation from `E` to `M ⊗_C E` by a finite-dimensional duality
+argument, which is what the Galois correspondence actually needs.  The separation half of
+`R^G = K` is therefore complete as general lemmas.
+
+Still carried: reducedness of the constants algebra `E` (Cartier in characteristic zero).  Then
+items (2) `G_m` converse, (3) `GL_2`, (4) Dreyfus's normal form.
+
+
+## Card 1 — parameterized quotients
+
+`ParameterizedPicardVessiotQuotient` gives `exists_sigmaDeltaSimple_quotient`: every proper doubly
+stable ideal lies in a maximal one whose quotient carries both operators, is doubly simple, and has
+commuting descended operators.  That is the parameterized analogue of the difference PV quotient.
+
+Next on that side: the `σ`-`δ` coordinate ring of a fundamental matrix (mirror of
+`DifferenceCoordinateRing`, with the jet variables carrying the derived action `σ(δ^k X) =
+δ^k((A X))`).  Then the parameterized Galois group, Cassidy's `GL_2` case, and Dreyfus's normal form.

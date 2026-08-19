@@ -10608,3 +10608,5 @@ import GaloisForLFunctions.RHTower.Sieve.JointSchedule
 import GaloisForLFunctions.RHTower.Sieve.JointSpectralDivisor
 import GaloisForLFunctions.RHTower.PrimeArchBernsteinPringsheimCollar
 import GaloisForLFunctions.RHTower.Sieve.JointNonSpectral
+import GaloisForLFunctions.RHTower.XiPrimeSeamOneEndedCollapse
+import GaloisForLFunctions.RHTower.XiHedenmalmLocalAlgebraRankCensus

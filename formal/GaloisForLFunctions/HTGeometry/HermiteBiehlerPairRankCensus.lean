@@ -164,6 +164,40 @@ theorem finrank_ker_polyQuotMul_deBrangesValue_local (rho : ℂ) (m : ℕ) (hm :
   rw [hroots, natDegree_pow, natDegree_X_sub_C, mul_one]
   simp [Multiset.toFinset_nsmul _ m hm.ne']
 
+theorem dvd_of_dvd_C_mul {c : ℂ} (hc : c ≠ 0) {d p : ℂ[X]} (h : d ∣ C c * p) : d ∣ p := by
+  have h2 := h.mul_left (C c⁻¹)
+  rwa [← mul_assoc, ← map_mul, inv_mul_cancel₀ hc, map_one, one_mul] at h2
+
+/-- **Reflection form.**  The de Branges value and its Schwarz reflection have the same common
+divisor as the pair `(F, F')`. -/
+theorem associated_gcd_deBrangesValue_reflection (F : ℂ[X]) :
+    Associated (EuclideanDomain.gcd (deBrangesValue F) (deBrangesReflection F))
+      (EuclideanDomain.gcd F (derivative F)) := by
+  classical
+  refine associated_of_dvd_dvd ?_ ?_
+  · set d := EuclideanDomain.gcd (deBrangesValue F) (deBrangesReflection F) with hd
+    have hE : d ∣ deBrangesValue F := EuclideanDomain.gcd_dvd_left _ _
+    have hE' : d ∣ deBrangesReflection F := EuclideanDomain.gcd_dvd_right _ _
+    have hC2 : (C (2 : ℂ) : ℂ[X]) = 2 := map_ofNat C 2
+    have h2F : d ∣ C (2 : ℂ) * F := by
+      have hsum := dvd_add hE hE'
+      rw [deBrangesValue_add_reflection] at hsum
+      rwa [hC2]
+    have h2F' : d ∣ C (2 * Complex.I) * derivative F := by
+      have hdif := dvd_sub hE hE'
+      rw [deBrangesValue_sub_reflection] at hdif
+      have hrw : (2 : ℂ[X]) * C Complex.I * derivative F
+          = C (2 * Complex.I) * derivative F := by
+        rw [map_mul, hC2]
+      rwa [hrw] at hdif
+    exact EuclideanDomain.dvd_gcd (dvd_of_dvd_C_mul two_ne_zero h2F)
+      (dvd_of_dvd_C_mul (mul_ne_zero two_ne_zero Complex.I_ne_zero) h2F')
+  · refine EuclideanDomain.dvd_gcd ?_ ?_
+    · exact dvd_add (EuclideanDomain.gcd_dvd_left F (derivative F))
+        ((EuclideanDomain.gcd_dvd_right F (derivative F)).mul_left _)
+    · exact dvd_sub (EuclideanDomain.gcd_dvd_left F (derivative F))
+        ((EuclideanDomain.gcd_dvd_right F (derivative F)).mul_left _)
+
 end
 
 end GaloisForLFunctions.HTGeometry

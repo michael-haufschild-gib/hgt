@@ -157,4 +157,12 @@ theorem eulerMass_tower_telescope : ∀ (R : ℕ) {σ : ℝ}, 1 < σ →
       rw [Finset.prod_congr rfl (fun r _ => by rw [hrw r]), hpow, pow_zero, one_mul]
       ring
 
+/-! ## The iterated affine joint cutoff `(35)` -/
+
+/-- **Equation (35).**  Every sharp logarithmic Euler cutoff becomes the affine joint cutoff of
+the whole tower, `∑_{r<R} 2^r log d_r + 2^R log m < T`, written in its exact recursive form. -/
+theorem eulerLogCutoff_iff_towerCutoff (R : ℕ) (T : ℝ) (n : ℕ+) :
+    Real.log ((n : ℕ+) : ℝ) < T ↔ towerLog R (dyadicTowerEquiv R n) < T := by
+  rw [towerLog_dyadicTowerEquiv R n]
+
 end RHTower

@@ -40,6 +40,96 @@ def connesVanSuijlekomB1OddVector : Fin 3 → ℝ := ![-1, 0, 1]
 /-- The even vectors used for the two remaining eigendirections of `M(c)`. -/
 def connesVanSuijlekomB1EvenVector (x : ℝ) : Fin 3 → ℝ := ![1, x, 1]
 
+/-- The discriminant of the even `2 × 2` block of `M(c)`. -/
+def connesVanSuijlekomB1Discriminant (c : ℝ) : ℝ := (c + 1) ^ 2 + 8
+
+/-- The two even-eigenvector parameters of `M(c)`. -/
+def connesVanSuijlekomB1RootPlus (c : ℝ) : ℝ :=
+  (-(c + 1) + Real.sqrt (connesVanSuijlekomB1Discriminant c)) / 2
+
+def connesVanSuijlekomB1RootMinus (c : ℝ) : ℝ :=
+  (-(c + 1) - Real.sqrt (connesVanSuijlekomB1Discriminant c)) / 2
+
+private theorem connesVanSuijlekomB1_discriminant_pos (c : ℝ) :
+    0 < connesVanSuijlekomB1Discriminant c := by
+  dsimp [connesVanSuijlekomB1Discriminant]
+  nlinarith [sq_nonneg (c + 1)]
+
+theorem connesVanSuijlekomB1_rootPlus_equation (c : ℝ) :
+    (connesVanSuijlekomB1RootPlus c) ^ 2 + (c + 1) * connesVanSuijlekomB1RootPlus c - 2 = 0 := by
+  have hsq := Real.sq_sqrt (connesVanSuijlekomB1_discriminant_pos c).le
+  simp only [connesVanSuijlekomB1RootPlus, connesVanSuijlekomB1Discriminant] at hsq ⊢
+  nlinarith
+
+theorem connesVanSuijlekomB1_rootMinus_equation (c : ℝ) :
+    (connesVanSuijlekomB1RootMinus c) ^ 2 + (c + 1) * connesVanSuijlekomB1RootMinus c - 2 = 0 := by
+  have hsq := Real.sq_sqrt (connesVanSuijlekomB1_discriminant_pos c).le
+  simp only [connesVanSuijlekomB1RootMinus, connesVanSuijlekomB1Discriminant] at hsq ⊢
+  nlinarith
+
+private theorem connesVanSuijlekomB1_sqrt_discriminant_sq (c : ℝ) :
+    (Real.sqrt (connesVanSuijlekomB1Discriminant c)) ^ 2 =
+      connesVanSuijlekomB1Discriminant c := by
+  exact Real.sq_sqrt (connesVanSuijlekomB1_discriminant_pos c).le
+
+theorem connesVanSuijlekomB1_rootPlus_pos (c : ℝ) :
+    0 < connesVanSuijlekomB1RootPlus c := by
+  have hsqrt : 0 ≤ Real.sqrt (connesVanSuijlekomB1Discriminant c) := Real.sqrt_nonneg _
+  have hsq := connesVanSuijlekomB1_sqrt_discriminant_sq c
+  have hlt : (c + 1) ^ 2 < (Real.sqrt (connesVanSuijlekomB1Discriminant c)) ^ 2 := by
+    rw [hsq]
+    dsimp [connesVanSuijlekomB1Discriminant]
+    nlinarith
+  have habs : |c + 1| < Real.sqrt (connesVanSuijlekomB1Discriminant c) :=
+    by simpa [abs_of_nonneg hsqrt] using sq_lt_sq.mp hlt
+  have hlt' : c + 1 < Real.sqrt (connesVanSuijlekomB1Discriminant c) :=
+    (abs_lt.mp habs).2
+  dsimp [connesVanSuijlekomB1RootPlus]
+  linarith
+
+theorem connesVanSuijlekomB1_rootMinus_neg (c : ℝ) :
+    connesVanSuijlekomB1RootMinus c < 0 := by
+  have hsqrt : 0 ≤ Real.sqrt (connesVanSuijlekomB1Discriminant c) := Real.sqrt_nonneg _
+  have hsq := connesVanSuijlekomB1_sqrt_discriminant_sq c
+  have hlt : (c + 1) ^ 2 < (Real.sqrt (connesVanSuijlekomB1Discriminant c)) ^ 2 := by
+    rw [hsq]
+    dsimp [connesVanSuijlekomB1Discriminant]
+    nlinarith
+  have habs : |c + 1| < Real.sqrt (connesVanSuijlekomB1Discriminant c) :=
+    by simpa [abs_of_nonneg hsqrt] using sq_lt_sq.mp hlt
+  have hlt' : -(c + 1) < Real.sqrt (connesVanSuijlekomB1Discriminant c) :=
+    by linarith [(abs_lt.mp habs).1]
+  dsimp [connesVanSuijlekomB1RootMinus]
+  linarith
+
+theorem connesVanSuijlekomB1_rootMinus_le_neg_two_of_nonneg {c : ℝ} (hc : 0 ≤ c) :
+    connesVanSuijlekomB1RootMinus c ≤ -2 := by
+  have hsqrt : 0 ≤ Real.sqrt (connesVanSuijlekomB1Discriminant c) := Real.sqrt_nonneg _
+  have hsq := connesVanSuijlekomB1_sqrt_discriminant_sq c
+  have hthreeSq : 3 ^ 2 ≤ (Real.sqrt (connesVanSuijlekomB1Discriminant c)) ^ 2 := by
+    rw [hsq]
+    dsimp [connesVanSuijlekomB1Discriminant]
+    nlinarith [sq_nonneg c]
+  have hthree : 3 ≤ Real.sqrt (connesVanSuijlekomB1Discriminant c) :=
+    (sq_le_sq₀ (by norm_num) hsqrt).mp hthreeSq
+  dsimp [connesVanSuijlekomB1RootMinus]
+  linarith
+
+theorem connesVanSuijlekomB1_neg_two_lt_rootMinus_of_neg {c : ℝ} (hc : c < 0) :
+    -2 < connesVanSuijlekomB1RootMinus c := by
+  have hsqrt : 0 ≤ Real.sqrt (connesVanSuijlekomB1Discriminant c) := Real.sqrt_nonneg _
+  have hsq := connesVanSuijlekomB1_sqrt_discriminant_sq c
+  have hbound : 0 ≤ 4 - (c + 1) := by linarith
+  have hsquare : (Real.sqrt (connesVanSuijlekomB1Discriminant c)) ^ 2 <
+      (4 - (c + 1)) ^ 2 := by
+    rw [hsq]
+    dsimp [connesVanSuijlekomB1Discriminant]
+    nlinarith
+  have hlt : Real.sqrt (connesVanSuijlekomB1Discriminant c) < 4 - (c + 1) :=
+    (sq_lt_sq₀ hsqrt hbound).mp hsquare
+  dsimp [connesVanSuijlekomB1RootMinus]
+  linarith
+
 theorem connesVanSuijlekomB1_normalized_odd_eigenvector (c : ℝ) :
     connesVanSuijlekomB1NormalizedMatrix c *ᵥ connesVanSuijlekomB1OddVector =
       1 • connesVanSuijlekomB1OddVector := by
@@ -54,7 +144,7 @@ theorem connesVanSuijlekomB1_normalized_even_eigenvector
   ext i
   fin_cases i <;> simp [connesVanSuijlekomB1NormalizedMatrix,
     connesVanSuijlekomB1EvenVector, Matrix.mulVec, dotProduct, Fin.sum_univ_three]
-  nlinarith
+  all_goals nlinarith
 
 /-- Appendix B.1's reduction of a nonzero off-diagonal source matrix to `M(c)`,
 up to a nonzero scalar and a scalar identity shift. -/
@@ -84,11 +174,89 @@ def connesVanSuijlekomB1FourierNumerator (v : Fin 3 → ℝ) (s : ℂ) : ℂ :=
     (v 1 : ℂ) * (-1 - s) * (1 - s) +
       (v 2 : ℂ) * (-1 - s) * (0 - s)
 
+/-- Every complex zero of the finite numerator lies on the real axis. -/
+def ConnesVanSuijlekomB1AllRootsReal (F : ℂ → ℂ) : Prop :=
+  ∀ z : ℂ, F z = 0 → z.im = 0
+
 theorem connesVanSuijlekomB1FourierNumerator_expand (v : Fin 3 → ℝ) (s : ℂ) :
     connesVanSuijlekomB1FourierNumerator v s =
       ((v 0 + v 1 + v 2 : ℝ) : ℂ) * s ^ 2 + ((v 2 - v 0 : ℝ) : ℂ) * s - v 1 := by
   simp [connesVanSuijlekomB1FourierNumerator]
   ring
+
+theorem connesVanSuijlekomB1_even_numerator (x : ℝ) (s : ℂ) :
+    connesVanSuijlekomB1FourierNumerator (connesVanSuijlekomB1EvenVector x) s =
+      ((x + 2 : ℝ) : ℂ) * s ^ 2 - x := by
+  rw [connesVanSuijlekomB1FourierNumerator_expand]
+  change (((1 + x + 1 : ℝ) : ℂ) * s ^ 2 + ((1 - 1 : ℝ) : ℂ) * s - (x : ℂ)) = _
+  push_cast
+  ring
+
+private theorem connesVanSuijlekomB1_complex_sq_eq_nonneg_im_zero
+    {r : ℝ} (hr : 0 ≤ r) {z : ℂ} (hz : z ^ 2 = (r : ℂ)) : z.im = 0 := by
+  have him := congrArg Complex.im hz
+  have hre := congrArg Complex.re hz
+  simp [pow_two, Complex.mul_im, Complex.mul_re] at him hre
+  have hprod : z.re * z.im = 0 := by nlinarith
+  rcases mul_eq_zero.mp hprod with hre0 | him0
+  · rw [hre0] at hre
+    nlinarith [sq_nonneg z.im]
+  · exact him0
+
+/-- The `N = 1` even-vector numerator has only real complex roots whenever the
+source's exact criterion `x(x+2) ≥ 0` holds. -/
+theorem connesVanSuijlekomB1_even_numerator_allRootsReal
+    {x : ℝ} (hx : 0 ≤ x * (x + 2)) :
+    ConnesVanSuijlekomB1AllRootsReal
+      (connesVanSuijlekomB1FourierNumerator (connesVanSuijlekomB1EvenVector x)) := by
+  intro z hz
+  rw [connesVanSuijlekomB1_even_numerator] at hz
+  by_cases hden : x + 2 = 0
+  · have hx' : x = -2 := by linarith
+    norm_num [hx'] at hz
+  · have hdenC : ((x + 2 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hden
+    have hdenC' : (x : ℂ) + 2 ≠ 0 := by simpa using hdenC
+    have hmul : ((x + 2 : ℝ) : ℂ) * z ^ 2 = x := by
+      linear_combination hz
+    have hmul' : ((x : ℂ) + 2) * z ^ 2 = x := by simpa using hmul
+    have hsq : z ^ 2 = ((x / (x + 2) : ℝ) : ℂ) := by
+      push_cast
+      apply (eq_div_iff hdenC').2
+      calc
+        z ^ 2 * ((x : ℂ) + 2) = ((x : ℂ) + 2) * z ^ 2 := mul_comm _ _
+        _ = (x : ℂ) := hmul'
+    have hratio : 0 ≤ x / (x + 2) := by
+      by_cases hpos : 0 < x + 2
+      · exact div_nonneg (nonneg_of_mul_nonneg_left hx hpos) hpos.le
+      · have hneg : x + 2 < 0 := lt_of_le_of_ne (le_of_not_gt hpos) hden
+        exact div_nonneg_iff.mpr (Or.inr ⟨nonpos_of_mul_nonneg_left hx hneg, hneg.le⟩)
+    exact connesVanSuijlekomB1_complex_sq_eq_nonneg_im_zero hratio hsq
+
+theorem connesVanSuijlekomB1_rootPlus_numerator_allRootsReal (c : ℝ) :
+    ConnesVanSuijlekomB1AllRootsReal
+      (connesVanSuijlekomB1FourierNumerator (connesVanSuijlekomB1EvenVector
+        (connesVanSuijlekomB1RootPlus c))) := by
+  apply connesVanSuijlekomB1_even_numerator_allRootsReal
+  have hpos := connesVanSuijlekomB1_rootPlus_pos c
+  nlinarith
+
+theorem connesVanSuijlekomB1_rootMinus_numerator_allRootsReal_of_nonneg
+    {c : ℝ} (hc : 0 ≤ c) :
+    ConnesVanSuijlekomB1AllRootsReal
+      (connesVanSuijlekomB1FourierNumerator (connesVanSuijlekomB1EvenVector
+        (connesVanSuijlekomB1RootMinus c))) := by
+  apply connesVanSuijlekomB1_even_numerator_allRootsReal
+  have hle := connesVanSuijlekomB1_rootMinus_le_neg_two_of_nonneg hc
+  exact mul_nonneg_of_nonpos_of_nonpos (by linarith) (by linarith)
+
+theorem connesVanSuijlekomB1_odd_numerator_allRootsReal :
+    ConnesVanSuijlekomB1AllRootsReal
+      (connesVanSuijlekomB1FourierNumerator connesVanSuijlekomB1OddVector) := by
+  intro z hz
+  rw [connesVanSuijlekomB1FourierNumerator_expand] at hz
+  change ((-1 + 0 + 1 : ℝ) : ℂ) * z ^ 2 + ((1 - -1 : ℝ) : ℂ) * z - (0 : ℂ) = 0 at hz
+  norm_num at hz
+  simp [hz]
 
 end
 

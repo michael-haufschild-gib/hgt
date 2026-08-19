@@ -113,19 +113,12 @@ extraction, and `caratheodoryFejerAtomicGram_kernel_eval_eq_zero_of_pos` removes
 all-weights-strictly-positive assumption.  The leaf `lake env lean`, targeted `lake build`, and
 axiom audit passed; axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
 
-## 2026-08-19 explicit Q8 radical certificate
+## 2026-08-19 legacy radical certificate correction
 
-`[PAPER-PROVED]` Put `r=2+x` and `u=z²`, with `x²=2`, `y²=3`, and
-`z²=(2+x)(3+y)`. First `r²-4r+2=0`. Taking the quadratic norm in `y` gives
-`u²-6ru+6r²=0`, hence `r(24-6u)=12-u²`. Squaring this identity and using the
-quadratic equation for `r` yields `u⁴-24u³+144u²-288u+144=0`; substituting
-`u=z²` is the standard degree-eight eliminant.
-
-`[LEAN-PROVED]` `DeningerQ8ExplicitRadicalPolynomial.lean` proves this identity as
-`deningerQ8_explicitRadicalPolynomial_eq_zero` over every commutative ring. It is an algebraic
-certificate for the standard explicit quaternion-field candidate—not a claim that its splitting
-field has Galois group `Q8`, and not a root-number calculation. Those two arithmetic steps remain
-open and must not be merged by citation alone.
+`DeningerQ8ExplicitRadicalPolynomial.lean` proves an elementary eliminant for
+`z²=(2+√2)(3+√3)`.  That identity is retained, but it is **not** evidence of the number-field
+root-number witness required by Deninger's theorem.  In particular it must not be conflated with
+Dedekind's `3+√6` quaternion field or the documented root-number-minus-one field below.
 
 ## 2026-08-19 literal CCM Lambert coefficient integrality
 
@@ -217,3 +210,31 @@ standard `propext`, `Classical.choice`, and `Quot.sound`.
 
 It does not prove CCM Theorem 5.6: the remaining literal frontier is the intersection
 `Q(sqrt 2) ∩ Z^cyc[1/2]`, followed by the finite characteristic-polynomial and measure argument.
+
+## 2026-08-19 actual Q8 root-number-minus-one witness correction
+
+`[LITERATURE]` Deninger’s cited existence gate is made explicit in Example 1.3(ii) of
+Shankar--Södergren--Templier, *Sato--Tate equidistribution of certain families of Artin
+L-functions*: the field
+
+```text
+Q(sqrt((5 + sqrt(5)) * (41 + 6 * sqrt(41))))
+```
+
+is quaternionic and its unique two-dimensional Artin representation has root number `-1`.
+The preceding `2,3` radical card is not this witness and is not used for the capstone.
+
+`[LEAN-PROVED]` `DeningerQ8RootNumberNegOneRadicalCertificate.lean` now proves the exact
+degree-eight eliminant
+
+```text
+z^8 - 820 z^6 + 146780 z^4 - 3362000 z^2 + 16810000 = 0
+```
+
+from the literal radical relations, entirely algebraically and without numerical calculation.
+This is the correct input polynomial for the actual arithmetic witness.
+
+The still-open, non-negotiable formal steps are: construct its number field, prove normality and
+identify its Galois group with `QuaternionGroup 2`, then formalize the local epsilon-factor product
+showing that the attached two-dimensional Artin representation has root number `-1`.  The existing
+Artin pullback and parity contradiction can compose only after those three facts are proved.

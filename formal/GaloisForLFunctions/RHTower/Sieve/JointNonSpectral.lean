@@ -262,7 +262,6 @@ theorem tendsto_rpow_log_div_scaledLength_sq {c β : ℝ} (hc0 : 0 < c) (hβ0 : 
   filter_upwards [Filter.eventually_gt_atTop (1 : ℝ)] with x hx1
   have h0 : (0 : ℝ) < scaledLength c β x := scaledLength_pos hc0 β x
   field_simp
-  ring
 
 /-- **The rounding row of the joint budget vanishes.** -/
 theorem tendsto_jointRoundingRow {c β a b : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (hβ0 : 0 < β)
@@ -298,12 +297,13 @@ theorem tendsto_jointRoundingRow {c β a b : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) 
           / Real.log ((siftStart (1 / 2 * β) x : ℕ) : ℝ))
         * (Real.log ((⌊Real.sqrt x + scaledLength c β x⌋₊ : ℕ) : ℝ)
           / Real.log ((siftStart (a / b * b) x : ℕ) : ℝ)) with hBdef
+    have hlx : (0 : ℝ) ≤ Real.log x := Real.log_nonneg (le_of_lt hx1)
     have hBd0 : (0 : ℝ) ≤ Bd := by
       rw [hBdef]
       have hlP : (0 : ℝ) ≤ Real.log ((siftStart (1 / 2 * β) x : ℕ) : ℝ) :=
-        le_trans (by positivity) (log_siftStart_ge _ x)
+        le_trans (Real.rpow_nonneg hlx _) (log_siftStart_ge _ x)
       have hlQ : (0 : ℝ) ≤ Real.log ((siftStart (a / b * b) x : ℕ) : ℝ) :=
-        le_trans (by positivity) (log_siftStart_ge _ x)
+        le_trans (Real.rpow_nonneg hlx _) (log_siftStart_ge _ x)
       have hfl : (1 : ℝ) ≤ ((⌊Real.sqrt x + scaledLength c β x⌋₊ : ℕ) : ℝ) := by
         have h1 : 1 ≤ ⌊Real.sqrt x + scaledLength c β x⌋₊ := by
           refine Nat.le_floor ?_
@@ -313,13 +313,13 @@ theorem tendsto_jointRoundingRow {c β a b : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) 
       have hlB : (0 : ℝ) ≤ Real.log ((⌊Real.sqrt x + scaledLength c β x⌋₊ : ℕ) : ℝ) :=
         Real.log_nonneg hfl
       positivity
-    have hlx : (0 : ℝ) ≤ Real.log x := Real.log_nonneg (le_of_lt hx1)
     have hBsq : Bd ^ 2 ≤ (Real.log x) ^ (4 : ℝ) := by
       have hstep : Bd ^ 2 ≤ ((Real.log x) ^ (2 : ℕ)) ^ 2 := by nlinarith [hBd, hBd0]
       have hval : ((Real.log x) ^ (2 : ℕ)) ^ 2 = (Real.log x) ^ (4 : ℝ) := by
         rw [show ((4 : ℝ)) = ((4 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
         ring
-      linarith [hstep, hval.le, hval.ge]
+      rw [← hval]
+      exact hstep
     have hW1 : (1 : ℝ) ≤ (Joint.mass (jointShortSet β x)
         * Joint.mass (jointLongSet a b x)) ^ 2 := by
       have := mul_le_mul hP1 hQ1 (by linarith) (by linarith)
@@ -332,7 +332,6 @@ theorem tendsto_jointRoundingRow {c β a b : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) 
             * ((Joint.mass (jointShortSet β x) * Joint.mass (jointLongSet a b x)) ^ 2
               * Real.sqrt x) := by
       field_simp
-      ring
     rw [hfin]
     have hleft : 204 * Bd ^ 2 * (Real.sqrt x + 1) ≤ 408 * (Real.log x) ^ (4 : ℝ) * Real.sqrt x := by
       have h1 : Real.sqrt x + 1 ≤ 2 * Real.sqrt x := by linarith
@@ -344,7 +343,10 @@ theorem tendsto_jointRoundingRow {c β a b : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) 
       have hp : (0 : ℝ) ≤ 408 * (Real.log x) ^ (4 : ℝ) := by
         have := Real.rpow_nonneg hlx (4 : ℝ)
         linarith
-      nlinarith [hW1, hsx, hp]
+      have hstep : Real.sqrt x
+          ≤ (Joint.mass (jointShortSet β x) * Joint.mass (jointLongSet a b x)) ^ 2
+            * Real.sqrt x := by nlinarith [hW1, hsx]
+      exact mul_le_mul_of_nonneg_left hstep hp
     linarith [hleft, hright]
 
 end

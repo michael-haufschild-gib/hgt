@@ -355,3 +355,65 @@ Gamma/Sonin limit must not be represented by hypotheses or wrappers.
 - [ ] transport the affine joint cutoff through prime--Gamma completion
 - [ ] prove cutoff-stable Sonin graph convergence and nonexpansiveness
 - [ ] RH
+
+## Lean status update (2026-08-19) — the card's theorem is fully formalized
+
+Seven new unconditional modules complete the Lean chain `(1)`–`(35)`.  All `#print axioms` give
+only `propext, Classical.choice, Quot.sound`.
+
+`formal/GaloisForLFunctions/RHTower/EulerSquarefreeDyadicStateFactorization.lean`
+- `eulerMass`, `squarefreeMass`, `rpow_dyadic_split`, `squarefreeMass_mul_eulerMass_two_mul` — `(6)`;
+- `eulerPointedState`, `squarefreePointedState`, both unit vectors — `(5)`;
+- `dyadicSquarefreeSignedUnitary` — the arithmetic unitary `(4)`, reindexing composed with the
+  Möbius parity phase, as a `LinearIsometryEquiv`;
+- `dyadicSquarefreeSignedUnitary_eulerPointedState` — `(7)`/`(8)` coordinatewise.
+
+`.../EulerSquarefreeDyadicLogTransport.lean`
+- `lpTensor`, `dyadicSquarefreeSignedUnitary_eq_tensor` — `(7)` as a vector identity;
+- `dyadicSignedTransport_eulerLogMul` — `(9)`, for *arbitrary* coordinate functions (no core-domain
+  hypothesis);
+- `eulerLogMean`, `squarefreeLogMean`, their expectation forms, and `eulerLogMean_split` — `(10)`,
+  `(11)`.
+
+`.../EulerSquarefreeDyadicLogMoments.lean`
+- convergence of every logarithmic moment on `σ > 1`;
+- `eulerLogPowMass_split_zero/one/two` — the exact zeroth, first and second moment splits;
+- `eulerLogVariance_split` — exact variance additivity `Var_σ(log n) = Var_σ(log d) + 4 Var_{2σ}(log m)`.
+
+`.../EulerSquarefreeDyadicFisherTangent.lean`
+- `eulerCenteredTangent`, `squarefreeCenteredTangent` — `(12)`;
+- `normSq_eulerCenteredTangent`, `normSq_squarefreeCenteredTangent` — `‖χ‖² = c² Var`;
+- `inner_eulerPointedState_eulerCenteredTangent`,
+  `inner_squarefreePointedState_squarefreeCenteredTangent` — `(14)`;
+- `dyadicSignedUnitary_eulerCenteredTangent` — `(13)`, coordinate and vector form.
+
+`.../EulerSquarefreeDyadicFisherDefect.lean`
+- `norm_lpTensor`, `lpTensorRight`, `dyadicSquarefreeEmbed` — the canonical isometry `V_σ` `(17)`;
+- `dyadicSquarefreeEmbed_squarefreePointedState`, `norm_eulerCenteredTangent_sub_embed` — `(18)`;
+- `normSq_eulerCenteredTangent_split` — `(15)`;
+- `unitaryPush_fisherConnection_split` — `(21)`, with `X_sq ⊗ P` and `P_s ⊗ X_r` written as pointed
+  connections of elementary tensors;
+- `hsNormSq_fisherConnection_defect` — `(22)`/`(23)`, the exact Hilbert–Schmidt defect law;
+- `criticalResidualEnergy`, `tendsto_criticalResidualEnergy` — `(16)`, the defect vanishes as
+  `σ → 1⁺`.
+
+`.../EulerSquarefreeDyadicTower.lean`
+- `DyadTower`, `dyadicTowerEquiv` — `(24)`;
+- `towerLog_dyadicTowerEquiv` — `(26)`;
+- `dyadicTowerUnitary`, `dyadicTowerUnitary_eulerPointedState` — `(25)`;
+- `eulerMass_tower_telescope` — the real form of `(27)`;
+- `eulerLogCutoff_iff_towerCutoff` — `(35)`.
+
+`.../EulerSquarefreeDyadicAnalyticTelescope.lean`
+- `squarefreeZeta` (identified with `L(μ·μ, s)`), `riemannZeta_dyadic_telescope` — `(27)`;
+- `eulerLogMorphism`, `squarefreeLogMorphism`, `eulerLogMorphism_step`,
+  `eulerLogMorphism_dyadic_reconstruction` — `(28)`, `(29)`.
+
+Already in the tree and unchanged: the one-prime probability/amplitude/mean/variance/Weyl layer
+(`EulerSquarefreeDyadicFockLocal.lean`, §7 `(30)`–`(33)`), the global index equivalence
+(`EulerSquarefreeDyadicGlobalCarrier.lean`), and the affine cutoff transport
+(`EulerSquarefreeDyadicAffineProjection.lean`, §8 `(34)`).
+
+The three unchecked gates below `(prime–Gamma completion, Sonin graph convergence, RH)` are the
+explicitly-declared *successor* programme, not theorems of this card; the card's own statement
+`(1)`–`(35)` is now unconditionally formalized.

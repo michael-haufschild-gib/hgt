@@ -4373,3 +4373,31 @@ a power of `x`.
 The lane now carries no factor larger than a power of the logarithm anywhere except the
 polynomials' own lengths.  The remaining work is the six limits of the numerology table, fed through
 `Sieve/Section4Master` and `jointOmegaBudgetD_le`.
+
+### Milestone B, brick 46 — two of the four budget rows are CLOSED (2026-08-19)
+
+`Sieve/JointNonSpectral` (axiom-clean, sorry-free, wired).  The two non-spectral rows of the joint
+budget quotient are now Lean limits at the schedule of brick 44.
+
+| name | content |
+|-|-|
+| **`jointVariance_quotient_le`** | the variance row, majorised: `≤ 24(1/W_Q + 1/W_P + 1/(W_PW_Q)) + 24·#P·#Q/(W_PW_Q√x)`.  The prefactor `2(h+1)(2h+1) ≤ 12h²` cancels the `h²`, one factor of `W_PW_Q` cancels, and `B₀ ≤ 2√x` cancels the `√x` |
+| `cardLength_mono_exp` | `exp(𝓁^β) ≤ exp(𝓁^b)` for `β ≤ b`, `𝓁 ≥ 1` |
+| **`tendsto_jointCards_div_sqrt`** | `#P·#Q/√x → 0`: both ladder tops are below `cardLength b x` (`eventually_ladderTop_facts`), so the product is `≤ 4(cardLength b x)²`, and `Sieve/NonSpectralBudget.tendsto_cardLength_sq_div_sqrt` finishes |
+| **`tendsto_jointVarianceRow`** | the variance row vanishes |
+| **`jointDivisorBound_le`** | the joint divisor bound is `≤ (log x)²`: both `log R_P` and `log R_Q` exceed `1`, and `log B₀ ≤ log(2√x) ≤ log x` for `x ≥ 4` |
+| **`tendsto_rpow_log_div_scaledLength_sq`** | `(log x)^d / h² → 0`, from the corpus's `tendsto_rpow_log_div_scaledLength` times `1/h → 0` |
+| **`tendsto_jointRoundingRow`** | the rounding row vanishes: `204·Bd²(√x+1)/((W_PW_Q)²h²√x) ≤ 408(log x)^4/h² → 0` |
+
+The sharp exponent `Bd ≍ (log x)^{2−β/2−a}` is not needed — `(log x)²` suffices, because `h²`
+outgrows every power of the logarithm.  Two rows to go: the slope row (which vanishes by `h → ∞`
+and `ω → ∞` once the energy is inserted) and the constant row, which is the §4 estimate itself.
+
+### Budget status
+
+| row | status |
+|-|-|
+| slope `48·C·(5π/2 + 5eh/(2ω))/h` | open — needs `energy_jointOmegaCoeff_le_variance` inserted, then `h, ω → ∞` |
+| constant `48·β₀/(B₀²(W_PW_Q)²)` | open — this **is** the §4 estimate, `Sieve/Section4Master` at the schedule |
+| cardinalities | **closed** (`tendsto_jointRoundingRow`) |
+| joint variance | **closed** (`tendsto_jointVarianceRow`) |

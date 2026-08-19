@@ -919,3 +919,72 @@ carrying the fundamental matrix to `Y . chi(Z)`.
 
 Every step of that chain is now Lean-proved.  What is left of the correspondence is only the
 bookkeeping that instantiates the general lemmas at the concrete Picard--Vessiot data.
+
+## Lean progress — points separate
+
+`GaloisForLFunctions.HTGeometry.PointsSeparate`, unconditional and axiom-clean:
+
+```text
+exists_algHom_ker_eq_of_isMaximal
+    every maximal ideal of a finite-type algebra over an algebraically closed field is the kernel
+    of a point
+eq_zero_of_forall_algHom_eq_zero
+    **points separate**: on a reduced finite-type algebra over an algebraically closed field, an
+    element killed by every point is zero
+```
+
+The Galois correspondence needs more than one point of the group: it needs enough of them.  This is
+the Nullstellensatz together with the Jacobson property -- the intersection of the maximal ideals is
+the nilradical, which vanishes when the algebra is reduced.
+
+With this, the chain from the torsor decomposition to `R^G = K` is complete at the level of general
+lemmas: if `a (x) 1 - 1 (x) a` is nonzero then its image under some point is nonzero, and the
+corresponding automorphism moves `a`.  The one remaining input on that route is reducedness of the
+constants algebra `E`, which in characteristic zero is Cartier's theorem for the Galois group
+scheme.
+
+## Lean progress — separation with coefficients in a module
+
+`GaloisForLFunctions.HTGeometry.PointsSeparateModule`, unconditional and axiom-clean:
+
+```text
+eq_zero_of_forall_point_smul_eq_zero
+    **an element `sum r_j (x) b_j` of `M (x)_C E` killed by every point of `E` vanishes**, for `b`
+    a `C`-independent family and the coefficients `r_j` in an arbitrary `C`-module
+```
+
+The Galois correspondence has to separate elements of `R (x)_C E`, not just of `E`, so separation on
+`E` alone is not enough.  The upgrade is a finite-dimensional duality argument: the vectors
+`(chi b_1, ..., chi b_n)` span `C^n`, since otherwise they lie in the kernel of a nonzero functional
+whose coefficients would give a nontrivial `C`-relation among the `b_j`; and the linear map
+`x |-> sum x_j . r_j` kills those vectors, hence their span, hence everything.
+
+Together with `TorsorDecomposition`, `TorsorPointSpecialization` and `DifferenceSpecialization`,
+this completes the separation half of `R^G = K`: an element of the tensor square killed by every
+specialisation is zero.  The one input still carried is reducedness of the constants algebra, which
+in characteristic zero is Cartier's theorem.
+
+## Lean progress — parameterized Picard--Vessiot quotients
+
+`GaloisForLFunctions.HTGeometry.ParameterizedPicardVessiotQuotient`, unconditional and axiom-clean:
+
+```text
+isSigmaIdeal_symm_of_maximal_sigmaDelta
+    a maximal doubly stable ideal is stable under the inverse difference operator
+isSigmaDeltaSimple_quotient_of_maximal
+    **the quotient by a maximal doubly stable ideal is doubly simple**
+exists_sigmaDeltaSimple_quotient
+    **existence of a parameterized Picard--Vessiot quotient**: every proper doubly stable ideal is
+    contained in one whose quotient carries both operators, is doubly simple, and on which the
+    descended operators commute
+```
+
+This is the parameterized analogue of `DifferencePicardVessiotQuotient`.  The difference operator
+descends because maximality forces two-sided stability -- the preimage of a maximal doubly stable
+ideal is again doubly stable, the `delta`-part because `sigma` and `delta` commute -- and the
+derivation descends by `QuotientDerivation`.
+
+With `ParameterizedDifferenceGalois` (the constants form a differential field, and the parameterized
+Galois matrix has entries there) this is the ring-theoretic layer of the parameterized theory.  What
+remains on that side is the `sigma`-`delta` coordinate ring of a fundamental matrix, whose
+construction mirrors `DifferenceCoordinateRing` with the jet variables carrying the derived action.
