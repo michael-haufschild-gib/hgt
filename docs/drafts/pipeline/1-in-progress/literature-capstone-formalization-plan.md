@@ -126,3 +126,19 @@ quadratic equation for `r` yields `u⁴-24u³+144u²-288u+144=0`; substituting
 certificate for the standard explicit quaternion-field candidate—not a claim that its splitting
 field has Galois group `Q8`, and not a root-number calculation. Those two arithmetic steps remain
 open and must not be merged by citation alone.
+
+## 2026-08-19 literal CCM Lambert coefficient integrality
+
+`[LEAN-PROVED]` `CCMLambertCoefficientIntegrality.lean` now represents the literal coefficient of
+`q^n` in CCM equation `(53)`: the finite sum over `ell` with `2*ell+1 | n`, including its sign,
+the `2^(3/2-2ell-i-j)` factor, and a chosen square root of
+`sigma(ell,i)*sigma(ell,j)`.  The theorem
+`ccmLambertEntryCoefficient_dyadicIntegral` proves that some power of `2` times this exact finite
+coefficient is an algebraic integer, for every choice satisfying the literal radical equation.
+It is unconditional and axiom-clean apart from Lean's standard `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+This closes the dyadic algebraic-integrality component of the paper's finite coefficient proof.
+It does **not** establish equation `(55)`, cyclotomic-integer containment of the radical, the
+intersection `Q(sqrt 2) ∩ Z^cyc[1/2]`, or Theorem 5.6(ii)--(iii). Those remain distinct literal
+CCM targets.

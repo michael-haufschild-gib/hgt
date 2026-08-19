@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiTaCharacteristicRealization
+import GaloisForLFunctions.RHTower.SuzukiTaSpectralEigenspace
 
 /-!
 # Suzuki v2 characteristic zeros as a self-adjoint spectrum
@@ -130,11 +130,10 @@ theorem eigenvalue_im_eq_zero_of_isFormalAdjoint
   change -lambda.im = lambda.im at hre
   linarith
 
-/-- Every zero of Suzuki's finite-aperture characteristic function is real. -/
-theorem suzukiTaCharacteristic_zero_im_eq_zero
-    (a : SuzukiPositiveAperture) (theta : ℝ) (z : ℂ)
-    (hz : suzukiTaCharacteristic a theta z = 0) : z.im = 0 := by
-  let x := suzukiTaCharacteristicEigenvector a theta z hz
+theorem suzukiTaSelfAdjointExtension_isFormalAdjoint
+    (a : SuzukiPositiveAperture) (theta : ℝ) :
+    (suzukiTaSelfAdjointExtension a theta).IsFormalAdjoint
+      (suzukiTaSelfAdjointExtension a theta) := by
   have hDenseExtension : Dense
       ((suzukiTaSelfAdjointExtension a theta).domain : Set (SuzukiTaHilbert a)) := by
     exact (dense_suzukiTaShiftedDerivativePMap_domain a 0).mono
@@ -143,22 +142,106 @@ theorem suzukiTaCharacteristic_zero_im_eq_zero
         (suzukiTaMinimalDerivative_symmetric a)
         (suzukiTaPlusDeficiencyDomain a) (suzukiTaMinusDeficiencyDomain a)
         (suzukiTaBoundaryPhase theta)).1
-  have hSymmExtension :
-      (suzukiTaSelfAdjointExtension a theta).IsFormalAdjoint
-        (suzukiTaSelfAdjointExtension a theta) := by
-    have hformal := LinearPMap.adjoint_isFormalAdjoint hDenseExtension
-    have hEq : (suzukiTaSelfAdjointExtension a theta).adjoint =
-        suzukiTaSelfAdjointExtension a theta :=
-      LinearPMap.isSelfAdjoint_def.mp
-        (suzukiTaSelfAdjointExtension_isSelfAdjoint a theta)
-    nth_rewrite 1 [← hEq]
-    exact hformal
+  have hformal := LinearPMap.adjoint_isFormalAdjoint hDenseExtension
+  have hEq : (suzukiTaSelfAdjointExtension a theta).adjoint =
+      suzukiTaSelfAdjointExtension a theta :=
+    LinearPMap.isSelfAdjoint_def.mp
+      (suzukiTaSelfAdjointExtension_isSelfAdjoint a theta)
+  nth_rewrite 1 [← hEq]
+  exact hformal
+
+/-- Every zero of Suzuki's finite-aperture characteristic function is real. -/
+theorem suzukiTaCharacteristic_zero_im_eq_zero
+    (a : SuzukiPositiveAperture) (theta : ℝ) (z : ℂ)
+    (hz : suzukiTaCharacteristic a theta z = 0) : z.im = 0 := by
+  let x := suzukiTaCharacteristicEigenvector a theta z hz
   have him : (star z).im = 0 :=
     eigenvalue_im_eq_zero_of_isFormalAdjoint
-      hSymmExtension
+      (suzukiTaSelfAdjointExtension_isFormalAdjoint a theta)
       x (star z)
       (suzukiTaCharacteristicEigenvector_ne_zero a theta z hz)
       (suzukiTa_characteristicZero_is_eigenvalue a theta z hz)
   simpa using him
+
+def SuzukiTaExtensionEigenvalue
+    (a : SuzukiPositiveAperture) (theta : ℝ) (z : ℂ) : Prop :=
+  ∃ x : (suzukiTaSelfAdjointExtension a theta).domain,
+    (x : SuzukiTaHilbert a) ≠ 0 ∧
+      suzukiTaSelfAdjointExtension a theta x = z • (x : SuzukiTaHilbert a)
+
+theorem star_eq_self_of_im_eq_zero {z : ℂ} (hz : z.im = 0) : star z = z := by
+  apply Complex.ext
+  · simp
+  · simp [hz]
+
+theorem suzukiTaCharacteristic_eq_zero_of_extensionEigenvalue
+    (a : SuzukiPositiveAperture) (theta : ℝ) (z : ℂ)
+    (hz : SuzukiTaExtensionEigenvalue a theta z) :
+    suzukiTaCharacteristic a theta z = 0 := by
+  obtain ⟨x, hx0, hx⟩ := hz
+  have hzIm : z.im = 0 := eigenvalue_im_eq_zero_of_isFormalAdjoint
+    (suzukiTaSelfAdjointExtension_isFormalAdjoint a theta) x z hx0 hx
+  have hstar : star z = z := star_eq_self_of_im_eq_zero hzIm
+  have hle := LinearPMap.deficiencyExtension_le_adjoint
+    (dense_suzukiTaShiftedDerivativePMap_domain a 0)
+    (suzukiTaMinimalDerivative_symmetric a)
+    (suzukiTaPlusDeficiencyDomain a) (suzukiTaMinusDeficiencyDomain a)
+    (suzukiTaBoundaryPhase theta)
+  let xAdj : (suzukiTaMinimalDerivative a).adjoint.domain :=
+    ⟨(x : SuzukiTaHilbert a), hle.1 x.property⟩
+  have hxAdj : (suzukiTaMinimalDerivative a).adjoint xAdj =
+      z • (x : SuzukiTaHilbert a) := by
+    rw [← hx]
+    exact (hle.2 rfl).symm
+  obtain ⟨c, hc⟩ := suzukiTa_adjoint_eigenspace_span a z xAdj hxAdj
+  have hc0 : c ≠ 0 := by
+    intro hczero
+    rw [hczero, zero_smul] at hc
+    exact hx0 hc
+  have hvMem : suzukiTaSpectralVector a z ∈
+      (suzukiTaSelfAdjointExtension a theta).domain := by
+    have hmem := (suzukiTaSelfAdjointExtension a theta).domain.smul_mem c⁻¹ x.property
+    rw [hc, smul_smul, inv_mul_cancel₀ hc0, one_smul] at hmem
+    exact hmem
+  let vA : (suzukiTaSelfAdjointExtension a theta).domain :=
+    ⟨suzukiTaSpectralVector a z, hvMem⟩
+  have hwMem : suzukiTaBoundaryVector a theta ∈
+      (suzukiTaSelfAdjointExtension a theta).domain := by
+    change suzukiTaBoundaryVector a theta ∈
+      (suzukiTaMinimalDerivative a).closure.domain ⊔
+        ℂ ∙ suzukiTaBoundaryVector a theta
+    exact Submodule.mem_sup_right (Submodule.subset_span (Set.mem_singleton _))
+  let wA : (suzukiTaSelfAdjointExtension a theta).domain :=
+    ⟨suzukiTaBoundaryVector a theta, hwMem⟩
+  let vAdj : (suzukiTaMinimalDerivative a).adjoint.domain :=
+    ⟨suzukiTaSpectralVector a z, hle.1 hvMem⟩
+  let wAdj : (suzukiTaMinimalDerivative a).adjoint.domain :=
+    ⟨suzukiTaBoundaryVector a theta, hle.1 hwMem⟩
+  have hvapp : suzukiTaSelfAdjointExtension a theta vA =
+      (suzukiTaMinimalDerivative a).adjoint vAdj := hle.2 rfl
+  have hwapp : suzukiTaSelfAdjointExtension a theta wA =
+      (suzukiTaMinimalDerivative a).adjoint wAdj := hle.2 rfl
+  have hformal := suzukiTaSelfAdjointExtension_isFormalAdjoint a theta vA wA
+  have hboundary : LinearPMap.adjointBoundaryPairing
+      (suzukiTaMinimalDerivative a) vAdj wAdj = 0 := by
+    rw [LinearPMap.adjointBoundaryPairing, ← hvapp, ← hwapp]
+    exact sub_eq_zero.mpr hformal
+  rw [suzukiTaCharacteristic_eq_boundaryPairing, hstar]
+  exact hboundary
+
+/-- Full exact-spectrum clause of Suzuki v2, Theorem 1.5. -/
+theorem suzukiTaCharacteristic_eq_zero_iff_extensionEigenvalue
+    (a : SuzukiPositiveAperture) (theta : ℝ) (z : ℂ) :
+    suzukiTaCharacteristic a theta z = 0 ↔
+      SuzukiTaExtensionEigenvalue a theta z := by
+  constructor
+  · intro hz
+    have hreal := suzukiTaCharacteristic_zero_im_eq_zero a theta z hz
+    have hstar := star_eq_self_of_im_eq_zero hreal
+    refine ⟨suzukiTaCharacteristicEigenvector a theta z hz,
+      suzukiTaCharacteristicEigenvector_ne_zero a theta z hz, ?_⟩
+    exact (suzukiTa_characteristicZero_is_eigenvalue a theta z hz).trans
+      (congrArg (fun q : ℂ => q • suzukiTaSpectralVector a (star z)) hstar)
+  · exact suzukiTaCharacteristic_eq_zero_of_extensionEigenvalue a theta z
 
 end RHTower

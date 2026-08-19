@@ -94,6 +94,67 @@ theorem setIntegral_normSq_add_le {F G : ℝ → ℂ} (hF : Continuous F) (hG : 
     MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul] at hmono
   exact hmono
 
+/-- **The exceptional-set split over an arbitrary measurable outer set.**  The window version of
+`Sieve/ExceptionalSplitGen` is the case `S = Icc (-W) W`; §4 also needs it on the annulus, because
+the Route-T bound for the long prime blocks is only available away from the origin. -/
+theorem setIntegral_normSq_mul_split_exceptional_set {F G : ℝ → ℂ} (hF : Continuous F)
+    (hG : Continuous G) {S : Set ℝ} (hSm : MeasurableSet S) {W V Bf : ℝ}
+    (hSs : S ⊆ Set.Icc (-W) W) (hBf : ∀ w : ℝ, ‖F w‖ ≤ Bf) :
+    (∫ w in S, ‖F w‖ ^ 2 * ‖G w‖ ^ 2)
+      ≤ V ^ 2 * (∫ w in S, ‖G w‖ ^ 2)
+        + Bf ^ 2 * ∫ w in S ∩ {w : ℝ | V ≤ ‖F w‖}, ‖G w‖ ^ 2 := by
+  classical
+  set E : Set ℝ := {w : ℝ | V ≤ ‖F w‖} with hE
+  set f : ℝ → ℝ := fun w => ‖G w‖ ^ 2 with hf
+  set g : ℝ → ℝ := fun w => ‖F w‖ ^ 2 * ‖G w‖ ^ 2 with hg
+  have hcF : Continuous fun w : ℝ => ‖F w‖ := hF.norm
+  have hcf : Continuous f := (hG.norm).pow 2
+  have hcg : Continuous g := (hcF.pow 2).mul hcf
+  have hEmeas : MeasurableSet E := measurableSet_le measurable_const hcF.measurable
+  have hgS : IntegrableOn g S := (hcg.integrableOn_Icc (a := -W) (b := W)).mono_set hSs
+  have hfS : IntegrableOn (fun w => V ^ 2 * f w) S :=
+    (((hcf.const_mul (V ^ 2)).integrableOn_Icc (a := -W) (b := W))).mono_set hSs
+  have hbfS : IntegrableOn (fun w => Bf ^ 2 * f w) S :=
+    (((hcf.const_mul (Bf ^ 2)).integrableOn_Icc (a := -W) (b := W))).mono_set hSs
+  have hsplit : (∫ w in S ∩ E, g w) + (∫ w in S \ E, g w) = ∫ w in S, g w :=
+    MeasureTheory.integral_inter_add_sdiff hEmeas hgS
+  have hsplit2 : (∫ w in S ∩ E, V ^ 2 * f w) + (∫ w in S \ E, V ^ 2 * f w)
+      = ∫ w in S, V ^ 2 * f w :=
+    MeasureTheory.integral_inter_add_sdiff hEmeas hfS
+  have hbig : (∫ w in S ∩ E, g w) ≤ Bf ^ 2 * ∫ w in S ∩ E, f w := by
+    have hmeas : MeasurableSet (S ∩ E) := hSm.inter hEmeas
+    have hint : IntegrableOn g (S ∩ E) := hgS.mono_set Set.inter_subset_left
+    have hint2 : IntegrableOn (fun w => Bf ^ 2 * f w) (S ∩ E) :=
+      hbfS.mono_set Set.inter_subset_left
+    have hle : ∀ w ∈ S ∩ E, g w ≤ Bf ^ 2 * f w := by
+      intro w _
+      have h1 : ‖F w‖ ^ 2 ≤ Bf ^ 2 := pow_le_pow_left₀ (norm_nonneg _) (hBf w) 2
+      have h2n : (0 : ℝ) ≤ f w := by rw [hf]; positivity
+      calc g w = ‖F w‖ ^ 2 * f w := rfl
+        _ ≤ Bf ^ 2 * f w := by nlinarith
+    have hmono := MeasureTheory.setIntegral_mono_on hint hint2 hmeas hle
+    rwa [MeasureTheory.integral_const_mul] at hmono
+  have hsmall : (∫ w in S \ E, g w) ≤ ∫ w in S \ E, V ^ 2 * f w := by
+    have hmeas : MeasurableSet (S \ E) := hSm.diff hEmeas
+    have hint : IntegrableOn g (S \ E) := hgS.mono_set Set.sdiff_subset
+    have hint2 : IntegrableOn (fun w => V ^ 2 * f w) (S \ E) := hfS.mono_set Set.sdiff_subset
+    refine MeasureTheory.setIntegral_mono_on hint hint2 hmeas ?_
+    intro w hw
+    have hlt : ‖F w‖ < V := by
+      by_contra hcon
+      exact hw.2 (not_lt.1 hcon)
+    have h1 : ‖F w‖ ^ 2 ≤ V ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hlt.le 2
+    have h2n : (0 : ℝ) ≤ f w := by rw [hf]; positivity
+    calc g w = ‖F w‖ ^ 2 * f w := rfl
+      _ ≤ V ^ 2 * f w := by nlinarith
+  have hdrop : (0 : ℝ) ≤ ∫ w in S ∩ E, V ^ 2 * f w := by
+    refine MeasureTheory.setIntegral_nonneg (hSm.inter hEmeas) fun w _ => ?_
+    have hfn : (0 : ℝ) ≤ f w := by rw [hf]; positivity
+    nlinarith [sq_nonneg V]
+  have hVf : (∫ w in S, V ^ 2 * f w) = V ^ 2 * ∫ w in S, f w :=
+    MeasureTheory.integral_const_mul _ _
+  linarith [hsplit, hbig, hsmall, hdrop, hsplit2, hVf]
+
 end
 
 end RHTower.Sieve

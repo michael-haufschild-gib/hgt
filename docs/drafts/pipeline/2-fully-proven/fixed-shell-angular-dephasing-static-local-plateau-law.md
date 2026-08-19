@@ -1128,3 +1128,45 @@ The induction step's parameter matching: state the dense/residual maximally proj
 open endpoint-completeness condition in one parameter space and intersect, so that the hypotheses
 of `exists_chartQuadraticOrbit_ne_zero` (`hE`, `hgap`, `hMherm`, `hM`, `hbase`) are met at some
 point of every nonempty open set of the extended architecture.
+
+## Lean progress -- Theorem A now needs only Lemma A1's output (2026-08-19)
+
+Three further modules remove the chart, the admissible shift and the transition channel from the
+hypotheses, so that the extension step of Theorem A consumes exactly what Lemma A1 produces.  All
+new, umbrella-wired, axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/ExtensionStepQuadraticOrbit.lean`
+
+| Card item | Declaration |
+|---|---|
+| the split spectrum is simple off the old level differences | `injective_layerSplitEnergy` |
+| an admissible split shift exists -- the differences are a finite set | `exists_admissible_split_shift` |
+| **Theorem A at one extension step, with no chart assumed** | `exists_extensionChart_quadraticOrbit_ne_zero` |
+
+`formal/GaloisForLFunctions/HTGeometry/HermitianCoveringProbe.lean`
+
+| Card item | Declaration |
+|---|---|
+| the squared modulus of a real combination, as a real polynomial | `realProbeModulusForm`, `eval_realProbeModulusForm`, `realProbeModulusForm_ne_zero` |
+| **a real generic combination sees every ordered pair** | `exists_realProbeCombination_ne_zero` |
+| **one Hermitian probe for all ordered pairs** | `exists_hermitian_covering_endpoint_probe` |
+| the transition channel of the family in its own labelling | `endpointChannel`, `reducedTransition_conjTranspose` |
+| **it is Hermitian**, and every off-diagonal entry is nonzero | `isHermitian_endpointChannel`, `endpointChannel_ne_zero` |
+
+The existing `exists_covering_endpoint_probe` combines the per-pair Hermitian probes with *complex*
+coefficients, which destroys Hermiticity; Hermiticity is exactly what makes the induced channel
+Hermitian and its residual energy `Q_V = 2∑|M_{ab}|²` strictly positive.  The real genericity is
+the same polynomial argument run over `ℝ`: the squared modulus of a real combination of complex
+numbers is a real polynomial in the coefficients, nonzero as soon as one of the numbers is, and a
+finite product of nonzero real polynomials is nonzero.
+
+`formal/GaloisForLFunctions/HTGeometry/EndpointCompleteExtensionOrbit.lean`
+
+| Card item | Declaration |
+|---|---|
+| **Theorem A at one extension step, from Lemma A1's output alone** | `exists_endpointComplete_extensionChart_quadraticOrbit_ne_zero` |
+
+Its hypotheses are now exactly the card's: `3 ≤ card`, a simple old spectrum with distinct ordered
+gaps, and an endpoint-complete eigenvector family.  Its conclusion is `(14)`, the symmetrised
+labeling obstruction, nonzero somewhere on the extension chart.  Nothing about charts, shifts or
+channels is assumed any more -- all three are constructed.
