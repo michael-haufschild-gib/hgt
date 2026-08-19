@@ -5207,3 +5207,45 @@ WidthBound}` for `ζ'/ζ = O(log|t|)` on the zero-free region, `RHTower/ZetaThre
 three-four-one inequality, and `RHTower/ZetaDerivNearOneLineBound`.
 
 **This is the next brick**: `‖ζ(σ+it)‖ ≥ c/log|t|` for `1 ≤ σ ≤ 5/4`, `|t| ≥ t₀`.
+
+### Milestone C, brick 60 — the gap is CLOSED: the quarter-loss distance bound (2026-08-19)
+
+`Sieve/PrimeCosineSumSharp` (axiom-clean, sorry-free, wired).  Brick 59 asked for the one-line `ζ`
+lower-bound exponent `θ < 1 + κ = 1.9`; the answer is that **`θ` is not the right parameter** — one
+should not slide to `σ = 1` at all.  Applying the three-four-one inequality *at the standard
+abscissa* `σ = 1 + 1/log z`, which is exactly where the prime-sum bridge already evaluates, gives
+
+```text
+   1 ≤ ‖ζ(1+x)‖³·‖ζ(1+x+it)‖⁴·‖ζ(1+x+2it)‖ ≤ (1/x + 2)³ · ‖ζ(1+x+it)‖⁴ · (log(2|t|) + 5) ,
+```
+
+so with `x = 1/log z`
+
+```text
+   log ‖ζ(1+x+it)‖  ≥  −(3/4)·log(log z + 2)  −  (1/4)·log(log 2|t| + 5) .
+```
+
+The three inputs are all corpus theorems: `Sieve/ZetaThreeFourOne.norm_zeta_product_ge_one`,
+`Sieve/ZetaThreeFourOne.abs_riemannZeta_one_add_le` (`‖ζ(1+x)‖ ≤ 1/x + 2`), and
+`RHTower/ZetaVerticalLineBound.norm_riemannZeta_le_log_add` (`‖ζ(s)‖ ≤ log|Im s| + 5`).
+
+| new theorem | statement |
+|-|-|
+| `log_norm_riemannZeta_ge_three_four_one` | `−(3/4)log(1/x+2) − (1/4)log(log 2\|t\|+5) ≤ log‖ζ((1+x)+it)‖`, for `0 < x ≤ 1`, `\|t\| ≥ 2` |
+| `exists_sum_cos_div_prime_ge_sharp` | `∑_{p≤z} cos(t log p)/p ≥ −(3/4)log(log z+2) − (1/4)log(log 2\|t\|+5) − C` |
+| **`exists_mulDistSqPair_ge_quarter`** | `D(f, χ_t; p ≤ z)² ≥ (1/4)·log log z − (1/4)·log log\|t\| − C` for every `f` with `f(p) = −1`, **with no condition linking `z` and `t`** |
+
+**This strictly supersedes the corpus's two existing pretentious bounds**:
+`Sieve/MoebiusUniformFrequency.exists_mulDistSqPair_ge_uniform` loses `7 log log T` and requires
+`log z ≥ (log T)^9/A`; `RHTower/MoebiusPretentiousGap.exists_primeCosPlusSum_ge_logLog` loses
+`11 log log|τ|`.  The new bound loses `(1/4)·log log|t|` and requires nothing.
+
+**Consequence for the range of frequencies.**  `D² ≥ (1/4)(log log z − log log|t|) − C` is a positive
+proportion of `log log z` for every `|t| ≤ exp((log z)^{1−c})`, and the Granville–Soundararajan tail
+route covers `log|t| ≥ (log z)^{1/(1+κ)} = (log z)^{0.5263…}`.  Taking `c = 0.4`, the two ranges
+overlap: **MR's Lemma 2 for `μ` now holds for the full range `1 ≤ |t| ≤ z^A`**, at `κ = 9/10`, with
+no gap.  In fact route (a) alone covers everything except `log|t| ≥ (log z)^{1−c}`, and for those
+frequencies route (b) applies with room to spare.
+
+Remaining for MR Lemma 2 as a single statement: the tail route (b) in Lean — dyadic Abel summation
+of `Sieve/PrimeBlockTwistBound.exists_norm_primeBlockPoly_routeT_le` over `(exp((log z)^{1−ε}), z]`.

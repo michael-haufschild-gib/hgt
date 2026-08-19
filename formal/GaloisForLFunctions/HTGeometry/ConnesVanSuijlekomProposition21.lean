@@ -28,6 +28,56 @@ def connesVanSuijlekomP21Ideal {N : ℕ} (a : Fin (N + 1) → ℝ) :
     Ideal (LaurentPolynomial ℂ) :=
   Ideal.span {connesVanSuijlekomP21Generator a}
 
+/-- Polynomial presentation of the source Laurent generator. -/
+def connesVanSuijlekomP21Polynomial {N : ℕ} (a : Fin (N + 1) → ℝ) : Polynomial ℂ :=
+  Polynomial.ofFn (N + 1) fun j => (a j : ℂ)
+
+/-- The polynomial presentation maps to the literal source Laurent generator. -/
+theorem connesVanSuijlekomP21_toLaurent_polynomial
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    Polynomial.toLaurent (connesVanSuijlekomP21Polynomial a) =
+      connesVanSuijlekomP21Generator a := by
+  rw [connesVanSuijlekomP21Polynomial, Polynomial.ofFn_eq_sum_monomial, map_sum]
+  simp_rw [Polynomial.toLaurent_C_mul_T]
+  rfl
+
+/-- Coefficients of the polynomial presentation are the source vector entries. -/
+theorem connesVanSuijlekomP21_polynomial_coeff
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (i : Fin (N + 1)) :
+    (connesVanSuijlekomP21Polynomial a).coeff i = (a i : ℂ) := by
+  rw [connesVanSuijlekomP21Polynomial]
+  exact Polynomial.ofFn_coeff_eq_val_of_lt _ i.isLt
+
+/-- A nonzero final source coefficient gives the exact polynomial degree. -/
+theorem connesVanSuijlekomP21_polynomial_natDegree
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (hN : a (Fin.last N) ≠ 0) :
+    (connesVanSuijlekomP21Polynomial a).natDegree = N := by
+  apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+  · change (Polynomial.ofFn (N + 1) fun j => (a j : ℂ)).natDegree ≤ N
+    exact Nat.le_of_lt_succ
+      (Polynomial.ofFn_natDegree_lt (Nat.succ_le_succ (Nat.zero_le N)) _)
+  · have hcoeff := connesVanSuijlekomP21_polynomial_coeff a (Fin.last N)
+    have hcoeffN : (connesVanSuijlekomP21Polynomial a).coeff N =
+        (a (Fin.last N) : ℂ) := by
+      simpa using hcoeff
+    rw [hcoeffN]
+    exact_mod_cast hN
+
+/-- Normalizing by the nonzero final coefficient gives the monic polynomial
+whose quotient has the desired `N`-element power basis. -/
+theorem connesVanSuijlekomP21_polynomial_monic_normalized
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (hN : a (Fin.last N) ≠ 0) :
+    (Polynomial.C ((a (Fin.last N) : ℂ)⁻¹) *
+      connesVanSuijlekomP21Polynomial a).Monic := by
+  apply Polynomial.monic_C_mul_of_mul_leadingCoeff_eq_one
+  rw [Polynomial.leadingCoeff, connesVanSuijlekomP21_polynomial_natDegree a hN]
+  have hcoeff := connesVanSuijlekomP21_polynomial_coeff a (Fin.last N)
+  have hcoeffN : (connesVanSuijlekomP21Polynomial a).coeff N =
+      (a (Fin.last N) : ℂ) := by
+    simpa using hcoeff
+  rw [hcoeffN]
+  field_simp
+
 /-- The canonical involution of the source Laurent algebra: conjugate
 coefficients and reverse the Laurent exponent. -/
 def connesVanSuijlekomP21Star : LaurentPolynomial ℂ →+* LaurentPolynomial ℂ :=
@@ -375,6 +425,26 @@ theorem connesVanSuijlekomP21_nonzero_kernel_head_ne_zero
     simpa [ha0] using hcoeff (0 : Fin (N + 1))
   have hunit := connesVanSuijlekom_proposition_2_2 c hG hRank a hker hroot
   norm_num at hunit
+
+/-- The corrected source hypotheses also force the final coefficient to be
+nonzero, completing the exact degree data for the Laurent quotient. -/
+theorem connesVanSuijlekomP21_nonzero_kernel_tail_ne_zero
+    {N : ℕ} (c : ℕ → ℝ)
+    (hG : (connesVanSuijlekomRealToeplitz N c).PosSemidef)
+    (hRank : (connesVanSuijlekomRealToeplitz N c).rank = N)
+    (a : Fin (N + 1) → ℝ)
+    (hker : connesVanSuijlekomRealToeplitz N c *ᵥ (fun j => (a j : ℂ)) = 0)
+    (ha : a ≠ 0) :
+    a (Fin.last N) ≠ 0 := by
+  obtain ⟨ε, _, hrev⟩ :=
+    connesVanSuijlekomP21_reverse_vector_smul c hRank a hker ha
+  intro hlast
+  have hcoeff := congrFun hrev (Fin.last N)
+  have hhead : a 0 = 0 := by
+    apply Complex.ofReal_injective
+    change (a (Fin.last N).rev : ℂ) = ε * (a (Fin.last N) : ℂ) at hcoeff
+    simpa [hlast] using hcoeff
+  exact connesVanSuijlekomP21_nonzero_kernel_head_ne_zero c hG hRank a hker ha hhead
 
 end
 

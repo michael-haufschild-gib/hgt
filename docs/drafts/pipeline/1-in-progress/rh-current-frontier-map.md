@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 19 August 2026, commit
-`eea714302f9b33e175c1d507345b96d821da75d4`, plus declaration-index review of current Lean
+`9bbb2cc3f8969443df351fdc91fd2a6fa5e9d51f`, plus declaration-index review of current Lean
 working-tree changes. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified as corpus source, not claimed build-audited in
@@ -53,18 +53,22 @@ final open producer and prove neither RH nor its negation.
 | HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Absolute subquantum estimate or source-first prime-summability for the literal paired Gamma-six determinant current. |
 | SV2 | literal Suzuki energy space -> paired self-adjoint characteristics -> bounded projective normal family -> global Xi projective target -> corrected two-chart spherical limit -> RH | Identify the canonical cofinal subsequential limit with the divisor-faithful global target, then extend convergence over the full finite chart and reciprocal pole chart. |
 
-Latest corpus changes strengthen SV2's literal paired mechanism: reflection exchanges its two
-deficiency channels, both channels come from one covariance--resolvent Fourier carrier, and actual
-Suzuki covariance realizes the source-faithful coalescing tangent with the correct nonnegative
-sign. They narrow `E`'s long-range analytic budget and `Q`'s Cauchy completeness, and complete the
-legacy degree-eight field's Galois identification as `Q8`. They do not close any first producer.
-No additional live route or candidate is promoted at this cutoff. The new Gamma--Meixner Landau
-criterion is an exact global RH receiver built from the Xi divisor, while prime-Laplace jets,
-prime-support cycle Hodge theory, and prime-square Fourier strata are genuine non-classical
-source/pre-route mechanisms whose completed Xi handoffs do not yet exist. In particular, the
-half-unit Mertens tower is exactly RH rather than a producer; high-height reciprocal-square Xi tails
-are closed but do not orient O's true ground; new joint-omega sieve budgets do not define E's fixed
-relation or prove T's short Möbius block estimate.
+Latest corpus changes do not alter route count. They materially narrow SEC: the increasing prime
+ray is already a canonical source-predeclared graph, and eventual compactness of its literal
+adjacent-prime seam coboundaries forces every Xi divisor onto the critical line. SEC's first open
+producer is now source-derived eventual Calkin compactness, not graph construction or a separate
+finite-variation theorem. Prime-square reflection has also advanced from a local detector to a
+cofinal scale law: nonzero radial drift has exact logarithmic type `|c|` and its product growth
+overwhelms the polylogarithmic reciprocal Wold boundary volume. It still has no coefficient-faithful
+Xi-divisor occurrence, so remains a pre-route rather than a candidate. The Gamma--Meixner receiver
+now has exact completely-monotone and radial-Hankel extension criteria, each equivalent to RH, but
+its coefficients remain divisor-built. Fisher/Born geometry is now formally terminal as a scalar
+phase selector: prescribed off-line zero data can coexist with identical Born probabilities and
+Fisher variances. E gains a sharper unconditional prime-frequency distance range, not its missing
+fixed relation. The source-authenticated Serre field is now Galois with group `Q8` and carries the
+literal two-dimensional symplectic Artin representation; only global epsilon-factor computation
+remains, and finite real descent stays terminal. No new first producer, live route, or candidate is
+present.
 
 Many exact source criteria below are formal equivalences with RH. Rewriting RH as positivity,
 boundedness, passivity, flatness, or collision absence advances nothing unless corpus also supplies an
@@ -252,7 +256,17 @@ carry these controls through the remaining analytic decomposition
 (`Sieve/GeomBlockCardBound.lean`, `Sieve/LadderDefectOnParts.lean`,
 `Sieve/Section4DiscRel.lean`, `Sieve/Section4DiscSum.lean`,
 `Sieve/Section4AnnCofactor.lean`, `Sieve/Section4AnnSum.lean`). None chooses adjacency or supplies
-the co-moving parity flux.
+the co-moving parity flux. `Sieve/PrimeCosineSumSharp.lean` separately removes the old
+zero-free-strip coupling between frequency and prime cutoff: at the standard abscissa, the
+three-four-one inequality gives a prime-cosine lower bound with only one-quarter frequency loss,
+and hence a Möbius multiplicative-distance lower bound
+
+```text
+(log log z - log log |t|)/4 - C
+```
+
+with no condition linking `z` and `t`. This enlarges the unconditional phase-separation range but
+still supplies neither relation adjacency nor Hall/co-moving flux.
 
 **Open core.** Construct/extract one exact relation on ordinary squarefree integers directly from
 factorization data represented by Ramaré incidence, fixed independently of observed Möbius
@@ -886,13 +900,20 @@ finite-boundary one-ended prime graph forces `Re(rho)=1/2`. On the increasing pr
 equality of consecutive seam values already suffices. This is strictly weaker in form than demanding
 all prime seams equal, whose global Xi version is already exactly RH.
 
-**Open core.** Construct one graph from completed arithmetic source data, independently of Xi
-divisors, prove it is preconnected and finite-boundary one-ended, and prove the canonical seam has
-finite edge variation on that same graph for every Xi zero copy. The prime-ray specialization asks
-for eventual consecutive equality and is a sharp endpoint, not yet a producer. No Lean theorem
-derives either variation law from prime--Gamma coefficients. SEC is therefore a genuine new
-infinite nonphysical candidate, but not live; arbitrary choice of a graph after inspecting a seam
-would be circular.
+The operator-valued seam formulation removes both the graph-choice and exact-equality bottlenecks.
+For each edge, the canonical coboundary corner is seam jump times a positive two-prime Euler Gram
+entry. Its essential norm has a quantitative lower bound by the Euler-weighted seam jump, so a
+compact edge coboundary forces exact endpoint coherence. On any one-ended graph, compactness on all
+but finitely many edges forces the critical line; on the canonical increasing prime ray, eventual
+compactness of adjacent-prime coboundaries already suffices
+(`XiPrimeSeamSparseEdgeCalkin.lean`).
+
+**Open core.** Prove from the completed prime--Gamma source, before inspecting or selecting a Xi
+divisor, eventual compactness of the literal adjacent-prime seam coboundary operators along the
+increasing prime ray. Graph construction, one-endedness, finite seam-value hypotheses, and an
+independent finite-variation estimate are no longer open in this specialization. Compactness is the
+entire missing producer; no Lean theorem derives it from source coefficients. SEC remains a genuine
+infinite nonphysical candidate, not live.
 
 ### BPC — Bernstein--Pringsheim collar
 
@@ -930,12 +951,15 @@ continuation producer is absent.
 
 - `XiGlobalMeixnerShapeLandau.lean` constructs a nonnegative Gamma--Meixner shape trace and proves
   that holomorphic continuation of its safe germ to `Re(z)>0` is equivalent to RH. Its safe real
-  trace is completely monotone with positive Hankel moment forms
-  (`XiGammaShapeCompleteMonotonicity.lean`, `HTGeometry/CompletelyMonotoneTower.lean`). This is not
-  a new producer: every coefficient is `xiSeamDivisorCoefficient`, hence already formed from the
-  complete Xi divisor. A new route would first need an equal trace constructed from pre-divisor
-  prime--Gamma data in its safe region and a source continuation theorem not equivalent to the
-  desired zero exclusion.
+  trace is completely monotone with positive Hankel moment forms. The extension problem is now
+  exact in two forms: existence of a finite completely-monotone extension to every positive shape,
+  and existence of an all-positive-shape radial Hankel-PSD extension, are each equivalent to RH
+  (`XiGammaShapeCompleteMonotonicity.lean`, `XiGammaShapeCompletelyMonotoneExtension.lean`,
+  `HTGeometry/CompletelyMonotoneTower.lean`). Generic Dirichlet/Bernstein and atomic Hausdorff
+  theorems close the safe-germ convergence and moment-uniqueness engine. This is not a new producer:
+  every trace coefficient is `xiSeamDivisorCoefficient`, hence already formed from the complete Xi
+  divisor. A new route still needs an equal pre-divisor prime--Gamma trace and an independent source
+  extension theorem.
 - `PrimeLaplaceGammaJetIncidence.lean` supplies a genuine all-prime, nonphysical source interface:
   every finite raw derivative clock is jointly faithful, each finite jet observation is
   Hilbert--Schmidt, prime translation has an exact Taylor-descent anomaly equal to the omitted
@@ -954,9 +978,15 @@ continuation producer is absent.
   supplying their missing Xi handoff.
 - `PrimeSquareFourierStrata.lean` computes the exact unit, valuation-one, and zero Fourier strata on
   `ZMod(p^2)` and proves the critically normalized reflected coefficient is at least one, with
-  equality exactly at zero radial drift. This is a local paired reflection detector potentially
-  useful to HC/PPM/IRK; corpus has no global source occurrence or divisor comparison, so it is not a
-  route.
+  equality exactly at zero radial drift. `PrimeSquareDeformedReflectionType.lean` assembles the
+  local coefficients: `log beta_p(c)/log p -> |c|`, and the prime product has normalized logarithmic
+  type `|c|`. `PrimeSquareSuperessentialScale.lean` proves the reciprocal Wold boundary volume is
+  only polylogarithmic and negligible against that product exponent for every nonzero admissible
+  drift. Thus an off-neutral drift creates a cofinal superessential signal, not merely a local
+  inequality. Corpus still has no theorem identifying `c` coefficient-faithfully with
+  `Re(rho)-1/2` on a completed Xi fibre, nor a completed source comparison limiting the same product
+  to Wold/Gamma scale. Until that bridge exists this remains a strong pre-route adjacent to
+  HC/PPM/IRK/G, not an eleventh candidate.
 - `XiUnitEulerPoleAffineSection.lean` shows translated decompletion has residue `1-2c`, so the unit
   Euler residue selects exactly the untranslated affine fibre; nonnegativity of its translated
   Hermitian Bezoutian forces that selected fibre onto the critical line. This is a sharp C1/Q/G
@@ -976,13 +1006,30 @@ continuation producer is absent.
   concrete bounded outer carrier: a residual family has maximally free parabolic orbit while every
   finite Blaschke defect remains possible with the same power-field data. Hardy cyclicity or
   maximal differential-field genericity alone is therefore not a faithful Xi-divisor producer.
+- `ZetaLineFirstMoment.lean` currently formalizes the exact oscillatory Dirichlet-polynomial
+  integral and quantitative Euler--Maclaurin tail and pole-integral bounds on the critical line.
+  The advertised dyadic first-moment asymptotic and resulting second-moment lower bound are not yet
+  assembled as capstone declarations. This is partial classical Hardy infrastructure and changes
+  no route status.
 - The Bessel/difference-Galois lane is now sharply delimited. Modified-Bessel order recurrence has
-  a meromorphic two-solution system, but its order derivative is not a rational Bessel combination
-  and no rational compatible derivation exists, including the physical specialization `c=2/s`
+  a meromorphic two-solution system, and every integer order shift lies in the rational span of the
+  first two solutions. Its order derivative nevertheless lies outside the rational span of every
+  finite shift family, and no rational compatible derivation exists, including the physical
+  specialization `c=2/s`
   (`HTGeometry/BesselOrderMeromorphicIsomonodromy.lean`,
-  `HTGeometry/BesselOrderIsomonodromyObstruction.lean`). A viable parameterized difference-Galois
-  successor must use a non-rational or singular differential structure and still construct a
-  literal prime--Gamma occurrence plus Xi reader.
+  `HTGeometry/BesselOrderShiftSpan.lean`, `HTGeometry/BesselOrderIsomonodromyObstruction.lean`).
+  Enlarging finite shift span cannot recover the missing differential direction. A viable
+  parameterized difference-Galois successor must use a non-rational or singular differential
+  structure and still construct a literal prime--Gamma occurrence plus Xi reader.
+- `PrimeFisherSuperspaceBlindness.lean` closes scalar phase geometry as a divisor selector. For
+  every unimodular completely multiplicative phase, normalized Dirichlet coherent-state Born laws,
+  expectations, and Fisher variance are the same phase-free `n^(-2 sigma)/zeta(2 sigma)` data. For
+  every marked point in the open critical strip, Lean constructs phase coefficients whose scalar
+  meromorphic Euler projection has a prescribed simple zero there while those Hilbert/Born/Fisher
+  data remain unchanged. The massless two-dimensional conformal equation is likewise independent
+  of conformal scale. This terminalizes Fisher/Born/conformal scalar superspace variants of G/MSC/AF;
+  a survivor must retain a phase-sensitive unbounded/distributional projection or a genuinely
+  mixed channel.
 - Generic shell/Noether, Schatten, and Stieltjes modules close reusable adapters, not RH source
   laws. Finite spectral actions are algebraic over symmetric shell coordinates, critical loci lie
   in explicit polynomial hypersurfaces, and source sublevel bounds follow from nonzero shell

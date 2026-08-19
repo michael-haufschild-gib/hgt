@@ -255,3 +255,27 @@ Stage-2 prime folder: 22 cards remaining.
 Note for the remaining analytic cards: Mertens' second theorem **with its constant** is available
 (`RHTower.tendsto_primeRecipSum_sub_logLog`, `RHTower.mertensSecondConstant`), as is Mertens' first
 (`RHTower.Mertens.mertens_first_prime`) and the PNT form `tendsto_sum_primesBelow_log_div`.
+
+## Next steps (searched, not yet built)
+
+Corpus search (`scripts/formal_tools.py research`) located these assets for the remaining cards, so
+none of them should be rebuilt:
+
+- PNT for `π` with the `exp(-c√log x)` error: `RHTower.Sieve.primeCounting_sub_logIntegral_isBigO`.
+- Abel partial summation over prime windows: `RHTower.sum_primeWindow_eq_sub_sub_integral`,
+  `RHTower.primeInvWindowSum_eq`, `RHTower.deningerAbelSummation`.
+- Oscillatory integration by parts: `HTGeometry.norm_integral_oscillatory_le`,
+  `PNTPlus.Fourier.norm_oscillatory_integral_le_integral_deriv_div`.
+- Abelian limit of the prime zeta: `RHTower.tendsto_primeZeta_add_log_abelian`.
+- Canonical Euler logarithm of zeta and its Dirichlet expansion:
+  `RHTower.criticalPrimeTailEulerLogVerticalTrace_eq_canonicalEulerLogZeta`.
+- Quantitative nonvanishing of `ζ` on the one line: `RHTower.Sieve.exists_pos_lower_bound_zeta_one_line`,
+  `RHTower.Sieve.zetaResidueUnit_ne_zero_on_one_line`.
+
+Planned order of work:
+1. `∑_p (1 − cos(λ log p))/p = ∞` for `λ ≠ 0` by the cheap Abelian route (prime-zeta Abelian limit
+   + `ζ(1+iλ) ≠ 0`), which is the input the Poisson-screen and superspace cards actually use.
+2. Convergence of `∑_p p^{-1-iλ}` by Abel summation against
+   `primeCounting_sub_logIntegral_isBigO` (needed for the sharp constants in the diagonal
+   singular-trace and superspace cards).
+3. `χ_N = ∑_{p≤N}(log p)²/p ∼ (log N)²/2` from Mertens' first theorem (superspace card §3).

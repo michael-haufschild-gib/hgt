@@ -8,13 +8,13 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 | # | Card | State | Lean modules |
 |---|---|---|---|
 | 1 | xi-determinant-logarithmic-singular-value-law | open | |
-| 2 | xi-gamma-shape-completely-monotone-rh | partial: complete monotonicity, Hankel positivity, exp counterexample done; CM-extension⇒RH still needs the Hausdorff/Bernstein consumer | RHTower/XiGammaShapeCompleteMonotonicity |
+| 2 | xi-gamma-shape-completely-monotone-rh | Lean done (scalar and kernel equivalence, overclaim exclusion) | HTGeometry/CompletelyMonotoneTower, HTGeometry/AtomicHausdorffSource, HTGeometry/GeneralDirichletCompletelyMonotone, RHTower/XiGammaShapeCompleteMonotonicity, RHTower/XiGammaShapeCompletelyMonotoneExtension |
 | 3 | xi-global-meixner-shape-landau-rh | Lean done | HTGeometry/GeneralDirichletLandau, RHTower/XiGlobalMeixnerShapeLandau |
 | 4 | xi-hedenmalm-local-algebra-rank-census | Lean done | HTGeometry/PolynomialQuotientMultiplicationRank, HTGeometry/GcdDerivativeDistinctRoots, HTGeometry/HermiteBiehlerPairRankCensus, HTGeometry/FiniteMomentDivisorReconstruction, RHTower/XiHedenmalmLocalAlgebraRankCensus |
 | 5 | xi-orientation-euler-safe-paired-cauchy-completeness | partial: Cauchy-transform holomorphy, vertical decay, quadrant completeness (targets 1-3) done; paired value kernel (14)-(15) and countable criterion (19) remain | RHTower/XiCauchyTransformCompleteness, RHTower/XiEulerSafePairedCompleteness |
 | 6 | xi-outer-euler-modulus-first-prime-seam-antialignment | Lean done | RHTower/XiOuterEulerModulusPrimeSeamAntialignment |
 | 7 | xi-positive-paired-real-loewner-seam-log-weld | Lean done (targets 1-5) | RHTower/XiPositivePairedRealLoewnerSeam |
-| 8 | xi-prime-seam-one-ended-cofinal-edge-collapse | Lean done (tensor essential-norm gate belongs to parent card) | HTGeometry/ArbitraryLabelEndReconstruction, RHTower/XiPrimeSeamOneEndedCollapse |
+| 8 | xi-prime-seam-one-ended-cofinal-edge-collapse | Lean done (including the sparse-edge Calkin chain (7)-(9)) | HTGeometry/ArbitraryLabelEndReconstruction, RHTower/XiPrimeSeamOneEndedCollapse, RHTower/XiPrimeSeamSparseEdgeCalkin |
 | 9 | xi-radial-jensen-schur-capacity-rigidity | Lean done | HTGeometry/SchwarzPickEstimate, RHTower/XiRadialJensenSchurCapacity |
 | 10 | xi-reciprocal-translation-prime-seam-norm-law | Lean done | RHTower/XiReciprocalTranslationSeamNormLaw |
 | 11 | xi-shift-loewner-prime-generator-law | open | |
@@ -25,15 +25,13 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 
 ## Precise plan for each remaining item
 
-1. **Card 2 converse** (`CM extension ⇒ RH`).  Route through the corpus Hausdorff moment theorem,
-   not through Bernstein.  Steps: (i) a completely monotone function on `(0,∞)` restricts to a
-   `HausdorffCompletelyMonotone` sequence `c_n = F(x₀ + n h)` — proved by induction on the order
-   using the mean value theorem on `(-1)^j F^{(j)}`, which is antitone; (ii) Hausdorff gives a
-   finite source `μ` on `[0,1]` with `∫ t^n dμ = c_n`; (iii) for `n ≥ N` with `(N+1)h > 1` the same
-   numbers are `Σ_p A_p x_p^{n+1}` with `x_p = exp(-h λ_p) ∈ (0,1)`; (iv) moment uniqueness on
-   `[0,1]` identifies `t^N dμ` with the atomic measure `Σ_p A_p x_p^{N+1} δ_{x_p}`; (v) integrating
-   `t^{-N}` gives `Σ_p A_p x_p = μ((0,1]) < ∞`, i.e. convergence at the shape `h`; (vi) combine with
-   the off-line divergence of card 3 at `h = δ/2`.
+1. **Card 2 converse** — DONE.  The route was Hausdorff, not Bernstein: sampling the completely
+   monotone extension on `θ₀ + n` gives a Hausdorff completely monotone sequence, hence a finite
+   source `μ` on `[0,1]`; the tilt `y^N dμ` has exactly the moments of the atomic measure
+   `Σ_p B_p x_p^N δ_{x_p}` with `x_p = exp(-λ_p)`, `B_p = A_p exp(-θ₀ λ_p)`; uniqueness of the
+   Hausdorff source identifies the two, the atom of `x_p` is `B_p`, and finiteness of `μ` bounds
+   `Σ_p B_p`.  Combined with card 3's off-line divergence this gives the equivalence in both scalar
+   and kernel form.
 2. **Card 5 packaging**.  (i) the exact absolute-Euler paired kernel `K_pair` and the identity
    `xiWeilHilbertQuadratic (Σ r_j P_{w_j}) = Σ r_j r_k K_pair (w_j, w_k)`, from
    `xiWeilPolarization_cauchy_eq_relativeResolvent_dividedDifference`; (ii) the closure statement:

@@ -10673,3 +10673,4 @@ import GaloisForLFunctions.RHTower.PrimeFisherSuperspaceBlindness
 import GaloisForLFunctions.RHTower.XiGammaShapeCompletelyMonotoneExtension
 import GaloisForLFunctions.RHTower.PrimeSquareSuperessentialScale
 import GaloisForLFunctions.RHTower.XiPrimeSeamSparseEdgeCalkin
+import GaloisForLFunctions.RHTower.Sieve.PrimeCosineSumSharp
