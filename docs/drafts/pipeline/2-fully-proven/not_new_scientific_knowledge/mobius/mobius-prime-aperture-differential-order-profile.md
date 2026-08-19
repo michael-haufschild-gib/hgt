@@ -259,3 +259,59 @@ would not certify the critical profile or order law.  No Lean file is added at t
 - [ ] strong critical transfer
 - [ ] four-unit energy bound
 - [ ] RH
+
+## Lean formalization (complete, unconditional)
+
+Every equation this card proves is machine-checked with no added axioms.
+
+**Equation (4), the finite-prime retained mass** —
+`formal/GaloisForLFunctions/RHTower/MobiusPrimeApertureRetainedMass.lean` and
+`.../MobiusPrimeApertureCriticalProfile.lean`.
+`prod_primesBelow_eq_tsum_smoothNumbers`, `hasProd_squarefreeEuler` and
+`tsum_log_one_add_prime_rpow` give the squarefree Euler product and its logarithm;
+`criticalRetainedMass_eq` identifies the critical retained mass with the finite Euler aperture
+divided by the squarefree partition function, and `log_squarefreeMobiusTotal_split` is the
+underlying finite-plus-tail splitting.
+
+**Equation (8), the critical prime-aperture theorem** —
+`.../MobiusPrimeApertureCriticalProfile.lean`.  The proof replaces the PNT-with-uniformity step of
+the paper argument by an exact interchange plus Mertens' second theorem:
+
+- `apertureTailSum_eq_integral` — the elementary identity `p^{-2ω} = ∫_{2ω log p}^∞ e^{-u} du`
+  and Tonelli turn `∑_{p > N_ω} p^{-1-2ω}` into `∫_c^∞ e^{-u}·(∑_{N_ω < p ≤ e^{u/(2ω)}} 1/p) du`.
+- `apertureWindow_eq`, `tendsto_apertureWindow`, `eventually_apertureWindow_le` — Mertens' second
+  theorem in the real variable evaluates the window as `log(u/c)` in the limit, with a uniform
+  `log(u/c) + 2` bound.
+- `tendsto_apertureTailSum` — dominated convergence gives
+  `∑_{p > N_ω} p^{-1-2ω} → ∫_c^∞ e^{-u} log(u/c) du = E₁(c)`.
+- `sub_log_one_add_le_sq`, `apertureTailSum_sub_logSum_le`, `tendsto_apertureLogSum` — the
+  quadratic remainder `t − log(1+t) ≤ t²` is summably small above the cutoff, so the Euler
+  logarithm has the same profile.
+- `tendsto_criticalRetainedMass` — **`M_ω(N_ω) → exp(−E₁(c))`**.
+
+**Equations (15)--(17), the quantile law** —
+`.../ExponentialIntegralE1Quantile.lean` and `.../MobiusPrimeApertureQuantile.lean`.
+`expIntegralOne_strictAntiOn`, `continuousOn_expIntegralOne` (through an explicit `1/δ` Lipschitz
+bound), `tendsto_expIntegralOne_nhdsGT` and `tendsto_expIntegralOne_atTop` make
+`Q(c) = exp(−E₁(c))` a continuous strictly increasing bijection onto `(0,1)`
+(`retentionQuantile_strictMonoOn`, `existsUnique_retentionQuantile`), and
+`exists_criticalCutoff_retaining` produces the unique scaled aperture `c_q`.
+
+**Equation (18), the full-mass criterion** — `.../MobiusPrimeApertureQuantile.lean`.
+`criticalRetainedMass_mono` and `criticalRetainedMass_le_one` give monotonicity in the scaled
+aperture; `tendsto_criticalRetainedMass_one_of_atTop` and
+`tendsto_atTop_of_criticalRetainedMass_one` prove both directions of
+`M_ω(N_ω) → 1 ⟺ 2ω log N_ω → ∞`.
+
+**Equations (21) and (23), the differential-order cost** —
+`.../MobiusPrimeApertureDifferentialOrder.lean`.
+`tendsto_primeCounting_ratio` extracts `π(x) ~ x/log x` from the corpus prime number theorem;
+`tendsto_criticalAperture_ratio` gives `π(N_ω) ~ (2ω/c)·exp(c/(2ω))`, and
+`tendsto_omega_mul_log_aperture_atTop` proves `ω·log(aperture) → ∞` under the full-mass
+criterion — the exact form of the no-go for `exp(O(1/ω))` families with bounded exponent constant.
+
+The exactness half of `(20)` (that the aperture *equals* `π(N)`, not merely dominates it) is the
+imported finite-Euler aperture law; the corpus already owns its lower-bound half as
+`HTGeometry.primeCounting_le_of_realAutonomousAnnihilator_of_primeLog_mem`.
+
+- [x] Lean: equations (4), (8), (15)--(18), (21), (23) formalized and unconditional.

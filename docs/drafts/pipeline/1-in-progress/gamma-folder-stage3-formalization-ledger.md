@@ -215,3 +215,40 @@ All of these live in the plain `GaloisForLFunctions` namespace (not `.HTGeometry
   New `MultipleGammaCyclotomicDeletionMultiplicity.lean` closes C8 with
   `cyclotomicDeletionMultiplicity`.  **6 of 8 gamma cards are at stage 3.**
   Remaining: C5 (`gamma-module-construction`) and C6 (`gamma-tail-law-shifted-square-tests`).
+
+## C6 CLOSED (tail law) — promoted to stage 3
+
+`formal/GaloisForLFunctions/RHTower/XiCentralTailLaw.lean`, wired into `GaloisForLFunctions.RHTower`,
+axiom-clean. Capstones `xi_central_tail_law`, `xi_central_tail_law_tsum`, four tower specialisations.
+Mechanism: Jensen disc mass `O(R log R)` + dyadic level `Nat.log 2 ⌊|Im ρ|/G⌋₊` + geometric/linear
+geometric partial-sum caps. Only the *sharpness* remark is left unformalized (needs a
+Riemann-von Mangoldt lower asymptotic, which the corpus does not own and the card itself cites).
+
+## C5 IN PROGRESS — `gamma-module-construction`
+
+Remaining Lean targets from the card: (a) the rank-one `(σ∞, ∂s)` module packaging, (b) the Lerch
+import `ζ_H'(0,a) = log Γ(a) − ½ log(2π)`, equivalently `Γ(a)·exp(−ζ_H'(0,a)) = √(2π)`, (c) the
+completed object `M_Λ = M_∞ ⊗ M_ζ` with diagonal section `Λ = Γ_ℝ · ζ`.
+
+Already owned: `GaloisForLFunctions.gammaReal_shift_two`, `digamma_half_add_one`,
+`gammaRealLogConnection_shift_compat` (`RHTower/ArchimedeanGamma.lean`).
+
+### The Lerch route (chosen; no mathlib input for `ζ'(0)` exists)
+
+Everything reduces to one integral kernel `K(a) = ∫_{Ioi 0} P₂(x)(x+a)^{-2} dx`, `P₂ = ({x}²−{x})/2`:
+
+1. **Second-order Euler-Maclaurin** (DONE):
+   `formal/GaloisForLFunctions/HTGeometry/EulerMaclaurinSecondOrder.lean`
+   `euler_maclaurin_second_order : ∑_{m≤N} f(m) = ∫_0^N f + (f 0 + f N)/2 − ∫_0^N P₂ f''`
+   for `f` twice differentiable on `Ici 0` with continuous `f''`.  Kernel API:
+   `bernoulliHalfPer`, `abs_bernoulliHalfPer_le` (≤ 1/8), `bernoulliHalfPer_natCast` (= 0),
+   `cell_euler_maclaurin`, `sum_trapezoid_complex`.
+2. **Binet**: apply (1) to `f = log(x+a)`, combine with mathlib's Gauss product
+   (`Real.GammaSeq_tendsto_Gamma`) and Stirling (`Stirling.tendsto_stirlingSeq_sqrt_pi`):
+   `log Γ(a) = (a−½) log a − a + ½ log(2π) − K(a)`.
+3. **Hurwitz EM continuation**: apply (1) to `f = (x+a)^{-s}`:
+   `ζ_H(s,a) = a^{1−s}/(s−1) + a^{-s}/2 − s(s+1)∫_{Ioi 0} P₂(x)(x+a)^{−s−2}dx` on `Re s > 1`;
+   the right side is the continuation.  Derivative at `s = 0` needs only *continuity* of the integral
+   in `s` (slope of `−s(s+1)K(s)` at 0 is `−K(0)`), so dominated convergence suffices:
+   `ζ_H'(0,a) = (a−½) log a − a − K(a)`.
+4. **Lerch** = (2) + (3).  Then `Γ(a)·exp(−ζ_H'(0,a)) = √(2π)` and the card's inverse-determinant form.

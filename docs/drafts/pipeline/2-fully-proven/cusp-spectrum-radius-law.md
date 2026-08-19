@@ -752,3 +752,60 @@ inputs are constructed:
 
 Confirmed absent: any Selberg-class structure, standard twist, or
 Kaczorowski--Perelli continuation.
+
+## Corpus audit correction (2026-08-19)
+
+The "Corpus reuse audit" above ends with *"Confirmed absent: any Selberg-class structure, standard
+twist, or Kaczorowski--Perelli continuation."*  **That is now stale.**  The corpus carries two
+Selberg-class layers:
+
+* `formal/GaloisForLFunctions/RHTower/SelbergClass/` (31 modules).  `Basic.lean` has the exact
+  carrier of `S^♯` -- `EntireFiniteOrder`, `SelbergAnalyticContinuation`, `SelbergGammaData` with
+  `degree`, `conductor`, `internalShift`, and `ExtendedSelbergClass` with the Dirichlet series,
+  the analytic continuation, the gamma presentation and the completed functional equation.  The
+  folder also carries the asymmetric functional equation, the affine gamma pole lattice and
+  residues, Barnes rectangle integrals, finite order, and root-number invariance.
+* `formal/GaloisForLFunctions/SelbergClass/` (24 modules) formalising Kaczorowski--Perelli,
+  *Multiple standard twists of `L`-functions*: `MultipleStandardTwistData`, the damping parameter,
+  joint holomorphy of the damped twist, the termwise Mellin--Barnes representation, spectral data
+  `(1.4)`--`(1.9)` with finite fibres and the residual `Ξ`, normal-family bounds on the initial
+  domain, and uniqueness from the initial domain.
+
+The continuation itself is **not yet proved there** -- those modules state explicitly that they
+assert no meromorphic continuation and that the sum--integral interchange is the next obligation --
+so item 2 below is still open, but it is an *in-progress* construction rather than an absent one,
+and the standard twist and the class axioms must be reused from those folders rather than rebuilt.
+
+## Lean progress -- the card's statement, for an actual class member (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/SelbergCuspSpectrumRadius.lean` (new, umbrella-wired,
+axiom-clean) transports the whole interior layer from the abstract coefficient family to a genuine
+`F ∈ S^♯`, i.e. to `RHTower.ExtendedSelbergClass`.
+
+| Card item | Declaration |
+|---|---|
+| **the class axioms give a polynomial coefficient bound** `‖a(n)‖ ≤ C n²` | `ExtendedSelbergClass.exists_coeff_bound` |
+| `Φ_F(s,z) = ∑ a(n) n^{-s} e(z n^{1/d})` for a class member | `ExtendedSelbergClass.theta` |
+| its shift-lattice coefficients `Φ_F(s-k/d, z₀)/k!` | `ExtendedSelbergClass.shiftCoeff` |
+| the standard-twist spectrum `Spec(F)` of a class member | `ExtendedSelbergClass.shiftSpectrum` |
+| absolute convergence on the upper half plane, every spectral parameter | `ExtendedSelbergClass.summable_thetaTerm` |
+| **Step 2's opening clause: `Φ_F(s,·)` is holomorphic on `H`** | `ExtendedSelbergClass.analyticAt_theta` |
+| **Step 1 in the interior: the shift-lattice expansion** | `ExtendedSelbergClass.hasSum_shiftLatticeExpansion` |
+| **the unconditional half of the boxed law** | `ExtendedSelbergClass.hadamardLimsup_shiftCoeff_le` |
+| **the boxed law at an interior base point** | `ExtendedSelbergClass.hadamardLimsup_shiftCoeff_eq` |
+| **radius of convergence exactly the height** | `ExtendedSelbergClass.radius_shiftLattice_eq` |
+| **`Δ(0) = d q^{-1/d}`** for the presentation degree and conductor | `ExtendedSelbergClass.infDist_zero_shiftSpectrum` |
+| **the cusp constant `q^{1/d}/(2πd)`** | `ExtendedSelbergClass.cuspConstant_eq` |
+| **the cusp case of the boxed law for a class member** | `ExtendedSelbergClass.hadamardLimsup_shiftCoeff_cusp` |
+
+The only new mathematics is the coefficient bound, and it is genuinely a consequence of the class
+axioms rather than an extra assumption: `LSeriesSummable a 2` makes the terms `a(n)/n²` a null
+sequence, hence bounded, so `‖a(n)‖ ≤ C n²` with `a(0) = 0` handled by the arithmetic-function
+convention.  Everything else is the abstract layer applied to `a := F.coeff`,
+`d := F.presentationDegree`, `q := F.presentationConductor`.
+
+So the card's statement is now formal *for the actual class object*, with two named hypotheses
+carried through unchanged: `0 < d` (the card's `d ≥ 1`) and, at an interior base point, the
+singularity below the base point -- which is exactly the Kaczorowski--Perelli input of item 2.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.

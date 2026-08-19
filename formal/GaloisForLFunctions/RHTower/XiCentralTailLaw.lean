@@ -230,6 +230,10 @@ theorem sum_lin_geom_half_le (t : Finset ℕ) :
   rw [hval] at this
   exact this
 
+/-- The dyadic level of a divisor-support point. -/
+def dyadicLevelSupport (G : ℝ) (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) : ℕ :=
+  dyadicLevel G (ρ : ℂ)
+
 /-! ## The tail law -/
 
 set_option maxHeartbeats 1600000 in
@@ -256,14 +260,14 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
   have hlogG0 : (0 : ℝ) < Real.log G := lt_of_lt_of_le (Real.log_pos (by norm_num)) hlogG
   set α : ℕ := 2 * r + 4 * j with hαdef
   have hα2 : 2 ≤ α := by omega
-  set t : Finset ℕ := s.image (fun ρ => dyadicLevel G (ρ : ℂ)) with ht
-  have hmaps : ∀ ρ ∈ s, dyadicLevel G (ρ : ℂ) ∈ t := fun ρ hρ =>
+  set t : Finset ℕ := s.image (dyadicLevelSupport G) with ht
+  have hmaps : ∀ ρ ∈ s, dyadicLevelSupport G ρ ∈ t := fun ρ hρ =>
     Finset.mem_image_of_mem _ hρ
   -- fiberwise decomposition
   rw [← Finset.sum_fiberwise_of_maps_to hmaps]
   -- bound each fiber
   have hfiber : ∀ k ∈ t,
-      (∑ ρ ∈ s with dyadicLevel G (ρ : ℂ) = k,
+      (∑ ρ ∈ s with dyadicLevelSupport G ρ = k,
         ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
           (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
            ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2))
@@ -277,7 +281,7 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
       have h1 : (1 : ℝ) ≤ (2 : ℝ) ^ (k + 2) := one_le_pow₀ (by norm_num)
       nlinarith
     -- pointwise bound on the fiber
-    have hpt : ∀ ρ ∈ s.filter (fun ρ => dyadicLevel G (ρ : ℂ) = k),
+    have hpt : ∀ ρ ∈ s.filter (fun ρ => dyadicLevelSupport G ρ = k),
         ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
           (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
            ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2)
@@ -286,6 +290,7 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
       intro ρ hρ
       rw [Finset.mem_filter] at hρ
       obtain ⟨hρs, hρk⟩ := hρ
+      simp only [dyadicLevelSupport] at hρk
       have him := hs ρ hρs
       have him1 : (1 : ℝ) ≤ |(ρ : ℂ).im| := by linarith
       have himpos : (0 : ℝ) < |(ρ : ℂ).im| := by linarith
@@ -351,13 +356,14 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
             mul_le_mul_of_nonneg_left hfinal hm0
         _ = (A / (2 ^ k * G) ^ α) * ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by ring
     -- the multiplicity mass of the fiber
-    have hmass : (∑ ρ ∈ s with dyadicLevel G (ρ : ℂ) = k,
+    have hmass : (∑ ρ ∈ s with dyadicLevelSupport G ρ = k,
         ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ))
           ≤ (xiRegionOrderSum (closedBall (0 : ℂ) R) : ℝ) := by
       refine sum_multiplicity_le_xiRegionOrderSum (isCompact_closedBall _ _) _ ?_
       intro ρ hρ
       rw [Finset.mem_filter] at hρ
       obtain ⟨hρs, hρk⟩ := hρ
+      simp only [dyadicLevelSupport] at hρk
       have him := hs ρ hρs
       have hup := (dyadicLevel_bounds hG him).2
       rw [hρk] at hup
@@ -376,20 +382,20 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
       linarith [hup, h1, h2, h3]
     -- combine
     have hAdiv : (0 : ℝ) ≤ A / (2 ^ k * G) ^ α := by positivity
-    have hstep : (∑ ρ ∈ s with dyadicLevel G (ρ : ℂ) = k,
+    have hstep : (∑ ρ ∈ s with dyadicLevelSupport G ρ = k,
         ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
           (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
            ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2))
         ≤ (A / (2 ^ k * G) ^ α) * (xiRegionOrderSum (closedBall (0 : ℂ) R) : ℝ) := by
-      calc (∑ ρ ∈ s with dyadicLevel G (ρ : ℂ) = k,
+      calc (∑ ρ ∈ s with dyadicLevelSupport G ρ = k,
             ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
               (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
                ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2))
-          ≤ ∑ ρ ∈ s with dyadicLevel G (ρ : ℂ) = k,
+          ≤ ∑ ρ ∈ s with dyadicLevelSupport G ρ = k,
               (A / (2 ^ k * G) ^ α) *
                 ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) :=
             Finset.sum_le_sum hpt
-        _ = (A / (2 ^ k * G) ^ α) * ∑ ρ ∈ s with dyadicLevel G (ρ : ℂ) = k,
+        _ = (A / (2 ^ k * G) ^ α) * ∑ ρ ∈ s with dyadicLevelSupport G ρ = k,
               ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by
             rw [Finset.mul_sum]
         _ ≤ (A / (2 ^ k * G) ^ α) * (xiRegionOrderSum (closedBall (0 : ℂ) R) : ℝ) :=
@@ -415,33 +421,37 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
       positivity
     have hkey : (A / (2 ^ k * G) ^ α) * (c * (2 ^ (k + 2) * G))
         ≤ 4 * A * c * (1 / 2 : ℝ) ^ k / G ^ (α - 1) := by
+      have hexp : k * α = k + k * (α - 1) := by
+        have h1 : α - 1 + 1 = α := by omega
+        conv_lhs => rw [← h1]
+        ring
       have hGα : G ^ α = G ^ (α - 1) * G := by
         rw [← pow_succ]
         congr 1
         omega
-      have h2α : (2 : ℝ) ^ (k * α) = (2 : ℝ) ^ k * (2 : ℝ) ^ (k * (α - 1)) := by
-        rw [← pow_add]
-        congr 1
-        cases' Nat.exists_eq_add_of_le hα2 with d hd
-        subst hd
-        ring_nf
-        omega
-      have hmono : (2 : ℝ) ^ k ≤ (2 : ℝ) ^ (k * (α - 1)) := by
-        refine pow_le_pow_right₀ (by norm_num) ?_
-        nlinarith [Nat.one_le_iff_ne_zero.mpr (by omega : α - 1 ≠ 0)]
-      rw [mul_pow, ← pow_mul, div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by positivity)]
-      rw [h2α, hGα, pow_succ]
+      have h2k2 : (2 : ℝ) ^ (k + 2) = 4 * (2 : ℝ) ^ k := by
+        rw [pow_add]
+        ring
       have hpos1 : (0 : ℝ) < (2 : ℝ) ^ k := by positivity
       have hpos2 : (0 : ℝ) < (2 : ℝ) ^ (k * (α - 1)) := by positivity
       have hpos3 : (0 : ℝ) < G ^ (α - 1) := by positivity
-      have h2k2 : (2 : ℝ) ^ (k + 2) = 4 * (2 : ℝ) ^ k := by
-        rw [pow_add]; ring
-      rw [h2k2]
-      have hhalf : ((1 : ℝ) / 2) ^ k = 1 / (2 : ℝ) ^ k := by
+      have h1 : (2 : ℝ) ^ k ≠ 0 := ne_of_gt hpos1
+      have h2 : (2 : ℝ) ^ (k * (α - 1)) ≠ 0 := ne_of_gt hpos2
+      have h3 : G ^ (α - 1) ≠ 0 := ne_of_gt hpos3
+      have h4 : G ≠ 0 := ne_of_gt hG0
+      have hL : (A / (2 ^ k * G) ^ α) * (c * (2 ^ (k + 2) * G))
+          = 4 * A * c / ((2 : ℝ) ^ (k * (α - 1)) * G ^ (α - 1)) := by
+        rw [h2k2, mul_pow, ← pow_mul, hexp, pow_add, hGα]
+        field_simp
+      have hRr : 4 * A * c * (1 / 2 : ℝ) ^ k / G ^ (α - 1)
+          = 4 * A * c / ((2 : ℝ) ^ k * G ^ (α - 1)) := by
         rw [div_pow, one_pow]
-      rw [hhalf]
-      field_simp
-      nlinarith [hmono, hpos1, hpos3, hc.le, hApos.le, mul_pos hpos1 hpos3]
+        field_simp
+      have hmono : (2 : ℝ) ^ k ≤ (2 : ℝ) ^ (k * (α - 1)) :=
+        pow_le_pow_right₀ (by norm_num) (Nat.le_mul_of_pos_right k (by omega))
+      rw [hL, hRr, div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith [mul_nonneg (mul_nonneg (by positivity : (0 : ℝ) ≤ 4 * A * c) hpos3.le)
+        (sub_nonneg.mpr hmono)]
     calc (A / (2 ^ k * G) ^ α) *
           (c * (2 ^ (k + 2) * G) * (((k : ℝ) + 2) * Real.log 2 + Real.log G))
         = ((A / (2 ^ k * G) ^ α) * (c * (2 ^ (k + 2) * G))) *
@@ -457,7 +467,7 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
       = (4 * A * c / G ^ (α - 1)) *
         (Real.log 2 * ∑ k ∈ t, ((k : ℝ) + 2) * (1 / 2 : ℝ) ^ k
           + Real.log G * ∑ k ∈ t, (1 / 2 : ℝ) ^ k) := by
-    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib, Finset.sum_div]
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     ring
   rw [hsplit]
@@ -478,6 +488,101 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
       ≤ (4 * A * c / G ^ (α - 1)) * (8 * Real.log G) :=
         mul_le_mul_of_nonneg_left hbound hfac
     _ = 32 * A * c * Real.log G / G ^ (α - 1) := by ring
+
+/-! ## The tail law as a convergent sum over all high zeros -/
+
+/-- A divisor-support point lies above height `G`. -/
+def AboveHeight (G : ℝ) (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) : Prop :=
+  G < |(ρ : ℂ).im|
+
+instance instDecidableAboveHeight (G : ℝ)
+    (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) : Decidable (AboveHeight G ρ) :=
+  Real.decidableLT _ _
+
+/-- The reciprocal square test mass carried by a zero above height `G`. -/
+def tailTestTerm (j r : ℕ) (q : Polynomial ℂ) (G : ℝ)
+    (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) : ℝ :=
+  if AboveHeight G ρ then
+    ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
+      (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
+       ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2)
+  else 0
+
+theorem tailTestTerm_nonneg (j r : ℕ) (q : Polynomial ℂ) (G : ℝ)
+    (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) : 0 ≤ tailTestTerm j r q G ρ := by
+  rw [tailTestTerm]
+  split
+  · have hm : (0 : ℝ) ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by
+      exact_mod_cast xi_divisor_nonneg Set.univ (ρ : ℂ)
+    positivity
+  · exact le_rfl
+
+/-- **The tail law.**  For `p = X^j q` with `r ≥ 1` the high-height reciprocal square test mass
+converges and obeys `∑_{|γ_ρ| > G} m_ρ ‖y_ρ‖^r ‖p(y_ρ)‖² ≤ C G^{1−2r−4j} log G`. -/
+theorem xi_central_tail_law_tsum (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ G : ℝ, 2 ≤ G →
+      Summable (tailTestTerm j r q G) ∧
+      ∑' ρ : ↥(MeromorphicOn.divisor xi Set.univ).support, tailTestTerm j r q G ρ
+        ≤ C * Real.log G / G ^ (2 * r + 4 * j - 1) := by
+  classical
+  obtain ⟨C, hC, hbound⟩ := xi_central_tail_law j r hr q
+  refine ⟨C, hC, fun G hG => ?_⟩
+  have hpartial : ∀ s : Finset ↥(MeromorphicOn.divisor xi Set.univ).support,
+      (∑ ρ ∈ s, tailTestTerm j r q G ρ) ≤ C * Real.log G / G ^ (2 * r + 4 * j - 1) := by
+    intro s
+    have hfilter : (∑ ρ ∈ s, tailTestTerm j r q G ρ)
+        = ∑ ρ ∈ s with AboveHeight G ρ,
+            ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
+              (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
+               ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2) := by
+      rw [Finset.sum_filter]
+      exact Finset.sum_congr rfl fun ρ _ => rfl
+    rw [hfilter]
+    refine hbound G hG _ ?_
+    intro ρ hρ
+    exact (Finset.mem_filter.mp hρ).2
+  have hsummable : Summable (tailTestTerm j r q G) :=
+    summable_of_sum_le (fun ρ => tailTestTerm_nonneg j r q G ρ) hpartial
+  exact ⟨hsummable, hsummable.tsum_le_of_sum_le hpartial⟩
+
+/-! ## The four shifted towers -/
+
+/-- `Q₀` with a nonvanishing hard-edge value: tail `O(G^{-1} log G)` — the slow bottleneck. -/
+theorem xi_central_tail_law_Q0_hardEdge (q : Polynomial ℂ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ G : ℝ, 2 ≤ G →
+      Summable (tailTestTerm 0 1 q G) ∧
+      ∑' ρ : ↥(MeromorphicOn.divisor xi Set.univ).support, tailTestTerm 0 1 q G ρ
+        ≤ C * Real.log G / G ^ 1 := by
+  simpa using xi_central_tail_law_tsum 0 1 le_rfl q
+
+/-- `Q₁` with a nonvanishing hard-edge value: tail `O(G^{-3} log G)`. -/
+theorem xi_central_tail_law_Q1_hardEdge (q : Polynomial ℂ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ G : ℝ, 2 ≤ G →
+      Summable (tailTestTerm 0 2 q G) ∧
+      ∑' ρ : ↥(MeromorphicOn.divisor xi Set.univ).support, tailTestTerm 0 2 q G ρ
+        ≤ C * Real.log G / G ^ 3 := by
+  simpa using xi_central_tail_law_tsum 0 2 (by norm_num) q
+
+/-- `Q₀` with a simple zero at the hard edge: tail `O(G^{-5} log G)`. -/
+theorem xi_central_tail_law_Q0_simpleZero (q : Polynomial ℂ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ G : ℝ, 2 ≤ G →
+      Summable (tailTestTerm 1 1 q G) ∧
+      ∑' ρ : ↥(MeromorphicOn.divisor xi Set.univ).support, tailTestTerm 1 1 q G ρ
+        ≤ C * Real.log G / G ^ 5 := by
+  simpa using xi_central_tail_law_tsum 1 1 le_rfl q
+
+/-- `Q₁` with a simple zero at the hard edge: tail `O(G^{-7} log G)`. -/
+theorem xi_central_tail_law_Q1_simpleZero (q : Polynomial ℂ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ G : ℝ, 2 ≤ G →
+      Summable (tailTestTerm 1 2 q G) ∧
+      ∑' ρ : ↥(MeromorphicOn.divisor xi Set.univ).support, tailTestTerm 1 2 q G ρ
+        ≤ C * Real.log G / G ^ 7 := by
+  simpa using xi_central_tail_law_tsum 1 2 (by norm_num) q
+
+/-- Each hard-edge zero of the test polynomial improves the tail by four powers of `G`. -/
+theorem xi_central_tail_exponent_step (j r : ℕ) (hr : 1 ≤ r) :
+    2 * r + 4 * (j + 1) - 1 = (2 * r + 4 * j - 1) + 4 := by
+  omega
 
 end
 

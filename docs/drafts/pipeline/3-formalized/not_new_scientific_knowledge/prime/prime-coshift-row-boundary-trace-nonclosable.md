@@ -1,7 +1,7 @@
 # Additive boundary evaluation is not closable on the prime co-shift row graph
 
 - **ID:** `prime-coshift-row-boundary-trace-nonclosable`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); fringe-route no-go
 - **Scientific status:** `[PROVED HERE] [BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `prime-coshift-row-orthogonal-spectral-gap.md` and
@@ -162,3 +162,36 @@ added independently.
 - [x] explicit prime-supported nonclosability sequence
 - [x] canonical scalar trace route retired
 - [ ] formalize together with the concrete co-shift row
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+Formalized in `formal/GaloisForLFunctions/RHTower/PrimeCoShiftRowGraph.lean` (model in
+`PrimeCoShiftModel.lean`).  All energies are stated in `ℝ≥0∞`, so every identity below is
+unconditional — no summability hypothesis appears anywhere.  `#print axioms` on each capstone
+reports only `propext, Classical.choice, Quot.sound`.
+
+| Card item | Lean declaration |
+|---|---|
+| `omega(n)` | `omegaPNat`, `primeDivisors`, `card_primeDivisors` |
+| `W(x) = sum_p ||V_p^* x||^2`, eq. (3) | `coShiftEnergy` |
+| `||R_s x||^2`, eq. (2) | `rowEnergy` |
+| `A_s = sum_p p^{-2 Re s} < infinity` | `primeZetaEnergy`, `primeZetaEnergy_ne_top` |
+| eq. (4) `W(x) = sum_m omega(m)|x_m|^2` | `coShiftEnergy_eq_omegaEnergy` (via `tsum_prime_shift`) |
+| eq. (5) | `rowEnergy_le` |
+| eq. (6) | `coShiftEnergy_le` |
+| eq. (1) the exact graph domain | `rowEnergy_ne_top_iff` |
+| eq. (7) graph-norm equivalence | `graphEnergy_le_weight`, `weight_le_graphEnergy` |
+| eq. (8)–(9) the vectors `x_M` | `exists_prime_uniform_vector` (`finsetVector`) |
+| eq. (10)–(12) failure of closability | `exists_small_graphEnergy_unit_coefficient_sum` |
+| eq. (13) divergence of `sum 1/(1+omega(n))` | `not_summable_inv_one_add_omega` |
+
+The auxiliary identity behind (4) is a pure double-counting statement proved for an arbitrary
+`ℝ≥0∞`-valued weight: `tsum_prime_shift`, `∑_p ∑_m G(pm) = ∑_k ω(k) G(k)`.
+
+## Gates
+
+- [x] graph domain identified exactly
+- [x] graph norm equivalence proved
+- [x] explicit prime-supported nonclosability sequence
+- [x] canonical scalar trace route retired
+- [x] formalized together with the concrete co-shift row

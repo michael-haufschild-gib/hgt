@@ -3908,3 +3908,162 @@ averagedMeanSquare_moebius_scaled' (hc0 : 0 < c) (hc1 : c ≤ 1) (hβ0 : 1/2 < �
 
 and `Sieve/OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget` already reduces it to the
 spectral budget, so what is left is precisely steps `(26)`–`(30)` of §3 and `(31)`–`(40)` of §4.
+
+## MILESTONE B, THE JOINT-WEIGHT LANE — bricks 15–22 (2026-08-19)
+
+The scope correction above says milestone B closes cards 3, 4 and 5.  This session built the
+**joint-weight** (`ω_P·ω_Q`) fibre chain that §4 needs, and the §4 per-block estimate itself.  All
+eight modules are unconditional, axiom-clean (`propext, Classical.choice, Quot.sound`), sorry-free
+and umbrella-wired.
+
+### Why the joint weight is unavoidable (proved, not assumed)
+
+The single-weight arrangement of §3 **cannot** be pushed below the Route-T exponent, and the reason
+is not the zero-free region — it is the diagonal of Halász–Montgomery.  Writing `M = ⌊√x + h⌋`,
+`δ = h/M`, `σ_j` for a `P`-block's harmonic mass and `N_j = M/P_j` for its cofactor length, the
+exceptional half of §4 with a *single* weight contributes
+
+```text
+   (σ_j P_j)² · δ² · (C·N_j + |E_j|·√T·log T)·N_j  ⊇  C·σ_j²·δ²M²  =  C·σ_j²h² ,
+```
+
+whose weighted sum over the ladder is `C·W_P²h²` — **exactly the trivial bound**, for every choice
+of blocks, thresholds and `|E_j|`.  Three independent repairs were checked and all fail:
+
+* thinner `P`-blocks — the loss is scale-invariant (`σ_j^{-1}·σ_j² = σ_j` sums to `W_P` again);
+* Lemma 2.3 on the *cofactor* (its length is `M^{1-o(1)}`, so it does apply) — but the pointwise
+  route needs `|E_j| ≤ (log x)^{O(1)}`, and Lemma 2.5 gives `|E_j| = x^{o(1)}`, never polylog,
+  because `log T/log P_j → ∞` whenever `P_j ≤ h = x^{o(1)}`;
+* truncating the frequency range — the Gallagher weight already forces `T ≳ M/h`, so
+  `log T ≍ log x` regardless.
+
+The second designated range `Q` is what supplies the missing factor: on the exceptional set the
+`Q`-block sum has a Lemma-2.3 saving of `1/log P_j`, whose square cancels the `(log P_j)²` of the
+threshold and leaves `h²W_Q²/(log P_j)²`, which **is** `o(h²W_Q²)`.  This is exposé (35)–(40) and it
+is the only arrangement that works.
+
+### The parameters for the Route E range (checked against the source)
+
+With `𝓁 = log x`, `h = exp(𝓁^β)`, `1/2 < β < 9/10` (above `9/10` the corpus already has the result):
+
+| object | choice | constraint it satisfies |
+|-|-|-|
+| `P` | primes with `𝓁^{β/2} ≤ log p ≤ 𝓁^β` | `P_j ≤ h`; `W_P = (β/2)log 𝓁 → ∞` |
+| `Q` | primes with `𝓁^a ≤ log q ≤ 𝓁^b`, `9/10 < a < b < 1` | disjoint from `P`; `W_Q = (b−a)log 𝓁 → ∞` |
+| threshold | `V_j = π(P_j)/log P_j` | non-exceptional term `≍ (log P_j)^{-2} → 0` |
+| Lemma 2.5 power | `k = ⌈log T/log P_j⌉ ≍ 𝓁^{1−β/2}` | `|E_j| ≤ exp(O(𝓁^{1−β/2}log 𝓁)) = x^{o(1)}` |
+| Lemma 2.3 on `Q_k` | Route-T at `log Q_k ≥ 𝓁^a`, `a > 9/10` | saving `exp(−c𝓁^{a−9/10}/(log 𝓁)²)`, beats every power of log |
+| HM cross term | needs `|E_j|·Q_max ≪ M^{1/2} = x^{1/4}` | both factors are `x^{o(1)}` |
+
+Every one of the exposé's own constraints (`P_jQ_k ≪ X^{1/14−ε}`, `|E_j| ≪ X^{1/2−ε}`) holds with
+enormous room at this range, because `P_j, Q_k = x^{o(1)}` here whereas the exposé must work at
+`h = exp(10(log log X)^{10/9})`.
+
+### The eight modules
+
+| module | content |
+|-|-|
+| `Sieve/JointFibreTransfer` | `fibreDyadicIndex_subset_Icc_one`, `sum_variance_joint_fibreDyadicIndex_le`, **`sum_sq_fibreSum_le_jointWeighted`** — the joint Turán–Kubilius transfer on the fibres.  The corpus's `WeightRemovalFibre.sum_sq_fibreSum_le_weighted` is already weight-generic, so only the joint variance (`JointTuranKubilius`, restricted to the fibre block) had to be supplied |
+| `Sieve/JointOmegaSpectral` | `jointOmegaPoly`, `jointOmegaWeight`, `logPoly_jointOmegaWeight_eq`, `abs_jointOmegaWeight_le`, **`sum_sq_fibreSum_moebius_le_jointSpectral`**, `jointOmegaBudget`, **`averagedMeanSquare_moebius_of_jointOmegaBudget`** — the joint analogue of `OmegaSpectralFibre`, i.e. the gate the whole §4 lane has to hit |
+| `Sieve/JointOmegaFactorisation` | `primeFactorsIn_mul_prime_not_mem`, **`jointOmegaPoly_eq_bilinear`**, `jointOmegaPoly_eq_blocks` — the exact two-variable factorisation.  The cofactor is *literally* the corpus's single-weight `omegaWeightedMoebiusPoly Q ·`, so the second factorisation is the corpus lemma applied again |
+| `Sieve/JointLadderProduct` | `omegaQCoeff`, `omegaWeightedMoebiusPoly_eq_logPoly`, `norm_omegaQCoeff_le`, `logPoly_div_const`, `jointLadderProductPoly`, `jointLadderProductDefect`, **`jointLadderProductPoly_sub_jointOmega_eq`**, **`integral_Icc_normSq_primeShift_family_le_bound`** (the corpus's prime-shift family bound at a general coefficient bound, by rescaling), **`integral_normSq_jointLadderProductDefect_le_closed`** |
+| `Sieve/JointLadderHarmonic` | `normSq_jointLadderProductPoly_le`, `integral_normSq_jointLadderProductPoly_le` — the harmonic Cauchy–Schwarz over the short ladder |
+| `Sieve/ExceptionalSplitGen` | **`integral_normSq_mul_split_exceptional_gen`** — the §4 split for an arbitrary pair of continuous factors (the corpus's version is `dirPoly`-only) |
+| `Sieve/LogPolyRestrict` | `restrictCoeff`, `logPoly_restrictCoeff`, **`logPoly_subset_eq_dirPoly`**, `primeBlockPoly_eq_logPoly`, **`integral_Icc_comp_mul_left`**, **`integral_Icc_normSq_mul_logPoly_eq`** — the bridge from the Gallagher variable `w` to the Dirichlet variable `t = 2πw`, for a *product* of two polynomials over arbitrary subsets of (possibly different) initial segments |
+| `Sieve/Section4Block`, `Sieve/Section4ExceptionalMeasure`, `Sieve/Section4BlockClosed` | `finCoeff`, `blockExceptional`, **`section4_block_bound`**; `sum_normSq_finCoeff_le_card`, `finCoeff_prime_support`, **`volume_blockExceptional_le`** (Lemma 2.5 for one block, at a free power); `norm_dirPoly_finCoeff_le_card`, **`section4_block_bound_prime`** |
+
+### The capstone of this session
+
+```text
+section4_block_bound_prime (b : ℕ → ℂ) {B D : Finset ℕ} {NA NB k : ℕ}
+    (hBprime : ∀ p ∈ B, p.Prime) (hBsub : B ⊆ Icc 1 NA) (hD : D ⊆ Icc 1 NB)
+    (hNB : 1 ≤ NB) (hk : 1 ≤ k) (hW : 0 ≤ W) (hV : 0 < V) :
+  ∫_{|w| ≤ W} ‖primeBlockPoly B w‖²·‖logPoly b D w‖² dw
+    ≤ (2π)⁻¹ · [ V²·2·(2πW + 4N_B(1+log N_B))·E_B
+               + (#B)²·( 2N_B + ((⌊log₂N_B⌋+1)·214·√(4πW) + 3072N_B)
+                                 · 2(2πW + 4N_A^k(1+log N_A^k))·k^k·(#B)^k / V^{2k} )·E_B ]
+```
+
+**Unconditional, no asymptotic notation, every constant named.**  This is exposé (35)–(37) plus
+Lemmas 2.4, 2.5 and 2.6 composed, for one step of the ladder.  Its two halves are exactly the two
+cases of §4: the `V²` term is the non-exceptional case (Lemma 2.4) and the `(#B)²` term is the
+exceptional one (Lemma 2.5 for the measure, Lemma 2.6 for the cofactor).
+
+### What is left of milestone B
+
+Only the **`Q`-side of the exceptional case**, and the parameter substitution:
+
+1. Split `logPoly (omegaQCoeff Q) D_j` over `Q`-blocks *inside the exceptional set*: the corpus's
+   `Sieve/LadderProductDefect` applies verbatim with `P := Q` and `Icc A₀ B₀ := D_j` (which is an
+   interval — `geomCofactorBlockAt` is an `Icc`), and `Sieve/HarmonicCauchySchwarz` supplies the
+   split.  What has to be added is the `∫_E` version of `Sieve/LadderHarmonicSplit`'s mean-square
+   statement (the pointwise inequality is set-independent, so this is `setIntegral_mono_on` again).
+2. Bound the `Q`-block prime sums pointwise by Lemma 2.3 —
+   `Sieve/PrimeBlockTwistBound.exists_norm_primeBlockPoly_routeT_le`, already connected in the
+   corpus, at `log Q_k ≥ (log x)^a`, `a > 9/10`.
+3. Replace `section4_block_bound_prime`'s exceptional half by that three-factor form, so the
+   `(#B)²·2N_B·E_B` diagonal acquires the `(log P_j)^{-2}` saving.
+4. Sum over the ladder (`JointLadderHarmonic`) and add the defect
+   (`integral_normSq_jointLadderProductDefect_le_closed`).
+5. The Gallagher tail: `AffineMajorantFromHeight` + `BudgetTermSplit.spectral_terms_le'` with the
+   §4 bound in place of the Route-T ladder bound, then the four quotient limits at the parameters of
+   the table above, exactly as `Sieve/ScaledBudgetLimit` does for `β > 9/10`.
+
+### Milestone B, bricks 23–28 — the exceptional case is CLOSED (2026-08-19)
+
+Six further modules, all unconditional, axiom-clean, sorry-free and umbrella-wired.  The exceptional
+half of §4 — the half that needs Lemmas 2.3, 2.5 and 2.6 together — is now a single Lean theorem.
+
+| module | content |
+|-|-|
+| `Sieve/SetIntegralBlockSplit` | **`setIntegral_normSq_sum_mul_le_weighted`** (harmonic Cauchy–Schwarz over a *measurable set*), **`setIntegral_normSq_mul_le_of_bound`** (replacing one factor by a pointwise bound on that set), `setIntegral_normSq_add_le`.  The corpus's versions integrate over intervals; the exceptional case does not |
+| `Sieve/LogPolySetScaling` | `logPoly_subset_eq_dirPoly_finCoeff`, **`setIntegral_comp_mul_left`** (the frequency scaling `t = 2πw` on an arbitrary measurable set, via `Real.map_volume_mul_left` and `Measure.restrict_map`), **`volume_real_preimage_mul_left`**, `setIntegral_normSq_logPoly_eq`, **`exceptional_preimage`**, `sum_normSq_finCoeff_le`, **`setIntegral_normSq_logPoly_le_HM`** — Lemma 2.6 for a Gallagher polynomial over a measurable set |
+| `Sieve/Section4QSide` | `continuous_ladderProductDefect'`, **`setIntegral_normSq_omegaWeighted_le_ladder`** (the long ladder over a measurable set, with its defect), **`setIntegral_normSq_omegaWeighted_le_blocks`** (the same with the Lemma 2.3 saving applied blockwise), **`setIntegral_normSq_short_long_le`** |
+| `Sieve/Section4BlockFull` | `shortExceptional`, `measurableSet_shortExceptional`, **`section4_block_full`** |
+| `Sieve/Section4ExceptionalCofactor` | **`shortExceptional_eq_preimage`**, **`setIntegral_normSq_logPoly_shortExceptional_le`** — the innermost cofactor's mean square over the exceptional set, with Lemma 2.5 already substituted for the measure |
+
+The capstone of the exceptional case:
+
+```text
+section4_block_full {B Q : Finset ℕ} {A₁ B₁ : ℕ} {R η W VP : ℝ}
+    (hR : 0 < R) (hη : 0 ≤ η) (hL : 1 ≤ L)
+    (hQprime : ∀ q ∈ Q, q.Prime) (hQrange : ∀ q ∈ Q, R < q ∧ q ≤ R(1+η)^L)
+    (hv : ∀ k < L, 0 < v k)
+    (hVk : ∀ k < L, ∀ w ∈ shortExceptional B W VP,
+              ‖primeBlockPoly (geomBlock Q R (1+η) k) w‖ ≤ Vk k)      -- Lemma 2.3
+    (hIk : ∀ k < L, ∫_{shortExceptional B W VP} ‖cofactor_k‖² ≤ Ik k) -- Lemmas 2.5 + 2.6
+  : ∫_{|w| ≤ W} ‖∑_{p∈B} μ(p)p^{iw}‖²·‖∑_m μ(m)ω_Q(m)m^{iw}‖² dw
+      ≤ VP²·∫_{|w| ≤ W} ‖∑_m μ(m)ω_Q(m)m^{iw}‖²
+        + (#B)²·( 2(∑_k 1/v_k)·∑_k v_k·V_k²·I_k
+                  + 2·∫_{shortExceptional} ‖ladder defect‖² )
+```
+
+and `hIk` is discharged, for any coefficient bounded by `Ω`, by
+
+```text
+setIntegral_normSq_logPoly_shortExceptional_le :
+  ∫_{shortExceptional B W VP} ‖logPoly a D w‖²
+    ≤ (2π)⁻¹·( 2N_D + ((⌊log₂N_D⌋+1)·214·√(4πW) + 3072N_D)
+                     · 2(2πW + 4N_A^k(1+log N_A^k))·k^k·(#B)^k / VP^{2k} )·Ω²·#D
+```
+
+**This is exactly (35)–(40) of the exposé, for one step of the short ladder, with every constant
+named and no asymptotic notation.**  The `VP²` term is the non-exceptional case (Lemma 2.4 finishes
+it), the `(#B)²·V_k²·I_k` term is the exceptional one.
+
+### Milestone B: what is left, after this session
+
+1. **`Vk` from Route-T.**  `Sieve/PrimeBlockTwistBound.exists_norm_primeBlockPoly_routeT_le`
+   requires its block to be *all* primes in an integer interval `(a,b]`; `geomBlock Q R (1+η) k` is
+   all primes of `Q` in a real interval, so the instantiation is the same bookkeeping the corpus
+   already carries in `Sieve/ScaledBudgetSubstitution` (`budgetRho A delta Ctot β γ x`) for the
+   single-weight ladder.  Mirror it.
+2. **The non-exceptional `VP²` term.**  Lemma 2.4 for `logPoly (omegaQCoeff Q) ·`, i.e. the corpus's
+   `integral_Icc_normSq_logPoly_le_support` at coefficient bound `#Q`.
+3. **Sum over the short ladder** — `Sieve/JointLadderHarmonic.integral_normSq_jointLadderProductPoly_le`
+   plus `Sieve/JointLadderProduct.integral_normSq_jointLadderProductDefect_le_closed`.
+4. **The Gallagher tail and the parameter substitution** — mirror `Sieve/ScaledBudgetSubstitution`
+   and `Sieve/ScaledBudgetLimit` at the parameters of the table above, ending at
+   `averagedMeanSquare_moebius_of_jointOmegaBudget`.
+
+No new analytic input remains anywhere in the lane.

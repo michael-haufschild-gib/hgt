@@ -30,9 +30,9 @@
 | 8 | `prime-boundary-perturbative-jet-monodromy-escape` | todo |
 | 9 | `prime-boundary-symmetric-dickman-zero-free-law` | todo |
 | 10 | `prime-corona-constraint-opacity-law` | todo |
-| 11 | `prime-coshift-eigenline-regularized-boundary-complex` | in progress |
-| 12 | `prime-coshift-row-boundary-trace-nonclosable` | Lean complete (needs card update) |
-| 13 | `prime-coshift-row-orthogonal-spectral-gap` | in progress |
+| 11 | `prime-coshift-eigenline-regularized-boundary-complex` | **stage 3** |
+| 12 | `prime-coshift-row-boundary-trace-nonclosable` | **stage 3** |
+| 13 | `prime-coshift-row-orthogonal-spectral-gap` | **stage 3** |
 | 14 | `prime-cyclotomic-coefficient-field-escape` | todo |
 | 15 | `prime-diagonal-singular-trace-dephasing` | todo |
 | 16 | `prime-exponential-holomorphic-determining-source-image` | todo |
@@ -60,6 +60,9 @@
 
 | Date | Card | Lean module(s) |
 |---|---|---|
+| 2026-08-19 | `prime-coshift-eigenline-regularized-boundary-complex` | `RHTower/PrimeCoShiftModel.lean`, `RHTower/PrimeCoShiftRowGraph.lean`, `RHTower/PrimeCoShiftBoundaryComplex.lean` |
+| 2026-08-19 | `prime-coshift-row-boundary-trace-nonclosable` | `RHTower/PrimeCoShiftRowGraph.lean` |
+| 2026-08-19 | `prime-coshift-row-orthogonal-spectral-gap` | `RHTower/PrimeCoShiftKernelProjection.lean`, `RHTower/PrimeCoShiftSpectralGap.lean`, `HTGeometry/CommutingProjectionIntersectionEnergy.lean`, `HTGeometry/AdjointTransverseLowerBound.lean` |
 
 ## 2026-08-19 — co-shift cluster (cards 11, 12, 13)
 
@@ -81,11 +84,12 @@ New Lean modules (all `lake env lean` clean):
   sequence (8)–(12), and the divergence (13).  Also `rowGraph` closed, `rowDomain` dense,
   and `ker = eigenSubmodule`.
 
-Still open for the cluster:
+Also landed: `HTGeometry/AdjointTransverseLowerBound.lean` (reduced minimum modulus from a
+bounded-below adjoint), `RHTower/PrimeCoShiftKernelProjection.lean` (the closed-form kernel
+projection `P_p = (1-|a|²) B_p E_p B_p^*` and its commutation at distinct primes), and
+`RHTower/PrimeCoShiftSpectralGap.lean` / `RHTower/PrimeCoShiftBoundaryComplex.lean`.
 
-- card 11: regularized additive boundary evaluation `RegEv_s(x) = x_1 ζ(s)` (corpus already owns
-  `RHTower/JonquiereExpansion.lean`), and the zero-Fredholm-index two-term complex.
-- card 13: the kernel projections `P_p = (1-|a|²) B_p E_p B_p^*` with
-  `B_p = (1 - p^{-s} V_p)⁻¹`, `E_p = 1 - V_p V_p^*`; their pairwise commutation from the doubly
-  commuting isometries; the reduced minimum modulus `‖T_p x‖ ≥ (1-p^{-σ})‖x - P_p x‖`; then the
-  global gap via `CommutingProjectionIntersectionEnergy`.
+**Cluster CLOSED**: cards 11, 12, 13 are at
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`.
+All new modules are wired into `GaloisForLFunctions.RHTower` / `GaloisForLFunctions.HTGeometry`
+and audit clean (`propext, Classical.choice, Quot.sound` only).

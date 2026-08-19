@@ -1,7 +1,7 @@
 # Prime co-shifts have one arithmetic eigenline, and its regularized boundary complex has zero index
 
 - **ID:** `prime-coshift-eigenline-regularized-boundary-complex`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); pivot foundation and index no-go
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** multiplicative isometries on `l2(N)`, the polylogarithm boundary expansion, and
@@ -205,3 +205,67 @@ finite-dimensional zero-index conclusion would not advance the open route.
 - [x] boundary value identified with `zeta(s)`
 - [x] cohomology and constant zero Fredholm index computed
 - [ ] optional Lean formalization after the analytic boundary map has a substantive API
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+Every displayed statement of this card is now Lean-proved with no hypotheses beyond the stated
+half-plane conditions, and each capstone `#print axioms` reports only
+`propext, Classical.choice, Quot.sound`.
+
+**The model** — `formal/GaloisForLFunctions/RHTower/PrimeCoShiftModel.lean`
+
+| Card item | Lean declaration |
+|---|---|
+| `H = l2(N_{>=1})` | `RHTower.PrimeCoShift.H` |
+| `V_p e_n = e_{pn}` | `RHTower.PrimeCoShift.primeShift` |
+| `(V_p^* x)_n = x_{pn}` | `RHTower.PrimeCoShift.primeCoShift`, `primeCoShift_apply` |
+| `V_p^*` is the Hilbert adjoint of `V_p` | `primeCoShift_eq_adjoint` |
+| `T_{p,s} = V_p^* - p^{-s}` | `rowOp` |
+| `L_s` | `eigenSubmodule` |
+| eq. (1) | `eigen_recursion` |
+| eq. (2), `x_n = n^{-s} x_1` | `eigen_coordinate` |
+| `Psi_s = (n^{-s})` and `Psi_s in L_s` | `groundState`, `groundState_mem_eigenSubmodule` |
+| `L_s = C Psi_s` for `Re s > 1/2` | `eigenSubmodule_eq_span` |
+| `L_s = 0` for `Re s <= 1/2` | `eigenSubmodule_eq_bot` |
+| Hilbert threshold `sum n^{-2 Re s} < infinity` | `memℓp_groundFun`, `not_summable_rpow_inv_of_le` |
+
+**The canonical closed all-prime row** —
+`formal/GaloisForLFunctions/RHTower/PrimeCoShiftRowGraph.lean`
+
+| Card item | Lean declaration |
+|---|---|
+| `R_s : Dom(R_s) -> l2(Primes;H)` | `rowGraph`, `RowSpace` |
+| `Dom(R_s)` | `rowDomain`, `mem_rowDomain_iff` |
+| densely defined (finite-support core) | `rowDomain_dense`, `truncate_mem_rowDomain` |
+| closed | `isClosed_rowGraph` |
+| eq. (2a) `ker R_s = L_s` | `rowGraph_kernel` |
+
+**The regularized additive boundary evaluation and the balanced complex** —
+`formal/GaloisForLFunctions/RHTower/PrimeCoShiftBoundaryComplex.lean`
+
+| Card item | Lean declaration |
+|---|---|
+| `F_x(theta) = sum_n x_n e^{i n theta}` (partial sums) | `boundaryPartialSum` |
+| `F_x(theta) = x_1 Li_s(e^{i theta})` | `tendsto_boundaryPartialSum` |
+| eq. (3) and (4): `RegEv_s(x) = x_1 zeta(s)` | `tendsto_regularized_boundary`, `tendsto_regEv` |
+| the differential of (6) | `regEv` |
+| acyclic when `zeta(s) != 0` | `regEv_bijective`, `regEv_ker_eq_bot`, `regEv_range_eq_top` |
+| eq. (7) on the divisor | `finrank_ker_regEv_of_zeta_eq_zero`, `regEv_eq_zero_of_zeta_eq_zero` |
+| eq. (8) `ind(RegEv_s) = 0` | `regEv_index_zero` |
+| eq. (5) `RegEv_s = 0` on `L_s` iff `zeta(s) = 0` | `regEv_eq_zero_of_zeta_eq_zero` + `regEv_bijective` |
+
+The analytic input for `(4)` is the corpus-owned Jonquière boundary expansion
+(`RHTower/JonquiereExpansion.lean`, `norm_expZeta_sub_jonquiere_le`) together with the
+Abel-summation identification of the boundary Dirichlet series with `expZeta`
+(`RHTower/DirichletAbel.lean`, `abelDirichlet_eq_expZeta`).  No new analytic hypothesis is
+introduced.
+
+## Gates
+
+- [x] common prime co-shift eigenspace classified exactly
+- [x] Hilbert threshold proved exactly
+- [x] canonical all-prime row proved densely defined and closed
+- [x] regularized additive boundary map defined without inserting the zero divisor
+- [x] boundary value identified with `zeta(s)`
+- [x] cohomology and constant zero Fredholm index computed
+- [x] unconditional Lean formalization

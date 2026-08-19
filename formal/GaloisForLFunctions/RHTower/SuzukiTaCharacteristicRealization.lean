@@ -439,6 +439,7 @@ theorem suzukiTaSpectralMoment_smoothCore_eq_integral
           (- -I * (starRingEnd ℂ) z * (((x : ℝ) : ℂ))) =
           Complex.exp (I * star z * (((x : ℝ) : ℂ))) := by
         congr 1
+        rw [show (starRingEnd ℂ) z = star z from rfl]
         ring
       rw [hexp, mul_comm]
     _ = ∫ x in Icc (-a.1) a.1,
@@ -555,10 +556,84 @@ theorem suzukiTaSpectralMoment_IDeriv
     hzero, zero_sub]
   rw [hfactor, integral_const_mul]
   rw [mul_neg]
-  have hII : I * (I * star z) = -(star z) := by
-    rw [← mul_assoc, Complex.I_mul_I]
-    simp
-  rw [hII]
-  ring
+  let A : ℂ := ∫ x : ℝ, Complex.exp (I * star z * (x : ℂ)) * u x
+  change -(I * (I * star z * A)) = star z * A
+  calc
+    -(I * (I * star z * A)) = -((I * I) * star z * A) := by ring
+    _ = star z * A := by rw [Complex.I_mul_I]; ring
+
+/-- Riesz vector representing evaluation at the complex spectral parameter `z`. -/
+def suzukiTaSpectralVector (a : SuzukiPositiveAperture) (z : ℂ) :
+    SuzukiTaHilbert a :=
+  (suzukiTaSpectralMoment a z).adjoint (1 : ℂ)
+
+theorem suzukiTaSpectralVector_inner
+    (a : SuzukiPositiveAperture) (z : ℂ) (x : SuzukiTaHilbert a) :
+    inner ℂ (suzukiTaSpectralVector a z) x = suzukiTaSpectralMoment a z x := by
+  rw [suzukiTaSpectralVector,
+    (suzukiTaSpectralMoment a z).adjoint_inner_left]
+  simp
+
+theorem suzukiTaSpectralVector_ne_zero
+    (a : SuzukiPositiveAperture) (z : ℂ) :
+    suzukiTaSpectralVector a z ≠ 0 := by
+  intro hzero
+  have hinner := suzukiTaSpectralVector_inner a z
+    (suzukiTaSmoothCoreToHilbert a (suzukiTaSpectralMomentNormalizer a z))
+  rw [hzero, inner_zero_left, suzukiTaSpectralMoment_normalizer a z] at hinner
+  exact zero_ne_one hinner
+
+theorem suzukiTaSpectralVector_mem_adjoint
+    (a : SuzukiPositiveAperture) (z : ℂ) :
+    suzukiTaSpectralVector a z ∈ (suzukiTaMinimalDerivative a).adjoint.domain := by
+  apply LinearPMap.mem_adjoint_domain_of_exists
+  refine ⟨z • suzukiTaSpectralVector a z, ?_⟩
+  intro x
+  let u : SuzukiTaSmoothCore a := (suzukiTaSmoothCoreEquivRange a).symm x
+  have hx : x = (suzukiTaSmoothCoreEquivRange a) u := by
+    exact ((suzukiTaSmoothCoreEquivRange a).apply_symm_apply x).symm
+  rw [hx]
+  have hcoe : ((suzukiTaSmoothCoreEquivRange a u :
+      LinearMap.range (suzukiTaSmoothCoreToHilbert a)) : SuzukiTaHilbert a) =
+      suzukiTaSmoothCoreToHilbert a u := rfl
+  rw [hcoe, suzukiTaMinimalDerivative_apply]
+  change inner ℂ (z • suzukiTaSpectralVector a z)
+      (suzukiTaSmoothCoreToHilbert a u) =
+    inner ℂ (suzukiTaSpectralVector a z)
+      (suzukiTaSmoothCoreToHilbert a (suzukiTaSmoothCoreIDeriv a u))
+  rw [inner_smul_left, suzukiTaSpectralVector_inner,
+    suzukiTaSpectralVector_inner, suzukiTaSpectralMoment_IDeriv]
+  rw [show (starRingEnd ℂ) z = star z from rfl]
+
+def suzukiTaSpectralVectorDomain
+    (a : SuzukiPositiveAperture) (z : ℂ) :
+    (suzukiTaMinimalDerivative a).adjoint.domain :=
+  ⟨suzukiTaSpectralVector a z, suzukiTaSpectralVector_mem_adjoint a z⟩
+
+theorem suzukiTa_adjoint_spectralVector
+    (a : SuzukiPositiveAperture) (z : ℂ) :
+    (suzukiTaMinimalDerivative a).adjoint (suzukiTaSpectralVectorDomain a z) =
+      z • suzukiTaSpectralVector a z := by
+  apply LinearPMap.adjoint_apply_eq
+    (dense_suzukiTaShiftedDerivativePMap_domain a 0)
+  intro x
+  let u : SuzukiTaSmoothCore a := (suzukiTaSmoothCoreEquivRange a).symm x
+  have hx : x = (suzukiTaSmoothCoreEquivRange a) u := by
+    exact ((suzukiTaSmoothCoreEquivRange a).apply_symm_apply x).symm
+  rw [hx]
+  have hcoe : ((suzukiTaSmoothCoreEquivRange a u :
+      LinearMap.range (suzukiTaSmoothCoreToHilbert a)) : SuzukiTaHilbert a) =
+      suzukiTaSmoothCoreToHilbert a u := rfl
+  have hspectral : ((suzukiTaSpectralVectorDomain a z :
+      (suzukiTaMinimalDerivative a).adjoint.domain) : SuzukiTaHilbert a) =
+      suzukiTaSpectralVector a z := rfl
+  rw [hcoe, suzukiTaMinimalDerivative_apply, hspectral]
+  change inner ℂ (z • suzukiTaSpectralVector a z)
+      (suzukiTaSmoothCoreToHilbert a u) =
+    inner ℂ (suzukiTaSpectralVector a z)
+      (suzukiTaSmoothCoreToHilbert a (suzukiTaSmoothCoreIDeriv a u))
+  rw [inner_smul_left, suzukiTaSpectralVector_inner,
+    suzukiTaSpectralVector_inner, suzukiTaSpectralMoment_IDeriv]
+  rw [show (starRingEnd ℂ) z = star z from rfl]
 
 end RHTower

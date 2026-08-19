@@ -508,6 +508,46 @@ theorem adjointBoundaryPairing_smul_right (S : H →ₗ.[ℂ] H)
   simp only [adjointBoundaryPairing]
   ring
 
+/-- Boundary-vanishing criterion for membership in a self-adjoint deficiency extension.
+
+This is the maximality step needed by characteristic-function realizations: an adjoint-domain
+vector belongs to the extension when its Green boundary pairing with the chosen boundary
+generator vanishes. -/
+theorem mem_deficiencyExtensionDomain_of_boundary_zero {S : H →ₗ.[ℂ] H}
+    (hDense : Dense (S.domain : Set H)) (hSymm : S.IsFormalAdjoint S)
+    (p m : S.adjoint.domain) (u : ℂ)
+    (hSelf : IsSelfAdjoint (deficiencyExtension hDense hSymm p m u))
+    (x : S.adjoint.domain)
+    (hboundary : adjointBoundaryPairing S x (p + u • m) = 0) :
+    (x : H) ∈ (deficiencyExtension hDense hSymm p m u).domain := by
+  let A := deficiencyExtension hDense hSymm p m u
+  let w : S.adjoint.domain := p + u • m
+  have hxAdj : (x : H) ∈ A.adjoint.domain := by
+    apply mem_adjoint_domain_of_exists
+    refine ⟨S.adjoint x, ?_⟩
+    intro y
+    obtain ⟨c, q, hy⟩ := exists_closure_add_smul_boundary p m u y.property
+    let cAdj : S.adjoint.domain :=
+      ⟨(c : H), (closure_le_adjoint hDense hSymm).1 c.property⟩
+    let yAdj : S.adjoint.domain :=
+      ⟨(y : H), deficiencyExtensionDomain_le_adjoint hDense hSymm p m u y.property⟩
+    have hyAdj : yAdj = cAdj + q • w := by
+      apply Subtype.ext
+      exact hy
+    have hxc : adjointBoundaryPairing S x cAdj = 0 :=
+      adjointBoundaryPairing_closure_right hDense hSymm x c
+    have hxy : adjointBoundaryPairing S x yAdj = 0 := by
+      rw [hyAdj, adjointBoundaryPairing_add_right,
+        adjointBoundaryPairing_smul_right, hxc, hboundary]
+      ring
+    change inner ℂ (S.adjoint x) (y : H) = inner ℂ (x : H) (A y)
+    rw [show A y = S.adjoint yAdj from rfl]
+    exact sub_eq_zero.mp hxy
+  have hEq : A.adjoint = A := isSelfAdjoint_def.mp hSelf
+  change (x : H) ∈ A.domain
+  rw [← hEq]
+  exact hxAdj
+
 theorem adjointBoundaryPairing_boundaryVector {S : H →ₗ.[ℂ] H}
     {p m : S.adjoint.domain} {u : ℂ}
     (hp : S.adjoint p = I • (p : H))

@@ -1,7 +1,7 @@
 # The all-prime co-shift row has a uniform orthogonal spectral gap
 
 - **ID:** `prime-coshift-row-orthogonal-spectral-gap`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); source-constraint coercivity
 - **Scientific status:** `[PROVED HERE] [BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `prime-coshift-eigenline-regularized-boundary-complex.md` and
@@ -197,4 +197,53 @@ with the concrete co-shift model and should expose `(1)` as its endpoint.
 - [x] infinite intersection identified with the arithmetic eigenline
 - [x] global compact-uniform orthogonal spectral gap
 - [ ] concrete Lean formalization of the co-shift row and `(1)`
+- [x] natural scalar additive trace proved nonclosable; exact route retired
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+The concrete co-shift row asked for in the "Lean decision" section now exists, and `(1)` is its
+endpoint.  `#print axioms` on every capstone reports only `propext, Classical.choice, Quot.sound`.
+
+**New reusable Hilbert-space infrastructure**
+
+| Statement | Lean declaration |
+|---|---|
+| product of two commuting orthogonal projections is the projection onto the intersection | `GaloisForLFunctions.HTGeometry.starProjection_inf_of_commute` |
+| eq. (10), finite form | `GaloisForLFunctions.HTGeometry.norm_sub_starProjection_finsetInf_sq_le` |
+| antitone families of closed subspaces have strongly convergent projections | `GaloisForLFunctions.HTGeometry.starProjection_tendsto_iInf_of_antitone` |
+| eq. (14), `dist(x, ⨅ M_i)^2 <= sum_i dist(x, M_i)^2` for a commuting family | `GaloisForLFunctions.HTGeometry.norm_sub_starProjection_iInf_sq_le` |
+| eqs. (5)–(6), reduced minimum modulus from the adjoint | `GaloisForLFunctions.HTGeometry.transverse_lower_bound_of_adjoint_bounded_below` |
+
+**The one-prime kernel projection** —
+`formal/GaloisForLFunctions/RHTower/PrimeCoShiftKernelProjection.lean`
+
+`P_p = (1 - |a|^2) B E B^*` with `B = (1 - a V_p)^{-1}` (a Neumann unit) and `E = 1 - V_p V_p^*`.
+
+| Card item | Lean declaration |
+|---|---|
+| `ker(T_p)` and its geometric generator, eq. (4) | `Pop`, `Pop_apply_of_mem_ker` |
+| `P_p` is the orthogonal projection onto `ker T_p` | `starProjection_ker_Top` |
+| eqs. (5)–(6), one-prime reduced minimum modulus | `norm_adjoint_Top_ge`, `norm_Top_ge_norm_sub_Pop` |
+| eq. (9), commuting prime ground projections | `commute_Pop_Pop` |
+| double commutation of the prime isometries | `Vop_commute`, `coShift_commute`, `coShift_commute_Vop` |
+
+**The global gap** — `formal/GaloisForLFunctions/RHTower/PrimeCoShiftSpectralGap.lean`
+
+| Card item | Lean declaration |
+|---|---|
+| eq. (7), `1 - p^{-sigma} >= 1 - 2^{-sigma}` | `two_rpow_le` |
+| eqs. (5)+(7), one-prime gap uniform in `p` | `gap_one_prime` |
+| eqs. (11)–(12), `prod_p P_p = P_s` | `eigenSubmodule_eq_iInf` with `eigenSubmodule_eq_span` |
+| eqs. (13)–(14) | `norm_sub_starProjection_iInf_sq_le` applied to `rowKer` |
+| **eq. (1), the orthogonal spectral gap** | `prime_row_spectral_gap` |
+| eq. (15), compact uniformity | `prime_row_spectral_gap_uniform` |
+| eq. (16) | the same, read as the first input of the retired chain |
+
+## Gates
+
+- [x] one-prime co-shift kernel and reduced minimum modulus
+- [x] commuting prime ground projections
+- [x] infinite intersection identified with the arithmetic eigenline
+- [x] global compact-uniform orthogonal spectral gap
+- [x] concrete Lean formalization of the co-shift row and `(1)`
 - [x] natural scalar additive trace proved nonclosable; exact route retired

@@ -1,7 +1,7 @@
 # Gamma Tail Law For Shifted Square Tests
 
 - **ID:** gamma-tail-law-shifted-square-tests
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `docs/consolidated/revision01/bridge-theorem.md`, RNG-selected variable `gamma = Im rho`
 - **Statement:** Let `p(y)=y^j q(y)` with `q(0) != 0`. The high-height tail of the reciprocal square test
@@ -25,7 +25,7 @@ tail law needed for finite audits and hard-edge regularized explicit-formula lim
 
 - [x] 0 -> 1 in-progress: bridge-theorem variable selected by corrected RNG sample space
 - [x] 1 -> 2 fully-proven: dyadic zero-count proof complete
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: `RHTower.xi_central_tail_law`, `RHTower.xi_central_tail_law_tsum`; `lake build` green; axioms clean
 - [ ] 3 -> 4 publication-ready: fold into reciprocal-certificate section
 
 ## Proof
@@ -132,3 +132,56 @@ slow `Q_0` high-height tail at the same time as the low-height hard-edge pole.
 ## Log
 
 - 2026-06-21 -- Conway: created from corrected bridge-theorem RNG draw `63/78`, `gamma = Im rho`.
+
+## Lean certification
+
+Module: `formal/GaloisForLFunctions/RHTower/XiCentralTailLaw.lean`
+(wired into `GaloisForLFunctions.RHTower`; `lake build` green; every declaration below depends only
+on `propext`, `Classical.choice`, `Quot.sound`).
+
+The card's variables are the corpus's:
+
+| Card | Lean |
+|---|---|
+| `w_rho = rho - 1/2` | the argument of `Complex.norm (ρ - 1/2)` |
+| `y_rho = -w_rho^(-2)` | `RHTower.xiCentralReciprocalSquare` |
+| `m_rho` | `MeromorphicOn.divisor xi Set.univ ρ` |
+| `gamma_rho = Im rho` | `(ρ : ℂ).im` |
+| `p = X^j q` | `Polynomial.X ^ j * q` |
+
+Proof steps:
+
+| Card step | Lean name |
+|---|---|
+| `N(T) = O(T log T)`, disc form | `exists_xiRegionOrderSum_closedBall_upper_bound` |
+| a finite set of zeros in a region has mass at most the region's divisor mass | `sum_multiplicity_le_xiRegionOrderSum` |
+| `|w_rho| >= |gamma_rho|` on the strip | `abs_im_le_norm_centered` |
+| `|y_rho| = O(|gamma_rho|^-2)` | `norm_xiCentralReciprocalSquare_le` |
+| `|q(y)| <= C_q` on the closed unit disc | `norm_eval_le_polyCoeffMass` |
+| `|p(y)| <= C_p |y|^j` | `norm_eval_shifted_le` |
+| dyadic window of a zero above the cutoff | `dyadicLevel`, `dyadicLevel_bounds` |
+| geometric and linear-geometric dyadic sums | `sum_geom_half_le`, `sum_lin_geom_half_le` |
+
+Statement:
+
+- `xi_central_tail_law` — for every `j`, every `r >= 1` and every `q`, there is `C > 0` with
+  `sum_{rho in s} m_rho |y_rho|^r |p(y_rho)|^2 <= C (log G) / G^(2r+4j-1)` for every `G >= 2` and
+  every finite set `s` of zeros of ordinate above `G`.
+- `xi_central_tail_law_tsum` — the same bound for the full tail: the tail mass function
+  `tailTestTerm` is summable over the whole zero divisor support and its `tsum` obeys the bound.
+
+Specialisations (the card's table):
+
+| Tower | Lean name | bound |
+|---|---|---|
+| `Q_0`, `j=0` | `xi_central_tail_law_Q0_hardEdge` | `O(G^-1 log G)` |
+| `Q_1`, `j=0` | `xi_central_tail_law_Q1_hardEdge` | `O(G^-3 log G)` |
+| `Q_0`, `j=1` | `xi_central_tail_law_Q0_simpleZero` | `O(G^-5 log G)` |
+| `Q_1`, `j=1` | `xi_central_tail_law_Q1_simpleZero` | `O(G^-7 log G)` |
+| four powers per hard-edge zero | `xi_central_tail_exponent_step` | exponent arithmetic |
+
+Not formalized: the closing remark that the exponent is *sharp* for absolute tails. That direction
+needs the Riemann-von Mangoldt lower asymptotic (`asymp G log G` zeros per dyadic height window); the
+corpus owns only the Jensen upper bound `exists_xiZeroCount_upper_bound`, and the card itself cites
+the asymptotic rather than proving it. The card's Statement -- the `O(G^(1-2r-4j) log G)` tail law --
+is fully proved and unconditional in Lean.

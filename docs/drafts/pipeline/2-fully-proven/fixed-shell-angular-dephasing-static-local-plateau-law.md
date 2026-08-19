@@ -1075,3 +1075,56 @@ diagonal, so both `Tr(D·V)` and `Tr(V·D)` vanish termwise.  The residual energ
 the channel is zero, which is exactly the nondegeneracy Lemma A2 asks for.
 
 Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+## Lean progress -- the chart bridge, and Theorem A on one chart (2026-08-19)
+
+The previous entry left "the chart" as item 1: produce a connected chart with analytic simple
+eigenbranches and feed Lemma A2 to it.  That is now done, in three new modules -- umbrella-wired,
+axiom-clean -- and the result is the symmetrised obstruction `(14)` of the proof of Theorem A,
+nonzero somewhere on the chart, with the card's own rate `Q(H) = Tr(H²)` and **no** hypothesis
+beyond the ones Lemma A1 and A2 supply.
+
+`formal/GaloisForLFunctions/HTGeometry/SelectedLayerSliceData.lean`
+
+| Card item | Declaration |
+|---|---|
+| the selected-pair slice of a chart, stated against the chart point so chart identities restrict | `SelectedLayerSliceData` |
+| **every chart has one**, for every pair of distinct local labels | `exists_selectedLayerSliceData` |
+
+The existing `SelectedLayerAnalyticRelationWitness` carries the *linear* relation as a field and so
+cannot serve a quadratic one; this slice carries only the geometry -- an infinite set of admissible
+shifts, the branch labels surviving the restriction by uniqueness of simple characteristic-root
+germs, the root equation on the slice, and membership of the selected-pair curve in the chart.
+
+`formal/GaloisForLFunctions/HTGeometry/ChartQuadraticRateEscape.lean`
+
+| Card item | Declaration |
+|---|---|
+| the split base shift `±z/2` of a one-qubit extension | `boolShift` |
+| **the chart slice is the split-spectrum slice**: `layeredEnergy E (boolShift z) = layerSplitEnergy E z`, `selectedPairShiftLine (boolShift z₀) false true z = boolShift z`, `selectedLayerCoupling M false true = layerCrossPerturbation M` | `layeredEnergy_boolShift`, `selectedPairShiftLine_boolShift`, `selectedLayerCoupling_bool` |
+| **chart-wide quadratic-rate rigidity**: a zero-sum packet satisfying `(∑ cᵢλᵢ)² = κ Tr(H²)` throughout the chart vanishes | `chart_quadraticRate_eq_zero` |
+| its contrapositive, the chart escape | `exists_chart_quadraticRate_ne` |
+
+`formal/GaloisForLFunctions/HTGeometry/ChartQuadraticRateOrbitEscape.lean`
+
+| Card item | Declaration |
+|---|---|
+| the rate `κ Tr(H(p)²)` is analytic on the chart | `analyticAt_localExtensionMatrix_entry`, `analyticOnNhd_chartQuadraticRate` |
+| **`(14)`: the labeling orbit `∏_π [(∑ cⱼ E_{π(j)})² − κ Q(H)]` is somewhere nonzero on the chart** | `exists_chartQuadraticOrbit_ne_zero` |
+
+Two things make this work without new analysis.  First, `trace_sq_layerExtensionSlice` gives the
+rate the shape `κ(Q₀(z) + g²Q_V)` along the slice, which is exactly what
+`localExtension_quadraticRate_eq_zero_unconditional` consumes, and
+`trace_sq_layerCrossPerturbation_ne_zero` supplies its `Q_V ≠ 0` from Hermiticity of the transition
+channel.  Second, the orbit is formed with the *card's* rate `Tr(H²)` rather than the power sum of
+the eigenvalues, so the second Newton identity -- the mathlib gap this card previously flagged --
+never enters: each factor of the product is the relation of the relabeled packet `c ∘ π⁻¹`, which
+chart rigidity refutes directly, and the identity theorem for a finite product of analytic
+functions does the rest.
+
+### What remains for Theorem A
+
+The induction step's parameter matching: state the dense/residual maximally projective set and the
+open endpoint-completeness condition in one parameter space and intersect, so that the hypotheses
+of `exists_chartQuadraticOrbit_ne_zero` (`hE`, `hgap`, `hMherm`, `hM`, `hbase`) are met at some
+point of every nonempty open set of the extended architecture.

@@ -21,9 +21,9 @@ namespace RHTower
 
 open GaloisForLFunctions
 
-variable {K L G : Type}
-variable [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
-variable [Group G] [Finite G] [MulSemiringAction G L] [IsGaloisGroup G K L]
+section
+
+variable {G : Type} [Group G]
 
 /-- The literal two-dimensional symplectic Artin representation obtained by
 pulling the standard `Q₈` representation back along a Galois-group
@@ -33,7 +33,6 @@ def deningerQ8ArtinRepresentation (e : G ≃* QuaternionGroup 2) :
   deningerQ8Representation.comp e.toMonoidHom
 
 /-- Pointwise description of the pulled-back Artin action. -/
-omit [Finite G] in
 theorem deningerQ8ArtinRepresentation_apply
     (e : G ≃* QuaternionGroup 2) (g : G) (v : Q8Carrier) :
     deningerQ8ArtinRepresentation e g v = deningerQ8Representation (e g) v :=
@@ -41,7 +40,6 @@ theorem deningerQ8ArtinRepresentation_apply
 
 /-- The pulled-back Artin representation preserves Deninger's nondegenerate
 alternating form. -/
-omit [Finite G] in
 theorem deningerQ8ArtinRepresentation_preserves_symplectic
     (e : G ≃* QuaternionGroup 2) (g : G) (p q : Q8Carrier) :
     deningerQ8TransitionSymplectic (deningerQ8ArtinRepresentation e g p)
@@ -64,10 +62,17 @@ theorem deningerQ8ArtinRepresentation_finrank :
   rw [Module.finrank_prod]
   norm_num
 
-/-- An actual number-field Galois extension whose group is `Q₈` has degree
-eight.  This is the field-theoretic part of a `Q₈` realization; it does not
-produce such an extension. -/
-omit [NumberField K] [NumberField L] in
+end
+
+section
+
+variable {K L G : Type}
+variable [Field K] [Field L] [Algebra K L]
+variable [Group G] [Finite G] [MulSemiringAction G L] [IsGaloisGroup G K L]
+
+/-- Any field Galois extension whose group is `Q₈` has degree eight.  This is
+the field-theoretic part of a `Q₈` realization; it does not produce such an
+extension. -/
 theorem deningerQ8Galois_finrank_eq_eight (e : G ≃* QuaternionGroup 2) :
     Module.finrank K L = 8 := by
   letI : Fintype G := Fintype.ofFinite G
@@ -78,6 +83,8 @@ theorem deningerQ8Galois_finrank_eq_eight (e : G ≃* QuaternionGroup 2) :
     _ = 8 := by
       rw [QuaternionGroup.card]
 
+end
+
 /-- The canonical finite-place Euler product of the pulled-back `Q₈` Artin
 representation. -/
 noncomputable def deningerQ8ArtinEulerProduct
@@ -86,6 +93,12 @@ noncomputable def deningerQ8ArtinEulerProduct
     (e : G ≃* QuaternionGroup 2) : ℂ → ℂ :=
   numberFieldFinitePlaceArtinEulerReciprocalProduct
     (K := K) (L := L) (deningerQ8ArtinRepresentation e)
+
+section
+
+variable {K L G : Type}
+variable [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
+variable [Group G] [Finite G] [MulSemiringAction G L] [IsGaloisGroup G K L]
 
 /-- The actual finite-place `Q₈` Artin Euler product is holomorphic in its
 absolute-convergence half-plane.  No continuation to the central point is
@@ -104,5 +117,7 @@ theorem deningerQ8ArtinEulerProduct_ne_zero_of_mem_artinEulerAbsoluteHalfPlane
     deningerQ8ArtinEulerProduct K L G e s ≠ 0 := by
   exact numberFieldFinitePlaceArtinEulerReciprocalProduct_ne_zero_of_mem_artinEulerAbsoluteHalfPlane
     (K := K) (L := L) (deningerQ8ArtinRepresentation e) hs
+
+end
 
 end RHTower

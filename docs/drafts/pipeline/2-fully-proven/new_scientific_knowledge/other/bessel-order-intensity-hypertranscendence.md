@@ -460,3 +460,154 @@ and left cancellation by `sigma(Y)` gives `sigma M = M`.
 `exists_constant_coeffs_of_relation` is the linear-disjointness statement that will bound the Galois
 group and is one of the two ingredients of the no-new-constants theorem; the other is
 `DifferenceSigmaSimple.isField_sigmaConstantsSubring_of_isSigmaSimple`.
+
+## Lean progress — no new constants, the Galois representation, and the parameterized layer
+
+Three further modules, all unconditional and axiom-clean.
+
+### `TranscendentalTranslateObstruction` — the geometric input
+
+```text
+exists_ne_zero_basicOpen_subset_of_isConstructible
+    a constructible subset of the spectrum of a domain containing the generic point contains a
+    basic open D(f) with f nonzero
+genericPoint_mem_range_comap
+    an injective ring map from a domain has the generic point in the image of its comap
+exists_notMem_isUnit_sub_algebraMap
+    **for a nonzero finite-type K-algebra and a transcendental e, some translate e - a with a in
+    any infinite set of scalars fails to be a unit**
+```
+
+The last is Chevalley's theorem in the exact form the constants theorem needs: the image of
+`Spec R -> Spec K[e]` is constructible and dense, hence contains `D(f)` for some nonzero `f`, hence
+contains all but the finitely many points `(X - a)` with `f(a) = 0`.
+
+### `DifferenceNoNewConstants`
+
+```text
+sigma_apply_aeval_eq        the shift of a polynomial value at a constant is the value of the
+                            shifted polynomial
+exists_monic_constantCoeff_annihilator
+    **every constant of a sigma-simple finite-type extension is killed by a monic polynomial fixed
+    by the shift** -- so it is algebraic over the constants of the base
+exists_eq_algebraMap_of_isSigmaSimple
+    **no new constants**: if the constants of the base are algebraically closed, every constant of
+    the extension already lies in the base
+```
+
+Two halves.  Geometric: a nonzero constant of a `sigma`-simple ring is a unit, so a transcendental
+constant would make every translate `e - a` (`a` a constant of the base) a unit, contradicting the
+Chevalley statement.  Algebraic: the annihilator ideal of the constant is stable under the shift
+acting on coefficients, so its monic generator is fixed, so its coefficients are constants; then
+the algebraically closed case splits off a linear factor and `sigma`-simplicity forces one of the
+factors `e - a` to vanish.
+
+This is the theorem that makes the difference Galois group a group over a *fixed* field.
+
+### `DifferenceGaloisRepresentation`
+
+```text
+apply_eq_self_of_noNewConstants   a K-algebra automorphism fixes every constant
+algEquiv_eq_of_eq_on_fundamental  automorphisms agreeing on the fundamental matrix agree on the
+                                  ring it and the inverse of its determinant generate
+galoisRepresentation              **the difference Galois representation**: a group homomorphism
+                                  from the difference automorphism group to GL_n over the base
+galoisRepresentation_injective    it is faithful on a Picard--Vessiot ring
+```
+
+### `ParameterizedDifferenceGalois`
+
+```text
+CommutesDeriv sigma                       the shift commutes with the derivation
+IsSigmaDeltaIdeal, IsSigmaDeltaSimple     ideals stable under both operators
+exists_maximal_isSigmaDeltaIdeal          maximal doubly stable ideals exist (Zorn)
+deriv_mem_sigmaConstantsSubring           **the constants are stable under the derivation**
+isField_and_derivClosed_sigmaConstantsSubring
+    the constants of a sigma-simple parameterized difference ring form a *differential* field
+parameterizedAut                          the parameterized difference Galois group
+galoisMatrix_deriv_mem_sigmaConstants     its Galois matrix has entries in that differential field
+```
+
+That last statement is the reason the parameterized Galois group is a *differential* algebraic
+group rather than an algebraic group, which is exactly the structure Cassidy's classification acts
+on.
+
+**Still not stage 3.**  Remaining: the torsor property of the Picard--Vessiot ring and the Galois
+correspondence; the parameterized Picard--Vessiot ring (a maximal `sigma`-ideal of the
+`sigma`-`delta` coordinate ring is a `delta`-ideal in a `Q`-algebra); Cassidy's classification of
+differential algebraic subgroups of `GL_2`; and Dreyfus's normal form, whose refutation for
+`K_nu(s)` the corpus already owns in `BesselOrderDreyfusNormalForm`.
+
+### `DifferenceFundamentalSolutionSpace`
+
+```text
+IsSystemSolution sigma B v                     sigma v = B v
+isSystemSolution_col                           the columns of a fundamental matrix are solutions
+exists_constant_coords                         **every solution is the fundamental matrix applied
+                                               to a vector of constants**
+constant_coords_unique                         and that vector is unique
+isSystemSolution_iff_exists_constant_coords    so the solution space is exactly the constant span
+```
+
+With `isField_sigmaConstantsSubring_of_isSigmaSimple` this says the solution space inside a
+Picard--Vessiot ring is a vector space of dimension exactly `n` over a field of constants — the
+statement that turns a difference equation into a Galois-theoretic object.  The proof needs no
+inverse of `B Y`: from `sigma Y = B Y` one shows `(Y^{-1})^sigma B = Y^{-1}` by right-cancelling
+`Y`, and then `Y^{-1} v` is fixed by the shift for every solution `v`.
+
+## Lean progress — the Picard--Vessiot ring is complete, and the order recurrence is irreducible
+
+### `DifferenceCompanionCasoratian`
+
+```text
+differenceCompanion_mulVec_of_lt, _of_last   the two row shapes of the companion matrix
+differenceCompanion_mulVec_eq_zero           its kernel is trivial when the trailing coefficient is
+isUnit_det_differenceCompanion               **the companion matrix is invertible in every rank**
+casoratian sigma y                           the matrix of successive shifts
+det_casoratian_eq_zero_of_constant_relation  a constant relation kills the Casoratian
+exists_constant_relation_of_det_casoratian_eq_zero
+                                             and conversely, a vanishing Casoratian produces one
+```
+
+The corpus previously had companion invertibility only in rank two, from the explicit `2 x 2`
+determinant.  The general statement needs no determinant computation: the companion matrix shifts
+coordinates up and reads the equation off in the last row, so a vector in its kernel has all higher
+coordinates zero and the trailing coefficient kills the first.  The Casoratian criterion then falls
+out of the minimal-support lemma already in `DifferenceSolutionSpace`.
+
+### `DifferenceOperatorFactorization`
+
+```text
+firstOrderOp sigma r y = sigma y - r y
+secondOrderOp sigma a1 a0 y = sigma^2 y - a1 sigma y - a0 y
+secondOrderOp_eq_comp                    a Riccati solution factors the operator
+riccati_of_secondOrderOp_eq_comp         a factorization solves the Riccati equation
+exists_factorization_iff_exists_riccati  **factorization is exactly the Riccati equation**
+besselOrderOperator_no_factorization     **the Bessel order recurrence has no first-order right
+                                         factor over C(X)**, for every nonzero slope
+modifiedBesselOrderOperator_no_factorization
+                                         the physical specialization at every positive argument
+```
+
+This converts the corpus's rational-Riccati obstruction into an *irreducibility* theorem: the
+second-order order recurrence for `K_nu(s)` admits no factorization into first-order difference
+operators over `C(nu)`.  Irreducibility is what forces the difference Galois group of the recurrence
+to be large, and it is the hypothesis under which Cassidy's classification has content.
+
+The coefficient comparison in the converse direction needs the shift to be nontrivial, supplied by
+`ratShift_ratFuncX_ne`.
+
+### `DifferencePicardVessiotConstants`
+
+```text
+pvSigma_algebraMap                       the action restricts to the shift on the base
+exists_picardVessiot_no_new_constants
+    **the Picard--Vessiot ring of an invertible linear difference system over a difference field
+    whose constants are infinite and algebraically closed is sigma-simple, carries an invertible
+    fundamental solution matrix, and has exactly the constants of the base**
+```
+
+This closes the loop between the construction and the constants theorem: the localized coordinate
+ring is a finite-type algebra over the base (mathlib's localization instance), so its quotient by a
+maximal `sigma`-ideal is too, and the abstract no-new-constants theorem applies.  That is the full
+defining property of a Picard--Vessiot ring, unconditional and axiom-clean.

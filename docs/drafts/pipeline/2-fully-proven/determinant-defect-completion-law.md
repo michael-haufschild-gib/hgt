@@ -522,3 +522,46 @@ cost -- is now formal, the latter at every order via
 `MicroSpectrumMomentAssembly.exists_multiset_moment_realization`.
 
 Axiom audit for all nine declarations: `propext`, `Classical.choice`, `Quot.sound`.
+
+## Lean progress -- the multivariable fibre at Schatten order two
+
+The card's `(DC)` is stated for a pencil over a finite-dimensional parameter space `V`, with fibre
+`⊕_{k=1}^{p-1} Sym^k(V*)`.  At `p = 2` that fibre is `Sym¹(V*)`, the linear forms on `V`, and the
+several-variable statement needs no new analysis: a pencil is *linear*, so restricting it to a
+coordinate axis turns the parameter into the spectral variable.  Two new modules, both
+umbrella-wired and axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantScaling.lean`
+
+| Card item | Declaration |
+|---|---|
+| the Hilbert--Schmidt scaling laws | `HilbertSchmidt.hsNorm_smul`, `hsComp_smul_left`, `hsComp_smul_right`, `hsPow_smul`, `hsTrace_hsPow_smul` |
+| **rescaling the kernel rescales the spectral variable**, in the exponent and on the disc | `HilbertSchmidt.fredholmExp_smul`, `HilbertSchmidt.fredholmDet_smul` |
+| **the same for the entire representative**: `det₂(1 − z·cK) = det₂(1 − (cz)K)` | `entireDet2_smul` |
+
+`formal/GaloisForLFunctions/HTGeometry/PencilDeterminantCompletion.lean`
+
+| Card item | Declaration |
+|---|---|
+| Hilbert--Schmidt kernels are closed under finite sums | `isHS_zero`, `isHS_finsetSum` |
+| the kernel of a linear pencil `A(v) = ∑ vᵢ Aᵢ` | `pencilKernel`, `isHS_pencilKernel` |
+| **its restriction to a coordinate axis is a rescaled kernel** | `pencilKernel_axis` |
+| the fibre coordinate `P ∈ Sym¹(V*)` | `linearJet`, `linearJet_axis` |
+| the completed character `e^{P} det₂(1 − A(·))` of a pencil | `completedPencilDet` |
+| **the axis restriction of a pencil completion is a one-variable completion** | `completedPencilDet_axis` |
+| **each coefficient of the jet is a derivative at the origin along its axis** | `deriv_completedPencilDet_axis` |
+| **the fibre coordinate of a pencil is faithful** | `linearJet_eq_of_completedPencilDet_eq` |
+| **multivariable necessity at order two**: coefficientwise Hilbert--Schmidt convergence plus axiswise locally uniform convergence forces every jet coefficient to converge, to the completed determinant of the limit kernel | `tendsto_pencilJet` |
+
+`entireDet2_smul` is what makes the reduction legitimate, and it is proved without any analysis:
+the defining exponent `∑_{n≥2} zⁿ tr(Kⁿ)/n` picks up exactly `cⁿ` under `K ↦ cK`, so it depends on
+`cz` alone, and uniqueness of the entire representative transports the identity off the disc.
+
+So at `p = 2` the determinant-completion law now holds in the card's multivariable form: the fibre
+is `Sym¹(V*)`, the parametrization is injective, and the coordinate map is continuous, in every
+finite number of parameters.  What remains for `(DC)` in full is only the passage to general `p`,
+where the fibre acquires the higher symmetric powers and the regularized determinant `det_p` must
+be constructed on Schatten-`p` -- the spectral side of which is already formal at every order via
+`MicroSpectrumMomentAssembly.exists_multiset_moment_realization`.
+
+Axiom audit for all listed declarations: `propext`, `Classical.choice`, `Quot.sound`.

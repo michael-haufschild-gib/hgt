@@ -322,3 +322,54 @@ named hypothesis `hrigidity`, exactly as the parent card
 rings now exist in Lean (five modules, all axiom-clean; see the card's own log).  The next layer is
 "no new constants" for a base with algebraically closed constants, then the difference Galois group,
 then the parameterized theory, then Cassidy's `GL_2` classification.
+
+
+## Card 1 — the difference Galois foundation, layer by layer
+
+Eleven new modules now exist where mathlib and this repository had no Picard--Vessiot theory at all:
+
+| Module | Content |
+|---|---|
+| `DifferenceSolutionSpace` | constants of a difference field; solution space of a rank-`n` system has dimension at most `n` over them |
+| `DifferenceSigmaSimple` | `sigma`-ideals, maximal ones by Zorn, `sigma`-simplicity, reducedness, **constants of a `sigma`-simple ring form a field** |
+| `DifferenceCoordinateRing` | the action `a |-> sigma a`, `X |-> A X` on `K[X_ij]`; an automorphism with explicit two-sided inverse; `det X |-> det A . det X` |
+| `DifferenceAwayLocalization` | the action extends to the localization at the determinant |
+| `DifferencePicardVessiotQuotient` | a maximal `sigma`-ideal is two-sided stable; the quotient is `sigma`-simple, reduced, with a field of constants |
+| `DifferenceSystemPicardVessiot` | **existence of a Picard--Vessiot ring for every invertible linear difference system over every difference field** |
+| `DifferenceGaloisMatrix` | linear disjointness of constants; a difference automorphism moves the fundamental matrix by an invertible matrix of constants, multiplicatively |
+| `TranscendentalTranslateObstruction` | Chevalley: a transcendental element of a finite-type algebra cannot have all its translates by an infinite set of scalars invertible |
+| `DifferenceNoNewConstants` | **no new constants**, algebraic form and algebraically-closed form |
+| `DifferenceGaloisRepresentation` | the faithful group homomorphism to `GL_n` over the base |
+| `ParameterizedDifferenceGalois` | `sigma`-`delta` ideals, maximal ones, and the fact that the constants form a *differential* field, so the parameterized Galois group is a differential algebraic group |
+
+Every capstone reports `#print axioms` = `[propext, Classical.choice, Quot.sound]`.
+
+**Next, in order.**
+
+1. The torsor property `R ⊗_K R ≅ R ⊗_C C[G]` and the Galois correspondence.
+2. Parameterized Picard--Vessiot rings: in a `Q`-algebra, a maximal `sigma`-ideal of a
+   `sigma`-`delta` ring is a `delta`-ideal (Hardouin--Singer), so the parameterized ring exists.
+3. Cassidy's classification of differential algebraic subgroups of `GL_2`.
+4. Dreyfus's growth normal form; the corpus already refutes it for `K_nu(s)` and for the intensity
+   in `BesselOrderDreyfusNormalForm`.
+
+
+## Card 1 — later layers
+
+Four further modules:
+
+| Module | Content |
+|---|---|
+| `DifferenceCompanionCasoratian` | companion invertibility in every rank (no determinant computation); the Casoratian criterion in both directions |
+| `DifferenceOperatorFactorization` | factorization of a second-order difference operator is exactly its Riccati equation; **the Bessel order recurrence is irreducible over `C(nu)`** |
+| `DifferencePicardVessiotConstants` | **the Picard--Vessiot ring of an invertible system has exactly the constants of the base** — construction and constants theorem joined |
+| `DifferenceFundamentalSolutionSpace` | the solution space is the constant span of the fundamental matrix |
+
+The irreducibility theorem is the first *card-specific* consequence of the new foundation: the
+corpus's rational-Riccati obstruction now says that the order recurrence for `K_nu(s)` has no
+first-order right factor, so its difference module is irreducible.  That is the hypothesis under
+which Cassidy's classification of differential algebraic subgroups of `GL_2` has content.
+
+Remaining, unchanged: the torsor property and Galois correspondence (needs semilinear tensor
+products, which mathlib lacks); the parameterized Picard--Vessiot ring; Cassidy's classification;
+Dreyfus's normal form.

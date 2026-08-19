@@ -78,3 +78,51 @@ derivatives, so it does not postulate differentiation under an improper integral
 This does **not** close Burnol’s Theorems 3.1–3.3.  The remaining literal work is the bounded
 zero-jet evaluator family on all `L_a`, closure/complement equality with `P_a`, the aperture
 thresholds, projection to `K_a`, and the `a = 1` two-jet deletion theorem.
+
+## 2026-08-19 Q8 Artin-Galois advance
+
+`[LEAN-PROVED]` `DeningerQ8ArtinGaloisRealization.lean` transports the literal Q8 action through
+any field-Galois identification `G ≃ Q8`.  It proves the degree-eight extension, the
+degree-two symplectic Artin representation, central scalar `-1`, and, for number fields, the
+instantiated finite-place Artin Euler product is holomorphic and nonzero in `Re(s) > 1`.
+
+This is not a construction of a Q8 number field, an analytic continuation, or the required global
+root-number `-1`; those remain the exact Deninger core.
+
+## 2026-08-19 finite Carathéodory--Fejér rank bridge — paper proof
+
+`[PAPER-PROVED]` Let `T = circleToeplitzGram N c` be normalized, Hermitian and PSD, with
+`rank(T) = N`, and let a nonzero kernel vector define `P`.  The existing same-level atomic
+factorization gives `T = B^* B` with finitely many nonnegative circle atoms.  Let `S` be the
+**distinct** nodes having positive weight.  Every row of `B` belongs to the span of the
+Vandermonde rows indexed by `S`; therefore
+`N = rank(T) = rank(B) ≤ #S`.  The kernel equation gives `P(z)=0` for every `z ∈ S`, while
+`deg(P) ≤ N`.  Thus `deg(P) ≤ #S`, and the exact polynomial root-cardinality theorem forces
+`P.roots = S` (with multiplicity one).  Consequently every root of `P` is one of the unit-circle
+atoms.  No spectral, RH, or extension hypothesis is used.
+
+This closes precisely the finite normalized corank-one statement.  It is not the continuous
+distributional theorem, and normalization still has to be removed separately to state the paper’s
+arbitrary nonzero-diagonal form.
+
+`[LEAN-PROVED]` The paper proof is formalized in
+`CaratheodoryFejerRankCorankOne.lean` as
+`circleToeplitzGram_kernel_polynomial_roots_on_unitCircle_of_rank_eq`.  Its supporting theorem
+`caratheodoryFejerAtomicFactor_rank_le_activeNodeCard` is the exact rank-to-distinct-support
+extraction, and `caratheodoryFejerAtomicGram_kernel_eval_eq_zero_of_pos` removes an avoidable
+all-weights-strictly-positive assumption.  The leaf `lake env lean`, targeted `lake build`, and
+axiom audit passed; axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 2026-08-19 explicit Q8 radical certificate
+
+`[PAPER-PROVED]` Put `r=2+x` and `u=z²`, with `x²=2`, `y²=3`, and
+`z²=(2+x)(3+y)`. First `r²-4r+2=0`. Taking the quadratic norm in `y` gives
+`u²-6ru+6r²=0`, hence `r(24-6u)=12-u²`. Squaring this identity and using the
+quadratic equation for `r` yields `u⁴-24u³+144u²-288u+144=0`; substituting
+`u=z²` is the standard degree-eight eliminant.
+
+`[LEAN-PROVED]` `DeningerQ8ExplicitRadicalPolynomial.lean` proves this identity as
+`deningerQ8_explicitRadicalPolynomial_eq_zero` over every commutative ring. It is an algebraic
+certificate for the standard explicit quaternion-field candidate—not a claim that its splitting
+field has Galois group `Q8`, and not a root-number calculation. Those two arithmetic steps remain
+open and must not be merged by citation alone.

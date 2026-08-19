@@ -17,7 +17,7 @@
 | 4 | `mobius-channel-critical-mass-escape-law` | (4)-(12), S5 (14)-(15) | **DONE** |
 | 5 | `mobius-schur-centered-boundary-limit-law` | (3)-(5), (11)-(17) | **DONE** |
 | 6 | `mobius-schur-causal-critical-graph-limit-law` | (5)-(7), (13)-(17) | **DONE** |
-| 7 | `mobius-prime-aperture-differential-order-profile` | (4), (8), (16)-(18), (20)-(23) | (4),(5) DONE; E_1 built; (8) left |
+| 7 | `mobius-prime-aperture-differential-order-profile` | (4), (8), (16)-(18), (20)-(23) | **DONE** |
 | 8 | `mobius-logarithmic-jet-ht-transfer-li-no-holonomic-route` | transfer thm; non-D-finite; Li | **DONE** |
 | 9 | `mobius-signed-channel-coisometry-incidence-law` | (5)-(10), (15)-(17), (19)-(23), (25)-(27) | partial: coisometry layer done |
 | 10 | `mobius-signed-coisometry-schur-transfer-law` | (4)-(13), (17)-(18), (21)-(23), (23a)-(23i) | **DONE** |

@@ -30,7 +30,7 @@ variable {K R : Type*} [Field K] [CommRing R] [Algebra K R]
 
 /-- The shift of a polynomial expression in a constant is the expression in the shifted
 coefficients. -/
-theorem sigma_aeval_eq (σK : K ≃+* K) (σR : R ≃+* R)
+theorem sigma_apply_aeval_eq (σK : K ≃+* K) (σR : R ≃+* R)
     (hcompat : ∀ x : K, σR (algebraMap K R x) = algebraMap K R (σK x))
     {e : R} (he : σR e = e) (p : K[X]) :
     σR (aeval e p) = aeval e (p.map (σK : K →+* K)) := by
@@ -98,7 +98,7 @@ theorem exists_monic_constantCoeff_annihilator
   have hstab : ∀ p ∈ I, p.map (σK : K →+* K) ∈ I := by
     intro p hp
     have hp0 : aeval e p = 0 := (hmemI p).mp hp
-    have hshift := sigma_aeval_eq σK σR hcompat he p
+    have hshift := sigma_apply_aeval_eq σK σR hcompat he p
     rw [hp0, map_zero] at hshift
     exact (hmemI _).mpr hshift.symm
   -- the monic generator is fixed
