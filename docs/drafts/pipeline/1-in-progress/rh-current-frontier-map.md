@@ -402,10 +402,15 @@ supply a root-number certificate or cohomological landing
 The separate Serre witness now has a literal degree-eight radical tower: its top radicand is proved
 nonsquare and its normalized generator satisfies exactly
 `X^8 - 205 X^6 + 13940 X^4 - 378225 X^2 + 3404025`
-(`SerreQ8RootNumberNegOneTopRadicand.lean`, `SerreQ8RootNumberNegOnePolynomial.lean`). Lean has not
-yet identified this Serre top field as Galois `Q8` or formalized its global Artin epsilon factor.
-Thus the authenticated root-number-minus-one input, not construction of a degree-eight radical or
-the legacy `Q8` group calculation, is the remaining arithmetic gate in this terminal detour.
+(`SerreQ8RootNumberNegOneTopRadicand.lean`, `SerreQ8RootNumberNegOnePolynomial.lean`). Lean now
+identifies this Serre top field as Galois `Q8` and pulls the two-dimensional symplectic Artin
+representation back over that literal Galois group
+(`SerreQ8RootNumberNegOneGalois.lean`,
+`SerreQ8RootNumberNegOneGaloisIdentification.lean`,
+`SerreQ8ArtinGaloisRealization.lean`).  Its global Artin epsilon factor remains unformalized.
+Thus the authenticated root-number-minus-one input, not construction of a degree-eight radical,
+the `Q8` group calculation, or the representation realization, is the remaining arithmetic gate in
+this terminal detour.
 
 ### O — exact restricted-Weil ground and canonical actual heads
 
@@ -1254,7 +1259,7 @@ Closure applies to named mechanism, not every future use of similar objects.
 | AF class-law scale-orbit | Convergent abelian class-law certificate exists iff centered rate is zero; global certificates on all Xi copies exist iff RH. | Terminal rigidity/selection theorem; successor must change interface to singular/infinite-action or genuinely global aggregate law. |
 | weighted-Mertens half-unit tower as producer | One exponent gives one zero-free half-plane, but the full tower `0<=alpha<1/2` is exactly RH; it cannot be invoked as an upstream estimate. | Exact causal transform, one-moment transfer, and invariant half-unit prelimit deficit guide MSC/G aperture research. |
 | Suzuki v2 entire characteristic wall | Displayed target has an unavoidable pole, so no all-plane locally uniform limit of entire real-zero characteristics exists; finite holomorphic exponential gauges do not remove it. | Actual entire real-zero Suzuki characteristics now exist; live SV2 uses the corrected two-chart spherical wall. |
-| Deninger finite quaternionic real descent | Quaternionic anti-linear square `-1` forces even complex multiplicity, but root number `-1` forces odd central order; order-equals-multiplicity real symplectic realization is impossible. | Legacy radical field is proved degree eight, Galois, with group `Q8`. Separate Serre polynomial now has literal degree-eight radical realization. Serre-field Galois/`Q8` identification and global Artin epsilon-factor calculation remain; even if supplied, they certify the parity obstruction rather than revive finite real descent. |
+| Deninger finite quaternionic real descent | Quaternionic anti-linear square `-1` forces even complex multiplicity, but root number `-1` forces odd central order; order-equals-multiplicity real symplectic realization is impossible. | Legacy radical field is proved degree eight, Galois, with group `Q8`. The source-authenticated Serre field is also now degree eight, Galois with group `Q8`, and carries the literal pulled-back two-dimensional symplectic Artin representation. Only its global Artin epsilon-factor calculation remains; even if supplied, it certifies the parity obstruction rather than reviving finite real descent. |
 | direct prime Ising | Raw/scalar-normalized finite balanced tree partitions cannot converge locally uniformly to XiC; rank growth forces scale collapse. | Only singular critical rescaling outside fixed modal closure could be new. |
 | compact Thorin/Markov | Compact Thorin and Markov representations are RH-equivalent; canonical measure unique; theta-likelihood candidate not infinitely divisible. | Upstream positive source measure only, not alternative canonical measure. |
 

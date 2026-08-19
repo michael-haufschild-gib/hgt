@@ -5139,3 +5139,71 @@ is the wrong shape and must be replaced by the Granville–Soundararajan form, w
 measurable set `E`**.  Instantiating `E := T₁` — the set on which every narrow block is small —
 discharges `hVk` by `Set.mem_setOf` alone.  Nothing about Route-T, zero-free regions, or `ρ` is
 needed on `T₁`; the whole analytic burden moves to `U`, where the tools are Lemmas 1–3, 8, 9, 11.
+
+### Milestone C, brick 59 — the whole `U` half reduces to ONE missing constant (2026-08-19)
+
+Tracing MR's Lemma 2 through the corpus's actual assets pins the gap to a single exponent.
+
+**What Lemma 2 needs.**  For `f = μ` directly (no need for the `2D(f) ≥ D(1,·)` step, since every
+term of `∑_p(1 + cos(α log p))/p` is nonnegative):
+
+```text
+   D(μ, p^{iα}; z)²  =  ∑_{p ≤ z} (1 + cos(α log p))/p  ≥  log log z  +  ∑_{p ≤ z} cos(α log p)/p ,
+```
+
+so everything is a lower bound for the oscillating prime sum, uniformly for `1 ≤ |α| ≤ z^A`.  There
+are exactly two ways to get one, and the corpus owns both — with a gap between them.
+
+**Route (a), the one-line `ζ` lower bound.**
+`RHTower/ZetaOneLineLogPowerLowerBound.exists_lower_bound_riemannZeta_near_one_line`:
+
+```text
+   ‖ζ(σ+it)‖ ≥ c/(log|t|)^{11}   for 1 ≤ σ ≤ 5/4, |t| ≥ t₀   — no condition on σ beyond the box,
+```
+
+which through `Sieve/ZetaStripPrimeSum.le_tsum_re_prime_cpow_of_log_le` and
+`Sieve/PrimeCosineSum.sum_cos_div_prime_ge_of_le` gives, at `σ = 1 + 1/log z`,
+
+```text
+   ∑_{p ≤ z} cos(α log p)/p  ≥  −11·log log|α| − C     (no constraint linking z and α),
+```
+
+hence `D² ≥ log log z − θ·log log|α| − C` with **`θ = 11`**.  Useful exactly for
+`log|α| ≤ (log z)^{(1−c)/θ}`.  (`Sieve/ZetaStripPrimeSum.le_tsum_re_prime_cpow_strip` is the same
+with `θ = 7` but only on the strip `|σ−1| ≤ A/(log|t|)^9`, i.e. `log|α| ≤ (A log z)^{1/9}`.)
+
+**Route (b), the Granville–Soundararajan tail.**  Drop all primes below `y = exp((log z)^{1−ε})`;
+the surviving mass is `ε·log log z`, and the surviving oscillation `∑_{y<p≤z}p^{−1−iα}` is `O(1)` by
+the twisted Chebyshev bound `Sieve/VonMangoldtTwistUniformHeight` + dyadic Abel summation.  That
+bound's *truncation* term is `C·(3b)^{1+2w/3}·polylog/(1+|τ|)` with `w ≍ (log|τ|)^{−κ}`, `κ = 9/10`,
+so it beats `b/(log b)²` exactly when
+
+```text
+   log b  ≲  (log|τ|)^{1+κ}       ⟺       log|α|  ≳  (log z)^{1/(1+κ)} = (log z)^{0.5263…} .
+```
+
+**The gap, and its exact size.**  Route (a) covers `log|α| ≤ (log z)^{1/θ}`, route (b) covers
+`log|α| ≥ (log z)^{1/(1+κ)}`.  They meet iff
+
+```text
+        θ  <  1 + κ  =  1.9 .
+```
+
+The corpus has `θ = 11` (and `θ = 7` is the best the elementary route can give: optimising the
+three-four-one/derivative slide `|ζ(σ+it)| ≥ c·δ^{3/4}L^{−1/4} − 110·δ·L²` over `δ` yields
+`δ ≍ L^{−9}` and hence `L^{−7}`, not `L^{−11}`).  The classical Titchmarsh 3.11 bound
+`1/ζ(1+it) = O(log t)` is `θ = 1`, and it needs the *logarithmic derivative* on a zero-free region
+rather than the derivative on the closed half-plane:
+
+```text
+   log ζ(1+it) − log ζ(σ₀+it) = ∫_1^{σ₀} (ζ'/ζ)(σ+it)dσ = O(1)   for σ₀ = 1 + c/log|t| ,
+   |ζ(σ₀+it)| ≥ ζ(σ₀)^{−3/4}|ζ(σ₀+2it)|^{−1/4} ≫ (σ₀−1)^{3/4}(log|t|)^{−1/4} ≍ 1/log|t| .
+```
+
+**So the entire `U` half of Milestone C — and with it MR's Lemma 2, Lemma 3, and the Halász input —
+hangs on improving one corpus constant from `θ = 11` to any `θ < 1.9`.**  The corpus already owns
+every ingredient of the `θ = 1` argument: `RHTower/ZetaLogDeriv{Bound,Regular,RegUniform,Wide,
+WidthBound}` for `ζ'/ζ = O(log|t|)` on the zero-free region, `RHTower/ZetaThreeFourOne` for the
+three-four-one inequality, and `RHTower/ZetaDerivNearOneLineBound`.
+
+**This is the next brick**: `‖ζ(σ+it)‖ ≥ c/log|t|` for `1 ≤ σ ≤ 5/4`, `|t| ≥ t₀`.

@@ -239,3 +239,19 @@ coherent state keeps exactly the untwisted Born and Fisher data.
 Card `prime-fisher-superspace-unimodular-phase-blindness` promoted to
 `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`.
 Stage-2 prime folder: 23 cards remaining.
+
+## 2026-08-19 — prime-square deformed reflection card CLOSED (card 22)
+
+`RHTower/PrimeSquareSuperessentialScale.lean` supplies the last piece: the Wold boundary volume
+`a_N = ∏_{p<N}(1−1/p)`, the polylogarithmic bound `1/a_N ≤ C (log N)²` (from `-log(1−1/p) ≤ 2/p`
+and the corpus's **Mertens' second theorem** `tendsto_primeRecipSum_sub_logLog` — which does exist,
+in `RHTower/MertensSecondPrimeRecipSum.lean`), the limit `(log N)²/N → 0`, and the superessential
+separation `(1/a_N) / log B_N(c) → 0`.
+
+Card `prime-square-deformed-reflection-line-superessential-fracture` promoted to
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`.
+Stage-2 prime folder: 22 cards remaining.
+
+Note for the remaining analytic cards: Mertens' second theorem **with its constant** is available
+(`RHTower.tendsto_primeRecipSum_sub_logLog`, `RHTower.mertensSecondConstant`), as is Mertens' first
+(`RHTower.Mertens.mertens_first_prime`) and the PNT form `tendsto_sum_primesBelow_log_div`.

@@ -1,7 +1,7 @@
 # Prime-square deformed reflection-line superessential fracture
 
 - **ID:** `prime-square-deformed-reflection-line-superessential-fracture`
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized
 - **Type:** EXACT SOURCE-LOCAL THEOREM / NO-GO / POSITIVE SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [FINITE FOURIER PARENT] [NOT RH]`
   `[DIRECT POISSON--WOLD LINE SEWING REFUTED]`
@@ -269,7 +269,8 @@ deferred rather than replacing the analytic comparison by scalar algebra.
 - [x] Wold--Gamma scale comparison proved
 - [x] direct scalar line-sewing route retired
 - [x] strongest positive survivor extracted
-- [ ] formalize only after actual prime-square Fourier carrier interface exists
+- [x] formalize only after actual prime-square Fourier carrier interface exists (the interface
+  is now in the formal tree; see the stage-3 section below)
 - [ ] construct full continuation--record joining at the \(\vartheta(x)\) scale
 - [ ] identify residual first-trace metric anomaly on the joined source
 - [ ] land every Xi conormal jet strictly
@@ -299,3 +300,47 @@ full continuation--record cancellation of the theta(x)-scale catastrophe
 The last three clauses force the critical line by
 `source-linear-essential-superselection-no-sewing.md`.  No finite-order or finite-Rees bound is
 required.
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+Three modules carry the card, all axiom-clean (`propext, Classical.choice, Quot.sound`):
+`formal/GaloisForLFunctions/RHTower/PrimeSquareFourierStrata.lean`,
+`formal/GaloisForLFunctions/RHTower/PrimeSquareDeformedReflectionType.lean`,
+`formal/GaloisForLFunctions/RHTower/PrimeSquareSuperessentialScale.lean`.
+
+**The literal finite Fourier clock** (the source-linked matrix interface the card asked for)
+
+| Card item | Lean declaration |
+|---|---|
+| the multiples of `p` in `ℤ/p²`, and the exact subgroup character sum | `primeSquareMultiples`, `card_primeSquareMultiples`, `sum_stdAddChar_primeSquareMultiples` |
+| the valuation strata `1_U`, `1_V`, `δ₀` and their sums/products | `unitIndicator`, `valOneVec`, `deltaZero`, `sum_unitIndicator`, `sum_valOneVec`, … |
+| eq. (2), the literal additive Fourier action on the strata | `dft_unitIndicator`, `dft_multipleIndicator`, `dft_deltaZero`, `primeSquareFourier_unitIndicator`, `primeSquareFourier_valOneVec` |
+| the Fourier compression matrix of the valuation plane | `countInner_unit_fourier_unit`, `countInner_valOne_fourier_unit`, `countInner_unit_fourier_valOne`, `countInner_valOne_fourier_valOne` |
+| eq. (1), the deformed occupation line `q_{p,c}` | `deformedOccupationRaw`, `deformedOccupationLine` |
+| **eq. (4), the exact reflected-line coefficient `α_p(c)`** | `reflectedLineCoefficient_eq` |
+| **eq. (5), `α_p(0) = −1/p`** | `reflectedLineCoefficient_zero` |
+| eq. (6), the critical normalization `β_p(c)` | `criticalNormalizedReflection`, `criticalNormalizedReflection_eq` |
+| **eq. (7), `N² − D² = p(p−1)x(x−2)`** | `reflection_numerator_sq_sub` |
+| **eq. (8), `β_p(c) ≥ 1` with equality exactly at `c = 0`** | `one_le_criticalNormalizedReflection`, `criticalNormalizedReflection_eq_one_iff` |
+
+**The cofinal type and the scale fracture**
+
+| Card item | Lean declaration |
+|---|---|
+| the `c ↦ −c` symmetry of the normalized coefficient | `criticalNormalizedReflection_neg` |
+| the sandwich `p^c/4 ≤ β_p(c) ≤ 3 p^c` | `criticalNormalizedReflection_bounds` |
+| **eq. (11), `log β_p(c)/log p → |c|`** | `tendsto_log_criticalNormalizedReflection_div_log` |
+| the weighted Cesàro transfer over the primes | `tendsto_weighted_prime_average` |
+| **eq. (12), `log B_x(c)/θ(x) → |c|`** | `tendsto_log_prod_criticalNormalizedReflection` |
+| **eqs. (13),(17), the linear rate `log B_N(c) ∼ |c| N`** | `tendsto_log_prod_criticalNormalizedReflection_div_natCast` |
+| eq. (14), the Wold boundary volume `a_N = ∏_{p<N}(1−1/p)` and its polylogarithmic reciprocal | `primeEulerVolume`, `exists_inv_primeEulerVolume_le` (via Mertens' second theorem `tendsto_primeRecipSum_sub_logLog`) |
+| **eqs. (16)–(18), the superessential separation of the two scales** | `tendsto_inv_primeEulerVolume_div_logProd` |
+
+The separation is stated exactly as the card's no-go requires: the exponent scale `1/a_N` of the
+Wold–Gamma first-trace anomaly, divided by the exponent `log B_N(c)` of the critically normalized
+prime-square line comparison, tends to zero for every nonzero admissible drift.  Hence the
+scalarized line comparison cannot be the missing Poisson–Wold morphism.
+
+The remaining unchecked gates in the Gates section above are the open continuation--record
+programme of the successor card, not statements of this one: everything this card proves is now
+formalized.

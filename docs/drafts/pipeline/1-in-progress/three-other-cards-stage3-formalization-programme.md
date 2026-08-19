@@ -833,3 +833,19 @@ maintain.
 
 Next: the initial (leading coefficient in the leader), pseudo-division by `A` and by `δ^k A`, the
 Ritt reduction algorithm, and hence the prime case of Ritt's basis theorem.
+
+
+## Card 1 — Ritt order reduction complete
+
+`DifferentialSeparantIterate` → `DifferentialPseudoDivision` → `RittOrderReduction`:
+
+* every proper derivative `δ^{k+1} A` is `S_A · y_{n+k+1} + (order ≤ n+k)`;
+* pseudo-division against a polynomial linear in the top jet costs only powers of `S_A` and leaves a
+  remainder of strictly lower order (induction over the jets of order ≤ m, so the only variable to
+  eliminate is `y_m` itself);
+* iterating gives `S_A^e · F ≡ R  (mod derivIdeal A)` with `ord R ≤ ord A`.
+
+Remaining in this layer: the degree-lowering step — pseudo-division by `A` itself in the leader,
+costing powers of the initial.  That needs the univariate view of a differential polynomial in its
+leader (`MvPolynomial.optionEquivLeft` plus `Equiv.optionSubtypeNe`, or a direct induction on the
+leader degree).  With it, the prime case of Ritt's basis theorem closes.

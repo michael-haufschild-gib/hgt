@@ -5,10 +5,10 @@ import GaloisForLFunctions.HTGeometry.ConnesVanSuijlekomToeplitz
 
 Proposition 2.1 of arXiv:2511.23257v1 omits the necessary hypothesis that
 its kernel vector is nonzero.  With the zero vector, its Laurent generator is
-zero and the asserted basis in clause (2) cannot span the quotient.  This
-module closes that obstruction and proves the first positive fact required by
-the corrected quotient construction: a nonzero source kernel vector has
-nonzero leading coefficient.
+zero and the asserted basis in clause (2) cannot span the quotient. This module
+closes that obstruction and proves the corrected involution-stability clause,
+together with the positive leading-coefficient fact needed by the quotient
+construction.
 -/
 
 open scoped BigOperators ComplexOrder
@@ -184,6 +184,89 @@ theorem connesVanSuijlekomP21_reverse_smul
   funext i
   simp [connesVanSuijlekomP21ReverseVector]
 
+/-- A reversal eigenvector gives the Laurent-generator relation needed for
+the corrected Proposition 2.1 involution clause. -/
+theorem connesVanSuijlekomP21_star_generator_eq_reflection
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ε : ℂ)
+    (hrev : connesVanSuijlekomP21ReverseVector (fun j => (a j : ℂ)) =
+      ε • (fun j => (a j : ℂ))) :
+    connesVanSuijlekomP21Star (connesVanSuijlekomP21Generator a) =
+      LaurentPolynomial.C ε * LaurentPolynomial.T (-(N : ℤ)) *
+        connesVanSuijlekomP21Generator a := by
+  rw [connesVanSuijlekomP21Generator, map_sum]
+  simp_rw [connesVanSuijlekomP21_star_C_mul_T]
+  have hstarReal (x : ℝ) : star (x : ℂ) = (x : ℂ) := by simp
+  simp_rw [hstarReal]
+  rw [Finset.mul_sum]
+  rw [← Equiv.sum_comp (Fin.revPerm : Equiv.Perm (Fin (N + 1)))]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [Fin.revPerm_apply]
+  have hexp : (j.rev : ℤ) - N = -(j : ℤ) := by
+    have hj : (j.rev : ℤ) + (j : ℤ) = N := by
+      exact_mod_cast j.rev_add_cast
+    omega
+  have hcoeff := congrFun hrev j
+  change (a j.rev : ℂ) = ε * (a j : ℂ) at hcoeff
+  calc
+    LaurentPolynomial.C (a j.rev : ℂ) * LaurentPolynomial.T (-(j.rev : ℤ)) =
+        LaurentPolynomial.C (ε * (a j : ℂ)) * LaurentPolynomial.T (-(j.rev : ℤ)) := by
+      rw [hcoeff]
+    _ = LaurentPolynomial.C (ε * (a j : ℂ)) *
+        LaurentPolynomial.T (-(N : ℤ) + (j : ℤ)) := by
+      congr 2
+      omega
+    _ = LaurentPolynomial.C ε * LaurentPolynomial.T (-(N : ℤ)) *
+        (LaurentPolynomial.C (a j : ℂ) * LaurentPolynomial.T (j : ℤ)) := by
+      rw [LaurentPolynomial.T_add, LaurentPolynomial.C.map_mul]
+      exact mul_mul_mul_comm _ _ _ _
+
+/-- Membership in an ideal is closed under the source Laurent involution. -/
+def connesVanSuijlekomP21StarClosed (J : Ideal (LaurentPolynomial ℂ)) : Prop :=
+  ∀ ⦃p⦄, p ∈ J → connesVanSuijlekomP21Star p ∈ J
+
+/-- Under the corrected reversal relation, the source principal ideal is
+closed under its Laurent involution. -/
+theorem connesVanSuijlekomP21_star_ideal_closed
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ε : ℂ)
+    (hrev : connesVanSuijlekomP21ReverseVector (fun j => (a j : ℂ)) =
+      ε • (fun j => (a j : ℂ))) :
+    connesVanSuijlekomP21StarClosed (connesVanSuijlekomP21Ideal a) := by
+  intro p hp
+  rw [connesVanSuijlekomP21Ideal] at hp ⊢
+  obtain ⟨q, hq⟩ := Ideal.mem_span_singleton'.mp hp
+  apply Ideal.mem_span_singleton'.mpr
+  refine ⟨connesVanSuijlekomP21Star q *
+    (LaurentPolynomial.C ε * LaurentPolynomial.T (-(N : ℤ))), ?_⟩
+  calc
+    connesVanSuijlekomP21Star q *
+        (LaurentPolynomial.C ε * LaurentPolynomial.T (-(N : ℤ))) *
+        connesVanSuijlekomP21Generator a =
+        connesVanSuijlekomP21Star q *
+          ((LaurentPolynomial.C ε * LaurentPolynomial.T (-(N : ℤ))) *
+            connesVanSuijlekomP21Generator a) := by rw [mul_assoc]
+    _ = connesVanSuijlekomP21Star q *
+        connesVanSuijlekomP21Star (connesVanSuijlekomP21Generator a) := by
+      rw [connesVanSuijlekomP21_star_generator_eq_reflection a ε hrev]
+    _ = connesVanSuijlekomP21Star
+        (q * connesVanSuijlekomP21Generator a) := by rw [map_mul]
+    _ = connesVanSuijlekomP21Star p := by rw [hq]
+
+/-- Corrected Proposition 2.1(1): the principal Laurent ideal is invariant
+under the source involution. -/
+theorem connesVanSuijlekomP21_star_ideal_stable
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ε : ℂ)
+    (hrev : connesVanSuijlekomP21ReverseVector (fun j => (a j : ℂ)) =
+      ε • (fun j => (a j : ℂ))) (p : LaurentPolynomial ℂ) :
+    p ∈ connesVanSuijlekomP21Ideal a ↔
+      connesVanSuijlekomP21Star p ∈ connesVanSuijlekomP21Ideal a := by
+  constructor
+  · intro hp
+    exact (connesVanSuijlekomP21_star_ideal_closed a ε hrev) hp
+  · intro hp
+    have hstar := (connesVanSuijlekomP21_star_ideal_closed a ε hrev) hp
+    simpa only [connesVanSuijlekomP21_star_involutive] using hstar
+
 /-- The one-dimensional source kernel is palindromic or anti-palindromic:
 reversing a nonzero real kernel vector multiplies it by a scalar whose square
 is one. -/
@@ -239,6 +322,20 @@ theorem connesVanSuijlekomP21_reverse_vector_smul
     apply (mul_right_cancel₀ hj)
     simpa [smul_eq_mul] using hpoint
   exact ⟨ε, hsq, hrev⟩
+
+/-- Corrected Proposition 2.1(1). The omitted nonzero-kernel-vector hypothesis
+forces the source Laurent ideal to be invariant under its involution. -/
+theorem connesVanSuijlekomP21_corrected_clauseOne
+    {N : ℕ} (c : ℕ → ℝ)
+    (hRank : (connesVanSuijlekomRealToeplitz N c).rank = N)
+    (a : Fin (N + 1) → ℝ)
+    (hker : connesVanSuijlekomRealToeplitz N c *ᵥ (fun j => (a j : ℂ)) = 0)
+    (ha : a ≠ 0) (p : LaurentPolynomial ℂ) :
+    p ∈ connesVanSuijlekomP21Ideal a ↔
+      connesVanSuijlekomP21Star p ∈ connesVanSuijlekomP21Ideal a := by
+  obtain ⟨ε, _, hrev⟩ :=
+    connesVanSuijlekomP21_reverse_vector_smul c hRank a hker ha
+  exact connesVanSuijlekomP21_star_ideal_stable a ε hrev p
 
 /-- Positive survivor of the Proposition 2.1 obstruction.  Under the source
 Toeplitz hypotheses, a *nonzero* real kernel vector has nonzero leading

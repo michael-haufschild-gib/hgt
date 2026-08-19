@@ -49,8 +49,10 @@ theorem summable_gdTwistTerm_of_completelyMonotoneTower [Countable ι] {a lam : 
   have hBnn : ∀ j, 0 ≤ B j := fun j => mul_nonneg (ha j) (Real.exp_pos _).le
   have hpow : ∀ (j : ι) (n : ℕ), B j * (x j : ℝ) ^ n = gdTwistTerm a lam (θ₀ + n) 0 j := by
     intro j n
-    rw [hB_def, hxval, gdTwistTerm, pow_zero, mul_one, ← Real.exp_nat_mul, ← Real.exp_add,
-      mul_assoc]
+    rw [hB_def, hxval, gdTwistTerm, pow_zero, mul_one, ← Real.exp_nat_mul]
+    show a j * Real.exp (-(θ₀ * lam j)) * Real.exp ((n : ℝ) * -lam j) =
+      a j * Real.exp (-((θ₀ + (n : ℝ)) * lam j))
+    rw [mul_assoc, ← Real.exp_add]
     congr 2
     ring
   have hcm : HausdorffCompletelyMonotone (fun n : ℕ => F 0 (θ₀ + n * 1)) :=

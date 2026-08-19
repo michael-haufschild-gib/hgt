@@ -248,10 +248,19 @@ sqrt((5 + sqrt(5)) * (41 + sqrt(205))).
 The scale by `1/2` converts the radical eliminant
 `X^8 - 820*X^6 + 223040*X^4 - 24206400*X^2 + 871430400` to the displayed Serre polynomial.
 
-`[OPEN CORE]` Formalize this literal Serre tower, its `Q8` Galois identification, then the
-local epsilon-factor product defining the Artin root number.  The latter needs a genuine global
-epsilon-factor theory and its source calculation; it cannot be replaced by a Lean declaration
-named `rootNumber = -1`.
+`[LEAN-PROVED]` The literal Serre tower now has exact degree eight, explicit radical lifts,
+`IsGalois ℚ SerreQ8TopField`, and
+`Gal(SerreQ8TopField/ℚ) ≃* QuaternionGroup 2`
+in `SerreQ8RootNumberNegOneTopRadicand.lean`,
+`SerreQ8RootNumberNegOneAutomorphisms.lean`,
+`SerreQ8RootNumberNegOneGalois.lean`, and
+`SerreQ8RootNumberNegOneGaloisIdentification.lean`.  The two-dimensional symplectic Artin
+representation is now pulled back over this exact Galois group in
+`SerreQ8ArtinGaloisRealization.lean`.
+
+`[OPEN CORE]` The local epsilon-factor product defining the Artin root number still needs a
+genuine global epsilon-factor theory and its source calculation; it cannot be replaced by a Lean
+declaration named `rootNumber = -1`.
 
 ## 2026-08-19 literal Q8 radical-coordinate lift system
 

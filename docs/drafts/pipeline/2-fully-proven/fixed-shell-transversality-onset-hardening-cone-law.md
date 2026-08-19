@@ -1631,3 +1631,20 @@ That is the second of the three properties `(18b)` needs, and it is the one that
 graded apparatus: `G` is produced by an existential, so its scaling could only be established
 through the explicit joint construction it descends from.  What is left is `G ≠ 0` and the
 factorisation `G = g · h_k`.
+
+### Lean progress — witness reduction for the shell criticality polynomial
+
+`HTGeometry/ShellPolyNonvanishing.lean` (umbrella-wired, `lake build` green, axioms =
+`propext`/`Classical.choice`/`Quot.sound`) closes the nonvanishing half of the `(18b)` chain:
+
+* `eval_jointCriticalitySquareSum_eq` — the evaluation of the sum-of-squares aggregate is the sum of
+  the squares of the evaluations of the individual joint-criticality components.
+* `eval_jointCriticalitySquareSum_ne_zero_of_exists` — one component nonzero at a point forces the
+  aggregate nonzero there (sum of nonnegative reals vanishes iff each term does).
+* `eval_shellPoly_ne_zero_of_forall` — if for *every* labelling permutation some component survives
+  at the witness point, the whole labelling product is nonzero there.
+* `shellPoly_ne_zero_of_eval_ne_zero` — a single evaluation witness upgrades to `G ≠ 0` as a
+  polynomial, which is the hypothesis the sublevel-measure capstone consumes.
+
+This removes the last "generic transversality" appeal from the `(18b)` route: nonvanishing of the
+criticality polynomial is now a checkable pointwise statement rather than an assumed genericity.
