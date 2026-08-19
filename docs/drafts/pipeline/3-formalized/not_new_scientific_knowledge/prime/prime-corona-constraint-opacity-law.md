@@ -1,7 +1,7 @@
 # Prime-corona constraint opacity and anchored maximal HT freedom
 
 - **ID:** `prime-corona-constraint-opacity-law`
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized
 - **Type:** THEOREM / GENERAL HT LANDSCAPE BRIDGE / RH ROUTE CONSTRAINT
 - **Scientific status:** `[PROVED ON PAPER] [FORMAL CORE COMPLETE] [BRIDGE]`
 - **Parents:**
@@ -186,9 +186,53 @@ Therefore a route to RH cannot obtain source rigidity from:
 - [x] formalize exact realization of arbitrary finite recurring-pattern constraints
 - [x] isolate arbitrary compact-cluster realization as a classical compact-metric boundary
 - [x] significance and novelty verdict: bridge; promoted residue transferred to the Prime-Walsh law
+- [x] corona rank law, closed-constraint realization and anchored opacity interval formalized
+  unconditionally in Lean
 
 ## Status
 
 `[CLOSED AS BRIDGE]` The theorem is proved.  It supplies the exact linear shadow and opacity
 statement used by the stronger Prime-Walsh Stone reconstruction candidate, but is not itself new
 scientific knowledge.
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+The corona and skeleton layers were already formalized in
+`HTGeometry/PrimeOrientationTailCluster.lean`, `HTGeometry/PrimeOrientationConstraintOpacity.lean`
+and `HTGeometry/PrimeWalshClosedConstraint.lean`.  The missing linear-rank layer and the
+closed-constraint interval are now
+`formal/GaloisForLFunctions/HTGeometry/PrimeOrientationCoronaRank.lean`.  Every declaration is
+axiom-clean (`propext, Classical.choice, Quot.sound`).
+
+| Card item | Lean declaration |
+|---|---|
+| the compact tail-cluster constraint `K_epsilon` | `primeOrientationTailClusterSet`, `isClosed_primeOrientationTailClusterSet`, `primeOrientationTailClusterSet_nonempty` |
+| its inverse-limit description by recurring finite patterns | `mem_primeOrientationTailClusterSet_iff_all_finite_patterns_recur`, `recurringOrientationPatternSet`, `recurringOrientationPatternSet_eq_chamber` |
+| finite projections `pi_I(K_epsilon)` | `image_tailCluster_orientationRestriction` |
+| **kernel identity**: a tail relation is exactly a corona annihilator | `tailRelation_iff_linearForm_vanishes_tailCluster`, `support_finite_of_vanishes_on_recurringPatterns`, `support_finite_sub_combination` |
+| **corona-span law**, maximal case | `primeOrientationTailIndependent_iff_tailClusterLinearIndependent` |
+| the corona rank `dim_C Span(pi_I(K_epsilon))` | `orientationSignVector`, `coronaRank`, `recurringPatternSignMatrix`, `coronaRank_eq_rank_transpose` |
+| corona basis extraction: a subfamily independent modulo finite support which spans the rest modulo finite support | `exists_coronaBasis_index` |
+| dependent coordinates differ from their combinations by finite Dirichlet polynomials | `differentialJet_signedPrimeShiftCarrier_mem_adjoin_of_tailCombination` |
+| the subfamily generates the whole shift rectangle | `signedOrientationShiftPalette_differentialAdjoin_eq_subfamily` |
+| **rank formula `(1)`**: an explicit differential transcendence basis with `card(A) * dim Span(pi_I(K))` generators | `signedOrientationShiftPalette_differentialBasis`, `exists_corona_differentialBasis` |
+| every nonempty closed `K` occurs as a tail cluster | `closedConstraintOrientation`, `tailCluster_infinitelyRepeatedDenseBooleanConstraint` |
+| the anchored skeleton `S_(j_0)` and the anchor half-space `H_(j_0)` | `anchoredSkeleton`, `anchorHalfSpace`, `mem_anchoredSkeleton_iff` |
+| **`S_(j_0)` is compact and lies in `H_(j_0)`** | `isClosed_anchoredSkeleton`, `isCompact_anchoredSkeleton`, `anchoredSkeleton_subset_anchorHalfSpace` |
+| **anchored maximal rank `(2)`**: coordinate functions independent on every `K` above the skeleton | `span_orientationSignVector_eq_top_of_anchoredSkeleton_subset`, `coronaRank_eq_card_of_anchoredSkeleton_subset`, `recurringPatternsSpan_of_anchoredSkeleton`, `primeOrientationTailIndependent_of_anchoredSkeleton` |
+| the projection of the skeleton is the skeleton of the chamber | `orientationRestriction_allPositive`, `orientationRestriction_singleNegative`, `anchoredSkeleton_restriction_subset` |
+| **the three simultaneous conclusions** (anchor = all-positive source, full differential independence of every finite shift rectangle, tail cluster exactly `K`) | `anchored_closedConstraint_opacity` |
+| **the matroid is constant on `[S_(j_0), H_(j_0)]`** | `anchored_opacity_interval_constant` |
+
+The rank formula is formalized in basis form — an explicit subfamily of the orientations
+themselves which is differentially independent and generates the same embedded differential field
+— which is exactly the assertion that the differential transcendence degree is `card(A)` times the
+corona rank.  The corona rank is identified with the dimension of the span of the recurring sign
+vectors through the row/column rank equality of the recurring-pattern sign matrix, so it is
+literally `dim_C Span(pi_I(K_epsilon))`.
+
+The complex coefficients of a corona relation are not bounded by one, so the reduction rescales
+the whole relation by `1 + sum ||u_k||` before entering the bounded-column carrier API and
+multiplies the scalar back inside the differential field; the finite-support correction lands in
+the finite-prime coefficient field, which is where the "differ by a finite Dirichlet polynomial"
+step of the paper proof is discharged.

@@ -1,7 +1,7 @@
 # Hardy cyclicity blindness inside one maximal HT power pro-field
 
 - **ID:** `hardy-cyclicity-maximal-ht-field-blindness`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; Hardy cyclicity; Nyman--Beurling boundary
 - **Statement:** A bounded outer carrier with a maximally free parabolic differential orbit and all
@@ -219,7 +219,7 @@ and stage 3 remains unavailable until the complete unconditional statement is fo
 
 - [x] 0 -> 1: exact Hardy model, proof route, and RH boundary isolated
 - [x] 1 -> 2: complete unconditional paper proof
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean (2026-08-19)
 - [ ] 3 -> 4: optional bridge publication/integration
 
 ## Log

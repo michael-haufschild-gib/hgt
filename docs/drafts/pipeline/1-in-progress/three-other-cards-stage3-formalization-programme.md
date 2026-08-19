@@ -992,3 +992,24 @@ a `2 × 2` traceless matrix with nonzero determinant, giving `diag(μ, -μ)`.  S
 one: the subalgebra is only a `k`-subspace, so `ad(X)`-stability does **not** by itself split it into
 root spaces (the eigenvalues `±2μ` need not lie in `k`).  That is where Cassidy's argument constructs
 the field of multipliers `k' = {c ∈ U : c L ⊆ L}` first.
+
+
+## Card 1 — Cassidy for `sl₂` is proved
+
+`Sl2DiagonaliseRegular.exists_conj_toral_of_det_ne_zero` (step two),
+`Sl2ToralClassification.cassidy_sl2_of_toral` (the toral case) and
+`CassidySl2Classification.cassidy_sl2` (the general case).  All axiom-clean.
+
+The reduction that made it work: **the line-stabiliser hypothesis**, `c A ∈ L` with `0 ≠ A ∈ L`
+forces `c ∈ C`, replaces the multiplier field.  With it, three brackets suffice — the naive
+"multiplier field" route is circular, because showing `mult(L) ⊆ C` implies the grading needs the
+grading first.  The line-stabiliser form is what differential algebraicity actually delivers, since
+`{c : c A ∈ L}` is a solution set of a linear differential system.
+
+Also recorded: over an algebraically closed `C` the conjugator `diag(1, v₀)` needs no square root,
+and the whole argument needs `C` algebraically closed exactly once — to pass from `μ² ∈ C` to
+`μ ∈ C`.  Without it the theorem is false (`su(2) ⊂ sl₂(ℂ)` over `ℝ` is not conjugate to `sl₂(ℝ)`).
+
+Next: the transfer lemma — a nonzero linear differential system has a solution space of finite
+dimension over the constants — which is what supplies the line-stabiliser hypothesis in the
+application.

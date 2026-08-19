@@ -378,3 +378,43 @@ built, axioms clean):
   contradicting the corpus's `RHTower.log_ratio_transcendental` (Gelfond–Schneider).
 
 REMAINING for C3: §4 only — `{γ_n}` is not P-recursive, i.e. `ζ` is not D-finite.
+
+### C3 — §4 half CLOSED (2026-08-19)
+
+Appended to `StieltjesCorankApplications.lean`:
+
+- `DFinite` — a function satisfies a nontrivial linear differential equation with polynomial
+  coefficients;
+- `eval_aeval_X_zero`, **`differentiallyAlgebraic_of_dFinite`** — D-finite implies differentially
+  algebraic (the linear ODE is an algebraic differential equation; nonvanishing of the transported
+  multivariate polynomial is checked by evaluating at a point where one coefficient polynomial does
+  not vanish);
+- **`not_dFinite_riemannZeta`** — `ζ` is not D-finite, from the corpus's unconditional Hölder /
+  Hilbert theorem `GaloisForLFunctions.hypertranscendental_riemannZeta`
+  (`RHTower/ZetaHypertranscendental.lean`, axioms clean).
+
+REMAINING for C3 (the only item): the classical dictionary **P-recursive ⟹ D-finite**, i.e. that a
+sequence obeying a linear recurrence with polynomial coefficients has a D-finite generating
+function.  With that bridge, `{γ_n}` not P-recursive follows from `not_dFinite_riemannZeta` exactly
+as the card states.  The formalization route is the Weyl-algebra translation
+`n ↦ θ = z·d/dz`, `shift ↦ multiplication by z^{-1}`: the recurrence becomes an inhomogeneous
+operator identity `L F = R` with `R` polynomial, and differentiating `deg R + 1` times clears `R`.
+
+## Stage-3 promotions (2026-08-19)
+
+Moved to `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/` after re-auditing their
+capstones (`#print axioms` = `propext, Classical.choice, Quot.sound` in every case):
+
+| Card | Capstones re-audited |
+|---|---|
+| C2 `hardy-cyclicity-maximal-ht-field-blindness` | `hardyCyclicityGaugeBlindness_carrier`, `outerCarrier_parabolicOrbitFreeness_denseResidual`, `gaugedOrbit_differentialAdjoin_pow_eq` |
+| C4 `faithful-krein-index-escape-stratification` | `no_continuous_faithful_krein_index`, `escapeCarrier_exact_negativeSquares`, `kreinEscapeTranslateFamily_differentialAdjoin_pow_eq`, `kreinEscapeTranslateFamily_differentialIndependent_iff` |
+| C5 `dyadic-squarefree-euler-fock-source-factorization` | `riemannZeta_dyadic_telescope`, `hsNormSq_fisherConnection_defect` |
+
+Still at stage 2:
+
+| Card | The single remaining item |
+|---|---|
+| C1 `hardy-critical-line-moment-anchor` | Lemma E, `\|∫_T^{2T} Z\| = o(T/log²T)`; needs the smooth-AFE split plus `θ''(t) ≍ 1/(2t)` (trigamma asymptotics), the only genuinely missing analytic input |
+| C3 `f1-inversion-single-prime-stieltjes-collapse` | the dictionary P-recursive ⟹ D-finite |
+| C6 `horizontal-singleton-zero-fibers` | unconditional Lean providers for the PRZZ proportions `κ ≥ 0.417293962`, `κ_* ≥ 0.407511457` |

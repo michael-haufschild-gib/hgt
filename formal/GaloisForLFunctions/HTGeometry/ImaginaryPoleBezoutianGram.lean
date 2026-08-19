@@ -28,7 +28,7 @@ theorem sub_imaginary_ne_zero {t : ℝ} {w : ℂ} (hw : 0 < w.re) :
   intro h
   have hre := congrArg Complex.re h
   simp only [Complex.sub_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-    Complex.I_im, mul_zero, zero_mul, sub_zero, Complex.zero_re] at hre
+    Complex.I_re, Complex.I_im, mul_zero, zero_mul, sub_zero, Complex.zero_re] at hre
   linarith
 
 theorem add_conj_ne_zero {w v : ℂ} (hw : 0 < w.re) (hv : 0 < v.re) :

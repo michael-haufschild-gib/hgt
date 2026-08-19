@@ -1,7 +1,7 @@
 # The Euler source is the dyadic Fock completion of the squarefree source
 
 - **ID:** `dyadic-squarefree-euler-fock-source-factorization`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized / not-new
 - **Type:** THEOREM (paper) / CANONICAL SOURCE CHANNEL
 - **Scientific status:** `[PAPER-PROVED] [REDISCOVERED PARENT THEORY] [NOT AN RH PROOF]`
 - **Parents:** unique prime factorization, the Euler product, Hilbert tensor products, and
@@ -351,7 +351,7 @@ Gamma/Sonin limit must not be represented by hypotheses or wrappers.
 - [x] false independent-cutoff intertwining rejected
 - [x] affine joint cutoff identified
 - [x] formalize the one-prime probability/amplitude/mean/variance factor in Lean
-- [ ] formalize the global squarefree-times-square unitary and rank-two connection identity
+- [x] formalize the global squarefree-times-square unitary and rank-two connection identity (2026-08-19)
 - [ ] transport the affine joint cutoff through prime--Gamma completion
 - [ ] prove cutoff-stable Sonin graph convergence and nonexpansiveness
 - [ ] RH

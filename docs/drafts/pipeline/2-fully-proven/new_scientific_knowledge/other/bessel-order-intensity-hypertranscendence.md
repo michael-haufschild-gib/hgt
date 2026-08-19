@@ -1686,3 +1686,52 @@ Mechanism: if the determinant vanished on the subspace, then — because the sub
 addition — its polarisation would vanish there too, and both would then vanish on the whole `U`-span
 by span induction.  So a Zariski-dense subalgebra of `sl₂(U)` contains a regular semisimple element,
 which is what the conjugation to the diagonal starts from.
+
+## Lean progress — Cassidy's classification for `sl₂`, unconditionally
+
+The last piece of new mathematics the card needed is now proved in full.
+
+`GaloisForLFunctions.HTGeometry.Sl2DiagonaliseRegular`
+
+```text
+eq_traceless_matrix                  a traceless `2 × 2` matrix in explicit form
+exists_conj_toral_of_det_ne_zero     **a regular element of `sl₂` is conjugate to `μ h`**, with the
+                                     conjugator written down from the eigenvectors — no spectral
+                                     theory, only `μ² = -det X` and one square root
+```
+
+`GaloisForLFunctions.HTGeometry.Sl2ToralClassification`
+
+```text
+adMap, conjLinear, smulMat           the adjoint action, conjugation and scaling as linear maps
+bracket_toral, bracket_toral_sq      `[μ h, Z]` and `[μ h, [μ h, Z]]` in the `h, e, f` basis
+bracket_root                         `[b e + c f, b' e + c' f] = (b c' - c b') h`
+traceless_decomp                     the `h, e, f` coordinates of a traceless matrix
+cassidy_sl2_of_toral                 **the toral case**: a bracket-closed `C`-subspace of `sl₂(U)`
+                                     that `U`-spans, has trivial `U`-line stabilisers and contains
+                                     `μ h` is `C·h + C·v₀e + C·w₀f` with `v₀w₀ ∈ C`
+```
+
+`GaloisForLFunctions.HTGeometry.CassidySl2Classification`
+
+```text
+conj_mul_conj, conj_conj_eq, conj_injective, conjLinear_comp
+cassidy_sl2                          **Cassidy's classification for `sl₂`**: such a subalgebra is
+                                     conjugate to `sl₂(C)`
+```
+
+The proof of the toral case is a chain of three brackets and needs no representation theory.
+Doubling the bracket with `μ h` projects `L` onto the root part, so the spanning hypothesis and the
+regular-element lemma put a root element `b e + c f` of nonzero determinant in `L`.  Bracketing that
+element against its own `ad(μ h)`-image returns `(b c)·(μ h)`, and bracketing the image against
+`μ h` returns `μ²·(b e + c f)`.  The line-stabiliser hypothesis therefore forces `b c ∈ C` **and**
+`μ² ∈ C`; since `C` is algebraically closed, `μ ∈ C`, so `h` itself lies in `L`.  Once `h` is
+present the eigenvalues `0, ±2` of `ad(h)` lie in `C`, the subalgebra splits into root spaces over
+`C`, and the product of the two root spaces lands in `C` — exactly the hypothesis of the graded
+classification proved earlier.  The general case follows by conjugating a regular element to the
+diagonal and transporting all four hypotheses through the conjugation.
+
+The line-stabiliser hypothesis is the honest form of "differential algebraic and proper": for a
+Lie algebra cut out by linear differential equations, `{c : c A ∈ L}` is itself the solution set of
+a linear differential system, hence finite dimensional over the constants, hence contained in the
+algebraically closed constants.  That transfer is the next brick.

@@ -1090,6 +1090,119 @@ theorem connesVanSuijlekomP21_explicit_positive_basis :
   exact connesVanSuijlekomP21_corrected_clauseTwo c (by simpa [M] using hG)
     (by simpa [M] using hRank) a (by simpa [M] using hker) ha
 
+/-- Evaluation of a Laurent polynomial at the unit scalar.  This is the
+source functional for the explicit `N = 1` Toeplitz instance. -/
+def connesVanSuijlekomP21ExplicitEvalOne : LaurentPolynomial ℂ →+* ℂ :=
+  LaurentPolynomial.eval₂ (RingHom.id ℂ) 1
+
+/-- Unit evaluation is a complex algebra homomorphism. -/
+def connesVanSuijlekomP21ExplicitEvalOneAlgHom : LaurentPolynomial ℂ →ₐ[ℂ] ℂ :=
+  { connesVanSuijlekomP21ExplicitEvalOne with
+    commutes' := by
+      intro c
+      change connesVanSuijlekomP21ExplicitEvalOne (LaurentPolynomial.C c) = c
+      simp [connesVanSuijlekomP21ExplicitEvalOne] }
+
+/-- The explicit generator `1-X` vanishes at the unit scalar. -/
+theorem connesVanSuijlekomP21_explicit_evalOne_generator :
+    connesVanSuijlekomP21ExplicitEvalOne
+      (connesVanSuijlekomP21Generator (![1, -1] : Fin 2 → ℝ)) = 0 := by
+  rw [connesVanSuijlekomP21Generator, map_sum, Fin.sum_univ_two]
+  norm_num [connesVanSuijlekomP21ExplicitEvalOne]
+
+/-- The explicit source functional descends to the quotient by `1-X`. -/
+def connesVanSuijlekomP21ExplicitFunctional :
+    connesVanSuijlekomP21Quotient (![1, -1] : Fin 2 → ℝ) →ₗ[ℂ] ℂ :=
+  (Ideal.Quotient.liftₐ (connesVanSuijlekomP21Ideal (![1, -1] : Fin 2 → ℝ))
+    connesVanSuijlekomP21ExplicitEvalOneAlgHom (by
+      intro p hp
+      obtain ⟨q, hq⟩ := Ideal.mem_span_singleton'.mp hp
+      rw [← hq, map_mul]
+      change connesVanSuijlekomP21ExplicitEvalOne q *
+        connesVanSuijlekomP21ExplicitEvalOne
+          (connesVanSuijlekomP21Generator (![1, -1] : Fin 2 → ℝ)) = 0
+      rw [connesVanSuijlekomP21_explicit_evalOne_generator, mul_zero])).toLinearMap
+
+/-- At the unit scalar, source Laurent involution agrees with complex
+conjugation. -/
+theorem connesVanSuijlekomP21_explicit_evalOne_star : ∀ f : LaurentPolynomial ℂ,
+    connesVanSuijlekomP21ExplicitEvalOne (connesVanSuijlekomP21Star f) =
+      star (connesVanSuijlekomP21ExplicitEvalOne f) := by
+  intro f
+  induction f using LaurentPolynomial.induction_on' with
+  | add p q hp hq =>
+      simpa only [map_add, star_add] using congrArg₂ (· + ·) hp hq
+  | C_mul_T n z =>
+      rw [connesVanSuijlekomP21_star_C_mul_T, map_mul]
+      simp [connesVanSuijlekomP21ExplicitEvalOne]
+
+/-- Evaluation of a source square in the explicit quotient is the complex
+norm-square of the evaluation. -/
+theorem connesVanSuijlekomP21_explicit_functional_source_square :
+    ∀ f : LaurentPolynomial ℂ,
+      connesVanSuijlekomP21ExplicitFunctional
+        (Ideal.Quotient.mk (connesVanSuijlekomP21Ideal (![1, -1] : Fin 2 → ℝ))
+          (connesVanSuijlekomP21Star f * f)) =
+        star (connesVanSuijlekomP21ExplicitEvalOne f) *
+          connesVanSuijlekomP21ExplicitEvalOne f := by
+  intro f
+  change connesVanSuijlekomP21ExplicitEvalOne (connesVanSuijlekomP21Star f * f) = _
+  rw [map_mul, connesVanSuijlekomP21_explicit_evalOne_star]
+
+/-- The explicit source functional is nonnegative on every Laurent source
+square. -/
+theorem connesVanSuijlekomP21_explicit_functional_source_square_nonnegative :
+    ∀ f : LaurentPolynomial ℂ,
+      0 ≤ connesVanSuijlekomP21ExplicitFunctional
+        (Ideal.Quotient.mk (connesVanSuijlekomP21Ideal (![1, -1] : Fin 2 → ℝ))
+          (connesVanSuijlekomP21Star f * f)) := by
+  intro f
+  rw [connesVanSuijlekomP21_explicit_functional_source_square]
+  exact star_mul_self_nonneg _
+
+/-- The explicit functional sends the sole basis monomial to the source
+moment `c₀ = 1`. -/
+theorem connesVanSuijlekomP21_explicit_functional_one :
+    connesVanSuijlekomP21ExplicitFunctional 1 = 1 := by
+  change connesVanSuijlekomP21ExplicitEvalOne (1 : LaurentPolynomial ℂ) = 1
+  simp [connesVanSuijlekomP21ExplicitEvalOne]
+
+/-- In the explicit `N = 1` quotient, every normalized complex-linear form
+is the unit-evaluation functional. -/
+theorem connesVanSuijlekomP21_explicit_functional_unique : ∀ ψ :
+    connesVanSuijlekomP21Quotient (![1, -1] : Fin 2 → ℝ) →ₗ[ℂ] ℂ,
+    ψ 1 = 1 → ψ = connesVanSuijlekomP21ExplicitFunctional := by
+  intro ψ hψ
+  obtain ⟨b, hb⟩ := connesVanSuijlekomP21_explicit_positive_basis
+  apply b.ext
+  intro i
+  obtain rfl : i = 0 := Fin.eq_zero i
+  have hb0 : b 0 = (1 : connesVanSuijlekomP21Quotient (![1, -1] : Fin 2 → ℝ)) := by
+    rw [hb 0]
+    change Ideal.Quotient.mk (connesVanSuijlekomP21Ideal (![1, -1] : Fin 2 → ℝ))
+      (LaurentPolynomial.T (0 : ℤ)) = 1
+    norm_num
+  rw [hb0, hψ, connesVanSuijlekomP21_explicit_functional_one]
+
+/-- A fully discharged `N = 1` instance of Proposition 2.1(3)--(4).
+
+For the constant Toeplitz data and fixed kernel vector `(1,-1)`, there is a
+unique normalized complex-linear form on the quotient by `1-X`; its value on
+every representative source square is nonnegative.  All source conditions are
+proved internally. -/
+theorem connesVanSuijlekomP21_explicit_positive_functional :
+    ∃ φ : connesVanSuijlekomP21Quotient (![1, -1] : Fin 2 → ℝ) →ₗ[ℂ] ℂ,
+      φ 1 = 1 ∧
+      (∀ ψ : connesVanSuijlekomP21Quotient (![1, -1] : Fin 2 → ℝ) →ₗ[ℂ] ℂ,
+        ψ 1 = 1 → ψ = φ) ∧
+      ∀ f : LaurentPolynomial ℂ,
+        0 ≤ φ (Ideal.Quotient.mk (connesVanSuijlekomP21Ideal (![1, -1] : Fin 2 → ℝ))
+          (connesVanSuijlekomP21Star f * f)) := by
+  refine ⟨connesVanSuijlekomP21ExplicitFunctional,
+    connesVanSuijlekomP21_explicit_functional_one,
+    connesVanSuijlekomP21_explicit_functional_unique,
+    connesVanSuijlekomP21_explicit_functional_source_square_nonnegative⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

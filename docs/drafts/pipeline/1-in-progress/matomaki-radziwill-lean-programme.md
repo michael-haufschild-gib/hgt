@@ -5395,3 +5395,229 @@ imports (`RouteTWidthExplicit`, `VonMangoldtTwistPrimeEnvelope`): with `routeTTw
 `routeTTwistHeightFactor` unresolved, `autoImplicit` turned them into metavariables and `congr`/
 `field_simp` searched over them.  With the imports added and the statement written so the exponents
 match `_le_two_sided` syntactically (`1 − m/2/3`, `1 + 2·(1/K·…)/3`), the proof is a single `exact`.
+
+### Milestone C, brick 65 — route (b) is now three real inequalities (2026-08-19)
+
+`Sieve/RouteTEnvelopeRho` and `Sieve/RouteTTailRho` (both axiom-clean, sorry-free, wired).
+
+| theorem | statement |
+|-|-|
+| `routeTTwistEnvelope_le_mul` | splitting the factor `3x` off both regimes: if each of the contour term `9C(3x)^{−m/6}(HF+log 2x)`, the truncation term `9C(3x)^{2U/3}(1+(log x)²+HF)/(1+\|τ\|)` and the Chebyshev term `6 log x/√x` is `≤ ρ`, then `routeTTwistEnvelope A delta C τ x ≤ ρ·x` |
+| `exists_abs_sum_cos_div_primesRange_le_of_envelope` | a uniform envelope majorant `E(i) ≤ ρ₀·i` on `[y,z]`, plus `14e⁹ ≤ ρ₀·y`, gives `\|∑_{y<p≤z}cos(t log p)/p\| ≤ 9ρ₀(2+log z)` |
+| **`exists_abs_sum_cos_div_primesRange_le_regimes`** | the same with the envelope replaced by its three regimes: three inequalities between explicit real functions of the block top `i` and the frequency `t` |
+
+**Route (b) of MR's Lemma 2 therefore has no arithmetic content left.**  What remains is to verify
+the three inequalities at the schedule `y = ⌈exp((log z)^{0.99})⌉`, `ρ₀ = 1/(9(2+log z))`,
+`(log z)^{0.6} ≤ log|t| ≤ 2 log z`, where they read
+
+| regime | value at `i ∈ [y,z]` | why it holds |
+|-|-|-|
+| contour | `exp(−(m/6)·log 3i)·polylog`, `m ≍ (log\|t\|)^{−9/10}(log log\|t\|)^{−2}` | `log i ≥ (log z)^{0.99}` and `log\|t\| ≤ 2 log z` give `exp(−c(log z)^{0.09}/(log log z)²)` |
+| truncation | `exp((2/(3K))·(log 3i)·(log 2/log\|t\|)^{9/10})/\|t\|` | `log\|t\| ≥ (log z)^{0.6}` gives `exp((log z)^{0.46} − (log z)^{0.6}) → 0` |
+| Chebyshev | `6 log i/√i` | `i ≥ exp((log z)^{0.99})` |
+
+and the harmonic mass that survives the cutoff is `∑_{y<p≤z}1/p = 0.01·log log z + O(1)`.
+
+### Milestone C, brick 66 — the tail regimes in closed form (2026-08-19)
+
+`Sieve/RouteTTailSurrogate` (axiom-clean, sorry-free, wired).  The three regimes of brick 65 still
+mentioned two corpus-internal quantities; both are now replaced by closed expressions in `|τ|`.
+
+```text
+routeTHeightSurrogate τ            = 2·log(6|τ| + 6) + 1     ( = routeTLogHeightEnvelope(4(3|τ|/2+1)) )
+routeTWidthReciprocalSurrogate A τ = 10·D_A·(routeTHeightSurrogate τ)^{9/10}
+                                        ·(1 + log routeTHeightSurrogate τ)²
+routeTWidthLowSurrogate A τ        = 1 / routeTWidthReciprocalSurrogate A τ
+routeTHeightFactorUpper A τ        = 1 + log(3|τ|/2 + 3)·routeTWidthReciprocalSurrogate A τ
+```
+
+| theorem | statement |
+|-|-|
+| `routeTHeightSurrogate_eq` | the surrogate height *is* `routeTLogHeightEnvelope (4(3\|τ\|/2+1))` |
+| `routeTWidthLowSurrogate_le` | `routeTWidthLowSurrogate A τ ≤ routeTWidthPolylogLower A τ` (`\|τ\| ≥ 1`) |
+| `routeTTwistHeightFactor_le_surrogate` | `routeTTwistHeightFactor A τ ≤ routeTHeightFactorUpper A τ` (`\|τ\| ≥ 16π/3`) |
+| **`exists_abs_sum_cos_div_primesRange_le_surrogate`** | the tail bound with all three regimes written in the surrogates alone |
+
+Both substitutions go in the safe direction: a *smaller* width weakens the contour saving, and a
+*larger* height factor enlarges both regimes.  Built on the corpus's own
+`Sieve/WidthEnvelopeBounds.{routeTWidthPolylogLower_ge, inv_routeTWidthPolylogLower_le}` and
+`Sieve/RouteTWidthExplicit.routeTTwistHeightFactor_le_explicit`.
+
+**Route (b) is now a statement about `exp`, `log`, `√` and `rpow` only.**  What is left is the
+asymptotic verification at `y = ⌈exp((log z)^{0.99})⌉`, `ρ₀ = 1/(9(2+log z))`,
+`(log z)^{0.6} ≤ log|t| ≤ 2 log z` — three limits, no arithmetic geometry.
+
+### Milestone C, brick 67 — the tail regimes at their essential shape (2026-08-19)
+
+`Sieve/RouteTTailElementary` (axiom-clean, sorry-free, wired).  The inner constants and the square
+root are removed by four elementary comparisons, leaving exactly the three inequalities the schedule
+has to verify:
+
+```text
+   contour     :  9C·i^{−m/6}·(HF + 2 log i)               ≤ ρ₀
+   truncation  :  9C·3^v·i^v·(1 + (log i)² + HF)/|t|       ≤ ρ₀
+   Chebyshev   :  24·i^{−1/4}                               ≤ ρ₀
+```
+
+| theorem | statement |
+|-|-|
+| `log_le_four_mul_rpow_quarter` | `log i ≤ 4·i^{1/4}` (from `Real.log_le_sub_one_of_pos` at `i^{1/4}`) |
+| `cheb_regime_le` | `6 log i/√i ≤ 24·i^{−1/4}` |
+| `contour_regime_le` | `(3i)^{−a} ≤ i^{−a}` and `log 2i ≤ 2 log i` |
+| `trunc_regime_le` | `(3i)^v = 3^v i^v` and `1 + \|t\| ≥ \|t\|` |
+| **`exists_abs_sum_cos_div_primesRange_le_elementary`** | the tail bound with only the three displayed inequalities as hypotheses |
+
+**Route (b) of MR's Lemma 2 is now purely a limit computation.**  At
+`y = ⌈exp((log z)^{0.99})⌉`, `ρ₀ = 1/(9(2+log z))`, `(log z)^{0.6} ≤ log|t| ≤ 2 log z` the three
+read, with `Li = log i ≥ (log z)^{0.99}` and `Lt = log|t|`:
+
+```text
+   contour     :  exp(−(m/6)·Li)·polylog ≤ ρ₀ ,   m ≍ Lt^{−9/10}(log Lt)^{−2}
+                     ⟹ exp(−c(log z)^{0.09}/(log log z)²)
+   truncation  :  exp(v·Li − Lt)·polylog ≤ ρ₀ ,   v ≍ Lt^{−9/10}
+                     ⟹ exp((log z)^{0.46} − (log z)^{0.6})
+   Chebyshev   :  24·exp(−Li/4) ≤ ρ₀
+```
+
+all three of which beat `ρ₀ ≍ 1/log z` with room.
+
+### Milestone C, bricks 68–69 — the tail regimes in `log i` and `log|t|` alone (2026-08-19)
+
+`Sieve/RouteTSurrogateSize` and `Sieve/RouteTTailBudget` (both axiom-clean, sorry-free, wired).
+
+**Brick 68.**  The surrogates of brick 66 are still nested — the height surrogate sits inside a
+`9/10` power and inside a logarithm.  Both are majorised by one increasing function of `log|t|`:
+
+```text
+   routeTHeightBudget t       = 23 + 2 log|t|                      ( ≥ routeTHeightSurrogate (−t) )
+   routeTReciprocalBudget A t = 10 D_A (routeTHeightBudget t)^{9/10}(1 + log routeTHeightBudget t)²
+```
+
+| theorem | statement |
+|-|-|
+| `routeTHeightSurrogate_le` | `2 log(6\|t\|+6)+1 ≤ 23 + 2 log\|t\|`, from `log 12 ≤ 11` |
+| `surrogate_shape_mono` | `Z ↦ Z^{9/10}(1+log Z)²` is monotone on `[1,∞)` |
+| `routeTWidthLowSurrogate_ge` | `1/routeTReciprocalBudget A t ≤ routeTWidthLowSurrogate A (−t)` |
+| `routeTHeightFactorUpper_le` | `≤ 1 + (4 + log\|t\|)·routeTReciprocalBudget A t`, from `log 5 ≤ 4` |
+
+**Brick 69.**  `routeTTruncExponent t := 2/(3·routeTWidthUpperConst·(log\|t\|/log 2)^{9/10})`, and
+
+```text
+exists_abs_sum_cos_div_primesRange_le_budget :
+  2 ≤ y ≤ z,  16π/3 ≤ |t|,  14e⁹ ≤ ρ₀·y,  and for every i ∈ [y,z]
+     contour     :  9C·i^{−min(delta, 1/G)/6}·(1 + (4+log|t|)G + 2 log i)  ≤ ρ₀
+     truncation  :  9C·3^v·i^v·(2 + (log i)² + (4+log|t|)G)/|t|            ≤ ρ₀
+     Chebyshev   :  24·i^{−1/4}                                            ≤ ρ₀
+  ⟹  |∑_{y<p≤z} cos(t log p)/p| ≤ 9ρ₀(2 + log z)
+```
+
+with `G = routeTReciprocalBudget A t`, `v = routeTTruncExponent t`.
+
+**Every quantity in the three hypotheses is now an elementary function of `i` and `|t|`** — `rpow`,
+`log`, and two named polylogarithmic budgets.  Route (b) of MR's Lemma 2 has no structure left in
+it; what remains is to check the three at the schedule
+`y = ⌈exp((log z)^{0.99})⌉`, `ρ₀ = 1/(9(2+log z))`, `(log z)^{0.6} ≤ log|t| ≤ 2 log z`.
+
+### Milestone C, brick 70 — the three regimes as logarithmic thresholds (2026-08-19)
+
+`Sieve/RouteTScheduleRegimes` (axiom-clean, sorry-free, wired).  Taking logarithms turns each regime
+of brick 69 into a single linear threshold in `log i`:
+
+| theorem | statement |
+|-|-|
+| `contour_regime_at` | `log(9CPB) ≤ a·log i`  ⟹  `9C·(i^{−a}·P) ≤ ρ₀`, whenever `1/B ≤ ρ₀`, `0 < 9CP`, `0 < B` |
+| `trunc_regime_at` | `v·log i + log(9C·3^v·Q·B) ≤ log tt`  ⟹  `9C·(3^v·i^v·Q)/tt ≤ ρ₀` |
+| `cheb_regime_at` | `log(24B) ≤ (log i)/4`  ⟹  `24·i^{−1/4} ≤ ρ₀` (the `P = 1`, `a = 1/4` instance of the first) |
+
+The block top now enters **only** through `log i`, and each hypothesis reads "the logarithm of the
+prefactor is below the saving".  At the schedule
+`ρ₀ = 1/(9(2+log z))`, i.e. `B = 9(2+log z)`, and `log i ≥ (log z)^{0.99}`, the three become
+
+```text
+   contour     :  log(9C·(1+(4+log|t|)G+2 log i)·9(2+log z))  ≤  (log i)/(6G)
+   truncation  :  v·log i + log(9C·3^v·(2+(log i)²+(4+log|t|)G)·9(2+log z))  ≤  log|t|
+   Chebyshev   :  log(216(2+log z))  ≤  (log i)/4
+```
+
+with `G = routeTReciprocalBudget A t ≍ (log|t|)^{9/10}(log log|t|)²` and
+`v = routeTTruncExponent t ≍ (log|t|)^{−9/10}`.  On the schedule's range
+`(log z)^{0.6} ≤ log|t| ≤ 2 log z` the right-hand sides are `≍ (log z)^{0.09}/(log log z)²`,
+`≍ (log z)^{0.6}` and `≍ (log z)^{0.99}` while the left-hand sides are `O(log log z)`, `O((log z)^{0.46})`
+and `O(log log z)`.  **Three limit statements, no structure.**
+
+### Milestone C, brick 71 — the thresholds at their worst case (2026-08-19)
+
+`Sieve/RouteTScheduleWorstCase` (axiom-clean, sorry-free, wired).  Each threshold of brick 70 is
+monotone in the block top `Li = log i` and in the frequency `Lt = log|t|`, so on the schedule's
+ranges it need only be checked once, with the prefactor at the largest admissible data and the
+saving at the smallest.
+
+| theorem | reduction |
+|-|-|
+| `contour_threshold_worst` | from `log(9C(1+(4+2Lz)Ĝ+2Lz)·9(2+Lz)) ≤ min(delta,1/Ĝ)/6 · Lz^{0.99}` to the same at `(Li, Lt, G)` with `Lz^{0.99} ≤ Li ≤ Lz`, `0 ≤ Lt ≤ 2Lz`, `G ≤ Ĝ` |
+| `trunc_threshold_worst` | from `v̂·Lz + log(9C·3^{v̂}(2+Lz²+(4+2Lz)Ĝ)·9(2+Lz)) ≤ Lz^{0.6}` to the same at `(Li, Lt, G, v)` with additionally `v ≤ v̂` and `Lz^{0.6} ≤ Lt` |
+
+Both are pure monotonicity — `1/G ≥ 1/Ĝ` for the saving, `Real.log_le_log` for the prefactor, and
+`Real.rpow_le_rpow_of_exponent_le` for `3^v`.  The Chebyshev threshold needs no reduction: it already
+mentions only `Lz` and `Li`.
+
+**What is left of route (b)** is three limits in `Lz` alone:
+
+```text
+   log(9C(1+(4+2Lz)Ĝ+2Lz)·9(2+Lz))                    ≤ min(delta,1/Ĝ)/6 · Lz^{0.99}
+   v̂·Lz + log(9C·3^{v̂}(2+Lz²+(4+2Lz)Ĝ)·9(2+Lz))       ≤ Lz^{0.6}
+   log(216(2+Lz))                                      ≤ Lz^{0.99}/4
+```
+
+with `Ĝ ≍ Lz^{0.9}(log Lz)²` and `v̂ ≍ Lz^{−0.54}`, i.e. left sides `O(log Lz)`, `O(Lz^{0.46})`,
+`O(log Lz)` against right sides `≍ Lz^{0.09}/(log Lz)²`, `Lz^{0.6}`, `Lz^{0.99}/4`.
+
+### Milestone C, brick 72 — one lemma discharges all three thresholds (2026-08-19)
+
+`Sieve/PolylogRpowDomination` (axiom-clean, sorry-free, wired).  All three schedule thresholds of
+brick 71 have the same shape after the prefactors are expanded, so a single lemma covers them:
+
+```text
+eventually_const_mul_rpow_polylog_le_rpow (k : ℕ) (hαβ : α < β) :
+    ∀ᶠ L in atTop,  C · L^α · (1 + |log L|)^k  ≤  L^β
+```
+
+proved by splitting `L^β = L^α·L^{(β−α)/2}·L^{(β−α)/2}` and spending the two halves on the constant
+(`tendsto_rpow_atTop`) and on the polylogarithm — the latter through the corpus's own
+`HTGeometry.eventually_one_add_abs_log_pow_le_rpow`, found with `formal_tools.py research` rather
+than rebuilt.
+
+The first instance is complete:
+
+```text
+eventually_cheb_threshold :  ∀ᶠ L in atTop,  log(216(2 + L))  ≤  L^{0.99}/4
+```
+
+using `2 + L ≤ 3L`, `log 216 ≤ 216`, `log 3 ≤ 3` and the lemma at `α = 0`, `β = 0.99`, `k = 1`,
+`C = 872`.  The threshold `L ≥ e` is needed because at `L` near `1` the polylogarithm has no room.
+
+Remaining: the contour and truncation instances, which need only the algebraic majorants
+`Ĝ ≤ C₁·L^{0.9}(1+|log L|)²` and `v̂ ≤ C₂·L^{−0.54}` before the same lemma applies at
+`(α,β) = (0.9, 0.99)` and `(0.46, 0.6)`.
+
+### Milestone C, brick 73 — the worst-case data of the schedule (2026-08-19)
+
+`Sieve/RouteTScheduleHats` (axiom-clean, sorry-free, wired).  Brick 71 asks for an upper bound `Ĝ`
+for the reciprocal-width budget and `v̂` for the truncation exponent over the schedule's frequency
+range `(log z)^{0.6} ≤ log|t| ≤ 2 log z`.  Both, and their sizes:
+
+```text
+routeTBudgetHat A L = 10·D_A·(23 + 4L)^{9/10}·(1 + log(23 + 4L))²
+routeTTruncHat L    = 2 / (3·routeTWidthUpperConst·(L^{0.6}/log 2)^{9/10})
+```
+
+| theorem | statement |
+|-|-|
+| `routeTReciprocalBudget_le_hat` | `log\|t\| ≤ 2L`  ⟹  `routeTReciprocalBudget A t ≤ routeTBudgetHat A L` |
+| `routeTTruncExponent_le_hat` | `L^{0.6} ≤ log\|t\|`  ⟹  `routeTTruncExponent t ≤ routeTTruncHat L` |
+| **`routeTBudgetHat_le_polylog`** | `≤ 211680·D_A·L^{0.9}·(1 + \|log L\|)²`, from `23+4L ≤ 27L`, `27^{9/10} ≤ 27`, `log 27 ≤ 27` |
+| **`routeTTruncHat_le`** | `≤ (2/(3·routeTWidthUpperConst))·L^{−0.54}`, from `(L^{0.6})^{9/10} = L^{0.54}` and `log 2 ≤ 1` |
+
+Both sizes are exactly what `Sieve/PolylogRpowDomination.eventually_const_mul_rpow_polylog_le_rpow`
+consumes: the contour threshold becomes an instance at `(α,β) = (0.9, 0.99)`, `k = 3`, and the
+truncation threshold two instances at `(0.46, 0.53)` and `(0, 0.05)`.

@@ -255,3 +255,14 @@ corpus, so both rungs close:
 
 REMAINING for 2 -> 3: §4 only — `{γ_n}` satisfies no linear recurrence with polynomial
 coefficients (equivalently `ζ` is not D-finite).
+
+### §4 — half formalized
+
+`StieltjesCorankApplications.lean` also defines `DFinite` (a nontrivial linear differential equation
+with polynomial coefficients), proves `differentiallyAlgebraic_of_dFinite`, and concludes
+**`not_dFinite_riemannZeta`** from the corpus's unconditional Hölder/Hilbert theorem
+`GaloisForLFunctions.hypertranscendental_riemannZeta`.  That is the load-bearing half of §4.
+
+The remaining half is the classical dictionary **P-recursive ⟹ D-finite** — a sequence obeying a
+linear recurrence with polynomial coefficients has a D-finite generating function.  With it,
+`{γ_n}` not P-recursive follows immediately from `not_dFinite_riemannZeta`, exactly as §4 states.

@@ -1,7 +1,7 @@
 # Faithful Krein-index escape stratification inside one maximal HT power pro-field
 
 - **ID:** `faithful-krein-index-escape-stratification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; generalized Nevanlinna index; spectral-route boundary
 - **Statement:** In one exact maximal-HT differential-translation field and complete power
@@ -232,7 +232,7 @@ of those layers occur in the exact theorem.  No partial stage-3 promotion is jus
 - [x] 0 -> 1: faithful-index continuity question and arbitrary-jump construction isolated
 - [x] 1 -> 2: complete unconditional paper proof
 - [x] parent-theory attack and honest bridge classification
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean (2026-08-19)
 - [ ] 3 -> 4: optional route-boundary integration
 
 ## Log

@@ -146,7 +146,7 @@ theorem exists_support_of_mem_polyMultiples {x : HardyDisk} (hx : x ∈ polyMult
     show ((hardyMul diskShift ^ n) hardyOne : HardyDisk) m = 0
     rw [shift_pow_hardyOne n]
     have hmn : m ≠ n := by simpa using hm
-    simp [lp.single_apply, Pi.single_apply, hmn]
+    simp [lp.single_apply, hmn]
   · exact ⟨∅, fun n _ => rfl⟩
   · rintro y z - - ⟨sy, hsy⟩ ⟨sz, hsz⟩
     refine ⟨sy ∪ sz, fun n hn => ?_⟩
@@ -168,7 +168,7 @@ theorem differentiable_polyExtend (s : Finset ℕ) (c : ℕ → ℂ) :
   fun_prop
 
 theorem hardyFun_eq_polyExtend {x : HardyDisk} {s : Finset ℕ} (hs : ∀ n ∉ s, x n = 0)
-    {z : ℂ} (hz : ‖z‖ < 1) : hardyFun x z = polyExtend s (fun n => x n) z := by
+    {z : ℂ} (_hz : ‖z‖ < 1) : hardyFun x z = polyExtend s (fun n => x n) z := by
   rw [hardyFun, polyExtend]
   refine tsum_eq_sum fun n hn => ?_
   rw [hs n hn, zero_mul]

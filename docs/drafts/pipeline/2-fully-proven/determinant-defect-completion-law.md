@@ -728,3 +728,239 @@ What remains for `(DC)` is only the *analytic* half: continuity of `det_p` on th
 i.e. Simon's `‖R_p(A)‖₁ ≤ c_p‖A‖_p^p`.  At `p = 2` the corpus already owns it
 (`EntireDet2HilbertSchmidtContinuity.tendsto_entireDet2_of_hsNorm_sub_tendsto_zero`), so the `p = 2`
 case of `(DC)` is now complete on both halves.
+
+## Lean progress -- `(DC)`'s necessity in the finite-rank category, at every order
+
+The necessity direction of `(DC)` is now proved wherever the objects are finite rank, at every
+order, with no Schatten-class analysis at all.  Three new modules (umbrella-wired, axioms =
+`propext`/`Classical.choice`/`Quot.sound`).
+
+`formal/GaloisForLFunctions/HTGeometry/GeneralNodePolynomialLimit.lean`
+
+| Card item | Declaration |
+|---|---|
+| the interpolant, its degree bound, and self-interpolation at arbitrary nodes | `nodeLimitPoly`, `natDegree_nodeLimitPoly_le`, `eq_nodeLimitPoly_of_natDegree_le` |
+| the linear coefficient recovery at arbitrary nodes | `coeff_eq_sum_lagrangeBasis` |
+| coefficientwise convergence from sample convergence | `tendsto_coeff_of_tendsto_samples_at` |
+| values converge when coefficients do | `tendsto_eval_of_tendsto_coeff` |
+| **the normalized polynomial factor converges, at arbitrary nodes** | `exists_limit_of_tendsto_derivative_samples_at` |
+
+The nodes must be free rather than fixed, because the recovery has to run *inside* the region where
+the limit function does not vanish.
+
+`formal/GaloisForLFunctions/HTGeometry/ExpPolynomialFactorClosure.lean`
+
+| Card item | Declaration |
+|---|---|
+| the derivative of the exponential of a polynomial | `deriv_exp_polynomial` |
+| **the exponential-polynomial fibre is closed under locally uniform limits** | `exists_poly_limit_of_tendstoLocallyUniformlyOn_exp` |
+
+`formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantGraphClosure.lean`
+
+| Card item | Declaration |
+|---|---|
+| the polynomial of the first `g` power traces | `tracePolynomial`, `eval_tracePolynomial`, `coeff_tracePolynomial_zero`, `natDegree_tracePolynomial_le` |
+| **the factorisation on finite rank**: `det(1+zM) = det_{g+1}(1+zM)·exp(P_M(z))` | `det_one_add_smul_eq_finiteDetOrder_mul_exp` |
+| the finite-rank determinant and its regularization are analytic in the parameter | `analyticAt_det_one_add_smul`, `analyticAt_finiteDetOrder` |
+| **`(DC)`'s necessity: the closure of the finite-rank determinant graph** | `exists_poly_limit_of_tendsto_finiteDet` |
+
+`exists_poly_limit_of_tendsto_finiteDet` is the card's necessity argument, formalised: if the
+finite-rank determinants converge locally uniformly to `F` and their order-`g+1` regularizations to
+`E`, and both limits are nonzero at `g+1` distinct points, then `F = E·exp(Q)` with `Q` of degree at
+most `g` and `Q(0) = 0`.  The mechanism is exactly the card's: the logarithmic derivatives satisfy
+`P_n' = F_n'/F_n − E_n'/E_n`, derivatives of locally uniform limits of holomorphic functions
+converge, and the finite-dimensional polynomial space is closed.  No quotient of locally uniform
+limits is ever formed -- the two families are differentiated separately, which is what makes the
+argument work without any bound-away-from-zero estimate.
+
+So the fibre `exp J_{<p}` is Lean-certified as *exactly* the ambiguity of the completion, in the
+finite-rank category, at every `p`.  What `(DC)` still needs is the passage from finite rank to the
+Schatten class, i.e. continuity of `det_p` there -- Simon's `‖R_p(A)‖₁ ≤ c_p‖A‖_p^p`.  At `p = 2` the
+corpus already owns that continuity, so the `p = 2` case of `(DC)` is complete on both halves.
+
+## Lean progress -- `(DC)`'s necessity on the spectral side, at every order
+
+The finite-rank closure of the previous section is now carried to the Schatten-`p` determinant of a
+spectrum, which is where the corpus's `det_p` and the card's sufficiency construction both live.
+Three new modules (umbrella-wired, axioms = `propext`/`Classical.choice`/`Quot.sound`).
+
+`formal/GaloisForLFunctions/HTGeometry/ExpFactorPointwiseClosure.lean`
+
+| Card item | Declaration |
+|---|---|
+| **the fibre is closed under pointwise convergence of values and derivatives at the nodes** | `exists_poly_limit_of_tendsto_exp_samples` |
+
+Stating the closure pointwise rather than locally uniformly is what makes it usable on the spectral
+side: for a series-defined determinant, locally uniform convergence is exactly the hard part, while
+the value and the derivative at finitely many points are directly computable.
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenDetDerivative.lean`
+
+| Card item | Declaration |
+|---|---|
+| the terms of the regularized exponent and their derivatives | `schattenDetExpTerm`, `deriv_schattenDetExpTerm`, `norm_schattenDetExpTerm_le` |
+| **termwise differentiation inside the reciprocal spectral radius** | `hasSum_deriv_schattenDetExp`, `deriv_schattenDetExp_eq` |
+| the regularized exponent is differentiable there | `differentiableAt_schattenDetExp` |
+| **the derivative of the exponent is continuous in the power traces** | `tendsto_deriv_schattenDetExp_of_tendsto_tracePower` |
+| the derivative of the determinant, and its continuity in the power traces | `deriv_schattenDet_eq`, `tendsto_deriv_schattenDet_of_tendsto_tracePower` |
+
+The geometric majorant `‖tr(A^{k+p})‖ ≤ S B^k` that makes `det_p` converge also makes it
+differentiable termwise, and the differentiated series carries the *same* majorant with one power of
+`r` removed -- so the derivative inherits the continuity in the power traces that the determinant
+already had.  No uniform convergence and no Vitali-type theorem is used.
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralDeterminantGraphClosure.lean`
+
+| Card item | Declaration |
+|---|---|
+| the order-`p` determinant never vanishes, and is differentiable | `schattenDet_ne_zero`, `differentiableAt_schattenDet` |
+| **`(DC)`'s necessity on the spectral side, at every order** | `exists_poly_limit_of_tendsto_spectralDet` |
+
+`exists_poly_limit_of_tendsto_spectralDet` is the card's `(DC)` necessity with `det_p` of a spectrum
+in place of the finite-rank determinant: a family of determinants factored as `det_p(λ_n)·exp(P_n)`
+with `deg P_n < p` and `P_n(0) = 0`, whose spectra converge in the power traces from `p` upwards
+under a common geometric bound, has limit `det_p(μ)·exp(Q)` with `Q` in the same finite-dimensional
+space.  So the fibre `exp J_{<p}` is exactly the ambiguity, at every order, on the spectral side --
+matching `MicroSpectrumMomentAssembly.exists_multiset_moment_realization`, which is the sufficiency
+direction in the same category.
+
+Both directions of `(DC)` are therefore Lean-certified at every `p` in the spectral category, and on
+finite rank.  The remaining gap is the *operator* category at `p > 2`: the identification of the
+Schatten-`p` operator norm topology with convergence of the power traces, i.e. Simon's
+`‖R_p(A)‖₁ ≤ c_p‖A‖_p^p`.  Mathlib has no Schatten ideals at all, so that is a construction from
+scratch and is the only thing between this card and stage 3.
+
+## Lean progress -- the Schatten scale: approximation numbers are submultiplicative
+
+The remaining item is the operator side at `p > 2`, whose foundation is the *ideal scale* structure
+of the Schatten classes.  The corpus already owned the approximation numbers, the class
+`MemSchattenClass p`, the trace norm, and the additive Ky Fan inequality; the multiplicative half
+was missing from both mathlib and the corpus and is now proved.
+
+`formal/GaloisForLFunctions/HTGeometry/ApproxNumberMultiplicative.lean` (umbrella-wired, axioms =
+`propext`/`Classical.choice`/`Quot.sound`)
+
+| Card item | Declaration |
+|---|---|
+| **submultiplicativity**: `a_{m+n}(ST) ≤ a_m(S)·a_n(T)` | `approxNumber_comp_add_le` |
+| the iterate bound `a_{k·n}(Tᵏ) ≤ a_n(T)ᵏ` | `approxNumber_pow_le` |
+
+The proof is the classical one, and it is short once the corpus's finite-rank algebra is in place:
+if `F` and `G` are near-optimal approximants of `S` and `T`, then
+`ST − (FT + (S−F)G) = (S−F)(T−G)` and the subtracted operator has rank at most `m+n`, so the error
+is at most `‖S−F‖·‖T−G‖`.  Only the `ε`-bookkeeping of the two infima is new.
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenPowerIdeal.lean` (umbrella-wired, axiom-clean)
+
+| Card item | Declaration |
+|---|---|
+| a nonnegative summable family stays summable after `k`-fold repetition | `summable_comp_nat_div` |
+| the approximation numbers of a power | `approxNumber_pow_le_div` |
+| **powers move down the Schatten scale**: `T ∈ S_p ⟹ Tᵏ ∈ S_{p/k}` | `memSchattenClass_pow` |
+
+`memSchattenClass_pow` is exactly the statement the order-`p` determinant needs of its operator:
+every power at or above the Schatten exponent lands in `S_1`, i.e. is trace class, which is the
+hypothesis `opSchattenDetExp_eq_schattenDetExp` carries.  The exponent bookkeeping is exact --
+`(a^k)^{p/k} = a^p` -- so no constant appears, and the `k`-fold repetition of the index is handled by
+fibering the partial sums over `m ↦ m/k`, each fibre having at most `k` elements.
+
+This is the first layer of the Schatten ideal scale.  What Simon's estimate still needs on top of it
+is the Hölder inequality for the `‖·‖_p` norms and the trace-norm bound on the regularized remainder
+`R_p(A) = (1+A)exp(∑_{k<p}(−1)^k A^k/k) − 1`.
+
+## Lean progress -- Hölder on the Schatten scale, and the determinant identification from class
+membership alone
+
+Three further modules (umbrella-wired, axioms = `propext`/`Classical.choice`/`Quot.sound`) turn the
+submultiplicativity of the previous section into the ideal-scale inequalities, and use them to
+remove the last hypothesis from the operator-side determinant identification.
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenHolder.lean`
+
+| Card item | Declaration |
+|---|---|
+| **Hölder for the Schatten scale**: `S ∈ S_p`, `T ∈ S_q`, `p⁻¹+q⁻¹ = r⁻¹` ⟹ `ST ∈ S_r` | `memSchattenClass_comp` |
+| **powers at or above the exponent are trace class** | `memSchattenClass_one_pow` |
+
+The proof needs no operator theory beyond `approxNumber_comp_add_le`: `a_m(ST) ≤ a_{m/2}(S)·a_{m/2}(T)`
+turns the Schatten sum into a doubled copy of a series product, and mathlib's
+`NNReal.summable_mul_rpow_of_Lp_Lq` closes it.
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenPowerHilbertSchmidt.lean`
+
+| Card item | Declaration |
+|---|---|
+| a power lands in Schatten 2 once twice its exponent dominates `p` | `memSchattenClass_two_pow` |
+| **a balanced split is a Hilbert–Schmidt factorisation** | `exists_hilbertSchmidt_factorization_pow` |
+| every power above `p` splits | `exists_hilbertSchmidt_factorization_pow_of_le` |
+
+The corpus's operator trace is defined through a Hilbert–Schmidt factorisation, so a regularized
+determinant of order `q` needs every power from `q` upwards written as a product of two
+Hilbert–Schmidt operators.  Splitting `T^m` in half and moving each half down the scale does it:
+`T^a ∈ S_{p/a}`, which is `S_2` as soon as `2a ≥ p`, and `memSchattenClass_two_iff_isHilbertSchmidt`
+(already in the corpus) converts.  The balanced split works for every `m ≥ p + 1`.
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenClassDeterminantIdentification.lean`
+
+| Card item | Declaration |
+|---|---|
+| **the operator `det_q` is the `det_q` of its spectrum, from class membership alone** | `opSchattenDet_eq_schattenDet_of_memSchattenClass`, `opSchattenDetExp_eq_schattenDetExp_of_memSchattenClass` |
+
+This removes the factorisation hypothesis that `opSchattenDet_eq_schattenDet` was carrying: for a
+compact self-adjoint operator in *any* Schatten class `S_p`, the order-`q` operator determinant
+equals the order-`q` determinant of its signed greedy spectrum, at every integer order `q ≥ p + 1`.
+So on the operator side the chain finite rank → spectrum → operator is now unconditional on the
+Schatten scale, and the only quantitative input still missing for `(DC)` at general `p` is the
+*norm* statement -- Simon's `‖R_p(A)‖₁ ≤ c_p‖A‖_p^p` -- rather than any structural one.
+
+## Lean progress -- the Schatten norms and their quantitative Hölder inequality
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenNorm.lean` (umbrella-wired, axioms =
+`propext`/`Classical.choice`/`Quot.sound`) supplies the *quantitative* half of the scale, which the
+class-membership statements of the previous sections did not carry.
+
+| Card item | Declaration |
+|---|---|
+| the tsum companion of the `k`-fold repetition bound | `tsum_comp_nat_div_le` |
+| **the Schatten `p`-norm**: the `ℓ^p` norm of the approximation numbers | `schattenNorm`, `schattenNorm_nonneg` |
+| at `p = 1` it is the corpus's trace norm | `schattenNorm_one_eq_traceNorm` |
+| **Hölder in the `r`-th power form** | `tsum_rpow_approxNumber_comp_le` |
+| **Hölder for the Schatten norms**: `‖ST‖_r ≤ 2^{1/r}‖S‖_p‖T‖_q` for `p⁻¹+q⁻¹=r⁻¹` | `schattenNorm_comp_le` |
+
+The constant `2^{1/r}` is the price of the two-fold index shift in
+`a_m(ST) ≤ a_{m/2}(S)·a_{m/2}(T)`; the sharp Hölder inequality has constant one, but nothing in this
+card's argument needs sharpness -- Simon's `c_p` is not required to be optimal either.
+
+With this the Schatten scale carries both its structural and its quantitative content: membership is
+closed under products at the conjugate exponents, powers move down the scale, powers above the
+exponent split into Hilbert–Schmidt factors, and the norms obey Hölder.  What Simon's estimate still
+needs is the trace-norm bound on the regularized remainder
+`R_p(A) = (1+A)exp(∑_{k<p}(−1)^k A^k/k) − 1`, whose expansion is a series of products of `p` or more
+copies of `A`; each such product is trace class by `memSchattenClass_comp`, and
+`schattenNorm_comp_le` is what turns that into the norm bound `c_p‖A‖_p^p`.
+
+## Lean progress -- the trace norm of a power, with a constant linear in the exponent
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenTraceNormPower.lean` (umbrella-wired, axioms =
+`propext`/`Classical.choice`/`Quot.sound`).
+
+| Card item | Declaration |
+|---|---|
+| above the exponent, the `s`-energy is the `p`-energy times an operator-norm factor | `rpow_approxNumber_le`, `tsum_rpow_approxNumber_le` |
+| **the trace norm of a power**: `‖Tᵏ‖₁ ≤ k·M^{k−p}·‖T‖_p^p` with `M = max(‖T‖,1)` | `traceNorm_pow_le` |
+
+One correction to the plan recorded in the previous section is worth stating explicitly, because it
+changes the route rather than just the constant.  **Iterating the Hölder inequality is the wrong way
+to bound `‖Aᵏ‖₁`.**  Each application of `schattenNorm_comp_le` costs a factor `2^{1/r}`, and the
+exponents `r` shrink like `p/i`, so `k` applications cost
+`2^{(2+3+⋯+k)/p} = 2^{(k(k+1)/2−1)/p}` -- superexponential in `k`.  The remainder `R_p(A)` is a
+*power series* in `A`, so a constant of that shape cannot be summed and the estimate would fail.
+
+The approximation numbers give the right shape directly, with no Hölder at all: `aₙ(Aᵏ) ≤ a_{n/k}(A)ᵏ`
+turns the trace norm into `k` copies of the `k`-th energy, and the `k`-th energy is the `p`-energy
+times `M^{k−p}`.  The constant is `k` -- *linear* -- which a power series absorbs.
+
+So the estimate that Simon's bound consumes is now available in a summable form:
+`‖Aᵏ‖₁ ≤ k·M^{k−p}·‖A‖_p^p` for every `k ≥ p`.  What remains is the scalar side: the coefficients of
+`(1+x)exp(∑_{k<p}(−1)^k x^k/k) − 1` vanish below degree `p` -- because that function is
+`exp(∑_{k≥p}(−1)^{k+1}x^k/k)` -- and summing `|cₖ|·k·M^{k−p}` against them gives `c_p‖A‖_p^p`.
