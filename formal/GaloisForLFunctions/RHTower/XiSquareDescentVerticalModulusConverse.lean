@@ -98,7 +98,7 @@ theorem exists_XiC_zero_upperRight_of_not_rh {R : ℝ}
     by simpa using hgabs, by simpa using hbpos, by simpa using hbabs⟩
   have hz₁val : z₁ = (gamma : ℂ) + (-(beta - 1 / 2) : ℝ) * Complex.I := by
     rw [hz₁]
-    apply Complex.ext <;> simp [hgamma, hbeta] <;> ring
+    apply Complex.ext <;> simp [hgamma, hbeta]
   have hcandidates : ((|gamma| : ℝ) : ℂ) + ((|beta - 1 / 2| : ℝ) : ℂ) * Complex.I = z₁ ∨
       ((|gamma| : ℝ) : ℂ) + ((|beta - 1 / 2| : ℝ) : ℂ) * Complex.I = -z₁ ∨
       ((|gamma| : ℝ) : ℂ) + ((|beta - 1 / 2| : ℝ) : ℂ) * Complex.I = (starRingEnd ℂ) z₁ ∨
@@ -117,6 +117,147 @@ theorem exists_XiC_zero_upperRight_of_not_rh {R : ℝ}
   · rw [h, XiC_even]; exact hXz₁
   · rw [h, XiC_conj, hXz₁, map_zero]
   · rw [h, XiC_even, XiC_conj, hXz₁, map_zero]
+
+/-! ## The contradiction -/
+
+private def upperRightSquareTarget (R : ℝ) : Set ℂ :=
+  {w : ℂ | R < w.re} ∩ ({w : ℂ | 0 < w.im} ∩ {w : ℂ | w.im < 1 / 2})
+
+private theorem isOpen_upperRightSquareTarget (R : ℝ) : IsOpen (upperRightSquareTarget R) := by
+  refine (isOpen_lt continuous_const Complex.continuous_re).inter
+    ((isOpen_lt continuous_const Complex.continuous_im).inter
+      (isOpen_lt Complex.continuous_im continuous_const))
+
+/-- **The localized vertical modulus criterion.**  Vertical modulus monotonicity of the square
+descent on one certified principal-root chamber forces the Riemann hypothesis. -/
+theorem riemannHypothesis_of_xiSquareDescentVerticalModulusOn {R : ℝ}
+    (hband : XiOffLineQuartetAccretiveBand R)
+    (hvm : XiSquareDescentVerticalModulusOn R) : RiemannHypothesis := by
+  by_contra hnot
+  obtain ⟨z, hz0, hzR, hzim, hzhalf⟩ := exists_XiC_zero_upperRight_of_not_rh hband hnot
+  have hzre : 0 < z.re := lt_of_le_of_lt hband.1 hzR
+  set w0 : ℂ := z ^ 2 with hw0
+  have hsqrt : Complex.sqrt w0 = z := complex_sqrt_sq_of_re_pos hzre
+  have hw0im : 0 < w0.im := by
+    rw [hw0, pow_two]
+    simp only [Complex.mul_im]
+    nlinarith
+  have hF0 : xiSquareDescent w0 = 0 := by
+    rw [hw0]
+    exact (xiSquaredSeamEntireQuotient_sq z).trans hz0
+  set W : ℝ → ℂ := fun t => ((w0.re : ℝ) : ℂ) + (t : ℂ) * Complex.I with hW
+  have hWval : W w0.im = w0 := by
+    rw [hW]
+    apply Complex.ext <;> simp
+  have hWcont : Continuous W := by rw [hW]; fun_prop
+  have hsqcont : ContinuousAt Complex.sqrt (W w0.im) := by
+    rw [hWval]
+    exact continuousAt_complex_sqrt (Or.inr hw0im.ne')
+  have hcomp : ContinuousAt (fun t : ℝ => Complex.sqrt (W t)) w0.im :=
+    hsqcont.comp hWcont.continuousAt
+  have hmemS : Complex.sqrt (W w0.im) ∈ upperRightSquareTarget R := by
+    rw [hWval, hsqrt]
+    exact ⟨hzR, hzim, hzhalf⟩
+  have hev : ∀ᶠ t : ℝ in nhds w0.im, Complex.sqrt (W t) ∈ upperRightSquareTarget R :=
+    hcomp.preimage_mem_nhds ((isOpen_upperRightSquareTarget R).mem_nhds hmemS)
+  obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhds_iff.mp hev
+  have hchamber : ∀ t : ℝ, |t - w0.im| < δ → W t ∈ xiSquareChamber R := by
+    intro t ht
+    have := hball (by rwa [Real.dist_eq])
+    exact ⟨this.1, this.2.1, this.2.2⟩
+  have hzeros : ∀ t : ℝ, |t - w0.im| < δ → t ≤ w0.im → xiSquareDescent (W t) = 0 := by
+    intro t ht hle
+    have hseg : ∀ u ∈ Set.Icc t w0.im, ((w0.re : ℝ) : ℂ) + (u : ℂ) * Complex.I ∈
+        xiSquareChamber R := by
+      intro u hu
+      refine hchamber u ?_
+      rw [abs_lt] at ht ⊢
+      constructor <;> [linarith [hu.1, ht.1]; linarith [hu.2]]
+    have hstep := hvm w0.re t w0.im hle hseg
+    rw [show ((w0.re : ℝ) : ℂ) + ((w0.im : ℝ) : ℂ) * Complex.I = w0 from hWval, hF0,
+      norm_zero] at hstep
+    exact norm_eq_zero.mp (le_antisymm hstep (norm_nonneg _))
+  -- a sequence of zeros accumulating at `w0`
+  set u : ℕ → ℂ := fun n => W (w0.im - δ / ((n : ℝ) + 2)) with hu
+  have hpos : ∀ n : ℕ, 0 < δ / ((n : ℝ) + 2) := by
+    intro n; positivity
+  have hsmall : ∀ n : ℕ, δ / ((n : ℝ) + 2) < δ := by
+    intro n
+    have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    exact div_lt_self hδ (by linarith)
+  have huzero : ∀ n : ℕ, xiSquareDescent (u n) = 0 := by
+    intro n
+    refine hzeros _ ?_ (by linarith [hpos n])
+    rw [show w0.im - δ / ((n : ℝ) + 2) - w0.im = -(δ / ((n : ℝ) + 2)) by ring, abs_neg,
+      abs_of_pos (hpos n)]
+    exact hsmall n
+  have htend0 : Filter.Tendsto (fun n : ℕ => δ / ((n : ℝ) + 2)) Filter.atTop (nhds 0) := by
+    apply Filter.Tendsto.div_atTop tendsto_const_nhds
+    exact Filter.tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop
+  have htendt : Filter.Tendsto (fun n : ℕ => w0.im - δ / ((n : ℝ) + 2))
+      Filter.atTop (nhds w0.im) := by
+    simpa using tendsto_const_nhds.sub htend0
+  have htendu : Filter.Tendsto u Filter.atTop (nhds w0) := by
+    have h : Filter.Tendsto (fun n : ℕ => W (w0.im - δ / ((n : ℝ) + 2))) Filter.atTop
+        (nhds (W w0.im)) := (hWcont.continuousAt (x := w0.im)).tendsto.comp htendt
+    rw [hWval] at h
+    exact h
+  have hune : ∀ n : ℕ, u n ≠ w0 := by
+    intro n hcon
+    have him := congrArg Complex.im hcon
+    rw [hu] at him
+    simp only [hW, Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re,
+      Complex.I_im, Complex.ofReal_re, zero_add, mul_one, mul_zero, add_zero] at him
+    linarith [hpos n]
+  have htendw : Filter.Tendsto u Filter.atTop (nhdsWithin w0 {w0}ᶜ) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within u htendu
+      (Filter.Eventually.of_forall fun n => hune n)
+  have hfreq : ∃ᶠ w in nhdsWithin w0 {w0}ᶜ, xiSquareDescent w = 0 :=
+    htendw.frequently (Filter.Eventually.of_forall huzero).frequently
+  have hanalytic : AnalyticOnNhd ℂ xiSquareDescent Set.univ :=
+    differentiable_xiSquaredSeamEntireQuotient.differentiableOn.analyticOnNhd isOpen_univ
+  have hzeroAll := hanalytic.eqOn_zero_of_preconnected_of_frequently_eq_zero
+    (isPreconnected_univ) (Set.mem_univ w0) hfreq
+  have hcenter : xiSquareDescent 0 = XiC 0 := by
+    have := xiSquaredSeamEntireQuotient_sq 0
+    simpa using this
+  have : xiSquareDescent 0 = 0 := hzeroAll (Set.mem_univ 0)
+  rw [hcenter] at this
+  exact XiC_zero_ne this
+
+/-- Global vertical modulus monotonicity restricts to every chamber of nonnegative radius. -/
+theorem xiSquareDescentVerticalModulusOn_of_global {R : ℝ} (hR : 0 ≤ R)
+    (hvm : XiSquareDescentVerticalModulus) : XiSquareDescentVerticalModulusOn R := by
+  intro x t₁ t₂ h12 hseg
+  have hmem := hseg t₁ (Set.left_mem_Icc.mpr h12)
+  obtain ⟨hre, him, _⟩ := hmem
+  have hzsq := GaloisForLFunctions.HTGeometry.complex_sqrt_sq ((x : ℂ) + (t₁ : ℂ) * Complex.I)
+  have hpos : 0 < ((x : ℂ) + (t₁ : ℂ) * Complex.I).im := by
+    rw [← hzsq, pow_two]
+    simp only [Complex.mul_im]
+    nlinarith [lt_of_le_of_lt hR hre, him]
+  have ht₁ : 0 < t₁ := by simpa using hpos
+  exact hvm x t₁ t₂ ht₁.le h12
+
+/-- **The square-descent vertical modulus criterion at the certified quartet radius.** -/
+theorem riemannHypothesis_iff_xiSquareDescentVerticalModulusOn_twoHundredEighteen_twentyFifths :
+    RiemannHypothesis ↔ XiSquareDescentVerticalModulusOn (218 / 25) := by
+  constructor
+  · intro hRH
+    exact xiSquareDescentVerticalModulusOn_of_global (by norm_num)
+      (xiSquareDescentVerticalModulus_of_rh hRH)
+  · exact riemannHypothesis_of_xiSquareDescentVerticalModulusOn
+      xiOffLineQuartetAccretiveBand_twoHundredEighteen_twentyFifths
+
+/-- **RH is exactly global vertical modulus monotonicity of the square descent.** -/
+theorem riemannHypothesis_iff_xiSquareDescentVerticalModulus :
+    RiemannHypothesis ↔ XiSquareDescentVerticalModulus := by
+  constructor
+  · exact xiSquareDescentVerticalModulus_of_rh
+  · intro hvm
+    exact riemannHypothesis_of_xiSquareDescentVerticalModulusOn
+      xiOffLineQuartetAccretiveBand_twoHundredEighteen_twentyFifths
+      (xiSquareDescentVerticalModulusOn_of_global (by norm_num) hvm)
 
 end
 

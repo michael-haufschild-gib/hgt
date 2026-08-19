@@ -4648,3 +4648,143 @@ AveragedMeanSquare μ h
 Every leaf is an unconditional theorem.  What remains is arithmetic: bound each of the five
 per-block pieces by `ε·stepMass_j²·B₀²·W_Q²` at the schedule (the first is done —
 `nonexceptional_piece_le`), sum with `∑_j stepMass_j² ≤ 2η·W_P` and `L_P·η ≤ 2𝓁^β`, and conclude.
+
+### Milestone B, brick 52 — the disc piece (2026-08-19)
+
+`Sieve/Section4DiscPiece` (axiom-clean, wired) — the second of the five per-block pieces.  Two
+cancellations, both exact:
+
+```text
+disc_term_le  :  (#Q_k)²·I_k  ≤  (Q_k(1+η_Q))²·((B₁/Q_k)·S)²·2w₀  =  (1+η_Q)²·B₁²·S²·2w₀
+```
+
+— the **long** block scale `Q_k` cancels between the trivial prime bound and the cofactor length, so
+the sum over the `L_Q` long blocks is `L_Q(1+η_Q)²B₁²S²·2w₀` with no `Q_k` left; and
+
+```text
+disc_block_le :  #B_j²·(2(L_Q·Σ) + 2·Dfct)
+                   ≤ stepMass_j²(1+η_P)²·(2L_Q²(1+η_Q)²B₀²S²·2w₀)
+                     + stepMass_j²·Pj0²(1+η_P)²·2Dfct
+```
+
+— the **short** block scale cancels the same way, through `Pj0²·B₁² ≤ B₀²`.
+
+So the disc piece is `stepMass_j²·B₀²·S²·(polylog)`, against the target
+`ε·stepMass_j²·B₀²·W_Q²`: it costs `ε ≍ L_Q²·w₀·S²/W_Q²`, and `S = exp(−c(log B₁)^{1/10})` beats
+every power of the logarithm, so no retuning of any parameter is needed for this piece.
+
+Two of the five per-block pieces are now Lean theorems (`nonexceptional_piece_le`,
+`disc_term_le`/`disc_block_le`).  The three left are the two ladder defects and the annulus
+exceptional term, whose savings (`ladderDefectSum_le`, and the Route-T `ρ`) are likewise already
+available.
+
+### Milestone B, brick 53 — the annulus exceptional piece (2026-08-19)
+
+`Sieve/Section4AnnPiece` (axiom-clean, wired) — the third of the five per-block pieces, and the one
+carrying §4's actual saving.
+
+```text
+ann_term_le  :  V_k²·I_k  ≤  (ρ'Q_k)²·(2π)⁻¹·(2(B₁/Q_k) + C|E|)·(B₁/Q_k)
+                          =  ρ'²·(2π)⁻¹·(2B₁² + C·|E|·B₁·Q_k)
+ann_block_le :  #B_j²·(2(L_Q·Σ) + 2Dfct)  ≤  stepMass_j²Pj0²(1+η_P)²·(2(L_Q·M) + 2Dfct)
+ann_main_le  :  Pj0²(1+η_P)²·2L_Q²·ρ'²(2π)⁻¹·2B₁²  ≤  (1+η_P)²·2L_Q²·ρ'²(2π)⁻¹·2B₀²
+```
+
+The long block scale `Q_k` cancels in the main summand exactly as on the disc, leaving `ρ'²`, which
+beats every power of the logarithm.  It survives only in the Halász–Montgomery cross term
+`C·|E|·B₁·Q_k`, where the comparison is `x^{1/4+o(1)}` against `B₀ = x^{1/2}` — the one place in the
+whole lane where a *power* of `x` rather than a power of `log x` does the work, and it is exactly
+the exposé's constraint `P_jQ_k ≪ X^{1/14−ε}` in the form this schedule needs it.
+
+Three of the five per-block pieces are Lean theorems:
+
+| piece | module | cost `ε` |
+|-|-|-|
+| non-exceptional | `Section4NonExcPiece` | `C·ω/K²` — forced `K = (log x)^{4β/5}` |
+| disc | `Section4DiscPiece` | `L_Q²·w₀·S²/W_Q²`, `S` super-polylog small |
+| annulus exceptional | `Section4AnnPiece` | `L_Q²ρ'²/W_Q²` + the `x^{-1/4+o(1)}` cross term |
+| short-ladder defect | corpus `ladderDefectSum_le` | — |
+| long-ladder defect | corpus `ladderDefectSum_le` | — |
+
+The two defect pieces are the corpus's `ladderDefectSum` object verbatim (brick 47's finding), so
+what is left is to instantiate all five at the schedule and sum.
+
+### Milestone B — the long ladder needs its OWN ratio; the corpus's `ladderEta` cannot serve (2026-08-19)
+
+Working the fourth per-block piece (the long-ladder defect) exposes a constraint that the reuse of
+brick 44 does **not** satisfy.  With `Dfct_j` from
+`Sieve/LadderProductDefect.integral_normSq_ladderProductDefect_le_closed` and the gap sum from
+`Sieve/LadderAffineBounds.ladderDefectSum_le`, the dominant contribution to the block's defect term
+is
+
+```text
+   Pj0²·(T₀ + B₁)·(log B₁/log R_Q)·(L_Q·B₁·η_Q²)
+     ≤ 2·Pj0²B₁²·𝓁^{β/2}·𝓁^{1−a}·𝓁^{b}·η_Q        (using T₀ ≤ B₁·𝓁^{β/2} and L_Q η_Q ≍ 𝓁^b)
+     ≤ 2·B₀²·𝓁^{β/2+1−a+b}·η_Q ,
+```
+
+so against the target `ε·B₀²·W_Q²` the requirement is
+
+```text
+   η_Q  =  o( 𝓁^{-(β/2 + 1 − a + b)}·(log 𝓁)² ) .
+```
+
+The corpus's instance supplies `η_Q = ladderEta b (a/b) x = 𝓁^{a−b−5/4}`, and
+
+```text
+   a − b − 5/4  ≤  −(β/2 + 1 − a + b)   ⟺   −5/4 ≤ −β/2 − 1   ⟺   β ≤ 1/2 .
+```
+
+**The `a − b` cancels**, so no choice of `9/10 < a < b < 1` repairs it: the corpus's exponent `−5/4`
+is exactly the one that works up to `β = 1/2` and fails above it.  Since the whole point of this
+lane is `β > 1/2`, the long ladder must carry its own ratio, e.g.
+
+```text
+   η_Q  :=  (log x)^{a − b − 2}      (any exponent ≤ a − b − 1 − β/2 will do).
+```
+
+The short ladder is unaffected: its defect is bounded by
+`integral_normSq_jointLadderProductDefect_le_divisor` at the *divisor* bound and was checked in
+brick 44 with `η_P = 𝓁^{−β/2−5/4}`, which is the corpus's own value.
+
+### Consequence for the schedule
+
+`Sieve/JointSchedule.jointLongSet` must be redefined with a free ratio, and the corpus lemmas
+`ladderPow_le`, `ladderTop_bounds`, `ladderPow_ge`, `tendsto_ladderMass`,
+`eventually_ladderTop_facts` need free-`η` companions.  Their proofs use only `0 < η` and
+`Q ≤ top`, so the generalisation is mechanical — the definitions
+`ladderSteps β γ x`, `ladderTop β γ x` simply bake in `ladderEta β γ x`, which is the only obstacle.
+
+This is recorded before the generalisation is written so the constraint is not rediscovered: **the
+long ladder's ratio is pinned by its own defect, not by the harmonic mass, and it is a strictly
+smaller power of `log x` than the corpus's short-ladder value.**
+
+### Milestone B, brick 54 — the free-ratio ladder (2026-08-19)
+
+`Sieve/FreeEtaLadder` (axiom-clean, wired) — the generalisation the previous entry showed was
+unavoidable.  Same three facts as `Sieve/SpectralParameters`, with the ratio loose:
+
+```text
+gLadderSteps Q η top = ⌊log(top/Q) / log(1+η)⌋
+gLadderTop   Q η top = ⌊Q(1+η)^{gLadderSteps Q η top}⌋
+
+gLadderPow_le    (0 < Q) (Q ≤ top) (0 < η) :  Q(1+η)^{steps} ≤ top
+gLadderPow_ge    (same)                    :  top/(1+η) ≤ Q(1+η)^{steps}
+gLadderTop_bounds(same)                    :  gLadderTop ≤ top  ∧  top/(1+η) − 1 ≤ gLadderTop
+gLadderMass_ge   (2 ≤ A) (2 ≤ B)           :  log log A − log log B + ladderMassConst
+                                                ≤ mertensS A − mertensS B
+```
+
+Every proof uses only `0 < η` and `Q ≤ top`; the corpus's versions were identical except for
+carrying `ladderEta β γ x` in the statement.  `gLadderMass_ge` is `ladderMass_ge` with the two
+naturals free, which is all `logLog_sub_le_mertensS` and `mertensS_le_logLog_add` ever needed.
+
+With this the long designated range can be redefined at `η_Q = (log x)^{a−b−2}`:
+
+```text
+   Q  =  primesRange (siftStart a x) (gLadderTop (siftStart a x) η_Q (cardLength b x)) ,
+```
+
+and `gLadderTop_bounds` + `gLadderMass_ge` give `W_Q ≥ (b−a)log 𝓁 − O(1) → ∞` exactly as
+`tendsto_ladderMass` did — the mass depends only on the two endpoints, not on the ratio, which is
+why the ratio was free to be shrunk in the first place.

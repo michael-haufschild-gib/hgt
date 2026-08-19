@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiTaCharacteristicRealization
+import GaloisForLFunctions.RHTower.SuzukiTaCharacteristicEntire
 
 /-!
 # Exact covariance source of Suzuki's finite characteristics

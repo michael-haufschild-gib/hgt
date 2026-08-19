@@ -644,3 +644,48 @@ parameterized Galois group, reducedness (Cartier), the `G_m` converse, `GL_2`, D
 
 Naming note: `conjDerivation` is already used in four corpus files (inside sub-namespaces); the new
 declaration is `automorphismConjDerivation` to keep the umbrella clean.
+
+
+## Card 1 — the parameterized Galois representation
+
+`ParameterizedGaloisRepresentation` gives the faithful representation of the parameterized Galois
+group in invertible matrices over the *differential* field of constants, by restricting the
+difference representation along `parameterizedAut_le_differenceAut` and reading the target off
+`galoisMatrix_deriv_mem_sigmaConstants`.
+
+That is the last structural piece before the classification itself.  Remaining: reducedness of the
+constants algebra (Cartier), the `G_m` converse, the `GL_2` case of Cassidy, and Dreyfus's normal
+form with its analytic realization.
+
+
+## Card 1 — the derivation on the tensor square
+
+`TensorSquareDerivation` puts the derivation on `R ⊗_K R` (same semilinear descent as the difference
+operator) and proves the two commute there.  That is the parameterized analogue of
+`DifferenceTensorTorsor`, so the parameterized torsor argument now has its setting.
+
+Remaining: reducedness (Cartier), the `G_m` converse, `GL_2`, Dreyfus's normal form.
+
+
+## Card 1 — parameterized side complete up to the classification
+
+`ParameterizedTensorTorsor` gives the parameterized comparison matrix: entries fixed by the
+difference operator on the tensor square, and their derivatives too.  So the Galois group's
+coordinates are differential coordinates — the object Cassidy's classification is about.
+
+The parameterized side now runs end to end: σδ-coordinate ring and its automorphism → localization
+carrying both operators → parameterized PV quotient → parameterized Galois representation over a
+differential field of constants → derivation on the tensor square → parameterized comparison matrix.
+
+Remaining, all classification/analysis rather than structure: reducedness (Cartier), the `G_m`
+converse, the `GL_2` case of Cassidy, Dreyfus's normal form and its analytic realization.
+
+
+## Card 1 — parameterized specialisation
+
+`ParameterizedSpecialization` closes the parameterized bridge: a specialisation of the tensor square
+commuting with both operators has a right component commuting with both, hence lies in
+`parameterizedAut`.  The derivation half is one line (`δ 1 = 0`).
+
+Remaining, all classification/analysis: reducedness (Cartier), the `G_m` converse, the `GL_2` case of
+Cassidy, Dreyfus's normal form and its analytic realization.

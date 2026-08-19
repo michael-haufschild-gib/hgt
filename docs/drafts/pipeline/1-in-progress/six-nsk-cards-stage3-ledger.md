@@ -85,3 +85,24 @@ STILL OPEN for C4: (i) exact order one and Schwarz reality of the gauged product
 translation-orbit differential independence and the concrete `P_N` equality — needs the gauge
 realized in `RatFunc ℂ` / `upperEndMeroField` like `movingCanonicalSurgeryGaugeRatFunc`;
 (iii) the functional-equation-even version (10)–(11).
+
+### C4 COMPLETE (2026-08-19)
+All of statements 1–5, (6), the FE-even strengthening (10)–(11), the lower semicontinuity law (12)
+and the continuous-Fredholm obstruction (13) are formalized unconditionally; see the card's
+"Lean status update (2026-08-19)" section for the exact declaration list.  Six modules:
+`RemotePairEscapeGauge`, `FaithfulIndexFredholmObstruction`, `KreinIndexEscapeStratification`,
+`KreinEscapeAnalyticFamily`, `KreinEscapePowerFieldInvariance` (+ the pre-existing
+`MovingCanonicalSurgery` stack).  All axioms clean.
+
+### Next: C2 `hardy-cyclicity-maximal-ht-field-blindness`
+Item 3 (`P_N(G_B) = P_N(O)` at every power level) is already covered by
+`differentialAdjoin_range_pow_baseGauge_eq`.
+Item 4 needs an analytic `H²(D)`: coefficient model `ℓ²(ℕ)`, polynomial density, multiplication by
+a bounded analytic function, multiplication by a finite Blaschke product as an isometry with closed
+range `B·H²`, and `dim(H² ⊖ B·H²) = deg B`.  NOTE: `[O] = H²(D)` does NOT need Beurling — `O` and
+`O⁻¹` bounded analytic makes multiplication by `O` a bounded operator with bounded inverse, so it
+carries the dense set of polynomials to a dense set.
+Item 1 needs `|σ| < 1` from the Herglotz/Cayley construction (corpus `CayleySchur.lean`).
+Item 2 needs the parent Herglotz full-translation freeness (corpus
+`HerglotzFullTranslationFreeness.lean`) transported through the rational substitution `φ`, the
+Cayley map and `exp`.

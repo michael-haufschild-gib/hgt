@@ -86,10 +86,12 @@ def kreinEscapeTranslateFamily {k r : ℕ} (θ : BoundedRealSequence)
 
 theorem eval_polyTranslationEquiv (h : ℂ) (p : Polynomial ℂ) (z : ℂ) :
     (polyTranslationEquiv h p).eval z = p.eval (z + h) := by
+  symm
+  change p.eval (z + h) = (polyTranslationHom h p).eval z
   induction p using Polynomial.induction_on' with
   | add p q hp hq => simp only [map_add, eval_add, hp, hq]
   | monomial n a =>
-      simp [polyTranslationEquiv, Polynomial.aeval_def, Polynomial.eval_monomial]
+      simp [polyTranslationHom, Polynomial.aeval_def, Polynomial.eval_monomial]
 
 /-- **The gauged orbit is the ungauged orbit times a polynomial unit of the base field.** -/
 theorem kreinEscapeTranslateFamily_eq_mul {k r : ℕ} (θ : BoundedRealSequence)
@@ -99,9 +101,11 @@ theorem kreinEscapeTranslateFamily_eq_mul {k r : ℕ} (θ : BoundedRealSequence)
       = upperEndPolyToMero (polyTranslationEquiv h (remotePairGaugePoly te))
         * surgeryProductTranslateFamily θ aIdx bIdx tb h := by
   letI := isDomain_upperEndAnalyticSubring
+  have hpoly : upperEndPolyToMero (polyTranslationEquiv h (remotePairGaugePoly te))
+      = algebraMap upperEndAnalyticSubring upperEndMeroField
+          (upperEndPolyToAnalytic (polyTranslationEquiv h (remotePairGaugePoly te))) := rfl
   rw [kreinEscapeTranslateFamily, surgeryProductTranslateFamily, analyticUpperEndMero,
-    analyticUpperEndMero, upperEndPolyToMero]
-  rw [← map_mul]
+    analyticUpperEndMero, hpoly, ← map_mul]
   congr 1
   apply Subtype.ext
   change (((fun z : ℂ => kreinEscapeProduct θ aIdx bIdx tb te (z + h))) :
@@ -115,6 +119,7 @@ theorem kreinEscapeTranslateFamily_eq_mul {k r : ℕ} (θ : BoundedRealSequence)
   rw [← Germ.coe_mul]
   apply Filter.Germ.coe_eq.mpr
   refine Filter.Eventually.of_forall fun z => ?_
+  simp only [Pi.mul_apply]
   rw [eval_polyTranslationEquiv, eval_remotePairGaugePoly]
   rfl
 
@@ -153,11 +158,13 @@ theorem kreinEscapeTranslateFamily_differentialAdjoin_pow_eq {k r : ℕ}
   have hne : ∀ h : ℂ,
       (algebraMap (Polynomial ℂ) (RatFunc ℂ)
         (polyTranslationEquiv h (remotePairGaugePoly te))) ≠ 0 := by
-    intro h
-    rw [Ne, RatFunc.algebraMap_eq_zero_iff]
-    intro hcon
-    exact remotePairGaugePoly_ne_zero hte
-      ((polyTranslationEquiv h).injective (by simpa using hcon))
+    intro h hcon
+    have h0 : polyTranslationEquiv h (remotePairGaugePoly te) = 0 :=
+      (IsFractionRing.injective (Polynomial ℂ) (RatFunc ℂ)) (by rw [hcon, map_zero])
+    have hz : remotePairGaugePoly te = 0 := by
+      have hb := congrArg (polyTranslationEquiv h).symm h0
+      simpa using hb
+    exact remotePairGaugePoly_ne_zero hte hz
   rw [funext hgauge]
   exact differentialAdjoin_range_pow_baseGauge_eq
     (fun h : ℂ => surgeryProductTranslateFamily θ aIdx bIdx tb h)
@@ -196,16 +203,19 @@ theorem kreinEscapeTranslateFamily_differentialIndependent_iff {k r : ℕ}
   have hne : ∀ h : ℂ,
       (algebraMap (Polynomial ℂ) (RatFunc ℂ)
         (polyTranslationEquiv h (remotePairGaugePoly te))) ≠ 0 := by
-    intro h
-    rw [Ne, RatFunc.algebraMap_eq_zero_iff]
-    intro hcon
-    exact remotePairGaugePoly_ne_zero hte
-      ((polyTranslationEquiv h).injective (by simpa using hcon))
+    intro h hcon
+    have h0 : polyTranslationEquiv h (remotePairGaugePoly te) = 0 :=
+      (IsFractionRing.injective (Polynomial ℂ) (RatFunc ℂ)) (by rw [hcon, map_zero])
+    have hz : remotePairGaugePoly te = 0 := by
+      have hb := congrArg (polyTranslationEquiv h).symm h0
+      simpa using hb
+    exact remotePairGaugePoly_ne_zero hte hz
   rw [hgauge]
-  exact differentialIndependent_affineBase_iff
+  exact _root_.GaloisForLFunctions.differentialIndependent_affineBase_iff
+    (F := RatFunc ℂ) (K := upperEndMeroField) (ι := ℂ)
     (fun h : ℂ => surgeryProductTranslateFamily θ aIdx bIdx tb h)
     (fun h : ℂ => algebraMap (Polynomial ℂ) (RatFunc ℂ)
       (polyTranslationEquiv h (remotePairGaugePoly te)))
-    (fun _ => 0) hne
+    (fun _ : ℂ => (0 : RatFunc ℂ)) hne
 
 end GaloisForLFunctions.HTGeometry

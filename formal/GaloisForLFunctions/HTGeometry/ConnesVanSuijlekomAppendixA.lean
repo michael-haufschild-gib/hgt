@@ -28,13 +28,13 @@ def connesVanSuijlekomA1Mu (n m : ℤ) : ℝ :=
 
 /-- The matrix-element formula claimed for the quadratic form in Lemma A.1. -/
 def connesVanSuijlekomA1QEntry (b : ℝ) (n m : ℤ) : ℝ :=
-  2 * if n = m then 1 else 0 + b * connesVanSuijlekomA1Mu n m
+  2 * (if n = m then 1 else 0) + b * connesVanSuijlekomA1Mu n m
 
 /-- Literal formula of Appendix A, Lemma A.1, once the paper's analytic
 quadratic form has been identified with `connesVanSuijlekomA1QEntry`. -/
 theorem connesVanSuijlekomA1_qEntry_eq (b : ℝ) (n m : ℤ) :
     connesVanSuijlekomA1QEntry b n m =
-      2 * if n = m then 1 else 0 + b * connesVanSuijlekomA1Mu n m := rfl
+      2 * (if n = m then 1 else 0) + b * connesVanSuijlekomA1Mu n m := rfl
 
 theorem connesVanSuijlekomA1_mu_center_block :
     (fun i j : Fin 3 => connesVanSuijlekomA1Mu ((i : ℤ) - 1) ((j : ℤ) - 1)) =
@@ -79,9 +79,9 @@ def connesVanSuijlekomA2Eta (n : ℤ) : ℝ :=
 
 /-- Matrix entries of the rank-four correction in Lemma A.2(i). -/
 def connesVanSuijlekomA2RankFour (n m : ℤ) : ℝ :=
-    connesVanSuijlekomA2Eta n * if m = 1 then 1 else 0
+    connesVanSuijlekomA2Eta n * (if m = 1 then 1 else 0)
   + (if n = 1 then 1 else 0) * connesVanSuijlekomA2Eta m
-  - connesVanSuijlekomA2Xi n * if m = -1 then 1 else 0
+  - connesVanSuijlekomA2Xi n * (if m = -1 then 1 else 0)
   - (if n = -1 then 1 else 0) * connesVanSuijlekomA2Xi m
 
 /-- Kronecker-delta notation for matrix entries. -/
@@ -106,8 +106,9 @@ theorem connesVanSuijlekomA2_diagonal_eq_source (n : ℤ) :
 
 theorem connesVanSuijlekomA2_neg_xi (m : ℤ) :
     1 / (-1 - (m : ℝ)) = - (1 / (1 + (m : ℝ))) := by
+  simp only [one_div]
   rw [show (-1 - (m : ℝ)) = -(1 + (m : ℝ)) by ring]
-  simp
+  exact inv_neg
 
 theorem connesVanSuijlekomA2_rankFour_off_special
     {n m : ℤ} (hn : n ≠ -1) (hn1 : n ≠ 1) (hm : m ≠ -1) (hm1 : m ≠ 1) :
@@ -143,8 +144,8 @@ theorem connesVanSuijlekomA2_mu_eq_diagonal_add_rankFour (n m : ℤ) :
     have hm' : (-1 : ℤ) ≠ m := Ne.symm hm
     simp [connesVanSuijlekomA1Mu, connesVanSuijlekomA2Diagonal,
       connesVanSuijlekomA2Delta, connesVanSuijlekomA2RankFour,
-      connesVanSuijlekomA2Xi, connesVanSuijlekomA2Eta, hm, hm', hm0, hm1,
-      connesVanSuijlekomA2_neg_xi]
+      connesVanSuijlekomA2Xi, connesVanSuijlekomA2Eta, hm, hm', hm0, hm1]
+    simpa only [one_div] using connesVanSuijlekomA2_neg_xi m
   by_cases hn0 : n = 0
   · subst n
     by_cases hm : m = -1
@@ -195,8 +196,8 @@ theorem connesVanSuijlekomA2_mu_eq_diagonal_add_rankFour (n m : ℤ) :
   · subst m
     simp [connesVanSuijlekomA1Mu, connesVanSuijlekomA2Diagonal,
       connesVanSuijlekomA2Delta, connesVanSuijlekomA2RankFour,
-      connesVanSuijlekomA2Xi, connesVanSuijlekomA2Eta, hn, hn0, hn1,
-      connesVanSuijlekomA2_neg_xi]
+      connesVanSuijlekomA2Xi, connesVanSuijlekomA2Eta, hn, hn0, hn1]
+    simpa only [one_div] using connesVanSuijlekomA2_neg_xi n
   by_cases hm1 : m = 1
   · subst m
     simp [connesVanSuijlekomA1Mu, connesVanSuijlekomA2Diagonal,

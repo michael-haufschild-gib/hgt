@@ -289,4 +289,61 @@ theorem remotePairGauge_mul_iteratedDeriv_tendstoLocallyUniformly {r : ℕ} {ι 
     isOpen_univ hconvOn hdiff j
   simpa [tendstoLocallyUniformlyOn_univ] using hj
 
+/-! ## The functional-equation-even gauge -/
+
+theorem normSq_neg_conj (t : ℂ) : Complex.normSq (-((starRingEnd ℂ) t)) = Complex.normSq t := by
+  rw [Complex.normSq_neg, Complex.normSq_conj]
+
+theorem remotePairFactor_neg (t z : ℂ) :
+    remotePairFactor t (-z) = remotePairFactor (-((starRingEnd ℂ) t)) z := by
+  rw [remotePairFactor, remotePairFactor, normSq_neg_conj, map_neg, Complex.conj_conj]
+  congr 1
+  ring
+
+/-- One normalized remote quartet factor `((z²-t²)(z²-\bar t²))/|t|⁴`. -/
+def evenRemotePairFactor (t z : ℂ) : ℂ :=
+  remotePairFactor t z * remotePairFactor (-((starRingEnd ℂ) t)) z
+
+theorem evenRemotePairFactor_neg (t z : ℂ) :
+    evenRemotePairFactor t (-z) = evenRemotePairFactor t z := by
+  have h1 := remotePairFactor_neg t z
+  have h2 : remotePairFactor (-((starRingEnd ℂ) t)) (-z) = remotePairFactor t z := by
+    rw [remotePairFactor_neg]
+    congr 1
+    rw [map_neg, Complex.conj_conj, neg_neg]
+  rw [evenRemotePairFactor, evenRemotePairFactor, h1, h2]
+  ring
+
+/-- The normalized remote quartet gauge `A^even_(r,T)`. -/
+def evenRemotePairGauge {r : ℕ} (t : Fin r → ℂ) (z : ℂ) : ℂ :=
+  ∏ q, evenRemotePairFactor (t q) z
+
+/-- **The even gauge is even.** -/
+theorem evenRemotePairGauge_neg {r : ℕ} (t : Fin r → ℂ) (z : ℂ) :
+    evenRemotePairGauge t (-z) = evenRemotePairGauge t z := by
+  rw [evenRemotePairGauge, evenRemotePairGauge]
+  exact Finset.prod_congr rfl fun q _ => evenRemotePairFactor_neg (t q) z
+
+/-- The quartet points: each upper point together with the reflection `-conj t`, again upper. -/
+def evenQuartetPoints {r : ℕ} (t : Fin r → ℂ) : Fin (r + r) → ℂ :=
+  Fin.append t (fun q => -((starRingEnd ℂ) (t q)))
+
+theorem im_evenQuartetPoints_pos {r : ℕ} {t : Fin r → ℂ} (ht : ∀ q, 0 < (t q).im) :
+    ∀ i, 0 < (evenQuartetPoints t i).im := by
+  intro i
+  refine Fin.addCases (fun q => ?_) (fun q => ?_) i
+  · rw [evenQuartetPoints, Fin.append_left]; exact ht q
+  · rw [evenQuartetPoints, Fin.append_right]
+    simp only [Complex.neg_im, Complex.conj_im, neg_neg]
+    exact ht q
+
+/-- **The even gauge is the general gauge at the doubled quartet family.**  Hence the even case is
+an instance of the general index arithmetic, and the exact index rises by `2` per quartet. -/
+theorem evenRemotePairGauge_eq_remotePairGauge {r : ℕ} (t : Fin r → ℂ) (z : ℂ) :
+    evenRemotePairGauge t z = remotePairGauge (evenQuartetPoints t) z := by
+  rw [evenRemotePairGauge, remotePairGauge, Fin.prod_univ_add]
+  simp only [evenQuartetPoints, Fin.append_left, Fin.append_right]
+  rw [← Finset.prod_mul_distrib]
+  exact Finset.prod_congr rfl fun q _ => rfl
+
 end GaloisForLFunctions.HTGeometry

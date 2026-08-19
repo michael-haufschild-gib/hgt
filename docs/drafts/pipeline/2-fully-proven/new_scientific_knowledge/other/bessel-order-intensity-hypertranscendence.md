@@ -1125,3 +1125,83 @@ because the two operators commute there.
 Both statements are mathlib gaps.  With `LocalizationDerivation` this completes the transport of the
 `sigma`-`delta` structure to the localization at the determinant: the localized differential
 coordinate ring of a fundamental matrix carries both operators, and they commute.
+
+## Lean progress — the parameterized Galois representation
+
+`GaloisForLFunctions.HTGeometry.ParameterizedGaloisRepresentation`, unconditional and axiom-clean:
+
+```text
+parameterizedGaloisRepresentation           **the parameterized Galois representation**
+parameterizedGaloisRepresentation_entries   **its entries lie in the constants of the difference
+                                            operator, and their derivatives do too**
+parameterizedGaloisRepresentation_injective **it is faithful** on a Picard--Vessiot ring
+```
+
+The parameterized Galois group is the subgroup of difference automorphisms which also commute with
+the derivation, so the representation is the restriction of the difference Galois representation
+along `parameterizedAut_le_differenceAut`.  What is new is the target: the entries are constants of
+the difference operator, and by `deriv_mem_sigmaConstantsSubring` those constants are closed under
+the derivation.
+
+So the parameterized Galois group embeds in the invertible matrices over a *differential* field.
+That is the structure a classification of differential algebraic subgroups acts on, and it is the
+last structural piece before Cassidy's classification itself.
+
+## Lean progress — the derivation on the tensor square
+
+`GaloisForLFunctions.HTGeometry.TensorSquareDerivation`, unconditional and axiom-clean:
+
+```text
+differentialTensorAddHom          x (x) y |-> delta x (x) y + x (x) delta y, descended to the tensor
+                                  product over K
+tensorSquareDerivation            **the derivation on the tensor square**
+tensorSquareDerivation_commutes   **it commutes with the difference operator there**
+```
+
+Like the difference operator, the derivation is not `K`-linear -- it moves the base field -- so
+mathlib's tensor maps do not apply.  The descent works for the same reason: `delta` on the base is
+the restriction of `delta` on `R`, so the two expressions
+`delta(a . x) (x) y + (a . x) (x) delta y` and `delta x (x) (a . y) + x (x) delta(a . y)` differ only by
+scalars that move across the tensor.
+
+Both operators now live on `R (x)_K R` and commute there, which is the parameterized analogue of
+`DifferenceTensorTorsor` and the setting in which the parameterized torsor argument runs.
+
+## Lean progress — the parameterized torsor comparison matrix
+
+`GaloisForLFunctions.HTGeometry.ParameterizedTensorTorsor`, unconditional and axiom-clean:
+
+```text
+exists_parameterized_tensor_comparison_matrix
+    **the comparison matrix of the torsor has entries fixed by the difference operator on the tensor
+    square, and so do their derivatives**
+```
+
+So the coordinates of the parameterized Galois group are *differential* coordinates: the comparison
+matrix lives over a differential ring of constants.  That is precisely what makes the parameterized
+Galois group a differential algebraic group rather than an algebraic one, and it is the object
+Cassidy's classification is about.
+
+The parameterized side of the theory is now complete up to the classification: the `sigma`-`delta`
+coordinate ring and its automorphism, the localization carrying both operators, the parameterized
+Picard--Vessiot quotient, the parameterized Galois representation over a differential field of
+constants, the derivation on the tensor square, and the parameterized torsor comparison matrix.
+
+## Lean progress — specialising the parameterized torsor
+
+`GaloisForLFunctions.HTGeometry.ParameterizedSpecialization`, unconditional and axiom-clean:
+
+```text
+rightComponent_commutes_deriv          the right component of a specialisation commutes with the
+                                       derivation as soon as the specialisation does
+rightComponent_mem_parameterizedAut    **a doubly equivariant specialisation gives an element of the
+                                       parameterized Galois group**
+```
+
+For the derivation the verification is one line: `delta 1 = 0`, so the derivation of `1 (x) y` is
+`1 (x) delta y`.
+
+The parameterized correspondence therefore has the same shape as the difference one: decompose the
+tensor square, take a point of the group, specialise, and read off the automorphism -- now
+commuting with both operators, hence an element of the parameterized Galois group whose Galois
+matrix has differential coordinates.

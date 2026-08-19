@@ -35,13 +35,13 @@ theorem disc_term_le {NQ Qk0 B₁ S w₀ ηQ Idisc : ℝ}
     exact mul_le_mul hNQsq hIdisc hIdisc0 h0
   refine hstep.trans (le_of_eq ?_)
   field_simp
-  ring
+  try ring
 
 /-- **The disc piece of one short block.**  The short scale cancels too. -/
 theorem disc_block_le {NB stepM Pj0 B₀ B₁ Sig Dfct LQ S w₀ ηP ηQ : ℝ}
-    (hPj0 : 0 < Pj0) (hηP : 0 ≤ ηP)
+    (hPj0 : 0 < Pj0)
     (hNB : NB ≤ stepM * (Pj0 * (1 + ηP))) (hNB0 : 0 ≤ NB)
-    (hB₁ : B₁ ≤ B₀ / Pj0) (hB₁0 : 0 ≤ B₁) (hLQ : 0 ≤ LQ) (hDfct : 0 ≤ Dfct)
+    (hB₁ : B₁ ≤ B₀ / Pj0) (hB₁0 : 0 ≤ B₁) (hB₀ : 0 ≤ B₀) (hLQ : 0 ≤ LQ) (hDfct : 0 ≤ Dfct)
     (hSig : Sig ≤ LQ * ((1 + ηQ) ^ 2 * B₁ ^ 2 * S ^ 2 * (2 * w₀))) (hSig0 : 0 ≤ Sig)
     (hw₀ : 0 ≤ w₀) :
     NB ^ 2 * (2 * (LQ * Sig) + 2 * Dfct)
@@ -56,14 +56,12 @@ theorem disc_block_le {NB stepM Pj0 B₀ B₁ Sig Dfct LQ S w₀ ηP ηQ : ℝ}
   have hB12 : (0 : ℝ) ≤ B₁ ^ 2 := sq_nonneg _
   -- the inner sum, with the short scale removed
   have hB1sq : Pj0 ^ 2 * B₁ ^ 2 ≤ B₀ ^ 2 := by
-    have hB0 : (0 : ℝ) ≤ B₀ := by
-      have := mul_le_mul_of_nonneg_left hB₁ hPj0.le
-      nlinarith [hB₁0, hPj0, this]
     have hmul : Pj0 * B₁ ≤ B₀ := by
-      have := mul_le_mul_of_nonneg_left hB₁ hPj0.le
-      rw [mul_div_cancel₀ _ (ne_of_gt hPj0)] at this
-      exact this
-    nlinarith [hmul, hB₁0, hPj0.le, hB0]
+      have hstep := mul_le_mul_of_nonneg_left hB₁ hPj0.le
+      rwa [mul_div_cancel₀ _ (ne_of_gt hPj0)] at hstep
+    have hprod0 : (0 : ℝ) ≤ Pj0 * B₁ := mul_nonneg hPj0.le hB₁0
+    have hsq : (Pj0 * B₁) ^ 2 ≤ B₀ ^ 2 := by nlinarith [hmul, hprod0, hB₀]
+    nlinarith [hsq]
   have hinner : Pj0 ^ 2 * (1 + ηP) ^ 2 * (2 * (LQ * Sig))
       ≤ (1 + ηP) ^ 2 * (2 * LQ ^ 2 * ((1 + ηQ) ^ 2 * B₀ ^ 2 * S ^ 2 * (2 * w₀))) := by
     have hSigle : LQ * Sig ≤ LQ ^ 2 * ((1 + ηQ) ^ 2 * B₁ ^ 2 * S ^ 2 * (2 * w₀)) := by

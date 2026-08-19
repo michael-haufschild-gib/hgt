@@ -265,4 +265,80 @@ theorem kreinEscapeProduct_eq_zero_iff {k r : ℕ} (θ : BoundedRealSequence)
       rw [remotePairGauge, Finset.prod_eq_zero_iff]
       exact ⟨q, Finset.mem_univ q, (remotePairFactor_eq_zero_iff (hte q) z).mpr hq⟩
 
+/-! ## The card's concrete escape parameterization -/
+
+/-- `t_(q,T) = δ_q + i (T + q)`: fixed real parts, imaginary parts escaping to `+∞`. -/
+def kreinEscapePoint {r : ℕ} (δ : Fin r → ℝ) (T : ℝ) (q : Fin r) : ℂ :=
+  (δ q : ℂ) + Complex.I * (((T + q : ℝ)) : ℂ)
+
+@[simp] theorem kreinEscapePoint_re {r : ℕ} (δ : Fin r → ℝ) (T : ℝ) (q : Fin r) :
+    (kreinEscapePoint δ T q).re = δ q := by
+  simp [kreinEscapePoint]
+
+@[simp] theorem kreinEscapePoint_im {r : ℕ} (δ : Fin r → ℝ) (T : ℝ) (q : Fin r) :
+    (kreinEscapePoint δ T q).im = T + q := by
+  simp [kreinEscapePoint]
+
+theorem kreinEscapePoint_im_pos {r : ℕ} (δ : Fin r → ℝ) {T : ℝ} (hT : 0 < T) (q : Fin r) :
+    0 < (kreinEscapePoint δ T q).im := by
+  rw [kreinEscapePoint_im]
+  have : (0 : ℝ) ≤ (q : ℕ) := Nat.cast_nonneg _
+  linarith
+
+theorem kreinEscapePoint_injective {r : ℕ} (δ : Fin r → ℝ) (T : ℝ) :
+    Function.Injective (kreinEscapePoint δ T) := by
+  intro p q hpq
+  have him := congrArg Complex.im hpq
+  rw [kreinEscapePoint_im, kreinEscapePoint_im] at him
+  have hnat : ((p : ℕ) : ℝ) = ((q : ℕ) : ℝ) := by linarith
+  exact Fin.ext (by exact_mod_cast hnat)
+
+theorem kreinEscapePoint_ne_zero {r : ℕ} (δ : Fin r → ℝ) {T : ℝ} (hT : 0 < T) (q : Fin r) :
+    kreinEscapePoint δ T q ≠ 0 := by
+  intro h
+  have him : (kreinEscapePoint δ T q).im = 0 := by rw [h]; simp
+  have := kreinEscapePoint_im_pos δ hT q
+  rw [him] at this
+  exact lt_irrefl 0 this
+
+theorem normSq_kreinEscapePoint {r : ℕ} (δ : Fin r → ℝ) (T : ℝ) (q : Fin r) :
+    Complex.normSq (kreinEscapePoint δ T q) = (δ q) ^ 2 + (T + q) ^ 2 := by
+  rw [Complex.normSq_apply, kreinEscapePoint_re, kreinEscapePoint_im]
+  ring
+
+/-- **The escape hypothesis holds for the card's parameterization.** -/
+theorem tendsto_normSq_inv_kreinEscapePoint {r : ℕ} (δ : Fin r → ℝ) (q : Fin r) :
+    Tendsto (fun T : ℝ => ((Complex.normSq (kreinEscapePoint δ T q) : ℂ))⁻¹) atTop (nhds 0) := by
+  have hreal : Tendsto (fun T : ℝ => (δ q) ^ 2 + (T + q) ^ 2) atTop atTop := by
+    have h1 : Tendsto (fun T : ℝ => (T + q) ^ 2) atTop atTop :=
+      (tendsto_pow_atTop (n := 2) (by norm_num)).comp (tendsto_atTop_add_const_right _ _ tendsto_id)
+    exact tendsto_atTop_add_const_left _ _ h1
+  have hinv : Tendsto (fun T : ℝ => ((δ q) ^ 2 + (T + q) ^ 2)⁻¹) atTop (nhds 0) :=
+    hreal.inv_tendsto_atTop
+  have hcast : Tendsto (fun T : ℝ => ((((δ q) ^ 2 + (T + q) ^ 2)⁻¹ : ℝ) : ℂ)) atTop (nhds 0) := by
+    have h := (Complex.continuous_ofReal.tendsto (0 : ℝ)).comp hinv
+    rw [Complex.ofReal_zero] at h
+    exact h
+  refine hcast.congr fun T => ?_
+  rw [normSq_kreinEscapePoint]
+  push_cast
+  ring
+
+/-- **Equation (5) in the card's parameterization.**  As `T → ∞` the gauged carriers converge to
+the ungauged one with every derivative, uniformly on every compact set. -/
+theorem kreinEscapeProduct_escape_iteratedDeriv_tendstoLocallyUniformly
+    {k r : ℕ} (θ : BoundedRealSequence) (aIdx bIdx : Fin k → ℕ) (tb : Fin k → ℂ)
+    (δ : Fin r → ℝ) (hδ : ∀ q, δ q ≠ 0) (j : ℕ) :
+    TendstoLocallyUniformly
+      (fun T : ℝ =>
+        iteratedDeriv j (kreinEscapeProduct θ aIdx bIdx tb (kreinEscapePoint δ T)))
+      (iteratedDeriv j (movingCanonicalSurgeryProduct θ aIdx bIdx tb)) atTop := by
+  refine kreinEscapeProduct_iteratedDeriv_tendstoLocallyUniformly θ aIdx bIdx tb
+    (δ := δ) (fun T q => kreinEscapePoint_re δ T q) (fun T q => ?_)
+    (fun q => tendsto_normSq_inv_kreinEscapePoint δ q) j
+  intro h
+  have hre : (kreinEscapePoint δ T q).re = δ q := kreinEscapePoint_re δ T q
+  rw [h] at hre
+  exact hδ q (by simpa using hre.symm)
+
 end GaloisForLFunctions.HTGeometry

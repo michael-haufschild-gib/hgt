@@ -1564,3 +1564,59 @@ So both properties Lemma A1 asserts are now formal at every path length `n >= 2`
 `exists_endpointComplete_chain` directly, and property 1 follows from it by the parent card's
 genericity intersection, which is now available in the architecture's own coordinates through
 `exists_mem_realHermitianSubmoduleMaximalSet_endpointComplete`.
+
+## Lean progress -- the analytic null-preimage layer behind Theorem B
+
+Theorem B needs one analytic input: the pushforward of the shell measure by a spectral action
+`phi_k` is absolutely continuous, so that the corpus's Riemann--Lebesgue engine
+(`tendsto_integral_exp_phase_weight`) kills the oscillatory integral `(17)`.  The card derives that
+from the coarea formula.  Coarea is not available, and is not needed: the same conclusion follows
+from a null-preimage law for real-analytic maps, which the corpus owned only in one variable.
+Three new modules -- umbrella-wired, axiom-clean -- supply it in every dimension and on every open
+domain.
+
+`formal/GaloisForLFunctions/HTGeometry/MultivariateAnalyticZeroNull.lean`:
+
+| Card item | Declaration |
+|---|---|
+| fixing one coordinate is an analytic map of the others, in both directions | `analyticAt_cons_left`, `analyticAt_cons_right`, `analyticOnNhd_slice_left`, `analyticOnNhd_slice_right` |
+| **a nonzero real-analytic function of finitely many real variables has a Lebesgue-null zero set** | `analytic_zero_set_volume_fin` |
+
+The proof is the Fubini induction: the transverse points at which the whole line-slice vanishes lie
+inside the zero set of one fixed slice, which is null by induction, and over every other transverse
+point the slice is a nonzero one-variable analytic function with a countable zero set.
+
+`formal/GaloisForLFunctions/HTGeometry/MultivariateAnalyticNullPreimage.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the measure-preserving coordinate split peeling off one variable | `slicePair`, `measurePreserving_slicePair` |
+| **a nonconstant real-analytic function of several variables pulls null sets back to null sets** | `analytic_preimage_volume_eq_zero_fin` |
+| **the pushforward is absolutely continuous** | `absolutelyContinuous_map_analytic` |
+
+Here the dichotomy is: either the analytic difference `f(w) - f(0, w')` vanishes identically, in
+which case `f` does not depend on the peeled coordinate and the statement descends to one variable
+fewer; or it does not, in which case its zero set is null, so almost every slice is a nonconstant
+one-variable analytic function and the one-variable law applies to it.
+
+`formal/GaloisForLFunctions/HTGeometry/LocalAnalyticNullPreimage.lean` removes the global-domain
+restriction, which is essential here because the eigenvalue branches only exist on the
+simple-spectrum region.
+
+| Card item | Declaration |
+|---|---|
+| the logistic coordinate, an analytic bijection from the line onto a bounded interval | `lineToUnit`, `analyticAt_lineToUnit`, `exists_lineToUnit_eq` |
+| its product, an analytic bijection from the whole space onto any sup-metric ball | `ballChart`, `analyticAt_ballChart`, `ballChart_mem_ball`, `exists_ballChart_eq` |
+| **the null-preimage law on one ball** | `analytic_preimage_volume_eq_zero_ball` |
+| **the null-preimage law on an arbitrary open domain** | `analytic_preimage_volume_eq_zero_isOpen` |
+
+The chart argument replaces a local-domain re-proof: a ball is the analytic bijective image of the
+whole space, the global law applies upstairs, and the differentiable null-image theorem transports
+the conclusion back down.  The open-domain law then follows from a countable subcover, the domain
+being Lindelöf.
+
+So the analytic half of Theorem B is now unconditional infrastructure, in the exact form the
+Riemann--Lebesgue engine consumes.  What remains for Theorem B is the transfer of these laws from
+the coefficient space to the fixed shell, and the identification of the spectral action `phi_k` as
+a function which is analytic and -- by Theorem A -- nonconstant on every open patch of the
+simple-spectrum region of that shell.
