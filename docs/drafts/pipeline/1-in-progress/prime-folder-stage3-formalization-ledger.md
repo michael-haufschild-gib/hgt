@@ -180,3 +180,30 @@ Cards `prime-laplace-gamma-jet-incidence-phase-transition` and
 `prime-laplace-gamma-clock-descent-anomaly` promoted to
 `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`.
 Stage-2 prime folder: 24 cards remaining.
+
+## 2026-08-19 — prime-square Fourier core landed (cards 22, 23 in progress)
+
+`RHTower/PrimeSquareFourierStrata.lean` (`lake env lean` clean, wired into `GaloisForLFunctions.RHTower`,
+axiom-clean) now carries the shared finite-Fourier interface both prime-square cards were waiting on:
+
+- the `p` multiples of `p` in `ZMod (p^2)`, their cardinality, and the exact subgroup character sum
+  `∑_{p ∣ x} e(kx) = p·[p ∣ k]` (proved from the geometric sum, no subgroup machinery);
+- the strata indicators `1_U`, `1_M`, `δ₀`, their products and sums;
+- the discrete Fourier transforms of all three (mathlib `ZMod.dft`), hence the unitary images
+  `𝓕 1_U = p δ₀ − 1_M` and `𝓕 (1_M − δ₀) = 1_M − 1/p`;
+- the four Fourier compression entries of the valuation plane
+  (`0`, `−(p−1)`, `−(p−1)`, `(p−1)²/p`), i.e. the matrix `C_p` of the parent card;
+- the deformed occupation line `q_{p,c}`, **the exact reflected-line coefficient**
+  `α_p(c) = ((p−1)/p − (p^c + p^{−c}))/√((p+p^{2c})(p+p^{−2c}))`, the critical value
+  `α_p(0) = −1/p`, the algebraic identity `N² − D² = p(p−1)x(x−2)`, and **the sharp criticality law
+  `β_p(c) ≥ 1` with equality exactly at `c = 0`**.
+
+Remaining for `prime-square-deformed-reflection-line-superessential-fracture`: the cofinal type
+`log β_p(c)/log p → |c|` and its weighted Cesàro form `log B_x(c)/θ(x) → |c|`, plus the
+Wold–Gamma scale comparison (needs Mertens `∏(1−1/p) ≍ 1/log x` and `θ(x) ~ x`, both in the corpus).
+
+Remaining for `prime-square-mobius-fourier-complementary-record-law`: the eigen-decomposition and
+leakage (its (8)–(11)), the involution `S_p` and the complementary amplitudes (17)–(21), the local
+Möbius Fourier spectrum and Plancherel (23)–(26), the natural-cone Gram (29), CRT tensorization
+(31)–(32), and the profinite tail-sector theorem (§6, which needs Haar measure on `Ẑ`,
+independence, and Borel–Cantelli).

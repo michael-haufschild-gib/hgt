@@ -1,101 +1,128 @@
-import GaloisForLFunctions.HTGeometry.FamilyPolynomialGauge
-import GaloisForLFunctions.HTGeometry.FamilyInversionGauge
-import GaloisForLFunctions.HTGeometry.ExponentialFullIndependence
+import GaloisForLFunctions.HTGeometry.CayleyOuterFamilyGauge
+import GaloisForLFunctions.HTGeometry.ParabolicCayleyAutomorphism
 import GaloisForLFunctions.HTGeometry.SpectralMobiusGauge
 
 /-!
-# Differential independence of the parabolic orbit of the exponential Cayley carrier
+# Differential independence of the parabolic orbit of the bounded outer carrier
 
-`hardy-cyclicity-maximal-ht-field-blindness`, statement `2`.
+The bounded outer carrier of a finite positive measure is `O = exp ∘ c ∘ m ∘ φ` on the unit disc,
+where `m` is the Cauchy transform of the measure, `c(z) = (z − i)/(z + i)` is the Cayley map of the
+upper half plane into the disc, and `φ(w) = i(1 + w)/(1 − w)` is its inverse.  The parabolic disc
+automorphisms are `τ_t = φ⁻¹ ∘ (z ↦ z + t) ∘ φ`, so `φ ∘ τ_t = φ + t`.
 
-The carrier of the card is `O = exp ∘ c ∘ m ∘ φ` with `c(x) = (x−i)/(x+i)` the Cayley map of the
-upper half plane into the disk and `φ(w) = i(1+w)/(1−w)` its inverse.  Because
-`φ(τ_t(w)) = φ(w) + t`, the parabolic orbit `{O ∘ τ_t}` is, in the half-plane coordinate, the
-family `z ↦ exp(c(m(z + t)))`.  Relation-freeness therefore transports along three corpus gauges:
-
-* the Cayley post-composition `c` (affine + inversion gauges);
-* the exponential (`not_familyDifferentiallyAlgebraicOn_exp`);
-* the Möbius change of variable `φ` (`not_familyDifferentiallyAlgebraicOn_comp_mobius`).
+Freeness of the translated Cauchy family and its transport through the Cayley exponential are
+already available.  The remaining transport is the rational change of variable `z = φ(w)`, which
+turns the half-plane translation family into the parabolic orbit on the disc; the Mobius gauge
+supplies it because `φ` is a Mobius map of nonzero determinant carrying the disc into the half
+plane.
 -/
 
-open Complex
+open MeasureTheory Set
 
 namespace GaloisForLFunctions.HTGeometry
 
+open GaloisForLFunctions
+
 noncomputable section
 
-/-! ## Relation-freeness only depends on the family near the domain -/
+/-! ## Real translation configurations -/
 
-theorem familyDifferentiallyAlgebraicOn_congr {m : ℕ} {U : Set ℂ} (hU : IsOpen U)
-    {g h : Fin m → ℂ → ℂ} (hgh : ∀ i, ∀ w ∈ U, g i w = h i w)
-    (hrel : FamilyDifferentiallyAlgebraicOn g U) : FamilyDifferentiallyAlgebraicOn h U := by
-  obtain ⟨n, P, hPne, hP⟩ := hrel
-  refine ⟨n, P, hPne, fun z hz => ?_⟩
-  have hjet : familyJetVec (n := n) h z = familyJetVec (n := n) g z := by
-    funext s
-    cases s with
-    | inl x => rfl
-    | inr p =>
-        obtain ⟨i, j⟩ := p
-        show iteratedDeriv (j : ℕ) (h i) z = iteratedDeriv (j : ℕ) (g i) z
-        have heq : h i =ᶠ[nhds z] g i := by
-          filter_upwards [hU.mem_nhds hz] with w hw
-          exact (hgh i w hw).symm
-        rw [heq.iteratedDeriv_eq]
-  rw [hjet]
-  exact hP z hz
+/-- The shift configuration attached to an injective tuple of real translations. -/
+def realShiftConfiguration {m : ℕ} (t : Fin m → ℝ) (ht : Function.Injective t) :
+    InjectiveShiftConfiguration (Fin m) :=
+  ⟨fun i => ((t i : ℝ) : ℂ), by
+    intro i j hij
+    exact ht (Complex.ofReal_inj.mp hij)⟩
 
-/-! ## The Cayley post-composition gauge -/
+/-- For real translations the common upper domain is the whole open upper half plane. -/
+theorem mem_commonUpperTranslationDomain_of_im_pos {m : ℕ} {t : Fin m → ℝ}
+    (ht : Function.Injective t) {z : ℂ} (hz : 0 < z.im) :
+    z ∈ commonUpperTranslationDomain (realShiftConfiguration t ht) := by
+  intro i
+  simpa [realShiftConfiguration] using hz
 
-theorem not_familyDifferentiallyAlgebraicOn_cayley {m : ℕ} {U : Set ℂ} (hU : IsOpen U)
-    {g : Fin m → ℂ → ℂ}
-    (hg : ∀ i, ∀ w ∈ U, ContDiffAt ℂ (⊤ : ℕ∞) (g i) w)
-    (hne : ∀ i, ∀ w ∈ U, g i w + Complex.I ≠ 0)
-    (hfree : ¬ FamilyDifferentiallyAlgebraicOn g U) :
+/-! ## The inverse Cayley map in Mobius normal form -/
+
+/-- `φ(w) = i(1 + w)/(1 − w)` is the Mobius map with coefficients `(i, i, −1, 1)`. -/
+theorem cayleyToUpper_eq_mobius (v : ℂ) :
+    (Complex.I * v + Complex.I) / ((-1 : ℂ) * v + 1) = cayleyToUpper v := by
+  rw [cayleyToUpper]
+  congr 1 <;> ring
+
+/-! ## The parabolic orbit inherits the freeness of the translation family -/
+
+/-- **Parabolic transport of translation freeness.**  If the translated Cauchy family carries no
+differential relation on its common upper domain, then the family of parabolic translates of the
+bounded outer carrier carries none on the disc. -/
+theorem not_familyDifferentiallyAlgebraicOn_parabolicOrbit {m : ℕ}
+    (ν : Measure ℝ) [IsFiniteMeasure ν] (t : Fin m → ℝ) (ht : Function.Injective t)
+    (hfree : ¬ FamilyDifferentiallyAlgebraicOn
+      (fun i z => cauchyTransform ν (z + (realShiftConfiguration t ht).1 i))
+      (commonUpperTranslationDomain (realShiftConfiguration t ht))) :
     ¬ FamilyDifferentiallyAlgebraicOn
-      (fun i w => (g i w - Complex.I) / (g i w + Complex.I)) U := by
-  intro hrel
-  apply hfree
-  set gI : Fin m → ℂ → ℂ := fun i w => g i w + Complex.I with hgI
-  have hgIsmooth : ∀ i, ∀ w ∈ U, ContDiffAt ℂ (⊤ : ℕ∞) (gI i) w := by
-    intro i w hw
-    exact (hg i w hw).add contDiffAt_const
-  have hgsmooth' : ∀ z ∈ U, ∀ i, ContDiffAt ℂ (⊤ : ℕ∞) (g i) z := fun z hz i => hg i z hz
-  have hinvsmooth : ∀ z ∈ U, ∀ i, ContDiffAt ℂ (⊤ : ℕ∞) (fun w => (gI i w)⁻¹) z := by
-    intro z hz i
-    exact (hgIsmooth i z hz).inv (hne i z hz)
-  -- the Cayley family agrees on `U` with an affine gauge of the reciprocals
-  have hshape : ∀ i, ∀ w ∈ U,
-      (g i w - Complex.I) / (g i w + Complex.I)
-        = Polynomial.eval w (Polynomial.C (1 : ℂ))
-          + Polynomial.eval w (Polynomial.C (-2 * Complex.I)) * (gI i w)⁻¹ := by
-    intro i w hw
-    have hden : g i w + Complex.I ≠ 0 := hne i w hw
-    rw [hgI]
-    simp only [Polynomial.eval_C]
-    field_simp
-    ring
-  have hrel' : FamilyDifferentiallyAlgebraicOn
-      (fun i w => Polynomial.eval w (Polynomial.C (1 : ℂ))
-        + Polynomial.eval w (Polynomial.C (-2 * Complex.I)) * (gI i w)⁻¹) U :=
-    familyDifferentiallyAlgebraicOn_congr hU (fun i w hw => hshape i w hw) hrel
-  have hcne : (Polynomial.C (-2 * Complex.I) : Polynomial ℂ) ≠ 0 := by
-    simp only [ne_eq, Polynomial.C_eq_zero]
+      (fun i w => outerCarrier ν (parabolicAut (t i) w)) openDisc := by
+  set shift := realShiftConfiguration t ht with hshift
+  set U := commonUpperTranslationDomain shift with hU
+  have hUo : IsOpen U := isOpen_commonUpperTranslationDomain shift
+  have hUc : IsPreconnected U := commonUpperTranslationDomain_isPreconnected shift
+  have houter := not_familyDifferentiallyAlgebraicOn_outerCauchyTranslates ν shift hfree
+  have hden : ∀ i, ∀ z ∈ U, cauchyTransform ν (z + shift.1 i) + Complex.I ≠ 0 := by
+    intro i z hz
+    exact add_I_ne_zero_of_im_nonneg (im_cauchyTransform_nonneg ν (hz i))
+  have hga : ∀ i, AnalyticOnNhd ℂ
+      (fun z => Complex.exp ((cauchyTransform ν (z + shift.1 i) - Complex.I)
+        / (cauchyTransform ν (z + shift.1 i) + Complex.I))) U := by
+    intro i z hz
+    have hc := analyticOnNhd_cauchyTransform_translate ν shift i
+    exact (((hc z hz).sub analyticAt_const).div ((hc z hz).add analyticAt_const)
+      (hden i z hz)).cexp
+  have hdet : (Complex.I * 1 - Complex.I * (-1 : ℂ)) ≠ 0 := by
     intro h
-    have h2 : Complex.I = 0 := by
-      have := h
-      field_simp at this
-      exact this
-    exact Complex.I_ne_zero h2
-  have hinvfree : FamilyDifferentiallyAlgebraicOn (fun i w => (gI i w)⁻¹) U :=
-    familyDifferentiallyAlgebraicOn_of_affine (fun i w => (gI i w)⁻¹)
-      (fun _ => Polynomial.C (-2 * Complex.I)) (fun _ => Polynomial.C (1 : ℂ))
-      (fun _ => hcne) hinvsmooth hrel'
-  have hgIfree : FamilyDifferentiallyAlgebraicOn gI U :=
-    familyDifferentiallyAlgebraicOn_of_inv hU hgIsmooth (fun i w hw => hne i w hw) hinvfree
-  refine familyDifferentiallyAlgebraicOn_of_add_polynomial g
-    (fun _ => Polynomial.C Complex.I) hgsmooth' ?_
-  simpa [hgI] using hgIfree
+    have h2 : (2 : ℂ) * Complex.I = 0 := by linear_combination h
+    simp [Complex.I_ne_zero] at h2
+  have hVden : ∀ v ∈ openDisc, (-1 : ℂ) * v + 1 ≠ 0 := by
+    intro v hv
+    have hv1 : ‖v‖ < 1 := mem_openDisc_iff.mp hv
+    intro h
+    exact one_sub_ne_zero_of_norm_lt_one hv1 (by linear_combination h)
+  have hVU : ∀ v ∈ openDisc,
+      (Complex.I * v + Complex.I) / ((-1 : ℂ) * v + 1) ∈ U := by
+    intro v hv
+    rw [cayleyToUpper_eq_mobius, hU, hshift]
+    exact mem_commonUpperTranslationDomain_of_im_pos ht
+      (im_cayleyToUpper_pos (mem_openDisc_iff.mp hv))
+  have hw₀ : (0 : ℂ) ∈ openDisc := by simp [mem_openDisc_iff]
+  have hcomp := not_familyDifferentiallyAlgebraicOn_comp_mobius hUo hUc hga isOpen_openDisc
+    hdet hVden hVU hw₀ houter
+  intro hrel
+  refine hcomp (familyDifferentiallyAlgebraicOn_congr_of_isOpen isOpen_openDisc
+    (fun i v hv => ?_) hrel)
+  have hv1 : ‖v‖ < 1 := mem_openDisc_iff.mp hv
+  rw [outerCarrier, cayleyToUpper_parabolicAut hv1, cayleyToUpper_eq_mobius, cayleyToDisc]
+  simp [hshift, realShiftConfiguration]
+
+/-! ## The residual capstone -/
+
+/-- **Maximal parabolic freeness of the bounded outer carrier.**  For every infinite-support base
+measure and every strictly positive integrable density, one dense residual set of bounded
+exponential parameters produces a bounded outer carrier on the disc whose entire real parabolic
+orbit is differentially algebraically independent over the rational functions. -/
+theorem outerCarrier_parabolicOrbitFreeness_denseResidual
+    (μ : Measure ℝ) (hμ : μ.support.Infinite)
+    (w : ℝ → ℝ) (hw : Integrable w μ) (hwpos : ∀ x, 0 < w x) :
+    ∃ Ufree : Set (Lp ℝ ⊤ μ), Dense Ufree ∧ Ufree ∈ residual (Lp ℝ ⊤ μ) ∧
+      ∀ u ∈ Ufree, ∀ (m : ℕ) (t : Fin m → ℝ), Function.Injective t →
+        ¬ FamilyDifferentiallyAlgebraicOn
+          (fun i v => outerCarrier (expWeightedMeasure μ w u) (parabolicAut (t i) v))
+          openDisc := by
+  obtain ⟨hdense, hres, hfree⟩ :=
+    herglotz_fullTranslationCauchyFamilyFreeness_denseResidual μ hμ w hw hwpos
+  refine ⟨_, hdense, hres, ?_⟩
+  intro u hu m t ht
+  letI : IsFiniteMeasure (expWeightedMeasure μ w u) :=
+    isFiniteMeasure_expWeightedMeasure μ w hw (fun x => (hwpos x).le) u
+  exact not_familyDifferentiallyAlgebraicOn_parabolicOrbit _ t ht
+    (hfree u hu m (realShiftConfiguration t ht))
 
 end
 

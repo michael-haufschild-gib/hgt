@@ -1350,3 +1350,164 @@ The construction is exactly the card's "eliminate the eigenvalues" route, now co
 times `h_k` -- at which point `exists_toSphere_sublevel_le_of_shellPoly` gives the power law.  The
 first two are properties of the explicit polynomial above; the third is where the eigenbranch
 differentiability of the spectral action enters, the same input the parent card's Theorem A needs.
+
+## Lean progress -- symmetric functions of the spectrum scale
+
+The homogeneity of the critical-locus polynomial rests on the spectrum scaling with the
+Hamiltonian.  The canonical eigenvalue *list* of `t·H` need not be `t` times the list of `H` --
+the ordering can change -- but a symmetric function does not see the ordering, and it is a
+polynomial in the power sums, which scale exactly.
+
+`formal/GaloisForLFunctions/HTGeometry/SymmetricEigenvalueScaling.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the power sums of the spectrum scale, from `tr((tH)^n) = t^n tr(H^n)` | `sum_pow_eigenvalues_smul` |
+| **every symmetric function of a Hermitian spectrum scales with the matrix** | `eval_symmetric_eigenvalues_smul` |
+
+This is the ordering-free replacement for the naive "eigenvalues scale" statement, and it is what
+feeds `isHomogeneous_of_eval_smul` when the critical-locus polynomial's degree is read off its
+scaling.
+
+One clarification the formalisation forced: the criticality expression built by
+`shell_criticality_relation` is *not* homogeneous as written, because it uses the unit-sphere form
+`∂_i φ = φ · θ_i` of the tangential condition.  The scale-correct form carries `|θ|^{-2}`, so the
+homogeneous version multiplies the gradient sum by `∑_a θ_a²` -- which is `1` on the shell and
+therefore changes nothing there, while making the total degrees of the two terms agree.
+
+## Lean progress -- the homogeneous critical-locus polynomial
+
+`formal/GaloisForLFunctions/HTGeometry/HomogenisedCriticality.lean` (new, umbrella-wired,
+axiom-clean) carries out the degree correction recorded above and rebuilds the critical-locus
+polynomial from the corrected expression.
+
+| Card item | Declaration |
+|---|---|
+| the norm-square polynomial of the coordinates, and its value | `normSqPoly`, `eval_normSqPoly` |
+| the homogeneous forms of the criticality expression and of its square sum | `criticalityPolyHom`, `criticalitySquareSumHom` |
+| their evaluations | `eval_map_criticalityPolyHom`, `eval_map_criticalitySquareSumHom` |
+| **the homogeneous square sum still vanishes at a critical point of the shell** | `eval_map_criticalitySquareSumHom_eq_zero_of_forall` |
+| **the critical-locus shell polynomial, homogeneous form**, with the polynomial relation, the product formula for its values, and the vanishing on the critical locus | `exists_criticalLocusShellPolyHom` |
+
+The correction is exactly one factor of `∑_a θ_a²` on the gradient term: identically one on the
+shell, so the vanishing statement is untouched, while the two terms of the criticality expression
+now carry the same total degree once the auxiliary variable is given degree one.  The product
+formula is recorded because it is what the scaling argument consumes: the value of `G` at `θ` is
+the product over labellings of the square-sum values, and each factor scales through
+`eval_symmetric_eigenvalues_smul`.
+
+## Lean progress -- degree bookkeeping of the symmetrised action polynomial
+
+`formal/GaloisForLFunctions/HTGeometry/ProdXSubCCoeffHomogeneous.lean` (new, umbrella-wired,
+axiom-clean) supplies the degree bookkeeping the scaling argument needs.
+
+| Card item | Declaration |
+|---|---|
+| the product of linear factors is monic of the expected degree | `natDegree_prod_X_sub_C` |
+| **the coefficients of a product of linear factors with degree-one roots are homogeneous of the complementary degree** | `isHomogeneous_coeff_prod_X_sub_C` |
+
+Applied to `labeledActionPoly`, whose roots are the labelled spectral actions -- each homogeneous of
+degree one in the eigenvalue variables -- this says the coefficient of `Y^n` is homogeneous of
+degree `D! − n`.  Combined with `eval_symmetric_eigenvalues_smul`, that is the scaling of the shell
+coefficients `c_n`, and hence, through the product formula of
+`exists_criticalLocusShellPolyHom`, the fixed-degree scaling of the critical-locus polynomial.
+
+The proof is the induction over the factor set, with the two boundary cases -- the constant
+coefficient, and coefficients beyond the degree -- handled by `mul_coeff_zero` and
+`coeff_eq_zero_of_natDegree_lt` respectively.
+
+## Lean progress -- the shell coefficients scale
+
+`formal/GaloisForLFunctions/HTGeometry/ShellCoeffScaling.lean` (new, umbrella-wired, axiom-clean)
+combines the degree bookkeeping with the spectral scaling to give the scaling law of the shell
+coefficients of the action polynomial.
+
+| Card item | Declaration |
+|---|---|
+| the labelled action is homogeneous of degree one in the eigenvalue variables | `isHomogeneous_labeledAction` |
+| hence the coefficient of `Y^n` is homogeneous of the complementary degree | `isHomogeneous_coeff_labeledActionPoly` |
+| the Hamiltonian family is linear in the coordinates | `spectralEnsembleMatrix_smul` |
+| so the canonical eigenvalue list of the scaled family is that of the scaled Hamiltonian | `eigenvalues_spectralEnsembleMatrix_smul` |
+| **the shell coefficients scale**: `c_n(tθ) = t^{|S_D| − n} c_n(θ)` | `eval_shellCoeff_smul` |
+
+The eigenvalue step goes through mathlib's `IsHermitian.eigenvalues_eq_eigenvalues_iff`, which
+compares characteristic polynomials rather than matrices, so the matrix identity is transported by
+`congrArg Matrix.charpoly`.  The symmetric-scaling lemma then removes the ordering ambiguity and
+`eval_smul_of_isHomogeneous` supplies the power.
+
+This is the last scaling ingredient: with it, every coefficient appearing in `criticalityPolyHom`
+carries a known homogeneity degree, so the product formula of `exists_criticalLocusShellPolyHom`
+exhibits the critical-locus polynomial as scaling by a fixed power -- the hypothesis of
+`isHomogeneous_of_eval_smul`.
+
+## Lean progress -- the total grading of the spectral construction
+
+The scaling of the critical-locus polynomial is not a statement about the coordinates alone: the
+symmetrised construction lives in the polynomials in the *spectral* variables whose coefficients are
+polynomials in the *coordinates*, and both scale simultaneously.  The relevant notion is the total
+grading.
+
+`formal/GaloisForLFunctions/HTGeometry/Bihomogeneous.lean` (new, umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the total grading: a spectral monomial of degree `a` carries a coefficient of coordinate degree `d − a`, and vanishes beyond `d` | `IsBihomogeneous` |
+| **a bihomogeneous object scales by its total degree** under simultaneous scaling of the coordinates and of the spectrum | `eval₂_smul_of_isBihomogeneous` |
+
+The proof is monomialwise: the coefficient contributes `t^{d−a}` by `eval_smul_of_isHomogeneous`
+and the spectral monomial contributes `t^a`, and the vanishing clause is exactly what makes the
+exponents add to `d` on the support.
+
+This is the grading in which the whole `(18b)` construction is homogeneous: the shell coefficients
+`c_n` have coordinate degree `|S_D| − n` (`eval_shellCoeff_smul`), the auxiliary variable stands for
+a spectral quantity of degree one, and `criticalityPolyHom` was corrected precisely so that its two
+terms have the same total degree.  What remains is to record that grading for the symmetrised
+product and read the scaling of `G` off `eval₂_smul_of_isBihomogeneous`.
+
+## Lean progress -- the joint grading replaces the ad hoc one
+
+The total grading of the previous entry is nothing but ordinary homogeneity on the *joint* variable
+set: polynomials in the spectral variables with coordinate-ring coefficients are polynomials in the
+disjoint union of the two variable sets.  Working there makes every closure property -- sums,
+products, constants, variables -- immediate from mathlib's `IsHomogeneous` API, instead of having
+to be re-proved for a bespoke bigraded predicate.
+
+`formal/GaloisForLFunctions/HTGeometry/JointGradingBridge.lean` (new, umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the homogeneous scaling identity over an arbitrary variable set | `eval_smul_of_isHomogeneous_general` |
+| **the iterated evaluation is the joint evaluation** | `eval_sumAlgEquiv` |
+| **a jointly homogeneous object scales by its degree** under simultaneous scaling of the coordinates and of the spectrum | `eval₂_smul_of_joint_isHomogeneous` |
+
+The bridge is the algebra equivalence `MvPolynomial (S₁ ⊕ S₂) R ≃ₐ MvPolynomial S₁ (MvPolynomial S₂ R)`
+together with a three-case induction identifying the two evaluations.  The corpus's
+`eval_smul_of_isHomogeneous` is stated for `Fin m`; the general-index version is proved here rather
+than transporting along a cardinality equivalence.
+
+This supersedes the bespoke `IsBihomogeneous` predicate: the construction should be built on the
+joint ring, where the criticality polynomial's homogeneity is assembled from `IsHomogeneous.add`,
+`IsHomogeneous.mul`, and the degrees already established for the shell coefficients.
+
+## Lean progress -- the graded pieces on the joint ring
+
+`formal/GaloisForLFunctions/HTGeometry/JointSpectralAction.lean` (new, umbrella-wired,
+axiom-clean) records the graded pieces the criticality construction is assembled from.
+
+| Card item | Declaration |
+|---|---|
+| **the shell coefficients of the action polynomial are homogeneous** of the complementary degree | `isHomogeneous_shellCoeff` |
+| coordinate polynomials embed homogeneously into the joint ring | `isHomogeneous_rename_inr` |
+| the spectral action of one labelling is a linear form on the joint ring | `jointAction`, `isHomogeneous_jointAction` |
+| its value at a spectrum and a coordinate vector | `eval_jointAction` |
+
+The first is a one-line consequence of two earlier results and is worth isolating: the shell
+coefficients were produced by an existential, so their homogeneity was not available structurally;
+`eval_shellCoeff_smul` gives their scaling at every real factor, and `isHomogeneous_of_eval_smul`
+converts that into genuine homogeneity of the polynomial.  This is the point at which the value
+level and the polynomial level meet.
+
+With these, the criticality expression can be written directly on the joint ring -- the auxiliary
+variable replaced by `jointAction`, the coefficients renamed in -- and its homogeneity assembled
+from `IsHomogeneous.add` and `IsHomogeneous.mul` alone.

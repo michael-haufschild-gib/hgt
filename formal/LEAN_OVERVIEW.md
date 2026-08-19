@@ -7,14 +7,14 @@ Use this as the quick map before opening large proof files.
 
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 11116 | 123227 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
-| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 9838 | 98841 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 11129 | 123375 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 9854 | 98999 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 58 | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 74 | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 379 | 5391 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
-| `hilbert_metric` | `GaloisForLFunctions.HilbertMetric` | 55 | 1113 | `gaussianCorrectedDeterminant_mul_sq_le`, `gaussianDistanceMatrix_det_mul_sq_le` |
+| `hilbert_metric` | `GaloisForLFunctions.HilbertMetric` | 56 | 1117 | `gaussianCorrectedDeterminant_mul_sq_le`, `gaussianDistanceMatrix_det_mul_sq_le` |
 | `selberg_class` | `GaloisForLFunctions.SelbergClass` | 24 | 172 | `SelbergClass.differentiable_dampedMultipleStandardTwist` |
-| `quantum_alg` | `GaloisForLFunctions.QuantumAlg` | 230 | 8955 | `QuantumAlg.Factoring.ShorStyle.main_factorization`, `QuantumAlg.Factoring.EkeraHastadStyle.main_factorization`, `QuantumAlg.GroverSearch.main_success_probability`, `QuantumAlg.DeutschJozsa.main` |
+| `quantum_alg` | `GaloisForLFunctions.QuantumAlg` | 231 | 8966 | `QuantumAlg.Factoring.ShorStyle.main_factorization`, `QuantumAlg.Factoring.EkeraHastadStyle.main_factorization`, `QuantumAlg.GroverSearch.main_success_probability`, `QuantumAlg.DeutschJozsa.main` |
 
 ## Wiring
 
@@ -38,9 +38,9 @@ Use this as the quick map before opening large proof files.
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 10651 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 10659 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
-| 9240 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 9254 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |
 | 6194 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Decomposition.lean` |

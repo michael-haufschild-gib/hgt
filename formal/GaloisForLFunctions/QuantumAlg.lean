@@ -62,6 +62,7 @@ import GaloisForLFunctions.QuantumAlg.Core.Cost
 import GaloisForLFunctions.QuantumAlg.Core.EncodedBasisMap
 import GaloisForLFunctions.QuantumAlg.Core.ResourceModel
 import GaloisForLFunctions.QuantumAlg.Init
+import GaloisForLFunctions.QuantumAlg.NoetherCorpusApplications
 import GaloisForLFunctions.QuantumAlg.Primitives
 import GaloisForLFunctions.QuantumAlg.Primitives.AmplitudeAmplification
 import GaloisForLFunctions.QuantumAlg.Primitives.Arithmetic

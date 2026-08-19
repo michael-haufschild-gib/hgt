@@ -4,10 +4,10 @@ import GaloisForLFunctions.HTGeometry.LpDiagonalMultiplier
 /-!
 # Connes--van Suijlekom, Appendix A: literal truncation matrix
 
-This module records the exact bi-infinite matrix `μ` displayed in Lemma A.1
-of arXiv:2511.23257v1, on the source Fourier index set `ℤ`.  The remaining
-analytic task is to identify this concrete matrix with the quadratic form of
-the paper's distribution `δ₀ + 2π b sin(2πx)`.
+This module formalizes the exact bi-infinite matrix `μ` displayed in Lemma A.1
+of arXiv:2511.23257v1, on the source Fourier index set `ℤ`, including its
+identification with the paper's distributional quadratic form for
+`δ₀ + 2π b sin(2πx)`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -33,6 +33,18 @@ def connesVanSuijlekomA1Mu (n m : ℤ) : ℝ :=
 /-- The matrix-element formula claimed for the quadratic form in Lemma A.1. -/
 def connesVanSuijlekomA1QEntry (b : ℝ) (n m : ℤ) : ℝ :=
   2 * (if n = m then 1 else 0) + b * connesVanSuijlekomA1Mu n m
+
+/-- The real kernel `K_{n,m}` in Appendix A, immediately after Lemma A.1. -/
+def connesVanSuijlekomA1Kernel (n m : ℤ) (y : ℝ) : ℝ :=
+  if n = m then 2 * (1 - y) * Real.cos (2 * Real.pi * (n : ℝ) * y) else
+    (Real.sin (2 * Real.pi * (n : ℝ) * y) -
+      Real.sin (2 * Real.pi * (m : ℝ) * y)) / (Real.pi * ((m - n : ℤ) : ℝ))
+
+/-- The Appendix A scalar quadratic-form entry for
+`δ₀ + 2π b sin(2πx)`, after evaluating the Dirac term at the kernel. -/
+def connesVanSuijlekomA1SourceEntry (b : ℝ) (n m : ℤ) : ℝ :=
+  (if n = m then 2 else 0) + 2 * Real.pi * b *
+    (∫ y in (0 : ℝ)..1, connesVanSuijlekomA1Kernel n m y * Real.sin (2 * Real.pi * y))
 
 /-- Literal formula of Appendix A, Lemma A.1, once the paper's analytic
 quadratic form has been identified with `connesVanSuijlekomA1QEntry`. -/
@@ -114,6 +126,107 @@ theorem connesVanSuijlekomA1_sinOne_integral (k : ℤ) :
   have hminus : k - 1 ≠ 0 := by omega
   have hplus : k + 1 ≠ 0 := by omega
   simp [hkOne, hkNegOne, hminus, hplus]
+
+/-- The non-diagonal Appendix A kernel evaluates to the corresponding
+non-diagonal entry of the displayed matrix. -/
+theorem connesVanSuijlekomA1_sourceEntry_offdiag (b : ℝ) (n m : ℤ) (hnm : n ≠ m) :
+    connesVanSuijlekomA1SourceEntry b n m = b * connesVanSuijlekomA1Mu n m := by
+  simp only [connesVanSuijlekomA1SourceEntry, if_neg hnm, connesVanSuijlekomA1Kernel]
+  rw [show (fun y : ℝ =>
+      ((Real.sin (2 * Real.pi * (n : ℝ) * y) -
+        Real.sin (2 * Real.pi * (m : ℝ) * y)) / (Real.pi * ((m - n : ℤ) : ℝ))) *
+        Real.sin (2 * Real.pi * y)) =
+      fun y => (1 / (Real.pi * ((m - n : ℤ) : ℝ))) *
+        (Real.sin (2 * Real.pi * (n : ℝ) * y) * Real.sin (2 * Real.pi * y) -
+          Real.sin (2 * Real.pi * (m : ℝ) * y) * Real.sin (2 * Real.pi * y)) by
+    funext y
+    ring, intervalIntegral.integral_const_mul]
+  have hcontN : Continuous (fun y : ℝ =>
+      Real.sin (2 * Real.pi * (n : ℝ) * y) * Real.sin (2 * Real.pi * y)) := by
+    fun_prop
+  have hcontM : Continuous (fun y : ℝ =>
+      Real.sin (2 * Real.pi * (m : ℝ) * y) * Real.sin (2 * Real.pi * y)) := by
+    fun_prop
+  rw [intervalIntegral.integral_sub (hcontN.intervalIntegrable (μ := volume) 0 1)
+    (hcontM.intervalIntegrable (μ := volume) 0 1),
+    connesVanSuijlekomA1_sinOne_integral n,
+    connesVanSuijlekomA1_sinOne_integral m]
+  by_cases hnNeg : n = -1 <;> by_cases hnZero : n = 0 <;> by_cases hnOne : n = 1 <;>
+    by_cases hmNeg : m = -1 <;> by_cases hmZero : m = 0 <;> by_cases hmOne : m = 1 <;>
+    simp_all [connesVanSuijlekomA1Mu] <;>
+    push_cast <;>
+    field_simp [Real.pi_ne_zero] <;>
+    ring_nf
+  all_goals
+    first
+    | rw [show (-1 - (m : ℝ)) = -(1 + (m : ℝ)) by ring, inv_neg]
+      ring
+    | rw [show (-1 + (n : ℝ)) = -(1 - (n : ℝ)) by ring, inv_neg]
+      ring
+
+/-- Integral of an integer Fourier sine over one period. -/
+theorem connesVanSuijlekomA1_integer_sin_integral (k : ℤ) :
+    (∫ x in (0 : ℝ)..1, Real.sin (2 * Real.pi * (k : ℝ) * x)) = 0 := by
+  by_cases hk : k = 0
+  · subst k
+    norm_num
+  have hκ : 2 * Real.pi * (k : ℝ) ≠ 0 := by
+    exact mul_ne_zero (mul_ne_zero (by norm_num) Real.pi_ne_zero) (by exact_mod_cast hk)
+  let F : ℝ → ℝ := fun x => -Real.cos (2 * Real.pi * (k : ℝ) * x) /
+    (2 * Real.pi * (k : ℝ))
+  have hF : ∀ x : ℝ, HasDerivAt (𝕜 := ℝ) F
+      (Real.sin (2 * Real.pi * (k : ℝ) * x)) x := by
+    intro x
+    dsimp [F]
+    have harg : HasDerivAt (𝕜 := ℝ) (fun y : ℝ => 2 * Real.pi * (k : ℝ) * y)
+        (2 * Real.pi * (k : ℝ)) x := by
+      exact hasDerivAt_const_mul _
+    have hc := (Real.hasDerivAt_cos (2 * Real.pi * (k : ℝ) * x)).comp x harg
+    convert! hc.neg.div_const (2 * Real.pi * (k : ℝ)) using 1
+    field_simp [hκ]
+  have hInt : (∫ x in (0 : ℝ)..1, Real.sin (2 * Real.pi * (k : ℝ) * x)) = F 1 - F 0 := by
+    apply integral_eq_sub_of_hasDerivAt
+    · intro x _
+      exact hF x
+    · exact (by fun_prop : Continuous fun x : ℝ =>
+        Real.sin (2 * Real.pi * (k : ℝ) * x)).intervalIntegrable 0 1
+  rw [hInt]
+  dsimp [F]
+  have hcos : Real.cos (2 * Real.pi * (k : ℝ)) = 1 := by
+    rw [show 2 * Real.pi * (k : ℝ) = (k : ℝ) * (2 * Real.pi) by ring]
+    exact Real.cos_int_mul_two_pi k
+  simp [hcos]
+
+/-- The source sine frequency is orthogonal to every integer cosine mode. -/
+theorem connesVanSuijlekomA1_sinOne_cos_integral (n : ℤ) :
+    (∫ x in (0 : ℝ)..1,
+      Real.sin (2 * Real.pi * x) * Real.cos (2 * Real.pi * (n : ℝ) * x)) = 0 := by
+  rw [show (fun x : ℝ =>
+      Real.sin (2 * Real.pi * x) * Real.cos (2 * Real.pi * (n : ℝ) * x)) =
+      fun x => (Real.sin (2 * Real.pi * ((1 + n : ℤ) : ℝ) * x) +
+        Real.sin (2 * Real.pi * ((1 - n : ℤ) : ℝ) * x)) / 2 by
+    funext x
+    rw [show 2 * Real.pi * ((1 + n : ℤ) : ℝ) * x =
+        2 * Real.pi * x + 2 * Real.pi * (n : ℝ) * x by
+        push_cast
+        ring,
+      show 2 * Real.pi * ((1 - n : ℤ) : ℝ) * x =
+        2 * Real.pi * x - 2 * Real.pi * (n : ℝ) * x by
+        push_cast
+        ring,
+      Real.sin_add, Real.sin_sub]
+    ring, intervalIntegral.integral_div]
+  have hcontPlus : Continuous (fun x : ℝ =>
+      Real.sin (2 * Real.pi * ((1 + n : ℤ) : ℝ) * x)) := by
+    fun_prop
+  have hcontMinus : Continuous (fun x : ℝ =>
+      Real.sin (2 * Real.pi * ((1 - n : ℤ) : ℝ) * x)) := by
+    fun_prop
+  rw [intervalIntegral.integral_add (hcontPlus.intervalIntegrable (μ := volume) 0 1)
+    (hcontMinus.intervalIntegrable (μ := volume) 0 1),
+    connesVanSuijlekomA1_integer_sin_integral (1 + n),
+    connesVanSuijlekomA1_integer_sin_integral (1 - n)]
+  norm_num
 
 theorem connesVanSuijlekomA1_mu_center_block :
     (fun i j : Fin 3 => connesVanSuijlekomA1Mu ((i : ℤ) - 1) ((j : ℤ) - 1)) =
@@ -628,6 +741,79 @@ theorem connesVanSuijlekomA2_alpha_cos_coefficient (n : ℤ) :
     field_simp [hden, hdenSrc]
     ring]
   nlinarith [h]
+
+/-- The diagonal Appendix A kernel is the diagonal Fourier multiplier from
+Lemma A.2. -/
+theorem connesVanSuijlekomA1_diagonal_kernel_integral (n : ℤ) :
+    2 * Real.pi * (∫ x in (0 : ℝ)..1,
+      2 * (1 - x) * Real.cos (2 * Real.pi * (n : ℝ) * x) * Real.sin (2 * Real.pi * x)) =
+      connesVanSuijlekomA2Diagonal n := by
+  rw [← intervalIntegral.integral_const_mul]
+  have hcontAlpha : Continuous (fun x : ℝ =>
+      connesVanSuijlekomA2Alpha x * Real.cos (2 * Real.pi * (n : ℝ) * x)) := by
+    simp only [connesVanSuijlekomA2Alpha]
+    fun_prop
+  have hcontSinCos : Continuous (fun x : ℝ =>
+      Real.sin (2 * Real.pi * x) * Real.cos (2 * Real.pi * (n : ℝ) * x)) := by
+    fun_prop
+  calc
+    _ = ∫ x in (0 : ℝ)..1,
+        connesVanSuijlekomA2Alpha x * Real.cos (2 * Real.pi * (n : ℝ) * x) +
+          (2 * Real.pi) *
+            (Real.sin (2 * Real.pi * x) * Real.cos (2 * Real.pi * (n : ℝ) * x)) := by
+      apply intervalIntegral.integral_congr
+      intro x _
+      simp only [connesVanSuijlekomA2Alpha]
+      ring
+    _ = (∫ x in (0 : ℝ)..1,
+        connesVanSuijlekomA2Alpha x * Real.cos (2 * Real.pi * (n : ℝ) * x)) +
+          (2 * Real.pi) * (∫ x in (0 : ℝ)..1,
+            Real.sin (2 * Real.pi * x) * Real.cos (2 * Real.pi * (n : ℝ) * x)) := by
+      rw [intervalIntegral.integral_add
+        (hcontAlpha.intervalIntegrable (μ := volume) 0 1)
+        ((hcontSinCos.const_mul (2 * Real.pi)).intervalIntegrable (μ := volume) 0 1),
+        intervalIntegral.integral_const_mul]
+    _ = _ := by
+      rw [connesVanSuijlekomA2_alpha_cos_coefficient, connesVanSuijlekomA1_sinOne_cos_integral]
+      ring
+
+/-- The A.1 and A.2 diagonal symbols agree exactly. -/
+theorem connesVanSuijlekomA1_mu_diagonal (n : ℤ) :
+    connesVanSuijlekomA1Mu n n = connesVanSuijlekomA2Diagonal n := by
+  by_cases hnNeg : n = -1 <;> by_cases hnZero : n = 0 <;> by_cases hnOne : n = 1 <;>
+    simp_all [connesVanSuijlekomA1Mu, connesVanSuijlekomA2Diagonal]
+
+/-- The diagonal scalar quadratic-form entry in Appendix A equals its
+displayed matrix entry. -/
+theorem connesVanSuijlekomA1_sourceEntry_diagonal (b : ℝ) (n : ℤ) :
+    connesVanSuijlekomA1SourceEntry b n n = connesVanSuijlekomA1QEntry b n n := by
+  simp only [connesVanSuijlekomA1SourceEntry, if_pos, connesVanSuijlekomA1Kernel]
+  simp only [connesVanSuijlekomA1QEntry, if_pos]
+  calc
+    2 + 2 * Real.pi * b *
+        (∫ y in (0 : ℝ)..1,
+          2 * (1 - y) * Real.cos (2 * Real.pi * (n : ℝ) * y) *
+            Real.sin (2 * Real.pi * y)) =
+        2 + b * (2 * Real.pi *
+          (∫ y in (0 : ℝ)..1,
+            2 * (1 - y) * Real.cos (2 * Real.pi * (n : ℝ) * y) *
+              Real.sin (2 * Real.pi * y))) := by ring
+    _ = 2 + b * connesVanSuijlekomA2Diagonal n := by
+      rw [connesVanSuijlekomA1_diagonal_kernel_integral]
+    _ = 2 + b * connesVanSuijlekomA1Mu n n := by
+      rw [connesVanSuijlekomA1_mu_diagonal]
+    _ = 2 * 1 + b * connesVanSuijlekomA1Mu n n := by ring
+
+/-- Lemma A.1: the distributional quadratic form of
+`δ₀ + 2π b sin(2πx)` has exactly the matrix displayed in Appendix A. -/
+theorem connesVanSuijlekomA1_sourceEntry_eq_qEntry (b : ℝ) (n m : ℤ) :
+    connesVanSuijlekomA1SourceEntry b n m = connesVanSuijlekomA1QEntry b n m := by
+  by_cases hnm : n = m
+  · subst m
+    exact connesVanSuijlekomA1_sourceEntry_diagonal b n
+  · rw [show connesVanSuijlekomA1SourceEntry b n m = b * connesVanSuijlekomA1Mu n m by
+      exact connesVanSuijlekomA1_sourceEntry_offdiag b n m hnm]
+    simp [connesVanSuijlekomA1QEntry, hnm]
 
 /-- Reflection symmetry gives the weighted cosine integral needed for the
 sine Fourier coefficients of the source kernel. -/

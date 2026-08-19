@@ -211,33 +211,47 @@ standard `propext`, `Classical.choice`, and `Quot.sound`.
 It does not prove CCM Theorem 5.6: the remaining literal frontier is the intersection
 `Q(sqrt 2) ∩ Z^cyc[1/2]`, followed by the finite characteristic-polynomial and measure argument.
 
-## 2026-08-19 actual Q8 root-number-minus-one witness correction
+## 2026-08-19 Q8 witness audit correction
 
-`[LITERATURE]` Deninger’s cited existence gate is made explicit in Example 1.3(ii) of
-Shankar--Södergren--Templier, *Sato--Tate equidistribution of certain families of Artin
-L-functions*: the field
+`[FALSIFIED]` The previously labelled radical field
 
 ```text
 Q(sqrt((5 + sqrt(5)) * (41 + 6 * sqrt(41))))
 ```
 
-is quaternionic and its unique two-dimensional Artin representation has root number `-1`.
-The preceding `2,3` radical card is not this witness and is not used for the capstone.
-
-`[LEAN-PROVED]` `DeningerQ8RootNumberNegOneRadicalCertificate.lean` now proves the exact
-degree-eight eliminant
+is **not authenticated** by the cited literature as the root-number-minus-one witness.  Its
+eliminant is
 
 ```text
-z^8 - 820 z^6 + 146780 z^4 - 3362000 z^2 + 16810000 = 0
+z^8 - 820 z^6 + 146780 z^4 - 3362000 z^2 + 16810000,
 ```
 
-from the literal radical relations, entirely algebraically and without numerical calculation.
-This is the correct input polynomial for the actual arithmetic witness.
+and the Lean corpus now proves that this is a degree-eight Galois `Q8` field.  No checked source
+establishes the required Artin root number for this particular field.  Thus its legacy
+`RootNumberNegOne` file prefix records an abandoned attribution, not a formal root-number result.
 
-The still-open, non-negotiable formal steps are: construct its number field, prove normality and
-identify its Galois group with `QuaternionGroup 2`, then formalize the local epsilon-factor product
-showing that the attached two-dimensional Artin representation has root number `-1`.  The existing
-Artin pullback and parity contradiction can compose only after those three facts are proved.
+`[LITERATURE]` The authenticated Serre witness is the root field of
+
+```text
+x^8 - 205*x^6 + 13940*x^4 - 378225*x^2 + 3404025,
+```
+
+which is Galois with group `Q8`; its unique nonabelian irreducible character is symplectic of
+degree two and has root number `-1`.  This exact statement is recorded in Example 1.3 of
+Fiorilli--Jouve, *Distribution of Frobenius elements in families of Galois extensions*, citing
+Serre.  Equivalently, its degree-eight radical generator is one half of
+
+```text
+sqrt((5 + sqrt(5)) * (41 + sqrt(205))).
+```
+
+The scale by `1/2` converts the radical eliminant
+`X^8 - 820*X^6 + 223040*X^4 - 24206400*X^2 + 871430400` to the displayed Serre polynomial.
+
+`[OPEN CORE]` Formalize this literal Serre tower, its `Q8` Galois identification, then the
+local epsilon-factor product defining the Artin root number.  The latter needs a genuine global
+epsilon-factor theory and its source calculation; it cannot be replaced by a Lean declaration
+named `rootNumber = -1`.
 
 ## 2026-08-19 literal Q8 radical-coordinate lift system
 
@@ -335,3 +349,37 @@ The next exact field-theoretic target is an injective `QuaternionGroup 2` action
 automorphism group, followed by the degree-eight automorphism-count criterion for `IsGalois`.
 The source's global Artin epsilon-factor calculation remains a separate, presently unformalized
 analytic-arithmetic theorem.
+
+## 2026-08-19 actual Q8 number field and Galois identification
+
+`[LEAN-PROVED]` `DeningerQ8RootNumberNegOneGalois.lean` constructs eight distinct
+`ℚ`-algebra automorphisms of the literal field, one for each element of
+`QuaternionGroup 2`.  Its exact automorphism-count theorem is
+
+```lean
+q8Aut_card_eq_eight : Fintype.card Gal(K/ℚ) = 8
+```
+
+and the already formalized degree computation is also eight.  Mathlib’s finite-extension
+criterion therefore gives the unconditional theorem
+
+```lean
+deningerQ8RootNumberNegOne_isGalois : IsGalois ℚ K.
+```
+
+`[LEAN-PROVED]` `DeningerQ8RootNumberNegOneGaloisIdentification.lean` then proves the stronger
+literal group statement.  It derives the generic relation
+`I^i J = J I^{-i}` from the field-level anti-commutation law, checks all four constructor
+multiplication cases of mathlib’s `QuaternionGroup 2`, and packages the resulting bijective
+homomorphism as
+
+```lean
+deningerQ8RootNumberNegOne_galoisEquivQ8 : Gal(K/ℚ) ≃* QuaternionGroup 2.
+```
+
+The leaf builds and axiom audits passed with only Lean’s standard `propext`, `Classical.choice`,
+and `Quot.sound`; both new leaves are wired into `GaloisForLFunctions.RHTower`, without an
+umbrella build.  This closes the **actual Q8 number-field and Galois-group** portion of the
+literature witness.  The remaining Q8 obligation is no longer field theory: formalize the source’s
+global epsilon-factor calculation that the unique irreducible two-dimensional Artin factor has
+root number `-1`, then connect it to the existing Deninger parity endpoint.

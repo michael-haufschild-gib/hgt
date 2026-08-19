@@ -1,9 +1,10 @@
 import GaloisForLFunctions.RHTower.DeningerQ8RootNumberNegOneSecondQuadratic
 
 /-!
-# Final quadratic gate for the explicit root-number-minus-one witness
+# Final quadratic gate for a legacy explicit Q8 radical field
 
-This module constructs the literal radical field
+This module constructs the literal radical field historically labelled
+`RootNumberNegOne`,
 `ℚ(√5, √41, √((5 + √5) * (41 + 6 * √41)))` and proves it has degree eight
 over `ℚ`.
 
@@ -13,9 +14,9 @@ relative norm.  A square root of the final radicand would therefore descend to
 a square root of `205` in `ℚ(√5)`, contradicted by the exact coefficient proof
 in the preceding module.
 
-This is not yet a proof that the constructed degree-eight field is normal,
-has Galois group `Q₈`, or that its two-dimensional Artin representation has
-root number `-1`; those are distinct, still-open formalization obligations.
+The constructed degree-eight field is now separately proved Galois with group
+`Q₈`.  No source has authenticated root number `-1` for it; that claim belongs
+to a distinct Serre field and remains a separate formalization obligation.
 -/
 
 open Polynomial

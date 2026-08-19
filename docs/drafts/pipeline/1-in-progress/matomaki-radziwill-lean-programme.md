@@ -4859,3 +4859,40 @@ the covering hypothesis, both top bounds, and the mass.  Everything the three do
 | `jointLongSet_prime`, `_ge` | `jointLongSetF_prime`, `_ge` |
 
 so the swap is now a mechanical substitution with no remaining mathematical content.
+
+### Milestone B, brick 57 — the free-ratio long range is IN the schedule (2026-08-19)
+
+The swap of brick 56 is done; nothing in the lane now uses `ladderTop b (a/b) x`.
+
+`Sieve/JointLongRange` was decoupled from `Sieve/JointSchedule` (it needs only `FreeEtaLadder`,
+`RoughRemainderLimit`, `ShortIntervalLength`, `GeomBlockPrimesRange`) and gained the last missing
+endpoint fact
+
+```text
+eventually_siftStart_le_jointLongTopF :  ∀ᶠ x, siftStart a x ≤ jointLongTopF a b x
+```
+
+— proved from `cardLength b x / 4 ≤ jointLongTopF` and `siftStart a x ≤ exp(𝓁^a) + 1` via
+`𝓁^a ≥ 4`, `𝓁^{b−a} ≥ 2`, `exp 4 ≥ 5`: then `exp(𝓁^b) ≥ 5·exp(𝓁^a) ≥ 4(exp(𝓁^a)+1)`.
+
+`Sieve/JointSchedule` now *defines* `jointLongSet a b x := jointLongSetF a b x`, and its five long-range
+lemmas are the free-ratio ones:
+
+| lemma | new content |
+|-|-|
+| `jointLongSet_prime` | `jointLongSetF_prime` |
+| `jointLongSet_ge` | base `siftStart a x` (was `siftStart (a/b*b) x`) |
+| `jointLongSet_range` | covering by `gLadderSteps` at `jointLongEta` |
+| `jointLongSet_mass` | `mertensS (jointLongTopF a b x) − mertensS (siftStart a x)` |
+| `tendsto_jointLongMass (ha0 : 0 < a) (hab : a < b)` | from `tendsto_jointLongMassF`; `0 < b`, `b < 1` are no longer needed |
+
+`eventually_jointSets_disjoint` lost its `0 < b` hypothesis for the same reason, and
+`Sieve/JointNonSpectral.tendsto_jointCards_div_sqrt` now takes the long top's bound from
+`jointLongTopF_le` instead of `eventually_ladderTop_facts`.  `Sieve/JointNonSpectral` and
+`Sieve/JointSlopeRow` build unchanged otherwise: the free ratio is invisible to the three
+non-spectral rows, exactly as predicted — they see only the two endpoints.
+
+**Range covered.**  The long ladder needs `9/10 < a` (Lemma 2.3's zero-free width) and the two
+designated ranges must be disjoint, i.e. `β < a`.  So this arrangement proves the mean square for
+`1/2 < β < a` with `9/10 < a < b < 1` free; at `a = 0.92, b = 0.95` that is `1/2 < β < 0.92`, which
+together with the corpus's existing `9/10 < β < 1` covers the card's full range `1/2 < β < 1`.

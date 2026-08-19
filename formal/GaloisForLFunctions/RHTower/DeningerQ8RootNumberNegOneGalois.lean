@@ -3,18 +3,18 @@ import Mathlib.FieldTheory.Galois.Basic
 import Mathlib.GroupTheory.SpecificGroups.Quaternion
 
 /-!
-# Normality of the documented quaternionic field
+# Normality of the legacy quaternionic radical field
 
-This leaf proves normality of the literal degree-eight field behind the documented
-root-number-minus-one witness.  The input is not an assumed Galois action: it
+This leaf proves normality of the literal degree-eight field historically labelled
+`RootNumberNegOne`.  The input is not an assumed Galois action: it
 constructs eight distinct `ℚ`-algebra automorphisms, indexed by the eight
 elements of `QuaternionGroup 2`, from the concrete `I` and `J` radical lifts.
 The finite automorphism bound and the already-proved degree then force
 `IsGalois ℚ K`.
 
-It deliberately stops short of packaging the candidate enumeration as a group
-isomorphism `Gal(K/ℚ) ≃* QuaternionGroup 2`, and it does not address the
-independent global Artin epsilon-factor calculation.
+The next leaf packages the candidate enumeration as a group isomorphism
+`Gal(K/ℚ) ≃* QuaternionGroup 2`.  Neither leaf establishes an Artin root number;
+the authenticated root-number-minus-one witness is a different Serre field.
 -/
 
 namespace RHTower

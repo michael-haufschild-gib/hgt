@@ -384,6 +384,12 @@ candidate conjugation lifts anti-commute on the top radical. These algebraic clo
 supply the missing arithmetic root-number identification, normality/Galois-group theorem, or
 cohomological landing
 (`DeningerQuaternionicMultiplicityParity.lean`, `DeningerArtinCentralParityNoGo.lean`).
+**Audit correction (2026-08-19):** the Lean field currently carrying the legacy
+`DeningerQ8RootNumberNegOne` prefix is formally a degree-eight Galois `Q8` field, but its
+root-number-minus-one attribution is not source-authenticated.  The literature witness to which
+the parity no-go applies is instead Serre's root field of
+`X^8 - 205 X^6 + 13940 X^4 - 378225 X^2 + 3404025`; its root-number claim still needs a genuine
+epsilon-factor formalization.
 
 ### O — exact restricted-Weil ground and canonical actual heads
 
@@ -1145,7 +1151,7 @@ Closure applies to named mechanism, not every future use of similar objects.
 | AF class-law scale-orbit | Convergent abelian class-law certificate exists iff centered rate is zero; global certificates on all Xi copies exist iff RH. | Terminal rigidity/selection theorem; successor must change interface to singular/infinite-action or genuinely global aggregate law. |
 | weighted-Mertens half-unit tower as producer | One exponent gives one zero-free half-plane, but the full tower `0<=alpha<1/2` is exactly RH; it cannot be invoked as an upstream estimate. | Exact causal transform, one-moment transfer, and invariant half-unit prelimit deficit guide MSC/G aperture research. |
 | Suzuki v2 entire characteristic wall | Displayed target has an unavoidable pole, so no all-plane locally uniform limit of entire real-zero characteristics exists; finite holomorphic exponential gauges do not remove it. | Actual entire real-zero Suzuki characteristics now exist; live SV2 uses the corrected two-chart spherical wall. |
-| Deninger finite quaternionic real descent | Quaternionic anti-linear square `-1` forces even complex multiplicity, but root number `-1` forces odd central order; order-equals-multiplicity real symplectic realization is impossible. | Literal `QuaternionGroup 2` symplectic representation, two irreducible quadratic stages, degree-eight radical certificate, and anti-commuting radical lifts are formal; arithmetic root-number realization and normal/Galois identification remain, but any successor must alter finite real descent or physical comparison. |
+| Deninger finite quaternionic real descent | Quaternionic anti-linear square `-1` forces even complex multiplicity, but root number `-1` forces odd central order; order-equals-multiplicity real symplectic realization is impossible. | Literal `QuaternionGroup 2` symplectic representation, and a separate legacy degree-eight `Q8` radical field with anti-commuting lifts are formal. The authenticated Serre root-number-minus-one field is `X^8 - 205X^6 + 13940X^4 - 378225X^2 + 3404025`; its literal radical tower, Galois proof, and epsilon calculation remain. |
 | direct prime Ising | Raw/scalar-normalized finite balanced tree partitions cannot converge locally uniformly to XiC; rank growth forces scale collapse. | Only singular critical rescaling outside fixed modal closure could be new. |
 | compact Thorin/Markov | Compact Thorin and Markov representations are RH-equivalent; canonical measure unique; theta-likelihood candidate not infinitely divisible. | Upstream positive source measure only, not alternative canonical measure. |
 

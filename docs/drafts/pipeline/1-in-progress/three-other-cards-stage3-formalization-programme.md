@@ -750,3 +750,44 @@ never be a nonzero constant.
 Remaining on card 1: Cassidy for `SL₂` (Zariski-dense proper differential algebraic subgroups are
 conjugate to the constant points), the parameterized Galois correspondence step "solution
 differentially algebraic ⟹ parameterized group proper", and the analytic realization.
+
+
+## Card 1 — the analytic isomonodromy theorem
+
+`DeltaStructureCompatibility` (abstract) plus `BesselOrderMeromorphicIsomonodromy` (analytic)
+transport the rational obstruction to the genuine meromorphic carrier:
+
+**for `s > 0` there are no rational `P, Q` with `∂K_ν(s)/∂ν = P K_ν(s) + Q K_{ν+1}(s)`.**
+
+Ingredients: the corpus's meromorphic translation/derivation compatibility for `ℂ(ν)`, the corpus's
+meromorphic order recurrence, the new linear independence of `K_ν(s)` and `K_{ν+1}(s)` over `ℂ(ν)`
+(from the rational Riccati obstruction), and the new degree-at-infinity obstruction.
+
+`DeltaStructureLinearOde` gives the converse: a rational compatible derivation would force a linear
+differential equation of order two, so the criterion is exactly right.
+
+Remaining on card 1: the parameterized classification itself — Cassidy for `SL₂`, the parameterized
+Galois correspondence, and the identification of the difference Galois group of the order module.
+
+
+## Card 1 — differential algebra foundations started
+
+The remaining chain (Cassidy for `SL₂`, the parameterized Galois correspondence) rests on
+Kolchin's differential algebraic geometry.  The corpus already owns the Kolchin topology
+(`DifferentialKolchinClosure`) and Ritt rank (`DifferentialPolynomialRank`).  Three new modules
+start the ideal theory, which mathlib does not have at all:
+
+* `RadicalDifferentialIdeal` — Ritt's lemma (`mul_deriv_mem_of_mul_mem`: in a radical differential
+  ideal, `a b ∈ I` forces `a δb ∈ I`) and the characteristic-zero Keigher property
+  (`deriv_mem_radical`: over a `ℚ`-algebra the radical of a differential ideal is differential,
+  by a descent trading one power of `x` for two powers of `δx`).
+* `RadicalDifferentialIdealGeneration` — `radicalDifferentialIdeal S`, the smallest radical
+  differential ideal containing `S`, with its radicality, differentiality and minimality, and the
+  product law via the colon ideal.
+* `RadicalDifferentialIdealPrime` — `mul_mem_of_forall_mul_mem` (the product law for sets) and
+  `mem_or_mem_of_maximal_not_radDiffFG`: **a maximal non-finitely-generated radical differential
+  ideal is prime**, the Zorn step of Ritt's basis theorem.
+
+Next in this layer: the Zorn existence step (a chain of radical differential ideals has a radical
+differential union, still not finitely generated), then the characteristic-set argument that a
+prime radical differential ideal in a differential polynomial ring is finitely generated.

@@ -33,9 +33,9 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from all of the cards in these folders: 
-- /Users/michael/Documents/code/hgt/docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other
-  
+formalize UNCONDITIONALLY in lean any proven theorem from all of the cards in these cards: 
+- docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/xi
+
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:
@@ -60,9 +60,11 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 
 GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF THE PIPELINE. NO SHORTCUTS OR FAKING IT!
 
+do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+
 do not add hypotheses. always use our custom search tool check first what the lean corpus already contains, to not duplicate existing work.
 
-do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+
 
 optimize lean code. only build what is necessary. you can yourself only start 1 build procress at a time. be mindful that you are not the only agent working on the lean codebase right now.
 
@@ -196,7 +198,7 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about the "SP-E — prime--Gamma signed-permutation Eulerian limit" route from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about the "HC — horizontal-collision quantum" route from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
 
 collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you. 
 
@@ -409,3 +411,26 @@ prior research: docs/drafts/pipeline/2-fully-proven/universal-law-field
 
 ### mathematician
 how would a fields medal mathematician approach this problem? what our corpus is, is technically decades of research with a lot of minor advancements beyond current sota research by other researchers. but the mathematician sees that all routes get stuck sooner or later, that something is missing, that they are looking at the problem from the wrong point of view and there must be some higher mathematical theory in play that is not yet known to humanity. how would they approach finding this higher mathematical theory? what questions would they ask? what research would they do? what would they do?
+
+
+## theorem experiment
+find as many places as possible in our lean corpus to apply any form of noether´s theorem, formalize it and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
+
+
+
+Lean rules:
+
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
+
+
+
+use the search tool for our lean corpus. do not read cards or anything, only work directly on lean.&#x20;
+
+
+
+do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.

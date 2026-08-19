@@ -1341,3 +1341,50 @@ degree zero.  When `deg P = 0` both summands have negative degree and again the 
 nonzero constant.
 
 Every declaration reports `#print axioms` = `[propext, Classical.choice, Quot.sound]`.
+
+## Lean progress — the analytic isomonodromy theorem
+
+The rational obstruction is now transported to the genuine meromorphic carrier, giving an
+unconditional theorem about the modified Bessel function itself.
+
+`GaloisForLFunctions.HTGeometry.DeltaStructureLinearOde`
+
+```text
+exists_nontrivial_linear_ode_of_deltaStructure
+    **a compatible derivation forces a linear differential equation**: if `δ y = p y + q σy` for a
+    solution of `σ²y = y + b σy`, the span `⟨y, σy⟩` is derivation stable, so `y`, `δy`, `δ²y` are
+    dependent and `y` satisfies a nonzero linear differential equation of order at most two
+```
+
+`GaloisForLFunctions.HTGeometry.DeltaStructureCompatibility`
+
+```text
+deltaStructure_compatibility
+    **the compatibility identities**: for a solution of `τ²y = y + ρb·τy` with `δy = ρP·y + ρQ·τy`
+    and `y, τy` independent over the base, the coefficients satisfy the two identities
+    `σ²P + σb·σ²Q = P + b·σQ` and `σ²Q + b σ²P + b σb σ²Q = Q + δb + b σP + b² σQ`
+```
+
+`GaloisForLFunctions.HTGeometry.BesselOrderMeromorphicIsomonodromy`
+
+```text
+modifiedBesselKOrderMero_ne_zero            the order function is a nonzero meromorphic element
+modifiedBesselKOrderMero_recurrence         `σ²K = K + (2(ν+1)/s) σK` with a rational coefficient
+besselMero_linearIndependent                **`K_ν(s)` and `K_{ν+1}(s)` are linearly independent
+                                            over `ℂ(ν)`** — a dependence is a rational Riccati
+                                            solution
+modifiedBesselKOrderMero_no_rational_delta_structure
+                                            **for `s > 0` there are no rational functions `P, Q`
+                                            with `∂K_ν(s)/∂ν = P(ν) K_ν(s) + Q(ν) K_{ν+1}(s)`**
+```
+
+Together with `exists_nontrivial_linear_ode_of_deltaStructure` this is sharp: a rational compatible
+derivation would make `K_ν(s)` satisfy a linear differential equation of order two over `ℂ(ν)`, and
+none exists.
+
+What the card still needs is the converse implication supplied by the parameterized classification:
+that differential algebraicity *forces* a compatible derivation.  That is Cassidy's classification
+of Zariski-dense differential algebraic subgroups of `SL₂` together with the parameterized Galois
+correspondence, plus the identification of the difference Galois group of the order module.
+
+Every declaration reports `#print axioms` = `[propext, Classical.choice, Quot.sound]`.

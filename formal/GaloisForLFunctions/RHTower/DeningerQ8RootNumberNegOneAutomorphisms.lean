@@ -2,17 +2,17 @@ import GaloisForLFunctions.RHTower.DeningerQ8RootNumberNegOnePrimitiveField
 import GaloisForLFunctions.RHTower.DeningerQ8RootNumberNegOneRadicalLifts
 
 /-!
-# Explicit quaternionic automorphisms of the documented witness
+# Explicit quaternionic automorphisms of a legacy radical Q8 field
 
-For the literal primitive degree-eight field of the root-number-minus-one
-witness, this module installs the documented radical formulas as genuine field
+For the literal primitive degree-eight field historically labelled
+`RootNumberNegOne`, this module installs the displayed radical formulas as genuine field
 automorphisms.  It proves their central-square and anti-commutation laws:
 `I² = J² = C`, `C² = 1`, and `I J = C J I`.
 
-Thus the concrete field carries the actual quaternionic automorphism structure,
-rather than merely a symbolic radical identity.  Counting all automorphisms,
-proving normality/Galois identification, and the global Artin epsilon-factor
-calculation remain separate obligations.
+Thus the concrete field carries actual quaternionic automorphism structure,
+rather than merely a symbolic radical identity.  The field is now separately
+proved Galois with group `Q₈`; its root-number-minus-one attribution remains
+unverified and belongs to Serre's distinct documented witness.
 -/
 open Polynomial
 
