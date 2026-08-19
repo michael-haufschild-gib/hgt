@@ -357,3 +357,24 @@ theorem.  Contents, in proof order:
 
 REMAINING for C3: §2 `trdeg = 1` (instantiate the corpus's Hermite–Lindemann), §2″ (instantiate
 the corpus's Gelfond–Schneider), §4 (no P-recurrence).
+
+### C3 — §2 and §2″ CLOSED (2026-08-19)
+
+New module `formal/GaloisForLFunctions/HTGeometry/StieltjesCorankApplications.lean` (wired, olean
+built, axioms clean):
+
+- `transcendental_log_nat` — `Real.log n` is transcendental for `n ≥ 2`, from the corpus's
+  Hermite–Lindemann `RHTower.exp_algebraic_transcendental`;
+- **`trdeg_stieltjesField_single_eq_one`** — §2: with one multiplier whose logarithm is
+  transcendental the Laurent-coefficient field has transcendence degree exactly `1`
+  (`stieltjesField_single_eq` plus the corpus's
+  `trdeg_intermediateFieldAdjoin_range_eq_cardinalMk_of_algebraicIndependent`);
+- `coeff_two_beurlingBlock_pair`, `blockCoeffVal_two_pair`, `stieltjesVal_two_pair` — the exact
+  corank-two value `γ = (L_p² + L_q²)/(12 L_p L_q) + 1/4`;
+- `isAlgebraic_of_quadratic_over_algebraic` — a real root of `w² − s w + 1` with `s` algebraic is
+  algebraic (via `algebraicClosure ℚ ℝ` and `IsAlgebraic.restrictScalars`);
+- **`transcendental_stieltjesVal_pair`** — §2″: for two distinct primes that Laurent coefficient is
+  transcendental, since otherwise `L_p/L_q` would satisfy a quadratic over the algebraic numbers,
+  contradicting the corpus's `RHTower.log_ratio_transcendental` (Gelfond–Schneider).
+
+REMAINING for C3: §4 only — `{γ_n}` is not P-recursive, i.e. `ζ` is not D-finite.

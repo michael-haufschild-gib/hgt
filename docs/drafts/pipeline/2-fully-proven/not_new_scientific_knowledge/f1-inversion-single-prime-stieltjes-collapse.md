@@ -198,3 +198,60 @@ REMAINING for 2 -> 3:
    only `NumberTheory/Transcendental/Lindemann/AnalyticalPart.lean`;
 3. §2″: Gelfond–Schneider — not in mathlib;
 4. §4: `ζ` is not D-finite (Hölder) and the D-finite ⇔ P-recursive dictionary.
+
+## Lean status update (2026-08-19b) — §2, §2′ and §2″ are formalized
+
+Two new modules, both wired into the `HTGeometry` umbrella, oleans built, `#print axioms` clean
+(`propext, Classical.choice, Quot.sound`).
+
+### `formal/GaloisForLFunctions/HTGeometry/StieltjesPowerSumRecovery.lean` — the repaired §2′
+
+The mechanism is the algebraic differential relation of the Bernoulli generating function
+`g(y) = y/(1 − e^{−y})`:
+
+```text
+y·g′(y) = g(y)·(1 + y − g(y)),
+```
+
+`bernoulliSeries_deriv_id`, obtained from mathlib's `bernoulli'PowerSeries_mul_exp_sub_one` by
+differentiating, multiplying by `y`, and cancelling the non-zero-divisor `e^y − 1`.  Rescaling
+(`rescale_bernoulliSeries_deriv_id`) and the product rule (`X_mul_deriv_prod`) give, for the block
+`h = ∏ᵢ g(Lᵢ y)`,
+
+```text
+y·h′ = h·Q,     Q_0 = 0,   Q_1 = p_1/2,   Q_m = −(B⁺_m/m!)·p_m  (m ≥ 2)
+```
+
+(`X_mul_deriv_beurlingBlock`, `coeff_blockQ_zero`, `coeff_blockQ_of_two_le`).  Reading this
+coefficientwise (`beurlingBlock_recursion`) makes every `Q_m` a rational polynomial in the block
+coefficients, so every `Q_m` lies in the Laurent-coefficient field (`qVal_mem_stieltjesField`);
+`B_{2m} ≠ 0` (`bernoulli_two_mul_ne_zero`, from `hasSum_zeta_nat`) then gives every **even** power
+sum (`sum_pow_even_mem_stieltjesField`).  Newton's identities applied to the family `−Lᵢ²`, whose
+power sums are exactly those even power sums up to sign, put every elementary symmetric function of
+the squares in the field (`aeval_esymm_negSq_mem`); Vieta (`vieta_negSq`) then makes each `Lᵢ²`, and
+hence each `Lᵢ`, algebraic over it (`isAlgebraic_log_over_stieltjesField`).  With the already-proved
+inclusion `stieltjesField_le_logField` this yields
+
+```text
+trdeg_ℚ {Laurent coefficients of ζ_S} = trdeg_ℚ ℚ(L_1,…,L_r)
+```
+
+— **`trdeg_stieltjesField_eq_logField`**, for every multiplier system with `∏ Lᵢ ≠ 0`.  This is §2′
+in full generality, by the repaired route: only the even power sums are used, no positivity, and
+`1/e_r` is never needed.
+
+### `formal/GaloisForLFunctions/HTGeometry/StieltjesCorankApplications.lean` — §2 and §2″
+
+The two classical transcendence inputs the card cites are already unconditional theorems of this
+corpus, so both rungs close:
+
+- `transcendental_log_nat` (Hermite–Lindemann, `RHTower.exp_algebraic_transcendental`) and
+  **`trdeg_stieltjesField_single_eq_one`**: §2, `trdeg = 1` for a single Frobenius, exactly.
+- `blockCoeffVal_two_pair` / `stieltjesVal_two_pair` compute the corank-two coefficient
+  `(L_p² + L_q²)/(12 L_p L_q) + 1/4` exactly, and
+  **`transcendental_stieltjesVal_pair`** proves it transcendental for distinct primes, via
+  `isAlgebraic_of_quadratic_over_algebraic` and the corpus's Gelfond–Schneider corollary
+  `RHTower.log_ratio_transcendental`.  That is §2″'s floor.
+
+REMAINING for 2 -> 3: §4 only — `{γ_n}` satisfies no linear recurrence with polynomial
+coefficients (equivalently `ζ` is not D-finite).

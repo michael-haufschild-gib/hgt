@@ -977,3 +977,18 @@ Worth remembering: the normalisation needs **no square root**.  The textbook con
 
 Remaining for Cassidy: reduce the general case to the graded one — produce a torus, i.e. conjugate a
 Zariski-dense differential algebraic subalgebra so that it is graded by the diagonal.
+
+
+## Card 1 — Cassidy's reduction, step one
+
+`Sl2RegularElement.exists_det_ne_zero_of_mem_span`: a `k`-subspace whose `U`-span contains a matrix
+of nonzero determinant contains one itself.  The determinant is a quadratic form; vanishing on a
+subspace forces its polarisation to vanish there (closure under addition), and both then vanish on
+the whole span by induction.
+
+So the Zariski-dense subalgebra contains a regular semisimple element.  Step two of the reduction:
+conjugate that element to the diagonal — over an algebraically closed `U` this is diagonalisation of
+a `2 × 2` traceless matrix with nonzero determinant, giving `diag(μ, -μ)`.  Step three is the delicate
+one: the subalgebra is only a `k`-subspace, so `ad(X)`-stability does **not** by itself split it into
+root spaces (the eigenvalues `±2μ` need not lie in `k`).  That is where Cassidy's argument constructs
+the field of multipliers `k' = {c ∈ U : c L ⊆ L}` first.

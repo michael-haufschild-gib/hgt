@@ -1023,6 +1023,73 @@ theorem connesVanSuijlekomP21_corrected_clauseTwo
   intro i
   exact connesVanSuijlekomP21_quotient_monomial_basis_apply a ha0 hN i
 
+/-- A fully discharged positive instance of Proposition 2.1(2): the all-one
+two-by-two Toeplitz Gram matrix has rank one and the explicit nonzero kernel
+vector `(1,-1)`, so the quotient by `1 - X` has the stated monomial basis.
+
+Unlike the parameterized corrected clause, this declaration has no hypotheses:
+positivity, rank, kernel membership, and nonzeroness are all proved below. -/
+theorem connesVanSuijlekomP21_explicit_positive_basis :
+    ∃ b : Module.Basis (Fin 1) ℂ
+      (connesVanSuijlekomP21Quotient (![1, -1] : Fin 2 → ℝ)),
+      ∀ i : Fin 1, b i =
+        Ideal.Quotient.mk (connesVanSuijlekomP21Ideal (![1, -1] : Fin 2 → ℝ))
+          (LaurentPolynomial.T (i : ℤ)) := by
+  let c : ℕ → ℝ := fun _ => 1
+  let a : Fin 2 → ℝ := ![1, -1]
+  let M := connesVanSuijlekomRealToeplitz 1 c
+  have hM : M = Matrix.vecMulVec (fun _ : Fin 2 => (1 : ℂ)) (fun _ : Fin 2 => (1 : ℂ)) := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [M, c, connesVanSuijlekomRealToeplitz, circleToeplitzGram,
+        Matrix.vecMulVec]
+  have hG : M.PosSemidef := by
+    rw [hM]
+    convert Matrix.posSemidef_vecMulVec_self_star (fun _ : Fin 2 => (1 : ℂ)) using 1
+    ext i j
+    simp [Matrix.vecMulVec]
+  have hRankLe : M.rank ≤ 1 := by
+    rw [hM]
+    exact Matrix.rank_vecMulVec_le _ _
+  have hImageNe : M.mulVecLin (![1, 0] : Fin 2 → ℂ) ≠ 0 := by
+    intro hz
+    have hz' : M *ᵥ (![1, 0] : Fin 2 → ℂ) = 0 := by
+      simpa [Matrix.mulVecLin_apply] using hz
+    have hone : M *ᵥ (![1, 0] : Fin 2 → ℂ) = (fun _ : Fin 2 => (1 : ℂ)) := by
+      rw [hM]
+      ext i
+      fin_cases i <;>
+        simp [Matrix.mulVec, Matrix.vecMulVec]
+    have hzero : (1 : ℂ) = 0 := by
+      simpa using congrFun (hone.symm.trans hz') 0
+    norm_num at hzero
+  have hRankNe : M.rank ≠ 0 := by
+    intro hzero
+    have hRange : LinearMap.range M.mulVecLin = ⊥ := by
+      apply Submodule.finrank_eq_zero.mp
+      exact hzero
+    have hz : M.mulVecLin (![1, 0] : Fin 2 → ℂ) = 0 := by
+      have hmem := LinearMap.mem_range_self M.mulVecLin (![1, 0] : Fin 2 → ℂ)
+      rw [hRange] at hmem
+      simpa using hmem
+    exact hImageNe hz
+  have hRank : M.rank = 1 := by
+    omega
+  have ha : a ≠ 0 := by
+    intro hzero
+    have hentry := congrFun hzero 0
+    norm_num [a] at hentry
+  have hker : M *ᵥ (fun j => (a j : ℂ)) = 0 := by
+    rw [hM]
+    ext i
+    fin_cases i <;>
+      simp [a, Matrix.mulVec, Matrix.vecMulVec]
+  change ∃ b : Module.Basis (Fin 1) ℂ (connesVanSuijlekomP21Quotient a),
+    ∀ i : Fin 1, b i =
+      Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T (i : ℤ))
+  exact connesVanSuijlekomP21_corrected_clauseTwo c (by simpa [M] using hG)
+    (by simpa [M] using hRank) a (by simpa [M] using hker) ha
+
 end
 
 end GaloisForLFunctions.HTGeometry

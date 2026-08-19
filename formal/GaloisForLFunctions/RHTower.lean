@@ -10687,3 +10687,4 @@ import GaloisForLFunctions.RHTower.XiEulerSafePairedRationalCriterion
 import GaloisForLFunctions.RHTower.Sieve.RouteTWidthUpper
 import GaloisForLFunctions.RHTower.XiThetaSquareRateBlaschkeLimit
 import GaloisForLFunctions.RHTower.XiThetaSquareRateReaderNorm
+import GaloisForLFunctions.RHTower.XiThetaSquareRateReaderL2

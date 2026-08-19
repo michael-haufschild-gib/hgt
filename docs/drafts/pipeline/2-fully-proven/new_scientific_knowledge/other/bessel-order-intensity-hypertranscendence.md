@@ -1669,3 +1669,20 @@ statement holds over an arbitrary field, not only an algebraically closed one.
 What remains of Cassidy is the reduction of the general case to the graded one: producing a torus,
 i.e. showing that a Zariski-dense differential algebraic subalgebra can be conjugated so that it is
 graded by the diagonal.
+
+## Lean progress — Cassidy's reduction, step one
+
+`GaloisForLFunctions.HTGeometry.Sl2RegularElement`
+
+```text
+detPolar X Y                        the polarisation of the determinant on `2 × 2` matrices
+det_add_detPolar, det_smul_two      the determinant is a quadratic form
+detPolar_comm/add_left/smul_left    its polarisation is symmetric and bilinear
+exists_det_ne_zero_of_mem_span      **a `k`-subspace whose `U`-span contains a matrix of nonzero
+                                    determinant contains one itself**
+```
+
+Mechanism: if the determinant vanished on the subspace, then — because the subspace is closed under
+addition — its polarisation would vanish there too, and both would then vanish on the whole `U`-span
+by span induction.  So a Zariski-dense subalgebra of `sl₂(U)` contains a regular semisimple element,
+which is what the conjugation to the diagonal starts from.
