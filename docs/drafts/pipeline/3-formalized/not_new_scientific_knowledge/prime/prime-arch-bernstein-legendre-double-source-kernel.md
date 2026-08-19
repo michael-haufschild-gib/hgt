@@ -1,11 +1,10 @@
 # Prime--archimedean Bernstein Legendre double-source kernel
 
 - **ID:** `prime-arch-bernstein-legendre-double-source-kernel`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** exact value relation / reflection law / top-down interface
 - **Status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Lean status:** paper theorem; its one-variable parents are formalized, but the double functional
-  and algebraic kernel are not yet formalized
+- **Lean status:** fully formalized — see the 2026-08-19 section
 
 ## General identity
 
@@ -248,3 +247,48 @@ and hence the positive asymptotic
 so the `(1-B^2t)^(-1/2)` term has nonzero monodromy in the complete susceptibility. Therefore
 a single-valued **meromorphic**, rather than holomorphic, source continuation through the thin
 collar already implies RH.
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+`formal/GaloisForLFunctions/RHTower/BernsteinLegendreDoubleSourceKernel.lean`.  Every proved
+statement of this card is Lean-proved, with no added hypothesis; `#print axioms` on each capstone
+reports only `propext, Classical.choice, Quot.sound`.
+
+The whole generating identity is reduced to Vandermonde, so no formal square root and no analytic
+continuation is needed anywhere: writing `P = xy`, `Q = (1-x)(1-y)` one has `A = P + Q` and
+`bc = PQ`, and the exact `t^n` coefficient of `K` is the polynomial
+`∑_{2k ≤ n} C(n,2k) C(2k,k) A^{n-2k}(bc)^k`.
+
+| Card item | Lean declaration |
+|---|---|
+| trinomial revision `C(n,2k)C(2k,k)C(n-2k,i-k) = C(n,i)C(i,k)C(n-i,k)` | `choose_triple_eq` |
+| Vandermonde `∑_k C(i,k)C(n-i,k) = C(n,i)` | `sum_choose_pair` |
+| the fibre identity `∑_k … = C(n,i)²` | `sum_choose_triple` |
+| **the Legendre row identity** (the content of `(5)`–`(6)`) | `legendre_row_identity` |
+| `L_m ⊗ L_m` | `bivariateMomentFunctional` (with `_add`, `_sum`, `_mul`) |
+| `S_n(x,y)`, eq. (3) | `bernsteinRowKernel` (polynomial), `bernsteinRowKernelOf` (value) |
+| **eq. (4)** | `bivariateMomentFunctional_bernsteinRowKernel` |
+| `A`, `D`, `b`, `c`, and the `t^n` coefficient of `K`, eq. (1) | `kernelA`, `kernelD`, `kernelB`, `kernelC`, `legendreKernelCoeff` |
+| **eq. (6)**, `S_n` is the kernel coefficient | `bernsteinRowKernel_eq_legendreKernelCoeff`, `bernsteinRowKernelOf_eq` |
+| **eq. (2)**, the double-source value formula | `bivariateMomentFunctional_legendreKernelCoeff` |
+| eq. (7), `A² - 4bc = D²` | `kernelA_sq_sub` |
+| eq. (8), both reflections | `legendreKernelCoeffOf_symm`, `legendreKernelCoeffOf_compl`, `kernelDOf_compl` |
+| `A(u,ū) = ‖u‖²+‖1-u‖²`, `D(u,ū)² = (‖u‖²-‖1-u‖²)²` | `kernelAOf_conj`, `kernelDOf_conj_sq` |
+| `B_±(u)` | `reflectedAmplitudePlus`, `reflectedAmplitudeMinus` |
+| **eq. (9)**, the conjugate factorization | `reflected_quadratic_factorization` |
+| **eq. (10)**, the first positive branch point | `reflected_quadratic_pos_of_lt`, `reflected_quadratic_eq_zero` |
+| eq. (2) for the endpoint source | `bivariateMomentFunctional_legendreKernelCoeff_primeArch` |
+| `B₊(u_q) = xiEndpointBernsteinAtomAmplitudeBase q` | `reflectedAmplitudePlus_eq_atomAmplitudeBase` |
+| the exact-radius splice to the false-RH Abel radius | `abelCriticalRadius_eq_reflectedPinch_of_not_rh` |
+| eqs. (11)–(12), the moment germ in the square-root coordinate | `bernsteinMomentGerm_primeArch` (in `RHTower/PrimeArchBernsteinMobiusPullbackSource.lean`) |
+
+## Gates
+
+- [x] double-source kernel identity proved on paper
+- [x] simultaneous complement reflection proved on paper
+- [x] conjugate reflected-pinch factorization proved on paper
+- [x] endpoint prime--Gamma specialization identified
+- [x] exact-radius splice identified
+- [x] Lean formalization
+- [ ] independent source continuation across the Abel collar  *(declared future research)*
+- [ ] RH  *(declared future research)*

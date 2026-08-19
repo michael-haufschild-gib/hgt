@@ -184,3 +184,32 @@ bounds have unconditional formal providers. No hypothesis wrapper or axiom subst
 - 2026-07-17 — Corrective dual-gate audit: demoted to `not_new_scientific_knowledge`. The theorem is
   correct and useful, but the quantitative statement is a routine corollary of PRZZ plus elementary
   reflection pairing and is not worth a standalone paper.
+
+## Lean status update (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/HorizontalSingletonFiberCharging.lean` now formalizes the
+**finite global counting law** and the **density passage**, unconditionally and with no hypothesis
+wrapper, on the actual `xi` divisor:
+
+- `xiZeroCount`, `xiCriticalZeroCount`, `xiOffLineZeroCount`, `xiSimpleCriticalZeroCount`,
+  `xiSingletonFiberCount` — the four counts `N`, `N₀`, `N − N₀`, `N₀,s`, `H₁` at height `T`,
+  built from the existing `stripFinsetLe` Xi-divisor API;
+- `criticalFiber_eq_singleton` — an ordinate carries at most one critical-line point;
+- `two_le_offLineFiber_sum` — a spoiled simple critical ordinate consumes at least two off-line
+  copies (the reflection-charging step);
+- `two_mul_xiSimpleCriticalZeroCount_le` — inequality `(1)` in the form
+  `2·N₀,s(T) ≤ 2·H₁(T) + (N(T) − N₀(T))`;
+- `xiSimpleCriticalZeroCount_sub_le_xiSingletonFiberCount` — the same over `ℝ` in the card's
+  displayed form;
+- `xiSimpleCriticalRatio_sub_le_xiSingletonFiberRatio` — the normalized law, valid also at heights
+  with `N(T) = 0`;
+- `le_liminf_xiSingletonFiberRatio` — the liminf passage `(2)`;
+- `prattRoblesZaharescuZeindler_singleton_density` — the exact `0.116158438` corollary as an
+  unconditional implication from the two published proportions.
+
+`#print axioms` on all of these gives only `propext, Classical.choice, Quot.sound`.
+
+Remaining for 2 -> 3: unconditional Lean providers for the two **cited analytic density inputs**
+(`κ ≥ 0.417293962` and `κ_* ≥ 0.407511457`, Pratt--Robles--Zaharescu--Zeindler).  These are not
+proved by this card; they are the mollified-moment lane whose substrate is being built on
+`hardy-critical-line-moment-anchor`.

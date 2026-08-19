@@ -1,7 +1,7 @@
 # The signed Möbius coisometry is an exact Schur transfer on the Euler side
 
 - **ID:** `mobius-signed-coisometry-schur-transfer-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** the squarefree Euler product, the Laplace shift representation, and Hardy
@@ -399,3 +399,10 @@ and the meromorphic continuation graph remain unformalized; the last is the RH-b
 - [ ] prove nonexpansive pole-to-divisor renormalization in that graph
 - [ ] four-unit boundary norm
 - [ ] RH
+
+## Lean formalization (this sweep, complete and unconditional)
+
+`formal/GaloisForLFunctions/RHTower/MobiusSignedSchurComplexMultiplier.lean` (equations
+`(9)`--`(13)`), `.../MobiusPowerSumBoundaryLaplace.lean` (equations `(14)`, `(17)` and the reusable
+causal shift law) and `.../MobiusSignedSchurTransferPaper.lean` (equations `(18)`, `(21)`,
+`(23a)`, `(23b)`, `(23d)`--`(23g)`) certify the card's proved payload.

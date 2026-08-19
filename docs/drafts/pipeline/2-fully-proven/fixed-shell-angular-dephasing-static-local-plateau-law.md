@@ -1260,3 +1260,113 @@ embedding of the six chart coordinates into the `m = 12n-9` shell parameters -- 
 induction that supplies `hE`, `hgap`, `hpsi` at each stage from
 `exists_endpointComplete_twoQubit_witness` (base), `eventually_forall_layerGerm_endpoint_ne_zero`
 (step) and `exists_mem_dense_forall_layerReducedTransition_ne_zero` (intersection).
+
+## Lean progress -- the architecture embedding, in physical coordinates (2026-08-19)
+
+The chart parameters of a one-qubit extension are a local field on the new site and an edge channel
+on it.  Physically the field is real and the edge Hermitian, so the physical slice is a real
+six-parameter family: two field values, two diagonal edge entries, and the real and imaginary parts
+of the one off-diagonal edge entry.  Over `ℂ` that parametrisation is onto the whole chart, with an
+explicit inverse, so the chart escape transports to it verbatim; over `ℝ` it lands exactly in the
+Hermitian data the leaf-extended architecture admits.
+
+`formal/GaloisForLFunctions/HTGeometry/PhysicalChartCoordinates.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the field and edge in physical coordinates | `physShift`, `physEdge` |
+| **real parameters give a real field and a Hermitian edge** | `physShift_star`, `physEdge_isHermitian` |
+| the inverse parametrisation, and that it is onto | `physChartCoord`, `physShift_physChartCoord`, `physEdge_physChartCoord` |
+| the chart Hamiltonian as a matrix of polynomials in the physical coordinates | `physShiftPoly`, `physEdgePoly`, `genericPhysicalLeafMatrix`, `map_genericPhysicalLeafMatrix` |
+| the complex witness in physical coordinates | `exists_eval_physicalLeafPullback_ne_zero` |
+| **`(6)` in physical coordinates**: inside every nonempty open set of real physical parameters there is a point whose field is real and whose edge is Hermitian -- so the Hamiltonian there is a genuine Hermitian one-qubit extension -- at which no relabeling of the quadratic-rate relation holds for any simple root packet | `exists_mem_real_physicalLeaf_quadraticRate_ne_zero` |
+
+This is the embedding the previous entry asked for, on the side that matters: the parameters
+produced are *physical*, not merely real values of abstract chart coordinates.  Note also that the
+corpus already carries the other half of the realisation --
+`LayerSplitPhysicalRealization.layerSplit_eq_physicalLeafHamiltonian` and
+`layerSplit_mem_hermitianLocalHamiltonianSubmodule` put the split system inside the leaf-extended
+architecture's Hermitian local Hamiltonian space, and `layerSplit_mem_traceless` inside its
+trace-zero part.
+
+Note on duplication: `boolShift` (introduced in `ChartQuadraticRateEscape`) and the corpus's
+`layerFieldShift` (in `LayerSplitPhysicalRealization`) have identical definitions; they are the same
+function under two names.
+
+### What remains for Theorem A
+
+The induction that supplies the capstone's three hypotheses at each stage of the architecture:
+`exists_endpointComplete_twoQubit_witness` at the base, `eventually_forall_layerGerm_endpoint_ne_zero`
+for the step, and `exists_mem_dense_forall_layerReducedTransition_ne_zero` for the intersection with
+the maximally projective set.  All three are proved; what is missing is only their composition into
+a statement indexed by the number of sites.
+
+## Lean progress -- the globalisation for an arbitrary linear family (2026-08-19)
+
+The fixed shell is a *linear* family `H(θ) = ∑ θ_a P_a`, so its entries are linear polynomials in
+the coefficients and the labeling-orbit obstruction is an honest polynomial in `θ`.  One coefficient
+vector carrying a simple spectrum on which no relabeling holds therefore forces the same failure
+somewhere inside every nonempty open set of *real* coefficients -- a nonzero polynomial cannot
+vanish on a nonempty real open set.
+
+`formal/GaloisForLFunctions/HTGeometry/ShellQuadraticRateGlobalisation.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the family as a matrix of polynomials in its coefficients | `genericShellMatrix`, `map_genericShellMatrix` |
+| **one coefficient vector makes the pullback a nonzero polynomial** | `exists_eval_shellPullback_ne_zero` |
+| **`(6)` for an arbitrary linear family**: one good coefficient vector forces, inside every nonempty open set of real coefficients, a Hamiltonian on whose simple root packets no relabeling of the quadratic-rate relation holds | `exists_mem_real_shell_quadraticRate_ne_zero` |
+
+This is stated for an arbitrary linear Hamiltonian family precisely so that the fixed shell can be
+fed to it: `S` is the state space, `P : Fin m → Matrix S S ℂ` is the interaction family, and the
+witness hypothesis is the card's own "the local family contains a simple-spectrum member" upgraded
+to "…on which no relabeled quadratic-rate relation holds", which is what
+`exists_mem_real_physicalLeaf_quadraticRate_ne_zero` produces on the extension chart.
+
+So the chain from Lemma A1 to `(6)` on the shell is now:
+
+1. `exists_endpointComplete_twoQubit_witness` — the base witness;
+2. `exists_mem_real_endpointComplete_quadraticRate_ne_zero` — Theorem A on the extension chart;
+3. `exists_mem_real_physicalLeaf_quadraticRate_ne_zero` — the same on *physical* parameters;
+4. `layerSplit_mem_hermitianLocalHamiltonianSubmodule` — the physical point is a shell Hamiltonian;
+5. `exists_mem_real_shell_quadraticRate_ne_zero` — `(6)` on every nonempty open set of the shell.
+
+Step 4 is the one remaining junction: reading the coordinates `θ` of the physical chart point in
+the shell's own interaction basis.
+
+## Lean progress -- the coordinate junction (2026-08-19)
+
+`formal/GaloisForLFunctions/HTGeometry/SpanCoordinateJunction.lean` (new, umbrella-wired,
+axiom-clean) closes step 4 of the chain recorded above.
+
+| Card item | Declaration |
+|---|---|
+| a real scalar acts on a complex matrix through its complex image | `real_smul_matrix` |
+| **real coordinates in the interaction basis**: a member of the real span of a finite matrix family is a real combination of it | `exists_realCoeff_of_mem_span` |
+| **the globalisation with the witness given as a Hamiltonian** rather than as a coefficient vector | `exists_mem_real_shell_quadraticRate_ne_zero_of_mem_span` |
+
+So the witness no longer has to be presented in the shell's coordinates: it is enough that the
+witness Hamiltonian *lies in the real span of the interaction family*, which is exactly what
+`LayerSplitPhysicalRealization.layerSplit_mem_hermitianLocalHamiltonianSubmodule` provides for a
+one-qubit extension of a leaf-extended architecture.
+
+The chain from Lemma A1 to `(6)` on a shell is therefore complete as a chain of Lean theorems:
+
+1. `exists_endpointComplete_twoQubit_witness` — the base witness;
+2. `exists_hermitian_covering_endpoint_probe` + `endpointChannel` — the Hermitian transition
+   channel of an endpoint-complete family;
+3. `exists_endpointComplete_extensionChart_quadraticOrbit_ne_zero` — Theorem A on the extension
+   chart, with the chart, the admissible shift and the channel all constructed;
+4. `exists_mem_real_physicalLeaf_quadraticRate_ne_zero` — the same on *physical* parameters;
+5. `exists_mem_real_shell_quadraticRate_ne_zero_of_mem_span` — `(6)` on every nonempty open set of
+   the shell, from a witness Hamiltonian in the real span of the interaction family.
+
+What is left is the induction over the number of sites: iterating step 2--3 to produce, at each
+size, an old system that is simple with distinct ordered gaps and endpoint complete.  Its three
+ingredients are all proved (`exists_endpointComplete_twoQubit_witness`,
+`eventually_forall_layerGerm_endpoint_ne_zero`,
+`exists_mem_dense_forall_layerReducedTransition_ne_zero`); what remains is their composition, which
+needs the eigenvector family of the coupled extension to be continuous at the chosen coupling --
+the content of `LocalExtensionChartProbeContinuity`.

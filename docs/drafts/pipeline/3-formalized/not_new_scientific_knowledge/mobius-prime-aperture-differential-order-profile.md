@@ -1,7 +1,7 @@
 # The Möbius boundary layer has an exact prime-aperture and differential-order profile
 
 - **ID:** `mobius-prime-aperture-differential-order-profile`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Source:** `mobius-critical-exponential-boundary-layer-law.md`;

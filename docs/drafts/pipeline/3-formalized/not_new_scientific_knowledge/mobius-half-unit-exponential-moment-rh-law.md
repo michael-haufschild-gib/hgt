@@ -1,7 +1,7 @@
 # The critical Möbius boundary requires a full half-unit exponential-moment tower
 
 - **ID:** `mobius-half-unit-exponential-moment-rh-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / POSITIVE HARDY-TRANSPORT LAW / `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [SEARCH] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** Hardy--Laplace translation, the classical Mertens-function criterion for RH,
@@ -248,3 +248,54 @@ would be wrapper work, so no Lean file is added.
 - [ ] construct the source-defined weighted synthesis on every `D_alpha`
 - [ ] prove the cofinal residue-boundary estimate
 - [ ] RH
+
+## Lean formalization (complete, unconditional)
+
+Every theorem of this card is machine-checked with no added axioms.
+
+**Section 1, the critical vector.** `criticalMertensVector` (in
+`RHTower/MobiusWeightedMertensVector.lean`) is `m₀(t) = ∑_{n ≤ e^t} μ(n)/n`, extended causally by
+zero; `memLp_criticalMertensVector` is equation `(2)`, unconditionally.  Equation `(3)` is
+`causalTransform_criticalMertensVector` in `RHTower/MobiusCriticalLaplaceIdentity.lean`: Tonelli
+against `∫_{log n}^∞ e^{-wt} dt = n^{-w}/w` gives `∫_0^∞ e^{-wt} m₀(t) dt = 1/(w ζ(1+w))` on the
+whole open right half plane.
+
+**Section 2, one weight gives one zero-free half plane.**
+`RHTower/CausalL2LaplaceHolomorphy.lean` proves that the causal transform of any square-integrable
+boundary function converges absolutely and is holomorphic on `Re z > 0`
+(`hasDerivAt_causalTransform`, `differentiableOn_causalTransform`).
+`RHTower/MobiusWeightedMomentZeroFree.lean` defines `WeightedMertensMoment α` (`M(α)`) and proves
+`zeta_ne_zero_of_weightedMertensMoment`: `M(α)` excludes every zeta zero from `Re s > 1-α`.  The
+identity theorem is applied to `H(z) = F(z)·zetaPoleUnit(1+z-α) − 1`, holomorphic on the convex
+half plane and vanishing on the initial overlap; a zero of `ζ` would make `zetaPoleUnit` vanish at
+the corresponding point and force `0 = 1`.
+
+**Section 3, the exact RH equivalence.**
+`RHTower/MobiusHalfUnitMomentTower.lean` proves `(ii) → (i)`
+(`riemannHypothesis_of_forall_weightedMertensMoment`), by choosing
+`α = max 0 ((3/2 − Re s)/2)` for a hypothetical zero right of the critical line.
+`RHTower/MobiusRHDecayMoment.lean` proves `(i) → (ii)`:
+
+- `abs_partialSum_le_of_mertensBound` converts Littlewood's bound
+  `riemannHypothesis_implies_mobiusMertensAllStrictHalfPowerBound` into the real Abel form;
+- `mobiusReciprocalPartial_eq` is the exact Abel identity from `HTGeometry.sum_mul_weight_eq`;
+- `abs_mobiusAbelIncrement_le`, `summable_mobiusAbelIncrement`, `abs_tsum_shift_le` bound the Abel
+  series and its tail by `O(N^{-1/2+2δ})`;
+- `mobiusAbelLimit_eq_zero_of_bound` shows the limit constant vanishes — a nonzero constant is not
+  square integrable on a half line, and `memLp_criticalMertensVector` already places `m₀` in `L²`;
+- `exists_decay_of_riemannHypothesis` gives `|m₀(t)| ≤ K e^{(-1/2+2δ)t}`, hence
+  `weightedMertensMoment_of_riemannHypothesis`.
+
+The capstone is `riemannHypothesis_iff_forall_weightedMertensMoment`:
+**RH ⟺ `e^{αt} m₀(t) ∈ L²(0,∞)` for every `0 ≤ α < 1/2`** — equation `(8)`.
+
+**Section 5, the prelimit safe width.**  `RHTower/MobiusPrelimitSafeWidth.lean` proves the sharp
+tail bound `norm_mobiusWeightedTail_le_of_lt` (any decay rate below `2ω` is available) and
+`memLp_weighted_centeredMertensVector`, equation `(18)`: every weight strictly below `e^{2ωt}`
+keeps `m_ω` square integrable.  `prelimit_missing_width` is equation `(21)`.
+`RHTower/MobiusPrelimitLaplaceIdentity.lean` proves equation `(16)`
+(`causalTransform_centeredMertensVector`) by the same Tonelli interchange at abscissa `1+2ω`, and
+equation `(19)` (`zeta_ne_zero_of_weightedPrelimitMoment`) by the Section 2 argument at the
+prelimit base: `e^{αt} m_ω ∈ L²` excludes every zeta zero from `Re s > 1+2ω-α`.
+
+- [x] Lean: sections 1, 2, 3 and 5 formalized and unconditional.

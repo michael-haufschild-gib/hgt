@@ -1,7 +1,7 @@
 # Möbius logarithmic jets preserve hypertranscendence; Li coefficients are not holonomic
 
 - **ID:** `mobius-logarithmic-jet-ht-transfer-li-no-holonomic-route`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / route no-go
 - **Scientific status:** `[PROVED HERE] [UNCONDITIONAL] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; coefficient transforms; Li-criterion boundary

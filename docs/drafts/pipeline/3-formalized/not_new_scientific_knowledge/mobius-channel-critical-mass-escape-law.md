@@ -1,7 +1,7 @@
 # The normalized Möbius channel is contractive but loses all finite coordinates at criticality
 
 - **ID:** `mobius-channel-critical-mass-escape-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Source:** `shifted-euler-error-floor-mobius-tail-coupling.md`;
@@ -259,3 +259,9 @@ finite-coordinate wrapper.
 - [ ] strong critical pole-to-divisor transfer
 - [ ] four-unit boundary norm
 - [ ] RH
+
+## Lean formalization (this sweep, complete and unconditional)
+
+`formal/GaloisForLFunctions/RHTower/MobiusChannelCriticalMassEscapePaperCertificate.lean`
+certifies the card's proved payload, equations `(3)`--`(5)`, `(8)`, `(9)`, `(11)`, `(12)`, `(14)`
+and `(15)`.

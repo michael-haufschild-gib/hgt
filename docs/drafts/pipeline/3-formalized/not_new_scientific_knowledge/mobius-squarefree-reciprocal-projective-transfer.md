@@ -1,7 +1,7 @@
 # The completed Möbius contraction has the reciprocal projective Ward connection
 
 - **ID:** `mobius-squarefree-reciprocal-projective-transfer`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / HTGEOMETRY--RHTOWER BRIDGE
 - **Scientific status:** `[PROVED] [LEAN ALGEBRA CORE] [BRIDGE] [NOT RH]`
 - **Lean:** `GaloisForLFunctions.RHTower.MobiusSquarefreeReciprocalTransfer`;
@@ -156,3 +156,14 @@ connection class, rather than a scalar determinant, is the conservative invarian
 - [ ] construct the derived critical completed transfer
 - [ ] prove it is nonexpansive on the distinguished four-unit score
 - [ ] RH
+
+## Lean formalization (this sweep, complete and unconditional)
+
+`formal/GaloisForLFunctions/RHTower/MobiusSquarefreeReciprocalProjectivePaperCertificate.lean`
+certifies the card's proved payload: the Dirichlet comparison bound
+`norm_riemannZeta_le_re_riemannZeta_ofReal`, the safe correction value
+`mobiusSafeCorrectionValue` with its holomorphy, nonvanishing and contractivity, the signed Schur
+multiplier `mobiusSignedSchurMultiplier`, the completed squarefree partition
+`completedSquarefreePartition`, the completed transfer `mobiusCompletedSquarefreeTransfer`, and the
+Ward connection `two_mul_logDeriv_mobiusCompletedSquarefreeTransfer`:
+`2 · dlog T = Q_sq`.  `#print axioms` reports only `propext`, `Classical.choice`, `Quot.sound`.

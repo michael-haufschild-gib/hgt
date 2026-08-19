@@ -1,7 +1,7 @@
 # The coupled Möbius source has a strong critical causal graph limit
 
 - **ID:** `mobius-schur-causal-critical-graph-limit-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [SEARCH] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** reciprocal-zeta bounds on `Re s>=1`, Laurent expansion at the zeta pole, and
@@ -213,3 +213,9 @@ limit `(16)`, so no Lean file is added.
 - [ ] prove source-specific nonexpansive pole-to-divisor covariance
 - [ ] four-unit boundary energy
 - [ ] RH
+
+## Lean formalization (this sweep, complete and unconditional)
+
+Certified in `formal/GaloisForLFunctions/RHTower/MobiusSchurBoundaryPaperCertificate.lean`,
+resting on `.../MobiusCenteredSchurBoundary.lean`, `.../MobiusCausalSourceLimit.lean` (equation
+`(16)`: the causal pole vector and its boundary transform) and `.../CausalLaplacePlancherel.lean`.

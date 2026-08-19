@@ -1,7 +1,7 @@
 # The coupled Möbius source is an exact signed-channel projection
 
 - **ID:** `mobius-signed-channel-coisometry-incidence-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Source:** `coupled-floor-mobius-complementary-shift-incidence-law.md`;
@@ -318,3 +318,14 @@ instead formalized concretely in `XiRationalQuartetGauge.lean`.
 - [ ] critical projected-component estimate
 - [ ] four-unit boundary norm
 - [ ] RH
+
+## Lean formalization (this sweep, complete and unconditional)
+
+`formal/GaloisForLFunctions/RHTower/VectorSignedChannelCoisometry.lean`,
+`.../MobiusCoupledFeatureIncidence.lean` and the certificate
+`.../MobiusSignedChannelIncidencePaperCertificate.lean` certify equations `(1)`, `(2)`, `(5)`,
+`(6)`, `(8)`, `(9)`, `(10)`, `(15)`, `(16)`, `(17)`, `(21)`, `(23)`, `(24)` and `(25)`--`(27)`:
+the signed synthesis is a coisometry, its channel projection is idempotent and self-adjoint, the
+coupled feature has the exact norm `‖k‖² + c² log d`, the cancellation law holds, both diagonal
+data blow up at the rate `1/(2ω)`, and every closed operator commutes with the signed synthesis on
+the graph-norm domain of its channelwise amplification.

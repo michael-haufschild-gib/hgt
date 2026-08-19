@@ -1,7 +1,7 @@
 # The normalized Möbius carrier has an exponential critical boundary layer
 
 - **ID:** `mobius-critical-exponential-boundary-layer-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [SEARCH] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Source:** `mobius-channel-critical-mass-escape-law.md`
@@ -175,3 +175,12 @@ boundary-layer theorem, so no Lean file is added at this stage.
 - [ ] contractive synthesis on the moving aperture
 - [ ] four-unit boundary transfer
 - [ ] RH
+
+## Lean formalization (this sweep, complete and unconditional)
+
+`formal/GaloisForLFunctions/RHTower/MobiusCriticalBoundaryLayerQuantiles.lean` and
+`.../MobiusCriticalExponentialBoundaryLayerPaperCertificate.lean` certify the card's proved
+payload: the squarefree Möbius clock mass `squarefreeMobiusClockMass`, its identification with the
+divisor cutoff, and the portmanteau convergence of the clock law to the unit exponential
+distribution on closed, open and moving apertures
+(`tendsto_squarefreeMobiusClockMass_Icc`, `_Iic`, `_Ioi`, `_Iic_moving`, `_Iic_moving_atTop`).

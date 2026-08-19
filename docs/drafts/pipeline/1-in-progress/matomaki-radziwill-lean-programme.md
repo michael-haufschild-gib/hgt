@@ -4234,3 +4234,44 @@ cut.  Dividing by `(W_PW_Q)²h²√x` and taking `Wc = B₀/h`, `T₀ = (B₀/h)
 already proved.  What remains is: instantiate the schedule, sum the per-block bounds of
 `Sieve/Section4DiscAnnulus` over the short ladder via `Sieve/Section4Assembly`, and verify the four
 limits above.
+
+### Milestone B, bricks 41–43 — the per-block master, and a second energy fix (2026-08-19)
+
+| module | content |
+|-|-|
+| `Sieve/Section4BlockMaster` | **`section4_block_master`** — one short block of §4, disc and annulus together, with the five inputs (Route-T `Vk`, the two cofactor mean squares `Idisc`/`Iann`, the long ladder's defect, the non-exceptional term) as parameters |
+| `Sieve/Section4Master` | **`integral_normSq_jointOmegaPoly_le_master`** — the same summed over the short ladder.  This *is* the `β₀` of `jointOmegaBudget_le`, so it is the single entry point for the parameter substitution |
+| `Sieve/JointLadderDefectDivisor` | `logPoly_restrictCoeff_of_subset`, `ladderGapSetAt_one_subset`, `norm_restrict_omegaQCoeff_le`, `jointLadderProductDefect_eq_restrict`, **`integral_normSq_jointLadderProductDefect_le_divisor`** |
+| `Sieve/Section4DiscCofactor` (extended) | **`exists_setIntegral_disc_normSq_logPoly_moebius_one_le`** — the disc bound for an *initial* cofactor block, which is the only shape that occurs once `A₀ = 1` |
+| `Sieve/OmegaQEnergy` (extended) | **`setIntegral_normSq_omegaWeighted_le_energy_on`** — Lemma 2.4 for the long-weighted cofactor over a part of the window |
+
+**The second place `#Q` was fatal.**  Writing out the assembly's arithmetic showed that
+`integral_normSq_jointLadderProductDefect_le_closed`'s coefficient bound `#Q` kills the short
+ladder's defect.  The gap budget contains an irreducible term `≍ B₀/R_P` (moving endpoints summed
+against the rounding term), so with the `#Q²` prefactor the defect is
+
+```text
+   ≍ exp(2(log x)^b)·√x·(log x)^{1−β/2}·(B₀/R_P)  ≍  x·exp(2(log x)^b − (log x)^{β/2})·polylog ,
+```
+
+and `2(log x)^b ≫ (log x)^{β/2}` because `b > 9/10 > β/2`.  It cannot be repaired by tuning `η_P`
+(the term is `η_P`-free) or by raising `R_P` (which is capped at `h`).
+
+The repair is the divisor bound, exactly as for the single weight: every gap index lies in `[1,B₀]`
+and every designated long prime exceeds `R_Q`, so `‖μ(n)ω_Q(n)‖ ≤ log B₀ / log R_Q`, which at
+`log R_Q ≍ (log x)^a` is `≍ (log x)^{1−a}` — a *small power of the logarithm* in place of a power of
+`x`.  `integral_normSq_jointLadderProductDefect_le_divisor` carries that:
+
+```text
+  ∫_{|w|≤W} ‖jointLadderProductDefect P Q 1 B₀ R_P η_P L_P w‖²
+    ≤ (log B₀/log R_Q + 1)²·(5π/2·W + 5e/2·N)·(log N/log R_P · gap budget) ,   N = ⌊B₀(1+η_P)⌋ .
+```
+
+The mechanism is `logPoly_restrictCoeff_of_subset`: the defect's cofactor sums run over gap sets
+inside `[1,B₀]`, so the coefficient may be replaced by its restriction there without changing the
+polynomial, and the restriction obeys the divisor bound everywhere.
+
+With this, **both** places where the crude `#Q` appeared are repaired — the non-exceptional Lemma 2.4
+term by the Turán–Kubilius energy (`Sieve/OmegaQEnergy`), and the short-ladder defect by the divisor
+bound.  Nothing in the lane now carries a factor larger than a power of the logarithm except the
+polynomials' own lengths.

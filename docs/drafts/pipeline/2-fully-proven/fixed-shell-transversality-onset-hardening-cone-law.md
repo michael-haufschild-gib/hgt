@@ -987,3 +987,37 @@ integrals, and (for the block form) a grid and an exceptional event.  Composing 
 `card_filter_collision_gt_mul_le` for the exceptional mass, is Theorem C and Corollary D.
 
 Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+## Lean progress -- the boxed `(13)`, without the power law
+
+`(18b)` -- the *power-law* bound on the sublevel sets of `‖∇_S φ_k‖` -- is not what Theorem B and
+Theorem C actually consume.  What they consume is the boxed `(13)`,
+`lim_{ζ↓0} lim_{g↓0} Q_r(ζ,g) = 0`, and that follows from the nullity of the critical sets alone,
+with no Łojasiewicz exponent and no semialgebraic geometry.
+
+`formal/GaloisForLFunctions/HTGeometry/SublevelVanishing.lean` (new, umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| **sublevel sets of a function with null zero set are eventually small** | `exists_small_sublevel` |
+| the same for a finite family, simultaneously | `exists_small_finite_sublevel` |
+| **`(13)` in `ε`-form**: a discriminant threshold and a gradient threshold whose two discarded regions together weigh less than any prescribed tolerance | `exists_small_transversalityTail` |
+
+The mechanism is continuity of measure from above: the sublevel sets `{|f| ≤ 1/(n+1)}` decrease,
+their intersection is exactly the zero set, and the shell measure is finite, so their masses
+converge to the mass of the zero set.  A finite family is handled by cutting each at tolerance
+`ε/|K|` and taking the smallest threshold.
+
+So `Q_r(ζ,g)` can be made arbitrarily small using only:
+
+* `σ{Disc = 0} = 0` -- already proved, and in the sharper power-law form, by
+  `exists_toSphere_spectralDiscriminant_sublevel_le` together with
+  `SpectralDiscriminantPolynomial`;
+* `σ{‖∇_S φ_k‖ = 0} = 0` for each of the finitely many `k ∈ K_r` -- the fixed-shell nonflatness
+  theorem, which is the parent card's Theorem A.
+
+`(18b)` remains a sharpening -- it gives the *rate* `A g^α` rather than mere vanishing, and the
+onset constant `(23)` is stated with an explicit `g` -- but the boxed `(13)`, which is what the
+card asserts and what Theorem C's choice `(22)` needs, no longer waits on any semialgebraic input.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.

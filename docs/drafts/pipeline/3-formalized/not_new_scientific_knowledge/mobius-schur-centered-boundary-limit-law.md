@@ -1,7 +1,7 @@
 # The centered Möbius Schur boundary has a canonical weighted-Mertens limit
 
 - **ID:** `mobius-schur-centered-boundary-limit-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [SEARCH] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** the classical zero-free line for zeta, reciprocal-zeta bounds on `Re s>=1`,
@@ -209,3 +209,14 @@ space, or the weighted-Mertens `L2` interface. Formalizing only the Dirichlet-se
 - [ ] orbit-sensitive contour continuation
 - [ ] four-unit boundary energy
 - [ ] RH
+
+## Lean formalization (this sweep, complete and unconditional)
+
+The analytic core is `formal/GaloisForLFunctions/RHTower/MobiusCenteredSchurBoundary.lean` (the
+centered Schur quotient, its uniform boundary majorant and both strong Hardy limits),
+`.../MobiusWeightedMertensVector.lean` (equations `(13)` and `(16)`: the weighted-Mertens vectors,
+the exact centering identity, exponential decay, `L¹ ∩ L²` membership and the exact transfer
+identity on the imaginary axis), `.../MobiusCenteredMertensLimit.lean` (equations `(14)`, `(15)`,
+`(17)`: `m₀ ∈ L²` unconditionally, the critical energy identity, and `m_ω → m₀` in `L²` via Fatou
+and Plancherel), `.../MobiusCausalSourceLimit.lean` (equation `(11)`), and the certificate
+`.../MobiusSchurBoundaryPaperCertificate.lean`.

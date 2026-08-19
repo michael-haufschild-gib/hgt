@@ -413,3 +413,46 @@ New modules this round: `TensorSquareEqualizer` (the equalizer of the two embedd
 square is the base field; a trivial comparison matrix collapses the Picard--Vessiot ring) and
 `QuotientDerivation` (a derivation descends to the quotient by a differential ideal, and the
 descended `sigma` and `delta` still commute).
+
+
+## Card 1 — the multiplicative transfer
+
+`LogDerivRelationSubgroup` builds the bridge from the additive classification (owned) to `G_m`:
+`logDerivHom` is the logarithmic derivative as a group homomorphism `F^x -> (F, +)`, and
+`logDerivRelationSubgroup c = comap logDerivHom (jetRelationAddSubgroup c)` identifies the
+multiplicative relation subgroups as preimages of the additive ones.
+
+What remains on the multiplicative side is the converse: that every proper differential algebraic
+subgroup of `G_m` is of this form.  That needs the image of a differential algebraic group under a
+differential-algebraic homomorphism to be differential algebraic, i.e. elimination in `DCF_0` -- the
+same model-theoretic input the tensor-square `sigma`-simplicity step needs.  Those two, plus the
+`GL_2` case, are now the whole gap between the corpus and Dreyfus's normal form.
+
+
+## Card 1 — plan correction
+
+The item "sigma-simplicity of the tensor square" recorded earlier was wrong: `R ⊗_K R` is not
+sigma-simple (it is `R ⊗_C C[G]`, whose sigma-ideals are the ideals of `C[G]`).  What the Galois
+correspondence needs is the *ideal correspondence*, and `SigmaIdealConstantCoefficients` shows it is
+pure algebra: for a family of constants linearly independent over a sigma-simple base, every
+sigma-ideal element has an associate with constant coefficients.  No model theory is involved.
+
+Revised remaining list for card 1:
+
+1. The passage from the ideal correspondence to `C`-points of the Galois group — the
+   Nullstellensatz over an algebraically closed constant field.
+2. The converse on the multiplicative side (every proper differential algebraic subgroup of `G_m`
+   is a `logDeriv` relation subgroup) — needs elimination in `DCF_0`.
+3. The `GL_2` case of Cassidy's classification.
+4. Dreyfus's normal form and its analytic realization (periodic meromorphic constants).
+
+
+## Card 1 — item (1) closed
+
+`NullstellensatzPoint` supplies the weak Nullstellensatz and its matrix form, so the passage from
+the ideal correspondence to `C`-points of the Galois group is no longer missing.  Remaining:
+
+2. the converse on the multiplicative side (every proper differential algebraic subgroup of `G_m`
+   is a `logDeriv` relation subgroup) — elimination in `DCF_0`;
+3. the `GL_2` case of Cassidy's classification;
+4. Dreyfus's normal form and its analytic realization (periodic meromorphic constants).

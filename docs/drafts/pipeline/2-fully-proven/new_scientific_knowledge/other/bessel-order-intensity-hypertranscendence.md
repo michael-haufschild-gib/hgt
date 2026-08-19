@@ -739,3 +739,83 @@ form: a proper differential algebraic subgroup of the additive group is cut out 
 `multiplicativeDGroup`.  So the additive half of the classification the card is waiting on does not
 have to be built; what remains is the multiplicative (`G_m`) transfer through the logarithmic
 derivative and the `GL_2` case.
+
+## Lean progress — the multiplicative transfer of the additive classification
+
+`GaloisForLFunctions.HTGeometry.LogDerivRelationSubgroup`, unconditional and axiom-clean:
+
+```text
+differentialJet_neg, differentialJet_zero_arg
+jetOperator c x = sum_i c_i . delta^i x     a constant-coefficient linear differential operator
+jetOperator_add, _zero, _neg                it is additive
+jetRelationAddSubgroup c                    **the additive subgroup it cuts out** -- the shape of
+                                            every proper differential algebraic subgroup of G_a
+logDerivHom F : F^x ->* Multiplicative F    **the logarithmic derivative is a group homomorphism
+                                            from the units to the additive group**
+logDerivRelationSubgroup c                  the units on which the operator kills the logarithmic
+                                            derivative
+logDerivRelationSubgroup_eq_comap           **the transfer**: the multiplicative relation subgroup
+                                            is exactly the preimage of the additive one under the
+                                            logarithmic derivative
+constant_mem_logDerivRelationSubgroup       every constant unit lies in every relation subgroup
+```
+
+This is the bridge from the additive classification the corpus already owns
+(`DifferentialHopfPrimitive.nonzero_additiveHopfIdeal_exists_finite_jet_linear_relation`) to the
+multiplicative group: the relation subgroups of `G_m` are exactly the preimages under `logDeriv` of
+the relation subgroups of `G_a`, and both sides are genuine groups.  What is still missing on the
+multiplicative side is the converse direction — that *every* proper differential algebraic subgroup
+of `G_m` arises this way — which needs the image of a differential algebraic group under a
+differential-algebraic homomorphism to be differential algebraic, i.e. elimination in `DCF_0`.
+
+## Lean progress — the sigma-ideal correspondence needs no model theory
+
+`GaloisForLFunctions.HTGeometry.SigmaIdealConstantCoefficients`, unconditional and axiom-clean:
+
+```text
+BasisIndependentOver R b                       linear independence of a family over the base
+exists_constant_coeff_mem_sigmaIdeal
+    **every element of a sigma-ideal expressible in a family of constants produces an element of
+    the same ideal all of whose coefficients are constants of the base**
+exists_nonzero_constant_coeff_mem_sigmaIdeal   and with linear independence it is nonzero
+```
+
+This corrects the plan recorded above.  The step "sigma-simplicity of the tensor square" was
+misstated: `R (x)_K R` is *not* sigma-simple in general -- it is `R (x)_C C[G]`, whose sigma-ideals
+are the ideals of `C[G]`.  What the Galois correspondence actually needs is the *ideal
+correspondence*, and that is pure algebra, not model theory.
+
+The proof is the minimal-support argument run one level up.  For a fixed finite support `s` and a
+fixed index `j`, the `j`-th coefficients of the elements of the ideal supported in `s` form a
+`sigma`-ideal of the base; `sigma`-simplicity makes it the whole base, so one coefficient can be
+normalised to one; subtracting the shifted element then kills that coefficient and strictly shrinks
+the support, so minimality forces every coefficient to be a constant.
+
+Combined with `exists_tensor_comparison_matrix` (the comparison matrix has constant entries) and
+`adjoin_tensor_comparison_eq_top` (those entries and the inverse of the determinant generate the
+tensor square over the left copy), this is the algebraic engine of the Galois correspondence.  What
+is left there is the passage from the ideal correspondence to `C`-points, which is the
+Nullstellensatz over an algebraically closed constant field.
+
+## Lean progress — the Galois group has points
+
+`GaloisForLFunctions.HTGeometry.NullstellensatzPoint`, unconditional and axiom-clean:
+
+```text
+exists_algHom_of_finiteType_of_isAlgClosed
+    **the weak Nullstellensatz**: a nontrivial finitely generated algebra over an algebraically
+    closed field admits an algebra homomorphism to that field
+exists_matrix_point_of_finiteType
+    **the Galois group has points**: an invertible matrix over such an algebra specialises to an
+    invertible matrix over the field
+```
+
+Take a maximal ideal; the quotient is a field of finite type over the base, hence finite over it by
+Zariski's lemma (`finite_of_finite_type_of_isJacobsonRing`), hence equal to the base because the
+base is algebraically closed (`IsAlgClosed.algebraMap_bijective_of_isIntegral`).
+
+This closes item (1) of the remaining list: the passage from the ideal correspondence to points of
+the Galois group.  With `exists_tensor_comparison_matrix`, `adjoin_tensor_comparison_eq_top` and
+`exists_constant_coeff_mem_sigmaIdeal`, the comparison matrix `Z` lives in a finitely generated
+algebra of constants over `C`, and `exists_matrix_point_of_finiteType` specialises it to an element
+of `GL_n(C)` -- a point of the difference Galois group.
