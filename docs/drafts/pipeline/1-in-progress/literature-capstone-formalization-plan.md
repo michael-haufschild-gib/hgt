@@ -66,3 +66,15 @@ same-level PSD realization with diagonal strictification, compact weak limit, an
 cubature.  It proves a `2*N+1`-atom factorization for arbitrary normalized Hermitian PSD
 `T_N`.  It does **not** yet prove rank-many/distinct support, so the sharp corank-one root
 conclusion and the continuous Theorem 1.2 branch remain open.
+
+## 2026-08-19 Burnol completed zero-jet advance
+
+`[LEAN-PROVED]` `BurnolCoPoissonCompletedZeroJets.lean` transfers exact zero multiplicity through
+the literal Gamma-completed Mellin evaluation of every positive logarithmic co-Poisson subwindow.
+For each actual Xi divisor it proves all lower jets vanish and the leading jet is nonzero.  The
+proof uses equality with the co-Poisson formula on an open strip plus locality of iterated
+derivatives, so it does not postulate differentiation under an improper integral.
+
+This does **not** close Burnol’s Theorems 3.1–3.3.  The remaining literal work is the bounded
+zero-jet evaluator family on all `L_a`, closure/complement equality with `P_a`, the aperture
+thresholds, projection to `K_a`, and the `a = 1` two-jet deletion theorem.

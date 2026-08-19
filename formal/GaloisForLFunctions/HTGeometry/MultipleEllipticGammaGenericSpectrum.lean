@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.MultipleEllipticGammaFaceHierarchy
 import GaloisForLFunctions.HTGeometry.FacePacketDisplacementFreeness
+import GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary
 import GaloisForLFunctions.HTGeometry.MultipleEllipticGammaHypertranscendence
 import GaloisForLFunctions.HTGeometry.EllipticGammaTranslationAnomalyRationalBase
 import GaloisForLFunctions.HTGeometry.TranslationStableDifferentialAlgebraicity
@@ -360,7 +361,7 @@ theorem da_meroTranslationDefect_iff_int {ι : Type} [Fintype ι] [DecidableEq �
     exact differentialAlgebraicOver_meroTranslationDefect_intCast τ hτ J n
 
 /-- The empty face is the full hierarchy coordinate. -/
-theorem multipleEllipticGammaLogDerivFaceMero_empty {ι : Type} [Fintype ι] [DecidableEq ι]
+theorem multipleEllipticGammaLogDerivFaceMero_empty_eq_full {ι : Type} [Fintype ι] [DecidableEq ι]
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) :
     multipleEllipticGammaLogDerivFaceMero τ hτ ∅ = multipleEllipticGammaLogDerivMero τ hτ := by
   let e : {i : ι // i ∉ (∅ : Finset ι)} ≃ ι :=
@@ -372,7 +373,6 @@ theorem multipleEllipticGammaLogDerivFaceMero_empty {ι : Type} [Fintype ι] [De
   rw [← hre]
   unfold multipleEllipticGammaLogDerivFaceMero
   congr 1
-  funext k
 
 /-- **The exact generic spectrum of the multiple elliptic gamma logarithmic derivative.**
 For at least three `ℚ`-independent structural periods,
@@ -391,7 +391,7 @@ theorem da_meroTranslationDefect_multipleEllipticGamma_iff_int {ι : Type} [Fint
     rw [card_not_mem_eq]
     simp
   have := da_meroTranslationDefect_iff_int τ hτ hind ∅ (by omega) h
-  rwa [multipleEllipticGammaLogDerivFaceMero_empty] at this
+  rwa [multipleEllipticGammaLogDerivFaceMero_empty_eq_full] at this
 
 /-- **Every nonintegral translation defect is hypertranscendental.** -/
 theorem hypertranscendentalOver_meroTranslationDefect_of_not_int {ι : Type} [Fintype ι]
@@ -420,6 +420,65 @@ theorem hypertranscendentalOver_multipleEllipticGammaLogDerivMero_of_card {ι : 
     exact lt_irrefl 0 this
   exact hypertranscendentalOver_meroTranslationDefect_of_not_int τ hτ hind hcard hnot
     (differentialAlgebraicOver_meroTranslationDefect (τ i₀) hDA)
+
+/-- **Hierarchy spectrum-descent constraint.**  With no independence hypothesis at all, a
+differentially algebraic translation defect of a face coordinate stays differentially algebraic on
+every coface: `Spec_DA(Ψ_J) ⊆ ⋂_{q ∉ J} Spec_DA(Ψ_{J ∪ {q}})`. -/
+theorem da_meroTranslationDefect_coface {ι : Type} [Fintype ι] [DecidableEq ι]
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (J : Finset ι) {q : ι} (hq : q ∉ J) {h : ℂ}
+    (hDA : DifferentialAlgebraicOver (RatFunc ℂ)
+      (meroTranslationDefect h (multipleEllipticGammaLogDerivFaceMero τ hτ J))) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (meroTranslationDefect h (multipleEllipticGammaLogDerivFaceMero τ hτ (insert q J))) := by
+  rw [← meroTranslationDefect_face τ hτ J hq h]
+  exact differentialAlgebraicOver_meroTranslationDefect (τ q) hDA
+
+/-! ## The multiplicative shift quotients -/
+
+theorem logDeriv_addTranslationMeroEquiv (h : ℂ) (y : meroField (Set.univ : Set ℂ)) :
+    Differential.logDeriv (addTranslationMeroEquiv h y)
+      = addTranslationMeroEquiv h (Differential.logDeriv y) := by
+  rw [Differential.logDeriv, Differential.logDeriv, map_div₀, addTranslationMeroEquiv_deriv]
+
+/-- The genuine multiple elliptic gamma shift quotient `G(z+h)/G(z)`. -/
+def multipleEllipticGammaShiftQuotientMero {ι : Type} [Fintype ι]
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (h : ℂ) : meroField (Set.univ : Set ℂ) :=
+  addTranslationMeroEquiv h (multipleEllipticGammaMero τ hτ) / multipleEllipticGammaMero τ hτ
+
+theorem multipleEllipticGammaShiftQuotientMero_logDeriv {ι : Type} [Fintype ι]
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (h : ℂ) :
+    Differential.logDeriv (multipleEllipticGammaShiftQuotientMero τ hτ h)
+      = meroTranslationDefect h (multipleEllipticGammaLogDerivMero τ hτ) := by
+  rw [multipleEllipticGammaShiftQuotientMero, Differential.logDeriv_div]
+  · rw [logDeriv_addTranslationMeroEquiv]
+    rfl
+  · exact (addTranslationMeroEquiv h).map_ne_zero_iff.mpr
+      (multipleEllipticGammaMero_ne_zero τ hτ)
+  · exact multipleEllipticGammaMero_ne_zero τ hτ
+
+/-- **The exact generic spectrum of the multiplicative shift quotients.**
+`G_r(z+h)/G_r(z)` is differentially algebraic over `ℂ(z)` exactly when `h` is an integer. -/
+theorem da_multipleEllipticGammaShiftQuotientMero_iff_int {ι : Type} [Fintype ι] [DecidableEq ι]
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
+    (hind : LinearIndependent ℚ (augmentedPeriods τ)) (hcard : 3 ≤ Fintype.card ι) (h : ℂ) :
+    DifferentialAlgebraicOver (RatFunc ℂ) (multipleEllipticGammaShiftQuotientMero τ hτ h)
+      ↔ ∃ n : ℤ, h = (n : ℂ) := by
+  rw [← differentialAlgebraicOver_deriv_div_self_iff]
+  have hlog : (multipleEllipticGammaShiftQuotientMero τ hτ h)′ /
+      multipleEllipticGammaShiftQuotientMero τ hτ h
+      = meroTranslationDefect h (multipleEllipticGammaLogDerivMero τ hτ) :=
+    multipleEllipticGammaShiftQuotientMero_logDeriv τ hτ h
+  rw [hlog]
+  exact da_meroTranslationDefect_multipleEllipticGamma_iff_int τ hτ hind hcard h
+
+/-- Every nonintegral shift quotient of the multiple elliptic gamma is hypertranscendental. -/
+theorem hypertranscendentalOver_multipleEllipticGammaShiftQuotientMero_of_not_int {ι : Type}
+    [Fintype ι] [DecidableEq ι] (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
+    (hind : LinearIndependent ℚ (augmentedPeriods τ)) (hcard : 3 ≤ Fintype.card ι) {h : ℂ}
+    (hnot : ¬ ∃ n : ℤ, h = (n : ℂ)) :
+    HypertranscendentalOver (RatFunc ℂ) (multipleEllipticGammaShiftQuotientMero τ hτ h) := by
+  intro hDA
+  exact hnot ((da_multipleEllipticGammaShiftQuotientMero_iff_int τ hτ hind hcard h).mp hDA)
 
 end
 

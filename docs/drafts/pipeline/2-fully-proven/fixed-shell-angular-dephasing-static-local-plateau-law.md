@@ -964,3 +964,114 @@ rather than a propagation:
 So the induction step is a two-line intersection once the two inputs are stated in the same
 parameter space.  The remaining work in item 1 is exactly that matching, not a new genericity
 argument.
+
+## Lean progress -- the rate is now a variable (2026-08-19)
+
+The previous entry located the last obstruction exactly:
+
+> "What that instantiation still needs is base-change naturality: ... the third is naturality of
+> `esymmAlgEquiv`, which mathlib does not state."
+
+Both halves are now built, umbrella-wired and axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/SymmetricDescentBaseChange.lean`
+
+| Item | Declaration |
+|---|---|
+| the substitution `Xᵢ ↦ eᵢ₊₁` is natural in the coefficient ring | `map_esymmAlgHom` |
+| it is injective, being half of an algebra equivalence | `injective_esymmAlgHom` |
+| **naturality of the symmetric-polynomial descent** -- the named mathlib gap | `map_esymmAlgEquiv_symm` |
+| the quadratic-rate relation and its labeling orbit are natural | `map_fieldQuadraticRateRelationPolynomial`, `map_fieldQuadraticRateOrbitPolynomial` |
+| **the characteristic-coefficient obstruction is natural** | `map_fieldQuadraticRateCoefficientPolynomial` |
+
+The proof of naturality never touches the construction of the inverse: the forward substitution is
+visibly natural because the elementary symmetric polynomials have coefficients `1`, and the forward
+map is injective, so two representatives with the same image coincide.
+
+`formal/GaloisForLFunctions/HTGeometry/VariableRateMatrixObstruction.lean`
+
+| Card item | Declaration |
+|---|---|
+| the obstruction built over `MvPolynomial θ ℂ`, with the rate one of its elements | `variableRateObstructionPullback` |
+| **it evaluates to the orbit obstruction of the root packet at the rate evaluated there** | `eval_variableRateObstructionPullback` |
+| a complex polynomial nonzero at one complex point is nonzero somewhere in every nonempty real open set | `exists_mem_eval₂_ne_zero_of_exists` |
+| **one complex witness beats every real open set, at a moving rate** | `exists_mem_eval_variableRateObstructionPullback_ne_zero` |
+| **the witness form**: a single simple root packet on which no relabeled quadratic-rate relation holds forces the same failure somewhere in every nonempty open set of real parameters | `exists_mem_forall_relabelled_quadraticRate_ne_zero` |
+
+This is `(14)`, the symmetrisation `𝒢_{c,b}`, with `b² Q(H)` carried as the polynomial `κ` rather
+than as a constant -- exactly the shape the proof of Theorem A needs, since `Q(H) = D^{-1} Tr(H²)`
+moves with the Hamiltonian.  The user of the theorem supplies `κ := C(κ₀/D) · Tr(M²)`, which is a
+direct matrix computation in the parameters with no eigenvalues involved.
+
+Axiom audit for all listed declarations: `propext`, `Classical.choice`, `Quot.sound`.
+
+### What remains for Theorem A
+
+1. **The induction step's parameter matching** (unchanged): state the dense/residual maximally
+   projective set and the open endpoint-completeness condition in one parameter space and
+   intersect.
+2. **The witness feed**: supply `exists_mem_forall_relabelled_quadraticRate_ne_zero` with the
+   Lemma A2 chart -- the two-qubit Bell witness at the base, the layer extension at the step -- as
+   its `z₀`, `energy₀`, `hfail` inputs.
+
+## Lean progress -- the globalisation step of Theorem A is assembled (2026-08-19)
+
+Two further modules complete the chain from Lemma A2 to the boxed statement `(6)`, at the moving
+rate `κ Q(H)`.  Both are new, umbrella-wired and axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/VariableRateAnalyticEscape.lean`
+
+| Card item | Declaration |
+|---|---|
+| the `σ`-relabeled relation at a moving rate | `permutedAnalyticVariableRate` |
+| the orbit value is the product of those factors | `fieldQuadraticRateOrbitValue_variableRate` |
+| each factor is analytic when the rate is | `analyticOnNhd_permutedAnalyticVariableRate` |
+| **evaluation of a multivariate polynomial is analytic in its parameters** | `analyticOnNhd_evalMvPolynomial` |
+| **chart escape at a moving rate** | `exists_fieldQuadraticRateOrbitValue_ne_zero_of_analyticVariableRate` |
+| the complex witness | `exists_eval_variableRateObstructionPullback_ne_zero_of_analyticBranchEscape` |
+| **nowhere flatness at a moving rate** | `exists_mem_eval_variableRateObstructionPullback_ne_zero_of_analyticBranchEscape` |
+
+`formal/GaloisForLFunctions/HTGeometry/LabelOrbitPacketEscape.lean`
+
+| Card item | Declaration |
+|---|---|
+| **the `σ`-labeled factor of `c` is the unlabeled relation of `c ∘ σ⁻¹`**, so a rigidity statement over all nonzero zero-sum packets is already an escape for every labeling | `forall_perm_exists_permutedAnalyticVariableRate_ne_zero` |
+| **the globalisation step**: inside every nonempty open set of real parameters there is a point at which no relabeling of the quadratic-rate relation holds, for any simple root packet over it | `exists_mem_forall_relabelled_quadraticRate_ne_zero_of_packetEscape` |
+
+The second theorem is exactly the proof of Theorem A as written on this card -- symmetrise `(13)`
+over labelings to get `(14)`, descend to the characteristic coefficients, and conclude by the
+identity theorem on the witness chart -- with three differences from the earlier constant-rate
+version, all of them removals: the rate is a polynomial in the parameters rather than a constant,
+so `κ Q(H)` is admissible; the escape hypothesis is a statement about *packets*, which is literally
+Lemma A2, rather than about labelings; and the conclusion is stated for every simple root packet
+over the produced real point, so no eigenvalue-selection is needed downstream.
+
+### What remains for Theorem A
+
+1. **The chart.**  Produce `U ⊆ ℂ^m` connected open with analytic simple eigenbranches over the
+   one-qubit extension slice, and feed `exists_localField_quadraticRate_not_eventually` to it as
+   `hpacket`.  This is the `(z, g)`-to-`Fin m → ℂ` bridge -- coordinates, not mathematics.
+2. **The induction step's parameter matching**: state the dense/residual maximally projective set
+   and the open endpoint-completeness condition in one parameter space and intersect.
+
+## Lean progress -- the slice rate has the shape `Q₀(z) + g² Q_V` (2026-08-19)
+
+`formal/GaloisForLFunctions/HTGeometry/LayerSliceQuadraticTrace.lean` (new, umbrella-wired,
+axiom-clean) settles the "slice plumbing" item, as the card predicted, by a direct matrix
+computation with no eigenvalues in it.
+
+| Card item | Declaration |
+|---|---|
+| the trace of a square as a double sum | `trace_sq_eq_sum` |
+| the cross perturbation has zero trace against a diagonal, from either side | `trace_diagonal_mul_layerCrossPerturbation`, `trace_layerCrossPerturbation_mul_diagonal` |
+| the diagonal part contributes its squared energies | `trace_diagonal_sq` |
+| **`Tr H(z,g)² = Q₀(z) + g² Q_V`** -- no linear term in the coupling | `trace_sq_layerExtensionSlice` |
+| **`Q_V = 2 ∑_{a,b} M_{ab} M_{ba}`** | `trace_sq_layerCrossPerturbation` |
+| **`Q_V ≠ 0` for a nonzero Hermitian channel** -- the `hQv` hypothesis of Lemma A2 | `trace_sq_layerCrossPerturbation_ne_zero` |
+
+The linear term vanishes for the reason the card gives: `layerCrossPerturbation M` has zero
+diagonal, so both `Tr(D·V)` and `Tr(V·D)` vanish termwise.  The residual energy is
+`2 ∑_{a,b} M_{ab} M_{ba} = 2 ∑_{a,b} |M_{ab}|²` for Hermitian `M`, hence strictly positive unless
+the channel is zero, which is exactly the nondegeneracy Lemma A2 asks for.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.

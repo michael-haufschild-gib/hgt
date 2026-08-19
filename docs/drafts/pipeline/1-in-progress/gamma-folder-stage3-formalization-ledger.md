@@ -207,3 +207,11 @@ everything on faces (`… hτ ∅`) instead — that is the same object and avoi
 ```
 
 All of these live in the plain `GaloisForLFunctions` namespace (not `.HTGeometry`).
+
+- 2026-08-19 — **C7 and C8 CLOSED and PROMOTED.**  `MultipleEllipticGammaGenericSpectrum.lean`
+  completed (general-face collapse, the `card ≥ 4` induction `exists_int_of_da_faceDefect`, the
+  exact spectrum `da_meroTranslationDefect_multipleEllipticGamma_iff_int`, the HT corollaries, and
+  the multiplicative shift-quotient spectrum `da_multipleEllipticGammaShiftQuotientMero_iff_int`).
+  New `MultipleGammaCyclotomicDeletionMultiplicity.lean` closes C8 with
+  `cyclotomicDeletionMultiplicity`.  **6 of 8 gamma cards are at stage 3.**
+  Remaining: C5 (`gamma-module-construction`) and C6 (`gamma-tail-law-shifted-square-tests`).

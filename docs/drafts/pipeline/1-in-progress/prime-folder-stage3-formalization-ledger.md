@@ -30,9 +30,9 @@
 | 8 | `prime-boundary-perturbative-jet-monodromy-escape` | todo |
 | 9 | `prime-boundary-symmetric-dickman-zero-free-law` | todo |
 | 10 | `prime-corona-constraint-opacity-law` | todo |
-| 11 | `prime-coshift-eigenline-regularized-boundary-complex` | todo |
-| 12 | `prime-coshift-row-boundary-trace-nonclosable` | todo |
-| 13 | `prime-coshift-row-orthogonal-spectral-gap` | todo |
+| 11 | `prime-coshift-eigenline-regularized-boundary-complex` | in progress |
+| 12 | `prime-coshift-row-boundary-trace-nonclosable` | Lean complete (needs card update) |
+| 13 | `prime-coshift-row-orthogonal-spectral-gap` | in progress |
 | 14 | `prime-cyclotomic-coefficient-field-escape` | todo |
 | 15 | `prime-diagonal-singular-trace-dephasing` | todo |
 | 16 | `prime-exponential-holomorphic-determining-source-image` | todo |
@@ -60,3 +60,32 @@
 
 | Date | Card | Lean module(s) |
 |---|---|---|
+
+## 2026-08-19 — co-shift cluster (cards 11, 12, 13)
+
+New Lean modules (all `lake env lean` clean):
+
+- `HTGeometry/CommutingProjectionIntersectionEnergy.lean` — product of two commuting orthogonal
+  projections is the projection onto the intersection; finite `Finset` energy bound; antitone
+  families of closed subspaces have strongly convergent projections (mathlib's monotone statement
+  read through orthogonal complements); the commuting-family bound
+  `dist(x, ⨅ M_i)² ≤ ∑ dist(x, M_i)²`.
+- `RHTower/PrimeCoShiftModel.lean` — `H = ℓ²(ℕ≥1)`, `primeShift`/`primeCoShift` built on the
+  pre-existing `RHTower.lpScalarInjection` / `lpCoordinatePullback`; `rowOp s p = V_p^* - p^{-s}`;
+  `eigenSubmodule s = ⨅_p ker(rowOp s p)`; the coordinate law `x_n = n^{-s} x_1`; the ground state
+  `Ψ_s`; **the common eigenline theorem** `eigenSubmodule s = ℂ ∙ Ψ_s` for `Re s > 1/2` and
+  `= ⊥` for `Re s ≤ 1/2`.
+- `RHTower/PrimeCoShiftRowGraph.lean` — `ω` double-counting (`tsum_prime_shift`),
+  `coShiftEnergy = omegaEnergy`, prime-zeta energy finiteness, the two-sided comparison (5)/(6),
+  the graph-norm equivalence (7), the exact graph domain, the prime-supported non-closability
+  sequence (8)–(12), and the divergence (13).  Also `rowGraph` closed, `rowDomain` dense,
+  and `ker = eigenSubmodule`.
+
+Still open for the cluster:
+
+- card 11: regularized additive boundary evaluation `RegEv_s(x) = x_1 ζ(s)` (corpus already owns
+  `RHTower/JonquiereExpansion.lean`), and the zero-Fredholm-index two-term complex.
+- card 13: the kernel projections `P_p = (1-|a|²) B_p E_p B_p^*` with
+  `B_p = (1 - p^{-s} V_p)⁻¹`, `E_p = 1 - V_p V_p^*`; their pairwise commutation from the doubly
+  commuting isometries; the reduced minimum modulus `‖T_p x‖ ≥ (1-p^{-σ})‖x - P_p x‖`; then the
+  global gap via `CommutingProjectionIntersectionEnergy`.

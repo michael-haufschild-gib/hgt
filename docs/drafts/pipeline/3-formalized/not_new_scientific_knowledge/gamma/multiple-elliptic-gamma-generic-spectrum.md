@@ -201,3 +201,41 @@ claimed by that module.
 - 2026-07-10 - Proved the order-two spectrum as the intersection of three rank-three order-one spectra.
 - 2026-07-10 - Propagated the exact spectrum `Z` to every higher order and transferred it to hypertranscendence and shift quotients of the full multiple elliptic gamma hierarchy.
 - 2026-07-10 - Checked the 2025--2026 geometric-family papers in full; neither contains differential-algebraicity or hypertranscendence results for the hierarchy.
+
+## Lean certification — 2026-08-19 (stage 2 → 3)
+
+The card's stronger exact-spectrum claim — the one the previous "Lean route" note explicitly did
+**not** claim — is now unconditionally Lean-proved.  New module
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaGenericSpectrum.lean`, wired into
+`GaloisForLFunctions.HTGeometry`; `#print axioms` reports only `propext`, `Classical.choice`,
+`Quot.sound`.
+
+| Card statement | Lean name |
+|---|---|
+| the ℚ-independence hypothesis `1, τ_0, …, τ_r` | `augmentedPeriods` + `LinearIndependent ℚ` |
+| the deleted-coordinate period groups intersect in `ℤ` | `exists_int_of_forall_memDeletedPeriodGroup` |
+| translation defect `Δ_h` and its calculus | `meroTranslationDefect`, `meroTranslationDefect_comm`, `differentialAlgebraicOver_meroTranslationDefect`, `meroTranslationDefect_addTranslation`, `differentialAlgebraicOver_addTranslation_iff` |
+| coface descent `Δ_{τ_q} Δ_h Ψ_J = Δ_h Ψ_{J ∪ {q}}` | `meroTranslationDefect_face` |
+| **general hierarchy spectrum-descent constraint** `Spec_DA(Ψ_r) ⊆ ⋂_j Spec_DA(Ψ_{r−1}^{(j)})` | `da_meroTranslationDefect_coface` |
+| order-one input (rank-three spectrum) | `exists_int_of_da_defect_fin_two` (bridge into `differentialAlgebraicOver_ellipticGammaExternalLogDerivDefectMero_iff_resonant`) |
+| **order-two intersection step** | `exists_int_of_da_faceDefect_card_three` |
+| **higher-order induction** | `exists_int_of_da_faceDefect` |
+| **`Spec_DA(Ψ_r) = ℤ` for `r ≥ 2`** | `da_meroTranslationDefect_iff_int`, `da_meroTranslationDefect_multipleEllipticGamma_iff_int` |
+| consequence 1: `Ψ_r` is hypertranscendental | `hypertranscendentalOver_multipleEllipticGammaLogDerivMero_of_card` (and, on the rank-three-minor phase, the pre-existing `hypertranscendentalOver_multipleEllipticGammaLogDerivMero_of_rankThreeMinor`) |
+| consequence 2: `G_r` is hypertranscendental | pre-existing `hypertranscendentalOver_multipleEllipticGammaMero_of_rankThreeMinor` |
+| consequence 3: every nonintegral defect is HT | `hypertranscendentalOver_meroTranslationDefect_of_not_int` |
+| consequence 4: `G_r(z+h)/G_r(z)` is DA iff `h ∈ ℤ`, every nonintegral quotient HT | `multipleEllipticGammaShiftQuotientMero`, `da_multipleEllipticGammaShiftQuotientMero_iff_int`, `hypertranscendentalOver_multipleEllipticGammaShiftQuotientMero_of_not_int` |
+
+Supporting infrastructure added here: `linearIndependent_ellipticGammaSourcePeriods_of_augmented`,
+`linearIndependent_augmentedPeriods_face`, `card_not_mem_eq`, `card_not_mem_insert`,
+`multipleEllipticGammaLogDerivFaceMero_empty_eq_full`, `logDeriv_addTranslationMeroEquiv`.
+
+The proof is exactly the card's: the coface equation plus translation stability of differential
+algebraicity turns a DA defect at order `r` into a DA defect on every coface; at order two the
+order-one exact spectrum gives three rank-three period-group memberships whose intersection under
+ℚ-independence is `ℤ`; higher orders follow by induction on the number of surviving parameters.
+No new analysis was needed — the order-one exact spectrum is the corpus's stage-3
+`elliptic-gamma-rank-three-da-spectrum`.
+
+The two remaining audit gates on this card (independent audit of the order-one parent theorem and
+of the literature boundary) are review tasks, not formalization tasks.

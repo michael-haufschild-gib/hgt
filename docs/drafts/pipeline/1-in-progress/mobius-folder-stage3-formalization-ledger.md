@@ -18,7 +18,7 @@
 | 5 | `mobius-schur-centered-boundary-limit-law` | (3)-(5), (11)-(17) | **DONE** |
 | 6 | `mobius-schur-causal-critical-graph-limit-law` | (5)-(7), (13)-(17) | **DONE** |
 | 7 | `mobius-prime-aperture-differential-order-profile` | (4), (8), (16)-(18), (20)-(23) | (4),(5) DONE; E_1 built; (8) left |
-| 8 | `mobius-logarithmic-jet-ht-transfer-li-no-holonomic-route` | transfer thm; non-D-finite; Li | jet identity + **unconditional non-holonomicity DONE**; **abstract transfer theorem DONE**; concrete HT(L_Li) left |
+| 8 | `mobius-logarithmic-jet-ht-transfer-li-no-holonomic-route` | transfer thm; non-D-finite; Li | **DONE** |
 | 9 | `mobius-signed-channel-coisometry-incidence-law` | (5)-(10), (15)-(17), (19)-(23), (25)-(27) | partial: coisometry layer done |
 | 10 | `mobius-signed-coisometry-schur-transfer-law` | (4)-(13), (17)-(18), (21)-(23), (23a)-(23i) | **DONE** |
 
@@ -96,35 +96,35 @@
   prime-aperture profile `(8)`), card 8 (Möbius logarithmic jet / Li non-holonomicity).
 
 
-## Card 8 remaining route (HT of the Li generator)
+## Card 8 closed
 
-Landed: `HTGeometry/MobiusJetTransfer.lean` proves, over an arbitrary differential field extension
-`F ⊆ E` of characteristic zero:
+`HTGeometry/MobiusJetTransfer.lean` proves, over an arbitrary characteristic-zero differential
+field extension `F` inside `E`:
 
 * `differentialAlgebraicOver_iff_exists_finPoly` — DA over `F` is a nonzero polynomial relation
   among finitely many consecutive jets.
 * `DifferentialRescaledEquiv F E` — a field automorphism carrying `F` onto itself and intertwining
   the derivation up to a nonzero factor of `F` (the algebraic form of `(f o r)' = r' * (f' o r)`),
   with `symm` and the conjugated derivation `conjDeriv`.
-* `exists_triangular_expansion` — triangular jet expansion with diagonal the factor powers.
+* `exists_triangular_expansion` — the triangular jet expansion with diagonal the factor powers.
 * `differentialAlgebraicOver_map_iff`, `hypertranscendentalOver_map_iff` — exact invariance.
-* `mobiusJet`, `mobiusJet_eq_logDeriv`, `hypertranscendentalOver_mobiusJet_iff` — the card's
-  general transfer theorem `F DA <-> J_r(F) DA`.
+* `mobiusJet`, `mobiusJet_eq_logDeriv`, `hypertranscendentalOver_mobiusJet_iff`,
+  `differentialAlgebraicOver_mobiusJet_iff` — the card's general transfer theorem.
 
-Remaining, to make the Li specialization concrete:
+`HTGeometry/AnharmonicRatFunc.lean` builds the order-three substitution `X -> 1/(1-X)` as a
+`C`-algebra automorphism of `C(z)` and the ring-hom extensionality of `C(z)`.
 
-1. `U := {z | z != 0 and z != 1}` is stable under `r z = 1/(1-z)` and under `r^2 z = (z-1)/z`
-   (the order-three anharmonic orbit `{0,1,inf}`); `r` restricted to `U` is an analytic
-   automorphism of order three.  Open, nonempty, infinite; connectivity from the mathlib
-   complement-of-a-countable-set path-connectedness lemma.
-2. Build `sigma : DifferentialRescaledEquiv (RatFunc C) (meroField U)` from precomposition with
-   `r`.  Germs along `Filter.principal U` are functions on `U`, so precomposition is a ring
-   automorphism directly; it preserves `Bottcher.analyticSubring U` because composites of analytic
-   maps are analytic, and extends to the fraction field.  Base automorphism: `X -> 1/(1-X)` on
-   `RatFunc C`; factor: `r' = (1-X)^(-2)`.
-3. Corpus assets to use: `HTGeometry.differentialAlgebraicOver_analyticMeroElement_iff`
-   (`AnalyticJetFieldBridge`), `RHTower.xi_hypertranscendental`
-   (`XiHypertranscendenceUnconditional`), and the identity theorem to pass a relation on `U` to a
-   relation on all of `C`.
-4. Conclude `HypertranscendentalOver (RatFunc C) (sigma.mobiusJet (xi element))`, which is the
-   meromorphic realization of the Keiper--Li generator on `U`.
+`HTGeometry/AnharmonicMeromorphicSubstitution.lean` realizes it analytically on the twice-punctured
+plane `C \ {0,1}` (stable under `r` and `r^2`), builds the field automorphism of `meroField`,
+proves the chain rule on germs and on the fraction field, identifies the factor with `(1-z)^(-2)`,
+supplies `C(z)` as a differential base field there, and assembles
+`anharmonicRescaledEquiv : DifferentialRescaledEquiv (RatFunc C) (meroField anharmonicDomain)`.
+
+`RHTower/MobiusLiGeneratorHypertranscendence.lean` gives the Li specialization:
+`hypertranscendentalOver_liGeneratorMero` — the Keiper--Li generator satisfies no algebraic
+differential equation over `C(z)`, unconditionally — together with the identification of the field
+element as the quotient of the germs of `(xi o r)'` and `xi o r`, whose pointwise quotient is the
+analytic `liGenerator`.
+
+`RHTower/MobiusLogarithmicJetLiGenerator.lean` gives the jet identity and
+`liGenerator_not_holonomic_unconditional`.

@@ -219,3 +219,59 @@ algebraic-differential handle.
   differential independence of `zeta` and `Gamma`.  The Li logarithmic generator is now
   unconditionally HT; the card remains stage 2 because this complete analytic transfer has not
   been formalized in Lean.
+
+## Lean formalization (complete, unconditional)
+
+All four theorems of this card are machine-checked with no added axioms
+(`#print axioms` reports only `propext`, `Classical.choice`, `Quot.sound`).
+
+**General transfer theorem** — `formal/GaloisForLFunctions/HTGeometry/MobiusJetTransfer.lean`.
+The algebraic content of "logarithmic differentiation after a Möbius change preserves DA versus
+HT exactly" is stated for an arbitrary characteristic-zero differential field extension:
+
+- `DifferentialRescaledEquiv F E` — a field automorphism of `E` carrying the coefficient field `F`
+  onto itself and intertwining the derivation up to a nonzero factor of `F`.  This is exactly the
+  algebraic shadow of substitution by a nonconstant rational change of variable, for which
+  `(f ∘ r)' = r' · (f' ∘ r)`.
+- `exists_triangular_expansion` — the iterated derivatives of `σ x` are a triangular combination
+  of the images of the iterated derivatives of `x`, with diagonal the powers of the factor.
+- `differentialAlgebraicOver_map_iff` / `hypertranscendentalOver_map_iff` — exact invariance of
+  differential algebraicity and hypertranscendence under the substitution.
+- `mobiusJet_eq_logDeriv` — `J_r(F) = r' · (F'/F) ∘ r` equals `(F ∘ r)'/(F ∘ r)`.
+- `hypertranscendentalOver_mobiusJet_iff`, `differentialAlgebraicOver_mobiusJet_iff` — the
+  transfer theorem itself, obtained by composing the substitution invariance with the exact
+  logarithmic-derivative equivalence `hypertranscendentalOver_deriv_div_self_iff`.
+
+**The concrete analytic transform** — `HTGeometry/AnharmonicRatFunc.lean` and
+`HTGeometry/AnharmonicMeromorphicSubstitution.lean`.  The chart `r z = 1/(1-z)` has order three
+and permutes `{0, 1, ∞}`, so it restricts to an analytic automorphism of `ℂ ∖ {0,1}` with inverse
+`r² z = 1 - 1/z`.  Precomposition is a field automorphism of the meromorphic function field of that
+domain; the chain rule inserts the factor `r'(z) = (1-z)⁻²`, which is the rational function
+`((1-X)⁻¹)²`.  The rational coordinate field `ℂ(z)` embeds as a differential base field, and
+`anharmonicRescaledEquiv` assembles the data into a `DifferentialRescaledEquiv (RatFunc ℂ)
+(meroField anharmonicDomain)`.  The Lean gate of this card — "only if the concrete analytic
+transform can be represented faithfully" — is therefore discharged.
+
+**Li specialization** — `RHTower/MobiusLiGeneratorHypertranscendence.lean`.
+
+- `hypertranscendentalOver_xiAnharmonic` — `xi` is hypertranscendental over `ℂ(z)` inside that
+  field; the identity theorem upgrades a relation on the open domain to a global relation, and
+  `xi_hypertranscendental` supplies the global statement.
+- `hypertranscendentalOver_liGeneratorMero` — **the Keiper--Li generator satisfies no algebraic
+  differential equation over `ℂ(z)`**, unconditionally.
+- `liGeneratorMero_mul_xiComp` and `liGenerator_eq_div` identify the field element with the
+  quotient of the germs of `(xi ∘ r)'` and `xi ∘ r`, whose pointwise quotient is the analytic
+  `liGenerator`.
+
+**Non-holonomicity and the route no-go** —
+`RHTower/MobiusLogarithmicJetLiGenerator.lean`.
+
+- `liGenerator_eq_jet` — `L_Li(z) = (1-z)⁻² · (ξ'/ξ)(1/(1-z))`, the Möbius logarithmic jet.
+- `liGenerator_not_holonomic` — a function with infinitely many nonzero zeros has a non-D-finite
+  Möbius logarithmic jet, via the corpus residue engine.
+- `xi_zeroSet_infinite`, `xi_zero_ne_zero`, and hence
+  `liGenerator_not_holonomic_unconditional` — **the Li generating function satisfies no linear
+  differential equation with polynomial coefficients**, so the Li sequence is not `P`-recursive
+  and no holonomic closed-recurrence implementation of Li's criterion can prove RH.
+
+- [x] Lean: complete and unconditional.

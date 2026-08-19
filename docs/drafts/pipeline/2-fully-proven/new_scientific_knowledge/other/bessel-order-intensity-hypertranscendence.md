@@ -425,3 +425,38 @@ five modules are wired into `GaloisForLFunctions.HTGeometry`.
 4. Cassidy's classification of differential algebraic subgroups of `GL_2`, which is what converts
    differential algebraicity of a solution into Dreyfus's growth normal form — the normal form the
    corpus already refutes for `K_nu(s)` in `BesselOrderDreyfusNormalForm`.
+
+## Lean progress — linear disjointness of constants and the difference Galois matrix
+
+`GaloisForLFunctions.HTGeometry.DifferenceGaloisMatrix`, unconditional and axiom-clean:
+
+```text
+exists_constant_coeffs_of_relation
+    a nontrivial base-linear relation among constants of a difference ring extension can be
+    replaced by one whose coefficients are constants of the base
+differenceAut sigmaR
+    the group of K-algebra automorphisms commuting with the difference operator
+galoisMatrix Y phi = Y^{-1} (phi Y)
+mul_galoisMatrix                    Y * galoisMatrix Y phi = phi Y
+isUnit_det_galoisMatrix             it is invertible
+galoisMatrix_map_eq_self            **its entries are constants**
+galoisMatrix_one, galoisMatrix_mul  it is one at the identity and multiplicative, the latter as
+                                    soon as the automorphism fixes the constants
+map_eq_of_galoisMatrix_eq           it determines the automorphism on the fundamental matrix
+```
+
+`galoisMatrix_map_eq_self` is the step that produces the Galois group: for `Y` an invertible
+fundamental solution of `sigma Y = B Y` with `B` over the base, and `phi` a difference automorphism,
+`Y * M = phi Y` with `sigma M = M`.  The proof multiplies through by `sigma Y`, which is invertible,
+so no matrix inverse of `B Y` has to be formed:
+
+```text
+sigma(Y) sigma(M) = sigma(Y M) = sigma(phi Y) = phi(sigma Y) = phi(B Y) = B (phi Y)
+sigma(Y) M       = B Y M       = B (phi Y)
+```
+
+and left cancellation by `sigma(Y)` gives `sigma M = M`.
+
+`exists_constant_coeffs_of_relation` is the linear-disjointness statement that will bound the Galois
+group and is one of the two ingredients of the no-new-constants theorem; the other is
+`DifferenceSigmaSimple.isField_sigmaConstantsSubring_of_isSigmaSimple`.

@@ -140,3 +140,36 @@ No conditional Lean wrapper is warranted.  The group-algebra factorization in `(
 and the hierarchy is already formalized, but the load-bearing HT assertion in `(7)--(8)` depends on
 the actual order-one elliptic-Gamma spectrum, whose unconditional analytic Lean construction is
 still open.  This card advances only after that parent exists in Lean.
+
+## Lean certification — 2026-08-19 (stage 2 → 3)
+
+The card's "Lean boundary" note said this card advances only once the order-one elliptic-Gamma
+spectrum exists unconditionally in Lean.  It does (stage-3
+`elliptic-gamma-rank-three-da-spectrum`, bridged in
+`HTGeometry/MultipleEllipticGammaGenericSpectrum.lean`), so the whole card is now formalized.
+
+New module: `formal/GaloisForLFunctions/HTGeometry/MultipleGammaCyclotomicDeletionMultiplicity.lean`,
+wired into `GaloisForLFunctions.HTGeometry`; `#print axioms` reports only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+| Card statement | Lean name |
+|---|---|
+| the dependent frame `(α, β, mα)` and its upper-half-plane hypothesis | `cyclotomicFrame`, `cyclotomicFrame_im_pos` |
+| `(3)` `g₂ = g₀^m`, in operator form `Δ_{mα} = (∑_{i<m} T_{iα}) ∘ Δ_α` | `meroTranslationDefect_natCast_mul` |
+| the rank-two collapse of the deleted pair `(α, mα)` | `not_linearIndependent_alpha_natMul`, `not_linearIndependent_natMul_alpha` |
+| the surviving rank-three pair `(β, mα)` | `linearIndependent_beta_natMul` |
+| `(5)` `x₁ F` is DA | `da_cyclotomicFrame_deleteBeta` |
+| `(5)`,`(9)` `x₀x₂ F` is DA | `da_cyclotomicFrame_deleteAlphaPair` |
+| `(5)`,`(7)`,`(8)` `x₀² F` is HT (because `α ∉ ℤ + ℤβ + ℤ(mα)`: `1 − bm ≠ 0` for `m ≥ 2`) | `hypertranscendentalOver_cyclotomicFrame_alphaSquare` |
+| `(4)`,`(6)` **the cyclotomic factor is analytically indispensable** | `cyclotomicDeletionMultiplicity` |
+
+`cyclotomicDeletionMultiplicity` packages the whole separation: `x₁F` DA, `x₀x₂F` DA, `x₀²F` HT, and
+the exact operator identity
+`x₀x₂F = ∑_{i<m} T_{iα} (x₀²F) = (1 + g₀ + … + g₀^{m−1})·x₀²F`.
+So the cyclotomic sum carries a hypertranscendental element into the differentially algebraic
+locus; deleting it from the second generator of `D = (x₁, x₀x₂)` would change the analytic content,
+which is exactly the card's scheme-theoretic residue: the radical, reduced zero set, and minimum
+support depth of the deletion ideal do not determine the analytic translation-annihilator data.
+
+The card's RH boundary is unchanged: this is relation-side information and supplies no Euler–Gamma
+positive Gram realization.
