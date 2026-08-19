@@ -1,7 +1,7 @@
 # Bounded prime-screen observables cannot produce the completed Xi amplitude
 
 - **ID:** `prime-screen-bounded-observable-almost-periodicity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); source-category no-go
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `prime-poisson-superselection-screen.md`; arithmetic Kronecker flow
@@ -140,9 +140,59 @@ The proof is a direct composition of compact-group Fourier approximation, the de
 almost periodicity, the elementary fact `AP intersect C_0={0}`, and Stirling decay of completed Xi.
 It is a sharp project route gate but not new scientific knowledge.
 
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+Two new modules carry the card, both unconditional and axiom-clean
+(`propext, Classical.choice, Quot.sound`).
+
+**The compact-group almost-periodicity engine** —
+`formal/GaloisForLFunctions/HTGeometry/CompactGroupAlmostPeriodic.lean`
+
+Bohr almost periodicity is formalized as relative density of the `epsilon`-almost periods:
+
+```text
+IsBohrAlmostPeriodic F  <->  forall eps>0, exists L>0, forall x, exists tau in [x, x+L],
+                             forall t, ‖F (t+tau) - F t‖ <= eps
+```
+
+| Card item | Lean declaration |
+|---|---|
+| uniform continuity of `f` under translation near `1` | `exists_nhds_one_norm_translate_sub_le` |
+| relative density of the returns of the flow to a neighbourhood of `1` | `exists_relatively_dense_mem` |
+| **Theorem: `E_f` is Bohr uniformly almost periodic** | `isBohrAlmostPeriodic_of_compact_flow` |
+| **Vanishing-at-infinity obstruction: AP ∩ C_0 = {0}** | `eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero` |
+| the convolution `g_f(x) = ∫ f(x z) d mu(z)` | `screenAverage` |
+| `g_f in C(G)` | `continuous_screenAverage` |
+| `E_f(t) = ∫ f d mu_t` is almost periodic | `isBohrAlmostPeriodic_screenExpectation` |
+| Banach-space-valued observables | every statement is proved for a general normed space `E` |
+
+The identity neighbourhood on which the observable moves by less than `epsilon` comes from the
+tube lemma over the compact second factor; relative density comes from a finite subcover of the
+compact orbit closure by translates of a small open set.  Continuity of the flow is not used: the
+homomorphism property alone suffices, so the statement covers every one-parameter group of
+translations of the compact screen.
+
+**The prime-screen no-go** —
+`formal/GaloisForLFunctions/RHTower/PrimeScreenAlmostPeriodicNoGo.lean`
+
+| Card item | Lean declaration |
+|---|---|
+| `G = prod_p S^1` with its compact commutative group structure | `PrimeTorus` and its instances |
+| the arithmetic Kronecker flow `r(t)_p = p^{it}` | `primeKronecker` |
+| `r` is a continuous one-parameter group | `primeKronecker_add`, `continuous_primeKronecker` |
+| `xi(1/2+it) -> 0` as `|t| -> infinity` | `tendsto_XiC_ofReal_atTop` |
+| **no bounded continuous symbol on the screen equals completed Xi on the line** | `not_exists_primeScreen_symbol_eq_XiC` |
+| **no bounded prime-screen observable expectation equals completed Xi** | `not_exists_primeScreen_observable_eq_XiC` |
+
+The vertical decay input is the corpus theorem `exists_norm_XiC_ofReal_le`
+(`‖XiC t‖ <= C e^{-delta|t|}` for `0 <= 2 delta < pi/2`, from the theta strip contour shift), used
+at `delta = 1/2`; the nonvanishing input is `XiC_zero_ne`.  Stirling asymptotics and any zeta
+convexity bound are therefore not needed anywhere in the formal chain.
+
 ## Gates
 
 - [x] 0 -> 1: fixed observable category and exact height action stated
 - [x] 1 -> 2: complete paper proof and Xi application
-- [ ] 2 -> 3: no formalization planned unless the compact-group almost-periodic lemma becomes a
-  required dependency of a substantive completion construction
+- [x] 2 -> 3: compact-group almost-periodicity lemma, the `AP ∩ C_0 = {0}` obstruction and the
+  completed-Xi no-go are formalized unconditionally in Lean

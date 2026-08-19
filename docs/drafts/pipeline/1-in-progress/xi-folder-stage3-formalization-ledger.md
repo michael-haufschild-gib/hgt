@@ -13,10 +13,10 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 | 4 | xi-hedenmalm-local-algebra-rank-census | Lean done | HTGeometry/PolynomialQuotientMultiplicationRank, HTGeometry/GcdDerivativeDistinctRoots, HTGeometry/HermiteBiehlerPairRankCensus, HTGeometry/FiniteMomentDivisorReconstruction, RHTower/XiHedenmalmLocalAlgebraRankCensus |
 | 5 | xi-orientation-euler-safe-paired-cauchy-completeness | open | |
 | 6 | xi-outer-euler-modulus-first-prime-seam-antialignment | Lean done | RHTower/XiOuterEulerModulusPrimeSeamAntialignment |
-| 7 | xi-positive-paired-real-loewner-seam-log-weld | open | |
+| 7 | xi-positive-paired-real-loewner-seam-log-weld | Lean done (targets 1-5) | RHTower/XiPositivePairedRealLoewnerSeam |
 | 8 | xi-prime-seam-one-ended-cofinal-edge-collapse | Lean done (tensor essential-norm gate belongs to parent card) | HTGeometry/ArbitraryLabelEndReconstruction, RHTower/XiPrimeSeamOneEndedCollapse |
-| 9 | xi-radial-jensen-schur-capacity-rigidity | open | |
-| 10 | xi-reciprocal-translation-prime-seam-norm-law | open | |
+| 9 | xi-radial-jensen-schur-capacity-rigidity | Lean done | HTGeometry/SchwarzPickEstimate, RHTower/XiRadialJensenSchurCapacity |
+| 10 | xi-reciprocal-translation-prime-seam-norm-law | Lean done | RHTower/XiReciprocalTranslationSeamNormLaw |
 | 11 | xi-shift-loewner-prime-generator-law | open | |
 | 12 | xi-square-descent-vertical-modulus-rh | Lean done (both directions + R* corollary) | RHTower/XiSquareDescentVerticalModulus, RHTower/XiSquareDescentVerticalModulusConverse |
 | 13 | xi-supercharge-persistent-harnack-defect | open | |

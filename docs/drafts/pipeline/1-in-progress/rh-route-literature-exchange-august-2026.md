@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`1287bc6e3688535e8945dc34a1fab9fa9b5c179a` on 19 August, plus declaration-level working-tree
+`27258d06f5a7b90a5f3f4d8fc5a45902d4a4db01` on 19 August, plus declaration-level working-tree
 review. Historical `Active-tree Lean` wording records former provenance. Current
 formal route status is maintained in `rh-current-frontier-map.md`; detailed sections below are a
 literature-exchange record and may retain older intermediate formulations. External literature was
@@ -94,9 +94,19 @@ degree, and one common reduced-fibre collision point; only the two-to-one fibre 
 primitivity/source occurrence, and arithmetic Xi handoff remain before this can feed PPM/IRK/HJ.
 Differential horizons now reconstruct a translation-rigid field from any positive jet depth and
 identify additive-cylinder layers as vector torsors; Manin reconstruction still takes one
-Hrushovski-dichotomy direction as a premise and has no completed-zeta specialization. Difference
+Hrushovski-dichotomy direction as a premise and has no completed-zeta specialization. Evaluated
+Cassidy classification now forces a nonzero constant-coefficient jet relation from every proper
+additive differential Hopf ideal, sharpening the firewall without producing an arithmetic group.
+Difference
 Picard--Vessiot rings and solution-space rank bounds now exist unconditionally, opening a
 difference-Galois carrier adjacent to AF/AP/IRK but with no literal arithmetic system or RH reader.
+Tensor-square derivation, parameterized torsor comparison, specialization, and faithful
+differential-constant representation now strengthen that carrier without supplying the missing
+arithmetic occurrence. Compact-group screens are also classified: their continuous observables are
+Bohr almost periodic, hence any one tending to zero is identically zero. On the actual infinite
+prime torus, Lean now proves no bounded continuous symbol or finite-measure translated screen
+expectation can equal Xi: prime phases alone miss the noncompact archimedean decay. Nontrivial
+decaying AF/G/MSC successors must therefore retain noncompact completion data or leave this class.
 Quantum diamond-return recovery gives a paired non-scalar information-loss reflection potentially
 useful to HC or a successor to J; exact return is forced unitary, so dissipative exact recurrence is
 closed, and no prime--Gamma channel or collision comparison exists. Exact

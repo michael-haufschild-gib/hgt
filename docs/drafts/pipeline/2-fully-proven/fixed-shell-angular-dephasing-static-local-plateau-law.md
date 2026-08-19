@@ -1620,3 +1620,44 @@ Riemann--Lebesgue engine consumes.  What remains for Theorem B is the transfer o
 the coefficient space to the fixed shell, and the identification of the spectral action `phi_k` as
 a function which is analytic and -- by Theorem A -- nonconstant on every open patch of the
 simple-spectrum region of that shell.
+
+## Lean progress -- Theorem B's dephasing engine on the fixed shell
+
+Two further modules -- umbrella-wired, axiom-clean -- carry the null-preimage layer to the shell
+itself and deliver the oscillatory estimate `(17)`.
+
+`formal/GaloisForLFunctions/HTGeometry/EuclideanAnalyticNullPreimage.lean`:
+
+| Card item | Declaration |
+|---|---|
+| transport of a null set along a measure-preserving bijection | `measure_eq_zero_of_preimage_eq_zero` |
+| the coordinate identification with Euclidean space, and that it preserves volume | `euclCoord`, `measurePreserving_euclCoord`, `measurePreserving_euclCoord_symm` |
+| **the null-preimage law on Euclidean space**, where the shell is a round sphere | `analytic_preimage_volume_eq_zero_isOpen_euclidean` |
+
+`formal/GaloisForLFunctions/HTGeometry/SphereAnalyticPushforward.lean`:
+
+| Card item | Declaration |
+|---|---|
+| **the cone identity**: for a ray-constant phase, the cone over a sphere preimage is the punctured-unit-ball part of the preimage | `cone_preimage_eq` |
+| **the pushforward of the surface measure by a ray-constant analytic phase is absolutely continuous** | `toSphere_map_absolutelyContinuous_of_analytic` |
+| **angular dephasing on the fixed shell**, equation `(17)` | `tendsto_integral_exp_sphere_phase_zero` |
+
+The coarea step of the card is replaced by the cone identity together with mathlib's surface-measure
+formula `Measure.toSphere_apply'`: the surface measure of a set is a fixed multiple of the Lebesgue
+measure of the open cone over it, so nullity on the shell is exactly nullity of the cone, and the
+cone of a preimage under a ray-constant phase is the preimage of the same set intersected with the
+punctured unit ball.  Absolute continuity therefore needs no Jacobian and no coarea formula, only
+the analytic null-preimage law and a full-measure open cone on which the phase is analytic.
+
+The dephasing statement `tendsto_integral_exp_sphere_phase_zero` is exactly `(17)`: for every
+bounded measurable amplitude `g` on the shell,
+
+```text
+  ∫ g(θ) exp(-i t φ(θ)) dσ(θ) → 0   as |t| → ∞.
+```
+
+What Theorem B still needs is the identification of the spectral action `phi_k` as such a phase:
+that it is ray-constant after normalisation, measurable on the whole shell, analytic on the
+simple-spectrum open cone, nonconstant on every open patch of it (Theorem A), and that the
+complement of the simple-spectrum cone is null.  The last item is the parent card's genericity law
+transported to the shell; the analyticity is the eigenbranch engine restricted to real parameters.

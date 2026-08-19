@@ -258,3 +258,56 @@ quadratic relations.
 It remains deliberately below a Galois claim: an `AdjoinRoot` construction must prove the three
 required nonsquare facts, install these coordinates as ring equivalences, prove normality and count
 all eight automorphisms.  The epsilon-factor calculation remains a further independent gate.
+
+## 2026-08-19 actual degree-eight Q8 witness field
+
+`[LEAN-PROVED]` `DeningerQ8RootNumberNegOneFirstQuadratic.lean`,
+`DeningerQ8RootNumberNegOneSecondQuadratic.lean`, and
+`DeningerQ8RootNumberNegOneTopRadicand.lean` now construct the entire literal radical tower.
+They prove, without a degree assumption, that `5` is nonsquare in `Q`, that `41` and `205` are
+nonsquare in `Q(√5)`, and that the final radicand is nonsquare in `Q(√5,√41)`.
+
+The last result is a relative-norm descent, not a finite search: second conjugation sends
+`√41` to `-√41`; a hypothetical square root of `(5+√5)(41+6√41)` gives a fixed norm quotient
+whose square is `205`; fixed-point descent returns a square root of `205` in `Q(√5)`, which is
+formally impossible.  Consequently Lean proves the exact tower degree
+
+```text
+[Q(√5, √41, √((5+√5)(41+6√41))) : Q] = 8.
+```
+
+The module is wired into `GaloisForLFunctions.RHTower`, has passed its narrow source and leaf
+build checks, and both capstone theorems have only `propext`, `Classical.choice`, and `Quot.sound`
+in their axiom audits.  This closes the field-construction gate, but not yet the primitive-field
+equality `Q(z)=Q(√5,√41,z)`, normality, an eight-element `Q8` automorphism group, or the Artin
+epsilon-factor computation.  Those remain the exact next obligations; none is being inferred from
+the degree calculation.
+
+## 2026-08-19 primitive equality for the documented Q8 field
+
+`[LEAN-PROVED]` `DeningerQ8RootNumberNegOnePrimitiveField.lean` now closes the next exact
+field-theory gate.  In the constructed top field, let `z` be the literal final radical and
+`u=z²`.  Lean proves the nonvanishing recovery law
+
+```text
+(5 + √5) * (2050 - 82u) = 4100 - u²,
+```
+
+then derives explicit rational-function recovery of `√5`, `41+6√41`, and `√41` from `z`.
+The denominator nonvanishing is proved algebraically: its vanishing would force `u=25`, which
+contradicts the displayed law.  Using exact normal forms for all three `AdjoinRoot` layers, the
+formal theorem
+
+```lean
+deningerQ8RootNumberNegOne_primitiveField_eq_top
+```
+
+proves `Q(z)` equals the complete degree-eight radical tower.  The literal notation in the cited
+source is therefore now represented faithfully, rather than as shorthand for a larger field.
+Leaf build and axiom audit passed; only `propext`, `Classical.choice`, and `Quot.sound` occur.
+
+`[OPEN CORE]` The field now has the documented primitive generator and degree.  The next distinct
+proof obligation is arithmetic, not eliminant algebra: install the already-verified radical lift
+coordinates as field automorphisms, prove their quaternion multiplication table and normality, and
+only then attach the Artin representation.  The global epsilon-factor/root-number calculation
+remains independent after that.

@@ -689,3 +689,15 @@ commuting with both operators has a right component commuting with both, hence l
 
 Remaining, all classification/analysis: reducedness (Cartier), the `G_m` converse, the `GL_2` case of
 Cassidy, Dreyfus's normal form and its analytic realization.
+
+
+## Card 1 — Cassidy additive, evaluated
+
+`CassidyAdditiveEvaluated` evaluates the corpus's coordinate-ideal Cassidy theorem at a point: a
+nonzero additive differential Hopf ideal vanishing on a family forces a nonzero finite
+constant-coefficient linear relation among its jets.  That is the form a hypertranscendence argument
+consumes, and it matches `jetOperator`.
+
+Classification side now: additive case owned and evaluated; multiplicative relation subgroups
+identified as preimages under `logDeriv`.  Missing: the multiplicative converse and `GL_2`.
+Plus reducedness (Cartier) and Dreyfus's normal form with its analytic realization.

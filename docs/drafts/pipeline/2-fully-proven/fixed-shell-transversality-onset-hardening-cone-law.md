@@ -1021,3 +1021,86 @@ onset constant `(23)` is stated with an explicit `g` -- but the boxed `(13)`, wh
 card asserts and what Theorem C's choice `(22)` needs, no longer waits on any semialgebraic input.
 
 Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+## Lean progress -- the elimination step for `(18b)`
+
+The card names two routes for `(18b)`: a semialgebraic Łojasiewicz inequality, or *eliminate the
+eigenvalues to get a polynomial in `θ` whose zero set contains the critical locus*.  The second
+route is the buildable one, and its first step is now formal.
+
+`formal/GaloisForLFunctions/HTGeometry/LabeledActionSymmetricPolynomial.lean` (new,
+umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the spectral action at one labelling of the spectrum, `∑_j k_j E_{π(j)}` | `labeledAction` |
+| relabelling the eigenvalues translates the labelling | `rename_labeledAction` |
+| the symmetrised action polynomial `∏_π (Y − ∑_j k_j E_{π(j)})` | `labeledActionPoly` |
+| relabelling permutes its factors, hence fixes it | `map_rename_labeledActionPoly` |
+| **every coefficient is a symmetric polynomial in the eigenvalues** | `isSymmetric_coeff_labeledActionPoly` |
+| **hence a polynomial in the elementary symmetric functions**, i.e. in the characteristic coefficients, i.e. in the shell coordinates | `exists_esymmAlgHom_coeff_labeledActionPoly` |
+| **every labelled action value is a root** | `eval_map_labeledActionPoly`, `eval_labeledAction` |
+
+This is exactly the elimination the card asks for: the spectral action `φ_k` is not a rational
+function of `θ`, but it is a root of a polynomial whose coefficients *are* polynomials in `θ`, and
+the passage from one to the other costs only the symmetrisation over labellings -- the same device
+that turns the parent card's `(13)` into the polynomial `(14)`.
+
+What `(18b)` still needs on top of this is the differentiated form: implicit differentiation of the
+root relation turns `∇_S φ_k = 0` into the vanishing of a polynomial expression in `(θ, y)` at
+`y = φ_k(θ)`, and symmetrising that expression over the roots again gives a polynomial in `θ` alone,
+whose sublevel sets are then controlled by the corpus's `exists_toSphere_sublevel_le`.
+
+## Lean progress -- the elimination chain for `(18b)`, second and third links
+
+Three further modules -- umbrella-wired, axiom-clean -- carry the elimination from the symmetrised
+action polynomial to the sublevel bound.  Together with the first link they reduce `(18b)` to a
+single differential identity.
+
+`formal/GaloisForLFunctions/HTGeometry/ActionValueProduct.lean` generalises the symmetrisation from
+the linear factor `Y − action` to an arbitrary one-variable polynomial over the coordinate ring --
+which is what the *differentiated* relation produces.
+
+| Card item | Declaration |
+|---|---|
+| an equivariant family of polynomials has a symmetric product | `isSymmetric_prod_of_equivariant` |
+| the value of a one-variable polynomial at one labelled action, and its relabelling law | `actionValue`, `rename_actionValue` |
+| the product of the values at all labellings | `actionValueProduct` |
+| **it is symmetric**, hence a polynomial in the elementary symmetric functions | `isSymmetric_actionValueProduct`, `exists_esymmAlgHom_actionValueProduct` |
+| **its evaluation at a spectrum** | `eval₂_actionValueProduct` |
+| **the vanishing criterion**: vanishing at one labelled action value kills the product | `eval₂_actionValueProduct_eq_zero` |
+
+`formal/GaloisForLFunctions/HTGeometry/SymmetricEsymmRepresentation.lean` puts the fundamental
+theorem of symmetric polynomials into the form the tail argument needs -- a substitution, so that
+evaluation at a spectrum is evaluation at the elementary symmetric functions of that spectrum.
+
+| Card item | Declaration |
+|---|---|
+| **the fundamental theorem as a substitution** | `exists_bind₁_esymm_of_isSymmetric` |
+| the value of a substituted polynomial at a spectrum | `eval₂_of_bind₁_esymm` |
+| **a symmetric polynomial evaluates to a fixed polynomial in the elementary symmetric functions of the spectrum** | `exists_eval₂_esymm_repr_of_isSymmetric` |
+| the same for the symmetrised action-value product | `exists_eval₂_esymm_repr_actionValueProduct` |
+
+`formal/GaloisForLFunctions/HTGeometry/SublevelTransfer.lean` is the final link.
+
+| Card item | Declaration |
+|---|---|
+| **the transferred power-law bound**: a nonnegative observable dominating a nonzero homogeneous polynomial inherits its shell sublevel bound | `exists_toSphere_sublevel_le_of_dominated` |
+| the same simultaneously for a finite family -- the shape of `(18c)` | `exists_toSphere_sublevel_le_of_dominated_finite` |
+
+So the chain now reads: the labelled action is a root of a polynomial whose coefficients are
+symmetric (`labeledActionPoly`); any polynomial expression in `(θ, y)` symmetrised over labellings
+is again symmetric (`actionValueProduct`); a symmetric polynomial is a polynomial in the elementary
+symmetric functions, hence in the characteristic coefficients, hence in the shell coordinates
+(`exists_eval₂_esymm_repr_of_isSymmetric`); and a homogeneous nonzero such polynomial dominated by
+`h_k` gives the power law (`exists_toSphere_sublevel_le_of_dominated`).
+
+The one remaining link is the differential identity itself: implicit differentiation of
+`R(θ, φ_k(θ)) = 0` together with Euler's relation `θ · ∇φ_k = φ_k`, which turns `∇_S φ_k = 0` into
+the vanishing at `y = φ_k(θ)` of the explicit polynomial
+
+```text
+  Q(θ, y) = ∑_i ( ∂_i R(θ,y) + y θ_i ∂_y R(θ,y) )²,
+```
+
+whose symmetrisation is then exactly the `Q` that `actionValueProduct` consumes.

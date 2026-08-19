@@ -609,3 +609,42 @@ The spectral half is complete at every order
 (`MicroSpectrumMomentAssembly.exists_multiset_moment_realization` for sufficiency, and the two
 theorems above for the forgetting), and the whole law is closed at `p = 2` in the card's
 multivariable form.
+
+## Lean progress -- `det_p` on an `ℓ^p` spectrum
+
+The card's remaining analytic item is a regularized determinant of order `p` that extends the
+finite-rank one continuously.  `formal/GaloisForLFunctions/HTGeometry/SchattenSpectralDeterminant.lean`
+(new, umbrella-wired, axiom-clean) builds it on the spectral side, where a Schatten-`p` datum is an
+`ℓ^p` family of eigenvalues, by exactly the construction the corpus already uses at order two
+(`fredholmExp`/`fredholmDet`): the regularized exponent is the trace series from exponent `p`
+upwards, and the determinant is the negative exponential of it.
+
+| Card item | Declaration |
+|---|---|
+| the spectral-side Schatten-`p` datum | `IsSchattenSpectrum` |
+| **an `ℓ^p` spectrum is bounded** | `exists_bound_of_isSchattenSpectrum` |
+| every power above the Schatten exponent is summable | `summable_normPow_of_le`, `summable_pow_of_le` |
+| the power traces, and their geometric bound `‖tr(A^{k+p})‖ ≤ B^k ‖A‖_p^p` | `schattenTracePower`, `norm_schattenTracePower_le` |
+| the order-`p` regularized exponent, convergent inside the reciprocal spectral radius | `schattenDetExp`, `summable_schattenDetExp` |
+| **the order-`p` regularized determinant** | `schattenDet` |
+| **it forgets every trace below `p`** -- the card's forgetting half, now in the completed setting | `schattenDet_congr` |
+| every finite family is an `ℓ^p` spectrum, and its power traces are the matrix power traces of its diagonal | `isSchattenSpectrum_of_finite`, `schattenTracePower_diagonal` |
+| **it extends the finite-rank order-`p` determinant** | `schattenDet_eq_finiteDetOrder` |
+| **it is continuous in the power traces** under a common geometric bound | `tendsto_schattenDet_of_tendsto_tracePower` |
+
+Three points are worth recording.
+
+1. The *forgetting* property is now a one-line consequence of the definition rather than a theorem
+   about finite matrices: `det_p` is literally a function of the traces from `p` upwards.  Combined
+   with `finiteDetOrder_neg_eq_of_traceTail_eq` this closes the forgetting half of the card at every
+   order, on finite rank and in the completion alike.
+2. The extension statement is exact: on a finite spectrum the new determinant *is*
+   `finiteDetOrder (p-1)` of the diagonal, with no limit and no approximation, so the completion
+   genuinely extends the finite-rank object the card starts from.
+3. Continuity is proved in the form the card's limit argument uses -- convergence of the power
+   traces under one geometric bound -- via Tannery's theorem, so no operator topology is needed.
+
+What remains for the operator side is the identification of an operator's `det_p` with the `det_p`
+of its eigenvalue sequence, i.e. a Lidskii-type theorem, and the entire (rather than disc-level)
+extension at order `p`, which needs the order-`p` Carleman coefficient bound.  Both are independent
+of the card's algebraic content, which is now formal at every order.

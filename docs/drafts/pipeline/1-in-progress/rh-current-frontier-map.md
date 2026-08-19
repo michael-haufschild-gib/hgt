@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 19 August 2026, commit
-`1287bc6e3688535e8945dc34a1fab9fa9b5c179a`, plus declaration-index review of current Lean
+`27258d06f5a7b90a5f3f4d8fc5a45902d4a4db01`, plus declaration-index review of current Lean
 working-tree changes. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified as corpus source, not claimed build-audited in
@@ -236,7 +236,9 @@ cancellation, and the nonexceptional block estimate are now formal
 `Sieve/Section4AnnPiece.lean`, `Sieve/Section4NonExcPiece.lean`). Remaining budget rows still retain
 explicit analytic hypotheses. `Sieve/FreeEtaLadder.lean` also removes fixed-step bookkeeping by
 proving exact nonovershoot, one-step top reach, and a harmonic-mass lower bound for a free-ratio
-geometric ladder. None of these theorems
+geometric ladder. Working-tree `Sieve/JointLongRange.lean` installs that free ratio in the actual
+long designated prime range, proving eventual base admissibility, target reach, and ladder coverage.
+None of these theorems
 chooses adjacency or supplies the co-moving parity flux.
 
 **Open core.** Construct/extract one exact relation on ordinary squarefree integers directly from
@@ -949,7 +951,10 @@ continuation producer is absent.
   nonorthogonality-to-isogeny direction as a named Hrushovski-dichotomy premise
   (`ManinHorizonIsogenyReconstruction.lean`). No arithmetic `D`-group, unconditional dichotomy
   specialization, or Xi landing exists, so this is a pre-route mechanism, not a live/candidate
-  route. It indicates a possible singular/infinite-action successor to AF.
+  route. Working-tree `CassidyAdditiveEvaluated.lean` adds the evaluated additive classification:
+  every proper differential Hopf ideal yields a nonzero constant-coefficient linear jet relation.
+  This sharpens the subgroup firewall but does not instantiate the missing arithmetic group. It
+  indicates a possible singular/infinite-action successor to AF.
 - `LogDerivRelationSubgroup.lean` transfers constant-coefficient additive differential subgroup
   laws to multiplicative units exactly by logarithmic derivative. It strengthens the differential
   group interface behind the Manin/AF pre-route, but constructs neither a nontrivial arithmetic
@@ -1045,9 +1050,11 @@ continuation producer is absent.
   landing is instantiated.
 - `CompactGroupAlmostPeriodic.lean` proves every continuous compact-group flow observable, including
   finite-measure screen expectations, is Bohr almost periodic; if it tends to zero at infinity it
-  is identically zero. Thus a nontrivial decaying source seam cannot arise from a compact continuous
-  screen alone. Successors to AF/G using decay must be noncompact, singular, or leave this screen
-  class.
+  is identically zero. `PrimeScreenAlmostPeriodicNoGo.lean` instantiates this on the full infinite
+  prime torus `product_p S1`: neither a bounded continuous symbol nor a finite-measure translated
+  screen expectation can equal the completed Xi amplitude, because Xi decays vertically but is
+  nonzero at the center. Thus prime phases alone cannot perform completion; a successful AF/G/MSC
+  screen must retain noncompact archimedean data, be singular/unbounded, or leave this class.
 - New sieve mean-value, divisor-moment, exceptional-set, and Halasz--Montgomery modules close exact
   analytic adapters used in long chains (`Sieve/DivisorMomentMeanSquare.lean`,
   `Sieve/HalaszMontgomeryIntegral.lean`, `Sieve/Section4Core.lean`). Their capstones retain explicit
@@ -1213,8 +1220,9 @@ Corpus proves insufficient:
   upstream estimates: each is already an exact RH receiver;
 - finite-packet local-algebra divisibility as an arithmetic producer: moments and rank census are
   exact, but supplying the global divisibility repeats IW's terminal burden;
-- nontrivial decay from a compact continuous group screen: its signal is Bohr almost periodic, so
-  convergence to zero forces identically zero;
+- completed Xi from a bounded continuous compact prime-torus screen or finite-measure screen
+  expectation: its signal is Bohr almost periodic, while Xi decays vertically and is nonzero at the
+  center;
 - source symmetry as proof every orbit point is fixed.
 
 Any successor must retain infinite source provenance, mixed incidence, non-scalar boundary

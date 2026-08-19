@@ -4788,3 +4788,74 @@ With this the long designated range can be redefined at `η_Q = (log x)^{a−b�
 and `gLadderTop_bounds` + `gLadderMass_ge` give `W_Q ≥ (b−a)log 𝓁 − O(1) → ∞` exactly as
 `tendsto_ladderMass` did — the mass depends only on the two endpoints, not on the ratio, which is
 why the ratio was free to be shrunk in the first place.
+
+### Milestone B, brick 55 — the long range rebuilt at its own ratio (2026-08-19)
+
+`Sieve/JointLongRange` (axiom-clean, sorry-free, wired).  The long designated range on
+`Sieve/FreeEtaLadder`:
+
+```text
+jointLongEta a b x  = (log x)^{a−b−2}
+jointLongTopF a b x = gLadderTop (siftStart a x) (jointLongEta a b x) (cardLength b x)
+jointLongSetF a b x = primesRange (siftStart a x) (jointLongTopF a b x)
+```
+
+with `siftStart_pos`, **`eventually_siftStart_le_cardLength`** (the ladder's base is below its
+target: `⌈exp(𝓁^a)⌉ ≤ exp(𝓁^a)+1 ≤ exp(𝓁^b)`, using `𝓁^b = 𝓁^a·𝓁^{b−a} ≥ 2𝓁^a ≥ 𝓁^a + 1`),
+**`jointLongTopF_le`**, **`jointLongTopF_ge`** (the two halves of `gLadderTop_bounds`),
+`jointLongSetF_prime`, `jointLongSetF_ge` and **`jointLongSetF_range`** (the covering hypothesis).
+
+Remaining for the swap: the mass limit `W_Q → ∞` at the new top.  It is
+`gLadderMass_ge` plus `jointLongTopF_ge` and `log_siftStart_le`:
+
+```text
+   W_Q  ≥  log log (jointLongTopF)  −  log log (siftStart a x)  +  ladderMassConst
+        ≥  log(𝓁^b − log 4)  −  log(𝓁^a + log 2)  +  ladderMassConst   →  ∞ ,
+```
+
+using `η_Q → 0` to get `jointLongTopF ≥ exp(𝓁^b)/4` eventually.  Once that is written, the three
+downstream modules (`JointSchedule`'s long-range lemmas, `JointNonSpectral`, `JointSlopeRow`) switch
+from `ladderTop b (a/b) x` to `jointLongTopF a b x` mechanically — the only corpus fact they use of
+the old top is `ladderTop_bounds`, whose replacement `jointLongTopF_le` is proved above.
+
+**Note on process.** A first attempt at this redefinition was written directly into
+`Sieve/JointSchedule` with two `sorry` placeholders for the base-below-target step; it was reverted
+before building and rewritten here as a standalone module with that step proved.  Nothing with a
+`sorry` has entered the tree.
+
+### Milestone B, brick 56 — the free-ratio long range is COMPLETE (2026-08-19)
+
+`Sieve/JointLongRange` extended (axiom-clean, sorry-free, wired).  The mass limit at the new ratio:
+
+```text
+tendsto_jointLongEta                : η_Q = (log x)^{a−b−2} → 0
+eventually_jointLongTopF_ge_quarter : cardLength b x / 4 ≤ jointLongTopF a b x
+tendsto_jointLongMassF              : mertensS (jointLongTopF a b x) − mertensS (siftStart a x) → ∞
+```
+
+The mass proof is the chain the previous entry predicted, with every step now closed:
+
+```text
+   W_Q  ≥  log log (TopF) − log log (siftStart a x) + ladderMassConst      gLadderMass_ge
+        ≥  log(𝓁^b/2)    − log(2𝓁^a)               + ladderMassConst      (top ≥ cardLength/4,
+                                                                            log siftStart ≤ 𝓁^a + log2)
+        =  (b−a)·log 𝓁   − log 4                   + ladderMassConst  →  ∞ .
+```
+
+The two rpow identities `log(𝓁^b/2) = b·log 𝓁 − log 2` and `log(2𝓁^a) = log 2 + a·log 𝓁` are
+`Real.log_rpow` at `log x > 0`; the `≥ 2` hypotheses of `gLadderMass_ge` come from
+`cardLength b x ≥ 8` and `eventually_le_siftStart`.
+
+**The long range is therefore complete at its own ratio**: definitions, primality, the lower bound,
+the covering hypothesis, both top bounds, and the mass.  Everything the three downstream modules
+(`JointSchedule`'s long-range lemmas, `JointNonSpectral`, `JointSlopeRow`) take from the old
+`ladderTop b (a/b) x` now has a `jointLongTopF` counterpart:
+
+| old | new |
+|-|-|
+| `eventually_ladderTop_facts …2.1` | `jointLongTopF_le` |
+| `tendsto_ladderMass` | `tendsto_jointLongMassF` |
+| `jointLongSet_range` | `jointLongSetF_range` |
+| `jointLongSet_prime`, `_ge` | `jointLongSetF_prime`, `_ge` |
+
+so the swap is now a mechanical substitution with no remaining mathematical content.

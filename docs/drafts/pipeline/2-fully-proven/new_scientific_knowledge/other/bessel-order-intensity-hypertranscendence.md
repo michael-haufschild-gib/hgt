@@ -1205,3 +1205,24 @@ The parameterized correspondence therefore has the same shape as the difference 
 tensor square, take a point of the group, specialise, and read off the automorphism -- now
 commuting with both operators, hence an element of the parameterized Galois group whose Galois
 matrix has differential coordinates.
+
+## Lean progress — Cassidy's additive classification, evaluated
+
+`GaloisForLFunctions.HTGeometry.CassidyAdditiveEvaluated`, unconditional and axiom-clean:
+
+```text
+exists_nonzero_jet_linear_relation_of_additiveHopfIdeal
+    **if a nonzero additive differential Hopf ideal vanishes on a family, the family satisfies a
+    nonzero finite constant-coefficient linear relation among its jets**
+```
+
+The corpus already owns Cassidy's classification of differential algebraic subgroups of `G_a` in
+coordinate-ideal form (`DifferentialHopfPrimitive`); this evaluates it at a point, which is the form
+in which the classification is used in a hypertranscendence argument, and the form matching
+`LogDerivRelationSubgroup.jetOperator`.
+
+Chaining what is now present on the classification side: a proper differential algebraic subgroup of
+the additive group forces a nonzero linear differential operator to kill the coordinates
+(`CassidyAdditiveEvaluated`), and the multiplicative relation subgroups are the preimages of the
+additive ones under the logarithmic derivative (`LogDerivRelationSubgroup`).  What is missing is the
+converse on the multiplicative side and the `GL_2` case.

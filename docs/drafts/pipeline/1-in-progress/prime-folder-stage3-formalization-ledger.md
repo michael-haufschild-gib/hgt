@@ -97,3 +97,30 @@ projection `P_p = (1-|a|²) B_p E_p B_p^*` and its commutation at distinct prime
 `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`.
 All new modules are wired into `GaloisForLFunctions.RHTower` / `GaloisForLFunctions.HTGeometry`
 and audit clean (`propext, Classical.choice, Quot.sound` only).
+
+## 2026-08-19 — prime-screen almost periodicity (card 8)
+
+New Lean modules (both `lake env lean` clean, wired into their umbrellas, axiom-clean):
+
+- `HTGeometry/CompactGroupAlmostPeriodic.lean` — `IsBohrAlmostPeriodic`; the tube-lemma
+  neighbourhood `exists_nhds_one_norm_translate_sub_le`; relative density of flow returns
+  `exists_relatively_dense_mem` (no continuity of the flow needed, only the homomorphism law);
+  `isBohrAlmostPeriodic_of_compact_flow`; `eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero`
+  (AP ∩ C₀ = {0}); and the measure layer `screenAverage`, `integrable_translate`,
+  `continuous_screenAverage`, `isBohrAlmostPeriodic_screenExpectation`,
+  `screenExpectation_eq_zero_of_tendsto_zero`, all for a general normed space of values.
+- `RHTower/PrimeScreenAlmostPeriodicNoGo.lean` — `PrimeTorus = ∏_p S¹` with its compact
+  commutative group / second-countable / Borel instances; the Kronecker flow `primeKronecker`
+  with `primeKronecker_add` and `continuous_primeKronecker`; the critical-line decay
+  `tendsto_XiC_ofReal_atTop` (from the corpus theorem `exists_norm_XiC_ofReal_le` at `δ = 1/2`);
+  and the two no-gos `not_exists_primeScreen_symbol_eq_XiC`,
+  `not_exists_primeScreen_observable_eq_XiC`.
+
+Corpus leads that removed the expected hard work: `exists_norm_XiC_ofReal_le`
+(`ThetaCuspComplexStrip`) already supplies exponential decay of ξ on the critical line, so no
+Stirling asymptotics, no zeta convexity bound and no Phragmén–Lindelöf step was needed;
+`XiC_zero_ne` (`XiHadamardFactorization`) supplies the nonvanishing.
+
+Card `prime-screen-bounded-observable-almost-periodicity` promoted to
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/prime/`.  Stage-2 prime folder:
+27 cards remaining.
