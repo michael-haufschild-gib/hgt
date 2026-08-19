@@ -9,7 +9,7 @@ cannot have all its partial derivatives again in `𝔭`, since differentiation s
 total degree and a polynomial with all partial derivatives zero is constant in characteristic zero.
 
 ```text
-totalDegree_pderiv_lt
+totalDegree_pderiv_lt_of_ne_zero
 totalDegree_eq_zero_of_forall_pderiv_eq_zero
 criticalObservationSchurCentre                       the centre of the Schur place
 exists_ne_zero_mem_criticalObservationSchurCentre
@@ -29,7 +29,7 @@ open MvPolynomial
 variable {σ R : Type*} [CommRing R]
 
 /-- Differentiating drops the total degree. -/
-theorem totalDegree_pderiv_lt {p : MvPolynomial σ R} (i : σ) (hne : pderiv i p ≠ 0) :
+theorem totalDegree_pderiv_lt_of_ne_zero {p : MvPolynomial σ R} (i : σ) (hne : pderiv i p ≠ 0) :
     (pderiv i p).totalDegree < p.totalDegree := by
   classical
   have hkey : ∀ m ∈ (pderiv i p).support, (m.sum fun _ e => e) < p.totalDegree := by
@@ -202,7 +202,7 @@ theorem exists_mem_maximalIdeal_repr_D_notMem_maximalIdeal :
     have hall : ∀ s : Fin n ⊕ Fin m, MvPolynomial.pderiv s r = 0 := by
       intro s
       by_contra hne
-      have hlt := totalDegree_pderiv_lt (R := K) s hne
+      have hlt := totalDegree_pderiv_lt_of_ne_zero (R := K) s hne
       have := hmin _ (hcon s) hne
       omega
     have := totalDegree_eq_zero_of_forall_pderiv_eq_zero hall

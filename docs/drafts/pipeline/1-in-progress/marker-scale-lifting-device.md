@@ -597,3 +597,416 @@ Only bookkeeping: instantiate `Sieve/LiftedMarkerBlock.card_sign_window_ge_block
 `M₀ = m·W`, `X = m·M₀`, `H = 2·L·M₀`, `W = ⌊log(m²)⌋`, `L = ⌈cardLength β (m²)⌉ + 1`,
 `Q = 2`, `K = 4W`, feeding `Pi` from `sum_card_shift_bigPrimeSet_le_sieve_sharp`; then sum over
 the `K₀ = ⌈log₂ Q⌉` dyadic marker blocks with the shrunk windows `scaledLength (2^{-k}) β`.
+
+## The multi-block frame is Lean (2026-08-19)
+
+`Sieve/MultiBlockFrame` carries the whole `K₀`-block construction with explicit parameters
+(`v` the free integer, `m = 2^{K₀+1}v`):
+
+```
+multiHalf K₀ v k = 2^{K₀-k}·v          multiBlockLen K₀ v k = 2·multiHalf   (= m/2^k)
+multiScale K₀ v  = multiBlockLen K₀ v 0                              (= m)
+multiFactor K₀ v = ⌊log(m²)⌋                                          (= W)
+multiBase K₀ v   = m·W                                                (= M₀)
+multiPhys K₀ v   = m·M₀                                               (= X)
+multiCell β K₀ v = ⌈cardLength β (m²)⌉ + 2^{K₀}                        (= L)
+multiWindow β K₀ v = 2·L·M₀                                            (= H)
+multiBlockScale K₀ v k  = (m/2^k)²                                     (= y_k)
+multiBlockWindow β K₀ v k = scaledLength (2^{-k}) β y_k                 (= h_k)
+```
+
+Proved:
+
+- `block_start_ge`, `block_start_lt`, `multiPhys_block`, `exists_block` — every marker of
+  `(M₀, 2^{K₀+1}M₀]` lies in exactly one dyadic block, and its reciprocal start lands in
+  `[m/2^{k+1}, m/2^k)`, which is exactly the realisable range of the block's outer factors.
+- `multi_fit` — the block's fibre fits inside the marker's cell.  The `+2^{K₀}` in `multiCell` is
+  what pays for the floor's `+1` at the top block.
+- `multi_supply` — the fibre fills at least `ϱ/256` of the cell, under
+  `L ≤ 12·cardLength β y_k − 24·2^k`.
+- `multi_cell_bound` — the two combined, through `cell_bound_of_good_start`.
+- `card_sign_window_ge_multi` — the whole family, via `card_sign_window_ge`, with `Pi`, `S`, `B`
+  abstract.
+- `multi_separation` (`q ≤ p + 4^{K₀+1}·W`) and `sum_inv_goodMarkers_ge` — the device on the family.
+- `card_badStartUnion_le` — the exceptional starts of the family are the sum of the blocks'.
+- `multiBlockScale_div` (`y_k = y_0/4^k`), `CardLengthDilation.eventually_half_cardLength_le_dilated`
+  and `eventually_multiCell_le` — the supply condition holds at every block, eventually in `v`.
+- `two_le_multiScale`, `two_le_multiFactor`, `multiPhys_add_le`, `eventually_multi_basics` —
+  `0 < M₀` and `X + H ≤ M₀²`, eventually in `v`.
+
+Left: the shifted-pair budget `Pi` at concrete `(P₁, h, z)` from
+`Sieve/PrimePairAverageSharp.sum_card_shift_bigPrimeSet_le_sieve_sharp`, the device threshold
+`#badStartUnion·(#M+2Pi) ≤ b²`, the harmonic mass `S` (sharp Mertens) and the count `B`
+(Brun–Titchmarsh), then the count theorem and the transfer from `X = multiPhys` to all large `X`.
+
+## The pair budget is instantiated (2026-08-19)
+
+`Sieve/SieveRemainderBound.sieve_remainder_le` : for `P₁ ≥ 2` and `z ≥ 1`,
+
+```
+      ∑_{e | P(P₁,h), e ≤ z} 2·6^{ω(e)}  ≤  2 z³ .
+```
+
+Every such `e` is squarefree with all prime factors `≥ 3`, so `3^{ω(e)} ≤ e` and hence
+`6^{ω(e)} ≤ 9^{ω(e)} ≤ e²`; and the `e` are distinct positive integers below `z`.
+
+`Sieve/MultiPairBudget` fixes the sieve parameters of the family:
+
+```
+      multiLevel K₀ v = M₀^{1/4}      multiSift K₀ v = ⌊M₀^{1/144}⌋      multiPairK K₀ v = 4^{K₀+1}·W
+```
+
+`multiSift_pow_le` verifies the level condition `h^{18} ≤ √z` exactly (`18/144 = 1/8 = (1/4)/2`),
+and `multi_pair_le` gives
+
+```
+      ∑_{d ≤ K} #{p ∈ M : p+d ∈ M}
+        ≤ 2e·K·(2^{K₀+1}M₀)/exp(mertensS h − mertensS 3)²  +  K·2·M₀^{3/4} .
+```
+
+The saving is `exp(mertensS h − mertensS 3) ≍ log h/log 3 ≍ log M₀/158`, so the first term is
+`≍ M₀/log M₀ ≍ m` and the second is `M₀^{3/4} log M₀ = o(m)`.  That is `Pi = O(m)` — the shape the
+device inequality `ρ·ν ≤ μ/4` needs.
+
+Still to do: `∃ C, ∀ᶠ v, Pi ≤ C·m` (Mertens-second lower bound on the saving), the device threshold
+`#badStartUnion·(#M+2Pi) ≤ b²` with `#badStartUnion = o(m)` from `Sieve/ScaledBadStart`, the
+harmonic mass `S` and count `B` of the marker range, the count theorem, and the transfer from
+`X = multiPhys K₀ v` to all large `X`.
+
+## The budget and the exceptional set are both `O(m)` in Lean (2026-08-19)
+
+- `Sieve/MultiPiBound.multiPi_le` : with `multiPi K₀ v` the explicit budget of `multi_pair_le`,
+
+  ```
+        multiPi K₀ v  ≤  multiPiConst K₀ · m ,
+        multiPiConst K₀ = 8e·8^{K₀+1}·(288 log 3)²·e^{2(L+U)} + 1 ,
+  ```
+
+  under `2 ≤ M₀`, `1 ≤ W`, `288 log 2 ≤ log M₀`, `3 ≤ h`, `8·4^{K₀+1}(log M₀)² ≤ M₀^{1/4}`.
+  The two ingredients are `sieve_saving_ge` (`exp(mertensS h − mertensS 3) ≥ (log h/log 3)e^{-(L+U)}`
+  from Mertens' second theorem) and `log_multiSift_ge` (`log h ≥ log M₀/288`).
+- `Sieve/MultiEventual` : all five side conditions hold eventually in `v`, from `multiBase → ∞`;
+  the remainder condition uses `isLittleO_log_rpow_rpow_atTop 2 (1/4)`.
+  Capstone: `eventually_multiPi_le`.
+- `Sieve/MultiBadStart.eventually_card_badStartUnion_le` : **for every `ε > 0`**,
+  eventually `#badStartUnion β K₀ v ≤ ε·m`.  Each block contributes
+  `1024ε'√y_k/ϱ² + √y_k/(log y_k)²` with `√y_k = m/2^k ≤ m`; choosing the mean-square tolerance
+  `ε' = δϱ²/2048` with `δ = ε/(2(K₀+1))` and summing the `K₀+1` blocks gives `ε·m`.
+
+That is exactly `ρ = o(1)` and `ν = O(1)` in the invariant device inequality `ρ·ν ≤ μ/4`.
+
+### The final arithmetic, checked
+
+With `B ≍ 16·2^{K₀+1}M₀/log M₀` (Brun–Titchmarsh at `Y = M₀^{1/8}`) and
+`S ≥ A(K₀)/log M₀`, `A(K₀) = (K₀+1)(log 2)/2 − 2(2·mertensFirstConst + 1/2)` (sharp Mertens at
+`z = M₀`, `b = 2^{K₀+1}M₀`):
+
+```
+      ϱ/256 · (H·S − B)  ≥  (ϱ/256)·A(K₀)·L·M₀/log M₀ ,        C·H/log X = C·L·M₀/log M₀ ,
+```
+
+so the constant in `#T_σ ≥ C·H/log X` is `C = (ϱ/256)·A(K₀)`, **unbounded in `K₀`**; and the device
+threshold reads `ε·(32·2^{K₀+1} + 2·multiPiConst K₀) ≤ A(K₀)²`, a fixed positive `ε`.
+
+Left: `hB` (Brun–Titchmarsh at the family's range), `hS` (sharp Mertens), the device threshold, the
+count theorem, and the transfer from `X = multiPhys K₀ v` to all large `X`.
+
+## Statement (3) of the Hall card is Lean, at the constructed scales (2026-08-19)
+
+`Sieve/MultiDevice.exists_eventually_card_sign_window_ge` — unconditional, axioms
+`[propext, Classical.choice, Quot.sound]`:
+
+```
+   for  9/10 < β < 1,  every  C : ℝ,  and either sign σ = ±1 :
+     ∃ K₀, ∀ᶠ v : ℕ in atTop,
+        C · H/log X  ≤  #{ n ∈ (X, X+H] : μ(n) = σ } ,
+     X = multiPhys K₀ v ,   H = multiWindow β K₀ v .
+```
+
+The chain of the last stretch:
+
+- `Sieve/MultiHarmonic` — `eventually_multiHarm_ge` (sharp Mertens over `K₀+1` dyadic blocks, net
+  constant `multiHarmConst K₀ = (K₀+1)(log 2)/2 − 2(2·mertensFirstConst + 1/2)`, via
+  `log(1+u) ≥ u/(1+u) ≥ u/2`) and `eventually_multiCount_le` (Brun–Titchmarsh at `Y = ⌊M₀^{1/8}⌋`,
+  `#M ≤ 64·2^{K₀+1}M₀/log M₀`).
+- `Sieve/MultiDevice` — `eventually_multiFactor_bounds` (`log M₀/2 ≤ W ≤ 2 log M₀`),
+  `multiEps K₀ = multiHarmConst²/(16(128·2^{K₀+1} + 2·multiPiConst))` — the Möbius tolerance the
+  Cauchy–Schwarz device can afford — then `eventually_card_sign_window_ge`,
+  `eventually_card_sign_window_ge_const` (constant `ϱ·multiHarmConst K₀/1024`), and finally
+  `tendsto_multiHarmConst` giving the `for every C` form.
+
+**Remaining for the card:** (i) recognise the window as `H = √X·exp((log X)^{β'})` — currently
+`H/√X = 2·multiCell·√W`, which is `X^{o(1)}` but has to be matched to the card's `h(X)`; (ii) the
+transfer from `X = multiPhys K₀ v` to *all* large `X` (the gap between consecutive `multiPhys` is
+`≍ √X·√W ≪ H`, so a covering argument suffices); (iii) the unique-decoding/injection corollary (5),
+which is already Lean in `Sieve/WindowMatching` and `Sieve/MarkerSignWindowCount`.
+
+## The arbitrary-scale obstruction is removed (2026-08-19)
+
+`Sieve/MultiBlockFrame` ties the physical scale to `X = m·M₀` because a *dyadic range of primes*
+`(2^k M₀, 2^{k+1} M₀]` only has its reciprocal starts inside the realisable range `[√y/2, √y − 1]`
+when `X` is exactly that product.  `Sieve/FreeScaleMarkerBlock` indexes the block by its **start
+range** instead, and the constraint disappears:
+
+```
+      freeStart m k = m / 2^k ,
+      freeBlock X m k = bigPrimeSet (X / freeStart m k) (X / freeStart m (k+1)) .
+```
+
+- `start_mem_of_mem_bigPrimeSet` — `p ∈ (X/b, X/a]` **iff** `X/p ∈ [a, b−1]`.  Both directions are
+  the same Nat fact `X/p < b ↔ X < p·b`, so there is no rounding loss at all.
+- `start_mem_freeBlock` — hence every marker of block `k` has `X/p ∈ [m_{k+1}, m_k − 1]`.
+- `freeStart_two_mul` — with `2^{K₀+1} ∣ m` each start scale halves **exactly**, so
+  `m_{k+1} = m_k/2` on the nose.
+- `freeBlock_start_bounds` — therefore `m_k/2 ≤ X/p` and `X/p + 1 ≤ m_k` in `ℝ`, which are exactly
+  the two hypotheses `htlow`, `hthigh` of `Sieve/MarkerBlockSignCount.cell_bound_of_good_start`.
+- `freeBlock_subset_range`, `exists_freeBlock` — the blocks all sit in the single prime range
+  `(X/m, X/(m/2^{K₀+1})]`, and every prime of that range lies in exactly one block.  Consecutive
+  halvings give **consecutive, disjoint** prime ranges, so the harmonic mass and the device apply
+  to the union exactly as before.
+
+`X` is now a free parameter.  The fit and supply conditions are unchanged: with `H = 2·L·(X/m)`,
+`p ≤ 2X/m_k` gives `H/p ≥ (hy_k+1)` from `L ≥ C_k + 2^k`, and `p > X/m_k` gives `H/p < 2L/2^k`, so
+the supply condition is again `L ≤ 12·C_k − 24·2^k`.  What remains for the card is to re-run
+`Sieve/MultiDevice` over `freeBlock` in place of the dyadic blocks, and then to note that the
+resulting window `H = 2L·(X/m)` at `m ≍ √(X/W)` is `√X·exp((log X)^β)·Θ(√log X)`, so the card's
+`H(X)` is covered by tiling `(X, X+H(X)]` with consecutive free-scale windows — which is now
+possible precisely because the construction runs at every `X`.
+
+## The whole per-marker argument now runs at a free scale (2026-08-19)
+
+Three more modules, all unconditional, all built and wired:
+
+- `Sieve/FreeScaleCellBound` — `freeScale m k = (m/2^k)²`,
+  `freeWindow β m k = scaledLength (2^{-k}) β (freeScale m k)`, and
+
+  ```
+     free_cell_bound :   (freeWindow + 1)·p ≤ H                                        (fit)
+                         rho·(H/p − 1) ≤ (3/16)ϱ·(freeWindow/2 − 1)                    (supply)
+                         X/p ∉ badStart (freeScale m k) (freeWindow β m k)
+                      ⟹  rho·(H/p − 1) ≤ #{ a ∈ windowCell X H p : μ(a) = −σ } .
+  ```
+
+  Both hypotheses are inequalities in the **block data alone** — the physical scale `X` has
+  disappeared from them, which is what the start-range indexing bought.
+- `Sieve/MarkerSignWindowCount.card_sign_window_ge'` — the harmonic sign count from
+  `∀ p ∈ P, p.Prime` and `∀ p ∈ P, M₀ < p` instead of `P ⊆ bigPrimeSet M₀ (Q·M₀)`, so the marker
+  set need not be a dyadic prime range.
+- `Sieve/FreeScaleWindowCount.free_card_sign_window_ge` — the assembly:
+
+  ```
+     rho·(H·S − B)  ≤  #{ n ∈ (X, X+H] : μ(n) = σ }
+  ```
+
+  for **any** `X`, with `S` the harmonic mass and `B` the count of
+  `freeGoodMarkers β X m K₀ = { p ∈ (X/m, X/(m/2^{K₀+1})] : X/p ∉ freeBadStartUnion β m K₀ }`.
+
+So the construction is no longer tied to `X = multiPhys K₀ v`.  What remains for the card is the
+analytic instantiation at a free scale — the free-scale copies of `eventually_multiPi_le`,
+`eventually_card_badStartUnion_le`, `eventually_multiHarm_ge`, `eventually_multiCount_le` and the
+device threshold, which are the same estimates with `multiBase K₀ v` replaced by `X / m` — and then
+the tiling of the card's `H(X)` by consecutive free-scale windows.
+
+### The device at a free scale
+
+`Sieve/FreeScaleWindowCount`, unconditional:
+
+- `freeRange X m K₀ = bigPrimeSet (X/m) (X/(m/2^{K₀+1}))` — the whole marker range;
+  `freeGoodMarkers_eq` identifies the good markers as its subset avoiding `freeBadStartUnion`.
+- `free_separation` — two markers of the range with the same reciprocal start differ by at most
+  `X/(m/2^{K₀+1})²`, from `Sieve/MarkerLossDevice.reciprocal_separation` at the range's minimal
+  start.
+- `free_sum_inv_goodMarkers_ge` — the Cauchy–Schwarz device at a free scale: under a shifted-pair
+  budget `Pi` and the threshold `#freeBadStartUnion·(#freeRange + 2Pi) ≤ b²`,
+
+  ```
+        ∑_{p ∈ freeRange} 1/p − b/(X/m)  ≤  ∑_{p ∈ freeGoodMarkers} 1/p .
+  ```
+
+- `card_freeBadStartUnion_le` — the family's exceptional starts are the sum of the blocks'.
+
+**Every structural step of the marker programme now holds at an arbitrary physical scale.**  What
+is left is arithmetic: the free-scale copies of `eventually_multiPi_le`,
+`eventually_card_badStartUnion_le`, `eventually_multiHarm_ge`, `eventually_multiCount_le` — the
+same estimates with `multiBase K₀ v` replaced by `X/m` — the device threshold, and the tiling.
+
+### One of the four free-scale estimates is done
+
+`Sieve/FreeScaleBadStart`, unconditional:
+
+- `freeStart_pow_mul`, `freeStart_pow_mul_pos`, `dvd_pow_mul` (in `FreeScaleMarkerBlock`) — with the
+  base written `m = 2^{K₀+1}·u`, every start scale is `freeStart m k = 2^{K₀+1−k}·u`, exactly.
+- `tendsto_freeScale`, `tendsto_freeStart_zero` — each block's cofactor scale and the base start
+  scale grow with `u`.
+- `eventually_card_freeBadStartUnion_le` — **for every `ε > 0`**,
+
+  ```
+        ∀ᶠ u,   #freeBadStartUnion β (2^{K₀+1}u) K₀  ≤  ε · freeStart (2^{K₀+1}u) 0 .
+  ```
+
+  Same mechanism as the fixed-scale version: block `k` contributes
+  `1024ε'·√y_k/ϱ² + √y_k/(log y_k)²` with `√y_k = m/2^k ≤ m`, and the mean-square tolerance
+  `ε' = δϱ²/2048`, `δ = ε/(2(K₀+1))`, is free.  Note this estimate depends only on the *start*
+  scale `m`, not on the physical scale `X` — which is why it transferred without change.
+
+Remaining for the card: the free-scale pair budget, harmonic mass and marker count (all three are
+`Sieve/PrimePairAverageSharp`, `Sieve/MertensWindowSharp` and `Sieve/MarkerCountUpper` applied at
+`M₀ = X/m`, `b = X/(m/2^{K₀+1})`), the device threshold, and the tiling.
+
+### The free-scale structural capstone
+
+`Sieve/GenericPairBudget` lifts the sieve parameters off the particular marker base:
+`sieveLevel M₀ = M₀^{1/4}`, `sieveSift M₀ = ⌊M₀^{1/144}⌋`, `sieveSift_pow_le` (the level condition
+`h^18 ≤ √z`, exact because `18/144 = 1/8`), and
+
+```
+   generic_pair_le :  ∑_{d ≤ K} #{p ∈ (M₀,b] : p+d ∈ (M₀,b]}
+                        ≤ 2e·K·b/exp(mertensS h − mertensS 3)²  +  K·2·(M₀^{1/4})³
+```
+
+for **any** base `M₀`, under `1 ≤ M₀`, `3 ≤ sieveSift M₀`, `20·mertensFirstConst ≤ log(sieveSift M₀)`.
+
+`Sieve/FreeScaleWindowCount.free_card_sign_window_ge_device` then closes the structure at a free
+physical scale:
+
+```
+   rho·(H·S − B)  ≤  #{ n ∈ (X, X+H] : μ(n) = σ }
+```
+
+from: the per-block fit and supply; the shifted-pair budget `Pi` of the marker range; the device
+threshold `#freeBadStartUnion·(#freeRange + 2Pi) ≤ b²`; the harmonic mass
+`S ≤ ∑_{p ∈ freeRange} 1/p − b/(X/m)`; and the count `B ≥ #freeRange`.  Every hypothesis is now an
+inequality between quantities the corpus already estimates:
+
+| hypothesis | supplied by |
+|---|---|
+| `Pi` | `Sieve/GenericPairBudget.generic_pair_le` at `M₀ = X/m`, `b = X/(m/2^{K₀+1})` |
+| `#freeBadStartUnion ≤ ε·m` | `Sieve/FreeScaleBadStart.eventually_card_freeBadStartUnion_le` |
+| `S` | `Sieve/MertensWindowSharp.sum_inv_bigPrimeSet_ge_sharp` |
+| `B` | `Sieve/MarkerCountUpper.card_bigPrimeSet_le_explicit` |
+
+**The marker programme is now structurally complete at every physical scale.**  What is left is the
+arithmetic: choose `m ≍ √(X/log X)`, check the fit/supply/threshold inequalities at those values
+(the same computations as `Sieve/MultiPiBound` and `Sieve/MultiDevice`, with `multiBase K₀ v`
+replaced by `X/m`), and tile the card's `H(X)` by consecutive free-scale windows.
+
+### The fit and supply conditions, discharged at every scale
+
+`Sieve/FreeScaleFitSupply`, unconditional.  Writing `C₀ = cardLength β (freeScale m 0)` and taking
+the cell parameter
+
+```
+        H  ≍  (2·C₀ + 2^{K₀+1}) · X / m ,
+```
+
+- `free_fit_of_le` — if `(2C₀ + 2^{K₀+1})·X/m ≤ H` then every marker of every block satisfies the
+  fit `(freeWindow β m k + 1)·p ≤ H`.  The proof is exact: a marker of block `k` obeys
+  `p ≤ 2^{k+1}X/m`, the block window obeys `freeWindow β m k ≤ 2^{-k}C₀`, and
+  `2^{-k}·2^{k+1} = 2`, so the product is `(2C₀ + 2^{k+1})X/m`.
+- `free_supply_of_le` — if `H ≤ (2C₀ + 2^{K₀+1})·X/m` and
+
+  ```
+        2·C₀ + 2^{K₀+1}  ≤  24·(freeWindow β m k · 2^k) − 48·2^k
+  ```
+
+  then every marker satisfies the supply
+  `(ϱ/256)(H/p − 1) ≤ (3/16)ϱ(freeWindow β m k/2 − 1)`.  A marker of block `k` obeys
+  `p > X/freeStart m k`, so its cell is at most `(2C₀ + 2^{K₀+1})/2^k`.
+- `freeWindow_le`, `freeScale_le_zero`, `one_le_freeScale` — the block window against the base one.
+
+**Both conditions are inequalities in `m` alone** — `X` cancels between the marker's size and the
+window.  Since `freeWindow β m k · 2^k = cardLength β (freeScale m k)` and
+`cardLength β (freeScale m k) ≥ C₀/2` eventually (`CardLengthDilation`), the gap hypothesis reads
+`2C₀ + 2^{K₀+1} ≤ 12C₀ − 48·2^{K₀}`, i.e. `49·2^{K₀+1} ≤ 10·C₀`, which holds for all large `m`.
+
+So a single choice of `m` serves **every** physical scale `X` simultaneously — which is exactly what
+the tiling of the card's `H(X)` needs.
+
+### The harmonic mass and the count, at a free scale
+
+`Sieve/FreeScaleHarmonic`, unconditional:
+
+- `freeRange_top_ge` — the marker range spans a factor `2^{K₀+1}` exactly:
+  `2^{K₀+1}·(X/m) ≤ X/(m/2^{K₀+1})`, from `Nat.div_div_eq_div_mul` and `Nat.div_mul_le_self`.
+- `log_freeRange_top_ge` — hence `log(top) ≥ (K₀+1)·log 2 + log(X/m)`, the input the sharp Mertens
+  comparison `logLog(top) − logLog(X/m) ≈ (K₀+1)log 2/log(X/m)` needs.
+- `free_harm_ge` — `Sieve/MertensWindowSharp.sum_inv_bigPrimeSet_ge_sharp` applied to `freeRange`.
+- `free_count_le` — `Sieve/MarkerCountUpper.card_bigPrimeSet_le_explicit` applied to `freeRange`.
+
+All four ingredients of `free_card_sign_window_ge_device` are now available at a free scale:
+the pair budget (`GenericPairBudget.generic_pair_le`), the exceptional starts
+(`FreeScaleBadStart.eventually_card_freeBadStartUnion_le`), the harmonic mass (`free_harm_ge`) and
+the count (`free_count_le`); the fit and supply are `FreeScaleFitSupply`.
+
+What is left is to choose `m` from `X`, check the device threshold
+`#freeBadStartUnion·(#freeRange + 2Pi) ≤ b²` at those values — the same computation as
+`Sieve/MultiDevice` — and sum the tiles.
+
+### The cell parameter, and both conditions at once
+
+`Sieve/FreeScaleFitSupply` now closes the two-sided band.  Writing
+`C₀ = cardLength β (freeScale m 0)`:
+
+```
+        freeCell β X m K₀ = ⌈ (2C₀ + 2^{K₀+1}) · X / m ⌉
+```
+
+- `free_supply_of_le` is now parametric in the upper bound `A₂` (`H ≤ A₂·X/m`, gap
+  `A₂ ≤ 24(freeWindow·2^k) − 48·2^k`), so the fit's lower bound and the supply's upper bound need
+  not coincide.
+- `free_fit_supply_ceil` — **both conditions hold simultaneously at `H = freeCell β X m K₀`**,
+  for every block and every marker, provided `m ≤ X` and
+
+  ```
+        2C₀ + 2^{K₀+1} + 1  ≤  24·(freeWindow β m k · 2^k) − 48·2^k      for all k ≤ K₀.
+  ```
+
+  The ceiling lands in the band because `⌈A⌉ < A + 1 ≤ A + X/m`.  Since
+  `freeWindow β m k · 2^k = cardLength β (freeScale m k) ≥ C₀/2` eventually, the displayed gap is
+  `2C₀ + 2^{K₀+1} + 1 ≤ 12C₀ − 48·2^{K₀}`, i.e. `49·2^{K₀+1} + 1 ≤ 10C₀` — a condition on `m` alone.
+
+So for a single `m`, the fit and supply hold at **every** `X ≥ m` with the cell parameter
+`freeCell β X m K₀`.  Together with `Sieve/WindowTiling.card_filter_Ioc_tile` this is the last
+structural ingredient; what remains is the device threshold at `M₀ = X/m` and the choice of `m`.
+
+## The tile family, and the count on one tile
+
+The construction is now indexed by the start modulus rather than by the physical scale.  With
+`K₀` blocks and index `u`:
+
+```
+        m = tileM K₀ u = 2^{K₀+1}·u          the start modulus
+        T = tileLog K₀ u = ⌊log m⌋
+        P = tileBase K₀ u = m²·T             the bottom of the physical range
+        C = tileC β K₀ u = cardLength β (m²)
+        h = tileLen β K₀ u = ⌈(2C + 2^{K₀+1})·2P/m⌉
+```
+
+`Sieve/FreeScaleTileCount.exists_tile_count` proves, for every `9/10 < β < 1`, every sign `σ`, and
+every `K₀` with positive net harmonic mass:
+
+> for all large `u` and **every** `X` with `P ≤ X ≤ 2P`,
+> `(ϱ/256)·(h·multiHarmConst K₀/(2 log M) − 64·2^{K₀+2}·M/log M) ≤ #{n ∈ (X, X+h] : μ(n) = σ}`,
+> where `M = X/m`.
+
+`tile_count_clean` absorbs the marker count into the main term (it costs a factor 4, and needs only
+`C ≥ 128·2^{K₀+2}/multiHarmConst K₀`) and replaces `log M` by `log X`:
+
+> `tileConst K₀ · h/log X ≤ #{n ∈ (X, X+h] : μ(n) = σ}`,   `tileConst K₀ = ϱ·multiHarmConst K₀/1024`.
+
+**One modulus serves a whole dyadic range**, which is what makes the tiling possible.  The three
+numerical inputs of `free_count_master` become, at these parameters:
+
+| input | what it says | how it is met |
+|---|---|---|
+| `T₁` | markers vs squared harmonic mass | `u·log M ≤ 4M/2^{K₀+1}`, i.e. the choice `X ≍ m² log m`; then `768·ε·2^{K₀+3} ≤ A²` |
+| `T₂` | shifted-pair budget | `6·ε·pairMainConst·2^{3K₀+6} ≤ A²` — **scale-free**: the `(log M)²` of the sharp pair sieve cancels the `(log M)²` of the squared harmonic mass |
+| `T₃` | sieve remainder | `12·ε·2^{2K₀+4}(log M)² ≤ A²·M^{1/4}` — eventual in `M` |
+
+with `A = multiHarmConst K₀/2` and `ε` chosen from `K₀` alone.  That `T₂` is scale-free is exactly
+the payoff of the Rankin exponent `α = 1/log h`: with the corpus's old exponent `1/k` the level was
+`h^{k}` with `k ≍ log log h`, and `T₂` would have carried a `(log log)²` that no choice of `ε`
+could absorb.
+
+Still open on this card: the covering (for each large `Z` a modulus `u` with `P ≤ Z` and
+`2Z < 3P`) and the tiling of `(Z, Z+H]` by `h`-blocks.

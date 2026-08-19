@@ -367,3 +367,116 @@ Jutila's; see `../1-in-progress/matomaki-teravainen-e3-lean-programme.md`.  The 
 is `1 + 44/79 = 1.55696…` instead of `1.55`, and the §6.1 (Heath-Brown identity + Bourgain) route at
 `1.615` is abandoned.  Nothing on this card depends on the value: the exponent enters only through a
 polylogarithmic factor in the displacement.
+
+## Lean progress (2026-08-19): the weight-general parity balance and the band's Euler factor
+
+`formal/GaloisForLFunctions/RHTower/RouteECofactorParityWeights.lean` closes the two pieces of
+`(7)` and `(9)` that were listed as "not formalized" and are **not** the Matomäki–Teräväinen input.
+
+- `half_sum_oddBase_le_sum_parityClass_weight` — the pairing `s ↔ 2s` costs a factor two in *any*
+  weight `w ≥ 0` with `(1/2)·w(s) ≤ w(2s)`.  The previously formalized statement was the special
+  case `w(t) = 1/t` of `(9)`; this is the general form.
+- `half_sum_oddBase_le_sum_parityClass_sqrt` — the instance `w(t) = 1/√t` the card's `(7)` uses.
+  Doubling costs only `√2` there, so the factor two is not even tight.
+- `prod_one_add_inv_le_exp`, `exp_neg_le_prod_inv` — `∏_{p∈S}(1+1/p) ≤ exp(∑_{p∈S}1/p)`, hence a
+  lower bound on the reciprocal Euler product of any finite prime set.
+- `band_euler_factor_ge` — **the card's quoted Mertens estimate, explicitly**:
+
+  ```
+       (log P / log Q) · exp(−(mertensSecondLowerConst + mertensSecondUpperConst))
+         ≤  ∏_{P < p ≤ Q} (1 + 1/p)^{-1}      for  2 ≤ P ≤ Q.
+  ```
+
+  At the card's band `P = (log U)^{a₀}`, `Q = 2(log U)^{a₁}` the ratio `log P/log Q → a₀/a₁`, so the
+  excluded band multiplies the unsigned squarefree main term by a factor bounded below by a
+  positive constant depending only on `a₀, a₁` — which is exactly the "`≍_{a₀,a₁} 1`" the card
+  quotes.  Unconditional; `#print axioms` gives `propext, Classical.choice, Quot.sound`.
+
+What is still not formalized in this card is only the quantitative all-interval supply `(6)`
+(the published Matomäki–Teräväinen minorant) and the unsigned squarefree harmonic *main terms*
+`∑_{t ≤ T} μ²(t) t^{-1/2} ≍ √T` and `∑_{t ≤ T} μ²(t)/t ≍ log T` restricted to band-avoiding `t`.
+
+### The unsigned squarefree harmonic main term of `(7)`
+
+`formal/GaloisForLFunctions/RHTower/RouteECofactorSquarefreeHarmonic.lean`, unconditional:
+
+- `sum_sqrtInv_le` — `∑_{n=1}^{T} n^{-1/2} ≤ 2√T`, by the telescoping
+  `n^{-1/2} ≤ 2(√n − √(n−1))`.
+- `sum_sqrtInv_squarefree_le` — hence `∑_{n ≤ T} μ²(n) n^{-1/2} ≤ 2√T`.
+- `sum_sqrtInv_squarefree_ge` — **the matching lower bound**, for any `R` with `T ≤ R²`:
+
+  ```
+        ϱ·√T − (R + T/R)/√T  ≤  ∑_{n ≤ T} μ²(n) n^{-1/2} ,      ϱ = squarefreeDensity.
+  ```
+
+  The proof is one comparison: every weight `n^{-1/2}` with `n ≤ T` is at least `T^{-1/2}`, so the
+  sum is at least `Q(T)/√T`, and `Q(T) ≥ T·ϱ − (R + T/R)` is the corpus's own squarefree window
+  count `Sieve/SquarefreeWindowCount.abs_window_squarefree_sub_le`.  At `R ≍ √T` the error is `O(1)`
+  and the two bounds pin the sum to `≍ √T` — the card's `(7)` main term.
+
+`#print axioms` on all three: `propext, Classical.choice, Quot.sound`.
+
+Still open in this card: the all-interval supply `(6)` (Matomäki–Teräväinen), the corresponding
+`∑_{n ≤ T} μ²(n)/n ≍ log T` main term of `(9)` (a dyadic-block sum of the same window count), and
+the restriction of both main terms to *odd band-avoiding* `n`, for which
+`RouteECofactorParityWeights.band_euler_factor_ge` supplies the Euler factor but the
+coprime-squarefree count itself is not yet formalized.
+
+### The unsigned squarefree harmonic main term of `(9)`
+
+Same file, unconditional:
+
+- `sum_inv_squarefree_block_ge` — one dyadic block: for `2^j + 2^j ≤ R²`,
+
+  ```
+        (2^j·ϱ − (R + 2^j/R)) / 2^{j+1}  ≤  ∑_{2^j < n ≤ 2^{j+1}} μ²(n)/n .
+  ```
+
+- `sum_inv_squarefree_block_ge_const` — at `R = 2^{⌊j/2⌋+1}` and `j ≥ 8` the error is at most
+  `3·2^{⌊j/2⌋} ≤ (ϱ/2)·2^j`, so **every dyadic block above `2^8` carries `≥ ϱ/4`**.
+- `sum_inv_squarefree_ge` — summing the blocks:
+
+  ```
+        (ϱ/4)·(J − 8)  ≤  ∑_{n ≤ 2^J} μ²(n)/n .
+  ```
+
+- `sum_inv_squarefree_le` — `∑_{n ≤ T} μ²(n)/n ≤ 1 + log T`, from the corpus's harmonic bound
+  `Sieve/HarmonicLogBound.sum_Icc_one_div_le_one_add_log`.
+
+The two together pin `∑_{n ≤ T} μ²(n)/n` to `≍ log T` — the card's `(9)` main term.  With the
+`(7)` main term above and `RouteECofactorParityWeights`, **every ingredient of `(7)` and `(9)` is
+now formalized except the restriction of the main terms to odd band-avoiding `n`**, i.e. the
+coprime-squarefree count; the Euler factor that governs that restriction is `band_euler_factor_ge`.
+
+### `(7)` is closed
+
+`formal/GaloisForLFunctions/RHTower/RouteECofactorBandCount.lean` assembles the pieces into the
+card's `(7)` itself, unconditionally:
+
+- `excludedPrimes Band Y = insert 2 ((Icc 1 Y).filter (fun p => p.Prime ∧ Band p))` — the primes a
+  cofactor must avoid: the prime `2` of the pairing together with the whole band.
+- `card_oddBase_ge` — the odd band-avoiding squarefree cofactors below `T/2` number at least
+
+  ```
+        (T/2)·ϱ − (R + (T/2)/R) − ∑_{p ∈ excludedPrimes} (T/2)/p ,     any  T/2 ≤ R² .
+  ```
+
+  (The union bound `Sieve/RouteECofactorSquarefreeHarmonic.card_squarefree_avoid_ge_of_subset`.)
+- `sum_sqrtInv_oddBase_ge` — dividing by `√(T/2)` gives the source sum of `(7)`.
+- `sum_sqrtInv_parityClass_ge` — with the pairing, **each parity class**:
+
+  ```
+        (1/2)·[ (T/2)·ϱ − (R + (T/2)/R) − ∑_{p ∈ excludedPrimes} (T/2)/p ] / √(T/2)
+          ≤  ∑_{t ≤ T, μ(t)=σ, band-avoiding} t^{-1/2} .
+  ```
+
+- `sum_sqrtInv_parityClass_le` — and `≤ 2√T` in the other direction.
+
+At `R ≍ √T` the second error term is `O(1)`, and the third is `(T/2)·(1/2 + ∑_{band} 1/p)`, whose
+band part is `log(a₁/a₀) + O(1/log P)` by `band_euler_factor_ge`'s Mertens input — at the card's
+`a₀ ∈ [1.1−10⁻⁴, 1.1]`, `a₁ = 1.1` that is below `10⁻³`, so the bracket is at least
+`(T/2)(ϱ − 1/2 − 10⁻³) > (T/2)/10` and the whole left side is `≥ √T/30`.  **Both sides of `(7)`
+are therefore `≍ √T`, formalized.**
+
+The only remaining unformalized input of this card is the quantitative all-interval supply `(6)`,
+the published Matomäki–Teräväinen minorant.

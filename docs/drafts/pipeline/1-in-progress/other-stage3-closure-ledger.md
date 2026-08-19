@@ -7287,3 +7287,1181 @@ Also cleaned: eleven Lean warnings across six modules from earlier in this run (
 `push_neg`→`push Not`, `tendsto_finset_sum`→`tendsto_finsetSum`,
 `DifferentiableAt.fun_finset_prod`→`…fun_finsetProd`, unused simp arguments and one unused binder).
 The formal lint gate fails on warnings, so these had to go before the sweep can be declared clean.
+
+## 2026-08-19 — entry 60: `NoIntegerRelation` is gone
+
+68. `HTGeometry/GammaFiberDatum.lean` — `HasShiftTubeDatum.congr_tube`,
+    **`exists_hasShiftTubeDatum_gammaFiberSum`**.
+69. `HTGeometry/GammaLatticeNormalForm.lean` — `NoNonzeroIntegerValue`, `TubeLimit.const_mul`,
+    `HasShiftTubeDatum.const_mul`, **`exists_hasShiftTubeDatum_jetGammaLatticeSum`**,
+    **`exists_hasShiftTubeDatum_jetGammaLatticeQuotient`**.
+70. `HTGeometry/PrimeLogLatticeShifts.lean` — `noNonzeroIntegerValue_primeLog`,
+    **`exists_hasShiftTubeDatum_primeLogGammaQuotient`**.
+
+```text
+shifts drawn from the prime-log lattice, pairwise incongruent mod ℤ, jets injective,
+numerator and denominator normal-form sums with injective exponent vectors and nonzero coefficients
+  ⟹  the quotient has a boundary datum on every tube, with nonzero constant.
+```
+
+This is `exists_hasShiftTubeDatum_jetGammaQuotient` **with `NoIntegerRelation` removed**, which is
+what the ledger has been driving at since entry 38. Recall why it had to go: for the rank-two
+lattice `Λ = ℤ log p + ℤ log q` every finite shift set with three or more elements carries an
+integer relation, so the hypothesis is not merely inconvenient — it is false.
+
+The replacement is `NoNonzeroIntegerValue`: no integer combination of the shifts is a **nonzero**
+integer. That is strictly weaker, it is exactly what the prime-log lattice satisfies, and
+`noNonzeroIntegerValue_primeLog` discharges it from the corpus's `primeLog_indep_mod_one` — one
+application of the transcendence of `e`.
+
+The regrouping went through as planned in entry 59, with one adjustment worth recording: the
+weighted family `F α = (1/n α)·(fibre sum)` chooses its datum per index, so two indices in the same
+fibre carry *separately chosen* data for the *same function*. Proving the chosen representatives
+agree fights `Finset.min'`'s dependent nonemptiness argument; the corpus's `hasShiftTubeDatum_unique`
+settles it instead — same function forces the same `(d, ω, b, c)`. That is what makes the dominance
+class come out as exactly the fibre and the class sum as `n·(c/n) = c ≠ 0`.
+
+## 2026-08-19 — entry 61: card B's equation (4) is Lean-closed
+
+71. `HTGeometry/ZetaPrimeLogGammaField.lean` — `gammaFieldQuotientFun`,
+    **`zeta_no_primeLogGammaShift_relation`**.
+
+The capstone: no nontrivial differential relation between the zeta jets with coefficients in the
+prime-log shifted Gamma field. This is equation `(4)` of `archimedean-relative-prime-cocycle-
+curvature`, and the card's own audit named the transseries model as its last Lean obligation.
+
+Assembly note: `zeta_no_gammaShift_relation` consumes a datum on a **single vertical line**, so the
+tube datum is specialised at `M := σ` with `hσM := le_rfl`; and the normal-form sums must be
+presented as functions of `s`, which `gammaProd_eq_gammaMonomial` supplies with no hypotheses at all,
+so the two presentations are equal as functions rather than merely on a tube.
+
+Card B is not yet moved. Its equation `(12)` is Lean-proved only for the plain Gamma coordinates
+(`IndexTranslationRigidity`), not for the differential ones, and that is a proven theorem of the card
+in the sense the goal asks for. That is the next target; the card names `FreeJetTranslationFixedField`
+and `DifferentialLurothVariableSupport` as the assets it should be built from.
+
+## 2026-08-19 — entry 62: equation (12) in differential coordinates, for free
+
+72. `HTGeometry/JetIndexTranslationRigidity.lean` — `jetIndexTranslation_infiniteOrder`,
+    **`eq_C_of_jetIndexTranslation_invariant`**, `vars_eq_empty_of_jetIndexTranslation_invariant`.
+
+The card said the differential form of `(12)` needed "the same argument run on the jets". It needs
+no argument: index the jets by `Λ × ℤ` with the second component the jet order; then
+`τ_μ : X_λ^{(j)} ↦ X_{λ+μ}^{(j)}` is index translation by `(μ, 0)`, of the same order as `μ`, and
+`IndexTranslationRigidity` — stated for an arbitrary `AddCommGroup` index — applies unchanged. Three
+lines.
+
+Worth recording as a habit: before writing "the same argument for the jet case", check whether the
+existing statement is already general enough in its index type. This is the second time in this
+sweep that the answer was yes.
+
+Card B still not moved. Two Lean items remain that the card asserts as proved: the two-shift
+quasi-period-rank law behind the gauge reformulation `(5)–(7)`, which is not yet identified in the
+tree, and the confluent case of the mixed-value determinant (only multiplicity one is Lean, in
+`GammaShiftCasoratian`).
+
+## 2026-08-19 — entry 63: card B is at stage 3
+
+73. `HTGeometry/PrimeLogQuasiPeriod.lean` — `linearIndependent_rat_primeLog_pair`,
+    `not_linearIndependent_real_ofReal_pair`,
+    **`differentiallyAlgebraic_of_primeLog_quasiperiods`**.
+
+`archimedean-relative-prime-cocycle-curvature` is moved to
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/other/`.
+
+The two items entry 62 listed as open were **both already in the tree**, and the card's text was
+stale about them:
+
+* the two-shift quasi-period rank law is `differentiallyAlgebraic_of_quasiperiods_realDependent` —
+  and the `ℝ`-dependent variant is the right one, because the card's two steps `log p`, `log q` are
+  *real*, hence `ℝ`-dependent in `ℂ`, and that variant needs neither nonvanishing nor nonzero
+  multipliers. Item 73 above is only the prime-log instance: `ℚ`-independence from
+  `primeLog_indep_mod_one` after clearing denominators, `ℝ`-dependence because two reals in `ℂ`
+  always are.
+* the mixed-value determinant at arbitrary multiplicities is
+  `RHTower.gammaZetaJetMixedFamily_linearIndependent` with
+  `HTGeometry.det_confluentGammaShiftMatrix`; only the card's prose said "multiplicity one".
+
+Both were found by searching the corpus before building — the third and fourth time in this sweep
+that the honest next step was a search rather than a proof.
+
+The Wang–Yao audit gate stays unchecked and is recorded on the card as a literature gate: the Lean
+chain proves the independence it needs itself and never cites Wang–Yao.
+
+## 2026-08-19 — entry 64: card A's §4 needs no ADH citation
+
+74. `HTGeometry/ArchimedeanGammaProductHypertranscendence.lean` —
+    **`hypertranscendentalOver_archimedeanGammaProductMero`**.
+
+Card A's §4 derives hypertranscendence of `G` from Adamczewski–Dreyfus–Hardouin Theorem 1.2. The
+tree proves it outright and by a completely different route — the positive-charge Gamma theorem
+(`hypertranscendentalOver_gammaFintypeOrbitProductMero_of_pos`, which needs **no** separation
+hypothesis because collided shifts merge by the Gamma recurrence and their positive charges add),
+lifted through the simultaneous Gauss reduction to commensurable scales, with `e^{αs}` cancelling as
+a differentially algebraic gauge. The new module is the assembly.
+
+That is the fifth time in this sweep that a card's "cited external input" was already an
+unconditional theorem of the corpus. The habit that keeps paying: read the card's citation as a
+*description of what is needed*, then search for that statement rather than for the citation.
+
+Card A now needs only its §1 monomial valuation theorem: `K_G = L(G)`, transcendence of `G` over
+`L`, and the datum `(22)` for nonzero elements of `L`. The last is the shifted-Gamma-jet datum at
+**scaled** arguments `Γ(λ_j s + μ_j)` rather than plain shifts, which is the one genuinely new
+ingredient.
+
+## 2026-08-19 — entry 65: the map for card A's monomial valuation theorem
+
+Searched before building. The corpus owns the **single-Gamma** case of card A's §1 in full:
+
+```text
+GammaDatumValuation.existsUnique_gammaField_datum
+    every nonzero element of ℂ(s)⟨Γ⟩ has exactly one boundary datum (k, a, b, c) on a vertical line
+GammaDatumValuation, eq. (19)
+    every nonzero element of ℂ(s)⟨ψ⟩ has exactly one datum, and its Γ-exponent is zero
+GammaFieldIntegerDatumUnique.gammaField_intDatum_unique
+    the datum depends only on the element, not the presentation
+GammaDatumLexValuation.gammaLexValuation
+    the rank-three valuation with value group ℤ ×ₗ ℤ ×ₗ ℤ
+GammaMonomialValuationUnconditional.gamma_monomial_valuation_residue_of_pos
+```
+
+What card A needs is the same development for `G = e^{αs}∏_j Γ(λ_j s + μ_j)` in place of `Γ`. No
+general-product version exists.
+
+**The key simplification, and it removes the hypothesis that blocked card B.** `L = ℂ(s)⟨Ψ⟩` with
+`Ψ = G'/G` is generated by *digamma* data only, so every element of `L` has Γ-exponent zero: it is a
+quotient of jet polynomials with **no Gamma monomial factor**. The datum for such an element is
+`exists_hasShiftTubeDatum_jetFieldPolyFun`, which needs only pairwise incongruence of the shifts —
+`NoIntegerRelation` was ever only needed to separate Gamma *monomials*, and there are none here.
+This matters because card A's shifts, unlike card B's, genuinely can satisfy
+`NoNonzeroIntegerValue`-violating relations (e.g. `1/3` and `2/3` sum to `1`), so the lattice route
+of entries 59–60 is *not* available and is not needed.
+
+The remaining steps, in order:
+1. digamma Gauss multiplication `ψ(n w + μ) = log n + (1/n)∑_{i<n} ψ(w + (μ+i)/n)`, by
+   differentiating the corpus's `gammaNatScaleMero_gauss`;
+2. reduction of the resulting shifts to pairwise incongruent orbit representatives, absorbing the
+   integer parts into a rational gauge exactly as `gammaCommonScaleGaugeRat` does;
+3. transfer of a tube datum along the real rescaling `s = H w`, which maps vertical lines to
+   vertical lines;
+4. `K_G = L(G)` from the Bell identity the tree already owns
+   (`gamma_iteratedDeriv_eq_gamma_mul_eval_gammaBell`);
+5. transcendence of `G` over `L` by the scaling automorphism `G^{(n)} ↦ λ G^{(n)}`;
+6. assembly, mirroring `existsUnique_gammaField_datum`.
+
+## 2026-08-19 — entry 66: card A, steps 1 and the §6 analytic input
+
+75. `HTGeometry/DigammaScaleShiftGauss.lean` — **`digamma_scale_shift_eq_sum`**:
+    `n·ψ(nw + μ) = ∑_{k<n} ψ(w + (μ+k)/n) + n·log n`, the shifted instance of the corpus's
+    `digamma_multiplication_rescaled`. This is what turns `Ψ = α + ∑_j λ_j ψ(λ_j s + μ_j)` into an
+    element of a **unit-scale** shifted digamma jet field.
+76. `HTGeometry/GammaScaleVerticalDecay.lean` — `gammaScale_arg_eq`,
+    `gammaScale_vertical_tendsto_nhdsWithin_zero`,
+    **`archimedeanProduct_vertical_tendsto_nhdsWithin_zero`**:
+    `e^{ασ+iαt}·∏_j Γ(λ_j(σ+it)+μ_j) → 0` without vanishing, for positive scales and real `α`.
+
+Item 76 is the card's `(27)`, and it is the *single analytic input* §6 needs: the corpus's
+`polynomial_lowest_power_ratio_tendsto` is stated for an arbitrary function tending to `0` in the
+punctured neighbourhood, so composing it with item 76 gives the card's exponential separation `(28)`
+for `P₀(G)/Q₀(G)` directly. The `Γ`-specific `gamma_monomial_valuation_residue` is only that
+composition with `Γ`; nothing about it is `Γ`-specific downstream.
+
+A scaled shifted Gamma argument is a vertical argument again — `Γ(λ(σ+it)+μ)` runs along abscissa
+`λσ + Re μ` at height `λt + Im μ` — so its decay is the unscaled decay reparameterised, and the
+positivity of the scale is used only to keep the height going to `+∞`.
+
+## 2026-08-19 — entry 67: card A's projective residue, and the shape of what is left
+
+77. `HTGeometry/ArchimedeanMonomialValuation.lean` — `archimedeanProductLine`,
+    **`archimedeanProduct_monomial_valuation_residue`**: a `K_G`-element presented as a quotient of
+    polynomials in `G`, normalised by its dominant `G` powers, converges to the residue of its
+    coefficients. This is the card's `(3)` in projective form for the general commensurable product,
+    and it is `polynomial_lowest_power_ratio_tendsto` composed with entry 66 — the corpus's law was
+    already stated for an arbitrary argument tending to zero, so nothing in it was `Γ`-specific.
+
+For `K_G = L(G)` the corpus has the `Γ` instance
+(`GammaFieldGeneratedByDigamma.differentialAdjoin_gamma_eq_adjoin_gamma_digammaJets`), resting on
+`UpperEndGammaElement.exists_gammaJet_factor`: `Γ^{(n)} = Γ·w` with `w` in the digamma jet algebra.
+There is no abstract version, and the abstract version is what card A needs:
+
+> for `x ≠ 0` in a differential field extension, `∃ w ∈ differentialJetAlgebra F {x′/x}` with
+> `x^{(n)} = x·w`, hence `differentialAdjoin F {x} = adjoin F ({x} ∪ jets of x′/x)`.
+
+The induction is two lines of differential algebra — `x^{(n+1)} = (x·w)′ = x·(ψ·w + w′)` — and it is
+the honest general form of the Bell identity `(23)`. Building it abstractly also retires the
+`Γ`-specific duplicate.
+
+Remaining on card A after that: transcendence of `G` over `L` by the scaling automorphism `(25)`,
+and the assembly of `(6)` from the residue law above together with the `L`-datum `(22)`.
+
+## 2026-08-19 — entry 68: `K_x = L(x)` abstractly
+
+78. `HTGeometry/LogDerivDifferentialAdjoin.lean` — `deriv_mem_differentialJetAlgebra'`,
+    `exists_jet_factor_of_logDeriv`, `differentialAdjoin_singleton_le_adjoin_logDeriv`,
+    `logDeriv_mem_differentialAdjoin_singleton`,
+    `differentialJetSet_logDeriv_subset_differentialAdjoin`,
+    **`differentialAdjoin_singleton_eq_adjoin_logDeriv`**:
+
+```text
+x ≠ 0,  x′ = x·ψ   ⟹   differentialAdjoin F {x} = adjoin F ({x} ∪ jets of ψ)
+```
+
+This is card A's `(24)` `K_G = L(G)` with no reference to `Γ` — the abstract content of the Bell
+identity `(23)`. The corpus had only the `Γ` instance
+(`differentialAdjoin_gamma_eq_adjoin_gamma_digammaJets`); the general statement is the same twelve-line
+induction, `x^{(n+1)} = (x·w)′ = x·(ψ·w + w′)`.
+
+One generalisation was needed on the way. The corpus's `deriv_mem_differentialJetAlgebra` assumes the
+base field consists of **constants**, which is right for its `ℂ` but wrong for the archimedean cards,
+whose base is `ℂ(s)`. The replacement hypothesis is that the base is closed under the derivation —
+`∀ c : F, ∃ c', (algebraMap c)′ = algebraMap c'` — which covers both and is what a differential base
+field satisfies.
+
+Remaining on card A: transcendence of `G` over `L` `(25)`, and the assembly of `(6)` from the
+projective residue (entry 67) together with the `L`-datum `(22)`.
+
+## 2026-08-19 — entry 69: reducing digamma shifts modulo the integers
+
+79. `HTGeometry/DigammaIntegerShiftReduction.lean` — **`digamma_add_natCast`**:
+    `ψ(z + n) = ψ(z) + ∑_{i<n} (z+i)^{-1}`, and its positive-abscissa corollary.
+
+Together with entry 66's Gauss reduction this completes the passage from card A's scaled shifts to a
+family of **pairwise incongruent** unit-scale shifts: Gauss turns `ψ(λ_j s + μ_j)` into a sum over
+`ψ(w + (μ_j+k)/n_j)`, and this lemma moves each of those shifts into a chosen residue class modulo
+`ℤ` at the cost of a rational function, which the base field `ℂ(s)` already contains.
+
+Card A's roadmap now stands at: Gauss reduction ✓, integer-shift reduction ✓, the `§6` analytic
+input and projective residue ✓, `K_G = L(G)` ✓. Remaining: transcendence of `G` over `L`, and the
+assembly of `(6)`.
+
+The transcendence should go through the **valuation**, not the card's scaling automorphism: the
+corpus proves `Γ ∉ L` that way (`GammaFieldValuation.gammaValuation_eq_one_of_mem_digammaAdjoin`,
+`GammaCoefficientLawWitness.not_mem_digammaAdjoin_of_gammaExponent_one`), and the same argument gives
+full transcendence, because in `∑_i A_i G^i` the terms have distinct `G`-exponents and therefore
+distinct data, so no cancellation is possible. Constructing a differential automorphism `x ↦ λx`
+would need the transcendence it is meant to prove.
+
+## 2026-08-19 — entry 70: the rate, not just the decay
+
+80. `HTGeometry/GammaScaleExponentialBound.lean` — **`exists_exponential_bound_gammaScale`**:
+    `‖Γ(λ(σ+it)+μ)‖ ≤ C·t^N·e^{−δt}` eventually, with `δ = πλ/4 > 0`.
+
+Entry 66 gave `G → 0`; that is enough for the projective residue with *constant* coefficients, but
+card A's coefficients live in `L` and grow algebraically-logarithmically, so the **rate** is needed:
+an exponentially small factor beats any polynomial, and that is what makes `∑_i A_i G^i ∼ A_u G^u`
+and, with it, both the transcendence of `G` over `L` and the assembly of `(6)`.
+
+The bound is the corpus's `exists_bound_norm_Gamma_vertical_strip` reparameterised: the scaled
+argument sits at abscissa `λσ + Re μ` and height `λt + Im μ`, and for `t` past `(2|Im μ|+2)/λ` that
+height is between `λt/2` and `2λt`, which converts `e^{−π|·|/2}` into `e^{−πλt/4}` and the
+polynomial factor into `(2λ)^N t^N`.
+
+## 2026-08-19 — entry 71: the exponential separation of distinct `G`-powers
+
+81. `HTGeometry/PolyExpDecayLimit.lean` — `tendsto_pow_mul_exp_neg_scaled`,
+    `tendsto_zero_of_eventually_norm_le_polyExp`.
+82. `HTGeometry/ArchimedeanProductExponentialBound.lean` —
+    `exists_exponential_bound_archimedeanProduct`, and
+    **`tendsto_polyGrowth_mul_archimedeanProduct_pow_zero`**:
+
+```text
+‖f t‖ ≤ C_f·t^m eventually,  k ≥ 1   ⟹   f(t)·G(σ+it)^k → 0.
+```
+
+This is the card's exponential separation: a *positive* power of the archimedean product annihilates
+any algebraic-logarithmic factor, which is exactly why in `∑_i A_i G^i` the lowest surviving power
+dominates and why distinct powers cannot cancel. Transcendence of `G` over `L` follows from it, and
+so does the card's `(28)`.
+
+The proof multiplies the per-factor rates of entry 70 into one `C·t^N·e^{−δt}` for the product (the
+exponential gauge has constant modulus on the line and only moves the constant), raises it to the
+`k`-th power, and applies the polynomial-versus-exponential limit. The one hypothesis worth noting is
+`0 ≤ C_f`: a growth bound does not imply its own constant is nonnegative unless the variable is
+bounded away from zero, so it is cleaner to ask for it.
+
+## 2026-08-19 — entry 72: equation (28)
+
+83. `HTGeometry/ArchimedeanLowestPowerDominance.lean` —
+    **`tendsto_one_add_polyGrowth_mul_archimedeanProduct_pow`**: after factoring out the lowest
+    surviving power of `G` and its coefficient, what remains is `1` plus a finite sum of coefficient
+    ratios against *positive* powers of `G`, and every such term dies, so the normalised quotient
+    tends to `1`. This is the card's `(28)`.
+
+The analytic core of card A's §6 is now complete end to end:
+
+```text
+decay          archimedeanProduct_vertical_tendsto_nhdsWithin_zero          (entry 66)
+rate           exists_exponential_bound_gammaScale, …_archimedeanProduct    (entries 70, 71)
+limit          tendsto_zero_of_eventually_norm_le_polyExp                   (entry 71)
+separation     tendsto_polyGrowth_mul_archimedeanProduct_pow_zero           (entry 71)
+dominance (28) tendsto_one_add_polyGrowth_mul_archimedeanProduct_pow        (this entry)
+residue (3)    archimedeanProduct_monomial_valuation_residue                (entry 67)
+K_G = L(G)     differentialAdjoin_singleton_eq_adjoin_logDeriv              (entry 68)
+scale/shift    digamma_scale_shift_eq_sum, digamma_add_natCast              (entries 66, 69)
+```
+
+What is left is the coefficient side: instantiate the `L`-datum `(22)` for this card's
+`Ψ = α + ∑_j λ_j ψ(λ_j s + μ_j)` by pushing it through the Gauss and integer-shift reductions into a
+shifted digamma jet field with pairwise incongruent shifts, where
+`exists_hasShiftTubeDatum_jetFieldPolyFun` applies with no further hypothesis — and then state `(6)`.
+
+## 2026-08-19 — entry 73: the coefficient side, first half
+
+84. `HTGeometry/ArchimedeanLogDerivDigammaSum.lean` — **`sum_scaleShift_digamma_eq`**:
+
+```text
+∑_j n_j·ψ(n_j w + μ_j) = ∑_j ∑_{k<n_j} ψ(w + (μ_j+k)/n_j) + ∑_j n_j·log n_j
+```
+
+The logarithmic derivative of a commensurable-scale Gamma product, in the variable `w = s/H` where
+the scales become integers, is a plain sum of **unit-scale** shifted digammas plus a constant. That
+is what places `Ψ` inside a shifted digamma jet field, where the boundary datum needs nothing beyond
+pairwise incongruence of the shifts — and pairwise incongruence is arranged by the integer-shift
+reduction of entry 69.
+
+## 2026-08-19 — entry 74: cards C and D, what the corpus already carries
+
+Searched both remaining cards' cited inputs before building.
+
+**Card C** (`torusless-quasi-abelian-…-jet-ampleness`). The gap recorded in
+`abe-jet-ampleness-analytic-layer-closed` is that Abe's Proposition 8.2 "needs the
+Hermitian/Appell–Humbert structure that the current `AutomorphicFactor` abstraction does not carry".
+The tree does carry that structure:
+
+```text
+HTGeometry/AppellHumbertFactor.lean
+  IsHermitianForm, appellHumbertFactor, appellHumbertFactor_isMulTwoCocycle,
+  norm_appellHumbertFactor, thetaNorm_add,
+  eq_zero_along_line_of_neg_of_thetaNorm_bounded
+HTGeometry/CapocasaCatanesePositivity.lean
+  hermitianForm_nonneg_of_theta
+HTGeometry/ActiveQuasiAbelianPalette.lean
+  ActiveQuasiAbelianPalette.facets_jetAmpleEveryFiniteOrder   (interface-level: the presentation
+  structure carries `jetAmpleEveryFiniteOrder` as a field, so this is transport, not a proof)
+```
+
+The precise remaining obligation is now readable off the interface: construct an
+`AbeDampingPacketData`, i.e. for each finite jet packet and lower column a `B`-family of seeds in
+`lower.forms` agreeing with the column on the packet jets (`seed_jet`), with summable complement
+Poincaré tail (`normal`) and the majorant `C·B^r·e^{−δB}·(Gaussian lattice weight)` (`majorant`).
+The Hermitian form on the complement directions is what supplies the damping, and my earlier
+correction stands: `ΓH`-invariance is periodicity under a *lattice*, so a multiplier may decay in the
+complement directions.
+
+**Card D** (`gauss-component-quasi-inner-residue-hierarchy`). The cited Connes–Consani input is not
+one theorem but a family the tree already develops in `RHTower/CCMConnesConsani*`:
+`connesConsani_arithmeticJacobianPrimeFibre_frontier` ("literature frontier plus strict new
+comparison in one unconditional statement"), `connesConsani_polarize2_realBasis`,
+`connesConsani_diracpm3_i_matrix`, `connesConsani_spectralreal_character`. The next step on card D is
+to check the §1 Hankel decomposition against these rather than to import the paper.
+
+## 2026-08-19 — entry 75: card D's remaining input is a genuine formalization project
+
+Checked the `CCMConnesConsani*` family against card D's actual gap. They do **not** cover it:
+`connesConsani_arithmeticJacobianPrimeFibre_frontier` is about the arithmetic Jacobian prime fibre
+(periodicity under the Frobenius unit, surjectivity and non-injectivity of the collapse), not about
+the Hankel operator. So unlike cards A and B, card D's citation is not already a corpus theorem.
+
+What card D still needs is Connes–Consani's one-prime decomposition of `H = (1−P)M_ρP`: that the
+omitted terms are rapidly smoothing or finite rank, so `|E_{m,k,p}|^{2m}` and `((p−1)/p)^{2m}G^m`
+differ by a trace-class operator. Everything downstream is Lean: `C² = G` (fifty-seventh pass) and
+the whole passage from `G` to the arithmetic residue (fifty-sixth pass).
+
+Relevant corpus technique for the trace-class half, to be reused rather than reinvented:
+`SoninSemilocalGradingNoGo.isTraceClass_rankOne_lp` and
+`DeningerGammaSixFullSourcePrincipalClass.deningerGammaSixSourceTensorRemainderOperator_traceClass`,
+the latter proved "by an explicit nuclear column decomposition" — the same shape the Hankel remainder
+needs.
+
+## 2026-08-19 — entry 76: the boundary datum now holds at arbitrary complex shifts
+
+Card A allows arbitrary complex `μ_j` in `G(s) = e^{αs}∏Γ(λ_j s+μ_j)`, and after the Gauss reduction
+its digamma shifts are `(μ_j+k)/n_j` — complex.  The whole corpus datum stack was stated for **real
+nonnegative** shifts (`lam : Fin r → ℝ`, `hlam : ∀ i, 0 ≤ lam i`), so `(22)` was out of reach.  It is
+now available at every complex shift, with no hypothesis beyond pairwise incongruence.
+
+Four new `HTGeometry` modules, each `lake env lean`-clean and `lake build`-green:
+
+```text
+ComplexShiftDigammaExpansion
+  shifted_height_bounds, div_pow_shift_le
+  exists_iteratedDeriv_digamma_complexShift_expansion   ψ⁽ʲ⁺¹⁾(s+λ) = Q(1/s) + O(t^{-(N+1)})
+  exists_digamma_complexShift_expansion                 ψ(s+λ)     = log s + P(1/s) + O(t^{-(N+1)})
+ComplexShiftJetApprox
+  hasLogRatApprox_of_tube_eq, digammaJet_add_natCast, tube_add_ne_neg_natCast
+  hasRatApprox_iteratedDeriv_digamma_anyShift           NO hypothesis on λ
+  hasLogRatApprox_digamma_anyShift                      NO hypothesis on λ
+ComplexShiftJetGerm
+  jetGermC, upperEndTranslateGerm_jetGermC, shiftedJetEvalC
+  not_isGermNegligible_shiftedJetEvalC
+ComplexShiftJetFieldDatum
+  jetFieldFunC, jetFieldPolyFunC, shiftedJetEvalC_map_eq_coe_field
+  exists_hasShiftTubeDatum_jetFieldPolyFunC             equation (11)/(22) at complex shifts
+```
+
+Three observations made the generalization cheap rather than a rewrite of six corpus modules:
+
+1. `log_add_eq` was **already** stated for a complex shift; only the base expansion was pinned to a
+   real abscissa.  A complex shift moves a vertical-line point to another vertical-line point, at
+   abscissa `σ+re λ` and height `t+im λ`, so the unshifted expansion applies verbatim once
+   `0 ≤ re λ`, and the height loses at most a factor two (`div_pow_shift_le`).
+2. The restriction `0 ≤ re λ` is then removed by the digamma recurrence, not by analysis: finitely
+   many unit steps move any shift into the closed right half plane and cost only inverse powers,
+   which are rational.  This is why the final approximability statements carry **no** hypothesis.
+3. The shift elimination in `JetNonNegligible` never used realness — its proof immediately coerces
+   to `lamC : Fin r → ℂ`, and `ratShift_sub_familyIncrement_flat` is already stated over `ℂ`.  Only
+   `jetGerm` and its translation law had to be re-stated; the pole-avoidance step needs the filter
+   neighbourhood `upperTail ‖λ‖` instead of `upperTail 0`.
+
+Trap for the next agent: `germRatFuncAlgebra` is a `local instance` in `JetNonNegligible`, so the
+name exists globally but the instance does not.  Re-declaring it under a fresh name gives a second,
+non-syntactically-equal instance and downstream unification fails; use
+`attribute [local instance] germRatFuncAlgebra` instead.
+
+## 2026-08-19 — entry 77: the integer-shift jet transfer, and the route to (22) for card A
+
+`HTGeometry/JetIntegerShiftRational` (green, wired):
+
+```text
+jetShiftDenom, jetShiftDenom_ne_zero, eval_jetShiftDenom, eval_jetShiftDenom_ne_zero
+exists_poly_sum_inv_pow            Σ_{i<k} c/(z+μ+i)^{n+1} is a single quotient of polynomials
+exists_ratEval_jet_natCast_shift   ψ⁽ⁿ⁾(z+μ+k) = ψ⁽ⁿ⁾(z+μ) + p(z)/q(z)
+exists_ratEval_jet_int_shift       the same for every m ∈ ℤ, by running the recurrence backwards
+```
+
+The common denominator is built by induction on `k` rather than by a product-over-complement
+formula: at each step `p/A + c/B = (pB + cA)/(AB)`, which `field_simp` closes once both factors are
+known nonzero.
+
+**Why this shape and not the germ-level merge.** At the germ level the correction is a `RatFunc ℂ`
+and `ratFuncGerm` is a ring hom, so merging looks free — but it is not usable. Merging maps two
+distinct jet variables onto the same variable whenever their shifts collide, so the substitution on
+`MvPolynomial` is not injective and `P ≠ 0` does **not** transfer. That is not a defect of the
+encoding: congruent shifts really are algebraically dependent. So the merge must happen **linearly,
+on `Ψ` itself**, before any polynomial is formed — which is what the function-level `p/q` statement
+above supports.
+
+**Remaining route to `(22)`**, all pieces now identified:
+
+1. Gauss-reduce `Ψ = α + Σ_j λ_j ψ(λ_j s + μ_j)` to `α' + Σ_{j,k} c_{j,k} ψ(w + (μ_j+k)/n_j)` —
+   `DigammaScaleShiftGauss.digamma_scale_shift_eq_sum` and `ArchimedeanLogDerivDigammaSum`.
+2. Merge the congruent shifts with `exists_ratEval_jet_int_shift`, using the representatives of
+   `IntegerCongruentShiftClasses`, giving `Ψ = R(w) + Σ_{ν ∈ reps} c_ν ψ(w+ν)` with `R` rational and
+   the `ν` pairwise incongruent.
+3. `DifferentialAdjoinPresentation.mem_differentialAdjoin_singleton_iff` (plus its finiteness
+   companion) presents every element of `L = ℂ(s)⟨Ψ⟩` as a quotient of polynomials in finitely many
+   jets of `Ψ`; each such jet is a `ℂ`-combination of jets at the incongruent `ν` plus a rational
+   function.
+4. Clear denominators and apply `ComplexShiftJetQuotientDatum.exists_hasShiftTubeDatum_jetFieldQuotientC`.
+
+Then `(6)` needs only the `G`-power separation `(28)`, for which `ArchimedeanLowestPowerDominance`
+and `ArchimedeanProductExponentialBound` are already in the tree.
+
+## 2026-08-19 — entry 78: the linear merge, and why the jet-level Gauss reduction is not needed
+
+`HTGeometry/DigammaJetShiftMerge` (green, wired):
+
+```text
+exists_poly_finsetSum_div            a finite sum of quotients of polynomials is a single quotient,
+                                     with the denominator pinned to ∏ qᵢ so the induction can carry
+                                     non-vanishing (an abstract Q would be free to vanish at z)
+exists_poly_digammaJet_sum_merge     Σᵢ cᵢ ψ⁽ⁿ⁾(z+νᵢ) = P(z)/Q(z)
+                                       + Σ_{a ∈ CongReps ν} (Σ_{rep i = a} cᵢ) ψ⁽ⁿ⁾(z+ν_a)
+                                     with Q(z) ≠ 0 delivered alongside
+```
+
+`JetIntegerShiftRational` was strengthened to deliver `q.eval z ≠ 0` in its conclusion; without that
+the merge cannot discharge the denominators, because the denominator polynomial is existentially
+bound and nothing about `z` can be recovered from it afterwards.
+
+**A simplification of the route in entry 77, item 1.** The jet-level Gauss reduction
+`n^{r+1} ψ⁽ʳ⁾(nw+μ) = Σ_k ψ⁽ʳ⁾(w+(μ+k)/n)` is **not** needed, and neither is differentiating the
+order-zero identity. It is enough to reduce `Ψ` itself:
+
+```text
+Ψ(s) = α + Σ_j λ_j ψ(λ_j s + μ_j)              λ_j = n_j/H,  w = s/H
+     = α + (1/H) Σ_j [ n_j ψ(n_j w + μ_j) ]
+     = const + (1/H) Σ_{j,k} ψ(w + (μ_j+k)/n_j)          Gauss, order zero only
+     = const + R(w) + (1/H) Σ_a C_a ψ(w + ν_a)           merge, order zero only
+```
+
+so `Ψ ∈ K' := ℂ(w)⟨ψ(w+ν_a) : a⟩` with the `ν_a` pairwise incongruent, hence
+`L = ℂ(s)⟨Ψ⟩ = ℂ(w)⟨Ψ⟩ ⊆ K'`.  Jets of the generators are in `K'` by definition of
+`differentialAdjoin`, so every element of `K'` — a fortiori of `L` — is a quotient of jet
+polynomials and `exists_hasShiftTubeDatum_jetFieldQuotientC` applies.  `(22)` then holds for every
+nonzero element of `L` without ever touching a higher-order multiplication theorem.
+
+What is left for `(22)` is plumbing only: the bridge from `exists_jetPoly_presentation`'s
+`MvPolynomial (differentialJetSet …) F` to the `MvPolynomial (Fin Mm) (Polynomial ℂ)` the datum
+theorem consumes.  Card B built the same bridge once, as `ZetaPrimeLogGammaField.gammaFieldQuotientFun`;
+check it for reuse before rebuilding.
+
+## 2026-08-19 — entry 79: equation (6) is Lean-proved on a vertical line
+
+`HTGeometry/ArchimedeanBracketRatio` (green, wired):
+
+```text
+tendsto_bracketRatio_archimedeanProduct
+    (1 + Σᵢ Aᵢ(t)·G(t)^{kᵢ}) / (1 + Σᵢ Bᵢ(t)·G(t)^{k'ᵢ})  →  1
+    for coefficients of polynomial growth and strictly positive exponents
+archimedeanProductLine_ne_zero
+    the archimedean product never vanishes on an admissible vertical line
+tendsto_archimedeanQuotient_valuation                            ← equation (6)
+    ((a·Num·G^{u₀}) / (b·Den·G^{v₀})) · (G^{v₀}·shape_B) / (G^{u₀}·shape_A)  →  c(A)/c(B)
+```
+
+The last statement **is** `(6)`: a `K_G`-element presented as a quotient of polynomials in `G`,
+normalized by the lowest power of `G` in numerator and denominator and by the boundary shapes of the
+lowest coefficients, converges to a nonzero residue.  Its hypotheses are exactly the card's: the
+coefficients grow at most polynomially (`(22)` supplies that), the omitted `G`-powers are strictly
+higher, and the two lowest coefficients have nonzero residues against their shapes.
+
+Nonvanishing of the shapes is not assumed — it is **derived** from `a/shape_A → c(A) ≠ 0` via
+`div_ne_zero_iff`, since a vanishing shape would make the quotient zero. Requiring `c(A) ≠ 0` (which
+the card asserts anyway, `c(F) ∈ ℂ^×`) is what makes that derivation available; with `c(A) = 0`
+allowed the shape could vanish and the cancellation would be false.
+
+Card A's remaining gap is now narrow and purely a matter of connecting two existing statements:
+feed `exists_hasShiftTubeDatum_jetFieldQuotientC` (which delivers `shape = s^a(log s)^b` with nonzero
+residue for every nonzero element of `L`) into the `a, b, shape_A, shape_B` slots above, and supply
+the polynomial-growth bounds for the higher coefficients from `HasLogRatApprox.hasTubePolyGrowth`.
+The `Ψ`-normal-form chain of entry 78 is what certifies those coefficients really are `L`-elements.
+
+## 2026-08-19 — entry 80: card A's monomial valuation theorem (6) is Lean-closed
+
+`HTGeometry/ArchimedeanGammaFieldBoundaryLaw` (green, wired, axioms = propext/Classical.choice/Quot.sound):
+
+```text
+jetFieldQuotLine                             an element of the shifted polygamma field on a line
+exists_archimedeanGammaField_boundaryLaw     ← the archimedean monomial valuation theorem
+```
+
+It says: a `K_G`-element whose coefficients are elements of the complex-shifted polygamma field,
+normalized by the lowest power of `G` in numerator and denominator and by the boundary shapes of its
+two lowest coefficients, converges to a nonzero residue `c₁/c₂`.  The datum exponents `a₁,b₁,a₂,b₂`
+are produced, not assumed — they come from `exists_hasShiftTubeDatum_jetFieldQuotientC`, whose only
+hypothesis on the shifts is pairwise incongruence.
+
+The assembly was a three-line application once the two halves were in place, which is the payoff of
+having generalized the datum stack to complex shifts (entry 76) and isolated the bracket ratio
+(entry 79).
+
+**Card A's three `[PROVED HERE]` claims, restated with current status:**
+
+- `(6)` monomial valuation — **closed** (this entry).
+- `(8)` projective tuple boundary: every nonzero tuple in `K_G^r` has an index `j` such that the
+  ratios `F_i/F_j` converge to a nonzero constant point of `ℂ^r`.  `GammaShiftTubeDatum` already
+  carries "the projective boundary of a finite family, uniformly on a tube" — check whether it
+  applies verbatim to data produced by this entry before building anything.
+- `(9)` recurrent finite-phase: a Bohr uniformly almost periodic `f` on a vertical strip that is
+  differentially algebraic over `K_G` is differentially algebraic over `ℂ` and has
+  `rank_ℚ Γ_B(f) < ∞`.  Nothing in the tree addresses Bohr almost periodicity yet; this is the
+  card's remaining open half and the natural next target.
+
+### Route to `(8)`, mapped
+
+The corpus already owns the whole projective-boundary mechanism, at the level of a *signature
+triple* rather than of Gamma factors specifically:
+
+```text
+ShiftShapeDominates d ω b d' ω' b' := d < d' ∨ (d' = d ∧ ω' < ω) ∨ (d' = d ∧ ω' = ω ∧ b' < b)
+exists_dominant_shiftShape_index         a finite family has a dominant signature (lex min on ℤ ×ₗ (ℝ ×ₗ ℤ))
+tendsto_gammaShiftShape_ratio_zero       a dominated shape is negligible against the dominating one
+exists_dominant_shiftShape_tube_ratio    ⇒ the projective boundary of a finite family
+```
+
+`exists_dominant_shiftShape_index` is purely combinatorial in `(d, ω, b)`, so it applies **verbatim**
+with the `G`-exponent `k` in the slot of the Gamma exponent `d` — the orientation already matches,
+since minimizing the exponent of a decaying factor is what "dominant" means in both settings.
+
+What has to be built is only the analytic half: with
+`archShape k ω b t := (archimedeanProductLine lam μ α σ t)^k · gammaShiftShape 0 σ 0 ω b t`, prove
+`ShiftShapeDominates k ω b k' ω' b' → archShape k' ω' b' / archShape k ω b → 0`. Two cases:
+
+- `k < k'`: the factor `G^{k'−k}` decays exponentially and the surviving
+  `s^{ω'−ω}(log s)^{b'−b}` grows polynomially, so `tendsto_polyGrowth_mul_archimedeanProduct_pow_zero`
+  applies. The polynomial-growth bound needs `t^{ω'−ω} ≤ C·t^{⌈ω'−ω⌉₊}` and, for the logarithm,
+  `|vertLog t|^{p} ≤ C·t` when `p ≥ 0` and `≤ 1` when `p < 0` (the vertical logarithm has modulus
+  at least one far up the line).
+- `k = k'`: the `G` factors cancel and the statement **is** `tendsto_gammaShiftShape_ratio_zero`
+  with `d = d' = 0`.
+
+Then `(8)` is the same assembly as `exists_dominant_shiftShape_tube_ratio`, with `archShape` in place
+of `gammaShiftShape`.
+
+## 2026-08-19 — entry 81: card A's projective tuple boundary (8) is Lean-closed
+
+`HTGeometry/ArchimedeanShapeDominance` (green, wired, axioms = propext/Classical.choice/Quot.sound):
+
+```text
+archimedeanShape                            G^k · s^ω · (log s)^b
+archimedeanShape_ne_zero, archimedeanShape_ratio_eq
+hasPolyGrowthLine_gammaShiftShape_ratio     the argument-logarithm ratio grows polynomially
+tendsto_archimedeanShape_ratio_zero         a dominated shape is negligible against the dominating one
+exists_dominant_archimedeanShape_ratio      ← equation (8)
+```
+
+The prediction of entry 80 held: `exists_dominant_shiftShape_index` applied **verbatim** with the
+`G`-exponent in the Gamma-exponent slot, and `ShiftShapeDominates` needed no analogue at all.  Only
+the analytic decay had to be built, and it splits exactly as mapped — `k < k'` via
+`tendsto_polyGrowth_mul_archimedeanProduct_pow_zero` against
+`hasPolyGrowthLine_cpow_mul_vertLog`, and `k = k'` is literally `tendsto_gammaShiftShape_ratio_zero`
+at `d = d' = 0`.
+
+Two details worth keeping:
+
+- `archimedeanShape_ratio_eq` needs **no** hypothesis on the height and none on `σ` beyond the
+  non-vanishing of the product; the split `(G^{k'}S')/(G^kS) = (S'/S)·G^{k'-k}` is `mul_div_mul_comm`
+  followed by `← zpow_sub₀`.  Keeping the `S'/S` factor unexpanded is what lets one statement serve
+  both branches of the dominance case split.
+- `F β ≠ 0` is not available pointwise and must be taken eventually, from
+  `(hdat β).eventually_ne (hc β)` plus `div_ne_zero_iff` — the same device as in entry 79.
+
+**Card A status.** `(6)` closed (entry 80), `(8)` closed (this entry).  The remaining
+`[PROVED HERE]` claim is `(9)`, the recurrent finite-phase theorem: a Bohr uniformly almost periodic
+`f` on a vertical strip, differentially algebraic over `K_G`, is differentially algebraic over `ℂ`
+and has `rank_ℚ Γ_B(f) < ∞`.  Nothing in the tree addresses Bohr almost periodicity; that is the
+next target for this card.
+
+## 2026-08-19 — entry 82: §7's autonomous collapse for archimedean coefficients
+
+`HTGeometry/ArchimedeanStripCollapse` (green, wired):
+
+```text
+HasArchimedeanTubeDatum                    a datum against G^k·s^ω·(log s)^b, uniform over a tube
+archimedean_strip_autonomous_relation      ← §7 (29)→(30): the collapsed constant-coefficient relation
+```
+
+`ArchimedeanShapeDominance` was refactored first: the dominant index is now **named** in
+`tendsto_archimedeanShape_dominantRatio`, with the limit given by an explicit formula (residue
+quotient at a tie, zero at a strictly dominated member), and `exists_dominant_archimedeanShape_ratio`
+is derived from it.  That refactor is what makes the collapse autonomous rather than pointwise: a
+tube datum carries **one** signature for the whole tube, so `β` and the limiting constants `rr` do
+not depend on the abscissa, and the same constant-coefficient relation holds at every `z₀` of the
+strip.  With the existential form of `(8)` the index could in principle vary with `z₀` and nothing
+autonomous would follow.
+
+**The big find of this pass.** The corpus already owns the field-agnostic engine of §7:
+
+```text
+VerticalStripBohrHull.verticalStrip_recurrence_collapse
+    arbitrary coefficient functions F α; supply "F β ≠ 0 eventually along the returns" and
+    "F α/F β → d α", and it returns the collapsed relation together with d β = 1
+```
+
+so §7 needed no new almost-periodicity theory at all — only the two inputs `(6)` and `(8)` supply,
+composed along `l ↦ z₀.im + T l`.  The corpus additionally owns the entire Bohr frequency stack
+(`bohrFrequencyModule`, `BohrFrequencyRankLaw`, `StripSolutionPhaseRankSharp`,
+`AutonomousMinimalOrderBudget`, `GammaFieldDifferentialAlgebraicLaw`), including
+`finite_phase_law_of_differentialAlgebraic_strip` — the same law stated for `ℂ(s)⟨Γ⟩`.
+
+What remains for `(9)`: feed the autonomous relation into the rank law.  The sharp version
+`rank_bohrSpectrum_le_of_autonomous_strip_solution` carries a separant-regularity hypothesis;
+`BohrFrequencyRankLaw.rank_bohrFrequencyModule_le_of_exists_realAutonomousAnnihilator` advertises
+"no minimality hypothesis" and should be checked first.
+
+## 2026-08-19 — entry 83: card A's equation (9) is Lean-closed
+
+`HTGeometry/ArchimedeanFinitePhaseRank` (green, wired, axioms = propext/Classical.choice/Quot.sound):
+
+```text
+jetExpFinsupp, jetExpFinsupp_apply, diffMonomial_jetExpFinsupp
+rank_finite_of_archimedean_relation          ← equation (9)
+```
+
+The assembly is `archimedean_strip_autonomous_relation` (entry 82) followed by
+`PolynomialRelationPhaseRank.rank_finite_of_polynomial_relation`, which is field-agnostic and — the
+point that made this cheap — carries **no separant-regularity hypothesis**, unlike the sharp
+`rank_bohrSpectrum_le_of_autonomous_strip_solution`.  It descends on the degree in the top jet and
+then on the order, so any nonzero polynomial jet relation suffices.  The nonzero polynomial comes
+from `monomialSum_ne_zero` applied to the collapsed coefficient vector, whose value at the dominant
+index is `1`.
+
+The only real bridging work was `diffMonomial_jetExpFinsupp`: the collapse engine indexes monomials
+by `ℕ →₀ ℕ` and multiplies over the finsupp support, while the rank law indexes them by
+`Fin (m+1) → ℕ` and multiplies over all jet orders.  `Finset.prod_subset` extends the support
+product by trivial factors and `Fin.prod_univ_eq_prod_range` closes the gap.
+
+**All three of card A's `[PROVED HERE]` claims are now Lean-closed:**
+
+```text
+(6)  exists_archimedeanGammaField_boundaryLaw      the archimedean monomial valuation theorem
+(8)  exists_dominant_archimedeanShape_ratio        the projective tuple boundary
+(9)  rank_finite_of_archimedean_relation           the recurrent finite-phase law
+```
+
+One honest caveat to settle before the card moves: `(9)` carries **two** almost-periodicity
+hypotheses, `IsStripAlmostPeriodic` (consumed by the rank law) and the `HasVerticalUniformReturn`
+family (consumed by the collapse engine).  Both are formalizations of the card's single Bohr
+hypothesis, and every corpus collapse theorem carries the latter in exactly this form, so the
+statement is faithful — but a bridge `IsStripAlmostPeriodic → HasVerticalUniformReturn` would remove
+the redundancy and should be looked for before the card is promoted.
+
+## 2026-08-19 — entry 84: CARD A MOVED TO STAGE 3
+
+`finite-archimedean-gamma-product-boundary-law.md` is now in `3-formalized/new_scientific_knowledge/other/`.
+
+Closing work of this pass:
+
+```text
+hasVerticalUniformReturn_of_isStripAlmostPeriodic    removes the redundant second Bohr hypothesis
+exists_incongruent_normalForm_archimedeanLogDeriv    Ψ = const + P/Q + Σ c_a ψ(w+ν_a), ν_a incongruent
+```
+
+The bridge was three lines once both definitions were read side by side: an almost period in
+`[N, N+L]` *is* a return time past `N`, so `IsStripAlmostPeriodic → HasVerticalUniformReturn` on
+every closed substrip.  `(9)` now carries exactly the card's single Bohr hypothesis.
+
+The normal form is what makes `(6)` a statement about **this card's** field rather than about an
+abstract jet field: Gauss at order zero flattens `Σ_j n_j ψ(n_j w + μ_j)` over the sigma-type
+`(j : Fin d) × Fin (n j)`, and the linear merge collapses congruent shifts, so
+`L = ℂ(s)⟨Ψ⟩ ⊆ ℂ(w)⟨ψ(w+ν_a)⟩` with the `ν_a` pairwise incongruent — exactly the hypothesis
+`exists_hasShiftTubeDatum_jetFieldQuotientC` wants.
+
+Full axiom audit of the card's seven capstones: all `[propext, Classical.choice, Quot.sound]`.
+
+The card keeps `[NOVELTY UNVERIFIED]`; its two remaining gates (full-text literature comparison,
+independent expert audit) are novelty gates, not formalization gates, and the Lean gate is ticked.
+
+**Remaining: cards C and D.**
+- C `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness` — needs an `AbeDampingPacketData`
+  built from the Appell–Humbert/Hermitian structure (see `abe-jet-ampleness-analytic-layer-closed`).
+- D `gauss-component-quasi-inner-residue-hierarchy` — needs the Connes–Consani one-prime Hankel
+  decomposition (entry 75); reuse `isTraceClass_rankOne_lp` and
+  `memSchattenClass_one_tsum_rankOneTerms_of_summable_norm`.
+
+## 2026-08-19 — entry 85: card C, the damping family is a rescaling — and what it costs
+
+Card C reduces to one object: an `AbeDampingPacketData`, i.e. Abe's Proposition 8.2.  Reading the
+structure against what the tree already owns settles how it must be built.
+
+**The `B`-family is a rescaling of the Gaussian width, not a new function.**
+`gaussianFlatSeedData σ center hm` has `damping = 1 − (1 − G)^m` with
+`G = centeredComplexGaussian σ center`, `G(center) = 1`.  So `damping − 1` vanishes to order `m` at
+the centre **for every `σ`**.  Taking `σ_B := B·σ` therefore leaves the packet jets untouched — which
+is exactly `seed_jet`, the field that has to be `B`-independent — while turning the lattice decay
+into `exp(−B·Σ σ_i k_i²/2)`.  For `k ≠ 0` that is at most `exp(−B·σ_min/2)`, the `e^{−δB}` the
+`majorant` field asks for, with `r = 0`.
+
+**The cost, which is not optional.** `exists_norm_centeredComplexGaussian_lattice_le` is proved from
+`(k+t)² ≥ k²/2 − t²`, so its constant is `exp(Σ σ_i t_i²)` where `t` bounds the coordinates of the
+compact set `K` (real and imaginary parts alike).  Under `σ ↦ B·σ` that constant is `exp(B·Σ σ_i t_i²)`
+and **grows with `B`**.  Netting it against the decay, for `B ≥ 1` and `k ≠ 0`:
+
+```text
+‖G_B(x+k)‖ ≤ exp(B·Σσ_i t_i²) · exp(−B·Σσ_i k_i²/2)
+           ≤ exp(B·(Σσ_i t_i² − σ_min/4)) · exp(−Σ(σ_i/4)k_i²)
+```
+
+so the damping is genuine exactly when `Σ σ_i t_i² < σ_min/4`.  With equal widths that is
+`Σ_i t_i² < 1/4`, a condition on the compact set **alone** — independent of `σ`, hence stable under
+the rescaling.  So the construction needs the jet packet and its evaluation region confined to a
+small compact relative to the lattice spacing; that is the analytic content of Prop 8.2, and it is
+what has to be threaded through as a hypothesis on the packet data rather than assumed away.
+
+Order of work for the next pass:
+
+1. a `B`-uniform Gaussian lattice bound: constant independent of `B`, decay carrying `e^{−δB}`,
+   under the smallness condition above (generalizing `exists_norm_damping_lattice_le`);
+2. the same for the full flat seed (`bump · damping · P`), i.e. a `B`-uniform
+   `exists_norm_flatGaussianSeed_lattice_le` — the `bump` and polynomial factors are `B`-free, so
+   only the damping factor needs the new bound;
+3. transport from `standardIntegerLattice d` to a general complement `comp : (Fin c → ℤ) →+ (Fin d → ℂ)`,
+   which is where `polynomialGaussianLatticeWeight` has to be pulled back along `comp`;
+4. assemble `seed`, `seed_jet`, `normal`, `majorant` into `AbeDampingPacketData`.
+
+## 2026-08-19 — entry 86: card C, the scaled-Gaussian damping bound
+
+`HTGeometry/QuasiAbelianScaledGaussianDamping` (green, wired, warning-free,
+axioms = propext/Classical.choice/Quot.sound):
+
+```text
+sum_width_sq_ge_of_ne_zero          a nonzero integer vector costs at least one full width
+norm_scaledGaussian_lattice_damped  ‖G_{Bσ}(x+k)‖ ≤ exp(-(σ₀/4 - (Σσᵢ)·2ρ²)·B) · exp(-Σ(σᵢ/4)kᵢ²)
+                                    for B ≥ 1, k ≠ 0, and x in a region of radius ρ about the centre
+```
+
+This is step 1 of entry 85, and it is the step that carries the whole `e^{-δB}`.  The proof is the
+coordinatewise estimate `(k+t)² ≥ k²/2 - t²` — hint `sq_nonneg (k + 2t)`, since
+`k²/2 + 2kt + 2t² = (k/√2 + √2 t)²` — followed by splitting `-B·Σσᵢkᵢ²/2` into one half that is
+discharged against `B ≥ 1` to give the `B`-free Gaussian weight, and one half that is bounded below
+by `σ₀` because some `|kᵢ| ≥ 1`.
+
+The smallness constant appears exactly where entry 85 predicted: the damping rate is
+`σ₀/4 - (Σσᵢ)·2ρ²`, positive precisely when the evaluation region is small compared with the
+lattice spacing.  It is stated as a *conclusion* about that quantity rather than as a hypothesis, so
+callers may instantiate `ρ` and discharge positivity themselves — which is what the packet data will
+do.
+
+Next: step 2 (the same bound for `bump · damping · P`, where only the damping factor is
+`B`-dependent), then step 3 (pull the lattice weight back along a general complement `comp`), then
+the four-field assembly.
+
+## 2026-08-19 — entry 87: card C, the damped flat seed (step 2)
+
+`HTGeometry/QuasiAbelianScaledFlatSeedDamping` (green, wired, warning-free):
+
+```text
+exists_norm_scaledFlatSeed_lattice_damped
+    ‖(bump · damping_{Bσ} · P)(x+k)‖ ≤ C · exp(-rate·B) · polynomialGaussianLatticeWeight …
+    for B ≥ 1, k ≠ 0, x in the ρ-region;  rate = σ₀/4 - (Σσᵢ)·2ρ²
+```
+
+Of the seed's three factors only the damping carries the scale, so the separator's strip bound and
+the polynomial's lattice growth transfer unchanged from `exists_norm_flatGaussianSeed_lattice_le`,
+and the whole `B`-dependence is the Gaussian bound of entry 86.
+
+One place where the hypothesis had to be strengthened rather than dropped: `norm_damping_le` bounds
+the damping by `‖G‖·Σ_{r<m}(1+‖G‖)^r`, and that geometric factor is only `B`-uniform once
+`‖G‖ ≤ 1`.  That needs `exp(-rate·B) ≤ 1`, hence `0 ≤ rate` — so `hpos` is a genuine hypothesis of
+this step, not bookkeeping.  With it the factor is at most `2^m` and the constant is `Cb · 2^m · Cp`,
+free of `B`.
+
+Remaining on card C: step 3 (pull `polynomialGaussianLatticeWeight` back along a general complement
+`comp : (Fin c → ℤ) →+ (Fin d → ℂ)`, since the seed machinery is written for
+`standardIntegerLattice d`), then the four-field `AbeDampingPacketData` assembly.
+
+## 2026-08-19 — entry 88: card C, step 3 begins — real translates, not just lattice ones
+
+`QuasiAbelianScaledGaussianDamping` refactored (green, warning-free, dependents rebuilt):
+
+```text
+norm_scaledGaussian_realTranslate_damped   the primary statement: an arbitrary REAL translate v
+    ‖G_{Bσ}(x + v)‖ ≤ exp(-rate·B) · exp(-Σ(σᵢ/4)vᵢ²)     whenever σ₀ ≤ Σσᵢvᵢ²
+norm_scaledGaussian_lattice_damped         now a corollary, via sum_width_sq_ge_of_ne_zero
+```
+
+**Why this is the right shape for step 3.**  `AbeDampingPacketData.majorant` is stated for a general
+complement `comp : (Fin c → ℤ) →+ (Fin d → ℂ)`, whose values are *not* integer vectors, so the
+lattice-indexed bound cannot be applied directly.  Replacing "nonzero integer vector" by the
+hypothesis `σ₀ ≤ Σ σᵢ vᵢ²` — which is what the integrality was only ever used for — makes the bound
+apply to any translate carrying enough Gaussian mass, `comp z` included.
+
+**The constraint this exposes, and it is structural.**  `poincareTerm ψ seed γ x = (ψ.factor γ x)⁻¹ · seed(x+γ)`,
+and for a general `AutomorphicFactor` the inverse factor is unconstrained — the structure carries
+only `normalized`, `cocycle`, `nowhereZero`, no size information.  Moreover the seed's separator
+factor is only `StripBounded`, so `comp z` must keep imaginary parts bounded: the complement must be
+**real**, which is exactly the corpus's design assumption (`the lattice is real, so translates never
+move the imaginary parts`, recorded on `abe-jet-ampleness-analytic-layer-closed`).
+
+So the remaining work on card C is not more estimates of this kind but an interface question: the
+majorant needs a growth bound on `(ψ.factor γ)⁻¹` along the complement, which is precisely the
+Appell–Humbert/Hermitian data that `AutomorphicFactor` does not carry.  Next pass: add that datum
+as an explicit hypothesis class, prove the majorant from it plus the two bounds now in hand, and
+assemble the four fields.
+
+### Card C: the remaining chain, with every link now identified
+
+The majorant field bounds a **jet** of the Poincaré term, not its value, so the chain is:
+
+```text
+1. jet estimate         ‖multiIndexJetEvalCLM p a F‖ ≤ C(a,r) · sup_{polydisc(p,r)} ‖F‖
+2. factor growth        ‖(ψ.factor (comp z) x)⁻¹‖ ≤ const · exp(Σ τᵢ (vec z i)²)
+3. seed decay           entry 87, now for real translates (entry 88)
+4. discreteness         κ · Σⱼ (zⱼ)² ≤ Σᵢ (vec z i)²      — comp is a proper lattice embedding
+5. assemble             seed, seed_jet, normal, majorant
+```
+
+Verified toolchain names for step 1 (checked in scratch against this toolchain):
+
+```text
+Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le
+    (j) (hr : 0 < r) (DiffContOnCl f (ball z r)) (∀ w ∈ sphere z r, ‖f w‖ ≤ C)
+      ⊢ ‖iteratedDeriv j f z‖ ≤ j! * C / r ^ j
+Complex.norm_cderiv_le                                   first-order form
+GaloisForLFunctions.RHTower.deningerNormalCircle_iteratedDeriv_le
+    the corpus's one-variable instance of the same estimate
+```
+
+`multiIndexJetEvalCLM x a = orderedPartialJetEvalCLM x (multiIndexWord a)`, i.e. iterated partial
+derivatives along the word, so step 1 is the coordinatewise iteration of that estimate; there is no
+`multiIndexJetEvalCLM` norm bound anywhere in the tree yet (grep for `multiIndexJetEvalCLM` against
+`norm_|le_|bound|estimate` returns nothing), so it has to be built.
+
+Steps 2 and 4 are the Appell–Humbert data that `AutomorphicFactor` does not carry — they enter as an
+explicit structure, which is the honest formalization of Abe's hypothesis rather than an assumption
+smuggled into the conclusion.
+
+## 2026-08-19 — entry 89: card C, the directional Cauchy estimate (link 1)
+
+`HTGeometry/MultivariateEntireCauchyEstimate` (green, wired, warning-free):
+
+```text
+differentiable_multivariateEntire        an entire source is differentiable
+hasDerivAt_lineThrough                   the complex line through a point in a fixed direction
+hasDerivAt_multivariateEntire_line       its restriction, with the directional derivative
+norm_partialDerivEntire_le               ‖∂_v g (x)‖ ≤ M / r  from  sup_{‖t‖=r} ‖g(x+t·v)‖ ≤ M
+```
+
+This is the one-slot case of link 1, and it is the whole analytic content: a mixed jet is
+`orderedPartialJetEvalCLM x word = (wordPartialDerivEntire word ·).1 x`, an iterated directional
+derivative, so the multi-slot bound is this lemma applied along the word with shrinking radii.
+
+Two toolchain facts worth recording, both of which cost a build each:
+
+- the mathlib estimate is `norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le` in the **root**
+  namespace, not `Complex.…` despite being about `ℂ`;
+- it lives in `Mathlib.Analysis.Complex.Liouville`, which the corpus's narrow
+  `Mathlib.Analysis.Calculus.FDeriv.Analytic` import does not pull in.  Searching the ranked index
+  will not find mathlib names — only `grep` over `.lake/packages/mathlib` does.
+
+The bridge `fderiv ℂ g x v = deriv (fun t => g (x + t·v)) 0` is `HasFDerivAt.comp_hasDerivAt`
+against `hasDerivAt_lineThrough`; no polydisc machinery is needed for the single slot.
+
+### Link 1 complete: the multi-index jet estimate
+
+`MultivariateEntireCauchyEstimate` extended (green, wired, warning-free):
+
+```text
+norm_smul_coordinateJetDirection_le   a coordinate direction is a unit vector
+norm_wordPartialDerivEntire_le        ‖∂_word g (x)‖ ≤ M / ρ^n  from  sup over ‖y-x‖ ≤ n·ρ
+norm_multiIndexJetEvalCLM_le          the same for a multi-index jet of total degree n
+```
+
+The induction is on the word length with a **fixed** radius `ρ` and a ball that shrinks by `ρ` per
+slot: if `‖g‖ ≤ M` on `‖y-x‖ ≤ (n+1)ρ`, then `‖∂_{w_last} g‖ ≤ M/ρ` on `‖y-x‖ ≤ nρ`, and the
+induction hypothesis finishes.  Using the sup norm on `Fin d → ℂ` is what makes this work: a step
+`t · e_i` with `‖t‖ = ρ` moves only one coordinate, so it changes `‖y-x‖` by at most `ρ`, and no
+polydisc bookkeeping is needed.
+
+`wordPartialDerivEntire` lives in `MultivariateJetCompositionLaw`, not in `MultivariateEntirePartialDeriv`
+— a second missing import in the same file, after the mathlib one of entry 89.
+
+## 2026-08-19 — entry 90: card C, the seed bound for a general (real) complement
+
+`QuasiAbelianScaledFlatSeedDamping` extended (green, wired, warning-free):
+
+```text
+exists_norm_scaledFlatSeed_realTranslate_damped
+    ‖(bump · damping_{Bσ} · P)(x + v)‖ ≤ C · exp(-rate·B) · (∏(1+|vᵢ|)^{degᵢ}) · exp(-Σ(σᵢ/4)vᵢ²)
+    for B ≥ 1, any REAL v with σ₀ ≤ Σσᵢvᵢ², and x in the ρ-region
+```
+
+This is the shape the general complement needs: `comp z` is real but not integral, so the
+lattice-indexed bound of entry 87 does not apply to it.
+
+Three points where the real case is *easier* than the lattice case, not harder:
+
+- the separator's strip bound is immediate — a **real** translate does not move imaginary parts at
+  all, so `(x+v).im = x.im` and the compact bound transfers verbatim;
+- the polynomial factor comes from `exists_norm_mvPolynomial_eval_le`, which is stated for an
+  arbitrary argument `y`, so no lattice version is needed: `1 + ‖yᵢ‖ ≤ (1+2R)(1+|vᵢ|)` via
+  `Complex.norm_le_abs_re_add_abs_im`;
+- the Gaussian factor is entry 88's real-translate bound.
+
+So the seed side of the majorant is complete for a general real complement.  What remains for card C
+is links 2 and 5: the structure carrying `comp`'s realness, its uniform discreteness
+(`κ·Σⱼzⱼ² ≤ Σᵢ(vec z i)²`) and boundedness, together with the Gaussian growth bound on
+`(ψ.factor (comp z))⁻¹`; then the Leibniz/jet step using entry 89's
+`norm_multiIndexJetEvalCLM_le`, and the four-field assembly.
+
+## 2026-08-19 — entry 91: card C, the complement weight transfer
+
+`HTGeometry/QuasiAbelianComplementWeightTransfer` (green, wired, warning-free):
+
+```text
+one_add_sum_le_prod_one_add                          the Weierstrass product inequality
+one_add_lin_sum_le                                   1 + lin·Σ|zⱼ| ≤ (1+lin)·∏(1+|zⱼ|)
+prod_mul_exp_le_polynomialGaussianLatticeWeight      ambient bound ⇒ complement-indexed weight
+```
+
+The seed bound is indexed by the ambient coordinates `Fin d` through the real vector the complement
+realizes; the majorant is indexed by the complement `Fin c`.  Two properties convert one to the
+other, and both are recorded as explicit hypotheses rather than assumed:
+
+- **uniform discreteness** `κ·Σⱼzⱼ² ≤ Σᵢ(vec z i)²` turns the ambient Gaussian into a Gaussian in
+  the index, with rate `eps·κ`;
+- **boundedness** `|vec z i| ≤ lin·Σⱼ|zⱼ|` turns the ambient polynomial factor into a polynomial in
+  the index, at the cost of `(1+lin)^{Σdegᵢ}` — via the Weierstrass inequality
+  `1 + Σaⱼ ≤ ∏(1+aⱼ)`, which is what lets a *sum* over the index be absorbed into a *product*.
+
+Toolchain note: `Int.cast_natAbs` does not exist in this toolchain; the working route from
+`((z j).natAbs : ℝ)` to `|((z j : ℤ) : ℝ)|` is
+`rw [← Int.cast_natCast, Int.natCast_natAbs, Int.cast_abs]`.  Also `Finset.prod_pow` (`∏ f^n = (∏ f)^n`)
+and `Finset.prod_pow_eq_pow_sum` (`∏ a^{nᵢ} = a^{Σnᵢ}`) are different lemmas and are easy to confuse.
+
+Card C's analytic side is now complete: seed decay, factor-growth transfer, and the jet estimate all
+exist.  What is left is the bookkeeping structure that packages `vec`, `κ`, `lin` and the factor
+bound, and the four-field `AbeDampingPacketData` assembly.
+
+## 2026-08-19 — entry 92: card C, link 2 closed — the Poincaré majorant of the damped seed
+
+`HTGeometry/QuasiAbelianComplementGrowthData` (green, wired, warning-free, no `sorry`):
+
+```text
+dampedFlatSeed                          the interpolation seed at scale B
+ComplementGaussianGrowth                the Appell–Humbert datum, as an explicit structure
+one_le_sum_sq_of_ne_zero                a nonzero index vector carries a unit of squared mass
+norm_poincareTerm_dampedFlatSeed_le     ← the value-level majorant
+    ‖poincareTerm ψ (dampedFlatSeed … B) (comp z) x‖
+      ≤ C · exp(-rate·B) · polynomialGaussianLatticeWeight (Fin c) (Σdegᵢ) (eps·κ) z
+```
+
+`ComplementGaussianGrowth` records exactly what `AutomorphicFactor` lacks and nothing more: the
+complement is realized by **real** vectors (`vec_eq`), the inverse factor grows at most Gaussianly
+along it (`factor_bound`), and the complement is uniformly discrete (`discrete`) and boundedly
+linear (`bounded`).  These are Abe's hypotheses made explicit rather than assumed away; the theorem
+consuming them is unconditional.
+
+The gap condition is `G.tau i + eps ≤ σ i / 4`: the seed's Gaussian must beat the factor's growth
+with room to spare, and what survives is `exp(-eps·Σvᵢ²)`, which the transfer of entry 91 converts
+into the complement-indexed weight.
+
+`σ₀ ≥ 0` is **derived**, not assumed — it follows from `hpos` and `κ > 0`, since
+`σ₀·κ/4 ≥ (Σσᵢ)·2ρ² ≥ 0`.  Worth noting because `set rate := …` hides the inequality behind the
+abbreviation: the proof has to `rw [hrate] at hpos` before `linarith` can see it.
+
+Card C now needs only the jet step — Leibniz for `multiIndexJetEvalCLM` on the product
+`(factor)⁻¹ · seed`, bounded through entry 89's `norm_multiIndexJetEvalCLM_le` — and the four-field
+`AbeDampingPacketData` assembly.
+
+## 2026-08-19 — entry 93: card C, the jet majorant — and Leibniz was not needed
+
+`HTGeometry/QuasiAbelianDampedJetMajorant` (green, wired, warning-free):
+
+```text
+norm_multiIndexJet_poincareTerm_dampedFlatSeed_le
+    ‖multiIndexJetEvalCLM p a (poincareTermEntire ψ (dampedFlatSeed … B) (comp z))‖
+      ≤ (C · exp(-rate·B) · weight z) / r^{card (MultiIndexSlot a)}
+    whenever the ball of radius card·r about p stays inside K
+```
+
+**Correction to entry 92's plan.**  I expected to need a Leibniz expansion of
+`multiIndexJetEvalCLM` on the product `(factor)⁻¹ · seed`, with separate jet bounds for each factor.
+That is unnecessary.  The value-level majorant of entry 92 holds *uniformly on all of `K`*, and
+Cauchy's estimate only ever needs a sup bound on the region the jet's circles sweep — so the jet
+bound is a direct application of `norm_multiIndexJetEvalCLM_le` to the value bound, with the single
+extra factor `r^{-card}`.  The whole module is five lines of proof.
+
+This is worth remembering as a pattern: when a bound is available uniformly on a compact set rather
+than at a point, Cauchy's estimate replaces any product rule for jets.
+
+Card C's remaining work is exactly one item: the four-field `AbeDampingPacketData` assembly
+(`seed`, `seed_jet`, `normal`, `majorant`).  `seed := dampedFlatSeed …`, `majorant` is this entry,
+and `seed_jet` is the `B`-independence of the packet jets recorded in entry 85 — the damping is
+flat to order `m` at the centre for **every** width, so rescaling does not move the jets.
+
+## 2026-08-19 — entry 94: card C, the growth datum made compact-uniform, and why `normal` ≠ `majorant`
+
+`ComplementGaussianGrowth` refactored (both dependent modules green, warning-free): the `K`
+parameter is gone and `factor_bound` now reads
+
+```text
+factor_bound : ∀ K, IsCompact K → ∃ cst, 0 ≤ cst ∧ ∀ z x ∈ K, ‖(ψ.factor (comp z) x)⁻¹‖ ≤ cst · exp(Σ τᵢ (vec z i)²)
+```
+
+which is what an Appell–Humbert factor actually satisfies, and what the summability field needs.
+
+**The finding that changes the assembly plan.**  `normal` and `majorant` cannot be served by the
+same bound:
+
+- `majorant` needs the **damped** bound `C·e^{-δB}·weight(z)`, and that is only available on the
+  packet's ρ-region, because the damping rate `σ₀κ/4 - (Σσᵢ)·2ρ²` is positive only for a region
+  small compared with the lattice spacing (entries 85–87).
+- `normal` needs a bound on **every** compact of `ℂ^d`, since it asserts
+  `SummableLocallyUniformlyOn … Set.univ`.  On a large compact the smallness condition fails and no
+  damped bound exists — but `normal` is stated at a *fixed* `B`, so it does not need damping at all:
+  any constant depending on `K` and `B` will do.
+
+So the remaining piece is the **undamped** real-translate Gaussian lattice bound,
+`‖G_{Bσ}(x+v)‖ ≤ C(K,B)·exp(-Σ(Bσᵢ/2)vᵢ²)`, with no smallness hypothesis — the same coordinatewise
+estimate `(k+t)² ≥ k²/2 - t²` as entry 86 but keeping the constant instead of fighting it.  Feeding
+that plus `factor_bound K` into
+`summableLocallyUniformlyOn_of_polynomialGaussianLattice_bound` gives `normal`; the `z = 0` term is
+`seed` itself, bounded on a compact by continuity.
+
+`seed_jet` remains the free field (entry 85: the damping is flat to order `m` at the centre for every
+width).  With `normal` in place, all four fields of `AbeDampingPacketData` are available.
+
+## 2026-08-19 — entry 95: card C, the undamped compact bound (the `normal` half)
+
+`HTGeometry/QuasiAbelianSeedCompactBound` (green, wired, warning-free):
+
+```text
+exists_centered_radius_of_isCompact        a compact set has a uniform radius about any centre
+exists_norm_scaledGaussian_realTranslate_le
+    ‖G_{Bσ}(x+v)‖ ≤ C(K,B) · exp(-Σ(σᵢ/4)vᵢ²)   for B ≥ 1, any real v, x in any compact K
+```
+
+This is the `normal` half of the split identified in entry 94: **no smallness hypothesis**, the
+constant `exp(B·(Σσᵢ)·2ρ²)` simply absorbs the region, and the surviving rate `σᵢ/4` is free of `B`
+because `B ≥ 1` makes `-B·σᵢvᵢ²/2 ≤ -σᵢvᵢ²/4`.  Same coordinatewise estimate as entry 86 — hint
+`sq_nonneg (v + 2t)` for `(v+t)² ≥ v²/2 - t²` — but keeping the constant instead of fighting it.
+
+Contrast worth keeping: entry 86 *fights* the constant, because `majorant` needs the exponential in
+`B` to survive; here the constant is harmless, because `normal` is a fixed-`B` statement.  The same
+inequality serves both roles with opposite bookkeeping.
+
+Remaining on card C: the seed-level version of this bound (`bump · damping · P`, the geometric factor
+of the damping now bounded by a `K,B`-dependent constant rather than by `2^m`), then `normal` via
+`summableLocallyUniformlyOn_of_polynomialGaussianLattice_bound`, then the four-field assembly.
+
+## 2026-08-19 — entry 96: card D, the Connes–Consani source reduction is Lean-proved
+
+`RHTower/ConnesConsaniTraceClassReduction` (green, wired into `RHTower`, warning-free,
+axioms = propext/Classical.choice/Quot.sound):
+
+```text
+IsTraceClass.adjoint                    the trace class is adjoint-closed
+memSchattenClass_one_modulusSq_sub      |E+R|² - |E|² is trace class when R is
+memSchattenClass_one_pow_sub            (A+T)^m - A^m is trace class when T is
+memSchattenClass_one_modulusPow_sub     ← the source reduction: |E+R|^{2m} - |E|^{2m} is trace class
+```
+
+**What this is and is not.**  Card D's §1 says: the omitted terms of the one-prime decomposition are
+rapidly smoothing or finite rank, **hence** their contribution to the `2m`-th positive power differs
+from that of `E_{m,k,p}` by a trace-class operator.  The word "hence" is now a theorem: the
+implication *trace-class perturbation ⟹ trace-class difference of `2m`-th powers* is proved
+unconditionally.  What remains cited is only the premise — that Connes–Consani's omitted terms are
+smoothing or finite rank — which is a statement about their construction, not about the inference.
+
+The proof is pure ideal theory, no estimate anywhere:
+`(E+R)^*(E+R) - E^*E = E^*R + (R^*E + R^*R)`, each summand in the Schatten 1-class by the two-sided
+ideal property; then induction on `m` through
+`(A+T)^{m+1} - A^{m+1} = ((A+T)^m - A^m)(A+T) + A^m T`.
+
+The corpus already owned every closure property needed — `MemSchattenClass.one_add`, `one_neg`,
+`one_sub`, `memSchattenClass_one_comp_left/right`, `memSchattenClass_one_smul` — so the only new
+ingredient was adjoint-closure, which is three lines in the **factorization** form
+(`T = S ∘L U ⟹ T* = U* ∘L S*`, and Hilbert–Schmidt is adjoint-closed).  Trying to prove it for
+`MemSchattenClass 1` directly would have required `approxNumber (adjoint T) = approxNumber T`, which
+the tree does not have; going through `IsTraceClass` avoids it entirely.
+
+Three toolchain notes: the trace modules live in the plain `RHTower` namespace, **not**
+`GaloisForLFunctions.RHTower`; `IsTraceClass` is a `def` unfolding to `Exists`, so dot notation on
+its proofs fails and the lemmas must be named explicitly; and `∘L` binds tighter than `^`, so
+`A ^ m ∘L T` parses as `A ^ (m ∘L T)`.
+
+### Entry 96, continued: the finite-rank half of the premise
+
+Added to the same module (green, wired, warning-free, axiom-clean):
+
+```text
+memSchattenClass_one_of_hasRankLE   a finite-rank operator is Schatten-1
+```
+
+Its approximation numbers vanish from the rank onwards (`approxNumber F k ≤ ‖F - F‖ = 0` once
+`HasRankLE F k`), so the Schatten-1 series is a finite sum.  `HasRankLE.mono` already existed in
+`NuclearRankOneSchatten` — checked before writing, and my duplicate was removed.
+
+So of card D's cited premise — *the omitted terms are rapidly smoothing or finite rank* — the
+**finite rank** disjunct is now discharged, and the **rapidly smoothing** disjunct is already
+available as `memSchattenClass_one_tsum_rankOneTerms_of_summable_norm` (an absolutely
+norm-summable series of rank-one terms is Schatten-1), which is the standard formalization of rapid
+smoothing.
+
+**The one gap that keeps this from being a closed chain.**  `memSchattenClass_one_modulusSq_sub`
+consumes `IsTraceClass R` (the Hilbert–Schmidt *factorization* form), because that is what makes
+adjoint-closure a three-line proof; but both criteria above conclude `MemSchattenClass 1 R`, and the
+tree has no bridge `MemSchattenClass 1 → IsTraceClass` (only the converse,
+`IsTraceClass.memSchattenClass_one`).  Two ways to close it, in increasing order of reusability:
+
+1. prove `HasRankLE F n → IsTraceClass F` directly (finite rank ⇒ Hilbert–Schmidt, then
+   `F = F ∘L P` with `P` the finite-rank projection onto `(ker F)^⊥`);
+2. prove adjoint-closure of `MemSchattenClass 1` — either via
+   `approxNumber (adjoint T) = approxNumber T`, or by showing the rank-one and finite-rank classes
+   are adjoint-closed and pushing `adjoint` through the `tsum` (`adjoint` is a continuous additive
+   isometry, so `map_tsum` applies and `‖adjoint (A k)‖ = ‖A k‖` keeps the norms summable).
+
+Route 2 is the better investment: it makes the whole Schatten-1 ideal adjoint-closed, which the tree
+currently lacks.

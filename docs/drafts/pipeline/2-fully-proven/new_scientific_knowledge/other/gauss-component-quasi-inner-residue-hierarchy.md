@@ -3120,3 +3120,42 @@ Three remarks.
    `((p−1)/p)^{2m} G^m` differ by a trace-class operator. That is a published theorem about the
    Hankel operator `H = (1−P)M_ρ P` and is not new content of this card; the passage from `G` to the
    arithmetic residue is entirely Lean-proved (§6, fifty-sixth pass).
+
+## Lean status, fifty-eighth pass: the source reduction's inference is proved
+
+`RHTower/ConnesConsaniTraceClassReduction.lean` (new, `lake build`-green,
+`#print axioms = [propext, Classical.choice, Quot.sound]`, wired into `RHTower`):
+
+```text
+IsTraceClass.adjoint                             the trace class is adjoint-closed
+memSchattenClass_one_modulusSq_sub               |E+R|² − |E|² is trace class when R is
+memSchattenClass_one_pow_sub                     (A+T)^m − A^m is trace class when T is
+memSchattenClass_one_modulusPow_sub              |E+R|^{2m} − |E|^{2m} is trace class
+memSchattenClass_one_modulusPow_sub_of_hilbertSchmidt
+                                                 the same with the remainder given as S ∘L U
+memSchattenClass_one_of_hasRankLE                a finite-rank operator is trace class
+```
+
+§1 of this card reads: the omitted terms of the one-prime decomposition are rapidly smoothing or
+finite rank, **hence** their contribution to the `2m`-th positive power differs from that of
+`E_{m,k,p}` by a trace-class operator.  The word "hence" is now a theorem.  The proof is pure ideal
+theory, with no estimate anywhere:
+
+```text
+(E+R)*(E+R) − E*E = E*R + (R*E + R*R)
+```
+
+each summand in the Schatten 1-class because that class is a two-sided ideal closed under addition,
+followed by induction on `m` through `(A+T)^{m+1} − A^{m+1} = ((A+T)^m − A^m)(A+T) + A^m T`.
+
+Adjoint-closure is the only ingredient the tree lacked, and it is three lines in the **factorization**
+form `IsTraceClass T := ∃ S U Hilbert–Schmidt, T = S ∘L U`, because the factorization transposes.
+Proving it for `MemSchattenClass 1` directly would require `approxNumber (adjoint T) = approxNumber T`,
+which the tree does not have.
+
+What §1 still cites is therefore only the **premise** — that Connes–Consani's omitted terms are
+smoothing or finite rank — a statement about their construction, not about the inference.  Of that
+premise the finite-rank disjunct is discharged here, and the smoothing disjunct is available as
+`NuclearRankOneSchatten.memSchattenClass_one_tsum_rankOneTerms_of_summable_norm`; feeding either into
+the reduction needs a bridge `MemSchattenClass 1 → IsTraceClass`, equivalently finite rank ⇒
+Hilbert–Schmidt, which the tree does not yet have.

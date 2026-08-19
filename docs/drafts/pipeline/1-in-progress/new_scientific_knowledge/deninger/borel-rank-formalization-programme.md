@@ -1134,3 +1134,1124 @@ Only one input to the covering is left: `∏ₖ det Aₖ ≥ c > 0` on the orbit
 squared covolume of the sublattice spanned by the first `k` basis vectors, and Minkowski's convex
 body theorem bounds it below by `Vₖ λ₁ᵏ / 2ᵏ`, where `λ₁` is the arithmetic minimum of the form —
 fixed along the orbit, since congruate forms take the same values on the lattice.
+
+## F30. The lower bound for the potential `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelProjMono.lean`
+
+- **`projNorm_mono`** — if one form dominates `λ` times another, so do their projected norms.  The
+  proof is a two-sided use of the intrinsic characterisation (F26): the optimal competitor for the
+  larger form is *a* competitor for the smaller one.
+- `d_mono`, **`det_leadingBlock_mono`** — hence `λ^k · det Bₖ ≤ det Aₖ` for every leading minor.
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelIntegralMinor.lean`
+
+- `det_leadingBlock_intCast`, `one_le_det_leadingBlock_of_int` — a form with integer entries has
+  integral leading minors, and a positive integer is at least one.
+- **`pow_le_det_leadingBlock`** — **if `A` dominates `λ` times an integral positive definite form,
+  every leading minor of `A` is at least `λ^k`.**
+
+This supplies the lower bound the descent scheme (F28) needs, and it does so **without geometry of
+numbers**: the plan recorded in F29 was to apply Minkowski's convex body theorem to each prefix
+sublattice, which would have required setting up a Haar measure and fundamental domain in each rank.
+Integrality of the standard Gram matrix of integer vectors does the same work — its leading minors
+are positive integers, hence at least one — and the uniform ellipticity bound
+`A[v] ≥ λ‖v‖²` (already available as `quadForm_ge_of_sphere_bound`) transfers that to `A` through
+`det_leadingBlock_mono`.  `exists_ne_zero_norm_le_of_covolume` is therefore not needed here.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+greedy + size reduced ⟹ IsSiegel (4/3) 1              [PROVED]
+the Siegel entry bound c dₖ γₖᵢ² ≤ K d'ᵢ              [PROVED]
+projNorm is intrinsic (a squared distance)             [PROVED]
+the swap identity and its strict decrease              [PROVED]
+the descent scheme; the potential is intrinsic         [PROVED]
+a swap moves only one leading minor                    [PROVED]
+a positive lower bound for the potential               [PROVED]
+assembling the descent into SL(n,ℤ)·𝔖 = X             [next]
+the arithmetic step of Siegel finiteness               [OPEN]
+```
+
+Every ingredient of the covering is now proved.  What is left is assembly: instantiate
+`exists_terminal_of_contracting` with the orbit as the state space, `potentialOf` as the potential,
+`IsSiegel (4/3) 1` as terminality, the lower bound above as `c`, and `3/4` as the contraction factor
+— the step being size reduction followed by a swap at a failing index.
+
+## F31. One descent step `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelDescentStep.lean`
+
+- **`det_leadingBlock_succ`** — consecutive leading minors differ by exactly one diagonal entry,
+  `det A_{k+1} = det A_k · dₖ`.
+- **`isSiegel_two_of_terminal`** — with the Lovász threshold written as `3/4`, terminality of the
+  descent *is* a Siegel bound: `(3/4) dᵢ ≤ projNorm i e_{i+1}` for all `i`, on a size reduced datum,
+  gives `IsSiegel 2 1`.
+- **`potentialOf_swap_lt`** — **a swap at a failing index contracts the potential by `3/4`.**  Only
+  the minor separating the two swapped indices changes; it changes by the ratio of the new to the
+  old Jacobi entry, which the failing condition bounds, and every other factor is positive and
+  unaltered.
+
+Writing the threshold as `3/4` rather than the sharp `4/3` in the Siegel parameter is what makes the
+contraction factor uniform.  With the sharp threshold a failing swap gives only `d'ᵢ < dᵢ`, with no
+fixed ratio, and the descent scheme (F28) would not apply; at the cost of `IsSiegel 2 1` in place of
+`IsSiegel (4/3) 1` — immaterial, since a Siegel set for any parameter serves — every failing swap
+now contracts by the constant `3/4`.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+the Siegel entry bound c dₖ γₖᵢ² ≤ K d'ᵢ              [PROVED]
+projNorm is intrinsic (a squared distance)             [PROVED]
+the swap identity and its strict decrease              [PROVED]
+the descent scheme; the potential is intrinsic         [PROVED]
+a swap moves only one leading minor                    [PROVED]
+a positive lower bound for the potential               [PROVED]
+terminality is a Siegel bound; a swap contracts by 3/4 [PROVED]
+the orbit bookkeeping (integral unimodular closure)    [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [next]
+the arithmetic step of Siegel finiteness               [OPEN]
+```
+
+Both hypotheses of `exists_terminal_of_contracting` are now discharged in the form the covering
+needs: the potential is bounded below by `λ^k` (F30) and every non-terminal state contracts it by
+`3/4` (above).  What is left is purely bookkeeping: a state type carrying "is a congruate of `A` by
+an integral unimodular matrix", closed under the two moves — integral shears (F19) and permutation
+matrices (F27) — so that the terminal state produced by the scheme is exhibited as lying in the
+orbit.
+
+## F32. The integral unimodular orbit `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelOrbit.lean`
+
+- **`IsIntUnimodular`** — a real matrix that is the cast of an *invertible* integral matrix.  Phrased
+  with `IsUnit g` in the matrix ring rather than `IsUnit g.det`, so that a move can be certified by
+  exhibiting its inverse.
+- `isIntUnimodular_one`, **`IsIntUnimodular.mul`** — closure.
+- **`IsIntUnipotent.isIntUnimodular`** — a size-reducing shear qualifies: its integral form is upper
+  triangular with unit diagonal, hence has determinant one.
+- `permMatrixInt`, `permMatrix_eq_cast`, `permMatrixInt_mul_inv`,
+  **`isIntUnimodular_permMatrix`** — a swap qualifies, certified by its explicit integral inverse
+  `permMatrixInt σ⁻¹`.  (`Matrix.det_permutation` is not reachable under these imports; the explicit
+  inverse avoids widening them.)
+- **`InOrbit`**, `inOrbit_refl`, **`InOrbit.congr`** — the congruates of a form under this class,
+  closed under further such congruence, hence under both reduction moves.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+the Siegel entry bound c dₖ γₖᵢ² ≤ K d'ᵢ              [PROVED]
+projNorm is intrinsic (a squared distance)             [PROVED]
+the swap identity and its strict decrease              [PROVED]
+the descent scheme; the potential is intrinsic         [PROVED]
+a swap moves only one leading minor                    [PROVED]
+a positive lower bound for the potential               [PROVED]
+terminality is a Siegel bound; a swap contracts by 3/4 [PROVED]
+the orbit and its closure under both moves             [PROVED]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [next]
+the arithmetic step of Siegel finiteness               [OPEN]
+```
+
+Every component of the covering is now proved.  What remains is a single assembly: take the state
+type to be the Jacobi data whose form lies in `InOrbit A`, note that positive definiteness is
+inherited along congruence so each state has Jacobi data, and feed
+`exists_terminal_of_contracting` the potential `potentialOf`, the bound `λ^k` (F30), the factor
+`3/4`, and the step "size-reduce, then swap at a failing index" (F19, F31), whose two moves are
+unimodular by the above.
+
+## F33. The two moves, inside the orbit `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelOrbitMoves.lean`
+
+- **`JacobiData.posDef`** — the form of a Jacobi datum is positive definite (`Uᵀ D U` with `U`
+  invertible and `D` positive diagonal).  This is what lets every congruate carry Jacobi data again,
+  so the descent never leaves the world it started in.
+- `potentialOf_shear_eq` — a shear leaves the potential fixed, because it leaves the diagonal fixed.
+- **`exists_sizeReduced_inOrbit`** — size reduction, inside the orbit, at constant potential.
+- **`exists_swap_inOrbit`** — a swap at a failing index, inside the orbit, contracting the potential
+  by `3/4`.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+the Siegel entry bound c dₖ γₖᵢ² ≤ K d'ᵢ              [PROVED]
+projNorm is intrinsic (a squared distance)             [PROVED]
+the swap identity and its strict decrease              [PROVED]
+the descent scheme; the potential is intrinsic         [PROVED]
+a swap moves only one leading minor                    [PROVED]
+a positive lower bound for the potential               [PROVED]
+terminality is a Siegel bound; a swap contracts by 3/4 [PROVED]
+the orbit and its closure under both moves             [PROVED]
+both moves realised inside the orbit                   [PROVED]
+the uniform lower bound along the orbit                [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [next]
+the arithmetic step of Siegel finiteness               [OPEN]
+```
+
+Two steps remain for the covering, both bookkeeping.  First, the lower bound of F30 has to be taken
+*along the orbit*: for a congruate `γᵀAγ` the comparison form is `γᵀγ`, which is integral because
+`γ` is, and the ellipticity constant `λ` of `A` transfers unchanged since
+`(γᵀAγ)[v] = A[γv] ≥ λ‖γv‖² = λ(γᵀγ)[v]`.  Second, the descent scheme is instantiated with a
+constant terminal predicate — "some Siegel datum lies in the orbit" — so that failure of terminality
+is available at *every* state, which is exactly what `exists_terminal_of_contracting` consumes.
+
+## F34. The covering `SL(n,ℤ)·𝔖 = X` `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelCovering.lean`
+
+- `dotProduct_self_le`, **`exists_ellipticity`** — a positive definite form dominates a multiple of
+  the identity.  The sup norm of `Fin n → ℝ` is not the Euclidean one, so the constant picks up a
+  factor `n`: `‖v‖²_∞ ≥ (v ⬝ᵥ v)/n`, and `λ = m/n` for the sphere bound `m` of
+  `exists_lower_bound_of_isCompact`.
+- `IsIntUnimodular.isUnit_det`, **`potentialOf_ge_of_inOrbit`** — the potential is bounded below
+  along the orbit.  The comparison form of a congruate `γᵀAγ` is `γᵀγ`, integral because `γ` is, and
+  the ellipticity constant transfers unchanged since `(γᵀAγ)[v] = A[γv] ≥ λ‖γv‖² = λ(γᵀγ)[v]`.
+- **`exists_siegel_inOrbit`** — **every positive definite form is unimodularly equivalent to one
+  satisfying the Siegel bounds `IsSiegel 2 1`.**
+
+This is the covering half of Siegel's property, unconditional and closed.  The descent scheme is
+instantiated with a *constant* terminal predicate — "some Siegel datum lies in the orbit" — so that
+failure of terminality is available at every state, which is the shape the scheme consumes; the
+alternative, a state-dependent predicate, fails because size reduction preserves the potential and
+so cannot itself be a contraction.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+the Siegel entry bound c dₖ γₖᵢ² ≤ K d'ᵢ              [PROVED]
+projNorm is intrinsic (a squared distance)             [PROVED]
+the swap identity and its strict decrease              [PROVED]
+the descent scheme; the potential is intrinsic         [PROVED]
+a swap moves only one leading minor                    [PROVED]
+a positive lower bound for the potential               [PROVED]
+terminality is a Siegel bound; a swap contracts by 3/4 [PROVED]
+the orbit and its closure under both moves             [PROVED]
+both moves realised inside the orbit                   [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+the arithmetic step of Siegel finiteness               [OPEN]
+```
+
+One half of Siegel's property is therefore closed.  The other half — that a Siegel set meets only
+finitely many of its own translates — still needs the arithmetic step recorded at F25: the analytic
+input `c dₖ γₖᵢ² ≤ K d'ᵢ` is proved, integrality turns it into `dₖ ≤ K d'ᵢ` whenever `γₖᵢ ≠ 0`, and
+what is missing is the passage from those support constraints to a bound on the entries themselves.
+
+## F35. Arithmetic inputs to Siegel's finiteness `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelFinitenessInputs.lean`
+
+- **`exists_nonzero_pair_of_mul_eq_one`** — if `M N = 1` then for each diagonal index some index
+  pairs the two matrices nontrivially: otherwise the diagonal entry of the product would vanish.
+- `one_le_sq_of_int_ne_zero` — a nonzero integer entry has square at least one.
+- **`d_le_of_entry_ne_zero`** — hence `γₖᵢ ≠ 0` forces `c dₖ ≤ K d'ᵢ`: integrality collapses the
+  analytic entry bound (F25) to a comparison of diagonal entries.
+- **`exists_d_comparable`** — every index of the congruate has a partner at which the comparison
+  holds in *both* directions, obtained by pairing `γ` against `γ⁻¹` on the diagonal.
+
+### Where the finiteness argument still stands
+
+The naive completions have been checked and do not close, which is worth recording so they are not
+re-attempted:
+
+* Pairing through the permutation supplied by `det γ ≠ 0` bounds only `d_{σ(i)} / d'ᵢ`, not
+  `dₖ / d'ᵢ` for arbitrary `k` (noted at F25).
+* Multiplying the two entry bounds gives `|γₖᵢ · (γ⁻¹)ᵢₖ| ≤ K` for *every* pair, but this bounds
+  neither factor when the other vanishes.
+* `exists_d_comparable` gives `d_{k(i)} ≍ d'ᵢ` at the paired index, and the Siegel bound
+  `dₖ ≤ tⁿ d_l` for `k ≤ l` then bounds `γₖᵢ` for every `k ≥ k(i)` — but for `k < k(i)` the entry
+  `dₖ` may be far smaller than `d_{k(i)}`, and the bound `γₖᵢ² ≤ K d'ᵢ / dₖ` is vacuous there.
+
+So the missing step is exactly the control of the entries *above* the paired index, which in the
+classical treatments comes from a Bruhat-type decomposition of `γ` rather than from the entry bound
+alone.  Everything feeding it is proved.
+
+Updated state of the reduction-theory lane:
+
+```text
+... (Jacobi coordinates through the covering)          [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+the analytic entry bound c dₖ γₖᵢ² ≤ K d'ᵢ            [PROVED]
+integrality: γₖᵢ ≠ 0 ⟹ c dₖ ≤ K d'ᵢ                   [PROVED]
+the two-sided partner of each index                    [PROVED]
+control of the entries above the paired index          [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F36. The weighted isometry normal form `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelWeightedIsometry.lean`
+
+- **`weightedIsometry_congr`** — stripping the unipotent factors from both sides of `A' = γᵀAγ`
+  leaves `M = U γ (U')⁻¹` with `Mᵀ D M = D'`.
+- **`weightedIsometry_entry_le`** — such an `M` satisfies `dₖ Mₖᵢ² ≤ d'ᵢ`, from
+  `∑ₖ dₖ Mₖᵢ² = d'ᵢ`.
+
+This is the right normal form for the finiteness half, and it corrects the shape of the remaining
+problem.  Bounding `γ` is *equivalent* to bounding `M`, because the unipotent factors are bounded on
+both sides — `U'` by size reduction (F19) and `U⁻¹` uniformly by compactness (F18).  A worked
+example shows why this matters: for `A = diag(ε, 1/ε)` and `γ` the shear by `m`, the entry bound
+alone gives only `m² ≤ K/ε²`, while size reduction of the *congruate* forces `m = 0`.  The entry
+bound is therefore not the whole story, and any completion must use the unipotent data — which the
+normal form isolates.
+
+What remains is a statement purely about weighted isometries: an integral `γ = U⁻¹ M U'` with
+`Mᵀ D M = D'`, both diagonals Siegel-ordered and both unipotent parts size reduced, has bounded
+entries.  This is where the classical treatments invoke a Bruhat-type decomposition.
+
+Updated state of the reduction-theory lane:
+
+```text
+... (Jacobi coordinates through the covering)          [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+the analytic entry bound c dₖ γₖᵢ² ≤ K d'ᵢ            [PROVED]
+integrality: γₖᵢ ≠ 0 ⟹ c dₖ ≤ K d'ᵢ                   [PROVED]
+the two-sided partner of each index                    [PROVED]
+the weighted isometry normal form γ = U⁻¹ M U'         [PROVED]
+boundedness of a Siegel-ordered weighted isometry      [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F37. Columns of a weighted isometry `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelIsometryColumns.lean`
+
+- `transpose_mul_diagonal_apply` — the entries of `Mᵀ D`.
+- **`weightedIsometry_col_sq`** — the congruence is an *identity* on columns:
+  `∑ₖ dₖ Mₖᵢ² = d'ᵢ`.
+- **`weightedIsometry_col_orth`** — distinct columns are `D`-orthogonal: `∑ₖ dₖ Mₖᵢ Mₖⱼ = 0`.
+- **`weightedIsometry_support_sum_le`** — for an integral `M`, the weights of a column's support
+  already sum to at most `d'ᵢ`.
+
+This upgrades what F36 recorded.  Everything before used only the *inequality* `dₖ Mₖᵢ² ≤ d'ᵢ`, and
+that inequality is provably too weak: in the two-dimensional example `d = d' = (ε, 1/ε)` it permits
+an off-diagonal entry as large as `1/ε`, whereas the identity forces it to vanish — because the
+diagonal entry is a nonzero integer, so its own term already exhausts `d'ᵢ`, leaving nothing for the
+other.  The support bound is the general form of that argument.
+
+Updated state of the reduction-theory lane:
+
+```text
+... (Jacobi coordinates through the covering)          [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+the analytic entry bound c dₖ γₖᵢ² ≤ K d'ᵢ            [PROVED]
+integrality: γₖᵢ ≠ 0 ⟹ c dₖ ≤ K d'ᵢ                   [PROVED]
+the weighted isometry normal form γ = U⁻¹ M U'         [PROVED]
+the column identity, orthogonality and support bound   [PROVED]
+boundedness of a Siegel-ordered weighted isometry      [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F38. The exact column sum `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelColumnSum.lean`
+
+- **`siegel_col_sum_eq`** — the diagonal entry of a congruate is an *exact* weighted sum:
+  `∑ₖ dₖ ((U γ)ₖᵢ)² = A'ᵢᵢ`.
+- **`siegel_col_sum_bound`** — hence `∑ₖ dₖ ((U γ)ₖᵢ)² ≤ (1 + n tⁿ/4) d'ᵢ`.
+
+This is the correct strengthening of the entry bound (F25), which records only the single-term
+consequence `dₖ γₖᵢ² ≤ K d'ᵢ`.
+
+It also corrects a mismatch that F37 left implicit.  The support argument proved there applies to an
+*integral* weighted isometry, but the isometry `M = U γ (U')⁻¹` of F36 is not integral — only `γ` is.
+The exact sum above resolves which object carries which property: the weights `dₖ` attach to the
+columns of `U γ`, while integrality attaches to `γ`.  The two are related by the bounded factors `U`
+and `U⁻¹`, and any completion of the finiteness half has to pass through that relation rather than
+apply the support bound to `γ` directly.
+
+Updated state of the reduction-theory lane:
+
+```text
+... (Jacobi coordinates through the covering)          [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+the analytic entry bound c dₖ γₖᵢ² ≤ K d'ᵢ            [PROVED]
+integrality: γₖᵢ ≠ 0 ⟹ c dₖ ≤ K d'ᵢ                   [PROVED]
+the weighted isometry normal form γ = U⁻¹ M U'         [PROVED]
+the column identity, orthogonality and support bound   [PROVED]
+the exact column sum ∑ₖ dₖ ((Uγ)ₖᵢ)² ≤ K d'ᵢ         [PROVED]
+reconciling integrality of γ with the weights of Uγ    [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F39. The support weight of a column `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelSupportWeight.lean`
+
+- **`siegel_col_weight_sum`** — `c ∑ₖ dₖ γₖᵢ² ≤ (1 + n tⁿ/4) d'ᵢ`: the weighted column bound holds
+  for `γ` itself, not only for `U γ`.
+- **`siegel_support_weight_sum`** — hence, for integral `γ`, the weights of the *support* of a column
+  sum to at most a multiple of `d'ᵢ`.
+
+This closes the reconciliation left open at F38.  The obstruction there was that the weights attach
+to the columns of `U γ` while integrality attaches to `γ`; quasi-diagonality (F18) is exactly the
+bridge, since it bounds `∑ₖ dₖ vₖ²` by `A[v]` for *every* `v` — in particular for the columns of `γ`.
+No new geometry was needed: the missing step was an application of a lemma proved much earlier in
+the lane, and the earlier single-term entry bound (F25) was simply a weaker consequence of the same
+inequality.
+
+Updated state of the reduction-theory lane:
+
+```text
+... (Jacobi coordinates through the covering)          [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+the analytic entry bound c dₖ γₖᵢ² ≤ K d'ᵢ            [PROVED]
+the weighted isometry normal form γ = U⁻¹ M U'         [PROVED]
+the column identity, orthogonality and support bound   [PROVED]
+the exact column sum ∑ₖ dₖ ((Uγ)ₖᵢ)² ≤ K d'ᵢ         [PROVED]
+the support weight bound for γ itself                  [PROVED]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+The finiteness half now has, for every column `i` of every `γ` carrying one Siegel form to another:
+`∑_{k : γₖᵢ ≠ 0} dₖ ≤ (K/c) d'ᵢ`, together with the same statement for `γ⁻¹` with the roles of `d`
+and `d'` exchanged, and the two-sided partner of F35.  What is still missing is the combinatorial
+step that turns these support constraints into a bound on the entries themselves.
+
+## F40. The top diagonal entries are comparable `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelTopEntry.lean`
+
+- **`exists_row_nonzero`** — every row of an invertible matrix has a nonzero entry (from the
+  pairing of F35 applied to `γ γ⁻¹ = 1`).
+- **`d_top_le`** — **`c d_l ≤ K tⁿ d'_l` for the largest index `l`**, with no hypothesis on where in
+  the row the nonzero entry sits: whichever column `i` it occupies satisfies `i ≤ l`, so the Siegel
+  ordering absorbs it.
+
+The *row* direction is what makes this work, and the asymmetry is worth recording.  Running the same
+argument down a column gives nothing: a nonzero `γ_{k i}` yields `c dₖ ≤ K d'ᵢ`, and for `k < l` the
+Siegel ordering then runs the wrong way — `d_l` is not bounded by `dₖ`.  So the argument closes at
+the top index and nowhere else, which is precisely why the finiteness half needs more than the entry
+bound, and why the descending induction of the classical proof starts where it does.
+
+Updated state of the reduction-theory lane:
+
+```text
+... (Jacobi coordinates through the covering)          [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+the weighted isometry normal form γ = U⁻¹ M U'         [PROVED]
+the column identity, orthogonality and support bound   [PROVED]
+the support weight bound for γ itself                  [PROVED]
+the top diagonal entries are comparable                [PROVED]
+the descending induction to the lower indices          [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F41. The top row is bounded `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelTopRow.lean`
+
+- **`row_top_bounded`** — **`c² γₗᵢ² ≤ K² t²ⁿ` for every `i`**, where `l` is the largest index.
+
+This is the first point in the finiteness half where an actual *entry* of the conjugating matrix is
+bounded, rather than merely constrained.  The chain is
+`dₗ γₗᵢ² ≲ d'ᵢ ≲ d'ₗ ≲ dₗ`, and `dₗ` cancels — the last link being the reverse of `d_top_le` (F40),
+which is that same lemma applied to `γ⁻¹`.
+
+It is the base case of the descending induction of Siegel's finiteness.  The induction step must
+pass to the complement of the top coordinate, where the argument repeats with `n` replaced by
+`n − 1`; that requires a sub-structure on the Jacobi data, which is the next brick.
+
+Updated state of the reduction-theory lane:
+
+```text
+... (Jacobi coordinates through the covering)          [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+the weighted isometry normal form γ = U⁻¹ M U'         [PROVED]
+the column identity, orthogonality and support bound   [PROVED]
+the support weight bound for γ itself                  [PROVED]
+the top diagonal entries are comparable                [PROVED]
+the top row of γ is bounded                            [PROVED]
+the induction step to n − 1                            [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F42. Truncating Jacobi data `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelTruncation.lean`
+
+- **`JacobiData.trunc`** — the leading `k × k` part of a Jacobi datum is again a Jacobi datum.
+- **`JacobiData.trunc_form`** — its form is the leading block of the original form (this is
+  `leadingBlock_congr`, F20, read in the other direction).
+- **`trunc_isSiegel`**, **`trunc_sizeReduced`** — both Siegel bounds and size reduction are
+  inherited: the diagonal bound constrains consecutive indices, all of which survive truncation, and
+  the other two are entrywise.
+
+This is the structure the descending induction runs on.  Having bounded the top row (F41), the
+argument restricts to the leading block and repeats with `n` replaced by `n − 1`; what the induction
+still needs is that the *conjugation* descends — that the leading block of `γᵀAγ` differs from the
+congruate of the leading blocks by contributions from the top row, which F41 has bounded.
+
+Updated state of the reduction-theory lane:
+
+```text
+... (Jacobi coordinates through the covering)          [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+the weighted isometry normal form γ = U⁻¹ M U'         [PROVED]
+the column identity, orthogonality and support bound   [PROVED]
+the support weight bound for γ itself                  [PROVED]
+the top diagonal entries are comparable                [PROVED]
+the top row of γ is bounded                            [PROVED]
+truncation of Jacobi data, with inherited bounds       [PROVED]
+descent of the conjugation to the leading block        [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F43. Comparable minors give comparable diagonals `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelMinorComparison.lean`
+
+- **`d_le_of_det_le`** — if the leading minors of two Jacobi data are comparable within a factor `C`
+  in both directions, then their diagonals are comparable within `C²`.  Each `dₗ` is the ratio of
+  consecutive minors (F31), so the comparison transfers with the constant squared.
+
+This reshapes what the finiteness half is waiting for.  The descending induction of F41–F42 is one
+route; this is another, and a shorter one: with `dₖ ≍ d'ₖ` for *all* `k`, the entry bound
+`γₖᵢ² ≤ (K/c) d'ᵢ / dₖ` becomes `≍ dᵢ / dₖ`, which the Siegel ordering bounds outright whenever
+`i ≤ k`, while the entries with `i > k` are exactly the ones size reduction of `U'` controls — the
+mechanism already isolated by the worked example at F36.
+
+The remaining input is then a single statement about minors rather than an induction over indices:
+**the leading minors of two reduced bases of one lattice are comparable.**  This holds because
+reduction makes each leading minor comparable to the minimum covolume over sublattices of that rank,
+which is a lattice invariant; it is a Minkowski-type input, and it is the one place in the finiteness
+half where geometry of numbers genuinely enters.
+
+Updated state of the reduction-theory lane:
+
+```text
+... (Jacobi coordinates through the covering)          [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+the weighted isometry normal form γ = U⁻¹ M U'         [PROVED]
+the column identity, orthogonality and support bound   [PROVED]
+the support weight bound for γ itself                  [PROVED]
+the top diagonal entries are comparable                [PROVED]
+the top row of γ is bounded                            [PROVED]
+truncation of Jacobi data, with inherited bounds       [PROVED]
+comparable minors ⟹ comparable diagonals              [PROVED]
+the leading minors of two reduced bases are comparable [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F44. The leading minors of a reduced form are minimal in its orbit `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelSubsetProduct.lean`,
+`SiegelWeightedGram.lean`, `SiegelGramDomination.lean`, `SiegelMinorLowerBound.lean`
+
+The open item of F43 is closed.  The route turned out not to need Minkowski's convex body theorem,
+nor Hermite normal form, nor any echelon reduction of the sublattice basis — three approaches that
+were tried and abandoned in that order.  What it needs is Cauchy–Binet, which the corpus already
+owned (`GaloisForLFunctions.det_mul_eq_sum_fun`, `factorial_mul_det_mul` in `HTGeometry/CauchyBinet`).
+
+The `k`-th leading minor of `A' = γᵀAγ` is the Gram determinant of the frame `C` of the first `k`
+columns of `γ`, taken in the form `A`:
+
+  `leadingBlock_congr_frame` : `leadingBlock hk (γᵀ A γ) = Cᵀ A C`.
+
+Three steps then bound it from below by the `k`-th leading minor of `A`.
+
+- **Domination** (`det_congr_ge`).  Quasi-diagonality `c · Σ dₘ vₘ² ≤ A[v]` on a Siegel set
+  (`exists_quasiDiagonal`, F13) upgrades from vectors to determinants without any Loewner-order
+  determinant monotonicity: every Jacobi diagonal entry of `CᵀAC` is *attained* at an explicit
+  vector (`projNorm_eq_form_sub`, F26), and that same vector bounds the corresponding entry for
+  `Cᵀ D C` from above (`projNorm_le_form_sub`).  Multiplying the `k` comparisons gives
+  `cᵏ · det(Cᵀ D C) ≤ det(Cᵀ A C)`.
+- **Cauchy–Binet** (`factorial_mul_det_weightedGram`).  For a diagonal weight,
+  `k! · det(Cᵀ D C) = Σ_f (∏_b d_{f b}) · det(C∘f)²`, the sum over *all* index functions.  All terms
+  are nonnegative; the non-injective `f` contribute zero.  Since the frame is integral, some maximal
+  minor is a nonzero integer (found by positivity of the determinant, not by a rank argument), so its
+  square is at least one.
+- **The weight comparison** (`prod_castLE_le_prod_of_injective`).  For an injective `f`, the selected
+  indices listed in increasing order satisfy `sⱼ ≥ j`, so the Siegel growth bound `dᵢ ≤ tⁿ dⱼ`
+  (`d_le_pow_n`) compares the selected weight product with the leading one factor by factor.  The
+  increasing enumeration is `Finset.orderIsoOfFin` on the image; `le_val_of_strictMono` supplies
+  `sⱼ ≥ j`.
+
+Together:
+
+  **`exists_minor_lower_bound`** — for every `t ≥ 1, u` there is `C > 0` such that whenever `J` is
+  Siegel-`(t,u)` and `J'.form = γᵀ J.form γ` with `γ` integral unimodular,
+  `det Aₖ ≤ C · det A'ₖ` for every `k ≤ n`.
+
+Applying it in both directions — the reverse needs `IsIntUnimodular.exists_inv`, the integral inverse
+— and feeding F43:
+
+  **`exists_d_comparable_of_siegel`** — two Siegel-reduced forms in one integral orbit have
+  `dₗ ≤ C² d'ₗ` for every `l`, with `C` depending only on `n, t, u`.
+
+Note that this half of the argument uses no size reduction: `exists_quasiDiagonal` and the weight
+comparison are consequences of the two Siegel bounds alone.
+
+## F45. Siegel's finiteness property `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelEntryBoundSiegel.lean`,
+`SiegelIsometryVanishing.lean`, `SiegelFiniteness.lean`
+
+With `d ≍ d'` in hand the finiteness half closes, and it closes by a mechanism different from the
+descending induction of F41–F42, which is now superseded.
+
+- **The entry bound without size reduction** (`form_diag_le_siegel`, `siegel_entry_bound_of_siegel`,
+  `d_le_of_entry_ne_zero_of_siegel`).  `A_jj = Σ_m d_m U_{mj}²` runs only over `m ≤ j`, where
+  `|U_{mj}| ≤ u` and `d_m ≤ tⁿ d_j`; so `A_jj ≤ n u² tⁿ d_j` with no `|U| ≤ 1/2` hypothesis.  The
+  whole finiteness argument is therefore a statement about the Siegel set as defined, not about a
+  size-reduced subset of it.
+- **The threshold** .  A nonzero entry of `δ = γ⁻¹` forces `d_a ≤ R d_b` with
+  `R = C² · n u² tⁿ / c`; this is `d_le_of_entry_ne_zero_of_siegel` applied to `δ`, combined with
+  F44.
+- **The vanishing** (`triangular_conjugate_entry_zero`).  Write the inverse isometry as
+  `M⁻¹ = U' δ U⁻¹`.  Both triangular factors move indices in the direction that *improves* the weight
+  comparison — `U'` upper triangular forces `a ≥ i`, and `U⁻¹` upper triangular (`inv_upper`) forces
+  `b ≤ k` — so every surviving term needs `δ_{ab} ≠ 0` with `d_i ≤ tⁿ d_a ≤ tⁿ R d_b ≤ t²ⁿ R d_k`.
+  Beyond that threshold the entry is zero.
+- **The isometry is bounded** (`isometryInv`, `isometryInv_mul`, `isometryInv_eq`).  From
+  `MᵀDM = D'` the weighted transpose `(M⁻¹)_{ik} = d_k M_{ki} / d'_i` is a left inverse, hence *the*
+  inverse.  So the vanishing above transfers to `M` itself: `M_{ki} = 0` once `d_i > t²ⁿ R d_k`, and
+  where it does not vanish `d_k M_{ki}² ≤ d'_i ≤ C² d_i ≤ C² t²ⁿ R d_k` bounds it.  This is the step
+  the earlier attempts kept missing: `M` is *not* bounded by the isometry relation alone — the
+  relation only says `‖D^{1/2} M D'^{-1/2}‖ = 1` — and it is not bounded by integrality alone either,
+  since `M` is not integral.  It is bounded because integrality of `γ⁻¹` kills the entries the
+  isometry relation cannot control.
+- **The conclusion** (`exists_gamma_bound`, `siegel_finiteness`).  `γ = U⁻¹ M U'` with all three
+  factors bounded, so `|γ_{ki}| ≤ n²·C_u·B·u`; and bounded integral matrices form a finite set.
+
+  **`siegel_finiteness`** — `{γ integral unimodular : ∃ J, J' Siegel-(t,u) with J'.form = γᵀ J.form γ}`
+  is finite.
+
+Updated state of the reduction-theory lane:
+
+```text
+... (Jacobi coordinates through the covering)          [PROVED]
+** SL(n,ℤ)·𝔖 = X  (the covering) **                   [PROVED]
+comparable minors ⟹ comparable diagonals              [PROVED]
+the leading minors of two reduced bases are comparable [PROVED]
+d ≍ d' for two reduced forms in one orbit              [PROVED]
+the weighted isometry is bounded                       [PROVED]
+** {γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel finiteness) **     [PROVED]
+```
+
+Both halves of the Siegel property are now unconditional in Lean.  What stands between them and
+`isFinitelyPresented_specialLinearGroup_of_siegel` (F7) is only that its hypotheses are stated for an
+**open connected** `V ⊆ posDefCone n` whose translates cover, whereas the Siegel set is closed.  The
+bridge is:
+
+```text
+Jacobi coordinates are continuous functions of the form      [OPEN]
+the open Siegel set (strict inequalities) is open            [OPEN]
+it is connected (continuous image of a convex parameter set) [OPEN]
+its translates cover (the closed set of F32 sits inside it)  [OPEN]
+meetSet V is finite (F45)                                    [PROVED]
+SL(n,ℤ) is finitely presented                                [OPEN]
+```
+
+Continuity of the Jacobi coordinates is elementary and does not need invariance of domain: the
+diagonal is a ratio of leading minors, `d_i = det A_{i+1} / det A_i` (F31), and the unipotent factor
+satisfies the LDL recursion `d_i U_{ij} = A_{ij} − Σ_{m<i} d_m U_{mi} U_{mj}`, which is a strong
+induction on `i`.
+
+**Scope note.**  `SL(n,ℤ)` finitely presented gives `K₂(ℤ)` finitely generated, hence — with Moore —
+`K₂(ℚ)` torsion.  That does *not* advance the Deninger card, because `milnorKDeg_numberField_torsion`
+already gives `K_m^M(ℚ)` torsion for every `m ≥ 2` unconditionally (Bass–Tate, degree drop
+`m ≥ [F:ℚ]+1`).  The card needs `K₂(𝒪_F)` for `[F:ℚ] = d ≥ 2`, so the reduction theory has to be run
+for `SL_n(𝒪_F)` acting on the `F`-Hermitian sub-cone of `posDefCone(nd)` — a linear slice of the same
+cone, so Macbeath's convex-domain criterion still applies verbatim, and the finiteness half is
+inherited from the ambient group.  It is the *covering* half that has to be redone over `𝒪_F`
+(Humbert reduction).  That is the next layer of this lane.
+
+## F46. `SL(n, ℤ)` is finitely presented `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/JacobiUniqueness.lean`, `JacobiContinuity.lean`,
+`JacobiSignFlip.lean`, `OpenSiegelSet.lean`
+
+Macbeath's criterion (F7) wants an **open connected** fundamental set; the Siegel set is closed.  The
+bridge is that the Jacobi coordinates are continuous functions of the form, so replacing `≤` by `<`
+gives an open set that still contains the closed Siegel set of the covering theorem.
+
+- **Uniqueness and the recursion** (`form_apply`, `ldl_recursion`, `U_unique`).  Reading `A = UᵀDU`
+  at `(i,j)` and separating the diagonal term gives `dᵢ Uᵢⱼ = Aᵢⱼ − Σ_{m<i} dₘ Uₘᵢ Uₘⱼ`, since
+  `Uₘᵢ = 0` for `m > i` and `Uᵢᵢ = 1`.  With `d` already determined by the minors (F31), a strong
+  induction on the row index determines `U`.  So the Jacobi datum of a form is unique, and the
+  recursion is exactly what makes it continuous.
+- **Continuity** (`jacOf`, `continuous_jacOf_d`, `continuous_jacOf_U`).  `dᵢ = det A_{i+1} / det A_i`
+  with positive denominator; then the recursion, by the same strong induction.  No invariance of
+  domain, no inverse function theorem.
+- **Sign normalisation** (`JacobiData.flip`, `exists_siegel_inOrbit_det_one`).  The covering theorem
+  produces an integral matrix of determinant `±1`, but `SL(n,ℤ)` wants `+1`.  Conjugating a Jacobi
+  datum by a diagonal sign matrix `s` sends `U` to `sᵢ Uᵢⱼ sⱼ` and fixes `d`, so it preserves both
+  Siegel bounds; multiplying the reducing matrix by that sign matrix corrects the determinant.
+- **The open Siegel set** (`openSiegelSet n t u`, strict bounds).  Open, by continuity.  Nonempty for
+  `t, u > 1`, the identity form being inside.  Connected, because
+  `coneMat '' openSiegelSet = psiParam '' siegelParam` — the parameter region `siegelParam` is cut out
+  by linear equalities and strict linear inequalities, hence convex, hence preconnected, and
+  `Subtype.val` is inducing.  Its translates cover with `(t,u) = (3,2)`, since `IsSiegel 2 1` implies
+  the strict bounds.  Its overlap set is finite by F45, the map `g ↦ (slReal g)ᵀ` being injective.
+
+  **`isFinitelyPresented_specialLinearGroup`** — `SL(n, ℤ)` is finitely presented, for every `n`.
+
+Final state of the reduction-theory lane over `ℤ`:
+
+```text
+Jacobi coordinates, uniqueness, continuity              [PROVED]
+SL(n,ℤ)·𝔖 = X  (the covering), with det = 1            [PROVED]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel finiteness)            [PROVED]
+the open Siegel set: open, nonempty, connected          [PROVED]
+** SL(n, ℤ) is finitely presented **                    [PROVED]
+```
+
+### What this does and does not give
+
+It gives the geometric input of the `K₂` finite-generation chain **over `ℤ`**.  Closing that chain
+still needs, at finite level `n`:
+
+```text
+E_n(ℤ) = SL_n(ℤ)  (transvections generate over a Euclidean domain)   [OPEN]
+K₂(n, ℤ) central in St_n(ℤ)  (the corpus owns only the stable form,
+  `KTwo_mem_center_of_card`, which needs a spare index)              [OPEN]
+K₂(ℤ) = K₂(n, ℤ) for large n  (stability)                           [OPEN]
+```
+
+and it does **not** advance the Deninger card, for the reason recorded at F45: `K_m^M(ℚ)` is already
+torsion for every `m ≥ 2` by Bass–Tate.  The card needs `[F:ℚ] ≥ 2`, hence Humbert reduction for
+`𝒪_F`-lattices.
+
+### What the `𝒪_F` layer inherits and what it does not
+
+Writing `N = n·[F:ℚ]` and `Y = {A ∈ posDefCone N : A is 𝒪_F-Hermitian}`, the group `SL_n(𝒪_F)` acts on
+`Y`, which is the intersection of the open convex cone with a linear subspace — so it is again open
+and convex, and Macbeath's convex-domain criterion applies verbatim.  Moreover the **finiteness**
+half is inherited for free: if `V ⊆ Y` is contained in an ambient open Siegel set, then
+`{γ ∈ SL_n(𝒪_F) : γV ∩ V ≠ ∅} ⊆ {λ ∈ SL_N(ℤ) : λV ∩ V ≠ ∅}`, which F45 makes finite.
+
+What does not transfer is the **covering**: ambient reduction of `A ∈ Y` produces `λ ∈ SL_N(ℤ)` with
+`λ·A` reduced, but `λ` need not be `𝒪_F`-linear and `λ·A` need not lie in `Y`.  So the covering has to
+be redone with `𝒪_F`-linear moves.  The two places where the ℤ-argument uses more than `𝒪_F` offers:
+
+- *size reduction* uses division with remainder.  Over `𝒪_F` the replacement is the covering radius:
+  `𝒪_F` is a full lattice in `F ⊗ ℝ`, so there is `C` with `∀ x, ∃ a ∈ 𝒪_F, ‖x − a‖ ≤ C`.  The
+  descent only ever used *boundedness* of the shear, never `≤ 1/2`, so this is a constant change.
+- *the swap* replaces a basis vector by another vector of a basis.  Over `𝒪_F` a primitive vector
+  need not extend to a basis; the replacement is Bass's stable range theorem, `SL_n(𝒪)` transitive on
+  unimodular rows for `n ≥ 3`.
+
+The Jacobi diagonal also becomes a tuple indexed by the archimedean places, so the potential and the
+Lovász condition become multi-dimensional.  That is the next layer of this lane.
+
+## F47. Design of the `𝒪_F` layer
+
+Two formulations of the symmetric space of `SL_n(𝒪_F)` were compared before starting.
+
+**(a) Place-indexed.**  `∏_{v real} P_n(ℝ) × ∏_{v complex} P_n(ℂ)`, an open convex subset of a real
+vector space, so Macbeath applies verbatim.  Rejected as the primary formulation: the finiteness half
+(F45) would have to be redone from scratch, and it is the harder half.
+
+**(b) Inside the ambient cone.**  `N = n·[F:ℚ]`, `SL_n(𝒪_F) ↪ SL_N(ℤ)` (the determinant of the
+ℤ-linear map is `N_{F/ℚ}(det) = 1`), and `Y ⊆ posDefCone N` the sub-symmetric space.  `Y` is the
+intersection of the open convex cone with a linear subspace, hence open and convex in that subspace,
+so Macbeath still applies; and — the decisive point — the **finiteness half is inherited free**:
+
+  `{γ ∈ SL_n(𝒪_F) : γV ∩ V ≠ ∅} ⊆ {λ ∈ SL_N(ℤ) : λV ∩ V ≠ ∅}`,
+
+which F45 makes finite as soon as `V` lies inside an ambient Siegel set.  Formulation (b) is the one
+to build.
+
+### The description of `Y`
+
+For `α ∈ 𝒪_F` let `M_α` be its matrix on `𝒪_F^n ≅ ℤ^N`.  A real symmetric `A` is the trace form of an
+`F_ℝ`-Hermitian form iff `A(αx, y) = A(x, ᾱy)`, and `ᾱ ∈ F_ℝ` is not in `F` when `F` has a complex
+place — so the defining equations of `Y` are linear with irrational coefficients in general, and the
+clean intrinsic description is instead
+
+  `Y = {A : A is invariant under the compact torus ∏_{v complex} U(1)}`.
+
+**For `F` totally real this collapses**: there is no torus, `ᾱ = α`, and
+
+  `Y = {A ∈ posDefCone N : ∀ α ∈ 𝒪_F, M_αᵀ A = A M_α}`,
+
+a linear subspace cut out by *integral* equations, needing no archimedean machinery in the statement.
+Note also that the `A(αx,y) = A(x,αy)` condition is **incompatible with positive definiteness** when
+`F` has a complex place — `H_v(ix,ix) = −H_v(x,x)` — which is exactly why the involution cannot be
+dropped there.  So the first milestone is `F` totally real, and it is not merely a special case: it is
+the case where the formulation is intrinsic.
+
+### What the ℤ-machinery already gives on `Y`
+
+The Jacobi decomposition of `A ∈ Y` is the ordinary real one — no complex LDL is needed.  A complex
+Hermitian `H = UᴴDU` has real form `Ũᵀ D̃ Ũ` in the basis `(e₁, ie₁, e₂, ie₂, …)`, with `Ũ` again
+unipotent upper triangular (its diagonal blocks are `I₂`) and `D̃ = diag(d₁,d₁,d₂,d₂,…)`; by
+`U_unique`/`d_unique` (F46) that *is* the real Jacobi datum.  So the `𝒪_F`-structure appears purely as
+a constraint on the ambient Jacobi data, and every continuity, uniqueness, minor and isometry lemma of
+F31–F46 applies unchanged.
+
+### What has to be built
+
+```text
+𝒪_F as a ℤ-algebra acting on ℤ^N; the subspace Y; Y open convex in it     [OPEN]
+size reduction over 𝒪_F: the covering radius                             [mathlib]
+  `ZSpan.floor`, `ZSpan.fract_apply`, `ZSpan.norm_fract_le` give
+  `∀ x, ∃ v ∈ span_ℤ b, ‖x − v‖ ≤ Σ ‖b i‖` in five lines; for 𝒪_F use
+  `NumberField.mixedEmbedding.latticeBasis`.
+integrality over 𝒪_F: `1 ≤ ∏_v v(α)^{mult v} = |N_{F/ℚ}(α)|` for α ≠ 0    [mathlib]
+  `NumberField.InfinitePlace.prod_eq_abs_norm` plus `N(α) ∈ ℤ`.
+the 𝒪_F-swap: a primitive vector extends to a basis                       [OPEN]
+  over ℤ this was automatic; over 𝒪_F it is Bass's stable range theorem,
+  `SL_n(𝒪)` transitive on unimodular rows for n ≥ 3.
+the Humbert descent: potential = ∏_i covol(𝒪_F-span of b₁..b_i)²          [OPEN]
+  bounded below by discreteness of the lattice of sublattice covolumes.
+Humbert-reduced ⟹ contained in an ambient ℤ-Siegel set                    [OPEN]
+  this is what buys the finiteness half from F45.
+SL_n(𝒪_F) finitely presented                                              [OPEN]
+```
+
+### The parallel algebraic lane
+
+`SL_n(𝒪_F)` finitely presented is the *geometric* input of the `K₂` chain.  The algebraic inputs, all
+still open and independent of the above, are: `E_n(𝒪_F) = SL_n(𝒪_F)` for `n ≥ 3`;
+`K₂(n,𝒪_F)` central in `St_n(𝒪_F)` — the corpus owns only the stable form `KTwo_mem_center_of_card`,
+which needs a spare index and so applies to `St(R, ℕ)`, where the group is central but not finitely
+generated; and van der Kallen stability `K₂(n,R) ≅ K₂(R)`.  A partial result available *now* from
+`isFinitelyPresented_specialLinearGroup`: with `G_n := image(St_n(ℤ) → St_{n+1}(ℤ)) =
+closure(indexGens (Fin n))`, every element of `G_n ∩ KTwo ℤ (Fin (n+1))` has a spare index, hence is
+central, so `ker(G_n → E_n(ℤ))` is finitely generated by `fg_ker_of_central_of_isFinitelyPresented`
+once `E_n(ℤ) = SL_n(ℤ)` is available.  That gives finite generation of the *image* of `K₂(n,ℤ)` at
+level `n+1`; passing to `K₂(ℤ)` is exactly where stability is needed.
+
+## F48. The `𝒪_F` layer: foundations `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/OrderBlockEmbedding.lean`, `BalancedOrderForm.lean`,
+`OrderSymmetricSpace.lean`, `OrderSiegelFiniteness.lean`, `BlockJacobiData.lean`
+
+Everything here is for an arbitrary commutative ring `R` free of finite rank `d` over `ℤ` — no number
+field machinery.  Where the construction would be vacuous (an order with a complex place admits no
+positive definite balanced form) the statements are true and empty, so nothing is lost by the
+generality.
+
+- **`blockEmbed`** flattens an `n × n` matrix of `d × d` blocks to an `nd × nd` matrix, with the
+  block-major index bijection `finProdFinEquiv (i,k) = k + d·i`, so blocks are *contiguous* and the
+  ambient order restricts to the lexicographic order on `(block, position)`.  It is unital,
+  multiplicative and injective.  Composing with `Algebra.leftMulMatrix ω` gives **`orderRep`**, and
+  `isIntUnimodular_orderRep` puts units of `M_n(R)` into `IsIntUnimodular` — the interface of F45.
+- **`balancedSubspace`** is the forms for which multiplication by every ring element is self-adjoint.
+  `balancedSubspace_congr` : congruence by `orderRep` preserves it, because scalars are central in
+  `M_n(R)` and `orderRep` is multiplicative.
+- **`orderForms = symmMatrices (nd) ⊓ balancedSubspace`**, **`orderCone`** its positive definite
+  locus — open (preimage of `posDefCone` under the inclusion) and convex (linear preimage).
+  `SL_n(R)` acts by `A ↦ ρ(M⁻¹)ᵀ A ρ(M⁻¹)`; the inverse is what makes it a *left* action while
+  keeping the congruence in the `γᵀAγ` shape that preserves balancedness.
+  **`isFinitelyPresented_of_orderSiegel`** is Macbeath's criterion in this setting: a connected open
+  `V` whose translates cover and whose overlaps are finite presents `SL_n(R)`.
+- **`orderMeet_finite`** is the claim of F47 made good: if every `A ∈ V` is Siegel-reduced *for the
+  ambient integral group*, the overlap set of `V` under `SL_n(R)` is finite.  The proof is three
+  lines on top of F45 — the conjugators are `IsIntUnimodular`, they carry one ambient Siegel-reduced
+  form to another, and `M ↦ orderInvRep ω M` is injective.  **The finiteness half over an order is
+  therefore closed.**
+- **`blockJacobi`, `JacobiData.twist`, `blockJacobi_twist_form`** compute the ambient Jacobi data of
+  `Wᵀ E W` with `E` block diagonal and `W` unipotent upper triangular: the diagonal is the
+  concatenation of the blocks' diagonals and the unipotent factor is `blockEmbed(diag Uₘ) · W`.
+
+### The remaining input, stated exactly
+
+What is left is the covering, and the analysis of what it needs is now precise.  Let `H` be the
+`R ⊗ ℝ`-bilinear form with `A = Tr(H)`, and let `H = μᵀ Δ μ` be its Gram–Schmidt over `R ⊗ ℝ`
+(available because `R ⊗ ℝ` is a product of fields and the leading minors of `H` are positive at every
+place).  Then
+
+  `A = Wᵀ E W`,  `W = blockEmbed(regRep_ℝ μ)`,  `E = blockEmbed(diag Eₘ)`,
+  `Eₘ(k,l) = Tr(Δₘ ω_k ω_l) = (Ωᵀ diag(Δ_{m,v}) Ω)(k,l)`,   `Ω_{v,k} = σ_v(ω_k)`,
+
+and `blockJacobi_twist_form` turns that into the ambient Jacobi data outright: ambient `d` at
+`(m,k)` is the `k`-th LDL entry of `Eₘ`, and the ambient unipotent factor is
+`blockEmbed(diag Vₘ) · blockEmbed(regRep_ℝ μ)`.
+
+So "Humbert-reduced ⟹ ambient Siegel-reduced" reduces to three bounds:
+
+```text
+|μ_{ij}|_v ≤ u  ⟹  |regRep_ℝ(μ_{ij})| bounded          [linear algebra, constant depends on ω]
+Δ_{m,v}/Δ_{m,v'} ≤ K  ⟹  Vₘ and the ratios of Dₘ bounded  [Eₘ ≍ Δ_{m,v₀}·ΩᵀΩ]
+Δ_{m,v} ≤ t Δ_{m+1,v}  ⟹  the ambient diagonal ordering    [across blocks]
+```
+
+The middle bound is the one with real content and it is **why the unit group enters**: without a
+constraint on the *shape* of `Δₘ` the factor `Vₘ` is unbounded, and the shape is normalised by
+replacing `b_m` by `ε b_m` for a unit `ε`, which sends `Δ_{m,v} ↦ σ_v(ε)² Δ_{m,v}`.  Dirichlet's unit
+theorem — the unit lattice spans the trace-zero hyperplane — is exactly what makes the shape
+normalisable.  This was not visible before computing the ambient Jacobi data.
+
+The covering itself is then the potential descent, with
+
+  `P(A) = ∏_{i=1}^{n} det(leadingBlock (i·d) A)`,
+
+which is a function of the ambient form alone, is bounded below by `pow_le_det_leadingBlock` (F32),
+is unchanged by `R`-shears (block unipotent, hence ambient unipotent by the block-major ordering) and
+by unit rescalings, and is decreased by an `R`-swap when the `R`-Lovász condition fails.  The moves:
+
+```text
+R-shear  b_i ↦ b_i + α b_j (j < i), α ∈ R          size reduction = lattice rounding (ZSpan.floor)
+unit     b_m ↦ ε b_m, ε ∈ R^×                       shape normalisation (Dirichlet)
+R-swap   b_i ↔ b_{i+1}                              the descent step
+```
+
+```text
+blockEmbed / orderRep / balanced subspace / the action      [PROVED]
+Macbeath's criterion over an order                          [PROVED]
+the finiteness half over an order                           [PROVED]
+ambient Jacobi data of a block form                         [PROVED]
+Gram–Schmidt over R ⊗ ℝ; the factorization A = Wᵀ E W       [OPEN]
+size reduction (rounding), shape normalisation (Dirichlet)  [OPEN]
+the R-Lovász swap and the potential descent                 [OPEN]
+Humbert-reduced ⟹ ambient Siegel-reduced                    [OPEN]
+SL_n(𝒪_F) finitely presented, F totally real                [OPEN]
+```
+
+## F49. Real embeddings diagonalise the regular representation `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/RealOrderEmbeddings.lean`
+
+`RealOrderData R d` packages a `ℤ`-basis `ω` of the order together with `d` ring homomorphisms
+`σ_v : R → ℝ` whose evaluation matrix `Ω_{v,k} = σ_v(ω_k)` is invertible.  That is the whole of
+"totally real order of degree `d`" that the reduction theory needs — no `NumberField` machinery, and
+in particular no `F ⊗ ℝ`.
+
+- **`embMatrix_mul_entryRep`** : `Ω · ρ(α) = diag(σ_v α) · Ω`.  The proof is one application of
+  `Basis.sum_repr` and `ℤ`-linearity of `σ_v`: the `k`-th column of `ρ(α)` is the coordinate vector
+  of `α ω_k`, and `σ_v` of that is `σ_v(α) σ_v(ω_k)`.
+- **`exists_diagonal_of_selfAdjoint`** : if `ρ(α)ᵀ B = B ρ(α)` for every `α ∈ R`, then
+  `B = Ωᵀ diag(c) Ω` for some `c`.  Conjugating by `Ω` turns the hypothesis into "`C` commutes with
+  `diag(σ_v α)` for all `α`", and the off-diagonal entry `(v,w)` is killed by any `α` with
+  `σ_v α ≠ σ_w α` — which exists whenever `v ≠ w`, because otherwise rows `v` and `w` of `Ω` would
+  coincide and `Ω` would be singular.  The spanning argument (that `{σ(α)}` spans `ℝ^d`) is not
+  needed: a *single* separating basis element per pair of places suffices.
+
+This is the coordinate description of the balanced forms:
+
+  `A ∈ balancedSubspace  ⟺  every block of `A` is `Ωᵀ diag(c_{ij}) Ω``,
+
+i.e. `A = Tr(H)` for a matrix `H` over `Fin d → ℝ` — the Humbert coordinates.  Combined with F48's
+`blockJacobi_twist_form`, the ambient Jacobi data of such an `A` is now computable from `(μ, Δ)`
+alone, which is what the "Humbert-reduced ⟹ ambient Siegel-reduced" step needs.
+
+Next: assemble the block characterization for the whole form, run Gram–Schmidt on `H` place by place
+(each place is an ordinary real `JacobiData nb`, so the existing machinery applies verbatim `d`
+times), and then the descent.
+
+## F50. The Humbert dictionary `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/HumbertCoordinates.lean`, `HumbertAmbientJacobi.lean`,
+`HumbertPositivity.lean`
+
+The symmetric space of `SL_n(R)` is now identified with `d` copies of the cone of positive definite
+real `n × n` forms, and the ambient Jacobi data of a point is computed from that identification.
+
+- **`blockUnembed`** inverts the flattening, so ambient identities can be read blockwise.
+- **`humbertForm T H = blockEmbed (fun i j => Ωᵀ diag(H i j) Ω)`** for
+  `H : Matrix (Fin n) (Fin n) (Fin d → ℝ)`.  `humbertForm_mem_balancedSubspace` and
+  `exists_humbert_of_mem_balancedSubspace` say the balanced forms are **exactly** these; the second
+  is F49 applied blockwise, using `blockEmbed_injective` to pass from the ambient identity
+  `(orderScalar α)ᵀ A = A (orderScalar α)` to the block identity `ρ(α)ᵀ A_{ij} = A_{ij} ρ(α)`.
+- **`humbertForm_factor`** : if `H i j v = (Jv v).form i j` for a family `Jv` of Jacobi data, one per
+  embedding, then `humbertForm T H = Wᵀ E W` with `W = blockEmbed(ρ_ℝ μ)` unipotent upper triangular
+  (`isUnipotentUpper_blockEmbed`: block upper unitriangular flattens to unipotent upper triangular,
+  because the block-major ordering makes the blocks contiguous) and `E` block diagonal with blocks
+  `Ωᵀ diag(Δ_m) Ω`.  The computation is the cancellation `(Ω⁻¹)ᵀΩᵀ = 1`, `ΩΩ⁻¹ = 1` and
+  `diagonal_mul_diagonal`.
+- **`humbertAmbient`** = `(blockJacobi Jm).twist (isUnipotentUpper_humbertUnipotent T Jv)`, with
+  `humbertAmbient_form` proving its form is the Humbert form, `humbertAmbient_d` giving
+  `d_{(m,k)} = (Jm m).d k` and `humbertAmbient_U` giving `U = blockEmbed(diag Uₘ) · W`.  So **the
+  ambient Jacobi data of a Humbert form is explicit**, which is what the transfer to ambient Siegel
+  bounds needs.
+- **`posDef_humbert_place`** : positivity passes to the place components.  Congruence by
+  `humbertUnscale = blockEmbed(diag Ω⁻¹)` strips `Ω`, leaving `blockEmbed (fun i j => diag (H i j))`,
+  and `H_v` is the principal submatrix of that on the indices `(i, v)` — so `Matrix.PosDef.submatrix`
+  finishes.  No quadratic-form computation is needed.
+- **`exists_humbert_jacobi`** : every point of `orderCone` is `humbertForm T H` with each `H_v`
+  positive definite, hence carries Gram–Schmidt data at every embedding.
+
+State of the `𝒪_F` lane:
+
+```text
+blockEmbed / orderRep / balanced subspace / the action      [PROVED]
+Macbeath's criterion over an order                          [PROVED]
+the finiteness half over an order                           [PROVED]
+ambient Jacobi data of a block form                         [PROVED]
+real embeddings diagonalise the regular representation      [PROVED]
+the Humbert dictionary and the ambient Jacobi data          [PROVED]
+size reduction (rounding), shape normalisation (Dirichlet)  [OPEN]
+the R-Lovász swap and the potential descent                 [OPEN]
+Humbert-reduced ⟹ ambient Siegel-reduced                    [OPEN]
+SL_n(𝒪_F) finitely presented, F totally real                [OPEN]
+```
+
+## F51. Rounding, the potential, and the action in Humbert coordinates `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/OrderRoundingPotential.lean`, `HumbertAction.lean`,
+`OrderShear.lean`
+
+- **`exists_round`** : there is `C` with `∀ x : ℝ^d, ∃ α ∈ R, ∀ v, |x_v − σ_v(α)| ≤ C`.  This is
+  size reduction over an order, and it needs no lattice theory: put `y = Ω⁻¹x`, take `α = Σ round(y_k) ω_k`,
+  and then `x − σ(α) = Ω(y − round y)` with `|y − round y| ≤ 1/2` entrywise.  (`ZSpan.floor` would
+  also do it; this is shorter and avoids the `NumberField` dependency.)
+- **`det_leadingBlock_humbertAmbient`** : the leading minor of a Humbert form at `i·d` is
+  `(det Ω)^{2i} ∏_{m<i} ∏_v Δ_{v,m}`.  So the covolumes of the sublattices spanned by the first `i`
+  basis vectors **over the order** — the quantities the descent has to decrease — are, up to the
+  constant `(det Ω)²` per step, the products of the norms of the Gram–Schmidt diagonals.  The
+  descent's potential is therefore the ambient potential of the integral theory restricted to the
+  multiples of `d`, and its lower bound is `pow_le_det_leadingBlock` (F32) unchanged.
+- **`humbertForm_congr`** : `ρ(N)ᵀ · humbertForm T H · ρ(N) = humbertForm T H'` with
+  `H'_v = σ_v(N)ᵀ H_v σ_v(N)`.  **The action of `SL_n(R)` on its symmetric space is the diagonal
+  action on `d` copies of the cone of positive definite real `n × n` forms.**  The proof is
+  `embConj_diagonal` — `ρ(α)ᵀ (Ωᵀ diag(c) Ω) ρ(β) = Ωᵀ diag(σ(α) c σ(β)) Ω`, from F49's
+  diagonalisation — summed over the two block indices with `sum_embConj`.
+- **`humbertForm_shear`** : an elementary shear `1 + α E_{ji}` with `j < i` is `Matrix.transvection`,
+  its embedding at each place is the transvection with coefficient `σ_v(α)`
+  (`placeMatrix_orderShear`), it is unipotent upper triangular there
+  (`isUnipotentUpper_transvection`), and so by the placewise description it **twists each of the `d`
+  Gram–Schmidt data and changes none of their diagonals**.  Hence it leaves the potential fixed —
+  exactly the role size reduction plays in the integral descent.
+
+With `exists_round` supplying the coefficient, a shear can put `μ_{v,j,i}` inside a fixed bound at
+*every* place simultaneously.  What remains of the covering:
+
+```text
+the size-reduction sweep (iterate the shear over the pairs j < i)   [OPEN]
+shape normalisation of each Δ_m by units (Dirichlet)                [OPEN]
+the R-Lovász swap and the potential descent                         [OPEN]
+Humbert-reduced ⟹ ambient Siegel-reduced                            [OPEN]
+SL_n(𝒪_F) finitely presented, F totally real                        [OPEN]
+```
+
+## F52. Size reduction over an order, and why the Lovász swap cannot terminate the descent `[PROVED / CORRECTION]`
+
+`formal/GaloisForLFunctions/HTGeometry/OrderSizeReduction.lean`
+
+- **`superShear k e`** is the shear `1 + Σ_i e_i E_{i,i+k+1}` supported on one superdiagonal; it is
+  unipotent upper triangular, has determinant one over any commutative ring
+  (`det_of_upperTriangular`), its embedding at each place is the real superShear of the embedded
+  coefficients (`placeMatrix_superShear`), and `mul_superShear_apply` records its effect: entries at
+  offset `≤ k` are unchanged, and the entry at offset `k+1` becomes `V_{ij} + e_i`.
+- **`exists_orderSweep`** : with the rounding constant `C` of F51, one shear puts the whole
+  superdiagonal of offset `k+1` inside `C` **at every embedding at once** — the coefficient is
+  `round`ed against the vector of the `d` entries.
+- **`exists_orderSizeReduction`** : iterating `nb` times, a single `N ∈ SL_n(R)` gives
+  `|(U_v · σ_v(N))_{ij}| ≤ C` for all `i < j` and all `v`.
+
+### The correction: the descent cannot be run by a Lovász swap
+
+The integral descent (F32) terminates because a failed Lovász condition lets a swap decrease the
+potential by a *fixed factor* `q < 1`, which is available because size reduction there gives
+`|U_{ij}| ≤ 1/2 < 1`.  Over an order this fails, and the failure is not a matter of constants.
+
+After size reduction the swap at `m` replaces `Δ_{v,m}` by `Δ_{v,m+1} + Δ_{v,m}δ_v²` with
+`δ_v = μ_v − σ_v(α)`, so with `r_v = Δ_{v,m+1}/Δ_{v,m}` the potential drops by the factor
+`∏_v (r_v + δ_v²)`.  For a definite contraction one needs `∏_v (r_v + δ_v²) < q < 1` **uniformly in
+`r`**, hence `∏_v δ_v² < 1`, hence `inf_{α ∈ R} |N(μ − α)| < 1` for every `μ` — that is, `F` must be
+**norm-Euclidean**.  Most totally real fields are not.  So no choice of the size-reduction constant
+or of the Lovász threshold makes the swap contract, and `exists_terminal_of_contracting` cannot be
+the termination mechanism over an order.  This is the precise reason Humbert reduction is harder
+than LLL, and it was not visible before the shear computation above.
+
+### The replacement: finiteness of Gram values
+
+The termination input that does work, and that the corpus can already reach:
+
+> **(FIN)** For a positive definite `A` on `ℤ^N` and `B > 0`, the set of values
+> `{det(Cᵀ A C) : C an integral `N × k` frame}` inside `(0, B]` is **finite**.
+
+Given (FIN), the potential `Pot(γ·A) = ∏_{i=1}^{n} det(leadingBlock (i·d) (γᵀAγ))` takes finitely
+many values below `Pot(A)` — each factor is bounded above by `Pot/c^{n−1}` and below by `c`, using
+ellipticity — so its **minimum over the orbit is attained**, and at a minimiser no move decreases it:
+that is the terminal state, and the reduction bounds follow from it exactly as in the integral case.
+
+(FIN) is provable from what is already in the tree, and the proof is the integral reduction theory
+applied one dimension down:
+
+```text
+G := CᵀAC is positive definite; exists_siegel_inOrbit gives δ ∈ GL_k(ℤ) with
+  δᵀGδ Siegel-(2,1); det is unchanged, so ∏ d_j = det G ≤ B.
+pow_le_det_leadingBlock bounds each leading minor below by λ^j (ellipticity of A on ℤ^N),
+  hence det_j ≤ B/λ^{k−j} and d_j = det_{j+1}/det_j ≥ λ^k/B.
+So each d_i ≤ B/(λ^k/B)^{k−1}, and form_diag_le_siegel bounds A[Cδ e_i] ≤ c·d_i.
+finite_latticePoints_le then confines the columns of Cδ to a finite set,
+  and det(CᵀAC) = det((Cδ)ᵀA(Cδ)) is determined by them.
+```
+
+```text
+size reduction over an order                                        [PROVED]
+(FIN) finiteness of Gram values below a bound                       [OPEN]
+the descent by minimisation of the potential                        [OPEN]
+shape normalisation of each Δ_m by units (Dirichlet)                [OPEN]
+Humbert-reduced ⟹ ambient Siegel-reduced                            [OPEN]
+SL_n(𝒪_F) finitely presented, F totally real                        [OPEN]
+```
+
+## F53. (FIN): finitely many Gram values below a bound `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/ReducedDiagonalBound.lean`, `GramValueFiniteness.lean`
+
+The termination input identified at F52 is now unconditional in Lean.
+
+- **`prod_filter_lt_eq_det_leadingBlock`** identifies the head `∏_{m<i} d_m` of the diagonal product
+  with the `i`-th leading minor, by transporting the product along `Fin.castLE` — the bridge between
+  the `Finset.filter` bookkeeping of the Siegel estimates and the `leadingBlock` bookkeeping of the
+  minor estimates.
+- **`d_le_bound_of_siegel`** : for a Siegel-`(2,1)` datum with `lam^j ≤ det A_j` for all `j` and
+  `det A ≤ B`, every `d_i` is at most `max 1 (2^{k²} B / lam^k)`.  The head of the product is at
+  least `lam^k`, so the tail is at most `B/lam^k`; the Siegel ordering makes every tail factor at
+  least `2^{-k} d_i`, so `d_i^{|tail|} ≤ 2^{k²} B / lam^k`; and an exponent at least one converts
+  that into the bound on `d_i` itself.
+- **`finite_intGram_values`** : for a positive definite `A` on `ℤ^N` and any `B`, the set
+
+    `{det(Zᵀ A Z) : Z an integral N × k frame, the Gram matrix positive definite, det ≤ B}`
+
+  is **finite**.  Given `Z`, `exists_siegel_inOrbit_det_one` (F46) produces `g ∈ SL_k(ℤ)` making
+  `(Zg)ᵀA(Zg)` Siegel-`(2,1)` without changing the determinant.  Ellipticity of `A`
+  (`exists_ellipticity`) plus integrality of the standard Gram matrix `(Zg)ᵀ(Zg)` give
+  `lam^j ≤ det A_j` through `pow_le_det_leadingBlock` (F32) — and crucially `lam` depends only on
+  `A`, not on `Z`, because the domination is transported through the frame by
+  `dotProduct_congr_mulVec`.  Then `d_le_bound_of_siegel` bounds each `d_i`,
+  `form_diag_le_siegel` (F45) bounds each diagonal entry of the Gram matrix, `intGram_diag`
+  identifies that entry as the `A`-length of a column of `Zg`, and `finite_latticePoints_le`
+  confines the columns to a finite set.  The determinant is a function of those columns.
+
+This is exactly the finiteness that replaces the contraction factor.  With it, the potential
+
+  `Pot(γ·A) = ∏_{i=1}^{n} det(leadingBlock (i·d) (γᵀAγ))`
+
+has each factor equal to `det(intGram A C_i)` for the integral frame `C_i` of the first `i·d` columns
+of `γ`, so each factor takes finitely many values below any bound, and — since the factors are
+bounded below by ellipticity — so does the product.  **The minimum of the potential over the orbit is
+therefore attained**, and a minimiser is the terminal state of the reduction.
+
+```text
+(FIN) finiteness of Gram values below a bound                       [PROVED]
+the descent by minimisation of the potential                        [OPEN]
+shape normalisation of each Δ_m by units (Dirichlet)                [OPEN]
+Humbert-reduced ⟹ ambient Siegel-reduced                            [OPEN]
+SL_n(𝒪_F) finitely presented, F totally real                        [OPEN]
+```

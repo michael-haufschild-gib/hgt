@@ -1,4 +1,4 @@
-# The RH Route–Literature Exchange Frontier: Literature through 9 August, Lean through 18 August 2026
+# The RH Route–Literature Exchange Frontier: Literature through 9 August, Lean through 19 August 2026
 
 ## Abstract
 
@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`37d4ac1435fecbadd754c67d4ad51ff62e0ec740` on 18 August, plus declaration-level working-tree review. Historical `Active-tree Lean` wording records former provenance. Current
+`156adc3ea8d38e632a303290fa704a08adcb49ed` on 19 August, plus declaration-level working-tree review. Historical `Active-tree Lean` wording records former provenance. Current
 formal route status is maintained in `rh-current-frontier-map.md`; detailed sections below are a
 literature-exchange record and may retain older intermediate formulations. External literature was
 not re-audited during the present Lean-only refresh.
@@ -46,6 +46,17 @@ centered rate, while global all-Xi-copy certificates are equivalent to RH
 (`SourceHorizontalAdaptiveFisherGlobalClassLawProducer.lean`). AF remains a rigidity theorem; any
 successor must change interface to singular/infinite-action or genuinely global aggregate law.
 External literature was not re-audited for these working-tree classifications.
+
+Two additional corpus-born candidates are now terminal. IW internal SEM Weyl-model existence is
+exactly dyadic divisibility of actual hole-space dimension, is source-blind at fixed dimension, and
+all-level/cofinal existence is exactly RH (`SEMDyadicWeylExistenceClassification.lean`). Its
+survivor is an exact cyclic clock--shift realization of already-known divisibility. AP is exhausted
+within Big-Witt/Scaling-Site/completed-Xi architecture
+(`BigWittArakelovSourceEndomorphismTerminal.lean`): canonical Big-Witt Frobenius supplies reporter
+power law, but pole-bearing Arakelov square lift admits no global entire-source pullback, actual
+Scaling-Site covers implement a different action, and remaining fixed-receiver stability or
+preperiodicity is RH-equivalent. Valid half-scaling survives only after receiver changes. External
+literature was not re-audited in this Lean-only status update.
 
 No newly audited module instantiates an eleventh lettered route. HC is unlettered and independent.
 Six CCM openings are now

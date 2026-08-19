@@ -4285,3 +4285,532 @@ For `(5)` the corpus already owns everything: `SchurCofactorLocus.not_dvd_det_su
 corank one over any extension field).  What has to be written is the reduction map
 `criticalSchurSourceRing → residue field of the source Schur place`, whose kernel is
 `criticalSchurPrimeDivisor`, and the observation that the corner cofactor survives it.
+
+### `(D-f)` step 6, worked out in coordinates (so it is not re-derived)
+
+Write `L = m + n`, `A` for the observation Schur DVR, `B` for the source Schur valuation ring,
+`P = criticalObservationJacobian`, and `c` for the coordinate vector of the differential of a
+non-unit of `A` in the observation cotangent basis.  Steps 3 and 4 give `P c ≡ 0 (mod 𝔪_B)` with
+`c ≢ 0`.
+
+**`P` is the transpose of the differential of the horizon map.**  Its `(t, s)` entry is
+`∂y_s/∂x_t`, so for a source deformation `δx` the induced observation deformation is
+`δy_s = Σ_t P t s · δx_t`.  Hence for every source deformation
+
+```text
+Σ_s c_s · δy_s  =  Σ_t δx_t · (Σ_s P t s c_s)  =  0 ,
+```
+
+i.e. `c` annihilates every liftable observation deformation — the same property
+`ConormalLiftObstruction.conormal_eq_zero_of_lifts` proves for the conormal functional `λ_{U,V}` of
+a tangent pair.
+
+**The corpus's "liftable" set is exactly that image.**  A deformation `(δP, δQ)` lifts iff there
+are low `(da, db)` with `X^L ∣ (da + δP)Y + A(db + δQ)`.  Multiplying by `Y` and using `AY ≡ 1`
+turns this into `X^L ∣ (da + δP)Y² + (db + δQ)`, i.e. `db + δQ = −Y²(da + δP)` — which is precisely
+`δ(recip) = −Y² δ(raw)` for the source deformation `δx = da + δP`.  So liftable deformations are
+the image of the differential, of dimension `L − 1` by corank one.
+
+**Conclusion.**  `λ_{U,V}` and `c` both annihilate an `(L−1)`-dimensional subspace of an
+`L`-dimensional space and both are nonzero, hence are proportional.  Since `c` comes from `A`, its
+image is the same under every residue embedding `k(Q₀) → k_W`, so the conormal functionals at all
+singular points of the reduced fibre are proportional — which is exactly the hypothesis of
+`conormal_determines_tangent_smul`, and then of `criticalFibre_eq_of_shared_coprime_tangent`.
+
+As a vector in the observation cotangent basis, `λ_{U,V}` is `(U reversed, −V reversed)`: the
+coefficient of `dq_j` is `U_{L-1-j}` and of `dp_i` is `−V_{L-1-i}`.
+
+## Lean progress — `(D-f)` step 5's infrastructure
+
+```text
+HTGeometry/CriticalObservationJacobianMinor.lean          (built)
+    finrank_ker_mulVecLin_eq_one_of_det_eq_zero'
+        corank one over ANY finite index type (the corpus version was `Fin (N+1)`-only)
+    det_criticalObservationJacobian_map_residue           the Jacobian is singular at the place
+    det_submatrix_criticalObservationJacobian
+        ** deleting one raw row and column from the observation Jacobian leaves exactly the
+           corresponding minor of the reciprocal Jacobian **
+
+HTGeometry/CriticalSchurResidueReduction.lean             (built)
+    mvPolynomialDropFirst, mvPolynomialDropFirst_rename_succ
+    mem_span_of_rename_succ_mem_span
+        ** the variable shift reflects membership in a principal ideal **
+    map_aeval_rectangularSchurToeplitz
+        the universal Schur matrix evaluates to the normalized reciprocal-square Toeplitz matrix
+    criticalSchur_residue_algebraMap_eq_zero_iff
+        a Schur coordinate polynomial has zero residue exactly on the ramification ideal
+```
+
+What is left of step 5 is the index bridge: `SchurCofactorLocus` states the corner-cofactor facts
+for `rectangularSchurToeplitz (schurVar K (n'+m'-1+2)) (n'+1) (m'+1)` while the actual objects use
+`rectangularSchurToeplitz (schurVar K (m+n-1)) n m`.  With `m = m'+1`, `n = n'+1` and `m' ≥ 1`
+these agree, but the identification needs the `finCongr` rename that
+`rename_finCongr_det_rectangularSchurToeplitz` already performs for the determinant; the same has
+to be done for the corner minor.  After that, `not_dvd_det_submatrix_rectangularSchur` plus
+`mem_span_of_rename_succ_mem_span` plus `criticalSchur_residue_algebraMap_eq_zero_iff` give the
+surviving minor, and `finrank_ker_mulVecLin_eq_one_of_det_eq_zero'` gives corank one at the
+residue field of the source Schur place.
+
+## Lean progress — `(D-f)` step 5 is CLOSED: corank one at the source Schur place
+
+```text
+HTGeometry/CriticalSchurCornerCofactor.lean               (built)
+    rename_finCongr_det_submatrix_rectangularSchurToeplitz
+    not_dvd_det_submatrix_rectangularSchur_actual
+    criticalSchur_cornerCofactor_notMem_ramificationIdeal
+        ** the corner cofactor of the actual Schur section is not in the ramification ideal **
+
+HTGeometry/CriticalSchurJacobianCorankOne.lean            (built)
+    criticalSourceSchurCoordinates_comp_succ
+    aeval_criticalSourceSchurCoordinates_rename_succ
+    coe_det_submatrix_criticalReciprocalJacobianIntegral
+        every minor of the integral reciprocal Jacobian, in closed form
+    residue_det_submatrix_criticalReciprocalJacobianIntegral_ne_zero
+    criticalSchur_finrank_ker_reduced_jacobian_eq_one
+        ** the kernel of the reduced observation Jacobian is a LINE **
+```
+
+The reciprocal Jacobian is the negative normalized Schur Toeplitz matrix scaled by the inverse
+square of the source scale, so each of its minors is a unit multiple of the corresponding minor of
+the universal Schur section evaluated at the Schur coordinates.  The determinant vanishes at the
+Schur place while the corner cofactor does not, and the corank-one criterion (now stated for an
+arbitrary finite index type) gives a one-dimensional kernel.
+
+**State of `(D-f)`.**
+
+```text
+1  Ω[A⁄K] coordinate basis                        DONE
+2  A formally étale over the coordinate ring      DONE
+3  the conormal vector is nonzero                 DONE
+4  the conormal vector is killed by the Jacobian  DONE
+5  corank one of the reduced Jacobian             DONE
+6  bridge to the corpus's conormal pairing        NEXT (worked out in coordinates above)
+7  assemble §3, then f_{Q₀} = 1
+```
+
+## Lean progress — `(D-f)` step 6 is CLOSED
+
+```text
+HTGeometry/HorizonConormalJacobianKernel.lean             (built)
+    sum_fin_toeplitz_eq_coeff_mul        a truncated Toeplitz row is a coefficient of a product
+    sum_toeplitz_rev_eq_neg_coeff        the same, against reversed coefficients
+    horizonConormalVector                (U reversed, −V reversed) in block order
+    horizonObservationJacobian           the observation Jacobian for a general reciprocal jet
+    horizonObservationJacobian_mulVec_conormal
+        ** the conormal vector of a low tangent is a KERNEL VECTOR of the observation Jacobian **
+
+HTGeometry/HorizonConormalProportional.lean               (built)
+    exists_smul_of_finrank_ker_eq_one    a nonzero vector spans a one-dimensional kernel
+    tangent_smul_of_conormal_smul
+        ** proportional conormal vectors ⟹ proportional tangent pairs **
+```
+
+The first proof is the identity `V ≡ −Y²U` below the horizon: on the reciprocal block the Toeplitz
+row computes `−(Y²U)` at an index at least `n`, where `V` vanishes; on the raw block it computes
+`−(Y²U) = V` at the matching index, cancelling the diagonal entry of the identity corner.  No
+deformation theory and no reference to the corpus's conormal *pairing* is needed — the conormal
+vector is characterised purely as a kernel vector.
+
+**State of `(D-f)`.**  Steps 1–6 are closed.  What remains is step 7, the corpus-level assembly:
+
+```text
+(a)  the two singular points of the reduced fibre are two residue embeddings k(Q₀) → k_W, and the
+     Jacobian at each is the image of the ONE matrix P mod 𝔪_B under that embedding;
+(b)  the conormal vector c of step 3/4 lies in ker (P mod 𝔪_B), is nonzero, and is fixed by both
+     embeddings because it comes from k(A);
+(c)  hence by exists_smul_of_finrank_ker_eq_one and tangent_smul_of_conormal_smul the two tangent
+     pairs are proportional; scale them to a common (U,V);
+(d)  criticalFibre_eq_of_shared_coprime_tangent then identifies the two points, so f_{Q₀} = 1.
+```
+
+`(a)` is the only remaining piece needing new corpus wiring: the dictionary between points of the
+reduced fibre and residue embeddings of the source Schur place.  That same dictionary is what
+`(D-c)` needs, so it should be built once.
+
+## Lean progress — collisions are singular points of the reduced fibre
+
+```text
+HTGeometry/CriticalSchurCollisionSingular.lean            (built)
+    C_uniformizer_dvd_of_map_residue_eq_zero
+    criticalSchur_exists_reduced_tangent_of_collision
+        ** two colliding sheets produce a NONZERO low tangent at their common reduced state **
+```
+
+Two distinct sheets have distinct integral fibre points (`criticalGeometricSheetToSchurFibre_injective`)
+whose difference reduces to zero, hence is divisible by a uniformizer, so
+`exists_reduced_tangent_of_congruent` applies.  This is the bridge from `collisionSupport` to the
+singular locus of the reduced fibre: **every sheet involved in a collision reduces to a point where
+the critical Jacobian degenerates.**
+
+Combined with `(D-f)` — at most one such point — this will give
+`collisionSupport ⊆ r⁻¹(that one point)`, and the remaining count is the size of that fibre.
+
+## Lean progress — `(D-1)` step 1: the Schur coordinate ring is integral over the Schur place
+
+```text
+HTGeometry/CriticalSchurCoordinateIntegral.lean           (built)
+    criticalChartSourceGroundTower, criticalChartSchurObservationFieldTower,
+    criticalChartSchurSourceTower, criticalSchurObservationGroundFieldTower,
+    criticalSchurObservationGroundSourceTower          five scalar towers
+    criticalSourceAdjoin_isIntegral_chartRing
+    criticalSourceSchurCoordinates_isIntegral
+    criticalSchurSourceRing_isIntegral
+        ** the whole Schur coordinate ring lands in the integral closure of the observation
+           Schur place in the source field **
+```
+
+### The route to `(D-1)`, recorded
+
+Write `R_s` for the Schur coordinate ring, `S` for its ramification polynomial, `A` for the
+observation Schur DVR, `B'` for the integral closure of `A` in the source field, and `Q₀` for the
+Schur prime.  With `R_s ⊆ B'` (just proved), every prime `Q` of `B'` over `𝔪_A` has a centre
+`Q ∩ R_s` on the Schur coordinate model, and:
+
+* `B'/Q` is finite over `k(A)`, whose transcendence degree over `K` is `L − 1`; since
+  `R_s/(Q ∩ R_s)` embeds in it, `dim R_s/(Q ∩ R_s) = L − 1`, i.e. **`ht (Q ∩ R_s) = 1`**;
+* a height-one prime of the UFD `R_s` containing the irreducible `S` equals `(S)`, so if `S ∈ Q`
+  then `Q ∩ R_s = (S)`;
+* `(R_s)_{(S)}` is the source Schur valuation ring `B` (`criticalSchurSourceValuation_isLocalization`),
+  and `B'_Q` is a valuation ring of the source field dominating it, hence equal to it;
+* therefore `Q = Q₀`: **only the Schur prime is ramified**, which is `(D-1)`.
+
+Only the transcendence-degree count is new work; everything else is already in the tree.
+
+### The one mathlib gap that `(D-1)` and §3 both need, isolated
+
+Everything in the `(D-1)` route above is corpus-side except one classical fact, which mathlib does
+**not** have (checked: `Mathlib/RingTheory/Ideal/Height.lean` has no dimension formula, and there is
+no `IsCatenary` development):
+
+```text
+height 𝔭 + dim (R ⧸ 𝔭) = dim R          for R a polynomial ring over a field
+```
+
+The only instance needed is the height-one case, and there it can be replaced by a direct
+transcendence-degree computation, which the corpus is already equipped for (`Algebra.trdeg` is used
+in `CorankTrdegRealizationLocus`, `ParameterCountTranscendenceBound`, …):
+
+```text
+trdeg_K (Frac (MvPolynomial (Fin L) K ⧸ (g)))  =  L − 1      for g irreducible
+```
+
+Proof to build: `g` involves some variable `x_i` nontrivially, so `x_i` is algebraic over the
+others modulo `(g)`, giving `≤ L − 1`; and the remaining `L − 1` variables stay algebraically
+independent, since a relation among them would be a nonzero element of `(g)` of degree zero in
+`x_i`, impossible because `g` has positive degree in `x_i` and `MvPolynomial` is a domain.
+
+With that in hand:
+
+```text
+trdeg k(A) = L − 1                              A is the local ring of a height-one prime
+trdeg (R_s ⧸ (Q ∩ R_s)) = L − 1                 it embeds in a finite extension of k(A)
+ht (Q ∩ R_s) = 1                                same computation, read backwards
+Q ∩ R_s = (S)                                   height one containing the irreducible S
+B'_Q = (R_s)_{(S)} = B                          a valuation ring dominating a DVR is that DVR
+Q = Q₀                                          ** (D-1) **
+```
+
+and then §3's conormal argument runs at the unique ramified prime, giving `f_{Q₀} = 1`, and the
+count `|collisionSupport| = e·f = 2` closes `(D)`.
+
+### Correction and a found asset — half of the `(D-1)` dimension count is already available
+
+A corpus search (do this before writing any dimension lemma) turns up an existing Krull-dimension
+toolkit, and through it a mathlib lemma that was not obvious from the `Ideal.height` file:
+
+```text
+ringKrullDim_quotient_succ_le_of_nonZeroDivisor        (mathlib)
+    ** dim (R ⧸ (a)) + 1 ≤ dim R  for a a non-zero-divisor **
+ScalarExtendedHypersurfaceDimension.scalarExtendedHypersurface_krullDim_add_one_le
+FiniteFamilyBlockHypersurfaceDimension, IteratedBlockHypersurfaceDimension
+LocalizationAtPrimeDivisorDVR.ringKrullDim_localizationAtPrime
+MvPolynomial.ringKrullDim_of_isNoetherianRing                              (mathlib)
+```
+
+So the **upper** half of the count is cheap: with `S` irreducible and `g ∉ (S)`, iterating the
+quotient bound gives `dim (R_s ⧸ (S, g)) ≤ L − 2`.  What is still missing is the **lower** half,
+i.e. that the centre of a place over the branch divisor is at least `(L−1)`-dimensional; that is
+Krull's principal ideal theorem in the direction `dim (R ⧸ (f)) ≥ dim R − 1`, or equivalently the
+statement that the Krull dimension of a finitely generated domain over a field equals its
+transcendence degree.  Neither is in mathlib, and the corpus's `Algebra.trdeg` development does not
+yet contain it either.  **That single statement is the whole remaining gap for `(D-1)`, and hence
+for §3 and `(D)`.**
+
+### Name-collision audit
+
+A scan of all declarations added for this card against the rest of `HTGeometry` found exactly one
+collision — `totalDegree_pderiv_lt`, already present in `PolynomialZeroSetDimension` (real
+coefficients) — which would have broken the umbrella even though every module built in isolation.
+Renamed to `totalDegree_pderiv_lt_of_ne_zero`; no other collisions among the 143 new declarations.
+
+## Lean progress — the Krull dimension is an integral invariant (mathlib gap CLOSED)
+
+```text
+HTGeometry/IntegralExtensionKrullDim.lean                 (built)
+    ringKrullDim_le_of_isIntegral        incomparability
+    exists_primeChain_over               going up, for chains of ARBITRARY length
+    le_ringKrullDim_of_isIntegral
+    ringKrullDim_eq_of_isIntegral
+        ** for an injective integral extension, dim R = dim S **
+```
+
+Mathlib has the two ingredients — `Ideal.IsIntegral.comap_lt_comap` (incomparability) and
+`Ideal.exists_ideal_over_prime_of_isIntegral_of_isPrime` (one step of going up) — but neither the
+chain version of going up (its own source marks that a `TODO`) nor the dimension statement.  The
+chain version is proved by induction with `Fin.snoc`, using `Fin.strictMono_iff_lt_succ` so that
+only consecutive comparisons have to be checked, and strictness at the top step comes from the two
+contractions being distinct.
+
+**What this unlocks.**  With Noether normalization (`exists_finite_inj_algHom_of_fg`, in mathlib)
+this gives `dim A = s` for a finitely generated domain `A` over a field that is finite over
+`MvPolynomial (Fin s) K`, i.e. **Krull dimension = transcendence degree**, which is exactly the
+statement isolated above as the sole remaining gap for `(D-1)`.  The next step is to package that
+corollary and then run the `(D-1)` chain:
+
+```text
+dim (R_s ⧸ 𝔭) = trdeg                       Noether normalization + the theorem just proved
+trdeg (R_s ⧸ (Q ∩ R_s)) ≥ L − 1             it maps onto a subring of a finite extension of k(A)
+dim (R_s ⧸ (S, g)) ≤ L − 2                  ringKrullDim_quotient_succ_le_of_nonZeroDivisor, twice
+⟹ Q ∩ R_s = (S) ⟹ B'_Q = B ⟹ Q = Q₀        ** (D-1) **
+```
+
+## Lean progress — Krull dimension = transcendence degree
+
+```text
+HTGeometry/NoetherNormalizationKrullDim.lean              (built)
+    ringKrullDim_eq_of_noetherNormalization
+        ** dim R = s for any Noether normalization of R by s variables **
+    exists_ringKrullDim_eq_of_finiteType
+        every finitely generated algebra over a field has finite Krull dimension
+```
+
+Since the fraction field of a domain finite over `MvPolynomial (Fin s) k` is algebraic over
+`k(X_0,…,X_{s-1})`, this **is** the statement that Krull dimension equals transcendence degree, and
+it closes the gap isolated two sections above.  It rests on `ringKrullDim_eq_of_isIntegral` (proved
+here) together with mathlib's Noether normalization and `MvPolynomial.ringKrullDim_of_isNoetherianRing`.
+
+### `(D-1)` restated on the chart algebra, where the going-down instance already exists
+
+The card's chain was written for `B' = integralClosure A E`, but the corpus's chart algebra `T` is
+a better model, and the required height statement is already available there:
+
+```text
+R_s ⊆ T ⊆ E                       the Schur coordinates lie in T (adjoin of the coordinate set)
+T is module-finite over Rs_o      criticalChartTowerFinite
+Rs_o is integrally closed, T a domain  ⟹  going down holds
+ht P = ht q' = 1                  for EVERY prime P of T lying over q'
+                                  (Ideal.height_eq_height_add_of_liesOver_of_hasGoingDown,
+                                   the same lemma already used for criticalSchurChartUnder_height)
+```
+
+So every point of the reduced fibre is a height-one prime of `T`, and `(D-1)` becomes: **the
+Jacobian lies in only one of them**, i.e. `√(Jac)` is prime in `T`.  In `R_s` the corresponding
+statement is true because `S` is irreducible in the UFD `R_s`; transporting it to `T` is the
+remaining step, and the relation to use is
+`criticalSourceReciprocalJacobian_det_eq_schurRamification`, which writes
+`det Jac · scale^{2m} = ± aeval S` with `scale` a coordinate of `T`.
+
+## Lean progress — every point of the reduced fibre is a divisorial point
+
+```text
+HTGeometry/CriticalSchurFibreHeight.lean                  (built)
+    criticalSchurChartOverPrime_height_eq_one
+        ** every prime of the chart algebra lying over the centre of the Schur place
+           has height one **
+```
+
+Going down (the chart algebra is module-finite over the integrally closed chart ring) gives
+`height P = height (P ∩ Rs_o) + (fibre height)`, and incomparability
+(`Ideal.IsIntegral.mem_minimalPrimes_map_under`) makes the fibre height zero, since a prime lying
+over the centre is minimal over the extended centre.
+
+So the points of the reduced fibre **are** the height-one primes of the chart algebra above the
+branch divisor, and the ramified ones are exactly those containing the Jacobian.  `(D-1)` is now the
+single statement that only one height-one prime over the centre contains `Jac`; in the Schur
+coordinate ring the corresponding fact holds because `S` is irreducible in a UFD, and the transport
+is through `det Jac · scale^{2m} = ± aeval S`.
+
+### `(D-1)` is now one classical input away, and the chain is fully determined
+
+Let `P` be a height-one prime of the chart algebra `T` over the centre `q'` with `Jac ∈ P`, and
+write `𝔭 = P ∩ R_s`.
+
+1. **`S ∈ 𝔭`.**  `criticalSourceReciprocalJacobian_det_eq_schurRamification` reads
+   `det Jac · scale^{2m} = ± aeval S`, and `scale` is the zeroth Schur coordinate, so it lies in
+   `R_s ⊆ T`; hence `aeval S ∈ P`, i.e. `S ∈ 𝔭`.
+2. **If `ht 𝔭 = 1` then `𝔭 = (S)`,** since `(S)` is a height-one prime of the UFD `R_s` contained
+   in `𝔭`.
+3. **Then `B ⊆ T_P`:** `B = (R_s)_{(S)} = (R_s)_𝔭 ⊆ T_P`.
+4. **Hence `T_P = B`,** because a ring between a discrete valuation ring and its fraction field is
+   one of the two, and `T_P` is local with nonzero maximal ideal.
+5. **Hence `P = 𝔪_B ∩ T = P''`** — only one ramified prime, which is `(D-1)`.
+
+Only step 2's hypothesis is missing, and it is the *same* classical statement as before, in its
+sharpest form:
+
+```text
+ht 𝔭 + dim (R ⧸ 𝔭) = dim R          for R a polynomial ring over a field
+```
+
+Half of it is available: `ringKrullDim_quotient_succ_le_of_nonZeroDivisor` gives
+`dim (R ⧸ 𝔭) + ht 𝔭 ≤ dim R` by iterating along a chain below `𝔭` (each step drops the dimension by
+at least one).  The missing half is `dim (R ⧸ 𝔭) ≥ dim R − ht 𝔭`, i.e. that `R` is **catenary** —
+equivalently, that a Noether normalization of `R ⧸ 𝔭` can be extended to one of `R`.  Everything
+else on this card's `(D-1)` line is now proved.
+
+## Lean progress — `(D-1)` IS CLOSED: the chart algebra is a localization of the Schur ring
+
+The dimension-formula route recorded above was the wrong one, and the correction is worth stating
+because it removes a classical input rather than supplying it.  The chart algebra `T` is **not
+merely birational** to the Schur coordinate ring `R_s`: it is a *localization* of it, and that
+makes the centre of every prime of `T` automatically a height-one prime of `R_s`.  No catenary
+theory, no dimension formula, no Krull-dimension count is needed.
+
+```text
+HTGeometry/FiniteJetSubalgebraInversion.lean              (built)
+    PolynomialCoefficientsInSubalgebra + closure lemmas
+    adjoinSubalgebra_finiteReciprocalPositive_eq
+    adjoinSubalgebra_finiteUnitSquarePositive_eq
+    adjoinSubalgebra_finiteReciprocalSquarePositive_eq
+        ** the finite jet transforms are invertible over the base RING, not just the base field **
+
+HTGeometry/CriticalSchurCoordinateGeneration.lean         (built)
+    criticalSourceNormalizedPositive_mem_adjoin_schur
+    criticalSourceRaw_mem_adjoin_schur
+    criticalSourceScale_pow_mul_recip_mem_adjoin_schur
+        ** every raw coordinate is a polynomial in the Schur coordinates; every reciprocal
+           coordinate becomes one after multiplying by a power of the scale **
+
+HTGeometry/CriticalSchurChartClearing.lean                (built)
+    criticalSchurClearingElement = scale^(n+2) * marked
+    criticalSchurClearable                       the subalgebra of clearable elements
+    criticalSourceChartAlgebra_mem_clearable
+        ** every element of the chart algebra becomes a Schur polynomial after clearing a power
+           of one explicit element **
+
+HTGeometry/SubalgebraClearingPrime.lean                   (built)
+    prime_subtype_of_clearing
+        ** primality survives a denominator-clearing extension **
+
+HTGeometry/CriticalSchurUniqueRamifiedPrime.lean          (built)
+    eq_span_singleton_of_height_eq_one
+    criticalSchurRamificationChartElement_prime
+    criticalSchurChartPrime_eq_of_mem
+        ** (D-1): every prime of the chart algebra over the centre containing the ramification
+           element is the centre of the Schur place **
+```
+
+**Why it works.**  The Schur coordinates are the scale together with the normalized
+reciprocal-square jet.  Both jet transforms — reciprocal and unit-square — are triangular with unit
+leading terms, so in characteristic zero they are invertible over the base *ring*, with `2` the only
+denominator; that is the content of `FiniteJetSubalgebraInversion`, which upgrades the corpus's
+`IntermediateField.adjoin` statements to `Algebra.adjoin`.  Consequently every raw coordinate is a
+polynomial in the Schur coordinates, and — by the cleared-numerator form of the reciprocal
+coefficients — every reciprocal coordinate is one after dividing by a power of the scale.  The chart
+ring inverts only the marked product, so with `w = scale^{n+2} · marked` (which lies in the Schur
+ring, and is a unit of the chart algebra because `recip₀ = scale⁻¹` and the marked product is
+inverted) the chart algebra is exactly `R_s[1/w]`.
+
+The endgame is then three lines: the ramification element `S` is irreducible in the polynomial ring
+`R_s`, `S ∤ w` because `S` is a nonunit of the chart algebra, hence `S` stays prime after clearing;
+a height-one prime containing a prime element is generated by it; and both the given ramified prime
+and the Schur centre are height-one primes containing `S`.
+
+**State of `(D)`.**
+
+```text
+(R)    e ≥ 2 at the Schur place            ** DONE **
+(D-e)  e = 2 exactly                       ** DONE **
+(D-1)  a unique ramified prime             ** DONE **
+(D-f)  f = 1                               steps 1-6 done; step 7 is the reduced-fibre dictionary
+(D-c)  |collisionSupport| = e·f = 2        the same dictionary
+```
+
+### `(D-f)` step 7 and `(D-c)`, rewritten now that `(D-1)` is available
+
+`(D-1)` removes the need for a general "reduced fibre ↔ residue embedding" dictionary.  The only
+sheets that matter are the **singular** ones, and for those the dictionary is a two-line
+consequence of `(D-1)`:
+
+```text
+σ a sheet whose reduced state is singular
+  ⟹ det Jac ∈ σ⁻¹(𝔪_W)                    the reduced Jacobian determinant vanishes at z_σ
+  ⟹ the prime σ⁻¹(𝔪_W) ∩ T over q' is ramified
+  ⟹ (D-1): that prime is the Schur centre, i.e. σ⁻¹(W) = B
+  ⟹ σ maps B into W and 𝔪_B into 𝔪_W, so it induces a residue embedding σ̄ : k(B) → k_W
+```
+
+With `σ̄` in hand everything reduces to statements already proved at the Schur place, because the
+reduced data at `z_σ` is the `σ̄`-image of the reduced data at the Schur place:
+
+```text
+corner minor at z_σ  = σ̄ (residue_B (corner minor))  ≠ 0
+        ⟹ corank one at EVERY singular reduced state, not just at the Schur place
+conormal vector c₀   is defined over k(A), and every sheet fixes the observation field
+        ⟹ the same vector c₀ lies in ker J(z_σ) for every singular σ
+```
+
+Since the conormal of a low tangent `(U,V)` is the *state-independent* linear expression
+`(rev U, −rev V)` (`horizonConormalVector`), a one-dimensional kernel containing the fixed vector
+`c₀` forces all collision tangents to be proportional; rescaling gives one common `(U,V)`, and
+`criticalFibre_eq_of_shared_coprime_tangent` then identifies all singular reduced states.  That is
+`f_{Q₀} = 1`.  The remaining count is the size of the one collapsing fibre, which is `e = 2`.
+
+**Build order for the rest of `(D)`.**
+
+```text
+7a  σ⁻¹(W) = B for a singular sheet σ                    from (D-1)
+7b  the induced residue embedding σ̄ and its compatibility with the fibre reduction
+7c  corank one at every singular reduced state
+7d  the fixed conormal vector lies in every such kernel
+7e  all collision tangents proportional; rescale; criticalFibre_eq_of_shared_coprime_tangent
+7f  f = 1, hence exactly one collapsing fibre
+8   |collisionSupport| = e = 2, and the endgame theorem fires
+```
+
+## Lean progress — `(D-f)` steps 7a and 7c are CLOSED
+
+```text
+HTGeometry/CriticalSheetChartIntegrality.lean             (built)
+    sheet_mem_normalClosureSchur_of_observationRange
+    criticalSourceRaw_sheet_mem_normalClosureSchur
+    criticalSourceRecip_sheet_mem_normalClosureSchur
+    algebraMap_chartRing_mem_observationRange
+    criticalSourceChartAlgebra_sheet_mem_normalClosureSchur
+        ** every sheet maps the chart algebra into the normal-closure Schur valuation ring **
+
+HTGeometry/CriticalSheetSchurPullback.lean                (built)
+    criticalSheetChartToNormalSchur      the sheet as a map of the chart algebra
+    criticalSheetChartPrime              the pulled-back centre, prime and over q'
+    criticalSheetChartPrime_eq_of_singular
+        ** (D-1) applied to sheets: a SINGULAR sheet pulls the Schur place back to itself **
+    criticalSheetSourceSchurLift         hence a lift B → W of the sheet
+    criticalSheetSourceSchurLift_coe     whose underlying map is the sheet
+    residue_criticalSheetSourceSchurLift_ne_zero
+
+HTGeometry/CriticalSheetJacobianCorankOne.lean            (built)
+    criticalSheetSourceSchurLift_mem_maximalIdeal    the lift is local
+    criticalSheet_finrank_ker_reduced_jacobian_eq_one
+        ** corank one at EVERY singular point of the reduced fibre **
+```
+
+The mechanism is worth recording: a sheet `σ` whose reduced state is singular has
+`det Jac ∈ σ⁻¹(𝔪_W)`, so the prime `σ⁻¹(𝔪_W) ∩ T` of the chart algebra lies over the branch centre
+*and* contains the ramification element; `(D-1)` then forces it to be the centre of the Schur place.
+Since the source Schur valuation ring is the localization of the chart algebra at that centre,
+`IsLocalization.lift` produces a ring map `B → W` whose underlying map is `σ` itself, and it is
+local because the centre is exactly the contracted maximal ideal.  Nonvanishing residues therefore
+transfer, and the corner-minor computation at the Schur place applies verbatim at every singular
+reduced state.
+
+**State of `(D-f)` step 7.**
+
+```text
+7a  σ⁻¹(W) = B for a singular sheet σ                    ** DONE **
+7b  compatibility of the lift with the fibre reduction   NEXT
+7c  corank one at every singular reduced state           ** DONE **
+7d  the fixed conormal vector lies in every such kernel
+7e  all collision tangents proportional; rescale
+7f  f = 1, hence exactly one collapsing fibre
+8   |collisionSupport| = 2, and the endgame theorem fires
+```

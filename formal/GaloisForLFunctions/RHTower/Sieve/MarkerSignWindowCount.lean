@@ -102,4 +102,87 @@ theorem card_sign_window_ge {X H M₀ Q : ℕ} {σ : ℤ} {rho S B : ℝ}
     linarith [hmono, hsum]
   linarith [hchain, hcard]
 
+/-- A cofactor is below the marker, from the marker bound alone. -/
+theorem cofactor_lt_marker' {X H M₀ : ℕ} {P : Finset ℕ} (hprime : ∀ p ∈ P, p.Prime)
+    (hlarge : ∀ p ∈ P, M₀ < p) (hXH : X + H ≤ M₀ * M₀) :
+    ∀ p ∈ P, ∀ a ∈ windowCell X H p, ∀ r ∈ P, a < r := by
+  intro p hp a ha r hr
+  have hppos : 0 < p := (hprime p hp).pos
+  have hprod := ((mem_windowCell_iff hppos).1 ha).2
+  have hMp : M₀ < p := hlarge p hp
+  have hMr : M₀ < r := hlarge r hr
+  have haM : a ≤ M₀ := by
+    by_contra hcon
+    have h1 : M₀ + 1 ≤ a := by omega
+    have h2 : M₀ + 1 ≤ p := by omega
+    have h3 : (M₀ + 1) * (M₀ + 1) ≤ a * p := Nat.mul_le_mul h1 h2
+    have h4 : a * p ≤ M₀ * M₀ := le_trans hprod hXH
+    nlinarith
+  omega
+
+/-- **The window receives the marker block's sign count, from the marker bound alone.** -/
+theorem card_sign_window_ge' {X H M₀ : ℕ} {σ : ℤ} {rho S B : ℝ}
+    (P : Finset ℕ) (hprime : ∀ p ∈ P, p.Prime) (hlarge : ∀ p ∈ P, M₀ < p)
+    (hXH : X + H ≤ M₀ * M₀) (hrho : 0 ≤ rho)
+    (hcell : ∀ p ∈ P, rho * ((H : ℝ) / (p : ℝ) - 1)
+      ≤ ((((windowCell X H p).filter (fun b => moebius b = -σ)).card : ℕ) : ℝ))
+    (hS : S ≤ ∑ p ∈ P, 1 / (p : ℝ)) (hB : ((P.card : ℕ) : ℝ) ≤ B) :
+    rho * ((H : ℝ) * S - B)
+      ≤ ((((Finset.Ioc X (X + H)).filter (fun n => moebius n = σ)).card : ℕ) : ℝ) := by
+  classical
+  set C : ℕ → Finset ℕ :=
+    fun p => (windowCell X H p).filter (fun b => moebius b = -σ) with hC
+  have hposW : ∀ p ∈ P, ∀ a ∈ windowCell X H p, 0 < a := fun p hp a ha =>
+    pos_of_mem_windowCell (hprime p hp).pos ha
+  have hposC : ∀ p ∈ P, ∀ a ∈ C p, 0 < a := by
+    intro p hp a ha
+    exact hposW p hp a (Finset.mem_filter.1 ha).1
+  have hsmallW := cofactor_lt_marker' hprime hlarge hXH
+  have hsmall : ∀ p ∈ P, ∀ a ∈ C p, ∀ r ∈ P, a < r := by
+    intro p hp a ha r hr
+    exact hsmallW p hp a (Finset.mem_filter.1 ha).1 r hr
+  have hexact : ((RHTower.markerBlockTargets P C).card : ℕ) = ∑ p ∈ P, (C p).card :=
+    RHTower.card_markerBlockTargets P C hprime hposC hsmall
+  have hsub : RHTower.markerBlockTargets P C
+      ⊆ (Finset.Ioc X (X + H)).filter (fun n => moebius n = σ) := by
+    intro n hn
+    obtain ⟨p, hp, a, ha, rfl, hsign⟩ :=
+      moebius_of_mem_markerBlockTargets hprime hposC hsmall hn
+    have haW : a ∈ windowCell X H p := (Finset.mem_filter.1 ha).1
+    have hasign : moebius a = -σ := (Finset.mem_filter.1 ha).2
+    have hw := (mem_windowCell_iff (hprime p hp).pos).1 haW
+    rw [Finset.mem_filter, Finset.mem_Ioc]
+    refine ⟨⟨hw.1, hw.2⟩, ?_⟩
+    rw [hsign, hasign]
+    ring
+  have hsum : rho * ((H : ℝ) * (∑ p ∈ P, 1 / (p : ℝ)) - ((P.card : ℕ) : ℝ))
+      ≤ ∑ p ∈ P, (((C p).card : ℕ) : ℝ) := by
+    refine le_trans (le_of_eq ?_) (Finset.sum_le_sum hcell)
+    have hexp : ∑ p ∈ P, rho * ((H : ℝ) / (p : ℝ) - 1)
+        = rho * ((H : ℝ) * (∑ p ∈ P, 1 / (p : ℝ)) - ((P.card : ℕ) : ℝ)) := by
+      rw [Finset.mul_sum, mul_sub, Finset.mul_sum]
+      rw [show ∑ p ∈ P, rho * ((H : ℝ) / (p : ℝ) - 1)
+          = ∑ p ∈ P, (rho * ((H : ℝ) * (1 / (p : ℝ))) - rho * 1) from
+        Finset.sum_congr rfl fun p _ => by rw [mul_one_div]; ring]
+      rw [Finset.sum_sub_distrib, Finset.sum_const, nsmul_eq_mul]
+      ring
+    rw [hexp]
+  have hmono : rho * ((H : ℝ) * S - B)
+      ≤ rho * ((H : ℝ) * (∑ p ∈ P, 1 / (p : ℝ)) - ((P.card : ℕ) : ℝ)) := by
+    have hH : (0 : ℝ) ≤ (H : ℝ) := Nat.cast_nonneg _
+    have h1 : (H : ℝ) * S ≤ (H : ℝ) * (∑ p ∈ P, 1 / (p : ℝ)) :=
+      mul_le_mul_of_nonneg_left hS hH
+    exact mul_le_mul_of_nonneg_left (by linarith) hrho
+  have hcast : ((∑ p ∈ P, (C p).card : ℕ) : ℝ) = ∑ p ∈ P, (((C p).card : ℕ) : ℝ) := by
+    push_cast
+    ring
+  have hcard : (((RHTower.markerBlockTargets P C).card : ℕ) : ℝ)
+      ≤ ((((Finset.Ioc X (X + H)).filter (fun n => moebius n = σ)).card : ℕ) : ℝ) :=
+    Nat.cast_le.2 (Finset.card_le_card hsub)
+  have hchain : rho * ((H : ℝ) * S - B)
+      ≤ (((RHTower.markerBlockTargets P C).card : ℕ) : ℝ) := by
+    rw [hexact, hcast]
+    linarith [hmono, hsum]
+  linarith [hchain, hcard]
+
 end RHTower.Sieve

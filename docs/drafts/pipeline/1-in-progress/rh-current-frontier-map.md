@@ -6,8 +6,8 @@ This document states where the `HTGeometry`, `HilbertMetric`, and `RHTower` Lean
 It maps architectures, theorem chains, open cores, and terminal mechanisms. It is not a chronology,
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
-**Formal-corpus cutoff:** 18 August 2026, commit
-`37d4ac1435fecbadd754c67d4ad51ff62e0ec740`, plus declaration-index review of Lean working-tree
+**Formal-corpus cutoff:** 19 August 2026, commit
+`156adc3ea8d38e632a303290fa704a08adcb49ed`, plus declaration-index review of Lean working-tree
 sources. Scientific status below comes only from Lean declarations, dependencies, theorem docstrings,
 and explicit gap/no-go markers. Pipeline cards and papers are not evidence for this map.
 
@@ -30,9 +30,8 @@ RH and its negation remain unproved.
 
 Formal corpus currently supports twelve live architectures: established
 `CCM-FU, C1, D2, E, G, L, O, P, Q, T, U`, plus newly separated
-**HC (horizontal-collision quantum)**. It supports one especially coherent new candidate,
-**IW (internal Weyl descent)**, and several earlier-stage source-mechanism candidates. Route R is
-terminal as independent producer.
+**HC (horizontal-collision quantum)**. Six corpus-born receiver/source-mechanism candidates remain:
+`SC, PPM, IRK, OPUC, HJ, BW`. Routes R, IW, and AP are terminal as independent producers.
 
 | Architecture | Proved chain | First open core |
 |---|---|---|
@@ -301,6 +300,25 @@ endpoint characters remain separated off line; consequently every exact nonlinea
 Lipschitz sensitivity tending to infinity.  The induced pre-divisor order predicate is critical
 line placement pointwise, and its universal Xi admission is exactly RH
 (`CompleteResolutionSecondCartierNormalOrder.lean`).
+The complete resolution now also retains the genuine consecutive products of forward and
+reflected prime-peeled adjacent shell transfers as one non-scalar three-coordinate Krein jet before
+the normal limit.  The forward product is exactly the half-density power times the
+terminal-to-initial peeled residual ratio whenever the traversed residuals are nonzero; no frozen
+transfer is externally repeated.  At every fixed orbit depth this finite source jet converges to
+the literal second-Cartier endpoint, its positive energy converges to literal radial energy, the
+physical conormal coefficient is unchanged, and the
+support-fibre sum preserves exact Xi multiplicity.  A single cofinal energy constant for all orbit
+depths is equivalent to literal endpoint moderation; on every strict-right Xi copy finite shell
+stages exhibit two-stage escape, and universal actual-Xi cofinal budgeting is exactly RH
+(`CompleteResolutionReflectedShellSecondCartierDescent.lean`).
+The regular completed-source class is now closed at its maximal nonlinear level.  Reflected
+complete source points collapse cofinally, while their literal endpoint characters stay separated
+off line.  Any exact extractor family with even one common continuity modulus on those two points
+is therefore impossible off line; conversely such reflection-pair equicontinuous exact extraction
+exists on the critical line.  Pointwise regular extraction is equivalent to critical-line
+placement, and universal actual-Xi regular extraction is equivalent to RH, without assuming
+linearity, positivity, global continuity, or a Lipschitz constant
+(`CompleteResolutionReflectionPairEquicontinuityFirewall.lean`).
 
 **Open core.** Derive endpoint moderation/order globally from literal completed source before divisor
 selection while retaining coefficient and multiplicity. Universal boundedness and universal finite
@@ -308,10 +326,17 @@ circle representability are RH-equivalent. Post-selected compact positive-measur
 impossible on every strict-right copy, and the literal static conormal short admits no uniform orbit
 budget. Viable producer must therefore be pre-divisor and source-natural; indefinite conservation,
 determinant, Krein form, compactness language, or scalar shorting cannot supply it.  Normal-reader
-reconstruction alone is also insufficient: its forced sensitivity diverges.  Remaining viable
-shape is a completed Gamma/source theorem pairing this singular normal gain with independent
-arithmetic decay strong enough that `gain × reflected source displacement → 0` on every Xi zero;
-that would annihilate the literal endpoint reflection defect before scalar domination.
+reconstruction alone is also insufficient: its forced sensitivity diverges, and the stronger
+reflection-pair theorem excludes every regular nonlinear repair admitting a common continuity
+modulus.  Remaining viable shape is singular/projective: an arithmetic order law on the exceptional
+normal boundary giving one orbit-depth-independent bound for the genuine consecutive
+forward/reflected prime-peeled shell Krein energies.  The shell threshold may depend on orbit depth,
+but the energy constant may not.  This estimate must be proved before Xi selection and cannot
+replace either reflected leg, conormal coefficient, or multiplicity.  Equivalently it must pair the
+singular normal gain with independent arithmetic decay strong enough that
+`gain × reflected source displacement → 0` on every Xi zero while deliberately failing every common
+reflection-pair continuity modulus.  The formal descent would then give endpoint moderation and RH
+without post-selected scalar domination.
 
 ### Q — Hurwitz/Cauchy source orientation
 
@@ -457,25 +482,6 @@ RH-equivalent; progress must be upstream arithmetic evaluation/cancellation of f
 These are Lean architectures, not literature-shaped suggestions. They are not counted as live until
 source handoff is built independently of zero tested.
 
-### IW — internal dyadic Weyl descent
-
-`WeldWeylMultiplicity.lean` proves primitive order-`2^k` Weyl commutation forces `2^k` divisibility;
-internal Weyl model on actual undoubled SEM hole space gives one RH rung; models at all or cofinal
-depths force RH. Open theorem: construct Weyl actions internally from arithmetic source. Auxiliary
-tensor factors are forbidden because they manufacture divisibility. Independently, finite
-shift--Weyl operations preserving full real-Xi sampling nullspace collapse to zero-shift polynomial
-multipliers under superlinear real sampling; Lean reduces that sampling input to explicit
-grid-cancellation or mean-square grid-cancellation surplus (`XiSuperlinearFromCancellation.lean`).
-This is rigidity against local finite descent, not an RH route: it acts only on already-real Xi
-divisor and supplies no off-line exhaustion. A successor must be boundary-completed, nonlocal, or
-genuinely all-prime.
-
-### AP — Arakelov power orbit
-
-`ArakelovPowerOrbitRH.lean` proves explicit `w -> w^n` lift, right-half preservation, convergence to
-nonzero Xi anchor, and RH from divisor stability or preperiodicity. Bare stability/preperiodicity is
-RH-equivalent. Open theorem: global source endomorphism inducing power law before zero selection.
-
 ### SC — prime--Gamma Stokes/Coxeter
 
 `PrimeGammaStokesCoxeterRH.lean` proves Coxeter preservation of symmetrized Seifert form and unit
@@ -540,6 +546,8 @@ Closure applies to named mechanism, not every future use of similar objects.
 | M | Gamma--Jacobi reader complete; anchored cofinal flatness is RH. | Receiver only. |
 | N | Response equality, endpoint contractivity, or bounded polar work is RH-equivalent. | Shared receiver for L/P/G. |
 | R | Intrinsic producer category empty; every surviving external interface RH-equivalent. | Quartic amplitude, singular cap, and physical landing remain reusable receivers. |
+| IW internal SEM Weyl model | Model existence is exactly `2^k` divisibility of actual hole count, depends only on dimension, and universal/cofinal existence is exactly RH. | Exact cyclic clock--shift realization and source-blind divisibility classification; useful certificate, not producer. |
+| AP Big-Witt/Scaling-Site power orbit | Big-Witt reporter law holds, but Arakelov square lift has a pole at `1/2`, so no global entire-source pullback exists; actual Scaling-Site covers act differently; fixed-receiver stability/preperiodicity are RH-equivalent. | Source-first Big-Witt Frobenius reporter and valid changed-receiver cross-fibre scaling law. |
 | TD/C1 raw positive completion | Four raw reflected critical Stokes atoms already exceed completed zeroth mass; no finite positive supercarrier dominating them can equal completed seam germ. | Any representing carrier must delete/reweight raw atoms or introduce signed negative correction before final positivity. |
 | AF class-law scale-orbit | Convergent abelian class-law certificate exists iff centered rate is zero; global certificates on all Xi copies exist iff RH. | Terminal rigidity/selection theorem; successor must change interface to singular/infinite-action or genuinely global aggregate law. |
 | direct prime Ising | Raw/scalar-normalized finite balanced tree partitions cannot converge locally uniformly to XiC; rank growth forces scale collapse. | Only singular critical rescaling outside fixed modal closure could be new. |
@@ -557,7 +565,19 @@ Closure applies to named mechanism, not every future use of similar objects.
 proves quadratic comparison no-go. R contributed novel architecture/invariants, but no intrinsic
 producer survives. It is closed negatively as RH route.
 
-### TD/C1 and AF exact closures
+### IW, AP, TD/C1, and AF exact closures
+
+`SEMDyadicWeylExistenceClassification.lean` proves internal SEM Weyl-model existence iff dyadic
+hole-count divisibility, source-blindness at fixed dimension, levelwise equivalence with the RH
+ladder, and all-level/cofinal equivalence with RH. IW therefore cannot independently generate the
+divisibility it was meant to explain. Its positive survivor is the exact internal cyclic
+clock--shift representation of already-present divisibility.
+
+`BigWittArakelovSourceEndomorphismTerminal.lean` proves the source-first Big-Witt Frobenius reporter,
+then closes every fixed completed-Xi handoff in this architecture: global entire pullback is
+impossible, actual Scaling-Site cover is not the power lift, Euler Adams gives dilation rather than
+ramification, half-scaling changes receiver, and remaining fixed-receiver conditions are
+RH-equivalent. AP is exhausted within Big-Witt/Scaling-Site/completed-Xi architecture.
 
 `GammaSewnMobiusApertureStokesPositiveCompletionNoGo.lean` closes TD/C1's canonical
 raw-positive/passive handoff and proves exact non-domination survivor. It does not close corrected
@@ -582,6 +602,10 @@ Corpus proves insufficient:
 - linear reflection cancellation as substitute for quadratic reflection incidence;
 - fixed-degree positive limits as control of degree-matched cofinal diagonal;
 - scalar counterterms for incompatible interior/boundary charts;
+- internal finite-dimensional Weyl-model existence as source mechanism: it only restates dimension
+  divisibility and is source-blind;
+- global entire-source pullback by pole-bearing Arakelov square lift, or replacement by an actual
+  Scaling-Site cover that implements a different action;
 - positive Hermitian completion preserving or dominating an overmassive canonical raw carrier;
 - copywise convergent abelian class-law certificates away from neutral rate;
 - source symmetry as proof every orbit point is fixed.
@@ -614,9 +638,10 @@ shows same issue at a fixed centered response point.
 
 ### Quantized obstructions beat normalized asymptotics
 
-HC and IW exploit indivisible integers: collision quantum two, squared reflection order, or
-divisibility by `2^k`. Normalized `o(N)` can coexist with finitely many bad atoms. Source estimate
-must cross absolute quantum threshold.
+HC exploits indivisible collision quantum two and squared reflection order. Normalized `o(N)` can
+coexist with finitely many bad atoms, so source estimate must cross absolute quantum threshold. IW
+shows the limitation of this idea: an abstract internal Weyl model can merely encode desired integer
+divisibility and contribute no independent arithmetic production.
 
 ### Ground selection replaced seed construction
 
@@ -638,7 +663,7 @@ Needed objects are relative, graph-valued, nonlocal, or non-scalar.
 
 ### Non-classical corpus-born mechanism family
 
-HC, IW, AP, SC, PPM, IRK, and HJ share architecture:
+HC, SC, PPM, IRK, and HJ share architecture:
 
 ```text
 literal source operation
@@ -649,7 +674,9 @@ literal source operation
 
 Common danger is zero-indexed vacuity. Valid proof must build global source operation before choosing
 divisor. HC is furthest because coefficient-faithful finite source carrier and exact quantized limit
-already exist; only source estimate remains.
+already exist; only source estimate remains. IW and AP were hostile tests of this family and are now
+terminal: IW's operation is exactly the desired divisibility, while AP's genuine source reporter
+cannot act on fixed completed-Xi receiver.
 
 ## Fundamental nature of remaining problems
 
@@ -664,10 +691,9 @@ Open cores fall into six classes:
 4. **Mixed-incidence control:** preserve cross terms diagonal energies erase (E, Q, HC, T).
 5. **Cofinal synchronization:** one estimate uniform in moving degree/aperture/height
    (CCM-FU, E, O, T, U).
-6. **Source-native internal dynamics:** endomorphism, Weyl action, projective module, corrected
-   Stokes category,
-   or monodromy on actual arithmetic carrier before divisor selection (IW, AP, SC, PPM, IRK, OPUC,
-   HJ).
+6. **Source-native internal dynamics:** projective module, corrected Stokes category, or monodromy
+   on actual arithmetic carrier before divisor selection (SC, PPM, IRK, OPUC, HJ). Abstract Weyl
+   existence and Arakelov power pullback are now classified terminal in their stated architectures.
 
 Fundamental remaining obstruction is not another equivalent criterion. Corpus already has many. It
 is:
@@ -698,9 +724,9 @@ is:
     proves shifted reciprocal Hankel tail positivity inside proved parabolic horizon?
 11. Can two-prime source excess be bounded absolutely below collision quantum two, or can literal
     paired Gamma-six determinant current be proved prime-summable upstream?
-12. Can arithmetic source construct internal dyadic Weyl pair on actual undoubled hole space?
-13. Can source globalize Arakelov power, Coxeter, prime-power collision, irrational-rotation `K_0`,
-    paraorthogonal phase, or Hurwitz projective reflection before divisor selection?
+12. Can source globalize Coxeter, prime-power collision, irrational-rotation `K_0`, paraorthogonal
+    phase, or Hurwitz projective reflection before divisor selection without collapsing to another
+    RH-equivalent certificate?
 
 Until one is answered, endpoint reformulations, finite real-zero models, seed asymptotics, diagonal
 moment inequalities, or scalar transport identities do not move formal RH frontier.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.Sieve.MarkerBlockSignCount
+import GaloisForLFunctions.RHTower.Sieve.LiftedMarkerBlock
 import GaloisForLFunctions.RHTower.Sieve.CardLengthDilation
 
 /-!
@@ -16,7 +16,7 @@ The `k`-th block sits at markers `(2^k M₀, 2^{k+1} M₀]`, whose reciprocal st
 
 namespace RHTower.Sieve
 
-open Finset
+open Finset ArithmeticFunction
 
 /-! ## The start range of one dyadic block -/
 
@@ -114,8 +114,9 @@ theorem multiBlockScale_le {K₀ v k : ℕ} (hk : k ≤ K₀) :
     multiBlockScale K₀ v k ≤ multiBlockScale K₀ v 0 := by
   have hle : multiBlockLen K₀ v k ≤ multiBlockLen K₀ v 0 := by
     rw [multiBlockLen, multiBlockLen, multiHalf, multiHalf, Nat.sub_zero]
-    exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_right _ (Nat.pow_le_pow_right (by norm_num)
-      (by omega)))
+    have hpow : (2 : ℕ) ^ (K₀ - k) ≤ 2 ^ K₀ := Nat.pow_le_pow_right (by norm_num) (by omega)
+    have hmul : 2 ^ (K₀ - k) * v ≤ 2 ^ K₀ * v := Nat.mul_le_mul_right v hpow
+    omega
   have hleR : ((multiBlockLen K₀ v k : ℕ) : ℝ) ≤ ((multiBlockLen K₀ v 0 : ℕ) : ℝ) := by
     exact_mod_cast hle
   rw [multiBlockScale, multiBlockScale]
@@ -123,6 +124,7 @@ theorem multiBlockScale_le {K₀ v k : ℕ} (hk : k ≤ K₀) :
 
 /-- **The fibre of the `k`-th block fits inside the marker's cell.** -/
 theorem multi_fit {β : ℝ} {K₀ v k p : ℕ} (hβ : 0 < β) (hv : 0 < v) (hk : k ≤ K₀)
+    (_hM0 : 0 < multiBase K₀ v)
     (hpl : 2 ^ k * multiBase K₀ v < p) (hpu : p ≤ 2 ^ (k + 1) * multiBase K₀ v) :
     (multiBlockWindow β K₀ v k
           * (((multiPhys K₀ v / p : ℕ) : ℝ) + 1) / ((multiBlockLen K₀ v k : ℕ) : ℝ) + 1)
@@ -131,17 +133,11 @@ theorem multi_fit {β : ℝ} {K₀ v k p : ℕ} (hβ : 0 < β) (hv : 0 < v) (hk 
   have hw : 0 < multiHalf K₀ v k := by
     rw [multiHalf]
     positivity
-  have hM0 : (0 : ℕ) < multiBase K₀ v := by
-    by_contra hc
-    push Not at hc
-    interval_cases h : multiBase K₀ v
-    · simp at hpl
-      omega
   have hp0 : 0 < p := by omega
   have hlen : multiBlockLen K₀ v k = 2 * multiHalf K₀ v k := rfl
-  have hstart := block_start_lt (w := multiHalf K₀ v k) (M₀ := multiBase K₀ v) (k := k)
-    hw (by rw [← multiPhys_block K₀ v hk] at *; exact hpl)
-  rw [← multiPhys_block K₀ v hk] at hstart
+  have hstart : multiPhys K₀ v / p < 2 * multiHalf K₀ v k := by
+    rw [multiPhys_block K₀ v hk]
+    exact block_start_lt hw hpl
   have hstartR : ((multiPhys K₀ v / p : ℕ) : ℝ) + 1 ≤ ((multiBlockLen K₀ v k : ℕ) : ℝ) := by
     have : multiPhys K₀ v / p + 1 ≤ multiBlockLen K₀ v k := by rw [hlen]; omega
     exact_mod_cast this
@@ -165,10 +161,16 @@ theorem multi_fit {β : ℝ} {K₀ v k p : ℕ} (hβ : 0 < β) (hv : 0 < v) (hk 
   have hbase : multiBlockScale K₀ v 0 = ((multiScale K₀ v : ℕ) : ℝ) ^ 2 := rfl
   have hCbig : cardLength β (multiBlockScale K₀ v 0) + (2 : ℝ) ^ K₀
       ≤ ((multiCell β K₀ v : ℕ) : ℝ) := by
-    rw [multiCell, hbase]
-    push_cast
-    have := Nat.le_ceil (cardLength β (((multiScale K₀ v : ℕ) : ℝ) ^ 2))
-    rw [← hbase]
+    have hceil := Nat.le_ceil (cardLength β (multiBlockScale K₀ v 0))
+    have hval : ((multiCell β K₀ v : ℕ) : ℝ)
+        = ((⌈cardLength β (multiBlockScale K₀ v 0)⌉₊ : ℕ) : ℝ) + (2 : ℝ) ^ K₀ := by
+      rw [multiCell, ← hbase]
+      push_cast
+      ring
+    rw [hval]
+    linarith
+  have hCpos : (0 : ℝ) ≤ ((multiCell β K₀ v : ℕ) : ℝ) - (2 : ℝ) ^ K₀ := by
+    have := cardLength_pos β (multiBlockScale K₀ v 0)
     linarith
   have hshrink : multiBlockWindow β K₀ v k
       ≤ ((1 : ℝ) / 2) ^ k * (((multiCell β K₀ v : ℕ) : ℝ) - (2 : ℝ) ^ K₀) := by
@@ -187,7 +189,10 @@ theorem multi_fit {β : ℝ} {K₀ v k p : ℕ} (hβ : 0 < β) (hv : 0 < v) (hk 
   have hstep : (multiBlockWindow β K₀ v k + 1) * (p : ℝ)
       ≤ (((1 : ℝ) / 2) ^ k * (((multiCell β K₀ v : ℕ) : ℝ) - (2 : ℝ) ^ K₀) + 1)
         * ((2 : ℝ) ^ (k + 1) * ((multiBase K₀ v : ℕ) : ℝ)) := by
-    refine mul_le_mul (by linarith [hshrink]) hpu' hpR.le (by positivity)
+    refine mul_le_mul (by linarith [hshrink]) hpu' hpR.le ?_
+    have h1 : (0 : ℝ) ≤ ((1 : ℝ) / 2) ^ k * (((multiCell β K₀ v : ℕ) : ℝ) - (2 : ℝ) ^ K₀) :=
+      mul_nonneg (by positivity) hCpos
+    linarith
   have hpow : ((1 : ℝ) / 2) ^ k * (2 : ℝ) ^ (k + 1) = 2 := by
     rw [div_pow, one_pow, pow_succ]
     field_simp
@@ -254,9 +259,9 @@ theorem multi_supply {β : ℝ} {K₀ v k p : ℕ} (hk : k ≤ K₀) (hv : 0 < v
     have hCnn : (0 : ℝ) ≤ 2 * ((multiCell β K₀ v : ℕ) : ℝ) := by positivity
     nlinarith [hplR, hCnn]
   -- the fibre of the block is at least half its window
-  have hstart := block_start_ge (w := multiHalf K₀ v k) (M₀ := multiBase K₀ v) (k := k)
-    hp0 hM0 (by rw [← multiPhys_block K₀ v hk] at *; exact hpu)
-  rw [← multiPhys_block K₀ v hk] at hstart
+  have hstart : multiHalf K₀ v k ≤ multiPhys K₀ v / p := by
+    rw [multiPhys_block K₀ v hk]
+    exact block_start_ge hp0 hM0 hpu
   have hstartR : ((multiBlockLen K₀ v k : ℕ) : ℝ) / 2 ≤ ((multiPhys K₀ v / p : ℕ) : ℝ) := by
     have hcast : ((multiHalf K₀ v k : ℕ) : ℝ) ≤ ((multiPhys K₀ v / p : ℕ) : ℝ) := by
       exact_mod_cast hstart
@@ -279,26 +284,22 @@ theorem multi_supply {β : ℝ} {K₀ v k p : ℕ} (hk : k ≤ K₀) (hv : 0 < v
   -- the numeric comparison
   have hkey : (squarefreeDensity / 256) * (2 * ((multiCell β K₀ v : ℕ) : ℝ) / (2 : ℝ) ^ k)
       ≤ (3 / 16) * squarefreeDensity * (multiBlockWindow β K₀ v k / 2 - 1) := by
-    rw [hWk]
-    rw [div_le_iff₀ ht0] at *
-    have hmul : ((1 : ℝ) / 2) ^ k = 1 / (2 : ℝ) ^ k := by
-      rw [div_pow, one_pow]
-    rw [hmul]
-    rw [ge_iff_le, ← sub_nonneg]
-    have hexp : (3 / 16) * squarefreeDensity
-          * (1 / (2 : ℝ) ^ k * cardLength β (multiBlockScale K₀ v k) / 2 - 1)
+    have hWk' : multiBlockWindow β K₀ v k
+        = cardLength β (multiBlockScale K₀ v k) / (2 : ℝ) ^ k := by
+      rw [hWk, div_pow, one_pow]
+      ring
+    rw [hWk', ← sub_nonneg]
+    have heq : (3 / 16) * squarefreeDensity
+          * (cardLength β (multiBlockScale K₀ v k) / (2 : ℝ) ^ k / 2 - 1)
         - squarefreeDensity / 256 * (2 * ((multiCell β K₀ v : ℕ) : ℝ) / (2 : ℝ) ^ k)
-        = squarefreeDensity / (256 * (2 : ℝ) ^ k)
-          * (3 * cardLength β (multiBlockScale K₀ v k)
-            - 6 * (2 : ℝ) ^ k * 8 - 2 * ((multiCell β K₀ v : ℕ) : ℝ)) := by
+        = squarefreeDensity / (128 * (2 : ℝ) ^ k)
+          * (12 * cardLength β (multiBlockScale K₀ v k) - 24 * (2 : ℝ) ^ k
+            - ((multiCell β K₀ v : ℕ) : ℝ)) := by
       field_simp
       ring
-    rw [hexp]
-    have hpos : (0 : ℝ) < squarefreeDensity / (256 * (2 : ℝ) ^ k) := by positivity
-    have hbig : 0 ≤ 3 * cardLength β (multiBlockScale K₀ v k)
-        - 6 * (2 : ℝ) ^ k * 8 - 2 * ((multiCell β K₀ v : ℕ) : ℝ) := by
-      linarith [hC]
-    positivity
+    rw [heq]
+    refine mul_nonneg (div_nonneg hD.le (by positivity)) ?_
+    linarith [hC]
   have hstep1 : (squarefreeDensity / 256) * (((multiWindow β K₀ v : ℕ) : ℝ) / (p : ℝ) - 1)
       ≤ (squarefreeDensity / 256) * (2 * ((multiCell β K₀ v : ℕ) : ℝ) / (2 : ℝ) ^ k) := by
     refine mul_le_mul_of_nonneg_left (by linarith [hcellR]) (by positivity)
@@ -325,12 +326,12 @@ theorem multi_cell_bound {β : ℝ} {K₀ v k p : ℕ} {σ : ℤ} (hβ : 0 < β)
     rw [multiHalf]
     positivity
   have hlen : multiBlockLen K₀ v k = 2 * multiHalf K₀ v k := rfl
-  have hstart := block_start_ge (w := multiHalf K₀ v k) (M₀ := multiBase K₀ v) (k := k)
-    hp0 hM0 (by rw [← multiPhys_block K₀ v hk] at *; exact hpu)
-  rw [← multiPhys_block K₀ v hk] at hstart
-  have hend := block_start_lt (w := multiHalf K₀ v k) (M₀ := multiBase K₀ v) (k := k)
-    hw (by rw [← multiPhys_block K₀ v hk] at *; exact hpl)
-  rw [← multiPhys_block K₀ v hk] at hend
+  have hstart : multiHalf K₀ v k ≤ multiPhys K₀ v / p := by
+    rw [multiPhys_block K₀ v hk]
+    exact block_start_ge hp0 hM0 hpu
+  have hend : multiPhys K₀ v / p < 2 * multiHalf K₀ v k := by
+    rw [multiPhys_block K₀ v hk]
+    exact block_start_lt hw hpl
   have ht1 : 1 ≤ multiPhys K₀ v / p := by omega
   have htlow : ((multiBlockLen K₀ v k : ℕ) : ℝ) / 2 ≤ ((multiPhys K₀ v / p : ℕ) : ℝ) := by
     have hcast : ((multiHalf K₀ v k : ℕ) : ℝ) ≤ ((multiPhys K₀ v / p : ℕ) : ℝ) := by
@@ -349,7 +350,7 @@ theorem multi_cell_bound {β : ℝ} {K₀ v k p : ℕ} {σ : ℤ} (hβ : 0 < β)
     nlinarith
   exact cell_bound_of_good_start hy4 (multiBlockWindow_pos β K₀ v k)
     (sqrt_multiBlockScale K₀ v k) hp0 hσ ht1 htlow hthigh hnot
-    (multi_fit hβ hv hk hpl hpu) (multi_supply hk hv hM0 hpl hpu hC)
+    (multi_fit hβ hv hk hM0 hpl hpu) (multi_supply hk hv hM0 hpl hpu hC)
 
 /-! ## The family of blocks -/
 
@@ -393,7 +394,7 @@ theorem card_sign_window_ge_multi {β : ℝ} {K₀ v : ℕ} {σ : ℤ} {S B : �
       ⊆ bigPrimeSet (multiBase K₀ v) (2 ^ (K₀ + 1) * multiBase K₀ v) :=
     Finset.filter_subset _ _
   refine card_sign_window_ge (M₀ := multiBase K₀ v) (Q := 2 ^ (K₀ + 1))
-    (goodMarkers β K₀ v) hsub hXH (by positivity) ?_ hS hB
+    (goodMarkers β K₀ v) hsub hXH (div_nonneg squarefreeDensity_pos.le (by norm_num)) ?_ hS hB
   intro p hp
   have hpM : p ∈ bigPrimeSet (multiBase K₀ v) (2 ^ (K₀ + 1) * multiBase K₀ v) := hsub hp
   have hpl : multiBase K₀ v < p := lt_of_mem_bigPrimeSet hpM
@@ -485,6 +486,207 @@ theorem card_badStartUnion_le (β : ℝ) (K₀ v : ℕ) :
   refine hcast.trans (le_of_eq ?_)
   push_cast
   ring
+
+/-! ## The `k`-th cofactor scale is a fixed dilation of the base one -/
+
+theorem multiBlockLen_mul (K₀ v : ℕ) {k : ℕ} (hk : k ≤ K₀) :
+    multiBlockLen K₀ v k * 2 ^ k = multiBlockLen K₀ v 0 := by
+  rw [multiBlockLen, multiBlockLen, multiHalf, multiHalf, Nat.sub_zero,
+    show 2 * (2 ^ (K₀ - k) * v) * 2 ^ k = 2 * (2 ^ (K₀ - k) * 2 ^ k) * v by ring,
+    ← pow_add, show K₀ - k + k = K₀ from by omega]
+  ring
+
+theorem multiBlockScale_div (K₀ v : ℕ) {k : ℕ} (hk : k ≤ K₀) :
+    multiBlockScale K₀ v k = multiBlockScale K₀ v 0 / (4 : ℝ) ^ k := by
+  have h := multiBlockLen_mul K₀ v hk
+  have hR : ((multiBlockLen K₀ v k : ℕ) : ℝ) * (2 : ℝ) ^ k
+      = ((multiBlockLen K₀ v 0 : ℕ) : ℝ) := by
+    have := congrArg (fun n : ℕ => (n : ℝ)) h
+    push_cast at this
+    exact this
+  have hfour : ((2 : ℝ) ^ k) ^ 2 = (4 : ℝ) ^ k := by
+    rw [← pow_mul, show k * 2 = 2 * k by ring, pow_mul]
+    norm_num
+  rw [multiBlockScale, multiBlockScale, ← hR, mul_pow, hfour]
+  field_simp
+
+/-- The base cofactor scale grows. -/
+theorem tendsto_multiBlockScale (K₀ : ℕ) :
+    Filter.Tendsto (fun v : ℕ => multiBlockScale K₀ v 0) Filter.atTop Filter.atTop := by
+  have hlin : Filter.Tendsto (fun v : ℕ => ((multiBlockLen K₀ v 0 : ℕ) : ℝ))
+      Filter.atTop Filter.atTop := by
+    have hval : ∀ v : ℕ, ((multiBlockLen K₀ v 0 : ℕ) : ℝ) = (2 : ℝ) ^ (K₀ + 1) * (v : ℝ) := by
+      intro v
+      rw [multiBlockLen, multiHalf, Nat.sub_zero]
+      push_cast
+      rw [pow_succ]
+      ring
+    have hbase : Filter.Tendsto (fun v : ℕ => (2 : ℝ) ^ (K₀ + 1) * (v : ℝ))
+        Filter.atTop Filter.atTop :=
+      Filter.Tendsto.const_mul_atTop (by positivity) tendsto_natCast_atTop_atTop
+    exact hbase.congr fun v => (hval v).symm
+  have := hlin.atTop_mul_atTop₀ hlin
+  refine this.congr fun v => ?_
+  rw [multiBlockScale, sq]
+
+/-- **The supply condition holds at every block, eventually.** -/
+theorem eventually_multiCell_le (β : ℝ) (hβ0 : 0 < β) (hβ1 : β < 1) (K₀ : ℕ) :
+    ∀ᶠ v : ℕ in Filter.atTop, ∀ k, k ≤ K₀ →
+      ((multiCell β K₀ v : ℕ) : ℝ)
+        ≤ 12 * cardLength β (multiBlockScale K₀ v k) - 24 * (2 : ℝ) ^ k := by
+  classical
+  have hgrow := tendsto_multiBlockScale K₀
+  have hhalf : ∀ k, k ≤ K₀ → ∀ᶠ v : ℕ in Filter.atTop,
+      cardLength β (multiBlockScale K₀ v 0) / 2
+        ≤ cardLength β (multiBlockScale K₀ v k) := by
+    intro k hk
+    have hc1 : (1 : ℝ) ≤ (4 : ℝ) ^ k := one_le_pow₀ (by norm_num)
+    have hev := eventually_half_cardLength_le_dilated (β := β) (c := (4 : ℝ) ^ k) hβ0 hβ1 hc1
+    filter_upwards [hgrow.eventually hev] with v hv
+    rw [multiBlockScale_div K₀ v hk]
+    exact hv
+  have hbig : ∀ᶠ v : ℕ in Filter.atTop,
+      25 * (2 : ℝ) ^ K₀ + 1 ≤ 5 * cardLength β (multiBlockScale K₀ v 0) := by
+    have hev : ∀ᶠ y : ℝ in Filter.atTop,
+        25 * (2 : ℝ) ^ K₀ + 1 ≤ 5 * cardLength β y := by
+      have := (tendsto_cardLength hβ0).eventually_ge_atTop (25 * (2 : ℝ) ^ K₀ + 1)
+      filter_upwards [this] with y hy
+      have hB : (0 : ℝ) ≤ 25 * (2 : ℝ) ^ K₀ + 1 := by positivity
+      linarith
+    exact hgrow.eventually hev
+  have hall : ∀ᶠ v : ℕ in Filter.atTop, ∀ k ∈ Finset.range (K₀ + 1),
+      cardLength β (multiBlockScale K₀ v 0) / 2
+        ≤ cardLength β (multiBlockScale K₀ v k) := by
+    refine (Filter.eventually_all_finset (Finset.range (K₀ + 1))).2 fun k hk => ?_
+    exact hhalf k (Nat.lt_succ_iff.1 (Finset.mem_range.1 hk))
+  filter_upwards [hall, hbig] with v hv hvb k hk
+  have hk' : k ∈ Finset.range (K₀ + 1) := Finset.mem_range.2 (by omega)
+  have hhalfk := hv k hk'
+  have hceil : ((multiCell β K₀ v : ℕ) : ℝ)
+      ≤ cardLength β (multiBlockScale K₀ v 0) + 1 + (2 : ℝ) ^ K₀ := by
+    rw [multiCell]
+    push_cast
+    have hbase : ((multiScale K₀ v : ℕ) : ℝ) ^ 2 = multiBlockScale K₀ v 0 := rfl
+    rw [hbase]
+    have := Nat.ceil_lt_add_one (cardLength_pos β (multiBlockScale K₀ v 0)).le
+    linarith
+  have hpk : (2 : ℝ) ^ k ≤ (2 : ℝ) ^ K₀ := pow_le_pow_right₀ (by norm_num) hk
+  linarith [hhalfk, hvb, hceil, hpk]
+
+/-! ## The arithmetic side conditions -/
+
+theorem two_le_multiScale {K₀ v : ℕ} (hv : 0 < v) : 2 ≤ multiScale K₀ v := by
+  rw [multiScale_eq]
+  have h1 : (2 : ℕ) ≤ 2 ^ (K₀ + 1) := by
+    calc (2 : ℕ) = 2 ^ 1 := by norm_num
+      _ ≤ 2 ^ (K₀ + 1) := Nat.pow_le_pow_right (by norm_num) (by omega)
+  nlinarith
+
+/-- The lift factor is at least two once the scale is. -/
+theorem two_le_multiFactor {K₀ v : ℕ} (hv : 3 ≤ multiScale K₀ v) : 2 ≤ multiFactor K₀ v := by
+  rw [multiFactor]
+  refine Nat.le_floor ?_
+  have h3 : (3 : ℝ) ≤ ((multiScale K₀ v : ℕ) : ℝ) := by exact_mod_cast hv
+  have hlog : Real.log 3 ≤ Real.log ((multiScale K₀ v : ℕ) : ℝ) :=
+    Real.log_le_log (by norm_num) h3
+  have hlog3 : (1 : ℝ) ≤ Real.log 3 := by
+    have := Real.exp_one_lt_d9
+    have h := Real.log_le_log (by positivity : (0:ℝ) < Real.exp 1) (by linarith : Real.exp 1 ≤ 3)
+    rwa [Real.log_exp] at h
+  have hsq : Real.log (((multiScale K₀ v : ℕ) : ℝ) ^ 2)
+      = 2 * Real.log ((multiScale K₀ v : ℕ) : ℝ) := by
+    rw [Real.log_pow]
+    push_cast
+    ring
+  rw [hsq]
+  push_cast
+  linarith
+
+/-- **The physical window fits inside the square of the marker base.** -/
+theorem multiPhys_add_le {β : ℝ} {K₀ v : ℕ} (hW : 2 ≤ multiFactor K₀ v)
+    (hC : 2 * multiCell β K₀ v ≤ multiScale K₀ v) :
+    multiPhys K₀ v + multiWindow β K₀ v ≤ multiBase K₀ v * multiBase K₀ v := by
+  rw [multiPhys, multiWindow, multiBase]
+  have hstep : multiScale K₀ v + 2 * multiCell β K₀ v
+      ≤ multiScale K₀ v * multiFactor K₀ v := by
+    nlinarith [hC, hW]
+  calc multiScale K₀ v * (multiScale K₀ v * multiFactor K₀ v)
+        + 2 * multiCell β K₀ v * (multiScale K₀ v * multiFactor K₀ v)
+      = (multiScale K₀ v + 2 * multiCell β K₀ v) * (multiScale K₀ v * multiFactor K₀ v) := by
+        ring
+    _ ≤ (multiScale K₀ v * multiFactor K₀ v) * (multiScale K₀ v * multiFactor K₀ v) :=
+        Nat.mul_le_mul_right _ hstep
+
+/-- The base scale grows. -/
+theorem tendsto_multiScale (K₀ : ℕ) :
+    Filter.Tendsto (fun v : ℕ => ((multiScale K₀ v : ℕ) : ℝ)) Filter.atTop Filter.atTop := by
+  have hval : ∀ v : ℕ, ((multiScale K₀ v : ℕ) : ℝ) = (2 : ℝ) ^ (K₀ + 1) * (v : ℝ) := by
+    intro v
+    rw [multiScale_eq]
+    push_cast
+    ring
+  have hbase : Filter.Tendsto (fun v : ℕ => (2 : ℝ) ^ (K₀ + 1) * (v : ℝ))
+      Filter.atTop Filter.atTop :=
+    Filter.Tendsto.const_mul_atTop (by positivity) tendsto_natCast_atTop_atTop
+  exact hbase.congr fun v => (hval v).symm
+
+/-- **The arithmetic side conditions hold eventually.** -/
+theorem eventually_multi_basics (β : ℝ) (hβ0 : 0 < β) (hβ1 : β < 1) (K₀ : ℕ) :
+    ∀ᶠ v : ℕ in Filter.atTop,
+      0 < multiBase K₀ v
+        ∧ multiPhys K₀ v + multiWindow β K₀ v ≤ multiBase K₀ v * multiBase K₀ v := by
+  classical
+  have hgrow := tendsto_multiScale K₀
+  have hsq : ∀ v : ℕ, Real.sqrt (multiBlockScale K₀ v 0) = ((multiScale K₀ v : ℕ) : ℝ) :=
+    fun v => sqrt_multiBlockScale K₀ v 0
+  have hratio : Filter.Tendsto (fun y : ℝ => cardLength β y / Real.sqrt y)
+      Filter.atTop (nhds 0) := by
+    have := tendsto_rpow_log_mul_cardLength_div_sqrt (β := β) hβ0 hβ1 0
+    simpa using this
+  have hsmall : ∀ᶠ v : ℕ in Filter.atTop,
+      cardLength β (multiBlockScale K₀ v 0) ≤ ((multiScale K₀ v : ℕ) : ℝ) / 8 := by
+    have hev : ∀ᶠ y : ℝ in Filter.atTop, cardLength β y / Real.sqrt y ≤ 1 / 8 :=
+      hratio.eventually_le_const (by norm_num)
+    filter_upwards [(tendsto_multiBlockScale K₀).eventually hev,
+      Filter.eventually_ge_atTop 1] with v hv hv1
+    have hs0 : (0 : ℝ) < Real.sqrt (multiBlockScale K₀ v 0) := by
+      rw [hsq v]
+      have : (0 : ℕ) < multiScale K₀ v := by
+        rw [multiScale_eq]
+        exact Nat.mul_pos (by positivity) (by omega)
+      exact_mod_cast this
+    rw [div_le_iff₀ hs0] at hv
+    rw [hsq v] at hv
+    linarith
+  have hbigS : ∀ᶠ v : ℕ in Filter.atTop,
+      (8 : ℝ) + (2 : ℝ) ^ (K₀ + 1) * 4 ≤ ((multiScale K₀ v : ℕ) : ℝ) :=
+    hgrow.eventually_ge_atTop _
+  have hv1 : ∀ᶠ v : ℕ in Filter.atTop, 3 ≤ multiScale K₀ v := by
+    have : ∀ᶠ v : ℕ in Filter.atTop, (3 : ℝ) ≤ ((multiScale K₀ v : ℕ) : ℝ) :=
+      hgrow.eventually_ge_atTop 3
+    filter_upwards [this] with v hv
+    exact_mod_cast hv
+  filter_upwards [hsmall, hbigS, hv1] with v hs hb h3
+  have hW2 : 2 ≤ multiFactor K₀ v := two_le_multiFactor h3
+  have hS0 : 0 < multiScale K₀ v := by omega
+  have hM0 : 0 < multiBase K₀ v := by
+    rw [multiBase]
+    exact Nat.mul_pos hS0 (by omega)
+  refine ⟨hM0, multiPhys_add_le hW2 ?_⟩
+  -- `2·multiCell ≤ multiScale`
+  have hceil : ((multiCell β K₀ v : ℕ) : ℝ)
+      ≤ cardLength β (multiBlockScale K₀ v 0) + 1 + (2 : ℝ) ^ K₀ := by
+    rw [multiCell]
+    push_cast
+    have hbase : ((multiScale K₀ v : ℕ) : ℝ) ^ 2 = multiBlockScale K₀ v 0 := rfl
+    rw [hbase]
+    have := Nat.ceil_lt_add_one (cardLength_pos β (multiBlockScale K₀ v 0)).le
+    linarith
+  have hpow : (2 : ℝ) ^ K₀ ≤ (2 : ℝ) ^ (K₀ + 1) :=
+    pow_le_pow_right₀ (by norm_num) (by omega)
+  have hreal : 2 * ((multiCell β K₀ v : ℕ) : ℝ) ≤ ((multiScale K₀ v : ℕ) : ℝ) := by
+    linarith [hs, hb, hceil, hpow]
+  exact_mod_cast hreal
 
 end
 

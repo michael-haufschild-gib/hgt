@@ -500,7 +500,7 @@ is unconditional in Lean.
 - [x] positive carrier requirements stated for the principal RH architectures
 - [ ] full-text comparison with Gamma-product, Gamma--Dirichlet, and automorphic-L literature
 - [ ] independent expert proof audit
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization
 
 ## Lean progress — §3 closed unconditionally
 
@@ -698,3 +698,87 @@ What remains for this card: §4's appeal to Adamczewski–Dreyfus–Hardouin The
 external dichotomy for rational linear shift equations over `ℂ((s^{-1}))`), the transfer of the
 formal statement to the analytic `Ψ` through the isomorphism (20), and §6's `K_G = L(G)` together
 with the transcendence of `G` over `L`. §3 and the §5 separation layer are Lean-closed.
+
+## Lean status 2026-08-19 (fourth pass) — §4 is closed, and without Adamczewski–Dreyfus–Hardouin
+
+```text
+HTGeometry/ArchimedeanGammaProductHypertranscendence.lean
+  hypertranscendentalOver_archimedeanGammaProductMero
+      G(s) = e^{αs}·∏_j Γ(n_j s + a_j)^{m_j},  n_j > 0,  m_j > 0,  a_j ∈ ℂ arbitrary
+        ⟹  G is hypertranscendental over ℂ(s).
+```
+
+The card's §4 obtains this from Adamczewski–Dreyfus–Hardouin Theorem 1.2, a cited external
+dichotomy for rational linear shift equations over `ℂ((s^{-1}))`. **That citation is not needed.**
+The tree already proves the statement outright, by a different route:
+
+```text
+GammaSameSignProductBoundary.hypertranscendentalOver_gammaFintypeOrbitProductMero_of_pos
+    a nonempty finite product of shifted Gamma factors with strictly positive charges is
+    hypertranscendental — with NO separation hypothesis; collided shifts are merged by the
+    Gamma recurrence and their charges add
+GammaSameSignProductBoundary.hypertranscendentalOver_gammaNatScaleFamilyMero_of_pos
+    the same for positive integer scales, via the simultaneous Gauss reduction
+    MeromorphicGammaNatScale.gammaNatScaleFamilyMero_normalForm
+MeroExponentialGauge.differentialAlgebraicOver_analyticMeroElement_expLinear
+    e^{αs} is a differentially algebraic gauge, so it cancels out of the question
+```
+
+The new module is the three-line assembly of these. Note that the commensurability hypothesis `(2)`
+is exactly what the Gauss reduction consumes, and that no hypothesis on the shifts `μ_j` is
+required — the card's own §5 separation argument is not needed for this conclusion either.
+
+What remains for this card: the **monomial valuation theorem** of §1, i.e. the boundary datum
+`F = c·G^k·s^a·(log s)^b(1+o(1))` for every nonzero `F ∈ K_G`. Its ingredients are `K_G = L(G)`
+(24, from the Bell identity the tree already owns), transcendence of `G` over `L` (25), and the
+datum `(22)` for nonzero elements of `L` — the last of which is the shifted-Gamma-jet datum applied
+to `Ψ = α + ∑_j λ_j ψ(λ_j s + μ_j)`, at **scaled** arguments rather than plain shifts.
+
+## Lean status 2026-08-19 (fifth pass) — all three `[PROVED HERE]` claims are closed
+
+Every claim the card makes as its own is now unconditional in Lean, with
+`#print axioms = [propext, Classical.choice, Quot.sound]` throughout.
+
+```text
+§4  hypertranscendence of the product
+      GaloisForLFunctions.hypertranscendentalOver_archimedeanGammaProductMero
+(24) K_G = L(G)
+      HTGeometry.differentialAdjoin_singleton_eq_adjoin_logDeriv
+Ψ normal form (Gauss + merge of congruent shifts)
+      HTGeometry.exists_incongruent_normalForm_archimedeanLogDeriv
+(22) boundary datum of a nonzero element of L
+      HTGeometry.exists_hasShiftTubeDatum_jetFieldQuotientC
+(6)  archimedean monomial valuation theorem
+      HTGeometry.exists_archimedeanGammaField_boundaryLaw
+(8)  projective tuple boundary
+      HTGeometry.exists_dominant_archimedeanShape_ratio
+(9)  recurrence → autonomous ADE, and finite phase rank
+      HTGeometry.archimedean_strip_autonomous_relation
+      HTGeometry.rank_finite_of_archimedean_relation
+```
+
+The infrastructure this needed, and why:
+
+- The corpus datum stack was stated for **real nonnegative** shifts, but this card's Gauss-reduced
+  shifts `(μ_j+k)/n_j` are complex.  `ComplexShiftDigammaExpansion`, `ComplexShiftJetApprox`,
+  `ComplexShiftJetGerm`, `ComplexShiftJetFieldDatum` and `ComplexShiftJetQuotientDatum` remove that
+  restriction entirely: the final approximability statements carry **no** hypothesis on the shift,
+  because the residual `0 ≤ re λ` comes off by the digamma recurrence rather than by analysis.
+- Congruent shifts are algebraically dependent, so a polynomial in jets at colliding shifts can
+  vanish without being the zero polynomial.  The merge therefore happens **linearly on `Ψ` itself**
+  (`IntegerCongruentShiftClasses`, `JetIntegerShiftRational`, `DigammaJetShiftMerge`), before any
+  polynomial is formed.
+- `(9)` needed no new almost-periodicity theory: `VerticalStripBohrHull.verticalStrip_recurrence_collapse`
+  is field-agnostic and consumes exactly what `(6)` and `(8)` supply, and
+  `PolynomialRelationPhaseRank.rank_finite_of_polynomial_relation` carries no separant-regularity
+  hypothesis.  A single `IsStripAlmostPeriodic` hypothesis suffices, via
+  `hasVerticalUniformReturn_of_isStripAlmostPeriodic`.
+
+Two dead ends recorded so they are not retried: the *germ*-level merge is unusable (the substitution
+on `MvPolynomial` is not injective when shifts collide, so `P ≠ 0` does not transfer); and the
+jet-level Gauss reduction `n^{r+1}ψ⁽ʳ⁾(nw+μ) = Σ_k ψ⁽ʳ⁾(w+(μ+k)/n)` is never needed — reducing `Ψ`
+itself at order zero suffices, because `L = ℂ(s)⟨Ψ⟩` then sits inside the field generated by the
+jets at the incongruent representatives.
+
+The two gates still open — full-text literature comparison and independent expert audit — are
+novelty-audit gates, not formalization gates; the card stays `[NOVELTY UNVERIFIED]`.
