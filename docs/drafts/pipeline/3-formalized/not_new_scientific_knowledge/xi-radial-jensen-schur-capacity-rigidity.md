@@ -1,8 +1,8 @@
 # Xi radial-Jensen Schur-capacity exact norm-gap law
 
 - **ID:** `xi-radial-jensen-schur-capacity-rigidity`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
-- **Type:** THEOREM (paper), `[PROVED HERE] [BRIDGE] [NOT AN RH PROOF]`
+- **Stage:** 3-formalized/not_new_scientific_knowledge
+- **Type:** THEOREM (paper), `[PROVED HERE] [FORMALIZED] [BRIDGE] [NOT AN RH PROOF]`
 - **Parents:** `xi-radial-jensen-mass-central-curvature`,
   `prime-arch-scaled-hausdorff-divisor-value-law`,
   `shifted-reciprocal-moments-determine-divisor`,
@@ -422,3 +422,11 @@ declaration closes the source-to-absolute-value step.  Naming the positive resid
 its polar decomposition is only a reformulation of the exact gap; a new predecessor must identify
 that residual with a prime--Gamma, theta, co-Poisson, or other source-positive object without first
 using Xi zero orientation.
+
+## Lean formalization (complete and unconditional)
+
+- `formal/GaloisForLFunctions/HTGeometry/SchwarzPickEstimate.lean` — the sharp Schwarz–Pick
+  displacement bound and the narrow-sector Schur lemma.
+- `formal/GaloisForLFunctions/RHTower/XiRadialJensenSchurCapacity.lean` — the reciprocal-square
+  bound on the Xi divisor, the narrow-sector balance, the Schur functional bound, and the
+  Hermitian-mass curvature inequality.

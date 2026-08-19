@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.EMCarrier
 import GaloisForLFunctions.RHTower.FirstMoment
 import GaloisForLFunctions.HTGeometry.IntervalPoincare
+import GaloisForLFunctions.RHTower.HardyZ
 
 /-!
 # The first moment of `ζ` on the critical line
@@ -402,5 +403,230 @@ theorem norm_integral_emPole_line_le {N : ℕ} (hN : 2 ≤ N) {T : ℝ} (hT : 1 
   rw [div_div, div_le_div_iff₀ (by positivity) (by positivity)]
   ring_nf
   nlinarith [Real.sqrt_nonneg (N : ℝ), hlog, hTpos]
+
+/-! ## The first moment of `ζ` on a dyadic window -/
+
+theorem integral_dirichletPoly_line_eq {N : ℕ} (hN : 1 ≤ N) {a b : ℝ} :
+    ∫ t in a..b, dirichletPoly N (linePt t)
+      = ((b - a : ℝ) : ℂ) + ∑ n ∈ Finset.Ioc 1 N, ∫ t in a..b, (n : ℂ) ^ (-(linePt t)) := by
+  rw [integral_dirichletPoly_line N a b]
+  have hins : Finset.Icc 1 N = insert 1 (Finset.Ioc 1 N) := by
+    ext n
+    simp only [Finset.mem_Icc, Finset.mem_insert, Finset.mem_Ioc]
+    omega
+  rw [hins, Finset.sum_insert (by simp)]
+  congr 1
+  rw [integral_cpow_neg_linePt_one]
+
+/-- **The mean of `ζ` on a dyadic window is the window length, up to explicit errors.** -/
+theorem norm_integral_riemannZeta_line_sub_le {N M : ℕ} (hM : 2 ≤ M) (hMN : M ≤ N)
+    {T : ℝ} (hT : 1 ≤ T) :
+    ‖(∫ t in T..(2*T), riemannZeta (linePt t)) - (T : ℂ)‖
+      ≤ (4 * Real.sqrt M / Real.log 2 + 4 * Real.sqrt N / Real.log M)
+        + 3 * Real.sqrt N / (Real.log N * T)
+        + (1 + 4 * T) / Real.sqrt N * T := by
+  have hN2 : 2 ≤ N := le_trans hM hMN
+  have hN1 : 1 ≤ N := le_trans (by norm_num) hN2
+  have hTpos : (0 : ℝ) < T := lt_of_lt_of_le zero_lt_one hT
+  have hzeta : ∀ t : ℝ, riemannZeta (linePt t)
+      = dirichletPoly N (linePt t) + emPole N (linePt t)
+        - linePt t * emTail N (linePt t) := by
+    intro t
+    rw [zeta_eq_emCarrier_sub hN1 (linePt_re_pos t) (linePt_ne_one t), emCarrier]
+  have hc1 : Continuous fun t : ℝ => dirichletPoly N (linePt t) := by
+    have : Continuous fun t : ℝ => ∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-(linePt t)) :=
+      continuous_finsetSum _ fun n hn =>
+        continuous_cpow_neg_linePt n (Finset.mem_Icc.mp hn).1
+    exact this
+  have hc2 : Continuous fun t : ℝ => emPole N (linePt t) := by
+    have h := (continuous_emPoleAmp N).mul
+      (Complex.continuous_exp.comp (by fun_prop :
+        Continuous fun t : ℝ => -(I * (Real.log N : ℂ)) * (t : ℂ)))
+    exact h.congr fun t => (emPole_linePt_eq hN1 t).symm
+  have hc3 : Continuous fun t : ℝ => linePt t * emTail N (linePt t) :=
+    continuous_linePt.mul (continuous_emTail_line hN1)
+  have hsplit : (∫ t in T..(2*T), riemannZeta (linePt t))
+      = (∫ t in T..(2*T), dirichletPoly N (linePt t))
+        + (∫ t in T..(2*T), emPole N (linePt t))
+        - ∫ t in T..(2*T), linePt t * emTail N (linePt t) := by
+    rw [intervalIntegral.integral_congr (g := fun t : ℝ =>
+      dirichletPoly N (linePt t) + emPole N (linePt t) - linePt t * emTail N (linePt t))
+      (fun t _ => hzeta t)]
+    have hc12 : Continuous fun t : ℝ =>
+        dirichletPoly N (linePt t) + emPole N (linePt t) := hc1.add hc2
+    rw [intervalIntegral.integral_sub
+      (f := fun t : ℝ => dirichletPoly N (linePt t) + emPole N (linePt t))
+      (g := fun t : ℝ => linePt t * emTail N (linePt t))
+      (hc12.intervalIntegrable _ _) (hc3.intervalIntegrable _ _),
+      intervalIntegral.integral_add (hc1.intervalIntegrable _ _)
+        (hc2.intervalIntegrable _ _)]
+  rw [hsplit, integral_dirichletPoly_line_eq hN1]
+  have hlen : ((2 * T - T : ℝ) : ℂ) = (T : ℂ) := by
+    rw [show (2 * T - T : ℝ) = T by ring]
+  rw [hlen]
+  have hrewrite : ((T : ℂ) + ∑ n ∈ Finset.Ioc 1 N, ∫ t in T..(2*T), (n : ℂ) ^ (-(linePt t)))
+        + (∫ t in T..(2*T), emPole N (linePt t))
+        - (∫ t in T..(2*T), linePt t * emTail N (linePt t)) - (T : ℂ)
+      = (∑ n ∈ Finset.Ioc 1 N, ∫ t in T..(2*T), (n : ℂ) ^ (-(linePt t)))
+        + (∫ t in T..(2*T), emPole N (linePt t))
+        - (∫ t in T..(2*T), linePt t * emTail N (linePt t)) := by ring
+  rw [hrewrite]
+  calc ‖(∑ n ∈ Finset.Ioc 1 N, ∫ t in T..(2*T), (n : ℂ) ^ (-(linePt t)))
+        + (∫ t in T..(2*T), emPole N (linePt t))
+        - (∫ t in T..(2*T), linePt t * emTail N (linePt t))‖
+      ≤ ‖(∑ n ∈ Finset.Ioc 1 N, ∫ t in T..(2*T), (n : ℂ) ^ (-(linePt t)))
+          + (∫ t in T..(2*T), emPole N (linePt t))‖
+        + ‖∫ t in T..(2*T), linePt t * emTail N (linePt t)‖ := norm_sub_le _ _
+    _ ≤ (‖∑ n ∈ Finset.Ioc 1 N, ∫ t in T..(2*T), (n : ℂ) ^ (-(linePt t))‖
+          + ‖∫ t in T..(2*T), emPole N (linePt t)‖)
+        + ‖∫ t in T..(2*T), linePt t * emTail N (linePt t)‖ := by
+        have := norm_add_le (∑ n ∈ Finset.Ioc 1 N, ∫ t in T..(2*T), (n : ℂ) ^ (-(linePt t)))
+          (∫ t in T..(2*T), emPole N (linePt t))
+        linarith
+    _ ≤ (4 * Real.sqrt M / Real.log 2 + 4 * Real.sqrt N / Real.log M)
+          + 3 * Real.sqrt N / (Real.log N * T)
+          + (1 + 4 * T) / Real.sqrt N * T := by
+        have h1 := norm_sum_integral_osc_le hM hMN T (2*T)
+        have h2 := norm_integral_emPole_line_le hN2 hT
+        have h3 := norm_integral_linePt_mul_emTail_le hN1 hTpos.le
+        linarith
+
+/-! ## The second moment lower bound -/
+
+theorem sq_norm_integral_riemannZeta_line_le {T : ℝ} (hT : 0 < T) :
+    ‖∫ t in T..(2*T), riemannZeta (linePt t)‖ ^ 2
+      ≤ T * ∫ t in T..(2*T), ‖riemannZeta (linePt t)‖ ^ 2 := by
+  have hle : T ≤ 2 * T := by linarith
+  have hcont := continuous_riemannZeta_line
+  have hnorm : Continuous fun t : ℝ => ‖riemannZeta (linePt t)‖ := hcont.norm
+  have h1 : ‖∫ t in T..(2*T), riemannZeta (linePt t)‖
+      ≤ ∫ t in T..(2*T), ‖riemannZeta (linePt t)‖ :=
+    intervalIntegral.norm_integral_le_integral_norm hle
+  have hIoc1 : (∫ t in T..(2*T), ‖riemannZeta (linePt t)‖)
+      = ∫ t in Set.Ioc T (2*T), ‖riemannZeta (linePt t)‖ :=
+    intervalIntegral.integral_of_le hle
+  have hIoc2 : (∫ t in T..(2*T), ‖riemannZeta (linePt t)‖ ^ 2)
+      = ∫ t in Set.Ioc T (2*T), ‖riemannZeta (linePt t)‖ ^ 2 :=
+    intervalIntegral.integral_of_le hle
+  have hf : MeasureTheory.IntegrableOn (fun t => ‖riemannZeta (linePt t)‖)
+      (Set.Ioc T (2*T)) MeasureTheory.volume := hnorm.integrableOn_Ioc
+  have hf2 : MeasureTheory.IntegrableOn (fun t => ‖riemannZeta (linePt t)‖ ^ 2)
+      (Set.Ioc T (2*T)) MeasureTheory.volume := (hnorm.pow 2).integrableOn_Ioc
+  have h2 := GaloisForLFunctions.HTGeometry.sq_integral_le_length_mul hle hf hf2
+  rw [← hIoc1, ← hIoc2] at h2
+  have hsq : ‖∫ t in T..(2*T), riemannZeta (linePt t)‖ ^ 2
+      ≤ (∫ t in T..(2*T), ‖riemannZeta (linePt t)‖) ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) h1 2
+  have hlen : (2 * T - T) = T := by ring
+  rw [hlen] at h2
+  linarith
+
+theorem hardyZ_sq_eq_norm_sq (t : ℝ) : (hardyZ t) ^ 2 = ‖riemannZeta (linePt t)‖ ^ 2 := by
+  rw [norm_riemannZeta_line_eq_abs_hardyZ t, sq_abs]
+
+/-- **Lemma C.**  The second moment of `ζ` on a dyadic window of the critical line is at least a
+fixed positive multiple of the window length, unconditionally. -/
+theorem exists_le_integral_norm_riemannZeta_line_sq :
+    ∃ T₀ : ℝ, 0 < T₀ ∧ ∀ T : ℝ, T₀ ≤ T →
+      T / 4 ≤ ∫ t in T..(2*T), ‖riemannZeta (linePt t)‖ ^ 2 := by
+  refine ⟨Real.exp 20000 + 100000, by positivity, ?_⟩
+  intro T hT
+  have hexp0 : (0 : ℝ) < Real.exp 20000 := Real.exp_pos _
+  have hTbig : (100000 : ℝ) ≤ T := by linarith
+  have hTpos : (0 : ℝ) < T := by linarith
+  have hT1 : (1 : ℝ) ≤ T := by linarith
+  have hTexp : Real.exp 20000 ≤ T := by linarith
+  have hlogT : (20000 : ℝ) ≤ Real.log T := (Real.le_log_iff_exp_le hTpos).mpr hTexp
+  have hlogTpos : (0 : ℝ) < Real.log T := by linarith
+  set M : ℕ := ⌈T⌉₊ with hMdef
+  set N : ℕ := ⌈65536 * T ^ 2⌉₊ with hNdef
+  have hMge : T ≤ (M : ℝ) := Nat.le_ceil T
+  have hMle : (M : ℝ) ≤ T + 1 := le_of_lt (Nat.ceil_lt_add_one hTpos.le)
+  have hNge : 65536 * T ^ 2 ≤ (N : ℝ) := Nat.le_ceil _
+  have hNle : (N : ℝ) ≤ 65536 * T ^ 2 + 1 :=
+    le_of_lt (Nat.ceil_lt_add_one (by positivity))
+  have hM2 : 2 ≤ M := by
+    have : (2 : ℝ) ≤ (M : ℝ) := by linarith
+    exact_mod_cast this
+  have hMN : M ≤ N := by
+    refine Nat.ceil_le_ceil ?_
+    nlinarith [hTbig]
+  -- square-root comparisons
+  have hsqrtN_ge : 256 * T ≤ Real.sqrt N := by
+    refine Real.le_sqrt_of_sq_le ?_
+    nlinarith [hNge]
+  have hsqrtN_le : Real.sqrt N ≤ 257 * T := by
+    refine (Real.sqrt_le_left (by linarith : (0:ℝ) ≤ 257 * T)).mpr ?_
+    nlinarith [hNle, hTbig]
+  have hsqrtM_le : Real.sqrt M ≤ T / 256 := by
+    refine (Real.sqrt_le_left (by positivity : (0:ℝ) ≤ T / 256)).mpr ?_
+    nlinarith [hMle, hTbig]
+  -- logarithm comparisons
+  have hlogM : Real.log T ≤ Real.log M := Real.log_le_log hTpos hMge
+  have hlogN : 2 * Real.log T ≤ Real.log N := by
+    have h1 : Real.log (65536 * T ^ 2) ≤ Real.log N := by
+      refine Real.log_le_log (by positivity) hNge
+    have h2 : Real.log (65536 * T ^ 2) = Real.log 65536 + 2 * Real.log T := by
+      rw [Real.log_mul (by norm_num) (by positivity), Real.log_pow]
+      push_cast
+      ring
+    have h3 : (0 : ℝ) ≤ Real.log 65536 := Real.log_nonneg (by norm_num)
+    linarith
+  have hlog2 : (1 : ℝ) / 2 ≤ Real.log 2 := by
+    have := Real.log_two_gt_d9
+    linarith
+  -- the four error terms
+  have hE1 : 4 * Real.sqrt M / Real.log 2 ≤ T / 16 := by
+    have hnum : 4 * Real.sqrt M ≤ 4 * (T / 256) := by linarith
+    have hpos : (0 : ℝ) < Real.log 2 := by linarith
+    rw [div_le_iff₀ hpos]
+    nlinarith [Real.sqrt_nonneg (M : ℝ), hlog2, hnum, hTpos]
+  have hE2 : 4 * Real.sqrt N / Real.log M ≤ T / 16 := by
+    have hpos : (0 : ℝ) < Real.log M := lt_of_lt_of_le hlogTpos hlogM
+    rw [div_le_iff₀ hpos]
+    have h1 : 4 * Real.sqrt N ≤ 1028 * T := by linarith
+    nlinarith [h1, hlogM, hlogT, hTpos]
+  have hE3 : 3 * Real.sqrt N / (Real.log N * T) ≤ T / 16 := by
+    have hposN : (0 : ℝ) < Real.log N := by linarith
+    have hpos : (0 : ℝ) < Real.log N * T := by positivity
+    rw [div_le_iff₀ hpos]
+    have h1 : 3 * Real.sqrt N ≤ 771 * T := by linarith
+    nlinarith [h1, hlogN, hlogT, hTpos, Real.sqrt_nonneg (N : ℝ)]
+  have hE4 : (1 + 4 * T) / Real.sqrt N * T ≤ T / 16 := by
+    have hsq : (0 : ℝ) < Real.sqrt N := lt_of_lt_of_le (by positivity) hsqrtN_ge
+    rw [div_mul_eq_mul_div, div_le_iff₀ hsq]
+    nlinarith [hsqrtN_ge, hTpos, hT1]
+  -- the first-moment bound
+  have hmain := norm_integral_riemannZeta_line_sub_le hM2 hMN hT1
+  have hE : ‖(∫ t in T..(2*T), riemannZeta (linePt t)) - (T : ℂ)‖ ≤ T / 4 := by
+    have : (4 * Real.sqrt M / Real.log 2 + 4 * Real.sqrt N / Real.log M)
+        + 3 * Real.sqrt N / (Real.log N * T)
+        + (1 + 4 * T) / Real.sqrt N * T ≤ T / 4 := by linarith
+    linarith
+  have hlower : 3 * T / 4 ≤ ‖∫ t in T..(2*T), riemannZeta (linePt t)‖ := by
+    have hTnorm : ‖(T : ℂ)‖ = T := by
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hTpos]
+    have := norm_sub_norm_le (T : ℂ) (∫ t in T..(2*T), riemannZeta (linePt t))
+    have hsymm : ‖(T : ℂ) - ∫ t in T..(2*T), riemannZeta (linePt t)‖
+        = ‖(∫ t in T..(2*T), riemannZeta (linePt t)) - (T : ℂ)‖ := norm_sub_rev _ _
+    rw [hsymm, hTnorm] at this
+    linarith
+  have hcs := sq_norm_integral_riemannZeta_line_le hTpos
+  have hsq : (3 * T / 4) ^ 2 ≤ ‖∫ t in T..(2*T), riemannZeta (linePt t)‖ ^ 2 :=
+    pow_le_pow_left₀ (by positivity) hlower 2
+  nlinarith [hcs, hsq, hTpos]
+
+/-- **Lemma C for Hardy's `Z`.**  The dyadic second moment of `Z` is at least a quarter of the
+window length. -/
+theorem exists_le_integral_hardyZ_sq :
+    ∃ T₀ : ℝ, 0 < T₀ ∧ ∀ T : ℝ, T₀ ≤ T →
+      T / 4 ≤ ∫ t in T..(2*T), (hardyZ t) ^ 2 := by
+  obtain ⟨T₀, hT₀, hbound⟩ := exists_le_integral_norm_riemannZeta_line_sq
+  refine ⟨T₀, hT₀, fun T hT => ?_⟩
+  have heq : (∫ t in T..(2*T), (hardyZ t) ^ 2)
+      = ∫ t in T..(2*T), ‖riemannZeta (linePt t)‖ ^ 2 :=
+    intervalIntegral.integral_congr fun t _ => hardyZ_sq_eq_norm_sq t
+  rw [heq]
+  exact hbound T hT
 
 end RHTower

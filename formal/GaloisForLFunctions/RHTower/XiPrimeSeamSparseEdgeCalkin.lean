@@ -52,8 +52,9 @@ theorem norm_div_le_norm_xiSeamCoboundaryCorner_sub_compact
     have : (0:ℝ) < 1 / (Real.sqrt p * Real.sqrt q) := by positivity
     linarith [hbnorm ▸ this]
   rcases eq_or_ne c 0 with rfl | hc
-  · rw [show ‖(0 : ℂ)‖ = 0 from norm_zero, zero_div]
-    exact norm_nonneg _
+  · have hz : ‖(0 : ℂ)‖ / (Real.sqrt p * Real.sqrt q) = 0 := by simp
+    rw [hz]
+    exact norm_nonneg (xiSeamCoboundaryCorner a p q hp hq 0 - K)
   · have hcb : c * b ≠ 0 := mul_ne_zero hc hbne
     have hsmul : xiSeamCoboundaryCorner a p q hp hq c =
         (c * b) • evenCentralSoninQuadraticCorner a p q hp hq := by
@@ -74,8 +75,11 @@ theorem eq_zero_of_isCompactOperator_xiSeamCoboundaryCorner
   have hq0 : 0 < Real.sqrt q := Real.sqrt_pos.mpr (zero_lt_one.trans hq)
   have hbound := norm_div_le_norm_xiSeamCoboundaryCorner_sub_compact ha hp hq c
     (xiSeamCoboundaryCorner a p q hp hq c) hcomp
-  rw [sub_self] at hbound
-  rw [show ‖(0 : evenSubspace →L[ℂ] evenSubspace)‖ = 0 from norm_zero] at hbound
+  have hb0 : ‖xiSeamCoboundaryCorner a p q hp hq c -
+      xiSeamCoboundaryCorner a p q hp hq c‖ = 0 := by
+    rw [sub_self]
+    exact ContinuousLinearMap.opNorm_zero
+  rw [hb0] at hbound
   have hcnorm : ‖c‖ ≤ 0 := by
     by_contra hpos
     push Not at hpos

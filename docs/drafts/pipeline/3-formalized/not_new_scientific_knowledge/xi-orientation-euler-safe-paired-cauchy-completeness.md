@@ -1,9 +1,9 @@
 # The Xi orientation sector is complete on an absolute-Euler paired Cauchy quadrant
 
 - **ID:** `xi-orientation-euler-safe-paired-cauchy-completeness`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[TOP-DOWN INTERFACE DISCHARGE]`, `[VALUE RELATION]`
-- **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED HERE] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Formal parents:**
   `RHTower/XiHurwitzOrientationWeilSector.lean`,
   `RHTower/XiHurwitzOrientationPositivePairedSource.lean`,
@@ -331,3 +331,23 @@ new scientific knowledge.
 - 2026-07-15 -- Codex: obtained by combining the newly formalized positive-paired orientation
   sector with absolute-Euler Cauchy-loss values and replacing local pole collision by global
   Cauchy-transform uniqueness.  No computation or Lean build was used.
+
+## Lean formalization (complete and unconditional)
+
+- `formal/GaloisForLFunctions/RHTower/XiCauchyTransformCompleteness.lean` — the Cauchy transform of
+  a square-summable divisor vector is holomorphic off the divisor, decays along a vertical ray, and
+  is killed by a vanishing real part on any divisor-free ball.
+- `formal/GaloisForLFunctions/RHTower/XiEulerSafePairedCompleteness.lean` — the absolute-Euler pole
+  type, the paired vector `P_w` and its Schwarz fixedness `(6)`, the real pairing formula `(13)`,
+  and the completeness theorem: a Schwarz-fixed fibre-constant vector orthogonal to every paired
+  vector of the quadrant is zero.
+- `formal/GaloisForLFunctions/RHTower/XiEulerSafePairedClosure.lean` — the closed real Schwarz-fixed
+  fibre-constant sector `(7)`, membership of the canonical orientation vector, equation `(9)`, and
+  the criterion `(26)` `riemannHypothesis_iff_xiEulerSafePairedPassivity`.
+- `formal/GaloisForLFunctions/RHTower/XiEulerSafePairedValueKernel.lean` — the absolute-Euler
+  logarithmic derivative, the four Schwarz blocks of the paired Weil polarization, the exact paired
+  value kernel `(14)`, the packet identity `(15)`, the observability kernel `(21)` and the doubled
+  conjugation-odd splice `(22)`.
+- `formal/GaloisForLFunctions/RHTower/XiEulerSafePairedRationalCriterion.lean` — density of the
+  Gaussian rationals, the countable completeness theorem, and the criterion `(19)`
+  `riemannHypothesis_iff_xiEulerSafePairedRationalPassivity`.

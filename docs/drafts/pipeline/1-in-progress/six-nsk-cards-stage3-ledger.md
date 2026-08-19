@@ -244,3 +244,80 @@ The Cayley-exponential half of the transport was ALREADY in the corpus
   (`[B·O] = B·H²(D)` with defect exactly `deg B`).
 
 C2 is ready for stage 3.
+
+### C1 — Lemma C CLOSED (2026-08-19)
+
+New module `formal/GaloisForLFunctions/RHTower/ZetaLineFirstMoment.lean` (wired into
+`RHTower.lean`, olean built, axioms clean).  It proves the second-moment lower bound by a *first
+moment* route, which is far cheaper than the card's sketched diagonal computation and gives the
+same assembly input:
+
+- `norm_exp_neg_I_mul_ofReal_mul`, `continuous_cpow_neg_linePt`, `integral_cpow_neg_linePt`,
+  `norm_integral_cpow_neg_linePt_le` — each Dirichlet monomial `n^{-1/2-it}` integrates to
+  `O(n^{-1/2}/log n)` over any window (built on the corpus's `natCast_cpow_neg_linePt` from
+  `RHTower/FirstMoment.lean`);
+- `rpow_neg_half_eq`, `sum_rpow_neg_half_le` (`Σ_{n≤K} n^{-1/2} ≤ 2√K`),
+  `norm_sum_integral_osc_le` — the split-at-`M` bound
+  `‖Σ_{1<n≤N} ∫ n^{-s}‖ ≤ 4√M/log 2 + 4√N/log M`;
+- `continuous_emTail_line`, `norm_integral_linePt_mul_emTail_le` — the Euler–Maclaurin remainder
+  contributes at most `(1+4T)T/√N` (corpus `norm_emTail_le`);
+- `cpow_one_sub_linePt`, `emPoleAmp`, `hasDerivAt_emPoleAmp`, `norm_integral_emPole_line_le` —
+  the explicit continuation term `N^{1-s}/(s-1)` contributes at most `3√N/(T log N)`, via the
+  corpus's oscillation bound `RHTower.norm_integral_mul_exp_le` (`FirstMoment.lean`);
+- **`norm_integral_riemannZeta_line_sub_le`** — `‖∫_T^{2T} ζ(1/2+it) dt − T‖` is bounded by the
+  sum of those three errors, for every `2 ≤ M ≤ N`;
+- `sq_norm_integral_riemannZeta_line_le` — Cauchy–Schwarz against the constant one
+  (corpus `HTGeometry.sq_integral_le_length_mul`);
+- **`exists_le_integral_norm_riemannZeta_line_sq`** and **`exists_le_integral_hardyZ_sq`** —
+  taking `M = ⌈T⌉₊`, `N = ⌈65536 T²⌉₊`: for all large `T`,
+  `∫_T^{2T} ‖ζ(1/2+it)‖² dt ≥ T/4` and `∫_T^{2T} Z(t)² dt ≥ T/4`, unconditionally.
+
+Note on the route: the card's Lemma C asks for `≥ ½ T log T`.  The assembly only needs
+`(∫Z)²·F < S³`; with `F = O(T log⁴T)` and the target `|∫Z| = O(T^{3/4})`, `S = T/4` is already
+more than sufficient (`T³/64` versus `T^{3/2}·CT log⁴T`).  The first-moment route avoids the
+diagonal/off-diagonal analysis entirely.
+
+REMAINING for C1: Lemma E, `|∫_T^{2T} Z| = o(T/log²T)`.  Sharp-cutoff Euler–Maclaurin provably
+cannot give it (the tail `Σ_{n≤N} n^{-1/2}` and the remainder `T²/√N` cannot both be small), so it
+must be built on the corpus's exact Gaussian smooth AFE for `Z`
+(`RHTower/HardyZSmoothAFEReal.lean`, `hardyZ_eq_two_tsum_smoothAFE_real`) together with the
+`SmoothAFECutoffBounds` / `SmoothAFEZetaDualWeight*` decay and height-derivative estimates and the
+van der Corput tests in `RHTower/VanDerCorput*.lean`.
+
+### C3 — the two transcendence inputs are ALREADY IN THE CORPUS (2026-08-19)
+
+Corpus search (`formal_tools.py research`) found both classical inputs the earlier plan listed as
+"not in mathlib", already proved unconditionally here (`#print axioms` = the three standard ones):
+
+- **Hermite–Lindemann**: `GaloisForLFunctions.RHTower.exp_algebraic_transcendental`
+  (`RHTower/ExpAlgebraicTranscendental.lean`) — `exp β` is transcendental for every nonzero
+  algebraic `β`.  Hence `log q` is transcendental for every rational `q ≥ 2`, which is exactly
+  §2's `trdeg = 1`.  Also `RHTower.transcendental_algebraicClosure_of_exp_isAlgebraic` and
+  `HTGeometry/HermiteLindemann.lean`.
+- **Gelfond–Schneider**: `GaloisForLFunctions.RHTower.gelfondSchneider_holds` and
+  `gelfondSchneiderReal_holds` (`RHTower/GelfondSchneider.lean`, full Schneider auxiliary-function
+  proof in `RHTower/GelfondSchneiderProof/`) — exactly §2″'s floor input.
+
+So C3's remaining work is (1) the repaired §2′ in general and (4) the §4 no-P-recurrence.
+
+**Plan for the repaired §2′ (verified on paper, formalizable without `PowerSeries.log`).**
+Let `g = bernoulli'PowerSeries ℚ`, `f_i = rescale L_i g`, `h = ∏_i f_i = beurlingBlock`.
+
+1. `X · D g = g · (1 + X − g)`.  From mathlib's `bernoulli'PowerSeries_mul_exp_sub_one`
+   (`g·(exp − 1) = X·exp`): differentiate, multiply by `X`, substitute `X·exp = g·(exp−1)`, and
+   cancel the non-zero-divisor `exp − 1` in the domain `ℚ[[X]]`.
+2. `X · D (rescale a g) = (rescale a g)·(1 + a·X − rescale a g)`, since `rescale a` is a ring
+   homomorphism, `rescale a X = a·X`, and `X · D (rescale a f) = rescale a (X · D f)`
+   (both have `n·aⁿ·fₙ` as `n`-th coefficient).
+3. Product rule: `X · D h = h · (r + e₁·X − ∑_i f_i)`, and `∑_i f_i = ∑_k c_k p_k X^k` with
+   `c_k = B⁺_k/k!` and `p_k` the `k`-th power sum, `p_0 = r`.  Hence
+   **`X · D h = h · (∑_{j≥1} q_j X^j)`** with `q_1 = p_1/2` and `q_j = −c_j p_j` for `j ≥ 2`.
+4. Coefficients: `k·a_k = ∑_{j=1}^{k} q_j a_{k−j}` with `a_0 = 1`, so every `q_j` is a rational
+   polynomial in `a_1,…,a_j`; hence `q_j ∈ stieltjesField`.
+5. `B⁺_k = B_k` for `k ≠ 1` and `B_k = 0` for odd `k ≥ 3`, so the surviving `q` are
+   `q_{2m} = −B_{2m} p_{2m}/(2m)!` with `B_{2m} ≠ 0`; therefore every even power sum
+   `p_{2m} ∈ stieltjesField`.
+6. `p_{2m}(L) = p_m(L²)`, so Newton's identities (`MvPolynomial.mul_esymm_eq_sum`) put every
+   `e_j(L₁²,…,L_r²)` in the field; each `L_i²` is then a root of a monic polynomial over it, and
+   each `L_i` a root of `X² − L_i²`.  With `stieltjesField_le_logField` this gives the §2′
+   transcendence-degree identity.

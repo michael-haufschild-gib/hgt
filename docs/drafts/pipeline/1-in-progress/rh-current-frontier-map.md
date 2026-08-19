@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 19 August 2026, commit
-`9bbb2cc3f8969443df351fdc91fd2a6fa5e9d51f`, plus declaration-index review of current Lean
+`81157bdd42c6f61321348d9392c3314bdd5ee790`, plus declaration-index review of current Lean
 working-tree changes. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified as corpus source, not claimed build-audited in
@@ -266,7 +266,11 @@ and hence a Möbius multiplicative-distance lower bound
 ```
 
 with no condition linking `z` and `t`. This enlarges the unconditional phase-separation range but
-still supplies neither relation adjacency nor Hall/co-moving flux.
+still supplies neither relation adjacency nor Hall/co-moving flux. Working-tree
+`Sieve/PrimeCosineTailAbel.lean` formalizes the exact Abel step from a uniform linear bound for
+unweighted tail-prime cosine partial sums to a reciprocal-weighted tail bound with one logarithmic
+loss. The required uniform partial-sum saving remains a hypothesis, so this is an analytic adapter,
+not E's producer.
 
 **Open core.** Construct/extract one exact relation on ordinary squarefree integers directly from
 factorization data represented by Ramaré incidence, fixed independently of observed Möbius
@@ -386,6 +390,10 @@ now equivalent to `zeta(w)=0`; one literal symmetric subwindow gives the reverse
 (`BurnolCoPoissonCosineClosedZeroJetDetection.lean`). They do not prove
 boundedness of the higher-jet evaluator on the completed Hilbert source, higher-jet
 closure/aperture-complement completeness, or the physical descent.
+Working-tree `BurnolSoninFiniteJetEvaluation.lean` begins the required source-first construction by
+defining the literal logarithmic Mellin derivative kernel and proving it is the pointwise spectral
+derivative of the Sonine Mellin kernel. No dominated-differentiation, integrated evaluator,
+boundedness, or closure theorem is present yet, so neither completion gate has moved.
 
 **Open core.** Two completion gates remain in series. First, prove boundedness of the relevant
 higher-jet evaluator and the higher-jet closure/aperture-complement theorem needed to pass the algebraic
@@ -551,8 +559,11 @@ square-summable divisor Cauchy transform is holomorphic off the divisor, decays 
 complete: if its real part vanishes on one regular ball, the transform and every multiplicity-fibre
 sum vanish (`XiCauchyTransformCompleteness.lean`). For Schwarz-fixed fibre-constant vectors, real
 pairings with all safe Euler-pole Schwarz pairs are already total
-(`XiEulerSafePairedCompleteness.lean`). Receiver exhaustion is therefore no longer a plausible
-missing step; neither theorem supplies passivity of the source matrices.
+(`XiEulerSafePairedCompleteness.lean`). `XiEulerSafePairedClosure.lean` defines the
+closed real span of absolute-Euler quadrant pairs and proves that this closure lies in the closed
+Schwarz-fixed fibre-constant sector. No converse inclusion or orientation-membership theorem is
+present. Receiver exhaustion is no longer a plausible missing step, but no theorem supplies
+passivity of the source matrices.
 
 Formal sources: `XiHurwitzOrientationSeparatedSourceReconstruction.lean`,
 `XiHurwitzOrientationExteriorCauchyClosure.lean`,
@@ -1001,16 +1012,17 @@ continuation producer is absent.
   differential-adjoin field fail to determine that inserted zero data
   (`HTGeometry/HardyCyclicityGaugeBlindness.lean`,
   `HTGeometry/HardyCyclicityPowerFieldInvariance.lean`,
-  `HTGeometry/HardyCyclicityOrbitFreeness.lean`). Working-tree
+  `HTGeometry/HardyCyclicityOrbitFreeness.lean`).
   `HTGeometry/HardyCyclicityCarrierCapstone.lean` realizes all failures simultaneously on one
   concrete bounded outer carrier: a residual family has maximally free parabolic orbit while every
   finite Blaschke defect remains possible with the same power-field data. Hardy cyclicity or
   maximal differential-field genericity alone is therefore not a faithful Xi-divisor producer.
-- `ZetaLineFirstMoment.lean` currently formalizes the exact oscillatory Dirichlet-polynomial
-  integral and quantitative Euler--Maclaurin tail and pole-integral bounds on the critical line.
-  The advertised dyadic first-moment asymptotic and resulting second-moment lower bound are not yet
-  assembled as capstone declarations. This is partial classical Hardy infrastructure and changes
-  no route status.
+- `ZetaLineFirstMoment.lean` formalizes the exact oscillatory Dirichlet-polynomial integral and
+  quantitative Euler--Maclaurin tail and pole-integral bounds on the critical line. Its current
+  working tree assembles these into an explicit error bound for the dyadic first moment
+  `integral_T^(2T) zeta(1/2+it) dt - T`. It does not yet declare a parameter schedule yielding the
+  advertised asymptotic or the resulting second-moment lower bound. This is classical Hardy
+  infrastructure and changes no route status.
 - The Bessel/difference-Galois lane is now sharply delimited. Modified-Bessel order recurrence has
   a meromorphic two-solution system, and every integer order shift lies in the rational span of the
   first two solutions. Its order derivative nevertheless lies outside the rational span of every
@@ -1030,6 +1042,15 @@ continuation producer is absent.
   of conformal scale. This terminalizes Fisher/Born/conformal scalar superspace variants of G/MSC/AF;
   a survivor must retain a phase-sensitive unbounded/distributional projection or a genuinely
   mixed channel.
+- The Higgs/Goldstone/Fabri--Picasso application modules classify where zero modes and broken
+  finite observations enter the arithmetic corpus. Exact Gamma--Slepian source operator has no
+  invisible zero mode, whereas overcomplete finite codiagonal/source/event observers necessarily
+  do. Several literal critical prime boundaries are provably outside `ell^2`, including Burnol,
+  Big-Witt, theta, Suzuki-Bianchi, Xi-aperture, and Julia channels
+  (`RHTower/GoldstoneFabriPicassoCorpusApplications.lean`). This supports the shared singular-boundary
+  diagnosis for O/G/L/U rather than creating a symmetry-breaking route. Generic Abelian,
+  non-Abelian, and quaternionic Higgs mechanisms have no completed arithmetic
+  specialization or Xi endpoint.
 - Generic shell/Noether, Schatten, and Stieltjes modules close reusable adapters, not RH source
   laws. Finite spectral actions are algebraic over symmetric shell coordinates, critical loci lie
   in explicit polynomial hypersurfaces, and source sublevel bounds follow from nonzero shell
@@ -1038,15 +1059,23 @@ continuation producer is absent.
   (`HTGeometry/ShellSublevelCapstone.lean`, `HTGeometry/NoetherCorpusApplications.lean`,
   `HTGeometry/SchattenSpectralDeterminant.lean`, `HTGeometry/StieltjesCorankTrdeg.lean`). None
   selects the arithmetic parameter, proves completed-source sign, or supplies cofinal control.
-- Working-tree `HTGeometry/ConnesVanSuijlekomProposition21.lean` gives a literal `N=1`
+  `HTGeometry/JointCriticalityEvaluation.lean` identifies the abstract joint polynomial on unit
+  shell with the labelled spectral-action criticality value. Working-tree
+  `HTGeometry/SpectralEnsembleEigenvalueBound.lean` bounds every finite Hermitian-ensemble
+  eigenvalue and every joint polynomial uniformly on that shell. These close finite domination
+  adapters only; they do not create an arithmetic selector or cofinal route.
+- `HTGeometry/ConnesVanSuijlekomProposition21.lean` gives a literal `N=1`
   counterexample to Proposition 2.1(2) as printed: its hypotheses admit the zero kernel vector, for
   which the claimed one-monomial quotient spanning statement is false. Positive survivor is exact:
   under the Toeplitz hypotheses every nonzero real kernel vector has nonzero leading coefficient,
   hence a nonzero Laurent generator. Any C1/OPUC use must add nonzero-vector/nondegeneracy data.
-- The radical-differential-ideal, reduced tensor-product, and Ritt prime-reduction files now close
-  broad algebraic foundations, while working-tree `HTGeometry/RittBasisPrimeReduction.lean` only
-  reduces finite generation to the prime case. No arithmetic specialization or Xi endpoint occurs;
-  these do not revive AF/AP or create a route.
+- The radical-differential-ideal, reduced tensor-product, and Ritt prime-reduction files close broad
+  algebraic foundations. `HTGeometry/RadicalDifferentialIdealSaturation.lean` adds
+  saturation decomposition and finite-subset exhaustion of radical differential-ideal membership.
+  Working-tree `HTGeometry/RittBasisFinishingStep.lean` proves the abstract maximal-ideal finishing
+  implication once a finite saturation witness is supplied; it does not supply the missing
+  differential reduction algorithm. These are generic finiteness tools: no arithmetic
+  specialization or Xi endpoint occurs, so they do not revive AF/AP or create a route.
 - `CCMCentralBinomialIntegrality.lean`, `CCMLambertRadicalIntegrality.lean`, and
   `CCMLambertCoefficientIntegrality.lean` close central-binomial divisibility, radical
   integrality, and dyadic algebraic integrality of every literal finite equation-(53) Lambert
@@ -1393,8 +1422,13 @@ Corpus proves insufficient:
 - Hardy cyclicity, model-space codimension, or the differential field generated by all power-level
   observations as a faithful zero selector: arbitrary finite Blaschke inner gauges change the zero
   defect while leaving the outer carrier and power-field data admissible;
-- rational isomonodromic derivation of the modified-Bessel order recurrence: the compatibility
-  equations have no such derivation, including the physical positive-argument specialization;
+- Born probabilities, expectations, Fisher variance, or two-dimensional massless conformal
+  geometry as phase-sensitive zero selectors: they remain unchanged while a scalar meromorphic
+  Euler projection acquires a prescribed off-line zero;
+- rational isomonodromic derivation of the modified-Bessel order recurrence: every finite shift
+  family remains in the same rank-two rational span, while the order derivative lies outside every
+  such span and the compatibility equations admit no rational derivation, including the physical
+  positive-argument specialization;
 - source symmetry as proof every orbit point is fixed.
 
 Any successor must retain infinite source provenance, mixed incidence, non-scalar boundary
@@ -1477,7 +1511,8 @@ divisor covariance. SV2 now has actual entire real-zero characteristics, a canon
 projective family, and local cofinal compactness; it lacks global target identification and the
 reciprocal pole chart. PCS has an exact all-prime graph, spectral gap, and divisor boundary
 complex but lacks a secondary class capable of seeing homology whose ordinary index is zero. SEC
-has an exact end-coherence collapse but lacks a source-fixed graph and finite-variation law. BPC
+has an exact end-coherence collapse and a canonical prime-ray Calkin endpoint, but lacks a source
+law making the adjacent seam coboundaries eventually compact. BPC
 has the exact positive susceptibility singularity and collar-to-RH transfer but lacks source
 continuation through that collar. None can be reduced to one finite positive object or one scalar
 response without hitting a proved
@@ -1486,10 +1521,13 @@ firewall.
 Three newest pre-routes reinforce that taxonomy rather than extend route count. Prime-Laplace
 Gamma jets are an infinite paired clock with exact translation anomaly/Bianchi curvature, but the
 coherent observer is unbounded. Prime-support Hodge theory says phase begins at cycles rather than
-paths and finite positive-prime apartments are acyclic. Prime-square Fourier strata give a local
-two-level reflection law whose equality detects zero radial drift. These mechanisms are genuinely
-corpus-born and non-classical; what they lack is not an abstract endpoint but a source-derived
-completed/infinite assembly carrying their local invariant into an Xi-divisor exclusion. The
+paths and finite positive-prime apartments are acyclic. Prime-square Fourier strata now give a
+cofinal two-level reflection law with exact type `|c|`; its exponential drift signal dominates the
+polylogarithmic Wold boundary scale. These mechanisms are genuinely corpus-born and non-classical;
+what they lack is not an abstract endpoint but a source-derived completed/infinite assembly carrying
+their invariant into an Xi-divisor exclusion. Fisher-superspace blindness supplies the matching
+warning: phase-free Hilbert information can remain identical while the unbounded scalar Euler
+projection changes its zero divisor. The
 Gamma--Meixner Landau trace lies at the opposite end: its global endpoint is exact, but its
 coefficients are divisor-built. A viable new architecture could emerge only by joining one of the
 source pre-routes to such a complete receiver without importing the divisor in the join.
@@ -1568,8 +1606,8 @@ is:
 16. What completed reflection-sensitive secondary class detects prime co-shift divisor homology
     despite its identically zero ordinary Fredholm index, and why must that class exclude homology
     throughout `1/2<Re(s)<1`?
-17. Which fixed arithmetic graph on primes is one-ended and makes the canonical FE--Schwarz seam
-    have finite edge variation for every Xi divisor, without choosing edges from the observed seam?
+17. What completed prime--Gamma source theorem makes the literal adjacent-prime FE--Schwarz seam
+    coboundaries eventually compact in the Calkin algebra along the canonical increasing prime ray?
 18. Can the continued prime--Gamma/Mobius expression be analytically continued through the full
     Bernstein susceptibility collar without importing a zero-free region or an equivalent radius
     bound?
@@ -1582,6 +1620,9 @@ is:
 21. Is there a pre-divisor prime--Gamma trace equal to the safe Gamma--Meixner shape germ, with a
     continuation law stronger than the divisor-built Landau criterion rather than another exact RH
     restatement?
+22. Can the cofinal prime-square reflection product be identified on every Xi fibre with
+    `c=Re(rho)-1/2` and simultaneously bounded by the proved Wold/Gamma scale from the literal
+    completed source, so its superessential type forces `c=0`?
 
 Until one is answered, endpoint reformulations, finite real-zero models, seed asymptotics, diagonal
 moment inequalities, or scalar transport identities do not move formal RH frontier.

@@ -279,3 +279,38 @@ Planned order of work:
    `primeCounting_sub_logIntegral_isBigO` (needed for the sharp constants in the diagonal
    singular-trace and superspace cards).
 3. `χ_N = ∑_{p≤N}(log p)²/p ∼ (log N)²/2` from Mertens' first theorem (superspace card §3).
+
+### 2026-08-19 (cont.) — prime clock energy divergence landed
+
+`RHTower/PrimeClockEnergyDivergence.lean` (clean, wired, axiom-clean):
+`tendsto_primeClockEnergy_atTop` — for every nonzero frequency `τ`,
+`∑_{p ≤ x} (1 − cos(τ log p))/p → ∞`.
+
+Found entirely by corpus search: the deficit bound `RHTower.zetaLineDeficit_sub_le_primeClockEnergy`
+(`RealTwistDeficitTransfer.lean`, resting on `abs_zeta_deficit_sub_primeClockEnergy_le` in
+`ZetaOneLineDeficit.lean`) plus continuity and nonvanishing of `ζ` at `1 + iτ` give the divergence
+in twenty lines; no prime number theorem or partial summation is needed.
+
+This is the arithmetic input for the mutual singularity of distinct critical heights
+(`prime-poisson-superselection-screen`, eqs. (8)–(9)) and for the clock decompactification
+(`prime-superspace-wick-anisotropy-decompactification`, eq. (20) second half).
+
+## 2026-08-19 — grade-monodromy inversion core (card 15, in progress)
+
+`RHTower/GradeMonodromyInversion.lean` (clean, wired, axiom-clean) proves the card's exact
+inversion law (5) in full generality: for a locally finite dilation datum `ν`,
+
+`gradeMonodromyTransform ν n = -∑_r μ(r) ν(r n)/r`,
+`gradeLambertTransform M n = -∑_k M(k n)/k`,
+`gradeLambertTransform (gradeMonodromyTransform ν) n = ν n`,
+
+with `sum_divisors_moebius_eq` (`∑_{d ∣ m} μ(d) = [m = 1]`) as the mechanism and mathlib's
+`sigmaAntidiagonalEquivProd` for the pair regrouping.
+
+Still to build for `prime-grade-monodromy-divisor-mobius-equivalence`:
+(1) the Lambert decomposition `A(s) = ∑_k Q(ks)` on `Re s > 1` (corpus has the prime/higher-valuation
+split `tsum_vonMangoldtLSeriesTerm_eq_primeLog_add_higherValuation` and the regrouping tool
+`tsum_eq_tsum_primes_of_support_subset_prime_powers`); (2) the Möbius inversion `Q = ∑_r μ(r) A(r·)`;
+(3)–(4) the residue law `Res_{s₀} Q = −∑_r μ(r) ν(r s₀)/r` from the continuation, using
+`logDeriv_iteratedDeriv_residue_of_zero` (residue of a logarithmic derivative = analytic order);
+(6) invariance under finite Euler-unit changes.

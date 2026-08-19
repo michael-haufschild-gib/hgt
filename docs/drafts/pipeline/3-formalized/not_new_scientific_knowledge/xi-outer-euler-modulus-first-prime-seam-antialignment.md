@@ -1,9 +1,9 @@
 # Xi outer-Euler modulus and first-prime seam are exactly antialigned
 
 - **ID:** `xi-outer-euler-modulus-first-prime-seam-antialignment`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[BRIDGE]`
-- **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED HERE] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent result:** Sondow--Dumitrescu horizontal monotonicity of the modulus of the Riemann
   xi function on a zero-free right half-plane
 - **Statement:** On every open-strip fibre, the completed all-prime--Gamma modulus defect at two
@@ -232,3 +232,10 @@ infrastructure, but they do not clear the novelty gate as independent scientific
 - [ ] source theorem proving the nonnegative cross-scale alignment
 - [ ] Lean formalization; intentionally deferred under the active no-computation boundary
 
+
+## Lean formalization (complete and unconditional)
+
+`formal/GaloisForLFunctions/RHTower/XiOuterEulerModulusPrimeSeamAntialignment.lean` — the prime
+clock reflection amplitude, the exact demodulation of the orbitwise seam charge, the outer modulus
+defect and its sign law, the antialignment inequality, and the RH consequence of alignment at the
+first prime.

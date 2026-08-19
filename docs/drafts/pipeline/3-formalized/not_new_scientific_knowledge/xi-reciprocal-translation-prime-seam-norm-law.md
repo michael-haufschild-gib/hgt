@@ -1,7 +1,7 @@
 # The Xi prime seam is the norm-growth defect of one reciprocal Cauchy orbit
 
 - **ID:** `xi-reciprocal-translation-prime-seam-norm-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / TOP-DOWN VALUE RELATION / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Formal parents:** `XiGlobalReflectionDefectEnergy.lean`,
   `XiPrimeSeamReflectionEnergy.lean`, `XiWeilLineConjHilbert.lean`,
@@ -9,7 +9,7 @@
   `CCMRectangularTwoEdge.lean`, `CCMSharpPrimeWindowDivisorTomography.lean`
 - **Paper parents:** `prime-seam-damping-aperture-law.md`,
   `xi-global-meixner-shape-landau-rh.md`
-- **Statement:** `[PROVED HERE]` The complete prime-seam coefficient at a prime `p` is exactly a
+- **Statement:** `[PROVED HERE] [FORMALIZED]` The complete prime-seam coefficient at a prime `p` is exactly a
   positive scalar times the increase in the squared norm of the single centered reciprocal
   Cauchy vector after spectral translation by `log p`.  Functional-equation reflection makes this
   norm orbit even and increasing away from zero.  Contractivity at any one nonzero translation,
@@ -395,3 +395,9 @@ independent scientific novelty.
 - [ ] RH
 
 No numerical experiment, Lean build, lint run, or scratch computation was used in this proof.
+
+## Lean formalization (complete and unconditional)
+
+`formal/GaloisForLFunctions/RHTower/XiReciprocalTranslationSeamNormLaw.lean` — the translated
+reciprocal norm, its evenness, the exact seam-divisor coefficient formula, the equivalences with
+the critical line, and the RH criterion from boundedness of the translated norm.

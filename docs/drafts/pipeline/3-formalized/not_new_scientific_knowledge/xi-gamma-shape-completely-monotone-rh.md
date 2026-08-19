@@ -1,9 +1,9 @@
 # Complete monotonicity of the Xi Gamma-shape trace is equivalent to RH
 
 - **ID:** `xi-gamma-shape-completely-monotone-rh`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / POSITIVE RADIAL RH CRITERION / BRIDGE
-- **Scientific status:** `[PROVED HERE] [NOT FORMALIZED] [NOT AN RH PROOF]
+- **Scientific status:** `[PROVED HERE] [FORMALIZED] [NOT AN RH PROOF]
   [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parents:** `xi-global-meixner-shape-landau-rh.md`,
   `xi-reciprocal-translation-prime-seam-norm-law.md`, and Bernstein's theorem for completely
@@ -137,3 +137,26 @@ claimed for their combination.
 - [x] completely-monotone extension equivalence with RH proved on paper
 - [x] plain Hankel-positivity overclaim excluded
 - [ ] formalize only if the analytic infrastructure is reusable beyond this criterion
+
+## Lean formalization (complete and unconditional)
+
+The converse was formalized through Hausdorff's moment theorem rather than Bernstein's theorem.
+
+- `formal/GaloisForLFunctions/HTGeometry/CompletelyMonotoneTower.lean` — a completely monotone
+  function on `(0,∞)`, presented by its derivative tower, has alternating forward differences of
+  every order, so its arithmetic samples are Hausdorff completely monotone.
+- `formal/GaloisForLFunctions/HTGeometry/AtomicHausdorffSource.lean` — atomic sources on `[0,1]`,
+  the power-density tilt `y^N dμ`, and the moment inversion
+  `summable_of_hausdorffMoment_eq_atomic`: if a finite source reproduces `∑ⱼ Bⱼ xⱼⁿ` for all
+  `n ≥ N` with distinct positive nodes, its atom at `xⱼ` is `Bⱼ` and `∑ⱼ Bⱼ` converges.
+- `formal/GaloisForLFunctions/HTGeometry/GeneralDirichletCompletelyMonotone.lean` — Landau for
+  completely monotone extensions: a nonnegative general Dirichlet series with distinct nonnegative
+  frequencies whose safe germ extends to a finite completely monotone function on `(0,∞)`
+  converges at every positive shape.
+- `formal/GaloisForLFunctions/RHTower/XiGammaShapeCompleteMonotonicity.lean` — equations `(6)` and
+  `(7)`, and the exclusion of the plain Hankel-positivity overclaim (`exp_hankel_nonneg` together
+  with `exp_not_completelyMonotone`).
+- `formal/GaloisForLFunctions/RHTower/XiGammaShapeCompletelyMonotoneExtension.lean` — strict
+  monotonicity and hence injectivity of the Gamma–Meixner frequencies, and both forms of `(8)`:
+  `riemannHypothesis_iff_xiGammaShapeRealTrace_completelyMonotone` (items 1 and 2) and
+  `riemannHypothesis_iff_xiGammaShapeRealTrace_hankel_extension` (items 1 and 3).

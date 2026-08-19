@@ -1648,3 +1648,68 @@ factorisation `G = g · h_k`.
 
 This removes the last "generic transversality" appeal from the `(18b)` route: nonvanishing of the
 criticality polynomial is now a checkable pointwise statement rather than an assumed genericity.
+
+### Lean progress — `(18b)` closed: the transversality power law
+
+Four new modules (umbrella-wired, `lake build` green, axioms = `propext`/`Classical.choice`/
+`Quot.sound`) complete the elimination route and prove `(18b)` in the form the card states.
+
+`HTGeometry/CriticalityTangentialFactorisation.lean`
+
+| Card item | Declaration |
+|---|---|
+| the leading factor of the defining relation and the criticality value | `criticalityLeading`, `criticalityValue` |
+| `h_k = ‖∇_S φ_k‖²` as the deviation of the directional derivatives from the radial one | `tangentialGradNormSq`, `tangentialGradNormSq_nonneg`, `tangentialGradNormSq_eq_zero_iff` |
+| on the shell, `‖∇_S φ‖² = ‖∇φ‖² − φ²` | `tangentialGradNormSq_eq_sub_sq_of_euler` |
+| **the criticality expression is the leading factor times the tangential deviation** | `criticalityValue_eq_leading_mul_tangential` |
+| **hence the direction square sum is `(∂_yQ)² · ‖∇_S φ‖²`** | `criticalitySquareSum_eq_leading_sq_mul` |
+
+This is the factorisation `G = g · h_k` the card asked for, and it is an *identity*, not a
+genericity statement: implicit differentiation of the defining relation gives
+`∑_n ∂_i c_n φ^n = −(∑_n n c_n φ^{n−1}) ∂_iφ`, so the criticality expression equals
+`(∑_n n c_n φ^{n−1}) · (φθ_i − ∂_iφ)`, and summing the squares over `i` factors exactly.
+
+`HTGeometry/JointCriticalityEvaluation.lean`
+
+| Card item | Declaration |
+|---|---|
+| the leading factor as a polynomial on the joint ring | `jointLeading`, `eval_jointLeading` |
+| the evaluation of the homogenised criticality expression | `eval_jointCriticality` |
+| **on the unit shell the homogenising factor is one** | `eval_jointCriticality_of_unit` |
+
+`HTGeometry/SpectralEnsembleEigenvalueBound.lean`
+
+| Card item | Declaration |
+|---|---|
+| the eigenvalue energy is the real trace of the square | `sum_sq_eigenvalues_eq_trace_sq_re` |
+| hence every eigenvalue is bounded by its square root | `abs_eigenvalues_le_sqrt_trace_sq_re` |
+| **the uniform spectral bound on the shell** | `ensembleTraceBound`, `abs_eigenvalues_spectralEnsembleMatrix_le` |
+| a polynomial is bounded on a box | `exists_bound_eval_of_abs_le` |
+| **a joint polynomial is bounded on the shell** | `exists_bound_eval_joint` |
+
+This replaces the continuity the sublevel capstone originally asked of the cofactor.  Eigenvalues
+of a Hermitian matrix are *not* continuous in its entries, so no continuous-cofactor statement is
+available; but `∑_i λ_i(θ)² = Re Tr H(θ)²` is a quadratic form in `θ`, bounded on the shell by the
+total absolute trace mass `∑_{a,b} |Tr(P_aP_b)|` of the family, and boundedness is all the
+domination step needs.
+
+`HTGeometry/ShellCriticalityDomination.lean`
+
+| Card item | Declaration |
+|---|---|
+| the criticality product with the distinguished tangential block removed | `jointCriticalCofactor` |
+| **the factorisation on the unit shell**: the product is `‖∇_S φ_k‖²` times the cofactor | `eval_jointCriticalProduct_eq_tangential_mul` |
+| the two shell facts used: `|θ_a| ≤ 1` and `∑_a θ_a² = 1` | `sphere_abs_coord_le_one`, `sphere_sum_sq_coord` |
+| **`(18b)`**: `σ{ω : ‖∇_S φ_k(ω)‖² ≤ g} ≤ A · g^{1/(D!·2(M+1))}` | `exists_toSphere_sublevel_le_shellCriticality` |
+
+So the power law now holds with the explicit exponent `1/(D!·2(M+1))`, where `M` is the degree of
+the symmetrised labelled action polynomial.  Its hypotheses are the card's own setup: the family is
+Hermitian, the action satisfies the relation `∑_n c_n(θ)φ^n = 0` with homogeneous shell
+coefficients (both supplied by `exists_shellRelation_labeledAction` and `isHomogeneous_shellCoeff`),
+the branch is differentiable along the coordinate lines of the shell, and one coordinate vector
+exists at which no labelling of the spectrum is critical.  No Łojasiewicz inequality, no
+semialgebraic stratification, and no genericity appeal is used anywhere.
+
+With `(18a)` (`exists_toSphere_spectralDiscriminant_sublevel_le`), `(13)`
+(`exists_small_transversalityTail`), Theorem C's assembly (`OnsetProbabilityAssembly`,
+`GridUnionOnset`) and now `(18b)`, the transversality half of the card is Lean-complete.

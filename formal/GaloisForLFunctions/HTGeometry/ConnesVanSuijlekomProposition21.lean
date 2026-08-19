@@ -28,6 +28,312 @@ def connesVanSuijlekomP21Ideal {N : ℕ} (a : Fin (N + 1) → ℝ) :
     Ideal (LaurentPolynomial ℂ) :=
   Ideal.span {connesVanSuijlekomP21Generator a}
 
+/-- The Laurent quotient of corrected Proposition 2.1. -/
+abbrev connesVanSuijlekomP21Quotient {N : ℕ} (a : Fin (N + 1) → ℝ) :=
+  LaurentPolynomial ℂ ⧸ connesVanSuijlekomP21Ideal a
+
+/-- The Laurent-variable class in the source quotient. -/
+def connesVanSuijlekomP21QuotientX {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    connesVanSuijlekomP21Quotient a :=
+  Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T 1)
+
+/-- The inverse Laurent-variable class in the source quotient. -/
+def connesVanSuijlekomP21QuotientXInv {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    connesVanSuijlekomP21Quotient a :=
+  Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T (-1))
+
+/-- The source Laurent generator vanishes in its principal quotient. -/
+theorem connesVanSuijlekomP21_quotient_generator_eq_zero
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+      (connesVanSuijlekomP21Generator a) = 0 := by
+  apply Ideal.Quotient.eq_zero_iff_mem.mpr
+  exact Ideal.mem_span_singleton_self _
+
+/-- The two Laurent-variable classes multiply to one in the source quotient. -/
+theorem connesVanSuijlekomP21_quotient_x_mul_xInv
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    connesVanSuijlekomP21QuotientX a * connesVanSuijlekomP21QuotientXInv a = 1 := by
+  change Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+    (LaurentPolynomial.T 1 * LaurentPolynomial.T (-1)) = 1
+  rw [← LaurentPolynomial.T_add]
+  norm_num
+
+/-- The two Laurent-variable classes multiply to one in the other order. -/
+theorem connesVanSuijlekomP21_quotient_xInv_mul_x
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    connesVanSuijlekomP21QuotientXInv a * connesVanSuijlekomP21QuotientX a = 1 := by
+  change Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+    (LaurentPolynomial.T (-1) * LaurentPolynomial.T 1) = 1
+  rw [← LaurentPolynomial.T_add]
+  norm_num
+
+/-- The quotient Laurent-variable class as an explicit unit. -/
+def connesVanSuijlekomP21QuotientXUnit {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    (connesVanSuijlekomP21Quotient a)ˣ where
+  val := connesVanSuijlekomP21QuotientX a
+  inv := connesVanSuijlekomP21QuotientXInv a
+  val_inv := connesVanSuijlekomP21_quotient_x_mul_xInv a
+  inv_val := connesVanSuijlekomP21_quotient_xInv_mul_x a
+
+/-- The nonconstant part of the source relation after multiplication by
+`X⁻¹`. It is a polynomial in nonnegative powers of `X`. -/
+def connesVanSuijlekomP21LaurentInverseTail {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    LaurentPolynomial ℂ :=
+  (Finset.univ.erase 0).sum fun j =>
+    LaurentPolynomial.C (a j : ℂ) * LaurentPolynomial.T ((j : ℤ) - 1)
+
+/-- Multiplying the source Laurent relation by `X⁻¹` isolates its nonzero
+constant coefficient. -/
+theorem connesVanSuijlekomP21_generator_mul_T_neg_one
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    connesVanSuijlekomP21Generator a * LaurentPolynomial.T (-1) =
+      LaurentPolynomial.C (a (0 : Fin (N + 1)) : ℂ) * LaurentPolynomial.T (-1) +
+        connesVanSuijlekomP21LaurentInverseTail a := by
+  rw [connesVanSuijlekomP21Generator, Finset.sum_mul]
+  let f : Fin (N + 1) → LaurentPolynomial ℂ := fun j =>
+    (LaurentPolynomial.C (a j : ℂ) * LaurentPolynomial.T (j : ℤ)) *
+      LaurentPolynomial.T (-1)
+  change (∑ j, f j) = _
+  rw [← Finset.add_sum_erase Finset.univ f (Finset.mem_univ 0)]
+  congr 1
+  · simp only [f]
+    rw [LaurentPolynomial.mul_T_assoc]
+    norm_num
+  · apply Finset.sum_congr rfl
+    intro j _
+    simp only [f]
+    rw [LaurentPolynomial.mul_T_assoc]
+    rw [sub_eq_add_neg]
+
+/-- The quotient class of the nonconstant tail of the `X⁻¹` relation. -/
+def connesVanSuijlekomP21QuotientInverseTail {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    connesVanSuijlekomP21Quotient a :=
+  Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+    (connesVanSuijlekomP21LaurentInverseTail a)
+
+/-- In the source quotient, the constant coefficient times `X⁻¹` is the
+negative of a finite polynomial in nonnegative powers. -/
+theorem connesVanSuijlekomP21_quotient_inverse_relation
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+        (LaurentPolynomial.C (a (0 : Fin (N + 1)) : ℂ)) *
+        connesVanSuijlekomP21QuotientXInv a +
+      connesVanSuijlekomP21QuotientInverseTail a = 0 := by
+  let J := connesVanSuijlekomP21Ideal a
+  calc
+    Ideal.Quotient.mk J (LaurentPolynomial.C (a (0 : Fin (N + 1)) : ℂ)) *
+        connesVanSuijlekomP21QuotientXInv a +
+        connesVanSuijlekomP21QuotientInverseTail a =
+        Ideal.Quotient.mk J
+          (LaurentPolynomial.C (a (0 : Fin (N + 1)) : ℂ) * LaurentPolynomial.T (-1) +
+            connesVanSuijlekomP21LaurentInverseTail a) := by
+      change Ideal.Quotient.mk J (LaurentPolynomial.C (a 0 : ℂ)) *
+          Ideal.Quotient.mk J (LaurentPolynomial.T (-1)) +
+          Ideal.Quotient.mk J (connesVanSuijlekomP21LaurentInverseTail a) = _
+      rw [← map_mul, ← map_add]
+    _ = Ideal.Quotient.mk J
+        (connesVanSuijlekomP21Generator a * LaurentPolynomial.T (-1)) := by
+      rw [connesVanSuijlekomP21_generator_mul_T_neg_one]
+    _ = Ideal.Quotient.mk J (connesVanSuijlekomP21Generator a) *
+        connesVanSuijlekomP21QuotientXInv a := by
+      rw [map_mul]
+      rfl
+    _ = 0 := by
+      rw [connesVanSuijlekomP21_quotient_generator_eq_zero]
+      exact zero_mul _
+
+/-- The subalgebra generated by the quotient Laurent-variable class. -/
+def connesVanSuijlekomP21QuotientAdjoin {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    Subalgebra ℂ (connesVanSuijlekomP21Quotient a) :=
+  Algebra.adjoin ℂ {connesVanSuijlekomP21QuotientX a}
+
+/-- Constant Laurent classes agree with the quotient scalar algebra map. -/
+theorem connesVanSuijlekomP21_quotient_mk_C_eq_algebraMap
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (z : ℂ) :
+    Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.C z) =
+      algebraMap ℂ (connesVanSuijlekomP21Quotient a) z := by
+  rfl
+
+/-- The quotient Laurent-variable class belongs to its generated subalgebra. -/
+theorem connesVanSuijlekomP21_quotient_x_mem_adjoin
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    connesVanSuijlekomP21QuotientX a ∈ connesVanSuijlekomP21QuotientAdjoin a := by
+  exact Algebra.subset_adjoin (Set.mem_singleton _)
+
+/-- A nonnegative Laurent monomial class is the matching power of the
+quotient Laurent-variable class. -/
+theorem connesVanSuijlekomP21_quotient_nonnegative_monomial_eq_pow
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (k : ℕ) :
+    Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T (k : ℤ)) =
+      connesVanSuijlekomP21QuotientX a ^ k := by
+  change Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T (k : ℤ)) =
+    Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T 1) ^ k
+  rw [← map_pow]
+  congr 1
+  rw [LaurentPolynomial.T_pow]
+  norm_num
+
+/-- Evaluation at the quotient Laurent-variable unit agrees with the quotient
+class on every nonnegative Laurent monomial. -/
+theorem connesVanSuijlekomP21_eval_nonnegative_term
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (z : ℂ) (k : ℕ) :
+    LaurentPolynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
+      (connesVanSuijlekomP21QuotientXUnit a)
+      (LaurentPolynomial.C z * LaurentPolynomial.T (k : ℤ)) =
+      Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+        (LaurentPolynomial.C z * LaurentPolynomial.T (k : ℤ)) := by
+  rw [LaurentPolynomial.eval₂_C_mul_T_n, map_mul,
+    connesVanSuijlekomP21_quotient_mk_C_eq_algebraMap,
+    connesVanSuijlekomP21_quotient_nonnegative_monomial_eq_pow]
+  rfl
+
+/-- The literal source Laurent generator vanishes when evaluated at the
+quotient Laurent-variable unit. -/
+theorem connesVanSuijlekomP21_eval_generator_eq_zero
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    LaurentPolynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
+      (connesVanSuijlekomP21QuotientXUnit a)
+      (connesVanSuijlekomP21Generator a) = 0 := by
+  rw [connesVanSuijlekomP21Generator, map_sum]
+  calc
+    ∑ j, LaurentPolynomial.eval₂ (algebraMap ℂ (connesVanSuijlekomP21Quotient a))
+        (connesVanSuijlekomP21QuotientXUnit a)
+        (LaurentPolynomial.C (a j : ℂ) * LaurentPolynomial.T (j : ℤ)) =
+        ∑ j, Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+          (LaurentPolynomial.C (a j : ℂ) * LaurentPolynomial.T (j : ℤ)) := by
+      apply Finset.sum_congr rfl
+      intro j _
+      exact connesVanSuijlekomP21_eval_nonnegative_term a (a j : ℂ) (j : ℕ)
+    _ = Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+        (connesVanSuijlekomP21Generator a) := by
+      rw [connesVanSuijlekomP21Generator, map_sum]
+    _ = 0 := connesVanSuijlekomP21_quotient_generator_eq_zero a
+
+/-- Every term in the inverse relation is polynomial in the quotient
+Laurent-variable class. -/
+theorem connesVanSuijlekomP21_quotient_inverse_tail_term_mem_adjoin
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (j : Fin (N + 1))
+    (hj : j ≠ 0) :
+    Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+      (LaurentPolynomial.C (a j : ℂ) * LaurentPolynomial.T ((j : ℤ) - 1)) ∈
+      connesVanSuijlekomP21QuotientAdjoin a := by
+  have hjpos : 0 < (j : ℕ) := by
+    by_contra h
+    have hjzero : (j : ℕ) = 0 := by omega
+    exact hj (Fin.ext hjzero)
+  have hcast : (j : ℤ) - 1 = ((j : ℕ) - 1 : ℕ) := by omega
+  rw [hcast, map_mul, connesVanSuijlekomP21_quotient_mk_C_eq_algebraMap,
+    connesVanSuijlekomP21_quotient_nonnegative_monomial_eq_pow]
+  exact (connesVanSuijlekomP21QuotientAdjoin a).mul_mem
+    ((connesVanSuijlekomP21QuotientAdjoin a).algebraMap_mem (a j : ℂ))
+    ((connesVanSuijlekomP21QuotientAdjoin a).pow_mem
+      (connesVanSuijlekomP21_quotient_x_mem_adjoin a) _)
+
+/-- The full finite tail in the inverse relation is polynomial in the
+quotient Laurent-variable class. -/
+theorem connesVanSuijlekomP21_quotient_inverse_tail_mem_adjoin
+    {N : ℕ} (a : Fin (N + 1) → ℝ) :
+    connesVanSuijlekomP21QuotientInverseTail a ∈ connesVanSuijlekomP21QuotientAdjoin a := by
+  rw [connesVanSuijlekomP21QuotientInverseTail,
+    connesVanSuijlekomP21LaurentInverseTail, map_sum]
+  apply (connesVanSuijlekomP21QuotientAdjoin a).sum_mem
+  intro j hj
+  exact connesVanSuijlekomP21_quotient_inverse_tail_term_mem_adjoin a j
+    (Finset.mem_erase.mp hj).1
+
+/-- With nonzero constant coefficient, `X⁻¹` itself is polynomial in the
+quotient Laurent-variable class. -/
+theorem connesVanSuijlekomP21_quotient_xInv_mem_adjoin
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) :
+    connesVanSuijlekomP21QuotientXInv a ∈ connesVanSuijlekomP21QuotientAdjoin a := by
+  have ha0C : (a 0 : ℂ) ≠ 0 := by exact_mod_cast ha0
+  have hrel := connesVanSuijlekomP21_quotient_inverse_relation a
+  rw [connesVanSuijlekomP21_quotient_mk_C_eq_algebraMap] at hrel
+  have hrel' : algebraMap ℂ (connesVanSuijlekomP21Quotient a) (a 0 : ℂ) *
+      connesVanSuijlekomP21QuotientXInv a =
+        -connesVanSuijlekomP21QuotientInverseTail a :=
+    eq_neg_of_add_eq_zero_left hrel
+  have hform : connesVanSuijlekomP21QuotientXInv a =
+      algebraMap ℂ (connesVanSuijlekomP21Quotient a) ((a 0 : ℂ)⁻¹) *
+        (-connesVanSuijlekomP21QuotientInverseTail a) := by
+    calc
+      connesVanSuijlekomP21QuotientXInv a = 1 * connesVanSuijlekomP21QuotientXInv a := by
+        rw [one_mul]
+      _ = (algebraMap ℂ (connesVanSuijlekomP21Quotient a) ((a 0 : ℂ)⁻¹) *
+          algebraMap ℂ (connesVanSuijlekomP21Quotient a) (a 0 : ℂ)) *
+          connesVanSuijlekomP21QuotientXInv a := by
+        rw [← map_mul, inv_mul_cancel₀ ha0C]
+        simp
+      _ = algebraMap ℂ (connesVanSuijlekomP21Quotient a) ((a 0 : ℂ)⁻¹) *
+          (algebraMap ℂ (connesVanSuijlekomP21Quotient a) (a 0 : ℂ) *
+            connesVanSuijlekomP21QuotientXInv a) := by rw [mul_assoc]
+      _ = algebraMap ℂ (connesVanSuijlekomP21Quotient a) ((a 0 : ℂ)⁻¹) *
+          (-connesVanSuijlekomP21QuotientInverseTail a) := by rw [hrel']
+  rw [hform]
+  exact (connesVanSuijlekomP21QuotientAdjoin a).mul_mem
+    ((connesVanSuijlekomP21QuotientAdjoin a).algebraMap_mem ((a 0 : ℂ)⁻¹))
+    ((connesVanSuijlekomP21QuotientAdjoin a).neg_mem
+      (connesVanSuijlekomP21_quotient_inverse_tail_mem_adjoin a))
+
+/-- A negative Laurent monomial class is the matching power of the quotient
+inverse Laurent-variable class. -/
+theorem connesVanSuijlekomP21_quotient_negative_monomial_eq_pow
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (k : ℕ) :
+    Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T (-(k : ℤ))) =
+      connesVanSuijlekomP21QuotientXInv a ^ k := by
+  change Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T (-(k : ℤ)) :
+      LaurentPolynomial ℂ) =
+    Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a) (LaurentPolynomial.T (-1)) ^ k
+  rw [← map_pow]
+  congr 1
+  rw [LaurentPolynomial.T_pow]
+  ring_nf
+
+/-- Every Laurent monomial class is polynomial in the quotient Laurent-variable
+class when the source constant coefficient is nonzero. -/
+theorem connesVanSuijlekomP21_quotient_laurent_monomial_mem_adjoin
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) (z : ℂ) (n : ℤ) :
+    Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+      (LaurentPolynomial.C z * LaurentPolynomial.T n) ∈ connesVanSuijlekomP21QuotientAdjoin a := by
+  cases n with
+  | ofNat k =>
+      change Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+        (LaurentPolynomial.C z * LaurentPolynomial.T (k : ℤ)) ∈
+          connesVanSuijlekomP21QuotientAdjoin a
+      rw [map_mul, connesVanSuijlekomP21_quotient_mk_C_eq_algebraMap,
+        connesVanSuijlekomP21_quotient_nonnegative_monomial_eq_pow]
+      exact (connesVanSuijlekomP21QuotientAdjoin a).mul_mem
+        ((connesVanSuijlekomP21QuotientAdjoin a).algebraMap_mem z)
+        ((connesVanSuijlekomP21QuotientAdjoin a).pow_mem
+          (connesVanSuijlekomP21_quotient_x_mem_adjoin a) _)
+  | negSucc k =>
+      change Ideal.Quotient.mk (connesVanSuijlekomP21Ideal a)
+        (LaurentPolynomial.C z * LaurentPolynomial.T (-((k + 1 : ℕ) : ℤ))) ∈
+          connesVanSuijlekomP21QuotientAdjoin a
+      rw [map_mul, connesVanSuijlekomP21_quotient_mk_C_eq_algebraMap,
+        connesVanSuijlekomP21_quotient_negative_monomial_eq_pow]
+      exact (connesVanSuijlekomP21QuotientAdjoin a).mul_mem
+        ((connesVanSuijlekomP21QuotientAdjoin a).algebraMap_mem z)
+        ((connesVanSuijlekomP21QuotientAdjoin a).pow_mem
+          (connesVanSuijlekomP21_quotient_xInv_mem_adjoin a ha0) _)
+
+/-- The corrected source quotient is generated as a complex algebra by the
+Laurent-variable class. -/
+theorem connesVanSuijlekomP21_quotient_adjoin_eq_top
+    {N : ℕ} (a : Fin (N + 1) → ℝ) (ha0 : a 0 ≠ 0) :
+    connesVanSuijlekomP21QuotientAdjoin a = ⊤ := by
+  apply top_unique
+  intro q hq
+  clear hq
+  obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective q
+  induction p using LaurentPolynomial.induction_on' with
+  | add p q hp hq =>
+      rw [map_add]
+      exact (connesVanSuijlekomP21QuotientAdjoin a).add_mem hp hq
+  | C_mul_T n z =>
+      exact connesVanSuijlekomP21_quotient_laurent_monomial_mem_adjoin a ha0 z n
+
 /-- Polynomial presentation of the source Laurent generator. -/
 def connesVanSuijlekomP21Polynomial {N : ℕ} (a : Fin (N + 1) → ℝ) : Polynomial ℂ :=
   Polynomial.ofFn (N + 1) fun j => (a j : ℂ)

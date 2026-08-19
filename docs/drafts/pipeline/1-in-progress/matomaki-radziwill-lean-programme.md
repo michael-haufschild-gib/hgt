@@ -5249,3 +5249,130 @@ frequencies route (b) applies with room to spare.
 
 Remaining for MR Lemma 2 as a single statement: the tail route (b) in Lean — dyadic Abel summation
 of `Sieve/PrimeBlockTwistBound.exists_norm_primeBlockPoly_routeT_le` over `(exp((log z)^{1−ε}), z]`.
+
+### Milestone C, brick 61 — the Granville–Soundararajan transfer (2026-08-19)
+
+`Sieve/PrimeCosineTailAbel` (axiom-clean, sorry-free, wired).  Route (b) of brick 59 needs one Abel
+summation, not a dyadic decomposition: a *uniform linear* bound on the twisted prime partial sums
+transfers to the reciprocal-weighted cosine sum at the cost of one logarithm.
+
+| theorem | statement |
+|-|-|
+| `abs_sum_div_le_of_partial_bound` | for `a` with `a 0 = 0`: `∀ i ≤ z, \|∑_{j≤i} a_j\| ≤ ρ·i` ⟹ `\|∑_{i≤z} a_i/i\| ≤ ρ·(2 + log z)` |
+| `primeCosTail`, `sum_range_primeCosTail`, `sum_Icc_primeCosTail_div` | the tail weight and its two sums |
+| `abs_sum_cos_div_primesRange_le` | the same for `∑_{y<p≤z} cos(t log p)/p` |
+| `sum_cos_eq_neg_re_primeBlockPoly` | `∑_{p∈B} cos(t log p) = −Re primeBlockPoly B (t/2π)` |
+| **`abs_sum_cos_div_primesRange_le_of_norm`** | `(∀ i ≤ z, ‖primeBlockPoly (primesRange y i) (t/2π)‖ ≤ ρ·i) ⟹ \|∑_{y<p≤z} cos(t log p)/p\| ≤ ρ(2 + log z)` |
+
+Built on `RHTower/MertensFirst.Mertens.abel_tail_identity` (`∑_{i≤N}a_i/i = A(N)/N +
+∑_{i<N}A(i)/(i(i+1))`) and `Sieve/PerronNearDiagonal.sum_inv_comp_le_one_add_log`.
+
+**The numerology this now has to be fed.**  Route (b) is used with `y = ⌈exp((log z)^{1−ε})⌉`,
+`ε < 1 − κ = 1/10`; the surviving harmonic mass is `ε·log log z`, and `ρ` must beat `1/log z`.
+`Sieve/PrimeBlockTwistBound.exists_norm_primeBlockPoly_routeT_le` supplies
+
+```text
+   ‖primeBlockPoly (primesRange y i) w‖
+     ≤ (E(i) + 7e⁹)(1/log 2 + 1/log(i+1)) + (E(y) + 7e⁹)(1/log 2 + 1/log(y+1)) ,
+   E(x) = routeTTwistEnvelope A delta C (−2πw) x ,
+```
+
+whose two regimes give, with `τ = −t` and `wτ = routeTUniformRegWidth A delta (3|τ|/2) ≍ (log|τ|)^{−κ}`,
+
+| term | value at `i ∈ (y,z]` | requirement | holds when |
+|-|-|-|-|
+| contour | `3·exp(−(wτ/6)·log 3i)·(HF + log 2i)` | `≤ ρ/(9C)` | `(wτ/6)·log y → ∞`, i.e. `log\|t\| ≤ (log y)^{1/κ}` |
+| truncation | `3·(3i)^{2wτ/3}·(1+(log i)²+HF)/(1+\|τ\|)` | `≤ ρ/(9C)` | `log z ≲ (log\|t\|)^{1+κ}` |
+| Chebyshev | `2 log i/√i` | `≤ ρ/3` | always, `i ≥ y` is stretched-exponential |
+
+At `y = exp((log z)^{0.99})`, `κ = 9/10`, both hold for `log|t| ≥ (log z)^{0.6}`: the contour term is
+`exp(−c(log z)^{0.99−0.54})` and the truncation term needs `(log z)^{0.46} ≲ (log z)^{0.6}`.
+
+**Coverage is now complete.**  Route (a) (`Sieve/PrimeCosineSumSharp.exists_mulDistSqPair_ge_quarter`)
+gives `D² ≥ 0.05·log log z` for `log|t| ≤ (log z)^{0.8}`; route (b) gives `D² ≥ 0.01·log log z` for
+`log|t| ≥ (log z)^{0.6}`.  The two overlap, so **MR's Lemma 2 for `μ` holds on the whole range
+`1 ≤ |t| ≤ z^A` at `κ = 9/10`.**  What remains for it is the third column of the table above — the
+explicit envelope estimates — which is arithmetic on `routeTTwistEnvelope`, no new analytic input.
+
+### Per-card audit of the five stage-2 targets — every one funnels into two named theorems (2026-08-19)
+
+Read against the tree (not against the card headers, several of which are stale).
+
+| card | what is Lean-proved | what is missing |
+|-|-|-|
+| `route-e-cofactor-amplified-e3-token-supply` | the whole elementary layer: parity reversal `(4)`, the `s↔2s` cofactor pairing and `half_sum_oddBase_le_sum_parityClass` (the structural half of `(7)`/`(9)`), the dyadic slice count `(6a)`, the amplified displacement `(5)` | the **Matomäki–Teräväinen all-interval `E₃` minorant** `(6)`; the classical unsigned squarefree harmonic estimates `∑ t^{-1/2} ≍ √T`, `∑ 1/t ≍ log T` over band-avoiding squarefree `t` |
+| `route-e-forbidden-support-e3-stability` | the whole perturbative layer `(FS5)`, `(FS6)`, `(FS10)`–`(FS12)` | the **Matomäki–Teräväinen all-interval `E₃` theorem** it perturbs |
+| `route-e-coprime-square-root-mobius-product-sign-law` | `(3)` and its consequence at `h = exp((log x)^{99/100})` (promoted as a stage-3 child); the whole reduction chain; the two-variable squarefree sieve; all three density inputs | the card's own range `h/log log 3x → ∞`, i.e. **Matomäki–Radziwiłł for arbitrarily slowly growing `h`**.  Its recorded Brun–Titchmarsh gate was *answered* on 2026-08-19: the Cauchy–Schwarz route provably loses a factor ≈150 and the bounded-multiplicity marker family supersedes it — which is the sibling Hall-law card, proved for `9/10 < β < 1` |
+| `route-e-growing-reciprocal-marker-low-breadth-transport` | as the Hall-law card | same as the Hall-law card |
+| `route-e-reciprocal-marker-mobius-hall-law` | **`route_e_marker_hall_law` — the card's `(3)`, unconditional, axiom-clean, both signs, every constant `C`** — for `9/10 < β' < 1` | the card states `1/2 < β < 1`; the exponent is inherited from `Sieve/ScaledBudgetLimit.averagedMeanSquare_moebius_scaledLength` |
+
+**So the five cards sit on exactly two published theorems**:
+
+* **MR** (arXiv:1501.04585) — cards 3, 4, 5.  Card 5 needs only the exponent range widened; card 3
+  needs the full `h → ∞` theorem.  This is Milestone C.
+* **MT all-interval `E₃`** — cards 1, 2.  Tracked at `mt-e3-programme`; the one remaining automorphic
+  input is Watt / Deshouillers–Iwaniec.
+
+Nothing else is missing on any of the five.  Milestone C therefore serves three of the five and is
+the correct critical path; the elementary squarefree estimates of card 1 `(7)`/`(9)` are the only
+piece of card work that is independent of both deep theorems.
+
+**And Milestone B's no-go is exactly the statement that card 5's `9/10` cannot be lowered by any
+zero-free-region argument** — which is why the frequency-partition architecture of Milestone C, and
+not more tuning of the joint arrangement, is the whole remaining content of cards 3, 4 and 5.
+
+### Milestone C, brick 62 — route (b) is arithmetic-free (2026-08-19)
+
+`Sieve/PrimeRangeTwistTail` (axiom-clean, sorry-free, wired).
+
+| theorem | statement |
+|-|-|
+| `inv_log_two_add_inv_log_succ_le_three` | `1/log 2 + 1/log(n+1) ≤ 3` for `n ≥ 1` (from `Real.log_two_gt_d9`) |
+| `exists_norm_primeBlockPoly_primesRange_le` | `‖primeBlockPoly (primesRange y i) (t/2π)‖ ≤ 3·(E(i) + E(y) + 14e⁹)`, `E = routeTTwistEnvelope A delta C (−t)` |
+| **`exists_abs_sum_cos_div_primesRange_le_routeT`** | the Granville–Soundararajan tail, with the *only* remaining hypothesis a size comparison: `∀ i ∈ [y,z], 3(E(i)+E(y)+14e⁹) ≤ ρ·i  ⟹  \|∑_{y<p≤z} cos(t log p)/p\| ≤ ρ(2+log z)` |
+
+The empty case `i < y` is discharged inside (`primesRange y i = ∅`), so the hypothesis is needed only
+on `[y, z]`.
+
+**What is left of route (b)** is exactly the third column of brick 61's table, now as one inequality
+between named quantities.  Working from the *definition* of `routeTTwistEnvelope` (not from
+`routeTTwistEnvelope_le_exp`, whose crude `(3x)^{delta/3}` is too lossy), the second regime's exponent
+is `1 + 2·routeTUniformRegWidth A delta (3|τ|/2)/3` with
+`routeTUniformRegWidth A delta K = min delta (routeTZeroFreeWidth A (K+1))/2`, so the truncation term
+is `exp((W/3)·log 3x)·polylog/(1+|τ|)` with `W ≍ (log|τ|)^{−κ}` — which is what turns the requirement
+into `log z ≲ (log|t|)^{1+κ}` rather than `|t| ≥ z^{delta}`.
+
+### Milestone C, brick 63 — the Route-T width from ABOVE (2026-08-19)
+
+`Sieve/RouteTWidthUpper` (axiom-clean, sorry-free, wired).  The corpus owned the zero-free width only
+from *below* (`Sieve/RouteTWidthExplicit.routeTWidthPolylogLower`), because the contour saving
+`x^{−w/3}` of `routeTTwistEnvelope` improves as `w` grows.  Its Perron truncation term carries
+`x^{+2w/3}` and needs the opposite inequality — and without it route (b) is only usable for
+`|t| ≥ z^{1/180}`, which route (a) cannot reach.
+
+The width is entirely explicit once unfolded, so the bound is a lower bound for the band shell:
+
+```text
+   routeTStripWidth V = 1/(D·(V+1)^9) ,   V = routeTBandShell t = ⌊¹⁰√(clog₂⌈t⌉)⌋ + 2 ,
+   n := clog₂⌈t⌉  <  (⌊¹⁰√n⌋+1)^10 ≤ (V+1)^10   (Nat.lt_pow_nthRoot_add_one)
+      ⟹  n^{9/10} ≤ (V+1)^9 ,
+   t ≤ 2^n  (Nat.le_pow_clog)  ⟹  log t/log 2 ≤ n .
+```
+
+| theorem | statement |
+|-|-|
+| `rpow_nine_tenths_le_bandShell_pow` | `(n:ℝ)^{9/10} ≤ (⌊¹⁰√n⌋+3)^9` |
+| `log_div_log_two_le_binaryHeight` | `log t/log 2 ≤ routeTBinaryHeight t` for `t ≥ 1` |
+| `routeTStripWidth_bandShell_le` | `routeTStripWidth (routeTBandShell t) ≤ 1/(D·(log t/log 2)^{9/10})`, `t ≥ 2` |
+| `routeTLandauRadius_le` | `≤ 1/(2D·(log γ/log 2)^{9/10})`, `γ ≥ 2` |
+| `routeTZeroFreeWidth_le_polylog` | `≤ 1/(2D·10⁵·10001²·(log γ/log 2)^{9/10})` (uses `routeTZeroFreeBudget ≥ 10001`) |
+| **`routeTUniformRegWidth_le_polylog`** | `routeTUniformRegWidth A delta (3\|τ\|/2) ≤ 1/(K·(log\|τ\|/log 2)^{9/10})`, `K = routeTWidthUpperConst = 4D·10⁵·10001²`, for `\|τ\| ≥ 2` |
+
+**This is the exponent `κ = 9/10` appearing as an upper bound for the first time in the corpus**, and
+it is what makes route (b)'s truncation requirement read `log z ≲ (log|t|)^{1+κ}` — i.e.
+`log|t| ≳ (log z)^{0.5263…}` — instead of `|t| ≳ z^{1/180}`.  With route (a) covering
+`log|t| ≤ (log z)^{0.8}`, the two now overlap.
+
+Remaining for MR's Lemma 2 as one statement: substitute `routeTUniformRegWidth_le_polylog` and
+`routeTWidthPolylogLower` into the two regimes of `routeTTwistEnvelope`, producing the `ρ` that
+`Sieve/PrimeRangeTwistTail.exists_abs_sum_cos_div_primesRange_le_routeT` consumes.

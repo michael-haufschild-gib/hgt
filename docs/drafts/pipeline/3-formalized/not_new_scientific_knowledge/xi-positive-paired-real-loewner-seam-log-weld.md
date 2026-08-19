@@ -1,9 +1,9 @@
 # Xi positive-paired real boundary is the seam-log Loewner kernel
 
 - **ID:** `xi-positive-paired-real-loewner-seam-log-weld`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[TOP-DOWN INTERFACE DISCHARGE]`, `[VALUE RELATION]`
-- **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED] [FORMALIZED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Formal parents:**
   `RHTower/XiHurwitzOrientationPositivePairedSource.lean`,
   `RHTower/CriticalTraceMomentGerm.lean`,
@@ -263,3 +263,10 @@ Loewner theorem.
   with the already formalized normalized trace germ and the paper-proven seam-log weld.  Recorded
   the confluent-diagonal correction and the exact finite matrix congruence.  No computation or
   Lean build was used.
+
+## Lean formalization (complete and unconditional, targets 1--5)
+
+`formal/GaloisForLFunctions/RHTower/XiPositivePairedRealLoewnerSeam.lean` — the boundary trace and
+its seam germ, the Loewner datum, the confluent paired kernel `(5)`, its identification with the
+reduced CCM paired kernel `(4)`, the finite matrix congruence `(6)`, and the equivalence of local
+all-order Loewner positivity with the critical line.

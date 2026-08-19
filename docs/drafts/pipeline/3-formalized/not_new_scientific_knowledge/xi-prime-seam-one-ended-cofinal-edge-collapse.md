@@ -1,9 +1,9 @@
 # Xi prime seam one-ended cofinal-edge collapse
 
 - **ID:** `xi-prime-seam-one-ended-cofinal-edge-collapse`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[TOP-DOWN BRIDGE]`
-- **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `finite-boundary-one-ended-coherence-reconstruction.md`;
   `sonin-two-particle-prime-coherence.md`; `xi-prime-seam-coherence-collapse.md`
 
@@ -156,3 +156,15 @@ for exact compactness edge by edge but only on a one-ended cofinal skeleton.
 - [ ] formalize the stage-2 tensor essential-norm lower bound
 - [ ] prove the source compactness theorem `(10)`
 - [ ] prove RH
+
+## Lean formalization (complete and unconditional)
+
+- `formal/GaloisForLFunctions/HTGeometry/ArbitraryLabelEndReconstruction.lean` — equation `(1)`:
+  finite edge variation of an arbitrary-valued label on an infinite preconnected graph with the
+  finite-boundary one-ended property forces the label to be constant off a finite set.
+- `formal/GaloisForLFunctions/RHTower/XiPrimeSeamOneEndedCollapse.lean` — the Xi seam
+  specialization: cofinal decay kills the common value, and both the graph form and the prime-ray
+  form `(4)` of the collapse.
+- `formal/GaloisForLFunctions/RHTower/XiPrimeSeamSparseEdgeCalkin.lean` — the coboundary corner
+  `(7)`, the essential-norm lower bound `(8)` from the two-scale positive Euler Gram entry, and
+  both forms of the sparse chain `(9)`.

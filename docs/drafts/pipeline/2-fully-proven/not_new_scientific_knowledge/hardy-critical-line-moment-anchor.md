@@ -449,3 +449,51 @@ Status of the ordered chain after this session:
 | (d') Lemma C — second-moment lower bound `∫Z² ≥ ½T log T` | OPEN |
 | (e) Lemma E — `\|∫Z\| = O(T^{3/4})` | OPEN |
 | (f) assembly + dyadic `N₀(T) ≥ c log T` | assembly **DONE**; the dyadic corollary waits on (d'), (e) |
+
+## Gate 5 progress log (2026-08-19b) — Lemma C is CLOSED
+
+New module `formal/GaloisForLFunctions/RHTower/ZetaLineFirstMoment.lean` (wired into
+`RHTower.lean`, olean built, `#print axioms` clean) proves the second-moment lower bound
+unconditionally, by a **first-moment** route rather than the diagonal computation sketched above.
+
+The mechanism: over a dyadic window the Euler–Maclaurin block
+`ζ(s) = Σ_{n≤N} n^{-s} + N^{1-s}/(s-1) − s·emTail_N(s)` (corpus `zeta_eq_emCarrier_sub`) has
+
+* constant term `n = 1` contributing exactly the window length `T`;
+* higher Dirichlet terms contributing `O(n^{-1/2}/log n)` each, whose sum splits at `M` into
+  `4√M/log 2 + 4√N/log M`;
+* the explicit continuation term contributing `3√N/(T log N)`, by the corpus oscillation bound
+  `norm_integral_mul_exp_le` applied with amplitude `√N/(s−1)` and frequency `log N`;
+* the Euler–Maclaurin remainder contributing `(1+4T)T/√N`.
+
+Taking `M = ⌈T⌉₊` and `N = ⌈65536·T²⌉₊` makes all four errors at most `T/16`, so
+
+```text
+‖∫_T^{2T} ζ(1/2+it) dt − T‖ ≤ T/4,     hence   |∫_T^{2T} ζ(1/2+it) dt| ≥ 3T/4,
+```
+
+and Cauchy–Schwarz against the constant one gives
+
+```text
+∫_T^{2T} |ζ(1/2+it)|² dt ≥ (3T/4)² / T = 9T/16 ≥ T/4.
+```
+
+Declarations: `norm_integral_cpow_neg_linePt_le`, `sum_rpow_neg_half_le`,
+`norm_sum_integral_osc_le`, `norm_integral_linePt_mul_emTail_le`, `norm_integral_emPole_line_le`,
+`norm_integral_riemannZeta_line_sub_le`, `sq_norm_integral_riemannZeta_line_le`,
+**`exists_le_integral_norm_riemannZeta_line_sq`**, **`exists_le_integral_hardyZ_sq`**.
+
+This is a *stronger-than-needed-in-shape but weaker-in-size* replacement for the displayed
+`½T log T`: the assembly consumes `(∫Z)²·F < S³`, and with `F = O(T log⁴T)` and Lemma E's
+`O(T^{3/4})` the value `S = T/4` already closes the chain (`T³/64` versus `T^{3/2}·C T log⁴T`).
+No diagonal/off-diagonal mean-value theorem is used anywhere.
+
+| Step | State |
+|---|---|
+| (a) van der Corput derivative tests (S3) | DONE |
+| (b) Hardy `Z`, phase, sign change, first jets | DONE |
+| (c) smooth AFE (Lemma A) | exact Gaussian form DONE (`hardyZ_eq_two_tsum_smoothAFE_real`) |
+| (d) Lemma F — fourth moment | DONE |
+| (d') Lemma C — second-moment lower bound | **DONE** (`exists_le_integral_hardyZ_sq`) |
+| (e) Lemma E — `\|∫Z\| = o(T/log²T)` | OPEN — the last analytic step |
+| (f) assembly + dyadic `N₀(T) ≥ c log T` | assembly DONE; waits on (e) |

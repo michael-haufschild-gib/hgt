@@ -648,3 +648,40 @@ What remains for the operator side is the identification of an operator's `det_p
 of its eigenvalue sequence, i.e. a Lidskii-type theorem, and the entire (rather than disc-level)
 extension at order `p`, which needs the order-`p` Carleman coefficient bound.  Both are independent
 of the card's algebraic content, which is now formal at every order.
+
+## Lean progress -- Lidskii for every power trace, and the operator-side `det_p`
+
+The remaining operator-side item was the identification of an operator's `det_p` with the `det_p`
+of its eigenvalue sequence.  Two new modules (umbrella-wired, `lake build` green, axioms =
+`propext`/`Classical.choice`/`Quot.sound`) supply it.
+
+`formal/GaloisForLFunctions/HTGeometry/LidskiiPowerTrace.lean`
+
+| Card item | Declaration |
+|---|---|
+| **the trace of an operator diagonal on the signed greedy family** | `opTrace_eq_tsum_of_sgVec_diagonal` |
+| **Lidskii for power traces**: `tr(Sᵐ) = ∑ₙ λₙ(S)ᵐ` | `opTrace_pow_eq_tsum_sgVal_pow` |
+
+The corpus's Lidskii theorem is for the operator itself; the completion needs *every* power trace.
+The greedy eigenvectors of a compact self-adjoint `S` diagonalize far more than `S`: any operator
+acting on them by scalars and killing their joint orthogonal complement has its trace computed by
+the same Hilbert-basis extension.  That abstraction is proved once, and powers are the special
+case: `Sᵐ eₙ = λₙᵐ eₙ` unconditionally from `apply_sgVec`, and `S u = 0` forces `Sᵐ u = 0`.
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenOperatorDeterminant.lean`
+
+| Card item | Declaration |
+|---|---|
+| the operator-side order-`p` regularized determinant | `opSchattenDetExp`, `opSchattenDet` |
+| the spectral power traces are the operator power traces | `schattenTracePower_sgVal_eq_opTrace_pow` |
+| **the operator determinant is the determinant of its spectrum** | `opSchattenDetExp_eq_schattenDetExp`, `opSchattenDet_eq_schattenDet` |
+| **it forgets every trace below `p`**, in the operator formulation | `opSchattenDet_congr` |
+
+So `det_p` is now defined directly on the operator by the same series in its own power traces, and
+agrees with the spectral `det_p` of the signed greedy eigenvalue sequence whenever each power from
+`p` upwards is trace class.  Combined with `schattenDet_eq_finiteDetOrder` this gives the full
+chain finite rank → spectrum → operator at every order `p`.
+
+What remains for the card at general `p` is only the *quantitative* half -- Simon's
+`‖R_p(A)‖₁ ≤ c_p‖A‖_p^p`, which upgrades the disc-level determinant to an entire function -- and it
+is independent of both the algebraic content and this identification.

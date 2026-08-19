@@ -1,12 +1,12 @@
 # One global Gamma--Meixner shape trace has a Landau boundary exactly off RH
 
 - **ID:** `xi-global-meixner-shape-landau-rh`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / TOP-DOWN BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Parents:** `archimedean-meixner-root-seam-scale.md`,
   `XiHurwitzOrientationEnergy.lean`, and Landau's theorem for general Dirichlet series with
   nonnegative coefficients
-- **Statement:** `[PROVED HERE]` The complete Xi divisor and the canonical prime seam define one
+- **Statement:** `[PROVED HERE] [FORMALIZED]` The complete Xi divisor and the canonical prime seam define one
   nonnegative general Dirichlet series in the archimedean Gamma convolution-time variable.  RH is
   equivalent to holomorphic continuation of its safely convergent source germ from `Re z>1` to
   `Re z>0`.  Thus a single scalar Gamma-shape value relation can replace separate continuation or
@@ -262,3 +262,15 @@ not new scientific knowledge.
 - [ ] identify `(8)` with a completed source expression holomorphic on `Re z>0`
 - [ ] formalize the global coefficients, safe domain, and Landau consumer in Lean
 - [ ] RH
+
+## Lean formalization (complete and unconditional)
+
+- `formal/GaloisForLFunctions/HTGeometry/GeneralDirichletLandau.lean` — Landau's theorem for a
+  general Dirichlet series with nonnegative coefficients and frequencies: the Taylor expansion at a
+  safe centre, complete monotonicity of the real germ, radial Hankel positivity, and the transfer
+  `summable at one point + half-plane analyticity ⇒ summable further left`.
+- `formal/GaloisForLFunctions/RHTower/XiGlobalMeixnerShapeLandau.lean` — the Gamma–Meixner
+  frequency `(1/2)·log cosh(2 log n)` and its bounds, the seam coefficient `A_p` and its
+  reciprocal-translation bound, safe convergence `(5)` for every shape above one, divergence forced
+  by one off-line divisor copy, and the criterion
+  `riemannHypothesis_iff_xiGammaShapeTrace_continuation`.

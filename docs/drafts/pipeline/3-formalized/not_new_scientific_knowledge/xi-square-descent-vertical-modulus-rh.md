@@ -1,7 +1,7 @@
 # Xi square-descent vertical-modulus criterion for RH
 
 - **ID:** xi-square-descent-vertical-modulus-rh
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** `[PROVED ON PAPER; BRIDGE] [FINITE-VALUE CONTRADICTION CRITERION]`
 - **Source:** live `formal/` and pipeline corpus
 - **Statement:** If `F` is the entire square descent determined by `F(z^2)=XiC(z)`, then RH is equivalent to vertical monotonicity of `|F|` in the upper half-plane; the exterior source chamber already suffices.
@@ -169,3 +169,12 @@ anti-Herglotz gate, not as new RH progress.
 - 2026-07-15 — completed the power-series square descent and local principal-root chamber proof;
   promoted the finite-value equivalence to the fully-proven bridge lane.  The source inequality
   remains the RH-bearing open problem and is not claimed proved.
+
+## Lean formalization (complete and unconditional, both directions)
+
+- `formal/GaloisForLFunctions/RHTower/XiSquareDescentVerticalModulus.lean` — the square descent,
+  its logarithmic derivative as a resolvent, reality on the real axis, and vertical monotonicity of
+  the modulus under RH.
+- `formal/GaloisForLFunctions/RHTower/XiSquareDescentVerticalModulusConverse.lean` — the square
+  chamber, the off-line upper-right zero, the converse, and the equivalence
+  `riemannHypothesis_iff_xiSquareDescentVerticalModulus`.

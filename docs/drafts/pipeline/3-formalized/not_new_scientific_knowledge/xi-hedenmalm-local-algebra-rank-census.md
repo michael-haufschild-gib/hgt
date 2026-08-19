@@ -1,9 +1,9 @@
 # Xi--Hedenmalm local-algebra rank census
 
 - **ID:** `xi-hedenmalm-local-algebra-rank-census`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / TOP-DOWN VALUE RELATION
-- **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED HERE] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Lean parents:** `XiHedenmalmDeBrangesSeam.lean`, `XiHedenmalmMomentDeterminacy.lean`,
   `XiHedenmalmKummerCollision.lean`, `XiHedenmalmJordanMatrix.lean`,
   `XiHeightAdaptiveHedenmalmCensusCollision.lean`
@@ -242,3 +242,16 @@ the distinct Xi-zero census through the canonical Hedenmalm value `E=XiC+i XiC'`
 - [x] centered `E`/`E#` reflection exchange and even/odd source recovery formalized in Lean
 - [ ] formalize the local multiplication-rank theorem in Lean
 - [ ] construct the subresultant reader directly from source boundary data
+
+## Lean formalization (complete and unconditional)
+
+- `formal/GaloisForLFunctions/HTGeometry/PolynomialQuotientMultiplicationRank.lean` — the rank of
+  multiplication in a polynomial quotient algebra.
+- `formal/GaloisForLFunctions/HTGeometry/GcdDerivativeDistinctRoots.lean` — `deg gcd(F, F')` and
+  the count of distinct roots.
+- `formal/GaloisForLFunctions/HTGeometry/HermiteBiehlerPairRankCensus.lean` — the de Branges value
+  `F + i F'`, its gcd with `F`, and the exact rank census of multiplication by it.
+- `formal/GaloisForLFunctions/HTGeometry/FiniteMomentDivisorReconstruction.lean` — a finite divisor
+  is determined by finitely many power sums.
+- `formal/GaloisForLFunctions/RHTower/XiHedenmalmLocalAlgebraRankCensus.lean` — the Xi packet
+  divisor, its Weierstrass polynomial, the moment reconstruction, and the census congruence.

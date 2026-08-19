@@ -1661,3 +1661,47 @@ that it is ray-constant after normalisation, measurable on the whole shell, anal
 simple-spectrum open cone, nonconstant on every open patch of it (Theorem A), and that the
 complement of the simple-spectrum cone is null.  The last item is the parent card's genericity law
 transported to the shell; the analyticity is the eigenbranch engine restricted to real parameters.
+
+## Lean progress -- the spectral action as a ray-constant measurable phase
+
+Theorem B's remaining item was the *identification* of `phi_k` as a phase the dephasing engine
+accepts.  The obstruction was not analyticity but measurability: `Matrix.IsHermitian.eigenvalues`
+is a choice, and no choice of labelling is continuous in the matrix.  The fix is to label the
+spectrum canonically -- by its increasing rearrangement -- and to prove that *this* labelling is
+continuous.  Two new modules (umbrella-wired, `lake build` green, axioms =
+`propext`/`Classical.choice`/`Quot.sound`) do it.
+
+`formal/GaloisForLFunctions/HTGeometry/SortedSpectrumContinuity.lean`
+
+| Card item | Declaration |
+|---|---|
+| the increasing rearrangement of a tuple, its monotonicity and its power sums | `sortedTuple`, `monotone_sortedTuple`, `sum_pow_sortedTuple` |
+| monotone tuples with equal power sums coincide | `eq_of_monotone_of_sum_pow_eq` |
+| the eigenvalue power sums are the real traces of the powers | `sum_pow_eigenvalues_eq_trace_pow_re` |
+| **the sorted spectrum of a continuous Hermitian family is continuous** | `continuous_sortedTuple_eigenvalues` |
+| hence measurable | `measurable_sortedTuple_eigenvalues` |
+
+The proof is a subsequence argument, and it needs no Courant--Fischer and no perturbation theory.
+Along any convergent sequence of parameters the eigenvalue energy `∑ᵢλᵢ² = Re Tr H²` converges,
+hence is bounded, hence the sorted tuples live in a fixed compact box; any limit of a convergent
+sub-subsequence is monotone and has the power sums `Re Tr Hᵏ` of the limit matrix, so by the
+corpus's `multiset_eq_of_powerSum_eq` it *is* the sorted spectrum of the limit.  A forced limit on
+every sub-subsequence gives convergence of the whole sequence.
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralActionPhase.lean`
+
+| Card item | Declaration |
+|---|---|
+| the canonically labelled spectral action, and its continuity | `sortedSpectralAction`, `continuous_sortedSpectralAction` |
+| **`phi_k` as a ray-constant phase**: the action at the normalised argument | `spectralActionPhase`, `spectralActionPhase_smul` |
+| **it is measurable on the whole space** | `measurable_spectralActionPhase` |
+| on the shell it is the spectral action itself | `spectralActionPhase_of_norm_one` |
+| the simple-spectrum part of the punctured unit ball, and that it is open | `simpleSpectrumCone`, `isOpen_simpleSpectrumCone` |
+| **its complement in the punctured ball is null** -- the degeneracy locus is the zero set of the spectral discriminant | `volume_ball_sdiff_simpleSpectrumCone` |
+| **angular dephasing for the spectral action** | `tendsto_integral_exp_sortedSpectralAction_zero` |
+
+Three of the five items the card listed for Theorem B are therefore closed unconditionally:
+ray-constancy after normalisation, measurability on the whole shell, and nullity of the complement
+of the simple-spectrum cone.  The capstone consumes only the two that remain -- analyticity of the
+phase on the cone and its nonconstancy on every open patch of it, the latter being Theorem A -- and
+delivers `(17)` for the actual spectral action rather than for an abstract phase.

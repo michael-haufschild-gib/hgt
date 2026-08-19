@@ -16,7 +16,7 @@ Consequently passivity of the unconditional Weil quadratic form on real finite p
 poles in one fixed absolute-Euler quadrant is already equivalent to the Riemann hypothesis.
 -/
 
-open Complex
+open Complex HurwitzOrbit
 
 namespace RHTower
 
@@ -41,6 +41,13 @@ def xiZeroCopyEval (q : XiZeroCopy) : XiLp →L[ℂ] ℂ :=
 theorem continuous_xiZeroCopyCoord (q : XiZeroCopy) :
     Continuous (fun v : XiLp => (v : XiZeroCopy → ℂ) q) :=
   (xiZeroCopyEval q).continuous
+
+/-- The real inner product on the Xi carrier is the real part of the Hermitian product. -/
+theorem xiLp_real_inner_eq_re (x y : XiLp) :
+    (inner ℝ x y : ℝ) = (inner ℂ x y).re := by
+  rw [lp.inner_eq_tsum (𝕜 := ℝ), lp.inner_eq_tsum (𝕜 := ℂ),
+    Complex.re_tsum (lp.summable_inner x y)]
+  exact tsum_congr (fun q => ClosedSubmodule.inner_real_eq_re_inner _ _)
 
 /-! ## The Schwarz-fixed fibre-constant sector -/
 
@@ -130,8 +137,120 @@ theorem xiEulerPairedSet_subset_sector :
 
 theorem xiEulerPairedRealClosure_le_sector :
     xiEulerPairedRealClosure ≤ xiSchwarzFiberSector := by
-  refine Submodule.topologicalClosure_minimal ?_ isClosed_xiSchwarzFiberSector
-  exact Submodule.span_le.mpr xiEulerPairedSet_subset_sector
+  exact Submodule.topologicalClosure_minimal _
+    (Submodule.span_le.mpr xiEulerPairedSet_subset_sector) isClosed_xiSchwarzFiberSector
+
+/-! ## The orientation vector lies in the sector -/
+
+/-- The support point of the conjugated divisor copy is the conjugated point. -/
+theorem xiZeroCopyConjEquiv_point' (q : XiZeroCopy) :
+    (((xiZeroCopyConjEquiv q).1 : XiDivisorSupport) : ℂ) = (starRingEnd ℂ) ((q.1 : ℂ)) := rfl
+
+/-- Schwarz conjugation inverts the conjugate Hurwitz monodromy character. -/
+theorem monoScalar_schwarzConj (s : ℂ) :
+    monoScalar ((starRingEnd ℂ) s) = ((starRingEnd ℂ) (monoScalar s))⁻¹ := by
+  rw [monoScalar, monoScalar, ← Complex.exp_conj, ← Complex.exp_neg]
+  congr 1
+  simp only [map_neg, map_mul, map_ofNat, Complex.conj_I, Complex.conj_ofReal, neg_neg]
+  ring
+
+/-- **The orientation coordinate is Schwarz invariant.**  Conjugating the divisor point inverts
+the conjugate character, which leaves the radius-normalized imaginary part unchanged. -/
+theorem xiHurwitzOrientationCoordinate_conj (q : XiZeroCopy) :
+    xiHurwitzOrientationCoordinate (xiZeroCopyConjEquiv q) =
+      xiHurwitzOrientationCoordinate q := by
+  have hpt := xiZeroCopyConjEquiv_point' q
+  have hm0 : xiHurwitzMonodromyCharacter q.1 ≠ 0 := xiHurwitzMonodromyCharacter_ne_zero q.1
+  have hnorm : ‖xiHurwitzMonodromyCharacter q.1‖ ≠ 0 := norm_ne_zero_iff.mpr hm0
+  have hchar : xiHurwitzMonodromyCharacter (xiZeroCopyConjEquiv q).1 =
+      ((starRingEnd ℂ) (xiHurwitzMonodromyCharacter q.1))⁻¹ := by
+    rw [xiHurwitzMonodromyCharacter, xiHurwitzMonodromyCharacter, hpt, monoScalar_schwarzConj]
+  have him : (((starRingEnd ℂ) (xiHurwitzMonodromyCharacter q.1))⁻¹).im =
+      (xiHurwitzMonodromyCharacter q.1).im / ‖xiHurwitzMonodromyCharacter q.1‖ ^ 2 := by
+    rw [Complex.inv_im, Complex.conj_im, Complex.normSq_conj, Complex.normSq_eq_norm_sq]
+    ring
+  have hnorminv : ‖((starRingEnd ℂ) (xiHurwitzMonodromyCharacter q.1))⁻¹‖ =
+      ‖xiHurwitzMonodromyCharacter q.1‖⁻¹ := by
+    rw [norm_inv, RCLike.norm_conj]
+  have hcent : ‖(((xiZeroCopyConjEquiv q).1 : XiDivisorSupport) : ℂ) - 1 / 2‖ =
+      ‖((q.1 : XiDivisorSupport) : ℂ) - 1 / 2‖ := by
+    rw [hpt, show (starRingEnd ℂ) ((q.1 : ℂ)) - 1 / 2 =
+      (starRingEnd ℂ) ((q.1 : ℂ) - 1 / 2) by
+        rw [map_sub, map_div₀, map_one, map_ofNat], Complex.norm_conj]
+  have hcent0 : ‖((q.1 : XiDivisorSupport) : ℂ) - 1 / 2‖ ≠ 0 :=
+    (norm_pos_iff.mpr (sub_ne_zero.mpr (xi_divisor_support_ne_half q.1))).ne'
+  rw [xiHurwitzOrientationCoordinate, xiHurwitzOrientationCoordinate, hchar]
+  congr 1
+  rw [him, hnorminv, hcent]
+  field_simp [hnorm, hcent0]
+
+theorem xiHurwitzOrientationVector_mem_xiSchwarzFiberSector :
+    xiHurwitzOrientationVector ∈ xiSchwarzFiberSector := by
+  refine ⟨fun q => ?_, fun q q' h => ?_⟩
+  · show (starRingEnd ℂ) (xiHurwitzOrientationCoordinate (xiZeroCopyConjEquiv q)) =
+      xiHurwitzOrientationCoordinate q
+    rw [xiHurwitzOrientationCoordinate_conj, xiHurwitzOrientationCoordinate,
+      Complex.conj_ofReal]
+  · show xiHurwitzOrientationCoordinate q = xiHurwitzOrientationCoordinate q'
+    rw [xiHurwitzOrientationCoordinate, xiHurwitzOrientationCoordinate, h]
+
+/-! ## Completeness of the absolute-Euler paired quadrant -/
+
+theorem mem_xiEulerPairedRealClosure_of_mem_sector {v : XiLp}
+    (hv : v ∈ xiSchwarzFiberSector) : v ∈ xiEulerPairedRealClosure := by
+  haveI hcl : IsClosed ((xiEulerPairedRealClosure : Submodule ℝ XiLp) : Set XiLp) :=
+    Submodule.isClosed_topologicalClosure _
+  haveI : CompleteSpace ((xiEulerPairedRealClosure : Submodule ℝ XiLp)) := hcl.completeSpace_coe
+  set K : Submodule ℝ XiLp := xiEulerPairedRealClosure with hK
+  have hpm : K.starProjection v ∈ K := K.starProjection_apply_mem v
+  have horth : v - K.starProjection v ∈ Kᗮ := Submodule.sub_starProjection_mem_orthogonal v
+  have husec : v - K.starProjection v ∈ xiSchwarzFiberSector :=
+    Submodule.sub_mem _ hv (xiEulerPairedRealClosure_le_sector hpm)
+  obtain ⟨hs, hf⟩ := (mem_xiSchwarzFiberSector_iff _).mp husec
+  have huzero : v - K.starProjection v = 0 := by
+    refine eq_zero_of_re_inner_eulerPaired_eq_zero hs hf (fun w hw1 hw2 => ?_)
+    have hmem : xiEulerPairedCauchyLp w (XiC_xiEulerCentered_ne_zero hw1)
+        (XiC_neg_conj_xiEulerCentered_ne_zero hw1) ∈ K := by
+      refine Submodule.le_topologicalClosure _ ?_
+      exact Submodule.subset_span ⟨w, hw1, hw2, rfl⟩
+    have hzero := (Submodule.mem_orthogonal K _).mp horth _ hmem
+    rw [← inner_conj_symm, Complex.conj_re, ← xiLp_real_inner_eq_re]
+    exact hzero
+  have : v = K.starProjection v := by
+    have := sub_eq_zero.mp huzero
+    exact this
+  rw [this]
+  exact hpm
+
+/-- **Equation `(9)`.**  The canonical Xi--Hurwitz orientation vector belongs to the closed real
+span of the absolute-Euler Schwarz-paired Cauchy vectors of one open quadrant. -/
+theorem xiHurwitzOrientationVector_mem_xiEulerPairedRealClosure :
+    xiHurwitzOrientationVector ∈ xiEulerPairedRealClosure :=
+  mem_xiEulerPairedRealClosure_of_mem_sector xiHurwitzOrientationVector_mem_xiSchwarzFiberSector
+
+/-! ## The absolute-Euler paired passivity criterion -/
+
+/-- Positivity of the unconditional Weil quadratic form on real finite packets of absolute-Euler
+paired Cauchy vectors. -/
+def XiEulerSafePairedPassivity : Prop :=
+  ∀ v ∈ Submodule.span ℝ xiEulerPairedSet, 0 ≤ xiWeilHilbertQuadratic v
+
+/-- **Equation `(26)`.**  Absolute-Euler paired passivity on one open quadrant is exactly the
+Riemann hypothesis. -/
+theorem riemannHypothesis_iff_xiEulerSafePairedPassivity :
+    RiemannHypothesis ↔ XiEulerSafePairedPassivity := by
+  constructor
+  · intro hRH _ _
+    exact xiWeilHilbertQuadratic_nonneg_of_riemannHypothesis hRH _
+  · intro hpos
+    refine riemannHypothesis_iff_xiHurwitzOrientationVector_weil_nonneg.mpr ?_
+    have hclosed : IsClosed {u : XiLp | 0 ≤ xiWeilHilbertQuadratic u} :=
+      isClosed_Ici.preimage continuous_xiWeilHilbertQuadratic
+    have hmem : xiHurwitzOrientationVector ∈
+        closure ((Submodule.span ℝ xiEulerPairedSet : Submodule ℝ XiLp) : Set XiLp) :=
+      xiHurwitzOrientationVector_mem_xiEulerPairedRealClosure
+    exact closure_minimal hpos hclosed hmem
+
 
 end
 

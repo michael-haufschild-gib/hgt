@@ -849,3 +849,50 @@ Remaining in this layer: the degree-lowering step — pseudo-division by `A` its
 costing powers of the initial.  That needs the univariate view of a differential polynomial in its
 leader (`MvPolynomial.optionEquivLeft` plus `Equiv.optionSubtypeNe`, or a direct induction on the
 leader degree).  With it, the prime case of Ritt's basis theorem closes.
+
+
+## Card 1 — Ritt's basis theorem proved; a duplication corrected
+
+**Correction.**  Four modules written earlier this session (`DifferentialSeparant`,
+`DifferentialSeparantIterate`, `DifferentialPseudoDivision`, `RittOrderReduction`) duplicated
+machinery the tree already owned in more general form — `PseudoDivisionCommRing` has
+`exists_pseudoDivision`, `iterate_eq_separant_mul_add`, `exists_higherJet_reduction_step`,
+`diffPolyIterateIdeal`, `exists_phaseOne_reduction`, `exists_ritt_reduction` and
+`exists_initial_separant_powers_mem_diffPolyIterateIdeal`, and `DifferentialKernelCharacteristic`
+has the initial, the separant, and `initial_not_mem` / `separant_not_mem` for a rank-minimal element.
+The four modules were deleted and unwired.  **Search the corpus before building a sub-layer, not
+just before opening a card.**
+
+What was genuinely missing was the *ideal theory*, and it is now complete:
+`radDiffFG_differentialPolynomial` — every radical differential ideal of `K{y}` is the radical
+differential ideal of a finite set.
+
+Assembly: Zorn gives a maximal non-finitely-generated radical differential ideal `M`; the product law
+makes it prime; `Ideal.exists_minimal_scalarDifferentialPolynomialRank_ne_zero` gives a rank-minimal
+`A ∈ M`; `initial_not_mem` and `separant_not_mem` put `h = I_A · S_A` outside `M`; the corpus's
+reduction gives `h^j Q ∈ {A}` for every `Q ∈ M` (with `hreduced` supplied by rank minimality); and
+`isRadDiffFG_of_saturation` collapses `M` onto a finite set.
+
+
+## Card 1 — the Kolchin topology is Noetherian
+
+`RadicalDifferentialIdealACC.acc_radicalDifferentialIdeal` (ACC on radical differential ideals, from
+Ritt's basis theorem) and `KolchinNoetherian.dcc_isKolchinClosedOver` (DCC on Kolchin closed sets of
+one differential coordinate, by the vanishing-ideal/zero-locus Galois connection the tree already
+owned).
+
+This is the last piece of general differential-algebraic-geometry infrastructure that is cheap.  The
+remaining chain for card 1 is genuinely the classification: differential algebraic subgroups of
+`SL₂` (Cassidy) and the parameterized Galois correspondence.
+
+
+## Card 1 — the obstruction in matrix form
+
+`BesselOrderJetModule` states the isomonodromy obstruction the way the literature does: the first
+jet system `[[A, δA],[0,A]]` splits under a block-unipotent gauge iff `σ(B)A - AB = -δA` is solvable,
+and for the Bessel companion `A = [[0,1],[1,c(ν+1)]]` it is not.  The four entrywise identities
+reduce to the two scalar ones already refuted.
+
+Next on the critical path (all searched, none present in the tree): the parameterized Galois
+correspondence linking non-splitting of the jet tower to growth of the differential transcendence
+degree, and Cassidy's classification for `SL₂`.

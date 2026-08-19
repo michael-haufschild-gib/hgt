@@ -11,7 +11,7 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 | 2 | xi-gamma-shape-completely-monotone-rh | Lean done (scalar and kernel equivalence, overclaim exclusion) | HTGeometry/CompletelyMonotoneTower, HTGeometry/AtomicHausdorffSource, HTGeometry/GeneralDirichletCompletelyMonotone, RHTower/XiGammaShapeCompleteMonotonicity, RHTower/XiGammaShapeCompletelyMonotoneExtension |
 | 3 | xi-global-meixner-shape-landau-rh | Lean done | HTGeometry/GeneralDirichletLandau, RHTower/XiGlobalMeixnerShapeLandau |
 | 4 | xi-hedenmalm-local-algebra-rank-census | Lean done | HTGeometry/PolynomialQuotientMultiplicationRank, HTGeometry/GcdDerivativeDistinctRoots, HTGeometry/HermiteBiehlerPairRankCensus, HTGeometry/FiniteMomentDivisorReconstruction, RHTower/XiHedenmalmLocalAlgebraRankCensus |
-| 5 | xi-orientation-euler-safe-paired-cauchy-completeness | partial: Cauchy-transform holomorphy, vertical decay, quadrant completeness (targets 1-3) done; paired value kernel (14)-(15) and countable criterion (19) remain | RHTower/XiCauchyTransformCompleteness, RHTower/XiEulerSafePairedCompleteness |
+| 5 | xi-orientation-euler-safe-paired-cauchy-completeness | Lean done (targets 1-5: closure (9), kernel (14)-(15), splice (21)-(22), countable criterion (19), chain (26)) | RHTower/XiCauchyTransformCompleteness, RHTower/XiEulerSafePairedCompleteness, RHTower/XiEulerSafePairedClosure, RHTower/XiEulerSafePairedValueKernel, RHTower/XiEulerSafePairedRationalCriterion |
 | 6 | xi-outer-euler-modulus-first-prime-seam-antialignment | Lean done | RHTower/XiOuterEulerModulusPrimeSeamAntialignment |
 | 7 | xi-positive-paired-real-loewner-seam-log-weld | Lean done (targets 1-5) | RHTower/XiPositivePairedRealLoewnerSeam |
 | 8 | xi-prime-seam-one-ended-cofinal-edge-collapse | Lean done (including the sparse-edge Calkin chain (7)-(9)) | HTGeometry/ArbitraryLabelEndReconstruction, RHTower/XiPrimeSeamOneEndedCollapse, RHTower/XiPrimeSeamSparseEdgeCalkin |
@@ -32,13 +32,14 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
    Hausdorff source identifies the two, the atom of `x_p` is `B_p`, and finiteness of `μ` bounds
    `Σ_p B_p`.  Combined with card 3's off-line divergence this gives the equivalence in both scalar
    and kernel form.
-2. **Card 5 packaging**.  (i) the exact absolute-Euler paired kernel `K_pair` and the identity
-   `xiWeilHilbertQuadratic (Σ r_j P_{w_j}) = Σ r_j r_k K_pair (w_j, w_k)`, from
-   `xiWeilPolarization_cauchy_eq_relativeResolvent_dividedDifference`; (ii) the closure statement:
-   the fibre-constant Schwarz-fixed sector is a closed real subspace, the paired vectors lie in it,
-   `J` commutes with the orthogonal projection, so the completeness theorem already proved gives
-   `v_Xi ∈ closure_R span_R {P_w}`; (iii) the countable Gaussian-rational reduction by node and
-   coefficient continuity.
+2. **Card 5 packaging** — done except the final build of the countable criterion.  (i) the paired
+   kernel `K_pair` and identity `(15)` were obtained from
+   `xiWeilPolarization_cauchy_eq_relativeResolvent_dividedDifference` after collapsing the four
+   Schwarz blocks with the oddness and Schwarz symmetry of the relative trace; (ii) the closure
+   statement used the closed real Schwarz-fixed fibre-constant sector and the orthogonal projection
+   onto the closed real span; (iii) the Gaussian-rational reduction was done on the *Cauchy
+   transform* side — continuity plus density of Gaussian rationals in a divisor-free ball — rather
+   than by norm continuity of `w ↦ P_w`.
 3. **Card 14 sufficiency**.  Needs the genus-one Hadamard package for `X_c = xi(1/2+·) - c`
    (an even, real, order-one entire function): reuse `OrderOneFixedDivisorRigidity` and the moving
    even canonical-product machinery in `HTGeometry/MovingEvenCanonicalSurgery.lean` rather than the
