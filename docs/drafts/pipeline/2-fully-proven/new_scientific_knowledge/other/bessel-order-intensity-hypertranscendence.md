@@ -304,3 +304,34 @@ The remaining obligation is therefore the classification theorem itself, and it 
 parameterized difference Galois theory, of which mathlib has no part: there is no Picard--Vessiot
 theory in mathlib, differential or difference.  That foundation, not any assembly step, is what this
 card is waiting on.
+
+## Lean progress — the first layer of the missing difference Galois theory
+
+The card's single open obligation is Dreyfus's classification, and that rests on difference
+Picard--Vessiot theory, of which neither mathlib nor this repository had any part.  The first layer
+now exists, unconditional and axiom-clean, in
+`GaloisForLFunctions.HTGeometry.DifferenceSolutionSpace`:
+
+```text
+differenceConstants σ                              the fixed subfield of a difference field
+IsDifferenceSystemSolution σ A v                   σ v = A v
+exists_differenceConstants_relation                every nontrivial linear relation among
+                                                   solutions of an invertible first-order system
+                                                   can be replaced by a nontrivial relation whose
+                                                   coefficients are shift invariant
+card_le_of_no_differenceConstants_relation         hence a family of solutions with no nontrivial
+                                                   constant relation has at most `rank` members
+```
+
+This is the finiteness statement that makes a difference Galois theory possible at all: the
+solution space of a rank-`n` system is a vector space over the constants of dimension at most `n`,
+not over the ambient field.  The proof is the classical minimal-support argument — normalize a
+coefficient to one, apply the shift, use invertibility of the system matrix, and subtract; the
+difference relation has strictly smaller support, so minimality forces every coefficient to be a
+constant.
+
+The remaining layers, in order: the companion-matrix reduction of the card's scalar recurrence
+`(3)` to a rank-two system; Picard--Vessiot rings for difference equations; the difference Galois
+group; the parameterized theory with the derivation `d/dν` acting; and Cassidy's classification of
+differential algebraic subgroups of `GL₂`, which is what converts differential algebraicity into
+the growth normal form the card already refutes.

@@ -404,3 +404,121 @@ written for free, the other says a moment at the order cannot.
 Assembling the blocks of `(M)` into a full pencil -- degrees in increasing order, absorbing higher
 moments into later targets, and the choice of multiplicities -- together with the necessity
 direction of `(DC)`, which needs `det_p` and the compact-open topology on holomorphic families.
+
+## Lean progress -- the vanishing micro-spectrum construction `(M)` is assembled
+
+`formal/GaloisForLFunctions/HTGeometry/MicroSpectrumMomentAssembly.lean` (new, umbrella-wired,
+axiom-clean) closes the first of the two items in "What remains": the blocks of `(M)` are now run
+in increasing order of degree and assembled into one spectrum.
+
+| Card item | Declaration |
+|---|---|
+| `N` copies of a root-of-unity block of order `k` and radius `t` | `rootBlockMultiset` |
+| its power sums: `N k t^q` in the degrees divisible by `k`, zero otherwise | `sum_map_pow_rootBlockMultiset` |
+| its Schatten `p` energy, `N k ‖t‖^p` | `sum_map_normPow_rootBlockMultiset` |
+| **one block writes one moment inside any energy budget**, disturbing no lower moment | `exists_block_realizing` |
+| **`(M)`**: every prescribed target for the moments `1, …, n` with `n < p` is realised by a finite spectrum inside any Schatten `p` budget | `exists_multiset_moment_realization` |
+
+Two things make the assembly finite and exponent-free.
+
+*Increasing order.*  A block of order `k` contributes only in degrees divisible by `k`, hence
+nothing at all below `k`.  So when the induction reaches degree `k` the residual target is already
+determined by the blocks already placed, and placing the `k`-block cannot spoil any earlier
+degree.  The higher degrees it does disturb are absorbed by the later stages, exactly as the card
+says.
+
+*The cost identity needs no fractional exponent.*  Distributing a target `R` over `N` copies of a
+`k`-block of radius `t` fixes `‖t‖^k = ‖R‖/(kN)`, so
+
+`kN‖t‖^p = kN · ‖t‖^k · ‖t‖^{p−k} = ‖R‖ · ‖t‖^{p−k}`,
+
+and `p − k ≥ 1`.  More copies means smaller `t` means smaller energy, with only natural-number
+exponents.  At `k = p` the factor `‖t‖^{p−k}` is `1` and the mechanism disappears -- the same
+quantitative reason for the cutoff at `p − 1` that `(RE)` gives from the other side.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+### What remains
+
+Only the necessity direction of `(DC)`: the closure of the finite-rank determinant graph.  The
+corpus already owns the `p = 2` analytic input --
+`HTGeometry/RegularizedDeterminantLimit.entireDet2` (the entire Hilbert--Carleman determinant of a
+Hilbert--Schmidt kernel) together with
+`HTGeometry/EntireDet2HilbertSchmidtContinuity.tendsto_entireDet2_of_hsNorm_sub_tendsto_zero`
+(continuity of `det₂` under Hilbert--Schmidt convergence), and `fredholmDet1` for the trace-class
+correction -- so the `p = 2` case of `(DC)` is reachable from what is already proved.  General `p`
+needs `det_p` on Schatten `p`, for which the standard route is Simon's
+`det_p(1 + A) = det₁(1 + R_p(A))` with `R_p : S_p → S_1` continuous.
+
+## Lean progress -- the `p = 2` sufficiency of `(DC)`, at the level of the forgotten coordinate
+
+`formal/GaloisForLFunctions/HTGeometry/FiniteRankTracePrescription.lean` (new, umbrella-wired,
+axiom-clean) proves the sufficiency half of `(DC)` in the case the corpus's determinant stack can
+already see: `p = 2`, where the only forgotten coordinate is the trace.
+
+| Card item | Declaration |
+|---|---|
+| `M` equal diagonal entries placed beyond the truncation block | `HilbertSchmidt.diagBlock`, `diagBlock_eq_zero_of_notMem`, `isHS_diagBlock` |
+| its Hilbert--Schmidt energy `M‖t‖²` | `hsNormSq_diagBlock` |
+| its diagonal trace `M t` | `hsTraceDiag_diagBlock` |
+| **every Hilbert--Schmidt kernel is approximated in Hilbert--Schmidt norm, to any accuracy, by finitely supported kernels of *any* prescribed diagonal trace** | `exists_finiteSupport_hsNorm_sub_lt_and_hsTraceDiag_eq` |
+
+This is the sufficiency mechanism of `(M)` at `k = 1`, `p = 2`, and it is exponent-free: spreading
+the required trace over `M` equal diagonal entries gives trace `M t` and energy `M‖t‖² = |t M|²/M`,
+so the energy vanishes while the trace stays put.  The trace -- the one coordinate `det₂` forgets
+-- is therefore genuinely free in the limit, which is what the completion law asserts.
+
+Together with `MicroSpectrumMomentAssembly.exists_multiset_moment_realization` (the same statement
+for all the moments `1, …, p−1` at once, for every `p`) the *spectral* content of the sufficiency
+direction of `(DC)` is now formal at every order; what remains on that side is only its transport
+into the operator model at general `p`, which is the same `det_p` infrastructure the necessity
+direction needs.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+## Lean progress -- `(DC)` closed in both directions at Schatten order two
+
+Two further modules (new, umbrella-wired, axiom-clean) close the coordinate-free theorem `(DC)`
+completely in the case `p = 2`, `dim V = 1`, where the pencil is `A(z) = zK` and the fibre
+`J_{<2}(V) = Sym¹(V*)` is the single linear jet `−cz`.
+
+`formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantTraceRecovery.lean`
+
+| Card item | Declaration |
+|---|---|
+| `det(1+zM) e^{−z·tr M}` has no linear term | `taylorCoeff_finiteDet2_one` |
+| the same for a Hilbert--Schmidt kernel | `detCoeff_one_eq_zero`, `deriv_entireDet2_zero` |
+| the completed character `e^{P(z)} det_p(1−zA)` | `completedDet2` |
+| **the normalized logarithmic derivative recovers `P`** | `deriv_completedDet2_zero`: `D'(0) = −c` |
+| ...hence injectivity of the parametrization | `completedDet2_inj` |
+| **necessity**: every compact-open limit is again a completed determinant, and the coordinate converges | `tendsto_completionCoefficient` |
+
+`formal/GaloisForLFunctions/HTGeometry/FiniteRankDeterminantCompletion.lean`
+
+| Card item | Declaration |
+|---|---|
+| a block kernel's regularized determinant is the finite one | `entireDet2_eq_finiteDet2_of_support` |
+| `D_A(v) = D_{p,A}(v) exp(−∑_{k<p} Tr(A^k)/k)` at `p = 2` | `det_one_sub_smul_blockMatrix`: `det(1 − z·K|ₛ) = det₂(1−zK)·e^{−z·tr K}` |
+| **sufficiency**: every `G_p` direction occurs | `exists_finiteRank_det_tendsto_completedDet2` |
+
+Sufficiency is proved by `(M)` at `k = 1`: `FiniteRankTracePrescription` supplies finitely supported
+kernels approaching `K` in Hilbert--Schmidt norm whose diagonal trace is *exactly* the prescribed
+`c`, and the block determinants of those kernels are, by
+`det_one_sub_smul_blockMatrix`, precisely the completed determinants `det₂(1−zK_n)e^{−cz}`; the
+Hilbert--Schmidt continuity of `det₂` then transports them to `det₂(1−zK)e^{−cz}`.
+
+Necessity needs no closedness argument at all in this case: the coordinate is an explicit
+continuous functional of the determinant, `c = −D'(0)`, because the regularized determinant is
+*flat* at the origin -- the trace counterterm is defined to kill the linear term. Local uniform
+convergence of the determinants therefore forces convergence of the coordinates directly.
+
+So at `p = 2` the closure of the finite-rank determinant graph over the Hilbert--Schmidt kernels is
+exactly the set of completed determinants, the parametrization is injective, and the coordinate map
+is continuous in both directions. The residual gap in `(DC)` is entirely the passage to general `p`
+(a `det_p` on Schatten-`p`, i.e. Simon's `det_p(1+A) = det₁(1+R_p(A))`) and to `dim V > 1`, where
+the fibre is a polynomial rather than a single scalar; the mechanism -- flatness of the
+regularization below degree `p`, and free prescription of the low moments at vanishing Schatten
+cost -- is now formal, the latter at every order via
+`MicroSpectrumMomentAssembly.exists_multiset_moment_realization`.
+
+Axiom audit for all nine declarations: `propext`, `Classical.choice`, `Quot.sound`.

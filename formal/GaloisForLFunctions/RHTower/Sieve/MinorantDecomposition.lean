@@ -90,4 +90,50 @@ theorem divisor_sum_rho_decomp {n z₀ z₁ D : ℕ} (α : ℕ → ℤ) (hn : 0 
   rw [hval, abs_mul]
   refine mul_le_mul_of_nonneg_left (abs_rho_sub_truncLegendre_le hk) (abs_nonneg _)
 
+/-! ## The Rankin atom for the truncation tail -/
+
+/-- **Rankin's trick for large divisors.**  The number of divisors of `m` exceeding `D` is at most
+`D^{-α}` times the `α`-th divisor moment, for any positive `α`.  This is the atom of the mean-square
+bound for the term `c₁,n` of Matomäki–Teräväinen, Lemma 2.3. -/
+theorem card_large_divisors_le_rankin {m D : ℕ} {α : ℝ} (hα : 0 < α) (hD : 0 < D) :
+    (((m.divisors.filter (fun e => D < e)).card : ℕ) : ℝ)
+      ≤ (D : ℝ) ^ (-α) * ∑ e ∈ m.divisors, (e : ℝ) ^ α := by
+  classical
+  have hDR : (0 : ℝ) < (D : ℝ) := by exact_mod_cast hD
+  have hDpow : (0 : ℝ) < (D : ℝ) ^ (-α) := Real.rpow_pos_of_pos hDR _
+  -- each large divisor contributes at least one unit of `D^{-α}e^α`
+  have hterm : ∀ e ∈ m.divisors.filter (fun e => D < e),
+      (1 : ℝ) ≤ (D : ℝ) ^ (-α) * (e : ℝ) ^ α := by
+    intro e he
+    rw [Finset.mem_filter] at he
+    have hDe : (D : ℝ) ≤ (e : ℝ) := by exact_mod_cast he.2.le
+    have hepow : (D : ℝ) ^ α ≤ (e : ℝ) ^ α := Real.rpow_le_rpow hDR.le hDe hα.le
+    have hDα : (0 : ℝ) < (D : ℝ) ^ α := Real.rpow_pos_of_pos hDR _
+    have hinv : (D : ℝ) ^ (-α) = ((D : ℝ) ^ α)⁻¹ := by
+      rw [Real.rpow_neg hDR.le]
+    rw [hinv, ← div_eq_inv_mul, le_div_iff₀ hDα]
+    linarith [hepow]
+  have hcard : (((m.divisors.filter (fun e => D < e)).card : ℕ) : ℝ)
+      ≤ ∑ e ∈ m.divisors.filter (fun e => D < e), (D : ℝ) ^ (-α) * (e : ℝ) ^ α := by
+    have := Finset.sum_le_sum hterm
+    rw [Finset.sum_const, nsmul_eq_mul, mul_one] at this
+    exact this
+  refine hcard.trans ?_
+  rw [← Finset.mul_sum]
+  refine mul_le_mul_of_nonneg_left ?_ hDpow.le
+  refine Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) fun e _ _ => ?_
+  exact Real.rpow_nonneg (Nat.cast_nonneg _) _
+
+/-- The same, applied to the truncation tail of the Legendre expansion. -/
+theorem truncTail_le_rankin {k z D : ℕ} {α : ℝ} (hα : 0 < α) (hD : 0 < D) :
+    ((truncTail k z D : ℕ) : ℝ)
+      ≤ (D : ℝ) ^ (-α) * ∑ e ∈ (Nat.gcd k (siftModulus z)).divisors, (e : ℝ) ^ α := by
+  classical
+  have hfilter : (Nat.gcd k (siftModulus z)).divisors.filter (fun e => ¬ e ≤ D)
+      = (Nat.gcd k (siftModulus z)).divisors.filter (fun e => D < e) := by
+    refine Finset.filter_congr fun e _ => ?_
+    simp [not_le]
+  rw [truncTail, hfilter]
+  exact card_large_divisors_le_rankin hα hD
+
 end RHTower.Sieve

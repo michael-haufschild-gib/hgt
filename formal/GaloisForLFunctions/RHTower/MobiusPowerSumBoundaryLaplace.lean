@@ -54,7 +54,7 @@ theorem powerSumAtom_zero (omega : ℝ) (z : ℂ) (t : ℝ) : powerSumAtom omega
 /-! ### The Laplace integral of a single atom -/
 
 /-- Integrating a causal indicator against the positive ray drops the ambient cutoff. -/
-private theorem setIntegral_Ioi_indicator_Ici
+theorem setIntegral_Ioi_indicator_Ici
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {L : ℝ} (hL : 0 ≤ L) (f : ℝ → E) (hf : IntegrableOn f (Ioi L) volume) :
     (∫ t in Ioi (0 : ℝ), Set.indicator (Set.Ici L) f t) = ∫ t in Ioi L, f t := by
@@ -90,7 +90,7 @@ private theorem setIntegral_Ioi_indicator_Ici
         exact Set.indicator_of_mem hv _
 
 /-- The real shifted exponential Laplace integral. -/
-private theorem integral_Ioi_exp_neg_mul_shift {c : ℝ} (hc : 0 < c) (L : ℝ) :
+theorem integral_Ioi_exp_neg_mul_shift {c : ℝ} (hc : 0 < c) (L : ℝ) :
     (∫ t in Ioi L, Real.exp (-(c * t))) = Real.exp (-(c * L)) / c := by
   rw [← GaloisForLFunctions.RHTower.integral_Ioi_translate L
     (fun t : ℝ => Real.exp (-(c * t)))]
@@ -103,7 +103,7 @@ private theorem integral_Ioi_exp_neg_mul_shift {c : ℝ} (hc : 0 < c) (L : ℝ) 
     GaloisForLFunctions.RHTower.integral_Ioi_exp_neg_mul hc]
   field_simp
 
-private theorem integrableOn_Ioi_exp_neg_mul_shift {c : ℝ} (hc : 0 < c) (L : ℝ) :
+theorem integrableOn_Ioi_exp_neg_mul_shift {c : ℝ} (hc : 0 < c) (L : ℝ) :
     IntegrableOn (fun t : ℝ => Real.exp (-(c * t))) (Ioi L) volume := by
   have h := exp_neg_integrableOn_Ioi L hc
   refine h.congr_fun ?_ measurableSet_Ioi
@@ -294,5 +294,125 @@ theorem causalLaplace_powerSumBoundary
   rw [zeta_eq_tsum_one_div_nat_cpow hzre]
   refine tsum_congr fun n => ?_
   rw [Complex.cpow_neg, one_div]
+
+
+/-! ### The causal shift law -/
+
+theorem powerSumBoundary_nonneg (omega : ℝ) (t : ℝ) : 0 ≤ powerSumBoundary omega t := by
+  rw [powerSumBoundary]
+  have hsum : (0 : ℝ) ≤ ∑ m ∈ Finset.Icc 1 ⌊Real.exp t⌋₊, (m : ℝ) ^ omega :=
+    Finset.sum_nonneg fun m _ => Real.rpow_nonneg (Nat.cast_nonneg m) _
+  positivity
+
+/-- The power-sum boundary vector is bounded by one on the causal ray. -/
+theorem powerSumBoundary_le_one {omega : ℝ} (homega : 0 ≤ omega) (t : ℝ) :
+    powerSumBoundary omega t ≤ 1 := by
+  have hexp : (0 : ℝ) < Real.exp t := Real.exp_pos t
+  have hcard : (Finset.Icc 1 ⌊Real.exp t⌋₊).card = ⌊Real.exp t⌋₊ := by
+    rw [Nat.card_Icc]
+    omega
+  have hbound : ∑ m ∈ Finset.Icc 1 ⌊Real.exp t⌋₊, (m : ℝ) ^ omega
+      ≤ (⌊Real.exp t⌋₊ : ℝ) * Real.exp t ^ omega := by
+    calc ∑ m ∈ Finset.Icc 1 ⌊Real.exp t⌋₊, (m : ℝ) ^ omega
+        ≤ ∑ _m ∈ Finset.Icc 1 ⌊Real.exp t⌋₊, Real.exp t ^ omega := by
+          refine Finset.sum_le_sum fun m hm => ?_
+          rw [Finset.mem_Icc] at hm
+          have hm1 : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm.1
+          have hmle : (m : ℝ) ≤ Real.exp t :=
+            le_trans (by exact_mod_cast hm.2) (Nat.floor_le hexp.le)
+          exact Real.rpow_le_rpow (by linarith) hmle homega
+      _ = (⌊Real.exp t⌋₊ : ℝ) * Real.exp t ^ omega := by
+          rw [Finset.sum_const, hcard, nsmul_eq_mul]
+  have hfloor : (⌊Real.exp t⌋₊ : ℝ) ≤ Real.exp t := Nat.floor_le hexp.le
+  have hpow : (0 : ℝ) < Real.exp t ^ omega := Real.rpow_pos_of_pos hexp _
+  have hstep : ∑ m ∈ Finset.Icc 1 ⌊Real.exp t⌋₊, (m : ℝ) ^ omega
+      ≤ Real.exp t * Real.exp t ^ omega := by
+    nlinarith [hbound, hfloor, hpow]
+  have hsplit : Real.exp (-(1 + omega) * t) * (Real.exp t * Real.exp t ^ omega) = 1 := by
+    rw [Real.rpow_def_of_pos hexp, Real.log_exp, ← Real.exp_add, ← Real.exp_add]
+    rw [show -(1 + omega) * t + (t + t * omega) = 0 by ring, Real.exp_zero]
+  have hexpneg : (0 : ℝ) < Real.exp (-(1 + omega) * t) := Real.exp_pos _
+  rw [powerSumBoundary]
+  nlinarith [hstep, hexpneg, hsplit]
+
+theorem measurable_powerSumBoundary (omega : ℝ) : Measurable (powerSumBoundary omega) := by
+  have hfloor : Measurable (fun t : ℝ => ⌊Real.exp t⌋₊) :=
+    Nat.measurable_floor.comp Real.measurable_exp
+  have hg : Measurable (fun k : ℕ => ∑ m ∈ Finset.Icc 1 k, (m : ℝ) ^ omega) :=
+    Measurable.of_discrete
+  exact (Real.measurable_exp.comp (measurable_const.mul measurable_id)).mul (hg.comp hfloor)
+
+theorem integrableOn_powerSumBoundary_damped {omega : ℝ} (homega : 0 ≤ omega) {z : ℂ}
+    (hz : 0 < z.re) :
+    IntegrableOn (fun t : ℝ => ((powerSumBoundary omega t : ℝ) : ℂ) *
+      Complex.exp (-z * (t : ℂ))) (Ioi (0 : ℝ)) volume := by
+  have hmaj : IntegrableOn (fun t : ℝ => Real.exp (-z.re * t)) (Ioi (0 : ℝ)) volume :=
+    exp_neg_integrableOn_Ioi 0 hz
+  refine Integrable.mono' hmaj ?_ ?_
+  · refine (Measurable.mul ?_ (by fun_prop)).aestronglyMeasurable
+    exact Complex.measurable_ofReal.comp (measurable_powerSumBoundary omega)
+  · filter_upwards [] with t
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (powerSumBoundary_nonneg omega t), Complex.norm_exp]
+    have hre : (-z * (t : ℂ)).re = -z.re * t := by
+      simp [Complex.mul_re]
+    rw [hre]
+    have h1 := powerSumBoundary_le_one homega t
+    have h2 : (0 : ℝ) < Real.exp (-z.re * t) := Real.exp_pos _
+    nlinarith [powerSumBoundary_nonneg omega t]
+
+/-- **The causal shift law.**  Translating a causal vector multiplies its Laplace transform by the
+exponential of the shift. -/
+theorem causalLaplace_indicator_shift {f : ℝ → ℂ} {L : ℝ} (hL : 0 ≤ L) {z : ℂ}
+    (hint : IntegrableOn (fun t : ℝ => f t * Complex.exp (-z * (t : ℂ))) (Ioi (0 : ℝ)) volume) :
+    (∫ t in Ioi (0 : ℝ),
+        Set.indicator (Set.Ici L) (fun s : ℝ => f (s - L)) t * Complex.exp (-z * (t : ℂ)))
+      = Complex.exp (-z * (L : ℂ)) * ∫ s in Ioi (0 : ℝ), f s * Complex.exp (-z * (s : ℂ)) := by
+  have hrw : ∀ t : ℝ,
+      Set.indicator (Set.Ici L) (fun s : ℝ => f (s - L)) t * Complex.exp (-z * (t : ℂ))
+        = Set.indicator (Set.Ici L)
+            (fun s : ℝ => f (s - L) * Complex.exp (-z * (s : ℂ))) t := by
+    intro t
+    by_cases hmem : t ∈ Set.Ici L
+    · rw [Set.indicator_of_mem hmem, Set.indicator_of_mem hmem]
+    · rw [Set.indicator_of_notMem hmem, Set.indicator_of_notMem hmem, zero_mul]
+  have hfun : (fun u : ℝ => f ((L + u) - L) * Complex.exp (-z * ((L + u : ℝ) : ℂ)))
+      = fun u : ℝ => Complex.exp (-z * (L : ℂ)) * (f u * Complex.exp (-z * (u : ℂ))) := by
+    funext u
+    rw [show L + u - L = u by ring]
+    rw [show Complex.exp (-z * (L : ℂ)) * (f u * Complex.exp (-z * (u : ℂ)))
+        = f u * (Complex.exp (-z * (L : ℂ)) * Complex.exp (-z * (u : ℂ))) by ring,
+      ← Complex.exp_add]
+    congr 2
+    push_cast
+    ring
+  have hshift : IntegrableOn
+      (fun s : ℝ => f (s - L) * Complex.exp (-z * (s : ℂ))) (Ioi L) volume := by
+    set g : ℝ → ℂ := fun u : ℝ => f u * Complex.exp (-z * (u : ℂ)) with hg
+    have hG : Integrable (Set.indicator (Ioi (0 : ℝ)) g) :=
+      (integrable_indicator_iff measurableSet_Ioi).mpr hint
+    have hGshift : Integrable (fun s : ℝ => Set.indicator (Ioi (0 : ℝ)) g (s - L)) :=
+      hG.comp_sub_right L
+    have hscaled : Integrable
+        (fun s : ℝ => Complex.exp (-z * (L : ℂ)) * Set.indicator (Ioi (0 : ℝ)) g (s - L)) :=
+      hGshift.const_mul _
+    refine hscaled.integrableOn.congr_fun ?_ measurableSet_Ioi
+    intro s hs
+    have hs0 : (0 : ℝ) < s - L := by
+      have : L < s := hs
+      linarith
+    simp only
+    rw [Set.indicator_of_mem (Set.mem_Ioi.mpr hs0), hg]
+    simp only
+    rw [show Complex.exp (-z * (L : ℂ)) * (f (s - L) * Complex.exp (-z * ((s - L : ℝ) : ℂ)))
+        = f (s - L) * (Complex.exp (-z * (L : ℂ)) * Complex.exp (-z * ((s - L : ℝ) : ℂ))) by ring,
+      ← Complex.exp_add]
+    congr 2
+    push_cast
+    ring
+  rw [setIntegral_congr_fun measurableSet_Ioi (fun t _ => hrw t),
+    setIntegral_Ioi_indicator_Ici hL _ hshift,
+    ← GaloisForLFunctions.RHTower.integral_Ioi_translate L
+      (fun s : ℝ => f (s - L) * Complex.exp (-z * (s : ℂ))), hfun, integral_const_mul]
 
 end RHTower

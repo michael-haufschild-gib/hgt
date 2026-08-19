@@ -1161,3 +1161,172 @@ Only the **mean-square** bounds: `∑_{n ∼ Y} |c_{i,n}|² ≪_A Y/(log X)^{3A}
 terms.  Each is a divisor-type second moment over a sparse set (`c₁`: integers with a divisor
 `> D` composed of primes `< z₀`; `c₂`: integers with a prime factor in a `δ_A`-short interval;
 `c₃`: the boundary of the last block).  The algebra of Lemma 2.3 is finished.
+
+### M5b, brick 1 — the Rankin atom for `c₁,n` (2026-08-19)
+
+Added to `Sieve/MinorantDecomposition.lean`, axiom-clean:
+
+```text
+card_large_divisors_le_rankin (hα : 0 < α) (hD : 0 < D) :
+  #{e ∣ m : e > D}  ≤  D^{-α} · ∑_{e ∣ m} e^α
+
+truncTail_le_rankin (hα : 0 < α) (hD : 0 < D) :
+  truncTail k z D  ≤  D^{-α} · ∑_{e ∣ gcd(k, P(z))} e^α
+```
+
+This is the standard Rankin trick — each divisor above `D` contributes at least `D^{-α}e^α ≥ 1` —
+and it is the atom of the first of the three mean-square bounds M5b still needs.  With it, the
+`c₁,n` estimate reduces to the Euler product
+
+```text
+   ∑_{n ∼ Y} (truncTail n z₀ D)²  ≤  D^{-2α}·∑_{n ∼ Y} (∑_{e ∣ gcd(n,P(z₀))} e^α)²
+     ≤ D^{-2α}·Y·∑_{e₁,e₂ ∣ P(z₀)} (e₁e₂)^α / lcm(e₁,e₂) ,
+```
+
+which at `α = 1/log z₀` and `D = exp((log X)/(log log X))` is the paper's `Y/(log X)^{3A}`.  The
+`lcm` pair sum is the same shape as `Sieve/JointTuranKubilius.sum_inv_lcmPair_le`, built this
+session for the other lane.
+
+Remaining for M5b: that Euler product, and the corresponding mean squares for `c₂,n` (integers with
+a prime factor in a `δ_A`-short interval — the cost of replacing the sieve level `q` by the bottom
+of its block, whose exact value is `Sieve/MinorantDecomposition.rho_sub_rho_eq_sum`) and `c₃,n`.
+
+### M5b, brick 2 — the mean square of the divisor moment (2026-08-19)
+
+`Sieve/DivisorMomentMeanSquare.lean`, axiom-clean, wired.
+
+```text
+divisors_gcd_eq (hn : 0 < n) (hP : 0 < P) :
+  (gcd n P).divisors = P.divisors.filter (· ∣ n)
+
+sum_sq_divisor_moment_le (hP : 0 < P) (α : ℝ) :
+  ∑_{n ≤ Y} (∑_{e ∣ gcd(n,P)} e^α)²  ≤  Y · ∑_{e₁,e₂ ∣ P} (e₁e₂)^α / lcm(e₁,e₂)
+```
+
+Composed with brick 1 this reduces the `c₁,n` mean square of Lemma 2.3 to a **pure Euler product**:
+
+```text
+   ∑_{n ≤ Y} (truncTail n z₀ D)²  ≤  D^{-2α} · Y · ∑_{e₁,e₂ ∣ P(z₀)} (e₁e₂)^α / lcm(e₁,e₂) ,
+```
+
+with no arithmetic left — the remaining step is to evaluate the pair sum as
+`∏_{p < z₀} (1 + 2p^{α−1} + p^{2α−1})` and choose `α = 1/log z₀`, `D = exp((log X)/(log log X))`.
+
+The proof is the same skeleton as `Sieve/JointTuranKubilius`: the square of a divisor sum is a pair
+sum of indicator products, a product of two divisibility indicators is the indicator of the lcm, and
+`sum_indicator_dvd_le` counts its multiples.  That lemma was built for the other lane and is reused
+verbatim here — the two gates share machinery.
+
+Remaining for M5b: the Euler-product evaluation above, and the mean squares of `c₂,n` (integers with
+a prime factor in a `δ_A`-short interval; its exact value is
+`Sieve/MinorantDecomposition.rho_sub_rho_eq_sum`) and `c₃,n`.
+
+### M5b: what the `c₁,n` Euler product needs, exactly (2026-08-19)
+
+The pair sum left by brick 2 is, for `P = P(z₀)` squarefree with prime support `S`,
+
+```text
+   ∑_{e₁,e₂ ∣ P} (e₁e₂)^α / lcm(e₁,e₂)  =  ∏_{p ∈ S} (1 + 2p^{α−1} + p^{2α−1}) ,
+```
+
+because each prime contributes `1`, `p^α/p`, `p^α/p` or `p^{2α}/p` according to whether it divides
+neither, only `e₁`, only `e₂`, or both.
+
+The **one-variable** squarefree divisor/powerset transfer is corpus-owned —
+`Sieve/MainTerm.sum_divisors_eq_sum_powerset` ("summing any function over the divisors of a
+squarefree number is summing over the subsets of its prime support") and
+`Sieve/SquarefreeDivisorProduct.sum_divisors_prod_primes_eq_prod`.  What is missing is the
+**two-variable** version: after applying the transfer twice one has `∑_{A ⊆ S}∑_{B ⊆ S}`, and
+turning that into `∏_{p ∈ S}` needs the four-way distributivity (`p` in neither, `A` only, `B` only,
+both), i.e. `Finset.prod_sum` with a four-element fibre — equivalently a bijection
+`S → Fin 4  ≃  {(A,B) : A, B ⊆ S}`.
+
+A crude substitute does **not** work: bounding `1/lcm(e₁,e₂) ≤ 1/√(e₁e₂)` replaces the off-diagonal
+`(e₁e₂)^{α−1}` by `(e₁e₂)^{α−1/2}`, and `∏_{p<z₀}(1 + p^{α−1/2})` is of size
+`exp(c·z₀^{1/2}/log z₀)` — the whole saving is lost.  The diagonal is fine either way; it is the
+off-diagonal that forces the exact product.
+
+### CORRECTION: the two-variable Euler product is avoidable (2026-08-19)
+
+The entry above says the `c₁,n` pair sum needs a **two-variable** powerset factorization.  It does
+not.  Using `1/lcm(e₁,e₂) = gcd(e₁,e₂)/(e₁e₂)` and Gauss's identity
+`gcd(e₁,e₂) = ∑_{d ∣ e₁, d ∣ e₂} φ(d)` (mathlib: `Nat.sum_totient`),
+
+```text
+   ∑_{e₁,e₂ ∣ P} (e₁e₂)^α/lcm(e₁,e₂)
+     = ∑_{e₁,e₂ ∣ P} (e₁e₂)^{α−1}·gcd(e₁,e₂)
+     = ∑_{d ∣ P} φ(d) · ( ∑_{e ∣ P, d ∣ e} e^{α−1} )²
+     ≤ ( ∑_{e ∣ P} e^{α−1} )² · ∑_{d ∣ P} φ(d)·d^{2α−2} ,
+```
+
+the last step because for squarefree `P` the inner sum is `d^{α−1}∑_{f ∣ P/d} f^{α−1}` and every
+term is positive, so it is at most `d^{α−1}·∑_{f ∣ P} f^{α−1}`.
+
+Both remaining sums are **one-variable** Euler products, which
+`Sieve/SquarefreeDivisorProduct.sum_divisors_prod_primes_eq_prod` already evaluates:
+
+```text
+   ∑_{e ∣ P} e^{α−1} = ∏_{p < z₀}(1 + p^{α−1}) ,
+   ∑_{d ∣ P} φ(d)d^{2α−2} = ∏_{p < z₀}(1 + (p−1)p^{2α−2}) .
+```
+
+### The numbers, and why the route closes
+
+At `α = 1/log z₀` one has `p^α ≤ e` for `p < z₀`, so `p^{α−1} ≤ e/p` and
+
+```text
+   ∏_{p<z₀}(1 + p^{α−1}) ≪ (log z₀)^e ,      ∏_{p<z₀}(1 + (p−1)p^{2α−2}) ≪ (log z₀)^{e²} ,
+```
+
+both polylogarithmic.  With `z₀ = exp((log X)/(log log X)³)` and `D = exp((log X)/(log log X))`,
+
+```text
+   D^{-2α} = exp(−2·(log X/log log X)·(log log X)³/log X) = exp(−2(log log X)²) ,
+```
+
+which beats every power of `log X`.  So `∑_{n ∼ Y}|c₁,n|² ≪ Y·exp(−2(log log X)²)·(log z₀)^{O(1)}`,
+comfortably inside the required `Y/(log X)^{3A}` — the paper's `(2.9)` slack is enormous here.
+
+**What to build**: the three displayed reductions (Gauss's identity, the `d ∣ e` reindexing for
+squarefree `P`, and the positivity step), then the two Euler products from the corpus lemma, then
+the numeric comparison.  No two-variable combinatorics.
+
+### M5b, brick 3 — the pair term in gcd form (2026-08-19)
+
+Added to `Sieve/DivisorMomentMeanSquare.lean`, axiom-clean:
+
+```text
+pair_term_eq (h₁ : 0 < e₁) (h₂ : 0 < e₂) (α : ℝ) :
+  (e₁^α · e₂^α) / lcm(e₁,e₂)  =  (e₁·e₂)^{α−1} · gcd(e₁,e₂)
+```
+
+the first of the three reductions of the entry above.  `gcd·lcm = e₁e₂` turns the `lcm` denominator
+into a `gcd` numerator, and `Real.rpow_sub` absorbs the extra `e₁e₂`.  Gauss's identity
+`∑_{d ∣ n} φ(d) = n` (`Nat.sum_totient`) then expands the `gcd`, after which the pair sum splits as
+
+```text
+   ∑_{d ∣ P} φ(d) · ( ∑_{e ∣ P, d ∣ e} e^{α−1} )² ,
+```
+
+and the remaining two steps — the `d ∣ e` reindexing for squarefree `P` and the positivity
+comparison — leave only one-variable Euler products.
+
+### M5b, brick 4 — Gauss's identity applied to the pair sum (2026-08-19)
+
+`Sieve/DivisorMomentMeanSquare.lean`, axiom-clean:
+
+```text
+divisors_gcd_pair_eq       (gcd e₁ e₂).divisors = P.divisors.filter (d ∣ e₁ ∧ d ∣ e₂)
+gcd_eq_sum_totient_filter  gcd e₁ e₂ = ∑_{d ∣ P} [d ∣ e₁][d ∣ e₂]·φ(d)
+sum_pair_gcd_eq            ∑_{e₁,e₂ ∣ P} (e₁e₂)^{α−1}·gcd(e₁,e₂)
+                             = ∑_{d ∣ P} φ(d)·(∑_{e ∣ P, d ∣ e} e^{α−1})²
+```
+
+The second of the three reductions.  With brick 3 (`pair_term_eq`) the whole pair sum of the `c₁,n`
+mean square is now the **single-variable** expression on the right; only the `d ∣ e` reindexing
+`{e ∣ P : d ∣ e} ↔ {d·f : f ∣ P/d}` for squarefree `P` and the positivity comparison remain before
+the two corpus Euler products.
+
+The proof is Gauss's `∑_{d ∣ n} φ(d) = n` (`Nat.sum_totient`) restricted to the divisors of `P`,
+then two `Finset.sum_comm` swaps to bring `d` outside and `Finset.sum_mul_sum` to factor the two
+inner sums.

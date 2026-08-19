@@ -3327,3 +3327,584 @@ remains is the §4 assembly:
 No new analytic input.  Formalising Vinogradov–Korobov is **not** on the critical path for the
 route-e cards, and the "lower the corpus exponent" plan recorded above should be retired in favour
 of this one.
+
+### Milestone B, brick 1 — the double weight `ω_P·ω_Q` (2026-08-19)
+
+`Sieve/JointTuranKubilius.lean`, axiom-clean, wired.  This is the second display of exposé §4:
+
+```text
+sum_sq_joint_deviation_le (hP : ∀ p ∈ P, p.Prime) (hQ : ∀ q ∈ Q, q.Prime)
+    (hPQ : Disjoint P Q) (M : ℕ) :
+  ∑_{n ≤ M} (ω_P(n)·ω_Q(n) − W(P)W(Q))²
+    ≤ M·W(P)W(Q)·(W(P) + W(Q) + 1) + 2·W(P)W(Q)·|P|·|Q|
+```
+
+which is the exposé's `≪ X W(P)²W(Q)²(1/W(P) + 1/W(Q))` with the prime-counting error exposed.
+
+**The mechanism, and why it is not a repetition of the single-weight case.**  The fourth moment
+`∑_n ω_P(n)²ω_Q(n)²` is a quadruple sum of products of four divisibility indicators.  Because `P`
+and `Q` are disjoint sets of primes, such a product is the indicator of *one* modulus,
+
+```text
+quadModulus p₁ p₂ q₁ q₂ = lcmPair p₁ p₂ · lcmPair q₁ q₂ ,   lcmPair a b = if a = b then a else a·b
+```
+
+(`indicator_quad_le`, resting on `coprime_lcmPair`), so the quadruple sum **factorises**:
+
+```text
+∑_n ω_P²ω_Q² ≤ M · (∑_{p₁,p₂} 1/lcmPair) · (∑_{q₁,q₂} 1/lcmPair) ≤ M(W_P²+W_P)(W_Q²+W_Q)
+```
+
+— `sum_sq_mul_sq_primeFactorsIn_le`, with `sum_inv_lcmPair_le` supplying the pair sums (the diagonal
+`a = b` is exactly the `+W` term).  Together with the matching first-moment lower bound
+`sum_mul_card_primeFactorsIn_ge` (`M·W_PW_Q − |P||Q| ≤ ∑_n ω_Pω_Q`) the variance telescopes: the
+`W_P²W_Q²` terms cancel and only `W_P²W_Q + W_PW_Q² + W_PW_Q` survives.  No joint fourth-moment
+inequality (Cauchy–Schwarz, hypercontractivity) is used — the factorisation is exact.
+
+Supporting lemmas, all reusable: `lcmPair`, `lcmPair_pos`, `dvd_left_of_lcmPair`,
+`dvd_right_of_lcmPair`, `lcmPair_dvd`, `inv_lcmPair`, `sum_inv_lcmPair_le`, `quadModulus`,
+`coprime_lcmPair`, `indicator_quad_le`, `sum_indicator_dvd_le`, `cast_div_sub_one_le`.
+
+Remaining for milestone B: items 2–5 of the list above (the `(31)`–`(34)` bookkeeping, the
+exceptional set `(35)`, and the two cases `(36)`–`(40)`).
+
+### Milestone B, brick 2 — the reduction `(34)` in discrete form (2026-08-19)
+
+`Sieve/JointWeightTransfer.lean`, axiom-clean, wired.
+
+```text
+sq_window_sum_le_weighted (hf : ∀ n, |f n| ≤ 1) (W t h) :
+  W²·(∑_{t<n≤t+h} f n)² ≤ 2(∑ f·ω)² + 2h·∑ (ω − W)²
+
+windowStart A h j = A + j·h
+windows_pairwise_disjoint : j ≠ k → the two windows are disjoint
+
+sum_sq_windows_le_weighted : the same summed over `j < K`, the variance paid ONCE over `[1,M]`
+
+sum_sq_windows_le_joint (hP hQ prime) (hPQ : Disjoint P Q) (hf : ∀ n, |f n| ≤ 1) :
+  (W_P W_Q)²·∑_{j<K}(∑_{window j} f)²
+    ≤ 2·∑_{j<K}(∑_{window j} f·ω_P·ω_Q)²
+      + 2h·( M·W_PW_Q(W_P + W_Q + 1) + 2W_PW_Q|P||Q| )
+```
+
+The last is exactly the exposé's `(34)` before the Fourier step: dividing by `(W_PW_Q)²` the error
+is `2h·M·(1/W_P + 1/W_Q)·(1 + 1/(W_PW_Q)) + …`, i.e. `o(hM)` as soon as `W_P` or `W_Q` tends to
+infinity — which is the whole point of the double weight.
+
+Two things make it clean.  The window atom is an identity plus one Cauchy–Schwarz:
+`W∑f = ∑fω − ∑f(ω−W)` and `(∑f(ω−W))² ≤ h∑(ω−W)²` since `|f| ≤ 1` and the window has `h` integers.
+And the windows of a dyadic family are *disjoint* (`windows_pairwise_disjoint`), so
+`Finset.sum_biUnion` pays the Turán–Kubilius variance once over the whole range rather than once per
+window — the step that would otherwise cost a factor `K`.
+
+Remaining for milestone B: the Fourier/Plancherel step `(31)`–`(33)` (Lemma 2.1, corpus-owned), the
+exceptional set `(35)`, and the two cases `(36)`–`(40)`.
+
+### Milestone B, brick 3 — the exceptional-set split `(35)`–`(36)` (2026-08-19)
+
+`Sieve/DirichletExceptionalSplit.lean`, axiom-clean, wired.
+
+```text
+integral_normSq_mul_split_exceptional (N M) (a b) (hBf : ∀ t, ‖dirPoly N a t‖ ≤ Bf) :
+  ∫_{|t|≤T} ‖F‖²‖G‖²
+    ≤ V²·∫_{|t|≤T} ‖G‖²  +  Bf²·∫_{{|t|≤T} ∩ {‖F‖ ≥ V}} ‖G‖²
+```
+
+**Why the corpus's existing split does not serve.**
+`Sieve/DirichletSymmSplit.integral_normSq_mul_split_symm` puts the threshold on the *second* factor
+and pays `sup‖F‖²·sup‖G‖²·|E|`.  §4 needs the threshold on the *short prime* polynomial `F` — the
+one with no zero-free input — and on the exceptional set it must **integrate** `‖G‖²` rather than
+bound it by its supremum, because that integral is exactly what Halász–Montgomery (Lemma 2.6)
+delivers.  Bounding `∫_E‖G‖²` by `sup‖G‖²·|E|` throws away the whole gain: `sup‖A_j‖` is the trivial
+size `X/(P_jQ_k)`, and `|E_j|·(X/(P_jQ_k))²` exceeds the target.
+
+With `F = ∑_{p∈P_j}p^{iy}` this is `(35)`–`(36)`: `V = P_j/(log P_j)²` is the cancellation threshold,
+`Bf = P_j` the trivial bound, the first term is the non-exceptional case (finished by Lemma 2.4 as
+in `(28)`), and the second is the exceptional case (finished by Lemma 2.3 on the `Q_k` sum, Lemma 2.5
+for `|E_j|`, and Lemma 2.6 on `E_j`).
+
+Remaining for milestone B: the Fourier/Plancherel step `(31)`–`(33)` (Lemma 2.1, corpus-owned), and
+the two numerical instantiations `(37)`–`(40)`.
+
+### Milestone B, brick 4 — the `(40)` shape (2026-08-19)
+
+`Sieve/Section4Core.lean`, axiom-clean, wired.
+
+```text
+section4_product_bound (hBf : ∀ t, ‖dirPoly N a t‖ ≤ Bf)
+    (hA₁ : ∫_{|t|≤T} ‖G‖² ≤ A₁)
+    (hA₂ : ∫_{{|t|≤T} ∩ {‖F‖ ≥ V}} ‖G‖² ≤ A₂) :
+  ∫_{|t|≤T} ‖F‖²‖G‖² ≤ V²·A₁ + Bf²·A₂
+
+section4_product_bound_scaled : the same with the outer factor `C = P_j²W(Q)²h²/((log P_j)²X²)`
+```
+
+Everything from `(36)` to `(40)` is now one inequality between named quantities, with the two inputs
+labelled by their sources: `A₁` from the mean value theorem (Lemma 2.4, the non-exceptional case,
+finished exactly as in `(28)`) and `A₂` from Halász–Montgomery (Lemma 2.6, after Lemma 2.5 bounds
+`|E_j|`).  At the paper's values `V = P_j/(log P_j)²`, `Bf = P_j`.
+
+### Milestone B: state after this session
+
+| item | status |
+|-|-|
+| Lemmas 2.1, 2.3, 2.4, 2.5, 2.6 | corpus theorems (see above) |
+| double weight `ω_Pω_Q`, Turán–Kubilius `(30')` | **`Sieve/JointTuranKubilius`** |
+| the reduction `(34)` | **`Sieve/JointWeightTransfer`** |
+| the exceptional split `(35)`–`(36)` | **`Sieve/DirichletExceptionalSplit`** |
+| the `(40)` shape | **`Sieve/Section4Core`** |
+| Plancherel `(31)`–`(33)` | Lemma 2.1 is corpus; the `A_j` bookkeeping is not yet written |
+| `A₁` at the paper's parameters | Lemma 2.4 + the `(28)` dyadic split — corpus has both, not composed |
+| `A₂` at the paper's parameters | Lemma 2.5 for `\|E_j\|`, then Lemma 2.6 through Gallagher's Sobolev lemma to pass from `∫_{E_j}` to a well-spaced sum — all three corpus-owned, not composed |
+
+No new analytic input remains; what is left is composition at the paper's parameters.
+
+### Milestone B, brick 5 — the `A₁` half discharged (2026-08-19)
+
+```text
+section4_product_bound_mvt (hT : 0 ≤ T) (hBf : ∀ t, ‖dirPoly N a t‖ ≤ Bf) (hA₂ : … ≤ A₂) :
+  ∫_{|t|≤T} ‖F‖²‖G‖²
+    ≤ V²·(2(T + 4M(1+log M))·∑‖b‖²)  +  Bf²·A₂
+```
+
+`A₁` is now supplied internally by `Sieve/LogPolyDirPoly.integral_Icc_normSq_dirPoly_symm_le`
+(Lemma 2.4 on a symmetric range), so the non-exceptional case of §4 needs no further input.
+
+### The one brick §4 still needs: Sobolev over a measurable set
+
+`A₂` is Lemma 2.6, `∫_E‖G‖²dt ≪ (M + |E|·T^{1/2}log T)·∑|b|²` for **measurable** `E`.  The corpus
+owns both halves of its proof — `Sieve/GallagherSobolev.gallagher_sobolev` and the discrete
+Halász–Montgomery `Sieve/DyadicSecondEnvelopeClosed.halaszMontgomery_dyadic_explicit`, together with
+`RHTower/WellSpacedSubset.exists_wellSpaced_subset` — but the passage
+
+```text
+   ∫_E ‖G‖²  ⟶  ∑_{r ∈ R} ‖G(r)‖²  over a 1-separated  R ⊆ E  with  |R| ≪ |E| + 1
+```
+
+is not in the tree: the corpus's Sobolev applications integrate over intervals, and a general
+measurable `E` needs a Vitali-type covering to produce `R`.  That is the single remaining
+ingredient of milestone B; everything else is composition at the paper's parameters.
+
+Note that the crude substitute `∫_E‖G‖² ≤ sup‖G‖²·|E|` — which the corpus *does* have, via
+`Sieve/DirichletSymmSplit` — is provably insufficient here: `sup‖A_j‖` is the trivial size
+`X/(P_jQ_k)`, and `|E_j|·(X/(P_jQ_k))²` exceeds the target of `(40)`.
+
+### CORRECTION to the previous entry — no covering argument supplies `A₂` (2026-08-19)
+
+The entry above suggested that the passage `∫_E‖G‖² ⟶ ∑_{r∈R}‖G(r)‖²` over a separated `R ⊆ E`
+needs "a Vitali-type covering".  **No covering argument can supply it**, and it is worth recording
+why, so the lane is not re-attempted:
+
+- Take `R` maximal `δ`-separated in `E`.  Maximality gives `E ⊆ ⋃_r[λ_r−δ, λ_r+δ]`, hence
+  `|E| ≤ 2δ|R|` — a *lower* bound on `|R|`, not an upper one.  The disjoint balls `B(λ_r, δ/2)` need
+  not lie inside `E`, so `|R|` is bounded only by `2T/δ + 1`, and the discrete Halász–Montgomery's
+  `|R|·B` term then contributes `(T/δ)√T`, far above the target.
+- Covering the other way, `∑_r∫_{I_r}‖G‖² ≤ 3∫_{-T}^{T}‖G‖²`, is just the mean value theorem again:
+  the smallness of `E` has been thrown away.
+- Bounding `|R|` by a *discrete* large-values count (Ivić Thm 9.4, corpus-owned as
+  `Sieve/DirichletFiniteSetLargeValues.largeValues_dirPoly_finset`) does bound `|R|` without
+  reference to `|E|`, but then the interval integrals `∫_{I_r}‖G‖²` are uncontrolled.
+
+Lemma 2.6's `|E|` enters through a **double integral over `E × E`**, and the proof is Montgomery's
+duality argument (exposé (17); Montgomery, *Topics*, Thm 7.8; Iwaniec–Kowalski Thm 9.6):
+
+```text
+  I = ∫_E‖A‖²  =  ∫_E ∑_n a(n)n^{-it}A(t)dt  ≤  ∑_n |a(n)|·|∫_E A(t)n^{-it}dt| ,
+  I² ≤ (∑|a(n)|²)·(∑_{n≤2N}(2 − n/N)|∫_E A(t)n^{-it}dt|²) ,
+```
+and expanding the second factor gives `∫_E∫_E A(t)\bar A(u)·K(u−t)dt du` with the smoothed kernel
+`K(v) = ∑_{n≤2N}(2−n/N)n^{iv}`, whose two-regime bound produces `N + |E|T^{1/2}log T`.
+
+So the single remaining ingredient of milestone B is the **integral (duality) form of
+Halász–Montgomery**, not a bridge from the discrete form the corpus owns
+(`Sieve/DyadicSecondEnvelopeClosed.halaszMontgomery_dyadic_explicit`).  The corpus already has the
+duality principle itself (`Sieve/AlmostOrthogonality.sum_norm_inner_sq_le_of_schur`) and both
+regimes of the logarithmic-phase kernel (`Sieve/HuxleyLogPhase`, `Sieve/KuzminLandau`,
+`Sieve/SecondDerivativeTest`); what has to be built is the continuous version — the double integral
+over `E × E` against that kernel.
+
+### Milestone B, brick 6 — the duality step `(17)` of Lemma 2.6 (2026-08-19)
+
+`Sieve/HalaszMontgomeryDual.lean`, axiom-clean, wired.
+
+```text
+dualCoeff N a E n = ∫_E exp(i·t·log(n+1))·conj(A(t)) dt
+
+setIntegral_normSq_dirPoly_eq_dual (hE : MeasurableSet E) (hEs : E ⊆ Icc (-T) T) :
+  (∫_E ‖A‖² : ℂ)  =  ∑_n a_n · dualCoeff N a E n
+
+setIntegral_normSq_dirPoly_sq_le :
+  (∫_E ‖A‖²)²  ≤  (∑_n ‖a_n‖²) · ∑_n ‖dualCoeff N a E n‖²
+```
+
+This is exactly `(17)`, and it is the step that keeps the smallness of `E` alive — the identity
+`∫_E‖A‖² = ∑_n a_n·(∫_E n^{it}\bar A)` moves `E` inside a coefficient sum, where expanding
+`∑_n‖∫_E n^{it}\bar A‖²` produces the double integral over `E × E` whose kernel bound yields
+`N + |E|T^{1/2}log T`.
+
+The proof is short but the measure-theoretic shape matters: `A·conj A` is cast from the real
+integrand by `Complex.mul_conj` and `Complex.normSq_eq_norm_sq`, the sum and the integral are
+exchanged by `integral_finsetSum` (each summand continuous, `E` inside a compact interval), and the
+final step is `Finset.sum_mul_sq_le_sq_mul_sq`.
+
+**What remains of Lemma 2.6**: bounding `∑_{n≤2N}(2 − n/N)‖dualCoeff‖²`, i.e. the double integral
+over `E × E` against the smoothed kernel `K(v) = ∑_{n≤2N}(2−n/N)n^{iv}`.  The corpus owns both
+regimes of that kernel (`Sieve/KuzminLandau`, `Sieve/SecondDerivativeTest`, `Sieve/HuxleyLogPhase`);
+what is left is the `E × E` integration against it.
+
+### Milestone B, brick 7 — the continuous Schur test (2026-08-19)
+
+`Sieve/KernelDoubleIntegral.lean`, axiom-clean, wired.
+
+```text
+setIntegral_double_kernel_le (hA : Continuous A) (hK : Continuous K)
+    (hEs : E ⊆ Icc (-T) T) (hEm : MeasurableSet E)
+    (hrow : ∀ t, ∫_E ‖K(t−u)‖du ≤ M) (hcol : ∀ u, ∫_E ‖K(t−u)‖dt ≤ M) :
+  ‖∫_E ∫_E K(t−u)·conj(A t)·A u du dt‖  ≤  M · ∫_E ‖A‖²
+```
+
+This is the second half of Lemma 2.6: brick 6 turns `∫_E‖A‖²` into the dual pairing, expanding the
+dual coefficients produces exactly this double integral, and the row/column masses of the kernel are
+what the two-regime phase estimates bound.
+
+The proof runs entirely on the product space, where every integrand is continuous on the compact
+rectangle `Icc(-T,T) ×ˢ Icc(-T,T)` and integrability is free (`ContinuousOn.integrableOn_compact`
+then `mono_set`).  `Measure.prod_restrict` identifies `(volume|E).prod (volume|E)` with
+`(volume.prod volume)|(E ×ˢ E)`, `integral_integral` moves between the iterated and product forms,
+and the arithmetic–geometric mean inequality `‖A t‖‖A u‖ ≤ (‖A t‖² + ‖A u‖²)/2` splits the bound
+into a row half and a column half.  The column half is the only place Fubini is genuinely used
+(`integral_integral_swap`), and it is unavoidable: with the outer variable fixed as `t` the column
+mass is invisible.
+
+**What remains of Lemma 2.6**: the kernel estimate itself — row and column masses of
+`K(v) = ∑_{n ≤ 2N}(2 − n/N)n^{iv}` of size `N + |E|T^{1/2}log T`.  Both regimes of the logarithmic
+phase are corpus theorems (`Sieve/KuzminLandau`, `Sieve/SecondDerivativeTest`,
+`Sieve/HuxleyLogPhase`); what is missing is the smoothed weight `2 − n/N` and the passage from a
+pointwise kernel bound to its mass over `E`.
+
+### Milestone B, brick 8 — the row mass from a two-regime kernel bound (2026-08-19)
+
+```text
+setIntegral_norm_kernel_le (hK : Continuous K) (hEs : E ⊆ Icc (-T) T) (hEm : MeasurableSet E)
+    (hnear : ∀ v, ‖K v‖ ≤ N) (hfar : ∀ v, 1 ≤ |v| → ‖K v‖ ≤ C) (hC : 0 ≤ C) (t : ℝ) :
+  ∫_E ‖K(t − u)‖ du  ≤  2N + C·|E|
+```
+
+This is the passage the Schur test needs, and it is where the shape `N + |E|T^{1/2}log T` of
+Lemma 2.6 comes from: the near-diagonal band `|t − u| < 1` has length two **whatever `E` is**, so
+the trivial size `N` of the kernel is paid only twice; away from the diagonal the oscillation bound
+`C` is paid once per unit of `|E|`.  With `C ≍ (√T + N/√T)log N` from the exponent-pair estimate
+this is exactly `N + |E|T^{1/2}log T` in the range where the second term dominates.
+
+The same statement serves as the column bound, since `‖K(−v)‖ = ‖K(v)‖` for
+`K(v) = ∑_n w_n n^{iv}`.
+
+### What is left of Lemma 2.6, exactly
+
+Only the **pointwise** two-regime bound for the kernel itself:
+
+```text
+   ‖∑_{n ≤ 2N} w_n n^{iv}‖ ≤ 2N   (trivial)  and  ≤ C(√|v| + N/√|v|)·log N  for  1 ≤ |v| ≤ 2T .
+```
+
+The corpus owns both regimes for a *dyadic* block of logarithmic phases
+(`Sieve/HuxleyLogPhase`, `Sieve/KuzminLandau`, `Sieve/SecondDerivativeTest`, and the closed envelope
+`Sieve/DyadicSecondEnvelopeClosed.logDyadicSecondEnvelope_le : B ≤ 214√T + 1536N/√U`); what remains
+is summing `O(log N)` dyadic blocks — which is where Lemma 2.6's `log T` comes from — and carrying
+the smoothing weight `w_n = 2 − n/N` (or dropping it, since the dyadic route does not need it).
+
+### Milestone B, brick 9 — the dyadic-block interface (2026-08-19)
+
+Added to `Sieve/AdicBlocks.lean` (axiom-clean, wired):
+
+```text
+sum_Icc_eq_sum_dyadic_blocks (f : ℕ → ℂ) :
+  ∑_{j ≤ ⌊log₂ M⌋} ∑_{n ∈ [1,M], ⌊log₂ n⌋ = j} f n  =  ∑_{n ∈ [1,M]} f n
+norm_sum_Icc_le_sum_dyadic_blocks : the triangle inequality over those blocks
+mem_dyadic_block : n in the j-th block ⟹ 2^j ≤ n < 2^{j+1}
+```
+
+Note: the corpus's `Sieve/LSeriesBlockDecomposition.LSeries_eq_sum_dyadic_blocks` is the same
+decomposition **for `LSeries`**, not for a finite sum; the finite version is one application of
+`Finset.sum_fiberwise_of_maps_to`, which is what these three lemmas package.
+
+### The single remaining analytic step of milestone B
+
+With bricks 6–9 in place the chain is
+
+```text
+   ∫_E‖A‖²  --(6, duality)-->  ∑_n a_n·dualCoeff n
+            --(expansion)-->   ∫_E∫_E K(t−u)·conj A·A
+            --(7, Schur)-->    M·∫_E‖A‖²
+            --(8)-->           M = 2N + C·|E| ,   C = sup_{|v|≥1}‖K(v)‖
+            --(9 + corpus)-->  C ≪ log M·√T + N/√T
+```
+
+and the only step not yet written is the last: for each dyadic block `[2^j, 2^{j+1})` choose between
+`Sieve/HuxleyLogPhase.norm_logPhase_dyadic_le_kuzminLandau` (`≤ 6π·2^j/t + 1`),
+`norm_logPhase_dyadic_le_secondDerivative` (`≤ logDyadicSecondBound`, which is
+`≍ √t + 2^j/√t`), and the trivial bound `2^j`, according to whether
+`logDyadicLambda (2^j) t = t/(8π·4^j) ≤ 1`.  That three-way split, summed over the
+`⌊log₂ M⌋ + 1` blocks, is the whole of what remains.
+
+### Milestone B, brick 10 — summing the per-block bounds (2026-08-19)
+
+```text
+norm_sum_Icc_le_of_dyadic_bounds (hM : 1 ≤ M) (hb : 0 ≤ b)
+    (hblk : ∀ j ≤ ⌊log₂ M⌋, ‖∑_{n ∈ block j} f n‖ ≤ a + b·2^j) :
+  ‖∑_{n ∈ [1,M]} f n‖ ≤ (⌊log₂ M⌋ + 1)·a + 2b·M
+```
+
+A per-block bound of the shape `a + b·2^j` — which is exactly what the two regimes of the
+logarithmic phase produce, with `a ≍ √t` and `b ≍ 1/√t` — sums to `(⌊log₂ M⌋+1)a + 2bM`.  **The
+first term is where Halász–Montgomery's `log T` comes from and the second is the `N/√T`**, so the
+summation is now accounted for exactly rather than absorbed into a `≪`.
+
+The geometric sum is `∑_{j ≤ K} 2^j = 2^{K+1} − 1 ≤ 2M` via `Nat.pow_log_le_self`.
+
+### Milestone B: the whole of what is left
+
+One statement: for each dyadic block `[2^j, 2^{j+1}) ∩ [1,M]` and each `1 ≤ |t| ≤ 2T`, a bound of
+the form `a + b·2^j` with `a ≍ √t`, `b ≍ 1/√t`, obtained by the three-way choice between
+
+* `Sieve/HuxleyLogPhase.norm_logPhase_dyadic_le_kuzminLandau` — `≤ 6π·2^j/t + 1`;
+* `Sieve/HuxleyLogPhase.norm_logPhase_dyadic_le_secondDerivative` — `≤ logDyadicSecondBound (2^j) t`,
+  which is `256(2^j√(16λ) + λ^{-1/2})` with `λ = t/(8π·4^j)`, i.e. `≍ √t + 2^j/√t`;
+* the trivial bound `2^j`;
+
+according to the size of `logDyadicLambda (2^j) t = t/(8π·4^j)`.  Everything upstream and downstream
+of that statement — bricks 1–10 — is now in the tree, unconditional and axiom-clean.
+
+### Milestone B, brick 11 — the three-way split collapses to two (2026-08-19)
+
+`Sieve/DyadicAffineEnvelope.lean`, axiom-clean, wired.
+
+```text
+logDyadicSecondBound_le_affine (hN : 1 ≤ N) (ht : 0 < t) :
+  logDyadicSecondBound N t ≤ 214·√t + 1536·(N/√t)
+
+trivial_le_affine (hN : 1 ≤ N) (ht : 0 < t) (hbig : 1 < logDyadicLambda N t) :
+  (N : ℝ) ≤ 214·√t + 1536·(N/√t)
+```
+
+The first is the corpus's closed envelope at `U = T = t` — note `logDyadicSecondBound N t` is
+*definitionally* `logDyadicSecondEnvelope N t t`, so it is one `rfl` away.
+
+The second is the observation that makes the block sum work: **the trivial bound is already inside
+the affine bound exactly when the second-derivative test is unavailable.**  The test fails only when
+`logDyadicLambda N t = t/(8πN²) > 1`, i.e. `8πN² < t`; since `8π > 25` this gives `N < √t/5`, which
+is far below `214√t`.  So the classical three-way split (Kuzmin–Landau / second derivative /
+trivial) collapses to a two-way one, and the affine per-block bound
+
+```text
+   ‖block j‖ ≤ 214·√t + 1536·(2^j/√t)        for every j, unconditionally
+```
+
+holds with the constants `a = 214√t`, `b = 1536/√t` that brick 10 consumes.  Feeding that into
+`norm_sum_Icc_le_of_dyadic_bounds` gives
+
+```text
+   ‖∑_{n ≤ M} n^{it}‖ ≤ (⌊log₂ M⌋ + 1)·214√t + 3072·M/√t ,
+```
+
+which is the pointwise kernel bound Lemma 2.6 needs — the `log T·√T` and the `N/√T`, with explicit
+constants and no asymptotic notation anywhere.
+
+**What is still missing** is only the identification of the `j`-th dyadic block of `[1,M]` with the
+corpus's indexing `∑_{k ∈ range N} (N+k)^{-it}` at `N = 2^j`, including the truncated last block,
+for which `Sieve/HuxleyLogPhase` needs its general-length companion `dirichlet_block_bound`.
+
+### Milestone B, brick 12 — the pointwise kernel bound is CLOSED (2026-08-19)
+
+`Sieve/LogPhaseKernelBound.lean`, axiom-clean, wired.
+
+```text
+norm_sum_Icc_logPhase_le (hM : 1 ≤ M) (ht : 0 < t) :
+  ‖∑_{n ≤ M} n^{-it}‖  ≤  (⌊log₂ M⌋ + 1)·214·√t  +  3072·M/√t
+```
+
+**Unconditional, with explicit constants, no asymptotic notation.**  This is the two-regime kernel
+estimate Lemma 2.6 needs — its `log T·T^{1/2}` is the first term and its `N/T^{1/2}` the second.
+
+Supporting theorems, all new:
+
+| name | content |
+|-|-|
+| `norm_cpow_imag_eq_one` | `‖n^{-it}‖ = 1` for `n ≥ 1` — the trivial bound's atom |
+| `norm_logPhase_partial_block_le` | the second-derivative bound on a **partial** block `[N, N+L)`, `L ≤ N`, from the corpus's general-length `dirichlet_block_bound` at `k = 2`; the corpus previously had only the full block `L = N` |
+| `dyadic_block_eq` | `(Icc 1 M).filter (⌊log₂·⌋ = j) = Ico (2^j) (min (2^{j+1}) (M+1))` |
+| `norm_dyadic_block_le_affine` | the affine bound `214√t + 1536·2^j/√t` on the `j`-th block, **unconditionally** |
+
+The last is where the two earlier observations pay off: the truncated last block is handled because
+`dirichlet_block_bound` takes a general length `L ≤ N` (brick 12 states that specialisation, which
+the corpus lacked), and the case where the second-derivative test is inadmissible is handled by
+`trivial_le_affine` (brick 11) rather than by a third regime.
+
+### Milestone B: what is left
+
+Only bookkeeping, no analysis:
+
+1. compose bricks 6 → 7 → 8 → 12 into the integral Halász–Montgomery `∫_E‖A‖² ≪ (N + |E|T^{1/2}log T)∑|a|²`
+   — the one step not yet written inside that chain is the expansion of `∑_n w_n‖dualCoeff n‖²` into
+   the `E × E` double integral, which is a second application of `integral_integral`;
+2. the Plancherel step `(31)`–`(33)` (Lemma 2.1 is corpus-owned);
+3. the numerical instantiation of `(37)`–`(40)` at the paper's parameters.
+
+### Milestone B, brick 13 — the dual coefficients as a double integral (2026-08-19)
+
+Added to `Sieve/HalaszMontgomeryDual.lean` (axiom-clean):
+
+```text
+logKernel N w v = ∑_n w_n · exp(i·v·log(n+1))
+
+normSq_dualCoeff_eq (a : Fin N → ℂ) (E : Set ℝ) (n : Fin N) :
+  (‖dualCoeff N a E n‖² : ℂ)
+    = ∫_E ∫_E exp(i(t−u)log(n+1))·conj(A t)·A u  du dt
+```
+
+This is the expansion that joins brick 6 to brick 7, and it needs **no Fubini**: `‖c‖² = c·conj c`,
+`conj` passes through the integral (`integral_conj`), and the product of the two single integrals
+becomes an iterated one by pulling constants (`integral_mul_const`, `integral_const_mul`).  The two
+phases combine as `exp(i t L)·exp(−i u L) = exp(i(t−u)L)`.
+
+Summing over `n` against a weight `w` turns the right-hand side into the `logKernel`, which is what
+bricks 7 and 8 consume, and brick 12 bounds.
+
+### Milestone B: the chain, complete
+
+```text
+   ∫_E‖A‖²  ≤  (∑‖a_n‖²)^{1/2}·(∑_n‖dualCoeff n‖²)^{1/2}          brick 6
+   ∑_n w_n‖dualCoeff n‖²  =  ∫_E∫_E logKernel(t−u)·conj A·A        brick 13
+   ‖∫_E∫_E K(t−u)·conj A·A‖  ≤  M·∫_E‖A‖²                          brick 7
+   M = 2N + C·|E|,  C = sup_{|v| ≥ 1}‖K(v)‖                        brick 8
+   ‖∑_{n ≤ M} n^{-it}‖ ≤ (⌊log₂M⌋+1)·214√t + 3072M/√t              brick 12
+```
+
+Every link is an unconditional Lean theorem.  What is left is arithmetic: choose the weight `w`,
+combine the five displays, and instantiate at the paper's parameters — plus the Plancherel
+`(31)`–`(33)` bookkeeping, whose Lemma 2.1 is corpus-owned.
+
+## LEMMA 2.6 IS CLOSED — the integral Halász–Montgomery bound (2026-08-19)
+
+`Sieve/HalaszMontgomeryIntegral.lean`, axiom-clean, warning-free, wired.
+
+```text
+plainKernel N v = ∑_{n < N} exp(i·v·log(n+1))
+
+sum_normSq_dualCoeff_eq (hEm : MeasurableSet E) (hEs : E ⊆ Icc (-T) T) :
+  (∑_n ‖dualCoeff N a E n‖² : ℂ)
+    = ∫_E ∫_E plainKernel N (t−u)·conj(A t)·A u  du dt
+
+setIntegral_normSq_dirPoly_le_HM (hEm) (hEs)
+    (hrow : ∀ t, ∫_E ‖plainKernel N (t−u)‖du ≤ M)
+    (hcol : ∀ u, ∫_E ‖plainKernel N (t−u)‖dt ≤ M) :
+  ∫_E ‖A‖²  ≤  M · ∑_n ‖a_n‖²
+```
+
+**This is Lemma 2.6, unconditional and with `M` supplied by bricks 8 and 12.**  The argument is the
+exposé's `(17)` throughout: duality (brick 6) gives `I² ≤ (∑‖a‖²)·(∑‖dualCoeff‖²)`, the expansion
+above turns the dual energy into the kernel double integral, the continuous Schur test (brick 7)
+bounds it by `M·I`, and dividing by `I` finishes.  The degenerate case `I = 0` is separate.
+
+**The smoothing weight `2 − n/N` of the exposé is not needed.**  It exists there to sharpen the
+kernel estimate; the dyadic route of brick 12 already gives `log M·√t + M/√t` without it, so the
+kernel is the plain `∑_{n<N} n^{iv}` and the statement is simpler than the published one.
+
+Two further notes for whoever continues.  The expansion needs **no Fubini** — `‖c‖² = c·conj c`,
+`integral_conj`, and pulling constants suffice, with the two finite-sum/integral exchanges justified
+by continuity on a compact rectangle.  And the outer exchange only works because the inner integral
+factorises as `exp(itL)·(a constant in t)`; had the phase not split, the swap would have needed the
+product-measure machinery.
+
+### Milestone B after this
+
+| item | status |
+|-|-|
+| Lemmas 2.1, 2.3, 2.4, 2.5 | corpus |
+| **Lemma 2.6 (integral form)** | **`Sieve/HalaszMontgomeryIntegral`** |
+| kernel row/column mass | `Sieve/KernelDoubleIntegral.setIntegral_norm_kernel_le` |
+| pointwise kernel bound | `Sieve/LogPhaseKernelBound.norm_sum_Icc_logPhase_le` |
+| double weight, `(34)`, `(35)`–`(36)`, `(40)` | bricks 1–5 |
+| Plancherel `(31)`–`(33)` | **remaining** (Lemma 2.1 is corpus; the `A_j` bookkeeping is not written) |
+| numerical instantiation `(37)`–`(40)` | **remaining** |
+
+### Lemma 2.6, sharpened hypotheses (2026-08-19)
+
+`setIntegral_double_kernel_le` and `setIntegral_normSq_dirPoly_le_HM` now take the row and column
+masses **only on `E`**:
+
+```text
+   (hrow : ∀ t ∈ E, ∫_E ‖K(t−u)‖du ≤ M)   (hcol : ∀ u ∈ E, ∫_E ‖K(t−u)‖dt ≤ M)
+```
+
+instead of for every real `t`, `u`.  This is not cosmetic: with `E ⊆ [−T, T]` the difference
+`t − u` is then confined to `[−2T, 2T]`, which is exactly the range in which the pointwise kernel
+bound `‖∑_{n ≤ M} n^{-iv}‖ ≤ (⌊log₂M⌋+1)·214√|v| + 3072M/√|v|` of brick 12 is useful — for `|v|`
+unbounded the `√|v|` term is useless and the instantiation would be impossible.  The empty-`E` case
+is now handled separately (both sides vanish), and `M ≥ 0` is derived from a point of `E` rather
+than assumed at `t = 0`.
+
+### Milestone B, brick 14 — the kernel's row mass, instantiated (2026-08-19)
+
+`Sieve/PlainKernelMass.lean`, axiom-clean, wired.
+
+```text
+log_complex_ofReal_pos   Complex.log ↑x = ↑(Real.log x)  for  x > 0
+cpow_eq_phase            (m : ℂ)^(-(I·t)) = exp(↑(−t·log m)·I)   for m ≥ 1
+plainKernel_eq_dirichlet plainKernel N v = ∑_{m ∈ [1,N]} m^{-(I·(−v))}
+norm_plainKernel_neg     ‖plainKernel N (−v)‖ = ‖plainKernel N v‖
+norm_plainKernel_le (hN : 1 ≤ N) (hv : v ≠ 0) :
+  ‖plainKernel N v‖ ≤ (⌊log₂N⌋+1)·214·√|v| + 3072·N/√|v|
+plainKernel_row_mass (hEs : E ⊆ Icc (-T) T) (hEm) (ht : t ∈ Icc (-T) T) :
+  ∫_E ‖plainKernel N (t−u)‖ du  ≤  2N + ((⌊log₂N⌋+1)·214·√(2T) + 3072N)·|E|
+```
+
+The bridge is the identification of the kernel with a Dirichlet sum (`plainKernel_eq_dirichlet`),
+after which brick 12 applies at `t = −v`; the sign is handled by `norm_plainKernel_neg`, since
+conjugation reflects `v`.  The mass bound then comes from brick 8's near/far split, with the far
+bound valid because `t, u ∈ [−T, T]` confines `|t−u|` to `[1, 2T]` — which is exactly why the
+hypotheses of bricks 7 and 8 had to be weakened to hold only on `E`.
+
+By symmetry the same statement is the column mass.  Together with `setIntegral_normSq_dirPoly_le_HM`
+this gives Lemma 2.6 with an entirely explicit `M`:
+
+```text
+   ∫_E ‖A‖²  ≤  (2N + ((⌊log₂N⌋+1)·214·√(2T) + 3072N)·|E|) · ∑_n ‖a_n‖²
+```
+
+— the published `≪ (N + |E|T^{1/2}log T)∑|a_n|²` with every constant named.
+
+## SCOPE CORRECTION: the three Route E cards need only the QUALITATIVE theorem (2026-08-19)
+
+The table above ("what the three cards need: `o(1/log Y)`, i.e. `(log h)^{-1/β}`") and the
+row "Menon 2026 `(log log L)²/(log L)²`" describe the requirement of an **architecture that has
+since been replaced**.  Traced through the Lean chain that now proves
+`route-e-reciprocal-marker-mobius-hall-law`'s `(3)`, the only analytic hypothesis is
+
+```text
+AveragedMeanSquare (fun n => (μ n : ℝ)) (scaledLength c β)
+  :=  Tendsto (fun x => (∑_{a ∈ (√x,2√x]} (∑_{b ∈ innerFibre x (hh x) a} μ b)²) / (hh x² √x))
+        atTop (𝓝 0)
+```
+
+— a bare `o(1)`, with **no rate**.  See the section "THE RECORDED GATE IS STALE" appended to that
+card for the full dependency trace (`route_e_marker_hall_law → … →
+GenericFibreStepOne.eventually_fibre_step_one_growing_gen`, whose four hypotheses are the mean
+square plus three growth conditions that hold for every `0 < β < 1`).  The `1/log X` saving in the
+cards' conclusion is produced by the multi-block marker construction, not by the mean square.
+
+**Therefore milestone B as scoped here — the exposé §4 arrangement, rate `1/log log h` — closes
+cards 3, 4 and 5 outright.**  Milestone A does not (its range `h ≥ exp((log X)^{0.95})` is *worse*
+than the Route-T mean square already in the corpus, which reaches `exp((log X)^{0.9+})`).  Menon's
+refinement is not on the critical path for any Route E card and should be dropped from the
+programme's requirements.
+
+The interface to hit is a single theorem
+
+```text
+averagedMeanSquare_moebius_scaled' (hc0 : 0 < c) (hc1 : c ≤ 1) (hβ0 : 1/2 < β) (hβ1 : β < 1) :
+    AveragedMeanSquare (fun n => ((moebius n : ℤ) : ℝ)) (scaledLength c β)
+```
+
+and `Sieve/OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget` already reduces it to the
+spectral budget, so what is left is precisely steps `(26)`–`(30)` of §3 and `(31)`–`(40)` of §4.

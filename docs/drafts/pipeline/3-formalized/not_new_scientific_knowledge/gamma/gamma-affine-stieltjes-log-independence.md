@@ -195,3 +195,42 @@ independence but *which constraint selects the pairing*: the completed Euler–G
 pairs each `γ`-divergence with a specific prime-log counterweight. A native object would be a
 pairing rule derived from the completed constraint that reproduces every `γ_n` assembly at once,
 rather than rung-by-rung regularization.
+
+## Lean certification — 2026-08-19 (stage 2 → 3)
+
+The card's **banked** content — the γ-affine structure of every individual finite-support `A_β` —
+is now unconditionally Lean-proved, together with the exact first-order closed form.  All modules
+are wired into `GaloisForLFunctions.RHTower` and `#print axioms` reports only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+### New modules
+
+| Module | Content |
+|---|---|
+| `RHTower/RegularizedDivisorHarmonicLimit.lean` | the reusable regularization device: the real Dirichlet hyperbola with reciprocal kernel, the sharp floor-harmonic comparison `abs_harmonic_sub_log_div_le` (`|H_{⌊N/d⌋} − log(N/d) − γ| ≤ 4d/N`), and **`tendsto_regularizedDivisorHarmonic`**: for `f = 1 ⋆ a`, `∑_{k≤N} f(k)/k − (∑_d a_d/d)·log N → γ(∑_d a_d/d) − ∑_d (a_d/d) log d`, under `Summable (fun d => |a_d|(1+log d)/d)` and `(∑_{d≤N}|a_d|)/N → 0` |
+| `RHTower/StieltjesGammaAffineFirstOrder.lean` | the prime-power ladder identity `∑_{k≤N} v_p(k)/k = ∑_i p^{-i} H_{⌊N/p^i⌋}`, the closed-form model ladder, the explicit `O((log N)/N)` comparison error, and **`tendsto_stieltjesFirstOrderCutoff`: `A_{1,p} = γ/(p−1) − (log p)·p/(p−1)²`**, plus `firstOrderStieltjes_eq_rat_combination` |
+| `RHTower/GeometricMomentRational.lean` | `geomMoment r m = ∑_{i≥0} i^m r^i`, the binomial shift recurrence `(1−r)R_m = r∑_{t<m}C(m,t)R_t`, and `exists_rat_geomMoment` (rationality at rational ratio) |
+| `RHTower/StieltjesGammaAffineSinglePrime.lean` | the order-`β` ladder `c_i = i^β − (i−1)^β`, its telescoping, the divisor identity `∑_{d∣k} a_d = v_p(k)^β`, the two device hypotheses, the lane identities `D_{β,p} = (1−1/p)R_β`, `L_{β,p} = R_{β+1} − (1/p)(R_{β+1}+R_β)`, and **`tendsto_stieltjesSinglePrimeCutoff_rat`: `A_{β,p} = q₁γ + q₂ log p` with `q₁,q₂ ∈ ℚ`, every order** |
+| `RHTower/CoprimeDirichletDivisorProduct.lean` | for coprime supports: `sum_divisors_dconv` (`∑_{d∣k}(a⋆b)_d = (∑_{d∣k}a_d)(∑_{d∣k}b_d)`), `coeffDensity_dconv`, `coeffLogMass_dconv`, `summable_logWeight_dconv`, `sum_Icc_abs_dconv_le`, `LogPolyMass.dconv` |
+| `RHTower/StieltjesGammaAffineMultiPrime.lean` | the multi-prime ladder by iterated coprime convolution, `sum_divisors_multiLadder` (`∑_{d∣k} a_d = ∏_p v_p(k)^{β_p}`), both device hypotheses, and the capstone |
+
+### The capstone
+
+`RHTower.StieltjesGammaAffine.tendsto_stieltjesMultiPrimeCutoff_rat` — for every finite list `ps`
+of distinct primes and every multi-index `β` with `β q ≥ 1`, there exist `D : ℚ` and `c : ℕ → ℚ`
+with
+
+```text
+∑_{k ≤ N} ( ∏_{p ∈ ps} v_p(k)^{β_p} ) / k  −  D · log N
+    →  D·γ  −  ∑_{p ∈ ps} c_p · log p .
+```
+
+That is exactly the card's banked theorem `A_β ∈ ℚ·γ ⊕ ⊕_p ℚ·log p`, now unconditional and
+machine-checked, with the mechanism made explicit: `D = ∏_p D_{β_p,p}` and
+`c_p = L_{β_p,p} ∏_{q≠p} D_{β_q,q}`, and every `D`, `L` is a rational value of the
+negative-order polylogarithm `R_m(1/p)`.
+
+The card's already-certified parts remain in place: the divergence floor of the retracted
+`γ₁ = B₁γ + C₁` split (`RHTower.StieltjesLaneCutoffDivergence`) and the formal seam class
+(`HTGeometry.SeamNonSplitting`).  What remains open on this card is the Schanuel-territory
+independence question, which is an open problem, not a proved statement.

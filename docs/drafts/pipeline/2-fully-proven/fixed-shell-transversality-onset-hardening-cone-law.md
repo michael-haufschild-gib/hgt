@@ -880,3 +880,28 @@ already-formal pieces above.
 Theorem B (quantitative transversality dephasing) and its algebraic
 corollary; Theorem C (the explicit plateau-onset bound); Corollary D; Theorem E (the robust
 hardening cone).
+
+## Lean progress -- the aggregation step of `(17)` (2026-08-19)
+
+`formal/GaloisForLFunctions/HTGeometry/AggregatedOscillatoryMass.lean` (new, umbrella-wired,
+axiom-clean) formalises the step the card singles out as the load-bearing use of Theorem A:
+
+> "At each `theta`, `(9)` bounds the total absolute coefficient mass of all discarded terms by one.
+> Hence all bad-gradient pieces together cost `Q_r(zeta,g)`, not `|K_r|Q_r`."
+
+| Card item | Declaration |
+|---|---|
+| the oscillatory factor of a real phase, and that it has unit modulus | `oscFactor`, `norm_oscFactor`, `norm_mul_oscFactor` |
+| **the discarded region costs one copy of its measure**, with no factor counting the terms | `sum_norm_setIntegral_le_measure` |
+| the diagonal split: the deviation from the zero-phase terms is at most the sum of the remaining moduli | `norm_integral_sub_diagonal_le` |
+| **`(17)` in aggregated form**: deviation `≤ μ(discarded) + ∑ (individual good-region bounds)` | `norm_integral_sub_diagonal_le_measureReal_add` |
+
+The statement is deliberately free of the sphere, the spectrum and the particular phases: it takes
+a finite family, a unit total coefficient mass on the discarded set, a discarded set of finite
+measure, and whatever individual bounds hold on the complement.  Composing it with
+`abs_oscillatory_le` (`HTGeometry/NonstationaryPhaseSphere`) for the good-region bounds and with
+`replica_variation_le_one` (`HTGeometry/UnitCoefficientVariation`) for the mass hypothesis is
+exactly `(17)`; the remaining work is supplying the two ingredient families for the fixed-shell
+spectral data, not any further analysis.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.

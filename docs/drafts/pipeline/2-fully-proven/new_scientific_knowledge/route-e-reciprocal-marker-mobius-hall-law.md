@@ -4920,3 +4920,74 @@ in the window, so no representation can be counted twice.
 this card and stage 3 is the exponent range `1/2 < β ≤ 9/10`, which needs a Matomäki–Radziwiłł mean
 square in place of the Route-T one; that is the shared gate tracked on
 `../../1-in-progress/matomaki-radziwill-lean-programme.md`.  Nothing else on the card is open.
+
+## THE RECORDED GATE IS STALE: only the QUALITATIVE mean square is needed (2026-08-19)
+
+The section "Lean gate, restated (2026-08-17)" above says the card's analytic gate is Menon's
+*quantitative* rate `(log log L)²/(log L)² + (log log Y)⁴/(log Y)²`, and that "the exponent `2` is
+used, not merely positivity".  **That was the requirement of the Markov-step architecture, which the
+free-scale marker device replaced.  It is no longer the requirement.**
+
+Traced through the Lean chain that actually proves `(3)`:
+
+```text
+route_e_marker_hall_law
+  → FreeScaleCover.tiled_count → FreeScaleTileCount.tile_count_clean
+  → FreeScaleBadStart.eventually_card_freeBadStartUnion_le
+  → ScaledBadStart.eventually_card_badOuter_le
+  → ScaledFibreStepOne.eventually_fibre_step_one_growing_scaled
+  → GenericFibreStepOne.eventually_fibre_step_one_growing_gen
+```
+
+`eventually_fibre_step_one_growing_gen` has exactly four hypotheses:
+
+```text
+(hms    : AveragedMeanSquare (fun n => (μ n : ℝ)) hh)
+(hgrow  : Tendsto hh atTop atTop)
+(hratio : Tendsto (fun x => hh x / √x) atTop (𝓝 0))
+(hpoly  : Tendsto (fun x => (log x)^3 / hh x) atTop (𝓝 0))
+```
+
+and `AveragedMeanSquare f hh` is a **`Tendsto … (𝓝 0)`** — a purely qualitative `o(1)`:
+
+```text
+AveragedMeanSquare f hh :=
+  Tendsto (fun x => (∑_{a ∈ outerBlock x (hh x)} (∑_{b ∈ innerFibre x (hh x) a} f b)²)
+              / (hh x ^ 2 * √x)) atTop (𝓝 0)
+```
+
+The last three hypotheses hold for **every** `0 < β < 1` (`tendsto_scaledLength` needs `0 < β`,
+`tendsto_scaledLength_div_sqrt` needs `0 < β < 1`, `tendsto_rpow_log_div_scaledLength` needs
+`0 < β`).  The **only** occurrence of `9/10 < β` anywhere in the chain is
+`ScaledFibreStepOne.averagedMeanSquare_moebius_scaled`, whose entire content is to discharge `hms`
+from the Route-T mean square `ScaledBudgetLimit.averagedMeanSquare_moebius_scaledLength`.
+
+### Consequence
+
+The `ε` of the device is an arbitrary positive constant, quantified *outside* the mean square: the
+tile bound is proved for one fixed `ε` chosen from `K₀` alone, and the marker construction — not the
+mean square — supplies the `1/log X` saving.  Therefore:
+
+> **Cards 3, 4 and 5 are gated on the *qualitative* Matomäki–Radziwiłł short-interval theorem
+> only.**  The crude arrangement of Soundararajan's exposé §4 (rate `1/log log h`) suffices; §6's
+> `(log h)^{-1/10}` suffices; Menon's `(log h)^{-2}` is **not** needed and never was, under the
+> present architecture.
+
+Concretely, all that is required to lift this card from `9/10 < β < 1` to `1/2 < β < 1` is a single
+Lean theorem of the shape
+
+```text
+averagedMeanSquare_moebius_scaled' {c β : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1)
+    (hβ0 : 1/2 < β) (hβ1 : β < 1) :
+    AveragedMeanSquare (fun n => ((moebius n : ℤ) : ℝ)) (scaledLength c β)
+```
+
+after which `9/10` may be replaced by `1/2` verbatim in `ScaledBadStart`, `FreeScaleBadStart`,
+`FreeScaleTileCount`, `FreeScaleCover` and `RouteEMarkerHallLaw` — six hypothesis sites, no proof
+changes, since none of those proofs uses the numeral for anything but forwarding.
+
+The fibre form is already the exposé's own shape: `Sieve/OmegaSpectralFibre.
+averagedMeanSquare_moebius_of_omegaBudget` reduces `AveragedMeanSquare` to the spectral budget
+`∫_ℝ ‖K_δ(w)‖²‖A_ω(w)‖² dw`, and `A_ω` is the `ω_P`-weighted Möbius polynomial that factors exactly
+(`OmegaWeightedFactorisation.omegaWeightedMoebiusPoly_eq_bilinear`).  So the remaining work is
+exactly milestone B's steps `(26)`–`(40)` and nothing else.

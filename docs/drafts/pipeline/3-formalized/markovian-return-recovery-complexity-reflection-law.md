@@ -1,10 +1,10 @@
 # Markovian return recovery and complexity reflection law
 
 - **ID:** `markovian-return-recovery-complexity-reflection-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** theorem / open-system recurrence rigidity / robust circuit incidence
 - **Parent:** `autonomous-return-complexity-reflection-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [CLASSICAL CORE] [EXTERNAL PRIORITY OPEN] [LEAN DEFERRED]`
+- **Status:** `[LEAN-PROVED] [FRONTIER ADVANCE] [CLASSICAL CORE] [EXTERNAL PRIORITY OPEN]`
 - **Date:** 2026-08-13
 
 ## Public sentence
@@ -293,3 +293,136 @@ identification of the abstract metric monoid with completely positive trace-pres
 diamond distance, together with the exact-return rigidity statement that a genuinely dissipative
 semigroup cannot return exactly.  The latter needs a Lean theory of the diamond norm, which is
 absent from mathlib and from this corpus.
+
+## Lean progress -- the card is now closed (2026-08-19)
+
+The two items listed above as remaining are done.  `(6)` is no longer a hypothesis but a theorem
+about a `DynamicalSemigroup`, and the abstract metric monoid is now *identified* with completely
+positive trace-preserving maps under the diamond distance: the diamond distance is constructed,
+proved to be a metric, and proved to satisfy exactly the two hypotheses the reflection law
+consumes.  Corollary C is proved outright, so no classical input is imported.
+
+### The trace-norm layer
+
+| Card item | Declaration | Module |
+|---|---|---|
+| the nuclear norm of a Hermitian matrix is `∑\|λ_i\|` | `finiteMatrixNuclearNorm_isHermitian` | `HTGeometry/HermitianTraceNorm` |
+| the trace of a functional-calculus image | `trace_cfc_re`, `trace_re_eq_sum_eigenvalues` | same |
+| a positive matrix has nuclear norm its trace | `finiteMatrixNuclearNorm_posSemidef` | same |
+| **duality**: a Hermitian contraction pairs at most as strongly as the nuclear norm | `IsHermContraction`, `re_trace_mul_le_nuclearNorm` | same |
+| **duality, attainment**: the sign of the spectrum realises it | `exists_isHermContraction_re_trace_eq` | same |
+| **the triangle inequality on Hermitian matrices** | `finiteMatrixNuclearNorm_add_le` | same |
+| the Jordan decomposition `A = A₊ − A₋` with `‖A‖₁ = tr A₊ + tr A₋` | `hermPos`, `hermNeg`, `hermPos_sub_hermNeg`, `trace_hermPos_add_trace_hermNeg` | `HTGeometry/PositiveTraceContraction` |
+| **a positive trace-preserving map contracts `‖·‖₁` on Hermitian matrices** | `finiteMatrixNuclearNorm_apply_le` | same |
+| the block/ancilla dictionary and the amplification calculus | `blockMat`, `blockMat_mul`, `blockMat_trace`, `amplify_blockMat`, `trace_amplify` | `HTGeometry/AncillaBlockMatrix` |
+| the Hermitian dilation `[[0,X],[Xᴴ,0]]` and `‖dil X‖₁ = 2‖X‖₁` | `hermDilation2`, `finiteMatrixNuclearNorm_hermDilation2` | `HTGeometry/PositiveMapTraceNormContraction` |
+| **a positive linear map is star preserving** | `positiveLinear_map_conjTranspose` | same |
+| **a two-positive trace-preserving map contracts `‖·‖₁` of *every* matrix** | `nuclearNorm_apply_le_of_twoPositive` | same |
+| the triangle inequality and the reverse triangle inequality in full generality | `finiteMatrixNuclearNorm_add_le'`, `_sub_le'`, `_sub_le_sub` | same |
+
+### The channel layer: the diamond distance is a metric on the monoid of channels
+
+`HTGeometry/QuantumChannelDiamond.lean`.
+
+| Card item | Declaration |
+|---|---|
+| a channel: linear, completely positive, trace preserving | `QuantumChannel` |
+| channels compose, and form a monoid | `Monoid (QuantumChannel n)` |
+| a channel is positive, and every ancilla amplification is a positive trace-preserving map | `QuantumChannel.positive`, `isPositiveTP_amplify_anc` |
+| **every amplification of a channel is again two-positive** | `amplify_amplify`, `twoPositive_amplify` |
+| **a channel contracts the trace norm at every ancilla level** | `nuclearNorm_amplify_le` |
+| **`(2)`**: the diamond distance, as the sup over the trace-norm unit ball | `diamondDist` |
+| it is bounded by two and attained on a nonempty set | `diamondDistSet_bddAbove`, `diamondDistSet_nonempty` |
+| **the diamond distance is a genuine metric on channels** | `MetricSpace (QuantumChannel n)` |
+| **`‖(Φ−Ψ)(X)‖₁ ≤ d_◇(Φ,Ψ)·‖X‖₁`** | `nuclearNorm_sub_le_diamondDist_mul` |
+| **left composition contracts** -- the `LeftContracting` hypothesis | `leftContracting_quantumChannel` |
+| unitary channels, and their inverses | `unitaryChannel`, `unitaryChannel_mul_star`, `star_unitaryChannel_mul` |
+| **right composition by a unitary channel is a diamond isometry** | `diamondDist_mul_unitaryChannel` |
+
+`eq_of_dist_eq_zero` is proved through `IsPositiveTP.eq_of_eqOn_density`: a positive
+trace-preserving map is determined by its action on states, because every positive matrix is a
+non-negative multiple of a state and every matrix is a complex combination of Hermitian ones.
+
+### Theorems A and B for a dynamical semigroup
+
+`HTGeometry/MarkovianReturnRecovery.lean`.
+
+| Card item | Declaration |
+|---|---|
+| a quantum dynamical semigroup | `DynamicalSemigroup` |
+| **`(6)`**: `Λ_{R−t} ∘ Λ_t = Λ_t ∘ Λ_{R−t} = Λ_R` -- now a theorem, not a hypothesis | `recovery_left`, `recovery_right` |
+| **`(7)`**: the recovery defect of the pair is exactly the return defect | `dist_recovery_eq` |
+| **`(8)`**: `(1 − δ_R)‖X‖₁ ≤ ‖(Λ_t ⊗ id)(X)‖₁` for **every** matrix `X` and every ancilla | `one_sub_defect_mul_nuclearNorm_le` |
+| a finite inverse-closed dictionary of unitary channels | `UnitaryDictionary` |
+| right composition by a dictionary word is a diamond isometry | `UnitaryDictionary.dist_mul_word` |
+| **`(9)`**: complexity reflection at radius shift `δ_R` | `dist_reflect_word`, `DynamicalSemigroup.dist_reflect_word` |
+| **`(10)`**: incidence-count interlacing at each exact length | `card_reflect_word`, `DynamicalSemigroup.card_reflect_word` |
+| **`(11)`**: any non-negative length weighting interlaces | `sum_weighted_le` |
+
+### Corollary C, proved rather than imported
+
+The classification of completely positive trace-preserving maps with completely positive inverse
+is built from scratch.  Four modules.
+
+`HTGeometry/CompletelyPositiveSchwarz.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the quadratic form of a two-by-two block matrix | `blockVec2`, `dotProduct_blockMat_two` |
+| **`[[A,Bᴴ],[B,1]] ⪰ 0 ⟹ BᴴB ≤ A`** | `sub_conjTranspose_mul_posSemidef` |
+| `[[XᴴX, Xᴴ],[X,1]] = CᴴC ⪰ 0` | `posSemidef_schwarzBlock` |
+| a completely positive linear map, and its positivity | `IsCP`, `IsCP.pos`, `IsCP.map_conjTranspose` |
+| **the Kadison--Schwarz inequality** `Θ(X)ᴴΘ(X) ≤ Θ(XᴴX)` | `IsCP.schwarz` |
+
+`HTGeometry/UnitalCPInverseRigidity.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a positive map is monotone for the Loewner order | `IsCP.monotone` |
+| **Schwarz equality** for two mutually inverse unital completely positive maps | `IsCP.schwarz_eq` |
+| **multiplicativity**, by polarising in `A+B` and `A+iB` | `IsCP.map_mul_of_inverse` |
+
+`HTGeometry/MatrixStarAutomorphismInner.lean`:
+
+| Card item | Declaration |
+|---|---|
+| moving a matrix across the pairing conjugates it | `star_mulVec_dotProduct` |
+| the unit is the sum of the diagonal matrix units | `one_eq_sum_diagonal_single` |
+| **an injective unital star endomorphism of a matrix algebra is a unitary conjugation** | `exists_unitary_conjugation_of_starAlgHom` |
+
+`HTGeometry/ChannelInverseRigidity.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a positive matrix is dominated by its trace times the unit | `posSemidef_le_trace_smul_one` |
+| a linear functional vanishing on positive matrices vanishes | `linear_eq_zero_of_eqOn_posSemidef` |
+| a matrix pairing with the trace like the unit is the unit | `eq_one_of_trace_mul_eq` |
+| **`Φ(1)` is nonsingular** when `Φ` is onto | `QuantumChannel.det_map_one_ne_zero` |
+| **Corollary C**: a channel with a channel inverse is `X ↦ W X Wᴴ` with `W` unitary | `QuantumChannel.exists_unitary_of_channel_inverse` |
+
+`HTGeometry/MarkovianExactReturn.lean` runs it back through the semigroup:
+
+| Card item | Declaration |
+|---|---|
+| a vanishing return defect is an exact return -- this is where the metric (not pseudometric) matters | `ch_eq_one_of_dist_eq_zero` |
+| **exact return makes every intermediate channel invertible** | `inverse_of_exact_return` |
+| **`(14)`**: every `Λ_t` is a unitary conjugation | `exists_unitary_of_exact_return` |
+| **`(14)`**: and the semigroup is periodic, `Λ_{t+R} = Λ_t` | `periodic_of_exact_return` |
+| **`(9)`--`(10)` become equalities under `t ↦ R−t`** | `card_reflect_eq` |
+
+The normalisation is the step that makes the classification unconditional: `P = Φ(1)` is positive
+definite because `X ↦ ⟨v, Φ(X)v⟩` is a positive linear functional and a positive matrix is
+dominated by its trace times the unit, so a functional annihilating the unit annihilates
+everything -- while `Φ` is onto.  Conjugating by `P^{-1/2}` makes `Φ` unital without disturbing
+complete positivity or invertibility, Kadison--Schwarz is then saturated in both directions, the
+normalised map is a star automorphism, hence inner, and trace preservation forces the remaining
+positive factor to be one.
+
+Axiom audit: every displayed declaration depends only on `propext`, `Classical.choice`,
+`Quot.sound`.
+
+### Nothing remains
+
+`(6)`--`(11)` and Corollary C are all Lean theorems about arbitrary finite-dimensional quantum
+dynamical semigroups, arbitrary ancillas, and arbitrary finite inverse-closed unitary
+dictionaries.  The card moves to stage 3.

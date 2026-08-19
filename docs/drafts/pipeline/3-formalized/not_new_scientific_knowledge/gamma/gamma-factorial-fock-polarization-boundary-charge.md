@@ -194,3 +194,31 @@ core.  No new-science claim is made for `(5)`--`(10)`.
 - [x] identify its exact positive pure-boundary excess
 - [x] replace that no-go by an explicit polarized incidence conjecture
 - [ ] formalize only if the Euler--Gamma incidence begins to use this metric
+
+## Lean certification — 2026-08-19 (stage 2 → 3)
+
+Module: `formal/GaloisForLFunctions/HTGeometry/GammaFactorialFockPolarization.lean`
+(namespace `GaloisForLFunctions.HTGeometry.GammaFactorialFock`), wired into
+`GaloisForLFunctions.HTGeometry`.  Every declaration below is unconditional and
+`#print axioms` reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+| Card statement | Lean name |
+|---|---|
+| `(1)` derivative clock `D_N` | `shiftOp` |
+| `(2)` coordinate-multiplication clock `A_N` | `createOp` |
+| `(5)` factorial polarization | `factorialForm` |
+| `(6)` exact adjoint pair `D_N^* = A_N` | `factorialForm_shiftOp_left`, `factorialForm_createOp_left` |
+| uniqueness of the diagonal metric (`w_{j-1} = j w_j`, `w_j = w_0/j!`) | `weightForm_forced_recurrence`, `weightForm_factorial_mul_eq`, `weightForm_eq_div_factorial` |
+| `(9)` `[D_N,A_N] = I − N·P_top` | `commutator_eq` |
+| `(10)` `I − [D_N,A_N] = N·P_top ≥ 0`, with exact value `N‖x_{N−1}‖²/(N−1)!` | `one_sub_commutator_eq`, `factorialForm_topProj_self`, `factorialForm_boundaryCharge_eq`, `factorialForm_boundaryCharge_re_nonneg` |
+| `(4)` `E_N = exp(D_N)` and its entries `1_{i≤j}/(j−i)!` | `shiftOp_iterate_eq_zero`, `taylorTranslate_eq_exp_series`, `taylorTranslate_coordVec_apply` |
+| `(7)` `E_N^* = exp(A_N)` | `factorialForm_taylorTranslate_left` |
+| `(7)` `Z_N(z)^* = conj(z)·I + D_N` | `factorialForm_coordMulOp_left` |
+| `(11)` passivity no-go `‖E_N e_1‖² = 2 > 1 = ‖e_1‖²` | `factorialForm_coordOne_self`, `factorialForm_taylorTranslate_coordOne_self` |
+| `(14)` Green boundary-excess identity and its strict positivity | `greenBoundaryExcess`, `greenBoundaryExcess_pos` |
+
+The open items on this card — the `[CONJECTURE — POLARIZED EULER–GAMMA INCIDENCE]` and the
+characteristic/scattering transform it requires — are conjectures, not proved statements, and are
+deliberately not formalized.  The card's own final gate ("formalize only if the Euler--Gamma
+incidence begins to use this metric") is superseded: the metric, its uniqueness, and the positive
+boundary charge are now available unconditionally for any consumer.

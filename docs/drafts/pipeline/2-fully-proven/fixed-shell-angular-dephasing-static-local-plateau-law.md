@@ -697,3 +697,270 @@ every analytic and algebraic step of Lemma A1 and Lemma A2 is proved.
 After that, Theorem A follows by the already-formal chain: `quadraticRateDefect_smul` for `(13)`,
 `realMvPolynomial_eq_zero_of_eqOn_zero_isOpen` and `exists_eqOn_zero_of_finsetProd_eqOn_zero` for
 `(14)`, and `localExtension_quadraticRate_eq_zero` for Lemma A2.
+
+## Lean progress -- the Theorem A assembly layer (2026-08-19)
+
+Three new modules turn the already-formal algebraic ingredients into the exact shape the
+globalisation `(14)` needs.  They mirror the *linear* machine of the parent card
+(`AnalyticEscapeGenericityTransfer`, `PolynomialHermitianMatrixProjectiveGenericity`), which is
+what makes the quadratic case an assembly rather than a new theory.
+
+`formal/GaloisForLFunctions/HTGeometry/QuadraticRateOrbitPolynomialField.lean` (new,
+umbrella-wired, axiom-clean) repeats the labeling-orbit construction over an **arbitrary field of
+characteristic zero**.  This is not cosmetic: the rational module cannot state `(13)`, because the
+multiple there is `κ = b²` with `b` the constant value of the projective action on the sphere
+patch, an arbitrary real number, while the characteristic-coefficient pullback used by the
+genericity machine lives over `ℂ`.
+
+| Card item | Declaration |
+|---|---|
+| the relation `(∑ c_iX_i)² − κ∑X_i²` over any field | `fieldQuadraticRateRelationPolynomial` |
+| **the symmetrised obstruction `(14)`**, the product over every labeling | `fieldQuadraticRateOrbitPolynomial`, `fieldQuadraticRateOrbitValue` |
+| its factors are the relabelled relations, so it vanishes exactly when some labeling holds | `fieldQuadraticRateOrbitValue_factor`, `fieldQuadraticRateOrbitValue_eq_zero_iff` |
+| over the reals the factors are exactly the quadratic-rate defects | `fieldQuadraticRateOrbitValue_real_eq_zero_iff` |
+| **the obstruction is symmetric**, hence a polynomial in the characteristic coefficients | `fieldQuadraticRateOrbitPolynomial_isSymmetric`, `fieldQuadraticRateCoefficientPolynomial`, `esymmAlgHom_fieldQuadraticRateCoefficientPolynomial`, `eval_fieldQuadraticRateCoefficientPolynomial_esymm` |
+| **the relation is a nonzero polynomial** unless the multiple and the packet both vanish | `fieldQuadraticRateRelationPolynomial_eq_zero_iff` |
+| hence so are the orbit and coefficient obstructions | `fieldQuadraticRateOrbitPolynomial_ne_zero`, `fieldQuadraticRateCoefficientPolynomial_ne_zero` |
+
+Characteristic zero is used exactly once, to divide the cross term of the two-level test by two.
+
+`formal/GaloisForLFunctions/HTGeometry/QuadraticRateMatrixObstruction.lean` (new, umbrella-wired,
+axiom-clean) descends the obstruction to the Hamiltonian parameters.
+
+| Card item | Declaration |
+|---|---|
+| elementary symmetric evaluation does not see the coefficient field | `eval₂_esymm_rat_eq_complex` |
+| **the obstruction pulled through the characteristic coefficients of a polynomial matrix family** | `quadraticRateObstructionPullback` |
+| **it evaluates to the orbit obstruction of the root packet** at every parameter with a full simple spectrum | `eval_quadraticRateObstructionPullback` |
+| **one complex parameter where it survives beats every real open set**: the real and imaginary parts are real polynomials, and a nonzero real polynomial cannot vanish on a nonempty open set | `exists_mem_eval_quadraticRateObstructionPullback_ne_zero` |
+
+`formal/GaloisForLFunctions/HTGeometry/QuadraticRateAnalyticEscape.lean` (new, umbrella-wired,
+axiom-clean) supplies the complex parameter from one analytic chart.
+
+| Card item | Declaration |
+|---|---|
+| the `σ`-relabelled relation of an analytic branch family | `permutedAnalyticQuadraticRate`, `fieldQuadraticRateOrbitValue_branch` |
+| every labeling factor is analytic on the chart | `analyticOnNhd_permutedAnalyticQuadraticRate` |
+| **chart escape**: if no single labeling holds identically on a connected chart, the orbit obstruction is somewhere nonzero there | `exists_fieldQuadraticRateOrbitValue_ne_zero_of_analytic` |
+| **the complex witness** for the parameter-space argument | `exists_eval_quadraticRateObstructionPullback_ne_zero_of_analyticBranchEscape` |
+| **nowhere flatness**: the obstruction is nonzero somewhere inside every nonempty open set of real parameters | `exists_mem_eval_quadraticRateObstructionPullback_ne_zero_of_analyticBranchEscape` |
+
+The chain `(13) → (14) → (6)` is therefore complete *given one input*: for every labeling `σ`, a
+chart point at which the `σ`-relabelled quadratic-rate relation fails.  That input is Lemma A2 in
+contrapositive form, and `localExtension_quadraticRate_eq_zero` already proves it under its
+hypothesis `hL` -- that the uncoupled action `L₀` is not identically zero in the new local field.
+
+### What remains for Theorem A
+
+1. **The `¬hL` branch.**  If `L₀ ≡ 0` then `(11)` forces `κ = 0` and the identity degenerates to a
+   *linear* relation among the eigenbranches, which the parent card's affine independence (trace is
+   the only relation) kills.  What is missing is the Lean bridge from the parent card's
+   linear-relation escape to this branch.
+2. **The induction bookkeeping.**  Assembling the closed cycle
+   `exists_covering_endpoint_probe → eventually_forall_layerGerm_endpoint_ne_zero →
+   eventually_forall_layerReducedTransition_ne_zero` into a witness at every qubit number,
+   carrying simplicity and distinct ordered gaps along -- both are open conditions at small
+   coupling, and both hold for all but finitely many split fields.
+
+## Lean progress -- the degenerate branch of Lemma A2 is closed
+
+`formal/GaloisForLFunctions/HTGeometry/LocalExtensionQuadraticRateFlatCollapse.lean` (new,
+umbrella-wired, axiom-clean) removes the `hL` hypothesis from Lemma A2.  Item 1 of the previous
+"what remains" is therefore done.
+
+| Card item | Declaration |
+|---|---|
+| a crown-constant zero-sum packet on the split labels vanishes | `crossPairConstant_eq_zero_of_sum_zero` |
+| **`(10)` isolated**: the second-order response of the extension is the crown pole packet | `localExtension_secondDeriv_sum` |
+| **the degenerate identity**: a vanishing square of the spectral action makes the pole packet vanish at every admissible local field | `localExtension_packet_eq_zero_of_flatSquare` |
+| **Lemma A2, degenerate branch**: `L₀ ≡ 0` still forces `c = 0` | `localExtension_quadraticRate_eq_zero_of_flat` |
+| **Lemma A2, unconditional** | `localExtension_quadraticRate_eq_zero_unconditional` |
+
+The mechanism is the one the card describes and is now fully formal.  If `L₀ ≡ 0` the key
+identity `L₀(z)·∂²ₓL(z,0) = κ Q_V` degenerates to `κ Q_V = 0`, so a probe with nonzero rate forces
+`κ = 0`; the quadratic-rate identity then reads `(∑ cᵢλᵢ)² = 0`, hence `∑ cᵢλᵢ = 0` on a whole
+neighbourhood of the uncoupled point, hence its second derivative vanishes.  That second
+derivative is the *same* simple-pole packet, now paired with the **constant** multiplier one.  A
+constant nonzero multiplier has no root, so `affinePole_support_subsingleton` leaves *no*
+exceptional ordered pair at all -- strictly better than the generic branch -- and the crown graph
+collapses every layer coefficient; the zero sum finishes.
+
+The only remaining hypothesis is `Q_V ≠ 0`, which is the statement that the probe `V_A = A ⊗ X`
+carries a nonzero Hilbert--Schmidt rate.  It is not a restriction: a probe with zero rate is the
+zero probe, which no endpoint-complete family uses.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound` only, for every declaration above and
+for the three assembly modules of the previous section.
+
+### What remains for Theorem A
+
+Only the induction bookkeeping: assembling
+`exists_covering_endpoint_probe → eventually_forall_layerGerm_endpoint_ne_zero →
+eventually_forall_layerReducedTransition_ne_zero` into a witness at every qubit number, carrying
+simple spectrum and distinct ordered gaps along the extension.  Both are open conditions at small
+coupling and hold for all but finitely many split fields, so the argument is a genericity
+bookkeeping step over assets that are all already formal.
+
+### The remaining gap, located exactly
+
+`exists_localField_quadraticRate_not_eventually` (same module) is the contrapositive interface:
+a nonzero zero-sum packet cannot satisfy the quadratic-rate identity throughout a one-qubit
+extension slice, so some admissible local field escapes it.  That is precisely the `hlabel`
+hypothesis of `exists_mem_eval_quadraticRateObstructionPullback_ne_zero_of_analyticBranchEscape`,
+read inside the extension slice.  What it needs, and all that Theorem A now needs, is a witness
+with **full endpoint completeness**:
+
+`hM : ∀ α β, α ≠ β → M α β * M β α ≠ 0`.
+
+This is where the quadratic case genuinely parts from the parent card.  The parent card's witness
+is a `GoodObserverSpectralSystem`, whose `HermitianObserverFamilyGood` field asks only that the
+transition support graph be **preconnected and non-bipartite** -- enough for the linear
+affine-independence residue argument, because a spanning connected non-bipartite graph already
+kills a linear relation.  The quadratic crown argument uses *every* ordered pair, so it needs the
+support graph to be **complete**.  That is exactly Lemma A1 of this card, and it is the reason
+Lemma A1 exists.
+
+So the three items are:
+
+1. **Base case.**  A two-qubit traceless local Hamiltonian with simple spectrum, distinct nonzero
+   ordered gaps, and a *complete* endpoint transition graph.  The card's argument is genericity:
+   the squared Hilbert--Schmidt norm of `Tr_ū |ψ_β⟩⟨ψ_α|` is a nonzero real-analytic function of
+   the eigenbasis and there are finitely many pairs.  `reducedTransition_eq_zero_iff` already
+   reduces completeness to that single nonvanishing condition, and
+   `exists_probeCombination_ne_zero` already supplies "a nonzero polynomial over `ℂ` has a
+   nonvanishing point".
+2. **Induction.**  `exists_covering_endpoint_probe → eventually_forall_layerGerm_endpoint_ne_zero`
+   is the closed cycle; simplicity and distinct ordered gaps are open conditions at small coupling
+   and hold off a finite set of split fields.
+3. **Slice plumbing.**  Identify `∑ᵢ λᵢ(g)² = Tr((H + gV)²)/D` for the full simple root packet, so
+   that the chart identity really has the shape `κ (Q₀(z) + g² Q_V)`; `trace_pow_eq_sum_eigenvalues_pow`
+   is the Hermitian case of that bridge.
+
+Nothing else in the chain `(6) ← (13) ← (14)` is open.
+
+## Lean progress -- the base case of Lemma A1 is closed
+
+`formal/GaloisForLFunctions/HTGeometry/BellEndpointCompleteBasis.lean` (new, umbrella-wired,
+axiom-clean) supplies the two-qubit endpoint-complete witness, and does it without any case
+analysis over the twelve ordered pairs.
+
+The observation that removes the case analysis is that reshaping a bipartite vector into a matrix
+turns the endpoint criterion into a product:
+
+`R(ψ, φ) = reshape φ · (reshape ψ)ᴴ`.
+
+So a basis every member of which reshapes to a *nonzero multiple of a unitary* -- a maximally
+entangled basis -- is endpoint complete outright, because a product of an invertible matrix with
+an invertible matrix is nonzero.  The Bell basis is exactly such a basis: the reshape of the Bell
+vector labelled `(a, b)` is `2^{-1/2}` times the unitary `i ↦ (-1)^{a i}` supported on
+`k = i ⊕ b`.
+
+| Card item | Declaration |
+|---|---|
+| the reshape of a bipartite vector | `bipartiteReshape` |
+| **the reduced transition is a product of reshapes** | `reducedTransition_eq_reshape` |
+| **maximally entangled vectors are endpoint visible** | `reducedTransition_ne_zero_of_unitary_reshape` |
+| the sign `(-1)^{a i}` and the Bell reshapes | `boolSign`, `bellReshape`, `bellReshape_conjTranspose_mul` |
+| the Bell vectors | `bellVector`, `bipartiteReshape_bellVector` |
+| **endpoint completeness of the Bell basis**, for every ordered pair | `reducedTransition_bellVector_ne_zero` |
+| **the Bell family is orthonormal** | `bellMatrix`, `bellMatrix_conjTranspose_mul`, `bellMatrix_mul_conjTranspose` |
+| the two-qubit Hamiltonian with a prescribed spectrum in that eigenbasis | `bellHamiltonian`, `bellHamiltonian_isHermitian`, `bellHamiltonian_trace`, `bellHamiltonian_mul_bellMatrix` |
+| **the base case of Lemma A1**: for every prescribed real spectrum there is a Hermitian two-qubit Hamiltonian with that spectrum in an orthonormal eigenbasis every ordered pair of which is endpoint visible | `exists_endpointComplete_twoQubit_witness` |
+
+Choosing the spectrum to be a Sidon set shifted to trace zero -- for instance `{0,1,3,7} − 11/4`,
+whose six positive differences `1,2,3,4,6,7` are distinct -- makes the witness simple with
+distinct nonzero ordered gaps as well, so it satisfies every hypothesis of
+`localExtension_quadraticRate_eq_zero_unconditional` at the base of the induction.  Note also that
+for two qubits every `4 × 4` Hermitian matrix is an onsite-plus-edge Hamiltonian of the two-site
+path, so the witness is automatically path-local.
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+### What remains for Theorem A, after the base case
+
+1. **The induction step's genericity bookkeeping.**  `eventually_forall_layerGerm_endpoint_ne_zero`
+   already propagates endpoint completeness across one attached qubit for all small nonzero
+   coupling.  What must be added is that simplicity and distinct nonzero ordered gaps also
+   survive: both are open conditions at zero coupling and hold for all but finitely many split
+   fields, so this is a finite-avoidance argument over assets that are already formal.
+2. **Slice plumbing.**  Identify `∑ᵢ λᵢ(g)² = Tr((H + gV)²)` for the full simple root packet, so
+   the chart identity has the shape `κ (Q₀(z) + g² Q_V)` that
+   `localExtension_quadraticRate_eq_zero_unconditional` consumes;
+   `trace_pow_eq_sum_eigenvalues_pow` is the Hermitian case of that bridge.
+
+### Correction to item 2 of the previous list
+
+Item 2 above -- "identify `∑ᵢ λᵢ² = Tr(H²)`" -- is not actually needed, and asking for it would be
+a detour: mathlib has the power sum of the roots only at order one
+(`Matrix.trace_eq_sum_roots_charpoly`), and the order-two case is a genuine mathlib gap requiring
+either the second Newton identity for the characteristic polynomial or Schur triangulation,
+neither of which is available.
+
+The detour is avoidable because the card's rate is `Q(H) = D^{-1} Tr(H²)` in the first place, not
+the spectral power sum.  Along the extension slice `H(z,g) = diag(layerSplitEnergy E z) + g·V`
+with `V = layerCrossPerturbation M`,
+
+`Tr(H(z,g)²) = Tr(diag(...)²) + 2g·Tr(diag(...)·V) + g²·Tr(V²) = Q₀(z) + g² Q_V`,
+
+because `V` has zero diagonal -- which is already the corpus lemma
+`layerCrossPerturbation_diagonal`.  So the shape `κ(Q₀(z) + g² Q_V)` that
+`localExtension_quadraticRate_eq_zero_unconditional` consumes is a **direct matrix computation**,
+with no eigenvalues involved.
+
+What must change instead is the shape of the labeling-orbit obstruction.  It should carry the rate
+as its own variable:
+
+`(∑ᵢ cᵢ Xᵢ)² − Y`   in   `MvPolynomial (I ⊕ Unit) K`,
+
+symmetrised over permutations of the `X`'s only.  The product is then symmetric in `X` for each
+fixed `Y`, so it descends to a polynomial in the elementary symmetric functions of the spectrum
+*and* `Y`; substituting the characteristic coefficients for the former and `κ·Tr(H²)/D` for the
+latter gives a polynomial in the matrix entries exactly as before.  This is a bounded refactor of
+`QuadraticRateOrbitPolynomialField` and `QuadraticRateMatrixObstruction`, and it removes the last
+analytic dependency from the globalisation step.
+
+### The refactor is already half done
+
+`QuadraticRateOrbitPolynomialField` now works over an arbitrary **characteristic-zero integral
+domain**, not just a field: the construction, the symmetry, the descent through
+`MvPolynomial.esymmAlgEquiv` (which needs only `CommRing`) and the non-vanishing all go through,
+because the only arithmetic used is "two is not a zero divisor" and "a square vanishes only at
+zero".  That is what makes the rate-as-variable version free rather than a rewrite: instantiate
+the same construction at
+
+`K := MvPolynomial θ ℂ`,   `c := fun i => C (c₀ i)`,   `κ := C κ₀ · (M * M).trace`,
+
+where `(M * M).trace` is literally `Tr(H²)` as a polynomial in the parameters.  Then
+`fieldQuadraticRateCoefficientPolynomial` already lives over the parameter ring and
+`MvPolynomial.aeval (matrixCharacteristicElementaryPolynomial M)` already substitutes the
+characteristic coefficients, so the pullback is the same definition read one level up.
+
+What that instantiation still needs is base-change naturality: for a ring hom `f : K →+* L`,
+`map f` should commute with the relation, the labeling orbit, and the descent, so that evaluating
+the parameters afterwards reproduces the orbit obstruction of the root packet.  The first two are
+immediate from the formulas; the third is naturality of `esymmAlgEquiv`, which mathlib does not
+state.
+
+### Correction to item 1: the induction cannot preserve distinct gaps *uncoupled*
+
+Item 1 above asked to propagate "simple spectrum and distinct nonzero ordered gaps" across the
+attached qubit.  Simplicity does propagate for all but finitely many split fields, but distinct
+ordered gaps **never** hold for the uncoupled split spectrum: the levels are `E_α ± z/2`, so the
+old gap `E_β − E_α` occurs twice, once inside each layer.  Any plan that tries to carry `hgap`
+through the uncoupled extension is therefore wrong.
+
+The coupling is what breaks that degeneracy, and the correct induction step is an intersection
+rather than a propagation:
+
+* the leaf-extended architecture has a **dense, residual, full-measure** maximally projective set
+  (`PhysicallyRealizedTensorTreeSystem.tracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure`),
+  and maximal projective rank already gives simplicity and distinct nonzero ordered gaps
+  (`MaximallyProjectiveEnergy.injective`, `maximallyProjectiveEnergy_orientedGap_injective`);
+* endpoint completeness holds at some small nonzero coupling
+  (`eventually_forall_layerGerm_endpoint_ne_zero`) and is an **open** condition
+  (`eventually_forall_layerReducedTransition_ne_zero`);
+* a nonempty open set meets a dense set, so the extended witness exists.
+
+So the induction step is a two-line intersection once the two inputs are stated in the same
+parameter space.  The remaining work in item 1 is exactly that matching, not a new genericity
+argument.

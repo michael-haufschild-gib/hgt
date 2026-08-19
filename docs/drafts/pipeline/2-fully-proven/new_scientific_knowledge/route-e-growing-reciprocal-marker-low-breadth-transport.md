@@ -5818,3 +5818,40 @@ The missing Möbius input for this card is the shared gate of three stage-2 card
 `../../1-in-progress/moebius-halasz-log-saving-programme.md`, with the ingredient table and the
 first brick (`RHTower/ZetaNearOneLineBound`, the growth bound just left of the one-line) recorded
 there.
+
+## CORRECTION: this card is NOT blocked by the free-scale marker device's ceiling (2026-08-19)
+
+Earlier notes in this session's sibling work claimed that a growing constant `C ≍ log h` is out of
+reach because the multi-block marker device caps the block count at `K₀ ≲ log log x`.  **That
+ceiling belongs to the device built for `route-e-reciprocal-marker-mobius-hall-law`, not to this
+card's construction, and the two are structurally different.**
+
+The Hall-law device merges all `K₀+1` dyadic marker blocks into **one** marker range
+`(M₀, 2^{K₀+1}M₀]` served by **one** start modulus.  Two markers of that range sharing a start can
+then differ by as much as `X/u² ≍ 4^{K₀}·X/m²`, so the shifted-pair budget runs over `≍ 4^{K₀}`
+shifts, and with the marker range itself `2^{K₀}` wide the device inequality becomes
+`ε·8^{K₀} ≲ K₀²`.  Since `ε` is bounded below by the Möbius mean-square rate — a power of `log x` at
+best — that forces `K₀ ≲ log log x`.
+
+**This card's `(10)`–`(14)` does something else.**  Each block `k ≤ K = ⌊(log h − w)/log 2⌋ − 4` is
+an *independent* construction with its own scales:
+
+```text
+        markers  2^k N < p ≤ 2^{k+1}N ,   starts  t_p = ⌊X/p⌋ ≍ A_k ≍ N/2^k ,
+        window   L_k = ⌊h/2^{k+2}⌋ .
+```
+
+Within block `k` two markers sharing a start differ by at most `X/A_k² ≍ 4^k`, and the marker range
+is a *single* dyadic block.  So each block pays a bounded pair budget at its own scale, and the
+blocks are summed at the end rather than merged.  The factor `log h` is the block count `K`, and
+nothing in the per-block estimate degrades with `K`.
+
+### What this card's Lean route actually needs
+
+Not the free-scale device.  Per block `k`, the same per-block machinery this session built —
+`Sieve/GenericMarkerAnalytic` (harmonic mass, marker count and pair budget at an **arbitrary** base),
+`Sieve/GenericPairBudget`, `Sieve/RankinTruncation` — instantiated at `M₀ = A_k`, window `L_k`, and
+then summed over `k ≤ K`.  The one external input is `(15)`: the Möbius short-interval mean square
+at window `L_k` with `log L_k ≥ w + O(1)`, i.e. down to `log L ≍ (log X)^{2/3}` for the schedule
+`(6)`.  The corpus's mean square reaches only `log L ≥ (log X)^{9/10}`, so this card is gated on the
+same milestone B as the sibling cards — but on the *window range*, not on any structural ceiling.

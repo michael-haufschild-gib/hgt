@@ -173,3 +173,40 @@ useful bridge but does not clear the novelty gate.
 - [x] singular, non-norm-convergent boundary identified
 - [x] interpretation as the positive residue of the joint-graph no-go
 - [ ] formalize only if a later source-incidence theorem consumes this Abel family
+
+## Lean certification — 2026-08-19 (stage 2 → 3)
+
+New modules, both wired into `GaloisForLFunctions.RHTower` and axiom-clean
+(`propext`, `Classical.choice`, `Quot.sound` only):
+
+* `formal/GaloisForLFunctions/RHTower/PrimeLogZetaAbelPole.lean` — the analytic engine;
+* `formal/GaloisForLFunctions/RHTower/GammaMeixnerAbelCoronaProbe.lean` — the card.
+
+| Card statement | Lean name |
+|---|---|
+| `(3)` the shape kernel `w_θ(p)` | `RHTower.meixnerShape` |
+| `(4)` the Abel functional `L_θ` | `RHTower.gammaShapeAbelFunctional` |
+| `(5)` exact factorization `w_θ(p) = 2^{θ/2}p^{-θ}(1+p^{-4})^{-θ/2}` | `RHTower.meixnerShape_factorization` |
+| `(6)` uniform two-sided comparison with `p^{-θ}` | `RHTower.meixnerShape_le`, `RHTower.meixnerShape_ge`, `RHTower.meixnerShape_le_one` |
+| `(7)`,`(8)`,`(10)` uniform dual bound `sup_{0<θ≤1}‖L_θ‖_{M_log^*} < ∞` | `RHTower.abs_gammaShapeAbelFunctional_le` (bound `2√2·max C 0`) |
+| `(11)` `L_θ(b) → 0` for every `b ∈ M_0` | `RHTower.tendsto_gammaShapeAbelFunctional_vanishingTail` |
+| `(12)` `θ·∑_p (log p)p^{-1-θ} → 1` | `RHTower.tendsto_mul_primeLogZeta` |
+| `(13)` `L_θ(1) → 1` | `RHTower.tendsto_gammaShapeAbelFunctional_unit` |
+| `(14)` `L_θ(1+b) → 1` for every `b ∈ M_0` | `RHTower.tendsto_gammaShapeAbelFunctional_unit_add` |
+| singular boundary: `w_θ ∈ M_0` for every fixed `θ > 0`, while `1 ∉ M_0` | `RHTower.meixnerShape_memVanishingTailLayer`, `RHTower.meixnerShape_singular_boundary` |
+
+Analytic route actually used for `(12)`: **no prime number theorem**.  Improper Abel summation of
+`∑_p (log p)p^{-1-δ}` against Mertens' first theorem in prime form
+(`RHTower.abs_mertensPrimeWeightSum_sub_log_le`, already in the corpus) gives
+`RHTower.primeLogZeta_eq_abel_integral`, and the elementary integral
+`∫_1^∞ t^{-δ-1}\log t\,dt = 1/δ²` (`RHTower.integral_rpow_mul_log_Ioi_one`) supplies the main term
+while the uniform Mertens error supplies the `O(1)`.
+
+Reusable by-products left behind for the rest of the pipeline:
+
+* `RHTower.weightedDirichlet_eq_abel_integral` — Abel representation of any arithmetic Dirichlet
+  series whose partial sums are `O(log)`;
+* `RHTower.mul_tsum_weightedDirichlet_le` and
+  `RHTower.summable_and_mul_tsum_weightedDirichlet_le` — the uniform Abelian bound
+  `δ·∑ c_n n^{-δ} ≤ K(1+δ)`, with summability obtained for free by truncating the weight;
+* `RHTower.integral_rpow_mul_log_Ioi_one`, `RHTower.logRpowPrimitive`.

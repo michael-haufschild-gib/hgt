@@ -7,9 +7,11 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 19 August 2026, commit
-`156adc3ea8d38e632a303290fa704a08adcb49ed`, plus declaration-index review of Lean working-tree
-sources. Scientific status below comes only from Lean declarations, dependencies, theorem docstrings,
-and explicit gap/no-go markers. Pipeline cards and papers are not evidence for this map.
+`f5844561598ffba3d02fb5e207a5e9fcc5baef1d`, plus declaration-index review of current Lean
+working-tree sources. Scientific status below comes only from Lean declarations, dependencies,
+theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
+this map. Working-tree declarations are identified as corpus source, not claimed build-audited in
+this documentation-only pass.
 
 Terms:
 
@@ -30,23 +32,30 @@ RH and its negation remain unproved.
 
 Formal corpus currently supports twelve live architectures: established
 `CCM-FU, C1, D2, E, G, L, O, P, Q, T, U`, plus newly separated
-**HC (horizontal-collision quantum)**. Six corpus-born receiver/source-mechanism candidates remain:
-`SC, PPM, IRK, OPUC, HJ, BW`. Routes R, IW, and AP are terminal as independent producers.
+**HC (horizontal-collision quantum)**. Eight corpus-born receiver/source-mechanism candidates
+remain: `SC, PPM, IRK, OPUC, HJ, BW, MSC, SV2`. Routes R, IW, and AP are terminal as independent
+producers. No latest Lean addition closes an open source premise or proves/disproves RH.
 
 | Architecture | Proved chain | First open core |
 |---|---|---|
-| CCM-FU | completed Guinand--Weil third-grade source -> Xi-screw Green -> second-Abel continuation -> RH | Linear growth of one Cesaro primitive of literal third-grade prime-minus-polar cumulative source. |
+| CCM-FU | completed Guinand--Weil third-grade source -> exact signed FU reporter -> Xi-screw Green -> second-Abel continuation -> RH | Linear growth of one Cesaro primitive of literal third-grade prime-minus-polar cumulative source; exact signed-symbol cancellation and lower-wall escape are closed. |
 | C1 | corrected theta/prime--Gamma source -> Weil/Connes form or real spectral realization -> RH | Construct a source-derived non-dominating or signed correction before final positivity; raw positive/passive Stokes completion is impossible. |
 | D2 | continued prime--arch trace -> one-sided anti-Herglotz/finite ceiling -> RH | Source control of sole positive-frequency tail by a reflected signed/non-dominating law; canonical directed passive limits are impossible. |
-| E | squarefree Wold source -> exact integer-pair incidence -> unit-load Hall transport with moving flux -> RH | All-interval Hall/load and co-moving flux for one source-fixed physical relation encoded by exact Ramaré incidence. |
-| G | Suzuki/Mobius/Gamma source -> marked pre-scalar boundary carrier -> exact Ward landing -> wall orientation -> RH | Independent source law forcing the already-transported Ward coefficient to vanish or have the required signed order. |
-| L | completed Green/BV/Big-Witt source -> singular Calderon--Witt comparison -> physical reader -> RH | Same-fibre bounded square-summable all-prime restriction whose radical is exactly arithmetic boundaries and whose target is existing physical landing. |
+| E | squarefree Wold source -> two-sign half-power marker supply -> exact integer-pair incidence -> unit-load Hall transport with moving flux -> RH | Build one Ramaré-supported relation joining proved marker supply to relation-specific subinterval Hall, unit load, co-moving flux, and Gibbs cost. |
+| G | Suzuki/Mobius/Gamma source -> marked pre-scalar or signed-channel carrier -> exact Ward landing -> wall orientation -> RH | Independent source law forcing the already-transported Ward coefficient to vanish or have the required signed order; Schur coisometry and causal limit do not supply four-unit orientation. |
+| L | completed Green/BV/Big-Witt source -> singular Calderon--Witt comparison -> physical reader -> RH | Source-derived singular comparison identifying resolved boundary flatness with existing coefficient-faithful Burnol/Deninger physical landing before divisor specialization. |
 | O | exact restricted-Weil operator -> canonical true-ground heads -> coherent signed producer -> nonnegative floor -> RH | Sign of cancellation-preserving coherent finite-head producer, equivalently eventual reverse-prime control on canonical actual heads. |
-| P | source-horizontal second-Cartier orbit -> radial Krein energy -> endpoint moderation -> RH | Produce endpoint order globally before divisor selection; finite circle measure after Xi selection and literal scalar short are formally ruled out. |
+| P | source-horizontal second-Cartier orbit -> Route-N capacity/radial-work bridge -> radial Krein energy -> endpoint moderation -> RH | Produce endpoint order globally before divisor selection; regular reflection-pair extraction, finite circle measure, and literal scalar short are formally ruled out. |
 | Q | continued Hurwitz/Cauchy source -> exterior positive-frequency paired kernel -> orientation zero -> RH | Passivity/PSD of explicit finite reduced prime--Gamma matrices on exterior positive poles. |
 | T | finite Xi-Taylor/theta-tail source -> exact reflection bridge -> raw core-current bound -> RH | Joint upper estimate for combined top-row plus surviving finite-translation remainder; in the endpoint specialization, pure short Möbius-block cancellation. |
 | U | shifted hard-edge source -> cofinal shifted Hankel tail or first-contact exclusion -> RH | Non-scalar source mechanism excluding the exact nonintegrable strict-frontier quotient, or uniform cofinal tail order. |
 | HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Absolute subquantum estimate or source-first prime-summability for the literal paired Gamma-six determinant current. |
+
+Latest corpus changes narrow `CCM-FU, E, G, L, P` and add candidates `MSC, SV2`. They do not move
+the first open producer of `D2, O, Q, T, U, HC`. C1 gains a generic trace-class reduction but no
+source carrier or spectral orientation. In particular, midpoint polar--prime positivity is a scalar
+square identity and has not been transported to O's canonical actual heads; new sieve mean-value
+lemmas do not yet prove T's short Möbius block estimate.
 
 Many exact source criteria below are formal equivalences with RH. Rewriting RH as positivity,
 boundedness, passivity, flatness, or collision absence advances nothing unless corpus also supplies an
@@ -66,11 +75,25 @@ under linear Cesaro growth.
 densities; complete restricted-Weil packet; first-jet negative rank-one contraction killed by
 centering; central second jet killed by centering; centered PSD cubic Loewner third jet; exact
 third-grade/Xi-screw Green identity; second-Abel continuation; RH from every subcubic envelope; RH
-from one linear Cesaro primitive; and contrapositive superlinear Cesaro escape under non-RH.
+from one linear Cesaro primitive; and contrapositive superlinear Cesaro escape under non-RH. The
+limiting FU reporter now retains both sign regions and its boundary atom in one exact symbol
+
+```text
+M(a) = -3 a^2 / (32 (a + 1) (2a + 1)),    a > -1/2,
+```
+
+with complex half-plane zero set reduced to the double affine zero at `0`. Its literal finite
+source-relative aperture equals this curvature response plus the explicit lower-wall value/first
+jet, and that escaped jet tends to zero cofinally for every real critical-Mellin exponent. Separately,
+the midpoint-read polar--prime Stieltjes codiagonal is exactly one half of the squared completed
+error; midpoint coefficient `1/2` is forced by the prime jump debt.
 
 Formal sources: `CCMGuinandWeilPrimeEntryThirdJetTransverse.lean`,
 `CCMGuinandWeilXiScrewGreenConnection.lean`,
-`CCMGuinandWeilThirdGradeCesaroCompleteness.lean`.
+`CCMGuinandWeilThirdGradeCesaroCompleteness.lean`,
+`CCMUnitRieszCesaroSignedReporterSymbol.lean`,
+`CCMUnitRieszCesaroSourceRelativeReporter.lean`,
+`CCMPolarPrimeMidpointCodiagonal.lean`.
 
 **Open core.** For some fixed `b>0`, prove from literal source
 
@@ -86,7 +109,11 @@ blind. Unit-Riesz Volterra/Laplace weld is exact and its two lower laws are equi
 exponent loss (`CCMUnitRieszCompletedSourceLaplaceWeld.lean`): remaining content is source lower law,
 not transform. Positive first-clock Markov transport exists exactly when original scalar is
 nonnegative, and universal feasibility is RH
-(`CCMFirstClockBarycentricOrientationCompleteness.lean`).
+(`CCMFirstClockBarycentricOrientationCompleteness.lean`). Estimating positive and negative FU
+regions separately, invoking vertical cancellation, or discarding the positive source wall is no
+longer a plausible missing step: exact symbol and escaped-jet laws settle all three. Midpoint
+codiagonal positivity is an identity `E^2/2`, not an upper bound on `E`, so it does not close the
+Cesaro source estimate.
 
 ### C1 — Weil/Connes positive spectral realization
 
@@ -104,6 +131,10 @@ theta-null representation is atomic and carried by real Xi divisor
 has excessive zeroth mass (`not_gammaSewnMobiusApertureStokesCriticalMomentIdentification`), and no
 finite positive measure dominating that raw carrier can represent the completed seam germ
 (`not_gammaSewnMobiusApertureStokesCriticalPositiveSupercarrierCompletion`).
+The one-prime trace-class propagation step is also closed abstractly: a trace-class, finite-rank,
+Hilbert--Schmidt-factorized, or nuclear remainder changes every positive modulus power only by a
+Schatten-one operator (`ConnesConsaniTraceClassReduction.lean`). This does not construct the literal
+one-prime remainder or orient the resulting spectrum.
 
 **Open core.** Derive from fixed theta/prime--Gamma source, before divisor selection, one of:
 
@@ -165,18 +196,31 @@ unconditional Step 1 Hall supply with growing squarefree truncation
 tail with no truncation-level term (`sum_fibre_windowTail_le_budget_sharp`); exact Type-II
 cancellation, cell/family energy, raised-threshold loss, dyadic cover, covered-set forms, and covered
 Type-II power saving (`MatomakiTeravainenTypeIIAmplitudeCells.lean`); exact ordinary integer-pair incidence
-(`RouteERamareIntegerIncidence.lean`).
+(`RouteERamareIntegerIncidence.lean`). The reciprocal-marker theorem now proves, for every
+`9/10 < beta < 1`, both Möbius signs, and every fixed constant, the correct-density supply in
+windows
+
+```text
+H(Z) = ceil(sqrt(Z) exp((log Z)^beta)).
+```
+
+The same window eventually contains at least as many positive-Möbius integers as primes, hence a
+prime-to-positive-marker injection at displacement `X^(1/2+o(1))`
+(`Sieve/RouteEMarkerHallLaw.lean`).
 
 **Open core.** Construct/extract one exact relation on ordinary squarefree integers directly from
 factorization data represented by Ramaré incidence, fixed independently of observed Möbius
 imbalance, and prove simultaneously:
 
 1. normalized row load and physical incoming co-degree at most one;
-2. Hall expansion for every interval using distinct opposite-sign targets;
+2. relation-specific Hall expansion for every relevant subinterval using distinct opposite-sign
+   targets;
 3. crossing of co-moving zero/one-large-prime cutoff with charges `-1,+1`;
 4. total mixed-difference Gibbs cost `X^(1/2+o(1))`.
 
-Step 1, Type-II amplitude cells, and seam estimates are no longer frontier. Existential complete
+Step 1, two-sign half-power cardinal supply, Type-II amplitude cells, and seam estimates are no
+longer frontier. Marker cardinality alone does not declare adjacency, prove Hall for the fixed
+Ramaré relation, control target co-degree, or cross the moving sector cutoff. Existential complete
 bipartite transport is not enough: its defect is original Möbius imbalance. On squarefree hard
 support valuation depth is fixed; hard axis is all-prime breadth.
 
@@ -203,12 +247,34 @@ landing, base-entry comparison, forced complementary correction, and premise-fre
 are closed (`MobiusGammaXiPreScalarAffineBoundaryRenormalization.lean`); its four-unit positivity is
 equivalent to RH.
 
+The squarefree Möbius side now also has a literal infinite signed-channel model: squarefree divisor
+probability, unit signed amplitude, vector coisometry and self-adjoint channel projection, exact
+coupled-feature norm and cancellation, closed-operator commutation, a Schur contraction on the
+closed right half-plane, and exact zeta-ratio multiplier. The safe squarefree correction produces
+the reciprocal completed squarefree amplitude and its Ward logarithmic connection before choosing
+a Xi divisor. Centered and causal boundary laws converge strongly in `L2`, with causal limit
+`exp(-t)`. At criticality its normalized divisor mass escapes every fixed finite coordinate window,
+is weakly but not strongly null, and is killed by every fixed compact synthesis. After rescaling
+`Y=(sigma-1) log d`, channel law converges to mean-one exponential measure with exact moving-cutoff
+quantiles. These theorems close carrier existence, ordinary Schur contractivity, and critical escape,
+but explicitly leave coefficient-faithful moving-aperture synthesis into the Xi boundary, concrete
+archimedean graph-domain membership, pointed residue continuation, pole-to-divisor covariance, and
+four-unit boundary norm open
+(`MobiusSignedChannelIncidencePaperCertificate.lean`,
+`MobiusSignedSchurComplexMultiplier.lean`,
+`MobiusSquarefreeReciprocalProjectivePaperCertificate.lean`,
+`MobiusSchurBoundaryPaperCertificate.lean`,
+`MobiusChannelCriticalMassEscapePaperCertificate.lean`,
+`MobiusCriticalExponentialBoundaryLayerPaperCertificate.lean`).
+
 **Open core.** Derive from literal source, independently of Xi-divisor selection, a nonlinear or
 distinct-channel law forcing the already-transported Ward coefficient to vanish or to satisfy the
 favorable signed wall order. Construction of a pre-scalar comparison is no longer open. More floor
 identities, positive scalar shadows, zero-clock commutators, or another linear budget reporter cannot
 close route: Lean separates surviving charge from vanishing jet and classifies the final four-unit
-scalar endpoint as RH itself.
+scalar endpoint as RH itself. The new Möbius Schur coisometry supplies one concrete distinct-channel
+carrier, but not the missing residue/covariance/four-unit estimate; it is candidate MSC below,
+source-isogenous to G rather than a new live route.
 
 ### L — Deninger/Green/Cartier singular boundary comparison
 
@@ -230,18 +296,30 @@ line classification with prime and multiplicity provenance
 right-half Frobenius orbit; genuine scaled-Xi cross-fibre quotient equivalence and Big-Witt
 naturality (`DeningerBigWittScaledXiCrossFiberNaturalTransformation.lean`).
 
-**Open core.** Construct source-derived bounded square-summable continuous all-prime restriction
-such that common kernel is exactly arithmetic boundary subspace, target-zero component is existing
-physical landing, reader kills resulting boundaries, prime/depth/multiplicity survive, and
-construction precedes divisor. Equivalently: prove same-fibre radical identification for continuous
-Green restriction together with the fixed physical singular landing. Cross-fibre naturality is now
-closed, but deliberately varies the analytic receiver and therefore cannot replace this theorem.
+For Burnol's actual source, Lean now proves cosine closure adds no new vectors: reciprocal-seed
+landing identifies the cosine branch with another literal co-Poisson source. Hence every right-half
+zeta zero annihilates the full closed cosine-invariant co-Poisson source space, not merely the raw
+span (`BurnolCoPoissonRawZeroAnnihilator.lean`,
+`BurnolCoPoissonCosineClosedZeroAnnihilator.lean`). This closes source annihilation only; aperture
+completeness, minimality, higher jets, and physical landing remain separate.
+
+**Open core.** Construct a source-derived singular comparison identifying resolved boundary
+flatness with the coefficient-faithful scalar Burnol/Deninger physical landing before divisor
+specialization. Operationally, construct a bounded square-summable continuous all-prime same-fibre
+restriction whose common kernel is exactly arithmetic boundary subspace, whose target-zero component
+is the existing physical landing, and whose reader kills genuine target boundaries while preserving
+prime/depth/multiplicity. Cross-fibre naturality and full co-Poisson zero annihilation are closed but
+cannot replace this fixed physical comparison.
 
 **Closed detours.** Residue-factored packet cannot classify boundaries unless middle cohomology is
 already trivial; cofinite unit-normalized packet floor forbids square summability; generic mapping
 cones/Koszul exactness merely relocate or erase `K_n`; finite Rees completion cannot match
 exponential sewing singularity; Frobenius is base change inside one fibre, and finite right-half
-preperiodicity is impossible.
+preperiodicity is impossible. A finite real-descended quaternionic cohomology repair is also blocked:
+`C^2=-1` forces even complex multiplicity, while root number `-1` forces odd central order, so an
+order-equals-multiplicity real symplectic realization is contradictory. The explicit two-dimensional
+`Q8` symplectic generator exists, but does not supply the missing arithmetic/cohomological landing
+(`DeningerQuaternionicMultiplicityParity.lean`, `DeningerArtinCentralParityNoGo.lean`).
 
 ### O — exact restricted-Weil ground and canonical actual heads
 
@@ -311,6 +389,11 @@ support-fibre sum preserves exact Xi multiplicity.  A single cofinal energy cons
 depths is equivalent to literal endpoint moderation; on every strict-right Xi copy finite shell
 stages exhibit two-stage escape, and universal actual-Xi cofinal budgeting is exactly RH
 (`CompleteResolutionReflectedShellSecondCartierDescent.lean`).
+Route N's bilateral prime-capacity receiver is now welded to this same invariant: its excess is
+exactly the reflected translation-pair excess, and at prime two its excess energy vanishes exactly
+when completed radial source work vanishes
+(`XiCenteredFlowRouteNSecondCartierRadialWorkBridge.lean`). This identifies N with P's radial-work
+receiver; it does not produce the missing source upper budget or reopen N independently.
 The regular completed-source class is now closed at its maximal nonlinear level.  Reflected
 complete source points collapse cofinally, while their literal endpoint characters stay separated
 off line.  Any exact extractor family with even one common continuity modulus on those two points
@@ -528,6 +611,96 @@ source. Current structure names genuine source obligations rather than replacing
 summability predicate, but no unconditional global witness exists. BW remains candidate adjacent to
 L/P.
 
+### MSC — Möbius signed-channel Schur projection
+
+**Architecture.** Literal squarefree Möbius weights define an infinite signed unit vector. Its
+coisometric synthesis projects a vector-valued divisor channel onto one causal source. As criticality
+is approached, information moves to divisor scale `log d ~ 1/(sigma-1)`, so physical receiver must
+move with that boundary layer rather than be finite or compact. Resulting all-prime Schur multiplier
+is a contraction on closed right half-plane; positive safe squarefree correction and archimedean
+completion turn it into reciprocal completed squarefree amplitude, whose logarithmic derivative is
+projective Ward current. Pointed continuation and four-unit boundary estimate would land in G's RH
+endpoint.
+
+**Proved.** Probability normalization, exact critical mass/log-moment rates, coisometry, projection,
+coupled-feature norm, arithmetic cancellation, closed-operator commutation, finite and infinite Schur
+contractivity, exact zeta-ratio transfer, reciprocal projective Ward connection, unconditional
+critical `L2` centered boundary, and causal convergence to `exp(-t)`. Normalized analysis channel
+has exact strict gain, loses every fixed finite coordinate while retaining positive total energy,
+converges weakly but not strongly to zero, and every fixed compact synthesis kills it. Rescaled
+logarithmic divisor clock converges to `Exp(1)`; fixed and moving cutoff masses have exact quantile
+limits, and full transport occurs exactly when rescaled cutoff tends to infinity.
+
+**Open core.** Prove for the concrete archimedean feature the graph-domain membership and pointed
+residue extension needed by the continuation square, then a nonexpansive pole-to-divisor covariance
+or equivalent source estimate reaching the exact four-unit boundary norm through a
+coefficient-faithful moving aperture on proved exponential clock scale. These clauses must be
+derived before selecting a Xi divisor. A fixed finite/compact receiver is now formally impossible
+because it sees asymptotically zero channel mass. Generic moving-node transports and the existing
+coisometry do not prove this Xi-boundary transfer: they are compatible with the safe half-plane and
+explicitly leave all RH-bearing gates untouched. MSC is a genuinely non-scalar source carrier, but
+is source-isogenous to G/CCM and is not yet an independent live route.
+
+Formal sources: `MobiusCoupledFeatureIncidence.lean`,
+`MobiusSignedChannelIncidencePaperCertificate.lean`,
+`MobiusSignedSchurComplexMultiplier.lean`,
+`MobiusSquarefreeReciprocalProjectivePaperCertificate.lean`,
+`MobiusCenteredSchurBoundary.lean`, `MobiusCausalSourceLimit.lean`,
+`MobiusChannelCriticalMassEscapePaperCertificate.lean`,
+`MobiusCriticalBoundaryLayerQuantiles.lean`,
+`MobiusCriticalExponentialBoundaryLayerPaperCertificate.lean`.
+
+### SV2 — meromorphic Suzuki characteristic limit
+
+**Architecture.** Entire real-zero characteristic approximants converge locally uniformly only on
+a preconnected pole-free open set containing `0` and the whole centered Xi divisor. Closedness of
+the real axis then forces every Xi zero to be real and proves RH.
+
+**Proved.** Suzuki's displayed target is exactly
+
+```text
+XiC(z) / (XiC(z) + i XiC'(z)).
+```
+
+The denominator has an unconditional negative-imaginary zero with nonzero numerator, so target has
+a genuine pole. Therefore the literal all-plane compact-open limit of entire real-zero functions is
+false. The corrected meromorphic/pole-free convergence wall still implies RH
+(`SuzukiV2CharacteristicTarget.lean`). On the literal dense smooth core of Suzuki's energy space,
+`i d/dx` is symmetric: its real Fourier multiplier moves between both slots of completed
+prime--polar--Gamma Weil form and physical `L2` correction without changing either
+(`SuzukiTaSymmetry.lean`). This closes operator symmetry, not self-adjoint exhaustion or
+characteristic convergence.
+
+**Open core.** Construct source-defined entire real-zero approximants and prove locally uniform
+convergence on one preconnected pole-free domain that contains `0` and every Xi zero. Domain cannot
+be chosen after inspecting individual zeros, and finite holomorphic exponential gauges cannot repair
+the all-plane wall. Dense-core symmetry alone gives no approximating real-zero characteristics.
+SV2 is an exact corrected receiver with no producer, hence candidate rather than live route.
+
+## Formal advances that do not change route count
+
+- `CCMCentralBinomialIntegrality.lean` and `CCMLambertRadicalIntegrality.lean` close the finite
+  central-binomial divisibility and algebraic-integrality gate for CCM Lambert radicals. Cyclotomic
+  containment and any source-to-RH handoff remain absent.
+- `SoninSemilocalDampedCovariancePositivity.lean` proves the Gamma-damped prime-log covariance is
+  PSD at every finite matrix and has exact critical half-weight decay. Its strictly positive cross
+  terms also prove it cannot equal the additive Euler logarithmic derivative. This is a covariance
+  carrier plus no-go, not a new route.
+- `ConnesConsaniTraceClassReduction.lean` closes generic propagation from trace-class, finite-rank,
+  Hilbert--Schmidt-factorized, or nuclear remainders to every positive modulus power. It does not
+  prove a literal source decomposition or spectral sign.
+- `MobiusLogarithmicJetLiGenerator.lean` proves the Xi/Li logarithmic generator is unconditionally
+  non-holonomic, hence Li coefficients are not accessible through a polynomial-coefficient linear
+  ODE or `P`-recursive shortcut. This closes a finite differential route, not RH.
+- `RegularizedDivisorHarmonicLimit.lean`, the `StieltjesGammaAffine*` modules, and
+  `GammaMeixnerAbelCoronaProbe.lean` construct exact Gamma-affine prime lanes and a singular Abel
+  corona detector. They expose source coefficients and boundary singularity but have no Xi landing
+  or RH endpoint.
+- New generic `HTGeometry` factorization, horizon, channel-rigidity, and moment modules have no
+  current `RHTower` import or declaration ending in `RiemannHypothesis`; they are infrastructure,
+  not hidden RH routes. New sieve mean-value/Halasz--Montgomery modules similarly have no direct RH
+  endpoint beyond their use in source estimates.
+
 ## Terminal and retired mechanisms
 
 Closure applies to named mechanism, not every future use of similar objects.
@@ -544,12 +717,14 @@ Closure applies to named mechanism, not every future use of similar objects.
 | J | For `L_m=6 log m`, `m>=25`, bad energy is at least `log(m)/20` at every Julia scale; uniform budget impossible; diagonal subtraction breaks one-node capacity. | Principal-relative current defined before projection; not Route J. |
 | K | Quadratic spectral mechanism cannot retain marked source. | Nonlinear incidence in P/HC. |
 | M | Gamma--Jacobi reader complete; anchored cofinal flatness is RH. | Receiver only. |
-| N | Response equality, endpoint contractivity, or bounded polar work is RH-equivalent. | Shared receiver for L/P/G. |
+| N | Response equality, endpoint contractivity, or bounded polar work is RH-equivalent; bilateral capacity excess is now exactly P's reflected translation/radial-work excess. | Shared receiver for L/P/G, not an independent producer. |
 | R | Intrinsic producer category empty; every surviving external interface RH-equivalent. | Quartic amplitude, singular cap, and physical landing remain reusable receivers. |
 | IW internal SEM Weyl model | Model existence is exactly `2^k` divisibility of actual hole count, depends only on dimension, and universal/cofinal existence is exactly RH. | Exact cyclic clock--shift realization and source-blind divisibility classification; useful certificate, not producer. |
 | AP Big-Witt/Scaling-Site power orbit | Big-Witt reporter law holds, but Arakelov square lift has a pole at `1/2`, so no global entire-source pullback exists; actual Scaling-Site covers act differently; fixed-receiver stability/preperiodicity are RH-equivalent. | Source-first Big-Witt Frobenius reporter and valid changed-receiver cross-fibre scaling law. |
 | TD/C1 raw positive completion | Four raw reflected critical Stokes atoms already exceed completed zeroth mass; no finite positive supercarrier dominating them can equal completed seam germ. | Any representing carrier must delete/reweight raw atoms or introduce signed negative correction before final positivity. |
 | AF class-law scale-orbit | Convergent abelian class-law certificate exists iff centered rate is zero; global certificates on all Xi copies exist iff RH. | Terminal rigidity/selection theorem; successor must change interface to singular/infinite-action or genuinely global aggregate law. |
+| Suzuki v2 entire characteristic wall | Displayed target has an unavoidable pole, so no all-plane locally uniform limit of entire real-zero characteristics exists; finite holomorphic exponential gauges do not remove it. | Pole-free meromorphic convergence wall SV2 still implies RH. |
+| Deninger finite quaternionic real descent | Quaternionic anti-linear square `-1` forces even complex multiplicity, but root number `-1` forces odd central order; order-equals-multiplicity real symplectic realization is impossible. | Explicit `Q8` symplectic carrier; any successor must alter real finite descent or the physical comparison. |
 | direct prime Ising | Raw/scalar-normalized finite balanced tree partitions cannot converge locally uniformly to XiC; rank growth forces scale collapse. | Only singular critical rescaling outside fixed modal closure could be new. |
 | compact Thorin/Markov | Compact Thorin and Markov representations are RH-equivalent; canonical measure unique; theta-likelihood candidate not infinitely divisible. | Upstream positive source measure only, not alternative canonical measure. |
 
@@ -608,6 +783,10 @@ Corpus proves insufficient:
   Scaling-Site cover that implements a different action;
 - positive Hermitian completion preserving or dominating an overmassive canonical raw carrier;
 - copywise convergent abelian class-law certificates away from neutral rate;
+- holonomic/P-recursive Li-generator closure: infinitely many Xi-zero preimages force poles of every
+  iterated logarithmic jet, excluding every polynomial-coefficient linear ODE;
+- fixed finite-coordinate or compact synthesis of critical Möbius signed channel: all channel mass
+  escapes to the exponential moving divisor boundary layer;
 - source symmetry as proof every orbit point is fixed.
 
 Any successor must retain infinite source provenance, mixed incidence, non-scalar boundary
@@ -663,7 +842,7 @@ Needed objects are relative, graph-valued, nonlocal, or non-scalar.
 
 ### Non-classical corpus-born mechanism family
 
-HC, SC, PPM, IRK, and HJ share architecture:
+HC, SC, PPM, IRK, HJ, and BW share architecture:
 
 ```text
 literal source operation
@@ -677,6 +856,11 @@ divisor. HC is furthest because coefficient-faithful finite source carrier and e
 already exist; only source estimate remains. IW and AP were hostile tests of this family and are now
 terminal: IW's operation is exactly the desired divisibility, while AP's genuine source reporter
 cannot act on fixed completed-Xi receiver.
+
+MSC and SV2 form a second non-classical family: infinite paired/signed source carrier followed by a
+singular or meromorphic boundary landing. MSC has the carrier but lacks pointed divisor covariance;
+SV2 has the corrected meromorphic endpoint but lacks source approximants. Neither can be reduced to
+a finite positive object or a single scalar response without hitting a proved firewall.
 
 ## Fundamental nature of remaining problems
 
@@ -692,8 +876,9 @@ Open cores fall into six classes:
 5. **Cofinal synchronization:** one estimate uniform in moving degree/aperture/height
    (CCM-FU, E, O, T, U).
 6. **Source-native internal dynamics:** projective module, corrected Stokes category, or monodromy
-   on actual arithmetic carrier before divisor selection (SC, PPM, IRK, OPUC, HJ). Abstract Weyl
-   existence and Arakelov power pullback are now classified terminal in their stated architectures.
+   on actual arithmetic carrier before divisor selection (SC, PPM, IRK, OPUC, HJ, BW, MSC, SV2).
+   Abstract Weyl existence, Arakelov power pullback, entire Suzuki convergence, and finite real
+   quaternionic descent are classified terminal in their stated architectures.
 
 Fundamental remaining obstruction is not another equivalent criterion. Corpus already has many. It
 is:
@@ -727,6 +912,10 @@ is:
 12. Can source globalize Coxeter, prime-power collision, irrational-rotation `K_0`, paraorthogonal
     phase, or Hurwitz projective reflection before divisor selection without collapsing to another
     RH-equivalent certificate?
+13. Can the concrete Möbius signed-channel feature cross its pointed residue/graph-domain wall and
+    satisfy a source-derived four-unit covariance bound?
+14. Can source-defined real-zero characteristics converge on one predeclared pole-free domain
+    containing the full Xi divisor, as required by corrected Suzuki v2?
 
 Until one is answered, endpoint reformulations, finite real-zero models, seed asymptotics, diagonal
 moment inequalities, or scalar transport identities do not move formal RH frontier.

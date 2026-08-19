@@ -15,12 +15,12 @@
 | 2 | `mobius-critical-exponential-boundary-layer-law` | (1)-(3), (5)-(8), (12)-(15) | **DONE** |
 | 3 | `mobius-half-unit-exponential-moment-rh-law` | S2 (5)-(7), S3 (8)-(12), S5 (18)-(21) | open |
 | 4 | `mobius-channel-critical-mass-escape-law` | (4)-(12), S5 (14)-(15) | **DONE** |
-| 5 | `mobius-schur-centered-boundary-limit-law` | (3)-(5), (11)-(17) | open |
-| 6 | `mobius-schur-causal-critical-graph-limit-law` | (5)-(7), (13)-(17) | open |
-| 7 | `mobius-prime-aperture-differential-order-profile` | (4), (8), (16)-(18), (20)-(23) | open |
-| 8 | `mobius-logarithmic-jet-ht-transfer-li-no-holonomic-route` | transfer thm; non-D-finite; Li | open |
+| 5 | `mobius-schur-centered-boundary-limit-law` | (3)-(5), (11)-(17) | **DONE** |
+| 6 | `mobius-schur-causal-critical-graph-limit-law` | (5)-(7), (13)-(17) | **DONE** |
+| 7 | `mobius-prime-aperture-differential-order-profile` | (4), (8), (16)-(18), (20)-(23) | (4),(5) DONE; E_1 built; (8) left |
+| 8 | `mobius-logarithmic-jet-ht-transfer-li-no-holonomic-route` | transfer thm; non-D-finite; Li | jet identity + **unconditional non-holonomicity DONE**; DA transfer + HT(L_Li) left |
 | 9 | `mobius-signed-channel-coisometry-incidence-law` | (5)-(10), (15)-(17), (19)-(23), (25)-(27) | partial: coisometry layer done |
-| 10 | `mobius-signed-coisometry-schur-transfer-law` | (4)-(13), (17)-(18), (21)-(23), (23a)-(23i) | partial: Schur + power-sum done |
+| 10 | `mobius-signed-coisometry-schur-transfer-law` | (4)-(13), (17)-(18), (21)-(23), (23a)-(23i) | **DONE** |
 
 ## New Lean modules added by this sweep
 
@@ -37,6 +37,29 @@
 - `RHTower/MobiusCriticalExponentialBoundaryLayerPaperCertificate.lean` — card 2 complete.
 - `RHTower/VectorSignedChannelCoisometry.lean` — card 9 (5)-(10),(22),(25)-(27): the
   vector-valued signed coisometry, its projection, and closed-operator channel commutation.
+- `RHTower/MobiusCoupledFeatureIncidence.lean` — card 9 (13)-(17),(20)-(23): the truncated
+  constant boundary mode, the coupled feature and its exact norm, and the cancellation law.
+- `RHTower/MobiusSignedChannelIncidencePaperCertificate.lean` — card 9 complete.
+- `RHTower/ExponentialIntegralE1.lean` — the exponential integral `E_1` and its logarithmic
+  representation (needed by card 7).
+- `RHTower/MobiusCenteredSchurBoundary.lean` — cards 5 and 6: the centered Schur quotient, its
+  uniform boundary majorant, and the strong Hardy limits of both Hardy components.
+- `RHTower/MobiusPrimeApertureRetainedMass.lean` — card 7 (4),(5): the smooth-number Euler product
+  for the squarefree channel mass and the cofinal logarithmic Euler sum.
+- `RHTower/CausalLaplacePlancherel.lean` — Plancherel for the boundary Laplace transform,
+  obtained from the corpus Mellin--Plancherel line law in logarithmic coordinates.
+- `RHTower/MobiusWeightedMertensVector.lean` — card 5 (13),(16): the weighted-Mertens vectors, the
+  exact centering identity, exponential decay, `L^1 cap L^2` membership, and the exact transfer
+  identity `L m_omega = G_omega` on the imaginary axis.
+- `RHTower/MobiusCenteredMertensLimit.lean` — card 5 (14),(15),(17): `m_0 in L^2` (unconditional),
+  the critical energy identity, and `m_omega -> m_0` in `L^2`, all via Fatou + Plancherel.
+- `RHTower/MobiusCausalSourceLimit.lean` — card 5 (11) and card 6 (16).
+- `RHTower/MobiusSchurBoundaryPaperCertificate.lean` — cards 5 and 6 complete.
+- `RHTower/MobiusSignedSchurTransferPaper.lean` — card 10 complete: (18),(21),(23a),(23b),(23d)-(23g),
+  plus the reusable causal shift law in `MobiusPowerSumBoundaryLaplace`.
+- `RHTower/MobiusLogarithmicJetLiGenerator.lean` — card 8: the Möbius chart, the jet identity
+  `J_r(F) = logDeriv (F o r)`, and the **unconditional** non-holonomicity of the Keiper--Li
+  generating function (hence the Li sequence is not P-recursive).
 
 ## Existing Lean assets found (do not duplicate)
 
@@ -68,3 +91,6 @@
 ## Log
 - 2026-08-19 — ledger created; corpus survey started.
 - 2026-08-19 — cards 1, 2, 4 fully certified in Lean; cards 9, 10 partially certified.
+- 2026-08-19 — cards 5, 6, 9, 10 fully certified.  18 new Lean modules, zero proof debt, all wired
+  into `GaloisForLFunctions.RHTower`.  Remaining: card 3 (half-unit tower), card 7 (critical
+  prime-aperture profile `(8)`), card 8 (Möbius logarithmic jet / Li non-holonomicity).

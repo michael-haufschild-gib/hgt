@@ -190,3 +190,31 @@ the exact critical carrier transition: the Gamma-damped packet is always summabl
 undamped critical-half-weight packet is summable exactly when `c=0`. The proof formalizes the
 Cauchy-condensation majorant `sum_n 1/(n(log n)^2)<infinity`. This closes the full finite Cauchy-core
 domain gate; it does not close the source-selection or relative-trace identity gates.
+
+## Lean certification — 2026-08-19 (stage 2 → 3)
+
+New module: `formal/GaloisForLFunctions/RHTower/SoninSemilocalDampedCovariancePositivity.lean`,
+wired into `GaloisForLFunctions.RHTower`; axiom-clean (`propext`, `Classical.choice`, `Quot.sound`
+only).  It closes the gap this card recorded ("the full finite-matrix positive-definiteness
+statement still uses the classical Gamma Fourier integral on paper").
+
+| Card statement | Lean name |
+|---|---|
+| `(1)` the sewn kernel | `RHTower.semilocalArchimedeanDampedCovarianceKernel` (pre-existing) |
+| `(2)` **positive semidefiniteness of `K_Γ`**, finite-matrix form | `RHTower.semilocalArchimedeanDampedCovarianceKernel_posSemidef` |
+| the spectral input: `φ` is a characteristic function | `RHTower.charFun_gammaCyclicMeasure`, `RHTower.positiveDefiniteOnReal_semilocalArchimedeanCharacteristic` |
+| `(3)` diagonal identity `K_Γ(t,t) = φ(2t)` | `RHTower.semilocalArchimedeanDampedCovarianceKernel_self` (pre-existing) |
+| `(4)` `e^{-t} ≤ φ(2t) ≤ √2 e^{-t}` for `t ≥ 0` | `RHTower.exp_neg_le_semilocalArchimedeanCharacteristic_two_mul` (new lower half) and `RHTower.semilocalArchimedeanCharacteristic_two_mul_le_sqrtTwo_mul_exp_neg` (pre-existing) |
+| `(5)` prime-log form `φ(2 log p) ≤ √2/p` | `RHTower.semilocalArchimedeanCharacteristic_two_mul_log_le` |
+| `(5)` critical-half-weight Cauchy summability | `RHTower.summable_gammaDampedPrimeLogCauchyPacketEnergy`, `RHTower.gammaDampedPrimeLogCauchyPacket_critical_carrierTransition` (pre-existing) |
+| `(6)`,`(7)` strict positivity of every cross entry and the exact additivity obstruction | `RHTower.semilocalArchimedeanDampedCovarianceKernel_pos` (pre-existing), `RHTower.semilocalArchimedeanDampedCovariance_gram_strict_superadditive` |
+
+Reuse note: no new Gamma–Fourier work was needed.  The corpus already owned the archimedean cyclic
+spectral probability measure `HTGeometry.gammaCyclicMeasure` with
+`∫ e^{ihy} dν = (cosh h)^{-1/2}`, and the universal Bochner Gram law
+`GaloisForLFunctions.HTGeometry.positiveDefiniteOnReal_charFun`.  The sewn kernel is their diagonal
+congruence, so PSD follows by absorbing the real damping into the coefficients.
+
+Still open on this card, and correctly so, are the RH-facing gates: identifying the Gram diagonal
+with the exact completed arithmetic source, identifying the completed finite-degree Gram with the
+Xi Hankel block, and RH itself.  Those are open problems, not proved statements.

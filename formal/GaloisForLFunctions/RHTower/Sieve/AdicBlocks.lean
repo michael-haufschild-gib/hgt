@@ -114,6 +114,71 @@ theorem adicIndex_mem_range {δ z₀ z₁ : ℝ} (hδ : 0 < δ) (hz₀ : 0 < z�
   obtain ⟨h1, h2⟩ := hS q hq
   exact Finset.mem_range.2 (Nat.lt_succ_of_le (adicIndex_le_of_le hδ hz₀ h1 h2))
 
+/-! ## Dyadic blocks of an initial segment -/
+
+/-- **A finite sum splits over its dyadic blocks.**  The block index of `n` is `⌊log₂ n⌋`, and the
+blocks of `[1, M]` are indexed by `j ≤ ⌊log₂ M⌋`. -/
+theorem sum_Icc_eq_sum_dyadic_blocks {M : ℕ} (f : ℕ → ℂ) :
+    ∑ j ∈ Finset.range (Nat.log 2 M + 1),
+        ∑ n ∈ (Finset.Icc 1 M).filter (fun n => Nat.log 2 n = j), f n
+      = ∑ n ∈ Finset.Icc 1 M, f n := by
+  classical
+  refine Finset.sum_fiberwise_of_maps_to (fun n hn => ?_) f
+  rw [Finset.mem_Icc] at hn
+  rw [Finset.mem_range, Nat.lt_succ_iff]
+  exact Nat.log_mono_right hn.2
+
+/-- **The triangle inequality over the dyadic blocks.**  This is the interface a two-regime
+pointwise estimate is summed through: each block carries its own bound, and there are
+`⌊log₂ M⌋ + 1` of them. -/
+theorem norm_sum_Icc_le_sum_dyadic_blocks {M : ℕ} (f : ℕ → ℂ) :
+    ‖∑ n ∈ Finset.Icc 1 M, f n‖
+      ≤ ∑ j ∈ Finset.range (Nat.log 2 M + 1),
+          ‖∑ n ∈ (Finset.Icc 1 M).filter (fun n => Nat.log 2 n = j), f n‖ := by
+  classical
+  rw [← sum_Icc_eq_sum_dyadic_blocks f]
+  exact norm_sum_le _ _
+
+/-- Every element of the `j`-th dyadic block of `[1, M]` lies in `[2^j, 2^{j+1})`. -/
+theorem mem_dyadic_block {M j n : ℕ} (hn : n ∈ (Finset.Icc 1 M).filter (fun n => Nat.log 2 n = j)) :
+    2 ^ j ≤ n ∧ n < 2 ^ (j + 1) := by
+  rw [Finset.mem_filter, Finset.mem_Icc] at hn
+  obtain ⟨⟨hn1, -⟩, hlog⟩ := hn
+  constructor
+  · rw [← hlog]
+    exact Nat.pow_log_le_self 2 (by omega)
+  · rw [← hlog]
+    exact Nat.lt_pow_succ_log_self (by norm_num) n
+
+/-- **Summing a two-parameter per-block bound over the dyadic blocks.**  A bound of the shape
+`a + b·2^j` on the `j`-th block — which is what the two regimes of the logarithmic phase produce,
+with `a ≍ √t` and `b ≍ 1/√t` — sums to `(⌊log₂ M⌋ + 1)·a + 2b·M`: the first term is where
+Halász–Montgomery's `log T` comes from, the second is the `N/√T`. -/
+theorem norm_sum_Icc_le_of_dyadic_bounds {M : ℕ} (hM : 1 ≤ M) (f : ℕ → ℂ) {a b : ℝ}
+    (hb : 0 ≤ b)
+    (hblk : ∀ j ∈ Finset.range (Nat.log 2 M + 1),
+      ‖∑ n ∈ (Finset.Icc 1 M).filter (fun n => Nat.log 2 n = j), f n‖ ≤ a + b * 2 ^ j) :
+    ‖∑ n ∈ Finset.Icc 1 M, f n‖ ≤ ((Nat.log 2 M : ℝ) + 1) * a + 2 * b * (M : ℝ) := by
+  classical
+  refine le_trans (norm_sum_Icc_le_sum_dyadic_blocks f) ?_
+  refine le_trans (Finset.sum_le_sum hblk) ?_
+  rw [Finset.sum_add_distrib, Finset.sum_const, ← Finset.mul_sum, Finset.card_range,
+    nsmul_eq_mul]
+  have hgeom : ∑ j ∈ Finset.range (Nat.log 2 M + 1), (2 : ℝ) ^ j
+      = (2 : ℝ) ^ (Nat.log 2 M + 1) - 1 := by
+    rw [geom_sum_eq (by norm_num : (2 : ℝ) ≠ 1)]
+    norm_num
+  rw [hgeom]
+  have hpow : (2 : ℝ) ^ (Nat.log 2 M) ≤ (M : ℝ) := by
+    have := Nat.pow_log_le_self 2 (by omega : M ≠ 0)
+    exact_mod_cast this
+  have hstep : (2 : ℝ) ^ (Nat.log 2 M + 1) - 1 ≤ 2 * (M : ℝ) := by
+    rw [pow_succ]
+    nlinarith [hpow]
+  have hcast : ((Nat.log 2 M + 1 : ℕ) : ℝ) = (Nat.log 2 M : ℝ) + 1 := by push_cast; ring
+  rw [hcast]
+  nlinarith [hstep, hb]
+
 end
 
 end RHTower.Sieve

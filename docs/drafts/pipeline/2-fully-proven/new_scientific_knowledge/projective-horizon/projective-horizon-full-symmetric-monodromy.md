@@ -4887,3 +4887,141 @@ The last item is what gives `U(0) ≠ 0` for a collision tangent: the surviving 
 observation Jacobian deletes the last raw column, whose conormal coordinate is exactly `U(0)`.
 With `U(0) ≠ 0` and `V ≡ −Y²U` the corpus's `isCoprime_of_low_tangent_unique` supplies coprimality,
 and `criticalFibre_eq_of_shared_coprime_tangent` then collapses the singular reduced states.
+
+### Session bookkeeping — modules landed for `(D-1)` and `(D-f)`
+
+All of the following are in the tree, wired into `HTGeometry.lean`, and free of `sorry`, `admit`,
+`axiom`, `opaque` and `unsafe`:
+
+```text
+CoordinatePrefixPrimeChain          DegreeOnePolynomialQuotient
+DegreeOneHypersurfaceDimension      FiniteJetSubalgebraInversion
+CriticalSchurCoordinateGeneration   SubalgebraClearingPrime
+CriticalSchurChartClearing          CriticalSchurUniqueRamifiedPrime     ** (D-1) **
+CriticalSheetChartIntegrality       CriticalSheetSchurPullback           ** 7a **
+CriticalSheetJacobianCorankOne      ** 7c **      CriticalSheetConormalVector   ** 7d **
+CriticalSheetReducedJacobian        ** 7b **      HorizonJacobianDeterminant
+CriticalSheetSingularity            MatrixKernelDeletedColumn
+```
+
+The remaining assembly (`criticalSchur_reducedFibre_eq_of_collisions`) chains them as follows, and
+each link is a theorem already in the tree:
+
+```text
+collision (σ,τ)                     criticalSchur_exists_reduced_tangent_of_collision
+  ⟹ nonzero low tangent (U,V)
+  ⟹ nonzero conormal                horizonConormalVector_ne_zero
+  ⟹ det of the horizon Jacobian = 0 Matrix.exists_mulVec_eq_zero_iff + det_horizonObservationJacobian
+  ⟹ σ is singular                   criticalSheet_singular_of_det_eq_zero
+  ⟹ corank one at z_σ               criticalSheet_finrank_ker_reduced_jacobian_eq_one   (via (D-1))
+  ⟹ (U,V) ∝ the fixed conormal      criticalSheet_jacobian_mulVec_conormal + exists_smul_…
+  ⟹ U(0) ≠ 0                        ker_coord_ne_zero_of_det_submatrix_ne_zero
+  ⟹ V(0) ≠ 0                        dvd_reciprocal_of_low_tangent
+  ⟹ (U,V) coprime                   isCoprime_of_low_tangent_unique
+  ⟹ both reduced states equal       criticalFibre_eq_of_shared_coprime_tangent
+```
+
+That is `f_{Q₀} = 1`.  The one classical input still outstanding for `(D)` is item 8 of the build
+order: the fibre of the reduction over that single point has exactly `e = 2` elements.
+
+### Item 8 has a mathlib backbone — the route to `(D-c)`
+
+The one classical input still missing is the count of sheets over a single reduced state.  Mathlib
+already carries the hard half, in `Mathlib/NumberTheory/RamificationInertia/Galois.lean`:
+
+```text
+Ideal.card_stabilizer_eq
+    Nat.card (MulAction.stabilizer G P) = p.ramificationIdxIn S * p.inertiaDegIn S
+Ideal.card_inertia_eq_ramificationIdxIn
+    Nat.card (P.inertia G) = p.ramificationIdxIn S
+```
+
+for a Galois group action with `Module.Finite`, `Flat` and a perfect residue field — all satisfied
+here (characteristic zero).  The route is therefore:
+
+```text
+8a  S := integral closure of A in the normal closure N; it is Dedekind, module-finite and flat
+8b  P := the prime of S under the chosen valuation W;  stabilizer G P = the decomposition group
+8c  card_stabilizer_eq gives |D| = e(W/A) · f(W/A)
+8d  sheets ≅ G / Gal(N/E); the sheets σ with σ⁻¹(W) = B are the classes in D·Gal(N/E)
+8e  |D · Gal(N/E) / Gal(N/E)| = |D| / |D ∩ Gal(N/E)| = e(B/A) · f(B/A) = 2 · 1 = 2
+8f  every colliding sheet is singular (proved), and every singular sheet has σ⁻¹(W) = B by (D-1),
+    so collisionSupport has at most 2 elements — which is (D)
+```
+
+Steps `8a`–`8c` are mathlib instantiation; `8d`–`8e` are the coset bookkeeping; `8f` is already in
+the tree.  Note that this route needs `(D-e)` (`e(B/A) = 2`, proved) and `(D-f)` (`f(B/A) = 1`).
+
+## Lean progress — `(D-f)` IS CLOSED
+
+```text
+HTGeometry/CriticalSheetFixedConormal.lean                (built)
+    criticalSchurFixedConormal                one nonzero conormal vector for all sheets
+    criticalSheet_horizonJacobian_mulVec_fixedConormal
+    criticalSheet_finrank_ker_horizonJacobian
+    criticalSheet_reduced_inv
+    criticalSheet_exists_smul_of_tangent
+        ** every low tangent at a singular sheet is a multiple of that vector **
+
+HTGeometry/CriticalSheetCollisionTangent.lean             (built)
+    criticalSheet_singular_of_tangent
+    criticalSheetReducedRecipPolynomial_coeff_zero_ne_zero
+    criticalSheet_tangent_coeff_zero_ne_zero      ** U(0) ≠ 0 **
+
+HTGeometry/CriticalSchurUniqueCollisionPoint.lean         (built)
+    criticalNormalClosureSchurResidue_charZero
+    criticalSheet_tangent_smul                    tangents at two singular sheets are proportional
+    criticalSheet_tangent_recip_coeff_zero_ne_zero
+    criticalSheet_tangent_isCoprime
+    criticalSchur_exists_reduced_tangent_of_collision'
+    criticalSchur_reducedFibre_eq_of_collisions
+        ** (D-f): ALL COLLISIONS OF THE SCHUR REDUCTION HAPPEN AT ONE POINT **
+```
+
+The statement proved is exactly what `(D)` needs on the "how many collision points" side:
+
+```text
+σ ≠ τ,  r σ = r τ,  σ' ≠ τ',  r σ' = r τ'   ⟹   r σ = r σ'
+```
+
+**State of `(D)`.**
+
+```text
+(R)    e ≥ 2 at the Schur place            ** DONE **
+(D-e)  e = 2 exactly                       ** DONE **
+(D-1)  a unique ramified prime             ** DONE **
+(D-f)  one collision point                 ** DONE **
+(D-c)  that point carries exactly 2 sheets   the last classical input (item 8 above)
+```
+
+## Lean progress — `(D)` is now one count away
+
+```text
+HTGeometry/CriticalSchurCollisionSupportFibre.lean        (built)
+    criticalSchur_collisionSupport_reducedFibre_eq
+        ** the whole collision support sits over ONE point of the reduced fibre **
+    criticalSchur_collisionSupport_ncard_le_two_of_fibre
+        ** if that one fibre carries at most two sheets, |collisionSupport| ≤ 2 **
+```
+
+So the entire card now rests on one statement, stated in Lean and consumed by the theorem above:
+
+```text
+∀ σ,  ncard {τ | r τ = r σ}  ≤  2
+```
+
+i.e. the Schur reduction is at most two-to-one.  Two routes are available, both classical:
+
+* **Inertia orbit.**  Two sheets with the same reduced state differ by an element of the inertia
+  group of the chosen normal-closure Schur place, and the inertia orbit of a singular sheet has
+  size `e(B/A) = 2` by `(D-e)`.  The corpus already has the inertia group
+  (`criticalSchurInertiaGroup`), its faithful action on sheets
+  (`criticalSchurInertiaAction_injective`) and tame cyclicity (`isCyclic_of_tame`); mathlib has
+  `Ideal.card_inertia_eq_ramificationIdxIn` for the ideal-theoretic count.
+* **Root multiplicity.**  A singular sheet is a local `A`-algebra map `B → W`
+  (`criticalSheetSourceSchurLift`), hence a root in `W` of the minimal polynomial of a generator,
+  congruent to a fixed residue; the number of such roots is at most the multiplicity of that
+  residue in the reduction, which is `e f = 2`.
+
+Everything else on this card — `(R)`, `(D-e)`, `(D-1)`, `(D-f)`, and the whole of §2's conormal
+apparatus — is now Lean-proved and unconditional.
