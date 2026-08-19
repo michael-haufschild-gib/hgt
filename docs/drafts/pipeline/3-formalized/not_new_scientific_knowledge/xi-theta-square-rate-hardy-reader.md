@@ -1,12 +1,12 @@
 # Canonical H2 and L2 reader for the theta square-rate spectrum
 
 - **ID:** xi-theta-square-rate-hardy-reader
-- **Stage:** 2-fully-proven
-- **Type:** BRIDGE THEOREM / CANONICAL PALEY-WIENER READER, [PROVED ON PAPER]
+- **Stage:** 3-formalized/not_new_scientific_knowledge
+- **Type:** BRIDGE THEOREM / CANONICAL PALEY-WIENER READER, [PROVED ON PAPER] [FORMALIZED]
 - **Date:** 2026-07-10
 - **Parents:** xi-theta-square-rate-reader-symbol.md,
   xi-theta-square-rate-boundary-energy.md
-- **Lean gap:** the current library has no right-half-plane H2 / Paley-Wiener isometry API.
+- **Lean gap:** closed.  The reader was built directly in `L²(0,∞)` as an orthogonal residual, so no half-plane Paley--Wiener surjectivity was needed.
 
 ## Statement
 
@@ -128,5 +128,42 @@ its action on the reflected theta half inside the third-order balanced Perron se
 
 - [x] 0 -> 1: explicit rate-plane symbol and exact boundary energy proved.
 - [x] 1 -> 2: interior H2 control, exact H2 norm, and canonical L2 reader proved on paper.
-- [ ] 2 -> 3: blocked only by missing half-plane H2 / Paley-Wiener formal infrastructure.
+- [x] 2 -> 3: complete; see the Lean formalization section.
 - [ ] 3 -> 4: requires the reflected balanced-Perron charge and final contradiction composition.
+
+## Lean formalization (complete and unconditional)
+
+Equation `(1)` was already in the tree.  The remaining items were formalized without the
+half-plane Paley--Wiener surjectivity: the reader is constructed directly in `L²(0,∞)` as the
+normalised orthogonal residual of one heat exponential against the closed span of all the others,
+and its norm is computed in closed form.
+
+- `formal/GaloisForLFunctions/RHTower/XiThetaSquareRateHardy.lean` — equation `(1)`
+  (`normalized_csSup_integral_sq_norm_thetaHeatRateReaderSymbol_line`) and the interpolation
+  identities `thetaHeatRateReaderSymbol_self` / `_other`.
+- `formal/GaloisForLFunctions/HTGeometry/CauchyMatrixDeterminant.lean` — the Cauchy determinant
+  over an arbitrary field (a mathlib gap).
+- `formal/GaloisForLFunctions/HTGeometry/CauchyDeterminantStep.lean` — the division-free
+  consecutive relation for a symmetric Cauchy matrix.
+- `formal/GaloisForLFunctions/HTGeometry/HalfLineExponentialGram.lean` — the half-line exponentials
+  have a Cauchy Gram, hence a closed-form Gram determinant and linear independence.
+- `formal/GaloisForLFunctions/HTGeometry/HalfLineExponentialDistance.lean` — the Blaschke distance
+  law for the Gram--Schmidt length.
+- `formal/GaloisForLFunctions/HTGeometry/HalfLineExponentialCoDistance.lean` — the same with one
+  rate deferred to the end, giving the distance to the span of all the other exponentials up to a
+  cutoff.
+- `formal/GaloisForLFunctions/HTGeometry/PuncturedSineProduct.lean` — the punctured Euler sine
+  product in closed factorial form and the limit of its factorial ratio (a mathlib gap).
+- `formal/GaloisForLFunctions/RHTower/XiThetaSquareRateBlaschkeLimit.lean` — Euler's hyperbolic
+  sine product on the real line, its punctured form, and the square-rate Blaschke limit
+  `∏_{m≠j} (m²-j²)/(m²+j²) → (-1)^{j-1} π j / sinh (π j)`.
+- `formal/GaloisForLFunctions/RHTower/XiThetaSquareRateReaderNorm.lean` — the physical heat rates
+  and the exact limiting co-distance `π / (2 sinh (π(n+1))²)`.
+- `formal/GaloisForLFunctions/HTGeometry/HalfLineExponentialReader.lean` — the canonical
+  biorthogonal reader, its Kronecker pairings, its norm, and its uniqueness.
+- `formal/GaloisForLFunctions/HTGeometry/HalfLineExponentialResidualLimit.lean` — the projection
+  residual is exactly the limit of the finite co-distances.
+- `formal/GaloisForLFunctions/RHTower/XiThetaSquareRateReaderL2.lean` — equations `(2)`--`(5)`:
+  canonicity (`thetaSquareRateReader_unique`), the exact norm `(3)`
+  (`norm_thetaSquareRateReader` = `√(2/π)·sinh(π(n+1))`), the Kronecker pairing `(4)`, and the
+  coefficient functional `(5)`.

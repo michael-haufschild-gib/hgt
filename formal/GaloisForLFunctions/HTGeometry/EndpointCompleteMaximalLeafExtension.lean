@@ -76,9 +76,11 @@ theorem LocalExtensionEigenbranchChart.probeMatrix_newEndpoint_eq_pairing
   · simp only [if_pos, Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro s _
-    ring
+    rw [mul_assoc]
+    rw [starRingEnd_apply]
   · intro b _ hba
-    simp [hba]
+    have hab : a ≠ b := Ne.symm hba
+    simp [hab]
   · intro ha
     exact (ha (Finset.mem_univ a)).elim
 

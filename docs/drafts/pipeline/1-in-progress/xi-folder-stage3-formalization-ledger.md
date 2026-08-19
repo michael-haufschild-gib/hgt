@@ -21,7 +21,7 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 | 12 | xi-square-descent-vertical-modulus-rh | Lean done (both directions + R* corollary) | RHTower/XiSquareDescentVerticalModulus, RHTower/XiSquareDescentVerticalModulusConverse |
 | 13 | xi-supercharge-persistent-harnack-defect | open | |
 | 14 | xi-unit-euler-pole-affine-section-translated-bezoutian | partial: unit-residue affine section (1)-(2), Bezoutian diagonal formula, and the necessity half of the classifier (6) done; sufficiency needs Hadamard genus zero | HTGeometry/HorizontalModulusDerivative, RHTower/XiUnitEulerPoleAffineSection |
-| 15 | xi-theta-square-rate-hardy-reader | open | |
+| 15 | xi-theta-square-rate-hardy-reader | Lean done, PROMOTED | HTGeometry/CauchyMatrixDeterminant, CauchyDeterminantStep, HalfLineExponentialGram, HalfLineExponentialDistance, HalfLineExponentialCoDistance, PuncturedSineProduct, HalfLineExponentialReader, HalfLineExponentialResidualLimit, RHTower/XiThetaSquareRateBlaschkeLimit, XiThetaSquareRateReaderNorm, XiThetaSquareRateReaderL2 |
 
 ## Precise plan for each remaining item
 
@@ -52,8 +52,12 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 5. **Card 13**.  Real hyperelliptic topology.  The formalizable core is the arc-count theorem: for
    a real polynomial of odd degree `2n+1` with `2r+1` simple real roots, the positivity set has
    exactly `r+1` components on the real projective line, giving `HarnackDefect = n - r`.
-6. **Card 15**.  Right half-plane `H^2` and the Laplace Paley--Wiener unitary; the Blaschke product
-   of the rate sequence and its exact boundary energy.
+6. **Card 15** — DONE and promoted.  Paley--Wiener surjectivity was never needed: the reader is the
+   normalised orthogonal residual of one heat exponential against the closed span of the others.
+   Its norm came from a new chain — Cauchy determinant (mathlib gap) → consecutive determinant step
+   → exponential Gram is a Cauchy matrix → Blaschke co-distance law → punctured Euler sine product
+   (mathlib gap) + the corpus's `tendsto_euler_sinh_prod` → Blaschke limit → residual = limit of
+   finite co-distances.
 7. **Card 1**.  Riemann--von Mangoldt in counting form, plus compact-operator singular values,
    Schatten ideals and `det_2`.  The corpus already owns approximation numbers, `MemSchattenClass`,
    and `SchattenCriticalAsymptotic`.

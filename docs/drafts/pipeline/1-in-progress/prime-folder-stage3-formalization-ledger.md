@@ -350,3 +350,27 @@ Search paid off again: `xiPrimeLogDirichletContinuation_zero_residue`
 (`XiHeatCassiniWoldZetaPoleCarrier.lean`) already proved the card's (3)–(4) for every zero right of
 the critical line, and `xiPrimeLogDirichlet_eq_tsum_primeLog_div_cpow` identified the corpus current
 with the card's `Q`.
+
+## 2026-08-19 — Krein–Hamming card CLOSED (card 16)
+
+`HTGeometry/UniversalPrimeKreinHamming.lean` already carried the algebraic half (exact rectangular
+inertia on canonical probes, Herglotz-iff-empty, rational-gauge same-field and Stanley–Reisner
+matroid product, dephasing energy = Hamming). The missing analytic half is now
+`HTGeometry/PrimeResiduePickInertia.lean`:
+
+- `pickKernel`, its subtraction / real-scalar / finite-sum linearity;
+- `pickKernel_cauchyAtom` — the one-atom rank-one identity for a real pole;
+- `universalPrimeOrientedHerglotz_sub` — the ordered chamber pair differs by the finite signed
+  divisor on `L \ J` and `J \ L` (the infinite common source cancels as an identity);
+- `pickKernel_universalPrimeOrientedHerglotz_sub` — the relative Pick defect;
+- `universalPrimeChamberRelativePickGram_eq` — sampling on the canonical unit-height probes gives
+  literally the rectangular Krein form, so the corpus inertia theorems transport;
+- `rectangularKreinForm_eq_featureCongruence` + `isUnit_universalPrimeChamberFeatureMatrix`
+  ⇒ `isUnit_det_...` and `rank_... = primeChamberHammingDistance` (this is `κ₀ = 0`);
+- `primeChamber_subset_iff_no_negative_pick_direction` — the analytic order law.
+
+Technique note: the Pick kernel is only ℝ-linear in the function (conjugation on the second
+argument), which is why the weights must be carried as real casts; `pickKernel_real_smul` is the
+form that is actually usable.
+
+Card `prime-residue-krein-hamming-product-law` promoted. Stage-2 prime folder: 20 cards remaining.

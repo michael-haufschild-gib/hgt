@@ -1795,3 +1795,63 @@ card's own `D^{-1}Tr H(θ)² = 1`, read at a general coefficient vector.
 What remains for Theorem A on the card's ensemble is the physical embedding named in the earlier
 section -- transporting the six chart coordinates of the one-qubit extension into the `m = 12n-9`
 shell parameters -- after which the extension capstone supplies the witness directly.
+
+## Lean progress -- the witness junction: from the shell globalisation to Theorem B
+
+Three further modules (umbrella-wired, axioms = `propext`/`Classical.choice`/`Quot.sound`) connect
+the globalisation output to the dephasing capstone.
+
+`formal/GaloisForLFunctions/HTGeometry/ShellQuadraticRateWitness.lean`
+
+| Card item | Declaration |
+|---|---|
+| the canonical eigenvalues satisfy the characteristic relation | `charpolyRelation_eigenvalues` |
+| the nondegenerate locus of the spectral discriminant is open and nonempty | `isOpen_discNonzero`, `nonempty_discNonzero` |
+| **the energy-form witness from one Hamiltonian in the interaction span** | `exists_energy_witness_of_span_witness` |
+| **angular dephasing `(17)` from the quadratic-rate rigidity of that one Hamiltonian** | `tendsto_integral_exp_sortedSpectralAction_zero_of_span_witness` |
+
+The globalisation `exists_mem_real_shell_quadraticRate_ne_zero_of_mem_span` concludes for *every*
+injective root packet at the produced coefficient vector; feeding it the open set where the spectral
+discriminant does not vanish makes the canonical eigenvalues such a packet, so the conclusion is the
+witness the nonconstancy criterion consumes.  The nondegenerate locus is nonempty precisely because
+the discriminant is a nonzero polynomial, which is the card's own "the local family contains a
+simple-spectrum member".
+
+`formal/GaloisForLFunctions/HTGeometry/SimpleSpectrumOpen.lean`
+
+| Card item | Declaration |
+|---|---|
+| injectivity is invariant under the canonical rearrangement | `injective_iff_injective_sortedTuple` |
+| **the simple-spectrum locus of a continuous Hermitian family is open** | `isOpen_simpleSpectrumLocus` |
+
+Simplicity is a finite set of separation conditions *once the spectrum is labelled canonically*, and
+that labelling is continuous, so the locus is a finite intersection of open sets.  This is the
+statement that lets the physical-leaf globalisation be applied on an open set of parameters where a
+root packet actually exists.
+
+`formal/GaloisForLFunctions/HTGeometry/PhysicalLeafSpanMembership.lean`
+
+| Card item | Declaration |
+|---|---|
+| a submodule element lies in the real span of its canonical generators | `mem_span_realMatrixSubmoduleGenerator` |
+| the physical leaf assembly is a local Hamiltonian of the extended architecture | `isLocalHamiltonian_physicalLeaf` |
+| a diagonal of self-adjoint entries is Hermitian; the assembly is Hermitian at Hermitian data | `isHermitian_diagonal_of_star`, `isHermitian_physicalLeafHamiltonian` |
+| **the physical leaf Hamiltonian lies in the interaction span** | `physicalLeaf_mem_span_generator` |
+
+This is the span hypothesis of `exists_energy_witness_of_span_witness` for an *arbitrary* physical
+leaf assembly, not only the `layerFieldShift`/`layerExchange` one the corpus already handled: the
+leaf case of `IsLocalHamiltonian` is by definition the existence of exactly such an assembly.
+
+So the chain from Lemma A1 to Theorem B is now, in Lean:
+
+1. `exists_endpointComplete_chain` — Lemma A1 at every chain length;
+2. `exists_mem_real_physicalLeaf_quadraticRate_ne_zero` — Theorem A on physical parameters;
+3. `physicalLeaf_mem_span_generator` — the witness Hamiltonian is in the interaction span;
+4. `exists_energy_witness_of_span_witness` — the energy-form witness on the shell;
+5. `exists_witness_of_energy_witness` — its coordinate form, via the trace normalisation;
+6. `tendsto_integral_exp_sortedSpectralAction_zero_of_witness` — `(17)`.
+
+The one junction left is the choice of the open parameter set in step 2: it must lie inside the
+simple-spectrum locus so that step 4's root packet exists.  `isOpen_simpleSpectrumLocus` supplies the
+openness; what remains is the nonemptiness, i.e. one physical parameter at which the extended system
+has a simple spectrum -- which is the uncoupled split point of Lemma A1's own construction.

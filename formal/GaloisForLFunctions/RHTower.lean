@@ -10688,3 +10688,5 @@ import GaloisForLFunctions.RHTower.Sieve.RouteTWidthUpper
 import GaloisForLFunctions.RHTower.XiThetaSquareRateBlaschkeLimit
 import GaloisForLFunctions.RHTower.XiThetaSquareRateReaderNorm
 import GaloisForLFunctions.RHTower.XiThetaSquareRateReaderL2
+import GaloisForLFunctions.RHTower.Sieve.RouteTEnvelopeRho
+import GaloisForLFunctions.RHTower.Sieve.RouteTTailRho

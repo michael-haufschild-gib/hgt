@@ -1,7 +1,7 @@
 # Prime-residue Krein--Hamming product geometry in one HT field
 
 - **ID:** `prime-residue-krein-hamming-product-law`
-- **Stage:** 2-fully-proven on paper / not new scientific knowledge
+- **Stage:** 3-formalized
 - **Type:** THEOREM / FINITE SIGNED-CAUCHY INERTIA BRIDGE
 - **Scientific status:** `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** One positive prime-log maximal-translation HT field carries every finite localized
@@ -284,9 +284,9 @@ not supply that arithmetic section and does not claim RH.
 - [x] non-routine geometric strengthening isolated
 - [x] artificial-pole and artificial-index attacks answered in the statement
 - [x] complete paper proof
-- [ ] exact relative-inertia theorem formalized unconditionally
-- [ ] prime-residue Herglotz chamber law formalized unconditionally
-- [ ] same-field and all-constraint product formalized unconditionally
+- [x] exact relative-inertia theorem formalized unconditionally
+- [x] prime-residue Herglotz chamber law formalized unconditionally
+- [x] same-field and all-constraint product formalized unconditionally
 - [x] parent-mechanism audit: finite signed Cauchy factorization plus Sylvester inertia
 - [x] significance rescored: bridge / not new scientific knowledge
 
@@ -323,3 +323,39 @@ multiqubit quantum information, applied directly to the universal hypertranscend
 prime-residue cube.  The declarations were added and manually reviewed during a no-computation
 phase; targeted Lean verification remains required before promotion to the checked formalized
 stage.
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+The three open formalization gates are closed by
+`formal/GaloisForLFunctions/HTGeometry/UniversalPrimeKreinHamming.lean` together with the new
+`formal/GaloisForLFunctions/HTGeometry/PrimeResiduePickInertia.lean`, which supplies the missing
+analytic half: the Nevanlinna--Pick kernel itself, the one-atom identity `(3)`, the relative
+factorization `(4)`, the identification of the sampled Pick defect with the rectangular Krein form,
+and nondegeneracy.  Every declaration is axiom-clean
+(`propext, Classical.choice, Quot.sound`).
+
+| Card item | Lean declaration |
+|---|---|
+| the fixed source and its chamber flips `(1)` | `universalPrimeWeight`, `universalPrimeWeight_pos`, `universalPrimeOrientedHerglotz` |
+| the Pick kernel `(2)` | `pickKernel`, `pickKernel_sub`, `pickKernel_real_smul`, `pickKernel_sum` |
+| **one-atom identity `(3)`** | `pickKernel_cauchyAtom` (with `cauchyAtom`, `pickKernel_atomCombination`) |
+| the exact chamber divisor difference | `universalPrimeOrientedHerglotz_sub`, `sum_sub_sum_eq_sum_sdiff_sub_sum_sdiff` |
+| **relative Pick factorization `(4)`**, common source atoms cancelling | `pickKernel_universalPrimeOrientedHerglotz_sub` |
+| the relative defect Gram on the node packet | `primeKreinProbeNode`, `universalPrimeChamberRelativePickGram`, `universalPrimeChamberRelativePickGram_eq` |
+| Cauchy feature matrix `(8)` and its invertibility | `universalPrimeKreinProbe_combined_linearIndependent`, `featurePacketMatrix`, `universalPrimeChamberFeatureMatrix`, `isUnit_universalPrimeChamberFeatureMatrix` |
+| the signature congruence used by Sylvester inertia | `chamberSignDiagonal`, `rectangularKreinForm_eq_featureCongruence` |
+| **exact relative inertia `(5)`**, both bounds attained | `universalPrimeChamberRelativePickGram_exact_pos_inertia`, `universalPrimeChamberRelativePickGram_exact_neg_inertia` |
+| `kappa_0 = 0` and rank `= #(J triangle L)` | `isUnit_det_universalPrimeChamberRelativePickGram`, `rank_universalPrimeChamberRelativePickGram` |
+| **analytic Hamming distance `(6)`** | `primeChamberHammingDistance`, `primeChamberSymmetricDifference_card`, `primeChamberDephasingMasterEnergy_eq_hamming` |
+| **analytic order `(7)`** | `primeChamber_subset_iff_no_negative_pick_direction` (with `star_dotProduct_mulVec_smul`) |
+| **Herglotz vertex `(9)`** | `universalPrimeOrientedHerglotz_nonneg_iff_empty`, `universalPrimeOrientedHerglotz_nonneg_iff_dephasingMasterEnergy_eq_zero` |
+| finite flips are base-field gauges `(11)` | `primeFlipGaugeRatFunc`, `universalPrimeOrientedPaletteGauge` |
+| **product law `(10)`.1: palette differentially independent** | `universalFacetOrbitPrimeOrientedSource_differentialIndependent` |
+| **product law `(10)`.2: same embedded differential field** | `universalFacetOrbitPrimeOrientedSource_differentialAdjoin_eq` |
+| **product law `(10)`.3: every finite localized Stanley--Reisner matroid** | `universalFacetOrbitPrimeOriented_stanleyReisnerLaurentDifferentialMatroid` |
+| chamber metric as independent-dephasing energy | `primeChamberDephasingCharge`, `primeChamberDephasingMasterEnergy`, `primeChamberDephasingMasterEnergy_eq_zero_iff` |
+
+The relative Pick defect is proved directly from the definition of the two chamber sources, so the
+infinitely many common prime atoms cancel as an identity rather than by a convergence argument;
+the sampled defect is then literally the rectangular Krein form whose inertia the corpus already
+computes, and the feature matrix is square and invertible, which is what makes `kappa_0 = 0`.

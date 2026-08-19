@@ -14,6 +14,8 @@ functional of the card is the reader pairing rescaled by `exp (λ_n)`.
 -/
 
 open Filter Topology MeasureTheory
+open scoped InnerProductSpace
+open InnerProductSpace
 
 namespace RHTower
 
@@ -82,8 +84,7 @@ theorem norm_thetaSquareRateReader (n : ℕ) :
     rw [← Real.sqrt_inv]
     congr 1
     rw [inv_div]
-  rw [div_inv_eq, ← hinv]
-  field_simp
+  rw [inv_div, div_eq_mul_inv, hinv, mul_comm]
 
 /-- **Equation `(2)`, canonicity.**  The reader is the unique biorthogonal element of the closed
 span of the heat exponential system. -/

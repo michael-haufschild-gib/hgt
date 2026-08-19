@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.StieltjesPowerSumRecovery
 import GaloisForLFunctions.RHTower.ExpAlgebraicTranscendental
 import GaloisForLFunctions.RHTower.GelfondSchneider
 import GaloisForLFunctions.HTGeometry.PrimeRadialRelativeJetRank
+import GaloisForLFunctions.RHTower.ZetaHypertranscendental
 
 /-!
 # The corank-one and corank-two rungs of the Stieltjes collapse
@@ -153,6 +154,84 @@ theorem transcendental_stieltjesVal_pair {p q : ℕ} (hp : p.Prime) (hq : q.Prim
     ring
   exact GaloisForLFunctions.RHTower.log_ratio_transcendental hq hp hpq.symm
     (isAlgebraic_of_quadratic_over_algebraic hs hw)
+
+
+
+/-! ## §4: the Riemann zeta function is not D-finite -/
+
+open GaloisForLFunctions
+
+
+/-- A function is *D-finite* when it satisfies a nontrivial linear differential equation with
+polynomial coefficients. -/
+def DFinite (f : ℂ → ℂ) : Prop :=
+  ∃ (m : ℕ) (q : Fin (m + 1) → Polynomial ℂ), (∃ i, q i ≠ 0) ∧
+    ∀ z : ℂ, ∑ i : Fin (m + 1), (q i).eval z * iteratedDeriv (i : ℕ) f z = 0
+
+theorem eval_aeval_X_zero {m : ℕ} (p : Polynomial ℂ) (v : Fin (m + 2) → ℂ) :
+    MvPolynomial.eval v (Polynomial.aeval (MvPolynomial.X (0 : Fin (m + 2))) p)
+      = p.eval (v 0) := by
+  induction p using Polynomial.induction_on' with
+  | add p₁ p₂ h₁ h₂ => simp [h₁, h₂]
+  | monomial n a => simp
+
+/-- **D-finite implies differentially algebraic.**  A linear differential equation with polynomial
+coefficients is in particular an algebraic differential equation. -/
+theorem differentiallyAlgebraic_of_dFinite {f : ℂ → ℂ} (h : DFinite f) :
+    DifferentiallyAlgebraic f := by
+  obtain ⟨m, q, ⟨i₀, hi₀⟩, hrel⟩ := h
+  classical
+  refine ⟨m, (∑ i : Fin (m + 1),
+    (Polynomial.aeval (MvPolynomial.X (0 : Fin (m + 2))) (q i)) * MvPolynomial.X i.succ :
+      MvPolynomial (Fin (m + 2)) ℂ), ?_, ?_⟩
+  · obtain ⟨z₀, hz₀⟩ : ∃ z₀ : ℂ, (q i₀).eval z₀ ≠ 0 := by
+      by_contra hc
+      refine hi₀ (Polynomial.funext fun z => ?_)
+      have := not_exists.mp hc z
+      simpa using not_not.mp this
+    intro hP
+    set v : Fin (m + 2) → ℂ := fun j => if j = 0 then z₀ else if j = i₀.succ then 1 else 0 with hv
+    have hval := congrArg (MvPolynomial.eval v) hP
+    rw [map_zero, map_sum] at hval
+    have hterm : ∀ i : Fin (m + 1),
+        MvPolynomial.eval v
+          ((Polynomial.aeval (MvPolynomial.X (0 : Fin (m + 2))) (q i)) * MvPolynomial.X i.succ)
+          = if i = i₀ then (q i₀).eval z₀ else 0 := by
+      intro i
+      rw [map_mul, MvPolynomial.eval_X, eval_aeval_X_zero]
+      have hv0 : v 0 = z₀ := by
+        show (if (0 : Fin (m+2)) = 0 then z₀ else if (0 : Fin (m+2)) = i₀.succ then (1:ℂ) else 0)
+          = z₀
+        rw [if_pos rfl]
+      rw [hv0]
+      by_cases h : i = i₀
+      · subst h
+        have : v i.succ = 1 := by
+          show (if i.succ = 0 then z₀ else if i.succ = i.succ then (1:ℂ) else 0) = 1
+          rw [if_neg (Fin.succ_ne_zero i), if_pos rfl]
+        rw [this, mul_one, if_pos rfl]
+      · have hne : i.succ ≠ i₀.succ := fun hc => h (Fin.succ_injective _ hc)
+        have : v i.succ = 0 := by
+          show (if i.succ = 0 then z₀ else if i.succ = i₀.succ then (1:ℂ) else 0) = 0
+          rw [if_neg (Fin.succ_ne_zero i), if_neg hne]
+        rw [this, mul_zero, if_neg h]
+    rw [Finset.sum_congr rfl fun i _ => hterm i, Finset.sum_ite_eq' Finset.univ i₀] at hval
+    simp only [Finset.mem_univ, if_true] at hval
+    exact hz₀ hval
+  · intro z
+    rw [map_sum, ← hrel z]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_mul, MvPolynomial.eval_X, eval_aeval_X_zero]
+    have h0 : (Fin.cons (α := fun _ : Fin (m + 2) => ℂ) z
+        fun j : Fin (m + 1) => iteratedDeriv (j : ℕ) f z) 0 = z := by simp
+    have hs : (Fin.cons (α := fun _ : Fin (m + 2) => ℂ) z
+        fun j : Fin (m + 1) => iteratedDeriv (j : ℕ) f z) i.succ
+        = iteratedDeriv (i : ℕ) f z := by simp
+    rw [h0, hs]
+
+/-- **`ζ` is not D-finite.** -/
+theorem not_dFinite_riemannZeta : ¬ DFinite riemannZeta := fun h =>
+  hypertranscendental_riemannZeta (differentiallyAlgebraic_of_dFinite h)
 
 
 end GaloisForLFunctions.HTGeometry
