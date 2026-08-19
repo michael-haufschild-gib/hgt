@@ -25,7 +25,7 @@
 | 3 | `prime-arch-bernstein-mobius-pullback-gutzmer-law` | **stage 3** |
 | 4 | `prime-arch-bernstein-pringsheim-collar-transfer` | **stage 3** |
 | 5 | `prime-arch-explicit-circle-state-reflection-law` | todo |
-| 6 | `prime-arch-moment-pole-residue-pinch-law` | todo |
+| 6 | `prime-arch-moment-pole-residue-pinch-law` | **stage 3** |
 | 7 | `prime-arch-shifted-sector-circle-valuation-cone` | todo |
 | 8 | `prime-boundary-perturbative-jet-monodromy-escape` | todo |
 | 9 | `prime-boundary-symmetric-dickman-zero-free-law` | todo |
@@ -62,6 +62,7 @@
 |---|---|---|
 | 2026-08-19 | `prime-coshift-eigenline-regularized-boundary-complex` | `RHTower/PrimeCoShiftModel.lean`, `RHTower/PrimeCoShiftRowGraph.lean`, `RHTower/PrimeCoShiftBoundaryComplex.lean` |
 | 2026-08-19 | `prime-coshift-row-boundary-trace-nonclosable` | `RHTower/PrimeCoShiftRowGraph.lean` |
+| 2026-08-19 | `prime-arch-moment-pole-residue-pinch-law` | `RHTower/PrimeArchMomentPoleResidue.lean` |
 | 2026-08-19 | `prime-arch-bernstein-pringsheim-collar-transfer` | `RHTower/PrimeArchBernsteinPringsheimCollar.lean`, `HTGeometry/VivantiPringsheim.lean`, `HTGeometry/SegmentAnalyticContinuation.lean` |
 | 2026-08-19 | `prime-arch-bernstein-legendre-double-source-kernel` | `RHTower/BernsteinLegendreDoubleSourceKernel.lean` |
 | 2026-08-19 | `prime-arch-bernstein-mobius-pullback-gutzmer-law` | `RHTower/PrimeArchBernsteinMobiusPullback.lean`, `RHTower/PrimeArchBernsteinMobiusPullbackSource.lean`, `HTGeometry/AntidiagonalRegrouping.lean`, `HTGeometry/GutzmerPowerSeries.lean` |

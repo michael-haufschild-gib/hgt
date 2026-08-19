@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.PrimeArchBernsteinMobiusPullbackSource
 import GaloisForLFunctions.RHTower.PrimeArchBernsteinConfinedPhase
+import GaloisForLFunctions.RHTower.ReciprocalAtomTestSpaceClosure
+import GaloisForLFunctions.RHTower.XiHadamardFactorization
 
 /-!
 # The prime--archimedean moment pole--residue pinch law
@@ -445,6 +447,214 @@ theorem xiCentralReciprocalSquare_pos_iff {ρ : ℂ} (hρ : ρ - 1 / 2 ≠ 0) :
     rw [hre, hz0]
     have : 0 < z.im ^ 2 := by positivity
     linarith
+
+/-! ### The pole ray, the reflected amplitude, and the RH equivalence -/
+
+/-- The pole of the moment germ attached to a divisor copy, `p_q = R / c_q`. -/
+def endpointPole (q : XiZeroCopy) : ℂ :=
+  (primeArchEndpointHausdorffRadius : ℂ) / xiZeroCopyReciprocalSquare q
+
+/-- The reflected Bernstein amplitude of a pole, `B(P) = (1 + |P-1|)/|P|`. -/
+def poleAmplitude (P : ℂ) : ℝ := (1 + ‖P - 1‖) / ‖P‖
+
+/-- **(5)** The amplitude in the normalized coordinate. -/
+theorem poleAmplitude_inv {u : ℂ} (hu : u ≠ 0) :
+    poleAmplitude u⁻¹ = ‖u‖ + ‖1 - u‖ := by
+  have hnu : ‖u‖ ≠ 0 := norm_ne_zero_iff.mpr hu
+  have h1 : ‖u⁻¹ - 1‖ = ‖1 - u‖ / ‖u‖ := by
+    rw [show u⁻¹ - 1 = (1 - u) / u by field_simp, norm_div]
+  rw [poleAmplitude, h1, norm_inv]
+  field_simp
+
+/-- **(6)** Triangle equality: the amplitude is one exactly on the ray `[1, ∞)`. -/
+theorem poleAmplitude_eq_one_iff {P : ℂ} (hP : P ≠ 0) :
+    poleAmplitude P = 1 ↔ (P.im = 0 ∧ 1 ≤ P.re) := by
+  have hnP : (0 : ℝ) < ‖P‖ := norm_pos_iff.mpr hP
+  have hsq : ‖P‖ ^ 2 = P.re ^ 2 + P.im ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]; ring
+  have hsq1 : ‖P - 1‖ ^ 2 = (P.re - 1) ^ 2 + P.im ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im, sub_zero]
+    ring
+  rw [poleAmplitude, div_eq_one_iff_eq hnP.ne']
+  constructor
+  · intro h
+    have h2 : ‖P‖ ^ 2 = (1 + ‖P - 1‖) ^ 2 := by rw [h]
+    have h3 : P.re - 1 = ‖P - 1‖ := by nlinarith [norm_nonneg (P - 1)]
+    have h4 : P.im ^ 2 = 0 := by nlinarith [h3, hsq1]
+    have him : P.im = 0 := by nlinarith [sq_nonneg P.im]
+    refine ⟨him, ?_⟩
+    have := norm_nonneg (P - 1)
+    linarith [h3]
+  · rintro ⟨him, hre⟩
+    have hPn : ‖P‖ = P.re := by
+      have h1 : ‖P‖ ^ 2 = P.re ^ 2 := by rw [hsq, him]; ring
+      nlinarith [hnP, hre]
+    have hP1n : ‖P - 1‖ = P.re - 1 := by
+      have h1 : ‖P - 1‖ ^ 2 = (P.re - 1) ^ 2 := by rw [hsq1, him]; ring
+      nlinarith [norm_nonneg (P - 1), hre]
+    rw [hPn, hP1n]
+    ring
+
+/-- **(7)** RH is exactly positivity of every reciprocal-square coordinate, hence exactly the
+statement that every pole of the endpoint moment germ lies on the ray `[1, ∞)`. -/
+theorem riemannHypothesis_iff_forall_reciprocalSquare_pos :
+    RiemannHypothesis ↔ ∀ q : XiZeroCopy,
+      (xiZeroCopyReciprocalSquare q).im = 0 ∧ 0 < (xiZeroCopyReciprocalSquare q).re := by
+  constructor
+  · intro hRH q
+    have hne : (q.1 : ℂ) - 1 / 2 ≠ 0 := sub_ne_zero.mpr (xi_divisor_support_ne_half q.1)
+    rw [xiZeroCopyReciprocalSquare_eq]
+    exact (xiCentralReciprocalSquare_pos_iff hne).mpr
+      (xi_divisor_support_re_eq_half_of_rh hRH q.1)
+  · intro h
+    rw [riemannHypothesis_iff_xiZero_reflection_fixed]
+    intro ρ hzero
+    have hmem := mem_xi_divisor_support_of_eq_zero hzero
+    have hpos := xi_divisor_pos_on_support ⟨ρ, hmem⟩
+    have hn : 0 < Int.toNat ((MeromorphicOn.divisor xi Set.univ)
+        ((⟨ρ, hmem⟩ : XiDivisorSupport) : ℂ)) := by omega
+    have hq := h ⟨⟨ρ, hmem⟩, ⟨0, hn⟩⟩
+    rw [xiZeroCopyReciprocalSquare_eq] at hq
+    have hne : (ρ : ℂ) - 1 / 2 ≠ 0 :=
+      sub_ne_zero.mpr (xi_divisor_support_ne_half ⟨ρ, hmem⟩)
+    have hre := (xiCentralReciprocalSquare_pos_iff hne).mp hq
+    apply Complex.ext
+    · simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
+      linarith
+    · simp only [Complex.sub_im, Complex.one_im, Complex.conj_im, zero_sub, neg_neg]
+
+/-! ### Reflection invariance of the fibres and of the residue -/
+
+/-- **(9)** at the copy level: functional-equation reflection fixes the reciprocal-square
+coordinate, so reflection partners lie in the same fibre. -/
+theorem xiZeroCopyReciprocalSquare_reflectEquiv (q : XiZeroCopy) :
+    xiZeroCopyReciprocalSquare (xiZeroCopyReflectEquiv q) = xiZeroCopyReciprocalSquare q := by
+  rw [xiZeroCopyReciprocalSquare, xiZeroCopyReciprocalSquare, xiSpectralPoint_reflect,
+    inv_neg, neg_pow]
+  simp
+
+theorem endpointFibre_reflect_mem {u : ℂ} {q : XiZeroCopy} :
+    xiZeroCopyReflectEquiv q ∈ endpointFibre u ↔ q ∈ endpointFibre u := by
+  simp only [endpointFibre, Set.mem_setOf_eq, xiEndpointNormalizedReciprocalSquare,
+    xiZeroCopyReciprocalSquare_reflectEquiv]
+
+/-- **(10)** The Schwarz-partner fibre is the conjugate image of the fibre. -/
+theorem endpointFibre_conj (u : ℂ) :
+    endpointFibre ((starRingEnd ℂ) u) = xiZeroCopyConjEquiv '' (endpointFibre u) := by
+  have hR : ((primeArchEndpointHausdorffRadius : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast primeArchEndpointHausdorffRadius_pos.ne'
+  have hcoord : ∀ q : XiZeroCopy, xiEndpointNormalizedReciprocalSquare (xiZeroCopyConjEquiv q)
+      = (starRingEnd ℂ) (xiEndpointNormalizedReciprocalSquare q) := by
+    intro q
+    rw [xiEndpointNormalizedReciprocalSquare, xiEndpointNormalizedReciprocalSquare,
+      xiZeroCopyReciprocalSquare_conjEquiv, map_div₀]
+    congr 1
+    simp
+  ext q
+  constructor
+  · intro hq
+    refine ⟨xiZeroCopyConjEquiv.symm q, ?_, xiZeroCopyConjEquiv.apply_symm_apply q⟩
+    have h1 := hcoord (xiZeroCopyConjEquiv.symm q)
+    rw [xiZeroCopyConjEquiv.apply_symm_apply] at h1
+    have h2 : xiEndpointNormalizedReciprocalSquare q = (starRingEnd ℂ) u := hq
+    rw [h2] at h1
+    have h3 := congrArg (starRingEnd ℂ) h1
+    show xiEndpointNormalizedReciprocalSquare (xiZeroCopyConjEquiv.symm q) = u
+    simpa using h3.symm
+  · rintro ⟨q₀, hq₀, rfl⟩
+    have h2 : xiEndpointNormalizedReciprocalSquare q₀ = u := hq₀
+    show xiEndpointNormalizedReciprocalSquare (xiZeroCopyConjEquiv q₀) = (starRingEnd ℂ) u
+    rw [hcoord q₀, h2]
+
+/-- **(10)** Schwarz partners carry the same fibre multiplicity, hence the same residue. -/
+theorem ncard_endpointFibre_conj (u : ℂ) :
+    (endpointFibre ((starRingEnd ℂ) u)).ncard = (endpointFibre u).ncard := by
+  rw [endpointFibre_conj u]
+  exact Set.ncard_image_of_injective _ xiZeroCopyConjEquiv.injective
+
+/-! ### The half-order pinch coefficient -/
+
+/-- **(8)** The half-order coefficient in the pole coordinate equals the normalized-coordinate
+diagonal coefficient. -/
+theorem halfOrderCoefficient_substitution {u C : ℂ} (hu : u ≠ 0) (hu1 : (1 : ℂ) - u ≠ 0) :
+    (‖C‖ / ‖u‖) ^ 2 * (1 + ‖u⁻¹ - 1‖) / (2 * ‖u⁻¹‖ ^ 2 * Real.sqrt ‖u⁻¹ - 1‖)
+      = ‖C‖ ^ 2 * (‖u‖ + ‖1 - u‖) / (2 * Real.sqrt (‖u‖ * ‖1 - u‖)) := by
+  have hnu : (0 : ℝ) < ‖u‖ := norm_pos_iff.mpr hu
+  have hnu1 : (0 : ℝ) < ‖1 - u‖ := norm_pos_iff.mpr hu1
+  obtain ⟨a, ha⟩ : ∃ a : ℝ, a = Real.sqrt ‖u‖ := ⟨_, rfl⟩
+  obtain ⟨b, hb⟩ : ∃ b : ℝ, b = Real.sqrt ‖1 - u‖ := ⟨_, rfl⟩
+  have hapos : 0 < a := by rw [ha]; exact Real.sqrt_pos.mpr hnu
+  have hbpos : 0 < b := by rw [hb]; exact Real.sqrt_pos.mpr hnu1
+  have ha2 : a ^ 2 = ‖u‖ := by rw [ha]; exact Real.sq_sqrt hnu.le
+  have hb2 : b ^ 2 = ‖1 - u‖ := by rw [hb]; exact Real.sq_sqrt hnu1.le
+  have h1 : ‖u⁻¹ - 1‖ = ‖1 - u‖ / ‖u‖ := by
+    rw [show u⁻¹ - 1 = (1 - u) / u by field_simp, norm_div]
+  have h2 : ‖u⁻¹‖ = ‖u‖⁻¹ := norm_inv u
+  have h3 : Real.sqrt (‖1 - u‖ / ‖u‖) = b / a := by
+    rw [← ha2, ← hb2, Real.sqrt_div (by positivity), Real.sqrt_sq hbpos.le,
+      Real.sqrt_sq hapos.le]
+  have h4 : Real.sqrt (‖u‖ * ‖1 - u‖) = a * b := by
+    rw [← ha2, ← hb2, Real.sqrt_mul (by positivity), Real.sqrt_sq hapos.le, Real.sqrt_sq hbpos.le]
+  rw [h1, h2, h3, h4, ← ha2, ← hb2]
+  field_simp
+
+/-! ### The pole-ray form of the RH equivalence -/
+
+theorem endpointPole_ne_zero (q : XiZeroCopy) : endpointPole q ≠ 0 := by
+  have hR : ((primeArchEndpointHausdorffRadius : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast primeArchEndpointHausdorffRadius_pos.ne'
+  exact div_ne_zero hR (xiZeroCopyReciprocalSquare_ne_zero q)
+
+theorem endpointPole_eq_inv (q : XiZeroCopy) :
+    endpointPole q = (xiEndpointNormalizedReciprocalSquare q)⁻¹ := by
+  have hR : ((primeArchEndpointHausdorffRadius : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast primeArchEndpointHausdorffRadius_pos.ne'
+  rw [endpointPole, xiEndpointNormalizedReciprocalSquare, inv_div]
+
+/-- **(7)** RH is exactly the statement that every pole of the endpoint moment germ has
+reflected amplitude one, that is, lies on the ray `[1, ∞)`. -/
+theorem riemannHypothesis_iff_forall_poleAmplitude_eq_one :
+    RiemannHypothesis ↔ ∀ q : XiZeroCopy, poleAmplitude (endpointPole q) = 1 := by
+  have hRpos := primeArchEndpointHausdorffRadius_pos
+  have hR : ((primeArchEndpointHausdorffRadius : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hRpos.ne'
+  rw [riemannHypothesis_iff_forall_reciprocalSquare_pos]
+  constructor
+  · intro h q
+    obtain ⟨him, hre⟩ := h q
+    have hle : (xiZeroCopyReciprocalSquare q).re ≤ primeArchEndpointHausdorffRadius :=
+      xiThermalNode_le_primeArchEndpointHausdorffRadius q
+    have hc : xiZeroCopyReciprocalSquare q = (((xiZeroCopyReciprocalSquare q).re : ℝ) : ℂ) := by
+      apply Complex.ext <;> simp [him]
+    have hpole : endpointPole q
+        = (((primeArchEndpointHausdorffRadius / (xiZeroCopyReciprocalSquare q).re : ℝ)) : ℂ) := by
+      rw [endpointPole, hc, ← Complex.ofReal_div]
+      simp
+    rw [(poleAmplitude_eq_one_iff (endpointPole_ne_zero q)).mpr]
+    refine ⟨by rw [hpole]; simp, ?_⟩
+    rw [hpole]
+    simp only [Complex.ofReal_re]
+    rw [le_div_iff₀ hre]
+    linarith
+  · intro h q
+    obtain ⟨him, hre⟩ := (poleAmplitude_eq_one_iff (endpointPole_ne_zero q)).mp (h q)
+    have hp : endpointPole q = (((endpointPole q).re : ℝ) : ℂ) := by
+      apply Complex.ext <;> simp [him]
+    have hppos : (0 : ℝ) < (endpointPole q).re := by linarith
+    have hc : xiZeroCopyReciprocalSquare q
+        = (((primeArchEndpointHausdorffRadius / (endpointPole q).re : ℝ)) : ℂ) := by
+      have hpne : endpointPole q ≠ 0 := endpointPole_ne_zero q
+      have hcalc : xiZeroCopyReciprocalSquare q
+          = ((primeArchEndpointHausdorffRadius : ℝ) : ℂ) / endpointPole q := by
+        rw [endpointPole]
+        field_simp
+      rw [hcalc, hp, ← Complex.ofReal_div]
+      simp
+    constructor
+    · rw [hc]; simp
+    · rw [hc]
+      simp only [Complex.ofReal_re]
+      positivity
 
 end
 

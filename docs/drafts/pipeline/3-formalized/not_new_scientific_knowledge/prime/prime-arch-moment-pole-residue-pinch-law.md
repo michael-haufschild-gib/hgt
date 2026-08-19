@@ -1,12 +1,10 @@
 # Prime--archimedean moment pole--residue pinch law
 
 - **ID:** `prime-arch-moment-pole-residue-pinch-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** exact source value relation / residue quantization / top-down RH bridge
 - **Status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Lean status:** paper theorem; the moment/divisor germ equality, absolute summability,
-  multiplicity indexing, and Bernstein parents are formalized, but this meromorphic regrouping and
-  pole-to-pinch transfer are not
+- **Lean status:** fully formalized — see the 2026-08-19 section
 
 ## Statement
 
@@ -253,3 +251,46 @@ the local square-root choice, but the two variables must not be conflated in a f
 - [ ] Lean formalization
 - [ ] independent source-side exclusion of half-order diagonal monodromy
 - [ ] RH
+
+## 2026-08-19 — unconditional Lean formalization (stage 3)
+
+`formal/GaloisForLFunctions/RHTower/PrimeArchMomentPoleResidue.lean`.  Every displayed equation of
+this card is Lean-proved; `#print axioms` on each capstone reports only
+`propext, Classical.choice, Quot.sound`.
+
+| Card item | Lean declaration |
+|---|---|
+| `m_n = normalizedPrimeArchMoment(n)/R^n`, eq. (1) | `endpointMoment` (`= radiusNormalizedMoment R normalizedPrimeArchMoment`) |
+| `u_q = c_q/R` | `xiEndpointNormalizedReciprocalSquare` (pre-existing), `xiEndpointNormalizedReciprocalSquare_mul` |
+| eq. (11) | `endpointMoment_eq_tsum` |
+| the resolvent `∑_q c_q/(1-u_q v)` | `endpointResolvent`, `resolventTerm` |
+| **eq. (2)** | `bernsteinMomentGerm_endpoint_eq_resolvent` |
+| the fibre `{q : u_q = u}` and its finiteness | `endpointFibre`, `finite_endpointFibre` |
+| **eq. (3)**, `C_u = R u m_u` | `reciprocalSquare_of_mem_fibre`, `tsum_reciprocalSquare_fibre` |
+| the normal-convergence tail bounds | `finite_largeCoordinate`, `norm_resolventTerm_le`, `summable_resolventTerm_compl`, `norm_tsum_resolventTerm_compl_le` |
+| **eq. (4)**, simple pole with residue `-R m_u` | `tendsto_endpointResolvent_residue` |
+| `B(p) = (1+\|p-1\|)/\|p\|`, eq. (5) | `poleAmplitude`, `poleAmplitude_inv` |
+| **eq. (6)**, triangle equality on the ray `[1,∞)` | `poleAmplitude_eq_one_iff` |
+| **eq. (7)**, the pole-ray RH equivalence | `riemannHypothesis_iff_forall_reciprocalSquare_pos`, `riemannHypothesis_iff_forall_poleAmplitude_eq_one` |
+| the positivity characterization behind (7) | `xiCentralReciprocalSquare_pos_iff` |
+| **eq. (8)**, the half-order coefficient substitution | `halfOrderCoefficient_substitution` |
+| **eq. (9)**, both reflections of the pole coordinate | `xiCentralReciprocalSquare_reflect`, `xiZeroCopyReciprocalSquare_reflectEquiv`, `endpointFibre_reflect_mem` |
+| **eq. (10)**, Schwarz partners carry the same multiplicity and residue | `endpointFibre_conj`, `ncard_endpointFibre_conj` |
+| variable warning: `M_R(v)` in the square-root coordinate | `bernsteinMomentGerm_primeArch` (in `RHTower/PrimeArchBernsteinMobiusPullbackSource.lean`) |
+
+The residue statement is formalized as the exact limit
+`(v - 1/u)·M_R(v) → -R·m_u` as `v → 1/u`, which is the residue of a simple pole and simultaneously
+records that no other fibre contributes: the tail is split into a finite large-coordinate part
+(continuous at the pole because `u_q ≠ u` there) and a uniformly bounded small-coordinate part.
+
+## Gates
+
+- [x] ordinary moment germ reduced to the reciprocal-coordinate resolvent
+- [x] global meromorphic regrouping proved on paper
+- [x] pole set and multiplicity residues proved exactly
+- [x] functional-equation and Schwarz pole reflections proved exactly
+- [x] pole-ray RH equivalence proved on paper
+- [x] pole position and residue transferred to the exact half-order pinch coefficient
+- [x] Lean formalization
+- [ ] independent source-side exclusion of half-order diagonal monodromy  *(declared future research)*
+- [ ] RH  *(declared future research)*

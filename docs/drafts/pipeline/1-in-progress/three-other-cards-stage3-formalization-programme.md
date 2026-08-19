@@ -591,3 +591,56 @@ Remaining on that side: invertibility of the action (the `DifferenceCoordinateRi
 computation transported through the jets), then localization at the determinant and the
 parameterized Galois group.  Plus reducedness (Cartier), the `G_m` converse, `GL_2`, and Dreyfus's
 normal form.
+
+
+## Card 1 — the σδ-coordinate ring is invertible
+
+`SigmaJetCoordinateEquiv` proves `sigmaJetCoordHom_comp_eq_id`: the difference action on the
+differential coordinate ring is invertible, the inverse being the same construction for `σ⁻¹` and
+the entrywise `σ⁻¹`-image of `A⁻¹`.  On jet variables the check reduces to the zeroth jet because
+both actions commute with the derivation.
+
+Remaining on the parameterized side: localization at the determinant (mirror of
+`DifferenceAwayLocalization`), then the parameterized Galois group.  Plus reducedness (Cartier),
+the `G_m` converse, `GL_2`, and Dreyfus's normal form.
+
+
+## Card 1 — derivations on localizations
+
+`LocalizationDerivation` fills a mathlib gap: a derivation extends to *any* localization, by the
+dual-numbers graph argument.  The corpus already had the fraction-field case, but the parameterized
+coordinate ring is localized at the determinant only — localizing to a field would make the ring
+simple and destroy the PV ideal.
+
+With `DifferenceAwayLocalization` both operators now live on the localized differential coordinate
+ring.  Remaining: assembling those into the concrete parameterized PV ring, the parameterized Galois
+group, reducedness (Cartier), the `G_m` converse, `GL_2`, and Dreyfus's normal form.
+
+
+## Card 1 — the σδ-coordinate ring is a σδ-ring
+
+`SigmaJetCoordinateAutomorphism` packages the difference action as a ring automorphism commuting
+with the total derivation.  The inverse composition follows from the same theorem applied to the
+inverse system.
+
+Chain on the parameterized side now: differential polynomial ring over a differential base
+(corpus) → difference action (`SigmaJetCoordinateRing`) → invertibility (`SigmaJetCoordinateEquiv`)
+→ automorphism (`SigmaJetCoordinateAutomorphism`) → both operators on the localization at the
+determinant (`LocalizationDerivation`, `DifferenceAwayLocalization`) →
+`exists_parameterizedPicardVessiot_of_fundamentalMatrix`.
+
+Remaining: the transport bookkeeping to the localization, the parameterized Galois group,
+reducedness (Cartier), the `G_m` converse, `GL_2`, Dreyfus's normal form.
+
+
+## Card 1 — commutation transports to the localization
+
+`LocalizationDerivationExt` gives two mathlib gaps: derivations of a localization are determined by
+their values on the base, and commutation of a difference operator with a derivation transports from
+the base to the localization (conjugate the derivation by the automorphism and apply uniqueness).
+
+The σδ structure therefore transports to the localization at the determinant.  Remaining: the
+parameterized Galois group, reducedness (Cartier), the `G_m` converse, `GL_2`, Dreyfus's normal form.
+
+Naming note: `conjDerivation` is already used in four corpus files (inside sub-namespaces); the new
+declaration is `automorphismConjDerivation` to keep the umbrella clean.

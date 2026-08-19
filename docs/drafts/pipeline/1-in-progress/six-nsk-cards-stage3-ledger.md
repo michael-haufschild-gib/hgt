@@ -60,3 +60,28 @@ continuous-Fredholm impossibility theorem.
 - C2 `hardy-cyclicity-maximal-ht-field-blindness`: needs analytic `H^2(D)`, inner-outer, Beurling.
 - C3 `f1-inversion-single-prime-stieltjes-collapse`: `HTGeometry/SymmetricBlockAlgebraicIndependence.lean`
   has `beurlingBlock` + esymm generation; the corank-2 floor needs Gelfond--Schneider (not in mathlib).
+
+### C4 progress (2026-08-19, same session)
+New modules (all compile clean, wired into `HTGeometry.lean`):
+- `HTGeometry/FaithfulIndexFredholmObstruction.lean` — `NegIndexAtMost`, `HasCoerciveComplement`
+  (the gap form of "self-adjoint Fredholm at 0 with finite negative spectral subspace"),
+  `finrank_le_of_trivial_meet_of_sup_eq_top`, `negIndexAtMost_of_coerciveComplement` (index
+  stability), `no_faithful_continuous_index_of_unbounded_witness` (the obstruction).
+- `HTGeometry/RemotePairEscapeGauge.lean` — `remotePairFactor`, `remotePairGauge` = `A_(r,T)`,
+  explicit quadratic form, Schwarz reality, zeros, `neg_logDeriv_remotePairGauge = multiPairCarrier`,
+  `tendstoLocallyUniformly_finset_prod`, `remotePairGauge_tendstoLocallyUniformly`,
+  `remotePairGauge_mul_iteratedDeriv_tendstoLocallyUniformly` (all-derivative escape).
+- `HTGeometry/KreinIndexEscapeStratification.lean` — `differentialAdjoin_range_pow_baseGauge_eq`
+  (equation (4) at EVERY power level, fully general — also serves card C2 item 3),
+  `multiPairCarrier_append`, `escapeCarrier`, `escapeCarrier_exact_negativeSquares` (index k+r),
+  `exists_coercive_bound_on_subspace`, `eventually_negOn_subspace_of_entrywise_tendsto` and
+  `eventually_carrier_negativeSquares_witness` (lower semicontinuity (12)),
+  `no_continuous_faithful_krein_index` (the card's continuous-Fredholm obstruction).
+- `HTGeometry/KreinEscapeAnalyticFamily.lean` — `kreinEscapeCarrier`,
+  `kreinEscapeCarrier_exact_negativeSquares`, `kreinEscapeProduct = A_(r,T)·F_(θ,k)`,
+  `neg_logDeriv_kreinEscapeProduct_eq`, `kreinEscapeProduct_iteratedDeriv_tendstoLocallyUniformly`.
+
+STILL OPEN for C4: (i) exact order one and Schwarz reality of the gauged product; (ii) the
+translation-orbit differential independence and the concrete `P_N` equality — needs the gauge
+realized in `RatFunc ℂ` / `upperEndMeroField` like `movingCanonicalSurgeryGaugeRatFunc`;
+(iii) the functional-equation-even version (10)–(11).

@@ -4516,3 +4516,135 @@ so `ε ≍ (1+η)²·C·ω/K²`.  **This fixes the threshold: `K = ω = (log x)^
 
 The same calculation, run at `T₀ = B₀` instead of `T₀ = (√x/h)ω`, gives `ε ≍ P_j/K²` and forces
 `K ≍ √P_j` — which is the obstruction brick 37 removed.
+
+### Milestone B, brick 49 — the non-exceptional piece in Lean, and a design correction (2026-08-19)
+
+`Sieve/Section4NonExcPiece.nonexceptional_piece_le` (axiom-clean, wired) — the first of the five
+per-block pieces, exactly as computed in brick 48:
+
+```text
+  (NB/K)²·(5π/2·T₀ + 5e/2·B₁)·E
+    ≤ stepMass_j²(1+η)²/K² · [ (5π/2)T₀·CE·B₀W_Q²·Pj0 + (5π/2)T₀·CR·Pj0²
+                               + (5e/2)CE·B₀²W_Q² + (5e/2)CR·B₀·Pj0 ]
+```
+
+for `NB ≤ stepMass_j·Pj0(1+η)`, `B₁ ≤ B₀/Pj0`, `E ≤ CE·B₁·W_Q² + CR`.
+
+### DESIGN CORRECTION: do not weight by `1/stepMass_j`
+
+Writing the sum over the short ladder exposed a trap.  The harmonic Cauchy–Schwarz
+(`Sieve/LadderHarmonicSplit`, `Sieve/SetIntegralBlockSplit`) needs `0 < v_j`, and the natural choice
+`v_j = 1/stepMass_j` **fails**: a thin ladder step need not contain a prime, so `stepMass_j = 0` is
+possible and `1/0 = 0` violates the hypothesis.  Proving every step nonempty would need prime
+counting in short intervals — precisely what this lane must avoid.
+
+The corpus already solved this, and the solution is not to divide at all.
+`Sieve/BlockMassCompare.sum_card_geomBlock_div_le` sums the *counting* side directly against the
+cofactor lengths:
+
+```text
+   ∑_{j<L} #B_j · (B / (Q(1+η)^j))  ≤  (1+η)·B·∑_{p∈P} 1/p ,
+```
+
+whose docstring records the point exactly: *"the estimate that replaces every short-interval prime
+count in the spectral side … no prime counting in short intervals is involved."*  And indeed
+`Sieve/OmegaWeightedLadderBound.integral_normSq_omegaWeighted_le` (the `1/v_j`-weighted route) has
+**no consumers** in the corpus: the chain to `ScaledBudgetLimit` goes through
+`Sieve/LadderAffineMajorant.integral_normSq_omegaWeighted_affine_le` instead.
+
+So the joint assembly must follow `LadderAffineMajorant`'s pattern.  The per-block pieces stay as
+they are — `Sieve/Section4NonExcPiece` and the four to come are stated with `stepMass_j` on the
+right, which is exactly the shape `sum_card_geomBlock_div_le` consumes — but
+`Sieve/Section4Master`'s `(∑_j 1/u_j)(∑_j u_j J_j)` form should be replaced by the direct sum.
+
+Also removed: `Sieve/StepMassCard.card_geomBlock_le_stepMass` duplicated the corpus's
+`BlockMassCompare.card_geomBlock_le_mul_stepMass`.  The module now imports it and keeps only the
+converse `stepMass_mul_le_card`.
+
+### Milestone B, brick 50 — equal weights work, and they retune the threshold (2026-08-19)
+
+The `stepMass_j = 0` obstruction of brick 49 has a second, simpler resolution than switching to the
+direct-sum form: **run the Cauchy–Schwarz over the ladder with equal weights `v_j = 1`.**  The cost
+is the number of steps instead of the harmonic mass, and the number of steps is a polylogarithm.
+
+`Sieve/StepMassCard` (axiom-clean, wired) supplies what makes that affordable:
+
+```text
+geomBlock_subset_Ioc :  a step sits in  Ioc ⌊Q(1+η)^j⌋ ⌊Q(1+η)^{j+1}⌋
+stepMass_le          :  stepMass_j  ≤  η + 1/(Q(1+η)^j)
+```
+
+so `max_j stepMass_j ≤ 2η` once `Q(1+η)^j ≥ 1/η`, which holds because the base is `exp(𝓁^{β/2})`
+and `η` is only a polylogarithm.  Then
+
+```text
+   ∑_j stepMass_j²  ≤  (max_j stepMass_j)·∑_j stepMass_j  ≤  2η·W_P ,
+   L_P·η ≤ 2𝓁^β        (from L_P ≤ log(h/R_P)/log(1+η) and log(1+η) ≥ η/2) ,
+```
+
+so the equal-weight Cauchy–Schwarz costs `L_P·∑_j J_j ≤ 4·ε·𝓁^β·B₀²W_Q²W_P` against the target
+`o(B₀²W_P²W_Q²)` — i.e. it needs `ε·𝓁^β = o(W_P) = o(log 𝓁)`.
+
+**This retunes the threshold.**  The non-exceptional piece has `ε ≍ C·ω/K²` (brick 48), so with
+`ω = 𝓁^{β/2}` the requirement is `K² ≫ 𝓁^{3β/2}/log 𝓁`.  The earlier choice `K = 𝓁^{β/2}` is
+**not** enough; `K = (log x)^{4β/5}` is, giving `ε·𝓁^β = C𝓁^{−β/10} → 0`.
+
+Lemma 2.5 is unaffected: at `K = 𝓁^{4β/5}` the exceptional measure is still
+`log|E_j| ≍ 𝓁^{1−β/2}·(8β/5+1)log 𝓁 = o(𝓁)`, so `|E_j| = x^{o(1)}` exactly as before, and the
+Halász–Montgomery cross term still compares `x^{1/4+o(1)}` against `x^{1/2−o(1)}`.
+
+The exceptional and disc pieces absorb the extra `L_P` (and the long ladder's `L_Q`) without
+retuning at all, because their savings — the Route-T `ρ` and the low-frequency
+`exp(−c(log B₁)^{1/10})` — beat every power of the logarithm.
+
+**Schedule, final form.**
+
+| parameter | value |
+|-|-|
+| short range | `(β, 1/2)` instance of the corpus ladder |
+| long range | `(b, a/b)` instance, `9/10 < a < b < 1` |
+| Gallagher cut `Wc` | `√x / h` |
+| expiry height `T₀` | `Wc·ω`, `ω = (log x)^{β/2}` |
+| threshold `K` | `(log x)^{4β/5}` |
+| both Cauchy–Schwarz weights | `1` |
+
+### Milestone B, brick 51 — the equal-weight chain (2026-08-19)
+
+`Sieve/JointEqualWeights` (axiom-clean, wired).  The three splits the assembly uses, instantiated at
+`v ≡ 1`, so that the `stepMass_j = 0` obstruction never arises:
+
+| name | shape |
+|-|-|
+| **`setIntegral_normSq_omegaWeighted_le_blocks_one`** | `∫_E‖∑_m μ(m)ω_Q(m)m^{iw}‖² ≤ 2(L_Q·∑_k V_k²I_k) + 2∫_E‖defect‖²` |
+| **`section4_block_master_one`** | one short block, disc + annulus, with `L_Q` in place of `∑_k 1/v_k` |
+| **`integral_normSq_jointOmegaPoly_le_one`** | `∫_{|w|≤W}‖A_PQ‖² ≤ 2(L_P·∑_j J_j) + 2·Dshort` |
+
+Each is the corresponding parametrised theorem at `v = fun _ => 1`, with `∑_k 1/1 = L` and
+`∑_k 1·X_k = ∑_k X_k`.  Nothing else changes: the per-block pieces were already stated with
+`stepMass_j` on the right, which is what `Sieve/StepMassCard.stepMass_le` and
+`Sieve/BlockMassCompare` consume.
+
+### The chain, as it now stands
+
+```text
+AveragedMeanSquare μ h
+  ← averagedMeanSquare_moebius_of_jointOmegaBudgetD              JointSpectralDivisor      ✓
+  ← jointOmegaBudgetD → 0, four rows:
+      ├ joint variance                tendsto_jointVarianceRow    JointNonSpectral          ✓
+      ├ cardinalities/rounding        tendsto_jointRoundingRow    JointNonSpectral          ✓
+      ├ slope                         tendsto_jointSlopeRow       JointSlopeRow             ✓
+      └ constant  48·β₀/(B₀²(W_PW_Q)²)                                                      OPEN
+          ← β₀ from integral_normSq_jointOmegaPoly_le_one          JointEqualWeights        ✓
+              ├ Dshort: integral_normSq_jointLadderProductDefect_le_divisor
+              │           + ladderDefectSum_le  (corpus)                                     ✓
+              └ per block j: section4_block_master_one                                       ✓
+                  ├ non-exceptional: nonexceptional_piece_le       Section4NonExcPiece      ✓
+                  ├ disc Idisc                                     Section4DiscCofactor     ✓
+                  ├ annulus Vk                                     AnnulusBoundUniform (corpus) ✓
+                  ├ annulus Iann                                   Section4ExceptionalCofactor ✓
+                  └ long-ladder defect                             LadderProductDefect (corpus) ✓
+```
+
+Every leaf is an unconditional theorem.  What remains is arithmetic: bound each of the five
+per-block pieces by `ε·stepMass_j²·B₀²·W_Q²` at the schedule (the first is done —
+`nonexceptional_piece_le`), sum with `∑_j stepMass_j² ≤ 2η·W_P` and `L_P·η ≤ 2𝓁^β`, and conclude.

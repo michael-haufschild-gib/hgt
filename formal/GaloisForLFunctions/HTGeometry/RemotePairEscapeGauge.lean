@@ -166,4 +166,127 @@ theorem neg_logDeriv_remotePairGauge {r : ℕ} {t : Fin r → ℂ} (ht : ∀ q, 
   rw [logDeriv_remotePairGauge ht hz, multiPairCarrier]
   simp only [hterm, Finset.sum_neg_distrib]
 
+/-! ## Escape to spectral infinity -/
+
+theorem tendstoLocallyUniformly_const_seq {ι α β : Type*} [TopologicalSpace α] [UniformSpace β]
+    {l : Filter ι} (f : α → β) : TendstoLocallyUniformly (fun _ : ι => f) f l := by
+  intro u hu x
+  exact ⟨Set.univ, Filter.univ_mem, Filter.Eventually.of_forall fun _ y _ => refl_mem_uniformity hu⟩
+
+/-- Locally uniform convergence passes through a finite product. -/
+theorem tendstoLocallyUniformly_finset_prod {ι κ : Type*} {l : Filter ι} (s : Finset κ)
+    (f : κ → ι → ℂ → ℂ) (g : κ → ℂ → ℂ)
+    (hf : ∀ k ∈ s, TendstoLocallyUniformly (f k) (g k) l)
+    (hg : ∀ k ∈ s, Continuous (g k)) :
+    TendstoLocallyUniformly (fun i z => ∏ k ∈ s, f k i z) (fun z => ∏ k ∈ s, g k z) l := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      simpa using
+        tendstoLocallyUniformly_const_seq (ι := ι) (l := l) (fun _ : ℂ => (1 : ℂ))
+  | insert k s hk ih =>
+      have hfk : TendstoLocallyUniformly (f k) (g k) l := hf k (Finset.mem_insert_self k s)
+      have hgk : Continuous (g k) := hg k (Finset.mem_insert_self k s)
+      have hrest := ih (fun j hj => hf j (Finset.mem_insert_of_mem hj))
+        (fun j hj => hg j (Finset.mem_insert_of_mem hj))
+      have hgrest : Continuous (fun z => ∏ j ∈ s, g j z) := by
+        exact continuous_finsetProd s fun j hj => hg j (Finset.mem_insert_of_mem hj)
+      have hmul := hfk.mul₀ hrest hgk hgrest
+      have hshape : (fun i z => ∏ j ∈ insert k s, f j i z)
+          = fun i z => f k i z * ∏ j ∈ s, f j i z := by
+        funext i z
+        rw [Finset.prod_insert hk]
+      have hshape' : (fun z => ∏ j ∈ insert k s, g j z)
+          = fun z => g k z * ∏ j ∈ s, g j z := by
+        funext z
+        rw [Finset.prod_insert hk]
+      rw [hshape, hshape']
+      exact hmul
+
+/-- A coefficient tending to zero times a fixed continuous shape gives locally uniform
+convergence to one. -/
+theorem tendstoLocallyUniformly_one_add_mul {ι : Type*} {l : Filter ι} (c : ι → ℂ) (g : ℂ → ℂ)
+    (hg : Continuous g) (hc : Tendsto c l (nhds 0)) :
+    TendstoLocallyUniformly (fun i z => 1 + g z * c i) (fun _ : ℂ => (1 : ℂ)) l := by
+  have hcoeff : TendstoLocallyUniformly
+      (fun i (_ : ℂ) => c i) (fun _ : ℂ => (0 : ℂ)) l :=
+    (hc.tendstoUniformly_const).tendstoLocallyUniformly
+  have hshape : TendstoLocallyUniformly (fun (_ : ι) (z : ℂ) => g z) g l :=
+    tendstoLocallyUniformly_const_seq _
+  have hmul := hshape.mul₀ hcoeff hg continuous_const
+  have hone : TendstoLocallyUniformly
+      (fun (_ : ι) (_ : ℂ) => (1 : ℂ)) (fun _ : ℂ => (1 : ℂ)) l :=
+    tendstoLocallyUniformly_const_seq _
+  have hadd := hone.add hmul
+  have hL : ((fun (_ : ℂ) => (1 : ℂ)) + g * (fun _ : ℂ => (0 : ℂ))) = (fun _ : ℂ => (1 : ℂ)) := by
+    funext z; simp
+  rw [hL] at hadd
+  exact hadd
+
+/-- **Escape of one normalized remote pair.**  If the real part of `t i` is fixed while
+`|t i| → ∞`, the normalized factor tends to `1` locally uniformly. -/
+theorem remotePairFactor_tendstoLocallyUniformly {ι : Type*} {l : Filter ι} {δ : ℝ}
+    {t : ι → ℂ} (hre : ∀ i, (t i).re = δ) (hne : ∀ i, t i ≠ 0)
+    (hnorm : Tendsto (fun i => ((Complex.normSq (t i) : ℂ))⁻¹) l (nhds 0)) :
+    TendstoLocallyUniformly (fun i z => remotePairFactor (t i) z) (fun _ : ℂ => (1 : ℂ)) l := by
+  have hbase := tendstoLocallyUniformly_one_add_mul (l := l)
+    (fun i => ((Complex.normSq (t i) : ℂ))⁻¹) (fun z : ℂ => z ^ 2 - 2 * (δ : ℂ) * z)
+    (by fun_prop) hnorm
+  have hlhs : (fun i z => remotePairFactor (t i) z)
+      = fun i (z : ℂ) => (1 : ℂ) + (z ^ 2 - 2 * (δ : ℂ) * z) * ((Complex.normSq (t i) : ℂ))⁻¹ := by
+    funext i z
+    rw [remotePairFactor_eq (hne i) z, hre i]
+  rw [hlhs]
+  exact hbase
+
+/-- **Escape of the whole gauge.** -/
+theorem remotePairGauge_tendstoLocallyUniformly {r : ℕ} {ι : Type*} {l : Filter ι}
+    {δ : Fin r → ℝ} {t : ι → Fin r → ℂ}
+    (hre : ∀ i q, (t i q).re = δ q) (hne : ∀ i q, t i q ≠ 0)
+    (hnorm : ∀ q, Tendsto (fun i => ((Complex.normSq (t i q) : ℂ))⁻¹) l (nhds 0)) :
+    TendstoLocallyUniformly (fun i z => remotePairGauge (t i) z) (fun _ : ℂ => (1 : ℂ)) l := by
+  have h := tendstoLocallyUniformly_finset_prod (l := l) (Finset.univ : Finset (Fin r))
+    (fun q i z => remotePairFactor (t i q) z) (fun _ (_ : ℂ) => (1 : ℂ))
+    (fun q _ => remotePairFactor_tendstoLocallyUniformly (δ := δ q)
+      (fun i => hre i q) (fun i => hne i q) (hnorm q))
+    (fun _ _ => continuous_const)
+  simpa [remotePairGauge] using h
+
+/-- **Escape of a gauged carrier.**  Multiplying any continuous function by the escaping gauge
+converges to it locally uniformly. -/
+theorem remotePairGauge_mul_tendstoLocallyUniformly {r : ℕ} {ι : Type*} {l : Filter ι}
+    {δ : Fin r → ℝ} {t : ι → Fin r → ℂ} {F : ℂ → ℂ} (hF : Continuous F)
+    (hre : ∀ i q, (t i q).re = δ q) (hne : ∀ i q, t i q ≠ 0)
+    (hnorm : ∀ q, Tendsto (fun i => ((Complex.normSq (t i q) : ℂ))⁻¹) l (nhds 0)) :
+    TendstoLocallyUniformly (fun i z => remotePairGauge (t i) z * F z) F l := by
+  have hgauge := remotePairGauge_tendstoLocallyUniformly hre hne hnorm
+  have hFseq : TendstoLocallyUniformly (fun (_ : ι) => F) F l :=
+    tendstoLocallyUniformly_const_seq _
+  have hmul := hgauge.mul₀ hFseq continuous_const hF
+  have hL : ((fun _ : ℂ => (1 : ℂ)) * F) = F := by funext z; simp
+  rw [hL] at hmul
+  exact hmul
+
+/-- **All derivatives escape too.**  Every iterated derivative of the gauged entire carrier
+converges locally uniformly to the corresponding derivative of the carrier. -/
+theorem remotePairGauge_mul_iteratedDeriv_tendstoLocallyUniformly {r : ℕ} {ι : Type*}
+    {l : Filter ι} {δ : Fin r → ℝ} {t : ι → Fin r → ℂ} {F : ℂ → ℂ}
+    (hF : Differentiable ℂ F)
+    (hre : ∀ i q, (t i q).re = δ q) (hne : ∀ i q, t i q ≠ 0)
+    (hnorm : ∀ q, Tendsto (fun i => ((Complex.normSq (t i q) : ℂ))⁻¹) l (nhds 0)) (j : ℕ) :
+    TendstoLocallyUniformly
+      (fun i => iteratedDeriv j (fun z => remotePairGauge (t i) z * F z))
+      (iteratedDeriv j F) l := by
+  have hconvOn : TendstoLocallyUniformlyOn
+      (fun i z => remotePairGauge (t i) z * F z) F l Set.univ := by
+    simpa [tendstoLocallyUniformlyOn_univ] using
+      remotePairGauge_mul_tendstoLocallyUniformly hF.continuous hre hne hnorm
+  have hdiff : ∀ᶠ i in l,
+      DifferentiableOn ℂ (fun z => remotePairGauge (t i) z * F z) Set.univ :=
+    Filter.Eventually.of_forall fun i =>
+      (((differentiable_remotePairGauge (t i)).mul hF)).differentiableOn
+  have hj := iteratedDeriv_tendstoLocallyUniformlyOn_of_locallyUniform
+    isOpen_univ hconvOn hdiff j
+  simpa [tendstoLocallyUniformlyOn_univ] using hj
+
 end GaloisForLFunctions.HTGeometry

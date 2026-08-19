@@ -1035,3 +1035,93 @@ With `ParameterizedPicardVessiotExistence` this is the concrete input the abstra
 existence theorem was missing.  What remains on that side is invertibility of the action, which is
 the same matrix computation as `DifferenceCoordinateRing.sigmaCoordEquiv` transported through the
 jets.
+
+## Lean progress — the difference action on the differential coordinate ring is invertible
+
+`GaloisForLFunctions.HTGeometry.SigmaJetCoordinateEquiv`, unconditional and axiom-clean:
+
+```text
+commutesDeriv_symm               the inverse shift also commutes with the derivation
+iterate_jetCoordDeriv_X          iterating the total derivation on a zeroth jet gives the jets
+sigmaJetCoordHom_systemRow       the inverse action returns the zeroth jets
+sigmaJetCoordHom_comp_eq_id      **the difference action is invertible**, with inverse the same
+                                 construction for sigma^{-1} and the entrywise sigma^{-1}-image of
+                                 the inverse matrix
+```
+
+On jet variables the verification reduces to the zeroth jet, because both actions commute with the
+derivation: `rho (sigma (delta^k X)) = delta^k (rho (sigma X))`, and at the zeroth jet it is exactly
+the matrix identity `A A' = 1`.  No Leibniz expansion is needed anywhere.
+
+So the `sigma`-`delta` coordinate ring of a fundamental matrix is now a genuine `sigma`-`delta` ring
+with an invertible difference operator, which is what
+`ParameterizedPicardVessiotExistence.exists_parameterizedPicardVessiot_of_fundamentalMatrix` takes as
+input.  What remains on that side is the localization at the determinant, mirroring
+`DifferenceAwayLocalization`.
+
+## Lean progress — derivations extend to arbitrary localizations
+
+`GaloisForLFunctions.HTGeometry.LocalizationDerivation`, unconditional and axiom-clean:
+
+```text
+localizationGraphAlgHom D            the square-zero graph a |-> (a, D a)
+localizationGraphAlgHom_isUnit       every element of the multiplicative set maps to a unit
+localizationDerivationGraphLift      the graph extended through the localization
+localizationDerivationGraphLift_fst  its first coordinate is the identity
+localizationDerivation               **a derivation extends to any localization**
+localizationDerivation_algebraMap    and restricts to the original derivation
+```
+
+This is a mathlib gap.  The corpus owned the fraction-field case
+(`GaloisForLFunctions.FractionRingDerivation`), but the parameterized coordinate ring is the
+differential polynomial ring localized at the *determinant*, not its fraction field -- localizing all
+the way to a field would make the ring simple and destroy the Picard--Vessiot ideal.  The same
+dual-numbers argument works verbatim for an arbitrary localization: the graph lands in the
+square-zero extension, elements of the multiplicative set map to units because their first coordinate
+is a unit downstairs, and the universal property extends the graph; the second coordinate is the
+quotient-rule derivation.
+
+With `DifferenceAwayLocalization` (the difference operator on a localization) this completes the
+localized parameterized coordinate ring: both operators now live on
+`K{X}_delta[1/det]`.
+
+## Lean progress — the difference action on the differential coordinate ring is an automorphism
+
+`GaloisForLFunctions.HTGeometry.SigmaJetCoordinateAutomorphism`, unconditional and axiom-clean:
+
+```text
+map_symm_map_self                mapping a matrix by sigma^{-1} and back is the identity
+sigmaJetCoordEquiv               **the difference action as a ring automorphism**
+sigmaJetCoordEquiv_commutes      it commutes with the total derivation
+```
+
+The inverse composition is the same theorem applied to the inverse system: the construction for
+`sigma^{-1}` and the `sigma^{-1}`-image of `A^{-1}` has, as its own inverse datum, the construction
+for `sigma` and `A` again.
+
+So the differential coordinate ring of a fundamental matrix is a `sigma`-`delta` ring with an
+invertible difference operator commuting with the derivation.  With `LocalizationDerivation` and
+`DifferenceAwayLocalization` both operators transport to the localization at the determinant, and
+`ParameterizedPicardVessiotExistence` then produces the parameterized Picard--Vessiot ring.
+
+## Lean progress — derivations on a localization are determined by the base, and commutation transports
+
+`GaloisForLFunctions.HTGeometry.LocalizationDerivationExt`, unconditional and axiom-clean:
+
+```text
+localizationDerivation_ext        **two derivations of a localization agreeing on the base are
+                                  equal**
+automorphismConjDerivation        conjugating a derivation by a ring automorphism
+localization_commutes_of_base     **commutation of a difference operator with a derivation
+                                  transports from the base to the localization**
+```
+
+The uniqueness is the quotient rule read backwards: for `z` with `z s = a` the Leibniz rule gives
+`s . D z = 0` for the difference of two derivations agreeing on the base, and `s` is invertible.  The
+transport is then immediate: conjugating the extended derivation by the extended difference operator
+is another derivation of the localization, and it agrees with the original on the base exactly
+because the two operators commute there.
+
+Both statements are mathlib gaps.  With `LocalizationDerivation` this completes the transport of the
+`sigma`-`delta` structure to the localization at the determinant: the localized differential
+coordinate ring of a fundamental matrix carries both operators, and they commute.

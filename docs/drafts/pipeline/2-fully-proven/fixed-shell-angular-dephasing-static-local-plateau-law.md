@@ -1482,3 +1482,85 @@ Its three inputs are all supplied by theorems now in the corpus:
 So the induction step no longer depends on the shape of the parameter space: it holds wherever the
 Hamiltonian family is analytic and the spectrum is simple at the base point, which is exactly the
 setting of the tensor-tree architecture's traceless local Hamiltonian submodule.
+
+## Lean progress -- Lemma A1 is closed as an induction
+
+The previous entry left the recursion of Lemma A1 as a *cycle* of theorems (base witness, covering
+probe, germ step, openness) without the induction that runs it.  Four new modules -- umbrella-wired,
+axiom-clean (`propext`, `Classical.choice`, `Quot.sound` only) -- close that gap, and the recursion
+now runs from one site upwards with no assumed base witness at all.
+
+`formal/GaloisForLFunctions/HTGeometry/RealParameterEndpointIntersection.lean` moves the
+intersection with the genericity set onto the *real* coordinate space the architecture actually
+uses.  Eigenvalue branches are analytic only in complex parameters, but endpoint visibility needs
+only continuity, so restricting the analytic family along the real embedding suffices.
+
+| Card item | Declaration |
+|---|---|
+| a linear matrix family is analytic in its complex coefficients | `analyticAt_linearMatrixFamily` |
+| analytic eigenvalue branches of a linear family at a base point with simple spectrum | `exists_analyticBranches_linearFamily` |
+| the canonical eigenvector family read in real coordinates | `realEndpointEigenvector` |
+| **the induction step of Lemma A1 in real coordinates**: endpoint visibility is open on the real coordinate space, hence meets every dense set there | `exists_mem_dense_realParameter_endpointComplete` |
+
+`formal/GaloisForLFunctions/HTGeometry/SubmoduleEndpointGenericity.lean` instantiates that at the
+architecture's own coordinates -- the canonical basis coordinates of a real Hermitian matrix
+subspace, which is exactly the coordinate system of
+`realHermitianSubmoduleMaximalSet` and hence of
+`PhysicallyRealizedTensorTreeSystem.tracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure`.
+
+| Card item | Declaration |
+|---|---|
+| the complexified canonical coordinate family of a real matrix submodule, and its restriction to real coordinates | `submoduleLinearFamily`, `submoduleLinearFamily_ofReal` |
+| the canonical Hermitian witness of the coordinate family | `realHermitianSubmoduleFamily_isHermitian` |
+| analytic eigenvalue branches of a Hermitian matrix subspace at a simple point | `exists_analyticBranches_submoduleLinearFamily` |
+| **maximal projectivity and endpoint completeness at one and the same parameter** | `exists_mem_realHermitianSubmoduleMaximalSet_endpointComplete` |
+
+Maximal projectivity implies a simple spectrum (`MaximallyProjectiveEnergy.injective`), so the
+base point of the second theorem is automatically unitarily diagonalisable and the branch family it
+needs is constructed rather than assumed.
+
+`formal/GaloisForLFunctions/HTGeometry/LayerSplitEndpointStep.lean` assembles one *complete*
+extension step: not only the germ-level nonvanishing that was already formal, but the packaged
+Hermitian system with a simple **real** spectrum and genuine eigenvectors.
+
+| Card item | Declaration |
+|---|---|
+| the split Hamiltonian at a real level shift and a real coupling, and its Hermiticity | `layerSplitMatrix`, `isHermitian_layerSplitMatrix` |
+| the split family is analytic in the coupling | `analyticAt_layerSplitFamily` |
+| analytic eigenvalue branches of the split family at zero coupling | `exists_layerSplitBranch` |
+| a *real* level shift avoiding every ordered energy difference | `exists_real_admissible_split_shift` |
+| **one endpoint-complete extension step**: a simple real spectrum plus a Hermitian covering channel produce a Hermitian split system with a simple real spectrum whose canonical eigenvectors are pairwise endpoint visible | `exists_layerSplit_endpointComplete_step` |
+
+The realness of the new spectrum is forced, not assumed: each branch value at the chosen real
+coupling is a root of the characteristic relation of a Hermitian matrix
+(`matrixCharpolyRelation_im_eq_zero_of_isHermitian`), so it equals its own real part, and the
+branches are pairwise distinct by continuity from the simple uncoupled spectrum.  The eigenvector
+equation comes from `affineEigenbranchAdjugateColumn_relation` at the same coupling.
+
+`formal/GaloisForLFunctions/HTGeometry/QubitChainEndpointCompleteness.lean` runs the recursion.
+
+| Card item | Declaration |
+|---|---|
+| the index type of an `n`-fold qubit extension | `qubitChain` (with its `Fintype` and `DecidableEq` instances) |
+| **the return leg**: an endpoint-complete family supplies a Hermitian channel on its own labelling seeing every ordered pair | `exists_hermitian_covering_channel` |
+| the exchange operator of one qubit is Hermitian | `isHermitian_layerExchange` |
+| the one-site seed: an injective real field and the exchange channel | `exists_covering_channel_bool` |
+| **the propagating data at every chain length** | `exists_covering_channel_chain` |
+| **Lemma A1 at every chain length** | `exists_endpointComplete_chain` |
+
+Two clarifications of the paper argument came out of the formalisation.
+
+1. The two-qubit Bell witness is *not needed as a base case*.  A single qubit already carries the
+   propagating data -- an injective real field and the exchange operator as endpoint channel -- and
+   one application of the extension step turns it into the two-qubit endpoint-complete system.  So
+   the recursion starts one site earlier than the card states, and
+   `exists_endpointComplete_twoQubit_witness` is a corollary of the chain rather than its input.
+2. The channel that propagates is Hermitian *for free*: `endpointChannel ψ X` is the matrix of the
+   Hermitian operator `X ⊗ 1` in the labelling of `ψ`, so its Hermiticity needs no orthonormality of
+   the eigenvector family -- only Hermiticity of the probe, which the real-coefficient covering
+   probe supplies.
+
+So both properties Lemma A1 asserts are now formal at every path length `n >= 2`: property 2 is
+`exists_endpointComplete_chain` directly, and property 1 follows from it by the parent card's
+genericity intersection, which is now available in the architecture's own coordinates through
+`exists_mem_realHermitianSubmoduleMaximalSet_endpointComplete`.
