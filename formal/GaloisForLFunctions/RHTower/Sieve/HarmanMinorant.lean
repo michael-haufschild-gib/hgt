@@ -62,58 +62,78 @@ def harmanS3 (z D E n : ℕ) : ℕ :=
 def rhoMinus (z Q D E n : ℕ) : ℤ :=
   (rho n z : ℤ) - (harmanS1 z Q n : ℤ) + (harmanS2 z D E n : ℤ) - (harmanS3 z D E n : ℤ)
 
+/-- The one-prime Buchstab remainder, still at level `q`. -/
+def harmanR1 (z Q n : ℕ) : ℕ := ∑ q ∈ primeWindow n z Q, rho (n / q) q
+
+/-- The full two-prime Buchstab remainder, at level `q₂`. -/
+def harmanR2 (z Q n : ℕ) : ℕ :=
+  ∑ q₁ ∈ primeWindow n z Q, ∑ q₂ ∈ primeWindow (n / q₁) z q₁, rho (n / q₁ / q₂) q₂
+
+/-- The admissible two-prime remainder, at level `q₂`. -/
+def harmanR2adm (z D E n : ℕ) : ℕ :=
+  ∑ q₁ ∈ primeWindow n z D, ∑ q₂ ∈ harmanPairs z E n q₁, rho (n / q₁ / q₂) q₂
+
+/-- The admissible three-prime remainder, at level `q₃`. -/
+def harmanR3 (z D E n : ℕ) : ℕ :=
+  ∑ q₁ ∈ primeWindow n z D, ∑ q₂ ∈ harmanPairs z E n q₁,
+    ∑ q₃ ∈ primeWindow (n / q₁ / q₂) z q₂, rho (n / q₁ / q₂ / q₃) q₃
+
+/-- The first Buchstab expansion. -/
+theorem harman_step_one {z Q n : ℕ} (hn : 0 < n) (hzQ : z ≤ Q) :
+    rho n Q + harmanR1 z Q n = rho n z := buchstab_window hn hzQ
+
+/-- The second Buchstab expansion, applied inside the one-prime remainder. -/
+theorem harman_step_two {z Q n : ℕ} (hn : 0 < n) :
+    harmanS1 z Q n = harmanR1 z Q n + harmanR2 z Q n := by
+  rw [harmanS1, harmanR1, harmanR2, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun q hq => ?_
+  exact (buchstab_window (div_pos_of_mem_primeWindow hn hq) (mem_primeWindow.1 hq).1.1).symm
+
+/-- Discarding the inadmissible pairs. -/
+theorem harmanR2adm_le {z Q D E n : ℕ} (hDQ : D ≤ Q) :
+    harmanR2adm z D E n ≤ harmanR2 z Q n := by
+  rw [harmanR2adm, harmanR2]
+  have step1 : (∑ q₁ ∈ primeWindow n z D, ∑ q₂ ∈ harmanPairs z E n q₁, rho (n / q₁ / q₂) q₂)
+      ≤ ∑ q₁ ∈ primeWindow n z D, ∑ q₂ ∈ primeWindow (n / q₁) z q₁, rho (n / q₁ / q₂) q₂ :=
+    Finset.sum_le_sum fun q₁ _ => Finset.sum_le_sum_of_subset (Finset.filter_subset _ _)
+  have step2 : (∑ q₁ ∈ primeWindow n z D, ∑ q₂ ∈ primeWindow (n / q₁) z q₁, rho (n / q₁ / q₂) q₂)
+      ≤ ∑ q₁ ∈ primeWindow n z Q, ∑ q₂ ∈ primeWindow (n / q₁) z q₁, rho (n / q₁ / q₂) q₂ :=
+    Finset.sum_le_sum_of_subset (primeWindow_subset_right hDQ)
+  exact le_trans step1 step2
+
+/-- The third Buchstab expansion, applied inside the admissible two-prime remainder. -/
+theorem harman_step_three {z D E n : ℕ} (hn : 0 < n) :
+    harmanS2 z D E n = harmanR2adm z D E n + harmanR3 z D E n := by
+  rw [harmanS2, harmanR2adm, harmanR3, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun q₁ hq₁ => ?_
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun q₂ hq₂ => ?_
+  have hq₂' : q₂ ∈ primeWindow (n / q₁) z q₁ := Finset.mem_of_mem_filter _ hq₂
+  have hq₁0 : 0 < n / q₁ := div_pos_of_mem_primeWindow hn hq₁
+  exact (buchstab_window (div_pos_of_mem_primeWindow hq₁0 hq₂') (mem_primeWindow.1 hq₂').1.1).symm
+
+/-- Raising the level of the innermost sum. -/
+theorem harmanR3_le {z D E n : ℕ} : harmanR3 z D E n ≤ harmanS3 z D E n := by
+  rw [harmanR3, harmanS3]
+  exact Finset.sum_le_sum fun q₁ _ => Finset.sum_le_sum fun q₂ _ =>
+    Finset.sum_le_sum fun q₃ hq₃ => rho_antitone (mem_primeWindow.1 hq₃).1.1
+
 /-- **The minorant is below the sifting function at level `Q`.**  Three Buchstab expansions and
 two discarded nonnegative tails. -/
 theorem rhoMinus_le_rho {z Q D E n : ℕ} (hn : 0 < n) (hzQ : z ≤ Q) (hDQ : D ≤ Q) :
     rhoMinus z Q D E n ≤ (rho n Q : ℤ) := by
-  classical
-  set W : Finset ℕ := primeWindow n z Q with hW
-  -- the first Buchstab expansion
-  have hB1 : rho n Q + ∑ q ∈ W, rho (n / q) q = rho n z := buchstab_window hn hzQ
-  -- the second: every level-`q` term becomes a level-`z` term minus a double sum
-  set Dsum : ℕ := ∑ q₁ ∈ W, ∑ q₂ ∈ primeWindow (n / q₁) z q₁, rho (n / q₁ / q₂) q₂ with hDsum
-  have hB2 : harmanS1 z Q n = (∑ q ∈ W, rho (n / q) q) + Dsum := by
-    rw [harmanS1, ← hW, hDsum, ← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun q hq => ?_
-    have hzq : z ≤ q := (mem_primeWindow.1 (hW ▸ hq)).1.1
-    exact (buchstab_window (div_pos_of_mem_primeWindow hn (hW ▸ hq)) hzq).symm
-  -- discarding the inadmissible pairs
-  set DG : ℕ := ∑ q₁ ∈ primeWindow n z D, ∑ q₂ ∈ harmanPairs z E n q₁, rho (n / q₁ / q₂) q₂
-    with hDG
-  have hDGle : DG ≤ Dsum := by
-    rw [hDG, hDsum]
-    refine le_trans (Finset.sum_le_sum fun q₁ _ => ?_) ?_
-    · exact Finset.sum_le_sum_of_subset (Finset.filter_subset _ _)
-    · exact Finset.sum_le_sum_of_subset (hW ▸ primeWindow_subset_right hDQ)
-  -- the third Buchstab expansion, on the admissible pairs
-  set Tsum : ℕ := ∑ q₁ ∈ primeWindow n z D, ∑ q₂ ∈ harmanPairs z E n q₁,
-    ∑ q₃ ∈ primeWindow (n / q₁ / q₂) z q₂, rho (n / q₁ / q₂ / q₃) q₃ with hTsum
-  have hB3 : harmanS2 z D E n = DG + Tsum := by
-    rw [harmanS2, hDG, hTsum, ← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun q₁ hq₁ => ?_
-    rw [← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun q₂ hq₂ => ?_
-    have hq₂' : q₂ ∈ primeWindow (n / q₁) z q₁ := Finset.mem_of_mem_filter _ hq₂
-    have hzq₂ : z ≤ q₂ := (mem_primeWindow.1 hq₂').1.1
-    have hq₁0 : 0 < n / q₁ := div_pos_of_mem_primeWindow hn hq₁
-    exact (buchstab_window (div_pos_of_mem_primeWindow hq₁0 hq₂') hzq₂).symm
-  -- the third correction dominates the level-`q₃` sum
-  have hT3 : Tsum ≤ harmanS3 z D E n := by
-    rw [hTsum, harmanS3]
-    refine Finset.sum_le_sum fun q₁ _ => Finset.sum_le_sum fun q₂ _ => ?_
-    refine Finset.sum_le_sum fun q₃ hq₃ => ?_
-    exact rho_antitone (mem_primeWindow.1 hq₃).1.1
-  -- assemble
-  have hB1Z : (rho n Q : ℤ) + (∑ q ∈ W, rho (n / q) q : ℕ) = (rho n z : ℤ) := by
-    exact_mod_cast congrArg (fun k : ℕ => (k : ℤ)) hB1
-  have hB2Z : (harmanS1 z Q n : ℤ) = ((∑ q ∈ W, rho (n / q) q : ℕ) : ℤ) + (Dsum : ℤ) := by
-    exact_mod_cast congrArg (fun k : ℕ => (k : ℤ)) hB2
-  have hB3Z : (harmanS2 z D E n : ℤ) = (DG : ℤ) + (Tsum : ℤ) := by
-    exact_mod_cast congrArg (fun k : ℕ => (k : ℤ)) hB3
-  have hDGZ : (DG : ℤ) ≤ (Dsum : ℤ) := by exact_mod_cast hDGle
-  have hT3Z : (Tsum : ℤ) ≤ (harmanS3 z D E n : ℤ) := by exact_mod_cast hT3
+  have h1 : (rho n Q : ℤ) + (harmanR1 z Q n : ℤ) = (rho n z : ℤ) := by
+    exact_mod_cast harman_step_one hn hzQ
+  have h2 : (harmanS1 z Q n : ℤ) = (harmanR1 z Q n : ℤ) + (harmanR2 z Q n : ℤ) := by
+    exact_mod_cast harman_step_two (z := z) (Q := Q) hn
+  have h3 : (harmanS2 z D E n : ℤ) = (harmanR2adm z D E n : ℤ) + (harmanR3 z D E n : ℤ) := by
+    exact_mod_cast harman_step_three (z := z) (D := D) (E := E) hn
+  have h4 : (harmanR2adm z D E n : ℤ) ≤ (harmanR2 z Q n : ℤ) := by
+    exact_mod_cast harmanR2adm_le (z := z) (E := E) (n := n) hDQ
+  have h5 : (harmanR3 z D E n : ℤ) ≤ (harmanS3 z D E n : ℤ) := by
+    exact_mod_cast harmanR3_le (z := z) (D := D) (E := E) (n := n)
   rw [rhoMinus]
-  linarith [hB1Z, hB2Z, hB3Z, hDGZ, hT3Z]
+  linarith
 
 /-- **The sifting function at level `Q` detects the primes in `[Q, Q²)`.** -/
 theorem rho_eq_prime_indicator {Q n : ℕ} (hQ : 2 ≤ Q) (hQn : Q ≤ n) (hnQ : n < Q * Q) :
@@ -156,5 +176,127 @@ theorem rhoMinus_le_primeIndicator {z Q D E n : ℕ} (hn : 0 < n) (hQ : 2 ≤ Q)
   rw [rho_eq_prime_indicator hQ hQn hnQ] at h
   refine h.trans (le_of_eq ?_)
   by_cases hp : n.Prime <;> simp [hp]
+
+/-! ## The size of the minorant -/
+
+/-- The number of distinct prime factors of `n` that are at least `z`. -/
+def largePrimeCount (n z : ℕ) : ℕ := (n.primeFactors.filter (fun p => z ≤ p)).card
+
+theorem largePrimeCount_mono_dvd {m n z : ℕ} (hmn : m ∣ n) (hn : n ≠ 0) :
+    largePrimeCount m z ≤ largePrimeCount n z := by
+  refine Finset.card_le_card (Finset.filter_subset_filter _ ?_)
+  exact Nat.primeFactors_mono hmn hn
+
+theorem card_primeWindow_le' {n z Q : ℕ} (hn : 0 < n) :
+    (primeWindow n z Q).card ≤ largePrimeCount n z := by
+  classical
+  refine Finset.card_le_card ?_
+  intro q hq
+  rw [mem_primeWindow] at hq
+  rw [Finset.mem_filter]
+  exact ⟨Nat.mem_primeFactors.2 ⟨hq.2.1, hq.2.2, by omega⟩, hq.1.1⟩
+
+theorem harmanS1_le {z Q n : ℕ} (hn : 0 < n) : harmanS1 z Q n ≤ largePrimeCount n z := by
+  refine le_trans (Finset.sum_le_card_nsmul _ _ 1 fun q _ => rho_le_one _ _) ?_
+  simpa using card_primeWindow_le' (z := z) (Q := Q) hn
+
+theorem harmanS2_le {z D E n : ℕ} (hn : 0 < n) :
+    harmanS2 z D E n ≤ largePrimeCount n z * largePrimeCount n z := by
+  classical
+  have hinner : ∀ q₁ ∈ primeWindow n z D,
+      (∑ q₂ ∈ harmanPairs z E n q₁, rho (n / q₁ / q₂) z) ≤ largePrimeCount n z := by
+    intro q₁ hq₁
+    have hq₁0 : 0 < n / q₁ := div_pos_of_mem_primeWindow hn hq₁
+    have hdvd : n / q₁ ∣ n := Nat.div_dvd_of_dvd (mem_primeWindow.1 hq₁).2.2
+    refine le_trans (Finset.sum_le_card_nsmul _ _ 1 fun q₂ _ => rho_le_one _ _) ?_
+    have hcard : (harmanPairs z E n q₁).card ≤ largePrimeCount n z := by
+      refine le_trans (Finset.card_le_card (Finset.filter_subset _ _)) ?_
+      exact le_trans (card_primeWindow_le' hq₁0) (largePrimeCount_mono_dvd hdvd (by omega))
+    simpa using hcard
+  refine le_trans (Finset.sum_le_sum hinner) ?_
+  rw [Finset.sum_const, smul_eq_mul]
+  exact Nat.mul_le_mul_right _ (card_primeWindow_le' hn)
+
+theorem harmanS3_le {z D E n : ℕ} (hn : 0 < n) :
+    harmanS3 z D E n ≤ largePrimeCount n z * largePrimeCount n z * largePrimeCount n z := by
+  classical
+  have hinner : ∀ q₁ ∈ primeWindow n z D,
+      (∑ q₂ ∈ harmanPairs z E n q₁,
+        ∑ q₃ ∈ primeWindow (n / q₁ / q₂) z q₂, rho (n / q₁ / q₂ / q₃) z)
+      ≤ largePrimeCount n z * largePrimeCount n z := by
+    intro q₁ hq₁
+    have hq₁0 : 0 < n / q₁ := div_pos_of_mem_primeWindow hn hq₁
+    have hdvd1 : n / q₁ ∣ n := Nat.div_dvd_of_dvd (mem_primeWindow.1 hq₁).2.2
+    have hmid : ∀ q₂ ∈ harmanPairs z E n q₁,
+        (∑ q₃ ∈ primeWindow (n / q₁ / q₂) z q₂, rho (n / q₁ / q₂ / q₃) z)
+        ≤ largePrimeCount n z := by
+      intro q₂ hq₂
+      have hq₂' : q₂ ∈ primeWindow (n / q₁) z q₁ := Finset.mem_of_mem_filter _ hq₂
+      have hq₂0 : 0 < n / q₁ / q₂ := div_pos_of_mem_primeWindow hq₁0 hq₂'
+      have hdvd2 : n / q₁ / q₂ ∣ n :=
+        (Nat.div_dvd_of_dvd (mem_primeWindow.1 hq₂').2.2).trans hdvd1
+      refine le_trans (Finset.sum_le_card_nsmul _ _ 1 fun q₃ _ => rho_le_one _ _) ?_
+      have hcard : (primeWindow (n / q₁ / q₂) z q₂).card ≤ largePrimeCount n z :=
+        le_trans (card_primeWindow_le' hq₂0) (largePrimeCount_mono_dvd hdvd2 (by omega))
+      simpa using hcard
+    refine le_trans (Finset.sum_le_sum hmid) ?_
+    rw [Finset.sum_const, smul_eq_mul]
+    refine Nat.mul_le_mul_right _ ?_
+    refine le_trans (Finset.card_le_card (Finset.filter_subset _ _)) ?_
+    exact le_trans (card_primeWindow_le' hq₁0) (largePrimeCount_mono_dvd hdvd1 (by omega))
+  refine le_trans (Finset.sum_le_sum hinner) ?_
+  rw [Finset.sum_const, smul_eq_mul]
+  have := card_primeWindow_le' (z := z) (Q := D) hn
+  calc (primeWindow n z D).card * (largePrimeCount n z * largePrimeCount n z)
+      ≤ largePrimeCount n z * (largePrimeCount n z * largePrimeCount n z) :=
+        Nat.mul_le_mul_right _ this
+    _ = largePrimeCount n z * largePrimeCount n z * largePrimeCount n z := by ring
+
+/-- **The minorant is bounded by a cube of the large-prime count.**  This is the elementary
+majorant `(2.4)`: since `n` has at most `log n / log z` prime factors above `z`, the four terms of
+`rhoMinus` have at most `1`, `K`, `K²`, `K³` nonzero summands. -/
+theorem abs_rhoMinus_le {z Q D E n : ℕ} (hn : 0 < n) :
+    |rhoMinus z Q D E n|
+      ≤ 1 + (largePrimeCount n z : ℤ) + (largePrimeCount n z : ℤ) ^ 2
+        + (largePrimeCount n z : ℤ) ^ 3 := by
+  have h0 : (rho n z : ℤ) ≤ 1 := by exact_mod_cast rho_le_one n z
+  have h0' : (0 : ℤ) ≤ (rho n z : ℤ) := Int.natCast_nonneg _
+  have h1 : (harmanS1 z Q n : ℤ) ≤ (largePrimeCount n z : ℤ) := by
+    exact_mod_cast harmanS1_le (z := z) (Q := Q) hn
+  have h1' : (0 : ℤ) ≤ (harmanS1 z Q n : ℤ) := Int.natCast_nonneg _
+  have h2 : (harmanS2 z D E n : ℤ) ≤ (largePrimeCount n z : ℤ) ^ 2 := by
+    have := harmanS2_le (z := z) (D := D) (E := E) hn
+    have hc : ((harmanS2 z D E n : ℕ) : ℤ)
+        ≤ ((largePrimeCount n z * largePrimeCount n z : ℕ) : ℤ) := by exact_mod_cast this
+    calc (harmanS2 z D E n : ℤ) ≤ ((largePrimeCount n z * largePrimeCount n z : ℕ) : ℤ) := hc
+      _ = (largePrimeCount n z : ℤ) ^ 2 := by push_cast; ring
+  have h2' : (0 : ℤ) ≤ (harmanS2 z D E n : ℤ) := Int.natCast_nonneg _
+  have h3 : (harmanS3 z D E n : ℤ) ≤ (largePrimeCount n z : ℤ) ^ 3 := by
+    have := harmanS3_le (z := z) (D := D) (E := E) hn
+    have hc : ((harmanS3 z D E n : ℕ) : ℤ)
+        ≤ ((largePrimeCount n z * largePrimeCount n z * largePrimeCount n z : ℕ) : ℤ) := by
+      exact_mod_cast this
+    calc (harmanS3 z D E n : ℤ)
+        ≤ ((largePrimeCount n z * largePrimeCount n z * largePrimeCount n z : ℕ) : ℤ) := hc
+      _ = (largePrimeCount n z : ℤ) ^ 3 := by push_cast; ring
+  have h3' : (0 : ℤ) ≤ (harmanS3 z D E n : ℤ) := Int.natCast_nonneg _
+  rw [abs_le, rhoMinus]
+  constructor <;> linarith
+
+/-! ## The large-prime count against the logarithm -/
+
+/-- **`z^K ≤ n`**: the distinct prime factors above `z` multiply into a divisor of `n`. -/
+theorem pow_largePrimeCount_le {n z : ℕ} (hn : 0 < n) :
+    z ^ largePrimeCount n z ≤ n := by
+  classical
+  set S : Finset ℕ := n.primeFactors.filter (fun p => z ≤ p) with hS
+  have hdvd : (∏ p ∈ S, p) ∣ n := by
+    refine dvd_trans (Finset.prod_dvd_prod_of_subset S n.primeFactors id ?_) ?_
+    · rw [hS]; exact Finset.filter_subset _ _
+    · exact Nat.prod_primeFactors_dvd n
+  have hle : z ^ S.card ≤ ∏ p ∈ S, p := by
+    calc z ^ S.card = ∏ _p ∈ S, z := by rw [Finset.prod_const]
+      _ ≤ ∏ p ∈ S, p := Finset.prod_le_prod' fun p hp => (Finset.mem_filter.1 hp).2
+  exact le_trans hle (Nat.le_of_dvd hn hdvd)
 
 end RHTower.Sieve

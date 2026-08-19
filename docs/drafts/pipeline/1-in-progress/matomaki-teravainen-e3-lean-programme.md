@@ -1029,3 +1029,135 @@ apart from the constant `x → 4(x+h₁)`.
 M2 (Lemma 3.1) is closed as far as the analytic weight is concerned: every hypothesis of
 `integral_mixed_moment_windowCompare_le` is one of the two affine mean-square majorants, and `(FS7)`
 supplies both.
+
+## M5 groundwork: Buchstab's identity and Harman's minorant are Lean-proved (2026-08-19)
+
+The minorant `ρ⁻` of `(2.3)` — the object every later section refers to — is now a definition in the
+tree, together with the three-fold Buchstab expansion that produces it and the elementary majorant
+`(2.4)`.  Two modules, both axiom-clean (`[propext, Classical.choice, Quot.sound]`), both wired.
+
+### `Sieve/BuchstabIdentity`
+
+```text
+rho (n z : ℕ) : ℕ := if 0 < n ∧ ∀ p ∈ n.primeFactors, z ≤ p then 1 else 0    -- 1_{(n,P(z))=1}
+
+buchstab {n w z : ℕ} (hn : 0 < n) (hwz : w ≤ z) :
+  rho n z + ∑ q ∈ (Ico w z).filter (fun q => q.Prime ∧ q ∣ n), rho (n / q) q = rho n w
+```
+
+This is `(1.2)`.  The proof is the three-case split on `rho n w` and `rho n z`; in the only
+non-degenerate case the sum collapses to the single term `q = n.minFac`, because every other prime
+`q ∣ n` in the window leaves `minFac n` behind in `n/q`.  Also `rho_le_one`, `rho_antitone`
+(raising the sifting level can only remove integers) and `dvd_div_of_ne`.
+
+### `Sieve/HarmanMinorant`
+
+```text
+primeWindow n a b   = (Ico a b).filter (fun q => q.Prime ∧ q ∣ n)
+harmanPairs z E n q₁ = (primeWindow (n/q₁) z q₁).filter (fun q => q₁ * q^4 < E)
+
+harmanS1 z Q n   = ∑_{q ∈ primeWindow n z Q} rho (n/q) z
+harmanS2 z D E n = ∑_{q₁ ∈ primeWindow n z D} ∑_{q₂ ∈ harmanPairs z E n q₁} rho (n/q₁/q₂) z
+harmanS3 z D E n = ∑_{q₁} ∑_{q₂} ∑_{q₃ ∈ primeWindow (n/q₁/q₂) z q₂} rho (n/q₁/q₂/q₃) z
+
+rhoMinus z Q D E n : ℤ = rho n z − harmanS1 + harmanS2 − harmanS3
+```
+
+- **`rhoMinus_le_rho`** (`0 < n`, `z ≤ Q`, `D ≤ Q`): `rhoMinus z Q D E n ≤ rho n Q`.
+- **`rho_eq_prime_indicator`** (`2 ≤ Q ≤ n < Q²`): `rho n Q = 1_{n prime}`.
+- **`rhoMinus_le_primeIndicator`**: the two combined — `ρ⁻(n) ≤ 1_P(n)` on `[Q, Q²)`.
+  At the paper's parameters `Q = 2X^{1/2}`, `D = X^{1/4−2ε}`, `E = X^{1−2ε}` the range `[2X^{1/2}, 3X]`
+  sits inside `[Q, Q²) = [2X^{1/2}, 4X)`.
+
+The proof is exactly the paper's: `harman_step_one` is Buchstab at `(z, Q)`; `harman_step_two`
+expands each level-`q` term as `rho (n/q) z` minus a double sum; `harmanR2adm_le` discards the
+inadmissible pairs (the second term of `(2.1)`); `harman_step_three` expands the admissible pairs;
+and `harmanR3_le` — `rho_antitone` — discards the fourth Buchstab tail (the last term of `(2.2)`)
+**without needing a fourth expansion**: raising the innermost level from `q₃` to `z` already
+dominates it.  That is a genuine simplification of the paper's bookkeeping.
+
+### The majorant `(2.4)`
+
+```text
+largePrimeCount n z = #(n.primeFactors.filter (z ≤ ·))
+
+abs_rhoMinus_le (hn : 0 < n) : |rhoMinus z Q D E n| ≤ 1 + K + K² + K³,   K = largePrimeCount n z
+pow_largePrimeCount_le (hn : 0 < n) : z ^ largePrimeCount n z ≤ n
+```
+
+Together these give `|ρ⁻(n)| ≤ 4(log n / log z)³` for `K ≥ 1`, which is `(2.4)` with the paper's
+`log(3X)` replaced by the sharper `log n`.  `harmanS1_le`, `harmanS2_le`, `harmanS3_le` bound the
+three corrections by `K`, `K²`, `K³` — each summand is at most one and the index sets inject into
+the large prime factors of `n`, which only shrink under division.
+
+### Milestone status
+
+- [x] **M5a** the minorant itself: definition, `ρ⁻ ≤ 1_P`, and the majorant `(2.4)`.
+- [ ] **M5b** Prop 2.2: the decomposition of `ρ⁻·1_{(Y/2,4Y]}` into Type I / Type I/II / Type II
+      pieces (Lemma 2.3 plus the §2.2 bookkeeping).
+- [ ] **M5c** Theorem 2.1(ii): the positive average, `∫` of the Buchstab function.
+
+## M5b groundwork: Legendre, `(1+δ)`-adic blocks, and Lemma 2.3(i) (2026-08-19)
+
+Three further modules, all axiom-clean and wired.
+
+### `Sieve/BuchstabIdentity`, second half — Legendre's identity
+
+```text
+siftModulus z = ∏_{p ∈ primesBelow z} p                                  -- P(z)
+rho_eq_one_iff_coprime (hn : 0 < n) : rho n z = 1 ↔ Nat.Coprime n (siftModulus z)
+rho_eq_sum_divisors_moebius (hn : 0 < n) :
+  (rho n z : ℤ) = ∑ e ∈ (gcd n (siftModulus z)).divisors, μ e
+abs_rho_sub_truncated_moebius_le (hn : 0 < n) :
+  |rho n z − ∑_{e ∣ gcd(n,P(z)), e ≤ D} μ e| ≤ #{e ∣ gcd(n,P(z)) : e > D}
+```
+
+The last is the term `c₁,n` of Lemma 2.3, bounded pointwise: cutting the Legendre expansion at `D`
+costs at most one unit per discarded divisor.  This also connects the new `rho` to the corpus's
+existing Brun layer (`Sieve/BrunPure`, `Sieve/TruncatedMoebius`), which truncates by `ω(e) ≤ r`
+instead.
+
+### `Sieve/AdicBlocks` — the `δ_A`-adic subdivision
+
+```text
+adicIndex δ z₀ q = ⌊log(q/z₀)/log(1+δ)⌋
+
+adicIndex_block  (0<δ, 0<z₀, z₀≤q) : z₀(1+δ)^j ≤ q < z₀(1+δ)^{j+1},  j = adicIndex δ z₀ q
+adicIndex_le_of_le                 : monotone in q
+adicIndex_le_div (0<δ≤1, z₀≤z₁)    : adicIndex δ z₀ z₁ ≤ 2·log(z₁/z₀)/δ
+sum_adic_blocks                    : ∑_{j<J} ∑_{q : adicIndex q = j} f q = ∑_q f q
+adicIndex_mem_range                : every q ∈ [z₀,z₁] indexes below adicIndex δ z₀ z₁ + 1
+```
+
+`adicIndex_le_div` uses `log(1+δ) ≥ δ/(1+δ) ≥ δ/2`.  At the paper's `δ_A = (log X)^{-10A}` and
+`z₁/z₀ ≤ X` this gives at most `2(log X)^{10A+1}` blocks, which is the counting behind Prop 2.2's
+`O(exp((log log X)^5))` — `R ≤ log z/log z₀ ≍ (log log X)³` nested blocks raise it to
+`exp(O((log log X)^4))`.
+
+### `Sieve/MinorantDecomposition` — Lemma 2.3(i) as an exact identity
+
+```text
+truncLegendre k z D = ∑_{e ∣ gcd(k,P(z)), e ≤ D} μ e
+truncTail    k z D  = #{e ∣ gcd(k,P(z)) : e > D}
+
+rho_sub_rho_eq_sum (0<k, Q≤q) : rho k Q − rho k q = ∑_{p ∈ primeWindow k Q q} rho (k/p) p
+rho_sub_rho_le_card           : ... ≤ #(primeWindow k Q q)
+
+divisor_sum_rho_decomp (α : ℕ → ℤ) (0<n) (z₀ ≤ z₁) :
+  | ∑_{m ∣ n} α_m ρ(n/m, z₁)
+      − ( ∑_{m ∣ n} α_m·truncLegendre(n/m, z₀, D)
+          − ∑_{m ∣ n} ∑_{q ∈ primeWindow (n/m) z₀ z₁} α_m ρ(n/m/q, q) ) |
+    ≤ ∑_{m ∣ n} |α_m|·truncTail(n/m, z₀, D)
+```
+
+This is the displayed identity in the proof of Lemma 2.3, with `c₁,n` named and bounded.
+`rho_sub_rho_eq_sum` is the exact cost of replacing the sieve level `q` by the bottom `Q` of its
+`δ_A`-adic block — the term `c₂,n` — and it is nothing but Buchstab over the block, so no new
+estimate is needed for it either.
+
+### What M5b still needs
+
+Only the **mean-square** bounds: `∑_{n ∼ Y} |c_{i,n}|² ≪_A Y/(log X)^{3A}` for the three error
+terms.  Each is a divisor-type second moment over a sparse set (`c₁`: integers with a divisor
+`> D` composed of primes `< z₀`; `c₂`: integers with a prime factor in a `δ_A`-short interval;
+`c₃`: the boundary of the last block).  The algebra of Lemma 2.3 is finished.

@@ -152,4 +152,97 @@ theorem buchstab {n w z : ℕ} (hn : 0 < n) (hwz : w ≤ z) :
       rho_eq_zero_of_lt hp hpw]
     omega
 
+/-! ## The sifting modulus and Legendre's identity -/
+
+open ArithmeticFunction in
+/-- The sifting modulus `P(z) = ∏_{p < z} p`. -/
+def siftModulus (z : ℕ) : ℕ := ∏ p ∈ Nat.primesBelow z, p
+
+theorem siftModulus_pos (z : ℕ) : 0 < siftModulus z := by
+  rw [siftModulus]
+  exact Finset.prod_pos fun p hp => (Nat.prime_of_mem_primesBelow hp).pos
+
+theorem prime_dvd_siftModulus_iff {p z : ℕ} (hp : p.Prime) :
+    p ∣ siftModulus z ↔ p < z := by
+  rw [siftModulus]
+  constructor
+  · intro h
+    obtain ⟨q, hq, hpq⟩ := (Nat.Prime.prime hp).exists_mem_finset_dvd h
+    have hqp := Nat.prime_of_mem_primesBelow hq
+    have heq : p = q := (Nat.prime_dvd_prime_iff_eq hp hqp).1 hpq
+    subst heq
+    exact Nat.lt_of_mem_primesBelow hq
+  · intro h
+    exact Finset.dvd_prod_of_mem _ (Nat.mem_primesBelow.2 ⟨h, hp⟩)
+
+/-- `rho n z = 1` is exactly coprimality with the sifting modulus. -/
+theorem rho_eq_one_iff_coprime {n z : ℕ} (hn : 0 < n) :
+    rho n z = 1 ↔ Nat.Coprime n (siftModulus z) := by
+  rw [rho_eq_one_iff]
+  constructor
+  · rintro ⟨-, hall⟩
+    by_contra hne
+    obtain ⟨p, hp, hpd⟩ := Nat.exists_prime_and_dvd hne
+    have hpn : p ∣ n := hpd.trans (Nat.gcd_dvd_left _ _)
+    have hpP : p ∣ siftModulus z := hpd.trans (Nat.gcd_dvd_right _ _)
+    have hz := hall p (Nat.mem_primeFactors.2 ⟨hp, hpn, by omega⟩)
+    exact absurd ((prime_dvd_siftModulus_iff hp).1 hpP) (by omega)
+  · intro hcop
+    refine ⟨hn, fun p hp => ?_⟩
+    by_contra hlt
+    have hpp : p.Prime := (Nat.mem_primeFactors.1 hp).1
+    have hpn : p ∣ n := (Nat.mem_primeFactors.1 hp).2.1
+    have hpP : p ∣ siftModulus z := (prime_dvd_siftModulus_iff hpp).2 (by omega)
+    have : p ∣ Nat.gcd n (siftModulus z) := Nat.dvd_gcd hpn hpP
+    rw [hcop] at this
+    exact absurd (Nat.le_of_dvd (by norm_num) this) (by have := hpp.two_le; omega)
+
+open ArithmeticFunction in
+/-- **Legendre's identity.**  The sifting indicator is the Möbius sum over the divisors of the
+sifted part of `n`. -/
+theorem rho_eq_sum_divisors_moebius {n z : ℕ} (hn : 0 < n) :
+    (rho n z : ℤ) = ∑ e ∈ (Nat.gcd n (siftModulus z)).divisors, moebius e := by
+  have hsum : ∑ e ∈ (Nat.gcd n (siftModulus z)).divisors, moebius e
+      = if Nat.gcd n (siftModulus z) = 1 then 1 else 0 := by
+    rw [← ArithmeticFunction.coe_mul_zeta_apply (f := (moebius : ArithmeticFunction ℤ))
+      (x := Nat.gcd n (siftModulus z)), moebius_mul_coe_zeta, ArithmeticFunction.one_apply]
+  rw [hsum]
+  by_cases hc : Nat.gcd n (siftModulus z) = 1
+  · rw [if_pos hc, (rho_eq_one_iff_coprime hn).2 hc]
+    norm_num
+  · rw [if_neg hc]
+    have hz : rho n z = 0 := by
+      rw [rho_eq_zero_iff]
+      intro hcon
+      exact hc ((rho_eq_one_iff_coprime hn).1 (rho_eq_one_iff.2 hcon))
+    rw [hz]
+    norm_num
+
+open ArithmeticFunction in
+theorem abs_moebius_le_one (e : ℕ) : |moebius e| ≤ 1 := by
+  by_cases h : moebius e = 0
+  · rw [h]; norm_num
+  · rcases ArithmeticFunction.moebius_ne_zero_iff_eq_or.1 h with h1 | h1 <;> rw [h1] <;> norm_num
+
+open ArithmeticFunction in
+/-- **Truncated Legendre expansion.**  Cutting the Möbius sum at `D` costs at most one unit per
+discarded divisor.  This is the term `c₁,n` of Matomäki–Teräväinen, Lemma 2.3. -/
+theorem abs_rho_sub_truncated_moebius_le {n z D : ℕ} (hn : 0 < n) :
+    |(rho n z : ℤ)
+        - ∑ e ∈ (Nat.gcd n (siftModulus z)).divisors.filter (fun e => e ≤ D), moebius e|
+      ≤ (((Nat.gcd n (siftModulus z)).divisors.filter (fun e => ¬ e ≤ D)).card : ℤ) := by
+  classical
+  have hsplit := Finset.sum_filter_add_sum_filter_not
+    (Nat.gcd n (siftModulus z)).divisors (fun e => e ≤ D) (fun e => moebius e)
+  rw [rho_eq_sum_divisors_moebius hn, ← hsplit]
+  have hcancel : (∑ e ∈ (Nat.gcd n (siftModulus z)).divisors.filter (fun e => e ≤ D), moebius e)
+        + ∑ e ∈ (Nat.gcd n (siftModulus z)).divisors.filter (fun e => ¬ e ≤ D), moebius e
+      - ∑ e ∈ (Nat.gcd n (siftModulus z)).divisors.filter (fun e => e ≤ D), moebius e
+      = ∑ e ∈ (Nat.gcd n (siftModulus z)).divisors.filter (fun e => ¬ e ≤ D), moebius e := by
+    ring
+  rw [hcancel]
+  refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
+  refine le_trans (Finset.sum_le_sum fun e _ => abs_moebius_le_one e) ?_
+  rw [Finset.sum_const, nsmul_eq_mul, mul_one]
+
 end RHTower.Sieve

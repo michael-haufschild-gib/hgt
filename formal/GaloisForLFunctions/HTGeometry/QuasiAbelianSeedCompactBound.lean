@@ -94,6 +94,125 @@ theorem exists_norm_scaledGaussian_realTranslate_le {d : ℕ} (σ : Fin d → �
   rw [hA]
   linarith
 
+set_option maxHeartbeats 1000000 in
+/-- **The damped seed on an arbitrary compact set.**  At a fixed scale the constant may depend on
+the compact set and on the scale, so no smallness hypothesis is needed; this is what local normal
+convergence of the Poincaré series consumes. -/
+theorem exists_norm_dampedFlatSeed_realTranslate_le {d : ℕ} {I : Type*} [Fintype I] [DecidableEq I]
+    (w : I → Fin d → ℂ) (hdistinct : PairwiseDistinctModulo (standardIntegerLattice d) w)
+    (target : I) {m : ℕ} (hm : 0 < m) (σ : Fin d → ℝ) (hσ : ∀ i, 0 < σ i)
+    (P : MvPolynomial (Fin d) ℂ) {K : Set (Fin d → ℂ)} (hK : IsCompact K) {B : ℝ} (hB : 1 ≤ B) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (v : Fin d → ℝ) (x : Fin d → ℂ), x ∈ K →
+      ‖(dampedFlatSeed w hdistinct target hm σ P B).1 (x + fun i => ((v i : ℝ) : ℂ))‖
+        ≤ C * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by
+  classical
+  obtain ⟨R, hR0, hR⟩ := exists_coordinate_bound_of_isCompact hK
+  obtain ⟨Cb, hCb0, hCb⟩ :=
+    (flatIntegerLatticePacketSeparatorData w hdistinct target m hm).bump_stripBounded R
+  obtain ⟨Cp, hCp0, hCp⟩ := exists_norm_mvPolynomial_eval_le P
+  obtain ⟨C₀, hC₀0, hC₀⟩ := exists_norm_scaledGaussian_realTranslate_le σ hσ (w target) hK hB
+  have hgs0 : (0 : ℝ) ≤ ∑ r ∈ Finset.range m, (1 + C₀) ^ r :=
+    Finset.sum_nonneg fun r _ => pow_nonneg (by linarith) r
+  have hprodR0 : (0 : ℝ) ≤ ∏ i, (1 + 2 * R) ^ (P.degreeOf i) :=
+    Finset.prod_nonneg fun i _ => pow_nonneg (by linarith) _
+  refine ⟨Cb * ((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
+    * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i))),
+    mul_nonneg hCb0 (mul_nonneg (mul_nonneg hC₀0 hgs0) (mul_nonneg hCp0 hprodR0)),
+    fun v x hx => ?_⟩
+  set y : Fin d → ℂ := x + fun i => ((v i : ℝ) : ℂ) with hy
+  set G : ℂ := (centeredComplexGaussian (fun i => B * σ i) (w target)).1 y with hGdef
+  have hGb : ‖G‖ ≤ C₀ * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2) := hC₀ v x hx
+  have hexp2 : Real.exp (-∑ i, σ i / 4 * (v i) ^ 2) ≤ 1 := by
+    refine Real.exp_le_one_iff.mpr ?_
+    have : (0 : ℝ) ≤ ∑ i, σ i / 4 * (v i) ^ 2 :=
+      Finset.sum_nonneg fun i _ => mul_nonneg (by linarith [hσ i]) (sq_nonneg _)
+    linarith
+  have hGle : ‖G‖ ≤ C₀ := by
+    refine le_trans hGb ?_
+    nlinarith [hexp2, hC₀0, (Real.exp_pos (-∑ i, σ i / 4 * (v i) ^ 2)).le]
+  have hgeom : ∑ r ∈ Finset.range m, (1 + ‖G‖) ^ r
+      ≤ ∑ r ∈ Finset.range m, (1 + C₀) ^ r :=
+    Finset.sum_le_sum fun r _ =>
+      pow_le_pow_left₀ (by positivity) (by linarith) r
+  have hdamp : ‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
+      ≤ ‖G‖ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r :=
+    le_trans (norm_damping_le (fun i => B * σ i) (w target) hm _)
+      (mul_le_mul_of_nonneg_left hgeom (norm_nonneg _))
+  have hstrip : ∀ c : Fin d, |(y c).im| ≤ R := by
+    intro c
+    have him : (y c).im = (x c).im := by simp [hy, Complex.add_im]
+    rw [him]
+    exact (hR x hx c).2
+  have h1 := hCb y hstrip
+  have hcoord : ∀ i : Fin d, 1 + ‖y i‖ ≤ (1 + 2 * R) * (1 + |v i|) := by
+    intro i
+    have hxi := hR x hx i
+    have hxnorm : ‖x i‖ ≤ 2 * R := by
+      have := Complex.norm_le_abs_re_add_abs_im (x i)
+      linarith [hxi.1, hxi.2]
+    have hyi : ‖y i‖ ≤ ‖x i‖ + |v i| := by
+      have hval : y i = x i + ((v i : ℝ) : ℂ) := by simp [hy]
+      rw [hval]
+      refine le_trans (norm_add_le _ _) ?_
+      simp
+    nlinarith [abs_nonneg (v i), norm_nonneg (x i), hR0]
+  have h3 : ‖MvPolynomial.eval y P‖
+      ≤ (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)) * ∏ i, (1 + |v i|) ^ (P.degreeOf i) := by
+    refine le_trans (hCp y) ?_
+    have hprod : ∏ i, (1 + ‖y i‖) ^ (P.degreeOf i)
+        ≤ ∏ i, ((1 + 2 * R) * (1 + |v i|)) ^ (P.degreeOf i) :=
+      Finset.prod_le_prod (fun i _ => by positivity)
+        (fun i _ => pow_le_pow_left₀ (by positivity) (hcoord i) _)
+    have hsplit : ∏ i, ((1 + 2 * R) * (1 + |v i|)) ^ (P.degreeOf i)
+        = (∏ i, (1 + 2 * R) ^ (P.degreeOf i)) * ∏ i, (1 + |v i|) ^ (P.degreeOf i) := by
+      rw [← Finset.prod_mul_distrib]
+      exact Finset.prod_congr rfl fun i _ => by rw [mul_pow]
+    calc Cp * ∏ i, (1 + ‖y i‖) ^ (P.degreeOf i)
+        ≤ Cp * ∏ i, ((1 + 2 * R) * (1 + |v i|)) ^ (P.degreeOf i) :=
+          mul_le_mul_of_nonneg_left hprod hCp0
+      _ = (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)) * ∏ i, (1 + |v i|) ^ (P.degreeOf i) := by
+          rw [hsplit]; ring
+  have hval : (dampedFlatSeed w hdistinct target hm σ P B).1 y
+      = (flatIntegerLatticePacketSeparatorData w hdistinct target m hm).bump.1 y
+        * ((gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y
+          * MvPolynomial.eval y P) := rfl
+  rw [hval, norm_mul, norm_mul]
+  have hstep : ‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
+        * ‖MvPolynomial.eval y P‖
+      ≤ ((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
+          * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
+        * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by
+    have hd1 : ‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
+        ≤ (C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2) := by
+      refine le_trans hdamp ?_
+      nlinarith [hGb, norm_nonneg G, hgs0]
+    calc ‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
+          * ‖MvPolynomial.eval y P‖
+        ≤ ((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
+            * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2))
+          * ((Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)) * ∏ i, (1 + |v i|) ^ (P.degreeOf i)) :=
+          mul_le_mul hd1 h3 (norm_nonneg _)
+            (mul_nonneg (mul_nonneg hC₀0 hgs0) (Real.exp_pos _).le)
+      _ = ((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
+            * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
+          * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
+            * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by ring
+  calc ‖(flatIntegerLatticePacketSeparatorData w hdistinct target m hm).bump.1 y‖
+        * (‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
+          * ‖MvPolynomial.eval y P‖)
+      ≤ Cb * (((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
+          * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
+        * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2))) :=
+        mul_le_mul h1 hstep (mul_nonneg (norm_nonneg _) (norm_nonneg _)) hCb0
+    _ = Cb * ((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
+          * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
+        * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

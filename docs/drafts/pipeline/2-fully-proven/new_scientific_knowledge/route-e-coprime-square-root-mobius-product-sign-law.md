@@ -9188,3 +9188,63 @@ The missing Möbius input for this card is the shared gate of three stage-2 card
 `../../1-in-progress/moebius-halasz-log-saving-programme.md`, with the ingredient table and the
 first brick (`RHTower/ZetaNearOneLineBound`, the growth bound just left of the one-line) recorded
 there.
+
+## The card's open question is ANSWERED — and the Cauchy–Schwarz route is the wrong one (2026-08-19)
+
+The recorded gate was: *is `(#S)²/(X·balancedMomentConst y)` larger than the Brun–Titchmarsh prime
+count of the window?*  The answer is **no on that route, yes on another**, and the reason is
+instructive.
+
+### Why Cauchy–Schwarz on balanced pairs cannot win
+
+Take `y ≍ √X`, window `(X, X+H]`, `H = X^{1/2+o(1)}`.
+
+- The pair count is `#S ≍ c·H` with `c = (log 2)·D²·(coprimality)/2 ≈ 0.09`: for each
+  `a ∈ (y, 2y]` there are `≈ H/a` admissible `b`, and `∑_{a ∈ (y,2y]} H/a ≈ H log 2`.
+- The **local** second moment is `∑_{m ∈ (X,X+H]} r(m)² ≍ (6/π²)·H·log(X/H)`.  Grouping ordered
+  pairs `(a₁,a₂)` by `d = gcd`, a pair with `lcm ≍ X/d` has a multiple in the window with
+  "probability" `Hd/X`, so the contribution of the level `d` is `(6/π²)H/d`, and summing
+  `d ≤ X/H` gives `(6/π²)H log(X/H)`.  (The card's `balancedMomentConst` normalizes by `X` rather
+  than by `H`; the local normalization is the right one and is what the numbers below use.)
+- Hence `#distinct ≥ (#S)²/∑r² ≈ 0.027·H/log X`, against Brun–Titchmarsh's `≤ 4H/log X` at
+  `log H ≈ (1/2)log X`.  **The route loses a factor ≈ 150.**
+
+The loss is structural, not a constant to be tuned: Cauchy–Schwarz pays the *average multiplicity*
+of the products, which for `a ≍ √X` is `≍ log(X/H) ≍ log X`.  The true number of distinct products
+is far larger — by Erdős/Ford it is `H/(log X)^{δ+o(1)}(log log X)^{3/2}` with
+`δ = 1 − (1+log log 2)/log 2 ≈ 0.086` — but no second-moment argument sees that.
+
+### The route that does win: bounded multiplicity, many dyadic blocks
+
+Restrict the first coordinate to a **prime**.  If `m ∈ (X, X+H]` and `p₁ ≠ p₂` both exceed `√X` and
+both divide `m`, then `m = p₁p₂` exactly, so the multiplicity is `r(m) ≤ 2` and
+`#distinct ≥ #S/2` — **no Cauchy–Schwarz loss at all**.
+
+A single dyadic block of marker primes still loses: `#S ≈ (D/2)·H·∑_{p ∈ (y,2y]}1/p ≈ 0.42 H/log X`,
+against Brun–Titchmarsh's `4H/log X`.  The fix is to span `K₀+1` dyadic blocks of markers,
+`p ∈ (M₀, 2^{K₀+1}M₀]`: the harmonic mass becomes `(K₀+1)log 2/log M₀` instead of `log 2/log M₀`,
+so the count is multiplied by `K₀+1` while the multiplicity stays `≤ 2`.  Taking `K₀` large beats
+Brun–Titchmarsh by any prescribed factor.
+
+**This is exactly the construction of the sibling card
+`route-e-reciprocal-marker-mobius-hall-law`, and it is Lean-proved:**
+
+```text
+RHTower.Sieve.route_e_marker_hall_injection (hβ'0 : 9/10 < β') (hβ'1 : β' < 1) :
+  ∀ᶠ Z : ℕ in atTop,
+    #{p ∈ (Z, Z + ⌈√Z·exp((log Z)^β')⌉] : p prime}
+      ≤ #{n ∈ (Z, Z + ⌈√Z·exp((log Z)^β')⌉] : μ(n) = 1}
+```
+
+axiom-clean, unconditional.  So the *purpose* of this card's representation/multiplicity programme —
+producing more prescribed-sign integers than the window's primes — is achieved, at window
+`H = X^{1/2+o(1)}`; what is not achieved is achieving it *by the balanced-pair Cauchy–Schwarz
+bound*, which the computation above shows is impossible.
+
+### Consequence for the card
+
+`Sieve/SecondMomentExplicit.card_image_mul_ge_explicit` and
+`Sieve/BalancedHallCapacity.exists_hall_injection_balanced` remain correct and useful, but they
+should no longer be read as the route to the card's Hall capacity: their hypothesis
+`#sources ≤ (#S)²/((X+H)·balancedMomentConst y)` is unreachable for a source set of Brun–Titchmarsh
+size.  The bounded-multiplicity marker family supersedes them.

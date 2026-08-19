@@ -185,16 +185,39 @@ theorem xiCenteredFlowBilateralPrimeCapacityExcessEnergy_two_eq_zero_iff_radialW
     xiCenteredFlowBilateralPrimeCapacityExcessEnergy q
         (⟨2, Nat.prime_two⟩ : Nat.Primes) = 0 ↔
       burnolCompletedRadialSourceWork q.1 = 0 := by
-  rw [xiCenteredFlowBilateralPrimeCapacityExcessEnergy_eq_radialTranslation,
-    routeNGammaSewnCriticalSquarefreeParityOdds_eq,
-    routeNGammaSewnUniversalCriticalChannelMass]
-  norm_num [Real.rpow_neg_one]
-  have hmass : xiCenteredFlowMultiplicityMass q.1 ≠ 0 :=
-    (xiCenteredFlowMultiplicityMass_pos q.1).ne'
-  rw [mul_eq_zero]
-  simp only [hmass, false_or]
-  exact
-    HedenmalmThetaSource.primeTranslationPairExcessEnergy_prime_two_eq_zero_iff_radialWork_eq_zero q
+  have hbounds :=
+    xiCenteredFlowBilateralPrimeCapacityExcessEnergy_two_mem_Icc q
+  have hE : 0 ≤ xiCenteredFlowBilateralPrimeCapacityExcessEnergy q
+      (⟨2, Nat.prime_two⟩ : Nat.Primes) := by
+    rw [xiCenteredFlowBilateralPrimeCapacityExcessEnergy]
+    exact mul_nonneg
+      (xiCenteredFlowBilateralPrimeCapacityExcess_nonneg q
+        (⟨2, Nat.prime_two⟩ : Nat.Primes))
+      (sq_nonneg _)
+  have hW : 0 ≤ burnolCompletedRadialSourceWork q.1 := by
+    rw [burnolCompletedRadialSourceWork_eq_width_sq_mul_norm_sq]
+    positivity
+  have hcoeff : 0 <
+      2 * xiCenteredFlowMultiplicityMass q.1 * Real.log 2 ^ 2 := by
+    have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+    exact mul_pos
+      (mul_pos (by norm_num) (xiCenteredFlowMultiplicityMass_pos q.1))
+      (sq_pos_of_pos hlog)
+  constructor
+  · intro hzero
+    apply le_antisymm ?_ hW
+    by_contra hnot
+    have hWpos : 0 < burnolCompletedRadialSourceWork q.1 :=
+      lt_of_not_ge hnot
+    have hprod : 0 <
+        2 * xiCenteredFlowMultiplicityMass q.1 * Real.log 2 ^ 2 *
+          burnolCompletedRadialSourceWork q.1 :=
+      mul_pos hcoeff hWpos
+    rw [hzero] at hbounds
+    exact (not_le_of_gt hprod) hbounds.1
+  · intro hzero
+    apply le_antisymm ?_ hE
+    simpa [hzero] using hbounds.2
 
 /-- Positive prime-time centered-flow transport is the inverse-square literal prime-two endpoint
 character, with analytic multiplicity unchanged. -/

@@ -4814,3 +4814,76 @@ reduced state.
 7f  f = 1, hence exactly one collapsing fibre
 8   |collisionSupport| = 2, and the endgame theorem fires
 ```
+
+## Lean progress — `(D-f)` steps 7b and 7d are CLOSED
+
+```text
+HTGeometry/CriticalSheetConormalVector.lean               (built)
+    criticalSheetSourceSchurLift_algebraMap_observation
+        the lift agrees with the canonical map on the observation valuation ring
+    criticalNormalSchurConormalVector          one vector, independent of the sheet
+    criticalSheet_jacobian_mulVec_conormal
+        ** it lies in the kernel of the reduced Jacobian at EVERY singular sheet **
+    exists_criticalNormalSchurConormalVector_ne_zero
+
+HTGeometry/CriticalSheetReducedJacobian.lean              (built)
+    horizonObservationJacobian_map              functoriality of the horizon Jacobian
+    criticalObservationJacobian_eq_horizon      the corpus Jacobian IS the horizon Jacobian
+    criticalSheet_recipPolynomialIntegral_map   the reduced reciprocal jet of a sheet
+    criticalSheet_jacobian_eq_horizon
+        ** the reduced observation Jacobian at a singular sheet is the horizon Jacobian of that
+           sheet's reduced reciprocal jet **
+```
+
+Combined with corank one (7c) this says: at every singular reduced state the kernel of the horizon
+Jacobian is the line spanned by one fixed vector `c₀` coming from the observation side.
+
+**What is left, precisely.**
+
+```text
+7e  a collision forces its sheet to be singular
+      det (horizon Jacobian at z_σ) = 0 because the conormal of a nonzero tangent is a nonzero
+      kernel vector; and det (horizon Jacobian Y) = ± det (reciprocal Jacobian Y), whose σ-image
+      is ± σ(aeval S) · σ(scale)^{-2m} with σ(scale) a unit — so σ is singular in the sense of
+      CriticalSheetSchurPullback.
+7f  two collisions have the same reduced state
+      both conormals span the same line as c₀, so the tangents are proportional; rescale and apply
+      criticalFibre_eq_of_shared_coprime_tangent.  That is f_{Q₀} = 1.
+8   |r⁻¹(z₀)| = 2
+      the only genuinely missing classical input: the number of sheets over one reduced state is
+      the ramification index, which is 2 by (D-e).  In the corpus's terms this is the statement
+      that sheets inducing the same residue embedding differ by an inertia element, together with
+      |I| = e = 2 (tame, characteristic zero).
+```
+
+Everything before item 8 is corpus wiring of theorems that are now all in the tree.
+
+## Lean progress — the singularity criterion and the kernel leading coefficient
+
+```text
+HTGeometry/HorizonJacobianDeterminant.lean                (built)
+    criticalReciprocalJacobian_map               functoriality
+    horizonObservationJacobian_eq_fromBlocks
+    det_horizonObservationJacobian
+        ** det of the horizon Jacobian = det of the reciprocal Jacobian **
+    horizonConormalVector_ne_zero                a nonzero tangent has a nonzero conormal
+
+HTGeometry/CriticalSheetSingularity.lean                  (built)
+    criticalSheetReducedRecipPolynomial          the reduced jet of a sheet
+    criticalSheetFibre_recipPolynomial_map
+    det_criticalReciprocalJacobian_criticalSheetReducedRecipPolynomial
+    subtype_det_criticalReciprocalJacobian_sheet
+    criticalSourceJacobianDetChart
+    criticalSchurRamificationChartElement_dvd
+    criticalSheet_singular_of_det_eq_zero
+        ** a degenerate reduced Jacobian makes the sheet singular, hence (D-1)-controlled **
+
+HTGeometry/MatrixKernelDeletedColumn.lean                 (built)
+    ker_coord_ne_zero_of_det_submatrix_ne_zero
+        ** a kernel vector is nonzero at the deleted column **
+```
+
+The last item is what gives `U(0) ≠ 0` for a collision tangent: the surviving minor of the
+observation Jacobian deletes the last raw column, whose conormal coordinate is exactly `U(0)`.
+With `U(0) ≠ 0` and `V ≡ −Y²U` the corpus's `isCoprime_of_low_tangent_unique` supplies coprimality,
+and `criticalFibre_eq_of_shared_coprime_tangent` then collapses the singular reduced states.

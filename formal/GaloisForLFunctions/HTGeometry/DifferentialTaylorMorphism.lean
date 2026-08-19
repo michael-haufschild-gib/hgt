@@ -1,5 +1,6 @@
-import Mathlib
 import GaloisForLFunctions.HTGeometry.DerivationIterateLeibniz
+import GaloisForLFunctions.HTGeometry.DifferentialIndependence
+import Mathlib.RingTheory.PowerSeries.Derivative
 
 /-!
 # The Taylor morphism of a differential ring
@@ -12,13 +13,13 @@ sequence of an element,
 ```
 
 is an injective ring homomorphism into the formal power series ring which turns the derivation into
-formal differentiation.  It is the algebraic form of "expand a function in its Taylor series at the
-origin": the jets of an element *are* a formal arc, and a polynomial relation among elements holds
-exactly when the corresponding relation among their arcs holds.
+formal differentiation.  It is the algebraic form of expanding a function in its Taylor series at
+the origin: the jets of an element *are* a formal arc, and a polynomial relation among elements
+holds exactly when the corresponding relation among their arcs holds.
 
 The two structural consequences used later are that the arc of a polynomial expression is that
 polynomial evaluated on the arcs, and that the elements killed by `δ^n` are exactly those whose arc
-is a polynomial of degree below `n`.
+has no coefficient in degree `n` or beyond.
 -/
 
 open scoped Differential
@@ -26,62 +27,37 @@ open PowerSeries
 
 namespace GaloisForLFunctions.HTGeometry
 
+open GaloisForLFunctions
+
 noncomputable section
 
 variable {R : Type*} [CommRing R] [Differential R]
 
-/-! ### Iterated derivatives -/
+/-! ### Elementary jet identities -/
 
-/-- The `n`-th derivative of an element of a differential ring. -/
-def diffIterate (n : ℕ) (a : R) : R := (fun x : R => x′)^[n] a
+theorem differentialJet_succ_apply (n : ℕ) (a : R) :
+    differentialJet (n + 1) a = differentialJet n a′ := by
+  rw [differentialJet_add n 1]
+  rfl
 
-@[simp] theorem diffIterate_zero (a : R) : diffIterate 0 a = a := rfl
-
-theorem diffIterate_succ (n : ℕ) (a : R) : diffIterate (n + 1) a = diffIterate n a′ :=
-  Function.iterate_succ_apply _ n a
-
-theorem diffIterate_succ' (n : ℕ) (a : R) : diffIterate (n + 1) a = (diffIterate n a)′ :=
-  Function.iterate_succ_apply' _ n a
-
-@[simp] theorem diffIterate_zero_elt (n : ℕ) : diffIterate n (0 : R) = 0 := by
+@[simp] theorem differentialJet_zero_elt (n : ℕ) : differentialJet n (0 : R) = 0 := by
   induction n with
   | zero => rfl
-  | succ n ih => rw [diffIterate_succ', ih, map_zero]
+  | succ n ih => rw [differentialJet_succ, ih, map_zero]
 
-theorem diffIterate_add (n : ℕ) (a b : R) :
-    diffIterate n (a + b) = diffIterate n a + diffIterate n b := by
-  induction n with
-  | zero => rfl
-  | succ n ih => rw [diffIterate_succ', ih, map_add, diffIterate_succ', diffIterate_succ']
-
-theorem diffIterate_neg (n : ℕ) (a : R) : diffIterate n (-a) = -diffIterate n a := by
-  induction n with
-  | zero => rfl
-  | succ n ih => rw [diffIterate_succ', ih, map_neg, diffIterate_succ']
-
-theorem diffIterate_sub (n : ℕ) (a b : R) :
-    diffIterate n (a - b) = diffIterate n a - diffIterate n b := by
-  rw [sub_eq_add_neg, diffIterate_add, diffIterate_neg, sub_eq_add_neg]
-
-/-- The iterated Leibniz rule, in jet notation. -/
-theorem diffIterate_mul (n : ℕ) (a b : R) :
-    diffIterate n (a * b) =
-      ∑ k ∈ Finset.range (n + 1), (Nat.choose n k) • (diffIterate k a * diffIterate (n - k) b) :=
-  derivation_iterate_mul (Differential.deriv) a b n
-
-theorem diffIterate_of_deriv_eq_zero {a : R} (ha : a′ = 0) {n : ℕ} (hn : 0 < n) :
-    diffIterate n a = 0 := by
+theorem differentialJet_eq_zero_of_deriv_eq_zero {a : R} (ha : a′ = 0) {n : ℕ} (hn : 0 < n) :
+    differentialJet n a = 0 := by
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  rw [diffIterate_succ, ha, diffIterate_zero_elt]
+  rw [differentialJet_succ_apply, ha, differentialJet_zero_elt]
 
 /-- Once a jet vanishes every later jet vanishes. -/
-theorem diffIterate_eq_zero_of_le {a : R} {n : ℕ} (h : diffIterate n a = 0) {m : ℕ} (hm : n ≤ m) :
-    diffIterate m a = 0 := by
+theorem differentialJet_eq_zero_of_le {a : R} {n : ℕ} (h : differentialJet n a = 0) {m : ℕ}
+    (hm : n ≤ m) : differentialJet m a = 0 := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hm
   induction k with
   | zero => simpa using h
   | succ k ih =>
-      rw [show n + (k + 1) = (n + k) + 1 by ring, diffIterate_succ',
+      rw [show n + (k + 1) = (n + k) + 1 by ring, differentialJet_succ,
         ih (Nat.le_add_right n k), map_zero]
 
 /-! ### The Taylor morphism -/
@@ -89,17 +65,22 @@ theorem diffIterate_eq_zero_of_le {a : R} {n : ℕ} (h : diffIterate n a = 0) {m
 variable [Algebra ℚ R]
 
 /-- The image of `1/n!` in a differential ℚ-algebra. -/
-def invFactorial (R : Type*) [CommRing R] [Algebra ℚ R] (n : ℕ) : R :=
+def invFactorialCast (R : Type*) [CommRing R] [Algebra ℚ R] (n : ℕ) : R :=
   algebraMap ℚ R ((n.factorial : ℚ)⁻¹)
 
 omit [Differential R] in
-@[simp] theorem invFactorial_zero : invFactorial R 0 = 1 := by
-  simp [invFactorial]
+@[simp] theorem invFactorialCast_zero : invFactorialCast R 0 = 1 := by
+  simp [invFactorialCast]
+
+omit [Differential R] in
+@[simp] theorem invFactorialCast_one : invFactorialCast R 1 = 1 := by
+  simp [invFactorialCast]
 
 omit [Differential R] in
 /-- The binomial identity in the form used by the Taylor product rule. -/
-theorem invFactorial_mul_invFactorial {n k : ℕ} (h : k ≤ n) :
-    invFactorial R k * invFactorial R (n - k) = (Nat.choose n k : R) * invFactorial R n := by
+theorem invFactorialCast_mul_invFactorialCast {n k : ℕ} (h : k ≤ n) :
+    invFactorialCast R k * invFactorialCast R (n - k)
+      = (Nat.choose n k : R) * invFactorialCast R n := by
   have hq : ((k.factorial : ℚ))⁻¹ * (((n - k).factorial : ℚ))⁻¹
       = (Nat.choose n k : ℚ) * ((n.factorial : ℚ))⁻¹ := by
     have hkey : (n.choose k : ℚ) * (k.factorial : ℚ) * ((n - k).factorial : ℚ)
@@ -110,118 +91,172 @@ theorem invFactorial_mul_invFactorial {n k : ℕ} (h : k ≤ n) :
     have h3 : ((n.factorial : ℚ)) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
     field_simp
     linarith [hkey]
-  unfold invFactorial
+  unfold invFactorialCast
   rw [← map_mul, hq, map_mul, map_natCast]
 
 /-- The exponential generating series of the jet sequence of an element. -/
-def taylor (a : R) : PowerSeries R := PowerSeries.mk fun n => invFactorial R n * diffIterate n a
+def differentialTaylor (a : R) : PowerSeries R :=
+  PowerSeries.mk fun n => invFactorialCast R n * differentialJet n a
 
-@[simp] theorem coeff_taylor (n : ℕ) (a : R) :
-    PowerSeries.coeff n (taylor a) = invFactorial R n * diffIterate n a :=
+@[simp] theorem coeff_differentialTaylor (n : ℕ) (a : R) :
+    PowerSeries.coeff n (differentialTaylor a) = invFactorialCast R n * differentialJet n a :=
   PowerSeries.coeff_mk _ _
 
-@[simp] theorem coeff_zero_taylor (a : R) : PowerSeries.coeff 0 (taylor a) = a := by
+@[simp] theorem coeff_zero_differentialTaylor (a : R) :
+    PowerSeries.coeff 0 (differentialTaylor a) = a := by
   simp
 
-theorem taylor_add (a b : R) : taylor (a + b) = taylor a + taylor b := by
+theorem differentialTaylor_add (a b : R) :
+    differentialTaylor (a + b) = differentialTaylor a + differentialTaylor b := by
   ext n
-  simp [diffIterate_add, mul_add]
+  simp [differentialJet_add_apply, mul_add]
 
-theorem taylor_zero : taylor (0 : R) = 0 := by
+theorem differentialTaylor_zero : differentialTaylor (0 : R) = 0 := by
   ext n; simp
 
-theorem taylor_one : taylor (1 : R) = 1 := by
+theorem differentialTaylor_one : differentialTaylor (1 : R) = 1 := by
   ext n
   cases n with
   | zero => simp
   | succ n =>
       have h1 : (1 : R)′ = 0 := Derivation.map_one_eq_zero _
-      rw [coeff_taylor, diffIterate_of_deriv_eq_zero h1 (Nat.succ_pos n), mul_zero,
-        PowerSeries.coeff_one]
+      rw [coeff_differentialTaylor, differentialJet_eq_zero_of_deriv_eq_zero h1 (Nat.succ_pos n),
+        mul_zero, PowerSeries.coeff_one]
       simp
 
-theorem taylor_mul (a b : R) : taylor (a * b) = taylor a * taylor b := by
+theorem differentialTaylor_mul (a b : R) :
+    differentialTaylor (a * b) = differentialTaylor a * differentialTaylor b := by
   ext n
-  rw [coeff_taylor, PowerSeries.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ
-    (fun i j => PowerSeries.coeff i (taylor a) * PowerSeries.coeff j (taylor b)) n,
-    diffIterate_mul, Finset.mul_sum]
+  have hL : differentialJet n (a * b) =
+      ∑ k ∈ Finset.range (n + 1),
+        (Nat.choose n k) • (differentialJet k a * differentialJet (n - k) b) :=
+    derivation_iterate_mul (Differential.deriv) a b n
+  rw [coeff_differentialTaylor, PowerSeries.coeff_mul,
+    Finset.Nat.sum_antidiagonal_eq_sum_range_succ
+      (fun i j => PowerSeries.coeff i (differentialTaylor a) *
+        PowerSeries.coeff j (differentialTaylor b)) n,
+    hL, Finset.mul_sum]
   refine Finset.sum_congr rfl fun k hk => ?_
   have hk' : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
-  rw [coeff_taylor, coeff_taylor, nsmul_eq_mul]
-  have hcomb := invFactorial_mul_invFactorial (R := R) hk'
-  linear_combination (-(diffIterate k a * diffIterate (n - k) b)) * hcomb
+  rw [coeff_differentialTaylor, coeff_differentialTaylor, nsmul_eq_mul]
+  have hcomb := invFactorialCast_mul_invFactorialCast (R := R) hk'
+  linear_combination (-(differentialJet k a * differentialJet (n - k) b)) * hcomb
 
 /-- The Taylor morphism as a ring homomorphism. -/
-def taylorHom (R : Type*) [CommRing R] [Differential R] [Algebra ℚ R] : R →+* PowerSeries R where
-  toFun := taylor
-  map_one' := taylor_one
-  map_mul' := taylor_mul
-  map_zero' := taylor_zero
-  map_add' := taylor_add
+def differentialTaylorHom (R : Type*) [CommRing R] [Differential R] [Algebra ℚ R] :
+    R →+* PowerSeries R where
+  toFun := differentialTaylor
+  map_one' := differentialTaylor_one
+  map_mul' := differentialTaylor_mul
+  map_zero' := differentialTaylor_zero
+  map_add' := differentialTaylor_add
 
-@[simp] theorem taylorHom_apply (a : R) : taylorHom R a = taylor a := rfl
+@[simp] theorem differentialTaylorHom_apply (a : R) :
+    differentialTaylorHom R a = differentialTaylor a := rfl
 
-theorem taylor_injective : Function.Injective (taylor : R → PowerSeries R) := by
+theorem differentialTaylor_injective :
+    Function.Injective (differentialTaylor : R → PowerSeries R) := by
   intro a b hab
   have := congrArg (PowerSeries.coeff 0) hab
   simpa using this
 
 /-- The Taylor morphism turns the derivation into formal differentiation. -/
-theorem derivative_taylor (a : R) : (d⁄dX R) (taylor a) = taylor a′ := by
+theorem derivative_differentialTaylor (a : R) :
+    (d⁄dX R) (differentialTaylor a) = differentialTaylor a′ := by
   ext n
-  rw [PowerSeries.coeff_derivative, coeff_taylor, coeff_taylor, diffIterate_succ]
+  rw [PowerSeries.coeff_derivative, coeff_differentialTaylor, coeff_differentialTaylor,
+    differentialJet_succ_apply]
   have hfac : ((n + 1).factorial : ℚ) = (n + 1 : ℚ) * (n.factorial : ℚ) := by
     rw [Nat.factorial_succ]; push_cast; ring
   have hn1 : ((n : R) + 1) = algebraMap ℚ R ((n : ℚ) + 1) := by
     rw [map_add, map_one, map_natCast]
   have hne : ((n : ℚ) + 1) ≠ 0 := by positivity
   have hfne : ((n.factorial : ℚ)) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
-  have : invFactorial R (n + 1) * ((n : R) + 1) = invFactorial R n := by
-    unfold invFactorial
+  have hkey : invFactorialCast R (n + 1) * ((n : R) + 1) = invFactorialCast R n := by
+    unfold invFactorialCast
     rw [hn1, ← map_mul]
     congr 1
     rw [hfac]
     field_simp
-  calc invFactorial R (n + 1) * diffIterate n a′ * ((n : R) + 1)
-      = (invFactorial R (n + 1) * ((n : R) + 1)) * diffIterate n a′ := by ring
-    _ = invFactorial R n * diffIterate n a′ := by rw [this]
+  calc invFactorialCast R (n + 1) * differentialJet n a′ * ((n : R) + 1)
+      = (invFactorialCast R (n + 1) * ((n : R) + 1)) * differentialJet n a′ := by ring
+    _ = invFactorialCast R n * differentialJet n a′ := by rw [hkey]
 
 /-- Iterating the previous identity. -/
-theorem iterate_derivative_taylor (n : ℕ) (a : R) :
-    (⇑(d⁄dX R))^[n] (taylor a) = taylor (diffIterate n a) := by
+theorem iterate_derivative_differentialTaylor (n : ℕ) (a : R) :
+    (⇑(d⁄dX R))^[n] (differentialTaylor a) = differentialTaylor (differentialJet n a) := by
   induction n generalizing a with
   | zero => rfl
   | succ n ih =>
-      rw [Function.iterate_succ_apply, derivative_taylor, ih, diffIterate_succ]
+      rw [Function.iterate_succ_apply, derivative_differentialTaylor, ih,
+        differentialJet_succ_apply]
 
 /-- The arc of a constant is constant. -/
-theorem taylor_of_deriv_eq_zero {a : R} (ha : a′ = 0) : taylor a = PowerSeries.C a := by
+theorem differentialTaylor_of_deriv_eq_zero {a : R} (ha : a′ = 0) :
+    differentialTaylor a = PowerSeries.C a := by
   ext n
   cases n with
   | zero => simp
   | succ n =>
-      rw [coeff_taylor, diffIterate_of_deriv_eq_zero ha (Nat.succ_pos n), mul_zero,
-        PowerSeries.coeff_C]
+      rw [coeff_differentialTaylor, differentialJet_eq_zero_of_deriv_eq_zero ha (Nat.succ_pos n),
+        mul_zero, PowerSeries.coeff_C]
       simp
 
 /-- An element is killed by `δ^n` exactly when its arc has no coefficient in degree `≥ n`. -/
-theorem diffIterate_eq_zero_iff_coeff_eq_zero (n : ℕ) (a : R) :
-    diffIterate n a = 0 ↔ ∀ m, n ≤ m → PowerSeries.coeff m (taylor a) = 0 := by
+theorem differentialJet_eq_zero_iff_coeff_eq_zero (n : ℕ) (a : R) :
+    differentialJet n a = 0 ↔ ∀ m, n ≤ m → PowerSeries.coeff m (differentialTaylor a) = 0 := by
   constructor
   · intro h m hm
-    rw [coeff_taylor, diffIterate_eq_zero_of_le h hm, mul_zero]
+    rw [coeff_differentialTaylor, differentialJet_eq_zero_of_le h hm, mul_zero]
   · intro h
     have hn := h n le_rfl
-    rw [coeff_taylor] at hn
+    rw [coeff_differentialTaylor] at hn
     have hfne : ((n.factorial : ℚ)) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
-    have hone : algebraMap ℚ R ((n.factorial : ℚ)) * invFactorial R n = 1 := by
-      unfold invFactorial
+    have hone : algebraMap ℚ R ((n.factorial : ℚ)) * invFactorialCast R n = 1 := by
+      unfold invFactorialCast
       rw [← map_mul, mul_inv_cancel₀ hfne, map_one]
-    calc diffIterate n a
-        = (algebraMap ℚ R ((n.factorial : ℚ)) * invFactorial R n) * diffIterate n a := by
+    calc differentialJet n a
+        = (algebraMap ℚ R ((n.factorial : ℚ)) * invFactorialCast R n) * differentialJet n a := by
           rw [hone, one_mul]
-      _ = algebraMap ℚ R ((n.factorial : ℚ)) * (invFactorial R n * diffIterate n a) := by ring
+      _ = algebraMap ℚ R ((n.factorial : ℚ)) * (invFactorialCast R n * differentialJet n a) := by
+          ring
       _ = 0 := by rw [hn, mul_zero]
+
+/-! ### Arcs of polynomial expressions -/
+
+section Polynomial
+
+variable {K σ : Type*} [CommRing K] [Algebra K R]
+
+/-- **The arc of a polynomial expression is the polynomial evaluated on the arcs.**  The
+coefficient ring is required to consist of constants. -/
+theorem differentialTaylor_aeval (hK : ∀ c : K, ((algebraMap K R c)′ = 0)) (z : σ → R)
+    (P : MvPolynomial σ K) :
+    differentialTaylor (MvPolynomial.aeval z P)
+      = MvPolynomial.aeval (fun i => differentialTaylor (z i)) P := by
+  have hring : (differentialTaylorHom R).comp
+        (MvPolynomial.aeval z : MvPolynomial σ K →ₐ[K] R).toRingHom
+      = (MvPolynomial.aeval (fun i => differentialTaylor (z i)) :
+          MvPolynomial σ K →ₐ[K] PowerSeries R).toRingHom := by
+    refine MvPolynomial.ringHom_ext (fun r => ?_) (fun i => ?_)
+    · simp only [RingHom.coe_comp, Function.comp_apply, AlgHom.toRingHom_eq_coe,
+        RingHom.coe_coe, MvPolynomial.aeval_C, differentialTaylorHom_apply]
+      rw [differentialTaylor_of_deriv_eq_zero (hK r), PowerSeries.algebraMap_apply]
+    · simp
+  exact congrArg (fun f : MvPolynomial σ K →+* PowerSeries R => f P) hring
+
+/-- A polynomial relation among elements holds exactly when it holds among their arcs. -/
+theorem aeval_eq_zero_iff_aeval_differentialTaylor_eq_zero
+    (hK : ∀ c : K, ((algebraMap K R c)′ = 0)) (z : σ → R) (P : MvPolynomial σ K) :
+    MvPolynomial.aeval z P = 0 ↔
+      MvPolynomial.aeval (fun i => differentialTaylor (z i)) P = 0 := by
+  rw [← differentialTaylor_aeval hK z P]
+  constructor
+  · intro h; rw [h, differentialTaylor_zero]
+  · intro h
+    exact differentialTaylor_injective (by rw [h, differentialTaylor_zero])
+
+end Polynomial
 
 end
 

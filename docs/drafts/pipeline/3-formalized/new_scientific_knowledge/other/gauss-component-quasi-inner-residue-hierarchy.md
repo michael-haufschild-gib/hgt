@@ -3159,3 +3159,59 @@ premise the finite-rank disjunct is discharged here, and the smoothing disjunct 
 `NuclearRankOneSchatten.memSchattenClass_one_tsum_rankOneTerms_of_summable_norm`; feeding either into
 the reduction needs a bridge `MemSchattenClass 1 → IsTraceClass`, equivalently finite rank ⇒
 Hilbert–Schmidt, which the tree does not yet have.
+
+## Lean status, fifty-ninth pass: §1 is closed — both disjuncts of the premise are discharged
+
+`RHTower/ConnesConsaniTraceClassReduction.lean`, extended (green, wired, warning-free,
+`#print axioms = [propext, Classical.choice, Quot.sound]`), together with the new
+`HTGeometry/RankOneHilbertSchmidt.lean`:
+
+```text
+adjoint_smulRight                                (φ ⊗ y)* = (⟪y,·⟫) ⊗ u, u the Riesz vector of φ
+adjoint_tsum_smulRight                           the adjoint of a nuclear series is the series of adjoints
+isHilbertSchmidt_smulRight                       a rank-one operator is Hilbert–Schmidt
+isHilbertSchmidt_of_hasRankLE                    finite rank ⇒ Hilbert–Schmidt
+isTraceClass_of_hasRankLE                        finite rank ⇒ trace class
+memSchattenClass_one_modulusSq_sub_of_adjoint    the modulus-square law from Schatten-1 data on R, R*
+memSchattenClass_one_modulusPow_sub_of_adjoint   the power law from the same
+memSchattenClass_one_modulusPow_sub_of_hasRankLE   ← finite-rank disjunct
+memSchattenClass_one_modulusPow_sub_of_nuclear     ← smoothing disjunct
+```
+
+**§1 no longer cites anything.**  The card's sentence — *the omitted terms are rapidly smoothing or
+finite rank, hence their contribution to the `2m`-th positive power differs from that of
+`E_{m,k,p}` by a trace-class operator* — is now a theorem in both readings of "or":
+
+- if the omitted terms have **finite rank**, `memSchattenClass_one_modulusPow_sub_of_hasRankLE`;
+- if they are **rapidly smoothing**, i.e. an absolutely norm-summable series of rank-one operators
+  (the standard formalization), `memSchattenClass_one_modulusPow_sub_of_nuclear`.
+
+Neither assumes a trace-class hypothesis; each derives it.
+
+The inference itself is pure ideal theory — `(E+R)*(E+R) − E*E = E*R + (R*E + R*R)`, each summand in
+the Schatten 1-class, then induction on `m` — and the only structural insight needed was that the
+proof requires `MemSchattenClass 1` for `R` **and** for `R*`, not the Hilbert–Schmidt factorization.
+Decoupling those (`..._of_adjoint`) is what let the nuclear criterion feed the reduction; the
+factorization form is retained as a convenience corollary.
+
+## Lean audit before promotion (2026-08-19)
+
+Every capstone the card claims as formalized was re-checked against the tree rather than trusted
+from the table, and each is unconditional with
+`#print axioms = [propext, Classical.choice, Quot.sound]`:
+
+```text
+RHTower.gaussComponent_criticalResidue_law
+RHTower.gaussComponentCriticalOperator_exact_schattenDepth
+RHTower.hasSchattenLogResidue_gaussComponentCriticalPowerOperator
+RHTower.gaussComponentCriticalResidue_independent_of_component
+RHTower.gaussPairedBlock_sq
+```
+
+The fifty-sixth pass recorded "only section 1" as remaining; the fifty-seventh proved its algebraic
+half (equation (1)), and the fifty-eighth and fifty-ninth proved its analytic half in both readings
+of the premise.  Nothing on this card is cited any longer.
+
+The one gate still open — **Independent audit** — is an expert-verification gate, not a
+formalization gate, exactly as on the archimedean-boundary card.  The card keeps
+`[NOVELTY UNVERIFIED]`.

@@ -4833,3 +4833,90 @@ The missing Möbius input for this card is the shared gate of three stage-2 card
 `../../1-in-progress/moebius-halasz-log-saving-programme.md`, with the ingredient table and the
 first brick (`RHTower/ZetaNearOneLineBound`, the growth bound just left of the one-line) recorded
 there.
+
+## THE CARD'S `(3)` IS LEAN-PROVED UNCONDITIONALLY (2026-08-19)
+
+```text
+RHTower.Sieve.route_e_marker_hall_law
+  {β' : ℝ} (hβ'0 : 9/10 < β') (hβ'1 : β' < 1) {σ : ℤ} (hσ : σ = 1 ∨ σ = -1) (C : ℝ) :
+    ∀ᶠ Z : ℕ in atTop,
+      C * (⌈√Z · exp((log Z)^β')⌉ / log Z)
+        ≤ #{ n ∈ (Z, Z + ⌈√Z · exp((log Z)^β')⌉] : μ(n) = σ }
+```
+
+`#print axioms`: `[propext, Classical.choice, Quot.sound]`.  No hypotheses, no premises, no
+external input.  This is exactly the card's `(3)` with `H(X) = √X h(X)` rounded up to an integer
+(the interval endpoint has to be a natural), for **both** signs and **every** constant `C`.
+
+The card's refinement "`(3)` holds with `C = cK` for every fixed positive integer `K`" is how the
+constant is produced: `C = tileConst K₀/4 = ϱ · multiHarmConst K₀ / 4096` with
+`multiHarmConst K₀ = (K₀+1)log 2/2 − 2(2c₁+1/2)`, i.e. **linear in the number `K₀` of dyadic marker
+blocks** — `exists_multiHarmConst_ge` supplies the block count for any prescribed `C`.
+
+### Range of validity, and the one restriction
+
+The card states `1/2 < β < 1`.  What is proved is `9/10 < β < 1`.  The restriction is not an
+artefact of the construction: it is inherited from the corpus's unconditional Möbius short-interval
+mean square `Sieve/ScaledBudgetLimit.averagedMeanSquare_moebius_scaledLength`, which holds for
+`9/10 < β < 1` because the Route-T zero-free-region width exponent is `κ = 9/10` and the rate
+ceiling of that route is `(log x)^{-2(β−κ)}`.  Reaching `β ∈ (1/2, 9/10]` requires a
+Matomäki–Radziwiłł-type mean square, tracked on `../../1-in-progress/mr-lean-programme` /
+`matomaki-radziwill-lean-programme.md`.
+
+Everything the card *uses* `(3)` for survives the restriction: the consequence `(5)` needs only the
+displacement `H(X) = X^{1/2+o(1)}`, and `√X·exp((log X)^{0.95}) = X^{1/2+o(1)}`.
+
+### The proof chain, module by module
+
+| module | content |
+|-|-|
+| `Sieve/FreeScaleMarkerBlock`, `FreeScaleCellBound`, `FreeScaleWindowCount`, `FreeScaleBadStart`, `FreeScaleFitSupply`, `FreeScaleHarmonic` | the free-scale marker device: blocks indexed by *start range* rather than by physical scale, so one start modulus serves every scale in a dyadic range |
+| `Sieve/RankinTruncation`, `RankinPairCondition`, `RoughPairSieveSharp`, `PrimePairAverageSharp`, `SieveRemainderBound`, `GenericPairBudget` | the shifted-pair Selberg sieve at Rankin exponent `α = 1/log h`, giving sieve level `h^18` and the full `(log Y)²` saving |
+| `Sieve/GenericMarkerAnalytic` | harmonic mass, marker count and pair budget at an **arbitrary** base `M`: `harm_ge_generic`, `count_le_generic`, `generic_pair_le'` |
+| `Sieve/FreeScaleBudget` | `free_count_master` — the whole device at explicit parameters, reduced to three numerical inequalities `T₁`, `T₂`, `T₃` |
+| `Sieve/FreeScaleTile`, `FreeScaleTileLimits`, `FreeScaleTileCount` | one tile: `exists_tile_count`, then `tile_count_clean` — `tileConst K₀ · h/log X ≤ #{n ∈ (X, X+h] : μ = σ}` for **every** `X` in the range `[P, 2P]` of one modulus |
+| `Sieve/FreeScaleCover`, `WindowTiling` | `exists_cover` (every large scale is served by some modulus, because `2·tileBase(u+1) ≤ 3·tileBase u`) and `tiled_count` (the counts add over the tiling) |
+| `Sieve/CardLengthGap`, `RouteEMarkerHallLaw` | `eventually_cardLength_gap` (a window at a larger exponent dominates `√(log y)` times one at a smaller exponent), `tileLen_le_bound`, and the capstone |
+
+**Why `T₂` is the crux, and why it is scale-free.**  The device inequality is
+`ρ·ν ≤ μ/4` — bad-start density times second-moment ratio against markers-per-start.  At the tile
+parameters it becomes `6·ε·pairMainConst·2^{3K₀+6} ≤ (multiHarmConst K₀/2)²`: **an inequality
+between constants**, with no `M` and no `log M`.  The `(log M)²` of the sharp pair sieve cancels the
+`(log M)²` of the squared harmonic mass exactly.  With the corpus's previous Rankin exponent `1/k`,
+`k ≍ log log h`, the sieve level was `h^k` and `T₂` carried a `(log log)²` that no choice of `ε`
+could absorb — that loss, not the geometry, was what blocked this card, and removing it is what the
+`α = 1/log h` truncation buys.
+
+**Why `X ≍ m² log m`.**  `T₁` is `192·ε·2^{2K₀+4}·u·log M ≤ M·A²`, and `u·log M ≤ 4M/2^{K₀+1}`
+holds exactly when the physical scale is `m²·⌊log m⌋`.  That choice is forced, and it is why the
+tile length is `≍ √(Z log Z)·exp((log Z)^{β₀})` rather than `√Z·exp((log Z)^{β₀})` — hence the need
+for the auxiliary exponent `β₀ = (9/10 + β')/2 < β'` and the tiling.
+
+### The consequence `(5)` is Lean too (2026-08-19)
+
+```text
+RHTower.Sieve.eventually_card_primes_le_window (β' : ℝ) :
+  ∀ᶠ Z : ℕ in atTop, #{p ∈ (Z, Z+H] : p prime} ≤ 17·(H/log Z)      -- Brun–Titchmarsh at Z^{1/8}
+
+RHTower.Sieve.route_e_marker_hall_injection (hβ'0 : 9/10 < β') (hβ'1 : β' < 1) :
+  ∀ᶠ Z : ℕ in atTop,
+    #{p ∈ (Z, Z + ⌈√Z·exp((log Z)^β')⌉] : p prime}
+      ≤ #{n ∈ (Z, Z + ⌈√Z·exp((log Z)^β')⌉] : μ(n) = 1}
+```
+
+Both axiom-clean.  This is the card's "every interval `(X, X+H(X)]` contains at least as many
+positive-Möbius targets as source primes", hence the injection of `(5)` and its normalized
+first-order Gibbs cost `≪ H(X)/log X = X^{1/2+o(1)}`.  The prime side uses the corpus's
+`Sieve/PrimeWindowBrunTitchmarsh.card_prime_Ioc_le_bt` at sieve parameter `z = Z^{1/8}`, whose error
+`6z(1+log z)³ + 1` is below one unit of the main term because `49(log Z)^4 ≤ Z^{3/8}` eventually.
+
+The card's `(4)` — that the count is of distinct physical integers, not of representations — is
+delivered by the formulation itself: the conclusion is the cardinality of a `Finset ℕ` of integers
+in the window, so no representation can be counted twice.
+
+### Card status
+
+`(3)`, `(4)` and `(5)` are Lean-proved unconditionally for `9/10 < β < 1`.  The only thing between
+this card and stage 3 is the exponent range `1/2 < β ≤ 9/10`, which needs a Matomäki–Radziwiłł mean
+square in place of the Route-T one; that is the shared gate tracked on
+`../../1-in-progress/matomaki-radziwill-lean-programme.md`.  Nothing else on the card is open.

@@ -3267,3 +3267,63 @@ window `9/10 < β < 1`, `9/10 < γβ < 1`:
 so every limit of this programme survives, and the budget quotient becomes `O((log x)^{−1/4})`,
 which is what the integer-start route needs.  The refactor touches `SpectralParameters`,
 `RhoLimitPieces`, `RhoLimit`, `SlopeQuotientLimit`, `ConstQuotientLimit` — exponent bookkeeping only.
+
+## CORRECTION: the corpus's Route-T exponent 9/10 is NOT a barrier to milestone B (2026-08-19)
+
+The card and the memory record "the window the corpus's Route-T width exponent 9/10 forces:
+`β > 9/10`", and conclude that lowering that exponent (Vinogradov–Korobov) is what moves the
+threshold down.  **That is true of milestone A (the corpus's own fibre/Route-T route) and false of
+milestone B (exposé §4).**  §4 is compatible with exponent 9/10 as it stands, and milestone B alone
+reaches `h ≥ exp(10(log log X)^{10/9})` — far below every `exp((log X)^β)`, hence it closes the
+window range of *both* reciprocal-marker cards and of the coprime square-root card.
+
+### Where Lemma 2.3 is actually used in §4
+
+§3 applies Lemma 2.3 to the **small** prime sum `∑_{p∈P_j}p^{iy}`, and that is why §3 needs
+`log P_j ≥ (log h)^{9/10} ≥ (log X)^{27/40}` — an exponent below `2/3+δ` only because the exposé has
+Vinogradov–Korobov.  §4 explicitly abandons that:
+
+> "Note that we may not be able to use Lemma 2.3 to bound `∑_{p∈P_j}p^{iy}` since the range for `p`
+> might lie below `exp((log X)^{2/3+δ})`.  Define `E_j = {y : |∑_{p∈P_j}p^{iy}| ≥ P_j/(log P_j)²}`."
+
+In §4 the small-prime sum is handled by the **exceptional-set split** (Lemmas 2.5 + 2.6), and
+Lemma 2.3 is used **only once**, at (38), on the *large* prime sum `∑_{q∈Q_k}q^{iy}`.
+
+### The one change the corpus's exponent forces
+
+The exposé takes `Q` = primes in `[exp((log X)^{4/5}), exp((log X)^{9/10})]`, giving
+`W(Q) = (9/10 − 4/5)·log log X = (1/10)log log X`.  With the corpus's Lemma 2.3 valid only above
+`exp((log X)^{9/10+δ})`, take instead
+
+```text
+        Q = primes in [ exp((log X)^a), exp((log X)^b) ],     9/10 < a < b < 1 ,
+        W(Q) = (b − a)·log log X  →  ∞ .
+```
+
+`W(Q)` depends only on the **gap between the exponents**, not on their size, and there is room
+between `9/10` and `1`.  Everything else in §4 survives verbatim: the two places the top of `Q`
+enters are
+`Q_k·P_j ≪ X` (from the diagonal term of Lemma 2.6) and `Q_k·P_j ≪ X^{1/14−ε}` (from the
+Halász–Montgomery term `|E_j|T^{1/2}log T` with `|E_j| ≪ X^{3/7+ε}`), and both hold with enormous
+room because `Q_k, P_j = X^{o(1)}`.  The `P` side of §4 needs only `(log X)^7 ≤ P_j ≤ X^ε`, which
+`log P_j ≍ (log h)^{9/10}` and `log h ≥ 10(log log X)^{10/9}` give with no zero-free input at all.
+
+### Consequence for the programme
+
+Milestone B is reachable **with the corpus's current assets**: Lemmas 2.1, 2.3, 2.4 (used in §3 and
+re-used here), 2.5 (`Sieve/DirichletPowerProductSplit`, free-exponent form) and 2.6
+(`Sieve/DyadicSecondEnvelopeClosed.halaszMontgomery_dyadic_explicit`) are all corpus theorems.  What
+remains is the §4 assembly:
+
+1. the double weight `ω_P(n)ω_Q(n)` and its Turán–Kubilius second moment (the corpus owns the
+   single-weight version, `Sieve/RoughCountTuran`);
+2. the decomposition `(31)`–`(32)` and the reduction `(34)` (the same Cauchy–Schwarz-over-blocks
+   bookkeeping as `(24)`–`(27)`, which the corpus already carries for the single weight);
+3. the exceptional set `E_j` of `(35)` and the two-case split;
+4. the non-exceptional case: Lemma 2.4 exactly as in `(28)`;
+5. the exceptional case: `(36)`–`(40)` — Lemma 2.3 on the `Q_k` sum, then Lemma 2.5 for `|E_j|` and
+   Lemma 2.6 on `E_j`.
+
+No new analytic input.  Formalising Vinogradov–Korobov is **not** on the critical path for the
+route-e cards, and the "lower the corpus exponent" plan recorded above should be retired in favour
+of this one.

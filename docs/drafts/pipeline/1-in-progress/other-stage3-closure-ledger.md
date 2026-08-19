@@ -8465,3 +8465,471 @@ tree has no bridge `MemSchattenClass 1 → IsTraceClass` (only the converse,
 
 Route 2 is the better investment: it makes the whole Schatten-1 ideal adjoint-closed, which the tree
 currently lacks.
+
+## 2026-08-19 — entry 97: card D, the finite-rank disjunct is fully discharged
+
+Two modules, green, wired, warning-free, axioms = propext/Classical.choice/Quot.sound:
+
+```text
+HTGeometry/RankOneHilbertSchmidt
+  summable_norm_apply_sq        a bounded functional is square-summable along a Hilbert basis
+  isHilbertSchmidt_smulRight    a rank-one operator is Hilbert–Schmidt
+RHTower/ConnesConsaniTraceClassReduction, extended
+  isHilbertSchmidt_of_hasRankLE finite rank ⇒ Hilbert–Schmidt
+  isTraceClass_of_hasRankLE     finite rank ⇒ trace class, in factorization form
+  memSchattenClass_one_modulusPow_sub_of_hasRankLE
+      |E+R|^{2m} − |E|^{2m} is trace class whenever R has finite rank — no trace-class hypothesis
+```
+
+This is the bridge entry 96 flagged as missing.  The route is the one predicted there but shorter
+than expected:
+
+- rank one ⇒ Hilbert–Schmidt is Riesz plus Parseval: represent `φ` as `⟪u, ·⟫`, then
+  `Σᵢ ‖φ(bᵢ)‖² = Σᵢ ‖⟪bᵢ, u⟫‖² = ‖u‖²` by `HilbertBasis.summable_norm_inner_sq`, which the corpus
+  already owned;
+- finite rank ⇒ Hilbert–Schmidt expands the image in an orthonormal basis of the range subspace,
+  writing `F = Σⱼ ⟪fⱼ, F ·⟫ • fⱼ`, a finite sum of rank-ones;
+- finite rank ⇒ **trace class** then needs no new analysis: `F = Q ∘L F` with `Q = V.starProjection`,
+  and `Q` has the same finite rank, so both factors are Hilbert–Schmidt.
+
+That last step is why the factorization form was worth keeping: `IsTraceClass` wants two
+Hilbert–Schmidt factors, and the projection onto the range supplies the second one for free.
+
+Toolchain notes: mathlib's projection is `Submodule.starProjection : E →L[𝕜] E` (with
+`starProjection_apply_mem` and `starProjection_eq_self_iff`) in
+`Mathlib.Analysis.InnerProductSpace.Projection.Basic` — `orthogonalProjection` no longer resolves,
+and the module is `Projection/Basic`, not `Projection`.  `ContinuousLinearMap.sum_apply` is
+deprecated in favour of the root `sum_apply`.
+
+**Card D's premise is now half-closed unconditionally.**  Remaining: the smoothing disjunct, i.e. a
+bridge from `memSchattenClass_one_tsum_rankOneTerms_of_summable_norm` (which concludes
+`MemSchattenClass 1`) to `IsTraceClass`.  With `isHilbertSchmidt_smulRight` in hand the natural
+route is now direct: an absolutely norm-summable series of rank-one terms is a Hilbert–Schmidt-norm
+convergent series, hence Hilbert–Schmidt, hence trace class after factoring through a projection.
+
+## 2026-08-19 — entry 98: card D, the reduction decoupled from the factorization form
+
+`RHTower/ConnesConsaniTraceClassReduction` extended (green, wired, warning-free):
+
+```text
+memSchattenClass_one_modulusSq_sub_of_adjoint    the modulus-square law from Schatten-1 data on R and R*
+memSchattenClass_one_modulusPow_sub_of_adjoint   the power law from the same
+adjoint_smulRight                                (φ ⊗ y)* = (⟪y,·⟫) ⊗ u, u the Riesz vector of φ
+```
+
+The original `IsTraceClass`-hypothesis versions are now corollaries.  The point of the split: the
+proof never needed the Hilbert–Schmidt factorization, only `MemSchattenClass 1` for `R` **and** for
+`R*` — the factorization was merely a convenient way to supply the second.  Decoupling them lets the
+*nuclear* criterion feed the reduction, which the factorization form could not.
+
+`adjoint_smulRight` is the key: it says the rank-one class is adjoint-closed, with the functional and
+the vector exchanged through Riesz.  Proved from `ContinuousLinearMap.eq_adjoint_iff`, both sides
+reducing to `⟪z,y⟫·φ(x)`.
+
+**Remaining for the smoothing disjunct** — now pure plumbing, no new mathematics:
+
+```text
+adjoint (∑' k, A k) = ∑' k, adjoint (A k)      via HasSum.map with adjoint's additive hom + continuity
+‖adjoint (A k)‖ = ‖A k‖                        adjoint is isometric, so the norms stay summable
+HasRankLE (adjoint (A k)) 1                    adjoint_smulRight plus the corpus rank-one lemma
+```
+
+feeding `memSchattenClass_one_tsum_rankOneTerms_of_summable_norm` twice — once for `R`, once for
+`R*` — and then `memSchattenClass_one_modulusPow_sub_of_adjoint`.  The hypothesis is best stated
+with the remainder already in `smulRight` form, which is how a nuclear expansion is given; extracting
+that form from a bare `HasRankLE _ 1` would be extra work with no gain.
+
+## 2026-08-19 — entry 99: card D §1 CLOSED — the smoothing disjunct too
+
+`memSchattenClass_one_modulusPow_sub_of_nuclear` (green, wired, axiom-clean) discharges the second
+disjunct: the omitted terms given as an absolutely norm-summable rank-one series, no trace-class
+hypothesis assumed.  It compiled on the first attempt, because entry 98 had already put every piece
+in place.
+
+`adjoint_tsum_smulRight` is the one new lemma: `HasSum.map` through the adjoint's additive hom, with
+`LinearIsometryEquiv.norm_map` keeping the norms summable and `adjoint_smulRight` keeping the terms
+rank-one, so the corpus's nuclear criterion applies to `R*` exactly as it does to `R`.
+
+**Card D's §1 now cites nothing.**  Both readings of "rapidly smoothing **or** finite rank" are
+theorems, and the inference from either to the trace-class difference of `2m`-th powers is proved.
+
+## 2026-08-19 — entry 100: CARD D MOVED TO STAGE 3
+
+`gauss-component-quasi-inner-residue-hierarchy.md` is now in
+`3-formalized/new_scientific_knowledge/other/`.
+
+Promotion audit, done the same way as card A's rather than on the strength of the card's own table:
+each claimed capstone was re-checked against the tree and is axiom-clean —
+`gaussComponent_criticalResidue_law`, `gaussComponentCriticalOperator_exact_schattenDepth`,
+`hasSchattenLogResidue_gaussComponentCriticalPowerOperator`,
+`gaussComponentCriticalResidue_independent_of_component`, `gaussPairedBlock_sq`.  (The `RHTower`
+modules are in the plain `RHTower` namespace, so an audit file must `open RHTower`, not
+`GaloisForLFunctions.RHTower`; and the umbrella cannot be imported wholesale for an audit because
+another agent's module is currently unbuilt — import the specific modules instead.)
+
+The card's own fifty-sixth pass had recorded "only section 1" as remaining.  Entries 96–99 closed
+it: equation (1) algebraically (fifty-seventh pass, already in the tree), then the trace-class
+inference, then both disjuncts of its premise.
+
+Its one open gate is **Independent audit**, an expert-verification gate rather than a formalization
+gate — the same situation as card A.  `[NOVELTY UNVERIFIED]` retained.
+
+**Three of four cards at stage 3.**  Only card C remains: the `AbeDampingPacketData` assembly, whose
+four fields are `seed` (= `dampedFlatSeed`), `seed_jet` (entry 85, free), `normal` (entry 95's
+undamped compact bound, at the seed level), and `majorant` (entry 93).
+
+## 2026-08-19 — entry 101: card C, `normal` is proved — three of four fields in hand
+
+Two additions, green, wired, warning-free:
+
+```text
+QuasiAbelianSeedCompactBound, extended
+  exists_norm_dampedFlatSeed_realTranslate_le
+      ‖seed_B(x+v)‖ ≤ C(K,B) · (∏(1+|vᵢ|)^{degᵢ}) · exp(-Σ(σᵢ/4)vᵢ²)   on any compact, no smallness
+QuasiAbelianDampedNormalConvergence
+  summableLocallyUniformlyOn_poincareTerm_dampedFlatSeed              ← the `normal` field
+```
+
+The `normal` proof is the entry-92 combination run with the **undamped** seed bound and for *all*
+`z`, including `z = 0`: factor growth `exp(Στᵢvᵢ²)` against seed decay `exp(-Σ(σᵢ/4)vᵢ²)` leaves
+`exp(-eps·Σvᵢ²)` by the gap condition, and entry 91's transfer converts that to the
+complement-indexed weight, which is exactly the hypothesis of the corpus's
+`summableLocallyUniformlyOn_of_polynomialGaussianLattice_bound`.
+
+Performance note worth keeping: `positivity` timed out three times in these two proofs, at
+1 000 000 heartbeats, on goals of the form `0 ≤ C₁ * (C₂ * ∏ …)` where the nonnegativity of the
+atoms is in context rather than syntactic.  Replacing each with an explicit
+`mul_nonneg …` chain made the file compile instantly.  In long products with hypothesis-carried
+positivity, do not reach for `positivity`.
+
+**Card C's four fields:** `seed` = `dampedFlatSeed` ✓, `seed_jet` (entry 85) ✓, `normal` (this
+entry) ✓, `majorant` (entry 93) ✓.  Only the assembly into `AbeDampingPacketData` remains.
+
+## 2026-08-19 — entry 102: card C, the assembly — and the obstruction it exposes
+
+`HTGeometry/QuasiAbelianDampingMultiplier` (green, wired, warning-free):
+
+```text
+multivariateEntireMul_mem_forms       an invariant multiplier keeps a lower form a lower form
+abeDampingPacketDataOfMultiplier      ← the AbeDampingPacketData assembly
+```
+
+**A correction to entries 85–101.**  I had been treating `dampedFlatSeed` as the seed of the packet
+data.  It cannot be: `AbeDampingPacketData.seed_mem` requires `seed B j ∈ lower.forms`, i.e. the seed
+must be **automorphic for the lower factor**, and `bump · damping · P` is a bare entire function.
+The seed has to be built *from the prescribed lower column*, and the only operation preserving
+`lower.forms` is multiplication by a `ΓH`-**invariant** entire function — which is exactly what Abe
+does.  `multivariateEntireMul_mem_forms` proves that closure, and
+`abeDampingPacketDataOfMultiplier` discharges every field of the interface from it.
+
+So the remaining content of Abe's Proposition 8.2 is now a single named existence statement: a
+`ΓH`-invariant entire multiplier family `m_B` that is flat on the finite jet packet and whose
+complement translates carry `C·Bʳ·e^{−δB}` times a polynomial-Gaussian lattice weight.
+
+**Why the estimate stack of entries 86–101 does not supply it.**  Those estimates are for the
+Gaussian seed `bump · damping_{Bσ} · P` on the *standard integer lattice*, and a Gaussian is not
+periodic.  A `ΓH`-invariant function with Gaussian decay transverse to `ΓH` is a theta-type object,
+and building one needs the Appell–Humbert/Hermitian data that `AutomorphicFactor` does not carry —
+precisely the obstruction recorded on `abe-jet-ampleness-analytic-layer-closed`.  What the estimate
+stack *does* establish is that the required decay has exactly the polynomial-Gaussian shape the
+interface consumes, and that the scale-rescaling `σ ↦ B·σ` produces `e^{−δB}` without moving packet
+jets — so the multiplier's specification is now fully pinned down.
+
+Card C therefore stands at: interface assembled, all analytic estimates in place, one existence
+statement outstanding.  It is **not** ready for stage 3, and I am not moving it.
+
+## 2026-08-19 — entry 103: card C, the multiplier is constructible after all
+
+`HTGeometry/LatticePeriodization` (green, wired, warning-free):
+
+```text
+latticePeriodizationFun              Σ_{n} f(x + emb n)
+latticePeriodizationFun_add_emb      invariance under a lattice generator
+latticePeriodizationFun_invariant    invariance under every element of ΓH in the embedding's range
+```
+
+**This overturns the pessimistic note on `abe-jet-ampleness-analytic-layer-closed`**, which said a
+purely `ΓH`-periodic multiplier cannot decay in both complement directions and that the construction
+therefore needs Appell–Humbert data.  That is wrong.  The `ΓH`-periodization of a Gaussian *is*
+`ΓH`-invariant, and it *does* decay transversally, for the same reason the corpus's own seed
+estimates work: `ΓH` is **real**, so a translate by `η ∈ ΓH` moves only real parts, the Gaussian
+decays along those directions, and `|exp(−Bσ(x+η−c)²)| = exp(−Bσ((Re+η)² − Im²))` is summable in `η`
+with a strip-bounded prefactor.  Transversal decay then comes from `G.discrete`: for `z ≠ 0` every
+`comp z + η` is uniformly bounded away from the centre.
+
+Invariance itself is purely formal — reindexing the unconditional sum by `Equiv.addLeft p` — which
+is what this entry proves.
+
+Route to the multiplier, now fully specified:
+
+```text
+Θ_B^{(i)} := latticePeriodization of the Gaussian centred at the packet point w i, normalized to 1 there
+m_B       := 1 − ∏_i (1 − Θ_B^{(i)})^{m}
+```
+
+`m_B` is `ΓH`-invariant (a polynomial in invariants), equals `1` to order `m` at every packet point
+(the `i`-th factor vanishes to order `m` at `w i`), and satisfies `|m_B| ≲ Σ_i |Θ_B^{(i)}| ≲ e^{−δB}`
+on complement translates — the `1 − (1−Θ)^m` device of entry 85, applied once per packet point
+instead of once.
+
+Remaining: local uniform summability of the periodized Gaussian (entirety of `Θ_B`), its
+normalization, and the two estimates — all of which are the estimates already built in entries
+86–101, transported across the periodization sum.
+
+## 2026-08-19 — entry 104: card C, the periodized Gaussian converges
+
+`HTGeometry/LatticeGaussianSummability` (green, wired, warning-free):
+
+```text
+polynomialGaussianLatticeWeight_zero_deg    the zero-degree weight is the plain index Gaussian
+summable_norm_scaledGaussian_lattice        Σ_n ‖G_{Bσ}(x + emb n)‖ < ∞ on any compact
+```
+
+The proof reuses entry 95's compact bound verbatim — `‖G_{Bσ}(x+v)‖ ≤ C(K,B)·exp(−Σ(σᵢ/4)vᵢ²)`,
+which is stated for an arbitrary **real** translate and so applies to `emb n` unchanged — and then
+converts the ambient Gaussian into an index Gaussian by the same uniform-discreteness hypothesis
+that the complement transfer uses (`κ·Σⱼnⱼ² ≤ Σᵢ(vec n i)²`).  Summability is then the corpus's own
+`summable_polynomialGaussianLatticeWeight` at zero polynomial degree.
+
+That the entry-95 bound applies with no modification is the payoff of having generalized it to real
+translates rather than lattice ones back in entry 88: the lower lattice `ΓH` and the complement
+`comp` are different lattices, but both are real, and one estimate serves both.
+
+Remaining for the multiplier: locally uniform convergence (to make the periodization entire),
+normalization at the packet points, and the transversal decay `|Θ_B| ≲ e^{−δB}` on complement
+translates — the last being entry 86's damped bound summed over `ΓH`.
+
+## 2026-08-19 — entry 105: card C, the periodization is damped transversally
+
+`HTGeometry/LatticeGaussianTransversalDecay` (green, wired, warning-free):
+
+```text
+norm_tsum_scaledGaussian_translate_le
+    ‖Σ_n G_{Bσ}(x + u + vec n)‖ ≤ exp(-rate·B) · Σ_n exp(-Σ(σᵢ/4)(uᵢ + vec n i)²)
+```
+
+This is the property that makes an invariant multiplier able to decay at all, and the reason it
+holds is geometric: a translate `u` transverse to the lattice moves **every** lattice copy of the
+Gaussian away from the centre simultaneously, so entry 86's damped bound applies to each term with
+the *same* rate, and the factor pulls out of the sum.
+
+The hypothesis carrying that geometry is `hmass : ∀ n, σ₀ ≤ Σᵢ σᵢ(uᵢ + vec n i)²` — joint
+discreteness of the complement modulo the lower lattice.  It is stated explicitly rather than
+derived, because it is exactly Abe's separation hypothesis; the corpus records its qualitative form
+as `QuasiAbelianComplementSeparation.packet_translate_not_congruent`.
+
+With entries 103–105 the three analytic facts about the periodization are in place — invariance,
+convergence, transversal damping.  What remains for the multiplier is bookkeeping of a different
+kind: assembling `Θ_B` as an entire function (locally uniform convergence rather than pointwise),
+normalizing it to `1` at each packet point, and forming `m_B = 1 − ∏ᵢ(1 − Θ_B^{(i)})^m`.
+
+## 2026-08-19 — entry 106: card C, the flat multiplier
+
+`HTGeometry/FlatMultiplier` (green, wired, warning-free):
+
+```text
+flatMultiplier Θ m                            1 − (1 − Θ)^m
+flatMultiplier_apply
+flatMultiplier_invariant                      an invariant profile gives an invariant multiplier
+multiIndexJetEvalCLM_flatMultiplier_mul       it does not move jets of order < m at a normalization point
+```
+
+This is the device that converts the periodized Gaussian — invariant and transversally small, but
+not normalized — into a multiplier that is genuinely the identity on the finite jet packet.
+Invariance is inherited because the expression is a polynomial in `Θ`; flatness is
+`multivariateEntireMul (flatMultiplier Θ m) f = f − (1−Θ)^m · f` together with the corpus's
+`multiIndexJetEvalCLM_mul_pow_eq_zero_of_degree_lt`, which was already in the tree — found by
+reading the proof of `multiIndexJetEvalCLM_poincareTermEntire_eq_zero_of_seed_power` rather than by
+searching for it directly.
+
+**A simplification worth recording.**  Entry 103 proposed `m_B = 1 − ∏ᵢ(1 − Θ_B^{(i)})^m`, one factor
+per packet point.  That is unnecessary: the corpus's architecture already separates the packet with
+`flatIntegerLatticePacketSeparatorData.bump`, which vanishes at the *non-target* points, so the
+multiplier only has to be flat at the **target**.  A single `Θ` suffices, and no product over the
+packet is needed — which also avoids needing a monoid structure on `MultivariateEntire`.
+
+Remaining for the multiplier: `Θ_B` as an entire function (locally uniform convergence of the
+periodization) and its normalization to `1` at the target.
+
+## 2026-08-19 — entry 107: card C, periodization as a Poincaré series for the trivial factor
+
+`HTGeometry/TrivialAutomorphicFactor` (green, wired, warning-free, no `sorry`):
+
+```text
+trivialAutomorphicFactor                     the constant factor 1
+poincareTerm_trivialAutomorphicFactor        its Poincaré term is a plain translate
+mem_forms_trivialAutomorphicFactor_iff       its forms are exactly the invariant functions
+latticePeriodizationEntire                   the periodization, as an entire source
+latticePeriodizationEntire_apply             it is the pointwise periodization
+latticePeriodizationEntire_invariant         and it is lattice-invariant
+```
+
+**The device.**  Periodization along a lattice *is* the Poincaré series for the trivial factor —
+the term is `1⁻¹·f(x+γ) = f(x+γ)` — so introducing that factor imports the corpus's entire
+coset-Poincaré apparatus, in particular entireness from local normal convergence, with no new
+analysis at all.  `Θ_B` is now an honest `MultivariateEntire d`.
+
+One route I tried and abandoned: deriving invariance from `cosetPoincareSeriesEntire_mem_forms`.
+That lemma needs the **seed** to be a lower form, and the Gaussian is not invariant — so it proves
+nothing here.  Invariance comes instead from entry 103's reindexing lemma, transported along
+`latticePeriodizationEntire_apply`; the two facts are about different things and only the pointwise
+one applies to a non-invariant seed.
+
+Remaining for the multiplier: normalizing `Θ_B` to `1` at the target packet point — the value there
+is `Σ_n G_{Bσ}(w target + emb n)`, nonzero because the `n = 0` term is `1` and the rest are positive
+reals in modulus, so the normalization is division by a nonzero constant.
+
+## 2026-08-19 — entry 108: card C, the periodization is normalizable
+
+`HTGeometry/PeriodizationNormalization` (green, wired, warning-free, no `sorry`):
+
+```text
+centeredComplexGaussian_real_translate       a real translate of the centre gives a positive real
+one_le_latticePeriodization_center           the periodization is ≥ 1 at the centre
+latticePeriodizationFun_center_ne_zero       hence nonzero there
+```
+
+The reason the periodization can be normalized is that **all its terms are positive reals at the
+centre**: a lattice translate is real, so `(center + emb n) − center` is real and the quadratic form
+in the exponent is a real number, making each term `Real.exp(−Σσᵢ(vec n i)²) > 0`.  The `n = 0` term
+is exactly `1`, so the sum is at least `1` — no cancellation is possible and no lower bound on the
+lattice is needed.
+
+This is the same "the lattice is real" fact that entries 88, 95 and 104 exploited, used a fourth
+time and for a different purpose: there it gave decay, here it gives positivity.
+
+With this, `Θ̂_B := (Θ_B(w target))⁻¹ • Θ_B` is a well-defined invariant profile equal to `1` at the
+target, and `flatMultiplier Θ̂_B m` (entry 106) is the damping multiplier — invariant, identity on
+the jet packet, and transversally damped by entry 105.
+
+## 2026-08-19 — entry 109: card C, the damping multiplier exists
+
+`HTGeometry/DampingMultiplier` (green, wired, warning-free, no `sorry`):
+
+```text
+normalizedProfile Θ p                            (Θ p)⁻¹ • Θ
+normalizedProfile_self, _invariant, norm_normalizedProfile
+dampingMultiplier Θ p m                          flatMultiplier (normalizedProfile Θ p) m
+dampingMultiplier_invariant                      ΓH-invariant
+multiIndexJetEvalCLM_dampingMultiplier_mul       identity on jets of order < m at p
+```
+
+The multiplier Abe's Proposition 8.2 asks for is now a **definition with proved properties**, not a
+hypothesis.  Instantiated at the periodized Gaussian `Θ_B` of entries 103–108 it is:
+
+- invariant, because `Θ_B` is (entry 107) and `flatMultiplier` is a polynomial in its profile;
+- the identity on the finite jet packet, because `Θ_B(w target) ≠ 0` (entry 108) makes the
+  normalization legitimate and `1 − (1−Θ̂)^m` is flat to order `m` where `Θ̂ = 1`;
+- transversally damped, because `‖normalizedProfile‖ = ‖Θ_B(p)‖⁻¹·‖Θ_B‖` scales the decay of
+  entry 105 by a constant.
+
+Chain now complete: periodize a Gaussian (103–105, 107), normalize it (108), flatten it (106),
+multiply the lower column by it (102).  What is left is arithmetic bookkeeping — instantiating the
+generic lemmas at `Θ_B` and discharging `AbeDampingPacketData`'s `normal` and `majorant` for the
+resulting seed, which are entries 93 and 101 with `dampedFlatSeed` replaced by
+`multivariateEntireMul (dampingMultiplier …) (lowerColumn j)`.
+
+## 2026-08-19 — entry 110: correction to entry 106 — the multiplier must be flat at every packet point
+
+Entry 106 claimed a single normalization point suffices because
+`flatIntegerLatticePacketSeparatorData.bump` already vanishes at the non-target packet points.  That
+is true of the corpus's *own* seed construction, but **not** of `AbeDampingPacketData`, whose field
+
+```text
+seed_jet : ∀ B i j, multiIndexJetEvalCLM (w i.1) i.2.1 (seed B j)
+                      = multiIndexJetEvalCLM (w i.1) i.2.1 (lowerColumn j).1
+```
+
+quantifies over **every** packet index `i`, with `seed B j = mult B · lowerColumn j` and
+`lowerColumn j` an arbitrary lower form carrying no vanishing at the other points.  So `mult B` must
+be the identity on the jets at every `w i`, and entry 103's original product
+
+```text
+m_B = 1 − ∏ᵢ (1 − Θ̂_B^{(i)})^{m i}
+```
+
+is what is required.  Entry 106's `flatMultiplier` is exactly the one-factor case, and the
+single-point lemmas of entry 109 remain correct as stated — what was wrong is the claim that one
+factor is enough for this interface.
+
+**What the product needs.**  `MultivariateEntire d` carries no multiplicative structure in the tree:
+grep finds no `Monoid`/`CommMonoid` instance and no `multivariateEntireMul_assoc`, `_comm`, `_one`.
+So `Finset.prod` is unavailable and the product has to be built, either by supplying that structure
+(`multivariateEntireMul` is visibly associative, commutative and unital, so the instance is routine)
+or by a `Finset.induction` on entirety of a finite product of entire functions.  Supplying the
+instance is the better investment — it is missing infrastructure that any product construction in
+this area will want.
+
+Everything else from entries 103–109 is unaffected: periodization, invariance, convergence,
+transversal damping, non-vanishing at the centre and normalization are all per-point statements and
+compose over the packet unchanged.
+
+## 2026-08-19 — entry 111: card C, entire sources form a commutative monoid
+
+`HTGeometry/MultivariateEntireCommMonoid` (green, wired, warning-free):
+
+```text
+multivariateEntireCommMonoid          CommMonoid (MultivariateEntire d), mul = multivariateEntireMul
+multivariateEntire_mul_apply, _one_apply
+multivariateEntire_prod_apply         the value of a finite product is the product of the values
+```
+
+This is the missing infrastructure entry 110 identified: with `Finset.prod` now available on entire
+sources, the packet product `∏ᵢ (1 − Θ̂^{(i)})^{m i}` can be formed at all.  The instance is routine —
+associativity, commutativity and unitality are pointwise `ring` after `ext` — which is precisely why
+its absence was worth fixing rather than working around.
+
+Note `multivariateEntire_mul_apply` is **not** `rfl`: the monoid's `mul` field goes through
+`multivariateEntireMul`, whose application lemma has to be invoked explicitly.  The same is true of
+`one`.
+
+Next: the packet-indexed flat multiplier `1 − ∏ᵢ (1 − Θ̂^{(i)})^{m i}`, with flatness at each packet
+point from the corresponding factor, and then the `AbeDampingPacketData` instantiation.
+
+## 2026-08-19 — entry 112: card C, the packet-indexed flat multiplier
+
+`HTGeometry/PacketFlatMultiplier` (green, wired, warning-free, no `sorry`):
+
+```text
+multivariateEntire_pow_eq                          the monoid power is the explicit power
+packetFlatMultiplier Θ m                           1 − ∏ⱼ (1 − Θⱼ)^{mⱼ}
+packetFlatMultiplier_apply, _invariant
+multiIndexJetEvalCLM_packetFlatMultiplier_mul      identity on jets of order < m k at every point k
+```
+
+This is the object entry 110 said was required, now built.  Flatness at the `k`-th packet point
+follows from splitting the product with `Finset.mul_prod_erase` and applying the corpus's
+`multiIndexJetEvalCLM_mul_pow_eq_zero_of_degree_lt` to the `k`-th factor, the rest of the product
+being absorbed into the cofactor — so one lemma serves every point, with no induction over the
+packet.
+
+`multivariateEntire_pow_eq` is needed because the monoid instance of entry 111 defines `^` by
+`Monoid.npow` while the corpus's vanishing-power lemmas are stated for `multivariateEntirePow`;
+the two agree, but only after an induction.
+
+Card C's construction is now complete as a chain of definitions and proved properties:
+periodize (103–105, 107) → normalize (108) → flatten per point (106, 109) → combine over the packet
+(111, 112) → multiply the lower column (102).
+
+## 2026-08-19 — entry 113: card C, the packet-profile instantiation
+
+`HTGeometry/AbeDampingFromProfiles` (green, wired, warning-free, no `sorry`):
+
+```text
+abeDampingPacketDataOfPacketProfiles
+    AbeDampingPacketData from one invariant profile per packet point, each normalized at its point
+```
+
+Two of `AbeDampingPacketData`'s four analytic fields are now discharged **outright**, with no
+hypothesis: `seed_mem` from invariance of the packet multiplier, and `seed_jet` from its flatness.
+The packet's own indexing supplies the exponents exactly — a `FiniteJetPacketIndex` is a pair
+`⟨i, ⟨a, ha⟩⟩` with `ha : Finsupp.degree a < m i`, which is precisely the hypothesis
+`multiIndexJetEvalCLM_packetFlatMultiplier_mul` wants at the point `w i`.  Nothing had to be chosen
+or bounded by hand.
+
+What the interface still takes as input is `normal` and `majorant` for the concrete seed
+`packetFlatMultiplier (Θ B) m · lowerColumn j`.  Those are genuinely estimate hypotheses, and they
+cannot be discharged in this generality: `lowerColumn j` is an arbitrary element of `lower.forms`
+with no growth control whatsoever, so no bound on the product is derivable without growth data on
+the column.  Supplying that data is part of the geometric setting, exactly as
+`ComplementGaussianGrowth` supplies the factor's.
