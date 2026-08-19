@@ -21,26 +21,24 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-variable {m D : ℕ}
+variable {m N D : ℕ}
 
-/-- **One literal two-Hamiltonian witness.**  If every prescribed quadratic level is missed by
-some member of a Hermitian linear ensemble, then two members of that ensemble have disjoint lists
-of squared labelled spectral-action ratios.  The first member is the explicit coefficient-basis
-vector `Pi.single 0 1`; the second is one real evaluation of the finite product of all forbidden
-level polynomials. -/
-theorem exists_disjoint_actionRatio_pair_of_witness
-    {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
-    (k : Fin D → ℝ)
-    (hwit : ∀ b : ℝ, ∃ θ₀ : Fin (m + 1) → ℝ, ∀ π : Equiv.Perm (Fin D),
+/-- **Positive-dimensional two-Hamiltonian compression.**  This is the dimension-agnostic form of
+the witness-pair theorem: any nonempty finite coefficient space suffices. -/
+theorem exists_disjoint_actionRatio_pair_of_witness_of_pos
+    {P : Fin N → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
+    (k : Fin D → ℝ) (hN : 0 < N)
+    (hwit : ∀ b : ℝ, ∃ θ₀ : Fin N → ℝ, ∀ π : Equiv.Perm (Fin D),
       (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
         ≠ b ^ 2 * (∑ a, (θ₀ a) ^ 2)) :
-    ∃ θ₁ θ₂ : Fin (m + 1) → ℝ, ∀ π₁ π₂ : Equiv.Perm (Fin D),
+    ∃ θ₁ θ₂ : Fin N → ℝ, ∀ π₁ π₂ : Equiv.Perm (Fin D),
       (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₁).eigenvalues (π₁ j)) ^ 2
           * (∑ a, (θ₂ a) ^ 2)
         ≠ (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₂).eigenvalues (π₂ j)) ^ 2
           * (∑ a, (θ₁ a) ^ 2) := by
   classical
-  let θ₁ : Fin (m + 1) → ℝ := Pi.single 0 1
+  let i₀ : Fin N := ⟨0, hN⟩
+  let θ₁ : Fin N → ℝ := Pi.single i₀ 1
   let level : Equiv.Perm (Fin D) → ℝ := fun π =>
     ∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₁).eigenvalues (π j)
   choose G hG using fun π : Equiv.Perm (Fin D) =>
@@ -52,7 +50,7 @@ theorem exists_disjoint_actionRatio_pair_of_witness
     rw [hG π θ, eval_jointActionDefectProduct] at heval
     obtain ⟨σ, -, hσ⟩ := Finset.prod_eq_zero_iff.mp heval
     exact hθ σ (sub_eq_zero.mp hσ)
-  let Q : MvPolynomial (Fin (m + 1)) ℝ := ∏ π : Equiv.Perm (Fin D), G π
+  let Q : MvPolynomial (Fin N) ℝ := ∏ π : Equiv.Perm (Fin D), G π
   have hQne : Q ≠ 0 := by
     dsimp only [Q]
     exact Finset.prod_ne_zero_iff.mpr fun π _ => hGne π
@@ -76,6 +74,24 @@ theorem exists_disjoint_actionRatio_pair_of_witness
       - level π₁ ^ 2 * (∑ a, (θ₂ a) ^ 2) = 0
   dsimp only [level]
   linarith
+
+/-- **One literal two-Hamiltonian witness.**  If every prescribed quadratic level is missed by
+some member of a Hermitian linear ensemble, then two members of that ensemble have disjoint lists
+of squared labelled spectral-action ratios.  The first member is the explicit coefficient-basis
+vector `Pi.single 0 1`; the second is one real evaluation of the finite product of all forbidden
+level polynomials. -/
+theorem exists_disjoint_actionRatio_pair_of_witness
+    {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
+    (k : Fin D → ℝ)
+    (hwit : ∀ b : ℝ, ∃ θ₀ : Fin (m + 1) → ℝ, ∀ π : Equiv.Perm (Fin D),
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
+        ≠ b ^ 2 * (∑ a, (θ₀ a) ^ 2)) :
+    ∃ θ₁ θ₂ : Fin (m + 1) → ℝ, ∀ π₁ π₂ : Equiv.Perm (Fin D),
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₁).eigenvalues (π₁ j)) ^ 2
+          * (∑ a, (θ₂ a) ^ 2)
+        ≠ (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₂).eigenvalues (π₂ j)) ^ 2
+      * (∑ a, (θ₁ a) ^ 2) :=
+  exists_disjoint_actionRatio_pair_of_witness_of_pos hP k (Nat.succ_pos m) hwit
 
 end
 

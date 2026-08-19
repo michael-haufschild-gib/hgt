@@ -106,7 +106,7 @@ theorem cassidy_sl2_of_toral [IsAlgClosed C] [CharZero U]
     (hbr : ∀ A ∈ L, ∀ B ∈ L, A * B - B * A ∈ L)
     (hdense : ∀ Z : Matrix (Fin 2) (Fin 2) U, Z.trace = 0 →
       Z ∈ Submodule.span U (L : Set (Matrix (Fin 2) (Fin 2) U)))
-    (hline : ∀ A ∈ L, A ≠ 0 → ∀ c : U, c • A ∈ L → ∃ c₀ : C, c = algebraMap C U c₀)
+    (hline : ∀ A ∈ L, A.det ≠ 0 → ∀ c : U, c • A ∈ L → ∃ c₀ : C, c = algebraMap C U c₀)
     {μ : U} (hμ : μ ≠ 0) (hXmem : μ • sl2H U ∈ L) :
     ∃ (v₀ w₀ : U) (b₀ : C), v₀ ≠ 0 ∧ w₀ ≠ 0 ∧ b₀ ≠ 0 ∧ v₀ * w₀ = algebraMap C U b₀ ∧
       L = Submodule.span C {sl2H U, v₀ • sl2E U, w₀ • sl2F U} := by
@@ -117,17 +117,15 @@ theorem cassidy_sl2_of_toral [IsAlgClosed C] [CharZero U]
     intro c₀ M hM
     rw [algebraMap_smul U]
     exact L.smul_mem c₀ hM
-  have hHne : (sl2H U) ≠ 0 := by
-    intro h0
-    have h1 := congrFun (congrFun h0 0) 0
-    simp [sl2H] at h1
+  have hHdet : (sl2H U).det ≠ 0 := by
+    simp [sl2H, Matrix.det_fin_two]
   set X : Matrix (Fin 2) (Fin 2) U := μ • sl2H U with hXdef
-  have hXne : X ≠ 0 := by
-    intro h0
-    have h1 := congrFun (congrFun h0 0) 0
-    rw [hXdef] at h1
-    simp [sl2H] at h1
-    exact hμ h1
+  have hXdet : X.det ≠ 0 := by
+    rw [hXdef]
+    have hval : ((μ • sl2H U : Matrix (Fin 2) (Fin 2) U)).det = -(μ * μ) := by
+      simp [sl2H, Matrix.det_fin_two]
+    rw [hval]
+    exact neg_ne_zero.mpr (mul_ne_zero hμ hμ)
   set Φ : Matrix (Fin 2) (Fin 2) U →ₗ[C] Matrix (Fin 2) (Fin 2) U :=
     (adMap C X).comp (adMap C X) with hΦdef
   set ΦU : Matrix (Fin 2) (Fin 2) U →ₗ[U] Matrix (Fin 2) (Fin 2) U :=
@@ -187,11 +185,6 @@ theorem cassidy_sl2_of_toral [IsAlgClosed C] [CharZero U]
     apply hA₂det
     rw [hdetbc, h0]
     ring
-  have hA₂ne : A₂ ≠ 0 := by
-    intro h0
-    apply hA₂det
-    rw [h0]
-    simp
   have hA₃eq : X * A₂ - A₂ * X = (2 * μ * b) • sl2E U + (-(2 * μ * c)) • sl2F U := by
     rw [hXdef, bracket_toral, h01, h10, neg_smul, ← sub_eq_add_neg]
   have hA₃L : X * A₂ - A₂ * X ∈ L := hbr _ hXmem _ hA₂L
@@ -203,7 +196,7 @@ theorem cassidy_sl2_of_toral [IsAlgClosed C] [CharZero U]
       congr 1
       ring
     rwa [hconv] at hbrk
-  obtain ⟨t, ht⟩ := hline X hXmem hXne (-(4 * b * c)) hbcX
+  obtain ⟨t, ht⟩ := hline X hXmem hXdet (-(4 * b * c)) hbcX
   have hA₃X : (X * A₂ - A₂ * X) * X - X * (X * A₂ - A₂ * X) = (-(4 * μ ^ 2) : U) • A₂ := by
     rw [hA₃eq, hA₂eq, hXdef]
     ext i j
@@ -214,7 +207,7 @@ theorem cassidy_sl2_of_toral [IsAlgClosed C] [CharZero U]
   have hμ2mem : (-(4 * μ ^ 2) : U) • A₂ ∈ L := by
     rw [← hA₃X]
     exact hbr _ hA₃L _ hXmem
-  obtain ⟨s, hs⟩ := hline A₂ hA₂L hA₂ne _ hμ2mem
+  obtain ⟨s, hs⟩ := hline A₂ hA₂L hA₂det _ hμ2mem
   obtain ⟨ν, hν⟩ : ∃ ν : C, μ = algebraMap C U ν := by
     obtain ⟨ν₀, hν₀⟩ := IsAlgClosed.exists_pow_nat_eq (-(s / 4)) (n := 2) (by norm_num)
     have hsq : (algebraMap C U ν₀) ^ 2 = μ ^ 2 := by
@@ -309,7 +302,7 @@ theorem cassidy_sl2_of_toral [IsAlgClosed C] [CharZero U]
     have hbrk : (v • sl2E U) * (w • sl2F U) - (w • sl2F U) * (v • sl2E U) ∈ L :=
       hbr _ ((hVmem v).mp hv) _ ((hWmem w).mp hw)
     rw [sl2_bracket_smul_E_F] at hbrk
-    obtain ⟨q, hq⟩ := hline (sl2H U) hHmem hHne (v * w) hbrk
+    obtain ⟨q, hq⟩ := hline (sl2H U) hHmem hHdet (v * w) hbrk
     exact ⟨q, by rw [sl2_bracket_smul_E_F, hq]⟩
   obtain ⟨v₀, w₀, b₀, hv₀, hw₀, hb₀, hVspan, hWspan, hprod, -, -, -⟩ :=
     graded_cassidy_sl2 V W hVne hWne hclosed
@@ -317,7 +310,7 @@ theorem cassidy_sl2_of_toral [IsAlgClosed C] [CharZero U]
   · intro Z hZ
     obtain ⟨hE, hF⟩ := hsplit Z hZ
     have hH := hHpart Z hZ
-    obtain ⟨a₀, ha₀⟩ := hline (sl2H U) hHmem hHne (Z 0 0) hH
+    obtain ⟨a₀, ha₀⟩ := hline (sl2H U) hHmem hHdet (Z 0 0) hH
     have hZ01 : Z 0 1 ∈ V := (hVmem _).mpr hE
     have hZ10 : Z 1 0 ∈ W := (hWmem _).mpr hF
     rw [hVspan, Submodule.mem_span_singleton] at hZ01

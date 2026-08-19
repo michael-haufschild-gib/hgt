@@ -418,3 +418,70 @@ Still at stage 2:
 | C1 `hardy-critical-line-moment-anchor` | Lemma E, `\|∫_T^{2T} Z\| = o(T/log²T)`; needs the smooth-AFE split plus `θ''(t) ≍ 1/(2t)` (trigamma asymptotics), the only genuinely missing analytic input |
 | C3 `f1-inversion-single-prime-stieltjes-collapse` | the dictionary P-recursive ⟹ D-finite |
 | C6 `horizontal-singleton-zero-fibers` | unconditional Lean providers for the PRZZ proportions `κ ≥ 0.417293962`, `κ_* ≥ 0.407511457` |
+
+### C3 — the P-recursive ⟹ D-finite dictionary is PROVED (2026-08-19)
+
+New module `formal/GaloisForLFunctions/HTGeometry/PRecursiveDFinite.lean` (wired into the
+`HTGeometry` umbrella, olean built, axioms clean).  It proves the classical dictionary
+unconditionally, by a route that avoids the Weyl algebra entirely.
+
+**The mechanism.**  Applying `X^m·(d/dX)^{m+j}` to a power series multiplies its `(n+j)`-th
+coefficient by the falling-times-rising product
+
+```text
+(n − m + 1)⋯(n + j) = risingPoly j (n) · fallingPoly m (n)     (`coeff_shiftOp`)
+```
+
+so the coefficient patterns realizable at shift `j` are `risingPoly j` times the span of the
+falling factorials — and the falling factorials span all of `ℂ[X]`
+(`fallingPoly_span`, `exists_fallingPoly_finsupp`).  Multiplying a recurrence of order `d` by
+`risingPoly d` therefore makes *every* coefficient polynomial realizable at once
+(`risingPoly_mul_cofactor`), which is `exists_opApply_eventually_zero`:
+
+```text
+P-recursive coefficients  ⟹  ∑_{j,m} α_{j,m} X^m (d/dX)^{m+j} F  has all coefficients 0 from N on.
+```
+
+**The analytic transfer.**  `taylorSeries`, `taylorSeries_id_mul`, `taylorSeries_deriv`,
+`taylorSeries_pow_mul`, `taylorSeries_iteratedDeriv`, `taylorSeries_add`,
+`taylorSeries_const_mul`, `taylorSeries_finsetSum` carry the power-series identity to the entire
+function; `entire_eq_zero_of_iteratedDeriv_zero` (via `analyticOrderAt_eq_top` and the identity
+theorem) and `exists_poly_of_taylorSeries_eventually_zero` turn "coefficients vanish from `N` on"
+into "the function is a polynomial".  Hence `exists_opFun_eq_polyEval`:
+
+```text
+∀ z,  ∑_{j,m} α_{j,m} z^m G^{(m+j)}(z) = P(z)   for a polynomial P.
+```
+
+**The conclusion.**  `differentiallyAlgebraic_of_opFun` packages that as an algebraic differential
+equation; the witnessing multivariate polynomial is nonzero because the monomial
+`X₀^{m₀}·X_{m₀+j₀+1}` occurs in it with coefficient `α_{j₀,m₀} ≠ 0` (`mvCoeff_term`,
+`mvCoeff_aeval_X_zero`).  Capstones:
+
+- **`differentiallyAlgebraic_of_pRecursive`** — an entire function whose Taylor coefficients at
+  the origin are P-recursive is differentially algebraic;
+- **`not_pRecursive_taylorSeries_of_hypertranscendental`** — contrapositive.
+
+REMAINING for C3: instantiate this at `G(z) = z·ζ(1+z)`, whose Taylor coefficients are the
+Stieltjes constants up to the factor `(−1)^n/n!`.  Two steps: (i) that `G` is entire (the simple
+pole of `ζ` at `1`); (ii) that `G` is hypertranscendental — from
+`hypertranscendental_riemannZeta`, using `iteratedDeriv_id_mul` (already proved in the new module)
+to convert a relation for `G` into one for `ζ(1+z)` off `z = 0`, and multiplying the witnessing
+polynomial by `(X₀ − 1)` to cover the pole.
+
+### C3 COMPLETE and PROMOTED (2026-08-19)
+
+`StieltjesNoPRecurrence.lean` closes §4:
+
+- `zetaPoleCompletion` (`z·ζ(1+z)` completed at the origin), `differentiable_zetaPoleCompletion`
+  (entire, from `riemannZeta_residue_one` and the removable-singularity criterion);
+- **`hypertranscendental_zetaPoleCompletion`** — via `differentiallyAlgebraicOn_div`,
+  `DifferentiallyAlgebraicOn.comp_add_const` and the corpus's
+  `differentiallyAlgebraic_of_on_compl_singleton`, contradicting `hypertranscendental_riemannZeta`;
+- `stieltjesGamma`, `pRecursive_coeff_of_pRecursive_stieltjes`, and
+  **`not_pRecursive_stieltjesGamma`**.
+
+The card is now at `3-formalized/not_new_scientific_knowledge/`.  Four of six promoted.
+
+Remaining: C1 (`hardy-critical-line-moment-anchor`, Lemma E) and C6
+(`horizontal-singleton-zero-fibers`, the PRZZ proportions).

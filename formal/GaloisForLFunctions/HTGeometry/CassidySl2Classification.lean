@@ -35,6 +35,15 @@ theorem conj_injective {P Q : Matrix (Fin 2) (Fin 2) U} (h : P * Q = 1)
   have h2 : P * (Q * A * P) * Q = P * (Q * B * P) * Q := by rw [hAB]
   rwa [conj_conj_eq h, conj_conj_eq h] at h2
 
+theorem det_conj {P Q : Matrix (Fin 2) (Fin 2) U} (h : Q * P = 1)
+    (Y : Matrix (Fin 2) (Fin 2) U) : (Q * Y * P).det = Y.det := by
+  have h1 : Q.det * P.det = 1 := by
+    have h2 := congrArg Matrix.det h
+    rwa [Matrix.det_mul, Matrix.det_one] at h2
+  rw [Matrix.det_mul, Matrix.det_mul]
+  calc Q.det * Y.det * P.det = Q.det * P.det * Y.det := by ring
+    _ = Y.det := by rw [h1, one_mul]
+
 theorem conjLinear_comp (P Q P' Q' : Matrix (Fin 2) (Fin 2) U) :
     (conjLinear C P' Q').comp (conjLinear C P Q) = conjLinear C (P' * P) (Q * Q') :=
   LinearMap.ext fun Z => by
@@ -47,7 +56,7 @@ theorem cassidy_sl2 [IsAlgClosed C] [IsAlgClosed U] [CharZero U]
     (hbr : ∀ A ∈ L, ∀ B ∈ L, A * B - B * A ∈ L)
     (hdense : ∀ Z : Matrix (Fin 2) (Fin 2) U, Z.trace = 0 →
       Z ∈ Submodule.span U (L : Set (Matrix (Fin 2) (Fin 2) U)))
-    (hline : ∀ A ∈ L, A ≠ 0 → ∀ c : U, c • A ∈ L → ∃ c₀ : C, c = algebraMap C U c₀) :
+    (hline : ∀ A ∈ L, A.det ≠ 0 → ∀ c : U, c • A ∈ L → ∃ c₀ : C, c = algebraMap C U c₀) :
     ∃ P Q : Matrix (Fin 2) (Fin 2) U, P * Q = 1 ∧ Q * P = 1 ∧
       L.map (conjLinear C P Q) = Submodule.span C {sl2H U, sl2E U, sl2F U} := by
   classical
@@ -100,8 +109,8 @@ theorem cassidy_sl2 [IsAlgClosed C] [IsAlgClosed U] [CharZero U]
     rw [h4] at h3
     have h5 : (conjLinear U Q P) (P * Z * Q) = Z := conj_conj_eq hQP Z
     rwa [h5] at h3
-  have hline' : ∀ A ∈ L', A ≠ 0 → ∀ c : U, c • A ∈ L' → ∃ c₀ : C, c = algebraMap C U c₀ := by
-    rintro A ⟨Y, hY, rfl⟩ hAne c hc
+  have hline' : ∀ A ∈ L', A.det ≠ 0 → ∀ c : U, c • A ∈ L' → ∃ c₀ : C, c = algebraMap C U c₀ := by
+    rintro A ⟨Y, hY, rfl⟩ hAdet c hc
     obtain ⟨Y', hY', hY'eq⟩ := hc
     have hsmul : c • (Q * Y * P) = Q * (c • Y) * P := by
       rw [Matrix.mul_smul, Matrix.smul_mul]
@@ -109,12 +118,12 @@ theorem cassidy_sl2 [IsAlgClosed C] [IsAlgClosed U] [CharZero U]
       refine conj_injective hPQ ?_
       have h : Q * Y' * P = c • (Q * Y * P) := hY'eq
       rw [h, hsmul]
-    have hYne : Y ≠ 0 := by
+    have hYdet : Y.det ≠ 0 := by
       intro h0
-      apply hAne
-      show Q * Y * P = 0
-      rw [h0, Matrix.mul_zero, Matrix.zero_mul]
-    exact hline Y hY hYne c (hYY' ▸ hY')
+      apply hAdet
+      show (Q * Y * P).det = 0
+      rw [det_conj hQP, h0]
+    exact hline Y hY hYdet c (hYY' ▸ hY')
   have hXmem' : μ • sl2H U ∈ L' := by
     have h : Q * X * P ∈ L' := hL'mem _ hXL
     rwa [mul_assoc, hXP, ← mul_assoc, hQP, one_mul] at h

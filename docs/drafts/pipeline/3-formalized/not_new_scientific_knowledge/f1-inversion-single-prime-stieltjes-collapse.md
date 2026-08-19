@@ -1,7 +1,7 @@
 # The F₁ inversion: a single Frobenius would DESTROY DSS — the corank-1 Stieltjes collapse
 
 - **ID:** f1-inversion-single-prime-stieltjes-collapse
-- **Stage:** 2-fully-proven (TERMINAL — proven theorem core banked; the corank-∞ apex externalized, see verdict)
+- **Stage:** 3-formalized (TERMINAL — proven theorem core banked; the corank-∞ apex externalized, see verdict)
 - **Type:** THEOREM (paper), Door grade **BRIDGE** — `trdeg{Stieltjes(ζ_S)} = corank{log p:p∈S}` (exact, finite Euler truncation, §2′) + corank-1 collapse (§2) + corank-2 Gelfond–Schneider floor (§2″) + Hölder no-P-recurrence (§4). The corank-∞ apex (⟹ DSS) is the open FIELDS-MEDAL conjunct, externalized.
 - **Priority:** FOUNDATIONAL (it reconceives the seam/missing-F₁); apex = FIELDS MEDAL
 - **Source:** built at the SOTA wall (user: "actual science starts at the wall"), from A5 (`γ_n` = regulators) + the Euler–Maclaurin/defect representation of the Stieltjes constants; reconceives `corank-seam-invariant.md` (#125), `compute-omega-h2-gl.md` §U/§V (the "missing F₁"), `omega-splits-wild-kernel-freeness.md`
@@ -266,3 +266,53 @@ with polynomial coefficients), proves `differentiallyAlgebraic_of_dFinite`, and 
 The remaining half is the classical dictionary **P-recursive ⟹ D-finite** — a sequence obeying a
 linear recurrence with polynomial coefficients has a D-finite generating function.  With it,
 `{γ_n}` not P-recursive follows immediately from `not_dFinite_riemannZeta`, exactly as §4 states.
+
+## Lean status update (2026-08-19c) — §4 is formalized; the card is complete
+
+Two new modules close the last item.  Both are wired into the `HTGeometry` umbrella, oleans built,
+`#print axioms` clean, zero lint warnings.
+
+### `formal/GaloisForLFunctions/HTGeometry/PRecursiveDFinite.lean` — the dictionary
+
+**P-recursive ⟹ D-finite**, proved unconditionally without the Weyl algebra.  The mechanism:
+applying `X^m·(d/dX)^{m+j}` to a power series multiplies its `(n+j)`-th coefficient by
+
+```text
+(n − m + 1)⋯(n + j) = risingPoly j (n) · fallingPoly m (n)        (`coeff_shiftOp`)
+```
+
+so the coefficient patterns realizable at shift `j` are exactly `risingPoly j` times the span of
+the falling factorials — and the falling factorials span all of `ℂ[X]` (`fallingPoly_span`).
+Multiplying a recurrence of order `d` by `risingPoly d` therefore makes *every* coefficient
+polynomial realizable at once (`risingPoly_mul_cofactor`), giving
+**`exists_opApply_eventually_zero`**.  The Taylor-series calculus (`taylorSeries_id_mul`,
+`taylorSeries_deriv`, `taylorSeries_pow_mul`, `taylorSeries_iteratedDeriv`, …) transports this to
+the entire function, and `entire_eq_zero_of_iteratedDeriv_zero` (identity theorem via
+`analyticOrderAt_eq_top`) turns "coefficients vanish from `N` on" into "the function is a
+polynomial": **`exists_opFun_eq_polyEval`**.  Finally `differentiallyAlgebraic_of_opFun` packages
+the relation `∑_{j,m} α_{j,m} z^m G^{(m+j)}(z) = P(z)` as an algebraic differential equation, the
+witnessing multivariate polynomial being nonzero because the monomial `X₀^{m₀}·X_{m₀+j₀+1}` occurs
+with coefficient `α_{j₀,m₀} ≠ 0`.  Capstone: **`differentiallyAlgebraic_of_pRecursive`**.
+
+### `formal/GaloisForLFunctions/HTGeometry/StieltjesNoPRecurrence.lean` — §4
+
+- `zetaPoleCompletion` — `z ↦ z·ζ(1+z)` completed at the origin by its limit `1`;
+  `differentiable_zetaPoleCompletion` proves it entire, from mathlib's `riemannZeta_residue_one`
+  and the removable-singularity criterion.
+- **`hypertranscendental_zetaPoleCompletion`** — a differential relation for it would, after
+  division by `z` (`differentiallyAlgebraicOn_div`) and translation
+  (`DifferentiallyAlgebraicOn.comp_add_const`), give one for `ζ` on `ℂ \ {1}`, hence — multiplying
+  the witnessing polynomial by `X₀ − 1` (`differentiallyAlgebraic_of_on_compl_singleton`) — a
+  global one, contradicting `hypertranscendental_riemannZeta`.
+- `stieltjesGamma n := (−1)ⁿ n! · [z^{n+1}] (z·ζ(1+z))` — the Stieltjes constants;
+  `pRecursive_coeff_of_pRecursive_stieltjes` transfers a recurrence for them to one for the Taylor
+  coefficients (index shift plus the hypergeometric factor `(−1)ⁿ/n!`).
+- **`not_pRecursive_stieltjesGamma`** — §4: the Stieltjes constants satisfy no linear recurrence
+  with polynomial coefficients.
+
+All four proven components of the card — §2, §2′, §2″ and §4 — are now unconditional Lean
+theorems.
+
+## Gates (updated 2026-08-19)
+
+- [x] 2 → 3: every proven component of the card formalized unconditionally in Lean

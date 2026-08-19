@@ -964,3 +964,101 @@ So the estimate that Simon's bound consumes is now available in a summable form:
 `‖Aᵏ‖₁ ≤ k·M^{k−p}·‖A‖_p^p` for every `k ≥ p`.  What remains is the scalar side: the coefficients of
 `(1+x)exp(∑_{k<p}(−1)^k x^k/k) − 1` vanish below degree `p` -- because that function is
 `exp(∑_{k≥p}(−1)^{k+1}x^k/k)` -- and summing `|cₖ|·k·M^{k−p}` against them gives `c_p‖A‖_p^p`.
+
+## Lean progress -- products of Schatten operators, structurally and quantitatively
+
+Two further modules (umbrella-wired, axioms = `propext`/`Classical.choice`/`Quot.sound`) carry the
+two-factor Hölder inequality along a list, which is the shape the telescoping identity for power
+traces consumes.
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenListProduct.lean`
+
+| Card item | Declaration |
+|---|---|
+| **a product of `n` Schatten-`p` operators lies in Schatten `p/n`** | `memSchattenClass_list_prod` |
+| hence trace class once the list is long enough | `memSchattenClass_one_list_prod` |
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenListProductNorm.lean`
+
+| Card item | Declaration |
+|---|---|
+| the accumulated Hölder constant | `schattenProdConst`, `schattenProdConst_nonneg` |
+| **the norm of a product**: `‖X₁⋯Xₙ‖_{p/n} ≤ C(p,n)·∏‖Xᵢ‖_p` | `schattenNorm_list_prod_le` |
+
+The constant `C(p,n)` accumulates a factor `2^{k/p}` at the `k`-th step, so it grows
+superexponentially in `n` -- the same phenomenon recorded in the previous section.  That is
+intrinsic to the approximation-number route and harmless *here*, because the list length is fixed in
+every use: the telescoping identity
+`Aᵏ − Bᵏ = ∑_{j<k} A^j(A−B)B^{k−1−j}` has exactly `k` factors in each term for a *fixed* `k`, and
+the geometric bound in `k` that the determinant series needs is supplied separately by
+`traceNorm_pow_le`, whose constant is linear.
+
+Together with the corpus's `norm_opTrace_le_traceNorm` this gives the continuity of every power
+trace in the Schatten norm: each telescoping term is a product of `k ≥ p` Schatten-`p` operators, so
+it is trace class with trace norm at most `C(p,k)·‖A‖_p^j·‖A−B‖_p·‖B‖_p^{k−1−j}`, and its trace is
+bounded by that.  What remains is the telescoping identity itself and the assembly.
+
+## Lean progress -- telescoping, and the power traces controlled by the Schatten norm
+
+`formal/GaloisForLFunctions/HTGeometry/TelescopingPowerTrace.lean` (umbrella-wired, axioms =
+`propext`/`Classical.choice`/`Quot.sound`).
+
+| Card item | Declaration |
+|---|---|
+| **the telescoping identity in a ring**: `aᵏ − bᵏ = ∑_{j<k} a^j(a−b)b^{k−1−j}` | `sub_pow_eq_sum_mul_sub_mul` |
+| each telescoping term is a product of `k` Schatten-`p` operators, hence trace class | `memSchattenClass_one_telescope_term` |
+| the Schatten-1 class is closed under finite sums | `memSchattenClass_one_sum` |
+| the trace of a finite sum is bounded by the sum of the trace norms | `norm_opTrace_sum_le` |
+| **the power traces are controlled by the telescoping terms** | `norm_opTrace_pow_sub_le` |
+
+`norm_opTrace_pow_sub_le` is the estimate `(DC)`'s necessity direction needs on the operator side:
+for two Schatten-`p` operators whose difference is again Schatten-`p` -- which is exactly what
+convergence *in* `Hom(V, S_p)` supplies -- and any `k ≥ p`,
+
+`‖tr(Aᵏ) − tr(Bᵏ)‖ ≤ ∑_{j<k} ‖A^j(A−B)B^{k−1−j}‖₁`,
+
+and each summand is bounded by `C(p,k)·‖A‖_p^j·‖A−B‖_p·‖B‖_p^{k−1−j}` through
+`schattenNorm_list_prod_le`.  So every power trace from `p` upwards is continuous in the Schatten
+norm, which is precisely the hypothesis `tendsto_schattenDet_of_tendsto_tracePower` and
+`tendsto_deriv_schattenDet_of_tendsto_tracePower` consume -- and therefore the hypothesis of
+`exists_poly_limit_of_tendsto_spectralDet`, the closure statement.
+
+The telescoping term is written as the product of the list
+`replicate j A ++ (A−B) :: replicate (k−1−j) B`, whose length is exactly `k`; that is why
+`memSchattenClass_one_list_prod` applies with no case analysis on whether `j` or `k−1−j` vanishes.
+
+## Lean progress -- power traces are continuous in the Schatten norm
+
+Two further modules (umbrella-wired, axioms = `propext`/`Classical.choice`/`Quot.sound`) close the
+quantitative chain from the Schatten norm to the power traces.
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenNormMonotone.lean`
+
+| Card item | Declaration |
+|---|---|
+| **the `ℓ^s ⊆ ℓ^1` norm inequality** for `0 < s ≤ 1` | `tsum_le_rpow_tsum_rpow` |
+| **the trace norm is at most the Schatten-`s` norm** | `traceNorm_le_schattenNorm` |
+
+This is the step that converts a product estimate stated at the exponent `p/n` into one for the
+trace norm: normalising by the `ℓ^s` norm makes every entry at most one, and on `[0,1]` a smaller
+exponent gives a larger power.
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenPowerTraceContinuity.lean`
+
+| Card item | Declaration |
+|---|---|
+| **the quantitative telescoping estimate** | `traceNorm_telescope_term_le` |
+| the whole difference against the Schatten norm of the difference | `norm_opTrace_pow_sub_le_mul` |
+| **the power traces converge** | `tendsto_opTrace_pow_of_tendsto_schattenNorm` |
+
+`tendsto_opTrace_pow_of_tendsto_schattenNorm` is the operator-side continuity the completion needs:
+if `‖Aₙ − B‖_p → 0` with `‖Aₙ‖_p` bounded, then `tr(Aₙᵏ) → tr(Bᵏ)` for every `k ≥ p`.  Composed with
+`tendsto_schattenDet_of_tendsto_tracePower` and
+`tendsto_deriv_schattenDet_of_tendsto_tracePower` this gives convergence of `det_p` and of its
+derivative, and hence -- through `exists_poly_limit_of_tendsto_spectralDet` -- the closure of the
+determinant graph with the operators presented in the Schatten topology rather than by their
+spectra.
+
+The estimate is `‖tr(Aᵏ) − tr(Bᵏ)‖ ≤ K(p,k,C,‖B‖_p)·‖A−B‖_p` with an explicit constant: the
+telescoping sum contributes `k` terms, each a product of exactly `k` Schatten-`p` factors, each
+bounded by `schattenProdConst p k · ‖A‖_p^j · ‖A−B‖_p · ‖B‖_p^{k−1−j}`.

@@ -1735,3 +1735,109 @@ The line-stabiliser hypothesis is the honest form of "differential algebraic and
 Lie algebra cut out by linear differential equations, `{c : c A ∈ L}` is itself the solution set of
 a linear differential system, hence finite dimensional over the constants, hence contained in the
 algebraically closed constants.  That transfer is the next brick.
+
+## Lean progress — the classification in the form the Galois group needs
+
+Three further modules, all unconditional and axiom-clean.
+
+`GaloisForLFunctions.HTGeometry.CassidyMatrixAlgebra`
+
+```text
+traceLinear, matrix_decomp_one_hef      the trace as a linear map; the `1, h, e, f` coordinates
+mem_span_hef_iff, mem_span_one_hef_iff  `sl₂(C)` and `M₂(C)` are exactly the matrices with entries
+                                        in `C` (traceless, resp. arbitrary)
+cassidy_matrixAlgebra                   **a `C`-subalgebra of `M₂(U)` that `U`-spans and whose
+                                        scalar line stabiliser is `C` is conjugate to `M₂(C)`**
+cassidy_gl2_constant_conjugate          **hence one conjugation makes every element of a spanning
+                                        matrix group constant**
+```
+
+The associative case reduces to the Lie case: commutators of the algebra lie in its traceless part
+and `U`-span `sl₂(U)`, so the `sl₂` classification conjugates that part to `sl₂(C)`; bracketing an
+arbitrary element against `e` and `f` then reads its off-diagonal and toral coordinates out of `C`,
+and the line stabiliser of `1` reads the scalar coordinate.
+
+The hypothesis was weakened in the process, and the weakening is what makes the theorem usable.
+The classification needs the line stabiliser only for elements of **nonzero determinant**, and for
+an algebra that hypothesis follows from the single scalar case: for traceless `Z` one has
+`Z² = -det(Z)·1`, so `Z ∈ A` puts `det Z` in the scalar stabiliser and `c Z ∈ A` puts `c² det Z`
+there too — whence `c² ∈ C`, and `c ∈ C` because `C` is algebraically closed.  So the final
+hypothesis is only: *the scalars `c` with `c · 1` in the span are constants.*
+
+`GaloisForLFunctions.HTGeometry.DifferentialSolutionSpace`
+
+```text
+IsDifferentialSystemSolution                      `v′ = A v`
+exists_differentialConstants_relation             the minimal-support argument
+card_le_of_no_differentialConstants_relation      **rank-`n` systems have solution spaces of
+                                                  dimension at most `n` over the constants**
+scalarCompanion, isDifferentialSystemSolution_jetVec, card_le_of_no_constantRelation_scalar
+exists_constantCoeff_relation_of_powers           if every power of `x` solves one monic scalar
+                                                  equation of order `n`, then `x` satisfies a
+                                                  nonzero polynomial with constant coefficients
+```
+
+`GaloisForLFunctions.HTGeometry.DifferentialConstantsCollapse`
+
+```text
+exists_eq_algebraMap_of_isIntegral            integral over an algebraically closed base means in it
+deriv_eq_zero_of_solution_powers              a power family of solutions collapses to a constant
+exists_eq_algebraMap_of_smul_one_solution     **the scalar line stabiliser of a multiplicative set
+                                              of matrices is constant** as soon as its elements
+                                              solve one monic linear differential equation
+```
+
+Together these close the loop for a matrix group: the scalars `c` with `c · 1` in the `C`-span form
+a ring, a ring of solutions of a linear differential equation is finite dimensional over the
+constants, hence algebraic over them, hence equal to them — and the classification then makes the
+group constant after a single conjugation.
+
+## Lean progress — the classification, in differential form
+
+The classification asks for line stabilisers that are *constant*; a differential-algebraic
+structure supplies line stabilisers that are *bounded* — a fixed number of scalars always admits a
+relation over the constants.  Three modules close that gap.
+
+`GaloisForLFunctions.HTGeometry.BaseFieldCollapse`
+
+```text
+exists_eq_algebraMap_of_isIntegral            integral over an algebraically closed base ⟹ in it
+exists_eq_algebraMap_of_sq                    a square root descends
+exists_eq_algebraMap_of_polynomial_relation   a nontrivial polynomial relation descends
+```
+
+`GaloisForLFunctions.HTGeometry.Sl2LineStabiliserBridge`
+
+```text
+BoundedOverBase                        a fixed number of elements always admits a relation over `C`
+exists_eq_algebraMap_of_powers_mem     a power family inside a bounded set is algebraic over `C`
+adFun, adFun_cube                      `ad(Z)³ = 4δ·ad(Z)` for traceless `Z`, with `δ = -det Z`
+iterate_adFun_smul, iterate_adFun_odd, iterate_adFun_mem
+line_stabiliser_mem_base               **bounded line stabilisers are constant**
+cassidy_sl2_of_bounded                 hence the classification under boundedness alone
+```
+
+The bridge is the iterated bracket.  Choose `W ∈ L` with `ad(Z) W ≠ 0` — one exists because `L`
+spans `sl₂(U)` and `Z ≠ 0`.  Bracketing `c Z` against `W` an odd number of times gives
+`c (δ c²)^k · ad(Z) W ∈ L` for every `k`, and the same computation with `c = 1` gives
+`δ^k · ad(Z) W ∈ L`.  Boundedness of the stabiliser of `ad(Z) W` therefore makes `δ` and `δ c²`
+algebraic over `C`, so `c²` lies in `C`, and `c` does too because `C` is algebraically closed.
+
+`GaloisForLFunctions.HTGeometry.DifferentialCassidyClassification`
+
+```text
+boundedOverBase_of_scalarSolution        solution sets of a monic scalar linear differential
+                                         equation of order `n` are bounded over the constants
+cassidy_sl2_of_differentialSolution      **the classification for `sl₂` over the constants of a
+                                         differential field**
+constant_conjugate_of_differentialSolution
+                                         **a spanning matrix group whose scalar stabiliser solves
+                                         a linear differential equation becomes constant after one
+                                         conjugation**
+```
+
+The last statement is the exact shape the difference Galois group needs: it says that a Galois
+group which is Zariski dense (spanning) and differentially constrained is, after a single change of
+fundamental matrix, a group of *constant* matrices — which is what
+`ConstantGaloisConnection.exists_base_logDerivMatrix_of_galois_constant` turns into isomonodromy,
+and isomonodromy is what `BesselOrderIntrinsicObstruction` refutes.

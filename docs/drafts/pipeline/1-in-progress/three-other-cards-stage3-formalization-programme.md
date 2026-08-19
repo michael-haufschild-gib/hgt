@@ -1013,3 +1013,42 @@ and the whole argument needs `C` algebraically closed exactly once — to pass f
 Next: the transfer lemma — a nonzero linear differential system has a solution space of finite
 dimension over the constants — which is what supplies the line-stabiliser hypothesis in the
 application.
+
+
+## Card 1 — Cassidy in usable form, and the differential transfer
+
+`CassidyMatrixAlgebra` (associative and group versions), `DifferentialSolutionSpace` (minimal
+support for `v′ = A v`, the companion reduction, the power-family relation) and
+`DifferentialConstantsCollapse` (a ring of solutions is constant).
+
+The important structural finding: **the classification only needs the line stabiliser of elements
+with nonzero determinant**, and for an associative algebra that follows from the stabiliser of `1`
+alone, via `Z² = -det(Z)·1` for traceless `Z`.  So the group form of the theorem has one hypothesis:
+the scalars `c` with `c · 1` in the `C`-span of the group are constants.  That is a *ring*, which is
+what makes the differential transfer work — finite dimensionality over the constants alone is not
+enough to force an element into `C`, but finite dimensionality of a *ring* is.
+
+Next: the Lie-level bridge.  When `L` is cut out by linear differential equations, each stabiliser
+`{c : c Y ∈ L}` is a solution set, hence bounded over the constants; the iterated bracket identity
+`ad(Z)³ = 4δ ad(Z)` then puts a whole power family `c (4δ c²)^k` inside one stabiliser, so `4δ c²`
+and `4δ` are algebraic over `C`, and `c ∈ C`.  That converts the boundedness the differential
+structure gives into the line-stabiliser hypothesis the classification takes.
+
+
+## Card 1 — the classification is complete in differential form
+
+`BaseFieldCollapse`, `Sl2LineStabiliserBridge`, `DifferentialCassidyClassification`.
+
+End product: `constant_conjugate_of_differentialSolution` — a multiplicative set of `2 × 2`
+matrices containing `1`, spanning `M₂(U)` over `U`, whose scalar stabiliser `{c : c·1 ∈ span_C G}`
+solves one monic linear differential equation, is conjugated by a single matrix into `M₂` over the
+constants.
+
+Remaining chain for the card, in order:
+
+1. the Galois group of the Bessel system spans `M₂` over `U` — this is Burnside from the
+   irreducibility the corpus already proves (`DifferenceOperatorFactorization`);
+2. the scalar stabiliser solves a linear differential equation — this is what differential
+   algebraicity of `K_ν(s)` gives, through the parameterized Galois representation;
+3. constant Galois matrices ⟹ isomonodromy (`ConstantGaloisConnection`, owned);
+4. isomonodromy is impossible (`BesselOrderIntrinsicObstruction`, owned).

@@ -1855,3 +1855,29 @@ The one junction left is the choice of the open parameter set in step 2: it must
 simple-spectrum locus so that step 4's root packet exists.  `isOpen_simpleSpectrumLocus` supplies the
 openness; what remains is the nonemptiness, i.e. one physical parameter at which the extended system
 has a simple spectrum -- which is the uncoupled split point of Lemma A1's own construction.
+
+## Lean progress -- Theorem B in the form the ensemble construction delivers
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralActionDephasingCapstone.lean` (umbrella-wired,
+axioms = `propext`/`Classical.choice`/`Quot.sound`) restates the dephasing capstones with the
+card's own hypothesis in place of the polynomial one.
+
+| Card item | Declaration |
+|---|---|
+| **`(17)` from a simple-spectrum member and a disjoint pair** | `tendsto_integral_exp_sortedSpectralAction_zero_of_simple_of_disjoint` |
+| **`(17)` from a simple-spectrum member and an energy-form witness** | `tendsto_integral_exp_sortedSpectralAction_zero_of_simple_of_energy_witness` |
+
+The earlier capstones asked for `spectralDiscriminantPoly P ≠ 0`.  That is not an extra hypothesis:
+the discriminant evaluates to the squared Vandermonde of the spectrum, so it is nonzero exactly when
+the family contains a simple-spectrum member -- which is the card's own sentence.  Stating it that
+way means the capstone consumes precisely what the construction of the ensemble produces.
+
+With this, Theorem B is complete as a chain of Lean theorems from the two data the construction
+supplies -- one coefficient vector with simple spectrum, and two Hamiltonians whose squared labelled
+action ratios are disjoint:
+
+1. `exists_witness_of_disjoint_actionRatio` — the two-point witness at every level;
+2. `exists_ne_spectralActionPhase_of_witness` — Theorem A `(6)`: nonconstancy on every open patch;
+3. `analyticOnNhd_spectralActionPhase` — analyticity on the simple-spectrum cone;
+4. `volume_ball_sdiff_simpleSpectrumCone` — the cone has full measure;
+5. `tendsto_integral_exp_sortedSpectralAction_zero_of_simple_of_disjoint` — `(17)`.

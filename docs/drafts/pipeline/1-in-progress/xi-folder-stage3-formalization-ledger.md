@@ -20,7 +20,7 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 | 11 | xi-shift-loewner-prime-generator-law | open | |
 | 12 | xi-square-descent-vertical-modulus-rh | Lean done (both directions + R* corollary) | RHTower/XiSquareDescentVerticalModulus, RHTower/XiSquareDescentVerticalModulusConverse |
 | 13 | xi-supercharge-persistent-harnack-defect | open | |
-| 14 | xi-unit-euler-pole-affine-section-translated-bezoutian | partial: unit-residue affine section (1)-(2), Bezoutian diagonal formula, and the necessity half of the classifier (6) done; sufficiency needs Hadamard genus zero | HTGeometry/HorizontalModulusDerivative, RHTower/XiUnitEulerPoleAffineSection |
+| 14 | xi-unit-euler-pole-affine-section-translated-bezoutian | Lean done, PROMOTED ((1)-(2), (5), (6) both directions, (13)) | HTGeometry/HorizontalModulusDerivative, OrderOneConvergenceExponent, OrderOneZeroDensity, CanonicalProductE1Divisor, ImaginaryPoleBezoutianGram, TsumRankOnePosSemidef, RHTower/XiUnitEulerPoleAffineSection, OrderOneHadamardFactorization, CanonicalProductE1LogDeriv, ImaginaryZeroBezoutianPositivity, XiUnitEulerPoleBezoutianSufficiency |
 | 15 | xi-theta-square-rate-hardy-reader | Lean done, PROMOTED | HTGeometry/CauchyMatrixDeterminant, CauchyDeterminantStep, HalfLineExponentialGram, HalfLineExponentialDistance, HalfLineExponentialCoDistance, PuncturedSineProduct, HalfLineExponentialReader, HalfLineExponentialResidualLimit, RHTower/XiThetaSquareRateBlaschkeLimit, XiThetaSquareRateReaderNorm, XiThetaSquareRateReaderL2 |
 
 ## Precise plan for each remaining item
@@ -40,10 +40,16 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
    onto the closed real span; (iii) the Gaussian-rational reduction was done on the *Cauchy
    transform* side — continuity plus density of Gaussian rationals in a divisor-free ball — rather
    than by norm continuity of `w ↦ P_w`.
-3. **Card 14 sufficiency**.  Needs the genus-one Hadamard package for `X_c = xi(1/2+·) - c`
-   (an even, real, order-one entire function): reuse `OrderOneFixedDivisorRigidity` and the moving
-   even canonical-product machinery in `HTGeometry/MovingEvenCanonicalSurgery.lean` rather than the
-   `QuadraticSubtypeZero` class, whose growth hypothesis is far too strong here.
+3. **Card 14** — DONE and promoted.  The sufficiency half needed a *general* Hadamard
+   factorization at order one, which the corpus did not own (only the far-too-strong
+   `QuadraticSubtypeZero` class, and the Xi-specific chain).  The new chain is: Jensen at order one
+   (`orderOneDensityIdx_zeroCopyPoint`) → logarithmic buckets
+   (`summable_inv_norm_sq_idx`) → the genus-one product carries the divisor
+   (`analyticOrderAt_canonicalProductE1Indexed`) → `OrderOneFixedDivisorRigidity` makes the
+   quotient `exp(affine)`, and evenness makes it constant.  The kernel step never needs the
+   Mittag-Leffler *limit* of partial products: each `E₁` factor contributes `1/(w-a) + 1/a`, and
+   `Re(1/a) = 0` for an imaginary pole, so the divided sum is *exactly* the rank-one Gram term
+   `(w-a)⁻¹ conj((v-a)⁻¹)`; the origin's monomial gives the same term at `t = 0`.
 4. **Card 11**.  The Loewner generator identity, the finite-matrix positive integration law, the
    Euler--Gamma split and its local uniform convergence are elementary.  The critical-generator
    equivalence and the positive-shift obstruction need Nevanlinna--Pick extension for
@@ -71,7 +77,7 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 | 5 | paired absolute-Euler value kernel and its Weil quadratic identity (the completeness core is now built) |
 | 11 | Nevanlinna–Pick extension for Caratheodory functions on a half plane |
 | 13 | real hyperelliptic topology: genus, real components, Harnack bound |
-| 14 | Hadamard factorization for even entire functions of order `< 1` (genus zero), for the sufficiency half only |
+| 14 | — (built: Hadamard factorization at order one, `RHTower/OrderOneHadamardFactorization.lean`) |
 | 15 | right half-plane Hardy space `H^2` and the Laplace Paley–Wiener unitary |
 
 ## Reusable corpus assets found

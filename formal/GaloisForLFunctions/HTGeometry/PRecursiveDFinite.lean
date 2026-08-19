@@ -605,6 +605,44 @@ theorem exists_opFun_eq_polyEval {G : ℂ → ℂ} (hG : Differentiable ℂ G)
 
 /-! ## The differential-algebraicity conclusion -/
 
+theorem mvCoeff_term {N : ℕ} (c : ℂ) (m : ℕ) (k : Fin (N + 2)) (μ : Fin (N + 2) →₀ ℕ) :
+    MvPolynomial.coeff μ
+        (MvPolynomial.C c * (MvPolynomial.X (0 : Fin (N + 2))) ^ m * MvPolynomial.X k)
+      = if μ = Finsupp.single 0 m + Finsupp.single k 1 then c else 0 := by
+  rw [MvPolynomial.X_pow_eq_monomial, MvPolynomial.X, MvPolynomial.C_mul_monomial,
+    MvPolynomial.monomial_mul, MvPolynomial.coeff_monomial]
+  simp only [mul_one]
+  by_cases hc : μ = Finsupp.single 0 m + Finsupp.single k 1
+  · rw [if_pos hc, if_pos hc.symm]
+  · rw [if_neg hc, if_neg (fun hcc => hc hcc.symm)]
+
+theorem mvCoeff_aeval_X_zero {N : ℕ} (P : Polynomial ℂ) (μ : Fin (N + 2) →₀ ℕ)
+    (k : Fin (N + 2)) (hk : k ≠ 0) (hμ : μ k ≠ 0) :
+    MvPolynomial.coeff μ
+      (Polynomial.aeval (MvPolynomial.X (0 : Fin (N + 2)) : MvPolynomial (Fin (N + 2)) ℂ) P)
+      = 0 := by
+  induction P using Polynomial.induction_on' with
+  | add p q hp hq =>
+      rw [map_add, MvPolynomial.coeff_add, hp, hq, add_zero]
+  | monomial n a =>
+      rw [Polynomial.aeval_monomial]
+      have hC : (algebraMap ℂ (MvPolynomial (Fin (N + 2)) ℂ)) a = MvPolynomial.C a := rfl
+      rw [hC, MvPolynomial.X_pow_eq_monomial, MvPolynomial.C_mul_monomial,
+        MvPolynomial.coeff_monomial]
+      refine if_neg fun hc => ?_
+      apply hμ
+      rw [← hc, Finsupp.single_apply, if_neg (fun hc2 => hk hc2.symm)]
+
+theorem mvEval_aeval_X_zero {N : ℕ} (P : Polynomial ℂ) (v : Fin (N + 2) → ℂ) :
+    MvPolynomial.eval v (Polynomial.aeval (MvPolynomial.X (0 : Fin (N + 2)) :
+        MvPolynomial (Fin (N + 2)) ℂ) P) = P.eval (v 0) := by
+  induction P using Polynomial.induction_on' with
+  | add p q hp hq => rw [map_add, map_add, hp, hq, Polynomial.eval_add]
+  | monomial n a =>
+      rw [Polynomial.aeval_monomial, Polynomial.eval_monomial]
+      have hC : (algebraMap ℂ (MvPolynomial (Fin (N + 2)) ℂ)) a = MvPolynomial.C a := rfl
+      rw [hC, map_mul, map_pow, MvPolynomial.eval_C, MvPolynomial.eval_X]
+
 /-- **A polynomial-coefficient linear relation up to a polynomial makes a function differentially
 algebraic.** -/
 theorem differentiallyAlgebraic_of_opFun {G : ℂ → ℂ} {d : ℕ} {α : ℕ → (ℕ →₀ ℂ)}
@@ -617,49 +655,140 @@ theorem differentiallyAlgebraic_of_opFun {G : ℂ → ℂ} {d : ℕ} {α : ℕ �
   set M : ℕ := (Finset.range (d + 1)).sup (fun j => (α j).support.sup (fun m => m + j)) with hM
   have hle : ∀ j ∈ Finset.range (d + 1), ∀ m ∈ (α j).support, m + j ≤ M := by
     intro j hj m hm
-    exact le_trans (Finset.le_sup (f := fun m => m + j) hm) (Finset.le_sup (s := Finset.range (d+1))
-      (f := fun j => (α j).support.sup (fun m => m + j)) hj)
+    exact le_trans (Finset.le_sup (f := fun m => m + j) hm)
+      (Finset.le_sup (s := Finset.range (d + 1))
+        (f := fun j => (α j).support.sup (fun m => m + j)) hj)
   have hj₀mem : j₀ ∈ Finset.range (d + 1) := Finset.mem_range.mpr (by omega)
-  -- the index of the jet slot carrying the order `m + j` derivative
-  set idx : ℕ → ℕ → Fin (M + 2) := fun j m => (((m + j : ℕ) : Fin (M + 1))).succ with hidx
+  set idx : ℕ → ℕ → Fin (M + 2) := fun j m => (Fin.ofNat (M + 1) (m + j)).succ with hidx
   have hidxval : ∀ j ∈ Finset.range (d + 1), ∀ m ∈ (α j).support,
-      (((m + j : ℕ) : Fin (M + 1)) : ℕ) = m + j := by
+      ((Fin.ofNat (M + 1) (m + j) : Fin (M + 1)) : ℕ) = m + j := by
     intro j hj m hm
-    exact Fin.val_cast_of_lt (by have := hle j hj m hm; omega)
+    have hlt : m + j < M + 1 := by
+      have := hle j hj m hm
+      omega
+    simp [Fin.ofNat, Nat.mod_eq_of_lt hlt]
+  have hidxne : ∀ j m, idx j m ≠ 0 := fun j m => Fin.succ_ne_zero _
   refine ⟨M, (∑ j ∈ Finset.range (d + 1), ∑ m ∈ (α j).support,
       MvPolynomial.C (α j m) * (MvPolynomial.X (0 : Fin (M + 2))) ^ m
         * MvPolynomial.X (idx j m))
-      - Polynomial.aeval (MvPolynomial.X (0 : Fin (M + 2))) P, ?_, ?_⟩
-  · -- nonvanishing
-    intro hzero
+      - Polynomial.aeval (MvPolynomial.X (0 : Fin (M + 2)) : MvPolynomial (Fin (M + 2)) ℂ) P,
+      ?_, ?_⟩
+  · intro hzero
     set μ : Fin (M + 2) →₀ ℕ :=
       Finsupp.single 0 m₀ + Finsupp.single (idx j₀ m₀) 1 with hμ
-    have hidxne : (idx j₀ m₀) ≠ 0 := by
-      rw [hidx]
-      exact Fin.succ_ne_zero _
-    have hcoeffP : MvPolynomial.coeff μ
-        (Polynomial.aeval (MvPolynomial.X (0 : Fin (M + 2))) P) = 0 := by
-      induction P using Polynomial.induction_on' with
-      | add p q hp hq => rw [map_add, MvPolynomial.coeff_add, hp, hq, add_zero]
-      | monomial n a =>
-          rw [Polynomial.aeval_monomial]
-          have : (algebraMap ℂ (MvPolynomial (Fin (M + 2)) ℂ)) a
-              = MvPolynomial.C a := rfl
-          rw [this, MvPolynomial.X_pow_eq_monomial, MvPolynomial.C_mul_monomial,
-            MvPolynomial.coeff_monomial]
-          refine if_neg fun hc => ?_
-          have hsupp : (idx j₀ m₀) ∈ μ.support := by
-            rw [hμ]
-            simp only [Finsupp.mem_support_iff, Finsupp.add_apply, Finsupp.single_eq_same,
-              Finsupp.single_apply]
-            rw [if_neg (fun hc2 => hidxne hc2.symm)]
+    have hμidx : μ (idx j₀ m₀) ≠ 0 := by
+      have h1 : μ (idx j₀ m₀) = Finsupp.single (0 : Fin (M + 2)) m₀ (idx j₀ m₀)
+          + Finsupp.single (idx j₀ m₀) (1 : ℕ) (idx j₀ m₀) := rfl
+      rw [h1, Finsupp.single_eq_same, Finsupp.single_apply,
+        if_neg (fun hc => hidxne j₀ m₀ hc.symm)]
+      omega
+    have hcoeff := congrArg (MvPolynomial.coeff μ) hzero
+    rw [MvPolynomial.coeff_zero, MvPolynomial.coeff_sub,
+      mvCoeff_aeval_X_zero P μ (idx j₀ m₀) (hidxne j₀ m₀) hμidx, sub_zero,
+      MvPolynomial.coeff_sum] at hcoeff
+    have hinner : ∀ j ∈ Finset.range (d + 1),
+        MvPolynomial.coeff μ (∑ m ∈ (α j).support,
+          MvPolynomial.C (α j m) * (MvPolynomial.X (0 : Fin (M + 2))) ^ m
+            * MvPolynomial.X (idx j m))
+          = if j = j₀ then α j₀ m₀ else 0 := by
+      intro j hj
+      rw [MvPolynomial.coeff_sum]
+      have hterm : ∀ m ∈ (α j).support,
+          MvPolynomial.coeff μ (MvPolynomial.C (α j m)
+            * (MvPolynomial.X (0 : Fin (M + 2))) ^ m * MvPolynomial.X (idx j m))
+            = if j = j₀ ∧ m = m₀ then α j m else 0 := by
+        intro m hm
+        rw [mvCoeff_term]
+        by_cases hc : μ = Finsupp.single 0 m + Finsupp.single (idx j m) 1
+        · rw [if_pos hc]
+          have hm0 : m = m₀ := by
+            have h0 := congrArg (fun f => f (0 : Fin (M + 2))) hc
+            simp only [hμ, Finsupp.add_apply, Finsupp.single_eq_same, Finsupp.single_apply] at h0
+            rw [if_neg (hidxne j₀ m₀), if_neg (hidxne j m)] at h0
             omega
-          rw [← hc] at hsupp
-          have := Finsupp.support_single_subset hsupp
-          simp at this
-          exact hidxne this.symm
-    sorry
+          subst hm0
+          have hidxeq : idx j m = idx j₀ m := by
+            have hk := congrArg (fun f => f (idx j m)) hc
+            simp only [hμ, Finsupp.add_apply, Finsupp.single_apply] at hk
+            rw [if_neg (fun hcc => hidxne j m hcc.symm)] at hk
+            by_cases hq : idx j₀ m = idx j m
+            · exact hq.symm
+            · rw [if_neg hq] at hk
+              simp at hk
+          have hjj : j = j₀ := by
+            have h1 : (Fin.ofNat (M + 1) (m + j) : Fin (M + 1))
+                = (Fin.ofNat (M + 1) (m + j₀) : Fin (M + 1)) := by
+              have := hidxeq
+              rw [hidx] at this
+              exact Fin.succ_injective _ this
+            have h2 := congrArg (fun x : Fin (M + 1) => (x : ℕ)) h1
+            rw [hidxval j hj m hm, hidxval j₀ hj₀mem m hm₀] at h2
+            omega
+          rw [if_pos ⟨hjj, rfl⟩]
+        · rw [if_neg hc]
+          by_cases hcond : j = j₀ ∧ m = m₀
+          · exfalso
+            apply hc
+            rw [hμ, hcond.1, hcond.2]
+          · rw [if_neg hcond]
+      rw [Finset.sum_congr rfl hterm]
+      by_cases hj0 : j = j₀
+      · subst hj0
+        rw [if_pos rfl]
+        have hsimp : ∀ m ∈ (α j).support,
+            (if j = j ∧ m = m₀ then α j m else 0) = (if m = m₀ then α j m else 0) := by
+          intro m _
+          simp
+        rw [Finset.sum_congr rfl hsimp, Finset.sum_ite_eq' (α j).support m₀, if_pos hm₀]
+      · rw [if_neg hj0, Finset.sum_eq_zero]
+        intro m _
+        exact if_neg (fun hcc => hj0 hcc.1)
+    rw [Finset.sum_congr rfl hinner, Finset.sum_ite_eq' (Finset.range (d + 1)) j₀,
+      if_pos hj₀mem] at hcoeff
+    exact (Finsupp.mem_support_iff.mp hm₀) hcoeff
   · intro z
-    sorry
+    rw [map_sub, map_sum]
+    have hP : MvPolynomial.eval (Fin.cons z fun i : Fin (M + 1) => iteratedDeriv (i : ℕ) G z)
+        (Polynomial.aeval (MvPolynomial.X (0 : Fin (M + 2)) : MvPolynomial (Fin (M + 2)) ℂ) P)
+        = P.eval z := by
+      rw [mvEval_aeval_X_zero]
+      rfl
+    have hmain : ∑ j ∈ Finset.range (d + 1),
+        MvPolynomial.eval (Fin.cons z fun i : Fin (M + 1) => iteratedDeriv (i : ℕ) G z)
+          (∑ m ∈ (α j).support, MvPolynomial.C (α j m)
+            * (MvPolynomial.X (0 : Fin (M + 2))) ^ m * MvPolynomial.X (idx j m))
+        = opFun d α G z := by
+      refine Finset.sum_congr rfl fun j hj => ?_
+      rw [map_sum]
+      refine Finset.sum_congr rfl fun m hm => ?_
+      rw [map_mul, map_mul, map_pow, MvPolynomial.eval_C, MvPolynomial.eval_X,
+        MvPolynomial.eval_X]
+      have hz : (Fin.cons (α := fun _ : Fin (M + 2) => ℂ) z
+          fun i : Fin (M + 1) => iteratedDeriv (i : ℕ) G z) (0 : Fin (M + 2)) = z := rfl
+      have hjet : (Fin.cons (α := fun _ : Fin (M + 2) => ℂ) z
+          fun i : Fin (M + 1) => iteratedDeriv (i : ℕ) G z) (idx j m)
+          = iteratedDeriv (m + j) G z := by
+        rw [hidx]
+        rw [Fin.cons_succ]
+        rw [hidxval j hj m hm]
+      rw [hz, hjet]
+      ring
+    rw [hmain, hP, hrel z, sub_self]
+
+
+/-- **The dictionary.**  An entire function whose Taylor coefficients at the origin obey a linear
+recurrence with polynomial coefficients is differentially algebraic. -/
+theorem differentiallyAlgebraic_of_pRecursive {G : ℂ → ℂ} (hG : Differentiable ℂ G)
+    (h : PRecursive (fun n => PowerSeries.coeff n (taylorSeries G))) :
+    GaloisForLFunctions.DifferentiallyAlgebraic G := by
+  obtain ⟨d, α, P, hne, hrel⟩ := exists_opFun_eq_polyEval hG h
+  exact differentiallyAlgebraic_of_opFun hne hrel
+
+/-- **Contrapositive form.**  A hypertranscendental entire function has Taylor coefficients that
+are not P-recursive. -/
+theorem not_pRecursive_taylorSeries_of_hypertranscendental {G : ℂ → ℂ}
+    (hG : Differentiable ℂ G) (h : GaloisForLFunctions.Hypertranscendental G) :
+    ¬ PRecursive (fun n => PowerSeries.coeff n (taylorSeries G)) :=
+  fun hp => h (differentiallyAlgebraic_of_pRecursive hG hp)
 
 end GaloisForLFunctions.HTGeometry

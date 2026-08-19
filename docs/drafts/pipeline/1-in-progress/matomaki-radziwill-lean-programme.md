@@ -5621,3 +5621,227 @@ routeTTruncHat L    = 2 / (3·routeTWidthUpperConst·(L^{0.6}/log 2)^{9/10})
 Both sizes are exactly what `Sieve/PolylogRpowDomination.eventually_const_mul_rpow_polylog_le_rpow`
 consumes: the contour threshold becomes an instance at `(α,β) = (0.9, 0.99)`, `k = 3`, and the
 truncation threshold two instances at `(0.46, 0.53)` and `(0, 0.05)`.
+
+### Milestone C, brick 74 — polynomial majorants for the two prefactors (2026-08-19)
+
+`Sieve/RouteTPolyMajorants` (axiom-clean, sorry-free, wired).  With the reciprocal-width budget
+replaced by its size `G ≤ G₁·L^{0.9}(1+log L)²` (brick 73), both threshold prefactors become a
+constant times a power of `L` times `(1 + log L)²`:
+
+| theorem | statement |
+|-|-|
+| `contour_bracket_le` | `1 + (4+2L)G + 2L ≤ (3+6G₁)·L^{1.9}(1+log L)²` |
+| **`contour_prefactor_le`** | `9C(1+(4+2L)G+2L)·9(2+L) ≤ 243C(3+6G₁)·L^{2.9}(1+log L)²` |
+| `trunc_bracket_le` | `2 + L² + (4+2L)G ≤ (3+6G₁)·L²(1+log L)²` |
+| **`trunc_prefactor_le`** | `9C·3^v(2+L²+(4+2L)G)·9(2+L) ≤ 729C(3+6G₁)·L³(1+log L)²`, for `3^v ≤ 3` |
+
+plus the three rpow utilities `one_le_one_add_log_sq`, `rpow_le_rpow_exp`, `self_le_rpow`.  The
+exponent bookkeeping is `L^{1.9}·L = L^{2.9}` and `L²·L = L³`, both from `Real.rpow_add`.
+
+**Process note.**  A first draft of this brick got the contour exponent wrong (`L^{2.9}` in the
+bracket instead of `L^{1.9}`, giving `L^{3.9}` after the outer factor) and was written out with two
+`sorry` placeholders while the algebra was being checked.  It was deleted before any build; the
+version above is the corrected one and the tree has never contained a `sorry`.
+
+### Milestone C, brick 75 — ALL THREE THRESHOLDS ARE PROVED (2026-08-19)
+
+`Sieve/RouteTThresholdLimits` (axiom-clean, sorry-free, wired).  The two remaining schedule
+thresholds are now unconditional eventual statements in `L = log z`:
+
+```text
+eventually_contour_threshold (hC : 0 < C) :
+  ∀ᶠ L in atTop,
+    log(9C(1 + (4+2L)·Ĝ + 2L)·9(2+L)) · (6·Ĝ)  ≤  L^{0.99}
+
+eventually_trunc_threshold (hC : 0 < C) :
+  ∀ᶠ L in atTop,
+    v̂·L + log(9C·3^{v̂}(2 + L² + (4+2L)·Ĝ)·9(2+L))  ≤  L^{0.6}
+```
+
+with `Ĝ = routeTBudgetHat A L`, `v̂ = routeTTruncHat L`.  Together with `eventually_cheb_threshold`
+(brick 72) **all three thresholds of the schedule are proved.**
+
+The new auxiliary is `log_le_of_le_poly`: `X ≤ M·L^α(1+log L)²` gives
+`log X ≤ (|log M| + α + 2)(1 + log L)`, using `log(1+log L) ≤ log L`.  The contour proof then
+multiplies by `6Ĝ ≤ 6G₁L^{0.9}(1+log L)²` and lands on
+`eventually_const_mul_rpow_polylog_le_rpow` at `(α,β,k) = (0.9, 0.99, 3)`; the truncation proof
+splits into `(0.46, 0.53, 0)`, `(0, 0.05, 1)` and `(0.53, 0.6, 0)`, the last being `2L^{0.53} ≤ L^{0.6}`.
+
+**Status of route (b).**  Every hypothesis of
+`Sieve/RouteTTailBudget.exists_abs_sum_cos_div_primesRange_le_budget` is now discharged at the
+schedule, except for assembling them: the chain
+`RouteTTailBudget → RouteTScheduleRegimes → RouteTScheduleWorstCase → RouteTThresholdLimits`
+has no open mathematical content, only the instantiation
+`y = ⌈exp((log z)^{0.99})⌉`, `ρ₀ = 1/(9(2+log z))`, `B = 9(2+log z)`.
+
+### Milestone C, brick 76 — the schedule itself (2026-08-19)
+
+`Sieve/GSScheduleFacts` (axiom-clean, sorry-free, wired).  The cutoff and tolerance of route (b),
+with the elementary facts the assembly consumes:
+
+```text
+   gsCutoff z = ⌈exp((log z)^{0.99})⌉ ,        gsRho z = 1/(9(2 + log z))
+```
+
+| theorem | statement |
+|-|-|
+| `exp_le_gsCutoff` | `exp((log z)^{0.99}) ≤ gsCutoff z` |
+| `two_le_gsCutoff` | `0 < log z ⟹ 2 ≤ gsCutoff z` |
+| `gsCutoff_le` | `1 ≤ log z ⟹ gsCutoff z ≤ z` (from `(log z)^{0.99} ≤ log z`) |
+| `log_ge_of_ge_gsCutoff` | `gsCutoff z ≤ i ⟹ (log z)^{0.99} ≤ log i` |
+| `nine_mul_gsRho_mul` | `9·gsRho z·(2 + log z) = 1` — the tail bound at the schedule is exactly `1` |
+| `one_div_gsRho` | `1/gsRho z = 9(2 + log z)`, i.e. the `B` of the threshold lemmas |
+| `log_tendsto_atTop_nat` | `log z → ∞` along `ℕ`, for transporting the three eventual thresholds |
+
+**Process note.**  A first attempt at the whole assembly in one module was abandoned mid-draft (and
+deleted before any build) because it contained a wrong step: `(log z)^{0.6} ≤ log|t|` was used as if
+it gave `log z ≤ log|t|`, which is false.  The frequency lower bound `16π/3 ≤ |t|` has to come from
+`(log z)^{0.6} ≥ log(16π/3)` instead, and the schedule facts above are the right granularity to
+build the assembly out of.
+
+### Milestone C, brick 77 — ROUTE (b) IS ASSEMBLED (2026-08-19)
+
+`Sieve/GSTailAssembly` (axiom-clean, sorry-free, wired).  Every hypothesis of
+`Sieve/RouteTTailBudget.exists_abs_sum_cos_div_primesRange_le_budget` is discharged at
+`y = gsCutoff z`, `ρ₀ = gsRho z`, `B = 9(2 + log z)`:
+
+```text
+exists_abs_sum_cos_div_gsRange_le :
+  ∃ A delta C, 0 < delta ∧ 0 < C ∧ ∀ (z : ℕ) (t : ℝ),
+    2 ≤ z → 1 ≤ log z →
+    <contour worst case> → <truncation worst case> → <Chebyshev worst case> →
+    1/Ĝ ≤ delta → 126e⁹(2+log z) ≤ exp((log z)^{0.99}) → log(16π/3) ≤ (log z)^{0.6} →
+    (log z)^{0.6} ≤ log|t| ≤ 2 log z
+  →  |∑_{gsCutoff z < p ≤ z} cos(t log p)/p|  ≤  1
+```
+
+The bound is literally `1`, because `9·gsRho z·(2 + log z) = 1`.
+
+Also proved here: `eventually_gsCutoff_growth`, `126e⁹(2+L) ≤ exp(L^{0.99})` eventually, via the
+elementary `exp u = (exp(u/2))² ≥ (1+u/2)² ≥ u²/4` and `L^{1.98} ≥ 1512e⁹·L`.
+
+All seven hypotheses are eventually true: the three worst cases are bricks 72 and 75, `1/Ĝ ≤ delta`
+holds because `Ĝ → ∞`, and the last two are elementary limits.  **Route (b) of Matomäki–Radziwiłł's
+Lemma 2 is complete**: the tail cosine sum over `(exp((log z)^{0.99}), z]` is at most `1` for every
+frequency with `(log z)^{0.6} ≤ log|t| ≤ 2 log z`.
+
+Combined with the surviving harmonic mass `∑_{y<p≤z} 1/p = 0.01·log log z + O(1)`, this gives
+`D(μ, χ_t; p ≤ z)² ≥ 0.01·log log z − O(1)` on that frequency range — and route (a)
+(`Sieve/PrimeCosineSumSharp.exists_mulDistSqPair_ge_quarter`) covers `log|t| ≤ (log z)^{0.8}`.
+The two ranges overlap, so **MR's Lemma 2 for `μ` now holds on the whole range `1 ≤ |t| ≤ z^A`.**
+
+### Milestone C, brick 78 — the distance from its tail (2026-08-19)
+
+`Sieve/MoebiusDistanceTail` (axiom-clean, sorry-free, wired).  The bridge from route (b)'s tail
+bound to the pretentious distance:
+
+```text
+mulDistSqPair_ge_tail (hyz : y ≤ z) (hf : ∀ p ∈ primesLE z, f p = −1) (t) :
+  (mertensS z − mertensS y) + ∑_{y<p≤z} cos(t log p)/p  ≤  mulDistSqPair f (charFn t) (primesLE z)
+```
+
+The mechanism is that every term of `∑_{p≤z}(1 + cos(t log p))/p` is nonnegative, so
+`Finset.sum_le_sum_of_subset_of_nonneg` discards the primes below the cutoff, and
+`Sieve/TuranKubiliusRange.sum_inv_primesRange` identifies the surviving harmonic mass as
+`mertensS z − mertensS y`.
+
+**With brick 77 this gives route (b)'s distance bound**: on `(log z)^{0.6} ≤ log|t| ≤ 2 log z`,
+
+```text
+   D(μ, χ_t; p ≤ z)²  ≥  (mertensS z − mertensS (gsCutoff z))  −  1 ,
+```
+
+and Mertens plus `log gsCutoff z ≤ (log z)^{0.99} + 1` make the mass `0.01·log log z − O(1)`.
+
+### Milestone C, bricks 79–80 — ROUTE (b)'s DISTANCE BOUND IS PROVED (2026-08-19)
+
+`Sieve/GSTailMass` and `Sieve/MoebiusDistanceHighFreq` (both axiom-clean, sorry-free, wired).
+
+**Brick 79 — the surviving mass.**
+
+| theorem | statement |
+|-|-|
+| `log_gsCutoff_le` | `log gsCutoff z ≤ (log z)^{0.99} + 1`, from `e^u + 1 ≤ e^{u+1}` |
+| **`gs_tail_mass_ge`** | `0.01·log log z − (c₁+c₂+log 2) ≤ mertensS z − mertensS (gsCutoff z)` |
+
+using `le_mertensS` and `mertensS_le` and `log log gsCutoff z ≤ log 2 + 0.99·log log z`.
+
+**Brick 80 — route (b).**
+
+```text
+exists_mulDistSqPair_ge_highFreq :
+  ∃ A delta C C₀, 0 < delta ∧ 0 < C ∧ ∀ z t f,
+    2 ≤ z → 1 ≤ log z → ⟨the six schedule facts⟩ →
+    (log z)^{0.6} ≤ log|t| ≤ 2 log z →  (∀ p ≤ z prime, f p = −1) →
+      0.01·log log z − C₀  ≤  D(f, χ_t; p ≤ z)²
+```
+
+with `C₀ = mertensSecondLowerConst + mertensSecondUpperConst + log 2 + 1`.
+
+**Matomäki–Radziwiłł's Lemma 2 for `μ` is now proved on both halves of the frequency range**:
+
+| range | theorem | bound |
+|-|-|-|
+| `\|t\| ≥ 9`, any `z` | `Sieve/PrimeCosineSumSharp.exists_mulDistSqPair_ge_quarter` | `(1/4)(log log z − log log\|t\|) − C` |
+| `(log z)^{0.6} ≤ log\|t\| ≤ 2 log z` | `Sieve/MoebiusDistanceHighFreq.exists_mulDistSqPair_ge_highFreq` | `0.01·log log z − C₀` |
+
+The first is `≥ 0.05·log log z − C` whenever `log|t| ≤ (log z)^{0.8}`, so the two ranges overlap and
+together cover `9 ≤ |t| ≤ z²` — which is the range Halász's theorem needs.  **This is the first
+unconditional pretentious lower bound in the corpus that survives to `|t|` of size `z^{Θ(1)}`.**
+
+### Milestone C, brick 81 — MR's LEMMA 2 FOR `μ`, ONE STATEMENT (2026-08-19)
+
+`Sieve/MoebiusDistanceUniform` (axiom-clean, sorry-free, wired).  The two halves are glued:
+
+```text
+exists_mulDistSqPair_ge_full :
+  ∃ A delta C C₀, 0 < delta ∧ 0 < C ∧ ∀ (z : ℕ) (t : ℝ) (f : ℕ → ℂ),
+    2 ≤ z → 1 ≤ log z → ⟨the six schedule facts⟩ →
+    9 ≤ |t| → log|t| ≤ 2 log z → (∀ p ∈ primesLE z, f p = −1) →
+      0.01·log log z − C₀  ≤  D(f, χ_t; p ≤ z)²
+```
+
+The split is at `log|t| = (log z)^{0.8}`: below it, `exists_mulDistSqPair_ge_quarter` gives
+`(1/4)(log log z − log log|t|) − C ≥ 0.05·log log z − C`, because
+`log log|t| ≤ log((log z)^{0.8}) = 0.8·log log z`; above it, `(log z)^{0.6} ≤ (log z)^{0.8} < log|t|`
+puts the frequency in the Granville–Soundararajan range and
+`exists_mulDistSqPair_ge_highFreq` applies.
+
+**This is Matomäki–Radziwiłł's Lemma 2 for the Möbius character, unconditional, at the corpus's
+zero-free exponent `κ = 9/10`, on the whole range `9 ≤ |t| ≤ z²`.**  It is the input Halász's
+theorem needs, and the corpus's own Halász machinery
+(`Sieve/HalaszUniformDistance.norm_tsum_twistedSummand_le_damped_of_uniform`) takes exactly a
+uniform lower bound for `mulDistSqPair f (charFn t) (primesLE z)` over a frequency range.
+
+**Next**: feed it into `norm_tsum_twistedSummand_le_damped_of_uniform` to obtain MR's Lemma 1/3 —
+`|R(1+it)| ≪ (log X)^{−δ}` for the Ramaré-weighted cofactor — which is the pointwise input of MR's
+`U` half.
+
+### Milestone C, brick 82 — the distance at EVERY frequency below `z²` (2026-08-19)
+
+`Sieve/MoebiusDistanceAllFreq` (axiom-clean, sorry-free, wired).  The last gap in the frequency
+range is `|t| ≤ 9`, where `Sieve/ZetaPoleBoxLowerBound.exists_sum_cos_div_prime_ge_small` costs only
+an absolute constant, so `D² ≥ log log z − (C_s + mertensSecondLowerConst)` there — better than the
+`0.01·log log z` the other two ranges give.
+
+```text
+exists_mulDistSqPair_ge_allFreq :
+  ∃ A delta C C₀, 0 < delta ∧ 0 < C ∧ ∀ (z : ℕ) (t : ℝ) (f : ℕ → ℂ),
+    2 ≤ z → 1 ≤ log z → ⟨the six schedule facts⟩ →
+    log|t| ≤ 2 log z → (∀ p ∈ primesLE z, f p = −1) →
+      0.01·log log z − C₀  ≤  D(f, χ_t; p ≤ z)²
+```
+
+**No lower restriction on `|t|` at all** — the three ranges `|t| ≤ 9`,
+`9 ≤ |t|, log|t| ≤ (log z)^{0.8}` and `(log z)^{0.6} ≤ log|t| ≤ 2 log z` cover everything.
+
+This is the exact shape of the `hunif` hypothesis of
+`Sieve/HalaszUniformDistance.norm_tsum_twistedSummand_le_damped_of_uniform`, with
+`δ = √(0.01·log log z − C₀)`.  At `σ = 1 + 1/log z` that lemma then gives
+
+```text
+   ‖∑' n, f(n)n^{−σ−it}‖ ≤ (1 + log z)·exp(7/2 + 2(1 + log 4/log z) − δ²) ≍ (log z)^{0.99} ,
+```
+
+against the trivial `1 + log z`: **an unconditional Halász saving of `(log z)^{−0.01}` for `μ`,
+uniform over `|t| ≤ z²`.**  That is MR's Lemma 1 for the Möbius character.

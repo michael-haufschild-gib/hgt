@@ -153,7 +153,8 @@ theorem cassidy_matrixAlgebra [IsAlgClosed C] [IsAlgClosed U] [CharZero U]
     (hmul : ∀ a ∈ A, ∀ b ∈ A, a * b ∈ A)
     (hspan : ∀ Z : Matrix (Fin 2) (Fin 2) U,
       Z ∈ Submodule.span U (A : Set (Matrix (Fin 2) (Fin 2) U)))
-    (hline : ∀ a ∈ A, a ≠ 0 → ∀ c : U, c • a ∈ A → ∃ c₀ : C, c = algebraMap C U c₀) :
+    (hline : ∀ c : U, c • (1 : Matrix (Fin 2) (Fin 2) U) ∈ A →
+      ∃ c₀ : C, c = algebraMap C U c₀) :
     ∃ P Q : Matrix (Fin 2) (Fin 2) U, P * Q = 1 ∧ Q * P = 1 ∧
       A.map (conjLinear C P Q)
         = Submodule.span C {1, sl2H U, sl2E U, sl2F U} := by
@@ -244,9 +245,50 @@ theorem cassidy_matrixAlgebra [IsAlgClosed C] [IsAlgClosed U] [CharZero U]
     rw [traceless_decomp hZ]
     exact Submodule.add_mem _ (Submodule.add_mem _ (Submodule.smul_mem _ _ hHspan)
       (Submodule.smul_mem _ _ hEspan)) (Submodule.smul_mem _ _ hFspan)
-  have hlineL : ∀ Z ∈ L, Z ≠ 0 → ∀ c : U, c • Z ∈ L → ∃ c₀ : C, c = algebraMap C U c₀ := by
-    intro Z hZ hZne c hc
-    exact hline Z (hLle hZ) hZne c (hLle hc)
+  have hCH : ∀ W : Matrix (Fin 2) (Fin 2) U, W.trace = 0 →
+      W * W = (-W.det) • (1 : Matrix (Fin 2) (Fin 2) U) := by
+    intro W hW
+    have h11 : W 1 1 = -(W 0 0) := by
+      rw [Matrix.trace_fin_two] at hW
+      linear_combination hW
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      simp only [Matrix.mul_apply, Fin.sum_univ_two, Matrix.smul_apply, smul_eq_mul,
+        Matrix.det_fin_two] <;>
+      simp [h11] <;> ring
+  have hlineL : ∀ Z ∈ L, Z.det ≠ 0 → ∀ c : U, c • Z ∈ L → ∃ c₀ : C, c = algebraMap C U c₀ := by
+    intro Z hZ hZdet c hc
+    obtain ⟨hZA, hZtr⟩ := (hLmem Z).mp hZ
+    obtain ⟨hcZA, hcZtr⟩ := (hLmem _).mp hc
+    have hsq1 : (-Z.det) • (1 : Matrix (Fin 2) (Fin 2) U) ∈ A := by
+      rw [← hCH Z hZtr]
+      exact hmul Z hZA Z hZA
+    obtain ⟨d₀, hd₀⟩ := hline _ hsq1
+    have hdetcz : (c • Z).det = c ^ 2 * Z.det := by
+      simp only [Matrix.det_fin_two, Matrix.smul_apply, smul_eq_mul]
+      ring
+    have hsq2 : (-(c ^ 2 * Z.det)) • (1 : Matrix (Fin 2) (Fin 2) U) ∈ A := by
+      rw [← hdetcz, ← hCH _ hcZtr]
+      exact hmul _ hcZA _ hcZA
+    obtain ⟨e₀, he₀⟩ := hline _ hsq2
+    have hd₀ne : d₀ ≠ 0 := by
+      intro h0
+      apply hZdet
+      rw [h0, map_zero] at hd₀
+      linear_combination -hd₀
+    have hd₀U : algebraMap C U d₀ ≠ 0 := by
+      simpa using (map_ne_zero_iff (algebraMap C U) (algebraMap C U).injective).mpr hd₀ne
+    have hc2 : c ^ 2 * algebraMap C U d₀ = algebraMap C U e₀ := by
+      linear_combination he₀ - c ^ 2 * hd₀
+    obtain ⟨r, hr⟩ := IsAlgClosed.exists_pow_nat_eq (e₀ / d₀) (n := 2) (by norm_num)
+    have hsq : (algebraMap C U r) ^ 2 = c ^ 2 := by
+      rw [← map_pow, hr, map_div₀, div_eq_iff hd₀U]
+      exact hc2.symm
+    have hfac : (c - algebraMap C U r) * (c + algebraMap C U r) = 0 := by
+      linear_combination -hsq
+    rcases mul_eq_zero.mp hfac with h | h
+    · exact ⟨r, by linear_combination h⟩
+    · exact ⟨-r, by rw [map_neg]; linear_combination h⟩
   obtain ⟨P, Q, hPQ, hQP, hLeq⟩ := cassidy_sl2 L htrL hbrL hdenseL hlineL
   refine ⟨P, Q, hPQ, hQP, ?_⟩
   have hA'mul : ∀ a ∈ A.map (conjLinear C P Q), ∀ b ∈ A.map (conjLinear C P Q),
@@ -259,22 +301,16 @@ theorem cassidy_matrixAlgebra [IsAlgClosed C] [IsAlgClosed U] [CharZero U]
     refine ⟨1, hone, ?_⟩
     show P * 1 * Q = 1
     rw [mul_one, hPQ]
-  have hA'line : ∀ a ∈ A.map (conjLinear C P Q), a ≠ 0 → ∀ c : U,
-      c • a ∈ A.map (conjLinear C P Q) → ∃ c₀ : C, c = algebraMap C U c₀ := by
-    rintro a ⟨x, hx, rfl⟩ hane c hc
+  have hA'line : ∀ c : U, c • (1 : Matrix (Fin 2) (Fin 2) U) ∈ A.map (conjLinear C P Q) →
+      ∃ c₀ : C, c = algebraMap C U c₀ := by
+    intro c hc
     obtain ⟨y, hy, hyeq⟩ := hc
-    have hsmul : c • (P * x * Q) = P * (c • x) * Q := by
-      rw [Matrix.mul_smul, Matrix.smul_mul]
-    have hxy : y = c • x := by
-      refine conj_injective hQP ?_
-      have h : P * y * Q = c • (P * x * Q) := hyeq
-      rw [h, hsmul]
-    have hxne : x ≠ 0 := by
-      intro h0
-      apply hane
-      show P * x * Q = 0
-      rw [h0, Matrix.mul_zero, Matrix.zero_mul]
-    exact hline x hx hxne c (hxy ▸ hy)
+    have hy1 : y = c • (1 : Matrix (Fin 2) (Fin 2) U) := by
+      have h1 : Q * (P * y * Q) * P = y := conj_conj_eq hQP y
+      have h2 : P * y * Q = c • (1 : Matrix (Fin 2) (Fin 2) U) := hyeq
+      rw [h2, Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_one, hQP] at h1
+      exact h1.symm
+    exact hline c (hy1 ▸ hy)
   have hsplitA : ∀ Z ∈ A.map (conjLinear C P Q), Z.trace = 0 →
       Z ∈ Submodule.span C ({sl2H U, sl2E U, sl2F U} : Set (Matrix (Fin 2) (Fin 2) U)) := by
     rintro Z ⟨Y, hY, rfl⟩ htrZ
@@ -345,8 +381,7 @@ theorem cassidy_matrixAlgebra [IsAlgClosed C] [IsAlgClosed U] [CharZero U]
           Matrix.one_apply] <;>
         simp [sl2H, sl2E, sl2F] <;> ring
     rw [hone_eq] at hmemsub
-    have honene : (1 : Matrix (Fin 2) (Fin 2) U) ≠ 0 := one_ne_zero
-    obtain ⟨c₀, hc₀⟩ := hA'line 1 hA'one honene _ hmemsub
+    obtain ⟨c₀, hc₀⟩ := hA'line _ hmemsub
     refine mem_span_one_hef_iff.mpr ?_
     intro i j
     have h00 : Z 0 0 = algebraMap C U (c₀ + c₂ / 2) := by
@@ -371,6 +406,33 @@ theorem cassidy_matrixAlgebra [IsAlgClosed C] [IsAlgClosed U] [CharZero U]
     · exact hhefle (Submodule.subset_span (by simp))
     · exact hhefle (Submodule.subset_span (by simp))
 
+/-- The `C`-span of a multiplicatively closed set of matrices is closed under multiplication. -/
+theorem mul_mem_span_of_mul_mem (G : Set (Matrix (Fin 2) (Fin 2) U))
+    (hmulG : ∀ g ∈ G, ∀ h ∈ G, g * h ∈ G) :
+    ∀ a ∈ Submodule.span C G, ∀ b ∈ Submodule.span C G, a * b ∈ Submodule.span C G := by
+  have hGA : G ⊆ (Submodule.span C G : Set (Matrix (Fin 2) (Fin 2) U)) := Submodule.subset_span
+  have hstep1 : ∀ g ∈ G, ∀ b ∈ Submodule.span C G, g * b ∈ Submodule.span C G := by
+    intro g hg b hb
+    induction hb using Submodule.span_induction with
+    | mem y hy => exact hGA (hmulG g hg y hy)
+    | zero => simp
+    | add y z _ _ hy hz =>
+        rw [Matrix.mul_add]
+        exact Submodule.add_mem _ hy hz
+    | smul u y _ hy =>
+        rw [Matrix.mul_smul]
+        exact Submodule.smul_mem _ u hy
+  intro a ha b hb
+  induction ha using Submodule.span_induction with
+  | mem y hy => exact hstep1 y hy b hb
+  | zero => simp
+  | add y z _ _ hy hz =>
+      rw [Matrix.add_mul]
+      exact Submodule.add_mem _ hy hz
+  | smul u y _ hy =>
+      rw [Matrix.smul_mul]
+      exact Submodule.smul_mem _ u hy
+
 /-- **A matrix group with trivial line stabilisers becomes constant after one conjugation.**  If a
 multiplicative set of matrices spans `M₂(U)` over `U` and its `C`-span has trivial `U`-line
 stabilisers, then a single conjugation puts every one of its elements in `M₂(C)`. -/
@@ -379,36 +441,15 @@ theorem cassidy_gl2_constant_conjugate [IsAlgClosed C] [IsAlgClosed U] [CharZero
     (hone : (1 : Matrix (Fin 2) (Fin 2) U) ∈ G)
     (hmulG : ∀ g ∈ G, ∀ h ∈ G, g * h ∈ G)
     (hspanG : ∀ Z : Matrix (Fin 2) (Fin 2) U, Z ∈ Submodule.span U G)
-    (hlineG : ∀ a ∈ Submodule.span C G, a ≠ 0 → ∀ c : U,
-      c • a ∈ Submodule.span C G → ∃ c₀ : C, c = algebraMap C U c₀) :
+    (hlineG : ∀ c : U, c • (1 : Matrix (Fin 2) (Fin 2) U) ∈ Submodule.span C G →
+      ∃ c₀ : C, c = algebraMap C U c₀) :
     ∃ P Q : Matrix (Fin 2) (Fin 2) U, P * Q = 1 ∧ Q * P = 1 ∧
       ∀ g ∈ G, ∀ i j, ∃ c : C, (P * g * Q) i j = algebraMap C U c := by
   classical
   set A : Submodule C (Matrix (Fin 2) (Fin 2) U) := Submodule.span C G with hAdef
   have hGA : G ⊆ (A : Set (Matrix (Fin 2) (Fin 2) U)) := Submodule.subset_span
   have hAone : (1 : Matrix (Fin 2) (Fin 2) U) ∈ A := hGA hone
-  have hstep1 : ∀ g ∈ G, ∀ b ∈ A, g * b ∈ A := by
-    intro g hg b hb
-    induction hb using Submodule.span_induction with
-    | mem y hy => exact hGA (hmulG g hg y hy)
-    | zero => simp
-    | add y z _ _ hy hz =>
-        rw [Matrix.mul_add]
-        exact A.add_mem hy hz
-    | smul u y _ hy =>
-        rw [Matrix.mul_smul]
-        exact A.smul_mem u hy
-  have hAmul : ∀ a ∈ A, ∀ b ∈ A, a * b ∈ A := by
-    intro a ha b hb
-    induction ha using Submodule.span_induction with
-    | mem y hy => exact hstep1 y hy b hb
-    | zero => simp
-    | add y z _ _ hy hz =>
-        rw [Matrix.add_mul]
-        exact A.add_mem hy hz
-    | smul u y _ hy =>
-        rw [Matrix.smul_mul]
-        exact A.smul_mem u hy
+  have hAmul : ∀ a ∈ A, ∀ b ∈ A, a * b ∈ A := mul_mem_span_of_mul_mem G hmulG
   have hAspan : ∀ Z : Matrix (Fin 2) (Fin 2) U,
       Z ∈ Submodule.span U (A : Set (Matrix (Fin 2) (Fin 2) U)) := by
     intro Z

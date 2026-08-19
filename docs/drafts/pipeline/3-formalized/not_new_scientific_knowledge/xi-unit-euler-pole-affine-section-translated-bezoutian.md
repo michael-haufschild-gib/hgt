@@ -1,9 +1,9 @@
 # The unit Euler pole marks the Xi affine origin, and a translated Bezoutian classifies every real value fibre
 
 - **ID:** `xi-unit-euler-pole-affine-section-translated-bezoutian`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / TOP-DOWN INTERFACE DISCHARGE / VALUE-FIBRE CLASSIFIER
-- **Scientific status:** `[PROVED ON PAPER] [CLASSICAL-KERNEL BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED ON PAPER] [FORMALIZED] [CLASSICAL-KERNEL BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `positive-jet-horizon-rh-level-blindness`,
   `projective-jet-horizon-stabilizer-law`, `RiemannTower.lean`, `ZetaCarrier.lean`
 - **Statement:** The unit residue of the Euler source canonically selects the untranslated Xi fibre
@@ -236,7 +236,7 @@ The missing Lean layer is theorem packaging, not a new hypothesis:
 4. formalize the genus-zero even-entire factorization or an equivalent Hermite--Biehler kernel
    theorem needed for (6).
 
-No Lean formalization is claimed by this card.
+All four are now done; see "Lean formalization" below.
 
 ## Literature calibration
 
@@ -252,5 +252,50 @@ No novelty claim is made.
 - [x] 0 -> 1: source-pure affine marking and orientation kernel identified
 - [x] 1 -> 2: complete symbolic proofs of the residue law and the two directions of the kernel
   classifier
-- [ ] 2 -> 3: Lean formalization of the punctured residue limit and the analytic kernel theorem
+- [x] 2 -> 3: Lean formalization of the punctured residue limit and the analytic kernel theorem
 - [ ] 3 -> 4: standalone presentation and formal certificate
+
+## Lean formalization
+
+Equations `(1)`--`(2)`, `(5)`, `(6)` (both directions) and `(13)` are unconditionally proved in Lean.
+The sufficiency half required a general Hadamard factorization at order one, which the corpus did not
+previously own for an arbitrary entire function; it is now available as reusable infrastructure.
+
+- `formal/GaloisForLFunctions/RHTower/XiUnitEulerPoleAffineSection.lean` — the punctured translated
+  decompletion `Z_c`, the residue limit `(1)` (`tendsto_translatedDecompletion_residue`), the affine
+  section `(2)` (`translatedDecompletion_residue_eq_one_iff`), the Bezoutian `(5)`
+  (`xiTranslatedBezoutian`), its diagonal formula `(12)` (`xiTranslatedBezoutian_self`), and the
+  necessity half of `(6)` (`re_eq_half_of_xiTranslatedBezoutian_nonneg`).
+- `formal/GaloisForLFunctions/HTGeometry/OrderOneConvergenceExponent.lean` — a divisor with the
+  counting bound `n(r) ≤ K(1+r)log(2+r)` has summable inverse squares
+  (`summable_inv_norm_sq_idx`), by logarithmic bucket decomposition.
+- `formal/GaloisForLFunctions/HTGeometry/OrderOneZeroDensity.lean` — Jensen's inequality turns an
+  order-one growth envelope into exactly that counting bound
+  (`orderOneDensityIdx_zeroCopyPoint`).
+- `formal/GaloisForLFunctions/HTGeometry/CanonicalProductE1Divisor.lean` — the arbitrarily indexed
+  genus-one canonical product vanishes at every point exactly to the multiplicity of that point in
+  the index family (`analyticOrderAt_canonicalProductE1Indexed`).
+- `formal/GaloisForLFunctions/RHTower/OrderOneHadamardFactorization.lean` — **Hadamard
+  factorization at order one**: an entire function with an order-one envelope and `f 0 ≠ 0` is
+  `exp` of an affine function times the genus-one product over its own divisor
+  (`exists_expAffine_mul_hadamardProduct`), and for an even function the exponential factor is the
+  constant `f 0` (`eq_const_mul_hadamardProduct_of_even`).
+- `formal/GaloisForLFunctions/RHTower/CanonicalProductE1LogDeriv.lean` — the Mittag-Leffler
+  logarithmic derivative `(8)` of the canonical product
+  (`logDeriv_canonicalProductE1Indexed`) and the absolute summability of paired resolvents.
+- `formal/GaloisForLFunctions/HTGeometry/ImaginaryPoleBezoutianGram.lean` — the rank-one collapse
+  `(9)`--`(10)` at an imaginary-axis pole (`bezoutian_imaginary_pole_rankOne`) and the diagonal
+  congruence that restores the factor `X_c(w) conj X_c(v)` (`posSemidef_congr_diagonal`).
+- `formal/GaloisForLFunctions/HTGeometry/TsumRankOnePosSemidef.lean` — a convergent sum of rank-one
+  Gram kernels is positive semidefinite (`posSemidef_tsum_rankOne`).
+- `formal/GaloisForLFunctions/RHTower/ImaginaryZeroBezoutianPositivity.lean` — the general theorem:
+  an even entire function of order one whose zeros all lie on the imaginary axis has a positive
+  semidefinite Bezoutian on the open right half plane
+  (`posSemidef_bezoutian_of_imaginary_zeros`).
+- `formal/GaloisForLFunctions/RHTower/XiUnitEulerPoleBezoutianSufficiency.lean` — the specialization
+  to `X_c`: evenness from the functional equation, the order-one envelope, the sufficiency half of
+  `(6)` (`posSemidef_xiTranslatedBezoutian_of_critical`), the exact classification
+  (`posSemidef_xiTranslatedBezoutian_iff`), and the marked chain `(13)`
+  (`riemannHypothesis_iff_unitResidue_and_posSemidef_bezoutian`).
+
+Every capstone audits to `[propext, Classical.choice, Quot.sound]`.
