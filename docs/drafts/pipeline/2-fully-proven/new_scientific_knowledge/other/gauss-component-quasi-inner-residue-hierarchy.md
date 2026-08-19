@@ -3072,3 +3072,51 @@ Only section 1, the Connes–Consani source reduction
 (Connes–Consani's one-prime decomposition of the Hankel operator `H = (1-P) M_(rho) P`) and not new
 content of this card.  It is recorded as a named classical input, in the same way the corpus records
 the classical inputs of the Manin-horizon and Hardy cards.
+
+## Lean status, fifty-seventh pass: equation (1) of the source reduction is proved
+
+The algebraic half of §1 is now unconditional in Lean. Two new modules, `lake build`-green,
+`#print axioms = [propext, Classical.choice, Quot.sound]`.
+
+### `RHTower/CircleReflectionOperator.lean`
+
+```text
+measurePreserving_neg_circle             negation preserves Haar measure on ℝ/ℤ
+circleReflectionCLM                      I : composition with x ↦ −x, an isometry of L²
+circleReflectionCLM_coeFn                its a.e. representative
+circleReflectionCLM_apply_self, _comp_self          I² = 1
+circleReflectionCLM_fourierLp            I e_n = e_{−n}
+dense_span_fourierBasis
+circleReflection_gaussDiagonalBlock_conj I D I = D*
+```
+
+The last identity is where the reality relation `d_{−n} = conj d_n` enters; the tree already had it
+(`gaussSampleValue_neg`), built into the definition of the sampled symbol.
+
+### `RHTower/GaussQuasiInnerSquare.lean`
+
+```text
+lpBoundedMulCLM_comp_circle              composing multipliers multiplies symbols
+circleReflection_lpBoundedMul_conj       I M_φ I = M_{φ∘(−·)}
+volume_singleton_addCircle, haar_singleton_addCircle, ae_ne_zero_addCircle
+gaussPrimeScaleCircle_neg_sq             b_p(1−x)² = p · b_p(x)^{−2}, off the single point 0
+circleReflection_gaussPrimeScaleSq_conj  I B² I = p · B^{−2}
+gaussPairedBlock                         C = B D I B
+gaussPairedBlock_sq                      **C² = G**, the card's equation (1)
+```
+
+Three remarks.
+
+1. **The identity is exactly algebraic.** `I² = 1` lets one insert `I I` between the two copies of
+   `C`; then `I B² I = p B^{−2}` and `I D I = D*` turn `B D I B B D I B` into `p B D B^{−2} D* B`.
+   No estimate is used anywhere.
+2. **The symbol computation is exact and its failure set is a point.** The representative of `−z` in
+   `(0,1]` is `1 − t`, so `b_p(1−t)² = p^t = p·b_p(t)^{−2}`. At `z = 0` the representative is `t = 1`
+   and the identity reads `1 = p`, which is false; that single point is Haar-null, proved here from
+   `AddCircle.volume_closedBall` and `AddCircle.volume_eq_smul_haarAddCircle` because the toolchain
+   has no `NullSingletonClass` instance for `haarAddCircle`.
+3. **What §1 still cites.** Only the Connes–Consani statement that the omitted terms of the one-prime
+   decomposition are rapidly smoothing or finite rank, so that `|E_{m,k,p}|^{2m}` and
+   `((p−1)/p)^{2m} G^m` differ by a trace-class operator. That is a published theorem about the
+   Hankel operator `H = (1−P)M_ρ P` and is not new content of this card; the passage from `G` to the
+   arithmetic residue is entirely Lean-proved (§6, fifty-sixth pass).

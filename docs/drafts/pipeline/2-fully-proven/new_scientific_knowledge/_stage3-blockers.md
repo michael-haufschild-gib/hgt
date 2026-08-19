@@ -3,15 +3,20 @@
 - **Type:** PLANNING NOTE (not a card)
 - **Scope:** `ht/`, `constrained-prolate/`, `burnol/`
 
-Two of the ten cards in these folders are at stage 3.  The other eight are gated on exactly three
-imported classical theorems, none of which exists in mathlib in any form.  Each card's own new
+Three of the ten cards in these folders are at stage 3.  The other seven are gated on exactly two
+imported classical theorems, neither of which exists in mathlib in any form.  Each card's own new
 mathematics is already formal; what is missing is the published input it cites.
 
 | gate | cards | what has to be built |
 |---|---|---|
 | Dunster's uniform radial-PSWF Bessel expansion | the 6 `constrained-prolate` cards | uniform asymptotics of prolate spheroidal wave functions across a turning point |
 | Lie--Cartan/Casale classification of proper transitive rational differential groupoids on a curve into `G1`,`G2`,`G3` | `ht/nonautonomous-rational-complete-tail-orbifold-classification` | transitive Lie pseudogroups and `D`-envelopes on a curve |
-| Pong Thm 5.9, Andersson's arbitrary continuation divisors, Saksman--Webb/Seip almost-sure abscissa `1/2` | `ht/helson-universal-ht-arbitrary-divisor-orthogonality` | differential--difference independence of Dirichlet series; random Dirichlet series and the Bohr lift |
+
+**Closed:** the Helson gate.  `ht/helson-universal-ht-arbitrary-divisor-orthogonality` is at stage 3:
+all three of its cited inputs — Pong's Theorem 5.9, Saksman--Webb's almost-sure abscissa (as
+`Haar(M) = 0`) and Andersson's arbitrary-divisor continuation theorem for `U = C` — are now Lean
+theorems in this tree, proved from scratch.  See
+`3-formalized/new_scientific_knowledge/ht/helson-universal-ht-arbitrary-divisor-orthogonality-formalized.md`.
 
 ## Done: `burnol` and `ht/irrational-power-canonical-products`
 

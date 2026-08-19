@@ -887,3 +887,1010 @@ Hence `|∑_{d≤N}(μ(d)/d) log(N/d)| ≤ 1 + γ + 4`, an explicit `O(1)`.  Not
 the earlier note said the crude route could not reach: the crude route bounded the log-floor defect
 by `log 2` and summed `1/d`; the sharp bound `1/⌊N/d⌋ ≤ 2d/N` cancels the `1/d` instead.  Only the
 `γ`-term needs Möbius cancellation, and that is exactly `abs_sum_moebius_div_le_one`.
+
+## Landed brick 28: Graham step six is closed (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LogMoebiusBounded.lean`
+
+- `abs_sum_moebius_log_div_le` — **the logarithmic Möbius sum is bounded by an absolute
+  constant**:
+  ```
+  | ∑_{d ≤ N} μ(d) log(N/d) / d |  ≤  5 + |γ|      for every N ≥ 1.
+  ```
+  Assembly: the exact identity of brick 26 splits the error sum as
+  `γ·∑_{d≤N} μ(d)/d + ∑_{d≤N}(μ(d)/d) R_d` with `R_d = H_{⌊N/d⌋} − log(N/d) − γ`; the first term is
+  `≤ |γ|` by the tree's `abs_sum_moebius_div_le_one`; the second is `≤ 4` because
+  `|R_d| ≤ 2/⌊N/d⌋ ≤ 4d/N` (brick 27 + `two_mul_natDiv_mul_ge`) kills the `1/d`, leaving `4/N` on
+  each of the `N` terms.
+
+Axiom-clean, like the rest of the stack.
+
+### Graham ledger, updated
+
+| step | content | status |
+|---|---|---|
+| 1 | expand the square into the lcm quadratic form | brick 21 ✔ |
+| 2 | remove the floor, error `O(X² log²X)` | brick 22 ✔ |
+| 3 | totient/gcd diagonalisation into a sum of squares | brick 23 ✔ |
+| 4 | reindex the inner sums, `μ(e)` factors out | brick 24 ✔ |
+| 5 | support: squarefree `e ≤ X` only | brick 25 ✔ |
+| 6 | bound the one-dimensional logarithmic Möbius sum | bricks 26–28 ✔ |
+
+What remains is the **coprime-class refinement of step 6**: the diagonal sums are
+`∑_{j ≤ X/e, (e,j)=1} μ(j) log((X/e)/j)/j`, i.e. the same sum restricted to residues coprime to `e`.
+Brick 28 is the case `e = 1`.  The general case follows the same route once the identity
+`∑_{d ≤ y, (e,d)=1} μ(d) H_{⌊y/d⌋}/d = ∏_{p ∣ e}(…)`-style substitute is set up — the coprimality
+being carried by an extra Möbius factor over the divisors of `e`.
+
+## Landed brick 29: the totient weight of the diagonal (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TotientDiagonalWeight.lean`
+
+- `sum_totient_div_sq_le` — `∑_{e ≤ N} φ(e)/e² ≤ ∑_{e ≤ N} 1/e`, from `Nat.totient_le`.
+- `sum_totient_diagonal_le` — **the diagonal bound against a uniform inner bound**: if
+  `|T e| ≤ C` for all `e ≤ N`, then
+  ```
+  ∑_{e ≤ N} (φ(e)/e²) (T e)²  ≤  C² ∑_{e ≤ N} 1/e .
+  ```
+
+This is the second of the two inputs of Graham's evaluation, and it makes the shape of the
+remaining work explicit: with `T e := ∑_{j ≤ X/e, (e,j)=1} μ(j) log((X/e)/j)/j`, the diagonal is
+`≤ C² (1 + log X)` as soon as `|T e| ≤ C` uniformly.  For the mollified second moment an **upper**
+bound of this shape is all that is needed — no asymptotic constant.
+
+### The one remaining item
+
+A uniform `O(1)` bound for the coprime-class sum `T e`.  Brick 28 is the case `e = 1`.  The general
+case follows the same three-line route once the coprime analogue of the Möbius–harmonic inversion
+is in place:
+```
+∑_{d ≤ y, (d,e)=1} (μ(d)/d) · H_e(⌊y/d⌋)  =  1 ,      H_e(z) := ∑_{k ≤ z, (k,e)=1} 1/k ,
+```
+which is the same double-counting as `harmonicFloorMoebiusSum_eq_one` with the multiplicative
+splitting `(dk, e) = 1 ↔ (d,e) = 1 ∧ (k,e) = 1`.  That identity plus the same defect estimate closes
+`T e`, hence Graham, hence the coefficient estimate, hence the mollified second moment, hence
+`(22)`.
+
+## Landed brick 30: the coprime Möbius–harmonic inversion (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeMoebiusHarmonic.lean`
+
+- `coprimeHarmonic e z := ∑_{k ≤ z, (e,k)=1} 1/k`.
+- `sum_moebius_coprime_harmonic_eq_one` — **the coprime inversion of the polar unit**: for every
+  modulus `e` and every `N ≥ 1`,
+  ```
+  ∑_{d ≤ N, (e,d)=1} (μ(d)/d) · H_e(⌊N/d⌋)  =  1 .
+  ```
+  Proof: the tree's `Sieve.sum_divisors_swap` applied to
+  `G d k = [ (e,d)=1 ∧ (e,k)=1 ] · μ(d)/(dk)`, using multiplicativity of coprimality
+  `(e, d k) = 1 ↔ (e,d) = 1 ∧ (e,k) = 1` (`Nat.Coprime.mul_right` and
+  `Nat.Coprime.coprime_dvd_right`) to collapse the inner divisor sum to `[m = 1]` by
+  `sum_divisors_moebius_real`.
+
+This is the coprime-class analogue of `harmonicFloorMoebiusSum_eq_one`, i.e. exactly the identity
+brick 26 used for `e = 1`.  With it, the brick 26 → 27 → 28 chain runs verbatim for every modulus:
+the exact identity, the pointwise harmonic-floor defect, and the `|∑ μ(d)/d| ≤ 1` cancellation.
+
+### Remaining
+
+The coprime analogues of the two quantitative inputs of brick 28:
+`|∑_{d ≤ N, (e,d)=1} μ(d)/d| ≤ 1` and the coprime harmonic defect
+`|H_e(⌊N/d⌋) − (φ(e)/e) log(N/d) − γ_e| ≤ …`.  Both follow the same elementary route as their
+`e = 1` cases, which are already Lean-certified.
+
+## Landed brick 31: basic bounds for the coprime harmonic sum (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeHarmonicBounds.lean`
+
+- `coprimeHarmonic_nonneg`, `coprimeHarmonic_le` (dominated by the full harmonic sum),
+  `one_le_coprimeHarmonic` (`≥ 1` once the window is nonempty, since `k = 1` is coprime to every
+  modulus).
+
+### Course correction on the last input
+
+The plan recorded at brick 30 — prove `|∑_{d ≤ N, (e,d)=1} μ(d)/d| ≤ 1` uniformly, by copying the
+`e = 1` argument — does **not** work, and the reason is worth recording so it is not re-attempted.
+The `e = 1` proof (`abs_sum_moebius_div_le_one`) runs through
+`∑_{d ≤ N} μ(d)⌊N/d⌋ = 1` and bounds the fractional-part sum by `N`.  Its coprime analogue is
+`∑_{d ≤ N,(e,d)=1} μ(d) C_e(⌊N/d⌋) = 1` with `C_e(z) = #{k ≤ z : (e,k)=1}`, and
+`C_e(z) = (φ(e)/e) z + O(2^{ω(e)})`: the error carries `2^{ω(e)}`, which is **not** bounded
+uniformly in `e`.  So the fractional-part route gives no uniform constant.
+
+The correct target is weaker and does suffice.  In the final assembly the diagonal is
+`∑_e (φ(e)/e²) T_e², so by brick 29 a modulus-dependent bound `|T_e| ≤ A · e/φ(e)` is enough:
+```
+∑_{e ≤ X} (φ(e)/e²)·(A e/φ(e))²  =  A² ∑_{e ≤ X} 1/φ(e)  ≍  A² log X ,
+```
+which is exactly the `O(log X)` Graham needs.  So the remaining item is
+```
+|T_e(y)| ≤ A · e/φ(e)        uniformly in e and y,
+```
+with `T_e(y) = ∑_{j ≤ y, (e,j)=1} μ(j) log(y/j)/j` — the natural normalisation, since `H_e` itself
+carries the factor `φ(e)/e`.  Brick 30's coprime inversion plus the brick 27 defect estimate is the
+route; what it needs in addition is the coprime harmonic asymptotic
+`H_e(z) = (φ(e)/e)(log z + γ_e) + O(2^{ω(e)}/z)`, whose main term is what supplies the `φ(e)/e`.
+
+## Landed brick 32: the coprime harmonic decomposition (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeHarmonicDecomposition.lean`
+
+- `coprimeHarmonic_eq_sum_divisors` — **the exact identity**
+  ```
+  H_e(z)  =  ∑_{f ∣ e} (μ(f)/f) · H(⌊z/f⌋) .
+  ```
+  Proof: detect coprimality by `[(e,k)=1] = ∑_{f ∣ (e,k)} μ(f)` (`sum_divisors_moebius_real`),
+  swap with `Finset.sum_comm'` through `f ∣ (e,k) ↔ f ∣ e ∧ f ∣ k`, and reindex the multiples of
+  `f` with brick 24's `sum_filter_dvd_eq_sum_scaled`.
+
+This is the identity whose main term carries the factor `∑_{f ∣ e} μ(f)/f = φ(e)/e`, i.e. exactly
+the normalisation the course correction at brick 31 identified as the right target.  Feeding
+`H(m) = log m + γ + O(1/m)` (the tree's `abs_harmonic_sub_log_sub_eulerMascheroni_le`) into it gives
+the coprime harmonic asymptotic termwise, with a divisor-indexed error — `d(e)` terms, each
+`O(f/z)`, which is where the `2^{ω(e)}` of the course-correction note comes from and why the
+`e/φ(e)` normalisation is the right one to carry.
+
+### Remaining
+
+Assemble: `H_e(⌊y/d⌋) = (φ(e)/e)(log(y/d) + γ) − ∑_{f ∣ e}(μ(f)/f)log f + (error)`, then run the
+brick 26 → 28 argument at the modulus `e` to get `|T_e(y)| ≤ A·e/φ(e)`, then brick 29 turns that
+into the `O(log X)` diagonal bound, closing Graham and with it the coefficient estimate, the
+mollified second moment, and `(22)`.
+
+## Landed brick 33: the totient normalisation identity (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TotientMoebiusNormalisation.lean`
+
+- `totient_eq_sum_moebius_mul` — `φ(n) = ∑_{a ∣ n} μ(a)(n/a)`, by Möbius inversion of
+  `∑_{d ∣ n} φ(d) = n` (mathlib's `Nat.sum_totient` through
+  `ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq` and `Nat.sum_divisorsAntidiagonal`).
+- `sum_moebius_div_divisors_eq_totient_div` — **the normalisation identity**
+  `∑_{a ∣ n} μ(a)/a = φ(n)/n`.
+
+Combined with brick 32 this makes the main term of the coprime harmonic decomposition explicit:
+```
+H_e(z) = ∑_{f ∣ e} (μ(f)/f) H(⌊z/f⌋)
+       = (φ(e)/e)(log z + γ) − ∑_{f ∣ e} (μ(f)/f) log f + (divisor-indexed error),
+```
+the `φ(e)/e` coming from `∑_{f ∣ e} μ(f)/f` exactly.
+
+### Remaining
+
+Estimate the two leftovers of that expansion — the `log f` term and the divisor-indexed error, each
+a sum over `d(e)` divisors — and feed the result through the brick 26 → 28 argument at modulus `e`
+to obtain `|T_e(y)| ≤ A·e/φ(e)`.  Brick 29 then converts that into the `O(log X)` diagonal bound,
+closing Graham, the coefficient estimate, the mollified second moment, and `(22)`.
+
+## Landed brick 34: centering the coprime harmonic decomposition (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeHarmonicCentering.lean`
+
+- `coprimeHarmonic_sub_totient_mul` — for every constant `C` and every `e > 0`,
+  ```
+  H_e(z) − (φ(e)/e)·C  =  ∑_{f ∣ e} (μ(f)/f) · ( H(⌊z/f⌋) − C ) .
+  ```
+  Exact, from bricks 32 (decomposition) and 33 (normalisation).
+
+Taking `C = log z + γ` puts the coprime harmonic asymptotic in the exact form
+```
+H_e(z) − (φ(e)/e)(log z + γ)  =  ∑_{f ∣ e} (μ(f)/f)·( H(⌊z/f⌋) − log z − γ ) ,
+```
+with each summand `= (H(m) − log m − γ) + (log m − log z)`, `m = ⌊z/f⌋` — the first piece bounded by
+`1/m` (mathlib, already used in brick 27) and the second essentially `−log f`.  So the two leftovers
+named at brick 33 are now literally the two halves of one divisor-indexed sum, with a free choice of
+centering constant.
+
+### Remaining
+
+Bound that divisor-indexed sum by `A·e/φ(e)`, then run brick 26 → 28 at modulus `e` and brick 29.
+
+## Landed brick 35: the harmonic bridge and the centered divisor defect (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeHarmonicDefect.lean`
+
+- `harmonic_eq_sum_Icc` — `(harmonic n : ℝ) = ∑_{j ≤ n} 1/j`, by induction with `harmonic_succ`
+  and `Finset.sum_Icc_succ_top`.  This bridges the two notations used by the two halves of the
+  programme: the coprime decomposition is written with interval sums, the tree's harmonic
+  comparison with `harmonic`.
+- `abs_coprime_centered_term_le` — **each divisor contributes at most `4/z`**:
+  ```
+  | (μ(f)/f)·( H(⌊z/f⌋) − (log z + γ) + log f ) | ≤ 4/z      for 1 ≤ f ≤ z,
+  ```
+  by splitting `log(z/f) = log z − log f`, applying brick 27's defect bound and
+  `2/⌊z/f⌋ ≤ 4f/z`.
+- `abs_coprime_centered_sum_le` — summing, `≤ d(e)·(4/z)` for `0 < e ≤ z`.
+
+Combined with brick 34 this is the coprime harmonic asymptotic in explicit form:
+```
+| H_e(z) − (φ(e)/e)(log z + γ) + ∑_{f ∣ e} (μ(f)/f) log f |  ≤  4 d(e)/z .
+```
+The `2^{ω(e)}`-type error of the course-correction note is now concrete: it is `d(e)`, and it is
+divided by `z`, so it is harmless once `z` exceeds `e` by a polynomial factor.
+
+### Remaining
+
+The `∑_{f ∣ e}(μ(f)/f) log f` term (the modulus-dependent constant `γ_e`), then the brick 26 → 28
+argument at modulus `e`, then brick 29.
+
+## Landed brick 36: the modulus constant of the coprime asymptotic (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeModulusConstant.lean`
+
+- `divisors_subset_Icc`, `sum_inv_divisors_le` — `∑_{f ∣ e} 1/f ≤ ∑_{j ≤ e} 1/j`.
+- `abs_sum_moebius_log_div_divisors_le` — **the modulus constant is bounded**:
+  ```
+  | γ_e |  =  | ∑_{f ∣ e} (μ(f)/f) log f |  ≤  log e · ∑_{f ∣ e} 1/f .
+  ```
+
+With bricks 34 and 35 the coprime harmonic asymptotic is now fully explicit and fully bounded:
+```
+H_e(z) = (φ(e)/e)(log z + γ) − γ_e + θ,     |θ| ≤ 4 d(e)/z,   |γ_e| ≤ log e · ∑_{f ∣ e} 1/f .
+```
+
+### Remaining
+
+Run the brick 26 → 28 argument at modulus `e`, using brick 30's coprime inversion in place of
+`harmonicFloorMoebiusSum_eq_one` and the display above in place of brick 27, to obtain
+`|T_e(y)| ≤ A · e/φ(e)`; then brick 29 turns that into the `O(log X)` diagonal bound, closing
+Graham → coefficient estimate → mollified second moment → `(22)`.
+
+## Landed brick 37: the exact identity at a general modulus (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeLogMoebiusIdentity.lean`
+
+- `sum_coprime_moebius_log_eq_one_sub_error` — for every modulus `e`, every `N ≥ 1` and every
+  centering weight `c`,
+  ```
+  ∑_{d ≤ N, (e,d)=1} (μ(d)/d)·c·log(N/d)
+      = 1 − ∑_{d ≤ N, (e,d)=1} (μ(d)/d)·( H_e(⌊N/d⌋) − c·log(N/d) ) .
+  ```
+  This is the modulus-`e` analogue of brick 26, obtained from brick 30's coprime inversion by the
+  same one-line split.  Taking `c = φ(e)/e` makes the defect exactly the quantity bounded by
+  bricks 34–36.
+
+The brick 26 → 28 chain is therefore reproduced at every modulus except for its final quantitative
+step: the identity is brick 37, the pointwise defect is bricks 34–36, and what is left is the
+modulus-`e` analogue of `abs_sum_moebius_div_le_one`, weighted appropriately — recall from the
+brick 31 course correction that the target is `A·e/φ(e)`, not an absolute constant.
+
+## Landed brick 38: the coprime counting identity (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeCounting.lean`
+
+- `coprimeCount_eq_sum_divisors` — **the exact identity**
+  ```
+  #{ k ≤ z : (e,k) = 1 }  =  ∑_{f ∣ e} μ(f) ⌊z/f⌋ ,
+  ```
+  by the same detector-and-swap as brick 32, with the multiple count supplied by brick 21's
+  `card_filter_dvd_Icc`.
+
+This is the counting analogue of brick 32 and the source of the density `φ(e)/e`: replacing
+`⌊z/f⌋` by `z/f` gives `(φ(e)/e)z` through brick 33's normalisation, with an error of at most `d(e)`
+fractional parts.
+
+### A second course correction, recorded
+
+The obvious route to the remaining bound — mimic `abs_sum_moebius_div_le_one` at modulus `e` using
+this identity — yields
+```
+| ∑_{d ≤ N, (e,d)=1} μ(d)/d |  ≤  (e/φ(e)) · ( 1/N + d(e) ) ,
+```
+because the fractional-part error of `coprimeCount_eq_sum_divisors` is `d(e)`, not `1`.  Feeding
+that into brick 29 gives `∑_e d(e)²/φ(e) ≍ (log X)^5`, not `log X` — so this route, like the one
+retired at brick 31, is **too lossy**.  Both failures have the same source: any argument that
+bounds the `d(e)` divisor terms individually loses a power of `log` per divisor.  The remaining
+bound therefore requires cancellation *across* the divisors of `e`, which is exactly the
+Barban–Vehov content and the last genuinely analytic step of the programme.
+
+## Landed brick 39: peeling one prime off a coprimality class (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimePrimePeeling.lean`
+
+- `sum_filter_coprime_split` — for every prime `p`, every modulus `e` and every weight `g`,
+  ```
+  ∑_{j ≤ y, (e,j)=1} g(j)
+      = ∑_{j ≤ y, (pe,j)=1} g(j) + ∑_{j ≤ y, (e,j)=1, p ∣ j} g(j) ,
+  ```
+  from `Finset.sum_filter_add_sum_filter_not` on the predicate `(p,j)=1`, together with
+  `Nat.coprime_mul_iff_left` and `Nat.Prime.coprime_iff_not_dvd`.
+
+**Why this is the right mechanism.**  Both retired routes (bricks 31 and 38) treated the `d(e)`
+divisors of the modulus one at a time and lost a `log` on each.  Prime peeling instead removes one
+prime at a time and, on the Möbius weight, the removed piece re-enters with the *opposite sign*:
+for `p ∣ j`, `j = p j'`, one has `μ(j) = −μ(j')` whenever `p ∤ j'` and `μ(j) = 0` otherwise, so
+```
+S_{pe}(y) = S_e(y) + ∑_{j' ≤ y/p, (pe,j')=1} μ(j') g(p j') ,
+```
+a genuine recursion in which the corrections telescope across the primes of `e` rather than being
+summed absolutely.  That is the cancellation the Barban–Vehov bound needs.
+
+### Remaining
+
+The Möbius specialisation of the split (the sign flip `μ(p j') = −μ(j')` plus the reindexing
+`j = p j'`), then the induction over the prime factors of `e` to reach `|T_e| ≤ A·e/φ(e)`, then
+brick 29.
+
+## Landed brick 40: reindexing the peeled part (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimePeeledReindex.lean`
+
+- `sum_filter_coprime_dvd_reindex` — for a prime `p` with `p ∤ e`,
+  ```
+  ∑_{j ≤ y, (e,j)=1, p ∣ j} F(j)  =  ∑_{j ≤ y/p, (e,j)=1} F(p j) ,
+  ```
+  by `Finset.sum_nbij'` with the mutually inverse maps `j ↦ j/p` and `j ↦ p j`.
+
+Together with brick 39 the prime-peeling recursion is now exact at the level of arbitrary weights:
+```
+∑_{j ≤ y, (e,j)=1} F(j)  =  ∑_{j ≤ y, (pe,j)=1} F(j)  +  ∑_{j ≤ y/p, (e,j)=1} F(p j) .
+```
+
+### Remaining
+
+Specialise `F(j) = μ(j) g(j)`: the second sum then carries `μ(pj) = −μ(j)` on `p ∤ j` and vanishes
+on `p ∣ j`, turning the recursion into the sign-alternating form whose corrections telescope.  Then
+induct over the prime factors of `e` for `|T_e| ≤ A·e/φ(e)`, and apply brick 29.
+
+## Landed brick 41: the Möbius prime-peeling recursion (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusPrimePeeling.lean`
+
+- `sum_moebius_peel` — for a prime `p` with `p ∤ e`, and every weight `g`,
+  ```
+  ∑_{j ≤ y, (e,j)=1} μ(j) g(j)
+      =  ∑_{j ≤ y, (pe,j)=1} μ(j) g(j)  −  ∑_{j ≤ y/p, (pe,j)=1} μ(j) g(p j) .
+  ```
+  Proof: peel with bricks 39–40 at height `y`, split the peeled part again at height `y/p`, kill
+  the `p ∣ j` piece by `μ(pj) = 0` (brick 24), and flip the sign of the rest by
+  `μ(pj) = μ(p)μ(j) = −μ(j)` on `(p,j)=1` (brick 24 plus `moebius_apply_prime`).
+
+This is the sign-alternating recursion: the correction enters with a minus sign and at height
+`y/p`, so peeling all primes of `e` produces a telescoping alternating sum rather than `d(e)`
+separately-estimated terms.  Axiom-clean, together with the rest of the coprime stack.
+
+### Remaining
+
+Induct on the prime factorisation of `e` with this recursion to obtain `|T_e(y)| ≤ A·e/φ(e)`
+(the base case `e = 1` is brick 28), then apply brick 29 for the `O(log X)` diagonal, closing
+Graham → the coefficient estimate → the mollified second moment → `(22)`.
+
+## Landed bricks 42–43: the uniform coprime bound `|T_e| ≤ A·e/φ(e)` (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeLogMoebiusRecursion.lean`
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeLogMoebiusUniformBound.lean`
+
+- `coprimeLogMoebius e Y = ∑_{j ≤ ⌊Y⌋, (e,j)=1} μ(j) log(Y/j)/j` — the target functional, with a
+  *real* cutoff so that the recursion can divide it.
+- `coprimeLogMoebius_recursion` — feeding brick 41 the weight `g(j) = log(Y/j)/j` and using
+  `log(Y/(pj))/(pj) = (1/p)·log((Y/p)/j)/j` together with `⌊Y⌋/p = ⌊Y/p⌋`
+  (`Nat.floor_div_natCast`) gives the **contraction**
+  ```
+  T_e(Y) = T_{pe}(Y) − (1/p)·T_{pe}(Y/p) ,   i.e.   T_{pe}(Y) = T_e(Y) + (1/p)·T_{pe}(Y/p).
+  ```
+  The correction is not merely signed: it sits at the *reduced cutoff* `Y/p`.
+- `abs_coprimeLogMoebius_one_le` — the modulus-one bound at a real cutoff: splitting
+  `log(Y/d) = log(N/d) + log(Y/N)` with `N = ⌊Y⌋` and using `|∑_{d≤N}μ(d)/d| ≤ 1` costs one unit
+  over brick 28, so `|T_1(Y)| ≤ 6 + |γ| =: A`.
+- `abs_coprimeLogMoebius_prime_step` — unfolding the contraction in the cutoff (induction on
+  `⌊Y⌋`, using `⌊Y/p⌋ ≤ ⌊Y⌋/2`) turns a uniform bound `C` at modulus `e` into the uniform bound
+  `C·(1−1/p)^{-1}` at modulus `pe`.  This is the geometric series `∑_k p^{-k}` in disguise.
+- `abs_coprimeLogMoebius_le` — inducting on the prime factorisation of a squarefree modulus,
+  ```
+  |T_e(Y)| ≤ (6 + |γ|) · e/φ(e)     for every squarefree e and every Y,
+  ```
+  since `∏_{p ∣ e}(1−1/p)^{-1} = e/φ(e)`.
+
+This is exactly the target set by the course correction at brick 31, and it is reached without ever
+estimating the `d(e)` divisor terms of the modulus one at a time — the failure mode that retired the
+routes at bricks 31 and 38.
+
+## Landed bricks 44–45: the reciprocal totient sum is logarithmic (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeTotientDivisorIdentity.lean`
+`formal/GaloisForLFunctions/RHTower/Sieve/ReciprocalTotientLogBound.lean`
+
+The bound `|T_e| ≤ A e/φ(e)` turns the Selberg diagonal `∑_e (φ(e)/e²)·μ(e)²T_e²` into
+`A²∑_{e ≤ X} μ²(e)/φ(e)`, so Graham's `O(log X)` needs the classical estimate
+`∑_{e ≤ N} 1/φ(e) ≪ log N`.  It is proved here from one multiplicative identity, applied twice:
+
+- `sum_divisors_sqfreeTotientInv` — `∑_{d ∣ n} μ²(d)/φ(d) = n/φ(n)`, by comparing the two
+  multiplicative functions `μ²/φ` (convolved with `ζ`) and `n ↦ n/φ(n)` on prime powers, where both
+  equal `p/(p−1)` because only `d = 1` and `d = p` survive the squarefree support.
+- `sum_sqfreeTotientInv_div_le` — `∑_{d ≤ N} μ²(d)/(dφ(d)) ≤ 4`.  Writing
+  `1/(dφ(d)) = (1/d²)(d/φ(d))`, the identity and the divisor swap turn the sum into
+  `∑_{k ≤ N}(μ²(k)/(kφ(k)))·k^{-1}·∑_{j ≤ N/k} j^{-2}`, and both reciprocal-square sums are `≤ 2`.
+- `sum_inv_totient_le` — `∑_{e ≤ N} 1/φ(e) ≤ 4(1 + log N)`, by the same swap with the harmonic sum
+  in the inner slot and the previous bound in the outer one.
+
+No Mertens estimate, no Euler product over primes, and no lower bound for `φ` is needed: two
+applications of one divisor identity suffice.
+
+### Remaining
+
+Assemble: the inner sums of the Selberg diagonalisation are `(μ(e)/e)·T_e(X/e)`, hence bounded by
+`A/φ(e)` and supported on `e ≤ X`; brick 23 plus the bound above then closes Graham's evaluation,
+and with bricks 21–22 the mean square `∑_{k ≤ N} b_X(k)² ≪ N log X + X² log²X`.
+
+## Landed bricks 46–47: **Graham's theorem is closed** (2026-08-18)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SelbergMoebiusLogDiagonal.lean`
+`formal/GaloisForLFunctions/RHTower/Sieve/GrahamMeanSquare.lean`
+
+- `barbanVehov_inner_eq` — the inner sums of the Selberg diagonalisation are exactly the coprime
+  logarithmic Möbius sums at the divided cutoff:
+  ```
+  ∑_{m ≤ N, e ∣ m} μ(m) log(X/m)/m  =  (μ(e)/e) · T_e(X/e)      (X ≤ N).
+  ```
+  Reindex `m = e j` with brick 24, drop the terms `e j > X` (the truncation kills them), and use
+  `X/(ej) = (X/e)/j` with `⌊X/e⌋ = X/e`.
+- `abs_barbanVehov_inner_le` — hence `|inner_e| ≤ A/φ(e)`, by `|μ(e)| ≤ 1` and bricks 42–43.
+- `barbanVehov_inner_eq_zero` — the inner sums vanish for `e > X`, because the cutoff `X/e` drops
+  below `1`.
+- `barbanVehov_totient_diagonal_le` — the totient-weighted diagonal:
+  ```
+  ∑_{e ≤ N} φ(e)·(inner_e)²  ≤  A² ∑_{e ≤ X} 1/φ(e)  ≤  4A²(1 + log X).
+  ```
+- `sum_sq_barbanVehovCoeff_le` — **Graham's mean square, upper half**:
+  ```
+  ∑_{k ≤ N} ( ∑_{m ∣ k, m ≤ X} μ(m) log(X/m) )²  ≤  4A²·N·(1 + log X)  +  X² log²X
+  ```
+  for every `1 ≤ X ≤ N`, with `A = 6 + |γ|`.  Assembly: brick 21 expands the square into the lcm
+  quadratic form, brick 22 removes the floor at the cost of the square of the `ℓ¹` mass
+  (`≤ X log X`), brick 23 diagonalises, and the display above bounds the diagonal.
+
+Axiom-clean.  **This closes the last named analytic input of the Graham ledger**; the whole ledger
+(steps 1–6 plus the coprime-class refinement) is now Lean-certified with no hypothesis beyond
+`1 ≤ X ≤ N`.
+
+### Remaining
+
+Graham → the mollified coefficient estimate → the mollified second moment `∫_T^{2T}|ζM|² ≪ T` →
+`GridCancellationSurplus` → `(22)` → `(23)`.
+
+## Landed brick 48, and a course correction that removes the Conrey computation (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HarmonicWeightedGrahamMeanSquare.lean`
+
+- `sum_weighted_sq_divisorSum_eq_lcm_quadratic` — brick 21 with an arbitrary weight attached:
+  `∑_{k ≤ N} w(k)(∑_{m ∣ k}a_m)² = ∑_{m₁,m₂ ≤ N}a_{m₁}a_{m₂}∑_{k ≤ N, [m₁,m₂] ∣ k}w(k)`.
+- `sum_dvd_inv_le`, `sum_dvd_inv_ge` — the harmonic mass of the multiples of `d`:
+  `(log N − log d)/d ≤ ∑_{k ≤ N, d ∣ k}1/k ≤ (1 + log N)/d`, from `log(⌊N/d⌋+1) ≤ H_{⌊N/d⌋} ≤
+  1 + log⌊N/d⌋` and `⌊N/d⌋ + 1 > N/d`.
+- `sum_harmonic_sq_divisorSum_le` — **the harmonic-weighted mean square**: for coefficients
+  supported on `m ≤ X`,
+  ```
+  ∑_{k ≤ N} (∑_{m ∣ k}a_m)²/k  ≤  (1 + log N)·∑_{m₁,m₂}a_{m₁}a_{m₂}/[m₁,m₂]
+                                   + (1 + 2log X)·(∑_m |a_m|)² ,
+  ```
+  because the defect `(1+log N)/d − ∑_{k≤N,d∣k}1/k` lies in `[0, (1+log d)/d]` and `d = [m₁,m₂] ≤ X²`
+  on the support.  The defect therefore costs a quantity that does **not** grow with the outer
+  range `N`.
+- `sum_harmonic_sq_barbanVehovCoeff_le` — with brick 46,
+  ```
+  ∑_{k ≤ N} b_X(k)²/k  ≤  4A²(1 + log N)(1 + log X)  +  (1 + 2log X)(X log X)² .
+  ```
+
+### The course correction
+
+The programme recorded at bricks 13–20 assumed the mollifier length must be `X = T^θ` and hence
+that the full Conrey computation (`∫_T^{2T}|ζM|² ≪ T`) was needed.  It is not, for this target.
+
+The goal `(22)` is `SuperlinearSamples`, i.e. `∀ c, ∃ T, c·T < N₀(T)` — the mollifier may therefore
+be chosen **depending on `c`**, and in particular may have *fixed length* `X = X(c)`.  Running the
+mean-square grid device with a fixed-length mollifier:
+
+* `L ≈ T` from the first moment (`c₁ = 1` dominates),
+* `Q ≤ H·∫_T^{2T}|ζM|²  ≈ H·T·λ`  with `λ = ∑_k |c_k|²`,
+* the surplus condition `c·T·Q < (L − Bsum)²` needs `H < 1/(4cλ)`,
+* the cell must contain many oscillations, i.e. `H·log T ≫ 1`, i.e. `log T ≫ 4cλ`.
+
+With the fixed-length linear mollifier `a_m = μ(m)log(X/m)/log X` the display above gives
+```
+λ  =  ∑_k |c_k|²  ≤  4A²(1 + log K)(1 + log X)/log²X + C(X)  ≈  4A²·log K/log X + C(X),
+```
+and `log K ≍ log T`, so `4cλ ≍ c·log T/log X`: the oscillation condition becomes
+`log X ≫ 4A²c`, i.e. **a fixed `X = X(c)` suffices**.  The `X`-dependent additive constant `C(X)`
+is harmless because it does not grow with `T`.
+
+So the last genuinely open input is *not* the Conrey/Balasubramanian–Conrey–Heath-Brown asymptotic;
+it is only the (already-owned) Graham diagonal bound plus the harmonic-weighted defect of brick 48.
+What remains is the analytic assembly: the mollified mean square through the AFE and the Dirichlet
+mean-value theorem, the first-moment lower bound, and the cell cancellation.
+
+## Route audit after Graham: where the two remaining routes actually stand (2026-08-19)
+
+With Graham's theorem closed (bricks 46–48) the coefficient side of the programme is finished.  A
+careful audit of what is left shows that the two available routes to `(23)` are separated by a
+genuine analytic barrier, and it is worth recording exactly where it sits.
+
+### Route 1 — `(22)` through the grid device
+
+The device needs, for cells `I_j` of length `H`,
+```
+∑_j |∫_{I_j} Z·W|  <  ∫_T^{2T}|Z|·W  −  (superlinear margin) ,     W = |M|² + ε > 0 .
+```
+Using the Hardy-`Z` smooth AFE and the tree's per-term cell bounds (bricks 6–10) the left side is
+bounded **term by term** by
+```
+∑_{n ≤ x} n^{-1/2}·min(H, 2/δ_n) ,      δ_n = |θ'(τ) − log n| ,
+```
+and this is `≍ √x ≍ T^{1/4}` for the balanced AFE, whatever `H` is: the terms with `n` near the
+conductor `x = √(t/2π)` have `δ_n → 0` and are only saved by the trivial bound.  Summed over the
+`T/H` cells that gives `T^{5/4}/H`, so the device closes only for `H ≫ T^{1/4}`, i.e. only
+`N₀(T) ≫ T^{3/4}` — sublinear, hence useless for `(22)`.
+
+**This is a barrier of the estimation method, not of the device.**  The device is sharp; what the
+term-by-term bound throws away is the cancellation *among* the AFE terms near the conductor, which
+is exactly the content of Selberg's theorem.  Any continuation of Route 1 must supply a bound for
+`∑_j|∫_{I_j}ZW|` that is not a triangle inequality over `n` — i.e. Selberg's mollified-moment
+machinery.  The fixed-length-mollifier simplification recorded at brick 48 remains valid and
+removes the Conrey computation, but it does not remove this barrier.
+
+### Route 2 — `(23)` through progression-freeness
+
+`RHTower/SamplingProgressionCriterion.lean` already reduces `(23)`, unconditionally, to
+```
+hnoAP : ∀ b k, 0 < k → ∃ n : ℕ, b + n·k ∉ xiRealDivisor,
+```
+i.e. the real zeros of `Ξ` contain no infinite one-sided arithmetic progression (Putnam 1954).
+This is strictly weaker than `(22)` and is the shorter route.
+
+**What the corpus already gives.**  `RHTower/PrimeArchThetaFirstMoment.lean` owns the exact
+positive-source cosine representation
+```
+Xi t = 2 ∫_{x > 0} thetaCuspFullSource x · cos(t x) dx ,      thetaCuspFullSource x > 0 (x > 0),
+```
+with the source Schwartz (`thetaCuspSchwartzReal`) and super-exponentially decaying.  Writing `Φ`
+for the even extension, `Ξ = Φ̂`, and Poisson summation over an arithmetic progression gives, for a
+**two-sided** progression `a + hℤ` of zeros,
+```
+0 = ∑_{n ∈ ℤ} Ξ(a+nh) = (2π/h)·∑_{k ∈ ℤ} Φ(2πk/h)·e^{2πika/h} .
+```
+Since `Φ > 0` and `Φ` decays like `exp(−π e^{2|u|})`, the `k = 0` term dominates as soon as
+`2π/h` is not too small, and the right-hand side is nonzero — a contradiction.  So **two-sided
+progressions with step below an explicit threshold are impossible**, unconditionally and by an
+elementary argument.
+
+**Why this does not yet close `hnoAP`, stated precisely.**
+
+1. *One-sidedness.*  For a one-sided progression the Poisson identity gives only that the
+   periodization `P(v) = ∑_k Φ(v + 2πk/h)e^{ia(v+2πk/h)}` has vanishing Fourier coefficients in
+   degrees `≤ 0`, i.e. `P ∈ H¹` with spectrum in `n ≥ 1`.  Its value `P(0)` is then
+   `(h/2π)∑_{n ≥ 1}Ξ(a−nh)` — the *backward* values, which the hypothesis does not control.  The
+   dominance argument bounds `|P(0)|` from below but the matching upper bound
+   `|P(0)| ≤ ∑_{n≥1}|c_n|` is lossy by exactly the factor that positivity was supposed to supply.
+2. *Large step.*  For `h` large the periodization sums many comparable values of `Φ` and no single
+   term dominates; the twisted periodization `∑_k Φ(v+kP₀)ω^k` (with `ω = e^{2πia/h}`) can cancel.
+3. *Jensen does not close the gap either.*  For the one-sided case, Jensen's inequality applied to
+   `P/z^m ∈ H¹` gives `|Ξ(a−mh)| ≤ (2π/h)exp((1/P₀)∫_0^{P₀}log Q)` with `Q` the periodization of
+   `Φ`; the right side is astronomically small but **fixed**, while `Ξ(t) ≍ t^{7/4}e^{−πt/4}|ζ(½+it)|`
+   decays super-exponentially, so a progression starting high enough is not excluded.  The
+   normalisation is wrong: the natural object for a height-uniform statement is `ζ(½+it)`, which
+   does not decay, and the positivity structure lives with `Ξ`, which does.
+
+So the honest open core of Route 2 is: **a height-uniform version of the positivity argument**, or
+the explicit-formula route (van Frankenhuijsen) using the tree's
+`XiGuinandWeilExplicitFormula`, whose own open core is the treatment of the off-line zeros without
+invoking Weil positivity.
+
+### What this session added
+
+Graham's theorem — the last *named* classical input of Route 1 — is Lean-proved unconditionally,
+together with the reciprocal-totient estimate `∑_{e ≤ N}1/φ(e) ≤ 4(1+log N)` and the multiplicative
+identity `∑_{d ∣ n}μ²(d)/φ(d) = n/φ(n)` that carries it.  These are reusable well beyond this card.
+
+## Landed brick 49: the Poisson trace of `Xi` along an arithmetic progression (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/XiPoissonProgression.lean`
+
+The first Lean asset on Route 2.  `Xi = 𝓕 S` with `S = xiThetaSchwartzSource` Schwartz and
+`S(0) = 2π·thetaCuspFullSource(0) > 0`, so Poisson summation converts the values of `Xi` along a
+progression into the periodisation of the source.
+
+- `isBigO_schwartz_affine` — Schwartz decay survives an affine reparametrisation:
+  `y ↦ F(d + cy)` is `O(|y|^{-2})` on the cocompact filter.  Reusable.
+- `xiProgressionKernel a h u = (1/h)·e^{-2πiua/h}·S(u/h)` and
+  `fourier_xiProgressionKernel` — `𝓕(xiProgressionKernel a h) y = Xi(a + h y)`, by the linear
+  change of variables `u = h x` in the Fourier integral.
+- `tsum_xiProgressionKernel_eq` — **the Poisson trace**:
+  ```
+  ∑_{n ∈ ℤ} (1/h)·e^{-2πina/h}·S(n/h)  =  ∑_{n ∈ ℤ} Xi(a + h n) .
+  ```
+- `thetaCuspFullSource_pos_zero` — the source is strictly positive at the origin (the `n = 1` term
+  already is, since `2π > 3`).  This is the positivity input, and the only one.
+- `summable_one_add_sq_inv_int`, `summable_xiProgressionKernel` — the summability the split needs.
+- `exists_ne_zero_along_progression` — **the theorem**: there is `h₀ > 0` such that for every step
+  `0 < h ≤ h₀` and every phase `a` there is `n ∈ ℤ` with `Xi(a + h n) ≠ 0`.  Proof: if all vanished
+  the trace would be `0`, so the `n = 0` term `S(0)/h` would be dominated by the rest, which is
+  `≤ 2C·h·∑_{n}(1+n²)^{-1}` by the Schwartz bound `‖x‖²‖S(x)‖ ≤ C`; that forces
+  `‖S(0)‖ ≤ 2CA h²`, false for small `h`.
+
+Axiom-clean.  Note what the statement does **not** say: it is uniform in the phase `a` (so it is
+height-uniform, unlike the Jensen route recorded in the audit) but it needs the step to be small,
+and it rules out two-sided progressions only.  The card's `hnoAP` needs one-sided progressions at
+every step; the remaining gap is exactly the one the audit isolated.
+
+## Landed brick 50, and the exact literature position of Route 2 (2026-08-19)
+
+### Brick 50: the criterion in length-bound form
+
+`formal/GaloisForLFunctions/RHTower/SamplingBilateralProgression.lean`
+
+- `exists_bilateral_threshold_of_finite_shiftFailure` — on a **symmetric** sample set a finite
+  shift failure at step `h` bounds the *backward* failure too, because the backward failure is the
+  reflection of the forward one (`backwardFailure_subset_neg_shiftFailure`, already owned).  Hence
+  there is one threshold `T` above which the set is closed under both `+h` and `−h`.
+- `exists_bilateral_block_of_finite_shiftFailure` — consequently the set carries a two-sided block
+  `{b + n h : |n| ≤ M}` of every prescribed length `M`.
+- `infinite_shiftFailure_of_no_long_block`, `xiSamplingIdealizer_collapse_of_no_long_block` —
+  `(23)` follows from a **length bound**: for each step `h` some length `M(h)` such that no block of
+  that length lies in the real `Xi` divisor.  This is the shape in which the literature states the
+  corresponding zero-free results.
+
+### The literature position, established (2026-08-19)
+
+- **Putnam (1954)** proves: the positive zeros of `ζ(½+it)` contain no infinite progression
+  `{d, 2d, 3d, …}` — the *homogeneous* case.  His proof (recovered from Srichan, *Bull. Aust. Math.
+  Soc.* 98 (2018) 376–382, which axiomatises it) is: write
+  `ζ(s) = s/(s−1) − s∫_0^∞ B(x)e^{−sx}dx`, `B(x) = {e^x}`, valid for `0 < Re s < 1`; at a zero
+  `z`, `A(z) := 1/(z−1) = ∫_0^∞B(x)e^{−zx}dx`; take real parts, extend `B` to the negative axis by
+  `B(−x) = B(x)e^{−x}`, and periodise `B(x)e^{−x/2}` with period `2π/d`.  The Fourier coefficients
+  of the periodisation are then `O(n^{−2})`, hence absolutely summable, so the periodisation is
+  continuous — contradicting the downward jumps of `{e^x}`, which cannot cancel because they all
+  have the same sign.
+- **Li–Radziwiłł** prove the *inhomogeneous* case: at least one third of the points of any vertical
+  progression `½ + i(a+nd)` are **not** zeros, by studying moments of `ζ`.  This is exactly the
+  statement `hnoAP` needs, and it is the literature target for Route 2.
+- Srichan records explicitly that Putnam's method "does not seem to extend to more general
+  arithmetic progressions asymmetrically distributed about the real axis".
+
+### What the audit adds to Putnam's method (recorded for the build)
+
+Working with the *complex* equation instead of its real part removes Putnam's sign condition and
+his restriction to the homogeneous case, **for two-sided progressions**.  Put
+
+```
+C(x) = B(x)e^{−x/2−iax}   (x ≥ 0),        C(x) = e^{x/2−iax}   (x < 0),
+```
+
+and let `D` be the `2π/d`-periodisation of `C`.  Then for **every** `n ∈ ℤ`,
+
+```
+∫_0^∞B(x)e^{−z_n x}dx = A(z_n) − ζ(z_n)/z_n ,     ∫_{−∞}^0 e^{x/2−iax}e^{−idnx}dx = 1/(½ − i(a+dn)) ,
+A(z_n) + 1/(½ − i(a+dn)) = 0 ,                    z_n = ½ + i(a+dn),
+```
+
+so the Fourier coefficients of `D` are exactly
+
+```
+c_n(D) = −(d/2π) · ζ(½ + i(a+dn)) / (½ + i(a+dn)) .
+```
+
+Hence: **the progression `½ + i(a+dℤ)` consists entirely of zeros iff `D ≡ 0`.**  And `D` cannot
+vanish identically, for every `d > 0` and every `a`: `C` jumps by `−m^{−½−ia}` at `x = log m`, and
+in the periodisation the jumps at a point `x₀` come from the class
+`{m : log m ≡ x₀ (mod 2π/d)}`, i.e. `{m : m/m₀ = e^{2πk/d}}`.  If `e^{2π/d}` is irrational every
+class is a singleton; if `e^{2π/d} = u/v` in lowest terms, then for every prime `p ∉ {u,v}` the
+class of `p` is `{p}` alone, because `v^k ∣ p` and `u^k ∣ p` force `k = 0`.  A singleton class
+carries the nonzero jump `−p^{−½−ia}`, so `D` is discontinuous, so `D ≢ 0`.
+
+This is a clean, unconditional, phase-uniform theorem — strictly stronger than brick 49 (which
+needed a small step) and strictly stronger than Putnam's (which needed `a ∈ dℤ`), but still
+**two-sided**.  The one-sided case is genuinely different: the same computation gives only
+`c_n(D) = 0` for `n ≥ 1`, i.e. `D̄ ∈ H²` of the circle, and an `H²` function *may* have a boundary
+jump (`Im log(1−e^{iφ})` does), so no contradiction follows.  That is precisely the gap
+Li–Radziwiłł's moment method fills.
+
+### Next targets on Route 2
+
+1. Formalise the two-sided theorem above (`ζ`'s Laplace representation with `{e^x}`, the
+   periodisation, its Fourier coefficients, the singleton-class jump).  Unconditional, complete
+   proof, no open core.
+2. Then the inhomogeneous one-sided case via the discrete second moment of `ζ` along a vertical
+   progression — the corpus already owns the Dirichlet mean-value machinery
+   (`Sieve/DirichletMVT.lean`, `Sieve/DirichletMVTWindow.lean`) and the smooth AFE, which is what a
+   discrete moment computation needs.
+
+## Landed brick 51: the Laplace representation of zeta through the fractional part (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/ZetaFractLaplace.lean`
+
+The foundation of the Putnam route, and the only analytic input it needs:
+
+- `image_Ioi_zero_exp` — `exp '' (0,∞) = (1,∞)`.
+- `cpow_ofReal_exp` — `(e^x)^w = exp(w x)` for real `x` and complex `w`.
+- `integral_Ioi_zero_fract_exp` — **the Laplace representation**
+  ```
+  ∫_0^∞ {e^x} e^{-s x} dx  =  1/(s−1) − ζ(s)/s ,      0 < Re s,  s ≠ 1,
+  ```
+  obtained from the tree's `integral_Ioi_one_fract_cpow_of_re_pos` by the change of variables
+  `t = e^x` (`integral_image_eq_integral_abs_deriv_smul`).
+
+With this, the periodisation `D` of
+
+`C(x) = {e^x}e^{−x/2−iax}` on `x ≥ 0`,  `C(x) = e^{x/2−iax}` on `x < 0`
+
+has Fourier coefficients `c_n(D) = −(d/2π)·ζ(½+i(a+dn))/(½+i(a+dn))` exactly, which is the identity
+the two-sided theorem of the audit rests on.  What remains for that theorem is the periodisation
+itself (uniform convergence, Fourier coefficients, and the singleton-class jump).
+
+## Landed brick 52: Putnam's kernel and its Fourier transform (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/PutnamKernel.lean`
+
+- `putnamKernel a x` — `{e^x}e^{−(½+ia)x}` for `x ≥ 0`, `e^{(½−ia)x}` for `x < 0`.
+- `putnamTwist a ξ x = putnamKernel a x · e^{−iξx}`, with its two branch formulas.
+- `integrableOn_putnamTwist_Iio`, `integrableOn_putnamTwist_Ici`, `integrable_putnamTwist` — the
+  kernel is dominated by `e^{−|x|/2}`; the left half-line is an honest exponential
+  (`integrableOn_exp_mul_complex_Iic`), the right one is dominated by `e^{−x/2}`
+  (`exp_neg_integrableOn_Ioi`).
+- `integral_putnamTwist` — **the Fourier transform of the kernel**:
+  ```
+  ∫_ℝ C_a(x) e^{−iξx} dx  =  − ζ(½+i(a+ξ)) / (½+i(a+ξ)) .
+  ```
+  The polar term `1/(z−1)` of brick 51 is exactly `−1/(½−i(a+ξ))`, which is what the left half-line
+  contributes, so the two cancel and only the zeta value survives.
+
+Axiom-clean.  This is the object on which the whole Putnam route runs: the Fourier transform of one
+explicit `L¹` kernel *is* the normalised zeta values along a vertical line.
+
+### Remaining on this route
+
+1. The periodisation `D(x) = ∑_k C_a(x + 2πk/d)` and the Fubini identity
+   `c_n(D) = (d/2π)·Ĉ_a(dn) = −(d/2π)ζ(½+i(a+dn))/(½+i(a+dn))`.
+2. Fourier uniqueness on the circle: all coefficients zero ⟹ `D = 0` a.e.
+3. The one-sided limits of `D` at `x₀ = 0` and the jump
+   `−∑_{m ∈ class}m^{−½−ia}`, where `class = {m ≥ 1 : log m ∈ (2π/d)ℤ}`.
+4. The class is `{u^j : j ≥ 0}` — the exponent set `K = {k ≥ 0 : e^{2πk/d} ∈ ℕ}` is an additive
+   submonoid of `ℕ` with `gcd(K) = k₀ ∈ K` (a rational whose integer power is an integer is an
+   integer), hence `K = k₀ℕ` — so the jump is the geometric sum `−1/(1 − u^{−½−ia}) ≠ 0`.
+
+That closes the two-sided theorem for **every** step and **every** phase.  The one-sided case still
+needs the discrete second moment (Li–Radziwiłł).
+
+## Landed brick 53: the periodisation and its Fourier coefficients (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/PutnamPeriodization.lean`
+`formal/GaloisForLFunctions/RHTower/PutnamFourierCoefficients.lean`
+
+- `putnamPeriod d = 2π/d`, `summable_exp_neg_abs_int`, `summable_putnamKernel_translates` — the
+  lattice translates of the kernel are summable at every point, because
+  `|x + kP| ≥ |k|P − |x|` and the kernel is dominated by `e^{−|·|/2}`.
+- `putnamPeriodization a d x = ∑' k, C_a(x + k·2π/d)` and `putnamPeriodization_periodic`.
+- `iUnion_Ioc_period`, `pairwise_disjoint_Ioc_period` — the half-open lattice cells tile `ℝ`.
+- `putnamTwist_shift` — the lattice phase is trivial: `e^{−i d n k (2π/d)} = 1`.
+- `integral_putnamPeriodization_fourier` — **the Fourier coefficients of the periodisation are the
+  zeta values**:
+  ```
+  ∫_0^{2π/d} D_a(x) e^{−idnx} dx  =  − ζ(½+i(a+dn)) / (½+i(a+dn))   for every n ∈ ℤ.
+  ```
+  Proof: interchange the sum and the integral with
+  `hasSum_integral_of_summable_integral_norm` (the cell norms are `≤ P e^{P/2}e^{−|k|P/2}`), shift
+  each cell integral with `intervalIntegral.integral_comp_add_right`, and reassemble the line from
+  the cells with `integral_iUnion`; the value is then `integral_putnamTwist`.
+
+Axiom-clean.  Item 1 of the two-sided programme is closed: **one periodic function records the whole
+vertical progression of zeta values.**
+
+### Remaining for the two-sided theorem
+
+2. Fourier uniqueness: transport `D` to `AddCircle (2π/d)`, show it is `L²`, and use
+   `fourierBasis` — all coefficients zero forces `D = 0` a.e.
+3. The one-sided limits of `D` at `x₀ = 0` (uniform convergence of the translate series, each
+   translate having one-sided limits) and the jump `−∑_{m ∈ class} m^{−½−ia}`.
+4. `class = {u^j : j ≥ 0}`, so the jump is the geometric sum `−1/(1 − u^{−½−ia}) ≠ 0`.
+
+## Landed brick 54: the exponent monoid is cyclic (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/PutnamExponentMonoid.lean`
+
+This is item 4 of the two-sided programme, and it is pure number theory.
+
+- `exists_nat_of_rat_pow_eq_nat` — a positive rational whose `N`-th power is a natural number is a
+  natural number, via `Rat.den_pow`: `(r^N).den = r.den^N = 1` forces `r.den = 1`.
+- `expNatSet P = {k : ℕ | e^{kP} ∈ ℕ}`, `zero_mem_expNatSet`, `add_mem_expNatSet`.
+- `gcd_mem_expNatSet` — **the gcd of two exponents is an exponent**.  Writing `g = gcd(k,k₀)`,
+  `k = gk'`, `k₀ = gk₀'` with `gcd(k',k₀') = 1`, Bézout gives
+  `e^{gP} = (e^{kP})^α (e^{k₀P})^β`, a positive *rational*; its `k'`-th power is the integer
+  `e^{kP}`, so it is an integer.
+- `dvd_of_mem_expNatSet` — hence `expNatSet P = k₀ℕ` for its least positive element `k₀`.
+
+Consequently the jump of the periodised kernel at `x₀ = 0`, namely `∑_{k ∈ expNatSet P} v^k` with
+`v = e^{−(½+ia)P}`, is the geometric series `1/(1 − v^{k₀})`, whose modulus is at least
+`1/(1 + |v|^{k₀}) > 0`.  **The jump is never zero, for any step and any phase.**
+
+### Remaining for the two-sided theorem
+
+2. Fourier uniqueness — from `∫_0^P D e^{−idnx} = 0` for all `n`, conclude `D = 0` at every point of
+   continuity.  Two routes: (i) transport to `AddCircle (2π/d)` and use mathlib's `fourierBasis`
+   Hilbert basis; (ii) pair `D` against the Fejér kernel `K_N(· − x₀)`, which is a *finite*
+   trigonometric polynomial with frequencies in `dℤ`, so the pairing vanishes identically, and let
+   `N → ∞` using that `K_N` is a nonnegative approximate identity.  Route (ii) needs no measure
+   theory on the quotient.
+3. The one-sided limits of `D`, via `TendstoUniformly.tendsto_of_eventually_tendsto` applied to the
+   partial sums of the translate series; the one-sided limits of the kernel are read off from
+   `C_a(x) = e^{(½−ia)x} − ⌊e^x⌋e^{−(½+ia)x}` (valid on all of `ℝ`, since `⌊e^x⌋ = 0` for `x < 0`),
+   whose only discontinuities are the downward jumps `−m^{−½−ia}` of `⌊e^x⌋` at `x = log m`.
+
+## Landed brick 55: the one-sided limits of the periodised kernel (2026-08-19)
+
+`formal/GaloisForLFunctions/HTGeometry/UniformTsumLimit.lean`
+`formal/GaloisForLFunctions/RHTower/PutnamKernelLimits.lean`
+`formal/GaloisForLFunctions/RHTower/PutnamPeriodizationLimits.lean`
+
+This is item 3 of the two-sided programme.
+
+- `HTGeometry.tendsto_tsum_of_tendsto_of_norm_bounded_on` — **a normally convergent series may be
+  passed to the limit term by term along any filter on which the domination holds**, from
+  `tendstoUniformlyOn_tsum` and `TendstoUniformlyOnFilter.tendsto_of_eventually_tendsto`.  Reusable.
+- `putnamKernel_eq_floor` — `C_a(x) = e^{(½−ia)x} − ⌊e^x⌋e^{−(½+ia)x}` on **all** of `ℝ`, because
+  `⌊e^x⌋ = 0` for `x < 0`.
+- `tendsto_putnamKernel_right`, `tendsto_putnamKernel_left` — the kernel is right-continuous
+  everywhere and has a left limit everywhere, obtained from mathlib's
+  `tendsto_floor_right_pure_floor` and `tendsto_floor_left_pure_ceil_sub_one` transported through
+  `exp`.
+- `putnamKernelLeft a z = C_a(z) + (⌊e^z⌋ − ⌈e^z⌉ + 1)·e^{−(½+ia)z}` — the left limit written as
+  value plus jump; the coefficient is the indicator of `e^z ∈ ℤ`.
+- `norm_putnamKernelLeft_le` — `‖C_a^-(z)‖ ≤ 2e^{−|z|/2}`; the jump term is harmless on `z < 0`
+  because the indicator vanishes there.
+- `tendsto_putnamPeriodization_right`, `tendsto_putnamPeriodization_left` — **the periodisation has
+  one-sided limits everywhere, and they are the term-by-term sums**.
+
+Axiom-clean.  What is left of the two-sided theorem:
+
+* the jump computation at `y = 0`, i.e.
+  `∑'_k C_a^-(kP) − ∑'_k C_a(kP) = ∑_{k ∈ expNatSet P} e^{−(½+ia)kP} = 1/(1 − v^{k₀}) ≠ 0`
+  by brick 54;
+* item 2, Fourier uniqueness (`D = 0` at every continuity point), for which the Fejér-kernel
+  pairing route needs no measure theory on the quotient.
+
+## Landed brick 56: the jump is never zero (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/PutnamJump.lean`
+
+- `putnamJumpTerm a d k` — the `k`-th jump contribution
+  `(⌊e^{kP}⌋ − ⌈e^{kP}⌉ + 1)·e^{−(½+ia)kP}`, i.e. `[e^{kP} ∈ ℤ]·e^{−(½+ia)kP}`.
+- `putnamJumpTerm_eq_zero_of_neg` — negative `k` contribute nothing (`0 < e^{kP} < 1`).
+- `putnamJumpTerm_of_mem`, `putnamJumpTerm_eq_zero_of_notMem` — for `k ≥ 0` the term is
+  `e^{−(½+ia)kP}` exactly when `k` lies in the exponent monoid, and `0` otherwise
+  (`Int.ceil_eq_floor_add_one_iff_notMem`).
+- `mul_mem_expNatSet` — the monoid contains every multiple of any of its elements.
+- `tsum_putnamJumpTerm_ne_zero` — **the jump is never zero.**  Either the monoid is trivial, and
+  the sum is the single term `1`; or it is `k₀ℕ` by brick 54, the support of the family is exactly
+  the range of `j ↦ k₀ j`, and reindexing through `Equiv.ofInjective` and
+  `tsum_subtype_eq_of_support_subset` turns the sum into the geometric series
+  `∑_j w^j = (1 − w)^{-1}` with `‖w‖ = e^{−k₀P/2} < 1`.
+
+Axiom-clean.  Together with brick 55 this says: **the periodised Putnam kernel has, at the origin, a
+left limit and a right limit whose difference is `(1 − w)^{-1} ≠ 0`** — for every step `d > 0` and
+every phase `a`.
+
+### The single remaining item of the two-sided theorem
+
+Fourier uniqueness: from `∫_0^{2π/d} D e^{−idnx} dx = 0` for all `n` (which is brick 53 plus the
+vanishing hypothesis), conclude that `D` vanishes at every point of continuity — then both one-sided
+limits at the origin are `0` and the jump is `0`, contradicting brick 56.  The Fejér-kernel pairing
+route needs no measure theory on the quotient: `K_N(· − x₀)` is a finite trigonometric polynomial
+with frequencies in `dℤ`, so the pairing vanishes identically, and `K_N` is a nonnegative
+approximate identity.
+
+## Landed brick 57: the Fejér kernel as a square (2026-08-19)
+
+`formal/GaloisForLFunctions/HTGeometry/FejerKernel.lean`
+
+The last item of the two-sided programme is Fourier uniqueness, and the route chosen avoids all
+measure theory on the quotient: pair the periodisation against a **finite** nonnegative
+trigonometric polynomial.
+
+- `fejerSum N θ = ∑_{n ≤ N} e^{inθ}` and `fejerKernel N θ = ‖fejerSum N θ‖²/(N+1)`, so
+  `fejerKernel_nonneg` is immediate.
+- `fejerKernel_eq_double_sum` — `K_N(θ) = (N+1)^{-1}∑_{n,m ≤ N}e^{i(n−m)θ}`, a *finite* double sum
+  of characters.  Pairing a periodic function against it therefore produces a finite combination of
+  its Fourier coefficients, with no interchange argument at all.
+- `normSq_exp_mul_I_sub_one` — `‖e^{iθ} − 1‖² = 2 − 2cos θ`.
+- `fejerKernel_le` — **the concentration bound** `K_N(θ) ≤ 2/((N+1)(1 − cos θ))`, from the closed
+  form of the finite geometric sum and `‖e^{i(N+1)θ} − 1‖ ≤ 2`.
+
+Reusable.  What remains is to assemble: pair `D` against `K_N(d(· − x₀))`, get `0` for every `N`,
+and let `N → ∞` to conclude `D(x₀) = 0` at every continuity point — then both one-sided limits at
+the origin vanish and brick 56 is contradicted.
+
+## Landed brick 58: integrability of the periodisation (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/PutnamPeriodizationIntegrable.lean`
+
+- `measurable_putnamPeriodization` — via mathlib's `Measurable.tsum`.
+- `norm_putnamPeriodization_le` — `‖D_a(x)‖ ≤ e^{|x|/2}·∑_k e^{−(P/2)|k|}`, from the termwise
+  kernel bound and `norm_tsum_le_tsum_norm`.
+- `integrableOn_putnamPeriodization` — hence `D_a` is bounded on a period, so integrable there.
+
+This is the last prerequisite for the Fejér pairing: the pairing
+`∫_0^P D_a(x)·K_N(d(x − x₀))dx` is a finite combination of the Fourier coefficients of `D_a`
+(brick 57's double-sum form), hence zero under the vanishing hypothesis; and the concentration
+bound then forces `D_a(x₀) = 0` at every continuity point.
+
+## Landed brick 59: the Fejér pairing vanishes (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/PutnamPeriodizationIntegrable.lean` (extended)
+
+- `putnamPeriodTwist a d k x = D_a(x)·e^{−idkx}` and `integrableOn_putnamPeriodTwist`.
+- `integral_putnamPeriodization_fejer` — **the pairing against the Fejér kernel vanishes**:
+  ```
+  ∫_0^{2π/d} D_a(x)·K_N(d(x − x₀)) dx = 0     for every x₀ and every N,
+  ```
+  whenever all the twisted integrals vanish.  The kernel's finite double-sum form (brick 57) turns
+  the integrand into a finite combination of the `putnamPeriodTwist` integrals; the interchange is
+  `MeasureTheory.integral_finsetSum`, needing only the integrability of brick 58.
+
+Axiom-clean.  What is left is the analytic endgame: `K_N ≥ 0`, `∫K_N = P` (the `n = m` diagonal of
+the same double sum), and the concentration bound of brick 57 give
+`D_a(x₀) = 0` at every continuity point; the one-sided limits of brick 55 then vanish and the
+nonvanishing jump of brick 56 is contradicted.
+
+## Landed brick 60: the Fejér mass over a period (2026-08-19)
+
+`formal/GaloisForLFunctions/RHTower/PutnamFejerMass.lean`
+
+- `integral_lattice_character` — `∫_0^{2π/d} e^{idkx}dx = P·[k = 0]`, from
+  `integral_exp_mul_complex` and `e^{2πik} = 1`.
+- `integral_fejer_mass` — **`∫_0^{2π/d} K_N(d(x − x₀))dx = 2π/d`** for every `x₀` and every `N`:
+  in the finite double-sum form only the `n = m` diagonal survives the character integral, and it
+  contributes `(N+1)` terms of size `(N+1)^{-1}P`.
+
+Axiom-clean.  With bricks 57 (nonnegativity and concentration), 58 (integrability), 59 (the pairing
+vanishes) and 60 (the mass), the approximate-identity estimate is now a purely `ε`-`N` argument:
+```
+|D_a(x₀)|·P = |∫ (D_a(x) − D_a(x₀))·K_N(d(x−x₀)) dx|
+            ≤ sup_{|x−x₀|<δ}|D_a(x) − D_a(x₀)|·P  +  (sup_{far} K_N)·‖D_a − D_a(x₀)‖_{L¹} ,
+```
+so `D_a(x₀) = 0` at every continuity point, both one-sided limits of brick 55 vanish, and brick 56's
+nonvanishing jump is contradicted.
+
+## CLOSED, 2026-08-19 — by Route 2, not Route 1
+
+The programme's target `(23)` is now unconditional Lean.  Route 1 (superlinear counting) is **not**
+what closed it and remains open at the barrier recorded above; Route 2 (progression-freeness) closed
+completely, with a mechanism that is neither of the two variants this note had ruled out.
+
+### What was wrong with the earlier reading of Route 2
+
+This note recorded that the reduction "cannot be pushed from one-sided to two-sided: symmetry plus a
+finite shift failure gives closure under `±h` only above a positive threshold, so the negative tail
+is never reached."  That is correct, and it stays correct.  The error was to conclude from it that a
+*one-sided* theorem needs Li--Radziwill's discrete second moment.  It does not.  The Fourier side
+never has to be symmetrised at all: one-sided vanishing of the coefficients is exactly the statement
+that the periodisation lies in a Hardy class, and a Hardy-class function of bounded modulus cannot
+have a jump.  The two-sided Fejér programme (bricks 41--60) proves the weaker statement; the Cauchy
+kernel proves the stronger one.
+
+### The closing mechanism
+
+For `0 <= r < 1` pair the periodisation `D_a` against `(1 - r e^{idy})^{-1}` over one period.
+
+* The conjugate kernel `(1 - r e^{-idy})^{-1} = sum_{m >= 0} (r e^{-idy})^m` involves only
+  frequencies `-dm` with `m >= 0`, so the conjugate pairing vanishes under the one-sided hypothesis
+  alone.  Adding the two pairings and removing the mean converts the Cauchy kernel into the Poisson
+  kernel `(1-r^2)/|1-re^{idy}|^2 >= 0` of mass `P`, so the pairing is bounded by `||D_a||_infty P`
+  uniformly in `r`.  **This is the only step that uses the hypothesis, and it is one-sided.**
+* The imaginary part `Im (1-re^{idy})^{-1}` is nonnegative on `(0,P/2]`, odd under `y |-> P-y`, and
+  has mass `d^{-1} log((1+r)/(1-r))`, which is unbounded.  Because it is odd, the pairing folds to
+  `integral_0^{P/2}(D_a(y) - D_a(P-y)) Im(...) dy`, whose integrand tends to the jump of `D_a` at
+  the origin.  The jump is a geometric series `(1 - e^{-(1/2+ia)k_0 P})^{-1}` and never vanishes.
+  Nonnegativity of the kernel on the half period is what removes every `L^1` log-estimate: the near
+  part is dominated by the *whole* mass, and the far part is `O_delta(1)`.
+
+Since the mass is unbounded and the pairing is bounded, some coefficient of nonnegative index is
+nonzero, i.e. some `zeta(1/2+i(a+dn))`, `n >= 0`, is nonzero.
+
+### Consequences for this note
+
+* Li--Radziwill's discrete second moment is **no longer needed** and should not be re-opened as a
+  requirement for `(23)`.
+* Selberg's positive-proportion theorem is **no longer needed** for the card either.  Route 1's
+  barrier (`term-by-term van der Corput over the AFE is ~T^{1/4} per cell, capping the grid device
+  at `N_0(T) >> T^{3/4}`) stands as an independent open problem, and the Graham/Barban--Vehov
+  machinery built for it (bricks 41--50) stays in the tree as reusable sieve infrastructure.
+* The card `prime-modulated-weyl-idealizer-collapse-on-xi-sampling` has moved to stage 3.
+
+Modules: `HTGeometry/{CosineArc,CauchyCircleIntegral}.lean`,
+`RHTower/{PutnamPoissonBound,PutnamJumpBlowUp,XiNoArithmeticProgression}.lean`
+(and `RHTower/PutnamApproximateIdentity.lean` for the two-sided companion).

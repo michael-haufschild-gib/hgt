@@ -38,7 +38,7 @@ instance devKerContinuousConstSMul (V : Set X) :
     ContinuousConstSMul ((macbeathHom (G := G) V).ker) (DevSpace (G := G) V) where
   continuous_const_smul h := continuous_devSmul V (h : MacbeathGroup (G := G) V)
 
-omit [ContinuousConstSMul G X] in
+omit [TopologicalSpace X] [ContinuousConstSMul G X] in
 /-- **The fibres of the developing map are the orbits of the kernel.** -/
 theorem devMap_eq_iff_mem_orbit {V : Set X} (hVne : V.Nonempty)
     {y₁ y₂ : DevSpace (G := G) V} :
@@ -93,10 +93,12 @@ theorem isQuotientCoveringMap_devMap [ConnectedSpace X] {V : Set X} (hVopen : Is
     rintro h ⟨z, ⟨w, hwU, rfl⟩, hz2⟩
     obtain ⟨y₁, -, rfl⟩ := hwU
     obtain ⟨y₂, -, hy₂⟩ := hz2
-    rw [devKer_smul_mk] at hy₂
+    have hy₂' : (Quot.mk (DevRel (G := G) V)
+        (⟨(h : MacbeathGroup (G := G) V) * p.1, y₁⟩ : DevSheet (G := G) V) :
+        DevSpace (G := G) V) = Quot.mk _ (⟨p.1, y₂⟩ : DevSheet (G := G) V) := hy₂
     have hφ : macbeathHom V ((h : MacbeathGroup (G := G) V) * p.1) = macbeathHom V p.1 := by
       rw [map_mul, MonoidHom.mem_ker.1 h.2, one_mul]
-    obtain ⟨heq, -⟩ := devSpace_mk_eq_mk_of_macbeathHom_eq hVne hφ hy₂
+    obtain ⟨heq, -⟩ := devSpace_mk_eq_mk_of_macbeathHom_eq hVne hφ hy₂'
     refine Subtype.ext ?_
     have : (h : MacbeathGroup (G := G) V) * p.1 = 1 * p.1 := by rw [heq, one_mul]
     exact mul_right_cancel this
@@ -105,6 +107,6 @@ theorem isQuotientCoveringMap_devMap [ConnectedSpace X] {V : Set X} (hVopen : Is
 theorem isCoveringMap_devMap [ConnectedSpace X] {V : Set X} (hVopen : IsOpen V)
     (hVne : V.Nonempty) (hcover : ⋃ g : G, g • V = (univ : Set X)) :
     IsCoveringMap (devMap (G := G) V) :=
-  IsQuotientCoveringMap.isCoveringMap (isQuotientCoveringMap_devMap hVopen hVne hcover)
+  (isQuotientCoveringMap_devMap hVopen hVne hcover).isCoveringMap
 
 end GaloisForLFunctions.HTGeometry

@@ -63,4 +63,28 @@ theorem finrank_ker_mulVecLin_map_eq_one
   · rw [Matrix.submatrix_map, ← RingHom.mapMatrix_apply, ← RingHom.map_det]
     exact fun h => hB (φ.injective (by rw [h, map_zero]))
 
+/-- **Corank one, stated as a rank equality.**  This is the form the cokernel-annihilator theorem
+consumes. -/
+theorem rank_add_one_eq_of_det_eq_zero
+    {F : Type*} [Field F] {N : ℕ} (M : Matrix (Fin (N + 1)) (Fin (N + 1)) F)
+    (hdet : M.det = 0) {r c : Fin N → Fin (N + 1)}
+    (hB : (M.submatrix r c).det ≠ 0) :
+    M.rank + 1 = N + 1 := by
+  classical
+  have hker := finrank_ker_mulVecLin_eq_one_of_det_eq_zero M hdet hB
+  have hsum := LinearMap.finrank_range_add_finrank_ker M.mulVecLin
+  rw [Module.finrank_fintype_fun_eq_card, Fintype.card_fin, hker] at hsum
+  exact hsum
+
+/-- The same after any extension of the coefficient field. -/
+theorem rank_map_add_one_eq_of_det_eq_zero
+    {F E : Type*} [Field F] [Field E] (φ : F →+* E) {N : ℕ}
+    (M : Matrix (Fin (N + 1)) (Fin (N + 1)) F) (hdet : M.det = 0)
+    {r c : Fin N → Fin (N + 1)} (hB : (M.submatrix r c).det ≠ 0) :
+    (M.map φ).rank + 1 = N + 1 := by
+  refine rank_add_one_eq_of_det_eq_zero (r := r) (c := c) _ ?_ ?_
+  · rw [← RingHom.mapMatrix_apply, ← RingHom.map_det, hdet, map_zero]
+  · rw [Matrix.submatrix_map, ← RingHom.mapMatrix_apply, ← RingHom.map_det]
+    exact fun h => hB (φ.injective (by rw [h, map_zero]))
+
 end GaloisForLFunctions.HTGeometry

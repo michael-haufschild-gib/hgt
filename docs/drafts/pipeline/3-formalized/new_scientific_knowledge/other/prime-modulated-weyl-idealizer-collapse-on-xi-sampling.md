@@ -1,7 +1,7 @@
 # Prime-modulated Weyl operators collapse on the full real Xi sampling quotient
 
 - **ID:** `prime-modulated-weyl-idealizer-collapse-on-xi-sampling`
-- **Stage:** 2-fully-proven / candidate-new
+- **Stage:** 3-formalized / candidate-new
 - **Type:** THEOREM (paper) / DIRECT HILBERT--PÓLYA OPERATOR RIGIDITY
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Novelty status:** provisional pending independent expert review of the proof and a broader
@@ -224,6 +224,10 @@ Thus no nonzero finite prime modulation, no polynomial position term, and no fin
 of their derivatives descends to the full real-Xi sampling quotient. Only a polynomial function
 of momentum survives.
 
+*Superseded route.*  `(22)` is no longer needed: `(23)` is proved directly from Hardy's theorem
+together with progression-freeness of the real Xi divisor, which is strictly weaker than a positive
+proportion of critical zeros and is itself unconditional.  See the 2026-08-19 Lean progress section.
+
 ## 5. Two prime dilations force the theta metric onto the divisor
 
 Return to logarithmic source coordinates. Let `q` be a jointly continuous positive semidefinite
@@ -359,9 +363,11 @@ therefore
   -> only the zero-shift, zero-jet polynomial multiplier remains. (32)
 ```
 
-The analytic inputs turning the full real Xi divisor into the hypotheses of `(32)` remain paper
-theorems: compactly supported smooth jet interpolation, the superlinear aperiodicity lemma, and
-Conrey's zero-density theorem.
+This section is superseded.  All three analytic inputs are now theorems of this tree: compactly
+supported smooth jet interpolation and the aperiodicity lemma in
+`SuperlinearSamplingAperiodicity.lean` / `SamplingProgressionCriterion.lean`, and Conrey's
+zero-density theorem is no longer used at all — progression-freeness of the real Xi divisor
+(`xiRealDivisor_no_progression`) replaces it, so `(32)` holds unconditionally.
 
 ## 10. Significance assessment
 
@@ -390,6 +396,7 @@ Fields-Medal-level score because it does not construct that carrier or prove RH.
 - [x] boundary cases and sharp lattice counterexample supplied
 - [x] preliminary primary-literature and parent-theory audit completed
 - [x] Lean formalization of the algebraic coefficient-collapse core
+- [x] unconditional Lean formalization of every theorem of the card — 2026-08-19
 - [ ] independent expert proof and novelty review
 
 ## 11. Lean formalization: the analytic Theorem A is closed
@@ -586,3 +593,150 @@ The remaining analytic core, the scale bookkeeping showing why the grid device i
 the ruled-out routes (Hardy blow-up, Bochner positivity, Littlewood–Jensen, Levinson with a trivial
 mollifier) and the external frontier are recorded in
 `docs/drafts/pipeline/1-in-progress/selberg-superlinear-xi-density-programme.md`.
+
+## Lean progress, 2026-08-19: Graham's theorem closed, and the two routes to `(23)` separated
+
+### Route 1 (`(22)` via the grid device): the last *named* classical input is now Lean-proved
+
+The reduction of `(22)` recorded above needs a mollified second moment, and that needs the
+Barban–Vehov/Graham mean square.  It is now unconditional Lean, together with everything it rests on:
+
+- `RHTower/Sieve/CoprimeLogMoebiusRecursion.lean`, `.../CoprimeLogMoebiusUniformBound.lean` —
+  the contraction `T_e(Y) = T_{pe}(Y) − (1/p)T_{pe}(Y/p)` for
+  `T_e(Y) = ∑_{j ≤ Y, (e,j)=1} μ(j)log(Y/j)/j`, and the uniform bound
+  `|T_e(Y)| ≤ (6+|γ|)·e/φ(e)` for every squarefree modulus and every real cutoff.  The bound is
+  reached by peeling one prime at a time, never by estimating the `d(e)` divisor terms separately.
+- `RHTower/Sieve/SquarefreeTotientDivisorIdentity.lean` — `∑_{d ∣ n} μ²(d)/φ(d) = n/φ(n)`.
+- `RHTower/Sieve/ReciprocalTotientLogBound.lean` — `∑_{d ≤ N} μ²(d)/(dφ(d)) ≤ 4` and
+  `∑_{e ≤ N} 1/φ(e) ≤ 4(1 + log N)`, from that identity applied twice.  No Mertens estimate and no
+  Euler product is used.
+- `RHTower/Sieve/SelbergMoebiusLogDiagonal.lean` — the inner sums of the Selberg diagonalisation are
+  `(μ(e)/e)·T_e(X/e)`, hence `≤ A/φ(e)` and supported on `e ≤ X`; the totient-weighted diagonal is
+  `≤ 4A²(1 + log X)`.
+- `RHTower/Sieve/GrahamMeanSquare.lean` — **Graham's mean square, upper half**:
+  `∑_{k ≤ N}(∑_{m ∣ k, m ≤ X}μ(m)log(X/m))² ≤ 4A²N(1+log X) + X²log²X` for `1 ≤ X ≤ N`.
+- `RHTower/Sieve/HarmonicWeightedGrahamMeanSquare.lean` — the same with the weight `1/k`, which is
+  the form the mollified second moment needs:
+  `∑_{k ≤ N}b_X(k)²/k ≤ 4A²(1+log N)(1+log X) + (1+2log X)(X log X)²`.
+
+A course correction that this makes possible is recorded in the programme note: because `(22)` is a
+`∀c ∃T` statement, the mollifier may be chosen depending on `c`, and a **fixed-length** mollifier
+suffices — so the Conrey/BCHB asymptotic is *not* needed.  What Route 1 still lacks is not a named
+theorem but a non-trivial bound for the grid cancellation `∑_j|∫_{I_j}Z·W|`: the term-by-term van
+der Corput estimate over the AFE is intrinsically `≍ T^{1/4}` per cell and caps the device at
+`N₀(T) ≫ T^{3/4}`.  That barrier is exactly Selberg's theorem and is documented in the note.
+
+### Route 2 (`(23)` via progression-freeness): first asset landed
+
+`SamplingProgressionCriterion.lean` already reduces `(23)` to `hnoAP`.  A first unconditional
+theorem on that route is now Lean-proved:
+
+- `RHTower/XiPoissonProgression.lean` — the Poisson trace
+  `∑_{n∈ℤ}Xi(a+nh) = ∑_{n∈ℤ}(1/h)e^{-2πina/h}S(n/h)` with `S` the (positive, Schwartz) theta-cusp
+  source, and `exists_ne_zero_along_progression`: there is `h₀ > 0` such that for every step
+  `0 < h ≤ h₀` and every phase `a`, some `Xi(a+nh) ≠ 0`.  Positivity enters only as `S(0) ≠ 0`.
+
+The statement is uniform in the phase but needs a small step, and covers two-sided progressions;
+the residual gap to `hnoAP` (one-sided progressions at every step) is isolated in the programme
+note, together with precise reasons why the Jensen/Hardy-space and dominance variants do not close
+it.
+
+All modules are axiom-clean (`propext, Classical.choice, Quot.sound`) and wired into
+`GaloisForLFunctions.RHTower`.
+
+## Lean progress, 2026-08-19: `(23)` is unconditional — the card is fully formalized
+
+Route 2 is closed.  `(23)` no longer depends on Selberg's positive-proportion theorem, on
+`SuperlinearSamples xiRealDivisor`, or on `GridCancellationSurplus`.  What replaced them is a new
+unconditional proof that the real Xi divisor contains **no infinite one-sided arithmetic
+progression** — the exact hypothesis `hnoAP` of `SamplingProgressionCriterion.lean`.
+
+### The mechanism
+
+Putnam's kernel is
+
+```text
+C_a(x) = {e^x} e^{-(1/2+ia)x}   (x >= 0),      C_a(x) = e^{(1/2-ia)x}   (x < 0),
+```
+
+with Fourier transform `-zeta(1/2+i(a+xi))/(1/2+i(a+xi))`.  Its periodisation `D_a` with period
+`P = 2pi/d` has Fourier coefficients proportional to `zeta(1/2+i(a+dn))/(1/2+i(a+dn))`, `n in Z`.
+A one-sided progression of critical zeros kills exactly the coefficients of **nonnegative** index.
+
+The new argument shows that this is already impossible, without ever touching the negative half of
+the spectrum.  Write `cf(y) = 1 - r e^{idy}` for `0 <= r < 1`.  Two facts about the pairing
+`J(r) = integral_0^P D_a(y) cf(y)^{-1} dy` collide:
+
+1. **Boundedness.**  The conjugate kernel `conj(cf^{-1}) = (1 - r e^{-idy})^{-1}` expands in
+   *nonnegative* powers of `r e^{-idy}`, so the conjugate pairing vanishes by hypothesis (this is
+   the only place the hypothesis is used, and it is one-sided).  Adding the two pairings and
+   subtracting the mean turns the Cauchy kernel into the Poisson kernel
+   `2 Re cf^{-1} - 1 = (1-r^2)/|cf|^2 >= 0`, of total mass `P`.  Hence `|J(r)| <= ||D_a||_infty P`
+   for every `r`.
+2. **Blow-up.**  The imaginary part `K_r = Im cf^{-1}` is nonnegative on the half period `(0,P/2]`,
+   odd under `y |-> P-y`, and has mass `d^{-1} log((1+r)/(1-r)) -> infinity`.  Folding the second
+   half period onto the first turns the pairing into
+   `integral_0^{P/2} (D_a(y) - D_a(P-y)) K_r(y) dy`, and by periodicity the integrand tends to the
+   jump `D_a(0+) - D_a(0-)` as `y -> 0+`.  That jump is
+   `sum_{k >= 0, e^{kP} in Z} e^{-(1/2+ia)kP}`, a geometric series of ratio of modulus `< 1`, hence
+   never zero.  Splitting the folded integral at a small `delta` gives
+   `|J(r)|/2 >= (1/2)|jump| * mass(r) - O_delta(1)`, which is unbounded.
+
+The two facts are incompatible, so some coefficient of nonnegative index is nonzero.
+
+### What landed
+
+Unconditional, axiom-clean (`propext, Classical.choice, Quot.sound`), wired into the umbrellas:
+
+```text
+HTGeometry/CosineArc.lean
+  cos_le_cos_of_mem_arc, cos_le_cos_of_abs_mem_arc
+
+HTGeometry/CauchyCircleIntegral.lean
+  circleFactor r d y = 1 - r e^{idy};  Re > 0, so the principal log is a genuine antiderivative
+  hasDerivAt_circleAntideriv, integral_circleKernel     -- exact integral of (1-re^{idy})^{-1}
+  circleKernel_re, circleKernel_im, poissonFactor(_eq,_nonneg,_reflect)
+  circleKernel_im_reflect, circleKernel_im_nonneg, abs_circleKernel_im_le
+
+HTGeometry/FejerKernel.lean  (extended)
+  continuous_fejerKernel, fejerKernel_le_card
+
+RHTower/PutnamPoissonBound.lean
+  periodizationBound, norm_putnamPeriodization_le_bound
+  integral_periodization_conjCauchy_eq_zero    -- uses only coefficients of index >= 0
+  cauchy_eq_poisson, integral_poissonFactor, norm_cauchy_le
+  norm_integral_periodization_kernelIm_le
+
+RHTower/PutnamJumpBlowUp.lean
+  integral_circleKernel_im_half                -- mass d^{-1} log((1+r)/(1-r))
+  fold_kernelIm_pairing                        -- folding onto the half period
+  putnamLeftValue, putnamLeftValue_sub_ne_zero, tendsto_foldedDifference
+  jump_estimate, exists_fourierCoeff_ne_zero
+
+RHTower/XiNoArithmeticProgression.lean
+  exists_riemannZeta_critical_ne_zero          -- Putnam's theorem, one-sided
+  xiRealDivisor_no_progression                 -- hnoAP
+  xiSamplingIdealizer_collapse_unconditional   -- (23), no hypotheses
+  xiSamplingIdealizer_eq_polynomial_multiplier_unconditional
+```
+
+`RHTower/PutnamApproximateIdentity.lean` (Fejér mass, concentration and the resulting
+approximate-identity estimate) is the two-sided companion of the same programme and is also landed.
+
+### Status of the two former literature inputs
+
+1. **Selberg's positive-proportion theorem** — no longer needed anywhere.  `(22)` was only ever a
+   means to `(23)`, and `(23)` is now proved directly from progression-freeness plus Hardy's
+   theorem, both of which this tree owns.  The `SuperlinearSamples` route and the
+   `GridCancellationSurplus` reduction remain in the tree as independent statements.
+2. **Bochner--Schwartz / Schwartz kernel** — already owned by this tree and unconditional:
+   `SchwartzMap.existsUnique_temperateSpectralRepresentation`
+   (`HTGeometry/SchwartzPositiveMeasureRepresentation.lean`) constructs the unique positive
+   temperate spectral measure of a nonnegative momentum-symmetric continuous Schwartz form by a
+   compact Riesz argument, and `existsUnique_temperateSpectralRepresentation_of_two_dilation`
+   feeds it the momentum symmetry produced by two multiplicatively independent dilations.  The
+   earlier note in section 11 that this was "a cited paper input" is stale.
+
+Every mathematical statement of sections 1--7 is therefore Lean-proved unconditionally, and the
+card moves to stage 3.  The only open gate is the external one (independent expert proof and
+novelty review), which no formalisation can discharge.

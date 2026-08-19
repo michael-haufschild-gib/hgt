@@ -645,3 +645,56 @@ conditions do not determine an exponent vector in `ℕ^{rr}`.  The card's §5 ne
 `ψ(s+λ) = log s + ∑_{m≤M} P_m(λ)/s^m + O(|s|^{-(M+1)})`; those give the power sums
 `∑_k e_k λ_k^m`, and Vandermonde on distinct `λ_k` then determines `e`.  The order-one case above
 is the base of that induction and supplies its telescope, anchor and independence principle.
+
+## Lean status 2026-08-19 (third pass) — the finite-order Stirling ladder and the §5 separation
+
+The blocker recorded in the second pass ("the card's §5 needs the residues at `1/s^m` for
+`m = 1 … rr`") is closed. Thirteen new modules, each `lake build`-green and
+`#print axioms = [propext, Classical.choice, Quot.sound]`:
+
+```text
+HTGeometry/PolynomialVanishingOrderBound.lean
+  exists_norm_polyEval_div_pow_le_of_dvd    X^N ∣ P ⟹ ‖P(u)/(1+u)^k‖ ≤ C‖u‖^N on ‖u‖ ≤ ½
+HTGeometry/GammaStirlingLadderPolynomial.lean
+  ladderCoeffOf, ladderPoly, X_pow_dvd_ladderPoly       X^(M+2) ∣ P_M for every M
+HTGeometry/GammaStirlingLadderStep.lean
+  taylorTail, taylorTail_eq, ladderPoly_eval, exists_norm_ladderDefect_step_le
+HTGeometry/GammaStirlingTelescopeThreshold.lean
+  norm_le_of_step_bound_ge                  the telescope above an arbitrary threshold R ≥ 2
+HTGeometry/GammaStirlingLadder.lean
+  exists_norm_ladderDefect_le               ψ z = log z − ∑_{m<M} c_m z^{−(m+1)} + O(‖z‖^{−(M+1)})
+HTGeometry/GammaShiftLadderPolynomial.lean
+  shiftLadderPoly, shiftLadderCoeff, X_pow_dvd_shiftLadderPoly
+HTGeometry/GammaShiftLadder.lean
+  exists_norm_shiftLadderDefect_le          the same with an arbitrary shift μ, R = max(2, 2‖μ‖+2)
+HTGeometry/GammaShiftLadderDifference.lean
+  shiftLadderCoeff_succ_sub                 d_m(μ+1) − d_m(μ) = −(−μ)^m
+HTGeometry/GammaShiftLadderGraded.lean
+  shiftLadderCoeffPoly, shiftLadderCoeff_eq_eval, natDegree_shiftLadderCoeffPoly_le
+HTGeometry/GammaShiftLadderCoeffTop.lean
+  natDegree_shiftLadderCoeffPoly            deg d_m = m+1 exactly, top coeff (−1)^{m+1}/(m+1) ≠ 0
+HTGeometry/GammaShiftLadderSeparation.lean
+  eq_zero_of_ladder_moments_vanish          triangularity + Lagrange ⟹ the moments separate
+HTGeometry/GammaLogPowerIndependence.lean
+  log_power_expansion_eq_zero               1, log t, t^{−1}, …, t^{−M} independent mod O(t^{−(M+1)})
+HTGeometry/GammaShiftSumSeparation.lean
+  eq_zero_of_digamma_shift_sum_small        ∑_k g_k ψ(t+λ_k) = O(t^{−r}), λ distinct ⟹ g = 0
+```
+
+Three points where this is stronger than the card's own §4–§5 argument.
+
+1. **No `log Γ`, no Binet integral, no branch analysis.** Working with `ψ = Γ'/Γ` throughout,
+   the whole expansion is obtained by telescoping the functional equation `ψ(z+1) = ψ(z) + 1/z`
+   against an explicit polynomial identity. The constant `½ log 2π` never appears.
+2. **No Bernoulli input.** The coefficients are *forced twice*: once by the degree `M+2`
+   obstruction of the cleared numerator (`ladderCoeffOf`), and once by the functional equation
+   (`shiftLadderCoeff_succ_sub`). Their agreement is what produces `deg d_m = m+1` with top
+   coefficient `(−1)^{m+1}/(m+1)`.
+3. **Commensurable scales are handled.** `eq_zero_of_digamma_shift_sum_small` assumes only that the
+   shifts are distinct. This is precisely the case `NoIntegerRelation` cannot reach and which this
+   card's `λ_j = n_j/H` always falls into.
+
+What remains for this card: §4's appeal to Adamczewski–Dreyfus–Hardouin Theorem 1.2 (a cited
+external dichotomy for rational linear shift equations over `ℂ((s^{-1}))`), the transfer of the
+formal statement to the analytic `Ψ` through the isomorphism (20), and §6's `K_G = L(G)` together
+with the transcendence of `G` over `L`. §3 and the §5 separation layer are Lean-closed.

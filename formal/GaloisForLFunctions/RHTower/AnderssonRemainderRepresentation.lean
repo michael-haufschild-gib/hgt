@@ -47,7 +47,8 @@ theorem mellin_arithJumpProfile_zero {q : ℝ → ℂ} {a : ℕ → ℂ} {C θ :
     mellin_complexPartialSum_eq_LSeries hC ha hs hθs hsum]
 
 /-- **The `j`-fold iteration.** -/
-theorem mellin_arithJumpProfile_iterate {q : ℝ → ℂ} (hq : Continuous q) (a : ℕ → ℂ) {s : ℂ}
+theorem mellin_arithJumpProfile_iterate {q : ℝ → ℂ}
+    (hq : ∀ u v : ℝ, IntervalIntegrable q volume u v) (a : ℕ → ℂ) {s : ℂ}
     (hs : 0 < s.re)
     (hint : ∀ j : ℕ, IntegrableOn
       (fun t => arithJumpProfile q a j t * (t : ℂ) ^ (-(s + j))) (Set.Ioi (1:ℝ))) (j : ℕ) :
@@ -60,7 +61,8 @@ theorem mellin_arithJumpProfile_iterate {q : ℝ → ℂ} (hq : Continuous q) (a
 /-- **The iterated Mellin representation.**  This is the analytic identity that Andersson's
 Theorem 1 integrates by parts: the datum and the arithmetic `L`-series together are a rising
 factorial multiple of the transform of the `j`-th remainder. -/
-theorem mellin_representation_iterated {q : ℝ → ℂ} (hq : Continuous q) {a : ℕ → ℂ} {C θ : ℝ}
+theorem mellin_representation_iterated {q : ℝ → ℂ}
+    (hq : ∀ u v : ℝ, IntervalIntegrable q volume u v) {a : ℕ → ℂ} {C θ : ℝ}
     (hC : 0 ≤ C) (ha : ∀ N : ℕ, ‖∑ m ∈ Finset.Icc 1 N, a m‖ ≤ C * (N : ℝ) ^ θ) {s : ℂ}
     (hs : 0 < s.re) (hθs : θ < s.re) (hsum : LSeriesSummable a s)
     (hq0 : IntegrableOn (fun t => q t * (t : ℂ) ^ (-s)) (Set.Ioi (1:ℝ)))

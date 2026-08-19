@@ -476,3 +476,45 @@ def AutomorphicFactor.HasLatticeExponentialGrowth (ψ) : Prop :=
 2. `AutomorphicFactor.IsAbePositiveTorusless` — Abe's structure theory: that a positive holomorphic
    line bundle on a torusless noncompact quasi-Abelian variety admits the positive
    base-and-extension presentation.  This is the geometric input; the analytic input is now closed.
+
+## Lean status 2026-08-19 (third pass) — the damped extension step is derived from a checkable estimate
+
+Item 1 of "Remaining on this card" (`AbeDampedFactorExtension.liftPacket`) is no longer an
+unverified structure field. Four new modules, `lake build`-green, `#print axioms = [propext,
+Classical.choice, Quot.sound]`:
+
+```text
+HTGeometry/QuasiAbelianCosetPoincareSeries.lean
+  complementEmbedding, cosetPoincareSeries
+  cosetPoincareSeries_shift          the partial sum over a complement of ΓH in Γ is Γ-automorphic
+  cosetPoincareSeriesEntire, cosetPoincareSeriesEntire_mem_forms
+  cosetPoincareSeries_eq_seed_add_tail                   the decomposition (5), F = m·G + R
+HTGeometry/QuasiAbelianCosetPoincareJet.lean
+  hasSum_cosetPoincareTermEntire_of_summableLocallyUniformly
+  jet_cosetPoincareSeriesEntire_eq_seed_add_tail         (5) at the level of mixed jets
+HTGeometry/QuasiAbelianDampedLiftConstruction.lean
+  AbeDampingPacketData, AbeDampingPacketData.toLift
+  HasAbeDampingFamily, abeDampedFactorExtensionOfDampingFamily
+  jetAmpleEveryFiniteOrder_of_hasAbeDampingFamily
+  isAbePositiveTorusless_of_hasAbeDampingFamily
+HTGeometry/QuasiAbelianDampingFamilyNonvacuous.lean
+  summableLocallyUniformlyOn_of_fintype
+  hasAbeDampingFamily_self, abeDampedFactorExtensionSelf                  the interface is inhabited
+```
+
+Two structural points.
+
+1. **Why the partial sum, not the full one.** Summing a `ΓH`-automorphic form over all of `Γ`
+   repeats each value once per element of `ΓH`. Abe sums over a complement. The resulting series is
+   still `Γ`-automorphic, and the reason is formal rather than analytic: writing `δ = η + comp w`,
+   the cocycle converts the shifted argument into a shifted index, the seed's own `ΓH`-law absorbs
+   `η`, and `w` translates the summation index. Only `upper.factor|_{ΓH} = lower.factor` is used.
+
+2. **What is left is exactly one estimate.** `HasAbeDampingFamily c lower upper` asks for a
+   `B`-family of lower seeds with the packet jets of the prescribed lower column and an
+   exponentially damped complement remainder. Everything downstream — that the partial sum is an
+   upper form, that its jets split as seed plus remainder, that the extension step preserves
+   all-order jet ampleness and Abe positivity — is now proved. Concretely the missing object is a
+   `ΓH`-invariant multiplier family `m_B` which is the identity on the finite jet packet and whose
+   complement translates carry `C·B^r e^{-δB}` times a polynomial-Gaussian lattice weight; that is
+   Abe's Proposition 8.2, and it is the sole analytic obligation left on this card.

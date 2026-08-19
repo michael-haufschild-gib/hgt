@@ -5648,3 +5648,1642 @@ Route 1 for the *separation* half.
 
 Neither is blocked; both are multi-stage builds.  Route 1's `M = 1` case, its telescope, its anchor
 and its independence principle are all already in the tree.
+
+## 2026-08-18 (thirteenth entry) — cards A/B: descending powers are independent at every order
+
+`HTGeometry/ArchimedeanPowerIndependence.lean` (new, wired, axioms clean) generalizes
+`three_term_expansion_eq_zero` from three scales to all of them:
+
+```lean
+theorem eq_zero_of_norm_le_const_div {x : ℂ} {C R : ℝ}
+    (h : ∀ t, R ≤ t → 1 ≤ t → ‖x‖ ≤ C / t) : x = 0
+
+theorem power_expansion_eq_zero : ∀ (M : ℕ) (a : ℕ → ℂ) (K R : ℝ),
+    (∀ t : ℝ, R ≤ t → 1 ≤ t → ‖∑ m ∈ Finset.range (M+1), a m / (t : ℂ) ^ m‖ ≤ K / t ^ (M+1)) →
+    ∀ m ∈ Finset.range (M+1), a m = 0
+```
+
+The scales `1, 1/t, …, 1/t^M` are independent modulo `O(t^{-(M+1)})`, at every order `M`.  The
+induction is two moves: the constant coefficient is killed by `t → ∞` (its competitors carry at
+least one factor `1/t`), and what is left is `1/t` times an expansion of one order less, so
+multiplying by `t` restores the shape and the inductive hypothesis applies.
+
+This is the *reading* half of Route 1 for the finite-order Stirling ladder: once the expansion
+`ψ(s+λ) = log s + ∑_{m≤M} P_m(λ)/s^m + O(s^{-(M+1)})` exists, this theorem is what turns "two
+products have the same logarithmic derivative" into "all `M` residues agree", hence into the power
+sums `∑_k e_k λ_k^m` and the Vandermonde inversion.
+
+What remains of Route 1 is the *producing* half: the ladder itself, by the induction described in
+the twelfth entry.  Its `M = 1` case, telescope, anchor and now its reading principle at every
+order are all in the tree.
+
+## 2026-08-18 (fourteenth entry) — cards A/B: the second rung of the ladder
+
+`HTGeometry/GammaStirlingQuarticLog.lean` (new, wired, axioms clean):
+
+- `norm_log_one_add_sub_taylor_three_le` — `‖log(1+u) − (u − u²/2 + u³/3)‖ ≤ ‖u‖⁴` on `‖u‖ ≤ ½`,
+  by dropping four terms of `Complex.hasSum_taylorSeries_log`.
+- `digammaStirlingDefectTwo z = ψ(z) − log z + 1/(2z) + 1/(12 z²)` and
+  `digammaStirlingDefectTwo_step`.
+- `norm_digammaStirlingDefectTwo_step_le` — **the second-rung gain**:
+  `‖g₂(z+1) − g₂(z)‖ ≤ 4/‖z‖⁴` for `Re z > 0`, `‖z‖ ≥ 2`.
+
+The mechanism, now visible twice and identical at every rung: in the variable `u = 1/z` the three
+cubic contributions of the one-step difference,
+
+```text
+u − log(1+u)      →  +u²/2 − u³/3
+−1/(2z(z+1))      →  −u²/2 + u³/2
+(1/12)(1/(z+1)² − 1/z²)  →  −u³/6,
+```
+
+sum to `(−1/3 + 1/2 − 1/6) u³ = 0`.  The coefficient `1/12` is *forced* by that cancellation, and at
+rung `m` the coefficient `c_m` is likewise forced by the order-`u^{m+1}` cancellation — which is why
+the ladder can be built by induction without ever naming a Bernoulli number.
+
+With `power_expansion_eq_zero` (thirteenth entry) supplying the reading principle at every order,
+the two halves of Route 1 are: this rung pattern, generalized to arbitrary `M` by an induction on
+the Taylor order of the explicit function
+`F_M(u) = u − log(1+u) + ∑_{m≤M} c_m u^m((1+u)^{−m} − 1)`,
+and the telescope, which is order-independent and already written twice.
+
+## 2026-08-18 (fifteenth entry) — cards A/B: the second rung, telescoped
+
+`HTGeometry/GammaStirlingSecondRung.lean` (new, wired, axioms clean):
+
+```lean
+theorem norm_digammaStirlingDefectTwo_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤ ‖z‖) :
+    ‖ψ z − log z + 1/(2z) + 1/(12 z²)‖ ≤ 12 / ‖z‖ ^ 3
+```
+
+i.e. **`ψ(z) = log z − 1/(2z) − 1/(12 z²) + O(|z|⁻³)`**, with an explicit constant.  Supporting:
+
+- `norm_add_natCast_fourth_ge` — `‖z+k‖⁴ ≥ ‖z‖²(‖z‖+k)²/2` on the right half-plane, which turns the
+  quartic one-step gain into the *same* `∑_k (‖z‖+k)⁻²` sum the first rung used;
+- `tendsto_digammaStirlingDefectTwo_shift_zero` — the anchor, from the first-rung anchor plus
+  `1/(12(z+N)²) → 0`.
+
+Both rungs are now complete end to end, and the telescope is verbatim the same at each: the *only*
+order-dependent inputs are the Taylor bound for `log(1+u)` (one more term per rung) and the
+elementary inequality `‖z+k‖^{2m} ≥ ‖z‖^{2m−2}(‖z‖+k)²/2`.  Everything else — the anchor, the
+`∑_k (‖z‖+k)⁻²` bound, and the passage to the limit — is order-independent and already written.
+
+Reading rung 2 at `w = s + λ` gives the second signature datum `∑_k e_k λ_k²`, so the separation now
+covers every normal form with at most three distinct shifts; the general case is the induction over
+rungs.
+
+## 2026-08-18 (sixteenth entry) — cards A/B: the telescope, once and for all
+
+`HTGeometry/GammaStirlingTelescope.lean` (new, wired, axioms clean) extracts the order-independent
+half of the ladder as a single reusable theorem about an *arbitrary* function:
+
+```lean
+theorem norm_add_natCast_pow_ge {z : ℂ} (hz : 0 < z.re) (N k : ℕ) :
+    ‖z‖ ^ N * (‖z‖ + k) ^ 2 / 2 ≤ ‖z + k‖ ^ (N + 2)
+
+theorem norm_le_of_step_bound {L : ℂ → ℂ} {N : ℕ} {K : ℝ} (hK : 0 ≤ K)
+    (hstep : ∀ w, 0 < w.re → 2 ≤ ‖w‖ → ‖L (w+1) − L w‖ ≤ K / ‖w‖ ^ (N+2))
+    {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤ ‖z‖)
+    (hanchor : Tendsto (fun n : ℕ => L (z + n)) atTop (𝓝 0)) :
+    ‖L z‖ ≤ (3 * K) / ‖z‖ ^ (N + 1)
+```
+
+Both rungs already built are instances.  The inequality `‖z+k‖^{N+2} ≥ ‖z‖^N (‖z‖+k)²/2` is what
+makes every order reduce to the *same* sum `∑_k (‖z‖+k)⁻² ≤ ‖z‖⁻² + ‖z‖⁻¹`.
+
+**Cost accounting for the remaining induction.**  With this in place a rung of the ladder now costs
+exactly two things:
+
+1. the Taylor bound `‖log(1+u) − ∑_{j<n} (−1)^{j+1} u^j / j‖ ≤ ‖u‖^n` on `‖u‖ ≤ ½` — proved twice
+   already (`n = 3, 4`) by dropping terms of `Complex.hasSum_taylorSeries_log`, and uniform in `n`;
+2. the algebraic cancellation that *forces* the rung's coefficient, an identity between explicit
+   rational functions of `u = 1/z`.
+
+Everything else — anchor, telescope, limit passage, reading principle — is now order-independent and
+certified.
+
+## 2026-08-18 (seventeenth entry) — cards A/B: the log Taylor bound at every order
+
+`HTGeometry/ComplexLogTaylorUniform.lean` (new, wired, axioms clean) removes the first of the two
+per-rung costs identified in the sixteenth entry:
+
+```lean
+theorem norm_log_one_add_sub_taylor_le {u : ℂ} (hu : ‖u‖ ≤ 1/2) {n : ℕ} (hn : 1 ≤ n) :
+    ‖log (1 + u) − ∑ j ∈ Finset.range n, (−1)^(j+1) * u^j / j‖ ≤ 2 * ‖u‖^n / n
+
+theorem norm_log_one_add_sub_taylor_le' (hu) {n} (hn : 2 ≤ n) :
+    ‖log (1 + u) − ∑ j ∈ Finset.range n, (−1)^(j+1) * u^j / j‖ ≤ ‖u‖^n
+```
+
+Mathlib has only the quadratic case (`Complex.norm_log_one_add_sub_self_le`).  The proof is the one
+used twice already, now uniform in `n`: drop the first `n` terms of
+`Complex.hasSum_taylorSeries_log`, bound the `k`-th tail term by `(‖u‖^n/n)‖u‖^k`, and sum the
+geometric series.  The cubic and quartic bounds of the first two rungs are the cases `n = 3, 4`.
+
+Remaining per-rung cost is now the single algebraic item: the identity between explicit rational
+functions of `u = 1/z` that forces the rung's coefficient.  Everything else in the ladder —
+Taylor bound at every order, telescope at every order, anchor, limit passage, and the reading
+principle `power_expansion_eq_zero` — is certified and order-independent.
+
+## 2026-08-18 (eighteenth entry) — cards A/B: the third rung, and the first use of the uniform tools
+
+`HTGeometry/GammaStirlingThirdRung.lean` (new, wired, axioms clean):
+
+```lean
+theorem norm_digammaStirlingDefectTwo_step_le' (hz : 0 < z.re) (h2 : 2 ≤ ‖z‖) :
+    ‖g₂(z+1) − g₂(z)‖ ≤ 4 / ‖z‖ ^ 5
+
+theorem norm_digammaStirlingDefectTwo_le' (hz : 0 < z.re) (h2 : 2 ≤ ‖z‖) :
+    ‖ψ z − log z + 1/(2z) + 1/(12 z²)‖ ≤ 12 / ‖z‖ ^ 4
+```
+
+i.e. **`ψ(z) = log z − 1/(2z) − 1/(12 z²) + O(|z|⁻⁴)`**.
+
+Two things worth recording:
+
+* **The third rung is free.**  `ψ` has no `1/z³` term, and that appears here as a second exact
+  cancellation: the quartic contributions `+u⁴/4`, `−u⁴/2`, `+u⁴/4` of the one-step difference sum
+  to zero with the *same* coefficients `1/2, 1/12` already fixed.  No new constant is introduced.
+* **The uniform tools did their job.**  The bound was assembled from
+  `norm_log_one_add_sub_taylor_le'` at `n = 5` and `norm_le_of_step_bound` at `N = 3`, both proved
+  once and for all in the two preceding entries; the whole rung reduced to three exact algebraic
+  remainders, each an explicit rational function of `u = 1/z`.
+
+Reading rung 3 at `w = s + λ` gives the third signature datum `∑_k e_k λ_k³`, so the archimedean
+separation now covers every normal form with at most four distinct shifts.
+
+## 2026-08-18 (nineteenth entry) — cards A/B: the fourth rung, `c₄ = −1/120`
+
+`HTGeometry/GammaStirlingFourthRung.lean` (new, wired, axioms clean):
+
+```lean
+def digammaStirlingDefectFour z = ψ z − log z + 1/(2z) + 1/(12 z²) − 1/(120 z⁴)
+
+theorem norm_digammaStirlingDefectFour_step_le : ‖g₄(z+1) − g₄(z)‖ ≤ 9 / ‖z‖ ^ 6
+theorem norm_digammaStirlingDefectFour_le      : ‖g₄ z‖ ≤ 27 / ‖z‖ ^ 5
+```
+
+i.e. **`ψ(z) = log z − 1/(2z) − 1/(12 z²) + 1/(120 z⁴) + O(|z|⁻⁵)`**.
+
+This rung is the first that is *not* free: the quintic contributions `−1/5`, `+1/2`, `−1/3` sum to
+`−1/30`, and the coefficient is forced by `−1/30 − 4c₄ = 0`.  The value `−1/120` reproduces the
+classical `B₄/4 = −1/120` without any Bernoulli input — it comes out of the cancellation.
+
+Four rungs are now built, and the pattern is fully exposed:
+
+| rung | new coefficient | forced by |
+|---|---|---|
+| 1 | `1/2`   | quadratic cancellation |
+| 2 | `1/12`  | cubic cancellation `−1/3 + 1/2 − 1/6 = 0` |
+| 3 | none    | quartic cancellation `1/4 − 1/2 + 1/4 = 0` |
+| 4 | `−1/120`| quintic cancellation `−1/5 + 1/2 − 1/3 + 1/30 = 0` |
+
+Every rung after the first was assembled from `norm_log_one_add_sub_taylor_le'` and
+`norm_le_of_step_bound`, both order-uniform, plus exact rational-function remainders.  Reading the
+four rungs at `w = s + λ` gives the signature data `∑_k e_k λ_k^m` for `m = 1 … 4`, so the
+archimedean separation now covers every normal form with at most five distinct shifts.
+
+## 2026-08-18 (twentieth entry) — cards A/B: rung-5 data, and the shape of the general induction
+
+Recording the next rung's arithmetic so it is not recomputed, and the exact form the general
+induction should take.
+
+### Rung 5 is free
+
+The sextic contributions of the one-step difference of `g₄` are
+
+```text
+u − log(1+u)                     →  +1/6
+−1/(2z(z+1))                     →  −1/2
+(1/12)(1/(z+1)² − 1/z²)          →  +5/12
+−(1/120)(1/(z+1)⁴ − 1/z⁴)        →  −1/12
+```
+
+and `1/6 − 1/2 + 5/12 − 1/12 = 0`.  So no `1/z⁵` coefficient is needed (as expected: `ψ` has no odd
+terms past `−1/(2z)`), `‖g₄(z+1) − g₄(z)‖ = O(‖z‖⁻⁷)`, and the telescope gives
+`‖g₄ z‖ = O(‖z‖⁻⁶)`.  The four exact remainders are, in `u = 1/z`:
+
+```text
+A = u − log(1+u) − (u²/2 − u³/3 + u⁴/4 − u⁵/5 + u⁶/6)            ‖A‖ ≤ ‖u‖⁷
+B = −1/(2z(z+1)) + (u²/2 − u³/2 + u⁴/2 − u⁵/2 + u⁶/2) = u⁷/(2(1+u))
+C = (1/12)(1/(z+1)² − 1/z²) + u³/6 − u⁴/4 + u⁵/3 − 5u⁶/12
+E = −(1/120)(1/(z+1)⁴ − 1/z⁴) − u⁵/30 + u⁶/12
+```
+
+`B` follows from `∑_{i≤4} (−1)^i u^i = (1+u⁵)/(1+u)`; `C` and `E` are the corresponding truncations
+of `(1+u)^{−2}` and `(1+u)^{−4}`.
+
+### The general induction
+
+Everything reduces to one polynomial statement.  With `T_N(u) = ∑_{j=2}^{N} (−1)^j u^j / j` and
+
+```text
+Q_M(u) = T_{M+1}(u)·(1+u)^M + ∑_{m<M} c_m u^{m+1}((1+u)^{M−m−1} − (1+u)^M),
+```
+
+`Q_M` is a *polynomial*, the rational part of the one-step difference is `Q_M(u)/(1+u)^M`, and the
+whole ladder is the claim that the `c_m` can be chosen so that `u^{M+2} ∣ Q_M`.  That system is
+triangular with diagonal entries `−(m+1) ≠ 0`, so it is solvable by strong recursion on `m`.
+
+Once `Q_M = u^{M+2} S_M`, the bound is immediate: `‖Q_M(u)/(1+u)^M‖ ≤ 2^M ‖S_M‖_∞ ‖u‖^{M+2}` on
+`‖u‖ ≤ ½`, and `norm_le_of_step_bound` finishes.  The order-uniform Taylor bound
+`norm_log_one_add_sub_taylor_le'` supplies the transcendental half.
+
+So the remaining work on cards A and B is a `Polynomial`-API induction, with every analytic
+ingredient already certified.
+
+## 2026-08-18 (twenty-first entry) — cards A/B: the second signature datum, in the card's own shape
+
+`HTGeometry/GammaShiftSignatureTwo.lean` (new, wired, axioms clean):
+
+```lean
+theorem exists_norm_digamma_shift_expansion_two_le (mu : ℂ) :
+    ∃ C R, 0 ≤ C ∧ 0 ≤ R ∧ ∀ s, 0 < s.re → 0 < (s + mu).re → R ≤ ‖s‖ →
+      ‖ψ (s + mu) − (log s + (mu − ½)/s + (−μ²/2 + μ/2 − 1/12)/s²)‖ ≤ C / ‖s‖ ^ 3
+```
+
+with `C = 48 + ‖μ‖³ + 2‖μ‖² + 2‖μ‖` and `R = max (4‖μ‖) 4`.
+
+This is stated at **unit scale**, which is the card's own normal form (`Γ(s + λ_k)^{e_k}`: all
+scales are `1`, the `λ_k` are shifts) — so it is directly consumable rather than a general-`λ`
+statement that would then have to be specialized.  Weighted by `e_k` and summed, the `1/s²` residue
+is
+
+```text
+−(∑_k e_k λ_k²)/2 + (∑_k e_k λ_k)/2 − (∑_k e_k)/12,
+```
+
+so the **second power sum `∑_k e_k λ_k²` is recovered** once `∑_k e_k` and `∑_k e_k λ_k` are known —
+and those are exactly the first two data, already certified.
+
+All four remainders are exact rather than estimated:
+`1/(s+μ) = 1/s − μ/s² + μ²/(s²(s+μ))` and `1/(s+μ)² = 1/s² − (2sμ+μ²)/(s²(s+μ)²)`, with the
+transcendental part supplied by `norm_log_one_add_sub_taylor_le'` at `n = 3` and the Stirling input
+by the third-rung bound `norm_digammaStirlingDefectTwo_le'`.
+
+Combined with `power_expansion_eq_zero`, the archimedean separation of monomials in the card's
+normal form is now unconditional for **three distinct shifts**, and each further rung extends it by
+one.
+
+## 2026-08-18 (twenty-second entry) — cards A/B: the third signature datum
+
+`HTGeometry/GammaShiftSignatureThree.lean` (new, wired, axioms clean), compiled on the first check:
+
+```lean
+theorem exists_norm_digamma_shift_expansion_three_le (mu : ℂ) :
+    ∃ C R, … ‖ψ (s + mu) − (log s + (mu − ½)/s + (−μ²/2 + μ/2 − 1/12)/s²
+                              + (μ³/3 − μ²/2 + μ/6)/s³)‖ ≤ C / ‖s‖ ^ 4
+```
+
+with `C = 217 + ‖μ‖⁴ + 2‖μ‖³ + ‖μ‖²` and `R = max (4‖μ‖) 4`.
+
+Weighted and summed, the `1/s³` residue is
+`(∑_k e_k λ_k³)/3 − (∑_k e_k λ_k²)/2 + (∑_k e_k λ_k)/6`, so the **third power sum** is recovered
+from it and the earlier data.  With `power_expansion_eq_zero`, the archimedean separation in the
+card's normal form is now unconditional for **four distinct shifts**.
+
+That this module compiled on the first attempt is the real signal: the per-datum cost has settled
+into a fixed routine — one Stirling rung, one uniform Taylor bound, and the exact expansions
+`1/(s+μ) = 1/s − μ/s² + μ²/s³ − μ³/(s³(s+μ))`,
+`1/(s+μ)² = 1/s² − 2μ/s³ + (3sμ² + 2μ³)/(s³(s+μ)²)`.
+The general datum needs the same routine with the general rung, i.e. exactly the polynomial
+induction recorded in the twentieth entry.
+
+## 2026-08-18 (twenty-third entry) — cards A/B: the fourth datum, and its one sticking point
+
+The fourth signature datum was written out and all but two goals discharged; it is **not** landed,
+because two arithmetic steps in the last remainder did not close.  Recording the working so the next
+attempt starts from it.
+
+Target:
+
+```text
+ψ(s + μ) = log s + (μ − ½)/s + (−μ²/2 + μ/2 − 1/12)/s² + (μ³/3 − μ²/2 + μ/6)/s³
+             + (−μ⁴/4 + μ³/2 − μ²/4 + 1/120)/s⁴ + O(|s|⁻⁵),
+```
+
+whose `1/s⁴` residue gives `∑_k e_k λ_k⁴`.  Four of the five remainders go through unchanged from
+the third-datum routine.  The sticking point is the fifth,
+`E₅ = 1/(120 w⁴) − 1/(120 s⁴)`, where the expanded numerator
+`4s³μ + 6s²μ² + 4sμ³ + μ⁴` needs `‖·‖ ≤ 6‖s‖³‖μ‖`, and `nlinarith` will not chain
+`‖μ‖ ≤ ‖s‖/4` through four degrees at once.
+
+**Better route for the next attempt**: factor instead of expanding.
+
+```text
+s⁴ − w⁴ = (s − w)(s + w)(s² + w²) = −μ (s + w)(s² + w²),
+```
+
+so `E₅ = −μ (s+w)(s²+w²) / (120 s⁴ w⁴)`, and with `‖s‖/2 ≤ ‖w‖ ≤ (5/4)‖s‖` this gives
+`‖E₅‖ ≤ ‖μ‖ · (9/4)‖s‖ · 3‖s‖² · 16 / (120 ‖s‖⁸) ≤ ‖μ‖/‖s‖⁵` in three easy steps rather than a
+four-degree chain.  The upper bound `‖w‖ ≤ (5/4)‖s‖` follows from `‖μ‖ ≤ ‖s‖/4`.
+
+Everything else in the module is already verified.
+
+## 2026-08-18 (twenty-fourth entry) — cards A/B: the fourth signature datum lands
+
+`HTGeometry/GammaShiftSignatureFour.lean` (new, wired, axioms clean).  The route recorded in the
+twenty-third entry worked:
+
+```lean
+theorem exists_norm_digamma_shift_expansion_four_le (mu : ℂ) :
+    ∃ C R, … ‖ψ (s + mu) − (log s + (mu − ½)/s + (−μ²/2 + μ/2 − 1/12)/s²
+                              + (μ³/3 − μ²/2 + μ/6)/s³
+                              + (−μ⁴/4 + μ³/2 − μ²/4 + 1/120)/s⁴)‖ ≤ C / ‖s‖ ^ 5
+```
+
+with `C = 864 + ‖μ‖⁵ + 2‖μ‖⁴ + 2‖μ‖³ + ‖μ‖` and `R = max (4‖μ‖) 4`.
+
+Two lessons for the remaining rungs, both about `nlinarith` rather than mathematics:
+
+* **Factor, don't expand.**  `s⁴ − w⁴ = −μ (s+w)(s²+w²)` turned a four-degree coefficient chain
+  into three independent estimates (`‖s+w‖ ≤ (9/4)‖s‖`, `‖s²+w²‖ ≤ 3‖s‖²`, `‖w‖⁴ ≥ ‖s‖⁴/16`).
+* **Chain products with `mul_le_mul`, not `nlinarith`.**  Degree-3 products of unknowns defeat
+  `nlinarith`; `mul_le_mul h₁ h₂ (norm_nonneg _) (by positivity)` followed by
+  `mul_le_mul_of_nonneg_right` closes them immediately.  The needed upper bound
+  `‖w‖ ≤ (5/4)‖s‖` comes from `norm_add_le` and `‖μ‖ ≤ ‖s‖/4`.
+
+The `1/s⁴` residue is `−(∑ e_k λ_k⁴)/4 + (∑ e_k λ_k³)/2 − (∑ e_k λ_k²)/4 + (∑ e_k)/120`, so with
+`power_expansion_eq_zero` the archimedean separation in the card's normal form is now unconditional
+for **five distinct shifts** — it was two when this session began.
+
+## 2026-08-18 — entry 25: the general Stirling ladder is closed at every finite order
+
+The open core recorded in entry 20 is proved. Four new Lean modules, all axiom-clean
+(`propext, Classical.choice, Quot.sound`), all built individually in the foreground:
+
+1. `HTGeometry/PolynomialVanishingOrderBound.lean` —
+   `exists_norm_polyEval_div_pow_le_of_dvd : X^N ∣ P → ∃ C ≥ 0, ∀ ‖u‖ ≤ ½, ‖P(u)/(1+u)^k‖ ≤ C‖u‖^N`.
+   The analytic half of the reduction; constant explicit in the coefficients of the cofactor, the
+   denominator costing only `2^k` because `‖1+u‖ ≥ ½` on the half disc.
+
+2. `HTGeometry/GammaStirlingLadderPolynomial.lean` — the **algebraic heart**. The key discovery is
+   that the cleared numerator obeys a *linear* recursion,
+
+   `P_{M+1} = (1+X)·P_M + ((-1)^M/(M+2))·X^{M+2}(1+X)^{M+1} + c_M·X^{M+1}(1 - (1+X)^{M+1})`,
+
+   in which **all three summands are already divisible by `X^{M+2}`**. So only the single degree
+   `M+2` coefficient has to be killed, and it is killed by
+
+   `c_M = (P_M.coeff (M+2) + (-1)^M/(M+2)) / (M+1)`,
+
+   the denominator `M+1` being the `u^1` coefficient of `1 - (1+u)^{M+1}` and never zero. Theorem
+   `X_pow_dvd_ladderPoly : ∀ M, X^(M+2) ∣ ladderPoly M`, by induction with
+   `Polynomial.X_pow_dvd_iff`. This replaces the triangular-system argument of entry 20: no linear
+   algebra, no Bernoulli input, no `M`-dependence in the coefficients — they are *forced*.
+
+3. `HTGeometry/GammaStirlingLadderStep.lean` — `ladderPoly_eval`: for `1 + u ≠ 0`,
+   `(ladderPoly M).eval u = (1+u)^M (ladderRatPart M u + taylorTail M u)`; `ladderDefect_step`;
+   `taylorTail_eq` (`u - T_M(u)` *is* the degree-`M+1` Taylor polynomial of `log(1+u)`); and
+   `exists_norm_ladderDefect_step_le : ∃ K ≥ 0, ‖g_M(z+1) - g_M(z)‖ ≤ K/‖z‖^{M+2}` on
+   `Re z > 0, ‖z‖ ≥ 2`. The split is rational part + logarithmic Taylor tail, the two bounds coming
+   from item 1 and `norm_log_one_add_sub_taylor_le'` at `n = M+2`.
+
+4. `HTGeometry/GammaStirlingLadder.lean` — the anchor at infinity
+   (`tendsto_ladderDefect_shift_zero`, from `tendsto_digammaStirlingDefect_shift_zero` plus
+   `‖z+n‖ → ∞`) and the capstone
+
+   `exists_norm_ladderDefect_le (M) : ∃ K ≥ 0, ∀ Re z > 0, ‖z‖ ≥ 2,`
+   `‖ψ z - log z + ∑_{m<M} c_m z^{-(m+1)}‖ ≤ K/‖z‖^{M+1}`,
+
+   via `norm_le_of_step_bound` at `N = M`. Restated as
+   `exists_norm_digamma_ladder_expansion_le`.
+
+The four hand-built rungs (`GammaStirlingCubicLog`, `SecondRung`, `ThirdRung`, `FourthRung`) and the
+four hand-built signature data are now special cases of a single theorem valid at every order. The
+archimedean separation in the cards' normal form is therefore available at *arbitrary* order, not
+only up to five distinct shifts.
+
+## 2026-08-19 — entry 26: the shifted ladder, its coefficient polynomials, and the §5 separation
+
+Six further Lean modules, all axiom-clean and built individually in the foreground.
+
+1. `HTGeometry/GammaStirlingTelescopeThreshold.lean` — `norm_le_of_step_bound_ge`: the telescope
+   above an arbitrary threshold `R ≥ 2`. Needed because a *shifted* ladder only has its step bound
+   for `‖s‖ ≥ R(μ)`; the telescope never leaves `{z + k}`, where `‖z+k‖ ≥ ‖z‖`.
+
+2. `HTGeometry/GammaShiftLadderPolynomial.lean` — `shiftLadderPoly`, `shiftLadderCoeff`,
+   `X_pow_dvd_shiftLadderPoly`. **The shifted numerator obeys the same recursion with the same
+   forced coefficient `ladderCoeffOf`**: the extra factor `1 + μX` has constant term `1`, so it
+   never touches the degree `M+2` obstruction, and `μ` only moves the base case from `0` to `-μX²`.
+   Telescoping directly in `s` avoids expanding the unshifted ladder at `z = s+μ`, which would have
+   needed a binomial-series remainder at every order; the only new ingredient is the single rational
+   function `1/(s+μ) = u/(1+μu)`.
+
+3. `HTGeometry/GammaShiftLadder.lean` — `shift_ne_neg_natCast` (beyond `2‖μ‖` the shifted argument
+   misses every digamma pole), `shiftLadderPoly_eval`, `shiftLadderPoly_eval_div`,
+   `shiftLadderDefect_step`, `exists_norm_shiftLadderDefect_step_le`,
+   `tendsto_shiftLadderDefect_shift_zero`, and the capstone
+
+   `exists_norm_shiftLadderDefect_le (μ) (M) : ∃ K ≥ 0, R ≥ 2, ∀ Re s > 0, ‖s‖ ≥ R,`
+   `‖ψ(s+μ) - log s + ∑_{m<M} d_m(μ) s^{-(m+1)}‖ ≤ K/‖s‖^{M+1}.`
+
+   The four hand-built signature data are the cases `M = 1,2,3,4`.
+
+4. `HTGeometry/GammaShiftLadderDifference.lean` — `shiftLadderCoeff_succ_sub`:
+   `d_m(μ+1) - d_m(μ) = -(-μ)^m`, for every `m` and every complex `μ`. Proof: the functional
+   equation `ψ(s+μ+1) = ψ(s+μ) + 1/(s+μ)` expands into a plain geometric series with an exact
+   remainder (`inv_add_eq_geom_add_rem`); the ladder bounds both defects by `O(t^{-(M+1)})`, and
+   `power_expansion_eq_zero` kills the bracket at each order. No new analysis.
+
+5. `HTGeometry/GammaShiftLadderGraded.lean` — the shift is restored as a second indeterminate.
+   `Graded`/`SubGraded` (Y-degree bounded by X-degree, resp. X-degree minus one) are closed under
+   the ring operations in the exact pattern the recursion uses; `shiftLadderPolyTwo` is SubGraded;
+   `map_shiftLadderPolyTwo` specialises it back. Consequence: `shiftLadderCoeff mu M` **is** a
+   polynomial in `mu`, `shiftLadderCoeffPoly M`, of degree at most `M+1`.
+
+6. `HTGeometry/GammaShiftLadderCoeffTop.lean` — the forward difference of a polynomial of degree
+   `≤ M+1` reads off its top coefficient with the factor `M+1`, so items 4 and 5 force
+
+   `(shiftLadderCoeffPoly M).coeff (M+1) = (-1)^{M+1}/(M+1) ≠ 0`,  `natDegree = M+1` exactly.
+
+   No Bernoulli input anywhere: the coefficients are forced twice over, once by the polynomial
+   obstruction and once by the functional equation.
+
+7. `HTGeometry/GammaShiftLadderSeparation.lean` — the card's §5 mechanism.
+   `sum_eval_eq_zero_of_ladder_moments` (triangularity: `1, d_0, …, d_{r-2}` have degrees
+   `0,1,…,r-1`, so they span every polynomial of degree below `r`) and
+
+   `eq_zero_of_ladder_moments_vanish : lam injective → ∑_k g_k = 0 →`
+   `(∀ m, m+2 ≤ r → ∑_k g_k d_m(λ_k) = 0) → ∀ k, g_k = 0`,
+
+   proved by feeding in the Lagrange basis of the shifts. **Distinctness of the shifts is the only
+   hypothesis** — no `NoIntegerRelation`, which is exactly the commensurable-scale situation that
+   defeated the order-one signature (ledger entries 12 and 20).
+
+## 2026-08-19 — entry 27: the analytic all-order separation is closed
+
+Two more modules complete the chain from the ladder to the card's §5 statement.
+
+8. `HTGeometry/GammaLogPowerIndependence.lean` — `log_power_expansion_eq_zero`: if
+   `‖b log t + ∑_{m≤M} a_m t^{-m}‖ ≤ K t^{-(M+1)}` for all large real `t`, then `b = 0` and every
+   `a_m = 0`. The power part is bounded on `t ≥ 1` while `log t` is not, so `b` dies first (choose
+   `t = exp((K+∑‖a_m‖+1)/‖b‖)`); `power_expansion_eq_zero` finishes. This is
+   `three_term_expansion_eq_zero` at arbitrary order.
+
+9. `HTGeometry/GammaShiftSumSeparation.lean` —
+   `ladder_moments_of_digamma_shift_sum_small`: if `∑_k g_k ψ(t+λ_k) = O(t^{-(M+1)})` along the real
+   ray then `∑_k g_k = 0` and `∑_k g_k d_m(λ_k) = 0` for every `m < M`; and the capstone
+
+   `eq_zero_of_digamma_shift_sum_small : lam injective →`
+   `(∀ large real t, ‖∑_k g_k ψ(t+λ_k)‖ ≤ K/t^r) → ∀ k, g_k = 0.`
+
+**What this closes.** The card's §5 ("no flat cancellation in the archimedean residue field") for
+the logarithmic-derivative layer is now unconditional in Lean, at *every* order, with distinctness
+of the shifts as the only hypothesis. The obstruction recorded in entries 12 and 20 — that in the
+normal form all scales are `1`, so the order-one signature yields only the two data `∑_k e_k` and
+`∑_k e_k λ_k`, which cannot pin down an exponent vector in `ℕ^{rr}` for `rr > 2` — is removed: the
+ladder supplies `rr` independent data, and Lagrange interpolation converts them into `e` itself.
+
+**Route note for whoever continues.** The whole ladder programme rests on one observation worth
+keeping: after clearing denominators, the one-step difference of the ladder defect satisfies a
+*linear* recursion whose three summands are already divisible by `X^{M+2}`, so a single coefficient
+has to be killed and the divisor `M+1` is never zero. Everything else (shifted version, degree
+bound, leading coefficient, separation) is bookkeeping on top of that. No Bernoulli numbers, no
+Binet integral, no `log Γ`, no branch analysis — only `ψ`.
+
+## 2026-08-19 — entry 28: card C — the damped extension step is now derived, not assumed
+
+Four Lean modules, axiom-clean, built individually.
+
+10. `HTGeometry/QuasiAbelianCosetPoincareSeries.lean` — **the partial Poincaré series**. Abe's step
+    does not sum a lower form over the whole upper lattice (that would repeat every value
+    infinitely often); it sums over a *complement* of `ΓH` in `Γ`. The module supplies
+    `complementEmbedding`, `cosetPoincareSeries`, and the two theorems that make it usable:
+
+    - `cosetPoincareSeries_shift` — **the partial sum is `Γ`-automorphic**. The proof is purely
+      formal: writing `δ = η + comp w`, the cocycle turns the shifted argument into a shifted index,
+      the `ΓH`-part `η` is absorbed by the seed's own transformation law (this is where
+      `upper.factor|_{ΓH} = lower.factor` is used), and the complement part is a translation of the
+      summation index. No convergence hypothesis: `tsum_mul_left` and `Equiv.tsum_eq` are
+      unconditional.
+    - `cosetPoincareSeriesEntire_mem_forms`, plus continuity and line-entirety of the sum.
+    - `cosetPoincareSeries_eq_seed_add_tail` — the card's decomposition `F = m·G + R` at the level
+      of values: index `0` contributes the seed, everything else is the complement remainder.
+
+11. `HTGeometry/QuasiAbelianCosetPoincareJet.lean` — the same decomposition at the level of mixed
+    jets. Every jet observation is a *continuous linear functional*, so it passes through the
+    locally normally convergent sum: `hasSum_cosetPoincareTermEntire_of_summableLocallyUniformly`
+    and `jet_cosetPoincareSeriesEntire_eq_seed_add_tail`.
+
+12. `HTGeometry/QuasiAbelianDampedLiftConstruction.lean` — **`liftPacket` is no longer an
+    unverified structure field.** `AbeDampingPacketData` collects only primitive, checkable data:
+    a complement embedding with the decomposition property, and a `B`-family of lower seeds that
+    (a) have the packet jets of the given lower column and (b) whose complement Poincaré terms obey
+    the polynomial-Gaussian damping bound. `AbeDampingPacketData.toLift` *derives* the whole
+    `AbeDampedJetPacketLift`, and `abeDampedFactorExtensionOfDampingFamily`,
+    `jetAmpleEveryFiniteOrder_of_hasAbeDampingFamily`,
+    `isAbePositiveTorusless_of_hasAbeDampingFamily` carry it to the card's conclusions. This is the
+    same move that turned `AbePositiveFactorPresentation.gaussianMajorant` into a consequence of
+    `HasLatticeExponentialGrowth` at the base of the tower.
+
+13. `HTGeometry/QuasiAbelianDampingFamilyNonvacuous.lean` — **the interface is inhabited.**
+    `hasAbeDampingFamily_self`: a factor extends itself with a rank-zero complement, the partial sum
+    being the seed and the majorant vacuous. Also `summableLocallyUniformlyOn_of_fintype`. This
+    guards against the failure mode recorded elsewhere in this repository, where a gap theorem is
+    stated over hypotheses no object satisfies.
+
+**Card C status.** Item 1 of "Remaining on this card" is reduced to a single named predicate,
+`HasAbeDampingFamily c lower upper` — Abe's Proposition 8.2 estimate and nothing else. Item 2,
+`IsAbePositiveTorusless`, is *definitionally* "reachable from an Abe presentation by damped
+extensions", and both its constructors (`isAbePositiveTorusless_of_presentation`,
+`isAbePositiveTorusless_of_hasAbeDampingFamily`) are now available, the base one from a checkable
+growth condition. What remains is the estimate itself for a concrete positive factor: a
+`ΓH`-invariant multiplier family that is the identity on the packet jets and exponentially small on
+the complement translates.
+
+### Correction to the card-C Lean model (2026-08-19)
+
+Attempting to *construct* `HasAbeDampingFamily` exposes a mismatch between the landed interface and
+Abe's actual argument, worth recording before anyone tries again.
+
+The construction that would work is `m_B = E^{⌈B⌉}` with `E` an entire multiplier that is the
+identity on the packet jets and uniformly `< 1` in modulus on every nonzero complement translate of
+the packet points. The corpus already has both halves of such an `E`: the separator bumps
+(`flatIntegerLatticePacketSeparatorData`, `StripBounded`, so bounded along real lattice translates)
+and the flat Gaussian damping `1 − (1 − gaussian)^m` of `gaussianFlatSeedData`, which is *by
+construction* the identity to order `m` at its centre. Their sum over the packet is the identity on
+every packet jet and Gaussian-small on translates, and raising it to the power `⌈B⌉` converts that
+into `C·B^r e^{−δB}` times a polynomial-Gaussian weight — exactly the required majorant.
+
+The obstruction is `ΓH`-invariance. `seed B j = m_B · (lowerColumn j)` lies in `lower.forms` only if
+`m_B` is `ΓH`-invariant, so `E` may depend on the complement coordinates alone. Two packet points
+can then share their complement coordinates, or differ there by a nonzero complement lattice vector
+— `PairwiseDistinctModulo Γ w` does not forbid a difference that is non-lattice in the `ΓH`
+directions and integral in the complement direction. In that case `E ≡ 1` at one point forces
+`|E| = 1` at a nonzero translate of another, and no uniform `ρ < 1` exists.
+
+Abe avoids this because he does **not** lift the whole packet at once: he peels one extremal block
+at a time (card §"Induction step"), the subgroup interpolants having already been arranged to vanish
+to the prescribed order at the earlier points, and chooses the damping ray for that block only.
+
+Consequence: `AbeDampedJetPacketLift`, which demands one damped lift reproducing *every* packet jet
+of *every* lower column simultaneously, is stronger than Proposition 8.2 supplies. Closing item 1
+therefore needs the inner peeling induction modelled as well — a per-block interface with an ordered
+packet and a vanishing hypothesis at the earlier blocks — not merely a proof of the present
+`liftPacket`. Everything else built above (partial Poincaré series, its automorphy, the jet
+decomposition, the reduction of the majorant to primitive data) is reusable unchanged.
+
+## 2026-08-19 — entry 29: card D — equation (1) of the source reduction is Lean-proved
+
+Two modules, axiom-clean, built individually.
+
+14. `RHTower/CircleReflectionOperator.lean` — the reflection `I` on `L²(ℝ/ℤ)`.
+    `measurePreserving_neg_circle`, `circleReflectionCLM` (composition with `x ↦ -x`, an isometry
+    since negation preserves Haar measure), `circleReflectionCLM_coeFn`,
+    `circleReflectionCLM_apply_self` / `_comp_self` (`I² = 1`),
+    `circleReflectionCLM_fourierLp` (`I e_n = e_{-n}`), `dense_span_fourierBasis`, and
+
+    `circleReflection_gaussDiagonalBlock_conj : I D I = D*`,
+
+    which is where the reality relation `d_{-n} = conj d_n` (`gaussSampleValue_neg`, already in the
+    tree) is consumed.
+
+15. `RHTower/GaussQuasiInnerSquare.lean` —
+    `lpBoundedMulCLM_comp_circle`, `circleReflection_lpBoundedMul_conj` (the reflection conjugates a
+    multiplier into the reflected multiplier), `volume_singleton_addCircle`,
+    `haar_singleton_addCircle`, `ae_ne_zero_addCircle`,
+
+    `gaussPrimeScaleCircle_neg_sq : b_p(1−x)² = p · b_p(x)^{−2}` off the single point `0`,
+    `circleReflection_gaussPrimeScaleSq_conj : I B² I = p · B^{−2}`,
+
+    and the card's equation (1):
+
+    `gaussPairedBlock hm k p := B ∘ D ∘ I ∘ B`,
+    `gaussPairedBlock_sq : C ∘ C = gaussQuasiInnerG hm k p`.
+
+The identity is genuinely algebraic once `I` exists: `I² = 1` lets one insert `I I` between the two
+copies of `C`, and the two conjugations do the rest. The symbol computation is exact — the
+representative of `−z` in `(0,1]` is `1 − t`, so `b_p(1−t)² = p^t = p · b_p(t)^{−2}` — and it fails
+at exactly one point, `z = 0`, whose Haar measure is zero (proved here from
+`AddCircle.volume_closedBall` and `AddCircle.volume_eq_smul_haarAddCircle`, since the tree has no
+`NullSingletonClass` instance for `haarAddCircle`).
+
+**Card D status.** §1 had two components: the algebraic identity `G = C²` (equation (1)) and the
+Connes–Consani statement that `|E_{m,k,p}|^{2m}` agrees with `((p−1)/p)^{2m} G^m` up to trace class.
+The first is now Lean-proved. The second remains a *cited* classical input — the one-prime
+decomposition of the Hankel operator `H = (1−P)M_ρ P` — and is not new content of this card.
+
+**Elaboration trap worth recording.** `QuasiMeasurePreserving.ae` has an implicit predicate `p`;
+leaving it to unification makes the elaborator diverge (1M heartbeats, ~50 s, then failure). Supply
+`(p := fun y => …)` explicitly and the same proof elaborates in two seconds. Same family as the
+`.comp _` higher-order unification trap already recorded for this repository.
+
+## 2026-08-19 — entry 30: the citable form of the separation
+
+16. `HTGeometry/GammaShiftMonomialSeparation.lean` —
+    `exponent_eq_of_digamma_shift_sum_eq` and its natural-number form
+    `natExponent_eq_of_digamma_shift_sum_eq`: if two exponent vectors give the same
+    `∑_k e_k ψ(t+λ_k)` on a real ray, and the shifts are distinct, the vectors are equal.
+
+Since `(∏_k Γ(s+λ_k)^{e_k})'/(∏_k Γ(s+λ_k)^{e_k}) = ∑_k e_k ψ(s+λ_k)`, this is exactly "distinct
+Gamma monomials have distinct logarithmic derivatives", the statement both archimedean cards cite,
+with **distinctness of the shifts as the only hypothesis**. The pair `Γ(s+α)Γ(s+β)` against
+`Γ(s+α+β)Γ(s)` — which `archimedean-relative-prime-cocycle-curvature` names as the example that
+defeats the leading-shape datum — is separated by it.
+
+### Running total for this sweep
+
+Twenty-one modules, every one `lake build`-green and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), no `sorry`/`admit`/`axiom`/`opaque`/`unsafe`, each
+wired into its umbrella exactly once, the formal lint gate reporting nothing against any of them.
+
+## 2026-08-19 — entry 31: the card-C obstruction of entry 28 was mis-stated; the route is open
+
+The "correction to the card-C Lean model" appended above is **wrong in its key step**, and the error
+is worth naming because it would stop anyone who repeated it.
+
+I argued that the damping multiplier `m_B` must be `ΓH`-invariant, therefore "may depend on the
+complement coordinates alone", therefore cannot separate two packet points sharing those
+coordinates. The middle step is false. `ΓH` is a *discrete lattice*, so `ΓH`-invariance is
+periodicity, not constancy along the real directions `ΓH` spans; a `ΓH`-periodic entire function is
+perfectly free to separate points that differ inside those directions.
+
+What such a multiplier genuinely cannot do is separate a packet point from a `ΓH`-translate of
+itself — and that never has to happen:
+
+17. `HTGeometry/QuasiAbelianDampedExtensionBasis.lean` —
+    `AbeDampedFactorExtensionBasis`, requiring the damped lift **only for columns realizing the
+    standard jet basis of the packet**. Inspecting `AbeDampedFactorExtension.jetAmpleEveryFiniteOrder`
+    shows those are the only columns it ever uses, so nothing downstream is lost;
+    `AbeDampedFactorExtensionBasis.jetAmpleEveryFiniteOrder`, `AbePositiveFactorTowerBasis`,
+    `IsAbePositiveToruslessBasis` and its jet-ampleness theorem, plus `AbeDampedFactorExtension.toBasis`
+    and `AbePositiveFactorTower.toBasis` so every prior instance survives. With the columns pinned to
+    the jet basis the multiplier needs no normalisation at all: `E ≡ 1` to order `m` at the packet
+    forces `E^n ≡ 1` there too, so the jet matrix of the lifted columns is the identity plus the
+    remainder.
+
+18. `HTGeometry/QuasiAbelianComplementSeparation.lean` — `packet_translate_not_congruent` and
+    `packet_translate_pairwiseDistinct`: for a genuine complement (`comp` injective,
+    `comp(ℤ^c) ∩ ΓH = 0`), a **nonzero** complement translate of a packet point is never
+    `ΓH`-congruent to any packet point. The proof is three lines: `w_i + comp z − w_j ∈ ΓH` gives
+    `w_i − w_j ∈ Γ`, which `PairwiseDistinctModulo Γ w` forbids for `i ≠ j`, while `i = j` forces
+    `comp z ∈ ΓH`, hence `z = 0`.
+
+So the damping multiplier is not obstructed. What it now has to be is explicit: an entire,
+`ΓH`-periodic `E` with `E − 1` vanishing to order `> m_i` at each `w_i` and `|E|` bounded by a fixed
+`ρ < 1` — indeed Gaussian-small — at every `w_i + comp z` with `z ≠ 0`. In the standard model
+(`ΓH` spanned by the first coordinates, `comp` the last) it is `E = ∑_i b_i g_i`: `b_i` a
+sine-ratio separator, periodic in the `ΓH` coordinates, flattened by `1 − (1 − ·)^{m+1}`; `g_i` the
+corpus's flat separator times the Gaussian damping in the complement coordinate. For each pair
+`i ≠ j` the difference `w_i − w_j` leaves `Γ` in one of the two groups of coordinates, and whichever
+group it is supplies the vanishing factor.
+
+## 2026-08-19 — entry 32: the reading principle on vertical rays
+
+The archimedean boundary data live on **vertical** tubes — the real part stays fixed while the
+imaginary part escapes — but every reading principle in the tree was stated along the real ray.
+The ladder itself already covers vertical directions, since it holds on `Re s > 0`, `‖s‖ ≥ R`; only
+the reading had to be generalized.
+
+19. `HTGeometry/PowerExpansionAlongRay.lean` —
+    `eq_zero_of_eventually_norm_le_div`,
+    `power_expansion_eq_zero_ray` (descending powers independent along **any** sequence with
+    `‖S n‖ → ∞`), and `log_power_expansion_eq_zero_ray` (the logarithm dies first, because
+    `‖log s‖ → ∞` while every power term stays bounded once `‖s‖ ≥ 1`). Nothing in the argument uses
+    the direction: peel the constant term, multiply by the variable, recurse.
+
+20. `HTGeometry/GammaShiftSumSeparationRay.lean` —
+    `ladder_moments_of_digamma_shift_sum_small_ray`,
+    `eq_zero_of_digamma_shift_sum_small_ray`, `tendsto_norm_verticalRay`, `re_verticalRay`,
+    `tendsto_norm_log_of_tendsto_norm`, and
+
+    `eq_zero_of_digamma_shift_sum_small_vertical` — on the vertical line `σ + i t` with `σ > 0`,
+    a combination `∑_k g_k ψ(s + λ_k)` that is eventually `O(‖s‖^{-r})` has `g = 0`, provided the
+    shifts are distinct.
+
+This is the separation in exactly the geometry the boundary datum of
+`archimedean-relative-prime-cocycle-curvature` uses.
+
+### What card B now needs, stated sharply
+
+With the separation available in the card's own geometry, the remaining obligation can be named
+precisely, and it is *not* "read the higher moments from the datum".
+
+`HasShiftTubeDatum M lam φ d ω b c` is `c ≠ 0` together with `φ / gammaShiftShape lam σ d ω b → c`
+on the tube. So the framework already has room for subleading information: one more order in `1/s`
+is simply a datum with `ω` lowered. What it does not have is a proof that the *difference* obtained
+after a leading-order cancellation still has a datum.
+
+The obstruction is genuine and is not repaired by the signature alone. Within one dominant class the
+ratios `R_α = ∏_k Γ(s+λ_k)^{e_α − e_β}` all tend to nonzero constants, so distinctness of their
+asymptotic expansions does **not** give linear independence — `1`, `1 + 1/s`, `1 + 2/s` have
+pairwise distinct expansions and satisfy `(1 + 2/s) − 2(1 + 1/s) + 1 = 0`. What is needed is the
+honest statement
+
+> **Linear independence of Gamma monomials.** If `∑_α P_α(s) ∏_k Γ(s+λ_k)^{e_{α,k}} = 0` identically,
+> with the `e_α` pairwise distinct, the `λ_k` pairwise incongruent mod `ℤ`, and the `P_α` in the
+> algebraic-logarithmic coefficient field, then every `P_α = 0`.
+
+and the natural Lean route to it is by **poles, not asymptotics**: at `s = −λ_j − n` the factor
+`Γ(s+λ_j)^{e_{α,j}}` contributes pole order `e_{α,j}` and, by incongruence, no other factor
+interferes for large `n`; picking `α` maximizing `e_{α,j}` and reading the leading Laurent
+coefficient kills `P_α`, and one iterates. That argument needs the Laurent expansion of `Γ` at its
+poles and the incongruence hypothesis the card already carries — both are within reach, and neither
+needs any of the transseries machinery.
+
+## 2026-08-19 — entry 33: the signed shift-orbit obstruction, and the route to linear independence
+
+The card-B obligation isolated in entry 32 — linear independence of Gamma monomials — has a purely
+*algebraic* proof that needs no transseries at all, and its main ingredient is an asset this
+repository already owns in unsigned form.
+
+**The argument.** A Gamma monomial satisfies `M(z+1) = ρ(z) M(z)` with `ρ(z) = ∏_k (z+λ_k)^{e_k}`
+rational and determined by the exponent vector. Given a relation `∑_α P_α M_α = 0`, shifting and
+subtracting `ρ_{α₁}` times the original produces a strictly shorter relation, so by induction on the
+number of terms one reaches `Q · M_α = 0`, hence `Q = 0`, and back-substitution needs exactly:
+
+> no nonzero rational `P` satisfies `P(z+1)/P(z) = ∏_k (z+λ_k)^{n_k}` when some `n_k ≠ 0`.
+
+Taking two logarithmic derivatives turns that into the shift equation
+`τ(z+1) − τ(z) = −∑_k n_k (z+λ_k)^{−2}` — which is *precisely* the equation §3 of
+`finite-archimedean-gamma-product-boundary-law` forbids, except that its exponents are signed.
+
+21. `HTGeometry/SignedShiftOrbitMass.lean` — `laurentCoeff_weightedSumInvSq` and
+    `not_shiftDifference_weightedSumInvSq_orbit`: the Laurent-mass computation and the obstruction
+    with **arbitrary complex weights**. Nothing in the telescoping argument uses positivity; only
+    the total mass on the orbit matters. Built from the exported pieces of
+    `ShiftOrbitMassObstruction` (`sum_Ico_laurentCoeff_shiftDiff_eq_zero`, `laurentCoeff_sum`,
+    `laurentCoeff_invSq_self`, `laurentCoeff_invSq_of_ne`, `laurentCoeff_congr`).
+
+22. `HTGeometry/IncongruentShiftObstruction.lean` —
+    `not_shiftDifference_signedInvSq_of_incongruent`: when the shifts are pairwise incongruent
+    modulo `ℤ` every unit orbit carries exactly one of them, so a **single** nonzero weight already
+    forbids the shift equation. This is the hypothesis both archimedean cards carry
+    (`hincong`, and `primeLog_indep_mod_one` on the prime-cocycle card).
+
+What is left on this route, in order: `deriv (logDeriv ∏_k (z+λ_k)^{n_k}) = −∑_k n_k (z+λ_k)^{−2}`
+(the corpus has the multiplicity-one case, `deriv_logDeriv_prod_sub`, and `logDeriv_zpow`); the
+rational-solution form, exactly as `not_rational_shiftDifference_negSumInvSq` does it for the
+unsigned case; and the Casoratian induction on the number of monomials.
+
+## 2026-08-19 — entry 34: card B, steps one and two of the linear-independence route
+
+23. `HTGeometry/SignedShiftProductLogDeriv.lean` — `logDeriv_shift_zpow`,
+    `differentiableAt_shift_zpow`, `logDeriv_zpowShiftProd`, `deriv_sum_shift_inv`,
+    `deriv_logDeriv_zpowShiftProd` (`deriv (logDeriv ∏_k (z+λ_k)^{n_k}) = −∑_k n_k (z+λ_k)^{−2}`,
+    integer exponents of either sign — the corpus had only the multiplicity-one case), and
+
+    `not_shiftDifference_deriv_logDeriv_zpowShiftProd`: with pairwise incongruent shifts and one
+    nonzero exponent, that second logarithmic derivative is not the unit shift difference of any
+    meromorphic function with finitely many poles.
+
+24. `HTGeometry/RationalShiftRatio.lean` — `logDeriv_congr_eventually` and the second step,
+
+    `not_rational_shiftRatio_zpowShiftProd`: **no rational function satisfies
+    `F(z+1) = (∏_k (z+λ_k)^{n_k}) F(z)`** when some exponent is nonzero and the shifts are pairwise
+    incongruent mod `ℤ`. Taking one logarithmic derivative turns the relation into
+    `v(z+1) − v(z) = logDeriv ρ (z)`; differentiating once more lands exactly on item 23. That
+    `deriv v` is meromorphic with finitely many poles is where rationality of `F` is used —
+    `MeromorphicAt.deriv` and `AnalyticAt.deriv` supply both halves.
+
+25. `HTGeometry/GammaMonomialShift.lean` — `gammaMonomial`, `gammaMonomial_shift`,
+    `gammaMonomial_shift_of_re`, `gammaMonomial_ne_zero`, `re_pos_of_gt_sum_abs`. The bridge:
+    `M_n(s+1) = (∏_k (s+λ_k)^{n_k}) M_n(s)`. The identity needs the arguments to miss the poles of
+    `Γ` and the origin, which a right half plane arranges uniformly — note this is *not* a cofinite
+    condition, since the poles of `Γ` are infinite in number, and that is the one place where the
+    argument has to leave the cofinite filter.
+
+### The remaining step, precisely
+
+To conclude `¬ ∃ rational F with M_n = F`, the half-plane identity of item 25 has to be transported
+to the cofinite identity item 24 consumes. Both sides of
+`y(z+1) − y(z) = deriv (logDeriv ρ) z` are analytic off a finite set, the complement of a finite set
+in `ℂ` is open and connected, and the two agree on a half plane minus finitely many points; the
+identity theorem then gives agreement on the whole domain, hence cofinitely. After that,
+linear independence of Gamma monomials follows by the shift-and-subtract induction on the number of
+terms, whose base case is exactly "no nontrivial monomial is rational".
+
+## 2026-08-19 — entry 35: a nontrivial Gamma monomial is never rational
+
+The transfer named at the end of entry 34 is done, and with it the base case of the linear
+independence of Gamma monomials.
+
+26. `HTGeometry/AnalyticCofiniteTransfer.lean` — `isPreconnected_compl_finite` (the complement of a
+    finite set in `ℂ` is preconnected, because `ℂ` has real rank two) and
+    `eventuallyEq_cofinite_of_analytic_compl_finite`: two functions analytic off a finite set that
+    agree on a nonempty open piece of the complement agree **cofinitely**. This is the identity
+    theorem, and it is what moves the Gamma functional equation off the half plane, where it lives,
+    onto the cofinite filter, where the orbit-mass obstruction can see a whole orbit `a + ℤ`.
+
+27. `HTGeometry/GammaMonomialNotRational.lean` — `analyticAt_shift_zpow`, `analyticAt_polyEval`, and
+
+    `not_rational_gammaMonomial` : **`∏_k Γ(s+λ_k)^{n_k}` is not a rational function**, when the
+    shifts are pairwise incongruent modulo `ℤ` and some exponent is nonzero.
+
+28. `HTGeometry/GammaMonomialPairIndependence.lean` — `gammaMonomial_sub`,
+    `gamma_ne_zero_of_gt_sum_abs`, and
+
+    `not_rational_gammaMonomial_ratio` : **two distinct Gamma monomials are not proportional over
+    the rational function field**.
+
+This is exactly the separation `archimedean-relative-prime-cocycle-curvature` says the leading shape
+cannot supply. Its own example, `Γ(s+α)Γ(s+β)` against `Γ(s+α+β)Γ(s)`, shares degree, weighted
+shift and leading constant; the two are separated here because their *ratio* is a nontrivial Gamma
+monomial, and a nontrivial Gamma monomial is not rational.
+
+The chain, end to end and with no analytic estimate anywhere in it:
+
+```text
+Γ(z+1) = z Γ(z)                            gammaMonomial_shift_of_re
+  ⟹  M(s+1) = (∏_k (s+λ_k)^{n_k}) M(s)     on a right half plane
+  ⟹  a rational M would satisfy that shift relation      (identity theorem: entry 26)
+  ⟹  logDeriv twice: τ(z+1) − τ(z) = −∑_k n_k (z+λ_k)^{−2}   entries 23, 24
+  ⟹  zero orbit mass at the orbit of −λ_{k₀}             entries 21, 22
+  ⟹  n_{k₀} = 0.
+```
+
+What remains for the full linear independence is the shift-and-subtract induction on the number of
+monomials, whose base case is exactly item 27.
+
+## 2026-08-19 — entry 36: linear independence of Gamma monomials is proved
+
+29. `HTGeometry/GammaMonomialClearedFactor.lean` — `clearedShiftFactor`,
+    `eval_clearedShiftFactor`, `clearedShiftFactor_ne_zero`, `exists_clearing_power`. Multiplying
+    the shift factor `ρ_e(s) = ∏_k (s+λ_k)^{e_k}` by `∏_k (s+λ_k)^m` for one `m` large enough for
+    the whole finite family makes every factor a polynomial at once. That is what keeps the
+    shift-and-subtract induction inside polynomial coefficients.
+
+30. `HTGeometry/GammaMonomialLinearIndependence.lean` — `eval_comp_X_add_one`, `shiftEliminate`,
+    `shiftEliminate_self`, `polynomial_eq_zero_of_half_plane`, and
+
+    `gammaMonomial_linearIndependent` : **if `∑_α R_α(s) ∏_k Γ(s+λ_k)^{e_{α,k}} = 0` on a right
+    half plane, with polynomial `R_α` and pairwise distinct exponent vectors, then every
+    `R_α = 0`** — assuming only that the shifts are pairwise incongruent modulo `ℤ`.
+
+The elimination is the classical one, arranged so that no rational-function machinery is needed.
+From the relation and its shift by one, the combination
+
+`C_β = R_{α₀}(X+1)·A_{α₀}·R_β − R_{α₀}·R_β(X+1)·A_β`,  `A_β = clearedShiftFactor lam (e β) m`,
+
+kills the distinguished index identically (`shiftEliminate_self`) and leaves a relation over one
+fewer monomial, whose coefficients are again polynomials. The induction hypothesis forces `C_β = 0`,
+and that polynomial identity says exactly that the rational function `R_β / R_{α₀}` has shift ratio
+`∏_k (s+λ_k)^{e_{α₀,k} − e_{β,k}}` — forbidden by `not_rational_shiftRatio_zpowShiftProd` for
+distinct exponent vectors. So every `R_β` with `β ≠ α₀` vanishes, the relation collapses to a single
+term, and `polynomial_eq_zero_of_half_plane` finishes it.
+
+### Card B: the three named steps of entry 33 are all closed
+
+```text
+deriv logDeriv of a signed product      entry 34, item 23
+the rational-solution form              entry 34, item 24
+the shift-and-subtract induction        entry 36, item 30
+```
+
+What remains on `archimedean-relative-prime-cocycle-curvature` is the re-fitting of
+`GammaJetNormalFormDatum`: its `HasShiftTubeDatum` records only `(degree, ω, b, c)`, and the
+`hclass` hypothesis of `exists_hasShiftTubeDatum_gammaCoeffSum` asks for the sum of constants over
+the dominant class to be nonzero. Linear independence is what makes that hypothesis *derivable*
+rather than assumed, because a vanishing class sum would exhibit a nontrivial relation among the
+monomials of that class.
+
+### A tactic note
+
+`linear_combination` failed on goals whose atoms are `Finset.prod` terms with `zpow` exponents,
+where a plain `calc` with `ring` on each step succeeded. When `linear_combination h` reports "ring
+expressions not equal" but the identity is a visible rearrangement, split it into `ring` steps
+around the hypothesis rather than searching for the right coefficient.
+
+## 2026-08-19 — entry 37: independence over the rational functions
+
+31. `HTGeometry/GammaMonomialRationalIndependence.lean` — `exists_threshold_above_roots` (a nonzero
+    polynomial is nonvanishing on a far enough right half plane) and
+
+    `gammaMonomial_linearIndependent_rat` : the same independence with **rational** coefficients,
+    which is the form a normal-form element of a shifted Gamma field actually has.
+
+The reduction is clearing denominators, and the one thing it costs is moving the half plane to the
+right of every root of `∏_β Q_β`; `gammaMonomial_linearIndependent_of_threshold` (the same induction
+stated at an arbitrary threshold `Rb ≥ ∑_j |Re λ_j|`) is what makes that free. The identity genuinely
+fails at the roots of the denominators, so the threshold cannot be avoided by working cofinitely.
+
+### Running total for this sweep
+
+Thirty-seven modules, each `lake build`-green and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), no `sorry`/`admit`/`axiom`/`opaque`/`unsafe`, each
+wired into its umbrella exactly once, the formal lint gate reporting nothing against any of them.
+
+## 2026-08-19 — entry 38: the step bound of the Gamma-monomial-ratio ladder
+
+The datum refit needs the subleading behaviour of a Gamma-monomial ratio inside a dominant class.
+That ratio satisfies an exact functional equation, `R(s+1) = ρ_g(s) R(s)` with `ρ_g` **rational**, so
+the same telescope that produced the Stirling ladder applies — no integration of a logarithmic
+derivative is needed. Two modules supply the step bound.
+
+32. `HTGeometry/RationalVanishingOrderBound.lean` — `exists_radius_norm_polyEval_ge` and
+    `exists_norm_polyEval_div_le_of_dvd`: if `X^N ∣ P` and `Q(0) ≠ 0` then
+    `‖P(u)/Q(u)‖ ≤ C‖u‖^N` on a small enough disc. This generalizes
+    `exists_norm_polyEval_div_pow_le_of_dvd`, whose denominator had to be `(1+u)^k`; the shift ratio
+    produces an arbitrary denominator that is merely nonzero at the origin, bounded below there by
+    its own value.
+
+33. `HTGeometry/ShiftRatioExpansion.lean` — `coeff_one_mul`, `coeff01_shift_pow`,
+    `coeff01_prod_shift`, `prod_zpow_const`, `zpow_eq_toNat_div`, `shiftNumer`, `shiftDenom`,
+    `X_sq_dvd_shiftNumer_sub_shiftDenom`, and
+
+    `exists_norm_shiftRatio_sub_one_le` : with `∑_k g_k = 0` and `∑_k g_k λ_k = 0` — exactly the
+    two conditions defining a dominant class —
+
+    `‖∏_k (s+λ_k)^{g_k} − 1‖ ≤ K/‖s‖²`.
+
+The proof is the numerator/denominator split at `u = 1/s`: `∏_k (1+λ_k u)^{g_k} = P(u)/Q(u)` with
+`P`, `Q` products of `(1 + λ_k X)^{n}`, both with constant term `1`, and with equal degree-one
+coefficients precisely when `∑_k g_k λ_k = 0`. So `X² ∣ P − Q`, and item 32 finishes it.
+
+### What the ladder still needs
+
+`R(s+1) − R(s) = (ρ_g(s) − 1) R(s)`, so with the bound above the telescope
+`norm_le_of_step_bound_ge` gives `R(s) = C + O(1/s)` **as soon as `R` is bounded** on the half plane.
+Boundedness along a single orbit is immediate from the functional equation
+(`∏_j (1 + K/‖s+j‖²)` converges); uniform boundedness on the half plane needs a bound on one
+fundamental strip, which is where the corpus's `gammaLine` estimates have to be brought in. After
+that the rungs proceed exactly as in the Stirling ladder, with the coefficients forced at each order.
+
+## 2026-08-19 — entry 39: the strip bound was already in the corpus
+
+Entry 38 ended by saying the ratio ladder still needs "a bound on one fundamental strip, which is
+where the corpus's `gammaLine` estimates have to be brought in". That understated what the corpus
+already has: `hasShiftTubeDatum_gammaProd` gives the boundary datum of a Gamma monomial on every
+vertical tube, with constant exactly `1`. Two monomials in the same dominant class have the *same*
+shape, so their ratio is a quotient of two things tending to `1`.
+
+34. `HTGeometry/GammaProdRatioTubeLimit.lean` —
+
+    `tubeLimit_gammaProd_ratio` : if `∑_i e_i = ∑_i f_i` and `∑_i e_i λ_i = ∑_i f_i λ_i`, then
+    `(∏_i Γ(σ+λ_i+it)^{e_i}) / (∏_i Γ(σ+λ_i+it)^{f_i}) → 1` uniformly on every tube.
+
+Four lines of actual content: rewrite the second datum along the two class equalities so the shapes
+coincide, divide, and cancel the shape with `field_simp` where it is nonzero (`t ≥ 3`).
+
+**Two corrections to earlier entries.** `TubeLimit.inv` (`UniformDominantRatio`) and `TubeLimit.div`
+(`UniformGammaFieldDatum`) already exist; I wrote both before the "already declared" error caught it.
+And the strip bound named as missing in entry 38 is not missing — it is one rewrite away from the
+corpus's own monomial datum.
+
+### Card B, what is left after this
+
+With the ratio bounded (indeed convergent to `1`) on tubes and
+`exists_norm_shiftRatio_sub_one_le` giving `‖ρ_g(s) − 1‖ ≤ K/‖s‖²`, the step difference
+`R(s+1) − R(s) = (ρ_g(s) − 1)R(s)` is `O(‖s‖^{-2})`, so `norm_le_of_step_bound_ge` yields
+`R(s) = 1 + O(1/s)`. The remaining work is bookkeeping of the same kind as the Stirling ladder:
+the rungs at each order, then the datum refit that reads the first nonvanishing coefficient.
+
+## 2026-08-19 — entry 40: the orbit bound, and what the ratio ladder still needs
+
+35. `HTGeometry/GammaMonomialOrbitBound.lean` — `gammaMonomial_shift_nat` (iterating the functional
+    equation: `M(s+n) = (∏_{j<n} ρ_g(s+j))·M(s)`), `two_mul_norm_add_natCast_sq_ge`
+    (`(‖s‖+j)² ≤ 2‖s+j‖²` on the right half plane), and
+
+    `exists_prod_norm_shiftRatio_le` : `‖∏_{j<n} ρ_g(s+j)‖ ≤ e^{4K}` for every `n`, uniformly on
+    `‖s‖ ≥ max(R₀,1)`.
+
+    The exponents sum to `K ∑_j ‖s+j‖^{-2} ≤ 2K ∑_j (‖s‖+j)^{-2} ≤ 2K(‖s‖^{-2} + ‖s‖^{-1}) ≤ 4K`,
+    the middle step being the corpus's `sum_inv_sq_shift_head_le`. So a Gamma monomial in a dominant
+    class is bounded along every orbit by a constant times its value at the base point.
+
+### The remaining gap in the ratio ladder, stated exactly
+
+`norm_le_of_step_bound_ge` needs a **single** function `L = R − C`, so the limit `C` must not depend
+on the orbit. Two of the three ingredients are in place:
+
+* on any tube `0 < σ ≤ M`, `R → 1` as `t → ∞` (`tubeLimit_gammaProd_ratio`);
+* along any orbit, `R(s+n) = R(s)·∏_{j<n} ρ_g(s+j)` with the product bounded (item 35) and
+  `∑_j ‖ρ_g(s+j) − 1‖` convergent, so the orbit limit `C(s) := lim_n R(s+n)` exists.
+
+What is missing is that `C ≡ 1`. `C` is `1`-periodic and, by locally uniform convergence of the
+product, analytic in `s`; the tube limit gives `C = 1` wherever `|Im s|` is large; the identity
+theorem then forces `C ≡ 1`. Formalizing that needs the locally uniform convergence of
+`∏_{j} ρ_g(s+j)` — which the bound of item 35 already supplies pointwise — upgraded to analyticity
+of the limit, i.e. one application of the corpus's `SummableLocallyUniformlyOn` machinery in
+multiplicative form.
+
+After that the rungs proceed exactly as in the Stirling ladder.
+
+## 2026-08-19 — entry 41: the orbit Cauchy estimate
+
+36. `HTGeometry/GammaMonomialOrbitCauchy.lean` —
+
+    `exists_norm_gammaMonomial_orbit_sub_le` : `‖M(s+n) − M(s)‖ ≤ A·‖M(s)‖/‖s‖` for **every** `n`,
+    uniformly on `‖s‖ ≥ Rb`, for a Gamma monomial in a dominant class.
+
+Telescoping the functional equation gives `M(s+n) − M(s) = ∑_{j<n} (ρ_g(s+j) − 1) M(s+j)`; each
+summand is `O(‖s+j‖^{-2})` times the orbit bound of item 35, and `∑_j ‖s+j‖^{-2} = O(1/‖s‖)`. So the
+orbit limit exists **with a rate**: letting `n → ∞`,
+
+`‖C(s) − M(s)‖ ≤ A ‖M(s)‖ / ‖s‖`,   `C(s) := lim_n M(s+n)`.
+
+### The one remaining link, restated after this
+
+Everything the ratio ladder needs is now proved except `C ≡ 1`, and the shape of that obstruction is
+worth stating plainly, because two natural routes do **not** close it.
+
+* Applying the Cauchy bound at `s+m` and letting `m → ∞` only re-derives the definition of `C`.
+* The tube limit gives `M(σ+it) → 1` as `t → ∞` for bounded `σ`, hence `C(σ+it) → 1`; but that is a
+  limit in `t`, not an identity, and `C` is constant along orbits, which move in `σ`.
+
+What does close it: `C` is `1`-periodic, and analytic (it is `M(s) + ∑_{j≥0} (ρ_g(s+j) − 1) M(s+j)`,
+a locally uniformly convergent series of analytic functions — the bound of item 36 is exactly the
+domination needed). A `1`-periodic analytic function on a right half plane descends through
+`q = e^{2πis}` to `ℂ∖{0}`, and the tube limits at `t → ±∞` say it extends holomorphically to both
+`q = 0` and `q = ∞` with value `1`; so it is constant. Formalizing that needs the descent and two
+removable-singularity arguments — the only genuinely new analytic step left on this card.
+
+## 2026-08-19 — entry 42: the monomial is analytic on the half plane
+
+37. `HTGeometry/GammaMonomialAnalytic.lean` — `analyticAt_Gamma_of_re_pos`,
+    `analyticAt_Gamma_shift_zpow`, `analyticAt_gammaMonomial`,
+    `analyticAt_gammaMonomial_of_gt_sum_abs`.
+
+`Γ` is differentiable off its poles, hence analytic and nonvanishing on `{Re z > 0}`; integer powers
+and finite products preserve both. This is the first half of the periodicity argument: the orbit
+limit `C(s) = M(s) + ∑_{j≥0} (ρ_g(s+j) − 1) M(s+j)` is a series of analytic functions dominated,
+by entry 41, by `A‖M(s)‖ ‖s+j‖^{-2}` locally uniformly, so `C` is analytic.
+
+### Status of the ratio ladder
+
+Proved: the step bound (entry 38), the tube limit (entry 39), the orbit bound (entry 40), the orbit
+Cauchy estimate (entry 41), analyticity of the monomial (entry 42). What remains is exactly the
+identification `C ≡ 1`, by the descent `q = e^{2πis}` and removable singularities at `q = 0, ∞`.
+Note this is *not* a formality: the two shortcuts one would try — applying the Cauchy bound further
+along the orbit, or reading the tube limit at a fixed height — both fail, the first because it only
+restates the definition of `C`, the second because the tube threshold `T` depends on the abscissa
+bound and so degrades as one moves along the orbit.
+
+## 2026-08-19 — entry 43: the crux lemma, by maximum modulus rather than descent
+
+Entry 42 said `C ≡ 1` needed "the descent `q = e^{2πis}` and removable singularities at `q = 0, ∞`".
+It does not. The maximum modulus principle applies directly on the half plane, and periodicity is
+needed only to move an arbitrary point into a fixed compact block.
+
+38. `HTGeometry/PeriodicHalfPlaneVanishing.lean` — `periodic_shift_nat`,
+    `periodic_shift_nat_sub`, `exists_block_translate` (every point of the half plane has a translate
+    with the same value in the block `R₀+1 ≤ Re s ≤ R₀+3`, reached by shifting up past `R₀+2` and
+    then down), `isCompact_vertical_block`, and
+
+    `eq_zero_of_periodic_of_vertical_decay` : a `1`-periodic function differentiable on
+    `{Re s > R₀}` whose norm tends to `0` as `|Im s| → ∞`, uniformly in `Re s`, is identically zero.
+
+The argument: if `F s₁ ≠ 0`, set `ε = ‖F s₁‖/2`; the decay hypothesis confines `|Im s₁|` and puts a
+translate of `s₁` in the compact block `K`, so the maximum of `‖F‖` over `K` exceeds `ε`. That
+maximum dominates `‖F‖` everywhere — off the block by the decay, on it by translating back — so it
+is a global maximum at an interior point of the half plane, which is convex, hence preconnected.
+`Complex.eqOn_of_isPreconnected_of_isMaxOn_norm` makes `F` constant, and the decay makes that
+constant `0`, contradicting `‖F z‖ > ε`.
+
+### What `C ≡ 1` now needs
+
+Only the two hypotheses of item 38, for `F = C − 1`:
+
+* **differentiability**: `C(s) = M(s) + ∑_{j≥0} (ρ_g(s+j) − 1) M(s+j)`, a series of analytic
+  functions (entry 42) dominated locally uniformly by `A‖M(s)‖‖s+j‖^{-2}` (entry 41);
+* **vertical decay**: from `‖C(s) − M(s)‖ ≤ A‖M(s)‖/‖s‖` (entry 41) together with the tube limit
+  (entry 39), which is uniform in `σ` over one period and extends to all `σ` by periodicity.
+
+## 2026-08-19 — entry 44: a general locally uniform M-test
+
+39. `HTGeometry/LocallyUniformMTest.lean` —
+
+    `summableLocallyUniformlyOn_of_locally_bounded` : a summable dominating bound valid on a
+    neighbourhood of each point gives `SummableLocallyUniformlyOn`.
+
+`tendstoUniformlyOn_tsum` is mathlib's M-test for a bound uniform on the whole set. Local normal
+convergence only needs one near each point, which is the situation for the series defining the orbit
+limit of a Gamma monomial: the dominating constant there depends on the distance to the boundary of
+the half plane. The corpus had several bespoke local-normal-convergence bridges
+(`summableLocallyUniformlyOn_of_polynomialGaussianLattice_bound`,
+`summableLocallyUniformlyOn_primeLogHerglotz_on_off_poles`, and others) but no general one.
+
+With this, the differentiability half of `C ≡ 1` is a direct application: on a ball around any
+`s₀` in the half plane, `‖(ρ_g(s+j) − 1) M(s+j)‖ ≤ A·sup_ball‖M‖·2/(r + j)²`, which is summable.
+
+## 2026-08-19 — entry 45: the orbit series
+
+40. `HTGeometry/GammaMonomialOrbitLimit.lean` — `orbitTerm`,
+    `gammaMonomial_orbit_telescope` (`M(s+n) = M(s) + ∑_{j<n} orbitTerm j`), and
+
+    `summable_orbitTerm` : the orbit series is absolutely summable on `‖s‖ ≥ Rb`, with the explicit
+    majorant `2K·B·‖M(s)‖ · (j+1)^{-2}`.
+
+So the orbit limit is the honest series `C(s) = M(s) + ∑'_j orbitTerm lam g s j`, and `M(s+n) → C(s)`
+is the convergence of its partial sums.
+
+### The path from here, module by module
+
+1. `tendsto_gammaMonomial_orbit` — partial sums of a summable series converge; one line from item 40.
+2. `C` is `1`-periodic — `C(s+1) = C(s)`, by reindexing the series (or by uniqueness of the orbit
+   limit).
+3. `C` is differentiable on the half plane — `summableLocallyUniformlyOn_of_locally_bounded`
+   (entry 44) with the majorant of item 40 on a ball, plus `analyticAt_gammaMonomial` (entry 42).
+4. `‖C(s) − 1‖ → 0` as `|Im s| → ∞`, uniformly in `Re s` — from `‖C(s) − M(s)‖ ≤ A‖M(s)‖/‖s‖`
+   (entry 41) and the tube limit (entry 39), uniform over one period and extended by periodicity.
+5. `C ≡ 1` — `eq_zero_of_periodic_of_vertical_decay` (entry 43) applied to `C − 1`.
+6. `M(s) = 1 + O(1/‖s‖)` — `norm_le_of_step_bound_ge` with `L = M − 1`, whose anchor is item 5.
+7. The rungs, exactly as in the Stirling ladder, and then the datum refit.
+
+## 2026-08-19 — entry 46: steps 1, 2 and the limit form of the Cauchy bound
+
+41. `HTGeometry/GammaMonomialOrbitLimitValue.lean` — `gammaMonomialOrbitLimit`,
+    `tendsto_gammaMonomial_orbit` (the series really is the limit along the orbit), and
+    `gammaMonomialOrbitLimit_shift` (**`C(s+1) = C(s)`**, by uniqueness of limits: the shifted
+    sequence is a tail of the original).
+
+42. `HTGeometry/GammaMonomialOrbitLimitBound.lean` — `norm_gammaMonomialOrbitLimit_sub_le`:
+    `‖C(s) − M(s)‖ ≤ A‖M(s)‖/‖s‖`, the Cauchy estimate of entry 41 passed to the limit.
+
+That is steps 1 and 2 of the path in entry 45, together with the quantitative input of step 4.
+Remaining on that path: differentiability of `C` (step 3, a direct application of the M-test of
+entry 44 with the majorant of entry 45), the vertical decay of `C − 1` (step 4, from item 42 above
+and the tube limit of entry 39), then `C ≡ 1` (step 5, entry 43), the first rung (step 6), the
+higher rungs, and the datum refit.
+
+## 2026-08-19 — entry 47: the explicit majorant for the M-test
+
+43. `HTGeometry/GammaMonomialOrbitMajorant.lean` — `exists_orbitTerm_majorant`
+    (`‖orbitTerm lam g s j‖ ≤ D·‖M(s)‖·(j+1)^{-2}`, with the base-point dependence isolated into the
+    single factor `‖M(s)‖`) and `summable_inv_succ_sq`.
+
+`summable_orbitTerm` (entry 45) proves summability; the locally uniform M-test needs the majorant
+itself, in a form where the only `s`-dependence is a factor that is bounded on any compact. That is
+what this supplies, so step 3 of the path (differentiability of `C`) is now: cover a point of the
+half plane by a closed ball inside it, bound `‖M‖` on that ball by compactness, and feed
+`D·(sup ball ‖M‖)·(j+1)^{-2}` to `summableLocallyUniformlyOn_of_locally_bounded`.
+
+A tactic note, second instance of the same shape: `nlinarith` failed on
+`(2K·a)·c ≤ (2K·b)·c` from `a ≤ b`, `c ≥ 0`, `2K ≥ 0`, where
+`mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left · ·) ·` closes it immediately. On monotone
+rearrangements of products, name the monotonicity lemma rather than calling a solver.
+
+## 2026-08-19 — entry 48: the half-plane boundary law is proved
+
+44. `HTGeometry/GammaMonomialOrbitAnalytic.lean` — `analyticAt_orbitFactor`,
+    `analyticAt_gammaMonomial_shift`, `analyticAt_orbitTerm`,
+    `differentiableOn_gammaMonomialOrbitLimit`.
+45. `HTGeometry/GammaMonomialStripLimit.lean` — `gammaMonomial_conj`, `toNat_sub_toNat_neg`,
+    `gammaProd_ratio_eq_gammaMonomial`, `exists_strip_gammaMonomial_sub_one`.
+46. `HTGeometry/GammaMonomialHalfPlaneLimit.lean` — `gammaMonomialOrbitLimit_eq_one`,
+    **`exists_norm_gammaMonomial_sub_one_le`**.
+
+The theorem: for real nonnegative shifts `λ` and integer exponents `g` with `∑ g = 0` and
+`∑ g_i λ_i = 0`,
+
+```text
+∃ A R₀, ∀ s, R₀ < Re s → ‖∏ Γ(s + λ_i)^{g_i} − 1‖ ≤ A / ‖s‖.
+```
+
+The corpus's tube framework gives this only on a **bounded** vertical strip `0 < σ ≤ M`; the content
+here is that it holds on the whole half plane, uniformly, with no upper bound on `Re s`.
+
+The mechanism, now complete in Lean:
+1. `C(s) := lim_n M(s + n)` exists (orbit series, entry 45), is `1`-periodic (entry 45),
+   is differentiable (item 44 above), and satisfies `‖C − M‖ ≤ A‖M‖/‖s‖` (entry 46).
+2. On a bounded strip the tube limit gives `M → 1` at height infinity (item 45 above). The
+   two-sided statement comes from `Γ(conj z) = conj Γ(z)` with real shifts, so only the
+   one-sided tube limit is needed.
+3. `C − 1` is differentiable, `1`-periodic, and — by translating any point into the block
+   `R₀+1 ≤ Re s ≤ R₀+3` via `exists_block_translate` — decays at height infinity **uniformly in
+   `Re s`**. `eq_zero_of_periodic_of_vertical_decay` then forces `C ≡ 1`.
+4. Feeding `C ≡ 1` back into `‖C − M‖ ≤ A‖M‖/‖s‖` bounds `‖M‖ ≤ 2` and yields `‖M − 1‖ ≤ 2A/‖s‖`.
+
+Steps 1–6 of the path recorded in entry 45 are therefore closed. Note the direction of the argument:
+periodicity converts a strip estimate into a half-plane estimate, which is exactly the step the tube
+formalism cannot take on its own.
+
+## 2026-08-19 — entry 49: opening the all-orders transseries model
+
+47. `HTGeometry/GammaMonomialLogDeriv.lean` — `gamma_shift_ne_zero_of_re_pos`,
+    `logDeriv_Gamma_zpow`, `logDeriv_Gamma_shift_zpow`, `differentiableAt_Gamma_shift_zpow`,
+    `logDeriv_gammaMonomial`, `deriv_gammaMonomial` (`M' = L·M` with `L = ∑ g_k ψ(·+λ_k)`).
+48. `HTGeometry/RayIntegralDecay.lean` — `integral_inv_sq_shift_le`, `norm_add_real_ge_half`,
+    **`norm_le_of_deriv_decay`**: `f` analytic on a right half plane, `‖f'‖ ≤ A‖s‖^{−(k+2)}`, and
+    `f → 0` along every horizontal ray ⟹ `‖f‖ ≤ 2^{k+2}A‖s‖^{−(k+1)}`.
+
+### Why this is the next brick, and what it is for
+
+Reading the two consumer theorems settled the architecture question. `zeta_no_gammaShift_relation`
+needs, for each coefficient, a limit `F_α(σ+it)/gammaShiftShape → c_α ≠ 0`, and the shape is
+`Γ(σ+λ+it)^d · s^ω · (log s)^b` with **real** `ω`. So a `1/s` correction is a shape with `ω` one
+lower: the hierarchy is graded by powers of `1/s`, and reading a datum past a leading cancellation
+means knowing the expansion to that order.
+
+`GammaJetNormalFormDatum` uses `NoIntegerRelation` in exactly one place — to prove the dominant
+class is a singleton. Under the card's own `primeLog_indep_mod_one` the class condition collapses to
+*equal degree and equal first moment*, so within a class every ratio `M_α/M_β` is a **balanced**
+monomial. Entry 48 proves each such ratio tends to `1`; what a datum needs is the first nonvanishing
+coefficient of its expansion in `1/s`. The card's own example `Γ(s+α)Γ(s+β)` against
+`Γ(s)Γ(s+α+β)` is exactly this: the ratio is balanced, the leading terms cancel, and the true
+datum sits one power of `1/s` down, at a coefficient proportional to `∑ g_k λ_k² = 2αβ ≠ 0`.
+
+So the class sum **can** vanish — `hclass` is not provable as stated — and the honest route is the
+all-orders expansion. Its three ingredients: the ladder (`ψ(s+μ)` to every order, already owned),
+`M' = L·M` (item 47), and the constant of integration, which is `C ≡ 1` (entry 48) — the part that
+looked hardest and is already done. Item 48 is the analytic step that turns an expansion of the
+logarithmic derivative into one of the function: integrate along a horizontal ray, using
+`‖s+x‖ ≥ (‖s‖+x)/2` and `(‖s‖+x)^{k+2} ≥ ‖s‖^k(‖s‖+x)^2` so that only `∫₀^∞ (a+x)^{-2} = 1/a` is
+ever needed — no Euler–Maclaurin, no Bernoulli numbers.
+
+## 2026-08-19 — entry 50: the forced inverse-power ladder
+
+49. `HTGeometry/GammaMonomialDigammaSum.lean` — `balancedLadderCoeff`,
+    `shiftLadderCoeff_zero_eq`, `balancedLadderCoeff_zero`,
+    `exists_norm_logDeriv_gammaMonomial_expansion`: for `∑ g = 0`,
+    `∑_k g_k ψ(s+λ_k) = −∑_{m<M} D_m s^{−(m+1)} + O(‖s‖^{−(M+1)})` with `D_m = ∑_k g_k d_m(λ_k)`,
+    and `D_0 = 0` as soon as the first moment vanishes (`d_0` has degree one).
+50. `HTGeometry/TruncatedInverseSeries.lean` — `truncSeries`, `truncSeries_eq_head_add`,
+    `hasDerivAt_truncSeries`, `analyticAt_truncSeries`, `tendsto_norm_shift_ray`,
+    `tendsto_truncSeries_ray`.
+51. `HTGeometry/InverseSeriesLadder.lean` — `lamPoly`, `expLadderCoeffOf`, `expPoly`, `resPoly`,
+    `lamPoly_succ`, `X_dvd_lamPoly`, `coeff_one_lamPoly`, `coeff_zero_expPoly`, `resPoly_succ`,
+    **`X_pow_dvd_resPoly`**.
+
+### The change of variable that makes the expansion a ladder
+
+Writing `u = 1/s`, the equation `M' = L·M` becomes `u²P'(u) = −Λ(u)P(u)` with
+`Λ(u) = −∑ D_m u^{m+1}`. So the object to construct is a polynomial `P_N` whose **residual**
+`Λ_N·P_N + X²·P_N'` is divisible by `X^{N+2}` — a statement entirely inside `ℂ[X]`, with no
+analysis in it at all.
+
+Adding `c_N X^{N+1}` to `P_N` moves the degree-`(N+2)` coefficient of the residual by exactly
+`(N+1)c_N` and moves nothing lower: the cross term `Λ_N·c_N X^{N+1}` contributes
+`c_N·(Λ_N).coeff 1 = −c_N D_0 = 0`, and extending the truncation of `Λ` changes it only in degree
+`N+2` and above. So one coefficient per step is forced, with divisor `N+1 ≠ 0` — the same shape as
+the Stirling ladder of entries 25–30, and it needs no antidiagonal convolution.
+
+That is the whole combinatorial content of the transseries model. What remains is analytic:
+transport `X^{N+2} ∣ resPoly` to a bound on `‖M − P_N(1/s)‖` by induction, each step running
+`norm_le_of_deriv_decay` (entry 49) once.
+
+## 2026-08-19 — entry 51: the transseries model is proved
+
+52. `HTGeometry/PolynomialInverseEval.lean` — `hasDerivAt_polyEval_inv`,
+    `differentiableAt_polyEval_inv`, `analyticAt_polyEval_inv`, `tendsto_polyEval_inv_ray`,
+    `norm_polyEval_inv_le`.
+53. `HTGeometry/GammaMonomialExpansion.lean` — `gammaLadderCoeff`, `gammaExpPoly`,
+    `eval_lamPoly_inv`, `eval_zero_expPoly`, `exists_tendsto_gammaMonomial_ray`,
+    **`exists_norm_gammaMonomial_expansion`**.
+54. `HTGeometry/InverseSeriesFirstCoefficient.lean` — `coeff_lamPoly`, `natDegree_expPoly_le`,
+    `expCoeffSeq`, `expPoly_succ_eq`, `expPoly_eq_one_of_coeffs`,
+    `forall_eq_zero_of_expPoly_eq_one`, `exists_first_expCoeffSeq_ne_zero`.
+55. `HTGeometry/GammaMonomialLeadingDeviation.lean` — `exists_gammaLadderCoeff_ne_zero`,
+    **`exists_gammaMonomial_leading_deviation`**.
+
+The two theorems:
+
+```text
+∀ N, ∃ A R₀, ∀ s with Re s > R₀ :
+    ‖∏ Γ(s+λ_k)^{g_k} − P_N(1/s)‖ ≤ A/‖s‖^{N+1},        P_N = expPoly (ladder moments) N
+
+and, when g ≠ 0 and the shifts are distinct,
+∃ m c A R₀,  c ≠ 0  ∧  ∀ s with Re s > R₀ :
+    ‖∏ Γ(s+λ_k)^{g_k} − 1 − c·s^{−(m+1)}‖ ≤ A/‖s‖^{m+2}.
+```
+
+The second is the statement the card asks for: the **exact** leading deviation of a nontrivial
+balanced monomial from `1`, with a nonzero constant, which is precisely a boundary datum for
+`M − 1`. Its proof chains: if every ladder coefficient vanished then the residual would be the
+truncated moment series itself, whose divisibility forces every moment `D_m` to vanish, and then
+the corpus's Vandermonde separation `eq_zero_of_ladder_moments_vanish` forces `g = 0`.
+
+So the card's example `Γ(s+α)Γ(s+β)` versus `Γ(s)Γ(s+α+β)` is fully resolved in Lean: the ratio is
+balanced, tends to `1`, and its deviation has an exact nonzero leading coefficient at some finite
+order.
+
+### What the datum refit still needs, stated exactly
+
+`Φ = ∑_α Q_α M_α`. Dividing by the dominant monomial makes every in-class ratio `R_α` balanced with
+`R_β = 1`, so `Φ/M_β = (∑_α Q_α) + ∑_α Q_α(R_α − 1)`, and every summand now has a datum — the first
+from `exists_hasShiftTubeDatum_jetFieldPolyFun`, the rest from item 55 above. If the maximal class
+of *that* collection has nonzero constant sum, the datum follows. If not, the process must recurse,
+and termination is a genuine statement, not bookkeeping:
+
+> the map from the exponent lattice to `1 + uℂ[[u]]`, `α ↦ (expansion of R_α)`, is an **injective
+> character** of a free abelian group into the units of a field of formal transseries.
+
+Injectivity is exactly item 55. Given it, Dedekind's independence of characters makes the `R_α`
+linearly independent over the coefficient field, so the total expansion of `Φ/M_β` is nonzero and
+its first nonvanishing coefficient is the datum. Completing this needs the coefficient side too:
+the transseries of `jetFieldPolyFun`, i.e. of `ψ^{(k)}(s+λ)` for every `k`.
+
+A route that does **not** work, recorded so it is not retried: obtaining the `ψ^{(k)}` expansions
+from the `ψ` expansion by Cauchy's estimate. On a half plane the distance to the boundary does not
+grow with `‖s‖`, so the estimate gives no gain in the exponent. Each `ψ^{(k)}` needs its own ladder,
+built from `ψ^{(k)}(z+1) = ψ^{(k)}(z) + (−1)^k k!/z^{k+1}` — the same architecture as the shifted
+ladder, and with no `log` term for `k ≥ 1`.
+
+## 2026-08-19 — entry 52: the corpus already owns the transfer layer; the refit has a route
+
+Searching before building (again) changed the plan. The corpus already contains, axiom-clean:
+
+```text
+HTGeometry/RatApproximant.lean        HasRatApprox f  — on every tube, to every order in the
+                                      height, f is a quotient of polynomials up to C/t^N;
+                                      closed under +, −, ·
+HTGeometry/LogRatApproximant.lean     HasLogRatApprox f — same with logarithmic polynomials;
+                                      closed under +, −, ·; HasRatApprox.hasLogRatApprox
+HTGeometry/ShiftedJetFieldDatum.lean  hasLogRatApprox_jetFieldPolyFun  — EVERY jet polynomial
+                                      exists_hasShiftTubeDatum_of_logRatApprox — a log-rational
+                                      approximant that is not vertically negligible HAS a datum
+HTGeometry/AsymptoticExpansionAlgebra.lean
+                                      IsAsymptoticExpansion + the algebra + the transfer
+                                      aeval_powerSeries_eq_zero_of_eq_zero
+HTGeometry/ShiftedDigammaExpansionVertical.lean
+                                      exists_iteratedDeriv_digamma_shift_expansion — every
+                                      polygamma jet of every real shift, to every order
+```
+
+So the polygamma ladders I was about to build already exist, and the coefficient side of the datum
+is entirely handled by an approximation class closed under the ring operations.
+
+**What this makes of the refit.** The missing piece is exactly the Gamma side, and entry 51 supplies
+it: a *balanced* monomial satisfies `M(s) = P_N(1/s) + O(‖s‖^{−(N+1)})`, and `P_N(1/s)` is a
+rational function, so a balanced monomial is `HasRatApprox` — hence `HasLogRatApprox`, hence
+multipliable into the jet coefficients. The half-plane statement transfers to a tube through the
+shift relation `M(s) = M(s+n)·ρ_n(s)^{-1}` with `ρ_n` rational and `ρ_n → 1`.
+
+Then a normal-form sum is grouped by the pair `(degree, first moment)` of the exponent vector.
+Within a block every ratio `M_α/M_{β_i}` is balanced, so the block coefficient
+`Ψ_i = ∑_{α∈B_i} Q_α·(M_α/M_{β_i})` is `HasLogRatApprox` and has a datum `(0, a_i, b_i, c_i)`,
+`c_i ≠ 0`, as soon as it is not vertically negligible. Multiplying by `M_{β_i}` gives a datum for
+each block with `ω = (moment of B_i) + a_i` and `a_i ∈ ℤ`.
+
+**And now the lattice hypothesis does the work `NoIntegerRelation` used to do, but correctly.** Two
+distinct blocks collide only if their moments differ by an integer; their moments lie in
+`Λ = ℤ log p + ℤ log q`, and `primeLog_indep_mod_one` says a nonzero element of `Λ` is never an
+integer. So distinct blocks never collide, every dominance class is a single block, and `hclass`
+holds with the block's own nonzero constant. This is the exact point at which the card's own
+arithmetic input replaces the false hypothesis.
+
+Two obligations remain, both now sharply stated:
+1. `HasRatApprox (gammaMonomial λ g)` for balanced `g` — entry 51 plus the shift transfer.
+2. `¬ IsVerticallyNegligible Ψ_i` for a nonzero block coefficient — the one place where linear
+   independence of Gamma monomials (entry, `gammaMonomial_linearIndependent`) has to be upgraded
+   from "the function is nonzero" to "the function is not negligible".
+
+## 2026-08-19 — entry 53: obligation 1 closed — a balanced monomial is rationally approximable
+
+56. `HTGeometry/GammaMonomialRatApprox.lean` — `hasRatApprox_shift_zpow`,
+    `HasRatApprox.finsetProd`, `HasRatApprox.finsetSum`, `hasRatApprox_of_tube_eq`,
+    `tube_add_real_ne_zero`, `hasRatApprox_polyEval_inv_shift`,
+    `gammaMonomial_shift_nat_of_ne`, **`hasRatApprox_gammaMonomial`**.
+57. `HTGeometry/GammaBlockSumDatum.lean` — `HasLogRatApprox.finsetSum`,
+    `hasLogRatApprox_balancedBlockSum`, `exists_hasShiftTubeDatum_balancedBlockSum`.
+
+`hasRatApprox_gammaMonomial`: a gamma monomial with real nonnegative shifts, vanishing degree and
+vanishing first moment belongs to `HasRatApprox`. Two ingredients: the transseries truncation of
+entry 51 is a polynomial in `1/s`, and the corpus's own `eval_inv_eq_div` turns that into a quotient
+of polynomials in `s`; and the half-plane statement reaches the tube through the `n`-fold functional
+equation, whose multiplier is a product of `n` factors each within `K/t²` of `1`
+(`exists_norm_shiftRatio_sub_one_le`, which needs **no** half-plane hypothesis), so the multiplier is
+bounded by `2ⁿ` and the transferred error is still `O(t^{-(N+1)})`.
+
+A version of the `n`-fold functional equation with no half-plane hypothesis was needed
+(`gammaMonomial_shift_nat_of_ne`): on a tube the real part can be arbitrarily small, and all the
+equation actually needs is `s + j + λ_k ≠ 0`, which the nonzero imaginary part supplies.
+
+Item 57 packages what follows: a block sum `∑_α Q_α·M_α` with every exponent vector balanced is
+`HasLogRatApprox`, and `exists_hasShiftTubeDatum_of_logRatApprox` then hands over a datum with
+nonzero constant **given only** `¬ IsVerticallyNegligible`.
+
+### The single remaining gap on card B, and the route to it
+
+`¬ IsVerticallyNegligible (∑_α Q_α M_α)` for a nonzero balanced block. The corpus establishes the
+same thing for jet polynomials alone in `JetNonNegligible.not_isGermNegligible_shiftedJetEval`,
+through the germ algebra at `upperEndFilter` and the rational-increment Hölder eliminator.
+
+The route for the block: modulo `O(t^{-N})` the block sum equals `shiftedJetEval` of
+`∑_α T̃_α^{(N)}·P_α`, where `T̃_α^{(N)} ∈ RatFunc ℂ` is the order-`N` transseries truncation of
+`M_α`, so negligibility of the block forces a **fixed** nontrivial `RatFunc`-linear relation among
+the truncations for all large `N`, hence among the full formal expansions. Those expansions form an
+**injective character** of the exponent lattice into the units of the field of formal series —
+injectivity being exactly `exists_gammaMonomial_leading_deviation` — so Dedekind's independence of
+characters (mathlib's `linearIndependent_monoidHom`) forbids such a relation.
+
+## 2026-08-19 — entry 54: the singleton-block datum is unconditional
+
+58. `HTGeometry/GammaSingleBlockDatum.lean` — `tubeLimit_gammaMonomial`,
+    `exists_norm_gammaMonomial_ge_half`, `not_isVerticallyNegligible_mul_gammaMonomial`,
+    `not_isVerticallyNegligible_jetFieldPolyFun`,
+    **`exists_hasShiftTubeDatum_jetGammaBalanced`**.
+
+```text
+lam real ≥ 0, shifts pairwise incongruent mod ℤ, idx injective, P ≠ 0,
+∑ e = 0, ∑ e_i λ_i = 0
+  ⟹  ∃ a b c, c ≠ 0 ∧ HasShiftTubeDatum M 0 (jetFieldPolyFun · P · gammaMonomial · e) 0 a b c
+```
+
+No `NoIntegerRelation`, no negligibility hypothesis, no premises at all beyond the card's own
+arithmetic input. The mechanism is short once the right observation is made:
+
+> a **balanced** monomial tends to `1` uniformly on every vertical tube, so multiplying by it
+> neither creates nor destroys negligibility.
+
+That is `tubeLimit_gammaMonomial` (the corpus's `tubeLimit_gammaProd_ratio` read through
+`gammaProd_ratio_eq_gammaMonomial` of entry 48) plus `exists_norm_gammaMonomial_ge_half`. So the
+non-negligibility of the product reduces to that of the jet polynomial alone, which the corpus
+already owns through the germ eliminator, and the approximant class supplies the rest.
+
+The same reduction also normalises the general case: factoring out `M_β` turns any block into one
+whose reference monomial is `1`, since `∑_α Q_α M_α = M_β·∑_α Q_α(M_α/M_β)` and `M_α/M_β` is
+balanced.
+
+So the remaining gap on card B is now exactly:
+
+> `¬ IsVerticallyNegligible (∑_α Q_α S_α)` for balanced `S_α` with distinct exponent vectors,
+> `S_{α₀} = 1`, and jet polynomials `Q_α` not all zero.
+
+Note that this case is genuinely needed and not vacuous: two exponent vectors share a block iff
+`∑_k (e_α − e_β)_k λ_k = 0`, and for a finite subset of the rank-two lattice `Λ` with three or more
+elements the `λ_k` are ℤ-dependent, so nontrivial blocks occur — the card's own example
+`Γ(s+α)Γ(s+β)` against `Γ(s)Γ(s+α+β)` is one.
+
+## 2026-08-19 — entry 55: the termination condition already exists in the corpus
+
+59. `HTGeometry/GammaMonomialTubeGrowth.lean` — `hasTubePolyGrowth_gammaMonomial`,
+    `IsVerticallyNegligible.mul_gammaMonomial`,
+    **`isVerticallyNegligible_mul_gammaMonomial_iff`**: a balanced monomial is a *unit* for
+    negligibility — multiplying by it changes nothing in either direction.
+
+### The proof of the remaining gap, in full, with every input identified
+
+Goal: `∑_{α∈A} Q_α S_α` negligible, `S_α` balanced with distinct exponent vectors, `Q_α` jet
+polynomials ⟹ every `Q_α = 0`. Induction on `|A|`.
+
+* `|A| = 1`: `Q S` negligible ⟺ `Q` negligible (item 59) ⟹ `Q = 0` by the corpus's germ eliminator.
+* `|A| ≥ 2`: pick `α₀` with `Q_{α₀} ≠ 0` (else drop it and use induction). Apply the unit shift `σ`,
+  which preserves negligibility (`IsVerticallyNegligible.shift`), and cross-multiply:
+
+  ```text
+  σ(Q_{α₀})·Φ  −  ρ_{α₀}^{-1}·Q_{α₀}·σ(Φ)  ≡  0     (mod negligible)
+  ```
+
+  Multiplication by a jet polynomial or by a rational function preserves negligibility
+  (`IsVerticallyNegligible.mul_polyGrowth`). Since `σ(S_α) = ρ_α S_α` with
+  `ρ_α = ∏_k (s+λ_k)^{e_{α,k}}`, the `α₀` term cancels **identically**, leaving `|A| − 1` terms.
+  By induction every new coefficient vanishes:
+  `σ(Q_{α₀})Q_α = Q_{α₀}σ(Q_α)·(ρ_α/ρ_{α₀})`, i.e. with `u = Q_α/Q_{α₀}`,
+
+  ```text
+  σ(u) = u · (ρ_{α₀}/ρ_α),   exponent vector  e_{α₀} − e_α ≠ 0.
+  ```
+
+  That is exactly
+
+  ```text
+  ShiftedGammaFieldIndependence.no_multiplicative_coboundary_digammaField
+      (u : digammaField lam) (hu : u ≠ 0) (mm : Fin r → ℤ) (i₀) (hmm : mm i₀ ≠ 0) :
+    digammaFieldShift lam u ≠ u * ∏ i, (gammaFactor lam i) ^ (mm i)
+  ```
+
+  already in the corpus, unconditional, and proved from pairwise incongruence alone. So every
+  `Q_α = 0` for `α ≠ α₀`, the relation collapses to one term, and the base case kills `Q_{α₀}` —
+  contradicting `Q_{α₀} ≠ 0`.
+
+Every step's input now exists. What remains is engineering, not mathematics: the induction has to be
+run where both objects live at once. The coefficients change type under the shift
+(`Polynomial ℂ` → `RatFunc ℂ`), so the natural home is the germ layer at `upperEndFilter`, where the
+corpus already evaluates jet polynomials over `RatFunc ℂ` (`shiftedJetEval`) and where negligibility
+is an ideal-like subgroup stable under the shift and under rational multiples. The two bridges to
+build are the germ of a Gamma monomial with its shift equation, and the passage from a germ identity
+between jet polynomials to the corresponding identity in `digammaField lam`.
+
+A route that does **not** work, recorded: eliminating with the *derivation* instead of the shift.
+The identity is prettier — `S_α' = L_α S_α` with `L_α = ∑_k e_{α,k}ψ(s+λ_k)` in the jet field, and
+the cross-multiplied combination cancels the `α₀` term just as well — but negligibility is not
+stable under differentiation on a tube, since the distance to the tube boundary does not grow.
+
+## 2026-08-19 — entry 56: both algebraic bridges for the shift elimination
+
+60. `HTGeometry/JetPolynomialShift.lean` — `jetShiftPoly`, `jetShiftPoly_C`, `jetShiftPoly_X`,
+    **`aeval_jetShiftPoly`**: the endomorphism of `MvPolynomial (Fin M) (RatFunc ℂ)` sending
+    `X k ↦ X k + C (familyIncrement …)` and acting on coefficients by `ratShift` induces the unit
+    shift on jet values, `aeval ∘ jetShiftPoly = addTranslationMeroEquiv 1 ∘ aeval`.
+61. `HTGeometry/JetPolynomialCoboundary.lean` — **`no_jetPoly_multiplicative_coboundary`**:
+
+```text
+P ≠ 0, Q ≠ 0, mm i₀ ≠ 0,
+jetShiftPoly rj P * Q = C (∏ i (X + C λ_i)^{mm i}) * (P * jetShiftPoly rj Q)   ⟹   False
+```
+
+The corpus's obstruction `no_multiplicative_coboundary_digammaJets` is stated for the *quotient*
+`aeval P / aeval Q` in the meromorphic field; the shift elimination produces instead a
+**cross-multiplied** identity between polynomials, because dividing is not available in the ring the
+elimination runs in. Item 61 is that restatement: evaluate, use item 60 for the shift, use
+`algebraicIndependent_digammaJet` to know both values are nonzero, and divide once at the end.
+
+So the elimination step is now fully supported. What remains for the block non-negligibility is the
+induction itself, which must run in the germ layer at `upperEndFilter` — the coefficients acquire
+denominators under the shift, so `RatFunc ℂ` coefficients are forced, and `shiftedJetEval` is the
+corpus's evaluation of exactly that ring into germs. The remaining pieces are the germ of a Gamma
+monomial with its shift equation `σ(S_e) = ratFuncGerm(ρ_e)·S_e`, and stability of negligibility
+under multiplication by a `shiftedJetEval` germ.
+
+Note the shape of the induction's conclusion: the inductive hypothesis returns that the new
+coefficients vanish **as polynomials**, not merely as germs, which is precisely the hypothesis
+`no_jetPoly_multiplicative_coboundary` consumes.
+
+## 2026-08-19 — entry 57: the germ layer for the shift elimination is complete
+
+62. `HTGeometry/GammaMonomialGerm.lean` — `gammaMonomialGerm`, `gammaShiftFactor`,
+    `gammaShiftNumer`, `gammaShiftDenom`, `gammaShiftFactor_eq_div`,
+    `ratFuncGerm_gammaShiftFactor`, **`upperEndTranslateGerm_gammaMonomialGerm`**:
+    `σ(S_e) = ratFuncGerm(ρ_e)·S_e`, the eigen-equation the elimination runs on.
+63. `HTGeometry/JetGermPolyGrowth.lean` — `exists_polyGrowth_rep_shiftedJetEval`,
+    `IsGermNegligible.mul_shiftedJetEval`, `IsGermNegligible.mul_coe`.
+64. `HTGeometry/JetGermShift.lean` — **`upperEndTranslateGerm_shiftedJetEval`**: the polynomial
+    shift of item 60 induces the unit shift on germs as well as on the meromorphic field.
+
+Every ingredient the induction consumes now exists:
+
+```text
+base case          isVerticallyNegligible_mul_gammaMonomial_iff  (entry 55)
+                   not_isGermNegligible_shiftedJetEval           (corpus)
+eigen-equation     upperEndTranslateGerm_gammaMonomialGerm       (item 62)
+shift carrier      jetShiftPoly, upperEndTranslateGerm_shiftedJetEval, aeval_jetShiftPoly
+stability          IsGermNegligible .sub .shift .mul_ratFuncGerm .mul_shiftedJetEval
+termination        no_jetPoly_multiplicative_coboundary          (entry 56)
+```
+
+The elimination itself, to be assembled next: with `Φ = ∑_{α∈S} shiftedJetEval(P_α)·S_{e_α}`
+negligible and `P_{α₀} ≠ 0`, the combination
+
+```text
+Ψ := ratFuncGerm(ρ_{α₀})·shiftedJetEval(σP_{α₀})·Φ  −  shiftedJetEval(P_{α₀})·σ(Φ)
+```
+
+is negligible, and expanding it with the two shift laws gives
+`Ψ = ∑_{α∈S} shiftedJetEval(C ρ_{α₀}·σP_{α₀}·P_α − C ρ_α·P_{α₀}·σP_α)·S_{e_α}`,
+whose `α₀` coefficient vanishes identically — note this form needs **no inverses**, which is why the
+elimination can live in the polynomial ring rather than its fraction field. Induction on `|S|` then
+kills every new coefficient, and dividing by the unit `C ρ_{α₀}` puts the surviving identity in
+exactly the shape `no_jetPoly_multiplicative_coboundary` refutes, with `mm = e_α − e_{α₀} ≠ 0`
+supplied by injectivity of `e`.
+
+## 2026-08-19 — entry 58: the shift elimination is proved; the block datum is unconditional
+
+65. `HTGeometry/GammaJetElimination.lean` — `shiftedJetEval_C`, `shiftedJetEval_mul`,
+    `shiftedJetEval_sub`, `shiftedJetEval_zero`, `eq_zero_of_isGermNegligible_single`,
+    `gammaShiftFactor_ne_zero`, `gammaShiftFactor_add`,
+    **`eq_zero_of_isGermNegligible_gammaCombination`**.
+66. `HTGeometry/GammaBlockNonNegligible.lean` — `not_isVerticallyNegligible_balancedBlockSum`,
+    **`exists_hasShiftTubeDatum_balancedBlock`**.
+
+```text
+lam real ≥ 0, shifts pairwise incongruent mod ℤ, idx injective,
+e injective with every e α balanced, some P β ≠ 0
+  ⟹  ∃ a b c, c ≠ 0 ∧ HasShiftTubeDatum M 0 (∑_α jetFieldPolyFun·P α · gammaMonomial·e α) 0 a b c
+```
+
+No `NoIntegerRelation`, no negligibility hypothesis, no premises beyond what the card already
+carries. This closes the obligation opened in entry 54.
+
+Two points worth keeping. First, the induction has to be stated with the coefficient family
+**universally quantified**, because the elimination replaces one family by another; fixing `Pf`
+outside the induction makes the hypothesis unusable — that was the first thing that failed. Second,
+the elimination is inverse-free by design:
+
+```text
+Ψ = ratFuncGerm(ρ_{α₀})·shiftedJetEval(σP_{α₀})·Φ − shiftedJetEval(P_{α₀})·σ(Φ)
+  = ∑_α shiftedJetEval(C ρ_{α₀}·σP_{α₀}·P_α − C ρ_α·P_{α₀}·σP_α)·S_{e_α},
+```
+
+so it lives in the polynomial ring and never needs the fraction field; the single division happens
+at the very end, cancelling the unit `C ρ_{α₀}` to reach the shape
+`no_jetPoly_multiplicative_coboundary` refutes.
+
+What remains on this card is assembly, not mathematics: regroup a normal-form sum by
+`(degree, first moment)`, give each block its datum by item 66, and observe that distinct blocks
+never collide because `primeLog_indep_mod_one` forbids a nonzero element of `Λ` from being an
+integer. That makes every dominance class a single block and discharges `hclass` — the hypothesis
+`NoIntegerRelation` was there to supply and could not.
+
+## 2026-08-19 — entry 59: the block datum over an arbitrary finite index, and the regrouping plan
+
+67. `HTGeometry/GammaBlockFinset.lean` — `gammaMonomial_add`, `gammaProd_eq_gammaMonomial`,
+    **`exists_hasShiftTubeDatum_balancedBlockFinset`**: the datum of entry 58 with the block
+    indexed by a `Finset` rather than a `Fin`, which is what the regrouping produces.
+
+### The regrouping, without any re-indexing
+
+The obvious route — partition `Fin Mm` into blocks and re-index them by `Fin n` — needs an
+equivalence and a great deal of transport. There is a way to avoid it entirely. Put
+
+```text
+key α  = (Γ-degree of e_α, first moment of e_α),      rep α = min of α's fibre,
+n α    = card of α's fibre,                            F α = (1/n α) · (block sum over rep α's fibre).
+```
+
+Then `∑_α F α = ∑_α Q_α M_α`, because each block is counted `n` times with weight `1/n`; each `F α`
+has a datum (the block datum times a nonzero constant); the dominance class of `β` is exactly the
+fibre of `rep β`; and the class sum is `n·(c/n) = c ≠ 0`. So `exists_hasShiftTubeDatum_sum_class`
+applies **on the original index set**, with `hclass` discharged by construction rather than by a
+hypothesis.
+
+The non-collision of distinct blocks is where the card's arithmetic enters, and it is robust to the
+coefficients: block shapes are `(d_i, a_i + moment_i, b_i)` with `a_i ∈ ℤ`, so two blocks share a
+shape only if `moment_i − moment_j ∈ ℤ`, which `primeLog_indep_mod_one` forbids unless the moments
+are equal — i.e. unless the blocks coincide.
+
+Also cleaned: eleven Lean warnings across six modules from earlier in this run (`simpa`→`simp`,
+`push_neg`→`push Not`, `tendsto_finset_sum`→`tendsto_finsetSum`,
+`DifferentiableAt.fun_finset_prod`→`…fun_finsetProd`, unused simp arguments and one unused binder).
+The formal lint gate fails on warnings, so these had to go before the sweep can be declared clean.

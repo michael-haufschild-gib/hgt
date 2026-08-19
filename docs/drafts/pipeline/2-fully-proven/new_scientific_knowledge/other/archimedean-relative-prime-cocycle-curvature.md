@@ -526,3 +526,111 @@ model**: the injection of the shifted Gamma jet field into `ℂ(log s)((s^{-1}))
 nonzero element a boundary datum from the first nonvanishing transseries coefficient, replacing
 `NoIntegerRelation` by pairwise incongruence.  This is ledger blocker 3, and it is shared with
 `finite-archimedean-gamma-product-boundary-law` §4–§6.  Everything else on this card is Lean.
+
+## Lean status 2026-08-19 — the Stirling signature separation is unconditional
+
+The card's own diagnosis was that `NoIntegerRelation` "is used exactly to make the exponent
+functional `e ↦ ∑ e_i λ_i` separate distinct Gamma monomials", that under pairwise incongruence
+alone two distinct monomials can share `(degree, ω, b)` — the card's example being `Γ(s+α)Γ(s+β)`
+against `Γ(s+α+β)Γ(s)` — and that the datum therefore has to be read from the **complete Stirling
+signature**, by Vandermonde on the signed moments.
+
+That separation is now Lean-proved unconditionally, with distinctness of the shifts as the only
+hypothesis. Sixteen new modules; the chain and the individual statements are recorded in
+`docs/drafts/pipeline/1-in-progress/other-stage3-closure-ledger.md`, entries 25–30, and summarised
+on the parent card `finite-archimedean-gamma-product-boundary-law`. The two statements this card
+consumes are
+
+```text
+HTGeometry/GammaShiftLadder.lean
+  exists_norm_shiftLadderDefect_le
+      ψ(s+μ) = log s − ∑_{m<M} d_m(μ) s^{−(m+1)} + O(‖s‖^{−(M+1)}), every M, every μ
+HTGeometry/GammaShiftMonomialSeparation.lean
+  natExponent_eq_of_digamma_shift_sum_eq
+      distinct shifts + equal ∑_k e_k ψ(t+λ_k) on a real ray  ⟹  equal exponent vectors
+```
+
+together with `natDegree_shiftLadderCoeffPoly` (`deg d_m = m+1` exactly, top coefficient
+`(−1)^{m+1}/(m+1) ≠ 0`), which is the triangularity that makes the moment matrix invertible, and
+`eq_zero_of_ladder_moments_vanish`, the Vandermonde step, proved through the Lagrange basis rather
+than a determinant.
+
+**What this does not yet do.** It separates monomials *analytically*; it does not by itself refit
+`GammaJetNormalFormDatum`, whose `HasShiftTubeDatum` records only the leading data
+`(degree, ω, b, c)` and therefore cannot see the higher moments. Completing this card still needs
+the boundary datum to be re-architected around the first nonvanishing transseries coefficient — the
+analytic engine for which is now entirely in place, since
+`exists_norm_digamma_shift_sum_leading` (`HTGeometry/GammaShiftSignatureOrder.lean`) locates that
+coefficient and supplies the matching estimate.
+
+### Addendum 2026-08-19 — the separation is available in the card's own geometry
+
+The separation quoted above was first proved along the real ray. It is now also proved on vertical
+lines, which is where this card's boundary data live:
+
+```text
+HTGeometry/PowerExpansionAlongRay.lean
+  power_expansion_eq_zero_ray, log_power_expansion_eq_zero_ray
+      the reading principle along any sequence with ‖S n‖ → ∞
+HTGeometry/GammaShiftSumSeparationRay.lean
+  eq_zero_of_digamma_shift_sum_small_vertical
+      on σ + i t with σ > 0: ∑_k g_k ψ(s+λ_k) = O(‖s‖^{−r}) and distinct shifts ⟹ g = 0
+```
+
+The ladder needed no change — it already holds on `Re s > 0`, `‖s‖ ≥ R`, hence on every vertical
+line in the right half plane. Only the reading principle was ray-specific, and it is not any more.
+
+### Addendum 2026-08-19 (second) — the card's own separating example is now Lean-proved
+
+The card names `Γ(s+α)Γ(s+β)` against `Γ(s+α+β)Γ(s)` as the pair that shares `(degree, ω, b)` and
+whose leading terms can cancel, concluding that the datum "has to be read from the complete Stirling
+signature". There is a second route, entirely algebraic, and it is now closed:
+
+```text
+HTGeometry/GammaMonomialShift.lean         gammaMonomial, gammaMonomial_shift_of_re
+HTGeometry/SignedShiftProductLogDeriv.lean deriv_logDeriv_zpowShiftProd
+                                           not_shiftDifference_deriv_logDeriv_zpowShiftProd
+HTGeometry/SignedShiftOrbitMass.lean       not_shiftDifference_weightedSumInvSq_orbit
+HTGeometry/IncongruentShiftObstruction.lean not_shiftDifference_signedInvSq_of_incongruent
+HTGeometry/RationalShiftRatio.lean         not_rational_shiftRatio_zpowShiftProd
+HTGeometry/AnalyticCofiniteTransfer.lean   eventuallyEq_cofinite_of_analytic_compl_finite
+HTGeometry/GammaMonomialNotRational.lean   not_rational_gammaMonomial
+HTGeometry/GammaMonomialPairIndependence.lean
+  not_rational_gammaMonomial_ratio
+      **two distinct Gamma monomials are not proportional over the rational function field**,
+      assuming only that the shifts are pairwise incongruent modulo ℤ — the hypothesis this card
+      already carries through `primeLog_indep_mod_one`.
+```
+
+The whole chain uses no asymptotics: the Gamma functional equation turns a putative rational ratio
+into a rational shift relation, two logarithmic derivatives turn that into the equation §3 of the
+parent card forbids, and the signed orbit-mass computation closes it. `NoIntegerRelation` never
+appears.
+
+Remaining: the shift-and-subtract induction from two monomials to `N`, and the re-fitting of
+`GammaJetNormalFormDatum` around it.
+
+### Addendum 2026-08-19 (third) — linear independence of Gamma monomials
+
+The pair case recorded above is now the base case of the general statement:
+
+```text
+HTGeometry/GammaMonomialClearedFactor.lean
+  clearedShiftFactor, eval_clearedShiftFactor, exists_clearing_power
+HTGeometry/GammaMonomialLinearIndependence.lean
+  shiftEliminate, shiftEliminate_self, polynomial_eq_zero_of_half_plane
+  gammaMonomial_linearIndependent
+      ∑_α R_α(s) ∏_k Γ(s+λ_k)^{e_{α,k}} = 0 on a right half plane, R_α polynomial, the exponent
+      vectors pairwise distinct, the shifts pairwise incongruent mod ℤ  ⟹  every R_α = 0.
+```
+
+This is the statement the card's §"Finite Gamma-monomial Stirling signatures separated by formalized
+Vandermonde moments" gate asks for, obtained without any Vandermonde and without any asymptotics:
+the Gamma functional equation, one elimination step, and the shift-orbit mass obstruction of the
+parent card's §3 in its signed form.
+
+Remaining on this card: re-fitting `GammaJetNormalFormDatum`. Its `HasShiftTubeDatum` records only
+`(degree, ω, b, c)`, and `exists_hasShiftTubeDatum_gammaCoeffSum` asks for the sum of constants over
+the dominant class to be nonzero; linear independence is what makes that hypothesis derivable rather
+than assumed, since a vanishing class sum exhibits a nontrivial relation among the monomials of the
+class.

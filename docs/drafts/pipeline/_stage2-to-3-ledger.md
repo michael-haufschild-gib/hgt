@@ -4267,3 +4267,50 @@ projector has to lie in `Q`, because the adjoined kernel term is what needs kill
 transport is exact.  Second, the constant is attained (for `su(2)` the spectrum of `K` on `ad ⊗ ad`
 is `{0, 2D², 3·2D²}`), so every step in the chain had to be exact -- which is why the normalization
 route, not a scalar estimate, is the only one that closes.
+
+## `new_scientific_knowledge/ht/helson-universal-ht-arbitrary-divisor-orthogonality` — promoted 2026-08-19
+
+The last of the card's three cited classical inputs is now a theorem in this tree, so the whole card
+is formal.  Promotion note, because the build is large and the pieces are reusable.
+
+What the card needed and where it now lives:
+
+- **Pong's Theorem 5.9's conclusion** (already formal before this sweep) —
+  `algebraicIndependent_helsonZetaShiftedJets_over_finitePrimeRationalCoefficientField`,
+  `helsonLabelledAlgEquiv`, `differentialIndependentAdjoinAlgEquiv_unique`.
+- **Saksman–Webb/Seip's almost-sure meromorphic abscissa**, in the form the card consumes
+  (`Haar(M) = 0`) — `RHTower/HelsonStratumNull.lean`, proved from scratch.
+- **Andersson's arbitrary-divisor continuation theorem for `U = ℂ`** — built in this sweep.
+
+The Andersson chain, end to end:
+
+- `RHTower/Sieve/CharacterStacking.exists_andersson_character` — Lemma 7 for the **full** remainder
+  chain `∫_1^x q + ∑_{n ≤ x} χ(n)Λ(n)` and all its iterated integrals.  The datum is absorbable only
+  because Lemma 1 delivers `q = o(1)`: over a window of length `L` its Taylor remainder costs `Mq·L`
+  against a Rayleigh floor proportional to `L`, so a global bound is not enough and the size
+  condition is split into four quarters (state, forced prime powers, datum, slack) with
+  `datumSlack J = 1/(262144 J² · blockRayleighConst J)`.
+- `RHTower/AnderssonTheoremOne.exists_character_entire_remainder` — Theorem 1.  The `j`-th Mellin
+  representation converges on `Re s > (j+1)ϑ + 2θ - j` with `ϑ = θ + (1-θ)/3 < 1`, so the abscissas
+  decrease to `-∞`; the identity theorem plus a first-admissible-index gluing turns the family into
+  one entire function (`HTGeometry/HalfPlaneSequenceGluing.lean`), and holomorphy of each member
+  comes from `HTGeometry/HalfPlaneMellinAnalytic.lean`.
+- `HTGeometry/HelsonCharacterLSeries.logDeriv_helsonZetaValue` — the Euler product of a Helson
+  character is its Dirichlet series (mathlib's completely multiplicative Euler product applied to
+  the completely multiplicative extension `phaseChar`), and the twisted `Λ ⋆ 1 = log` identifies its
+  logarithmic derivative with `-L(χΛ, s)`.
+- `RHTower/AnderssonTheoremTwo` — Theorem 2 by an entire primitive (Morera) and a constancy argument
+  on a half plane, transported to `Re s > 1` by the identity theorem; then the divisor statement.
+- `HTGeometry/WeierstrassProductMultiplicity`, `RHTower/AnderssonDivisorAtOrigin`,
+  `RHTower/LocallyFiniteDivisorPresentation` — the divisor side made exact: the order of a
+  Weierstrass product is the multiplicity in the zero sequence, an integer power of `z` supplies an
+  order at the origin, and an arbitrary locally finite signed divisor is presented by two sequences
+  whose auxiliary points cancel.  The capstone
+  `exists_continuable_phase_with_prescribed_locallyFinite_divisor` is surjectivity in the literal
+  sense.
+
+Two facts worth reusing.  First, `HalfPlaneMellinAnalytic` turns any `‖f‖ ≤ x^ρ log x` tail bound
+into convergence *and* holomorphy of `∫_1^∞ f x^{-w} dx` on `Re w > ρ + 1`, which is the standard
+entry point for every Mellin continuation argument.  Second, the four-quarter split in the window
+recursion is the general shape for adding any bounded perturbation to a rounding construction: the
+perturbation must be `o(1)` relative to the floor, and the floor is linear in the window length.

@@ -3169,3 +3169,1119 @@ under equivalence of matrices.
 Sylvester-type block matrix `[T(Y) | T(A)]`, whose determinant reduces by Schur complement to the
 `m × m` `criticalReciprocalJacobian` already in the tree — the elimination of `b`, which is
 determined by `a` through `B ≡ A⁻¹`.
+
+## Lean progress — the Jacobian–different bridge is CLOSED
+
+```text
+HTGeometry/CotangentPresentationCokernel.lean
+    relationCotangent_surjective        the relations generate the conormal module
+    cotangentSpaceEquiv, cotangentSpaceEquiv_cotangentComplex
+    map_range_cotangentComplex          range(cotangentComplex) ↦ range(aevalDifferential)
+    annihilator_eq_of_linearEquiv
+    kaehlerEquivCoker                   Ω[S⁄R] ≃ₗ (ι → S) ⧸ range(aevalDifferential)
+    annihilator_kaehler_eq_span_jacobian
+        ** over a DVR, with the reduced Jacobian of corank one,
+           Ann (Ω[S⁄R]) = (P.jacobian) **
+```
+
+With `JacobianKaehlerAnnihilator.jacobian_smul_kaehler_eq_zero` (already in the tree) supplying the
+forward containment, the different of a square presentation is now *exactly* the Jacobian ideal at
+any place where the reduced Jacobian has corank one.  Two mathlib facts made the proof short:
+`Algebra.Extension.Cotangent.span_eq_top_of_span_eq_ker` (the relations span the conormal module)
+and `Algebra.Extension.exact_cotangentComplex_toKaehler`.
+
+Step `(a)` of the `(R)` route is therefore done, and `(R)` is now purely corpus-side:
+
+```text
+(b) the critical fibre as a PreSubmersivePresentation over the observation Schur DVR
+(c) that presentation's Jacobian = criticalReciprocalJacobian
+(d) corank one at the Schur place, transported by SquareMatrixCorankOne
+(e) v(Jac) = 1                                                              corpus ✓
+```
+
+`(b)` is the construction to write next: `m + n` variables `a_0 … a_{m-1}, b_0 … b_{n-1}` and the
+`m + n` relations `f_k = [X^k] ((A + P)(B + Q) - 1)`, square as `PreSubmersivePresentation`
+requires, whose Jacobian is the Sylvester block `[T(Y) | T(A)]`.  Its Schur complement — eliminating
+`b`, which `B ≡ A⁻¹` determines from `a` — is the `m × m` `criticalReciprocalJacobian` the tree
+already carries, which is what `(c)` has to prove.
+
+## Lean progress — steps `(a)` and `(b)` of `(R)` are DONE, and `(c)`'s differential is computed
+
+```text
+HTGeometry/CotangentPresentationCokernel.lean     (built)
+    annihilator_kaehler_eq_span_jacobian
+        ** over a DVR with the reduced Jacobian of corank one, Ann (Ω[S⁄R]) = (P.jacobian) **
+
+HTGeometry/HorizonFibrePresentation.lean          (built)
+    horizonRawCoeff, horizonRecipCoeff, horizonRelation, horizonFibreAlgebra
+    horizonPresentation
+        ** the critical fibre as a SQUARE PreSubmersivePresentation, with map = id **
+
+HTGeometry/HorizonPresentationDifferential.lean
+    pderiv_horizonRelation_rawVar      ∂ f_k / ∂ a_{i₀} = Y_{k-i₀}   (i₀ ≤ k), else 0
+    pderiv_horizonRelation_recipVar    ∂ f_k / ∂ b_{j₀} = A_{k-j₀}   (j₀ ≤ k), else 0
+```
+
+`(b)` was far cheaper than expected: mathlib's `Algebra.Presentation.naive` presents
+`R[X_σ] ⧸ span (range v)` directly, so the critical fibre presentation is a definition, not a
+construction.  And `map = id` is exactly the hypothesis both bridge theorems consume.
+
+The differential is therefore the Sylvester block `[T(Y) | T(A)]`, as predicted.  What remains of
+`(c)` is one matrix identity:
+
+```text
+T_Y^full · [T(Y) | T(A)] = [ first m columns of T(Y²) | e_0 … e_{n-1} ]
+```
+
+because `T_Y^full` is the inverse of `T_A^full` (as `A Y ≡ 1` to the horizon) and has unit
+determinant.  Laplace expansion along the identity columns then leaves exactly
+`det (rectangularSchurToeplitz (Y²) n m)` — the corpus's `criticalReciprocalJacobian`, up to sign.
+That is `(c)`; `(d)` transports corank one to the Schur place through `SquareMatrixCorankOne`.
+
+## Lean progress — step `(c)` of `(R)` is CLOSED
+
+Seven modules, all built, chain into the identification of the abstract presentation Jacobian with
+the concrete Schur equation:
+
+```text
+HTGeometry/HorizonPresentationDifferential.lean
+    ∂ f_k / ∂ a_{i₀} = Y_{k-i₀},   ∂ f_k / ∂ b_{j₀} = A_{k-j₀}
+HTGeometry/HorizonCompletedJets.lean
+    horizonRelation k = (rawJet * recipJet - 1).coeff k
+HTGeometry/HorizonFibreJetInverse.lean
+    X^(m+n) ∣ rawJetFibre * recipJetFibre - 1
+HTGeometry/TruncatedToeplitz.lean
+    toeplitz_mul, det_toeplitz, toeplitz_mul_toeplitz_of_inverse
+HTGeometry/IdentityCornerDeterminant.lean
+    associated_det_of_identity_columns
+HTGeometry/HorizonSylvesterDifferential.lean
+    transpose_toMatrix'_aevalDifferential      differentialᵀ = [ T(Y) | T(A) ]
+HTGeometry/HorizonJacobianSchurDeterminant.lean
+    toeplitz_mul_horizonSylvester              T(Y) · [ T(Y) | T(A) ] = [ T(Y²) | 1 ]
+    associated_jacobian_rectangularSchurToeplitz
+        ** the presentation Jacobian is ASSOCIATED to
+           det (rectangularSchurToeplitz ((Y·Y).coeff) n m) **
+```
+
+The Toeplitz calculus is what makes this elementary: `T(F) T(G) = T(F G)` turns the fibre relation
+`A Y ≡ 1` into a literal matrix inverse, with no completion and no limits, so the raw block of the
+Sylvester matrix becomes an identity corner and the reciprocal block becomes `T(Y²)`.
+
+### Status of `(R)`
+
+```text
+(a) Ω ≅ coker (Jacobian), Ann Ω = (jacobian)     CotangentPresentationCokernel      DONE
+(b) the critical fibre as a square presentation  HorizonFibrePresentation           DONE
+(c) that Jacobian = the Schur determinant        HorizonJacobianSchurDeterminant    DONE
+(d) corank one at the Schur place                SquareMatrixCorankOne + corpus     OPEN
+(e) v(Jac) = 1                                   corpus                             DONE
+```
+
+With `(d)`, `annihilator_kaehler_eq_span_jacobian` gives `𝔇 = (Jac)`, hence `v(𝔇) = 1`, hence
+`e = 2` through the already-landed `ramificationIdx_eq_two_of_derivative_uniformizer` — which is
+`(R)`.
+
+## The Jacobian–different bridge is OWNED, and what `(d)` still needs
+
+```text
+HTGeometry/PresentationDifferentJacobian.lean          (built)
+    annihilator_kaehler_eq_span_jacobian_of_det_eq_zero
+        ** square presentation over a DVR, reduced Jacobian with det 0 and one surviving
+           codimension-one cofactor  ⟹  Ann (Ω[S⁄R]) = (P.jacobian) **
+HTGeometry/SquareMatrixCorankOne.lean                  (extended, built)
+    rank_add_one_eq_of_det_eq_zero, rank_map_add_one_eq_of_det_eq_zero
+        corank one in the rank form the annihilator theorem consumes, and its transport
+        along any extension of the coefficient field
+```
+
+The hypothesis shape — `det = 0` plus one surviving cofactor — is exactly the pair the corpus
+already proves for the Schur matrix (`criticalSchurGenericMatrix_det_eq_zero`,
+`criticalSchurGenericMatrix_cornerCofactor_ne_zero`), and `rank_map_add_one_eq_of_det_eq_zero`
+carries it from the function field of the Schur divisor to the residue field of the upper place.
+
+**What `(d)` still needs, exactly.**  Two identifications, both corpus-side:
+
+```text
+(d1) instantiate horizonPresentation over the observation Schur DVR, and identify
+     horizonFibreAlgebra with the localised source order
+(d2) Ann (Ω[B⁄A]) = differentIdeal A B for a monogenic extension of Dedekind domains
+```
+
+`(d2)` is the last general theorem of the chain.  Note it does **not** need corank one: for a
+monogenic presentation the Jacobian matrix is `1 × 1`, the cotangent module is `B ⧸ (p'(x))`, and
+the annihilator of a cyclic quotient is its defining ideal
+(`ConstraintRelativity.MonogenicKaehler.annihilator_monogenicOmega`, already in the tree, stated for
+`AdjoinRoot`).  What has to be supplied is the transport along `B ≃ₐ[A] AdjoinRoot (minpoly A x)`,
+which is `AdjoinRoot.minpoly.equivAdjoin` composed with `Subalgebra.topEquiv` under
+`Algebra.adjoin A {x} = ⊤`.
+
+With `(d1)` and `(d2)`, `annihilator_kaehler_eq_span_jacobian_of_det_eq_zero` gives `𝔇 = (Jac)`,
+`addVal_criticalSchurJacobianDetElement_eq_one` gives `v(𝔇) = 1`, and the already-landed
+`ramificationIdx_eq_two_of_derivative_uniformizer` gives `e = 2` — which is `(R)`.
+
+### `(d2)` in detail: what the transport needs, and why it cannot be dodged
+
+`(d2)` is `Ann (Ω[B⁄A]) = differentIdeal A B` for a monogenic extension.  The right-hand side is
+`span {p'(x)}` (`DifferentIdealMonogenic.differentIdeal_eq_span_aeval_derivative`), and the
+left-hand side is `span {p'(root)}` for `AdjoinRoot (minpoly A x)`
+(`ConstraintRelativity.MonogenicKaehler.annihilator_kaehler`).  So the whole content is the
+transport along
+
+```text
+minpoly.equivAdjoin :  AdjoinRoot (minpoly A x) ≃ₐ[A] adjoin A {x}          (mathlib)
+Subalgebra.topEquiv :  adjoin A {x} = ⊤  ⟹  adjoin A {x} ≃ₐ[A] B
+```
+
+Two routes were tried and the second is the one to take.
+
+* Redoing the `MonogenicKaehler` construction directly for `B` rather than for `AdjoinRoot` does
+  **not** avoid anything: well-definedness of `g(x) ↦ g'(x)` needs exactly that the kernel of
+  `A[X] → B` is `(minpoly)`, which is `minpoly.equivAdjoin` again.
+* So the transport must be built.  Neither mathlib nor the corpus has "Kähler differentials
+  transport along an algebra isomorphism"; it is a general, reusable theorem.  The plumbing point
+  learned here: do not put the pulled-back `Module B Ω[C⁄A]` in the *statement* — instead take
+  `[Algebra B C]` `[IsScalarTower A B C]` with `algebraMap B C` bijective as hypotheses, so that
+  `KaehlerDifferential.map A A B C : Ω[B⁄A] →ₗ[B] Ω[C⁄A]` typechecks with the instance coming from
+  the algebra structure rather than from `Module.compHom`.
+
+## Lean progress — `(d2)` is CLOSED, and `(R)`'s mathematical content is now a general theorem
+
+```text
+HTGeometry/KaehlerAnnihilatorTransport.lean            (built)
+    annihilator_kaehler_map_of_surjective
+    annihilator_kaehler_algEquiv
+        ** the annihilator of Ω is an isomorphism invariant **
+HTGeometry/MonogenicKaehlerAnnihilator.lean            (built)
+    monogenicEquiv, monogenicEquiv_mk
+    annihilator_kaehler_monogenic       Ann (Ω[B⁄A]) = (p'(x))  for B = A[x]
+HTGeometry/JacobianDerivativeOrder.lean                (built)
+    span_jacobian_eq_span_aeval_derivative        (P.jacobian) = (p'(x))
+    addVal_aeval_derivative_eq_addVal_jacobian    v(p'(x)) = v(P.jacobian)
+HTGeometry/DifferentIdealJacobian.lean                 (built)
+    differentIdeal_eq_span_jacobian
+        ** differentIdeal A B = (P.jacobian) for a square presentation over a DVR whose
+           reduced Jacobian has det 0 and one surviving codimension-one cofactor **
+```
+
+The transport was the only genuinely missing piece, and it is shorter than expected: **only the
+push-forward along a surjection is needed, applied twice — once in each direction of the
+isomorphism** — so no injectivity, no inverse Kähler map, and none of the `Module.compHom` plumbing.
+The push-forward itself is three lines from `KaehlerDifferential.map_surjective_of_surjective`.
+
+So the mathematical content of `(R)` is now a general theorem: **the divisorial order of the
+different is the order of the presentation Jacobian**, hence a Jacobian that is a uniformizer is a
+simple fold.
+
+### `(d1)`, and what it really asserts
+
+`(d1)` is not bookkeeping.  It asks for an isomorphism between `horizonFibreAlgebra` — localised at
+the Schur point — and the source Schur DVR `criticalSchurSourceValuationSubring`.  That is the
+statement that the total space of the critical fibration is **regular at the fold**, i.e. that the
+local ring of the fibre algebra there is a discrete valuation ring.  It is the last geometric input
+of `(R)`, and it should be attacked through the corank-one datum: a hypersurface singularity of
+embedding dimension one whose defining equation has order one is regular.
+
+## A shorter road to `(R)`: `(d1)` is not needed, and the fold condition is not needed either
+
+Two corrections, both of which shrink the remaining work.
+
+**First correction — `(R)` as the card consumes it is only `e ≥ 2`.**  The endgame theorem in the
+tree is
+
+```text
+criticalGeometricMonodromy_eq_top_of_ramification_of_degree_of_isPreprimitive
+    hram  : 2 ≤ Ideal.ramificationIdxIn (maximalIdeal (CriticalSchurNormalBaseRing …)) …
+    hdeg  : Nat.card sheets ≤ (range criticalGeometricSheetToSchurReducedFibre).ncard + 1
+    hprim : IsPreprimitive …
+```
+
+so the sharp form `e = 2` — which is what forced the different, monogenicity, the presentation and
+`(d1)` — is *not* what the card needs.  It needs only **ramification**, `e ≥ 2`.  The sharp form
+remains a theorem worth having (`DifferentOrderOneSimpleFold`,
+`DifferentIdealKaehlerAnnihilator`), but it is not on the critical path.
+
+**Second correction — ramification is the *nonvanishing* of the relative differentials, and that
+needs no corank, no reducedness, and no fold condition.**  Over a local base with a discrete
+valuation ring upstairs and separable residue extension,
+
+```text
+Algebra.FormallyUnramified.of_map_maximalIdeal  (mathlib)
+    𝔪_A B = 𝔪_B   ⟹   Ω[B⁄A] = 0
+```
+
+so `Ω[B⁄A] ≠ 0` gives `𝔪_A B ≠ 𝔪_B`, hence — a nonzero ideal of a DVR other than the maximal ideal
+lies in its square — `𝔪_A B ⊆ 𝔪_B²`, which is `e ≥ 2`.  And `Ω[B⁄A] ≠ 0` is *exactly* the statement
+that the coordinate Jacobian is not invertible, which the tree already owns twice over
+(`criticalSourceReciprocalJacobian_det_eq_schurRamification`,
+`addVal_criticalSchurJacobianDetElement_eq_one`).
+
+Recorded because a whole session was spent on the alternative: the second-order (Morin) fold
+condition `⟨dσ, u⟩ ∉ P`, which *is* needed if one insists on computing `e` from valuations of
+observation functions, is **not** needed here.  Only `det ∈ 𝔪` is.
+
+### Lean progress — the general half of the new route is CLOSED
+
+```text
+HTGeometry/KaehlerRelativeSpan.lean                        (built)
+    range_mapBaseChange_eq_span     range (mapBaseChange R A B) = span B {D a | a ∈ A}
+    kaehlerQuotientEquiv            Ω[B⁄R] ⧸ span B {D a | a ∈ A}  ≃ₗ[B]  Ω[B⁄A]
+    cotangentVanishingSubalgebra    elements with differential in a submodule form a subalgebra
+    D_mem_of_adjoin_eq_top          ** differentials of algebra generators suffice **
+    D_mem_of_isLocalization         ** differentials of a ring the base localizes suffice **
+HTGeometry/KaehlerRamificationCriterion.lean               (built)
+    isUnit_det_of_span_eq_top       a spanning family of the right size has unit determinant
+    le_maximalIdeal_sq_of_ne        a nonzero non-maximal ideal of a DVR lies in 𝔪²
+    map_maximalIdeal_le_sq_of_not_subsingleton
+        ** Ω[B⁄A] ≠ 0  ⟹  𝔪_A B ⊆ 𝔪_B²  **
+HTGeometry/MvPolynomialLocalizationCotangent.lean          (built)
+    mvPolynomialLocalizationCotangentBasis                 (arbitrary base ring)
+    mvPolynomialLocalizationCotangentBasis_repr_D_algebraMap
+        ** in the localized cotangent basis, D f has the partial derivatives of f **
+HTGeometry/KaehlerJacobianRamification.lean                (built)
+    not_subsingleton_kaehler_of_not_isUnit_det
+    map_maximalIdeal_le_sq_of_not_isUnit_det
+        ** ¬ IsUnit (det of the coordinate Jacobian)  ⟹  𝔪_A B ⊆ 𝔪_B²  =  (R) **
+HTGeometry/DifferentIdealKaehlerAnnihilator.lean           (built)
+    differentIdeal_eq_annihilator_kaehler
+        ** the Dedekind different is the Kähler different, for a Dedekind order over a local
+           domain with characteristic-zero residue field **
+```
+
+`LocalizedMvPolynomialCotangent` (already in the tree, over `ℂ`) supplied the pattern for the
+arbitrary-base version; only the base ring had to be generalized.
+
+### What remains for `(R)`, exactly
+
+Only the instantiation, and it is now a list of identifications rather than new mathematics:
+
+```text
+k := K,  B := the source Schur DVR       criticalSchurSourceValuationSubring
+                                         ≅ Localization.AtPrime (criticalSchurPrimeDivisor)
+         A := the observation Schur DVR  criticalSchurObservationValuationSubring
+         y := the observation coordinates criticalFieldObservation, as elements of A
+         b := mvPolynomialLocalizationCotangentBasis K (criticalSchurRamificationIdeal)
+    hgen := D_mem_of_isLocalization ∘ D_mem_of_adjoin_eq_top     (A is K(y) localized)
+    hdet := the coordinate Jacobian determinant is the Schur ramification polynomial,
+            which lies in the Schur prime                        criticalSourceReciprocal-
+                                                                 Jacobian_det_eq_schurRamification
+  ⟹ 𝔪_A B ⊆ 𝔪_B²  ⟹  2 ≤ e(Q₀ | 𝔪_A)
+  ⟹ 2 ≤ e(W | 𝔪_A) ≤ ramificationIdxIn      (W the normal-closure Schur place above Q₀)
+```
+
+### Lean progress — `dY = -Y² dX` as a Kähler identity, and the factorization that removes a basis
+
+```text
+HTGeometry/PolynomialDerivationReciprocal.lean             (built)
+    polyD                    coefficientwise extension of a derivation to polynomials,
+                             valued in PolynomialModule
+    polyD_add, polyD_mul, polyD_one, polyD_X_pow           Leibniz and the constants
+    coeff_X_pow_smul_of_lt
+    polyD_reciprocal
+        ** X^L ∣ f g − 1  ⟹  d (g_l) = −∑_{i+j=l} (g²)_i • d (f_j)  for l < L **
+HTGeometry/KaehlerJacobianFactorization.lean               (built)
+    coordinate_matrix_mul            [v]_b = [w]_b · P  when  v j = ∑ P i j • w i
+    not_isUnit_det_of_eq_smul_comb
+    map_maximalIdeal_le_sq_of_factorized_jacobian
+        ** the auxiliary family w need NOT be a basis **
+```
+
+`polyD_reciprocal` is the exact Kähler form of the corpus's `criticalReciprocalInfinitesimal`
+identity: in the differentials of the *raw* coordinates, the differential of the reciprocal
+coefficient `c_l` has coordinates `−(Y²)_{l−j}`, i.e. the rectangular Schur Toeplitz row.  So the
+observation Jacobian in the raw differentials is the block matrix
+
+```text
+rows  a_{m+i}  :  the identity on the high raw columns
+rows  c_{n+j}  :  −(Y²)_{n+j−k}
+```
+
+whose determinant is, by `IdentityCornerDeterminant.associated_det_of_identity_columns`, the
+`m × m` determinant `criticalReciprocalJacobian`, already identified with the Schur ramification
+polynomial.
+
+`KaehlerJacobianFactorization` is the step that makes this usable: because the coordinate matrix of
+a family changes by *right* multiplication, only the transition matrix `P` (the raw Jacobian) needs
+a non-unit determinant — the intermediate family `w = {D a_i}` never has to be shown to be a basis.
+The basis may therefore be taken from **whatever presentation of the local ring is available**,
+which in this tree is the Schur-coordinate one.
+
+### The remaining wiring, in dependency order
+
+```text
+(A) a basis of Ω[B⁄K] for B the source Schur DVR
+        = present B as a localization of the Schur coordinate polynomial ring
+          (criticalSchurSourceValuationRingEquiv + IsDiscreteValuationRing.equivValuationSubring),
+          then mvPolynomialLocalizationCotangentBasis
+(B) D (observation coordinate) = ∑ (raw Jacobian) • D (raw coordinate)   PolynomialDerivationReciprocal
+(C) det (raw Jacobian) ∈ 𝔪_B                                            corpus, twice over
+(D) D a ∈ span {D y_j} for a in the observation DVR                     KaehlerRelativeSpan
+(E) the instance stack: Algebra K A, Algebra A B, IsScalarTower, IsLocalHom,
+    EssFiniteType A B, IsSeparable (ResidueField A) (ResidueField B), 𝔪_A B ≠ ⊥
+(F) transport 𝔪_A B ⊆ 𝔪_B² to 2 ≤ ramificationIdxIn 𝔪_A C for the normal closure C
+```
+
+Everything general is now proved; `(A)`–`(F)` are identifications inside this tree.
+
+### Lean progress — step `(A)` is CLOSED: the source Schur place has a coordinate cotangent basis
+
+```text
+HTGeometry/MvPolynomialLocalizationCotangent.lean          (extended, built)
+    localizationCotangentBasis                 for ANY localization, not just Localization.AtPrime
+    localizationCotangentBasis_repr_D_algebraMap
+HTGeometry/CriticalSchurSourceCotangent.lean               (built)
+    criticalSchurCoordinateLocalizationEquiv
+        Localization.AtPrime (Schur prime) ≃+* criticalSchurCoordinateValuationSubring
+    criticalSchurSourceLocalizationEquiv
+        Localization.AtPrime (Schur prime) ≃+* criticalSchurSourceValuationSubring
+    criticalSchurSourceValuationAlgebra          Schur coordinate ring acts
+    criticalSchurSourceValuation_isLocalization
+        ** the actual source Schur valuation ring IS a localization of the coordinate ring **
+    criticalSchurSourceValuationGroundAlgebra, criticalSchurSourceValuationGroundTower
+    criticalSchurSourceCotangentBasis
+        ** Ω[B⁄K] is free on the Schur coordinate differentials **
+```
+
+The transport was three lines: `IsDiscreteValuationRing.equivValuationSubring` matches
+`criticalSchurCoordinateValuationSubring` definitionally, and
+`IsLocalization.isLocalization_of_algEquiv` moves the localization property across the composite.
+
+### Lean progress — steps `(B)`, `(C)`, `(E)` are CLOSED, and `(A)` is CLOSED
+
+```text
+HTGeometry/CriticalSchurSourceIntegralModels.lean          (built)
+    criticalSourceRawIntegral, criticalSourceRecipIntegral
+    criticalSourceRawPolynomialIntegral, criticalSourceRecipPolynomialIntegral
+    X_pow_dvd_criticalSourceIntegral_mul_sub_one
+    D_criticalSourceRecipPolynomialIntegral_coeff            ** (B): dY = −Y² dX at the place **
+HTGeometry/CriticalSchurObservationSourceAlgebra.lean       (built)
+    coe_algebraMap_criticalSchurSourceValuation
+    coe_algebraMap_ground_criticalSchurSourceValuation
+    criticalSchurObservationGroundAlgebra
+    criticalSchurObservationSourceAlgebra, …_isLocalHom
+    criticalSchurObservationSourceTower
+    criticalSchurSourceValuation_essFiniteType_ground / _observation
+    criticalSchurResidue_isAlgebraic                         ** κ_B/κ_A is algebraic **
+    criticalSchurObservation_map_maximalIdeal_ne_bot         ** (E) **
+HTGeometry/ValuationSubringResidueAlgebraic.lean            (built)
+    exists_max_valuation
+    valuationSubringComapAlgebra, …_isLocalHom
+    isAlgebraic_residueField_comap
+        ** the residue extension of a pulled-back valuation subring along an algebraic field
+           extension is algebraic — hence separable in characteristic zero **
+```
+
+With `criticalSchurResidue_isAlgebraic` the residue separability instance that
+`Algebra.FormallyUnramified.of_map_maximalIdeal` demands is now automatic
+(`Algebra.IsSeparable.of_integral`, the residue field having characteristic zero by
+`criticalObservationSchurResidue_charZero`).  Step `(C)` — the coordinate Jacobian determinant is
+the Schur uniformizer, hence not a unit — is `det_criticalReciprocalJacobianIntegral` together with
+`irreducible_criticalSchurJacobianDetElement`.
+
+## The exact geometric input `(R)` still needs, isolated
+
+`(D)` of the route — the hypothesis `hgen` of `map_maximalIdeal_le_sq_of_factorized_jacobian`, i.e.
+
+```text
+∀ a in the observation Schur DVR A,  D a ∈ span_B { D y_j }
+```
+
+is **not** bookkeeping, and it is worth recording exactly why, because two different-looking
+attacks both land on the same wall.
+
+`hgen` holds if and only if `A` is the localization of the observation coordinate ring `K[y]` at
+`q := 𝔪_A ∩ K[y]`, equivalently if and only if `q` has **height one**.  A valuation ring of `K(y)`
+whose centre `q` has height ≥ 2 (a blow-up valuation) satisfies every other hypothesis already
+proved — including `κ_B/κ_A` algebraic — so no amount of further valuation theory closes it.  The
+explicit witness: for `φ(x₁,x₂) = (x₁x₂, x₂)` the ring `A = B ∩ F` is the valuation ring of
+`{x₂ = 0}`, its centre on `K[y]` is the maximal ideal `(y₁,y₂)`, `Ω[B⁄A] = 0`, and the Jacobian
+determinant is nevertheless a non-unit.  What excludes this in the horizon situation is that the
+critical map is **finite** on the chart: a finite morphism does not contract a divisor, so the
+image of the Schur divisor is again a divisor and `q` has height one.
+
+**The cheapest Lean form of that input.**  Height one for `q` follows from
+
+```text
+Algebra.IsAlgebraic κ_O κ_B ,   κ_O := Frac (K[y] ⧸ q)
+```
+
+and, since `κ_B` is generated over `K` by the residues of the raw source coordinates and the
+observation coordinates already contain `a_m, …, a_{L−1}`, this reduces to
+
+```text
+for i < m,  a_i is INTEGRAL over the observation coordinate ring with the marked
+            coordinates inverted, K[y][ (a_m c_n)^{-1} ]
+```
+
+— a monic relation reduces modulo the Schur place to a monic relation, which is exactly the
+statement that fails for a contraction.  The marked coordinates are units at the Schur place
+(`CriticalSchurMarkedUnits.isUnit_criticalSourceRaw_marked_sourceValuationSubring`), so the
+reduction is legitimate.
+
+This is §1's "the critical map is finite after restricting to the stated open base" in the precise
+ring-theoretic form the ramification argument consumes, and it is the only geometric input left in
+`(R)`.
+
+### The remaining `(R)` chain, fully decided
+
+The finiteness input has an exact Lean route, and the tree already owns its hardest ingredient.
+
+```text
+(i)   valuative integrality of the low coordinates
+        for every valuation subring V of the source field containing the observation
+        coordinates and the inverses of the two marked ones, every raw coordinate is in V
+      PROOF: if not, scale the low blocks by the inverse of a coordinate of minimal value,
+             reduce modulo 𝔪_V, and apply
+             critical_biprojective_boundary_exclusion_of_marked_coefficients   (already in the tree)
+             — the reduced homogenizing coordinate is 0 while the reduced low block is not,
+             which that theorem forbids.  The marked coefficients survive reduction precisely
+             because they were inverted.
+      ⟹ S := Ro'[a_0 … a_{m-1}, c_0 … c_{n-1}] is finite over Ro' := K[y][(a_m c_n)^{-1}]
+(ii)  S is a localization of the Schur coordinate ring, so P'' := 𝔪_B ∩ S has height one
+(iii) going-down for the integral extension Ro' ⊆ S with Ro' normal gives height q' = 1,
+      q' := 𝔪_A ∩ Ro'
+(iv)  hence (Ro')_{q'} is a DVR dominated by A inside the same fraction field, so A = (Ro')_{q'},
+      which is exactly `hgen` through D_mem_of_isLocalization + D_mem_of_adjoin_eq_top
+(v)   map_maximalIdeal_le_sq_of_factorized_jacobian  ⟹  𝔪_A B ⊆ 𝔪_B²
+(vi)  transport to 2 ≤ ramificationIdxIn 𝔪_A C for the normal closure C
+```
+
+Step `(i)` is the mathematical content — it is §1's finiteness — and the boundary exclusion it needs
+is already an unconditional theorem here.  Everything after it is standard commutative algebra.
+
+### Lean progress — step `(C)` is CLOSED
+
+```text
+HTGeometry/CriticalSchurIntegralJacobian.lean              (built)
+    map_criticalReciprocalJacobianIntegral
+    det_criticalReciprocalJacobianIntegral
+        ** det of the integral reciprocal Jacobian = criticalSchurJacobianDetElement,
+           which is irreducible, hence not a unit **
+```
+
+### Lean progress — step `(i)` is CLOSED: §1's finiteness is now a ring-theoretic theorem
+
+```text
+HTGeometry/CriticalLowBlockValuativeIntegrality.lean       (built)
+    exists_scaling            in a valuation ring one of finitely many elements divides the rest,
+                              normalized so that the scaling is trivial or one product is 1
+    valLift, valLift_map, valLift_coeff, valLift_natDegree_le
+    coeffs_mem_of_criticalRelation
+        ** tails in O with marked coefficients units  ⟹  both low blocks have coefficients in O **
+HTGeometry/CriticalSourceLowValuativeIntegrality.lean      (built)
+    algebraMap_criticalObservationRaw / _Recip
+    coeff_map_criticalObservationRawTail_mem / _Recip…_mem
+    coeff_map_criticalObservationRawTail_marked / _Recip…_marked
+    criticalSourceLow_mem_valuationSubring
+        ** every valuation subring of the source field containing the observation coordinates and
+           inverting the two marked ones contains every low raw and low reciprocal coordinate **
+HTGeometry/CriticalSourceChartIntegrality.lean             (built)
+    criticalObservationRaw_ne_zero, criticalObservationRecip_ne_zero
+    criticalSourceRaw_marked_ne_zero, criticalSourceRecip_marked_ne_zero
+    criticalObservationChart
+    criticalSourceLow_isIntegral_chart
+        ** the low raw and low reciprocal coordinates are INTEGRAL over the subring generated by
+           the observation coordinates and the inverses of the two marked ones **
+```
+
+The valuative criterion is mathlib's `iInf_valuationSubring_superset` (the integral closure of a
+subset of a field is the intersection of the valuation subrings containing it); the geometric input
+is the tree's own `critical_biprojective_boundary_exclusion_of_marked_coefficients`.
+
+**Overlap noted, so no session rebuilds either.**  `ValuationCriticalFibreIntegrality.
+valuationSubring_criticalFibre_coefficients_mem_of_marked_reduction` is a sibling of
+`coeffs_mem_of_criticalRelation`: it is phrased for a `criticalFibre` point with tails already over
+the valuation subring and needs the reduced tails to be divisible by the corresponding powers of
+`X`; the new one is phrased for fraction-field data and needs only invertibility of the marked
+coefficients.  Either can drive the argument; the new one wired more directly into the horizon
+splitting.
+
+`(R)` now needs only the commutative algebra `(ii)`–`(vi)`: height one for the centre, the DVR
+identification of the observation Schur place, `hgen`, and the transport to `ramificationIdxIn`.
+
+### Lean progress — the Schur coordinates are polynomial in the horizon coordinates
+
+```text
+HTGeometry/CriticalSchurCoordinateAdjoin.lean              (built)
+    criticalSourceCoordinateSet
+    criticalSourceScale_mem_adjoin
+    criticalSourceReciprocalPolynomial_coeff_mem_adjoin
+    criticalSourceReciprocalSquarePositive_mem_adjoin
+    criticalSourceSchurCoordinates_mem_adjoin
+        ** every Schur coordinate lies in the algebra generated by the raw and reciprocal
+           coordinates **
+```
+
+This is what makes the Schur local ring `B` a localization of the finite chart algebra
+`T := adjoin (chart ring) {raw, reciprocal coordinates}`, and hence what gives `height P'' = 1` for
+`P'' := 𝔪_B ∩ T` without circularity: `Rs ⊆ T ⊆ B` and `B` is the localization of `Rs`, so
+`B = T_{P''}`, a DVR.
+
+### `(R)`'s remaining chain, corrected once more
+
+An earlier plan tried to reach `height q' = 1` through a dimension formula
+(`height p + dim (R/p) = dim R` for finitely generated domains).  **mathlib does not carry that
+formula**, and building it needs Noether normalization plus catenarity.  It is not needed:
+mathlib's `Ideal.height_eq_height_add_of_liesOver_of_hasGoingDown` together with the going-down
+instance for an integral extension of a normal domain
+(`Mathlib/RingTheory/IntegralClosure/GoingDown.lean`) gives
+
+```text
+height P'' = height q' + height (fibre)        ⟹   height q' ≤ height P'' = 1
+```
+
+and `q' ≠ 0` closes it.  Recorded so no session reaches for the dimension formula again.
+
+Remaining, in order:
+
+```text
+1. Rloc := the observation coordinate polynomial ring localized away from the marked product,
+   with its injective map to the source field         (normal, Noetherian)
+2. T := adjoin Rloc {raw, reciprocal coordinates}      integral and module-finite over Rloc
+3. Rs ⊆ T                                              CriticalSchurCoordinateAdjoin  DONE
+4. IsLocalization P''.primeCompl B                     ⟹ height P'' = 1
+5. going-down                                          ⟹ height q' = 1
+6. (Rloc)_{q'} is a DVR dominated by A                 ⟹ A = (Rloc)_{q'}
+7. hgen, then map_maximalIdeal_le_sq_of_factorized_jacobian
+8. transport to 2 ≤ ramificationIdxIn for the normal closure
+```
+
+### Lean progress — steps 1 and 2 of the `(R)` tail are CLOSED
+
+```text
+HTGeometry/CriticalSourceSubringIntegrality.lean           (built)
+    isIntegral_of_isIntegral_range        integrality over the image subring descends to the ring
+    criticalSourceLow_isIntegral_subring  ** integral over ANY subring containing the chart **
+HTGeometry/CriticalObservationCoordinateRing.lean          (built)
+    criticalObservationRing, criticalObservationRingToField, …Algebra, …Tower
+    criticalObservationFracEquiv
+    criticalObservationRing_isFractionRing
+        ** the observation field is the fraction field of the observation coordinate ring **
+    coe_aeval_criticalObservationCoord, criticalObservationRingToField_apply
+    criticalObservationRingSourceAlgebra, …Tower
+    algebraMap_criticalObservationRing_X_inl / _inr
+    criticalObservationMarked, algebraMap_criticalObservationMarked
+HTGeometry/CriticalObservationChartRing.lean               (built)
+    isUnit_algebraMap_criticalObservationMarked
+    criticalObservationChartRing := Localization.Away (marked)
+    criticalObservationChartRingAlgebra, …Tower
+    criticalObservationMarked_ne_zero
+    criticalObservationChartRing_isIntegrallyClosed        (localization of a polynomial ring)
+    algebraMap_chartRing_invSelf, criticalObservationChart_subset_range
+    criticalSourceCoordinate_isIntegral_chartRing
+        ** every horizon coordinate is integral over the chart ring **
+    criticalSourceChartAlgebra, criticalSourceChartAlgebra_isIntegral
+        ** the chart algebra is an integral extension of an integrally closed ring:
+           exactly the input of mathlib's going-down instance **
+```
+
+Positivity is carried as `Fact (0 < m)`, `Fact (0 < n)` so that the algebra structures can be
+instances; call sites supply `haveI : Fact _ := ⟨hm⟩`.
+
+Remaining on the `(R)` tail: `Rs ⊆ T` at the chart-ring level (the ground-field version is
+`criticalSourceSchurCoordinates_mem_adjoin`), `IsLocalization P''.primeCompl B`, going-down for
+`height q' = 1`, the DVR identification `A = (chart ring)_{q'}`, `hgen`, and the transport to
+`ramificationIdxIn`.
+
+### Lean progress — the chart tower `Rs ⊆ T ⊆ B` is CLOSED
+
+```text
+HTGeometry/CriticalSchurChartInclusion.lean                (built)
+    criticalSourceCoordinateSet_subset_schur
+    criticalObservationRingGroundTower
+    observationRing_mem_schur                the observation coordinate ring is integral there
+    isUnit_algebraMap_marked_schur           the marked product is a unit there
+    chartRing_mem_schur                      ** the whole chart ring is integral there **
+    criticalSchurSourceSubalgebra
+    criticalSourceChartAlgebra_le_schur      ** T ⊆ B **
+HTGeometry/CriticalSchurChartAlgebra.lean                  (built)
+    algebraMap_ground_mem_chartAlgebra, adjoinGround_le_chartAlgebra
+    schurCoordinateAeval_mem_chartAlgebra    ** Rs ⊆ T **
+    chartAlgebraToSchur, chartAlgebraSchurAlgebra, chartAlgebraToSchur_injective
+```
+
+So `Rs ⊆ T ⊆ B` with `B` the localization of `Rs` at the Schur prime: the next step,
+`IsLocalization P''.primeCompl B` over `T`, is now purely formal, and it yields `height P'' = 1`
+because `B` is a DVR.
+
+**A name collision was caught and fixed.**  `criticalSourceRaw_marked_ne_zero` and
+`criticalSourceRecip_marked_ne_zero` already exist in `CriticalSchurMarkedUnits` (with `1 < m`,
+`1 < n`); the versions proved here for `0 < m`, `0 < n` are now
+`criticalSourceRaw_atMarkedIndex_ne_zero` / `criticalSourceRecip_atMarkedIndex_ne_zero`.  The
+umbrella does not elaborate if two modules declare the same name — check the whole tree, not just
+the file, before naming.
+
+### Lean progress — the Schur place is a height-one point of the chart algebra
+
+```text
+HTGeometry/CriticalSchurChartHeight.lean                   (built)
+    schurRingToChartAlgebra, chartAlgebraToSchur_schurRingToChartAlgebra
+    criticalSchurChartPrime, …_isPrime
+    criticalSchurChartPrime_isLocalization
+        ** B is the localization of the chart algebra at the centre of the Schur place **
+    criticalSchurChartPrime_height       ** that centre has height one **
+HTGeometry/CriticalChartTowerFinite.lean                   (built)
+    algebraMap_observationRing_injective, algebraMap_chartRing_injective
+    chartAlgebra_faithfulSMul
+    criticalSourceCoordinateSet_finite
+    chartAlgebra_module_finite           the chart algebra is a finite chart-ring module
+    chartRing_isNoetherianRing, chartAlgebra_isNoetherianRing
+    chartRingObservationFieldAlgebra, …Tower, chartRing_isFractionRing
+        ** the observation field is the fraction field of the chart ring **
+```
+
+All hypotheses of mathlib's going-down instance
+(`[IsDomain S] [FaithfulSMul R S] [Algebra.IsIntegral R S] [IsIntegrallyClosed R]`) and of
+`Ideal.height_eq_height_add_of_liesOver_of_hasGoingDown` are now in place for the pair
+(chart ring, chart algebra).  Next: `height q' = 1` for the centre `q'` on the chart ring — the
+alternative `q' = ⊥` is excluded by `criticalSchurObservationValuationSubring_ne_top`, since it
+would put the whole observation field inside the Schur valuation ring.
+
+### Lean progress — step 6 is CLOSED: the centre on the chart ring has height one
+
+```text
+HTGeometry/CriticalChartCentreHeight.lean                  (built)
+    chartRing_isDomain
+    chartRingSourceTower                     the two chart-ring maps into the source field agree
+    criticalSchurChartUnder, …_isPrime, …_liesOver
+    criticalSchurChartUnder_ne_bot
+        ** the centre is nonzero, because otherwise the whole observation field would be
+           integral at the Schur place **
+    criticalSchurChartUnder_height           ** height q' = 1 **
+```
+
+The height transfer is mathlib's `Ideal.height_eq_height_add_of_liesOver_of_hasGoingDown` with the
+going-down instance for an integral extension of an integrally closed domain; the only extra input
+is that the centre is not the zero ideal, which the corpus's
+`criticalSchurObservationValuationSubring_ne_top` supplies.
+
+What remains of `(R)`:
+
+```text
+7. (chart ring)_{q'} is a DVR (height one in a normal Noetherian domain) and equals A,
+   because a discrete valuation ring is a maximal proper subring of its fraction field
+8. hgen, then map_maximalIdeal_le_sq_of_factorized_jacobian
+9. transport 𝔪_A B ⊆ 𝔪_B² to 2 ≤ ramificationIdxIn for the normal closure
+```
+
+### Lean progress — step 7 is CLOSED: `A` is the chart local ring
+
+```text
+HTGeometry/CriticalChartLocalRing.lean                     (built)
+    criticalChartLocalRing := Localization.AtPrime (centre)
+    criticalChartLocalRing_isDVR            height one in a normal Noetherian domain
+    criticalChartLocalRingAlgebra, …Tower, …_isFractionRing
+    mem_criticalSchurChartUnder_iff
+    algebraMap_chartRing_observationField_mem_schur
+    isUnit_chartRing_schur_of_notMem, isUnit_chartRing_observation_of_notMem
+HTGeometry/CriticalSchurObservationChartLocal.lean          (built)
+    notUnit_chartRing_observation_of_mem
+    criticalSchurObservation_isInteger_chartLocal
+        ** every element of the observation Schur valuation ring is r / s with r, s in the chart
+           ring and s outside the centre **
+```
+
+The argument is the standard one for valuation rings: `ValuationRing.isInteger_or_isInteger` splits
+an element of the fraction field, and in the inverse branch the numerator would have to be a
+non-unit of the chart local ring, which contradicts the element being a unit of the observation
+Schur place.
+
+`(R)` now needs only
+
+```text
+8. hgen — immediate from step 7 through D_mem_of_isLocalization + D_mem_of_adjoin_eq_top —
+   and then map_maximalIdeal_le_sq_of_factorized_jacobian
+9. transport 𝔪_A B ⊆ 𝔪_B² to 2 ≤ ramificationIdxIn for the normal closure
+```
+
+### Lean progress — `A` as an `IsLocalization`, and the algebra towers to the Schur places
+
+```text
+HTGeometry/CriticalSchurObservationLocalization.lean       (built)
+    chartRingToObservationSchur, chartRingObservationSchurAlgebra
+    criticalSchurObservation_isLocalization
+        ** IsLocalization (centre).primeCompl (observation Schur valuation ring) **
+    chartRingSchurSourceAlgebra, chartRingSchurSourceTower
+    observationRingSchurSourceAlgebra, observationRingChartSchurTower
+    coe_algebraMap_observationRing_schur
+    observationRingSchurGroundTower, chartRingSchurGroundTower, observationSchurGroundTower
+```
+
+The instance `criticalSchurObservation_isLocalization` is the exact hypothesis of
+`KaehlerRelativeSpan.D_mem_of_isLocalization`, and the ground towers let it be applied with the
+ground field as base.  `hgen` is now one application of that lemma followed by one of
+`D_mem_of_adjoin_eq_top` over `MvPolynomial.adjoin_range_X`.
+
+### Lean progress — `hgen` is CLOSED
+
+```text
+HTGeometry/CriticalSchurGenerationHypothesis.lean          (built)
+    observationRingObservationSchurAlgebra and the four remaining algebra towers
+    criticalObservationCoordSchur
+    criticalSchur_hgen
+        ** D (anything from the observation Schur place) lies in the span of the differentials of
+           the observation coordinates **
+```
+
+The proof is three applications of `KaehlerRelativeSpan`: localize the observation Schur place down
+to the chart ring (`criticalSchurObservation_isLocalization`), localize the chart ring down to the
+observation coordinate ring (`Localization.Away` of the marked product), and then use
+`MvPolynomial.adjoin_range_X`.
+
+`hgen` was the crux of `(R)` — the hypothesis that is false for a map that contracts the Schur
+divisor — and it is now unconditional.  What is left of `(R)` is arithmetic bookkeeping:
+
+```text
+hvw   D (observation coordinate) = ∑ (raw Jacobian) • D (raw coordinate)
+      — the reciprocal rows are D_criticalSourceRecipPolynomialIntegral_coeff, the raw rows are
+        the identity, and the block determinant is IdentityCornerDeterminant
+hdet  ¬ IsUnit (det (raw Jacobian))
+      — det_criticalReciprocalJacobianIntegral together with
+        irreducible_criticalSchurJacobianDetElement
+then  map_maximalIdeal_le_sq_of_factorized_jacobian   gives   𝔪_A B ⊆ 𝔪_B²
+then  transport to 2 ≤ ramificationIdxIn for the normal closure
+```
+
+### Lean progress — the observation Jacobian, set up in block order
+
+```text
+HTGeometry/CriticalObservationJacobianBlocks.lean          (built)
+    coe_algebraMap_criticalObservationCoordSchur
+    algebraMap_criticalObservationCoordSchur_inl / _inr
+        ** the observation coordinates, seen in the source Schur ring, ARE the marked raw and
+           reciprocal integral coordinates **
+    criticalRawDifferential      the auxiliary family w, indexed by Fin m ⊕ Fin n through
+                                 finSumFinEquiv (low raw block first, then high)
+    criticalObservationBlockCoord   the family y in the matching block order
+    criticalObservationJacobian     the matrix P: identity on the raw block, rectangular Schur
+                                    Toeplitz on the reciprocal block
+    criticalObservationJacobian_hvw_inr    ** the identity column of hvw **
+```
+
+The block order is chosen so that `P = Matrix.fromBlocks D 0 C 1` and hence
+`det P = det D` by `Matrix.det_fromBlocks_zero₁₂`, with `D` the transpose of
+`criticalReciprocalJacobian` — whose determinant is the Schur uniformizer, hence not a unit.
+
+Remaining: the reciprocal column of `hvw` (converting the antidiagonal convolution of
+`polyD_reciprocal` into the `Fin m ⊕ Fin n` sum), the determinant identification, the application of
+`map_maximalIdeal_le_sq_of_factorized_jacobian`, and the transport to `ramificationIdxIn`.
+
+## `(R)` IS PROVED IN LOCAL FORM
+
+```text
+HTGeometry/CriticalObservationJacobianRecip.lean           (built)
+    criticalRawDifferential_eq, criticalObservationJacobian_apply_inl
+    criticalObservationJacobian_hvw_inl        ** the reciprocal column of hvw **
+HTGeometry/CriticalObservationJacobianDet.lean             (built)
+    criticalObservationJacobian_eq_fromBlocks
+    det_criticalObservationJacobian
+    not_isUnit_det_criticalObservationJacobian
+HTGeometry/CriticalSchurRamifies.lean                      (built)
+    criticalBlockIndexEquiv, criticalSchurBlockCotangentBasis
+    criticalSchur_hgen_block
+    criticalSchur_map_maximalIdeal_le_sq
+        ** 𝔪(observation Schur place) · B  ⊆  𝔪(source Schur place)²  **
+```
+
+That is obligation `(R)`: the ramification index of the source Schur place over the observation
+Schur place is at least two.  Unconditional, no hypotheses beyond `1 < m`, `1 < n` (carried as
+`Fact` instances) and the standing `[Field K] [CharZero K] [IsAlgClosed K]`.
+
+The chain, for the record:
+
+```text
+critical_biprojective_boundary_exclusion_of_marked_coefficients   (already in the tree)
+  → coeffs_mem_of_criticalRelation                                valuative integrality
+  → criticalSourceLow_isIntegral_chart                            §1 finiteness, ring form
+  → chart algebra integral over the chart ring                    going-down input
+  → height (centre on the chart ring) = 1                         going down
+  → A = (chart ring) localized at that centre                     valuation-ring maximality
+  → hgen                                                          KaehlerRelativeSpan
+  → Ω[B⁄A] ≠ 0                                                    non-unit Jacobian determinant
+  → 𝔪_A B ⊆ 𝔪_B²                                                 FormallyUnramified.of_map_maximalIdeal
+```
+
+What remains for the card: transport this to `2 ≤ ramificationIdxIn 𝔪_A C` for the normal-closure
+integral closure `C` (multiplicativity of the ramification index in the tower, or
+`Ideal.ramificationIdx'_ne_one_iff` at the source place and `ramificationIdx'_le_ramificationIdx'`),
+and then `(D)` and `(P)`.
+
+## OBLIGATION `(R)` IS CLOSED
+
+```text
+HTGeometry/CriticalSchurNormalRamifies.lean                (built)
+    criticalSchurSourceToNormalUpper, ..._comp
+    criticalSchur_normalUpper_map_maximalIdeal_le_sq
+    criticalNormalUpper_not_maximalIdeal_le_sq             Nakayama in a DVR
+    criticalSchur_normalUpper_map_maximalIdeal_ne
+    criticalSchurNormalLocalizationUpperEquiv, ..._comp, ..._map_maximalIdeal
+    criticalSchur_map_maximalIdeal_localization_ne
+HTGeometry/CriticalSchurRamificationIndex.lean             (built)
+    criticalSchur_two_le_ramificationIdx'
+    criticalSchur_two_le_ramificationIdxIn
+        ** 2 ≤ ramificationIdxIn 𝔪(observation Schur place) (normal integral closure) **
+    criticalSchurInertiaGroup_nontrivial                   (instance)
+    exists_criticalGeometricMonodromy_isSwap_of_degree
+    criticalGeometricMonodromy_eq_top_of_degree_of_isPreprimitive
+    criticalGeometricMonodromy_eq_top_of_collision_of_isPreprimitive
+```
+
+The transport, for the record.  The local statement `𝔪_A B ⊆ 𝔪_B²` travels along the local
+embedding `B → V` of the source Schur valuation ring into the chosen normal-closure Schur valuation
+ring, giving `𝔪_A V ⊆ 𝔪_V²`.  Nakayama in the discrete valuation ring `V` (its maximal ideal is
+finitely generated and nonzero) gives `𝔪_V² ≠ 𝔪_V`, hence `𝔪_A V ≠ 𝔪_V`.  Since `V` is the
+localization of the normal integral closure `S` at the Schur prime `P`
+(`criticalSchurNormalLocalizationEquivUpper`), this is exactly the failure of
+`Ideal.IsDedekindDomain.ramificationIdx'_eq_one_iff`, so `e(P) ≠ 1`; and `e(P) ≠ 0` because `P` lies
+over a nonzero prime.  Thus `2 ≤ e(P) = ramificationIdxIn`, the Galois-invariance of the index
+(`Ideal.ramificationIdxIn_eq_ramificationIdx`) supplying the last step.
+
+**Card status.**  `(R)` done.  `(D)` (`collisionSupport ≤ 2`, i.e. at most two sheets collide) and
+`(P)` (primitivity) remain; both now feed directly into
+`criticalGeometricMonodromy_eq_top_of_collision_of_isPreprimitive`, which needs nothing else.
+
+## Lean progress — the Kähler different at the Schur place is the MAXIMAL IDEAL
+
+Two modules, built and wired.
+
+```text
+HTGeometry/KaehlerAnnihilatorDeterminant.lean            (built)
+    bijective_linearCombination_of_spanning
+    basisOfSpanningOfBasis, coe_basisOfSpanningOfBasis
+        a spanning family of the size of a basis IS a basis (Orzech)
+    det_mem_annihilator_kaehler                Cramer: det P annihilates Ω[B⁄A]
+    annihilator_kaehler_eq_maximalIdeal
+        ** det P irreducible in the DVR B  ⟹  Ann (Ω[B⁄A]) = 𝔪_B **
+
+HTGeometry/CriticalRawCotangentBasis.lean                (built)
+    localizationCotangentBasis_apply           the basis IS the family of variable differentials
+    criticalSchurSourceCotangentBasis_apply
+    criticalRawSpan, D_criticalSourceRawIntegral_mem, D_criticalSourceRecipIntegral_mem
+    criticalSchurSourceInclusion, criticalRawVanishing
+    criticalRawSpan_eq_top
+        ** the RAW differentials span Ω[B⁄K] **
+    criticalRawBlockCotangentBasis              hence they form a basis
+    criticalSchur_annihilator_kaehler_eq_maximalIdeal
+        ** Ann (Ω[source Schur place ⁄ observation Schur place]) = 𝔪_B **
+```
+
+The spanning statement is the one that needed the corpus: `dY = -Y² dX`
+(`D_criticalSourceRecipPolynomialIntegral_coeff`) puts the reciprocal differentials in the raw span,
+`criticalSourceSchurCoordinates_mem_adjoin` puts the Schur coordinates in the algebra generated by
+raw and reciprocal coordinates, and the elements whose differential lies in a fixed submodule form
+a subalgebra (`cotangentVanishingSubalgebra`).  With the raw differentials as the basis, the
+coordinate matrix of the observation differentials is the observation Jacobian *itself*, whose
+determinant `criticalSchurJacobianDetElement` is a uniformizer
+(`irreducible_criticalSchurJacobianDetElement`).
+
+### What this buys, and the remaining chain for `(D)`
+
+`(D)` is `|collisionSupport| ≤ 2`, and the dictionary is
+
+```text
+|collisionSupport| = Σ_{Q ramified over the Schur place} e_Q · f_Q
+```
+
+so `(D)` needs exactly three things beyond `(R)`:
+
+```text
+(D-e)  e_{Q₀} = 2 exactly       ⟸ v_{Q₀}(𝔇) = 1 (now proved, in Kähler form)
+                                   + Ideal.pow_sub_one_dvd_differentIdeal (mathlib)
+(D-f)  f_{Q₀} = 1               ⟸ §3: at most one singular point in the reduced fibre
+(D-1)  one ramified prime       ⟸ irreducibility of the Jacobian divisor (corpus)
+```
+
+`(D-e)` is now infrastructure only: mathlib's bound needs `A` Dedekind and `B` the *integral
+closure* of `A` in the source field, whereas the corpus works with the source Schur *valuation
+ring*, which is that integral closure localized at `Q₀`.  Building
+`integralClosure (CriticalSchurNormalBaseRing) (criticalSourceField)` and the localization
+identification — the exact analogue of `criticalSchurNormalLocalizationEquivUpper`, which already
+exists for the normal closure — transports `Ann = 𝔪_B` to `v_{Q₀}(differentIdeal) = 1`.
+
+`(D-f)` is the mathematics.  The clean route, recorded so it is not re-derived: for a singular point
+`p` of the reduced fibre with conormal `λ_p`, corank one gives `im (df_p) = ker λ_p`, and
+`𝔪_A B ⊆ 𝔪_B²` — which `(R)` now proves — gives `f^*δ ∈ 𝔪_p²` for `δ` the reduced equation of the
+branch divisor, hence `d(f^*δ) = 0`, hence `dδ` annihilates `im (df_p)`, hence `λ_p ∥ dδ`.  Since
+`dδ` is defined over the residue field of `A`, the same holds for every singular point, so all the
+conormals are proportional; §2 (`conormal_determines_tangent_smul`) then scales the tangents to a
+common `(U,V)` and `criticalFibre_eq_of_shared_coprime_tangent` collapses the singular points to
+one.  The one genuinely new input in that chain is `dδ ≠ 0`, i.e. that the branch divisor is
+generically reduced — equivalently the fold condition `⟨d(det Jac), ker⟩ ≠ 0` at the generic point
+of the Jacobian divisor.
+
+## Lean progress — `(D-e)` IS CLOSED: the Schur ramification index is exactly two
+
+Three more modules, built and wired.
+
+```text
+HTGeometry/AnnihilatorLocalization.lean                     (built)
+    annihilator_le_map_annihilator_of_isLocalizedModule
+        ** for a finite module, Ann_B(localized) ≤ (Ann_S M)·B **
+
+HTGeometry/CriticalSchurSourceIntegralClosure.lean          (built)
+    criticalSchurObservationSourceFieldAlgebra + towers
+    CriticalSchurSourceIntegralClosure          integralClosure (obs Schur DVR) (source field)
+    Dedekind / finite / faithful / fraction-ring instances
+    criticalSchurSourceIntegralClosure_mem_upper, ...ToUpper
+    criticalSchurSourceIntegralClosurePrime, _isPrime, _liesOver, _ne_bot
+    CriticalSchurSourceLocalization, ...ToUpper, _isLocalHom, _bijective
+    criticalSchurSourceUpper_isLocalization
+        ** the source Schur valuation ring IS the localization of that integral closure **
+
+HTGeometry/CriticalSchurSourceRamificationIndex.lean        (built)
+    criticalSchurObservationResidueField_charZero
+    criticalSchur_maxExt_ne_bot
+    criticalSchur_differentIdeal_eq_annihilator     Dedekind different = Kähler different
+    criticalSchur_maximalIdeal_le_map_differentIdeal
+    criticalSchur_differentIdeal_not_le_sq
+    criticalSchur_source_ramificationIdx_le_two
+    criticalSchurSourceLocalizationUpperEquiv + comp/map_maximalIdeal
+    criticalSchur_source_map_maximalIdeal_localization_ne
+    criticalSchur_source_ramificationIdx_eq_two
+        ** e(source Schur place / observation Schur place) = 2, UNCONDITIONALLY **
+```
+
+The upper bound is mathlib's `pow_sub_one_dvd_differentIdeal` fed by the Kähler computation: the
+different of the source integral closure equals the annihilator of `Ω[S⁄A]`
+(`differentIdeal_eq_annihilator_kaehler`), whose localization at the Schur prime is the maximal
+ideal of the source Schur valuation ring (`criticalSchur_annihilator_kaehler_eq_maximalIdeal`), and
+the annihilator of a localized finite module is the extension of the annihilator.  So the different
+is not contained in the square of the Schur prime, which caps `e − 1` at one.  The lower bound is
+`(R)` transported to the same localization.
+
+**`(D)` after this.**
+
+```text
+(D-e)  e_{Q₀} = 2                  ** DONE **
+(D-f)  f_{Q₀} = 1                  §3 — the conormal/fold argument (see the chain recorded above)
+(D-1)  one ramified prime          irreducibility of the Jacobian divisor
+(D-c)  |collisionSupport| = e·f    the fibre-to-prime dictionary
+```
+
+## `(D-f)` — the route, fully determined (READ THIS BEFORE TOUCHING §3)
+
+The conormal apparatus §2 needs is already complete in the tree:
+
+```text
+ConormalLiftObstruction.conormal_eq_zero_of_lifts       liftable ⟹ the conormal functional vanishes
+ConormalTangentDetermination.exists_conormal_ne_zero    a nonzero low pair has a nonzero functional
+ConormalTangentDetermination.conormal_determines_tangent_smul
+    ** proportional conormal functionals ⟹ proportional tangent pairs **
+CriticalFibreSharedTangentRigidity.criticalFibre_eq_of_shared_coprime_tangent
+```
+
+so §3 needs exactly one thing: **the conormal functionals at two singular points of the reduced
+fibre are proportional.**  The following identification settles it, and is the reason no
+deformation theory is needed.
+
+**The conormal IS `dδ`, and `dδ` is defined over the base.**  Write `A` for the observation Schur
+DVR, `B` for the source Schur valuation ring, `δ` for a uniformizer of `A`, and `P` for
+`criticalObservationJacobian`.  Then:
+
+* `Ω[A⁄K]` has the observation coordinates as a cotangent basis — `A` is a localization of
+  `criticalObservationRing` (through `criticalObservationChartRing` and `criticalChartLocalRing`),
+  so `localizationCotangentBasis` applies exactly as it did for `B`;
+* in that basis and the raw basis of `Ω[B⁄K]`, the matrix of `Ω[A⁄K] ⊗ B → Ω[B⁄K]` **is** `P` —
+  that is precisely `criticalObservationJacobian_hvw_inl/inr`;
+* `(R)` gives `δ · B ⊆ 𝔪_B²`, hence `D(algebraMap A B δ) ∈ 𝔪_B · Ω[B⁄K]`, i.e. the coordinate
+  vector `c` of `dδ` satisfies `P c ≡ 0 (mod 𝔪_B)`;
+* `c mod 𝔪_B ≠ 0` because `dδ ∉ 𝔪_A Ω[A⁄K]` (the residue field of `A` has transcendence degree
+  `L−1`, so the image of `𝔪_A/𝔪_A²` in `Ω[A⁄K] ⊗ k(A)` is a line);
+* `ker (P mod 𝔪_B)` is one-dimensional (corank one), so `c mod 𝔪_B` **spans** it.
+
+Since `Ω[A⁄K] ⊗ B → Ω[B⁄K]` is the transpose of the differential of the horizon map, its kernel is
+the annihilator of the liftable deformations — the conormal line.  So the conormal line is spanned
+by `dδ`, which is defined over `A`; every singular point of the reduced fibre is a residue
+embedding `k(Q₀) → k_W` and they all restrict to the same map on `k(A)`, so all the conormal lines
+coincide.  `conormal_determines_tangent_smul` then scales the tangents to one `(U,V)` and
+`criticalFibre_eq_of_shared_coprime_tangent` collapses the singular points to one, i.e.
+`f_{Q₀} = 1`.
+
+**Build order for `(D-f)`.**
+
+```text
+1  Ω[A⁄K] coordinate basis            mirror of CriticalRawCotangentBasis for the observation side
+2  A as a localization of criticalObservationRing        composite of two localizations
+3  dδ ∉ 𝔪_A Ω[A⁄K]                    trdeg of the residue field = L−1
+4  D(algebraMap A B δ) ∈ 𝔪_B Ω[B⁄K]   directly from (R)
+5  corank one of P mod 𝔪_B            SquareMatrixCorankOne + the surviving cofactor
+6  bridge: ker(P mod 𝔪_B) = the corpus's conormal line     via conormal_eq_zero_of_lifts + (5)
+7  assemble §3, then f_{Q₀} = 1
+```
+
+Nothing in this list is open mathematics; `(3)` and `(6)` are the only ones needing new proofs of
+any length.
+
+## Lean progress — `(D-f)` steps 1, 2 and 4 are CLOSED
+
+```text
+HTGeometry/CriticalSchurConormalDirection.lean          (built)
+    repr_D_mem_maximalIdeal_of_mem_sq                   general Leibniz form
+    criticalSchur_repr_D_observation_mem_maximalIdeal
+        ** every raw coordinate of the differential of a non-unit of the observation Schur
+           place lies in the maximal ideal of the source Schur place **
+
+HTGeometry/CriticalObservationCotangentBasis.lean       (built)
+    formallyEtaleCotangentBasis, ..._repr_D_algebraMap, ..._apply
+        the coordinate cotangent basis for any formally étale algebra over a polynomial ring
+    criticalObservationRingSchur_formallyEtale          composite of two localizations
+    criticalObservationSchurCotangentBasis, ..._apply
+    criticalObservationBlockCotangentBasis, ..._apply
+    criticalObservationJacobian_repr
+        ** in the observation and raw bases, the cotangent map has the observation Jacobian
+           as its matrix **
+    D_algebraMap_eq_sum_blockCoord
+    criticalSchur_jacobian_conormal_mem_maximalIdeal
+        ** the coordinate vector of the differential of a non-unit of the observation Schur
+           place is killed by the Jacobian modulo 𝔪 of the source Schur place **
+```
+
+So the conormal line of the branch at the source Schur place is spanned by a vector whose entries
+come from the observation side.  What remains of step 3 is that this vector is **nonzero**
+modulo the maximal ideal — equivalently, that the branch divisor is generically smooth.  The
+elementary proof being built: the centre of the observation Schur place on the observation
+coordinate ring is a prime `𝔭`; take `r ∈ 𝔭` nonzero of minimal total degree; if every
+`∂r/∂y_s` were again in `𝔭` then, being of smaller total degree, each would vanish, so `r` would be
+constant and `𝔭` the unit ideal.  In characteristic zero a polynomial with all partial derivatives
+zero is constant (`coeff_pderiv` plus `CharZero`), and differentiation strictly drops the total
+degree; both are general `MvPolynomial` facts that this corpus did not have.
+
+## Lean progress — `(D-f)` step 3 is CLOSED: the branch divisor is generically smooth
+
+```text
+HTGeometry/CriticalObservationConormalBase.lean          (built)
+    totalDegree_pderiv_lt                       differentiation strictly drops total degree
+    totalDegree_eq_zero_of_forall_pderiv_eq_zero
+        ** in characteristic zero, all partial derivatives zero ⟹ constant **
+    criticalObservationSchurCentre               the centre of the Schur place on the coordinate ring
+    criticalObservationSchurCentre_isPrime, ..._ne_top
+    exists_ne_zero_mem_criticalObservationSchurCentre
+    exists_mem_maximalIdeal_repr_D_notMem_maximalIdeal
+        ** some non-unit of the observation Schur place has a differential with a UNIT
+           coordinate **
+```
+
+The proof is the minimal-degree argument: take a nonzero `r` in the centre of minimal total degree;
+if every `∂r/∂y_s` were again in the centre it would have to vanish (smaller degree), so `r` would
+be constant and the centre the unit ideal.  Both `MvPolynomial` facts were missing from mathlib and
+from this corpus.
+
+**State of `(D-f)`.**
+
+```text
+1  Ω[A⁄K] coordinate basis           DONE   CriticalObservationCotangentBasis
+2  A formally étale over the coordinate ring   DONE   (composite of two localizations)
+3  the conormal vector is nonzero    DONE   CriticalObservationConormalBase
+4  the conormal vector is killed by the Jacobian   DONE   CriticalSchurConormalDirection
+5  corank one of the reduced Jacobian at the source Schur place        NEXT
+6  bridge to the corpus's conormal pairing                            after 5
+7  assemble §3, then f_{Q₀} = 1
+```
+
+For `(5)` the corpus already owns everything: `SchurCofactorLocus.not_dvd_det_submatrix_rectangularSchur`
+(the corner cofactor is not divisible by the Schur section, hence does not vanish on the divisor),
+`CriticalSchurJacobianDivisor.rectangularSchurToeplitz_actual_eq_invScale_smul_normalized`
+(the actual reciprocal Toeplitz matrix is the normalized one up to the inverse scale square), and
+`SquareMatrixCorankOne.finrank_ker_mulVecLin_map_eq_one` (`det = 0` plus one surviving minor gives
+corank one over any extension field).  What has to be written is the reduction map
+`criticalSchurSourceRing → residue field of the source Schur place`, whose kernel is
+`criticalSchurPrimeDivisor`, and the observation that the corner cofactor survives it.

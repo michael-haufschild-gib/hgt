@@ -110,6 +110,7 @@ theorem exists_mellin_add_entire {f : ℂ → ℂ} {G : ℂ → ℂ}
     (hGd : Differentiable ℂ G)
     (hGb : ∀ s : ℂ, 1 ≤ s.re → ‖(s ^ 2 + s) * f s - G s‖ ≤ 1) :
     ∃ (q : ℝ → ℂ) (g : ℂ → ℂ), Differentiable ℂ g ∧
+      AEStronglyMeasurable q (volume.restrict (Ioi (1:ℝ))) ∧
       Tendsto q atTop (nhds 0) ∧ (∃ M : ℝ, ∀ x : ℝ, 1 ≤ x → ‖q x‖ ≤ M) ∧
       ∀ s : ℂ, 1 < s.re → f s = (∫ x in Ioi (1:ℝ), q x * (x : ℂ) ^ (-s)) + g s := by
   -- the partial fraction split of `G / (s (s+1))`
@@ -227,8 +228,14 @@ theorem exists_mellin_add_entire {f : ℂ → ℂ} {G : ℂ → ℂ}
     calc ‖B‖ * ‖((x : ℂ) ^ 2)⁻¹‖ ≤ ‖B‖ * 1 :=
           mul_le_mul_of_nonneg_left (hnormpow 2 x hx) (norm_nonneg B)
       _ = ‖B‖ := by ring
-  refine ⟨fun x => q0 x + A * ((x : ℂ) ^ 1)⁻¹ + B * ((x : ℂ) ^ 2)⁻¹, H, hHd, ?_,
+  refine ⟨fun x => q0 x + A * ((x : ℂ) ^ 1)⁻¹ + B * ((x : ℂ) ^ 2)⁻¹, H, hHd, ?_, ?_,
     ⟨Kb + ‖A‖ + ‖B‖, ?_⟩, ?_⟩
+  · have h1 : Measurable fun x : ℝ => A * ((x : ℂ) ^ 1)⁻¹ :=
+      ((Complex.measurable_ofReal.pow_const 1).inv).const_mul A
+    have h2 : Measurable fun x : ℝ => B * ((x : ℂ) ^ 2)⁻¹ :=
+      ((Complex.measurable_ofReal.pow_const 2).inv).const_mul B
+    exact ((aestronglyMeasurable_mellinDensity φ hφana).add h1.aestronglyMeasurable).add
+      h2.aestronglyMeasurable
   · have hinv : Tendsto (fun x : ℝ => ((x : ℂ))⁻¹) atTop (nhds 0) := by
       rw [tendsto_zero_iff_norm_tendsto_zero]
       have heq : (fun x : ℝ => ‖((x : ℂ))⁻¹‖) =ᶠ[atTop] fun x : ℝ => x⁻¹ := by
@@ -344,6 +351,7 @@ theorem exists_mellin_add_entire_logDeriv_divisorFunction {a b : ℕ → ℂ}
     (hb : Tendsto (fun n => ‖b n‖) atTop atTop) (hbne : ∀ n, b n ≠ 0)
     (hare : ∀ n, (a n).re < 1) (hbre : ∀ n, (b n).re < 1) :
     ∃ (q : ℝ → ℂ) (g : ℂ → ℂ), Differentiable ℂ g ∧
+      AEStronglyMeasurable q (volume.restrict (Ioi (1:ℝ))) ∧
       Tendsto q atTop (nhds 0) ∧ (∃ M : ℝ, ∀ x : ℝ, 1 ≤ x → ‖q x‖ ≤ M) ∧
       ∀ s : ℂ, 1 < s.re →
         logDeriv (divisorFunction a b) s

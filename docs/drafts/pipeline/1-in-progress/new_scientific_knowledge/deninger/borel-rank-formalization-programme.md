@@ -416,3 +416,721 @@ With these, the even covering of `macbeathHom(h₀) · V` is completely describe
 disjoint union of the sheets at the `h` with `macbeathHom h = macbeathHom h₀`, each sheet is open,
 each is mapped bijectively and openly onto the base set, and the sheets are pairwise disjoint.  The
 only remaining step of the covering property is packaging that data into a `Trivialization`.
+
+### F10. THE DEVELOPING MAP IS A COVERING MAP `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MacbeathQuotientMap.lean` and
+`formal/GaloisForLFunctions/HTGeometry/MacbeathCovering.lean` (wired, axiom-clean).
+
+```text
+sheetTrace, isOpen_sheetTrace       the trace of an open set on a sheet is open
+isOpenMap_devMap                    ** the developing map is OPEN ** — an open set is, on each
+                                       sheet, an open subset of V, and its image is the translate
+isQuotientMap_devMap                hence a quotient map
+
+devKerMulAction                     ** the kernel of macbeathHom acts on the developed space **
+devKerContinuousConstSMul           continuously
+devMap_eq_iff_mem_orbit             ** THE FIBRES ARE THE ORBITS ** — given two sheets with the same
+                                       image, the connecting γ = φ(q)⁻¹φ(p) lies in the overlap set,
+                                       and φ(p)·(q·s_γ)⁻¹ lies in the kernel and carries one to the
+                                       other
+isQuotientCoveringMap_devMap        ** a QUOTIENT COVERING MAP **: the disjointness neighbourhood of
+                                       a point is its own sheet, by the separation lemma
+isCoveringMap_devMap                ** THE DEVELOPING MAP IS A COVERING MAP **
+```
+
+The route avoids building a `Trivialization` by hand: mathlib's `IsQuotientCoveringMap` turns the
+three conditions — quotient map, fibres = orbits, disjoint translates of a neighbourhood — into the
+covering property, and all three are exactly what the sheet analysis provides.
+
+**Only one statement of the whole finite-presentation layer is now open**: the developed space is
+connected.  Its proof is the chain of sheets — each sheet is a continuous image of the connected `V`,
+the sheets at `g` and `g·s_γ` always meet, and the `s_γ` generate Macbeath's group.
+
+### F11. MACBEATH'S THEOREM IS PROVED `[COMPLETE]`
+
+`formal/GaloisForLFunctions/HTGeometry/MacbeathConnected.lean` (wired, axiom-clean).
+
+```text
+sheetImage_self_eq_range, isPreconnected_sheet
+      a sheet is the continuous image of V, hence connected
+preconnectedSpace_devSpace
+      ** THE DEVELOPED SPACE IS CONNECTED ** — the elements whose sheet lies in the component of the
+      base point form a SUBGROUP (via the "right translation preserves the property" trick), it
+      contains every generator because the sheets at g and g·s_γ share a point of V ∩ γ·V, and the
+      generators generate
+macbeathHom_injective
+      ** MACBEATH'S THEOREM: for a group acting on a simply connected, locally path-connected space
+         with a connected fundamental open set, the overlaps PRESENT the group **
+isFinitelyPresented_of_macbeath
+      ** a group acting properly discontinuously and cocompactly on a simply connected, locally
+         path-connected space, with a connected fundamental open set, is FINITELY PRESENTED **
+```
+
+The finite-presentation criterion is therefore **complete and unconditional**:
+
+```text
+closure_meetSet_eq_top                  generation
+MacbeathGroup, macbeathHom              the presentation and the surjection
+isFinitelyPresented_macbeathGroup       finitely many overlaps ⟹ finitely presented
+DevSpace, devMap, devSmul               the developing space, its map, the action
+devSpace_mk_eq_iff                      the gluing relation is already one step
+devSpace_mk_eq_mk_of_macbeathHom_eq     sheets separate points
+isOpen_sheetImage, isOpenMap_devMap     the sheets are open, the map is open
+devMap_eq_iff_mem_orbit                 the fibres are the orbits of ker macbeathHom
+isCoveringMap_devMap                    ** the developing map is a covering map **
+preconnectedSpace_devSpace              ** the developed space is connected **
+isCoveringMap_injective_of_simplyConnected   simple connectivity trivialises the covering
+macbeathHom_injective                   ** MACBEATH'S THEOREM **
+isFinitelyPresented_of_macbeath         ** the criterion **
+```
+
+What the arithmetic application still needs from outside this layer: Siegel's finiteness property
+(to supply a fundamental open set with finitely many overlaps for `SL_n(𝒪)`) and simple connectivity
+of the symmetric space.
+
+### F12. Macbeath's criterion on a convex domain — the shape arithmetic groups need `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/MacbeathConvexDomain.lean` (wired, axiom-clean).
+
+```text
+simplyConnectedSpace_of_convex        an open convex set is contractible, hence simply connected
+locallyPathConnectedSpace_of_isOpen   an open subset of a locally path-connected space is locally
+                                      path connected
+connectedSpace_of_convex              and connected
+isFinitelyPresented_of_macbeath_convex
+      ** A GROUP ACTING ON A NONEMPTY OPEN CONVEX SET, WITH A CONNECTED FUNDAMENTAL OPEN SET WHOSE
+         OVERLAP SET IS FINITE, IS FINITELY PRESENTED **
+```
+
+This is exactly the shape the arithmetic case needs: the space of positive definite forms is an
+**open convex cone**, and the fundamental open set is a Siegel set.  Note that the criterion asks
+only for the overlap set to be *finite* — not for the action to be cocompact — which is what makes
+it applicable to the **non-uniform** lattice `SL_n(𝒪)`, where Siegel's finiteness property provides
+exactly that.
+
+The two arithmetic inputs that remain for `E_n(𝒪)` finitely presented are therefore:
+
+1. the action of `SL_n(𝒪)` on the positive definite cone, with a Siegel set as fundamental open set
+   (`⋃ γ • V = X`);
+2. **Siegel's finiteness property**: `{γ : γ·V ∩ V ≠ ∅}` is finite.
+
+Nothing else in the finite-presentation layer is open.
+
+### F13. The positive definite cone is an open convex set `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/PositiveDefiniteCone.lean` (wired, axiom-clean).
+
+```text
+symmMatrices n              the real symmetric matrices, as a SUBMODULE (so a topological vector
+                            space, which is where the convexity has to live — the positive definite
+                            set is NOT open in all of Matrix, since being symmetric is closed)
+isHermitian_of_mem_symmMatrices
+posDefCone n                the positive definite ones inside it
+posDefCone_nonempty         the identity matrix
+convex_posDefCone           ** CONVEX **
+posDef_iff_sphere           positive definiteness of a symmetric matrix is a condition on the unit
+                            sphere
+isOpen_posDefCone           ** OPEN ** — the matrices failing positivity somewhere on the sphere are
+                            the image under the projection `Matrix × sphere → Matrix` of a closed
+                            set, and that projection is closed because the sphere is compact
+```
+
+Combined with `isFinitelyPresented_of_macbeath_convex`, the topological side of the arithmetic
+application is **complete**: the space is an open convex set, so simple connectivity, local path
+connectivity and connectivity all come for free.
+
+The remaining arithmetic inputs are exactly:
+
+1. the action of `SL_n(𝒪)` on `posDefCone`, with a Siegel set `V` satisfying `⋃ γ • V = X`;
+2. **Siegel's finiteness property**: `{γ : γ·V ∩ V ≠ ∅}` is finite.
+
+### F14. `SL(n, ℤ)` acts on the cone, and the criterion is now ONE reduction-theory input away `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/PositiveDefiniteConeAction.lean` (wired, axiom-clean).
+
+```text
+slReal                    an integral unimodular matrix, read over ℝ
+slReal_one, slReal_mul, slReal_det, slReal_isUnit, slReal_vecMul_injective
+symmConj                  the congruence action A ↦ g·A·gᵀ on symmetric matrices
+symmConj_one, symmConj_mul
+symmConj_posDef           ** congruence by an invertible matrix preserves positive definiteness **
+posDefConeMulAction       ** the MulAction of SL(n, ℤ) on the positive definite cone **
+posDefConeContinuousConstSMul
+locallyPathConnectedSpace_symmMatrices
+                          the symmetric matrices are locally path connected — via the defeq between
+                          `Submodule ℝ (Matrix …)` and `Submodule ℝ (Fin n → Fin n → ℝ)`, which
+                          makes the Pi normed-space instances apply
+isFinitelyPresented_specialLinearGroup_of_siegel
+                          ** SL(n, ℤ) IS FINITELY PRESENTED as soon as reduction theory supplies a
+                             connected fundamental open set with finitely many overlaps **
+```
+
+Every topological hypothesis is discharged: the cone is open and convex, so simple connectivity,
+local path connectivity and connectivity are automatic, and the action is by congruence.
+
+**The finite-generation half of the card is now ONE named classical theorem away**:
+
+> **Siegel's finiteness property.**  There is a connected open `V` in the positive definite cone with
+> `⋃_{γ ∈ SL(n, ℤ)} γ·V = X` and `{γ : γ·V ∩ V ≠ ∅}` finite.
+
+Given it, `isFinitelyPresented_specialLinearGroup_of_siegel` gives `SL(n, ℤ)` finitely presented;
+with `steinbergGroup_fg_of_moduleFinite` and `fg_ker_of_central_of_isFinitelyPresented` that gives
+`K₂` finitely generated.  The rank-zero half (Borel, or Tate + Iwasawa) is independent of this
+layer.
+
+### F15. `SL(n, ℤ)` acts PROPERLY DISCONTINUOUSLY on the cone `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/PositiveDefiniteBounds.lean` (wired, axiom-clean).
+
+```text
+quadForm, continuous_quadForm, quadForm_pos
+exists_lower_bound_of_isCompact    ** a POSITIVE uniform lower bound on a compact family of forms **
+exists_upper_bound_of_isCompact    a uniform upper bound
+quadForm_smul, quadForm_zero, quadForm_ge_of_sphere_bound
+quadForm_smul_group                ** the congruence formula: Q_{g·A}(x) = Q_A(gᵀx) **
+norm_single_one
+entry_bound                        ** a group element carrying one compact family of forms into
+                                      another has BOUNDED ENTRIES ** — from m‖gᵀx‖² ≤ Q_A(gᵀx)
+                                      = Q_{g·A}(x) ≤ M on the unit sphere
+finite_entries_bounded             finitely many integer matrices with bounded entries
+finite_meet_of_isCompact           ** {γ : γ·K ∩ L ≠ ∅} is FINITE for K, L compact **
+properlyDiscontinuousSMul_posDefCone
+                                   ** THE ACTION IS PROPERLY DISCONTINUOUS **
+```
+
+This is the properness half of reduction theory, proved from scratch: compactness gives uniform
+bounds on the quadratic form, the bounds give bounded entries, and integrality gives finiteness.
+
+What is still missing for `SL(n, ℤ)` finitely presented is only the *fundamental set*: a connected
+open `V` with `⋃ γ·V = X`.  Given such a `V` with relatively compact closure the overlap set is
+finite by `meetSet_finite_of_properlyDiscontinuousSMul` — but the action is not cocompact, so what
+is needed is a Siegel set together with Siegel's finiteness property, of which the properness proved
+here is the first half.
+
+### F16. The arithmetic minimum of a positive definite form `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/ArithmeticMinimum.lean` (wired, axiom-clean).
+
+```text
+intVec, intVec_injective, intVec_eq_zero_iff    an integer vector read over ℝ
+finite_intVec_bounded         finitely many integer vectors with bounded entries
+finite_latticePoints_le       ** finitely many integer vectors take a bounded value ** — the form
+                              dominates m‖v‖², so a bound on the value bounds the entries
+exists_arithmeticMinimum      ** THE MINIMUM OVER NONZERO INTEGER VECTORS IS ATTAINED **
+```
+
+This is the first step of Minkowski reduction: reduction proceeds by repeatedly choosing vectors
+that realise the minimum, and the properness proved here is what makes those choices possible.
+
+### State of the finite-generation half
+
+```text
+St(𝒪) finitely generated                                   [PROVED]
+central extension ⟹ K₂ finitely generated                  [PROVED]
+Macbeath's criterion (open convex domain)                   [PROVED]
+the positive definite cone is open and convex               [PROVED]
+SL(n, ℤ) acts on it, continuously                           [PROVED]
+the action is properly discontinuous                        [PROVED]
+the arithmetic minimum is attained                          [PROVED]
+--------------------------------------------------------------------
+a fundamental open set with finitely many overlaps          [OPEN: Siegel]
+```
+
+## F17. Jacobi coordinates — 2026-08-19 `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/JacobiDecomposition.lean`
+
+- `blockTriangular_of_lower`, `lower_of_blockTriangular`, `lower_mul_diag` — the triangularity
+  bookkeeping in the form mathlib's `Matrix.BlockTriangular` takes.
+- `lowerTriangular_diag_ne_zero` — an invertible lower triangular matrix has nonzero diagonal.
+- `unitTriangular_inv_diag` — the inverse of a unit lower triangular matrix has unit diagonal.
+- **`exists_jacobi_decomposition`** — every real positive definite `A` is `Uᵀ D U` with `U`
+  unipotent upper triangular and `D` positive diagonal.  Built from mathlib's `LDL` (Gram–Schmidt in
+  the inner product of the form), normalised so the diagonal is one and inverted.
+- **`quadForm_jacobi`** — `A[v] = ∑ dᵢ (Uv)ᵢ²`.
+
+These are the coordinates in which Siegel sets are defined, so this is the first step of the
+reduction theory that `isFinitelyPresented_of_macbeath_convex` is waiting for.  The remaining steps:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set 𝔖_{t,u} as explicit inequalities        [next]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F18. Siegel sets and quasi-diagonality `[PROVED]`
+
+- `UnipotentInverseBound.lean` — `unipotentBall` (unipotent upper triangular with entries bounded
+  by `u`), `det_eq_one_of_unipotent`, `inv_eq_adjugate_of_unipotent`,
+  **`isCompact_unipotentBall`**, **`exists_unipotent_inv_bound`**: the inverses are uniformly
+  bounded.  The determinant is identically one on the ball, so the inverse is the adjugate — a
+  polynomial in the entries — and the ball is a closed subset of a box, hence compact.
+
+- `SiegelSet.lean` — `JacobiData` (the pair `(U, d)`), `JacobiData.form`, `exists_jacobiData`,
+  `JacobiData.IsSiegel` (the two Siegel bounds: `dᵢ ≤ t·dᵢ₊₁` and `|Uᵢⱼ| ≤ u`),
+  **`JacobiData.d_le_pow`**, `d_le_pow_of_le`, **`d_le_pow_n`**: the diagonal bound iterated along
+  a chain, so `dᵢ ≤ tⁿ dⱼ` whenever `i ≤ j`.
+
+- `SiegelQuasiDiagonal.lean` — `JacobiData.det_eq_one`, `JacobiData.inv_upper`,
+  `JacobiData.mulVec_inv`, `JacobiData.quadForm_eq`, and **`exists_quasiDiagonal`**:
+
+  > for every `n, t ≥ 1, u` there is `c > 0` with `A[v] ≥ c · ∑ dᵢ vᵢ²` for every form in the
+  > Siegel set and every `v`.
+
+  Both Siegel bounds enter exactly once: the unipotent bound through the uniform bound on `U⁻¹`,
+  and the diagonal bound through `dᵢ ≤ tⁿ dⱼ` — which is applied only for `i ≤ j`, precisely the
+  range in which the entries of `U⁻¹` can be nonzero.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+Quasi-diagonality already gives one half of Siegel's finiteness: if `A` and `γᵀAγ` both lie in the
+Siegel set then `dₖ γₖᵢ² ≤ K d'ᵢ` for all `k, i`, so a nonzero *integer* entry forces
+`dₖ ≤ K d'ᵢ`.  What remains is the combinatorial step that turns those support constraints into a
+bound on the entries themselves, using `∏ dᵢ = ∏ d'ᵢ = det A`.
+
+## F19. Size reduction `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelSizeReduction.lean`
+
+- `IsUnipotentUpper`, `IsIntUnipotent`, with `upper_mul_diag`, `IsUnipotentUpper.mul`,
+  `IsIntUnipotent.mul`, `isIntUnipotent_one` — the real and integral unipotent upper triangular
+  matrices are closed under products.
+- `SizeReduced k` — the superdiagonals of offset at most `k` lie in `[-1/2, 1/2]`.
+- **`exists_sweep`** — one integral shear at offset `k+1` reduces that superdiagonal and leaves the
+  smaller offsets untouched.  The shear `1 + E` has `E` supported on a single offset, so
+  `(V·E)ᵢⱼ` vanishes for every smaller offset (the surviving index would sit strictly left of `i`,
+  where `V` is zero) and equals `eᵢ` on offset `k+1` (where the surviving index is `i` itself and
+  `Vᵢᵢ = 1`).  Choosing `eᵢ = −round(Vᵢ,ᵢ₊ₖ₊₁)` finishes.
+- **`exists_size_reduction`** — sweeping the offsets outwards, every unipotent upper triangular
+  matrix becomes size reduced after multiplication by an integral one.
+- `JacobiData.shear`, `shear_d`, `shear_U`, **`shear_form`** (`γᵀAγ`), **`exists_sizeReduced_shear`**
+  — an integral unipotent basis change is a congruence of the form that leaves the Jacobi diagonal
+  fixed, so every form has a size reduced Jacobi datum in its orbit, with the same diagonal.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+the Lovász swap: dᵢ ≤ t dᵢ₊₁ after a transposition     [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+The covering statement now needs only the second Siegel bound.  The LLL route supplies it: a
+transposition of two adjacent basis vectors replaces `(dᵢ, dᵢ₊₁)` by
+`(dᵢ₊₁ + u² dᵢ, dᵢ dᵢ₊₁ / (dᵢ₊₁ + u² dᵢ))`, which strictly lowers `dᵢ` whenever
+`dᵢ₊₁ < (1 − u²) dᵢ`; with `|u| ≤ 1/2` from size reduction this is implied by `dᵢ₊₁ < (3/4) dᵢ`.
+Minimising the potential `∏ dᵢ^(n−i)` over the orbit therefore forces `dᵢ ≤ (4/3) dᵢ₊₁`.
+
+## F20. Leading minors and uniqueness of the Jacobi diagonal `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/JacobiLeadingMinors.lean`
+
+- `leadingBlock`, `leadingBlock_upper`, `leadingBlock_unit`.
+- **`leadingBlock_congr`** — the leading `k × k` block of `Uᵀ D U` is `Uₖᵀ Dₖ Uₖ`.  An upper
+  triangular `U` has nothing below the diagonal to couple the block to the rest: in the entry sum,
+  every index outside the block sits strictly to the right of the row index, where `U` vanishes.
+- **`det_leadingBlock_form`** — hence `det Aₖ = ∏_{m<k} dₘ`, since the leading block of `U` is again
+  unipotent so has determinant one.
+- **`JacobiData.d_unique`** — the Jacobi diagonal is determined by the form, via
+  `dₖ = det Aₖ₊₁ / det Aₖ`.
+
+This makes the reduction-theory potential `∏ₖ det Aₖ` a function of the *form* rather than of a
+chosen decomposition, which is what lets the LLL minimisation argument be stated at all: a swap of
+two adjacent basis vectors changes exactly one leading minor, so the potential is a well-defined
+quantity to minimise over the `SL(n, ℤ)`-orbit.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász swap: dᵢ ≤ t dᵢ₊₁ after a transposition     [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F21. The Lovász bound from local minimality `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelLovasz.lean`
+
+- **`JacobiData.form_diag`** — `A_jj = ∑ₘ dₘ Uₘⱼ²`: the diagonal entries read off the Jacobi
+  coordinates.
+- `JacobiData.d_le_form_diag` — hence `dⱼ ≤ A_jj`.
+- **`JacobiData.form_diag_le`** — on a size reduced datum, `A_jj ≤ dⱼ + ¼ ∑_{m<j} dₘ`.
+- **`lovasz_of_le`** — if `dₖ ≤ d_l + U_kl² dₖ` for some `l > k` on a size reduced datum, then
+  `dₖ ≤ (4/3) d_l`.
+
+This settles the *shape* of the second Siegel bound and, importantly, which route can supply it.
+Minkowski reduction cannot: the naive induction gives `dₖ ≤ dₖ₊₁ + ¼ ∑_{m≤k} dₘ`, whose constant
+grows with `k` and breaks once the accumulated sum exceeds `4 dₖ`.  The local condition above has no
+such defect — `4/3` is uniform in `k` and in `n` — because it compares `dₖ` only against the squared
+distance of the *next* basis vector from the earlier ones, never against the whole prefix.
+
+What `lovasz_of_le` still needs as input is exactly that geometric minimality, `dₖ ≤ dₖ₊₁ + u² dₖ`.
+For `k = 0` it is the arithmetic minimum (`exists_arithmeticMinimum`, F16), since
+`A_{11} = d₁ + u² d₀` is the value of the form at the second basis vector.  For general `k` it is
+minimality of `dₖ` against lattice vectors outside the span of the first `k−1` basis vectors, which
+is the greedy construction of the basis — the remaining open step.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound dₖ ≤ (4/3) dₖ₊₁ from local minimality [PROVED]
+the greedy basis realising that minimality             [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F22. The first Lovász bound, closed `[PROVED]`
+
+Appended to `formal/GaloisForLFunctions/HTGeometry/SiegelLovasz.lean`:
+
+- `JacobiData.form_diag_zero` — `A₀₀ = d₀`.
+- **`JacobiData.form_diag_succ`** — when the coordinates before `i` vanish,
+  `A_jj = dᵢ Uᵢⱼ² + dⱼ` for `j` the successor of `i`.  This is the squared distance of the next
+  basis vector from the earlier ones, written out.
+- **`JacobiData.lovasz_succ`** — hence `dᵢ ≤ (4/3) dⱼ` whenever `dᵢ ≤ A_jj`.
+- **`JacobiData.lovasz_first`** — the case `i = 0`, where the hypothesis on earlier coordinates is
+  vacuous.
+- `quadForm_single` — the value of the form at a standard basis vector is the diagonal entry.
+- **`lovasz_first_of_arithmeticMinimum`** — **the first Lovász bound is now unconditional**: if the
+  first standard basis vector realises the arithmetic minimum of the form, then `d₀ ≤ (4/3) d₁`.
+
+This closes the bottom step of the second Siegel bound outright, with `exists_arithmeticMinimum`
+(F16) supplying the minimality.  The general step needs the same inequality one level up: minimality
+of `dₖ` against lattice vectors outside the span of the first `k−1` basis vectors.  That is the
+greedy basis construction, and `lovasz_succ` is stated exactly so that it plugs in — its hypothesis
+`hpre` is precisely "the new vector has no component along the earlier basis vectors", which the
+greedy choice provides.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+the first Lovász bound d₀ ≤ (4/3) d₁                   [PROVED]
+the greedy basis: minimality at every level            [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+## F23. The projected norm; the Siegel conditions reduced to a greedy basis `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelProjectedNorm.lean`
+
+- **`JacobiData.projNorm`** — `projNorm i v = ∑_{m ≥ i} dₘ (Uv)ₘ²`, the squared norm of the
+  projection of `v` orthogonally to the first `i` Jacobi directions; `projNorm_nonneg`,
+  `projNorm_le` (it is at most the value of the form).
+- **`projNorm_self`** — `projNorm i eᵢ = dᵢ`.
+- **`projNorm_succ`** — `projNorm i eⱼ = dᵢ Uᵢⱼ² + dⱼ` for `j` the successor of `i`.
+- **`lovasz_of_projNorm_min`** — hence greedy minimality at level `i` gives `dᵢ ≤ (4/3) dⱼ`.
+- **`JacobiData.isSiegel_of_greedy`** — **a greedy, size reduced Jacobi datum satisfies
+  `IsSiegel (4/3) 1`**: both Siegel bounds, with explicit parameters.
+
+This corrects the hypothesis shape recorded in F22.  There, `lovasz_succ` demanded that the later
+basis vector have *no* component along the earlier ones (`hpre`).  That is unachievable: a greedy
+lift is only ever determined modulo the earlier basis vectors, so its real coordinates cannot be
+made to vanish — size reduction brings them into `[-1/2, 1/2]` and no further.  Projecting them away
+instead is both correct and exactly what the greedy minimum is a minimum *of*.  `lovasz_of_le`
+(F21) was already stated in the right generality and is unaffected.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+the first Lovász bound d₀ ≤ (4/3) d₁                   [PROVED]
+greedy + size reduced ⟹ IsSiegel (4/3) 1              [PROVED]
+the greedy basis itself                                [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+The covering statement is now exactly one construction away: a `ℤ`-basis whose `i`-th vector
+minimises `projNorm i` among lattice vectors of nonzero projection.  Discreteness supplies each
+individual minimum (`finite_latticePoints_le`, F16); what remains is that the minimising vectors can
+be chosen to form a basis, i.e. that a vector realising the projected minimum is primitive modulo
+the earlier ones.
+
+## F24. Minimisers of the projected norm have primitive tail `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelGreedyPrimitive.lean`
+
+- **`JacobiData.projNorm_smul`** — the projected norm is quadratically homogeneous.
+- **`JacobiData.projNorm_congr_tail`** — it depends only on the coordinates from `i` on.  (`U` is
+  upper triangular, so `(Uv)ₘ` for `m ≥ i` involves no coordinate before `m`.)
+- **`JacobiData.not_dvd_of_projNorm_min`** — **a lattice vector realising the minimum of the
+  projected norm at level `i` has no common divisor `k ≥ 2` among its coordinates from `i` on.**
+  Dividing by `k` would keep the projection nonzero and divide the projected norm by `k²`.
+
+This is the step that makes the greedy construction produce a **basis** rather than merely a
+sequence of short vectors: primitivity modulo the earlier coordinates is exactly the condition under
+which the minimiser extends the partial basis.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+greedy + size reduced ⟹ IsSiegel (4/3) 1              [PROVED]
+minimisers have primitive tail                         [PROVED]
+primitive tail ⟹ extends the partial basis            [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+{γ : γ𝔖 ∩ 𝔖 ≠ ∅} finite (Siegel)                      [OPEN]
+```
+
+The remaining step of the covering is now purely module-theoretic and carries no analysis: a vector
+of `ℤⁿ` whose coordinates from `i` on are setwise coprime extends the first `i` standard basis
+vectors to a basis of `ℤⁿ`.  Equivalently, a primitive vector of `ℤ^{n-i}` is the first column of a
+matrix of `SL(n-i, ℤ)`.
+
+## F25. The Siegel entry bound `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelEntryBound.lean`
+
+- **`congr_diag_eq_quadForm_col`** — the `i`-th diagonal entry of `γᵀAγ` is the value of `A` at the
+  `i`-th column of `γ`.
+- **`JacobiData.form_diag_le_pow`** — on a Siegel set, `A_ii ≤ (1 + n tⁿ/4) dᵢ`: the earlier
+  diagonal entries entering `A_ii` are each at most `tⁿ dᵢ`, and size reduction weights them by at
+  most a quarter.
+- **`siegel_entry_bound`** — **if a form and its congruate by `γ` both lie in a Siegel set then
+  `c · dₖ γₖᵢ² ≤ (1 + n tⁿ/4) d'ᵢ` for every `k, i`.**
+
+This is the entire analytic content of Siegel's finiteness property, and it now rests only on
+results already proved: quasi-diagonality (F18) for the lower bound, and the two Siegel bounds
+(F18, F19) for the upper one.
+
+What remains for finiteness is arithmetic, not analysis.  The entries of `γ` are integers, so
+`γₖᵢ ≠ 0` forces `|γₖᵢ| ≥ 1` and hence `dₖ ≤ K d'ᵢ`; the support pattern of `γ` is therefore
+constrained by the ratios `d'ᵢ / dₖ`.  Turning those constraints into a bound on the entries uses
+`∏ dᵢ = ∏ d'ᵢ = det A` (available from F20) together with a decomposition of `γ`; the naive
+argument through the permutation supplied by `det γ ≠ 0` bounds only `d_{σ(i)} / d'ᵢ`, not
+`dₖ / d'ᵢ` for arbitrary `k`, so a finer argument is needed there.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+greedy + size reduced ⟹ IsSiegel (4/3) 1              [PROVED]
+minimisers have primitive tail                         [PROVED]
+the Siegel entry bound c dₖ γₖᵢ² ≤ K d'ᵢ              [PROVED]
+primitive tail ⟹ extends the partial basis            [OPEN, module theory]
+the arithmetic step of Siegel finiteness               [OPEN]
+```
+
+## F26. The projected norm is a squared distance `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelProjIntrinsic.lean`
+
+- `lowerSupport` — the vectors supported on the coordinates before `i`, as a submodule.
+- `JacobiData.mulVec_lower` — an upper triangular `U` preserves that support condition.
+- **`JacobiData.projNorm_le_form_sub`** — `projNorm i v ≤ A[v − w]` for every `w` supported
+  below `i`.
+- **`JacobiData.eq_zero_of_mulVec_lower`** — the transform is injective on `lowerSupport i`; proved
+  by back-substitution, as a downward induction on `i − p`.
+- `JacobiData.lowerMap`, `lowerMap_injective`, **`JacobiData.exists_proj`** — injectivity in equal
+  finite dimension gives surjectivity, hence the projection exists.
+- **`JacobiData.projNorm_eq_form_sub`** — **`projNorm i v` is exactly the squared distance of `v`
+  from the span of the first `i` coordinates.**
+
+This makes `projNorm` *intrinsic*: it depends only on the form and on the span of the first `i`
+basis vectors, not on the basis chosen inside that span.  That is precisely what the Lovász swap
+needs and what removes the determinant computation that blocked it.  Transposing two adjacent basis
+vectors leaves the span of the earlier ones unchanged, so the new `i`-th Jacobi entry is the *old*
+projected norm of the transposed vector — which `projNorm_succ` (F23) already evaluates as
+`dᵢ Uᵢⱼ² + dⱼ`.  No Cauchy–Binet, no minor determinant, no explicit re-triangularisation.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+greedy + size reduced ⟹ IsSiegel (4/3) 1              [PROVED]
+minimisers have primitive tail                         [PROVED]
+the Siegel entry bound c dₖ γₖᵢ² ≤ K d'ᵢ              [PROVED]
+projNorm is intrinsic (a squared distance)             [PROVED]
+the swap identity d'ᵢ = dᵢ₊₁ + u² dᵢ                   [next, now unblocked]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+the arithmetic step of Siegel finiteness               [OPEN]
+```
+
+## F27. The Lovász swap identity `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelSwap.lean`
+
+- **`quadForm_congr`** — the value of a congruate at `x` is the value of the form at the transported
+  vector.
+- `permMatrix`, `permMatrix_mulVec`, `permMatrix_involutive`, `permMatrix_single_swap`,
+  `permMatrix_lowerSupport` — the permutation matrix, its action, and the two facts the swap needs:
+  it exchanges the two basis vectors and preserves the support condition below `i` (both swapped
+  indices being at least `i`).
+- **`swap_d_eq_projNorm`** — **if `J'` is Jacobi data for the form obtained by transposing the basis
+  vectors `i` and `j`, then `d'ᵢ = projNorm i e_j` for the original data.**  Both inequalities come
+  from the two halves of the intrinsic characterisation (F26), transported through the permutation:
+  a competitor for one side maps to a competitor for the other.
+- **`swap_d_lt`** — **a swap strictly lowers `dᵢ` exactly when the Lovász condition fails**, i.e.
+  when `dⱼ < (3/4) dᵢ` on a size reduced datum.
+
+Combined with `projNorm_succ` (F23), this evaluates the swap: `d'ᵢ = dᵢ Uᵢⱼ² + dⱼ`.  It required
+neither Cauchy–Binet, nor a minor determinant, nor an explicit re-triangularisation — the three
+routes that had blocked this step earlier — because intrinsic-ness of `projNorm` makes the identity
+a statement about *spans*, which the transposition does not move.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+greedy + size reduced ⟹ IsSiegel (4/3) 1              [PROVED]
+the Siegel entry bound c dₖ γₖᵢ² ≤ K d'ᵢ              [PROVED]
+projNorm is intrinsic (a squared distance)             [PROVED]
+the swap identity and its strict decrease              [PROVED]
+existence of a potential minimiser over the orbit      [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+the arithmetic step of Siegel finiteness               [OPEN]
+```
+
+The covering is now one existence statement away.  All the moves are in place — size reduction
+leaves the potential fixed, a failed Lovász condition strictly lowers it, and the group elements
+involved are integral shears and permutation matrices — so what remains is that the potential
+`∏ₖ det Aₖ` attains its infimum over the `SL(n, ℤ)`-orbit, which is a discreteness statement about
+the values of `det Aₖ` on sublattices.
+
+## F28. The descent scheme and the reduction potential `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/PotentialDescent.lean`
+
+- **`exists_terminal_of_contracting`** — if a potential is bounded below by a positive constant and
+  every non-terminal state admits a successor whose potential is a fixed proportion `q < 1` of its
+  own, then a terminal state exists.  Iterating the contraction drives the potential below the
+  bound; the geometric limit supplies the index at which that happens.
+
+This is the termination scheme of lattice basis reduction, and it replaces the "existence of a
+minimiser" formulation recorded as next in F27.  That formulation is strictly harder: it needs the
+infimum of the potential to be *attained*, whereas the descent only needs it to be *bounded below* —
+and boundedness is what the geometry actually supplies.
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelPotential.lean`
+
+- **`potentialOf`** — the product of the determinants of all leading minors of the form.
+- **`potentialOf_form`** — its value in Jacobi coordinates: a product of powers of the diagonal,
+  each `dₘ` appearing once per leading minor containing it.
+- **`potentialOf_pos`**, `potentialOf_congr` — it is positive, and it depends on the form alone,
+  never on a chosen decomposition.  This is what makes "contract the potential over the orbit"
+  well-posed, and it rests on `det_leadingBlock_form` (F20).
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+greedy + size reduced ⟹ IsSiegel (4/3) 1              [PROVED]
+the Siegel entry bound c dₖ γₖᵢ² ≤ K d'ᵢ              [PROVED]
+projNorm is intrinsic (a squared distance)             [PROVED]
+the swap identity and its strict decrease              [PROVED]
+the descent scheme; the potential is intrinsic         [PROVED]
+the swap acts on the other leading minors              [next]
+a positive lower bound for the potential               [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+the arithmetic step of Siegel finiteness               [OPEN]
+```
+
+The covering now decomposes into two named, finite tasks: (i) the swap leaves every leading minor
+except the `(i+1)`-st unchanged — a permutation-invariance statement, since the spans of the other
+prefixes are not moved; and (ii) `∏ₖ det Aₖ ≥ c > 0` on the orbit, which is Minkowski's convex body
+theorem applied to each prefix sublattice (`exists_ne_zero_norm_le_of_covolume` is already in the
+corpus).
+
+## F29. A swap moves only one leading minor `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/SiegelSwapMinors.lean`
+
+- **`permMatrix_congr_apply`** — conjugating by the permutation matrix of an involution rewrites the
+  form entrywise: `A'ₐᵦ = A_{σa,σb}`.
+- **`leadingBlock_swap_low`** — a leading block below both swapped indices is *equal* to the old
+  one, since the transposition fixes every index it contains.
+- **`det_leadingBlock_swap_high`** — a leading block above both swapped indices is the old one
+  permuted by the restricted transposition, so its determinant is unchanged
+  (`Matrix.det_submatrix_equiv_self`).
+
+Together with `swap_d_eq_projNorm` (F27) this pins down the whole effect of a Lovász swap on the
+potential: every factor `det Aₖ` with `k ≤ i` or `k ≥ i+2` is unchanged, and the single remaining
+factor `det A_{i+1}` is multiplied by `d'ᵢ / dᵢ`, which `swap_d_lt` shows is `< 1` exactly when the
+Lovász condition fails.
+
+Updated state of the reduction-theory lane:
+
+```text
+Jacobi coordinates                                     [PROVED]
+the Siegel set as explicit inequalities                [PROVED]
+quasi-diagonality: A[v] ≥ c ∑ dᵢ vᵢ² on 𝔖             [PROVED]
+size reduction: |Uᵢⱼ| ≤ 1/2 after an integral shear    [PROVED]
+uniqueness of the diagonal; the potential ∏ det Aₖ     [PROVED]
+the Lovász bound from local minimality                 [PROVED]
+greedy + size reduced ⟹ IsSiegel (4/3) 1              [PROVED]
+the Siegel entry bound c dₖ γₖᵢ² ≤ K d'ᵢ              [PROVED]
+projNorm is intrinsic (a squared distance)             [PROVED]
+the swap identity and its strict decrease              [PROVED]
+the descent scheme; the potential is intrinsic         [PROVED]
+a swap moves only one leading minor                    [PROVED]
+a positive lower bound for the potential               [next]
+SL(n,ℤ)·𝔖 = X  (reduction)                            [OPEN]
+the arithmetic step of Siegel finiteness               [OPEN]
+```
+
+Only one input to the covering is left: `∏ₖ det Aₖ ≥ c > 0` on the orbit.  Each `det Aₖ` is the
+squared covolume of the sublattice spanned by the first `k` basis vectors, and Minkowski's convex
+body theorem bounds it below by `Vₖ λ₁ᵏ / 2ᵏ`, where `λ₁` is the arithmetic minimum of the form —
+fixed along the orbit, since congruate forms take the same values on the lattice.

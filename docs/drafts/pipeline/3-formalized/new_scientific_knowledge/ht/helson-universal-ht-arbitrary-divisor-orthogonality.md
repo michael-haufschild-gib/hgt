@@ -1,9 +1,10 @@
 # Boundary-everywhere Helson continuation seam and universal HT field type
 
 - **ID:** `helson-universal-ht-arbitrary-divisor-orthogonality`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `helson-universal-ht-arbitrary-divisor-orthogonality-formalized.md`
 - **Type:** THEOREM / RH ROUTE CONSTRAINT
-- **Scientific status:** `[PROVED ON PAPER] [LEAN-CERTIFIED CONSEQUENCES] [NEW GEOMETRY] [NOVEL × SIGNIFICANT]`
+- **Scientific status:** `[LEAN-PROVED] [NEW GEOMETRY] [NOVEL × SIGNIFICANT]`
 
 ## Constraint
 
@@ -3613,3 +3614,579 @@ the Hankel solvability (Lemma 4), the rounding (Lemma 5) and the jump algebra (r
 What Lemma 7 still needs is the *arithmetic* side of Lemma 4: the Rayleigh floor `lam` for the
 moment matrix of the primes in `(x, x + x^theta]` with weights `log p`, which is
 `rayleigh_lower_of_blocks` fed by `exists_theta_subwindow_lower`.
+
+## Lean progress — Lemma 4's arithmetic side and Lemma 7's recursion are proved
+
+`RHTower/Sieve/PrimeWindowRayleighFloor.lean`
+
+```text
+theta_sub_eq_sum_Ioc          the Chebyshev increment is the log-sum over the window primes
+windowPrimes x y              the primes of (x, y] as a Finset
+windowPrimeIndex              the same, indexed by Fin (card), injective, all prime
+image_windowPrimeIndex, sum_windowPrimeIndex, sum_log_windowPrimeIndex_block
+subwindowLeft/Right J i       J separated subwindows of the window, gaps 1/(2J)
+subwindow_separated           distinct subwindows are 1/(2J) apart
+primeWindowFloor J theta x    the explicit floor  (x^theta/(32768 J)) / (Lagrange constant)
+exists_prime_window_rayleigh
+    for every J there is X with, for all x >= X and all c,
+      primeWindowFloor J theta x * sum_k c_k^2
+        <=  c . (atomicHankel (log p) (rescaled prime nodes) J) . c
+```
+
+This is the arithmetic half of Andersson's Lemma 4, and it is unconditional: the mass of each of the
+`J` subwindows is a Chebyshev increment, bounded below by the corpus's every-window short-interval
+prime mass `exists_theta_subwindow_lower`, and the block Rayleigh bound converts `J` separated
+massive blocks into a positive-definiteness floor for the whole moment matrix.
+
+`RHTower/AnderssonWindowRecursion.lean`
+
+```text
+exists_window_step
+    one recursion step: if the levels at x obey the bound with constant K and
+    2 J 2^J K <= primeWindowFloor J theta x, then unimodular phases at the window primes give
+      ‖ level_j (x + x^theta) ‖  <=  (x^theta)^j / j! * (J log (x + x^theta))    for all j < J
+windowSeq theta x0            the window endpoints  x_{k+1} = x_k + x_k^theta
+windowSeq_mono, windowSeq_ge_index, windowSeq_tendsto
+windowUpdate, WindowGood, stepSource, anderssonSource
+    the recursive construction: each stage assigns phases on its window; the stages agree at
+    integers already passed, so they define a single source
+stepSource_stable, anderssonSource_eq, arithProfile_anderssonSource
+eventually_floor_dominates    log x = o(x^theta) makes the floor dominate the state constant
+stepSource_state_bound, anderssonSource_state_bound
+    **Lemma 7**: for x0 beyond a threshold and every k,
+      ‖ level_j ( anderssonSource ) ( x_{k+1} ) ‖
+          <=  (x_k^theta)^j / j! * (J log x_{k+1})       for all j < J
+```
+
+The induction closes because the target the next window must realize is at most `2^j` times the
+current state constant (`norm_windowTarget_le`), while the Rayleigh floor of the window grows like
+`x^theta` and the state constant only like `log x`.  Nothing here is conditional: the prime supply
+is the corpus's unconditional short-interval theorem, and every other ingredient is finite-dimensional
+linear algebra.
+
+### Remaining
+
+```text
+Lemma 7, interior points   the same bound between window endpoints (no cancellation there, so the
+                           window mass contributes and the exponent is (j+1) theta)
+Theorem 1                  discharge the integrability hypotheses of mellin_representation_iterated
+                           with that bound, identify the source with chi(n) Lambda(n) up to the
+                           prime-power correction, and let j grow
+Theorem 2                  integrate f'/f = zeta'_chi/zeta_chi + g
+divisor surjectivity       feed Theorem 2 into HelsonFactorizationProperty
+```
+
+### The prime-power correction must sit inside the recursion — recorded so the shortcut is not retried
+
+The source of Andersson's chain is `chi(n) Lambda(n)`, supported on all prime *powers*, not only on
+primes.  Two shortcuts are dead:
+
+* Absorbing the prime-power part into the entire function `g` fails: `sum_{k >= 2}` is analytic only
+  on `Re s > 1/2`, so Theorem 2 would give `zeta_chi = F/g` meromorphic only there, and the card
+  needs the whole plane.
+* Absorbing it as a global error fails by orders of magnitude: `E(x) = O(sqrt x log^2 x)` integrated
+  `j` times is `x^{j + 1/2}`, while the level bound must stay at `x^{(j+1) theta}` with
+  `theta < 1`.  For large `j` the first beats the second, so the correction cannot be a remainder.
+
+The correct place for it is *inside* one window.  If the base point `x` is large then every prime
+power `p^k <= y = x + x^theta` with `k >= 2` has `p <= sqrt y < x`, so its value is already fixed by
+an earlier window.  Therefore:
+
+* the window update must be **partial** — it rewrites the source only at the window's *primes* and
+  leaves the already-determined prime-power values in place;
+* the moment target must cancel the Taylor image **and** those forced values;
+* the size condition still closes, because the forced mass of a window is
+  `O(x^{theta - 1/2} log x)`, which is `o(x^theta)` — the Rayleigh floor still dominates.
+
+Equivalently and more cleanly: carry the *character* `chi` as the state, define the source as
+`chi(n) Lambda(n)`, and note that changing `chi` at the primes of `(x, y]` changes the source only
+at those primes on `[1, y]`, since their squares exceed `y`.
+
+### Andersson's actual Lemma 6/7 structure — read from the source, and what it forces
+
+Fetched from arXiv:2408.15713v1:
+
+* **Lemma 6** is a *J-increasing* step: from `|r_j(x_k)| ≤ ((J+1)/(j-1)!) x_k^{(j-1)θ} log x_k`
+  for `1 ≤ j ≤ J`, the character extends to some later `x_{k₁}` with the same bound *and*
+  `|r_j(x_{k₁})| ≤ ((J+2)/(j-1)!) x_{k₁}^{(j-1)θ} log x_{k₁}` for `1 ≤ j ≤ J+1`.
+* **Lemma 7** starts with `χ(p_m) = (-1)^m` on the primes below `x_{k₀}`, then uses a *long* window
+  with `3/2 ≤ x_{k₁}/x_{k₀} ≤ 2` to reach `|r₁(x_{k₁})| ≤ log x_{k₁}`, and then invokes Lemma 6
+  recursively with `k_{J+1} > max(k_J, 2^J)`.
+
+Two consequences for the formalisation:
+
+1. **A fixed `J` cannot give Theorem 1.**  The entire function `g` requires the representation at
+   *every* order, so the character has to be built as the common extension of a nested sequence of
+   finite-order constructions.  The nesting is exactly what the window recursion already provides:
+   each stage only writes phases at primes of its own window, so later stages never disturb earlier
+   ones.
+2. **The startup and each order upgrade need a long window, not a short one.**  The window step is
+   self-correcting — after a window the whole state is the rounding error, independent of what came
+   before — so the *only* obstruction is the very first window of each order: the incoming state
+   must be inside the cancellable range `K ≲ (window length)`.  A window of length `x^θ` cannot
+   absorb a state of size `x^θ · const`, but a window of length `x` can, since the moment matrix's
+   Rayleigh floor scales with the window length while the incoming state is measured in the *old*
+   scale `x^θ`.
+
+So the remaining construction is: short windows (length `x^θ`) inside a phase of fixed order `J`,
+one long window (length comparable to `x`) at each order upgrade, and the limiting character as the
+common extension.  The corpus's every-window prime mass theorem `exists_theta_window_lower` already
+covers windows of arbitrary length, so the Rayleigh floor generalises without new arithmetic input.
+
+## Lean progress — the character source, partial windows, and arbitrary window lengths
+
+`HTGeometry/CharacterSource.lean`
+
+```text
+characterSource u n = u(minFac n)^(factorization n (minFac n)) * Lambda n
+    the source chi(n) Lambda(n) of a family of prime phases, written without building chi
+characterSource_prime, norm_characterSource_eq (= Lambda n for unimodular phases)
+characterSource_congr      the source at n only reads phases at most n
+characterSource_update
+    changing the phases at primes whose square exceeds y changes the source, on [1,y],
+    only at those primes
+```
+
+`HTGeometry/WindowAssignmentStep.lean` (extended)
+
+```text
+windowForced a S x y j        the contribution of the window values that are NOT free
+arithProfile_updateWindow_partial   the window decomposition for a partial update
+windowTargetPartial           the moment that cancels Taylor image AND forced values
+norm_windowForced_le, norm_windowTargetPartial_le   ‖target‖ <= 2^j K + (forced mass)
+exists_window_phases_partial  the window step when only part of the window is free
+norm_windowTaylor_le, norm_arithProfile_window_le   the interior bound
+```
+
+`RHTower/Sieve/CharacterWindowMass.lean`
+
+```text
+psi_sub_eq_sum_Ioc, sum_vonMangoldt_window_sdiff_primes_le
+    the forced mass of a window is the prime-power leakage psi - theta, bounded by the corpus's
+    explicit  (log b / log 2)(sqrt(width) + 1) log b
+arithProfile_characterSource_update, phaseAssign, windowAssign_eq_phaseAssign
+forcedMassBoundL x L, sum_norm_characterSource_forced_le_L
+```
+
+`RHTower/Sieve/PrimeWindowRayleighFloor.lean` (extended)
+
+```text
+blockRayleighConst J, primeWindowFloorL J L
+exists_prime_window_rayleigh_general
+    for every J there is X with: for all x >= X and every window length L with
+    4 J (x+L)^alpha <= L,
+      primeWindowFloorL J L * sum_k c_k^2  <=  c . (atomicHankel (log p) (nodes)) . c
+```
+
+`RHTower/Sieve/CharacterWindowStep.lean`
+
+```text
+exists_character_window_step          the step for a window of length x^theta
+exists_character_window_step_general  the step for a window of any admissible length L
+    hypotheses: levels at x bounded by (L^m/m!) K, and 2J(2^J K + forcedMassBoundL x L)
+      <= primeWindowFloorL J L
+    conclusion: unimodular phases at the window primes with, for j < J,
+      ‖ level_j (updated character source) (x+L) ‖ <= (L^j/j!) (J log (x+L))
+```
+
+`RHTower/Sieve/CharacterWindowRecursion.lean`
+
+```text
+CharGood, charStep, anderssonPhases      the recursion carrying the phases as state
+norm_charStep (= 1 everywhere), charStep_stable, anderssonPhases_eq
+arithProfile_characterSource_anderssonPhases
+eventually_log_sq_le, forcedMassBound_le, eventually_floor_dominates_forced
+    log x = o(x^theta) and sqrt(x^theta) log^2 x = o(x^theta) make the floor dominate both the
+    state constant and the forced mass
+```
+
+Every one of these is wired and axiom-clean.  What remains for Lemma 7 in Andersson's full form is
+the *phase structure*: short windows inside a fixed order `J`, one long window at each upgrade
+`J -> J+1`, and the limiting character as the common extension.  Both window kinds are now available
+as theorems; only the bookkeeping of the phases is left.
+
+## Lean progress — the ladder recursion at a fixed order is closed
+
+`RHTower/Sieve/WindowLadder.lean`
+
+```text
+ladder, ladderBase, ladderLen        base_{k+1} = base_k + len_k,  len_{k+1} = max(base^theta, len_k/2)
+ladderLen_le_two_mul                 lengths halve at worst
+rpow_le_ladderLen', ladderLen_le_mul, ladderLen_le_base
+ladderBase_tendsto, eventually_ladderLen_eq   the ladder reaches the short windows
+```
+
+`RHTower/Sieve/LadderCharacterRecursion.lean`
+
+```text
+norm_arithProfile_characterSource_le_crude   ‖level_m(x)‖ <= (x^m/m!) (C_psi x)   (any character)
+CharGoodL, ladderChar, ladderChar_stable, norm_ladderChar
+ladder_window_admissible_zero / _succ        4J(x+L)^alpha <= L for every rung
+size_condition_of_halves, eventually_forced_half, eventually_K_half_first / _succ
+exists_ladder_state_bound
+    for x0 beyond a threshold and any unimodular starting phases,
+      ‖ level_j (ladder character after k+1 windows) (base_{k+1}) ‖
+          <= (len_k^j / j!) * (J log base_{k+1})     for every j < J
+```
+
+The first window has length `x0^{3/2}`, which is what absorbs the arbitrary incoming state — the
+crude Chebyshev bound `‖level_m(x0)‖ ≤ (x0^m/m!)(C x0)` — and the halving ladder then brings the
+scale down to `x^theta` without ever losing more than a factor `2^J` in the state constant.  This is
+the correct startup: a window of length `x^theta` cannot absorb a state of size `x`, and Andersson's
+own proof likewise begins with a long window.
+
+### Why long windows are wrong in the middle, and the transition-window fix
+
+A long window is fine for *absorbing* an arbitrary state, but it is fatal for Lemma 7: inside a
+window nothing is cancelled, so at an interior point the level is as large as
+`(window length)^{j+1}`.  With a window of length `x^{3/2}` that is `x^{j+1}`, i.e. the crude bound,
+and the Mellin integral `∫ r_j(x) x^{-s-1-j} dx` then only converges for `Re s > 1` — the
+continuation dies.  So the ladder (long first window, halving down to `x^θ`) is **not** usable as
+the startup of each order, even though it is correct as a theorem.
+
+What actually makes the orders stack is that the *new* coordinate is not crude.  During a stage of
+order `J` the levels `m < J` obey `|level_m(x)| ≪ x^{(m+1)θ}` at every point (window interior bound),
+and `level_J` is the integral of `level_{J-1}`, so
+
+```text
+|level_J(x)|  ≤  |level_J(b)| + ∫_b^x |level_{J-1}|  ≪  |level_J(b)| + x^{Jθ + 1} .
+```
+
+The first window of the next stage must satisfy `|level_J(b)| ≤ (L^J/J!) K` with `K ≲ L`, i.e.
+`L^{J+1} ≳ b^{Jθ+1}`.  So a **transition window of length `b^{θ'}` with
+`θ' = (Jθ+1)/(J+1) = θ + (1-θ)/(J+1)`** suffices — barely longer than `x^θ`, and `θ' < 1`.
+
+After it, the state sits at scale `b^{θ'}`, and the next ordinary window of length `y^θ` can take it
+because the conversion costs `b^{J(θ'-θ)} = b^{J(1-θ)/(J+1)}`, which is `≪ b^θ` exactly because
+`θ > 1/2` — and `θ > 0.701` here.  So no ladder and no steering are needed: **short windows
+everywhere, with one slightly longer transition window per order**.  The interior bound in a
+transition window is `x^{(j+1)θ'_J}`, and `θ'_J → θ`, so for every `ε > 0` the final bound
+`|r_{j+1}(x)| ≪ x^{(j+1)(θ+ε)}` holds for all large `x` — which is what Theorem 1 consumes.
+
+## Lean progress — the stage recursion (transition window + short windows)
+
+`RHTower/Sieve/StageWindowRecursion.lean` (wired, axiom-clean)
+
+```text
+stageWindow, stageBaseAt, stageLenAt      base_{k+1} = base_k + len_k, len_0 = b^{θ+δ}, len_{k+1} = base^θ
+stageChar, stageLimit, stageChar_stable, arithProfile_stageLimit
+window_admissible_of_len                  4J(x+L)^alpha <= L and x+L <= x^2 for x^θ <= L <= x
+eventually_K_half_stage                   the state half of the size condition, with the b^{Jδ} conversion
+exists_stage_state_bound
+    given the transition-window state bound at b in scale b^{θ+δ} and its size condition,
+      ‖ level_j (stage character after k+1 windows) (base_{k+1}) ‖
+          <= (len_k^j / j!) * (J log base_{k+1})     for every j < J
+```
+
+`HTGeometry/WindowAssignmentStep.lean` also gained `norm_arithProfile_window_le'`, the interior
+bound measured in a *fixed* scale `S ≥ y - x`, which is what the interior of a window needs (the
+`y-x` form degenerates as `y → x`).
+
+### The bookkeeping that closes the stacking
+
+* `δ_J := 2(1-θ)/(J+2)` for `J ≥ 2`.  Then `θ + δ_J < 1`, `J δ_J < θ` (this needs `θ > 2/3`, and
+  `θ > 0.701` here), and `(J+1) δ_{J+1} > 1-θ` — the three inequalities the stage needs.
+* The invariant carried from stage to stage is *pointwise at the next base*: for some constant,
+  `‖level_m(b')‖ ≤ C b'^{(m+1)θ} log b'` for `m < J` and `‖level_J(b')‖ ≤ C b'^{Jθ+1} log b'`.
+  The second is the growth bound `level_J = level_J(b) + ∫_b^{b'} level_{J-1}`.
+* Both are consumed by the next transition window because its scale is `b'^{θ+δ'}` and
+  `(m+1)δ' > 0` beats every constant and logarithm once `b'` is large.
+* Near a stage's start the levels are only `x^{(j+1)(θ+δ_J)}`; that slack is harmless for
+  Theorem 1, since the Mellin exponent still tends to `-∞` in `j`.
+
+## Lemma 7 is Lean-proved for the arithmetic chain — and why the datum must be folded in
+
+`RHTower/Sieve/CharacterStacking.lean` (wired, axiom-clean)
+
+```text
+stackDelta θ J = 2(1-θ)/(J+3)      with θ+δ<1, Jδ<θ, (J+1)δ>1-θ  (all need θ > 2/3)
+StackInv θ J b C u                 the carried state: ‖level_m(b)‖ ≤ C b^{(m+1)θ} log b for m < J,
+                                   and ‖level_J(b)‖ ≤ C b^{Jθ+1} log b
+stage_hypotheses_of_stackInv       the carried state is inside the reach of a b^{θ+δ} window
+exists_stack_step                  one stage: new character agreeing below b, uniform level bound
+                                   past b, carried state of the next order at every large point,
+                                   and C' ≤ b^{2θ} (this is what makes the final bound constant-free)
+exists_stack_start                 the bootstrap, from the order-4 ladder
+stackSeq, stackSeq_spec, anderssonChar, anderssonChar_eq, arithProfile_anderssonChar
+exists_andersson_character
+    ∃ u unimodular, ∀ j, ∃ X, ∀ x ≥ X,
+      ‖ level_j (characterSource u) (x) ‖ ≤ x^{(j+1)(θ + (1-θ)/3) + 2θ} · log x
+```
+
+### The remaining gap, stated precisely
+
+This is Lemma 7 **for the arithmetic chain alone** — the levels of `∑_{n ≤ x} χ(n)Λ(n)`.  Andersson's
+`r_1` is `∫_1^x q + ψ_χ(x)`, and the datum `q` must be cancelled by the same windows.  The
+distinction is not cosmetic: a character that only makes the *arithmetic* levels small makes
+`ζ'_χ/ζ_χ` entire, and then `g = f - ζ'_χ/ζ_χ` inherits `f`'s half-plane, so Theorem 1 fails.  The
+character has to depend on `f`, and it does so exactly through `q`.
+
+The fix is local.  For the full chain `arithJumpProfile q a j = iteratedAntideriv q (j+1) + level_j`,
+the window decomposition acquires one extra term:
+
+```text
+iteratedAntideriv q (j+1) y
+    = sum_{m ≤ j} ((y-x)^{j-m}/(j-m)!) · iteratedAntideriv q (m+1) x
+      + iteratedAntiderivFrom q x (j+1) y ,
+```
+
+a Taylor expansion whose remainder is itself an iterated antiderivative *based at `x`* — so it needs
+no Fubini, only `∫_x^y (t-x)^k dt = (y-x)^{k+1}/(k+1)`.  The remainder is bounded by
+`M_q (y-x)^{j+1}/(j+1)!` with `M_q = sup |q|`, i.e. it behaves exactly like extra forced mass of the
+window, which every size condition in the chain already carries.  So the retrofit is: prove that
+Taylor formula, add the remainder to `windowForced`, and replace `arithProfile (characterSource u)`
+by `arithJumpProfile q (characterSource u)` through the window step, the stage, the ladder and the
+stacking.
+
+## Lemma 7 is Lean-proved for the FULL chain (datum + arithmetic)
+
+The retrofit recorded in the previous section is done.  Every layer of the recursion now carries the
+continuous datum, so Lemma 7 controls `r_{j+1} = ∫_1^x q + ∑_{n ≤ x} χ(n)Λ(n)` and all its
+iterated integrals, not merely the arithmetic part.
+
+```text
+RHTower/Sieve/CharacterStacking.lean
+exists_andersson_character
+    α > 0.701299, α < θ < 1, θ > 2/3,
+    dq interval-integrable everywhere, ‖dq‖ ≤ Mglob globally, dq → 0 at ∞
+      ==>  ∃ u : ℕ → ℂ, (∀ n, ‖u n‖ = 1) ∧
+             ∀ j, ∃ X ≥ 1, ∀ x ≥ X,
+               ‖arithJumpProfile dq (characterSource u) j x‖
+                 ≤ x^{(j+1)(θ + (1-θ)/3) + 2θ} · log x
+```
+
+### Why the datum needs a decay hypothesis, and what it costs
+
+Over a window `(x, x+L]` the datum's Taylor remainder has size `Mq·L^{j+1}/(j+1)!`, i.e. `Mq·L`
+relative to the state scale `L^j/j!`.  The window's rounding capacity is the Rayleigh floor
+`primeWindowFloorL J L = L/(32768·J·blockRayleighConst J)`, also proportional to `L`.  So a datum
+with only a *global* bound is not absorbable: the comparison is constant-versus-constant and fails
+as soon as `Mq > 1/(32768 J D_J)`.  What saves the construction is that Lemma 1 delivers `q = o(1)`:
+past a threshold depending on the order, the datum is below
+
+```text
+datumSlack J = 1 / (262144 · J² · blockRayleighConst J)
+```
+
+and then `2J·Mq·L ≤ primeWindowFloorL J L / 4` exactly.  Hence every size condition is now split
+into **four** quarters — state, forced prime powers, datum, and slack — instead of the two halves
+used for the arithmetic chain:
+
+```text
+LadderCharacterRecursion.lean
+datumSlack, datumSlack_pos, datum_quarter, size_condition_of_quarters, exists_datum_threshold
+eventually_forced_quarter, eventually_K_quarter_first, eventually_K_quarter_succ
+StageWindowRecursion.lean          eventually_K_quarter_stage
+```
+
+`exists_datum_threshold` is the only place the decay is used: for each order it produces a point
+past which `‖dq‖ ≤ min 1 (datumSlack J)`.  The stacking then starts each stage beyond that point,
+which is possible because the stage bases already diverge.
+
+### The layers, as they now stand
+
+```text
+HTGeometry/JumpProfileLevels.lean
+    iteratedAntiderivFrom, iteratedAntideriv_window, arithJumpProfile_window
+    norm_iteratedAntiderivFrom_le (localized: ‖q‖ ≤ Mq only on [c, y])
+    iteratedAntideriv_eq_from, norm_iteratedAntideriv_le
+    intervalIntegrable_arithJumpProfile, norm_arithJumpProfile_succ_le
+HTGeometry/WindowAssignmentStep.lean
+    windowTaylorFull, windowForcedFull, windowTargetFull
+    arithJumpProfile_updateWindow_partial, norm_windowTaylorFull_le, norm_windowForcedFull_le,
+    norm_windowTargetFull_le, exists_window_phases_partial_full,
+    norm_taylorLevels_le, norm_arithJumpProfile_window_le'
+RHTower/Sieve/CharacterWindowMass.lean      arithJumpProfile_characterSource_update
+RHTower/Sieve/CharacterWindowStep.lean      exists_character_window_step_general_full
+RHTower/Sieve/LadderCharacterRecursion.lean CharGoodL/ladderChar/ladderLimit now carry the datum;
+    norm_arithJumpProfile_characterSource_le_crude, arithJumpProfile_ladderLimit,
+    exists_ladder_state_bound (full)
+RHTower/Sieve/StageWindowRecursion.lean     stageChar/stageLimit carry the datum;
+    arithJumpProfile_stageLimit(_le), arithJumpProfile_stageChar_succ_at_base,
+    exists_stage_state_bound, norm_arithJumpProfile_stage_uniform, ..._sharp
+RHTower/Sieve/CharacterStacking.lean        StackInv/stackThr/StackOK/stackSeq/anderssonChar carry
+    the datum; stage_hypotheses_of_stackInv, exists_stack_step, exists_stack_start,
+    exists_stack_next, stackSeq_spec, arithJumpProfile_anderssonChar, exists_andersson_character
+RHTower/Sieve/CharacterOrderStacking.lean   the older fixed-θ scaffold, threaded through as well
+```
+
+All modules build individually and `exists_andersson_character` is axiom-clean
+(`propext, Classical.choice, Quot.sound`).
+
+### Normalizing Lemma 1's datum
+
+`HTGeometry/DatumNormalization.lean` (wired, axiom-clean) turns Lemma 1's output into the shape the
+recursion consumes.  Lemma 1 gives `q` only measurable on `(1,∞)` and bounded there; the recursion
+needs a globally measurable, globally bounded, everywhere interval-integrable function.
+
+```text
+truncDatum q = indicator (1,∞) q
+norm_truncDatum_le            ‖truncDatum q‖ ≤ max M 0 everywhere
+intervalIntegrable_truncDatum from AEStronglyMeasurable on (1,∞) and the bound
+tendsto_truncDatum            the decay survives the cut-off
+setIntegral_truncDatum        the Mellin transform on (1,∞) is unchanged
+iteratedAntideriv_truncDatum  and so is every level of the chain past 1
+arithJumpProfile_truncDatum
+```
+
+### What remains for Theorem 1
+
+```text
+(a) the identity holds on a fixed half-plane:  with ϑ = θ + (1-θ)/3, level j is integrable against
+    x^{-(s+1+j)} for Re s > j(ϑ-1) + ϑ + 2θ, so all levels are integrable simultaneously for
+    Re s > ϑ + 2θ (≈ 2.21).  There mellin_representation_iterated applies verbatim.
+(b) analyticity of each truncated Mellin integral in its own half-plane (mathlib's
+    mellin_differentiableAt_of_isBigO_rpow, applied to indicator (1,∞) r_{j+1});
+(c) the identity theorem to see the H_j as one germ, and the gluing of the increasing half-planes
+    Re s > j(ϑ-1) + ϑ + 2θ into an entire function;
+(d) the sign: Lemma 7 is run with datum -dq, so that the chain is ∫_1^x q - ∑_{n≤x} χ(n)Λ(n);
+(e) LSeries (χ·Λ) = -ζ'_χ/ζ_χ on Re s > 1, from the Euler product of the Helson zeta;
+(f) Theorem 2: F'/F = ζ'_χ/ζ_χ + g ==> F = ζ_χ·exp(G) with G' = g, G entire.
+```
+
+## THE ANDERSSON INPUT IS CLOSED — Theorem 1, Theorem 2, and divisor surjectivity in Lean
+
+All three are unconditional and axiom-clean (`propext, Classical.choice, Quot.sound`).
+
+### Theorem 1
+
+`RHTower/AnderssonTheoremOne.lean`
+
+```text
+anderssonAbscissa θ j = (j+1)(θ + (1-θ)/3) + 2θ - j        the j-th representation's abscissa
+exists_character_entire_remainder
+    701299/1000000 < α < θ < 1, θ > 2/3,
+    q measurable on (1,∞), q → 0, ‖q‖ ≤ M on [1,∞)
+      ==>  ∃ u unimodular, ∃ g entire,
+             ∀ s with Re s > (θ+(1-θ)/3) + 2θ,
+               ∫_1^∞ q(x) x^{-s} dx = LSeries (χ_u Λ) s + g s
+```
+
+The proof: normalize the datum (`truncDatum`), run Lemma 7 on `-dq`, feed the level bounds into
+`mellin_representation_iterated` — legal for every order simultaneously exactly on
+`Re s > anderssonAbscissa θ 0` — and glue the resulting family.  Two new reusable modules do the
+analysis:
+
+```text
+HTGeometry/HalfPlaneMellinAnalytic.lean
+    halfPlaneMellin f w = ∫_1^∞ f(x) x^{-w} dx
+    halfPlaneMellin_eq_mellin, locallyIntegrableOn_indicator_of_intervalIntegrable,
+    isBigO_atTop_indicator_of_polyLog, isBigO_zero_indicator,
+    integrableOn_halfPlaneMellin, differentiableAt_halfPlaneMellin
+        ‖f‖ ≤ x^ρ log x past a threshold  ==>  convergence and holomorphy on Re w > ρ + 1
+HTGeometry/HalfPlaneSequenceGluing.lean
+    glueIndex, glueSeq, differentiable_glueSeq,
+    exists_entire_of_halfPlane_family
+        holomorphic functions on {Re s > A n} with A n → -∞, all agreeing on the base half plane,
+        come from one entire function      (identity theorem + first-admissible-index gluing)
+```
+
+### The Euler product as a Dirichlet series
+
+`HTGeometry/HelsonCharacterLSeries.lean`
+
+```text
+phaseChar u          the completely multiplicative extension of the prime phases (ℕ →*₀ ℂ)
+characterSource_eq_phaseChar_mul     χ(n)Λ(n) = phaseChar u n · Λ n
+phaseSummandHom, summable_phaseSummand, tsum_phaseSummand
+hasProd_phaseEuler, helsonZetaValue_eq_LSeries
+    Z_χ(s) = ∑ χ(n) n^{-s}                                    (mathlib's Euler product)
+convolution_characterSource_phaseChar     (χΛ) ⋆ χ = χ·log     (the twisted Λ ⋆ 1 = log)
+logDeriv_LSeries_phaseChar, logDeriv_helsonZetaValue
+    logDeriv Z_χ (s) = -LSeries (χ Λ) s     on Re s > 1
+```
+
+### Theorem 2 and the divisor statement
+
+`RHTower/AnderssonTheoremTwo.lean`
+
+```text
+helson_factorization_of_mellin_logDeriv
+    F analytic and zero free on Re s ≥ 1, logDeriv F = ∫_1^∞ q x^{-s} + entire, q bounded and o(1)
+      ==>  ∃ χ Helson, ∃ g entire zero free,  F s = Z_χ(s) · g s   on Re s > 1
+helson_factorization_divisorFunction      the same for a prescribed-divisor realization,
+                                          Lemma 1 supplying the Mellin representation
+exists_continuable_phase_with_prescribed_divisor
+    every locally finite signed divisor strictly left of the line is the divisor of the
+    meromorphic continuation of a Helson zeta function — with χ in the continuable stratum and
+    the Euler product converging to it on Re s > 1
+```
+
+The mechanism of Theorem 2: Theorem 1 gives `logDeriv F = logDeriv Z_χ + G` with `G` entire on a
+fixed half plane; an entire primitive `H` of `G` (Morera, `Differentiable.isExactOn_univ`) makes
+`F / (Z_χ · exp H)` have vanishing derivative there, so it is a nonzero constant `c`, and
+`g = c · exp H` is entire and zero free.  The identity is then transported from the half plane
+`Re s > (θ+(1-θ)/3)+2θ` to `Re s > 1` by the identity theorem, since `F`, `Z_χ` and `g` are all
+analytic there.
+
+With this the divisor half of the card is unconditional: the consumer end
+(`HelsonPrescribedDivisor.lean`) no longer needs `HelsonFactorizationProperty` as a hypothesis.
+
+## The divisor statement in full generality — arbitrary locally finite signed divisors
+
+The sequence presentation used by `PrescribedDivisorRealization` realizes a divisor whose zero and
+pole parts are both infinite, carries no order at the origin, and — until now — was only known to
+have the right *support*.  All three restrictions are removed.
+
+### Exact multiplicities
+
+`HTGeometry/WeierstrassProductMultiplicity.lean` (wired, axiom-clean).
+
+```text
+zeroMultiplicity a z = #{n | a n = z}
+finite_zeroIndices                 the multiplicity is finite, because ‖a n‖ → ∞
+tprod_eq_prod_mul_tprod_compl      a multipliable family splits at any finite index set
+weierstrassGenusProduct_split      the Weierstrass product splits at the indices hitting a point
+awaySeq                            the same sequence with those indices moved to the far axis
+analyticOrderAt_weierstrassGenusProduct
+    ** ord_{z}(∏ E_n(z/a_n)) = #{n | a n = z} **
+meromorphicOrderAt_divisorFunction_eq_multiplicity
+    ** ord_z(P_a / P_b) = mult_a(z) - mult_b(z) at every point **
+```
+
+The proof avoids re-running the convergence argument for the complementary subfamily: the tail is
+recognized as the tail of the *moved* sequence, which is nonvanishing at the point, so it is a unit
+there and the order comes from the finitely many elementary factors.
+
+### An order at the origin
+
+`RHTower/AnderssonDivisorAtOrigin.lean` (wired, axiom-clean).
+
+```text
+originDivisorFunction k a b = z^k · (P_a / P_b)
+exists_mellin_add_entire_logDeriv_originDivisorFunction
+    Lemma 1 for it: (s²+s)·(k/s) = k(s+1) is entire, so the Arakelyan approximant only shifts
+meromorphicOrderAt_originDivisorFunction
+exists_continuable_phase_with_divisor_at_origin
+```
+
+### Presenting an arbitrary divisor
+
+`RHTower/LocallyFiniteDivisorPresentation.lean` (wired, axiom-clean).
+
+```text
+LocallyFiniteDivisor D           every ball meets {D ≠ 0} in a finite set
+divisorShell, shellList, shellPoint, exists_unique_shell
+    the support away from the origin is enumerated shell by shell, each point exactly once
+slot, divisorSeq                 pairs (k, j, m) carry the m-th copy of the j-th point of shell k;
+                                 the unused indices carry auxiliary points -(i+1), indexed by
+                                 Nat.count, hence enumerated bijectively
+zeroMultiplicity_divisorSeq      mult_a(z) = mult(z) + #{i | pad i = z}
+exists_presentation_of_locallyFiniteDivisor
+    ** every locally finite signed divisor left of the line is mult_a - mult_b **
+exists_continuable_phase_with_prescribed_locallyFinite_divisor
+    ** for every locally finite D supported in Re s < 1 there is a Helson phase χ in the
+       continuable stratum whose Euler product continues meromorphically to ℂ with
+       ord_z = D z at every point **
+```
+
+The auxiliary points enter both sequences with the *same* multiset of values — each `-(i+1)` exactly
+once, because `Nat.count` is a bijection from the unused indices onto `ℕ` — so they cancel in the
+divisor and only serve to make both sequences infinite with `‖·‖ → ∞`.
+
+This is Andersson's Theorem 5 for `U = ℂ`, unconditionally, in the exact form the card consumes:
+
+```text
+divisor map on the continuation stratum  :  surjective onto all locally finite signed divisors
+                                            supported in Re s < 1.
+```

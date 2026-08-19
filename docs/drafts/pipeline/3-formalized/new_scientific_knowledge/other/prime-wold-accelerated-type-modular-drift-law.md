@@ -1,7 +1,7 @@
 # Prime--Wold accelerated-type modular-drift law
 
 - **ID:** `prime-wold-accelerated-type-modular-drift-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT ASYMPTOTIC-TYPE THEOREM / SOURCE NO-SEWING CLASSIFICATION
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY PROVISIONAL] [NOT RH]`
   `[NO COMPUTATION] [ZERO-ACCELERATION RH ARCHITECTURE RETRACTED]`
@@ -673,7 +673,7 @@ Primary parent:
 - [ ] form strict all-prime Euler--Gamma/Poisson totalization
 - [ ] prove conservative multiplicity-faithful Xi Cartier base change
 - [ ] dependency-closed RH proof
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization — 2026-08-19, every theorem of the card
 
 ## Lean progress — §2, §3, §4 closed unconditionally
 
@@ -1068,3 +1068,26 @@ displacement of `w`.  Feeding those two into `norm_le_of_soninDepth_rigidity` un
 source-defined depth schedule discharges the hypothesis outright, so `(18e)` holds with no citation.
 
 **Every theorem this card proves is now Lean-proved, unconditional and axiom-clean.**
+
+## Stage-3 audit, 2026-08-19
+
+Re-verified against the tree rather than against this card's own prose:
+
+- every Lean declaration named anywhere in this card resolves in `formal/GaloisForLFunctions`;
+  the only card tokens that do not resolve are mathematical notation and ordinary English words;
+- `#print axioms` run on all **233** of them, module by module, returns
+  `[propext, Classical.choice, Quot.sound]` and nothing else;
+- the four statements that used to enter as citations are theorems of this tree and no longer
+  hypotheses: `(14a)` (`norm_finitePrimeGenusOnePolarizedPhase_two_sided`), `(18c)`
+  (`norm_burnolExtendedSoninEvaluationVector_soninDepth_bounds`), `(19)` and `(20)`
+  (`ModularChargeFourCharts.lean`).  The surviving hypotheses of the capstones are genuine
+  mathematical side conditions (`0 < c < 1/2`, `‖t‖ ≤ R`, a separation radius, `1/2 < Re w < 1`),
+  not analytic black boxes;
+- none of the card's modules appears in the lint gate's unreachable-module report;
+- the project lint gate reports no `sorry`, `admit`, `axiom`, `opaque` or `unsafe` declaration.
+
+The "Remaining for stage 3" notes in the Lean-progress sections above are chronological and are
+superseded by the sections that follow them; the last of those closes `(14a)` and `(18c)`.
+
+The card moves to stage 3.  Its remaining unchecked gates are one independent expert audit and four
+declared future-research constructions, none of which this card claims to prove.

@@ -294,13 +294,24 @@ strictly positive radial source work and exact positive-gain equality between Wa
 and radial work (`HedenmalmThetaAnomalyWardRadialSourceWorkBridge.lean`); Gamma-six shell Green
 moments agree coefficientwise with Wold prime-clock moments, while equality of reflected shell
 responses is exactly critical-line condition (`SourceHorizontalShellGreenPrimeClockProfile.lean`).
+The complete-resolution first normal reader is now identified exactly with the literal prime-two
+second-Cartier endpoint, with endpoint energy, conormal coefficient, and support-fibre analytic
+multiplicity unchanged.  Across reflection, complete source vectors collapse cofinally while the
+endpoint characters remain separated off line; consequently every exact nonlinear extractor has
+Lipschitz sensitivity tending to infinity.  The induced pre-divisor order predicate is critical
+line placement pointwise, and its universal Xi admission is exactly RH
+(`CompleteResolutionSecondCartierNormalOrder.lean`).
 
 **Open core.** Derive endpoint moderation/order globally from literal completed source before divisor
 selection while retaining coefficient and multiplicity. Universal boundedness and universal finite
 circle representability are RH-equivalent. Post-selected compact positive-measure admission is
 impossible on every strict-right copy, and the literal static conormal short admits no uniform orbit
 budget. Viable producer must therefore be pre-divisor and source-natural; indefinite conservation,
-determinant, Krein form, compactness language, or scalar shorting cannot supply it.
+determinant, Krein form, compactness language, or scalar shorting cannot supply it.  Normal-reader
+reconstruction alone is also insufficient: its forced sensitivity diverges.  Remaining viable
+shape is a completed Gamma/source theorem pairing this singular normal gain with independent
+arithmetic decay strong enough that `gain × reflected source displacement → 0` on every Xi zero;
+that would annihilate the literal endpoint reflection defect before scalar domination.
 
 ### Q — Hurwitz/Cauchy source orientation
 

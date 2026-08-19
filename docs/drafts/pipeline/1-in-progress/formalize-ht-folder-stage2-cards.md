@@ -24,7 +24,7 @@ prove its properties rather than assuming them.
 | `nonautonomous-rational-first-order-tail-orbifold-law` | PROMOTED to 3-formalized (2026-08-14) |
 | `nonautonomous-rational-complete-tail-orbifold-classification` | Euclidean signature classification closed |
 | `nonautonomous-isogeny-tail-time-splitting` | (1),(3),(4),(5) formal; (2),(6),(7) formal for `G_m` |
-| `helson-universal-ht-arbitrary-divisor-orthogonality` | pending |
+| `helson-universal-ht-arbitrary-divisor-orthogonality` | PROMOTED to 3-formalized (2026-08-19) |
 | `irrational-power-canonical-products-…-gevrey-slope-rigidity` | pending |
 
 ## Closed: the projective time law
@@ -444,7 +444,7 @@ TaylorPartialSumApproximation                        the approximation step of M
 | nonautonomous-rational-first-order-tail-orbifold-law | §4: the isogeny-tail identification of the late tail with the invariant Maurer–Cartan field |
 | nonautonomous-rational-complete-tail-orbifold-classification | the same, plus Casale's groupoid classification as an input to §2 |
 | nonautonomous-isogeny-tail-time-splitting | Rosenlicht-type quotient for a general connected commutative algebraic group |
-| helson-universal-ht-arbitrary-divisor-orthogonality | Pong 5.9's conclusion; Andersson's Mittag-Leffler theorem; Saksman–Webb/Seip |
+| helson-universal-ht-arbitrary-divisor-orthogonality | CLOSED — all three inputs are Lean theorems here (Pong 5.9's conclusion, `Haar(M) = 0`, Andersson's divisor theorem for `U = ℂ`) |
 | irrational-power-canonical-products | the Barnes expansion `(4)`–`(6)`; Sibuya–Ramis |
 
 ### The next shared asset — Mittag-Leffler on `ℂ`

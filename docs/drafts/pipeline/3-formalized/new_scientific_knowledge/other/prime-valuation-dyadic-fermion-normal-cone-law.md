@@ -1,7 +1,7 @@
 # Dyadic fermionization of prime valuations and the universal critical normal cone
 
 - **ID:** `prime-valuation-dyadic-fermion-normal-cone-law`
-- **Stage:** 2-fully-proven / external novelty audit preliminary
+- **Stage:** 3-formalized / external novelty audit preliminary
 - **Type:** EXACT PRIME-SOURCE FACTORIZATION / HELLINGER NORMAL-CONE THEOREM
 - **Scientific status:** `[PAPER PROOF COMPLETE]`
   `[DYADIC SOURCE FACTORIZATION IS CORPUS-KNOWN PARENT]`
@@ -662,8 +662,8 @@ finding, not a priority certificate.
 The local identities `(1)`--`(9)`, finite binary truncations, and finite Fisher decomposition are
 appropriate unconditional Lean targets.  The infinite probability isomorphism needs an
 almost-sure finite-support argument; `(11)`--`(13)` and `(22)` need prime asymptotics.  No analytic
-claim is inserted as an axiom.  Formalization should wait until an independent paper audit confirms
-the theorem surface.
+claim is inserted as an axiom.  This section is superseded: the formalization was carried out
+anyway and is complete — see the stage-3 audit at the end of this card.
 
 ## Gates
 
@@ -1005,3 +1005,23 @@ The algebraic identity behind it is `(e^{−x} − 1)² = 2(1 − e^{−x}) − 
 (`[propext, Classical.choice, Quot.sound]`).  What remains open are the card's own declared research
 gates — the squarefree source-to-exceptional-reporter comparison and Xi conormal/multiplicity-jet
 conservativity — which the card explicitly does not claim, and the two independent expert audits.
+
+## Stage-3 audit, 2026-08-19
+
+Re-verified against the tree rather than against this card's own prose, because a card's Lean
+section can go stale:
+
+- every Lean declaration named anywhere in this card resolves in `formal/GaloisForLFunctions`;
+  the only card tokens that do not resolve are mathematical notation and ordinary English words;
+- `#print axioms` run on all **286** of them, module by module, returns
+  `[propext, Classical.choice, Quot.sound]` and nothing else;
+- none of the card's modules appears in the lint gate's unreachable-module report, so all are
+  reachable from `GaloisForLFunctions.HTGeometry` / `GaloisForLFunctions.RHTower`;
+- the project lint gate reports no `sorry`, `admit`, `axiom`, `opaque` or `unsafe` declaration.
+
+The "Remaining for `(11)`" note in the Lean-progress sections above is chronological and is
+superseded by the section that follows it, which proves `(11)`--`(13b)`.
+
+The card moves to stage 3.  Its remaining unchecked gates are the two independent expert audits and
+two declared future-research constructions (the squarefree source-to-exceptional-reporter comparison
+and Xi conormal/multiplicity-jet conservativity), none of which this card claims to prove.

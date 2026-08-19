@@ -174,11 +174,25 @@ def windowPrimeNode (x θ : ℝ) : Fin (windowPrimes x (x + x ^ θ)).card → �
   windowNode (windowPrimeIndex x (x + x ^ θ)) x (x + x ^ θ)
 
 /-- The Rayleigh floor of the prime window. -/
-def primeWindowFloor (J : ℕ) (θ x : ℝ) : ℝ :=
-  (x ^ θ / (32768 * J)) /
-    ((J : ℝ) * (2 * ((J : ℝ) * (2 ^ (J - 1) /
-      ((1 / (2 * (J : ℝ))) ^ (J - 1) * (((J - 1).factorial : ℕ) : ℝ)))) *
-      GaloisForLFunctions.HTGeometry.unitCoeffConstSum J) ^ 2)
+def blockRayleighConst (J : ℕ) : ℝ :=
+  (J : ℝ) * (2 * ((J : ℝ) * (2 ^ (J - 1) /
+    ((1 / (2 * (J : ℝ))) ^ (J - 1) * (((J - 1).factorial : ℕ) : ℝ)))) *
+    GaloisForLFunctions.HTGeometry.unitCoeffConstSum J) ^ 2
+
+theorem blockRayleighConst_pos {J : ℕ} (hJ : 0 < J) : 0 < blockRayleighConst J := by
+  have hJR : (0:ℝ) < (J : ℝ) := by exact_mod_cast hJ
+  have hUpos : 0 < GaloisForLFunctions.HTGeometry.unitCoeffConstSum J :=
+    GaloisForLFunctions.HTGeometry.unitCoeffConstSum_pos hJ
+  have hfacpos : (0:ℝ) < (((J - 1).factorial : ℕ) : ℝ) := by
+    exact_mod_cast Nat.factorial_pos (J - 1)
+  rw [blockRayleighConst]
+  positivity
+
+/-- The Rayleigh floor of a window of length `L`. -/
+def primeWindowFloorL (J : ℕ) (L : ℝ) : ℝ :=
+  (L / (32768 * J)) / blockRayleighConst J
+
+def primeWindowFloor (J : ℕ) (θ x : ℝ) : ℝ := primeWindowFloorL J (x ^ θ)
 
 theorem eventually_small_ratio {J : ℕ} (hJ : 0 < J) {α θ : ℝ} (hαθ : α < θ) :
     ∃ X : ℝ, 1 ≤ X ∧ ∀ x : ℝ, X ≤ x → 2 * x ^ (α - θ) ≤ 1 / (4 * J) := by
@@ -356,7 +370,164 @@ theorem exists_prime_window_rayleigh (J : ℕ) (hJ : 0 < J) {α θ : ℝ}
   have hteq : windowPrimeNode x θ = t := rfl
   rw [hweq, hteq]
   refine le_trans (le_of_eq ?_) hray
-  rw [primeWindowFloor, hmdef, hΔdef]
+  rw [primeWindowFloor, primeWindowFloorL, blockRayleighConst, hmdef, hΔdef]
+
+open GaloisForLFunctions.HTGeometry in
+/-- The weights of the primes of a window of length `L`. -/
+def windowPrimeWeightL (x L : ℝ) : Fin (windowPrimes x (x + L)).card → ℝ :=
+  fun r => Real.log (windowPrimeIndex x (x + L) r)
+
+open GaloisForLFunctions.HTGeometry in
+/-- The primes of a window of length `L`, rescaled to `[0,1]`. -/
+def windowPrimeNodeL (x L : ℝ) : Fin (windowPrimes x (x + L)).card → ℝ :=
+  windowNode (windowPrimeIndex x (x + L)) x (x + L)
+
+open GaloisForLFunctions.HTGeometry in
+/-- **The Rayleigh floor of a window of arbitrary length.**  A window `(x, x+L]` whose length
+dominates `4J (x+L)^α` carries a moment matrix bounded below by `L/(32768 J)` over the block
+constant. -/
+theorem exists_prime_window_rayleigh_general (J : ℕ) (hJ : 0 < J) {α : ℝ}
+    (halpha : (701299/1000000:ℝ) < α) (halpha1 : α < 1) :
+    ∃ X : ℝ, 1 ≤ X ∧ ∀ x L : ℝ, X ≤ x → 0 < L → 4 * (J : ℝ) * (x + L) ^ α ≤ L →
+      ∀ c : Fin J → ℝ,
+        primeWindowFloorL J L * (∑ k, c k ^ 2)
+          ≤ c ⬝ᵥ (atomicHankel (windowPrimeWeightL x L) (windowPrimeNodeL x L) J).mulVec c := by
+  classical
+  obtain ⟨X₁, hX₁, hwin⟩ := exists_theta_window_lower halpha halpha1
+  refine ⟨max X₁ 1, le_max_right _ _, fun x L hx hL hLbig c => ?_⟩
+  have hx1 : X₁ ≤ x := le_trans (le_max_left _ _) hx
+  have hx0 : (1:ℝ) ≤ x := le_trans (le_max_right _ _) hx
+  have hxpos : (0:ℝ) < x := lt_of_lt_of_le zero_lt_one hx0
+  have hxy : x < x + L := by linarith
+  have hJR : (0:ℝ) < (J : ℝ) := by exact_mod_cast hJ
+  have hη : (0:ℝ) < 1 / (2 * (J : ℝ)) := by positivity
+  set m : ℝ := L / (32768 * J) with hmdef
+  have hm : 0 < m := by
+    rw [hmdef]
+    positivity
+  set A : Fin J → ℝ := fun i => 1 - subwindowRight J i with hAdef
+  set Bd : Fin J → ℝ := fun i => 1 - subwindowLeft J i with hBddef
+  set Blk : Fin J → Finset (Fin (windowPrimes x (x + L)).card) := fun i =>
+    {r ∈ Finset.univ | windowPrimeIndex x (x + L) r ∈
+      Finset.Ioc ⌊x + subwindowLeft J i * L⌋₊ ⌊x + subwindowRight J i * L⌋₊} with hBlkdef
+  have hleft_nonneg : ∀ i : Fin J, 0 ≤ subwindowLeft J i := subwindowLeft_nonneg
+  have hlr : ∀ i : Fin J, subwindowLeft J i ≤ subwindowRight J i := fun i =>
+    le_of_lt (subwindowLeft_lt_right hJ i)
+  have hr1 : ∀ i : Fin J, subwindowRight J i ≤ 1 := subwindowRight_le_one hJ
+  have hxu : ∀ i : Fin J, x ≤ x + subwindowLeft J i * L := by
+    intro i
+    nlinarith [hleft_nonneg i, hL]
+  have huv : ∀ i : Fin J, x + subwindowLeft J i * L ≤ x + subwindowRight J i * L := by
+    intro i
+    nlinarith [hlr i, hL]
+  have hvy : ∀ i : Fin J, x + subwindowRight J i * L ≤ x + L := by
+    intro i
+    nlinarith [hr1 i, hL]
+  -- the block masses
+  have hmass : ∀ i : Fin J, m ≤ ∑ r ∈ Blk i, windowPrimeWeightL x L r := by
+    intro i
+    have hblock : (∑ r ∈ Blk i, windowPrimeWeightL x L r)
+        = Chebyshev.theta (x + subwindowRight J i * L)
+          - Chebyshev.theta (x + subwindowLeft J i * L) := by
+      rw [hBlkdef]
+      exact sum_log_windowPrimeIndex_block (huv i) (hxu i) (hvy i)
+    rw [hblock]
+    have hlow := hwin (x + subwindowLeft J i * L) ((subwindowRight J i - subwindowLeft J i) * L)
+      (le_trans hx1 (hxu i)) (by nlinarith [hlr i, hL])
+    have hsum : x + subwindowLeft J i * L + (subwindowRight J i - subwindowLeft J i) * L
+        = x + subwindowRight J i * L := by ring
+    rw [hsum] at hlow
+    refine le_trans ?_ hlow
+    have hgap : subwindowRight J i - subwindowLeft J i = 1 / (2 * (J : ℝ)) :=
+      subwindowRight_sub_left i
+    rw [hgap]
+    have hpow : (x + subwindowRight J i * L) ^ α ≤ (x + L) ^ α := by
+      refine Real.rpow_le_rpow (by nlinarith [hleft_nonneg i, hlr i, hL, hxpos]) (hvy i) ?_
+      linarith
+    have hquarter : (x + L) ^ α ≤ L / (4 * (J : ℝ)) := by
+      rw [le_div_iff₀ (by positivity)]
+      nlinarith [hLbig]
+    rw [hmdef, le_div_iff₀ (by norm_num : (0:ℝ) < 8192)]
+    have h1 : L / (32768 * (J : ℝ)) * 8192 = L / (4 * (J : ℝ)) := by
+      field_simp
+      ring
+    have h2 : 1 / (2 * (J : ℝ)) * L = 2 * (L / (4 * (J : ℝ))) := by
+      field_simp
+      ring
+    rw [h1, h2]
+    linarith [hpow, hquarter]
+  -- blocks are nonempty
+  have hBne : ∀ i : Fin J, (Blk i).Nonempty := by
+    intro i
+    by_contra hcon
+    rw [Finset.not_nonempty_iff_eq_empty] at hcon
+    have := hmass i
+    rw [hcon, Finset.sum_empty] at this
+    linarith
+  have hBmem : ∀ i : Fin J, ∀ r ∈ Blk i, windowPrimeNodeL x L r ∈ Set.Icc (A i) (Bd i) := by
+    intro i r hr
+    have hmem : windowPrimeIndex x (x + L) r ∈ Finset.Ioc ⌊x + subwindowLeft J i * L⌋₊
+        ⌊x + subwindowRight J i * L⌋₊ := (Finset.mem_filter.1 hr).2
+    have hmem' := Finset.mem_Ioc.1 hmem
+    have hup : ((windowPrimeIndex x (x + L) r : ℕ) : ℝ) ≤ x + subwindowRight J i * L := by
+      have h1 : ((windowPrimeIndex x (x + L) r : ℕ) : ℝ)
+          ≤ (⌊x + subwindowRight J i * L⌋₊ : ℝ) := by exact_mod_cast hmem'.2
+      refine le_trans h1 (Nat.floor_le ?_)
+      nlinarith [hr1 i, hL, hxpos, hlr i, hleft_nonneg i]
+    have hlow : x + subwindowLeft J i * L < ((windowPrimeIndex x (x + L) r : ℕ) : ℝ) := by
+      have h1 : (⌊x + subwindowLeft J i * L⌋₊ : ℝ) + 1
+          ≤ ((windowPrimeIndex x (x + L) r : ℕ) : ℝ) := by exact_mod_cast hmem'.1
+      have h2 := Nat.lt_floor_add_one (x + subwindowLeft J i * L)
+      linarith
+    have hden : x + L - x = L := by ring
+    constructor
+    · show 1 - subwindowRight J i
+        ≤ (x + L - ((windowPrimeIndex x (x + L) r : ℕ) : ℝ)) / (x + L - x)
+      rw [hden, le_div_iff₀ hL]
+      nlinarith [hup]
+    · show (x + L - ((windowPrimeIndex x (x + L) r : ℕ) : ℝ)) / (x + L - x)
+        ≤ 1 - subwindowLeft J i
+      rw [hden, div_le_iff₀ hL]
+      nlinarith [hlow]
+  have hIcc : ∀ i : Fin J, ∀ s ∈ Set.Icc (A i) (Bd i), s ∈ Set.Icc (0:ℝ) 1 := by
+    intro i s hs
+    constructor
+    · have := hr1 i
+      have h1 : A i = 1 - subwindowRight J i := rfl
+      linarith [hs.1]
+    · have := hleft_nonneg i
+      have h1 : Bd i = 1 - subwindowLeft J i := rfl
+      linarith [hs.2]
+  have hsep : ∀ i k : Fin J, i ≠ k → ∀ s ∈ Set.Icc (A i) (Bd i), ∀ v ∈ Set.Icc (A k) (Bd k),
+      1 / (2 * (J : ℝ)) ≤ |s - v| := by
+    intro i k hik s hs v hv
+    have hs' : 1 - s ∈ Set.Icc (subwindowLeft J i) (subwindowRight J i) := by
+      constructor
+      · have : s ≤ 1 - subwindowLeft J i := hs.2
+        linarith
+      · have : 1 - subwindowRight J i ≤ s := hs.1
+        linarith
+    have hv' : 1 - v ∈ Set.Icc (subwindowLeft J k) (subwindowRight J k) := by
+      constructor
+      · have : v ≤ 1 - subwindowLeft J k := hv.2
+        linarith
+      · have : 1 - subwindowRight J k ≤ v := hv.1
+        linarith
+    have hkey := subwindow_separated hJ hik hs' hv'
+    have habs : |(1 - s) - (1 - v)| = |s - v| := by
+      rw [show (1 - s) - (1 - v) = -(s - v) by ring, abs_neg]
+    rwa [habs] at hkey
+  have hwpos : ∀ r, 0 < windowPrimeWeightL x L r := by
+    intro r
+    have hp2 : 2 ≤ windowPrimeIndex x (x + L) r := (windowPrimeIndex_prime x (x + L) r).two_le
+    have h2 : (2:ℝ) ≤ ((windowPrimeIndex x (x + L) r : ℕ) : ℝ) := by exact_mod_cast hp2
+    rw [windowPrimeWeightL]
+    exact Real.log_pos (by linarith)
+  have hray := rayleigh_lower_of_blocks hJ hη hm A Bd hIcc hsep (windowPrimeNodeL x L)
+    (windowPrimeWeightL x L) hwpos Blk hBne hBmem hmass c
+  rw [dotProduct_mulVec_atomicHankel]
+  refine le_trans (le_of_eq ?_) hray
+  rw [primeWindowFloorL, blockRayleighConst, hmdef]
 
 end RHTower.Sieve
 
