@@ -1458,3 +1458,201 @@ linear forms (polarization / Waring), which is what makes the diagonal micro-spe
 whose eigenvalues must be *linear* in the pencil parameter -- able to realise an arbitrary
 homogeneous defect.  The corpus already owns the pure-power case
 (`exists_rootMicroSpectrumPencil_realizing`).
+
+## Lean progress -- the several-variable micro-spectrum `(M)` (2026-08-20)
+
+The remaining gap on this card was the several-variable sufficiency, whose one missing input was the
+classical polarization/Waring statement: a diagonal operator pencil has eigenvalues *linear* in the
+parameter, so its `k`-th power trace is a sum of `k`-th powers of linear forms, and an arbitrary
+homogeneous defect is reachable only if those powers span all of `Sym^k(V^*)`.  Both the input and
+the construction are now proved.
+
+`formal/GaloisForLFunctions/HTGeometry/PolarizationIdentity.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the alternating sum over the supersets of a set | `sum_powerset_superset_sign` |
+| **the polarization identity** `∑_{S⊆[k]} (−1)^{|S|}(∑_{i∈S}x_i)^k = (−1)^k k! ∏ x_i` | `polarization` |
+| the `k`-th powers of linear forms | `linearPowSet` |
+| **a product of `k` linear forms is a combination of `k`-th powers** | `prod_linear_mem_span_linearPow` |
+| **every degree-`k` monomial function is reachable** | `prod_coord_mem_span_linearPow` |
+
+The proof is the classical one, with no analysis: expand each `(∑_{i∈S}x_i)^k` over the maps
+`Fin k → Fin k` (`Finset.sum_pow'`), exchange the two sums, and observe that the inner alternating
+sum over the subsets containing the image of `p` is `(−1)^k` when `p` is onto and `0` otherwise --
+that collapse is `Finset.prod_add` applied to `f ≡ −1`, `g = indicator of the complement of the
+image.  Only the permutations survive, and there are `k!` of them.
+
+`formal/GaloisForLFunctions/HTGeometry/PencilMomentRealization.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the `k`-th powers of continuous linear forms | `clmPowSet`, `mem_clmPowSet` |
+| transporting a scalar block along a linear form | `sum_map_pow_smul`, `sum_map_normPow_smul` |
+| **one pure homogeneous defect `c·ℓ(v)^k`, at arbitrarily small cost** | `exists_pencilBlock_realizing` |
+| scaling a family of forms | `sum_map_pow_const_smul`, `sum_map_normPow_const_smul` |
+| **an arbitrary combination of pure powers** | `exists_pencilSpan_realizing` |
+| the moments of a family of forms stay in the span | `multiset_pow_sum_mem_span` |
+| **the several-variable construction `(M)`** | `exists_pencilForms_moment_realization` |
+| **polarization in the form the construction consumes** | `prod_clm_mem_span_clmPow` |
+
+The pencil block is a *transport* of the one-variable root-of-unity block: multiplying every
+eigenvalue of a scalar block by a fixed linear form `ℓ` keeps the lower moments zero, turns the
+degree-`k` moment into `c·ℓ(v)^k`, multiplies the Schatten cost by `‖ℓ‖^p`, and -- the point that
+makes the induction close -- turns each *higher* moment into a scalar times `ℓ(v)^q`, again a pure
+power.  So the residual bookkeeping of the assembly never leaves the span of `q`-th powers, and by
+`prod_clm_mem_span_clmPow` that span already contains every product of linear forms, hence every
+`k`-th power trace of a linear pencil and every element of `Sym^k(V^*)`.
+
+```
+theorem exists_pencilForms_moment_realization (p : ℕ) :
+    ∀ n : ℕ, n < p → ∀ T : ℕ → V → ℂ,
+      (∀ k, 1 ≤ k → k ≤ n → T k ∈ Submodule.span ℂ (clmPowSet V k)) →
+      ∀ ε : ℝ, 0 < ε →
+      ∃ S : Multiset (V →L[ℂ] ℂ),
+        (∀ k, 1 ≤ k → k ≤ n → ∀ v, (S.map fun m => (m v) ^ k).sum = T k v) ∧
+        (S.map fun m => ‖m‖ ^ p).sum < ε
+```
+
+### What remains on this card
+
+Only the assembly of `exists_pencilForms_moment_realization` into the several-variable form of the
+sufficiency half -- placing the realised family of linear forms as a diagonal block beside the
+truncated pencil, exactly as `OperatorDeterminantSufficiency` does in one variable.  The one-variable
+`(DC)` (both halves, homeomorphism, naturality) and the several-variable necessity are already
+proved.
+
+## Lean progress -- the several-variable sufficiency step (2026-08-20)
+
+The block that corrects the low power traces of a *pencil* has to be a pencil itself: its
+eigenvalues are linear forms in the parameter, so the block operator is linear in the parameter and
+its coefficients are the blocks of the coordinate forms.  Three new modules build it.
+
+`formal/GaloisForLFunctions/HTGeometry/PencilTracePolynomial.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the ordered operator word of a multi-index | `opWord`, `opWord_zero`, `opWord_succ` |
+| **the ordered-word expansion of a pencil power** | `pow_pencilOperator_eq_sum_word` |
+| the trace is additive on finite families of trace-class operators | `memSchattenClass_one_finsetSum`, `opTrace_finsetSum` |
+| a word of finite-rank operators has finite rank | `hasRankLE_opWord`, `HasRankLE.smul` |
+| **the power trace as a coefficient sum over words** | `opTrace_pow_pencilOperator` |
+| **the power trace of a pencil lies in the span of `k`-th powers** | `pencilTraceForm_mem_span` |
+
+`formal/GaloisForLFunctions/HTGeometry/PencilBlockPlacement.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the finite-dimensional carrier of a whole family of truncations | `greedyFamilyGens`, `greedyFamilySupport`, `greedySupport_le_greedyFamilySupport` |
+| **an orthonormal family beside the whole family** | `exists_orthonormal_beside_greedyFamily` |
+| the truncated pencil is annihilated on both sides | `pencilOperator_apply_eq_zero`, `inner_pencilOperator_eq_zero` |
+
+`formal/GaloisForLFunctions/HTGeometry/PencilMicroBlock.lean` (new, umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| listing a multiset as a finite family | `msIndex`, `ms_sum_eq_finSum` |
+| the diagonal block is additive and homogeneous in its entries | `blockOp_finsetSum`, `blockOp_smul_entries` |
+| **the diagonal block of a family of linear forms is a linear pencil** | `blockOp_pencil` |
+| **the several-variable micro-spectrum block** | `exists_pencilMicroBlock` |
+
+`formal/GaloisForLFunctions/HTGeometry/PencilSufficiencyStep.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| a pencil of finite-rank coefficients has finite rank at every parameter | `hasRankLE_finsetSum`, `hasRankLE_pencilOperator` |
+| the pencil construction is additive | `pencilOperator_add` |
+| **the several-variable sufficiency step** | `exists_finiteRankPencil_lowTrace` |
+
+```
+theorem exists_finiteRankPencil_lowTrace (hH : ¬ FiniteDimensional ℂ H) {p d : ℕ} (hp : 0 < p)
+    (B : Fin d → (H →L[ℂ] H)) (n : ℕ) (Q : ℕ → (Fin d → ℂ) → ℂ)
+    (hQ : ∀ k, 1 ≤ k → k ≤ p - 1 → Q k ∈ Submodule.span ℂ (clmPowSet (Fin d → ℂ) k))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ F : Fin d → (H →L[ℂ] H),
+      (∀ j, ∃ N : ℕ, HasRankLE (F j) N) ∧
+      (∀ (v : Fin d → ℂ) (k : ℕ), 1 ≤ k → k ≤ p - 1 →
+        opTrace ((pencilOperator F v) ^ k)
+          = opTrace ((pencilOperator (fun j => greedyTrunc (B j) n) v) ^ k) + Q k v) ∧
+      (∀ v, schattenNorm (p : ℝ)
+          (pencilOperator F v - pencilOperator (fun j => greedyTrunc (B j) n) v) ^ (p : ℝ)
+        ≤ ε * ‖v‖ ^ p)
+```
+
+Every hypothesis of `(M)` in several variables is discharged: the residual defect at each degree is
+a homogeneous form, `pencilTraceForm_mem_span` puts the truncation's own trace in the span of
+`k`-th powers, `prod_clm_mem_span_clmPow` (polarization) puts an arbitrary element of `Sym^k(V^*)`
+there as well, and `exists_pencilForms_moment_realization` realises the whole jet by linear forms
+inside any energy budget.
+
+### What remains on this card
+
+The final bookkeeping of the several-variable sufficiency: feeding
+`exists_finiteRankPencil_lowTrace` through the order-shift identity and Schatten continuity exactly
+as `OperatorDeterminantSufficiency` and `OperatorDeterminantUniform` do in one variable, to state the
+several-variable `(DC)` as a set equality.  Every *mathematical* input is now owned; what is left is
+assembly.
+
+## Lean progress -- the several-variable sufficiency half, in determinant form (2026-08-20)
+
+`formal/GaloisForLFunctions/HTGeometry/PencilSufficiencyLaw.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the Schatten norm is homogeneous | `schattenNorm_smul`, `memSchattenClass_smul` |
+| the Schatten classes are closed under finite sums | `memSchattenClass_finsetSum` |
+| a finite sum of Schatten-null sequences is Schatten null | `tendsto_schattenNorm_finsetSum` |
+| **the truncated pencil converges at every parameter** | `tendsto_schattenNorm_pencil_greedy` |
+| an energy bound `≤ (1/(n+1))·c` forces Schatten nullity | `tendsto_schattenNorm_of_rpow_le` |
+| **the several-variable sufficiency construction** | `exists_finiteRankPencil_tendsto_lowTrace` |
+
+`formal/GaloisForLFunctions/HTGeometry/PencilDeterminantSufficiency.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| a Schatten-convergent family is uniformly bounded | `exists_uniform_schattenNorm_bound` |
+| **the several-variable sufficiency half of `(DC)`** | `exists_finiteRankPencil_tendsto_plainDet` |
+
+```
+theorem exists_finiteRankPencil_tendsto_plainDet (hH : ¬ FiniteDimensional ℂ H) {p d : ℕ}
+    (hp : 0 < p) {A : Fin d → (H →L[ℂ] H)} (hA : ∀ j, MemSchattenClass (p : ℝ) (A j))
+    (P : ℕ → (Fin d → ℂ) → ℂ)
+    (hP : ∀ k, 1 ≤ k → k ≤ p - 1 → P k ∈ Submodule.span ℂ (clmPowSet (Fin d → ℂ) k)) :
+    ∃ F : ℕ → Fin d → (H →L[ℂ] H),
+      (∀ n j, ∃ N : ℕ, HasRankLE (F n j) N) ∧
+      (∀ v, Tendsto (fun n => schattenNorm (p : ℝ)
+        (pencilOperator (F n) v - pencilOperator A v)) atTop (nhds 0)) ∧
+      (∀ v, ∃ C : ℝ, 1 ≤ C ∧ ∀ z : ℂ, ‖z‖ * (2 * C) < 1 →
+        Tendsto (fun n => opSchattenDet 1 (pencilOperator (F n) v) z) atTop
+          (nhds (opSchattenDet p (pencilOperator A v) z
+            * Complex.exp (∑ m ∈ Finset.Ico 1 p, P m v * z ^ m))))
+```
+
+This is the card's `(DC)` sufficiency in several variables: finite-rank *pencils* converging to the
+given pencil in the Schatten norm at every parameter, whose **plain** determinants converge to
+`exp(P(v, z))·det_p`, with `P` an arbitrary element of `⊕_{k=1}^{p-1} Sym^k(V^*)`.  The low power
+traces of the approximants are `−k·P_k(v)` *exactly*, at every truncation order, so no error term
+survives in the exponential factor.
+
+### Status of `(DC)`
+
+| direction | one variable | several variables |
+|---|---|---|
+| necessity | `exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet` (unconditional) | `exists_mvPoly_of_line_closures` |
+| sufficiency | `exists_finiteRank_tendstoLocallyUniformlyOn_opSchattenDet_one` | `exists_finiteRankPencil_tendsto_plainDet` |
+| set equality | `detGraphClosure_eq_detCompletionFibre` | -- |
+| homeomorphism | `detCompletionFibre_jet_unique` + coefficient convergence | `linearJet_eq_of_completedPencilDet_eq` (order two) |
+| naturality | `opSchattenDet_add_of_orthogonal`, `opSchattenDet_conj`, `opSchattenDet_pencil_line` | same |
+
+### What remains on this card
+
+Only the packaging of the several-variable halves as one set equality, in the shape of
+`detGraphClosure_eq_detCompletionFibre`.  Both halves, and every mathematical input to them, are
+proved and axiom-clean.

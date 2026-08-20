@@ -327,3 +327,50 @@ in `(0, T]`.  Levinson's method produces precisely that count — on the critica
 `Re[Γ_ℝ·G]` equals `Ξ` times a nonvanishing factor
 (`re_Gammaℝ_mul_levinsonG_eq_half_Y_mul_completed`) — with constant `0.3474… > 1/3`.  That work is
 `docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md`.
+
+## Status of the one remaining analytic input (2026-08-20, later)
+
+Everything below is Lean-proved and axiom-clean; all of it exists **for this card** and is tracked in
+`docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md`.
+
+### The window inequality is closed (brick 4)
+
+`RHTower/LevinsonWindowBound.exists_levinson_window_edge_bound` reduces the required sign-change
+count to a single zero count.  For real `λ ∈ [−1, 0)` and `20 ≤ T₁ < T₂` at admissible heights:
+
+```text
+(n+1)π + π + (T₂−T₁)·6/T₁² + c·log T₁ + c·log T₂
+     + 2π·#{zeros of G♯ in [½,4]×[T₁,T₂]}   ≤   θ(T₂) − θ(T₁)
+  ⟹  n ≤ xiOddFiberCount T₂  ⟹  H₁(T₂) ≥ (3/2)n − N(T₂)/2.
+```
+
+The chain: polar form of `Z` from Levinson's detector; `ψ(T₂)−ψ(T₁) = Δθ + ∫Re(G′/G)`; the entire
+detector `G♯ = (s−1)²G`; the rectangle argument principle in argument-variation form; the right edge
+`≤ π` (because `Re G > 0` on `Re s = 4`); the horizontal edges `O(log T)` (Backlund + Jensen on the
+real trace of `G`); and density of admissible heights.  Modules:
+`LevinsonPhaseAdvance`, `LevinsonEntireDetector`, `EntireArgumentVariationRectangle`,
+`LevinsonEntirePhaseAdvance`, `LevinsonWindowAdvance`, `PhaseAdvanceIncrementCount`,
+`ZetaFarRightDecay`, `LevinsonRightEdge`, `LevinsonStripBound`, `LevinsonRealTrace`,
+`LevinsonHorizontalEdge`, `LevinsonAdmissibleHeight`, `LevinsonWindowBound`, plus
+`HTGeometry/SegmentPolarForm` and `HTGeometry/SegmentArgumentBound`.
+
+### The mollified second moment (brick 5) — in progress
+
+* **5a closed.**  `HTGeometry/ExponentialWindowIntegral`, `TwistedDirichletMeanValue`,
+  `TwistedDiagonal`, `TwistedMeanValueSplit`; `RHTower/Sieve/DistinctReciprocalSum`,
+  `TwistedOffDiagonalSum`, `TwistedMeanValueError`, `TwistedDiagonalReindex`.  Capstones:
+  `twisted_meanValue_error` (twisted mean value with explicit `U`-free error) and
+  `twisted_diagonal_reindex` (for coprime `h,k` the diagonal `nk = mh` is exactly `(kd, hd)`).
+* **5b closed.**  The Gaussian smooth approximate functional equation now holds at every `s` with
+  `0 < Re s < 2`, `s ≠ 1` — the abscissa `σ₀ = ½ − R/log T` that Levinson's method uses.  Modules:
+  `ZetaVerticalLineGrowth`, `GaussianShiftedMoment`, `SmoothAFEZetaGeneralHorizontal`,
+  `SmoothAFEZetaGeneralVertical`, `SmoothAFEZetaGeneral`.
+* **5c–5e open.**  Assemble `∫|G♯·M|²` at `σ₀` from the general AFE and the twisted mean value;
+  evaluate the arithmetic main term; optimize to `κ > 1/3`.
+
+### Why the constants matter for this card
+
+`H₁ ≥ (3/2)·n − N/2` is non-vacuous exactly when `liminf n/N > 1/3`; Levinson's own constant
+`0.3474…` already suffices for positivity.  The card's advertised decimal `0.116158438` needs the
+PRZZ pair `κ ≥ 0.417293962`, `κ_* ≥ 0.407511457`, i.e. bricks 9–10 (Conrey's `θ = 4/7` mollifier and
+the PRZZ optimization) on top of brick 5.

@@ -1524,3 +1524,99 @@ eq_algebraMap_of_scalarStabilizer_of_zeroSet  the hypothesis `cassidy_gl2_consta
 Together with `AdditiveDifferentialSubgroupLinear` this replaces the whole Hopf-algebra route to
 Cassidy's additive classification by two elementary theorems, and reduces the remaining gap to the
 *structure* half of Cassidy (entries fill a subfield) plus the exclusion of the imprimitive case.
+
+
+## Card 1 — the inner-cocycle route replaces Cassidy's structure theorem
+
+A better architecture for the last gap, found by taking the endgame's own hypothesis
+`Algebra.FiniteType C E` seriously: **finite type of the constants algebra is differential
+algebraicity**.  If `E` is generated over `C` by the entries of the comparison matrix and the inverse
+of its determinant, then `δZ ∈ E` is a polynomial in those generators, so there is one matrix `F` of
+polynomials over `C` with
+
+  `δM = F(M)`  for **every** Galois matrix `M`.
+
+Write `Φ(M) := F(M)·M⁻¹ = unitLogDeriv M`.  The crossed-homomorphism law
+`Φ(gh) = Φ(g) + gΦ(h)g⁻¹` holds identically, so `Φ` is a *rational* cocycle on the group, and by
+Zariski density it is one on the Zariski closure.  For a group containing `SL₂` the first rational
+cohomology with values in the adjoint representation vanishes (Whitehead), so `Φ(M) = A - M A M⁻¹`
+for a fixed `A`, that is
+
+  `δM = A M - M A`  for every Galois matrix.
+
+Conjugating by a solution of `δP = A P` then makes every Galois matrix **constant**, and a constant
+Galois group feeds `exists_base_logDerivMatrix_of_galoisAutAt_constant` directly — no `hsol`, no
+`BoundedOverBase`, no Cassidy classification.  The solution `P` exists *inside* `C` because `C` is
+differentially closed: that is what the differential closure built earlier is for.
+
+`InnerLogDerivativeConjugation`
+
+```text
+matrixDeriv_conjugate_eq_zero_of_commutator        δM = AM - MA and δP = AP ⟹ δ(P⁻¹MP) = 0
+forall_matrixDeriv_conjugate_eq_zero_of_commutator the family version
+matrixDeriv_eq_commutator_of_unitLogDeriv          the logarithmic form of the coboundary condition
+```
+
+`LogDerivativeSpanDichotomy`
+
+```text
+unitLogDeriv, unitLogDeriv_mul                the logarithmic derivative and its cocycle law
+trace_unitLogDeriv                            its trace is the logarithmic derivative of the
+                                              determinant (Jacobi)
+logDerivSpan, adjoint_mem_logDerivSpan        the span is stable under conjugation by the group
+matrixDeriv_eq_zero_of_logDerivSpan_proper    **the dichotomy**: with an irreducible adjoint action,
+                                              either the logarithmic derivatives fill the traceless
+                                              matrices or the whole group is constant
+```
+
+Remaining for the route: (i) the concrete Picard--Vessiot data giving `δZ = F(Z)`; (ii) the
+vanishing of the rational `H¹` for the adjoint representation of `SL₂` (with the imprimitive and
+finite Zariski closures handled by the symmetric-square and growth obstructions); (iii) existence of
+an invertible solution of `δP = A P` in a differentially closed field — which is the linear system's
+consistency plus `IsDifferentiallyClosed`.
+
+
+## Card 1 — the constant-conjugate half of the inner-cocycle route is Lean-complete
+
+`MvPolynomialTotalDerivation`
+
+```text
+mvCoeffDerivation                differentiating the coefficients of a multivariate polynomial
+mvTotalDerivation                the general derivation extending it with prescribed values on the
+                                 variables (the index-free form of the jet derivation)
+```
+
+`LinearSystemFundamentalMatrix`
+
+```text
+IsDifferentiallyClosed.exists_point_finite   differential closedness for any finite index type,
+                                             by renaming along a bijection
+systemCoordDifferential, linearSystemGenericMatrix, matrixDeriv_linearSystemGenericMatrix
+                                             the coordinate ring of `δY = A·Y`, in which the generic
+                                             matrix is a solution
+det_linearSystemGenericMatrix_ne_zero        its determinant is a nonzero polynomial
+fundamentalSystem, eval_fundamentalSystem_iff  the finite differential system saying "`Y` solves the
+                                             equation and `det Y` is invertible"
+exists_fundamentalMatrix                     **a linear differential system has an invertible
+                                             solution over a differentially closed field**
+```
+
+`ConstantConjugateOfInnerDerivative`
+
+```text
+exists_conjugate_matrixDeriv_eq_zero   **`δM = A M - M A` for a family of matrices makes the family
+                                       constant after one conjugation**, the conjugator being the
+                                       fundamental solution supplied by differential closedness
+```
+
+Together with `InnerLogDerivativeConjugation` and `LogDerivativeSpanDichotomy` this closes the whole
+second half of the route: from "the logarithmic derivative cocycle of the Galois group is a
+coboundary" to "the Galois matrices are constant", which is exactly the input of
+`exists_base_logDerivMatrix_of_galoisAutAt_constant`.
+
+Two obligations remain, both on the first half:
+
+1. the concrete Picard--Vessiot data, giving `δZ = F(Z)` with `F` a matrix of polynomials over `C`
+   (this is what `Algebra.FiniteType C E` says);
+2. vanishing of the rational `H¹` of the adjoint representation of `SL₂` — with the imprimitive
+   Zariski closure excluded by the symmetric-square obstruction and the finite one by growth.

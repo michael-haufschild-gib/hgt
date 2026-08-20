@@ -120,6 +120,7 @@ theorem deriv_logDeriv_riemannZeta_eq {s : ℂ} (hs : s ∈ zetaLaurentDomain) :
       (deriv (logDeriv zetaLaurentUnit) s - (-1 / (s - 1) ^ 2)) s := hU.hasDerivAt.sub hV
   rw [zetaFisherMetric, heq.deriv_eq, hTotal.deriv]
   field_simp
+  ring
 
 /-! ### The blow-up at the wall -/
 

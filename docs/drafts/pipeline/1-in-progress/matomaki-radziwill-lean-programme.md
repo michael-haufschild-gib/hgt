@@ -6465,3 +6465,45 @@ exchanged (`Sieve/Section4CofactorSup`) and the measure is paid by
 `integral_normSq_ramareBlock_geom_le` and `integral_normSq_ramareBilinear_le_ladder_error` over `E`,
 then the affine majorant `Sieve/RamareLadderAffine` and finally
 `sum_sq_fibreSum_moebius_le_ramareLadder_final` itself.
+
+### Brick 99e — the Ramaré ladder against a frequency partition (2026-08-20)
+
+Two modules, both `lake env lean`-clean, axiom-clean, wired.
+
+**`Sieve/RamarePartitionedLadder`**
+
+| theorem | content |
+|-|-|
+| `ramareStepDefect` | the per-step ladder defect, named |
+| `setIntegral_normSq_ramareBilinear_le_ladder_defect` | the block ladder over a measurable set, in `‖P‖²‖C‖²` form |
+| `setIntegral_split_three` | `Icc(−W,W)` is the disjoint union of the low disc, the annulus inside `T`, and the annulus outside |
+| **`integral_normSq_blockProduct_set_cofactorSup_le`** | one block over a frequency set with the **cofactor** bounded and the prime polynomial's mean square supplied — the missing dual of `Sieve/BlockProductAnnulus.integral_normSq_blockProduct_set_le` |
+| **`integral_normSq_blockProduct_partitioned_le`** | one block over the whole window, split three ways |
+
+**`Sieve/RamareAnnulusPartitioned`**
+
+```text
+integral_normSq_ramareBilinear_annulus_partitioned_le :
+  ∫_{|w| ≤ W} ‖ramareBilinear P M w‖²
+    ≤ 2L·∑_{j<L} ( V_j²·(5π/2·W + 5e/2·⌊M/Q_j⌋)·#C_j          -- annulus ∩ T, prime bounded
+                 + Us_j²·J_j                                    -- annulus \ T, cofactor bounded
+                 + Vlow_j²·U_j²·2w₀ )                           -- low disc
+      + 2·Dfct
+```
+
+This is `Sieve/RamareLadderAnnulus.integral_normSq_ramareBilinear_annulus_le` with its single
+whole-annulus hypothesis `hann` replaced by the partition: `V_j` holds on `T` **by definition** of
+the frequency set, and off `T` the roles are exchanged.  Taking `T` to be the whole window and
+`Us = J = 0` recovers the original, so nothing is lost.
+
+**Import discipline (following the earlier lesson).**  The ladder defect is left as a hypothesis
+`hErr` rather than discharged by `Sieve/RamareLadderAnnulus.integral_normSq_ramareLadderError_le_defectSum`,
+because that module reaches the Route-T/Ingham stack through its affine-majorant layer; the corpus
+lemma discharges `hErr` at the call site at no cost.
+
+**What remains for `averagedMeanSquare_moebius_scaled'`:** feed this into
+`Sieve/FibreRamareLadderFinal` in place of `integral_normSq_ramareBilinear_ladder_affine` (its
+hypotheses `hV`/`hU` become the partitioned ones), instantiate `T = allBlocksSmall` at the second
+range `log P' = (log x)^{49/50}` with `V_j = #B_j·(log x)^{−100}`, take `Us_j` from brick 89c through
+`Sieve/LogPolyIccPrefix`, `J_j` from brick 94 with the measure from `Sieve/Section4RelativeThreshold`,
+and check the three budgets against `M²W²` as derived in the design entry.

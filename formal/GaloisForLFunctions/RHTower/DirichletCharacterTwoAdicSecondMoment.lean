@@ -69,14 +69,13 @@ theorem fourOdd_quadratic_intervalShiftSum_energy [DecidableEq I] (P : OddPrimeF
     rw [Finset.sum_comm]
   simp_rw [← Finset.mul_sum]
 
-/-- The incomplete level-four/odd second moment is bounded by four times the literal positive
-gcd kernel.  This combines the closed CRT correlation bound with the finite coefficient-energy
-expansion, with no analytic hypothesis. -/
+/-- The incomplete level-four/odd second moment is bounded by the literal positive gcd kernel.
+This combines the exact CRT correlation bound with the finite coefficient-energy expansion. -/
 theorem fourOdd_quadratic_intervalShiftSum_normSq_le_gcdKernel [DecidableEq I]
     (P : OddPrimeFamily I) (M : ℕ) (b : ℕ → ℂ) :
     ∑ x : ZMod (fourOddModulus P),
       Complex.normSq (fourOddQuadraticIntervalShiftSum P M b x) ≤
-      4 * gcdKernelMoment (fourOddModulus P - 1) M b := by
+      gcdKernelMoment (fourOddModulus P - 1) M b := by
   have henergy := fourOdd_quadratic_intervalShiftSum_energy P M b
   have hnonneg : 0 ≤ ∑ x : ZMod (fourOddModulus P),
       Complex.normSq (fourOddQuadraticIntervalShiftSum P M b x) :=
@@ -122,43 +121,39 @@ theorem fourOdd_quadratic_intervalShiftSum_normSq_le_gcdKernel [DecidableEq I]
       apply Finset.sum_congr rfl
       intro l hl
       simp only [norm_mul, norm_star]
-    _ ≤ 4 * gcdKernelMoment (fourOddModulus P - 1) M b := by
-      rw [gcdKernelMoment, Finset.mul_sum]
+    _ ≤ gcdKernelMoment (fourOddModulus P - 1) M b := by
+      rw [gcdKernelMoment]
       apply Finset.sum_le_sum
       intro k hk
-      rw [Finset.mul_sum]
       apply Finset.sum_le_sum
       intro l hl
       rw [hmod]
       have hcorr : ‖∑ x : ZMod (fourOddModulus P),
           fourOddQuadraticCharacter P (x + ((k : ℤ) : ZMod (fourOddModulus P))) *
             fourOddQuadraticCharacter P (x + ((l : ℤ) : ZMod (fourOddModulus P)))‖ ≤
-          4 * (fourOddModulus P).gcd (Nat.dist k l) := by
+          (fourOddModulus P).gcd (Nat.dist k l) := by
         simpa only [natAbs_intCast_sub_eq_natDist] using
-          fourOdd_quadratic_shiftCorrelation_norm_le_gcd P (k : ℤ) (l : ℤ)
+          fourOdd_quadratic_shiftCorrelation_norm_le_gcd_exact P (k : ℤ) (l : ℤ)
       nlinarith [mul_le_mul_of_nonneg_left hcorr
         (mul_nonneg (norm_nonneg (b k)) (norm_nonneg (b l)))]
 
-/-- Exact divisor/totient form of the level-four/odd second moment.  The factor four is the
-closed contribution of the conductor-four local character; the coefficient estimate itself is
-the same finite divisor/Cauchy argument used for the odd CRT family. -/
+/-- Exact divisor/totient form of the level-four/odd second moment. -/
 theorem fourOdd_quadratic_intervalShiftSum_normSq_le_divisor [DecidableEq I]
     (P : OddPrimeFamily I) (M : ℕ) (b : ℕ → ℂ) :
     ∑ x : ZMod (fourOddModulus P),
       Complex.normSq (fourOddQuadraticIntervalShiftSum P M b x) ≤
-      4 * ((∑ e ∈ (fourOddModulus P).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
+      (∑ e ∈ (fourOddModulus P).divisors, (Nat.totient e : ℝ) *
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
   have hmodpos : 0 < fourOddModulus P :=
     Nat.pos_of_ne_zero (fourOddModulus_neZero P).out
   have hmod : fourOddModulus P - 1 + 1 = fourOddModulus P :=
     Nat.sub_add_cancel hmodpos
   calc
-    _ ≤ 4 * gcdKernelMoment (fourOddModulus P - 1) M b :=
+    _ ≤ gcdKernelMoment (fourOddModulus P - 1) M b :=
       fourOdd_quadratic_intervalShiftSum_normSq_le_gcdKernel P M b
-    _ ≤ 4 * ((∑ e ∈ (fourOddModulus P - 1 + 1).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
-      exact mul_le_mul_of_nonneg_left (gcdKernelMoment_le (fourOddModulus P - 1) M b)
-        (by norm_num)
+    _ ≤ (∑ e ∈ (fourOddModulus P - 1 + 1).divisors, (Nat.totient e : ℝ) *
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+      exact gcdKernelMoment_le (fourOddModulus P - 1) M b
     _ = _ := by rw [hmod]
 
 /-- Literal-divisor-count form of the closed level-four/odd second moment. -/
@@ -166,8 +161,8 @@ theorem fourOdd_quadratic_intervalShiftSum_normSq_le_divisorCount [DecidableEq I
     (P : OddPrimeFamily I) (M : ℕ) (b : ℕ → ℂ) :
     ∑ x : ZMod (fourOddModulus P),
       Complex.normSq (fourOddQuadraticIntervalShiftSum P M b x) ≤
-      4 * (((M : ℝ) * ((fourOddModulus P).divisors.card : ℝ) +
-        (fourOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
+      ((M : ℝ) * ((fourOddModulus P).divisors.card : ℝ) +
+        (fourOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
   have hmodpos : 0 < fourOddModulus P :=
     Nat.pos_of_ne_zero (fourOddModulus_neZero P).out
   have hmod : fourOddModulus P - 1 + 1 = fourOddModulus P :=
@@ -177,18 +172,16 @@ theorem fourOdd_quadratic_intervalShiftSum_normSq_le_divisorCount [DecidableEq I
   have henergy_nonneg : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
     Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
   calc
-    _ ≤ 4 * ((∑ e ∈ (fourOddModulus P).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) :=
+    _ ≤ (∑ e ∈ (fourOddModulus P).divisors, (Nat.totient e : ℝ) *
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
       fourOdd_quadratic_intervalShiftSum_normSq_le_divisor P M b
-    _ ≤ 4 * (((M : ℝ) * ((fourOddModulus P).divisors.card : ℝ) +
+    _ ≤ (((M : ℝ) * ((fourOddModulus P).divisors.card : ℝ) +
         (fourOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
-      apply mul_le_mul_of_nonneg_left
-      · exact mul_le_mul_of_nonneg_right
-          (by
-            simpa only [hmod, hmodR] using
-              divisor_totient_coefficient_le (fourOddModulus P - 1) M)
-          henergy_nonneg
-      · norm_num
+      exact mul_le_mul_of_nonneg_right
+        (by
+          simpa only [hmod, hmodR] using
+            divisor_totient_coefficient_le (fourOddModulus P - 1) M)
+        henergy_nonneg
 
 end OddPrimeFamily
 end RHTower

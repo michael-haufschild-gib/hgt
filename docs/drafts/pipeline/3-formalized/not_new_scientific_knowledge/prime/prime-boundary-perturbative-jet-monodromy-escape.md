@@ -1,7 +1,7 @@
 # The prime boundary layer is an endpoint jet; the zeta divisor survives only as escaping monodromy
 
 - **ID:** `prime-boundary-perturbative-jet-monodromy-escape`
-- **Stage:** 2-fully-proven / finite cumulant-moment core formalized in Lean
+- **Stage:** 3-formalized
 - **Type:** THEOREM / PERTURBATIVE-NONPERTURBATIVE NO-GO
 - **Scientific status:** `[PROVED; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** the signed Levy defect left by
@@ -334,3 +334,79 @@ shows why every fixed boundary-layer calculation misses it.
 - [x] exact finite cumulant-moment parity formalized in Lean
 - [x] parent theory audit completed; classified as bridge
 - [x] RH endpoint identified: monodromy support localization is RH itself
+
+## 2026-08-20 — Stage-3 formalization
+
+The card is formalized unconditionally across seven new modules plus two corpus modules that
+already carried the monodromy half.
+
+### New modules
+
+| module | content |
+|-|-|
+| `RHTower/PrimeHigherMertens.lean` | the higher-order Mertens theorem `∑_{p≤x}(log p)^k/p - (log x)^k/k → C_k`, by Abel summation against `θ`; the devices `exp_neg_sqrt_le_pow` and `integrableOn_logPow_pntErrorWeight` |
+| `RHTower/PrimeHigherMertensRate.lean` | the same with the de la Vallée Poussin rate, the packaged PNT envelope, the half-exponential tail bound, and the monomial defect estimate |
+| `RHTower/PrimeEndpointJet.lean` | the boundary defect `D_x`, its exact Abel decomposition, and the master remainder estimate |
+| `RHTower/PrimeEndpointJetExpansion.lean` | linearity of `D_x` and the jet expansion for `polynomial + remainder` test functions |
+| `RHTower/PrimeEndpointJetTaylor.lean` | iterated integration, the Taylor polynomial of a derivative tower, the remainder bound, and `(6)` for smooth test functions |
+| `RHTower/PrimeBoundaryWickExpansion.lean` | the hyperbolic and trigonometric towers, the two-axis Wick expansion, the leading correction, the beyond-all-orders statement, and the zero-freeness of truncations |
+| `RHTower/PrimeBoundaryMonodromyEscape.lean` | the Möbius-inversion derivative form, the quantized monodromy charge, the boundary-chart escape, the archimedean zero-charge statement, the RH restatement, and the two zero-charge obstructions |
+
+### Item table
+
+| card item | Lean declaration |
+|-|-|
+| `(1)`, `(2)` prime-harmonic boundary defect | `primeBoundaryDefect`, `primeBoundaryDefect_eq` |
+| `(3)` defect of a test function | `primeBoundaryDefect`, `primeBoundaryDefect_add`, `primeBoundaryDefect_const_mul`, `primeBoundaryDefect_sum` |
+| `(4)`, `(5)` prime zeta germ coefficients | `mertensLogPowConstant`, `mertensLogPowConstantFull`, `tendsto_primeLogPowSum_sub` |
+| `(6)`, `(7)` endpoint-jet expansion | `exists_abs_primeBoundaryDefect_jet_le`, `exists_abs_primeBoundaryDefect_taylor_jet_le` |
+| `(8)`, `(9)` `A_k(x)` and its remainder | `primeLogPowSum`, `primeLogPowSumIoc_sub_eq`, `exists_primeLogPowSum_sub_bound` |
+| `(10)` monomial defect | `exists_abs_primeBoundaryDefect_pow_le`, `tendsto_logPow_mul_primeLevyDefect_pow` |
+| `(11)`–`(14)` Taylor split and remainder control | `jetTaylor`, `abs_sub_jetTaylor_le`, `tower_bound`, `jetTailWeight`, `integrableOn_jetTailWeight`, `exists_abs_primeBoundaryDefect_le` |
+| `(15)`, `(16)` finite and limiting Wick cumulants | `primeClockRadialEnergy`, `primeClockVerticalEnergy`, `wickProfile` |
+| `(17)` symmetric Wick expansion | `exists_abs_primeClockRadialEnergy_jet_le`, `exists_abs_primeClockVerticalEnergy_jet_le` |
+| `(18)` leading correction at scale `(log N)^2` | `tendsto_logSq_mul_primeClockRadialEnergy_sub` |
+| `(19)` beyond all algebraic orders | `exists_abs_primeBoundaryDefect_flat_le` |
+| `(20)` finite truncations are zero-free | `exp_wickProfile_add_poly_ne_zero` |
+| `(21)` prime zeta continuation | `primeBoundary_moebius_inversion` (derivative form of `P(s) = ∑ μ(n)/n log ζ(ns)`), `primeGradeSource_eq_continuation` |
+| `(22)` quantized monodromy charge | `primeBoundary_monodromy_charge` |
+| `(23)`, `(24)` boundary chart and escape | `tendsto_boundaryChart_escape` |
+| `(25)` the perturbative/nonperturbative split | `exp_wickProfile_add_poly_ne_zero` with `primeBoundary_monodromy_charge` |
+| `(26)` the archimedean weld has zero monodromy | `circleIntegral_logDeriv_archFactor_eq_zero` |
+| `(27)` terminal RH restatement | `riemannHypothesis_iff_no_primeBoundary_charge` |
+| §7.1 finite cumulants carry no charge | `circleIntegral_deriv_of_entire_eq_zero` |
+| §7.2 Hurwitz obstruction | `no_zero_of_tendstoUniformlyOn_zeroFree` |
+
+Every declaration has axiom set `[propext, Classical.choice, Quot.sound]`.
+
+Two deliberate renderings, both faithful and both noted here:
+
+* `(6)` is stated for a derivative tower on `ℝ` with the explicit remainder bounds
+  `|r| ≤ A u^{M+1}`, `|r'| ≤ A u^M` on `(0,1]` — exactly the hypotheses the Abel proof uses, and
+  exactly what the Taylor module supplies for a `C^{M+1}` test function.
+* `(21)`–`(22)` are formalized in derivative form: the monodromy of `P` around a loop is the
+  contour integral of `P'`, so the branch-point statement is the residue statement for the
+  continued prime-log current, which is what the corpus modules `GradeMonodromyInversion` and
+  `XiHeatCassiniWoldZetaPoleCarrier` already prove.
+* `(17)` is proved on the two real axes (radial `cosh` and vertical `cos`), which are the
+  restrictions the corpus energies `R_N` and `V_N` use; the general complex statement follows by
+  applying the same theorem to real and imaginary parts.
+
+**Stage: 3-formalized.**
+
+## Gates (stage 3)
+
+- [x] higher-order Mertens constants constructed and their limits proved
+- [x] rate form proved with the de la Vallée Poussin error
+- [x] endpoint remainder estimate proved
+- [x] endpoint-jet expansion proved, including the Taylor construction for smooth test functions
+- [x] symmetric Wick expansion proved on both axes
+- [x] leading `(log N)^2` correction identified with the second Mertens constant
+- [x] bulk defect proved beyond all algebraic orders
+- [x] finite truncations proved zero-free
+- [x] Möbius inversion and quantized monodromy charge assembled from the corpus
+- [x] boundary-chart escape proved
+- [x] archimedean weld proved to carry zero monodromy
+- [x] terminal RH restatement proved
+- [x] both zero-charge obstructions proved
+- [x] axiom audit clean

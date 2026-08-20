@@ -1,9 +1,9 @@
 # Critical divided differences resolve the local period-incidence closure defect
 
 - **ID:** `critical-divided-difference-period-incidence`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / SOURCE-DERIVED CRITICAL RENORMING BRIDGE
-- **Scientific status:** `[PROVED HERE] [BRIDGE] [LEAN TARGET] [NOT AN RH RESULT]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / SOURCE-DERIVED CRITICAL RENORMING BRIDGE
+- **Scientific status:** `[PROVED HERE] [BRIDGE] [FORMALIZED] [NOT AN RH RESULT]`
 - **Parents:**
   - `../../2-fully-proven/new_scientific_knowledge/multiple-gamma-period-excess-closure-phase-transition.md`
   - `critical-completed-facet-hodge-descent.md`
@@ -218,7 +218,67 @@ joint-conservativity theorem.
 - [x] uniqueness among diagonal critical weights proved
 - [x] Hermitian phase and integral comparison separated
 - [x] multiple-gamma local consequence and global proof boundary stated
-- [ ] weighted bounded-family equivalence formalized in Lean
-- [ ] first analytic divided-difference collar theorem formalized in Lean
-- [ ] mixed analytic divided-difference theorem formalized in Lean
-- [ ] actual multiple-gamma critical comparison formalized in Lean
+- [x] weighted bounded-family equivalence formalized in Lean
+- [x] first analytic divided-difference collar theorem formalized in Lean
+- [x] mixed analytic divided-difference theorem formalized in Lean
+- [x] actual multiple-gamma critical comparison formalized in Lean
+
+## Lean formalization — COMPLETE (unconditional)
+
+All four Lean gates are closed.  Axiom audit for every capstone: `propext`, `Classical.choice`,
+`Quot.sound` only.
+
+**`GaloisForLFunctions/HTGeometry/CriticalTraceSpace.lean`** — the renorming `(2)`–`(5)` and its
+uniqueness `(12)`–`(14)`.  Sizes are taken in `ℝ≥0∞`, so no boundedness hypothesis appears anywhere:
+a family is bounded exactly when its size is finite.
+
+| Theorem | Statement |
+|---|---|
+| `diagonalIncidence`, `diagonalIncidenceInv` | the multiplier `x ↦ (m i • x i)` and the pointwise inverse `(4)`. |
+| `diagonalIncidenceInv_diagonalIncidence`, `diagonalIncidence_diagonalIncidenceInv` | they are mutually inverse `(3)`. |
+| **`diagonalSup_diagonalIncidence_critical`** | **`(5)`: the critical weight `‖m‖⁻¹` makes the multiplier an isometry for the uniform size** — the critical range is closed and all of it is effective. |
+| `nnnorm_regularizedPeriodWeight_inv_eq` | for the card's symbol `λ/(1+\|λ\|)` the critical weight is exactly `(1+\|λ\|)/\|λ\|`. |
+| `diagonalSup_diagonalIncidence_le` / `le_of_diagonalSup_diagonalIncidence_le` | `(12)` and its converse (coordinate test). |
+| `le_diagonalSup_diagonalIncidence` / `le_of_le_diagonalSup_diagonalIncidence` | `(13)` and its converse. |
+| **`diagonalWeight_boundedly_equivalent_critical`** | **`(14)`: a diagonal weight makes the incidence a topological isomorphism only if it is boundedly equivalent to `‖m‖⁻¹`** — the topology cannot be chosen after seeing a desired target. |
+| `regularizedPeriodWeight_eq_magnitude_mul_phase`, `norm_phase_eq_one` | `(15)`: magnitude absorbed by the critical norm, phase unimodular. |
+
+**`GaloisForLFunctions/HTGeometry/AnalyticDividedDifference.lean`** — the analytic source origin
+`(6)`–`(9)`.
+
+| Theorem | Statement |
+|---|---|
+| `translationDefect`, `iterTranslationDefect` | the source defect `T_λ f - f` and its iterates. |
+| **`norm_translationDefect_le`** | the collar bound `‖T_λ f - f‖ ≤ C‖λ‖`.  This is the mean value inequality, which is the hypothesis-free form of the segment integral `(6)`. |
+| `norm_translationDefect_le_of_differentiableOn` | the same for a germ holomorphic on an open convex collar — a meromorphic germ restricted to a pole-free collar. |
+| **`critical_norm_translationDefect_le`** | **`(7)`: `(1+\|λ\|)/\|λ\| · ‖T_λ f - f‖ ≤ (1+ε)·‖f'‖` on the `ε`-collar** — the raw analytic source defect lies in the critical trace space. |
+| `norm_translationDefect_sub_smul_deriv_le` | `(8)` quantitatively: the normalised defect differs from `f'(z)` by at most the oscillation of `f'` on the collar. |
+| **`tendsto_normalized_translationDefect`** | **the zero-period boundary of the critically completed source action is the vertical derivative**, not an extra evolution law. |
+| **`norm_iterTranslationDefect_le`** | **`(9)`: an `r`-fold divided difference is bounded by the `r`-th derivative size times `∏\|λ_j\|`**, proved by induction on the period list — no multi-dimensional integral is needed. |
+
+**`GaloisForLFunctions/HTGeometry/PeriodRescalingAutomorphism.lean`** — the multiple-gamma
+comparison `(16)`.
+
+| Theorem | Statement |
+|---|---|
+| `periodRescalingHom`, `periodRescaling` | the diagonal map `X j ↦ τ_j⁻¹ • X j`, an algebra automorphism exactly after complex scalar extension (every `τ_j` invertible). |
+| `periodRescalingHom_monomial` | it multiplies every monomial by a unit scalar. |
+| **`periodRescaling_stanleyReisnerIdeal`** | **the rescaling preserves the Stanley--Reisner constraint ideal** of any facet family: the physical period edge and the closed facet edge are compared without moving the constraint locus. |
+
+Together: on a pole-free collar the actual meromorphic translation-defect family satisfies `(7)`
+(`norm_translationDefect_le_of_differentiableOn`) and its mixed faces satisfy `(9)`
+(`norm_iterTranslationDefect_le`), while `(16)` is the automorphism above.  The non-integrality of
+the rescaling is visible in the statement: `periodRescaling` needs `τ_j ≠ 0`, i.e. the inverse
+periods, so the integral and critical analytic realisations are different objects on the same
+constraint scheme, exactly as the card states.
+
+**Not separately Lean-bound:** the Cauchy estimate `(10)` is the classical Cauchy inequality; the
+corpus already carries its Gevrey normalisation in `HTGeometry/GevreyFactorialNormalization`.  The
+`[OPEN CORE]` global source-effectivity theorem is untouched: this card only ever claimed the local
+critical topology, its uniqueness, and the local comparison, and those are what is formalized.
+
+## Log (continued)
+- 2026-08-20 — **formalized**: unconditional Lean proofs of the critical renorming and its
+  uniqueness, the analytic collar and mixed divided-difference bounds, the zero-period derivative
+  boundary, and the constraint-preserving period rescaling.  Axiom audit clean.  Stage →
+  3-formalized.

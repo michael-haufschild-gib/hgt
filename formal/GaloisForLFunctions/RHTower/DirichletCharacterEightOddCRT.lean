@@ -4,7 +4,7 @@
 This module constructs each explicit conductor-eight character times the
 certified odd square-free CRT character and proves closed correlation bounds.
 -/
-import GaloisForLFunctions.RHTower.DirichletCharacterTwoAdicQuadratic
+import GaloisForLFunctions.RHTower.DirichletCharacterTwoAdicExactCorrelation
 import GaloisForLFunctions.RHTower.QuadraticJacobiSum
 
 open scoped BigOperators
@@ -213,6 +213,72 @@ theorem eightOdd_quadraticCharacterEightPrime_shiftCorrelation_norm_le_gcd [Deci
       apply mul_le_mul_of_nonneg_left
       · exact_mod_cast gcdOdd_le_gcdEightOdd P (l - k).natAbs
       · norm_num
+
+/-- First conductor-eight/odd correlations have the exact, multiplier-free gcd majorant. -/
+theorem eightOdd_quadraticCharacterEight_shiftCorrelation_norm_le_gcd_exact
+    (P : OddPrimeFamily I) (k l : ℤ) :
+    ‖∑ x : ZMod (eightOddModulus P),
+      eightOddQuadraticCharacterEight P (x + (k : ZMod (eightOddModulus P))) *
+        eightOddQuadraticCharacterEight P (x + (l : ZMod (eightOddModulus P)))‖ ≤
+      ((eightOddModulus P).gcd (l - k).natAbs : ℝ) := by
+  classical
+  rw [eightOddQuadraticCharacterEight, eightOdd_shiftCorrelation, Complex.norm_mul]
+  rw [eightCoordinate_intCast, eightCoordinate_intCast, eightOddCoordinate_intCast,
+    eightOddCoordinate_intCast]
+  have hcop : Nat.Coprime (Nat.gcd 8 (l - k).natAbs)
+      (Nat.gcd P.modulus (l - k).natAbs) :=
+    Nat.Coprime.of_dvd (Nat.gcd_dvd_left _ _) (Nat.gcd_dvd_left _ _)
+      (eight_coprime_modulus P)
+  have hproduct : Nat.gcd 8 (l - k).natAbs * Nat.gcd P.modulus (l - k).natAbs ∣
+      Nat.gcd (8 * P.modulus) (l - k).natAbs :=
+    Nat.dvd_gcd
+      (Nat.mul_dvd_mul (Nat.gcd_dvd_left _ _) (Nat.gcd_dvd_left _ _))
+      (hcop.mul_dvd_of_dvd_of_dvd (Nat.gcd_dvd_right _ _) (Nat.gcd_dvd_right _ _))
+  calc
+    _ ≤ (Nat.gcd 8 (l - k).natAbs : ℝ) *
+        (Nat.gcd P.modulus (l - k).natAbs : ℝ) :=
+      mul_le_mul (quadraticCharacterEight_shiftCorrelation_norm_le_gcd k l)
+        (quadratic_shiftCorrelation_norm_le_gcd P k l) (norm_nonneg _) (by positivity)
+    _ ≤ (Nat.gcd (8 * P.modulus) (l - k).natAbs : ℝ) := by
+      exact_mod_cast Nat.le_of_dvd
+        (Nat.gcd_pos_of_pos_left (l - k).natAbs
+          (Nat.mul_pos (by norm_num) (Nat.pos_of_ne_zero P.modulus_neZero.out)))
+        hproduct
+    _ = ((eightOddModulus P).gcd (l - k).natAbs : ℝ) := by
+      rw [eightOddModulus_eq]
+
+/-- Second conductor-eight/odd correlations have the exact, multiplier-free gcd majorant. -/
+theorem eightOdd_quadraticCharacterEightPrime_shiftCorrelation_norm_le_gcd_exact
+    (P : OddPrimeFamily I) (k l : ℤ) :
+    ‖∑ x : ZMod (eightOddModulus P),
+      eightOddQuadraticCharacterEightPrime P (x + (k : ZMod (eightOddModulus P))) *
+        eightOddQuadraticCharacterEightPrime P (x + (l : ZMod (eightOddModulus P)))‖ ≤
+      ((eightOddModulus P).gcd (l - k).natAbs : ℝ) := by
+  classical
+  rw [eightOddQuadraticCharacterEightPrime, eightOdd_shiftCorrelation, Complex.norm_mul]
+  rw [eightCoordinate_intCast, eightCoordinate_intCast, eightOddCoordinate_intCast,
+    eightOddCoordinate_intCast]
+  have hcop : Nat.Coprime (Nat.gcd 8 (l - k).natAbs)
+      (Nat.gcd P.modulus (l - k).natAbs) :=
+    Nat.Coprime.of_dvd (Nat.gcd_dvd_left _ _) (Nat.gcd_dvd_left _ _)
+      (eight_coprime_modulus P)
+  have hproduct : Nat.gcd 8 (l - k).natAbs * Nat.gcd P.modulus (l - k).natAbs ∣
+      Nat.gcd (8 * P.modulus) (l - k).natAbs :=
+    Nat.dvd_gcd
+      (Nat.mul_dvd_mul (Nat.gcd_dvd_left _ _) (Nat.gcd_dvd_left _ _))
+      (hcop.mul_dvd_of_dvd_of_dvd (Nat.gcd_dvd_right _ _) (Nat.gcd_dvd_right _ _))
+  calc
+    _ ≤ (Nat.gcd 8 (l - k).natAbs : ℝ) *
+        (Nat.gcd P.modulus (l - k).natAbs : ℝ) :=
+      mul_le_mul (quadraticCharacterEightPrime_shiftCorrelation_norm_le_gcd k l)
+        (quadratic_shiftCorrelation_norm_le_gcd P k l) (norm_nonneg _) (by positivity)
+    _ ≤ (Nat.gcd (8 * P.modulus) (l - k).natAbs : ℝ) := by
+      exact_mod_cast Nat.le_of_dvd
+        (Nat.gcd_pos_of_pos_left (l - k).natAbs
+          (Nat.mul_pos (by norm_num) (Nat.pos_of_ne_zero P.modulus_neZero.out)))
+        hproduct
+    _ = ((eightOddModulus P).gcd (l - k).natAbs : ℝ) := by
+      rw [eightOddModulus_eq]
 
 end OddPrimeFamily
 end RHTower

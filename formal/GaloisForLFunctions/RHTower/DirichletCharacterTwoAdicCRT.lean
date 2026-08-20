@@ -6,7 +6,7 @@ odd square-free CRT quadratic character.  It constructs the composite modulus,
 the CRT equivalence, and a closed complete-correlation factorization.  It does
 not identify this constructed family with every fundamental discriminant.
 -/
-import GaloisForLFunctions.RHTower.DirichletCharacterTwoAdicQuadratic
+import GaloisForLFunctions.RHTower.DirichletCharacterTwoAdicExactCorrelation
 import GaloisForLFunctions.RHTower.QuadraticJacobiSum
 
 open scoped BigOperators
@@ -208,6 +208,39 @@ theorem fourOdd_quadratic_shiftCorrelation_norm_le_gcd [DecidableEq I]
       apply mul_le_mul_of_nonneg_left
       · exact_mod_cast gcdOdd_le_gcdFourOdd P (l - k).natAbs
       · norm_num
+
+/-- Level-four/odd complete correlations have the exact, multiplier-free gcd majorant. -/
+theorem fourOdd_quadratic_shiftCorrelation_norm_le_gcd_exact
+    (P : OddPrimeFamily I) (k l : ℤ) :
+    ‖∑ x : ZMod (fourOddModulus P),
+      fourOddQuadraticCharacter P (x + (k : ZMod (fourOddModulus P))) *
+        fourOddQuadraticCharacter P (x + (l : ZMod (fourOddModulus P)))‖ ≤
+      ((fourOddModulus P).gcd (l - k).natAbs : ℝ) := by
+  classical
+  rw [fourOdd_quadratic_shiftCorrelation, Complex.norm_mul]
+  rw [fourCoordinate_intCast, fourCoordinate_intCast, oddCoordinate_intCast,
+    oddCoordinate_intCast]
+  have hcop : Nat.Coprime (Nat.gcd 4 (l - k).natAbs)
+      (Nat.gcd P.modulus (l - k).natAbs) :=
+    Nat.Coprime.of_dvd (Nat.gcd_dvd_left _ _) (Nat.gcd_dvd_left _ _)
+      (four_coprime_modulus P)
+  have hproduct : Nat.gcd 4 (l - k).natAbs * Nat.gcd P.modulus (l - k).natAbs ∣
+      Nat.gcd (4 * P.modulus) (l - k).natAbs :=
+    Nat.dvd_gcd
+      (Nat.mul_dvd_mul (Nat.gcd_dvd_left _ _) (Nat.gcd_dvd_left _ _))
+      (hcop.mul_dvd_of_dvd_of_dvd (Nat.gcd_dvd_right _ _) (Nat.gcd_dvd_right _ _))
+  calc
+    _ ≤ (Nat.gcd 4 (l - k).natAbs : ℝ) *
+        (Nat.gcd P.modulus (l - k).natAbs : ℝ) :=
+      mul_le_mul (quadraticCharacterFour_shiftCorrelation_norm_le_gcd k l)
+        (quadratic_shiftCorrelation_norm_le_gcd P k l) (norm_nonneg _) (by positivity)
+    _ ≤ (Nat.gcd (4 * P.modulus) (l - k).natAbs : ℝ) := by
+      exact_mod_cast Nat.le_of_dvd
+        (Nat.gcd_pos_of_pos_left (l - k).natAbs
+          (Nat.mul_pos (by norm_num) (Nat.pos_of_ne_zero P.modulus_neZero.out)))
+        hproduct
+    _ = ((fourOddModulus P).gcd (l - k).natAbs : ℝ) := by
+      rw [fourOddModulus_eq]
 
 end OddPrimeFamily
 end RHTower

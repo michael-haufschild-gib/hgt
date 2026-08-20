@@ -1,8 +1,8 @@
 # The critical line is the signature-change wall of the arithmetic DeWitt supermetric (Fisher metric)
 
 - **ID:** critical-line-fisher-signature-wall
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper, structural / D2 unification) — Door **BRIDGE (substrate)**, charter §6 D2
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean, structural / D2 unification) — Door **BRIDGE (substrate)**, charter §6 D2
 - **Priority:** FUTURE (A2 / time–geometry axis)
 - **Source:** Seed B of `dewitt-gr-lens-conjectures.md` (split out + resolved); parent
   `../2-fully-proven/dewitt-supermetric-no-margin.md` (Giulini 2011, Findings 1/3); the info-geometric horizon
@@ -80,7 +80,7 @@ dictionary.
   change).
 - [x] 1 → 2: §1 signature change verified (sign flip at `σ=½`), §2 Fisher blowup verified (`g·(2σ−1)²→1`),
   §3 the GR kinship + the two-degeneracy completion, §4 honesty. D2 BRIDGE (substrate).
-- [ ] 2 → 3: Lean (optional) — the `ζ(2σ)` sign-change interval algebra; or fold into the parent's anchors.
+- [x] 2 → 3: Lean — **complete and unconditional**; all of (R1)–(R4) formalized, not only the sign-change algebra (see the Lean section below).
 - [ ] 3 → 4: with the parent: "the arithmetic supermetric carries both GR degeneracies — ellipticity (λ, the
   cone boundary) and signature change (σ, the critical line / Fisher horizon)."
 
@@ -137,3 +137,63 @@ diverges logarithmically as `σ→½⁺`. So `σ=½` is at **infinite Fisher dis
 
 Leaner's paper-proof gap is closed: §1 = (R1), §2 = (R2)–(R4), all rigorous classical derivations; the numerics
 are confirmations. Grade unchanged: BRIDGE (substrate), RH-blind (§4). Stage → 2-fully-proven.
+
+## Lean formalization — COMPLETE (unconditional)
+
+Every rigorous derivation of this card — (R1) the signature change, (R2) the Fisher metric as a
+Gibbs variance, (R3) the blow-up rate, (R4) the infinite Fisher distance — is now an unconditional
+Lean theorem.  Axiom audit for all capstones: `propext`, `Classical.choice`, `Quot.sound` only.
+
+**`GaloisForLFunctions/RHTower/ZetaRealSignature.lean`** — §1 / (R1), the signature change of the
+arithmetic norm form `‖ψ(s)‖² = ζ(2σ)`.
+
+| Theorem | Statement |
+|---|---|
+| `eulerPositiveTotal_two_mul_pos` | `σ > 1/2 ⟹ ζ(2σ) > 0` — a convergent series of positive terms. |
+| `riemannZeta_two_mul_eq_ofReal` | `ζ(2σ)` is that real number. |
+| `riemannZeta_two_mul_neg` | `0 < σ < 1/2 ⟹ ζ(2σ) < 0` (ghost region), via the corpus's Dirichlet-eta quotient theorem `riemannZeta_real_strip_neg`. |
+| `tendsto_eulerPositiveTotal_two_mul_atTop` | `ζ(2σ) → +∞` as `σ → 1/2⁺` — the degenerate wall, from the residue at the pole. |
+
+**`GaloisForLFunctions/RHTower/ZetaFisherMetric.lean`** — §2 / (R3), the Laurent factorisation and
+the blow-up.
+
+| Theorem | Statement |
+|---|---|
+| `zetaLaurentUnit`, `differentiable_zetaLaurentUnit`, `zetaLaurentUnit_one` | the entire unit `U` with `U(1) = 1`. |
+| `riemannZeta_eq_laurentUnit_div` | `ζ(s) = U(s)/(s-1)` off the pole. |
+| `zetaFisherMetric` | `g := (log ζ)'' = deriv (logDeriv ζ)` — the quantum-Fisher / Fubini–Study metric. |
+| `deriv_logDeriv_riemannZeta_eq` | `g(s) = (log U)''(s) + 1/(s-1)²` — multiplicativity of the logarithmic derivative. |
+| **`tendsto_sub_one_sq_mul_zetaFisherMetric`** | **`(s-1)² g(s) → 1`**, i.e. `g ∼ 1/(2σ-1)²` at the critical line. |
+
+**`GaloisForLFunctions/RHTower/ZetaFisherHorizon.lean`** — §2 / (R4), infinite Fisher distance.
+
+| Theorem | Statement |
+|---|---|
+| `zetaFisherReal`, `continuousOn_zetaFisherReal` | the metric on the real axis, continuous right of the pole. |
+| `tendsto_sub_one_sq_mul_zetaFisherReal` | the real form of the blow-up. |
+| `sqrt_zetaFisherReal_ge_of_gt` | `√g ≥ 1/(2(x-1))` wherever `(x-1)²g > 1/4`. |
+| **`exists_tendsto_zetaFisherLength_atTop`** | **the Fisher arclength `∫_a^b √g` tends to `+∞` as `a → 1⁺`** — the critical line is at infinite Fisher distance. |
+
+**`GaloisForLFunctions/RHTower/ZetaFisherVariance.lean`** — §2 / (R2), the metric is the Gibbs
+variance.
+
+| Theorem | Statement |
+|---|---|
+| `ofReal_eulerLogPowMass_eq_LSeries_zetaJetA` | the real logarithmic Dirichlet sums are the corpus's zeta jets. |
+| `deriv_riemannZeta_ofReal`, `deriv_deriv_riemannZeta_ofReal` | `ζ'(x) = -∑ (log n) n^{-x}`, `ζ''(x) = ∑ (log n)² n^{-x}`. |
+| `zetaFisherMetric_eq_quotient` | `g = (ζ''ζ - ζ'²)/ζ²`. |
+| **`zetaFisherMetric_ofReal_eq_eulerLogVariance`** | **`g(x) = Var_{p}(log n)`** for the Gibbs law `p_n = n^{-x}/ζ(x)`. |
+| `zetaFisherReal_nonneg` | hence `g ≥ 0` right of the critical line — it is a variance, via the corpus's `eulerLogVariance_nonneg`. |
+
+The numerics of §1/§2 are, as the card already recorded, only confirmations; the Lean proofs use
+none of them.  Nothing here is conditional: no hypothesis on the zeros, on RH, or on any unproved
+analytic input enters any proof — consistent with §4, the theorem is RH-blind.
+
+**Not Lean-bound:** the Giulini DeWitt-supermetric side of the §3 kinship is a statement about
+general relativity, not an arithmetic theorem; the card's D2 content is the dictionary, and only its
+arithmetic half is a formalizable proposition.
+
+## Log (continued)
+- 2026-08-20 — **formalized**: unconditional Lean proofs of (R1)–(R4), including the Laurent-unit
+  factorisation of `ζ` and the identification of the Fisher metric with the Gibbs variance of
+  `log n`.  Axiom audit clean.  Stage → 3-formalized.

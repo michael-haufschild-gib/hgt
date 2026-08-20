@@ -48,20 +48,20 @@ theorem eightOddQuadraticCharacterOfKind_star [DecidableEq I] (κ : EightQuadrat
     eightQuadraticLocal_star, quadraticCharacter_star]
   ring
 
-/-- Complete correlation gcd bound, uniformly over the two explicit conductor-eight characters. -/
+/-- Exact complete correlation gcd bound, uniformly over the two explicit conductor-eight characters. -/
 theorem eightOdd_quadraticCharacterOfKind_shiftCorrelation_norm_le_gcd [DecidableEq I]
     (κ : EightQuadraticKind) (P : OddPrimeFamily I) (k l : ℤ) :
     ‖∑ x : ZMod (eightOddModulus P),
       eightOddQuadraticCharacterOfKind κ P (x + (k : ZMod (eightOddModulus P))) *
         eightOddQuadraticCharacterOfKind κ P (x + (l : ZMod (eightOddModulus P)))‖ ≤
-      8 * (eightOddModulus P).gcd (l - k).natAbs := by
+      (eightOddModulus P).gcd (l - k).natAbs := by
   cases κ
   · simpa only [eightOddQuadraticCharacterOfKind, eightQuadraticLocal,
       eightOddQuadraticCharacterEight] using
-      eightOdd_quadraticCharacterEight_shiftCorrelation_norm_le_gcd P k l
+      eightOdd_quadraticCharacterEight_shiftCorrelation_norm_le_gcd_exact P k l
   · simpa only [eightOddQuadraticCharacterOfKind, eightQuadraticLocal,
       eightOddQuadraticCharacterEightPrime] using
-      eightOdd_quadraticCharacterEightPrime_shiftCorrelation_norm_le_gcd P k l
+      eightOdd_quadraticCharacterEightPrime_shiftCorrelation_norm_le_gcd_exact P k l
 
 /-- Incomplete shift sum for the selected conductor-eight/odd composite character. -/
 def eightOddQuadraticIntervalShiftSum [DecidableEq I] (κ : EightQuadraticKind)
@@ -102,13 +102,13 @@ theorem eightOdd_quadratic_intervalShiftSum_energy [DecidableEq I] (κ : EightQu
     rw [Finset.sum_comm]
   simp_rw [← Finset.mul_sum]
 
-/-- The finite second moment for either conductor-eight composite is bounded by eight times its
-literal positive gcd kernel. -/
+/-- The finite second moment for either conductor-eight composite is bounded by its literal
+positive gcd kernel. -/
 theorem eightOdd_quadratic_intervalShiftSum_normSq_le_gcdKernel [DecidableEq I]
     (κ : EightQuadraticKind) (P : OddPrimeFamily I) (M : ℕ) (b : ℕ → ℂ) :
     ∑ x : ZMod (eightOddModulus P),
       Complex.normSq (eightOddQuadraticIntervalShiftSum κ P M b x) ≤
-      8 * gcdKernelMoment (eightOddModulus P - 1) M b := by
+      gcdKernelMoment (eightOddModulus P - 1) M b := by
   have henergy := eightOdd_quadratic_intervalShiftSum_energy κ P M b
   have hnonneg : 0 ≤ ∑ x : ZMod (eightOddModulus P),
       Complex.normSq (eightOddQuadraticIntervalShiftSum κ P M b x) :=
@@ -154,18 +154,17 @@ theorem eightOdd_quadratic_intervalShiftSum_normSq_le_gcdKernel [DecidableEq I]
       apply Finset.sum_congr rfl
       intro l hl
       simp only [norm_mul, norm_star]
-    _ ≤ 8 * gcdKernelMoment (eightOddModulus P - 1) M b := by
-      rw [gcdKernelMoment, Finset.mul_sum]
+    _ ≤ gcdKernelMoment (eightOddModulus P - 1) M b := by
+      rw [gcdKernelMoment]
       apply Finset.sum_le_sum
       intro k hk
-      rw [Finset.mul_sum]
       apply Finset.sum_le_sum
       intro l hl
       rw [hmod]
       have hcorr : ‖∑ x : ZMod (eightOddModulus P),
           eightOddQuadraticCharacterOfKind κ P (x + ((k : ℤ) : ZMod (eightOddModulus P))) *
             eightOddQuadraticCharacterOfKind κ P (x + ((l : ℤ) : ZMod (eightOddModulus P)))‖ ≤
-          8 * (eightOddModulus P).gcd (Nat.dist k l) := by
+          (eightOddModulus P).gcd (Nat.dist k l) := by
         simpa only [natAbs_intCast_sub_eq_natDist] using
           eightOdd_quadraticCharacterOfKind_shiftCorrelation_norm_le_gcd κ P (k : ℤ) (l : ℤ)
       nlinarith [mul_le_mul_of_nonneg_left hcorr
@@ -177,8 +176,8 @@ theorem eightOdd_quadratic_intervalShiftSum_normSq_le_divisorRpow [DecidableEq I
     {ε : ℝ} (hε : 0 < ε) :
     ∑ x : ZMod (eightOddModulus P),
       Complex.normSq (eightOddQuadraticIntervalShiftSum κ P M b x) ≤
-      8 * (((M : ℝ) * (Sieve.divisorBoundConst ε * (eightOddModulus P : ℝ) ^ ε) +
-        (eightOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
+      ((M : ℝ) * (Sieve.divisorBoundConst ε * (eightOddModulus P : ℝ) ^ ε) +
+        (eightOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
   have hmodpos : 0 < eightOddModulus P :=
     Nat.pos_of_ne_zero (eightOddModulus_neZero P).out
   have hmod : eightOddModulus P - 1 + 1 = eightOddModulus P :=
@@ -191,23 +190,21 @@ theorem eightOdd_quadratic_intervalShiftSum_normSq_le_divisorRpow [DecidableEq I
   have henergy_nonneg : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
     Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
   calc
-    _ ≤ 8 * gcdKernelMoment (eightOddModulus P - 1) M b :=
+    _ ≤ gcdKernelMoment (eightOddModulus P - 1) M b :=
       eightOdd_quadratic_intervalShiftSum_normSq_le_gcdKernel κ P M b
-    _ ≤ 8 * ((∑ e ∈ (eightOddModulus P - 1 + 1).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
-      exact mul_le_mul_of_nonneg_left (gcdKernelMoment_le (eightOddModulus P - 1) M b)
-        (by norm_num)
-    _ ≤ 8 * (((M : ℝ) * ((eightOddModulus P - 1 + 1).divisors.card : ℝ) +
+    _ ≤ (∑ e ∈ (eightOddModulus P - 1 + 1).divisors, (Nat.totient e : ℝ) *
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+      exact gcdKernelMoment_le (eightOddModulus P - 1) M b
+    _ ≤ ((M : ℝ) * ((eightOddModulus P - 1 + 1).divisors.card : ℝ) +
         ((eightOddModulus P - 1 : ℕ) : ℝ) + 1) *
-          ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
-      apply mul_le_mul_of_nonneg_left
-      · apply mul_le_mul_of_nonneg_right
-        · simpa only [add_assoc] using
-            divisor_totient_coefficient_le (eightOddModulus P - 1) M
-        · exact henergy_nonneg
-      · norm_num
-    _ = 8 * (((M : ℝ) * ((eightOddModulus P).divisors.card : ℝ) +
-        (eightOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
+          ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+      exact mul_le_mul_of_nonneg_right
+        (by
+          simpa only [add_assoc] using
+            divisor_totient_coefficient_le (eightOddModulus P - 1) M)
+        henergy_nonneg
+    _ = ((M : ℝ) * ((eightOddModulus P).divisors.card : ℝ) +
+        (eightOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
       have hcoeff :
           (M : ℝ) * ((eightOddModulus P).divisors.card : ℝ) +
               ((eightOddModulus P - 1 : ℕ) : ℝ) + 1 =
@@ -215,15 +212,13 @@ theorem eightOdd_quadratic_intervalShiftSum_normSq_le_divisorRpow [DecidableEq I
               (eightOddModulus P : ℝ) := by
         linarith [hmodR]
       rw [hmod, hcoeff]
-    _ ≤ 8 * (((M : ℝ) * (Sieve.divisorBoundConst ε * (eightOddModulus P : ℝ) ^ ε) +
-        (eightOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
-      apply mul_le_mul_of_nonneg_left
-      · apply mul_le_mul_of_nonneg_right
-        · simpa [add_comm] using
-            add_le_add_right (mul_le_mul_of_nonneg_left hdiv (Nat.cast_nonneg M))
-              (eightOddModulus P : ℝ)
-        · exact henergy_nonneg
-      · norm_num
+    _ ≤ ((M : ℝ) * (Sieve.divisorBoundConst ε * (eightOddModulus P : ℝ) ^ ε) +
+        (eightOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+      apply mul_le_mul_of_nonneg_right
+      · simpa [add_comm] using
+          add_le_add_right (mul_le_mul_of_nonneg_left hdiv (Nat.cast_nonneg M))
+            (eightOddModulus P : ℝ)
+      · exact henergy_nonneg
 
 end OddPrimeFamily
 end RHTower

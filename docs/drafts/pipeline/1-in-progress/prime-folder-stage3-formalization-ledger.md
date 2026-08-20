@@ -687,3 +687,86 @@ first prime card:
   card's two zero-charge obstructions.
 
 So §5–§7 became a thin wrapper instead of a 700-line project.  Search first.
+
+## 2026-08-20 — card 9 promoted: `prime-boundary-perturbative-jet-monodromy-escape`
+
+Stage 3.  Eight new modules (`PrimeHigherMertens`, `PrimeHigherMertensRate`, `PrimeEndpointJet`,
+`PrimeEndpointJetExpansion`, `PrimeEndpointJetTaylor`, `PrimeBoundaryWickExpansion`,
+`PrimeBoundaryMonodromyEscape`, plus `PrimeBoundaryPoissonJumpField` from the previous card), all
+axiom-clean and wired.  Remaining stage-2 prime cards: 13.
+
+### Working-mode corrections adopted mid-card
+
+* **No full builds.**  `lake build <module>` in this project rebuilds the whole library and blocks
+  `lake env lean` on the build lock for hours while other agents commit.  Replaced by:
+  * scratch checking with `LEAN_PATH=<project + package olean dirs> lean <file>`;
+  * `/tmp/scr/build_needed.py <file>`, which walks the transitive project imports of a scratch file
+    and compiles *only* the missing oleans with `lean -o`;
+  * `lean -o .lake/build/lib/lean/<Module path>.olean <source>` to publish one finished module.
+  Umbrella wiring is still done (append the import) but never built as a whole.
+* **Search the corpus before writing.**  Two near-duplications were caught this way; one was
+  written before the check and deleted (`CentralBinomialGeneratingFunction`, superseded by
+  `HTGeometry/CentralBinomialSeries.hasSum_centralBinom`).
+
+### Bernstein card: what the corpus already owns
+
+Checked with `scripts/formal_tools.py research` before writing anything:
+
+* `HTGeometry/CentralBinomialSeries.lean` — `hasSum_centralBinom`, the analytic
+  `∑ C(2n,n) x^n = (1-4x)^{-1/2}`;
+* `HTGeometry/CentralBinomialDiagonalKernel.lean` —
+  `hasSum_centralBinomialDiagonalKernelCoefficient`, i.e. the card's `(15)`
+  `K(t;u,ū) = ((1-B²t)(1-B₋(u)²t))^{-1/2}`, and its positive-branch form;
+* `HTGeometry/CentralBinomialConvolutionAsymptotic.lean` —
+  `tendsto_sqrtNat_mul_centralBinomialDiagonalKernelCoefficient_div_pow`, the card's `(7)`;
+* `HTGeometry/BernsteinRowDiagonalKernel.lean` and
+  `RHTower/BernsteinAffineRowDiagonalAsymptotic.lean` — the row-square identity for one complex
+  affine Bernstein row;
+* `RHTower/BernsteinLegendreDoubleSourceKernel.lean` — the Legendre row identity and the bivariate
+  moment functional;
+* `RHTower/BernsteinEllipseRigidity.lean` — the distinct maximizing phases behind `(16)`.
+
+So `prime-arch-bernstein-half-order-pringsheim-singularity` needs only the finite-packet assembly:
+the maximal-coordinate grouping `(11)`, the `O(β^n)` non-maximal tail `(12)`, the pair expansion
+`(14)`, the strict gap `(16)` for mixed-maximal pairs, and the resulting decomposition `(4)`--`(6)`
+with the half-order radial law `(9)`.
+
+### Bernstein card: precise remaining work (2026-08-20)
+
+Already in the corpus (verified with the research tool):
+
+* `(7)` the sharp coefficient asymptotic — `exists_positive_halfOrder_primeArchEndpointBernsteinPurity_of_not_rh`;
+* `(9)` the half-order radial law — `exists_positive_halfOrder_primeArchEndpointBernsteinAbelBoundary_of_not_rh`;
+* `(4)` in real-variable form — `exists_exact_maximalDiagonalSquareRootDecomposition_of_not_rh`
+  (exact finite diagonal square-root kernel plus a remainder that vanishes after multiplication by
+  the boundary square root);
+* `(15)` the diagonal kernel — `hasSum_centralBinomialDiagonalKernelCoefficient`;
+* ellipse rigidity — `eq_or_eq_one_sub_conj_of_bernsteinEllipsePhase_eq_of_amplitude_eq`.
+
+Missing for a faithful `(4)`: the *holomorphy* of the remainder past `R_A`.  Route:
+
+1. `(21)`: for distinct maximal coordinates `u ≠ v`, `max_{|w|=1} |(1-u+uw)(1-v̄+v̄w⁻¹)| < B²`.
+   Ellipse rigidity gives distinct alignment phases (the reflected complement `1 - conj u` is
+   excluded by the quarter-disk bound); compactness of the circle turns that into a strict maximum.
+2. The remainder coefficients are `O(γ^n)` with `γ = max(β², Bβ, mixed-maximal gap) < B²`, using the
+   corpus complement-packet bounds and `(21)`.
+3. Hence the remainder Abel susceptibility is a power series of radius `≥ 1/γ > R_A`, so it is
+   holomorphic on a neighbourhood of `R_A`; `A(t) = ∑_u |C_u|²/√(1-B₋(u)²t)` is holomorphic there
+   because `|B₋(u)| < B`.  That is `(4)`--`(6)`.
+
+## 2026-08-20 — card 10 promoted: `prime-arch-bernstein-half-order-pringsheim-singularity`
+
+Stage 3.  One new module, `RHTower/PrimeArchBernsteinBranchDecomposition.lean`:
+
+* `abs_finiteBernsteinCoordinatePacketEnergy_sub_diagonal_le` — the polarized packet energy minus
+  its diagonal is bounded by `(∑‖C‖)² γ^n` whenever every mixed cross moment is `≤ γ^n`;
+* `exists_uniform_mixedCrossMoment_gap` — one rate `γ < B²` works for the whole finite maximal
+  packet (finite `sup'` over the mixed pairs of the corpus per-pair gaps);
+* `exists_remainder_exponential_bound` — the diagonal remainder is `≤ K γ^n` with
+  `γ = max(mixed gap, Bβ, β²) < B²`, combining the above with the corpus `l1` packet bounds and
+  the energy perturbation inequality;
+* `summable_remainder_of_lt_inv_gamma` and `exists_branchDecomposition_of_not_rh` — the remainder
+  Abel series converges on `|t| < 1/γ ⊋ [0, R_A]`, so the branch decomposition `(4)`--`(6)` holds
+  with a remainder holomorphic across the critical radius.
+
+Remaining stage-2 prime cards: 12.

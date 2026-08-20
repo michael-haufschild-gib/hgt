@@ -1,7 +1,7 @@
 # Prime--archimedean Bernstein half-order Pringsheim singularity
 
 - **ID:** `prime-arch-bernstein-half-order-pringsheim-singularity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** exact local branch decomposition / top-down RH bridge / value-relation consequence
 - **Status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Lean status:** paper theorem; its divisor-pencil, maximal-packet, phase-rigidity, exact-radius,
@@ -343,3 +343,47 @@ the Laplace and Abelian tools are no longer needed for the meromorphic-collar ob
 - [ ] optionally formalize the coefficient asymptotic
 - [ ] construct the independent source-side meromorphic collar
 - [ ] RH
+
+## 2026-08-20 — Stage-3 formalization
+
+The Lean gate — the exact finite-packet branch decomposition — is closed by
+
+`formal/GaloisForLFunctions/RHTower/PrimeArchBernsteinBranchDecomposition.lean`,
+
+which supplies the analytic half the corpus was missing: the remainder left after the finite
+maximal diagonal packet decays at a geometric rate strictly below `B²`, so its Abel series
+converges on a disc strictly larger than `R_A = B^{-2}` and is holomorphic across it.  The only
+non-single-valued part of the germ at `R_A` is therefore the explicit square-root kernel.
+
+| card item | Lean declaration |
+|-|-|
+| `(1)` finite packet and its purity | `primeArchEndpointBernsteinPurity`, `primeArchEndpointBernsteinPurity_eq_atomicBernsteinPacketSquareEnergy` |
+| `(2)` the maximum `B` is attained | `exists_uniformlySeparated_maximal_xiEndpointAmplitudePacket_of_not_rh` |
+| `(3)`, `(11)` fibre weights `C_u` | `xiEndpointCoordinateSet`, `xiEndpointCoordinateWeight` |
+| `(4)` exact branch decomposition | `exists_branchDecomposition_of_not_rh` (new), with `exists_exact_maximalDiagonalSquareRootDecomposition_of_not_rh` |
+| `(5)` the amplitude `A(t)` | `finiteBernsteinCoordinateDiagonalSquareRootKernel` |
+| `(6)`, `(9)` positive half-order boundary | `exists_positive_halfOrder_primeArchEndpointBernsteinAbelBoundary_of_not_rh` |
+| `(7)` coefficient asymptotic | `exists_positive_halfOrder_primeArchEndpointBernsteinPurity_of_not_rh` |
+| `(10)`, `(12)` cofinal decay and the `β^n` tail | `summable_xiZeroCopyReciprocalSquare`, `finitePacketL1_atomicBernsteinComplementPacket_le` |
+| `(13)`--`(15)` the diagonal double-source kernel | `hasSum_centralBinomialDiagonalKernelCoefficient`, `hasSum_centralBinomialDiagonalKernelCoefficient_eq_kernel` |
+| `(16)`, `(21)` mixed-maximal gap | `exists_uniform_mixedCrossMoment_gap` (new), `exists_uniform_mixedXiBernsteinCrossMoment_gap_of_distinct_maximal_coordinates`, `eq_or_eq_one_sub_conj_of_bernsteinEllipsePhase_eq_of_amplitude_eq` |
+| `(18)`--`(20)` one-row Laplace asymptotic | `tendsto_sqrtNat_mul_bernsteinAffineRowEnergy_div_pow` |
+| `(22)` Abelian transfer | `tendsto_sqrt_scaled_boundary_mul_tsum_of_halfOrder` |
+| remainder holomorphy across `R_A` | `exists_remainder_exponential_bound`, `summable_remainder_of_lt_inv_gamma` |
+| polarized packet identity | `abs_finiteBernsteinCoordinatePacketEnergy_sub_diagonal_le` (new), `finiteBernsteinCoordinatePacketEnergy_eq_sum_re_crossMoment` |
+
+All new declarations have axiom set `[propext, Classical.choice, Quot.sound]`.
+
+The nonmeromorphicity conclusion is the Lean-proved finite nonzero limit of
+`√(1-B²t)·χ(t)` together with the branch decomposition: a removable germ would force the limit to
+be zero and a pole of integer order would force it to be infinite.
+
+**Stage: 3-formalized.**
+
+## Gates (stage 3)
+
+- [x] formalize the exact finite-packet branch decomposition in Lean
+- [x] formalize the coefficient asymptotic (already carried by the corpus half-order modules)
+- [x] uniform mixed-maximal cross-moment gap formalized
+- [x] remainder proved holomorphic across the critical radius
+- [x] axiom audit clean

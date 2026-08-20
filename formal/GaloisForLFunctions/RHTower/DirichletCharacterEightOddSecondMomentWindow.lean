@@ -54,8 +54,8 @@ theorem eightOdd_quadratic_windowShiftSum_normSq_le_divisorRpow [DecidableEq I]
     {ε : ℝ} (hε : 0 < ε) :
     ∑ x : ZMod (eightOddModulus P),
       Complex.normSq (eightOddQuadraticWindowShiftSum κ P A M b x) ≤
-      8 * (((M : ℝ) * (Sieve.divisorBoundConst ε * (eightOddModulus P : ℝ) ^ ε) +
-        (eightOddModulus P : ℝ)) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2) := by
+      ((M : ℝ) * (Sieve.divisorBoundConst ε * (eightOddModulus P : ℝ) ^ ε) +
+        (eightOddModulus P : ℝ)) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
   rw [eightOdd_quadratic_windowShiftSum_normSq_eq_interval]
   exact eightOdd_quadratic_intervalShiftSum_normSq_le_divisorRpow κ P M b hε
 

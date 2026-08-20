@@ -47,8 +47,8 @@ theorem fourOdd_quadratic_windowShiftSum_normSq_eq_interval [DecidableEq I]
 theorem fourOdd_quadratic_windowShiftSum_normSq_le_divisorRpow [DecidableEq I]
     (P : OddPrimeFamily I) (A M : ℕ) (b : ℕ → ℂ) {ε : ℝ} (hε : 0 < ε) :
     ∑ x : ZMod (fourOddModulus P), Complex.normSq (fourOddQuadraticWindowShiftSum P A M b x) ≤
-      4 * (((M : ℝ) * (Sieve.divisorBoundConst ε * (fourOddModulus P : ℝ) ^ ε) +
-        (fourOddModulus P : ℝ)) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2) := by
+      ((M : ℝ) * (Sieve.divisorBoundConst ε * (fourOddModulus P : ℝ) ^ ε) +
+        (fourOddModulus P : ℝ)) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
   rw [fourOdd_quadratic_windowShiftSum_normSq_eq_interval]
   exact fourOdd_quadratic_intervalShiftSum_normSq_le_divisorRpow P M b hε
 

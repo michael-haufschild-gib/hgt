@@ -679,3 +679,39 @@ The Dirichlet expansion `smoothAFEZetaMellinAt_eq_tsum_smoothAFECutoff` is *alre
 `|Re s − ½| ≤ ½` in the contour-shift chain, checking that the Gaussian horizontal decay estimates
 are uniform in that strip.  Since Levinson's abscissa satisfies `|σ₀ − ½| = R/log T → 0`, uniformity
 on any fixed strip around the critical line suffices.
+
+## Brick 5b CLOSED — the smooth AFE at a general point (2026-08-20)
+
+The Gaussian smooth approximate functional equation now holds at **every** `s` in the open strip
+`0 < Re s < 2` with `s ≠ 1`, not just on the critical line.  Five new modules, each scratch-checked
+clean:
+
+* `RHTower/ZetaVerticalLineGrowth.lean` — **`exists_bound_norm_riemannZeta_vertical`**: for any
+  abscissa `σ ≠ 1`, `‖ζ(σ+it)‖ ≤ C(1+|t|)^N` for *every* `t`.  (The corpus's strip bound covers only
+  `|t| ≥ 1`; below it the segment is compact and `ζ` continuous.)
+* `RHTower/GaussianShiftedMoment.lean` — **`integrable_shifted_pow_mul_exp_neg_sq`**:
+  `(a+|v|)^N e^{-v²}` is integrable, by binomial expansion into the corpus's monomial moments.
+* `RHTower/SmoothAFEZetaGeneralHorizontal.lean` — the horizontal Gaussian edges vanish at a general
+  base point (`tendsto_smoothAFEZetaMellinIntegrand_horizontal_general`), with the explicit
+  majorant `C·max(x,x⁻¹)·e · (|Im s|+|v|)^N e^{-v²}` and the limit lemma
+  `tendsto_shifted_pow_mul_exp_neg_sq`.
+* `RHTower/SmoothAFEZetaGeneralVertical.lean` — **both** vertical edges are integrable at a general
+  base point (`smoothAFEZetaMellinIntegrand_verticalIntegrable_general`), the only hypotheses being
+  `c ≠ 0` (avoid the kernel's pole) and `Re s + c ≠ 1` (avoid zeta's).  This removes the corpus's
+  `1 < Re s + c` restriction and its critical-line-only left-edge argument.
+* `RHTower/SmoothAFEZetaGeneral.lean` — the assembly:
+  `smoothAFEZetaMellin_finite_contour_shift_general`,
+  `smoothAFEZetaMellin_infinite_contour_shift_general`, and the two exact forms
+  **`riemannZeta_eq_smoothAFEZetaMellin_sub_dual_sub_residue_general`** and
+  **`riemannZeta_eq_tsum_smoothAFECutoff_sub_dual_sub_residue_general`**:
+
+  ```text
+  ζ(s) = ∑_{n≥1} n^{-s} W(n/x) − (reflected Mellin integral) − x^{1-s}e^{(1-s)²}/(1-s).
+  ```
+
+The rectangle identity `rectIntegral_smoothAFEZetaMellinIntegrand_horizontal_box` and the Dirichlet
+expansion `smoothAFEZetaMellinAt_eq_tsum_smoothAFECutoff` were already general in `s`; what was
+missing — and is now supplied — is the edge analysis.
+
+Axiom audit (2026-08-20): all nine brick-5b capstones plus `twisted_diagonal_reindex` depend only
+on `propext, Classical.choice, Quot.sound`.
