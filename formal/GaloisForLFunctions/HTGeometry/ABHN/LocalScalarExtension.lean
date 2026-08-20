@@ -133,6 +133,16 @@ theorem numberFieldLocalBrauerMap_brauerClass (K : Type u) [Field K] [NumberFiel
   funext v
   rfl
 
+/-- The number-field global-to-local map sends the split global class to the everywhere-split
+local family. -/
+theorem numberFieldLocalBrauerMap_split (K : Type u) [Field K] [NumberField K] :
+    numberFieldLocalBrauerMap K (brauerSplitClass K) =
+      (restrictedSplitClass K).toLocalBrauerClasses := by
+  funext v
+  change scalarExtensionBrauerMap K (completion K v) (brauerSplitClass K) =
+    brauerSplitClass (completion K v)
+  exact scalarExtensionBrauerMap_split K (completion K v)
+
 /-- The rational-function-field global-to-local map on Brauer quotients.  Its upgrade to finite
 support is likewise precisely the finite ramification part of ABHN. -/
 noncomputable def rationalFunctionLocalBrauerMap (F : Type u) [Field F] [Finite F] :
@@ -147,6 +157,16 @@ theorem rationalFunctionLocalBrauerMap_brauerClass (F : Type u) [Field F] [Finit
       rationalFunctionLocalBrauerClassesOfCSA F A := by
   funext v
   rfl
+
+/-- The rational-function-field global-to-local map sends the split global class to the
+everywhere-split local family. -/
+theorem rationalFunctionLocalBrauerMap_split (F : Type u) [Field F] [Finite F] :
+    rationalFunctionLocalBrauerMap F (brauerSplitClass (RatFunc F)) =
+      (rationalFunctionRestrictedSplitClass F).toLocalBrauerClasses := by
+  funext v
+  change scalarExtensionBrauerMap (RatFunc F) (rationalFunctionCompletion F v)
+      (brauerSplitClass (RatFunc F)) = brauerSplitClass (rationalFunctionCompletion F v)
+  exact scalarExtensionBrauerMap_split (RatFunc F) (rationalFunctionCompletion F v)
 
 /-- At every number-field place, the local scalar extension of a split matrix representative is
 definitionally the standard scalar extension of that split matrix algebra. -/

@@ -65,6 +65,12 @@ theorem integral_Icc_normSq_logPoly_moebius_le_partition (M : ℕ) {W w₀ : ℝ
   rw [setIntegral_split_three hcont hwW hTm hTs]
   exact add_le_add (add_le_add hdisc hsmall) hlarge
 
+/-- The large half of the annulus sits inside the cut window, which is where every
+zero-free-region estimate is stated. -/
+theorem annulusLarge_subset_annulus (T : Set ℝ) (W w₀ : ℝ) :
+    annulusLarge T W w₀ ⊆ Set.Icc (-W) W \ Set.Icc (-w₀) w₀ :=
+  fun _ hu => ⟨hu.1.1, hu.2⟩
+
 end
 
 end RHTower.Sieve

@@ -88,6 +88,19 @@ theorem algClosedLocalInvariant_range (F : Type u) [Field F] [IsAlgClosed F] :
     subst x
     exact ⟨brauerSplitClass F, rfl⟩
 
+/-- At an algebraically closed local field, the local invariant is an isomorphism onto the
+singleton subgroup `{0} ⊂ ℚ/ℤ`. -/
+noncomputable def algClosedLocalInvariantEquivZero (F : Type u) [Field F] [IsAlgClosed F] :
+    BrauerGroup.{u, u} F ≃ {q : RatModInt | q = 0} :=
+  Equiv.ofBijective (fun x ↦ ⟨algClosedLocalInvariant F x,
+    algClosedLocalInvariant_eq_zero F x⟩) ⟨
+    (fun x y h ↦ algClosedLocalInvariant_injective F (Subtype.ext_iff.mp h)),
+    (by
+      rintro ⟨q, hq⟩
+      subst q
+      refine ⟨brauerSplitClass F, ?_⟩
+      exact Subtype.ext (algClosedLocalInvariant_eq_zero F (brauerSplitClass F)))⟩
+
 /-- At a complex infinite place of a number field, the completed local Brauer quotient is
 trivial. -/
 theorem complexInfiniteCompletion_brauer_subsingleton (K : Type u) [Field K] [NumberField K]
@@ -114,6 +127,23 @@ theorem complexInfiniteCompletion_localInvariant_injective (K : Type u) [Field K
     complexInfiniteCompletion_brauer_subsingleton K v hv
   intro x y _
   exact Subsingleton.elim _ _
+
+/-- At a complex infinite place, the local invariant is an isomorphism onto `{0} ⊂ ℚ/ℤ`. -/
+noncomputable def complexInfiniteCompletionLocalInvariantEquivZero
+    (K : Type u) [Field K] [NumberField K]
+    (v : NumberField.InfinitePlace K) (hv : v.IsComplex) :
+    BrauerGroup.{u, u} v.Completion ≃ {q : RatModInt | q = 0} := by
+  letI : IsAlgClosed v.Completion := isAlgClosed_of_ringEquiv
+    (NumberField.InfinitePlace.Completion.ringEquivComplexOfIsComplex hv).symm
+  exact algClosedLocalInvariantEquivZero v.Completion
+
+/-- This complex-place invariant equivalence is induced by the defined local-invariant map. -/
+theorem complexInfiniteCompletionLocalInvariantEquivZero_apply
+    (K : Type u) [Field K] [NumberField K]
+    (v : NumberField.InfinitePlace K) (hv : v.IsComplex)
+    (x : BrauerGroup.{u, u} v.Completion) :
+    (complexInfiniteCompletionLocalInvariantEquivZero K v hv x).1 =
+      complexInfiniteCompletionLocalInvariant K v hv x := rfl
 
 /-- Scalar extension of a global central simple algebra is split at every complex infinite place.
 Thus these places make no contribution to the ABHN local class family. -/
@@ -152,5 +182,14 @@ theorem complexInfiniteLocalBrauerMap_invariant_eq_zero (K : Type u) [Field K] [
     complexInfiniteCompletionLocalInvariant K v hv (numberFieldLocalBrauerMap K x (.infinite v)) =
       0 := by
   exact complexInfiniteCompletion_localInvariant_eq_zero K v hv _
+
+/-- The nonsplit support of a global Brauer class contains no complex infinite place.  Thus the
+only possible archimedean contribution to ABHN finite ramification is at real places. -/
+theorem numberFieldLocalBrauerMap_nonSplitSupport_subset_notComplexInfinite
+    (K : Type u) [Field K] [NumberField K] (x : BrauerGroup.{u, u} K) :
+    {w | numberFieldLocalBrauerMap K x w ≠ brauerSplitClass (completion K w)} ⊆
+      {w | ∀ v : NumberField.InfinitePlace K, v.IsComplex → w ≠ .infinite v} := by
+  rintro w hw v hv rfl
+  exact hw (complexInfiniteLocalBrauerMap_eq_split K v hv x)
 
 end GaloisForLFunctions.HTGeometry.ABHN

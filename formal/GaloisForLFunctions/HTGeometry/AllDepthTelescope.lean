@@ -291,10 +291,7 @@ theorem finsum_lineTail_eq_zero {w v : A}
       · rw [if_pos hc, h0]
       · rw [if_neg hc]
     exact hsupp _ hne
-  have hleft : ∀ n : ℤ, lineTail w D (p + n • v) = ∑ᶠ m : ℤ, g (n, m) := by
-    intro n
-    rw [lineTail]
-    exact finsum_congr fun m => rfl
+  have hleft : ∀ n : ℤ, lineTail w D (p + n • v) = ∑ᶠ m : ℤ, g (n, m) := fun n => rfl
   rw [finsum_congr hleft, ← finsum_curry g hgfin]
   have hswap : ∑ᶠ nm : ℤ × ℤ, g nm = ∑ᶠ mn : ℤ × ℤ, g (Equiv.prodComm ℤ ℤ mn) :=
     (finsum_comp_equiv (Equiv.prodComm ℤ ℤ) (f := g)).symm
@@ -320,6 +317,141 @@ theorem finsum_lineTail_eq_zero {w v : A}
         simp only [hg, Equiv.prodComm_apply, Prod.swap_prod_mk, if_neg hm]
       rw [finsum_congr hval, finsum_zero]
   rw [finsum_congr hrow, finsum_zero]
+
+/-! ## The full multi-directional telescoping -/
+
+set_option maxHeartbeats 1000000 in
+/-- **Multi-directional telescoping.**  A finitely supported divisor whose line sums vanish in
+every direction of a finite family of pairwise free, infinite-order directions is the full
+difference cube of a finitely supported divisor. -/
+theorem exists_telescopeCube {ι : Type*} [DecidableEq ι] [DecidableEq A] (w : ι → A) :
+    ∀ (s : Finset ι),
+      (∀ i ∈ s, ∀ n : ℤ, n • w i = 0 → n = 0) →
+      (∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ n m : ℤ, n • w i + m • w j = 0 → n = 0 ∧ m = 0) →
+      ∀ (D : A → ℂ) (S : Finset A), (∀ p, D p ≠ 0 → p ∈ S) →
+      (∀ i ∈ s, ∀ p, ∑ᶠ m : ℤ, D (p + m • w i) = 0) →
+      ∃ (C : A → ℂ) (S' : Finset A), (∀ p, C p ≠ 0 → p ∈ S') ∧
+        ∀ p, telescopeCube w s C p = D p := by
+  classical
+  intro s
+  induction s using Finset.induction_on with
+  | empty =>
+      intro _ _ D S hsupp _
+      exact ⟨D, S, hsupp, fun p => by simp⟩
+  | @insert q s' hq ih =>
+      intro hw hfree D S hsupp hsum
+      have hwq : ∀ n : ℤ, n • w q = 0 → n = 0 := hw q (Finset.mem_insert_self q s')
+      have hsumq : ∀ p, ∑ᶠ m : ℤ, D (p + m • w q) = 0 :=
+        hsum q (Finset.mem_insert_self q s')
+      obtain ⟨S'', hS''⟩ := exists_finset_support_lineTail hwq hsupp hsumq
+      have hEsum : ∀ i ∈ s', ∀ p, ∑ᶠ n : ℤ, lineTail (w q) D (p + n • w i) = 0 := by
+        intro i hi p
+        have hiq : i ≠ q := fun h => hq (h ▸ hi)
+        refine finsum_lineTail_eq_zero (v := w i) (w := w q) ?_ hsupp
+          (hsum i (Finset.mem_insert_of_mem hi)) p
+        intro n m hnm
+        exact hfree i (Finset.mem_insert_of_mem hi) q (Finset.mem_insert_self q s') hiq n m hnm
+      obtain ⟨C, S₃, hS₃, hC⟩ := ih
+        (fun i hi => hw i (Finset.mem_insert_of_mem hi))
+        (fun i hi j hj hij => hfree i (Finset.mem_insert_of_mem hi) j
+          (Finset.mem_insert_of_mem hj) hij)
+        (lineTail (w q) D) S'' hS'' hEsum
+      refine ⟨C, S₃, hS₃, ?_⟩
+      intro p
+      rw [telescopeCube_insert w hq C]
+      show telescopeCube w s' C (p - w q) - telescopeCube w s' C p = D p
+      rw [hC, hC]
+      exact lineTail_sub hwq hsupp p
+
+/-! ## Invariance under an infinite-order translation kills a finite divisor -/
+
+/-- **A finitely supported divisor invariant under an infinite-order translation vanishes.** -/
+theorem eq_zero_of_invariant_of_finite_support {R : A → ℂ} {S : Finset A}
+    (hsupp : ∀ p, R p ≠ 0 → p ∈ S) {t : A} (ht : ∀ n : ℤ, n • t = 0 → n = 0)
+    (hinv : ∀ p, R (p + t) = R p) (p : A) : R p = 0 := by
+  classical
+  by_contra hne
+  have hstep : ∀ n : ℤ, R (p + n • t) = R p := by
+    intro n
+    induction n using Int.induction_on with
+    | zero => simp
+    | succ k ih =>
+        have harg : p + ((k : ℤ) + 1) • t = (p + (k : ℤ) • t) + t := by
+          rw [add_smul, one_smul]
+          abel
+        rw [harg, hinv, ih]
+    | pred k ih =>
+        have harg : (p + (-(k : ℤ) - 1) • t) + t = p + (-(k : ℤ)) • t := by
+          rw [sub_smul, one_smul]
+          abel
+        have hh := hinv (p + (-(k : ℤ) - 1) • t)
+        rw [harg, ih] at hh
+        exact hh.symm
+  have hinj : Function.Injective (fun n : ℤ => p + n • t) := by
+    intro m n hmn
+    have hz : (m - n) • t = 0 := by
+      have h2 : p + (m • t) = p + (n • t) := hmn
+      have h3 := add_left_cancel h2
+      rw [sub_smul, sub_eq_zero]
+      exact h3
+    have := ht _ hz
+    omega
+  have hmaps : ∀ n : ℤ, (fun n : ℤ => p + n • t) n ∈ S := by
+    intro n
+    refine hsupp _ ?_
+    rw [hstep n]
+    exact hne
+  have hsub : ((fun n : ℤ => p + n • t) '' Set.univ) ⊆ (↑S : Set A) := by
+    rintro x ⟨n, -, rfl⟩
+    exact hmaps n
+  have himg := Set.Finite.subset S.finite_toSet hsub
+  have hfin : (Set.univ : Set ℤ).Finite :=
+    Set.Finite.of_finite_image himg hinj.injOn
+  exact absurd hfin Set.infinite_univ.not_finite
+
+/-- **A divisor with finitely many nonzero classes modulo a subgroup, invariant under a
+translation of infinite order modulo that subgroup, vanishes.** -/
+theorem eq_zero_of_invariant_of_finite_classes {R : A → ℂ} {S : Finset A}
+    {H : AddSubgroup A}
+    (hsupp : ∀ p, R p ≠ 0 → ∃ s ∈ S, p - s ∈ H)
+    {t : A} (ht : ∀ n : ℤ, n • t ∈ H → n = 0)
+    (hinv : ∀ p, R (p + t) = R p) (p : A) : R p = 0 := by
+  classical
+  by_contra hne
+  have hstep : ∀ n : ℤ, R (p + n • t) = R p := by
+    intro n
+    induction n using Int.induction_on with
+    | zero => simp
+    | succ k ih =>
+        have harg : p + ((k : ℤ) + 1) • t = (p + (k : ℤ) • t) + t := by
+          rw [add_smul, one_smul]
+          abel
+        rw [harg, hinv, ih]
+    | pred k ih =>
+        have harg : (p + (-(k : ℤ) - 1) • t) + t = p + (-(k : ℤ)) • t := by
+          rw [sub_smul, one_smul]
+          abel
+        have hh := hinv (p + (-(k : ℤ) - 1) • t)
+        rw [harg, ih] at hh
+        exact hh.symm
+  have hchoice : ∀ n : ℤ, ∃ s ∈ S, p + n • t - s ∈ H := by
+    intro n
+    refine hsupp _ ?_
+    rw [hstep n]
+    exact hne
+  choose f hfS hfH using hchoice
+  have hmaps : Set.MapsTo f (Set.univ : Set ℤ) (↑S : Set A) := fun n _ => hfS n
+  obtain ⟨m, -, n, -, hmn, hfeq⟩ :=
+    Set.Infinite.exists_ne_map_eq_of_mapsTo Set.infinite_univ hmaps S.finite_toSet
+  have hdiff : (m - n) • t ∈ H := by
+    have h1 := hfH m
+    have h2 := hfH n
+    have h3 : (p + m • t - f m) - (p + n • t - f n) ∈ H := H.sub_mem h1 h2
+    have harg : (p + m • t - f m) - (p + n • t - f n) = (m - n) • t := by
+      rw [hfeq, sub_smul]
+      abel
+    rwa [harg] at h3
+  exact hmn (by have := ht _ hdiff; omega)
 
 end
 

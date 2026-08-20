@@ -7180,3 +7180,86 @@ needed rather than a case split).
 | `Bmax`, `PP`, `#C_j ≤ N_j+1` | `LadderAggregates` |
 | `hP`, `hPprime`, ladder ⊆ window | `TwoRangeScheduleFacts` |
 | **remaining** | `1 ≤ W`, `1 ≤ L`, `hNj`, the Route-T instantiation `hbound'`, then the seven limits |
+
+### Brick 126 — the window and the step count at the schedule (2026-08-20)
+
+`Sieve/TwoRangeScheduleFacts` (extended), axiom-clean, wired, built.
+
+| theorem | content |
+|-|-|
+| `one_le_twoRangeCut` | `1 ≤ ⌊√x+h⌋/h` — the Gallagher cutoff exceeds one (a light restatement of `Sieve/BudgetSubstitution.one_le_gallagherCut`, whose module reaches the whole `Ω`-budget stack) |
+| `one_le_twoRangeTop` | `1 ≤ W = cut·log log x` |
+| **`one_le_lowSteps`** | `1 ≤ L`, i.e. `log(h/R) ≥ log(1+η)` |
+
+The last is the first place the *polylogarithmic* bottom has to be paid for explicitly: with
+`R ≤ 2(log x)^K` one has `log R ≤ log 2 + K·log log x`, and the step exists as soon as
+
+```text
+   (log x)^β − log 2 − K·log log x ≥ 1 ,
+```
+
+which follows from `Sieve/TwoRangeLimits.tendsto_logRpow_mul_logLogPow` at `ε = 1/(2(K+1))`
+together with `(log x)^β ≥ 4`.  So `K` may be any constant — it never competes with `β`, which is
+exactly the property the two-range architecture was built to have.
+
+**Remaining structural hypotheses**: `hNj` (the high cofactors are non-empty, i.e.
+`R'(1+η')^{L'} ≤ M`) and `1 ≤ L'`; then the Route-T instantiation `hbound'`, then the seven limits.
+
+### Bricks 127–128, and a CORRECTION: the disc radius is not a constant (2026-08-20)
+
+**Brick 127 — the high ladder at the schedule.**  `Sieve/TwoRangeScheduleFacts` (extended),
+axiom-clean, wired, built.
+
+| theorem | content |
+|-|-|
+| `highBase_bounds` | `exp((log x)^a) ≤ R' ≤ 2·exp((log x)^a)` |
+| `one_le_highSteps` | `1 ≤ L'`, from `(log x)^b − (log x)^a → ∞` |
+| `highLadder_le` | `R'·(1+η')^{L'} ≤ 2·exp((log x)^b)` |
+| **`one_le_floor_div_highLadder`** | **the hypothesis `hNj`**: every high cofactor length `⌊M/R'_j⌋` is at least one, because `2·exp((log x)^b) ≤ ⌊√x + h⌋` |
+
+**Brick 128 — the bridge to the annulus.**
+`Sieve/MoebiusWindowPartition.annulusLarge_subset_annulus : annulusLarge T W w₀ ⊆ Icc(−W,W) \ Icc(−w₀,w₀)`,
+so `Sieve/AnnulusBoundUniform.exists_annulus_bound_uniform` applies verbatim on the large half with
+`T₀ := W`.
+
+**CORRECTION — `w₀` is a growing quantity, and that is what pins `a < 19/20`.**  Instantiating the
+Route-T majorant showed my earlier reading of `max τ₀ (16π/3) ≤ 2π w₀` as "`w₀` is a constant" is
+wrong: that is only the *lower* bound the lemma demands.  The majorant itself,
+
+```text
+   relScaledMajorant Ctot D Lx Hmaj μ q t₀ xmin
+     = Ctot·D²·( Lx²/t₀ + Hmaj·(e^{−μq} + 1/t₀²) )/(2π) + (log 2 + Lx)/D + 2Lx/√xmin ,
+```
+
+has a term `Ctot·D²·Lx²/(2π t₀)` **with no exponential factor**.  With `Lx ≍ (log x)^b` and the
+target saving `ρ`, the third summand forces `D ≥ Lx/ρ` and then the first forces
+
+```text
+   t₀ = 2π w₀  ≥  D²Lx²/ρ  =  Lx⁴/ρ³ .
+```
+
+So with `ρ = exp(−s(log x)^{a−9/10})` (which is what `e^{−μq}` delivers, `μ ≍ (log T₀)^{−9/10}`,
+`q = (log x)^a`) one needs
+
+```text
+   w₀ ≍ (log x)^{4b}·exp(3s(log x)^{a−9/10}) ,
+```
+
+recorded as `twoRangeDisc a b s`, with `twoRangeRho a s = exp(−s(log x)^{a−9/10})` and
+`tendsto_logRpow_mul_twoRangeRho` (the saving beats every power of `log x`).
+
+**The consequence is a new, binding constraint.**  The disc group is `≍ w₀·exp(−2(log M)^{1/20})`
+relative to `M²`, so it vanishes only when
+
+```text
+   log w₀ ≍ 3s(log x)^{a−9/10}  <  2((1/2)log x)^{1/20} ,   i.e.   a − 9/10 < 1/20 ,
+```
+
+that is **`9/10 < a < 19/20`** — e.g. `a = 0.92`, `b = 0.99`.  The margin is exactly the corpus's
+Route-T rate exponent `1/20` of bricks 88c/89c; MR's own `(log X)^{−1/24}` would leave none.  This
+supersedes the earlier note "`w₀` is a constant" in the brick-113 entry.
+
+**Still open in the substitution**: the schedule instantiation of `relScaledMajorant` (choose
+`D = Lx/ρ`, `t₀ = 2πw₀`, `Lx = log 2 + (log x)^b`, `q = (log x)^a`, `xmin = exp((log x)^a)`,
+`μ = min delta (routeTWidthPolylogLower A (2πT₀))/2`, `Hmaj` at equality) and the seven group
+limits.

@@ -339,4 +339,119 @@ theorem integral_poisson_shift_product {c d : ℝ} (hc : 0 < c) (hd : 0 < d) (t 
   rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hcongr), hshift,
     halfPlanePoisson_convolution hc hd]
 
+/-! ### The conjugate Poisson kernel -/
+
+/-- The conjugate half-plane Poisson kernel at height `p`. -/
+def conjugatePoisson (p x : ℝ) : ℝ := x / (Real.pi * (p ^ 2 + x ^ 2))
+
+theorem conjugatePoisson_neg (p x : ℝ) : conjugatePoisson p (-x) = -conjugatePoisson p x := by
+  rw [conjugatePoisson, conjugatePoisson]
+  have hsq : (-x) ^ 2 = x ^ 2 := by ring
+  rw [hsq, neg_div]
+
+theorem integrable_conjugate_product {c p : ℝ} (hc : 0 < c) (hp : 0 < p) (t : ℝ) :
+    Integrable fun s : ℝ => (s / ((c ^ 2 + (s - t) ^ 2) * (p ^ 2 + s ^ 2))) := by
+  have hcont : Continuous fun s : ℝ => (s / ((c ^ 2 + (s - t) ^ 2) * (p ^ 2 + s ^ 2))) := by
+    refine Continuous.div (by fun_prop) (by fun_prop) fun s => ?_
+    positivity
+  refine ((integrable_inv_shifted_sq_add_sq hc t).const_mul (1 / (2 * p))).mono'
+    hcont.aestronglyMeasurable ?_
+  filter_upwards with s
+  have h1 : (0 : ℝ) < c ^ 2 + (s - t) ^ 2 := by positivity
+  have h2 : (0 : ℝ) < p ^ 2 + s ^ 2 := by positivity
+  have h2p : (0 : ℝ) < 2 * p := by linarith
+  have hbound : |s| / (p ^ 2 + s ^ 2) ≤ 1 / (2 * p) := by
+    rw [div_le_div_iff₀ h2 h2p]
+    nlinarith [sq_nonneg (|s| - p), abs_nonneg s, sq_abs s]
+  have hval : ‖s / ((c ^ 2 + (s - t) ^ 2) * (p ^ 2 + s ^ 2))‖
+      = (|s| / (p ^ 2 + s ^ 2)) * (c ^ 2 + (s - t) ^ 2)⁻¹ := by
+    rw [Real.norm_eq_abs, abs_div, abs_of_pos (mul_pos h1 h2)]
+    field_simp
+  rw [hval]
+  exact mul_le_mul_of_nonneg_right hbound (le_of_lt (inv_pos.mpr h1))
+
+/-- **The conjugate Poisson product integral.** -/
+theorem integral_conjugate_product {c p : ℝ} (hc : 0 < c) (hp : 0 < p) (t : ℝ) :
+    (∫ s : ℝ, (s / ((c ^ 2 + (s - t) ^ 2) * (p ^ 2 + s ^ 2))))
+      = Real.pi * t / (c * ((c + p) ^ 2 + t ^ 2)) := by
+  have hcne : c ≠ 0 := ne_of_gt hc
+  have hpne : p ≠ 0 := ne_of_gt hp
+  rcases eq_or_ne t 0 with rfl | ht
+  · have hodd : ∀ s : ℝ, ((-s) / ((c ^ 2 + ((-s) - 0) ^ 2) * (p ^ 2 + (-s) ^ 2)))
+        = -(s / ((c ^ 2 + (s - 0) ^ 2) * (p ^ 2 + s ^ 2))) := by
+      intro s
+      have h1 : ((-s) - 0) ^ 2 = (s - 0) ^ 2 := by ring
+      have h2 : (-s) ^ 2 = s ^ 2 := by ring
+      rw [h1, h2, neg_div]
+    have hself := MeasureTheory.integral_neg_eq_self
+      (fun s : ℝ => (s / ((c ^ 2 + (s - 0) ^ 2) * (p ^ 2 + s ^ 2)))) (μ := volume)
+    rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hodd),
+      MeasureTheory.integral_neg] at hself
+    have : (∫ s : ℝ, (s / ((c ^ 2 + (s - 0) ^ 2) * (p ^ 2 + s ^ 2)))) = 0 := by linarith
+    rw [this]
+    simp
+  · have hG : poissonPartialDen c p t ≠ 0 := ne_of_gt (poissonPartialDen_pos ht)
+    have hpf : ∀ s : ℝ, (s / ((c ^ 2 + (s - t) ^ 2) * (p ^ 2 + s ^ 2)))
+        = (-(c ^ 2 + t ^ 2 - p ^ 2) / poissonPartialDen c p t) * poissonOdd c p t s
+          + (t * (c ^ 2 + t ^ 2 + p ^ 2) / poissonPartialDen c p t) * ((c ^ 2 + (s - t) ^ 2)⁻¹)
+          + (-2 * t * p ^ 2 / poissonPartialDen c p t) * ((p ^ 2 + s ^ 2)⁻¹) := by
+      intro s
+      have hQ : (0 : ℝ) < c ^ 2 + (s - t) ^ 2 := by positivity
+      have hR : (0 : ℝ) < p ^ 2 + s ^ 2 := by positivity
+      rw [poissonOdd, poissonPartialDen] at *
+      field_simp
+      ring
+    have hint1 : Integrable fun s : ℝ =>
+        (-(c ^ 2 + t ^ 2 - p ^ 2) / poissonPartialDen c p t) * poissonOdd c p t s :=
+      (integrable_poissonOdd hc hp ht).const_mul _
+    have hint2 : Integrable fun s : ℝ =>
+        (t * (c ^ 2 + t ^ 2 + p ^ 2) / poissonPartialDen c p t) * ((c ^ 2 + (s - t) ^ 2)⁻¹) :=
+      (integrable_inv_shifted_sq_add_sq hc t).const_mul _
+    have hint3 : Integrable fun s : ℝ =>
+        (-2 * t * p ^ 2 / poissonPartialDen c p t) * ((p ^ 2 + s ^ 2)⁻¹) :=
+      (integrable_inv_sq_add_sq hp).const_mul _
+    have hint12 : Integrable fun s : ℝ =>
+        (-(c ^ 2 + t ^ 2 - p ^ 2) / poissonPartialDen c p t) * poissonOdd c p t s
+          + (t * (c ^ 2 + t ^ 2 + p ^ 2) / poissonPartialDen c p t)
+            * ((c ^ 2 + (s - t) ^ 2)⁻¹) := hint1.add hint2
+    rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hpf),
+      MeasureTheory.integral_add hint12 hint3, MeasureTheory.integral_add hint1 hint2,
+      MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
+      MeasureTheory.integral_const_mul,
+      integral_poissonOdd hc hp t (integrable_poissonOdd hc hp ht),
+      integral_inv_shifted_sq_add_sq hc t, integral_inv_sq_add_sq hp, poissonPartialDen]
+    have hs1 : ((c + p) ^ 2 + t ^ 2) ≠ 0 := by positivity
+    have ht2 : (0 : ℝ) < t ^ 2 := by positivity
+    have hs2 : ((c - p) ^ 2 + t ^ 2) ≠ 0 := by nlinarith [sq_nonneg (c - p)]
+    field_simp
+    ring
+
+/-- **The conjugate Poisson semigroup.** -/
+theorem conjugatePoisson_convolution {c p : ℝ} (hc : 0 < c) (hp : 0 < p) (t r : ℝ) :
+    (∫ s : ℝ, halfPlanePoisson c (t - s) * conjugatePoisson p (s - r))
+      = conjugatePoisson (c + p) (t - r) := by
+  have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
+  have hcne : c ≠ 0 := ne_of_gt hc
+  have hshift : (∫ s : ℝ, ((s + -r) / ((c ^ 2 + ((s + -r) - (t - r)) ^ 2)
+        * (p ^ 2 + (s + -r) ^ 2))))
+      = ∫ s : ℝ, (s / ((c ^ 2 + (s - (t - r)) ^ 2) * (p ^ 2 + s ^ 2))) :=
+    MeasureTheory.integral_add_right_eq_self
+      (fun s : ℝ => (s / ((c ^ 2 + (s - (t - r)) ^ 2) * (p ^ 2 + s ^ 2)))) (-r)
+  have hcongr : ∀ s : ℝ, halfPlanePoisson c (t - s) * conjugatePoisson p (s - r)
+      = (c / Real.pi ^ 2)
+        * ((s + -r) / ((c ^ 2 + ((s + -r) - (t - r)) ^ 2) * (p ^ 2 + (s + -r) ^ 2))) := by
+    intro s
+    have h1 : ((s + -r) - (t - r)) ^ 2 = (t - s) ^ 2 := by ring
+    have h2 : (s + -r) ^ 2 = (s - r) ^ 2 := by ring
+    have h3 : s + -r = s - r := by ring
+    rw [halfPlanePoisson, conjugatePoisson, h1, h2, h3]
+    have hQ : (0 : ℝ) < c ^ 2 + (t - s) ^ 2 := by positivity
+    have hR : (0 : ℝ) < p ^ 2 + (s - r) ^ 2 := by positivity
+    field_simp
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hcongr),
+    MeasureTheory.integral_const_mul, hshift, integral_conjugate_product hc hp (t - r),
+    conjugatePoisson]
+  have hs1 : ((c + p) ^ 2 + (t - r) ^ 2) ≠ 0 := by positivity
+  field_simp
+
 end GaloisForLFunctions.HTGeometry

@@ -24,7 +24,7 @@ finite algebraic infrastructure from the still-open analytic HLS theorem.
 noncomputable section
 
 open Filter
-open scoped Topology
+open scoped Topology Matrix
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -477,87 +477,6 @@ theorem hlsWeylBarSigma_clifford (μ ν : Fin 4) :
     simp [hlsWeylSigma, hlsWeylBarSigma, hlsComplexMinkowskiMetric, hlsMinkowskiMetric] <;>
       ring
 
-/-- Standard left-handed Weyl generators for the Lorentz Lie algebra. -/
-def hlsWeylLorentzGenerator (μ ν : Fin 4) : Matrix (Fin 2) (Fin 2) ℂ :=
-  (Complex.I / 4) •
-    (hlsWeylSigma μ * hlsWeylBarSigma ν - hlsWeylSigma ν * hlsWeylBarSigma μ)
-
-/-- The standard Weyl Lorentz generators are antisymmetric in their vector indices. -/
-theorem hlsWeylLorentzGenerator_antisymmetric (μ ν : Fin 4) :
-    hlsWeylLorentzGenerator μ ν = -hlsWeylLorentzGenerator ν μ := by
-  simp [hlsWeylLorentzGenerator, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
-
-/-- The standard Weyl generators realize the Lorentz Lie algebra used by
-`HLSPoincareWeylSuperalgebraData`. -/
-theorem hlsWeylLorentzGenerator_bracket (μ ν ρ σ : Fin 4) :
-    hlsMatrixCommutator (hlsWeylLorentzGenerator μ ν)
-      (hlsWeylLorentzGenerator ρ σ) =
-      Complex.I •
-        (hlsComplexMinkowskiMetric μ σ • hlsWeylLorentzGenerator ν ρ +
-          hlsComplexMinkowskiMetric ν ρ • hlsWeylLorentzGenerator μ σ -
-          hlsComplexMinkowskiMetric μ ρ • hlsWeylLorentzGenerator ν σ -
-          hlsComplexMinkowskiMetric ν σ • hlsWeylLorentzGenerator μ ρ) := by
-  fin_cases μ <;> fin_cases ν <;> fin_cases ρ <;> fin_cases σ <;>
-    ext i j <;> fin_cases i <;> fin_cases j <;>
-    simp [hlsWeylLorentzGenerator, hlsMatrixCommutator, hlsWeylSigma,
-      hlsWeylBarSigma, hlsComplexMinkowskiMetric, hlsMinkowskiMetric,
-      Matrix.mul_apply, Fin.sum_univ_two] <;>
-    ring
-
-/-- Standard right-handed Weyl generators for the Lorentz Lie algebra. -/
-def hlsWeylBarLorentzGenerator (μ ν : Fin 4) : Matrix (Fin 2) (Fin 2) ℂ :=
-  (Complex.I / 4) •
-    (hlsWeylBarSigma μ * hlsWeylSigma ν - hlsWeylBarSigma ν * hlsWeylSigma μ)
-
-/-- The right-handed Weyl Lorentz generators are antisymmetric in their vector indices. -/
-theorem hlsWeylBarLorentzGenerator_antisymmetric (μ ν : Fin 4) :
-    hlsWeylBarLorentzGenerator μ ν = -hlsWeylBarLorentzGenerator ν μ := by
-  simp [hlsWeylBarLorentzGenerator, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
-
-/-- The right-handed Weyl generators realize the same Lorentz Lie algebra. -/
-theorem hlsWeylBarLorentzGenerator_bracket (μ ν ρ σ : Fin 4) :
-    hlsMatrixCommutator (hlsWeylBarLorentzGenerator μ ν)
-      (hlsWeylBarLorentzGenerator ρ σ) =
-      Complex.I •
-        (hlsComplexMinkowskiMetric μ σ • hlsWeylBarLorentzGenerator ν ρ +
-          hlsComplexMinkowskiMetric ν ρ • hlsWeylBarLorentzGenerator μ σ -
-          hlsComplexMinkowskiMetric μ ρ • hlsWeylBarLorentzGenerator ν σ -
-          hlsComplexMinkowskiMetric ν σ • hlsWeylBarLorentzGenerator μ ρ) := by
-  fin_cases μ <;> fin_cases ν <;> fin_cases ρ <;> fin_cases σ <;>
-    ext i j <;> fin_cases i <;> fin_cases j <;>
-    simp [hlsWeylBarLorentzGenerator, hlsMatrixCommutator, hlsWeylSigma,
-      hlsWeylBarSigma, hlsComplexMinkowskiMetric, hlsMinkowskiMetric,
-      Matrix.mul_apply, Fin.sum_univ_two] <;>
-    ring
-
-/-- The unbarred sigma matrices intertwine the two chiral Lorentz actions. -/
-theorem hlsWeylLorentzGenerator_sigma_covariant (μ ν ρ : Fin 4) :
-    hlsWeylLorentzGenerator μ ν * hlsWeylSigma ρ -
-      hlsWeylSigma ρ * hlsWeylBarLorentzGenerator μ ν =
-      Complex.I •
-        (hlsComplexMinkowskiMetric ν ρ • hlsWeylSigma μ -
-          hlsComplexMinkowskiMetric μ ρ • hlsWeylSigma ν) := by
-  fin_cases μ <;> fin_cases ν <;> fin_cases ρ <;>
-    ext i j <;> fin_cases i <;> fin_cases j <;>
-    simp [hlsWeylLorentzGenerator, hlsWeylBarLorentzGenerator, hlsWeylSigma,
-      hlsWeylBarSigma, hlsComplexMinkowskiMetric, hlsMinkowskiMetric,
-      Matrix.mul_apply, Fin.sum_univ_two] <;>
-    ring
-
-/-- The barred sigma matrices satisfy the companion chiral covariance law. -/
-theorem hlsWeylBarLorentzGenerator_sigma_covariant (μ ν ρ : Fin 4) :
-    hlsWeylBarLorentzGenerator μ ν * hlsWeylBarSigma ρ -
-      hlsWeylBarSigma ρ * hlsWeylLorentzGenerator μ ν =
-      Complex.I •
-        (hlsComplexMinkowskiMetric ν ρ • hlsWeylBarSigma μ -
-          hlsComplexMinkowskiMetric μ ρ • hlsWeylBarSigma ν) := by
-  fin_cases μ <;> fin_cases ν <;> fin_cases ρ <;>
-    ext i j <;> fin_cases i <;> fin_cases j <;>
-    simp [hlsWeylLorentzGenerator, hlsWeylBarLorentzGenerator, hlsWeylSigma,
-      hlsWeylBarSigma, hlsComplexMinkowskiMetric, hlsMinkowskiMetric,
-      Matrix.mul_apply, Fin.sum_univ_two] <;>
-    ring
-
 /-- Four-component Dirac spinors in the Weyl decomposition. -/
 abbrev HLSDiracSpinor := Fin 2 ⊕ Fin 2
 
@@ -904,31 +823,6 @@ theorem HLSMassiveSectorRestrictions.mass_ne_zero {A : Type v} {E : Type u}
     (data : HLSMassiveSectorRestrictions A E) (a : A) :
     data.particlePoincare.particles.mass a ≠ 0 :=
   ne_of_gt (data.positive_mass a)
-
-/-- Positive mass, nonnegative energy, and the mass-shell equation force every labelled massive
-particle momentum into the strict future-timelike cone. -/
-theorem HLSMassiveSectorRestrictions.particle_futureTimelike {A : Type v} {E : Type u}
-    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
-    (data : HLSMassiveSectorRestrictions A E) (a : A) :
-    hlsFutureTimelike (data.particlePoincare.particles.momentum a) := by
-  constructor
-  · have henergy := data.particlePoincare.particles.positive_energy a
-    have hmass := data.positive_mass a
-    have hshell := data.particlePoincare.particles.on_mass_shell a
-    change hlsMinkowskiForm (data.particlePoincare.particles.momentum a) =
-      data.particlePoincare.particles.mass a ^ 2 at hshell
-    rw [hlsMinkowskiForm_apply] at hshell
-    by_contra hnot
-    have hzero : data.particlePoincare.particles.momentum a 0 = 0 := by
-      linarith
-    rw [hzero] at hshell
-    nlinarith [sq_nonneg (data.particlePoincare.particles.momentum a 1),
-      sq_nonneg (data.particlePoincare.particles.momentum a 2),
-      sq_nonneg (data.particlePoincare.particles.momentum a 3), sq_pos_of_pos hmass]
-  · rw [show hlsMinkowskiForm (data.particlePoincare.particles.momentum a) =
-      data.particlePoincare.particles.mass a ^ 2 from
-      data.particlePoincare.particles.on_mass_shell a]
-    exact sq_pos_of_pos (data.positive_mass a)
 
 /-- A finite-order distributional generator kernel on a momentum-space open region. -/
 structure HLSDistributionalGeneratorKernelData where

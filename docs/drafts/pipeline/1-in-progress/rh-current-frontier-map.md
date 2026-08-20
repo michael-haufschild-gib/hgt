@@ -94,7 +94,8 @@ with prolate impurity. No theorem identifies either completed trace family with 
 all-prime Sonin moment curve. F2's frontier is this source-to-source all-moment weld, not another
 bounded compact correction, one scalar trace identity, or post-divisor spectral model.
 
-Cross-cutting current state changes several frontiers but no live or candidate count. **W2C**, the
+Apart from F2's promotion, cross-cutting current state changes several frontiers but no further live
+or candidate count. **W2C**, the
 two-channel Weil resolvent/aperture bridge, proves that CLG's critical logarithmic-derivative kernel
 is exactly the sum of canonical even and odd Weil Gram channels, realizes both as truncated
 two-sided exponential Fourier sources, transports every negative exact packet to all sufficiently
@@ -442,7 +443,7 @@ installs this bound in actual cofactor blocks and the exceptional Ramaré ladder
 `Sieve/LadderAggregates.lean`, `Sieve/LadderGroupBudget.lean`, and
 `Sieve/LargeLadderGroup.lean` reduce grouped large-half cost to harmonic mass, maximal block, and
 prime count. Pointwise prime-block control and ladder-error/head premises remain, so this does not
-produce the physical relation. Working-tree `Sieve/TwoRangeSchedule.lean` fixes low/high bases, mesh ratios,
+produce the physical relation. `Sieve/TwoRangeSchedule.lean` fixes low/high bases, mesh ratios,
 relative threshold, polynomial length, Gallagher cut, and head height and proves their elementary
 positivity/basic limits; `Sieve/PrimeRangeLogLogMass.lean` supplies a wide-range harmonic upper
 bound. The schedule's decisive eventual group/head inequalities are not yet theorems. Meanwhile
@@ -1007,10 +1008,10 @@ bound with the sign needed by T; the identically-one auxiliary detector polynomi
 Möbius polynomial itself. `ChenGuptaLiCharacterLargeValues.lean` constructs the literal
 character/ordinate dyadic row and Gram matrix, identifies every entry with source correlation, and
 proves only the baseline Hilbert-energy large-value count. Its own module boundary leaves the
-refined Guth--Maynard correlation estimate open. A working-tree extension expands cubic Gram trace exactly into
+refined Guth--Maynard correlation estimate open. The current extension expands cubic Gram trace exactly into
 all-equal diagonal and complementary off-diagonal triple correlations, so missing analytic input is
 an off-diagonal bound rather than matrix formation. Neither T's signed current nor HC's absolute
-off-line census closes. Working-tree `ChenGuptaLiAnalyticAnchor.lean` proves the analytically continued
+off-line census closes. `ChenGuptaLiAnalyticAnchor.lean` proves the analytically continued
 Dirichlet `L`-function equals its series and the full character-twisted Möbius series is its exact
 inverse at certified absolute-convergence points. This anchors the detector on `Re(s)>1`; it does
 not continue the finite detector identity to zeros or prove a density alternative.
@@ -1659,7 +1660,7 @@ continuation producer is absent.
   into internal anomaly plus polarized boundary leakage. EPC explains why diagonal/scalar
   compression loses the missing mixed incidence and connects CLG to CCM-FU/G/L. It has no
   independent completed source order or RH endpoint beyond those routes, so it is a pre-route, not
-  a fourteenth-plus-one live architecture.
+  an additional live architecture.
 - `AllGradePrimePowerCorona.lean` closes **AGC** negatively as an independent selector in the
   logarithmic Marcinkiewicz topology. Grade-one embedding is isometric and projection contractive;
   higher nonlinear Euler grades have uniformly bounded mass and vanish in the quotient; the unit
@@ -2155,9 +2156,13 @@ continuation producer is absent.
   baseline Hilbert large-value count are also formal; its cubic trace now splits exactly into
   diagonal and off-diagonal triple correlations, while the refined Guth--Maynard off-diagonal
   estimate remains absent. Its full Möbius inverse is analytically anchored only in the certified
-  absolute-convergence half-plane. `Sieve/TwoRangeSchedule.lean` fixes the intended low/high
+  absolute-convergence half-plane. `ChenGuptaLiDetectorTail.lean` proves exact unit-plus-tail
+  formation there, with every tail coefficient through the cutoff zero; contour transport to a
+  critical-strip zero remains absent. `Sieve/TwoRangeSchedule.lean` fixes the intended low/high
   parameters and basic limits, while `Sieve/PrimeRangeLogLogMass.lean` gives the wide-range
-  harmonic upper bound; neither proves the remaining group/head inequalities.
+  harmonic upper bound. `Sieve/TwoRangeLimits.lean` closes the elementary asymptotic absorption of
+  fixed log-log powers by negative log powers and of log-log factors by the zero-free-region
+  exponential. None proves the remaining scheduled group/head or pointwise ladder inequalities.
 - `PrimeArchBernsteinMobiusPullback.lean` and
   `PrimeArchBernsteinMobiusPullbackSource.lean` remove finite Bernstein coefficients from the
   prime--arch moment germ, identify the pullback with a two-torus Gutzmer susceptibility, and give
@@ -2220,8 +2225,10 @@ continuation producer is absent.
   infinity-sensitive data are required.
 - The ABHN files now supply Brauer-quotient/scalar-extension/tensor-product foundations,
   algebraically closed local invariant triviality, place carriers, and an exactness specification;
-  working-tree `ABHN/CentralSimpleAzumaya.lean` adds central-simple-to-Azumaya and
-  enveloping-action equivalences. They do not prove the
+  `ABHN/CentralSimpleAzumaya.lean` and `ABHN/AzumayaBaseChange.lean` add
+  central-simple-to-Azumaya, enveloping-action, and Azumaya base-change laws. Local scalar
+  extension is injective, finite-dimensional, simple, and central for the proved central-simple
+  input. They do not prove the
   number-field/function-field ABHN exact sequence or instantiate a completed zeta source; no C1/L
   status changes. HLS Fock, kinematic, physical-assumption, and finite-scattering modules likewise
   construct unconditional algebraic interfaces and examples but explicitly prove no interacting
@@ -2231,15 +2238,24 @@ continuation producer is absent.
   positivity calculus, data processing, exact reduction-pencil gauge `min(k,n)`, complete gauge
   `n`, and migrating-depth/false-promotion laws. `AllDepthMixedConstraintClass.lean` defines the
   iterated mixed-difference germ class, identifies its two-parameter case with the triptic class,
-  and proves one difference lowers depth. Working-tree `AllDepthMeroClass.lean` realizes the meromorphic germ
-  class, transports translations/periodicity, and proves differential algebraicity passes to every
-  pair-face witness. These are universal obstruction/selection mechanics;
+  and proves one difference lowers depth. `AllDepthMeroClass.lean` realizes the meromorphic germ
+  class and transports translations/periodicity. `AllDepthPairFaceSignature.lean` and
+  `AllDepthBottomCharge.lean` add a depth-two face obstruction and finite-support elliptic-quotient
+  charge whose orbit sum is that obstruction; vanishing charge gives descent. These strengthen
+  MEG's internal invariant but remain universal obstruction/selection mechanics;
   absent a literal prime--Gamma/Möbius occurrence and Xi reader they change no RH route.
-- Working-tree `HalfPlanePoissonKernel.lean` closes normalized half-plane Poisson mass, shifted products, odd
-  primitive, and boundary limits. Working-tree `KLFactorizationSufficiency.lean` proves exact data processing
+- `HalfPlanePoissonKernel.lean` closes normalized half-plane Poisson mass, shifted products, odd
+  primitive, and boundary limits. `XiBoundaryPoissonDensity.lean` specializes it to the exact safe
+  completed log-derivative density and W2C's paired even channel. Positivity is automatic there but
+  divisor-indexed and insensitive to horizontal orientation, so it is a W2C/CLG bridge rather than
+  a producer. `KLFactorizationSufficiency.lean` proves exact data processing
   and scalar sufficiency for factored likelihood ratios and Esscher families. These are clean
-  analytic/information-geometric adapters but contain no completed arithmetic specialization,
-  divisor receiver, or RH implication.
+  analytic/information-geometric adapters. `EsscherFormationChirality.lean`,
+  `ExponentialFormationResponse.lean`, `PositiveJumpFormationChirality.lean`, and
+  `GeometricModeChirality.lean` compute exact oriented higher response laws, while
+  `AbelianZetaGasChemicalPotentialShift.lean` supplies only convergent zeta-gas parameter-shift and
+  normalizer identities. No theorem couples these formation responses to completed Xi or gives a
+  critical-boundary order law; they do not change G/D2/MSC or create a route.
 
 ## Terminal and retired mechanisms
 
@@ -2251,7 +2267,7 @@ Closure applies to named mechanism, not every future use of similar objects.
 | B | Scaling/grading and distinct prolate parameters cannot share required unitary transport; finite real-zero receiver lacks source orientation. | Relative graph/boundary deformation only. |
 | C2/I | Finite theta/dyadic width saturates coordinate; missing width is RH-bearing. | Cauchy/Hurwitz interfaces survive in Q. |
 | D1 | Finite/local moment positivity does not orient completed all-degree source. | D2 continued tail and Q exterior kernel. |
-| F | Compact Sonin completion/correction has wrong asymptotic order or collapses source. | New order-one pre-Gamma primitive only. |
+| F | Bounded/sublinear compact Sonin completion has wrong asymptotic order, loses its floor, or collapses source. | F2 survives by replacing passive completion with a cofinal all-prime trace-moment weld; Route F itself stays retired. |
 | G2 | Required relative-Volterra germ is RH-equivalent. | G marked boundary problem survives. |
 | H | Even Taylor factorization loses orientation. | Relation-valued indefinite primitive only. |
 | J | For `L_m=6 log m`, `m>=25`, bad energy is at least `log(m)/20` at every Julia scale; uniform budget impossible; diagonal subtraction breaks one-node capacity. | Principal-relative current defined before projection; not Route J. |
@@ -2468,7 +2484,7 @@ already exist; only source estimate remains. IW and AP were hostile tests of thi
 terminal: IW's operation is exactly the desired divisibility, while AP's genuine source reporter
 cannot act on fixed completed-Xi receiver.
 
-UEB, CLG, PSRC, PBM, MSC, SV2, PCS, SEC, and BPC form a second non-classical family: infinite paired/operator/graph or
+F2, UEB, CLG, PSRC, PBM, MSC, SV2, PCS, SEC, and BPC form a second non-classical family: infinite paired/operator/graph or
 analytic source followed by a singular, meromorphic, or homological boundary landing. MSC has the carrier but lacks pointed
 divisor covariance. UEB has exact affine marking and a complete order-one Bezoutian classifier but
 lacks source-produced kernel positivity. CLG turns the same logarithmic-derivative geometry into a
@@ -2487,6 +2503,13 @@ has the exact positive susceptibility singularity and collar-to-RH transfer but 
 continuation through that collar. None can be reduced to one finite positive object or one scalar
 response without hitting a proved
 firewall.
+
+F2 is the cleanest source-to-source member of this family. Its open premise names neither a Xi zero
+nor a divisor-built Gram: one literal positive all-prime operator moment curve must approach one
+literal continued prime--Gamma moment germ. Latest code separately supplies the completed
+trace-class source and positive prolate carrier, but trace realization is weaker than positivity of
+all powers. This isolates a new recurring wall: matching scalar traces or first moments does not
+place an entire target sequence inside a positive Hankel moment cone.
 
 Remaining pre-routes reinforce that taxonomy rather than extend route count. Prime-Laplace
 Gamma jets are an infinite paired clock with exact translation anomaly/Bianchi curvature, but the
@@ -2545,7 +2568,7 @@ Open cores fall into six classes:
    coefficient, multiplicity, or orientation (G, L, P, U).
 4. **Mixed-incidence control:** preserve cross terms diagonal energies erase (E, Q, HC, T).
 5. **Cofinal synchronization:** one estimate uniform in moving degree/aperture/height
-   (CCM-FU, E, O, T, U, SV2).
+   (CCM-FU, E, F2, O, T, U, SV2).
 6. **Source-native internal dynamics:** projective module, corrected Stokes category, monodromy,
    singular depth action, operator leakage, or analytic continuation on literal completed source
    before divisor selection (UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS, SEC, BPC;
@@ -2636,8 +2659,11 @@ is:
 28. What topology or singular invariant escapes the proved AGC collapse of every nonlinear and
    tangent higher-grade tail to grade one while still retaining coefficient-faithful Euler source?
 29. Can PLAC's recovered squarefree action and multiplicity residue, or EPC's polarized boundary
-   leakage, be coupled to a completed pre-divisor source law that forces zero charge/order without
-   importing CLG, PBM, G, or L's RH-equivalent endpoint premise?
+    leakage, be coupled to a completed pre-divisor source law that forces zero charge/order without
+    importing CLG, PBM, G, or L's RH-equivalent endpoint premise?
+30. Can one source-derived cofinal Sonin aperture section or positive aperture barycenter identify
+    every moment of the positive all-prime residual energy with the continued prime--Gamma moment
+    germ, preserving all mixed Hankel powers rather than only the completed scalar trace?
 
 Until one is answered, endpoint reformulations, finite real-zero models, seed asymptotics, diagonal
 moment inequalities, or scalar transport identities do not move formal RH frontier.

@@ -304,7 +304,17 @@ semigroup applied term by term.
   `MeasureTheory.integral_tsum_of_summable_integral_norm`.  Supporting:
   `integral_boundaryPoissonTerm`, `integrable_poisson_boundaryTerm`, `abs_im_spectral_lt`.
   All audit to `propext, Classical.choice, Quot.sound`.
-- **P3** the parent card's `(17)`: `K_a (w,v) = (1/π) ∫ h_a(t) / ((w-a-it)(conj v - a + it)) dt`,
+- **P3 - analytic core DONE.** `HTGeometry/HalfPlanePoissonKernel` gained the
+  conjugate kernel `conjugatePoisson`, its product integral `integral_conjugate_product`
+  and semigroup `conjugatePoisson_convolution`; `HTGeometry/PoissonCauchyIntegral`
+  then proves the key lemma
+  `integral_poisson_cauchy : integral P_c(u) (A - i u)^(-1) du = (A + c)^(-1)`
+  for `Re A > 0`, `c > 0`, via `inv_sub_I_mul_real_eq`:
+  `(A - i u)^(-1) = pi (P_(Re A)(u - Im A) + i Q_(Re A)(u - Im A))`.
+  Remaining in P3: assemble the parent card `(17)` from this by the divisor sum,
+  using the constant-sum split
+  `((w-a-it)(conj v-a+it))^(-1) = S^(-1)[(w-a-it)^(-1) + (conj v-a+it)^(-1)]`,
+  `S = w + conj v - 2a`, and the interchange with the divisor tsum.
   by term-by-term residue evaluation of `∫ P_c(t-ρ) / ((w-a-it)(conj v-a+it)) dt`.
 - **P4** `(3)`, `(4)` and hence `(16)`, `(21)`.
 - **P5 - DONE.** `RHTower/XiDePoissonizedStationarity`: `shiftedExpPacket`, `expPacket`,

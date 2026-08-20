@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.ShortIntervalLength
 import GaloisForLFunctions.RHTower.Sieve.LogPowerLimits
+import GaloisForLFunctions.RHTower.Sieve.PolylogLimits
 
 /-!
 # The schedule of the two-range argument
@@ -197,6 +198,57 @@ theorem lowSteps_le {K c β : ℝ} (hK : 0 ≤ K) (hc : 0 < c) (_hβ : 0 < β) :
       norm_num
     rw [hzero]
     positivity
+
+/-- The radius of the low-frequency disc.  It is **not** a constant: the Route-T relative majorant
+carries a term `Lx²/(2π w₀)` with no exponential factor, so `w₀` must exceed `Lx⁴/ρ³` where `ρ` is
+the target saving.  With `ρ = exp(−s(log x)^{a−9/10})` this is `(log x)^{4b}·exp(3s(log x)^{a−9/10})`,
+still below every power of `x`, and the disc estimate survives precisely when `a − 9/10` is below
+the Route-T rate exponent `1/20`. -/
+def twoRangeDisc (a b s : ℝ) (x : ℝ) : ℝ :=
+  (Real.log x) ^ (4 * b) * Real.exp (3 * s * (Real.log x) ^ (a - 9 / 10))
+
+/-- The target relative saving of the high range. -/
+def twoRangeRho (a s : ℝ) (x : ℝ) : ℝ := Real.exp (-(s * (Real.log x) ^ (a - 9 / 10)))
+
+theorem twoRangeDisc_pos {a b s x : ℝ} (hx : 1 < x) : 0 < twoRangeDisc a b s x := by
+  have hlog : (0 : ℝ) < Real.log x := Real.log_pos hx
+  rw [twoRangeDisc]
+  positivity
+
+theorem twoRangeRho_pos (a s x : ℝ) : 0 < twoRangeRho a s x := Real.exp_pos _
+
+/-- **The saving beats every power of the logarithm.** -/
+theorem tendsto_logRpow_mul_twoRangeRho {a s : ℝ} (ha : 9 / 10 < a) (hs : 0 < s) (e : ℝ) :
+    Tendsto (fun x : ℝ => (Real.log x) ^ e * twoRangeRho a s x) atTop (𝓝 0) := by
+  have hd : (0 : ℝ) < a - 9 / 10 := by linarith
+  have hmaj := tendsto_rpow_log_mul_exp_neg (c := e) (a := (a - 9 / 10) / 2) (by positivity)
+  have hhalf : Tendsto (fun x : ℝ => (Real.log x) ^ ((a - 9 / 10) / 2)) atTop atTop :=
+    (tendsto_rpow_atTop (by positivity)).comp Real.tendsto_log_atTop
+  refine squeeze_zero' ?_ ?_ hmaj
+  · filter_upwards [Filter.eventually_gt_atTop (1 : ℝ)] with x hx1
+    have hlog : (0 : ℝ) < Real.log x := Real.log_pos hx1
+    have : (0 : ℝ) ≤ (Real.log x) ^ e := Real.rpow_nonneg hlog.le e
+    have := twoRangeRho_pos a s x
+    positivity
+  · filter_upwards [Filter.eventually_gt_atTop (1 : ℝ),
+      hhalf.eventually_ge_atTop (1 / s)] with x hx1 hbig
+    have hlog : (0 : ℝ) < Real.log x := Real.log_pos hx1
+    have hnn : (0 : ℝ) ≤ (Real.log x) ^ e := Real.rpow_nonneg hlog.le e
+    have hsplit : (Real.log x) ^ (a - 9 / 10)
+        = (Real.log x) ^ ((a - 9 / 10) / 2) * (Real.log x) ^ ((a - 9 / 10) / 2) := by
+      rw [← Real.rpow_add hlog]
+      congr 1
+      ring
+    have hkey : (Real.log x) ^ ((a - 9 / 10) / 2) ≤ s * (Real.log x) ^ (a - 9 / 10) := by
+      rw [hsplit]
+      have hp0 : (0 : ℝ) ≤ (Real.log x) ^ ((a - 9 / 10) / 2) := Real.rpow_nonneg hlog.le _
+      have hs1 : (1 : ℝ) ≤ s * (Real.log x) ^ ((a - 9 / 10) / 2) := by
+        have hmul := mul_le_mul_of_nonneg_left hbig hs.le
+        rw [mul_one_div, div_self (ne_of_gt hs)] at hmul
+        linarith
+      nlinarith [hs1, hp0]
+    rw [twoRangeRho]
+    refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 (by linarith)) hnn
 
 end
 

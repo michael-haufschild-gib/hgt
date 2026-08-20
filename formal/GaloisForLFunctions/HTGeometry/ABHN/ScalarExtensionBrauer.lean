@@ -100,4 +100,16 @@ theorem scalarExtensionBrauerMap_brauerClass (K L : Type u) [Field K] [Field L] 
     scalarExtensionBrauerMap K L (brauerClass A) = brauerClass (scalarExtensionCSA (L := L) A) :=
   rfl
 
+/-- Scalar extension sends the split Brauer class to the split Brauer class. -/
+theorem scalarExtensionBrauerMap_split (K L : Type u) [Field K] [Field L] [Algebra K L] :
+    scalarExtensionBrauerMap K L (brauerSplitClass K) = brauerSplitClass L := by
+  change brauerClass (scalarExtensionCSA (L := L) (scalarCSA K)) = brauerSplitClass L
+  calc
+    brauerClass (scalarExtensionCSA (L := L) (scalarCSA K)) =
+        brauerClass (scalarExtensionMatrixFinScalarCSA K L 1) :=
+      brauerClass_eq_of_algEquiv _ _
+        (scalarExtension_algEquiv (L := L) (oneByOneMatrixAlgEquiv K K).symm)
+    _ = brauerSplitClass L :=
+      brauerClass_scalarExtensionMatrixFinScalar_eq (K := K) (L := L) 1
+
 end GaloisForLFunctions.HTGeometry.ABHN

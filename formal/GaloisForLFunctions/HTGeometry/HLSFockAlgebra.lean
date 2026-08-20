@@ -3,7 +3,6 @@ import Mathlib.Analysis.Complex.Basic
 import Mathlib.LinearAlgebra.ExteriorAlgebra.Basic
 import Mathlib.LinearAlgebra.SymmetricAlgebra.Basic
 import Mathlib.RingTheory.TensorProduct.Basic
-import Mathlib.RingTheory.TensorProduct.Maps
 import Mathlib.LinearAlgebra.TensorProduct.Map
 
 /-!
@@ -52,18 +51,6 @@ def hlsFockParity (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
     [AddCommGroup F] [Module ℂ F] : HLSAlgebraicFock B F →ₗ[ℂ] HLSAlgebraicFock B F :=
   TensorProduct.map LinearMap.id (hlsExteriorParity F).toLinearMap
 
-/-- Fermion parity is multiplicative on the algebraic Fock algebra. -/
-def hlsFockParityAlgHom (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
-    [AddCommGroup F] [Module ℂ F] : HLSAlgebraicFock B F →ₐ[ℂ] HLSAlgebraicFock B F :=
-  Algebra.TensorProduct.map (AlgHom.id ℂ (SymmetricAlgebra ℂ B)) (hlsExteriorParity F)
-
-/-- The algebraic parity endomorphism has exactly the existing linear parity map underneath. -/
-theorem hlsFockParityAlgHom_toLinearMap (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
-    [AddCommGroup F] [Module ℂ F] :
-    (hlsFockParityAlgHom B F).toLinearMap = hlsFockParity B F := by
-  ext b f
-  rfl
-
 /-- Fermion parity negates every one-fermion creation operator. -/
 theorem hlsExteriorParity_apply_ι (F : Type v) [AddCommGroup F] [Module ℂ F] (f : F) :
     hlsExteriorParity F (ExteriorAlgebra.ι ℂ f) = -ExteriorAlgebra.ι ℂ f := by
@@ -89,18 +76,6 @@ theorem hlsFockParity_squared (B : Type u) (F : Type v) [AddCommGroup B] [Module
     (hlsExteriorParity_squared F)
   simpa only [AlgHom.comp_apply, AlgHom.id_apply] using congrArg (TensorProduct.tmul ℂ b) h
 
-/-- Algebraic Fock parity is an involutive algebra endomorphism. -/
-theorem hlsFockParityAlgHom_squared (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
-    [AddCommGroup F] [Module ℂ F] :
-    (hlsFockParityAlgHom B F).comp (hlsFockParityAlgHom B F) =
-      AlgHom.id ℂ (HLSAlgebraicFock B F) := by
-  change (Algebra.TensorProduct.map (AlgHom.id ℂ (SymmetricAlgebra ℂ B))
-    (hlsExteriorParity F)).comp
-    (Algebra.TensorProduct.map (AlgHom.id ℂ (SymmetricAlgebra ℂ B))
-      (hlsExteriorParity F)) = _
-  rw [← Algebra.TensorProduct.map_comp, hlsExteriorParity_squared]
-  simp
-
 /-- Fermion parity is a genuine algebraic Fock-space linear equivalence, equal to its own inverse. -/
 def hlsFockParityEquiv (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
     [AddCommGroup F] [Module ℂ F] : HLSAlgebraicFock B F ≃ₗ[ℂ] HLSAlgebraicFock B F :=
@@ -112,20 +87,6 @@ def hlsFockParityEquiv (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
     right_inv := by
       intro x
       exact LinearMap.congr_fun (hlsFockParity_squared B F) x }
-
-/-- Fermion parity as an involutive algebra automorphism of the algebraic Fock space. -/
-def hlsFockParityAlgEquiv (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
-    [AddCommGroup F] [Module ℂ F] : HLSAlgebraicFock B F ≃ₐ[ℂ] HLSAlgebraicFock B F :=
-  { hlsFockParityAlgHom B F with
-    invFun := hlsFockParityAlgHom B F
-    left_inv := fun x => DFunLike.congr_fun (hlsFockParityAlgHom_squared B F) x
-    right_inv := fun x => DFunLike.congr_fun (hlsFockParityAlgHom_squared B F) x }
-
-/-- The algebraic parity automorphism is its own inverse. -/
-theorem hlsFockParityAlgEquiv_apply_twice (B : Type u) (F : Type v) [AddCommGroup B]
-    [Module ℂ B] [AddCommGroup F] [Module ℂ F] (x : HLSAlgebraicFock B F) :
-    hlsFockParityAlgEquiv B F (hlsFockParityAlgEquiv B F x) = x :=
-  DFunLike.congr_fun (hlsFockParityAlgHom_squared B F) x
 
 /-- Algebraic Fock parity remains involutive when used as a linear equivalence. -/
 theorem hlsFockParityEquiv_apply_twice (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
