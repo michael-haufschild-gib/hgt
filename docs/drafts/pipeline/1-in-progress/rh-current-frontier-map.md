@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 20 August 2026, commit
-`84c46aadce38a2ee2c779186456013c76a5848ba`, plus declaration-index review of current Lean
+`048b25fbb3583322849c112653dd9da1f829c70f`, plus declaration-index review of current Lean
 working-tree additions. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified and not claimed build-audited in this
@@ -34,7 +34,7 @@ Formal corpus currently supports fourteen live architectures:
 `CCM-FU, C1, D2, E, G, L, O, P, Q, CLG, T, U, HC`, and
 **SV2 (Suzuki spherical characteristic convergence)**. Thirteen corpus-born receiver/source-mechanism
 candidates remain: `UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS, SEC, BPC`. Routes R, IW, and AP are terminal as independent
-producers. Latest additions close important intermediate premises, but do not close any route's
+producers. Current formal corpus closes important intermediate premises, but does not close any route's
 final open producer and prove neither RH nor its negation.
 
 | Architecture | Proved chain | First open core |
@@ -92,6 +92,17 @@ leakage; neither supplies an independent zero-charge/order law. Universal BPS an
 packages show many corpus endpoints are saturation statements, but do not force saturation.
 `SL_2` cocycle rigidity likewise rules out regular one-entry cocycle shortcuts. No open producer is
 closed; RH status is unchanged.
+
+Route-wide implication is explicit. E and T gain stronger mean-square, character-correlation, and
+archimedean contour inputs but retain their signed relation/current producers. CLG gains a sharper
+multi-node formulation and a new two-node no-go. HC loses critical-edge and height-selection
+obstacles but retains absolute detector/off-line control. PLAC can feed PBM/G/L/T with a singular
+coefficient-faithful depth connection; EPC can feed CCM-FU/CLG/G/L with polarized leakage; neither
+has a new source theorem. BPS language applies to receivers throughout C1, G, O, P, U, HC, and
+adjacent candidates, but merely identifies their unsaturated defect. CCM-FU, C1, D2, G, L, O, P,
+Q, U, SV2 and all thirteen candidates retain the first open cores stated below; no declaration in
+the audited delta supplies their missing source law, ground sign, singular descent, or global
+cofinal identification.
 
 Many exact source criteria below are formal equivalences with RH. Rewriting RH as positivity,
 boundedness, passivity, flatness, or collision absence advances nothing unless corpus also supplies an
@@ -291,7 +302,7 @@ and master assemblies. Their capstones correctly retain the normalized joint-bud
 annular saving, cofactor-mean, and defect estimates as hypotheses
 (`Sieve/JointOmegaFactorisation.lean`, `Sieve/JointOmegaSpectral.lean`,
 `Sieve/JointOmegaBudgetFromLadder.lean`, `Sieve/Section4Master.lean`). Thus the analytic accounting
-needed after a relation is supplied is formal. The latest divisor repair replaces the fatal
+needed after a relation is supplied is formal. The divisor repair replaces the fatal
 crude `#Q` ladder-defect coefficient by `(log B0/log RQ+1)^2`
 (`Sieve/JointLadderDefectDivisor.lean`). `Sieve/JointSchedule.lean` fixes the short/long prime
 ranges, common ladder ratio, Gallagher cut, expiry height, and eventual range disjointness.
@@ -373,7 +384,7 @@ split over an arbitrary measurable frequency set. `Sieve/Section4AllBlocksSmall.
 Q-side estimate automatic on the all-small set and covers its complement by single-block
 exceptional sets; `Section4CofactorSup.lean`, `Section4LadderExceptional.lean`, and
 `Section4RelativeThreshold.lean` control the cofactor supremum, whole-ladder exceptional measure,
-and relative-threshold moment loss. Working-tree `RamarePartitionedLadder.lean` and
+and relative-threshold moment loss. `RamarePartitionedLadder.lean` and
 `RamareAnnulusPartitioned.lean` assemble the three-piece disc/annulus/exceptional partition;
 `RamareAffinePartitioned.lean` packages resulting affine majorant uniformly below cutoff.
 `FibreRamarePartitionedFinal.lean` carries that majorant through Gallagher kernel and fibre bridge to
@@ -381,10 +392,10 @@ the Route-E fibre mean square. Its capstone still assumes the ladder defect, poi
 exceptional cofactor bound, and exceptional prime mean square; it is an exact assembly theorem, not
 an unconditional final fibre estimate.
 
-The newest sieve layer isolates a smaller analytic gate. `MoebiusWindowPartition.lean`,
+The current sieve layer isolates a smaller analytic gate. `MoebiusWindowPartition.lean`,
 `DoubleRamareWeight.lean`, `RamareRoughSetSplit.lean`, and `RamareLadderSupMeanSquare.lean` give
 exact disc/annulus, two-range Ramaré, rough-set, and prime-sup/cofactor decompositions; the rough
-count is paid by its Turán harmonic mass. Working-tree `RamareLadderHM.lean` supplies the
+count is paid by its Turán harmonic mass. `RamareLadderHM.lean` supplies the
 Halász--Montgomery cofactor bound on measurable exceptional sets, while
 `MoebiusTwoRangeWindow.lean` makes the small annulus unconditional and leaves the large annulus's
 pointwise high-prime estimate explicit. `AffineFromHead.lean`, `MoebiusHeadGate.lean`,
@@ -767,7 +778,7 @@ K_0 = K_a * (1 - C_a).
 ```
 
 Consequently RH is equivalent both to PSD of this critical difference and to domination of the
-Cauchy-loss energy by safe-kernel energy on every finite node/coefficient system. Working-tree
+Cauchy-loss energy by safe-kernel energy on every finite node/coefficient system.
 `PSDKernelDensity.lean` reduces that test, for continuous Hermitian kernels, to any dense node and
 coefficient family. This literal Euler--Gamma handoff, independent of zero selection, promotes CLG
 to live.
@@ -1390,7 +1401,7 @@ continuation producer is absent.
   trigamma bound and the unconditional second-jet law
   `deriv gammaHardyPhaseRate t >= 1/(100t)` for `t>=4`. These strengthen archimedean curvature and
   growth inputs available to D2/HC/SV2, but do not couple them to prime cancellation or orient any
-  completed source form. Working-tree `HTGeometry/GammaProductRootLaw.lean` and
+  completed source form. `HTGeometry/GammaProductRootLaw.lean` and
   `RHTower/SelbergCuspArchimedeanRoot.lean` further prove exact finite Gamma-product root
   asymptotics and identify the Selberg archimedean root constant with its cusp parameter.
   `SelbergShiftRootLaw.lean` completes full functional-equation assembly: along degree-normalized
@@ -1424,7 +1435,8 @@ continuation producer is absent.
   conductor-eight CRT discriminants are fundamental and identify their characters with the literal
   Kronecker symbol. Bondarenko--Heap Lemmas 4, 7, 8, and the expanding Lemma-9 layer now formalize
   finite Fourier completion, inverse-incidence fibre energy, source-scale discriminant-window
-  estimates, and exact local Jacobi/Ramanujan factorization with square-root residual-core control.
+  estimates, exact local Jacobi/Ramanujan factorization with square-root residual-core control, and
+  premise-free source-scale summation of the literal exceptional additive-Ramanujan mass.
   These remain finite/cofinal correlation inputs toward E/T, not conductor-uniform density or their
   signed critical cancellation.
 - `PrimeLaplaceGammaJetIncidence.lean` supplies a genuine all-prime, nonphysical source interface:
@@ -1678,7 +1690,7 @@ continuation producer is absent.
   index `#(L\J)`, and no negative direction exactly when `J subset L`.
   `HTGeometry/ImaginaryPoleBezoutianGram.lean` separately makes every imaginary-pole Bezoutian a
   rank-one Gram sum. `SchurNevanlinnaPick.lean` constructs the kernel Hilbert space and lurking
-  contraction from a Pick identity; working-tree `HTGeometry/TransferFunction.lean` realizes every
+  contraction from a Pick identity; `HTGeometry/TransferFunction.lean` realizes every
   such contraction as a Schur transfer function, and `CaratheodoryNevanlinnaPick.lean` transports
   PSD Caratheodory data to a holomorphic nonnegative-real-part half-plane interpolant.
   `MatsumotoSuzukiScrewKernel.lean` proves the literal
@@ -1699,7 +1711,7 @@ continuation producer is absent.
   Cassidy `sl2` grading/regular diagonalization is now extended to matrix, toral, line-stabilizer,
   differential-solution, and constant-conjugacy classifications; constant-Galois connection,
   base/differential-constant collapse, ring-torsor coinvariance, and torsor-point separation close
-  generic group carriers. Working-tree `HTGeometry/BurnsideTwoByTwo.lean` supplies the exact
+  generic group carriers. `HTGeometry/BurnsideTwoByTwo.lean` supplies the exact
   irreducible two-dimensional matrix-algebra step. `HTGeometry/DifferenceSemiInvariantSolution.lean`
   proves that a tensor-square semi-invariant line in a sigma-simple Picard--Vessiot ring forces a
   base Riccati solution, sharpening the difference-Galois obstruction to stable lines.
@@ -1708,7 +1720,7 @@ continuation producer is absent.
   symmetry, closing the abstract input used by that Riccati reduction. None is specialized to
   completed arithmetic source or connected to an RH reader, so they remain infrastructure rather
   than PPM/IRK/HJ/AF promotions.
-- Working-tree `HTGeometry/LSeriesRightLimit.lean` proves a polynomial-growth Dirichlet series tends
+- `HTGeometry/LSeriesRightLimit.lean` proves a polynomial-growth Dirichlet series tends
   to its first coefficient along every family with real part tending to infinity, without
   controlling imaginary part. `HTGeometry/LimsupPositiveFactor.lean` proves a convergent positive
   factor scales root limsup by its limit. These close far-right normalization and root-growth
