@@ -3,6 +3,7 @@ import Mathlib.Analysis.Complex.Basic
 import Mathlib.LinearAlgebra.ExteriorAlgebra.Basic
 import Mathlib.LinearAlgebra.SymmetricAlgebra.Basic
 import Mathlib.RingTheory.TensorProduct.Basic
+import Mathlib.LinearAlgebra.TensorProduct.Map
 
 /-!
 # Algebraic boson--fermion Fock space for HLS systems
@@ -44,6 +45,12 @@ def hlsExteriorParity (F : Type v) [AddCommGroup F] [Module ℂ F] :
     ExteriorAlgebra ℂ F →ₐ[ℂ] ExteriorAlgebra ℂ F :=
   ExteriorAlgebra.map (-LinearMap.id)
 
+/-- Fermion parity on the full algebraic Fock space: identity on the symmetric bosonic factor
+and exterior parity on the fermionic factor. -/
+def hlsFockParity (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
+    [AddCommGroup F] [Module ℂ F] : HLSAlgebraicFock B F →ₗ[ℂ] HLSAlgebraicFock B F :=
+  TensorProduct.map LinearMap.id (hlsExteriorParity F).toLinearMap
+
 /-- Fermion parity negates every one-fermion creation operator. -/
 theorem hlsExteriorParity_apply_ι (F : Type v) [AddCommGroup F] [Module ℂ F] (f : F) :
     hlsExteriorParity F (ExteriorAlgebra.ι ℂ f) = -ExteriorAlgebra.ι ℂ f := by
@@ -56,6 +63,19 @@ theorem hlsExteriorParity_squared (F : Type v) [AddCommGroup F] [Module ℂ F] :
   simp only [hlsExteriorParity, ExteriorAlgebra.map_comp_map]
   simp
 
+/-- Full algebraic Fock parity is an involution. -/
+theorem hlsFockParity_squared (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
+    [AddCommGroup F] [Module ℂ F] :
+    (hlsFockParity B F).comp (hlsFockParity B F) = LinearMap.id := by
+  ext b f
+  change TensorProduct.map LinearMap.id (hlsExteriorParity F).toLinearMap
+    (TensorProduct.map LinearMap.id (hlsExteriorParity F).toLinearMap (b ⊗ₜ[ℂ] f)) = b ⊗ₜ[ℂ] f
+  simp only [TensorProduct.map_tmul, LinearMap.id_apply]
+  change b ⊗ₜ[ℂ] hlsExteriorParity F (hlsExteriorParity F f) = b ⊗ₜ[ℂ] f
+  have h := congrArg (fun q : ExteriorAlgebra ℂ F →ₐ[ℂ] ExteriorAlgebra ℂ F => q f)
+    (hlsExteriorParity_squared F)
+  simpa only [AlgHom.comp_apply, AlgHom.id_apply] using congrArg (TensorProduct.tmul ℂ b) h
+
 /-- Bosonic creation operators commute. -/
 theorem hlsBosonCreate_commute (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
     [AddCommGroup F] [Module ℂ F] (b c : B) :
@@ -63,6 +83,12 @@ theorem hlsBosonCreate_commute (B : Type u) (F : Type v) [AddCommGroup B] [Modul
       hlsBosonCreate B F c * hlsBosonCreate B F b := by
   simp only [hlsBosonCreate, Algebra.TensorProduct.tmul_mul_tmul, mul_one]
   rw [mul_comm]
+
+/-- Full Fock parity fixes bosonic creation. -/
+theorem hlsFockParity_apply_bosonCreate (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
+    [AddCommGroup F] [Module ℂ F] (b : B) :
+    hlsFockParity B F (hlsBosonCreate B F b) = hlsBosonCreate B F b := by
+  simp [hlsFockParity, hlsBosonCreate, hlsExteriorParity]
 
 /-- Fermionic creation squares to zero. -/
 theorem hlsFermionCreate_sq_zero (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
@@ -78,6 +104,13 @@ theorem hlsFermionCreate_anticommute (B : Type u) (F : Type v) [AddCommGroup B] 
   simp only [hlsFermionCreate, Algebra.TensorProduct.tmul_mul_tmul, one_mul]
   rw [← TensorProduct.tmul_add]
   simp [ExteriorAlgebra.ι_add_mul_swap]
+
+/-- Full Fock parity negates fermionic creation. -/
+theorem hlsFockParity_apply_fermionCreate (B : Type u) (F : Type v) [AddCommGroup B]
+    [Module ℂ B] [AddCommGroup F] [Module ℂ F] (f : F) :
+    hlsFockParity B F (hlsFermionCreate B F f) = -hlsFermionCreate B F f := by
+  simp [hlsFockParity, hlsFermionCreate, hlsExteriorParity_apply_ι]
+  rw [TensorProduct.tmul_neg]
 
 /-- Bosonic and fermionic creation commute in the ordinary tensor-product algebra. -/
 theorem hlsBosonCreate_commutes_fermionCreate (B : Type u) (F : Type v) [AddCommGroup B]

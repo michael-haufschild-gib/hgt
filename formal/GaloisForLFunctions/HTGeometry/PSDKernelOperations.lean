@@ -237,6 +237,25 @@ theorem posSemidef_of_isHermitian_of_re_nonneg {n : ℕ} {M : Matrix (Fin n) (Fi
   exact Complex.le_def.mpr ⟨by simpa using h x,
     by simpa using (Complex.conj_eq_iff_im.mp hconj).symm⟩
 
+/-- **Energy form of positivity.**  A Hermitian kernel is positive semidefinite exactly when every
+finite node/coefficient system has nonnegative energy. -/
+theorem isPSDKernel_iff_forall_energy_nonneg {K : X → X → ℂ}
+    (hherm : ∀ x y, conj (K x y) = K y x) :
+    IsPSDKernel K ↔ ∀ (n : ℕ) (c : Fin n → ℂ) (w : Fin n → X), 0 ≤ (kernelEnergy K c w).re := by
+  constructor
+  · intro hK n c w
+    have hnn := (hK.posSemidef w).dotProduct_mulVec_nonneg c
+    rw [dotProduct_mulVec_kernelMatrix] at hnn
+    simpa using (Complex.le_def.mp hnn).1
+  · intro h
+    refine isPSDKernel_of_forall_posSemidef hherm (fun n w => ?_)
+    refine posSemidef_of_isHermitian_of_re_nonneg ?_ (fun c => ?_)
+    · ext j k
+      simp only [Matrix.conjTranspose_apply, Matrix.of_apply, RCLike.star_def]
+      exact hherm _ _
+    · rw [dotProduct_mulVec_kernelMatrix]
+      exact h n c w
+
 /-- **Kernel domination.**  One positive semidefinite kernel dominates another exactly when it
 dominates it on every finite node/coefficient system. -/
 theorem isPSDKernel_sub_iff_forall_energy_le {K₁ K₂ : X → X → ℂ} (h₁ : IsPSDKernel K₁)

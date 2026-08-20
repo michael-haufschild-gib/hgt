@@ -142,3 +142,43 @@ Main declarations:
 - [x] module imported by the `RHTower` umbrella
 - [ ] completed prime--Gamma phase families constructed
 - [ ] Xi-zero-fibre compressed mixed derivative proved compact
+
+## Literature audit — 2026-08-20
+
+`[LITERATURE]` This card's fixed-base projection algebra is standard operator geometry, not a
+new analytic construction.  Kato's perturbation theory covers differentiable spectral-projection
+calculus when a suitable isolated spectral subspace is available.
+
+`[LITERATURE]` Connes--Consani, *Quasi-inner functions and local factors*, J. Number Theory 226
+(2021), 139--167, prove compact Hardy off-diagonal blocks for a **completed finite product** of
+local factors and prove that individual non-archimedean local ratios are not quasi-inner.  That is
+the correct literature antecedent for the completed, rather than one-prime, compact cancellation
+required here; it contains neither a two-parameter projection jet nor an Xi-fibre mixed-curvature
+identity.
+
+`[LITERATURE]` Connes--Consani--Moscovici, *Zeta zeros and prolate wave operators: semilocal
+adelic operators*, Ann. Funct. Anal. 15 (2024), Art. 87, prove stability of semilocal Sonin spaces
+and propose a semilocal prolate operator.  They explicitly leave a further candidate to future
+work.  Their result supplies an operator setting, not the completed differentiable family in this
+card.
+
+`[LITERATURE]` Their subsequent preprint *Zeta Spectral Triples* (arXiv:2511.22755, 2025)
+constructs a different finite-Euler-product rank-one-perturbation model.  Its Section 8 explicitly
+lists two missing convergence steps.  Connes' 2026 survey (arXiv:2602.04022, §7.4) recalls
+semilocal sharp time/frequency projections `P_T^S` and `P_hat_W^S`, but does not state a
+norm-differentiable two-parameter prime--Gamma family or the compact compressed mixed derivative
+required above.
+
+`[CORPUS]` The sharp cutoff family cannot itself fill the Lean hypothesis: for distinct cutoffs,
+the corresponding multiplication projections differ by norm one on a non-null annulus.  Hence it
+is not norm-continuous, let alone norm-differentiable.  The formal endpoint's `HasDerivAt`
+assumptions demand a genuinely new smooth source, not a restatement of the standard cutoff
+projections.
+
+`[OPEN CORE]` Limited primary-source audit found no paper asserting the exact source theorem:
+a norm-differentiable completed semilocal two-parameter projection family whose normal corners are
+the actual prime--Gamma/Sonin directions and whose base-compressed mixed derivative is compact on
+Xi fibres.  This is a project-local open core, **not** a claim that the question is a named or
+globally unproved problem.  Any proposed construction must first prove its source-to-operator
+identification before zero-fibre specialization; otherwise the existing Calkin equivalence makes
+the assertion circular with RH.

@@ -6840,3 +6840,106 @@ each of its five groups is `o(M²)`.
 
 Note the interface also shows what the *existing* `9/10 < β` theorem is spending: nothing in the
 Gallagher layer, only in the head bound.
+
+### CORRECTION — the per-block discrepancy is unusable; the ladder must pay it once (2026-08-20)
+
+The first version of `Sieve/RamareLadderSupMeanSquare` and `Sieve/RamareLadderHM` was built on
+`Sieve/RamareBlockSplitOn.setIntegral_normSq_ramareBilinear_le_ladder_assembled`, whose discrepancy
+is **per block and multiplied by `(#B_j)²`**:
+
+```text
+   ramareStepDefect P M Q η W j = 2(#B_j)²·(2(5π/2·W + 5e/2·M)·((1+M)η/R_j + 5 + M/R_j²))
+```
+
+Checking that against the budget kills it twice over.  Relative to `M²`, with the block count `L`
+in front and `#B_j ≍ ηR_j/log R_j`:
+
+```text
+   the (1+M)η/R_j part  →  10L·η·∑_j (#B_j)²/R_j  ≍  η·R_max/log R_max ,
+   the M/R_j²   part    →  10L·∑_j (#B_j)²/R_j²   ≍  10L²η²/(log R_max)² = 10 ,
+```
+
+so the second is a **constant** — it never vanishes, whatever the parameters — and the first needs
+`η ≲ log R_max/R_max`, i.e. a block ratio exponentially small in the top of the range.
+
+The sharp form pays the discrepancy **once**, as a single prime-shifted family
+(`ramareLadderError`), and its budget is
+`(5π/2·W + 5e/2·⌊M(1+η)⌋)·ladderDefectSum L M Q η` with
+
+```text
+   ladderDefectSum ≍ (log M/log R_min)·( Lη²M + 5R_max + M/R_min + 5L ) ,
+```
+
+whose quotient by `M²` is `≍ (log M/log R_min)(ηlog R_max + R_max/M + 1/R_min + L/(ηM))` — every
+term vanishing for `R_max ≤ h`, `log R_min ≍ log log x`, `η` a small negative power of `log x`.
+
+Both orientation lemmas were rebuilt on
+`Sieve/RamareLadderSupMeanSquare.setIntegral_normSq_ramareBilinear_le_ladder_error`, the
+set-parametric form of `Sieve/RamareBlockSplit.integral_normSq_ramareBilinear_le_ladder_error`
+(its proof is pointwise, so it restricts to any measurable set):
+
+```text
+   ∫_E ‖ramareBilinear P M‖²  ≤  2L·∑_{j<L} ∫_E ‖P_j·C_j‖²  +  2·∫_E ‖ramareLadderError‖²
+```
+
+and `Sieve/MoebiusTwoRangeWindow` now carries `2∫_{|w|≤W}‖ramareLadderError‖²` in each half instead
+of `∑_j ramareStepDefect`.  Rebuilt, axiom-clean, wired.
+
+**Lesson for this lane**: the crude per-block discrepancy is only usable when the prime range is
+short; every arrangement that lets the range reach `h` must use `ramareLadderError`.
+
+### Bricks 111–112 — the disc and rough groups, relative to `M²` (2026-08-20)
+
+| theorem | content |
+|-|-|
+| `Sieve/MoebiusDiscRate.exists_eventually_setIntegral_disc_fibre_le` | the disc bound at the fibre length `√x + h` |
+| **`Sieve/MoebiusDiscRate.tendsto_discRelative`** | `2w₀(K·N·e^{−(log N)^{1/20}})²/⌊N⌋² → 0` — the disc group vanishes, `N = √x + h` |
+| **`Sieve/MoebiusHeadBudget.roughGroup_le`** | `(5π/2·W + 5e/2·M)·((M + 2\|P\|)/A)/M² ≤ 10W/(AM) + 20W\|P\|/(AM²) + 7/A + 14\|P\|/(AM)` — every term carries `1/A`, so a designated range of divergent harmonic mass makes the rough group vanish |
+| `Sieve/RamareRoughSetSplit.integral_Icc_normSq_roughPoly_le_harmonic` | the rough mean square with Turán's count substituted |
+| `Sieve/MoebiusTwoRangeWindow.measureReal_annulusLarge_le` | `\|𝒰\| ≤ ∑_k \|shortExceptional (geomBlock …) W (V k)\|` — the moment method's entry point |
+
+Remaining for `averagedMeanSquare_moebius_scaled'` at `1/2 < β < 1`: the two **ladder** groups —
+`2L∑_j V_j²(5π/2·W + 5e/2·⌊M/R_j⌋)#C_j` on the small half and `2L'∑_j V'_j²·ladderHMBound` on the
+large half — plus `2∫‖ramareLadderError‖²` for each range, at the parameters
+`log R_min ≍ log log x`, `R_max = h`, `V_j = θ·#B_j`, `θ = (log x)^{−A}`, `9/10 < a < b < 1`.
+
+### The Halász–Montgomery kernel constant is the real bottleneck (2026-08-20)
+
+Checking the large half of the two-range budget against
+`Sieve/PlainKernelMass.setIntegral_normSq_dirPoly_le_explicit` shows its constant is fatal:
+
+```text
+   row mass  ≤  2N + ( (log₂N + 1)·214√(2T) + 3072·N )·|E| ,
+```
+
+the `3072·N` coming from `sup_{|v| ≥ 1}` of the affine envelope `214√|v| + 3072N/√|v|`, attained at
+`|v| = 1`.  So the bound only improves on the trivial `|E|·N²` when `|E| ≲ 1/3072`, and the moment
+method can **never** deliver that: with `k` forced by `N^k ≲ T` one has `k·log R_j ≈ log T`, so the
+saving is `T^{−1+o(1)}` and `|𝒰| ≈ T^{o(1)} ≥ 1` always.  Optimising the near-band width `v₀` does
+not help either — balancing `2v₀N` against `3072N|E|/√v₀` gives `≍ N|E|^{2/3}`, still growing.
+
+**What the classical Lemma 2.6 has that this does not** is the *Kuzmin–Landau* decay `N/|v|`, not
+`N/√|v|`.  The corpus already owns it per dyadic block —
+`Sieve/HuxleyLogPhase.norm_logPhase_dyadic_le_kuzminLandau : ≤ 6π·2^j/t + 1`, valid exactly when
+`3t ≤ 4π·2^j` — but `Sieve/LogPhaseKernelBound.norm_sum_Icc_logPhase_le` assembles the blocks with
+the *second-derivative* envelope alone, which is the right choice for the small blocks and the wrong
+one for the large ones.  Splitting the dyadic range at `2^{J₀} ≍ 3t/(4π)`:
+
+```text
+   ∑_{j < J₀}  (214√t + 1536·2^j/√t)   ≤  214·J₀·√t + 4608√t/π ,
+   ∑_{j ≥ J₀}  (6π·2^j/t + 1)          ≤  12π·M/t + log₂M + 1 ,
+```
+
+giving the classical shape
+
+```text
+   ‖∑_{n ≤ M} n^{−it}‖  ≤  214(log₂ t + 1)√t + 1466√t + 12π·M/t + log₂M + 1     (t ≥ 1)
+```
+
+and hence the row mass `2N + 24π·N·log(2T) + (214 log₂(2T) + 1466)√(2T)·|E| + (log₂N+1)|E|`, i.e.
+Lemma 2.6's `N log T + |E|√T log T`.  The HM condition then reads `|𝒰| ≲ N/√T`, which unwinds — as
+in the design entry — to `log R_min ≳ 2C₁ ≍ log log x`, and *that* is what makes the low range's
+bottom polylogarithmic and the whole architecture reach `β > 1/2`.
+
+**So the next brick is the Kuzmin–Landau assembly of the log-phase kernel**, and it is the last
+place where a constant, rather than an idea, is missing.

@@ -14,7 +14,8 @@ These records make explicit the assumptions that a physical HLS theorem would
 need.  They are data interfaces only: this file postulates no axiom, constructs
 no purported QFT model, and proves no classification result.  The generator
 interface uses Mathlib's densely defined `LinearPMap` adjoint and records actual
-self-adjointness; it still does not differentiate a group representation.
+self-adjointness.  `HLSGeneratorIntegrationData` separately ties those generators
+to strongly continuous one-parameter Poincaré flows.
 
 Together with `HLSKinematics` and `HLSScattering`, this separates the available
 finite algebraic infrastructure from the still-open analytic HLS theorem.
@@ -22,6 +23,7 @@ finite algebraic infrastructure from the still-open analytic HLS theorem.
 
 noncomputable section
 
+open Filter
 open scoped Topology
 
 namespace GaloisForLFunctions.HTGeometry
@@ -71,6 +73,16 @@ structure HLSOneParticleData (A : Type v) (E : Type u) [NormedAddCommGroup E]
   spin_statistics : ∀ a, fermionic a ↔ Odd (spinTwice a)
   finite_multiplicity_at_mass : ∀ m, Set.Finite {a | mass a = m}
   finite_multiplicity_below_mass : ∀ m, Set.Finite {a | mass a ≤ m}
+
+/-- Bosonic particle labels have integral spin, as a direct consequence of the supplied
+spin--statistics equivalence. -/
+theorem HLSOneParticleData.bosonic_spin_twice_even {A : Type v} {E : Type u}
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (data : HLSOneParticleData A E) (a : A) (ha : ¬ data.fermionic a) :
+    Even (data.spinTwice a) := by
+  apply Int.not_odd_iff_even.mp
+  intro hodd
+  exact ha ((data.spin_statistics a).mpr hodd)
 
 /-- Unitary representation of the proper orthochronous Poincaré group. -/
 structure HLSPoincareRepresentation (E : Type u) [NormedAddCommGroup E]
@@ -128,11 +140,32 @@ structure HLSFockStateCompletionData (B : Type v) (F : Type w) [AddCommGroup B] 
     [InnerProductSpace ℂ E] [CompleteSpace E] where
   sectors : HLSStateSectorData E
   completion : HLSAlgebraicFock B F →ₗ[ℂ] E
+  completion_injective : Function.Injective completion
   dense_range : Dense (Set.range completion)
   vacuum_image : completion 1 = sectors.vacuum
+  parity_compatible : ∀ x,
+    sectors.fermionParity (completion x) = completion (hlsFockParity B F x)
   boson_creation_in_bosonic : ∀ b, completion (hlsBosonCreate B F b) ∈ sectors.bosonicSector
   fermion_creation_in_fermionic : ∀ f,
     completion (hlsFermionCreate B F f) ∈ sectors.fermionicSector
+
+/-- Physical parity fixes a completed bosonic creation state. -/
+theorem HLSFockStateCompletionData.parity_boson_creation {B : Type v} {F : Type w}
+    [AddCommGroup B] [Module ℂ B] [AddCommGroup F] [Module ℂ F] {E : Type u}
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (data : HLSFockStateCompletionData B F E) (b : B) :
+    data.sectors.fermionParity (data.completion (hlsBosonCreate B F b)) =
+      data.completion (hlsBosonCreate B F b) := by
+  rw [data.parity_compatible, hlsFockParity_apply_bosonCreate]
+
+/-- Physical parity negates a completed fermionic creation state. -/
+theorem HLSFockStateCompletionData.parity_fermion_creation {B : Type v} {F : Type w}
+    [AddCommGroup B] [Module ℂ B] [AddCommGroup F] [Module ℂ F] {E : Type u}
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (data : HLSFockStateCompletionData B F E) (f : F) :
+    data.sectors.fermionParity (data.completion (hlsFermionCreate B F f)) =
+      -data.completion (hlsFermionCreate B F f) := by
+  rw [data.parity_compatible, hlsFockParity_apply_fermionCreate, map_neg]
 
 /-- Unitary representation of a spin-Poincaré group after supplying the missing algebraic
 spin-to-Lorentz cover data. -/
@@ -212,11 +245,13 @@ def hlsDomainAnticommutator {E : Type u} [NormedAddCommGroup E] [InnerProductSpa
   A.comp B + B.comp A
 
 /-- Exact Poincaré Lie-algebra relations for self-adjoint generators, expressed on their common
-invariant domain.  This supplies the infinitesimal Lorentz assumptions used by HLS; it does not
-claim that the supplied group action differentiates to these operators. -/
+invariant domain.  `HLSGeneratorIntegrationData` can further identify these generators with
+derivatives of a strongly continuous group action. -/
 structure HLSInfinitesimalPoincareLieData (E : Type u) [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [CompleteSpace E] where
   generators : HLSInfinitesimalPoincareData E
+  lorentz_antisymmetric : ∀ μ ν,
+    generators.lorentzOnDomain μ ν = -generators.lorentzOnDomain ν μ
   translations_commute : ∀ μ ν,
     hlsDomainCommutator generators.commonDomain (generators.translationOnDomain μ)
       (generators.translationOnDomain ν) = 0
@@ -239,10 +274,10 @@ The `-i` convention makes a self-adjoint generator `T` satisfy `U(t) = exp(-itT)
 def hlsUnitaryGeneratorDerivative {E : Type u} [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [CompleteSpace E]
     (action : HLSPhysicalPoincareGroup →* (E ≃ₗᵢ[ℂ] E))
-    (flow : ℝ → HLSPhysicalPoincareGroup) (D : Submodule ℂ E) (T : E →ₗ.[ℂ] E) : Prop :=
+    (flow : ℝ → HLSPhysicalPoincareGroup) (D : Submodule ℂ E) (T : D →ₗ[ℂ] E) : Prop :=
   ∀ ψ : D, Tendsto
     (fun t : ℝ => (t : ℂ)⁻¹ • (action (flow t) (ψ : E) - (ψ : E)))
-    (𝓝[≠] (0 : ℝ)) (𝓝 (-Complex.I • T ⟨(ψ : E), ψ.property⟩))
+    (𝓝[≠] (0 : ℝ)) (𝓝 (-Complex.I • T ψ))
 
 /-- Integration data connecting a strongly continuous Poincaré representation with its
 self-adjoint infinitesimal translation and Lorentz generators.  Translation flows are fixed to
@@ -262,10 +297,22 @@ structure HLSGeneratorIntegrationData (E : Type u) [NormedAddCommGroup E]
     inferInstance hlsPhysicalPoincareTopology (lorentzFlow μ ν)
   translation_derivative : ∀ μ,
     hlsUnitaryGeneratorDerivative representation.action (translationFlow μ) generators.commonDomain
-      (generators.translation μ).operator
+      (generators.commonDomain.subtype.comp (generators.translationOnDomain μ))
   lorentz_derivative : ∀ μ ν,
     hlsUnitaryGeneratorDerivative representation.action (lorentzFlow μ ν) generators.commonDomain
-      (generators.lorentz μ ν).operator
+      (generators.commonDomain.subtype.comp (generators.lorentzOnDomain μ ν))
+
+/-- The prescribed coordinate translation flows are continuous; no additional continuity premise
+is needed for them. -/
+theorem HLSGeneratorIntegrationData.translationFlow_continuous {E : Type u}
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (data : HLSGeneratorIntegrationData E) (μ : Fin 4) :
+    @Continuous ℝ HLSPhysicalPoincareGroup inferInstance hlsPhysicalPoincareTopology
+      (data.translationFlow μ) := by
+  have hflow : data.translationFlow μ = hlsTranslationAt μ :=
+    funext (data.translationFlow_eq μ)
+  rw [hflow]
+  exact hlsTranslationAt_continuous μ
 
 /-- The invariant alternating tensor on two-component Weyl spinors. -/
 def hlsWeylEpsilon : Matrix (Fin 2) (Fin 2) ℂ :=
@@ -304,6 +351,9 @@ structure HLSWeylSuperalgebraData (N : Type v) [DecidableEq N] (E : Type u)
   conjugateSupercharge : N → Fin 2 → commonDomain →ₗ[ℂ] commonDomain
   sigma : Fin 4 → Matrix (Fin 2) (Fin 2) ℂ
   centralCharge : N → N → commonDomain →ₗ[ℂ] commonDomain
+  conjugate_adjoint : ∀ I α (ψ φ : commonDomain),
+    inner ℂ (supercharge I α ψ : E) (φ : E) =
+      inner ℂ (ψ : E) (conjugateSupercharge I α φ : E)
   mixed_anticommutator : ∀ I J α β,
     hlsDomainAnticommutator commonDomain (supercharge I α) (conjugateSupercharge J β) =
       ∑ μ, (if I = J then (2 : ℂ) * sigma μ α β else 0) • translation μ
@@ -336,6 +386,9 @@ structure HLSPoincareWeylSuperalgebraData (N : Type v) [DecidableEq N] (E : Type
   sigma : Fin 4 → Matrix (Fin 2) (Fin 2) ℂ
   centralCharge : N → N → poincare.generators.commonDomain →ₗ[ℂ]
     poincare.generators.commonDomain
+  conjugate_adjoint : ∀ I α (ψ φ : poincare.generators.commonDomain),
+    inner ℂ (supercharge I α ψ : E) (φ : E) =
+      inner ℂ (ψ : E) (conjugateSupercharge I α φ : E)
   translation_commutes_supercharge : ∀ I μ α,
     hlsDomainCommutator poincare.generators.commonDomain
       (poincare.generators.translationOnDomain μ) (supercharge I α) = 0
@@ -367,6 +420,15 @@ structure HLSPoincareWeylSuperalgebraData (N : Type v) [DecidableEq N] (E : Type
         (conjugateSupercharge I α) ψ : poincare.generators.commonDomain) : E)
       (ψ : E)).re
 
+/-- A Weyl superalgebra whose Poincaré generators are the actual derivatives of a strongly
+continuous physical Poincaré action.  This removes the otherwise possible mismatch between the
+group representation used by scattering and the infinitesimal algebra used by supercharges. -/
+structure HLSIntegratedPoincareWeylSuperalgebraData (N : Type v) [DecidableEq N] (E : Type u)
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E] where
+  integration : HLSGeneratorIntegrationData E
+  superalgebra : HLSPoincareWeylSuperalgebraData N E
+  generators_agree : superalgebra.poincare.generators = integration.generators
+
 /-- A unitary scattering operator together with its exact Poincaré invariance. -/
 structure HLSSMatrixData (E : Type u) [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [CompleteSpace E] where
@@ -380,8 +442,12 @@ fixed by scattering, while the multiparticle sector is invariant. -/
 structure HLSPhysicalScatteringData (A : Type v) (E : Type u) [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [CompleteSpace E] where
   particlePoincare : HLSOneParticlePoincareData A E
+  stronglyContinuousPoincare : HLSStronglyContinuousPoincareRepresentation E
+  stronglyContinuous_agrees : stronglyContinuousPoincare.toPoincareRepresentation =
+    particlePoincare.poincare
   sMatrix : HLSSMatrixData E
   poincare_agrees : sMatrix.poincare = particlePoincare.poincare
+  scattering_nontrivial : ∃ ψ, sMatrix.scattering ψ ≠ ψ
   vacuum_fixed : sMatrix.scattering particlePoincare.sectors.vacuum = particlePoincare.sectors.vacuum
   oneParticle_fixed : ∀ ψ ∈ particlePoincare.sectors.oneParticleSector,
     sMatrix.scattering ψ = ψ
@@ -415,6 +481,24 @@ structure HLSSMatrixWeylSymmetryData (N : Type v) [DecidableEq N] (E : Type u)
   supercharge_commutes_scattering : ∀ I α,
     hlsDomainCommutator commonDomain scatteringOnDomain (supercharge I α) = 0
 
+/-- Physical scattering symmetry for the same integrated Weyl superalgebra that acts on the
+strongly continuous Poincaré representation.  The domain action is a literal restriction of the
+unitary S-matrix, so these are not independent abstract scattering and supercharge systems. -/
+structure HLSPhysicalWeylScatteringData (N : Type v) [DecidableEq N] (A : Type w) (E : Type u)
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E] where
+  physicalScattering : HLSPhysicalScatteringData A E
+  physicalWeyl : HLSIntegratedPoincareWeylSuperalgebraData N E
+  scatteringOnDomain : physicalWeyl.superalgebra.poincare.generators.commonDomain →ₗ[ℂ]
+    physicalWeyl.superalgebra.poincare.generators.commonDomain
+  scattering_agrees : ∀ ψ : physicalWeyl.superalgebra.poincare.generators.commonDomain,
+    (scatteringOnDomain ψ : E) = physicalScattering.sMatrix.scattering (ψ : E)
+  supercharge_commutes_scattering : ∀ I α,
+    hlsDomainCommutator physicalWeyl.superalgebra.poincare.generators.commonDomain
+      scatteringOnDomain (physicalWeyl.superalgebra.supercharge I α) = 0
+  conjugateSupercharge_commutes_scattering : ∀ I α,
+    hlsDomainCommutator physicalWeyl.superalgebra.poincare.generators.commonDomain
+      scatteringOnDomain (physicalWeyl.superalgebra.conjugateSupercharge I α) = 0
+
 /-- Additive action on ordered finite asymptotic configurations. -/
 structure HLSAdditiveGeneratorData (E : Type u) [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [CompleteSpace E] (A : Type v) where
@@ -444,10 +528,9 @@ structure HLSMassPreservingGeneratorData (A : Type u) where
   transition : A → A → Prop
   connects_equal_mass : ∀ a b, transition a b → mass a = mass b
 
-/-- Massive-sector assumptions used to avoid vacuum degeneracy, massless infrared behavior, and
-infinite low-mass particle towers.  `infraredRegularity` remains a named proposition because the
-present finite-order distributional-kernel interface does not formalize massless infrared
-estimates. -/
+/-- Massive-sector assumptions excluding vacuum degeneracy, massless particles, and infinite
+low-mass towers.  The positive mass gap is the explicit infrared restriction for this massive HLS
+setting. -/
 structure HLSMassiveSectorRestrictions (E : Type u) [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [CompleteSpace E] (A : Type v) where
   vacuum : E
@@ -456,7 +539,6 @@ structure HLSMassiveSectorRestrictions (E : Type u) [NormedAddCommGroup E]
   mass : A → ℝ
   positive_mass : ∀ a, 0 < mass a
   mass_gap : ∃ m₀, 0 < m₀ ∧ ∀ a, m₀ ≤ mass a
-  infraredRegularity : Prop
 
 /-- A finite-order distributional generator kernel on a momentum-space open region. -/
 structure HLSDistributionalGeneratorKernelData where
@@ -471,10 +553,19 @@ structure HLSAnalyticScatteringData where
   physicalRegion : Set (ℂ × ℂ)
   normalThresholds : Set (ℂ × ℂ)
   regularPhysicalRegion : Set (ℂ × ℂ)
+  normal_thresholds_closed : IsClosed normalThresholds
   regular_region : regularPhysicalRegion = physicalRegion \ normalThresholds
   analytic_regular_region : AnalyticOn ℂ elasticAmplitude regularPhysicalRegion
   scattering_occurs : ∃ st ∈ regularPhysicalRegion, elasticAmplitude st ≠ 0
   scattering_generic : regularPhysicalRegion ⊆
     closure {st | st ∈ regularPhysicalRegion ∧ elasticAmplitude st ≠ 0}
+
+/-- Combined physical S-matrix and analytic elastic-amplitude input.  Relating a concrete Hilbert
+space S-matrix to LSZ amplitudes is deliberately left as an explicit further construction rather
+than silently identifying these two levels. -/
+structure HLSPhysicalAnalyticScatteringInput (A : Type v) (E : Type u)
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E] where
+  physicalScattering : HLSPhysicalScatteringData A E
+  analyticElastic : HLSAnalyticScatteringData
 
 end GaloisForLFunctions.HTGeometry

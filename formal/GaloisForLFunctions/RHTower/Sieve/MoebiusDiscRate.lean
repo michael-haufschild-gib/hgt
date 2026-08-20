@@ -102,6 +102,75 @@ theorem exists_eventually_setIntegral_disc_fibre_le {hh : ℝ → ℝ}
   have hbase := hN₀ (Real.sqrt x + hh x) hN w₀ hw₀ hpi
   exact hbase
 
+/-- **The disc contributes nothing relative to `M²`.**  The Route-T rate beats the constant length
+of the disc, and the floor loses at most a factor four. -/
+theorem tendsto_discRelative {hh : ℝ → ℝ} (hh0 : ∀ᶠ x : ℝ in Filter.atTop, 0 ≤ hh x)
+    {w₀ K : ℝ} (hw₀ : 0 ≤ w₀) :
+    Filter.Tendsto (fun x : ℝ =>
+        2 * w₀ * (K * (Real.sqrt x + hh x)
+            * Real.exp (-((Real.log (Real.sqrt x + hh x)) ^ ((1 : ℝ) / 20)))) ^ 2
+          / ((⌊Real.sqrt x + hh x⌋₊ : ℕ) : ℝ) ^ 2)
+      Filter.atTop (nhds 0) := by
+  have hgto : Filter.Tendsto (fun x : ℝ => (Real.log x / 2) ^ ((1 : ℝ) / 20))
+      Filter.atTop Filter.atTop :=
+    (tendsto_rpow_atTop (by norm_num)).comp
+      (Real.tendsto_log_atTop.atTop_div_const (by norm_num))
+  have hEto : Filter.Tendsto (fun x : ℝ => Real.exp (-((Real.log x / 2) ^ ((1 : ℝ) / 20))))
+      Filter.atTop (nhds 0) := Real.tendsto_exp_neg_atTop_nhds_zero.comp hgto
+  have hmaj : Filter.Tendsto (fun x : ℝ =>
+      8 * w₀ * K ^ 2 * Real.exp (-((Real.log x / 2) ^ ((1 : ℝ) / 20))) ^ 2)
+      Filter.atTop (nhds 0) := by
+    have := (hEto.pow 2).const_mul (8 * w₀ * K ^ 2)
+    simpa using this
+  refine squeeze_zero' (g := fun x : ℝ =>
+    8 * w₀ * K ^ 2 * Real.exp (-((Real.log x / 2) ^ ((1 : ℝ) / 20))) ^ 2) ?_ ?_ hmaj
+  · filter_upwards [hh0, Filter.eventually_ge_atTop (4 : ℝ)] with x hx hx4
+    positivity
+  · filter_upwards [hh0, Filter.eventually_ge_atTop (4 : ℝ)] with x hx hx4
+    set N : ℝ := Real.sqrt x + hh x with hN
+    have hs2 : (2 : ℝ) ≤ Real.sqrt x := by
+      rw [show (2 : ℝ) = Real.sqrt 4 by rw [show (4 : ℝ) = 2 ^ 2 by norm_num,
+        Real.sqrt_sq (by norm_num)]]
+      exact Real.sqrt_le_sqrt hx4
+    have hN2 : (2 : ℝ) ≤ N := by rw [hN]; linarith
+    have hM : N - 1 ≤ ((⌊N⌋₊ : ℕ) : ℝ) := by
+      have := Nat.sub_one_lt_floor N
+      linarith
+    have hMhalf : N / 2 ≤ ((⌊N⌋₊ : ℕ) : ℝ) := by linarith
+    have hM0 : (0 : ℝ) < ((⌊N⌋₊ : ℕ) : ℝ) := by linarith
+    have hlogN : Real.log x / 2 ≤ Real.log N := by
+      have hsq : Real.log (Real.sqrt x) = Real.log x / 2 := Real.log_sqrt (by linarith)
+      rw [← hsq]
+      exact Real.log_le_log (by linarith) (by rw [hN]; linarith)
+    have hlog0 : (0 : ℝ) ≤ Real.log x / 2 := by
+      have : (0 : ℝ) ≤ Real.log x := Real.log_nonneg (by linarith)
+      linarith
+    have hrpow : (Real.log x / 2) ^ ((1 : ℝ) / 20) ≤ (Real.log N) ^ ((1 : ℝ) / 20) :=
+      Real.rpow_le_rpow hlog0 hlogN (by norm_num)
+    have hEle : Real.exp (-((Real.log N) ^ ((1 : ℝ) / 20)))
+        ≤ Real.exp (-((Real.log x / 2) ^ ((1 : ℝ) / 20))) := by
+      exact Real.exp_le_exp.2 (by linarith)
+    have hE0 : (0 : ℝ) ≤ Real.exp (-((Real.log N) ^ ((1 : ℝ) / 20))) := (Real.exp_pos _).le
+    set E : ℝ := Real.exp (-((Real.log N) ^ ((1 : ℝ) / 20))) with hEdef
+    set E₀ : ℝ := Real.exp (-((Real.log x / 2) ^ ((1 : ℝ) / 20))) with hE₀def
+    have hratio : N ^ 2 / ((⌊N⌋₊ : ℕ) : ℝ) ^ 2 ≤ 4 := by
+      rw [div_le_iff₀ (by positivity)]
+      nlinarith [hMhalf, hM0, hN2]
+    have hrw : 2 * w₀ * (K * N * E) ^ 2 / ((⌊N⌋₊ : ℕ) : ℝ) ^ 2
+        = 2 * w₀ * K ^ 2 * E ^ 2 * (N ^ 2 / ((⌊N⌋₊ : ℕ) : ℝ) ^ 2) := by
+      field_simp
+    rw [hrw]
+    have hEsq : E ^ 2 ≤ E₀ ^ 2 := by
+      have := pow_le_pow_left₀ hE0 hEle 2
+      exact this
+    have hpos : (0 : ℝ) ≤ 2 * w₀ * K ^ 2 * E ^ 2 := by positivity
+    have hstep1 : 2 * w₀ * K ^ 2 * E ^ 2 * (N ^ 2 / ((⌊N⌋₊ : ℕ) : ℝ) ^ 2)
+        ≤ 2 * w₀ * K ^ 2 * E ^ 2 * 4 := mul_le_mul_of_nonneg_left hratio hpos
+    have hstep2 : 2 * w₀ * K ^ 2 * E ^ 2 * 4 ≤ 8 * w₀ * K ^ 2 * E₀ ^ 2 := by
+      have hc : (0 : ℝ) ≤ 8 * w₀ * K ^ 2 := by positivity
+      nlinarith [hEsq, hc]
+    linarith
+
 end
 
 end RHTower.Sieve

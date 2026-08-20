@@ -118,6 +118,37 @@ theorem headBudget_le {M δ h ω B : ℝ} (hM : 0 < M) (hh : 1 ≤ h) (hω : 1 �
     linarith
   linarith
 
+/-- **The rough group, relative to `M²`.**  Turán's rough count `(M + 2|P|)/A` against the mean
+value theorem: every term carries `1/A`, so a designated range of divergent harmonic mass makes the
+whole group vanish. -/
+theorem roughGroup_le {W M A cP : ℝ} (hW : 0 ≤ W) (hM : 0 < M) (hA : 0 < A) (hcP : 0 ≤ cP) :
+    (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * M) * ((M + 2 * cP) / A) / M ^ 2
+      ≤ 10 * W / (A * M) + 20 * W * cP / (A * M ^ 2) + 7 / A + 14 * cP / (A * M) := by
+  have hπ4 : Real.pi ≤ 4 := Real.pi_le_four
+  have hπ0 : (0 : ℝ) < Real.pi := Real.pi_pos
+  have he : Real.exp 1 < 2.7182818286 := Real.exp_one_lt_d9
+  have he0 : (0 : ℝ) < Real.exp 1 := Real.exp_pos 1
+  have hcoef : 5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * M ≤ 10 * W + 7 * M := by
+    nlinarith [hW, hM.le, hπ4, he]
+  have hmass : (0 : ℝ) ≤ (M + 2 * cP) / A := by positivity
+  have hM2 : (0 : ℝ) < M ^ 2 := by positivity
+  have hstep : (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * M) * ((M + 2 * cP) / A) / M ^ 2
+      ≤ (10 * W + 7 * M) * ((M + 2 * cP) / A) / M ^ 2 := by
+    have hnum := mul_le_mul_of_nonneg_right hcoef hmass
+    have hnn : (0 : ℝ) ≤ ((10 * W + 7 * M) * ((M + 2 * cP) / A)
+        - (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * M) * ((M + 2 * cP) / A)) / M ^ 2 :=
+      div_nonneg (by linarith) hM2.le
+    have hdiff : ((10 * W + 7 * M) * ((M + 2 * cP) / A)
+        - (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * M) * ((M + 2 * cP) / A)) / M ^ 2
+        = (10 * W + 7 * M) * ((M + 2 * cP) / A) / M ^ 2
+          - (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * M) * ((M + 2 * cP) / A) / M ^ 2 := by
+      ring
+    rw [hdiff] at hnn
+    linarith
+  refine hstep.trans (le_of_eq ?_)
+  field_simp
+  ring
+
 end
 
 end RHTower.Sieve

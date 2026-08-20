@@ -51,10 +51,10 @@ theorem setIntegral_normSq_cofactorBlock_le_HM (P : Finset ℕ) (M : ℕ) {Q η 
   exact hbase
 
 /-- **The Ramaré ladder on the exceptional set: prime sup from arithmetic, cofactor from
-Halász–Montgomery.** -/
+Halász–Montgomery.**  The discrepancy is paid once, and the row mass of the kernel carries the
+measure of the set rather than the height of the window. -/
 theorem setIntegral_normSq_ramareBilinear_le_ladder_HM {P : Finset ℕ} (M : ℕ)
-    {Q η W : ℝ} (hQ : 1 ≤ Q) (hη : 0 ≤ η) (hW : 1 ≤ W) {L : ℕ} (hL : 1 ≤ L)
-    (hPprime : ∀ q ∈ P, q.Prime)
+    {Q η W : ℝ} (hQ : 0 < Q) (hη : 0 ≤ η) {L : ℕ} (hL : 1 ≤ L)
     (hP : ∀ p ∈ P, Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * (1 + η) ^ L)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     (V : ℕ → ℝ)
@@ -62,17 +62,13 @@ theorem setIntegral_normSq_ramareBilinear_le_ladder_HM {P : Finset ℕ} (M : ℕ
     (hbound : ∀ j ∈ Finset.range L, ∀ w ∈ E,
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ V j) :
     (∫ w in E, ‖ramareBilinear P M w‖ ^ 2)
-      ≤ (L : ℝ) * ∑ j ∈ Finset.range L,
-          (2 * (V j ^ 2 * ladderHMBound M Q η W (volume.real E) j)
-            + 2 * ((geomBlock P Q (1 + η) j).card : ℝ) ^ 2
-                * (2 * (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
-                    * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 4
-                      + (((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2 + 1)))) := by
-  have hQ0 : (0 : ℝ) < Q := lt_of_lt_of_le zero_lt_one hQ
-  refine setIntegral_normSq_ramareBilinear_le_ladder_supMeanSquare (P := P) M hQ hη hW hL
-    hPprime hP hEm hEs V (fun j => ladderHMBound M Q η W (volume.real E) j) hbound ?_
+      ≤ 2 * (L : ℝ) * ∑ j ∈ Finset.range L,
+          V j ^ 2 * ladderHMBound M Q η W (volume.real E) j
+        + 2 * ∫ w in E, ‖ramareLadderError P M Q η L w‖ ^ 2 := by
+  refine setIntegral_normSq_ramareBilinear_le_ladder_supMeanSquare (P := P) M hQ hη hL hP
+    hEm hEs V (fun j => ladderHMBound M Q η W (volume.real E) j) hbound ?_
   intro j hj
-  exact setIntegral_normSq_cofactorBlock_le_HM P M hQ0 hη (hNj j hj) hEm hEs
+  exact setIntegral_normSq_cofactorBlock_le_HM P M hQ hη (hNj j hj) hEm hEs
 
 end
 

@@ -94,6 +94,12 @@ def hlsProperOrthoLorentzGroup :
     · intro p
       simpa using (hg.2.2 (g.symm p)).symm
 
+/-- Inclusion of the proper orthochronous component into the full Lorentz group. -/
+def hlsProperOrthoLorentzToLorentz : hlsProperOrthoLorentzGroup →* hlsLorentzGroup where
+  toFun g := ⟨g.1, g.2.1⟩
+  map_one' := rfl
+  map_mul' _ _ := rfl
+
 /-- The natural action of Lorentz transformations on the additive translation group. -/
 def hlsLorentzAction : hlsLorentzGroup →* MulAut (Multiplicative HLSMinkowskiVector) where
   toFun g := g.1.toAddEquiv.toMultiplicative
@@ -155,15 +161,169 @@ theorem hlsTranslationAt_add (μ : Fin 4) (s t : ℝ) :
     hlsTranslationAt μ (s + t) = hlsTranslationAt μ s * hlsTranslationAt μ t := by
   ext <;> simp [hlsTranslationAt, Pi.single_add]
 
+/-- Coordinate translation is continuous for the explicit physical Poincaré topology. -/
+theorem hlsTranslationAt_continuous (μ : Fin 4) : @Continuous ℝ HLSPhysicalPoincareGroup
+    inferInstance hlsPhysicalPoincareTopology (hlsTranslationAt μ) := by
+  let f : ℝ → HLSMinkowskiVector := fun t => Pi.single μ t
+  apply continuous_induced_rng.2
+  change @Continuous ℝ (Multiplicative HLSMinkowskiVector × hlsProperOrthoLorentzGroup)
+    inferInstance (@instTopologicalSpaceProd (Multiplicative HLSMinkowskiVector)
+      hlsProperOrthoLorentzGroup hlsTranslationTopology hlsProperOrthoLorentzTopology)
+      (fun t => (Multiplicative.ofAdd (f t), 1))
+  refine @Continuous.prodMk (Multiplicative HLSMinkowskiVector) hlsProperOrthoLorentzGroup ℝ
+    hlsTranslationTopology hlsProperOrthoLorentzTopology inferInstance
+      (fun t => Multiplicative.ofAdd (f t)) (fun _ => 1) ?_ ?_
+  · apply continuous_induced_rng.2
+    change Continuous f
+    rw [continuous_pi_iff]
+    intro i
+    dsimp [f]
+    by_cases h : i = μ
+    · subst i
+      convert continuous_id using 1
+      ext a
+      simp
+    · simpa [h] using (continuous_const : Continuous fun _ : ℝ => (0 : ℝ))
+  · apply continuous_induced_rng.2
+    exact continuous_const
+
 /-- The Clifford spin group of the HLS Minkowski form. -/
 abbrev HLSSpinGroup := spinGroup hlsMinkowskiForm
 
+/-- Conjugation by a Clifford-spin element as an algebra equivalence of the ambient Clifford
+algebra. -/
+def hlsSpinConjugation (s : HLSSpinGroup) :
+    CliffordAlgebra hlsMinkowskiForm ≃ₐ[ℝ] CliffordAlgebra hlsMinkowskiForm :=
+  MulSemiringAction.toAlgEquiv ℝ _ (ConjAct.toConjAct (spinGroup.toUnits s))
+
+/-- Concrete Clifford-spin conjugation on the subspace represented by Clifford vectors. -/
+def hlsSpinConjugationOnCliffordVectors (s : HLSSpinGroup) :
+    LinearMap.range (CliffordAlgebra.ι hlsMinkowskiForm) →ₗ[ℝ]
+      LinearMap.range (CliffordAlgebra.ι hlsMinkowskiForm) :=
+  ((hlsSpinConjugation s).toLinearMap.domRestrict
+    (LinearMap.range (CliffordAlgebra.ι hlsMinkowskiForm))).codRestrict
+      (LinearMap.range (CliffordAlgebra.ι hlsMinkowskiForm)) (by
+        rintro ⟨x, p, rfl⟩
+        exact spinGroup.conjAct_smul_ι_mem_range_ι s.property p)
+
+/-- Clifford-spin conjugation sends each represented Minkowski vector to another represented
+vector. -/
+theorem hlsSpinConjugationOnCliffordVectors_apply_ι (s : HLSSpinGroup)
+    (p : HLSMinkowskiVector) :
+    (hlsSpinConjugationOnCliffordVectors s
+      ⟨CliffordAlgebra.ι hlsMinkowskiForm p, LinearMap.mem_range_self _ p⟩ :
+      CliffordAlgebra hlsMinkowskiForm) = hlsSpinConjugation s (CliffordAlgebra.ι hlsMinkowskiForm p) :=
+  rfl
+
+/-- The Clifford embedding of Minkowski vectors is injective.  Mathlib's equivalence with the
+exterior algebra gives this without any signature-specific axiom. -/
+theorem hlsCliffordIota_injective :
+    Function.Injective (CliffordAlgebra.ι hlsMinkowskiForm) := by
+  intro p q hpq
+  apply (ExteriorAlgebra.ι_inj ℝ p q).mp
+  simpa [CliffordAlgebra.equivExterior] using
+    congrArg (CliffordAlgebra.equivExterior hlsMinkowskiForm) hpq
+
+/-- Clifford-spin conjugation is an invertible linear action on represented Minkowski vectors. -/
+def hlsSpinConjugationOnCliffordVectorsEquiv (s : HLSSpinGroup) :
+    LinearMap.range (CliffordAlgebra.ι hlsMinkowskiForm) ≃ₗ[ℝ]
+      LinearMap.range (CliffordAlgebra.ι hlsMinkowskiForm) :=
+  { hlsSpinConjugationOnCliffordVectors s with
+    invFun := hlsSpinConjugationOnCliffordVectors s⁻¹
+    left_inv := by
+      intro x
+      apply Subtype.ext
+      exact show hlsSpinConjugation s⁻¹
+          (hlsSpinConjugation s (x : CliffordAlgebra hlsMinkowskiForm)) = x by
+        simp [hlsSpinConjugation]
+    right_inv := by
+      intro x
+      apply Subtype.ext
+      exact show hlsSpinConjugation s
+          (hlsSpinConjugation s⁻¹ (x : CliffordAlgebra hlsMinkowskiForm)) = x by
+        simp [hlsSpinConjugation] }
+
+/-- Identifies Minkowski space with the subspace of Clifford vectors. -/
+def hlsCliffordIotaRangeEquiv : HLSMinkowskiVector ≃ₗ[ℝ]
+    LinearMap.range (CliffordAlgebra.ι hlsMinkowskiForm) :=
+  LinearEquiv.ofInjective (CliffordAlgebra.ι hlsMinkowskiForm) hlsCliffordIota_injective
+
+/-- Concrete Lorentz linear equivalence induced by a Clifford-spin element. -/
+def hlsSpinMinkowskiLinearEquiv (s : HLSSpinGroup) : HLSMinkowskiVector ≃ₗ[ℝ]
+    HLSMinkowskiVector :=
+  (hlsCliffordIotaRangeEquiv.trans (hlsSpinConjugationOnCliffordVectorsEquiv s)).trans
+    hlsCliffordIotaRangeEquiv.symm
+
+/-- The induced Minkowski action is characterized by Clifford-spin conjugation. -/
+theorem hlsCliffordIota_spinMinkowskiLinearEquiv (s : HLSSpinGroup) (p : HLSMinkowskiVector) :
+    CliffordAlgebra.ι hlsMinkowskiForm (hlsSpinMinkowskiLinearEquiv s p) =
+      hlsSpinConjugation s (CliffordAlgebra.ι hlsMinkowskiForm p) := by
+  change (hlsCliffordIotaRangeEquiv (hlsSpinMinkowskiLinearEquiv s p) :
+    CliffordAlgebra hlsMinkowskiForm) = hlsSpinConjugation s
+      (CliffordAlgebra.ι hlsMinkowskiForm p)
+  simp [hlsSpinMinkowskiLinearEquiv, hlsCliffordIotaRangeEquiv,
+    hlsSpinConjugationOnCliffordVectorsEquiv, hlsSpinConjugationOnCliffordVectors]
+
+/-- The concrete Clifford-spin action preserves the Minkowski quadratic form. -/
+theorem hlsSpinMinkowskiLinearEquiv_preserves_minkowski (s : HLSSpinGroup)
+    (p : HLSMinkowskiVector) :
+    hlsMinkowskiForm (hlsSpinMinkowskiLinearEquiv s p) = hlsMinkowskiForm p := by
+  apply FaithfulSMul.algebraMap_injective ℝ (CliffordAlgebra hlsMinkowskiForm)
+  calc
+    algebraMap ℝ (CliffordAlgebra hlsMinkowskiForm)
+        (hlsMinkowskiForm (hlsSpinMinkowskiLinearEquiv s p)) =
+        CliffordAlgebra.ι hlsMinkowskiForm (hlsSpinMinkowskiLinearEquiv s p) *
+          CliffordAlgebra.ι hlsMinkowskiForm (hlsSpinMinkowskiLinearEquiv s p) := by
+          symm
+          exact CliffordAlgebra.ι_sq_scalar _ _
+    _ = hlsSpinConjugation s (CliffordAlgebra.ι hlsMinkowskiForm p) *
+          hlsSpinConjugation s (CliffordAlgebra.ι hlsMinkowskiForm p) := by
+          rw [hlsCliffordIota_spinMinkowskiLinearEquiv]
+    _ = hlsSpinConjugation s
+          (CliffordAlgebra.ι hlsMinkowskiForm p * CliffordAlgebra.ι hlsMinkowskiForm p) := by
+          symm
+          exact map_mul _ _ _
+    _ = hlsSpinConjugation s
+          (algebraMap ℝ (CliffordAlgebra hlsMinkowskiForm) (hlsMinkowskiForm p)) := by
+          rw [CliffordAlgebra.ι_sq_scalar]
+    _ = algebraMap ℝ (CliffordAlgebra hlsMinkowskiForm) (hlsMinkowskiForm p) := by
+          exact (hlsSpinConjugation s).commutes _
+
+/-- The canonical Clifford construction gives a genuine homomorphism from Spin to the full
+Lorentz group.  Establishing that its image is exactly the proper orthochronous component is
+kept separate below. -/
+def hlsCliffordSpinToLorentz : HLSSpinGroup →* hlsLorentzGroup where
+  toFun s := ⟨hlsSpinMinkowskiLinearEquiv s,
+    hlsSpinMinkowskiLinearEquiv_preserves_minkowski s⟩
+  map_one' := by
+    apply Subtype.ext
+    apply LinearEquiv.ext
+    intro p
+    change hlsSpinMinkowskiLinearEquiv 1 p = p
+    apply hlsCliffordIota_injective
+    rw [hlsCliffordIota_spinMinkowskiLinearEquiv]
+    simp [hlsSpinConjugation]
+  map_mul' := by
+    intro s t
+    apply Subtype.ext
+    apply LinearEquiv.ext
+    intro p
+    change hlsSpinMinkowskiLinearEquiv (s * t) p =
+      hlsSpinMinkowskiLinearEquiv s (hlsSpinMinkowskiLinearEquiv t p)
+    apply hlsCliffordIota_injective
+    rw [hlsCliffordIota_spinMinkowskiLinearEquiv,
+      hlsCliffordIota_spinMinkowskiLinearEquiv,
+      hlsCliffordIota_spinMinkowskiLinearEquiv]
+    simp [hlsSpinConjugation, mul_smul]
+
 /-- Algebraic data of the spin double-cover map required to pass from Mathlib's Clifford spin
 group to the proper orthochronous Lorentz group.  Its two-point kernel and surjectivity make the
-covering degree explicit.  The map itself is not yet constructed in this corpus; recording it as
-data keeps that missing geometric proof explicit. -/
+covering degree explicit.  The canonical map to the full Lorentz group is constructed above;
+this record isolates the still-needed proof that it restricts to a surjective proper two-fold
+cover. -/
 structure HLSSpinLorentzCoverData where
   toLorentz : HLSSpinGroup →* hlsProperOrthoLorentzGroup
+  canonical : hlsProperOrthoLorentzToLorentz.comp toLorentz = hlsCliffordSpinToLorentz
   surjective : Function.Surjective toLorentz
   kernel_equiv_bool : toLorentz.ker ≃ Bool
 
@@ -206,6 +366,19 @@ theorem hlsLorentz_preserves_massShell (g : hlsLorentzGroup) (m : ℝ)
     hlsMassShell m (g.1 p) ↔ hlsMassShell m p := by
   change hlsMinkowskiForm (g.1 p) = m ^ 2 ↔ hlsMinkowskiForm p = m ^ 2
   rw [hlsLorentz_preserves_minkowski]
+
+/-- The concrete Clifford-spin action preserves every physical mass shell. -/
+theorem hlsCliffordSpin_preserves_massShell (s : HLSSpinGroup) (m : ℝ)
+    (p : HLSMinkowskiVector) :
+    hlsMassShell m ((hlsCliffordSpinToLorentz s).1 p) ↔ hlsMassShell m p :=
+  hlsLorentz_preserves_massShell (hlsCliffordSpinToLorentz s) m p
+
+/-- Proper orthochronous Lorentz transformations preserve every physical mass shell. -/
+theorem hlsProperOrthoLorentz_preserves_massShell (g : hlsProperOrthoLorentzGroup) (m : ℝ)
+    (p : HLSMinkowskiVector) :
+    hlsMassShell m (g.1 p) ↔ hlsMassShell m p := by
+  change hlsMinkowskiForm (g.1 p) = m ^ 2 ↔ hlsMinkowskiForm p = m ^ 2
+  rw [g.2.1]
 
 /-- Unit future timelike rest momentum for a unit-mass particle. -/
 def hlsUnitRestMomentum : HLSMinkowskiVector := ![1, 0, 0, 0]

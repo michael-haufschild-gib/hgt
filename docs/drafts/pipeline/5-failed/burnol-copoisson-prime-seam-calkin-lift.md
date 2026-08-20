@@ -234,7 +234,7 @@ prime limit, zero enumeration, or limiting measure is needed at this stage.
   Lemma 6.1 and Theorem 6.4 supply the scale-invariant summation map and its zero-character
   annihilation.
 - A. Connes, C. Consani, H. Moscovici, *Zeta zeros and prolate wave operators*, Ann. Funct. Anal.
-  16 (2025).  The semilocal Hardy--Titchmarsh transform and Sonin-space construction provide the
+  15 (2024), Art. 87.  The semilocal Hardy--Titchmarsh transform and Sonin-space construction provide the
   intended operator setting, but no co-Poisson/time-band lift of `(11)` is stated there.
 
 ## 8. Gates
