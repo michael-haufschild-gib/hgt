@@ -152,6 +152,14 @@ theorem diffCube_add (τ : ι → ℂ) (s : Finset ι) (F G : ℂ → ℂ) :
   exact Finset.sum_congr rfl fun E _ => by ring
 
 omit [DecidableEq ι] in
+/-- The cube is subtractive in its source. -/
+theorem diffCube_sub (τ : ι → ℂ) (s : Finset ι) (F G : ℂ → ℂ) :
+    diffCube τ s (fun z => F z - G z) = fun z => diffCube τ s F z - diffCube τ s G z := by
+  funext z
+  simp only [diffCube, ← Finset.sum_sub_distrib]
+  exact Finset.sum_congr rfl fun E _ => by ring
+
+omit [DecidableEq ι] in
 /-- The cube commutes with a one-step difference. -/
 theorem diffCube_shiftDiffFun_comm (τ : ι → ℂ) (s : Finset ι) (h : ℂ) (F : ℂ → ℂ) :
     diffCube τ s (shiftDiffFun h F) = shiftDiffFun h (diffCube τ s F) := by

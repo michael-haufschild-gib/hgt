@@ -99,19 +99,18 @@ theorem deningerKummerReciprocityHom_eq_iff (K : Type*) [Field K] [NumberField K
       IsOfFinOrder (((u * v⁻¹ : Kˣ) : K)) := by
   constructor
   · intro h
-    have hsub : deningerKummerReciprocityHom K
-        (Additive.ofMul u - Additive.ofMul v) = 0 := by
-      rw [map_sub, sub_eq_zero]
-      exact h
-    exact (deningerKummerReciprocityHom_eq_zero_iff K (u * v⁻¹)).mp (by simpa using hsub)
+    apply (deningerKummerReciprocityHom_eq_zero_iff K (u * v⁻¹)).mp
+    change deningerKummerReciprocityHom K (Additive.ofMul u + -Additive.ofMul v) = 0
+    rw [map_add, map_neg]
+    rw [h, add_neg_cancel]
   · intro h
     have hzero : deningerKummerReciprocityHom K (Additive.ofMul (u * v⁻¹)) = 0 :=
       (deningerKummerReciprocityHom_eq_zero_iff K (u * v⁻¹)).mpr h
-    have hsub : deningerKummerReciprocityHom K
-        (Additive.ofMul u - Additive.ofMul v) = 0 := by
-      simpa using hzero
-    rw [map_sub, sub_eq_zero] at hsub
-    exact hsub
+    change deningerKummerReciprocityHom K (Additive.ofMul u + -Additive.ofMul v) = 0 at hzero
+    rw [map_add, map_neg] at hzero
+    apply add_right_cancel (b := -deningerKummerReciprocityHom K (Additive.ofMul v))
+    rw [hzero]
+    exact (add_neg_cancel (deningerKummerReciprocityHom K (Additive.ofMul v))).symm
 
 /-- The range of the reciprocity-valued Kummer homomorphism is exactly the family of Kummer
 currents regarded inside the product-formula kernel. -/

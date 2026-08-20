@@ -236,8 +236,9 @@ of the all-depth mixed-constraint class. -/
 theorem exists_class_member_with_prescribed_bottomCharge
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (s : Finset ι) {k : ι} (hk : k ∈ s) {a : ι}
     (hak : a ≠ k) (N : ℕ) (R : Finset ℂ) (c : ℕ → ℂ → ℂ) :
-    ∃ (x : meroField (Set.univ : Set ℂ)) (f : ℂ → ℂ) (Cst : ℂ),
-      RealizesMero x f ∧ PeriodicOneGerm f ∧ MixedConstGermSet τ s f Cst ∧
+    ∃ (f : ℂ → ℂ) (Cst : ℂ),
+      RealizesMero (carrierAtomCombination τ hτ s k N R c) f ∧ PeriodicOneGerm f ∧
+      MixedConstGermSet τ s f Cst ∧
       ∀ (p : ℂ) (ℓ : ℤ), ℓ < 0 →
         laurentCoeff (bottomWitnessFun τ s k f) p ℓ
           = laurentCoeff (multiAtomRealization (τ k) N R c) p ℓ := by
@@ -245,7 +246,7 @@ theorem exists_class_member_with_prescribed_bottomCharge
   obtain ⟨f, hf⟩ := exists_realizesMero (carrierAtomCombination τ hτ s k N R c)
   obtain ⟨Cst, hCst⟩ := exists_mixedConst_carrierAtomCombination τ hτ s k N R c
   obtain ⟨C, hC⟩ := exists_bottomWitnessMero_carrierAtomCombination τ hτ s hk hak N R c
-  refine ⟨carrierAtomCombination τ hτ s k N R c, f, Cst, hf, ?_, ?_, ?_⟩
+  refine ⟨f, Cst, hf, ?_, ?_, ?_⟩
   · exact periodicOneGerm_of_realizesMero hf
       (addTranslationMeroEquiv_one_carrierAtomCombination τ hτ s k N R c)
   · intro z
@@ -269,6 +270,24 @@ theorem exists_class_member_with_prescribed_bottomCharge
     have hgerm := realizesMero_congr h1 h2 p
     rw [laurentCoeff_congr (hVmero p (Set.mem_univ p)) hgerm ℓ]
     exact laurentCoeff_add_const (hZmero p (Set.mem_univ p)) C hℓ
+
+/-! ## Differences of realized functions -/
+
+theorem realizesMero_sub {x y : meroField (Set.univ : Set ℂ)} {f g : ℂ → ℂ}
+    (hx : RealizesMero x f) (hy : RealizesMero y g) :
+    RealizesMero (x - y) (fun z => f z - g z) := by
+  have h := realizesMero_add hx (realizesMero_const_mul (-1 : ℂ) hy)
+  have hneg : algebraMap (analyticSubring (Set.univ : Set ℂ)) (meroField Set.univ)
+      (constToAnalytic Set.univ (-1 : ℂ)) = -1 := by
+    rw [map_neg, map_one, map_neg, map_one]
+  rw [hneg] at h
+  have hfun : (f + fun z => (-1 : ℂ) * g z) = fun z => f z - g z := by
+    funext z
+    show f z + (-1 : ℂ) * g z = f z - g z
+    ring
+  rw [hfun] at h
+  have hgerm : x + (-1 : meroField (Set.univ : Set ℂ)) * y = x - y := by ring
+  rwa [hgerm] at h
 
 end
 

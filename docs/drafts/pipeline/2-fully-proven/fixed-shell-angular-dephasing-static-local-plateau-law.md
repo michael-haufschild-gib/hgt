@@ -2203,3 +2203,65 @@ the fixed-shell analysis: the closedness of the easy-circuit tube `A` in the ang
 and the quenched heavy-sector incidence bound `(25)` on each good fibre (the parent card's theorem,
 already stage 3 and quenched).  The fixed-shell analysis itself -- `(23)`, `(24)`, `(16)`, `(17)`,
 Portmanteau and the `limsup` bookkeeping -- is complete and unconditional.
+
+## Lean progress -- Theorem C item 3: the easy-circuit tube is closed (2026-08-21)
+
+The first of the two inputs named above -- *closedness of the easy-circuit tube `A` in the
+angular-phase bundle* -- is closed, together with the exact bridge from the Schrödinger evolution to
+a point of that bundle.  Three new modules, all umbrella-wired and axiom-clean.
+
+The obstruction the card records ("an eigenbasis is not a continuous function of the matrix") is
+removed by never using an eigenbasis: the tube is described by the **gauge-invariant cross-weights**
+`w_j = conj⟨e_j,z⟩·⟨e_j,Ω⟩ = ⟨z, P_j(θ)Ω⟩`, in which every eigenvector phase cancels between the two
+factors, and `P_j` is the Lagrange interpolation projector -- a polynomial in `H(θ)` with
+spectrum-dependent coefficients, hence continuous wherever the spectrum stays simple.
+
+`formal/GaloisForLFunctions/HTGeometry/LagrangeSpectralProjector.lean`:
+
+| Card item | Declaration |
+|---|---|
+| reindexing an orthonormal eigenbasis (the sorted labelling) | `IsOrthoEigenBasis.reindex` |
+| the interpolation factors and the projector `∏_{k≠j}(H-E_k)/(E_j-E_k)` | `lagrangeFactor`, `lagrangeSpectralProjector` |
+| the projector acts as the Kronecker delta on an eigenbasis with distinct eigenvalues | `lagrangeSpectralProjector_mulVec_eigen` |
+| **the gauge-invariant cross-weight** `⟨u, P_j v⟩` | `spectralCrossWeight` |
+| **it equals `conj⟨e_j,u⟩·⟨e_j,v⟩`** -- no eigenbasis choice enters the left side | `spectralCrossWeight_eq` |
+| **continuity at every simple-spectrum parameter** | `continuousAt_lagrangeSpectralProjector`, `continuousAt_spectralCrossWeight` |
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralBundleCaptureTube.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the phase pairing `∑_j conj(e^{2πi y_j}) w_j` | `bundlePairing` |
+| **the orbit pairing is the pairing of the cross-weights** | `finiteComplexInner_torusAmpOrbit` |
+| the easy-circuit tube `A` in the relative-phase bundle | `projectiveBundleTube` |
+| **its fibres are exactly the parent card's capture events** | `preimage_projectiveBundleTube` |
+| **`A` is compact, hence closed, over every compact simple-spectrum parameter set** | `isCompact_projectiveBundleTube_inter`, `isClosed_projectiveBundleTube_inter` |
+| the auxiliary compactness lemma (a `ContinuousOn` preimage over a compact set) | `isCompact_inter_preimage_of_continuousOn` |
+
+`formal/GaloisForLFunctions/HTGeometry/EvolvedStateBundlePairing.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the evolved state `e^{-isH}Ω` in an eigenbasis | `unitaryEvolution_mulVec_eq_sum` |
+| the anchored relative-phase point `s(E_j-E_{i₀})/2π` of physical time `s` | `evolvedPhasePoint` |
+| **the physical fidelity is a bundle pairing at that point** | `norm_finiteComplexInner_unitaryEvolution_eq`, `finitePureStateFidelity_unitaryEvolution_eq` |
+
+Closedness is obtained as *compactness*: `A ∩ (K × 𝕋)` is a finite union of superlevel sets of
+functions continuous on the compact set `K × 𝕋`, hence compact, hence closed in the ambient bundle.
+`K` is any compact subset of the (open) simple-spectrum locus, and the discriminant null set is
+exhausted by such `K` exactly as the card's proof prescribes.
+
+### What remains for Theorem C
+
+One item.  `(23)`/`(24)` are proved for the **Pauli** coefficient shell (`pauliEnsemble w`,
+`ShellSecondMoment`), while `(16)`/`(17)` are proved for the **leaf-extended endpoint-complete
+architecture** (`physicalEndpointCompleteQubitPath`, `PhysicalQubitPathAnglePhase`).  The final
+assembly needs both on one ensemble, i.e. either
+
+* Theorem A's two data -- one simple-spectrum coefficient vector and one disjoint labelled
+  action-ratio pair -- for the literal nearest-neighbour Pauli family `H(θ) = ∑ θ_a P_a` of the
+  card's `(2)` (the corpus already owns the simple-spectrum half in
+  `HTGeometry/BalancedTernaryUniqueness.lean`, whose `∑_j 3^j X_j` has distinct eigenvalues); or
+* the product-Clifford second moment `(23)` for the leaf-extended architecture.
+
+The first is the card's own setup and is the intended route.

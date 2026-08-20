@@ -89,6 +89,67 @@ theorem carrierSpan_erase_le (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (s :
   exact Submodule.sub_mem _ (mem_carrierSpan_of_jet τ hτ s j (b + τ k))
     (mem_carrierSpan_of_jet τ hτ s j b)
 
+/-! ## An atom sum with a prescribed divisor -/
+
+set_option maxHeartbeats 1200000 in
+/-- **Every lattice-invariant divisor of bounded order with finitely many classes is the exact
+Laurent datum of an atom sum.** -/
+theorem exists_multiAtomRealization_matching {σ : ℂ} (hσ : 0 < σ.im) (D : ℤ → ℂ → ℂ) (N : ℕ)
+    (hinv : ∀ ℓ : ℤ, ℓ < 0 → ∀ p g : ℂ, g ∈ lineLattice σ → D ℓ (p + g) = D ℓ p)
+    (htop : ∀ ℓ : ℤ, ℓ < -(N : ℤ) → ∀ p, D ℓ p = 0)
+    (hfin : ∀ ℓ : ℤ, ℓ < 0 → ∃ S : Finset ℂ, ∀ p, D ℓ p ≠ 0 → ∃ q ∈ S, sameLine σ q p) :
+    ∃ (R : Finset ℂ) (c : ℕ → ℂ → ℂ),
+      ∀ ℓ : ℤ, ℓ < 0 → ∀ p, laurentCoeff (multiAtomRealization σ N R c) p ℓ = D ℓ p := by
+  classical
+  choose S hS using fun j : ℕ => hfin (-((j : ℤ) + 1)) (by omega)
+  set mkq : ℂ → (ℂ ⧸ lineLattice σ) := fun z => QuotientAddGroup.mk z with hmkq
+  have hmk_eq : ∀ a b : ℂ, mkq a = mkq b ↔ a - b ∈ lineLattice σ := fun a b =>
+    QuotientAddGroup.eq_iff_sub_mem
+  have hout : ∀ x : ℂ ⧸ lineLattice σ, mkq (Quotient.out x) = x := fun x =>
+    QuotientAddGroup.out_eq' x
+  set R : Finset ℂ := ((Finset.range N).biUnion S).image (fun q => Quotient.out (mkq q)) with hR
+  have hRform : ∀ q ∈ R, ∃ x : ℂ ⧸ lineLattice σ, q = Quotient.out x := by
+    intro q hq
+    obtain ⟨t, -, rfl⟩ := Finset.mem_image.mp hq
+    exact ⟨mkq t, rfl⟩
+  have hdist : ∀ q ∈ R, ∀ r ∈ R, sameLine σ q r → q = r := by
+    intro q hq r hr hqr
+    obtain ⟨x, rfl⟩ := hRform q hq
+    obtain ⟨y, rfl⟩ := hRform r hr
+    have hmem : Quotient.out y - Quotient.out x ∈ lineLattice σ := hqr
+    have hneg := neg_mem hmem
+    rw [neg_sub] at hneg
+    have hxy : mkq (Quotient.out x) = mkq (Quotient.out y) := (hmk_eq _ _).mpr hneg
+    rw [hout, hout] at hxy
+    rw [hxy]
+  refine ⟨R, fun j q => D (-((j : ℤ) + 1)) q, ?_⟩
+  intro ℓ hℓ p
+  obtain ⟨j, rfl⟩ : ∃ j : ℕ, ℓ = -((j : ℤ) + 1) := ⟨(-ℓ - 1).toNat, by omega⟩
+  by_cases hjN : j < N
+  · by_cases hcase : ∃ q ∈ R, sameLine σ q p
+    · obtain ⟨q, hq, hqp⟩ := hcase
+      rw [laurentCoeff_multiAtomRealization_line hσ R _ hdist hq hqp hjN]
+      have hmem : p - q ∈ lineLattice σ := hqp
+      have hval := hinv (-((j : ℤ) + 1)) (by omega) q (p - q) hmem
+      rw [show q + (p - q) = p from by ring] at hval
+      exact hval.symm
+    · push Not at hcase
+      rw [laurentCoeff_multiAtomRealization_off hσ N R _ hcase (by omega)]
+      by_contra hne
+      obtain ⟨q, hq, hqp⟩ := hS j p (Ne.symm hne)
+      have hqT : q ∈ (Finset.range N).biUnion S :=
+        Finset.mem_biUnion.mpr ⟨j, Finset.mem_range.mpr hjN, hq⟩
+      have hoR : Quotient.out (mkq q) ∈ R := Finset.mem_image.mpr ⟨q, hqT, rfl⟩
+      refine hcase _ hoR ?_
+      show p - Quotient.out (mkq q) ∈ lineLattice σ
+      refine (hmk_eq p (Quotient.out (mkq q))).mp ?_
+      rw [hout]
+      have hmem2 : p - q ∈ lineLattice σ := hqp
+      exact ((hmk_eq p q).mpr hmem2)
+  · have hbig : -((j : ℤ) + 1) < -(N : ℤ) := by omega
+    rw [laurentCoeff_multiAtomRealization_of_lt hσ N R _ p hbig]
+    exact (htop _ hbig p).symm
+
 end
 
 end GaloisForLFunctions

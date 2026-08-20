@@ -100,3 +100,33 @@ built from scratch.
 | `c1-o-open-core-reduction-theorem.md` (ULF-MECH-3) | Components (A)–(C) are in-tree (`XiWeilResolventSource`, `XiQuotientRealDecay.tendsto_primeArchSource_packetSum_of_tendsto`, `CCMPublishedRestrictedWeilMatrix`). **(D) is the card's own new lemma and is not in the tree**: a tent test's evaluation vector lies in `RHTower.XiWeilSquareSummable`. Needs the tent transform's `γ^{-2}` strip decay against Riemann–von Mangoldt counting. Clauses 1 and 3 of the reduction are then immediate (clause 3 is witness transport along an equality); clause 2 is a typing statement about what the comparison reduces to |
 | 21 | `species-relative-formation-mechanics/species-predicted-stokes-coenergy-sharp-prime-valuation-asymptotic-law.md` (ULF-SRFM-3) | **DONE 2026-08-20** — card was `[LEAN PENDING]`, "adds no Lean code". New module `RHTower/SourceHorizontalStokesCoenergySharpPrimeAsymptotic.lean` (9 public decls) closes Thm 3.1 (3.1)+(3.2) and Cor 3.2 unconditionally along `Filter.cofinite` on `Nat.Primes`. Route: exact scaled product form `stokesCoenergy_scaled_eq` (reuses `sourceHorizontalPrimePowerHolonomy_scaleVirial`, `gammaSewnMobiusApertureStokesReflectedWeight_eq_source`, `gammaSewnMobiusValuationContractionMultiplier_pow_four`) × renormalized virial clock `e^{-u}V(u)/L → (1-s)(e+1)/2` × amplitude `c² → 1/(2√2)`. Axiom-clean; wired into `RHTower.lean` and `UniversalLawField.lean`; promoted |
 | 22 | `species-relative-formation-mechanics/superposition-saturation-hidden-history-...-law.md` (ULF-SRFM-4) | **DONE 2026-08-21** — card was `[LEAN PENDING]`, "no Lean was written". Three new modules: `HTGeometry/CountableRelativeEntropyValue.lean` (exact atom-series value of `klDiv` on countable spaces — new reusable mathlib gap), `HTGeometry/PoissonOccupancyHistorySplit.lean` (Poisson + zero-truncated-Poisson relative entropy, the occupancy–history chain rule, Thm 2.1), `HTGeometry/PoissonSuperpositionSaturationProperness.lean` (§3 saturation + sharp rate (3.3a), §3.4 density, Cor 3.2, §4 escape, §5 properness + compact sublevel, Cor 5.2, §6 prime consumer). Chain rule proved as an exact atom-series identity, not by kernel disintegration. Axiom-clean; wired into `HTGeometry.lean` and `UniversalLawField.lean`; promoted |
+| 23 | `species-relative-formation-mechanics/poisson-boolean-history-information-conservation-...-law.md` (ULF-SRFM-2) | **DONE 2026-08-21** — card was `[LEAN PENDING]`, "paper-proved only". Two new modules on top of the SRFM-4 stack: `HTGeometry/CountFormationSplit.lean` (the `Φ`/`Ψ` bijection, general countable KL chain rule Thm 2.1 + (2.6), reconstruction, and the Poisson instance §3) and `HTGeometry/ReflectedPrimeHistoryReserve.lean` (two-sided cubic log sandwich, the reserve split (4.7), Thm 4.1 sharp asymptotic `R_p ~ t(log p)p^{-2(1-t)}`, Thm 4.2 exact half-aperture summability threshold). Axiom-clean; wired into both umbrellas; promoted |
+| 24 | `species-relative-formation-mechanics/bounded-positive-conservation-blindness-...-law.md` (ULF-SRFM-5) | **DONE 2026-08-21** — card was `[LEAN PENDING]`, "No Lean was written". New module `HTGeometry/BoundedConservationBlindness.lean`: `llr_symm` (mathlib gap), the modular representation and domination of Jeffreys information (Thm 4.1), exact Hellinger affinity of two Poissons (3.2), TV/JS boundedness, the packaged blindness capstone (Thm 3.1), the reflected-signed-family insufficiency (Cor 3.2), and both producer criteria (Cor 4.2, 4.3) — the latter two with integrability *discharged*, not assumed. Axiom-clean; wired into both umbrellas; promoted |
+
+## Open TODO — `species-relative-formation-mechanics/superposition-thinning-...-law.md` (ULF-SRFM-1)
+
+Card is `[LEAN PENDING]`, "No Lean theorem is claimed".  Five items, in dependency order:
+
+1. **Theorem 2.1** (superposition + Bernoulli thinning + mean calibration ⟹ Poisson).  Needs: a
+   probability generating function for laws on `ℕ`, `Measure.conv` for superposition,
+   `ProbabilityTheory.binomial` for thinning, the continuous multiplicative Cauchy equation, and
+   **PGF determinacy** (a mathlib gap: equal PGFs on `[0,1]` ⟹ equal laws on `ℕ`).
+2. **DONE 2026-08-21** — **Theorem 3.1(1)**, (3.2): `klDiv_prod` and `klDiv_pi` (new reusable
+   mathlib gaps) plus `toReal_klDiv_poissonPacket`, in
+   `HTGeometry/PoissonIntensityMarkingIsometry.lean`.
+3. **DONE 2026-08-21** — **Theorem 3.1(2)**, (3.3): `intensityDiv_marking`; **Corollary 3.2**
+   (3.4)–(3.5): `intensityDiv_mass_shape`, `intensityJeffreys_mass_shape`.
+4. **Theorem 4.1**: (4.3)–(4.7) **DONE 2026-08-21** (`gammaSix_forward_div`,
+   `gammaSix_reflected_div`, `gammaSix_jeffreys`, `gammaSix_chirality`,
+   `gammaSix_jeffreys_reflection`, `gammaSix_chirality_reflection`,
+   `gammaSix_intensityHellingerSq`).  (4.8) is proved as the per-coordinate affinity raised to the
+   coordinate count (`gammaSix_affinity`); the remaining half is the **product-affinity identity**
+   `Aff(⨂ Pᵢ, ⨂ Qᵢ) = ∏ Aff(Pᵢ, Qᵢ)` on `Fin n → ℕ` (multi-index `tsum` factorization).
+5. **Theorem 5.1** (5.2) and **Corollary 5.2**: infinite product laws over the shells
+   (`MeasureTheory.Measure.infinitePi`) plus first Borel--Cantelli for mutual singularity.
+
+## Open TODO — `species-relative-formation-mechanics/three-slot-exchangeability-...-law.md`
+
+The card carries a Lean certificate for `ConstitutiveExchangeableFormationSelection`.  Re-audit it
+against the tree and close whatever of EFD.4 / EFD.5 / EFD.11 (measure-level KL) is still open;
+the new `CountableRelativeEntropyValue` / `CountFormationSplit` stack may already cover it.

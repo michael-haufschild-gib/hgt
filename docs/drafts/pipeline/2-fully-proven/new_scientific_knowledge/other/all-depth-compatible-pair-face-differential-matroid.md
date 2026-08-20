@@ -550,3 +550,35 @@ finite-divisor lifting lemma and surjectivity — after which formula `(1)` for 
 follows from the already-Lean universal carrier form `(4)`
 (`cosetCompleteDifferentialMatroid(_rationalBase)`) together with
 `arbitraryTranslate_eq_deepSpan_add_differentialAlgebraic`.
+
+## Lean progress 2026-08-21 — the universal cyclic reduction `(3)`–`(4)` is closed
+
+`HTGeometry.AllDepthNormalForm.exists_carrierSpan_normal_form` proves, unconditionally and
+axiom-clean, the statement this card uses to reduce formula `(1)` to the universal carrier:
+
+```text
+∀ s with 2 ≤ s.card, every F ∈ Q_s satisfies
+  ∃ y ∈ carrierSpan τ hτ s,  x − y  is differentially algebraic over ℂ
+```
+
+where `carrierSpan τ hτ s` (in `HTGeometry.AllDepthCarrierSpan`) is the `ℂ`-span of all jets
+`δ^n T_b Ψ_s` of all complex translates of the universal carrier
+`Ψ_s = universalCarrierMero τ hτ s`, the multiple elliptic gamma logarithmic derivative whose
+parameters are exactly the directions of `s`.  This is the card's
+
+> every `F ∈ Q_d` is congruent modulo DA functions to `P Ψ_(d−1)` for some finite
+> arbitrary-translation operator `P`.
+
+The proof is an induction on `|s|`: the bottom charge is realized by an explicit jet combination of
+the carrier (`AllDepthCarrierJets.exists_class_member_with_prescribed_bottomCharge` together with
+`AllDepthCarrierSpan.exists_multiAtomRealization_matching`), the difference has trivial bottom
+charge and therefore lies in `Q_(s\{k})`
+(`AllDepthBottomCharge.exists_mixedConstGermSet_erase_of_bottomCharge_eq_zero`), and the smaller
+carrier's span sits inside the larger one because the coface law makes `Ψ_(s\{k})` the translation
+defect of `Ψ_s` (`carrierSpan_erase_le`).  The depth-two base is the corpus's own triptic normal
+form.
+
+With this, the card's remaining route to `(1)` is the comparison of `carrierSpan` with the labelled
+deep coordinates of `cosetSpanDecomposition` — i.e. feeding
+`arbitraryTranslate_eq_deepSpan_add_differentialAlgebraic` and
+`cosetCompleteDifferentialMatroid(_rationalBase)` the jets as well as the translates.

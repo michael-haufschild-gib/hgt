@@ -94,4 +94,30 @@ theorem toReal_klDiv_of_countable {P Q : Measure α}
     integral_countable hint]
   simp [Measure.real, smul_eq_mul]
 
+/-- Conversely, integrability on a countable law is absolute summability of the atom-weighted
+values. -/
+theorem summable_singleton_weighted_of_integrable {Q : Measure α} [IsFiniteMeasure Q] {f : α → ℝ}
+    (hf : Integrable f Q) : Summable fun a => (Q {a}).toReal * |f a| := by
+  have hfin : ∫⁻ a, ‖f a‖ₑ ∂Q ≠ ⊤ := hf.hasFiniteIntegral.ne
+  rw [lintegral_countable'] at hfin
+  have hterm : (fun a => ‖f a‖ₑ * Q {a}) = fun a => ENNReal.ofReal ((Q {a}).toReal * |f a|) := by
+    funext a
+    rw [← ofReal_norm, Real.norm_eq_abs, ← ENNReal.ofReal_toReal (measure_ne_top Q {a}),
+      ← ENNReal.ofReal_mul (abs_nonneg (f a)), ENNReal.toReal_ofReal ENNReal.toReal_nonneg]
+    ring_nf
+  rw [hterm] at hfin
+  have hsum := ENNReal.summable_toReal hfin
+  refine hsum.congr fun a => ?_
+  exact ENNReal.toReal_ofReal (by positivity)
+
+/-- Finite relative entropy on a countable space is exactly absolute summability of the
+atom-weighted log-ratio series. -/
+theorem summable_log_singleton_ratio_of_klDiv_ne_top {P Q : Measure α}
+    [IsFiniteMeasure P] [IsFiniteMeasure Q] (hP0 : ∀ a, P {a} ≠ 0) (hfin : klDiv Q P ≠ ⊤) :
+    Summable fun a =>
+      (Q {a}).toReal * |Real.log ((Q {a}).toReal / (P {a}).toReal)| := by
+  obtain ⟨-, hint⟩ := klDiv_ne_top_iff.1 hfin
+  exact summable_singleton_weighted_of_integrable
+    (hint.congr (llr_eq_log_singleton_ratio hP0))
+
 end GaloisForLFunctions.HTGeometry

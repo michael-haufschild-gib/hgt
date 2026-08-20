@@ -2035,3 +2035,75 @@ Corollary A.3's identification of the sector with a left-translation-invariant s
 `L²(U(D))`; the identification of the fixed point with the path-space expectation `E_x[a^{τ_A}]`
 (`(11be)`, unused by any estimate); the relative-entropy half `(11aa)` of Theorem F, which needs the
 log-sum inequality; and Theorems G--K.
+
+## Lean progress -- Theorems G, H, I and the divergence lower bounds (2026-08-21)
+
+Four new umbrella-wired, axiom-clean modules.
+
+`formal/GaloisForLFunctions/HTGeometry/CapacitySoftMinLaw.lean` -- **Theorem H in full**:
+
+| Card item | Declaration |
+|---|---|
+| `(11ak)` the first-entrance mass of an endpoint law and its surprisal | `accessMass`, `accessSurprisal`, `exp_neg_accessSurprisal` |
+| **`(11al)`**: the mass of a mixture is the mixture of the masses | `accessMass_mixture` |
+| **`(11am)`, upper**: `Q(ν) ≤ Q_j + log(1/w_j)` | `accessSurprisal_le_of_component` |
+| **`(11am)`, lower**: `Q(ν) ≥ min_i Q_i` | `le_accessSurprisal_of_forall_le` |
+| **`(11an)`**: the carrier/good two-cell specialization | `accessMass_twoCell` |
+| **`(11ao)`**: the exact carrier-weight threshold, as an iff | `carrier_negligible_iff` |
+
+`formal/GaloisForLFunctions/HTGeometry/CompletedPhaseAccessibilityPlateau.lean` --
+**Theorem I in the finite-chain model**:
+
+| Card item | Declaration |
+|---|---|
+| the one-step pushforward of an endpoint law and its target mass | `lawPush`, `lawTargetMass`, `sum_lawPush`, `sum_lawPush_iterate` |
+| the fixed-point equation averaged against a law | `sum_occupation_step` |
+| the geometric expansion after `n` steps | `sum_occupation_expand` |
+| **`(11aq)` for the occupation potential** | `sum_occupation_le` |
+| **`(11aq)`**: `∫h_A dν ≤ B/(1-a)` | `sum_hitting_le` |
+| **`(11ar)`**: the Markov bound at level `θ` | `measure_hitting_ge_le` |
+| **`(11as)`**: the complete-union bound `(B/(1-a))(M/a)^s` | `measure_reachable_le_of_uniform` |
+
+The card's `(11at)` -- the all-word discounted path majorant -- is replaced by the corpus's
+comparison `h_A ≤ g_{A,a}` together with the *iterated fixed-point equation*: the occupation mass of
+a law is `∑_{ℓ<n} a^ℓ ν P^ℓ(A)` plus a tail bounded by `a^n/(1-a)`.  So no path space, no word
+enumeration and no Tonelli step is used, and the per-word hypothesis `(11ap)` is replaced by the
+uniform per-*step* hypothesis `ν P^ℓ(A) ≤ B`, which is exactly its average over the words of
+length `ℓ`.
+
+`formal/GaloisForLFunctions/HTGeometry/PartitionDivergenceBounds.lean` -- **`(11aa)`**:
+
+| Card item | Declaration |
+|---|---|
+| **the log-sum inequality** on a finite family | `log_sum_le` |
+| relative entropy of two finite laws | `finRelEntropy` |
+| **two-cell data processing** | `partition_le_finRelEntropy` |
+| `H₂(p) ≤ log 2` | `binaryEntropy_le_log_two` |
+| **`(11aa)`**: `D(σ‖π) ≥ (1-a)log(1/π(A)) - log 2` | `le_finRelEntropy_of_target_mass` |
+
+The log-sum inequality is proved directly from `log t ≥ 1 - 1/t` applied once per cell, and the
+binary-entropy ceiling from the same inequality applied twice; no convexity API and no
+`ProbabilityTheory.klDiv` layer is used.
+
+`formal/GaloisForLFunctions/HTGeometry/CapacityEntropyBudget.lean` -- **Theorem G and `(11ab)`**:
+
+| Card item | Declaration |
+|---|---|
+| **`(11ae)`**, potential form | `measure_reachable_inter_le` |
+| `h_A = cap·𝔄/(1-a)` | `hitting_eq_cap_mul_accessAmp` |
+| **`(11ae)`**, amplification form | `measure_reachable_inter_le_accessAmp` |
+| **`(11ae2)`**: `-log Pr ≥ Q^eff - s log(M/a)` | `neg_log_measure_ge` |
+| **`(11ai)`**: the exponential-rate consequence | `measure_reachable_le_exp` |
+| `‖𝔄‖²_2 = ((1-a)/cap)²‖h‖²_2` | `piNormSq_accessAmp` |
+| **`(11ab)`**: `χ² ≥ (1-a)²/cap - 1` | `le_piNormSq_accessAmp` |
+
+### What remains
+
+* Corollary I.1's physical-time transfer (unique ergodicity/Portmanteau for the projective phase
+  rotation and the phase-coherence target bound `(11au)`), Corollary I.2 (elementary), and
+  Corollary J.1 `(11bo)`--`(11br)` (which needs the Neumann series
+  `Z_a(ν,A) = ∑_ℓ a^ℓ νP^ℓ(A)`, available as the `n → ∞` limit of `sum_occupation_expand`).
+* Corollary I.3 and Theorem K, both stated for the fixed-shell Pauli ensemble of
+  `fixed-shell-angular-dephasing-static-local-plateau-law`, hence gated on that card.
+* Corollary A.3's identification of the sector with a left-translation-invariant subspace of
+  `L²(U(D))`, the transitive-action hypothesis of `(8c)`, and `(11be)`.

@@ -3,7 +3,7 @@
 **ID:** ULF-SRFM-5  
 **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [SELECTION-PRODUCER CLASSIFICATION]`
 `[BOUNDED-CONSERVATION NO-GO] [MODULAR SURVIVOR] [NEW CORPUS CONSEQUENCE]`
-`[NOVELTY UNVERIFIED] [LEAN PENDING] [NOT RH]`
+`[NOVELTY UNVERIFIED] [LEAN CLOSED] [NOT RH]`
 
 ## 1. Purpose
 
@@ -268,4 +268,10 @@ superposition, Boolean saturation, divergent conditional-history action, failure
 positive comparison, and the centered modular producer criterion. Claim remains new-to-corpus with
 external novelty unverified.
 
-No Lean was written or built. Formalization is deferred until hostile paper audit is complete.
+## 7. Lean status
+
+Closed unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/BoundedConservationBlindness.lean`, on top of the
+`PoissonOccupancyHistorySplit` / `PoissonSuperpositionSaturationProperness` stack.  See the
+companion `...-formalized.md` for the result-to-declaration table.  Every declaration depends only
+on `propext`, `Classical.choice`, `Quot.sound`.

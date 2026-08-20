@@ -783,6 +783,346 @@ theorem log_window_le {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
     nlinarith [htop0, hpi]
   exact Real.log_le_log hpos hle
 
+set_option maxHeartbeats 1600000 in
+/-- **The large half's Halász–Montgomery ladder group vanishes relative to `M²`.**  The kernel's
+far constant and the measure of the exceptional set enter only through their product `U`, and only
+through the hypothesis `hUf`: that single limit is the exceptional-measure input, and everything
+else is the schedule. -/
+theorem tendsto_largeLadderGroup_div_sq {β b c' E : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1)
+    (hb0 : 0 < b) (hb1 : b < 1) (hE : b + c' + 2 ≤ 2 * E) (hE0 : 0 ≤ E)
+    {Lf ρf Bf Sf Pf Uf : ℝ → ℝ}
+    (hLf : ∀ᶠ x : ℝ in atTop, 0 ≤ Lf x ∧ Lf x ≤ 2 * (Real.log x) ^ (b + c'))
+    (hρ0 : ∀ᶠ x : ℝ in atTop, 0 ≤ ρf x)
+    (hρ : Tendsto (fun x : ℝ => (Real.log x) ^ E * ρf x) atTop (𝓝 0))
+    (hBf : ∀ᶠ x : ℝ in atTop, 0 ≤ Bf x ∧ Bf x ≤ 3 * cardLength b x)
+    (hSf : ∀ᶠ x : ℝ in atTop, 0 ≤ Sf x
+        ∧ Sf x ≤ 2 * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x))
+    (hPf : ∀ᶠ x : ℝ in atTop, 0 ≤ Pf x ∧ Pf x ≤ 3 * cardLength b x)
+    (hUf0 : ∀ᶠ x : ℝ in atTop, 0 ≤ Uf x)
+    (hUf : Tendsto (fun x : ℝ => (Real.log x) ^ (b + c') * Uf x
+        * (cardLength b x * Real.log (Real.log x) / ((twoRangeLength β x : ℕ) : ℝ)
+          + cardLength b x ^ 2 / ((twoRangeLength β x : ℕ) : ℝ) ^ 2)) atTop (𝓝 0)) :
+    Tendsto (fun x : ℝ =>
+      2 * Lf x * (2 * Real.pi)⁻¹
+        * (ρf x ^ 2
+            * ((2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)))
+                * (Sf x ^ 2 + Bf x * Sf x)
+              + Uf x * (Bf x * Sf x + Bf x * Pf x)))
+        / ((twoRangeLength β x : ℕ) : ℝ) ^ 2) atTop (𝓝 0) := by
+  have m1 : Tendsto (fun x : ℝ =>
+      1600 * ((Real.log x) ^ (-1 : ℝ) * (Real.log (Real.log x)) ^ 2)) atTop (𝓝 0) := by
+    simpa using (tendsto_logMonomial (e := (-1 : ℝ)) (by norm_num) 2).const_mul 1600
+  have m2 : Tendsto (fun x : ℝ =>
+      2400 * ((Real.log x) ^ (-1 : ℝ) * (Real.log (Real.log x)) ^ 1
+        * (cardLength b x / Real.sqrt x))) atTop (𝓝 0) := by
+    simpa using (tendsto_logMonomial_mul_cardLength_div_sqrt (β := b) hb0 hb1
+      (-1 : ℝ) 1).const_mul 2400
+  have m3 : Tendsto (fun x : ℝ => 18 * ((Real.log x) ^ (b + c') * Uf x
+      * (cardLength b x * Real.log (Real.log x) / ((twoRangeLength β x : ℕ) : ℝ)
+        + cardLength b x ^ 2 / ((twoRangeLength β x : ℕ) : ℝ) ^ 2))) atTop (𝓝 0) := by
+    simpa using hUf.const_mul 18
+  have hsum := ((m1.add m2).add m3)
+  rw [show ((0 : ℝ) + 0 + 0) = 0 by ring] at hsum
+  have hPsq : Tendsto (fun x : ℝ => ((Real.log x) ^ E * ρf x) ^ 2) atTop (𝓝 0) := by
+    have h := hρ.mul hρ
+    rw [show ((0 : ℝ) * 0) = 0 by ring] at h
+    exact h.congr fun x => by ring
+  have hlim : Tendsto (fun x : ℝ => ((Real.log x) ^ E * ρf x) ^ 2
+      * (1600 * ((Real.log x) ^ (-1 : ℝ) * (Real.log (Real.log x)) ^ 2)
+        + 2400 * ((Real.log x) ^ (-1 : ℝ) * (Real.log (Real.log x)) ^ 1
+            * (cardLength b x / Real.sqrt x))
+        + 18 * ((Real.log x) ^ (b + c') * Uf x
+            * (cardLength b x * Real.log (Real.log x) / ((twoRangeLength β x : ℕ) : ℝ)
+              + cardLength b x ^ 2 / ((twoRangeLength β x : ℕ) : ℝ) ^ 2)))) atTop (𝓝 0) := by
+    have h := hPsq.mul hsum
+    rw [show ((0 : ℝ) * 0) = 0 by ring] at h
+    exact h
+  refine squeeze_zero' ?_ ?_ hlim
+  · filter_upwards [hLf, hρ0, hBf, hSf, hPf, hUf0, Filter.eventually_gt_atTop (1 : ℝ),
+      one_le_twoRangeLength hβ0,
+      Real.tendsto_log_atTop.eventually_ge_atTop (1 : ℝ)] with x hL hρx hB hS hP hU hx1 hM1 hlog1
+    have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+    have hM0 : (0 : ℝ) < ((twoRangeLength β x : ℕ) : ℝ) := by linarith
+    have hu0 : (0 : ℝ) ≤ Real.log (Real.log x) := Real.log_nonneg hlog1
+    have hΛ0 : (0 : ℝ) ≤ Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)) := by
+      refine Real.log_nonneg ?_
+      have hcut0 : (0 : ℝ) ≤ twoRangeCut β x := by
+        rw [twoRangeCut]
+        exact div_nonneg (Nat.cast_nonneg _) (cardLength_pos β x).le
+      have htop : (0 : ℝ) ≤ twoRangeTop β x := by
+        rw [twoRangeTop]
+        exact mul_nonneg hcut0 hu0
+      nlinarith [hpi]
+    have h1 : (0 : ℝ) ≤ (2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)))
+        * (Sf x ^ 2 + Bf x * Sf x) := by
+      have hs : (0 : ℝ) ≤ Sf x ^ 2 + Bf x * Sf x :=
+        add_nonneg (sq_nonneg _) (mul_nonneg hB.1 hS.1)
+      have h0 : (0 : ℝ)
+          ≤ 2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)) := by
+        positivity
+      exact mul_nonneg h0 hs
+    have h2 : (0 : ℝ) ≤ Uf x * (Bf x * Sf x + Bf x * Pf x) :=
+      mul_nonneg hU (add_nonneg (mul_nonneg hB.1 hS.1) (mul_nonneg hB.1 hP.1))
+    have h3 : (0 : ℝ) ≤ 2 * Lf x * (2 * Real.pi)⁻¹ := by
+      have := hL.1
+      positivity
+    have h4 : (0 : ℝ) ≤ ρf x ^ 2
+        * ((2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)))
+            * (Sf x ^ 2 + Bf x * Sf x)
+          + Uf x * (Bf x * Sf x + Bf x * Pf x)) :=
+      mul_nonneg (sq_nonneg _) (by linarith)
+    have h5 := mul_nonneg h3 h4
+    positivity
+  · filter_upwards [hLf, hρ0, hBf, hSf, hPf, hUf0, Filter.eventually_gt_atTop (1 : ℝ),
+      one_le_twoRangeLength hβ0, sqrt_le_twoRangeLength hβ0,
+      Real.tendsto_log_atTop.eventually_ge_atTop (1 : ℝ), Filter.eventually_ge_atTop (16 : ℝ),
+      log_window_le hβ0 hβ1] with x hL hρx hB hS hP hU hx1 hM1 hMsq hlog1 hx16 hΛ
+    have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+    have hp4 : Real.pi ≤ 4 := Real.pi_le_four
+    have hlogx : (0 : ℝ) < Real.log x := Real.log_pos hx1
+    have hu0 : (0 : ℝ) ≤ Real.log (Real.log x) := Real.log_nonneg hlog1
+    have hM0 : (0 : ℝ) < ((twoRangeLength β x : ℕ) : ℝ) := by linarith
+    have hhb0 : (0 : ℝ) < cardLength b x := cardLength_pos b x
+    have hsq0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
+    have hΛ0 : (0 : ℝ) ≤ Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)) := by
+      refine Real.log_nonneg ?_
+      have hcut0 : (0 : ℝ) ≤ twoRangeCut β x := by
+        rw [twoRangeCut]
+        exact div_nonneg (Nat.cast_nonneg _) (cardLength_pos β x).le
+      have htop : (0 : ℝ) ≤ twoRangeTop β x := by
+        rw [twoRangeTop]
+        exact mul_nonneg hcut0 hu0
+      nlinarith [hpi]
+    -- the coefficient
+    have hLb0 : (0 : ℝ) < (Real.log x) ^ (b + c') := Real.rpow_pos_of_pos hlogx _
+    have hpi4 : (4 : ℝ) ≤ 2 * Real.pi := by nlinarith [Real.pi_gt_three]
+    have hinv : (2 * Real.pi)⁻¹ ≤ 1 / 4 := by
+      rw [inv_eq_one_div]
+      exact div_le_div_of_nonneg_left (by norm_num) (by norm_num) hpi4
+    have hinv0 : (0 : ℝ) ≤ (2 * Real.pi)⁻¹ := by positivity
+    have hcoef : 2 * Lf x * (2 * Real.pi)⁻¹ ≤ (Real.log x) ^ (b + c') := by
+      have h1 : 2 * Lf x * (2 * Real.pi)⁻¹
+          ≤ (2 * (2 * (Real.log x) ^ (b + c'))) * (2 * Real.pi)⁻¹ :=
+        mul_le_mul_of_nonneg_right (by linarith [hL.2]) hinv0
+      have h2 : (2 * (2 * (Real.log x) ^ (b + c'))) * (2 * Real.pi)⁻¹
+          ≤ (2 * (2 * (Real.log x) ^ (b + c'))) * (1 / 4) :=
+        mul_le_mul_of_nonneg_left hinv (by linarith)
+      linarith
+    -- the bracket
+    have hbs : Bf x * Sf x
+        ≤ 6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x) := by
+      nlinarith [hB.1, hB.2, hS.1, hS.2, hM0, hu0, hhb0]
+    have hssq : Sf x ^ 2
+        ≤ 4 * ((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2 := by
+      nlinarith [hS.1, hS.2, hM0, hu0]
+    have hbp : Bf x * Pf x ≤ 9 * cardLength b x ^ 2 := by
+      nlinarith [hB.1, hB.2, hP.1, hP.2, hhb0]
+    have hc0 : (0 : ℝ)
+        ≤ 2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)) := by
+      nlinarith [hΛ0, hpi]
+    have hcΛ : 2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x))
+        ≤ 200 * Real.log x := by
+      have hprod : (0 : ℝ)
+          ≤ (4 - Real.pi) * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)) :=
+        mul_nonneg (by linarith) hΛ0
+      linarith [hΛ, hlog1, hprod]
+    have hbracket : (2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)))
+            * (Sf x ^ 2 + Bf x * Sf x)
+          + Uf x * (Bf x * Sf x + Bf x * Pf x)
+        ≤ 200 * Real.log x
+            * (4 * ((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2
+              + 6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x))
+          + Uf x * (6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+              * Real.log (Real.log x) + 9 * cardLength b x ^ 2) := by
+      have hA : (2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)))
+            * (Sf x ^ 2 + Bf x * Sf x)
+          ≤ 200 * Real.log x
+            * (4 * ((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2
+              + 6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x)) := by
+        refine mul_le_mul hcΛ (by linarith) (add_nonneg (sq_nonneg _) (mul_nonneg hB.1 hS.1))
+          (by linarith)
+      have hsum2 : Bf x * Sf x + Bf x * Pf x
+          ≤ 6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x)
+            + 9 * cardLength b x ^ 2 := by linarith [hbs, hbp]
+      have hB' := mul_le_mul_of_nonneg_left hsum2 hU
+      linarith [hA, hB']
+    have hinner0 : (0 : ℝ) ≤ ρf x ^ 2
+        * ((2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)))
+            * (Sf x ^ 2 + Bf x * Sf x)
+          + Uf x * (Bf x * Sf x + Bf x * Pf x)) := by
+      refine mul_nonneg (sq_nonneg _) (add_nonneg ?_ ?_)
+      · exact mul_nonneg hc0 (add_nonneg (sq_nonneg _) (mul_nonneg hB.1 hS.1))
+      · exact mul_nonneg hU (add_nonneg (mul_nonneg hB.1 hS.1) (mul_nonneg hB.1 hP.1))
+    have hstep1 := mul_le_mul_of_nonneg_right hcoef hinner0
+    have hstep2 := mul_le_mul_of_nonneg_left
+      (mul_le_mul_of_nonneg_left hbracket (sq_nonneg (ρf x))) hLb0.le
+    have hnumle : 2 * Lf x * (2 * Real.pi)⁻¹
+          * (ρf x ^ 2
+              * ((2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)))
+                  * (Sf x ^ 2 + Bf x * Sf x)
+                + Uf x * (Bf x * Sf x + Bf x * Pf x)))
+        ≤ (Real.log x) ^ (b + c')
+          * (ρf x ^ 2
+              * (200 * Real.log x
+                  * (4 * ((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2
+                    + 6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                      * Real.log (Real.log x))
+                + Uf x * (6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                    * Real.log (Real.log x) + 9 * cardLength b x ^ 2))) :=
+      hstep1.trans hstep2
+    -- the exponent bookkeeping
+    have hLbrho : (Real.log x) ^ (b + c') * ρf x ^ 2
+        = ((Real.log x) ^ E * ρf x) ^ 2 * (Real.log x) ^ (b + c' - 2 * E) := by
+      have h1 : ((Real.log x) ^ E) ^ 2 = (Real.log x) ^ (2 * E) := by
+        rw [← Real.rpow_natCast ((Real.log x) ^ E) 2, ← Real.rpow_mul hlogx.le,
+          show E * ((2 : ℕ) : ℝ) = 2 * E by push_cast; ring]
+      have h2 : (Real.log x) ^ (2 * E) * (Real.log x) ^ (b + c' - 2 * E)
+          = (Real.log x) ^ (b + c') := by
+        rw [← Real.rpow_add hlogx, show 2 * E + (b + c' - 2 * E) = b + c' by ring]
+      calc (Real.log x) ^ (b + c') * ρf x ^ 2
+          = ((Real.log x) ^ (2 * E) * (Real.log x) ^ (b + c' - 2 * E)) * ρf x ^ 2 := by rw [h2]
+        _ = (((Real.log x) ^ E) ^ 2 * ρf x ^ 2) * (Real.log x) ^ (b + c' - 2 * E) := by
+            rw [h1]; ring
+        _ = ((Real.log x) ^ E * ρf x) ^ 2 * (Real.log x) ^ (b + c' - 2 * E) := by rw [mul_pow]
+    have hs1 : (Real.log x) ^ (b + c' - 2 * E) * Real.log x ≤ (Real.log x) ^ (-1 : ℝ) := by
+      have hid : (Real.log x) ^ (b + c' - 2 * E + 1)
+          = (Real.log x) ^ (b + c' - 2 * E) * Real.log x := by
+        rw [Real.rpow_add hlogx, Real.rpow_one]
+      rw [← hid]
+      exact Real.rpow_le_rpow_of_exponent_le hlog1 (by linarith)
+    have hs2 : (Real.log x) ^ (b + c' - 2 * E) ≤ (Real.log x) ^ (b + c') :=
+      Real.rpow_le_rpow_of_exponent_le hlog1 (by linarith)
+    have hs0 : (0 : ℝ) ≤ (Real.log x) ^ (b + c' - 2 * E) := Real.rpow_nonneg hlogx.le _
+    have hL10 : (0 : ℝ) ≤ (Real.log x) ^ (-1 : ℝ) := Real.rpow_nonneg hlogx.le _
+    have hMle : ((twoRangeLength β x : ℕ) : ℝ)
+        ≤ ((twoRangeLength β x : ℕ) : ℝ) ^ 2 / Real.sqrt x := by
+      rw [le_div_iff₀ hsq0]
+      nlinarith [hMsq, hM0]
+    -- assemble
+    rw [div_le_iff₀ (by positivity)]
+    refine hnumle.trans ?_
+    rw [show (Real.log x) ^ (b + c')
+        * (ρf x ^ 2
+            * (200 * Real.log x
+                * (4 * ((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2
+                  + 6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                    * Real.log (Real.log x))
+              + Uf x * (6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                  * Real.log (Real.log x) + 9 * cardLength b x ^ 2)))
+        = ((Real.log x) ^ (b + c') * ρf x ^ 2)
+            * (200 * Real.log x
+                * (4 * ((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2
+                  + 6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                    * Real.log (Real.log x))
+              + Uf x * (6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                  * Real.log (Real.log x) + 9 * cardLength b x ^ 2)) by ring, hLbrho]
+    have hP2 : (0 : ℝ) ≤ ((Real.log x) ^ E * ρf x) ^ 2 := sq_nonneg _
+    have hkey : (Real.log x) ^ (b + c' - 2 * E)
+          * (200 * Real.log x
+              * (4 * ((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2
+                + 6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x))
+            + Uf x * (6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                * Real.log (Real.log x) + 9 * cardLength b x ^ 2))
+        ≤ (1600 * ((Real.log x) ^ (-1 : ℝ) * (Real.log (Real.log x)) ^ 2)
+            + 2400 * ((Real.log x) ^ (-1 : ℝ) * (Real.log (Real.log x)) ^ 1
+                * (cardLength b x / Real.sqrt x))
+            + 18 * ((Real.log x) ^ (b + c') * Uf x
+                * (cardLength b x * Real.log (Real.log x) / ((twoRangeLength β x : ℕ) : ℝ)
+                  + cardLength b x ^ 2 / ((twoRangeLength β x : ℕ) : ℝ) ^ 2)))
+          * ((twoRangeLength β x : ℕ) : ℝ) ^ 2 := by
+      have hexpand : (1600 * ((Real.log x) ^ (-1 : ℝ) * (Real.log (Real.log x)) ^ 2)
+              + 2400 * ((Real.log x) ^ (-1 : ℝ) * (Real.log (Real.log x)) ^ 1
+                  * (cardLength b x / Real.sqrt x))
+              + 18 * ((Real.log x) ^ (b + c') * Uf x
+                  * (cardLength b x * Real.log (Real.log x) / ((twoRangeLength β x : ℕ) : ℝ)
+                    + cardLength b x ^ 2 / ((twoRangeLength β x : ℕ) : ℝ) ^ 2)))
+            * ((twoRangeLength β x : ℕ) : ℝ) ^ 2
+          = 1600 * ((Real.log x) ^ (-1 : ℝ)
+                * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2))
+            + 2400 * ((Real.log x) ^ (-1 : ℝ)
+                * (cardLength b x * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 / Real.sqrt x)
+                  * Real.log (Real.log x)))
+            + 18 * ((Real.log x) ^ (b + c') * Uf x
+                * (cardLength b x * Real.log (Real.log x) * ((twoRangeLength β x : ℕ) : ℝ)
+                  + cardLength b x ^ 2)) := by
+        field_simp
+      have hexpandL : (Real.log x) ^ (b + c' - 2 * E)
+            * (200 * Real.log x
+                * (4 * ((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2
+                  + 6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x))
+              + Uf x * (6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                  * Real.log (Real.log x) + 9 * cardLength b x ^ 2))
+          = 800 * (((Real.log x) ^ (b + c' - 2 * E) * Real.log x)
+                * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2))
+            + 1200 * (((Real.log x) ^ (b + c' - 2 * E) * Real.log x)
+                * (cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x)))
+            + (Real.log x) ^ (b + c' - 2 * E)
+                * (Uf x * (6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                    * Real.log (Real.log x) + 9 * cardLength b x ^ 2)) := by ring
+      rw [hexpand, hexpandL]
+      have q1 : (0 : ℝ) ≤ ((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2 := by
+        positivity
+      have q2 : (0 : ℝ)
+          ≤ cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x) := by
+        positivity
+      have q3 : (0 : ℝ)
+          ≤ cardLength b x * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 / Real.sqrt x)
+              * Real.log (Real.log x) := by positivity
+      have k1 : 800 * (((Real.log x) ^ (b + c' - 2 * E) * Real.log x)
+            * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2))
+          ≤ 1600 * ((Real.log x) ^ (-1 : ℝ)
+              * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2)) := by
+        have h := mul_le_mul_of_nonneg_right hs1 q1
+        have hq : (0 : ℝ) ≤ (Real.log x) ^ (-1 : ℝ)
+            * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 * Real.log (Real.log x) ^ 2) :=
+          mul_nonneg hL10 q1
+        linarith
+      have k2 : 1200 * (((Real.log x) ^ (b + c' - 2 * E) * Real.log x)
+            * (cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x)))
+          ≤ 2400 * ((Real.log x) ^ (-1 : ℝ)
+              * (cardLength b x * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 / Real.sqrt x)
+                * Real.log (Real.log x))) := by
+        have hmono : cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x)
+            ≤ cardLength b x * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 / Real.sqrt x)
+              * Real.log (Real.log x) := by
+          have hstep : cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+              ≤ cardLength b x * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 / Real.sqrt x) :=
+            mul_le_mul_of_nonneg_left hMle hhb0.le
+          exact mul_le_mul_of_nonneg_right hstep hu0
+        have h1 := mul_le_mul_of_nonneg_right hs1 q2
+        have h2 := mul_le_mul_of_nonneg_left hmono hL10
+        have hq : (0 : ℝ) ≤ (Real.log x) ^ (-1 : ℝ)
+            * (cardLength b x * (((twoRangeLength β x : ℕ) : ℝ) ^ 2 / Real.sqrt x)
+              * Real.log (Real.log x)) := mul_nonneg hL10 q3
+        linarith
+      have k3 : (Real.log x) ^ (b + c' - 2 * E)
+            * (Uf x * (6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                * Real.log (Real.log x) + 9 * cardLength b x ^ 2))
+          ≤ 18 * ((Real.log x) ^ (b + c') * Uf x
+            * (cardLength b x * Real.log (Real.log x) * ((twoRangeLength β x : ℕ) : ℝ)
+              + cardLength b x ^ 2)) := by
+        have hq0 : (0 : ℝ) ≤ Uf x * (6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+            * Real.log (Real.log x) + 9 * cardLength b x ^ 2) := by positivity
+        have hstep := mul_le_mul_of_nonneg_right hs2 hq0
+        have hgap : 18 * ((Real.log x) ^ (b + c') * Uf x
+              * (cardLength b x * Real.log (Real.log x) * ((twoRangeLength β x : ℕ) : ℝ)
+                + cardLength b x ^ 2))
+            - (Real.log x) ^ (b + c')
+              * (Uf x * (6 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ)
+                  * Real.log (Real.log x) + 9 * cardLength b x ^ 2))
+            = (Real.log x) ^ (b + c') * Uf x
+              * (12 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x)
+                + 9 * cardLength b x ^ 2) := by ring
+        have hgap0 : (0 : ℝ) ≤ (Real.log x) ^ (b + c') * Uf x
+            * (12 * cardLength b x * ((twoRangeLength β x : ℕ) : ℝ) * Real.log (Real.log x)
+              + 9 * cardLength b x ^ 2) := by
+          refine mul_nonneg (mul_nonneg hLb0.le hU) ?_
+          positivity
+        linarith
+      linarith
+    have := mul_le_mul_of_nonneg_left hkey hP2
+    linarith [this]
+
 end
 
 end RHTower.Sieve

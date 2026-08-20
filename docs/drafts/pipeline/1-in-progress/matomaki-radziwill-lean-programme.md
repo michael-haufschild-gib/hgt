@@ -7478,9 +7478,24 @@ Two structural points came out of the substitution:
   the product is `(log log x)^{−1/2} = δ`, which is why `δ` is forced to be a *root* of `log log`
   from both sides.  Recorded as the identity `(1/δ)·(1/log log x) = δ`.
 
-**The one group left** is the large half's Halász–Montgomery ladder group.  Its `(2+48π·Λ)(S'²+Bmax'S')`
-half is the same shape as the small one; its `FCmax·|𝒰|·(Bmax'S' + Bmax'#P')` half needs the
-exceptional measure `|𝒰|`.
+**Brick 136 — the seventh group** (`tendsto_largeLadderGroup_div_sq`, same module, axiom-clean,
+wired, built).  The large half's Halász–Montgomery ladder group,
+
+```text
+   2L'(2π)⁻¹·ρ²·( (2+48π·Λ)(S'²+Bmax'S') + U·(Bmax'S' + Bmax'#P') ) / M²  →  0 ,
+   Λ = log(2 + 2·2π·W) ,   U = FCmax·(2π|𝒰|) ,
+```
+
+under `b + c' + 2 ≤ 2E` and `(log x)^E·ρ → 0`.  The zero-free-region saving enters only as
+`((log x)^E ρ)²`, and every schedule factor is then at most `(log x)^{-1}(log log x)²`,
+`(log x)^{-1}(log log x)(h_b/√x)`, or the single hypothesis
+
+```text
+   (log x)^{b+c'}·U·( h_b·log log x / M + h_b² / M² )  →  0 ,
+```
+
+which is **exactly the exceptional-measure input** and nothing else.  The supporting fact
+`log_window_le` (`log(2+4π·W) ≤ log x`) is the only place the window's height is used.
 
 **A correction to the constraint on `K`.**  Working out what `|𝒰|` has to be: the exceptional term
 carries `FCmax ≍ √W·log W ≍ x^{1/4}·polylog/√h`, while the trivial Halász–Montgomery term is
@@ -7509,3 +7524,46 @@ below `x^{1/4}` only when
 The recorded constraint `K > max(2(3+c+2A), (c+1)/2)` was read off without tracking the `N^k` term;
 it must be replaced by the above when the `|𝒰|` brick is built.  Nothing else in the schedule
 changes, and `β` stays free in `(0,1)`.
+
+### Brick 136 addendum — what the exceptional measure has to be (2026-08-21)
+
+Working the requirement backwards through `tendsto_largeLadderGroup_div_sq`'s hypothesis `hUf`
+with `U = FCmax·(2π|𝒰|)`, `FCmax ≍ √W·log W ≍ x^{1/4}·polylog/√h` and `W ≍ x^{1/2}·log log x / h`:
+
+```text
+   |𝒰| ≲ x^{1/4}·√h·e^{−(log x)^b}  ,     i.e.   |𝒰| / W  ≲  x^{−1/4+o(1)} .
+```
+
+So the exceptional set must be smaller than the window by a **power of `x`**, not by a power of the
+logarithm.  `Sieve/Section4RelativeThreshold.volume_blockExceptional_le_relative` supplies it, but
+only with a *growing* moment order: with `log N ≍ K·log log x` and `#B_jθ² ≍ (log x)^{K−c−2A}` its
+two terms are
+
+```text
+   W·(log x)^{−k(K−c−2A)}      and      x^{(c+2A+1)/(K−c−2A)} ,
+```
+
+so one takes `k ≍ log x / ((K−c−2A)·log log x)` — the moment order is not a constant — and the
+second term is below `x^{1/4}` exactly when
+
+```text
+   K  >  5(c + 2A) + 4 .
+```
+
+This is a **sharpening of the recorded constraint** `K > max(2(3+c+2A), (c+1)/2)`, which was read
+off without tracking the `N^k` term of Lemma 2.5.  `K` is a free constant, so nothing else in the
+schedule moves and `β` stays free in `(0,1)`; but the `|𝒰|` brick must be built at the sharpened
+`K`, and with a moment order that grows with `x`.
+
+**State of the substitution.**  All seven groups of
+`integral_Icc_normSq_logPoly_moebius_le_twoRange` now have their limit, and `hbound'` is proved.
+What remains for the two-range bound is bookkeeping plus one genuinely new brick:
+
+| item | status |
+|-|-|
+| `hbound'` (Route-T on the large half) | **done** (brick 132) |
+| disc group | done (brick 111, `tendsto_discRelative`) |
+| small ladder, both defects, both roughs | **done** (bricks 133–135) |
+| large ladder group | **done** (brick 136), modulo its one hypothesis `hUf` |
+| `hUf` — the exceptional measure `\|𝒰\|` | **open**: moment method at growing order, `K > 5(c+2A)+4` |
+| assembling `B x` and feeding `averagedMeanSquare_moebius_of_headSmall` | pending |

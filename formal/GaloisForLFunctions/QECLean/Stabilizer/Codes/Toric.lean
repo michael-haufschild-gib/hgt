@@ -14,6 +14,7 @@ import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.Distance
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.DistanceX
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.DistanceZ
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.StabilizerCode
+import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.LoopGaugeApplications
 
 set_option autoImplicit false
 set_option relaxedAutoImplicit false

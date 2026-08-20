@@ -1,7 +1,7 @@
 # Poisson--Boolean--history information conservation and prime reserve threshold law
 
 **ID:** ULF-SRFM-2  
-**Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [THREE-SPECIES FUSION] [NEW CORPUS CONSEQUENCE] [NOVELTY UNVERIFIED] [LEAN PENDING] [NOT RH]`
+**Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [THREE-SPECIES FUSION] [NEW CORPUS CONSEQUENCE] [NOVELTY UNVERIFIED] [LEAN CLOSED] [NOT RH]`
 
 ## 1. Purpose
 
@@ -362,14 +362,19 @@ Broad searches through August 2026 found no source treating the reflected arithm
 Poisson hurdle work and general relative-entropy chain rules.  Therefore the correct status is
 classical mechanism plus a new corpus theorem; no external priority claim is made.
 
-## 8. Lean boundary
+## 8. Lean status
 
-This card is paper-proved only.  Formalization requires:
+Closed unconditionally in
 
-1. a count-to-Boolean-history bijection and finite/countable KL chain rule;
-2. explicit Poisson conditional mass identities;
-3. positivity of the reserve;
-4. the small-odds asymptotic;
-5. prime-series convergence and divergence at the exact threshold.
+* `formal/GaloisForLFunctions/HTGeometry/CountableRelativeEntropyValue.lean`,
+* `formal/GaloisForLFunctions/HTGeometry/PoissonOccupancyHistorySplit.lean`,
+* `formal/GaloisForLFunctions/HTGeometry/CountFormationSplit.lean`,
+* `formal/GaloisForLFunctions/HTGeometry/ReflectedPrimeHistoryReserve.lean`.
 
-No Lean file, build, or Stage-3 card is created by this research pass.
+All five formalization items are discharged: the count-to-Boolean-history bijection and the
+countable KL chain rule (`formationSplit`, `toReal_klDiv_formationSplit`), the explicit Poisson
+conditional mass identities (`countExcessLaw_poissonMeasure`), positivity of the reserve
+(`primeHistoryReserve_pos`), the small-odds asymptotic (`isEquivalent_primeHistoryReserve`), and
+the exact prime-series threshold (`summable_primeHistoryReserve_iff`).  See the companion
+`...-formalized.md` for the full result-to-declaration table.  Every declaration depends only on
+`propext`, `Classical.choice`, `Quot.sound`.

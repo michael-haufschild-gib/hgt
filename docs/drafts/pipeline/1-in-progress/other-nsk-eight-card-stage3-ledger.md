@@ -278,3 +278,102 @@ compatibility of actual signatures (for triples through the distinguished direct
 `orbitSum_comm` plus `additiveOrbitalDivisorAt_pairFaceWitnessFun`), and the induction assembling
 `Q_d/(Q_d ∩ Mer_DA) ≅ Comp_d` from the simultaneous lifting lemma, the surjectivity above and the
 completeness theorem.
+
+## Landed 2026-08-21 (eighth stretch) — the universal cyclic normal form
+
+`GaloisForLFunctions.HTGeometry.AllDepthCarrierSpan` and `...AllDepthNormalForm` (wired, built,
+axiom-clean) close the card's universal cyclic reduction `(3)`–`(4)`:
+
+```text
+carrierSpan τ hτ s            the ℂ-span of all jets of all translates of Ψ_s
+carrierAtomCombination_mem_carrierSpan
+carrierSpan_erase_le          deleting a direction keeps the span (the coface law exhibits
+                              Ψ_(s\{k}) as the translation defect of Ψ_s)
+exists_multiAtomRealization_matching
+                              every lattice-invariant divisor of bounded order with finitely many
+                              classes is the exact Laurent datum of an atom sum
+universalCarrierMero_pair, jet_ellipticGamma_mem_carrierSpan
+exists_carrierSpan_normal_form_pair    depth two, from the corpus's triptic normal form
+exists_carrierSpan_normal_form
+    **every member of Q_s differs from an element of carrierSpan τ hτ s by a differentially
+    algebraic germ**
+```
+
+The induction is: realize the bottom charge by a carrier jet combination (surjectivity), subtract,
+land in `Q_(s\{k})` (the kernel theorem), recurse, and push the smaller carrier's span into the
+larger one.  The depth-two base is the corpus's
+`TripticNormalForm.exists_gammaCorrection_differentiallyAlgebraic` together with
+`MultipleEllipticGammaBottomFace.multipleEllipticGammaLogDerivFaceMero_two_surviving`, which
+identifies `Ψ_({i,j})` with a translate of the order-one elliptic gamma logarithmic derivative.
+
+This is the statement `all-depth-compatible-pair-face-differential-matroid` calls
+"every `F ∈ Q_d` is congruent modulo DA functions to `P Ψ_(d−1)` for some finite
+arbitrary-translation operator `P`", i.e. the cyclic form `Comp_d = B·PairFace_d(Ψ_(d−1))`.
+
+## Landed 2026-08-21 (ninth stretch) — the signature is a compatible finite divisor family
+
+Three further modules (wired, built, axiom-clean) supply the "image ⊆ Comp_d" half of the
+exact-image theorem and the divisor algebra the realization half needs:
+
+```text
+HTGeometry/AllDepthClassDivisor.lean
+  DivInvariant, DivFiniteClasses and their closure under ± ;
+  divQuotient, divQuotient_mk, exists_finset_support_divQuotient
+  exists_antidifference_of_orbitSum_zero  a divisor with vanishing line sums in an
+                                          infinite-order direction is a one-step difference
+  eq_zero_of_shiftDiff_eq_zero            and that difference operator is injective
+HTGeometry/AllDepthSignatureProperties.lean
+  pairSig τ s f i j ℓ p                   the pair-face signature at an ordered pair
+  divInvariant_pairSig                    it is a class function modulo H_(ij)
+  divFiniteClasses_pairSig                with finitely many nonzero classes
+  exists_order_bound_pairSig              and bounded order
+  pairSig_eq_zero_of_mixedConstGermSet_erase
+      a member of Q_(s\{k}) has trivial signature at every pair through k
+HTGeometry/AllDepthTripleCompat.lean
+  finite_grid_support_of_finite_classes, finsum_comm_grid, mixedConstGerm_comm
+  pairSig_triple_compat                   **the three pair-face signatures of a triple have one
+                                          common pushforward**
+```
+
+`pairSig_triple_compat` is the card's "higher face reciprocity": each signature is computed by
+`triptic_orbit_residue_reciprocity` in the *other* direction of its own pair, and then both
+pushforwards are the same double sum of `laurentCoeff (Δ_j Δ_k W)` over the `(τ_j, τ_k)` grid,
+where `W = □_(s\{i,j,k}) F`; Fubini on that grid (finite because the grid meets each
+`ℤ + ℤτ_i`-class at most once) finishes.
+
+This closes `PairFace_d(Q_d) ⊆ Comp_d`.  What is left of the exact-image theorem is the converse
+inclusion: the induction realizing an arbitrary compatible family, for which every ingredient is
+now in place (`exists_simultaneous_lift`, `exists_class_member_with_prescribed_bottomCharge`,
+`exists_antidifference_of_orbitSum_zero`, `eq_zero_of_shiftDiff_eq_zero`,
+`pairSig_eq_zero_of_mixedConstGermSet_erase`, `additiveOrbitalDivisorAt_shiftDiffFun`).
+
+## Landed 2026-08-21 (tenth stretch) — the realization ingredients
+
+`GaloisForLFunctions.HTGeometry.AllDepthPeriodSpan` and `...AllDepthRealization` (wired, built,
+axiom-clean):
+
+```text
+periodSpan τ t = ℤ + ∑_(i ∈ t) ℤ τ_i, periodSpan_free, tripticPeriodGroup_le_periodSpan
+lineLattice_free_triple                 (in AllDepthCompletenessCore)
+tripticPeriodGroup_comm
+pairSig_symm                            the signature is symmetric in its pair (reciprocity)
+pairSig_descent                         the depth-d signature is the τ_k-displacement of the
+                                        depth-(d−1) one
+pairSig_add                             the signature is additive
+exists_depthTwo_member_with_prescribed_divisor
+    **depth-two realization**: every finite class divisor of bounded order is the orbital divisor of
+    a member of the depth-two class (the corpus's `exists_mem_class_with_prescribed_divisor`
+    together with a transversal of the classes)
+exists_bottom_realizer
+    **the components of a compatible family through one distinguished direction are realized**:
+    the simultaneous lifting lemma on `ℂ ⧸ (ℤ + ℤτ_k)` produces one bottom charge, and
+    `exists_class_member_with_prescribed_bottomCharge` realizes it
+```
+
+What is left of the exact-image theorem is exactly the induction that glues these: at depth `d ≥ 3`
+take `F₀` from `exists_bottom_realizer`, form the errors `E_ij = D_ij − S_ij(F₀)` on the pairs below
+`k`, antidifference them along `τ_k` (`exists_antidifference_of_orbitSum_zero`), check that the
+antiderivatives are again a compatible family (`eq_zero_of_shiftDiff_eq_zero` for uniqueness and
+`periodSpan` for the invariance bookkeeping), realize them by the inductive hypothesis on `s \ {k}`,
+and add — the sum's signature is `D` by `pairSig_add`, `pairSig_descent` and
+`pairSig_eq_zero_of_mixedConstGermSet_erase`.

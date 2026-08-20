@@ -184,6 +184,47 @@ theorem tripticPeriodGroup_free (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndepen
   simp only [hc, if_pos, if_neg (Ne.symm hik), if_neg (Ne.symm hjk), zero_add] at hck
   omega
 
+/-- **Three distinct surviving directions are free modulo the distinguished lattice.** -/
+theorem lineLattice_free_triple (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndependent τ)
+    {k i j l : ι} (hik : i ≠ k) (hjk : j ≠ k) (hlk : l ≠ k)
+    (hij : i ≠ j) (hil : i ≠ l) (hjl : j ≠ l) (n m r : ℤ)
+    (h : (n : ℂ) * τ i + (m : ℂ) * τ j + (r : ℂ) * τ l ∈ lineLattice (τ k)) :
+    n = 0 ∧ m = 0 ∧ r = 0 := by
+  classical
+  obtain ⟨a, b, hab⟩ := h
+  set c : ι → ℤ := fun t =>
+    (if t = i then n else 0) + (if t = j then m else 0) + (if t = l then r else 0)
+      + (if t = k then -b else 0) with hc
+  have hterm : ∀ t : ι, ((c t : ℤ) : ℂ) * τ t
+      = (if t = i then (n : ℂ) * τ t else 0) + (if t = j then (m : ℂ) * τ t else 0)
+        + (if t = l then (r : ℂ) * τ t else 0)
+        + (if t = k then ((-b : ℤ) : ℂ) * τ t else 0) := by
+    intro t
+    simp only [hc]
+    push_cast
+    split_ifs <;> ring
+  have hsum : ∑ t, ((c t : ℤ) : ℂ) * τ t
+      = (n : ℂ) * τ i + (m : ℂ) * τ j + (r : ℂ) * τ l + ((-b : ℤ) : ℂ) * τ k := by
+    rw [Finset.sum_congr rfl fun t _ => hterm t, Finset.sum_add_distrib, Finset.sum_add_distrib,
+      Finset.sum_add_distrib,
+      Finset.sum_ite_eq' Finset.univ i (fun t => (n : ℂ) * τ t),
+      Finset.sum_ite_eq' Finset.univ j (fun t => (m : ℂ) * τ t),
+      Finset.sum_ite_eq' Finset.univ l (fun t => (r : ℂ) * τ t),
+      Finset.sum_ite_eq' Finset.univ k (fun t => ((-b : ℤ) : ℂ) * τ t)]
+    simp
+  have hzero : (((-a : ℤ)) : ℂ) + ∑ t, ((c t : ℤ) : ℂ) * τ t = 0 := by
+    rw [hsum]
+    push_cast
+    linear_combination hab
+  obtain ⟨-, hcl⟩ := hQ (-a) c hzero
+  have hci := hcl i
+  have hcj := hcl j
+  have hcl' := hcl l
+  simp only [hc, if_pos, if_neg hik, if_neg hjk, if_neg hlk, if_neg hij, if_neg hil, if_neg hjl,
+    if_neg (Ne.symm hij), if_neg (Ne.symm hil), if_neg (Ne.symm hjl),
+    add_zero, zero_add] at hci hcj hcl'
+  exact ⟨by omega, by omega, by omega⟩
+
 end
 
 end GaloisForLFunctions
