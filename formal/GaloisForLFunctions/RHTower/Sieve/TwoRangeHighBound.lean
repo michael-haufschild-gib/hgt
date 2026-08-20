@@ -39,14 +39,19 @@ theorem two_pi_mul_twoRangeDisc (b A₃ x : ℝ) :
 theorem eventually_one_add_logLogSq_le_rpow {C ε : ℝ} (hC : 0 ≤ C) (hε : 0 < ε) :
     ∀ᶠ x : ℝ in atTop, 1 + C * (1 + Real.log (3 * Real.log x)) ^ 2 ≤ (Real.log x) ^ ε := by
   have hconst : Tendsto (fun x : ℝ =>
-      (1 + 2 * C * (1 + Real.log 3) ^ 2) * (Real.log x) ^ (-ε)) atTop (𝓝 0) :=
-    (tendsto_rpow_log_of_neg (by linarith)).const_mul _
+      (1 + 2 * C * (1 + Real.log 3) ^ 2) * (Real.log x) ^ (-ε)) atTop (𝓝 0) := by
+    simpa using (tendsto_rpow_log_of_neg (c := -ε) (by linarith)).const_mul
+      (1 + 2 * C * (1 + Real.log 3) ^ 2)
   have hll : Tendsto (fun x : ℝ =>
-      (2 * C) * ((Real.log x) ^ (-ε) * (Real.log (Real.log x)) ^ 2)) atTop (𝓝 0) :=
-    (tendsto_logRpow_mul_logLogPow (by linarith : (-ε) < 0) 2).const_mul _
+      (2 * C) * ((Real.log x) ^ (-ε) * (Real.log (Real.log x)) ^ 2)) atTop (𝓝 0) := by
+    simpa using (tendsto_logRpow_mul_logLogPow (e := -ε) (by linarith) 2).const_mul (2 * C)
   have hlim : Tendsto (fun x : ℝ =>
       (Real.log x) ^ (-ε) * (1 + C * (1 + Real.log (3 * Real.log x)) ^ 2)) atTop (𝓝 0) := by
-    refine squeeze_zero' ?_ ?_ (hconst.add hll)
+    have hsum : Tendsto (fun x : ℝ =>
+        (1 + 2 * C * (1 + Real.log 3) ^ 2) * (Real.log x) ^ (-ε)
+          + 2 * C * ((Real.log x) ^ (-ε) * (Real.log (Real.log x)) ^ 2)) atTop (𝓝 0) := by
+      simpa using hconst.add hll
+    refine squeeze_zero' ?_ ?_ hsum
     · filter_upwards [Filter.eventually_gt_atTop (1 : ℝ)] with x hx1
       have hlogx : (0 : ℝ) < Real.log x := Real.log_pos hx1
       have h1 : (0 : ℝ) ≤ (Real.log x) ^ (-ε) := Real.rpow_nonneg hlogx.le _
@@ -234,9 +239,7 @@ theorem twoRangeHmaj_bounds {A b A₃ β : ℝ} (hb : 0 < b) (hA₃ : 0 < A₃) 
     rw [hrw]
     refine mul_le_mul hlogS (le_trans hinv hinner) (by positivity) (by linarith)
   have hpow19 : Real.log x * (Real.log x) ^ ((9 : ℝ) / 10) = (Real.log x) ^ ((19 : ℝ) / 10) := by
-    conv_lhs => rw [← Real.rpow_one (Real.log x)]
-    rw [← Real.rpow_add hlogx]
-    norm_num
+    rw [show ((19 : ℝ) / 10) = 1 + 9 / 10 by norm_num, Real.rpow_add hlogx, Real.rpow_one]
   have h19 : (1 : ℝ) ≤ (Real.log x) ^ ((19 : ℝ) / 10) :=
     Real.one_le_rpow hlog1 (by norm_num)
   have hmain : twoRangeHmaj A b A₃ β x
@@ -277,8 +280,8 @@ theorem twoRangeMu_mul_twoRangeQ_ge {A delta a β : ℝ} (hdelta : 0 < delta) (h
     routeTZeroFreeDeltaEnvelopeConstant_pos A
   set ε : ℝ := (a - 9 / 10) / 2 with hεdef
   have hε : 0 < ε := by rw [hεdef]; linarith
-  have hdec : Tendsto (fun x : ℝ => 2 * (Real.log x) ^ (-(9 / 10 + ε))) atTop (𝓝 0) :=
-    (tendsto_rpow_log_of_neg (by linarith)).const_mul 2
+  have hdec : Tendsto (fun x : ℝ => 2 * (Real.log x) ^ (-(9 / 10 + ε))) atTop (𝓝 0) := by
+    simpa using (tendsto_rpow_log_of_neg (c := -(9 / 10 + ε)) (by linarith)).const_mul 2
   filter_upwards [routeTHeight_twoRangeTop_bounds (β := β) hβ0 hβ1,
     eventually_one_add_logLogSq_le_rpow
       (C := 60 * routeTZeroFreeDeltaEnvelopeConstant A) (ε := ε) (by positivity) hε,
@@ -335,9 +338,8 @@ theorem twoRangeMu_mul_twoRangeQ_ge {A delta a β : ℝ} (hdelta : 0 < delta) (h
   have hwidth : 2 * (Real.log x) ^ (-(9 / 10 + ε))
       ≤ routeTWidthPolylogLower A (2 * Real.pi * twoRangeTop β x) := by
     refine le_trans ?_ hge
-    rw [Real.rpow_neg hlogx.le, ← one_div, ← mul_one_div, mul_one_div, div_le_div_iff₀ hpowpos
-      hdenpos]
-    nlinarith [hden, hpowpos]
+    rw [Real.rpow_neg hlogx.le, ← one_div, mul_one_div, div_le_div_iff₀ hpowpos hdenpos]
+    linarith [hden]
   have hmin : 2 * (Real.log x) ^ (-(9 / 10 + ε))
       ≤ min delta (routeTWidthPolylogLower A (2 * Real.pi * twoRangeTop β x)) := by
     refine le_min ?_ hwidth
@@ -445,7 +447,8 @@ theorem exists_twoRange_high_bound {a b c' β A₃ : ℝ}
         rw [← Real.exp_neg]
         congr 1
         ring
-      rw [hsq, hexp, div_eq_mul_inv]
+      rw [hsq, hexp]
+      exact (div_eq_mul_inv _ _).symm
     have hrel := tendsto_logRpow_mul_relScaledMajorant (b := b) (A₃ := A₃) (Ctot := Ctot)
       (e := e) (Hmaj := fun x => twoRangeHmaj A b A₃ β x)
       (μ := fun x => twoRangeMu A delta β x) (q := fun x => twoRangeQ a x)
@@ -538,7 +541,6 @@ theorem exists_twoRange_high_bound {a b c' β A₃ : ℝ}
               + 7 * Real.exp 9 * ((Real.log x) ^ e / ((highBase a x : ℕ) : ℝ))) := by
         rw [twoRangeHighRho]
         field_simp
-        ring
       rw [hexpand]
       have hcoef : (0 : ℝ) ≤ 4 / Real.log 2 := by positivity
       have hstep : (1 + highEta c' x)

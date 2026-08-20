@@ -542,3 +542,52 @@ the simultaneous finite-divisor lifting lemma are Lean (`TelescopeIdeal`,
 `SimultaneousDivisorLifting`).  What remains for Stage 3 is the **all-depth induction itself** —
 the class `Q_d`, the bottom charge `ρ_d` with `ker ρ_d = Q_{d−1}`, the pair-face signature
 `PairFace_d`, the inductive step, and the realization half of `Q_d/(Q_d ∩ Mer_DA) ≅ Comp_d`.
+
+## Lean progress 2026-08-20 — the main theorem is closed unconditionally
+
+`GaloisForLFunctions.HTGeometry.AllDepthCompleteness` proves the card's main theorem in Lean, with
+no hypotheses and axiom-clean (`[propext, Classical.choice, Quot.sound]`):
+
+```text
+differentialAlgebraicOver_iff_pairFace_eq_zero
+    (τ : ι → ℂ) (hτ : ∀ k, 0 < (τ k).im) (hQ : PeriodsIntegrallyIndependent τ)
+    (s : Finset ι) (hs : 2 ≤ s.card)
+    (hx : RealizesMero x f) (hper : PeriodicOneGerm f) (hmixed : MixedConstGermSet τ s f Cst) :
+  DifferentialAlgebraicOver ℂ x
+    ↔ ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ p ℓ, ℓ < 0 →
+        additiveOrbitalDivisorAt (pairFaceWitnessFun τ s i j f) (τ i) p ℓ = 0
+```
+
+together with the full-family form `differentialAlgebraicOver_iff_pairFace_univ` and the converse
+half `differentialAlgebraicOver_of_pairFace_eq_zero`.
+
+The card states the theorem *assuming* the depth-two triptic DA-completeness theorem.  That
+assumption is discharged: the base case of the induction is the corpus's own unconditional
+`TripticCompleteness.differentiallyAlgebraic_iff_additiveOrbitalDivisorAt_eq_zero`.  So the Lean
+statement is strictly stronger than the card's.
+
+The Lean proof follows the card's induction exactly:
+
+| Card step | Lean |
+|---|---|
+| `S_(i,d)(F) = q_i(rho_d(F))` | `additiveOrbitalDivisorAt_pairFaceWitnessFun` |
+| multi-telescoping `⋂_i ker q_i = (∏_i x_i)A_d` | `exists_telescopeCube` (on `ℂ ⧸ (ℤ+ℤτ_d)`) |
+| `Z = C λ_d` with `rho_d(Z) = D`, `Z` DA | `exists_multiAtomRealization_of_bottomCharge`, `realizedDA_multiAtomRealization`, `mixedConstGermSet_multiAtomRealization` |
+| `ker rho_d = Q_(d−1)` | `exists_mixedConstGermSet_erase_of_bottomCharge_eq_zero` |
+| `R_2^(ij)(Δ_d V) = (t_(τ_d)−1)R_2^(ij)(V)` and infinite order kills it | `additiveOrbitalDivisorAt_shiftDiffFun`, `eq_zero_of_invariant_of_finite_classes`, `orbitalDivisor_eq_zero_of_shiftDiff_orbitalDivisor_eq_zero` |
+
+Two ingredients the card's prose leaves implicit and that the formalization had to supply:
+
+1. **The bottom charge has bounded pole order.**  Telescoping is order-by-order, and the realizing
+   atom sum is a finite sum over orders, so the descent needs `∃ N, ∀ ℓ < −N, ρ_d(F)(·,ℓ) = 0`.
+   This is `exists_order_bound_of_lineLattice_invariant`: the pole set meets finitely many
+   `Λ_d`-classes and the order is a class function, so the maximum over a finite set of
+   representatives bounds every order.
+2. **The realization is itself in the class.**  `F − Z ∈ Q_d` needs `Δ_(τ_d) Z` to be a germ
+   constant and every further difference of it to vanish; this is
+   `mixedConstGermSet_multiAtomRealization`, from `lineAtom_shift` at order zero and
+   `jetAtom_shift_succ` above it.
+
+Still open for stage 3: the **exact-image** half — the group algebra `A_S`, the pushforwards
+`p_(S,T)`, `Comp_d`, the simultaneous finite-divisor lifting lemma, and
+`Q_d/(Q_d ∩ Mer_DA) ≅ Comp_d`.  Injectivity of that map is exactly the theorem above.

@@ -530,3 +530,23 @@ whose realization half assumes the independently unaudited depth-two triptic DA-
 theorem.  That statement, `U ∈ Q_2(τ_i,τ_j)` is DA iff `R_2^(ij)(U) = 0`, is the single remaining
 mathematical input of this card and of its parent; it is not an elliptic-gamma statement about the
 named special function but a classification of the whole two-parameter mixed-constraint class.
+
+## Lean progress 2026-08-20 (second entry) — the depth-two input is discharged
+
+The closing paragraph above named "the depth-two triptic DA-completeness theorem" as the single
+remaining mathematical input of this card and of its parent.  That input is discharged twice over.
+
+1. The depth-two statement itself is already unconditional in the tree:
+   `HTGeometry.TripticCompleteness.differentiallyAlgebraic_iff_additiveOrbitalDivisorAt_eq_zero`.
+2. The *all-depth* statement it was assumed for is now unconditional as well:
+   `HTGeometry.AllDepthCompleteness.differentialAlgebraicOver_iff_pairFace_eq_zero` proves, for
+   every `d ≥ 2` and every member of `Q_d`, that differential algebraicity is equivalent to the
+   vanishing of all pair-face signatures, by induction with the depth-two theorem as base.  See the
+   parent card for the module map.
+
+What remains for this card is therefore only the *exact-image* half of the parent's module
+isomorphism `(5)` — the group algebra `A_S`, the pushforwards `p_(S,T)`, `Comp_d`, the simultaneous
+finite-divisor lifting lemma and surjectivity — after which formula `(1)` for an arbitrary `F ∈ Q_d`
+follows from the already-Lean universal carrier form `(4)`
+(`cosetCompleteDifferentialMatroid(_rationalBase)`) together with
+`arbitraryTranslate_eq_deepSpan_add_differentialAlgebraic`.

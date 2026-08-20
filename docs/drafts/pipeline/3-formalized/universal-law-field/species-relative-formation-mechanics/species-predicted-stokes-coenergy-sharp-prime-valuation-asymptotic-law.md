@@ -1,7 +1,7 @@
 # Species-predicted Stokes coenergy sharp prime--valuation asymptotic law
 
 **ID:** ULF-SRFM-3  
-**Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [FOURTH-ORGAN PREDICTION] [NEW CORPUS THEOREM] [NOVELTY UNVERIFIED] [LEAN PENDING] [NOT RH]`
+**Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [FOURTH-ORGAN PREDICTION] [NEW CORPUS THEOREM] [NOVELTY UNVERIFIED] [LEAN CLOSED] [NOT RH]`
 
 ## 1. Withheld prediction
 
@@ -239,9 +239,13 @@ upper bound and summability theorem but no sharp limit (3.1) or ratio (3.10).
 The honest classification is a new theorem about an existing corpus construction, obtained from a
 new cross-species prediction.  No external priority claim is made.
 
-## 7. Lean boundary
+## 7. Lean status
 
-This card audits existing Lean definitions read-only.  It adds no Lean code and runs no Lean build.
-Formalization requires a prime-at-infinity filter lemma, the exact rewrites (2.3)--(2.5), elementary
-hyperbolic asymptotics, and limit multiplication.  Stage 3 remains closed until that proof is
-unconditional and axiom-audited in Lean.
+Closed unconditionally in
+`formal/GaloisForLFunctions/RHTower/SourceHorizontalStokesCoenergySharpPrimeAsymptotic.lean`.
+See the companion file
+`species-predicted-stokes-coenergy-sharp-prime-valuation-asymptotic-law-formalized.md` for the
+result-to-declaration table.  Theorem 3.1 is `tendsto_stokesCoenergy_sharp`, its equivalent form
+(3.2) is `isEquivalent_stokesCoenergy_sharp`, and Corollary 3.2 is
+`tendsto_stokesCoenergy_div_majorant`.  Every declaration depends only on
+`propext`, `Classical.choice`, `Quot.sound`.

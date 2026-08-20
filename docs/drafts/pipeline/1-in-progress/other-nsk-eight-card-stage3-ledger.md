@@ -136,3 +136,52 @@ Next: finiteness of the nonzero classes of the depth-two orbital divisor modulo 
 (from `TripticLineFiniteness.exists_finset_pole_classes` plus
 `TripticOrbitalDivisorLinearity.laurentCoeff_boundary_periodic_one/_tau`), which closes the
 signature descent; then the assembly of the realization `Z` and the induction.
+
+## Landed 2026-08-20 (fourth stretch) — the all-depth main theorem is CLOSED
+
+`GaloisForLFunctions.HTGeometry.AllDepthCompleteness` now proves, unconditionally and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), the main theorem of
+`all-depth-pair-face-signature-completeness`:
+
+```text
+differentialAlgebraicOver_of_pairFace_eq_zero        -- the converse half, by induction on |s|
+differentialAlgebraicOver_iff_pairFace_eq_zero       -- F is DA  ⟺  every pair-face signature is 0
+differentialAlgebraicOver_iff_pairFace_univ          -- the same on the full parameter family
+```
+
+The card assumed the depth-two theorem as a hypothesis.  It is **not** a hypothesis here: the base
+case is the corpus's unconditional
+`TripticCompleteness.differentiallyAlgebraic_iff_additiveOrbitalDivisorAt_eq_zero`.
+
+Supporting modules added in this stretch (all wired, built, axiom-clean):
+
+- `HTGeometry/AllDepthBottomRealization.lean` — `lineLattice` (the lattice `ℤ + ℤσ` as an
+  `AddSubgroup`), `multiAtomRealization` (a finite atom sum carrying prescribed coefficients at
+  every order `-(j+1)`, `j < N`) with its exact Laurent data, `laurentCoeff_diffCube` (the
+  difference cube acts on Laurent coefficients as the translated cube), and the capstone
+  **`exists_multiAtomRealization_of_bottomCharge`**: every prescribed divisor on the elliptic
+  quotient with vanishing transverse line sums and bounded order is the full difference cube of the
+  principal-part data of an explicit finite atom sum.  The proof descends the divisor to
+  `ℂ ⧸ (ℤ + ℤσ)`, applies `exists_telescopeCube` there, and lifts through `Quotient.out`.
+- `HTGeometry/AllDepthAtomClass.lean` — the atom sum is itself a member of the class:
+  `shiftConstGerm_jetAtom` (a jet atom drops by `-2πi` at order zero and is unchanged above it),
+  `shiftConstGerm_multiAtomRealization`, `eventually_zero_diffCube`,
+  `mixedConstGermSet_zero_of_shiftConstGerm` and
+  **`mixedConstGermSet_multiAtomRealization`** — with `k` and one further direction present, the
+  full cube of an atom sum is germ-zero.
+- `HTGeometry/AllDepthCompletenessCore.lean` — `laurentCoeff_lineLattice_of_periods`,
+  **`exists_order_bound_of_lineLattice_invariant`** (finitely many pole classes + class-function
+  order ⟹ bounded pole order), and the three freeness laws `lineLattice_free_single`,
+  `lineLattice_free_pair`, `tripticPeriodGroup_free`.
+
+Structural change: `pairFaceWitnessFun`, `pairFaceWitnessMero`, `bottomWitnessFun`,
+`bottomWitnessMero` and every theorem about them now take an explicit `Finset ι` of active
+directions instead of `Finset.univ`, and the class hypotheses are function-level
+(`PeriodicOneGerm f`, `MixedConstGermSet τ s f Cst`) instead of germ-level.  Both changes are what
+make the induction on `s.card` run inside one fixed index type.
+
+Remaining for card 2: the exact-image half — the group algebra `A_S = ℂ[δ][ℂ/H_S]`, the
+pushforwards `p_(S,T)`, the compatible-pair space `Comp_d`, the simultaneous finite-divisor lifting
+lemma, and the isomorphism `Q_d/(Q_d ∩ Mer_DA) ≅ Comp_d`.
+Remaining for card 1: the matroid statement over the all-depth class (the coset chain is already
+closed).

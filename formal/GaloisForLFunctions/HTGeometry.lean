@@ -111,6 +111,7 @@ import GaloisForLFunctions.HTGeometry.AllDepthAtomClass
 import GaloisForLFunctions.HTGeometry.AllDepthAtomRealization
 import GaloisForLFunctions.HTGeometry.AllDepthBottomCharge
 import GaloisForLFunctions.HTGeometry.AllDepthBottomRealization
+import GaloisForLFunctions.HTGeometry.AllDepthCompleteness
 import GaloisForLFunctions.HTGeometry.AllDepthCompletenessCore
 import GaloisForLFunctions.HTGeometry.AllDepthMeroClass
 import GaloisForLFunctions.HTGeometry.AllDepthMixedConstraintClass
@@ -5591,6 +5592,7 @@ import GaloisForLFunctions.HTGeometry.MilnorKDegTwoSymbol
 import GaloisForLFunctions.HTGeometry.MilnorKFiniteField
 import GaloisForLFunctions.HTGeometry.MilnorKFunctoriality
 import GaloisForLFunctions.HTGeometry.MilnorKGersten
+import GaloisForLFunctions.HTGeometry.MilnorKTotalResidue
 import GaloisForLFunctions.HTGeometry.MilnorKGradedRing
 import GaloisForLFunctions.HTGeometry.MilnorKGradedRingAssoc
 import GaloisForLFunctions.HTGeometry.MilnorKGrading

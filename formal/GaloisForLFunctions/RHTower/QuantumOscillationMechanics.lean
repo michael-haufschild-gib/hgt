@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CalibrationSpectrumMechanics
+import GaloisForLFunctions.HTGeometry.ConstantFieldQEDGammaClock
 import GaloisForLFunctions.HTGeometry.GammaPeriodicConstraintCorona
 import GaloisForLFunctions.HTGeometry.HyperbolicModulus
 import GaloisForLFunctions.HTGeometry.RegularLevelSetStratification
@@ -6,6 +7,7 @@ import GaloisForLFunctions.RHTower.CCMArchimedeanGeometricCompositeKernel
 import GaloisForLFunctions.RHTower.FiniteWindowRecurrenceInstability
 import GaloisForLFunctions.RHTower.LegStripSteepness
 import GaloisForLFunctions.RHTower.ReversalPositivity
+import GaloisForLFunctions.SelbergClass.MultipleStandardTwistDamping
 
 /-!
 # Mechanical quantum-oscillation interfaces
@@ -24,6 +26,7 @@ not a material-specific model or numerical prediction.
 -/
 
 open Set Filter Topology
+open scoped UnivMeroFieldInstances
 
 noncomputable section
 
@@ -166,6 +169,19 @@ theorem landauCrossing_spacing :
   intro phaseOffset n
   push_cast
   ring
+
+/-- Scalar and spinor constant-field Landau ladders have an intrinsically HT comparison. -/
+theorem constantMagneticLandauSpinSplit_hypertranscendental :
+    HypertranscendentalOver (RatFunc ℂ)
+      _root_.GaloisForLFunctions.constantMagneticQEDSpinStatisticsRatioMero :=
+  _root_.GaloisForLFunctions.hypertranscendentalOver_constantMagneticQEDSpinStatisticsRatioMero
+
+/-- No rational or finite-Laurent clock realizes the exact constant-field Landau spin split. -/
+theorem constantMagneticLandauSpinSplit_ne_finiteClock :
+    ∀ r : RatFunc ℂ,
+      _root_.GaloisForLFunctions.constantMagneticQEDSpinStatisticsRatioMero ≠
+        algebraMap (RatFunc ℂ) (_root_.Bottcher.meroField Set.univ) r :=
+  _root_.GaloisForLFunctions.constantMagneticQEDSpinStatisticsRatioMero_ne_ratFuncModel
 
 /-- Every unit Landau crossing is a trough of the Onsager oscillation. -/
 theorem unitOnsagerOscillation_unitLandauCrossing :
@@ -357,6 +373,24 @@ theorem dingleFactor_tendsto_atTop :
     Tendsto dingleFactor atTop (𝓝 0) := by
   change Tendsto (fun x : ℝ => Real.exp (-x)) atTop (𝓝 0)
   exact Real.tendsto_exp_neg_atTop_nhds_zero
+
+/-- Effective Dingle exponent carried by one damped multiple-standard-twist term. -/
+def multipleTwistDingleExponent {N : ℕ} (kappa : Fin N → ℝ)
+    (alpha X : ℝ) (n : Fin N → ℕ+) : ℝ :=
+  (2 * Real.pi * alpha / X) *
+    SelbergClass.multipleIndexPower kappa n
+
+/-- Corpus multiple-twist damping is exactly a generalized Dingle factor. -/
+theorem norm_multipleTwistDamping_eq_dingleFactor :
+    ∀ {N : ℕ} (kappa : Fin N → ℝ) (alpha X : ℝ)
+      (n : Fin N → ℕ+),
+      ‖Complex.exp
+          (-SelbergClass.multipleTwistDampingParameter alpha X *
+            (SelbergClass.multipleIndexPower kappa n : ℂ))‖ =
+        dingleFactor (multipleTwistDingleExponent kappa alpha X n) := by
+  intro N kappa alpha X n
+  simpa [dingleFactor, multipleTwistDingleExponent] using
+    SelbergClass.norm_exp_multipleTwistDamping kappa alpha X n
 
 /-- LK spin-splitting factor in a unit-normalized phase convention. -/
 def lifshitzKosevichSpinFactor (spinPhase : ℝ) : ℝ :=

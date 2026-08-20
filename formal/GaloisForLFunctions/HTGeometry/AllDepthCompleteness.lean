@@ -133,7 +133,7 @@ theorem differentialAlgebraicOver_of_pairFace_eq_zero
             (Finset.mem_sdiff.mp hi).1 f p ℓ
           have hzero := hsig i (Finset.mem_sdiff.mp hi).1 k hk hik p ℓ hℓ
           rw [hzero] at hsum
-          rw [mul_finsum, ← hsum, mul_zero])
+          rw [← mul_finsum, ← hsum, mul_zero])
     have hZmero : MeromorphicOn (multiAtomRealization (τ k) N R cc) (Set.univ : Set ℂ) :=
       meromorphicOn_multiAtomRealization (hτ k) N R cc
     have hZbotmero :
@@ -217,7 +217,10 @@ theorem differentialAlgebraicOver_of_pairFace_eq_zero
         (meromorphicOn_diffCube τ _ hZmero) (periodicOneGerm_diffCube τ _ hZper)
         (mixedConstGerm_pairFaceWitnessFun τ s hij hi hj hZmix) (hτ j)
         (hindepPair i j hij) p hℓ
-      rw [hsplit, additiveOrbitalDivisorAt_add (meromorphicOn_diffCube τ _ hmeroF)
+      rw [hsplit, additiveOrbitalDivisorAt_add
+        (F := pairFaceWitnessFun τ s i j f)
+        (G := pairFaceWitnessFun τ s i j (multiAtomRealization (τ k) N R cc))
+        (meromorphicOn_diffCube τ _ hmeroF)
         (meromorphicOn_diffCube τ _ hZmero) hAs hBs, hsig i hi j hj hij p ℓ hℓ,
         hZsig i hi j hj hij p ℓ hℓ, add_zero]
     have hEsig' : ∀ i ∈ s \ {k}, ∀ j ∈ s \ {k}, i ≠ j → ∀ (p : ℂ) (ℓ : ℤ), ℓ < 0 →
@@ -256,6 +259,46 @@ theorem differentialAlgebraicOver_of_pairFace_eq_zero
     have hxeq : x = (x + xZ) - xZ := by ring
     rw [hxeq]
     exact differentialAlgebraicOver_sub hxEDA hxZDA
+
+set_option synthInstance.maxHeartbeats 800000 in
+/-- **All-depth pair-face completeness.**  A `1`-periodic meromorphic germ with constant full mixed
+difference in a family of integrally independent directions is differentially algebraic exactly
+when every pair-face signature vanishes. -/
+theorem differentialAlgebraicOver_iff_pairFace_eq_zero
+    (τ : ι → ℂ) (hτ : ∀ k, 0 < (τ k).im) (hQ : PeriodsIntegrallyIndependent τ)
+    (s : Finset ι) (hs : 2 ≤ s.card)
+    {x : meroField (Set.univ : Set ℂ)} {Cst : ℂ} {f : ℂ → ℂ} (hx : RealizesMero x f)
+    (hper : PeriodicOneGerm f) (hmixed : MixedConstGermSet τ s f Cst) :
+    DifferentialAlgebraicOver ℂ x ↔
+      ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ (p : ℂ) (ℓ : ℤ), ℓ < 0 →
+        additiveOrbitalDivisorAt (pairFaceWitnessFun τ s i j f) (τ i) p ℓ = 0 := by
+  constructor
+  · intro hDA i hi j hj hij
+    exact pairFaceSignature_eq_zero_of_differentialAlgebraicOver τ hτ hQ s hij hi hj hx hper
+      hmixed hDA
+  · intro hsig
+    exact differentialAlgebraicOver_of_pairFace_eq_zero τ hτ hQ s.card s rfl hs x Cst f hx hper
+      hmixed hsig
+
+set_option synthInstance.maxHeartbeats 800000 in
+/-- **All-depth pair-face completeness on the full parameter family.** -/
+theorem differentialAlgebraicOver_iff_pairFace_univ
+    (τ : ι → ℂ) (hτ : ∀ k, 0 < (τ k).im) (hQ : PeriodsIntegrallyIndependent τ)
+    (hs : 2 ≤ Fintype.card ι)
+    {x : meroField (Set.univ : Set ℂ)} {Cst : ℂ} {f : ℂ → ℂ} (hx : RealizesMero x f)
+    (hper : PeriodicOneGerm f)
+    (hmixed : MixedConstGermSet τ (Finset.univ : Finset ι) f Cst) :
+    DifferentialAlgebraicOver ℂ x ↔
+      ∀ i j : ι, i ≠ j → ∀ (p : ℂ) (ℓ : ℤ), ℓ < 0 →
+        additiveOrbitalDivisorAt (pairFaceWitnessFun τ (Finset.univ : Finset ι) i j f)
+          (τ i) p ℓ = 0 := by
+  rw [differentialAlgebraicOver_iff_pairFace_eq_zero τ hτ hQ (Finset.univ : Finset ι)
+    (by simpa using hs) hx hper hmixed]
+  constructor
+  · intro h i j hij
+    exact h i (Finset.mem_univ i) j (Finset.mem_univ j) hij
+  · intro h i _ j _ hij
+    exact h i j hij
 
 end
 
