@@ -1,8 +1,8 @@
 # The critical all-grade Euler-ray corona is its grade-one face
 
 - **ID:** `critical-all-grade-euler-corona-grade-one-reduction`
-- **Stage:** 2-fully-proven / not-new
-- **Type:** theorem (paper), `[BRIDGE]`
+- **Stage:** 3-formalized / not-new
+- **Type:** theorem (Lean), `[BRIDGE]`
 - **Statement:** In the critical Marcinkiewicz topology on all prime-power coefficients, every
   grade `m>=2` of a bounded degree-one Euler ray is a vanishing tail.  The quotient class of the
   complete nonlinear ray is therefore exactly the class of its grade-one coordinate.  The actual
@@ -218,6 +218,41 @@ the grades `m>=2` at the critical Dirichlet weight, together with quotient funct
 is to close the all-grade escape explicitly: the complete nonlinear Euler ray does not repair the
 separation between the nonzero source tail and the vanishing off-line residue character.
 
-No isolated Lean formalization is selected.  The algebraic ray identities are already formalized in
-`EulerSourceJetJacobian.lean`, while the Marcinkiewicz completion is analysis infrastructure and the
-theorem introduces no scientifically new mechanism.
+The theorem introduces no scientifically new mechanism, but it is now formalized: see the Lean
+section below.  (The earlier note that no isolated formalization was selected is superseded.)
+
+## Lean formalization — COMPLETE (unconditional)
+
+**`GaloisForLFunctions/RHTower/AllGradePrimePowerCorona.lean`.**  Axiom audit for every capstone:
+`propext`, `Classical.choice`, `Quot.sound` only.
+
+The all-grade coefficient array is indexed by pairs `(p, m)` standing for the grade-`m+1`
+coefficient at the prime `p`, and `primePowerMass c X = ∑_{p^{m+1} ≤ X} |c_{p,m}| / p^{m+1}` is the
+numerator of the seminorm `(1)`; `primePowerQuotient` is the Marcinkiewicz quotient at cutoff `X`.
+The grade-one layer `M_log` is the corpus's `WeightedEulerCoefficientSpaces`.
+
+| Theorem | Statement |
+|---|---|
+| `primePowerIndex`, `primePowerMass`, `primePowerQuotient`, `MemPrimePowerLayer` | the space `M_pp` of `(1)`. |
+| **`primePowerMass_gradeOneEmbed`** | **`(2)`–`(3)`: `ι` is an isometry** — the all-grade mass of a grade-one embedded field is exactly its prime-log mass. |
+| **`primeLogMass_gradeOneProj_le`** | **`(4)`: grade-one projection is contractive.** |
+| `eulerRay`, `eulerRayHigher`, `eulerRay_eq_add` | the complete nonlinear ray `(6)` and its higher-grade part `H(a) = Φ(a) − ι(a)`. |
+| **`primePowerMass_eulerRayHigher_le`** | **`(7)`: for a bounded degree-one field the grades `m ≥ 2` carry mass at most `∑_p (log p)/(p(p−1)) ≤ 8`, uniformly in the cutoff.** |
+| **`tendsto_primePowerQuotient_eulerRayHigher`** | **`(8)`, the grade-one reduction: the higher-grade quotient tends to zero**, so the complete nonlinear ray and its linear grade-one face have the same critical corona class. |
+| **`tendsto_primePowerQuotient_eulerRay_unit`** | **`(9)`: the actual unit Euler source survives with quotient exactly one** — Mertens' first theorem through the corpus's `tendsto_mertensPrimeMean_unit`, with the higher grades contributing `O(1/log X)`. |
+| `shiftField`, **`primePowerMass_eulerRay_shift_le`, `tendsto_primePowerQuotient_eulerRay_shift`** | **`(10)`–`(11)`: the off-line shift ray has zero corona class** even with every prime-power grade retained — the mass is uniformly bounded by `2·primeLogRpowTailConstant ε` and the quotient vanishes. |
+| `eulerTangent`, **`primePowerMass_eulerTangent_le`** | **`(13)`–`(14)`: the complete tangent ray has mass at most `4` times the grade-one mass**, so adding all tangent grades does not strengthen the critical summable topology. |
+| `eulerTangentHigher`, **`primePowerMass_eulerTangentHigher_le`** | **`(14a)`–`(14b)`: the extension to all of `M_log`** — for a field in the logarithmic Marcinkiewicz layer with constant `K`, the tangent grades `m ≥ 2` carry mass at most `24 K log 2`, uniformly in the cutoff, continuously in `K`. |
+| `sum_primesBelow_primeLog_div_le` | the dyadic-block step of `(14a)`: `∑_p α_p/p ≤ 4 K log 2` from the defining Marcinkiewicz bound. |
+| `sum_range_pow_le`, `sum_range_add_one_mul_pow_le`, `sum_Ico_succ_mul_pow_le`, `primePowerMass_le_prod` | the reusable finite geometric and grouping bounds the estimates run on. |
+
+Every statement is a finite-cutoff inequality or a limit of such; no hypothesis on `ζ`, on the
+zeros, or on any unproved analytic input enters any proof.  Complex parameter fields are covered
+because the seminorm sees only absolute values: the mass of a complex ray equals the mass of the
+real ray of its moduli, which is what the shift-ray statement is instantiated at.
+
+## Log
+- 2026-08-20 — **formalized**: unconditional Lean proofs of the all-grade prime-power Marcinkiewicz
+  layer, the grade-one isometry and contraction, the grade-one reduction of the complete nonlinear
+  Euler ray, the exact Mertens unit class, the vanishing off-line shift ray, and both tangent bounds
+  (critical-summable and Marcinkiewicz).  Axiom audit clean.  Stage → 3-formalized.

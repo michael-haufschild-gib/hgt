@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SuperPoincareAlgebra
+import GaloisForLFunctions.RHTower.BurnolCoPoissonBerezinReflection
 import GaloisForLFunctions.RHTower.CCMPublishedRestrictedWeilParityBlocks
 import GaloisForLFunctions.RHTower.CCMParityInvolutionGrading
 import GaloisForLFunctions.RHTower.RankTwoCommutatorParityMultiplicityBalance
@@ -6,6 +7,9 @@ import GaloisForLFunctions.RHTower.RealCoronaQuaternionicCyclic
 import GaloisForLFunctions.RHTower.PrimeArchThetaMorseAnomalousDarboux
 import GaloisForLFunctions.RHTower.SuzukiPositiveResolventParityNoGo
 import GaloisForLFunctions.RHTower.DeningerArithmeticQuaternionicTransitionNoReal
+import GaloisForLFunctions.RHTower.GradingSectorWitness
+import GaloisForLFunctions.RHTower.SoninLogCoordinateScattering
+import GaloisForLFunctions.RHTower.SuzukiXiRealFEBipolarizationCompletion
 
 /-!
 # Super-Poincare applications in RHTower
@@ -53,9 +57,68 @@ def residualParityD1N2 (L : ℕ) :
     rw [h]
     exact neg_add_cancel _
 
+/-- Abstract sign grading and its occupied odd sector form another unit-momentum `N = 2` pair. -/
+def gradingSectorD1N2 :
+    SuperPoincare.D1N2 (Matrix (Fin 2) (Fin 2) ℝ) where
+  supercharge0 := signGrading
+  supercharge1 := flipMatrix
+  momentum := 1
+  supercharge0_sq := signGrading_sq
+  supercharge1_sq := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [flipMatrix, Matrix.mul_apply, Fin.sum_univ_two]
+  mixed_anticommutator := by
+    rw [signGrading_anticomm]
+    exact neg_add_cancel _
+
 end GaloisForLFunctions.RHTower
 
+open GaloisForLFunctions GaloisForLFunctions.RHTower
+
 namespace RHTower
+
+/-- Positive-aperture Burnol holonomy and cosine reflection form split `N = 2`. -/
+def burnolApertureHolonomyD1N2Split (u v : ℝ) :
+    SuperPoincare.D1N2Split (evenSubspace →L[ℂ] evenSubspace) := by
+  let a := Real.exp u
+  have ha : 0 < a := Real.exp_pos u
+  let r := Real.exp v + 1
+  have hr : 1 < r := by
+    dsimp [r]
+    linarith [Real.exp_pos v]
+  refine {
+    supercharge0 := burnolExtendedBilateralApertureHolonomy a ha r hr
+    supercharge1 := evenFourierTransform
+    mixed_anticommutator := ?_ }
+  · apply ContinuousLinearMap.ext
+    intro x
+    change burnolExtendedBilateralApertureHolonomy
+        a ha r hr (evenFourierTransform x) +
+      evenFourierTransform (burnolExtendedBilateralApertureHolonomy
+        a ha r hr x) = 0
+    have h := burnolExtendedBilateralApertureHolonomy_cosine_odd a ha r hr x
+    change burnolExtendedBilateralApertureHolonomy
+        a ha r hr (evenFourierTransform x) =
+      -evenFourierTransform (burnolExtendedBilateralApertureHolonomy
+        a ha r hr x) at h
+    rw [h]
+    exact neg_add_cancel _
+
+/-- Fourier-reflection diagonal translation in the Burnol split sector is the identity. -/
+theorem burnolApertureHolonomy_momentum1_eq_one (u v : ℝ) :
+    (burnolApertureHolonomyD1N2Split u v).momentum1 = 1 := by
+  apply ContinuousLinearMap.ext
+  intro x
+  exact evenFourierTransform_involutive x
+
+/-- Sonin logarithmic Fourier scattering is an infinite-dimensional unit-momentum supercharge. -/
+def soninLogFourierScatteringD1N1 :
+    SuperPoincare.D1N1 (SoninL2 →L[ℂ] SoninL2) where
+  supercharge := soninLogFourierScattering
+  momentum := 1
+  supercharge_sq := by
+    simpa only [pow_two] using soninLogFourierScattering_sq_eq_one
 
 /-- Linear parity reflection in the Suzuki four-space. -/
 def suzukiParityReflectionEnd : Module.End ℝ SuzukiParityFourSpace where
@@ -100,6 +163,70 @@ def suzukiParityD1N2 :
       suzukiParityReflection (suzukiParityPosition v) = 0
     rw [suzukiParityPosition_anticommutes_reflection]
     exact neg_add_cancel _
+
+/-- Xi-real quarter-turn and FE reflection form split `N = 2` with opposite momenta. -/
+def suzukiWeldQuarterTurnReflectionD1N2Split :
+    SuperPoincare.D1N2Split (Module.End ℝ (ℝ × ℝ)) where
+  supercharge0 := planeJ
+  supercharge1 := weldFEReflectionLinear
+  mixed_anticommutator := by
+    apply LinearMap.ext
+    intro x
+    change planeJ (weldFEReflectionLinear x) + weldFEReflectionLinear (planeJ x) = 0
+    have h := congrArg (fun f : Module.End ℝ (ℝ × ℝ) => f x)
+      planeJ_comp_weldFEReflectionLinear_eq_neg
+    simp only [LinearMap.comp_apply, LinearMap.neg_apply] at h
+    rw [h]
+    exact neg_add_cancel _
+
+/-- Quarter-turn diagonal translation is negative unit momentum. -/
+theorem suzukiWeldQuarterTurnReflection_momentum0_eq_neg_one :
+    suzukiWeldQuarterTurnReflectionD1N2Split.momentum0 = -1 := by
+  apply LinearMap.ext
+  intro x
+  change planeJ (planeJ x) = -x
+  have h := congrArg (fun f : Module.End ℝ (ℝ × ℝ) => f x) planeJ_sq
+  simpa only [LinearMap.comp_apply, LinearMap.neg_apply, LinearMap.id_apply] using h
+
+/-- FE-reflection diagonal translation is positive unit momentum. -/
+theorem suzukiWeldQuarterTurnReflection_momentum1_eq_one :
+    suzukiWeldQuarterTurnReflectionD1N2Split.momentum1 = 1 := by
+  apply LinearMap.ext
+  intro x
+  change weldFEReflectionLinear (weldFEReflectionLinear x) = x
+  have h := congrArg (fun f : Module.End ℝ (ℝ × ℝ) => f x)
+    weldFEReflectionLinear_sq
+  simpa only [LinearMap.comp_apply, LinearMap.id_apply] using h
+
+/-- Positive light-cone combination of the split supercharges is nilpotent. -/
+theorem suzukiWeldQuarterTurnReflection_positive_lightlike :
+    ((2 : ℝ)⁻¹ •
+      (suzukiWeldQuarterTurnReflectionD1N2Split.supercharge0 +
+        suzukiWeldQuarterTurnReflectionD1N2Split.supercharge1)) *
+      ((2 : ℝ)⁻¹ •
+        (suzukiWeldQuarterTurnReflectionD1N2Split.supercharge0 +
+          suzukiWeldQuarterTurnReflectionD1N2Split.supercharge1)) = 0 := by
+  apply LinearMap.ext
+  intro x
+  change suzukiWeldPositiveTriangleLinear (suzukiWeldPositiveTriangleLinear x) = 0
+  have h := congrArg (fun f : Module.End ℝ (ℝ × ℝ) => f x)
+    suzukiWeldPositiveTriangleLinear_sq
+  simpa only [LinearMap.comp_apply, LinearMap.zero_apply] using h
+
+/-- Negative light-cone combination of the split supercharges is also nilpotent. -/
+theorem suzukiWeldQuarterTurnReflection_negative_lightlike :
+    ((2 : ℝ)⁻¹ •
+      (suzukiWeldQuarterTurnReflectionD1N2Split.supercharge0 -
+        suzukiWeldQuarterTurnReflectionD1N2Split.supercharge1)) *
+      ((2 : ℝ)⁻¹ •
+        (suzukiWeldQuarterTurnReflectionD1N2Split.supercharge0 -
+          suzukiWeldQuarterTurnReflectionD1N2Split.supercharge1)) = 0 := by
+  apply LinearMap.ext
+  intro x
+  change suzukiWeldNegativeTriangleLinear (suzukiWeldNegativeTriangleLinear x) = 0
+  have h := congrArg (fun f : Module.End ℝ (ℝ × ℝ) => f x)
+    suzukiWeldNegativeTriangleLinear_sq
+  simpa only [LinearMap.comp_apply, LinearMap.zero_apply] using h
 
 /-- First Deninger quaternion transition as a complex-linear endomorphism. -/
 def deningerQuaternionTransitionIEnd : Module.End ℂ (ℂ × ℂ) where

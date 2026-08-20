@@ -1,8 +1,8 @@
 # The critical Euler logarithmic derivative is a weighted prime-shift accretivity problem
 
 - **ID:** `critical-euler-weighted-shift-accretivity-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[BRIDGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** weighted Laplace RKHS theory, the completed Euler logarithmic derivative, and
   the critical two-channel Weil resolvent law
@@ -278,3 +278,36 @@ the RH equivalence, so no Lean file is added.
 - [x] signed-Gamma complementary carrier budget attached
 - [ ] factor the Hermitian part of `T` through a source-defined positive space
 - [ ] prove accretivity and RH
+
+## Lean formalization — the proved algebra is COMPLETE (unconditional)
+
+**`GaloisForLFunctions/RHTower/WeightedLaplaceShift.lean`.**  Axiom audit for every capstone:
+`propext`, `Classical.choice`, `Quot.sound` only.
+
+| Theorem | Statement |
+|---|---|
+| **`integral_cexp_neg_mul_Ioi_zero`** | `∫_0^∞ e^{-cx} dx = 1/c` for `Re c > 0` — the half-line Laplace integral at complex rate, proved by the fundamental theorem of calculus on `Ioi 0` with the explicit antiderivative.  This was a mathlib gap. |
+| `weightedInner`, `laplaceEval` | the weighted pairing `⟨g,h⟩ = ∫_0^∞ g h̄ e^{-x}` of `(1)` and the evaluation vectors `k_z(x) = e^{-z̄x}` of `(3)`. |
+| **`weightedInner_laplaceEval`** | **`(4)`–`(5)`: `⟨k_η, k_z⟩ = 1/(z + η̄ + 1)`** — the reproducing kernel of the weighted Laplace space. |
+| `weightedLaplaceShift`, `weightedLaplaceShift_of_lt`, `weightedLaplaceShift_of_le` | the weighted shift `(6)` and its support. |
+| `setIntegral_Ioi_comp_add_right` | translation of a half-line integral (the change of variables `(9)` runs on). |
+| **`integral_normSq_weightedLaplaceShift`** | **`(8)`: `‖S_h g‖² = e^h ‖g‖²` on the support of the shift** — the exact critical scaling. |
+| **`integral_normSq_primeWeightedShift`** | **`(10)`: `‖n^{-1} S_{log n} g‖² = n^{-1} ‖g‖²`**, so the `n`-th Euler monomial has operator norm exactly `n^{-1/2}`.  The critical Weil weight is forced by the weighted boundary, not inserted by normalisation. |
+| `weightedLaplace`, **`weightedLaplace_weightedLaplaceShift`** | **`(7)`: `L(S_h g)(z) = e^{-hz} L(g)(z)`.** |
+| **`weightedInner_weightedLaplaceShift_eq_zero`** | **`(22)`–`(23)`: a shift by more than the aperture has zero pairing with a vector supported in the aperture** — the prime side of the accretivity problem is exactly finite. |
+| `accretivityKernel`, **`accretivityKernel_eq_add`, `accretivityKernel_conj`** | **`(15)`: the accretivity kernel is the Hermitian part of the multiplier Gram**, and it is a Hermitian kernel. |
+| **`accretivityKernel_shift`** | **`(18)`–`(19)`: under `w = z + 1/2` the accretivity kernel is exactly the critical logarithmic-derivative kernel `(L(w) + L(v)‾)/(w + v̄)`.** |
+
+**Not claimed here.**  `(20)`'s equivalence `(i) ↔ (ii)` is the two-channel theorem of
+`critical-logderivative-two-channel-weil-resolvent-law.md`; `(11)`–`(14)`'s analytic Euler multiplier
+`B` and the accretivity of the completed operator remain the card's open gates, unchanged.  What is
+now certified is the exact algebra the card proves: the carrier, its kernel, the shift laws, the
+critical weight, the cutoff, and the kernel identities that turn accretivity into the critical
+logarithmic-derivative positivity.
+
+## Log
+- 2026-08-20 — **formalized**: unconditional Lean proofs of the weighted Laplace reproducing kernel,
+  the exact weighted-shift norm and Laplace-transport laws, the critical `n^{-1/2}` weight, the exact
+  aperture cutoff, and the accretivity-kernel identities including the `w = z + 1/2` coordinate
+  change.  A new mathlib-gap lemma (the complex-rate half-line Laplace integral) was proved on the
+  way.  Axiom audit clean.  Stage → 3-formalized.

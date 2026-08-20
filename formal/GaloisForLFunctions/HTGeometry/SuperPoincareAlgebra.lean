@@ -58,6 +58,26 @@ theorem momentum_commutes_supercharge1 :
 
 end D1N2
 
+/-- Supertranslation sector with an arbitrary family of odd generators and common translation. -/
+structure D1Extended (I R : Type*) [Ring R] where
+  supercharge : I → R
+  momentum : R
+  supercharge_sq : ∀ i, supercharge i * supercharge i = momentum
+  mixed_anticommutator : ∀ i j, i ≠ j →
+    supercharge i * supercharge j + supercharge j * supercharge i = 0
+
+namespace D1Extended
+
+variable {I R : Type*} [Ring R] (S : D1Extended I R)
+
+/-- Common translation commutes with every supercharge. -/
+theorem momentum_commutes_supercharge (i : I) :
+    S.momentum * S.supercharge i = S.supercharge i * S.momentum := by
+  rw [← S.supercharge_sq i]
+  simp only [mul_assoc]
+
+end D1Extended
+
 /-- `N = 2` supertranslation sector whose two diagonal momenta may differ. -/
 structure D1N2Split (R : Type*) [Ring R] where
   supercharge0 : R

@@ -6507,3 +6507,177 @@ hypotheses `hV`/`hU` become the partitioned ones), instantiate `T = allBlocksSma
 range `log P' = (log x)^{49/50}` with `V_j = #B_j·(log x)^{−100}`, take `Us_j` from brick 89c through
 `Sieve/LogPolyIccPrefix`, `J_j` from brick 94 with the measure from `Sieve/Section4RelativeThreshold`,
 and check the three budgets against `M²W²` as derived in the design entry.
+
+### CORRECTION + the architecture that actually closes `1/2 < β < 1`: the DOUBLE Ramaré identity (2026-08-20)
+
+The design entry "The `𝒰` half: four dead arrangements, and the one that closes" is **wrong on its
+positive half**, and the error is worth recording exactly, because it also shows what the right
+arrangement is.
+
+#### 1. Why a second range *above* `h` cannot be blocked and thresholded
+
+The entry checked only the *diagonal* half of the mean value theorem on `𝒯'_S`,
+`(∑_k V_k N_k)² = θ²M²(W')²`.  The mean value theorem also has a **height** half, and it is the one
+that constrains the top of the range.  With `V_k = θ#B_k`, `#C_k ≍ ηM/R_k`,
+
+```text
+   ∫_{|w| ≤ T} ‖P_k C_k‖²  ≤  V_k²·(5π/2·T + 5e/2·M/R_k)·#C_k ,
+```
+
+so the height half, with optimal Cauchy–Schwarz weights, contributes
+
+```text
+   (∑_k V_k √(5π T #C_k/2))²  =  (5πT η M/2)·θ²·(∑_k #B_k/√R_k)²
+        ≍  T·θ²·η·M·R_max/(log R_max)²      since  ∑_{p ≤ R} p^{-1/2} ≍ 2√R/log R .
+```
+
+The Gallagher budget of `Sieve/FibreWindowBridge.averagedMeanSquare_of_gallagherBudget` is optimised
+at `W = M/h` and then demands `β_maj = o(M²)` at `T ≍ M/h`, i.e.
+
+```text
+   θ²·η·R_max/(h (log R_max)²)  →  0        ⟹        R_max ≲ h · polylog .
+```
+
+**Every thresholded, blocked prime range must therefore sit below `h` up to polylogarithmic
+factors.**  `log Q' = log x/log log x` violates this by `exp(log x/log log x − (log x)^β)`.
+
+#### 2. Why one range below `h` cannot go below `β = 19/20`
+
+With `R_max ≤ h·polylog` the moment method (Lemma 2.5) gives, for the bottom block `R_min`,
+
+```text
+   |𝒰| ≍ exp( log T₀ · C₁ / log R_min ) ,   C₁ = log log R_min + log(1/η) + 2log(1/θ) + log k ≍ log log x ,
+```
+
+and `log T₀ ≍ (1/2)log x` always (because `T₀ ≍ M/h` and `h = x^{o(1)}`).  On `𝒰` the only two
+orientations both fail:
+
+* `sup‖C_k‖·√(∫_𝒰‖P_k‖²)` with `∫_𝒰‖P_k‖² ≤ |𝒰|(#B_k)²` needs `σ²|𝒰|(W)² → 0`, i.e.
+  `log R_min ≳ C₁ log T₀/(2E)`; with the corpus's `E = (log x)^{1/20}` that is
+  `log R_min ≳ (log x)^{19/20}log log x`, and `log R_min ≤ log R_max ≤ (log x)^β` forces `β > 19/20`
+  (Vinogradov–Korobov's `E = (log x)^{1/3}` would give `β > 2/3`, never `1/2`);
+* `sup‖P_k‖·√(∫_𝒰‖C_k‖²)` with Halász–Montgomery returns the irreducible diagonal
+  `(∑_k #B_kN_k)² = M²W²` — dead arrangement 1.
+
+So **no single-range arrangement reaches `β = 1/2`, whatever the zero-free region.**  This is a
+sharper no-go than the Milestone-B one and supersedes it.
+
+#### 3. The arrangement that does close it
+
+Exposé §4's actual mechanism: **two ranges used for two different purposes.**
+
+```text
+   P = primes with  (log x)^{A} ≤ log p ≤ log h                (small range: thresholded, blocked)
+   Q = primes with  (log x)^{a}  ≤ log q ≤ (log x)^{b} ,  9/10 < a < b < 1
+                                                              (large range: NEVER thresholded)
+```
+
+`Q` sits far above `h`, and that is legal **because `Q` is used only on `𝒰`, where there is no
+height term at all**: Halász–Montgomery's row mass is `2N + C·|𝒰|`, with the measure of the
+exceptional set in place of the height.  Concretely, writing `n = p·q·m`:
+
+| region | `‖P_j‖` | `‖Q_k‖` | `∫‖A_{j,k}‖²` | total |
+|-|-|-|-|-|
+| `𝒯` = all `P`-blocks small | `θ#B_j` | — (not split off) | mean value theorem | `θ²(5πT₀M·4P_max/(log P_max)² + 2.5M²W_P²)` |
+| `𝒰 ∩ {\|w\| ≥ w₀}` | `#B_j` | `ρ#D_k` (Route T) | `(2N + C\|𝒰\|)·N` | `ρ²M²W_P²W_Q²` |
+| `{\|w\| ≤ w₀}` | `#B_j` | `#D_k` | `σ²N²`, brick 89c | `2w₀σ²M²W_P²W_Q²` |
+
+with `ρ = exp(−c(log x)^{a−9/10}) → 0` (Route T at `log q ≥ (log x)^a`, `a > 9/10`) and
+`σ = exp(−(log N)^{1/20})` (brick 89c, all heights `|τ| ≤ N`).
+
+The three requirements are
+
+```text
+   (i)   P_max ≲ h·polylog                       — the height half of the m.v.t. on 𝒯 ;
+   (ii)  |𝒰| ≲ min( N_{j,k}/√T₀ , √T₀ )          — so that Halász–Montgomery's row mass is 2N ;
+   (iii) W_P = log( log P_max / log P_min ) → ∞  — so that θ·W_P → 0 with θ polylogarithmic.
+```
+
+`(ii)` unwinds to `log P_min ≳ 2C₁ ≍ log log x`, i.e. `P_min = (log x)^{O(1)}` — **the exposé's
+`(log X)^7`, recovered.**  `(i)` and `(iii)` then say only `log h / log log x → ∞`.  So this
+architecture reaches every `h ≥ exp(ω(log log x))`, in particular every `β ∈ (1/2, 1)`, which is
+exactly what cards 4 and 5 need.  (Card 3, which needs *every* `h → ∞`, still needs Milestone D.)
+
+#### 4. The one structural brick that is missing: the double Ramaré identity
+
+The corpus's two-range object is the **joint Turán–Kubilius weight** `ω_P·ω_Q`
+(`Sieve/JointTuranKubilius`, `Sieve/JointWeightTransfer`), and its budget carries the prime-counting
+error `204((#P+1)(#Q+1))²(√x+1)`, which needs `#P·#Q ≪ W_PW_Q·h` — false for `Q` above `h`.  That is
+the recorded reason "the joint arrangement cannot host the large range".
+
+The repair is to drop the weight entirely and use **Ramaré's identity twice**: for `n` with a prime
+factor in `P` *and* one in `Q`,
+
+```text
+   1 = ∑_{p ∈ P, p | n} ∑_{q ∈ Q, q | n}  1/(ω_P(n)·ω_Q(n))
+```
+
+exactly — no variance, no `1/W`, no `(#P#Q)²`.  The two discarded classes are the integers with no
+prime factor in `P` (density `≍ log P_min/log P_max`) and those with no prime factor in `Q`
+(density `≍ (log x)^{a−b}`); both are `o(1)` and both enter through the **mean value theorem on the
+rough Dirichlet polynomial**, not through a short-interval sieve — because the whole split now
+happens *after* Gallagher, at the level of `logPoly μ (Icc 1 M)`, where
+`Sieve/FibreWindowBridge.averagedMeanSquare_of_gallagherBudget` takes over.
+
+**Brick list for `averagedMeanSquare_moebius_scaled'` at `1/2 < β < 1`:**
+1. the double Ramaré identity for `μ` on `[1,M]`, with the two rough classes named;
+2. the mean value theorem for the two rough polynomials (corpus: `Sieve/LogPolyDirPoly`) and the
+   two rough counts (sieve at the level of `[1,M]`, not short intervals);
+3. the `P`-block ladder of the double bilinear form, with the `Q`-factor left inside the cofactor
+   on `𝒯` and split off on `𝒰`;
+4. `𝒯` = `Sieve/Section4AllBlocksSmall.allBlocksSmall` at `θ` polylogarithmic + the mean value
+   theorem;
+5. `𝒰 ∩` annulus: Route T on the `Q`-block (`Sieve/AnnulusBoundUniform`) + integral
+   Halász–Montgomery (`Sieve/HalaszMontgomeryIntegral` + `Sieve/DyadicAffineEnvelope` for `C`) with
+   `|𝒰|` from `Sieve/Section4RelativeThreshold`;
+6. the disc `|w| ≤ w₀`: brick 89c on the cofactor;
+7. assembly through `Sieve/FibreWindowBridge.averagedMeanSquare_of_gallagherBudget`.
+
+Bricks 99a–99f (`Sieve/RamareBlockSplitOn`, `Sieve/RamarePartitionedLadder`,
+`Sieve/RamareAnnulusPartitioned`, `Sieve/RamareAffinePartitioned`,
+`Sieve/FibreRamarePartitionedFinal`) are the single-range instance of items 3–4 and are reusable
+verbatim once the cofactor carries the `Q`-factor.
+
+### Brick 99f — the partitioned ladder reaches the fibre capstone (2026-08-20)
+
+Two modules, `lake env lean`-clean, axiom-clean, wired, `lake build`-verified.
+
+**`Sieve/RamareAffinePartitioned`**
+
+```text
+ramarePartSlope M L Q η V Dslope
+  = 2L·∑_{j<L} V_j²·(5π/2·#C_j) + 2·Dslope
+ramarePartConst M L Q η w₀ V U Vlow Us J Dconst
+  = 2L·∑_{j<L} ( V_j²·(5e/2·⌊M/Q_j⌋·#C_j) + Us_j²·J_j + Vlow_j²U_j²·2w₀ ) + 2·Dconst
+
+integral_normSq_ramareBilinear_affine_partitioned_le :
+  ∀ W, 1 ≤ W → w₀ ≤ W → W ≤ T₀ →
+    ∫_{|w| ≤ W} ‖ramareBilinear P M w‖² ≤ ramarePartSlope·W + ramarePartConst
+```
+
+The partition set is intersected with the current window, so a single set `S` stated at the top
+height `T₀` serves every window below it: the complement `Icc(−W,W) \ (S ∩ Icc(−W,W))` is
+`Icc(−W,W) \ S`, which shrinks with `W`, and the prime mean square `J_j` transfers by monotonicity
+of a nonnegative integrand.  The ladder defect is again a hypothesis `hDfct` in affine form
+(`Dslope·W + Dconst`), discharged at the call site by
+`Sieve/RamareLadderAnnulus.integral_normSq_ramareLadderError_le_defectSum`, which is affine in `W`
+with `Dslope = 5π/2·ladderDefectSum` and `Dconst = 5e/2·⌊M(1+η)⌋·ladderDefectSum`.
+
+**`Sieve/FibreRamarePartitionedFinal`**
+
+```text
+sum_sq_fibreSum_moebius_le_ramarePartitioned_final :
+  ∑_{a ∈ outerBlock x h} (∑_{b ∈ innerFibre x h a} μ b)²
+    ≤ 16√x·( 2·fibreWidth²·(slope·G + const)
+             + ( 4(slope + 5π/2·M + 5e/2·M²/T₀)/(π²G) + 4·const/(3π²G²) ) )
+      + 204(√x + 1) + 2·#outerBlock·(fibreRamareSieveError h z r lam)²
+```
+
+This is `Sieve/FibreRamareLadderFinal.sum_sq_fibreSum_moebius_le_ramareLadder_final` with its two
+pointwise hypotheses replaced by the frequency partition.  Nothing else in the chain changes:
+`Sieve/RamareBilinearKernelBound.integral_kernel_normSq_ramareBilinear_le` and the fibre bridge are
+already parametric in the slope and the constant.
+
+Per §3 above this module is the **single-range** capstone; it is superseded for `β < 19/20` by the
+double-range architecture, but it is the exact shape that architecture will re-use, with
+`ramareBilinear` replaced by the double bilinear form.

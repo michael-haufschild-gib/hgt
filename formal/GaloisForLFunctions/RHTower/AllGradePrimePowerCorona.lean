@@ -525,4 +525,236 @@ theorem primePowerMass_eulerTangent_le (b : ℕ → ℝ) (X : ℕ) :
     _ = 4 * primeLogMass b X := by
         rw [← Finset.mul_sum, primeLogMass, primesBelow_succ_eq_filter]
 
+/-! ### The Marcinkiewicz tangent extension -/
+
+theorem sum_range_add_one_mul_pow_le {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (M : ℕ) :
+    ∑ m ∈ Finset.range M, ((m : ℝ) + 1) * r ^ m ≤ ((1 - r) ^ 2)⁻¹ := by
+  have hnorm : ‖r‖ < 1 := by rwa [Real.norm_eq_abs, abs_of_nonneg hr0]
+  have hden : (0 : ℝ) < 1 - r := by linarith
+  have h1 := hasSum_coe_mul_geometric_of_norm_lt_one (𝕜 := ℝ) hnorm
+  have h2 := hasSum_geometric_of_norm_lt_one hnorm
+  have hs : HasSum (fun n : ℕ => ((n : ℝ) + 1) * r ^ n) (((1 - r) ^ 2)⁻¹) := by
+    have hadd := h1.add h2
+    have hval : r / (1 - r) ^ 2 + (1 - r)⁻¹ = ((1 - r) ^ 2)⁻¹ := by
+      field_simp
+      ring
+    rw [hval] at hadd
+    exact hadd.congr_fun fun n => by ring
+  rw [← hs.tsum_eq]
+  exact hs.summable.sum_le_tsum _ fun n _ => by positivity
+
+theorem sum_Ico_succ_mul_pow_le {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r ≤ 1 / 2) (M : ℕ) :
+    ∑ m ∈ Finset.Ico 1 M, ((m : ℝ) + 1) * r ^ (m + 1) ≤ 6 * r ^ 2 := by
+  have hlt : r < 1 := by linarith
+  have hden : (0 : ℝ) < 1 - r := by linarith
+  have hinv1 : (1 - r)⁻¹ ≤ 2 := by
+    rw [inv_le_comm₀ hden (by norm_num)]
+    linarith
+  have hinv2 : ((1 - r) ^ 2)⁻¹ ≤ 4 := by
+    have h : (1 - r)⁻¹ * (1 - r)⁻¹ ≤ 2 * 2 :=
+      mul_le_mul hinv1 hinv1 (by positivity) (by norm_num)
+    calc ((1 - r) ^ 2)⁻¹ = (1 - r)⁻¹ * (1 - r)⁻¹ := by rw [← mul_inv]; ring_nf
+      _ ≤ 4 := by linarith
+  rw [Finset.sum_Ico_eq_sum_range]
+  have hterm : ∀ i ∈ Finset.range (M - 1),
+      (((1 + i : ℕ) : ℝ) + 1) * r ^ ((1 + i) + 1)
+        = r ^ 2 * (((i : ℝ) + 1) * r ^ i + r ^ i) := by
+    intro i _
+    push_cast
+    ring
+  rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum, Finset.sum_add_distrib]
+  have hb1 := sum_range_add_one_mul_pow_le hr0 hlt (M - 1)
+  have hb2 := sum_range_pow_le hr0 hlt (M - 1)
+  have hsum : (∑ i ∈ Finset.range (M - 1), ((i : ℝ) + 1) * r ^ i)
+      + ∑ i ∈ Finset.range (M - 1), r ^ i ≤ 6 := by linarith
+  calc r ^ 2 * ((∑ i ∈ Finset.range (M - 1), ((i : ℝ) + 1) * r ^ i)
+        + ∑ i ∈ Finset.range (M - 1), r ^ i)
+      ≤ r ^ 2 * 6 := mul_le_mul_of_nonneg_left hsum (by positivity)
+    _ = 6 * r ^ 2 := by ring
+
+/-- The dyadic Marcinkiewicz bound: a logarithmic-layer field has summable reciprocal-weighted
+prime mass, with the explicit constant `4 K log 2`. -/
+theorem sum_primesBelow_primeLog_div_le {b : ℕ → ℝ} {K : ℝ}
+    (hK : ∀ Y : ℕ, 2 ≤ Y → primeLogMass b Y ≤ K * Real.log Y) (X : ℕ) :
+    ∑ p ∈ Nat.primesBelow (X + 1), Real.log p / p * |b p| / p ≤ 4 * K * Real.log 2 := by
+  classical
+  have hKnn : 0 ≤ K := by
+    by_contra hneg
+    rw [not_le] at hneg
+    have h2 := hK 2 le_rfl
+    have hmass : 0 ≤ primeLogMass b 2 := primeLogMass_nonneg b 2
+    have hlog2 : (0 : ℝ) < Real.log ((2 : ℕ) : ℝ) := by
+      rw [Nat.cast_ofNat]
+      exact Real.log_pos (by norm_num)
+    have hprod : K * Real.log ((2 : ℕ) : ℝ) < 0 := mul_neg_of_neg_of_pos hneg hlog2
+    linarith
+  have hmaps : ∀ p ∈ Nat.primesBelow (X + 1),
+      Nat.log 2 p ∈ Finset.range (Nat.log 2 X + 1) := by
+    intro p hp
+    obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp
+    exact Finset.mem_range.mpr (Nat.lt_succ_of_le (Nat.log_mono_right (by omega)))
+  rw [← Finset.sum_fiberwise_of_maps_to hmaps]
+  have hblock : ∀ k ∈ Finset.range (Nat.log 2 X + 1),
+      ∑ p ∈ {p ∈ Nat.primesBelow (X + 1) | Nat.log 2 p = k},
+          Real.log p / p * |b p| / p
+        ≤ ((1 : ℝ) / 2) ^ k * (K * ((k : ℝ) + 1) * Real.log 2) := by
+    intro k _
+    have hbound : ∀ p ∈ {p ∈ Nat.primesBelow (X + 1) | Nat.log 2 p = k},
+        Real.log p / p * |b p| / p ≤ ((1 : ℝ) / 2) ^ k * (Real.log p / p * |b p|) := by
+      intro p hp
+      obtain ⟨hp1, hp2⟩ := Finset.mem_filter.mp hp
+      obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp1
+      have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hpp.pos
+      have hpk : (2 : ℕ) ^ k ≤ p := by
+        rw [← hp2]
+        exact Nat.pow_log_le_self 2 hpp.pos.ne'
+      have hpkR : ((2 : ℝ)) ^ k ≤ (p : ℝ) := by exact_mod_cast hpk
+      have hrecip : (1 : ℝ) / (p : ℝ) ≤ ((1 : ℝ) / 2) ^ k := by
+        rw [div_pow, one_pow]
+        exact one_div_le_one_div_of_le (by positivity) hpkR
+      have hnn : (0 : ℝ) ≤ Real.log p / p * |b p| :=
+        mul_nonneg (div_nonneg (Real.log_natCast_nonneg p) hp0.le) (abs_nonneg _)
+      calc Real.log p / p * |b p| / p = (Real.log p / p * |b p|) * (1 / (p : ℝ)) := by ring
+        _ ≤ (Real.log p / p * |b p|) * ((1 : ℝ) / 2) ^ k :=
+            mul_le_mul_of_nonneg_left hrecip hnn
+        _ = ((1 : ℝ) / 2) ^ k * (Real.log p / p * |b p|) := by ring
+    have hsub : {p ∈ Nat.primesBelow (X + 1) | Nat.log 2 p = k}
+        ⊆ Finset.filter (fun n : ℕ => n.Prime) (Finset.Icc 1 (2 ^ (k + 1))) := by
+      intro p hp
+      obtain ⟨hp1, hp2⟩ := Finset.mem_filter.mp hp
+      obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp1
+      refine Finset.mem_filter.mpr ⟨Finset.mem_Icc.mpr ⟨hpp.one_lt.le, ?_⟩, hpp⟩
+      have hlt2 := Nat.lt_pow_succ_log_self (b := 2) (by omega) p
+      rw [hp2] at hlt2
+      omega
+    have hmass : ∑ p ∈ {p ∈ Nat.primesBelow (X + 1) | Nat.log 2 p = k},
+        Real.log p / p * |b p| ≤ primeLogMass b (2 ^ (k + 1)) := by
+      rw [primeLogMass]
+      exact Finset.sum_le_sum_of_subset_of_nonneg hsub fun p _ _ =>
+        mul_nonneg (div_nonneg (Real.log_natCast_nonneg p) (by positivity)) (abs_nonneg _)
+    have hKmass : primeLogMass b (2 ^ (k + 1)) ≤ K * ((k : ℝ) + 1) * Real.log 2 := by
+      have h2 : 2 ≤ 2 ^ (k + 1) := Nat.le_self_pow (by omega) 2
+      have h := hK (2 ^ (k + 1)) h2
+      have hlog : Real.log ((2 ^ (k + 1) : ℕ) : ℝ) = ((k : ℝ) + 1) * Real.log 2 := by
+        push_cast
+        rw [Real.log_pow]
+        push_cast
+        ring
+      rw [hlog] at h
+      calc primeLogMass b (2 ^ (k + 1)) ≤ K * (((k : ℝ) + 1) * Real.log 2) := h
+        _ = K * ((k : ℝ) + 1) * Real.log 2 := by ring
+    calc ∑ p ∈ {p ∈ Nat.primesBelow (X + 1) | Nat.log 2 p = k}, Real.log p / p * |b p| / p
+        ≤ ∑ p ∈ {p ∈ Nat.primesBelow (X + 1) | Nat.log 2 p = k},
+            ((1 : ℝ) / 2) ^ k * (Real.log p / p * |b p|) := Finset.sum_le_sum hbound
+      _ = ((1 : ℝ) / 2) ^ k * ∑ p ∈ {p ∈ Nat.primesBelow (X + 1) | Nat.log 2 p = k},
+            Real.log p / p * |b p| := by rw [Finset.mul_sum]
+      _ ≤ ((1 : ℝ) / 2) ^ k * (K * ((k : ℝ) + 1) * Real.log 2) :=
+          mul_le_mul_of_nonneg_left (le_trans hmass hKmass) (by positivity)
+  have hgeom : ∑ k ∈ Finset.range (Nat.log 2 X + 1),
+      ((1 : ℝ) / 2) ^ k * (K * ((k : ℝ) + 1) * Real.log 2) ≤ 4 * K * Real.log 2 := by
+    have hrw : ∀ k : ℕ, ((1 : ℝ) / 2) ^ k * (K * ((k : ℝ) + 1) * Real.log 2)
+        = (K * Real.log 2) * (((k : ℝ) + 1) * ((1 : ℝ) / 2) ^ k) := by
+      intro k; ring
+    rw [Finset.sum_congr rfl fun k _ => hrw k, ← Finset.mul_sum]
+    have hb := sum_range_add_one_mul_pow_le (r := (1 : ℝ) / 2) (by norm_num) (by norm_num)
+      (Nat.log 2 X + 1)
+    have hval : (((1 : ℝ) - 1 / 2) ^ 2)⁻¹ = 4 := by norm_num
+    rw [hval] at hb
+    have hnn : (0 : ℝ) ≤ K * Real.log 2 :=
+      mul_nonneg hKnn (Real.log_nonneg (by norm_num))
+    calc (K * Real.log 2) * ∑ k ∈ Finset.range (Nat.log 2 X + 1),
+          (((k : ℝ) + 1) * ((1 : ℝ) / 2) ^ k)
+        ≤ (K * Real.log 2) * 4 := mul_le_mul_of_nonneg_left hb hnn
+      _ = 4 * K * Real.log 2 := by ring
+  exact le_trans (Finset.sum_le_sum hblock) hgeom
+
+/-- The tangent grades `m ≥ 2` of the complete Euler ray. -/
+def eulerTangentHigher (b : ℕ → ℝ) : ℕ × ℕ → ℝ :=
+  fun z => if z.2 = 0 then 0 else eulerTangent b z
+
+/-- **The Marcinkiewicz tangent extension.**  For a coefficient field in the logarithmic
+Marcinkiewicz layer the tangent grades `m ≥ 2` carry weighted mass bounded uniformly in the cutoff,
+continuously in the layer constant: the all-grade tangent over `M_0` is exactly the vanishing-tail
+tangent. -/
+theorem primePowerMass_eulerTangentHigher_le {b : ℕ → ℝ} {K : ℝ}
+    (hK : ∀ Y : ℕ, 2 ≤ Y → primeLogMass b Y ≤ K * Real.log Y) (X : ℕ) :
+    primePowerMass (eulerTangentHigher b) X ≤ 24 * K * Real.log 2 := by
+  set g : ℕ → ℕ → ℝ := fun p m =>
+    if m = 0 then 0 else ((m : ℝ) + 1) * (Real.log p * |b p|) * (((p : ℝ))⁻¹) ^ (m + 1) with hg
+  have hgnn : ∀ p m, 0 ≤ g p m := by
+    intro p m
+    rw [hg]
+    dsimp only
+    split
+    · exact le_rfl
+    · have h1 : (0 : ℝ) ≤ ((m : ℝ) + 1) * (Real.log p * |b p|) :=
+        mul_nonneg (by positivity) (mul_nonneg (Real.log_natCast_nonneg p) (abs_nonneg _))
+      positivity
+  have hmaj : ∀ z ∈ primePowerIndex X,
+      |eulerTangentHigher b z| / ((z.1 : ℝ) ^ (z.2 + 1)) ≤ g z.1 z.2 := by
+    intro z hz
+    have hp := (mem_primePowerIndex.mp hz).1
+    have hp0 : (0 : ℝ) < (z.1 : ℝ) := by exact_mod_cast hp.pos
+    rw [hg]
+    dsimp only
+    by_cases hz2 : z.2 = 0
+    · rw [if_pos hz2, eulerTangentHigher, if_pos hz2]
+      simp
+    · rw [if_neg hz2, eulerTangentHigher, if_neg hz2, eulerTangent, abs_mul, abs_mul,
+        abs_of_nonneg (show (0 : ℝ) ≤ (z.2 : ℝ) + 1 by positivity),
+        abs_of_nonneg (Real.log_natCast_nonneg z.1), inv_pow, ← div_eq_mul_inv]
+      ring_nf
+      rfl
+  refine le_trans (primePowerMass_le_prod g X hmaj hgnn) ?_
+  have hinner : ∀ p ∈ Nat.primesBelow (X + 1),
+      ∑ m ∈ Finset.range (X + 1), g p m ≤ 6 * (Real.log p / p * |b p| / p) := by
+    intro p hp
+    obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp
+    have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hpp.two_le
+    have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
+    set r : ℝ := ((p : ℝ))⁻¹ with hr
+    have hr0 : 0 ≤ r := by positivity
+    have hrhalf : r ≤ 1 / 2 := by
+      rw [hr, ← one_div]
+      exact one_div_le_one_div_of_le (by norm_num) hp2
+    have hsub : Finset.Ico 1 (X + 1) ⊆ Finset.range (X + 1) := by
+      intro m hm
+      exact Finset.mem_range.mpr (Finset.mem_Ico.mp hm).2
+    have hzeroOut : ∀ m ∈ Finset.range (X + 1), m ∉ Finset.Ico 1 (X + 1) → g p m = 0 := by
+      intro m hm hnot
+      have hm0 : m = 0 := by
+        by_contra hne
+        exact hnot (Finset.mem_Ico.mpr ⟨Nat.one_le_iff_ne_zero.mpr hne,
+          Finset.mem_range.mp hm⟩)
+      rw [hg]
+      dsimp only
+      rw [if_pos hm0]
+    rw [← Finset.sum_subset hsub hzeroOut]
+    have hIco : ∑ m ∈ Finset.Ico 1 (X + 1), g p m
+        = (Real.log p * |b p|) * ∑ m ∈ Finset.Ico 1 (X + 1), ((m : ℝ) + 1) * r ^ (m + 1) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun m hm => ?_
+      have hm0 : ¬ m = 0 := Nat.one_le_iff_ne_zero.mp (Finset.mem_Ico.mp hm).1
+      rw [hg]
+      dsimp only
+      rw [if_neg hm0]
+      ring
+    rw [hIco]
+    have hb := sum_Ico_succ_mul_pow_le hr0 hrhalf (X + 1)
+    have hnn : (0 : ℝ) ≤ Real.log p * |b p| :=
+      mul_nonneg (Real.log_natCast_nonneg p) (abs_nonneg _)
+    have hval : (Real.log p * |b p|) * (6 * r ^ 2) = 6 * (Real.log p / p * |b p| / p) := by
+      rw [hr]
+      field_simp
+    calc (Real.log p * |b p|) * ∑ m ∈ Finset.Ico 1 (X + 1), ((m : ℝ) + 1) * r ^ (m + 1)
+        ≤ (Real.log p * |b p|) * (6 * r ^ 2) := mul_le_mul_of_nonneg_left hb hnn
+      _ = 6 * (Real.log p / p * |b p| / p) := hval
+  calc ∑ p ∈ Nat.primesBelow (X + 1), ∑ m ∈ Finset.range (X + 1), g p m
+      ≤ ∑ p ∈ Nat.primesBelow (X + 1), 6 * (Real.log p / p * |b p| / p) :=
+        Finset.sum_le_sum hinner
+    _ = 6 * ∑ p ∈ Nat.primesBelow (X + 1), Real.log p / p * |b p| / p := by rw [Finset.mul_sum]
+    _ ≤ 6 * (4 * K * Real.log 2) :=
+        mul_le_mul_of_nonneg_left (sum_primesBelow_primeLog_div_le hK X) (by norm_num)
+    _ = 24 * K * Real.log 2 := by ring
+
 end RHTower

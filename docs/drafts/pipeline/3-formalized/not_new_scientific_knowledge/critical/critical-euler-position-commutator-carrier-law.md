@@ -1,8 +1,8 @@
 # The critical prime-shift form is an exact logarithmic position commutator
 
 - **ID:** `critical-euler-position-commutator-carrier-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[BRIDGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** weighted translation operators, the position--translation commutator, and
   Burnol's conductor-operator realization of local explicit-formula terms
@@ -354,3 +354,44 @@ Equation `(9)` is therefore the concrete position-commutator representative of a
 cyclic source class.  The remaining theorem is an exact comparison map from that cutoff class to
 the compressed pair `(17a)`, not a choice of a new trace.  Finite-part preservation supplies a
 sharp falsifier for any proposed Sonin relative functional.
+
+## Lean formalization — COMPLETE (unconditional)
+
+**`GaloisForLFunctions/RHTower/EulerPositionCommutator.lean`**, on top of the corpus's
+`CCMCompressedShiftIndependence` (which already owns the compressed weighted shift `T_{A,h}` and the
+arithmetic-carrier faithfulness).  Axiom audit for every capstone: `propext`, `Classical.choice`,
+`Quot.sound` only.
+
+| Theorem | Statement |
+|---|---|
+| `positionMult` | the bounded aperture position operator `X_A`, multiplication by the logarithmic position. |
+| **`positionMult_compressedShift_commutator`** | **`(4)`: `[X_A, T_{A,h}] = h · T_{A,h}`** — the exact compressed-shift commutator.  The orbital length is produced by the commutator, not inserted as an external scalar normalisation. |
+| `halfWeightTransport`, `halfWeightTransportInv`, `halfWeightTransport_inv`, `truncatedTranslation` | the unitary `W_A f = e^{-x/2} f` of `(11a)` and the ordinary truncated translation `V_{A,h}` of `(11b)`. |
+| **`halfWeightTransport_compressedShift`** | **`(11c)`: `W_A T_{A,h} W_A^{-1} = e^{h/2} V_{A,h}`.** |
+| **`halfWeightTransport_positionMult`** | **`(11d)`: `W_A X_A W_A^{-1} = X_A`.** |
+| **`vonMangoldt_div_mul_log_prime_pow`** | **`(10)`: `Λ(p^k)/(p^k log p^k) = 1/(k p^k)`** — the unsquared prime-power coefficient of the finite-aperture Euler logarithm.  Combined with `(11c)` this is the coefficient magnitude `1/(k p^{k/2})` of `(11e)`. |
+| **`adjoint_commutator_of_commutator`** | **`(5)`: `[X, T] = h T` with `X` self-adjoint and `h` real forces `[X, T^*] = -h T^*`.** |
+| `skewSum`, **`adjoint_skewSum`** | **`(8)`: the Euler logarithm `Z_A = ∑ c_n (T_n - T_n^*)` is skew-adjoint.** |
+| **`commutator_skewSum`** | **`(9)`: `[X, Z] = ∑ c_n h_n (T_n + T_n^*)`** — the Hermitian prime contribution, with the orbital lengths supplied by the commutator. |
+| **`projection_commutator_decomposition`** | **`(11f)`–`(11g)`: `Q[X,Z]Q = [X_Q, Z_Q] + L_X^* L_Z + L_Z^* L_X`** for any orthogonal projection `Q`, self-adjoint `X` and skew-adjoint `Z`. |
+| **`trace_projection_commutator_decomposition`** | **`(11j)`–`(11k)`: under any linear functional the compressed commutator splits into exactly two degree-one channels** — the internal trace anomaly and the polarized leakage cross. |
+
+Already in the corpus and reused rather than rebuilt: `compressedShift` (the operator `T_{A,h}` of
+`(2)`), `linearIndependent_compressedShift_primes` and `linearIndependent_rat_compressedShift_primes`
+(the arithmetic-carrier faithfulness `(14)`), and `finrank_primeLog_le_quotient_add` (the surviving
+quotient rank `(15)`).
+
+`(12)` is a definition of the completed Hermitian operator, not a separate theorem: its three
+ingredients — `B_A + B_A^*`, `[X_A, Z_A]`, and their compression — are the formalized objects above.
+
+**Not Lean-bound, as the open gates already record:** the bounded conductor-cutoff graph is
+`sonin-burnol-conductor-cutoff-bounded-graph-law.md`'s theorem, and the semilocal relative trace, the
+positive-commutator inequality `(16)` and RH remain open research.  Nothing about them is claimed
+here.
+
+## Log
+- 2026-08-20 — **formalized**: unconditional Lean proofs of the exact compressed-shift commutator,
+  the adjoint eigenvalue reversal, the skew Euler logarithm and its commutator, the unitary transport
+  to the unweighted logarithmic carrier, the unsquared prime-power coefficient, and the
+  projection-compressed commutator/Gram and trace-defect identities.  Axiom audit clean.  Stage →
+  3-formalized.

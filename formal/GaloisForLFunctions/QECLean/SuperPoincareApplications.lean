@@ -64,6 +64,27 @@ def pauliD1N2
   supercharge1_sq := toMatrix_sq_eq_one_of_phasePower_eq_zero q hq
   mixed_anticommutator := toMatrix_anticommutator_eq_zero p q h
 
+/-- Every anticommuting Pauli pair gives split `N = 2`, without a phase convention. -/
+def pauliD1N2Split
+    {n : ℕ} (p q : NQubitPauliGroupElement n)
+    (h : NQubitPauliGroupElement.Anticommute p q) :
+    SuperPoincare.D1N2Split (Matrix (NQubitBasis n) (NQubitBasis n) ℂ) where
+  supercharge0 := p.toMatrix
+  supercharge1 := q.toMatrix
+  mixed_anticommutator := toMatrix_anticommutator_eq_zero p q h
+
+/-- Every packaged logical qubit canonically carries split `N = 2` supertranslations. -/
+def logicalQubitD1N2Split {n : ℕ} {S : Quantum.StabilizerGroup n}
+    (ops : Quantum.StabilizerGroup.LogicalQubitOps n S) :
+    SuperPoincare.D1N2Split (Matrix (NQubitBasis n) (NQubitBasis n) ℂ) :=
+  pauliD1N2Split ops.xOp ops.zOp ops.anticommute
+
+/-- Every encoded qubit of every corpus `StabilizerCode` inherits the construction. -/
+def stabilizerCodeLogicalD1N2Split {n k : ℕ}
+    (C : Quantum.StabilizerGroup.StabilizerCode n k) (i : Fin k) :
+    SuperPoincare.D1N2Split (Matrix (NQubitBasis n) (NQubitBasis n) ℂ) :=
+  logicalQubitD1N2Split (C.logicalOps i)
+
 /-- Three-qubit repetition-code logical supercharges. -/
 def repetitionThreeLogical : SuperPoincare.D1N2
     (Matrix (NQubitBasis 3) (NQubitBasis 3) ℂ) :=

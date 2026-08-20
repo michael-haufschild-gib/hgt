@@ -29,4 +29,45 @@ theorem simplexConstraintD1N1_momentum (n : ℕ) :
       algebraMap ℝ (CliffordAlgebra (simplexConstraintQuadraticForm (Fin n))) (n : ℝ) :=
   rfl
 
+/-- Clifford generator attached to one simplex facet. -/
+def simplexFacetSupercharge (n : ℕ) (i : Fin n) :
+    CliffordAlgebra (simplexConstraintQuadraticForm (Fin n)) :=
+  CliffordAlgebra.ι (simplexConstraintQuadraticForm (Fin n)) (Pi.single i 1)
+
+/-- Each facet supercharge squares to unit translation. -/
+theorem simplexFacetSupercharge_sq (n : ℕ) (i : Fin n) :
+    simplexFacetSupercharge n i * simplexFacetSupercharge n i = 1 := by
+  rw [simplexFacetSupercharge, CliffordAlgebra.ι_sq_scalar]
+  have hq : simplexConstraintQuadraticForm (Fin n) (Pi.single i 1) = 1 := by
+    simp [simplexConstraintQuadraticForm, Matrix.toQuadraticForm',
+      LinearMap.BilinMap.toQuadraticMap_apply, Matrix.toLinearMap₂'_apply,
+      Matrix.one_apply, Pi.single_apply]
+  rw [hq]
+  exact (algebraMap ℝ
+    (CliffordAlgebra (simplexConstraintQuadraticForm (Fin n)))).map_one
+
+/-- Distinct facet supercharges have zero mixed anticommutator. -/
+theorem simplexFacetSupercharge_anticommute (n : ℕ) (i j : Fin n) (hij : i ≠ j) :
+    simplexFacetSupercharge n i * simplexFacetSupercharge n j +
+      simplexFacetSupercharge n j * simplexFacetSupercharge n i = 0 := by
+  rw [simplexFacetSupercharge, simplexFacetSupercharge,
+    CliffordAlgebra.ι_mul_ι_add_swap]
+  have hpolar : QuadraticMap.polar (simplexConstraintQuadraticForm (Fin n))
+      (Pi.single i 1) (Pi.single j 1) = 0 := by
+    simp [simplexConstraintQuadraticForm, QuadraticMap.polar,
+      Matrix.toQuadraticForm', LinearMap.BilinMap.toQuadraticMap_apply,
+      Matrix.toLinearMap₂'_apply, Matrix.one_apply, Pi.single_apply, hij, Ne.symm hij]
+  rw [hpolar]
+  exact (algebraMap ℝ
+    (CliffordAlgebra (simplexConstraintQuadraticForm (Fin n)))).map_zero
+
+/-- Every finite simplex carries `n` extended supercharges with common unit momentum. -/
+def simplexFacetD1Extended (n : ℕ) :
+    SuperPoincare.D1Extended (Fin n)
+      (CliffordAlgebra (simplexConstraintQuadraticForm (Fin n))) where
+  supercharge := simplexFacetSupercharge n
+  momentum := 1
+  supercharge_sq := simplexFacetSupercharge_sq n
+  mixed_anticommutator := simplexFacetSupercharge_anticommute n
+
 end GaloisForLFunctions

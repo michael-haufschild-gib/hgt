@@ -788,3 +788,122 @@ The corpus already owned the two strip bounds above ordinate `2`
 fixed edge `Re w = -1` is already usable at the Levinson abscissa: `Re(s+w) = σ₀ - 1 ∈ (-1,0)` lies
 in the covered range and `Re(1-s-w) = 2 - σ₀ > 1` converges, so the movable edge of
 `SmoothAFEZetaGeneralEdge` is a convenience rather than a necessity.
+
+## Brick 4f CLOSED — the critical-edge hypothesis is removed at no cost (2026-08-20)
+
+`exists_levinson_window_advance` and everything above it assumed `G(½+iτ) ≠ 0` on the window.  That
+hypothesis is now gone, and the constant is unchanged: the zero-free bound `(n+1)π` becomes
+`(n+2)π`, one extra half-turn independent of the window.
+
+**Capstone.**  `RHTower/LevinsonWindowUnconditional.lean`:
+
+```text
+le_xiOddFiberCount_of_levinson_window_unconditional :
+  λ < 0,  ½ < d,  20 ≤ T₁ < T₂,  G♯ ≠ 0 on the bottom, top and right edges only,
+  and  (n+2)π ≤ Δθ + I_right + I_bot − I_top − 2π·Σ_{Z} ord   for the zero set Z of G♯ in the
+       closed box
+  ⟹  n ≤ O(T₂),
+xiSingletonFiberCount_ge_of_levinson_window_unconditional :  … ⟹ H₁(T₂) ≥ (3/2)n − N(T₂)/2.
+```
+
+Axiom audit: all ten new capstones depend only on `propext, Classical.choice, Quot.sound`.
+
+### Why nothing is lost — the exact accounting
+
+First, a simplification the earlier passes missed.  On the critical line the detector identity gives
+`Y·Z = 2 Re[e^{iθ}G]` with `Y ≠ 0`, so `G(½+iτ) = 0` forces `ζ(½+iτ) = 0`, and then
+`λ ζ'(½+iτ) = 0` with `λ ≠ 0` forces `ζ'(½+iτ) = 0`.  **`G` vanishes on the critical line exactly at
+the multiple zeros of `ζ`**, and there `ord G = ord ζ − 1`.
+
+Write `G♯ = Q·H` with `Q(s) = ∏_j (s − ½ − iτ_j)^{m_j}` the node polynomial of those zeros in the
+window and `H` entire, nonvanishing on the whole segment.  Three exact facts:
+
+1. **The left edge does not see `Q`.**  `Re (Q'/Q)(½+iτ) = Σ_j m_j Re(1/(i(τ−τ_j))) = 0`, so
+   `∫_{T₁}^{T₂} Re (G♯'/G♯)(½+it) dt = ∫_{T₁}^{T₂} Re (H'/H)(½+it) dt`.
+2. **Each node costs exactly `π` on the other three edges.**  With `a = d−½`, `p = τ_j−T₁`,
+   `q = T₂−τ_j`, the three integrals are `arctan(q/a)+arctan(p/a)`, `arctan(a/p)` and `−arctan(a/q)`,
+   and `arctan u + arctan u⁻¹ = π/2` collapses their combination to `π`
+   (`HTGeometry/RectangleBoundaryPole.lean`, `HTGeometry/RectangleNodeProductVariation.lean`).
+3. **Removing the nodes lowers the box count by exactly `M = Σ m_j`.**
+
+Hence, with `N_closed` the zero count of `G♯` in the *closed* box,
+
+```text
+∫_{T₁}^{T₂} Re (G♯'/G♯)(½+it) dt = (three edges of G♯) − 2π·N_closed + π·M,
+```
+
+which is the indented-contour identity of the earlier pass, obtained without any indentation or
+limiting argument.
+
+The surplus `π·M` is exactly what the counting step needs.  On the line
+`Q(½+iτ) = i^M ∏_j (τ−τ_j)^{m_j}`, so
+
+```text
+Z(τ) = P(τ)·ρ(τ)·cos φ(τ),      P(τ) = ∏_j (τ−τ_j)^{m_j},  ρ > 0,  φ continuous,
+```
+
+and each sign change of `P` can spoil at most one step of the sign chain — *provided the chain's
+nodes avoid the `τ_j`*.  They can: the chain is built from first hitting times of the levels
+`c₀ + iπ`, and `φ(g_i) = c₀ + iπ` exactly, so a node lands on a prescribed point only for finitely
+many base levels `c₀`; one extra half-turn of phase buys a base level avoiding all of them
+(`HTGeometry/PhaseSignChainAvoid.lean`).  The loss is therefore `#{τ_j} ≤ M`, paid for by the `π·M`
+surplus.
+
+### New modules
+
+| Module | Content |
+|---|---|
+| `HTGeometry/PhaseSignChainAvoid.lean` | sign chains at an arbitrary base level `c₀` with `cos c₀ ≠ 0`; `exists_avoiding_level`; `exists_sign_chain_avoiding` (nodes off a prescribed finite set) |
+| `HTGeometry/RectangleBoundaryPole.lean` | `simplePole_three_edge_variation`: a simple pole on the open left edge contributes exactly `π` to `(right)+(bottom)−(top)` |
+| `HTGeometry/RectangleNodeProductVariation.lean` | `logDeriv_nodeProduct`; `nodeProduct_three_edge_variation` = `π·Σ m_j` |
+| `HTGeometry/EntireMultiplicityFactor.lean` | `exists_entire_factor_of_analyticOrderAt_eq`, `exists_entire_multiplicity_factor` (exact prescribed multiplicities, cofactor nonvanishing at every node), plus the order-transfer helpers |
+| `RHTower/HardySignSubchainCount.lean` | `le_xiOddFiberCount_of_sign_subchain` (a subfamily of steps suffices); `le_xiOddFiberCount_add_card_of_factored_advance` (the `Z = P·ρ·cos φ` counting interface) |
+| `RHTower/LevinsonLineZeroFactorization.lean` | `exists_levinson_line_factorization`: finitely many line zeros, node polynomial divided out, cofactor nonvanishing on the segment |
+| `RHTower/LevinsonFactoredPolar.lean` | `exists_factored_polar_hardyZ_advance`: `Z = P·ρ·cos φ` with `Δφ ≥ Δθ + ∫ Re (H'/H)(½+it) dt` |
+| `RHTower/LevinsonWindowUnconditional.lean` | the assembly |
+
+The reflected quadratic factor `conj(s−1)²` is what replaces the pole term `(s−1)^{-2}` inside the
+polar carrier: its phase velocity is `(¼+τ²)^{-1} > 0`, so the correction again only helps, and the
+carrier stays a product of entire objects with no quotient.
+
+### What brick 4 still owes
+
+Nothing structural.  The chain
+
+```text
+(three edges of G♯) + Δθ − 2π·N_closed  ⟹  odd fibres  ⟹  H₁
+```
+
+is unconditional Lean, with the edge bounds already owned
+(`exists_levinson_window_edge_bound`).  The only remaining quantity is `N_closed` — brick 5, the
+mollified second moment.
+
+## Brick 4 fully discharged — the whole counting apparatus is now hypothesis-free (2026-08-20)
+
+Two further modules remove the last standing hypotheses.
+
+* `RHTower/LevinsonWindowEdgeUnconditional.lean` —
+  **`exists_levinson_window_edge_bound_unconditional`**: the `LevinsonWindowBound` capstone with
+  `hleft` deleted and `(n+1)π` replaced by `(n+2)π`.  The `G♯`-versions of the horizontal-edge
+  hypotheses are derived from the `G`-versions through `levinsonGEntire_eq_zero_iff`, so only two
+  hypotheses survive: `G ≠ 0` on `[½,4]×{T₁}` and on `[½,4]×{T₂}`.
+
+* `RHTower/LevinsonAdmissibleWindow.lean` —
+  **`exists_levinson_admissible_window`** and **`exists_levinson_admissible_window_singleton`**:
+  those two heights are chosen by `exists_levinsonG_admissible_height'` inside any prescribed pair
+  of intervals, so nothing at all is assumed:
+
+  ```text
+  ∃ c > 0, ∀ λ < 0 with |λ| ≤ 1, ∀ 20 ≤ a₁ < b₁ ≤ a₂ < b₂,
+    ∃ T₁ ∈ (a₁,b₁), ∃ T₂ ∈ (a₂,b₂), ∀ n,
+      (n+2)π + π + (T₂−T₁)(6/T₁²) + c log T₁ + c log T₂ + 2π·N_{G♯}([½,4]×[T₁,T₂])
+        ≤ θ(T₂) − θ(T₁)
+      ⟹  n ≤ O(T₂)   and   H₁(T₂) ≥ (3/2)n − N(T₂)/2.
+  ```
+
+Axiom-clean.  `θ(T₂) − θ(T₁)` is the archimedean main term, asymptotically `π·(N(T₂) − N(T₁))`.
+
+**Levinson's method is therefore reduced, in Lean and unconditionally, to a single analytic
+quantity: `N_{G♯}([½,4]×[T₁,T₂])`.**  That is brick 5 — Littlewood's lemma applied to `G♯·M` at the
+abscissa `σ₀ = ½ − R/log T`, hence the mollified second moment.  Bricks 6 and 7 are the optimization
+of the resulting constant.

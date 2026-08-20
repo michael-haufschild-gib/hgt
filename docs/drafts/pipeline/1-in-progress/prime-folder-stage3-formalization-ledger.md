@@ -770,3 +770,14 @@ Stage 3.  One new module, `RHTower/PrimeArchBernsteinBranchDecomposition.lean`:
   with a remainder holomorphic across the critical radius.
 
 Remaining stage-2 prime cards: 12.
+
+## 2026-08-20 — card 11 promoted: `prime-log-action-condensation-normal-cone-law`
+
+Stage 3.  One new module, `RHTower/PrimeLogActionCondensation.lean`, containing the card's whole
+analytic layer: the depth carriers and their increment, the exact squarefree action expansion
+(from the corpus reciprocal-zeta Dirichlet series), the asymptotic-deflation extraction theorem
+with its elementary ratio-tail estimates, the diagonal blow-up identities, the condensation limits,
+the universal normal-cone law for any nonvanishing germ, its completed-`ξ` specialization, and the
+divisor residue `-dρ`.
+
+Remaining stage-2 prime cards: 11.

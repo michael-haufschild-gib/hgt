@@ -1620,3 +1620,49 @@ Two obligations remain, both on the first half:
    (this is what `Algebra.FiniteType C E` says);
 2. vanishing of the rational `H¹` of the adjoint representation of `SL₂` — with the imprimitive
    Zariski closure excluded by the symmetric-square obstruction and the finite one by growth.
+
+
+## Card 1 — the rational H¹ computation for SL₂, started
+
+The remaining input of the inner-cocycle route is: a *rational* cocycle on `SL₂` with values in the
+adjoint representation is a coboundary.  Rationality is essential — for the abstract group the
+statement is false, since `M ↦ δM·M⁻¹` is a cocycle for any derivation `δ` of the field and is not a
+coboundary (already for `diag(t, t⁻¹)`).
+
+The proof is entirely explicit, and needs no cohomology machinery:
+
+1. On the upper elementary subgroup the cocycle satisfies `Ψ(x+y) = Ψ(x)u⁺(y) + u⁺(x)Ψ(y)`, so its
+   lower-left entry is **additive**; conjugating by the torus (`D(t)u⁺(x) = u⁺(t²x)D(t)`) scales that
+   entry by `t⁻²` — and the unknown value at `D(t)` cancels.  Over an algebraically closed field of
+   characteristic zero every element is a square, so `R(z) = R(1)/z`, and additivity at `1+1` forces
+   `3·R(1) = 0`, hence `R ≡ 0`.
+2. With the lower entry gone, the diagonal and upper entries are additive; polynomiality makes them
+   linear, and two explicit coboundaries (`γ·f` and `α·h`) remove them, so the cocycle vanishes on
+   the whole upper elementary subgroup.
+3. The mirrored torus argument kills the upper-right entry on the lower elementary subgroup, one
+   further coboundary (`β·e`, which preserves the vanishing on `u⁺`) kills its diagonal, and the
+   Weyl element `w = u⁺(1)u⁻(−1)u⁺(1)` — evaluated twice, once through `w u⁺(x) w⁻¹ = u⁻(−x)` and
+   once through `w u⁻(y) w⁻¹ = u⁺(−y)` — forces the remaining coefficient to vanish.
+4. The explicit Bruhat factorization then propagates the vanishing to all of `SL₂`.
+
+Steps 1 and 4 are Lean-complete:
+
+`Sl2ElementaryFactorization`
+
+```text
+sl2UPlus, sl2UMinus, uPlus_mul_uPlus, uMinus_mul_uMinus
+eq_uPlus_mul_uMinus_mul_uPlus     the Bruhat factorization when the lower-left entry is nonzero
+exists_elementary_factorization    **every determinant-one matrix is a product of four elementary
+                                   matrices**
+```
+
+`Sl2CocycleUpperEntry`
+
+```text
+IsSl2Derivation                   the derivation-like cocycle condition
+sl2Torus, sl2Torus_mul_uPlus      the torus and its conjugation of the upper subgroup
+uPlus_lower_add, uPlus_lower_scale
+uPlus_lower_eq_zero               **the lower-left entry of the cocycle vanishes on `u⁺`**
+```
+
+Steps 2 and 3 remain.

@@ -1,7 +1,7 @@
 # Prime-log action condensation in the exponent normal cone
 
 - **ID:** `prime-log-action-condensation-normal-cone-law`
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized
 - **Type:** EXACT ALL-ACTION ASYMPTOTIC THEOREM / UNIVERSAL NORMAL-CONE MECHANISM
 - **Scientific status:** `[PAPER-PROVED] [CORPUS-NEW SYNTHESIS]`
   `[PARENT DIRICHLET-SERIES ANALYSIS] [NOT RH]`
@@ -362,3 +362,39 @@ be theatre.  No Lean wrapper is added.
 - [ ] prove zero Busemann degree on every Xi conormal
 - [ ] formalize analytic carrier and limits in Lean
 - [ ] RH
+
+## 2026-08-20 — Stage-3 formalization
+
+The Lean gate — the analytic carrier and its limits — is closed by
+
+`formal/GaloisForLFunctions/RHTower/PrimeLogActionCondensation.lean`.
+
+| card item | Lean declaration |
+|-|-|
+| `(1)` depth carriers `B_m`, `H_m` | `depthReciprocalZeta`, `depthReciprocalZetaIncrement` |
+| `(2)`, `(3)` exact squarefree action expansion | `squarefreeActionCoefficient`, `hasSum_depthReciprocalZetaIncrement`, `depthReciprocalZetaIncrement_eq_tsum` |
+| `(4)`--`(7)` coefficient-by-coefficient recovery | `actionExtraction_eq`, `tendsto_actionExtraction`, with the tail estimates `ratioPow_le`, `tsum_ratioPow_le`, `tendsto_tsum_ratioPow`, `tendsto_tsum_shiftedRatioPow` |
+| `(8)`, `(9)`, `(12)` diagonal blow-up | `blowUpScale`, `depthReciprocalZeta_succ_blowUp`, `depthReciprocalZeta_blowUp` |
+| `(10)`, `(11)` all-action condensation | `tendsto_depthIncrement_blowUp_riemannZeta` |
+| `(13)` normalized Euler logarithmic connection | `tendsto_depthNormalizedIncrement_riemannZeta` |
+| `(14)`--`(16)` universal analytic normal-cone law | `normalConeQuotient`, `tendsto_normalConeQuotient` |
+| `(17)` completed Xi connection on the safe locus | `tendsto_normalConeQuotient_xi` |
+| `(18)` residue `-dρ` at a divisor point | `residue_depthConnection_xi` |
+| coefficient bound `|c_n| ≤ 2` | `norm_squarefreeActionCoefficient_le` |
+
+All declarations have axiom set `[propext, Classical.choice, Quot.sound]`.
+
+Sections 5--7 are interpretation, the explicitly labelled RH-facing conjecture, and audits; they
+add no further theorem, and their gates remain the card's open research programme.
+
+**Stage: 3-formalized.**
+
+## Gates (stage 3)
+
+- [x] formalize analytic carrier and limits in Lean
+- [x] exact squarefree action expansion formalized
+- [x] coefficient-by-coefficient action recovery formalized
+- [x] diagonal condensation and normalized Euler connection formalized
+- [x] universal normal-cone law and completed Xi connection formalized
+- [x] divisor residue of the depth connection formalized
+- [x] axiom audit clean
