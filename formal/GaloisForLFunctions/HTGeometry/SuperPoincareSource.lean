@@ -7,18 +7,6 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
-/-- Record polarity and paired composition form a unit-momentum supertranslation sector. -/
-def sourceRecordPairD1N2 :
-    SuperPoincare.D1N2 (Matrix (Fin 2) (Fin 2) ℝ) where
-  supercharge0 := recordPolarityMatrix
-  supercharge1 := pairRecordMatrix
-  momentum := 1
-  supercharge0_sq := recordPolarityMatrix_mul_self
-  supercharge1_sq := pairRecordMatrix_mul_self
-  mixed_anticommutator := by
-    rw [recordPolarity_pair_anticommute]
-    exact neg_add_cancel _
-
 /-- Odd-degree binary-source polarity and exchange form a unit-momentum sector. -/
 def oddBinaryFormSourceD1N2 (k : ℕ) :
     SuperPoincare.D1N2

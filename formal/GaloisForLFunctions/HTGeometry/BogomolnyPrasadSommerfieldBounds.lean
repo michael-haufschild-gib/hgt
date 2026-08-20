@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.AbstractSpectralCharge
 import GaloisForLFunctions.HTGeometry.ConstitutiveBalancedDefectZeroIndex
 import GaloisForLFunctions.HTGeometry.ObserverFieldEquation
+import GaloisForLFunctions.HTGeometry.ProjectiveQuantumFisherValue
 import GaloisForLFunctions.HTGeometry.StokesEnergyTree
 
 /-!
@@ -40,6 +41,56 @@ end
 
 
 end HTGeometry.AbstractSpectralFamily
+
+namespace HTGeometry
+
+noncomputable section
+
+/-- Mass-weighted scalar-shifted tangent energy. -/
+def quantumTangentBPSEnergy
+    (mass overlap speedSq c : ℝ) : ℝ :=
+  mass * scalarShiftedQuantumTangentValue mass overlap speedSq c
+
+/-- Gauge-invariant projective tangent charge. -/
+def quantumTangentBPSCharge (mass overlap speedSq : ℝ) : ℝ :=
+  projectiveQuantumTangentValue mass overlap speedSq
+
+/-- Scalar-phase square measuring distance from the canonical connection. -/
+def quantumTangentBPSDefect (mass overlap c : ℝ) : ℝ :=
+  (mass * c - overlap) ^ 2
+
+/-- Exact quotient-free quantum-Fisher BPS decomposition. -/
+theorem quantumTangentBPSEnergy_eq_charge_add_defect
+    (mass overlap speedSq c : ℝ) :
+    quantumTangentBPSEnergy mass overlap speedSq c =
+      quantumTangentBPSCharge mass overlap speedSq +
+        quantumTangentBPSDefect mass overlap c :=
+  mass_mul_scalarShiftedQuantumTangentValue mass overlap speedSq c
+
+/-- Projective tangent charge is the sharp lower bound over scalar-phase recenterings. -/
+theorem quantumTangentBPSCharge_le_energy
+    (mass overlap speedSq c : ℝ) :
+    quantumTangentBPSCharge mass overlap speedSq ≤
+      quantumTangentBPSEnergy mass overlap speedSq c :=
+  projectiveQuantumTangentValue_le_mass_mul_shifted mass overlap speedSq c
+
+/-- Quantum-Fisher BPS saturation fixes the canonical scalar connection. -/
+theorem quantumTangentBPSSaturation_iff
+    (mass overlap speedSq c : ℝ) :
+    quantumTangentBPSEnergy mass overlap speedSq c =
+        quantumTangentBPSCharge mass overlap speedSq ↔
+      mass * c = overlap := by
+  rw [quantumTangentBPSEnergy_eq_charge_add_defect]
+  constructor
+  · intro h
+    have hzero : quantumTangentBPSDefect mass overlap c = 0 := by linarith
+    exact sub_eq_zero.mp (sq_eq_zero_iff.mp hzero)
+  · intro h
+    rw [quantumTangentBPSDefect, h, sub_self, zero_pow (by norm_num : 2 ≠ 0), add_zero]
+
+end
+
+end HTGeometry
 
 namespace GaloisForLFunctions.HTGeometry
 

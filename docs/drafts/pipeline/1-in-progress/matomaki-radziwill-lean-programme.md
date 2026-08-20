@@ -6681,3 +6681,42 @@ already parametric in the slope and the constant.
 Per §3 above this module is the **single-range** capstone; it is superseded for `β < 19/20` by the
 double-range architecture, but it is the exact shape that architecture will re-use, with
 `ramareBilinear` replaced by the double bilinear form.
+
+### Bricks 100–103 — the two-range architecture, structural layer (2026-08-20)
+
+Four modules, all `lake env lean`-clean, axiom-clean, wired.
+
+| module | theorem | content |
+|-|-|-|
+| `Sieve/DoubleRamareWeight` | `sum_sum_inv_card_double`, `doubleCore`, `doubleRough`, **`sum_eq_doubleRamare_add_rough`**, `card_doubleRough_le` | Ramaré's identity for two disjoint ranges at once: `∑_{n∈S} f = ∑_{p∈P}∑_{q∈Q}∑_{n : p,q ∣ n} f(n)/(ω_P(n)ω_Q(n)) + ∑_{rough}`, exact |
+| `Sieve/RamareRoughSetSplit` | **`setIntegral_normSq_logPoly_moebius_le_ramare_rough`**, `setIntegral_normSq_logPoly_moebius_roughSet_le` | the exact two-way Ramaré decomposition integrated over an **arbitrary measurable frequency set** |
+| `Sieve/RamareLadderSupMeanSquare` | `setIntegral_normSq_blockProduct_le_supMeanSquare`, **`setIntegral_normSq_ramareBilinear_le_ladder_supMeanSquare`**, **`setIntegral_normSq_ramareBilinear_le_ladder_sup`** | both orientations of the ladder over a measurable set: prime sup + supplied cofactor mean square (the exceptional one), and prime sup + mean value theorem (the non-exceptional one) |
+| `Sieve/MoebiusWindowPartition` | `annulusSmall`, `annulusLarge`, **`integral_Icc_normSq_logPoly_moebius_le_partition`** | the window as disc ⊍ small annulus ⊍ large annulus, each piece a free parameter |
+
+**The design point these four settle.**  The double Ramaré identity turns out *not* to be needed:
+because `setIntegral_normSq_logPoly_moebius_le_ramare_rough` is set-parametric, the small range `P`
+can be used on `annulusSmall` and the large range `Q` on `annulusLarge`, with each range's rough
+class paid only on its own region.  The identity is kept as reusable infrastructure, but the
+architecture is *two single splits on two disjoint frequency sets*, which is strictly lighter: no
+joint weight, no `ω_Pω_Q` variance, no `(#P#Q)²` prime-counting error, and no double reindexing.
+
+**What the assembly now reduces to.**  With `G = M/h` the Gallagher cutoff and `T₀ = G·ω(1)`, the
+majorant `Sieve/FibreWindowBridge.averagedMeanSquare_of_gallagherBudget` consumes can be taken as
+
+```text
+   α = 5π/2·M + 5e/2·M²/T₀ ,      β = B := ∫_{|w| ≤ T₀} ‖logPoly μ (Icc 1 M) w‖² ,
+```
+
+because the bound is monotone in `T` below `T₀` and the trivial mean value theorem covers `T > T₀`
+once `β_triv/T₀ ≤ α`.  So the **entire** remaining analytic content of `1/2 < β < 1` is the single
+statement `B = o(M²)`, and `integral_Icc_normSq_logPoly_moebius_le_partition` reduces that to three
+independent estimates:
+
+```text
+   disc          : brick 88c pointwise on logPoly μ, measure 2w₀ = O(1)
+                   (w₀ is a constant: `Sieve/AnnulusBoundUniform` needs only max(τ₀, 16π/3) ≤ 2πw₀)
+   annulusSmall  : ladder_sup at the small range, V_j = θ·#B_j by membership in allBlocksSmall
+   annulusLarge  : ladder_supMeanSquare at the large range, prime sup from Route T,
+                   cofactor mean square from `Sieve/LogPolySetScaling.setIntegral_normSq_logPoly_le_HM`
+                   with |𝒰| from `Sieve/Section4RelativeThreshold`
+```

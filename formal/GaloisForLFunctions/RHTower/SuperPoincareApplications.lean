@@ -8,6 +8,7 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaMorseAnomalousDarboux
 import GaloisForLFunctions.RHTower.SuzukiPositiveResolventParityNoGo
 import GaloisForLFunctions.RHTower.DeningerArithmeticQuaternionicTransitionNoReal
 import GaloisForLFunctions.RHTower.GradingSectorWitness
+import GaloisForLFunctions.RHTower.HedenmalmSupersymmetricDirac
 import GaloisForLFunctions.RHTower.SoninLogCoordinateScattering
 import GaloisForLFunctions.RHTower.SuzukiXiRealFEBipolarizationCompletion
 
@@ -326,5 +327,58 @@ theorem thetaCuspMorseConstant_hamiltonian_zero (A : ℝ) (n : ℕ) (x : ℝ) :
       (thetaCuspMorseDressedPolynomial A n 1) x = 0 := by
   rw [thetaCuspMorseHamiltonianMinus_dressedPolynomial]
   simp
+
+namespace HedenmalmClosedWeightedDerivative
+
+open Complex Function MeasureTheory Module Topology
+open scoped ENNReal
+open GaloisForLFunctions.HTGeometry
+
+/-- Public expanded Hilbert carrier for the Hedenmalm graded certificate. -/
+abbrev thetaSupersymmetricHilbertCarrier := Lp ℂ 2 unitIntervalMeasure
+
+/-- Public expanded direct-sum carrier for the Hedenmalm graded certificate. -/
+abbrev thetaSupersymmetricDirectSum :=
+  WithLp 2 (thetaSupersymmetricHilbertCarrier × thetaSupersymmetricHilbertCarrier)
+
+/-- Fermion grading `Gamma(x,y) = (x,-y)` for the Hedenmalm Dirac operator. -/
+def thetaSupersymmetricGrading
+    (p : thetaSupersymmetricDirectSum) : thetaSupersymmetricDirectSum :=
+  WithLp.toLp 2 (p.ofLp.1, -p.ofLp.2)
+
+theorem thetaSupersymmetricGrading_involutive :
+    Function.Involutive thetaSupersymmetricGrading := by
+  intro p
+  apply (WithLp.equiv 2
+    (thetaSupersymmetricHilbertCarrier × thetaSupersymmetricHilbertCarrier)).injective
+  exact Prod.ext (by rfl) (by simp [thetaSupersymmetricGrading])
+
+/-- Grading preserves the exact domain of the unbounded Dirac operator. -/
+theorem thetaSupersymmetricGrading_mem_domain
+    (p : thetaSupersymmetricDirac.domain) :
+    thetaSupersymmetricGrading p.1 ∈ thetaSupersymmetricDirac.domain := by
+  change p.1.ofLp.1 ∈ thetaWeightedDerivative.domain ∧
+    -p.1.ofLp.2 ∈ thetaWeightedDerivative.adjoint.domain
+  exact ⟨p.2.1, thetaWeightedDerivative.adjoint.domain.neg_mem p.2.2⟩
+
+/-- Exact graded Super-Poincare law `Q Gamma = - Gamma Q` on the natural domain. -/
+theorem thetaSupersymmetricDirac_anticommutes_grading
+    (p : thetaSupersymmetricDirac.domain) :
+    thetaSupersymmetricDirac
+        ⟨thetaSupersymmetricGrading p.1,
+          thetaSupersymmetricGrading_mem_domain p⟩ =
+      -thetaSupersymmetricGrading (thetaSupersymmetricDirac p) := by
+  apply (WithLp.equiv 2
+    (thetaSupersymmetricHilbertCarrier × thetaSupersymmetricHilbertCarrier)).injective
+  apply Prod.ext
+  · change thetaWeightedDerivative.adjoint
+      ⟨-p.1.ofLp.2, thetaWeightedDerivative.adjoint.domain.neg_mem p.2.2⟩ =
+      -thetaWeightedDerivative.adjoint ⟨p.1.ofLp.2, p.2.2⟩
+    exact LinearPMap.map_neg thetaWeightedDerivative.adjoint ⟨p.1.ofLp.2, p.2.2⟩
+  · change thetaWeightedDerivative ⟨p.1.ofLp.1, p.2.1⟩ =
+      -(-thetaWeightedDerivative ⟨p.1.ofLp.1, p.2.1⟩)
+    simp
+
+end HedenmalmClosedWeightedDerivative
 
 end RHTower

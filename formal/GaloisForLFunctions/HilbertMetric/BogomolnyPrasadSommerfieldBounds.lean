@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HilbertMetric.FanoCommutator
+import GaloisForLFunctions.HilbertMetric.TransverseDegreePhase
 
 /-!
 # Bogomolny--Prasad--Sommerfield bounds
@@ -110,6 +111,107 @@ theorem fanoBPSCharge_le_energy (A : Matrix n n ℝ) :
 theorem fanoBPSEnergy_eq_charge_iff (A : Matrix n n ℝ) :
     fanoBPSEnergy A = fanoBPSCharge A ↔ matrixSelfCommutator A = 0 := by
   exact trace_columnEnergy_sq_eq_squareEnergy_iff A
+
+/-! ## Transverse Fano square-completion bounds -/
+
+variable {ι : Type*} [Fintype ι]
+
+/-- Sharp baseline charge in the equal-gap transverse channel law. -/
+def transverseChannelBPSCharge
+    (loweringCharge topDegree : ℝ) : ℝ :=
+  loweringCharge - (Fintype.card ι : ℝ) *
+    (topDegree * (topDegree - 4) / 4)
+
+/-- Sum of channel phase-square BPS defects. -/
+def transverseChannelBPSDefect (topDegree : ℝ) (p : ι → ℝ) : ℝ :=
+  ∑ i, ((topDegree - 1) * p i - (topDegree - 2) / 2) ^ 2
+
+/-- Equal-gap transverse Fano margin is charge plus phase defect. -/
+theorem transverseChannelFanoMargin_eq_bpsCharge_add_defect
+    (loweringCharge topDegree : ℝ) (p : ι → ℝ) :
+    transverseChannelFanoMargin loweringCharge topDegree p =
+      transverseChannelBPSCharge (ι := ι) loweringCharge topDegree +
+        transverseChannelBPSDefect topDegree p := by
+  exact transverseChannelFanoMargin_square_card loweringCharge topDegree p
+
+/-- Equal-gap transverse-channel BPS bound. -/
+theorem transverseChannelBPSCharge_le_fanoMargin
+    (loweringCharge topDegree : ℝ) (p : ι → ℝ) :
+    transverseChannelBPSCharge (ι := ι) loweringCharge topDegree ≤
+      transverseChannelFanoMargin loweringCharge topDegree p :=
+  transverseChannelFanoMargin_lower_bound loweringCharge topDegree p
+
+/-- Equal-gap saturation is channelwise phase balance. -/
+theorem transverseChannelBPSSaturation_iff
+    (loweringCharge topDegree : ℝ) (p : ι → ℝ) :
+    transverseChannelFanoMargin loweringCharge topDegree p =
+        transverseChannelBPSCharge (ι := ι) loweringCharge topDegree ↔
+      ∀ i, (topDegree - 1) * p i = (topDegree - 2) / 2 := by
+  rw [transverseChannelFanoMargin_eq_bpsCharge_add_defect]
+  constructor
+  · intro h i
+    have hzero : transverseChannelBPSDefect topDegree p = 0 := by linarith
+    have hi : ((topDegree - 1) * p i - (topDegree - 2) / 2) ^ 2 = 0 :=
+      (Finset.sum_eq_zero_iff_of_nonneg
+        (fun j (_hj : j ∈ Finset.univ) => sq_nonneg
+          ((topDegree - 1) * p j - (topDegree - 2) / 2))).1
+        hzero i (Finset.mem_univ i)
+    exact sub_eq_zero.mp (sq_eq_zero_iff.mp hi)
+  · intro h
+    have hzero : transverseChannelBPSDefect topDegree p = 0 := by
+      apply Finset.sum_eq_zero
+      intro i _hi
+      rw [h i, sub_self, zero_pow (by norm_num : 2 ≠ 0)]
+    rw [hzero, add_zero]
+
+/-- Sharp baseline charge in the unequal-gap transverse channel law. -/
+def unequalGapChannelBPSCharge
+    (loweringCharge : ℝ) (lowerDegree gap : ι → ℝ) : ℝ :=
+  loweringCharge + ∑ i, (lowerDegree i - (gap i - 1) ^ 2 / 4)
+
+/-- Sum of unequal-gap phase-square BPS defects. -/
+def unequalGapChannelBPSDefect (gap p : ι → ℝ) : ℝ :=
+  ∑ i, (gap i * p i - (gap i - 1) / 2) ^ 2
+
+/-- Unequal-gap transverse Fano margin is charge plus phase defect. -/
+theorem unequalGapChannelFanoMargin_eq_bpsCharge_add_defect
+    (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) :
+    unequalGapChannelFanoMargin loweringCharge lowerDegree gap p =
+      unequalGapChannelBPSCharge loweringCharge lowerDegree gap +
+        unequalGapChannelBPSDefect gap p := by
+  exact unequalGapChannelFanoMargin_square_separated loweringCharge lowerDegree gap p
+
+/-- Unequal-gap transverse-channel BPS bound. -/
+theorem unequalGapChannelBPSCharge_le_fanoMargin
+    (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) :
+    unequalGapChannelBPSCharge loweringCharge lowerDegree gap ≤
+      unequalGapChannelFanoMargin loweringCharge lowerDegree gap p := by
+  rw [unequalGapChannelFanoMargin_eq_bpsCharge_add_defect]
+  exact le_add_of_nonneg_right
+    (Finset.sum_nonneg fun i _ => sq_nonneg (gap i * p i - (gap i - 1) / 2))
+
+/-- Unequal-gap saturation is channelwise phase balance. -/
+theorem unequalGapChannelBPSSaturation_iff
+    (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) :
+    unequalGapChannelFanoMargin loweringCharge lowerDegree gap p =
+        unequalGapChannelBPSCharge loweringCharge lowerDegree gap ↔
+      ∀ i, gap i * p i = (gap i - 1) / 2 := by
+  rw [unequalGapChannelFanoMargin_eq_bpsCharge_add_defect]
+  constructor
+  · intro h i
+    have hzero : unequalGapChannelBPSDefect gap p = 0 := by linarith
+    have hi : (gap i * p i - (gap i - 1) / 2) ^ 2 = 0 :=
+      (Finset.sum_eq_zero_iff_of_nonneg
+        (fun j (_hj : j ∈ Finset.univ) => sq_nonneg
+          (gap j * p j - (gap j - 1) / 2))).1
+        hzero i (Finset.mem_univ i)
+    exact sub_eq_zero.mp (sq_eq_zero_iff.mp hi)
+  · intro h
+    have hzero : unequalGapChannelBPSDefect gap p = 0 := by
+      apply Finset.sum_eq_zero
+      intro i _hi
+      rw [h i, sub_self, zero_pow (by norm_num : 2 ≠ 0)]
+    rw [hzero, add_zero]
 
 end
 
