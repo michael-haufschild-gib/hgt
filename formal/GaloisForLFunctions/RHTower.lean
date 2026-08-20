@@ -358,6 +358,8 @@ import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaNineTwoAdic
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaTenConductorAggregation
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaTenZeroDetection
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaTenDetectorPolynomial
+import GaloisForLFunctions.RHTower.ChenGuptaLiFiniteZeroDetector
+import GaloisForLFunctions.RHTower.ChenGuptaLiCharacterLargeValues
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaEight
 import GaloisForLFunctions.RHTower.BooleanGradeCoprimePlateau
 import GaloisForLFunctions.RHTower.BorderDeterminantVanishing
@@ -6810,6 +6812,8 @@ import GaloisForLFunctions.RHTower.Sieve.LadderBlockMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.LadderCharacterRecursion
 import GaloisForLFunctions.RHTower.Sieve.LadderDefectOnParts
 import GaloisForLFunctions.RHTower.Sieve.LadderErrorBudget
+import GaloisForLFunctions.RHTower.Sieve.LadderGroupBudget
+import GaloisForLFunctions.RHTower.Sieve.LadderAggregates
 import GaloisForLFunctions.RHTower.Sieve.LadderGeomSums
 import GaloisForLFunctions.RHTower.Sieve.LadderHarmonicSplit
 import GaloisForLFunctions.RHTower.Sieve.LadderMajorantMono
@@ -10736,6 +10740,7 @@ import GaloisForLFunctions.RHTower.XiWeilResolventGram
 import GaloisForLFunctions.RHTower.XiWeilTwoChannelResolvent
 import GaloisForLFunctions.RHTower.XiWeilApertureChannels
 import GaloisForLFunctions.RHTower.XiWeilCarrierBudget
+import GaloisForLFunctions.RHTower.XiBezoutianPointedIncidence
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
 import GaloisForLFunctions.RHTower.XiWeilSameFiberAtomIsotropy
 import GaloisForLFunctions.RHTower.XiWeilSourceInvolution
@@ -10844,6 +10849,7 @@ import GaloisForLFunctions.RHTower.Sieve.RamareBlockSplitOn
 import GaloisForLFunctions.RHTower.Sieve.RamareLadderSupMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.RamareLadderHM
 import GaloisForLFunctions.RHTower.Sieve.RamareLadderHMRecip
+import GaloisForLFunctions.RHTower.Sieve.LargeLadderGroup
 import GaloisForLFunctions.RHTower.SmoothAFEZetaGeneralHorizontal
 import GaloisForLFunctions.RHTower.PrimeBoundaryMonodromyEscape
 import GaloisForLFunctions.RHTower.Sieve.RamarePartitionedLadder

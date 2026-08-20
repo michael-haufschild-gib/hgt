@@ -505,3 +505,40 @@ summand.
 Together with the already-owned `TelescopeIdeal` this closes the whole algebraic layer of the
 realization proof.  The remaining inputs are analytic: meromorphic principal parts on elliptic
 curves and the unaudited depth-two triptic DA-completeness theorem.
+
+## Lean audit 2026-08-20 — the depth-two hypothesis is no longer a hypothesis
+
+The `## Lean route` section above is out of date on its central point.  The depth-two triptic
+DA-completeness theorem that this card *assumes* is already an unconditional, axiom-clean theorem
+of the tree:
+
+```text
+GaloisForLFunctions.HTGeometry.differentiallyAlgebraic_iff_additiveOrbitalDivisorAt_eq_zero
+  F meromorphic on ℂ, 1-periodic germ, mixed constant along (τ, σ),
+  0 < im τ, 0 < im σ, 1/τ/σ independent over ℚ (and the two real-independence clauses)
+    ==>  ( DifferentiallyAlgebraic (toMeromorphicNFOn F ℂ)
+             ↔  ∀ p, ∀ ℓ < 0,  additiveOrbitalDivisorAt F σ p ℓ = 0 )
+  #print axioms = [propext, Classical.choice, Quot.sound]
+```
+
+Here `additiveOrbitalDivisorAt F σ p ℓ = ∑ᶠ m : ℤ, laurentCoeff (Δ_σ F) (p + m σ) ℓ` is exactly the
+complete order-`ℓ` orbit-residue coefficient of `R_2`, so the displayed equivalence is
+`U ∈ Q_2(σ,τ)` is DA iff `R_2(U) = 0` — with *all* principal-part orders, not only the residue.
+
+Both halves are in the tree with their own names:
+
+```text
+additiveOrbitalDivisorAt_eq_zero_of_differentiallyAlgebraic     (TripticCompleteness)
+differentiallyAlgebraic_toMeromorphicNFOn_of_vanishing_orbital_divisor
+                                                               (TripticKernelDifferentialAlgebraicity)
+```
+
+together with the multiplicative counterpart
+(`differentiallyAlgebraic_logDeriv_iff_tripticOrbitCharge_eq_zero`) and the Kummer-content root
+classification.
+
+Consequently the base `d = 2` of this card's induction is Lean, and the multi-telescoping lemma and
+the simultaneous finite-divisor lifting lemma are Lean (`TelescopeIdeal`,
+`SimultaneousDivisorLifting`).  What remains for Stage 3 is the **all-depth induction itself** —
+the class `Q_d`, the bottom charge `ρ_d` with `ker ρ_d = Q_{d−1}`, the pair-face signature
+`PairFace_d`, the inductive step, and the realization half of `Q_d/(Q_d ∩ Mer_DA) ≅ Comp_d`.

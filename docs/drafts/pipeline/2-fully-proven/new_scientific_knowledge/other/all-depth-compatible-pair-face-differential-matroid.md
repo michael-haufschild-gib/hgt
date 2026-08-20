@@ -458,3 +458,75 @@ aperiodicity being nonresonance of the shift.
 
 The remaining inputs are therefore star differential independence, off-star packetwise DA (which
 supplies `CrossNeutral`), and the concrete compatible-pair hierarchy-to-row identification.
+
+## Lean progress 2026-08-20 — the arbitrary-coset freeness theorem is closed
+
+The candidate new scientific content of this card — *all external coset blocks are jointly free*,
+i.e. the analytic/difference-algebraic half of `(12)`–`(21)` — is now unconditional Lean, together
+with the universal cyclic carrier reduction that feeds it.  Thirteen new modules, all wired into
+`GaloisForLFunctions.HTGeometry`, all `#print axioms = [propext, Classical.choice, Quot.sound]`.
+
+The labelled objects.  `fullPeriodLattice τ = ℤ + ∑_i ℤ τ_i` is the lattice `L` of the hierarchy;
+`CosetSeparated τ A` says the labels in `A ⊆ ℂ` are pairwise inequivalent modulo `L`, i.e. `A`
+injects into `C_d = ℂ/L`; `cosetFaceShiftSet τ A J = A + faceShiftLattice τ J` is the labelled
+external shift set of the deleted face `J`, and `cosetFacePacket τ hτ A J` its packet.  These are
+exactly the coordinates `(12)`: `O_(c,J) = {T_(a_c + ∑_(j∈J) n_j τ_j) F_J}`.
+
+```text
+cosetProperFacePackets_diffIndepOn
+    integral period independence + coset separation
+      ==>  the union of the labelled packets of every face with at least two surviving periods is
+           differentially independent over ℂ
+cosetSelectedFaces_differentialIndependent(_rationalBase)
+    the same for every injectively selected finite family, over ℂ and over ℂ(z)
+cosetFacePacket_differentialAlgebraic_iff
+    the exact two-survivor phase boundary, for arbitrary complex translations
+cosetCompleteDifferentialMatroid(_rationalBase)
+    **the rank formula (21)**: for every finite family of constant-coefficient
+    differential-operator rows applied to distinct labelled face coordinates, the nonlinear
+    differential matroid equals the ordinary row matroid over Frac(ℂ[∂])
+cosetCompleteDifferentialRank(_rationalBase)
+    its numerical form: differential transcendence rank = localized row-span dimension
+```
+
+The universal cyclic carrier reduction `(3)`–`(4)` is also Lean:
+
+```text
+exists_cosetTransversal                 a coset-separated label set meeting every class of ℂ/L
+cosetTranslate_mem_span                 every labelled structural translate of the top primitive
+                                        lies in the span of the labelled total packet
+cosetTranslate_eq_deepSpan_add_differentialAlgebraic
+arbitraryTranslate_eq_deepSpan_add_differentialAlgebraic
+    **modulo a differentially algebraic error, every complex translate of Ψ_(d−1) is a finite
+    ℂ-linear combination of the jointly free labelled deep coordinates**
+```
+
+The one genuinely new Lean device.  The corpus's order-one packet theorem is *base-pointed* at the
+untranslated `Ψ`, so it requires every shift to be individually nonresonant.  With arbitrary coset
+labels that fails for exactly one class — the class of the half period `−(1+τ_b)/2` used in the
+bottom-face normalization.  The fix is the base-point-free form
+
+```text
+ellipticGammaTranslateOrbit_diffIndepOn_of_pairwiseSeparated
+    {T_s Ψ : s ∈ S} is differentially independent as soon as the *differences* of distinct shifts
+    are nonresonant — no individual shift has to be
+```
+
+obtained by rebasing at a chosen `s₀ ∈ S` through the differential automorphism
+`addTranslationMeroDifferentialAlgEquiv s₀`.  Everything above the bottom layer then carries the
+label inertly, exactly as the card's first proof audit predicted: the twelve labelled modules
+mirror `MultipleEllipticGammaFacePacket`, `FaceShiftLatticeNonresonance`,
+`BottomFaceCrossSeparation`/`BottomFaceStarIndependence`, `FaceDepthRigidity`/
+`MultipleEllipticGammaFacePacketDisjointness`, `FacePacketFieldStability`/
+`FacePacketFieldTranslation`/`MultipleEllipticGammaFacePalette`, `FacePacketDifferenceSystem`,
+`FacePacketFreeTelescoping`, `FacePacketLayerGluing`/`FaceLayerOffStarDisplacement`/
+`FaceLayerDescendingUnion`, `FaceTranslateInjective`,
+`MultipleEllipticGammaAllFaceIndependence`, `MultipleEllipticGammaCompleteDifferentialMatroid`
+and `MultipleEllipticGammaStructuralSpanDecomposition`.
+
+What this does **not** yet give.  Formula `(1)` for an arbitrary `F ∈ Q_d` — as opposed to the
+universal carrier form `(4)` — still routes through the parent card's module isomorphism `(5)`,
+whose realization half assumes the independently unaudited depth-two triptic DA-completeness
+theorem.  That statement, `U ∈ Q_2(τ_i,τ_j)` is DA iff `R_2^(ij)(U) = 0`, is the single remaining
+mathematical input of this card and of its parent; it is not an elliptic-gamma statement about the
+named special function but a classification of the whole two-parameter mixed-constraint class.

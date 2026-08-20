@@ -1,8 +1,8 @@
 # The critical Xi Bezoutian is the pointed global incidence kernel for the Connes route
 
 - **ID:** `critical-xi-bezoutian-pointed-incidence-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[BRIDGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** the critical log-derivative Pick kernel, the polarized Weil form, and the
   theta-source realization of Xi
@@ -248,11 +248,10 @@ pointed source object but is classified as bridge infrastructure, not new scient
 - `hedenmalm-theta-pair-divisor-supported-metric-law.md`.
 - `signed-archimedean-gamma-orbit-charge-phase-law.md`.
 
-## Lean decision
+## Lean decision (SUPERSEDED)
 
-The formal tree contains the actual Xi trace/moment germs but not the analytic two-variable
-Bezoutian, Weil distribution, or Pick extension theorem. A formal algebraic quotient alone would
-not certify `(7)`, `(10)`, or the source presentations, so no Lean file is added.
+The two-variable Bezoutian, the Weil distribution, and the Pick extension are now all in the tree,
+so `(7)`, `(10)`–`(12)` and the source presentations are certified; see below.
 
 ## Gates
 
@@ -266,3 +265,90 @@ not certify `(7)`, `(10)`, or the source presentations, so no Lean file is added
 - [ ] construct the non-target-fed source Gram factorization `(16)`
 - [ ] deduce RH
 
+
+## Lean formalization — the proved content is COMPLETE (unconditional)
+
+New module `RHTower/XiBezoutianPointedIncidence`, plus `isPSDKernel_gram` added to
+`HTGeometry/PSDKernelOperations`.  Every capstone audits to
+`propext, Classical.choice, Quot.sound`.
+
+### The entire Bezoutian and its removability
+
+| Card item | Lean name |
+|---|---|
+| `X` even, `X'` odd | `xiCent_even`, `deriv_xiCent_neg` |
+| Schwarz reality of `X` and `X'` | `xiCent_conj`, `deriv_xiCent_conj` |
+| `(3)` the numerator `N(w,y)` | `xiCentBezoutianNumerator` |
+| **`(4)`** `N(w,-w) = 0` | `xiCentBezoutianNumerator_antidiagonal` |
+| `(2)` the Bezoutian, defined across the antidiagonal | `xiCentBezoutian` (a `dslope`) |
+| the quotient form off the antidiagonal | `xiCentBezoutian_eq_div` |
+| **removability**: entire in the holomorphic variable | `differentiable_xiCentBezoutian` |
+| agreement with the corpus value-fibre Bezoutian at `c = 0` | `xiCentBezoutian_eq_xiTranslatedBezoutian` |
+| **`(5)`** `B_X = X(w) conj(X(v)) · K_L(w,v)` | `xiCentBezoutian_eq_mul_criticalKernel` |
+
+### RH equivalence on the Euler half plane
+
+| Card item | Lean name |
+|---|---|
+| **`(7)`** RH ⟺ every finite Bezoutian matrix on `Re w > 1/2` is positive semidefinite | `riemannHypothesis_iff_posSemidef_xiCentBezoutian` |
+
+The proof is the card's: the diagonal congruence by `diag (X w_j)` (corpus
+`posSemidef_congr_diagonal`) transports positivity between the Bezoutian matrices and the critical
+logarithmic-derivative matrices, and the latter is
+`riemannHypothesis_iff_isPSDKernel_criticalLogDerivKernel` from
+`critical-logderivative-euler-safe-cauchy-loss-law`.  Note this is on the *Euler* half plane
+`Re w > 1/2`; the corpus already had the coarser `Re w > 0` statement
+(`posSemidef_xiTranslatedBezoutian_iff`).
+
+### The completed two-channel Weil identity
+
+| Card item | Lean name |
+|---|---|
+| **`(10)`** `B_X = q_W(X A_w, X A_v) + q_W(X B_w, X B_v)` | `xiCentBezoutian_eq_twoChannelWeil` |
+| **`(11)`** the explicit divisor expansion | `xiCentBezoutian_eq_tsum` |
+| `(12)` the entire feature channels | `xiFeatureChannelEven`, `xiFeatureChannelOdd` |
+| **`(12)`** under RH the Bezoutian is their positive Gram sum | `xiCentBezoutian_eq_featureGram_of_riemannHypothesis` |
+
+### The source presentations and the budget
+
+| Card item | Lean name |
+|---|---|
+| `(14)`–`(15)` Euler--Gamma presentation | `logDeriv_xiCent_eq_eulerPresentation`, `lSeriesSummable_vonMangoldt_shift` (`RHTower/XiWeilTwoChannelResolvent`) |
+| `(13)` theta/trace presentation: the invertible pointed odd-trace/even-moment coordinate | `normalizedTraceMomentGerm_criticalTraceToCenteredOdd_evenMomentToCriticalTrace`, `normalizedTraceMomentGerm_oddTracePreimage` (corpus `RHTower/CriticalTraceMomentGerm`) |
+| `(17)`–`(19)` signed-Gamma complementary rank bound | `finrank_span_log_primesBelow`, `carrierBudget_rank_ge` (`RHTower/XiWeilCarrierBudget`) |
+
+### The positive factorization target
+
+| Card item | Lean name |
+|---|---|
+| Gram kernels are positive | `isPSDKernel_gram` (`HTGeometry/PSDKernelOperations`) |
+| **`(16)` ⟹ RH**: a source Gram factorization of `B_X` proves RH | `riemannHypothesis_of_bezoutianGram` |
+
+`riemannHypothesis_of_bezoutianGram` takes an arbitrary complex inner product space and a family
+`R : {W : ℂ // 1/2 < W.re} → H` with `B_X (w, v) = ⟪R v, R w⟫`, and concludes RH.  Compatibility
+under enlargement of finite node sets is automatic in this formulation.  Constructing such an `R`
+remains the open gate; the theorem certifies only that it would suffice.
+
+### The CCM chain `(20)`
+
+The links are the Lean theorems above together with those of
+`critical-logderivative-two-channel-weil-resolvent-law`:
+`riemannHypothesis_of_bezoutianGram` → `riemannHypothesis_iff_posSemidef_xiCentBezoutian` →
+`riemannHypothesis_iff_isPSDKernel_twoChannel` → `tendsto_apertureTwoChannelKernel` and
+`riemannHypothesis_iff_forall_aperture_energy_nonneg`.  The passage from "no negative aperture
+mode" to "conserved zero Morse charge" belongs to
+`ccm-aperture-morse-index-conservation-law.md` and is not re-proved here.
+
+### What is *not* formalized
+
+- The Hedenmalm metric classification paragraph (that any continuous positive source-core form is
+  nonlocal with Fourier measure on the real Xi divisor).  That is a theorem of
+  `hedenmalm-theta-pair-divisor-supported-metric-law.md`; it constrains the *shape* of a solution
+  to `(16)` and is not used in any statement above.
+- the two open gates: the construction of `(16)`, and RH.
+
+## Log
+
+- 2026-08-20 — Formalized in Lean 4.  New module `RHTower/XiBezoutianPointedIncidence`; the reusable
+  `isPSDKernel_gram` added to `HTGeometry/PSDKernelOperations`.  15 capstones audited to
+  `propext, Classical.choice, Quot.sound`.  Promoted to stage 3.

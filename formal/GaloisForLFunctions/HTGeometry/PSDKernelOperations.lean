@@ -168,6 +168,38 @@ theorem isPSDKernel_rankOne (e : X → ℂ) :
     rw [hval, mul_comm, ← Complex.normSq_eq_conj_mul_self]
     exact Complex.zero_le_real.mpr (Complex.normSq_nonneg _)
 
+/-- **Gram kernels are positive.**  Every kernel of the form `⟪R y, R x⟫` in an inner product space
+is positive semidefinite. -/
+theorem isPSDKernel_gram {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (R : X → H) :
+    IsPSDKernel (fun x y => ⟪R y, R x⟫_ℂ) := by
+  refine isPSDKernel_of_forall_posSemidef (fun x y => inner_conj_symm _ _) (fun n w => ?_)
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg ?_ ?_
+  · ext j k
+    simp only [Matrix.conjTranspose_apply, Matrix.of_apply, RCLike.star_def]
+    exact inner_conj_symm _ _
+  · intro x
+    set C : H := ∑ j, conj (x j) • R (w j) with hC
+    have hform : star x ⬝ᵥ (Matrix.of fun j k => ⟪R (w k), R (w j)⟫_ℂ).mulVec x = ⟪C, C⟫_ℂ := by
+      rw [hC, sum_inner]
+      have hstep : ∀ j : Fin n,
+          ⟪conj (x j) • R (w j), ∑ k, conj (x k) • R (w k)⟫_ℂ
+            = ∑ k, x j * conj (x k) * ⟪R (w j), R (w k)⟫_ℂ := by
+        intro j
+        rw [inner_sum]
+        refine Finset.sum_congr rfl fun k _ => ?_
+        rw [inner_smul_left, inner_smul_right, Complex.conj_conj]
+        ring
+      simp only [hstep]
+      rw [Finset.sum_comm]
+      simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, RCLike.star_def]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun k _ => by ring
+    rw [hform, inner_self_eq_norm_sq_to_K]
+    have h0 : (0 : ℂ) ≤ ((‖C‖ ^ 2 : ℝ) : ℂ) := Complex.zero_le_real.mpr (sq_nonneg _)
+    push_cast at h0
+    exact h0
+
 /-! ## Finite kernel energies -/
 
 /-- The energy of a finite node/coefficient system against a kernel. -/

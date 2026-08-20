@@ -126,4 +126,74 @@ theorem zeroDetectionFiniteProductCoefficient_factor (X Y q n : ℕ)
     _ = _ := by
       rw [Finset.sum_mul, Finset.sum_mul]
 
+/-- Below the common cutoff, the finite convolution coefficient is exactly the
+source coefficient `c_n = Σ_{d ∣ n} μ(d)`.  `Fin (X + 1)` packages the entire
+low-index range without asking callers to supply a bound. -/
+theorem zeroDetectionTruncatedConvolutionCoefficient_eq_mobiusCoefficient
+    (X : ℕ) (n : Fin (X + 1)) :
+    zeroDetectionTruncatedConvolutionCoefficient X X (n.1 + 1) =
+      (zeroDetectionMobiusCoefficient X (n.1 + 1) : ℂ) := by
+  let k : ℕ := n.1 + 1
+  have hkpos : k ≠ 0 := by
+    dsimp [k]
+    omega
+  have hkbound : k ≤ X + 1 := by
+    dsimp [k]
+    omega
+  have hIcc : Finset.Icc 1 (X + 1) = Finset.Ioc 0 (X + 1) := by
+    ext d
+    simp only [Finset.mem_Icc, Finset.mem_Ioc]
+    omega
+  have hanti := Nat.divisorsAntidiagonal_eq_prod_filter_of_le hkpos hkbound
+  have hfilter : k.divisors.filter (fun d => d ≤ X + 1) = k.divisors := by
+    apply Finset.filter_eq_self.mpr
+    intro d hd
+    have hdk : d ∣ k := (Nat.mem_divisors.mp hd).1
+    exact (Nat.le_of_dvd (Nat.pos_of_ne_zero hkpos) hdk).trans hkbound
+  change zeroDetectionTruncatedConvolutionCoefficient X X k =
+    (zeroDetectionMobiusCoefficient X k : ℂ)
+  unfold zeroDetectionTruncatedConvolutionCoefficient zeroDetectionMobiusCoefficient
+  rw [hIcc, ← hanti]
+  have hsum : (∑ dm ∈ k.divisorsAntidiagonal, (moebius dm.1 : ℂ)) =
+      ∑ d ∈ k.divisors, (moebius d : ℂ) :=
+    Nat.sum_divisorsAntidiagonal (fun d _ => (moebius d : ℂ))
+  rw [hsum]
+  rw [hfilter]
+  simp
+
+/-- The finite truncated convolution has its source value `c₁ = 1`. -/
+theorem zeroDetectionTruncatedConvolutionCoefficient_one (X : ℕ) :
+    zeroDetectionTruncatedConvolutionCoefficient X X 1 = 1 := by
+  simpa [zeroDetectionMobiusCoefficient_one] using
+    zeroDetectionTruncatedConvolutionCoefficient_eq_mobiusCoefficient X (0 : Fin (X + 1))
+
+/-- Every non-unit index through the common cutoff has zero finite convolution
+coefficient. -/
+theorem zeroDetectionTruncatedConvolutionCoefficient_vanishes_below_cutoff
+    (X : ℕ) (n : Fin X) :
+    zeroDetectionTruncatedConvolutionCoefficient X X (n.1 + 2) = 0 := by
+  let k : Fin (X + 1) := ⟨n.1 + 1, by omega⟩
+  have hk : k.1 + 1 = n.1 + 2 := by
+    dsimp [k]
+  rw [← hk, zeroDetectionTruncatedConvolutionCoefficient_eq_mobiusCoefficient]
+  simpa [hk] using congrArg (fun z : ℤ => (z : ℂ))
+    (zeroDetectionMobiusCoefficient_vanishes_below_cutoff X n)
+
+/-- The index-one coefficient in the actual finite product `M_X L_X` is one. -/
+theorem zeroDetectionFiniteProductCoefficient_one (X q : ℕ)
+    (χ : DirichletCharacter ℂ q) (s : ℂ) :
+    zeroDetectionFiniteProductCoefficient X X q χ s 1 = 1 := by
+  rw [zeroDetectionFiniteProductCoefficient_factor,
+    zeroDetectionTruncatedConvolutionCoefficient_one]
+  simp
+
+/-- Every non-unit coefficient through the common cutoff in the actual finite
+product `M_X L_X` vanishes. -/
+theorem zeroDetectionFiniteProductCoefficient_vanishes_below_cutoff
+    (X q : ℕ) (χ : DirichletCharacter ℂ q) (s : ℂ) (n : Fin X) :
+    zeroDetectionFiniteProductCoefficient X X q χ s (n.1 + 2) = 0 := by
+  rw [zeroDetectionFiniteProductCoefficient_factor,
+    zeroDetectionTruncatedConvolutionCoefficient_vanishes_below_cutoff]
+  simp
+
 end RHTower

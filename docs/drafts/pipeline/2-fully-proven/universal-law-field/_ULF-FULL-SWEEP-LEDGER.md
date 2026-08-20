@@ -13,3 +13,6 @@ companion have been moved to `docs/drafts/pipeline/3-formalized/universal-law-fi
 
 (rows appended as each card is audited/closed)
 
+| # | Card | Status |
+|---|---|---|
+| 1 | `amplified-generative-response-mechanics/amplified-admission-depth-escape-and-reduction-pencil-law.md` | **DONE 2026-08-20** — promoted. New modules `HTGeometry/ReductionPencilKPositivity.lean` (Thm 2.1: `id⊗Φ_{n,c}` positive ⟺ `c ≥ min(k,n)`, both halves + maximally-entangled necessity, no Schmidt/SVD) and `HTGeometry/AmplifiedAdmissionGauge.lean` (AGR.1–AGR.4, AGR.7, AGR.12–AGR.14). Axiom-clean, umbrella-wired |

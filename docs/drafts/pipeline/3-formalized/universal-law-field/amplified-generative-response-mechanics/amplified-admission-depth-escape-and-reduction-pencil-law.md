@@ -1,11 +1,13 @@
 # Amplified admission depth escape and reduction-pencil law
 
 - **ID:** `ulf-agrm-reduction-pencil-depth-escape`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM / TWO-INDEX GENERATIVE-ADMISSION LAW
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.ReductionPencilKPositivity`,
+  `GaloisForLFunctions.HTGeometry.AmplifiedAdmissionGauge`
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [CLASSICAL CP PARENTS]`
-  `[EXACT COFINAL MIGRATING OBSTRUCTION] [CHOI/COFINAL LEAN CORE CERTIFIED]`
-  `[INTERMEDIATE K-POSITIVITY LEAN OPEN] [NOT RH]`
+  `[EXACT COFINAL MIGRATING OBSTRUCTION] [LEAN-CERTIFIED] [UMBRELLA-WIRED]`
+  `[NO SORRY] [NO AXIOMS] [NOT RH]`
 - **Statement:** Matrix amplification depth and source aperture are independent admission axes.
   The reduction pencil has exact `k`-positive gauge `min(k,n)`, so every fixed amplification level
   remains uniformly admissible while complete admission diverges cofinally.
@@ -300,6 +302,14 @@ source**, not positivity in another fixed route.
 - [x] scalar phase-kernel law placed as level-one face;
 - [x] rank-one pencil and Choi threshold certified in Lean;
 - [x] fixed-depth/diagonal false-promotion capstone certified in Lean;
-- [ ] literal arithmetic operator-system realization;
-- [ ] full intermediate `k`-positive reduction-map threshold in Lean;
-- [ ] RH selection theorem.
+- [x] full intermediate `k`-positive reduction-map threshold in Lean
+      (`redPencil_posSemidef_forall_iff`, `isLevelPositive_reduction_iff`);
+- [x] amplified gauge, monotonicity, complete-positivity criterion and data processing in Lean
+      (`levelGauge`, `levelGauge_mono`, `levelFeasible_eq_Ici`,
+      `isCompletelyPositiveMap_iff_forall_levelGauge_le`, `levelGauge_comp_le`);
+- [x] exact profile, cofinal migration and false promotion in Lean
+      (`levelGauge_reduction`, `completeGauge_reduction`, `isGreatest_fixed_depth_reduction`,
+      `completeGauge_reduction_not_bddAbove`, `reduction_false_promotion`);
+- [ ] literal arithmetic operator-system realization — **explicitly not claimed** by this card
+      (§7: "No such arithmetic operator system or equivalence currently exists");
+- [ ] RH selection theorem — **explicitly not claimed** by this card (§7).

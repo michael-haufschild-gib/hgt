@@ -32,3 +32,14 @@
 ## Log
 
 - 2026-08-20 — ledger opened; architecture of the elliptic-gamma face chain audited.
+- 2026-08-20 — **card 1 core closed**: the arbitrary-complex-translation (coset) extension of the
+  multiple elliptic-gamma face-packet chain is Lean-certified, axiom-clean, umbrella-wired
+  (14 new modules, capstones `cosetProperFacePackets_diffIndepOn`,
+  `cosetCompleteDifferentialMatroid`, `cosetCompleteDifferentialRank`,
+  `arbitraryTranslate_eq_deepSpan_add_differentialAlgebraic`).  See Serena memory
+  `nsk-other/coset-face-packet-chain-built-2026-08-20`.
+- 2026-08-20 — **card 2 blocker dissolved**: the depth-two triptic DA-completeness theorem that
+  cards 1 and 2 both assume is already unconditional in the tree, as
+  `HTGeometry.differentiallyAlgebraic_iff_additiveOrbitalDivisorAt_eq_zero`
+  (`TripticCompleteness`), axiom-clean.  Both cards' remaining mathematics is now the *all-depth
+  induction*: `Q_d`, `ρ_d`, `PairFace_d`, the inductive step, and the realization half.

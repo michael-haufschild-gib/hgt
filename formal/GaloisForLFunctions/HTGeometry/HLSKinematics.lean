@@ -186,6 +186,18 @@ abbrev hlsPhysicalPoincareTopology : TopologicalSpace HLSPhysicalPoincareGroup :
     (@instTopologicalSpaceProd (Multiplicative HLSMinkowskiVector) hlsProperOrthoLorentzGroup
       hlsTranslationTopology hlsProperOrthoLorentzTopology)
 
+/-- Topological-group laws for the explicit physical Poincaré topology.  The finite-dimensional
+continuity proof for Lorentz multiplication is kept as data until the pointwise Lorentz topology
+is connected to its matrix-coordinate Lie topology. -/
+structure HLSPoincareTopologicalGroupData where
+  multiplication_continuous : @Continuous
+    (HLSPhysicalPoincareGroup × HLSPhysicalPoincareGroup) HLSPhysicalPoincareGroup
+    (@instTopologicalSpaceProd HLSPhysicalPoincareGroup HLSPhysicalPoincareGroup
+      hlsPhysicalPoincareTopology hlsPhysicalPoincareTopology)
+    hlsPhysicalPoincareTopology (fun x => x.1 * x.2)
+  inversion_continuous : @Continuous HLSPhysicalPoincareGroup HLSPhysicalPoincareGroup
+    hlsPhysicalPoincareTopology hlsPhysicalPoincareTopology Inv.inv
+
 /-- A physical Poincaré translation with trivial Lorentz component. -/
 def hlsTranslation (a : HLSMinkowskiVector) : HLSPhysicalPoincareGroup :=
   ⟨Multiplicative.ofAdd a, 1⟩

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.XiEdgeLogDerivativeBlindness
 import GaloisForLFunctions.RHTower.XiRectangleZeroCount
 import GaloisForLFunctions.PNTPlus.ZetaConj
 
@@ -21,31 +22,10 @@ noncomputable section
 
 namespace RHTower
 
-/-! ## The derivative symmetries -/
+/-! ## The logarithmic-derivative symmetries
 
-theorem deriv_xi_conj (s : ℂ) :
-    deriv xi ((starRingEnd ℂ) s) = (starRingEnd ℂ) (deriv xi s) := by
-  have hfun : (fun z : ℂ => (starRingEnd ℂ) (xi ((starRingEnd ℂ) z))) = xi := by
-    funext z
-    rw [xi_conj]
-    simp
-  have h := deriv_conj_conj' xi s
-  rwa [hfun] at h
-
-theorem deriv_xi_one_sub (s : ℂ) : deriv xi (1 - s) = -deriv xi s := by
-  have hfun : (fun z : ℂ => xi (1 - z)) = xi := by
-    funext z
-    exact xi_one_sub z
-  have h1 : HasDerivAt (fun z : ℂ => (1 : ℂ) - z) (-1) s := by
-    simpa using (hasDerivAt_id s).const_sub 1
-  have h2 : HasDerivAt xi (deriv xi (1 - s)) (1 - s) := (xi_differentiable _).hasDerivAt
-  have hd : HasDerivAt (fun z : ℂ => xi (1 - z)) (deriv xi (1 - s) * (-1)) s := by
-    simpa [Function.comp_def] using h2.comp s h1
-  rw [hfun] at hd
-  have hval := hd.deriv
-  linear_combination hval
-
-/-! ## The logarithmic-derivative symmetries -/
+The two derivative symmetries `deriv_xi_conj` and `deriv_xi_one_sub` they rest on are
+`RHTower.XiEdgeLogDerivativeBlindness`. -/
 
 theorem logDeriv_xi_conj (s : ℂ) :
     logDeriv xi ((starRingEnd ℂ) s) = (starRingEnd ℂ) (logDeriv xi s) := by

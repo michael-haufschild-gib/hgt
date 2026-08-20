@@ -99,6 +99,7 @@ abbrev hlsStrongUnitaryTopology (E : Type u) [NormedAddCommGroup E]
 Hilbert vectors), using the explicit Poincaré and strong-operator topologies from this layer. -/
 structure HLSStronglyContinuousPoincareRepresentation (E : Type u) [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [CompleteSpace E] where
+  topologicalGroup : HLSPoincareTopologicalGroupData
   action : HLSPhysicalPoincareGroup →* (E ≃ₗᵢ[ℂ] E)
   strongly_continuous : @Continuous HLSPhysicalPoincareGroup (E ≃ₗᵢ[ℂ]
     E) hlsPhysicalPoincareTopology (hlsStrongUnitaryTopology E) action
@@ -365,32 +366,18 @@ structure HLSGeneratorIntegrationData (E : Type u) [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [CompleteSpace E] where
   representation : HLSStronglyContinuousPoincareRepresentation E
   generators : HLSInfinitesimalPoincareData E
-  translationFlow : Fin 4 → ℝ → HLSPhysicalPoincareGroup
   lorentzFlow : Fin 4 → Fin 4 → ℝ → HLSPhysicalPoincareGroup
-  translationFlow_eq : ∀ μ t, translationFlow μ t = hlsTranslationAt μ t
   lorentzFlow_zero : ∀ μ ν, lorentzFlow μ ν 0 = 1
   lorentzFlow_add : ∀ μ ν s t,
     lorentzFlow μ ν (s + t) = lorentzFlow μ ν s * lorentzFlow μ ν t
   lorentzFlow_continuous : ∀ μ ν, @Continuous ℝ HLSPhysicalPoincareGroup
     inferInstance hlsPhysicalPoincareTopology (lorentzFlow μ ν)
   translation_derivative : ∀ μ,
-    hlsUnitaryGeneratorDerivative representation.action (translationFlow μ) generators.commonDomain
+    hlsUnitaryGeneratorDerivative representation.action (hlsTranslationAt μ) generators.commonDomain
       (generators.commonDomain.subtype.comp (generators.translationOnDomain μ))
   lorentz_derivative : ∀ μ ν,
     hlsUnitaryGeneratorDerivative representation.action (lorentzFlow μ ν) generators.commonDomain
       (generators.commonDomain.subtype.comp (generators.lorentzOnDomain μ ν))
-
-/-- The prescribed coordinate translation flows are continuous; no additional continuity premise
-is needed for them. -/
-theorem HLSGeneratorIntegrationData.translationFlow_continuous {E : Type u}
-    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
-    (data : HLSGeneratorIntegrationData E) (μ : Fin 4) :
-    @Continuous ℝ HLSPhysicalPoincareGroup inferInstance hlsPhysicalPoincareTopology
-      (data.translationFlow μ) := by
-  have hflow : data.translationFlow μ = hlsTranslationAt μ :=
-    funext (data.translationFlow_eq μ)
-  rw [hflow]
-  exact hlsTranslationAt_continuous μ
 
 /-- The invariant alternating tensor on two-component Weyl spinors. -/
 def hlsWeylEpsilon : Matrix (Fin 2) (Fin 2) ℂ :=
@@ -651,6 +638,22 @@ structure HLSOddAdditiveGeneratorData (E : Type u) [NormedAddCommGroup E]
     multiparticleContribution (a :: configuration) = oneParticleContribution a +
       hlsFermionSign (fermionic a) • multiparticleContribution configuration
 
+/-- Graded multiparticle additivity using the same proposition-valued statistics assignment as a
+physical one-particle system.  `gradedSign` avoids choosing a global decision procedure for every
+particle-statistics proposition. -/
+structure HLSPhysicalOddAdditiveGeneratorData (A : Type v) (E : Type u)
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E] where
+  fermionic : A → Prop
+  gradedSign : A → ℂ
+  bosonic_sign : ∀ a, ¬ fermionic a → gradedSign a = 1
+  fermionic_sign : ∀ a, fermionic a → gradedSign a = -1
+  oneParticleContribution : A → E
+  multiparticleContribution : List A → E
+  empty : multiparticleContribution [] = 0
+  prepend_graded : ∀ a configuration,
+    multiparticleContribution (a :: configuration) = oneParticleContribution a +
+      gradedSign a • multiparticleContribution configuration
+
 /-- An HLS symmetry generator may connect only particle types of equal mass. -/
 structure HLSMassPreservingGeneratorData (A : Type u) where
   mass : A → ℝ
@@ -677,6 +680,7 @@ theorem HLSMassiveSectorRestrictions.mass_ne_zero {A : Type v} {E : Type u}
 structure HLSDistributionalGeneratorKernelData where
   momentumRegion : TopologicalSpace.Opens HLSMinkowskiVector
   order : ℕ∞
+  finite_order : order ≠ ⊤
   kernel : Distribution momentumRegion ℂ order
 
 /-- Elastic amplitude data on a regular physical region after excluding normal thresholds.
@@ -686,12 +690,21 @@ structure HLSAnalyticScatteringData where
   physicalRegion : Set (ℂ × ℂ)
   normalThresholds : Set (ℂ × ℂ)
   regularPhysicalRegion : Set (ℂ × ℂ)
+  physical_region_open : IsOpen physicalRegion
   normal_thresholds_closed : IsClosed normalThresholds
   regular_region : regularPhysicalRegion = physicalRegion \ normalThresholds
   analytic_regular_region : AnalyticOn ℂ elasticAmplitude regularPhysicalRegion
   scattering_occurs : ∃ st ∈ regularPhysicalRegion, elasticAmplitude st ≠ 0
   scattering_generic : regularPhysicalRegion ⊆
     closure {st | st ∈ regularPhysicalRegion ∧ elasticAmplitude st ≠ 0}
+
+/-- Removing closed normal thresholds from the open physical region leaves an open analytic
+scattering region. -/
+theorem HLSAnalyticScatteringData.regular_region_open (data : HLSAnalyticScatteringData) :
+    IsOpen data.regularPhysicalRegion := by
+  rw [data.regular_region]
+  rw [Set.sdiff_eq]
+  exact data.physical_region_open.inter data.normal_thresholds_closed.isOpen_compl
 
 /-- Combined physical S-matrix and analytic elastic-amplitude input.  Relating a concrete Hilbert
 space S-matrix to LSZ amplitudes is deliberately left as an explicit further construction rather
@@ -725,10 +738,66 @@ structure HLSPhysicalSystemInput (N B : Type v) [DecidableEq N] (A F : Type w) (
   massive : HLSMassiveSectorRestrictions A E
   massive_particles_agree : massive.particlePoincare =
     weylScattering.physicalScattering.particlePoincare
+  oddAdditivity : HLSPhysicalOddAdditiveGeneratorData A E
+  oddAdditivity_statistics_agree : oddAdditivity.fermionic =
+    weylScattering.physicalScattering.particlePoincare.particles.fermionic
+  massPreserving : HLSMassPreservingGeneratorData A
+  massPreserving_mass_agrees : massPreserving.mass =
+    weylScattering.physicalScattering.particlePoincare.particles.mass
   analyticElastic : HLSAnalyticScatteringData
   translationKernel : Fin 4 → HLSDistributionalGeneratorKernelData
   lorentzKernel : Fin 4 → Fin 4 → HLSDistributionalGeneratorKernelData
   superchargeKernel : N → Fin 2 → HLSDistributionalGeneratorKernelData
   conjugateSuperchargeKernel : N → Fin 2 → HLSDistributionalGeneratorKernelData
+
+/-- A bosonic labelled one-particle state is fixed by the physical fermion parity. -/
+theorem HLSPhysicalSystemInput.bosonic_label_parity {N B : Type v} [DecidableEq N]
+    {A F : Type w} {E : Type u} [AddCommGroup B] [Module ℂ B]
+    [AddCommGroup F] [Module ℂ F] [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    [CompleteSpace E] (data : HLSPhysicalSystemInput N B A F E)
+    (a : {a : A //
+      ¬ data.weylScattering.physicalScattering.particlePoincare.particles.fermionic a}) :
+    data.weylScattering.physicalScattering.particlePoincare.sectors.fermionParity
+      (data.weylScattering.physicalScattering.particlePoincare.particles.state a) =
+        data.weylScattering.physicalScattering.particlePoincare.particles.state a := by
+  have h := data.fockCompletion.parity_boson_creation (data.bosonicLabel a)
+  rw [data.fock_sectors_agree, data.bosonicLabel_state] at h
+  exact h
+
+/-- A fermionic labelled one-particle state is negated by the physical fermion parity. -/
+theorem HLSPhysicalSystemInput.fermionic_label_parity {N B : Type v} [DecidableEq N]
+    {A F : Type w} {E : Type u} [AddCommGroup B] [Module ℂ B]
+    [AddCommGroup F] [Module ℂ F] [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    [CompleteSpace E] (data : HLSPhysicalSystemInput N B A F E)
+    (a : {a : A //
+      data.weylScattering.physicalScattering.particlePoincare.particles.fermionic a}) :
+    data.weylScattering.physicalScattering.particlePoincare.sectors.fermionParity
+      (data.weylScattering.physicalScattering.particlePoincare.particles.state a) =
+        -data.weylScattering.physicalScattering.particlePoincare.particles.state a := by
+  have h := data.fockCompletion.parity_fermion_creation (data.fermionicLabel a)
+  rw [data.fock_sectors_agree, data.fermionicLabel_state] at h
+  exact h
+
+/-- The equal-mass selection rule in a full physical input refers to its actual particle masses. -/
+theorem HLSPhysicalSystemInput.transition_preserves_particle_mass {N B : Type v} [DecidableEq N]
+    {A F : Type w} {E : Type u} [AddCommGroup B] [Module ℂ B]
+    [AddCommGroup F] [Module ℂ F] [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    [CompleteSpace E] (data : HLSPhysicalSystemInput N B A F E) (a b : A)
+    (hab : data.massPreserving.transition a b) :
+    data.weylScattering.physicalScattering.particlePoincare.particles.mass a =
+      data.weylScattering.physicalScattering.particlePoincare.particles.mass b := by
+  rw [← data.massPreserving_mass_agrees]
+  exact data.massPreserving.connects_equal_mass a b hab
+
+/-- The graded sign of a fermionic physical particle is minus one. -/
+theorem HLSPhysicalSystemInput.fermionic_graded_sign {N B : Type v} [DecidableEq N]
+    {A F : Type w} {E : Type u} [AddCommGroup B] [Module ℂ B]
+    [AddCommGroup F] [Module ℂ F] [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    [CompleteSpace E] (data : HLSPhysicalSystemInput N B A F E) (a : A)
+    (ha : data.weylScattering.physicalScattering.particlePoincare.particles.fermionic a) :
+    data.oddAdditivity.gradedSign a = -1 := by
+  apply data.oddAdditivity.fermionic_sign a
+  rw [data.oddAdditivity_statistics_agree]
+  exact ha
 
 end GaloisForLFunctions.HTGeometry

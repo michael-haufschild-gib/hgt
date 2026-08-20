@@ -1,7 +1,8 @@
 # Reflection-blind descent freezing, defect conservation, and global properness selection law
 
 - **ID:** ULF-AEDM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Lean module:** `GaloisForLFunctions.HTGeometry.AntiEquivariantDescentFormation`
 - **Type:** THEOREM (paper) / UNIVERSAL FORMATION-SELECTION MECHANISM
 - **Source:** `../../../1-in-progress/rh-current-frontier-map.md`,
   `../packet-formation-mechanics/functional-equation-split-formation-lift-information-isometry-and-work-no-go.md`,
@@ -14,7 +15,7 @@
   forces that grade.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [ROUTE-INDEPENDENT]
   [FOUR-ORGAN FUSION] [EXACT CONSERVATION] [GLOBAL FORMATION/PROPERNESS SELECTOR]
-  [LEAN-PROVED] [STANDARD AXIOMS ONLY] [NOT RH]
+  [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]
 
 ## Goal
 

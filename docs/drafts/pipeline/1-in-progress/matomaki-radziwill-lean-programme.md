@@ -6978,3 +6978,111 @@ Halász–Montgomery vacuous for every exceptional set of measure `≥ 1`.
 4. then the large half's budget reads `ρ²·(N log T + |𝒰|√T log T)/N²`-shaped, and the condition is
    `|𝒰| ≲ N/√T`, i.e. `log R_min ≳ 2C₁ ≍ log log x` — the polylogarithmic bottom that makes
    `β > 1/2` reachable.
+
+### Bricks 114–117 — Lemma 2.6 rebuilt on Kuzmin–Landau (2026-08-20)
+
+Five modules, all `lake env lean`-clean, axiom-clean, wired, built; the two-range capstone now runs
+on them.
+
+| module | theorem | content |
+|-|-|-|
+| `Sieve/PlainKernelRecip` | `exists_pow_two_bracket`, `norm_sum_Icc_logPhase_le_recip`, **`norm_plainKernel_le_recip`** | the split point taken at the frequency (`J₀ = log₂⌈t⌉ + 1`, so `t ≤ 2^{J₀} ≤ 4t`): `‖K(v)‖ ≤ 214(log₂⌈\|v\|⌉+1)√\|v\| + 12288√\|v\| + 12π·N/\|v\| + log₂N + 1` |
+| `Sieve/KernelRowMassRecip` | `recipMajorant`, `integral_recipMajorant_symm`, `setIntegral_recipMajorant_le`, **`setIntegral_norm_kernel_le_recip`** | the row mass for a far bound `A + B/\|v\|`: `2N + A·\|E\| + 4B·log(2+2T)` |
+| `Sieve/PlainKernelMassRecip` | `plainKernelFarConst`, `plainKernel_row_mass_recip`, **`setIntegral_normSq_dirPoly_le_recip`** | Lemma 2.6 with the Kuzmin–Landau constants |
+| `Sieve/LogPolyWindowHMRecip` | `hmMassRecip`, **`setIntegral_normSq_logPoly_le_HM_window_recip`** | the same over a measurable set of **Gallagher** frequencies |
+| `Sieve/RamareLadderHMRecip` | `ladderHMBoundRecip`, **`setIntegral_normSq_ramareBilinear_le_ladder_HM_recip`** | the exceptional-set ladder on the new mass |
+
+The continuous majorant `2/(1+\|x\|)` of `1/\|x\|` is what makes the row mass elementary: it needs no
+indicator, so `∫_{-c}^{c} 2/(1+\|x\|)dx = 4 log(1+c)` follows from `integral_inv_of_pos` after one
+reflection and one translation, and the far mass is bounded by moving the window to
+`Ioc (t−(2T+1)) (t+(2T+1))`, which contains `E` whenever `E, t ⊆ [−T, T]`.
+
+**Net effect.**  The large half of `Sieve/MoebiusTwoRangeWindow` now reads
+
+```text
+   2L'·∑_{j<L'} V'_j²·(2π)⁻¹·( 2N'_j + 48π·N'_j·log(2 + 4πW) + C(2πW, N'_j)·2π·|𝒰| )·#C'_j
+     + 2∫‖ramareLadderError‖² ,
+   C(T, N) = 214(log₂⌈2T⌉+1)√(2T) + 12288√(2T) + log₂N + 1 ,
+```
+
+so the exceptional set enters through `√W·log W·|𝒰|` instead of `N·|𝒰|`, and the condition for the
+diagonal to dominate is `|𝒰| ≲ N'_j/√W` — attainable by the moment method exactly when
+`log R_min ≳ 2C₁ ≍ log log x`.
+
+**What is left**: the numerology.  Choose
+`log R_min ≍ K·log log x`, `R_max = h`, `V_j = θ·#B_j` with `θ = (log x)^{−A}`,
+`log R'_min = (log x)^a`, `log R'_max = (log x)^b`, `9/10 < a < b < 1`, `η, η'` small powers of
+`log x`, `W = T₀ = (M/h)·ω`, `ω = log log x`, `δ → 0` slowly; then check the five groups of
+`integral_Icc_normSq_logPoly_moebius_le_twoRange` against `M²` — every one of them is now a
+finite expression in named corpus quantities.
+
+### Brick 118 — both ladder groups reduced to three aggregates (2026-08-20)
+
+`Sieve/LadderGroupBudget`, `lake env lean`-clean, axiom-clean, wired, built.
+
+The two ladder groups of the two-range budget differ only in which mass multiplies the cofactor;
+both depend on the block data through exactly three aggregates,
+
+```text
+   S ≥ ∑_j #B_j·N_j ,      Bmax ≥ #B_j ,      PP ≥ ∑_j #B_j ,
+```
+
+with `N_j = ⌊M/R_j⌋` the cofactor length and `#C_j ≤ N_j + 1`.
+
+```text
+ladderGroup_mvt_le :
+  2L·∑_{j<L} (θ·B_j)²·((5π/2·W + 5e/2·N_j)·C_j)
+    ≤ 5π·L·θ²·W·(Bmax·S + Bmax·PP) + 5e·L·θ²·(S² + Bmax·S)
+
+ladderGroup_hm_inner_le :
+  ∑_{j<L} (ρ·B_j)²·((2N_j + FC_j·v + 48π·N_j·Λ)·C_j)
+    ≤ ρ²·( (2 + 48π·Λ)·(S² + Bmax·S) + FCmax·v·(Bmax·S + Bmax·PP) )
+```
+
+The only inequality of substance is `∑_j (B_jN_j)² ≤ (∑_j B_jN_j)² = S²`
+(`Finset.sum_sq_le_sq_sum_of_nonneg`); the rest is `∑_j B_j²N_j ≤ Bmax·S` and
+`∑_j B_j² ≤ Bmax·PP`.
+
+**Where the three aggregates come from.**  `S`: because `p ≤ R_j(1+η)` on a block,
+`#B_j/R_j ≤ (1+η)∑_{p∈B_j}1/p`, so `∑_j #B_j·(M/R_j) ≤ (1+η)·M·∑_{p∈P}1/p`
+(`Sieve/BlockMassCompare.sum_card_geomBlock_div_le`).  `Bmax`: `Sieve/LadderErrorBudget.card_geomBlock_le`
+and `Sieve/GeomBlockCardBound.card_geomBlock_le_endpoint`.  `PP`: `Sieve/LadderStepMajorant.sum_card_geomBlock_eq`
+(the blocks partition the designated primes).
+
+**Numerology now checkable term by term.**  At `θ = (log x)^{−A}`, `η = (log x)^{−c}`,
+`R_max = h`, `W = (M/h)·log log x`:
+`5e·L·θ²·S² / M² ≍ θ²·(log h/η)·(log log x)² → 0` for `2A > β + c`, and
+`5π·L·θ²·W·Bmax·S / M² ≍ θ²·(log log x)² → 0`.
+For the high range with `ρ = exp(−c(log x)^{a−9/10})`, both HM terms carry `ρ²`, which beats every
+power of `log x`; the `FCmax·v` term additionally carries `|𝒰|·√W·log W·R'_max/√M`, and
+`R'_max/√M = exp((log x)^b − (log x)/4) → 0` swallows it.
+
+### Bricks 119–120 — the aggregates, and both ladder groups in closed form (2026-08-20)
+
+`Sieve/LadderAggregates` and `Sieve/LargeLadderGroup`, both `lake env lean`-clean, axiom-clean,
+wired, built.
+
+| theorem | content |
+|-|-|
+| `card_geomCofactorBlock_le` | `#C_j ≤ ⌊M/R_j⌋ + 1` (the block is an `Icc` ending there) |
+| `sum_card_geomBlock_mul_floor_le` | **the aggregate `S`**: `∑_j #B_j·⌊M/R_j⌋ ≤ (1+η)·M·∑_{p∈P}1/p` |
+| `card_geomBlock_le_top` | **the aggregate `Bmax`**: `#B_j ≤ R(1+η)^L·η + 1` |
+| `sum_card_geomBlock_le_card` | **the aggregate `PP`**: `∑_j #B_j = #P` |
+| `rangeHarmonic`, **`smallLadderGroup_le`** | the small half's group, entirely in `(1+η)M·H`, `R(1+η)^Lη+1`, `#P` |
+| `plainKernelFarConst_mono`, `floor_div_le_bottom`, **`largeLadderGroup_le`** | the large half's group, same three aggregates, with the kernel's far constant made uniform by monotonicity in the cofactor length |
+
+So both ladder groups of `integral_Icc_normSq_logPoly_moebius_le_twoRange` are now closed-form
+expressions in
+
+```text
+   L , θ (or ρ) , W , η , R , M , H = ∑_{p ∈ P} 1/p , #P , |𝒰| ,
+```
+
+with no sums left. Together with `Sieve/MoebiusHeadBudget.roughGroup_le` (rough groups),
+`Sieve/MoebiusDiscRate.tendsto_discRelative` (disc) and
+`Sieve/RamareLadderAnnulus.integral_normSq_ramareLadderError_le_defectSum` +
+`Sieve/LadderAffineBounds.ladderDefectSum_le` (the two defect groups), every one of the seven groups
+of the two-range bound is a named finite expression.
+
+**What is left**: substitute the schedule, bound `H`, `#P`, `R(1+η)^Lη`, `L`, `|𝒰|` at it, and take
+the limit.
