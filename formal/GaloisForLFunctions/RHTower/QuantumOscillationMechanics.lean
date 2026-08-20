@@ -5,7 +5,9 @@ import GaloisForLFunctions.HTGeometry.HyperbolicModulus
 import GaloisForLFunctions.HTGeometry.RegularLevelSetStratification
 import GaloisForLFunctions.RHTower.CCMArchimedeanGeometricCompositeKernel
 import GaloisForLFunctions.RHTower.FiniteWindowRecurrenceInstability
+import GaloisForLFunctions.RHTower.FermionicFockIsospectrality
 import GaloisForLFunctions.RHTower.LegStripSteepness
+import GaloisForLFunctions.RHTower.RandomEulerAbscissa
 import GaloisForLFunctions.RHTower.ReversalPositivity
 import GaloisForLFunctions.SelbergClass.MultipleStandardTwistDamping
 
@@ -25,7 +27,7 @@ Constants are unit-normalized. The purpose is exact structural reuse of existing
 not a material-specific model or numerical prediction.
 -/
 
-open Set Filter Topology
+open Set Filter Topology Module
 open scoped UnivMeroFieldInstances
 
 noncomputable section
@@ -115,6 +117,70 @@ theorem oneDimensionalFreeElectronFermiSurface_regular :
   simp only [oneDimensionalFreeElectronFermiSurface,
     oneDimensionalFreeElectronDispersion, Set.mem_setOf_eq, g]
   constructor <;> intro hk <;> nlinarith
+
+/-- One-dimensional free-electron Fermi surface at arbitrary chemical potential. -/
+def oneDimensionalFreeElectronFermiSurfaceAt (chemicalPotential : ℝ) : Set ℝ :=
+  {momentum | momentum ^ 2 = chemicalPotential}
+
+/-- Below the band edge, the one-dimensional Fermi surface is empty. -/
+theorem oneDimensionalFreeElectronFermiSurfaceAt_negative :
+    ∀ chemicalPotential ∈ Iio (0 : ℝ),
+      oneDimensionalFreeElectronFermiSurfaceAt chemicalPotential = ∅ := by
+  intro chemicalPotential hchemical
+  change chemicalPotential < 0 at hchemical
+  ext momentum
+  simp only [oneDimensionalFreeElectronFermiSurfaceAt, mem_setOf_eq,
+    Set.mem_empty_iff_false, iff_false]
+  nlinarith [sq_nonneg momentum]
+
+/-- At the band edge, the one-dimensional Fermi surface is one touching point. -/
+theorem oneDimensionalFreeElectronFermiSurfaceAt_zero :
+    oneDimensionalFreeElectronFermiSurfaceAt 0 = {0} := by
+  ext momentum
+  simp [oneDimensionalFreeElectronFermiSurfaceAt]
+
+/-- Above the band edge, the one-dimensional Fermi surface splits into two Fermi points. -/
+theorem oneDimensionalFreeElectronFermiSurfaceAt_positive :
+    ∀ chemicalPotential ∈ Ioi (0 : ℝ),
+      oneDimensionalFreeElectronFermiSurfaceAt chemicalPotential =
+        {-Real.sqrt chemicalPotential, Real.sqrt chemicalPotential} := by
+  intro chemicalPotential hchemical
+  ext momentum
+  simp only [oneDimensionalFreeElectronFermiSurfaceAt, mem_setOf_eq,
+    mem_insert_iff, mem_singleton_iff]
+  have hsqrt := Real.sq_sqrt hchemical.le
+  constructor
+  · intro hmomentum
+    have hfactor :
+        (momentum - Real.sqrt chemicalPotential) *
+            (momentum + Real.sqrt chemicalPotential) = 0 := by
+      nlinarith
+    rcases mul_eq_zero.mp hfactor with hminus | hplus
+    · right
+      linarith
+    · left
+      linarith
+  · rintro (rfl | rfl) <;> nlinarith
+
+/-- Exact Fermi-surface cardinalities across the one-dimensional band edge. -/
+theorem oneDimensionalFreeElectronFermiSurfaceAt_ncard :
+    (∀ chemicalPotential ∈ Iio (0 : ℝ),
+        (oneDimensionalFreeElectronFermiSurfaceAt chemicalPotential).ncard = 0) ∧
+      (oneDimensionalFreeElectronFermiSurfaceAt 0).ncard = 1 ∧
+      (∀ chemicalPotential ∈ Ioi (0 : ℝ),
+        (oneDimensionalFreeElectronFermiSurfaceAt chemicalPotential).ncard = 2) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro chemicalPotential hchemical
+    rw [oneDimensionalFreeElectronFermiSurfaceAt_negative chemicalPotential hchemical]
+    simp
+  · rw [oneDimensionalFreeElectronFermiSurfaceAt_zero]
+    simp
+  · intro chemicalPotential hchemical
+    rw [oneDimensionalFreeElectronFermiSurfaceAt_positive chemicalPotential hchemical]
+    have hsqrt : 0 < Real.sqrt chemicalPotential := Real.sqrt_pos.2 hchemical
+    have hne : -Real.sqrt chemicalPotential ≠ Real.sqrt chemicalPotential := by
+      linarith
+    simp [hne]
 
 /-- Unit-normalized free-electron dispersion in two momentum dimensions. -/
 def twoDimensionalFreeElectronDispersion
@@ -497,5 +563,90 @@ theorem abs_lifshitzKosevichAmplitude_le_one :
       unfold lifshitzKosevichSpinFactor
       exact mul_le_mul hthermalDingle hspin (abs_nonneg _) (by norm_num)
     _ = 1 := by norm_num
+
+/-! ## Finite Landau Fermi seas and multiharmonic signals -/
+
+/-- Unit-spaced one-particle Landau energy, including the zero-point half shift. -/
+def unitLandauOneParticleEnergy {r : ℕ} (j : Fin r) : ℝ :=
+  (j : ℕ) + 1 / 2
+
+/-- Every occupied Landau subset is an exact Slater eigenstate, in every particle sector. -/
+theorem unitLandauFermionicSector_completeSpectrum :
+    ∀ (r k : ℕ)
+      (U : _root_.RHTower.FiniteIndexClockSpace (Fin r) ≃ₗ[ℂ]
+        _root_.RHTower.FiniteIndexClockSpace (Fin r)),
+      ∃ b : Basis (Set.powersetCard (Fin r) k) ℂ
+          (⋀[ℂ]^k (_root_.RHTower.FiniteIndexClockSpace (Fin r))),
+        ∀ S : Set.powersetCard (Fin r) k,
+          _root_.RHTower.ParityForecast.fermionicSectorHamiltonian
+              (k := k) unitLandauOneParticleEnergy U (b S) =
+            (_root_.RHTower.ParityForecast.fermionicSubsetEnergy
+                unitLandauOneParticleEnergy S : ℂ) • b S := by
+  intro r k U
+  refine ⟨_root_.RHTower.ParityForecast.fermionicSectorEigenbasis U, ?_⟩
+  intro S
+  exact _root_.RHTower.ParityForecast.fermionicSectorHamiltonian_eigenvector
+    unitLandauOneParticleEnergy U S
+
+/-- Total energy of the filled first `N` unit Landau levels. -/
+def filledUnitLandauFermiSeaEnergy (N : ℕ) : ℝ :=
+  ∑ n ∈ Finset.range N, ((n : ℝ) + 1 / 2)
+
+/-- A filled unit Landau sea has exact ground-state energy `N²/2`. -/
+theorem filledUnitLandauFermiSeaEnergy_eq :
+    ∀ N : ℕ, filledUnitLandauFermiSeaEnergy N = (N : ℝ) ^ 2 / 2 := by
+  intro N
+  rcases N with _ | N
+  · simp [filledUnitLandauFermiSeaEnergy]
+  rw [filledUnitLandauFermiSeaEnergy, Finset.sum_add_distrib]
+  have h := congrArg (fun n : ℕ => (n : ℝ))
+    (Finset.sum_range_id_mul_two (N + 1))
+  push_cast at h
+  simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+  push_cast
+  nlinarith
+
+/-- Finite LK harmonic packet with no constant mode. -/
+def finiteLifshitzKosevichSignal {N : ℕ}
+    (amplitude : Fin N → ℝ) (inverseField : ℝ) : ℝ :=
+  ∑ j : Fin N,
+    amplitude j *
+      Real.cos (2 * Real.pi * (((j : ℕ) + 1 : ℕ) : ℝ) * inverseField)
+
+/-- Every finite LK harmonic packet is unit-periodic in inverse field. -/
+theorem finiteLifshitzKosevichSignal_periodic :
+    ∀ {N : ℕ} (amplitude : Fin N → ℝ),
+      Function.Periodic (finiteLifshitzKosevichSignal amplitude) 1 := by
+  intro N amplitude inverseField
+  unfold finiteLifshitzKosevichSignal
+  apply Finset.sum_congr rfl
+  intro j hj
+  congr 1
+  rw [show
+      2 * Real.pi * (((j : ℕ) + 1 : ℕ) : ℝ) * (inverseField + 1) =
+        2 * Real.pi * (((j : ℕ) + 1 : ℕ) : ℝ) * inverseField +
+          (((j : ℕ) + 1 : ℕ) : ℤ) * (2 * Real.pi) by
+      push_cast
+      ring,
+    Real.cos_add_int_mul_two_pi]
+
+/-- With no constant mode, every finite LK packet has zero mean over one inverse-field period. -/
+theorem intervalIntegral_finiteLifshitzKosevichSignal_zero :
+    ∀ {N : ℕ} (amplitude : Fin N → ℝ),
+      (∫ inverseField in (0 : ℝ)..1,
+        finiteLifshitzKosevichSignal amplitude inverseField) = 0 := by
+  intro N amplitude
+  unfold finiteLifshitzKosevichSignal
+  rw [intervalIntegral.integral_finsetSum]
+  · apply Finset.sum_eq_zero
+    intro j hj
+    rw [intervalIntegral.integral_const_mul]
+    have h := intervalIntegral_cos_twoPi_intCast
+      (((j : ℕ) + 1 : ℕ) : ℤ)
+    have hne : (((j : ℕ) + 1 : ℕ) : ℤ) ≠ 0 := by omega
+    rw [if_neg hne] at h
+    simpa [mul_assoc] using congrArg (fun x : ℝ => amplitude j * x) h
+  · intro j hj
+    exact (continuous_const.mul (Real.continuous_cos.comp (by fun_prop))).intervalIntegrable _ _
 
 end GaloisForLFunctions.RHTower

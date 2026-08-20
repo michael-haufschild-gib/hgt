@@ -91,4 +91,17 @@ theorem completedLFunction_primitiveDivisor_zeroDensityBoxCount_le_range
       · intro n hn hnot
         exact completedLFunction_primitiveFamily_zeroDensityBoxCount_nonneg n σ H
 
+/-- Closed height envelope for the exact primitive-conductor aggregation in source equation (38).
+Its constant is constructed at the fixed ambient conductor `q`; it deliberately does not assert
+the conductor-uniform Chen--Gupta--Li exponent. -/
+theorem completedLFunction_primitiveDivisor_zeroDensityBoxCount_growth
+    (q : ℕ) : ∃ C : ℝ, 0 < C ∧ ∀ σ H : ℝ,
+      completedLFunctionPrimitiveDivisorZeroDensityBoxCount q σ H ≤
+        C * (5 + |σ| + |H|) * Real.log (6 + |σ| + |H|) := by
+  obtain ⟨C, hC, hbound⟩ :=
+    completedLFunction_primitiveRange_zeroDensityBoxCount_growth q
+  exact ⟨C, hC, fun σ H ↦
+    (completedLFunction_primitiveDivisor_zeroDensityBoxCount_le_range q σ H).trans
+      (hbound σ H)⟩
+
 end RHTower

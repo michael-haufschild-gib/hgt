@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GrothendieckKTheoryIntersectionApplications
-import GaloisForLFunctions.RHTower.RealCoronaKZeroMultiplicityFracture
+import GaloisForLFunctions.RHTower.RealCoronaFixedCrossedProductKZero
 
 /-!
 # Concrete completion model for finite-coordinate K-zero
@@ -86,5 +86,26 @@ theorem finiteCoordinateKZeroEquiv_realCoronaFixedKZeroClass
     finiteCoordinateKZeroEquiv ι (realCoronaFixedKZeroClass q) =
       effectiveFinsuppToIntegral ι (realCoronaKZeroSupportVector q) :=
   finiteCoordinateKZeroEquiv_of _
+
+/-! ## Two character blocks of crossed-product K-zero -/
+
+/-- Crossed-product K-zero is a pair of signed finite-support rank vectors. -/
+noncomputable def fixedReflectionCrossedProductKZeroEquiv (ι : Type*) :
+    FixedReflectionCrossedProductKZero ι ≃+
+      ((ι →₀ ℤ) × (ι →₀ ℤ)) :=
+  (finiteCoordinateKZeroEquiv ι).prodCongr (finiteCoordinateKZeroEquiv ι)
+
+/-- Fixed Real-corona class is diagonal in completed trivial/sign rank cycles. -/
+theorem fixedReflectionCrossedProductKZeroEquiv_realCoronaClass
+    {ι : Type*} (q : ι →₀ ℕ) :
+    fixedReflectionCrossedProductKZeroEquiv ι
+        (realCoronaFixedCrossedProductKZeroClass q) =
+      (effectiveFinsuppToIntegral ι (realCoronaKZeroSupportVector q),
+        effectiveFinsuppToIntegral ι (realCoronaKZeroSupportVector q)) := by
+  change
+    (finiteCoordinateKZeroEquiv ι (realCoronaFixedKZeroClass q),
+      finiteCoordinateKZeroEquiv ι (realCoronaFixedKZeroClass q)) = _
+  rw [finiteCoordinateKZeroEquiv_realCoronaFixedKZeroClass,
+    finiteCoordinateKZeroEquiv_realCoronaFixedKZeroClass]
 
 end GaloisForLFunctions.RHTower

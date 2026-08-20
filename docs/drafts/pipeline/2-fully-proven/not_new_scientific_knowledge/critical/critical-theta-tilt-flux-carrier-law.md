@@ -466,7 +466,56 @@ The closest current source-side formulation found in the July 2026 literature is
 Volterra/Schur program for the Riemann phase kernel.  It likewise leaves a quotient-to-original
 positivity lift and the final RH bridge open.  Nothing in that work supplies the sign in `(13)`.
 
-## Lean status
+## Lean formalization — IN PROGRESS
+
+Module `RHTower/ThetaTiltFluxCarrier`.  Sections 1--4 of this card are fully Lean-proved,
+unconditionally; every capstone below audits to `propext, Classical.choice, Quot.sound`.
+
+| Card | Lean |
+|---|---|
+| the source kernel `k` (even, positive, superexponentially decaying) | `RHTower.ThetaSource` |
+| `(1)` `X(w) = ∫ k(x) e^{wx} dx` | `RHTower.bilateralLaplace`, `RHTower.ThetaSource.integrable_mul_exp` |
+| `X` is entire with `X'(w) = ∫ x k(x) e^{wx} dx` | `RHTower.hasDerivAt_bilateralLaplace`, `RHTower.differentiable_bilateralLaplace`, `RHTower.deriv_bilateralLaplace` |
+| `X` is Schwarz real and even; `X'` is odd | `RHTower.bilateralLaplace_conj`, `RHTower.bilateralLaplaceDeriv_conj`, `RHTower.bilateralLaplace_neg`, `RHTower.bilateralLaplaceDeriv_neg` |
+| `(2)` the finite exponential packet | `RHTower.expPacketFn` |
+| `(3)` `W_a Φ`, `(4)` `J_Φ(a)` | `RHTower.tiltWindow`, `RHTower.tiltCorrelation` |
+| `(5)` `(W_a Φ)(s) = ∑_j c_j X(w_j + a) e^{-w_j s}` | `RHTower.tiltWindow_eq` |
+| `(8)` the closed Cauchy form of `J_Φ(a)` | `RHTower.tiltCorrelationForm`, `RHTower.tiltCorrelation_eq` |
+| `(6)` the source Bezoutian `B_X` | `RHTower.sourceBezoutian` |
+| `(7)` `J_Φ'(0) = ∑_{j,l} c_j conj(c_l) B_X(w_j,w_l)` | `RHTower.hasDerivAt_tiltCorrelationForm`, `RHTower.hasDerivAt_tiltCorrelation` |
+| `(9)`, `(17)` `W Φ`, `M Φ` and their exponential forms | `RHTower.sourceWindow`, `RHTower.sourceMoment`, `RHTower.tiltWindow_zero`, `RHTower.sourceMoment_eq_integral` |
+| `(10)` `J_Φ'(0) = 2 Re ⟨MΦ, WΦ⟩` | `RHTower.momentWindowPairing`, `RHTower.sourceBezoutianSum_eq_pairing` |
+| the half-line Cauchy Gram of finite exponential sums | `RHTower.expSum`, `RHTower.integral_expSum_mul_conj`, `RHTower.integral_norm_sq_eq_expSum` |
+| `(14)` `V_{±,c} = M ± c W` | `RHTower.contractionPlus`, `RHTower.contractionMinus` |
+| `(15)` `J_Φ'(0) = (2c)^{-1}(‖V_+Φ‖² − ‖V_-Φ‖²)` | `RHTower.contraction_energy_difference`, `RHTower.sourceBezoutianSum_eq_contraction_difference` |
+| `(18)` the Cayley multiplier `Θ_c = (L−c)/(L+c)` | `RHTower.contraction_multiplier` |
+| `(18a)`–`(18c)` the reflection--continuation law | `RHTower.sourceWindow_neg`, `RHTower.sourceMoment_neg`, `RHTower.contractionMinus_eq_reflected` |
+| `(12)` `X = ξ(1/2 + ·)` gives the centred Xi Bezoutian | `RHTower.sourceBezoutian_eq_xiCentBezoutian` |
+| `(13)` RH ⟺ nonnegative critical tilt flux | `RHTower.riemannHypothesis_iff_sourceBezoutian_nonneg`, `RHTower.riemannHypothesis_iff_tiltFlux_nonneg` |
+
+Supporting: `RHTower.sourceBezoutian_conj_symm`, `RHTower.sourceBezoutianSum_conj`,
+`RHTower.sourceBezoutianSum_im` (the flux is real), `RHTower.dotProduct_mulVec_bezoutian`.
+
+### Remaining: section 5, equations `(19)`–`(26)`
+
+The finite-prime Euler resolvent split.  Programme:
+
+- **S1.**  A packet class `b` with `‖b y‖ ≤ C_M exp(-(M y))` for every `M` (equivalently: bounded,
+  and superexponentially decaying at `+∞`), plus the one-sided lower-tail bound
+  `‖b y‖ ≤ C exp(y/2)` needed to move the linear weight `y` across the shift sums.
+- **S2.**  The `N`-smooth monoid `S_N` and the resolvent `R_N(σ) f (x) = ∑'_{n ∈ S_N} n^{-σ} f(x + log n)`,
+  with summability from S1 (`n^{-σ}‖f(x+log n)‖ ≤ C_M e^{-Mx} n^{-σ-M}`).
+- **S3.**  `(21)` `e^{ax} τ_{log n} b = n^{-a} τ_{log n} b_a`, a pointwise identity.
+- **S4.**  `(22)` `e^{ax} k_N = R_N(1/2+a) b_a`, termwise from S3.
+- **S5.**  `(23)` the von Mangoldt shift generator `Q_N(σ)` and `(24)`
+  `x k_N = R_N(1/2)(y ↦ y b(y)) − Q_N(1/2) k_N`, which is `log n = ∑_{d ∣ n} Λ(d)` transported
+  through the shift sums (Fubini on the smooth double sum).
+- **S6.**  `(25)`–`(26)` the exact flux decomposition, by applying `(10)` to the source `k_N`.
+
+`(28)`–`(29)` (section 6) are imports of the arbitrary-scale Gamma card, not theorems of this card.
+The three open gates below are the Riemann hypothesis and are not claimed.
+
+## Lean status (historical)
 
 The repository already formalizes the decisive downstream implication
 

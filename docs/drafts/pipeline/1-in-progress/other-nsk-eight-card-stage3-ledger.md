@@ -185,3 +185,65 @@ pushforwards `p_(S,T)`, the compatible-pair space `Comp_d`, the simultaneous fin
 lemma, and the isomorphism `Q_d/(Q_d ∩ Mer_DA) ≅ Comp_d`.
 Remaining for card 1: the matroid statement over the all-depth class (the coset chain is already
 closed).
+
+## Landed 2026-08-20 (fifth stretch) — the simultaneous finite-divisor lifting lemma
+
+`GaloisForLFunctions.HTGeometry.AllDepthSimultaneousLift` (wired, built, axiom-clean) proves the
+second `[PROVED HERE]` lemma of `all-depth-pair-face-signature-completeness`, abstractly on any
+abelian group:
+
+```text
+orbitSum w B p = ∑ᶠ n : ℤ, B (p + n • w)          the orbit-sum pushforward
+orbitSum_invariant, orbitSum_finite_classes, orbitSum_add, orbitSum_sub
+orbitSum_comm                       orbit sums in two free directions commute
+finite_line_support_of_finite_classes
+                                    a divisor with finitely many classes along one direction meets
+                                    every transverse line finitely
+orbitSum_step_eq_zero, finite_support_telescopeCube
+orbitSum_telescopeCube_eq_zero      a full difference cube has no orbit sum in its own directions
+transversalLift, exists_support_transversalLift
+orbitSum_transversalLift            the orbit sum of the canonical transversal lift is the original
+exists_simultaneous_lift            **the lemma**: divisors D_i, each invariant along w_i and
+                                    finitely supported modulo it, with pairwise agreeing orbit sums,
+                                    are the orbit-sum pushforwards of one finitely supported divisor
+```
+
+The proof is the card's: lift all but the last component by induction, subtract, note the error has
+vanishing orbit sums in every earlier direction, telescope it on the quotient by the last direction
+(`exists_telescopeCube`), and lift the telescoping datum through the canonical transversal — the
+lift disturbs no earlier component because a full difference cube has vanishing orbit sums in its
+own directions.
+
+This is the ideal-theoretic content the card phrases as `⋂_i ker q_i = (∏_i x_i)A_d` plus exactness
+at the middle of `A_d → ⊕_i A_d/(x_i) → ⊕_(i<j) A_d/(x_i,x_j)`, proved directly on divisors rather
+than through the Laurent-ring UFD.
+
+Still open for the exact-image theorem: bottom-charge surjectivity (`ρ_d(B·Ψ_(d−1)) = B`), which
+needs the multiple-elliptic-gamma hierarchy's difference law, and the packaging of the signature as
+an element of `A_S = ℂ[δ][ℂ/H_S]`.
+
+## Landed 2026-08-20 (sixth stretch) — the universal carrier is in the class
+
+`GaloisForLFunctions.HTGeometry.AllDepthUniversalCarrier` (wired, built, axiom-clean) identifies the
+card's `Ψ_(d−1)` inside the Lean class:
+
+```text
+diffCubeMero_face                 the difference cube of a face coordinate deletes exactly its own
+                                  directions:  □_t (Face J) = Face (J ∪ t)   for t disjoint from J
+universalCarrierMero τ hτ s       = Face (univ \ s):  the multiple elliptic gamma logarithmic
+                                  derivative whose parameters are exactly the directions of s
+diffCubeMero_universalCarrier     □_s Ψ_s = -2πi, the terminal constant
+addTranslationMeroEquiv_one_universalCarrier
+periodicOneGerm_universalCarrier
+mixedConstGermSet_universalCarrier        **Ψ_s ∈ Q_s**
+bottomWitnessMero_universalCarrier        ρ-witness of Ψ_s = Face (univ \ {k})
+exists_bottomWitnessMero_universalCarrier_theta
+    = a translated theta logarithmic derivative plus a constant, so the bottom charge of Ψ_s is the
+    unit divisor of the surviving direction
+```
+
+This is the card's "`ρ_d(B Ψ_(d−1)) = B`" carrier, now a Lean object with its two class properties
+and its bottom identification proved.  What still separates it from bottom-charge surjectivity is
+the jet layer: realizing an arbitrary finite divisor needs the finite combination
+`∑_(j,q) c_(j,q) δ^j T_q Ψ_s`, i.e. Laurent data for jets of translates of the carrier, transported
+from the corpus's `jetAtom` laws through the theta identification above.

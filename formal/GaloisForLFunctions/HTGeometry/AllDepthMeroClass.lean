@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.MeromorphicRealizationAlgebra
 import GaloisForLFunctions.HTGeometry.AllDepthMixedConstraintClass
 import GaloisForLFunctions.HTGeometry.MeromorphicFractionRealization
 import GaloisForLFunctions.HTGeometry.EllipticGammaRationalBaseMatroid
@@ -142,39 +143,6 @@ section Transport
 
 open Filter
 
-/-- **Realization commutes with translation.** -/
-theorem realizesMero_translate (c : ℂ) {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ}
-    (hx : RealizesMero x f) :
-    RealizesMero (addTranslationMeroEquiv c x) (fun z => f (z + c)) := by
-  classical
-  obtain ⟨a, b, A, B, hb0, hA, hB, hAa, hBb, hxab, hfAB⟩ := hx
-  have htr : Filter.Tendsto (addTranslation c) (𝓟 (Set.univ : Set ℂ))
-      (𝓟 (Set.univ : Set ℂ)) :=
-    Filter.tendsto_principal_principal.mpr (Set.mapsTo_univ _ _)
-  have hcoe : ∀ (u : analyticSubring (Set.univ : Set ℂ)) (U : ℂ → ℂ),
-      Germ.coeRingHom (𝓟 (Set.univ : Set ℂ)) U = (u : Germ (𝓟 Set.univ) ℂ) →
-      Germ.coeRingHom (𝓟 (Set.univ : Set ℂ)) (fun z => U (z + c)) =
-        ((addTranslationAnalyticEquiv c u : analyticSubring (Set.univ : Set ℂ)) :
-          Germ (𝓟 Set.univ) ℂ) := by
-    intro u U hU
-    change _ = (u : Germ (𝓟 Set.univ) ℂ).compTendsto (addTranslation c) htr
-    rw [← hU]
-    rfl
-  have hanal : ∀ U : ℂ → ℂ, AnalyticOnNhd ℂ U (Set.univ : Set ℂ) →
-      AnalyticOnNhd ℂ (fun z => U (z + c)) (Set.univ : Set ℂ) := by
-    intro U hU
-    have h := hU.comp (analyticOnNhd_addTranslation c (Set.univ : Set ℂ))
-      (Set.mapsTo_univ _ _)
-    exact h
-  refine ⟨addTranslationAnalyticEquiv c a, addTranslationAnalyticEquiv c b,
-    (fun z => A (z + c)), (fun z => B (z + c)), ?_, hanal A hA, hanal B hB,
-    hcoe a A hAa, hcoe b B hBb, ?_, fun z hz => hfAB (z + c) hz⟩
-  · intro h
-    exact hb0 ((addTranslationAnalyticEquiv c).injective (by simpa using h))
-  · rw [hxab, map_div₀, addTranslationMeroEquiv_algebraMap,
-      addTranslationMeroEquiv_algebraMap]
-
-/-- **Two realizations of the same germ agree punctured-locally everywhere.** -/
 theorem realizesMero_congr {x : meroField (Set.univ : Set ℂ)} {f g : ℂ → ℂ}
     (hf : RealizesMero x f) (hg : RealizesMero x g) (z : ℂ) :
     ∀ᶠ w in 𝓝[≠] z, f w = g w := by
@@ -222,7 +190,7 @@ theorem periodicOneGerm_of_realizesMero {x : meroField (Set.univ : Set ℂ)} {f 
     PeriodicOneGerm f := by
   intro z
   have hshift : RealizesMero x (fun w => f (w + 1)) := by
-    have h := realizesMero_translate 1 hf
+    have h := HTGeometry.realizesMero_translate hf 1
     rwa [h1] at h
   exact realizesMero_congr hshift hf z
 
@@ -260,7 +228,7 @@ theorem realizesMero_diffCubeMero (τ : ι → ℂ) (s : Finset ι)
         (fun z => ((-1 : ℂ) ^ (s.card - E.card)) * f (z + ∑ i ∈ E, τ i)) := by
     intro E _
     have h := realizesMero_const_mul ((-1 : ℂ) ^ (s.card - E.card))
-      (realizesMero_translate (∑ i ∈ E, τ i) hx)
+      (HTGeometry.realizesMero_translate hx (∑ i ∈ E, τ i))
     have hsmul : ((-1 : ℂ) ^ (s.card - E.card)) •
         addTranslationMeroEquiv (∑ i ∈ E, τ i) x =
         algebraMap (analyticSubring (Set.univ : Set ℂ)) (meroField Set.univ)

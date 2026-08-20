@@ -591,3 +591,33 @@ Two ingredients the card's prose leaves implicit and that the formalization had 
 Still open for stage 3: the **exact-image** half — the group algebra `A_S`, the pushforwards
 `p_(S,T)`, `Comp_d`, the simultaneous finite-divisor lifting lemma, and
 `Q_d/(Q_d ∩ Mer_DA) ≅ Comp_d`.  Injectivity of that map is exactly the theorem above.
+
+## Lean progress 2026-08-20 (second entry) — the lifting lemma and the universal carrier
+
+Two further pieces of the exact-image half are unconditional Lean, both axiom-clean.
+
+**The simultaneous finite-divisor lifting lemma** is
+`HTGeometry.AllDepthSimultaneousLift.exists_simultaneous_lift`, stated on an arbitrary abelian
+group: divisors `D_i`, each invariant along its own direction `w_i` and finitely supported modulo
+it, whose pairwise orbit sums agree, are the orbit-sum pushforwards `q_i(B)` of a single finitely
+supported `B`.  The proof is the card's induction — lift all but the last component, subtract, note
+the error has vanishing orbit sums in every earlier direction, telescope it on the quotient by the
+last direction, and lift the telescoping datum through the canonical transversal, which disturbs no
+earlier component because a full difference cube has vanishing orbit sums in its own directions
+(`orbitSum_telescopeCube_eq_zero`).  Supporting API: `orbitSum`, `orbitSum_comm` (orbit sums in two
+free directions commute), `finite_line_support_of_finite_classes`, `transversalLift`,
+`orbitSum_transversalLift`.
+
+**The universal carrier** is `HTGeometry.AllDepthUniversalCarrier.universalCarrierMero τ hτ s`, the
+logarithmic derivative of the multiple elliptic gamma whose parameters are exactly the directions of
+`s`.  `diffCubeMero_face` proves the iterated coface law `□_t (Face J) = Face (J ∪ t)`; from it,
+`diffCubeMero_universalCarrier` gives `□_s Ψ_s = -2πi`, so
+`mixedConstGermSet_universalCarrier` and `periodicOneGerm_universalCarrier` place `Ψ_s` in `Q_s`,
+and `exists_bottomWitnessMero_universalCarrier_theta` identifies its bottom witness with a
+translated theta logarithmic derivative — i.e. `ρ_k(Ψ_s)` is the unit divisor, which is the card's
+`R_1(λ_d) = [0]`.
+
+What remains for the exact-image theorem: the jet layer realizing an arbitrary bottom charge as
+`ρ_k(∑_(j,q) c_(j,q) δ^j T_q Ψ_s)` (Laurent data for jets of translates of the carrier, transported
+from the corpus's `jetAtom` laws through the theta identification), and the packaging of the
+signature as an element of `A_S = ℂ[δ][ℂ/H_S]` with the pushforwards `p_(S,T)` and `Comp_d`.

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.BiprojectiveChowRing
 import GaloisForLFunctions.HTGeometry.MilnorWittCycles
 import Mathlib.Algebra.BigOperators.Finsupp.Basic
+import Mathlib.Data.Finsupp.Multiset
 import Mathlib.Data.Finsupp.ToDFinsupp
 import Mathlib.GroupTheory.MonoidLocalization.GrothendieckGroup
 
@@ -14,6 +15,8 @@ followed by the complete intersection-theory and GRR calculation for line bundle
 namespace GaloisForLFunctions.HTGeometry
 
 open Algebra
+
+attribute [local instance] Ideal.Quotient.field Classical.propDecidable
 
 /-! ## Grothendieck completion of effective bidegrees -/
 
@@ -84,6 +87,54 @@ noncomputable def p1xp1DivisorK0Equiv : P1xP1DivisorK0 ≃+ P1xP1Bidegree where
   right_inv := p1xp1DivisorK0Class_rightInverse
   map_add' := map_add p1xp1DivisorK0Class
 
+/-! ## One-generator completion used by monoid Hopf envelopes -/
+
+/-- Grothendieck group of natural multiplicities. -/
+abbrev NaturalMultiplicityK0 := GrothendieckAddGroup ℕ
+
+/-- Signed multiplicity of an abstract natural-multiplicity K-zero class. -/
+noncomputable def naturalMultiplicityK0Class : NaturalMultiplicityK0 →+ ℤ :=
+  GrothendieckAddGroup.lift (Nat.castAddMonoidHom ℤ)
+
+theorem naturalMultiplicityK0Class_of (n : ℕ) :
+    naturalMultiplicityK0Class (GrothendieckAddGroup.of n) = (n : ℤ) := by
+  change ((GrothendieckAddGroup.lift (M := ℕ) (G := ℤ)).symm
+    (GrothendieckAddGroup.lift (Nat.castAddMonoidHom ℤ))) n = (n : ℤ)
+  rw [Equiv.symm_apply_apply]
+  rfl
+
+/-- Signed multiplicity represented inside abstract completion. -/
+def integerToNaturalMultiplicityK0 : ℤ →+ NaturalMultiplicityK0 :=
+  zmultiplesHom _ (GrothendieckAddGroup.of 1)
+
+theorem naturalMultiplicityK0Class_rightInverse (n : ℤ) :
+    naturalMultiplicityK0Class (integerToNaturalMultiplicityK0 n) = n := by
+  simp [integerToNaturalMultiplicityK0]
+  change n • naturalMultiplicityK0Class (GrothendieckAddGroup.of 1) = n
+  rw [naturalMultiplicityK0Class_of]
+  simp
+
+theorem naturalMultiplicityK0Class_leftInverse (x : NaturalMultiplicityK0) :
+    integerToNaturalMultiplicityK0 (naturalMultiplicityK0Class x) = x := by
+  have hhom : integerToNaturalMultiplicityK0.comp naturalMultiplicityK0Class =
+      AddMonoidHom.id NaturalMultiplicityK0 := by
+    apply (GrothendieckAddGroup.lift (M := ℕ) (G := NaturalMultiplicityK0)).symm.injective
+    apply AddMonoidHom.ext_nat
+    change integerToNaturalMultiplicityK0
+      (naturalMultiplicityK0Class (GrothendieckAddGroup.of 1)) =
+        GrothendieckAddGroup.of 1
+    rw [naturalMultiplicityK0Class_of]
+    simp [integerToNaturalMultiplicityK0]
+  exact DFunLike.congr_fun hhom x
+
+/-- Canonical completion `K₀(ℕ) ≃ ℤ`, underlying Laurent/Hopf exponent passage. -/
+noncomputable def naturalMultiplicityK0EquivInt : NaturalMultiplicityK0 ≃+ ℤ where
+  toFun := naturalMultiplicityK0Class
+  invFun := integerToNaturalMultiplicityK0
+  left_inv := naturalMultiplicityK0Class_leftInverse
+  right_inv := naturalMultiplicityK0Class_rightInverse
+  map_add' := map_add naturalMultiplicityK0Class
+
 /-! ## Divisor classes and intersection theory -/
 
 /-- Chow class of divisor of integral bidegree `(a,b)` on `P¹ × P¹`. -/
@@ -95,6 +146,26 @@ theorem p1xp1_chowH₁_sq : chowH₁ 1 1 ^ 2 = 0 :=
 
 theorem p1xp1_chowH₂_sq : chowH₂ 1 1 ^ 2 = 0 :=
   chowH₂_pow_eq_zero (by omega)
+
+/-- Top intersection of `m+n` equal divisors of bidegree `(a,b)` on `P^m × P^n`. -/
+theorem chow_bidegree_divisor_pow (m n : ℕ) (a b : ℤ) :
+    ((a : ChowProd m n) * chowH₁ m n + (b : ChowProd m n) * chowH₂ m n) ^ (m + n) =
+      (((Nat.choose (m + n) m : ℤ) * a ^ m * b ^ n : ℤ) : ChowProd m n) *
+        chowTop m n := by
+  rw [add_pow, Finset.sum_eq_single m]
+  · rw [Nat.add_sub_cancel_left]
+    simp [mul_pow, chowTop]
+    ring
+  · intro k hk hkm
+    rcases lt_or_gt_of_ne hkm with h | h
+    · rw [Finset.mem_range] at hk
+      rw [mul_pow, mul_pow,
+        chowH₂_pow_eq_zero (m := m) (n := n) (k := m + n - k) (by omega)]
+      simp
+    · rw [mul_pow, chowH₁_pow_eq_zero (m := m) (n := n) (k := k) h]
+      simp
+  · intro hm
+    exact absurd (Finset.mem_range.2 (by omega)) hm
 
 /-- Intersection pairing on `P¹ × P¹`: `(a,b)·(c,d) = ad + bc`. -/
 theorem p1xp1_divisor_intersection (a b c d : ℤ) :
@@ -318,6 +389,105 @@ def integralFinsuppEvaluation {α : Type*} (i : α) : (α →₀ ℤ) →+ ℤ w
   map_zero' := rfl
   map_add' _ _ := rfl
 
+/-! ## Root and pole multisets as effective divisors -/
+
+/-- Map on Grothendieck groups induced by an additive monoid homomorphism. -/
+noncomputable def grothendieckAddGroupMap {M N : Type*}
+    [AddCommMonoid M] [AddCommMonoid N] (f : M →+ N) :
+    GrothendieckAddGroup M →+ GrothendieckAddGroup N :=
+  GrothendieckAddGroup.lift (GrothendieckAddGroup.of.comp f)
+
+theorem grothendieckAddGroupMap_of {M N : Type*}
+    [AddCommMonoid M] [AddCommMonoid N] (f : M →+ N) (x : M) :
+    grothendieckAddGroupMap f (GrothendieckAddGroup.of x) =
+      GrothendieckAddGroup.of (f x) := by
+  change ((GrothendieckAddGroup.lift
+    (M := M) (G := GrothendieckAddGroup N)).symm
+      (GrothendieckAddGroup.lift (GrothendieckAddGroup.of.comp f))) x = _
+  rw [Equiv.symm_apply_apply]
+  rfl
+
+/-- Additively equivalent monoids have equivalent Grothendieck groups. -/
+noncomputable def grothendieckAddGroupCongr {M N : Type*}
+    [AddCommMonoid M] [AddCommMonoid N] (e : M ≃+ N) :
+    GrothendieckAddGroup M ≃+ GrothendieckAddGroup N where
+  toFun := grothendieckAddGroupMap e.toAddMonoidHom
+  invFun := grothendieckAddGroupMap e.symm.toAddMonoidHom
+  left_inv x := by
+    have hhom : (grothendieckAddGroupMap e.symm.toAddMonoidHom).comp
+        (grothendieckAddGroupMap e.toAddMonoidHom) =
+        AddMonoidHom.id (GrothendieckAddGroup M) := by
+      apply (GrothendieckAddGroup.lift
+        (M := M) (G := GrothendieckAddGroup M)).symm.injective
+      apply AddMonoidHom.ext
+      intro m
+      change grothendieckAddGroupMap e.symm.toAddMonoidHom
+          (grothendieckAddGroupMap e.toAddMonoidHom (GrothendieckAddGroup.of m)) =
+        GrothendieckAddGroup.of m
+      rw [grothendieckAddGroupMap_of, grothendieckAddGroupMap_of]
+      congr 1
+      exact e.symm_apply_apply m
+    exact DFunLike.congr_fun hhom x
+  right_inv y := by
+    have hhom : (grothendieckAddGroupMap e.toAddMonoidHom).comp
+        (grothendieckAddGroupMap e.symm.toAddMonoidHom) =
+        AddMonoidHom.id (GrothendieckAddGroup N) := by
+      apply (GrothendieckAddGroup.lift
+        (M := N) (G := GrothendieckAddGroup N)).symm.injective
+      apply AddMonoidHom.ext
+      intro n
+      change grothendieckAddGroupMap e.toAddMonoidHom
+          (grothendieckAddGroupMap e.symm.toAddMonoidHom (GrothendieckAddGroup.of n)) =
+        GrothendieckAddGroup.of n
+      rw [grothendieckAddGroupMap_of, grothendieckAddGroupMap_of]
+      congr 1
+      exact e.apply_symm_apply n
+    exact DFunLike.congr_fun hhom y
+  map_add' := map_add (grothendieckAddGroupMap e.toAddMonoidHom)
+
+/-- Grothendieck group of finite root or pole multisets. -/
+abbrev RootDivisorK0 (α : Type*) := GrothendieckAddGroup (Multiset α)
+
+/-- Multiplicity function of a root or pole multiset. -/
+noncomputable def multisetMultiplicity {α : Type*} (s : Multiset α) : α →₀ ℕ := by
+  classical
+  exact Multiset.toFinsupp s
+
+/-- Completion of root multisets is free integral divisor group on roots. -/
+noncomputable def rootDivisorK0Equiv (α : Type*) : RootDivisorK0 α ≃+ (α →₀ ℤ) := by
+  classical
+  exact (grothendieckAddGroupCongr Multiset.toFinsupp).trans
+    (effectiveFinsuppK0Equiv α)
+
+/-- Effective root multiset maps to its integer multiplicity divisor. -/
+theorem rootDivisorK0Equiv_of {α : Type*} (s : Multiset α) :
+    rootDivisorK0Equiv α (GrothendieckAddGroup.of s) =
+      effectiveFinsuppToIntegral α (multisetMultiplicity s) := by
+  classical
+  change effectiveFinsuppK0Class α
+    (grothendieckAddGroupMap Multiset.toFinsupp.toAddMonoidHom
+      (GrothendieckAddGroup.of s)) = _
+  rw [grothendieckAddGroupMap_of, effectiveFinsuppK0Class_of]
+  rfl
+
+/-- Virtual root divisor is difference of multiplicity functions. -/
+theorem rootDivisorK0Equiv_difference {α : Type*} (s t : Multiset α) :
+    rootDivisorK0Equiv α (GrothendieckAddGroup.of s - GrothendieckAddGroup.of t) =
+      effectiveFinsuppToIntegral α (multisetMultiplicity s) -
+        effectiveFinsuppToIntegral α (multisetMultiplicity t) := by
+  rw [map_sub, rootDivisorK0Equiv_of, rootDivisorK0Equiv_of]
+
+/-- One root becomes corresponding unit divisor. -/
+theorem rootDivisorK0Equiv_of_singleton {α : Type*} (z : α) :
+    rootDivisorK0Equiv α (GrothendieckAddGroup.of ({z} : Multiset α)) =
+      Finsupp.single z 1 := by
+  classical
+  rw [rootDivisorK0Equiv_of]
+  change effectiveFinsuppToIntegral α (Multiset.toFinsupp ({z} : Multiset α)) = _
+  rw [Multiset.toFinsupp_singleton]
+  ext w
+  simp [effectiveFinsuppToIntegral]
+
 /-! ## Ordinary codimension-one cycles -/
 
 /-- Effective codimension-one cycles on `Spec S`. -/
@@ -344,5 +514,24 @@ theorem effectiveCyclesK0Equiv_of_single {S : Type*} [CommRing S]
       (GrothendieckAddGroup.of (Finsupp.single p n))) = cycleSingle p n
   rw [effectiveFinsuppK0Class_of]
   simp [effectiveFinsuppToIntegral, cycleSingle, Finsupp.toDFinsupp_single]
+
+/-- A signed point cycle is integer multiple of one completed effective generator. -/
+theorem effectiveCyclesK0Equiv_symm_cycleSingle {S : Type*} [CommRing S]
+    (p : ClosedPoint S) (n : ℤ) :
+    (effectiveCyclesK0Equiv S).symm (cycleSingle p n) =
+      n • GrothendieckAddGroup.of (Finsupp.single p 1) := by
+  classical
+  apply (effectiveCyclesK0Equiv S).injective
+  rw [AddEquiv.apply_symm_apply, map_zsmul, effectiveCyclesK0Equiv_of_single]
+  change cycleSingle p n = n • cycleSingle p 1
+  rw [cycleSingle, cycleSingle, ← DFinsupp.single_smul]
+  simp
+
+/-- Milnor--Witt Gysin class forgets to signed multiple of universal point generator. -/
+theorem effectiveCyclesK0Equiv_symm_mwCyclesRank_mwGysin
+    {S : Type*} [CommRing S] (p : ClosedPoint S) (x : MWPointGroup p) :
+    (effectiveCyclesK0Equiv S).symm (mwCyclesRank S (mwGysin p x)) =
+      mwTwistRank x • GrothendieckAddGroup.of (Finsupp.single p 1) := by
+  rw [mwCyclesRank_mwGysin, effectiveCyclesK0Equiv_symm_cycleSingle]
 
 end GaloisForLFunctions.HTGeometry

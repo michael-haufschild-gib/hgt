@@ -29,7 +29,7 @@ Riemann hypothesis.
 -/
 
 open Complex MeasureTheory Set Filter Topology
-open scoped ComplexConjugate
+open scoped ComplexConjugate ComplexOrder
 
 namespace RHTower
 
@@ -738,7 +738,7 @@ theorem contraction_energy_difference (S : ThetaSource) {d : ℕ} (c w : Fin d �
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [← Finset.sum_sub_distrib, ← Finset.sum_add_distrib, Finset.mul_sum]
   refine Finset.sum_congr rfl fun l _ => ?_
-  rw [map_mul, map_mul, map_add, map_sub, map_mul, map_mul, Complex.conj_ofReal]
+  simp only [map_mul, map_add, map_sub, Complex.conj_ofReal]
   ring
 
 /-- **Equation (15).**  The critical flux is the exact difference of the two contraction
@@ -752,6 +752,138 @@ theorem sourceBezoutianSum_eq_contraction_difference (S : ThetaSource) {d : ℕ}
   have htne : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt ht)
   rw [contraction_energy_difference S c w hw t, sourceBezoutianSum_eq_pairing S c w hw]
   field_simp
+
+/-! ## The spectral transfer multiplier and the reflection law -/
+
+/-- **Equation (18).**  On a single exponential mode the contraction coordinate acts by the Cayley
+multiplier of the logarithmic derivative `L = X'/X`. -/
+theorem contraction_multiplier (S : ThetaSource) {w : ℂ} (hX : bilateralLaplace S w ≠ 0) (t : ℝ) :
+    (bilateralLaplaceDeriv S w - (t : ℂ) * bilateralLaplace S w)
+        * (bilateralLaplaceDeriv S w / bilateralLaplace S w + (t : ℂ))
+      = (bilateralLaplaceDeriv S w / bilateralLaplace S w - (t : ℂ))
+        * (bilateralLaplaceDeriv S w + (t : ℂ) * bilateralLaplace S w) := by
+  field_simp
+
+/-- **Equation (18c).**  The contraction coordinate is a cross-boundary reflection: `V_{-,t} Φ` on
+the positive half line is minus the reflected continuation of `V_{+,t} R Φ`. -/
+theorem contractionMinus_eq_reflected (S : ThetaSource) {d : ℕ} (c w : Fin d → ℂ) (t s : ℝ) :
+    contractionMinus S c w t s = -(contractionPlus S c (fun j => -(w j)) t (-s)) := by
+  have hM := sourceMoment_neg S c w (-s)
+  have hW := sourceWindow_neg S c w (-s)
+  rw [neg_neg] at hM hW
+  rw [contractionMinus, contractionPlus, hM, hW]
+  ring
+
+/-! ## The Riemann specialization -/
+
+theorem sourceBezoutian_conj_symm (S : ThetaSource) (w v : ℂ) :
+    conj (sourceBezoutian S w v) = sourceBezoutian S v w := by
+  rw [sourceBezoutian, sourceBezoutian, map_div₀, map_add, map_mul, map_mul, Complex.conj_conj,
+    Complex.conj_conj, map_add, Complex.conj_conj]
+  ring
+
+theorem sourceBezoutianSum_conj (S : ThetaSource) {d : ℕ} (c w : Fin d → ℂ) :
+    conj (∑ j, ∑ l, c j * conj (c l) * sourceBezoutian S (w j) (w l))
+      = ∑ j, ∑ l, c j * conj (c l) * sourceBezoutian S (w j) (w l) := by
+  rw [map_sum]
+  have hstep : ∀ j : Fin d, conj (∑ l, c j * conj (c l) * sourceBezoutian S (w j) (w l))
+      = ∑ l, conj (c j) * c l * sourceBezoutian S (w l) (w j) := by
+    intro j
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    rw [map_mul, map_mul, Complex.conj_conj, sourceBezoutian_conj_symm]
+  rw [Finset.sum_congr rfl (fun j _ => hstep j), Finset.sum_comm]
+  refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun l _ => ?_
+  ring
+
+theorem sourceBezoutianSum_im (S : ThetaSource) {d : ℕ} (c w : Fin d → ℂ) :
+    (∑ j, ∑ l, c j * conj (c l) * sourceBezoutian S (w j) (w l)).im = 0 := by
+  have h := sourceBezoutianSum_conj S c w
+  have him := congrArg Complex.im h
+  rw [Complex.conj_im] at him
+  linarith
+
+/-- **Equation (12).**  For the completed Riemann theta source the source Bezoutian is the corpus's
+centred Xi Bezoutian. -/
+theorem sourceBezoutian_eq_xiCentBezoutian (S : ThetaSource)
+    (hX : ∀ w, bilateralLaplace S w = xiCent w) {w v : ℂ} (hne : w + conj v ≠ 0) :
+    sourceBezoutian S w v = xiCentBezoutian w (conj v) := by
+  have hfun : bilateralLaplace S = xiCent := funext hX
+  have hD : ∀ z, bilateralLaplaceDeriv S z = deriv xiCent z := by
+    intro z
+    rw [← deriv_bilateralLaplace S z, hfun]
+  rw [sourceBezoutian, hX, hX, hD, hD, xiCentBezoutian_eq_div hne, xiCentBezoutianNumerator,
+    ← xiCent_conj, ← deriv_xiCent_conj]
+
+theorem dotProduct_mulVec_bezoutian {d : ℕ} (B : ℂ → ℂ → ℂ) (x w : Fin d → ℂ) :
+    star x ⬝ᵥ (Matrix.of fun j k : Fin d => B (w j) (w k)).mulVec x
+      = ∑ j, ∑ l, conj (x j) * x l * B (w j) (w l) := by
+  rw [GaloisForLFunctions.HTGeometry.dotProduct_mulVec_kernelMatrix B x w]
+  simp only [GaloisForLFunctions.HTGeometry.kernelEnergy]
+
+/-- **Equation (13).**  For the completed Riemann theta source, nonnegativity of the critical tilt
+flux on every finite Euler packet is exactly the Riemann hypothesis. -/
+theorem riemannHypothesis_iff_sourceBezoutian_nonneg (S : ThetaSource)
+    (hX : ∀ w, bilateralLaplace S w = xiCent w) :
+    RiemannHypothesis ↔
+      ∀ (d : ℕ) (c w : Fin d → ℂ), (∀ j, 1 / 2 < (w j).re) →
+        0 ≤ (∑ j, ∑ l, c j * conj (c l) * sourceBezoutian S (w j) (w l)).re := by
+  have hbez : ∀ {w v : ℂ}, 1 / 2 < w.re → 1 / 2 < v.re →
+      sourceBezoutian S w v = xiCentBezoutian w (conj v) := by
+    intro w v hw hv
+    refine sourceBezoutian_eq_xiCentBezoutian S hX ?_
+    intro h
+    have := congrArg Complex.re h
+    rw [re_add_conj, Complex.zero_re] at this
+    linarith
+  rw [riemannHypothesis_iff_posSemidef_xiCentBezoutian]
+  constructor
+  · intro hPSD d c w hw
+    have hmat := hPSD d (fun j => (⟨w j, hw j⟩ : {W : ℂ // 1 / 2 < W.re}))
+    have hval := hmat.dotProduct_mulVec_nonneg (fun j => conj (c j))
+    rw [dotProduct_mulVec_bezoutian (fun u v => xiCentBezoutian u (conj v))
+      (fun j => conj (c j)) w] at hval
+    simp only [Complex.conj_conj] at hval
+    have hcongr : (∑ j, ∑ l, c j * conj (c l) * xiCentBezoutian (w j) (conj (w l)))
+        = ∑ j, ∑ l, c j * conj (c l) * sourceBezoutian S (w j) (w l) :=
+      Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun l _ => by
+        rw [hbez (hw j) (hw l)]
+    rw [hcongr] at hval
+    exact (Complex.le_def.mp hval).1
+  · intro hflux n w
+    refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg ?_ ?_
+    · ext j k
+      simp only [Matrix.conjTranspose_apply, Matrix.of_apply, RCLike.star_def]
+      rw [← hbez (w j).2 (w k).2, ← hbez (w k).2 (w j).2, sourceBezoutian_conj_symm]
+    · intro x
+      rw [dotProduct_mulVec_bezoutian (fun u v => xiCentBezoutian u (conj v))
+        x (fun j => (w j : ℂ))]
+      have hcongr : (∑ j, ∑ l, conj (x j) * x l * xiCentBezoutian ((w j : ℂ)) (conj ((w l : ℂ))))
+          = ∑ j, ∑ l, (fun j => conj (x j)) j * conj ((fun j => conj (x j)) l)
+              * sourceBezoutian S ((w j : ℂ)) ((w l : ℂ)) := by
+        refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun l _ => ?_
+        rw [hbez (w j).2 (w l).2, Complex.conj_conj]
+      rw [hcongr]
+      refine Complex.le_def.mpr ⟨?_, ?_⟩
+      · exact hflux n (fun j => conj (x j)) (fun j => (w j : ℂ)) (fun j => (w j).2)
+      · exact (sourceBezoutianSum_im S (fun j => conj (x j)) (fun j => (w j : ℂ))).symm
+
+/-- **Equation (13)** in flux form: the tilt derivative of the correlation energy. -/
+theorem riemannHypothesis_iff_tiltFlux_nonneg (S : ThetaSource)
+    (hX : ∀ w, bilateralLaplace S w = xiCent w) :
+    RiemannHypothesis ↔
+      ∀ (d : ℕ) (c w : Fin d → ℂ), (∀ j, 1 / 2 < (w j).re) → ∀ D : ℝ,
+        HasDerivAt (tiltCorrelation S c w) D 0 → 0 ≤ D := by
+  rw [riemannHypothesis_iff_sourceBezoutian_nonneg S hX]
+  constructor
+  · intro h d c w hw D hD
+    have hw' : ∀ j, 0 < (w j).re := fun j => lt_trans (by norm_num) (hw j)
+    have hval := hasDerivAt_tiltCorrelation S c w hw'
+    rw [hD.unique hval]
+    exact h d c w hw
+  · intro h d c w hw
+    have hw' : ∀ j, 0 < (w j).re := fun j => lt_trans (by norm_num) (hw j)
+    exact h d c w hw _ (hasDerivAt_tiltCorrelation S c w hw')
 
 end
 

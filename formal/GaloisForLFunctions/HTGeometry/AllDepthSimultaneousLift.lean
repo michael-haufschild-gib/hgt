@@ -225,10 +225,11 @@ theorem mk_add_zsmul (w : A) (p : A) (n : ℤ) :
   rw [show p + n • w - p = n • w from by abel]
   exact AddSubgroup.mem_zmultiples_iff.mpr ⟨n, rfl⟩
 
-theorem support_transversalLift {w : A} {Cb : (A ⧸ AddSubgroup.zmultiples w) → ℂ}
+theorem exists_support_transversalLift {w : A} {Cb : (A ⧸ AddSubgroup.zmultiples w) → ℂ}
     {Sb : Finset (A ⧸ AddSubgroup.zmultiples w)} (hSb : ∀ c, Cb c ≠ 0 → c ∈ Sb) :
-    ∀ p, transversalLift w Cb p ≠ 0 → p ∈ Sb.image Quotient.out := by
+    ∃ S : Finset A, ∀ p, transversalLift w Cb p ≠ 0 → p ∈ S := by
   classical
+  refine ⟨Sb.image Quotient.out, ?_⟩
   intro p hp
   rw [transversalLift] at hp
   by_cases hcase : p = Quotient.out (QuotientAddGroup.mk p : A ⧸ AddSubgroup.zmultiples w)
@@ -269,6 +270,250 @@ theorem orbitSum_transversalLift {w : A} (hw : ∀ n : ℤ, n • w = 0 → n = 
     omega
   rw [finsum_eq_single _ n₀ hsingle, if_pos hn₀]
 
+theorem orbitSum_add {f g : A → ℂ} {u : A} (p : A)
+    (hf : (Function.support fun n : ℤ => f (p + n • u)).Finite)
+    (hg : (Function.support fun n : ℤ => g (p + n • u)).Finite) :
+    orbitSum u (fun q => f q + g q) p = orbitSum u f p + orbitSum u g p := by
+  rw [orbitSum, orbitSum, orbitSum]
+  exact finsum_add_distrib hf hg
+
+theorem finite_line_support_of_finite_support {B : A → ℂ} {S : Finset A}
+    (hS : ∀ p, B p ≠ 0 → p ∈ S) {u : A} (hu : ∀ n : ℤ, n • u = 0 → n = 0) (p : A) :
+    (Function.support fun n : ℤ => B (p + n • u)).Finite := by
+  refine Set.Finite.subset (finite_lineIndex hu S p) ?_
+  intro n hn
+  exact hS _ hn
+
+/-! ## The simultaneous lift -/
+
+set_option maxHeartbeats 2000000 in
+/-- **Simultaneous lifting of a compatible family of finite divisors.**  A family of divisors, one
+per direction, each invariant along its own direction and finitely supported modulo it, whose
+pairwise orbit sums agree, is the family of orbit-sum pushforwards of one finitely supported
+divisor. -/
+theorem exists_simultaneous_lift {ι : Type*} [DecidableEq ι] [DecidableEq A] (w : ι → A) :
+    ∀ (s : Finset ι),
+      (∀ i ∈ s, ∀ n : ℤ, n • w i = 0 → n = 0) →
+      (∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ n m : ℤ, n • w i + m • w j = 0 → n = 0 ∧ m = 0) →
+      (∀ i ∈ s, ∀ j ∈ s, ∀ k ∈ s, i ≠ j → i ≠ k → j ≠ k → ∀ n m l : ℤ,
+        n • w i + m • w j + l • w k = 0 → n = 0 ∧ m = 0 ∧ l = 0) →
+      ∀ D : ι → A → ℂ,
+      (∀ i ∈ s, ∀ p, D i (p + w i) = D i p) →
+      (∀ i ∈ s, ∃ S : Finset A, ∀ p, D i p ≠ 0 → ∃ q ∈ S, ∃ n : ℤ, p = q + n • w i) →
+      (∀ i ∈ s, ∀ j ∈ s, ∀ p, orbitSum (w j) (D i) p = orbitSum (w i) (D j) p) →
+      ∃ (B : A → ℂ) (S : Finset A), (∀ p, B p ≠ 0 → p ∈ S) ∧
+        ∀ i ∈ s, ∀ p, orbitSum (w i) B p = D i p := by
+  classical
+  intro s
+  induction s using Finset.induction_on with
+  | empty =>
+      intro _ _ _ D _ _ _
+      exact ⟨fun _ => 0, ∅, fun p hp => absurd rfl hp, by simp⟩
+  | @insert r s' hr ih =>
+      intro hone hpair htriple D hinv hsupp hcomp
+      have hmem : ∀ i ∈ s', i ∈ insert r s' := fun i hi => Finset.mem_insert_of_mem hi
+      have hrmem : r ∈ insert r s' := Finset.mem_insert_self r s'
+      have hne : ∀ i ∈ s', i ≠ r := fun i hi hcon => hr (hcon ▸ hi)
+      obtain ⟨B₀, S₀, hS₀, hB₀⟩ := ih
+        (fun i hi => hone i (hmem i hi))
+        (fun i hi j hj => hpair i (hmem i hi) j (hmem j hj))
+        (fun i hi j hj k hk => htriple i (hmem i hi) j (hmem j hj) k (hmem k hk))
+        D (fun i hi => hinv i (hmem i hi)) (fun i hi => hsupp i (hmem i hi))
+        (fun i hi j hj => hcomp i (hmem i hi) j (hmem j hj))
+      obtain ⟨SDr, hSDr⟩ := hsupp r hrmem
+      -- the error term
+      set E : A → ℂ := fun p => D r p - orbitSum (w r) B₀ p with hE
+      have hEinv : ∀ p, E (p + w r) = E p := by
+        intro p
+        rw [hE]
+        show D r (p + w r) - orbitSum (w r) B₀ (p + w r) = D r p - orbitSum (w r) B₀ p
+        rw [hinv r hrmem p, orbitSum_invariant]
+      have hEsupp : ∀ p, E p ≠ 0 → ∃ q ∈ SDr ∪ S₀, ∃ n : ℤ, p = q + n • w r := by
+        intro p hp
+        by_cases hd : D r p = 0
+        · have horb : orbitSum (w r) B₀ p ≠ 0 := by
+            intro hcon
+            exact hp (by rw [hE]; show D r p - orbitSum (w r) B₀ p = 0; rw [hd, hcon, sub_zero])
+          obtain ⟨q, hq, n, hn⟩ := orbitSum_finite_classes hS₀ (w r) horb
+          exact ⟨q, Finset.mem_union_right _ hq, n, hn⟩
+        · obtain ⟨q, hq, n, hn⟩ := hSDr p hd
+          exact ⟨q, Finset.mem_union_left _ hq, n, hn⟩
+      have hDrline : ∀ i ∈ s', ∀ p : A,
+          (Function.support fun n : ℤ => D r (p + n • w i)).Finite := by
+        intro i hi p
+        refine finite_line_support_of_finite_classes hSDr ?_ p
+        intro n m hnm
+        exact hpair i (hmem i hi) r hrmem (hne i hi) n m hnm
+      have hOrbline : ∀ i ∈ s', ∀ p : A,
+          (Function.support fun n : ℤ => orbitSum (w r) B₀ (p + n • w i)).Finite := by
+        intro i hi p
+        refine finite_line_support_of_finite_classes
+          (S := S₀) (fun q hq => orbitSum_finite_classes hS₀ (w r) hq) ?_ p
+        intro n m hnm
+        exact hpair i (hmem i hi) r hrmem (hne i hi) n m hnm
+      have hEline : ∀ i ∈ s', ∀ p : A, orbitSum (w i) E p = 0 := by
+        intro i hi p
+        rw [hE, orbitSum_sub p (hDrline i hi p) (hOrbline i hi p)]
+        have h1 : orbitSum (w i) (D r) p = orbitSum (w r) (D i) p :=
+          hcomp r hrmem i (hmem i hi) p
+        have hfun : orbitSum (w i) B₀ = D i := funext fun q => hB₀ i hi q
+        have h2 : orbitSum (w i) (orbitSum (w r) B₀) p = orbitSum (w r) (D i) p := by
+          rw [orbitSum_comm hS₀ (u := w i) (v := w r) ?_ p, hfun]
+          intro n m hnm
+          exact hpair i (hmem i hi) r hrmem (hne i hi) n m hnm
+        rw [h1, h2, sub_self]
+      -- descend to the quotient by the last direction
+      have hEclass : ∀ (p : A) (n : ℤ), E (p + n • w r) = E p := invariant_zsmul hEinv
+      set Ebar : (A ⧸ AddSubgroup.zmultiples (w r)) → ℂ :=
+        fun c => E (Quotient.out c) with hEbar
+      have hEbar_mk : ∀ p : A,
+          Ebar (QuotientAddGroup.mk p : A ⧸ AddSubgroup.zmultiples (w r)) = E p := by
+        intro p
+        have hmk : (QuotientAddGroup.mk
+            (Quotient.out (QuotientAddGroup.mk p : A ⧸ AddSubgroup.zmultiples (w r)))
+              : A ⧸ AddSubgroup.zmultiples (w r)) = QuotientAddGroup.mk p :=
+          QuotientAddGroup.out_eq' _
+        obtain ⟨k, hk⟩ := AddSubgroup.mem_zmultiples_iff.mp
+          (QuotientAddGroup.eq_iff_sub_mem.mp hmk)
+        rw [hEbar]
+        show E (Quotient.out (QuotientAddGroup.mk p : A ⧸ AddSubgroup.zmultiples (w r))) = E p
+        rw [show Quotient.out (QuotientAddGroup.mk p : A ⧸ AddSubgroup.zmultiples (w r))
+          = p + k • w r from by rw [hk]; abel]
+        exact hEclass p k
+      have hEbarsupp : ∀ c, Ebar c ≠ 0 →
+          c ∈ (SDr ∪ S₀).image
+            (fun q => (QuotientAddGroup.mk q : A ⧸ AddSubgroup.zmultiples (w r))) := by
+        intro c hc
+        obtain ⟨q, hq, n, hn⟩ := hEsupp (Quotient.out c) hc
+        refine Finset.mem_image.mpr ⟨q, hq, ?_⟩
+        have : (QuotientAddGroup.mk (Quotient.out c) : A ⧸ AddSubgroup.zmultiples (w r))
+            = QuotientAddGroup.mk q := by
+          rw [hn, mk_add_zsmul]
+        rw [← this]
+        exact QuotientAddGroup.out_eq' c
+      set wq : ι → (A ⧸ AddSubgroup.zmultiples (w r)) :=
+        fun i => QuotientAddGroup.mk (w i) with hwq
+      have hwq_smul : ∀ (n : ℤ) (i : ι), n • wq i
+          = (QuotientAddGroup.mk (n • w i) : A ⧸ AddSubgroup.zmultiples (w r)) := by
+        intro n i
+        rw [hwq]
+        exact (QuotientAddGroup.mk_zsmul _ _ _).symm
+      have hwq_zero : ∀ y : A,
+          (QuotientAddGroup.mk y : A ⧸ AddSubgroup.zmultiples (w r)) = 0 ↔
+            ∃ k : ℤ, k • w r = y := by
+        intro y
+        constructor
+        · intro h
+          refine AddSubgroup.mem_zmultiples_iff.mp ?_
+          have : y - 0 ∈ AddSubgroup.zmultiples (w r) :=
+            QuotientAddGroup.eq_iff_sub_mem.mp (by simpa using h)
+          simpa using this
+        · intro ⟨k, hk⟩
+          have : y - 0 ∈ AddSubgroup.zmultiples (w r) := by
+            simpa using AddSubgroup.mem_zmultiples_iff.mpr ⟨k, hk⟩
+          have h2 : (QuotientAddGroup.mk y : A ⧸ AddSubgroup.zmultiples (w r))
+              = QuotientAddGroup.mk 0 := QuotientAddGroup.eq_iff_sub_mem.mpr this
+          simpa using h2
+      have hwq_one : ∀ i ∈ s', ∀ n : ℤ, n • wq i = 0 → n = 0 := by
+        intro i hi n hn
+        rw [hwq_smul] at hn
+        obtain ⟨k, hk⟩ := (hwq_zero _).mp hn
+        refine (hpair i (hmem i hi) r hrmem (hne i hi) n (-k) ?_).1
+        rw [neg_smul, hk]
+        abel
+      have hwq_pair : ∀ i ∈ s', ∀ j ∈ s', i ≠ j → ∀ n m : ℤ,
+          n • wq i + m • wq j = 0 → n = 0 ∧ m = 0 := by
+        intro i hi j hj hij n m hnm
+        rw [hwq_smul, hwq_smul, ← QuotientAddGroup.mk_add] at hnm
+        obtain ⟨k, hk⟩ := (hwq_zero _).mp hnm
+        obtain ⟨h1, h2, -⟩ := htriple i (hmem i hi) j (hmem j hj) r hrmem hij
+          (hne i hi) (hne j hj) n m (-k) (by rw [neg_smul, hk]; abel)
+        exact ⟨h1, h2⟩
+      have hEbarlines : ∀ i ∈ s', ∀ c : A ⧸ AddSubgroup.zmultiples (w r),
+          ∑ᶠ n : ℤ, Ebar (c + n • wq i) = 0 := by
+        intro i hi c
+        have hterm : ∀ n : ℤ, Ebar (c + n • wq i)
+            = E (Quotient.out c + n • w i) := by
+          intro n
+          have harg : c + n • wq i
+              = (QuotientAddGroup.mk (Quotient.out c + n • w i)
+                  : A ⧸ AddSubgroup.zmultiples (w r)) := by
+            rw [QuotientAddGroup.mk_add, QuotientAddGroup.out_eq', hwq_smul]
+          rw [harg, hEbar_mk]
+        rw [finsum_congr hterm]
+        exact hEline i hi (Quotient.out c)
+      obtain ⟨Cbar, Sbar, hSbar, hCbar⟩ := exists_telescopeCube wq s' hwq_one hwq_pair
+        Ebar _ hEbarsupp hEbarlines
+      -- the lift
+      obtain ⟨SC, hCsupp⟩ := exists_support_transversalLift (w := w r) hSbar
+      obtain ⟨S₁, hS₁⟩ := finite_support_telescopeCube w s' hCsupp
+      have hB1 : ∀ p : A, orbitSum (w r) (telescopeCube w s' (transversalLift (w r) Cbar)) p = E p := by
+        intro p
+        have hexp : ∀ n : ℤ, telescopeCube w s' (transversalLift (w r) Cbar) (p + n • w r)
+            = ∑ F ∈ s'.powerset,
+                (-1 : ℂ) ^ (s'.card - F.card) * (transversalLift (w r) Cbar) ((p - ∑ i ∈ F, w i) + n • w r) := by
+          intro n
+          rw [telescopeCube]
+          refine Finset.sum_congr rfl fun F _ => ?_
+          congr 2
+          abel
+        have hfin : ∀ F ∈ s'.powerset, Function.HasFiniteSupport
+            fun n : ℤ => (-1 : ℂ) ^ (s'.card - F.card) * (transversalLift (w r) Cbar) ((p - ∑ i ∈ F, w i) + n • w r) := by
+          intro F _
+          refine Set.Finite.subset
+            (finite_line_support_of_finite_support hCsupp (hone r hrmem)
+              (p - ∑ i ∈ F, w i)) ?_
+          intro n hn hcon
+          refine hn ?_
+          have hc : transversalLift (w r) Cbar (p - ∑ i ∈ F, w i + n • w r) = 0 := hcon
+          show (-1 : ℂ) ^ (s'.card - F.card)
+            * transversalLift (w r) Cbar (p - ∑ i ∈ F, w i + n • w r) = 0
+          rw [hc, mul_zero]
+        have hterm : ∀ F ∈ s'.powerset,
+            (∑ᶠ n : ℤ, (-1 : ℂ) ^ (s'.card - F.card) * (transversalLift (w r) Cbar) ((p - ∑ i ∈ F, w i) + n • w r))
+              = (-1 : ℂ) ^ (s'.card - F.card) *
+                  Cbar (QuotientAddGroup.mk (p - ∑ i ∈ F, w i)) := by
+          intro F _
+          rw [← mul_finsum]
+          congr 1
+          exact orbitSum_transversalLift (hone r hrmem) Cbar _
+        have hmkF : ∀ F : Finset ι,
+            (QuotientAddGroup.mk (p - ∑ i ∈ F, w i) : A ⧸ AddSubgroup.zmultiples (w r))
+              = QuotientAddGroup.mk p - ∑ i ∈ F, wq i := by
+          intro F
+          show (QuotientAddGroup.mk' (AddSubgroup.zmultiples (w r))) (p - ∑ i ∈ F, w i)
+            = (QuotientAddGroup.mk' (AddSubgroup.zmultiples (w r))) p - ∑ i ∈ F, wq i
+          rw [map_sub]
+          congr 1
+          rw [hwq]
+          exact map_sum (QuotientAddGroup.mk' (AddSubgroup.zmultiples (w r))) _ F
+        rw [orbitSum, finsum_congr hexp, finsum_sum_comm s'.powerset _ hfin,
+          Finset.sum_congr rfl hterm]
+        have hcube : ∑ F ∈ s'.powerset, (-1 : ℂ) ^ (s'.card - F.card) *
+            Cbar (QuotientAddGroup.mk (p - ∑ i ∈ F, w i))
+            = telescopeCube wq s' Cbar (QuotientAddGroup.mk p) := by
+          rw [telescopeCube]
+          exact Finset.sum_congr rfl fun F _ => by rw [hmkF F]
+        rw [hcube, hCbar, hEbar_mk]
+      refine ⟨fun p => B₀ p + telescopeCube w s' (transversalLift (w r) Cbar) p, S₀ ∪ S₁, ?_, ?_⟩
+      · intro p hp
+        by_cases h0 : B₀ p = 0
+        · refine Finset.mem_union_right _ (hS₁ p ?_)
+          intro hcon
+          exact hp (by show B₀ p + telescopeCube w s' (transversalLift (w r) Cbar) p = 0; rw [h0, hcon, add_zero])
+        · exact Finset.mem_union_left _ (hS₀ p h0)
+      · intro i hi p
+        have hone_i : ∀ n : ℤ, n • w i = 0 → n = 0 := hone i hi
+        have hfin0 := finite_line_support_of_finite_support hS₀ hone_i p
+        have hfin1 := finite_line_support_of_finite_support hS₁ hone_i p
+        rw [orbitSum_add p hfin0 hfin1]
+        rcases Finset.mem_insert.mp hi with heq | hi''
+        · subst heq
+          rw [hB1 p, hE]
+          show orbitSum (w i) B₀ p + (D i p - orbitSum (w i) B₀ p) = D i p
+          ring
+        · rw [hB₀ i hi'',
+            orbitSum_telescopeCube_eq_zero w s' hi'' hone_i hCsupp p, add_zero]
 end
 
 end GaloisForLFunctions.HTGeometry
