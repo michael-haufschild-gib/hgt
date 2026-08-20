@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.ABHN.RationalFunctionPlaces
 import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtension
 import GaloisForLFunctions.HTGeometry.ABHN.LocalScalarExtension
 import GaloisForLFunctions.HTGeometry.ABHN.Specification
+import GaloisForLFunctions.HTGeometry.ABHN.LocalInvariants
 import GaloisForLFunctions.HTGeometry.AbeDampingFromProfiles
 import GaloisForLFunctions.HTGeometry.AbePositiveTorusFreeWitnesses
 import GaloisForLFunctions.HTGeometry.AbelianHiggsMechanism

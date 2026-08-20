@@ -63,6 +63,34 @@ theorem hlsMinkowskiForm_eq_pairing_self (p : HLSMinkowskiVector) :
   simp only [hlsMinkowskiPairing]
   ring
 
+/-- Polarization identity for the concrete Minkowski quadratic form. -/
+theorem hlsMinkowskiForm_add (p q : HLSMinkowskiVector) :
+    hlsMinkowskiForm (p + q) = hlsMinkowskiForm p + hlsMinkowskiForm q +
+      2 * hlsMinkowskiPairing p q := by
+  rw [hlsMinkowskiForm_apply, hlsMinkowskiForm_apply, hlsMinkowskiForm_apply]
+  simp only [Pi.add_apply, hlsMinkowskiPairing]
+  ring
+
+/-- The Minkowski pairing is symmetric. -/
+theorem hlsMinkowskiPairing_symm (p q : HLSMinkowskiVector) :
+    hlsMinkowskiPairing p q = hlsMinkowskiPairing q p := by
+  simp only [hlsMinkowskiPairing]
+  ring
+
+/-- The Minkowski pairing is additive in its second argument. -/
+theorem hlsMinkowskiPairing_add_right (p q r : HLSMinkowskiVector) :
+    hlsMinkowskiPairing p (q + r) =
+      hlsMinkowskiPairing p q + hlsMinkowskiPairing p r := by
+  simp only [Pi.add_apply, hlsMinkowskiPairing]
+  ring
+
+/-- The Minkowski pairing is additive in its first argument. -/
+theorem hlsMinkowskiPairing_add_left (p q r : HLSMinkowskiVector) :
+    hlsMinkowskiPairing (p + q) r =
+      hlsMinkowskiPairing p r + hlsMinkowskiPairing q r := by
+  rw [hlsMinkowskiPairing_symm, hlsMinkowskiPairing_add_right,
+    hlsMinkowskiPairing_symm p r, hlsMinkowskiPairing_symm q r]
+
 /-- Linear Lorentz transformations: precisely the invertible real linear maps preserving
 the Minkowski quadratic form. -/
 def hlsLorentzGroup : Subgroup (HLSMinkowskiVector ≃ₗ[ℝ] HLSMinkowskiVector) where
@@ -178,6 +206,80 @@ theorem hlsTranslationAt_zero (μ : Fin 4) : hlsTranslationAt μ 0 = 1 := by
 theorem hlsTranslationAt_add (μ : Fin 4) (s t : ℝ) :
     hlsTranslationAt μ (s + t) = hlsTranslationAt μ s * hlsTranslationAt μ t := by
   ext <;> simp [hlsTranslationAt, hlsTranslation, Pi.single_add]
+
+/-- All Minkowski translations form the translation subgroup of the physical Poincaré group. -/
+theorem hlsTranslation_zero : hlsTranslation 0 = 1 := by
+  ext <;> simp [hlsTranslation]
+
+/-- Poincaré translations respect vector addition. -/
+theorem hlsTranslation_add (a b : HLSMinkowskiVector) :
+    hlsTranslation (a + b) = hlsTranslation a * hlsTranslation b := by
+  ext <;> simp [hlsTranslation]
+
+/-- Pure Lorentz transformations form their canonical subgroup. -/
+theorem hlsLorentzAt_one : hlsLorentzAt 1 = 1 := by
+  ext <;> simp [hlsLorentzAt]
+
+/-- The pure-Lorentz embedding is multiplicative. -/
+theorem hlsLorentzAt_mul (g h : hlsProperOrthoLorentzGroup) :
+    hlsLorentzAt (g * h) = hlsLorentzAt g * hlsLorentzAt h := by
+  ext <;> simp [hlsLorentzAt]
+
+/-- The full translation subgroup is continuous for the explicit physical Poincaré topology. -/
+theorem hlsTranslation_continuous : @Continuous HLSMinkowskiVector HLSPhysicalPoincareGroup
+    inferInstance hlsPhysicalPoincareTopology hlsTranslation := by
+  apply continuous_induced_rng.2
+  change @Continuous HLSMinkowskiVector
+    (Multiplicative HLSMinkowskiVector × hlsProperOrthoLorentzGroup)
+    inferInstance (@instTopologicalSpaceProd (Multiplicative HLSMinkowskiVector)
+      hlsProperOrthoLorentzGroup hlsTranslationTopology hlsProperOrthoLorentzTopology)
+      (fun a => (Multiplicative.ofAdd a, 1))
+  refine @Continuous.prodMk (Multiplicative HLSMinkowskiVector) hlsProperOrthoLorentzGroup
+    HLSMinkowskiVector hlsTranslationTopology hlsProperOrthoLorentzTopology inferInstance
+    (fun a => Multiplicative.ofAdd a) (fun _ => 1) ?_ ?_
+  · apply continuous_induced_rng.2
+    exact continuous_id
+  · apply continuous_induced_rng.2
+    exact continuous_const
+
+/-- The pure-Lorentz embedding is continuous for the explicit physical Poincaré topology. -/
+theorem hlsLorentzAt_continuous : @Continuous hlsProperOrthoLorentzGroup
+    HLSPhysicalPoincareGroup hlsProperOrthoLorentzTopology hlsPhysicalPoincareTopology
+    hlsLorentzAt := by
+  apply continuous_induced_rng.2
+  change @Continuous hlsProperOrthoLorentzGroup
+    (Multiplicative HLSMinkowskiVector × hlsProperOrthoLorentzGroup)
+    hlsProperOrthoLorentzTopology
+    (@instTopologicalSpaceProd (Multiplicative HLSMinkowskiVector)
+      hlsProperOrthoLorentzGroup hlsTranslationTopology hlsProperOrthoLorentzTopology)
+      (fun g => (1, g))
+  refine @Continuous.prodMk (Multiplicative HLSMinkowskiVector) hlsProperOrthoLorentzGroup
+    hlsProperOrthoLorentzGroup hlsTranslationTopology hlsProperOrthoLorentzTopology
+    hlsProperOrthoLorentzTopology (fun _ => 1) (fun g => g) ?_ ?_
+  · apply continuous_induced_rng.2
+    change @Continuous hlsProperOrthoLorentzGroup HLSMinkowskiVector
+      hlsProperOrthoLorentzTopology inferInstance (fun _ => 0)
+    exact @continuous_const hlsProperOrthoLorentzGroup HLSMinkowskiVector
+      hlsProperOrthoLorentzTopology inferInstance 0
+  · exact @continuous_id hlsProperOrthoLorentzGroup hlsProperOrthoLorentzTopology
+
+/-- Translation followed by Lorentz transformation gives the canonical factorization of every
+physical Poincaré element. -/
+theorem hlsPoincare_factorization (x : HLSPhysicalPoincareGroup) :
+    x = hlsTranslation x.left.toAdd * hlsLorentzAt x.right := by
+  ext <;> simp [hlsTranslation, hlsLorentzAt]
+
+/-- Lorentz transformations act on translations by the defining semidirect-product law. -/
+theorem hlsLorentzAt_mul_translation (g : hlsProperOrthoLorentzGroup)
+    (a : HLSMinkowskiVector) :
+    hlsLorentzAt g * hlsTranslation a =
+      hlsTranslation (g.1 a) * hlsLorentzAt g := by
+  change (⟨1, g⟩ : HLSPhysicalPoincareGroup) *
+      (⟨Multiplicative.ofAdd a, 1⟩ : HLSPhysicalPoincareGroup) =
+    (⟨Multiplicative.ofAdd (g.1 a), 1⟩ : HLSPhysicalPoincareGroup) *
+      (⟨1, g⟩ : HLSPhysicalPoincareGroup)
+  rw [SemidirectProduct.mul_def, SemidirectProduct.mul_def]
+  simp [hlsProperOrthoLorentzAction]
 
 /-- Coordinate translation is continuous for the explicit physical Poincaré topology. -/
 theorem hlsTranslationAt_continuous (μ : Fin 4) : @Continuous ℝ HLSPhysicalPoincareGroup
@@ -396,6 +498,14 @@ theorem hlsLorentz_preserves_minkowski (g : hlsLorentzGroup) (p : HLSMinkowskiVe
     hlsMinkowskiForm (g.1 p) = hlsMinkowskiForm p :=
   g.2 p
 
+/-- Preserving the Minkowski quadratic form also preserves its polarized bilinear pairing. -/
+theorem hlsLorentz_preserves_pairing (g : hlsLorentzGroup) (p q : HLSMinkowskiVector) :
+    hlsMinkowskiPairing (g.1 p) (g.1 q) = hlsMinkowskiPairing p q := by
+  have hsum := g.2 (p + q)
+  rw [map_add, hlsMinkowskiForm_add, hlsMinkowskiForm_add] at hsum
+  rw [g.2 p, g.2 q] at hsum
+  linarith
+
 /-- Lorentz transformations preserve every mass shell. -/
 theorem hlsLorentz_preserves_massShell (g : hlsLorentzGroup) (m : ℝ)
     (p : HLSMinkowskiVector) :
@@ -415,6 +525,12 @@ theorem hlsProperOrthoLorentz_preserves_massShell (g : hlsProperOrthoLorentzGrou
     hlsMassShell m (g.1 p) ↔ hlsMassShell m p := by
   change hlsMinkowskiForm (g.1 p) = m ^ 2 ↔ hlsMinkowskiForm p = m ^ 2
   rw [g.2.1]
+
+/-- Proper orthochronous Lorentz transformations preserve the Minkowski pairing. -/
+theorem hlsProperOrthoLorentz_preserves_pairing (g : hlsProperOrthoLorentzGroup)
+    (p q : HLSMinkowskiVector) :
+    hlsMinkowskiPairing (g.1 p) (g.1 q) = hlsMinkowskiPairing p q :=
+  hlsLorentz_preserves_pairing (hlsProperOrthoLorentzToLorentz g) p q
 
 /-- Unit future timelike rest momentum for a unit-mass particle. -/
 def hlsUnitRestMomentum : HLSMinkowskiVector := ![1, 0, 0, 0]

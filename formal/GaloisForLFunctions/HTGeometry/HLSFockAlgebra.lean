@@ -76,6 +76,24 @@ theorem hlsFockParity_squared (B : Type u) (F : Type v) [AddCommGroup B] [Module
     (hlsExteriorParity_squared F)
   simpa only [AlgHom.comp_apply, AlgHom.id_apply] using congrArg (TensorProduct.tmul ℂ b) h
 
+/-- Fermion parity is a genuine algebraic Fock-space linear equivalence, equal to its own inverse. -/
+def hlsFockParityEquiv (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
+    [AddCommGroup F] [Module ℂ F] : HLSAlgebraicFock B F ≃ₗ[ℂ] HLSAlgebraicFock B F :=
+  { hlsFockParity B F with
+    invFun := hlsFockParity B F
+    left_inv := by
+      intro x
+      exact LinearMap.congr_fun (hlsFockParity_squared B F) x
+    right_inv := by
+      intro x
+      exact LinearMap.congr_fun (hlsFockParity_squared B F) x }
+
+/-- Algebraic Fock parity remains involutive when used as a linear equivalence. -/
+theorem hlsFockParityEquiv_apply_twice (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
+    [AddCommGroup F] [Module ℂ F] (x : HLSAlgebraicFock B F) :
+    hlsFockParityEquiv B F (hlsFockParityEquiv B F x) = x :=
+  LinearMap.congr_fun (hlsFockParity_squared B F) x
+
 /-- Bosonic creation operators commute. -/
 theorem hlsBosonCreate_commute (B : Type u) (F : Type v) [AddCommGroup B] [Module ℂ B]
     [AddCommGroup F] [Module ℂ F] (b c : B) :

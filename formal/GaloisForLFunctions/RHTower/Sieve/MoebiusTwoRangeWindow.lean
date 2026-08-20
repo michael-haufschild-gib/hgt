@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.MoebiusWindowPartition
-import GaloisForLFunctions.RHTower.Sieve.RamareLadderHM
+import GaloisForLFunctions.RHTower.Sieve.RamareLadderHMRecip
 import GaloisForLFunctions.RHTower.Sieve.Section4AllBlocksSmall
 
 /-!
@@ -82,7 +82,7 @@ theorem setIntegral_annulusSmall_normSq_logPoly_moebius_le {P : Finset ℕ} (M :
 /-- **The large half of the annulus.**  The pointwise prime bound is supplied by the caller — a
 zero-free-region estimate for the high range — and the cofactor is paid by Halász–Montgomery. -/
 theorem setIntegral_annulusLarge_normSq_logPoly_moebius_le {P' : Finset ℕ} (M : ℕ)
-    {R' η' W w₀ δ : ℝ} (hR' : 0 < R') (hη' : 0 ≤ η') {L' : ℕ} (hL' : 1 ≤ L')
+    {R' η' W w₀ δ : ℝ} (hR' : 0 < R') (hη' : 0 ≤ η') (hW : 1 ≤ W) {L' : ℕ} (hL' : 1 ≤ L')
     (hδ : 0 < δ) (hP'prime : ∀ q ∈ P', q.Prime)
     (hP' : ∀ p ∈ P', R' < (p : ℝ) ∧ (p : ℝ) ≤ R' * (1 + η') ^ L')
     {T : Set ℝ} (hTm : MeasurableSet T)
@@ -94,7 +94,7 @@ theorem setIntegral_annulusLarge_normSq_logPoly_moebius_le {P' : Finset ℕ} (M 
         ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
       ≤ (1 + δ) * (2 * (L' : ℝ) * ∑ j ∈ Finset.range L',
               V' j ^ 2
-                * ladderHMBound M R' η' W (volume.real (annulusLarge T W w₀)) j
+                * ladderHMBoundRecip M R' η' W (volume.real (annulusLarge T W w₀)) j
             + 2 * ∫ w in Set.Icc (-W) W, ‖ramareLadderError P' M R' η' L' w‖ ^ 2)
         + (1 + 1 / δ)
             * (∫ w in Set.Icc (-W) W,
@@ -102,7 +102,7 @@ theorem setIntegral_annulusLarge_normSq_logPoly_moebius_le {P' : Finset ℕ} (M 
   set E : Set ℝ := annulusLarge T W w₀ with hE
   have hEm : MeasurableSet E := measurableSet_annulusLarge hTm W w₀
   have hEs : E ⊆ Set.Icc (-W) W := annulusLarge_subset T W w₀
-  have hlad := setIntegral_normSq_ramareBilinear_le_ladder_HM (P := P') M hR' hη' hL'
+  have hlad := setIntegral_normSq_ramareBilinear_le_ladder_HM_recip (P := P') M hR' hη' hW hL'
     hP' hEm hEs V' hNj hbound
   have herr := setIntegral_normSq_ramareLadderError_le_window P' M R' η' L' hEs
   have hsplit := setIntegral_normSq_logPoly_moebius_le_ramare_rough (P := P') hP'prime M
@@ -112,10 +112,10 @@ theorem setIntegral_annulusLarge_normSq_logPoly_moebius_le {P' : Finset ℕ} (M 
   have hδ1 : (0 : ℝ) ≤ 1 + 1 / δ := by positivity
   have hlad' := hlad.trans (by linarith [herr] :
     2 * (L' : ℝ) * ∑ j ∈ Finset.range L',
-        V' j ^ 2 * ladderHMBound M R' η' W (volume.real E) j
+        V' j ^ 2 * ladderHMBoundRecip M R' η' W (volume.real E) j
       + 2 * ∫ w in E, ‖ramareLadderError P' M R' η' L' w‖ ^ 2
       ≤ 2 * (L' : ℝ) * ∑ j ∈ Finset.range L',
-          V' j ^ 2 * ladderHMBound M R' η' W (volume.real E) j
+          V' j ^ 2 * ladderHMBoundRecip M R' η' W (volume.real E) j
         + 2 * ∫ w in Set.Icc (-W) W, ‖ramareLadderError P' M R' η' L' w‖ ^ 2)
   have h1 := mul_le_mul_of_nonneg_left hlad' hδ0
   have h2 := mul_le_mul_of_nonneg_left hrough hδ1
@@ -148,7 +148,7 @@ theorem integral_Icc_normSq_logPoly_moebius_le_twoRange {P P' : Finset ℕ} (M :
               * (∫ w in Set.Icc (-W) W,
                   ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2))
         + ((1 + δ) * (2 * (L' : ℝ) * ∑ j ∈ Finset.range L',
-                V' j ^ 2 * ladderHMBound M R' η' W
+                V' j ^ 2 * ladderHMBoundRecip M R' η' W
                     (volume.real (annulusLarge (allBlocksSmall P R η L V W) W w₀)) j
               + 2 * ∫ w in Set.Icc (-W) W, ‖ramareLadderError P' M R' η' L' w‖ ^ 2)
           + (1 + 1 / δ)
@@ -157,7 +157,7 @@ theorem integral_Icc_normSq_logPoly_moebius_le_twoRange {P P' : Finset ℕ} (M :
   refine integral_Icc_normSq_logPoly_moebius_le_partition M hwW
     (measurableSet_allBlocksSmall P R η L V W) (allBlocksSmall_subset P R η L V W) hdisc ?_ ?_
   · exact setIntegral_annulusSmall_normSq_logPoly_moebius_le M hR hη hW hL hδ hPprime hP V hV0
-  · exact setIntegral_annulusLarge_normSq_logPoly_moebius_le M hR' hη' hL' hδ hP'prime hP'
+  · exact setIntegral_annulusLarge_normSq_logPoly_moebius_le M hR' hη' hW hL' hδ hP'prime hP'
       (measurableSet_allBlocksSmall P R η L V W) V' hNj hbound'
 
 /-- The large half of the annulus sits inside the ladder's exceptional set. -/

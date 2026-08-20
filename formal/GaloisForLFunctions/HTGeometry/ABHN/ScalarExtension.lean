@@ -1,15 +1,17 @@
 import GaloisForLFunctions.HTGeometry.ABHN.BrauerFoundations
 import Mathlib.Algebra.Algebra.Subalgebra.Centralizer
 import Mathlib.RingTheory.Flat.Basic
+import Mathlib.RingTheory.MatrixAlgebra
+import Mathlib.RingTheory.SimpleRing.Congr
 import Mathlib.RingTheory.TensorProduct.Finite
 
 /-!
-# Raw scalar extension for Albert--Brauer--Hasse--Noether
+# Scalar extension for Albert--Brauer--Hasse--Noether
 
 For `A` central simple over `K` and a field extension `L/K`, the local Brauer map must be induced
-by `L ⊗[K] A`.  Mathlib already constructs this algebra and proves finite dimensionality.  The
-missing upgrade to a `CSA L` is deliberately not hidden: it requires forward centrality and the
-central-simple tensor-product theorem, neither of which is currently available in Mathlib.
+by `L ⊗[K] A`.  Mathlib already constructs this algebra and proves finite dimensionality.  This
+file proves its centrality, as well as the full central-simple upgrade for split matrix algebras.
+The only remaining upgrade for arbitrary `A` is the central-simple tensor-product theorem.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
@@ -69,5 +71,49 @@ theorem scalarExtensionAlg_isCentral {K : Type u} {L : Type v} [Field K] [Field 
       refine ⟨lx + ly, ?_⟩
       change algebraMap L (L ⊗[K] A.carrier) (lx + ly) = _
       rw [map_add, map_add, hx, hy]
+
+/-- Base change of a split matrix algebra is simple.  The explicit equivalence is used below to
+package its scalar extension as a central simple algebra. -/
+theorem scalarExtension_matrix_isSimple {K : Type u} {L : Type v} [Field K] [Field L]
+    [Algebra K L] (n : Type w) [Fintype n] [Nonempty n] [DecidableEq n] :
+    IsSimpleRing (L ⊗[K] Matrix n n K) := by
+  exact IsSimpleRing.of_ringEquiv (matrixEquivTensor n K L).toRingEquiv
+    (inferInstance : IsSimpleRing (Matrix n n L))
+
+/-- The standard base-change equivalence for a matrix algebra, promoted from a `K`-algebra
+equivalence to an `L`-algebra equivalence. -/
+noncomputable def scalarExtensionMatrixAlgEquiv {K : Type u} {L : Type v} [Field K] [Field L]
+    [Algebra K L] (n : Type w) [Fintype n] [Nonempty n] [DecidableEq n] :
+    (L ⊗[K] Matrix n n K) ≃ₐ[L] Matrix n n L where
+  toFun := MatrixEquivTensor.toFunAlgHom n K L
+  invFun := MatrixEquivTensor.invFun n K L
+  left_inv := MatrixEquivTensor.left_inv n K L
+  right_inv := MatrixEquivTensor.right_inv n K L
+  map_mul' := map_mul (MatrixEquivTensor.toFunAlgHom n K L)
+  map_add' := map_add (MatrixEquivTensor.toFunAlgHom n K L)
+  commutes' l := by
+    change MatrixEquivTensor.toFunAlgHom n K L (l ⊗ₜ (1 : Matrix n n K)) = _
+    rw [MatrixEquivTensor.toFunAlgHom_apply, Algebra.algebraMap_eq_smul_one]
+    simp
+
+/-- The raw scalar extension of a split matrix representative, packaged as a central simple
+`L`-algebra. -/
+noncomputable def scalarExtensionMatrixFinScalarCSA (K L : Type u) [Field K] [Field L]
+    [Algebra K L] (n : ℕ) [NeZero n] : CSA.{u, u} L where
+  carrier := L ⊗[K] (matrixFinCSA (scalarCSA K) n).carrier
+  isCentral := scalarExtensionAlg_isCentral (matrixFinCSA (scalarCSA K) n)
+  isSimple := scalarExtension_matrix_isSimple (K := K) (L := L) (Fin n)
+  fin_dim := scalarExtensionAlg_finiteDimensional (matrixFinCSA (scalarCSA K) n)
+
+/-- Scalar extension carries every split matrix representative to the split class. -/
+theorem brauerClass_scalarExtensionMatrixFinScalar_eq {K L : Type u} [Field K] [Field L]
+    [Algebra K L] (n : ℕ) [NeZero n] :
+    brauerClass (scalarExtensionMatrixFinScalarCSA K L n) = brauerSplitClass L := by
+  calc
+    brauerClass (scalarExtensionMatrixFinScalarCSA K L n) =
+      brauerClass (matrixFinCSA (scalarCSA L) n) :=
+      brauerClass_eq_of_algEquiv _ _
+        (scalarExtensionMatrixAlgEquiv (K := K) (L := L) (Fin n))
+    _ = brauerSplitClass L := brauerClass_matrixFinCSA_scalar_eq n
 
 end GaloisForLFunctions.HTGeometry.ABHN

@@ -1,8 +1,8 @@
 # The critical logarithmic-derivative kernel is a complete two-channel Weil resolvent family
 
 - **ID:** `critical-logderivative-two-channel-weil-resolvent-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[BRIDGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** the centered Hadamard product, the polarized Weil form, and the
   Carathéodory criterion for the completed logarithmic derivative
@@ -443,12 +443,12 @@ route infrastructure but does not clear the novelty gate as independent scientif
 - `signed-archimedean-gamma-orbit-charge-phase-law.md` and
   `quasianalytic-exponential-log-phase-jet-law.md`.
 
-## Lean decision
+## Lean decision (SUPERSEDED)
 
-The formal tree contains the completed logarithmic derivative and abstract finite Krein Gram
-algebra, but not the infinite Hadamard log-derivative convergence, the Weil distribution, or the
-Nevanlinna--Pick extension theorem. A finite rational-identity wrapper would not certify `(8)` or
-the completeness theorem, so no Lean file is added.
+The original decision cited three missing ingredients: the infinite Hadamard log-derivative
+convergence, the Weil distribution, and the Nevanlinna--Pick extension.  All three are now in the
+tree (`RHTower/XiRelativeResolventTrace`, `RHTower/XiWeilPolarization`,
+`HTGeometry/CaratheodoryKernelPositive`), so the card is formalized; see the section below.
 
 ## Gates
 
@@ -467,3 +467,101 @@ the completeness theorem, so no Lean file is added.
 - [ ] prove the resulting finite Cauchy--Laplace contraction from exact prime--Gamma source
       relations
 - [ ] deduce RH
+
+## Lean formalization — the proved content is COMPLETE (unconditional)
+
+Every `[PROVED]` statement of this card is a Lean theorem with a clean axiom audit
+(`propext, Classical.choice, Quot.sound` only).  The card's three prerequisites are supplied by the
+corpus rather than re-proved: the paired Hadamard logarithmic derivative by
+`RHTower/XiRelativeResolventTrace`, the multiplicity-exact Weil polarization `q_W` by
+`RHTower/XiWeilPolarization`, and the half-plane Carathéodory criterion by
+`HTGeometry/CaratheodoryKernelPositive` together with
+`RHTower/XiShiftLoewnerCriticalGenerator`.
+
+New modules: `RHTower/XiWeilTwoChannelResolvent`, `RHTower/XiWeilApertureChannels`,
+`RHTower/XiWeilCarrierBudget`.
+
+### The channels and the identity
+
+| Card item | Lean name |
+|---|---|
+| `(5)` the two channels `A_w`, `B_w` | `weilChannelA`, `weilChannelB` |
+| `(6)` the two Hardy orientations `R_w^±` | `weilResolventPlus`, `weilResolventMinus` |
+| `(7)` `A_w = (R^+ + R^-)/2`, `B_w = (R^+ - R^-)/(2i)` | `weilChannelA_eq_resolvent`, `weilChannelB_eq_resolvent` |
+| the sharp involution conjugates the parameter | `xiWeilSharp_channelA`, `xiWeilSharp_channelB`, `xiWeilSharp_resolventPlus`, `xiWeilSharp_resolventMinus` |
+| `(10)`–`(11)` `L w = ∑' α, A_w α` on the paired divisor | `logDeriv_xiCent_eq_tsum_channelA` |
+| Schwarz reality of the divisor sum | `tsum_channelA_conj`, `logDeriv_xiCent_conj` |
+| Weil admissibility of the channels | `xiWeilSquareSummable_channelA`, `xiWeilSquareSummable_channelB`, `summable_channelA_mul`, `summable_channelB_mul`, `summable_resolvent_mul` |
+| **`(8)`** `K_L = q_W(A_w,A_v) + q_W(B_w,B_v)` | `criticalLogDerivKernel_eq_twoChannel` |
+| **`(9)`** `K_L = (q_W(R_w^+,R_v^+) + q_W(R_w^-,R_v^-))/2` | `criticalLogDerivKernel_eq_resolventChannels` |
+
+The proof of `(8)` is exactly the card's: reflecting the divisor by `α ↦ -α`
+(`xiZeroCopyReflectEquiv`) turns the centred relative resolvent trace into the even channel sum, and
+the one-line partial fraction `(12)`–`(14)` is `channel_pair_pointwise`.
+
+### The complete-detector theorem
+
+| Card item | Lean name |
+|---|---|
+| the two-channel Gram kernel | `twoChannelKernel`, `twoChannelKernel_eq`, `twoChannelKernel_conj_symm` |
+| `(15)` the finite packets `A_c`, `B_c` | `channelPacketA`, `channelPacketB` |
+| the packet energy is the Gram energy | `xiWeilPolarization_channelPacketA`, `xiWeilPolarization_channelPacketB`, `twoChannel_packet_eq_kernelEnergy` |
+| **`(17)`** RH ⟺ the kernel is positive on `Re w > 1/2` | `riemannHypothesis_iff_isPSDKernel_twoChannel` |
+| **`(16)`** RH ⟺ every finite two-channel Weil energy is nonnegative | `riemannHypothesis_iff_twoChannel_packet_nonneg` |
+
+### The Euler presentation
+
+| Card item | Lean name |
+|---|---|
+| `(19)` `L w = 1/s + 1/(s-1) + (log Γ_ℝ)'(s) - ∑ Λ(n) n^{-s}`, `s = 1/2 + w` | `logDeriv_xiCent_eq_eulerPresentation` |
+| absolute convergence of the prime series | `lSeriesSummable_vonMangoldt_shift` |
+| `(20)` every Gram entry is the Euler--Gamma kernel | `twoChannelKernel_eq_eulerKernel` |
+
+### The aperture channels and the index-faithful transport
+
+| Card item | Lean name |
+|---|---|
+| `(21)`–`(22)` the truncated source and its transform | `weilApertureA_eq_fourier` |
+| `(24)` `A_{w,a}` in closed form | `weilApertureA_eq` |
+| `(25)` `B_{w,a}` in closed form | `weilApertureB_eq` |
+| `(23)` `A_{w,a} → A_w`, `B_{w,a} → B_w` | `tendsto_weilApertureA`, `tendsto_weilApertureB` |
+| `(28)` uniform aperture bounds on the zero strip | `norm_weilApertureA_le`, `norm_weilApertureA_spectral_le`, `norm_weilApertureA_spectral_le'`, and the `B` versions |
+| `(29)` the summable dominating family | `apertureDominant`, `apertureDominant_bound`, `summable_apertureDominant` |
+| **`(27)`** the aperture Gram converges to the exact Gram | `tendsto_apertureTwoChannelKernel` |
+| **`(30)`–`(31)`** a negative vector is visible at a finite aperture | `eventually_aperture_energy_neg` |
+| **`(32)`** RH ⟺ every finite-aperture two-channel Weil form is nonnegative | `riemannHypothesis_iff_forall_aperture_energy_nonneg` |
+
+`(27)` is Tannery's theorem against the dominating family `apertureDominant w u / ‖α‖²`, which uses
+only `|Im α| ≤ 1/2` (the unconditional critical-strip width) and the inverse-square summability of
+the centred divisor.
+
+### The carrier budget
+
+| Card item | Lean name |
+|---|---|
+| `(20c)` `dim_ℚ ⟨log p : p < N⟩ = π'(N)` | `finrank_span_log_primesBelow` |
+| `(20d)`–`(20e)` the complementary rank deficit | `carrierBudget_rank_ge` |
+
+`(20a)`–`(20b)` are *imported* from `signed-archimedean-gamma-orbit-charge-phase-law.md` and
+`quasianalytic-exponential-log-phase-jet-law.md`; they are premises of `carrierBudget_rank_ge`, not
+theorems of this development.
+
+### What is *not* formalized
+
+- `(25a)`, the `C_c^∞` mollification of the hard truncations, and the identification of the
+  finite-aperture two-channel form with Suzuki's *restricted* Weil form and its negative index
+  `κ(a)`.  The Lean transport `(27)`, `(30)`, `(32)` is proved for the Weil polarization of the
+  truncated channels themselves, which is the object the card's argument actually manipulates; the
+  further passage to `κ(a) ≥ 1` is a statement about Suzuki's form-core domain and is left as
+  prose.
+- the compact-detector compatibility remark, which is a consistency statement about
+  `ht-weil-compact-detector-near-radical-alternative.md`, not an independent theorem.  Its formal
+  content here is the cofinality of the aperture family, i.e. `(27)` and
+  `eventually_aperture_energy_neg`.
+- the two open gates: `(19)`-based proof of the Cauchy--Laplace contraction, and RH.
+
+## Log
+
+- 2026-08-20 — Formalized in Lean 4.  New modules `RHTower/XiWeilTwoChannelResolvent`,
+  `RHTower/XiWeilApertureChannels`, `RHTower/XiWeilCarrierBudget`; 22 capstones audited to
+  `propext, Classical.choice, Quot.sound`.  Promoted to stage 3.

@@ -6788,6 +6788,7 @@ import GaloisForLFunctions.RHTower.Sieve.JointWeightTransfer
 import GaloisForLFunctions.RHTower.Sieve.JutilaLargeValues
 import GaloisForLFunctions.RHTower.Sieve.KernelDiffMonotone
 import GaloisForLFunctions.RHTower.Sieve.KernelDoubleIntegral
+import GaloisForLFunctions.RHTower.Sieve.KernelRowMassRecip
 import GaloisForLFunctions.RHTower.Sieve.KernelPieceMonotone
 import GaloisForLFunctions.RHTower.Sieve.KernelReshape
 import GaloisForLFunctions.RHTower.Sieve.KernelSmoothSplit
@@ -7272,6 +7273,9 @@ import GaloisForLFunctions.RHTower.Sieve.PhaseCorrelation
 import GaloisForLFunctions.RHTower.Sieve.PhaseGeometricBound
 import GaloisForLFunctions.RHTower.Sieve.PhaseIntegral
 import GaloisForLFunctions.RHTower.Sieve.PlainKernelMass
+import GaloisForLFunctions.RHTower.Sieve.PlainKernelRecip
+import GaloisForLFunctions.RHTower.Sieve.PlainKernelMassRecip
+import GaloisForLFunctions.RHTower.Sieve.LogPolyWindowHMRecip
 import GaloisForLFunctions.RHTower.Sieve.PoleBoundaryResidue
 import GaloisForLFunctions.RHTower.Sieve.PoleTermSplit
 import GaloisForLFunctions.RHTower.Sieve.PolyDecayLimits
@@ -10730,6 +10734,8 @@ import GaloisForLFunctions.RHTower.XiWeilPositivityCriterion
 import GaloisForLFunctions.RHTower.XiWeilResolventChartDictionary
 import GaloisForLFunctions.RHTower.XiWeilResolventGram
 import GaloisForLFunctions.RHTower.XiWeilTwoChannelResolvent
+import GaloisForLFunctions.RHTower.XiWeilApertureChannels
+import GaloisForLFunctions.RHTower.XiWeilCarrierBudget
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
 import GaloisForLFunctions.RHTower.XiWeilSameFiberAtomIsotropy
 import GaloisForLFunctions.RHTower.XiWeilSourceInvolution
@@ -10837,6 +10843,7 @@ import GaloisForLFunctions.RHTower.Sieve.TwistedDiagonalReindex
 import GaloisForLFunctions.RHTower.Sieve.RamareBlockSplitOn
 import GaloisForLFunctions.RHTower.Sieve.RamareLadderSupMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.RamareLadderHM
+import GaloisForLFunctions.RHTower.Sieve.RamareLadderHMRecip
 import GaloisForLFunctions.RHTower.SmoothAFEZetaGeneralHorizontal
 import GaloisForLFunctions.RHTower.PrimeBoundaryMonodromyEscape
 import GaloisForLFunctions.RHTower.Sieve.RamarePartitionedLadder

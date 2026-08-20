@@ -438,4 +438,230 @@ theorem norm_weilApertureB_spectral_le' {w : ℂ} (hw : 1 / 2 < w.re) {q : XiZer
   rw [this]
   linarith
 
+/-! ### Equation (27): exponential Weil-form convergence -/
+
+/-- The uniform dominating constant of the aperture channel products. -/
+def apertureDominant (w u : ℂ) : ℝ :=
+  16 + 4 * (2 * max ‖w‖ ‖u‖) ^ 2 / ((w.re - 1 / 2) * (u.re - 1 / 2))
+
+theorem apertureDominant_bound {w u : ℂ} (hw : 1 / 2 < w.re) (hu : 1 / 2 < u.re)
+    {q : XiZeroCopy} {p r : ℝ} (hr : 0 ≤ r)
+    (hglob : p ≤ 2 / (w.re - 1 / 2)) (hglob' : r ≤ 2 / (u.re - 1 / 2))
+    (hfar : 2 * max ‖w‖ ‖u‖ ≤ ‖xiSpectralPoint q‖ →
+      p ≤ 4 / ‖xiSpectralPoint q‖ ∧ r ≤ 4 / ‖xiSpectralPoint q‖) :
+    p * r ≤ apertureDominant w u / ‖xiSpectralPoint q‖ ^ 2 := by
+  have hpos : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
+  have hdw : 0 < w.re - 1 / 2 := by linarith
+  have hdu : 0 < u.re - 1 / 2 := by linarith
+  set M : ℝ := 2 * max ‖w‖ ‖u‖ with hM
+  have hMnn : 0 ≤ M := by positivity
+  by_cases hcase : M ≤ ‖xiSpectralPoint q‖
+  · obtain ⟨hp4, hr4⟩ := hfar hcase
+    have hprod : p * r ≤ (4 / ‖xiSpectralPoint q‖) * (4 / ‖xiSpectralPoint q‖) :=
+      mul_le_mul hp4 hr4 hr (by positivity)
+    have hval : (4 / ‖xiSpectralPoint q‖) * (4 / ‖xiSpectralPoint q‖)
+        = 16 / ‖xiSpectralPoint q‖ ^ 2 := by
+      field_simp
+      ring
+    rw [hval] at hprod
+    refine hprod.trans ?_
+    rw [apertureDominant, div_le_div_iff₀ (by positivity) (by positivity)]
+    have hextra : 0 ≤ 4 * M ^ 2 / ((w.re - 1 / 2) * (u.re - 1 / 2)) := by positivity
+    nlinarith [hextra, sq_nonneg ‖xiSpectralPoint q‖, hpos]
+  · rw [not_le] at hcase
+    have hprod : p * r ≤ (2 / (w.re - 1 / 2)) * (2 / (u.re - 1 / 2)) :=
+      mul_le_mul hglob hglob' hr (by positivity)
+    refine hprod.trans ?_
+    rw [apertureDominant]
+    have hkey : (2 / (w.re - 1 / 2)) * (2 / (u.re - 1 / 2))
+        ≤ (4 * M ^ 2 / ((w.re - 1 / 2) * (u.re - 1 / 2))) / ‖xiSpectralPoint q‖ ^ 2 := by
+      rw [div_mul_div_comm, div_div, div_le_div_iff₀ (by positivity) (by positivity)]
+      have hsq : ‖xiSpectralPoint q‖ ^ 2 ≤ M ^ 2 := by nlinarith [hcase, hpos, hMnn]
+      nlinarith [hsq, mul_pos hdw hdu]
+    refine hkey.trans ?_
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    have h16 : (0 : ℝ) ≤ 16 := by norm_num
+    nlinarith [h16, sq_nonneg ‖xiSpectralPoint q‖, hpos,
+      div_nonneg (by positivity : (0:ℝ) ≤ 4 * M ^ 2) (le_of_lt (mul_pos hdw hdu))]
+
+theorem summable_apertureDominant (w u : ℂ) :
+    Summable (fun q : XiZeroCopy => apertureDominant w u / ‖xiSpectralPoint q‖ ^ 2) := by
+  refine (xiSpectralPoint_inv_sq_summable.mul_left (apertureDominant w u)).congr fun q => ?_
+  rw [mul_one_div]
+
+theorem re_sub_I_spectral_pos {w : ℂ} (hw : 1 / 2 < w.re) (q : XiZeroCopy) :
+    0 < (w - Complex.I * xiSpectralPoint q).re :=
+  lt_of_lt_of_le (by linarith) (re_sub_I_spectral_ge q)
+
+theorem re_add_I_spectral_pos {w : ℂ} (hw : 1 / 2 < w.re) (q : XiZeroCopy) :
+    0 < (w + Complex.I * xiSpectralPoint q).re :=
+  lt_of_lt_of_le (by linarith) (re_add_I_spectral_ge q)
+
+theorem tendsto_xiWeilPolarization_apertureA {w v : ℂ} (hw : 1 / 2 < w.re) (hv : 1 / 2 < v.re) :
+    Tendsto (fun a : ℝ => xiWeilPolarization (weilApertureA w a) (weilApertureA v a)) atTop
+      (𝓝 (xiWeilPolarization (weilChannelA w) (weilChannelA v))) := by
+  have hcv : 1 / 2 < (conj v).re := by
+    rwa [Complex.conj_re]
+  simp only [xiWeilPolarization, xiWeilSharp_weilApertureA, xiWeilSharp_channelA]
+  refine tendsto_tsum_of_dominated_convergence (summable_apertureDominant w (conj v))
+    (fun q => ?_) ?_
+  · exact (tendsto_weilApertureA (re_sub_I_spectral_pos hw q) (re_add_I_spectral_pos hw q)).mul
+      (tendsto_weilApertureA (re_sub_I_spectral_pos hcv q) (re_add_I_spectral_pos hcv q))
+  · filter_upwards [eventually_ge_atTop (0 : ℝ)] with a ha q
+    rw [norm_mul]
+    refine apertureDominant_bound hw hcv (norm_nonneg _)
+      (norm_weilApertureA_spectral_le hw q ha) (norm_weilApertureA_spectral_le hcv q ha)
+      (fun hfar => ⟨norm_weilApertureA_spectral_le' hw
+        (le_trans (by linarith [le_max_left ‖w‖ ‖(conj v)‖]) hfar) ha,
+        norm_weilApertureA_spectral_le' hcv
+        (le_trans (by linarith [le_max_right ‖w‖ ‖(conj v)‖]) hfar) ha⟩)
+
+theorem tendsto_xiWeilPolarization_apertureB {w v : ℂ} (hw : 1 / 2 < w.re) (hv : 1 / 2 < v.re) :
+    Tendsto (fun a : ℝ => xiWeilPolarization (weilApertureB w a) (weilApertureB v a)) atTop
+      (𝓝 (xiWeilPolarization (weilChannelB w) (weilChannelB v))) := by
+  have hcv : 1 / 2 < (conj v).re := by
+    rwa [Complex.conj_re]
+  simp only [xiWeilPolarization, xiWeilSharp_weilApertureB, xiWeilSharp_channelB]
+  refine tendsto_tsum_of_dominated_convergence (summable_apertureDominant w (conj v))
+    (fun q => ?_) ?_
+  · exact (tendsto_weilApertureB (re_sub_I_spectral_pos hw q) (re_add_I_spectral_pos hw q)).mul
+      (tendsto_weilApertureB (re_sub_I_spectral_pos hcv q) (re_add_I_spectral_pos hcv q))
+  · filter_upwards [eventually_ge_atTop (0 : ℝ)] with a ha q
+    rw [norm_mul]
+    refine apertureDominant_bound hw hcv (norm_nonneg _)
+      (norm_weilApertureB_spectral_le hw q ha) (norm_weilApertureB_spectral_le hcv q ha)
+      (fun hfar => ⟨norm_weilApertureB_spectral_le' hw
+        (le_trans (by linarith [le_max_left ‖w‖ ‖(conj v)‖]) hfar) ha,
+        norm_weilApertureB_spectral_le' hcv
+        (le_trans (by linarith [le_max_right ‖w‖ ‖(conj v)‖]) hfar) ha⟩)
+
+/-- The aperture-`a` two-channel Weil Gram kernel. -/
+def apertureTwoChannelKernel (a : ℝ) (x y : {W : ℂ // 1 / 2 < W.re}) : ℂ :=
+  xiWeilPolarization (weilApertureA (x : ℂ) a) (weilApertureA (y : ℂ) a)
+    + xiWeilPolarization (weilApertureB (x : ℂ) a) (weilApertureB (y : ℂ) a)
+
+/-- **Equation (27).**  The finite-aperture two-channel Weil Gram converges to the exact one. -/
+theorem tendsto_apertureTwoChannelKernel (x y : {W : ℂ // 1 / 2 < W.re}) :
+    Tendsto (fun a : ℝ => apertureTwoChannelKernel a x y) atTop (𝓝 (twoChannelKernel x y)) := by
+  rw [twoChannelKernel]
+  exact (tendsto_xiWeilPolarization_apertureA x.2 y.2).add
+    (tendsto_xiWeilPolarization_apertureB x.2 y.2)
+
+/-! ### Equations (30)-(32): index-faithful finite-aperture transport -/
+
+theorem xiWeilSquareSummable_weilApertureA {w : ℂ} (hw : 1 / 2 < w.re) {a : ℝ} (ha : 0 ≤ a) :
+    XiWeilSquareSummable (weilApertureA w a) := by
+  refine Summable.of_norm_bounded (summable_apertureDominant w w) (fun q => ?_)
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), sq]
+  exact apertureDominant_bound hw hw (norm_nonneg _)
+    (norm_weilApertureA_spectral_le hw q ha) (norm_weilApertureA_spectral_le hw q ha)
+    (fun hfar => ⟨norm_weilApertureA_spectral_le' hw
+        (le_trans (by simp) hfar) ha,
+      norm_weilApertureA_spectral_le' hw (le_trans (by simp) hfar) ha⟩)
+
+theorem xiWeilSquareSummable_weilApertureB {w : ℂ} (hw : 1 / 2 < w.re) {a : ℝ} (ha : 0 ≤ a) :
+    XiWeilSquareSummable (weilApertureB w a) := by
+  refine Summable.of_norm_bounded (summable_apertureDominant w w) (fun q => ?_)
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), sq]
+  exact apertureDominant_bound hw hw (norm_nonneg _)
+    (norm_weilApertureB_spectral_le hw q ha) (norm_weilApertureB_spectral_le hw q ha)
+    (fun hfar => ⟨norm_weilApertureB_spectral_le' hw
+        (le_trans (by simp) hfar) ha,
+      norm_weilApertureB_spectral_le' hw (le_trans (by simp) hfar) ha⟩)
+
+/-- The even aperture packet `A_{c,a}`. -/
+def aperturePacketA {n : ℕ} (a : ℝ) (c : Fin n → ℂ)
+    (w : Fin n → {W : ℂ // 1 / 2 < W.re}) : ℂ → ℂ :=
+  fun z => ∑ j, c j * weilApertureA ((w j : ℂ)) a z
+
+/-- The odd aperture packet `B_{c,a}`. -/
+def aperturePacketB {n : ℕ} (a : ℝ) (c : Fin n → ℂ)
+    (w : Fin n → {W : ℂ // 1 / 2 < W.re}) : ℂ → ℂ :=
+  fun z => ∑ j, c j * weilApertureB ((w j : ℂ)) a z
+
+theorem xiWeilPolarization_aperturePacketA {n : ℕ} {a : ℝ} (ha : 0 ≤ a) (c d : Fin n → ℂ)
+    (w : Fin n → {W : ℂ // 1 / 2 < W.re}) :
+    xiWeilPolarization (aperturePacketA a c w) (aperturePacketA a d w)
+      = ∑ j, ∑ k, c j * conj (d k)
+          * xiWeilPolarization (weilApertureA ((w j : ℂ)) a) (weilApertureA ((w k : ℂ)) a) := by
+  have hsum : ∀ j ∈ (Finset.univ : Finset (Fin n)),
+      XiWeilSquareSummable (weilApertureA ((w j : ℂ)) a) :=
+    fun j _ => xiWeilSquareSummable_weilApertureA (w j).2 ha
+  unfold aperturePacketA
+  rw [xiWeilPolarization_finsetSum_left hsum c (XiWeilSquareSummable.finsetSum hsum d)]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [xiWeilPolarization_finsetSum_right hsum d (hsum j (Finset.mem_univ j)), Finset.mul_sum]
+  exact Finset.sum_congr rfl fun k _ => by ring
+
+theorem xiWeilPolarization_aperturePacketB {n : ℕ} {a : ℝ} (ha : 0 ≤ a) (c d : Fin n → ℂ)
+    (w : Fin n → {W : ℂ // 1 / 2 < W.re}) :
+    xiWeilPolarization (aperturePacketB a c w) (aperturePacketB a d w)
+      = ∑ j, ∑ k, c j * conj (d k)
+          * xiWeilPolarization (weilApertureB ((w j : ℂ)) a) (weilApertureB ((w k : ℂ)) a) := by
+  have hsum : ∀ j ∈ (Finset.univ : Finset (Fin n)),
+      XiWeilSquareSummable (weilApertureB ((w j : ℂ)) a) :=
+    fun j _ => xiWeilSquareSummable_weilApertureB (w j).2 ha
+  unfold aperturePacketB
+  rw [xiWeilPolarization_finsetSum_left hsum c (XiWeilSquareSummable.finsetSum hsum d)]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [xiWeilPolarization_finsetSum_right hsum d (hsum j (Finset.mem_univ j)), Finset.mul_sum]
+  exact Finset.sum_congr rfl fun k _ => by ring
+
+theorem aperture_packet_eq_kernelEnergy {n : ℕ} {a : ℝ} (ha : 0 ≤ a) (c : Fin n → ℂ)
+    (w : Fin n → {W : ℂ // 1 / 2 < W.re}) :
+    xiWeilPolarization (aperturePacketA a c w) (aperturePacketA a c w)
+        + xiWeilPolarization (aperturePacketB a c w) (aperturePacketB a c w)
+      = kernelEnergy (apertureTwoChannelKernel a) (fun j => conj (c j)) w := by
+  rw [xiWeilPolarization_aperturePacketA ha, xiWeilPolarization_aperturePacketB ha, kernelEnergy,
+    ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [apertureTwoChannelKernel, Complex.conj_conj]
+  ring
+
+theorem tendsto_kernelEnergy_aperture {n : ℕ} (c : Fin n → ℂ)
+    (w : Fin n → {W : ℂ // 1 / 2 < W.re}) :
+    Tendsto (fun a : ℝ => kernelEnergy (apertureTwoChannelKernel a) c w) atTop
+      (𝓝 (kernelEnergy twoChannelKernel c w)) := by
+  simp only [kernelEnergy]
+  refine tendsto_finsetSum _ fun j _ => tendsto_finsetSum _ fun k _ => ?_
+  exact (tendsto_apertureTwoChannelKernel (w j) (w k)).const_mul _
+
+/-- **Equation (30).**  A negative exact two-channel energy is already negative at every
+sufficiently large finite aperture. -/
+theorem eventually_aperture_energy_neg {n : ℕ} {c : Fin n → ℂ}
+    {w : Fin n → {W : ℂ // 1 / 2 < W.re}}
+    (h : (kernelEnergy twoChannelKernel c w).re < 0) :
+    ∀ᶠ a : ℝ in atTop, (kernelEnergy (apertureTwoChannelKernel a) c w).re < 0 :=
+  ((Complex.continuous_re.tendsto _).comp (tendsto_kernelEnergy_aperture c w)).eventually_lt_const h
+
+/-- **Equation (32).**  Nonnegativity of every finite-aperture two-channel Weil form is exactly the
+Riemann hypothesis. -/
+theorem riemannHypothesis_iff_forall_aperture_energy_nonneg :
+    RiemannHypothesis ↔
+      ∀ a : ℝ, 0 ≤ a → ∀ (n : ℕ) (c : Fin n → ℂ) (w : Fin n → {W : ℂ // 1 / 2 < W.re}),
+        0 ≤ (kernelEnergy (apertureTwoChannelKernel a) c w).re := by
+  constructor
+  · intro hRH a ha n c w
+    have hval := aperture_packet_eq_kernelEnergy ha (fun j => conj (c j)) w
+    simp only [Complex.conj_conj] at hval
+    rw [← hval, Complex.add_re]
+    have hsumA : XiWeilSquareSummable (aperturePacketA a (fun j => conj (c j)) w) :=
+      XiWeilSquareSummable.finsetSum
+        (fun j _ => xiWeilSquareSummable_weilApertureA (w j).2 ha) _
+    have hsumB : XiWeilSquareSummable (aperturePacketB a (fun j => conj (c j)) w) :=
+      XiWeilSquareSummable.finsetSum
+        (fun j _ => xiWeilSquareSummable_weilApertureB (w j).2 ha) _
+    have hA := xiWeilPolarization_diagonal_nonneg_of_riemannHypothesis hRH _ hsumA
+    have hB := xiWeilPolarization_diagonal_nonneg_of_riemannHypothesis hRH _ hsumB
+    linarith
+  · intro h
+    refine riemannHypothesis_iff_isPSDKernel_twoChannel.mpr
+      ((isPSDKernel_iff_forall_energy_nonneg twoChannelKernel_conj_symm).mpr fun n c w => ?_)
+    refine ge_of_tendsto
+      ((Complex.continuous_re.tendsto _).comp (tendsto_kernelEnergy_aperture c w)) ?_
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with a ha
+    exact h a ha n c w
+
 end RHTower

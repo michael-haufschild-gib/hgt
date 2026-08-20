@@ -109,6 +109,54 @@ def HLSStronglyContinuousPoincareRepresentation.toPoincareRepresentation {E : Ty
     (ρ : HLSStronglyContinuousPoincareRepresentation E) : HLSPoincareRepresentation E :=
   ⟨ρ.action⟩
 
+/-- A strongly continuous Poincaré representation is strongly continuous on its full translation
+subgroup. -/
+theorem HLSStronglyContinuousPoincareRepresentation.translation_strongly_continuous {E : Type u}
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (ρ : HLSStronglyContinuousPoincareRepresentation E) :
+    @Continuous HLSMinkowskiVector (E ≃ₗᵢ[ℂ] E) inferInstance (hlsStrongUnitaryTopology E)
+      (fun a => ρ.action (hlsTranslation a)) := by
+  exact @Continuous.comp HLSMinkowskiVector HLSPhysicalPoincareGroup (E ≃ₗᵢ[ℂ] E)
+    inferInstance hlsPhysicalPoincareTopology (hlsStrongUnitaryTopology E)
+    hlsTranslation ρ.action ρ.strongly_continuous hlsTranslation_continuous
+
+/-- A strongly continuous Poincaré representation is strongly continuous on the pure-Lorentz
+subgroup. -/
+theorem HLSStronglyContinuousPoincareRepresentation.lorentz_strongly_continuous {E : Type u}
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (ρ : HLSStronglyContinuousPoincareRepresentation E) :
+    @Continuous hlsProperOrthoLorentzGroup (E ≃ₗᵢ[ℂ] E)
+      hlsProperOrthoLorentzTopology (hlsStrongUnitaryTopology E)
+      (fun g => ρ.action (hlsLorentzAt g)) := by
+  exact @Continuous.comp hlsProperOrthoLorentzGroup HLSPhysicalPoincareGroup (E ≃ₗᵢ[ℂ] E)
+    hlsProperOrthoLorentzTopology hlsPhysicalPoincareTopology (hlsStrongUnitaryTopology E)
+    hlsLorentzAt ρ.action ρ.strongly_continuous hlsLorentzAt_continuous
+
+/-- The unit-modulus translation character of momentum `p` at translation `x`. -/
+def hlsTranslationPhase (p x : HLSMinkowskiVector) : ℂ :=
+  Complex.exp (-Complex.I * (hlsMinkowskiPairing p x : ℂ))
+
+/-- Physical translation phases are unitary scalars. -/
+theorem hlsTranslationPhase_norm (p x : HLSMinkowskiVector) :
+    ‖hlsTranslationPhase p x‖ = 1 := by
+  rw [hlsTranslationPhase, Complex.norm_exp]
+  simp [Complex.mul_re]
+
+/-- The translation phase at fixed momentum is a character of the translation subgroup. -/
+theorem hlsTranslationPhase_add (p x y : HLSMinkowskiVector) :
+    hlsTranslationPhase p (x + y) = hlsTranslationPhase p x * hlsTranslationPhase p y := by
+  simp only [hlsTranslationPhase, hlsMinkowskiPairing_add_right]
+  push_cast
+  rw [mul_add, Complex.exp_add]
+
+/-- The translation character is Lorentz invariant when momentum and translation are transformed
+together. -/
+theorem hlsTranslationPhase_lorentz (g : hlsProperOrthoLorentzGroup)
+    (p x : HLSMinkowskiVector) :
+    hlsTranslationPhase (g.1 p) (g.1 x) = hlsTranslationPhase p x := by
+  simp only [hlsTranslationPhase]
+  rw [hlsProperOrthoLorentz_preserves_pairing]
+
 /-- Compatibility of labelled one-particle states and the full state-sector split with a unitary
 Poincaré representation.  This is the actual positive-energy one-particle representation input;
 the mass-shell and energy inequalities live in `HLSOneParticleData`.  The translation character
@@ -133,8 +181,7 @@ structure HLSOneParticlePoincareData (A : Type v) (E : Type u) [NormedAddCommGro
     particles.fermionic (particleLorentz g a) ↔ particles.fermionic a
   translation_eigenstate : ∀ x a,
     poincare.action (hlsTranslation x) (particles.state a) =
-      Complex.exp (-Complex.I * (hlsMinkowskiPairing (particles.momentum a) x : ℂ)) •
-        particles.state a
+      hlsTranslationPhase (particles.momentum a) x • particles.state a
   oneParticle_invariant : ∀ g ψ, ψ ∈ sectors.oneParticleSector →
     poincare.action g ψ ∈ sectors.oneParticleSector
   multiparticle_invariant : ∀ g ψ, ψ ∈ sectors.multiparticleSector →
@@ -148,6 +195,16 @@ structure HLSOneParticlePoincareData (A : Type v) (E : Type u) [NormedAddCommGro
     particles.state a ∈ sectors.bosonicSector
   fermionic_particle_state : ∀ a, particles.fermionic a →
     particles.state a ∈ sectors.fermionicSector
+
+/-- Lorentz transport preserves the mass-shell assertion carried by every one-particle label. -/
+theorem HLSOneParticlePoincareData.lorentz_transported_mass_shell {A : Type v} {E : Type u}
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (data : HLSOneParticlePoincareData A E) (g : hlsProperOrthoLorentzGroup) (a : A) :
+    hlsMassShell (data.particles.mass (data.particleLorentz g a))
+      (data.particles.momentum (data.particleLorentz g a)) := by
+  rw [data.mass_lorentz_invariant, data.momentum_lorentz_covariant]
+  exact (hlsProperOrthoLorentz_preserves_massShell g (data.particles.mass a)
+    (data.particles.momentum a)).mpr (data.particles.on_mass_shell a)
 
 /-- A Hilbert-space realization of the algebraic Bose/Fermi Fock core.  Its image is dense in
 the physical state space, and the vacuum and one-creation states land in their named sectors.
@@ -260,6 +317,11 @@ def hlsDomainAnticommutator {E : Type u} [NormedAddCommGroup E] [InnerProductSpa
     [CompleteSpace E] (D : Submodule ℂ E) (A B : D →ₗ[ℂ] D) : D →ₗ[ℂ] D :=
   A.comp B + B.comp A
 
+/-- Matrix commutator for finite Weyl-spinor transformations. -/
+def hlsMatrixCommutator {ι : Type v} [Fintype ι] [DecidableEq ι]
+    (A B : Matrix ι ι ℂ) : Matrix ι ι ℂ :=
+  A * B - B * A
+
 /-- Exact Poincaré Lie-algebra relations for self-adjoint generators, expressed on their common
 invariant domain.  `HLSGeneratorIntegrationData` can further identify these generators with
 derivatives of a strongly continuous group action. -/
@@ -340,6 +402,35 @@ theorem hlsWeylEpsilon_antisymmetric : hlsWeylEpsilon.transpose = -hlsWeylEpsilo
   ext i j
   fin_cases i <;> fin_cases j <;> simp [hlsWeylEpsilon]
 
+/-- The Weyl epsilon tensor is nondegenerate: its square is minus the identity. -/
+theorem hlsWeylEpsilon_squared : hlsWeylEpsilon * hlsWeylEpsilon = -1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [hlsWeylEpsilon, Matrix.mul_apply, Fin.sum_univ_two]
+
+/-- Standard Weyl sigma matrices `(1, σ₁, σ₂, σ₃)` for signature `(1, 3)`. -/
+def hlsWeylSigma : Fin 4 → Matrix (Fin 2) (Fin 2) ℂ :=
+  ![!![1, 0; 0, 1],
+    !![0, 1; 1, 0],
+    !![0, -Complex.I; Complex.I, 0],
+    !![1, 0; 0, -1]]
+
+/-- Conjugate Weyl matrices `(1, -σ₁, -σ₂, -σ₃)`. -/
+def hlsWeylBarSigma : Fin 4 → Matrix (Fin 2) (Fin 2) ℂ :=
+  ![!![1, 0; 0, 1],
+    !![0, -1; -1, 0],
+    !![0, Complex.I; -Complex.I, 0],
+    !![-1, 0; 0, 1]]
+
+/-- The standard Weyl matrices satisfy the Clifford relation for the HLS Minkowski metric. -/
+theorem hlsWeylSigma_clifford (μ ν : Fin 4) :
+    hlsWeylSigma μ * hlsWeylBarSigma ν + hlsWeylSigma ν * hlsWeylBarSigma μ =
+      ((2 : ℂ) * hlsComplexMinkowskiMetric μ ν) • 1 := by
+  fin_cases μ <;> fin_cases ν <;>
+    ext i j <;> fin_cases i <;> fin_cases j <;>
+    simp [hlsWeylSigma, hlsWeylBarSigma, hlsComplexMinkowskiMetric, hlsMinkowskiMetric] <;>
+      ring
+
 /-- Weyl-spinor transformation and translation-invariance laws on a common invariant domain.
 The matrices `lorentzOnSpinor` are supplied representation data; deriving the unique Weyl form
 from physical hypotheses is part of the unformalized HLS classification proof. -/
@@ -399,7 +490,17 @@ structure HLSPoincareWeylSuperalgebraData (N : Type v) [DecidableEq N] (E : Type
   conjugateSupercharge : N → Fin 2 → poincare.generators.commonDomain →ₗ[ℂ]
     poincare.generators.commonDomain
   lorentzOnSpinor : Fin 4 → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ
+  lorentzOnSpinor_antisymmetric : ∀ μ ν,
+    lorentzOnSpinor μ ν = -lorentzOnSpinor ν μ
+  lorentzOnSpinor_bracket : ∀ μ ν ρ σ,
+    hlsMatrixCommutator (lorentzOnSpinor μ ν) (lorentzOnSpinor ρ σ) =
+      Complex.I •
+        (hlsComplexMinkowskiMetric μ σ • lorentzOnSpinor ν ρ +
+          hlsComplexMinkowskiMetric ν ρ • lorentzOnSpinor μ σ -
+          hlsComplexMinkowskiMetric μ ρ • lorentzOnSpinor ν σ -
+          hlsComplexMinkowskiMetric ν σ • lorentzOnSpinor μ ρ)
   sigma : Fin 4 → Matrix (Fin 2) (Fin 2) ℂ
+  sigma_standard : sigma = hlsWeylSigma
   centralCharge : N → N → poincare.generators.commonDomain →ₗ[ℂ]
     poincare.generators.commonDomain
   conjugate_adjoint : ∀ I α (ψ φ : poincare.generators.commonDomain),
@@ -556,17 +657,21 @@ structure HLSMassPreservingGeneratorData (A : Type u) where
   transition : A → A → Prop
   connects_equal_mass : ∀ a b, transition a b → mass a = mass b
 
-/-- Massive-sector assumptions excluding vacuum degeneracy, massless particles, and infinite
-low-mass towers.  The positive mass gap is the explicit infrared restriction for this massive HLS
-setting. -/
-structure HLSMassiveSectorRestrictions (E : Type u) [NormedAddCommGroup E]
-    [InnerProductSpace ℂ E] [CompleteSpace E] (A : Type v) where
-  vacuum : E
-  vacuumOrbit : Set E
-  vacuum_unique : ∀ ψ ∈ vacuumOrbit, ψ = vacuum
-  mass : A → ℝ
-  positive_mass : ∀ a, 0 < mass a
-  mass_gap : ∃ m₀, 0 < m₀ ∧ ∀ a, m₀ ≤ mass a
+/-- Massive-sector assumptions attached to the actual one-particle Poincaré system.  Vacuum
+uniqueness is supplied by `vacuum_invariant_vectors`; positive mass and a gap are the explicit
+infrared restriction for this massive HLS setting. -/
+structure HLSMassiveSectorRestrictions (A : Type v) (E : Type u) [NormedAddCommGroup E]
+    [InnerProductSpace ℂ E] [CompleteSpace E] where
+  particlePoincare : HLSOneParticlePoincareData A E
+  positive_mass : ∀ a, 0 < particlePoincare.particles.mass a
+  mass_gap : ∃ m₀, 0 < m₀ ∧ ∀ a, m₀ ≤ particlePoincare.particles.mass a
+
+/-- The massive-sector condition excludes massless one-particle labels. -/
+theorem HLSMassiveSectorRestrictions.mass_ne_zero {A : Type v} {E : Type u}
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (data : HLSMassiveSectorRestrictions A E) (a : A) :
+    data.particlePoincare.particles.mass a ≠ 0 :=
+  ne_of_gt (data.positive_mass a)
 
 /-- A finite-order distributional generator kernel on a momentum-space open region. -/
 structure HLSDistributionalGeneratorKernelData where
@@ -595,5 +700,35 @@ structure HLSPhysicalAnalyticScatteringInput (A : Type v) (E : Type u)
     [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E] where
   physicalScattering : HLSPhysicalScatteringData A E
   analyticElastic : HLSAnalyticScatteringData
+
+/-- One coherent package of the physical HLS input: an integrated, graded symmetry of a
+nontrivial unitary S-matrix; massive finite-multiplicity particles; regular analytic elastic
+scattering; and distributional kernels for all Poincaré and supercharge generators.  It remains
+input data, not a purported premise-free classification theorem. -/
+structure HLSPhysicalSystemInput (N B : Type v) [DecidableEq N] (A F : Type w) (E : Type u)
+    [AddCommGroup B] [Module ℂ B] [AddCommGroup F] [Module ℂ F]
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E] where
+  weylScattering : HLSPhysicalWeylScatteringData N A E
+  fockCompletion : HLSFockStateCompletionData B F E
+  fock_sectors_agree : fockCompletion.sectors =
+    weylScattering.physicalScattering.particlePoincare.sectors
+  bosonicLabel : {a : A //
+    ¬ weylScattering.physicalScattering.particlePoincare.particles.fermionic a} → B
+  fermionicLabel : {a : A //
+    weylScattering.physicalScattering.particlePoincare.particles.fermionic a} → F
+  bosonicLabel_state : ∀ a,
+    fockCompletion.completion (hlsBosonCreate B F (bosonicLabel a)) =
+      weylScattering.physicalScattering.particlePoincare.particles.state a
+  fermionicLabel_state : ∀ a,
+    fockCompletion.completion (hlsFermionCreate B F (fermionicLabel a)) =
+      weylScattering.physicalScattering.particlePoincare.particles.state a
+  massive : HLSMassiveSectorRestrictions A E
+  massive_particles_agree : massive.particlePoincare =
+    weylScattering.physicalScattering.particlePoincare
+  analyticElastic : HLSAnalyticScatteringData
+  translationKernel : Fin 4 → HLSDistributionalGeneratorKernelData
+  lorentzKernel : Fin 4 → Fin 4 → HLSDistributionalGeneratorKernelData
+  superchargeKernel : N → Fin 2 → HLSDistributionalGeneratorKernelData
+  conjugateSuperchargeKernel : N → Fin 2 → HLSDistributionalGeneratorKernelData
 
 end GaloisForLFunctions.HTGeometry
