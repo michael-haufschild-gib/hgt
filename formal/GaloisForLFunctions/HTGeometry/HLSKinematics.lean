@@ -630,6 +630,50 @@ theorem hlsTranslationAt_continuous (μ : Fin 4) : @Continuous ℝ HLSPhysicalPo
 /-- The Clifford spin group of the HLS Minkowski form. -/
 abbrev HLSSpinGroup := spinGroup hlsMinkowskiForm
 
+/-- A unit spacelike Clifford vector is a Pin element.  This gives a fully concrete supply of
+reflections for the physical Minkowski signature. -/
+theorem hlsCliffordIota_mem_pin_of_minkowski_eq_neg_one (u : HLSMinkowskiVector)
+    (huq : hlsMinkowskiForm u = -1) :
+    CliffordAlgebra.ι hlsMinkowskiForm u ∈ pinGroup hlsMinkowskiForm := by
+  have hu_unit : IsUnit (hlsMinkowskiForm u) := by
+    rw [huq]
+    exact isUnit_neg_one
+  have hι_unit : IsUnit (CliffordAlgebra.ι hlsMinkowskiForm u) :=
+    CliffordAlgebra.isUnit_ι_of_isUnit hlsMinkowskiForm hu_unit
+  let u' : (CliffordAlgebra hlsMinkowskiForm)ˣ := hι_unit.unit
+  have hu' : (u' : CliffordAlgebra hlsMinkowskiForm) =
+      CliffordAlgebra.ι hlsMinkowskiForm u := hι_unit.unit_spec
+  have hu_lipschitz : u' ∈ lipschitzGroup hlsMinkowskiForm := by
+    change u' ∈ Subgroup.closure
+      ((fun x : (CliffordAlgebra hlsMinkowskiForm)ˣ =>
+        (x : CliffordAlgebra hlsMinkowskiForm)) ⁻¹'
+        Set.range (CliffordAlgebra.ι hlsMinkowskiForm))
+    apply Subgroup.subset_closure
+    exact ⟨u, hu'⟩
+  apply pinGroup.mem_iff.mpr
+  constructor
+  · exact ⟨u', hu_lipschitz, hu'⟩
+  · constructor
+    · rw [CliffordAlgebra.star_ι, neg_mul,
+        CliffordAlgebra.ι_sq_scalar, huq]
+      norm_num
+    · rw [CliffordAlgebra.star_ι, mul_neg,
+        CliffordAlgebra.ι_sq_scalar, huq]
+      norm_num
+
+/-- A product of two unit spacelike Clifford vectors is a Spin element. -/
+theorem hlsCliffordIota_mul_iota_mem_spin_of_minkowski_eq_neg_one
+    (u v : HLSMinkowskiVector) (hu : hlsMinkowskiForm u = -1)
+    (hv : hlsMinkowskiForm v = -1) :
+    CliffordAlgebra.ι hlsMinkowskiForm u * CliffordAlgebra.ι hlsMinkowskiForm v ∈
+      HLSSpinGroup := by
+  apply spinGroup.mem_iff.mpr
+  constructor
+  · exact (pinGroup hlsMinkowskiForm).mul_mem
+      (hlsCliffordIota_mem_pin_of_minkowski_eq_neg_one u hu)
+      (hlsCliffordIota_mem_pin_of_minkowski_eq_neg_one v hv)
+  · exact CliffordAlgebra.ι_mul_ι_mem_evenOdd_zero hlsMinkowskiForm u v
+
 /-- Conjugation by a Clifford-spin element as an algebra equivalence of the ambient Clifford
 algebra. -/
 def hlsSpinConjugation (s : HLSSpinGroup) :
@@ -933,6 +977,22 @@ transformation. -/
 def hlsSpinPlusCoverFiber (s : HLSSpinPlusGroup) : Set HLSSpinPlusGroup :=
   {t | hlsSpinPlusToProperLorentz t = hlsSpinPlusToProperLorentz s}
 
+/-- Translation by `s⁻¹` identifies the actual fiber above the image of `s` with the canonical
+kernel.  Thus exact fiber classification is precisely exact kernel classification. -/
+def hlsSpinPlusCoverFiberEquivKernel (s : HLSSpinPlusGroup) :
+    hlsSpinPlusCoverFiber s ≃ hlsSpinPlusToProperLorentz.ker where
+  toFun t := ⟨t.1 * s⁻¹, by
+    rw [MonoidHom.mem_ker, map_mul, t.2, map_inv, mul_inv_cancel]⟩
+  invFun k := ⟨k.1 * s, by
+    change hlsSpinPlusToProperLorentz (k.1 * s) = hlsSpinPlusToProperLorentz s
+    rw [map_mul, MonoidHom.mem_ker.mp k.2, one_mul]⟩
+  left_inv t := by
+    apply Subtype.ext
+    simp
+  right_inv k := by
+    apply Subtype.ext
+    simp
+
 /-- Every represented proper Lorentz transformation has the two central Spin-plus lifts `s` and
 `-s` in its actual fiber. -/
 def hlsSpinPlusCoverFiberBool (s : HLSSpinPlusGroup) : Bool → hlsSpinPlusCoverFiber s
@@ -1007,6 +1067,12 @@ properties for `hlsSpinPlusToProperLorentz` itself. -/
 structure HLSSpinLorentzCoverData where
   surjective : Function.Surjective hlsSpinPlusToProperLorentz
   kernel_equiv_bool : hlsSpinPlusToProperLorentz.ker ≃ Bool
+
+/-- Subject only to the named double-cover obligation, each actual canonical Spin-plus fiber is
+equivalent to the two-element type. -/
+def hlsSpinPlusCoverFiberEquivBool (cover : HLSSpinLorentzCoverData)
+    (s : HLSSpinPlusGroup) : hlsSpinPlusCoverFiber s ≃ Bool :=
+  (hlsSpinPlusCoverFiberEquivKernel s).trans cover.kernel_equiv_bool
 
 /-- Spin-plus action on translations through its canonical proper Lorentz action. -/
 def hlsSpinTranslationAction : HLSSpinPlusGroup →*
@@ -1112,5 +1178,32 @@ theorem hlsUnitRestMomentum_futureTimelike : hlsFutureTimelike hlsUnitRestMoment
   · exact hlsUnitRestMomentum_positive_energy
   · rw [hlsUnitRestMomentum_mass_shell]
     norm_num
+
+/-- Rest momentum for a particle of mass `m`. -/
+def hlsRestMomentum (m : ℝ) : HLSMinkowskiVector := m • hlsUnitRestMomentum
+
+/-- The rest momentum has energy equal to its mass parameter. -/
+theorem hlsRestMomentum_energy (m : ℝ) : hlsRestMomentum m 0 = m := by
+  simp [hlsRestMomentum, hlsUnitRestMomentum]
+
+/-- Rest momentum lies on the mass shell of its mass parameter. -/
+theorem hlsRestMomentum_mass_shell (m : ℝ) : hlsMassShell m (hlsRestMomentum m) := by
+  change hlsMinkowskiForm (hlsRestMomentum m) = m ^ 2
+  rw [hlsMinkowskiForm_apply]
+  simp [hlsRestMomentum, hlsUnitRestMomentum]
+
+/-- Every strictly positive mass has a future-timelike rest momentum. -/
+theorem hlsRestMomentum_futureTimelike {m : ℝ} (hm : 0 < m) :
+    hlsFutureTimelike (hlsRestMomentum m) := by
+  constructor
+  · simpa only [hlsRestMomentum_energy] using hm
+  · rw [show hlsMinkowskiForm (hlsRestMomentum m) = m ^ 2 from
+      hlsRestMomentum_mass_shell m]
+    exact sq_pos_of_pos hm
+
+/-- Every strictly positive mass shell has a concrete future-timelike point. -/
+theorem hls_exists_futureTimelike_massShell {m : ℝ} (hm : 0 < m) :
+    ∃ p, hlsFutureTimelike p ∧ hlsMassShell m p :=
+  ⟨hlsRestMomentum m, hlsRestMomentum_futureTimelike hm, hlsRestMomentum_mass_shell m⟩
 
 end GaloisForLFunctions.HTGeometry

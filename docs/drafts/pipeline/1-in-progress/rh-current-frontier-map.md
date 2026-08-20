@@ -30,8 +30,8 @@ RH and its negation remain unproved.
 
 ## Executive map
 
-Formal corpus currently supports fourteen live architectures:
-`CCM-FU, C1, D2, E, G, L, O, P, Q, CLG, T, U, HC`, and
+Formal corpus currently supports fifteen live architectures:
+`CCM-FU, C1, D2, E, F2, G, L, O, P, Q, CLG, T, U, HC`, and
 **SV2 (Suzuki spherical characteristic convergence)**. Thirteen corpus-born receiver/source-mechanism
 candidates remain: `UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS, SEC, BPC`. Routes R, IW, and AP are terminal as independent
 producers. Current formal corpus closes important intermediate premises, but does not close any route's
@@ -43,6 +43,7 @@ final open producer and proves neither RH nor its negation.
 | C1 | corrected theta/prime--Gamma source -> Weil/Connes form or real spectral realization -> RH | Construct a source-derived non-dominating or signed correction before final positivity; raw positive/passive Stokes completion is impossible. |
 | D2 | continued prime--arch trace -> one-sided anti-Herglotz/finite ceiling -> RH | Source control of sole positive-frequency tail by a reflected signed/non-dominating law; canonical directed passive limits are impossible. |
 | E | squarefree Wold source -> two-sign half-power marker supply -> exact integer-pair incidence -> unit-load Hall transport with moving flux -> RH | Build one Ramaré-supported relation joining proved marker supply to relation-specific subinterval Hall, unit load, co-moving flux, and Gibbs cost. |
+| F2 | all-prime principal-relative Sonin residual -> positive trace-class energy -> one intrinsic Hankel moment curve -> continued prime--Gamma moment germ -> RH | Prove one source-derived cofinal aperture section, positive aperture barycenter, or equivalent all-moment weld from the Sonin energy moments to the fixed prime--Gamma moments. |
 | G | Suzuki/Mobius/Gamma source -> marked pre-scalar or signed-channel carrier -> exact Ward landing -> wall orientation -> RH | Independent source law forcing the already-transported Ward coefficient to vanish or have the required signed order; Schur coisometry and causal limit do not supply four-unit orientation. |
 | L | completed Green/BV/Big-Witt/co-Poisson source -> bounded completed jet system -> singular Calderon--Witt comparison -> physical reader -> RH | Extend the now-bounded literal first Sonine logarithmic Mellin jet to all required multiplicity jets and completed closure, then identify resolved flatness with the existing physical landing before divisor specialization. |
 | O | exact restricted-Weil operator -> canonical true-ground heads -> coherent signed producer -> nonnegative floor -> RH | Sign of cancellation-preserving coherent finite-head producer, equivalently eventual reverse-prime control on canonical actual heads. |
@@ -81,6 +82,18 @@ budget, this is not HC's producer. Random Euler, Fisher, prime-boundary Poisson/
 completion, difference-Galois, and finite-conductor Dirichlet additions are classified below as
 pre-route infrastructure or firewalls.
 
+The corpus also exposes live successor **F2**, distinct from retired Route F. The actual weighted
+all-prime Sonin residual is Hilbert--Schmidt; its positive trace-class energy has nonnegative
+trace--Hankel tests governed by one moment sequence. A single cofinal aperture sequence matching
+that sequence to every fixed continued prime--Gamma moment, or a positive aperture barycenter with
+those moments, formally implies RH. New semilocal modules now construct an actual finite cyclic
+trace-class prime-power source, complete its trace to the continued prime--archimedean germ, and
+identify all resulting centered moments with the Xi reciprocal moments. Independently they
+construct a source-free positive trace-class prolate boundary-leakage carrier and identify its trace
+with prolate impurity. No theorem identifies either completed trace family with the positive
+all-prime Sonin moment curve. F2's frontier is this source-to-source all-moment weld, not another
+bounded compact correction, one scalar trace identity, or post-divisor spectral model.
+
 Cross-cutting current state changes several frontiers but no live or candidate count. **W2C**, the
 two-channel Weil resolvent/aperture bridge, proves that CLG's critical logarithmic-derivative kernel
 is exactly the sum of canonical even and odd Weil Gram channels, realizes both as truncated
@@ -110,13 +123,17 @@ closed; RH status is unchanged.
 Route-wide implication is explicit. E gains reciprocal row-mass and two-adic character-correlation
 inputs but retains its fixed signed relation producer. T and HC gain exact finite zero-detector
 coefficient algebra, conductor aggregation, and character-Gram cubic diagonal/off-diagonal
-decomposition, but no refined off-diagonal estimate, analytic zero alternative, signed short-block
+decomposition. Exact detector-tail formation and `M_X L = 1 + tail` are now proved on `Re(s)>1`,
+with the tail zero through the cutoff, but no theorem evaluates that tail at a critical-strip zero.
+Thus there is still no refined off-diagonal estimate, analytic zero alternative, signed short-block
 bound, or absolute off-line upper count. CLG gains exact W2C realization, finite-aperture index
 retention, a sharper multi-node formulation, and a two-node no-go; this changes detector geometry,
 not source burden. HC loses critical-edge and height-selection
 obstacles but retains absolute detector/off-line control. PLAC can feed PBM/G/L/T with a singular
 coefficient-faithful depth connection; EPC can feed CCM-FU/CLG/G/L with polarized leakage; neither
-has a new source theorem. BPS language applies to receivers throughout C1, G, L, O, P, U, HC, and
+has a new source theorem. F2 gains literal trace-class provenance on both semilocal sides and a
+positive prolate finite part, but still lacks the joint moment identification transferring that
+positivity to the continued prime--Gamma germ. BPS language applies to receivers throughout C1, G, L, O, P, U, HC, and
 adjacent candidates, but merely identifies their unsaturated defect. CCM-FU, C1, D2, G, L, O, P,
 Q, U, SV2 and all thirteen candidates retain the first open cores stated below; W2C only identifies
 a common paired receiver, and no declaration in
@@ -458,6 +475,65 @@ longer frontier. Marker cardinality alone does not declare adjacency, prove Hall
 Ramaré relation, control target co-degree, or cross the moving sector cutoff. Existential complete
 bipartite transport is not enough: its defect is original Möbius imbalance. On squarefree hard
 support valuation depth is fixed; hard axis is all-prime breadth.
+
+### F2 — cofinal all-prime Sonin moment weld
+
+**Architecture.** Assemble the literal logarithmically weighted, principal-subtracted Sonin
+residuals over every prime power into one Hilbert--Schmidt operator `K_a`. Its energy
+`T_a = K_a^* K_a` is positive and trace class. Real-polynomial probes of `T_a` therefore give a
+nonnegative trace--Hankel form, and every such form is governed by the single intrinsic sequence
+
+```text
+m_r(a) = Tr(T_a^(r+1)).
+```
+
+The continued prime--Gamma source has a fixed centered moment sequence `M_r`, unconditionally
+equal to the centered Xi reciprocal moments. If one positive aperture sequence makes every fixed
+`m_r(a_j)` converge to `M_r`, or if one positive aperture law has `M_r` as the barycenter of the
+Sonin moments, positivity passes to every integer-polynomial prime--Gamma Hankel test and forces
+RH. This route is infinite, paired, nonphysical, and entirely pre-divisor at its open premise.
+
+**Proved.** `SoninAllPrimeResidualKernel.lean` constructs `K_a`, proves Hilbert--Schmidt
+convergence, constructs positive trace-class `T_a`, and proves every real-polynomial trace--Hankel
+test is real and nonnegative. `SoninAllPrimeHankelCollapse.lean` reduces the full Gram functional to
+the one moment sequence above. `SoninPrimeArchPerTestTransfer.lean`,
+`SoninPrimeArchFiniteMomentTransfer.lean`, and `SoninPrimeArchCofinalMomentSection.lean` prove the
+successive transfer chain: finite moment-block closure is equivalent to one cofinal all-moment
+aperture section, and either the section or a uniform growing-block approximation implies RH.
+`SoninPrimeArchMomentBarycenter.lean` gives the parallel positive-aperture-law route.
+
+The latest source modules make the two sides literal without joining them.
+`SoninSemilocalCorrectedSource.lean` constructs an actual trace-class finite cyclic prime-power
+operator, proves its trace is the finite von--Mangoldt flux, adds the exact continued
+prime--archimedean completion remainder, and proves every centered moment of the completed trace
+family equals the actual Xi reciprocal moment. `SoninSemilocalProlateFinitePart.lean` independently
+constructs the physical/Fourier boundary transition, its positive trace-class carrier, and the
+identities
+
+```text
+Tr(carrier) = prolate finite part = Re Tr(T_prolate - T_prolate^2),
+retained prolate energy + finite part = 4 a^2.
+```
+
+These are provenance and positivity theorems on different carriers. The completion carrier in the
+corrected-source module realizes the required scalar trace by a normalized rank-one carrier; no
+theorem makes it positive or identifies its powers with `T_a`. Conversely, the prolate finite-part
+carrier contains no prime, Gamma, Xi, or completed-source coefficient.
+
+**Open core.** Prove, from the literal Sonin/prime--Gamma source and without divisor selection, one
+cofinal all-moment identification:
+
+```text
+forall r,  m_r(a_j) -> M_r
+```
+
+for a common aperture sequence, or the proved barycentric equivalent sufficient for every Hankel
+test. A useful stronger form would identify the completed cyclic remainder with the independently
+positive prolate/all-prime energy carrier in a way preserving all mixed powers, not merely its
+zeroth trace. One scalar trace equality cannot transfer Hankel positivity. Existing bounded or
+sublinear compact completions are formally excluded, and the coupled Feshbach/variance upper bound
+is itself classified as RH-equivalent. F2 is therefore the positive cofinal-moment successor to
+retired Route F, not a reopening of F's passive compact-completion mechanism.
 
 ### G — marked Suzuki/Mobius/Gamma boundary orientation
 
@@ -938,6 +1014,17 @@ off-line census closes. Working-tree `ChenGuptaLiAnalyticAnchor.lean` proves the
 Dirichlet `L`-function equals its series and the full character-twisted Möbius series is its exact
 inverse at certified absolute-convergence points. This anchors the detector on `Re(s)>1`; it does
 not continue the finite detector identity to zeros or prove a density alternative.
+`ChenGuptaLiDetectorTail.lean` now makes the safe-half-plane remainder literal: convolution of the
+finite Möbius polynomial with the full character series is unit plus one explicit tail, whose unit
+coefficient and every coefficient through the cutoff vanish, and on `Re(s)>1`
+
+```text
+M_X(s, chi) L(s, chi) = 1 + detectorTail_X(s, chi).
+```
+
+The tail is summable there. No declaration evaluates it at a critical-strip zero, moves this
+identity through the required contour, or bounds its off-diagonal correlations. It closes tail
+formation, not analytic zero detection.
 
 Formal sources: `XiCTaylorThetaTailCoreCurrentCapstone.lean`,
 `XiCTaylorThetaTailProductFiberHermitianCollapse.lean`, `Sieve/RouteTWidthUpper.lean`,
@@ -953,7 +1040,8 @@ Formal sources: `XiCTaylorThetaTailCoreCurrentCapstone.lean`,
 `SmoothAFETruncation.lean`, `ZetaChiVerticalGrowth.lean`,
 `BondarenkoHeapLemmaNineTwoAdic.lean`, `BondarenkoHeapLemmaTenConductorAggregation.lean`,
 `BondarenkoHeapLemmaTenDetectorPolynomial.lean`, `ChenGuptaLiFiniteZeroDetector.lean`,
-`ChenGuptaLiCharacterLargeValues.lean`.
+`ChenGuptaLiCharacterLargeValues.lean`, `ChenGuptaLiAnalyticAnchor.lean`,
+`ChenGuptaLiDetectorTail.lean`.
 
 **Open core.** Prove joint upper estimate for
 `canonicalThetaTailCoreFiniteArithmeticRemainderCurrent` at same cutoff and depth as prefix selector,
@@ -1461,6 +1549,12 @@ continuation producer is absent.
   `XiBezoutianPointedIncidence.lean` clears the Xi trace to an entire antidiagonal-removable
   Bezoutian, proves it is simultaneously UEB's marked-origin kernel, CLG's diagonal congruence, and
   W2C's completed Gram, and reduces a forward proof to a source-defined Hilbert Gram factorization.
+  `XiBoundaryPoissonDensity.lean` gives an exact safe-boundary model: for every `a>1/2`, the real
+  completed logarithmic derivative is a convergent sum of positive upper-half-plane Poisson
+  kernels at the reflected divisor heights, and W2C's even channel is exactly the paired Poisson
+  contribution. This explains safe-half-plane positivity but does not orient horizontal divisor
+  displacement: off-line zeros still contribute positive kernels there, and the construction is
+  divisor-indexed. Critical limiting domination remains the producer.
   This closes receiver matching among UEB/CLG/Q and finite-aperture restricted-Weil branches O/SV2,
   but not the producer: the aperture form is defined using the actual Xi-divisor polarization.
   `XiWeilCarrierBudget.lean` adds the exact rational independence and span dimension
@@ -1874,7 +1968,12 @@ continuation producer is absent.
   structural translation automorphisms, descending layer gluing, no simultaneous telescoper,
   joint independence of every proper face packet, arbitrary-translate deep-span reduction modulo
   differential-algebraic error, and the complete differential matroid with exact two-survivor
-  algebraic/hypertranscendental boundary (`MultipleEllipticGammaCoset*.lean`). This defines
+  algebraic/hypertranscendental boundary (`MultipleEllipticGammaCoset*.lean`). The all-depth
+  extension now supplies a meromorphic class, pair-face signature, and bottom charge. A depth-two
+  face is a genuine witness; every differential-algebraic all-depth member has vanishing pair-face
+  signature; bottom charge orbit-sums to that signature, has finite support on the elliptic
+  quotient, and zero bottom charge descends the class (`AllDepthMeroClass.lean`,
+  `AllDepthPairFaceSignature.lean`, `AllDepthBottomCharge.lean`). This defines
   pre-route **MEG**. Its internal elliptic-Gamma rigidity is closed under integral period
   independence and coset separation. Open core is now external: instantiate this system on literal
   completed prime--Gamma/Möbius source and provide a coefficient-faithful Xi reader whose selected

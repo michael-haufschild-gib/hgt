@@ -294,13 +294,27 @@ semigroup applied term by term.
   the odd part `A ∫ [(s-t)/Q - s/R]` vanishes because
   `(1/2) log(((s-t)²+c²)/(s²+d²)) → 0` at both ends.  The two even parts are the corpus's
   `integral_inv_sq_add_sq`.
-- **P2** `Re A_w (α)` as a pair of Poisson kernels; `h_a` as the divisor sum; summability and
-  integrability against the resolvent weights.
+- **P2 - DONE.** `RHTower/XiBoundaryPoissonDensity`: `re_inv_sub_I_mul`, `re_inv_add_I_mul`,
+  `re_weilChannelA` (the even channel is a pair of Poisson kernels), `eulerSafeDensity`,
+  `boundaryPoissonTerm`, `summable_boundaryPoissonTerm`, `eulerSafeDensity_eq_tsum`
+  (`h_a = (pi/2) sum_q [P_(a+nu_q)(t-rho_q) + P_(a-nu_q)(t+rho_q)]`).
+- **`(12)` - DONE.** `eulerSafeDensity_poisson_transport`:
+  `h_b t = integral P_(b-a)(t-s) h_a s ds` for `1/2 < a < b`, by the shifted semigroup
+  (`integral_poisson_shift_product`) applied term by term and the interchange
+  `MeasureTheory.integral_tsum_of_summable_integral_norm`.  Supporting:
+  `integral_boundaryPoissonTerm`, `integrable_poisson_boundaryTerm`, `abs_im_spectral_lt`.
+  All audit to `propext, Classical.choice, Quot.sound`.
 - **P3** the parent card's `(17)`: `K_a (w,v) = (1/π) ∫ h_a(t) / ((w-a-it)(conj v - a + it)) dt`,
   by term-by-term residue evaluation of `∫ P_c(t-ρ) / ((w-a-it)(conj v-a+it)) dt`.
 - **P4** `(3)`, `(4)` and hence `(16)`, `(21)`.
-- **P5** `(6)`–`(9)`, the elementary tail-Laplace identities.
-- **P6** `(17)`–`(20)`, the offset-free prime weights, in the elementary coefficient form.
+- **P5 - DONE.** `RHTower/XiDePoissonizedStationarity`: `shiftedExpPacket`, `expPacket`,
+  `expPacket_eq_tilt` (`(5)`), `laplace_shiftedExpPacket` (`(6)`),
+  `laplace_tail_shiftedExpPacket` (`(7)`), `integral_min_exp` (`(8)`),
+  `exp_neg_two_mul_min` (`(9)`).
+- **P6 - DONE.** same module: `primeAtomWeight` (`(18)`), `exp_mul_abs_log` (`(19)`,
+  `exp (a |log n|) = n^a`), `primeAtomWeight_dePoissonized` (`(20)`), and
+  `primeAtomWeight_dePoissonized_offset_free`: the de-Poissonized prime weight is
+  independent of the safe offset.  All audit to `propext, Classical.choice, Quot.sound`.
 
 `(11)` in its tempered-distribution form is *not* on the programme: its content is `(4)`, which is
 distribution-free.  The distributional guardrail section of this card is exactly the reason.

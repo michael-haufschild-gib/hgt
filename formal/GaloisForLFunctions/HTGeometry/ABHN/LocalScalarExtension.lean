@@ -1,15 +1,16 @@
 import GaloisForLFunctions.HTGeometry.ABHN.Places
 import GaloisForLFunctions.HTGeometry.ABHN.RationalFunctionPlaces
 import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtension
+import GaloisForLFunctions.HTGeometry.ABHN.AzumayaBaseChange
+import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtensionBrauer
 
 /-!
 # Local scalar-extension carriers for Albert--Brauer--Hasse--Noether
 
 This connects the two global-place packages with the raw scalar extension of a central simple
 algebra.  At every actual completion Lean now has the correct local algebra, its canonical map,
-finite dimensionality, and centrality.  Simplicity of this tensor product remains the sole
-obstruction to packaging the object as a local `CSA` and hence to defining the global-to-local
-Brauer map.
+finite dimensionality, centrality, and simplicity.  Thus every global central simple representative
+has a genuine local central simple representative at every actual completion.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
@@ -47,6 +48,18 @@ theorem numberFieldLocalScalarExtension_isCentral (K : Type u) [Field K] [Number
     Algebra.IsCentral (completion K v) (completion K v ⊗[K] A.carrier) := by
   exact scalarExtensionAlg_isCentral (L := completion K v) A
 
+/-- The central simple algebra obtained from a number-field central simple algebra at a place. -/
+noncomputable def numberFieldLocalCSA (K : Type u) [Field K] [NumberField K]
+    (v : NumberFieldPlace K) (A : CSA.{u, v} K) : CSA.{u, max u v} (completion K v) where
+  carrier := completion K v ⊗[K] A.carrier
+  isCentral := numberFieldLocalScalarExtension_isCentral K v A
+  isSimple := by
+    letI : IsAzumaya K A.carrier := csa_isAzumaya A
+    letI : IsAzumaya (completion K v) (completion K v ⊗[K] A.carrier) :=
+      isAzumaya_scalarExtension (K := K) (L := completion K v) (A := A.carrier)
+    exact isSimpleRing_of_isAzumaya (K := completion K v) _
+  fin_dim := numberFieldLocalScalarExtension_finiteDimensional K v A
+
 /-- Raw scalar extension of a central simple algebra over the rational global function field. -/
 noncomputable def rationalFunctionLocalScalarExtensionAlg (F : Type u) [Field F] [Finite F]
     (v : RationalFunctionPlace F) (A : CSA.{u, v} (RatFunc F)) :
@@ -78,5 +91,117 @@ theorem rationalFunctionLocalScalarExtension_isCentral (F : Type u) [Field F] [F
     Algebra.IsCentral (rationalFunctionCompletion F v)
       (rationalFunctionCompletion F v ⊗[RatFunc F] A.carrier) := by
   exact scalarExtensionAlg_isCentral (L := rationalFunctionCompletion F v) A
+
+/-- The central simple algebra obtained from a rational-function-field central simple algebra at
+a place. -/
+noncomputable def rationalFunctionLocalCSA (F : Type u) [Field F] [Finite F]
+    (v : RationalFunctionPlace F) (A : CSA.{u, v} (RatFunc F)) :
+    CSA.{u, max u v} (rationalFunctionCompletion F v) where
+  carrier := rationalFunctionCompletion F v ⊗[RatFunc F] A.carrier
+  isCentral := rationalFunctionLocalScalarExtension_isCentral F v A
+  isSimple := by
+    letI : IsAzumaya (RatFunc F) A.carrier := csa_isAzumaya A
+    letI : IsAzumaya (rationalFunctionCompletion F v)
+        (rationalFunctionCompletion F v ⊗[RatFunc F] A.carrier) :=
+      isAzumaya_scalarExtension (K := RatFunc F) (L := rationalFunctionCompletion F v)
+        (A := A.carrier)
+    exact isSimpleRing_of_isAzumaya (K := rationalFunctionCompletion F v) _
+  fin_dim := rationalFunctionLocalScalarExtension_finiteDimensional F v A
+
+/-- Local Brauer classes of one number-field central simple representative.  This is the
+representative-level precursor to the global-to-local quotient map. -/
+noncomputable def numberFieldLocalBrauerClasses (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, v} K) : localBrauerClasses K := fun v ↦
+  brauerClass (numberFieldLocalCSA K v A)
+
+/-- Local Brauer classes of one rational-function-field central simple representative. -/
+noncomputable def rationalFunctionLocalBrauerClassesOfCSA (F : Type u) [Field F] [Finite F]
+    (A : CSA.{u, v} (RatFunc F)) : rationalFunctionLocalBrauerClasses F := fun v ↦
+  brauerClass (rationalFunctionLocalCSA F v A)
+
+/-- The number-field global-to-local map on Brauer quotients.  The finite ramification theorem
+needed to land in `RestrictedLocalBrauerClasses` is a later ABHN input. -/
+noncomputable def numberFieldLocalBrauerMap (K : Type u) [Field K] [NumberField K] :
+    BrauerGroup.{u, u} K → localBrauerClasses K := fun x v ↦
+  scalarExtensionBrauerMap K (completion K v) x
+
+/-- The quotient-level number-field global-to-local map agrees with its representative-level
+construction. -/
+theorem numberFieldLocalBrauerMap_brauerClass (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, u} K) :
+    numberFieldLocalBrauerMap K (brauerClass A) = numberFieldLocalBrauerClasses K A := by
+  funext v
+  rfl
+
+/-- The rational-function-field global-to-local map on Brauer quotients.  Its upgrade to finite
+support is likewise precisely the finite ramification part of ABHN. -/
+noncomputable def rationalFunctionLocalBrauerMap (F : Type u) [Field F] [Finite F] :
+    BrauerGroup.{u, u} (RatFunc F) → rationalFunctionLocalBrauerClasses F := fun x v ↦
+  scalarExtensionBrauerMap (RatFunc F) (rationalFunctionCompletion F v) x
+
+/-- The quotient-level rational-function-field global-to-local map agrees with its
+representative-level construction. -/
+theorem rationalFunctionLocalBrauerMap_brauerClass (F : Type u) [Field F] [Finite F]
+    (A : CSA.{u, u} (RatFunc F)) :
+    rationalFunctionLocalBrauerMap F (brauerClass A) =
+      rationalFunctionLocalBrauerClassesOfCSA F A := by
+  funext v
+  rfl
+
+/-- At every number-field place, the local scalar extension of a split matrix representative is
+definitionally the standard scalar extension of that split matrix algebra. -/
+theorem numberFieldLocalCSA_matrixFinScalar_eq (K : Type u) [Field K] [NumberField K]
+    (v : NumberFieldPlace K) (n : ℕ) [NeZero n] :
+    numberFieldLocalCSA K v (matrixFinCSA (scalarCSA K) n) =
+      scalarExtensionMatrixFinScalarCSA K (completion K v) n := by
+  rfl
+
+/-- Every split matrix representative has split local class at every number-field place. -/
+theorem numberFieldLocalBrauerClass_matrixFinScalar_eq_split (K : Type u) [Field K]
+    [NumberField K] (v : NumberFieldPlace K) (n : ℕ) [NeZero n] :
+    brauerClass (numberFieldLocalCSA K v (matrixFinCSA (scalarCSA K) n)) =
+      brauerSplitClass (completion K v) := by
+  rw [numberFieldLocalCSA_matrixFinScalar_eq]
+  exact brauerClass_scalarExtensionMatrixFinScalar_eq (K := K) (L := completion K v) n
+
+/-- Representative-level local classes send every split matrix representative to the everywhere
+split number-field local family. -/
+theorem numberFieldLocalBrauerClasses_matrixFinScalar_eq_split (K : Type u) [Field K]
+    [NumberField K] (n : ℕ) [NeZero n] :
+    numberFieldLocalBrauerClasses K (matrixFinCSA (scalarCSA K) n) =
+      (restrictedSplitClass K).toLocalBrauerClasses := by
+  funext v
+  change brauerClass (numberFieldLocalCSA K v (matrixFinCSA (scalarCSA K) n)) =
+    brauerSplitClass (completion K v)
+  exact numberFieldLocalBrauerClass_matrixFinScalar_eq_split K v n
+
+/-- At every rational-function-field place, the local scalar extension of a split matrix
+representative is the standard scalar extension of that split matrix algebra. -/
+theorem rationalFunctionLocalCSA_matrixFinScalar_eq (F : Type u) [Field F] [Finite F]
+    (v : RationalFunctionPlace F) (n : ℕ) [NeZero n] :
+    rationalFunctionLocalCSA F v (matrixFinCSA (scalarCSA (RatFunc F)) n) =
+      scalarExtensionMatrixFinScalarCSA (RatFunc F) (rationalFunctionCompletion F v) n := by
+  rfl
+
+/-- Every split matrix representative has split local class at every rational-function-field
+place. -/
+theorem rationalFunctionLocalBrauerClass_matrixFinScalar_eq_split (F : Type u) [Field F]
+    [Finite F] (v : RationalFunctionPlace F) (n : ℕ) [NeZero n] :
+    brauerClass (rationalFunctionLocalCSA F v (matrixFinCSA (scalarCSA (RatFunc F)) n)) =
+      brauerSplitClass (rationalFunctionCompletion F v) := by
+  rw [rationalFunctionLocalCSA_matrixFinScalar_eq]
+  exact brauerClass_scalarExtensionMatrixFinScalar_eq
+    (K := RatFunc F) (L := rationalFunctionCompletion F v) n
+
+/-- Representative-level local classes send every split matrix representative to the everywhere
+split rational-function-field local family. -/
+theorem rationalFunctionLocalBrauerClasses_matrixFinScalar_eq_split (F : Type u) [Field F]
+    [Finite F] (n : ℕ) [NeZero n] :
+    rationalFunctionLocalBrauerClassesOfCSA F (matrixFinCSA (scalarCSA (RatFunc F)) n) =
+      (rationalFunctionRestrictedSplitClass F).toLocalBrauerClasses := by
+  funext v
+  change brauerClass (rationalFunctionLocalCSA F v (matrixFinCSA (scalarCSA (RatFunc F)) n)) =
+    brauerSplitClass (rationalFunctionCompletion F v)
+  exact rationalFunctionLocalBrauerClass_matrixFinScalar_eq_split F v n
 
 end GaloisForLFunctions.HTGeometry.ABHN

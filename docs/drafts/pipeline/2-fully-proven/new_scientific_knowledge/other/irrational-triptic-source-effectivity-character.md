@@ -311,3 +311,59 @@ the same module.
 
 The remaining Lean gates of this card are the global analytic-subring packaging of the source
 boundary and the FHRZ/differential-character comparison.
+
+## Lean progress 2026-08-20 — the global analytic-subring packaging of the source boundary is closed
+
+The gate "global analytic-subring packaging of the source boundary in Lean" is met.
+`GaloisForLFunctions.HTGeometry.EllipticGammaThetaBoundaryAnalytic` (wired, `lake build` green,
+`#print axioms = [propext, Classical.choice, Quot.sound]`) proves that both structural boundaries
+
+```text
+Theta_tau(z)      = ∏_k (1 − q^(k+1)/x(z)) · ∏_k (1 − q^k x(z)),
+Theta_(sigma|tau)(z) = ∏_j (1 − p^(j+1)/x(z)) · ∏_j (1 − p^j x(z))
+```
+
+converge locally uniformly on the whole plane, hence are **entire**, packages them in the global
+analytic germ ring, and restates the three source equations as unconditional identities in the
+meromorphic germ field:
+
+```text
+hasProdLocallyUniformlyOn_ellipticGammaForwardBoundaryFactor
+hasProdLocallyUniformlyOn_ellipticGammaBackwardBoundaryFactor
+    normal convergence of each single q-Pochhammer boundary product on every compact set
+differentiable_ellipticGammaMultiplicativeThetaBoundary
+differentiable_ellipticGammaMultiplicativeThetaBoundaryTau
+    both boundaries are entire
+entireAnalyticElem, ellipticGammaThetaBoundaryAnalytic(Tau), ellipticGammaThetaBoundaryMero(Tau)
+    the boundaries as elements of `analyticSubring ℂ` and of `meroField ℂ`
+ellipticGammaMero_add_sigma :  T_sigma Gamma = Theta_tau · Gamma
+ellipticGammaMero_add_tau   :  T_tau   Gamma = Theta_(sigma|tau) · Gamma
+ellipticGammaMero_add_one   :  T_1     Gamma = Gamma
+```
+
+The last three are exactly `(4)` **with no regular-locus hypothesis**: the nonvanishing clause of
+`ellipticGammaProduct_add_sigma`/`_add_tau` disappears because the identity is now an identity of
+germs in a field, the denominator germ being nonzero as a germ
+(`ellipticGammaBackwardAnalytic_ne_zero`).  The boundary is still constructed *before* the gamma
+product — from the source periods alone — so the card's "construction without storing the answer"
+discipline is preserved.
+
+### Corpus audit: the FHRZ layer is not absent
+
+The Lean-boundary paragraph above is out of date on its second point.  The tree already owns
+
+```text
+GroupCechBicomplex                     the group–Čech total complex of φ : G →* H,
+                                       totalD2_totalD1, totalD3_totalD2, sector restrictions
+GammaGerbeDixmierDouadyGenerator       coboundary₁/₂/₃ on the triptic lattice, the DD cocycle
+                                       gammaGerbeDD, coboundary₃_gammaGerbeDD = 0, and the
+                                       alternation obstruction killing every coboundary
+GammaGerbeThetaCocycle                 FHRZ's thetaProd_cocycle,
+                                       thetaProd_defect_eq_gammaGerbeExponent, and
+                                       coboundary_gammaGerbeExponent_not_coboundary —
+                                       the gamma gerbe has no holomorphic trivialisation
+CechLowDegreeComplex, CechFineAcyclicModule
+```
+
+so the remaining Lean gate of this card is the *differential-character comparison* itself, not the
+group–Čech complex or the gerbe class.

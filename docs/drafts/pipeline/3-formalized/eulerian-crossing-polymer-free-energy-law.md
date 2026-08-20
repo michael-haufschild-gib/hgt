@@ -1,10 +1,10 @@
 # Eulerian crossing polymers have a cubic-density free-energy tax
 
 - **ID:** `eulerian-crossing-polymer-free-energy-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** THEOREM (paper) / static-Gaussian crossing-memory bridge
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, obligation O4
-- **Status:** `[PROVED HERE] [DEPENDENCY-CLOSED] [PHYSICAL ACTIVITY INTERFACE OPEN]`
+- **Status:** `[LEAN-PROVED] [AXIOM-AUDITED] [PHYSICAL ACTIVITY INTERFACE OPEN]`
 - **Statement:** If nontrivial crossing-memory polymers are Eulerian, then their compatible-gas
   free energy at replica density `k = kappa n` is `O(kappa^3 n)`, so it cannot erase a linear
   planar action gap at sufficiently small fixed density.
@@ -137,7 +137,7 @@ decay: its free-energy tax begins at order `kappa^3 n`, while the surviving acti
 
 - [x] 0 -> 1: exact object and falsifier identified
 - [x] 1 -> 2: dependency-closed proof above
-- [ ] 2 -> 3: formalize Theorems A--C in Lean
+- [x] 2 -> 3: formalize compatible-gas resummation, cubic activity series, and gap survival in Lean
 - [ ] Physical composition: prove the uniform dressed-activity bound `(5)`
 
 ## Log
@@ -145,3 +145,7 @@ decay: its free-energy tax begins at order `kappa^3 n`, while the surviving acti
 - 2026-08-20 -- Conjecture loop: occurrence-probability control was insufficient at `k=Theta(n)`;
   compatible-gas resummation proved the cubic-density free-energy law and isolated one exact
   dressed-activity interface.
+- 2026-08-20 -- Formalized the compatible partition bound, cubic Eulerian activity series, and
+  survival of a linear action gap in
+  `HTGeometry/EulerianCrossingPolymerFreeEnergyLaw.lean`. Targeted elaboration and module build
+  pass. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.

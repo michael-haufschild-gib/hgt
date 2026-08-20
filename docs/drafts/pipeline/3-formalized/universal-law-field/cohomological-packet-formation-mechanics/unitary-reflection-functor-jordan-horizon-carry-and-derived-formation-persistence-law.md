@@ -1,9 +1,9 @@
 # Unitary-reflection functor, Jordan horizon carry, and derived formation persistence law
 
 - **ID:** ULF-CPFM-5
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NEW-FIELD FUSION LAW
-- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [ROUTE-INDEPENDENT]`
+- **Status:** `[PAPER-PROVED] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [ROUTE-INDEPENDENT]`
   `[POSITIVE OBSERVER DERIVED] [NON-LEFT-EXACTNESS COMPUTED]`
   `[COHOMOLOGY + POSITIVITY + PROLONGATION + PROPERNESS] [NOT RH]`
 - **Statement:** Finite-unipotent formation has a functorial maximal quotient seen by positive

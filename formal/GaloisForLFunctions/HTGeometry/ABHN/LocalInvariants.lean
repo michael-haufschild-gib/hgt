@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ABHN.BrauerFoundations
+import GaloisForLFunctions.HTGeometry.ABHN.LocalScalarExtension
 import GaloisForLFunctions.HTGeometry.ABHN.Specification
 import Mathlib.RingTheory.SimpleModule.IsAlgClosed
 
@@ -113,5 +114,43 @@ theorem complexInfiniteCompletion_localInvariant_injective (K : Type u) [Field K
     complexInfiniteCompletion_brauer_subsingleton K v hv
   intro x y _
   exact Subsingleton.elim _ _
+
+/-- Scalar extension of a global central simple algebra is split at every complex infinite place.
+Thus these places make no contribution to the ABHN local class family. -/
+theorem complexInfiniteLocalBrauerClass_eq_split (K : Type u) [Field K] [NumberField K]
+    (v : NumberField.InfinitePlace K) (hv : v.IsComplex) (A : CSA.{u, u} K) :
+    brauerClass (numberFieldLocalCSA K (.infinite v) A) = brauerSplitClass v.Completion := by
+  letI : IsAlgClosed (completion K (.infinite v)) := by
+    change IsAlgClosed v.Completion
+    exact isAlgClosed_of_ringEquiv
+      (NumberField.InfinitePlace.Completion.ringEquivComplexOfIsComplex hv).symm
+  exact brauerClass_eq_split_of_isAlgClosed (completion K (.infinite v))
+    (numberFieldLocalCSA K (.infinite v) A)
+
+/-- The local invariant of a scalar-extended global central simple algebra vanishes at every
+complex infinite place. -/
+theorem complexInfiniteLocalBrauerClass_invariant_eq_zero
+    (K : Type u) [Field K] [NumberField K]
+    (v : NumberField.InfinitePlace K) (hv : v.IsComplex) (A : CSA.{u, u} K) :
+    complexInfiniteCompletionLocalInvariant K v hv
+      (brauerClass (numberFieldLocalCSA K (.infinite v) A)) = 0 := by
+  exact complexInfiniteCompletion_localInvariant_eq_zero K v hv _
+
+/-- Every global Brauer class becomes split at a complex infinite completion.  This is the
+quotient-level form of the fact that complex places contribute zero to ABHN reciprocity. -/
+theorem complexInfiniteLocalBrauerMap_eq_split (K : Type u) [Field K] [NumberField K]
+    (v : NumberField.InfinitePlace K) (hv : v.IsComplex) (x : BrauerGroup.{u, u} K) :
+    numberFieldLocalBrauerMap K x (.infinite v) = brauerSplitClass v.Completion := by
+  refine Quotient.inductionOn x ?_
+  intro A
+  change brauerClass (numberFieldLocalCSA K (.infinite v) A) = brauerSplitClass v.Completion
+  exact complexInfiniteLocalBrauerClass_eq_split K v hv A
+
+/-- The local invariant of every global Brauer class vanishes at a complex infinite completion. -/
+theorem complexInfiniteLocalBrauerMap_invariant_eq_zero (K : Type u) [Field K] [NumberField K]
+    (v : NumberField.InfinitePlace K) (hv : v.IsComplex) (x : BrauerGroup.{u, u} K) :
+    complexInfiniteCompletionLocalInvariant K v hv (numberFieldLocalBrauerMap K x (.infinite v)) =
+      0 := by
+  exact complexInfiniteCompletion_localInvariant_eq_zero K v hv _
 
 end GaloisForLFunctions.HTGeometry.ABHN

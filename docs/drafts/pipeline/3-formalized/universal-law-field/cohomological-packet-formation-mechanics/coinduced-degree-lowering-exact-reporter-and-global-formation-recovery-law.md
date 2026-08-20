@@ -1,9 +1,9 @@
 # Coinduced degree-lowering, exact reporter, and global formation-recovery law
 
 - **ID:** ULF-CPFM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / GLOBAL FORMATION LAW / SELECTION-BRIDGE ARCHITECTURE
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN FORMALIZED] [NOT RH]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]
 - **Date:** 2026-08-17
 
 ## 1. The mismatch this theorem resolves

@@ -4173,6 +4173,45 @@ remaining difficulty is not a macroscopic connected diagram; it is the
 collective signed free energy of extensively many small components and
 their seed-parity dressing.
 
+`[NEW THEOREM] [LEAN-PROVED.]`  The collective combinatorial part is now
+closed.  For any finite family of nonnegative connected activities `w_gamma`,
+the partition function of every compatible collection obeys
+
+\[
+ Z\leq\exp\!\left(\sum_\gamma w_\gamma\right).                     \tag{O4.22a}
+\]
+
+If every nontrivial crossing polymer is Eulerian and the total size-`v`
+activity has the tree envelope
+
+\[
+ \sum_{|\gamma|=v}w_\gamma
+ \leq {n\over q^2}{x^v\over v^2}\qquad(v\geq3),
+\]
+
+then
+
+\[
+ \log Z\leq {n\over q^2}{x^3\over9(1-x)}.                         \tag{O4.22b}
+\]
+
+For `k=kappa n` and `x=eAq^2kappa<=1/2`, this is
+`log Z <= (2e^3A^3q^4/9)kappa^3n`.  Hence a planar factor
+`exp(-eta k)` still gives `exp(-eta kappa n/4)` once
+`(2e^3A^3q^4/9)kappa^2<=eta/4`.  The apparently extensive gas therefore has
+a cubic-density free-energy tax and cannot erase a linear action gap at
+sufficiently small fixed replica density.  Full paper proof and hostile audit
+are in `../3-formalized/eulerian-crossing-polymer-free-energy-law.md`; Lean
+module: `HTGeometry/EulerianCrossingPolymerFreeEnergyLaw.lean`.
+
+This does not assume that physical cavity dressing is harmless.  It isolates
+the exact remaining interface: prove that planar cavity segments, replica
+joins, seed parity, and the selector-aware Bellman boundary multiply every
+connected size-`v` activity by at most `A^v`, with one `A` independent of
+`n,k,v`, after common recurrence mass is removed.  Once that inequality is
+proved, neither large-component occurrence nor collective polymer
+multiplicity remains open.
+
 This Eulerian law moves the live problem beyond the elementary `k^2/n`
 collision ceiling.  The next object is a forest-renormalized expansion in
 which all nested self-energy insertions are summed exactly and the remaining

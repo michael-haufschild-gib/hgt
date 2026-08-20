@@ -1,9 +1,11 @@
 # Polarized cross-effect complement intertwining and bounded-arity no-go
 
 - **ID:** ULF-PCIM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.ConstitutivePolarizedCrossEffect`,
+  `GaloisForLFunctions.HTGeometry.PolarizedCrossEffectDegreeNeutrality`
 - **Type:** UNIVERSAL INTERVENTION / FORMATION / DUALITY EXCHANGE LAW
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM, NOT ROUTE]
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM, NOT ROUTE] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS]
   [EXACT RECONSTRUCTION] [EXACT FUSION INTERTWINER] [BOUNDED-ARITY NO-GO]
   [INFORMATION-NEUTRAL DUALITY] [LEAN FORMALIZED] [NOT SELECTION] [NOT RH]`
 

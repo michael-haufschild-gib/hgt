@@ -91,3 +91,5 @@ Landed and umbrella-wired: `PositiveJumpFormationChirality`, `EsscherFormationCh
 5. **FCRM.18**: `κ₃(t) = ∑ (log p)³ r(1+r)/(1−r)³ > 0`.
 6. **Theorem 7.1**: `klChirality_eq_zero_of_reversal` + the chronology.
    **Theorem 7.2**: `eq_id_of_strictMonoOn_of_iterate_id` + the chronology.
+| 9–13 | `cohomological-packet-formation-mechanics/*` (5 cards) | **DONE 2026-08-20** — 7 existing modules re-verified (0 errors, 91 declarations audited axiom-clean, all umbrella-wired); folder-level companion written; promoted |
+| 14 | `polarized-cross-effect-complement-intertwining-and-bounded-arity-no-go.md` | **DONE 2026-08-20** — `(PC.11)` was the missing displayed result; new `HTGeometry/PolarizedCrossEffectDegreeNeutrality.lean`; promoted |

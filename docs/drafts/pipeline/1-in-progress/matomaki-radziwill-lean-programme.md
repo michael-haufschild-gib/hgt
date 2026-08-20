@@ -7122,3 +7122,61 @@ error **decays**: the two Meissel–Mertens constants cancel exactly and only `O
 
 At the schedule this gives `H ≤ β·log log x − log(K log log x) + O(1/log log x) ≤ β·log log x`,
 which is what makes `θ²·L·H² = (log x)^{β+c−2A}(log log x)² → 0` for `2A > β + c`.
+
+### Bricks 123–124 — the step count, and the mixed limits (2026-08-20)
+
+**`Sieve/TwoRangeSchedule`** (extended): `lowSteps`, `highSteps`, `log_one_add_ge_half_self`, and
+
+```text
+lowSteps_le (hK : 0 ≤ K) (hc : 0 < c) :
+  ∀ᶠ x,  #steps of the low ladder  ≤  2·(log x)^{β + c}
+```
+
+from `log(1+η) ≥ η/2` (proved locally from `Real.add_one_le_exp` at `−η/(1+η)`, so the module stays
+off `Sieve/SpectralParameters`'s heavy closure) and `log(h/R) ≤ (log x)^β`.  The degenerate case
+`R > h` is handled: the floor is then `0`.
+
+**`Sieve/TwoRangeLimits`**: the two mixed limits every group needs.
+
+```text
+tendsto_logRpow_mul_logLogPow (he : e < 0) (k) :
+  (log x)^e·(log log x)^k → 0
+tendsto_logLogPow_mul_expNeg (hs : 0 < s) (k) (e) :
+  (log x)^e·(log log x)^k·exp(−(log x)^s) → 0
+```
+
+The first absorbs a power of `log log` into an arbitrarily small power of `log` via
+`Real.log_le_rpow_div` at `ε = (−e)/(2(k+1))`, leaving the exponent `e(k+2)/(2k+2) < 0`.  The second
+is the same absorption against the zero-free-region saving, where any power of `log x` loses.
+
+Together with the corpus's `tendsto_rpow_log_mul_cardLength_div_sqrt` (window against `√x`) and
+`tendsto_rpow_log_div_siftStart`, these are all the limits the seven groups need.
+
+### Brick 125 — the structural hypotheses at the schedule (2026-08-20)
+
+`Sieve/TwoRangeScheduleFacts`, `lake env lean`-clean, axiom-clean, wired, built.
+
+| theorem | content |
+|-|-|
+| `lowTop`, `highTop` | the two ladder tops, `⌊R·(1+η)^L⌋` |
+| `primesRange_ladder_bounds_self` | a light restatement of `Sieve/SpectralHeadBound.primesRange_ladder_bounds` (that module reaches the `Ω`-weighted annulus stack for a ten-line fact) |
+| `lowRange_bounds`, `highRange_bounds` | **the hypothesis `hP` of the two-range theorem**, for both ranges |
+| `lowBase_lt_cardLength` | `(log x)^K < h` — the polylogarithmic bottom really is below the window |
+| **`lowTop_le_cardLength`** | `R·(1+η)^L ≤ h`: the low ladder does not overshoot the window length |
+
+The last one is where the floor in `lowSteps` is paid: `L·log(1+η) ≤ log(h/R)` gives
+`(1+η)^L ≤ h/R` after exponentiating, and `lowBase_lt_cardLength` rules out the degenerate branch
+where the base already exceeds the window (there the bound is simply false, so the hypothesis is
+needed rather than a case split).
+
+**Running state of the substitution.**
+
+| input | module |
+|-|-|
+| schedule + vanishing | `TwoRangeSchedule` |
+| `L ≤ 2(log x)^{β+c}` | `TwoRangeSchedule.lowSteps_le` |
+| `H ≤ log log z − log log z₀ + O(1/log z₀)` | `PrimeRangeLogLogMass` |
+| mixed limits | `TwoRangeLimits` |
+| `Bmax`, `PP`, `#C_j ≤ N_j+1` | `LadderAggregates` |
+| `hP`, `hPprime`, ladder ⊆ window | `TwoRangeScheduleFacts` |
+| **remaining** | `1 ≤ W`, `1 ≤ L`, `hNj`, the Route-T instantiation `hbound'`, then the seven limits |

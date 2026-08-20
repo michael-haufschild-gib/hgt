@@ -110,7 +110,7 @@ theorem summable_boundaryPoissonTerm {a : ℝ} (ha : 1 / 2 < a) (t : ℝ) :
     have := Real.pi_pos
     positivity
   refine ((hre.div_const (Real.pi / 2)).congr fun q => ?_)
-  simp only [Function.comp_def]
+  simp only [Function.comp_def, Complex.reCLM_apply]
   rw [re_weilChannelA_spectral ha q]
   field_simp
 
@@ -133,5 +133,104 @@ theorem eulerSafeDensity_eq_tsum {a : ℝ} (ha : 1 / 2 < a) (t : ℝ) :
     rw [re_weilChannelA (sq_add_spectral_sq_ne_zero hWhalf q), hWre, hWim]
   rw [eulerSafeDensity, ← hW, logDeriv_xiCent_eq_tsum_channelA hWhalf, Complex.re_tsum hsum,
     tsum_congr hre, tsum_mul_left]
+
+theorem eulerSafeDensity_eq_tsum_term {a : ℝ} (ha : 1 / 2 < a) (t : ℝ) :
+    eulerSafeDensity a t = (Real.pi / 2) * ∑' q : XiZeroCopy, boundaryPoissonTerm a t q :=
+  eulerSafeDensity_eq_tsum ha t
+
+/-! ### Equation (12): the Poisson semigroup transports the boundary density -/
+
+theorem abs_im_spectral_lt {a : ℝ} (ha : 1 / 2 < a) (q : XiZeroCopy) :
+    0 < a + (xiSpectralPoint q).im ∧ 0 < a - (xiSpectralPoint q).im := by
+  have hb := abs_le.mp (abs_im_xiSpectralPoint_le q)
+  constructor <;> linarith [hb.1, hb.2]
+
+theorem integral_boundaryPoissonTerm {a b : ℝ} (ha : 1 / 2 < a) (hab : a < b) (t : ℝ)
+    (q : XiZeroCopy) :
+    (∫ s : ℝ, halfPlanePoisson (b - a) (t - s) * boundaryPoissonTerm a s q)
+      = boundaryPoissonTerm b t q := by
+  obtain ⟨hp, hm⟩ := abs_im_spectral_lt ha q
+  have hba : 0 < b - a := by linarith
+  have h1 : (∫ s : ℝ, halfPlanePoisson (b - a) (t - s)
+      * halfPlanePoisson (a + (xiSpectralPoint q).im) (s - (xiSpectralPoint q).re))
+      = halfPlanePoisson (b - a + (a + (xiSpectralPoint q).im)) (t - (xiSpectralPoint q).re) :=
+    integral_poisson_shift_product hba hp t _
+  have h2 : (∫ s : ℝ, halfPlanePoisson (b - a) (t - s)
+      * halfPlanePoisson (a - (xiSpectralPoint q).im) (s - (-(xiSpectralPoint q).re)))
+      = halfPlanePoisson (b - a + (a - (xiSpectralPoint q).im)) (t - (-(xiSpectralPoint q).re)) :=
+    integral_poisson_shift_product hba hm t _
+  have hi1 : Integrable fun s : ℝ => halfPlanePoisson (b - a) (t - s)
+      * halfPlanePoisson (a + (xiSpectralPoint q).im) (s - (xiSpectralPoint q).re) :=
+    integrable_poisson_shift_product hba hp t _
+  have hi2 : Integrable fun s : ℝ => halfPlanePoisson (b - a) (t - s)
+      * halfPlanePoisson (a - (xiSpectralPoint q).im) (s - (-(xiSpectralPoint q).re)) :=
+    integrable_poisson_shift_product hba hm t _
+  have hcongr : ∀ s : ℝ, halfPlanePoisson (b - a) (t - s) * boundaryPoissonTerm a s q
+      = halfPlanePoisson (b - a) (t - s)
+          * halfPlanePoisson (a + (xiSpectralPoint q).im) (s - (xiSpectralPoint q).re)
+        + halfPlanePoisson (b - a) (t - s)
+          * halfPlanePoisson (a - (xiSpectralPoint q).im) (s - (-(xiSpectralPoint q).re)) := by
+    intro s
+    rw [boundaryPoissonTerm]
+    have hsub : s - (-(xiSpectralPoint q).re) = s + (xiSpectralPoint q).re := by ring
+    rw [hsub]
+    ring
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hcongr),
+    MeasureTheory.integral_add hi1 hi2, h1, h2, boundaryPoissonTerm]
+  have he1 : b - a + (a + (xiSpectralPoint q).im) = b + (xiSpectralPoint q).im := by ring
+  have he2 : b - a + (a - (xiSpectralPoint q).im) = b - (xiSpectralPoint q).im := by ring
+  have he3 : t - -(xiSpectralPoint q).re = t + (xiSpectralPoint q).re := by ring
+  rw [he1, he2, he3]
+
+theorem integrable_poisson_boundaryTerm {a b : ℝ} (ha : 1 / 2 < a) (hab : a < b) (t : ℝ)
+    (q : XiZeroCopy) :
+    Integrable fun s : ℝ => halfPlanePoisson (b - a) (t - s) * boundaryPoissonTerm a s q := by
+  obtain ⟨hp, hm⟩ := abs_im_spectral_lt ha q
+  have hba : 0 < b - a := by linarith
+  have hi1 := integrable_poisson_shift_product hba hp t ((xiSpectralPoint q).re)
+  have hi2 := integrable_poisson_shift_product hba hm t (-(xiSpectralPoint q).re)
+  refine (hi1.add hi2).congr (Filter.Eventually.of_forall fun s => ?_)
+  simp only [Pi.add_apply, boundaryPoissonTerm]
+  have hsub : s - -(xiSpectralPoint q).re = s + (xiSpectralPoint q).re := by ring
+  rw [hsub]
+  ring
+
+/-- **Equation (12).**  The boundary densities at all safe offsets form one Poisson semigroup
+orbit. -/
+theorem eulerSafeDensity_poisson_transport {a b : ℝ} (ha : 1 / 2 < a) (hab : a < b) (t : ℝ) :
+    eulerSafeDensity b t
+      = ∫ s : ℝ, halfPlanePoisson (b - a) (t - s) * eulerSafeDensity a s := by
+  have hb : 1 / 2 < b := lt_trans ha hab
+  have hba : 0 < b - a := by linarith
+  have hnormeq : ∀ q : XiZeroCopy,
+      (∫ s : ℝ, ‖halfPlanePoisson (b - a) (t - s) * boundaryPoissonTerm a s q‖)
+        = boundaryPoissonTerm b t q := by
+    intro q
+    obtain ⟨hp, hm⟩ := abs_im_spectral_lt ha q
+    rw [← integral_boundaryPoissonTerm ha hab t q]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun s => ?_)
+    have h1 := halfPlanePoisson_pos hba (t - s)
+    have h2 := halfPlanePoisson_pos hp (s - (xiSpectralPoint q).re)
+    have h3 := halfPlanePoisson_pos hm (s + (xiSpectralPoint q).re)
+    simp only [boundaryPoissonTerm]
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  have hswap : (∑' q : XiZeroCopy,
+        ∫ s : ℝ, halfPlanePoisson (b - a) (t - s) * boundaryPoissonTerm a s q)
+      = ∫ s : ℝ, ∑' q : XiZeroCopy,
+          halfPlanePoisson (b - a) (t - s) * boundaryPoissonTerm a s q := by
+    refine MeasureTheory.integral_tsum_of_summable_integral_norm
+      (fun q => integrable_poisson_boundaryTerm ha hab t q) ?_
+    exact (summable_boundaryPoissonTerm hb t).congr fun q => (hnormeq q).symm
+  have hinner : ∀ s : ℝ, halfPlanePoisson (b - a) (t - s) * eulerSafeDensity a s
+      = (Real.pi / 2) * ∑' q : XiZeroCopy,
+          halfPlanePoisson (b - a) (t - s) * boundaryPoissonTerm a s q := by
+    intro s
+    rw [eulerSafeDensity_eq_tsum_term ha s, ← tsum_mul_left, ← tsum_mul_left, ← tsum_mul_left]
+    exact tsum_congr fun q => by ring
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hinner),
+    MeasureTheory.integral_const_mul, ← hswap]
+  rw [eulerSafeDensity_eq_tsum_term hb t]
+  refine congrArg (fun x => (Real.pi / 2) * x) ?_
+  exact (tsum_congr fun q => (integral_boundaryPoissonTerm ha hab t q)).symm
 
 end RHTower
