@@ -36,6 +36,10 @@ def hlsMinkowskiMetric : Matrix (Fin 4) (Fin 4) ℝ :=
 def hlsMinkowskiForm : QuadraticForm ℝ HLSMinkowskiVector :=
   Matrix.toQuadraticForm' hlsMinkowskiMetric
 
+/-- Minkowski bilinear pairing in the convention `p⁰q⁰ - p¹q¹ - p²q² - p³q³`. -/
+def hlsMinkowskiPairing (p q : HLSMinkowskiVector) : ℝ :=
+  p 0 * q 0 - p 1 * q 1 - p 2 * q 2 - p 3 * q 3
+
 /-- The positive-energy timelike cone. -/
 def hlsFutureTimelike (p : HLSMinkowskiVector) : Prop :=
   0 < p 0 ∧ 0 < hlsMinkowskiForm p
@@ -50,6 +54,13 @@ theorem hlsMinkowskiForm_apply (p : HLSMinkowskiVector) :
   simp [hlsMinkowskiForm, hlsMinkowskiMetric, Matrix.toQuadraticForm',
     LinearMap.BilinMap.toQuadraticMap_apply, Matrix.toLinearMap₂'_apply,
     Fin.sum_univ_four]
+  ring
+
+/-- The quadratic form is the self-pairing of the Minkowski bilinear form. -/
+theorem hlsMinkowskiForm_eq_pairing_self (p : HLSMinkowskiVector) :
+    hlsMinkowskiForm p = hlsMinkowskiPairing p p := by
+  rw [hlsMinkowskiForm_apply]
+  simp only [hlsMinkowskiPairing]
   ring
 
 /-- Linear Lorentz transformations: precisely the invertible real linear maps preserving
@@ -147,19 +158,26 @@ abbrev hlsPhysicalPoincareTopology : TopologicalSpace HLSPhysicalPoincareGroup :
     (@instTopologicalSpaceProd (Multiplicative HLSMinkowskiVector) hlsProperOrthoLorentzGroup
       hlsTranslationTopology hlsProperOrthoLorentzTopology)
 
-/-- Translation by parameter `t` in Minkowski coordinate `μ`, viewed as a physical Poincaré
-element with trivial Lorentz component. -/
+/-- A physical Poincaré translation with trivial Lorentz component. -/
+def hlsTranslation (a : HLSMinkowskiVector) : HLSPhysicalPoincareGroup :=
+  ⟨Multiplicative.ofAdd a, 1⟩
+
+/-- A pure proper-orthochronous Lorentz transformation with zero translation. -/
+def hlsLorentzAt (g : hlsProperOrthoLorentzGroup) : HLSPhysicalPoincareGroup :=
+  ⟨1, g⟩
+
+/-- Translation by parameter `t` in Minkowski coordinate `μ`. -/
 def hlsTranslationAt (μ : Fin 4) (t : ℝ) : HLSPhysicalPoincareGroup :=
-  ⟨Multiplicative.ofAdd (Pi.single μ t), 1⟩
+  hlsTranslation (Pi.single μ t)
 
 /-- The coordinate translation flow starts at the identity. -/
 theorem hlsTranslationAt_zero (μ : Fin 4) : hlsTranslationAt μ 0 = 1 := by
-  ext <;> simp [hlsTranslationAt]
+  ext <;> simp [hlsTranslationAt, hlsTranslation]
 
 /-- Coordinate translations form a one-parameter subgroup. -/
 theorem hlsTranslationAt_add (μ : Fin 4) (s t : ℝ) :
     hlsTranslationAt μ (s + t) = hlsTranslationAt μ s * hlsTranslationAt μ t := by
-  ext <;> simp [hlsTranslationAt, Pi.single_add]
+  ext <;> simp [hlsTranslationAt, hlsTranslation, Pi.single_add]
 
 /-- Coordinate translation is continuous for the explicit physical Poincaré topology. -/
 theorem hlsTranslationAt_continuous (μ : Fin 4) : @Continuous ℝ HLSPhysicalPoincareGroup

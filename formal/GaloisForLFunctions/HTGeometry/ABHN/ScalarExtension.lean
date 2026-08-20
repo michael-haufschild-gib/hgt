@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ABHN.BrauerFoundations
 import Mathlib.Algebra.Algebra.Subalgebra.Centralizer
+import Mathlib.RingTheory.Flat.Basic
 import Mathlib.RingTheory.TensorProduct.Finite
 
 /-!
@@ -31,6 +32,12 @@ noncomputable def scalarExtensionMap {K : Type u} {L : Type v} [Field K] [Field 
 theorem scalarExtensionAlg_finiteDimensional {K : Type u} {L : Type v} [Field K] [Field L]
     [Algebra K L] (A : CSA.{u, w} K) : FiniteDimensional L (L ⊗[K] A.carrier) := by
   infer_instance
+
+/-- The canonical map into scalar extension is injective. -/
+theorem scalarExtensionMap_injective {K : Type u} {L : Type v} [Field K] [Field L]
+    [Algebra K L] (A : CSA.{u, w} K) : Function.Injective (scalarExtensionMap (L := L) A) := by
+  apply Algebra.TensorProduct.includeRight_injective
+  exact FaithfulSMul.algebraMap_injective K L
 
 /-- Scalar extension of a central algebra remains central over the extended field. -/
 theorem scalarExtensionAlg_isCentral {K : Type u} {L : Type v} [Field K] [Field L]

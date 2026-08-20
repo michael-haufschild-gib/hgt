@@ -6943,3 +6943,38 @@ bottom polylogarithmic and the whole architecture reach `β > 1/2`.
 
 **So the next brick is the Kuzmin–Landau assembly of the log-phase kernel**, and it is the last
 place where a constant, rather than an idea, is missing.
+
+### Brick 113 — the Kuzmin–Landau kernel bound (2026-08-20)
+
+`Sieve/LogPhaseKernelKuzminLandau`, `lake env lean`-clean, axiom-clean, wired, built.
+
+```text
+norm_dyadic_block_le_kuzminLandau (M j) (ht : 0 < t) (hKL : 3t ≤ 4π·2^j) :
+  ‖∑_{n ∈ [1,M], ⌊log₂ n⌋ = j} n^{−it}‖ ≤ 6π·2^j/t + 1
+
+norm_sum_Icc_logPhase_le_split (hM : 1 ≤ M) (ht : 0 < t) (J₀) (hJ₀ : 3t ≤ 4π·2^{J₀}) :
+  ‖∑_{n ≤ M} n^{−it}‖
+    ≤ J₀·214√t + 1536·2·2^{J₀}/√t + ( 12π·M/t + log₂M + 1 )
+```
+
+The dyadic range is split at the Kuzmin–Landau threshold: below `J₀` the second-derivative envelope
+(`Sieve/LogPhaseKernelBound.norm_dyadic_block_le_affine`) and its geometric sum
+`∑_{j<J₀}2^j ≤ 2^{J₀}`; at and above `J₀`, `Sieve/MaynardKuzminLandauFactor`'s prefix
+Kuzmin–Landau, whose geometric sum `∑_{j ≤ log₂M}2^j ≤ 2M` is what produces `12π·M/t`.  The cpow
+form is reached through `Sieve/LogPhaseBlock.natCast_cpow_neg_I_mul`.
+
+**The point**: taking `2^{J₀} ≍ t` gives `‖K(v)‖ ≲ (log|v|)√|v| + N/|v|` for `|v| ≥ 1` — the
+reciprocal decay the row mass needs — in place of the old `N/√|v|`, whose supremum `3072N` made
+Halász–Montgomery vacuous for every exceptional set of measure `≥ 1`.
+
+**Remaining in this layer** (each a named, independent step):
+1. the pointwise kernel bound at a free frequency: instantiate `J₀ = ⌈log₂|v|⌉` to get
+   `‖plainKernel N v‖ ≤ 214(log₂|v|+1)√|v| + 6144√|v| + 12π·N/|v| + log₂N + 1`;
+2. the row mass with a reciprocal far bound: `∫_E‖K(t−u)‖du ≤ 2N + A·|E| + B·2log(2T)` from
+   `‖K(v)‖ ≤ A + B/|v|` on `|v| ≥ 1` — the only new measure-theoretic input is
+   `∫_{1 ≤ |v| ≤ 2T} dv/|v| = 2log(2T)`;
+3. propagate through `Sieve/PlainKernelMass`, `Sieve/LogPolySetScaling`, `Sieve/LogPolyWindowHM`,
+   `Sieve/RamareLadderHM.ladderHMBound`;
+4. then the large half's budget reads `ρ²·(N log T + |𝒰|√T log T)/N²`-shaped, and the condition is
+   `|𝒰| ≲ N/√T`, i.e. `log R_min ≳ 2C₁ ≍ log log x` — the polylogarithmic bottom that makes
+   `β > 1/2` reachable.

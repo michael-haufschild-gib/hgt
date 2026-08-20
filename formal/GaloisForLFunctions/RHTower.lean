@@ -356,6 +356,8 @@ import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaSeven
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaNine
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaNineTwoAdic
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaTenConductorAggregation
+import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaTenZeroDetection
+import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaTenDetectorPolynomial
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaEight
 import GaloisForLFunctions.RHTower.BooleanGradeCoprimePlateau
 import GaloisForLFunctions.RHTower.BorderDeterminantVanishing
@@ -6858,6 +6860,7 @@ import GaloisForLFunctions.RHTower.Sieve.LogMoebiusHarmonicFloor
 import GaloisForLFunctions.RHTower.Sieve.LogNormSegment
 import GaloisForLFunctions.RHTower.Sieve.LogPhaseBlock
 import GaloisForLFunctions.RHTower.Sieve.LogPhaseKernelBound
+import GaloisForLFunctions.RHTower.Sieve.LogPhaseKernelKuzminLandau
 import GaloisForLFunctions.RHTower.Sieve.LogPolyDirPoly
 import GaloisForLFunctions.RHTower.Sieve.LogPolyIccPrefix
 import GaloisForLFunctions.RHTower.Sieve.LogPolyMoebius

@@ -111,13 +111,30 @@ def HLSStronglyContinuousPoincareRepresentation.toPoincareRepresentation {E : Ty
 
 /-- Compatibility of labelled one-particle states and the full state-sector split with a unitary
 Poincaré representation.  This is the actual positive-energy one-particle representation input;
-the mass-shell and energy inequalities live in `HLSOneParticleData`. -/
+the mass-shell and energy inequalities live in `HLSOneParticleData`.  The translation character
+and Lorentz covariance fields connect those labels to the represented Poincaré action. -/
 structure HLSOneParticlePoincareData (A : Type v) (E : Type u) [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [CompleteSpace E] where
   sectors : HLSStateSectorData E
   particles : HLSOneParticleData A E
   poincare : HLSPoincareRepresentation E
   vacuum_invariant : ∀ g, poincare.action g sectors.vacuum = sectors.vacuum
+  vacuum_invariant_vectors : {ψ | ∀ g, poincare.action g ψ = ψ} = hlsVacuumSector sectors.vacuum
+  particleLorentz : hlsProperOrthoLorentzGroup →* Equiv.Perm A
+  lorentz_state_covariant : ∀ g a,
+    poincare.action (hlsLorentzAt g) (particles.state a) = particles.state (particleLorentz g a)
+  momentum_lorentz_covariant : ∀ g a,
+    particles.momentum (particleLorentz g a) = g.1 (particles.momentum a)
+  mass_lorentz_invariant : ∀ g a,
+    particles.mass (particleLorentz g a) = particles.mass a
+  spin_lorentz_invariant : ∀ g a,
+    particles.spinTwice (particleLorentz g a) = particles.spinTwice a
+  statistics_lorentz_invariant : ∀ g a,
+    particles.fermionic (particleLorentz g a) ↔ particles.fermionic a
+  translation_eigenstate : ∀ x a,
+    poincare.action (hlsTranslation x) (particles.state a) =
+      Complex.exp (-Complex.I * (hlsMinkowskiPairing (particles.momentum a) x : ℂ)) •
+        particles.state a
   oneParticle_invariant : ∀ g ψ, ψ ∈ sectors.oneParticleSector →
     poincare.action g ψ ∈ sectors.oneParticleSector
   multiparticle_invariant : ∀ g ψ, ψ ∈ sectors.multiparticleSector →
@@ -489,8 +506,20 @@ structure HLSPhysicalWeylScatteringData (N : Type v) [DecidableEq N] (A : Type w
   physicalWeyl : HLSIntegratedPoincareWeylSuperalgebraData N E
   scatteringOnDomain : physicalWeyl.superalgebra.poincare.generators.commonDomain →ₗ[ℂ]
     physicalWeyl.superalgebra.poincare.generators.commonDomain
+  fermionParityOnDomain : physicalWeyl.superalgebra.poincare.generators.commonDomain →ₗ[ℂ]
+    physicalWeyl.superalgebra.poincare.generators.commonDomain
+  fermionParity_agrees : ∀ ψ : physicalWeyl.superalgebra.poincare.generators.commonDomain,
+    (fermionParityOnDomain ψ : E) =
+      physicalScattering.particlePoincare.sectors.fermionParity (ψ : E)
+  fermionParity_involutive : fermionParityOnDomain.comp fermionParityOnDomain = LinearMap.id
   scattering_agrees : ∀ ψ : physicalWeyl.superalgebra.poincare.generators.commonDomain,
     (scatteringOnDomain ψ : E) = physicalScattering.sMatrix.scattering (ψ : E)
+  supercharge_odd : ∀ I α,
+    fermionParityOnDomain.comp (physicalWeyl.superalgebra.supercharge I α) =
+      -(physicalWeyl.superalgebra.supercharge I α).comp fermionParityOnDomain
+  conjugateSupercharge_odd : ∀ I α,
+    fermionParityOnDomain.comp (physicalWeyl.superalgebra.conjugateSupercharge I α) =
+      -(physicalWeyl.superalgebra.conjugateSupercharge I α).comp fermionParityOnDomain
   supercharge_commutes_scattering : ∀ I α,
     hlsDomainCommutator physicalWeyl.superalgebra.poincare.generators.commonDomain
       scatteringOnDomain (physicalWeyl.superalgebra.supercharge I α) = 0
