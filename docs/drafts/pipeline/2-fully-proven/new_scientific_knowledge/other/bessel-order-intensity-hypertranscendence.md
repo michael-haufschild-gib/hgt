@@ -2100,3 +2100,45 @@ constants, and differentially closed.  The remaining obligation is the different
 layer: from differential algebraicity of the solution, the descended relations make the Galois
 points lie in a proper differential algebraic set, and Cassidy's additive classification — owned in
 evaluated form — turns that into the bound the classification consumes.
+
+## Lean progress — Cassidy's additive classification, elementarily, and the collapse it feeds
+
+`AdditiveDifferentialSubgroupLinear`
+
+```text
+jetVecHom                                        the jet vector of an element, as an additive map
+exists_nonzero_linear_jet_relation_of_addSubgroup
+    **an additive subgroup lying in the zero set of a nonzero differential polynomial satisfies a
+    nonzero linear relation among its jets**
+```
+
+The proof is elementary and needs no Hopf algebra: a differential polynomial in one indeterminate
+involves finitely many jets, so it is an ordinary polynomial on a finite-dimensional jet space; the
+jet vectors of an additive subgroup form an additive subgroup there on which it vanishes; if they
+spanned, every point would be a finite linear combination of them and the pullback would vanish on
+an integer lattice, hence be zero.  So they span a proper subspace and any annihilating functional
+is the relation.  (`MvPolynomialInfiniteVanishing.mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow`
+was generalised from `ℂ` to an arbitrary domain for this.)
+
+`DifferentialSubringCollapse`
+
+```text
+exists_monic_jet_relation                     a nonzero linear jet relation can be taken monic
+deriv_eq_zero_of_subring_of_zeroSet           **a subring inside a proper differential algebraic set
+                                              consists of constants**
+scalarStabilizer                              the scalars `x` with `x • 1` in a module of matrices
+eq_algebraMap_of_scalarStabilizer_of_zeroSet  exactly the hypothesis
+                                              `cassidy_gl2_constant_conjugate` consumes
+```
+
+**Correction to the route.**  The scalars of the `C^δ`-span of the Galois monoid are *not* bounded by
+differential algebraicity alone: for `Z = {x : δ(δx/x) = 0}` the group
+
+  `G = {diag(a,a⁻¹) : a ∈ Z} ∪ {antidiag(b,-b⁻¹) : b ∈ Z}`
+
+is irreducible with determinant `1` and all entries in the zero set of `x δ²x - (δx)²`, yet
+`diag(a,a⁻¹) + diag(a⁻¹,a) = (a+a⁻¹)·1` puts `{a + a⁻¹}` — the hyperbolic cosines — into the scalar
+stabiliser, and those are unbounded.  The imprimitive case therefore has to be excluded separately
+(the symmetric-square layer of this card), and in the primitive case Cassidy's structure theorem
+makes the traces fill a differential subfield, which the two theorems above then collapse to the
+constants.

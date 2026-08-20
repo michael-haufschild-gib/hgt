@@ -1,8 +1,8 @@
 # Re = ½ is the abscissa of almost-sure convergence of the random Euler product
 
 - **ID:** critical-line-abscissa-of-convergence
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) — Door-2 grade **BRIDGE**; **review fixes applied 2026-06-19** (½ normalization + divergence direction), ready for Lean
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) — Door-2 grade **BRIDGE**; formalized unconditionally
 - **Priority:** FUTURE
 - **Source:** split from `../1-in-progress/erosion-threshold.md` (G19); ../../door/bucket-time-and-non-holonomic-time.md · 00-status rows #59, #110
 - **Statement:** On the boundary torus `𝕋^∞` (Bohr model: `X_p = e(θ_p)` i.i.d. uniform on the unit
@@ -91,7 +91,7 @@ rigorous backbone under the native conjecture **G19** (the dynamical erosion/Lya
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven (above; dependencies discharged by classical citation)
-- [ ] 2 → 3  formalized — **pre-certified ✓**
+- [x] 2 → 3  formalized — **pre-certified ✓**
   (`../../../../computations/2026-06-19-abscissa-normalization-check.txt`: the `loglog`-vs-finite split,
   the exact `½` real-part ratio, and the Mertens divergence). Lean: the elementary core
   "`Σ_p p^{-2σ} < ∞ ⟺ σ > ½`" is Tier-A (`≤ ζ(2σ)` above ½; `≥ Σ_p 1/p` Mertens below); the blow-up
@@ -120,3 +120,70 @@ correction, not a mathematical rejection — Leaner's own note, line 109):
 - **Real-part ratio** `Var(Re𝓛)/V = ½` exact (`E[cos²]=½`, analytic).
 Proof rigorous and internally consistent; dependencies classical (Kolmogorov three-series, Mertens,
 prime-zeta/log ζ, Selberg CLT — all credited IMPORTs). Door-2 **BRIDGE**. → **2-fully-proven**.
+
+## Lean formalization — COMPLETE (unconditional)
+
+Every proved statement of this card is now an unconditional Lean theorem.  Axiom audit for all
+capstones: `propext`, `Classical.choice`, `Quot.sound` only.
+
+**`GaloisForLFunctions/RHTower/RandomEulerAbscissa.lean`** — the arithmetic threshold and the exact
+real-part normalisation.
+
+| Theorem | Statement |
+|---|---|
+| `summable_prime_rpow_neg_iff` | `∑_p p^{-t} < ∞ ↔ t > 1`.  Above the threshold by comparison with `ζ(t)`; at or below it by `p^{-t} ≥ p^{-1}` and the divergence of the prime harmonic sum.  Both halves, as the card requires: the `ζ`-comparison alone gives only convergence. |
+| `summable_eulerGradeSecondMoment_iff` | `V(σ) = ∑_p ∑_{k≥1} p^{-2kσ}/k² < ∞ ↔ σ > 1/2` — the total second moment, with no factor `½`. |
+| `summable_eulerHigherGradeSecondMoment` | the grades `k ≥ 2` are already summable for `σ > 1/4`, so they cannot move the transition. |
+| `intervalIntegral_cos_twoPi_mul_cos_twoPi` | `∫₀¹ cos(2πkθ)cos(2πjθ) dθ = δ_{kj}/2` for `k, j ≥ 1`. |
+| `intervalIntegral_cos_twoPi_sq` | `∫₀¹ cos(2πkθ)² dθ = 1/2` — the exact real-part halving `Var(Re 𝓛) = ½ V(σ)`. |
+
+**`GaloisForLFunctions/HTGeometry/KolmogorovLowerInequality.lean`** — new reusable probability
+infrastructure (a mathlib gap): the converse half of Kolmogorov's three-series theorem for
+uniformly bounded centred coordinate series in a countable product of probability spaces.
+
+| Theorem | Statement |
+|---|---|
+| `stopped_secondMoment_step` | the stopped second moment gains the full increment variance on the surviving event and loses at most `(λ+C)²` per unit of exiting probability. |
+| `kolmogorov_lower_inequality` | `(∑_{n<N} E‖g n‖²) · P(∀ n ≤ N, ‖S n‖ < λ) ≤ (λ + C)²`. |
+| `measure_coordSeriesConverges_eq_zero_of_variance_atTop` | divergent accumulated variance forces almost sure divergence of the series. |
+
+This is the exact converse of the corpus's `kolmogorov_maximal_inequality` /
+`measure_coordSeriesConverges_eq_one`, so the pair is the full bounded-case three-series dichotomy.
+
+**`GaloisForLFunctions/RHTower/RandomEulerObservableFactor.lean`** — one Euler factor
+`ℓ(r,x) = -log(1 - r e(x))` as a function of its phase.
+
+| Theorem | Statement |
+|---|---|
+| `norm_randomEulerLogFactor_le` | `‖ℓ‖ ≤ r²/(2(1-r)) + r`. |
+| `norm_randomEulerLogFactor_sub_linear_le` | `‖ℓ - r e(x)‖ ≤ r²/(2(1-r))` — the grade-`≥2` remainder. |
+| `integral_randomEulerLogFactor` | `∫₀¹ ℓ(r,x) dx = 0`, by the mean value property of `w ↦ -log(1-w)` on the disc of radius `r`. |
+| `norm_randomEulerLogFactor_ge` | on the far arc (`cos 2πx ≤ -1/2`), `‖ℓ‖ ≥ r/4`, because there `|1 - r e(x)|² ≥ 1 + r`. |
+
+**`GaloisForLFunctions/RHTower/RandomEulerObservableAbscissa.lean`** — the capstone.
+
+| Theorem | Statement |
+|---|---|
+| `randomEulerTerm_prime_eq` | the term at a prime coordinate is `-log(1 - p^{-σ} X_p)` for the Steinhaus character `X_p`. |
+| `integral_normSq_randomEulerTerm_le` / `_ge` | two-sided second-moment bounds: `p^{-2σ}/48 ≤ E‖ℓ_p‖² ≤ κ(σ)² p^{-2σ}`. |
+| `measure_coordSeriesConverges_randomEulerTerm_eq_one` | for `σ > 1/2` the observable converges almost surely. |
+| `measure_coordSeriesConverges_randomEulerTerm_eq_zero` | for `0 < σ ≤ 1/2` it diverges almost surely. |
+| **`measure_coordSeriesConverges_randomEulerTerm_eq_one_iff`** | **`𝓛(σ)` converges almost surely `↔ σ > 1/2`** — the card's statement. |
+
+The probability space is the corpus's Bohr model `RHTower.SteinhausModel`: `Measure.infinitePi` of
+uniform phases on `[0,1]`, one per prime, with `X_n` the induced completely multiplicative
+unimodular character.
+
+The capstone is stated on `0 < σ`, the domain on which the random Euler product
+`∏_p (1 - X_p p^{-σ})^{-1}` is defined at all (for `σ ≤ 0` the local factors have `|X_p p^{-σ}| ≥ 1`
+and the observable is not the Euler product).  This is the statement's domain, not an assumed
+input: no hypothesis on `ζ`, on the zeros, or on any unproved analytic fact enters any proof.
+
+**Not Lean-bound (classical imports, as the card already recorded):** the blow-up constant
+`V(σ) = P(2σ) + O(1) ~ log(1/(2σ−1))`, the truncated `log log X` rate, and Selberg's CTL.  These are
+asymptotic refinements of the threshold, not part of the almost-sure dichotomy proved here.
+
+## Log (continued)
+- 2026-08-20 — **formalized**: unconditional Lean proof of the full dichotomy, including a new
+  mathlib-gap module (Kolmogorov's lower inequality / the divergence half of the three-series
+  theorem).  Axiom audit clean.  Stage → 3-formalized.

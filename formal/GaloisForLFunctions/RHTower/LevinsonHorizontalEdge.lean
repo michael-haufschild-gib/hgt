@@ -108,7 +108,7 @@ theorem hasDerivAt_levinsonG_horiz (lam : ℂ) {T : ℝ} (hT : T ≠ 0) (x : ℝ
     have h := (Complex.ofRealCLM.hasDerivAt (x := x)).add_const ((T : ℂ) * I)
     simpa using h
   have h := ((analyticAt_levinsonG lam hne1).differentiableAt.hasDerivAt).comp x hpath
-  simpa only [mul_one] using h
+  exact h.congr_deriv (by ring)
 
 /-- **The horizontal side of a Levinson rectangle is `O(log T)`.** -/
 theorem exists_horizontal_levinsonG_bound :

@@ -1,6 +1,6 @@
 # Novelty audit
 
-Date: 17 August 2026. Priority status: provisional pending independent search.
+Date: 20 August 2026. Priority status: provisional pending independent search.
 No absolute “first” claim is authorized.
 
 ## Closest current literature
@@ -8,7 +8,7 @@ No absolute “first” claim is authorized.
 1. Bocchieri--Loinger establishes finite-dimensional quantum recurrence
    existence, not interaction-induced rank singularity, local-network rank or
    target-capacity laws.
-2. Kotowski--Oszmaniec and Gupta--Short study first-return bounds for finite
+2. Kotowski--Oszmaniec and Gupta--Short study recurrence-time bounds for finite
    quantum systems. Current paper studies completed orbit geometry and
    completed-time occupation and explicitly does not infer first-return times.
 3. Riddell--Pagliaroli--Alhambra study recurrence and concentration; Riddell--
@@ -46,6 +46,10 @@ No absolute “first” claim is authorized.
    classical hard instances, with static unit-time and piecewise-constant
    late-time constructions. These results are closer than random-complexity
    work to candidate G below and substantially narrow its priority residue.
+9. Nayak--Sen characterize CPTP maps with CPTP inverses; on equal input and
+   output dimension this gives unitary conjugation. This is prior art for
+   exact channel-inverse rigidity, not for the joined semigroup return-defect,
+   intermediate recovery and circuit-incidence statement below.
 
 ## Candidate novelty residues
 
@@ -172,11 +176,46 @@ local spectra and interaction-suppressed revivals are established. Exact
 rational-rank/cascade/Hilbert conjunction may be technically new but is not
 headline novelty and is not a microscopic random-field MBL theorem.
 
+### J. Fixed-shell local spectral-action dephasing
+
+Exact residue: on one recursive family of ordinary open nearest-neighbour
+qubit paths, every nonzero balanced real spectral action has vanishing
+oscillatory integral against every bounded measurable amplitude on fixed
+Hilbert--Schmidt coefficient sphere as absolute time diverges. Same local
+family supplies simple spectrum and two Hamiltonians whose normalized squared
+labelled action sets are disjoint under all spectral permutations.
+
+Closest sources: generic local spectral simplicity and nondegenerate-gap
+results, no-resonance analyses, and disorder-averaged spectral-form-factor
+theorems. Targeted primary-source search found no theorem matching all of:
+real rather than only integer balanced characters, angular-only averaging at
+fixed interaction rate, full Hermitian nearest-neighbour path locality, and
+an explicit two-Hamiltonian nonflatness certificate at every size.
+
+Preliminary verdict: strong new candidate. It is qualitative and asymptotic;
+no finite-time decay rate, single-Hamiltonian mixing, or all-local-family
+claim is authorized.
+
+### K. Markovian return as recovery and rigidity
+
+Exact residue: for every finite-dimensional CPTP semigroup, diamond defect of
+one full-channel return equals defect of remaining-time recovery at every
+intermediate time and bounds all ancilla-assisted trace-norm loss. Inverse
+words inject exact-length circuit incidences across return at radius shifted
+by same defect. Exact return forces unitary conjugation throughout, periodicity
+and exact incidence palindrome.
+
+Preliminary verdict: structural synthesis, not headline priority claim.
+Semigroup recovery identity is algebraic and CPTP inverse rigidity is known
+from Nayak--Sen. Candidate residue is exact conjunction and common defect
+control, not either ingredient alone.
+
 ## Novelty explicitly disclaimed
 
 - Compact-hull equidistribution and Kronecker--Weyl theory.
 - Rank--nullity itself.
 - Abstract all-order form-factor formulas under rational independence.
+- Reversible-channel classification and semigroup composition identity.
 - Elementary finite target union bound.
 - Permanent non-Haar behavior of constant-local static ensembles.
 - First-return estimates, any literal monotone complexity trajectory,
@@ -195,9 +234,8 @@ headline novelty and is not a microscopic random-field MBL theorem.
 ## Required before submission
 
 1. Independent MathSciNet/zbMATH/INSPIRE/Google Scholar ancestry and citation
-   search for candidates A--G, especially exact comparison of G with
+   search for candidates A--K, especially exact comparison of G with
    arXiv:2607.19852.
 2. Specialist review of interaction and arbitrary-graph proofs.
 3. Metadata check for 2026 preprints and later versions.
 4. Calibrate journal claim language after external priority result.
-

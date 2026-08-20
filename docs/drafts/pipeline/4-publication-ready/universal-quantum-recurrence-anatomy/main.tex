@@ -37,7 +37,7 @@
 \title{\textbf{Persistent phase geometry of quantum recurrence}\\
 \large\itshape Four structural laws for loss, spectral constraints, observability, and finite-horizon inference}
 \author{GPT 5.6 Sol \and Opus 5 \and Fable 5 \and Michael Haufschild}
-\date{17 August 2026}
+\date{20 August 2026}
 
 \begin{document}
 \maketitle
@@ -57,12 +57,18 @@ dimension-free Duhamel bound $2|t|\delta$ on a perturbation of norm at most
 $\delta$.
 
 This singular principle organizes four structural laws.  Loss selects the
-persistent carrier and fixes the exact asymptotic return ceiling.  Spectral
+persistent carrier and fixes the exact asymptotic return ceiling; at channel
+level, a Markovian return within diamond defect $\delta$ supplies the
+remaining evolution as a $\delta$-recovery at every intermediate time, while
+an exact full-channel return forces unitary, periodic evolution.  Spectral
 constraints determine completed temporal dimension: for any finite
 interaction graph, generic onsite-plus-edge Hamiltonians have an exact
 component formula, subsystem temporal curvature reconstructs the supplied
 graph, and homogeneous nearest-neighbour qudit paths have strict return
-density doubly exponential in their length.  Observability is governed by
+density doubly exponential in their length.  On a fixed Hilbert--Schmidt
+sphere of ordinary nearest-neighbour qubit Hamiltonians, every nonzero
+balanced spectral action dephases under angular averaging, with its
+nonflatness certified by two local Hamiltonians.  Observability is governed by
 target capacity: coherence-graph rank gives the visible exponent, every
 finite family of Born histories either never exits a prescribed tolerance
 or returns after a same-record exit within a least graph--resolution
@@ -98,21 +104,19 @@ infinite-volume orbit recurrence, or Haar randomization.
 \end{abstract}
 
 \noindent\textbf{Public summary.}
-A tiny interaction may be almost invisible for any fixed duration yet
-completely reorganize what a quantum system does over arbitrarily long time.
-The reason is arithmetic: long-time recurrence depends on exact relations
-among energy levels, and exact relations can disappear under an arbitrarily
-small perturbation.  We turn that observation into quantitative laws for
-loss, local many-body systems, measurement, computational complexity and
-limits of prediction.  If a chosen finite collection of quantum measurement
-probabilities ever leaves a tolerance band, same record is guaranteed to
-re-enter it.
-For one concrete one-dimensional chain, the same analysis proves that the
-number of two-qubit gates needed to reproduce its motion lies between
-explicit linear bounds for a controlled time window, but can nevertheless
-drop between two nearby increasing times when one local phase completes a
-full turn.  This separates large-scale complexity growth from literal
-increase at every instant.
+A tiny interaction can be invisible at any fixed time yet reorganize a
+system's entire long-time recurrence because exact relations among energies
+can disappear under arbitrarily small perturbations.  We turn this arithmetic
+fact into laws for loss, local many-body systems, measurement, complexity and
+inference.  A finite collection of measurement probabilities either stays
+inside its tolerance band or, after leaving, is guaranteed to re-enter it.
+For memoryless open dynamics, near-return of complete channel certifies
+recovery of what earlier evolution could erase; exact return forces reversible
+unitary motion.  At fixed interaction strength, averaging directions of
+one-dimensional local Hamiltonians cancels every nontrivial relative spectral
+phase at late times.  One concrete local chain has explicit linear complexity
+bounds yet drops between nearby increasing times, separating large-scale
+growth from literal increase at every instant.
 
 \input{body}
 
@@ -127,4 +131,3 @@ analysis, verification and writing of the manuscript.
 \input{references}
 
 \end{document}
-

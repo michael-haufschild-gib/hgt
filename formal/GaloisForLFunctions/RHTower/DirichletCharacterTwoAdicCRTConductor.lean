@@ -2,13 +2,14 @@
 # Conductor certificates for two-adic/odd CRT quadratic characters
 
 This module identifies the bundled CRT characters at levels `4q` and `8q`
-with the corresponding products of lifted local characters.  It also proves
-the unconditional two-adic divisor certificate for each resulting conductor.
-The remaining odd-factor conductor calculation is deliberately kept separate.
+with the corresponding products of lifted local characters.  It proves their
+full primitivity and conductor identities.  The remaining source-facing work
+is fundamental-discriminant classification and exact local correlation bounds.
 -/
 import GaloisForLFunctions.RHTower.DirichletCharacterCoprimePrimitiveProduct
 import GaloisForLFunctions.RHTower.DirichletCharacterTwoAdicCRTProduct
 import GaloisForLFunctions.RHTower.DirichletCharacterTwoAdicPrimitive
+import GaloisForLFunctions.RHTower.DirichletCharacterQuadraticCRTPrimitive
 
 noncomputable section
 
@@ -63,6 +64,16 @@ theorem four_dvd_fourOddQuadraticDirichletCharacter_conductor (P : OddPrimeFamil
     quadraticCharacterFour_isPrimitive (four_dvd_fourOddModulus P)
     (odd_dvd_fourOddModulus P)
 
+/-- The bundled level-four/odd CRT quadratic character is primitive at its full modulus. -/
+theorem fourOddQuadraticDirichletCharacter_isPrimitive (P : OddPrimeFamily I) :
+    (fourOddQuadraticDirichletCharacter P).IsPrimitive := by
+  rw [fourOddQuadraticDirichletCharacter_eq_canonical]
+  exact lifted_coprime_product_isPrimitive_at_level quadraticCharacterFour
+    (quadraticDirichletCharacter P) (four_coprime_modulus P)
+    quadraticCharacterFour_isPrimitive (quadraticDirichletCharacter_isPrimitive P)
+    (four_dvd_fourOddModulus P) (odd_dvd_fourOddModulus P)
+    (fourOddModulus_eq P)
+
 /-- The level-eight factor divides the literal CRT modulus. -/
 theorem eight_dvd_eightOddModulus (P : OddPrimeFamily I) : 8 ∣ eightOddModulus P := by
   rw [eightOddModulus_eq]
@@ -111,6 +122,16 @@ theorem eight_dvd_eightOddQuadraticDirichletCharacterEight_conductor
     quadraticCharacterEight_isPrimitive (eight_dvd_eightOddModulus P)
     (odd_dvd_eightOddModulus P)
 
+/-- The first bundled level-eight/odd CRT quadratic character is primitive at its full modulus. -/
+theorem eightOddQuadraticDirichletCharacterEight_isPrimitive (P : OddPrimeFamily I) :
+    (eightOddQuadraticDirichletCharacterEight P).IsPrimitive := by
+  rw [eightOddQuadraticDirichletCharacterEight_eq_canonical]
+  exact lifted_coprime_product_isPrimitive_at_level quadraticCharacterEight
+    (quadraticDirichletCharacter P) (eight_coprime_modulus P)
+    quadraticCharacterEight_isPrimitive (quadraticDirichletCharacter_isPrimitive P)
+    (eight_dvd_eightOddModulus P) (odd_dvd_eightOddModulus P)
+    (eightOddModulus_eq P)
+
 /-- Product of the lifted second level-eight and certified odd quadratic characters. -/
 def eightOddCanonicalCharacterEightPrime (P : OddPrimeFamily I) :
     DirichletCharacter ℂ (eightOddModulus P) :=
@@ -149,6 +170,16 @@ theorem eight_dvd_eightOddQuadraticDirichletCharacterEightPrime_conductor
     (quadraticDirichletCharacter P) (eight_coprime_modulus P)
     quadraticCharacterEightPrime_isPrimitive (eight_dvd_eightOddModulus P)
     (odd_dvd_eightOddModulus P)
+
+/-- The second bundled level-eight/odd CRT quadratic character is primitive at its full modulus. -/
+theorem eightOddQuadraticDirichletCharacterEightPrime_isPrimitive (P : OddPrimeFamily I) :
+    (eightOddQuadraticDirichletCharacterEightPrime P).IsPrimitive := by
+  rw [eightOddQuadraticDirichletCharacterEightPrime_eq_canonical]
+  exact lifted_coprime_product_isPrimitive_at_level quadraticCharacterEightPrime
+    (quadraticDirichletCharacter P) (eight_coprime_modulus P)
+    quadraticCharacterEightPrime_isPrimitive (quadraticDirichletCharacter_isPrimitive P)
+    (eight_dvd_eightOddModulus P) (odd_dvd_eightOddModulus P)
+    (eightOddModulus_eq P)
 
 end OddPrimeFamily
 end RHTower

@@ -58,6 +58,43 @@ shows that its non-permutation excess is a sum over unequal multiplicity
 vectors of equal total energy.  Maximal projective rank removes every such
 balanced equality, leaving exactly the permutation floor.
 
+\section{Full-channel recovery at a Markovian return}
+
+We prove Theorem \ref{thm:markovreturn}.  Semigroup composition and
+$t+(R-t)=R$ give both identities in \eqref{eq:markovrecovery}; therefore
+\eqref{eq:markovrecoverdefect} is exact, not an estimate.  Complete
+positivity and trace preservation make every ampliation trace-norm
+contractive.  Hence
+\[
+ \|(\Lambda_R\otimes\mathrm{id})(X)\|_1
+ \le \|(\Lambda_t\otimes\mathrm{id})(X)\|_1.
+\]
+Diamond distance and reverse triangle inequality also give
+\[
+ \|X\|_1-\|(\Lambda_R\otimes\mathrm{id})(X)\|_1
+ \le \|[(\Lambda_R-\mathrm{id})\otimes\mathrm{id}](X)\|_1
+ \le\delta_R\|X\|_1.
+\]
+Combining these inequalities proves \eqref{eq:markovinformation}.
+
+If $\delta_R=0$, equations \eqref{eq:markovrecovery} make
+$\Lambda_t$ and $\Lambda_{R-t}$ mutually inverse quantum channels.  A
+finite-dimensional channel with a channel inverse is a unitary conjugation:
+normalize its image of identity, apply Kadison--Schwarz to map and inverse,
+and obtain a star automorphism of full matrix algebra; trace preservation
+removes positive normalization, and every such automorphism is inner.  Thus
+every intermediate channel is unitary.  Moreover
+$\Lambda_{t+R}=\Lambda_t\circ\Lambda_R=\Lambda_t$, proving periodicity.
+
+Finally, if a word $w$ approximates $\Lambda_t$, then inverse word $w^{-1}$
+approximates $\Lambda_{R-t}$ with additional error at most $\delta_R$.
+This follows by inserting
+$\Lambda_{R-t}\circ\Lambda_t=\Lambda_R$, using contractivity under channel
+composition and invariance of diamond distance under unitary composition.
+Inversion injects captured words at $t$ into captured words at $R-t$, proving
+\eqref{eq:markovincidence}.  Under exact return same argument in reverse gives
+equality.
+
 \section{Arbitrary interaction graphs}
 
 \subsection{Generic component rank}
@@ -100,6 +137,42 @@ component witnesses avoids the countable set of ratios at which two modules
 intersect.  This proves the component formula
 \eqref{eq:graphrank-main}.  There are only finitely many induced subsystems;
 intersecting their pullbacks supplies one simultaneous generic set.
+
+\subsection{Fixed-shell spectral-action dephasing}
+
+We prove Theorem \ref{thm:localdephasing}.  Start with full Hermitian algebra
+on first two qubits.  Successively attach one endpoint qubit and choose old
+Hamiltonian in intersection of dense maximally projective set with open
+endpoint-complete set.  A small allowed edge perturbation preserves simple
+spectrum and makes every new endpoint transition available.  Iteration gives
+recursive physical path used in \eqref{eq:localshell}; its last extension has
+exactly $n+3$ qubits.  Trace inner product on full onsite-plus-edge subspace
+supplies basis in \eqref{eq:localshell} and identifies Euclidean coefficient
+norm with Hilbert--Schmidt norm.
+
+Fix balanced $k\ne0$.  Endpoint completeness and second-order eigenvalue
+response give, for every real $c$, one simple-spectrum local Hamiltonian at
+which every eigenvalue labelling avoids
+\begin{equation}
+ \left(\sum_j k_jE_{\pi(j)}(H)\right)^2
+   =c\,\|H\|_{\rm HS}^2                              \label{eq:quadraticrate}
+\end{equation}
+for every eigenvalue labelling $\pi$.  Apply this witness once, then again
+against finite set of its normalized labelled action values.  This produces
+two local Hamiltonians whose sets
+of normalized squared labelled actions are disjoint.  Same construction
+contains simple-spectrum Hamiltonian, so spectral discriminant of local
+coefficient family is not identically zero.
+
+On simple-spectrum locus, ordered eigenbranches and $\phi_k$ are real
+analytic.  If $\phi_k$ were constant on nonempty open shell patch,
+homogeneity would give \eqref{eq:quadraticrate} on its open cone, contradicting
+two-Hamiltonian witness after symmetrizing over labels.  Thus $\phi_k$ is
+nonconstant on every analytic chart.  Its critical set has spherical measure
+zero, and coarea on regular set makes weighted pushforward of spherical
+measure under $\phi_k$ absolutely continuous.  Riemann--Lebesgue lemma then
+gives \eqref{eq:localdephasing} for bounded measurable amplitude $g$; null
+discriminant and critical sets contribute nothing.
 
 \subsection{Curvature, density and exhaustion}
 
@@ -539,4 +612,3 @@ an inverse-closed dictionary.  Choi-metric unitary invariance and the
 triangle inequality add only the return defect $\Delta_R$, proving both
 inequalities in \eqref{eq:reflection}.  When $\Delta_R=0$, the two bounds are
 inverse inequalities and give exact palindromic symmetry.
-

@@ -40,13 +40,18 @@ theorem cdterm_mul_conj (a b : ℕ → ℂ) (σ t : ℝ) (m n : ℕ) :
       = (a m * (starRingEnd ℂ) (b n))
         * ((((m : ℝ) ^ (-σ) * (n : ℝ) ^ (-σ) : ℝ)) : ℂ)
         * Complex.exp ((((Real.log n - Real.log m) * t : ℝ) : ℂ) * I) := by
-  rw [conj_cdterm]
+  have hexp : Complex.exp ((((-(Real.log m) * t : ℝ)) : ℂ) * I)
+      * Complex.exp ((((Real.log n * t : ℝ)) : ℂ) * I)
+      = Complex.exp (((((Real.log n - Real.log m) * t : ℝ)) : ℂ) * I) := by
+    rw [← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  have hcast : ((((m : ℝ) ^ (-σ) * (n : ℝ) ^ (-σ) : ℝ)) : ℂ)
+      = (((m : ℝ) ^ (-σ) : ℝ) : ℂ) * (((n : ℝ) ^ (-σ) : ℝ) : ℂ) := by push_cast; ring
+  rw [conj_cdterm, hcast, ← hexp]
   unfold cdterm
-  rw [← Complex.exp_add]
-  push_cast
-  ring_nf
-  rw [← Complex.exp_add]
-  ring_nf
+  ring
 
 theorem continuous_cdterm_mul_conj_twist (a b : ℕ → ℂ) (σ L₀ : ℝ) (m n : ℕ) :
     Continuous fun t : ℝ =>
@@ -92,9 +97,9 @@ theorem twisted_meanValue (a b : ℕ → ℂ) (s : Finset ℕ) (σ L₀ T U : �
     · intro n _
       exact (continuous_cdterm_mul_conj_twist a b σ L₀ m n).intervalIntegrable _ _
   · intro m _
-    refine IntervalIntegrable.sum _ ?_
-    intro n _
-    exact (continuous_cdterm_mul_conj_twist a b σ L₀ m n).intervalIntegrable _ _
+    refine Continuous.intervalIntegrable ?_ _ _
+    exact continuous_finsetSum s
+      (fun n _ => continuous_cdterm_mul_conj_twist a b σ L₀ m n)
 
 end GaloisForLFunctions.HTGeometry
 

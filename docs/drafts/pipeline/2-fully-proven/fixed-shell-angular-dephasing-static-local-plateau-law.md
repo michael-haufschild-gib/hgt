@@ -2108,3 +2108,98 @@ Pauli labels are indexed by `Fin n → Option (Fin 3)`.
 So the card's second-moment step is complete on the fixed shell: for every support-invariant weight
 supported on the nonidentity strings of bounded weight and non-vanishing there,
 `E_θ C_{H(θ)}(Ω) ≤ (2/3)ⁿ` and the good angular set has measure at least `1 − 1/L`.
+
+## Lean progress -- Theorem C item 2: `(16)` is proved (2026-08-20)
+
+Item 2 of "What remains for Theorem C" -- weak convergence of the joint angular-phase laws -- is
+closed, both abstractly and on the card's own ensemble.
+
+`formal/GaloisForLFunctions/HTGeometry/BaseCharacterDensity.lean` (new, umbrella-wired,
+axiom-clean) is the reduction the card calls "trigonometric-polynomial density":
+
+| Card item | Declaration |
+|---|---|
+| torus characters separate points | `exists_mFourier_ne` |
+| the products `(x,τ) ↦ g(x)·χ_k(τ)` and their multiplicative structure | `baseCharProd`, `baseCharSubmonoid`, `star_baseCharProd` |
+| **their linear span is dense in `C(X × 𝕋ᵈ, ℂ)`** | `dense_span_baseChar`, `exists_baseChar_approx` |
+| a probability measure moves integrals by at most the sup norm | `norm_integral_sub_le_norm` |
+| **testing against the products already tests against everything** | `tendsto_integral_of_baseChar` |
+
+Density is Stone--Weierstrass through the corpus's `ShilovLocal.generates_of_separatesPoints`: the
+products are self-adjoint, separate the points of the product (the base factor separates base
+points, the characters separate torus points) and form a *submonoid*, so the algebra they generate
+is already their linear span (`Algebra.adjoin_eq_span` + `Submonoid.closure_eq`).
+
+`formal/GaloisForLFunctions/HTGeometry/AngularPhaseLaw.lean` (new, umbrella-wired, axiom-clean)
+carries out the card's proof of `(16)`:
+
+| Card item | Declaration |
+|---|---|
+| the normalized fixed-shell law on the coefficient sphere | `sphereLaw`, `isProbabilityMeasure_sphereLaw` |
+| a torus character on a real phase vector is one exponential | `mFourier_apply_ofReal` |
+| the phase index set and the zero-sum spectral weight of a character | `phaseIndex`, `zeroSumWeight`, `sum_zeroSumWeight`, `zeroSumWeight_eq_zero_iff` |
+| **`(15)`: the projective phase vector** | `spectralTuple`, `projectivePhase`, `continuous_projectivePhase` |
+| **the character weight is the zero-sum spectral action** | `sum_weight_mul_projectivePhase` |
+| the joint angular-phase map `θ ↦ (θ, tω(θ))` | `anglePhaseMap`, `continuous_anglePhaseMap`, `measurable_anglePhaseMap` |
+| **`(17)` is exactly a character along the joint map** | `mFourier_anglePhaseMap` |
+| continuous functions separate points of a metric space | `exists_continuousMap_ne_of_ne` |
+| the rescaled time escapes every compact | `tendsto_neg_two_pi_mul_cocompact` |
+| **`(16)`: the joint angular-phase laws converge weakly** | `tendsto_integral_anglePhase` |
+
+The mechanism is the card's own: on a product `g ⊗ χ_k` the joint integral is
+`∫ g(θ) e^{2πi t ⟨k, ω(θ)⟩} dσ`, and `⟨k, ω(θ)⟩` is the *zero-sum* spectral action of the weight
+`a` with `a_{i₀} = −∑k` and `a_j = k_j` elsewhere; the zero character contributes `∫ g`, every other
+character contributes zero on both sides -- on the left by Theorem B's Riemann--Lebesgue statement
+`(17)`, on the right because a nonzero character integrates to zero against Haar.
+
+`formal/GaloisForLFunctions/HTGeometry/PhysicalQubitPathAnglePhase.lean` (new, umbrella-wired,
+axiom-clean) instantiates it:
+
+| Card item | Declaration |
+|---|---|
+| the spectral label set is nonempty | `physicalStateBool_card_pos`, `physicalBaseLabel` |
+| **`(16)` on the card's ensemble, no hypotheses** | `tendsto_integral_anglePhase_physicalQubitPath` |
+
+### What remains for Theorem C
+
+Only item 3: the final assembly `(25)`--`(21)` -- the quenched heavy-sector incidence bound of the
+parent card, Portmanteau against `(16)`, and the `limsup` bookkeeping.  Items 1 and 2 are closed.
+
+## Lean progress -- Theorem C item 3: Portmanteau and the `(20)` bookkeeping (2026-08-20)
+
+`formal/GaloisForLFunctions/HTGeometry/AngularPhasePortmanteau.lean` (new, umbrella-wired,
+axiom-clean) carries out the card's *"Apply `(16)` and the Portmanteau upper bound"* step and the
+`limsup` bookkeeping that turns it into `(20)`:
+
+| Card item | Declaration |
+|---|---|
+| the joint law and its limit, as probability measures | `anglePhaseLaw`, `angleProductLaw` |
+| **`(16)` as convergence of probability measures** | `tendsto_anglePhaseLaw` |
+| **the Portmanteau upper bound on every closed set** | `limsup_measure_closed_anglePhase` |
+| the same in the pullback form the card uses | `limsup_measure_preimage_anglePhase` |
+| **`(20)`: the `limsup` bookkeeping** | `limsup_measure_preimage_anglePhase_le_of_good` |
+
+The last one is exactly the card's final inequality, in the form the proof produces it:
+
+```
+theorem limsup_measure_preimage_anglePhase_le_of_good … 
+    {A : Set (coeffSphere N × UnitAddTorus (phaseIndex i₀))} (hA : IsClosed A)
+    {G : Set (coeffSphere N)} (hG : MeasurableSet G) {ε δ : ENNReal}
+    (hgood : ∀ x ∈ G, volume (Prod.mk x ⁻¹' A) ≤ ε)
+    (hGc : (sphereLaw N) Gᶜ ≤ δ) :
+    (atTop.limsup fun t : ℝ => (sphereLaw N) (anglePhaseMap hP i₀ t ⁻¹' A)) ≤ ε + δ
+```
+
+Read against the card: `A` is the easy-circuit tube (a finite union of closed fidelity superlevel
+sets, hence closed), `G` is the good angular set of `(24)`, `δ = 1/L` is its complement's mass, and
+`ε = 2^{-r_n/2}` is the incidence bound `(25)` on each good fibre.  The conclusion is `(20)`:
+`limsup_t Pr_θ{easy} ≤ 1/L + 2^{-r_n/2}`.  Portmanteau enters through `(16)`; the fibrewise split is
+Fubini for the product law and the trivial bound `m_T ≤ 1` off the good set.
+
+### What remains for Theorem C
+
+Only the two *inputs* of that final inequality, both specific to the circuit model rather than to
+the fixed-shell analysis: the closedness of the easy-circuit tube `A` in the angular-phase bundle,
+and the quenched heavy-sector incidence bound `(25)` on each good fibre (the parent card's theorem,
+already stage 3 and quenched).  The fixed-shell analysis itself -- `(23)`, `(24)`, `(16)`, `(17)`,
+Portmanteau and the `limsup` bookkeeping -- is complete and unconditional.

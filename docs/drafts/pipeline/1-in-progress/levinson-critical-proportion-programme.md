@@ -549,3 +549,133 @@ needs `∫_0^T ζ(½+α+it)ζ(½+β−it)(h/k)^{-it} dt` for `h,k ≤ T^θ`, `θ
 error.  With the smooth AFE in hand this is a diagonal `mh = nk` computation plus an off-diagonal
 sum controlled by `∑ 1/|log(mh/nk)|`; the corpus's off-diagonal machinery in `SecondMoment.lean` is
 the right shape but is written for the untwisted diagonal `m = n`.
+
+### 4f, corrected: removing the hypothesis is free
+
+The earlier sketch was pessimistic.  The exact accounting is this.
+
+Let `τ_1 < … < τ_k` be the ordinates in `[T₁,T₂]` at which `G(½+iτ) = 0`, with multiplicities
+`m_i`, and put `M = Σ m_i`.  Two observations make the hypothesis removable at no cost.
+
+1. **The integrand does not blow up.**  Near a line zero `s₀ = ½+iτ_0` of order `m`,
+   `logDeriv G♯(s) = m/(s−s₀) + h(s)` with `h` analytic, and on the critical line
+   `s − s₀ = i(τ−τ_0)`, so the singular part is `−i m/(τ−τ_0)`, which is *purely imaginary*.
+   Hence `Re (G♯'/G♯)(½+iτ)` extends continuously across every line zero, and
+   `∫_{T₁}^{T₂} Re (G♯'/G♯)(½+it) dt` is an ordinary integral.
+
+2. **Indentation costs exactly `π` per unit of multiplicity.**  Indenting the left edge to the
+   right around each line zero excludes it from the rectangle and contributes `−π m_i` (half of the
+   full `−2π m_i`).  So
+
+   ```text
+   ∫_{T₁}^{T₂} Re (G♯'/G♯)(½+it) dt = (three edges) − 2π·N_int − π·M,
+   ```
+
+   where `N_int` counts the zeros in the *open* rectangle, and `N_total = N_int + M`.
+
+Splitting `[T₁,T₂]` at the `k` line zeros, the phase is defined on each closed subinterval and the
+anchored counting lemma loses at most one half-turn per subinterval, i.e. `k+1` in total.  Summing,
+
+```text
+n ≥ Δθ/π − 2N_int − M − (k+1) ≥ Δθ/π − 2N_int − 2M − 1 = Δθ/π − 2·N_total − 1,
+```
+
+using `k ≤ M`.  **This is exactly the bound of the zero-free case**, with the closed-rectangle zero
+count in place of the open one.  So hypothesis 4f can be removed without weakening the constant;
+what it costs is the Lean work of (i) the continuous extension of `Re (G♯'/G♯)` across a line zero,
+(ii) the indented rectangle argument principle, and (iii) the finite subdivision bookkeeping.
+
+## Verification log
+
+- 2026-08-20 — **Brick 4 closed and machine-checked.**  `lake build` green for, in dependency
+  order: `HTGeometry/SegmentPolarForm` (strengthened), `HTGeometry/SegmentArgumentBound`,
+  `RHTower/LevinsonPhaseAdvance`, `RHTower/EntireArgumentVariationRectangle`,
+  `RHTower/LevinsonEntireDetector`, `RHTower/LevinsonEntirePhaseAdvance`,
+  `RHTower/PhaseAdvanceIncrementCount`, `RHTower/LevinsonWindowAdvance`,
+  `RHTower/ZetaFarRightDecay`, `RHTower/LevinsonStripBound`, `RHTower/LevinsonRightEdge`,
+  `RHTower/LevinsonAdmissibleHeight`, `RHTower/LevinsonRealTrace`,
+  `RHTower/LevinsonHorizontalEdge`, `RHTower/LevinsonWindowBound`.  All are wired into their
+  area umbrellas.  The capstone is `exists_levinson_window_edge_bound`.
+- 2026-08-20 — Brick 5 groundwork landed: `HTGeometry/ExponentialWindowIntegral` (`expInt`,
+  `expInt_zero`, `expInt_eq`, `norm_expInt_le`, `norm_expInt_le_length`),
+  `HTGeometry/TwistedDirichletMeanValue` (`cdterm`, `cdpoly`, `twisted_meanValue`) and
+  `HTGeometry/TwistedDiagonal` (`sub_div_le_log_sub_log`, `inv_le_abs_log_sub_log`,
+  `twistedFreq_eq`, `expInt_twisted_diag`, `norm_expInt_twisted_offdiag`) all build.
+
+## Brick 5a — the twisted mean value of a Dirichlet polynomial (2026-08-20)
+
+Landed and machine-checked:
+
+* `HTGeometry/ExponentialWindowIntegral.lean` — `expInt L T U = ∫_T^{T+U} e^{iLt}dt`, with
+  `expInt 0 T U = U`, the closed form, `‖expInt‖ ≤ 2/|L|` and `‖expInt‖ ≤ U`.
+* `HTGeometry/TwistedDirichletMeanValue.lean` — `cdterm`, `cdpoly`, and the **exact** identity
+
+  ```text
+  ∫_T^{T+U} A(σ+it)·conj B(σ+it)·e^{iL₀t} dt
+      = ∑_{m,n} a_m conj(b_n) (mn)^{-σ} · expInt(log n − log m + L₀).
+  ```
+
+* `HTGeometry/TwistedDiagonal.lean` — for a twist by `(h/k)^{-it}` the frequency is
+  `log(nk) − log(mh)`; `expInt` is `U` on the diagonal `nk = mh` and `O(max(nk,mh))` off it.
+* `HTGeometry/TwistedMeanValueSplit.lean` — the exact diagonal/off-diagonal split
+  `U·(diagonal) + (off-diagonal)`, and the termwise off-diagonal bound.
+* `HTGeometry/VerticalLogDerivRegular.lean` — `Re (f'/f)` along a vertical line through a zero of
+  order `m` equals `Re` of the cofactor's logarithmic derivative, because the singular part
+  `m/(iτ)` is purely imaginary.  (This is ingredient (i) of brick 4f.)
+* `RHTower/Sieve/DistinctReciprocalSum.lean` — a finite set of positive integers has reciprocal sum
+  at most the harmonic number of its cardinality (`sum_inv_le_sum_Icc`), hence
+  `∑ 1/|v i| ≤ 2(1 + log #s)` for any family of **distinct nonzero integers**
+  (`sum_inv_abs_le_of_injOn`).  This is the combinatorial engine of every off-diagonal estimate.
+
+Next: `RHTower/Sieve/TwistedOffDiagonalSum.lean` (`|log A − log B| ≥ |A−B|/max(A,B)`, and the row
+sum `∑_n 1/|nk − mh| ≤ 2(1 + log #s)` from the distinct-integer lemma), then the twisted mean value
+theorem in error form, then the approximate functional equation step.
+
+### Brick 5a closed (2026-08-20)
+
+`RHTower/Sieve/TwistedOffDiagonalSum.lean` (`abs_sub_div_max_le_abs_log_sub_log`,
+`two_div_abs_log_twisted_le`, `sum_inv_abs_twisted_row_le`) and
+`RHTower/Sieve/TwistedMeanValueError.lean` build, giving
+
+* **`twisted_meanValue_error`** — for Dirichlet polynomials supported on `s`, a twist by
+  `(h/k)^{-it}`, any bound `B` on `nk` and `mh`, and any uniform coefficient bound `C`:
+
+  ```text
+  ‖ ∫_T^{T+U} A·conj B·(h/k)^{-it} − U · ∑_{nk = mh} a_m conj(b_n) (mn)^{-σ} ‖
+      ≤ 4 · #s · C · B · (1 + log #s).
+  ```
+
+Axiom audit: all 23 capstones of bricks 4 and 5a depend only on
+`propext, Classical.choice, Quot.sound`.
+
+## Brick 5b — the shifted approximate functional equation (scoped 2026-08-20)
+
+`RHTower/Sieve/TwistedDiagonalReindex.lean` closes the diagonal:
+
+* **`twisted_diagonal_reindex`** — for coprime `h,k`, the pairs with `nk = mh` are exactly
+  `(kd, hd)`, so the twisted diagonal is the single sum `∑_d f(kd, hd)`.
+  (`twisted_diagonal_decomp` isolates the arithmetic: `k ∣ mh` and `(h,k)=1` force `k ∣ m`.)
+
+With the twisted mean value and its diagonal in hand, the remaining input is a Dirichlet-polynomial
+representation of `ζ` at the Levinson abscissa `σ₀ = ½ − R/log T`.
+
+**Plain truncation is provably insufficient.**  The corpus's exact Euler–Maclaurin identity
+`riemannZeta_eq_sum_add_tail` gives
+`ζ(w) = ∑_{k ≤ N} k^{-w} + O(N^{1-σ}/|w−1|) + O(|w| N^{-σ}/σ)`.  At `σ ≈ ½` the second error is
+`≍ T·N^{-1/2}`, so a useful error needs `N ≫ T²` — and then the mean-value error term
+`4·N·y·(1+log N)` swamps the main term `U ≍ T`.  The approximate functional equation, with its
+length `≍ √T`, is therefore not a convenience but a necessity.
+
+**What has to be generalized.**  The corpus owns a complete *exact* Gaussian smooth AFE, but every
+statement in the chain is written at `linePt τ`:
+
+* `SmoothAFEZetaExact.riemannZeta_line_eq_tsum_smoothAFECutoff_sub_dual_sub_residue`,
+* `SmoothAFEZetaStripBound.smoothAFEZetaMellin_infinite_contour_shift_line`,
+* `SmoothAFEZetaInfiniteContour.smoothAFEZetaMellin_infinite_contour_shift_line_of_horizontal_tendsto`
+  and its two horizontal-decay inputs.
+
+The Dirichlet expansion `smoothAFEZetaMellinAt_eq_tsum_smoothAFECutoff` is *already general in `s`*
+(it needs only `1 < Re s + c`).  So brick 5b is exactly: replace `linePt τ` by a general `s` with
+`|Re s − ½| ≤ ½` in the contour-shift chain, checking that the Gaussian horizontal decay estimates
+are uniform in that strip.  Since Levinson's abscissa satisfies `|σ₀ − ½| = R/log T → 0`, uniformity
+on any fixed strip around the critical line suffices.

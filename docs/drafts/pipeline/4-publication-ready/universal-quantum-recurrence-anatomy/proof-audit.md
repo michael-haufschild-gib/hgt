@@ -1,6 +1,6 @@
 # Internal claim ledger
 
-Not part of submitted paper. Audit date: 17 August 2026.
+Not part of submitted paper. Audit date: 20 August 2026.
 
 ## Admission rule
 
@@ -31,6 +31,10 @@ proof-assistant or internal-corpus references.
 | Countable pure-point recurrence | `RHTower.exists_summablePhaseEnergy_recurrence` | `SummablePurePointPhaseRecurrence.lean` |
 | Positive exact return iff visible group is cyclic | `RHTower.exists_positive_unitFidelity_iff_cyclic` | `ObserverTemporalUniversalityLaw.lean` |
 | Atomless continuum dimension and vanishing fixed return-window density | `RHTower.atomlessProjectiveObserverTemporalPhaseLaw`; packaged in `RHTower.universalQuantumRecurrenceAnatomyLaw` | `ObserverTemporalUniversalityLaw.lean`; `UniversalQuantumRecurrenceAnatomyLaw.lean` |
+| Markovian semigroup recovery identities, exact recovery defect, and ancilla-assisted trace-norm preservation bound | `HTGeometry.DynamicalSemigroup.recovery_left`; `recovery_right`; `dist_recovery_eq`; `one_sub_defect_mul_nuclearNorm_le` | `MarkovianReturnRecovery.lean` |
+| Approximate inverse-word incidence reflection at shifted diamond radius | `HTGeometry.DynamicalSemigroup.dist_reflect_word`; `card_reflect_word` | `MarkovianReturnRecovery.lean` |
+| Exact full-channel return forces a unitary conjugation at every intermediate time, periodicity, and exact incidence palindrome | `HTGeometry.DynamicalSemigroup.exists_unitary_of_exact_return`; `periodic_of_exact_return`; `card_reflect_eq` | `MarkovianExactReturn.lean` |
+| CPTP two-sided inverse rigidity used by exact-return clause | `HTGeometry.QuantumChannel.exists_unitary_of_channel_inverse` | `ChannelInverseRigidity.lean` |
 
 ## Law II: local networks, thermodynamics and replicas
 
@@ -45,6 +49,9 @@ proof-assistant or internal-corpus references.
 | Homogeneous path density, extinction, Hilbert-dimension rate and site double-log rate | `HTGeometry.thermodynamicProjectiveRecurrenceExtinctionLaw` | `ThermodynamicProjectiveRecurrenceExtinctionLaw.lean` |
 | One countable-network exhaustion: residual/dense event, probability-one event and rank divergence | `HTGeometry.infiniteNetworkExhaustion_temporalRank_tendsto_atTop` with `networkExhaustionGoodSet_residual` and `measure_compl_networkExhaustionGoodSet_eq_zero` | `InfiniteNetworkExhaustion.lean` |
 | Static onsite-plus-nearest-neighbour qudit paths attain every positive-weight replica floor simultaneously | `HTGeometry.exists_quditPath_generic_survivalFidelityFloor` | `GenericLocalCollisionExtremality.lean` |
+| Recursive physical path has exactly `n+3` qubits, and its full Hermitian onsite-plus-nearest-neighbour subspace has trace-orthonormal coordinates | `HTGeometry.physicalEndpointCompleteQubitPath_leafPhysicalCard`; `HTGeometry.PhysicallyRealizedEndpointCompleteSystem.leafLocalTraceGeneratorFin_trace_mul` | `ConcreteTwoHamiltonianSpectralActionWitness.lean` |
+| For every nonzero balanced real spectral character, same recursive local path contains two Hamiltonians with disjoint normalized squared labelled spectral actions and a simple-spectrum member | `HTGeometry.exists_physicalEndpointCompleteQubitPath_disjoint_actionRatio_pair`; `HTGeometry.physicalEndpointCompleteQubitPath_leafLocal_spectralDiscriminantPoly_ne_zero` | `ConcreteTwoHamiltonianSpectralActionWitness.lean` |
+| Fixed-shell local angular dephasing for every bounded measurable amplitude and every nonzero balanced real spectral character | `HTGeometry.tendsto_integral_exp_sortedSpectralAction_zero_physicalQubitPath` | `PhysicalQubitPathDephasing.lean` |
 | Component histogram collision identity | `HTGeometry.fidelityReplicaCollisionMass_factorizedOn_eq_componentCollisionMass` | `ComponentReplicaCollisionLaw.lean` |
 | Uniform component SFF product and moment limit | `HTGeometry.card_pow_mul_componentCollisionMass_eq_prod`; `HTGeometry.tendsto_componentFormFactorMoment` | `ComponentSpectralFormFactorProduct.lean` |
 | Fixed-component product of independent unit exponentials | `HTGeometry.tendsto_prod_replicaFormFactorCoeff`; `HTGeometry.tendsto_sffLaw_unitExpLaw` | `ComponentFormFactorExponentialLimit.lean`; `SpectralFormFactorExponentialLimit.lean` |
@@ -107,10 +114,12 @@ retained in present main text.
 `/tmp/AuditNestedMonotonicity.lean` import load-bearing modules and run
 `#print axioms` on headline declarations. Audit passed: every reported
 kernel dependency is among `[propext, Classical.choice, Quot.sound]`.
-Targeted 17 August audits of
+Targeted 17--20 August audits of
 `FiniteHermitianBornPostExitRecurrenceLaw`,
 `ThermodynamicDiameterLBitCascadeLaw` and
-`ThermodynamicDiameterLBitHilbertDynamicsLaw` report same standard
+`ThermodynamicDiameterLBitHilbertDynamicsLaw`, together with
+`PhysicalQubitPathDephasing`, `MarkovianReturnRecovery`,
+`MarkovianExactReturn` and `ChannelInverseRigidity`, report same standard
 dependencies.
 Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 `opaque` and `unsafe` declarations.
@@ -123,4 +132,3 @@ Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 - No bounded-degree geometry claim for bounded-weight all-to-all Pauli terms.
 - No infinite-volume orbit recurrence, infinite-system circuit complexity or interchange of size and time limits.
 - No physical-space reconstruction without supplied subsystem factorization.
-

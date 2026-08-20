@@ -28,11 +28,10 @@ theorem im_two_div_horiz {x T : ℝ} (hT : 0 < T) :
   have hden : (0 : ℝ) < (x - 1) ^ 2 + T ^ 2 := by positivity
   rw [Complex.div_im, hns, hre, him]
   simp only [Complex.re_ofNat, Complex.im_ofNat]
-  rw [show (0 : ℝ) / ((x - 1) ^ 2 + T ^ 2) = 0 by simp, zero_sub, abs_neg, abs_div,
-    abs_of_pos hden]
-  rw [div_le_div_iff₀ hden hT]
-  have : |2 * T| = 2 * T := abs_of_pos (by linarith)
-  rw [this]
+  rw [show (0 : ℝ) * (x - 1) / ((x - 1) ^ 2 + T ^ 2) - 2 * T / ((x - 1) ^ 2 + T ^ 2)
+      = -(2 * T / ((x - 1) ^ 2 + T ^ 2)) by ring]
+  rw [abs_neg, abs_div, abs_of_pos hden, abs_of_pos (by linarith : (0 : ℝ) < 2 * T),
+    div_le_div_iff₀ hden hT]
   nlinarith [sq_nonneg (x - 1), hT]
 
 theorem re_two_div_vert {t : ℝ} :
@@ -131,7 +130,7 @@ theorem exists_horizontal_levinsonGEntire_bound :
   have hne1 : ∀ x : ℝ, ((x : ℂ) + (T : ℂ) * I) ≠ 1 := by
     intro x h
     have him := congrArg Complex.im h
-    simp only [Complex.add_im, Complex.mul_im, Complex.mul_re, Complex.ofReal_re,
+    simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re,
       Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.one_im] at him
     exact hTne (by linarith)
   have huIcc : Set.uIcc (1 / 2 : ℝ) 4 = Icc (1 / 2 : ℝ) 4 := uIcc_of_le (by norm_num)

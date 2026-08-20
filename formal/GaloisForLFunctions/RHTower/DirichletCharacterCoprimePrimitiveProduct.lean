@@ -44,6 +44,8 @@ theorem lifted_coprime_product_left_conductor_dvd_at_level {N : ℕ} [NeZero N]
     exact DirichletCharacter.conductor_dvd_of_mem_conductorSet χN hχNfac
   exact hcop.dvd_of_dvd_mul_right (dvd_trans hnL (Nat.lcm_dvd_mul c m))
 
+section
+
 variable [NeZero n] [NeZero m]
 
 /-- The conductor of a product of a lifted primitive character with a coprime-level
@@ -72,6 +74,32 @@ theorem lifted_coprime_product_left_conductor_dvd (χ : DirichletCharacter K n)
     rw [← hχ, ← DirichletCharacter.conductor_changeLevel χ (n.dvd_mul_right m)]
     exact DirichletCharacter.conductor_dvd_of_mem_conductorSet χN hχNfac
   exact hcop.dvd_of_dvd_mul_right (dvd_trans hnL (Nat.lcm_dvd_mul c m))
+
+end
+
+/-- Lifts of primitive characters at coprime levels have primitive product at
+any explicitly identified common product level. -/
+theorem lifted_coprime_product_isPrimitive_at_level {N : ℕ} [NeZero N]
+    (χ : DirichletCharacter K n) (ψ : DirichletCharacter K m) (hcop : n.Coprime m)
+    (hχ : χ.IsPrimitive) (hψ : ψ.IsPrimitive) (hn : n ∣ N) (hm : m ∣ N)
+    (hN : N = n * m) :
+    ((χ.changeLevel hn) * (ψ.changeLevel hm)).IsPrimitive := by
+  let θ : DirichletCharacter K N := (χ.changeLevel hn) * (ψ.changeLevel hm)
+  rw [DirichletCharacter.isPrimitive_def]
+  change θ.conductor = N
+  have hcN : θ.conductor ∣ N := DirichletCharacter.conductor_dvd_level θ
+  have hnC : n ∣ θ.conductor := by
+    exact lifted_coprime_product_left_conductor_dvd_at_level χ ψ hcop hχ hn hm
+  have hmC : m ∣ θ.conductor := by
+    simpa [θ, mul_comm] using
+      (lifted_coprime_product_left_conductor_dvd_at_level ψ χ hcop.symm hψ hm hn)
+  have hprod : n * m ∣ θ.conductor := hcop.mul_dvd_of_dvd_of_dvd hnC hmC
+  apply dvd_antisymm hcN
+  calc
+    N = n * m := hN
+    _ ∣ θ.conductor := hprod
+
+variable [NeZero n] [NeZero m]
 
 /-- Lifting primitive coprime characters to their product level and multiplying them is primitive. -/
 theorem lifted_coprime_product_isPrimitive (χ : DirichletCharacter K n)

@@ -6337,3 +6337,131 @@ bare phase sum instead keeps `Sieve/HalaszMontgomerySupport` on light dependenci
 (`HalaszMontgomeryIntegral`, `LogPolyRestrict`, `LowHeightPoly`) and leaves the arithmetic input to
 the call site.  This matters in practice: with several agents building concurrently the heavy
 closure could not be replayed inside a single build window, while the light one builds in 196 s.
+
+### The `𝒰` half: four dead arrangements, and the one that closes (2026-08-20)
+
+Working the exceptional half against the corpus's normalisation (`M ≈ √x`, `δ = fibreWidth ≈ h/√x`,
+`Wc ≈ M/h`, `A_ω = ∑_n μ(n)ω_P(n)n^{2πiw}`, target `∫‖K_δ‖²‖A_ω‖² = o(h²W²)`, i.e.
+`∫_{|w|≤Wc}‖A_ω‖² = o(M²W²)`), the following are **all dead**, each for a reason worth recording.
+
+**1. Optimal Cauchy–Schwarz over the ladder with `sup|P_k| = #B_k`.**
+`∫_𝒰|A_ω|² ≤ (∑_k 1/v_k)(∑_k v_k (#B_k)²∫_𝒰|C_k|²)`; with the irreducible Halász–Montgomery
+diagonal `∫_𝒰|C_k|² ≳ N_k²`, `N_k = M/R_k`, the optimal weights give
+
+```text
+   (∑_k #B_k N_k)²  =  M²(∑_{p ∈ P} 1/p)²  =  M²W²  —  exactly the trivial bound.
+```
+
+`∑_k #B_k N_k = M∑_{p∈P}1/p` is **blocking-independent**: narrowing the blocks (even to MR's width
+`1 + 1/H`, `H = P^{1/6−η}`) does not change it, and neither does any choice of the levels `V_k`.
+So the frequency partition, which works perfectly on `𝒯₁`, buys nothing here.
+
+**2. Equal weights.**  Worse: `L∑_k(#B_kN_k)² = M²(u−1)²/u` with `u = log z/log z₀`, against
+`M²(log u)²`.
+
+**3. Halász–Montgomery on the product `P_kC_k`.**  Diagonal `M·∑_n|c_n|² ≈ ηM²/log R_k`; optimal
+weights give `(4M²/η)(√log z − √log z₀)²`, which needs `u → 1` and hence `W → 0`.
+
+**4. Sup on the cofactor, mean square on the prime polynomial — at the *first* range.**  With
+`sup|C_k| ≲ N_k e^{−E}`, `E = (log M)^{1/20}` (brick 88c) and the mean value theorem
+`∫_{|w|≤Wc}|P_k|² ≈ 2Wc·#B_k`, the total is `4Wc e^{−2E}M²/(η z₀ log z₀)`, larger than the `𝒯₁`
+term by the factor `Wc e^{−2E}/(eℓ)`.  Since `Wc = exp(log x/2 − (log x)^β)` and `z₀ =
+exp((log x)^{γβ})`, `Wc/z₀ → ∞` for every `β < 1`.  Making `z₀` large enough would force
+`log z₀ ≳ log x/2`, i.e. cofactors of length `O(1)`.
+
+**The arrangement that closes: a SECOND Ramaré range above `h`.**  This is what
+Matomäki–Radziwiłł §8.3 does, and the reason it escapes is that the moment method bites only when
+`log P` is comparable to `log T`.  Take
+
+```text
+   log P' = (log x)^{49/50} ,   log Q' = log x/log log x ,   threshold  V'_k = #B'_k·(log x)^{−100} .
+```
+
+Then, writing `𝒰' = {w : |P'_k(w)| > V'_k for some k}`:
+
+* **Lemma 8 (moment method).**  `|𝒰'| ≪ Wc^{2 log V/log P'}·V²·exp(2(log Wc/log P')·log log Wc)
+  = exp((log x)^{1/50 + o(1)})` — the exponent `2 log V/log P'` is tiny because the *threshold* is
+  only polylogarithmic, not because the moment order is large.  This is the step the first range
+  cannot perform: there `log R_k ≤ (log x)^{β}` and the same computation returns `|𝒰| ≈ Wc`.
+* **On `𝒯'_S`** (`|P'_k| < #B'_k(log x)^{−100}`): `(log x)^{−200}(∑_k #B'_kN'_k)²
+  = (log x)^{−200}M²(W')²`, negligible against `M²W²`.
+* **On `𝒯'_L`**: `sup|C'_k|²·∫_{𝒯'_L}|P'_k|²` with `sup|C'_k| ≲ N'_k·W·e^{−E}` (brick 89c, the
+  factor `W` from the `ω_P` weight) and `∫_{𝒯'_L}|P'_k|² ≲ |𝒰'|(#B'_k)²` (brick 94, prime-support
+  Halász–Montgomery, with the measure of `𝒰'` in the row mass).  Optimal weights give
+  `W²e^{−2E}|𝒰'|M²(W')²`, so the requirement is
+
+```text
+   e^{−2E}·|𝒰'|·(W')² = o(1) ,   i.e.   (log x)^{1/50} < 2·(log x/2)^{1/20} ,   ✓ with room.
+```
+
+**The margin comes from brick 88c/89c.**  With Matomäki–Radziwiłł's own cofactor bound
+`(log X)^{−1/24}` in place of `exp(−(log x)^{1/20})`, the last line would demand `|𝒰'|`
+polylogarithmic, which is false; the corpus's super-polylogarithmic cofactor bound is what makes the
+exceptional half comfortable.  Conversely the second range must sit **above** `h`
+(`log P' = (log x)^{49/50} > (log x)^β`), which is exactly why no arrangement confined to
+`[1,h]` — the Milestone-B family, and the partition applied to it — can work.
+
+**Remaining bricks for `averagedMeanSquare_moebius_scaled'`.**
+(95) the second Ramaré split of `A_ω` at `[P',Q']`, with the Buchstab error `1/H + 1/P' + log P'/log Q'`;
+(96) `Lemma 8` in the corpus's `shortExceptional` normalisation at a polylogarithmic threshold;
+(97) the `𝒯'_S`/`𝒯'_L` split and the two estimates above;
+(98) the low-frequency and dyadic-tail pieces (`Sieve/CofactorLowFreqBound`, `Sieve/GallagherDyadicTail`);
+(99) assembly into `Sieve/OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget`.
+
+### Bricks 96–98 — the three glue lemmas of the `𝒰` half (2026-08-20)
+
+All built, axiom-clean, wired.
+
+| module | theorem | content |
+|-|-|-|
+| `Sieve/Section4RelativeThreshold` | `volume_blockExceptional_le_relative` | Lemma 2.5 at a **relative** threshold `#B·θ`: the measure is `2(T + 4N^k(1+log N^k))·(k/(#B·θ²))^k` |
+| | `volume_blockExceptional_le_exp` | the same in exponential form, saving `exp(−k·log(#B·θ²/k))` |
+| `Sieve/Section4CofactorSup` | **`setIntegral_normSq_omegaWeighted_le_blocks_cofactorSup`** | the long ladder with the supremum on the **cofactor** and the mean square on the **prime block** — the dual of `Sieve/Section4QSide.setIntegral_normSq_omegaWeighted_le_blocks`, and the only orientation usable on the exceptional set |
+| `Sieve/LogPolyIccPrefix` | `logPoly_Icc_eq_sub`, `norm_logPoly_Icc_le_of_prefix` | a cofactor block `Icc lo hi` is a difference of two prefixes, so any uniform prefix bound gives the block bound with a factor two |
+
+The third is what lets brick 88c/89c — stated for prefixes `∑_{n ≤ N}` — be applied to the ladder's
+cofactor blocks `geomCofactorBlockAt A₀ B₀ Q η j = Icc ⌈…⌉ ⌊…⌋`.
+
+**Both orientations of the ladder are now available over an arbitrary measurable set**, which is
+exactly the `𝒯'_S`/`𝒯'_L` dichotomy:
+
+```text
+   on 𝒯'_S = allBlocksSmall  :  Σ_k v_k·(#B_k·θ)²·∫‖C_k‖²      (Section4AllBlocksSmall, θ = (log x)^{−100})
+   on 𝒯'_L = someBlockLarge  :  Σ_k v_k·(sup‖C_k‖)²·∫‖P_k‖²     (Section4CofactorSup)
+                                 sup‖C_k‖ from brick 89c + LogPolyIccPrefix,
+                                 ∫_{𝒰'}‖P_k‖² from brick 94 + Section4RelativeThreshold.
+```
+
+**Remaining**: (99) instantiate the two orientations at the second range
+`log P' = (log x)^{49/50}`, `log Q' = log x/log log x`, verify the two budgets against `M²W²` as
+derived in the design entry above, add the low-frequency and dyadic-tail pieces, and assemble into
+`Sieve/OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget`.
+
+### Brick 99a–b — the Ramaré ladder over a measurable set (2026-08-20)
+
+`Sieve/RamareBlockSplitOn`, built, axiom-clean, wired.
+
+| theorem | content |
+|-|-|
+| `setIntegral_normSq_ramareBilinear_le_blocks` | the block split of the bilinear form over an arbitrary measurable `E ⊆ Icc (−W) W` |
+| `setIntegral_normSq_ramareBilinear_le_geomLadder` | the same for the geometric ladder |
+| `setIntegral_normSq_ramareBlock_le_product` | one block as a prime polynomial times a common cofactor, plus the cofactor discrepancy, over `E` |
+
+**Why the set-parametric versions are needed.**  The corpus's Ramaré route to the fibre mean square,
+`Sieve/FibreRamareLadderFinal.sum_sq_fibreSum_moebius_le_ramareLadder_final`, is the one that
+*avoids Turán–Kubilius entirely* — no `1/W` divides anything and no `(#P)²` error appears, so unlike
+`Sieve/OmegaSpectralFibre.omegaBudget` and `Sieve/JointOmegaSpectral.jointOmegaBudget` it does not
+force the designated range below `√h`.  (Those two budgets carry `204((#P+1)(#Q+1))²(√x+1)`, whose
+quotient by `(W_PW_Q)²h²√x` needs `#P·#Q ≪ W_PW_Q·h`; with the second range at
+`log P' = (log x)^{49/50}` that is false, so the joint arrangement cannot host the large range
+either.)  But `sum_sq_fibreSum_moebius_le_ramareLadder_final` demands the prime-block bound `ρ`
+**pointwise on all of `[−T₀,T₀] \ [−w₀,w₀]`**, which is precisely the Milestone-B hypothesis the
+no-go rules out for `β < 9/10`.
+
+Making the ladder set-parametric is what lets that single pointwise hypothesis be replaced by the
+`𝒯₁`/`𝒰` dichotomy: on `𝒯₁` the bound holds by definition, on `𝒰` the roles of the two factors are
+exchanged (`Sieve/Section4CofactorSup`) and the measure is paid by
+`Sieve/Section4RelativeThreshold`.  Remaining in this layer:
+`integral_normSq_ramareBlock_geom_le` and `integral_normSq_ramareBilinear_le_ladder_error` over `E`,
+then the affine majorant `Sieve/RamareLadderAffine` and finally
+`sum_sq_fibreSum_moebius_le_ramareLadder_final` itself.

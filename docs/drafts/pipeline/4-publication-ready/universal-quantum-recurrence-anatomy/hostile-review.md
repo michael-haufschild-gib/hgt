@@ -1,6 +1,6 @@
 # Hostile review and scope audit
 
-Date: 17 August 2026.
+Date: 20 August 2026.
 
 ## Verdict
 
@@ -35,6 +35,12 @@ source search nor internal proof audit can establish literature priority.
 6. Arbitrary finite Hermitian Born records satisfy a same-record
    never-exits/post-exit-return law with least deadline inside exact
    graph--resolution certificate family.
+7. Every balanced nonzero real spectral action dephases under fixed-shell
+   angular averaging on a recursive ordinary nearest-neighbour qubit path;
+   same local family supplies simple spectrum and two-Hamiltonian nonflatness.
+8. Full-channel Markovian return gives explicit remaining-time recovery and
+   ancilla-assisted information preservation; exact return forces unitary
+   periodic dynamics and exact circuit-incidence reflection.
 
 ## Objections and dispositions
 
@@ -86,6 +92,22 @@ nonlocal and non-diagonal two-qubit gates.  Upper bound is explicit and uses
 free scalar/one-qubit centering.  Paper states coarse scale-separated order,
 nearby backtracking and exact return reflection as three distinct facts.
 
+### “Angular dephasing proves one Hamiltonian thermalizes”
+
+No. Limit averages Hamiltonian directions on one fixed Hilbert--Schmidt
+coefficient sphere. It proves cancellation of every nontrivial balanced
+spectral character against bounded measurable angular amplitudes. It supplies
+no rate, trajectory mixing, eigenvector randomness or thermalization theorem
+for one Hamiltonian.
+
+### “Open-system recurrence means dissipative dynamics can exactly revive”
+
+Not for a finite-dimensional CPTP semigroup returning as a complete channel.
+Approximate return gives quantitative recoverability; exact return makes
+every intermediate channel invertible by a channel and therefore unitary.
+State recurrence or observable revival is weaker and is not covered by this
+rigidity statement.
+
 ### “Graph reconstruction derives physical space from time”
 
 No. Tensor-factor decomposition and subsystem restrictions are supplied.
@@ -113,7 +135,8 @@ MBL realization or quasi-local $C^*$ dynamics is inferred.
 2. Independent specialist check of arbitrary-graph leaf-extension and
    simultaneous-subsystem genericity.
 3. External priority search in inverse spectral graph theory, quantum
-   controllability, recurrence arithmetic and static-Hamiltonian complexity.
+   controllability, recurrence arithmetic, angular spectral dephasing,
+   quantum-channel semigroups and static-Hamiltonian complexity.
 4. Journal positioning: paper combines several exact regimes; abstract and
    introduction must keep singularity theorem as clear center.
 5. Terminology: “completed-time occupation” must not drift into “first-return
@@ -133,4 +156,3 @@ MBL realization or quasi-local $C^*$ dynamics is inferred.
 - Independent mathematical referee pass.
 - Independent literature-priority pass.
 - Bibliographic metadata recheck at submission date.
-

@@ -134,6 +134,52 @@ The statement covers nonnormal loss as well as unitary dynamics: transient
 modes disappear, while the semisimple peripheral packet retains all
 recurrence information.
 
+\subsection{Full-channel return and Markovian loss}
+
+Let $\{\Lambda_t\}_{t\ge0}$ be a finite-dimensional quantum dynamical
+semigroup: each $\Lambda_t$ is completely positive and trace preserving,
+$\Lambda_0=\mathrm{id}$, and
+$\Lambda_{s+t}=\Lambda_s\circ\Lambda_t$.  No continuity assumption is
+needed.  Put
+\begin{equation}
+ \delta_R=\|\Lambda_R-\mathrm{id}\|_\diamond .       \label{eq:markovdefect}
+\end{equation}
+
+\begin{theorem}[Markovian return--recovery law]
+\label{thm:markovreturn}
+For every $0\le t\le R$,
+\begin{align}
+ \Lambda_{R-t}\circ\Lambda_t
+ &=\Lambda_t\circ\Lambda_{R-t}=\Lambda_R,             \label{eq:markovrecovery}\\
+ \|\Lambda_{R-t}\circ\Lambda_t-\mathrm{id}\|_\diamond
+ &=\delta_R.                                          \label{eq:markovrecoverdefect}
+\end{align}
+For every finite ancilla and every operator $X$ on system plus ancilla,
+\begin{equation}
+ (1-\delta_R)\|X\|_1
+ \le \|(\Lambda_t\otimes\mathrm{id})(X)\|_1.         \label{eq:markovinformation}
+\end{equation}
+If $\delta_R=0$, then every $\Lambda_t$, $0\le t\le R$, is conjugation by
+a unitary, and $\Lambda_{t+R}=\Lambda_t$ for every $t\ge0$.
+
+More generally, let $W_\ell$ be any finite inverse-closed family of unitary
+channel words whose inversion preserves length, and let $N_\ell(t,\varepsilon)$
+count words within diamond distance $\varepsilon$ of $\Lambda_t$.  Then
+\begin{equation}
+ N_\ell(t,\varepsilon)
+ \le N_\ell(R-t,\varepsilon+\delta_R),                \label{eq:markovincidence}
+\end{equation}
+and exact return makes these counts palindromic:
+$N_\ell(t,\varepsilon)=N_\ell(R-t,\varepsilon)$.
+\end{theorem}
+
+The channel-inverse classification used in exact case is known
+\cite{NayakSen2007}.  The theorem's recurrence content is stronger than a
+state revival: approximate return controls ancilla-assisted distinguishability
+at every intermediate time, while exact full-channel recurrence excludes
+genuine Markovian dissipation.  It does not apply when only one state or one
+observable returns.
+
 For a probability measure $\mu$ on energy, write
 $A_\mu(t)=\int e^{-itE}\,d\mu(E)$ and let
 $\Delta\mu$ be the law of $E-E'$ for independent samples from $\mu$.
@@ -194,6 +240,46 @@ rank changes by
  (AB-1)-[(A-1)+(B-1)]=(A-1)(B-1).                     \label{eq:edgegain}
 \end{equation}
 \end{corollary}
+
+\subsection{Fixed-strength angular dephasing on a local qubit path}
+
+For every $n\ge0$, take a recursive open path on $n+3$ qubits and let
+$\mathcal L_n$ be its full real space of Hermitian onsite and
+nearest-neighbour terms.  Choose a trace-orthonormal basis
+$P_1,\ldots,P_{m_n}$ and write
+\begin{equation}
+ H_n(\theta)=\sum_{a=1}^{m_n}\theta_aP_a,
+ \qquad \theta\in S^{m_n-1}.                         \label{eq:localshell}
+\end{equation}
+All Hamiltonians on this sphere have same Hilbert--Schmidt norm.  Let
+$E_1(\theta)\le\cdots\le E_D(\theta)$ be canonically ordered eigenvalues,
+$D=2^{n+3}$, and for a real balanced vector $k\ne0$ define
+\begin{equation}
+ \phi_k(\theta)=\sum_{j=1}^{D}k_jE_j(\theta),
+ \qquad \sum_jk_j=0.                                \label{eq:localspectralaction}
+\end{equation}
+
+\begin{theorem}[Local spectral-action dephasing]
+\label{thm:localdephasing}
+For every bounded measurable amplitude $g:S^{m_n-1}\to\C$, with spherical
+surface measure $\sigma$,
+\begin{equation}
+ \boxed{\lim_{|t|\to\infty}
+ \int_{S^{m_n-1}}g(\theta)e^{-it\phi_k(\theta)}
+ \,d\sigma(\theta)=0.}                              \label{eq:localdephasing}
+\end{equation}
+The hypotheses needed for this limit are discharged inside same local
+family: it contains a simple-spectrum member and, for every such $k$, two
+Hamiltonians whose normalized squared spectral-action values are disjoint
+under every possible eigenvalue labelling.
+\end{theorem}
+
+Thus late dephasing needs neither radial disorder nor random time: angular
+variation at one fixed interaction rate suffices.  This is a qualitative
+ensemble limit, not a decay-rate bound, a statement for every local
+Hamiltonian family, or time averaging of one fixed Hamiltonian.  It is also
+distinct from assuming rational independence or no-resonance conditions
+\cite{RiddellPagliaroli2023,RiddellBertini2024}.
 
 \subsection{Temporal curvature and graph reconstruction}
 
@@ -710,7 +796,7 @@ phase return.  Couplings decay with position, so theorem
 does not claim translation invariance, uniform transport or a complexity
 plateau.
 
-\subsection{Return forces reflection}
+\subsection{Return forces recovery and reflection}
 
 \begin{theorem}[Robust complexity reflection]
 \label{thm:reflection}
@@ -726,6 +812,10 @@ palindromic: $C_\varepsilon(U_t)=C_\varepsilon(U_{R-t})$.
 \end{theorem}
 
 This law constrains decline near recurrence but supplies no first hard time.
+At channel level, Theorem \ref{thm:markovreturn} gives stronger operational
+content: remaining semigroup segment is an explicit recovery, and exact
+return reflects every exact-length word-incidence count, not only minimum
+complexity.
 
 \section{Law IV: finite-horizon records do not determine completed geometry}
 
@@ -795,12 +885,20 @@ KotowskiOszmaniec2026}.  Principal new results are joined statements:
 \item generic maximal projective rank for arbitrary static finite interaction
       graphs, simultaneous subsystem graph reconstruction, and its
       nearest-neighbour thermodynamic consequences;
+\item fixed-Hilbert--Schmidt-shell angular dephasing of every nonzero balanced
+      spectral action on a recursive nearest-neighbour qubit path, with
+      simple spectrum and a two-Hamiltonian nonflatness witness supplied by
+      same local family;
 \item complete countable-spectrum saturation under arbitrarily weak
       domain-preserving trace-class perturbations and along a separable
       interaction ray outside a countable exceptional set;
 \item same-record post-exit recurrence for arbitrary finite Hermitian Born
       histories, with least deadline inside exact graph--resolution
       certificate family;
+\item Markovian return as uniform intermediate-time recovery: diamond return
+      defect bounds all ancilla-assisted trace-norm loss, exact full-channel
+      return forces unitary periodic dynamics, and inverse-closed circuit
+      incidences reflect about return;
 \item static bounded-weight Pauli recurrence--hardness alternation with a
       permanent operational separation from Haar randomness;
 \item one explicit nested static nearest-neighbour qubit path with bounded
@@ -856,6 +954,12 @@ Infinite l-bit theorem supplies bounded self-adjoint multiplication
 Hamiltonian and strongly continuous unitary dynamics for one engineered
 absolutely summable diagonal field; it is not microscopic MBL theorem,
 quasi-local $C^*$-dynamics theorem or global orbit recurrence.
+Local spectral-action dephasing averages Hamiltonian directions on one
+finite-dimensional coefficient sphere.  It gives no quantitative onset and
+does not turn angular ensemble convergence into trajectory mixing for one
+Hamiltonian.  Markovian recovery assumes a full-channel semigroup return;
+state recurrence, non-Markovian reduced dynamics and observable revivals do
+not satisfy that premise.
 Bounded-weight Pauli complexity theorem is $q$-local but all-to-all in
 support.  The nested path theorem is static, geometrically nearest-neighbour
 and circuit-hard over explicit finite-time windows, but its diagonal
@@ -868,19 +972,19 @@ Principal open boundary is stronger dynamical shape: a classification of
 all local complexity drops, a sharp phase-return exchange law, a
 parametrically longer growth regime, and a saturation plateau for one
 uniform-strength noncommuting bounded-degree Hamiltonian are not proved.
+Quantitative finite-time rates for local angular dephasing are also not
+proved.
 Completed occupation does not determine first onset, and inverse
 completed density is not asserted to be a first-return time.  Infinite-volume
 quasi-local orbit recurrence remains outside present scope.
 
 \section{Proof organization}
 
-Appendices give self-contained proofs in order used above.  They begin with
-finite contraction selection and arbitrary spectral measures, develop
-projective detuning map and interaction conversion, prove static path and
-arbitrary-graph genericity, and then derive completed return densities,
-observer deadlines, Born-record return, l-bit Hilbert dynamics,
-circuit-target bounds, countable saturation and finite-record no-go theorem.
-A separate construction proves bounded
+Appendices collect self-contained proofs and detailed foundational results.
+They develop projective detuning and interaction conversion, Markovian
+recovery, static-path and arbitrary-graph genericity, local angular dephasing,
+completed return densities, observer deadlines, Born-record return, l-bit
+Hilbert dynamics, circuit-target bounds, countable saturation and finite-record
+no-go theorem.  A separate construction proves bounded
 thermodynamic completion, finite-time circuit ramp, exact return and
 reflection for nested static path \eqref{eq:nestedH}.
-

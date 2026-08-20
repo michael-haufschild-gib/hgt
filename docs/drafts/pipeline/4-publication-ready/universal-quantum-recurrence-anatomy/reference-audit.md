@@ -1,8 +1,8 @@
 # Literature-reference audit
 
-Audit date: 2026-08-17
+Audit date: 2026-08-20
 
-Scope: every one of the 30 entries now present in `references.tex`, plus every
+Scope: every one of the 31 entries now present in `references.tex`, plus every
 claim directly attached to a citation in `body.tex`. Sources below are
 publisher records, author-hosted records, or arXiv records maintained from the
 authors' submissions. Search-result aggregators were not used as authority.
@@ -20,8 +20,9 @@ authors' submissions. Search-result aggregators were not used as authority.
   *Journal of Statistical Physics* publication, volume 191, article 141
 - `KotowskiOszmaniecHorodecki2025`: normalized JHEP record to issue 01,
   article 116 (2025)
-- `NayakSen2007`: verified as real, then removed because no claim in current
-  manuscript uses it
+- `NayakSen2007`: reintroduced after addition of exact Markovian return law;
+  publisher record and arXiv version verify same-space CPTP inverse
+  specialization used in manuscript
 - Citation prose: replaced unsupported wording `first-return bounds` with
   `recurrence-time bounds`; replaced vague claim that higher no-resonance
   conditions are difficult to verify with source-backed statement that
@@ -68,6 +69,21 @@ authors' submissions. Search-result aggregators were not used as authority.
 All statements directly carrying citations were checked against cited
 abstracts or publisher descriptions. After corrections listed above, no
 cited sentence attributes result absent from its cited source. Every one of
-30 references retained in manuscript is cited in body; no uncited
+31 references retained in manuscript is cited in body; no uncited
 bibliography padding remains.
 
+The new fixed-shell spectral-action theorem is not attributed to external
+literature. Targeted primary-source searches covered generic local spectra,
+no-resonance conditions, disorder-averaged spectral form factors and static
+local Hamiltonian ensembles. They found no source matching its exact object:
+every balanced real spectral action, fixed Hilbert--Schmidt sphere, angular
+averaging only, ordinary nearest-neighbour qubit interactions, and an
+internal two-Hamiltonian nonflatness witness. This is absence evidence, not a
+priority proof.
+
+For open dynamics, searches covered quantum-channel recurrence, quantum
+Markov semigroups and reversible channels. The reversible-channel
+classification is explicitly credited to Nayak--Sen. No priority claim is
+made for that classification or elementary semigroup identity; candidate
+new residue is their joined quantitative return-defect, ancilla-assisted
+recovery and exact word-incidence reflection law.

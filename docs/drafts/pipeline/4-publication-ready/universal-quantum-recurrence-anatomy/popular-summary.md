@@ -20,6 +20,14 @@ bounded-duration experiment can distinguish it from zero, yet it can remove
 exact energy relations and completely reorganize system's infinite-time
 behavior.
 
+Paper also separates two meanings of “coming back” in open systems. If a
+memoryless noisy evolution returns as a complete quantum channel, then later
+part of evolution must undo everything earlier part did, including information
+stored jointly with an external ancilla. A nearly exact return gives a
+quantitative recovery guarantee. A perfectly exact return means dynamics
+could not have been genuinely dissipative at all: every intermediate step was
+unitary and whole motion repeats periodically.
+
 ## Main new results
 
 For generic static one-dimensional nearest-neighbour qudit chains, paper proves
@@ -27,6 +35,13 @@ all projective phase directions allowed by Hilbert space are present. Their
 global return density is then known exactly and vanishes doubly exponentially
 with chain length when long-time averaging is completed at each finite size
 before size is increased.
+
+For a fixed-strength sphere of ordinary nearest-neighbour qubit Hamiltonians,
+paper proves that every nontrivial relative combination of energy levels
+cancels under late-time averaging over interaction directions. Two concrete
+Hamiltonians inside same local family certify that none of these spectral
+phases is secretly constant. No randomness in interaction strength or time is
+used.
 
 For any finite Hermitian Hamiltonian and any chosen finite collection of
 physical measurement probabilities, paper proves a direct observed-record
@@ -59,7 +74,11 @@ contributions are joined theorems:
    certified deadline;
 3. exact finite-size-to-thermodynamic return-density law;
 4. explicit static local complexity ramp, return, reflection and certified
-   nonmonotonicity.
+   nonmonotonicity;
+5. fixed-strength local spectral-phase dephasing with all spectral premises
+   discharged inside same nearest-neighbour family;
+6. full-channel Markovian recurrence as quantitative recovery, with exact
+   recurrence forcing reversible periodic dynamics.
 
 ## What paper does not claim
 
@@ -67,3 +86,5 @@ It does not give first-return time from inverse return density. It does not
 claim Haar randomness, universal monotone complexity, microscopic
 many-body localization, or global recurrence of an infinite system.
 Thermodynamic density result takes long-time limit first at each finite size.
+Angular dephasing is an ensemble statement with no finite-time rate, and
+Markovian rigidity requires return of complete channel, not one state.
