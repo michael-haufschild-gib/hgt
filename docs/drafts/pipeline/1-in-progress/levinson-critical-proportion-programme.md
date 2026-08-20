@@ -715,3 +715,58 @@ missing — and is now supplied — is the edge analysis.
 
 Axiom audit (2026-08-20): all nine brick-5b capstones plus `twisted_diagonal_reindex` depend only
 on `propext, Classical.choice, Quot.sound`.
+
+## Brick 5c — the AFE as a finite Dirichlet polynomial (2026-08-20)
+
+`RHTower/SmoothAFETruncation.lean` (builds clean, no warnings):
+
+* `norm_smoothAFE_term_le` — `‖n^{-s}·W(n/x)‖ ≤ K·x^A·n^{-(Re s + A)}` from the Gaussian cutoff's
+  arbitrary-power decay `exists_norm_smoothAFECutoff_le_neg_rpow`.
+* `exists_smoothAFE_direct_tail_le` — the tail of the direct edge beyond `L` is at most
+  `C·x^A·L^{1-Re s-A}/(Re s + A − 1)`, using the corpus's integral-test tail
+  `Sieve.tsum_tail_rpow_neg_le`.
+* `summable_smoothAFE_direct` — the direct edge converges at *any* abscissa (the cutoff, not the
+  exponent, supplies convergence).
+* **`exists_riemannZeta_sub_smoothAFE_head_le`** —
+
+  ```text
+  ‖ ζ(s) − ( ∑_{n ≤ L} n^{-s}W(n/x) − (reflected edge) − (pole term) ) ‖
+      ≤ C · x^A · L^{1-Re s-A}/(Re s + A − 1),
+  ```
+
+  for every `s` with `0 < Re s < 2`, `s ≠ 1`, every `x > 0`, every `A > 0` with `Re s + A > 1`.
+
+Choosing `A` large and `L` a small power above `x` makes the error negligible, so at the Levinson
+abscissa `σ₀ = ½ − R/log T` the zeta function *is* a finite Dirichlet polynomial of length `≍ √T`
+up to the reflected edge, the pole term, and a power saving.  This is exactly the input
+`twisted_meanValue_error` consumes, and it is why `θ < 1/2` is the right mollifier constraint: the
+mean-value error `4·#s·C·B·(1+log #s)` is then `≍ T^{1/2+θ+ε} = o(T)`.
+
+**Remaining in brick 5:** the reflected edge's own Dirichlet expansion (the corpus's
+`smoothAFEZetaDualCutoff` at a general point), then the assembly of `∫|G♯M|²` and the arithmetic
+main term.
+
+## Brick 5d — the movable left edge (2026-08-20)
+
+`RHTower/SmoothAFEZetaGeneralEdge.lean` (scratch-clean on first try) repeats the general-point
+contour analysis with the reflected edge at `Re w = -c` instead of `-1`:
+
+* `smoothAFEZetaDualMellinEdge`, `tendsto_smoothAFEZetaMellinIntegrand_horizontal_edge`,
+  `smoothAFEZetaMellin_finite_contour_shift_edge`,
+  `smoothAFEZetaMellin_infinite_contour_shift_edge`, and
+  **`riemannZeta_eq_smoothAFEZetaMellin_sub_dualEdge_sub_residue`**, valid for `0 < c ≤ 1`,
+  `s ≠ 1`, `0 < Re s < 1 + c`.
+
+**Why the edge has to move.**  Expanding the reflected edge into a dual Dirichlet series needs two
+things at once:
+
+* `Re(1 − s − w) = 1 − Re s + c > 1`, i.e. `c > Re s`, for the dual series to converge;
+* `Re(s + w) = Re s − c ∈ [−1/2, 1/2]`, the strip on which the corpus controls the
+  functional-equation factor (`norm_zetaChi_le_half_strip`), i.e. `c ≤ Re s + 1/2`.
+
+At the fixed edge `c = 1` and Levinson's abscissa `σ₀ = ½ − R/log T` the second condition fails
+(`σ₀ − 1 < −1/2`).  Choosing `c = Re s + 1/4` satisfies both, and `c ≤ 1` holds for `Re s ≤ 3/4`.
+
+**Next:** the dual expansion itself — `ζ(s+w) = χ(s+w)·ζ(1−s−w)`, termwise, with Fubini justified
+by the χ bound times the Gaussian.  That is the last structural piece of the AFE side; after it the
+mollified second moment is an assembly of `twisted_meanValue_error` over the two edges.

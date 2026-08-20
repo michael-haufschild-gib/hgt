@@ -25,6 +25,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {α : Type*} {E : α → Type*} [∀ a, NormedAddCommGroup (E a)]
   [∀ a, NormedSpace ℝ (E a)]
 
+omit [∀ a, NormedSpace ℝ (E a)] in
 theorem hasSum_sq_norm_lp (x : lp E 2) :
     HasSum (fun a => ‖(x : ∀ a, E a) a‖ ^ 2) (‖x‖ ^ 2) := by
   have h := lp.hasSum_norm (E := E) (p := 2) (by norm_num) x
