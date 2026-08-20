@@ -196,4 +196,110 @@ theorem cglCharacterDyadicGram_apply (N q R : ℕ)
     cglCharacterDyadicGram N q R w r s = cglCharacterDyadicCorrelation N q (w r) (w s) :=
   inner_cglCharacterDyadicRows N q (w r) (w s)
 
+/-- The literal cubic trace expansion of the finite Gram matrix. -/
+def cglCharacterDyadicGramCubicTrace (N q R : ℕ)
+    (w : Fin R → CGLCharacterDyadicRowData q) : ℂ :=
+  ∑ r, ∑ s, ∑ t,
+    cglCharacterDyadicGram N q R w r s *
+      cglCharacterDyadicGram N q R w s t *
+      cglCharacterDyadicGram N q R w t r
+
+/-- The cubic correlation sum is exactly the trace of the Gram cube. -/
+theorem cglCharacterDyadicGramCubicTrace_eq_trace (N q R : ℕ)
+    (w : Fin R → CGLCharacterDyadicRowData q) :
+    cglCharacterDyadicGramCubicTrace N q R w =
+      Matrix.trace ((cglCharacterDyadicGram N q R w) *
+        (cglCharacterDyadicGram N q R w) * cglCharacterDyadicGram N q R w) := by
+  unfold cglCharacterDyadicGramCubicTrace Matrix.trace Matrix.diag
+  simp_rw [Matrix.mul_apply, Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro r hr
+  rw [Finset.sum_comm]
+
+/-- One labelled triple term in the cubic Gram trace. -/
+def cglCharacterDyadicGramCubicTerm (N q R : ℕ)
+    (w : Fin R → CGLCharacterDyadicRowData q) (rst : Fin R × Fin R × Fin R) : ℂ :=
+  cglCharacterDyadicGram N q R w rst.1 rst.2.1 *
+    cglCharacterDyadicGram N q R w rst.2.1 rst.2.2 *
+    cglCharacterDyadicGram N q R w rst.2.2 rst.1
+
+/-- The finite cube of row labels. -/
+def cglCharacterDyadicGramCubicIndexSet (R : ℕ) : Finset (Fin R × Fin R × Fin R) :=
+  Finset.univ ×ˢ (Finset.univ ×ˢ Finset.univ)
+
+/-- Product-index form of the cubic trace. -/
+theorem cglCharacterDyadicGramCubicTrace_eq_cubeSum (N q R : ℕ)
+    (w : Fin R → CGLCharacterDyadicRowData q) :
+    cglCharacterDyadicGramCubicTrace N q R w =
+      ∑ rst ∈ cglCharacterDyadicGramCubicIndexSet R,
+        cglCharacterDyadicGramCubicTerm N q R w rst := by
+  unfold cglCharacterDyadicGramCubicTrace cglCharacterDyadicGramCubicIndexSet
+    cglCharacterDyadicGramCubicTerm
+  simp only [Finset.sum_product]
+
+/-- All-equal row triples in the cubic trace. -/
+def cglCharacterDyadicGramCubicDiagonal (N q R : ℕ)
+    (w : Fin R → CGLCharacterDyadicRowData q) : ℂ :=
+  ∑ rst ∈ (cglCharacterDyadicGramCubicIndexSet R).filter
+      (fun rst => rst.1 = rst.2.1 ∧ rst.2.1 = rst.2.2),
+    cglCharacterDyadicGramCubicTerm N q R w rst
+
+/-- The complementary, not-all-equal row triples in the cubic trace. -/
+def cglCharacterDyadicGramCubicOffDiagonal (N q R : ℕ)
+    (w : Fin R → CGLCharacterDyadicRowData q) : ℂ :=
+  ∑ rst ∈ (cglCharacterDyadicGramCubicIndexSet R).filter
+      (fun rst => ¬ (rst.1 = rst.2.1 ∧ rst.2.1 = rst.2.2)),
+    cglCharacterDyadicGramCubicTerm N q R w rst
+
+/-- Exact diagonal/off-diagonal partition of the cubic trace. -/
+theorem cglCharacterDyadicGramCubicTrace_eq_diagonal_add_offDiagonal (N q R : ℕ)
+    (w : Fin R → CGLCharacterDyadicRowData q) :
+    cglCharacterDyadicGramCubicTrace N q R w =
+      cglCharacterDyadicGramCubicDiagonal N q R w +
+        cglCharacterDyadicGramCubicOffDiagonal N q R w := by
+  rw [cglCharacterDyadicGramCubicTrace_eq_cubeSum]
+  unfold cglCharacterDyadicGramCubicDiagonal cglCharacterDyadicGramCubicOffDiagonal
+  let P : (Fin R × Fin R × Fin R) → Prop :=
+    fun rst => rst.1 = rst.2.1 ∧ rst.2.1 = rst.2.2
+  let f : Fin R × Fin R × Fin R → ℂ := cglCharacterDyadicGramCubicTerm N q R w
+  have hsplit := Finset.sum_filter_add_sum_filter_not
+    (s := cglCharacterDyadicGramCubicIndexSet R) (p := P) f
+  simp only [P, f] at hsplit
+  exact hsplit.symm
+
+/-- One literal six-label summand obtained by expanding a cubic Gram term into
+three row labels and three Dirichlet indices. -/
+def cglCharacterDyadicGramCubicExpandedTerm (N q R : ℕ)
+    (w : Fin R → CGLCharacterDyadicRowData q) (rst : Fin R × Fin R × Fin R)
+    (j₁ j₂ j₃ : Fin N) : ℂ :=
+  (w rst.1).character (cglCharacterDyadicIndex N j₁) *
+      (starRingEnd ℂ) ((w rst.2.1).character (cglCharacterDyadicIndex N j₁)) *
+      cglCharacterDyadicPhase N ((w rst.1).time - (w rst.2.1).time) j₁ *
+    ((w rst.2.1).character (cglCharacterDyadicIndex N j₂) *
+      (starRingEnd ℂ) ((w rst.2.2).character (cglCharacterDyadicIndex N j₂)) *
+      cglCharacterDyadicPhase N ((w rst.2.1).time - (w rst.2.2).time) j₂) *
+    ((w rst.2.2).character (cglCharacterDyadicIndex N j₃) *
+      (starRingEnd ℂ) ((w rst.1).character (cglCharacterDyadicIndex N j₃)) *
+      cglCharacterDyadicPhase N ((w rst.2.2).time - (w rst.1).time) j₃)
+
+/-- Exact expansion of one cubic Gram summand into three finite Dirichlet
+indices.  This is the finite source expression before Poisson summation. -/
+theorem cglCharacterDyadicGramCubicTerm_expand (N q R : ℕ)
+    (w : Fin R → CGLCharacterDyadicRowData q) (rst : Fin R × Fin R × Fin R) :
+    cglCharacterDyadicGramCubicTerm N q R w rst =
+      ∑ j₁, ∑ j₂, ∑ j₃,
+        cglCharacterDyadicGramCubicExpandedTerm N q R w rst j₁ j₂ j₃ := by
+  unfold cglCharacterDyadicGramCubicTerm
+  rw [cglCharacterDyadicGram_apply, cglCharacterDyadicGram_apply,
+    cglCharacterDyadicGram_apply]
+  unfold cglCharacterDyadicCorrelation cglCharacterDyadicGramCubicExpandedTerm
+  rw [Finset.sum_mul_sum]
+  rw [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro j₁ hj₁
+  rw [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro j₂ hj₂
+  rw [Finset.mul_sum]
+
 end RHTower

@@ -1,89 +1,69 @@
-# Observer-fibre chirality conservation and sufficient-reversal selection law — formalized
+# Observer-fibre chirality conservation and sufficient reversal — Lean certification
 
-- **Paper card:**
-  `docs/drafts/pipeline/2-fully-proven/universal-law-field/formation-chirality-reversal-mechanics/observer-fibre-chirality-conservation-and-sufficient-reversal-selection-law.md`
-- **Lean module:**
-  `GaloisForLFunctions.HTGeometry.ConstitutiveObserverFibreChirality`
-- **Umbrella:** `GaloisForLFunctions.HTGeometry.UniversalLawField`
-- **Status:** [LEAN 4 FORMALIZED] [PAPER/LEAN BOUNDARY EXPLICIT] [NOT RH]
+- **ID:** ULF-FCRM-2
+- **Paper card:** `observer-fibre-chirality-conservation-and-sufficient-reversal-selection-law.md`
+- **Lean modules:**
+  `GaloisForLFunctions.HTGeometry.ConstitutiveObserverFibreChirality`,
+  `GaloisForLFunctions.HTGeometry.KLFactorizationSufficiency` (new)
+- **Universal-law umbrella:** `GaloisForLFunctions.HTGeometry.UniversalLawField`
+- **Status:** `[LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [TARGETED BUILD]`
 
-## Certified mechanism
+## Certified declarations
 
-Lean defines directed KL chirality
+### Theorem 2.1 — exact observer-fibre conservation
 
-\[
-\chi(P,R)=D(P\Vert R)-D(R\Vert P)
-\]
+`klChirality`, `observerFibreChirality`, `klChirality_observer_conservation`.  The setting is fully
+measure-theoretic: arbitrary measurable spaces, `MeasureTheory.klDiv`, no finiteness of the source
+space.
 
-using real parts of mathlib's extended-real `klDiv`, and observer-fibre current
+### Theorem 2.2 — serial observer-current composition
 
-\[
-\mathfrak F_q(P,R)=\chi(P,R)-\chi(q_*P,q_*R).
-\]
+`observerFibreChirality_comp`, together with the exact conditional-KL identification
+`observerFibreChirality_eq_conditionalDifference` through the standard-Borel disintegration.
 
-Certified declarations:
+### Theorem 3.1 and Corollary 3.2
 
-- `klChirality_swap`: reversing an ordered law pair negates chirality;
-- `klChirality_observer_conservation`: source chirality is observed chirality plus fibre current;
-- `observerFibreChirality_comp`: exact additive composition through two deterministic observers;
-- `observerTowerCurrent`, `observerTower_chirality_conservation`, and
-  `observerTower_chirality_eq_sum_of_terminal_zero`: exact conservation and terminal-reversal
-  localization for arbitrary finite observer towers;
-- `exists_observerTowerCurrent_ge_average_of_terminal_zero`: some stage current is at least source
-  chirality divided by tower length whenever the nonempty tower has zero terminal chirality;
-- `conditionalForwardKL` and `observerFibreChirality_eq_conditionalDifference`: under the exact
-  finiteness boundary, the abstract current is the difference of forward and reverse conditional
-  KL terms from disintegration;
-- `measurableEmbedding_of_measurable_involution`: measurable involutions preserve the full
-  information content needed by KL;
-- `klChirality_eq_zero_of_reversal`: an involution exchanging two finite laws kills their
-  chirality;
-- `map_reversal_reverse_of_involution` and `klChirality_eq_zero_of_reversal_left`: the paper's
-  single endpoint-exchange equality implies the reverse equality and zero chirality;
-- `observerFibreChirality_eq_source_of_reversal` and
-  `observerFibreChirality_pos_of_reversal`: reversible observation localizes all source chirality
-  in the fibres and strict source chronology forces a positive fibre current;
-- `IsKLPairSufficient` and `observerFibreChirality_eq_zero_of_pairSufficient`: preserving both
-  directed KL costs is exactly a zero-current sufficient comparison interface;
-- `klChirality_eq_zero_of_sufficient_reversal`: sufficient observation transports observed
-  reversal back to zero source chirality;
-- `klChirality_eq_zero_of_sufficient_reversal_left`: pair sufficiency plus the paper's single
-  observed endpoint exchange already kills source chirality;
-- `StrictKLChronology`, `SufficientReversalComparison`, and `sufficientReversalSelection`: all
-  formation, finiteness, sufficiency, and reversal data are internalized in structures, and the
-  capstone unconditionally selects equal parameters.
+`observerFibreChirality_pos_of_reversal`, `observerFibreChirality_eq_source_of_reversal`,
+`observerTower_chirality_conservation`, `observerTower_chirality_eq_sum_of_terminal_zero`.
 
-## Exact paper/Lean boundary
+### Theorem 4.1 — sufficient reversible observation selects zero chronology
 
-Lean now certifies the arbitrary-length observer-tower sum, terminal-reversal localization, and
-quantitative average-current consequence in addition to the measure-theoretic one-stage law, exact
-two-stage composition, conditional disintegration bridge, one-sided endpoint-exchange reversal,
-and structure-encoded selection capstone. The paper's displayed finite conditional-probability
-sum remains represented by the stronger measure-theoretic disintegration theorem rather than by a
-second finite-only definition.
+`IsKLPairSufficient`, `observerFibreChirality_eq_zero_of_pairSufficient`,
+`klChirality_eq_zero_of_sufficient_reversal`, `klChirality_eq_zero_of_sufficient_reversal_left`,
+`StrictKLChronology`, `SufficientReversalComparison`, `sufficientReversalSelection`.
 
-The Abelian-zeta positive-jump source supplies a strict KL chronology on paper through the parent
-formation-cumulant card. That parent theorem has no exact Lean construction yet. Consequently this
-paper card remains in Stage 2: the module proves the route-independent receiver theorem, but does
-not replace the source-native likelihood factorization and chronology with an assumption.
+### Section 5 — the sufficient-statistic reduction (new module)
+
+Mathlib has no sufficiency theorem for `klDiv`.  `KLFactorizationSufficiency` supplies it:
+
+- `map_withDensity_comp` — pushing a `q`-factored density through `q` gives the density itself on
+  the observer space, `(R.withDensity (g ∘ q)).map q = (R.map q).withDensity g`.  This is exactly
+  the card's computation `q_*P(B) = ∫_B g d(q_*R)`;
+- `klDiv_map_eq_of_density_comp` — hence `D(P‖R) = D(q_*P‖q_*R)` whenever `dP/dR` factors through
+  `q`.  Proved through `klDiv_eq_lintegral_klFun_of_ac` and `lintegral_map`: both sides are
+  literally the same integral of `klFun ∘ g`;
+- `isKLPairSufficient_of_density_comp` and `observerFibreChirality_eq_zero_of_density_comp` — the
+  two-sided statement, which is the card's "mutual absolute continuity applies the same argument to
+  `dR/dP = 1/(g∘q)`";
+- `esscherLaw`, `esscherLaw_eq_withDensity_comp` — **(OFCC.11)**: two members of an exponentially
+  tilted family differ by the density `(Z(t)/Z(s))·e^{(t−s)Q}`, which factors through `Q`;
+- `esscher_isKLPairSufficient` — the tilting statistic is Kullback–Leibler pair-sufficient for
+  every pair of members, on arbitrary (not necessarily finite or discrete) source spaces.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/HTGeometry/ConstitutiveObserverFibreChirality.lean` — passed.
-- `lake build GaloisForLFunctions.HTGeometry.UniversalLawField` — passed, 11,826 jobs.
-- `scripts/formal_tools.py lint` — passed.
-- `#print axioms` for conservation, serial composition, conditional difference, reversal, and
-  selection — only `propext`, `Classical.choice`, and `Quot.sound`.
+```text
+lake env lean GaloisForLFunctions/HTGeometry/ConstitutiveObserverFibreChirality.lean
+lake env lean GaloisForLFunctions/HTGeometry/KLFactorizationSufficiency.lean
+```
 
-## Remaining selection landing
+Both elaborate clean.  `#print axioms` on all eleven chirality declarations and all six
+factorization declarations reports only `propext`, `Classical.choice`, `Quot.sound`.  Both modules
+are imported by `GaloisForLFunctions.HTGeometry.UniversalLawField`.
 
-RH is not proved. Required external construction is now sharply typed:
+## Cited, not reproved
 
-1. realize centered physical displacement as two parameters of a strict source chronology;
-2. transport the scalar sufficient formation statistic before zero specialization;
-3. prove the physical reflection exchanges its two pushed-forward laws;
-4. prove pair sufficiency, equivalently preservation of both directed KL divergences.
-
-Once those fields of `SufficientReversalComparison` are constructed, Lean theorem
-`sufficientReversalSelection` returns equality of the two formation parameters with no further
-analytic argument.
+`(OFCC.13)` — the positive-jump chronology equivalence `s < t ↔ D(P_s‖P_t) > D(P_t‖P_s)` — is
+imported from the parent card and appears in Lean as the `StrictKLChronology.strict` field, exactly
+the interface the card describes.  Building the abelian-zeta instance of that interface is the
+card's remaining construction gate, not a proved statement of this card.

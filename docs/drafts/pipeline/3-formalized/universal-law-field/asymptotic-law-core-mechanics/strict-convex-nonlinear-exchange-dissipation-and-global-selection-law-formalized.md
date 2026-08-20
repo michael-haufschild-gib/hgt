@@ -1,7 +1,7 @@
 # Strict-convex law-core selection — formalized
 
 - **Parent:**
-  `../../../2-fully-proven/universal-law-field/asymptotic-law-core-mechanics/strict-convex-nonlinear-exchange-dissipation-and-global-selection-law.md`
+  `strict-convex-nonlinear-exchange-dissipation-and-global-selection-law.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveAsymptoticLawCoreRigidity`
 - **Umbrella:** `GaloisForLFunctions.HTGeometry.UniversalLawField`
 - **Workflow:** theorem was developed and closed first in

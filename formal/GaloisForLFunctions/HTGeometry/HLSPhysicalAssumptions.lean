@@ -96,10 +96,10 @@ abbrev hlsStrongUnitaryTopology (E : Type u) [NormedAddCommGroup E]
   TopologicalSpace.induced (fun U => fun ψ => U ψ) inferInstance
 
 /-- A physically continuous unitary Poincaré representation.  Continuity is strong (pointwise on
-Hilbert vectors), using the explicit Poincaré and strong-operator topologies from this layer. -/
+Hilbert vectors), using the explicit Poincaré topological-group proof and strong-operator
+topology from this layer. -/
 structure HLSStronglyContinuousPoincareRepresentation (E : Type u) [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [CompleteSpace E] where
-  topologicalGroup : HLSPoincareTopologicalGroupData
   action : HLSPhysicalPoincareGroup →* (E ≃ₗᵢ[ℂ] E)
   strongly_continuous : @Continuous HLSPhysicalPoincareGroup (E ≃ₗᵢ[ℂ]
     E) hlsPhysicalPoincareTopology (hlsStrongUnitaryTopology E) action
@@ -157,6 +157,56 @@ theorem hlsTranslationPhase_lorentz (g : hlsProperOrthoLorentzGroup)
     hlsTranslationPhase (g.1 p) (g.1 x) = hlsTranslationPhase p x := by
   simp only [hlsTranslationPhase]
   rw [hlsProperOrthoLorentz_preserves_pairing]
+
+/-- The translation character is invariant under the canonical physical Spin-plus action. -/
+theorem hlsTranslationPhase_spinPlus (s : HLSSpinPlusGroup)
+    (p x : HLSMinkowskiVector) :
+    hlsTranslationPhase ((hlsSpinPlusToProperLorentz s).1 p)
+      ((hlsSpinPlusToProperLorentz s).1 x) = hlsTranslationPhase p x :=
+  hlsTranslationPhase_lorentz (hlsSpinPlusToProperLorentz s) p x
+
+/-- The translation character is trivial at the zero translation. -/
+theorem hlsTranslationPhase_zero (p : HLSMinkowskiVector) : hlsTranslationPhase p 0 = 1 := by
+  simp [hlsTranslationPhase, hlsMinkowskiPairing]
+
+/-- The zero momentum has the trivial translation character. -/
+theorem hlsTranslationPhase_zero_momentum (x : HLSMinkowskiVector) :
+    hlsTranslationPhase 0 x = 1 := by
+  simp [hlsTranslationPhase, hlsMinkowskiPairing]
+
+/-- At fixed translation, momenta add as characters multiply. -/
+theorem hlsTranslationPhase_add_momentum (p q x : HLSMinkowskiVector) :
+    hlsTranslationPhase (p + q) x =
+      hlsTranslationPhase p x * hlsTranslationPhase q x := by
+  simp only [hlsTranslationPhase, hlsMinkowskiPairing_add_left]
+  push_cast
+  rw [mul_add, Complex.exp_add]
+
+/-- Negating momentum inverts the corresponding translation character. -/
+theorem hlsTranslationPhase_neg_momentum (p x : HLSMinkowskiVector) :
+    hlsTranslationPhase (-p) x = (hlsTranslationPhase p x)⁻¹ := by
+  rw [hlsTranslationPhase, hlsTranslationPhase, ← Complex.exp_neg]
+  congr 1
+  simp only [hlsMinkowskiPairing, Pi.neg_apply]
+  push_cast
+  ring
+
+/-- The translation character of an ordered multiparticle momentum sum factors into its
+one-particle characters. -/
+theorem hlsTranslationPhase_list_sum (ps : List HLSMinkowskiVector) (x : HLSMinkowskiVector) :
+    hlsTranslationPhase ps.sum x = (ps.map fun p => hlsTranslationPhase p x).prod := by
+  induction ps with
+  | nil => simpa using hlsTranslationPhase_zero_momentum x
+  | cons p ps ih =>
+    simp only [List.sum_cons, List.map_cons, List.prod_cons]
+    rw [hlsTranslationPhase_add_momentum, ih]
+
+/-- Translation characters multiply when ordered particle configurations are concatenated. -/
+theorem hlsTranslationPhase_list_append (ps qs : List HLSMinkowskiVector)
+    (x : HLSMinkowskiVector) :
+    hlsTranslationPhase (ps ++ qs).sum x =
+      hlsTranslationPhase ps.sum x * hlsTranslationPhase qs.sum x := by
+  rw [List.sum_append, hlsTranslationPhase_add_momentum]
 
 /-- Compatibility of labelled one-particle states and the full state-sector split with a unitary
 Poincaré representation.  This is the actual positive-energy one-particle representation input;
@@ -557,6 +607,25 @@ structure HLSPhysicalScatteringData (A : Type v) (E : Type u) [NormedAddCommGrou
     sMatrix.scattering ψ = ψ
   multiparticle_invariant : ∀ ψ ∈ particlePoincare.sectors.multiparticleSector,
     sMatrix.scattering ψ ∈ particlePoincare.sectors.multiparticleSector
+
+/-- The physical S-matrix commutes with the actual strongly continuous Poincaré action,
+not only with a separately named abstract representation. -/
+theorem HLSPhysicalScatteringData.scattering_commutes_strongly_continuous_poincare
+    {A : Type v} {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    [CompleteSpace E] (data : HLSPhysicalScatteringData A E)
+    (g : HLSPhysicalPoincareGroup) (ψ : E) :
+    data.sMatrix.scattering (data.stronglyContinuousPoincare.action g ψ) =
+      data.stronglyContinuousPoincare.action g (data.sMatrix.scattering ψ) := by
+  have hsc := congrArg (fun ρ : HLSPoincareRepresentation E => ρ.action)
+    data.stronglyContinuous_agrees
+  have hsm := congrArg (fun ρ : HLSPoincareRepresentation E => ρ.action)
+    data.poincare_agrees
+  change data.sMatrix.scattering
+      (data.stronglyContinuousPoincare.toPoincareRepresentation.action g ψ) =
+    data.stronglyContinuousPoincare.toPoincareRepresentation.action g
+      (data.sMatrix.scattering ψ)
+  rw [hsc, ← hsm]
+  exact data.sMatrix.poincare_invariant g ψ
 
 /-- A symmetry generator represented on an S-invariant common domain.  The agreement field makes
 the domain action a restriction of the unitary scattering operator, and the final field is the

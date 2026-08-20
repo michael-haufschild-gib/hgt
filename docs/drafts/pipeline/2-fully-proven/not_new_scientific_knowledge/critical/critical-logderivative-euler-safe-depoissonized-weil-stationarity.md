@@ -257,3 +257,50 @@ No Lean build, lint, numerical experiment, or scratch computation was run.
 - [x] large-offset perturbative escape ruled out positively by congruence
 - [ ] prove the stationary completed form nonnegative from a source-specific orientation theorem
 - [ ] deduce RH
+
+## Lean formalization — IN PROGRESS
+
+The blocking piece is reusable and is also the one gap left open by the parent card
+`critical-logderivative-euler-safe-cauchy-loss-law` (its equation `(17)`): a half-plane Poisson
+representation of the boundary density `h_a`.
+
+The route avoids abstract Herglotz theory.  `RHTower/XiWeilTwoChannelResolvent` already proves the
+paired Hadamard expansion `L w = ∑' α, A_w α` with `A_w (α) = w / (w² + α²)`, and
+`A_w = (1/2)[1/(w - iα) + 1/(w + iα)]`.  Writing `w = σ + iτ` and `α = ρ + iν` with `|ν| ≤ 1/2`,
+
+```text
+Re (1/(w - i alpha)) = pi * P_(sigma+nu)(tau - rho),
+Re (1/(w + i alpha)) = pi * P_(sigma-nu)(tau + rho),
+P_c(t) = c / (pi (c^2 + t^2)),
+```
+
+so `h_a` is an explicit convergent divisor sum of Poisson kernels and `(12)` is the Poisson
+semigroup applied term by term.
+
+### Programme
+
+- **P1 — DONE.** `HTGeometry/HalfPlanePoissonKernel`: `halfPlanePoisson`,
+  `halfPlanePoisson_pos`, `integrable_halfPlanePoisson`, `integral_halfPlanePoisson` (unit mass),
+  `integral_shifted_poisson_product`, and the semigroup `halfPlanePoisson_convolution`
+  (`∫ P_c (t-s) P_d s ds = P_{c+d} t`).  All audit to
+  `propext, Classical.choice, Quot.sound`.  Supporting: `poissonOdd`, `poissonOddPrimitive`,
+  `hasDerivAt_poissonOddPrimitive`, `integral_poissonOdd_interval`,
+  `tendsto_poissonOdd_boundary`, `integral_poissonOdd`, `poisson_partial_fraction`,
+  `integrable_poissonOdd`, `tendsto_lin_div_sq_atTop`, `tendsto_one_div_sq_atTop`.
+  The original P1 sketch:  The semigroup reduces to
+  `∫ ds / ((c² + (s-t)²)(d² + s²)) = π (c+d) / (c d ((c+d)² + t²))`, whose partial fraction is
+  `1/(QR) = (A(s-t)+B)/Q + (-As+D)/R` with
+  `G = ((c+d)²+t²)((c-d)²+t²)`, `A = -2t/G`, `B = (t²-c²+d²)/G`, `D = (c²+t²-d²)/G`;
+  the odd part `A ∫ [(s-t)/Q - s/R]` vanishes because
+  `(1/2) log(((s-t)²+c²)/(s²+d²)) → 0` at both ends.  The two even parts are the corpus's
+  `integral_inv_sq_add_sq`.
+- **P2** `Re A_w (α)` as a pair of Poisson kernels; `h_a` as the divisor sum; summability and
+  integrability against the resolvent weights.
+- **P3** the parent card's `(17)`: `K_a (w,v) = (1/π) ∫ h_a(t) / ((w-a-it)(conj v - a + it)) dt`,
+  by term-by-term residue evaluation of `∫ P_c(t-ρ) / ((w-a-it)(conj v-a+it)) dt`.
+- **P4** `(3)`, `(4)` and hence `(16)`, `(21)`.
+- **P5** `(6)`–`(9)`, the elementary tail-Laplace identities.
+- **P6** `(17)`–`(20)`, the offset-free prime weights, in the elementary coefficient form.
+
+`(11)` in its tempered-distribution form is *not* on the programme: its content is `(4)`, which is
+distribution-free.  The distributional guardrail section of this card is exactly the reason.

@@ -1,11 +1,11 @@
 # Triple-reporter fusion, additive dissipation, global properness, and fourth-organ propagation law
 
 - **ID:** ULF-TRF-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Status:** `[PROVED HERE] [DEPENDENCY-CLOSED] [ROUTE-INDEPENDENT]`
   `[THREE-REPORTER FUSION] [EXACT CONSERVATION] [FOURTH-ORGAN PREDICTION]`
-  `[LEAN FORMALIZED] [NOT RH]`
+  `[LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]`
 - **Lean:** `GaloisForLFunctions.HTGeometry.ConstitutiveTripleReporterFusion`
 - **Parent mechanics:**
   `../asymptotic-law-core-mechanics/strict-convex-nonlinear-exchange-dissipation-and-global-selection-law.md`

@@ -1,12 +1,14 @@
 # Observer-fibre chirality conservation and sufficient-reversal selection law
 
 - **ID:** ULF-FCRM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.ConstitutiveObserverFibreChirality`,
+  `GaloisForLFunctions.HTGeometry.KLFactorizationSufficiency`
 - **Type:** FORMATION / OBSERVER / HIDDEN-HISTORY CONSERVATION THEOREM
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [CLASSICAL CHAIN-RULE PARENT]
   [CHIRALITY CONSERVATION] [SERIAL CURRENT COMPOSITION] [SUFFICIENT-OBSERVER SELECTION]
   [FOUR-ORGAN FUSION] [FOURTH-ORGAN PREDICTION]
-  [LEAN 4 FORMALIZED] [NOT RH]
+  [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]
 
 ## 1. Exact question
 
@@ -380,4 +382,8 @@ here.
 - [x] Exact serial composition and observer-tower localization theorem.
 - [x] Lean formalization of conservation, serial composition, conditional-KL identification,
   sufficient reversal, and abstract chronology selection.
-- [ ] Lean construction of the Abelian-zeta source as the abstract strict chronology interface.
+- [x] Lean formalization of the §5 sufficient-statistic reduction: factored likelihood ratios are
+  KL pair-sufficient (`isKLPairSufficient_of_density_comp`), with the exponential/Esscher family as
+  the certified instance (`esscherLaw_eq_withDensity_comp`, `esscher_isKLPairSufficient`).
+- [ ] Lean construction of the Abelian-zeta source as the abstract strict chronology interface
+  (construction target, not a proved statement of this card).

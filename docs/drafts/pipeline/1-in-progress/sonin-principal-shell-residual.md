@@ -292,3 +292,67 @@ proved not to equal it. This is a construction gap, not a normalization hypothes
 - `[NOVELTY UNVERIFIED]` The source-defined principal-shell subtraction, its prime-power
   regularization, and any Xi trace identification require a full parent-theory and literature
   audit after proof.
+
+## 2026-08-20 relation audit: corrected Sonin trace, not raw equality
+
+`[REFUTED]` The proposed raw identity
+
+```text
+soninRelativeTrace = xiRelativeResolventTrace
+```
+
+cannot be the missing relation when `soninRelativeTrace` means a bare trace of the compression
+onto the Sonin space.  The existing corpus no-go already excludes its fixed
+projection-correction scalarization, and Connes--Consani prove at the archimedean place that the
+actual Sonin trace has a nonzero prolate trace-remainder.
+
+`[LITERATURE THEOREM, ARCHIMEDEAN]` For the Sonin projection `S` and the scaling action
+`vartheta`, Connes--Consani give
+
+```text
+Tr(vartheta(f) S) = W_infty(f) + E_infty(f),
+E_infty(f) = integral f(rho) epsilon(rho) d*rho.
+```
+
+Here `W_infty` is the archimedean Weil distribution and `epsilon` is an explicit prolate
+remainder (arXiv:2006.13771, Theorem 3 / equation (13)).  Thus no choice of normalization can
+remove the source defect: it has to be represented as an additional trace-class or finite-part
+term.  The same paper gives the local trace formula
+
+```text
+W_infty(f) = -(1/2) Tr(f-hat u* dbar(u)).
+```
+
+This supplies the correct *shape* of the missing relation.
+
+`[OPEN CORE]` Construct for every finite semilocal place set `S` a source-only remainder
+`E_S` and a common admissible test algebra such that
+
+```text
+Tr(vartheta_S(f) Sonin_S) - E_S(f) = Weil_S(f).
+```
+
+Then identify the prime--archimedean continuation of the right side with the existing corpus
+source `continuedPrimeArchSourceRelativeTrace`, already proved equal to
+`xiRelativeResolventTrace`.  Equivalently, its normalized central Taylor coefficients must be the
+already formal `xiCentralReciprocalMoment n` for every `n`.  The relation must be produced without
+a Xi zero divisor on the Sonin side.
+
+`[CORPUS STATUS]` The principal-shell cyclic trace now recovers the exact finite von-Mangoldt
+flux (`SoninPrincipalShellCyclicTrace.lean`), and
+`continuedPrimeArchSourceRelativeTrace = xiRelativeResolventTrace` plus all central moment
+identities are closed.  Missing connector is the test-algebra representation of the semilocal
+remainder and the proof that its corrected Sonin trace is that existing prime--archimedean source.
+The finite Weyl-phase descent does not supply this Mellin/finite-part connector.
+
+`[LITERATURE BOUNDARY]` Connes's semilocal trace formula supplies the Hilbert-space setting for
+finite-place Weil forms; Connes--Consani--Moscovici construct semilocal Sonin/prolate spaces but
+defer general semilocal Jacobi coefficients and treat the prolate operator formally.  No audited
+source supplied the displayed corrected trace identity for the actual semilocal Sonin carrier.
+Therefore this is not an RH proof or a routine Lean port.  The parent trace formula is established
+mathematics; proving its compatibility with this corpus's specific Sonin carrier and a canonical
+semilocal remainder remains an analytic construction/identification problem.
+
+Sources checked: Connes, arXiv:math/9811068; Connes--Consani, arXiv:2006.13771;
+Connes--Consani--Moscovici, arXiv:2310.18423; Burnol, arXiv:math/9902080; and
+Connes--Consani--Moscovici, arXiv:2511.22755.

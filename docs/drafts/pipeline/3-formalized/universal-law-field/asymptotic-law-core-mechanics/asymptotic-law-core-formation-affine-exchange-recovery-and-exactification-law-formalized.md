@@ -1,7 +1,7 @@
 # Asymptotic law-core mechanics — formalized
 
 - **Parent:**
-  `../../../2-fully-proven/universal-law-field/asymptotic-law-core-mechanics/asymptotic-law-core-formation-affine-exchange-recovery-and-exactification-law.md`
+  `asymptotic-law-core-formation-affine-exchange-recovery-and-exactification-law.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveAsymptoticLawCore`
 - **Umbrella:** `GaloisForLFunctions.HTGeometry.UniversalLawField`
 - **Workflow:** exact module first elaborated with

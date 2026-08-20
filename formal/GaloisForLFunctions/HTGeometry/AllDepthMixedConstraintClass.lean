@@ -143,6 +143,35 @@ theorem MixedConstGermSet.shiftDiff {τ : ι → ℂ} {s : Finset ι} {q : ι} (
   rw [hcomm]
   exact hw
 
+/-- The cube commutes with a one-step difference. -/
+theorem diffCube_shiftDiffFun_comm (τ : ι → ℂ) (s : Finset ι) (h : ℂ) (F : ℂ → ℂ) :
+    diffCube τ s (shiftDiffFun h F) = shiftDiffFun h (diffCube τ s F) := by
+  funext w
+  simp only [diffCube, shiftDiffFun, Finset.sum_sub_distrib, mul_sub]
+  refine congrArg₂ (· - ·) (Finset.sum_congr rfl fun E _ => ?_) rfl
+  have harg : w + ∑ i ∈ E, τ i + h = w + h + ∑ i ∈ E, τ i := by ring
+  rw [harg]
+
+/-- **The cube of a disjoint union is the composite of the two cubes.** -/
+theorem diffCube_union (τ : ι → ℂ) {s t : Finset ι} (hd : Disjoint s t) (F : ℂ → ℂ) :
+    diffCube τ (s ∪ t) F = diffCube τ s (diffCube τ t F) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert q s hq ih =>
+      have hqt : q ∉ t := by
+        intro hqt
+        exact (Finset.disjoint_left.mp hd (Finset.mem_insert_self q s)) hqt
+      have hst : Disjoint s t := hd.mono_left (Finset.subset_insert q s)
+      have hunion : insert q s ∪ t = insert q (s ∪ t) := by
+        ext i
+        simp only [Finset.mem_insert, Finset.mem_union]
+        tauto
+      have hqst : q ∉ s ∪ t := by
+        simp only [Finset.mem_union]
+        tauto
+      rw [hunion, diffCube_insert τ hqst F, ih hst, diffCube_insert τ hq (diffCube τ t F)]
+
 end
 
 end GaloisForLFunctions.HTGeometry

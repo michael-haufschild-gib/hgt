@@ -7086,3 +7086,39 @@ of the two-range bound is a named finite expression.
 
 **What is left**: substitute the schedule, bound `H`, `#P`, `R(1+η)^Lη`, `L`, `|𝒰|` at it, and take
 the limit.
+
+### Bricks 121–122 — the schedule, and the harmonic mass of a WIDE range (2026-08-20)
+
+**`Sieve/TwoRangeSchedule`** (axiom-clean, wired) fixes the two-range schedule as named functions:
+
+```text
+   lowBase K x   = ⌈(log x)^K⌉            (the polylogarithmic bottom — the whole point)
+   lowEta c x    = (log x)^{−c}           lowTheta A x = (log x)^{−A}
+   highBase a x  = ⌈exp((log x)^a)⌉       highEta c' x = (log x)^{−c'}
+   twoRangeLength β x = ⌊√x + h⌋          twoRangeCut β x = ⌊√x+h⌋ / h
+   twoRangeTop β x    = twoRangeCut · log log x
+   twoRangeDelta x    = (log log x)^{−1/2}
+```
+
+with `tendsto_lowEta`, `tendsto_highEta`, `tendsto_lowTheta`, `tendsto_twoRangeDelta`,
+`one_le_lowBase`, `lowBase_bounds`.
+
+The split weight `δ = (log log x)^{−1/2}` is forced from both sides: the rough groups carry
+`(1 + 1/δ)·O(1/H)` with `H ≍ log log x`, so `δ` must beat `1/log log x`; the ladder groups carry
+`(1+δ)`, so `δ` must stay bounded.  A square root of `log log` sits in between.
+
+**`Sieve/PrimeRangeLogLogMass`** (axiom-clean, wired):
+
+```text
+sum_inv_primesRange_le_logLog_diff (h₀ : 2 ≤ z₀) (hz : z₀ ≤ z) :
+  ∑_{z₀ < p ≤ z} 1/p  ≤  log log z − log log z₀ + 2·(2c₁ + 1/2)/log z₀
+```
+
+This is the input the ladder groups need and the one the corpus did **not** have in usable form:
+`Sieve/PrimeRangeMertensMass.sum_inv_primesRange_le` gives `(log z − log z₀ + 2c)/log z₀`, sharp for
+a narrow band but catastrophic here — at the schedule it reads `(log x)^β/(K log log x)` instead of
+`β·log log x`.  The fix is `Sieve/MertensSecondSharp.abs_mertensS_sub_logLog_sub_const_le`, whose
+error **decays**: the two Meissel–Mertens constants cancel exactly and only `O(1/log z₀)` survives.
+
+At the schedule this gives `H ≤ β·log log x − log(K log log x) + O(1/log log x) ≤ β·log log x`,
+which is what makes `θ²·L·H² = (log x)^{β+c−2A}(log log x)² → 0` for `2A > β + c`.

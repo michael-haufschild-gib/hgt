@@ -1,9 +1,10 @@
 # Quantized proximity, approximate formation, and winding selection law
 
 - **ID:** ULF-DFPM-6
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveApproximateFormationSelection`
 - **Type:** THEOREM / APPROXIMATE FORMATION / ADMISSION-GAP SELECTION
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-FORMALIZED] [EXACT ROOTS NOT REQUIRED] [SOURCE APPROXIMATION OPEN] [NOT RH]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [EXACT ROOTS NOT REQUIRED] [SOURCE APPROXIMATION OPEN] [NOT RH]
 
 ## 1. Mechanism
 

@@ -43,3 +43,11 @@
   `HTGeometry.differentiallyAlgebraic_iff_additiveOrbitalDivisorAt_eq_zero`
   (`TripticCompleteness`), axiom-clean.  Both cards' remaining mathematics is now the *all-depth
   induction*: `Q_d`, `ρ_d`, `PairFace_d`, the inductive step, and the realization half.
+- 2026-08-20 — all-depth programme opened (closes cards 1 and 2 together).  Two modules landed,
+  built and axiom-clean: `HTGeometry/AllDepthMixedConstraintClass.lean` (the difference cube
+  `diffCube`, the class `MixedConstGermSet`, and `mixedConstGermSet_pair_iff` identifying the
+  depth-two case with the corpus's `MixedConstGerm`) and `HTGeometry/AllDepthMeroClass.lean`
+  (the class inside `meroField ℂ`, `exists_realizesMero`, `diffCubeMero_insert`,
+  `differentialAlgebraicOver_pairFaceWitnessMero`, `realizesMero_translate`,
+  `realizesMero_congr`, `periodicOneGerm_of_realizesMero`).  Full design and the remaining step
+  list are in Serena memory `nsk-other/all-depth-pair-face-programme-2026-08-20`.

@@ -1,10 +1,10 @@
 # Asymptotic law-core formation, affine exchange, recovery, and exactification law
 
 - **ID:** ULF-ALCM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Status:** `[PROVED HERE] [DEPENDENCY-CLOSED] [ROUTE-INDEPENDENT]`
-  `[LEAN FORMALIZED] [NOT A SELECTOR] [NOT RH]`
+  `[LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT A SELECTOR] [NOT RH]`
 - **Lean:** `GaloisForLFunctions.HTGeometry.ConstitutiveAsymptoticLawCore`
 - **Parent programme:**
   `../../../1-in-progress/universal-law-field/asymptotic-law-core-mechanics/field-programme.md`

@@ -1,10 +1,11 @@
 # Strict-convex nonlinear exchange, dissipation, and global selection law
 
 - **ID:** ULF-ALCM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Status:** `[PROVED HERE] [DEPENDENCY-CLOSED] [ROUTE-INDEPENDENT]`
-  `[GLOBAL FORMATION/PROPERNESS] [LEAN FORMALIZED] [SELECTION MECHANISM] [NOT RH]`
+  `[GLOBAL FORMATION/PROPERNESS] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS]`
+  `[SELECTION MECHANISM] [NOT RH]`
 - **Lean:** `GaloisForLFunctions.HTGeometry.ConstitutiveAsymptoticLawCoreRigidity`
 - **Parent:**
   `asymptotic-law-core-formation-affine-exchange-recovery-and-exactification-law.md`
