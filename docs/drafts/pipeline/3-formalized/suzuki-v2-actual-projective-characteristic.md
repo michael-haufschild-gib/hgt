@@ -1,6 +1,6 @@
 # Suzuki v2 actual projective characteristic
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Status:** unconditional paper theorem; formalized in Lean
 - **Source:** actual finite-aperture Suzuki characteristics at extension angles `0` and `pi`
 - **Claimed novelty:** removes the arbitrary one-angle exponential gauge and constructs the
@@ -153,3 +153,23 @@ It proves, for the literal `suzukiTaCharacteristic` family:
 
 No theorem assumes convergence to the Xi target.  Target identification remains exactly the
 RH-bearing source problem stated in (8).
+
+### Declaration table
+
+| Card statement | Lean declaration |
+|---|---|
+| pencil coordinates `A_a`, `E_a` and `W_a^u = A_a + u E_a` | `RHTower.suzukiTaV2CharacteristicA`, `RHTower.suzukiTaV2CharacteristicE`, `RHTower.suzukiTaCharacteristic_eq_v2Pencil` |
+| angles `0`, `pi` | `RHTower.suzukiTaCharacteristic_zeroAngle`, `RHTower.suzukiTaCharacteristic_piAngle` |
+| actual all-angle reality of the pencil | `RHTower.suzukiTaV2_allAngleRealZeros` |
+| `theta_a = A_a/E_a`, strict Schur (3) | `RHTower.suzukiTaV2Livsic`, `RHTower.norm_suzukiTaV2Livsic_lt_one` |
+| projective characteristic `F_a` (1) | `RHTower.suzukiTaV2ProjectiveCharacteristic` |
+| Theorem A: normalized-Livsic formula (2) | `RHTower.suzukiTaV2ProjectiveCharacteristic_eq_mobius` |
+| Theorem B: denominator gap (4) | `RHTower.suzukiTaV2ProjectiveDenominator_ne_zero`, `RHTower.two_mul_min_le_norm_suzukiV2MobiusDenominator` |
+| Theorem B: holomorphy on `Im z > 0` | `RHTower.differentiableOn_suzukiTaV2ProjectiveCharacteristic_upperHalfPlane` |
+| Theorem B: aperture-uniform bound (5) | `RHTower.norm_suzukiTaV2ProjectiveCharacteristic_le` |
+| Theorem B: Montel normal family / cofinal limit | `RHTower.exists_suzukiTaV2ProjectiveCharacteristic_montel_subseq`, `RHTower.exists_suzukiTaV2CanonicalCofinalProjectiveLimit` |
+| global meromorphicity of `F_a` | `RHTower.meromorphicOn_suzukiTaV2ProjectiveCharacteristic` |
+| Theorem C: target chart (6)–(7), division-free | `RHTower.xiHedenmalmAlgebraicLivsic_v2_projective_identity` |
+
+Every declaration is unconditional; `#print axioms` on each reports only `propext`,
+`Classical.choice`, `Quot.sound`.  The module is wired into `GaloisForLFunctions/RHTower.lean`.

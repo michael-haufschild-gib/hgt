@@ -4670,6 +4670,7 @@ import GaloisForLFunctions.RHTower.PinnedAffineDefectQuotient
 import GaloisForLFunctions.RHTower.PinnedAffinePrimeJetRigidity
 import GaloisForLFunctions.RHTower.PinnedAffineWeldBoundaryNoGo
 import GaloisForLFunctions.RHTower.PinnedWindow
+import GaloisForLFunctions.RHTower.PlasmaDischargePhotoelectricCorpusBridges
 import GaloisForLFunctions.RHTower.PointedCartanSeminormConservationLaw
 import GaloisForLFunctions.RHTower.PointedStonePrimeCompleteRelationCircuitUniversalityLaw
 import GaloisForLFunctions.RHTower.PoissonAbelBoundary
@@ -6901,6 +6902,9 @@ import GaloisForLFunctions.RHTower.Sieve.TwoRangeScheduleFacts
 import GaloisForLFunctions.RHTower.Sieve.TwoRangeMajorant
 import GaloisForLFunctions.RHTower.Sieve.TwoRangeRouteT
 import GaloisForLFunctions.RHTower.Sieve.TwoRangeHighBound
+import GaloisForLFunctions.RHTower.Sieve.ScheduleMonomialLimits
+import GaloisForLFunctions.RHTower.Sieve.TwoRangeAggregates
+import GaloisForLFunctions.RHTower.Sieve.TwoRangeGroupLimits
 import GaloisForLFunctions.RHTower.Sieve.LogSeparation
 import GaloisForLFunctions.RHTower.Sieve.LogSqZetaCap
 import GaloisForLFunctions.RHTower.Sieve.LogSumFromCount

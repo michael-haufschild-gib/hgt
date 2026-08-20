@@ -1,6 +1,7 @@
 # Suzuki v2 pole-free and spherical-atlas convergence
 
-**Status:** `[PAPER-PROVED]` `[BRIDGE]`  
+**Stage:** 3-formalized  
+**Status:** `[PAPER-PROVED]` `[LEAN-PROVED]` `[BRIDGE]`  
 **Source corrected:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
 arXiv:2606.09096v2, Corollary 1.6.
 
@@ -61,3 +62,24 @@ arbitrary strengthening of the finite-chart premise.
 - The exact open producer remains source-faithful convergence of the actual Suzuki characteristics
   in either corrected topology.  This card proves only that both corrected formulations are
   coherent and RH-bearing.
+
+## Lean formalization
+
+Formal module:
+
+```text
+formal/GaloisForLFunctions/RHTower/SuzukiV2SphericalConvergence.lean
+```
+
+| Card statement | Lean declaration |
+|---|---|
+| finite chart / corrected pole-free convergence | `RHTower.SuzukiV2PoleFreeConvergenceOn` |
+| eventual compact zero-freeness guard (condition 4) | `RHTower.EventuallyZeroFreeOnCompacta` |
+| two-affine-chart spherical convergence | `RHTower.SuzukiV2SphericalAtlasCharacteristicLimitWall` |
+| corrected meromorphic wall = existence of a finite chart | `RHTower.suzukiV2MeromorphicCharacteristicLimitWall_iff_exists_poleFreeConvergenceOn` |
+| spherical-atlas convergence ⇒ pole-free convergence wall | `RHTower.suzukiV2SphericalAtlasCharacteristicLimitWall_implies_meromorphicWall` |
+| Theorem: spherical-atlas convergence ⇒ RH | `RHTower.suzukiV2SphericalAtlasCharacteristicLimitWall_implies_riemannHypothesis` |
+
+All three theorems are unconditional (no `sorry`, no added axiom); `#print axioms` reports only
+`propext`, `Classical.choice`, `Quot.sound`.  The module is wired into
+`GaloisForLFunctions/RHTower.lean`.

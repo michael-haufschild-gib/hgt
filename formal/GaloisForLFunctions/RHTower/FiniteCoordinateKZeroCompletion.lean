@@ -105,7 +105,6 @@ theorem fixedReflectionCrossedProductKZeroEquiv_realCoronaClass
   change
     (finiteCoordinateKZeroEquiv ι (realCoronaFixedKZeroClass q),
       finiteCoordinateKZeroEquiv ι (realCoronaFixedKZeroClass q)) = _
-  rw [finiteCoordinateKZeroEquiv_realCoronaFixedKZeroClass,
-    finiteCoordinateKZeroEquiv_realCoronaFixedKZeroClass]
+  rw [finiteCoordinateKZeroEquiv_realCoronaFixedKZeroClass]
 
 end GaloisForLFunctions.RHTower

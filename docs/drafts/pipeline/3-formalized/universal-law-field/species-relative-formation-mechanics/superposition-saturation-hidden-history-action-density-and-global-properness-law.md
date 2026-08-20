@@ -3,7 +3,7 @@
 **ID:** ULF-SRFM-4  
 **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [GLOBAL FORMATION PROPERNESS]`
 `[SOURCE-GENERATED DEPTH] [NEW CORPUS CONSEQUENCE] [NOVELTY UNVERIFIED]`
-`[LEAN PENDING] [NOT RH]`
+`[LEAN CLOSED] [NOT RH]`
 
 ## 1. Purpose
 
@@ -385,11 +385,18 @@ Significance is internal and mathematical: Gate V of first species-fusion chambe
 by source-generated mechanism. Result predicts which observer completion is harmless (only diagonal
 history) and converts any future uniform source conservation bound into exact neutral selection.
 
-## 10. Formalization gate
+## 10. Lean status
 
-No Lean was written or built during this research pass. Eligible formal targets are formulas
-`(3.2)`, saturation `(3.3)`, normalized conservation `(3.4)`, bounded-orbit classification `(3.7)`,
-compact-lift classification `(5.4)`, and reflected-prime selection consumer `(6.2)`.
+Closed unconditionally in three new modules:
 
-Promotion to Stage 3 requires unconditional Lean closure, axiom audit, formal lint, and umbrella
-wiring under existing programme rules.
+* `formal/GaloisForLFunctions/HTGeometry/CountableRelativeEntropyValue.lean` — the exact atom-series
+  value of relative entropy between countable laws.
+* `formal/GaloisForLFunctions/HTGeometry/PoissonOccupancyHistorySplit.lean` — Poisson and
+  excess-count relative entropy, the occupancy--history chain rule, and Theorem 2.1.
+* `formal/GaloisForLFunctions/HTGeometry/PoissonSuperpositionSaturationProperness.lean` — Sections
+  3--6.
+
+See the companion file
+`superposition-saturation-hidden-history-action-density-and-global-properness-law-formalized.md`
+for the result-to-declaration table.  Every declaration depends only on `propext`,
+`Classical.choice`, `Quot.sound`.

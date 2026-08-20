@@ -114,6 +114,7 @@ import GaloisForLFunctions.HTGeometry.AllDepthAtomClass
 import GaloisForLFunctions.HTGeometry.AllDepthAtomRealization
 import GaloisForLFunctions.HTGeometry.AllDepthBottomCharge
 import GaloisForLFunctions.HTGeometry.AllDepthBottomRealization
+import GaloisForLFunctions.HTGeometry.AllDepthCarrierJets
 import GaloisForLFunctions.HTGeometry.AllDepthCompleteness
 import GaloisForLFunctions.HTGeometry.AllDepthCompletenessCore
 import GaloisForLFunctions.HTGeometry.AllDepthMeroClass

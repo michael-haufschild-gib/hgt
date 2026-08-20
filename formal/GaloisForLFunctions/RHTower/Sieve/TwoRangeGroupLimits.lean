@@ -194,7 +194,6 @@ theorem tendsto_smallLadderGroup_div_sq {β c A : ℝ} (hβ0 : 0 < β) (hβ1 : �
         | (exact mul_nonneg hB.1 hS.1)
         | (exact add_nonneg (mul_nonneg hB.1 hS.1) (mul_nonneg hB.1 hP.1))
         | (exact add_nonneg (sq_nonneg _) (mul_nonneg hB.1 hS.1))
-        | (exact div_nonneg hM0.le hh0.le)
 
 /-- The reciprocal of `log log` vanishes. -/
 theorem tendsto_inv_logLog :
@@ -630,7 +629,7 @@ theorem tendsto_roughGroup_div_sq {β cA : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) 
   have hδu : (1 / twoRangeDelta x) * (1 / Real.log (Real.log x)) = twoRangeDelta x := by
     rw [hd1, twoRangeDelta, show (-(1 : ℝ) / 2) = (1 : ℝ) / 2 + (-1) by ring,
       Real.rpow_add hu0, Real.rpow_neg_one]
-    rw [one_div]
+    rw [one_div (Real.log (Real.log x))]
   have hδ1 : twoRangeDelta x ≤ 1 := by
     rw [twoRangeDelta]
     exact Real.rpow_le_one_of_one_le_of_nonpos hu1 (by norm_num)
@@ -652,7 +651,6 @@ theorem tendsto_roughGroup_div_sq {β cA : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) 
       = (14 / cA) * (cardLength β x / ((twoRangeLength β x : ℕ) : ℝ))
         * (1 / Real.log (Real.log x)) := by
     field_simp
-    ring
   have hDT1 : (1 / twoRangeDelta x) * ((10 / cA) * (1 / cardLength β x))
       ≤ (10 / cA) * (Real.log (Real.log x) / cardLength β x) := by
     have h := mul_le_mul_of_nonneg_right hDle
