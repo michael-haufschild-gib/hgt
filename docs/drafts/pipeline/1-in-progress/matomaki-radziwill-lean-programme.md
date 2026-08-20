@@ -7263,3 +7263,19 @@ supersedes the earlier note "`w₀` is a constant" in the brick-113 entry.
 `D = Lx/ρ`, `t₀ = 2πw₀`, `Lx = log 2 + (log x)^b`, `q = (log x)^a`, `xmin = exp((log x)^a)`,
 `μ = min delta (routeTWidthPolylogLower A (2πT₀))/2`, `Hmaj` at equality) and the seven group
 limits.
+
+### Brick 129 — the harmonic mass at the schedule (2026-08-20)
+
+`Sieve/TwoRangeScheduleFacts.lowRange_harmonic_le` (axiom-clean, wired, built):
+
+```text
+   (hK : 1 ≤ K) (hc : 0 < c) (hβ : 0 < β) :
+      ∀ᶠ x,  ∑_{p ∈ primesRange (lowBase K x) (lowTop K c β x)} 1/p  ≤  β · log log x
+```
+
+This is the aggregate `H` of `Sieve/LadderAggregates.smallLadderGroup_le` evaluated at the schedule,
+and it is the step that makes the ladder groups cost only a *power of `log log`* rather than a power
+of `log`.  The three ingredients: `log(lowTop) ≤ (log x)^β` (from `lowTop_le_cardLength`), so
+`log log lowTop ≤ β·log log x`; `log(lowBase) ≥ K·log log x`, so `log log lowBase ≥ log(K log log x)
+→ ∞`; and `Sieve/PrimeRangeLogLogMass`'s decaying error `2(2c₁+1/2)/log(lowBase) → 0`.  The negative
+`− log log lowBase` swallows the error, leaving exactly `β·log log x`.

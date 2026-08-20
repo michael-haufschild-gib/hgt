@@ -42,6 +42,91 @@ noncomputable def modeLogPartition (a lam t : ℝ) : ℝ := -Real.log (1 - modeR
 noncomputable def modeFirstMoment (a lam t : ℝ) : ℝ :=
   lam * (modeRatio a lam t / (1 - modeRatio a lam t))
 
+/-- Second response of a geometric mode. -/
+noncomputable def modeSecondResponse (a lam t : ℝ) : ℝ :=
+  lam ^ 2 * (modeRatio a lam t / (1 - modeRatio a lam t) ^ 2)
+
+/-- Third response of a geometric mode. -/
+noncomputable def modeThirdCumulant (a lam t : ℝ) : ℝ :=
+  lam ^ 3 * (modeRatio a lam t * (1 + modeRatio a lam t) / (1 - modeRatio a lam t) ^ 3)
+
+theorem hasDerivAt_modeRatio (a lam t : ℝ) :
+    HasDerivAt (modeRatio a lam) (-(lam * modeRatio a lam t)) t := by
+  have hin : HasDerivAt (fun x : ℝ => -(lam * x)) (-lam) t := by
+    have h := ((hasDerivAt_id t).const_mul lam).neg
+    convert h using 1
+    ring
+  have h2 := hin.exp.const_mul a
+  convert h2 using 1
+  simp only [modeRatio]
+  ring
+
+private theorem hasDerivAt_one_sub_modeRatio (a lam t : ℝ) :
+    HasDerivAt (fun x : ℝ => 1 - modeRatio a lam x) (lam * modeRatio a lam t) t := by
+  have h := (hasDerivAt_modeRatio a lam t).const_sub 1
+  convert h using 1
+  ring
+
+/-- **(FCRM.21), first step.**  The mode log partition has derivative minus its first response. -/
+theorem hasDerivAt_modeLogPartition (h1 : modeRatio a lam t < 1) :
+    HasDerivAt (modeLogPartition a lam) (-(modeFirstMoment a lam t)) t := by
+  have hne : 1 - modeRatio a lam t ≠ 0 := by linarith
+  have hlog := (hasDerivAt_one_sub_modeRatio a lam t).log hne
+  have h := hlog.neg
+  convert h using 1
+  simp only [modeFirstMoment]
+  field_simp
+
+/-- **(FCRM.21), second step.**  The first response has derivative minus the second response. -/
+theorem hasDerivAt_modeFirstMoment (h1 : modeRatio a lam t < 1) :
+    HasDerivAt (modeFirstMoment a lam) (-(modeSecondResponse a lam t)) t := by
+  have hne : 1 - modeRatio a lam t ≠ 0 := by linarith
+  have hdiv := (hasDerivAt_modeRatio a lam t).div (hasDerivAt_one_sub_modeRatio a lam t) hne
+  have h := hdiv.const_mul lam
+  convert h using 1
+  simp only [modeSecondResponse]
+  field_simp
+  ring
+
+/-- **(FCRM.21), third step.**  The second response has derivative minus the third cumulant. -/
+theorem hasDerivAt_modeSecondResponse (h1 : modeRatio a lam t < 1) :
+    HasDerivAt (modeSecondResponse a lam) (-(modeThirdCumulant a lam t)) t := by
+  have hne : 1 - modeRatio a lam t ≠ 0 := by linarith
+  have hne2 : (1 - modeRatio a lam t) ^ 2 ≠ 0 := pow_ne_zero 2 hne
+  have hsub := hasDerivAt_one_sub_modeRatio a lam t
+  have hsq : HasDerivAt (fun x : ℝ => (1 - modeRatio a lam x) ^ 2)
+      (2 * (1 - modeRatio a lam t) * (lam * modeRatio a lam t)) t := by
+    have h := hsub.mul hsub
+    have hfun : (fun x : ℝ => (1 - modeRatio a lam x) * (1 - modeRatio a lam x))
+        = fun x : ℝ => (1 - modeRatio a lam x) ^ 2 := by
+      funext x; ring
+    rw [hfun] at h
+    convert h using 1
+    ring
+  have hdiv := (hasDerivAt_modeRatio a lam t).div hsq hne2
+  have h := hdiv.const_mul (lam ^ 2)
+  convert h using 1
+  simp only [modeThirdCumulant]
+  field_simp
+  ring
+
+theorem modeSecondResponse_pos (hlam : 0 < lam)
+    (h0 : 0 < modeRatio a lam t) (h1 : modeRatio a lam t < 1) :
+    0 < modeSecondResponse a lam t := by
+  have hden : 0 < (1 - modeRatio a lam t) ^ 2 := by positivity
+  simp only [modeSecondResponse]
+  positivity
+
+/-- **(FCRM.14), (FCRM.18) mode form.**  The third response of a geometric mode is strictly
+positive. -/
+theorem modeThirdCumulant_pos (hlam : 0 < lam)
+    (h0 : 0 < modeRatio a lam t) (h1 : modeRatio a lam t < 1) :
+    0 < modeThirdCumulant a lam t := by
+  have hden : 0 < (1 - modeRatio a lam t) ^ 3 := by positivity
+  have hnum : 0 < modeRatio a lam t * (1 + modeRatio a lam t) := by nlinarith
+  simp only [modeThirdCumulant]
+  positivity
+
 /-- Directed information commutator of a geometric mode. -/
 noncomputable def modeChirality (a lam s t : ℝ) : ℝ :=
   2 * (modeLogPartition a lam t - modeLogPartition a lam s)

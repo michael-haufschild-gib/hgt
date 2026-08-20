@@ -143,6 +143,7 @@ theorem MixedConstGermSet.shiftDiff {τ : ι → ℂ} {s : Finset ι} {q : ι} (
   rw [hcomm]
   exact hw
 
+omit [DecidableEq ι] in
 /-- The cube commutes with a one-step difference. -/
 theorem diffCube_shiftDiffFun_comm (τ : ι → ℂ) (s : Finset ι) (h : ℂ) (F : ℂ → ℂ) :
     diffCube τ s (shiftDiffFun h F) = shiftDiffFun h (diffCube τ s F) := by

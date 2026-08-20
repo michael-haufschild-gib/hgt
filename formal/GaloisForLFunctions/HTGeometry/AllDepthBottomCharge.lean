@@ -285,7 +285,7 @@ theorem exists_finset_bottomCharge_pole_classes (τ : ι → ℂ) (hτ : ∀ m, 
     intro z hz
     have := hstepOne (z - 1)
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have hle : ¬ meromorphicOrderAt V (z - 1) < 0 := not_lt.mpr hcon
     have hback : ∀ (ℓ : ℤ), ℓ < 0 → laurentCoeff V z ℓ = laurentCoeff V (z - 1) ℓ := by
       intro ℓ hℓ
@@ -302,7 +302,7 @@ theorem exists_finset_bottomCharge_pole_classes (τ : ι → ℂ) (hτ : ∀ m, 
       meromorphicOrderAt V (z - τ k) < 0 := by
     intro z hz
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have hle : ¬ meromorphicOrderAt V (z - τ k) < 0 := not_lt.mpr hcon
     have hback : ∀ (ℓ : ℤ), ℓ < 0 → laurentCoeff V z ℓ = laurentCoeff V (z - τ k) ℓ := by
       intro ℓ hℓ
@@ -328,14 +328,14 @@ theorem exists_finset_bottomCharge_pole_classes (τ : ι → ℂ) (hτ : ∀ m, 
           have h1 := ih w hw
           have := hstepOneNeg _ h1
           have harg : w - (p : ℤ) • (1 : ℂ) - 1 = w - ((p : ℤ) + 1) • (1 : ℂ) := by
-            push_cast; ring
+            ring
           rwa [harg] at this
       | pred p ih =>
           intro w hw
           have h1 := ih w hw
           have := hstepOne _ h1
           have harg : w - (-(p : ℤ)) • (1 : ℂ) + 1 = w - (-(p : ℤ) - 1) • (1 : ℂ) := by
-            push_cast; ring
+            ring
           rwa [harg] at this
     have htau : ∀ (j : ℤ) (w : ℂ), meromorphicOrderAt V w < 0 →
         meromorphicOrderAt V (w - j • τ k) < 0 := by
@@ -347,14 +347,14 @@ theorem exists_finset_bottomCharge_pole_classes (τ : ι → ℂ) (hτ : ∀ m, 
           have h1 := ih w hw
           have := hstepTauNeg _ h1
           have harg : w - (p : ℤ) • τ k - τ k = w - ((p : ℤ) + 1) • τ k := by
-            push_cast; ring
+            ring
           rwa [harg] at this
       | pred p ih =>
           intro w hw
           have h1 := ih w hw
           have := hstepTau _ h1
           have harg : w - (-(p : ℤ)) • τ k + τ k = w - (-(p : ℤ) - 1) • τ k := by
-            push_cast; ring
+            ring
           rwa [harg] at this
     have hmn := htau n _ (hone m z hz)
     have harg : z - m • (1 : ℂ) - n • τ k = z - (m • (1 : ℂ) + n • τ k) := by ring

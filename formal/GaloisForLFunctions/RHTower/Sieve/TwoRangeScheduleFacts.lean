@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.Sieve.TwoRangeSchedule
 import GaloisForLFunctions.RHTower.Sieve.GeomBlockPrimesRange
 import GaloisForLFunctions.RHTower.Sieve.PolyDecayLimits
 import GaloisForLFunctions.RHTower.Sieve.TwoRangeLimits
+import GaloisForLFunctions.RHTower.Sieve.PrimeRangeLogLogMass
 
 /-!
 # The structural facts of the two-range schedule
@@ -360,6 +361,100 @@ theorem one_le_floor_div_highLadder {a b c' β : ℝ} (hab : a ≤ b) (hc' : 0 <
   refine Nat.le_floor ?_
   rw [Nat.cast_one, le_div_iff₀ hpos, one_mul]
   linarith [hprod, hM]
+
+/-- **The harmonic mass of the low range is at most `β·log log x`.**  This is the aggregate `H` of
+`Sieve/LadderAggregates.smallLadderGroup_le`, and the reason the ladder groups cost only a power of
+`log log` rather than a power of `log`. -/
+theorem lowRange_harmonic_le {K c β : ℝ} (hK : 1 ≤ K) (hc : 0 < c) (hβ : 0 < β) :
+    ∀ᶠ x : ℝ in atTop,
+      ∑ p ∈ primesRange (lowBase K x) (lowTop K c β x), 1 / (p : ℝ)
+        ≤ β * Real.log (Real.log x) := by
+  have hK0 : (0 : ℝ) ≤ K := by linarith
+  have hpowK : Tendsto (fun x : ℝ => (Real.log x) ^ K) atTop atTop :=
+    (tendsto_rpow_atTop (by linarith)).comp Real.tendsto_log_atTop
+  have herr : Tendsto (fun x : ℝ =>
+      2 * ((2 * mertensFirstConst + 1 / 2) / (K * Real.log (Real.log x)))) atTop (𝓝 0) := by
+    have hll : Tendsto (fun x : ℝ => K * Real.log (Real.log x)) atTop atTop := by
+      refine Filter.Tendsto.const_mul_atTop (by linarith) ?_
+      exact Real.tendsto_log_atTop.comp Real.tendsto_log_atTop
+    have := (Tendsto.div_atTop (tendsto_const_nhds
+      (x := 2 * mertensFirstConst + 1 / 2)) hll).const_mul (2 : ℝ)
+    simpa using this
+  have hllto : Tendsto (fun x : ℝ => Real.log (K * Real.log (Real.log x))) atTop atTop := by
+    refine Real.tendsto_log_atTop.comp ?_
+    refine Filter.Tendsto.const_mul_atTop (by linarith) ?_
+    exact Real.tendsto_log_atTop.comp Real.tendsto_log_atTop
+  filter_upwards [Filter.eventually_ge_atTop (Real.exp 1), Filter.eventually_gt_atTop (1 : ℝ),
+    lowTop_le_cardLength (K := K) (c := c) (β := β) hK0 hc hβ,
+    hpowK.eventually_ge_atTop (2 : ℝ),
+    Real.tendsto_log_atTop.eventually_ge_atTop (Real.exp 1),
+    Tendsto.eventually_le_const (by norm_num : (0 : ℝ) < 1) herr,
+    hllto.eventually_ge_atTop (1 : ℝ)] with x hxe hx1 htop hpow2 hlogbig hsmall hllbig
+  have hlogx : (0 : ℝ) < Real.log x := Real.log_pos hx1
+  have hlogx1 : (1 : ℝ) ≤ Real.log x := by
+    have : (1 : ℝ) ≤ Real.exp 1 := Real.one_le_exp (by norm_num)
+    linarith
+  have hQ2 : (2 : ℝ) ≤ ((lowBase K x : ℕ) : ℝ) := by
+    have := (lowBase_bounds hK0 hxe).1
+    linarith
+  have h₀ : 2 ≤ lowBase K x := by exact_mod_cast hQ2
+  have hη : 0 < lowEta c x := lowEta_pos hx1
+  have hpowge : (1 : ℝ) ≤ (1 + lowEta c x) ^ (lowSteps K c β x) :=
+    one_le_pow₀ (by linarith)
+  have hz : lowBase K x ≤ lowTop K c β x := by
+    rw [lowTop]
+    refine Nat.le_floor ?_
+    have hQ0 : (0 : ℝ) < ((lowBase K x : ℕ) : ℝ) := by linarith
+    nlinarith [hpowge, hQ0]
+  have hmass := sum_inv_primesRange_le_logLog_diff (z₀ := lowBase K x)
+    (z := lowTop K c β x) h₀ hz
+  -- the top
+  have hTop0 : (0 : ℝ) < ((lowTop K c β x : ℕ) : ℝ) := by
+    have : (2 : ℝ) ≤ ((lowTop K c β x : ℕ) : ℝ) := by
+      have : (2 : ℕ) ≤ lowTop K c β x := le_trans h₀ hz
+      exact_mod_cast this
+    linarith
+  have hTople : ((lowTop K c β x : ℕ) : ℝ) ≤ cardLength β x := by
+    rw [lowTop]
+    refine le_trans (Nat.floor_le ?_) htop
+    have hQ0 : (0 : ℝ) < ((lowBase K x : ℕ) : ℝ) := by linarith
+    positivity
+  have hlogTop : Real.log ((lowTop K c β x : ℕ) : ℝ) ≤ (Real.log x) ^ β := by
+    have := Real.log_le_log hTop0 hTople
+    rwa [log_cardLength] at this
+  have hlogTop0 : (0 : ℝ) < Real.log ((lowTop K c β x : ℕ) : ℝ) := by
+    refine Real.log_pos ?_
+    have : (2 : ℕ) ≤ lowTop K c β x := le_trans h₀ hz
+    have : (2 : ℝ) ≤ ((lowTop K c β x : ℕ) : ℝ) := by exact_mod_cast this
+    linarith
+  have hllTop : Real.log (Real.log ((lowTop K c β x : ℕ) : ℝ)) ≤ β * Real.log (Real.log x) := by
+    have hstep := Real.log_le_log hlogTop0 hlogTop
+    rwa [Real.log_rpow hlogx] at hstep
+  -- the bottom
+  have hlogBase : K * Real.log (Real.log x) ≤ Real.log ((lowBase K x : ℕ) : ℝ) := by
+    have hb := (lowBase_bounds hK0 hxe).1
+    have hQ0 : (0 : ℝ) < ((lowBase K x : ℕ) : ℝ) := by linarith
+    have hp0 : (0 : ℝ) < (Real.log x) ^ K := Real.rpow_pos_of_pos hlogx K
+    have := Real.log_le_log hp0 hb
+    rwa [Real.log_rpow hlogx] at this
+  have hlogBase0 : (0 : ℝ) < K * Real.log (Real.log x) := by
+    have hll1 : (1 : ℝ) ≤ Real.log (Real.log x) := by
+      have : (1 : ℝ) ≤ Real.exp 1 := Real.one_le_exp (by norm_num)
+      have := Real.log_le_log (Real.exp_pos 1) hlogbig
+      rw [Real.log_exp] at this
+      linarith
+    nlinarith [hK]
+  have hllBase : Real.log (K * Real.log (Real.log x))
+      ≤ Real.log (Real.log ((lowBase K x : ℕ) : ℝ)) :=
+    Real.log_le_log hlogBase0 hlogBase
+  have herrle : 2 * ((2 * mertensFirstConst + 1 / 2) / Real.log ((lowBase K x : ℕ) : ℝ))
+      ≤ 2 * ((2 * mertensFirstConst + 1 / 2) / (K * Real.log (Real.log x))) := by
+    have hc0 : (0 : ℝ) ≤ 2 * mertensFirstConst + 1 / 2 := by
+      have := mertensFirstConst_nonneg
+      linarith
+    have := div_le_div_of_nonneg_left hc0 hlogBase0 hlogBase
+    linarith
+  linarith [hmass, hllTop, hllBase, herrle, hsmall, hllbig]
 
 end
 

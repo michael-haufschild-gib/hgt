@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.AllDepthBottomCharge
 import GaloisForLFunctions.HTGeometry.AllDepthTelescope
 import GaloisForLFunctions.HTGeometry.TripticOrbitalDivisorLinearity
 import GaloisForLFunctions.HTGeometry.TripticLineFiniteness
+import GaloisForLFunctions.HTGeometry.TripticSourceDivisorFinsupp
 
 /-!
 # Descending the pair-face signature one depth
@@ -132,7 +133,7 @@ theorem exists_finset_orbitalDivisor_classes {G : ℂ → ℂ} {τ σ : ℂ}
       (hUmero (z - t) (Set.mem_univ _))).mpr ⟨k, hk, ?_⟩
     have hval := hinv k hk (z - t)
     rw [sub_add_cancel] at hval
-    rw [hval]
+    rw [← hval]
     exact hne
   have hpoleOneNeg := hback 1 hone
   have hpoleTauNeg := hback τ htau
@@ -149,7 +150,6 @@ theorem exists_finset_orbitalDivisor_classes {G : ℂ → ℂ} {τ σ : ℂ}
         have h1 := ih z hz
         have h2 := hb _ h1
         have harg : z - (n : ℤ) • t - t = z - ((n : ℤ) + 1) • t := by
-          push_cast
           module
         rwa [harg] at h2
     | pred n ih =>
@@ -157,7 +157,6 @@ theorem exists_finset_orbitalDivisor_classes {G : ℂ → ℂ} {τ σ : ℂ}
         have h1 := ih z hz
         have h2 := hf _ h1
         have harg : z - (-(n : ℤ)) • t + t = z - (-(n : ℤ) - 1) • t := by
-          push_cast
           module
         rwa [harg] at h2
   have hinv : ∀ (a b : ℤ) (z : ℂ), meromorphicOrderAt U z < 0 →
@@ -173,7 +172,7 @@ theorem exists_finset_orbitalDivisor_classes {G : ℂ → ℂ} {τ σ : ℂ}
   intro p hp
   have hterm : ∃ m : ℤ, laurentCoeff U (p + (m : ℂ) * σ) ℓ ≠ 0 := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     apply hp
     rw [additiveOrbitalDivisorAt]
     have : ∀ m : ℤ, laurentCoeff U (p + (m : ℂ) * σ) ℓ = 0 := hcon
@@ -187,6 +186,68 @@ theorem exists_finset_orbitalDivisor_classes {G : ℂ → ℂ} {τ σ : ℂ}
   refine ⟨a, b, -m, ?_⟩
   push_cast
   ring
+
+/-! ## The descent -/
+
+theorem periodicOneGerm_comp_add {G : ℂ → ℂ} (hper : PeriodicOneGerm G) (t : ℂ) :
+    PeriodicOneGerm (fun w => G (w + t)) := by
+  intro z
+  have h := (tendsto_nhdsNE_add_const z t).eventually (hper (z + t))
+  filter_upwards [h] with w hw
+  show G (w + 1 + t) = G (w + t)
+  rw [show w + 1 + t = w + t + 1 from by ring]
+  exact hw
+
+theorem mixedConstGerm_comp_add' {G : ℂ → ℂ} {τ σ Cst : ℂ}
+    (hmixed : MixedConstGerm G τ σ Cst) (t : ℂ) :
+    MixedConstGerm (fun w => G (w + t)) τ σ Cst := by
+  intro z
+  have h := (tendsto_nhdsNE_add_const z t).eventually (hmixed (z + t))
+  filter_upwards [h] with w hw
+  show G (w + τ + σ + t) - G (w + τ + t) - G (w + σ + t) + G (w + t) = Cst
+  rw [show w + τ + σ + t = w + t + τ + σ from by ring,
+    show w + τ + t = w + t + τ from by ring,
+    show w + σ + t = w + t + σ from by ring]
+  exact hw
+
+set_option maxHeartbeats 1000000 in
+/-- **The signature descends one depth.**  If the `t`-difference of a depth-two source has
+vanishing orbital divisor, and `t` has infinite order modulo the period group, then the source
+itself has vanishing orbital divisor. -/
+theorem orbitalDivisor_eq_zero_of_shiftDiff_orbitalDivisor_eq_zero
+    {G : ℂ → ℂ} {τ σ t : ℂ}
+    (hG : MeromorphicOn G (Set.univ : Set ℂ)) (hper : PeriodicOneGerm G)
+    {Cst : ℂ} (hmixed : MixedConstGerm G τ σ Cst)
+    (hτ : 0 < τ.im)
+    (hindep : ∀ m n j : ℤ, (m : ℂ) * σ + (n : ℂ) * τ + (j : ℂ) = 0 → m = 0 ∧ n = 0 ∧ j = 0)
+    (ht : ∀ n : ℤ, n • t ∈ tripticPeriodGroup τ σ → n = 0)
+    {ℓ : ℤ} (hℓ : ℓ < 0)
+    (hzero : ∀ p : ℂ, additiveOrbitalDivisorAt (HTGeometry.shiftDiffFun t G) σ p ℓ = 0)
+    (p : ℂ) : additiveOrbitalDivisorAt G σ p ℓ = 0 := by
+  classical
+  have hGt : MeromorphicOn (fun w => G (w + t)) (Set.univ : Set ℂ) := fun z _ =>
+    meromorphicAt_comp_add.mpr (hG (z + t) (Set.mem_univ _))
+  have hinvR : ∀ q : ℂ,
+      additiveOrbitalDivisorAt G σ (q + t) ℓ = additiveOrbitalDivisorAt G σ q ℓ := by
+    intro q
+    have hs1 : {m : ℤ | laurentCoeff (fun w : ℂ => G (w + σ + t) - G (w + t))
+        (q + (m : ℂ) * σ) ℓ ≠ 0}.Finite := by
+      have h := finite_support_orbitalDivisorTerm (F := fun w => G (w + t)) (τ := τ) (σ := σ)
+        hGt (periodicOneGerm_comp_add hper t) (mixedConstGerm_comp_add' hmixed t) hτ hindep q hℓ
+      refine h.subset ?_
+      intro m hm
+      simpa [show ∀ w : ℂ, w + t + σ = w + σ + t from fun w => by ring] using hm
+    have hs2 : {m : ℤ | laurentCoeff (fun w : ℂ => G (w + σ) - G w)
+        (q + (m : ℂ) * σ) ℓ ≠ 0}.Finite :=
+      finite_support_orbitalDivisorTerm hG hper hmixed hτ hindep q hℓ
+    have hd := additiveOrbitalDivisorAt_shiftDiffFun (G := G) (σ := σ) (c := t) (p := q) (ℓ := ℓ)
+      hG hs1 hs2
+    rw [hzero q] at hd
+    linear_combination -hd
+  obtain ⟨S, hS⟩ := exists_finset_orbitalDivisor_classes hG hper hmixed hτ hℓ
+  exact HTGeometry.eq_zero_of_invariant_of_finite_classes (R := fun q =>
+    additiveOrbitalDivisorAt G σ q ℓ) (S := S) (H := tripticPeriodGroup τ σ)
+    (fun q hq => hS q hq) ht hinvR p
 
 end
 

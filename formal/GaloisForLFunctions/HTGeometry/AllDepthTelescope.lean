@@ -204,12 +204,12 @@ theorem lineTail_support_two_sided {w : A} (hw : ∀ n : ℤ, n • w = 0 → n 
     (∃ m : ℤ, 1 ≤ m ∧ p + m • w ∈ S) ∧ (∃ m : ℤ, m ≤ 0 ∧ p + m • w ∈ S) := by
   constructor
   · by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hp (lineTail_eq_zero_of_forall_pos p fun m hm => by
       by_contra hne
       exact hcon m hm (hsupp _ hne))
   · by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hp (lineTail_eq_zero_of_forall_nonpos hw hsupp hsum p fun m hm => by
       by_contra hne
       exact hcon m hm (hsupp _ hne))

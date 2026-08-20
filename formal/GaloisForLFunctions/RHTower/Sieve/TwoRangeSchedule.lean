@@ -199,56 +199,71 @@ theorem lowSteps_le {K c β : ℝ} (hK : 0 ≤ K) (hc : 0 < c) (_hβ : 0 < β) :
     rw [hzero]
     positivity
 
-/-- The radius of the low-frequency disc.  It is **not** a constant: the Route-T relative majorant
-carries a term `Lx²/(2π w₀)` with no exponential factor, so `w₀` must exceed `Lx⁴/ρ³` where `ρ` is
-the target saving.  With `ρ = exp(−s(log x)^{a−9/10})` this is `(log x)^{4b}·exp(3s(log x)^{a−9/10})`,
-still below every power of `x`, and the disc estimate survives precisely when `a − 9/10` is below
-the Route-T rate exponent `1/20`. -/
-def twoRangeDisc (a b s : ℝ) (x : ℝ) : ℝ :=
-  (Real.log x) ^ (4 * b) * Real.exp (3 * s * (Real.log x) ^ (a - 9 / 10))
+/-- The zero-free-region saving of the high range.  It is only a **negative power of the
+logarithm**: the large half needs `ρ²·L'·log W·(H')² → 0`, i.e. `ρ² ≪ (log x)^{−(b+c'+1)}`, and
+nothing stronger.  What must be super-polylogarithmic is the *exponential* factor `e^{−μq}` inside
+the Route-T majorant, and that is automatic once `a > 9/10`. -/
+def twoRangeRho (A₃ x : ℝ) : ℝ := (Real.log x) ^ (-A₃)
 
-/-- The target relative saving of the high range. -/
-def twoRangeRho (a s : ℝ) (x : ℝ) : ℝ := Real.exp (-(s * (Real.log x) ^ (a - 9 / 10)))
+/-- The smoothing width `D` of the Route-T contour. -/
+def twoRangeWidth (b A₃ x : ℝ) : ℝ := (Real.log x) ^ (b + A₃ + 1)
 
-theorem twoRangeDisc_pos {a b s x : ℝ} (hx : 1 < x) : 0 < twoRangeDisc a b s x := by
+/-- The radius of the low-frequency disc.  It is polylogarithmic: the majorant's `Lx²/t₀` term
+forces `t₀ ≥ D²·Lx²/ρ`, which at `D = Lx/ρ` and `ρ = (log x)^{−A₃}` is `(log x)^{4b+3A₃+3}`. -/
+def twoRangeDisc (b A₃ x : ℝ) : ℝ := (Real.log x) ^ (4 * b + 3 * A₃ + 3) / (2 * Real.pi)
+
+/-- The height cost of the Route-T contour, as it enters the majorant. -/
+def twoRangeLx (b x : ℝ) : ℝ := Real.log 2 + (Real.log x) ^ b
+
+theorem twoRangeRho_pos {A₃ x : ℝ} (hx : 1 < x) : 0 < twoRangeRho A₃ x :=
+  Real.rpow_pos_of_pos (Real.log_pos hx) _
+
+theorem twoRangeWidth_pos {b A₃ x : ℝ} (hx : 1 < x) : 0 < twoRangeWidth b A₃ x :=
+  Real.rpow_pos_of_pos (Real.log_pos hx) _
+
+theorem twoRangeDisc_pos {b A₃ x : ℝ} (hx : 1 < x) : 0 < twoRangeDisc b A₃ x := by
   have hlog : (0 : ℝ) < Real.log x := Real.log_pos hx
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   rw [twoRangeDisc]
   positivity
 
-theorem twoRangeRho_pos (a s x : ℝ) : 0 < twoRangeRho a s x := Real.exp_pos _
+/-- **The saving vanishes.** -/
+theorem tendsto_twoRangeRho {A₃ : ℝ} (hA : 0 < A₃) :
+    Tendsto (fun x : ℝ => twoRangeRho A₃ x) atTop (𝓝 0) := by
+  refine (tendsto_log_rpow_neg hA).congr' ?_
+  filter_upwards [Filter.eventually_gt_atTop (1 : ℝ)] with x hx
+  rfl
 
-/-- **The saving beats every power of the logarithm.** -/
-theorem tendsto_logRpow_mul_twoRangeRho {a s : ℝ} (ha : 9 / 10 < a) (hs : 0 < s) (e : ℝ) :
-    Tendsto (fun x : ℝ => (Real.log x) ^ e * twoRangeRho a s x) atTop (𝓝 0) := by
-  have hd : (0 : ℝ) < a - 9 / 10 := by linarith
-  have hmaj := tendsto_rpow_log_mul_exp_neg (c := e) (a := (a - 9 / 10) / 2) (by positivity)
-  have hhalf : Tendsto (fun x : ℝ => (Real.log x) ^ ((a - 9 / 10) / 2)) atTop atTop :=
+/-- **An exponential saving beats every power of the logarithm.**  This is what `e^{−μq}` supplies
+inside the Route-T majorant once `q = (log x)^a` with `a > 9/10`. -/
+theorem tendsto_logRpow_mul_expSaving {d s : ℝ} (hd : 0 < d) (hs : 0 < s) (e : ℝ) :
+    Tendsto (fun x : ℝ => (Real.log x) ^ e * Real.exp (-(s * (Real.log x) ^ d)))
+      atTop (𝓝 0) := by
+  have hmaj := tendsto_rpow_log_mul_exp_neg (c := e) (a := d / 2) (by positivity)
+  have hhalf : Tendsto (fun x : ℝ => (Real.log x) ^ (d / 2)) atTop atTop :=
     (tendsto_rpow_atTop (by positivity)).comp Real.tendsto_log_atTop
   refine squeeze_zero' ?_ ?_ hmaj
   · filter_upwards [Filter.eventually_gt_atTop (1 : ℝ)] with x hx1
     have hlog : (0 : ℝ) < Real.log x := Real.log_pos hx1
     have : (0 : ℝ) ≤ (Real.log x) ^ e := Real.rpow_nonneg hlog.le e
-    have := twoRangeRho_pos a s x
     positivity
   · filter_upwards [Filter.eventually_gt_atTop (1 : ℝ),
       hhalf.eventually_ge_atTop (1 / s)] with x hx1 hbig
     have hlog : (0 : ℝ) < Real.log x := Real.log_pos hx1
     have hnn : (0 : ℝ) ≤ (Real.log x) ^ e := Real.rpow_nonneg hlog.le e
-    have hsplit : (Real.log x) ^ (a - 9 / 10)
-        = (Real.log x) ^ ((a - 9 / 10) / 2) * (Real.log x) ^ ((a - 9 / 10) / 2) := by
+    have hsplit : (Real.log x) ^ d = (Real.log x) ^ (d / 2) * (Real.log x) ^ (d / 2) := by
       rw [← Real.rpow_add hlog]
       congr 1
       ring
-    have hkey : (Real.log x) ^ ((a - 9 / 10) / 2) ≤ s * (Real.log x) ^ (a - 9 / 10) := by
+    have hkey : (Real.log x) ^ (d / 2) ≤ s * (Real.log x) ^ d := by
       rw [hsplit]
-      have hp0 : (0 : ℝ) ≤ (Real.log x) ^ ((a - 9 / 10) / 2) := Real.rpow_nonneg hlog.le _
-      have hs1 : (1 : ℝ) ≤ s * (Real.log x) ^ ((a - 9 / 10) / 2) := by
+      have hp0 : (0 : ℝ) ≤ (Real.log x) ^ (d / 2) := Real.rpow_nonneg hlog.le _
+      have hs1 : (1 : ℝ) ≤ s * (Real.log x) ^ (d / 2) := by
         have hmul := mul_le_mul_of_nonneg_left hbig hs.le
         rw [mul_one_div, div_self (ne_of_gt hs)] at hmul
         linarith
       nlinarith [hs1, hp0]
-    rw [twoRangeRho]
-    refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 (by linarith)) hnn
+    exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 (by linarith)) hnn
 
 end
 

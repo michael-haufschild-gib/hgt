@@ -6307,3 +6307,13 @@ receive a new title and an independent significance audit.
   for one ordinary static local Hamiltonian, uniform over complete approximate shallow-circuit
   selector class.  Formal card:
   `../3-formalized/return-excised-cross-recurrence-capacity-law.md`.
+- 2026-08-20 -- Removed the feared replica-quadratic collective-energy loss on physical observer
+  boundaries.  For every normalized one-copy vector centered for `A`, Lean proves exact slot
+  orthogonality and `||sum_j A_j v^(tensor r)||^2 = r||Av||^2`.  Vectorized commutator
+  representations are automatically centered on every Hermitian matrix by trace cyclicity, so
+  every normalized pure-projector boundary realizes this linear law for every finite generator and
+  every replica count.  This converts the `r=O(n)` complete Brown-grid schedule from a worst-case
+  `r^2` energy penalty to the exact physical `r` penalty.  It does not yet compare one-draw
+  static-local fixed-time graph measure with the completed-phase incidence mean; next frontier is
+  preservation of this centered sector through that quenched transfer.  Formal card:
+  `../3-formalized/pure-replica-collective-energy-law.md`.

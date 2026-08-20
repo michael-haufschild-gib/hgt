@@ -53,6 +53,7 @@ theorem realizesMero_const (c : ℂ) :
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
+omit [DecidableEq ι] in
 /-- **The germ cube commutes with translation.** -/
 theorem diffCubeMero_translate_comm (τ : ι → ℂ) (s : Finset ι) (c : ℂ)
     (x : meroField (Set.univ : Set ℂ)) :

@@ -62,6 +62,27 @@ theorem klDiv_esscherLaw (μ : Measure Ω) {Q : Ω → ℝ} (hQ : Measurable Q)
   rw [integral_add (integrable_const _) (hQint.const_mul (t - s))]
   simp [integral_const_mul, probReal_univ]
 
+/-- **Gibbs positivity in Esscher coordinates.**  The argument of the directed relative entropy is
+nonnegative. -/
+theorem esscherDirected_nonneg (μ : Measure Ω) {Q : Ω → ℝ} (hQ : Measurable Q)
+    {cs ct : ℝ} (hcs : 0 < cs) (hct : 0 < ct) (s t : ℝ)
+    [IsProbabilityMeasure (esscherLaw μ Q cs s)] [IsProbabilityMeasure (esscherLaw μ Q ct t)]
+    (hQint : Integrable Q (esscherLaw μ Q cs s)) :
+    0 ≤ Real.log (cs / ct) + (t - s) * ∫ ω, Q ω ∂(esscherLaw μ Q cs s) := by
+  have hfac := esscherLaw_eq_withDensity_comp μ hQ hcs.le hct s t
+  have hac : esscherLaw μ Q cs s ≪ esscherLaw μ Q ct t := by
+    rw [hfac]; exact withDensity_absolutelyContinuous _ _
+  have hllr := (llr_esscherLaw μ hQ hcs hct s t).filter_mono hac.ae_le
+  have hint : Integrable (llr (esscherLaw μ Q cs s) (esscherLaw μ Q ct t))
+      (esscherLaw μ Q cs s) := by
+    refine Integrable.congr ?_ hllr.symm
+    exact (integrable_const _).add (hQint.const_mul (t - s))
+  have hgibbs := integral_llr_add_sub_measure_univ_nonneg hac hint
+  rw [integral_congr_ae hllr,
+    integral_add (integrable_const _) (hQint.const_mul (t - s))] at hgibbs
+  simp only [integral_const, integral_const_mul, probReal_univ, smul_eq_mul, mul_one] at hgibbs
+  linarith
+
 /-- The directed information commutator of two members of an exponential family. -/
 theorem klChirality_esscherLaw (μ : Measure Ω) {Q : Ω → ℝ} (hQ : Measurable Q)
     {cs ct : ℝ} (hcs : 0 < cs) (hct : 0 < ct) (s t : ℝ)
