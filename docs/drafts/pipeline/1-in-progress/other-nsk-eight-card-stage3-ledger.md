@@ -377,3 +377,60 @@ antiderivatives are again a compatible family (`eq_zero_of_shiftDiff_eq_zero` fo
 `periodSpan` for the invariance bookkeeping), realize them by the inductive hypothesis on `s \ {k}`,
 and add — the sum's signature is `D` by `pairSig_add`, `pairSig_descent` and
 `pairSig_eq_zero_of_mixedConstGermSet_erase`.
+
+## Landed 2026-08-21 (eleventh stretch) — THE EXACT-IMAGE THEOREM IS CLOSED
+
+`GaloisForLFunctions.HTGeometry.AllDepthExactImage` (wired, built, axiom-clean) closes the
+`Exact image and universal pair-face normal form` section of
+`all-depth-pair-face-signature-completeness`:
+
+```text
+finite_line_support_of_divFiniteClasses, mixedConstGermSet_of_erase
+exists_class_member_with_prescribed_pairSig
+    **every compatible family of finite class divisors is the pair-face signature of a member of
+    the all-depth class**
+exists_class_member_with_prescribed_pairSig_iff
+    the two-way form: a family is a pair-face signature exactly when each component is a finite
+    class divisor of bounded order, the family is symmetric, and every triple has one common
+    pushforward
+```
+
+Together with `AllDepthCompleteness.differentialAlgebraicOver_iff_pairFace_eq_zero` (injectivity)
+and `AllDepthTripleCompat.pairSig_triple_compat` (image ⊆ Comp_d) this is the card's isomorphism
+`Q_d/(Q_d ∩ Mer_DA) ≅ Comp_d`, in the concrete divisor description.
+
+The induction is the card's: realize the components through one distinguished direction with
+`exists_bottom_realizer`, antidifference the residual errors along `τ_k`
+(`exists_antidifference_of_orbitSum_zero`), check that the antiderivatives are again symmetric
+(`eq_zero_of_shiftDiff_eq_zero`) and triple-compatible (`periodSpan_free` plus
+`eq_zero_of_invariant_of_finite_classes`), realize them by the inductive hypothesis on `s \ {k}`,
+and add (`pairSig_add`, `pairSig_descent`, `pairSig_eq_zero_of_mixedConstGermSet_erase`).
+
+**Card status.**  Of the card's five `[PROVED HERE]` sections, three are now fully Lean: the main
+theorem, the exact image / universal normal form, and the multi-telescoping lemma.  Two remain:
+`Complete differential-translation module consequences` (the criterion `P·F` is DA iff
+`π_(ij)(P)·S_(ij)(F) = 0`, with the annihilator and DA translation spectrum) and the
+`Multiplicative theorem`.  The card therefore stays at stage 2 until those are formalized.
+
+## Landed 2026-08-21 (twelfth stretch) — the differential-translation module consequences
+
+`GaloisForLFunctions.HTGeometry.AllDepthOperatorCriterion` (wired, built, axiom-clean) closes the
+fourth `[PROVED HERE]` section of `all-depth-pair-face-signature-completeness`:
+
+```text
+diffCube_comp_add, pairSig_translate          translation equivariance
+pairSig_deriv, pairSig_iteratedDeriv          δ becomes the order shift with the jet factor
+                                              ∏_(t<n)(ℓ+t+1)
+pairSig_const_mul, pairSig_finsetSum          ℂ-linearity
+mixedConstGermSet_comp_add/_const_mul/_add/_finsetSum, mixedConstGermSet_deriv,
+periodicOneGerm_deriv                          closure of the class under the generators
+transOpFun, transOpMero, transOpDiv           a finite constant-coefficient
+                                              differential-translation operator, on functions,
+                                              germs and divisors
+pairSig_transOp                               **the signature of an operator output is the operator
+                                              applied to the signature**
+differentialAlgebraicOver_transOp_iff          **`P·F` is DA ⟺ `π_(ij)(P)·S_(ij)(F) = 0` for every
+                                              pair**
+```
+
+Only the card's `Multiplicative theorem` section is now missing for stage 3.

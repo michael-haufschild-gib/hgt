@@ -130,3 +130,45 @@ The first realizes `(3)` and the second realizes `(4)` unconditionally.
 - [x] boundary-wedge Lean verification complete
 - [ ] extend from Boolean rank-one forms to restriction-compatible Witt objects
 - [ ] construct one source-natural nontrivial transport system analytically
+
+## Lean formalization of the general law (2026-08-21) — COMPLETE
+
+The boundary-wedge seed `(3)`/`(4)` was already Lean-verified in
+`formal/GaloisForLFunctions/HTGeometry/WedgeRealization.lean`
+(`boundaryWedgeDeletedCompatibleOrientationEquivBoolProd`,
+`boundaryWedgeCompatibleOrientationEquivBool`).  The **general** classification `(2)`, valid for an
+arbitrary simplicial constraint complex, is now formalized unconditionally in the new module
+
+`formal/GaloisForLFunctions/HTGeometry/PolarizationTransportComponentCollapse.lean`
+
+(namespace `GaloisForLFunctions.HTGeometry`; axiom audit: only
+`propext`, `Classical.choice`, `Quot.sound`):
+
+- `ConstraintComplex` / `ConstraintComplex.skeleton` / `ConstraintComplex.skeleton_adj` — a
+  simplicial constraint complex as a downward-closed face family, and its `1`-skeleton as a
+  `SimpleGraph`, with `Adj u v ↔ u ≠ v ∧ IsFace {u, v}`.
+- `sameSign_of_isometryScalar` — **the transport step**: if `x ↦ t * x` carries the
+  one-dimensional form `cv · x²` back to `cu · x²` and `cu ≠ 0`, then `0 < cu ↔ 0 < cv`.  Stated
+  over an arbitrary linearly ordered field (`Field R`, `LinearOrder R`, `IsStrictOrderedRing R`),
+  which covers the card's "one-dimensional Hermitian lines over any real closed field".
+- `signOrientation`, `signOrientation_eq_of_isometryScalar`,
+  `compatibleOrientation_signOrientation` — a polarization by one-dimensional nondegenerate forms
+  whose edge restrictions are isometries *is* a transport-compatible Boolean orientation.
+- `CompatibleOrientation G` — Boolean orientations transported unchanged across every edge.
+- `compatibleOrientationEquivComponents` — **equation (2)**:
+  `CompatibleOrientation G ≃ (G.ConnectedComponent → Bool)`.
+- `compatibleOrientation_eq_of_preconnected`, `compatibleOrientationEquivBool` — on a connected
+  complex the fibre is exactly `Bool`.
+- `uniquePointedCompatibleOrientation` — positive pointing at one vertex leaves a singleton
+  (`Unique {ε // ε v₀ = true}`).
+
+Wired into `GaloisForLFunctions.HTGeometry`.
+
+## Gates
+
+- [x] general component classification formalized in Lean (`compatibleOrientationEquivComponents`)
+- [x] one-dimensional isometry sign-transport step formalized over any linearly ordered field
+- [x] connected fibre and positive pointing formalized
+
+The two remaining unchecked gates below are the card's own **open research targets** (Witt-object
+extension; an analytic source-natural transport system), not parts of the proven theorem.

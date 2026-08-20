@@ -7567,3 +7567,105 @@ What remains for the two-range bound is bookkeeping plus one genuinely new brick
 | large ladder group | **done** (brick 136), modulo its one hypothesis `hUf` |
 | `hUf` — the exceptional measure `\|𝒰\|` | **open**: moment method at growing order, `K > 5(c+2A)+4` |
 | assembling `B x` and feeding `averagedMeanSquare_moebius_of_headSmall` | pending |
+
+### Bricks 137–140 — the exceptional measure `|𝒰|`, moment method at a growing order (2026-08-21)
+
+Five modules, all `lake env lean`-clean, axiom-clean, wired, built:
+`Sieve/ShortExceptionalMeasure`, `Sieve/ShortIntervalPrimeCount`, `Sieve/LadderBlockPrimeCount`,
+`Sieve/ExceptionalMomentOrder`, `Sieve/ExceptionalMeasureLimit`.
+
+**Brick 137 — Lemma 2.5 in the Gallagher variable.**  The two frequency variables differ by
+`w ↦ 2πw`, under which Lebesgue measure picks up `(2π)⁻¹`
+(`Sieve/LogPolySetScaling.volume_real_preimage_mul_left`), so
+
+```text
+measureReal_shortExceptional_le  (B ⊆ Icc 1 NA) (1 ≤ k) (0 ≤ W) (0 < V) :
+  |{ |w| ≤ W : ‖∑_{p∈B} μ(p)p^{iw}‖ ≥ V }|
+    ≤ (2π)⁻¹·2·( 2πW + 4·NA^k(1+log NA^k) )·( k·#B / V² )^k
+measureReal_annulusLarge_le_moment : the same summed over the ladder
+```
+
+**A dichotomy that is *not* enough, and why.**  With the threshold `V = max(θ·#B, B₀)` the moment
+ratio obeys `k#B/V² ≤ k/(θB₀)` **whichever branch the maximum takes**
+(`moment_ratio_max_le`, `measureReal_shortExceptional_max_le`) — so the *saving* needs no lower
+bound on `#B` at all.  But the diagonal term is `4NA^k(1+log NA^k)·(k#B/V²)^k
+= 4(1+k log NA)·(k·NA·#B/V²)^k`, and there the block size returns: the estimate is useful only when
+`k·NA_j·#B_j/V_j²` is polylogarithmic, i.e. only when `#B_j` is comparable to `NA_j·η`.  Pushing
+`B₀` up to repair this forces `B₀ ≳ √(kh)`, whose price in the mean-value ladder group forces the
+designated range into the thin band `[h^{1/2}, h]`, where its harmonic mass is a *constant* and the
+rough group dies.  **The block count is unavoidable**; the max-threshold form is kept because it is
+unconditional and may serve elsewhere.
+
+**Brick 138 — the block count, from the prime number theorem with error term.**
+`Sieve/ShortIntervalPrimeCount.exists_card_windowPrimes_ge`:
+
+```text
+∃ C c, 0 < c ∧ 0 ≤ C ∧ ∀ᶠ y, ∀ 0 < η ≤ 1,
+    16C·e^{−c√(log y)} + 24·log y/√y ≤ η  →  y·η/(4 log y) ≤ #{p prime ∈ (y, y(1+η)]}
+```
+
+from `RHTower.exists_psi_error_eventually` (`ψ(x) − x = O(x e^{−c√(log x)})`, the corpus's own
+de la Vallée Poussin), `Chebyshev.psi_sub_theta_le` for the prime-power excess, and
+`Sieve/PrimeWindowRayleighFloor.theta_sub_eq_sum_Ioc`.  **No Huxley, no Hoheisel**: the interval is
+relatively short but absolutely enormous, so the classical error term has room to spare — at the
+schedule `e^{−c√(log y)} ≤ e^{−c(log x)^{a₀/2}}` beats every power of the logarithm.
+
+`Sieve/LadderBlockPrimeCount` transports this to the ladder: `windowPrimes_subset_geomBlock` shows a
+step of `primesRange z₀ ⌊Q(1+η)^L⌋` holds *every* prime of its interval (the lower endpoint is at
+least `z₀` because the ratio exceeds one; the upper one is an integer below `Q(1+η)^L`), whence
+`card_geomBlock_primesRange_ge`.
+
+**Brick 139 — the two exponents.**  `Sieve/ExceptionalMomentOrder` puts the bound in the only shape
+in which a growing order is usable:
+
+```text
+measureReal_shortExceptional_le_exp :
+  |𝒰_j| ≤ 2W·e^{−k·g_j} + 2(1 + k·n_j)·e^{−k·(g_j − n_j)} ,
+          g_j = log(#B_j·θ²/k) ,   n_j = log NA_j
+measureReal_annulusLarge_le_exp : summed, with `g₀ ≤ g_j`, `d ≤ g_j − n_j`, `n_j ≤ nmax`
+```
+
+The point is that the two exponents must be uniformised **separately**: `g_j` alone (of size
+`log NA_j`) controls the trivial term `W`, while the *difference* `g_j − n_j` — negative, but only
+`−O(log log x)` once the block count is known — controls the diagonal term.  A single uniform pair
+`(min g_j, max n_j)` would give `g − n ≈ (log x)^{a₀} − (log x)^β`, which is useless.
+
+**Brick 140 — the growing order.**  `Sieve/ExceptionalMeasureLimit`:
+
+```text
+exp_neg_mul_le_inv  (2(log x)^{1−a₀} ≤ k) ((log x)^{a₀}/2 ≤ g₀) :  e^{−k g₀} ≤ 1/x
+measureReal_annulusLarge_le_growing :  |𝒰| ≤ L·( 2W/x + 2(1 + k·nmax)·e^{k·D·log log x} )
+tendsto_expSubLinear_div_rpow (0 < a₀ < 1) (0 ≤ D) (0 < s) :
+    (log x)^e·e^{D(log x)^{1−a₀}·log log x} / x^s  →  0
+```
+
+so the exceptional half is `x^{o(1)}` — far below the `x^{1/4−o(1)}` that the Halász–Montgomery
+half of the large ladder group needs.  **The moment order is pinned from both sides**:
+`k ≥ 2(log x)^{1−a₀}` is forced by the trivial term, and `k = O(log x/log log x)` by the diagonal
+one; a bounded `k` fails the first and `k ≫ log x/log log x` fails the second.
+
+**Consequence — the schedule's low bottom must be exponential, not polylogarithmic.**  The window
+`2(log x)^{1−a₀} ≤ k ≤ O(log x/log log x)` is non-empty only for `a₀ > 0`, i.e. only when the low
+designated range starts at `exp((log x)^{a₀})`.  With the recorded bottom `⌈(log x)^K⌉` one has
+`log NA_j ≍ K log log x`, the diagonal term becomes `exp(k·K·log log x)` and the trivial term needs
+`k ≍ log x/((K−c−2A) log log x)`, whose product is `x^{K/(K−c−2A)} > x` — vacuous for every `K`.
+**This supersedes both the recorded constraint `K > max(2(3+c+2A),(c+1)/2)` and the sharpening
+`K > 5(c+2A)+4` of the brick-136 addendum**: no constant `K` works, and the fix is to replace
+`lowBase K x = ⌈(log x)^K⌉` by `⌈exp((log x)^{a₀})⌉` with `0 < a₀ < β`.
+
+Everything else in the schedule survives that replacement unchanged, and two things improve:
+
+| quantity | with `(log x)^K` | with `exp((log x)^{a₀})` |
+|-|-|-|
+| harmonic mass `H` | `β·log log x` (upper bound only, brick 129) | `(β − a₀)·log log x`, **and a matching lower bound** is now immediate from `sum_inv_primesRange_ge_logLog_diff` |
+| ladder defect `1/(Qη)`, `1/(Q²η)` | needs `K > 1 + c` | exponentially small, free |
+| block count `#B_j` | impossible (Cramér-scale) | classical PNT with error term |
+
+The three group-limit theorems of bricks 133–135 are stated in terms of `h`, `M`, `log log x` and
+the exponents `(ℓ, c, K, γ)` only, so **all of them remain valid verbatim** — `Qf ≥ (log x)^K` is
+implied by `Qf ≥ exp((log x)^{a₀})` for every `K`.
+
+**What remains**: the schedule module `lowBaseExp a₀ x = ⌈exp((log x)^{a₀})⌉` with its five facts
+(steps, top, harmonic mass two-sided, base below the window), then the instantiation of
+`measureReal_annulusLarge_le_growing` at it, and finally the assembly of `B x` into
+`averagedMeanSquare_moebius_of_headSmall`.

@@ -536,6 +536,77 @@ theorem exists_class_member_with_prescribed_pairSig
 
 
 
+/-! ## The exact image -/
+
+set_option maxHeartbeats 2000000 in
+set_option synthInstance.maxHeartbeats 800000 in
+/-- **The exact image of the pair-face signature.**  A family of divisors is the pair-face
+signature of a member of the all-depth mixed-constraint class exactly when each component is a
+finite class divisor of bounded order, the family is symmetric, and every triple has one common
+pushforward. -/
+theorem exists_class_member_with_prescribed_pairSig_iff
+    (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im) (hQ : PeriodsIntegrallyIndependent τ)
+    (s : Finset ι) (hs : 2 ≤ s.card) (D : ι → ι → ℤ → ℂ → ℂ) :
+    (∃ (f : ℂ → ℂ) (Cst : ℂ),
+        MeromorphicOn f (Set.univ : Set ℂ) ∧ PeriodicOneGerm f ∧
+        MixedConstGermSet τ s f Cst ∧
+        ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ ℓ : ℤ, ℓ < 0 → ∀ p,
+          pairSig τ s f i j ℓ p = D i j ℓ p)
+      ↔ ((∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ ℓ : ℤ, ℓ < 0 →
+            DivInvariant (tripticPeriodGroup (τ j) (τ i)) (D i j ℓ)) ∧
+          (∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ ℓ : ℤ, ℓ < 0 →
+            DivFiniteClasses (tripticPeriodGroup (τ j) (τ i)) (D i j ℓ)) ∧
+          (∃ N : ℕ, ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ ℓ : ℤ, ℓ < -(N : ℤ) → ∀ p, D i j ℓ p = 0) ∧
+          (∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ ℓ : ℤ, ℓ < 0 → D i j ℓ = D j i ℓ) ∧
+          (∀ i ∈ s, ∀ j ∈ s, ∀ l ∈ s, i ≠ j → i ≠ l → j ≠ l → ∀ ℓ : ℤ, ℓ < 0 → ∀ p : ℂ,
+            (∑ᶠ n : ℤ, D i j ℓ (p + (n : ℂ) * τ l))
+              = ∑ᶠ n : ℤ, D i l ℓ (p + (n : ℂ) * τ j))) := by
+  classical
+  constructor
+  · rintro ⟨f, Cst, hmero, hper, hmixed, hsig⟩
+    have hDeq : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ ℓ : ℤ, ℓ < 0 → D i j ℓ = pairSig τ s f i j ℓ := by
+      intro i hi j hj hij ℓ hℓ
+      funext p
+      exact (hsig i hi j hj hij ℓ hℓ p).symm
+    refine ⟨?_, ?_, ?_, ?_, ?_⟩
+    · intro i hi j hj hij ℓ hℓ
+      rw [hDeq i hi j hj hij ℓ hℓ]
+      exact divInvariant_pairSig τ s hij hi hj hmero hper hmixed hℓ
+    · intro i hi j hj hij ℓ hℓ
+      rw [hDeq i hi j hj hij ℓ hℓ]
+      exact divFiniteClasses_pairSig τ s hij hi hj hmero hper hmixed (hτ j) hℓ
+    · have hMex : ∀ i j : ι, ∃ M : ℕ, i ∈ s → j ∈ s → i ≠ j →
+          ∀ ℓ : ℤ, ℓ < -(M : ℤ) → ∀ p, pairSig τ s f i j ℓ p = 0 := by
+        intro i j
+        by_cases hcase : i ∈ s ∧ j ∈ s ∧ i ≠ j
+        · obtain ⟨hi, hj, hij⟩ := hcase
+          obtain ⟨M, hM⟩ := exists_order_bound_pairSig τ s hij hi hj hmero hper hmixed (hτ j)
+          exact ⟨M, fun _ _ _ => hM⟩
+        · exact ⟨0, fun h1 h2 h3 => absurd ⟨h1, h2, h3⟩ hcase⟩
+      choose M hM using hMex
+      refine ⟨Finset.univ.sup fun q : ι × ι => M q.1 q.2, ?_⟩
+      intro i hi j hj hij ℓ hℓ p
+      have hle : ((M i j : ℕ) : ℤ)
+          ≤ ((Finset.univ.sup fun q : ι × ι => M q.1 q.2 : ℕ) : ℤ) := by
+        have h1 : M i j ≤ Finset.univ.sup fun q : ι × ι => M q.1 q.2 :=
+          Finset.le_sup (f := fun q : ι × ι => M q.1 q.2) (Finset.mem_univ (i, j))
+        exact_mod_cast h1
+      have hℓ0 : ℓ < 0 := by
+        have : (0 : ℤ) ≤ ((Finset.univ.sup fun q : ι × ι => M q.1 q.2 : ℕ) : ℤ) :=
+          Int.natCast_nonneg _
+        omega
+      rw [hDeq i hi j hj hij ℓ hℓ0]
+      exact hM i j hi hj hij ℓ (by omega) p
+    · intro i hi j hj hij ℓ hℓ
+      rw [hDeq i hi j hj hij ℓ hℓ, hDeq j hj i hi (Ne.symm hij) ℓ hℓ]
+      funext p
+      exact pairSig_symm τ hτ hQ s hij hi hj hmero hper hmixed hℓ p
+    · intro i hi j hj l hl hij hil hjl ℓ hℓ p
+      rw [hDeq i hi j hj hij ℓ hℓ, hDeq i hi l hl hil ℓ hℓ]
+      exact pairSig_triple_compat τ hτ hQ s hi hj hl hij hil hjl hmero hper hmixed hℓ p
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    exact exists_class_member_with_prescribed_pairSig τ hτ hQ s.card s rfl hs D h1 h2 h3 h4 h5
+
 end
 
 end GaloisForLFunctions

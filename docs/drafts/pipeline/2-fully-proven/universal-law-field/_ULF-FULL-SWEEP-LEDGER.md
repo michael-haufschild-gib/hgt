@@ -125,8 +125,5 @@ Card is `[LEAN PENDING]`, "No Lean theorem is claimed".  Five items, in dependen
 5. **Theorem 5.1** (5.2) and **Corollary 5.2**: infinite product laws over the shells
    (`MeasureTheory.Measure.infinitePi`) plus first Borel--Cantelli for mutual singularity.
 
-## Open TODO — `species-relative-formation-mechanics/three-slot-exchangeability-...-law.md`
 
-The card carries a Lean certificate for `ConstitutiveExchangeableFormationSelection`.  Re-audit it
-against the tree and close whatever of EFD.4 / EFD.5 / EFD.11 (measure-level KL) is still open;
-the new `CountableRelativeEntropyValue` / `CountFormationSplit` stack may already cover it.
+| 25 | `species-relative-formation-mechanics/three-slot-exchangeability-...-law.md` (ULF-SRFM-6) | **DONE 2026-08-21** — the existing `ConstitutiveExchangeableFormationSelection` covered only the reporter/tensor layer (§3). New module `HTGeometry/ThreeSlotExchangeabilityInformation.lean` closes the measure-level layer: EFD.4, EFD.5, EFD.11 (= mathlib `klDiv_compProd_left`), EFD.13–EFD.15 (via the new `klDiv_pi`), EFD.17 and the EFD.18 logistic example. All hypothesis-free. Axiom-clean; wired into both umbrellas; promoted |

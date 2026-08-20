@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixCurvedSuspensionHodgeTrace
 import GaloisForLFunctions.RHTower.WindingNumber
+import GaloisForLFunctions.RHTower.IntegralCyclicReflectionTateOrbitUniversalityLaw
+import GaloisForLFunctions.RHTower.QuadraticCircleFreeOrbitCharge
 
 /-!
 # Loop-gauge applications in the RHTower corpus
@@ -23,6 +25,31 @@ theorem tHooftLoopCharge_eq_zero_iff
     tHooftLoopCharge k γ a b = 0 ↔
       (2 ^ k : ℤ) ∣ RHTower.windingNumber γ a b :=
   RHTower.loopCharge_eq_zero_iff k γ a b
+
+/-- A single free-orbit circle phase is a faithful finite disorder-charge detector: it vanishes
+exactly when every multiplicity vanishes. -/
+abbrev freeOrbitTHooftCharge := RHTower.freeOrbitQuadraticCircleCharge
+
+theorem freeOrbitTHooftCharge_eq_zero_iff
+    (p : Nat.Primes) (ms : List ℕ) :
+    freeOrbitTHooftCharge p ms = 0 ↔ ∀ m ∈ ms, m = 0 :=
+  RHTower.freeOrbitQuadraticCircleCharge_eq_zero_iff p ms
+
+/-- Reflection disorder-charge screening depends on orbit type: unit charge at a fixed orbit is a
+nonboundary cocycle, while invariant unit charge on the free two-orbit is a boundary. -/
+theorem reflectionTHooft_screening_dichotomy :
+    GaloisForLFunctions.ReflectionTateCocycle (Equiv.refl (Fin 1))
+        RHTower.fixedUnitReflectionCharge ∧
+      (¬ ∃ g, RHTower.fixedUnitReflectionCharge =
+        GaloisForLFunctions.reflectionTateBoundary (Equiv.refl (Fin 1)) g) ∧
+      GaloisForLFunctions.ReflectionTateCocycle RHTower.finTwoOrbitReflection
+        RHTower.freeUnitReflectionCharge ∧
+      ∃ g, RHTower.freeUnitReflectionCharge =
+        GaloisForLFunctions.reflectionTateBoundary RHTower.finTwoOrbitReflection g :=
+  ⟨RHTower.fixedUnitReflectionCharge_cocycle,
+    RHTower.fixedUnitReflectionCharge_not_boundary,
+    RHTower.freeUnitReflectionCharge_cocycle,
+    RHTower.freeUnitReflectionCharge_is_boundary⟩
 
 /-! ## Wilson-trace resolution -/
 

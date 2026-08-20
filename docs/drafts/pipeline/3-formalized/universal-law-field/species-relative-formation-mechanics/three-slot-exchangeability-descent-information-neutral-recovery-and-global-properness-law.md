@@ -3,7 +3,7 @@
 **ID:** ULF-SRFM-6  
 **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [THREE-ORGAN FUSION]`
 `[FUNCTIONAL-EQUATION NEUTRALITY SURVIVES] [GLOBAL FORMATION PROPERNESS]`
-`[LEAN-FORMALIZED] [SOURCE-LANDING OPEN] [NOT RH]`
+`[LEAN CLOSED] [SOURCE-LANDING OPEN] [NOT RH]`
 
 ## 1. Purpose
 
@@ -462,8 +462,10 @@ or project build was run.  A scratch `#print axioms` audit of all capstones repo
 `GaloisForLFunctions.HTGeometry.UniversalLawField` without building that umbrella.  Repository lint
 reports six unrelated pre-existing umbrella-ownership failures and no defect in this module.
 
-The measure-level KL and common-kernel identities reuse the already formalized
-`ConstitutiveFunctionalEquationPacketLift` chain rule.
+The measure-level results `(EFD.4)`, `(EFD.5)`, `(EFD.11)`, `(EFD.14)`, `(EFD.15)`, `(EFD.17)` and
+`(EFD.18)` are closed in
+`GaloisForLFunctions.HTGeometry.ThreeSlotExchangeabilityInformation`, on top of the new
+`klDiv_prod` / `klDiv_pi` product-additivity lemmas.  See the companion `...-formalized.md`.
 
 ## Log
 

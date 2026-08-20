@@ -77,18 +77,20 @@ def countExcessWeight (P : Measure ℕ) (n : ℕ) : ℝ := (P {n + 1}).toReal / 
 def countExcessLaw (P : Measure ℕ) : Measure ℕ :=
   Measure.sum fun n => ENNReal.ofReal (countExcessWeight P n) • Measure.dirac n
 
-theorem tsum_measure_singleton (P : Measure ℕ) [IsProbabilityMeasure P] :
-    ∑' n : ℕ, P {n} = 1 := by
+theorem tsum_measure_singleton {α : Type*} [MeasurableSpace α] [Countable α]
+    [MeasurableSingletonClass α] (P : Measure α) [IsProbabilityMeasure P] :
+    ∑' n : α, P {n} = 1 := by
   have h := lintegral_countable' (μ := P) (fun _ => (1 : ℝ≥0∞))
   simpa using h.symm
 
-theorem hasSum_measure_singleton_toReal (P : Measure ℕ) [IsProbabilityMeasure P] :
-    HasSum (fun n : ℕ => (P {n}).toReal) 1 := by
-  have hne : ∑' n : ℕ, P {n} ≠ ⊤ := by
+theorem hasSum_measure_singleton_toReal {α : Type*} [MeasurableSpace α] [Countable α]
+    [MeasurableSingletonClass α] (P : Measure α) [IsProbabilityMeasure P] :
+    HasSum (fun n : α => (P {n}).toReal) 1 := by
+  have hne : ∑' n : α, P {n} ≠ ⊤ := by
     rw [tsum_measure_singleton]
     exact ENNReal.one_ne_top
   have hs := ENNReal.summable_toReal hne
-  have hval : ∑' n : ℕ, (P {n}).toReal = 1 := by
+  have hval : ∑' n : α, (P {n}).toReal = 1 := by
     rw [← ENNReal.tsum_toReal_eq fun n => measure_ne_top P _, tsum_measure_singleton]
     simp
   exact hval ▸ hs.hasSum

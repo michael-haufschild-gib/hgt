@@ -90,12 +90,13 @@ theorem tvDist_le_one (P Q : Measure ℕ) [IsProbabilityMeasure P] [IsProbabilit
   rw [abs_le]
   constructor <;> linarith
 
-/-- Hellinger affinity of two countable laws. -/
-def hellingerAffinity (P Q : Measure ℕ) : ℝ :=
-  ∑' n : ℕ, Real.sqrt ((P {n}).toReal * (Q {n}).toReal)
+/-- Hellinger affinity of two laws on a countable space. -/
+def hellingerAffinity {α : Type*} [MeasurableSpace α] (P Q : Measure α) : ℝ :=
+  ∑' a : α, Real.sqrt ((P {a}).toReal * (Q {a}).toReal)
 
 /-- Squared Hellinger distance. -/
-def hellingerSq (P Q : Measure ℕ) : ℝ := 2 - 2 * hellingerAffinity P Q
+def hellingerSq {α : Type*} [MeasurableSpace α] (P Q : Measure α) : ℝ :=
+  2 - 2 * hellingerAffinity P Q
 
 /-- **Exact Hellinger affinity of two Poisson formations.** -/
 theorem hellingerAffinity_poissonMeasure (a b : ℝ≥0) :

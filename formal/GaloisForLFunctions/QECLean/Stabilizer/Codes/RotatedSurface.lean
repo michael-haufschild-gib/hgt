@@ -8,6 +8,7 @@ import GaloisForLFunctions.QECLean.Stabilizer.Codes.RotatedSurface.Distance
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.RotatedSurface.DistanceX
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.RotatedSurface.DistanceZ
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.RotatedSurface.StabilizerCode
+import GaloisForLFunctions.QECLean.Stabilizer.Codes.RotatedSurface.LoopGaugeApplications
 
 set_option autoImplicit false
 set_option relaxedAutoImplicit false

@@ -423,3 +423,57 @@ What the rest of Theorem A still needs is the deferred input theorem `(6)` itsel
 completed-phase circuit bound at capture threshold `1-(2ε)²` together with the one-sided
 Kronecker--Weyl step and the counting inequality `(14)`.  Theorem B's rational-density and
 computable-search layers are untouched.
+
+## Lean progress -- Theorem A's remaining inputs (2026-08-21)
+
+Three new umbrella-wired, axiom-clean modules, plus a non-invasive strengthening of
+`HTGeometry/GaussianBoxMass.lean` (its index type is now an arbitrary `Fintype`, and the
+quarter-tail estimate that its proof already established is exposed as a theorem; the original
+`half_le_measureReal_box` is unchanged and is now a two-line corollary).
+
+`formal/GaloisForLFunctions/HTGeometry/CompletedTimeCircuitDensity.lean` -- **the completed-phase
+circuit bound `(6)` at the level of the phase-torus density**:
+
+| Card item | Declaration |
+|---|---|
+| the counting chain `h_r·r!·(16C/a²)^r ≤ \|Z\|·2^{-r} ≤ 2^{-r/2}` | `replicaMoment_le_two_rpow` |
+| **the completed-time density of the complete circuit union is at most `2^{-r/2}`** | `limsup_completedTime_capture_le_two_rpow` |
+
+This is the composition the card calls "the completed-phase circuit bound at capture threshold
+`a = 1-(2ε)²` together with one-sided Kronecker--Weyl equidistribution": the Kronecker--Weyl step is
+the parent card's `limsup_finiteTorusPhaseProbabilityMeasure_evolutionCapture_le`, applied at a
+maximally projective spectrum, and the counting is `CircuitCountingCollisionBound`'s chain.
+
+`formal/GaloisForLFunctions/HTGeometry/GaussianGoodCoefficientSet.lean` -- **`(5)`, `(12)`, `(13)`**:
+
+| Card item | Declaration |
+|---|---|
+| the law of one Gaussian coefficient | `map_coordinate_centredProductGaussian` |
+| **`(5)`**: the bounded, collision-good coefficient set `G_n` | `gaussianGoodSet` |
+| **`(12)`+`(13)`**: its complement has Gaussian mass at most `1/2` | `measureReal_gaussianGoodSet_compl_le` |
+| **`(5)`**: `γ(G_n) ≥ 1/2` | `half_le_measureReal_gaussianGoodSet` |
+
+`(13)` is `measureReal_box_compl_le_quarter` at `B² ≥ 2log(8m_n)` and `(12)` is the corpus's
+`measureReal_collision_pauliEnsemble_zeroProductState_ge_le` at `L = 4`.  Measurability of the
+collision functional -- which is genuinely absent, since an eigenbasis is not continuous in the
+matrix -- is **not needed**: subadditivity gives `1 ≤ γ(G) + γ(Gᶜ)` for an arbitrary set, so the
+two quarter-bounds already force `γ(G) ≥ 1/2`.
+
+`formal/GaloisForLFunctions/HTGeometry/CircuitDictionaryCounting.lean` -- **`(14)`** and the
+coordinate change:
+
+| Card item | Declaration |
+|---|---|
+| **the eigenbasis coordinate change** `⟨u,v⟩ = ∑_j conj⟨e_j,u⟩⟨e_j,v⟩` | `parseval_finiteComplexInner` |
+| the padded depth-`s` dictionary has `M^s` members | `card_wordIndex`, `card_wordIndex_le_pow` |
+| **`(14)`**: `(s+1)⌈log₂M⌉ ≤ r/4` implies `(s+1)log M ≤ (r/2)log 2` | `circuitCount_log_le` |
+
+### What remains on this card
+
+Only the *instantiation wiring* of Theorem A, and Theorem B.  Concretely: transporting the physical
+time interval `[0,T]` of `(6)` to the centred sampling of
+`finiteTorusPhaseProbabilityMeasure` (the parent's `finiteTorusPhasePoint` at `A(2u-1)`); packaging
+the depth-`s` circuit dictionary as the target family `z` in eigencoordinates through
+`parseval_finiteComplexInner`; and then `QuenchedFixedTimeTransfer` already carries `(15)`--`(16)`,
+`(8)`, `(8a)` and `(9)` verbatim.  Theorem B's Duhamel step, rational density and dovetailed search
+are untouched.

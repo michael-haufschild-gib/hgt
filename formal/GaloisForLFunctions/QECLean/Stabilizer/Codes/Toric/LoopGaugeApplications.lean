@@ -19,6 +19,7 @@ open Quantum
 open StabilizerGroup
 
 private instance : Fact (2 ≤ 2) := ⟨by omega⟩
+private instance : Fact (0 < 2) := ⟨by omega⟩
 
 /-- Nondegenerate toric lattice sizes, with the size side condition internalized as data. -/
 abbrev ToricGaugeSize := {L : ℕ // 2 ≤ L}
@@ -60,6 +61,18 @@ theorem toric_wilson_tHooft_anticommute (i : Fin 2) :
     NQubitPauliGroupElement.Anticommute
       (toricTHooftLoop i) (toricWilsonLoop i) := by
   exact ((toricStabilizerCode 2).logicalOps i).anticommute
+
+/-- Primal lattice Bianchi identity: boundary of every plaquette 2-chain has no endpoint. -/
+theorem toric_plaquette_bianchi (f : Quantum.Stabilizer.Lattice.C2 2) :
+    Quantum.Stabilizer.Lattice.toricBoundary1 (L := 2)
+      (Quantum.Stabilizer.Lattice.toricBoundary2 (L := 2) f) = 0 :=
+  Quantum.Stabilizer.Lattice.toricBoundary_comp_zero_apply (L := 2) f
+
+/-- Dual lattice Bianchi identity: every dual boundary is a dual cycle. -/
+theorem toric_dual_plaquette_bianchi :
+    Quantum.Stabilizer.Lattice.toricDualBoundaries (L := 2) ≤
+      Quantum.Stabilizer.Lattice.toricDualCycles (L := 2) :=
+  Quantum.Stabilizer.Lattice.toricDualBoundaries_le_toricDualCycles 2
 
 /-- Each 't Hooft loop survives quotienting by local stabilizer gauge transformations. -/
 theorem toric_tHooftLoop_nontrivial (i : Fin 2) :

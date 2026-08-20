@@ -979,3 +979,37 @@ already builds one — inside its proof, `L = ‖g 0‖·exp(−2 log(M/‖g 0�
 Pólya growth-depth lemma through the already-owned
 `HTGeometry/PolyaConnectedTransfer.exists_le_norm_comp_of_floor`, and with it the composition-depth
 half of this card and of `asymptotically-exponential-algebraic-cascade-unit-cost`.
+
+## Sweep 2026-08-21
+
+Folder size at start of this pass: **262** top-level cards.
+
+| Date | Card | Lean module(s) |
+|---|---|---|
+| 2026-08-21 | `joint-hurwitz-exponent-half-plane-removal` | `Hurwitz/ContinuedJointUpperEndDifferentialIndependence.lean` (pre-existing, unrestricted) + new `HTGeometry/DerivativeTailDifferentialIndependence.lean` |
+| 2026-08-21 | `polarization-transport-component-collapse` | `HTGeometry/WedgeRealization.lean` (pre-existing seed) + new `HTGeometry/PolarizationTransportComponentCollapse.lean` (general law) |
+| 2026-08-21 | `euler-dirichlet-laurent-residue-double` | `RHTower/EulerLaurentResidueDouble.lean` (pre-existing) + new `RHTower/EulerCharacterGroupCompletion.lean` |
+
+### New reusable infrastructure (2026-08-21)
+
+- `HTGeometry/DerivativeTailDifferentialIndependence.lean` — **the derivative-tail law**
+  `differentialIndependent_of_jetShift`: for a finite nonempty index type, if
+  `fun j => differentialJet (m j) (x j)` is differentially independent over `F`, then so is `x`.
+  Proved by the dtrdeg count inside `F⟨x⟩` using `differentialIndependent_of_spanning_of_cardinalMk_le`
+  and `cardinalMk_le_differentialTranscendenceDegree`.  Also
+  `injective_of_differentialIndependent_jetShift` and `differentialIndependent_coe_of_subfield`
+  (the converse of `differentialIndependent_subfield`).  Use this whenever an independence
+  certificate is available only after differentiating.
+- `HTGeometry/PolarizationTransportComponentCollapse.lean` — `ConstraintComplex` + its `1`-skeleton,
+  `CompatibleOrientation`, `compatibleOrientationEquivComponents` (compatible Boolean orientations
+  ≃ functions on `π₀`), `compatibleOrientationEquivBool`, `uniquePointedCompatibleOrientation`, and
+  the one-dimensional-form isometry sign law `sameSign_of_isometryScalar` over any linearly ordered
+  field.
+- `RHTower/EulerCharacterGroupCompletion.lean` — `EulerCharGroup` (= `ℚ_{>0}^×`) with
+  `closure_natRange_eq_top` (group completion of the Dirichlet monoid) and
+  `closure_primeRange_eq_top` (prime-exponent lattice); the character map `eulerRatCharacter` with
+  multiplicativity, reflection-inverts-characters and injectivity; and the group algebra
+  `ℂ[ℚ_{>0}^×]` with the scale derivation `scaleDeriv` (Leibniz: `scaleDeriv_mul`), the
+  constant-term functional (`constantTerm_scaleDeriv : CT ∘ D = 0`) and the residue pairing
+  (`residuePairing_single/_swap/_natMode_eq_zero/_opposite_ne_zero`).  Reusable for any
+  "constant-term residue seam of a character algebra" argument.

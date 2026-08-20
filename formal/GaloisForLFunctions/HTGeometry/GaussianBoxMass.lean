@@ -68,56 +68,75 @@ theorem measureReal_abs_ge_le_of_standardGaussian {X : Ω → ℝ} (hmeas : AEMe
     norm_num
   linarith
 
-/-- **The explicit Gaussian box.**  With `B² ≥ 2 log(8m)` the coefficient vector stays in
-`[-B,B]^m` with probability at least one half. -/
-theorem half_le_measureReal_box {m : ℕ} (hm : 0 < m) (J : Fin m → Ω → ℝ)
+/-- **The Gaussian box tail.**  With `B² ≥ 2 log(8m)` the coefficient vector leaves `[-B,B]^m`
+with probability at most one quarter. -/
+theorem measureReal_box_compl_le_quarter {ι : Type*} [Fintype ι] (hm : 0 < Fintype.card ι) (J : ι → Ω → ℝ)
     (hmeas : ∀ a, Measurable (J a)) (hJ : ∀ a, p.map (J a) = gaussianReal 0 1)
-    {B : ℝ} (hB0 : 0 ≤ B) (hB : 2 * Real.log (8 * m) ≤ B ^ 2) :
-    1 / 2 ≤ p.real {ω | ∀ a, |J a ω| ≤ B} := by
+    {B : ℝ} (hB0 : 0 ≤ B) (hB : 2 * Real.log (8 * Fintype.card ι) ≤ B ^ 2) :
+    p.real ({ω | ∀ a, |J a ω| ≤ B}ᶜ) ≤ 1 / 4 := by
   classical
-  have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
-  have hexp : Real.exp (-B ^ 2 / 2) ≤ 1 / (8 * (m : ℝ)) := by
-    have hlog : Real.log (8 * (m : ℝ)) ≤ B ^ 2 / 2 := by linarith
-    have hpos : (0 : ℝ) < 8 * (m : ℝ) := by positivity
+  have hmR : (0 : ℝ) < (Fintype.card ι : ℝ) := by exact_mod_cast hm
+  have hexp : Real.exp (-B ^ 2 / 2) ≤ 1 / (8 * (Fintype.card ι : ℝ)) := by
+    have hlog : Real.log (8 * (Fintype.card ι : ℝ)) ≤ B ^ 2 / 2 := by linarith
+    have hpos : (0 : ℝ) < 8 * (Fintype.card ι : ℝ) := by linarith
     calc Real.exp (-B ^ 2 / 2) = (Real.exp (B ^ 2 / 2))⁻¹ := by
           rw [← Real.exp_neg]
           congr 1
           ring
-      _ ≤ (Real.exp (Real.log (8 * (m : ℝ))))⁻¹ := by
+      _ ≤ (Real.exp (Real.log (8 * (Fintype.card ι : ℝ))))⁻¹ := by
           rw [inv_le_inv₀ (Real.exp_pos _) (Real.exp_pos _)]
           exact Real.exp_le_exp.mpr hlog
-      _ = 1 / (8 * (m : ℝ)) := by
+      _ = 1 / (8 * (Fintype.card ι : ℝ)) := by
           rw [Real.exp_log hpos, one_div]
-  have hcompl : {ω | ∀ a, |J a ω| ≤ B}ᶜ ⊆ ⋃ a : Fin m, {ω | B ≤ |J a ω|} := by
+  have hcompl : {ω | ∀ a, |J a ω| ≤ B}ᶜ ⊆ ⋃ a : ι, {ω | B ≤ |J a ω|} := by
     intro ω hω
     rw [Set.mem_compl_iff, Set.mem_setOf_eq] at hω
     push Not at hω
     obtain ⟨a, ha⟩ := hω
     exact Set.mem_iUnion.mpr ⟨a, le_of_lt ha⟩
-  have hbound : p.real ({ω | ∀ a, |J a ω| ≤ B}ᶜ) ≤ 1 / 4 := by
-    calc p.real ({ω | ∀ a, |J a ω| ≤ B}ᶜ)
-        ≤ p.real (⋃ a : Fin m, {ω | B ≤ |J a ω|}) :=
-          measureReal_mono hcompl (measure_ne_top _ _)
-      _ ≤ ∑ a : Fin m, p.real {ω | B ≤ |J a ω|} := measureReal_iUnion_fintype_le _
-      _ ≤ ∑ _a : Fin m, 2 * Real.exp (-B ^ 2 / 2) :=
-          Finset.sum_le_sum fun a _ =>
-            measureReal_abs_ge_le_of_standardGaussian (hmeas a).aemeasurable (hJ a) hB0
-      _ = (m : ℝ) * (2 * Real.exp (-B ^ 2 / 2)) := by
-          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-      _ ≤ (m : ℝ) * (2 * (1 / (8 * (m : ℝ)))) := by
-          have : 2 * Real.exp (-B ^ 2 / 2) ≤ 2 * (1 / (8 * (m : ℝ))) := by linarith
-          exact mul_le_mul_of_nonneg_left this (le_of_lt hmR)
-      _ = 1 / 4 := by
-          field_simp
-          ring
-  have htotal : p.real {ω | ∀ a, |J a ω| ≤ B} + p.real ({ω | ∀ a, |J a ω| ≤ B}ᶜ) = 1 := by
-    have hmeasSet : MeasurableSet {ω | ∀ a, |J a ω| ≤ B} := by
-      have : {ω | ∀ a, |J a ω| ≤ B} = ⋂ a : Fin m, {ω | |J a ω| ≤ B} := by
-        ext ω
-        simp
-      rw [this]
-      exact MeasurableSet.iInter fun a => measurableSet_le ((hmeas a).abs) measurable_const
-    exact probReal_add_probReal_compl hmeasSet
+  calc p.real ({ω | ∀ a, |J a ω| ≤ B}ᶜ)
+      ≤ p.real (⋃ a : ι, {ω | B ≤ |J a ω|}) :=
+        measureReal_mono hcompl (measure_ne_top _ _)
+    _ ≤ ∑ a : ι, p.real {ω | B ≤ |J a ω|} := measureReal_iUnion_fintype_le _
+    _ ≤ ∑ _a : ι, 2 * Real.exp (-B ^ 2 / 2) :=
+        Finset.sum_le_sum fun a _ =>
+          measureReal_abs_ge_le_of_standardGaussian (hmeas a).aemeasurable (hJ a) hB0
+    _ = (Fintype.card ι : ℝ) * (2 * Real.exp (-B ^ 2 / 2)) := by
+        rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    _ ≤ (Fintype.card ι : ℝ) * (2 * (1 / (8 * (Fintype.card ι : ℝ)))) := by
+        have : 2 * Real.exp (-B ^ 2 / 2) ≤ 2 * (1 / (8 * (Fintype.card ι : ℝ))) := by linarith
+        exact mul_le_mul_of_nonneg_left this (le_of_lt hmR)
+    _ = 1 / 4 := by
+        field_simp
+        ring
+
+theorem measurableSet_gaussianBox {ι : Type*} [Fintype ι] (J : ι → Ω → ℝ)
+    (hmeas : ∀ a, Measurable (J a)) {B : ℝ} :
+    MeasurableSet {ω | ∀ a, |J a ω| ≤ B} := by
+  have hrw : {ω | ∀ a, |J a ω| ≤ B} = ⋂ a : ι, {ω | |J a ω| ≤ B} := by
+    ext ω
+    simp
+  rw [hrw]
+  exact MeasurableSet.iInter fun a => measurableSet_le ((hmeas a).abs) measurable_const
+
+/-- **The explicit Gaussian box.**  With `B² ≥ 2 log(8m)` the coefficient vector stays in
+`[-B,B]^m` with probability at least three quarters. -/
+theorem three_quarters_le_measureReal_box {ι : Type*} [Fintype ι] (hm : 0 < Fintype.card ι) (J : ι → Ω → ℝ)
+    (hmeas : ∀ a, Measurable (J a)) (hJ : ∀ a, p.map (J a) = gaussianReal 0 1)
+    {B : ℝ} (hB0 : 0 ≤ B) (hB : 2 * Real.log (8 * Fintype.card ι) ≤ B ^ 2) :
+    3 / 4 ≤ p.real {ω | ∀ a, |J a ω| ≤ B} := by
+  have hbound := measureReal_box_compl_le_quarter hm J hmeas hJ hB0 hB
+  have htotal : p.real {ω | ∀ a, |J a ω| ≤ B} + p.real ({ω | ∀ a, |J a ω| ≤ B}ᶜ) = 1 :=
+    probReal_add_probReal_compl (measurableSet_gaussianBox J hmeas)
+  linarith
+
+/-- **The explicit Gaussian box.**  With `B² ≥ 2 log(8m)` the coefficient vector stays in
+`[-B,B]^m` with probability at least one half. -/
+theorem half_le_measureReal_box {ι : Type*} [Fintype ι] (hm : 0 < Fintype.card ι) (J : ι → Ω → ℝ)
+    (hmeas : ∀ a, Measurable (J a)) (hJ : ∀ a, p.map (J a) = gaussianReal 0 1)
+    {B : ℝ} (hB0 : 0 ≤ B) (hB : 2 * Real.log (8 * Fintype.card ι) ≤ B ^ 2) :
+    1 / 2 ≤ p.real {ω | ∀ a, |J a ω| ≤ B} := by
+  have := three_quarters_le_measureReal_box hm J hmeas hJ hB0 hB
   linarith
 
 end GaussianBox

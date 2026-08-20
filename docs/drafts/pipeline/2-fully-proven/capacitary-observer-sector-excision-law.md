@@ -2107,3 +2107,26 @@ binary-entropy ceiling from the same inequality applied twice; no convexity API 
   `fixed-shell-angular-dephasing-static-local-plateau-law`, hence gated on that card.
 * Corollary A.3's identification of the sector with a left-translation-invariant subspace of
   `L²(U(D))`, the transitive-action hypothesis of `(8c)`, and `(11be)`.
+
+## Lean progress -- Corollary I.2 and Corollary J.1 (2026-08-21)
+
+`formal/GaloisForLFunctions/HTGeometry/GeometricCircuitCollision.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| **the reporter is the discounted Neumann series** `Z_a(ν,A) = ∑_ℓ a^ℓ νP^ℓ(A)` | `hasSum_occupation_neumann` |
+| **`(11bn)`**: the collision probability of one geometrically killed uniform random word | `collisionProbability` |
+| **`(11bo)`, equality**: `p_coll = (1-a)Z_a(ν,A)` | `collisionProbability_eq` |
+| **`(11bo)`, sandwich**: `p_coll ≤ ∫h_A dν ≤ p_coll/(1-a)` | `collision_le_hitting`, `hitting_le_collision_div` |
+| **`(11bp)`**: `ν{C_ε ≤ s} ≤ (M/a)^s p_coll/(1-a)` | `measure_reachable_le_collision` |
+| **`(11bq)`**: `p_coll ≥ (1-a)(a/M)^s ν{C_ε ≤ s}` | `collision_ge_measure` |
+| **`(11ax)`, optimality**: `a^s(1-a) ≤ (s/(s+1))^s/(s+1)`, so `a_s = s/(s+1)` minimizes `a^{-s}/(1-a)` | `pow_mul_one_sub_le` |
+| `(1+1/s)^s ≤ e` | `one_add_inv_pow_le_exp_one` |
+| **`(11ay)`/`(11br)`**: the depth-`s` union costs `e(s+1)M^s` times the per-step bound | `measure_reachable_le_optimal` |
+
+The Neumann identity is the `n → ∞` limit of `sum_occupation_expand`: the partial sums are
+`Z_a − a^n·(pushed reporter)` and the tail is squeezed by `a^n/(1−a)`.  The optimality of `a_s` is
+proved without calculus: with `u = (s+1)a/s`, `v = (s+1)(1−a)` one has `su + v = s+1`, and
+`u ≤ e^{u−1}`, `v ≤ e^{v−1}` give `u^s v ≤ e^{su+v−s−1} = 1`, which is exactly weighted AM--GM at
+the two weights `s/(s+1)`, `1/(s+1)`.

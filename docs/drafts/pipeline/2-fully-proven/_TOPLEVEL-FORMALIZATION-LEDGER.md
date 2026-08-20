@@ -42,8 +42,17 @@ depend only on the span, since `∑_a θ_a² = Tr(H²)/c`).
 
 **`capacitary-observer-sector-excision-law`** — 2026-08-21: Theorems G, H, I, `(11aa)`, `(11ab)`
 closed with four new modules (`CapacitySoftMinLaw`, `CompletedPhaseAccessibilityPlateau`,
-`PartitionDivergenceBounds`, `CapacityEntropyBudget`).  Remaining: Corollaries I.1, I.2, J.1,
-Corollary A.3, `(8c)`, `(11be)`, and — gated on the fixed-shell card — Corollary I.3 and Theorem K.
+`PartitionDivergenceBounds`, `CapacityEntropyBudget`).  Corollaries I.2 and J.1 closed the same day
+with `GeometricCircuitCollision`.  Remaining: Corollary I.1's physical-time transfer (unique
+ergodicity + the phase-coherence target bound), Corollary A.3, `(8c)`, `(11be)`, and — gated on the
+fixed-shell card — Corollary I.3 and Theorem K.
+
+**`computable-static-local-exponential-state-complexity-law`** — 2026-08-21: `(5)`, `(12)`, `(13)`,
+`(14)`, the completed-time circuit bound behind `(6)` and the eigenbasis coordinate change are
+closed with `CompletedTimeCircuitDensity`, `GaussianGoodCoefficientSet`, `CircuitDictionaryCounting`
+(plus a strengthening of `GaussianBoxMass`).  Remaining: the instantiation wiring of Theorem A
+(centred-time transport + dictionary in eigencoordinates) and all of Theorem B.  **Not gated on the
+fixed-shell card** — it lives on the Gaussian Pauli ensemble, where `(23)`/`(26)` are available.
 
 ## Open (20)
 

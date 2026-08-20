@@ -644,3 +644,42 @@ work, all now Lean:
 3. `□_(s\{k}) Ψ_s` is a translated theta logarithmic derivative, so the combination's bottom witness
    is exactly the atom sum, up to an additive constant which has no principal part
    (`exists_bottomWitnessMero_carrierAtomCombination`, `realizesMero_atomSumMero`).
+
+## Lean progress 2026-08-21 (second entry) — the exact-image theorem is closed
+
+`HTGeometry.AllDepthExactImage` proves the converse inclusion, unconditionally and axiom-clean:
+
+```text
+exists_class_member_with_prescribed_pairSig
+    for every `d ≥ 2` and every family `D` of divisors on the pairs of `s` that is
+      * a class function modulo `H_(ij)` at each negative order,
+      * finitely supported modulo `H_(ij)`,
+      * of bounded order, and
+      * symmetric and triple-compatible,
+    there is `F` in the all-depth class of `s` with `PairFace_d(F) = D`.
+exists_class_member_with_prescribed_pairSig_iff
+    the two-way statement: those five conditions are *exactly* the conditions satisfied by an
+    actual signature.
+```
+
+With `AllDepthCompleteness.differentialAlgebraicOver_iff_pairFace_eq_zero` (injectivity) and
+`AllDepthTripleCompat.pairSig_triple_compat` (the image lands in `Comp_d`), this is the card's
+
+> the pair-face map induces an isomorphism of differential-translation modules
+> `Q_d/(Q_d ∩ Mer_DA) ≅ Comp_d`.
+
+in its concrete divisor description: `A_S = ℂ[δ][ℂ/H_S]` is realized as the class functions modulo
+`H_S` with finitely many nonzero classes and bounded order (`DivInvariant`, `DivFiniteClasses`,
+`AllDepthClassDivisor`), `p_(S,T)` is the orbit sum, and `Comp_d` is the symmetric triple-compatible
+families.
+
+The Lean induction is the card's own: `exists_bottom_realizer` realizes the components through one
+distinguished direction (simultaneous lifting on `ℂ ⧸ (ℤ + ℤτ_k)` followed by bottom-charge
+surjectivity), the residual errors on the pairs below `k` are antidifferenced along `τ_k`
+(`exists_antidifference_of_orbitSum_zero`), the antiderivatives are shown to be again a symmetric
+triple-compatible family, the inductive hypothesis realizes them on `s \ {k}`, and the sum has the
+prescribed signature.
+
+Remaining for stage 3: the `Complete differential-translation module consequences` section (the
+criterion `P·F` is DA iff `π_(ij)(P)·S_(ij)(F) = 0`, and the resulting annihilator and DA
+translation spectrum) and the `Multiplicative theorem`.
