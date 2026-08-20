@@ -122,6 +122,82 @@ theorem lowBase_bounds {K x : ℝ} (hK : 0 ≤ K) (hx : Real.exp 1 ≤ x) :
   have := Nat.ceil_lt_add_one (le_of_lt (lt_of_lt_of_le zero_lt_one hpow))
   linarith
 
+/-- The number of steps of the low ladder. -/
+def lowSteps (K c β x : ℝ) : ℕ :=
+  ⌊Real.log (cardLength β x / ((lowBase K x : ℕ) : ℝ)) / Real.log (1 + lowEta c x)⌋₊
+
+/-- The number of steps of the high ladder. -/
+def highSteps (a b c' x : ℝ) : ℕ :=
+  ⌊((Real.log x) ^ b - (Real.log x) ^ a) / Real.log (1 + highEta c' x)⌋₊
+
+/-- `η/2 ≤ log(1+η)` below unit ratio. -/
+theorem log_one_add_ge_half_self {η : ℝ} (hη : 0 < η) (hη1 : η ≤ 1) :
+    η / 2 ≤ Real.log (1 + η) := by
+  have h1 : (0 : ℝ) < 1 + η := by linarith
+  have hkey : η / (1 + η) ≤ Real.log (1 + η) := by
+    have hexp := Real.add_one_le_exp (-(η / (1 + η)))
+    have hval : -(η / (1 + η)) + 1 = 1 / (1 + η) := by
+      field_simp
+      ring
+    rw [hval] at hexp
+    have hlog := Real.log_le_log (by positivity) hexp
+    rw [Real.log_exp, Real.log_div one_ne_zero (ne_of_gt h1), Real.log_one] at hlog
+    linarith
+  have hdiv : η / 2 ≤ η / (1 + η) :=
+    div_le_div_of_nonneg_left hη.le (by linarith) (by linarith)
+  linarith
+
+/-- **The low ladder has polylogarithmically many steps.** -/
+theorem lowSteps_le {K c β : ℝ} (hK : 0 ≤ K) (hc : 0 < c) (_hβ : 0 < β) :
+    ∀ᶠ x : ℝ in atTop,
+      ((lowSteps K c β x : ℕ) : ℝ) ≤ 2 * (Real.log x) ^ (β + c) := by
+  have hzero := tendsto_lowEta (c := c) hc
+  filter_upwards [Filter.eventually_ge_atTop (Real.exp 1),
+    Filter.eventually_gt_atTop (1 : ℝ),
+    Tendsto.eventually_le_const (by norm_num : (0 : ℝ) < 1) hzero] with x hxe hx1 hη1
+  have hlogx : 0 < Real.log x := Real.log_pos hx1
+  have hη : 0 < lowEta c x := lowEta_pos hx1
+  have hQ1 : (1 : ℝ) ≤ ((lowBase K x : ℕ) : ℝ) := by
+    have := one_le_lowBase hK hxe
+    exact_mod_cast this
+  have hQ0 : (0 : ℝ) < ((lowBase K x : ℕ) : ℝ) := by linarith
+  have hh0 : (0 : ℝ) < cardLength β x := cardLength_pos β x
+  have hlogr : (0 : ℝ) < Real.log (1 + lowEta c x) := Real.log_pos (by linarith)
+  have hhalf := log_one_add_ge_half_self hη hη1
+  have hratio : Real.log (cardLength β x / ((lowBase K x : ℕ) : ℝ)) ≤ (Real.log x) ^ β := by
+    rw [Real.log_div (ne_of_gt hh0) (ne_of_gt hQ0), log_cardLength]
+    have : (0 : ℝ) ≤ Real.log ((lowBase K x : ℕ) : ℝ) := Real.log_nonneg hQ1
+    linarith
+  have hfl : ((lowSteps K c β x : ℕ) : ℝ)
+      ≤ Real.log (cardLength β x / ((lowBase K x : ℕ) : ℝ)) / Real.log (1 + lowEta c x)
+        ∨ Real.log (cardLength β x / ((lowBase K x : ℕ) : ℝ)) < 0 := by
+    by_cases hnn : 0 ≤ Real.log (cardLength β x / ((lowBase K x : ℕ) : ℝ))
+    · left
+      rw [lowSteps]
+      exact Nat.floor_le (div_nonneg hnn hlogr.le)
+    · right
+      exact lt_of_not_ge hnn
+  have hpowβ : (0 : ℝ) ≤ (Real.log x) ^ β := Real.rpow_nonneg hlogx.le β
+  have hkey : 2 * (Real.log x) ^ β / lowEta c x = 2 * (Real.log x) ^ (β + c) := by
+    rw [lowEta, div_eq_mul_inv, ← Real.rpow_neg hlogx.le, neg_neg, mul_assoc,
+      ← Real.rpow_add hlogx]
+  rcases hfl with hfl | hneg
+  · refine hfl.trans ?_
+    rw [← hkey]
+    refine (div_le_div₀ (by positivity) hratio (by linarith) hhalf).trans (le_of_eq ?_)
+    field_simp
+  · have hzero : ((lowSteps K c β x : ℕ) : ℝ) = 0 := by
+      have : lowSteps K c β x = 0 := by
+        rw [lowSteps]
+        refine Nat.floor_eq_zero.2 ?_
+        have : Real.log (cardLength β x / ((lowBase K x : ℕ) : ℝ))
+            / Real.log (1 + lowEta c x) < 0 := div_neg_of_neg_of_pos hneg hlogr
+        linarith
+      rw [this]
+      norm_num
+    rw [hzero]
+    positivity
+
 end
 
 end RHTower.Sieve

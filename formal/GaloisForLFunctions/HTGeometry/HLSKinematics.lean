@@ -843,6 +843,36 @@ theorem hlsSpinNegativeOne_action :
   rw [hu_inv]
   simp [u, hlsSpinNegativeOne, spinGroup.toUnits]
 
+/-- The central Spin element `-1` has order two. -/
+theorem hlsSpinNegativeOne_sq : hlsSpinNegativeOne * hlsSpinNegativeOne = 1 := by
+  apply Subtype.ext
+  change (-1 : CliffordAlgebra hlsMinkowskiForm) * -1 = 1
+  simp
+
+/-- The central Spin element `-1` commutes with every Spin element. -/
+theorem hlsSpinNegativeOne_central (s : HLSSpinGroup) :
+    hlsSpinNegativeOne * s = s * hlsSpinNegativeOne := by
+  apply Subtype.ext
+  change (-1 : CliffordAlgebra hlsMinkowskiForm) * s = s * -1
+  simp
+
+/-- Left multiplication by the central Spin element `-1` leaves the concrete Lorentz action
+unchanged. -/
+theorem hlsSpinNegativeOne_action_mul (s : HLSSpinGroup) :
+    hlsSpinMinkowskiLinearEquiv (hlsSpinNegativeOne * s) =
+      hlsSpinMinkowskiLinearEquiv s := by
+  change hlsCliffordSpinToLinearEquiv (hlsSpinNegativeOne * s) =
+    hlsCliffordSpinToLinearEquiv s
+  rw [map_mul]
+  change hlsSpinMinkowskiLinearEquiv hlsSpinNegativeOne *
+      hlsSpinMinkowskiLinearEquiv s = hlsSpinMinkowskiLinearEquiv s
+  rw [show hlsSpinMinkowskiLinearEquiv hlsSpinNegativeOne = 1 by
+    apply LinearEquiv.ext
+    intro p
+    rw [hlsSpinNegativeOne_action]
+    rfl]
+  simp
+
 /-- The central Clifford scalar `-1` lies in the physically selected Spin-plus subgroup. -/
 def hlsSpinPlusNegativeOne : HLSSpinPlusGroup :=
   ⟨hlsSpinNegativeOne, by
@@ -866,6 +896,67 @@ theorem hlsSpinPlusNegativeOne_ne_one : hlsSpinPlusNegativeOne ≠ 1 := by
     apply FaithfulSMul.algebraMap_injective ℝ (CliffordAlgebra hlsMinkowskiForm)
     simpa using hc
   norm_num at hr
+
+/-- The central `-1` acts on Spin-plus fibers by a fixed-point-free involution. -/
+def hlsSpinPlusCentralInvolution (s : HLSSpinPlusGroup) : HLSSpinPlusGroup :=
+  hlsSpinPlusNegativeOne * s
+
+/-- Central Spin-plus multiplication leaves the proper Lorentz image unchanged. -/
+theorem hlsSpinPlusCentralInvolution_maps (s : HLSSpinPlusGroup) :
+    hlsSpinPlusToProperLorentz (hlsSpinPlusCentralInvolution s) =
+      hlsSpinPlusToProperLorentz s := by
+  change hlsSpinPlusToProperLorentz (hlsSpinPlusNegativeOne * s) = _
+  rw [map_mul, hlsSpinPlusNegativeOne_maps_to_one, one_mul]
+
+/-- Applying central Spin-plus multiplication twice is the identity. -/
+theorem hlsSpinPlusCentralInvolution_sq (s : HLSSpinPlusGroup) :
+    hlsSpinPlusCentralInvolution (hlsSpinPlusCentralInvolution s) = s := by
+  change hlsSpinPlusNegativeOne * (hlsSpinPlusNegativeOne * s) = s
+  rw [← mul_assoc, show hlsSpinPlusNegativeOne * hlsSpinPlusNegativeOne = 1 from by
+    apply Subtype.ext
+    apply Subtype.ext
+    change (-1 : CliffordAlgebra hlsMinkowskiForm) * -1 = 1
+    simp, one_mul]
+
+/-- The central Spin-plus involution has no fixed point. -/
+theorem hlsSpinPlusCentralInvolution_ne (s : HLSSpinPlusGroup) :
+    hlsSpinPlusCentralInvolution s ≠ s := by
+  intro h
+  change hlsSpinPlusNegativeOne * s = s at h
+  have h' : hlsSpinPlusNegativeOne = 1 := by
+    apply mul_right_cancel (b := s)
+    simpa using h
+  exact hlsSpinPlusNegativeOne_ne_one h'
+
+/-- The exact fiber of the canonical Spin-plus action above a represented proper Lorentz
+transformation. -/
+def hlsSpinPlusCoverFiber (s : HLSSpinPlusGroup) : Set HLSSpinPlusGroup :=
+  {t | hlsSpinPlusToProperLorentz t = hlsSpinPlusToProperLorentz s}
+
+/-- Every represented proper Lorentz transformation has the two central Spin-plus lifts `s` and
+`-s` in its actual fiber. -/
+def hlsSpinPlusCoverFiberBool (s : HLSSpinPlusGroup) : Bool → hlsSpinPlusCoverFiber s
+  | false => ⟨s, rfl⟩
+  | true => ⟨hlsSpinPlusCentralInvolution s, hlsSpinPlusCentralInvolution_maps s⟩
+
+/-- The central pair gives a genuine two-element subfamily of every nonempty canonical fiber. -/
+theorem hlsSpinPlusCoverFiberBool_injective (s : HLSSpinPlusGroup) :
+    Function.Injective (hlsSpinPlusCoverFiberBool s) := by
+  intro a b h
+  cases a <;> cases b
+  · rfl
+  · have hs : s = hlsSpinPlusCentralInvolution s :=
+      congrArg Subtype.val h
+    exact False.elim (hlsSpinPlusCentralInvolution_ne s hs.symm)
+  · have hs : hlsSpinPlusCentralInvolution s = s :=
+      congrArg Subtype.val h
+    exact False.elim (hlsSpinPlusCentralInvolution_ne s hs)
+  · rfl
+
+/-- Every actual Spin-plus fiber contains the expected two central lifts. -/
+def hlsSpinPlusCoverFiberBoolEmbedding (s : HLSSpinPlusGroup) :
+    Bool ↪ hlsSpinPlusCoverFiber s :=
+  ⟨hlsSpinPlusCoverFiberBool s, hlsSpinPlusCoverFiberBool_injective s⟩
 
 /-- The canonical physical Spin-plus action has a nonidentity kernel element.  This is the
 concrete half of the usual double-cover statement; surjectivity and exact kernel classification
