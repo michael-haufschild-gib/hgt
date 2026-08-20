@@ -181,7 +181,7 @@ theorem exists_multiAtomRealization_of_bottomCharge
     have := hDinv ℓ hℓ b (a - b) hmem
     rw [show b + (a - b) = a from by ring] at this
     exact this
-  set wq : κ → Q := fun i => -(mk (w i)) with hwq
+  set wq : κ → Q := fun i => mk (-(w i)) with hwq
   have hzsmul : ∀ (n : ℤ) (y : ℂ), (n • mk y : Q) = mk ((n : ℂ) * y) := by
     intro n y
     rw [hmk]
@@ -192,23 +192,21 @@ theorem exists_multiAtomRealization_of_bottomCharge
   have hwq_smul : ∀ (n : ℤ) (i : κ), (n • wq i : Q) = mk (-((n : ℂ) * w i)) := by
     intro n i
     rw [hwq]
-    show (n • (-(mk (w i))) : Q) = _
-    rw [smul_neg, hzsmul]
-    rfl
+    show (n • mk (-(w i)) : Q) = _
+    rw [hzsmul]
+    congr 1
+    ring
+  have hmk_zero_eq : mk (0 : ℂ) = (0 : Q) := rfl
   have hmk_zero : ∀ y : ℂ, (mk y = (0 : Q)) ↔ y ∈ Λ := by
     intro y
-    constructor
-    · intro h
-      have : y - 0 ∈ Λ := (hmk_eq y 0).mp (by simpa using h)
-      simpa using this
-    · intro h
-      refine (hmk_eq y 0).mpr ?_
-      simpa using h
+    rw [← hmk_zero_eq, hmk_eq, sub_zero]
   have hwq_free : ∀ i ∈ s, ∀ n : ℤ, n • wq i = 0 → n = 0 := by
     intro i hi n hn
     rw [hwq_smul] at hn
     have hmem : -((n : ℂ) * w i) ∈ Λ := (hmk_zero _).mp hn
-    exact hfree i hi n (by simpa using (neg_mem hmem))
+    have hneg := neg_mem hmem
+    rw [neg_neg] at hneg
+    exact hfree i hi n hneg
   have hwq_pair : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ n m : ℤ,
       n • wq i + m • wq j = 0 → n = 0 ∧ m = 0 := by
     intro i hi j hj hij n m hnm
@@ -220,8 +218,10 @@ theorem exists_multiAtomRealization_of_bottomCharge
       exact hnm
     have hmem := (hmk_zero _).mp hsum
     refine hpair i hi j hj hij n m ?_
-    have := neg_mem hmem
-    simpa using this
+    have hneg := neg_mem hmem
+    rw [show -(-((n : ℂ) * w i) + -((m : ℂ) * w j))
+      = (n : ℂ) * w i + (m : ℂ) * w j from by ring] at hneg
+    exact hneg
   -- the descended divisor at each order
   set Dbar : ℕ → Q → ℂ := fun j x => D (-((j : ℤ) + 1)) (Quotient.out x) with hDbar
   have hDbar_mk : ∀ (j : ℕ) (p : ℂ), Dbar j (mk p) = D (-((j : ℤ) + 1)) p := by
@@ -236,20 +236,22 @@ theorem exists_multiAtomRealization_of_bottomCharge
     · intro x hx
       obtain ⟨q, hq, hql⟩ := hS₀ _ hx
       refine Finset.mem_image.mpr ⟨q, hq, ?_⟩
-      have : mk q = mk (Quotient.out x) := (hmk_eq _ _).mpr (by
-        have : Quotient.out x - q ∈ Λ := hql
-        simpa using (neg_mem this))
-      rw [this, hout]
+      have hql' : Quotient.out x - q ∈ Λ := hql
+      have hneg := neg_mem hql'
+      rw [neg_sub] at hneg
+      have hqx : mk q = mk (Quotient.out x) := (hmk_eq _ _).mpr hneg
+      rw [hqx, hout]
     · intro i hi x
       have hterm : ∀ m : ℤ, Dbar j (x + m • wq i) = D (-((j : ℤ) + 1))
           (Quotient.out x + ((-m : ℤ) : ℂ) * w i) := by
         intro m
         have harg : x + m • wq i = mk (Quotient.out x + ((-m : ℤ) : ℂ) * w i) := by
-          rw [hwq_smul, ← hout x, hmk]
-          show QuotientAddGroup.mk (Quotient.out x) + QuotientAddGroup.mk _
-            = QuotientAddGroup.mk _
-          rw [← QuotientAddGroup.mk_add]
-          congr 1
+          have h1 : mk (Quotient.out x + ((-m : ℤ) : ℂ) * w i)
+              = mk (Quotient.out x) + mk (((-m : ℤ) : ℂ) * w i) := by
+            rw [hmk]
+            exact map_add (QuotientAddGroup.mk' Λ) _ _
+          rw [h1, hout, hwq_smul]
+          congr 2
           push_cast
           ring
         rw [harg, hDbar_mk]
@@ -271,10 +273,10 @@ theorem exists_multiAtomRealization_of_bottomCharge
     intro q hq r hr hqr
     obtain ⟨x, rfl⟩ := hRmem q hq
     obtain ⟨y, rfl⟩ := hRmem r hr
-    have hmkeq : mk (Quotient.out x) = mk (Quotient.out y) := by
-      refine (hmk_eq _ _).mpr ?_
-      have : Quotient.out y - Quotient.out x ∈ Λ := hqr
-      simpa using (neg_mem this)
+    have hqr' : Quotient.out y - Quotient.out x ∈ Λ := hqr
+    have hneg := neg_mem hqr'
+    rw [neg_sub] at hneg
+    have hmkeq : mk (Quotient.out x) = mk (Quotient.out y) := (hmk_eq _ _).mpr hneg
     rw [hout, hout] at hmkeq
     rw [hmkeq]
   refine ⟨R, fun j q => C j (mk q), hdist, ?_⟩
@@ -287,9 +289,10 @@ theorem exists_multiAtomRealization_of_bottomCharge
     · obtain ⟨q, hq, hqv⟩ := hcase
       rw [laurentCoeff_multiAtomRealization_line hσ R _ hdist hq hqv hj]
       congr 1
-      exact (hmk_eq q v).mpr (by
-        have : v - q ∈ Λ := hqv
-        simpa using (neg_mem this))
+      have hqv' : v - q ∈ Λ := hqv
+      have hneg := neg_mem hqv'
+      rw [neg_sub] at hneg
+      exact (hmk_eq q v).mpr hneg
     · push Not at hcase
       rw [laurentCoeff_multiAtomRealization_off hσ N R _ hcase (by omega)]
       by_contra hne
@@ -312,16 +315,19 @@ theorem exists_multiAtomRealization_of_bottomCharge
       intro E _
       rw [hcoeff j hj]
       congr 2
-      rw [hwq]
-      show mk (p + ∑ i ∈ E, w i) = mk p - ∑ i ∈ E, -(mk (w i))
-      rw [← Finset.sum_neg_distrib, neg_neg, sub_neg_eq_add]
-      congr 1
-      · rw [hmk]
-        show QuotientAddGroup.mk (p + ∑ i ∈ E, w i)
-          = QuotientAddGroup.mk p + ∑ i ∈ E, QuotientAddGroup.mk (w i)
-        rw [QuotientAddGroup.mk_add]
+      have hsum : ∑ i ∈ E, wq i = mk (-(∑ i ∈ E, w i)) := by
+        rw [hwq, hmk]
+        show ∑ i ∈ E, (QuotientAddGroup.mk' Λ) (-(w i))
+          = (QuotientAddGroup.mk' Λ) (-(∑ i ∈ E, w i))
+        rw [← map_sum]
         congr 1
-        exact map_sum (QuotientAddGroup.mk' Λ) _ E
+        rw [← Finset.sum_neg_distrib]
+      rw [hsum, hmk]
+      show (QuotientAddGroup.mk' Λ) (p + ∑ i ∈ E, w i)
+        = (QuotientAddGroup.mk' Λ) p - (QuotientAddGroup.mk' Λ) (-(∑ i ∈ E, w i))
+      rw [← map_sub]
+      congr 1
+      ring
     rw [Finset.sum_congr rfl hterms]
     have := hC j (mk p)
     rw [telescopeCube] at this

@@ -1,12 +1,15 @@
 # Reciprocal Hadamard mixed-cumulant reconstruction and global properness law
 
 - **ID:** ULF-BFIM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.ConstitutiveBiFormationInterference`,
+  `GaloisForLFunctions.HTGeometry.ConstitutiveBiFormationAllOrder`,
+  `GaloisForLFunctions.HTGeometry.GaussianQuadraticCumulantCharacterization`
 - **Type:** THREE-ORGAN FUSION + FOURTH-ORGAN PREDICTION + GLOBAL FORMATION THEOREM
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [UNCONDITIONAL]`
   `[INDEPENDENT-FORMATION ADDITIVITY] [RECIPROCAL POLARIZATION]`
   `[COMPLETE CUMULANT RECONSTRUCTION] [RENORMALIZED CHARGE CONSERVATION]`
-  `[CLASSICAL GAUSSIAN-CHARACTERIZATION PARENT] [LEAN-FORMALIZED ALGEBRAIC CORE] [NOT RH]`
+  `[CLASSICAL GAUSSIAN-CHARACTERIZATION PARENT] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]`
 
 ## 1. Two source compositions
 
@@ -466,9 +469,11 @@ without building that
 umbrella. Repository lint reports eleven unrelated pre-existing theorem-area ownership failures and
 does not report this module.
 
-The algebraic all-order response and formal quadratic-flatness theorem are Lean-certified. The
-analytic identification of a quadratic moment-generating germ with a Gaussian probability law
-remains a dependency-closed paper proof, not yet Lean-certified.
+The algebraic all-order response and formal quadratic-flatness theorem are Lean-certified.  The
+analytic identification of a quadratic moment-generating germ with a Gaussian probability law —
+clause 4 of Theorem 2.2 — is now certified as well, in the new leaf
+`GaloisForLFunctions.HTGeometry.GaussianQuadraticCumulantCharacterization`
+(`map_eq_gaussianReal_of_mgf_quadratic`, with mathlib's `mgf_gaussianReal` as the converse).
 
 ## Log
 

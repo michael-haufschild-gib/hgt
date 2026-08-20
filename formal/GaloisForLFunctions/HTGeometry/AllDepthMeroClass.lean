@@ -109,16 +109,15 @@ theorem diffCubeMero_insert (τ : ι → ℂ) {s : Finset ι} {q : ι} (hq : q �
 
 /-- The all-depth mixed-constraint class on germs: `1`-periodic with constant full mixed
 difference. -/
-def AllDepthMeroSource (τ : ι → ℂ) [Fintype ι] (x : meroField (Set.univ : Set ℂ))
+def AllDepthMeroSource (τ : ι → ℂ) (s : Finset ι) (x : meroField (Set.univ : Set ℂ))
     (Cst : ℂ) : Prop :=
   addTranslationMeroEquiv 1 x = x ∧
-    diffCubeMero τ (Finset.univ : Finset ι) x =
-      algebraMap ℂ (meroField (Set.univ : Set ℂ)) Cst
+    diffCubeMero τ s x = algebraMap ℂ (meroField (Set.univ : Set ℂ)) Cst
 
 /-- The pair-face witness `W_ij(F) = ∏_(k ∉ {i,j}) Δ_k F`. -/
-def pairFaceWitnessMero (τ : ι → ℂ) [Fintype ι] (i j : ι)
+def pairFaceWitnessMero (τ : ι → ℂ) (s : Finset ι) (i j : ι)
     (x : meroField (Set.univ : Set ℂ)) : meroField (Set.univ : Set ℂ) :=
-  diffCubeMero τ ((Finset.univ : Finset ι) \ {i, j}) x
+  diffCubeMero τ (s \ {i, j}) x
 
 omit [DecidableEq ι] in
 /-- The difference cube preserves differential algebraicity. -/
@@ -134,9 +133,9 @@ theorem differentialAlgebraicOver_diffCubeMero (τ : ι → ℂ) (s : Finset ι)
 
 /-- **The forward half.**  A differentially algebraic member of the class has differentially
 algebraic pair-face witnesses. -/
-theorem differentialAlgebraicOver_pairFaceWitnessMero (τ : ι → ℂ) [Fintype ι] (i j : ι)
+theorem differentialAlgebraicOver_pairFaceWitnessMero (τ : ι → ℂ) (s : Finset ι) (i j : ι)
     {x : meroField (Set.univ : Set ℂ)} (hx : DifferentialAlgebraicOver ℂ x) :
-    DifferentialAlgebraicOver ℂ (pairFaceWitnessMero τ i j x) :=
+    DifferentialAlgebraicOver ℂ (pairFaceWitnessMero τ s i j x) :=
   differentialAlgebraicOver_diffCubeMero τ _ hx
 
 section Transport

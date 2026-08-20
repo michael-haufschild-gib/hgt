@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ABHN.AzumayaTensorProduct
+import GaloisForLFunctions.HTGeometry.ABHN.BrauerGroupStructure
 import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtensionBrauer
 
 /-!
@@ -53,5 +53,13 @@ theorem scalarExtensionBrauerMap_tensorAdd
       (scalarExtensionBrauerMap K L (brauerClass B))
   simp only [brauerTensorAdd_brauerClass, scalarExtensionBrauerMap_brauerClass]
   exact brauerClass_scalarExtension_tensorProductCSA_eq K L A B
+
+/-- Scalar extension as an additive map between Brauer groups. -/
+noncomputable def scalarExtensionBrauerAddHom
+    (K L : Type u) [Field K] [Field L] [Algebra K L] :
+    BrauerGroup.{u, u} K →+ BrauerGroup.{u, u} L where
+  toFun := scalarExtensionBrauerMap K L
+  map_zero' := scalarExtensionBrauerMap_split K L
+  map_add' := scalarExtensionBrauerMap_tensorAdd K L
 
 end GaloisForLFunctions.HTGeometry.ABHN

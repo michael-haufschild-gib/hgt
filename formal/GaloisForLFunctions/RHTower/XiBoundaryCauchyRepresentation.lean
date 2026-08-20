@@ -139,16 +139,24 @@ theorem norm_inv_add_I_sq (B : ℂ) (t : ℝ) :
     ‖(B + Complex.I * (t : ℂ))⁻¹‖ ^ 2 = (B.re ^ 2 + (t + B.im) ^ 2)⁻¹ := by
   rw [norm_inv, inv_pow, ← Complex.normSq_eq_norm_sq, normSq_add_I_mul_real]
 
-theorem norm_boundaryCauchyKernel_le {a : ℝ} {w v : ℂ} (t : ℝ) :
+theorem norm_boundaryCauchyKernel_le {a : ℝ} (w v : ℂ) (t : ℝ) :
     ‖boundaryCauchyKernel a w v t‖
-      ≤ (1 / 2) * (((w - (a : ℂ)).re ^ 2 + (t - (w - (a : ℂ)).im) ^ 2)⁻¹
-        + ((conj v - (a : ℂ)).re ^ 2 + (t + (conj v - (a : ℂ)).im) ^ 2)⁻¹) := by
+      ≤ (1 / 2) * (((w.re - a) ^ 2 + (t - w.im) ^ 2)⁻¹
+        + ((v.re - a) ^ 2 + (t - v.im) ^ 2)⁻¹) := by
   have hAeq : w - (a : ℂ) - Complex.I * (t : ℂ) = (w - (a : ℂ)) - Complex.I * (t : ℂ) := by ring
   have hBeq : conj v - (a : ℂ) + Complex.I * (t : ℂ)
       = (conj v - (a : ℂ)) + Complex.I * (t : ℂ) := by ring
-  rw [boundaryCauchyKernel, hAeq, hBeq, mul_inv, norm_mul]
   have h1 := norm_inv_sub_I_sq (w - (a : ℂ)) t
   have h2 := norm_inv_add_I_sq (conj v - (a : ℂ)) t
+  have hre1 : (w - (a : ℂ)).re = w.re - a := by simp
+  have him1 : (w - (a : ℂ)).im = w.im := by simp
+  have hre2 : (conj v - (a : ℂ)).re = v.re - a := by simp
+  have him2 : (conj v - (a : ℂ)).im = -v.im := by simp
+  rw [hre1, him1] at h1
+  rw [hre2, him2] at h2
+  have hshift : t + -v.im = t - v.im := by ring
+  rw [hshift] at h2
+  rw [boundaryCauchyKernel, hAeq, hBeq, mul_inv, norm_mul]
   nlinarith [norm_nonneg ((w - (a : ℂ)) - Complex.I * (t : ℂ))⁻¹,
     norm_nonneg ((conj v - (a : ℂ)) + Complex.I * (t : ℂ))⁻¹,
     sq_nonneg (‖((w - (a : ℂ)) - Complex.I * (t : ℂ))⁻¹‖
@@ -436,5 +444,139 @@ theorem integral_boundaryTerm_cauchy {a : ℝ} (ha : 1 / 2 < a) {w v : ℂ} (hw 
       map_div₀, map_add, map_ofNat]
   rw [hwA, hvA]
   ring
+
+/-! ### The divisor sum of the boundary integrals -/
+
+theorem integrable_boundaryPoissonTerm_mul_poisson {a p : ℝ} (ha : 1 / 2 < a) (hp : 0 < p)
+    (m : ℝ) (q : XiZeroCopy) :
+    Integrable fun t : ℝ => boundaryPoissonTerm a t q * halfPlanePoisson p (t - m) := by
+  obtain ⟨hpos, hneg⟩ := abs_im_spectral_lt ha q
+  have h1 := integrable_poisson_product_pair hpos hp (xiSpectralPoint q).re m
+  have h2 := integrable_poisson_product_pair hneg hp (-(xiSpectralPoint q).re) m
+  refine (h1.add h2).congr (Filter.Eventually.of_forall fun t => ?_)
+  simp only [Pi.add_apply, boundaryPoissonTerm]
+  have h : t - -(xiSpectralPoint q).re = t + (xiSpectralPoint q).re := by ring
+  rw [h]
+  ring
+
+theorem integrable_boundaryPoissonTerm_mul_invSq {a p : ℝ} (ha : 1 / 2 < a) (hp : 0 < p)
+    (m : ℝ) (q : XiZeroCopy) :
+    Integrable fun t : ℝ => boundaryPoissonTerm a t q * (p ^ 2 + (t - m) ^ 2)⁻¹ := by
+  refine ((integrable_boundaryPoissonTerm_mul_poisson ha hp m q).const_mul
+    (Real.pi / p)).congr (Filter.Eventually.of_forall fun t => ?_)
+  simp only [Pi.mul_apply]
+  rw [inv_sq_add_sq_eq_poisson hp]
+  ring
+
+theorem integral_boundaryPoissonTerm_mul_invSq {a p : ℝ} (ha : 1 / 2 < a) (hp : 0 < p)
+    (m : ℝ) (q : XiZeroCopy) :
+    (∫ t : ℝ, boundaryPoissonTerm a t q * (p ^ 2 + (t - m) ^ 2)⁻¹)
+      = (Real.pi / p) * boundaryPoissonTerm (a + p) m q := by
+  have hc : ∀ t : ℝ, boundaryPoissonTerm a t q * (p ^ 2 + (t - m) ^ 2)⁻¹
+      = (Real.pi / p) * (boundaryPoissonTerm a t q * halfPlanePoisson p (t - m)) := by
+    intro t
+    rw [inv_sq_add_sq_eq_poisson hp]
+    ring
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hc),
+    MeasureTheory.integral_const_mul, integral_boundaryPoissonTerm_mul_poisson ha hp m q]
+
+theorem integral_norm_boundaryTerm_cauchy_le {a : ℝ} (ha : 1 / 2 < a) {w v : ℂ} (hw : a < w.re)
+    (hv : a < v.re) (q : XiZeroCopy) :
+    (∫ t : ℝ, ‖((boundaryPoissonTerm a t q : ℝ) : ℂ) * boundaryCauchyKernel a w v t‖)
+      ≤ (1 / 2) * ((Real.pi / (w.re - a)) * boundaryPoissonTerm w.re w.im q
+        + (Real.pi / (v.re - a)) * boundaryPoissonTerm v.re v.im q) := by
+  obtain ⟨hpos, hneg⟩ := abs_im_spectral_lt ha q
+  have hwa : (0 : ℝ) < w.re - a := by linarith
+  have hva : (0 : ℝ) < v.re - a := by linarith
+  have hmaj : Integrable fun t : ℝ => (1 / 2) *
+      (boundaryPoissonTerm a t q * ((w.re - a) ^ 2 + (t - w.im) ^ 2)⁻¹
+        + boundaryPoissonTerm a t q * ((v.re - a) ^ 2 + (t - v.im) ^ 2)⁻¹) := by
+    refine (((integrable_boundaryPoissonTerm_mul_invSq ha hwa w.im q).add
+      (integrable_boundaryPoissonTerm_mul_invSq ha hva v.im q)).const_mul (1 / 2)).congr
+      (Filter.Eventually.of_forall fun t => ?_)
+    simp only [Pi.mul_apply, Pi.add_apply]
+  have hle : ∀ t : ℝ, ‖((boundaryPoissonTerm a t q : ℝ) : ℂ) * boundaryCauchyKernel a w v t‖
+      ≤ (1 / 2) * (boundaryPoissonTerm a t q * ((w.re - a) ^ 2 + (t - w.im) ^ 2)⁻¹
+        + boundaryPoissonTerm a t q * ((v.re - a) ^ 2 + (t - v.im) ^ 2)⁻¹) := by
+    intro t
+    have hT : 0 < boundaryPoissonTerm a t q := by
+      rw [boundaryPoissonTerm]
+      exact add_pos (halfPlanePoisson_pos hpos _) (halfPlanePoisson_pos hneg _)
+    have hb := norm_boundaryCauchyKernel_le (a := a) w v t
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hT]
+    nlinarith [hb, hT]
+  refine le_trans (MeasureTheory.integral_mono
+    (integrable_boundaryTerm_cauchy ha hw hv q).norm hmaj hle) ?_
+  have hcalc : (∫ t : ℝ, (1 / 2) *
+      (boundaryPoissonTerm a t q * ((w.re - a) ^ 2 + (t - w.im) ^ 2)⁻¹
+        + boundaryPoissonTerm a t q * ((v.re - a) ^ 2 + (t - v.im) ^ 2)⁻¹))
+      = (1 / 2) * ((Real.pi / (w.re - a)) * boundaryPoissonTerm (a + (w.re - a)) w.im q
+        + (Real.pi / (v.re - a)) * boundaryPoissonTerm (a + (v.re - a)) v.im q) := by
+    rw [MeasureTheory.integral_const_mul,
+      MeasureTheory.integral_add (integrable_boundaryPoissonTerm_mul_invSq ha hwa w.im q)
+        (integrable_boundaryPoissonTerm_mul_invSq ha hva v.im q),
+      integral_boundaryPoissonTerm_mul_invSq ha hwa w.im q,
+      integral_boundaryPoissonTerm_mul_invSq ha hva v.im q]
+  rw [hcalc]
+  have e1 : a + (w.re - a) = w.re := by ring
+  have e2 : a + (v.re - a) = v.re := by ring
+  rw [e1, e2]
+
+theorem summable_integral_norm_boundaryTerm {a : ℝ} (ha : 1 / 2 < a) {w v : ℂ} (hw : a < w.re)
+    (hv : a < v.re) :
+    Summable fun q : XiZeroCopy =>
+      ∫ t : ℝ, ‖((boundaryPoissonTerm a t q : ℝ) : ℂ) * boundaryCauchyKernel a w v t‖ := by
+  have hwh : 1 / 2 < w.re := lt_trans ha hw
+  have hvh : 1 / 2 < v.re := lt_trans ha hv
+  refine Summable.of_nonneg_of_le
+    (fun q => MeasureTheory.integral_nonneg fun t => norm_nonneg _)
+    (fun q => integral_norm_boundaryTerm_cauchy_le ha hw hv q) ?_
+  exact (((summable_boundaryPoissonTerm hwh w.im).mul_left _).add
+    ((summable_boundaryPoissonTerm hvh v.im).mul_left _)).mul_left _
+
+/-! ### The boundary Cauchy representation of the safe Carathéodory kernel -/
+
+/-- **The safe Carathéodory kernel is the Cauchy transform of its boundary density.**  Averaging
+`h_a(t) = Re (ξ'/ξ)(a + it)` against the two-node Cauchy kernel
+`((w - a - it)(conj v - a + it))⁻¹` reproduces
+`(L(w) + conj L(v)) / (w + conj v - 2a)`. -/
+theorem safeCaratheodoryKernel_eq_boundary_integral {a : ℝ} (ha : 1 / 2 < a) {w v : ℂ}
+    (hw : a < w.re) (hv : a < v.re) (hS : w + conj v - 2 * (a : ℂ) ≠ 0) :
+    safeCaratheodoryKernel a w v
+      = (1 / (Real.pi : ℂ))
+        * ∫ t : ℝ, ((eulerSafeDensity a t : ℝ) : ℂ) * boundaryCauchyKernel a w v t := by
+  have hwh : 1 / 2 < w.re := lt_trans ha hw
+  have hvh : 1 / 2 < v.re := lt_trans ha hv
+  have hcvh : 1 / 2 < (conj v).re := by rwa [Complex.conj_re]
+  have hpi : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt Real.pi_pos)
+  have hpt : ∀ t : ℝ, ((eulerSafeDensity a t : ℝ) : ℂ) * boundaryCauchyKernel a w v t
+      = ((Real.pi : ℂ) / 2)
+        * ∑' q : XiZeroCopy,
+            ((boundaryPoissonTerm a t q : ℝ) : ℂ) * boundaryCauchyKernel a w v t := by
+    intro t
+    rw [eulerSafeDensity_eq_tsum_term ha t, Complex.ofReal_mul, Complex.ofReal_tsum, mul_assoc,
+      tsum_mul_right]
+    push_cast
+    ring
+  have hsA : Summable fun q : XiZeroCopy => weilChannelA w (xiSpectralPoint q) :=
+    summable_channelA hwh
+  have hsB : Summable fun q : XiZeroCopy => conj (weilChannelA v (xiSpectralPoint q)) := by
+    refine (summable_channelA hvh).map (starRingEnd ℂ) ?_
+    exact Complex.continuous_conj
+  have hsum : (∑' q : XiZeroCopy, (w + conj v - 2 * (a : ℂ))⁻¹
+        * (2 * (weilChannelA w (xiSpectralPoint q)
+          + conj (weilChannelA v (xiSpectralPoint q)))))
+      = (w + conj v - 2 * (a : ℂ))⁻¹
+        * (2 * (logDeriv xiCent w + conj (logDeriv xiCent v))) := by
+    rw [tsum_mul_left, tsum_mul_left, Summable.tsum_add hsA hsB,
+      ← logDeriv_xiCent_eq_tsum_channelA hwh, ← Complex.conj_tsum,
+      ← logDeriv_xiCent_eq_tsum_channelA hvh]
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hpt),
+    MeasureTheory.integral_const_mul,
+    ← MeasureTheory.integral_tsum_of_summable_integral_norm
+      (fun q => integrable_boundaryTerm_cauchy ha hw hv q)
+      (summable_integral_norm_boundaryTerm ha hw hv),
+    tsum_congr (integral_boundaryTerm_cauchy ha hw hv hS), hsum, safeCaratheodoryKernel]
+  field_simp
 
 end RHTower

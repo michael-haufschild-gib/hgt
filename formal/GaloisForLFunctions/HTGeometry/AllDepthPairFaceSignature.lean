@@ -67,51 +67,61 @@ theorem diffCubeMero_translate_comm (τ : ι → ℂ) (s : Finset ι) (c : ℂ)
     addTranslationMeroEquiv_add, add_comm c (∑ i ∈ E, τ i)]
 
 /-- The pair-face witness at function level. -/
-def pairFaceWitnessFun (τ : ι → ℂ) (i j : ι) (f : ℂ → ℂ) : ℂ → ℂ :=
-  HTGeometry.diffCube τ ((Finset.univ : Finset ι) \ {i, j}) f
+def pairFaceWitnessFun (τ : ι → ℂ) (s : Finset ι) (i j : ι) (f : ℂ → ℂ) : ℂ → ℂ :=
+  HTGeometry.diffCube τ (s \ {i, j}) f
 
-theorem pairFaceWitnessFun_realizesMero (τ : ι → ℂ) (i j : ι)
+theorem pairFaceWitnessFun_realizesMero (τ : ι → ℂ) (s : Finset ι) (i j : ι)
     {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ} (hf : RealizesMero x f) :
-    RealizesMero (pairFaceWitnessMero τ i j x) (pairFaceWitnessFun τ i j f) :=
+    RealizesMero (pairFaceWitnessMero τ s i j x) (pairFaceWitnessFun τ s i j f) :=
   realizesMero_diffCubeMero τ _ hf
 
-theorem meromorphicOn_pairFaceWitnessFun (τ : ι → ℂ) (i j : ι)
+theorem meromorphicOn_pairFaceWitnessFun (τ : ι → ℂ) (s : Finset ι) (i j : ι)
     {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ} (hf : RealizesMero x f) :
-    MeromorphicOn (pairFaceWitnessFun τ i j f) (Set.univ : Set ℂ) :=
-  meromorphicOn_of_realizesMero (pairFaceWitnessFun_realizesMero τ i j hf)
+    MeromorphicOn (pairFaceWitnessFun τ s i j f) (Set.univ : Set ℂ) :=
+  meromorphicOn_of_realizesMero (pairFaceWitnessFun_realizesMero τ s i j hf)
 
-theorem periodicOneGerm_pairFaceWitnessFun (τ : ι → ℂ) (i j : ι)
+theorem periodicOneGerm_pairFaceWitnessFun (τ : ι → ℂ) (s : Finset ι) (i j : ι)
     {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ} (hf : RealizesMero x f)
     (h1 : addTranslationMeroEquiv 1 x = x) :
-    PeriodicOneGerm (pairFaceWitnessFun τ i j f) := by
-  refine periodicOneGerm_of_realizesMero (pairFaceWitnessFun_realizesMero τ i j hf) ?_
+    PeriodicOneGerm (pairFaceWitnessFun τ s i j f) := by
+  refine periodicOneGerm_of_realizesMero (pairFaceWitnessFun_realizesMero τ s i j hf) ?_
   rw [pairFaceWitnessMero, ← diffCubeMero_translate_comm, h1]
 
 /-- **The pair-face witness lies in the depth-two class.** -/
-theorem mixedConstGerm_pairFaceWitnessFun (τ : ι → ℂ) {i j : ι} (hij : i ≠ j)
+theorem mixedConstGerm_pairFaceWitnessFun (τ : ι → ℂ) (s : Finset ι) {i j : ι} (hij : i ≠ j)
+    (hi : i ∈ s) (hj : j ∈ s)
     {x : meroField (Set.univ : Set ℂ)} {Cst : ℂ} {f : ℂ → ℂ} (hf : RealizesMero x f)
-    (hmixed : diffCubeMero τ (Finset.univ : Finset ι) x =
+    (hmixed : diffCubeMero τ s x =
       algebraMap ℂ (meroField (Set.univ : Set ℂ)) Cst) :
-    MixedConstGerm (pairFaceWitnessFun τ i j f) (τ j) (τ i) Cst := by
+    MixedConstGerm (pairFaceWitnessFun τ s i j f) (τ j) (τ i) Cst := by
   classical
-  have hunion : ({i, j} : Finset ι) ∪ ((Finset.univ : Finset ι) \ {i, j}) =
-      (Finset.univ : Finset ι) := by
+  have hunion : ({i, j} : Finset ι) ∪ (s \ {i, j}) = s := by
     ext k
-    simp only [Finset.mem_union, Finset.mem_sdiff, Finset.mem_univ, true_and]
-    tauto
-  have hdisj : Disjoint ({i, j} : Finset ι) ((Finset.univ : Finset ι) \ {i, j}) := by
+    simp only [Finset.mem_union, Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton]
+    constructor
+    · rintro ((rfl | rfl) | hk)
+      · exact hi
+      · exact hj
+      · exact hk.1
+    · intro hk
+      by_cases hki : k = i
+      · exact Or.inl (Or.inl hki)
+      · by_cases hkj : k = j
+        · exact Or.inl (Or.inr hkj)
+        · exact Or.inr ⟨hk, by simp [hki, hkj]⟩
+  have hdisj : Disjoint ({i, j} : Finset ι) (s \ {i, j}) := by
     rw [Finset.disjoint_left]
     intro k hk hk'
     exact (Finset.mem_sdiff.mp hk').2 hk
-  have hcube : diffCubeMero τ ({i, j} : Finset ι) (pairFaceWitnessMero τ i j x) =
+  have hcube : diffCubeMero τ ({i, j} : Finset ι) (pairFaceWitnessMero τ s i j x) =
       algebraMap ℂ (meroField (Set.univ : Set ℂ)) Cst := by
     rw [pairFaceWitnessMero, ← diffCubeMero_union τ hdisj, hunion]
     exact hmixed
   have hreal : RealizesMero (algebraMap ℂ (meroField (Set.univ : Set ℂ)) Cst)
-      (HTGeometry.diffCube τ ({i, j} : Finset ι) (pairFaceWitnessFun τ i j f)) := by
+      (HTGeometry.diffCube τ ({i, j} : Finset ι) (pairFaceWitnessFun τ s i j f)) := by
     rw [← hcube]
-    exact realizesMero_diffCubeMero τ _ (pairFaceWitnessFun_realizesMero τ i j hf)
-  have hset : MixedConstGermSet τ ({i, j} : Finset ι) (pairFaceWitnessFun τ i j f) Cst := by
+    exact realizesMero_diffCubeMero τ _ (pairFaceWitnessFun_realizesMero τ s i j hf)
+  have hset : MixedConstGermSet τ ({i, j} : Finset ι) (pairFaceWitnessFun τ s i j f) Cst := by
     intro z
     have h := realizesMero_congr hreal (realizesMero_const Cst) z
     exact h
@@ -152,24 +162,24 @@ set_option synthInstance.maxHeartbeats 800000 in
 the all-depth mixed-constraint class has vanishing pair-face signature at every pair. -/
 theorem pairFaceSignature_eq_zero_of_differentialAlgebraicOver
     (τ : ι → ℂ) (hτ : ∀ k, 0 < (τ k).im) (hQ : PeriodsIntegrallyIndependent τ)
-    {i j : ι} (hij : i ≠ j)
+    (s : Finset ι) {i j : ι} (hij : i ≠ j) (hi : i ∈ s) (hj : j ∈ s)
     {x : meroField (Set.univ : Set ℂ)} {Cst : ℂ} {f : ℂ → ℂ} (hf : RealizesMero x f)
     (h1 : addTranslationMeroEquiv 1 x = x)
-    (hmixed : diffCubeMero τ (Finset.univ : Finset ι) x =
+    (hmixed : diffCubeMero τ s x =
       algebraMap ℂ (meroField (Set.univ : Set ℂ)) Cst)
     (hDA : DifferentialAlgebraicOver ℂ x) :
     ∀ (p : ℂ) (ℓ : ℤ), ℓ < 0 →
-      additiveOrbitalDivisorAt (pairFaceWitnessFun τ i j f) (τ i) p ℓ = 0 := by
-  have hWDA : DifferentialAlgebraicOver ℂ (pairFaceWitnessMero τ i j x) :=
-    differentialAlgebraicOver_pairFaceWitnessMero τ i j hDA
+      additiveOrbitalDivisorAt (pairFaceWitnessFun τ s i j f) (τ i) p ℓ = 0 := by
+  have hWDA : DifferentialAlgebraicOver ℂ (pairFaceWitnessMero τ s i j x) :=
+    differentialAlgebraicOver_pairFaceWitnessMero τ s i j hDA
   have hWDA' : DifferentiallyAlgebraic
-      (toMeromorphicNFOn (pairFaceWitnessFun τ i j f) (Set.univ : Set ℂ)) :=
-    differentiallyAlgebraic_of_realizesMero (pairFaceWitnessFun_realizesMero τ i j hf)
+      (toMeromorphicNFOn (pairFaceWitnessFun τ s i j f) (Set.univ : Set ℂ)) :=
+    differentiallyAlgebraic_of_realizesMero (pairFaceWitnessFun_realizesMero τ s i j hf)
       (differentialAlgebraicOver_ratFunc_of_complex hWDA)
   exact additiveOrbitalDivisorAt_eq_zero_of_differentiallyAlgebraic
-    (meromorphicOn_pairFaceWitnessFun τ i j hf)
-    (periodicOneGerm_pairFaceWitnessFun τ i j hf h1)
-    (mixedConstGerm_pairFaceWitnessFun τ hij hf hmixed)
+    (meromorphicOn_pairFaceWitnessFun τ s i j hf)
+    (periodicOneGerm_pairFaceWitnessFun τ s i j hf h1)
+    (mixedConstGerm_pairFaceWitnessFun τ s hij hi hj hf hmixed)
     (hτ j) (hτ i) (indepPeriods_of_periodsIntegrallyIndependent τ hQ hij)
     (linearIndependent_one_of_im_pos (hτ j)) (linearIndependent_one_of_im_pos (hτ i))
     (linearIndependent_ellipticGammaSourcePeriods_of_periodsIntegrallyIndependent τ hQ hij.symm)

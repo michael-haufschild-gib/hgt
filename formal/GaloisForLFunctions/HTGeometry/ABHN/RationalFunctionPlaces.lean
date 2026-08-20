@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ABHN.BrauerFoundations
+import GaloisForLFunctions.HTGeometry.ABHN.BrauerGroupStructure
 import Mathlib.FieldTheory.RatFunc.Valuation
 import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 
@@ -82,6 +82,13 @@ theorem rationalFunctionPlaceDiagonal_injective (F : Type u) [Field F] [Finite F
 /-- Family of local Brauer-class carriers for `F(t)`. -/
 noncomputable def rationalFunctionLocalBrauerClasses (F : Type u) [Field F] [Finite F] :=
   (v : RationalFunctionPlace F) → BrauerGroup (rationalFunctionCompletion F v)
+
+/-- Pointwise Brauer-group structure on rational-function-field local Brauer families. -/
+noncomputable instance rationalFunctionLocalBrauerClassesAddCommGroup
+    (F : Type u) [Field F] [Finite F] :
+    AddCommGroup (rationalFunctionLocalBrauerClasses F) :=
+  show AddCommGroup ((v : RationalFunctionPlace F) →
+    BrauerGroup (rationalFunctionCompletion F v)) from inferInstance
 
 /-- Finite-support condition for the local Brauer term of the function-field ABHN sequence. -/
 def RationalFunctionHasFiniteNonSplitSupport (F : Type u) [Field F] [Finite F]

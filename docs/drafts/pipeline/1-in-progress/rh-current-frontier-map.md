@@ -2331,10 +2331,17 @@ continuation producer is absent.
   and scalar sufficiency for factored likelihood ratios and Esscher families. These are clean
   analytic/information-geometric adapters. `EsscherFormationChirality.lean`,
   `ExponentialFormationResponse.lean`, `PositiveJumpFormationChirality.lean`, and
-  `GeometricModeChirality.lean` compute exact oriented higher response laws, while
-  `AbelianZetaGasChemicalPotentialShift.lean` supplies only convergent zeta-gas parameter-shift and
-  normalizer identities. No theorem couples these formation responses to completed Xi or gives a
-  critical-boundary order law; they do not change G/D2/MSC or create a route.
+  `GeometricModeChirality.lean` compute exact oriented higher response laws.
+  `AbelianZetaGasModeChirality.lean` sums them over every prime-depth mode, proves strict source
+  chirality, and reconstructs complete order of admitted chemical potentials.
+  `AbelianZetaGasDirectedEntropy.lean` identifies that commutator with KL asymmetry and proves any
+  measurable involution exchanging two class laws forces equality of their parameters. This is
+  pre-route **ZGC**: actual infinite zeta source and pairwise orientation exist, but only in
+  convergent chamber. No completed functional-equation involution, Xi landing, or RH endpoint is
+  formal. `PureReplicaCollectiveEnergyLaw.lean` separately proves centered replica energy is linear
+  rather than quadratic, and `EulerianCrossingPolymerFreeEnergyLaw.lean` proves cubic crossing cost
+  cannot erase a linear action gap. These prevent false amplification/crossing heuristics but do
+  not define E's relation or change G/D2/MSC.
 
 ## Terminal and retired mechanisms
 

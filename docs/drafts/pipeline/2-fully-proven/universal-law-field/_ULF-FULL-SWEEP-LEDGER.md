@@ -72,3 +72,5 @@ series is its Laplace exponent), and the corpus's fugacity shift is exactly the 
 so the whole gas is a summable family of geometric modes.  The one analytic input the corpus lacked
 was the general-`θ` log-weighted mode majorant, obtained by absorbing `log p ≤ pᵉ/ε` into a slightly
 smaller Euler exponent.
+| 15–16 | `tensor-polarization-amplification-mechanics/*` (2 cards) | **DONE 2026-08-20** — both modules re-verified, folder companion written; promoted |
+| 17 | `bi-formation-interference-mechanics/reciprocal-hadamard-mixed-cumulant-...-law.md` | **DONE 2026-08-20** — the card's one recorded gap (Theorem 2.2 clause 4, quadratic mgf ⟹ Gaussian) closed by the new `HTGeometry/GaussianQuadraticCumulantCharacterization.lean` (analytic continuation on the strip `|Re z| < δ`, no Marcinkiewicz); promoted |

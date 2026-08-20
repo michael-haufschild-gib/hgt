@@ -180,6 +180,92 @@ theorem relScaledMajorant_le_twoRangeMajTerms {b A₃ Ctot : ℝ} (hb : 0 < b) (
     ring
   linarith [hmain, e4, e5]
 
+/-- **The elementary majorant beats a power of the logarithm.** -/
+theorem tendsto_logRpow_mul_twoRangeMajTerms {b A₃ Ctot e : ℝ} (hb : 0 < b) (hA₃ : 0 < A₃)
+    (he1 : e < A₃ + 1) (_he3 : e < 6 * b + 4 * A₃ + 2) {μ q xmin : ℝ → ℝ}
+    (hexpq : Tendsto (fun x : ℝ =>
+      (Real.log x) ^ (2 * b + 2 * A₃ + 4 + e) * Real.exp (-(μ x * q x))) atTop (𝓝 0))
+    (hxmin : Tendsto (fun x : ℝ =>
+      (Real.log x) ^ (b + e) / Real.sqrt (xmin x)) atTop (𝓝 0)) :
+    Tendsto (fun x : ℝ => (Real.log x) ^ e * twoRangeMajTerms b A₃ Ctot μ q xmin x)
+      atTop (𝓝 0) := by
+  have t1 : Tendsto (fun x : ℝ => (Real.log x) ^ (e - A₃ - 1)) atTop (𝓝 0) := by
+    refine (tendsto_log_rpow_neg (δ := A₃ + 1 - e) (by linarith)).congr fun x => ?_
+    congr 1
+    ring
+  have t3 : Tendsto (fun x : ℝ => (Real.log x) ^ (e - (6 * b + 4 * A₃ + 2))) atTop (𝓝 0) := by
+    refine (tendsto_log_rpow_neg (δ := 6 * b + 4 * A₃ + 2 - e) (by linarith)).congr fun x => ?_
+    congr 1
+    ring
+  have hsum : Tendsto (fun x : ℝ =>
+      Ctot / (2 * Real.pi) * (4 * (Real.log x) ^ (e - A₃ - 1)
+          + (Real.log x) ^ (2 * b + 2 * A₃ + 4 + e) * Real.exp (-(μ x * q x))
+          + (Real.log x) ^ (e - (6 * b + 4 * A₃ + 2)))
+        + 3 * (Real.log x) ^ (e - A₃ - 1)
+        + 4 * ((Real.log x) ^ (b + e) / Real.sqrt (xmin x))) atTop (𝓝 0) := by
+    have h := (((t1.const_mul (4 : ℝ)).add hexpq).add t3).const_mul (Ctot / (2 * Real.pi))
+    have h2 := (h.add (t1.const_mul (3 : ℝ))).add (hxmin.const_mul (4 : ℝ))
+    simpa using h2
+  refine hsum.congr' ?_
+  filter_upwards [Filter.eventually_gt_atTop (1 : ℝ)] with x hx1
+  have hL0 : (0 : ℝ) < Real.log x := Real.log_pos hx1
+  simp only [twoRangeMajTerms]
+  have h1 : (Real.log x) ^ e * (Real.log x) ^ (-A₃ - 1) = (Real.log x) ^ (e - A₃ - 1) := by
+    rw [← Real.rpow_add hL0]
+    congr 1
+    ring
+  have h2 : (Real.log x) ^ e * (Real.log x) ^ (2 * b + 2 * A₃ + 4)
+      = (Real.log x) ^ (2 * b + 2 * A₃ + 4 + e) := by
+    rw [← Real.rpow_add hL0]
+    congr 1
+    ring
+  have h3 : (Real.log x) ^ e * (Real.log x) ^ (-(6 * b + 4 * A₃ + 2))
+      = (Real.log x) ^ (e - (6 * b + 4 * A₃ + 2)) := by
+    rw [← Real.rpow_add hL0]
+    congr 1
+    ring
+  have h4 : (Real.log x) ^ e * (Real.log x) ^ b = (Real.log x) ^ (b + e) := by
+    rw [← Real.rpow_add hL0]
+    congr 1
+    ring
+  rw [← h1, ← h2, ← h3, ← h4]
+  ring
+
+/-- **The Route-T relative majorant beats a power of the logarithm at the schedule.** -/
+theorem tendsto_logRpow_mul_relScaledMajorant {b A₃ Ctot e : ℝ} (hb : 0 < b) (hA₃ : 0 < A₃)
+    (hC : 0 ≤ Ctot) (he1 : e < A₃ + 1) (he3 : e < 6 * b + 4 * A₃ + 2) (_he0 : 0 ≤ e)
+    {Hmaj μ q xmin : ℝ → ℝ}
+    (hH : ∀ᶠ x : ℝ in atTop, 0 ≤ Hmaj x ∧ Hmaj x ≤ (Real.log x) ^ (2 : ℝ))
+    (hxpos : ∀ᶠ x : ℝ in atTop, 0 < xmin x)
+    (hexpq : Tendsto (fun x : ℝ =>
+      (Real.log x) ^ (2 * b + 2 * A₃ + 4 + e) * Real.exp (-(μ x * q x))) atTop (𝓝 0))
+    (hxmin : Tendsto (fun x : ℝ =>
+      (Real.log x) ^ (b + e) / Real.sqrt (xmin x)) atTop (𝓝 0)) :
+    Tendsto (fun x : ℝ => (Real.log x) ^ e
+        * relScaledMajorant Ctot (twoRangeWidth b A₃ x) (twoRangeLx b x) (Hmaj x) (μ x) (q x)
+            (twoRangeT₀ b A₃ x) (xmin x)) atTop (𝓝 0) := by
+  refine squeeze_zero' (g := fun x : ℝ =>
+    (Real.log x) ^ e * twoRangeMajTerms b A₃ Ctot μ q xmin x) ?_ ?_
+    (tendsto_logRpow_mul_twoRangeMajTerms (Ctot := Ctot) hb hA₃ he1 he3 hexpq hxmin)
+  · filter_upwards [hH, hxpos, Filter.eventually_gt_atTop (1 : ℝ)] with x hHx hxp hx1
+    have hL0 : (0 : ℝ) < Real.log x := Real.log_pos hx1
+    have hnn : (0 : ℝ) ≤ (Real.log x) ^ e := Real.rpow_nonneg hL0.le e
+    have hLx0 : (0 : ℝ) ≤ twoRangeLx b x := by
+      rw [twoRangeLx]
+      have : (0 : ℝ) ≤ (Real.log x) ^ b := Real.rpow_nonneg hL0.le b
+      have h2 : (0 : ℝ) ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+      linarith
+    have hrel := relScaledMajorant_nonneg (Ctot := Ctot) (D := twoRangeWidth b A₃ x)
+      (Lx := twoRangeLx b x) (Hmaj := Hmaj x) (μ := μ x) (q := q x)
+      (t₀ := twoRangeT₀ b A₃ x) (xmin := xmin x) hC (twoRangeWidth_pos hx1) hLx0 hHx.1
+      (twoRangeT₀_pos hx1) hxp
+    exact mul_nonneg hnn hrel
+  · filter_upwards [relScaledMajorant_le_twoRangeMajTerms hb hA₃ hC hH hxpos,
+      Filter.eventually_gt_atTop (1 : ℝ)] with x hle hx1
+    have hL0 : (0 : ℝ) < Real.log x := Real.log_pos hx1
+    have hnn : (0 : ℝ) ≤ (Real.log x) ^ e := Real.rpow_nonneg hL0.le e
+    exact mul_le_mul_of_nonneg_left hle hnn
+
 end
 
 end RHTower.Sieve

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ABHN.BrauerFoundations
+import GaloisForLFunctions.HTGeometry.ABHN.BrauerGroupStructure
 import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 import Mathlib.NumberTheory.NumberField.Completion.InfinitePlace
 
@@ -79,6 +79,11 @@ theorem placeDiagonal_injective (K : Type u) [Field K] [NumberField K] :
 /-- The family of local Brauer-class carriers. -/
 noncomputable def localBrauerClasses (K : Type u) [Field K] [NumberField K] :=
   (v : NumberFieldPlace K) → BrauerGroup (completion K v)
+
+/-- Pointwise Brauer-group structure on families indexed by number-field places. -/
+noncomputable instance localBrauerClassesAddCommGroup (K : Type u) [Field K] [NumberField K] :
+    AddCommGroup (localBrauerClasses K) :=
+  show AddCommGroup ((v : NumberFieldPlace K) → BrauerGroup (completion K v)) from inferInstance
 
 /-- A local family has ABHN finite support when only finitely many classes are nonsplit. -/
 def HasFiniteNonSplitSupport (K : Type u) [Field K] [NumberField K]
