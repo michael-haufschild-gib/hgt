@@ -193,6 +193,18 @@ theorem integral_poissonOdd {c d : ℝ} (hc : 0 < c) (hd : 0 < d) (t : ℝ)
     exact (integral_poissonOdd_interval hc hd t M).symm
   exact tendsto_nhds_unique hlim hval
 
+theorem continuous_halfPlanePoisson {c : ℝ} (hc : 0 < c) : Continuous (halfPlanePoisson c) := by
+  unfold halfPlanePoisson
+  refine Continuous.div continuous_const (by fun_prop) fun u => ?_
+  have hpi := Real.pi_pos
+  positivity
+
+theorem halfPlanePoisson_le {c : ℝ} (hc : 0 < c) (u : ℝ) :
+    halfPlanePoisson c u ≤ 1 / (Real.pi * c) := by
+  have hpi := Real.pi_pos
+  rw [halfPlanePoisson, div_le_div_iff₀ (by positivity) (by positivity)]
+  nlinarith [sq_nonneg u, hpi, hc]
+
 /-! ### The shifted product integral and the semigroup -/
 
 /-- The partial-fraction denominator of the shifted Poisson product. -/
@@ -296,5 +308,35 @@ theorem halfPlanePoisson_convolution {c d : ℝ} (hc : 0 < c) (hd : 0 < d) (t : 
     halfPlanePoisson]
   have hs1 : ((c + d) ^ 2 + t ^ 2) ≠ 0 := by positivity
   field_simp
+
+theorem integrable_poisson_shift_product {c d : ℝ} (hc : 0 < c) (hd : 0 < d) (t r : ℝ) :
+    Integrable fun s : ℝ => halfPlanePoisson c (t - s) * halfPlanePoisson d (s - r) := by
+  have hbase : Integrable fun s : ℝ => halfPlanePoisson d (s - r) :=
+    (integrable_halfPlanePoisson hd).comp_sub_right r
+  have hcont : Continuous fun s : ℝ => halfPlanePoisson c (t - s) * halfPlanePoisson d (s - r) :=
+    ((continuous_halfPlanePoisson hc).comp (by fun_prop)).mul
+      ((continuous_halfPlanePoisson hd).comp (by fun_prop))
+  refine (hbase.const_mul (1 / (Real.pi * c))).mono' hcont.aestronglyMeasurable ?_
+  filter_upwards with s
+  have h1 := halfPlanePoisson_pos hc (t - s)
+  have h2 := halfPlanePoisson_pos hd (s - r)
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  exact mul_le_mul_of_nonneg_right (halfPlanePoisson_le hc _) (le_of_lt h2)
+
+/-- **The shifted Poisson semigroup.** -/
+theorem integral_poisson_shift_product {c d : ℝ} (hc : 0 < c) (hd : 0 < d) (t r : ℝ) :
+    (∫ s : ℝ, halfPlanePoisson c (t - s) * halfPlanePoisson d (s - r))
+      = halfPlanePoisson (c + d) (t - r) := by
+  have hshift : (∫ s : ℝ, halfPlanePoisson c ((t - r) - (s + -r)) * halfPlanePoisson d (s + -r))
+      = ∫ s : ℝ, halfPlanePoisson c ((t - r) - s) * halfPlanePoisson d s :=
+    MeasureTheory.integral_add_right_eq_self
+      (fun s : ℝ => halfPlanePoisson c ((t - r) - s) * halfPlanePoisson d s) (-r)
+  have hcongr : ∀ s : ℝ, halfPlanePoisson c (t - s) * halfPlanePoisson d (s - r)
+      = halfPlanePoisson c ((t - r) - (s + -r)) * halfPlanePoisson d (s + -r) := by
+    intro s
+    congr 2
+    ring
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hcongr), hshift,
+    halfPlanePoisson_convolution hc hd]
 
 end GaloisForLFunctions.HTGeometry

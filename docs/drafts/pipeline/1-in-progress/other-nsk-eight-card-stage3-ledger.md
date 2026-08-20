@@ -51,3 +51,31 @@
   `differentialAlgebraicOver_pairFaceWitnessMero`, `realizesMero_translate`,
   `realizesMero_congr`, `periodicOneGerm_of_realizesMero`).  Full design and the remaining step
   list are in Serena memory `nsk-other/all-depth-pair-face-programme-2026-08-20`.
+
+## Card audit against the tree (2026-08-20)
+
+Several cards' "Lean does not yet formalize …" notes are stale.  Verified findings:
+
+- **Card 2** — the assumed depth-two triptic DA-completeness theorem is already unconditional:
+  `HTGeometry.differentiallyAlgebraic_iff_additiveOrbitalDivisorAt_eq_zero` (`TripticCompleteness`).
+- **Card 5** (`irrational-triptic-source-effectivity-character`) — the card says the FHRZ group–Čech
+  complex and the differential gamma gerbe are absent.  The tree already owns
+  `GroupCechBicomplex` (the total complex of a group–Čech bicomplex, `totalD2_totalD1`,
+  `totalD3_totalD2`, sector restrictions), `GammaGerbeDixmierDouadyGenerator` (the DD cocycle
+  `gammaGerbeDD`, `coboundary₃_gammaGerbeDD = 0`, the alternation obstruction) and
+  `GammaGerbeThetaCocycle` (FHRZ's `thetaProd_cocycle`, `thetaProd_defect_eq_gammaGerbeExponent`,
+  and **`coboundary_gammaGerbeExponent_not_coboundary`** — the gamma gerbe has no holomorphic
+  trivialisation), plus `CechLowDegreeComplex`, `CechFineAcyclicModule`.
+  Its two Lean gates are therefore (i) *global analytic-subring packaging of the source boundary*
+  and (ii) the *differential-character comparison*.  For (i) the corpus already packages the gamma
+  products themselves (`MeromorphicEllipticGamma`: `ellipticGammaForwardAnalytic`,
+  `ellipticGammaBackwardAnalytic`, `ellipticGammaMero`, both nonzero); what is missing is the
+  same packaging for the two theta boundaries
+  `ellipticGammaMultiplicativeThetaBoundary(Tau)` — i.e. locally uniform convergence of the two
+  single q-Pochhammer products, hence entirety — and then the three source equations restated as
+  identities in `meroField ℂ` (which removes the pointwise nonvanishing hypothesis of
+  `ellipticGammaProduct_add_sigma` / `_add_tau`).
+- **Card 7** — `QuasiAbelianDampedExtensionBasis` (2026-08-19) adds `IsAbePositiveToruslessBasis`;
+  the two open obligations of the card (`HasAbeDampingFamily`, `IsAbePositiveTorusless`) are still
+  open.
+- **Card 8** — `AlgebraicBorderShape` (item A2) still absent; `PlaceGrading` (A1) present.

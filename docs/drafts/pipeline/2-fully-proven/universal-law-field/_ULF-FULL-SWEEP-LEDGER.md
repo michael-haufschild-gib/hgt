@@ -61,3 +61,33 @@ Still to build for this card:
    `AbelianZetaGas/RelativeEntropy.lean` (`summable_primes_log_mul_ladderBound`).
 3. §7 Theorem 7.1 — instantiate `klChirality_eq_zero_of_reversal`
    (`HTGeometry.ConstitutiveObserverFibreChirality`) against the chronology.
+
+### ULF-FCRM-1 continuation record (2026-08-20)
+
+Landed and umbrella-wired: `PositiveJumpFormationChirality`, `EsscherFormationChirality`,
+`ExponentialFormationResponse` (§4: `jeffreysWork_eq_integral_secondResponse` = FCRM.10,
+`formationChiralityAt_eq_integral_secondResponse` and `..._thirdResponse` = FCRM.11,
+`directed_reconstruction` = FCRM.12), `GeometricModeChirality`
+(`hasSum_modeLogPartition` = the mode Lévy series, `hasSum_modeFirstMoment`,
+`hasSum_modeChirality`, `modeChirality_pos`), and
+`AbelianZetaGasChemicalPotentialShift` (`shiftTau`, `ratio_shiftTau`
+— `ratio_{τ+t}(m) = modeRatio (ratio_τ m) (log p) t` —, `coe_nnNormalizer_eq_exp`,
+`log_nnNormalizer`).
+
+**Remaining for §6 (Theorem 6.1 / Corollary 6.2), in order:**
+
+1. `gasLogPartition θ t := −log ((shiftTau θ t).nnNormalizer)` and
+   `= ∑' m, modeLogPartition (θ.ratio m) (log p_m) t`  — immediate from `log_nnNormalizer`,
+   `ratio_shiftTau` and `tsum_neg`.
+2. `(socleExpectation (shiftTau θ t)).toReal = ∑' m, modeFirstMoment (θ.ratio m) (log p_m) t`.
+   The corpus has `socleExpectation_eq` (grouped by prime, in `ℝ≥0∞`) and
+   `summable_primes_log_mul_tsum_modeMean` **only for `temperatureParameters`**; the general-`θ`
+   summability majorant has to be added first (same Dirichlet majorant, `σ + τ > 1`).
+3. The gas KL: `classMass θ A = ennNormalizer θ * ofReal (|A|^{-σ} |soc A|^{-τ})`, so
+   `log (mass_s A / mass_t A) = log N_s − log N_t + (t−s) log|soc A|`; integrate against the
+   discrete `classLaw` to get **FCRM.9** for the gas.
+4. `gasChirality = ∑' m, modeChirality …` and `> 0` for `s < t` (**FCRM.20**, **FCRM.22b**), from
+   `modeChirality_pos` plus summability.
+5. **FCRM.18**: `κ₃(t) = ∑ (log p)³ r(1+r)/(1−r)³ > 0`.
+6. **Theorem 7.1**: `klChirality_eq_zero_of_reversal` + the chronology.
+   **Theorem 7.2**: `eq_id_of_strictMonoOn_of_iterate_id` + the chronology.

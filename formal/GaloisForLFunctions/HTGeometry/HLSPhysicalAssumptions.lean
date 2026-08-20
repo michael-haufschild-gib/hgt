@@ -468,6 +468,55 @@ theorem hlsWeylSigma_clifford (μ ν : Fin 4) :
     simp [hlsWeylSigma, hlsWeylBarSigma, hlsComplexMinkowskiMetric, hlsMinkowskiMetric] <;>
       ring
 
+/-- The barred Weyl matrices satisfy the companion Clifford identity. -/
+theorem hlsWeylBarSigma_clifford (μ ν : Fin 4) :
+    hlsWeylBarSigma μ * hlsWeylSigma ν + hlsWeylBarSigma ν * hlsWeylSigma μ =
+      ((2 : ℂ) * hlsComplexMinkowskiMetric μ ν) • 1 := by
+  fin_cases μ <;> fin_cases ν <;>
+    ext i j <;> fin_cases i <;> fin_cases j <;>
+    simp [hlsWeylSigma, hlsWeylBarSigma, hlsComplexMinkowskiMetric, hlsMinkowskiMetric] <;>
+      ring
+
+/-- Four-component Dirac spinors in the Weyl decomposition. -/
+abbrev HLSDiracSpinor := Fin 2 ⊕ Fin 2
+
+/-- Weyl-basis Dirac gamma matrices for signature `(1,3)`. -/
+def hlsWeylGamma (μ : Fin 4) : Matrix HLSDiracSpinor HLSDiracSpinor ℂ :=
+  Matrix.fromBlocks 0 (hlsWeylSigma μ) (hlsWeylBarSigma μ) 0
+
+/-- The Weyl-basis gamma matrices satisfy the four-dimensional Minkowski Clifford relation. -/
+theorem hlsWeylGamma_clifford (μ ν : Fin 4) :
+    hlsWeylGamma μ * hlsWeylGamma ν + hlsWeylGamma ν * hlsWeylGamma μ =
+      ((2 : ℂ) * hlsComplexMinkowskiMetric μ ν) • 1 := by
+  simp only [hlsWeylGamma, Matrix.fromBlocks_multiply, Matrix.fromBlocks_add]
+  simp only [Matrix.zero_mul, Matrix.mul_zero, zero_add, add_zero]
+  rw [hlsWeylSigma_clifford μ ν, hlsWeylBarSigma_clifford μ ν]
+  rw [← Matrix.fromBlocks_one, Matrix.fromBlocks_smul]
+  simp
+
+/-- Chirality operator in the Weyl Dirac basis. -/
+def hlsWeylGammaFive : Matrix HLSDiracSpinor HLSDiracSpinor ℂ :=
+  Matrix.fromBlocks (-1) 0 0 1
+
+/-- The chirality operator is an involution. -/
+theorem hlsWeylGammaFive_squared : hlsWeylGammaFive * hlsWeylGammaFive = 1 := by
+  simp [hlsWeylGammaFive, Matrix.fromBlocks_multiply, ← Matrix.fromBlocks_one]
+
+/-- Chirality anticommutes with every Minkowski gamma matrix. -/
+theorem hlsWeylGammaFive_anticommutes (μ : Fin 4) :
+    hlsWeylGammaFive * hlsWeylGamma μ + hlsWeylGamma μ * hlsWeylGammaFive = 0 := by
+  simp [hlsWeylGammaFive, hlsWeylGamma, Matrix.fromBlocks_multiply,
+    Matrix.fromBlocks_add, Matrix.fromBlocks_zero]
+
+/-- The gamma adjoint rule has the Lorentzian sign prescribed by the Minkowski metric. -/
+theorem hlsWeylGamma_conjTranspose (μ : Fin 4) :
+    (hlsWeylGamma μ)ᴴ = (hlsMinkowskiCoordinateSign μ : ℂ) • hlsWeylGamma μ := by
+  fin_cases μ <;>
+    ext i j <;> rcases i with i | i <;> rcases j with j | j <;>
+    fin_cases i <;> fin_cases j <;>
+    simp [hlsWeylGamma, hlsWeylSigma, hlsWeylBarSigma, hlsMinkowskiCoordinateSign,
+      Matrix.conjTranspose_apply]
+
 /-- Weyl-spinor transformation and translation-invariance laws on a common invariant domain.
 The matrices `lorentzOnSpinor` are supplied representation data; deriving the unique Weyl form
 from physical hypotheses is part of the unformalized HLS classification proof. -/

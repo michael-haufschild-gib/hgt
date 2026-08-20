@@ -71,7 +71,8 @@ theorem re_weilChannelA {w z : ℂ} (hz : w ^ 2 + z ^ 2 ≠ 0) :
       = (Real.pi / 2) * (halfPlanePoisson (w.re + z.im) (w.im - z.re)
         + halfPlanePoisson (w.re - z.im) (w.im + z.re)) := by
   rw [weilChannelA_eq_resolvent hz, weilResolventPlus, weilResolventMinus, Complex.div_re]
-  simp only [Complex.add_re, Complex.add_im, re_inv_sub_I_mul, re_inv_add_I_mul]
+  simp only [Complex.add_re, Complex.add_im, re_inv_sub_I_mul, re_inv_add_I_mul,
+    Complex.re_ofNat, Complex.im_ofNat, Complex.normSq_ofNat]
   ring
 
 /-! ### The boundary density -/
@@ -85,6 +86,33 @@ theorem re_boundaryPoint (a t : ℝ) : (((a : ℂ) + (t : ℂ) * Complex.I)).re 
 
 theorem im_boundaryPoint (a t : ℝ) : (((a : ℂ) + (t : ℂ) * Complex.I)).im = t := by
   simp
+
+/-- The divisor family of Poisson kernels attached to the boundary line `Re w = a`. -/
+def boundaryPoissonTerm (a t : ℝ) (q : XiZeroCopy) : ℝ :=
+  halfPlanePoisson (a + (xiSpectralPoint q).im) (t - (xiSpectralPoint q).re)
+    + halfPlanePoisson (a - (xiSpectralPoint q).im) (t + (xiSpectralPoint q).re)
+
+theorem re_weilChannelA_spectral {a t : ℝ} (ha : 1 / 2 < a) (q : XiZeroCopy) :
+    (weilChannelA ((a : ℂ) + (t : ℂ) * Complex.I) (xiSpectralPoint q)).re
+      = (Real.pi / 2) * boundaryPoissonTerm a t q := by
+  have hW : (((a : ℂ) + (t : ℂ) * Complex.I)).re = a := by simp
+  have hWim : (((a : ℂ) + (t : ℂ) * Complex.I)).im = t := by simp
+  have hWhalf : 1 / 2 < (((a : ℂ) + (t : ℂ) * Complex.I)).re := by rw [hW]; exact ha
+  rw [re_weilChannelA (sq_add_spectral_sq_ne_zero hWhalf q), hW, hWim, boundaryPoissonTerm]
+
+theorem summable_boundaryPoissonTerm {a : ℝ} (ha : 1 / 2 < a) (t : ℝ) :
+    Summable (boundaryPoissonTerm a t) := by
+  have hW : (((a : ℂ) + (t : ℂ) * Complex.I)).re = a := by simp
+  have hWhalf : 1 / 2 < (((a : ℂ) + (t : ℂ) * Complex.I)).re := by rw [hW]; exact ha
+  have hsum := summable_channelA hWhalf
+  have hre := (hsum.map Complex.reCLM Complex.reCLM.continuous)
+  have hpi : (Real.pi / 2) ≠ 0 := by
+    have := Real.pi_pos
+    positivity
+  refine ((hre.div_const (Real.pi / 2)).congr fun q => ?_)
+  simp only [Function.comp_def]
+  rw [re_weilChannelA_spectral ha q]
+  field_simp
 
 /-- **The boundary density is a convergent divisor sum of Poisson kernels.** -/
 theorem eulerSafeDensity_eq_tsum {a : ℝ} (ha : 1 / 2 < a) (t : ℝ) :
@@ -103,12 +131,6 @@ theorem eulerSafeDensity_eq_tsum {a : ℝ} (ha : 1 / 2 < a) (t : ℝ) :
           + halfPlanePoisson (a - (xiSpectralPoint q).im) (t + (xiSpectralPoint q).re)) := by
     intro q
     rw [re_weilChannelA (sq_add_spectral_sq_ne_zero hWhalf q), hWre, hWim]
-  have hsumre : Summable fun q : XiZeroCopy =>
-      (Real.pi / 2) * (halfPlanePoisson (a + (xiSpectralPoint q).im)
-          (t - (xiSpectralPoint q).re)
-        + halfPlanePoisson (a - (xiSpectralPoint q).im) (t + (xiSpectralPoint q).re)) := by
-    refine (hsum.map Complex.reCLM Complex.reCLM.continuous).congr fun q => ?_
-    simpa [Function.comp_def] using hre q
   rw [eulerSafeDensity, ← hW, logDeriv_xiCent_eq_tsum_channelA hWhalf, Complex.re_tsum hsum,
     tsum_congr hre, tsum_mul_left]
 

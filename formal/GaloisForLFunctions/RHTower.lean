@@ -361,6 +361,7 @@ import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaTenDetectorPolynomial
 import GaloisForLFunctions.RHTower.ChenGuptaLiFiniteZeroDetector
 import GaloisForLFunctions.RHTower.ChenGuptaLiCharacterLargeValues
 import GaloisForLFunctions.RHTower.ChenGuptaLiAnalyticAnchor
+import GaloisForLFunctions.RHTower.ChenGuptaLiDetectorTail
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaEight
 import GaloisForLFunctions.RHTower.BooleanGradeCoprimePlateau
 import GaloisForLFunctions.RHTower.BorderDeterminantVanishing
@@ -6877,6 +6878,7 @@ import GaloisForLFunctions.RHTower.Sieve.LogPolyWindowHM
 import GaloisForLFunctions.RHTower.Sieve.LogPolyTranslation
 import GaloisForLFunctions.RHTower.Sieve.LogPowerLimits
 import GaloisForLFunctions.RHTower.Sieve.TwoRangeSchedule
+import GaloisForLFunctions.RHTower.Sieve.TwoRangeLimits
 import GaloisForLFunctions.RHTower.Sieve.LogSeparation
 import GaloisForLFunctions.RHTower.Sieve.LogSqZetaCap
 import GaloisForLFunctions.RHTower.Sieve.LogSumFromCount
