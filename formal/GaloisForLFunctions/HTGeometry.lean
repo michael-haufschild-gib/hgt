@@ -5,7 +5,9 @@ import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtension
 import GaloisForLFunctions.HTGeometry.ABHN.TensorProduct
 import GaloisForLFunctions.HTGeometry.ABHN.CentralSimpleAzumaya
 import GaloisForLFunctions.HTGeometry.ABHN.AzumayaBaseChange
+import GaloisForLFunctions.HTGeometry.ABHN.AzumayaTensorProduct
 import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtensionBrauer
+import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtensionTensorProduct
 import GaloisForLFunctions.HTGeometry.ABHN.LocalScalarExtension
 import GaloisForLFunctions.HTGeometry.ABHN.Specification
 import GaloisForLFunctions.HTGeometry.ABHN.LocalInvariants

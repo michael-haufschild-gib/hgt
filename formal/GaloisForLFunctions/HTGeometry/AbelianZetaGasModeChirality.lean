@@ -272,7 +272,7 @@ theorem summable_modeChirality (θ : AbelianZetaConvergentParameters)
   have hmt := summable_modeFirstMoment θ t ht
   exact ((hFt.sub hFs).mul_left 2).add ((hms.add hmt).mul_left (t - s))
 
-private theorem modeRatio_shift_mem (θ : AbelianZetaConvergentParameters) (u : ℝ) (hu : 0 ≤ u)
+theorem modeRatio_shift_mem (θ : AbelianZetaConvergentParameters) (u : ℝ) (hu : 0 ≤ u)
     (m : AbelianZetaMode) :
     0 < modeRatio (θ.toAbelianZetaParameters.ratio m) (Real.log ((m.1 : ℕ) : ℝ)) u ∧
       modeRatio (θ.toAbelianZetaParameters.ratio m) (Real.log ((m.1 : ℕ) : ℝ)) u < 1 := by
@@ -295,6 +295,44 @@ theorem gasChirality_pos (θ : AbelianZetaConvergentParameters)
   rw [gasChirality_eq_tsum]
   exact Summable.tsum_pos (summable_modeChirality θ s t hs ht)
     (fun m => (hpos m).le) (⟨2, Nat.prime_two⟩, 0) (hpos _)
+
+/-- **(FCRM.22b)  The explicit chirality series of the gas.**  Every prime, every depth and every
+jump multiplicity contributes one kernel evaluation. -/
+theorem gasChirality_eq_tsum_kernel (θ : AbelianZetaConvergentParameters)
+    (s t : ℝ) (hs : 0 ≤ s) (ht : 0 ≤ t) :
+    gasChirality θ s t hs ht
+      = ∑' m : AbelianZetaMode, ∑' k : ℕ,
+          θ.toAbelianZetaParameters.ratio m ^ (k + 1) / ((k : ℝ) + 1) *
+            (Real.exp (-(s * (((k : ℝ) + 1) * Real.log ((m.1 : ℕ) : ℝ))))
+              * formationKernel ((t - s) * (((k : ℝ) + 1) * Real.log ((m.1 : ℕ) : ℝ)))) := by
+  rw [gasChirality_eq_tsum]
+  refine tsum_congr fun m => ?_
+  obtain ⟨hs0, hs1⟩ := modeRatio_shift_mem θ s hs m
+  obtain ⟨ht0, ht1⟩ := modeRatio_shift_mem θ t ht m
+  exact (hasSum_modeChirality hs0 hs1 ht0 ht1).tsum_eq.symm
+
+/-- **(FCRM.18)  The third response of the gas.**  It is the log-cubed weighted sum over all
+prime-depth modes. -/
+noncomputable def gasThirdCumulant (θ : AbelianZetaConvergentParameters) (u : ℝ) (_hu : 0 ≤ u) : ℝ :=
+  ∑' m : AbelianZetaMode,
+    modeThirdCumulant (θ.toAbelianZetaParameters.ratio m) (Real.log ((m.1 : ℕ) : ℝ)) u
+
+theorem gasThirdCumulant_eq (θ : AbelianZetaConvergentParameters) (u : ℝ) (hu : 0 ≤ u) :
+    gasThirdCumulant θ u hu
+      = ∑' m : AbelianZetaMode, Real.log ((m.1 : ℕ) : ℝ) ^ 3 *
+          ((fugacityShiftConv θ u hu).toAbelianZetaParameters.ratio m *
+              (1 + (fugacityShiftConv θ u hu).toAbelianZetaParameters.ratio m) /
+            (1 - (fugacityShiftConv θ u hu).toAbelianZetaParameters.ratio m) ^ 3) := by
+  refine tsum_congr fun m => ?_
+  rw [modeThirdCumulant, ← ratio_fugacityShiftParameters θ.toAbelianZetaParameters u hu m]
+  rfl
+
+/-- Every term of the third-response series is strictly positive. -/
+theorem modeThirdCumulant_gas_pos (θ : AbelianZetaConvergentParameters) (u : ℝ) (hu : 0 ≤ u)
+    (m : AbelianZetaMode) :
+    0 < modeThirdCumulant (θ.toAbelianZetaParameters.ratio m) (Real.log ((m.1 : ℕ) : ℝ)) u := by
+  obtain ⟨h0, h1⟩ := modeRatio_shift_mem θ u hu m
+  exact modeThirdCumulant_pos (Real.log_pos (by exact_mod_cast m.1.prop.one_lt)) h0 h1
 
 /-- **Information chronology of the gas.**  The directed commutator reconstructs the complete
 order of the chemical potential. -/

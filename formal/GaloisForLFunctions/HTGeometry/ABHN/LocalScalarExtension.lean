@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.ABHN.RationalFunctionPlaces
 import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtension
 import GaloisForLFunctions.HTGeometry.ABHN.AzumayaBaseChange
 import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtensionBrauer
+import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtensionTensorProduct
 
 /-!
 # Local scalar-extension carriers for Albert--Brauer--Hasse--Noether
@@ -143,6 +144,15 @@ theorem numberFieldLocalBrauerMap_split (K : Type u) [Field K] [NumberField K] :
     brauerSplitClass (completion K v)
   exact scalarExtensionBrauerMap_split K (completion K v)
 
+/-- Number-field localization preserves tensor-product addition pointwise at every place. -/
+theorem numberFieldLocalBrauerMap_tensorAdd (K : Type u) [Field K] [NumberField K]
+    (x y : BrauerGroup.{u, u} K) :
+    numberFieldLocalBrauerMap K (brauerTensorAdd K x y) = fun v ↦
+      brauerTensorAdd (completion K v) (numberFieldLocalBrauerMap K x v)
+        (numberFieldLocalBrauerMap K y v) := by
+  funext v
+  exact scalarExtensionBrauerMap_tensorAdd K (completion K v) x y
+
 /-- The rational-function-field global-to-local map on Brauer quotients.  Its upgrade to finite
 support is likewise precisely the finite ramification part of ABHN. -/
 noncomputable def rationalFunctionLocalBrauerMap (F : Type u) [Field F] [Finite F] :
@@ -167,6 +177,16 @@ theorem rationalFunctionLocalBrauerMap_split (F : Type u) [Field F] [Finite F] :
   change scalarExtensionBrauerMap (RatFunc F) (rationalFunctionCompletion F v)
       (brauerSplitClass (RatFunc F)) = brauerSplitClass (rationalFunctionCompletion F v)
   exact scalarExtensionBrauerMap_split (RatFunc F) (rationalFunctionCompletion F v)
+
+/-- Rational-function-field localization preserves tensor-product addition pointwise at every
+place. -/
+theorem rationalFunctionLocalBrauerMap_tensorAdd (F : Type u) [Field F] [Finite F]
+    (x y : BrauerGroup.{u, u} (RatFunc F)) :
+    rationalFunctionLocalBrauerMap F (brauerTensorAdd (RatFunc F) x y) = fun v ↦
+      brauerTensorAdd (rationalFunctionCompletion F v)
+        (rationalFunctionLocalBrauerMap F x v) (rationalFunctionLocalBrauerMap F y v) := by
+  funext v
+  exact scalarExtensionBrauerMap_tensorAdd (RatFunc F) (rationalFunctionCompletion F v) x y
 
 /-- At every number-field place, the local scalar extension of a split matrix representative is
 definitionally the standard scalar extension of that split matrix algebra. -/

@@ -7279,3 +7279,48 @@ of `log`.  The three ingredients: `log(lowTop) ≤ (log x)^β` (from `lowTop_le_
 `log log lowTop ≤ β·log log x`; `log(lowBase) ≥ K·log log x`, so `log log lowBase ≥ log(K log log x)
 → ∞`; and `Sieve/PrimeRangeLogLogMass`'s decaying error `2(2c₁+1/2)/log(lowBase) → 0`.  The negative
 `− log log lowBase` swallows the error, leaving exactly `β·log log x`.
+
+### CORRECTION TO THE CORRECTION — `w₀` is polylogarithmic, and `a < 19/20` is not a constraint (2026-08-20)
+
+The previous entry's conclusion (`w₀ ≍ exp(3s(log x)^{a−9/10})`, hence `a < 19/20`) is **wrong**, and
+the error was mine, not the corpus's: I required the Route-T saving `ρ` to be *super*-polylogarithmic.
+It does not have to be.  The large half's leading group is
+
+```text
+   2L'·(2π)⁻¹·ρ²·(2 + 48π·Λ)·(S'² + Bmax'·S') / M²  ≍  ρ²·L'·Λ·(H')²
+     ≍  ρ²·(log x)^{b+c'}·(log x)·(log log x)² ,
+```
+
+so all that is needed is `ρ² ≪ (log x)^{−(b+c'+1)}`, i.e. **`ρ = (log x)^{−A₃}` for a large enough
+constant `A₃`**.  With that target the majorant closes at *polylogarithmic* parameters:
+
+```text
+   Lx = log 2 + (log x)^b ,        D  = (log x)^{b+A₃+1}  (so (log 2 + Lx)/D ≤ ρ/3) ,
+   t₀ = (log x)^{4b+3A₃+3}         (so Ctot·D²·Lx²/(2π t₀) ≤ ρ/3) ,
+   q  = (log x)^a ,  xmin = exp((log x)^a) ,  Hmaj ≍ (log x)^{19/10} ,
+```
+
+and the two remaining summands, `Ctot·D²·Hmaj·e^{−μq}/(2π)` and `2Lx/√xmin`, carry a genuine
+exponential — `e^{−μq} = exp(−(log x)^{a−9/10})` with `μ ≍ (log T₀)^{−9/10}` — which beats every
+power of `log x` as soon as `a > 9/10`.  So the disc radius is
+
+```text
+   w₀ = t₀/(2π) = (log x)^{4b+3A₃+3}/(2π) ,
+```
+
+polylogarithmic, exactly like the corpus's own `annulusStart β x = (log x)^13` in milestone A, and
+the disc group `w₀·exp(−2(log M)^{1/20})` vanishes with room to spare.  **There is no upper
+constraint on `a`.**
+
+Recorded in `Sieve/TwoRangeSchedule` as `twoRangeRho A₃`, `twoRangeWidth b A₃`, `twoRangeDisc b A₃`,
+`twoRangeLx b`, with `tendsto_twoRangeRho` and `tendsto_logRpow_mul_expSaving` (the exponential
+factor beats every power of the logarithm).  The entry above it, and its claim `9/10 < a < 19/20`,
+are superseded.
+
+**The constraint set, final:**
+
+```text
+   9/10 < a < b < 1 ,   c > 1 + β ,   c' > 1 + b − a ,   2A > β + c ,
+   K > max( 2(3 + c + 2A), (c+1)/2 ) ,   2A₃ > b + c' + 1 ,
+   ω = log log x ,   δ = (log log x)^{−1/2} ,   β ∈ (0,1) free.
+```

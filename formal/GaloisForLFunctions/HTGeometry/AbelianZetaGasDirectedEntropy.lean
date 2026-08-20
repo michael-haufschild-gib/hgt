@@ -202,4 +202,104 @@ theorem centered_reversal_selection (θ : AbelianZetaConvergentParameters)
   have h := fugacityShift_eq_of_involution θ (c - a) (c + a) hca hcb hΘ hinv hmap
   linarith
 
+/-- Injectivity of the formation family: distinct admitted chemical potentials give distinct laws. -/
+theorem classLaw_fugacityShift_injective (θ : AbelianZetaConvergentParameters)
+    {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t)
+    (h : classLaw (fugacityShiftConv θ s hs).toAbelianZetaParameters
+      = classLaw (fugacityShiftConv θ t ht).toAbelianZetaParameters) : s = t := by
+  have hzero : gasChirality θ s t hs ht = 0 := by
+    rw [← klChirality_classLaw_fugacityShift θ s t hs ht, h, klChirality]
+    ring
+  rcases lt_trichotomy s t with hst | hst | hst
+  · exact absurd hzero (ne_of_gt (gasChirality_pos θ s t hs ht hst))
+  · exact hst
+  · have hneg : gasChirality θ s t hs ht = -gasChirality θ t s ht hs := by
+      simp only [gasChirality]; ring
+    have := gasChirality_pos θ t s ht hs hst
+    rw [hneg] at hzero
+    linarith
+
+/-- The formation law depends on the chemical potential only through its value. -/
+theorem classLaw_fugacityShift_congr (θ : AbelianZetaConvergentParameters)
+    {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : a = b) :
+    classLaw (fugacityShiftConv θ a ha).toAbelianZetaParameters
+      = classLaw (fugacityShiftConv θ b hb).toAbelianZetaParameters := by
+  subst h; rfl
+
+/-- A finite-order measurable self-map of a measurable space is a measurable embedding. -/
+theorem measurableEmbedding_of_finite_order {α : Type*} [MeasurableSpace α]
+    {Θ : α → α} (hΘ : Measurable Θ) {N : ℕ} (hN : 0 < N) (hiter : ∀ A, Θ^[N] A = A) :
+    MeasurableEmbedding Θ := by
+  obtain ⟨k, rfl⟩ : ∃ k, N = k + 1 := ⟨N - 1, by omega⟩
+  have hinvL : ∀ A, Θ^[k] (Θ A) = A := by
+    intro A
+    have := hiter A
+    rwa [Function.iterate_succ_apply] at this
+  have hinvR : ∀ A, Θ (Θ^[k] A) = A := by
+    intro A
+    have := hiter A
+    rwa [Function.iterate_succ_apply'] at this
+  let e : α ≃ᵐ α :=
+    { toFun := Θ
+      invFun := Θ^[k]
+      left_inv := hinvL
+      right_inv := hinvR
+      measurable_toFun := hΘ
+      measurable_invFun := hΘ.iterate k }
+  exact e.measurableEmbedding
+
+/-- Relative entropy is invariant under a finite-order measurable symmetry. -/
+theorem klChirality_map_of_finite_order {α : Type*} [MeasurableSpace α]
+    {Θ : α → α} (hΘ : Measurable Θ) {N : ℕ} (hN : 0 < N) (hiter : ∀ A, Θ^[N] A = A)
+    (P R : Measure α) [IsFiniteMeasure P] [IsFiniteMeasure R] :
+    klChirality (P.map Θ) (R.map Θ) = klChirality P R := by
+  have hemb := measurableEmbedding_of_finite_order hΘ hN hiter
+  rw [klChirality, klChirality, klDiv_map_measurableEmbedding hemb,
+    klDiv_map_measurableEmbedding hemb]
+
+/-- **Theorem 7.2 (FCRM.27).**  A finite-order measurable symmetry transporting the formation
+family along a parameter map acts as the identity on the parameter. -/
+theorem fugacityShift_finite_order_symmetry_id (θ : AbelianZetaConvergentParameters)
+    {Θ : AbelianZetaGroupClass → AbelianZetaGroupClass} (hΘ : Measurable Θ)
+    {N : ℕ} (hN : 0 < N) (hiter : ∀ A, Θ^[N] A = A)
+    {φ : ℝ → ℝ} {I : Set ℝ} (hI : ∀ t ∈ I, 0 ≤ t) (hmapI : ∀ t ∈ I, φ t ∈ I)
+    (htrans : ∀ t, ∀ ht : t ∈ I,
+      (classLaw (fugacityShiftConv θ t (hI t ht)).toAbelianZetaParameters).map Θ
+        = classLaw (fugacityShiftConv θ (φ t) (hI (φ t) (hmapI t ht))).toAbelianZetaParameters) :
+    ∀ t ∈ I, φ t = t := by
+  have hiterI : ∀ (k : ℕ), ∀ t ∈ I, φ^[k] t ∈ I := by
+    intro k
+    induction k with
+    | zero => intro t ht; simpa using ht
+    | succ k ih =>
+        intro t ht
+        rw [Function.iterate_succ_apply]
+        exact ih _ (hmapI t ht)
+  have hmono : ∀ s ∈ I, ∀ t ∈ I, s < t → φ s < φ t := by
+    intro s hsI t htI hst
+    have hchir := gasChirality_pos θ s t (hI s hsI) (hI t htI) hst
+    rw [← klChirality_classLaw_fugacityShift θ s t (hI s hsI) (hI t htI)] at hchir
+    rw [← klChirality_map_of_finite_order hΘ hN hiter, htrans s hsI, htrans t htI,
+      klChirality_classLaw_fugacityShift] at hchir
+    exact (gasChirality_lt_iff θ (φ s) (φ t) (hI _ (hmapI s hsI)) (hI _ (hmapI t htI))).mpr hchir
+  have hmapIter : ∀ (k : ℕ), ∀ t, ∀ ht : t ∈ I,
+      (classLaw (fugacityShiftConv θ t (hI t ht)).toAbelianZetaParameters).map (Θ^[k])
+        = classLaw (fugacityShiftConv θ (φ^[k] t)
+            (hI (φ^[k] t) (hiterI k t ht))).toAbelianZetaParameters := by
+    intro k
+    induction k with
+    | zero => intro t ht; simp
+    | succ k ih =>
+        intro t ht
+        rw [show (Θ^[k + 1]) = Θ^[k] ∘ Θ from Function.iterate_succ Θ k,
+          ← Measure.map_map (hΘ.iterate k) hΘ, htrans t ht, ih (φ t) (hmapI t ht)]
+        exact classLaw_fugacityShift_congr θ _ _ (Function.iterate_succ_apply φ k t).symm
+  have hfix : ∀ t ∈ I, φ^[N] t = t := by
+    intro t ht
+    have h := hmapIter N t ht
+    have hid : Θ^[N] = id := funext hiter
+    rw [hid, Measure.map_id] at h
+    exact (classLaw_fugacityShift_injective θ (hI _ (hiterI N t ht)) (hI t ht) h.symm)
+  exact eq_id_of_strictMonoOn_of_iterate_id hmapI hmono hN hfix
+
 end GaloisForLFunctions.HTGeometry

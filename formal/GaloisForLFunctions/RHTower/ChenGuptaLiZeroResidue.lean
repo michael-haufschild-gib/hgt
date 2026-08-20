@@ -49,6 +49,27 @@ theorem continuousAt_zeroDetectionMobiusPolynomial (X q : ℕ)
     exact (continuousAt_const_cpow hdne).comp continuousAt_neg
   exact (continuous_const.mul continuous_const).mul hpow
 
+/-- The finite detector polynomial is complex differentiable at every point. -/
+theorem differentiableAt_zeroDetectionMobiusPolynomial (X q : ℕ)
+    (χ : DirichletCharacter ℂ q) (s : ℂ) :
+    DifferentiableAt ℂ (zeroDetectionMobiusPolynomial X q χ) s := by
+  unfold zeroDetectionMobiusPolynomial
+  apply DifferentiableAt.fun_sum
+  intro d hd
+  have hdne : (d : ℂ) ≠ 0 := by
+    have hdpos : 0 < d := (Finset.mem_Icc.mp hd).1
+    exact_mod_cast (Nat.ne_of_gt hdpos)
+  exact ((differentiable_const (ArithmeticFunction.moebius d : ℂ)).differentiableAt.mul
+    (differentiable_const (χ d)).differentiableAt).mul
+    (DifferentiableAt.const_cpow differentiableAt_id.neg (Or.inl hdne))
+
+/-- The finite detector polynomial is entire. -/
+theorem differentiable_zeroDetectionMobiusPolynomial (X q : ℕ)
+    (χ : DirichletCharacter ℂ q) :
+    Differentiable ℂ (zeroDetectionMobiusPolynomial X q χ) := by
+  intro s
+  exact differentiableAt_zeroDetectionMobiusPolynomial X q χ s
+
 /-- The Mellin integrand used to detect a zero after shifting the initial
 line. -/
 def cglDetectorMellinIntegrand (X q : ℕ) (z : CGLCriticalStripLZero q) (w : ℂ) : ℂ :=

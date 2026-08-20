@@ -222,4 +222,224 @@ theorem integral_boundaryPoissonTerm_mul_poisson {a p : ℝ} (ha : 1 / 2 < a) (h
     congr 1
     ring
 
+/-! ### Integrability of the divisor terms against the Cauchy kernel -/
+
+theorem norm_inv_add_I_mul_real_le {B : ℂ} (hB : 0 < B.re) (t : ℝ) :
+    ‖(B + Complex.I * (t : ℂ))⁻¹‖ ≤ 1 / B.re := by
+  have hre : (B + Complex.I * (t : ℂ)).re = B.re := by simp
+  have hge : B.re ≤ ‖B + Complex.I * (t : ℂ)‖ := by
+    have := Complex.re_le_norm (B + Complex.I * (t : ℂ))
+    rwa [hre] at this
+  rw [norm_inv, inv_eq_one_div]
+  exact one_div_le_one_div_of_le hB hge
+
+theorem integrable_poisson_cauchy_shiftL {c : ℝ} (hc : 0 < c) {A : ℂ} (hA : 0 < A.re) (r : ℝ) :
+    Integrable fun t : ℝ =>
+      ((halfPlanePoisson c (t - r) : ℝ) : ℂ) * (A - Complex.I * (t : ℂ))⁻¹ := by
+  have hne : ∀ t : ℝ, A - Complex.I * (t : ℂ) ≠ 0 := by
+    intro t h
+    have hre : (A - Complex.I * (t : ℂ)).re = A.re := re_sub_I_ofReal A t
+    rw [h, Complex.zero_re] at hre
+    linarith [hre ▸ hA]
+  have hcont : Continuous fun t : ℝ =>
+      ((halfPlanePoisson c (t - r) : ℝ) : ℂ) * (A - Complex.I * (t : ℂ))⁻¹ :=
+    (Complex.continuous_ofReal.comp ((continuous_halfPlanePoisson hc).comp (by fun_prop))).mul
+      (Continuous.inv₀ (by fun_prop) hne)
+  refine ((((integrable_halfPlanePoisson hc).comp_sub_right r)).const_mul (1 / A.re)).mono'
+    hcont.aestronglyMeasurable ?_
+  filter_upwards with t
+  have hp := halfPlanePoisson_pos hc (t - r)
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hp, Real.norm_eq_abs,
+    abs_of_nonneg (by positivity), mul_comm (1 / A.re)]
+  exact mul_le_mul_of_nonneg_left (norm_inv_sub_I_mul_real_le hA t) (le_of_lt hp)
+
+theorem integrable_poisson_cauchy_shiftR {c : ℝ} (hc : 0 < c) {B : ℂ} (hB : 0 < B.re) (r : ℝ) :
+    Integrable fun t : ℝ =>
+      ((halfPlanePoisson c (t - r) : ℝ) : ℂ) * (B + Complex.I * (t : ℂ))⁻¹ := by
+  have hne : ∀ t : ℝ, B + Complex.I * (t : ℂ) ≠ 0 := by
+    intro t h
+    have hre : (B + Complex.I * (t : ℂ)).re = B.re := by simp
+    rw [h, Complex.zero_re] at hre
+    linarith [hre ▸ hB]
+  have hcont : Continuous fun t : ℝ =>
+      ((halfPlanePoisson c (t - r) : ℝ) : ℂ) * (B + Complex.I * (t : ℂ))⁻¹ :=
+    (Complex.continuous_ofReal.comp ((continuous_halfPlanePoisson hc).comp (by fun_prop))).mul
+      (Continuous.inv₀ (by fun_prop) hne)
+  refine ((((integrable_halfPlanePoisson hc).comp_sub_right r)).const_mul (1 / B.re)).mono'
+    hcont.aestronglyMeasurable ?_
+  filter_upwards with t
+  have hp := halfPlanePoisson_pos hc (t - r)
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hp, Real.norm_eq_abs,
+    abs_of_nonneg (by positivity), mul_comm (1 / B.re)]
+  exact mul_le_mul_of_nonneg_left (norm_inv_add_I_mul_real_le hB t) (le_of_lt hp)
+
+theorem norm_boundaryCauchyKernel_le_const {a : ℝ} {w v : ℂ} (hw : a < w.re) (hv : a < v.re)
+    (t : ℝ) :
+    ‖boundaryCauchyKernel a w v t‖ ≤ (1 / (w - (a : ℂ)).re) * (1 / (conj v - (a : ℂ)).re) := by
+  have hAeq : w - (a : ℂ) - Complex.I * (t : ℂ) = (w - (a : ℂ)) - Complex.I * (t : ℂ) := by ring
+  have hBeq : conj v - (a : ℂ) + Complex.I * (t : ℂ)
+      = (conj v - (a : ℂ)) + Complex.I * (t : ℂ) := by ring
+  rw [boundaryCauchyKernel, hAeq, hBeq, mul_inv, norm_mul]
+  exact mul_le_mul (norm_inv_sub_I_mul_real_le (re_node_offset hw) t)
+    (norm_inv_add_I_mul_real_le (re_conj_node_offset hv) t) (norm_nonneg _)
+    (by positivity)
+
+theorem integrable_boundaryPoissonTerm {a : ℝ} (ha : 1 / 2 < a) (q : XiZeroCopy) :
+    Integrable fun t : ℝ => boundaryPoissonTerm a t q := by
+  obtain ⟨hpos, hneg⟩ := abs_im_spectral_lt ha q
+  have h1 : Integrable fun t : ℝ =>
+      halfPlanePoisson (a + (xiSpectralPoint q).im) (t - (xiSpectralPoint q).re) :=
+    (integrable_halfPlanePoisson hpos).comp_sub_right _
+  have h2 : Integrable fun t : ℝ =>
+      halfPlanePoisson (a - (xiSpectralPoint q).im) (t - (-(xiSpectralPoint q).re)) :=
+    (integrable_halfPlanePoisson hneg).comp_sub_right _
+  refine (h1.add h2).congr (Filter.Eventually.of_forall fun t => ?_)
+  simp only [Pi.add_apply, boundaryPoissonTerm]
+  have h : t - -(xiSpectralPoint q).re = t + (xiSpectralPoint q).re := by ring
+  rw [h]
+
+theorem integrable_boundaryTerm_cauchy {a : ℝ} (ha : 1 / 2 < a) {w v : ℂ} (hw : a < w.re)
+    (hv : a < v.re) (q : XiZeroCopy) :
+    Integrable fun t : ℝ =>
+      ((boundaryPoissonTerm a t q : ℝ) : ℂ) * boundaryCauchyKernel a w v t := by
+  obtain ⟨hpos, hneg⟩ := abs_im_spectral_lt ha q
+  have hcont : Continuous fun t : ℝ =>
+      ((boundaryPoissonTerm a t q : ℝ) : ℂ) * boundaryCauchyKernel a w v t := by
+    refine Continuous.mul (Complex.continuous_ofReal.comp ?_) ?_
+    · unfold boundaryPoissonTerm
+      exact ((continuous_halfPlanePoisson hpos).comp (by fun_prop)).add
+        ((continuous_halfPlanePoisson hneg).comp (by fun_prop))
+    · unfold boundaryCauchyKernel
+      refine Continuous.inv₀ (by fun_prop) fun t => ?_
+      exact mul_ne_zero (sub_I_ne_zero hw t) (add_I_ne_zero hv t)
+  have hApos := re_node_offset hw
+  have hBpos := re_conj_node_offset hv
+  refine ((integrable_boundaryPoissonTerm ha q).const_mul
+    ((1 / (w - (a : ℂ)).re) * (1 / (conj v - (a : ℂ)).re))).mono'
+    hcont.aestronglyMeasurable ?_
+  filter_upwards with t
+  have hT : 0 < boundaryPoissonTerm a t q := by
+    rw [boundaryPoissonTerm]
+    exact add_pos (halfPlanePoisson_pos hpos _) (halfPlanePoisson_pos hneg _)
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hT, Real.norm_eq_abs,
+    abs_of_nonneg (by positivity), mul_comm ((1 / (w - (a : ℂ)).re) * (1 / (conj v - (a : ℂ)).re))]
+  exact mul_le_mul_of_nonneg_left (norm_boundaryCauchyKernel_le_const hw hv t) (le_of_lt hT)
+
+/-! ### The per-term Cauchy integral -/
+
+theorem integral_boundaryTerm_cauchy {a : ℝ} (ha : 1 / 2 < a) {w v : ℂ} (hw : a < w.re)
+    (hv : a < v.re) (hS : w + conj v - 2 * (a : ℂ) ≠ 0) (q : XiZeroCopy) :
+    (∫ t : ℝ, ((boundaryPoissonTerm a t q : ℝ) : ℂ) * boundaryCauchyKernel a w v t)
+      = (w + conj v - 2 * (a : ℂ))⁻¹
+        * (2 * (weilChannelA w (xiSpectralPoint q)
+          + conj (weilChannelA v (xiSpectralPoint q)))) := by
+  obtain ⟨hpos, hneg⟩ := abs_im_spectral_lt ha q
+  have hA := re_node_offset hw
+  have hB := re_conj_node_offset hv
+  have hwhalf : 1 / 2 < w.re := lt_trans ha hw
+  have hvhalf : 1 / 2 < v.re := lt_trans ha hv
+  set r : ℝ := (xiSpectralPoint q).re with hrdef
+  set n : ℝ := (xiSpectralPoint q).im with hndef
+  have hsplit : ∀ t : ℝ, ((boundaryPoissonTerm a t q : ℝ) : ℂ) * boundaryCauchyKernel a w v t
+      = (w + conj v - 2 * (a : ℂ))⁻¹
+        * ((((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ)
+              * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹
+            + ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
+              * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹)
+          + (((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ)
+              * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹
+            + ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
+              * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹)) := by
+    intro t
+    rw [boundaryCauchyKernel_split hw hv hS t, boundaryPoissonTerm]
+    have h : t - -r = t + r := by ring
+    rw [h, ← hrdef, ← hndef]
+    push_cast
+    ring
+  have hAeq : ∀ t : ℝ, w - (a : ℂ) - Complex.I * (t : ℂ)
+      = (w - (a : ℂ)) - Complex.I * (t : ℂ) := fun t => by ring
+  have hBeq : ∀ t : ℝ, conj v - (a : ℂ) + Complex.I * (t : ℂ)
+      = (conj v - (a : ℂ)) + Complex.I * (t : ℂ) := fun t => by ring
+  have hi1 : Integrable fun t : ℝ => ((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ)
+      * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹ := by
+    refine (integrable_poisson_cauchy_shiftL hpos hA r).congr
+      (Filter.Eventually.of_forall fun t => ?_)
+    rw [hAeq t]
+  have hi2 : Integrable fun t : ℝ => ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
+      * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹ := by
+    refine (integrable_poisson_cauchy_shiftL hneg hA (-r)).congr
+      (Filter.Eventually.of_forall fun t => ?_)
+    rw [hAeq t]
+  have hi3 : Integrable fun t : ℝ => ((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ)
+      * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹ := by
+    refine (integrable_poisson_cauchy_shiftR hpos hB r).congr
+      (Filter.Eventually.of_forall fun t => ?_)
+    rw [hBeq t]
+  have hi4 : Integrable fun t : ℝ => ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
+      * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹ := by
+    refine (integrable_poisson_cauchy_shiftR hneg hB (-r)).congr
+      (Filter.Eventually.of_forall fun t => ?_)
+    rw [hBeq t]
+  have hv1 : (∫ t : ℝ, ((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ)
+      * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹)
+      = ((w - (a : ℂ)) - Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ))⁻¹ := by
+    rw [← integral_poisson_cauchy_shift hpos hA r]
+    exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => by rw [hAeq t])
+  have hv2 : (∫ t : ℝ, ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
+      * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹)
+      = ((w - (a : ℂ)) - Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ))⁻¹ := by
+    rw [← integral_poisson_cauchy_shift hneg hA (-r)]
+    exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => by rw [hAeq t])
+  have hv3 : (∫ t : ℝ, ((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ)
+      * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹)
+      = ((conj v - (a : ℂ)) + Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ))⁻¹ := by
+    rw [← integral_poisson_cauchy_shift_conj hpos hB r]
+    exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => by rw [hBeq t])
+  have hv4 : (∫ t : ℝ, ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
+      * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹)
+      = ((conj v - (a : ℂ)) + Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ))⁻¹ := by
+    rw [← integral_poisson_cauchy_shift_conj hneg hB (-r)]
+    exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => by rw [hBeq t])
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hsplit),
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_add (hi1.add hi2) (hi3.add hi4),
+    MeasureTheory.integral_add hi1 hi2, MeasureTheory.integral_add hi3 hi4,
+    hv1, hv2, hv3, hv4]
+  congr 1
+  have halpha : xiSpectralPoint q = ((r : ℝ) : ℂ) + ((n : ℝ) : ℂ) * Complex.I := by
+    rw [hrdef, hndef]
+    exact (Complex.re_add_im _).symm
+  have e1 : (w - (a : ℂ)) - Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ)
+      = w - Complex.I * xiSpectralPoint q := by
+    rw [halpha]
+    push_cast
+    linear_combination ((n : ℝ) : ℂ) * Complex.I_mul_I
+  have e2 : (w - (a : ℂ)) - Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ)
+      = w + Complex.I * xiSpectralPoint q := by
+    rw [halpha]
+    push_cast
+    linear_combination (-((n : ℝ) : ℂ)) * Complex.I_mul_I
+  have e3 : (conj v - (a : ℂ)) + Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ)
+      = conj (v - Complex.I * xiSpectralPoint q) := by
+    rw [halpha]
+    simp only [map_sub, map_mul, Complex.conj_I, Complex.conj_ofReal, map_add]
+    push_cast
+    linear_combination ((n : ℝ) : ℂ) * Complex.I_mul_I
+  have e4 : (conj v - (a : ℂ)) + Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ)
+      = conj (v + Complex.I * xiSpectralPoint q) := by
+    rw [halpha]
+    simp only [map_add, map_mul, Complex.conj_I, Complex.conj_ofReal, map_sub]
+    push_cast
+    linear_combination (-((n : ℝ) : ℂ)) * Complex.I_mul_I
+  rw [e1, e2, e3, e4, ← map_inv₀, ← map_inv₀]
+  have hwsq := sq_add_spectral_sq_ne_zero hwhalf q
+  have hvsq := sq_add_spectral_sq_ne_zero hvhalf q
+  rw [weilChannelA_eq_resolvent hwsq, weilChannelA_eq_resolvent hvsq, weilResolventPlus,
+    weilResolventMinus, weilResolventPlus, weilResolventMinus, map_div₀, map_add, map_div₀,
+    map_div₀, map_one, map_one, map_add, map_mul, Complex.conj_I, Complex.conj_conj]
+  simp only [one_div]
+  rw [map_sub, map_mul, Complex.conj_I]
+  ring_nf
+  simp only [Complex.conj_conj]
+  ring
+
 end RHTower

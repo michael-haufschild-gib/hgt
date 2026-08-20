@@ -52,38 +52,28 @@ noncomputable def modeThirdCumulant (a lam t : ℝ) : ℝ :=
 
 theorem hasDerivAt_modeRatio (a lam t : ℝ) :
     HasDerivAt (modeRatio a lam) (-(lam * modeRatio a lam t)) t := by
-  have hin : HasDerivAt (fun x : ℝ => -(lam * x)) (-lam) t := by
-    have h := ((hasDerivAt_id t).const_mul lam).neg
-    convert h using 1
-    ring
-  have h2 := hin.exp.const_mul a
-  convert h2 using 1
-  simp only [modeRatio]
-  ring
+  have hin : HasDerivAt (fun x : ℝ => -(lam * x)) (-lam) t :=
+    HasDerivAt.congr_deriv (((hasDerivAt_id t).const_mul lam).neg) (by ring)
+  exact HasDerivAt.congr_deriv (hin.exp.const_mul a) (by simp only [modeRatio]; ring)
 
 private theorem hasDerivAt_one_sub_modeRatio (a lam t : ℝ) :
-    HasDerivAt (fun x : ℝ => 1 - modeRatio a lam x) (lam * modeRatio a lam t) t := by
-  have h := (hasDerivAt_modeRatio a lam t).const_sub 1
-  convert h using 1
-  ring
+    HasDerivAt (fun x : ℝ => 1 - modeRatio a lam x) (lam * modeRatio a lam t) t :=
+  HasDerivAt.congr_deriv ((hasDerivAt_modeRatio a lam t).const_sub 1) (by ring)
 
 /-- **(FCRM.21), first step.**  The mode log partition has derivative minus its first response. -/
 theorem hasDerivAt_modeLogPartition (h1 : modeRatio a lam t < 1) :
     HasDerivAt (modeLogPartition a lam) (-(modeFirstMoment a lam t)) t := by
   have hne : 1 - modeRatio a lam t ≠ 0 := by linarith
   have hlog := (hasDerivAt_one_sub_modeRatio a lam t).log hne
-  have h := hlog.neg
-  convert h using 1
-  simp only [modeFirstMoment]
-  field_simp
+  exact HasDerivAt.congr_deriv hlog.neg (by simp only [modeFirstMoment]; field_simp)
 
 /-- **(FCRM.21), second step.**  The first response has derivative minus the second response. -/
 theorem hasDerivAt_modeFirstMoment (h1 : modeRatio a lam t < 1) :
     HasDerivAt (modeFirstMoment a lam) (-(modeSecondResponse a lam t)) t := by
   have hne : 1 - modeRatio a lam t ≠ 0 := by linarith
   have hdiv := (hasDerivAt_modeRatio a lam t).div (hasDerivAt_one_sub_modeRatio a lam t) hne
-  have h := hdiv.const_mul lam
-  convert h using 1
+  rw [Pi.div_def] at hdiv
+  refine HasDerivAt.congr_deriv (hdiv.const_mul lam) ?_
   simp only [modeSecondResponse]
   field_simp
   ring
@@ -97,15 +87,15 @@ theorem hasDerivAt_modeSecondResponse (h1 : modeRatio a lam t < 1) :
   have hsq : HasDerivAt (fun x : ℝ => (1 - modeRatio a lam x) ^ 2)
       (2 * (1 - modeRatio a lam t) * (lam * modeRatio a lam t)) t := by
     have h := hsub.mul hsub
+    rw [Pi.mul_def] at h
     have hfun : (fun x : ℝ => (1 - modeRatio a lam x) * (1 - modeRatio a lam x))
         = fun x : ℝ => (1 - modeRatio a lam x) ^ 2 := by
       funext x; ring
     rw [hfun] at h
-    convert h using 1
-    ring
+    exact HasDerivAt.congr_deriv h (by ring)
   have hdiv := (hasDerivAt_modeRatio a lam t).div hsq hne2
-  have h := hdiv.const_mul (lam ^ 2)
-  convert h using 1
+  rw [Pi.div_def] at hdiv
+  refine HasDerivAt.congr_deriv (hdiv.const_mul (lam ^ 2)) ?_
   simp only [modeThirdCumulant]
   field_simp
   ring
@@ -149,6 +139,23 @@ theorem hasSum_modeLogPartition (h0 : 0 < modeRatio a lam t) (h1 : modeRatio a l
   have habs : |modeRatio a lam t| < 1 := by rw [abs_of_pos h0]; exact h1
   refine (Real.hasSum_pow_div_log_of_abs_lt_one habs).congr_fun fun k => ?_
   rw [modeRatio_pow]
+  ring
+
+/-- **(FCRM.17)  The Lévy measure of one geometric mode.**  Its Laplace exponent relative to the
+untilted mode is the compound-Poisson exponent of the discrete measure `∑_{k ≥ 1} (a^k/k) δ_{kλ}`. -/
+theorem hasSum_modeLogPartition_sub (h0 : 0 < a) (h1 : a < 1)
+    (ht0 : 0 < modeRatio a lam t) (ht1 : modeRatio a lam t < 1) :
+    HasSum (fun k : ℕ =>
+        a ^ (k + 1) / ((k : ℝ) + 1) * (Real.exp (-(t * (((k : ℝ) + 1) * lam))) - 1))
+      (modeLogPartition a lam t - modeLogPartition a lam 0) := by
+  have hz0 : modeRatio a lam 0 = a := by simp [modeRatio]
+  have hzt := hasSum_modeLogPartition ht0 ht1
+  have hz : HasSum (fun k : ℕ =>
+      a ^ (k + 1) / ((k : ℝ) + 1) * Real.exp (-((0 : ℝ) * (((k : ℝ) + 1) * lam))))
+      (modeLogPartition a lam 0) :=
+    hasSum_modeLogPartition (by rw [hz0]; exact h0) (by rw [hz0]; exact h1)
+  refine (hzt.sub hz).congr_fun fun k => ?_
+  simp only [zero_mul, neg_zero, Real.exp_zero, mul_one]
   ring
 
 /-- **The first response of one geometric mode is the Lévy first moment.** -/

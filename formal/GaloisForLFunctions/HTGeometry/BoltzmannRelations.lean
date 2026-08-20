@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.FiniteEntropyPlateauFutureLaw
+import GaloisForLFunctions.HTGeometry.FiniteGibbsDifferentialBoundary
 import GaloisForLFunctions.HTGeometry.FiniteKMSPurityNormalization
 import GaloisForLFunctions.HTGeometry.ThermodynamicAffinityHolonomy
+import GaloisForLFunctions.HTGeometry.ThermodynamicCycleAffinity
 
 /-!
 # Finite Boltzmann relations
@@ -50,6 +52,7 @@ theorem finiteGibbsStateWeight_zero_eq_exp_neg_finiteMicrocanonicalEntropy
     {I : Type*} [Fintype I] (energy : I → ℝ) (i : I) :
     HTGeometry.finiteGibbsStateWeight 0 energy i =
       Real.exp (-finiteMicrocanonicalEntropy I) := by
+  letI : Nonempty I := ⟨i⟩
   rw [finiteGibbsStateWeight_zero_eq_microcanonicalWeight]
   simpa [microcanonicalWeight] using
     (exp_neg_finiteMicrocanonicalEntropy_eq_card_inv I).symm
@@ -67,6 +70,7 @@ theorem finiteKMSWightmanWeight_zero_eq_exp_neg_finiteMicrocanonicalEntropy
     {I : Type*} [Fintype I] (energy : I → ℝ) (i j : I) :
     HTGeometry.finiteKMSWightmanWeight 0 energy i j =
       Real.exp (-finiteMicrocanonicalEntropy I) := by
+  letI : Nonempty I := ⟨i⟩
   rw [finiteKMSWightmanWeight_zero_eq_microcanonicalWeight]
   simpa [microcanonicalWeight] using
     (exp_neg_finiteMicrocanonicalEntropy_eq_card_inv I).symm
@@ -78,16 +82,39 @@ theorem finiteGibbsPurity_zero_eq_exp_neg_finiteMicrocanonicalEntropy
       Real.exp (-finiteMicrocanonicalEntropy I) := by
   rw [HTGeometry.finiteGibbsPurity_zero,
     exp_neg_finiteMicrocanonicalEntropy_eq_card_inv]
+  simp [one_div]
+
+/-- The diagonal squared mass of the zero-inverse-temperature thermofield kernel is the inverse
+Boltzmann multiplicity. -/
+theorem sum_sq_diag_finiteKMSWightmanWeight_zero_eq_exp_neg_entropy
+    {I : Type*} [Fintype I] [Nonempty I] (energy : I → ℝ) :
+    ∑ i, HTGeometry.finiteKMSWightmanWeight 0 energy i i ^ 2 =
+      Real.exp (-finiteMicrocanonicalEntropy I) := by
+  rw [HTGeometry.sum_sq_diag_finiteKMSWightmanWeight_eq_purity,
+    finiteGibbsPurity_zero_eq_exp_neg_finiteMicrocanonicalEntropy]
+
+/-- The off-diagonal squared thermofield mass at zero inverse temperature is one minus the
+inverse Boltzmann multiplicity. -/
+theorem sum_offDiagonal_sq_finiteKMSWightmanWeight_zero_eq_one_sub_exp_neg_entropy
+    {I : Type*} [Fintype I] [Nonempty I] [DecidableEq I] (energy : I → ℝ) :
+    (∑ i, ∑ j ∈ Finset.univ.erase i,
+        HTGeometry.finiteKMSWightmanWeight 0 energy i j ^ 2) =
+      1 - Real.exp (-finiteMicrocanonicalEntropy I) := by
+  rw [HTGeometry.sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity,
+    finiteGibbsPurity_zero_eq_exp_neg_finiteMicrocanonicalEntropy]
 
 /-- Microcanonical entropy is additive for independent finite state spaces. -/
 theorem finiteMicrocanonicalEntropy_prod
     (I J : Type*) [Fintype I] [Fintype J] [Nonempty I] [Nonempty J] :
     finiteMicrocanonicalEntropy (I × J) =
       finiteMicrocanonicalEntropy I + finiteMicrocanonicalEntropy J := by
+  have hI : (Fintype.card I : ℝ) ≠ 0 := by
+    exact_mod_cast Fintype.card_ne_zero
+  have hJ : (Fintype.card J : ℝ) ≠ 0 := by
+    exact_mod_cast Fintype.card_ne_zero
   rw [finiteMicrocanonicalEntropy, Fintype.card_prod,
-    Nat.cast_mul, Real.log_mul]
-  positivity
-  positivity
+    Nat.cast_mul, Real.log_mul hI hJ]
+  rfl
 
 /-- The zero-inverse-temperature partition of an independent product is the exponential of the
 sum of its microcanonical entropies. -/
@@ -98,6 +125,19 @@ theorem finiteGibbsPartition_zero_tensor_eq_exp_entropy_add
         (HTGeometry.finiteTensorEnergy energyI energyJ) =
       Real.exp (finiteMicrocanonicalEntropy I + finiteMicrocanonicalEntropy J) := by
   rw [finiteGibbsPartition_zero_eq_exp_finiteMicrocanonicalEntropy,
+    finiteMicrocanonicalEntropy_prod]
+
+/-- A zero-inverse-temperature product Gibbs population is the inverse exponential of the sum
+of the component microcanonical entropies. -/
+theorem finiteGibbsStateWeight_zero_tensor_eq_exp_neg_entropy_add
+    {I J : Type*} [Fintype I] [Fintype J]
+    (energyI : I → ℝ) (energyJ : J → ℝ) (i : I) (j : J) :
+    HTGeometry.finiteGibbsStateWeight 0
+        (HTGeometry.finiteTensorEnergy energyI energyJ) (i, j) =
+      Real.exp (-(finiteMicrocanonicalEntropy I + finiteMicrocanonicalEntropy J)) := by
+  letI : Nonempty I := ⟨i⟩
+  letI : Nonempty J := ⟨j⟩
+  rw [finiteGibbsStateWeight_zero_eq_exp_neg_finiteMicrocanonicalEntropy,
     finiteMicrocanonicalEntropy_prod]
 
 /-- Uniform Gibbs weights of independent systems factor into their microcanonical weights. -/
@@ -144,6 +184,25 @@ theorem finiteGibbsProductGapIntensity_zero_eq_exp_neg_two_entropy
   congr 1
   ring
 
+/-- Every unsymmetrized Gibbs transition intensity at zero inverse temperature carries the
+common inverse Boltzmann multiplicity. -/
+theorem finiteGibbsTransitionIntensity_zero_eq_exp_neg_entropy_mul_normSq
+    {I : Type*} [Fintype I] (energy : I → ℝ) (amplitude : I → I → ℂ) (i j : I) :
+    HTGeometry.finiteGibbsTransitionIntensity 0 energy amplitude i j =
+      Real.exp (-finiteMicrocanonicalEntropy I) * Complex.normSq (amplitude i j) := by
+  unfold HTGeometry.finiteGibbsTransitionIntensity
+  rw [finiteGibbsStateWeight_zero_eq_exp_neg_finiteMicrocanonicalEntropy]
+
+/-- Every symmetric Wightman transition intensity at zero inverse temperature carries the common
+inverse Boltzmann multiplicity. -/
+theorem finiteKMSWightmanTransitionIntensity_zero_eq_exp_neg_entropy_mul_normSq
+    {I : Type*} [Fintype I] (energy : I → ℝ) (amplitude : I → I → ℂ) (i j : I) :
+    HTGeometry.finiteKMSWightmanTransitionIntensity 0 energy amplitude i j =
+      Real.exp (-finiteMicrocanonicalEntropy I) * Complex.normSq (amplitude i j) := by
+  unfold HTGeometry.finiteKMSWightmanTransitionIntensity
+  unfold HTGeometry.wightmanTransitionIntensity
+  rw [finiteKMSWightmanWeight_zero_eq_exp_neg_finiteMicrocanonicalEntropy]
+
 /-- Squared zero-inverse-temperature Wightman weights have the squared inverse multiplicity. -/
 theorem finiteKMSWightmanWeight_sq_zero_eq_exp_neg_two_entropy
     {I : Type*} [Fintype I] (energy : I → ℝ) (i j : I) :
@@ -153,6 +212,16 @@ theorem finiteKMSWightmanWeight_sq_zero_eq_exp_neg_two_entropy
     pow_two, ← Real.exp_add]
   congr 1
   ring
+
+/-- The second Gibbs gap moment at zero inverse temperature is twice the uniform
+Boltzmann-normalized energy variance. -/
+theorem thermalGapMoment_finiteGibbsProduct_two_zero_eq_entropy_weighted
+    {I : Type*} [Fintype I] [Nonempty I] (energy : I → ℝ) :
+    HTGeometry.thermalGapMoment (HTGeometry.finiteGibbsProductGapIntensity 0 energy) energy 2 =
+      2 * (Real.exp (-finiteMicrocanonicalEntropy I) * ∑ i, energy i ^ 2 -
+        (Real.exp (-finiteMicrocanonicalEntropy I) * ∑ i, energy i) ^ 2) := by
+  rw [HTGeometry.thermalGapMoment_finiteGibbsProduct_two_eq_two_mul_energyVariance,
+    finiteGibbsEnergyVariance_zero_eq_entropy_weighted]
 
 /-- Gibbs population affinity vanishes at zero inverse temperature. -/
 theorem thermodynamicAffinity_finiteGibbsStateWeight_zero

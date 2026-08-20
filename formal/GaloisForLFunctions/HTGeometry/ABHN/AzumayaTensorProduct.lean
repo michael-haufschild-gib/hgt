@@ -439,4 +439,51 @@ theorem brauerTensorAdd_brauerClass (K : Type u) [Field K]
     (A B : CSA.{u, u} K) :
     brauerTensorAdd K (brauerClass A) (brauerClass B) = brauerClass (tensorProductCSA A B) := rfl
 
+/-- Tensor-product addition on the Brauer quotient is commutative. -/
+theorem brauerTensorAdd_comm (K : Type u) [Field K]
+    (x y : BrauerGroup.{u, u} K) : brauerTensorAdd K x y = brauerTensorAdd K y x := by
+  refine Quotient.inductionOn x ?_
+  intro A
+  refine Quotient.inductionOn y ?_
+  intro B
+  change brauerTensorAdd K (brauerClass A) (brauerClass B) =
+    brauerTensorAdd K (brauerClass B) (brauerClass A)
+  rw [brauerTensorAdd_brauerClass, brauerTensorAdd_brauerClass]
+  exact brauerClass_eq_of_algEquiv _ _ (Algebra.TensorProduct.comm K A.carrier B.carrier)
+
+/-- The split class is a left identity for tensor-product addition. -/
+theorem brauerTensorAdd_split_left (K : Type u) [Field K]
+    (x : BrauerGroup.{u, u} K) : brauerTensorAdd K (brauerSplitClass K) x = x := by
+  refine Quotient.inductionOn x ?_
+  intro A
+  change brauerTensorAdd K (brauerClass (scalarCSA K)) (brauerClass A) = brauerClass A
+  rw [brauerTensorAdd_brauerClass]
+  exact brauerClass_eq_of_algEquiv _ _ (Algebra.TensorProduct.lid K A.carrier)
+
+/-- The split class is a right identity for tensor-product addition. -/
+theorem brauerTensorAdd_split_right (K : Type u) [Field K]
+    (x : BrauerGroup.{u, u} K) : brauerTensorAdd K x (brauerSplitClass K) = x := by
+  rw [brauerTensorAdd_comm]
+  exact brauerTensorAdd_split_left K x
+
+/-- Tensor-product addition on the Brauer quotient is associative. -/
+theorem brauerTensorAdd_assoc (K : Type u) [Field K]
+    (x y z : BrauerGroup.{u, u} K) :
+    brauerTensorAdd K (brauerTensorAdd K x y) z =
+      brauerTensorAdd K x (brauerTensorAdd K y z) := by
+  refine Quotient.inductionOn x ?_
+  intro A
+  refine Quotient.inductionOn y ?_
+  intro B
+  refine Quotient.inductionOn z ?_
+  intro C
+  change brauerTensorAdd K
+      (brauerTensorAdd K (brauerClass A) (brauerClass B)) (brauerClass C) =
+    brauerTensorAdd K (brauerClass A)
+      (brauerTensorAdd K (brauerClass B) (brauerClass C))
+  rw [brauerTensorAdd_brauerClass, brauerTensorAdd_brauerClass,
+    brauerTensorAdd_brauerClass, brauerTensorAdd_brauerClass]
+  exact brauerClass_eq_of_algEquiv _ _
+    (Algebra.TensorProduct.assoc K K K A.carrier B.carrier C.carrier)
+
 end GaloisForLFunctions.HTGeometry.ABHN

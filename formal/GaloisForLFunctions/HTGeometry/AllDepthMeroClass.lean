@@ -249,6 +249,7 @@ theorem diffCubeMero_union (τ : ι → ℂ) {s t : Finset ι} (hd : Disjoint s 
         diffCubeMero_insert τ hq (diffCubeMero τ t x)]
 
 set_option synthInstance.maxHeartbeats 400000 in
+omit [DecidableEq ι] in
 /-- **The germ cube is realized by the function cube.** -/
 theorem realizesMero_diffCubeMero (τ : ι → ℂ) (s : Finset ι)
     {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ} (hx : RealizesMero x f) :
