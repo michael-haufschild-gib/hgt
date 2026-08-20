@@ -22,6 +22,7 @@ theorem freeNatShiftDerivation_freeCoordinate (k : ℕ) :
     freeNatShiftDerivation (freeCoordinate ℂ ℕ k) = freeCoordinate ℂ ℕ (k + 1) := by
   rw [freeNatShiftDerivation, freeCoordinate,
     extendFreeCoordinatePolynomialDerivation_algebraMap, natShiftDerivation_X]
+  rfl
 
 theorem freeCoordinate_canonical_commutation (i : ℕ) :
     ⁅derivationEndomorphism (freeCoordinateDerivation ℂ ℕ i),
@@ -47,8 +48,7 @@ theorem freeNatShiftDerivation_iterate_freeCoordinate (n k : ℕ) :
   | succ n ih =>
       rw [Function.iterate_succ_apply', ih,
         freeNatShiftDerivation_freeCoordinate]
-      congr 2
-      omega
+      simp [Nat.add_assoc]
 
 theorem freeNatShift_heisenbergJetOperator (n : ℕ) :
     heisenbergJetOperator freeNatShiftDerivation (freeCoordinate ℂ ℕ 0) n =
@@ -61,7 +61,7 @@ end
 
 end GaloisForLFunctions.HTGeometry
 
-namespace GaloisForLFunctions.RHTower
+namespace RHTower
 
 open MeasureTheory Set FourierTransform
 open scoped FourierTransform
@@ -93,6 +93,13 @@ theorem no_nonzero_bounded_l2_with_fourier_spectral_gap :
           (((𝓕 f : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) w = 0)) := by
   rintro ⟨f, a, c, d, hne, hcd, hs, hF⟩
   exact hne (l2_eq_zero_of_bounded_support_fourier_vanishes_on_Ioo f hs hcd hF)
+
+end RHTower
+
+namespace GaloisForLFunctions.RHTower
+
+open MeasureTheory Set FourierTransform
+open scoped FourierTransform
 
 theorem no_band_interior_signal_with_zero_spectral_tail :
     ¬ ∃ (c : ℝ) (Φ : ℝ → ℝ) (x : ℝ),

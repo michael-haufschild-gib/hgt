@@ -79,6 +79,40 @@ theorem deningerKummerReciprocityHom_apply (K : Type*) [Field K] [NumberField K]
   apply Subtype.ext
   rfl
 
+/-- A reciprocity-valued Kummer current vanishes exactly for a root of unity.  Thus imposing the
+product formula does not introduce any new kernel beyond the unavoidable global torsion. -/
+theorem deningerKummerReciprocityHom_eq_zero_iff (K : Type*) [Field K] [NumberField K] (u : Kˣ) :
+    deningerKummerReciprocityHom K (Additive.ofMul u) = 0 ↔ IsOfFinOrder ((u : K)) := by
+  constructor
+  · intro h
+    exact (deningerKummerHom_eq_zero_iff K u).mp (congrArg Subtype.val h)
+  · intro h
+    apply Subtype.ext
+    exact (deningerKummerHom_eq_zero_iff K u).mpr h
+
+/-- Two global units have the same local logarithmic current precisely when their quotient is a
+root of unity.  Equivalently, the Kummer map to the product-formula kernel is injective modulo
+global torsion. -/
+theorem deningerKummerReciprocityHom_eq_iff (K : Type*) [Field K] [NumberField K] (u v : Kˣ) :
+    deningerKummerReciprocityHom K (Additive.ofMul u) =
+      deningerKummerReciprocityHom K (Additive.ofMul v) ↔
+      IsOfFinOrder (((u * v⁻¹ : Kˣ) : K)) := by
+  constructor
+  · intro h
+    have hsub : deningerKummerReciprocityHom K
+        (Additive.ofMul u - Additive.ofMul v) = 0 := by
+      rw [map_sub, sub_eq_zero]
+      exact h
+    exact (deningerKummerReciprocityHom_eq_zero_iff K (u * v⁻¹)).mp (by simpa using hsub)
+  · intro h
+    have hzero : deningerKummerReciprocityHom K (Additive.ofMul (u * v⁻¹)) = 0 :=
+      (deningerKummerReciprocityHom_eq_zero_iff K (u * v⁻¹)).mpr h
+    have hsub : deningerKummerReciprocityHom K
+        (Additive.ofMul u - Additive.ofMul v) = 0 := by
+      simpa using hzero
+    rw [map_sub, sub_eq_zero] at hsub
+    exact hsub
+
 /-- The range of the reciprocity-valued Kummer homomorphism is exactly the family of Kummer
 currents regarded inside the product-formula kernel. -/
 theorem deningerKummerReciprocityHom_range (K : Type*) [Field K] [NumberField K] :

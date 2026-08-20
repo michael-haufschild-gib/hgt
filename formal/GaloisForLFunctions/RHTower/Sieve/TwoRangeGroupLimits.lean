@@ -766,14 +766,19 @@ theorem log_window_le {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
     rw [twoRangeTop]
     exact mul_nonneg hcut0 hll0
   have hle : 2 + 2 * (2 * Real.pi * twoRangeTop β x) ≤ x := by
-    have h1 : 2 * (2 * Real.pi * twoRangeTop β x)
-        ≤ 8 * Real.pi * (Real.sqrt x * Real.log x) := by
-      nlinarith [htop, hpi, hsqrt, hlogx, htop0]
-    have h2 : 8 * Real.pi * (Real.sqrt x * Real.log x) ≤ x / 4 := by
-      nlinarith [hkey, hsq0, hxx, hpi, hlogx]
+    have hT2 : twoRangeTop β x ≤ 2 * (Real.sqrt x * Real.log x) := by
+      have hp : (0 : ℝ) ≤ Real.log x * (Real.sqrt x - 1) :=
+        mul_nonneg hlogx.le (by linarith)
+      nlinarith [htop, hp]
+    have h1 : 4 * Real.pi * twoRangeTop β x
+        ≤ 4 * Real.pi * (2 * (Real.sqrt x * Real.log x)) :=
+      mul_le_mul_of_nonneg_left hT2 (by positivity)
+    have h2 : 32 * Real.pi * Real.log x * (Real.sqrt x / 4)
+        ≤ Real.sqrt x * (Real.sqrt x / 4) :=
+      mul_le_mul_of_nonneg_right hkey (by linarith)
     have h3 : (2 : ℝ) ≤ x / 4 := by
       nlinarith [hsqrt, hxx, hsq0]
-    linarith
+    nlinarith [h1, h2, h3, hxx]
   have hpos : (0 : ℝ) < 2 + 2 * (2 * Real.pi * twoRangeTop β x) := by
     nlinarith [htop0, hpi]
   exact Real.log_le_log hpos hle
