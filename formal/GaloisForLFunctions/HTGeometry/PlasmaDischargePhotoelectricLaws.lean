@@ -23,12 +23,40 @@ into two positive scales. -/
 def bjerrumLength (coulombLog thermalLog : ℝ) : ℝ :=
   Real.exp (coulombLog - thermalLog)
 
+/-- Bjerrum length for two possibly different charge magnitudes, dielectric scale, and thermal
+scale, all in logarithmic coordinates. -/
+def bjerrumPairLength
+    (charge₁Log charge₂Log dielectricLog thermalLog : ℝ) : ℝ :=
+  Real.exp (charge₁Log + charge₂Log - dielectricLog - thermalLog)
+
 /-- Coulomb energy at logarithmic separation, with geometric constants absorbed. -/
 def coulombEnergyAtLogSeparation (coulombLog separationLog : ℝ) : ℝ :=
   Real.exp (coulombLog - separationLog)
 
 theorem bjerrumLength_pos (coulombLog thermalLog : ℝ) :
     0 < bjerrumLength coulombLog thermalLog := Real.exp_pos _
+
+theorem bjerrumPairLength_swap
+    (charge₁Log charge₂Log dielectricLog thermalLog : ℝ) :
+    bjerrumPairLength charge₁Log charge₂Log dielectricLog thermalLog =
+      bjerrumPairLength charge₂Log charge₁Log dielectricLog thermalLog := by
+  unfold bjerrumPairLength
+  exact congrArg Real.exp (by ring)
+
+theorem bjerrumPairLength_equalCharge
+    (chargeLog dielectricLog thermalLog : ℝ) :
+    bjerrumPairLength chargeLog chargeLog dielectricLog thermalLog =
+      bjerrumLength (2 * chargeLog - dielectricLog) thermalLog := by
+  unfold bjerrumPairLength bjerrumLength
+  exact congrArg Real.exp (by ring)
+
+theorem bjerrumPairLength_mul_dielectricThermalScale
+    (charge₁Log charge₂Log dielectricLog thermalLog : ℝ) :
+    bjerrumPairLength charge₁Log charge₂Log dielectricLog thermalLog *
+        Real.exp (dielectricLog + thermalLog) =
+      Real.exp (charge₁Log + charge₂Log) := by
+  rw [bjerrumPairLength, ← Real.exp_add]
+  exact congrArg Real.exp (by ring)
 
 /-- At Bjerrum separation, normalized Coulomb energy equals thermal energy. -/
 theorem coulombEnergy_at_bjerrumLength (coulombLog thermalLog : ℝ) :
@@ -67,6 +95,41 @@ def debyeLength (mediumLog chargeDensityLog : ℝ) : ℝ :=
 def debyeWaveNumber (mediumLog chargeDensityLog : ℝ) : ℝ :=
   (debyeLength mediumLog chargeDensityLog)⁻¹
 
+/-- Total `Σ nᵢqᵢ²` stiffness for a nonempty finite species family in logarithmic density and
+charge coordinates. -/
+def multispeciesChargeStiffness {n : ℕ}
+    (densityLog chargeLog : Fin (n + 1) → ℝ) : ℝ :=
+  ∑ i, Real.exp (densityLog i + 2 * chargeLog i)
+
+/-- Multi-species Debye length `sqrt (medium / Σ nᵢqᵢ²)`. -/
+def multispeciesDebyeLength {n : ℕ} (mediumLog : ℝ)
+    (densityLog chargeLog : Fin (n + 1) → ℝ) : ℝ :=
+  Real.sqrt
+    (Real.exp mediumLog / multispeciesChargeStiffness densityLog chargeLog)
+
+theorem multispeciesChargeStiffness_pos {n : ℕ}
+    (densityLog chargeLog : Fin (n + 1) → ℝ) :
+    0 < multispeciesChargeStiffness densityLog chargeLog := by
+  unfold multispeciesChargeStiffness
+  exact Finset.sum_pos (fun i _ => Real.exp_pos _) Finset.univ_nonempty
+
+theorem multispeciesDebyeLength_sq {n : ℕ} (mediumLog : ℝ)
+    (densityLog chargeLog : Fin (n + 1) → ℝ) :
+    multispeciesDebyeLength mediumLog densityLog chargeLog ^ 2 =
+      Real.exp mediumLog / multispeciesChargeStiffness densityLog chargeLog := by
+  exact Real.sq_sqrt
+    (div_nonneg (Real.exp_pos _).le (multispeciesChargeStiffness_pos _ _).le)
+
+/-- Multi-species formula is effective-stiffness instance of scalar Debye length. -/
+theorem multispeciesDebyeLength_eq_debyeLength {n : ℕ} (mediumLog : ℝ)
+    (densityLog chargeLog : Fin (n + 1) → ℝ) :
+    multispeciesDebyeLength mediumLog densityLog chargeLog =
+      debyeLength mediumLog
+        (Real.log (multispeciesChargeStiffness densityLog chargeLog)) := by
+  unfold multispeciesDebyeLength debyeLength
+  congr 1
+  rw [Real.exp_sub, Real.exp_log (multispeciesChargeStiffness_pos _ _)]
+
 /-- Squared Debye length is medium scale divided by charge-density stiffness. -/
 theorem debyeLength_sq (mediumLog chargeDensityLog : ℝ) :
     debyeLength mediumLog chargeDensityLog ^ 2 =
@@ -102,6 +165,12 @@ def townsendGain (ionization distance : ℝ) : ℝ :=
 def townsendPopulation (seedLog ionization distance : ℝ) : ℝ :=
   Real.exp seedLog * townsendGain ionization distance
 
+/-- Product gain through finitely many segments with independently constant ionization
+coefficients. -/
+def townsendSegmentedGain {n : ℕ}
+    (ionization distance : Fin n → ℝ) : ℝ :=
+  ∏ i, townsendGain (ionization i) (distance i)
+
 /-- Secondary-emission feedback after an avalanche with integrated exponent `exponent`. -/
 def townsendFeedback (secondaryLog exponent : ℝ) : ℝ :=
   Real.exp secondaryLog * (Real.exp exponent - 1)
@@ -122,6 +191,24 @@ theorem townsendPopulation_distance_add (seedLog ionization x y : ℝ) :
       townsendPopulation seedLog ionization x * townsendGain ionization y := by
   rw [townsendPopulation, townsendPopulation, townsendGain_distance_add]
   ring
+
+/-- Segmented Townsend gain depends only on integrated ionization exponent. -/
+theorem townsendSegmentedGain_eq_exp_sum {n : ℕ}
+    (ionization distance : Fin n → ℝ) :
+    townsendSegmentedGain ionization distance =
+      Real.exp (∑ i, ionization i * distance i) := by
+  classical
+  unfold townsendSegmentedGain
+  have hsegments : ∀ s : Finset (Fin n),
+      (∏ i ∈ s, townsendGain (ionization i) (distance i)) =
+        Real.exp (∑ i ∈ s, ionization i * distance i) := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty => simp [townsendGain]
+    | @insert i s hi ih =>
+        simp only [Finset.prod_insert hi, Finset.sum_insert hi, ih]
+        rw [townsendGain, Real.exp_add]
+  simpa using hsegments Finset.univ
 
 /-- Reciprocal rescaling of coefficient and distance leaves avalanche gain unchanged. -/
 theorem townsendGain_logGauge_invariant (ionizationLog distanceLog shift : ℝ) :
@@ -299,6 +386,31 @@ def photoelectricThresholdFrequency (planckLog workLog : ℝ) : ℝ :=
 def photoelectricStoppingPotential
     (chargeLog planck workFunction frequency : ℝ) : ℝ :=
   photoelectricKineticEnergy planck workFunction frequency / Real.exp chargeLog
+
+/-- Multiphoton photoelectric kinetic energy `N hν - φ`, with positive photon count `N = n+1`. -/
+def multiphotonKineticEnergy
+    (n : ℕ) (planck workFunction frequency : ℝ) : ℝ :=
+  ((n + 1 : ℕ) : ℝ) * planck * frequency - workFunction
+
+/-- Multiphoton threshold frequency for positive log-coordinate `h` and `φ`. -/
+def multiphotonThresholdFrequency (n : ℕ) (planckLog workLog : ℝ) : ℝ :=
+  Real.exp workLog / (((n + 1 : ℕ) : ℝ) * Real.exp planckLog)
+
+theorem multiphotonKineticEnergy_eq_photoelectricKineticEnergy
+    (n : ℕ) (planck workFunction frequency : ℝ) :
+    multiphotonKineticEnergy n planck workFunction frequency =
+      photoelectricKineticEnergy (((n + 1 : ℕ) : ℝ) * planck)
+        workFunction frequency := by
+  unfold multiphotonKineticEnergy photoelectricKineticEnergy
+  ring
+
+theorem multiphoton_at_threshold (n : ℕ) (planckLog workLog : ℝ) :
+    multiphotonKineticEnergy n (Real.exp planckLog) (Real.exp workLog)
+        (multiphotonThresholdFrequency n planckLog workLog) = 0 := by
+  unfold multiphotonKineticEnergy multiphotonThresholdFrequency
+  have hn : (((n + 1 : ℕ) : ℝ)) ≠ 0 := by positivity
+  field_simp [hn, Real.exp_ne_zero]
+  ring
 
 /-- Photoelectron kinetic energy vanishes at threshold frequency. -/
 theorem photoelectric_at_threshold (planckLog workLog : ℝ) :

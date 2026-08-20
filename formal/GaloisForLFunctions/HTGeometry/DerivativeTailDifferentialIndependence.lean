@@ -44,6 +44,7 @@ theorem differentialIndependent_coe_of_subfield
 variable {F E : Type u} [Field F] [Field E] [Algebra F E]
 variable [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
 
+omit [Differential F] [DifferentialAlgebra F E] [CharZero E] in
 /-- A family whose prescribed jets are differentially independent is itself injective. -/
 theorem injective_of_differentialIndependent_jetShift
     {ι : Type*} {x : ι → E} {m : ι → ℕ}

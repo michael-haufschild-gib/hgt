@@ -125,3 +125,48 @@ zero divisor or to critical-line orientation.
 - [x] nonzero Pochhammer factor justified
 - [x] derivative-tail differential-algebra lemma proved
 - [ ] Lean formalization of the derivative-tail lemma and unrestricted analytic Hurwitz carrier
+
+## Lean formalization (2026-08-21) — COMPLETE
+
+Both remaining gate items are unconditional Lean theorems, axiom-audited to
+`propext, Classical.choice, Quot.sound`.
+
+1. **The card's theorem — unrestricted analytic Hurwitz carrier.**
+   `HurwitzJointLadder.continued_joint_hzeta_upperEnd_differentialIndependent_finite`
+   (`formal/GaloisForLFunctions/Hurwitz/ContinuedJointUpperEndDifferentialIndependence.lean:238`):
+
+   for every `Fintype ι` and `s : ι → ℂ` with `LinearIndependent ℚ (exponentFamily s)` — i.e. the
+   augmented family `1, (s_j)_j` rationally independent, with **no** restriction `Re s_j > 1` —
+   the analytically continued Hurwitz elements `fun j => continuedHzetaUpperEndMero (s j)` are
+   `DifferentialIndependent (RatFunc ℂ)` in the upper-end meromorphic differential field.
+
+   The carrier is the genuine classical continuation: `continuedHzeta` is built by the canonical
+   finite Taylor subtraction (`Hurwitz/AnalyticContinuation.lean`), agrees with the convergent
+   Hurwitz series on `Re s > 1` (`continuedHzeta_eq_hzeta`), is analytic on the whole upper
+   half-plane (`continuedHzeta_analyticOnNhd`), and satisfies the unrestricted shift-derivative law
+   `∂ₐ ζ(s,a) = -s ζ(s+1,a)` (`continuedHzeta_hasDerivAt`) — the Lean form of the card's
+   `∂_a^{m} ζ(s,a) = (-1)^m (s)_m ζ(s+m,a)` identity, packaged as
+   `continuedHzetaUpperEndAnalyticJet_eq`.
+
+2. **The derivative-tail differential-algebra lemma.**  New module
+   `formal/GaloisForLFunctions/HTGeometry/DerivativeTailDifferentialIndependence.lean`:
+
+   - `GaloisForLFunctions.differentialIndependent_of_jetShift` — for a finite nonempty index type,
+     if `fun j => differentialJet (m j) (x j)` is differentially independent over `F`, then `x` is.
+     This is exactly the card's lemma "`(D^{m_j} x_j)_j` differentially independent ⇒ `(x_j)_j`
+     differentially independent", proved by the differential-transcendence-degree count the card
+     describes: the shifted family lives in `K = F⟨x⟩` and certifies
+     `#ι ≤ dtrdeg_F K`, while `x` generates `K`, so the spanning family of that size is a
+     differential transcendence basis
+     (`differentialIndependent_of_spanning_of_cardinalMk_le`).
+   - `GaloisForLFunctions.injective_of_differentialIndependent_jetShift` — the injectivity input,
+     from `differentialJet (m j) (differentialJet (m i) (x i)) =
+     differentialJet (m i) (differentialJet (m j) (x j))` when `x i = x j`.
+   - `GaloisForLFunctions.differentialIndependent_coe_of_subfield` — the converse of
+     `differentialIndependent_subfield`, needed to read the certificate back in the ambient field.
+
+Wired into `GaloisForLFunctions.HTGeometry`.
+
+## Gates
+
+- [x] Lean formalization of the derivative-tail lemma and unrestricted analytic Hurwitz carrier

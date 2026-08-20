@@ -7395,3 +7395,117 @@ number**, so `⌊R'(1+η')^{j+1}⌋ ≥ R'` and every block top is at least the 
 with the fourteen slots now all filled), and then the five remaining group limits, each a
 composition of `Sieve/TwoRangeLimits`, `Sieve/LadderGroupBudget`, `Sieve/MoebiusHeadBudget.roughGroup_le`
 and `Sieve/TwoRangeMajorant.tendsto_logRpow_mul_relScaledMajorant`.
+
+### Brick 132 — the high blocks on the large half (`hbound'`) (2026-08-21)
+
+`Sieve/TwoRangeHighBound`, `lake env lean`-clean, axiom-clean, wired, built.
+
+This is the hypothesis `hbound'` of
+`Sieve/MoebiusTwoRangeWindow.integral_Icc_normSq_logPoly_moebius_le_twoRange`, produced by a single
+application of `Sieve/AnnulusBoundUniform.exists_annulus_bound_uniform` with all fourteen slots
+filled from `Sieve/TwoRangeRouteT`, restricted to the exceptional half by
+`Sieve/MoebiusWindowPartition.annulusLarge_subset_annulus`:
+
+```text
+twoRangeHighRho A δ Ctot a b c' β A₃ x
+  = (4/log 2)·( (1+η')·relScaledMajorant Ctot D Lx Hmaj μ q t₀ xmin + 7e⁹/R' )
+
+exists_twoRange_high_bound (9/10 < a) (a < b < 1) (0 < c') (0 < β < 1) (0 < A₃) :
+  ∃ A δ Ctot, 0 < δ ∧ 0 < Ctot ∧
+    (∀ᶠ x, ∀ T, ∀ j < L', ∀ w ∈ annulusLarge T W w₀,
+        ‖primeBlockPoly (geomBlock (primesRange R' z') R' (1+η') j) w‖
+          ≤ twoRangeHighRho … x · (R'·(1+η')^j))
+    ∧ ∀ e, 0 ≤ e → e < A₃ + 1 → (log x)^e · twoRangeHighRho … x → 0
+```
+
+Two analytic facts were needed, and they are the only places where arithmetic enters:
+
+| lemma | content |
+|-|-|
+| `twoRangeTop_two_pi_le` | `2π·W ≤ x` — the window is below the outer scale (`log x/√x → 0`) |
+| `routeTHeight_twoRangeTop_bounds` | `Z := routeTLogHeightEnvelope(4(3\|τ\|/2+1)) ≤ 3 log x` at `τ = 2πW` |
+| **`twoRangeHmaj_bounds`** | `0 ≤ Hmaj ≤ (log x)²` — the width surrogate is `≍ (log x)^{−9/10}(log log x)^{−2}`, so the height cost is `≍ 60·C_A·(log x)^{19/10}(1+log(3 log x))²`, and `(log x)^{1/10}` swallows the square of `log log` |
+| **`twoRangeMu_mul_twoRangeQ_ge`** | `(log x)^{(a−9/10)/2} ≤ μ·q` — **the only use of `a > 9/10`**; it makes `e^{−μq}` beat every power of the logarithm |
+| `eventually_one_add_logLogSq_le_rpow` | `1 + C(1+log(3 log x))² ≤ (log x)^ε` for every `ε > 0` |
+| `tendsto_rpow_log_mul_exp_neg_of_ge` | `(log x)^c·e^{−f} → 0` whenever `(log x)^s ≤ f` |
+
+The margin in `Hmaj ≤ (log x)²` is exactly `1/10`: the Route-T width exponent is `9/10` and the
+height is `log x`, so `Hmaj ≍ (log x)^{19/10+o(1)}`.  That is what the majorant of brick 130 assumes.
+
+### Bricks 133–135 — five of the seven group limits (2026-08-21)
+
+`Sieve/ScheduleMonomialLimits`, `Sieve/TwoRangeAggregates`, `Sieve/TwoRangeGroupLimits`: all
+`lake env lean`-clean, axiom-clean, wired, built.
+
+**`Sieve/ScheduleMonomialLimits`** — after substitution every group is a finite sum of monomials
+`(log x)^e·(log log x)^k·f` with `f ∈ {1, 1/h, 1/√x, h/√x, e^{−(log x)^s}}`, and each vanishes:
+
+```text
+eventually_logLogPow_le_rpow (k) (0 < ε)      :  (log log x)^k ≤ (log x)^ε
+tendsto_logMonomial                (e < 0)    :  (log x)^e(log log x)^k → 0
+tendsto_logMonomial_div_cardLength (0 < β)    :  (log x)^e(log log x)^k / h → 0
+tendsto_logMonomial_div_sqrt                  :  (log x)^e(log log x)^k / √x → 0
+tendsto_logMonomial_mul_cardLength_div_sqrt   :  (log x)^e(log log x)^k·(h/√x) → 0
+tendsto_logMonomial_mul_expNeg     (0 < s)    :  (log x)^e(log log x)^k·e^{−(log x)^s} → 0
+```
+
+**`Sieve/TwoRangeAggregates`** — the comparisons the two ladders need:
+
+| theorem | content |
+|-|-|
+| **`sum_inv_primesRange_ge_logLog_diff`** | the *lower* Mertens companion: `log log z − log log z₀ − 2(2c₁+½)/log z₀ ≤ ∑_{z₀<p≤z} 1/p`.  The rough group needs it because the harmonic mass sits in a **denominator** |
+| `sqrt_le_twoRangeLength`, `twoRangeLength_le_two_sqrt`, `one_le_twoRangeLength` | `√x ≤ M ≤ 2√x` |
+| `highSteps_le` | `L' ≤ 2(log x)^{b+c'}` (the high mirror of `lowSteps_le`) |
+
+**`Sieve/TwoRangeGroupLimits`** — five of the seven groups, each `→ 0` relative to `M²`:
+
+| theorem | group | binding constraint |
+|-|-|-|
+| `tendsto_smallLadderGroup_div_sq` | the mean-value ladder group | `2A > β + c` |
+| **`tendsto_defectGroup_div_sq`** | *both* ladder discrepancy groups | `1 + ℓ < 2c`, `1 < K`, `1 + c < 2K` |
+| **`tendsto_roughGroup_div_sq`** | *both* rough groups, against the Cauchy–Schwarz weight `1 + 1/δ` | `δ = (log log x)^{−1/2}`, harmonic mass `≥ c_A·log log x` |
+
+The defect and rough theorems are **range-agnostic** — the designated range enters only through the
+exponents `(ℓ, c, K, γ)` of its step count, step ratio, bottom and top — so one statement each
+serves the low and the high halves.  That is why five group limits are covered by three theorems.
+
+Two structural points came out of the substitution:
+
+* The window enters the ladder group only through `W/M = log log x / h`, which is an identity
+  (`twoRangeTop_eq`), not an estimate.  This is what makes the mean-value ladder group cost only a
+  power of `log log`.
+* In the rough group the weight `1/δ = (log log x)^{1/2}` multiplies `7/A` with `A ≍ log log x`;
+  the product is `(log log x)^{−1/2} = δ`, which is why `δ` is forced to be a *root* of `log log`
+  from both sides.  Recorded as the identity `(1/δ)·(1/log log x) = δ`.
+
+**The one group left** is the large half's Halász–Montgomery ladder group.  Its `(2+48π·Λ)(S'²+Bmax'S')`
+half is the same shape as the small one; its `FCmax·|𝒰|·(Bmax'S' + Bmax'#P')` half needs the
+exceptional measure `|𝒰|`.
+
+**A correction to the constraint on `K`.**  Working out what `|𝒰|` has to be: the exceptional term
+carries `FCmax ≍ √W·log W ≍ x^{1/4}·polylog/√h`, while the trivial Halász–Montgomery term is
+`N log W ≍ (M/R')·log x ≍ x^{1/2−o(1)}`, so the exceptional half needs
+
+```text
+   |𝒰|  ≲  x^{1/4}·√h·e^{−(log x)^b}  ,       i.e.   |𝒰|/W ≲ x^{−1/4+o(1)} .
+```
+
+That is a genuine **power-of-`x`** relative saving, not a polylogarithmic one.  The moment method
+supplies it, but only with a *growing* moment order: `Sieve/Section4RelativeThreshold` gives
+`|𝒰_j| ≤ 2(W + 4N^k(1+log N^k))(k/(#B_jθ²))^k`, and with `log N ≍ K log log x`,
+`#B_jθ² ≍ (log x)^{K−c−2A}` the two terms read
+
+```text
+   W·(log x)^{−k(K−c−2A)}   and   x^{(c+2A+1)/(K−c−2A)} ,
+```
+
+so one must take `k ≍ log x / ((K−c−2A)·log log x)` — not a constant — and then the second term is
+below `x^{1/4}` only when
+
+```text
+   K  >  5(c + 2A) + 4 .
+```
+
+The recorded constraint `K > max(2(3+c+2A), (c+1)/2)` was read off without tracking the `N^k` term;
+it must be replaced by the above when the `|𝒰|` brick is built.  Nothing else in the schedule
+changes, and `β` stays free in `(0,1)`.

@@ -621,3 +621,26 @@ What remains for the exact-image theorem: the jet layer realizing an arbitrary b
 `ρ_k(∑_(j,q) c_(j,q) δ^j T_q Ψ_s)` (Laurent data for jets of translates of the carrier, transported
 from the corpus's `jetAtom` laws through the theta identification), and the packaging of the
 signature as an element of `A_S = ℂ[δ][ℂ/H_S]` with the pushforwards `p_(S,T)` and `Comp_d`.
+
+## Lean progress 2026-08-21 — the bottom-charge map is surjective
+
+`HTGeometry.AllDepthCarrierJets.exists_class_member_with_prescribed_bottomCharge` proves the card's
+surjectivity step unconditionally and axiom-clean: for every `N`, every finite set `R` of base
+points and every coefficient family `c`, there is `F` in the all-depth class of `s` whose bottom
+witness has exactly the Laurent data of the atom sum `multiAtomRealization (τ k) N R c`.  With
+`laurentCoeff_multiAtomRealization_line` and `_off` this realizes an arbitrary finite divisor of
+bounded order on `ℂ/(ℤ + ℤτ_k)` — the card's `ρ_d(B Ψ_(d−1)) = B`.
+
+The realizing object is the card's own: `carrierAtomCombination` is
+`∑_(j,q) (c j q/((-1)^j j!)) · δ^j T_((1+τ_k)−q) Ψ_s`, a finite constant-coefficient
+differential-translation operator applied to the universal carrier `Ψ_s`.  Three facts make it
+work, all now Lean:
+
+1. the difference cube is a constant-coefficient differential operator, so it commutes with jets,
+   translations and ℂ-linear combinations (`diffCubeMero_differentialJet`,
+   `diffCubeMero_translate_comm`, `diffCubeMero_algebraMap_mul`, `diffCubeMero_finsetSum`);
+2. `□_s Ψ_s` is the terminal constant `-2πi`, so the combination stays in `Q_s`
+   (`exists_mixedConst_carrierAtomCombination`);
+3. `□_(s\{k}) Ψ_s` is a translated theta logarithmic derivative, so the combination's bottom witness
+   is exactly the atom sum, up to an additive constant which has no principal part
+   (`exists_bottomWitnessMero_carrierAtomCombination`, `realizesMero_atomSumMero`).

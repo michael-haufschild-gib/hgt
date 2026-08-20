@@ -214,6 +214,67 @@ theorem p1xp1_riemannRoch_intersection (a b : ℤ) :
   push_cast
   ring
 
+/-! ## GRR on projective lines and planes -/
+
+/-- Chow ring of the projective line, represented as `P¹ × P⁰`. -/
+abbrev P1Chow := ChowProd 1 0
+
+/-- Hyperplane class on `P¹`. -/
+noncomputable def p1Hyperplane : P1Chow := chowH₁ 1 0
+
+theorem p1Hyperplane_sq : p1Hyperplane ^ 2 = 0 :=
+  chowH₁_pow_eq_zero (by omega)
+
+/-- Chern character of `O(d)` in the integral Chow ring of `P¹`. -/
+noncomputable def p1LineChernCharacter (d : ℤ) : P1Chow :=
+  1 + (d : P1Chow) * p1Hyperplane
+
+/-- Todd class of `P¹`. -/
+noncomputable def p1ToddClass : P1Chow := 1 + p1Hyperplane
+
+/-- GRR for `O(d)` on `P¹`: the top component is `χ(O(d)) = d + 1`. -/
+theorem p1_grr_lineBundle (d : ℤ) :
+    p1LineChernCharacter d * p1ToddClass =
+      1 + ((d + 1 : ℤ) : P1Chow) * p1Hyperplane := by
+  simp only [p1LineChernCharacter, p1ToddClass]
+  ring_nf
+  rw [p1Hyperplane_sq]
+  simp
+  ring
+
+/-- Chow ring of the projective plane, represented as `P² × P⁰`. -/
+abbrev P2Chow := ChowProd 2 0
+
+/-- Hyperplane class on `P²`. -/
+noncomputable def p2Hyperplane : P2Chow := chowH₁ 2 0
+
+theorem p2Hyperplane_cube : p2Hyperplane ^ 3 = 0 :=
+  chowH₁_pow_eq_zero (by omega)
+
+theorem p2Hyperplane_fourth : p2Hyperplane ^ 4 = 0 :=
+  chowH₁_pow_eq_zero (by omega)
+
+/-- Twice the Chern character of `O(d)` on `P²`, clearing its denominator. -/
+noncomputable def p2TwiceLineChernCharacter (d : ℤ) : P2Chow :=
+  2 + ((2 * d : ℤ) : P2Chow) * p2Hyperplane +
+    ((d ^ 2 : ℤ) : P2Chow) * p2Hyperplane ^ 2
+
+/-- Twice the Todd class of `P²`, clearing its denominator. -/
+noncomputable def p2TwiceToddClass : P2Chow :=
+  2 + (3 : P2Chow) * p2Hyperplane + 2 * p2Hyperplane ^ 2
+
+/-- Denominator-cleared GRR for `O(d)` on `P²`.
+The top component is `4χ(O(d)) = 2(d+1)(d+2)`. -/
+theorem p2_grr_fourfold_lineBundle (d : ℤ) :
+    p2TwiceLineChernCharacter d * p2TwiceToddClass =
+      4 + ((4 * d + 6 : ℤ) : P2Chow) * p2Hyperplane +
+        ((2 * (d + 1) * (d + 2) : ℤ) : P2Chow) * p2Hyperplane ^ 2 := by
+  simp only [p2TwiceLineChernCharacter, p2TwiceToddClass]
+  ring_nf
+  rw [p2Hyperplane_cube, p2Hyperplane_fourth]
+  simp
+  ring
+
 /-! ## K-theory Chern character and GRR on `P¹ × P¹` -/
 
 /-- Integral truncated Chern character of line-bundle class `O(a,b)`. -/

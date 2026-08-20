@@ -247,3 +247,34 @@ and its bottom identification proved.  What still separates it from bottom-charg
 the jet layer: realizing an arbitrary finite divisor needs the finite combination
 `∑_(j,q) c_(j,q) δ^j T_q Ψ_s`, i.e. Laurent data for jets of translates of the carrier, transported
 from the corpus's `jetAtom` laws through the theta identification above.
+
+## Landed 2026-08-21 (seventh stretch) — bottom-charge surjectivity
+
+`GaloisForLFunctions.HTGeometry.AllDepthCarrierJets` (wired, built, axiom-clean) closes the card's
+"the bottom-charge map `ρ_d` is surjective, `ρ_d(B Ψ_(d−1)) = B`":
+
+```text
+realizesMero_thetaLogDerivMero        the theta germ is realized by `thetaSource`
+diffCubeMero_add, _finsetSum, _algebraMap_mul, _differentialJet
+    the difference cube is a constant-coefficient differential operator, so it commutes with jets,
+    with translations and with ℂ-linear combinations
+carrierAtomCombination τ hτ s k N R c
+    ∑_(j<N) ∑_(q∈R) (c j q / ((-1)^j j!)) · δ^j T_((1+τ_k)−q) Ψ_s
+diffCubeMero_carrierAtomCombination, addTranslationMeroEquiv_one_carrierAtomCombination
+exists_mixedConst_carrierAtomCombination      **the combination is in Q_s**
+atomSumMero, realizesMero_atomSumMero         the atom-sum germ is realized by multiAtomRealization
+exists_bottomWitnessMero_carrierAtomCombination
+    its bottom witness is the atom sum up to an additive constant
+exists_class_member_with_prescribed_bottomCharge
+    **every atom-sum divisor is the bottom charge of a member of the class**
+```
+
+Combined with `AllDepthBottomRealization.laurentCoeff_multiAtomRealization_line/_off/_of_lt`, this
+realizes an arbitrary finite divisor of bounded order on `ℂ/(ℤ+ℤτ_k)`.
+
+Remaining for the exact-image theorem: the packaging of the pair-face signature as an element of
+`A_S = ℂ[δ][ℂ/H_S]` with the pushforwards `p_(S,T)` and the compatible space `Comp_d`, triple
+compatibility of actual signatures (for triples through the distinguished direction this is
+`orbitSum_comm` plus `additiveOrbitalDivisorAt_pairFaceWitnessFun`), and the induction assembling
+`Q_d/(Q_d ∩ Mer_DA) ≅ Comp_d` from the simultaneous lifting lemma, the surjectivity above and the
+completeness theorem.

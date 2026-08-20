@@ -719,6 +719,65 @@ theorem tendsto_roughGroup_div_sq {β cA : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) 
       = (28 / cA) * (cardLength β x / ((twoRangeLength β x : ℕ) : ℝ)) := by ring
   linarith [hDT1, hDT2, hDT3, hDT4, hT4', hG7]
 
+/-- The Halász–Montgomery logarithm of the window is below the logarithm of the outer scale. -/
+theorem log_window_le {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
+    ∀ᶠ x : ℝ in atTop,
+      Real.log (2 + 2 * (2 * Real.pi * twoRangeTop β x)) ≤ Real.log x := by
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+  have hsq := tendsto_rpow_log_div_sqrt (1 : ℝ)
+  filter_upwards [one_le_twoRangeCut hβ0 hβ1, Filter.eventually_gt_atTop (1 : ℝ),
+    Filter.eventually_ge_atTop (16 : ℝ),
+    Real.tendsto_log_atTop.eventually_ge_atTop (1 : ℝ),
+    (tendsto_cardLength hβ0).eventually_ge_atTop (1 : ℝ),
+    Tendsto.eventually_le_const (show (0 : ℝ) < 1 / (32 * Real.pi) by positivity) hsq]
+    with x hcut hx1 hx16 hlog1 hh1 hsmall
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hlogx : (0 : ℝ) < Real.log x := Real.log_pos hx1
+  have hsqrt : (4 : ℝ) ≤ Real.sqrt x := by
+    rw [show (4 : ℝ) = Real.sqrt 16 by
+      rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+    exact Real.sqrt_le_sqrt hx16
+  have hsq0 : (0 : ℝ) < Real.sqrt x := by linarith
+  have hxx : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx0.le
+  have hkey : 32 * Real.pi * Real.log x ≤ Real.sqrt x := by
+    rw [Real.rpow_one, div_le_iff₀ hsq0] at hsmall
+    have hmul := mul_le_mul_of_nonneg_left hsmall (by positivity : (0 : ℝ) ≤ 32 * Real.pi)
+    have hid : 32 * Real.pi * (1 / (32 * Real.pi) * Real.sqrt x) = Real.sqrt x := by
+      field_simp
+    rw [hid] at hmul
+    linarith
+  have hcutle : twoRangeCut β x ≤ Real.sqrt x + 1 := by
+    have hh0 : (0 : ℝ) < cardLength β x := cardLength_pos β x
+    have hfl : ((twoRangeLength β x : ℕ) : ℝ) ≤ Real.sqrt x + cardLength β x := by
+      rw [twoRangeLength]
+      refine Nat.floor_le ?_
+      linarith [Real.sqrt_nonneg x, hh0]
+    rw [twoRangeCut, div_le_iff₀ hh0]
+    nlinarith [hfl, hh1, hsq0]
+  have hll : Real.log (Real.log x) ≤ Real.log x := by
+    have := Real.log_le_sub_one_of_pos hlogx
+    linarith
+  have hll0 : (0 : ℝ) ≤ Real.log (Real.log x) := Real.log_nonneg hlog1
+  have hcut0 : (0 : ℝ) ≤ twoRangeCut β x := by linarith [hcut]
+  have htop : twoRangeTop β x ≤ (Real.sqrt x + 1) * Real.log x := by
+    rw [twoRangeTop]
+    nlinarith [hcutle, hll, hll0, hcut0]
+  have htop0 : (0 : ℝ) ≤ twoRangeTop β x := by
+    rw [twoRangeTop]
+    exact mul_nonneg hcut0 hll0
+  have hle : 2 + 2 * (2 * Real.pi * twoRangeTop β x) ≤ x := by
+    have h1 : 2 * (2 * Real.pi * twoRangeTop β x)
+        ≤ 8 * Real.pi * (Real.sqrt x * Real.log x) := by
+      nlinarith [htop, hpi, hsqrt, hlogx, htop0]
+    have h2 : 8 * Real.pi * (Real.sqrt x * Real.log x) ≤ x / 4 := by
+      nlinarith [hkey, hsq0, hxx, hpi, hlogx]
+    have h3 : (2 : ℝ) ≤ x / 4 := by
+      nlinarith [hsqrt, hxx, hsq0]
+    linarith
+  have hpos : (0 : ℝ) < 2 + 2 * (2 * Real.pi * twoRangeTop β x) := by
+    nlinarith [htop0, hpi]
+  exact Real.log_le_log hpos hle
+
 end
 
 end RHTower.Sieve
