@@ -802,15 +802,16 @@ large-frequency/compact-height split: the four-edge Perron argument gives, unifo
 ```
 
 `RouteTDampedTwistAllHeights.lean` and `RouteTDampedTwistRate.lean` prove the corresponding bound
-for every finite-prime damped Ramaré cofactor, with its explicit correction factor. Smooth-AFE
-horizontal estimates and working-tree general vertical integrability now assemble into exact
-two-pole Gaussian smooth AFE at arbitrary base point. These are long-prefix absolute bounds. At T's short window their error scale
-is larger than the signed block to be controlled, and differencing two prefix inequalities loses
-the required joint sign. Thus the new bounds are genuine analytic progress but do not close—or
-reformulate away—the signed short-block producer.
-Working-tree `SmoothAFETruncation.lean` further replaces direct edge by finite Dirichlet polynomial
-with explicit power-saving Gaussian tail at every strip point. This makes mean-value handoff finite,
-but does not estimate reflected dual edge or signed short Möbius block.
+for every finite-prime damped Ramaré cofactor, with its explicit correction factor.
+`SmoothAFEZetaGeneralEdge.lean` proves finite and infinite two-pole contour identities with movable
+reflected edge `Re(w)=-c` and the exact Gaussian smooth AFE whenever `0<c<=1` and
+`0<Re(s)<1+c`. This closes contour placement needed to put reflected Dirichlet expansion and the
+controlled chi strip on one edge. `SmoothAFETruncation.lean` replaces the direct edge by a finite
+Dirichlet polynomial with explicit Gaussian tail. These are long-prefix absolute bounds and exact
+decompositions. At T's short window their error scale is larger than the signed block to be
+controlled, and differencing two prefix inequalities loses the required joint sign. Thus new
+bounds and movable-edge AFE do not close—or reformulate away—the signed short-block producer;
+reflected dual-edge estimation and joint signed cancellation remain absent.
 
 Formal sources: `XiCTaylorThetaTailCoreCurrentCapstone.lean`,
 `XiCTaylorThetaTailProductFiberHermitianCollapse.lean`, `Sieve/RouteTWidthUpper.lean`,
@@ -822,7 +823,8 @@ Formal sources: `XiCTaylorThetaTailCoreCurrentCapstone.lean`,
 `Sieve/GSTailAssembly.lean`, `Sieve/GSTailMass.lean`,
 `Sieve/MoebiusDistanceAllFreq.lean`, `Sieve/MoebiusDistanceSharp.lean`,
 `Sieve/MoebiusSmoothPolySaving.lean`, `Sieve/MoebiusSeriesPolySaving.lean`,
-`SmoothAFEZetaChiLeftPowerBound.lean`.
+`SmoothAFEZetaChiLeftPowerBound.lean`, `SmoothAFEZetaGeneralEdge.lean`,
+`SmoothAFETruncation.lean`.
 
 **Open core.** Prove joint upper estimate for
 `canonicalThetaTailCoreFiniteArithmeticRemainderCurrent` at same cutoff and depth as prefix selector,
@@ -1344,7 +1346,10 @@ continuation producer is absent.
   presentation by period-four recurrence and a nonvanishing sine/cosine pair. This is a new exact
   cusp--spectrum radius law for extended Selberg class, but it measures gamma/conductor data rather
   than horizontal zero location. It broadens completed-family infrastructure without specializing
-  a zeta source order or creating an RH route.
+  a zeta source order or creating an RH route. Current working-tree
+  `ZetaChiVerticalGrowth.lean` proves only that the relevant real-Gamma factors avoid zero/poles on
+  stated vertical strips and are continuous there. It does not yet prove its title's global
+  polynomial chi majorant, so it closes no further contour or route premise.
 - `DirichletCharacterOrthogonality.lean` closes exact finite complex-character orthogonality and
   bilinear diagonalization; `BoundedCoeffPowerSeries.lean` gives holomorphy of bounded-coefficient
   series on the unit disc; `HermitianSubmoduleTraceOrthonormal.lean` gives canonical real
@@ -1359,9 +1364,11 @@ continuation producer is absent.
   subfamilies. Every constant remains character/modulus/cutoff dependent: these are finite
   aggregations, not a conductor-uniform density theorem, GRH, or divisor-exclusion producer.
   Quadratic CRT/primitivity and second-moment modules close exact finite character-family
-  diagonalization; working-tree `DirichletCharacterQuadraticJacobiIdentity.lean` identifies bundled
-  squarefree CRT character with literal Jacobi symbol, while two-adic correlations reach exact gcd majorants. These are
-  finite-family inputs toward E/T correlation bounds, not their cofinal signed cancellation.
+  diagonalization; `DirichletCharacterQuadraticJacobiIdentity.lean` identifies bundled squarefree
+  CRT character with literal Jacobi symbol, while two-adic correlations reach exact gcd majorants.
+  `DirichletCharacterFundamentalDiscriminant.lean` now proves the conductor-four and both
+  conductor-eight CRT discriminants are fundamental. These remain finite-family inputs toward E/T
+  correlation bounds, not conductor-uniform density or their cofinal signed cancellation.
 - `PrimeLaplaceGammaJetIncidence.lean` supplies a genuine all-prime, nonphysical source interface:
   every finite raw derivative clock is jointly faithful, each finite jet observation is
   Hilbert--Schmidt, prime translation has an exact Taylor-descent anomaly equal to the omitted
@@ -1375,15 +1382,23 @@ continuation producer is absent.
   source over all dilations. The inverse analytic formula is also formal:
   grade-one prime source is the Mobius-weighted sum of dilated von Mangoldt `LSeries`, with geometric
   absolute control. Prime provenance therefore survives an invertible infinite grade resolution in
-  both directions. Working-tree `PrimeBoundaryMonodromyEscape.lean` now supplies critical-strip
+  both directions. `PrimeBoundaryMonodromyEscape.lean` supplies critical-strip
   divisor landing, quantized residue, compact-chart escape, and exact RH endpoint, promoting this
   architecture to PBM. What remains absent is independent source cancellation of monodromy; finite
   entire or locally-uniform zero-free completions are formally incapable of producing it.
+- Current working-tree `AllGradePrimePowerCorona.lean` defines the infinite all-prime-power
+  Marcinkiewicz layer and proves exact grade-one face control: logarithmically weighted
+  grade-one embedding preserves every cutoff mass, while grade-one projection is contractive.
+  This is **AGC**, an all-grade, multi-channel, nonphysical pre-route adjacent to PBM/PPM rather
+  than a new candidate. No declaration yet proves the nonlinear Euler ray lies in this layer, that
+  higher grades form the advertised absolutely summable tail, or that its all-grade corona class
+  equals the grade-one class. Without that source theorem and a completed monodromy/collision
+  landing, AGC cannot inherit PBM's RH endpoint or produce PPM's collision.
 - `PrimeClockEnergyDivergence.lean` proves exact all-prime clock energy diverges for every fixed
   nonzero frequency. Literal source strongly separates distinct vertical heights, but no
   finite-energy scalar clock completion can retain all primes. This sharpens E/G/AF phase
   firewall: successor must renormalize, become distributional, or retain relative mixed channels.
-- Working-tree `HTGeometry/CriticalTraceSpace.lean` identifies exact diagonal trace topology for
+- `HTGeometry/CriticalTraceSpace.lean` identifies exact diagonal trace topology for
   regularized period multiplier: weight `||m||^-1` makes incidence an isometry, and any weight
   making multiplier a topological isomorphism is boundedly equivalent to it. Magnitude is absorbed
   while unimodular phase survives. This is useful topology for L/PCS/PBM boundary descent, but it
@@ -1392,9 +1407,23 @@ continuation producer is absent.
   by derivative size, converge to derivative as period shrinks, and satisfy iterated collar bounds;
   `PeriodRescalingAutomorphism.lean` shows invertible period rescaling preserves the
   Stanley--Reisner constraint ideal. These close local rescaling calculus, not global source law.
+- `FacetHodgeMonomialBlock.lean` proves every surviving monomial block of a finite facet family has
+  Hodge operator equal to positive facet multiplicity, and specializes this uniform gap to every
+  face of the multiple-sine skeleton. `SuperPoincareSimplex.lean` and
+  `RHTower/SuperPoincareApplications.lean` package simplex, CCM clock/reflection, real-corona, and
+  truncated-frequency pairs as finite `N=1` or split `N=2` supertranslation sectors; the
+  theta-cusp constant state is an unconditional zero-energy BPS state. These are exact paired,
+  non-scalar adapters, but they are finite and contain neither completed arithmetic source
+  exhaustion nor an Xi-divisor reader. They do not repair L's singular physical landing, O/G's
+  whole-ground orientation, or HC's absolute charge budget, and create no new route.
+- Current working-tree `HTGeometry/Sl2ElementaryFactorization.lean` proves every determinant-one
+  two-by-two matrix over a field is a product of four upper/lower elementary unipotents. Hence an
+  `SL_2` cocycle can be reduced to two one-parameter subgroups. This is useful projective descent
+  infrastructure for U/Q/UEB/HJ, but no declaration instantiates a literal prime--Gamma cocycle or
+  derives a critical-line reader; it is not a route.
 - `RandomEulerObservableAbscissa.lean` proves almost-sure convergence of the Steinhaus Euler
   observable exactly for `sigma>1/2` and almost-sure divergence for `sigma<=1/2`.
-  `ZetaRealSignature.lean`, `ZetaFisherMetric.lean`, and working-tree
+  `ZetaRealSignature.lean`, `ZetaFisherMetric.lean`,
   `ZetaFisherHorizon.lean`/`ZetaFisherVariance.lean` identify same wall as sign change, Fisher
   blow-up `1/(2 sigma-1)^2`, infinite Fisher distance, and Gibbs variance of `log n`.
   `PrimeBoundaryPoissonJumpField.lean` and `PrimeSuperspaceDecompactification.lean` compute the
@@ -1406,7 +1435,7 @@ continuation producer is absent.
 - `PrimeHigherMertensRate.lean`, `PrimeEndpointJet*.lean`, and
   `PrimeBoundaryWickExpansion.lean` give all algebraic endpoint-jet coefficients with exponentially
   small prime-number-theorem remainder. They close perturbative prime-boundary expansion used by
-  G/MSC/PBM. PBM's working-tree escape theorem shows exact limitation: a fixed endpoint chart sees
+  G/MSC/PBM. PBM's escape theorem shows exact limitation: a fixed endpoint chart sees
   these jets while zero-generated monodromy runs to infinity. More jet orders cannot recover that
   charge.
 - `XiSuperchargeHarnackDefect.lean` computes finite conjugation-closed Xi-packet defect as one half
@@ -1722,7 +1751,7 @@ continuation producer is absent.
   connection over any base field. Thus any attempted Bessel specialization must violate one of
   abstract rigidity hypotheses; connection cannot be asserted as missing bookkeeping. New
   differential-closure/Kolchin modules make ambient solution and separation steps unconditional,
-  and working-tree `LinearSystemFundamentalMatrix.lean` gives every finite linear differential
+  and `LinearSystemFundamentalMatrix.lean` gives every finite linear differential
   system an invertible fundamental solution over a differentially closed field, but none selects
   arithmetic system. This is a genuine non-classical
   carrier adjacent to AF/AP/IRK, but no literal prime--Gamma difference system, source-selected
@@ -1759,10 +1788,13 @@ continuation producer is absent.
   closure of finite-rank plain-determinant graph in Schatten-`p` topology is precisely order-`p`
   regularized determinant multiplied by exponential of an arbitrary polynomial jet of degree
   below `p` with zero constant term. Necessity, sufficiency, jet uniqueness, naturality, operator
-  and multivariable pencil forms are formal. Working-tree pencil micro-block, moment realization,
-  and sufficiency-law modules prove every admissible homogeneous low-trace defect can be inserted at
+  and multivariable pencil forms are formal. Pencil micro-block, moment realization, and
+  sufficiency-law modules prove every admissible homogeneous low-trace defect can be inserted at
   arbitrarily small Schatten cost and assemble finite-rank pencils converging in Schatten norm with
-  prescribed lower traces.
+  prescribed lower traces. `PencilJetFiniteDimensional.lean` closes the converse topology: every
+  pointwise limit of fixed-order trace jets of finite-rank pencils remains in the finite-dimensional
+  span of powers of linear forms. Cofinal finite pencils therefore neither erase the low-jet fibre
+  nor create a new nonpolynomial selector.
   Consequence for C1/O/SV2/OPUC is negative as well as positive: determinant convergence does not
   canonically recover missing low traces or orientation. Those jets are genuine completion fibres,
   so an arithmetic source law must select them; generic determinant packaging cannot.
@@ -2117,7 +2149,9 @@ coherent observer is unbounded. Prime-support Hodge theory says phase begins at 
 paths and finite positive-prime apartments are acyclic. Prime-square Fourier strata now give a
 cofinal two-level reflection law with exact type `|c|`; its exponential drift signal dominates the
 polylogarithmic Wold boundary scale. Grade--Lambert monodromy inversion has now crossed into PBM's
-critical-strip quantized residue, but still lacks independent zero-charge production. Half-line exponential Gram/distance identities supply exact Cauchy
+critical-strip quantized residue, but still lacks independent zero-charge production. AGC adds an
+infinite all-grade coefficient topology with an exact grade-one retract, but not yet the nonlinear
+Euler-ray tail or a completed landing. Half-line exponential Gram/distance identities supply exact Cauchy
 geometry and now specialize to canonical `L2` readers for literal theta square rates. TSR therefore
 has arithmetic source occurrence, but causal reflection supplies no second orientation and no Xi
 divisor landing exists. Finite prime-chamber Pick inertia exactly converts chamber inclusion and
@@ -2155,8 +2189,8 @@ Open cores fall into six classes:
    (CCM-FU, E, O, T, U, SV2).
 6. **Source-native internal dynamics:** projective module, corrected Stokes category, monodromy, or
    analytic continuation on the literal completed source
-   on actual arithmetic carrier before divisor selection (UEB, PSRC, PBM, SC, PPM, IRK, OPUC,
-   HJ, BW, MSC, PCS, SEC, BPC).
+   on actual arithmetic carrier before divisor selection (UEB, PSRC, PBM, AGC, SC, PPM, IRK,
+   OPUC, HJ, BW, MSC, PCS, SEC, BPC).
    Abstract Weyl existence, Arakelov power pullback, all-plane entire Suzuki convergence, and finite
    real quaternionic descent are classified terminal in their stated architectures.
 
@@ -2238,6 +2272,9 @@ is:
 27. Why is the literal critical archimedean Loewner matrix greater than or equal to complete prime
    Loewner matrix on every finite Euler-safe node packet, given that every positive-shift generator
    is formally non-PSD and therefore cannot supply a positive interpolation path?
+28. Does the nonlinear all-grade Euler ray differ from its grade-one face by a uniformly
+   summable prime-power tail in the proved Marcinkiewicz topology, and if so can that completed
+   all-grade class carry a source-native law excluding PBM monodromy or forcing PPM collision?
 
 Until one is answered, endpoint reformulations, finite real-zero models, seed asymptotics, diagonal
 moment inequalities, or scalar transport identities do not move formal RH frontier.

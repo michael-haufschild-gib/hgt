@@ -16,3 +16,4 @@ import GaloisForLFunctions.QECLean.Foundations.Foundations
 import GaloisForLFunctions.QECLean.NoetherCorpusApplications
 import GaloisForLFunctions.QECLean.RepetitionCode.RepetitionCode
 import GaloisForLFunctions.QECLean.Stabilizer.Stabilizer
+import GaloisForLFunctions.QECLean.SuperPoincareApplications

@@ -1,11 +1,15 @@
 import GaloisForLFunctions.HTGeometry.SuperPoincareAlgebra
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Repetition.Three
+import GaloisForLFunctions.QECLean.Stabilizer.Codes.Repetition.N
+import GaloisForLFunctions.QECLean.Stabilizer.Codes.Iceberg.N
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.RotatedSurface.Three
+import GaloisForLFunctions.QECLean.Stabilizer.Codes.RotatedSurface.StabilizerCode
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Small.CSS_4_1_2
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Small.FiveQubit_5_1_3
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Small.FourQubit_4_2_2
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Small.SixQubit_6_2_2
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Small.Steane7
+import GaloisForLFunctions.QECLean.Stabilizer.Codes.Small.QuantumHamming
 
 /-!
 # Super-Poincare certificates for concrete stabilizer codes
@@ -139,5 +143,43 @@ def steaneLogical : SuperPoincare.D1N2
     StabilizerGroup.Steane7.logicalX
     StabilizerGroup.Steane7.logicalZ rfl rfl
     StabilizerGroup.Steane7.logicalX_anticommutes_logicalZ
+
+/-- Logical supercharges for every odd-length repetition code. -/
+def oddRepetitionLogical (k : ℕ) : SuperPoincare.D1N2
+    (Matrix (NQubitBasis ((2 * k + 1) + 2)) (NQubitBasis ((2 * k + 1) + 2)) ℂ) :=
+  pauliD1N2
+    (StabilizerGroup.RepetitionCodeN.logicalX (2 * k + 1))
+    (StabilizerGroup.RepetitionCodeN.logicalZ (2 * k + 1)) rfl rfl
+    (StabilizerGroup.RepetitionCodeN.logicalX_anticommutes_logicalZ
+      (2 * k + 1) ⟨k + 1, by omega⟩)
+
+/-- Logical supercharges for every quantum Hamming code in the corpus. -/
+def quantumHammingLogical (k : ℕ) : SuperPoincare.D1N2
+    (Matrix (NQubitBasis (2 ^ (k + 1) - 1)) (NQubitBasis (2 ^ (k + 1) - 1)) ℂ) :=
+  pauliD1N2
+    (StabilizerGroup.QuantumHamming.logicalX (k + 1))
+    (StabilizerGroup.QuantumHamming.logicalZ (k + 1)) rfl rfl
+    (StabilizerGroup.QuantumHamming.logicalX_anticommutes_logicalZ
+      (r := k + 1) (by omega))
+
+/-- Every encoded qubit in every Iceberg code supplies its own `N = 2` representation. -/
+def icebergLogical (k : ℕ) (i : Fin (2 * (k + 2) - 2)) : SuperPoincare.D1N2
+    (Matrix (NQubitBasis (2 * (k + 2))) (NQubitBasis (2 * (k + 2))) ℂ) := by
+  letI : Fact (2 ≤ k + 2) := ⟨by omega⟩
+  exact pauliD1N2
+    (StabilizerGroup.Iceberg.logicalX (k + 2) i)
+    (StabilizerGroup.Iceberg.logicalZ (k + 2) i) rfl rfl
+    (StabilizerGroup.Iceberg.logicalX_anticommutes_logicalZ_diag (k + 2) i)
+
+/-- Logical supercharges for every odd rotated-surface lattice of side at least three. -/
+def oddRotatedSurfaceLogical (k : ℕ) : SuperPoincare.D1N2
+    (Matrix (NQubitBasis ((2 * k + 3) * (2 * k + 3)))
+      (NQubitBasis ((2 * k + 3) * (2 * k + 3))) ℂ) := by
+  letI : Fact (Odd (2 * k + 3)) := ⟨⟨k + 1, by omega⟩⟩
+  letI : Fact (3 ≤ 2 * k + 3) := ⟨by omega⟩
+  exact pauliD1N2
+    (StabilizerGroup.RotatedSurfaceCodeN.logicalX (2 * k + 3))
+    (StabilizerGroup.RotatedSurfaceCodeN.logicalZ (2 * k + 3)) rfl rfl
+    (StabilizerGroup.RotatedSurfaceCodeN.logicalX_anticommute_logicalZ (2 * k + 3))
 
 end Quantum.SuperPoincareApplications

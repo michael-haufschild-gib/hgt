@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.WeightedEulerCoefficientSpaces
 import GaloisForLFunctions.RHTower.CreaseBudgetPrimeMass
+import GaloisForLFunctions.RHTower.PrimeLogRpowTail
+import GaloisForLFunctions.RHTower.MertensPrimeMeanReader
 
 /-!
 # The all-grade prime-power Marcinkiewicz layer and its grade-one face
@@ -22,7 +24,7 @@ its linear grade-one face have the same critical corona class.
 
 noncomputable section
 
-open Finset
+open Finset Filter Topology
 
 namespace RHTower
 
@@ -183,7 +185,7 @@ theorem primePowerMass_le_prod {c : ℕ × ℕ → ℝ} (g : ℕ → ℕ → ℝ
         Finset.sum_le_sum_of_subset_of_nonneg (primePowerIndex_subset_product X)
           (fun z _ _ => hgnn z.1 z.2)
     _ = ∑ p ∈ Nat.primesBelow (X + 1), ∑ m ∈ Finset.range (X + 1), g p m :=
-        Finset.sum_product
+        Finset.sum_product _ _ _
 
 /-! ### The geometric grade tail -/
 
@@ -192,12 +194,10 @@ theorem sum_range_pow_le {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (M : ℕ) :
   have hne : r ≠ 1 := ne_of_lt hr1
   rw [geom_sum_eq hne]
   have hden : (0 : ℝ) < 1 - r := by linarith
-  have hnum : r ^ M - 1 ≤ 0 := by
-    have : r ^ M ≤ 1 := pow_le_one₀ hr0 hr1.le
-    linarith
-  rw [div_le_iff₀' (by linarith : (0 : ℝ) < r - 1 ∨ True) ] at *
-  · exact le_rfl
-  · trivial
+  have hrw : (r ^ M - 1) / (r - 1) = (1 - r ^ M) / (1 - r) := by
+    rw [show r ^ M - 1 = -(1 - r ^ M) by ring, show r - 1 = -(1 - r) by ring, neg_div_neg_eq]
+  rw [hrw, div_le_iff₀ hden, inv_mul_cancel₀ (ne_of_gt hden)]
+  linarith [pow_nonneg hr0 M]
 
 theorem sum_Ico_pow_succ_le {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (M : ℕ) :
     ∑ m ∈ Finset.range M, r ^ (m + 1) ≤ r * (1 - r)⁻¹ := by
@@ -206,3 +206,323 @@ theorem sum_Ico_pow_succ_le {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (M : ℕ) :
     exact Finset.sum_congr rfl fun m _ => by ring
   rw [hgeom]
   exact mul_le_mul_of_nonneg_left (sum_range_pow_le hr0 hr1 M) hr0
+
+theorem sum_range_ite_pow_le {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (M : ℕ) :
+    ∑ m ∈ Finset.range M, (if m = 0 then (0 : ℝ) else r ^ (m + 1)) ≤ r ^ 2 * (1 - r)⁻¹ := by
+  have hden : (0 : ℝ) < 1 - r := by linarith
+  have hinv : (0 : ℝ) ≤ (1 - r)⁻¹ := by positivity
+  match M with
+  | 0 => simpa using by positivity
+  | (K + 1) =>
+      have hterm : ∀ i ∈ Finset.range K,
+          (if i + 1 = 0 then (0 : ℝ) else r ^ (i + 1 + 1)) = r ^ 2 * r ^ i := by
+        intro i _
+        rw [if_neg (by omega)]
+        ring
+      have hzero : (if (0 : ℕ) = 0 then (0 : ℝ) else r ^ (0 + 1)) = 0 := by norm_num
+      rw [Finset.sum_range_succ', Finset.sum_congr rfl hterm, ← Finset.mul_sum, hzero, add_zero]
+      exact mul_le_mul_of_nonneg_left (sum_range_pow_le hr0 hr1 K) (by positivity)
+
+/-! ### The grade-`≥ 2` part is a vanishing tail -/
+
+/-- **The higher-grade Euler mass is uniformly bounded.**  For a bounded degree-one parameter field
+the grades `m ≥ 1` carry weighted mass at most `∑_p (log p)/(p(p-1)) ≤ 8`, uniformly in the
+cutoff. -/
+theorem primePowerMass_eulerRayHigher_le {a : ℕ → ℝ} (ha : ∀ p, |a p| ≤ 1) (X : ℕ) :
+    primePowerMass (eulerRayHigher a) X ≤ 8 := by
+  set g : ℕ → ℕ → ℝ := fun p m => if m = 0 then 0 else Real.log p * (((p : ℝ))⁻¹) ^ (m + 1)
+    with hg
+  have hgnn : ∀ p m, 0 ≤ g p m := by
+    intro p m
+    rw [hg]
+    dsimp only
+    split
+    · exact le_rfl
+    · exact mul_nonneg (Real.log_natCast_nonneg p) (by positivity)
+  have hmaj : ∀ z ∈ primePowerIndex X,
+      |eulerRayHigher a z| / ((z.1 : ℝ) ^ (z.2 + 1)) ≤ g z.1 z.2 := by
+    intro z hz
+    have hp := (mem_primePowerIndex.mp hz).1
+    have hp0 : (0 : ℝ) < (z.1 : ℝ) := by exact_mod_cast hp.pos
+    by_cases hz2 : z.2 = 0
+    · have hzeq : z = (z.1, 0) := Prod.ext rfl hz2
+      rw [hg]
+      dsimp only
+      rw [if_pos hz2, hzeq, eulerRayHigher_grade_zero]
+      simp
+    · rw [hg]
+      dsimp only
+      rw [if_neg hz2, eulerRayHigher_of_ne_zero a hz2, abs_mul,
+        abs_of_nonneg (Real.log_natCast_nonneg z.1), abs_pow, div_le_iff₀ (by positivity)]
+      have hle : |a z.1| ^ (z.2 + 1) ≤ 1 := pow_le_one₀ (abs_nonneg _) (ha z.1)
+      have hinv : (((z.1 : ℝ))⁻¹) ^ (z.2 + 1) * ((z.1 : ℝ) ^ (z.2 + 1)) = 1 := by
+        rw [← mul_pow, inv_mul_cancel₀ (ne_of_gt hp0), one_pow]
+      calc Real.log z.1 * |a z.1| ^ (z.2 + 1)
+          ≤ Real.log z.1 * 1 := mul_le_mul_of_nonneg_left hle (Real.log_natCast_nonneg z.1)
+        _ = Real.log z.1 * ((((z.1 : ℝ))⁻¹) ^ (z.2 + 1) * ((z.1 : ℝ) ^ (z.2 + 1))) := by
+            rw [hinv]
+        _ = Real.log z.1 * (((z.1 : ℝ))⁻¹) ^ (z.2 + 1) * ((z.1 : ℝ) ^ (z.2 + 1)) := by ring
+  refine le_trans (primePowerMass_le_prod g X hmaj hgnn) ?_
+  have hinner : ∀ p ∈ Nat.primesBelow (X + 1),
+      ∑ m ∈ Finset.range (X + 1), g p m ≤ Real.log p / ((p : ℝ) * ((p : ℝ) - 1)) := by
+    intro p hp
+    obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp
+    have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hpp.two_le
+    set r : ℝ := ((p : ℝ))⁻¹ with hr
+    have hr0 : 0 ≤ r := by positivity
+    have hr1 : r < 1 := by
+      rw [hr, inv_lt_one_iff₀]
+      right; linarith
+    have hsum : ∑ m ∈ Finset.range (X + 1), g p m
+        = Real.log p * ∑ m ∈ Finset.range (X + 1), (if m = 0 then (0 : ℝ) else r ^ (m + 1)) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun m _ => ?_
+      rw [hg]
+      dsimp only
+      split <;> simp [hr]
+    rw [hsum]
+    have hb := sum_range_ite_pow_le hr0 hr1 (X + 1)
+    have hpne : (p : ℝ) ≠ 0 := by linarith
+    have hp1ne : (p : ℝ) - 1 ≠ 0 := by linarith
+    have hval : r ^ 2 * (1 - r)⁻¹ = 1 / ((p : ℝ) * ((p : ℝ) - 1)) := by
+      rw [hr]
+      field_simp
+    rw [hval] at hb
+    calc Real.log p * ∑ m ∈ Finset.range (X + 1), (if m = 0 then (0 : ℝ) else r ^ (m + 1))
+        ≤ Real.log p * (1 / ((p : ℝ) * ((p : ℝ) - 1))) :=
+          mul_le_mul_of_nonneg_left hb (Real.log_natCast_nonneg p)
+      _ = Real.log p / ((p : ℝ) * ((p : ℝ) - 1)) := by ring
+  calc ∑ p ∈ Nat.primesBelow (X + 1), ∑ m ∈ Finset.range (X + 1), g p m
+      ≤ ∑ p ∈ Nat.primesBelow (X + 1), Real.log p / ((p : ℝ) * ((p : ℝ) - 1)) :=
+        Finset.sum_le_sum hinner
+    _ ≤ 8 := sum_primesBelow_log_div_le (X + 1)
+
+/-- **The grade-one reduction.**  For a bounded degree-one parameter field the higher grades are a
+vanishing tail: their Marcinkiewicz quotient tends to zero, so the complete nonlinear Euler ray and
+its grade-one coordinate have the same critical corona class. -/
+theorem tendsto_primePowerQuotient_eulerRayHigher {a : ℕ → ℝ} (ha : ∀ p, |a p| ≤ 1) :
+    Tendsto (fun X : ℕ => primePowerQuotient (eulerRayHigher a) X) atTop (nhds 0) := by
+  refine squeeze_zero' ?_ ?_ (tendsto_const_div_log_nat 8)
+  · filter_upwards [eventually_ge_atTop 2] with X hX
+    have hlog : 0 < Real.log X := log_cutoff_pos hX
+    exact div_nonneg (primePowerMass_nonneg _ _) hlog.le
+  · filter_upwards [eventually_ge_atTop 2] with X hX
+    have hlog : 0 < Real.log X := log_cutoff_pos hX
+    exact div_le_div_of_nonneg_right (primePowerMass_eulerRayHigher_le ha X) hlog.le
+
+/-! ### The exact unit class -/
+
+theorem abs_eulerRay_unit (z : ℕ × ℕ) :
+    |eulerRay (fun _ => (1 : ℝ)) z|
+      = |gradeOneEmbed (fun _ => (1 : ℝ)) z| + |eulerRayHigher (fun _ => (1 : ℝ)) z| := by
+  by_cases hz : z.2 = 0
+  · have hzeq : z = (z.1, 0) := Prod.ext rfl hz
+    rw [hzeq, eulerRayHigher_grade_zero]
+    simp [eulerRay, gradeOneEmbed]
+  · rw [eulerRayHigher_of_ne_zero _ hz]
+    simp [eulerRay, gradeOneEmbed, hz]
+
+theorem primePowerMass_eulerRay_unit (X : ℕ) :
+    primePowerMass (eulerRay fun _ => (1 : ℝ)) X
+      = primeLogMass (fun _ => (1 : ℝ)) X
+        + primePowerMass (eulerRayHigher fun _ => (1 : ℝ)) X := by
+  rw [← primePowerMass_gradeOneEmbed, primePowerMass, primePowerMass, primePowerMass,
+    ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun z _ => ?_
+  rw [abs_eulerRay_unit]
+  ring
+
+/-- **The actual unit Euler source survives with quotient one.**  Mertens' first theorem gives the
+exact Marcinkiewicz value of the complete all-grade unit ray: the surviving unit class is not
+annihilated by the corona. -/
+theorem tendsto_primePowerQuotient_eulerRay_unit :
+    Tendsto (fun X : ℕ => primePowerQuotient (eulerRay fun _ => (1 : ℝ)) X) atTop (nhds 1) := by
+  have hsplit : ∀ X : ℕ, primePowerQuotient (eulerRay fun _ => (1 : ℝ)) X
+      = mertensPrimeMean (fun _ => (1 : ℝ)) X
+        + primePowerQuotient (eulerRayHigher fun _ => (1 : ℝ)) X := by
+    intro X
+    rw [primePowerQuotient, primePowerMass_eulerRay_unit, primePowerQuotient,
+      mertensPrimeMean_unit_eq, add_div]
+  have hunit : ∀ p : ℕ, |(1 : ℝ)| ≤ 1 := fun _ => by norm_num
+  have h := tendsto_mertensPrimeMean_unit.add
+    (tendsto_primePowerQuotient_eulerRayHigher hunit)
+  rw [add_zero] at h
+  exact h.congr fun X => (hsplit X).symm
+
+/-! ### The off-line shift ray vanishes -/
+
+/-- The shifted parameter field of an off-line residue character at half-plane depth `ε`. -/
+def shiftField (ε : ℝ) : ℕ → ℝ := fun p => (p : ℝ) ^ (-ε)
+
+theorem primePowerMass_eulerRay_shift_le {ε : ℝ} (hε : 0 < ε) (X : ℕ) :
+    primePowerMass (eulerRay (shiftField ε)) X ≤ 2 * primeLogRpowTailConstant ε := by
+  set g : ℕ → ℕ → ℝ := fun p m => Real.log p * (((p : ℝ) ^ (-(1 + ε)))) ^ (m + 1) with hg
+  have hgnn : ∀ p m, 0 ≤ g p m := fun p m =>
+    mul_nonneg (Real.log_natCast_nonneg p) (by positivity)
+  have hmaj : ∀ z ∈ primePowerIndex X,
+      |eulerRay (shiftField ε) z| / ((z.1 : ℝ) ^ (z.2 + 1)) ≤ g z.1 z.2 := by
+    intro z hz
+    have hp := (mem_primePowerIndex.mp hz).1
+    have hp0 : (0 : ℝ) < (z.1 : ℝ) := by exact_mod_cast hp.pos
+    have hq : (z.1 : ℝ) ^ (-ε) / (z.1 : ℝ) = (z.1 : ℝ) ^ (-(1 + ε)) := by
+      rw [div_eq_mul_inv, ← Real.rpow_neg_one (z.1 : ℝ), ← Real.rpow_add hp0]
+      congr 1
+      ring
+    rw [hg]
+    dsimp only
+    rw [eulerRay, shiftField, abs_mul, abs_of_nonneg (Real.log_natCast_nonneg z.1), abs_pow,
+      abs_of_nonneg (Real.rpow_nonneg hp0.le _), mul_div_assoc, ← div_pow, hq]
+  refine le_trans (primePowerMass_le_prod g X hmaj hgnn) ?_
+  have hinner : ∀ p ∈ Nat.primesBelow (X + 1),
+      ∑ m ∈ Finset.range (X + 1), g p m ≤ 2 * (Real.log p * ((p : ℝ) ^ (-(1 + ε)))) := by
+    intro p hp
+    obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp
+    have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hpp.two_le
+    have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
+    set q : ℝ := (p : ℝ) ^ (-(1 + ε)) with hqdef
+    have hq0 : 0 < q := Real.rpow_pos_of_pos hp0 _
+    have hqhalf : q ≤ 1 / 2 := by
+      have h1 : (2 : ℝ) ^ (1 + ε) ≤ (p : ℝ) ^ (1 + ε) :=
+        Real.rpow_le_rpow (by norm_num) hp2 (by linarith)
+      have h2 : (2 : ℝ) ≤ (2 : ℝ) ^ (1 + ε) := by
+        have := Real.rpow_le_rpow_of_exponent_le (x := (2 : ℝ)) (by norm_num)
+          (show (1 : ℝ) ≤ 1 + ε by linarith)
+        simpa using this
+      rw [hqdef, Real.rpow_neg hp0.le, ← one_div]
+      exact one_div_le_one_div_of_le (by norm_num) (le_trans h2 h1)
+    have hq1 : q < 1 := by linarith
+    have hsum : ∑ m ∈ Finset.range (X + 1), g p m
+        = Real.log p * ∑ m ∈ Finset.range (X + 1), q ^ (m + 1) := by
+      rw [Finset.mul_sum]
+    rw [hsum]
+    have hb := sum_Ico_pow_succ_le hq0.le hq1 (X + 1)
+    have hinv2 : (1 - q)⁻¹ ≤ 2 := by
+      rw [inv_le_comm₀ (by linarith) (by norm_num)]
+      linarith
+    calc Real.log p * ∑ m ∈ Finset.range (X + 1), q ^ (m + 1)
+        ≤ Real.log p * (q * (1 - q)⁻¹) :=
+          mul_le_mul_of_nonneg_left hb (Real.log_natCast_nonneg p)
+      _ ≤ Real.log p * (q * 2) := by
+          refine mul_le_mul_of_nonneg_left ?_ (Real.log_natCast_nonneg p)
+          exact mul_le_mul_of_nonneg_left hinv2 hq0.le
+      _ = 2 * (Real.log p * q) := by ring
+  have htail := sum_prime_log_rpow_dyadic_tail_le hε 0 X
+  have hfilter : {p ∈ Nat.primesBelow (X + 1) | 2 ^ 0 ≤ p} = Nat.primesBelow (X + 1) := by
+    refine Finset.filter_true_of_mem fun p hp => ?_
+    have hpp := (Nat.mem_primesBelow.mp hp).2
+    simpa using hpp.one_lt.le
+  rw [hfilter] at htail
+  simp only [pow_zero, mul_one] at htail
+  calc ∑ p ∈ Nat.primesBelow (X + 1), ∑ m ∈ Finset.range (X + 1), g p m
+      ≤ ∑ p ∈ Nat.primesBelow (X + 1), 2 * (Real.log p * ((p : ℝ) ^ (-(1 + ε)))) :=
+        Finset.sum_le_sum hinner
+    _ = 2 * ∑ p ∈ Nat.primesBelow (X + 1), Real.log p * ((p : ℝ) ^ (-(1 + ε))) := by
+        rw [Finset.mul_sum]
+    _ ≤ 2 * primeLogRpowTailConstant ε := by
+        exact mul_le_mul_of_nonneg_left htail (by norm_num)
+
+/-- **The off-line shift ray is a vanishing tail.**  Even with every prime-power grade retained,
+the complete nonlinear ray of a right-half residue character has zero critical corona class. -/
+theorem tendsto_primePowerQuotient_eulerRay_shift {ε : ℝ} (hε : 0 < ε) :
+    Tendsto (fun X : ℕ => primePowerQuotient (eulerRay (shiftField ε)) X) atTop (nhds 0) := by
+  refine squeeze_zero' ?_ ?_ (tendsto_const_div_log_nat (2 * primeLogRpowTailConstant ε))
+  · filter_upwards [eventually_ge_atTop 2] with X hX
+    exact div_nonneg (primePowerMass_nonneg _ _) (log_cutoff_pos hX).le
+  · filter_upwards [eventually_ge_atTop 2] with X hX
+    exact div_le_div_of_nonneg_right (primePowerMass_eulerRay_shift_le hε X)
+      (log_cutoff_pos hX).le
+
+/-! ### The tangent ray at the actual unit source -/
+
+theorem primesBelow_succ_eq_filter (X : ℕ) :
+    Nat.primesBelow (X + 1) = Finset.filter (fun n : ℕ => n.Prime) (Finset.Icc 1 X) := by
+  ext p
+  simp only [Nat.mem_primesBelow, Finset.mem_filter, Finset.mem_Icc]
+  constructor
+  · rintro ⟨hlt, hp⟩
+    exact ⟨⟨hp.one_lt.le, by omega⟩, hp⟩
+  · rintro ⟨⟨_, hle⟩, hp⟩
+    exact ⟨by omega, hp⟩
+
+theorem sum_range_succ_mul_pow_le {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (M : ℕ) :
+    ∑ m ∈ Finset.range M, ((m : ℝ) + 1) * r ^ (m + 1) ≤ r / (1 - r) ^ 2 := by
+  have hnorm : ‖r‖ < 1 := by rwa [Real.norm_eq_abs, abs_of_nonneg hr0]
+  have hs := hasSum_coe_mul_geometric_of_norm_lt_one (𝕜 := ℝ) hnorm
+  have heq : ∑ m ∈ Finset.range M, ((m : ℝ) + 1) * r ^ (m + 1)
+      = ∑ n ∈ Finset.range (M + 1), (n : ℝ) * r ^ n := by
+    rw [Finset.sum_range_succ']
+    simp
+  rw [heq, ← hs.tsum_eq]
+  exact hs.summable.sum_le_tsum _ fun n _ => by positivity
+
+/-- The tangent of the complete Euler ray at the actual unit source. -/
+def eulerTangent (b : ℕ → ℝ) : ℕ × ℕ → ℝ := fun z => ((z.2 : ℝ) + 1) * Real.log z.1 * b z.1
+
+/-- **The critical summable tangent bound.**  Adding all tangent grades does not strengthen the
+critical summable topology: the complete tangent ray has weighted mass at most four times the
+grade-one mass. -/
+theorem primePowerMass_eulerTangent_le (b : ℕ → ℝ) (X : ℕ) :
+    primePowerMass (eulerTangent b) X ≤ 4 * primeLogMass b X := by
+  set g : ℕ → ℕ → ℝ :=
+    fun p m => ((m : ℝ) + 1) * Real.log p * |b p| * (((p : ℝ))⁻¹) ^ (m + 1) with hg
+  have hgnn : ∀ p m, 0 ≤ g p m := by
+    intro p m
+    rw [hg]
+    dsimp only
+    have : 0 ≤ ((m : ℝ) + 1) * Real.log p * |b p| :=
+      mul_nonneg (mul_nonneg (by positivity) (Real.log_natCast_nonneg p)) (abs_nonneg _)
+    positivity
+  have hmaj : ∀ z ∈ primePowerIndex X,
+      |eulerTangent b z| / ((z.1 : ℝ) ^ (z.2 + 1)) ≤ g z.1 z.2 := by
+    intro z hz
+    have hp := (mem_primePowerIndex.mp hz).1
+    have hp0 : (0 : ℝ) < (z.1 : ℝ) := by exact_mod_cast hp.pos
+    rw [hg]
+    dsimp only
+    rw [eulerTangent, abs_mul, abs_mul,
+      abs_of_nonneg (show (0 : ℝ) ≤ (z.2 : ℝ) + 1 by positivity),
+      abs_of_nonneg (Real.log_natCast_nonneg z.1), inv_pow, ← div_eq_mul_inv]
+  refine le_trans (primePowerMass_le_prod g X hmaj hgnn) ?_
+  have hinner : ∀ p ∈ Nat.primesBelow (X + 1),
+      ∑ m ∈ Finset.range (X + 1), g p m ≤ 4 * (Real.log p / p * |b p|) := by
+    intro p hp
+    obtain ⟨hplt, hpp⟩ := Nat.mem_primesBelow.mp hp
+    have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hpp.two_le
+    have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
+    set r : ℝ := ((p : ℝ))⁻¹ with hr
+    have hr0 : 0 ≤ r := by positivity
+    have hr1 : r < 1 := by
+      rw [hr, inv_lt_one_iff₀]
+      right; linarith
+    have hsum : ∑ m ∈ Finset.range (X + 1), g p m
+        = (Real.log p * |b p|) * ∑ m ∈ Finset.range (X + 1), ((m : ℝ) + 1) * r ^ (m + 1) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun m _ => ?_
+      rw [hg]
+      dsimp only
+      ring
+    rw [hsum]
+    have hb := sum_range_succ_mul_pow_le hr0 hr1 (X + 1)
+    have hpne : (p : ℝ) ≠ 0 := by linarith
+    have hp1 : (0 : ℝ) < (p : ℝ) - 1 := by linarith
+    have hval : r / (1 - r) ^ 2 = (p : ℝ) / ((p : ℝ) - 1) ^ 2 := by
+      rw [hr]
+      field_simp
+    rw [hval] at hb
+    have hcmp : (p : ℝ) / ((p : ℝ) - 1) ^ 2 ≤ 4 / (p : ℝ) := by
+      have hd1 : (0 : ℝ) < ((p : ℝ) - 1) ^ 2 := by positivity
+      rw [div_le_iff₀ hd1, div_mul_eq_mul_div, le_div_iff₀ hp0]
+      nlinarith
+    have hnn : (0 : ℝ) ≤ Real.log p * |b p| :=
+      mul_nonneg (Real.log_natCast_nonneg p) (abs_nonneg _)
+    calc (Real.log p * |b p|) * ∑ m ∈ Finset.range (X + 1), ((m : ℝ) + 1) * r ^ (m + 1)
+        ≤ (Real.log p * |b p|) * ((p : ℝ) / ((p : ℝ) - 1) ^ 2) :=
+          mul_le_mul_of_nonneg_left hb hnn
+      _ ≤ (Real.log p * |b p|) * (4 / (p : ℝ)) := mul_le_mul_of_nonneg_left hcmp hnn
+      _ = 4 * (Real.log p / p * |b p|) := by field_simp
+  calc ∑ p ∈ Nat.primesBelow (X + 1), ∑ m ∈ Finset.range (X + 1), g p m
+      ≤ ∑ p ∈ Nat.primesBelow (X + 1), 4 * (Real.log p / p * |b p|) := Finset.sum_le_sum hinner
+    _ = 4 * primeLogMass b X := by
+        rw [← Finset.mul_sum, primeLogMass, primesBelow_succ_eq_filter]
+
+end RHTower
