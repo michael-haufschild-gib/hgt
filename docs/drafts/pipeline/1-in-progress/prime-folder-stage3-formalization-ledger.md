@@ -401,3 +401,289 @@ instance — note it is `local` in `PrimeWalshDifferentialRank.lean`, so any new
 must re-declare it.
 
 Card `prime-corona-constraint-opacity-law` promoted. Stage-2 prime folder: 19 cards remaining.
+
+## 2026-08-19 — closability card CLOSED (card 18)
+
+Two new modules:
+
+`RHTower/PrimeCharacterTailIndependence.lean`
+- `exists_prime_log_in_window` — prime logarithms are eventually δ-dense on the line, from
+  `RHTower.Sieve.exists_threshold_routeT_prime_in_fixed_window` (the 71/100 Hoheisel window).
+- `expSumOn`, `expSumLip`, `norm_expSumOn_sub_le` — Lipschitz bound for an exponential sum.
+- `tendsto_expSumOn_atTop_zero_of_prime_log` — vanishing along prime logs ⇒ vanishing at infinity.
+- `primeCharacter_coeff_eq_zero_of_eventually_vanishing` — **distinct prime characters `p^{-x}` are
+  linearly independent modulo finite prime support**, for arbitrary complex exponents (no positivity
+  needed). Reusable well beyond this card.
+
+`RHTower/PrimeShiftResidueClosability.lean` — the residue graph, its domain, the functional, the
+graph lemma, and `RiemannHypothesis ↔ IsClosableMarcinkiewicz residueDomain residueFunctional`.
+
+Search notes (the user's standing instruction paid off three times here):
+- `HTGeometry/ExpSumVanishing.lean` already had `eq_zero_of_expSum_tendsto_zero` — replaced ~110
+  lines of a hand-rolled discrete Bohr mean.
+- `RHTower/WeightedEulerCoefficientSpaces.lean` already had the card's actual spaces: `primeLogMass`,
+  `marcinkiewiczLogQuotient`, `MemCriticalSummableLayer` (T₁), `MemMarcinkiewiczLogLayer` (M_log),
+  `MemVanishingTailLayer` (M₀), `T₁ ⊆ M₀`, `primeLogMass_tail_anti`, and the Mertens corona
+  exclusion `unitField_not_memVanishingTailLayer`. A first draft on an ad-hoc weighted-ℓ¹ seminorm
+  was discarded and rebuilt on these, which is both faithful to the card and shorter.
+- `HTGeometry/ZetaVerticalAlmostPeriodic.summable_log_pow_div_nat_rpow` gives the character
+  summability immediately.
+
+Card `prime-shift-residue-closability-criterion` promoted. Stage-2 prime folder: 18 cards remaining.
+
+## 2026-08-19 — triage of the remaining 18 stage-2 prime cards
+
+Read before choosing the next card.  Each entry names the genuinely missing mathematics, not the
+bookkeeping.
+
+**Reachable next (analytic input already in the corpus or newly built):**
+
+1. `prime-power-dirichlet-complex-jet-independence` — the tail-span lemma is an exponential
+   polynomial with *polynomial* coefficients vanishing along prime logs; the new
+   `primeCharacter_coeff_eq_zero_of_eventually_vanishing` handles the pure-exponential case and the
+   same two-layer induction (real part, then degree) extends it. Remaining: squarefree-coefficient
+   extraction (elementary) and Chiang–Feng separation over Nagoshi's `F_s` — the corpus does have
+   `HTGeometry/NevanlinnaEntireCharacteristic.lean`, `NevanlinnaCharacteristicLowerBound.lean`,
+   `BorelGrowthLemma.lean`.
+2. `prime-trace-critical-energy-divisor-budget` — needs (a) `∑_p log p · p^{-1-ε} = 1/ε + O(1)`
+   (corpus `tendsto_LSeries_vonMangoldt_sub_pole`), (b) boundedness at `1+ε+iτ`, `τ ≠ 0`
+   (corpus `zetaResidueUnit_ne_zero_on_one_line`), (c) Cauchy–Schwarz, (d) the local expansion of
+   `P` from the divisor — the corpus's `RHTower/SelbergClass/` directory is the right home for the
+   completed-Euler-product hypotheses.
+3. `prime-square-mobius-fourier-complementary-record-law` §§1–5 — pure finite Fourier on
+   `ZMod (p^2)`, already largely in `RHTower/PrimeSquareFourierStrata.lean`. Blocked only at §6:
+   Möbius orthogonality to a fixed periodic sequence (needs PNT in APs) and the profinite
+   Borel–Cantelli sector.
+
+**Blocked on one shared analytic input** (`∑_p p^{-1-iλ}` convergence for `λ ≠ 0`):
+`prime-diagonal-singular-trace-dephasing`, `prime-poisson-superselection-screen`,
+`prime-superspace-wick-anisotropy-decompactification`.
+
+**Large but self-contained builds:**
+- `prime-boundary-symmetric-dickman-zero-free-law` — finite Wick core is done
+  (`RHTower/PrimeBoundaryDickmanWick.lean`); needs the Poisson probability construction
+  (mathlib has `poissonMeasure`, `mgf`, `iIndepFun.mgf_sum`, but not the Poisson mgf) and the
+  scale-invariant Lévy limit.
+- `prime-boundary-perturbative-jet-monodromy-escape` — the successor of the Dickman card.
+- `prime-arch-bernstein-half-order-pringsheim-singularity` — exact finite-packet Puiseux
+  decomposition; six formal parents exist.
+- `prime-arch-explicit-circle-state-reflection-law`, `prime-arch-shifted-sector-circle-valuation-cone`
+  — both list their formal reuse surface explicitly; the missing layer is an infinite absolutely
+  summable Fourier-density wrapper plus the concrete `L²` reflection carrier.
+- `prime-indexed-rvm-trace-class-hp-normal-form` — RVM two-term counting law plus a trace-class
+  displacement estimate.
+- `prime-tail-copoisson-essential-boundary-bockstein`, `prime-log-action-condensation-normal-cone-law`,
+  `prime-sieve-boolean-first-trace-connection-curvature` (algebraic core already Lean-certified).
+
+**Needs a mathematical layer the corpus does not have at all:**
+- `prime-cyclotomic-coefficient-field-escape` — Mahler/Sibuya–Sperber coefficient recurrence and
+  its normalization to an eventual forward recurrence.
+- `prime-quasi-inner-dixmier-residue` — the weak trace ideal `L^{1,∞}`, Dixmier traces, Connes
+  measurability.
+- `prime-exponential-holomorphic-determining-source-image` — analytic functionals and
+  Fréchet holomorphy on `O(D)` (Fourier–Borel duality).
+
+## 2026-08-19 — trace-energy card CLOSED (card 19)
+
+`RHTower/PrimeTraceCriticalEnergyBudget.lean` (626 lines, axiom-clean). The chain:
+
+1. `tendsto_primeGradeSource_sub_pole` / `tendsto_primeGradeSource_shift` — the grade-one prime
+   current has residue 1 at `s = 1` and a finite limit at `1 + iτ`, `τ ≠ 0`. Both are read off
+   `xiPrimeLogDirichletContinuation = infinitePrimeFlux − xiPrimeLogHigherValuation`, so the higher
+   prime powers never need a separate estimate.
+2. `divisorTestEnergy_eq` — the test energy is the ordinate-pair sum of the current;
+   `tendsto_mul_divisorTestEnergy` — its residue is `∑ m_j²` (only the diagonal survives, by
+   injectivity of the ordinates).
+3. `norm_primeDivisorCurrent_sq_le` — Cauchy–Schwarz with the split
+   `f = |c| √(log p) p^{-(a+ε/2)}`, `g = √(log p) p^{-(1/2+ε/2)} |phase|`, using the corpus's
+   `deningerTsum_mul_le_sqrt`.
+4. `primeTraceCriticalEnergyBudget(_extended)` — the budget, with the divergent-energy case handled
+   in `ℝ≥0∞`.
+
+Technique note: `HTGeometry.cis` (from `ExpSumVanishing`) is the right normal form for the
+unimodular factors — `natCast_cpow_neg_split` turns `p^{-(σ+iτ)}` into
+`(p^{-σ} : ℝ) * cis (-τ) (log p)` once and for all, which is what makes the pair expansion and the
+Cauchy–Schwarz split routine.
+
+Card `prime-trace-critical-energy-divisor-budget` promoted. Stage-2 prime folder: 17 cards remaining.
+
+## 2026-08-20 — dephasing card CLOSED (card 20), and the prime-zeta one-line asset
+
+Three new modules:
+
+`RHTower/PrimeDiagonalSingularValues.lean` — `primeDiagonalSum` (the sum over the first `N` primes)
+identified with the corpus's `primeRecipSum` at `p_N` through a `Nat.nth` bijection; then
+`n/p_n → 0`, `S_N/log N → 0`, `S_N/log log N → 1` from `PNTPlus.nth_prime_asymp`,
+`log_nth_prime_asymp` and `tendsto_primeRecipSum_sub_logLog`.
+
+`RHTower/OscillatoryLogIntegral.lean` — **new reusable analytic asset**:
+`exists_tendsto_integral_oscLogKernel`, the convergence of `∫_2^∞ t^{-1-iλ}/log t dt` for `λ ≠ 0`,
+by integration by parts against the phase; plus `integrableOn_logTailWeight`
+(`∫_2^∞ dt/(t log²t) < ∞`) and `integrableOn_pntErrorWeight`
+(`∫_2^∞ e^{-c√log t}/t dt < ∞`, via `e^{-c√u} ≤ 24/(c⁴u²)`).
+
+`RHTower/PrimeZetaOneLineConvergence.lean` — **`∑_p p^{-1-iλ}` converges for every `λ ≠ 0`**
+(`exists_tendsto_primeCpowSum`). Method: mathlib's `sum_mul_eq_sub_integral_mul₁` against the
+Chebyshev `theta` datum (NOT against `π`), so the main term is the smooth `t` rather than the
+logarithmic integral; `theta(t) = t + R(t)` with `RHTower.Sieve.chebyshevTheta_sub_id_isBigO`, the
+main integral reduces to the oscillatory logarithmic integral plus an absolutely convergent tail,
+and the error is dominated by `e^{-c√log t}/t`. The local integrability of the error uses mathlib's
+`locallyIntegrableOn_mul_sum_Icc` from the same Abel-summation file.
+
+This closes the shared blocker recorded in the earlier triage. `prime-poisson-superselection-screen`
+and `prime-superspace-wick-anisotropy-decompactification` were listed as blocked on the same input;
+check them next against `exists_tendsto_primeCpowSum`.
+
+Card `prime-diagonal-singular-trace-dephasing` promoted. Stage-2 prime folder: 16 cards remaining.
+
+## 2026-08-20 — superspace card CLOSED (card 21)
+
+`RHTower/PrimeSuperspaceDecompactification.lean` (524 lines, axiom-clean). What made it cheap:
+
+- the corpus already had the Mertens weak limit `tendsto_mertensPrimeWindow_div_log`
+  (`RHTower/MertensPrimeWindowWeakConvergence.lean`) — equation (8) of the card — so the profile
+  limits (9)–(10) are one `congr'` away once the test functions are shown continuous at the
+  removable singularity (use `hasDerivAt_iff_tendsto_slope` at `0`, not a series estimate);
+- `tendsto_primeClockSusceptibility_div_log_sq` (equation (5)) was already there;
+- recurrence (13) is `HTGeometry.primeBooleanFusion_exists_large_return` plus
+  `‖e^{iθ}−1‖² = 2(1−cos θ)`;
+- the boundary sum (16) is the new `exists_tendsto_primePhaseSum`.
+
+New here: `wickProfile` with `hasSum_wickProfile` (the `∑ z^{2k}/(k(2k)!)` series, via
+`intervalIntegral.hasSum_integral_of_dominated_convergence`), `wickProfile_mul_I` (the Wick
+relation from `Complex.cosh_mul_I`), the exact decomposition
+`primeClockVerticalEnergy_eq_recipSum_sub`, and the sharp law / overlap / decompactification
+theorems.
+
+Card `prime-superspace-wick-anisotropy-decompactification` promoted. Stage-2 prime folder:
+15 cards remaining.
+
+## 2026-08-20 — updated triage of the remaining 15 cards
+
+New assets available to all of them:
+`exists_tendsto_primeCpowSum` (∑_p p^{-1-iλ} converges), `exists_tendsto_integral_oscLogKernel`,
+`integrableOn_logTailWeight` / `integrableOn_pntErrorWeight`, `wickProfile` + `hasSum_wickProfile`,
+`radialProfileTest` / `verticalProfileTest` with their Mertens-window limits,
+`primeCharacter_coeff_eq_zero_of_eventually_vanishing`, `coronaRank`, `pickKernel`.
+
+**Closest to done:**
+1. `prime-boundary-symmetric-dickman-zero-free-law` — §§3–5 are now immediate:
+   the Lévy limit (10) is `tendsto_mertensPrimeWindow_div_log` applied to `u ↦ f u / u`; the
+   profiles (14)–(15) are `radialProfileTest`/`verticalProfileTest`; the cumulant tower (17)–(18)
+   is `hasSum_wickProfile`; (16) as characteristic-function convergence is
+   `primeBoundaryCharacteristic_eq_exp_neg_verticalEnergy` + `tendsto_primeClockVerticalEnergy_scaled`;
+   (19)–(20) follow. **The only genuinely missing piece is the probability model (§1–§2, (5)–(6)):**
+   mathlib has `poissonMeasure`, `integral_poissonMeasure` (no integrability side condition),
+   `iIndepFun_pi` and `iIndepFun.mgf_sum`, but NOT the Poisson mgf `E e^{tK} = e^{r(e^t-1)}`;
+   that is ~60 lines from `integral_poissonMeasure` plus the exponential series.
+2. `prime-sieve-boolean-first-trace-connection-curvature` — (4), (7)–(9) are already Lean-certified;
+   (6) is an elementary sieve telescope (`∑ a_{P_{n-1}}/p_n = 1`, needs `a_{P_n} → 0`, i.e. Mertens
+   third, corpus `tendsto_mertensPrimeProduct_mul_log`); (10) is a Boolean evaluation.
+   **Blocker: (5), the projective tensor norm `‖D_P‖_π = 1`** — mathlib only has
+   `Analysis.NormedSpace.PiTensorProduct.ProjectiveSeminorm`.
+3. `prime-power-dirichlet-complex-jet-independence` — the tail-span lemma is the polynomial-coefficient
+   version of `primeCharacter_coeff_eq_zero_of_eventually_vanishing`; the same two-layer induction
+   (real part, then polynomial degree) extends it. Blocker: Chiang–Feng separation over Nagoshi's
+   `F_s` (the corpus does have `NevanlinnaEntireCharacteristic`, `NevanlinnaCharacteristicLowerBound`,
+   `BorelGrowthLemma`).
+
+**Still needing a mathematical layer the corpus lacks entirely:**
+`prime-cyclotomic-coefficient-field-escape` (Mahler/Sibuya–Sperber recurrence),
+`prime-quasi-inner-dixmier-residue` (Dixmier traces on `L^{1,∞}`),
+`prime-exponential-holomorphic-determining-source-image` (analytic functionals, Fourier–Borel),
+`prime-poisson-superselection-screen` (Kakutani dichotomy for infinite product measures on the
+prime torus).
+
+**Large but self-contained:** the three `prime-arch-*` cards (they list their reuse surfaces),
+`prime-boundary-perturbative-jet-monodromy-escape`, `prime-indexed-rvm-trace-class-hp-normal-form`,
+`prime-tail-copoisson-essential-boundary-bockstein`,
+`prime-log-action-condensation-normal-cone-law`,
+`prime-square-mobius-fourier-complementary-record-law` (§§1–5 nearly free from
+`RHTower/PrimeSquareFourierStrata.lean`; §6 needs Möbius orthogonality to a fixed periodic sequence
+and a profinite Borel–Cantelli sector).
+
+## 2026-08-20 — card 8 promoted; roadmap for `prime-boundary-perturbative-jet-monodromy-escape`
+
+`prime-boundary-symmetric-dickman-zero-free-law` is at stage 3 (see its own dated section).  New
+module: `RHTower/PrimeBoundaryPoissonJumpField.lean`.
+
+The successor card is a six-module project; module 1 is written and awaiting the corpus rebuild:
+
+1. **`RHTower/PrimeHigherMertens.lean` (written).**  The higher-order Mertens theorem
+   `∑_{p ≤ x}(log p)^k/p - (log x)^k/k → C_k` for every `k ≥ 1`, by Abel summation of the corpus
+   `primeLogWeight` against `Chebyshev.theta`, splitting `θ(t) = t(1 + thetaError t)`, with the
+   error integral controlled by the new device
+   `exp_neg_sqrt_le_pow : exp(-c√u) ≤ (2m)!/(c^{2m} u^m)` and
+   `integrableOn_logPow_pntErrorWeight : (log t)^m e^{-c√log t}/t ∈ L¹(2,∞)`.
+   Also gives the card's `D_N(u^k)` form `(10)` as
+   `tendsto_logPow_mul_primeLevyDefect_pow`.
+2. **Rate form.**  `|A_k(x) - (log x)^k/k - C_k| = O((log x)^k e^{-(c/2)√log x})`, via the tail
+   estimate `∫_{Ioi x} (log t)^m e^{-c√log t}/t ≤ e^{-(c/2)√log x} ∫_{Ioi 2} (log t)^m e^{-(c/2)√log t}/t`
+   (split the exponential in half).  This is `(9)`, and gives `(10)` with its error term.
+3. **The endpoint jet `(6)`--`(7)`.**  Abel weight `f(t) = r(log t/log x)/(t log t)`; integrate by
+   parts to produce `∫_{log2/L}^1 r(u) du/u` as the main term; bound the four boundary terms and
+   the `thetaError` integral by `O(L^{-M-1})` using module 1's devices.  Then Taylor
+   (`taylor_mean_remainder_lagrange`) gives the jet expansion.  Stated for `r` differentiable on
+   `(0,1]` with `|r| ≤ A u^{M+1}`, `|r'| ≤ A u^M` — the exact hypotheses the proof uses, and what
+   the Taylor remainder of a `C^{M+1}` test function satisfies.
+4. **The Wick expansion `(15)`--`(20)`.**
+5. **Prime zeta continuation, germ `(4)`--`(5)`, monodromy `(21)`--`(22)`, escape `(24)`.**
+6. **`(26)`--`(27)`: the archimedean weld, the Hurwitz obstruction, the RH restatement.**
+
+Two other cards were triaged in passing: `prime-log-action-condensation-normal-cone-law` and
+`prime-square-mobius-fourier-complementary-record-law` each have all their *theorem* gates proved
+and only research gates (ending in RH) open, so stage 3 for them means formalizing the proved
+gates only.
+
+### 2026-08-20 (later) — jet card: modules 1–3 of 6 landed
+
+Five new axiom-clean modules, all wired into `RHTower.lean`:
+
+| module | content | card items |
+|-|-|-|
+| `RHTower/PrimeHigherMertens.lean` | `∑_{p≤x}(log p)^k/p - (log x)^k/k → C_k`; the devices `exp_neg_sqrt_le_pow`, `integrableOn_logPow_pntErrorWeight`, the Abel weight `(log t)^m/t` and its primitive | `(5)`, `(8)` |
+| `RHTower/PrimeHigherMertensRate.lean` | the same with the de la Vallée Poussin rate; `exists_pntErrorEnvelope`; the half-exponential tail bound; the monomial defect `|D_x(u^{k}) - C_k/L^k| = O(L^{-M-1})` | `(9)`, `(10)` |
+| `RHTower/PrimeEndpointJet.lean` | `primeBoundaryDefect`, its exact Abel decomposition, and the master remainder estimate `|D_x(r)| ≤ A·B/L^{M+1}` | `(13)`, `(14)` |
+| `RHTower/PrimeEndpointJetExpansion.lean` | linearity of the defect and the jet expansion for "polynomial + remainder" test functions | `(6)`, `(7)` |
+| `RHTower/PrimeEndpointJetTaylor.lean` | iterated integration, `jetTaylor`, the Taylor remainder bound, and `(6)` for any smooth test function vanishing at the endpoint | `(6)`, `(11)` |
+
+Remaining for `prime-boundary-perturbative-jet-monodromy-escape`:
+
+* §3 `(15)`--`(19)`: apply the jet theorem to `h_z(u) = 2(cosh(zu) - 1)`, giving the symmetric Wick
+  expansion `K_N^bdry(z) = Φ(z) + ∑ 2α_{2m} z^{2m}/((2m)! L^{2m}) + O(L^{-2M-2})`, and the
+  beyond-all-orders statement for test functions supported in `[δ,1]`.
+* §4 `(20)`: finite truncations are zero-free (elementary, from `Complex.exp_ne_zero`).
+* §5 `(21)`--`(25)`: prime zeta continuation `P(s) = ∑ μ(n)/n log ζ(ns)`, its logarithmic branch
+  points, the monodromy charge `m_ρ`, and the escape `|L(ρ-1)| → ∞`.
+* §6 `(26)`: the archimedean factor is holomorphic and zero-free on the strip, hence has zero
+  monodromy.
+* §7 `(27)`: RH as the support statement for prime-zeta monodromy, plus the two Hurwitz-type
+  obstructions.
+
+Note on faithfulness: the Lean form of `(6)` takes a derivative tower on `ℝ` (the honest Lean
+rendering of `C^{M+1}`), and the remainder estimate takes the two bounds `|r| ≤ A u^{M+1}`,
+`|r'| ≤ A u^M` on `(0,1]` — exactly what the proof uses and what the Taylor module supplies.
+
+### 2026-08-20 (later still) — jet card §§3–7
+
+Two more modules landed: `RHTower/PrimeBoundaryWickExpansion.lean` (the two-axis Wick expansion
+`(17)`, the leading correction `(18)`, the beyond-all-orders statement `(19)` and the zero-freeness
+of truncations `(20)`) and `RHTower/PrimeBoundaryMonodromyEscape.lean` (§5–§7).
+
+**Corpus-search payoff.**  §5 of the card — the prime zeta continuation and its quantized
+monodromy — was already formalized in the corpus, in the very module this session closed for the
+first prime card:
+
+* `RHTower/GradeMonodromyInversion.lean`: `primeGradeSource` (= `∑_p (log p) p^{-s}` = `-P'`),
+  the Lambert decomposition, the Möbius inversion `primeGradeSource_eq_tsum_moebius_lSeries`
+  (the derivative form of `P(s) = ∑ μ(n)/n log ζ(ns)`), `primeGradeMonodromy_zero_residue`
+  (residue `-m_ρ` at every strip zero) and `differentiableAt_lSeries_vonMangoldt_dilate` (the
+  higher grades are regular there);
+* `RHTower/XiHeatCassiniWoldZetaPoleCarrier.lean`: `xiPrimeLogDirichletContinuation` and its
+  residue theorem;
+* `RHTower/ReflectionCocycleClass.lean`: `riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip`;
+* `HTGeometry/ZeroDivisorCount.lean` and `HTGeometry/LogDerivUniformLimit.lean`: the argument
+  principle and the convergence of contour integrals of logarithmic derivatives, which give the
+  card's two zero-charge obstructions.
+
+So §5–§7 became a thin wrapper instead of a 700-line project.  Search first.

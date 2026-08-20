@@ -5845,3 +5845,495 @@ This is the exact shape of the `hunif` hypothesis of
 
 against the trivial `1 + log z`: **an unconditional Halász saving of `(log z)^{−0.01}` for `μ`,
 uniform over `|t| ≤ z²`.**  That is MR's Lemma 1 for the Möbius character.
+
+### Brick 83–84 — Halász for `μ` at every frequency below `z²` (2026-08-19)
+
+`Sieve/MoebiusSmoothPolySaving`, `Sieve/MoebiusSeriesPolySaving`.  Both built, both axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), both wired into `RHTower.lean`.
+
+| theorem | statement |
+|-|-|
+| `tendsto_routeTBudgetHat` | `routeTBudgetHat A · → ∞` |
+| `eventually_mulDistSqPair_ge_allFreq` | `∃ C₀, ∀ᶠ z, ∀ t f, log\|t\| ≤ 2 log z → (∀p≤z, f p = −1) → (1/100)log log z − C₀ ≤ D²` — every threshold of `exists_mulDistSqPair_ge_allFreq` discharged |
+| `exists_norm_sum_moebius_smooth_le_polySaving` | `‖∑_{n squarefree z-smooth} μ(n)n^{−1−it}‖ ≤ C(log z)^{99/100}` for `\|t\| ≤ z²` |
+| `log_abs_le_two_mul_log_of_le_sq` | `\|t\| ≤ z² → log\|t\| ≤ 2 log z` |
+| `exists_norm_tsum_moebius_le_polySaving` | `‖∑'_n μ(n)n^{−σ−it}‖ ≤ C(log z)^{99/100}` at `σ = 1 + 1/log z`, for `\|t\| ≤ z²` — **MR Lemma 1 at the level of the full series** |
+
+The trivial size of the series at that abscissa is `1 + 1/(σ−1) = 1 + log z`, so this is an
+unconditional Halász saving of `(log z)^{−1/100}` for `μ`, uniform over the whole range `|t| ≤ z²`.
+The mechanism is `Sieve/DistanceAbscissaBridge.norm_tsum_twistedSummand_le_of_mulDistSqPair`
+(`‖∑'‖ ≤ (1 + 1/(σ−1))exp(7/2 + 2(σ−1)(log z + log 4) − D²)`) fed by brick 82.
+
+**Prior-work correction.**  `Sieve/MoebiusDistanceSharp` (committed 2026-08-10, not by this
+programme) already contains the three-four-one route: `exists_mulDistSqPair_ge_free` gives
+`log log z − (3/4)log(1+log z) − (1/4)log(3+log(4+2|t|)) − C`.  That bound is **positive only for
+`log|t| ≤ (log z)^{1−ε}` and is exactly `0` at `log|t| ≍ log z`**, and its companion
+`exists_mulDistSqPair_ge_height` (`log log z − log log T − C` for `z ≤ T`) is vacuous.  Brick 60
+(`Sieve/PrimeCosineSumSharp.exists_mulDistSqPair_ge_quarter`) duplicates the same three-four-one
+mechanism with a different constant profile.  What is genuinely new in bricks 61–84 is the
+**Granville–Soundararajan tail half**, which keeps the bound positive (`(1/100)log log z`) all the
+way to `log|t| = 2 log z`, and the resulting series bound.  Lesson: `formal_tools.py research`
+does index `MoebiusDistanceSharp`; the earlier queries were badly chosen.  Query by *mechanism*
+("three four one", "smooth moebius sum power saving") as well as by conclusion.
+
+### Milestone C for `1/2 < β < 1` — the case `J = 1`, and what the zero-free region does and does not buy
+
+**`β > 1/2` is exactly the regime `J = 1`.**  MR need `[P₁,Q₁] ⊆ [1,h]` and define `J` as the largest
+`j` with `Q_j ≤ exp((log X)^{1/2})`.  For `h = exp((log X)^β)` with `β > 1/2` one may take
+`Q₁ = exp((log X)^{1/2})` outright, so `J = 1`: **no iterated family `[P_j,Q_j]`, no `ℓ`-th power
+lengthening, no minimality-of-`j` device.**  The five cards need precisely this case.
+
+**What the target actually is.**  `route_e_marker_hall_law` consumes
+`AveragedMeanSquare μ (cardLength β)`, which is a bare `o(h²√x)` — *not* the `(log x)^{−1−c}` of the
+card's prose `(8)` (that is Menon's rate; the Lean route does not need it).  MR's Theorem 1 is
+exactly `o(h²)`, so **MR is the right strength, and no quantitative rate is required.**
+
+**The reduction (MR Lemma 14 + the mean value theorem).**  Everything reduces to
+`∫_{T₀}^{X/h}|F(1+it)|²dt = o(1)` for `F(s) = ∑_{X≤n≤2X, n∈𝒮} μ(n)n^{−s}`, against the mean-value
+theorem's `T/X + 1 ≍ 1`.  The large-`T` piece is free: `max_{T≥X/h}(X/(hT))∫_T^{2T}|F|² ≪ 1/h`.
+
+**What the κ = 9/10 zero-free region buys, exactly.**  For `μ` — unlike MR's general `f : ℕ → [−1,1]`
+— the contour argument gives the *dyadic* bound
+
+```text
+   |∑_{X ≤ n ≤ 2X} μ(n) n^{−1−it}| ≪ exp(−c (log X)^{1/10})   uniformly for |t| ≤ X ,
+```
+
+(the `1/ζ(1+it)` main terms of the two partial sums cancel), which is far stronger than MR's
+Lemma 1 (`(log X)^{−1/12+o(1)}`) and Lemma 3 (`(log X)^{−1/24}`).  **But it is not enough by itself:**
+`∫_{T₀}^{T}|F|²dt ≤ min(T·sup|F|², T/X+1)` beats `1` only for `T ≤ exp(2c(log X)^{1/10})`, and
+`∫|F|² ≤ sup|F|·√(T·∫|F|²) ≈ exp(−c(log X)^{1/10})√X` is useless.  The mean-value theorem's
+**diagonal** `∑_n |a_n|²·N ≍ 1` is irreducible; only the bilinear (Ramaré) structure removes it.
+So the zero-free region replaces MR's Lemmas 1–3 as the *pointwise* input, and the Ramaré +
+large-values architecture is still required.
+
+**Caveat on the corpus's existing Route-T Möbius atom.**
+`Sieve/RouteTMoebiusPowerSaving.exists_norm_LSeries_truncatedMoebius_dyadic_le_routeTPower` demands
+`(2^q)^4 ≤ U ≤ |τ| − routeTInverseBaseHeight`, i.e. **frequency at least the fourth power of the
+polynomial length**.  Our regime is the opposite (`length ≈ X`, `|t| ≤ X`), so that module is not
+reusable here; the dyadic-cancellation bound above has to be built separately, with Perron
+truncation height `U ≈ exp(c(log X)^{1/10})log X` and the requirement `|t| > U`.
+
+**The `J = 1` chain, with the numbers checked at κ = 9/10.**
+
+```text
+   𝒯₁ half:  Q₁ = exp((log X)^{1/2}),  P₁ ≥ (log Q₁)^{40/η},  H₁ = P₁^{1/6−η}/(log Q₁)^{1/3},
+             α = 1/4 − η ,   t ∈ 𝒯₁  :⟺  ∀v ∈ I₁, |Q_{v,H₁}(1+it)| ≤ e^{−αv/H₁} ,
+             Ramaré + mean value theorem  ⟹  ∫_{𝒯₁}|F|² ≪ H₁² log Q₁ · P₁^{−2α}
+                                                        ≈ (log Q₁)^{1/3}/P₁^{1/6+2η}  →  0 .
+   𝒰 half:   P = exp((log X)^{1−1/48}),  Q = exp(log X/log log X),  H = (log X)^{1/48} ,
+             Lemma 12 error   1/H + 1/P + log P/log Q  ≪ (log X)^{−1/48} log log X ,
+             𝒯_S (|Q_v| < (log X)^{−100}):  Lemma 9 gives  ≪ (log X)^{−200}·(1 + T^{1−η}P/X) ,
+             𝒯_L (|Q_v| ≥ (log X)^{−100}):  Lemma 8 gives  |𝒯_L| ≤ exp((log X)^{0.021+o(1)}) ,
+                                            Lemma 11 saving  exp(−log P/(log T)^{κ+ε})
+                                                           = exp(−(log X)^{1−1/48−9/10−ε})
+                                                           = exp(−(log X)^{0.0792−ε}) .
+             0.0792 > 0.021 , so the 𝒯_L term still dies at κ = 9/10.        ✓
+```
+
+The Vinogradov–Korobov exponent `2/3` would give `exp(−(log X)^{0.3125})`; the corpus's `9/10`
+leaves a margin of `0.058` in the exponent.  **`κ = 9/10` is enough, with room.**
+
+**Brick order from here.**  (85) MR Lemma 8, the moment-method large-value count for a prime
+polynomial — audit `Sieve/PrimePowerSupport.volume_largeValues_pow_symm_le_of_prime_support` first.
+(86) MR Lemma 11, Halász–Montgomery for prime-supported coefficients carrying
+`exp(−log P/(log T)^{9/10+ε})` — audit `Sieve/HalaszPrimeSavingBound`.  (87) MR Lemma 9 — audit
+`Sieve/HalaszMontgomeryIntegral`.  (88) MR Lemma 12 at `J = 1`.  (89) Lemma 14 in the corpus's
+fibre normalisation.  (90) the dyadic Route-T cancellation bound for `μ` at `|t| ≤ X`.
+
+### Bricks 85–87 — the large-values and Perron layers (2026-08-19)
+
+All built, all axiom-clean, all wired into `RHTower.lean`.
+
+| module | theorem | content |
+|-|-|-|
+| `Sieve/SupportKernelLargeValues` | `sum_normSq_logPoly_le_of_rowBound` | `∑_{w∈T}‖logPoly a S w‖² ≤ Δ·∑_{n∈S}‖a_n‖²` whenever every Gram row `∑_{v∈T}‖∑_{n∈S}n^{2πi(u−v)}‖ ≤ Δ` — pure duality, no arithmetic |
+| | `sum_normSq_logPoly_le_of_kernelBound` | the corollary `Δ = #S + E·#T` |
+| `Sieve/PrimeRangeKernelLargeValues` | `exists_norm_sum_unitLogPhase_primeRange_le` | the Gram kernel of a prime range is bounded by `routeTPrimeKernel`, from `Sieve/PrimeBlockTwistBound.exists_norm_primeBlockPoly_routeT_le` |
+| | `exists_sum_normSq_logPoly_primeRange_le` | **MR Lemma 11**: the diagonal is `#B` (the *number of primes*, not the length) and the off-diagonal price carries the Route-T saving `x^{−w(τ)/3}`, `w(τ) ≍ (log\|τ\|)^{−9/10}` |
+| `Sieve/PerronKernelExplicit` | `exists_perronKernel_bound_explicit` | `‖perronKernel σ N H y‖ ≤ (N+H)^σ(1/σ + C₁(N+H)/H)·(1+y²)⁻¹`, `C₁` absolute — removes the existential constant of `Sieve/HalaszPerronAssembly` |
+| | `exists_norm_tsum_mul_smoothWeight_le_explicitConst` | the assembled Halász bound with that constant substituted |
+
+Corpus assets identified and **not** rebuilt: `Sieve/AlmostOrthogonality.sum_norm_inner_sq_le_of_schur`
+(the Schur/duality principle), `Sieve/HalaszMontgomeryDyadic.halaszMontgomery_dyadic` (MR Lemma 9 for
+integers), `Sieve/PrimePowerSupport.volume_largeValues_pow_symm_le_of_prime_support` (MR Lemma 8, in
+measure form), `HTGeometry/SmoothWeightSharpMellin.exists_mellin_smoothWeight_two_scale_bounds`.
+
+### The pointwise gap, located exactly: two Möbius contour chains and the hole between them
+
+**Halász cannot supply the pointwise input.**  The Perron route bounds the smoothed sum by
+`(1/2π)∫_ℝ|F(σ+iy)|·‖W(σ+iy)‖dy`, and `∫_ℝ‖W‖dy ≍ N·log(N/H)` (the `1/|y|` regime of the Mellin
+transform), while the trivial size of the partial sum is `N`.  So the modulus-only Perron transfer
+needs `sup|F| ≪ 1/log(N/H)`, whereas Halász only gives `sup|F| ≍ (log N)^{99/100}` — a *positive*
+power.  Recovering the `1/log N` is the Halász theorem proper, i.e. the corpus's
+Granville–Harper–Soundararajan chain, whose master bound
+`Sieve/HalaszGhsMasterBound.norm_sum_Icc_mul_log_le_of_kernelBound` (i) still awaits the arithmetic
+evaluation of its two sieve mean squares and (ii) assumes `f (a*b) = f a * f b`, which `μ` fails.
+**Brick 84 is therefore not upgradable to a partial-sum bound by soft means.**
+
+**The zero-free region can, and for `μ` it is much stronger.**  The corpus already owns
+
+```text
+   Sieve/MoebiusTwistSharpRate.exists_norm_sum_moebiusTwist_rate :
+     ‖∑_{n ≤ N} μ(n) n^{−iτ}‖  ≤  3N·exp(−(c/8192)(log N)^{1/10}/2)/π + (smoothWidth N + 1)
+   Sieve/DampedTwistSharpRate.exists_norm_sum_dampedTwist_rate :
+     the same for the ω-damped coefficients μ(n)u^{ω_P(n)}, times dampedCorrBound P (leftAbscissa K)
+```
+
+— i.e. **a super-polylogarithmic saving, and already in the `1/(ω_P+1) = ∫₀¹u^{ω_P}du` form that MR
+Lemma 3 needs.**  Both carry the hypothesis `5 + 4|τ| ≤ contourParam (N + smoothWidth N)` with
+`contourParam x = ⌈exp((log x)^{1/10})⌉₊`, because `leftAbscissa K = 1 − c/(16(log K)⁹)` is the
+**exponent-nine** zero-free width: the height must be held down to `exp((log N)^{1/10})` for that
+width to be `(log N)^{−9/10}`.
+
+**The hole.**  MR need the frequency range `|t| ≤ T₁ = X/h`, i.e. `|τ| ≈ N`.  The two existing
+Möbius contour chains cover
+
+```text
+   (a) Sieve/MoebiusTwist* , exponent 9      :  |τ| ≤ exp((log N)^{1/10}) ,  saving exp(−c(log N)^{1/10})
+   (b) Sieve/RouteTMoebiusPowerSaving        :  |τ| ≥ N⁴               ,  saving N^{−w/3}
+```
+
+and **nothing covers `exp((log N)^{1/10}) < |τ| ≤ N`**, which is exactly the range the `𝒰` half lives
+in.  With the Route-T width `w ≍ (log|τ|)^{−9/10}` at `|τ| ≤ N` the saving would be
+`exp(−c(log N)^{1/10})`, so the theorem is true and the ingredients exist
+(`Sieve/VonMangoldtTwistUniformHeight.exists_norm_partialSum_vonMangoldtTwist_routeT_uniform` is the
+same statement for `Λ`, uniform in the height, already proved).  Restriction (b) comes from taking
+the Perron truncation `U ≥ N⁴` and then demanding `|τ| ≥ U` so that the contour box misses the real
+axis; for `1/ζ` the point `s = 1` is a zero, not a pole, so the restriction is an artefact of the
+edge bounds, not of the mathematics.
+
+**Brick 88 (the critical path): the Route-T twisted Möbius contour bound, uniform in the height** —
+the `1/ζ` analogue of `VonMangoldtTwistUniformHeight`, i.e.
+
+```text
+   ‖∑_{n ≤ N} μ(n)n^{−iτ}‖ ≤ C·N·exp(−c·(log N)^{1/10}) + (height term)   for every real τ with |τ| ≤ N,
+```
+
+and its `ω`-damped companion, which together are MR Lemma 3 for `μ` with a super-polylogarithmic
+saving in place of MR's `(log X)^{−1/24}`.
+
+**Slack check for the damped correction.**  `dampedCorrBound P c = ∏_{p∈P}(1+p^{−c})/(1−p^{−c})` at
+`c = 1 − δ` costs `exp(3Q^δ log(log Q/log P))`.  For the `𝒯₁` half (`log Q₁ = (log X)^{1/2}`,
+`δ ≍ (log X)^{−9/10}`) this is `exp(3(1+o(1))·(1/2)log log X)` — a fixed power of `log X`, dominated
+by the saving `exp(−c(log X)^{1/10})`.  For the `𝒰` half (`log Q = log X/log log X`) one has
+`Q^δ = exp((log X)^{1/10}/log log X)`, which **beats** the saving, so there the abscissa must be
+pulled in to `δ = c/log Q ≍ c·log log X/log X`; the saving is then only `(log X)^{−c}` and the
+correction costs `(log X)^{3e^c/48}`, net `(log X)^{−0.83}` at `c = 1` — still far better than MR's
+`(log X)^{−1/24}`.  This needs the contour bound with the **abscissa as a free parameter**, which
+`Sieve/DampedTwistContourBoundGeneral` may already provide; audit it before rebuilding.
+
+**Low-frequency dividend.**  Chain (a) already closes the range `|t| ≤ exp(κ(log X)^{1/10})` of the
+main integral for free: `∫_{T₀}^{T_*}|F|²dt ≤ T_*·sup|F|² ≤ exp(−(3c/2)(log X)^{1/10}) → 0` on
+choosing `T_* = exp((c/2)(log X)^{1/10})`.  So MR's `T₀ = (log X)^{1/15}` can be replaced by
+`T_* = exp(c'(log X)^{1/10})`, which makes every `1/T₀` term in the argument superpolylogarithmically
+small.
+
+### Brick 88 — the Route-T twisted Möbius contour at EVERY frequency (2026-08-20)
+
+`Sieve/RouteTMoebiusTwistAllHeights`, built, axiom-clean, wired.
+
+```text
+exists_norm_tsum_moebiusTwist_smoothWeight_le_routeT_allHeights :
+  ∃ A C C' M δ, 0 ≤ C ∧ 0 ≤ C' ∧ 0 ≤ M ∧ 0 < δ ∧
+    ∀ N H τ U d, 0 < N → 0 < H → 1 ≤ U → 1 < d → d ≤ 2 →
+      routeTInverseBaseHeight ≤ |τ| + U →  d ≤ routeTContourRight A (|τ|+U) →
+      ‖2π • ∑' n, μ(n)n^{−iτ} w_{N,H}(n)‖ ≤ (four rectangle edges, with
+        Mc = max M (routeTContourEdgeBound A (|τ|+U)) on the three shifted edges)
+
+exists_norm_sum_moebiusTwist_le_routeTSharp_allHeights :
+  the same for the sharp sum ∑_{n ≤ N} μ(n)n^{−iτ}, at the cost of (H + 1).
+```
+
+**What was removed.**  `Sieve/RouteTMoebiusContour.exists_norm_tsum_moebiusTwist_smoothWeight_le_routeT`
+carries `routeTInverseBaseHeight + U ≤ |τ|`, which together with the Perron truncation `U ≥ N⁴`
+needed to kill the truncation edge forces `|τ| ≥ N⁴`.  The new theorem drops it: on the ordinates
+`|Im s| ≤ routeTInverseBaseHeight` the rectangle lies in the fixed compact box of
+`exists_bound_invZeta_fixed_box`, **whose statement already covers `1 − δ ≤ Re s ≤ 2`**, so the same
+constant `M` bounds `1/ζ` on the horizontal edges as well as the left edge.  Only `Mh ↦ max M Mh`
+changes.  The right abscissa `d` is now a free parameter: keeping `d = 1 + Δ(|τ|+U)` costs
+`(N+H)^{Δ}`, which is `exp(log N/(log(|τ|+U))^{9/10})` and is only harmless when
+`log(|τ|+U) ≍ log N`; pulling `d` back to `1 + 1/log N` removes that factor at the cost of a
+right-edge constant `e^{22/4}(1 + log N)`.
+
+**Brick 88c, the parameter choice (next).**  With `L = log N` and a small `c₀ > 0` set
+
+```text
+   d = 1 + 1/L ,   H = N·exp(−2c₀L^{1/10}) ,   U = K·(1+L)·exp(3c₀L^{1/10}) ,
+```
+
+so that (i) `H + 1 ≤ N exp(−c₀L^{1/10})`, (ii) the truncation edge
+`2 Md C (N+H+1)^{2+d}/(H²U) ≍ (1+L)N/(η²U)` is `≤ N exp(−c₀L^{1/10})` by the choice of `U`,
+(iii) the two horizontal edges carry `1/U` and `(d − c) ≍ Δ`, hence are smaller still, and (iv) the
+left edge is `Mc·(N+H)^{1−shift}/c ≍ Mc·N·exp(−shift·L)·exp(2c₀L^{1/10})` with
+`shift = min(Δ(S)/20, δ/2) ≍ L^{−9/10}/20`, i.e. `exp(−L^{1/10}/20 + 2c₀L^{1/10})`.  Taking
+`c₀ = 1/100` gives the net saving `exp(−0.03·L^{1/10})`.  The side conditions are
+`base ≤ |τ| + U` (free, `U → ∞`) and `1/L ≤ routeTInverseDelta A (|τ| + U)`, which for `|τ| ≤ N`
+follows from antitonicity of `routeTInverseDelta` plus a polylogarithmic lower bound for it at
+`T = 2N`.  Also needed: an upper bound for `routeTContourEdgeBound A (|τ|+U) =
+exp(400·routeTZeroFreeBudget A (routeTInverseHeight (|τ|+U))²)` that is `o(exp(L^{1/10}))` for
+`|τ| ≤ N`.
+
+**Target of 88c.**
+```text
+   ∃ c C > 0, ∀ᶠ N : ℝ in atTop, ∀ τ : ℝ, |τ| ≤ N →
+     ‖∑_{n ≤ N} μ(n) n^{−iτ}‖ ≤ C · N · exp(−c (log N)^{1/10}) .
+```
+This is the pointwise input MR's `𝒰` half needs, and — with the `u^{ω_P}` damping of
+`Sieve/DampedTwist*` carried through the same rectangle — it is MR Lemma 3 for `μ` with a
+super-polylogarithmic saving in place of `(log X)^{−1/24}`.
+
+### Brick 88c stage 1 — the Route-T contour data below the doubled cutoff (2026-08-20)
+
+`Sieve/RouteTContourRateBounds`, built, axiom-clean, wired.
+
+| theorem | statement |
+|-|-|
+| `routeTContourLeft_ge_half` | `1/2 ≤ routeTContourLeft A δ T` — unconditional, from `routeTInverseDelta_le_sixteenth` |
+| `routeTLogHeightEnvelope_le_five_log` | `S ≤ 2N`, `log N ≥ 3` ⟹ `routeTLogHeightEnvelope (4·routeTInverseHeight S) ≤ 5 log N` |
+| `one_le_routeTLogHeightEnvelope` | `1 ≤ routeTLogHeightEnvelope t` for `t ≥ −1` |
+| `five_log_polylog_le` | `(5L)^{9/10}(1+log 5L)² ≤ 5^{9/10}(1+log5)²·L^{9/10}(1+\|log L\|)²` |
+| **`eventually_routeT_contour_rate_data`** | `∀ᶠ N, ∀ S ∈ [base, 2N]`: `10(log N)^{1/20} ≤ shift·log N`, `routeTContourEdgeBound A S ≤ exp((log N)^{1/20})`, and `1/log N ≤ routeTInverseDelta A S` |
+
+The three facts are exactly what the rectangle bound of brick 88 needs: the displacement beats every
+fixed power of `(log N)^{1/20}` after multiplication by `log N` (so the left edge carries
+`N^{1−shift} ≤ N e^{−10(log N)^{1/20}}`), the edge constant is negligible against it, and the
+abscissa `1 + 1/log N` still lies inside the zero-free rectangle.  All three reduce by monotonicity
+(`routeTZeroFreeDelta_antitone`, `routeTZeroFreeBudget_mono`) to the top of the range `S = 2N`,
+where `Sieve/RouteTZetaAsymptotics.{routeTZeroFreeDelta_polylog_lower,
+routeTZeroFreeBudget_logHeight_upper}` apply and brick 76
+(`Sieve/PolylogRpowDomination.eventually_const_mul_rpow_polylog_le_rpow`) finishes.
+
+**Stage 2 (next), the parameter choice.**  With `ε = (log N)^{1/20}`,
+
+```text
+   H = N e^{−3ε} ,   U = (1+log N) e^{8ε} + routeTInverseBaseHeight ,   d = 1 + 1/log N ,
+```
+
+and `(N+H+1) ≤ 3N`, `(N+H+1)^d ≤ 9eN`, `(N+H)^{c} ≤ 2N e^{−10ε}` where `c = 1 − shift`, the four
+edges of `exists_norm_sum_moebiusTwist_le_routeTSharp_allHeights` are
+
+```text
+   T₁ ≤ 162 e^{6.5} C · N e^{−2ε} ,      T₂ = T₃ ≤ 54 e C' (M+1) · N e^{−4ε} ,
+   T₄ ≤ (M+1)(8 + 54C) · N e^{−3ε} ,      H + 1 ≤ 2N e^{−3ε} ,
+```
+
+so the sharp sum is `≤ C₄ · N · exp(−(log N)^{1/20})`.  The side condition to discharge is
+`|τ| + U ≤ 2N`, i.e. `(1+log N)e^{8ε} + routeTInverseBaseHeight ≤ N`, which follows from
+`1 + L ≤ e^{L/4}`, `8L^{1/20} ≤ L/4` and `base ≤ e^{L/2}`, all eventually.
+
+**Statement of brick 88c.**
+```text
+   ∃ C > 0, ∀ᶠ N : ℝ in atTop, ∀ τ : ℝ, |τ| ≤ N →
+     ‖∑_{n ≤ N} μ(n) n^{−iτ}‖ ≤ C · N · exp(−(log N)^{1/20}) .
+```
+
+### Brick 88c — CLOSED: the twisted Mertens sum at every frequency below the cutoff (2026-08-20)
+
+`Sieve/RouteTMoebiusTwistRate`, built (86 s), axiom-clean, wired.
+
+```text
+exists_norm_sum_moebiusTwist_le_rate :
+  ∃ K > 0, ∀ᶠ N : ℝ in atTop, ∀ τ : ℝ, |τ| ≤ N →
+    ‖∑_{n ≤ N} μ(n) n^{−iτ}‖ ≤ K · N · exp(−(log N)^{1/20}) .
+```
+
+**Unconditional, uniform over every real frequency up to the cutoff, with a saving that beats every
+power of the logarithm.**  The two Möbius contour chains the corpus had covered only
+`|τ| ≤ exp((log N)^{1/10})` (exponent-nine width) and `|τ| ≥ N⁴` (Route-T width, `U ≥ N⁴`); the gap
+between them was the range MR's exceptional set `𝒰` lives in.  It is now closed.
+
+Parameters actually used: `H = N e^{−3ε}`, `U = N`, `d = 1 + 1/log N`, `ε = (log N)^{1/20}`.  Taking
+the Perron half-height equal to the cutoff itself makes the three non-left edges polylogarithmic
+(they are divided by `U = N`), so only the left edge — the zero-free one — carries weight, and it is
+`N^{1−shift} ≤ N e^{−10ε}` by `eventually_routeT_contour_rate_data`.  The intermediate estimates are
+`(N+H+1)^d ≤ 9eN`, `(N+H+1)^c ≤ 3N e^{−10ε}`, `(N+H)^c ≤ 2N e^{−10ε}`,
+`C/H²·(N+H+1)² ≤ 9C e^{6ε}`, `C'/H·(N+H+1) ≤ 3C' e^{3ε}`, `Mc ≤ (M+1)e^{ε}`, and the
+side conditions `(1+log N)e^{8ε} ≤ N`, `e^{6ε} ≤ N` from `eventually_rate_growth`.
+
+**What this is, mathematically.**  It is the Vinogradov–Korobov-strength prime number theorem for
+the Möbius function twisted by an arbitrary character `n^{−iτ}`, uniformly in `τ` up to the cutoff,
+at the corpus's zero-free exponent `κ = 9/10`.  For MR it replaces Lemma 1 and (once the `ω`-damping
+is carried through, brick 89) Lemma 3, with `exp(−(log X)^{1/20})` in place of `(log X)^{−1/24}` —
+an enormous margin over what the `𝒰` half needs.
+
+**Brick 89 (next).**  The same for the Ramaré cofactor: `1/(ω_P(n)+1) = ∫₀¹ u^{ω_P(n)}du` turns the
+cofactor into an average of `dampedTwist P u τ`, whose Euler product is `(1/ζ)·∏_{p∈P}(1−up^{−s})/(1−p^{−s})`.
+The corpus already owns the exponent-nine version (`Sieve/DampedTwistSharpRate`) together with the
+correction factor `Sieve/DampedCorrBound.dampedCorrBound P c = ∏_{p∈P}(1+p^{−c})/(1−p^{−c})`; what is
+needed is the Route-T all-heights version, mirroring bricks 88/88b/88c.  Slack: at the `𝒯₁`
+parameters (`log Q₁ = (log X)^{1/2}`) the correction is `exp(3 Q₁^{δ} log(log Q₁/log P₁))` with
+`Q₁^δ → 1`, hence a fixed power of `log X` — negligible against `exp(−(log X)^{1/20})`.
+
+### Brick 89 — the Ramaré cofactor on the same rectangle (2026-08-20)
+
+`Sieve/RouteTDampedTwistAllHeights`, built, axiom-clean, wired.
+
+| theorem | statement |
+|-|-|
+| `exists_norm_tsum_dampedTwist_smoothWeight_le_routeT_allHeights` | the four-edge Route-T rectangle bound for `∑' μ(n)u^{ω_P(n)}n^{−iτ}w_{N,H}(n)` at **every** frequency, with each edge constant multiplied by `dampedCorrBound P (routeTContourLeft A δ (\|τ\|+U))` |
+| `routeTDampedAllHeightsSmoothBound` | the right-hand side, as a definition |
+| `exists_norm_sum_dampedTwist_le_routeTSharp_allHeights` | the same for the sharp sum `∑_{n ≤ N}`, at the cost of `H + 1` |
+
+The proof is brick 88's verbatim, with `Sieve/DampedShiftBound.norm_dampedInvZeta_shift_le` applied at
+each of the four edges: it converts a bound `M` for `‖invZeta (s + iτ)‖` into `M · dampedCorrBound P c`
+for `‖dampedInvZeta P u (s + iτ)‖`, provided `1/2 ≤ c ≤ Re s`.  The hypothesis `1/2 ≤ c` is exactly
+`Sieve/RouteTContourRateBounds.routeTContourLeft_ge_half`, which holds unconditionally because
+`routeTInverseDelta ≤ 1/16`.
+
+**Structural identity worth recording**:
+`routeTDampedAllHeightsSmoothBound A C C' M δ P N H τ U d
+   = dampedCorrBound P (routeTContourLeft A δ (|τ|+U)) · routeTMoebiusAllHeightsSmoothBound A C C' M δ N H τ U d`
+holds by `ring`, so the rate estimate of brick 88c transfers with one extra factor once the estimate
+is extracted from `exists_norm_sum_moebiusTwist_le_rate` into a standalone lemma about
+`routeTMoebiusAllHeightsSmoothBound` (**brick 89c, the remaining refactor**).  The size of that factor
+at the `𝒯₁` parameters is `exp(2 Q₁^{shift} log(log Q₁/log P₁))` with
+`Q₁^{shift} = exp((log X)^{1/2 − 9/10}/20) → 1`, i.e. a fixed power of `log X` — negligible against
+`exp(−(log X)^{1/20})`.
+
+### Brick 89c — CLOSED: MR Lemma 3 for `μ`, with a super-polylogarithmic saving (2026-08-20)
+
+`Sieve/RouteTMoebiusTwistRate` refactored, `Sieve/RouteTDampedTwistRate` added; both built and
+axiom-clean.
+
+| theorem | statement |
+|-|-|
+| `routeTMoebiusAllHeightsSmoothBound_le_rate` | the rate estimate, extracted from `exists_norm_sum_moebiusTwist_le_rate` as a standalone bound on the rectangle expression at `H = N e^{−3ε}`, `U = N`, `d = 1 + 1/log N` |
+| `one_le_dampedCorrBound` | `1 ≤ dampedCorrBound P c` for `c ≥ 1/2` |
+| `routeTDampedAllHeightsSmoothBound_eq` | `damped rectangle = dampedCorrBound P c · plain rectangle` (by `ring`) |
+| **`exists_norm_sum_dampedTwist_le_rate`** | `∃ A δ K > 0, ∀ᶠ N, ∀ P u τ, (∀q∈P, prime) → 0 ≤ u ≤ 1 → \|τ\| ≤ N → ‖∑_{n ≤ N} μ(n)u^{ω_P(n)}n^{−iτ}‖ ≤ K·dampedCorrBound P (routeTContourLeft A δ (\|τ\|+N))·N·exp(−(log N)^{1/20})` |
+
+Because `1/(ω_P(n)+1) = ∫₀¹u^{ω_P(n)}du`, the last line is the pointwise bound for the Ramaré
+cofactor itself, uniformly over every frequency below the cutoff: **MR Lemma 3 for `μ`, with
+`exp(−(log X)^{1/20})` in place of the paper's `(log X)^{−1/24}`.**  The correction factor is
+`∏_{p∈P}(1+p^{−c})/(1−p^{−c})` at `c = 1 − shift`, `shift ≍ (log(|τ|+N))^{−9/10}/20`; at the `𝒯₁`
+parameters (`log Q₁ = (log X)^{1/2}`) it is a fixed power of `log X`, negligible against the saving.
+
+**Remaining for the `J = 1` architecture:** MR Lemma 12 (the Ramaré/Buchstab split into narrow
+blocks) at `J = 1`, the `𝒯₁`/`𝒰` partition with the mean-value bound on `𝒯₁`, MR Lemma 8 in
+discrete (well-spaced) form, and the assembly into the corpus's `AveragedMeanSquare` normalisation.
+
+### Brick 90 — the `𝒯₁`/`𝒰` partition in the corpus's normalisation (2026-08-20)
+
+`Sieve/Section4AllBlocksSmall`, built, axiom-clean, wired.
+
+```text
+allBlocksSmall Q R η L Vk W
+  = Icc (−W) W ∩ ⋂_{k<L} {w : ‖primeBlockPoly (geomBlock Q R (1+η) k) w‖ ≤ V_k}     -- MR's 𝒯₁
+someBlockLarge Q R η L Vk W = Icc (−W) W \ allBlocksSmall …                          -- MR's 𝒰
+```
+
+| theorem | content |
+|-|-|
+| `measurableSet_allBlocksSmall`, `allBlocksSmall_subset` | `𝒯₁` is a measurable subset of the window |
+| `norm_primeBlockPoly_le_of_mem_allBlocksSmall` | the pointwise bound holds **by membership** |
+| **`setIntegral_normSq_omegaWeighted_le_blocks_allSmall`** | `Sieve/Section4QSide.setIntegral_normSq_omegaWeighted_le_blocks` with its hypothesis `hVk` discharged — on `𝒯₁` the long ladder needs *no* zero-free region, *no* Route-T saving, no analytic input at all |
+| `someBlockLarge_subset` | `𝒰 ⊆ ⋃_{k<L} shortExceptional (geomBlock Q R (1+η) k) W (V_k)` |
+| `volume_someBlockLarge_le` | `\|𝒰\| ≤ ∑_{k<L} \|shortExceptional …\|`, each summand being what `Sieve/PrimePowerSupport.volume_largeValues_pow_symm_le_of_prime_support` (MR Lemma 8) controls |
+
+This is the structural move the Milestone-C read-off identified as decisive: the *proved pointwise
+saving* that the Milestone-B no-go showed cannot exist below `β = κ = 9/10` is replaced by the
+*definition* of the frequency set, and the whole analytic burden moves to `𝒰`, where the tools are
+bricks 84–89c (Lemmas 1, 3), 85–86 (Lemma 11) and the moment method (Lemma 8).
+
+**Status of MR's lemma list for the `J = 1` architecture: every lemma is now owned.**
+
+| MR | corpus |
+|-|-|
+| Lemma 1 (Halász) | `Sieve/MoebiusSeriesPolySaving.exists_norm_tsum_moebius_le_polySaving` |
+| Lemma 2 (distance) | `Sieve/MoebiusDistanceAllFreq.exists_mulDistSqPair_ge_allFreq` |
+| Lemma 3 (cofactor, pointwise) | `Sieve/RouteTDampedTwistRate.exists_norm_sum_dampedTwist_le_rate` |
+| Lemma 8 (large values, measure form) | `Sieve/PrimePowerSupport.volume_largeValues_pow_symm_le_of_prime_support` |
+| Lemma 9 (HM for integers) | `Sieve/HalaszMontgomeryDyadic.halaszMontgomery_dyadic` |
+| Lemma 11 (HM for primes) | `Sieve/PrimeRangeKernelLargeValues.exists_sum_normSq_logPoly_primeRange_le` |
+| Lemma 12 (Ramaré split) | `Sieve/{RamareBlockSplit, LadderHarmonicSplit, LadderProductDefect, Section4QSide}` |
+| Lemma 14 (Parseval) | `Sieve/{LogWindowPlancherel, GallagherDyadicTail}` |
+| the `𝒯₁`/`𝒰` partition | `Sieve/Section4AllBlocksSmall` |
+
+**What remains is the assembly**: choosing `Q₁ = exp((log X)^{1/2})`, `P₁`, `H₁`, `α`, running the
+`𝒯₁` half through `setIntegral_normSq_omegaWeighted_le_blocks_allSmall` and the `𝒰` half through
+Lemma 8 + Lemma 11 + brick 89c, and feeding the result into
+`Sieve/OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget` in place of the Milestone-B
+budget.  That is the single remaining milestone for cards 3, 4 and 5.
+
+### Brick 91 — the cofactor over the ladder's exceptional set (2026-08-20)
+
+`Sieve/Section4LadderExceptional`, built, axiom-clean, wired.  This is the `𝒰` companion of brick 90.
+
+| theorem | content |
+|-|-|
+| `ladderExceptionalD` | the Dirichlet-variable exceptional set of the **whole** ladder: `⋃_{k<L} blockExceptional (geomBlock Q R (1+η) k) moebiusCoeff NA T (V_k)` |
+| `measurableSet_ladderExceptionalD`, `ladderExceptionalD_subset` | measurable, inside `Icc (−T) T` |
+| **`measureReal_ladderExceptionalD_le`** | Lemma 2.5 for the whole ladder: the measure is at most `∑_{k<L}` of the single-block moment bounds `2(T + 4N^{k'}(1+log N^{k'}))(k'^{k'}(#B_k)^{k'})/V_k^{2k'}` |
+| `someBlockLarge_subset_preimage` | brick 90's `𝒰` is inside the scaled preimage of `ladderExceptionalD` |
+| **`setIntegral_normSq_logPoly_someBlockLarge_le`** | Lemma 2.6 on the union: `∫_𝒰 ‖logPoly a D w‖²dw ≤ (2π)^{-1}(2N_D + (…)·(the measure sum))·Ω²·#D` |
+
+**Both halves of the Matomäki–Radziwiłł frequency partition are now available in the corpus's own
+Gallagher normalisation**, with `V_k` a free parameter:
+
+```text
+   ∫_{𝒯₁} ‖A_ω‖²  ≤  2(∑1/v_k)(∑ v_k V_k² I_k) + 2·(ladder defect)      -- brick 90, hypothesis-free
+   ∫_{𝒰}  ‖C‖²    ≤  Halász–Montgomery(∑_k moment bound at V_k)          -- brick 91
+```
+
+The Milestone-B no-go said no *proved* pointwise bound `V_k` can be small enough below `β = κ = 9/10`;
+here `V_k` is chosen, not proved, and the price is paid in the measure of `𝒰`.  That is the whole
+mechanism of the MR partition, now formal.
+
+**What is left for `averagedMeanSquare_moebius_scaled'` at `1/2 < β < 1`:** choose
+`Q₁ = exp((log x)^{1/2})`, `P₁`, the block ratio `1+η`, `L`, the levels `V_k` and the Cauchy–Schwarz
+weights `v_k`; verify the two resulting budgets are `o(W²h²)` with `W = mertensS z − mertensS z₀ ≍
+log log x`; and feed the total into
+`Sieve/OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget`.  That is a parameter
+optimisation over quantities that are now all explicit.
+
+### Bricks 92–93 — the integral Halász–Montgomery with a restricted support (2026-08-20)
+
+`Sieve/HalaszMontgomerySupport`, built, axiom-clean, wired.
+
+| theorem | content |
+|-|-|
+| `supportKernel S v = ∑_{n∈S} n^{iv}` | the Gram kernel of a **restricted** support |
+| `setIntegral_normSq_dirPoly_eq_dual_support` | the duality identity with the sum restricted to the support |
+| `setIntegral_normSq_dirPoly_sq_le_support` | Cauchy–Schwarz over the support |
+| `sum_normSq_dualCoeff_support_eq` | the dual energy over the support is the **restricted-kernel** double integral |
+| **`setIntegral_normSq_dirPoly_le_HM_support`** | `∫_E‖A‖² ≤ M·∑_{n∈S}‖a_n‖²` with `M` a row/column mass of `supportKernel S`, not of `plainKernel N` |
+| `norm_supportKernel_le_card` | `‖supportKernel S v‖ ≤ #S` |
+| **`setIntegral_norm_supportKernel_le`** | the row mass from a two-regime bound: `∫_E‖K(t−u)‖du ≤ 2v₀·#S + 2T·G` whenever `‖K(v)‖ ≤ G` for `\|v\| ≥ v₀` |
+
+**Why this was needed.**  `Sieve/HalaszMontgomeryIntegral` bounds the mean square by the row mass of
+`plainKernel N`, i.e. of the kernel of *all* `n < N`.  For sparse coefficients that is a gross
+overestimate: the duality only ever produces the kernel of the support.  For a prime support the
+gain is a full logarithm twice — once in `#S` versus `N`, once in the coefficient energy — and that
+is precisely the difference between MR's Lemma 9 (integers) and Lemma 11 (primes).
+
+Verified during this session that the difference is not cosmetic: with the integer kernel, the
+exceptional half of the ladder costs, **with optimal Cauchy–Schwarz weights**, exactly
+`M²(∑_k #B_k·M/R_k)²/π ≍ M²W²` — the full trivial bound, for every choice of the levels `V_k`.
+So the `𝒰` half cannot be closed with `Sieve/HalaszMontgomeryIntegral`; it needs the prime kernel,
+which is what these two bricks supply and what `Sieve/PrimeBlockTwistBound` (Route-T twisted prime
+sum) then bounds in the `hfar` slot.
+
+**Next**: identify `supportKernel` at a prime range with `primeBlockPoly` (they differ by the sign
+`μ(p) = −1` and the `2π` rescaling), discharge `hfar` from
+`exists_norm_primeBlockPoly_routeT_le`, and run the `𝒰` half of MR §8.3 with the second, large
+prime range.
+
+### Brick 94 — the kernel of a prime range identified (2026-08-20)
+
+Appended to `Sieve/HalaszMontgomerySupport`; built and axiom-clean.
+
+| theorem | content |
+|-|-|
+| `supportKernel_neg`, `norm_supportKernel_neg` | the kernel conjugates under frequency reversal, so the column mass equals the row mass |
+| `finSupport B N` | the `Fin N`-indexed support attached to `B ⊆ Icc 1 N` |
+| `supportKernel_eq_dirPoly`, `supportKernel_eq_logPoly_one` | the kernel is the Dirichlet/Gallagher polynomial of the indicator of `B` |
+| **`supportKernel_eq_sum_unitLogPhase`** | `supportKernel (finSupport B N) v = ∑_{p∈B} p^{2πi(v/2π)}` — for a range of primes this is minus `primeBlockPoly B (v/2π)` (`Sieve/PrimeRangeKernelLargeValues.primeBlockPoly_eq_neg_sum_unitLogPhase`), i.e. exactly what the Route-T twisted prime sum bounds |
+| **`setIntegral_normSq_dirPoly_le_HM_phaseSupport`** | the integral Halász–Montgomery bound with the far-field of that phase sum in the `hfar` slot: `∫_E‖A‖² ≤ (2v₀·#B + 2T·G)·∑_{n∈supp}‖a_n‖²` |
+
+**Import discipline.**  The first draft imported `Sieve/PrimeRangeKernelLargeValues` in order to
+name `primeBlockPoly`, which drags in the whole Route-T/Ingham stack.  Stating the kernel as the
+bare phase sum instead keeps `Sieve/HalaszMontgomerySupport` on light dependencies
+(`HalaszMontgomeryIntegral`, `LogPolyRestrict`, `LowHeightPoly`) and leaves the arithmetic input to
+the call site.  This matters in practice: with several agents building concurrently the heavy
+closure could not be replayed inside a single build window, while the light one builds in 196 s.

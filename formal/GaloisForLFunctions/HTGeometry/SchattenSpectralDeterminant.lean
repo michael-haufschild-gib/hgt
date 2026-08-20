@@ -21,6 +21,7 @@ Main results:
 * `tendsto_schattenDet_of_tendsto_tracePower` — **it is continuous in the power traces**.
 -/
 import GaloisForLFunctions.HTGeometry.FiniteRegularizedDeterminantOrder
+import GaloisForLFunctions.HTGeometry.TracePowerDeterminant
 import Mathlib.Analysis.Normed.Group.Tannery
 
 open Filter
@@ -99,48 +100,28 @@ theorem norm_schattenTracePower_le {p k : ℕ} (hp : 0 < p) {lam : ι → ℂ}
         exact Summable.tsum_le_tsum hstep hsum (h.mul_left _)
     _ = B ^ k * ∑' i, ‖lam i‖ ^ p := tsum_mul_left
 
-/-- The order-`p` regularized exponent of a spectrum. -/
+/-- The order-`p` regularized exponent of a spectrum: the regularized exponent of its power-trace
+sequence. -/
 def schattenDetExp (p : ℕ) (lam : ι → ℂ) (z : ℂ) : ℂ :=
-  ∑' k : ℕ, z ^ (k + p) / ((k + p : ℕ) : ℂ) * schattenTracePower lam (k + p)
+  tracePowerDetExp p (schattenTracePower lam) z
 
 /-- The regularized exponent converges inside the reciprocal spectral radius. -/
 theorem summable_schattenDetExp {p : ℕ} (hp : 0 < p) {lam : ι → ℂ}
     (h : IsSchattenSpectrum p lam) {B : ℝ} (hB1 : 1 ≤ B) (hB : ∀ i, ‖lam i‖ ≤ B)
     {z : ℂ} (hz : ‖z‖ * B < 1) :
-    Summable fun k : ℕ => z ^ (k + p) / ((k + p : ℕ) : ℂ) * schattenTracePower lam (k + p) := by
-  have hB0 : (0 : ℝ) ≤ B := le_trans zero_le_one hB1
-  set S : ℝ := ∑' i, ‖lam i‖ ^ p with hS
-  have hS0 : 0 ≤ S := tsum_nonneg fun i => pow_nonneg (norm_nonneg _) p
-  have hzB0 : 0 ≤ ‖z‖ * B := mul_nonneg (norm_nonneg z) hB0
-  refine Summable.of_norm_bounded (g := fun k : ℕ => (S * ‖z‖ ^ p) * (‖z‖ * B) ^ k) ?_ ?_
-  · exact ((summable_geometric_of_lt_one hzB0 hz).mul_left _)
-  · intro k
-    have hden : (1 : ℝ) ≤ ‖((k + p : ℕ) : ℂ)‖ := by
-      rw [Complex.norm_natCast]
-      exact_mod_cast Nat.one_le_iff_ne_zero.mpr (by omega)
-    have htr := norm_schattenTracePower_le (k := k) hp h hB1 hB
-    have hnum : ‖z ^ (k + p) / ((k + p : ℕ) : ℂ) * schattenTracePower lam (k + p)‖
-        ≤ ‖z‖ ^ (k + p) * (B ^ k * S) := by
-      rw [norm_mul, norm_div, norm_pow]
-      refine mul_le_mul ?_ htr (norm_nonneg _) (by positivity)
-      rw [div_le_iff₀ (by linarith : (0:ℝ) < ‖((k + p : ℕ) : ℂ)‖)]
-      nlinarith [pow_nonneg (norm_nonneg z) (k + p)]
-    refine le_trans hnum (le_of_eq ?_)
-    rw [pow_add, mul_pow]
-    ring
+    Summable fun k : ℕ => z ^ (k + p) / ((k + p : ℕ) : ℂ) * schattenTracePower lam (k + p) :=
+  summable_tracePowerDetExp hp hB1
+    (fun _ => (norm_schattenTracePower_le hp h hB1 hB).trans_eq (mul_comm _ _)) hz
 
 /-- **The order-`p` regularized determinant of a spectrum.** -/
 def schattenDet (p : ℕ) (lam : ι → ℂ) (z : ℂ) : ℂ :=
-  Complex.exp (- schattenDetExp p lam z)
+  tracePowerDet p (schattenTracePower lam) z
 
 /-- **The determinant forgets every trace below the Schatten exponent.** -/
 theorem schattenDet_congr {p : ℕ} {lam mu : ι → ℂ}
     (h : ∀ n, p ≤ n → schattenTracePower lam n = schattenTracePower mu n) (z : ℂ) :
-    schattenDet p lam z = schattenDet p mu z := by
-  have hexp : schattenDetExp p lam z = schattenDetExp p mu z := by
-    refine tsum_congr fun k => ?_
-    rw [h (k + p) (Nat.le_add_left p k)]
-  rw [schattenDet, schattenDet, hexp]
+    schattenDet p lam z = schattenDet p mu z :=
+  tracePowerDet_congr h z
 
 /-- Every family on a finite index set is an `ℓ^p` spectrum. -/
 theorem isSchattenSpectrum_of_finite [Finite ι] (p : ℕ) (lam : ι → ℂ) :
@@ -164,7 +145,7 @@ theorem schattenDet_eq_finiteDetOrder {p n : ℕ} (hp : 0 < p) (lam : Fin n → 
       = z ^ (k + p) / ((k + p : ℕ) : ℂ) * ((Matrix.diagonal lam) ^ (k + p)).trace := by
     intro k
     rw [schattenTracePower_diagonal]
-  rw [← hmain, schattenDet, schattenDetExp, tsum_congr hterm]
+  rw [← hmain, schattenDet, tracePowerDet, tracePowerDetExp, tsum_congr hterm]
 
 /-- **Continuity of the order-`p` determinant in the power traces.**  Along any filter on which the
 power traces converge under a common geometric bound, the determinants converge. -/
@@ -175,33 +156,8 @@ theorem tendsto_schattenDet_of_tendsto_tracePower {p : ℕ} (hp : 0 < p)
     (hconv : ∀ k : ℕ, Filter.Tendsto (fun a => schattenTracePower (lam a) (k + p)) l
       (nhds (schattenTracePower mu (k + p))))
     {z : ℂ} (hz : ‖z‖ * B < 1) :
-    Filter.Tendsto (fun a => schattenDet p (lam a) z) l (nhds (schattenDet p mu z)) := by
-  have hB0 : (0 : ℝ) ≤ B := le_trans zero_le_one hB1
-  have hzB0 : 0 ≤ ‖z‖ * B := mul_nonneg (norm_nonneg z) hB0
-  have hdom : Summable fun k : ℕ => (S * ‖z‖ ^ p) * (‖z‖ * B) ^ k :=
-    (summable_geometric_of_lt_one hzB0 hz).mul_left _
-  have hbnd : ∀ (a : L) (k : ℕ),
-      ‖z ^ (k + p) / ((k + p : ℕ) : ℂ) * schattenTracePower (lam a) (k + p)‖
-        ≤ (S * ‖z‖ ^ p) * (‖z‖ * B) ^ k := by
-    intro a k
-    have hden : (1 : ℝ) ≤ ‖((k + p : ℕ) : ℂ)‖ := by
-      rw [Complex.norm_natCast]
-      exact_mod_cast Nat.one_le_iff_ne_zero.mpr (by omega)
-    have hnum : ‖z ^ (k + p) / ((k + p : ℕ) : ℂ) * schattenTracePower (lam a) (k + p)‖
-        ≤ ‖z‖ ^ (k + p) * (S * B ^ k) := by
-      rw [norm_mul, norm_div, norm_pow]
-      refine mul_le_mul ?_ (hbound a k) (norm_nonneg _) (by positivity)
-      rw [div_le_iff₀ (by linarith : (0:ℝ) < ‖((k + p : ℕ) : ℂ)‖)]
-      nlinarith [pow_nonneg (norm_nonneg z) (k + p)]
-    refine le_trans hnum (le_of_eq ?_)
-    rw [pow_add, mul_pow]
-    ring
-  have hexp : Filter.Tendsto (fun a => schattenDetExp p (lam a) z) l
-      (nhds (schattenDetExp p mu z)) := by
-    simp only [schattenDetExp]
-    exact tendsto_tsum_of_dominated_convergence hdom (fun k => (hconv k).const_mul _)
-      (Filter.Eventually.of_forall fun a k => hbnd a k)
-  exact (Complex.continuous_exp.continuousAt).tendsto.comp hexp.neg
+    Filter.Tendsto (fun a => schattenDet p (lam a) z) l (nhds (schattenDet p mu z)) :=
+  tendsto_tracePowerDet_of_tendsto hp hB1 hbound hconv hz
 
 end
 

@@ -809,3 +809,247 @@ carried through unchanged: `0 < d` (the card's `d ≥ 1`) and, at an interior ba
 singularity below the base point -- which is exactly the Kaczorowski--Perelli input of item 2.
 
 Axiom audit: `propext`, `Classical.choice`, `Quot.sound`.
+
+## Lean progress -- Step 3 in general degree, archimedean half (2026-08-19)
+
+Step 3's opening clause -- *"by the functional equation and uniform Stirling, for `σ → −∞` with `t`
+fixed, `|X(σ+it)| ≍ C[q/(2π)^d]^{|σ|}|σ|^{d|σ|}e^{−d|σ|}`"* -- is now `[LEAN-PROVED]` in **every
+degree**, for the archimedean factor of Kaczorowski--Perelli's asymmetric functional equation, with
+**no hypothesis beyond `0 < d`**.  The uniform Stirling estimate the card cites is replaced by an
+exact root asymptotic, so no `≍` and no implied constants appear anywhere.
+
+`formal/GaloisForLFunctions/RHTower/SelbergCuspArchimedeanRoot.lean` (new, umbrella-wired,
+axioms `propext`, `Classical.choice`, `Quot.sound`):
+
+| Card item | Declaration |
+|---|---|
+| the rate `λ_j/d` at which the `j`-th Gamma argument advances | `SelbergGammaData.shiftRate` |
+| the two constant shifts `λ_j(1−s₀)+\bar μ_j` and `1−λ_j s₀−μ_j` | `SelbergGammaData.shiftUp`, `shiftDown` |
+| the `2r` rates and shifts of the archimedean factor | `SelbergGammaData.pairRate`, `pairShift` |
+| **the rates sum to one** — this *is* the definition of the degree | `SelbergGammaData.sum_pairRate` |
+| the two Gamma arguments along the lattice `s₀ − k/d` | `SelbergGammaData.gammaArg_up_shift`, `gammaArg_down_shift` |
+| the modulus of `h_F(s₀−k/d)`: constant, `Q`-power, `2r` Gamma moduli | `SelbergGammaData.norm_asymmetricH_shift` |
+| **the root constant equals the cusp constant `q^{1/d}/(2πd)`** | `SelbergGammaData.archimedeanRootConstant_eq` |
+| a `Q`-power advancing at rate `2/d` has `k`-th root `Q^{2/d}` | `tendsto_rpow_linear_rpow_inv` |
+| **`(‖h_F(s₀−k/d)‖/k!)^{1/k} → q^{1/d}/(2πd)`** | `SelbergGammaData.tendsto_norm_asymmetricH_shift_rpow_inv` |
+
+`archimedeanRootConstant_eq` is the arithmetic identity behind the card's constant:
+`Q^{2/d}·∏_j(λ_j/d)^{2λ_j/d} = q^{1/d}/(2πd)` with `q = (2π)^d Q²∏λ_j^{2λ_j}`.  The `2π` on the
+right is exactly the `(2π)^{-r}` prefactor of `h_F` becoming invisible to the root, and the `1/d`
+is exactly `∏_j d^{-2λ_j/d} = d^{-1}` — the same "rates sum to one" that makes the factorial
+cancel.  Nothing is tuned: both sides are computed from the gamma presentation alone.
+
+### The analytic layer this rests on
+
+Four new reusable `HTGeometry` modules, all axiom-clean.  None of them existed in the corpus;
+the corpus's previous root technology (`RootGrowthEngine`, `ScaledRootGrowth`) deliberately avoids
+Stirling and therefore cannot see the constant `(c/e)^c`, which is exactly what a degree-`d`
+lattice needs.
+
+`HTGeometry/GammaWendelInequality.lean` — log-convexity of `Γ`:
+
+| Item | Declaration |
+|---|---|
+| **Wendel's inequality** `Γ(x+a) ≤ Γ(x)x^a` for `0 ≤ a ≤ 1` | `Gamma_add_le` |
+| its lower companion `Γ(x)x ≤ Γ(x+a)(x+a)^{1−a}` | `le_Gamma_add` |
+
+`HTGeometry/GammaRatioAsymptotic.lean` — the ratio law:
+
+| Item | Declaration |
+|---|---|
+| `Γ(x+a)/(Γ(x)x^a) → 1` for a shift in `[0,1]` | `tendsto_Gamma_add_div_rpow_unit` |
+| the same after peeling whole units | `tendsto_Gamma_add_div_rpow_nat` |
+| **`Γ(x+a) ∼ Γ(x)x^a` for every `a ≥ 0`** | `tendsto_Gamma_add_div_rpow` |
+
+`HTGeometry/GammaRootAsymptotic.lean` — Stirling with an explicit remainder, and the root law:
+
+| Item | Declaration |
+|---|---|
+| `∫_0^∞ (x+a)^{-2}dx = 1/a` | `integrableOn_invSqShift`, `integral_Ioi_inv_sq_shift` |
+| **the Binet kernel is at most `1/(8a)`** | `abs_binetKernel_le` |
+| **Stirling with an explicit remainder** | `abs_log_Gamma_sub_stirling_le` |
+| `log Γ(cx+b)/x − c log x → c log c − c` | `tendsto_log_Gamma_linear_div` |
+| `exp(c log c − c) = (c/e)^c` | `exp_stirling_eq_rpow` |
+| **`Γ(cx+b)^{1/x}/x^c → (c/e)^c`** | `tendsto_Gamma_linear_rpow_inv`, `..._nat` |
+| **`(k!)^{1/k}/k → 1/e`** | `tendsto_factorial_rpow_inv_div` |
+
+`HTGeometry/GammaVerticalRootAsymptotic.lean` — the vertical line is invisible to the root:
+
+| Item | Declaration |
+|---|---|
+| the comparison ratio `Γ(x)/‖Γ(x+iy)‖` | `gammaVerticalRatio` |
+| **it decreases along unit steps**, by the functional equation | `gammaVerticalRatio_add_one_le`, `gammaVerticalRatio_add_nat_le` |
+| `Γ ≤ 1` on `[1,2]`, from Wendel | `Gamma_le_one_of_mem_Icc` |
+| a positive minimum of `‖Γ(·+iy)‖` on `[1,2]` | `exists_pos_le_norm_Gamma_verticalPoint` |
+| **`Γ(x) ≤ C‖Γ(x+iy)‖` for all `x ≥ 1`** | `exists_const_Gamma_le_norm_Gamma_vertical` |
+| a positive constant is invisible to the root | `tendsto_const_rpow_inv` |
+| **`‖Γ(cx+β)‖^{1/x}/x^c → (c/e)^c`** for complex `β` | `tendsto_norm_Gamma_linear_rpow_inv`, `..._nat` |
+
+`HTGeometry/GammaProductRootLaw.lean` — the combination law:
+
+| Item | Declaration |
+|---|---|
+| a constant base with a family of exponents | `prod_rpow_const` |
+| **`k/(k!)^{1/k} → e`** | `tendsto_div_factorial_rpow_inv` |
+| **`(∏_i ‖Γ(c_i k+β_i)‖/k!)^{1/k} → ∏_i c_i^{c_i}`** when `∑ c_i = 1` | `tendsto_prod_norm_Gamma_div_factorial_rpow_inv` |
+
+The last statement is the whole mechanism in one line: the powers of `k` contributed by the `2r`
+Gamma factors multiply to `k^{∑c_i} = k`, which is exactly the factorial's root, and the `e`'s
+cancel for the same reason.  The vertical comparison is what lets the *complex* shifts `μ_j` and
+the base point `s₀` be arbitrary: the ratio `Γ(x)/‖Γ(x+iy)‖` is multiplied by `x/‖x+iy‖ ≤ 1` at
+each unit step, so it is bounded by its values on `[1,2]`, and a bounded factor cannot change a
+`k`-th root.  No Euler product, no Weierstrass factorization, and no Laplace method is used.
+
+### What Step 3 still needs in general degree
+
+Three items, all of them the card's own hypotheses rather than missing mathematics:
+
+1. **The sine factor.**  `S_F(s) = 2^r ∏_j sin(π(λ_j s+μ_j))` is bounded along the lattice (its
+   imaginary part is constant in `k`), so it cannot raise the root; what is needed is a *frequent*
+   lower bound, which is exactly the card's "`s` off the exceptional lattice `{s*_ℓ+k/d}`".  When
+   some `Im(λ_j s₀+μ_j) ≠ 0` the factor is bounded below outright; when the presentation has rank
+   one — every degree at most two — the rate is `λ_1/d = 1/2` and the factor has period four in
+   `k`, so `cos²+sin² = 1` supplies the frequent lower bound unconditionally, exactly as
+   `exists_cosShift_pos` does for `ζ`.
+2. **`\bar F(1−\bar s) → \bar a_F(1)`.**  This is a Dirichlet-series limit to the right along a
+   horizontal ray, not the real axis.
+3. **Applicability of the functional equation at `s₀−k/d`**, i.e. membership in
+   `ExtendedSelbergClass.asymmetricFERegularSet` — pair-analyticity of the completed value and
+   Gamma-pole-freeness.  This is where the class's own analytic continuation enters.
+
+## Lean progress -- Step 3 in general degree, complete assembly (2026-08-19)
+
+The three items listed above as "what Step 3 still needs" are now items **1 and 3 only**: the
+Dirichlet-series limit is proved, the sine factor's boundedness is proved unconditionally, and the
+frequent lower bound is proved unconditionally whenever the gamma presentation has rank one --
+which is every degree at most two, i.e. every row of the card's Verifications table.
+
+`formal/GaloisForLFunctions/HTGeometry/LSeriesRightLimit.lean` (new, umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the terms decrease as the real part grows | `norm_term_le_of_re_le` |
+| past the second term the decay is geometric in `Re s` | `norm_term_le_two_pow` |
+| a polynomial coefficient bound gives absolute convergence | `summable_norm_term_of_rpow_bound` |
+| **`L(f,s) → f(1)` along *every* family with `Re s → ∞`** | `tendsto_LSeries_of_re_atTop` |
+
+This is the general form of the corpus's `tendsto_riemannZeta_of_re_atTop`, and the form Step 3
+needs: the reflected argument `1-\bar s` travels along a *horizontal* ray, not the real axis, so
+mathlib's `LSeries.tendsto_cpow_mul_atTop` (real ray only) does not apply.
+
+`formal/GaloisForLFunctions/HTGeometry/LimsupPositiveFactor.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| a positive constant scales a `limsup` | `limsup_const_mul` |
+| **`a → κ > 0` and `limsup b = 1` give `limsup (a·b) = κ`** | `limsup_mul_eq_of_tendsto` |
+
+The corpus's `limsup_mul_eq_one_of_tendsto_one` handles a convergent group tending to *one*, which
+is what degree one needs; in degree `d` the archimedean group converges to the cusp constant
+instead, so the unit-factor law has to be scaled.
+
+`formal/GaloisForLFunctions/RHTower/SelbergShiftRootLaw.lean` (new, umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| **the invariant phase `ω_F` is unimodular** | `SelbergGammaData.norm_invariantRootNumber` |
+| `‖sin w‖ ≤ e^{\|Im w\|}` | `norm_sin_le_exp_abs_im` |
+| the sine arguments keep their imaginary parts along the lattice | `SelbergGammaData.sine_arg_im` |
+| **the sine factor is bounded along the lattice, no hypotheses** | `SelbergGammaData.exists_bound_norm_asymmetricS_shift` |
+| **`‖\bar F(1-\bar s_k)‖ → \|a_F(1)\|`** | `ExtendedSelbergClass.tendsto_norm_reflection_shift` |
+| **`limsup_k (‖F(s₀-k/d)‖/k!)^{1/k} = q^{1/d}/(2πd)`** | `ExtendedSelbergClass.limsup_norm_shift_rpow_inv` |
+
+`formal/GaloisForLFunctions/RHTower/SelbergRankOneSineFactor.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| a half rate forces rank one | `SelbergGammaData.rank_eq_one_of_halfRate` |
+| the unique index and its product law | `SelbergGammaData.soleIndex`, `eq_soleIndex`, `prod_eq_soleIndex` |
+| **the sine factor has period four in `k`** | `SelbergGammaData.asymmetricS_shift_periodic` |
+| it cannot vanish at both `k = 0` and `k = 1`, since `sin²+cos² = 1` | `SelbergGammaData.exists_pos_norm_asymmetricS_shift` |
+| **the frequent lower bound, unconditionally** | `SelbergGammaData.exists_frequently_le_norm_asymmetricS_shift` |
+| **Step 3 with the sine hypothesis discharged** | `ExtendedSelbergClass.limsup_norm_shift_rpow_inv_of_halfRate` |
+
+`limsup_norm_shift_rpow_inv` is the card's Step 3 in full generality.  Its hypotheses are exactly
+the card's own: `d > 0`, `a_F(1) ≠ 0` (the card's `a_F(1) = 1`), applicability of the functional
+equation along the lattice, and the frequent non-degeneracy of the sine factor (the card's "`s` off
+the exceptional lattice").  Everything else is proved: the phase is unimodular, the archimedean
+factor has root exactly `q^{1/d}/(2πd)`, the reflected series has root one, and the sine factor is
+bounded, hence cannot raise the root.
+
+`limsup_norm_shift_rpow_inv_of_halfRate` removes the sine hypothesis outright for a rank-one
+presentation.  In that case the single rate is `λ_1/d = 1/2`, so the sine factor has period four in
+`k`; if it vanished at both `k = 0` and `k = 1` then `sin z` and `cos z` would both vanish, which
+`sin²+cos² = 1` forbids.  This is the same mechanism the corpus already used for `ζ`
+(`exists_cosShift_pos`), now derived from the class axioms rather than from the explicit zeta
+functional equation, and it covers every member of degree at most two -- the whole Verifications
+table.
+
+### Remaining for Step 3
+
+Only membership in `ExtendedSelbergClass.asymmetricFERegularSet` along the lattice, i.e.
+pair-analyticity of the completed value at `s₀-k/d` and `1-\bar s₀+k/d` together with
+Gamma-pole-freeness.  That is a statement about the class member's own analytic continuation, and
+is the same input items 1 and 2 of "What is not yet formalized" need.
+
+## Lean progress -- Step 3 has no remaining hypothesis (2026-08-20)
+
+The last item of "Remaining for Step 3" -- membership of the shift lattice in
+`ExtendedSelbergClass.asymmetricFERegularSet` -- is discharged.
+
+`formal/GaloisForLFunctions/RHTower/SelbergShiftLatticeRegularity.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| a nonzero height excludes the reflected continuation pole, with no real-part condition | `selbergVerticalPoint_reflection_ne_one_of_im_ne_zero` |
+| the reflected completed value is analytic at every nonzero height | `analyticAt_selbergCompletedValue_verticalTail_reflection_of_im_ne_zero` |
+| pair-analyticity from the height alone | `ExtendedSelbergClass.mem_completedFEContourSafeSet_of_im_ne_zero` |
+| the Gamma-tail bound is non-negative | `SelbergGammaData.gammaTailHeight_nonneg` |
+| **the height criterion for regularity, with no real-part hypothesis** | `ExtendedSelbergClass.mem_asymmetricFERegularSet_of_height` |
+| the shift lattice is horizontal | `selbergShiftPoint_eq` |
+| **the whole shift lattice is regular** | `ExtendedSelbergClass.shiftLattice_mem_asymmetricFERegularSet` |
+| **Step 3, regularity hypothesis discharged** | `ExtendedSelbergClass.limsup_norm_shift_rpow_inv_of_height` |
+| **Step 3 for a rank-one presentation, every continuation hypothesis discharged** | `ExtendedSelbergClass.limsup_norm_shift_rpow_inv_of_halfRate_of_height` |
+
+The point is that all three regularity conditions -- analyticity of the completed value, analyticity
+of its reflection, and Gamma-pole-freeness -- depend only on the **height** of the point, while the
+shift lattice `s₀ - k/d` is *horizontal*.  So one height inequality on the base point,
+`gammaTailHeight(F) < |Im s₀|`, puts the entire lattice inside the regular set.
+
+The corpus already carried the height criterion, but with a spurious `0 < σ` side condition; that
+condition was only excluding the reflected continuation pole at `s = 1`, i.e. only ruling out
+`1 - \bar s = 1`, which a nonzero height already rules out.  Removing it is what makes the criterion
+usable on a lattice that runs to the left, where the real part goes to `-∞`.
+
+So Step 3 of the card -- *"the independent cusp constant via the functional equation and uniform
+Stirling"* -- now reads, in every degree and with no analytic-continuation premise:
+
+```
+theorem ExtendedSelbergClass.limsup_norm_shift_rpow_inv_of_halfRate_of_height
+    (F : ExtendedSelbergClass) (hd : 0 < F.gammaData.degree) {s₀ : ℂ}
+    (ha1 : (F.coeff 1 : ℂ) ≠ 0)
+    (hrate : ∀ j, F.gammaData.lambda j = F.gammaData.degree / 2)
+    (hheight : F.gammaData.gammaTailHeight < |s₀.im|) :
+    limsup (fun k : ℕ =>
+        (‖F (s₀ - (k : ℂ) / (F.gammaData.degree : ℂ))‖ / (k.factorial : ℝ)) ^ (1 / (k : ℝ)))
+      atTop
+      = F.gammaData.conductor ^ (1 / F.gammaData.degree) / (2 * Real.pi * F.gammaData.degree)
+```
+
+`ha1` is the class normalisation `a_F(1) = 1` (an axiom of the full class `SelbergClass`, a
+hypothesis for the extended carrier); `hrate` is the rank-one/half-rate presentation, which covers
+the whole Verifications table; `hheight` is a condition on the base point, which the card's own
+statement already allows ("for every `s ∈ ℂ` off the exceptional lattice").
+
+### What remains on this card
+
+Items 1 and 2 of "What is not yet formalized", for a **general** class member: Kaczorowski--Perelli
+standard-twist theory -- entire continuation of `F_α` for `α ∉ Spec(F)` and `ρ_0(α) ≠ 0` on the
+spectrum.  (The note there that "the corpus has no Selberg-class layer at all" is now stale: the
+`RHTower/SelbergClass/` layer exists and carries the axioms, the completed value, the asymmetric
+functional equation and its regular set.)  Everything else -- Step 1 interior, Step 2 mechanism,
+Step 3 in every degree, and the whole Verifications table at degree one (`ζ`, every Dirichlet
+character) and degree two (divisor function) -- is unconditional in Lean.

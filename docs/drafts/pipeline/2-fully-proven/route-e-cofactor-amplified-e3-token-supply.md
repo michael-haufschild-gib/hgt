@@ -480,3 +480,59 @@ are therefore `≍ √T`, formalized.**
 
 The only remaining unformalized input of this card is the quantitative all-interval supply `(6)`,
 the published Matomäki–Teräväinen minorant.
+
+## Lean progress update (2026-08-20) — `(7)` and `(9)` are now unconditional
+
+The "Lean progress" section above is out of date on two counts.
+
+**1. The unsigned squarefree estimates `(7)` and `(9)` were already formalized.**
+`Sieve/CoprimeSquarefreeHarmonic` proves both lower bounds for the squarefree integers coprime to
+an even modulus `Q`,
+
+```text
+   sum_inv_coprime_squarefree_ge      : (1/8)·log M − 7/8 ≤ ∑_{n ≤ M, (n,Q)=1, μ²(n)=1} 1/n
+   sum_inv_sqrt_coprime_squarefree_ge : (1/4)·√M   − 2   ≤ ∑_{n ≤ M, (n,Q)=1, μ²(n)=1} 1/√n
+```
+
+whenever `∑_{p ∣ Q} 1/p ≤ 5/8`, and `RouteECofactorUnsignedMass` transports them across the
+`s ↔ 2s` pairing (generalised there to an arbitrary antitone weight) to the parity classes:
+
+```text
+   sum_inv_sqrt_parityClass_ge : (1/8)·√(T/2) − 1        ≤ ∑_{t ∈ parityClass B σ T} 1/√t
+   sum_inv_parityClass_ge      : (1/16)·log(T/2) − 7/16  ≤ ∑_{t ∈ parityClass B σ T} 1/t
+```
+
+for any band `B` of odd primes with `∑_{p ∈ B} 1/p ≤ 1/8`.
+
+**2. The band hypothesis is now discharged for the card's own band.**  Two new modules:
+
+- `Sieve/PrimeRangeMertensMass.sum_inv_primesRange_le` — the **sharp** Mertens mass of a prime
+  range.  The corpus's Mertens second theorem carries different additive constants at the two ends,
+  so its difference is useless for a narrow band; Mertens' *first* theorem gives the sharp bound
+  directly, since `1/p ≤ (log p/p)/log z₀` for `p > z₀`:
+  ```text
+     ∑_{z₀ < p ≤ z} 1/p ≤ (𝔄(z) − 𝔄(z₀))/log z₀ ≤ (log z − log z₀ + 2c)/log z₀ ,
+  ```
+  with the single constant `c = mertensFirstConst` of `|𝔄(N) − log N| ≤ c`.
+- `RouteECofactorBandMass` — the specialisation.  `eventually_sum_inv_primesRange_polylog_le` shows
+  that for `V^{a₀} ≤ z₀ ≤ z ≤ 2V^{a₁}` the band mass is at most
+  `(log 2 + (a₁ − a₀)log V + 2c)/(a₀ log V) → (a₁ − a₀)/a₀`, hence below any target `c > (a₁−a₀)/a₀`
+  once `V` is large.  At the card's exponents `a₀ = 1.1 − 10⁻⁴`, `a₁ = 1.1` this ratio is
+  `10⁻⁴/1.0999 ≈ 9.1·10⁻⁵ < 1/8`.
+
+  `eventually_sum_inv_sqrt_parityClass_band_ge`, `eventually_sum_inv_parityClass_band_ge` and
+  `eventually_routeE_band_parity_mass` are `(7)` and `(9)` with that hypothesis removed:
+
+```text
+   ∀ᶠ V in atTop, ∀ z₀ z, 2 ≤ z₀ → z₀ ≤ z → V^{1.1−10⁻⁴} ≤ z₀ → z ≤ 2V^{1.1} →
+     ∀ σ ∈ {1,−1}, ∀ T,
+       (1/8)·√(T/2) − 1        ≤ ∑_{t ∈ parityClass (primesRange z₀ z) σ T} 1/√t
+     ∧ (1 ≤ T/2 → (1/16)·log(T/2) − 7/16 ≤ ∑_{t ∈ parityClass (primesRange z₀ z) σ T} 1/t) .
+```
+
+`#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound` only.
+
+**Remaining gap, now the only one:** the quantitative all-interval supply `(6)`, i.e.
+Matomäki–Teräväinen Theorem 1.2 (`docs/drafts/pipeline/1-in-progress/matomaki-teravainen-e3-lean-programme.md`).
+Both this card and `route-e-forbidden-support-e3-stability` are gated on exactly that one theorem;
+nothing else in either card is unformalized.

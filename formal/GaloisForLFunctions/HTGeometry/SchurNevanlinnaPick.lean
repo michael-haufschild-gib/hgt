@@ -11,6 +11,7 @@ zero on the orthogonal complement produces a contraction of the Hilbert space, a
 is its transfer function.
 -/
 import GaloisForLFunctions.HTGeometry.PosSemidefKernelGram
+import GaloisForLFunctions.HTGeometry.TransferFunction
 
 noncomputable section
 
@@ -237,5 +238,35 @@ theorem exists_pick_contraction
     rw [← hval0, hproj, hW, LinearMap.extendOfNorm_eq hdense ⟨1, hb⟩, pickRan_single]
 
 end Pick
+
+/-! ## The Nevanlinna--Pick extension theorem -/
+
+/-- **Nevanlinna--Pick, kernel form.**  A family of values whose Pick kernel is positive
+semidefinite is interpolated by a single Schur function of the open unit disc. -/
+theorem exists_schur_interpolant {p hval : X → ℂ} (hp : ∀ x, ‖p x‖ < 1)
+    (hK : IsPSDKernel K)
+    (hid : ∀ x y, K x y + hval x * conj (hval y) = p x * conj (p y) * K x y + 1) :
+    ∃ G : ℂ → ℂ, DifferentiableOn ℂ G (Metric.ball 0 1) ∧
+      (∀ u : ℂ, ‖u‖ < 1 → ‖G u‖ ≤ 1) ∧ (∀ x, G (p x) = hval x) := by
+  haveI : Fact (IsPSDKernel (augmentKernel K)) := ⟨isPSDKernel_augmentKernel hK⟩
+  obtain ⟨V, hVnorm, hVstep⟩ := exists_pick_contraction (K := K) p hval hid
+  exact exists_transferFunction V hVnorm (pickUnit K) norm_pickUnit (pickVec K) p hval
+    (fun x => inner_pickUnit_pickVec x) hp hVstep
+
+/-- **Nevanlinna--Pick.**  If the Pick matrix of the interpolation data is positive semidefinite,
+the data extends to a Schur function of the open unit disc. -/
+theorem exists_schur_interpolant_of_pickKernel {p hval : X → ℂ} (hp : ∀ x, ‖p x‖ < 1)
+    (hK : IsPSDKernel (fun x y => (1 - hval x * conj (hval y)) / (1 - p x * conj (p y)))) :
+    ∃ G : ℂ → ℂ, DifferentiableOn ℂ G (Metric.ball 0 1) ∧
+      (∀ u : ℂ, ‖u‖ < 1 → ‖G u‖ ≤ 1) ∧ (∀ x, G (p x) = hval x) := by
+  refine exists_schur_interpolant hp hK (fun x y => ?_)
+  have hden : (1 : ℂ) - p x * conj (p y) ≠ 0 := by
+    intro hzero
+    have h1 : p x * conj (p y) = 1 := by linear_combination -hzero
+    have h2 : ‖p x * conj (p y)‖ = 1 := by rw [h1, norm_one]
+    rw [norm_mul, RCLike.norm_conj] at h2
+    nlinarith [hp x, hp y, norm_nonneg (p x), norm_nonneg (p y)]
+  field_simp
+  ring
 
 end GaloisForLFunctions.HTGeometry

@@ -1881,3 +1881,230 @@ action ratios are disjoint:
 3. `analyticOnNhd_spectralActionPhase` — analyticity on the simple-spectrum cone;
 4. `volume_ball_sdiff_simpleSpectrumCone` — the cone has full measure;
 5. `tendsto_integral_exp_sortedSpectralAction_zero_of_simple_of_disjoint` — `(17)`.
+
+## Lean progress -- Theorem B on the card's own ensemble, unconditionally (2026-08-19)
+
+The junction named at the end of the previous section is closed.  The two data the dephasing
+capstone consumes are both now available on the recursive physical qubit path:
+
+* `physicalEndpointCompleteQubitPath_leafLocal_spectralDiscriminantPoly_ne_zero` — a coefficient
+  vector with simple spectrum, hence the simple-spectrum premise;
+* `exists_physicalEndpointCompleteQubitPath_disjoint_actionRatio_pair` — two Hamiltonians from the
+  full Hermitian nearest-neighbour local submodule with disjoint squared labelled action ratios.
+
+`formal/GaloisForLFunctions/HTGeometry/PhysicalQubitPathDephasing.lean` (new, umbrella-wired,
+axioms `propext`, `Classical.choice`, `Quot.sound`):
+
+| Card item | Declaration |
+|---|---|
+| **`(17)` on the card's ensemble, no hypotheses beyond `∑k = 0`, `k ≠ 0` and a bounded measurable amplitude** | `tendsto_integral_exp_sortedSpectralAction_zero_physicalQubitPath` |
+
+So Theorem B's oscillatory integral `(17)` is a Lean theorem *for the card's own nearest-neighbour
+path ensemble*, for every path length `n`, every nonzero balanced spectral character `k` and every
+bounded measurable amplitude `g`.  Nothing is assumed: the simple-spectrum member and the
+two-Hamiltonian witness are both constructed from the ensemble.
+
+The dephasing chain was also generalised from a coefficient space of dimension `m+1` to an
+arbitrary dimension `m`, since the underlying shell theorem
+(`tendsto_integral_exp_sphere_phase_zero`) never needed the successor form.  That is what allows
+the capstone to be applied at `Module.finrank ℝ (leaf-local Hermitian submodule)`, whose value is
+known only to be positive.  Modules touched: `SpectralActionPhase`, `SpectralActionNonconstancy`,
+`SpectralActionWitness`, `SpectralActionPhaseAnalytic`, `SpectralEnergyWitnessBridge`,
+`ShellQuadraticRateWitness`, `SpectralActionDephasingCapstone`.
+
+### What remains on this card
+
+Theorem C only.  Its inputs are `(16)` (weak convergence of the joint angular-phase laws, which is
+`(17)` plus trigonometric-polynomial density), the product-Clifford second moment `(23)`, and the
+heavy-sector incidence bound `(25)` from the parent card
+`local-clifford-return-excised-phase-incidence-law`.
+
+## Lean progress -- Theorem C, first ingredient: the shell measure is isometry-invariant
+
+Theorem C's second-moment step `(23)` is the sentence *"the spherical ensemble is invariant under
+every product of one-qubit Clifford conjugations: these act by signed permutations of Pauli
+orientations"*.  The corpus already carries that invariance for the **Gaussian** coefficient law
+(`measurePreserving_signedPerm`, `measurePreserving_cliffordCoefficientMap` in the parent card's
+stage-3 layer); the fixed-shell ensemble needs it for the **uniform measure on the coefficient
+sphere**, which is exactly what removes the radial mixing the card rejects in `C1`.
+
+`formal/GaloisForLFunctions/HTGeometry/SphereMeasureIsometryInvariance.lean` (new, umbrella-wired,
+axioms `propext`, `Classical.choice`, `Quot.sound`) proves it in the general form, which mathlib
+does not have:
+
+| Card item | Declaration |
+|---|---|
+| a linear isometry restricted to the unit sphere | `sphereMap`, `coe_sphereMap`, `continuous_sphereMap`, `measurable_sphereMap` |
+| the cone over a preimage is the preimage of the cone | `coe_image_preimage_sphereMap` |
+| a linear isometry commutes with dilation of sets | `smul_preimage_linearIsometryEquiv` |
+| ambient measure invariance, on arbitrary sets | `measure_preimage_linearIsometryEquiv` |
+| **the unit-sphere measure is invariant under every linear isometry** | `measurePreserving_sphereMap` |
+| the isometry as a measurable equivalence of the sphere | `sphereEquiv` |
+| **spherical integrals are invariant under linear isometries** | `integral_comp_sphereMap` |
+
+The proof is the radial disintegration read backwards: mathlib's `Measure.toSphere_apply'` says a
+measurable set of directions has sphere measure `dim E` times the ambient measure of the punctured
+cone it spans in the unit ball, and a linear isometry maps that cone to the cone of the image,
+because it commutes with the dilations `Ioo 0 1 •`.  Ambient invariance is
+`LinearIsometryEquiv.measurePreserving`, transported to arbitrary (not necessarily measurable) sets
+through the measurable equivalence.
+
+Signed permutations of the Pauli coefficients are linear isometries of `EuclideanSpace ℝ ι`, so
+this is the exact input the fixed-shell second moment `(23)` needs.
+
+### Theorem C, second and third ingredients
+
+`formal/GaloisForLFunctions/HTGeometry/SignedPermutationIsometry.lean` (new, umbrella-wired,
+axiom-clean) turns the Clifford action into an object the previous module accepts:
+
+| Card item | Declaration |
+|---|---|
+| the signed permutation `x ↦ (i ↦ ε_i x_{π i})` as a linear equivalence | `signedPermLinearEquiv`, `coe_signedPermLinearEquiv` |
+| **the signed permutation is a linear isometry of Euclidean space** | `signedPermIsometry`, `coe_signedPermIsometry` |
+
+Its inverse is the signed permutation of the inverse permutation, and the norm is preserved because
+`ε_i² = 1` and the permutation only reindexes the sum.  Composed with `measurePreserving_sphereMap`
+this is the fixed-shell form of the card's *"the spherical ensemble is invariant under every product
+of one-qubit Clifford conjugations"*.
+
+`formal/GaloisForLFunctions/HTGeometry/SphereHomogeneousNullSet.lean` (new, umbrella-wired,
+axiom-clean) supplies the almost-everywhere clause *"simple spectrum, maximal projective rank and
+full input support fail only on null sets"* in the fixed-shell setting:
+
+| Card item | Declaration |
+|---|---|
+| the zero set of a polynomial, read on the sphere | `sphereZeroSet`, `measurableSet_sphereZeroSet` |
+| the ambient zero set of a nonzero polynomial is Lebesgue null | `volume_euclidean_zeroSet_eq_zero` |
+| **a nonzero homogeneous polynomial vanishes on a null set of directions** | `toSphere_sphereZeroSet_eq_zero` |
+
+Homogeneity is what makes the sphere statement follow from the ambient one: the cone `Ioo 0 1 • S`
+over a set of zeros consists of zeros, and mathlib's `Measure.toSphere_apply'` computes the sphere
+measure of `S` as `dim E` times the ambient measure of that cone.  The spectral discriminant is
+homogeneous (`isHomogeneous_spectralDiscriminantPoly`) and nonzero whenever the family has one
+simple-spectrum member, so its sphere zero set is null -- which is the fixed-shell replacement for
+the Gaussian absolute-continuity argument `injective_eigenvalues_pauliEnsemble_ae`.
+
+### Theorem C, fourth ingredient: the shell law on the coefficient space
+
+`formal/GaloisForLFunctions/HTGeometry/ShellCoefficientMeasure.lean` (new, umbrella-wired,
+axiom-clean) pushes the sphere measure forward along the coordinate map, so that the corpus's whole
+ensemble layer -- which is indexed by a *coefficient vector* rather than by a point of a sphere --
+applies to the fixed-shell ensemble with no change of type:
+
+| Card item | Declaration |
+|---|---|
+| the coordinate map from the unit sphere to coefficient space | `shellCoefficientMap`, `continuous_shellCoefficientMap`, `measurable_shellCoefficientMap` |
+| **the fixed-shell coefficient law** | `shellCoefficientMeasure`, `isFiniteMeasure_shellCoefficientMeasure` |
+| the coordinate map intertwines the sphere and coefficient actions | `shellCoefficientMap_sphereMap` |
+| **the shell law is invariant under every signed permutation** | `measurePreserving_signedPerm_shell` |
+
+`measurePreserving_signedPerm_shell` is the exact fixed-shell analogue of the corpus's
+`measurePreserving_signedPerm` for the centred product Gaussian, and it is the last measure-theoretic
+input the second-moment step `(23)` needs: the corpus's `integral_spectralCollision_conj_eq` is
+already stated for an *arbitrary* probability measure with an invariant conjugation map, so the
+Clifford-orbit averaging argument transfers to the shell once the shell law is normalized and the
+Clifford coefficient map is recognized as a signed permutation.
+
+### Theorem C: `(23)` and `(24)` are proved on the fixed shell
+
+`formal/GaloisForLFunctions/HTGeometry/ShellProbabilityMeasure.lean` and
+`ShellCliffordCollisionMean.lean` (new, umbrella-wired, axiom-clean) finish the second-moment step.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| the total mass of the shell law | `shellCoefficientMeasure_univ`, `..._ne_top`, `..._pos` | `ShellProbabilityMeasure` |
+| **the fixed-shell coefficient probability law** | `shellProbability`, `isProbabilityMeasure_shellProbability` | same |
+| it is signed-permutation invariant | `measurePreserving_signedPerm_shellProbability` | same |
+| **the shell law is product-Clifford invariant** | `measurePreserving_cliffordCoefficientMap_shell` | `ShellCliffordCollisionMean` |
+| **`(23)`: `E_θ C_{H(θ)}(Ω) ≤ (2/3)ⁿ` on the fixed shell** | `integral_spectralCollision_shell_le` | same |
+| **`(24)`: the good angular set has measure at least `1 − 1/L`** | `measureReal_spectralCollision_shell_ge_le` | same |
+
+Two theorems of the parent card's stage-3 layer were **generalized in place** so that the Gaussian
+and the fixed-shell ensembles are two instances of one statement, with no duplicated proof:
+
+* `integral_spectralCollision_pauliEnsemble_clifford_eq_of_invariant` — Clifford invariance of the
+  mean collision for *any* probability law invariant under the Clifford coefficient map; the
+  Gaussian statement `integral_spectralCollision_pauliEnsemble_clifford_eq` is now its instance.
+* `integral_spectralCollision_zeroProductState_le_of_invariant` — the `(2/3)ⁿ` Clifford-orbit
+  averaging bound in the same generality; the Gaussian
+  `integral_spectralCollision_zeroProductState_le` is now its instance.
+
+This is exactly the card's `C1` verdict made formal: the Gaussian argument used the *radius*
+distribution nowhere except through Clifford invariance, so removing the radius costs nothing --
+`(23)` and `(24)` hold verbatim at one fixed normalized interaction rate.
+
+### What remains for Theorem C
+
+1. Almost-sure simple spectrum and a measurable eigenbasis for the shell law -- the Gaussian proof
+   `injective_eigenvalues_pauliEnsemble_ae` uses absolute continuity of the coefficient law; the
+   shell replacement is `toSphere_sphereZeroSet_eq_zero` applied to the (homogeneous, nonzero)
+   spectral discriminant.
+2. `(16)`: weak convergence of the joint angular-phase laws, i.e. `(17)` -- already proved on the
+   card's ensemble -- plus trigonometric-polynomial density on the torus.
+3. The final assembly `(25)`--`(21)`: the quenched heavy-sector incidence bound of the parent card
+   (already stage 3 and quenched, hence shell-agnostic), Portmanteau against `(16)`, and the
+   `limsup` bookkeeping.
+
+### Theorem C: the almost-sure hypothesis of `(23)`/`(24)` is discharged on the shell
+
+The Gaussian proof of almost-sure simple spectrum goes through absolute continuity of the
+coefficient law with respect to Lebesgue measure -- which the shell law does *not* have, since the
+sphere is Lebesgue-null.  The fixed-shell replacement uses that simplicity is a **closed,
+scale-invariant** condition, so its failure locus is a closed cone, and a Lebesgue-null cone is null
+on the sphere.
+
+`formal/GaloisForLFunctions/HTGeometry/HermitianEigenvalueScaling.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| injectivity on a finite type is nodup-ness of the value multiset | `injective_iff_nodup_map` |
+| **the eigenvalue multiset of `tA` is `t` times that of `A`** | `multiset_map_eigenvalues_smul` |
+| **a simple spectrum is a scale-invariant property** | `injective_eigenvalues_smul_iff` |
+
+The eigenvalue *function* of a Hermitian matrix is a choice, so it need not scale pointwise; the
+multiset does, because every power trace does and a multiset of reals is determined by its power
+sums (`multiset_eq_of_powerSum_eq`).
+
+`formal/GaloisForLFunctions/HTGeometry/FintypeSortedSpectrum.lean` (new, umbrella-wired,
+axiom-clean) removes the `Fin D` restriction from the canonical labelling:
+
+| Card item | Declaration |
+|---|---|
+| reindexing preserves every power trace | `trace_reindex_eq`, `trace_pow_reindex` |
+| the power sums of the spectrum, any finite index | `sum_pow_eigenvalues_eq_trace_pow_re'` |
+| **the sorted spectrum is the reindexed one** | `sortedTuple_eigenvalues_reindex` |
+| simplicity is preserved by reindexing | `injective_eigenvalues_reindex_iff` |
+| **the degenerate locus of a continuous Hermitian family is closed** | `isClosed_repeatedSpectrum` |
+
+`formal/GaloisForLFunctions/HTGeometry/ShellSimpleSpectrum.lean` (new, umbrella-wired,
+axiom-clean) assembles the shell statement:
+
+| Card item | Declaration |
+|---|---|
+| the product absolute-continuity law over an arbitrary finite index | `pi_absolutelyContinuous_pi_fintype` |
+| **Lebesgue measure is dominated by the centred product Gaussian** | `volume_absolutelyContinuous_centredProductGaussian` |
+| the ensemble is continuous in the coefficient vector | `continuous_pauliEnsemble` |
+| **scaling the coefficients scales the ensemble** | `pauliEnsemble_smul` |
+| **the degenerate locus is a cone** | `injective_eigenvalues_pauliEnsemble_smul_iff` |
+| **it is closed** | `isClosed_pauliEnsemble_degenerate` |
+| it is Lebesgue-null | `volume_pauliEnsemble_degenerate_eq_zero`, `volume_euclideanDegenerate_eq_zero` |
+| **almost every direction of the fixed shell has a simple spectrum** | `injective_eigenvalues_pauliEnsemble_shell_ae` |
+| **the almost-sure eigenbasis datum on the fixed shell** | `isOrthoEigenBasis_injective_pauliEnsemble_shell_ae` |
+
+The Lebesgue-null step runs in the opposite direction to the Gaussian one: the centred product
+Gaussian is *equivalent* to Lebesgue measure (`gaussianReal_absolutelyContinuous'` in each
+coordinate), so a Gaussian-null set is Lebesgue-null.  Generalizing the corpus's
+`pi_absolutelyContinuous_pi` from a `Fin n` index to an arbitrary finite one was needed because the
+Pauli labels are indexed by `Fin n → Option (Fin 3)`.
+
+`formal/GaloisForLFunctions/HTGeometry/ShellSecondMoment.lean` (new, umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| **`(23)` on the fixed shell, hypotheses only on the weight function** | `integral_spectralCollision_shell_le_of_weights` |
+| **`(24)` on the fixed shell, hypotheses only on the weight function** | `measureReal_spectralCollision_shell_ge_le_of_weights` |
+
+So the card's second-moment step is complete on the fixed shell: for every support-invariant weight
+supported on the nonidentity strings of bounded weight and non-vanishing there,
+`E_θ C_{H(θ)}(Ω) ≤ (2/3)ⁿ` and the good angular set has measure at least `1 − 1/L`.

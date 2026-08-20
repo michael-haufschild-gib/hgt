@@ -103,7 +103,7 @@ variable {m : ℕ}
 
 /-- **Angular dephasing from the quadratic-rate rigidity of one Hamiltonian in the family.** -/
 theorem tendsto_integral_exp_sortedSpectralAction_zero_of_span_witness
-    {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
+    {P : Fin m → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
     (hdisc : spectralDiscriminantPoly P ≠ 0) (k : Fin D → ℝ) {c : ℝ} (hc : 0 < c)
     (hON : ∀ a b, (P a * P b).trace = if a = b then ((c : ℝ) : ℂ) else 0)
     {H₀ : Matrix (Fin D) (Fin D) ℂ} (hspan : H₀ ∈ Submodule.span ℝ (Set.range P))
@@ -112,11 +112,11 @@ theorem tendsto_integral_exp_sortedSpectralAction_zero_of_span_witness
     (hfail : ∀ (κ : ℝ) (σ : Equiv.Perm (Fin D)),
       (∑ j, ((k (σ.symm j) : ℝ) : ℂ) * energy₀ j) ^ 2
         - ((κ : ℝ) : ℂ) * ∑ j, energy₀ j ^ 2 ≠ 0)
-    (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin (m + 1))) 1 → ℂ) (hg : Measurable g)
+    (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 → ℂ) (hg : Measurable g)
     {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖g x‖ ≤ C) :
     Filter.Tendsto (fun t : ℝ => ∫ x, g x *
         Complex.exp (-((t * sortedSpectralAction hP k
-            (WithLp.ofLp (x : EuclideanSpace ℝ (Fin (m + 1)))) : ℝ) : ℂ) * Complex.I)
+            (WithLp.ofLp (x : EuclideanSpace ℝ (Fin m))) : ℝ) : ℂ) * Complex.I)
         ∂(MeasureTheory.volume.toSphere))
       (Filter.cocompact ℝ) (nhds 0) :=
   tendsto_integral_exp_sortedSpectralAction_zero_of_energy_witness hP hdisc k hc hON

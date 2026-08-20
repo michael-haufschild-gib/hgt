@@ -21,9 +21,13 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- **A polynomial vanishing on a power of an infinite set is zero.** -/
-theorem mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow {S : Set ℂ} (hS : S.Infinite) :
-    ∀ (m : ℕ) (p : MvPolynomial (Fin m) ℂ),
-      (∀ x : Fin m → ℂ, (∀ j, x j ∈ S) → MvPolynomial.eval x p = 0) → p = 0 := by
+theorem mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow {C : Type*} [CommRing C] [IsDomain C]
+    {S : Set C} (hS : S.Infinite) :
+    ∀ (m : ℕ) (p : MvPolynomial (Fin m) C),
+      (∀ x : Fin m → C, (∀ j, x j ∈ S) → MvPolynomial.eval x p = 0) → p = 0 := by
+  haveI : Infinite C := by
+    haveI := hS.to_subtype
+    exact Infinite.of_injective (Subtype.val : S → C) Subtype.val_injective
   intro m
   induction m with
   | zero =>
@@ -35,11 +39,11 @@ theorem mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow {S : Set ℂ} (hS :
       rw [Subsingleton.elim x (fun _ : Fin 0 => x₀), hval, map_zero]
   | succ m ih =>
       intro p h
-      set q : Polynomial (MvPolynomial (Fin m) ℂ) := MvPolynomial.finSuccEquiv ℂ m p with hq
+      set q : Polynomial (MvPolynomial (Fin m) C) := MvPolynomial.finSuccEquiv C m p with hq
       have hcoeff : ∀ k : ℕ, q.coeff k = 0 := by
         intro k
         refine ih (q.coeff k) fun y hy => ?_
-        have hroots : S ⊆ {x : ℂ | (Polynomial.map (MvPolynomial.eval y) q).IsRoot x} := by
+        have hroots : S ⊆ {x : C | (Polynomial.map (MvPolynomial.eval y) q).IsRoot x} := by
           intro x₀ hx₀
           show Polynomial.eval x₀ (Polynomial.map (MvPolynomial.eval y) q) = 0
           rw [hq, ← MvPolynomial.eval_eq_eval_mv_eval' y x₀ p]
@@ -52,12 +56,12 @@ theorem mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow {S : Set ℂ} (hS :
             exact hy i
         have hpoly : Polynomial.map (MvPolynomial.eval y) q = 0 :=
           Polynomial.eq_zero_of_infinite_isRoot _ (hS.mono hroots)
-        have hck := congrArg (fun r : Polynomial ℂ => r.coeff k) hpoly
+        have hck := congrArg (fun r : Polynomial C => r.coeff k) hpoly
         simpa [Polynomial.coeff_map] using hck
       have hq0 : q = 0 := Polynomial.ext fun k => by simpa using hcoeff k
-      have hpq : p = (MvPolynomial.finSuccEquiv ℂ m).symm q := by
+      have hpq : p = (MvPolynomial.finSuccEquiv C m).symm q := by
         rw [hq]
-        exact ((MvPolynomial.finSuccEquiv ℂ m).symm_apply_apply p).symm
+        exact ((MvPolynomial.finSuccEquiv C m).symm_apply_apply p).symm
       rw [hpq, hq0, map_zero]
 
 /-- The product of the differences of distinct variables. -/

@@ -99,7 +99,7 @@ section Cone
 variable {m : ℕ}
 
 /-- **The spectral phase is real-analytic on the simple-spectrum cone.** -/
-theorem analyticOnNhd_spectralActionPhase {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ}
+theorem analyticOnNhd_spectralActionPhase {P : Fin m → Matrix (Fin D) (Fin D) ℂ}
     (hP : ∀ a, (P a).IsHermitian) (k : Fin D → ℝ) :
     AnalyticOnNhd ℝ (spectralActionPhase hP k) (simpleSpectrumCone P) := by
   intro y hy

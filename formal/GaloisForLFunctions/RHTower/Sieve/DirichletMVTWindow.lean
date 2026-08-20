@@ -1,41 +1,67 @@
 import GaloisForLFunctions.RHTower.Sieve.DirichletMVT
 
 /-!
-# The Dirichlet mean value theorem on an arbitrary interval
+# The Dirichlet mean value theorem on a window
 
-The tree's mean value theorem is stated on `[0, T]`.  Subtracting two such statements gives the
-version on `[U, V]` that a dyadic window needs, at twice the error constant.
+`DirichletMVT.lean` proves the mean value theorem anchored at `0`.  Every moment computation on a
+dyadic window `[T, 2T]` needs it there instead.  Subtracting the two anchored statements doubles the
+error and keeps the exact main term `(T₂ − T₁)·∑|a_n|²`.
 -/
 
-open MeasureTheory
+open Finset MeasureTheory intervalIntegral
+
 
 namespace RHTower.Sieve
 
-theorem intervalIntegrable_normSq_dirPoly (N : ℕ) (a : Fin N → ℂ) (U V : ℝ) :
-    IntervalIntegrable (fun t : ℝ => ‖dirPoly N a t‖ ^ 2) volume U V :=
-  (((continuous_dirPoly N a).norm).pow 2).intervalIntegrable U V
+noncomputable section
 
-/-- **The mean value theorem on a window.**  On `[U, V]` the mean square of a Dirichlet polynomial
-is its diagonal `(V - U) ∑ |a_n|²` up to `8 N (1 + log N) ∑ |a_n|²`. -/
-theorem dirichlet_meanValue_window (N : ℕ) (a : Fin N → ℂ) (U V : ℝ) :
-    |(∫ t in U..V, ‖dirPoly N a t‖ ^ 2) - (V - U) * ∑ m : Fin N, ‖a m‖ ^ 2|
+theorem continuous_normSq_dirPoly (N : ℕ) (a : Fin N → ℂ) :
+    Continuous fun t : ℝ => ‖dirPoly N a t‖ ^ 2 := by
+  have hc : Continuous (dirPoly N a) := by
+    unfold dirPoly
+    refine continuous_finsetSum _ fun n _ => ?_
+    exact continuous_const.mul
+      (Complex.continuous_exp.comp
+        ((Complex.continuous_ofReal.comp
+          (continuous_id.mul continuous_const)).mul continuous_const))
+  exact hc.norm.pow 2
+
+theorem intervalIntegrable_normSq_dirPoly (N : ℕ) (a : Fin N → ℂ) (u v : ℝ) :
+    IntervalIntegrable (fun t : ℝ => ‖dirPoly N a t‖ ^ 2) volume u v :=
+  (continuous_normSq_dirPoly N a).intervalIntegrable u v
+
+/-- **The mean value theorem on an arbitrary window.**  Subtracting the two anchored
+mean values doubles the error but keeps the exact main term `(T₂ − T₁)·∑|a|²`. -/
+theorem dirichlet_meanValue_window (N : ℕ) (a : Fin N → ℂ) (T₁ T₂ : ℝ) :
+    |(∫ t in T₁..T₂, ‖dirPoly N a t‖ ^ 2) - (T₂ - T₁) * ∑ m : Fin N, ‖a m‖ ^ 2|
       ≤ 8 * (N : ℝ) * (1 + Real.log N) * ∑ m : Fin N, ‖a m‖ ^ 2 := by
-  have hV := dirichlet_meanValue_theorem N a V
-  have hU := dirichlet_meanValue_theorem N a U
-  have hsplit : (∫ t in U..V, ‖dirPoly N a t‖ ^ 2)
-      = (∫ t in (0 : ℝ)..V, ‖dirPoly N a t‖ ^ 2)
-        - ∫ t in (0 : ℝ)..U, ‖dirPoly N a t‖ ^ 2 := by
-    have hadd := intervalIntegral.integral_add_adjacent_intervals
-      (intervalIntegrable_normSq_dirPoly N a 0 U) (intervalIntegrable_normSq_dirPoly N a U V)
-    linarith [hadd]
+  have h₁ := dirichlet_meanValue_theorem N a T₁
+  have h₂ := dirichlet_meanValue_theorem N a T₂
+  have hsplit : (∫ t in T₁..T₂, ‖dirPoly N a t‖ ^ 2)
+      = (∫ t in (0:ℝ)..T₂, ‖dirPoly N a t‖ ^ 2)
+        - ∫ t in (0:ℝ)..T₁, ‖dirPoly N a t‖ ^ 2 := by
+    rw [← intervalIntegral.integral_interval_sub_left
+      (intervalIntegrable_normSq_dirPoly N a 0 T₂)
+      (intervalIntegrable_normSq_dirPoly N a 0 T₁)]
   rw [hsplit]
-  have hkey : ((∫ t in (0 : ℝ)..V, ‖dirPoly N a t‖ ^ 2)
-        - ∫ t in (0 : ℝ)..U, ‖dirPoly N a t‖ ^ 2) - (V - U) * ∑ m : Fin N, ‖a m‖ ^ 2
-      = ((∫ t in (0 : ℝ)..V, ‖dirPoly N a t‖ ^ 2) - V * ∑ m : Fin N, ‖a m‖ ^ 2)
-        - ((∫ t in (0 : ℝ)..U, ‖dirPoly N a t‖ ^ 2) - U * ∑ m : Fin N, ‖a m‖ ^ 2) := by
+  have hrw : (∫ t in (0:ℝ)..T₂, ‖dirPoly N a t‖ ^ 2)
+        - (∫ t in (0:ℝ)..T₁, ‖dirPoly N a t‖ ^ 2)
+        - (T₂ - T₁) * ∑ m : Fin N, ‖a m‖ ^ 2
+      = ((∫ t in (0:ℝ)..T₂, ‖dirPoly N a t‖ ^ 2) - T₂ * ∑ m : Fin N, ‖a m‖ ^ 2)
+        - ((∫ t in (0:ℝ)..T₁, ‖dirPoly N a t‖ ^ 2) - T₁ * ∑ m : Fin N, ‖a m‖ ^ 2) := by
     ring
-  rw [hkey]
+  rw [hrw]
   refine le_trans (abs_sub _ _) ?_
   linarith
+
+/-- **The dyadic mean value theorem.** -/
+theorem dirichlet_meanValue_dyadic (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
+    |(∫ t in T..(2 * T), ‖dirPoly N a t‖ ^ 2) - T * ∑ m : Fin N, ‖a m‖ ^ 2|
+      ≤ 8 * (N : ℝ) * (1 + Real.log N) * ∑ m : Fin N, ‖a m‖ ^ 2 := by
+  have h := dirichlet_meanValue_window N a T (2 * T)
+  have hrw : 2 * T - T = T := by ring
+  rwa [hrw] at h
+
+end
 
 end RHTower.Sieve

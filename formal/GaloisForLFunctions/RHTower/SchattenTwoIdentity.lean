@@ -24,32 +24,57 @@ open ContinuousLinearMap
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 variable {T : H →L[ℂ] H}
 
-/-- **The upward bound: `aₙ(T) ≤ sₙ(T)`.**  The greedy truncation has rank at most `n` and its
-error is the constrained norm of `T` beyond the first `n` greedy vectors. -/
-theorem approxNumber_le_singVal (hcpt : IsCompactOperator T) (n : ℕ) :
-    approxNumber T n ≤ singVal T n := by
+/-- The **greedy truncation** of `T` at order `n`: the rank-`≤ n` operator that agrees with `T` on
+the span of the first `n` greedy vectors of `T†T` and kills its orthogonal complement. -/
+noncomputable def greedyTrunc (T : H →L[ℂ] H) (n : ℕ) : H →L[ℂ] H :=
+  ∑ m ∈ Finset.range n,
+    (innerSL ℂ (svVec (energyOp T) m)).smulRight (T (svVec (energyOp T) m))
+
+/-- The greedy block over an arbitrary finite index set has rank at most its cardinality. -/
+theorem hasRankLE_greedyBlock (T : H →L[ℂ] H) (s : Finset ℕ) :
+    HasRankLE (∑ m ∈ s,
+      (innerSL ℂ (svVec (energyOp T) m)).smulRight (T (svVec (energyOp T) m))) s.card := by
+  classical
+  set e : ℕ → H := svVec (energyOp T) with he
+  refine ⟨Submodule.span ℂ ((s.image fun m => T (e m) : Finset H) : Set H),
+    FiniteDimensional.span_of_finite ℂ (Finset.finite_toSet _), ?_, ?_⟩
+  · exact (finrank_span_finset_le_card _).trans Finset.card_image_le
+  · intro x
+    rw [sum_apply]
+    refine Submodule.sum_mem _ fun m hm => ?_
+    rw [smulRight_apply]
+    exact Submodule.smul_mem _ _ (Submodule.subset_span
+      (Finset.mem_coe.mpr (Finset.mem_image_of_mem _ hm)))
+
+theorem hasRankLE_greedyTrunc (T : H →L[ℂ] H) (n : ℕ) : HasRankLE (greedyTrunc T n) n := by
+  have h := hasRankLE_greedyBlock T (Finset.range n)
+  rwa [Finset.card_range] at h
+
+/-- **The greedy truncation error is the `n`-th singular value.** -/
+theorem norm_sub_greedyTrunc_le (hcpt : IsCompactOperator T) (n : ℕ) :
+    ‖T - greedyTrunc T n‖ ≤ singVal T n := by
   classical
   have hsym := energyOp_symmetric T
   have hpos := energyOp_pos T
   have hScpt := energyOp_compact hcpt
   set e : ℕ → H := svVec (energyOp T) with he
-  set F : H →L[ℂ] H := ∑ m ∈ Finset.range n, (innerSL ℂ (e m)).smulRight (T (e m)) with hF
+  set F : H →L[ℂ] H := greedyTrunc T n with hF
+  have hFsum : F = ∑ m ∈ Finset.range n, (innerSL ℂ (e m)).smulRight (T (e m)) := rfl
   have hrank : HasRankLE F n := by
     refine ⟨Submodule.span ℂ (((Finset.range n).image fun m => T (e m) : Finset H) : Set H),
       FiniteDimensional.span_of_finite ℂ (Finset.finite_toSet _), ?_, ?_⟩
     · refine (finrank_span_finset_le_card _).trans (Finset.card_image_le.trans ?_)
       simp
     · intro x
-      rw [hF, sum_apply]
+      rw [hFsum, sum_apply]
       refine Submodule.sum_mem _ fun m hm => ?_
       rw [smulRight_apply]
       exact Submodule.smul_mem _ _ (Submodule.subset_span
         (Finset.mem_coe.mpr (Finset.mem_image_of_mem _ hm)))
-  refine (approxNumber_le T n F hrank).trans ?_
   refine opNorm_le_bound _ (singVal_nonneg T n) fun x => ?_
   set P : H := ∑ m ∈ Finset.range n, (inner ℂ (e m) x) • e m with hP
   have hFx : F x = T P := by
-    rw [hF, sum_apply, hP, map_sum]
+    rw [hFsum, sum_apply, hP, map_sum]
     exact Finset.sum_congr rfl fun m _ => by rw [smulRight_apply, innerSL_apply_apply, map_smul]
   have hunit_sq : ∀ m, (inner ℂ (e m) x) * ((‖e m‖ : ℂ)) ^ 2 = inner ℂ (e m) x := by
     intro m
@@ -88,6 +113,13 @@ theorem approxNumber_le_singVal (hcpt : IsCompactOperator T) (n : ℕ) :
   calc ‖(T - F) x‖ = ‖T (x - P)‖ := by rw [sub_apply, hFx, ← map_sub]
     _ ≤ singVal T n * ‖x - P‖ := norm_apply_le_singVal_of_orth T n hy_orth
     _ ≤ singVal T n * ‖x‖ := mul_le_mul_of_nonneg_left hy_le (singVal_nonneg T n)
+
+/-- **The upward bound: `aₙ(T) ≤ sₙ(T)`.**  The greedy truncation has rank at most `n` and its
+error is the constrained norm of `T` beyond the first `n` greedy vectors. -/
+theorem approxNumber_le_singVal (hcpt : IsCompactOperator T) (n : ℕ) :
+    approxNumber T n ≤ singVal T n :=
+  (approxNumber_le T n (greedyTrunc T n) (hasRankLE_greedyTrunc T n)).trans
+    (norm_sub_greedyTrunc_le hcpt n)
 
 /-- **The downward bound: `sₙ(T) ≤ aₙ(T)`.**  Any rank-`≤ n` operator kills a nonzero vector of
 the span of the first `n+1` greedy vectors, on which `‖T z‖² ≥ μₙ·‖z‖²`. -/

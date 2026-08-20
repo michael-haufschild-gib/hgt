@@ -14,6 +14,7 @@ Main results:
 -/
 import GaloisForLFunctions.HTGeometry.SchattenSpectralDeterminant
 import GaloisForLFunctions.HTGeometry.LidskiiPowerTrace
+import GaloisForLFunctions.HTGeometry.TracePowerDeterminant
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -25,11 +26,11 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
 
 /-- The order-`p` regularized exponent of an operator: the power-trace series from `p` upwards. -/
 def opSchattenDetExp (p : ℕ) (S : H →L[ℂ] H) (z : ℂ) : ℂ :=
-  ∑' k : ℕ, z ^ (k + p) / ((k + p : ℕ) : ℂ) * opTrace (S ^ (k + p))
+  tracePowerDetExp p (fun m => opTrace (S ^ m)) z
 
 /-- The order-`p` regularized determinant of an operator. -/
 def opSchattenDet (p : ℕ) (S : H →L[ℂ] H) (z : ℂ) : ℂ :=
-  Complex.exp (- opSchattenDetExp p S z)
+  tracePowerDet p (fun m => opTrace (S ^ m)) z
 
 /-- The spectral power traces of the signed greedy eigenvalues are the operator power traces. -/
 theorem schattenTracePower_sgVal_eq_opTrace_pow {S : H →L[ℂ] H} (hcpt : IsCompactOperator S)
@@ -44,7 +45,7 @@ theorem opSchattenDetExp_eq_schattenDetExp {p : ℕ} (hp : 0 < p) {S : H →L[�
     (hfac : ∀ m : ℕ, p ≤ m → ∃ A B : H →L[ℂ] H,
       A.IsHilbertSchmidt ∧ B.IsHilbertSchmidt ∧ S ^ m = A ∘L B) (z : ℂ) :
     opSchattenDetExp p S z = schattenDetExp p (fun n => ((sgVal S n : ℝ) : ℂ)) z := by
-  rw [opSchattenDetExp, schattenDetExp]
+  rw [opSchattenDetExp, tracePowerDetExp, schattenDetExp]
   refine tsum_congr fun k => ?_
   obtain ⟨A, B, hA, hB, hS⟩ := hfac (k + p) (Nat.le_add_left p k)
   rw [schattenTracePower_sgVal_eq_opTrace_pow hcpt hsym
@@ -56,17 +57,16 @@ theorem opSchattenDet_eq_schattenDet {p : ℕ} (hp : 0 < p) {S : H →L[ℂ] H}
     (hfac : ∀ m : ℕ, p ≤ m → ∃ A B : H →L[ℂ] H,
       A.IsHilbertSchmidt ∧ B.IsHilbertSchmidt ∧ S ^ m = A ∘L B) (z : ℂ) :
     opSchattenDet p S z = schattenDet p (fun n => ((sgVal S n : ℝ) : ℂ)) z := by
-  rw [opSchattenDet, schattenDet, opSchattenDetExp_eq_schattenDetExp hp hcpt hsym hfac z]
+  show Complex.exp (- opSchattenDetExp p S z)
+      = Complex.exp (- schattenDetExp p (fun n => ((sgVal S n : ℝ) : ℂ)) z)
+  rw [opSchattenDetExp_eq_schattenDetExp hp hcpt hsym hfac z]
 
 /-- **The operator determinant forgets every trace below `p`.**  Two operators whose power traces
 agree from `p` upwards have the same order-`p` regularized determinant. -/
 theorem opSchattenDet_congr {p : ℕ} {S T : H →L[ℂ] H}
     (h : ∀ m : ℕ, p ≤ m → opTrace (S ^ m) = opTrace (T ^ m)) (z : ℂ) :
-    opSchattenDet p S z = opSchattenDet p T z := by
-  have hexp : opSchattenDetExp p S z = opSchattenDetExp p T z := by
-    refine tsum_congr fun k => ?_
-    rw [h (k + p) (Nat.le_add_left p k)]
-  rw [opSchattenDet, opSchattenDet, hexp]
+    opSchattenDet p S z = opSchattenDet p T z :=
+  tracePowerDet_congr h z
 
 end
 

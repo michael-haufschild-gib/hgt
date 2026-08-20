@@ -55,15 +55,15 @@ section Phase
 variable {m : ℕ}
 
 /-- The ray-constant phase of a spectral action: its value at the normalised argument. -/
-def spectralActionPhase {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ}
+def spectralActionPhase {P : Fin m → Matrix (Fin D) (Fin D) ℂ}
     (hP : ∀ a, (P a).IsHermitian) (k : Fin D → ℝ)
-    (y : EuclideanSpace ℝ (Fin (m + 1))) : ℝ :=
+    (y : EuclideanSpace ℝ (Fin m)) : ℝ :=
   sortedSpectralAction hP k (fun a => ‖y‖⁻¹ * (WithLp.ofLp y) a)
 
 /-- **The phase is constant on rays.** -/
-theorem spectralActionPhase_smul {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ}
+theorem spectralActionPhase_smul {P : Fin m → Matrix (Fin D) (Fin D) ℂ}
     (hP : ∀ a, (P a).IsHermitian) (k : Fin D → ℝ) (r : ℝ) (hr : 0 < r)
-    (y : EuclideanSpace ℝ (Fin (m + 1))) :
+    (y : EuclideanSpace ℝ (Fin m)) :
     spectralActionPhase hP k (r • y) = spectralActionPhase hP k y := by
   refine congrArg (sortedSpectralAction hP k) ?_
   funext a
@@ -74,70 +74,70 @@ theorem spectralActionPhase_smul {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ
     inv_mul_cancel₀ hr.ne', one_mul]
 
 /-- The phase is measurable. -/
-theorem measurable_spectralActionPhase {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ}
+theorem measurable_spectralActionPhase {P : Fin m → Matrix (Fin D) (Fin D) ℂ}
     (hP : ∀ a, (P a).IsHermitian) (k : Fin D → ℝ) :
     Measurable (spectralActionPhase hP k) := by
   refine (continuous_sortedSpectralAction hP k).measurable.comp ?_
   refine measurable_pi_lambda _ fun a => ?_
   exact (continuous_norm.measurable.inv).mul
-    (((continuous_apply a).comp (PiLp.continuous_ofLp 2 (fun _ : Fin (m + 1) => ℝ))).measurable)
+    (((continuous_apply a).comp (PiLp.continuous_ofLp 2 (fun _ : Fin m => ℝ))).measurable)
 
 /-- On the unit sphere the phase is the spectral action itself. -/
-theorem spectralActionPhase_of_norm_one {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ}
+theorem spectralActionPhase_of_norm_one {P : Fin m → Matrix (Fin D) (Fin D) ℂ}
     (hP : ∀ a, (P a).IsHermitian) (k : Fin D → ℝ)
-    {y : EuclideanSpace ℝ (Fin (m + 1))} (hy : ‖y‖ = 1) :
+    {y : EuclideanSpace ℝ (Fin m)} (hy : ‖y‖ = 1) :
     spectralActionPhase hP k y = sortedSpectralAction hP k (WithLp.ofLp y) := by
   refine congrArg (sortedSpectralAction hP k) ?_
   funext a
   rw [hy, inv_one, one_mul]
 
 /-- The simple-spectrum part of the punctured unit ball. -/
-def simpleSpectrumCone (P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ) :
-    Set (EuclideanSpace ℝ (Fin (m + 1))) :=
+def simpleSpectrumCone (P : Fin m → Matrix (Fin D) (Fin D) ℂ) :
+    Set (EuclideanSpace ℝ (Fin m)) :=
   {y | MvPolynomial.eval (WithLp.ofLp y) (spectralDiscriminantPoly P) ≠ 0} ∩
-    (Metric.ball (0 : EuclideanSpace ℝ (Fin (m + 1))) 1 \ {0})
+    (Metric.ball (0 : EuclideanSpace ℝ (Fin m)) 1 \ {0})
 
-theorem isOpen_simpleSpectrumCone (P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ) :
+theorem isOpen_simpleSpectrumCone (P : Fin m → Matrix (Fin D) (Fin D) ℂ) :
     IsOpen (simpleSpectrumCone P) := by
   refine IsOpen.inter ?_ (Metric.isOpen_ball.sdiff isClosed_singleton)
   have hcont : Continuous
-      (fun y : EuclideanSpace ℝ (Fin (m + 1)) =>
+      (fun y : EuclideanSpace ℝ (Fin m) =>
         MvPolynomial.eval (WithLp.ofLp y) (spectralDiscriminantPoly P)) :=
     (MvPolynomial.continuous_eval _).comp (PiLp.continuous_ofLp 2 _)
   exact isOpen_ne_fun hcont continuous_const
 
 /-- **The complement of the simple-spectrum cone in the punctured ball is null.** -/
-theorem volume_ball_sdiff_simpleSpectrumCone {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ}
+theorem volume_ball_sdiff_simpleSpectrumCone {P : Fin m → Matrix (Fin D) (Fin D) ℂ}
     (hDisc : spectralDiscriminantPoly P ≠ 0) :
-    volume ((Metric.ball (0 : EuclideanSpace ℝ (Fin (m + 1))) 1 \ {0}) \ simpleSpectrumCone P)
+    volume ((Metric.ball (0 : EuclideanSpace ℝ (Fin m)) 1 \ {0}) \ simpleSpectrumCone P)
       = 0 := by
-  have hsub : ((Metric.ball (0 : EuclideanSpace ℝ (Fin (m + 1))) 1 \ {0}) \ simpleSpectrumCone P)
-      ⊆ {y : EuclideanSpace ℝ (Fin (m + 1)) |
+  have hsub : ((Metric.ball (0 : EuclideanSpace ℝ (Fin m)) 1 \ {0}) \ simpleSpectrumCone P)
+      ⊆ {y : EuclideanSpace ℝ (Fin m) |
           MvPolynomial.eval (WithLp.ofLp y) (spectralDiscriminantPoly P) = 0} := by
     rintro y ⟨hy, hny⟩
     by_contra hzero
     exact hny ⟨hzero, hy⟩
   refine measure_mono_null hsub ?_
-  refine measure_eq_zero_of_preimage_eq_zero (euclCoord (m + 1)).toEquiv
-    (measurePreserving_euclCoord_symm (m + 1)) ?_
-  exact realMvPolynomial_zero_set_volume_fin (m + 1) (spectralDiscriminantPoly P) hDisc
+  refine measure_eq_zero_of_preimage_eq_zero (euclCoord m).toEquiv
+    (measurePreserving_euclCoord_symm m) ?_
+  exact realMvPolynomial_zero_set_volume_fin m (spectralDiscriminantPoly P) hDisc
 
 /-- **Angular dephasing for the spectral action.**  On a family whose discriminant does not vanish
 identically, and whose canonically labelled spectral action is analytic and nonconstant on every
 open patch of the simple-spectrum cone, the oscillatory shell integral of the action against any
 bounded measurable amplitude tends to zero. -/
 theorem tendsto_integral_exp_sortedSpectralAction_zero
-    {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
+    {P : Fin m → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
     (hDisc : spectralDiscriminantPoly P ≠ 0) (k : Fin D → ℝ)
     (hana : AnalyticOnNhd ℝ (spectralActionPhase hP k) (simpleSpectrumCone P))
-    (hnc : ∀ V : Set (EuclideanSpace ℝ (Fin (m + 1))), IsOpen V → V.Nonempty →
+    (hnc : ∀ V : Set (EuclideanSpace ℝ (Fin m)), IsOpen V → V.Nonempty →
       V ⊆ simpleSpectrumCone P →
       ∃ p ∈ V, ∃ q ∈ V, spectralActionPhase hP k p ≠ spectralActionPhase hP k q)
-    (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin (m + 1))) 1 → ℂ) (hg : Measurable g)
+    (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 → ℂ) (hg : Measurable g)
     {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖g x‖ ≤ C) :
     Tendsto (fun t : ℝ => ∫ x, g x *
         Complex.exp (-((t * sortedSpectralAction hP k
-            (WithLp.ofLp (x : EuclideanSpace ℝ (Fin (m + 1)))) : ℝ) : ℂ) * Complex.I)
+            (WithLp.ofLp (x : EuclideanSpace ℝ (Fin m))) : ℝ) : ℂ) * Complex.I)
         ∂(volume.toSphere))
       (Filter.cocompact ℝ) (nhds 0) := by
   refine Filter.Tendsto.congr (fun t => ?_)

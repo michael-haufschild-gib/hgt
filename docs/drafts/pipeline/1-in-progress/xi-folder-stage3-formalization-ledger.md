@@ -17,9 +17,9 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
 | 8 | xi-prime-seam-one-ended-cofinal-edge-collapse | Lean done (including the sparse-edge Calkin chain (7)-(9)) | HTGeometry/ArbitraryLabelEndReconstruction, RHTower/XiPrimeSeamOneEndedCollapse, RHTower/XiPrimeSeamSparseEdgeCalkin |
 | 9 | xi-radial-jensen-schur-capacity-rigidity | Lean done | HTGeometry/SchwarzPickEstimate, RHTower/XiRadialJensenSchurCapacity |
 | 10 | xi-reciprocal-translation-prime-seam-norm-law | Lean done | RHTower/XiReciprocalTranslationSeamNormLaw |
-| 11 | xi-shift-loewner-prime-generator-law | open | |
+| 11 | xi-shift-loewner-prime-generator-law | Lean done, PROMOTED (all eight gates) | HTGeometry/PosSemidefKernelGram, BoundedCoeffPowerSeries, TransferFunction, SchurNevanlinnaPick, CaratheodoryNevanlinnaPick, PSDKernelMatrixBridge, LogDerivNoZero, RHTower/XiShiftLoewnerCriticalGenerator, XiShiftLoewnerFlow, XiShiftLoewnerEulerSplit, HTGeometry/IntegralMatrixPosSemidef |
 | 12 | xi-square-descent-vertical-modulus-rh | Lean done (both directions + R* corollary) | RHTower/XiSquareDescentVerticalModulus, RHTower/XiSquareDescentVerticalModulusConverse |
-| 13 | xi-supercharge-persistent-harnack-defect | open | |
+| 13 | xi-supercharge-persistent-harnack-defect | Lean done, PROMOTED (arc count, one-oval-per-arc, divisor-recorder identity, RH criterion) | HTGeometry/RealBranchArcCount, RHTower/XiSuperchargeHarnackDefect |
 | 14 | xi-unit-euler-pole-affine-section-translated-bezoutian | Lean done, PROMOTED ((1)-(2), (5), (6) both directions, (13)) | HTGeometry/HorizontalModulusDerivative, OrderOneConvergenceExponent, OrderOneZeroDensity, CanonicalProductE1Divisor, ImaginaryPoleBezoutianGram, TsumRankOnePosSemidef, RHTower/XiUnitEulerPoleAffineSection, OrderOneHadamardFactorization, CanonicalProductE1LogDeriv, ImaginaryZeroBezoutianPositivity, XiUnitEulerPoleBezoutianSufficiency |
 | 15 | xi-theta-square-rate-hardy-reader | Lean done, PROMOTED | HTGeometry/CauchyMatrixDeterminant, CauchyDeterminantStep, HalfLineExponentialGram, HalfLineExponentialDistance, HalfLineExponentialCoDistance, PuncturedSineProduct, HalfLineExponentialReader, HalfLineExponentialResidualLimit, RHTower/XiThetaSquareRateBlaschkeLimit, XiThetaSquareRateReaderNorm, XiThetaSquareRateReaderL2 |
 
@@ -50,11 +50,19 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
    Mittag-Leffler *limit* of partial products: each `E₁` factor contributes `1/(w-a) + 1/a`, and
    `Re(1/a) = 0` for an imaginary pole, so the divided sum is *exactly* the rank-one Gram term
    `(w-a)⁻¹ conj((v-a)⁻¹)`; the origin's monomial gives the same term at `t = 0`.
-4. **Card 11**.  The Loewner generator identity, the finite-matrix positive integration law, the
-   Euler--Gamma split and its local uniform convergence are elementary.  The critical-generator
-   equivalence and the positive-shift obstruction need Nevanlinna--Pick extension for
-   Caratheodory functions on a half plane; the corpus already owns Hardy's theorem, the
-   Sondow--Dumitrescu monotonicity, and `Bottcher/DiskSchwarzPick.lean`.
+4. **Card 11**.  Nevanlinna--Pick is now BUILT (`HTGeometry/SchurNevanlinnaPick.lean`,
+   `CaratheodoryNevanlinnaPick.lean`), by the lurking-isometry/transfer-function route: a positive
+   semidefinite kernel is realized as a Gram kernel, the Pick identity factors as an isometry, the
+   isometry extends by zero to a contraction, and the interpolant is its transfer function.  No
+   normal families are needed: the argument handles an arbitrary node set in one step.
+   With it, `RHTower/XiShiftLoewnerCriticalGenerator.lean` proves both directions of `(26)` and the
+   obstruction `(29)`.  The forward half of `(26)` needs no Sondow--Dumitrescu: it comes from card
+   14's imaginary-divisor Bezoutian.  The mechanism for the converse is
+   `HTGeometry/LogDerivNoZero.ne_zero_of_deriv_eq_mul`: extend the Caratheodory function off the
+   Euler region, propagate `Y' = Gf·Y` by the identity theorem, and read off that `Y` is zero-free.
+   Remaining for the card: the Loewner derivative identity `(6)`--`(9)`, the matrix integration law
+   `(13)`--`(16)`, the Euler--Gamma split `(17)`--`(23)`, and the Schur-complement interface
+   `(32)`--`(33)`.
 5. **Card 13**.  Real hyperelliptic topology.  The formalizable core is the arc-count theorem: for
    a real polynomial of odd degree `2n+1` with `2r+1` simple real roots, the positivity set has
    exactly `r+1` components on the real projective line, giving `HarnackDefect = n - r`.
@@ -64,19 +72,35 @@ formalized unconditionally in Lean and promoted to `3-formalized`.
    → exponential Gram is a Cauchy matrix → Blaschke co-distance law → punctured Euler sine product
    (mathlib gap) + the corpus's `tendsto_euler_sinh_prod` → Blaschke limit → residual = limit of
    finite co-distances.
-7. **Card 1**.  Riemann--von Mangoldt in counting form, plus compact-operator singular values,
-   Schatten ideals and `det_2`.  The corpus already owns approximation numbers, `MemSchattenClass`,
-   and `SchattenCriticalAsymptotic`.
+7. **Card 1** — the only card left.  Survey done; the operator side is already owned
+   (`RHTower/SchattenApproximation.lean` for approximation numbers and `MemSchattenClass`,
+   `HTGeometry/RegularizedDeterminantLimit.lean` for `entireDet2` and `IsRegularizedDet`,
+   `RHTower/XiRectangleZeroCount.lean` for the rectangle argument principle,
+   `RHTower/XiZeroDensity.lean` for the one-sided bound `N(r) = O(r log r)`).
+   The single missing input is the **Riemann--von Mangoldt asymptotic**, and only its leading term
+   `N(T) ~ (T/2π) log T` is needed.  Planned route, which avoids Backlund's `S(T) = O(log T)`
+   entirely:
+   a. Jensen/Nevanlinna: for the centred `XiC`, `logCounting XiC 0 R = circleAverage (log ‖XiC‖) R
+      − log ‖XiC 0‖`.  Mathlib's `ValueDistribution` and the corpus's
+      `NevanlinnaEntireCharacteristic` already supply this.
+   b. Compute `circleAverage (log ‖XiC‖) R ~ (R/π) log R` from Stirling for `log Γ` plus the
+      observation that the critical strip meets the circle `|w| = R` in angular measure `O(1/R)`,
+      where `log ‖ζ‖ = O(log R)` contributes `O(log R / R)` to the mean.  The corpus owns the
+      Stirling ladder (`stirling-ladder-all-orders-closed`) and the order-one envelope.
+   c. Monotone Tauberian: `∫₀^R n(t)/t dt ~ (R/π) log R` plus monotonicity of `n` gives
+      `n(R) ~ (R/π) log R`, hence `N(T) ~ (T/2π) log T`.
+   d. Then the card's own steps are elementary: the divisor transport `(5)`, the squeeze inversion
+      `(9)`, and the Schatten/partial-trace/weak-trace consequences `(10)`--`(14)`.
 
 ## Remaining infrastructure to build
 
 | Card | Missing classical input |
 |---|---|
-| 1 | Riemann–von Mangoldt asymptotic in operator form; compact-operator singular values, Schatten ideals, `det_2` |
+| 1 | leading Riemann–von Mangoldt term `N(T) ~ (T/2π) log T` only (route recorded in item 7); the operator side is already owned |
 | 2 | Bernstein/Hausdorff consumer: CM function on `(0,∞)` ⇒ Hausdorff source ⇒ summability at every positive shape |
 | 5 | paired absolute-Euler value kernel and its Weil quadratic identity (the completeness core is now built) |
-| 11 | Nevanlinna–Pick extension for Caratheodory functions on a half plane |
-| 13 | real hyperelliptic topology: genus, real components, Harnack bound |
+| 11 | — (built: Nevanlinna–Pick, `HTGeometry/SchurNevanlinnaPick.lean` and `CaratheodoryNevanlinnaPick.lean`) |
+| 13 | — (built: `HTGeometry/RealBranchArcCount.lean`; genus/Harnack bound cited classically) |
 | 14 | — (built: Hadamard factorization at order one, `RHTower/OrderOneHadamardFactorization.lean`) |
 | 15 | right half-plane Hardy space `H^2` and the Laplace Paley–Wiener unitary |
 

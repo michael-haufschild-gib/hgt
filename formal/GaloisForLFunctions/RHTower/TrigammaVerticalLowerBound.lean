@@ -159,9 +159,12 @@ theorem deriv_gammaHardyPhaseRate_lower_bound {t : ℝ} (ht : 4 ≤ t) :
   rw [deriv_gammaHardyPhaseRate, harg]
   have hval : (1 : ℝ) / (50 * (t / 2)) = 1 / (25 * t) := by
     field_simp
+    norm_num
   rw [hval] at hbound
-  have h25 : (0 : ℝ) < 25 * t := by linarith
-  rw [le_div_iff₀ (by norm_num : (0:ℝ) < 4)] at *
-  nlinarith [hbound, htpos]
+  calc (1 : ℝ) / (100 * t) = (1 / (25 * t)) / 4 := by
+        field_simp
+        ring
+    _ ≤ -(deriv Complex.digamma (((1 / 4 : ℝ) : ℂ) + ((t / 2 : ℝ) : ℂ) * Complex.I)).im / 4 := by
+        gcongr
 
 end RHTower

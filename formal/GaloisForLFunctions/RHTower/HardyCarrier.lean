@@ -30,6 +30,7 @@ theorem conj_linePt (τ : ℝ) : (starRingEnd ℂ) (linePt τ) = 1 - linePt τ :
 theorem linePt_re (τ : ℝ) : (linePt τ).re = 1/2 := by unfold linePt; simp
 theorem linePt_re_pos (τ : ℝ) : 0 < (linePt τ).re := by rw [linePt_re]; norm_num
 theorem linePt_re_lt_one (τ : ℝ) : (linePt τ).re < 1 := by rw [linePt_re]; norm_num
+theorem linePt_im (τ : ℝ) : (linePt τ).im = τ := by unfold linePt; simp
 
 theorem norm_zetaChi_line (τ : ℝ) : ‖zetaChi (linePt τ)‖ = 1 := by
   have hstrip : zetaChi (linePt τ) * zetaChi (1 - linePt τ) = 1 :=

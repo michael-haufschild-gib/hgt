@@ -1052,3 +1052,334 @@ Remaining chain for the card, in order:
    algebraicity of `K_ν(s)` gives, through the parameterized Galois representation;
 3. constant Galois matrices ⟹ isomonodromy (`ConstantGaloisConnection`, owned);
 4. isomonodromy is impossible (`BesselOrderIntrinsicObstruction`, owned).
+
+
+## Card 1 — Burnside lands, classification now takes irreducibility
+
+`BurnsideTwoByTwo.mem_of_irreducibleAction` and
+`DifferentialCassidyClassification.constant_conjugate_of_irreducible`.
+
+The remaining Galois-side obligation is now exactly one arrow: **no first-order factorization ⟹ the
+Galois action on the solution space has no invariant line**.  Everything after it is proved.
+
+
+## Card 1 — the irreducibility arrow, in two halves
+
+`DifferenceSemiInvariantSolution` closes the second half: tensor identity ⟹ base Riccati solution.
+
+The first half is a separation statement to build next:
+
+```text
+eq_zero_of_forall_specialization_eq_zero :
+  if every K-algebra map R ⊗_K R → R that is the identity on the left copy kills w, then w = 0
+```
+
+Route (all inputs owned): the torsor decomposition `R ⊗_K R ≅ R ⊗_k E` writes `w = Σ r_j ⊗ b_j` in
+a `k`-basis of `E`; each `k`-point `χ` of `E` gives such a specialisation, and its value on `w` is
+`Σ χ(b_j) r_j`; `PointsSeparateModule.eq_zero_of_forall_point_smul_eq_zero` then forces every
+`r_j = 0`.
+
+Applied to `w = v₁ ⊗ v₂ - v₂ ⊗ v₁` for a solution vector `v = (y, σ y)`, this converts
+"every Galois element scales `v`" into `y ⊗ σ y = σ y ⊗ y`, and the Riccati contradiction closes
+irreducibility — the last hypothesis the classification needs.
+
+
+## Card 1 — irreducibility arrow closed
+
+`TorsorSpecializationSeparation` (separation of specialisations) and
+`DifferenceIrreducibilityCriterion` (no Riccati ⟹ no semi-invariant solution).
+
+Every general theorem the endgame needs is now proved.  What remains is instantiation:
+
+1. build the concrete Picard--Vessiot data for the Bessel recurrence — the constants subalgebra `E`
+   of the tensor square with its basis, the generation and independence hypotheses;
+2. identify the Galois matrices with the specialisations, so "no semi-invariant solution" becomes
+   the irreducibility hypothesis of `constant_conjugate_of_irreducible`;
+3. derive the scalar-stabiliser differential equation from differential algebraicity of `K_ν(s)`;
+4. feed the constant Galois matrices into `ConstantGaloisConnection` and contradict
+   `BesselOrderIntrinsicObstruction`.
+
+
+## Card 1 — abstract endgame closed
+
+`isomonodromy_of_no_riccati_of_differentialSolution` is the capstone: for a second-order difference
+equation over a base field, with
+
+* no Riccati solution over the base,
+* a separating set of Galois points,
+* a scalar stabiliser of the Galois monoid solving one monic linear differential equation,
+
+the system carries a connection over the base — the exact statement the Bessel intrinsic obstruction
+refutes.
+
+Remaining: (i) the scalar-stabiliser differential equation from differential algebraicity
+(Cassidy additive, owned in evaluated form as
+`exists_nonzero_jet_linear_relation_of_additiveHopfIdeal`); (ii) the concrete Bessel
+Picard--Vessiot data.
+
+
+## Card 1 — the base field has to be enlarged, and the obstruction now travels
+
+An architectural finding that determines the rest of the card.
+
+The parameterised theory is **vacuous over `ℂ(ν)`**: the `σ`-constants of the base are `ℂ`, the
+parameter derivation kills them, and a differential algebraic subgroup over a derivation-trivial
+field is just an algebraic subgroup.  Concretely, the fundamental theorem of parameterised
+Picard--Vessiot theory fails there — for `σ y = x y` the automorphism `ψ ↦ ψ + a` fixes nothing new
+yet `ψ = δy/y` is not rational.  So the base must be `C(ν)` with `C` a differentially closed field
+containing `ℂ`: then `K^σ = C` carries a nontrivial derivation and the theory is meaningful.  The
+statement proved is then non-differential-algebraicity over `C(ν)`, which is *stronger* than over
+`ℂ(ν)`, so nothing is lost.
+
+That forces the obstruction to hold over the larger base, and it now does:
+
+`GaloisForLFunctions.HTGeometry.RatFuncFieldShift` — the unit shift `X ↦ X+1` and its whole degree
+calculus over an arbitrary field of characteristic zero (37 declarations: the finite difference of a
+polynomial, the exact degree drop of the shift difference, shift-invariance implies constancy).
+
+`GaloisForLFunctions.HTGeometry.BesselOrderFieldObstruction` — the scalar and matrix forms of
+"the Bessel order recurrence carries no rational connection", over any such field.
+
+Remaining for the card:
+
+1. a `Differential` structure on `C(ν)` extending a given derivation on `C` with `δν = 1`, and its
+   commutation with the shift;
+2. the concrete Picard--Vessiot data over `C(ν)`;
+3. the scalar-stabiliser differential equation from differential algebraicity (Cassidy additive);
+4. a separating set of differential points — the Kolchin Nullstellensatz over a differentially
+   closed `C`, for which the corpus already owns Ritt--Raudenbush and Kolchin Noetherianity.
+
+
+## Card 1 — the differential structure on the enlarged base
+
+`RatFuncTotalDerivation`: `D(f) = coeffDeriv f + (d/dX) f` on `K[X]`, extended across the fraction
+field, giving `Differential (RatFunc K)` in which `K` keeps its own derivation and the coordinate has
+derivative one — with `coordinateTotalDerivation_base` and `coordinateTotalDerivation_X` as the two
+computational facts.
+
+Reuse note: the coefficientwise derivation already existed (`PolynomialTotalDerivative.coeffDeriv`,
+`TwoCylinderDifferential.coeffDeriv_mul`, `coeffDerivHom`) — the search index did not surface it for
+the query "derivation on polynomial ring extending base derivation", so a duplicate was built and
+then discarded.  When looking for a construction, grep the corpus for the *operation name* as well.
+
+Lean note: `Derivation ℤ (RatFunc K) (RatFunc K)` has an instance diamond — `Algebra ℤ (RatFunc K)`
+resolves to `RatFunc.instAlgebraOfPolynomial` rather than `Ring.toIntAlgebra`.  Building the
+derivation over `ℚ` and closing with
+`letI : Algebra ℤ (RatFunc K) := Ring.toIntAlgebra _; Derivation.restrictScalars ℤ` is what elaborates.
+
+Next: the shift as a ring equivalence over a general field, and the commutation `σ ∘ δ = δ ∘ σ`
+(two derivations agreeing on `K[X]` agree on `K(X)`, by `derivation_ext_of_fractionRing`).
+
+
+## Card 1 — the base field is complete, and the route to the last hypothesis
+
+`RatFuncFieldShiftEquiv` (the shift as a ring automorphism, via translations composing additively)
+and `RatFuncShiftDerivationCommute` (`σ ∘ δ = δ ∘ σ` on `K(X)`, by conjugating the derivation and
+comparing on `K[X]`) finish the difference-differential base field over an arbitrary differential
+coefficient field.  The conjugation reuses `SemilinearFractionField.conjDerivation` rather than
+rebuilding it.
+
+What the endgame still needs is `hsep`: a separating set of *differential* points of the Galois
+coordinate ring.  That is Kolchin's Nullstellensatz, and it needs the constants `C` to be
+differentially closed — which is exactly why the base had to be enlarged.  The route is:
+
+1. a proper radical differential ideal has a zero in a differential field extension (Ritt's prime
+   decomposition, which the corpus owns as `RadicalDifferentialIdealPrime` and `RittBasisTheorem`);
+2. iterate to a differentially closed extension, as one builds an algebraic closure;
+3. Kolchin's Nullstellensatz: over such a field the differential points of a finitely generated
+   differentially reduced algebra separate.
+
+The alternative route — the prolongation tower with only the classical Galois correspondence —
+needs the Picard--Vessiot dimension theorem (`trdeg = dim G`) instead, and the tower analysis that
+shows the transcendence degree keeps growing when the isomonodromy class is nonzero.  Route 1 is
+the one the endgame is already built for.
+
+
+## Card 1 — the weak differential Nullstellensatz
+
+`RadicalDifferentialIdealMaximal` (a maximal proper radical differential ideal is prime, so every
+proper one lies in a prime differential ideal) and `DifferentialFieldSolution`
+(`exists_differentialField_hom_of_ne_top`: a proper radical differential ideal of a differential
+`ℚ`-algebra is killed by a differential ring map to a differential field).
+
+That is step 1 of the differential closure.  Step 2 is the iteration: for a differential field `F`,
+adjoin solutions of *all* consistent systems over `F` at once — the differential polynomial ring in
+the union of the variable sets modulo the sum of the ideals, which stays proper because the
+quotients are nonzero algebras over a field in disjoint variables — and take the union of the chain.
+Step 3 is Kolchin's Nullstellensatz over the resulting field, which is what supplies `hsep`.
+
+
+## Card 1 — the differential closure, step by step
+
+`DifferentialSystemSolution.exists_point_of_ne_top` is the engine: a proper radical differential
+ideal in the differential polynomial ring over a differential field has a solution point in a
+differential field extension.
+
+The closure is then built as mathlib builds an algebraic closure:
+
+1. **Joint consistency.**  For systems in disjoint variables the quotient of the sum ideal is the
+   tensor product of the quotients over the base field, hence nonzero; so the sum of proper
+   differential ideals in disjoint variables is proper, and its radical is a proper radical
+   differential ideal (Ritt's lemma keeps it differential).
+2. **One step.**  Take the differential polynomial ring in the variables of *all* consistent systems
+   over `F`, with the radical differential ideal generated by all of them; any element of it
+   involves finitely many systems, so step 1 makes it proper.  A maximal proper radical differential
+   ideal above it is prime, and the fraction field of the quotient solves every system over `F`.
+3. **Iterate.**  Repeat `ω` times and take the direct limit; every system over the limit has its
+   coefficients in some stage, hence a solution one stage later.  The limit is differentially closed.
+4. **Kolchin.**  Over a differentially closed field the differential points of a finitely generated
+   differentially reduced algebra separate — which is `hsep`.
+
+
+## Card 1 — the differential closure is built
+
+The four steps of the closure plan are Lean-complete.
+
+`DifferentialPolynomialRename` (renaming differential variables commutes with the total derivation;
+the kernel of a differential map to a field is a radical differential ideal) and
+`DifferentialPolynomialBaseChange` (extending the coefficients commutes with the total derivation;
+the three evaluation identities: renamed, coefficient-extended, and transported along a differential
+map of the target).
+
+`DifferentialFieldExtension` bundles a differential field extension — field, derivation, structure
+map, and the statement that the structure map is differential — so an extension is a value that can
+be returned, composed and iterated.  `DifferentialJointSolvability` proves that a system consistent
+over the base stays solvable over any extension (the coefficient extension of a differential ideal
+is differential, and stays proper over a field, so its radical is a proper radical differential
+ideal), and that finitely many consistent systems are jointly solvable in one extension.
+
+`DifferentialClosureStep`: the differential polynomial ring on the variables of *all* consistent
+systems over `F` at once carries the radical differential ideal generated by all of them, and it is
+proper — membership is witnessed by finitely many generators, hence finitely many systems, which are
+jointly solvable, and evaluation at a joint solution is a differential map to a field killing those
+generators.  A point of it solves every consistent system over `F` in a single extension.
+
+`DifferentialClosureTower`: the tower of iterated one-step extensions, and its union.  The field
+structure is the directed union of fields; the derivation comes from the universal property applied
+to the **dual numbers** of the union — the maps `x ↦ (x, x′)` are compatible along the tower, so
+they lift to a ring map whose first component is the identity and whose second component is a
+derivation extending every stage.  (That trick is what avoids having to define a non-ring-hom map on
+a colimit.)
+
+`DifferentialClosureClosed`: the union is differentially closed — a finite system there has finitely
+many coefficients, hence descends to a stage; consistency descends because a relation would push
+forward; and the next stage solves it.
+
+`RadicalDifferentialIdealAvoiding`: for a radical ideal, missing an element is missing all its
+powers, so Zorn and Ritt's product law give a *prime* differential ideal avoiding a prescribed
+element, hence the weak differential Nullstellensatz in the form separation needs — a differential
+map to a differential field killing the ideal but not the element.
+
+Lean note: `Ring.DirectLimit` carries its own `CommRing`, and `Field.DirectLimit.field` is a
+reducible non-instance built on it.  Declaring both a `CommRing` and an unrelated `Field` instance
+on the union makes instance search fail on `DualNumber` (two incompatible `Semiring` paths).  The
+fix is to declare the field as `{ theCommRingInstance, Field.DirectLimit.field … with }`, so that
+the ring structure of the field literally is the one instance search finds.
+
+Remaining for the card: Kolchin's Nullstellensatz (differential points of a finitely generated
+differentially reduced algebra separate, over a differentially closed field), then the concrete
+Bessel Picard--Vessiot data and the scalar-stabiliser differential equation.
+
+
+## Card 1 — Kolchin, the differential Galois points, and the constants field
+
+`KolchinNullstellensatz`: over a differentially closed field, a nonzero element of a finitely
+generated differentially reduced algebra survives some differential point.  The proof presents the
+algebra by generators and relations and turns a differential map into a *finite* differential system
+over the base — the defining relations, the first-order equations for the derivatives of the
+generators, and the Rabinowitsch equation — which differential closedness then solves inside the
+field.  Hence the differential points separate.
+
+`DifferentialGaloisPoint`: the specialisation of the torsor at a differential point commutes with
+the derivation.  The elements of the tensor square where the two agree form a subalgebra containing
+the image of the ring and the constants subalgebra, so generation forces the identity everywhere; at
+`1 ⊗ x` that is exactly the statement that the Galois automorphism is differential.  (The derivation
+on the tensor square was already owned: `TensorSquareDerivation`.)
+
+`DifferentialGaloisSeparation`: both hypotheses of the isomonodromy endgame — the separating set and
+the differentiality of its Galois automorphisms — are now discharged, leaving
+`isomonodromy_of_no_riccati_of_differentiallyClosed`, whose only inputs are the difference equation,
+the absence of a base Riccati solution, and the differential constraint on the scalar stabiliser.
+
+`DifferentiallyClosedAlgClosed`: a differentially closed field is algebraically closed (the
+algebraic closure is separable in characteristic zero, so the derivation extends to it, and a root
+there is a solution of an order-zero differential system), and its constants are algebraically
+closed (differentiating the defining relation of a root of a polynomial with constant coefficients
+gives the separant times the derivative of the root).
+
+So `diffClosure ℚ` — or the differential closure of any characteristic-zero differential field —
+supplies every hypothesis the endgame makes on the field of constants: `IsAlgClosed`, `CharZero`,
+`IsAlgClosed (differentialConstants ·)`, and `IsDifferentiallyClosed`.
+
+What remains for the card is the concrete instantiation: the Picard--Vessiot ring of the Bessel
+order recurrence over `C(ν)` (the corpus owns `exists_picardVessiot_system`,
+`exists_parameterizedPicardVessiot_of_fundamentalMatrix`, `exists_picardVessiot_no_new_constants`,
+the torsor generation and the comparison matrix), and the bridge from differential algebraicity of
+`K_ν(s)` to the differential constraint on the scalar stabiliser (Cassidy additive, owned in
+evaluated form).
+
+
+## Card 1 — what the endgame's scalar hypothesis really needs (route analysis)
+
+The endgame hypothesis `hsol` — the scalars `x` with `x • 1` in the `C^δ`-span of the Galois monoid
+solve one monic linear differential equation — is **not** a consequence of differential algebraicity
+alone.  Counterexample shape: a group `SL₂(C^δ) · Z` with `Z` the scalars whose logarithmic
+derivative solves a linear equation.  Every solution of the associated system is differentially
+algebraic (its logarithmic derivative is), yet the `C^δ`-span of `Z` is not the solution set of any
+single linear equation, and indeed the system is only isomonodromic *after a scalar twist*.  So the
+endgame is inapplicable to a system whose Galois group has a nontrivial differential scalar part.
+
+For the Bessel order recurrence that part is absent, and for a structural reason worth recording:
+the companion matrix `!![0,1;1,b]` has determinant `-1`, so `σ(det Y) = -det Y`, hence `(det Y)²` is
+`σ`-invariant and lies in the constants; every Galois matrix therefore has determinant `±1` and
+every *scalar* Galois matrix `x·1` has `x² = ±1`.  The scalar part of the Galois group is contained
+in the fourth roots of unity — in particular it is differentially constant, and no scalar twist is
+available.
+
+That leaves the genuine remaining content, which is Cassidy's classification in its
+differential-algebraic form rather than in the corpus's "bounded" form:
+
+* **From differential algebraicity to a nonzero differential ideal.**  If a solution is
+  differentially algebraic over `K`, so is the whole Picard--Vessiot ring (the Galois translates of
+  a solution span the solution space by irreducibility, and the differentially algebraic elements
+  form a differential field).  For a `σ`-invariant element the relation ideal over `K` is a
+  `σ`-ideal, so the minimal-support engine
+  (`SigmaIdealConstantCoefficients.exists_nonzero_constant_coeff_mem_sigmaIdeal`) descends a nonzero
+  relation to the constants `C`.  Every entry of the comparison matrix therefore satisfies a nonzero
+  differential polynomial over `C`, and since the differential points are `C`-algebra maps commuting
+  with the derivation, *every Galois matrix entry lies in a fixed proper differential algebraic
+  subset of `C`*.
+* **From the ideal to boundedness.**  The multiplier field of the differential Lie algebra is an
+  additive differential subgroup; the group's nonzero differential ideal restricts to a nonzero
+  differential Hopf ideal on it (the Hopf property of a vanishing ideal of a subgroup is the
+  differential Nullstellensatz for a product, now available through Kolchin), and Cassidy's additive
+  classification — owned as
+  `CassidyAdditiveEvaluated.exists_nonzero_jet_linear_relation_of_additiveHopfIdeal` — turns that
+  into the linear differential equation the corpus's `BoundedOverBase` wants.
+
+So the remaining chain is: (P1) `σ`-descent of differential relations; (P2) differential
+algebraicity of the whole ring from one solution; (P3) the differential algebraic group layer —
+vanishing ideal, Hopf property, and the reduction of the multiplier field to an additive subgroup.
+
+
+## Card 1 — the descent of relations to the constants
+
+`DifferentialRelationSigmaDescent`, `DifferentialRelationConstants`
+
+```text
+differentialPolynomialSigma                the coefficientwise shift of differential polynomials
+differentialPolynomialEvalOver_sigma       evaluation intertwines it with a shift fixing the point
+exists_sigmaFixed_relation                 a relation satisfied by a `σ`-invariant point can be
+                                           taken with `σ`-invariant coefficients
+exists_preimage_of_coeffs                  a polynomial with coefficients in a subring descends
+exists_nonzero_constants_relation          **hence a relation over the constants**
+eval_relation_of_differentialHom           and a relation over the constants travels along any
+                                           differential map of algebras over them
+```
+
+So for a `σ`-invariant element of the tensor square which is differentially algebraic over the base,
+there is one nonzero differential polynomial over `C` that every differential point sends its value
+into the zero set of.  That is step (P1) of the remaining chain; what is left is (P2) differential
+algebraicity of the whole ring from one solution, and (P3) the differential algebraic group layer
+turning the resulting proper differential algebraic set into the boundedness Cassidy's
+classification consumes.

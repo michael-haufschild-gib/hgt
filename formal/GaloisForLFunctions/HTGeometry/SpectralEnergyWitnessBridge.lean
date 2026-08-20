@@ -70,17 +70,17 @@ variable {m : ℕ}
 
 /-- **Angular dephasing from an energy-form witness.** -/
 theorem tendsto_integral_exp_sortedSpectralAction_zero_of_energy_witness
-    {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
+    {P : Fin m → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
     (hDisc : spectralDiscriminantPoly P ≠ 0) (k : Fin D → ℝ) {c : ℝ} (hc : 0 < c)
     (hON : ∀ a b, (P a * P b).trace = if a = b then ((c : ℝ) : ℂ) else 0)
-    (hwit : ∀ κ : ℝ, ∃ θ₀ : Fin (m + 1) → ℝ, ∀ π : Equiv.Perm (Fin D),
+    (hwit : ∀ κ : ℝ, ∃ θ₀ : Fin m → ℝ, ∀ π : Equiv.Perm (Fin D),
       (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
         ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues i) ^ 2)
-    (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin (m + 1))) 1 → ℂ) (hg : Measurable g)
+    (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 → ℂ) (hg : Measurable g)
     {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖g x‖ ≤ C) :
     Filter.Tendsto (fun t : ℝ => ∫ x, g x *
         Complex.exp (-((t * sortedSpectralAction hP k
-            (WithLp.ofLp (x : EuclideanSpace ℝ (Fin (m + 1)))) : ℝ) : ℂ) * Complex.I)
+            (WithLp.ofLp (x : EuclideanSpace ℝ (Fin m))) : ℝ) : ℂ) * Complex.I)
         ∂(MeasureTheory.volume.toSphere))
       (Filter.cocompact ℝ) (nhds 0) :=
   tendsto_integral_exp_sortedSpectralAction_zero_of_witness hP hDisc k

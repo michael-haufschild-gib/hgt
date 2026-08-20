@@ -9,8 +9,8 @@ is simple, and it sits on the critical line.
 
 This module proves the *global finite* half.  With
 
-* `xiZeroCount T`               — `N(T)`, all strip Xi zeros with `0 < im ≤ T`, with multiplicity;
-* `xiCriticalZeroCount T`       — `N₀(T)`, the critical-line copies;
+* `xiPosZeroCount T`               — `N(T)`, all strip Xi zeros with `0 < im ≤ T`, with multiplicity;
+* `xiPosCriticalZeroCount T`       — `N₀(T)`, the critical-line copies;
 * `xiOffLineZeroCount T`        — `N(T) − N₀(T)`, the off-line copies;
 * `xiSimpleCriticalZeroCount T` — `N₀,s(T)`, the simple critical-line zeros;
 * `xiSingletonFiberCount T`     — `H₁(T)`, the ordinates whose full fiber has multiplicity one,
@@ -53,11 +53,11 @@ theorem mem_stripFinsetPos {T : ℝ} {z : ℂ} :
     exact ⟨⟨h1, h2, hpos.le, h4, hz⟩, hpos⟩
 
 /-- `N(T)`: the number of nontrivial Xi zeros with ordinate in `(0, T]`, with multiplicity. -/
-def xiZeroCount (T : ℝ) : ℕ :=
+def xiPosZeroCount (T : ℝ) : ℕ :=
   ∑ z ∈ stripFinsetPos T, (analyticOrderAt xi z).toNat
 
 /-- `N₀(T)`: the critical-line copies counted by `N(T)`. -/
-def xiCriticalZeroCount (T : ℝ) : ℕ :=
+def xiPosCriticalZeroCount (T : ℝ) : ℕ :=
   ∑ z ∈ (stripFinsetPos T).filter (fun z => z.re = 1 / 2), (analyticOrderAt xi z).toNat
 
 /-- `N(T) − N₀(T)`: the off-line copies counted by `N(T)`. -/
@@ -65,12 +65,12 @@ def xiOffLineZeroCount (T : ℝ) : ℕ :=
   ∑ z ∈ (stripFinsetPos T).filter (fun z => ¬ z.re = 1 / 2), (analyticOrderAt xi z).toNat
 
 /-- The census splits into its critical and off-line halves. -/
-theorem xiCriticalZeroCount_add_xiOffLineZeroCount (T : ℝ) :
-    xiCriticalZeroCount T + xiOffLineZeroCount T = xiZeroCount T :=
+theorem xiPosCriticalZeroCount_add_xiOffLineZeroCount (T : ℝ) :
+    xiPosCriticalZeroCount T + xiOffLineZeroCount T = xiPosZeroCount T :=
   Finset.sum_filter_add_sum_filter_not _ _ _
 
-theorem xiCriticalZeroCount_le (T : ℝ) : xiCriticalZeroCount T ≤ xiZeroCount T := by
-  rw [← xiCriticalZeroCount_add_xiOffLineZeroCount T]; exact Nat.le_add_right _ _
+theorem xiPosCriticalZeroCount_le (T : ℝ) : xiPosCriticalZeroCount T ≤ xiPosZeroCount T := by
+  rw [← xiPosCriticalZeroCount_add_xiOffLineZeroCount T]; exact Nat.le_add_right _ _
 
 /-- `N₀,s(T)`: the simple critical-line Xi zeros with ordinate in `(0, T]`. -/
 def xiSimpleCriticalZeroCount (T : ℝ) : ℕ :=
@@ -235,47 +235,47 @@ H₁(T) ≥ N₀,s(T) − (N(T) − N₀(T)) / 2.
 ```
 -/
 theorem xiSimpleCriticalZeroCount_sub_le_xiSingletonFiberCount (T : ℝ) :
-    (xiSimpleCriticalZeroCount T : ℝ) - ((xiZeroCount T : ℝ) - (xiCriticalZeroCount T : ℝ)) / 2
+    (xiSimpleCriticalZeroCount T : ℝ) - ((xiPosZeroCount T : ℝ) - (xiPosCriticalZeroCount T : ℝ)) / 2
       ≤ (xiSingletonFiberCount T : ℝ) := by
   have hnat := two_mul_xiSimpleCriticalZeroCount_le T
-  have hsplit := xiCriticalZeroCount_add_xiOffLineZeroCount T
+  have hsplit := xiPosCriticalZeroCount_add_xiOffLineZeroCount T
   have hR : (2 : ℝ) * (xiSimpleCriticalZeroCount T : ℝ)
       ≤ 2 * (xiSingletonFiberCount T : ℝ) + (xiOffLineZeroCount T : ℝ) := by
     exact_mod_cast hnat
-  have hRsplit : (xiCriticalZeroCount T : ℝ) + (xiOffLineZeroCount T : ℝ)
-      = (xiZeroCount T : ℝ) := by exact_mod_cast hsplit
+  have hRsplit : (xiPosCriticalZeroCount T : ℝ) + (xiOffLineZeroCount T : ℝ)
+      = (xiPosZeroCount T : ℝ) := by exact_mod_cast hsplit
   linarith
 
 /-! ## Normalized form and the density passage -/
 
 /-- Every zero counted by `N(T)` has positive Xi order, so any subfamily of ordinates is dominated
 by the census. -/
-theorem card_le_xiZeroCount {T : ℝ} {A : Finset ℂ} (hA : A ⊆ stripFinsetPos T) :
-    A.card ≤ xiZeroCount T := by
+theorem card_le_xiPosZeroCount {T : ℝ} {A : Finset ℂ} (hA : A ⊆ stripFinsetPos T) :
+    A.card ≤ xiPosZeroCount T := by
   classical
   calc A.card = ∑ _z ∈ A, 1 := by rw [Finset.sum_const, smul_eq_mul, mul_one]
     _ ≤ ∑ z ∈ A, (analyticOrderAt xi z).toNat := by
         refine Finset.sum_le_sum fun z hz => ?_
         have hzero : xi z = 0 := (mem_stripFinsetPos.mp (hA hz)).2.2.2.2
         exact Nat.one_le_iff_ne_zero.mpr (xi_order_toNat_ne_zero hzero)
-    _ ≤ xiZeroCount T := Finset.sum_le_sum_of_subset hA
+    _ ≤ xiPosZeroCount T := Finset.sum_le_sum_of_subset hA
 
 theorem xiSimpleCriticalZeroCount_le (T : ℝ) :
-    xiSimpleCriticalZeroCount T ≤ xiZeroCount T :=
-  card_le_xiZeroCount (Finset.filter_subset _ _)
+    xiSimpleCriticalZeroCount T ≤ xiPosZeroCount T :=
+  card_le_xiPosZeroCount (Finset.filter_subset _ _)
 
 theorem xiSingletonFiberCount_le (T : ℝ) :
-    xiSingletonFiberCount T ≤ xiZeroCount T :=
-  card_le_xiZeroCount (Finset.filter_subset _ _)
+    xiSingletonFiberCount T ≤ xiPosZeroCount T :=
+  card_le_xiPosZeroCount (Finset.filter_subset _ _)
 
 /-- The critical-line proportion of the census. -/
-def xiCriticalRatio (T : ℝ) : ℝ := (xiCriticalZeroCount T : ℝ) / (xiZeroCount T : ℝ)
+def xiCriticalRatio (T : ℝ) : ℝ := (xiPosCriticalZeroCount T : ℝ) / (xiPosZeroCount T : ℝ)
 
 /-- The simple-critical-line proportion of the census. -/
-def xiSimpleCriticalRatio (T : ℝ) : ℝ := (xiSimpleCriticalZeroCount T : ℝ) / (xiZeroCount T : ℝ)
+def xiSimpleCriticalRatio (T : ℝ) : ℝ := (xiSimpleCriticalZeroCount T : ℝ) / (xiPosZeroCount T : ℝ)
 
 /-- The horizontal-singleton proportion of the census. -/
-def xiSingletonFiberRatio (T : ℝ) : ℝ := (xiSingletonFiberCount T : ℝ) / (xiZeroCount T : ℝ)
+def xiSingletonFiberRatio (T : ℝ) : ℝ := (xiSingletonFiberCount T : ℝ) / (xiPosZeroCount T : ℝ)
 
 theorem xiCriticalRatio_nonneg (T : ℝ) : 0 ≤ xiCriticalRatio T :=
   div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
@@ -287,19 +287,19 @@ theorem xiSingletonFiberRatio_nonneg (T : ℝ) : 0 ≤ xiSingletonFiberRatio T :
   div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
 
 theorem xiCriticalRatio_le_one (T : ℝ) : xiCriticalRatio T ≤ 1 := by
-  rcases Nat.eq_zero_or_pos (xiZeroCount T) with h0 | hpos
+  rcases Nat.eq_zero_or_pos (xiPosZeroCount T) with h0 | hpos
   · simp [xiCriticalRatio, h0]
   · rw [xiCriticalRatio, div_le_one (by exact_mod_cast hpos)]
-    exact_mod_cast xiCriticalZeroCount_le T
+    exact_mod_cast xiPosCriticalZeroCount_le T
 
 theorem xiSimpleCriticalRatio_le_one (T : ℝ) : xiSimpleCriticalRatio T ≤ 1 := by
-  rcases Nat.eq_zero_or_pos (xiZeroCount T) with h0 | hpos
+  rcases Nat.eq_zero_or_pos (xiPosZeroCount T) with h0 | hpos
   · simp [xiSimpleCriticalRatio, h0]
   · rw [xiSimpleCriticalRatio, div_le_one (by exact_mod_cast hpos)]
     exact_mod_cast xiSimpleCriticalZeroCount_le T
 
 theorem xiSingletonFiberRatio_le_one (T : ℝ) : xiSingletonFiberRatio T ≤ 1 := by
-  rcases Nat.eq_zero_or_pos (xiZeroCount T) with h0 | hpos
+  rcases Nat.eq_zero_or_pos (xiPosZeroCount T) with h0 | hpos
   · simp [xiSingletonFiberRatio, h0]
   · rw [xiSingletonFiberRatio, div_le_one (by exact_mod_cast hpos)]
     exact_mod_cast xiSingletonFiberCount_le T
@@ -313,26 +313,26 @@ H₁(T)/N(T) ≥ N₀,s(T)/N(T) − (1 − N₀(T)/N(T))/2,
 with the degenerate height `N(T) = 0` included (all three ratios are then `0`). -/
 theorem xiSimpleCriticalRatio_sub_le_xiSingletonFiberRatio (T : ℝ) :
     xiSimpleCriticalRatio T - (1 - xiCriticalRatio T) / 2 ≤ xiSingletonFiberRatio T := by
-  rcases Nat.eq_zero_or_pos (xiZeroCount T) with h0 | hpos
+  rcases Nat.eq_zero_or_pos (xiPosZeroCount T) with h0 | hpos
   · simp only [xiSimpleCriticalRatio, xiCriticalRatio, xiSingletonFiberRatio, h0, Nat.cast_zero,
       div_zero]
     norm_num
-  · have hn : (0 : ℝ) < (xiZeroCount T : ℝ) := by exact_mod_cast hpos
+  · have hn : (0 : ℝ) < (xiPosZeroCount T : ℝ) := by exact_mod_cast hpos
     have hnat := two_mul_xiSimpleCriticalZeroCount_le T
-    have hsplit : (xiCriticalZeroCount T : ℝ) + (xiOffLineZeroCount T : ℝ)
-        = (xiZeroCount T : ℝ) := by
-      exact_mod_cast xiCriticalZeroCount_add_xiOffLineZeroCount T
+    have hsplit : (xiPosCriticalZeroCount T : ℝ) + (xiOffLineZeroCount T : ℝ)
+        = (xiPosZeroCount T : ℝ) := by
+      exact_mod_cast xiPosCriticalZeroCount_add_xiOffLineZeroCount T
     have hR : (2 : ℝ) * (xiSimpleCriticalZeroCount T : ℝ)
         ≤ 2 * (xiSingletonFiberCount T : ℝ) + (xiOffLineZeroCount T : ℝ) := by
       exact_mod_cast hnat
     have hkey : (2 : ℝ) * (xiSimpleCriticalZeroCount T : ℝ)
-        + (xiCriticalZeroCount T : ℝ)
-        ≤ 2 * (xiSingletonFiberCount T : ℝ) + (xiZeroCount T : ℝ) := by linarith
+        + (xiPosCriticalZeroCount T : ℝ)
+        ≤ 2 * (xiSingletonFiberCount T : ℝ) + (xiPosZeroCount T : ℝ) := by linarith
     rw [← sub_nonneg]
     have hrw : xiSingletonFiberRatio T - (xiSimpleCriticalRatio T - (1 - xiCriticalRatio T) / 2)
-        = (2 * (xiSingletonFiberCount T : ℝ) + (xiZeroCount T : ℝ)
-            - (2 * (xiSimpleCriticalZeroCount T : ℝ) + (xiCriticalZeroCount T : ℝ)))
-          / (2 * (xiZeroCount T : ℝ)) := by
+        = (2 * (xiSingletonFiberCount T : ℝ) + (xiPosZeroCount T : ℝ)
+            - (2 * (xiSimpleCriticalZeroCount T : ℝ) + (xiPosCriticalZeroCount T : ℝ)))
+          / (2 * (xiPosZeroCount T : ℝ)) := by
       rw [xiSingletonFiberRatio, xiSimpleCriticalRatio, xiCriticalRatio]
       field_simp
       ring

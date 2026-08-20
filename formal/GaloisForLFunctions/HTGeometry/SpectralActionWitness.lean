@@ -57,18 +57,18 @@ variable {m : ℕ}
 
 /-- **Angular dephasing from two coefficient vectors.** -/
 theorem tendsto_integral_exp_sortedSpectralAction_zero_of_disjoint
-    {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
-    (hDisc : spectralDiscriminantPoly P ≠ 0) (k : Fin D → ℝ) {θ₁ θ₂ : Fin (m + 1) → ℝ}
+    {P : Fin m → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
+    (hDisc : spectralDiscriminantPoly P ≠ 0) (k : Fin D → ℝ) {θ₁ θ₂ : Fin m → ℝ}
     (hdisj : ∀ π₁ π₂ : Equiv.Perm (Fin D),
       (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₁).eigenvalues (π₁ j)) ^ 2
           * (∑ a, (θ₂ a) ^ 2)
         ≠ (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₂).eigenvalues (π₂ j)) ^ 2
           * (∑ a, (θ₁ a) ^ 2))
-    (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin (m + 1))) 1 → ℂ) (hg : Measurable g)
+    (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 → ℂ) (hg : Measurable g)
     {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖g x‖ ≤ C) :
     Filter.Tendsto (fun t : ℝ => ∫ x, g x *
         Complex.exp (-((t * sortedSpectralAction hP k
-            (WithLp.ofLp (x : EuclideanSpace ℝ (Fin (m + 1)))) : ℝ) : ℂ) * Complex.I)
+            (WithLp.ofLp (x : EuclideanSpace ℝ (Fin m))) : ℝ) : ℂ) * Complex.I)
         ∂(MeasureTheory.volume.toSphere))
       (Filter.cocompact ℝ) (nhds 0) :=
   tendsto_integral_exp_sortedSpectralAction_zero_of_witness hP hDisc k

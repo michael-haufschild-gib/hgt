@@ -152,13 +152,13 @@ variable {m : ℕ}
 which no labelling of the spectrum satisfies the quadratic identity, the spectral phase is
 nonconstant on every nonempty open set avoiding the origin. -/
 theorem exists_ne_spectralActionPhase_of_witness
-    {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
+    {P : Fin m → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
     (k : Fin D → ℝ)
-    (hwit : ∀ b : ℝ, ∃ θ₀ : Fin (m + 1) → ℝ, ∀ π : Equiv.Perm (Fin D),
+    (hwit : ∀ b : ℝ, ∃ θ₀ : Fin m → ℝ, ∀ π : Equiv.Perm (Fin D),
       (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
         ≠ b ^ 2 * (∑ a, (θ₀ a) ^ 2))
-    {V : Set (EuclideanSpace ℝ (Fin (m + 1)))} (hV : IsOpen V) (hVne : V.Nonempty)
-    (hV0 : (0 : EuclideanSpace ℝ (Fin (m + 1))) ∉ V) :
+    {V : Set (EuclideanSpace ℝ (Fin m))} (hV : IsOpen V) (hVne : V.Nonempty)
+    (hV0 : (0 : EuclideanSpace ℝ (Fin m)) ∉ V) :
     ∃ p ∈ V, ∃ q ∈ V, spectralActionPhase hP k p ≠ spectralActionPhase hP k q := by
   classical
   by_contra hcon
@@ -183,12 +183,12 @@ theorem exists_ne_spectralActionPhase_of_witness
     rw [← spectralActionPhase, hconst y hy, mul_comm]
   -- the quadratic identity on the open image of `V`
   obtain ⟨G, hG⟩ := exists_shellPoly_jointActionDefectProduct hP k b
-  have hUopen : IsOpen ((euclCoord (m + 1)).symm '' V) :=
-    (euclCoord (m + 1)).symm.toHomeomorph.isOpenMap V hV
-  have hUne : ((euclCoord (m + 1)).symm '' V).Nonempty := ⟨_, ⟨y₀, hy₀, rfl⟩⟩
-  have hGzero : ∀ θ ∈ (euclCoord (m + 1)).symm '' V, MvPolynomial.eval θ G = 0 := by
+  have hUopen : IsOpen ((euclCoord m).symm '' V) :=
+    (euclCoord m).symm.toHomeomorph.isOpenMap V hV
+  have hUne : ((euclCoord m).symm '' V).Nonempty := ⟨_, ⟨y₀, hy₀, rfl⟩⟩
+  have hGzero : ∀ θ ∈ (euclCoord m).symm '' V, MvPolynomial.eval θ G = 0 := by
     rintro θ ⟨y, hy, rfl⟩
-    have hθ : (euclCoord (m + 1)).symm y = WithLp.ofLp y := rfl
+    have hθ : (euclCoord m).symm y = WithLp.ofLp y := rfl
     rw [hθ, hG (WithLp.ofLp y), eval_jointActionDefectProduct]
     refine Finset.prod_eq_zero
       (Finset.mem_univ (Tuple.sort (isHermitian_spectralEnsembleMatrix hP (WithLp.ofLp y)).eigenvalues)) ?_
@@ -213,16 +213,16 @@ identically and one coefficient vector at which no labelling satisfies the quadr
 oscillatory shell integral of the spectral action against any bounded measurable amplitude tends to
 zero. -/
 theorem tendsto_integral_exp_sortedSpectralAction_zero_of_witness
-    {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
+    {P : Fin m → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
     (hDisc : spectralDiscriminantPoly P ≠ 0) (k : Fin D → ℝ)
-    (hwit : ∀ b : ℝ, ∃ θ₀ : Fin (m + 1) → ℝ, ∀ π : Equiv.Perm (Fin D),
+    (hwit : ∀ b : ℝ, ∃ θ₀ : Fin m → ℝ, ∀ π : Equiv.Perm (Fin D),
       (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
         ≠ b ^ 2 * (∑ a, (θ₀ a) ^ 2))
-    (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin (m + 1))) 1 → ℂ) (hg : Measurable g)
+    (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 → ℂ) (hg : Measurable g)
     {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖g x‖ ≤ C) :
     Filter.Tendsto (fun t : ℝ => ∫ x, g x *
         Complex.exp (-((t * sortedSpectralAction hP k
-            (WithLp.ofLp (x : EuclideanSpace ℝ (Fin (m + 1)))) : ℝ) : ℂ) * Complex.I)
+            (WithLp.ofLp (x : EuclideanSpace ℝ (Fin m))) : ℝ) : ℂ) * Complex.I)
         ∂(MeasureTheory.volume.toSphere))
       (Filter.cocompact ℝ) (nhds 0) := by
   refine tendsto_integral_exp_sortedSpectralAction_zero hP hDisc k

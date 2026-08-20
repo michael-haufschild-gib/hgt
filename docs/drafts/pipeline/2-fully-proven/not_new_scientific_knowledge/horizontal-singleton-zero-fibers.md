@@ -213,3 +213,117 @@ Remaining for 2 -> 3: unconditional Lean providers for the two **cited analytic 
 (`κ ≥ 0.417293962` and `κ_* ≥ 0.407511457`, Pratt--Robles--Zaharescu--Zeindler).  These are not
 proved by this card; they are the mollified-moment lane whose substrate is being built on
 `hardy-critical-line-moment-anchor`.
+
+## Lean status update (2026-08-20)
+
+**Name-collision repair.**  `HorizontalSingletonFiberCharging.lean` declared `xiZeroCount` and
+`xiCriticalZeroCount` in namespace `RHTower`, colliding with the older `ℤ`-valued box/divisor
+definitions in `RHTower/XiZeroCountingFunction.lean`; the `GaloisForLFunctions.RHTower` umbrella
+could not elaborate.  The `Finset`-based strict-ordinate counts of this card are now
+`xiPosZeroCount`, `xiPosCriticalZeroCount`, with the dependent names
+`xiPosCriticalZeroCount_add_xiOffLineZeroCount`, `xiPosCriticalZeroCount_le`,
+`card_le_xiPosZeroCount` renamed to match.  All statements are unchanged.
+
+**Remaining gap, scoped.**  The two cited proportions are the *only* obstruction, and they are the
+deepest unconditional results in the field: they need Levinson's method (Littlewood's lemma, the
+Riemann–von Mangoldt formula, Levinson's `V = Q(−D)ζ` lemma, and a twisted mollified second moment
+of `ζ`), and, for the exact displayed decimal, Conrey's `θ = 4/7` mollifier length with the
+Deshouillers–Iwaniec spectral input plus the PRZZ two-piece optimization.  A hypothesis wrapper is
+not acceptable, so the card stays at stage 2.
+
+That work is now owned by `docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md`,
+which records the full dependency tree and its state.  Two of its ten bricks are already in the
+tree: Littlewood's lemma (`weighted_littlewood_from_rectIntegral`) and the log-mean-to-mean-square
+Jensen step (`RHTower/LevinsonLogMeanStep.lean`, `two_mul_integral_log_norm_le`, added today).
+
+Note also that the *non-vacuity* threshold for this card is `κ_* > (1 − κ)/2`, i.e. `κ > 1/3` when
+`κ = κ_*`.  So no proportion at or below Levinson's threshold suffices; the card genuinely requires
+a `> 1/3` unconditional proportion, and the displayed `0.116158438` requires PRZZ exactly.
+
+## A second, cheaper charging law (2026-08-20) — new mathematics for this card
+
+The card's inequality `(1)` charges the spoiled **simple critical** ordinates against the off-line
+census.  It therefore needs *two* proportions, `κ` and `κ_*`, and `κ_*` is the expensive one: it is
+Levinson's method plus Heath-Brown's simple-zero refinement.
+
+There is a charging that needs only **one** quantity, and it is the quantity that every sign-change
+detector produces natively.
+
+**Fibre parity.**  Off-line copies of a Xi zero come in `s ↦ 1 − s̄` pairs, and that involution's
+only fixed points are on the critical line.  Hence for every ordinate `γ`
+
+```text
+h(γ) ≡ k(γ)   (mod 2),        k(γ) := the critical-line multiplicity at γ.
+```
+
+**Odd-fibre charging.**  Let `O(T)` count the ordinates in `(0, T]` with `h(γ)` odd — equivalently,
+by the parity law, the critical-line zeros of odd order.  An odd number other than one is at least
+three, so an odd ordinate is either a singleton fibre or carries `h(γ) ≥ 3`.  Distinct ordinates
+have disjoint fibres, so
+
+```text
+3·O(T) ≤ 2·H₁(T) + N(T),        i.e.   H₁(T) ≥ (3/2)·O(T) − N(T)/2,
+```
+
+and in normalized form `H₁/N ≥ (3/2)·(O/N) − 1/2`.  **The bound is non-vacuous exactly when
+`liminf O(T)/N(T) > 1/3`.**
+
+**Why this matters for the card's dependency list.**  `O(T)` dominates the number of sign changes
+of Hardy's `Z` in `(0, T]`, because a sign change forces a zero of odd order.  Sign changes are
+exactly what Selberg's method and Levinson's detector `Re[γ(s)G(s)]` produce; no simple-zero
+refinement is involved.  So this route replaces the pair `(κ, κ_*)` by the single proportion
+`liminf O/N`, and removes Heath-Brown's theorem from the card's dependency list.
+
+Neither inequality dominates the other pointwise (compare at `(k,j) = (2,0)`, where `(1)` gives `0`
+and the odd-fibre law gives `−1`), so the card keeps both; the useful one is whichever matches the
+analytic input available.
+
+Lean: `formal/GaloisForLFunctions/RHTower/HorizontalOddFiberCharging.lean` —
+`xiOddFiberCount`, `one_le_xiHorizontalMultiplicity_of_mem`, **`three_mul_xiOddFiberCount_le`**,
+`xiOddFiberCount_charge_real`, `xiOddFiberRatio`, **`xiOddFiberRatio_charge`**;
+`formal/GaloisForLFunctions/RHTower/HorizontalFibreParity.lean` —
+`feSchwarz_eq_lineReflect`, **`xiHorizontalMultiplicity_odd_iff`** (the parity law),
+`mem_xiOddFiber_iff` (odd fibre = critical zero of odd order).  All axiom-clean.
+
+The sign-change bridge is also closed:
+`formal/GaloisForLFunctions/RHTower/HardySignFlipOddOrder.lean` —
+`re_xi_linePt_eq`, `re_xi_linePt_scale_pos`, `exists_odd_order_line_zero_of_sign_flip`, and
+**`exists_odd_order_line_zero_of_hardyZ_sign_flip`**: `hardyZ τ₁ · hardyZ τ₂ < 0` with `τ₁ < τ₂`
+produces `τ' ∈ (τ₁, τ₂)` with `xi(linePt τ') = 0` and `(analyticOrderAt xi (linePt τ')).toNat` odd.
+It rests on the corpus's seam-parity theorem `line_sign_flip_iff_odd_total_order` and the on-segment
+peeling `xi_line_multi_peel`; the only new step is that an odd *total* forces an odd *summand*.
+Axiom-clean.
+
+So the whole combinatorial half of the odd-fibre route is Lean-complete: **any** sign-change count
+for `Z` now feeds `H₁ ≥ (3/2)·O − N/2` directly.  What remains is the single analytic proportion
+`liminf O(T)/N(T) > 1/3`, which is
+`docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md`.
+
+## The combinatorial pipeline is closed end to end (2026-08-20)
+
+`formal/GaloisForLFunctions/RHTower/HardySignChainCount.lean` assembles every step into one
+statement.  For a strictly increasing chain `g 0 < g 1 < … < g n` inside `(0, T]` across which
+Hardy's `Z` alternates in sign,
+
+```text
+three_mul_le_two_mul_xiSingletonFiberCount_add_of_sign_chain :
+    3·n  ≤  2·H₁(T) + N(T),
+xiSingletonFiberCount_ge_of_sign_chain :
+    H₁(T)  ≥  (3/2)·n − N(T)/2.
+```
+
+The chain of unconditional steps behind it:
+
+1. sign change of `Z` ⟹ critical zero of **odd order** strictly inside the subinterval
+   (`exists_odd_order_line_zero_of_hardyZ_sign_flip`, from the corpus's seam-parity theorem);
+2. disjoint subintervals ⟹ distinct ordinates (`le_xiOddFiberCount_of_sign_chain`);
+3. odd critical order ⟺ odd **fibre** (`xiHorizontalMultiplicity_odd_iff`, the reflection
+   involution has the critical line as its exact fixed-point set);
+4. odd fibre ⟹ singleton, or fibre multiplicity ≥ 3 (`three_mul_xiOddFiberCount_le`).
+
+All axiom-clean.  **Nothing combinatorial remains.**  The card is now blocked on exactly one
+analytic statement: a lower bound of the form `n ≥ (1/3 + δ)·N(T)` for the sign-change count of `Z`
+in `(0, T]`.  Levinson's method produces precisely that count — on the critical line his detector
+`Re[Γ_ℝ·G]` equals `Ξ` times a nonvanishing factor
+(`re_Gammaℝ_mul_levinsonG_eq_half_Y_mul_completed`) — with constant `0.3474… > 1/3`.  That work is
+`docs/drafts/pipeline/1-in-progress/levinson-critical-proportion-programme.md`.

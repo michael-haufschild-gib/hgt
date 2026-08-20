@@ -5028,3 +5028,31 @@ against the trivial `T/X + 1`.  Since this card's gate is the *qualitative* `Ave
 `(log X)^{−1/50}` is far more than enough, and it holds for **every** `h → ∞` — in particular for all
 `0 < β < 1`.  The Lean route to `1/2 < β < 1` is therefore that architecture ("Milestone C" in the
 programme card), not the joint-weight one.
+
+## Gate status (2026-08-20): both halves of the Milestone-C partition are now Lean
+
+The header's claim that this card needs "the integer-start form `DyadicTranslates.dyadicMeanSquare`"
+and "the low-frequency contour bound for the Ramaré-weighted cofactor" is superseded twice over —
+first by the fibre/variable-window route recorded above, and now by the following.  The card's one
+remaining gate is unchanged and is the single theorem
+
+```text
+averagedMeanSquare_moebius_scaled' {c β} (0 < c) (c ≤ 1) (1/2 < β) (β < 1) :
+    AveragedMeanSquare (fun n => ((moebius n : ℤ) : ℝ)) (scaledLength c β)
+```
+
+after which `9/10 → 1/2` at six forwarding sites.  Progress towards it, this session:
+
+| brick | module | content |
+|-|-|-|
+| MR Lemma 1 | `Sieve/MoebiusSeriesPolySaving` | Halász for `μ`: `‖∑' μ(n)n^{−σ−it}‖ ≤ C(log z)^{99/100}` at `σ = 1+1/log z`, all `\|t\| ≤ z²` |
+| MR Lemma 2 | `Sieve/MoebiusDistanceAllFreq` | `D²(μ, n^{it}; z) ≥ (1/100)log log z − C₀`, all `\|t\| ≤ z²` |
+| MR Lemma 3 | `Sieve/RouteTDampedTwistRate` | `‖∑_{n ≤ N} μ(n)u^{ω_P(n)}n^{−iτ}‖ ≤ K·dampedCorrBound P c·N·exp(−(log N)^{1/20})`, **every** real `\|τ\| ≤ N` |
+| MR Lemma 11 | `Sieve/PrimeRangeKernelLargeValues` | Halász's inequality for prime-supported coefficients, diagonal `= #primes`, off-diagonal carrying the Route-T twisted-PNT saving |
+| the `𝒯₁` half | `Sieve/Section4AllBlocksSmall` | on `{w : every block is small}` the pointwise hypothesis of the §4 long-prime estimate is discharged **by membership** |
+| the `𝒰` half | `Sieve/Section4LadderExceptional` | the ladder's exceptional set: measure `≤ ∑_k` moment bounds, and Halász–Montgomery for the cofactor over it |
+
+Every lemma of Matomäki–Radziwiłł's `J = 1` architecture (the case `β > 1/2` forces `J = 1`, since
+`Q₁ = exp((log X)^{1/2}) ≤ h`) is now an unconditional corpus theorem.  What remains is the parameter
+choice and the assembly into `Sieve/OmegaSpectralFibre.averagedMeanSquare_moebius_of_omegaBudget`;
+it is tracked on `../../1-in-progress/matomaki-radziwill-lean-programme.md`.

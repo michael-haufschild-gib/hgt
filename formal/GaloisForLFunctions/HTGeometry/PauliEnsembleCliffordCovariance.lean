@@ -127,6 +127,31 @@ theorem measurable_pauliEnsemble_entry (w : (σ → Option (Fin 3)) → ℝ)
 /-- **Product-Clifford invariance of the mean collision.**  The mean spectral collision of the
 weighted Pauli Gaussian ensemble at a state equals its mean collision at any product-Clifford
 rotation of that state. -/
+theorem integral_spectralCollision_pauliEnsemble_clifford_eq_of_invariant
+    (w : (σ → Option (Fin 3)) → ℝ) (hw : SupportInvariantWeight w)
+    {μ : Measure ((σ → Option (Fin 3)) → ℝ)} [IsProbabilityMeasure μ]
+    (g : σ → QubitTwoDesign.BinaryOctahedral)
+    (hinv : MeasurePreserving (cliffordCoefficientMap g) μ μ)
+    (ψ : FiniteQubitConfiguration σ → ℂ)
+    {e : ((σ → Option (Fin 3)) → ℝ) →
+      FiniteQubitConfiguration σ → FiniteQubitConfiguration σ → ℂ}
+    {lam : ((σ → Option (Fin 3)) → ℝ) → FiniteQubitConfiguration σ → ℝ}
+    (hae : ∀ᵐ J ∂μ,
+      IsOrthoEigenBasis (pauliEnsemble w J) (e J) (lam J) ∧ Function.Injective (lam J)) :
+    (∫ J, spectralCollision (e J) ((finiteProductCliffordGate g)ᴴ *ᵥ ψ) ∂μ) =
+      ∫ J, spectralCollision (e J) ψ ∂μ := by
+  refine integral_spectralCollision_conj_eq (Hf := fun J => pauliEnsemble w J)
+    (fun x y => measurable_pauliEnsemble_entry w x y) ψ hae
+    (U := (finiteProductCliffordGate g)ᴴ) ?_ ?_
+    (T := cliffordCoefficientMap g) hinv ?_
+  · rw [Matrix.conjTranspose_conjTranspose]
+    exact finiteProductCliffordGate_mul_conjTranspose g
+  · rw [Matrix.conjTranspose_conjTranspose]
+    exact finiteProductCliffordGate_unitary g
+  · refine Filter.Eventually.of_forall fun J => ?_
+    rw [Matrix.conjTranspose_conjTranspose, pauliEnsemble_conj w hw g J]
+
+/-- **Product-Clifford invariance of the mean collision, for the centred product Gaussian.** -/
 theorem integral_spectralCollision_pauliEnsemble_clifford_eq
     (w : (σ → Option (Fin 3)) → ℝ) (hw : SupportInvariantWeight w) (v : NNReal)
     (g : σ → QubitTwoDesign.BinaryOctahedral)
@@ -138,16 +163,8 @@ theorem integral_spectralCollision_pauliEnsemble_clifford_eq
       IsOrthoEigenBasis (pauliEnsemble w J) (e J) (lam J) ∧ Function.Injective (lam J)) :
     (∫ J, spectralCollision (e J) ((finiteProductCliffordGate g)ᴴ *ᵥ ψ)
         ∂(centredProductGaussian (σ → Option (Fin 3)) v)) =
-      ∫ J, spectralCollision (e J) ψ ∂(centredProductGaussian (σ → Option (Fin 3)) v) := by
-  refine integral_spectralCollision_conj_eq (Hf := fun J => pauliEnsemble w J)
-    (fun x y => measurable_pauliEnsemble_entry w x y) ψ hae
-    (U := (finiteProductCliffordGate g)ᴴ) ?_ ?_
-    (T := cliffordCoefficientMap g) (measurePreserving_cliffordCoefficientMap g v) ?_
-  · rw [Matrix.conjTranspose_conjTranspose]
-    exact finiteProductCliffordGate_mul_conjTranspose g
-  · rw [Matrix.conjTranspose_conjTranspose]
-    exact finiteProductCliffordGate_unitary g
-  · refine Filter.Eventually.of_forall fun J => ?_
-    rw [Matrix.conjTranspose_conjTranspose, pauliEnsemble_conj w hw g J]
+      ∫ J, spectralCollision (e J) ψ ∂(centredProductGaussian (σ → Option (Fin 3)) v) :=
+  integral_spectralCollision_pauliEnsemble_clifford_eq_of_invariant w hw g
+    (measurePreserving_cliffordCoefficientMap g v) ψ hae
 
 end GaloisForLFunctions.HTGeometry

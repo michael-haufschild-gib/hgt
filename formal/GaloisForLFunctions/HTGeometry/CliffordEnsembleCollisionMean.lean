@@ -64,17 +64,18 @@ section Ensemble
 variable {n : ℕ}
 
 /-- **The mean spectral collision of the all-zero product input is at most `(2/3)ⁿ`.** -/
-theorem integral_spectralCollision_zeroProductState_le
-    (w : (Fin n → Option (Fin 3)) → ℝ) (hw : SupportInvariantWeight w) (v : NNReal)
+theorem integral_spectralCollision_zeroProductState_le_of_invariant
+    (w : (Fin n → Option (Fin 3)) → ℝ) (hw : SupportInvariantWeight w)
+    {μ : Measure ((Fin n → Option (Fin 3)) → ℝ)} [IsProbabilityMeasure μ]
+    (hinv : ∀ g : Fin n → QubitTwoDesign.BinaryOctahedral,
+      MeasurePreserving (cliffordCoefficientMap g) μ μ)
     {e : ((Fin n → Option (Fin 3)) → ℝ) →
       FiniteQubitConfiguration (Fin n) → FiniteQubitConfiguration (Fin n) → ℂ}
     {lam : ((Fin n → Option (Fin 3)) → ℝ) → FiniteQubitConfiguration (Fin n) → ℝ}
-    (hae : ∀ᵐ J ∂(centredProductGaussian (Fin n → Option (Fin 3)) v),
+    (hae : ∀ᵐ J ∂μ,
       IsOrthoEigenBasis (pauliEnsemble w J) (e J) (lam J) ∧ Function.Injective (lam J)) :
-    (∫ J, spectralCollision (e J) (zeroProductState (Fin n))
-        ∂(centredProductGaussian (Fin n → Option (Fin 3)) v)) ≤ (2 / 3 : ℝ) ^ n := by
+    (∫ J, spectralCollision (e J) (zeroProductState (Fin n)) ∂μ) ≤ (2 / 3 : ℝ) ^ n := by
   classical
-  set μ := centredProductGaussian (Fin n → Option (Fin 3)) v with hμ
   set Ω := zeroProductState (Fin n) with hΩ
   set orb : (Fin n → Fin 6) → FiniteQubitConfiguration (Fin n) → ℂ :=
     fun τ => finiteProductCliffordGate (fun s => stabClifford (τ s)) *ᵥ Ω with horb
@@ -87,8 +88,8 @@ theorem integral_spectralCollision_zeroProductState_le
   have hinv : ∀ τ : Fin n → Fin 6,
       (∫ J, spectralCollision (e J) (orb τ) ∂μ) = ∫ J, spectralCollision (e J) Ω ∂μ := by
     intro τ
-    have h := integral_spectralCollision_pauliEnsemble_clifford_eq w hw v
-      (fun s => (stabClifford (τ s))⁻¹) Ω (e := e) (lam := lam) hae
+    have h := integral_spectralCollision_pauliEnsemble_clifford_eq_of_invariant w hw
+      (fun s => (stabClifford (τ s))⁻¹) (hinv _) Ω (e := e) (lam := lam) hae
     rw [hconj τ] at h
     exact h
   have hint : ∀ τ : Fin n → Fin 6,
@@ -135,6 +136,20 @@ theorem integral_spectralCollision_zeroProductState_le
   rw [div_pow, le_div_iff₀ (by positivity : (0 : ℝ) < 3 ^ n)]
   rw [mul_comm] at h3
   exact h3
+
+/-- **The mean spectral collision of the all-zero product input is at most `(2/3)ⁿ`, for the
+centred product Gaussian.** -/
+theorem integral_spectralCollision_zeroProductState_le
+    (w : (Fin n → Option (Fin 3)) → ℝ) (hw : SupportInvariantWeight w) (v : NNReal)
+    {e : ((Fin n → Option (Fin 3)) → ℝ) →
+      FiniteQubitConfiguration (Fin n) → FiniteQubitConfiguration (Fin n) → ℂ}
+    {lam : ((Fin n → Option (Fin 3)) → ℝ) → FiniteQubitConfiguration (Fin n) → ℝ}
+    (hae : ∀ᵐ J ∂(centredProductGaussian (Fin n → Option (Fin 3)) v),
+      IsOrthoEigenBasis (pauliEnsemble w J) (e J) (lam J) ∧ Function.Injective (lam J)) :
+    (∫ J, spectralCollision (e J) (zeroProductState (Fin n))
+        ∂(centredProductGaussian (Fin n → Option (Fin 3)) v)) ≤ (2 / 3 : ℝ) ^ n :=
+  integral_spectralCollision_zeroProductState_le_of_invariant w hw
+    (fun g => measurePreserving_cliffordCoefficientMap g v) hae
 
 /-- **Markov bound for the fixed product input.**  The quenched collision exceeds `L (2/3)ⁿ` with
 probability at most `1 / L`. -/

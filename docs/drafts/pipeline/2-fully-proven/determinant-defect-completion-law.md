@@ -1062,3 +1062,399 @@ spectra.
 The estimate is `‖tr(Aᵏ) − tr(Bᵏ)‖ ≤ K(p,k,C,‖B‖_p)·‖A−B‖_p` with an explicit constant: the
 telescoping sum contributes `k` terms, each a product of exactly `k` Schatten-`p` factors, each
 bounded by `schattenProdConst p k · ‖A‖_p^j · ‖A−B‖_p · ‖B‖_p^{k−1−j}`.
+
+## Lean progress -- `det_p` on the operator side, with no spectral hypothesis (2026-08-19)
+
+The card's "What remains" paragraph said the two halves of `(DC)` need *continuity of `det_p` on
+Schatten-`p`* (Gohberg--Krein/Simon, not in mathlib).  That is now proved, and proved without
+Lidskii: the regularized determinant depends on its operator **only** through the sequence of power
+traces from exponent `p` upwards, so naming that sequence as the datum removes every reference to a
+spectrum, and with it the self-adjointness that the corpus's Lidskii layer carries.
+
+`formal/GaloisForLFunctions/HTGeometry/TracePowerDeterminant.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| **the order-`p` regularized determinant of a power-trace sequence** | `tracePowerDetExp`, `tracePowerDet` |
+| the geometric majorant of its terms, and convergence on a disc | `norm_tracePowerDetTerm_le`, `summable_tracePowerDetExp` |
+| **it forgets every trace below `p`** | `tracePowerDet_congr` |
+| **it is continuous in the power traces** | `tendsto_tracePowerDet_of_tendsto` |
+
+`formal/GaloisForLFunctions/HTGeometry/TracePowerDetDerivative.lean` and
+`TracePowerDeterminantGraphClosure.lean` (new, umbrella-wired, axiom-clean) carry the termwise
+differentiation, the continuity of the derivative and the closure statement
+`exists_poly_limit_of_tendsto_tracePowerDet` in the same generality.
+
+The spectral layer is now the *instance* of this at the power-trace sequence of a spectrum:
+`SchattenSpectralDeterminant`, `SchattenDetDerivative` and `SpectralDeterminantGraphClosure` keep
+their statements verbatim but their proofs are one-line delegations, and
+`SchattenOperatorDeterminant` defines `opSchattenDet` directly as `tracePowerDet` of the operator
+power traces.  Nothing is duplicated.
+
+`formal/GaloisForLFunctions/HTGeometry/OperatorDeterminantGraphClosure.lean` (new, umbrella-wired,
+axiom-clean) is the operator-side statement:
+
+| Card item | Declaration |
+|---|---|
+| the operator determinant *is* the determinant of its power traces | `opSchattenDetExp_eq_tracePowerDetExp`, `opSchattenDet_eq_tracePowerDet` |
+| the Schatten norm dominates the operator norm | `norm_le_schattenNorm` |
+| the Schatten norm carries the `p`-energy | `schattenNorm_rpow_eq_tsum` |
+| every power above the order is trace class | `memSchattenClass_one_pow_add` |
+| **the uniform geometric bound `‖tr(Aᵏ⁺ᵖ)‖ ≤ (1+p)‖A‖_p^p (2‖A‖_p)^k`** | `norm_opTrace_pow_add_le` |
+| **continuity of `det_p` in the Schatten norm** | `tendsto_opSchattenDet_of_tendsto_schattenNorm` |
+| **the closure of the determinant graph, operators in the Schatten topology** | `exists_poly_limit_of_tendsto_opSchattenDet` |
+
+`tendsto_opSchattenDet_of_tendsto_schattenNorm` is exactly the missing Gohberg--Krein/Simon input:
+if `‖Aₙ − A‖_p → 0` with `‖Aₙ‖_p` uniformly bounded, then `det_p(1 − zAₙ) → det_p(1 − zA)` on the
+disc `‖z‖·2C < 1`.  It composes the telescoping estimate `tendsto_opTrace_pow_of_tendsto_schattenNorm`
+(which supplies convergence of every power trace above the order) with the trace-norm-of-a-power
+bound `traceNorm_pow_le` (which supplies the uniform geometric majorant).  The constant is explicit:
+the `k` in `‖Aᵏ‖₁ ≤ k·M^{k−p}‖A‖_p^p` is absorbed by one factor of two per step, since
+`k + 1 ≤ 2^k`.
+
+`exists_poly_limit_of_tendsto_opSchattenDet` is the **necessity half of `(DC)` in one variable, on
+the operator side and at every order `p`**: a family `det_p(1−zAₙ)·e^{Pₙ(z)}` with `Aₙ → A` in the
+Schatten norm and `deg Pₙ < p`, `Pₙ(0) = 0`, converges only to `det_p(1−zA)·e^{Q(z)}` with `Q` of
+the same shape.
+
+### What remains on this card
+
+1. The multivariable packaging: `(DC)` for a pencil `A : V → S_p` with the compact-open topology on
+   `Hol(V)`, at every order (the corpus has the Schatten-order-two fibre already), together with the
+   homeomorphism and the naturality under linear pullback, unitary conjugacy and direct sum.
+2. The sufficiency half at every order: feeding the vanishing micro-spectrum construction `(M)` --
+   already assembled -- into the operator-side statement, i.e. realizing each degree-`k` block as a
+   genuine Schatten-`p` perturbation of the approximating pencil.
+
+### The line reduction for pencils, at every order
+
+`formal/GaloisForLFunctions/HTGeometry/OperatorDeterminantScaling.lean` (new, umbrella-wired,
+axiom-clean) generalizes `entireDet2_smul` from Schatten order two to **every order**, on the
+operator side:
+
+| Card item | Declaration |
+|---|---|
+| the power traces of a rescaled operator | `opTrace_pow_smul` |
+| **`det_p(1 − z·cT) = det_p(1 − (cz)T)`** | `opSchattenDetExp_smul`, `opSchattenDet_smul` |
+| a linear operator pencil and its homogeneity | `pencilOperator`, `pencilOperator_smul` |
+| **the line restriction of a pencil determinant is the one-variable determinant** | `opSchattenDet_pencil_line` |
+
+This is the reduction the `p = 2` multivariable fibre used, now available at every order and with no
+Hilbert--Schmidt or self-adjointness hypothesis: the regularized exponent's `m`-th coefficient
+carries `tr(Tᵐ)`, so `T ↦ cT` multiplies it by `cᵐ` and the exponent depends on `cz` alone.
+
+With `exists_poly_limit_of_tendsto_opSchattenDet` available on every line through the origin, the
+remaining step for the multivariable `(DC)` at general `p` is purely algebraic: the limit jet
+`Q_k(v) := coeff_k Q_v` is a pointwise limit of homogeneous degree-`k` forms, hence homogeneous, and
+lies in the finite-dimensional space `Sym^k(V*)` because that space is closed under pointwise
+convergence.
+
+## Lean progress -- the multivariable fibre at every order (2026-08-20)
+
+The passage from Schatten order two to general `p` in the card's multivariable `(DC)` is now
+complete on the necessity side.  Four new modules, all umbrella-wired and axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/BoundedDegreeMvPolynomialLimit.lean`
+
+| Card item | Declaration |
+|---|---|
+| **a finite-dimensional function space is closed under pointwise limits** | `mem_of_tendsto_pointwise` |
+| the evaluations of the bounded-degree monomials, and their finiteness | `monomialFunSet`, `finite_monomialFunSet` |
+| the finite-dimensional evaluation space of the fibre | `monomialFunSpan`, `finiteDimensional_monomialFunSpan` |
+| bounded-degree polynomials evaluate into it, and everything in it is such an evaluation | `evalFun_mem_monomialFunSpan`, `exists_poly_of_mem_monomialFunSpan` |
+| **the bounded-degree polynomial limit law, in several variables** | `exists_mvPolynomial_of_tendsto_pointwise` |
+
+This is the card's *"the finite-dimensional polynomial space is closed"* in the several-variable
+setting, where the fibre `⊕_{k<p} Sym^k(V*)` lives: there are only finitely many monomials of total
+degree at most `d`, so their evaluations span a finite-dimensional subspace of the space of all
+functions, and a finite-dimensional subspace of a Hausdorff topological vector space is closed while
+pointwise convergence *is* convergence in the product topology.
+
+`formal/GaloisForLFunctions/HTGeometry/PolynomialLineRestriction.lean`
+
+| Card item | Declaration |
+|---|---|
+| the restriction of a jet to the line through `v` | `lineRestrict`, `eval_lineRestrict`, `lineRestrict_eq_sum` |
+| **the line restriction does not raise the degree** | `natDegree_lineRestrict_le` |
+| pointwise jet convergence from coefficient convergence on lines | `tendsto_eval_of_line_coeff` |
+
+`formal/GaloisForLFunctions/HTGeometry/MultivariableDeterminantFibre.lean`
+
+| Card item | Declaration |
+|---|---|
+| **the multivariable fibre statement at every order** | `exists_mvPoly_limit_of_tendsto_familyDet` |
+| the limit jet keeps a vanishing constant coefficient | `eval_zero_eq_zero_of_tendsto` |
+| the same for a linear operator pencil | `exists_mvPoly_limit_of_tendsto_pencilDet` |
+| **multivariable necessity from the one-variable closures along every line** | `exists_mvPoly_of_line_closures` |
+
+The one-variable closure now also returns **coefficient convergence** of the jets
+(`exists_poly_limit_of_tendsto_tracePowerDet`, `..._spectralDet`, `..._opSchattenDet` all carry the
+extra clause), which is exactly what the line-to-fibre passage consumes: along each line the jets
+converge coefficientwise, so the multivariable jets converge pointwise, so the limit is again a
+polynomial of total degree at most `d` with vanishing constant term.
+
+Together with `opSchattenDet_pencil_line` -- the line reduction that carries the parameter into the
+spectral variable at every order -- and `tendsto_opSchattenDet_of_tendsto_schattenNorm` -- the
+Gohberg--Krein/Simon continuity -- the card's `(DC)` **necessity direction is now formal in several
+variables and at every Schatten order**, with the fibre exactly `⊕_{k<p} Sym^k(V*)` realized as the
+bounded-degree jets with vanishing constant term.
+
+### What remains on this card
+
+Only the **sufficiency** direction at general `p`: feeding the vanishing micro-spectrum construction
+`(M)` -- already assembled on the spectral side -- into the operator-side statement, which needs
+finite-rank density in the Schatten-`p` norm.
+
+## Lean progress -- finite-rank density in every Schatten norm (2026-08-20)
+
+The sufficiency direction's standing prerequisite -- *"choose finite-rank pencil approximants
+`A_n → A`"* -- is now a theorem at every Schatten order, not just in the Hilbert--Schmidt norm.
+
+`formal/GaloisForLFunctions/RHTower/SchattenTwoIdentity.lean` was refactored so that the greedy
+truncation used inside `approxNumber_le_singVal` is a named object with its own error bound (no
+duplicated proof; `approxNumber_le_singVal` is now a two-line corollary):
+
+| Card item | Declaration |
+|---|---|
+| the greedy truncation of `T` at order `n` | `RHTower.greedyTrunc` |
+| the greedy block over any finite index set has rank at most its cardinality | `RHTower.hasRankLE_greedyBlock`, `hasRankLE_greedyTrunc` |
+| **the greedy truncation error is the `n`-th singular value** | `RHTower.norm_sub_greedyTrunc_le` |
+
+`formal/GaloisForLFunctions/HTGeometry/SchattenFiniteRankDensity.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the greedy truncations telescope | `greedyTrunc_add` |
+| the difference of two truncations is a greedy block of the right rank | `hasRankLE_greedyTrunc_sub` |
+| **`a_k(T − T_N) ≤ s_{N+k}(T)`** | `approxNumber_sub_greedyTrunc_le` |
+| the singular-value `p`-series, and the error is again Schatten-`p` | `summable_singVal_rpow`, `memSchattenClass_sub_greedyTrunc` |
+| the `p`-energy of the error is a tail | `tsum_rpow_approxNumber_sub_greedyTrunc_le`, `tendsto_tsum_singVal_rpow_shift` |
+| **finite-rank density in every Schatten norm** | `tendsto_schattenNorm_sub_greedyTrunc` |
+
+The mechanism is the one the operator-norm statement already used, run one order deeper: the
+difference `T_{N+k} − T_N` is a greedy block of rank at most `k`, and subtracting it turns the
+order-`N` error into the order-`(N+k)` error, whose operator norm is `s_{N+k}(T)`.  Hence
+`a_k(T − T_N) ≤ s_{N+k}(T)`, and summing `p`-th powers leaves a tail of the convergent series
+`∑ s_n^p = ∑ a_n(T)^p`.
+
+With this, **every analytic input of `(DC)` is formal at every order**: continuity of `det_p` in the
+Schatten norm, the closure of the determinant graph in one variable, the line reduction, the
+multivariable fibre, and now finite-rank density.  What remains is the sufficiency *assembly*:
+combining the finite-rank approximants with the vanishing micro-spectrum blocks `(M)` so that the
+prescribed low power traces are realized while the Schatten-`p` error still vanishes.
+
+## Lean progress -- the sufficiency half, on the spectral side at every order (2026-08-20)
+
+The card's sufficiency proof -- *"choose finite-rank pencil approximants `A_n → A`; it suffices to
+construct a finite diagonal pencil `B_n` on an orthogonal complement with `‖B_n‖_{S_p} → 0` and
+prescribed low moments `(M)`"* -- is now assembled at every order.  On the spectral side the
+orthogonal complement is free: adding a micro-spectrum block to a truncated spectrum is multiset
+addition, and moments add.
+
+`formal/GaloisForLFunctions/HTGeometry/FiniteSpectrumPlainDeterminant.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the power traces of the negated diagonal | `neg_diagonal_pow_trace` |
+| the characteristic factor of a diagonal pencil | `det_one_add_smul_neg_diagonal` |
+| **`∏(1 − zλ) = det_p(1 − zΛ)·exp(−∑_{k<p} zᵏ tr_k/k)`** | `prod_one_sub_eq_schattenDet_mul_exp` |
+
+`formal/GaloisForLFunctions/HTGeometry/MultisetSpectrumDeterminant.lean` (new, umbrella-wired,
+axiom-clean) transports that identity to the multiset presentation the micro-spectrum layer
+produces (`multisetIndex`, `multiset_prod_eq_finProd`, `multiset_sum_eq_finSum`,
+`multiset_schattenTracePower`, `multiset_prod_one_sub_eq_schattenDet_mul_exp`).
+
+`formal/GaloisForLFunctions/HTGeometry/VanishingMicroSpectrumFamily.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the truncation of a spectrum and its moments | `truncSpectrum`, `truncSpectrum_moment` |
+| the high moments of the truncation converge | `tendsto_truncSpectrum_moment` |
+| **the vanishing micro-spectrum family `(M)`, assembled** | `exists_microSpectrumFamily` |
+
+`exists_microSpectrumFamily` is the card's construction verbatim: at truncation order `n` the block
+is chosen to realise the residual low moments inside an energy budget `1/(n+1)`, so the low moments
+of the corrected spectrum are **exactly** the prescribed targets at *every* order, the total energy
+stays inside `∑‖λ‖^p + 1`, every eigenvalue stays inside `max(B,1)`, and the moments above the order
+converge to the power traces of the original spectrum.
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralDeterminantSufficiency.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| a jet with vanishing constant term is its shifted coefficient sum | `eval_eq_sum_shift` |
+| **the sufficiency family**: `∏(1 − zμ) = det_p·exp(Q)` exactly, at every order | `exists_finiteSpectra_plainDet` |
+| **the sufficiency half of `(DC)` on the spectral side** | `exists_finiteSpectra_tendsto_plainDet` |
+
+Taking the low-moment targets to be `c k = −k·Q_k` makes the exponential factor of the finite
+determinant exactly `exp(Q)` at *every* truncation order -- no limit is needed there -- and the
+regularized factors converge because the moments above the order do.  So the plain determinants of
+the finite spectra converge to `exp(Q)·det_p(1 − zΛ)` on the disc `‖z‖·B < 1`.
+
+### Status of `(DC)`
+
+* **Necessity** — one variable, operator side, every order: `exists_poly_limit_of_tendsto_opSchattenDet`.
+* **Necessity** — several variables, every order: `exists_mvPoly_of_line_closures`.
+* **Sufficiency** — spectral side, every order: `exists_finiteSpectra_tendsto_plainDet`.
+* Continuity of `det_p` in the Schatten norm: `tendsto_opSchattenDet_of_tendsto_schattenNorm`.
+* Finite-rank density in every Schatten norm: `tendsto_schattenNorm_sub_greedyTrunc`.
+
+What remains is the transport of the spectral sufficiency to the *operator* side -- realizing the
+micro-spectrum block as an operator on an orthogonal complement of the finite-rank truncation --
+and the packaging of the two directions as the single set equality `(DC)` with its homeomorphism and
+naturality clauses.
+
+## Lean progress -- `(DC)` closed: both halves, unconditionally (2026-08-20)
+
+`(DC)` is now a **proved set equality** in Lean, in the topology the card states it in: the Schatten
+`p`-norm on the operator side and the compact-open topology on the function side.
+
+`formal/GaloisForLFunctions/HTGeometry/DeterminantCompletionLaw.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| membership in the closure of the finite-rank determinant graph | `DetGraphClosure` |
+| the completion fibre presentation | `DetCompletionFibre` |
+| **`(DC)`: the two sets are equal** | `detGraphClosure_eq_detCompletionFibre` |
+
+```
+theorem detGraphClosure_eq_detCompletionFibre (hH : ¬ FiniteDimensional ℂ H) {p : ℕ} (hp : 0 < p) :
+    DetGraphClosure H p = DetCompletionFibre H p
+```
+
+### The infrastructure the two halves needed
+
+**Order shift.** `HTGeometry/TracePowerDetOrderShift.lean` proves the card's transition identity
+`det_q = det_p · exp(−∑_{q ≤ j < p} Tr(A^j) z^j / j)` (`tracePowerDet_order_shift`) as a head/tail
+split of one absolutely convergent series, together with `tracePowerTerm` and
+`summable_tracePowerTerm_add`.  At `q = 1` this is the factorization of the *plain* determinant that
+both halves of `(DC)` run on.
+
+**Room beside a truncation.** `HTGeometry/OrthonormalComplementFamily.lean`
+(`exists_unit_mem_orthogonal`, `exists_orthonormal_mem_orthogonal`) produces an orthonormal family
+of any prescribed finite size in the orthogonal complement of a finite-dimensional subspace of an
+infinite-dimensional inner product space; `HTGeometry/GreedySupportComplement.lean` identifies the
+finite-dimensional subspace `greedySupport T n` that carries the greedy truncation and proves the
+complement is annihilated on both sides (`greedyTrunc_apply_eq_zero_of_mem_orthogonal`,
+`inner_greedyTrunc_eq_zero_of_mem_orthogonal`, `exists_orthonormal_beside_greedyTrunc`).
+
+**The block operator.** `HTGeometry/DiagonalBlockOperator.lean` builds the carrier of the vanishing
+micro-spectrum: `blockOpOn`/`blockOp`, `blockOp_comp`, `blockOp_pow`, `hasRankLE_blockOpOn`,
+`norm_blockOpOn_le` (its norm is its largest entry), **`opTrace_blockOp`** (its trace is the sum of
+its entries), the two annihilation lemmas `comp_blockOp_eq_zero`/`blockOp_comp_eq_zero`, and the
+ring lemma `add_pow_succ_of_mul_eq_zero` -- the powers of an orthogonal sum split.
+
+**Schatten additivity.** `HTGeometry/SchattenApproximationAdditivity.lean` proves `HasRankLE.add`,
+**`approxNumber_add_le`** (`a_{i+j}(X+Y) ≤ a_i(X) + a_j(Y)`), `rpow_add_le_two_rpow_mul`,
+`memSchattenClass_add`, **`schattenNorm_add_rpow_le`** (the quasi-triangle inequality for the
+`p`-energy, valid at every positive exponent -- no Ky Fan needed) and `tendsto_schattenNorm_add`.
+`HTGeometry/BlockOperatorSchatten.lean` proves **`tsum_rpow_approxNumber_blockOp_le`**: the Schatten
+`p`-energy of a block is at most the `p`-energy of its entries, with no constant, by sorting the
+entries through `Tuple.sort` (a permutation of the orthonormal family leaves the block unchanged).
+
+**Compact-open continuity of `det_p`.** `HTGeometry/TracePowerDetUniform.lean` proves
+`norm_tracePowerDetExp_sub_le` (head/tail split of the exponent difference),
+`norm_tracePowerDetExp_le` (the exponent is uniformly bounded on the disc),
+**`tendstoUniformlyOn_tracePowerDetExp`** and **`tendstoUniformlyOn_tracePowerDet`**.
+`HTGeometry/OperatorDeterminantUniform.lean` transports this to operators
+(`tendstoUniformlyOn_opSchattenDet`, **`tendstoLocallyUniformlyOn_opSchattenDet`**) and adds
+`tendstoLocallyUniformlyOn_mul_continuous_right`.  This is the card's missing
+"continuity of `det_p` on Schatten-`p` (Gohberg--Krein/Simon)" input, now owned.
+
+### The two halves
+
+`formal/GaloisForLFunctions/HTGeometry/OperatorDeterminantSufficiency.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| powers of a finite-rank operator stay finite rank | `hasRankLE_pow_succ` |
+| the power traces of an orthogonal sum split | `opTrace_add_pow_succ_of_orthogonal` |
+| the Schatten data is even | `approxNumber_neg`, `schattenNorm_neg`, `memSchattenClass_neg` |
+| the greedy error never exceeds the operator in `p`-energy | `schattenNorm_greedy_sub_rpow_le` |
+| **the sufficiency half of `(DC)`, operator side** | `exists_finiteRank_tendsto_opSchattenDet_one` |
+
+and `HTGeometry/OperatorDeterminantUniform.lean` upgrades it to the compact-open topology:
+**`exists_finiteRank_tendstoLocallyUniformlyOn_opSchattenDet_one`**.  The construction is the card's
+`(M)` verbatim: `F n = greedyTrunc T n + blockOp (e n) (μ n)`, with `e n` orthonormal beside the
+truncation and `μ n` the micro-spectrum realizing the residual low moments inside energy `1/(n+1)`.
+Consequently the low power traces of `F n` are *exactly* `−k·Q_k` at every order, so the plain
+determinant is `exp(Q)` times the regularized one with no error term at all, and Schatten continuity
+of `det_p` delivers the limit.
+
+`formal/GaloisForLFunctions/HTGeometry/DeterminantGraphLocallyUniform.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the polynomial of the trace coordinates below the order | `lowTracePoly`, `eval_lowTracePoly`, `natDegree_lowTracePoly_le`, `coeff_zero_lowTracePoly` |
+| **the plain determinant factors** | `opSchattenDet_one_eq_mul_exp_lowTracePoly` |
+| it is holomorphic on the disc of convergence, and unital at the origin | `differentiableOn_opSchattenDet_one`, `opSchattenDet_apply_zero` |
+| **the necessity half of `(DC)`, unconditionally** | `exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet` |
+
+The necessity half needs no side hypotheses: locally uniform convergence makes the limit holomorphic
+(Weierstrass), unital at the origin, hence nonvanishing near it, and the derivative limits come from
+Weierstrass convergence of derivatives.  Those are exactly the two inputs the earlier conditional
+graph-closure theorem took as hypotheses, so they are now discharged.
+
+### The parametrization is injective
+
+`formal/GaloisForLFunctions/HTGeometry/DeterminantJetUniqueness.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| a nonempty disc in `ℂ` is infinite | `infinite_ball_complex` |
+| **jets with vanishing constant term are determined by `exp` of their values on a disc** | `eq_of_exp_eval_eq_on_ball` |
+| **the fibre coordinate of `(DC)` is unique** | `detCompletionFibre_jet_unique` |
+
+Together with the coefficientwise convergence clause of
+`exists_poly_limit_of_tendsto_opSchattenDet` -- which is precisely continuity of the inverse
+parametrization -- this gives the card's "the displayed parametrization is a homeomorphism".
+
+### What remains on this card
+
+The naturality clauses: internal direct sum and unitary conjugacy of the completed character, and
+the several-variable form of the sufficiency half (necessity in several variables is already owned by
+`exists_mvPoly_of_line_closures`).
+
+## Lean progress -- naturality of the completion (2026-08-20)
+
+`formal/GaloisForLFunctions/HTGeometry/DeterminantCompletionNaturality.lean` (new, umbrella-wired,
+axiom-clean).  Every naturality clause of the card is a trace identity, because the regularized
+determinant sees its operator only through the power traces.
+
+| Card item | Declaration |
+|---|---|
+| the regularized exponent is additive in the power traces | `tracePowerDetExp_add` |
+| **the determinant is multiplicative in the power traces** | `tracePowerDet_add` |
+| the power traces add across an internal direct sum | `opTrace_add_pow_of_orthogonal` |
+| **direct-sum multiplicativity `det_p(A ⊕ B) = det_p(A)·det_p(B)`** | `opSchattenDet_add_of_orthogonal` |
+| the Schatten ideal property | `memSchattenClass_comp_right`, `memSchattenClass_comp_left` |
+| `(V A W)^m = V A^m W` for an invertible pair | `pow_conj_of_inverse` |
+| **similarity invariance of the power traces** | `opTrace_conj` |
+| **similarity invariance of the completed determinant** | `opSchattenDet_conj` |
+
+"Internal direct sum" is the intrinsic form of the clause: a pair of Schatten-`p` operators
+annihilating each other in both orders is exactly a pair supported on orthogonal complementary
+subspaces, and `opSchattenDet_add_of_orthogonal` says the completed character is multiplicative
+there.  `opSchattenDet_conj` is stated for conjugation by an arbitrary invertible bounded operator,
+so unitary conjugacy is the special case `W = U†`; it rests on the corpus's bounded cyclicity of the
+Schatten-1 trace (`MemSchattenClass.one_opTrace_comp_comm`) together with the ideal property proved
+here.  Linear pullback in one parameter is `opSchattenDet_smul` / `opSchattenDet_pencil_line`.
+
+### What remains on this card
+
+Only the **several-variable** sufficiency half.  Necessity in several variables is already owned
+(`exists_mvPoly_of_line_closures`), and the several-variable sufficiency needs one further classical
+input: every homogeneous form of degree `k` over `ℂ` is a linear combination of `k`-th powers of
+linear forms (polarization / Waring), which is what makes the diagonal micro-spectrum block --
+whose eigenvalues must be *linear* in the pencil parameter -- able to realise an arbitrary
+homogeneous defect.  The corpus already owns the pure-power case
+(`exists_rootMicroSpectrumPencil_realizing`).

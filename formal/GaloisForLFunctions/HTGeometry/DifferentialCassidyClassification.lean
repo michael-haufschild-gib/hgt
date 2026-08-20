@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.BurnsideTwoByTwo
 import GaloisForLFunctions.HTGeometry.Sl2LineStabiliserBridge
 import GaloisForLFunctions.HTGeometry.CassidyMatrixAlgebra
 import GaloisForLFunctions.HTGeometry.DifferentialConstantsCollapse
@@ -108,6 +109,36 @@ theorem constant_conjugate_of_differentialSolution [IsAlgClosed U] [CharZero U]
   obtain ⟨c, hc⟩ := hconst g hg i j
   rw [hc]
   exact c.2
+
+/-- **An irreducible matrix group with a differentially constrained scalar stabiliser becomes
+constant after one conjugation.**  Irreducibility replaces the spanning hypothesis through
+Burnside's theorem. -/
+theorem constant_conjugate_of_irreducible [IsAlgClosed U] [CharZero U]
+    [IsAlgClosed (differentialConstants U)]
+    (G : Set (Matrix (Fin 2) (Fin 2) U))
+    (hone : (1 : Matrix (Fin 2) (Fin 2) U) ∈ G)
+    (hmulG : ∀ g ∈ G, ∀ h ∈ G, g * h ∈ G)
+    (hirr : ∀ v : Fin 2 → U, v ≠ 0 → ∀ u : Fin 2 → U,
+      u ∈ Submodule.span U {x : Fin 2 → U | ∃ g ∈ G, g.mulVec v = x})
+    {n : ℕ} (a : Fin n → U)
+    (hsol : ∀ c : U, c • (1 : Matrix (Fin 2) (Fin 2) U) ∈
+        Submodule.span (differentialConstants U) G →
+      differentialJet n c = ∑ i, a i * differentialJet (i : ℕ) c) :
+    ∃ P Q : Matrix (Fin 2) (Fin 2) U, P * Q = 1 ∧ Q * P = 1 ∧
+      ∀ g ∈ G, ∀ i j, (P * g * Q) i j ∈ differentialConstants U := by
+  have hGA : G ⊆ (Submodule.span U G : Set (Matrix (Fin 2) (Fin 2) U)) := Submodule.subset_span
+  have hirr' : ∀ v : Fin 2 → U, v ≠ 0 → ∀ u : Fin 2 → U,
+      u ∈ Submodule.span U
+        {x : Fin 2 → U | ∃ b ∈ Submodule.span U G, Matrix.mulVec b v = x} := by
+    intro v hv u
+    refine Submodule.span_mono ?_ (hirr v hv u)
+    rintro x ⟨g, hg, rfl⟩
+    exact ⟨g, hGA hg, rfl⟩
+  have hspanG : ∀ Z : Matrix (Fin 2) (Fin 2) U, Z ∈ Submodule.span U G := by
+    intro Z
+    exact mem_of_irreducibleAction (Submodule.span U G) (hGA hone)
+      (mul_mem_span_of_mul_mem (C := U) G hmulG) hirr' Z
+  exact constant_conjugate_of_differentialSolution G hone hmulG hspanG a hsol
 
 end
 

@@ -485,3 +485,62 @@ The card is now at `3-formalized/not_new_scientific_knowledge/`.  Four of six pr
 
 Remaining: C1 (`hardy-critical-line-moment-anchor`, Lemma E) and C6
 (`horizontal-singleton-zero-fibers`, the PRZZ proportions).
+
+### C1 — the missing analytic input for Lemma E is now PROVED (2026-08-19)
+
+Corpus search first: `RHTower/TrigammaVertical.lean` already owns the trigamma series
+(`deriv_digamma_partialSum_tendsto`) and the *qualitative* sign `deriv_digamma_vertical_im_neg`,
+and `RHTower/HardyZPhaseAsymptotic.lean` owns the exact second-jet law
+`deriv_gammaHardyPhaseRate t = −(ψ′(linePt t/2)).im/4` together with `θ″(t) > 0`.  What was missing
+was the *quantitative* `θ″(t) ≳ 1/t` needed by the second-derivative test.
+
+New module `formal/GaloisForLFunctions/RHTower/TrigammaVerticalLowerBound.lean` (wired into
+`RHTower.lean`, olean built, axioms clean, no warnings):
+
+- `trigammaVerticalTerm`, `trigammaVerticalTerm_nonneg`, `im_inv_sq_eq` — the explicit terms
+  `2(σ+n)t/((σ+n)²+t²)²` of `−Im ψ′(σ+it)`;
+- `partialSum_le_neg_im_deriv_digamma` — every partial sum is a lower bound (all terms are
+  nonnegative, so the partial sums are monotone and bounded by their limit);
+- **`neg_im_deriv_digamma_lower_bound`** — `−Im ψ′(σ+it) ≥ 1/(50 t)` for `0 < σ ≤ 1`, `t ≥ 2`,
+  by summing the first `⌈t⌉` terms, each of which is at least `2(σ+n)/(25 t³)`;
+- **`deriv_gammaHardyPhaseRate_lower_bound`** — `θ″(t) ≥ 1/(100 t)` for `t ≥ 4`.
+
+The van der Corput second-derivative test with amplitude is already in the corpus
+(`RHTower/VanDerCorput.lean`, `secondDerivTest`: `φ″ ≥ μ > 0 ⟹ ‖∫ A e^{iφ}‖ ≤ 8·budget/√μ`), as is
+the first-derivative test.  What remains for Lemma E is the split of the corpus's exact Gaussian
+smooth AFE for `Z` (`hardyZ_eq_two_tsum_smoothAFE_real`) into the three ranges and the summation.
+
+### C1 — Lemma E: a much cheaper route than the card's (2026-08-19)
+
+The card aims for the sharp `|∫_T^{2T} Z| = O(T^{3/4})`, which needs the three-range split
+(first-derivative test away from the saddle, second-derivative test at it).  **The assembly does
+not need the sharp exponent**: with `S = T/4` (Lemma C) and `F = O(T log⁴T)` (Lemma F), the Hölder
+chain closes as soon as `|∫_T^{2T} Z| = o(T/log²T)`.  That allows applying the **second-derivative
+test uniformly to every term**, with no range decomposition at all:
+
+* `φ_n(τ) = θ(τ) − τ·log(n+1)` has `φ_n″ = θ″` for *every* `n`, and
+  `θ″(τ) ≥ 1/(100τ) ≥ 1/(200T)` on `[T,2T]` (`deriv_gammaHardyPhaseRate_lower_bound`), so the
+  corpus's `secondDerivTest` gives `‖∫_T^{2T} A e^{iφ_n}‖ ≤ 8·budget_n·√(200T)` for every `n`;
+* direct terms have constant amplitude `V_n = smoothAFECutoff((n+1)/x)`, so `budget_n = 2‖V_n‖` and
+  `∑_n (n+1)^{-1/2}‖V_n‖ = O(√x)` (bounded for `n ≲ x` by
+  `exists_norm_smoothAFECutoff_sub_one_le_rpow`, and by `exists_norm_smoothAFECutoff_le_neg_rpow`
+  with `A = 2` beyond);
+* dual terms have `budget_n = ‖W_n(T)‖ + ‖W_n(2T)‖ + ∫_T^{2T}‖∂_τW_n‖`, with
+  `∫_T^{2T}‖∂_τW_n‖ ≤ A·T/((n+1)x)` (`exists_norm_deriv_smoothAFEZetaDualWeight_le_invScale`).
+
+Totals: direct `O(√x·√T)`, dual-derivative `O((T/x)·√T)`, dual-size `O(√(T/x)·√T)`.  Balancing
+`√x = T/x` gives `x = T^{2/3}` and
+
+```text
+|∫_T^{2T} Z| = O(T^{5/6}) = o(T/log²T).      ✓
+```
+
+The one input still missing from the corpus is the **large-scale decay of the dual weight**,
+`‖smoothAFEZetaDualWeight τ Y‖ ≤ K (Y/max(1,|τ|))^{-A}` for some `A > 1/2` — the positive-contour
+analogue of the existing small-scale bound
+`exists_norm_smoothAFEZetaDualWeight_sub_one_le_conductor` (which uses the contour `Re w = −δ`).
+The machinery is present: `smoothAFEZetaDualWeightAt`, `smoothAFEZetaDualWeight_finite_contour`,
+and `exists_norm_smoothAFEZetaChiShiftRatio_pos_le`; what is needed is the same argument on the
+contour `Re w = +A`, where `smoothAFEMellinIntegrand Y` contributes `Y^{-A}`.
+
+Also needed, and routine: the interchange `∫_T^{2T} ∑_n = ∑_n ∫_T^{2T}` for the two AFE series.
