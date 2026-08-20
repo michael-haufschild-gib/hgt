@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ABHN.BrauerFoundations
+import Mathlib.Algebra.Algebra.Subalgebra.Centralizer
 import Mathlib.RingTheory.TensorProduct.Finite
 
 /-!
@@ -30,5 +31,36 @@ noncomputable def scalarExtensionMap {K : Type u} {L : Type v} [Field K] [Field 
 theorem scalarExtensionAlg_finiteDimensional {K : Type u} {L : Type v} [Field K] [Field L]
     [Algebra K L] (A : CSA.{u, w} K) : FiniteDimensional L (L ⊗[K] A.carrier) := by
   infer_instance
+
+/-- Scalar extension of a central algebra remains central over the extended field. -/
+theorem scalarExtensionAlg_isCentral {K : Type u} {L : Type v} [Field K] [Field L]
+    [Algebra K L] (A : CSA.{u, w} K) : Algebra.IsCentral L (L ⊗[K] A.carrier) := by
+  constructor
+  intro z hz
+  rw [Subalgebra.mem_center_iff] at hz
+  rw [Algebra.mem_bot]
+  have hz' : z ∈ Subalgebra.centralizer K
+      (↑(Algebra.TensorProduct.includeRight : A.carrier →ₐ[K] L ⊗[K] A.carrier).range) := by
+    rw [Subalgebra.mem_centralizer_iff]
+    rintro g ⟨a, rfl⟩
+    exact hz _
+  rw [Subalgebra.centralizer_range_includeRight_eq_center_tensorProduct K L A.carrier] at hz'
+  rcases hz' with ⟨x, hx⟩
+  subst z
+  clear hz
+  induction x using TensorProduct.induction_on with
+  | zero => exact ⟨0, by simp⟩
+  | tmul l a =>
+      obtain ⟨k, hk⟩ := (Algebra.IsCentral.mem_center_iff K).mp a.prop
+      refine ⟨l * algebraMap K L k, ?_⟩
+      simpa [Algebra.TensorProduct.map_tmul, hk, Algebra.smul_def, mul_comm] using
+        (TensorProduct.tmul_smul (R := K) (R' := K) (M := L) (N := A.carrier)
+          k l (1 : A.carrier)).symm
+  | add x y hx hy =>
+      obtain ⟨lx, hx⟩ := hx
+      obtain ⟨ly, hy⟩ := hy
+      refine ⟨lx + ly, ?_⟩
+      change algebraMap L (L ⊗[K] A.carrier) (lx + ly) = _
+      rw [map_add, map_add, hx, hy]
 
 end GaloisForLFunctions.HTGeometry.ABHN

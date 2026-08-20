@@ -59,30 +59,31 @@ def projectionPhaseShearFamily (t : ℝ) : ProjectionPhaseEnd :=
 theorem projectionPhaseShearFamily_idempotent (t : ℝ) :
     projectionPhaseShearFamily t * projectionPhaseShearFamily t = projectionPhaseShearFamily t := by
   unfold projectionPhaseShearFamily
-  calc
-    (projectionPhaseProjection + (t : ℂ) • projectionPhaseNormal) *
-        (projectionPhaseProjection + (t : ℂ) • projectionPhaseNormal) =
-        projectionPhaseProjection * projectionPhaseProjection +
-          projectionPhaseProjection * ((t : ℂ) • projectionPhaseNormal) +
-          ((t : ℂ) • projectionPhaseNormal) * projectionPhaseProjection +
-          ((t : ℂ) • projectionPhaseNormal) * ((t : ℂ) • projectionPhaseNormal) := by
-      noncomm_ring
-    _ = projectionPhaseProjection + 0 + (t : ℂ) • projectionPhaseNormal + 0 := by
-      rw [projectionPhaseProjection_sq, mul_smul_comm, projectionPhaseProjection_mul_normal,
-        smul_zero, smul_mul_assoc, projectionPhaseNormal_mul_projection, smul_mul_assoc,
-        mul_smul_comm, projectionPhaseNormal_sq, smul_zero]
-    _ = projectionPhaseProjection + (t : ℂ) • projectionPhaseNormal := by simp
+  have hsmul_zero (c : ℂ) : c • (0 : ProjectionPhaseEnd) = 0 := by
+    ext x
+    simp
+  rw [add_mul, mul_add, mul_add, projectionPhaseProjection_sq, mul_smul_comm,
+    projectionPhaseProjection_mul_normal, hsmul_zero, smul_mul_assoc,
+    projectionPhaseNormal_mul_projection, smul_mul_assoc, mul_smul_comm,
+    projectionPhaseNormal_sq, hsmul_zero, hsmul_zero]
+  abel
 
 theorem projectionPhaseShearFamily_zero :
     projectionPhaseShearFamily 0 = projectionPhaseProjection := by
+  ext x
   simp [projectionPhaseShearFamily]
 
 /-- The normal corner is the exact derivative of the idempotent shear at every real parameter. -/
 theorem hasDerivAt_projectionPhaseShearFamily (t : ℝ) :
     HasDerivAt projectionPhaseShearFamily projectionPhaseNormal t := by
   unfold projectionPhaseShearFamily
-  simpa using ((hasDerivAt_id (t : ℂ)).comp_ofReal.smul_const projectionPhaseNormal).const_add
-    projectionPhaseProjection
+  have h : HasDerivAt (fun z : ℂ => z • projectionPhaseNormal)
+      ((1 : ℂ) • projectionPhaseNormal) (t : ℂ) :=
+    (hasDerivAt_id (t : ℂ)).smul_const projectionPhaseNormal
+  have hreal : HasDerivAt (fun s : ℝ => (s : ℂ) • projectionPhaseNormal)
+      ((1 : ℂ) • projectionPhaseNormal) t :=
+    HasDerivAt.comp_ofReal (z := t) h
+  simpa only [one_smul] using hreal.const_add projectionPhaseProjection
 
 /-- The Hodge--Dirac supercharge of the normal corner reconstructs the full Pauli-X tangent. -/
 theorem brstHodgeDirac_projectionPhaseNormal_eq_X :

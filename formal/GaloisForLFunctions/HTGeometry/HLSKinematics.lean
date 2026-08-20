@@ -316,37 +316,55 @@ def hlsCliffordSpinToLorentz : HLSSpinGroup →* hlsLorentzGroup where
       hlsCliffordIota_spinMinkowskiLinearEquiv]
     simp [hlsSpinConjugation, mul_smul]
 
-/-- Algebraic data of the spin double-cover map required to pass from Mathlib's Clifford spin
-group to the proper orthochronous Lorentz group.  Its two-point kernel and surjectivity make the
-covering degree explicit.  The canonical map to the full Lorentz group is constructed above;
-this record isolates the still-needed proof that it restricts to a surjective proper two-fold
-cover. -/
+/-- The algebraic Spin action with its Lorentz subgroup coercion exposed. -/
+def hlsCliffordSpinToLinearEquiv : HLSSpinGroup →*
+    (HLSMinkowskiVector ≃ₗ[ℝ] HLSMinkowskiVector) :=
+  (Subgroup.subtype hlsLorentzGroup).comp hlsCliffordSpinToLorentz
+
+/-- The physical `Spin⁺(1,3)` subgroup: exactly the Spin elements whose concrete Clifford action
+is proper and preserves time orientation.  This avoids identifying Mathlib's full algebraic spin
+group with the physical connected component. -/
+abbrev HLSSpinPlusGroup : Subgroup HLSSpinGroup :=
+  Subgroup.comap hlsCliffordSpinToLinearEquiv hlsProperOrthoLorentzGroup
+
+/-- The canonical physical Spin-plus action on the proper orthochronous Lorentz group. -/
+def hlsSpinPlusToProperLorentz : HLSSpinPlusGroup →* hlsProperOrthoLorentzGroup :=
+  (hlsCliffordSpinToLinearEquiv.comp (Subgroup.subtype HLSSpinPlusGroup)).codRestrict
+    hlsProperOrthoLorentzGroup (fun s => s.property)
+
+/-- Forgetting properness from the canonical Spin-plus action recovers Clifford conjugation. -/
+theorem hlsSpinPlusToProperLorentz_canonical :
+    hlsProperOrthoLorentzToLorentz.comp hlsSpinPlusToProperLorentz =
+      hlsCliffordSpinToLorentz.comp (Subgroup.subtype HLSSpinPlusGroup) :=
+  rfl
+
+/-- The remaining standard double-cover theorem for the explicitly defined physical
+`Spin⁺(1,3)` map.  No arbitrary cover map is accepted: any future proof must establish these
+properties for `hlsSpinPlusToProperLorentz` itself. -/
 structure HLSSpinLorentzCoverData where
-  toLorentz : HLSSpinGroup →* hlsProperOrthoLorentzGroup
-  canonical : hlsProperOrthoLorentzToLorentz.comp toLorentz = hlsCliffordSpinToLorentz
-  surjective : Function.Surjective toLorentz
-  kernel_equiv_bool : toLorentz.ker ≃ Bool
+  surjective : Function.Surjective hlsSpinPlusToProperLorentz
+  kernel_equiv_bool : hlsSpinPlusToProperLorentz.ker ≃ Bool
 
-/-- Spin action on translations induced by a supplied spin-to-Lorentz cover. -/
-def hlsSpinTranslationAction (cover : HLSSpinLorentzCoverData) :
-    HLSSpinGroup →* MulAut (Multiplicative HLSMinkowskiVector) :=
-  hlsProperOrthoLorentzAction.comp cover.toLorentz
+/-- Spin-plus action on translations through its canonical proper Lorentz action. -/
+def hlsSpinTranslationAction : HLSSpinPlusGroup →*
+    MulAut (Multiplicative HLSMinkowskiVector) :=
+  hlsProperOrthoLorentzAction.comp hlsSpinPlusToProperLorentz
 
-/-- Spin-Poincaré group associated to a supplied cover of the proper orthochronous Lorentz group. -/
-abbrev HLSSpinPoincareGroup (cover : HLSSpinLorentzCoverData) :=
-  Multiplicative HLSMinkowskiVector ⋊[hlsSpinTranslationAction cover] HLSSpinGroup
+/-- Physical Spin-plus Poincaré group. -/
+abbrev HLSSpinPoincareGroup :=
+  Multiplicative HLSMinkowskiVector ⋊[hlsSpinTranslationAction] HLSSpinPlusGroup
 
-/-- The spin-to-Lorentz cover induces a homomorphism of the associated Poincaré groups. -/
-def hlsSpinPoincareToPhysical (cover : HLSSpinLorentzCoverData) :
-    HLSSpinPoincareGroup cover →* HLSPhysicalPoincareGroup where
-  toFun x := ⟨x.left, cover.toLorentz x.right⟩
+/-- The canonical physical Spin-plus action induces a Poincaré homomorphism. -/
+def hlsSpinPoincareToPhysical : HLSSpinPoincareGroup →* HLSPhysicalPoincareGroup where
+  toFun x := ⟨x.left, hlsSpinPlusToProperLorentz x.right⟩
   map_one' := by ext <;> simp
   map_mul' x y := by
     ext <;> simp [hlsSpinTranslationAction]
 
-/-- The induced spin-Poincaré homomorphism is surjective whenever the Lorentz cover is. -/
+/-- The induced Spin-plus Poincaré homomorphism is surjective once the canonical Spin-plus
+double-cover theorem is supplied. -/
 theorem hlsSpinPoincareToPhysical_surjective (cover : HLSSpinLorentzCoverData) :
-    Function.Surjective (hlsSpinPoincareToPhysical cover) := by
+    Function.Surjective hlsSpinPoincareToPhysical := by
   rintro ⟨translation, lorentz⟩
   obtain ⟨spin, hspin⟩ := cover.surjective lorentz
   refine ⟨⟨translation, spin⟩, ?_⟩

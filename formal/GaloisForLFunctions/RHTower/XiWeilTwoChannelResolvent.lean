@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiEulerSafeCauchyLoss
 import GaloisForLFunctions.RHTower.XiWeilResolventGram
 import GaloisForLFunctions.RHTower.XiThetaEigenGramLaw
+import GaloisForLFunctions.RHTower.XiExplicitFormulaLogDeriv
 
 /-!
 # The critical logarithmic-derivative kernel is a two-channel Weil resolvent Gram
@@ -626,5 +627,45 @@ theorem riemannHypothesis_iff_twoChannel_packet_nonneg :
     have hval := h n (fun j => conj (c j)) w
     rw [twoChannel_packet_eq_kernelEnergy] at hval
     simpa using hval
+
+/-! ### Equation (19): the absolutely convergent Euler presentation -/
+
+theorem logDeriv_xiCent_eq_shift (W : ℂ) : logDeriv xiCent W = logDeriv xi (1 / 2 + W) := by
+  have hfun : xiCent = fun W : ℂ => xi (1 / 2 + W) := rfl
+  rw [logDeriv_apply, logDeriv_apply, hfun, deriv_comp_const_add]
+
+theorem one_lt_re_shift {W : ℂ} (hW : 1 / 2 < W.re) : 1 < ((1 : ℂ) / 2 + W).re := by
+  have h : ((1 : ℂ) / 2).re = 1 / 2 := by
+    rw [show (1 : ℂ) / 2 = ((1 / 2 : ℝ) : ℂ) by norm_num, Complex.ofReal_re]
+  rw [Complex.add_re, h]
+  linarith
+
+/-- **Equation (19).**  On the Euler-safe half plane the centred logarithmic derivative is the
+polar and archimedean head minus the absolutely convergent von Mangoldt series. -/
+theorem logDeriv_xiCent_eq_eulerPresentation {W : ℂ} (hW : 1 / 2 < W.re) :
+    logDeriv xiCent W
+      = ((1 : ℂ) / 2 + W)⁻¹ + ((1 : ℂ) / 2 + W - 1)⁻¹ + logDeriv Complex.Gammaℝ ((1 : ℂ) / 2 + W)
+        - LSeries (fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) ((1 : ℂ) / 2 + W) := by
+  have hs : 1 < ((1 : ℂ) / 2 + W).re := one_lt_re_shift hW
+  have hL := ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs
+  have hlogζ : logDeriv riemannZeta ((1 : ℂ) / 2 + W)
+      = -LSeries (fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) ((1 : ℂ) / 2 + W) := by
+    rw [logDeriv_apply, hL]
+    ring
+  rw [logDeriv_xiCent_eq_shift, logDeriv_xi_split hs, hlogζ]
+  ring
+
+/-- The von Mangoldt series of the Euler presentation converges absolutely. -/
+theorem lSeriesSummable_vonMangoldt_shift {W : ℂ} (hW : 1 / 2 < W.re) :
+    LSeriesSummable (fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) ((1 : ℂ) / 2 + W) :=
+  ArithmeticFunction.LSeriesSummable_vonMangoldt (one_lt_re_shift hW)
+
+/-- **Equation (20).**  Every entry of the two-channel Weil Gram is the Euler--Gamma logarithmic
+derivative kernel. -/
+theorem twoChannelKernel_eq_eulerKernel (x y : {W : ℂ // 1 / 2 < W.re}) :
+    twoChannelKernel x y
+      = (logDeriv xiCent (x : ℂ) + conj (logDeriv xiCent (y : ℂ)))
+          / ((x : ℂ) + conj (y : ℂ)) := by
+  rw [twoChannelKernel_eq, criticalLogDerivKernel]
 
 end RHTower

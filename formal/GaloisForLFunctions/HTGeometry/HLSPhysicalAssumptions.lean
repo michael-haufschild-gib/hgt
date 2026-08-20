@@ -167,11 +167,10 @@ theorem HLSFockStateCompletionData.parity_fermion_creation {B : Type v} {F : Typ
       -data.completion (hlsFermionCreate B F f) := by
   rw [data.parity_compatible, hlsFockParity_apply_fermionCreate, map_neg]
 
-/-- Unitary representation of a spin-Poincaré group after supplying the missing algebraic
-spin-to-Lorentz cover data. -/
-structure HLSSpinPoincareRepresentation (cover : HLSSpinLorentzCoverData) (E : Type u)
+/-- Unitary representation of the canonical physical Spin-plus Poincaré group. -/
+structure HLSSpinPoincareRepresentation (E : Type u)
     [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E] where
-  action : HLSSpinPoincareGroup cover →* (E ≃ₗᵢ[ℂ] E)
+  action : HLSSpinPoincareGroup →* (E ≃ₗᵢ[ℂ] E)
 
 /-- A genuinely self-adjoint, possibly unbounded Hilbert-space operator.  Mathlib's
 `LinearPMap` adjoint makes this stronger than a merely symmetric common-domain map: its domain
