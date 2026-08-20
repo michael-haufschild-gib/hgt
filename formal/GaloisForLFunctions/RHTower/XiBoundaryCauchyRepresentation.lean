@@ -249,8 +249,7 @@ theorem integrable_poisson_cauchy_shiftL {c : ℝ} (hc : 0 < c) {A : ℂ} (hA : 
     hcont.aestronglyMeasurable ?_
   filter_upwards with t
   have hp := halfPlanePoisson_pos hc (t - r)
-  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hp, Real.norm_eq_abs,
-    abs_of_nonneg (by positivity), mul_comm (1 / A.re)]
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hp, mul_comm (1 / A.re)]
   exact mul_le_mul_of_nonneg_left (norm_inv_sub_I_mul_real_le hA t) (le_of_lt hp)
 
 theorem integrable_poisson_cauchy_shiftR {c : ℝ} (hc : 0 < c) {B : ℂ} (hB : 0 < B.re) (r : ℝ) :
@@ -269,8 +268,7 @@ theorem integrable_poisson_cauchy_shiftR {c : ℝ} (hc : 0 < c) {B : ℂ} (hB : 
     hcont.aestronglyMeasurable ?_
   filter_upwards with t
   have hp := halfPlanePoisson_pos hc (t - r)
-  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hp, Real.norm_eq_abs,
-    abs_of_nonneg (by positivity), mul_comm (1 / B.re)]
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hp, mul_comm (1 / B.re)]
   exact mul_le_mul_of_nonneg_left (norm_inv_add_I_mul_real_le hB t) (le_of_lt hp)
 
 theorem norm_boundaryCauchyKernel_le_const {a : ℝ} {w v : ℂ} (hw : a < w.re) (hv : a < v.re)
@@ -282,7 +280,7 @@ theorem norm_boundaryCauchyKernel_le_const {a : ℝ} {w v : ℂ} (hw : a < w.re)
   rw [boundaryCauchyKernel, hAeq, hBeq, mul_inv, norm_mul]
   exact mul_le_mul (norm_inv_sub_I_mul_real_le (re_node_offset hw) t)
     (norm_inv_add_I_mul_real_le (re_conj_node_offset hv) t) (norm_nonneg _)
-    (by positivity)
+    (le_of_lt (one_div_pos.mpr (re_node_offset hw)))
 
 theorem integrable_boundaryPoissonTerm {a : ℝ} (ha : 1 / 2 < a) (q : XiZeroCopy) :
     Integrable fun t : ℝ => boundaryPoissonTerm a t q := by
@@ -321,8 +319,8 @@ theorem integrable_boundaryTerm_cauchy {a : ℝ} (ha : 1 / 2 < a) {w v : ℂ} (h
   have hT : 0 < boundaryPoissonTerm a t q := by
     rw [boundaryPoissonTerm]
     exact add_pos (halfPlanePoisson_pos hpos _) (halfPlanePoisson_pos hneg _)
-  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hT, Real.norm_eq_abs,
-    abs_of_nonneg (by positivity), mul_comm ((1 / (w - (a : ℂ)).re) * (1 / (conj v - (a : ℂ)).re))]
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hT,
+    mul_comm ((1 / (w - (a : ℂ)).re) * (1 / (conj v - (a : ℂ)).re))]
   exact mul_le_mul_of_nonneg_left (norm_boundaryCauchyKernel_le_const hw hv t) (le_of_lt hT)
 
 /-! ### The per-term Cauchy integral -/
@@ -356,90 +354,87 @@ theorem integral_boundaryTerm_cauchy {a : ℝ} (ha : 1 / 2 < a) {w v : ℂ} (hw 
     rw [h, ← hrdef, ← hndef]
     push_cast
     ring
-  have hAeq : ∀ t : ℝ, w - (a : ℂ) - Complex.I * (t : ℂ)
-      = (w - (a : ℂ)) - Complex.I * (t : ℂ) := fun t => by ring
-  have hBeq : ∀ t : ℝ, conj v - (a : ℂ) + Complex.I * (t : ℂ)
-      = (conj v - (a : ℂ)) + Complex.I * (t : ℂ) := fun t => by ring
   have hi1 : Integrable fun t : ℝ => ((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ)
-      * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹ := by
-    refine (integrable_poisson_cauchy_shiftL hpos hA r).congr
-      (Filter.Eventually.of_forall fun t => ?_)
-    rw [hAeq t]
+      * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹ :=
+    integrable_poisson_cauchy_shiftL (A := w - (a : ℂ)) hpos hA r
   have hi2 : Integrable fun t : ℝ => ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
-      * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹ := by
-    refine (integrable_poisson_cauchy_shiftL hneg hA (-r)).congr
-      (Filter.Eventually.of_forall fun t => ?_)
-    rw [hAeq t]
+      * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹ :=
+    integrable_poisson_cauchy_shiftL (A := w - (a : ℂ)) hneg hA (-r)
   have hi3 : Integrable fun t : ℝ => ((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ)
-      * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹ := by
-    refine (integrable_poisson_cauchy_shiftR hpos hB r).congr
-      (Filter.Eventually.of_forall fun t => ?_)
-    rw [hBeq t]
+      * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹ :=
+    integrable_poisson_cauchy_shiftR (B := conj v - (a : ℂ)) hpos hB r
   have hi4 : Integrable fun t : ℝ => ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
-      * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹ := by
-    refine (integrable_poisson_cauchy_shiftR hneg hB (-r)).congr
-      (Filter.Eventually.of_forall fun t => ?_)
-    rw [hBeq t]
+      * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹ :=
+    integrable_poisson_cauchy_shiftR (B := conj v - (a : ℂ)) hneg hB (-r)
+  have hi12 : Integrable fun t : ℝ =>
+      ((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ) * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹
+        + ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
+          * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹ := by
+    exact hi1.add hi2
+  have hi34 : Integrable fun t : ℝ =>
+      ((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ) * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹
+        + ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
+          * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹ := by
+    exact hi3.add hi4
   have hv1 : (∫ t : ℝ, ((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ)
       * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹)
-      = ((w - (a : ℂ)) - Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ))⁻¹ := by
-    rw [← integral_poisson_cauchy_shift hpos hA r]
-    exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => by rw [hAeq t])
+      = (w - (a : ℂ) - Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ))⁻¹ :=
+    integral_poisson_cauchy_shift (A := w - (a : ℂ)) hpos hA r
   have hv2 : (∫ t : ℝ, ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
       * (w - (a : ℂ) - Complex.I * (t : ℂ))⁻¹)
-      = ((w - (a : ℂ)) - Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ))⁻¹ := by
-    rw [← integral_poisson_cauchy_shift hneg hA (-r)]
-    exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => by rw [hAeq t])
+      = (w - (a : ℂ) - Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ))⁻¹ :=
+    integral_poisson_cauchy_shift (A := w - (a : ℂ)) hneg hA (-r)
   have hv3 : (∫ t : ℝ, ((halfPlanePoisson (a + n) (t - r) : ℝ) : ℂ)
       * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹)
-      = ((conj v - (a : ℂ)) + Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ))⁻¹ := by
-    rw [← integral_poisson_cauchy_shift_conj hpos hB r]
-    exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => by rw [hBeq t])
+      = (conj v - (a : ℂ) + Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ))⁻¹ :=
+    integral_poisson_cauchy_shift_conj (B := conj v - (a : ℂ)) hpos hB r
   have hv4 : (∫ t : ℝ, ((halfPlanePoisson (a - n) (t - (-r)) : ℝ) : ℂ)
       * (conj v - (a : ℂ) + Complex.I * (t : ℂ))⁻¹)
-      = ((conj v - (a : ℂ)) + Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ))⁻¹ := by
-    rw [← integral_poisson_cauchy_shift_conj hneg hB (-r)]
-    exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => by rw [hBeq t])
+      = (conj v - (a : ℂ) + Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ))⁻¹ :=
+    integral_poisson_cauchy_shift_conj (B := conj v - (a : ℂ)) hneg hB (-r)
   rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hsplit),
-    MeasureTheory.integral_const_mul, MeasureTheory.integral_add (hi1.add hi2) (hi3.add hi4),
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_add hi12 hi34,
     MeasureTheory.integral_add hi1 hi2, MeasureTheory.integral_add hi3 hi4,
     hv1, hv2, hv3, hv4]
   congr 1
   have halpha : xiSpectralPoint q = ((r : ℝ) : ℂ) + ((n : ℝ) : ℂ) * Complex.I := by
     rw [hrdef, hndef]
     exact (Complex.re_add_im _).symm
-  have e1 : (w - (a : ℂ)) - Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ)
+  have e1 : w - (a : ℂ) - Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ)
       = w - Complex.I * xiSpectralPoint q := by
     rw [halpha]
     push_cast
     linear_combination ((n : ℝ) : ℂ) * Complex.I_mul_I
-  have e2 : (w - (a : ℂ)) - Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ)
+  have e2 : w - (a : ℂ) - Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ)
       = w + Complex.I * xiSpectralPoint q := by
     rw [halpha]
     push_cast
     linear_combination (-((n : ℝ) : ℂ)) * Complex.I_mul_I
-  have e3 : (conj v - (a : ℂ)) + Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ)
+  have e3 : conj v - (a : ℂ) + Complex.I * ((r : ℝ) : ℂ) + ((a + n : ℝ) : ℂ)
       = conj (v - Complex.I * xiSpectralPoint q) := by
     rw [halpha]
     simp only [map_sub, map_mul, Complex.conj_I, Complex.conj_ofReal, map_add]
     push_cast
     linear_combination ((n : ℝ) : ℂ) * Complex.I_mul_I
-  have e4 : (conj v - (a : ℂ)) + Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ)
+  have e4 : conj v - (a : ℂ) + Complex.I * ((-r : ℝ) : ℂ) + ((a - n : ℝ) : ℂ)
       = conj (v + Complex.I * xiSpectralPoint q) := by
     rw [halpha]
-    simp only [map_add, map_mul, Complex.conj_I, Complex.conj_ofReal, map_sub]
+    simp only [map_add, map_mul, Complex.conj_I, Complex.conj_ofReal]
     push_cast
     linear_combination (-((n : ℝ) : ℂ)) * Complex.I_mul_I
   rw [e1, e2, e3, e4, ← map_inv₀, ← map_inv₀]
   have hwsq := sq_add_spectral_sq_ne_zero hwhalf q
   have hvsq := sq_add_spectral_sq_ne_zero hvhalf q
-  rw [weilChannelA_eq_resolvent hwsq, weilChannelA_eq_resolvent hvsq, weilResolventPlus,
-    weilResolventMinus, weilResolventPlus, weilResolventMinus, map_div₀, map_add, map_div₀,
-    map_div₀, map_one, map_one, map_add, map_mul, Complex.conj_I, Complex.conj_conj]
-  simp only [one_div]
-  rw [map_sub, map_mul, Complex.conj_I]
-  ring_nf
-  simp only [Complex.conj_conj]
+  have hwA : weilChannelA w (xiSpectralPoint q)
+      = ((w - Complex.I * xiSpectralPoint q)⁻¹
+        + (w + Complex.I * xiSpectralPoint q)⁻¹) / 2 := by
+    rw [weilChannelA_eq_resolvent hwsq, weilResolventPlus, weilResolventMinus, one_div, one_div]
+  have hvA : conj (weilChannelA v (xiSpectralPoint q))
+      = (conj ((v - Complex.I * xiSpectralPoint q)⁻¹)
+        + conj ((v + Complex.I * xiSpectralPoint q)⁻¹)) / 2 := by
+    rw [weilChannelA_eq_resolvent hvsq, weilResolventPlus, weilResolventMinus, one_div, one_div,
+      map_div₀, map_add, map_ofNat]
+  rw [hwA, hvA]
   ring
 
 end RHTower

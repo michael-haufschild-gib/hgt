@@ -33,7 +33,7 @@ declaration, the axiom print is `propext / Classical.choice / Quot.sound`, and t
 reachable from `GaloisForLFunctions.HTGeometry.UniversalLawField`.
 | 6 | `divisible-formation-potential-mechanics/quantized-proximity-approximate-formation-and-winding-selection-law.md` | **DONE 2026-08-20** — `HTGeometry/ConstitutiveApproximateFormationSelection.lean` verified; promoted |
 | 7 | `formation-chirality-reversal-mechanics/observer-fibre-chirality-conservation-...-law.md` | **DONE 2026-08-20** — existing `ConstitutiveObserverFibreChirality` verified; §5's sufficient-statistic reduction was the real gap and is now closed by the new `HTGeometry/KLFactorizationSufficiency.lean` (factored densities are KL pair-sufficient; Esscher instance). Promoted |
-| 8 | `formation-chirality-reversal-mechanics/formation-cumulant-chirality-and-involutive-selection-law.md` (ULF-FCRM-1) | **IN PROGRESS** — see the work plan below |
+| 8 | `formation-chirality-reversal-mechanics/formation-cumulant-chirality-and-involutive-selection-law.md` (ULF-FCRM-1) | **DONE 2026-08-20** — card was `[NO LEAN YET]`; seven new modules close §4, §5, §6 and §7 in full (see the companion in 3-formalized). Promoted |
 
 ## ULF-FCRM-1 work plan (card 8)
 
@@ -62,34 +62,13 @@ Still to build for this card:
 3. §7 Theorem 7.1 — instantiate `klChirality_eq_zero_of_reversal`
    (`HTGeometry.ConstitutiveObserverFibreChirality`) against the chronology.
 
-### ULF-FCRM-1 continuation record (2026-08-20)
+### ULF-FCRM-1 — completed 2026-08-20
 
-Landed and umbrella-wired: `PositiveJumpFormationChirality`, `EsscherFormationChirality`,
-`ExponentialFormationResponse` (§4: `jeffreysWork_eq_integral_secondResponse` = FCRM.10,
-`formationChiralityAt_eq_integral_secondResponse` and `..._thirdResponse` = FCRM.11,
-`directed_reconstruction` = FCRM.12), `GeometricModeChirality`
-(`hasSum_modeLogPartition` = the mode Lévy series, `hasSum_modeFirstMoment`,
-`hasSum_modeChirality`, `modeChirality_pos`), and
-`AbelianZetaGasChemicalPotentialShift` (`shiftTau`, `ratio_shiftTau`
-— `ratio_{τ+t}(m) = modeRatio (ratio_τ m) (log p) t` —, `coe_nnNormalizer_eq_exp`,
-`log_nnNormalizer`).
-
-**Remaining for §6 (Theorem 6.1 / Corollary 6.2), in order:**
-
-1. `gasLogPartition θ t := −log ((shiftTau θ t).nnNormalizer)` and
-   `= ∑' m, modeLogPartition (θ.ratio m) (log p_m) t`  — immediate from `log_nnNormalizer`,
-   `ratio_shiftTau` and `tsum_neg`.
-2. `(socleExpectation (shiftTau θ t)).toReal = ∑' m, modeFirstMoment (θ.ratio m) (log p_m) t`.
-   The corpus has `socleExpectation_eq` (grouped by prime, in `ℝ≥0∞`) and
-   `summable_primes_log_mul_tsum_modeMean` **only for `temperatureParameters`**; the general-`θ`
-   summability majorant has to be added first (same Dirichlet majorant, `σ + τ > 1`).
-3. The gas KL: `classMass θ A = ennNormalizer θ * ofReal (|A|^{-σ} |soc A|^{-τ})`, so
-   `log (mass_s A / mass_t A) = log N_s − log N_t + (t−s) log|soc A|`; integrate against the
-   discrete `classLaw` to get **FCRM.9** for the gas.
-4. `gasChirality = ∑' m, modeChirality …` and `> 0` for `s < t` (**FCRM.20**, **FCRM.22b**), from
-   `modeChirality_pos` plus summability.
-5. **FCRM.18**: `κ₃(t) = ∑ (log p)³ r(1+r)/(1−r)³ > 0`.
-6. **Theorem 7.1**: `klChirality_eq_zero_of_reversal` + the chronology.
-   **Theorem 7.2**: `eq_id_of_strictMonoOn_of_iterate_id` + the chronology.
-| 9–13 | `cohomological-packet-formation-mechanics/*` (5 cards) | **DONE 2026-08-20** — 7 existing modules re-verified (0 errors, 91 declarations audited axiom-clean, all umbrella-wired); folder-level companion written; promoted |
-| 14 | `polarized-cross-effect-complement-intertwining-and-bounded-arity-no-go.md` | **DONE 2026-08-20** — `(PC.11)` was the missing displayed result; new `HTGeometry/PolarizedCrossEffectDegreeNeutrality.lean`; promoted |
+Seven new modules: `PositiveJumpFormationChirality`, `ExponentialFormationResponse`,
+`EsscherFormationChirality`, `GeometricModeChirality`, `AbelianZetaGasChemicalPotentialShift`,
+`AbelianZetaGasModeChirality`, `AbelianZetaGasDirectedEntropy`.  The route that made §6 tractable:
+one geometric occupation mode is *literally* a compound-Poisson formation (the `−log(1−x) = ∑xᵏ/k`
+series is its Laplace exponent), and the corpus's fugacity shift is exactly the mode Esscher tilt,
+so the whole gas is a summable family of geometric modes.  The one analytic input the corpus lacked
+was the general-`θ` log-weighted mode majorant, obtained by absorbing `log p ≤ pᵉ/ε` into a slightly
+smaller Euler exponent.

@@ -52,6 +52,15 @@ theorem primeLogGibbsFiniteIntensity_nonneg
       cases b <;>
         simp [primeLogGibbsFiniteIntensity, (primeDyadicWeight_pos u p.1).le]
 
+/-- At zero inverse temperature, every reverse prime transition loses its Boltzmann bias and the
+finite Gibbs intensity is exactly the symmetric KMS intensity. -/
+theorem primeLogGibbsFiniteIntensity_zero_eq_primeLogKMSFiniteHermitianIntensity
+    (P : Finset Nat.Primes) (u : Nat.Primes → ℝ) (a b : Option P) :
+    primeLogGibbsFiniteIntensity P u 0 a b =
+      primeLogKMSFiniteHermitianIntensity P u a b := by
+  cases a <;> cases b <;>
+    simp [primeLogGibbsFiniteIntensity, primeLogKMSFiniteHermitianIntensity]
+
 theorem finiteGibbsStateWeight_primeLog_some_eq_boltzmann_mul_none
     (P : Finset Nat.Primes) (β : ℝ) (p : P) :
     _root_.HTGeometry.finiteGibbsStateWeight β (primeLogKMSFiniteEnergy P) (some p) =
@@ -104,6 +113,17 @@ theorem finiteGibbsTransitionIntensity_primeLogGibbsFiniteHermitianAmplitude
               (↑(Real.sqrt (primeDyadicWeight u p.1 / r))) = primeDyadicWeight u p.1
           rw [Complex.normSq_ofReal, Real.mul_self_sqrt (div_nonneg hw hr.le)]
           exact mul_div_cancel₀ _ hr.ne'
+
+/-- The normalized finite prime-log Gibbs response is the symmetric KMS response at zero inverse
+temperature. -/
+theorem finiteGibbsTransitionIntensity_primeLog_zero_eq_kms
+    (P : Finset Nat.Primes) (u : Nat.Primes → ℝ)
+    (a b : Option P) :
+    _root_.HTGeometry.finiteGibbsTransitionIntensity 0
+        (primeLogKMSFiniteEnergy P) (primeLogGibbsFiniteHermitianAmplitude P u 0) a b =
+      primeLogKMSFiniteHermitianIntensity P u a b := by
+  rw [finiteGibbsTransitionIntensity_primeLogGibbsFiniteHermitianAmplitude,
+    primeLogGibbsFiniteIntensity_zero_eq_primeLogKMSFiniteHermitianIntensity]
 
 /-- Finite thermal Hermitian prime-log carrier. -/
 def finitePrimeLogHermitianGibbsCarrier (P : Finset Nat.Primes)

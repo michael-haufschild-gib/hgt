@@ -68,7 +68,9 @@ singular infinity-sensitive zero-charge law, not finite completion.
 Route E now has unconditional unsigned cofactor supply outside its prescribed polylogarithmic prime
 band, exact two-range Ramaré/rough partitions, and reciprocal-decay Halász--Montgomery row mass of
 shape `N log T + |E| sqrt(T) log T`, removing the former `N|E|` loss. Its averaged mean-square gate
-still reduces to one relative head bound. Route T now has all-height twisted Mertens
+still reduces to one relative head bound. The chosen low/high ladders are now proved to cover their
+ranges, stay inside their intended tops, have nonempty high cofactor blocks, and incur only
+`beta log log x` low-range harmonic mass. Route T now has all-height twisted Mertens
 and damped Ramaré-cofactor bounds, a movable-edge smooth AFE, and a whole-vertical-line polynomial
 majorant for the chi factor. These close additional absolute-value analytic rows but do not supply
 E's fixed relation or T's signed short-block current cancellation. Hardy's theorem is formal in
@@ -116,20 +118,30 @@ packages now include concrete projection-phase, Deninger-cochain, and arithmetic
 realizations, but do not force saturation. A bare reciprocal-Xi Clifford split is itself exactly RH.
 **MEG**, the multiple-elliptic-Gamma coset difference system, now has faithful translate labels,
 layer gluing, all-proper-face joint independence, an exact two-survivor phase boundary, and the
-complete arbitrary-translation differential matroid; it still lacks a completed arithmetic source
-specialization and Xi reader, so remains a pre-route.
+complete arbitrary-translation differential matroid. Its all-depth layer now has explicit atom
+realization, multidirectional telescoping, one-depth signature descent, and analytic theta-boundary
+germs; it still lacks a completed arithmetic source specialization and Xi reader, so remains a
+pre-route. **ZGC**, the abelian zeta-gas chirality mechanism, is a second genuine source pre-route:
+the convergent all-mode class law has strict directed KL chirality, and an involution exchanging two
+formation laws forces equal chemical potentials. No theorem extends that law through completion or
+identifies functional-equation reflection with the required class-law involution on an Xi receiver.
 `SL_2` cocycle rigidity likewise rules out regular one-entry cocycle shortcuts. No open producer is
 closed; RH status is unchanged.
 
-Route-wide implication is explicit. E gains reciprocal row-mass and two-adic character-correlation
-inputs but retains its fixed signed relation producer. T and HC gain exact finite zero-detector
+Route-wide implication is explicit. E gains reciprocal row-mass, structural schedule discharge, and
+two-adic character-correlation inputs but retains its fixed signed relation producer. T and HC gain exact finite zero-detector
 coefficient algebra, conductor aggregation, and character-Gram cubic diagonal/off-diagonal
-decomposition. Exact detector-tail formation and `M_X L = 1 + tail` are now proved on `Re(s)>1`,
-with the tail zero through the cutoff, but no theorem evaluates that tail at a critical-strip zero.
-Thus there is still no refined off-diagonal estimate, analytic zero alternative, signed short-block
+decomposition. Exact detector-tail formation and `M_X L = 1 + tail` are proved on `Re(s)>1`, with
+the tail zero through the cutoff. The full shifted coefficients now have one uniform bound on
+`Re(s)>=1/2`, finite and infinite initial Mellin identities are exact on `Re(w)=2`, and at a
+certified critical-strip zero the apparent Gamma residue at `w=0` is proved to cancel. No contour
+shift, horizontal-integral control, or detector zero-density inequality follows. Thus there is
+still no refined off-diagonal estimate, analytic zero alternative, signed short-block
 bound, or absolute off-line upper count. CLG gains exact W2C realization, finite-aperture index
-retention, a sharper multi-node formulation, and a two-node no-go; this changes detector geometry,
-not source burden. HC loses critical-edge and height-selection
+retention, a sharper multi-node formulation, and a two-node no-go. Its safe boundary densities now
+form one Poisson semigroup orbit; divisor terms have exact Cauchy integrals; and inverse Poisson
+conjugation removes safe offset from each prime atom. The missing full quadratic-form conjugation
+and critical source order remain. HC loses critical-edge and height-selection
 obstacles but retains absolute detector/off-line control. PLAC can feed PBM/G/L/T with a singular
 coefficient-faithful depth connection; EPC can feed CCM-FU/CLG/G/L with polarized leakage; neither
 has a new source theorem. F2 gains literal trace-class provenance on both semilocal sides and a
@@ -446,7 +458,13 @@ prime count. Pointwise prime-block control and ladder-error/head premises remain
 produce the physical relation. `Sieve/TwoRangeSchedule.lean` fixes low/high bases, mesh ratios,
 relative threshold, polynomial length, Gallagher cut, and head height and proves their elementary
 positivity/basic limits; `Sieve/PrimeRangeLogLogMass.lean` supplies a wide-range harmonic upper
-bound. The schedule's decisive eventual group/head inequalities are not yet theorems. Meanwhile
+bound. `Sieve/TwoRangeScheduleFacts.lean` now discharges the structural callers: both designated
+prime ranges lie in their ladders, the low ladder stays below window length, the high ladder stays
+below its exponential top, both ladders have a step, the Gallagher cutoff and head height exceed
+one, all high cofactor blocks are nonempty, and low-range harmonic mass is at most
+`beta * log log x` eventually. `Sieve/TwoRangeLimits.lean` closes the elementary log/log-log and
+zero-free exponential absorptions. The schedule's decisive pointwise block, ladder-error, and
+relation-specific group/head inequalities are not yet theorems. Meanwhile
 `MoebiusTwoRangeWindow.lean` makes the small annulus unconditional and leaves the large annulus's
 pointwise high-prime estimate explicit. `AffineFromHead.lean`, `MoebiusHeadGate.lean`,
 `MoebiusHeadBudget.lean`, and `MoebiusHeadSmall.lean` reduce the averaged Route-E mean square to one
@@ -910,10 +928,32 @@ CLG a literal paired finite-aperture detector and links its receiver to restrict
 It does not prove source positivity: every aperture energy is still evaluated by
 `xiWeilPolarization`, hence already uses the Xi divisor.
 
+The safe-to-critical bridge is now more explicit. `XiBoundaryPoissonDensity.lean` proves every
+safe density is a convergent positive Poisson-kernel divisor sum and that all safe offsets form one
+Poisson semigroup orbit. `XiBoundaryCauchyRepresentation.lean` proves integrability and the exact
+Cauchy evaluation for each individual divisor term against the two-node boundary kernel. It does
+not yet sum those identities into a source-side global representation theorem.
+`XiDePoissonizedStationarity.lean` gives the complementary source algebra: exponential packets are
+safe-offset tilts, their tail Laplace transforms are the two Cauchy resolvent sums, and inverse
+Poisson conjugation changes every prime-power weight
+
+```text
+-Lambda(n) n^(-1/2-a) / 2
+```
+
+exactly to the offset-free critical weight `-Lambda(n) n^(-1/2) / 2`. This removes artificial safe
+offset at each atom, but proves neither convergence nor positivity of the fully conjugated
+multi-node quadratic form. Because density side is divisor-indexed while atom side is source-built,
+this is a new bridge within CLG/Q/W2C, not an independent route.
+
 **Open core and exact obstruction.** Prove global multi-node Schur domination for the actual
 Euler--Gamma safe kernel: every finite safe-kernel energy must dominate its Cauchy-loss energy.
 Equivalently, derive nonnegativity of W2C's canonical finite-aperture even--odd packets from the
 pre-divisor Euler--Gamma source, rather than invoking their divisor polarization.
+The new de-Poissonized formulation suggests a sharper sufficient task: justify full inverse-Poisson
+conjugation at source quadratic-form level and prove order of resulting offset-free critical form.
+Per-atom cancellation and per-divisor Cauchy evaluation do not control cross terms, so this is not
+yet a proved reduction or positivity theorem.
 This is source-isogenous to UEB and Q but a different infinitesimal-shift mechanism.
 `not_isPSDKernel_shiftGenerator` proves **every** positive shift `omega>0` has non-PSD generator,
 so positive Loewner flow from the safe region is dead. The two-node model no-go
@@ -1023,9 +1063,16 @@ coefficient and every coefficient through the cutoff vanish, and on `Re(s)>1`
 M_X(s, chi) L(s, chi) = 1 + detectorTail_X(s, chi).
 ```
 
-The tail is summable there. No declaration evaluates it at a critical-strip zero, moves this
-identity through the required contour, or bounds its off-diagonal correlations. It closes tail
-formation, not analytic zero detection.
+The tail is summable there. `ChenGuptaLiTailCoefficientBounds.lean` strengthens formation to all
+indices and gives one cutoff/modulus/character-uniform bound after shifting by any certified
+`Re(s)>=1/2` point. `ChenGuptaLiFiniteMellinSlice.lean` proves exact finite post-cutoff Mellin
+inversion, and `ChenGuptaLiInfiniteMellinDetector.lean` proves the full exponentially smoothed
+initial-line identity on `Re(w)=2`. `ChenGuptaLiZeroResidue.lean` then proves that at a certified
+critical-strip zero the apparent Gamma pole at `w=0` is cancelled: its residue coefficient and
+punctured limit are zero. This is necessary local contour data, not a zero signal. No declaration
+performs full contour shift, controls horizontal/remaining residues, proves zero-density large
+values, or bounds off-diagonal correlations. These additions materially advance HC's detector
+branch but do not touch T's signed short-current open core.
 
 Formal sources: `XiCTaylorThetaTailCoreCurrentCapstone.lean`,
 `XiCTaylorThetaTailProductFiberHermitianCollapse.lean`, `Sieve/RouteTWidthUpper.lean`,
@@ -1042,7 +1089,9 @@ Formal sources: `XiCTaylorThetaTailCoreCurrentCapstone.lean`,
 `BondarenkoHeapLemmaNineTwoAdic.lean`, `BondarenkoHeapLemmaTenConductorAggregation.lean`,
 `BondarenkoHeapLemmaTenDetectorPolynomial.lean`, `ChenGuptaLiFiniteZeroDetector.lean`,
 `ChenGuptaLiCharacterLargeValues.lean`, `ChenGuptaLiAnalyticAnchor.lean`,
-`ChenGuptaLiDetectorTail.lean`.
+`ChenGuptaLiDetectorTail.lean`, `ChenGuptaLiTailCoefficientBounds.lean`,
+`ChenGuptaLiFiniteMellinSlice.lean`, `ChenGuptaLiInfiniteMellinDetector.lean`,
+`ChenGuptaLiZeroResidue.lean`.
 
 **Open core.** Prove joint upper estimate for
 `canonicalThetaTailCoreFiniteArithmeticRemainderCurrent` at same cutoff and depth as prefix selector,
@@ -1150,6 +1199,15 @@ variation. `LevinsonWindowUnconditional.lean` removes the critical-edge nonvanis
 hypotheses. The number of entire-detector zeros in the rectangle is now the sole undetermined term.
 Even a density-one singleton result would not remove finitely many off-line pairs, so HC still
 requires an absolute detector-zero bound or absolute defect control, not normalized proportion.
+
+The Chen--Gupta--Li Mellin layer now reaches the exact start of that missing estimate. Full shifted
+detector coefficients are uniformly bounded on the closed right half-plane, finite and infinite
+exponentially smoothed Mellin identities hold on the safe inversion line, and the local Gamma pole
+at a certified critical-strip zero cancels. Therefore coefficient growth, initial inversion, and
+the `w=0` local singularity are no longer blockers. Remaining analytic core is global contour
+displacement with horizontal-edge and nonzero-residue control, followed by a conductor-uniform
+large-value/zero-count inequality strong enough for HC's absolute census. The cancelled local pole
+cannot itself supply collision charge.
 
 `PrimeTraceCriticalEnergyBudget.lean` proves a complementary charge law: if a continued
 prime-trace source has residues `-m_j` at finitely many distinct ordinates on one abscissa, the
@@ -1553,9 +1611,13 @@ continuation producer is absent.
   `XiBoundaryPoissonDensity.lean` gives an exact safe-boundary model: for every `a>1/2`, the real
   completed logarithmic derivative is a convergent sum of positive upper-half-plane Poisson
   kernels at the reflected divisor heights, and W2C's even channel is exactly the paired Poisson
-  contribution. This explains safe-half-plane positivity but does not orient horizontal divisor
-  displacement: off-line zeros still contribute positive kernels there, and the construction is
-  divisor-indexed. Critical limiting domination remains the producer.
+  contribution. The densities at every safe offset form one Poisson semigroup orbit.
+  `XiBoundaryCauchyRepresentation.lean` evaluates each divisor term against the boundary Cauchy
+  product kernel, while `XiDePoissonizedStationarity.lean` proves that inverse Poisson conjugation
+  removes offset from each von--Mangoldt atom. No global summed source representation or
+  conjugated-form positivity is proved. These facts explain safe-half-plane positivity but do not
+  orient horizontal divisor displacement: off-line zeros still contribute positive kernels there,
+  and the density construction is divisor-indexed. Critical limiting domination remains producer.
   This closes receiver matching among UEB/CLG/Q and finite-aperture restricted-Weil branches O/SV2,
   but not the producer: the aperture form is defined using the actual Xi-divisor polarization.
   `XiWeilCarrierBudget.lean` adds the exact rational independence and span dimension
@@ -1973,8 +2035,15 @@ continuation producer is absent.
   extension now supplies a meromorphic class, pair-face signature, and bottom charge. A depth-two
   face is a genuine witness; every differential-algebraic all-depth member has vanishing pair-face
   signature; bottom charge orbit-sums to that signature, has finite support on the elliptic
-  quotient, and zero bottom charge descends the class (`AllDepthMeroClass.lean`,
-  `AllDepthPairFaceSignature.lean`, `AllDepthBottomCharge.lean`). This defines
+  quotient, and zero bottom charge descends the class. `AllDepthTelescope.lean` proves the full
+  finite multidirectional difference-cube reconstruction from vanishing line sums;
+  `AllDepthSignatureDescent.lean` propagates a vanishing signature down one depth under the exact
+  period-independence hypothesis. `AllDepthAtomRealization.lean` shows every prescribed finite
+  principal divisor at one order is realizable by a differentially algebraic theta-atom sum, so a
+  merely local divisor pattern cannot be the selector: global mixed-constraint compatibility is
+  essential. `EllipticGammaThetaBoundaryAnalytic.lean` places first structural theta boundary in
+  global analytic germ ring (`AllDepthMeroClass.lean`, `AllDepthPairFaceSignature.lean`,
+  `AllDepthBottomCharge.lean`). This defines
   pre-route **MEG**. Its internal elliptic-Gamma rigidity is closed under integral period
   independence and coset separation. Open core is now external: instantiate this system on literal
   completed prime--Gamma/Möbius source and provide a coefficient-faithful Xi reader whose selected
@@ -2155,14 +2224,16 @@ continuation producer is absent.
   conductor-uniform density exponent. The literal Chen--Gupta--Li character/ordinate Gram and
   baseline Hilbert large-value count are also formal; its cubic trace now splits exactly into
   diagonal and off-diagonal triple correlations, while the refined Guth--Maynard off-diagonal
-  estimate remains absent. Its full Möbius inverse is analytically anchored only in the certified
-  absolute-convergence half-plane. `ChenGuptaLiDetectorTail.lean` proves exact unit-plus-tail
-  formation there, with every tail coefficient through the cutoff zero; contour transport to a
-  critical-strip zero remains absent. `Sieve/TwoRangeSchedule.lean` fixes the intended low/high
+  estimate remains absent. Exact unit-plus-tail formation, all-index divisor bounds, uniform
+  shifted coefficient control on `Re(s)>=1/2`, and finite/full initial Mellin inversion are now
+  formal. At a certified critical-strip zero the local Gamma residue cancels. Full contour shift
+  and zero-density large values remain absent. `Sieve/TwoRangeSchedule.lean` fixes the intended low/high
   parameters and basic limits, while `Sieve/PrimeRangeLogLogMass.lean` gives the wide-range
   harmonic upper bound. `Sieve/TwoRangeLimits.lean` closes the elementary asymptotic absorption of
   fixed log-log powers by negative log powers and of log-log factors by the zero-free-region
-  exponential. None proves the remaining scheduled group/head or pointwise ladder inequalities.
+  exponential. `Sieve/TwoRangeScheduleFacts.lean` additionally closes range coverage, ladder tops,
+  nonempty high cofactors, and low harmonic mass. None proves the remaining relation-specific
+  group/head, pointwise ladder, signed-current, or detector contour inequalities.
 - `PrimeArchBernsteinMobiusPullback.lean` and
   `PrimeArchBernsteinMobiusPullbackSource.lean` remove finite Bernstein coefficients from the
   prime--arch moment germ, identify the pullback with a two-torus Gutzmer susceptibility, and give
@@ -2228,7 +2299,11 @@ continuation producer is absent.
   `ABHN/CentralSimpleAzumaya.lean` and `ABHN/AzumayaBaseChange.lean` add
   central-simple-to-Azumaya, enveloping-action, and Azumaya base-change laws. Local scalar
   extension is injective, finite-dimensional, simple, and central for the proved central-simple
-  input. They do not prove the
+  input. `ABHN/AzumayaTensorProduct.lean` proves tensor closure of Azumaya/central-simple carriers
+  and commutative associative tensor addition with split identity on the Brauer quotient;
+  `ABHN/ScalarExtensionBrauer.lean` proves represented scalar extension is well-defined on that
+  quotient. Complex infinite completions are now proved split and absent from nonsplit support.
+  They do not prove the
   number-field/function-field ABHN exact sequence or instantiate a completed zeta source; no C1/L
   status changes. HLS Fock, kinematic, physical-assumption, and finite-scattering modules likewise
   construct unconditional algebraic interfaces and examples but explicitly prove no interacting
@@ -2241,7 +2316,11 @@ continuation producer is absent.
   and proves one difference lowers depth. `AllDepthMeroClass.lean` realizes the meromorphic germ
   class and transports translations/periodicity. `AllDepthPairFaceSignature.lean` and
   `AllDepthBottomCharge.lean` add a depth-two face obstruction and finite-support elliptic-quotient
-  charge whose orbit sum is that obstruction; vanishing charge gives descent. These strengthen
+  charge whose orbit sum is that obstruction; vanishing charge gives descent.
+  `AllDepthTelescope.lean`, `AllDepthSignatureDescent.lean`, and `AllDepthAtomRealization.lean`
+  close finite difference-cube reconstruction, one-depth signature descent, and arbitrary local
+  differentially-algebraic atom realization. The last theorem is a firewall against treating one
+  local principal-part pattern as the desired selector. These strengthen
   MEG's internal invariant but remain universal obstruction/selection mechanics;
   absent a literal prime--Gamma/Möbius occurrence and Xi reader they change no RH route.
 - `HalfPlanePoissonKernel.lean` closes normalized half-plane Poisson mass, shifted products, odd

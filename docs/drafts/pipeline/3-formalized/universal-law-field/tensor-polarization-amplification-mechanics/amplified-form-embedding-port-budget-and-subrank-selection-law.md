@@ -1,11 +1,11 @@
 # Amplified form embedding, port budget, and subrank selection law
 
 - **ID:** ULF-TPAM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL LAW-FIELD THEOREM / AMPLIFIED REALIZATION SELECTION
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [ROUTE-INDEPENDENT]`
   `[FORMATION + POLARIZATION + REALIZATION + PORT BUDGET]`
-  `[LEAN-FORMALIZED] [CONDITIONAL RH INTERFACE] [NOT RH]`
+  `[LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [CONDITIONAL RH INTERFACE] [NOT RH]`
 - **Statement:** A form-preserving realization cannot reduce negative index.  Repeated tensor
   formation of one genuinely mixed packet has at least the previous total tensor rank in negative
   directions.  Consequently one realized formation depth whose target port budget is smaller than

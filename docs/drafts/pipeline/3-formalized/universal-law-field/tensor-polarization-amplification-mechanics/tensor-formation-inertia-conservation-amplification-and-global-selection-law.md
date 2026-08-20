@@ -1,9 +1,9 @@
 # Tensor-formation inertia conservation, amplification, and global selection law
 
 - **ID:** ULF-TPAM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / UNIVERSAL FORMATION-SELECTION LAW
-- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [ROUTE-INDEPENDENT]`
+- **Status:** `[PAPER-PROVED] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [ROUTE-INDEPENDENT]`
   `[FORMATION + POLARIZATION + CONSERVATION + PROPERNESS] [CONDITIONAL RH INTERFACE]`
 - **Statement:** Tensor formation obeys an exact two-channel fusion law.  A mixed positive/negative
   packet generates unbounded negative index under repeated formation, whereas a uniform family

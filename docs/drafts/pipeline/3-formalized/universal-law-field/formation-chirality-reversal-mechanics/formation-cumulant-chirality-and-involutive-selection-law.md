@@ -1,7 +1,14 @@
 # Formation cumulant chirality and involutive-selection law
 
 - **ID:** ULF-FCRM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.PositiveJumpFormationChirality`,
+  `GaloisForLFunctions.HTGeometry.ExponentialFormationResponse`,
+  `GaloisForLFunctions.HTGeometry.EsscherFormationChirality`,
+  `GaloisForLFunctions.HTGeometry.GeometricModeChirality`,
+  `GaloisForLFunctions.HTGeometry.AbelianZetaGasChemicalPotentialShift`,
+  `GaloisForLFunctions.HTGeometry.AbelianZetaGasModeChirality`,
+  `GaloisForLFunctions.HTGeometry.AbelianZetaGasDirectedEntropy`
 - **Type:** POSITIVE-JUMP FORMATION / INFORMATION-ARROW / INVOLUTIVE-SELECTION THEOREM
 - **Source:** universal-law-field formation/properness and time-reversal likelihood mechanisms
 - **Statement:** Every nontrivial positive-jump compound-Poisson Esscher family carries a strict
@@ -13,7 +20,8 @@
   [INTERNAL FRONTIER AUDITED] [EXTERNAL PARENTS AUDITED] [MECHANISM FIRST]
   [POSITIVE-JUMP LEVY FORMATION] [INFORMATION CHRONOLOGY] [FINITE-SYMMETRY RIGIDITY]
   [CENTERED REVERSAL SELECTION]
-  [BRIDGE] [NOVELTY UNVERIFIED] [NO LEAN YET] [NOT RH]`
+  [BRIDGE] [NOVELTY UNVERIFIED] [LEAN-CERTIFIED] [UMBRELLA-WIRED]
+  [NO SORRY] [NO AXIOMS] [NOT RH]`
 
 ## 1. Goal and higher pivot
 
@@ -735,7 +743,7 @@ this card.
 - [x] 0 -> 1: exact source, exact conjecture, internal audit, external parents, hostile loops.
 - [x] 1 -> 2: positive-jump kernel, pairwise chronology, source Lévy realization, centered
   involutive selection, and finite-order symmetry rigidity closed under hostile review.
-- [ ] 2 -> 3: formalize the exact paper theorem with no additional hypothesis or project axiom.
+- [x] 2 -> 3: formalized with no additional hypothesis or project axiom (2026-08-20).
 - [ ] 3 -> 4: publication/priority audit and standalone exposition.
 
 ## 12. Log
