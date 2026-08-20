@@ -773,7 +773,7 @@ theorem exceptionalRamanujanAdditiveProduct_norm_le_gcd_unitInverse
           (P.crtEquiv ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus)) i)
     · have hz : P.crtEquiv ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus)) i ≠ 0 :=
         fun hz => h ((hcoord i).mp hz)
-      rw [oddPrimeRamanujanAdditiveSum, if_neg hz]
+      rw [oddPrime_ramanujanAdditiveSum, if_neg hz]
       simp only [g, if_neg h]
       norm_num
   rw [exceptionalRamanujanAdditiveProduct, norm_prod]
@@ -912,6 +912,483 @@ theorem ramanujanGcdSymmetricIntervalMass_le_two_mul_divisorCount
       2 * (R : ℝ) * (P.modulus.divisors.card : ℝ) := by
   rw [ramanujanGcdSymmetricIntervalMass_eq_two_mul]
   nlinarith [ramanujanGcdIntervalMass_le_divisorCount P R]
+
+/-- Bounded complex coefficient data, packaged with its unit-ball proof so
+the Lemma-9 finite sum carries no external coefficient premise. -/
+structure UnitBallCoefficient (α : Type*) where
+  toFun : α → ℂ
+  norm_le_one : ∀ a, ‖toFun a‖ ≤ 1
+
+instance : CoeFun (UnitBallCoefficient α) (fun _ => α → ℂ) where
+  coe := UnitBallCoefficient.toFun
+
+/-- The literal finite coefficient sum in source equation (32), on the
+symmetric range `0 < |r| ≤ R` and an arbitrary finite set of unit `m`
+residues. -/
+def lemmaNineCoefficientSum (P : OddPrimeFamily I)
+    (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ)
+    (R : ℕ) (mset : Finset (ZMod P.modulus)ˣ)
+    (b : UnitBallCoefficient (ZMod P.modulus)ˣ) (c : UnitBallCoefficient ℤ) : ℂ :=
+  ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0, ∑ m ∈ mset,
+    c r * b m * generalizedJacobiLocalSum P ψ
+      ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))
+
+/-- Pointwise finite-algebra estimate for the generalized Jacobi sum at the
+source shift `r m⁻¹`. -/
+theorem norm_generalizedJacobiLocalSum_unitInverse_le
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ)
+    (r : ℤ) (m : (ZMod P.modulus)ˣ) :
+    ‖generalizedJacobiLocalSum P ψ
+      ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ ≤
+      ‖exceptionalRamanujanAdditiveProduct P ψ
+        ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ *
+        Real.sqrt (P.modulus : ℝ) := by
+  rw [generalizedJacobiLocalSum_source_factor, norm_mul, norm_mul]
+  calc
+    ‖exceptionalRamanujanAdditiveProduct P ψ
+        ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ *
+        ‖residualJacobiPhase P ψ
+          ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ *
+        ‖residualJacobiCoreProduct P ψ‖ ≤
+      ‖exceptionalRamanujanAdditiveProduct P ψ
+        ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ * 1 *
+        Real.sqrt (P.modulus : ℝ) := by
+          gcongr
+          · exact residualJacobiPhase_norm_le_one P ψ _
+          · exact residualJacobiCoreProduct_norm_le_sqrt_modulus P ψ
+    _ = _ := by ring
+
+/-- Exact finite coefficient form of the Ramanujan/gcd step in Lemma 9:
+bounded coefficients cost only the number of `m` values, the residual
+square-root factor, and the literal source gcd mass. -/
+theorem lemmaNineCoefficientSum_norm_le_mass
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ)
+    (R : ℕ) (mset : Finset (ZMod P.modulus)ˣ)
+    (b : UnitBallCoefficient (ZMod P.modulus)ˣ) (c : UnitBallCoefficient ℤ) :
+    ‖lemmaNineCoefficientSum P ψ R mset b c‖ ≤
+      (mset.card : ℝ) * Real.sqrt (P.modulus : ℝ) *
+        ramanujanGcdSymmetricIntervalMass P R := by
+  unfold lemmaNineCoefficientSum
+  calc
+    ‖∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0, ∑ m ∈ mset,
+        c r * b m * generalizedJacobiLocalSum P ψ
+          ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ ≤
+      ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0,
+        ‖∑ m ∈ mset, c r * b m * generalizedJacobiLocalSum P ψ
+          ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ := by
+        exact norm_sum_le ((Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0)
+          (fun r => ∑ m ∈ mset,
+            c r * b m * generalizedJacobiLocalSum P ψ
+              ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus)))
+    _ ≤
+      ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0, ∑ m ∈ mset,
+        ‖c r * b m * generalizedJacobiLocalSum P ψ
+          ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ := by
+        apply Finset.sum_le_sum
+        intro r hr
+        exact norm_sum_le mset (fun m =>
+          c r * b m * generalizedJacobiLocalSum P ψ
+            ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus)))
+    _ ≤ ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0, ∑ m ∈ mset,
+        ‖exceptionalRamanujanAdditiveProduct P ψ
+          ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ *
+          Real.sqrt (P.modulus : ℝ) := by
+        apply Finset.sum_le_sum
+        intro r hr
+        apply Finset.sum_le_sum
+        intro m hm
+        rw [norm_mul, norm_mul]
+        have hT := norm_generalizedJacobiLocalSum_unitInverse_le P ψ r m
+        have hb := b.norm_le_one m
+        have hc := c.norm_le_one r
+        calc
+          ‖c r‖ * ‖b m‖ * ‖generalizedJacobiLocalSum P ψ
+              ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ ≤
+            1 * 1 * ‖generalizedJacobiLocalSum P ψ
+              ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ := by
+              gcongr
+          _ = ‖generalizedJacobiLocalSum P ψ
+              ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ := by ring
+          _ ≤ _ := hT
+    _ ≤ ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0, ∑ m ∈ mset,
+        (P.modulus.gcd r.natAbs : ℝ) * Real.sqrt (P.modulus : ℝ) := by
+        apply Finset.sum_le_sum
+        intro r hr
+        apply Finset.sum_le_sum
+        intro m hm
+        gcongr
+        exact exceptionalRamanujanAdditiveProduct_norm_le_gcd_unitInverse P ψ r m
+    _ = (mset.card : ℝ) * Real.sqrt (P.modulus : ℝ) *
+        ramanujanGcdSymmetricIntervalMass P R := by
+        unfold ramanujanGcdSymmetricIntervalMass
+        simp only [Finset.sum_const, nsmul_eq_mul]
+        have hreorder (r : ℤ) : (mset.card : ℝ) *
+            ((P.modulus.gcd r.natAbs : ℝ) * Real.sqrt (P.modulus : ℝ)) =
+          ((mset.card : ℝ) * Real.sqrt (P.modulus : ℝ)) *
+            (P.modulus.gcd r.natAbs : ℝ) := by ring
+        simp_rw [hreorder]
+        rw [← Finset.mul_sum]
+
+omit [DecidableEq I] in
+/-- Exact elementary normalization for the certified square-free modulus:
+`q ≤ φ(q) d(q)`.  It is obtained by multiplying `p ≤ 2(p - 1)` over the
+pairwise-coprime odd primes of the family. -/
+theorem modulus_le_totient_mul_divisorCount (P : OddPrimeFamily I) :
+    P.modulus ≤ P.modulus.totient * P.modulus.divisors.card := by
+  classical
+  let f : I → ℕ := fun i => (P.prime i).1
+  have hsingle (i : I) : f i ≤ (f i).totient * (f i).divisors.card := by
+    dsimp [f]
+    have hnot : 1 ∉ ({(P.prime i).1} : Finset ℕ) := by
+      simpa using (P.prime i).2.1.ne_one.symm
+    have hcard : ({1, (P.prime i).1} : Finset ℕ).card = 2 := by
+      rw [Finset.card_insert_of_notMem hnot]
+      simp
+    rw [Nat.totient_prime (P.prime i).2.1, (P.prime i).2.1.divisors, hcard]
+    have hp2 : 2 ≤ (P.prime i).1 := (P.prime i).2.1.two_le
+    omega
+  have hbound : ∀ s : Finset I,
+      (∏ i ∈ s, f i) ≤ (∏ i ∈ s, f i).totient * (∏ i ∈ s, f i).divisors.card := by
+    intro s
+    induction s using Finset.cons_induction with
+    | empty => simp
+    | cons i s hi ih =>
+      have hcop : (f i).Coprime (∏ j ∈ s, f j) := by
+        rw [Nat.coprime_prod_right_iff]
+        intro j hj
+        apply P.pairwise_coprime
+        intro hij
+        apply hi
+        simpa [hij] using hj
+      rw [Finset.prod_cons, Nat.totient_mul hcop, Nat.Coprime.card_divisors_mul hcop]
+      calc
+        f i * ∏ x ∈ s, f x ≤
+          ((f i).totient * (f i).divisors.card) *
+            ((∏ x ∈ s, f x).totient * (∏ x ∈ s, f x).divisors.card) :=
+          Nat.mul_le_mul (hsingle i) ih
+        _ = ((f i).totient * (∏ x ∈ s, f x).totient) *
+            ((f i).divisors.card * (∏ x ∈ s, f x).divisors.card) := by ring
+  simpa [OddPrimeFamily.modulus, f] using hbound Finset.univ
+
+/-- Squared divisor bound, with the exponent restored after applying the
+ordinary divisor estimate at half the requested exponent. -/
+theorem divisorCount_sq_le_const_mul_rpow {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 1 ≤ n →
+      (n.divisors.card : ℝ) ^ 2 ≤ C * (n : ℝ) ^ ε := by
+  obtain ⟨C, hC, hdiv⟩ := _root_.RHTower.card_divisors_le_const_mul_rpow (ε := ε / 2)
+    (by linarith)
+  refine ⟨C ^ 2, pow_pos hC _, ?_⟩
+  intro n hn
+  have hd := hdiv n hn
+  have hsq : (n.divisors.card : ℝ) ^ 2 ≤ (C * (n : ℝ) ^ (ε / 2)) ^ 2 := by
+    rw [sq_le_sq₀ (by positivity) (by positivity)]
+    exact hd
+  have hrpow : ((n : ℝ) ^ (ε / 2)) ^ 2 = (n : ℝ) ^ ε := by
+    rw [← Real.rpow_natCast ((n : ℝ) ^ (ε / 2)) 2,
+      ← Real.rpow_mul (by positivity)]
+    congr 1
+    ring
+  calc
+    (n.divisors.card : ℝ) ^ 2 ≤ (C * (n : ℝ) ^ (ε / 2)) ^ 2 := hsq
+    _ = C ^ 2 * (n : ℝ) ^ ε := by
+      rw [mul_pow, hrpow]
+
+omit [DecidableEq I] in
+theorem divisorCount_div_totient_le_sq_div_modulus
+    (P : OddPrimeFamily I) :
+    (P.modulus.divisors.card : ℝ) / (P.modulus.totient : ℝ) ≤
+      (P.modulus.divisors.card : ℝ) ^ 2 / (P.modulus : ℝ) := by
+  have hq : 0 < (P.modulus : ℝ) := by
+    exact_mod_cast (P.modulus_neZero.out |> Nat.pos_of_ne_zero)
+  have hphi : 0 < (P.modulus.totient : ℝ) := by
+    exact_mod_cast Nat.totient_pos.mpr (P.modulus_neZero.out |> Nat.pos_of_ne_zero)
+  have hnat := modulus_le_totient_mul_divisorCount P
+  have hreal : (P.modulus : ℝ) ≤
+      (P.modulus.totient : ℝ) * (P.modulus.divisors.card : ℝ) := by
+    exact_mod_cast hnat
+  rw [div_le_div_iff₀ hphi hq]
+  calc
+    (P.modulus.divisors.card : ℝ) * (P.modulus : ℝ) ≤
+        (P.modulus.divisors.card : ℝ) *
+          ((P.modulus.totient : ℝ) * (P.modulus.divisors.card : ℝ)) :=
+      mul_le_mul_of_nonneg_left hreal (by positivity)
+    _ = (P.modulus.divisors.card : ℝ) ^ 2 * (P.modulus.totient : ℝ) := by ring
+
+theorem lemmaNineCoefficientSum_normalized_le_divisorRatio
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ)
+    (R : ℕ) (mset : Finset (ZMod P.modulus)ˣ)
+    (b : UnitBallCoefficient (ZMod P.modulus)ˣ) (c : UnitBallCoefficient ℤ) :
+    (P.modulus.totient : ℝ)⁻¹ * ‖lemmaNineCoefficientSum P ψ R mset b c‖ ≤
+      2 * (mset.card : ℝ) * (R : ℝ) * Real.sqrt (P.modulus : ℝ) *
+        ((P.modulus.divisors.card : ℝ) / (P.modulus.totient : ℝ)) := by
+  have hsum := lemmaNineCoefficientSum_norm_le_mass P ψ R mset b c
+  have hgcd := ramanujanGcdSymmetricIntervalMass_le_two_mul_divisorCount P R
+  have hphi : 0 ≤ (P.modulus.totient : ℝ)⁻¹ := by positivity
+  calc
+    (P.modulus.totient : ℝ)⁻¹ * ‖lemmaNineCoefficientSum P ψ R mset b c‖ ≤
+      (P.modulus.totient : ℝ)⁻¹ *
+        ((mset.card : ℝ) * Real.sqrt (P.modulus : ℝ) *
+          ramanujanGcdSymmetricIntervalMass P R) :=
+      mul_le_mul_of_nonneg_left hsum hphi
+    _ ≤ (P.modulus.totient : ℝ)⁻¹ *
+        ((mset.card : ℝ) * Real.sqrt (P.modulus : ℝ) *
+          (2 * (R : ℝ) * (P.modulus.divisors.card : ℝ))) := by
+      gcongr
+    _ = 2 * (mset.card : ℝ) * (R : ℝ) * Real.sqrt (P.modulus : ℝ) *
+        ((P.modulus.divisors.card : ℝ) / (P.modulus.totient : ℝ)) := by
+      rw [div_eq_mul_inv]
+      ring
+
+theorem lemmaNineCoefficientSum_normalized_sourceScale
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ)
+    (R : ℕ) (mset : Finset (ZMod P.modulus)ˣ)
+    (b : UnitBallCoefficient (ZMod P.modulus)ˣ) (c : UnitBallCoefficient ℤ) (ε : ℝ) :
+    ε ≤ 0 ∨ ∃ C : ℝ, 0 < C ∧
+      (P.modulus.totient : ℝ)⁻¹ * ‖lemmaNineCoefficientSum P ψ R mset b c‖ ≤
+        C * (mset.card : ℝ) * (R : ℝ) * (P.modulus : ℝ) ^ (ε - 1 / 2) := by
+  by_cases hεnonpos : ε ≤ 0
+  · exact Or.inl hεnonpos
+  · right
+    have hε : 0 < ε := lt_of_not_ge hεnonpos
+    obtain ⟨C, hC, hdiv⟩ := divisorCount_sq_le_const_mul_rpow hε
+    refine ⟨2 * C, mul_pos (by norm_num) hC, ?_⟩
+    have hnorm := lemmaNineCoefficientSum_normalized_le_divisorRatio P ψ R mset b c
+    have hratio := divisorCount_div_totient_le_sq_div_modulus P
+    have hq : 0 < (P.modulus : ℝ) := by
+      exact_mod_cast (P.modulus_neZero.out |> Nat.pos_of_ne_zero)
+    have hq1 : 1 ≤ P.modulus := Nat.one_le_iff_ne_zero.mpr P.modulus_neZero.out
+    have hsquare := hdiv P.modulus hq1
+    have hsqrt_div : Real.sqrt (P.modulus : ℝ) / (P.modulus : ℝ) =
+        (P.modulus : ℝ) ^ (-(1 : ℝ) / 2) := by
+      calc
+        Real.sqrt (P.modulus : ℝ) / (P.modulus : ℝ) =
+          (P.modulus : ℝ) ^ (1 / 2) / (P.modulus : ℝ) ^ 1 := by
+            rw [Real.sqrt_eq_rpow, Real.rpow_one]
+        _ = (P.modulus : ℝ) ^ (1 / 2 - 1) :=
+          (Real.rpow_sub hq (1 / 2) 1).symm
+        _ = (P.modulus : ℝ) ^ (-(1 : ℝ) / 2) := by
+          have hhalf : (1 / 2 : ℝ) - 1 = -(1 : ℝ) / 2 := by norm_num
+          rw [hhalf]
+    have hscale : Real.sqrt (P.modulus : ℝ) *
+        (C * (P.modulus : ℝ) ^ ε / (P.modulus : ℝ)) =
+        C * (P.modulus : ℝ) ^ (ε - 1 / 2) := by
+      calc
+        Real.sqrt (P.modulus : ℝ) *
+            (C * (P.modulus : ℝ) ^ ε / (P.modulus : ℝ)) =
+          C * (P.modulus : ℝ) ^ ε *
+            (Real.sqrt (P.modulus : ℝ) / (P.modulus : ℝ)) := by
+              field_simp
+        _ = C * ((P.modulus : ℝ) ^ ε * (P.modulus : ℝ) ^ (-(1 : ℝ) / 2)) := by
+              rw [hsqrt_div]
+              ring
+        _ = C * (P.modulus : ℝ) ^ (ε - 1 / 2) := by
+              have hpow : (P.modulus : ℝ) ^ ε *
+                  (P.modulus : ℝ) ^ (-(1 : ℝ) / 2) =
+                  (P.modulus : ℝ) ^ (ε - 1 / 2) := by
+                rw [← Real.rpow_add hq]
+                congr 1
+                ring
+              rw [hpow]
+    calc
+      (P.modulus.totient : ℝ)⁻¹ * ‖lemmaNineCoefficientSum P ψ R mset b c‖ ≤
+        2 * (mset.card : ℝ) * (R : ℝ) * Real.sqrt (P.modulus : ℝ) *
+          ((P.modulus.divisors.card : ℝ) / (P.modulus.totient : ℝ)) := hnorm
+      _ ≤ 2 * (mset.card : ℝ) * (R : ℝ) * Real.sqrt (P.modulus : ℝ) *
+          ((P.modulus.divisors.card : ℝ) ^ 2 / (P.modulus : ℝ)) := by
+            gcongr
+      _ ≤ 2 * (mset.card : ℝ) * (R : ℝ) * Real.sqrt (P.modulus : ℝ) *
+          (C * (P.modulus : ℝ) ^ ε / (P.modulus : ℝ)) := by
+            gcongr
+      _ = (2 * C) * (mset.card : ℝ) * (R : ℝ) *
+          (P.modulus : ℝ) ^ (ε - 1 / 2) := by
+            calc
+              2 * (mset.card : ℝ) * (R : ℝ) * Real.sqrt (P.modulus : ℝ) *
+                  (C * (P.modulus : ℝ) ^ ε / (P.modulus : ℝ)) =
+                2 * (mset.card : ℝ) * (R : ℝ) *
+                  (Real.sqrt (P.modulus : ℝ) *
+                    (C * (P.modulus : ℝ) ^ ε / (P.modulus : ℝ))) := by ring
+              _ = (2 * C) * (mset.card : ℝ) * (R : ℝ) *
+                  (P.modulus : ℝ) ^ (ε - 1 / 2) := by
+                rw [hscale]
+                ring
+
+/-- The two source exceptional character families: principal and quadratic. -/
+def lemmaNineSpecialLocalCharacter (P : OddPrimeFamily I) (quadratic : Bool) :
+    ∀ i, MulChar (ZMod (P.prime i).1) ℂ :=
+  fun i => if quadratic then oddPrimeQuadraticCharacter (P.prime i) else 1
+
+omit [DecidableEq I] in
+/-- The quadratic exceptional tuple occupies every local prime. -/
+theorem exceptionalPrimeIndices_quadraticLocalCharacter
+    (P : OddPrimeFamily I) :
+    exceptionalPrimeIndices P (lemmaNineSpecialLocalCharacter P true) = Finset.univ := by
+  ext i
+  simp [mem_exceptionalPrimeIndices, lemmaNineSpecialLocalCharacter]
+
+/-- Principal and quadratic tuples have residual Jacobi-core norm at most one. -/
+theorem residualJacobiCoreProduct_norm_le_one_special
+    (P : OddPrimeFamily I) (quadratic : Bool) :
+    ‖residualJacobiCoreProduct P (lemmaNineSpecialLocalCharacter P quadratic)‖ ≤ 1 := by
+  cases quadratic with
+  | false =>
+    have hsq := residualJacobiCoreProduct_sq_norm P (lemmaNineSpecialLocalCharacter P false)
+    have hfactor : residualJacobiCoreNormSqFactor P
+        (lemmaNineSpecialLocalCharacter P false) = 1 := by
+      unfold residualJacobiCoreNormSqFactor lemmaNineSpecialLocalCharacter
+      simp
+    rw [hfactor] at hsq
+    apply (sq_le_sq₀ (norm_nonneg _) zero_le_one).mp
+    norm_num [hsq]
+  | true =>
+    have hex := exceptionalPrimeIndices_quadraticLocalCharacter P
+    unfold residualJacobiCoreProduct
+    rw [hex]
+    simp
+
+/-- Pointwise special-character bound with no residual square-root factor. -/
+theorem norm_generalizedJacobiLocalSum_unitInverse_le_special
+    (P : OddPrimeFamily I) (quadratic : Bool)
+    (r : ℤ) (m : (ZMod P.modulus)ˣ) :
+    ‖generalizedJacobiLocalSum P (lemmaNineSpecialLocalCharacter P quadratic)
+      ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ ≤
+      ‖exceptionalRamanujanAdditiveProduct P (lemmaNineSpecialLocalCharacter P quadratic)
+        ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ := by
+  rw [generalizedJacobiLocalSum_source_factor, norm_mul, norm_mul]
+  calc
+    ‖exceptionalRamanujanAdditiveProduct P (lemmaNineSpecialLocalCharacter P quadratic)
+        ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ *
+        ‖residualJacobiPhase P (lemmaNineSpecialLocalCharacter P quadratic)
+          ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ *
+        ‖residualJacobiCoreProduct P (lemmaNineSpecialLocalCharacter P quadratic)‖ ≤
+      ‖exceptionalRamanujanAdditiveProduct P (lemmaNineSpecialLocalCharacter P quadratic)
+        ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ * 1 * 1 := by
+          gcongr
+          · exact residualJacobiPhase_norm_le_one P _ _
+          · exact residualJacobiCoreProduct_norm_le_one_special P quadratic
+    _ = _ := by ring
+
+/-- Finite unnormalized coefficient bound for the principal/quadratic branch. -/
+theorem lemmaNineCoefficientSum_norm_le_gcdMass_special
+    (P : OddPrimeFamily I) (quadratic : Bool)
+    (R : ℕ) (mset : Finset (ZMod P.modulus)ˣ)
+    (b : UnitBallCoefficient (ZMod P.modulus)ˣ) (c : UnitBallCoefficient ℤ) :
+    ‖lemmaNineCoefficientSum P (lemmaNineSpecialLocalCharacter P quadratic) R mset b c‖ ≤
+      (mset.card : ℝ) * ramanujanGcdSymmetricIntervalMass P R := by
+  unfold lemmaNineCoefficientSum
+  calc
+    ‖∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0, ∑ m ∈ mset,
+        c r * b m * generalizedJacobiLocalSum P (lemmaNineSpecialLocalCharacter P quadratic)
+          ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ ≤
+      ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0,
+        ‖∑ m ∈ mset, c r * b m * generalizedJacobiLocalSum P
+          (lemmaNineSpecialLocalCharacter P quadratic)
+          ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ := by
+        exact norm_sum_le ((Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0)
+          (fun r => ∑ m ∈ mset,
+            c r * b m * generalizedJacobiLocalSum P (lemmaNineSpecialLocalCharacter P quadratic)
+              ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus)))
+    _ ≤ ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0, ∑ m ∈ mset,
+        ‖c r * b m * generalizedJacobiLocalSum P
+          (lemmaNineSpecialLocalCharacter P quadratic)
+          ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ := by
+        apply Finset.sum_le_sum
+        intro r hr
+        exact norm_sum_le mset (fun m =>
+          c r * b m * generalizedJacobiLocalSum P (lemmaNineSpecialLocalCharacter P quadratic)
+            ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus)))
+    _ ≤ ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0, ∑ m ∈ mset,
+        ‖exceptionalRamanujanAdditiveProduct P
+          (lemmaNineSpecialLocalCharacter P quadratic)
+          ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ := by
+        apply Finset.sum_le_sum
+        intro r hr
+        apply Finset.sum_le_sum
+        intro m hm
+        rw [norm_mul, norm_mul]
+        have hT := norm_generalizedJacobiLocalSum_unitInverse_le_special P quadratic r m
+        have hb := b.norm_le_one m
+        have hc := c.norm_le_one r
+        calc
+          ‖c r‖ * ‖b m‖ * ‖generalizedJacobiLocalSum P
+              (lemmaNineSpecialLocalCharacter P quadratic)
+              ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ ≤
+            1 * 1 * ‖generalizedJacobiLocalSum P
+              (lemmaNineSpecialLocalCharacter P quadratic)
+              ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ := by
+              gcongr
+          _ = ‖generalizedJacobiLocalSum P (lemmaNineSpecialLocalCharacter P quadratic)
+              ((r : ZMod P.modulus) * (↑(m⁻¹) : ZMod P.modulus))‖ := by ring
+          _ ≤ _ := hT
+    _ ≤ ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0, ∑ m ∈ mset,
+        (P.modulus.gcd r.natAbs : ℝ) := by
+        apply Finset.sum_le_sum
+        intro r hr
+        apply Finset.sum_le_sum
+        intro m hm
+        exact exceptionalRamanujanAdditiveProduct_norm_le_gcd_unitInverse P
+          (lemmaNineSpecialLocalCharacter P quadratic) r m
+    _ = (mset.card : ℝ) * ramanujanGcdSymmetricIntervalMass P R := by
+        unfold ramanujanGcdSymmetricIntervalMass
+        simp only [Finset.sum_const, nsmul_eq_mul]
+        rw [Finset.mul_sum]
+
+/-- Closed exceptional branch of source equation (32), with the additional
+square-root saving for principal and quadratic character tuples. -/
+theorem lemmaNineCoefficientSum_normalized_sourceScale_special
+    (P : OddPrimeFamily I) (quadratic : Bool)
+    (R : ℕ) (mset : Finset (ZMod P.modulus)ˣ)
+    (b : UnitBallCoefficient (ZMod P.modulus)ˣ) (c : UnitBallCoefficient ℤ) (ε : ℝ) :
+    ε ≤ 0 ∨ ∃ C : ℝ, 0 < C ∧
+      (P.modulus.totient : ℝ)⁻¹ *
+        ‖lemmaNineCoefficientSum P (lemmaNineSpecialLocalCharacter P quadratic) R mset b c‖ ≤
+        C * (mset.card : ℝ) * (R : ℝ) * (P.modulus : ℝ) ^ (ε - 1) := by
+  by_cases hεnonpos : ε ≤ 0
+  · exact Or.inl hεnonpos
+  · right
+    have hε : 0 < ε := lt_of_not_ge hεnonpos
+    obtain ⟨C, hC, hdiv⟩ := divisorCount_sq_le_const_mul_rpow hε
+    refine ⟨2 * C, mul_pos (by norm_num) hC, ?_⟩
+    have hsum := lemmaNineCoefficientSum_norm_le_gcdMass_special P quadratic R mset b c
+    have hgcd := ramanujanGcdSymmetricIntervalMass_le_two_mul_divisorCount P R
+    have hratio := divisorCount_div_totient_le_sq_div_modulus P
+    have hq : 0 < (P.modulus : ℝ) := by
+      exact_mod_cast (P.modulus_neZero.out |> Nat.pos_of_ne_zero)
+    have hq1 : 1 ≤ P.modulus := Nat.one_le_iff_ne_zero.mpr P.modulus_neZero.out
+    have hsquare := hdiv P.modulus hq1
+    have hscale : C * (P.modulus : ℝ) ^ ε / (P.modulus : ℝ) =
+        C * (P.modulus : ℝ) ^ (ε - 1) := by
+      have hpow : (P.modulus : ℝ) ^ (ε - 1) =
+          (P.modulus : ℝ) ^ ε / (P.modulus : ℝ) := by
+        rw [Real.rpow_sub hq ε 1, Real.rpow_one]
+      calc
+        C * (P.modulus : ℝ) ^ ε / (P.modulus : ℝ) =
+            C * ((P.modulus : ℝ) ^ ε / (P.modulus : ℝ)) := by ring
+        _ = C * (P.modulus : ℝ) ^ (ε - 1) := by
+            rw [hpow]
+    have hphi : 0 ≤ (P.modulus.totient : ℝ)⁻¹ := by positivity
+    calc
+      (P.modulus.totient : ℝ)⁻¹ *
+          ‖lemmaNineCoefficientSum P (lemmaNineSpecialLocalCharacter P quadratic) R mset b c‖ ≤
+        (P.modulus.totient : ℝ)⁻¹ *
+          ((mset.card : ℝ) * ramanujanGcdSymmetricIntervalMass P R) :=
+        mul_le_mul_of_nonneg_left hsum hphi
+      _ ≤ (P.modulus.totient : ℝ)⁻¹ *
+          ((mset.card : ℝ) * (2 * (R : ℝ) * (P.modulus.divisors.card : ℝ))) := by
+        gcongr
+      _ = 2 * (mset.card : ℝ) * (R : ℝ) *
+          ((P.modulus.divisors.card : ℝ) / (P.modulus.totient : ℝ)) := by
+        rw [div_eq_mul_inv]
+        ring
+      _ ≤ 2 * (mset.card : ℝ) * (R : ℝ) *
+          ((P.modulus.divisors.card : ℝ) ^ 2 / (P.modulus : ℝ)) := by
+        gcongr
+      _ ≤ 2 * (mset.card : ℝ) * (R : ℝ) *
+          (C * (P.modulus : ℝ) ^ ε / (P.modulus : ℝ)) := by
+        gcongr
+      _ = (2 * C) * (mset.card : ℝ) * (R : ℝ) *
+          (P.modulus : ℝ) ^ (ε - 1) := by
+        rw [hscale]
+        ring
 
 /-- Actual exceptional additive-Ramanujan mass on the literal source range
 `0 < |r| ≤ R`. -/

@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`048b25fbb3583322849c112653dd9da1f829c70f` on 20 August, plus declaration-level working-tree
+`ad606ff0b0d40829f77b312b70b0b32055ff0b5d` on 20 August, plus declaration-level working-tree
 review. Historical `Active-tree Lean` wording records former provenance. Current
 formal route status is maintained in `rh-current-frontier-map.md`; detailed sections below are a
 literature-exchange record and may retain older intermediate formulations. External literature was

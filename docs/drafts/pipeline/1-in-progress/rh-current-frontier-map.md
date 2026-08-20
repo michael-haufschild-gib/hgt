@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 20 August 2026, commit
-`048b25fbb3583322849c112653dd9da1f829c70f`, plus declaration-index review of current Lean
+`ad606ff0b0d40829f77b312b70b0b32055ff0b5d`, plus declaration-index review of current Lean
 working-tree additions. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified and not claimed build-audited in this
@@ -35,7 +35,7 @@ Formal corpus currently supports fourteen live architectures:
 **SV2 (Suzuki spherical characteristic convergence)**. Thirteen corpus-born receiver/source-mechanism
 candidates remain: `UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS, SEC, BPC`. Routes R, IW, and AP are terminal as independent
 producers. Current formal corpus closes important intermediate premises, but does not close any route's
-final open producer and prove neither RH nor its negation.
+final open producer and proves neither RH nor its negation.
 
 | Architecture | Proved chain | First open core |
 |---|---|---|
