@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerTowerDirectLimit
+import GaloisForLFunctions.RHTower.DeningerKummerHomomorphism
 
 /-!
 # Global reciprocity in a tower of number fields
@@ -13,6 +14,7 @@ global Kummer currents satisfy the sole global reciprocity relation at every fin
 not assert the stronger Albert--Brauer--Hasse--Noether surjectivity statement.
 
 * `deningerTowerPullHomKer` : field embeddings preserve reciprocity kernels.
+* `deningerKummerReciprocityHom` : the global Kummer map lands in the reciprocity kernel.
 * `deningerTowerKernelSystem` : the directed system of reciprocity kernels.
 * `DeningerTowerReciprocityLimit` : its direct limit.
 * `deningerKummerKernel_limit_compatible` : global Kummer currents persist in that limit.
@@ -61,6 +63,44 @@ theorem deningerKummerKernelTest_towerPull (σ : K →+* L) {α : K} (hα : α �
     deningerTowerPullHomKer σ (deningerKummerKernelTest K hα) = deningerKummerKernelTest L hσα := by
   apply Subtype.ext
   exact deningerKummerTest_towerPull σ hα hσα
+
+/-- The logarithmic Kummer map, with the product formula built into its codomain.  Thus every
+global multiplicative element gives a finite-support local current satisfying global reciprocity. -/
+noncomputable def deningerKummerReciprocityHom (K : Type*) [Field K] [NumberField K] :
+    Additive Kˣ →+ LinearMap.ker (deningerPlaceSum K) :=
+  (deningerKummerHom K).codRestrict (LinearMap.ker (deningerPlaceSum K)) (fun u => by
+    change deningerPlaceSum K (deningerKummerTest K (Units.ne_zero (Additive.toMul u))) = 0
+    exact deningerKummer_sum_eq_zero K (Units.ne_zero (Additive.toMul u)))
+
+/-- The reciprocity-valued Kummer homomorphism agrees with the pointwise bundled Kummer current. -/
+theorem deningerKummerReciprocityHom_apply (K : Type*) [Field K] [NumberField K] (u : Kˣ) :
+    deningerKummerReciprocityHom K (Additive.ofMul u) =
+      deningerKummerKernelTest K (Units.ne_zero u) := by
+  apply Subtype.ext
+  rfl
+
+/-- The range of the reciprocity-valued Kummer homomorphism is exactly the family of Kummer
+currents regarded inside the product-formula kernel. -/
+theorem deningerKummerReciprocityHom_range (K : Type*) [Field K] [NumberField K] :
+    Set.range (deningerKummerReciprocityHom K) =
+      {g | ∃ (α : K) (hα : α ≠ 0), g = deningerKummerKernelTest K hα} := by
+  ext g
+  constructor
+  · rintro ⟨u, rfl⟩
+    exact ⟨(Additive.toMul u : Kˣ), Units.ne_zero _,
+      (deningerKummerReciprocityHom_apply K _).symm⟩
+  · rintro ⟨α, hα, rfl⟩
+    exact ⟨Additive.ofMul (Units.mk0 α hα), deningerKummerReciprocityHom_apply K _⟩
+
+/-- Kummer currents commute with scalar extension after their codomains are restricted to the
+reciprocity kernels. -/
+theorem deningerKummerReciprocityHom_towerPull
+    (σ : K →+* L) (u : Kˣ) :
+    deningerTowerPullHomKer σ (deningerKummerReciprocityHom K (Additive.ofMul u)) =
+      deningerKummerReciprocityHom L (Additive.ofMul (Units.map σ.toMonoidHom u)) := by
+  rw [deningerKummerReciprocityHom_apply, deningerKummerReciprocityHom_apply]
+  exact deningerKummerKernelTest_towerPull σ (Units.ne_zero u)
+    ((map_ne_zero σ).mpr (Units.ne_zero u))
 
 end PullHom
 

@@ -1,8 +1,8 @@
 # Critical prime sampling forces logarithmic kernel microlocalization
 
 - **ID:** `critical-prime-sampling-microlocalization-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / HILBERT--POLYA CARRIER LAW / BRIDGE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / HILBERT--POLYA CARRIER LAW / BRIDGE
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** If the critical prime evaluations are a Bessel family of normalized evaluation
   vectors in an RKHS, then every fixed positive normalized-kernel coherence radius at logarithmic
@@ -248,13 +248,63 @@ Relevant parent literature includes:
   `https://arxiv.org/abs/1707.07880`;
 - the classical prime number theorem with a zero-free-region error term.
 
-## Lean status
+## Lean status (SUPERSEDED)
 
-The current tree already proves divergence of the global critical prime profile in
-`PrimeLogSamplingWeightObstruction.lean`.  It does not contain RKHS/de Branges normalized kernels,
-the short logarithmic-window asymptotic `(8)`, or the phase formula `(13)`.  Adding only the scalar
-inequality `(7)` would be wrapper bloat rather than a formalization of the theorem.  No Lean
-formalization is claimed.
+The original status read:
+
+> The current tree already proves divergence of the global critical prime profile in
+> `PrimeLogSamplingWeightObstruction.lean`.  It does not contain RKHS/de Branges normalized
+> kernels, the short logarithmic-window asymptotic `(8)`, or the phase formula `(13)`.  Adding only
+> the scalar inequality `(7)` would be wrapper bloat rather than a formalization of the theorem.
+> No Lean formalization is claimed.
+
+Two of the three obstacles were already gone.  The short-window asymptotic `(8)` is the
+second-order Mertens theorem, which the corpus proves unconditionally in
+`RHTower/PrimeHigherMertens` from the de la Vallée Poussin error term; and the phase formula `(13)`
+is an elementary polar-form computation, not de Branges space theory.  The normalized-kernel layer
+is three definitions.  The card is now formalized; see below.
+
+## Lean formalization — COMPLETE
+
+Module `RHTower/PrimeSamplingMicrolocalization`.  Every capstone audits to
+`propext, Classical.choice, Quot.sound`.
+
+| Card | Lean |
+|---|---|
+| `(1)` squared normalized kernel coherence `C_K` | `RHTower.kernelCoherence`, `RHTower.unitCoherence` |
+| `C_K` is gauge invariant under `K ↦ H(x) conj(H(y)) K` | `RHTower.kernelCoherence_gauge` |
+| `C_K` of a Gram kernel; normalization of evaluation vectors | `RHTower.kernelCoherence_gram`, `RHTower.norm_normalized`, `RHTower.unitCoherence_normalized` |
+| `(2)`–`(3)` critical prime weights `w_p = (log p)²/p` | `RHTower.primeLogPowWeight` (corpus, at `k = 2`) |
+| `(4)` boundedness of the normalized sampling operator | `RHTower.PrimeSamplingBessel` |
+| `(5)` kernel testing law | `RHTower.primeSampling_kernel_test` |
+| `(6)`–`(7)` coherence floor bounds the window prime mass | `RHTower.primeLogWindowMass_le` |
+| `(8)` uniform logarithmic-window prime mass `2 x r + o(1)` | `RHTower.primeLogWindowMass`, `RHTower.primeLogWindowMass_eq_sum`, `RHTower.primeLogWindowMass_uniform_asymptotic` |
+| `(9)`–`(10)` PNT error term and `∑_{p≤X}(log p)²/p = (log X)²/2 + C + o(1)` | corpus: `RHTower.Sieve.chebyshevTheta_sub_id_isBigO`, `RHTower.tendsto_primeLogPowSum_sub` |
+| `(11)` microlocalization law `limsup x r(x) ≤ B²/(2c)` | `RHTower.prime_coherence_radius_bound` |
+| `(12)` `r(log N) = O(1/log N)` | `RHTower.prime_coherence_radius_cutoff` |
+| `(13)` de Branges phase kernel formula | `RHTower.deBrangesKernelOffDiag`, `RHTower.deBrangesKernelOffDiag_polar`, `RHTower.deBrangesRealKernel`, `RHTower.phaseCoherence`, `RHTower.kernelCoherence_deBranges` |
+| `(14)`–`(15)` local phase regularity gives a coherence floor | `RHTower.phaseCoherence_ge` (with `RHTower.abs_sin_ge_of_abs_le`, `RHTower.sq_sin_ge_of_abs_le`, `RHTower.exists_mvt_between`) |
+| `(16)` phase-speed bound | `RHTower.phase_speed_ge`, `RHTower.phase_speed_liminf` |
+
+`(11)` is stated in the sharp `∀ ε > 0, ∀ᶠ x, x r(x) ≤ B²/(2c) + ε` form, which is exactly
+`limsup_{x→∞} x r(x) ≤ B²/(2c)` and avoids the junk value of `Filter.limsup` on an unbounded
+family.  `(16)` is given both in the quantitative `D`-parametrized form
+(`∀ᶠ x, 1/(2 M D) ≤ φ'(x)/x` for every `D > π² M³ B²/8`) and in the card's limit form
+(`∀ ε > 0, ∀ᶠ x, 4/(π² M⁴ B²) − ε ≤ φ'(x)/x`).
+
+The hypotheses of the Lean statements are exactly the hypotheses of the card: the Bessel bound
+`(4)`, the coherence radius `(6)`, and the local phase regularity `(14)`.  Nothing else is assumed.
+
+### What is *not* formalized
+
+- The construction of a de Branges space `H(E)` and the derivation of its reproducing kernel from
+  `E`.  The corpus has no general de Branges space theory.  `(13)` is proved for the real-axis
+  kernel *written in the de Branges form* `K(x,y) = (B(y)A(x) − A(y)B(x))/(π(y−x))` with the polar
+  data `A = m cos φ`, `B = m sin φ`, and diagonal value `m² φ'/π` — that is, from exactly the two
+  structural inputs the card quotes.  Which entire functions `E` produce such data is not addressed.
+- The Hilbert--Pólya consequence section, which is a discussion of three separate obligations rather
+  than a theorem.
+
 
 ## Gates
 
@@ -264,4 +314,11 @@ formalization is claimed.
 - [x] locally regular de Branges phase-speed corollary proved
 - [x] RH-free and gauge-invariant formulation checked
 - [x] parent-theory novelty claim rejected
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization
+
+## Log
+
+- 2026-08-20 — Stage 2 → 3.  The "no Lean formalization is claimed" status was overturned: `(8)` is
+  the corpus's own second-order Mertens theorem and `(13)` is a polar-form computation.  New module
+  `RHTower/PrimeSamplingMicrolocalization`, wired into `GaloisForLFunctions.RHTower`; every capstone
+  audits to `propext, Classical.choice, Quot.sound`.

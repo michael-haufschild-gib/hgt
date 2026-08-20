@@ -266,6 +266,57 @@ theorem rectIntegral_cglPrincipalDetectorMellinIntegrand (X q : ℕ)
           (cglPrincipalPole_re_pos z))
         r.principal_re_lt_upper r.lower_im_lt_principal r.principal_im_lt_upper
 
+/-- The regularized Cauchy coefficient at the principal pole is exactly the
+explicit residue obtained from the trivial Dirichlet-character continuation. -/
+theorem cglPrincipalRegularizedMellinFactor_at_principalPole (X q : ℕ)
+    (z : CGLPrincipalCriticalStripLZero q) :
+    cglPrincipalRegularizedMellinFactor X q z (cglPrincipalPole z) =
+      Complex.Gamma (cglPrincipalPole z) *
+        zeroDetectionMobiusPolynomial X (q + 1) z.character 1 *
+          cglPrincipalLFunctionResidue q := by
+  have hp : cglPrincipalPole z ≠ 0 := by
+    intro h
+    have hpos := cglPrincipalPole_re_pos z
+    rw [h] at hpos
+    norm_num at hpos
+  have hfactor : cglPrincipalPoleClearedFactor X q z (cglPrincipalPole z) =
+      zeroDetectionMobiusPolynomial X (q + 1) z.character 1 *
+        cglPrincipalLFunctionResidue q := by
+    unfold cglPrincipalPoleClearedFactor cglPrincipalLFunctionResidue
+    rw [cglPrincipalPole_shift_eq_one]
+    rw [DirichletCharacter.LFunctionTrivChar₁, Function.update_self]
+  have hquotient : cglPrincipalDetectorZeroQuotient X q z (cglPrincipalPole z) =
+      (zeroDetectionMobiusPolynomial X (q + 1) z.character 1 *
+        cglPrincipalLFunctionResidue q) * (cglPrincipalPole z)⁻¹ := by
+    calc
+      cglPrincipalDetectorZeroQuotient X q z (cglPrincipalPole z) =
+          (cglPrincipalPole z)⁻¹ *
+            ((cglPrincipalPole z) *
+              cglPrincipalDetectorZeroQuotient X q z (cglPrincipalPole z)) := by
+            field_simp [hp]
+      _ = (cglPrincipalPole z)⁻¹ *
+          cglPrincipalPoleClearedFactor X q z (cglPrincipalPole z) := by
+            rw [← cglPrincipalPoleClearedFactor_eq_mul_zeroQuotient]
+      _ = (zeroDetectionMobiusPolynomial X (q + 1) z.character 1 *
+          cglPrincipalLFunctionResidue q) * (cglPrincipalPole z)⁻¹ := by
+            rw [hfactor]
+            ring
+  unfold cglPrincipalRegularizedMellinFactor
+  rw [Complex.Gamma_add_one (cglPrincipalPole z) hp, hquotient]
+  field_simp [hp]
+
+/-- **Explicit finite principal contour shift.**  The finite detector contour
+integral equals the source's translated trivial-character residue. -/
+theorem rectIntegral_cglPrincipalDetectorMellinIntegrand_eq_explicitResidue (X q : ℕ)
+    (z : CGLPrincipalCriticalStripLZero q) (r : CGLPrincipalDetectorRectangle z) :
+    rectIntegral (cglDetectorMellinIntegrand X q z.toCGLCriticalStripLZero) r.lower r.upper =
+      2 * Real.pi * I * Complex.Gamma (cglPrincipalPole z) *
+        zeroDetectionMobiusPolynomial X (q + 1) z.character 1 *
+          cglPrincipalLFunctionResidue q := by
+  rw [rectIntegral_cglPrincipalDetectorMellinIntegrand,
+    cglPrincipalRegularizedMellinFactor_at_principalPole]
+  ring
+
 end
 
 end RHTower

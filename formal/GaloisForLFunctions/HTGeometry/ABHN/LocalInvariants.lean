@@ -108,6 +108,41 @@ noncomputable def algClosedLocalInvariantEquivZero (F : Type u) [Field F] [IsAlg
       refine ⟨brauerSplitClass F, ?_⟩
       exact Subtype.ext (algClosedLocalInvariant_eq_zero F (brauerSplitClass F)))⟩
 
+/-- At an algebraically closed local field, the local invariant is an additive isomorphism onto
+the zero additive subgroup of `ℚ/ℤ`. -/
+noncomputable def algClosedLocalInvariantAddEquivBot (F : Type u) [Field F] [IsAlgClosed F] :
+    BrauerGroup.{u, u} F ≃+ (⊥ : AddSubgroup RatModInt) := by
+  let localInvariantToBot : BrauerGroup.{u, u} F →+ (⊥ : AddSubgroup RatModInt) :=
+    { toFun := fun x => ⟨algClosedLocalInvariant F x, by
+        simpa using algClosedLocalInvariant_eq_zero F x⟩
+      map_zero' := by
+        apply Subtype.ext
+        change algClosedLocalInvariant F 0 = 0
+        exact algClosedLocalInvariant_eq_zero F 0
+      map_add' := by
+        intro x y
+        apply Subtype.ext
+        change algClosedLocalInvariant F (x + y) =
+          algClosedLocalInvariant F x + algClosedLocalInvariant F y
+        exact (algClosedLocalInvariantAddHom F).map_add x y }
+  apply AddEquiv.ofBijective localInvariantToBot
+  constructor
+  · intro x y h
+    exact algClosedLocalInvariant_injective F (congrArg Subtype.val h)
+  · intro y
+    refine ⟨brauerSplitClass F, ?_⟩
+    apply Subtype.ext
+    change algClosedLocalInvariant F (brauerSplitClass F) = y.val
+    have hy : (y : RatModInt) = 0 := y.property
+    rw [algClosedLocalInvariant_eq_zero, hy]
+
+/-- The additive algebraically closed local-invariant equivalence has the defined invariant as its
+underlying `ℚ/ℤ`-valued map. -/
+theorem algClosedLocalInvariantAddEquivBot_apply (F : Type u) [Field F] [IsAlgClosed F]
+    (x : BrauerGroup.{u, u} F) :
+    ((algClosedLocalInvariantAddEquivBot F x : (⊥ : AddSubgroup RatModInt)) : RatModInt) =
+      algClosedLocalInvariant F x := rfl
+
 /-- At a complex infinite place of a number field, the completed local Brauer quotient is
 trivial. -/
 theorem complexInfiniteCompletion_brauer_subsingleton (K : Type u) [Field K] [NumberField K]
@@ -159,6 +194,26 @@ theorem complexInfiniteCompletionLocalInvariantEquivZero_apply
     (v : NumberField.InfinitePlace K) (hv : v.IsComplex)
     (x : BrauerGroup.{u, u} v.Completion) :
     (complexInfiniteCompletionLocalInvariantEquivZero K v hv x).1 =
+      complexInfiniteCompletionLocalInvariant K v hv x := rfl
+
+/-- At a complex infinite place, the local invariant is an additive isomorphism onto the zero
+additive subgroup of `ℚ/ℤ`. -/
+noncomputable def complexInfiniteCompletionLocalInvariantAddEquivBot
+    (K : Type u) [Field K] [NumberField K]
+    (v : NumberField.InfinitePlace K) (hv : v.IsComplex) :
+    BrauerGroup.{u, u} v.Completion ≃+ (⊥ : AddSubgroup RatModInt) := by
+  letI : IsAlgClosed v.Completion := isAlgClosed_of_ringEquiv
+    (NumberField.InfinitePlace.Completion.ringEquivComplexOfIsComplex hv).symm
+  exact algClosedLocalInvariantAddEquivBot v.Completion
+
+/-- The additive complex-place invariant equivalence has the defined complex local invariant as
+its underlying `ℚ/ℤ`-valued map. -/
+theorem complexInfiniteCompletionLocalInvariantAddEquivBot_apply
+    (K : Type u) [Field K] [NumberField K]
+    (v : NumberField.InfinitePlace K) (hv : v.IsComplex)
+    (x : BrauerGroup.{u, u} v.Completion) :
+    ((complexInfiniteCompletionLocalInvariantAddEquivBot K v hv x :
+      (⊥ : AddSubgroup RatModInt)) : RatModInt) =
       complexInfiniteCompletionLocalInvariant K v hv x := rfl
 
 /-- Scalar extension of a global central simple algebra is split at every complex infinite place.

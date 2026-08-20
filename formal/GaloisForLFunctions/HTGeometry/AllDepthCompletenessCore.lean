@@ -99,8 +99,9 @@ theorem lineLattice_free_single (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndepen
   have hterm : ∀ l : ι, ((c l : ℤ) : ℂ) * τ l
       = (if l = i then (n : ℂ) * τ l else 0) + (if l = k then ((-b : ℤ) : ℂ) * τ l else 0) := by
     intro l
-    rw [hc]
-    split_ifs <;> push_cast <;> ring
+    simp only [hc]
+    push_cast
+    split_ifs <;> ring
   have hsum : ∑ l, ((c l : ℤ) : ℂ) * τ l = (n : ℂ) * τ i + ((-b : ℤ) : ℂ) * τ k := by
     rw [Finset.sum_congr rfl fun l _ => hterm l, Finset.sum_add_distrib,
       Finset.sum_ite_eq' Finset.univ i (fun l => (n : ℂ) * τ l),
@@ -112,8 +113,7 @@ theorem lineLattice_free_single (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndepen
     linear_combination hab
   obtain ⟨-, hcl⟩ := hQ (-a) c hzero
   have hci := hcl i
-  rw [hc] at hci
-  simp only [if_pos rfl, if_neg hik] at hci
+  simp only [hc, if_pos, if_neg hik, add_zero] at hci
   omega
 
 /-- **Two distinct surviving directions are free modulo the distinguished lattice.** -/
@@ -128,8 +128,9 @@ theorem lineLattice_free_pair (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndepende
       = (if l = i then (n : ℂ) * τ l else 0) + (if l = j then (m : ℂ) * τ l else 0)
         + (if l = k then ((-b : ℤ) : ℂ) * τ l else 0) := by
     intro l
-    rw [hc]
-    split_ifs <;> push_cast <;> ring
+    simp only [hc]
+    push_cast
+    split_ifs <;> ring
   have hsum : ∑ l, ((c l : ℤ) : ℂ) * τ l
       = (n : ℂ) * τ i + (m : ℂ) * τ j + ((-b : ℤ) : ℂ) * τ k := by
     rw [Finset.sum_congr rfl fun l _ => hterm l, Finset.sum_add_distrib, Finset.sum_add_distrib,
@@ -144,13 +145,13 @@ theorem lineLattice_free_pair (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndepende
   obtain ⟨-, hcl⟩ := hQ (-a) c hzero
   have hci := hcl i
   have hcj := hcl j
-  rw [hc] at hci hcj
-  simp only [if_pos rfl, if_neg hik, if_neg hij, if_neg hjk, if_neg (Ne.symm hij)] at hci hcj
+  simp only [hc, if_pos, if_neg hik, if_neg hij, if_neg hjk, if_neg (Ne.symm hij),
+    add_zero, zero_add] at hci hcj
   omega
 
 /-- **The distinguished direction has infinite order modulo a surviving pair.** -/
 theorem tripticPeriodGroup_free (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndependent τ)
-    {k i j : ι} (hik : i ≠ k) (hjk : j ≠ k) (hij : i ≠ j) (n : ℤ)
+    {k i j : ι} (hik : i ≠ k) (hjk : j ≠ k) (n : ℤ)
     (h : n • τ k ∈ tripticPeriodGroup (τ j) (τ i)) : n = 0 := by
   classical
   obtain ⟨a, q, r, hqr⟩ := h
@@ -161,8 +162,9 @@ theorem tripticPeriodGroup_free (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndepen
         + (if l = j then ((-q : ℤ) : ℂ) * τ l else 0)
         + (if l = k then (n : ℂ) * τ l else 0) := by
     intro l
-    rw [hc]
-    split_ifs <;> push_cast <;> ring
+    simp only [hc]
+    push_cast
+    split_ifs <;> ring
   have hsum : ∑ l, ((c l : ℤ) : ℂ) * τ l
       = ((-r : ℤ) : ℂ) * τ i + ((-q : ℤ) : ℂ) * τ j + (n : ℂ) * τ k := by
     rw [Finset.sum_congr rfl fun l _ => hterm l, Finset.sum_add_distrib, Finset.sum_add_distrib,
@@ -176,11 +178,10 @@ theorem tripticPeriodGroup_free (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndepen
       rw [zsmul_eq_mul]
     rw [hsm] at hqr
     push_cast
-    linear_combination -hqr
+    linear_combination hqr
   obtain ⟨-, hcl⟩ := hQ (-a) c hzero
   have hck := hcl k
-  rw [hc] at hck
-  simp only [if_pos rfl, if_neg (Ne.symm hik), if_neg (Ne.symm hjk)] at hck
+  simp only [hc, if_pos, if_neg (Ne.symm hik), if_neg (Ne.symm hjk), zero_add] at hck
   omega
 
 end

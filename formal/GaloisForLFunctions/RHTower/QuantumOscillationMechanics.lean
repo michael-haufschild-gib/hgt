@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CalibrationSpectrumMechanics
+import GaloisForLFunctions.HTGeometry.GammaPeriodicConstraintCorona
 import GaloisForLFunctions.HTGeometry.HyperbolicModulus
 import GaloisForLFunctions.HTGeometry.RegularLevelSetStratification
 import GaloisForLFunctions.RHTower.CCMArchimedeanGeometricCompositeKernel
@@ -29,6 +30,41 @@ noncomputable section
 namespace GaloisForLFunctions.RHTower
 
 /-! ## Free-electron Fermi surfaces -/
+
+/-- Unit-normalized free-electron dispersion in arbitrary finite momentum dimension. -/
+def freeElectronDispersion (d : ℕ) (k : EuclideanSpace ℝ (Fin d)) : ℝ :=
+  ‖k‖ ^ 2
+
+/-- Unit-chemical-potential free-electron Fermi surface in arbitrary finite dimension. -/
+def freeElectronFermiSurface (d : ℕ) : Set (EuclideanSpace ℝ (Fin d)) :=
+  {k | freeElectronDispersion d k = 1}
+
+/-- Every unit free-electron Fermi surface is exactly a Euclidean unit sphere. -/
+theorem freeElectronFermiSurface_eq_sphere :
+    ∀ d : ℕ, freeElectronFermiSurface d = Metric.sphere 0 1 := by
+  intro d
+  ext k
+  simp only [freeElectronFermiSurface, freeElectronDispersion, Set.mem_setOf_eq,
+    Metric.mem_sphere, dist_zero_right]
+  constructor
+  · intro hk
+    nlinarith [norm_nonneg k]
+  · intro hk
+    nlinarith
+
+/-- Every finite-dimensional unit free-electron Fermi surface is compact. -/
+theorem freeElectronFermiSurface_isCompact :
+    ∀ d : ℕ, IsCompact (freeElectronFermiSurface d) := by
+  intro d
+  rw [freeElectronFermiSurface_eq_sphere]
+  exact isCompact_sphere 0 1
+
+/-- Free-electron Fermi surfaces are invariant under momentum reversal. -/
+theorem freeElectronFermiSurface_neg_invariant :
+    ∀ d : ℕ, MapsTo Neg.neg (freeElectronFermiSurface d)
+      (freeElectronFermiSurface d) := by
+  intro d k hk
+  simpa [freeElectronFermiSurface, freeElectronDispersion] using hk
 
 /-- Unit-normalized free-electron dispersion in one momentum dimension. -/
 def oneDimensionalFreeElectronDispersion (k : ℝ) : ℝ := k ^ 2
@@ -123,6 +159,14 @@ theorem unitLandauCrossing_spacing :
   simp only [unitLandauCrossing, Nat.cast_add, Nat.cast_one]
   ring
 
+/-- Arbitrary Onsager phase offsets leave Landau-crossing spacing unchanged. -/
+theorem landauCrossing_spacing :
+    ∀ phaseOffset : ℝ, ∀ n : ℕ,
+      ((n + 1 : ℕ) : ℝ) + phaseOffset - ((n : ℝ) + phaseOffset) = 1 := by
+  intro phaseOffset n
+  push_cast
+  ring
+
 /-- Every unit Landau crossing is a trough of the Onsager oscillation. -/
 theorem unitOnsagerOscillation_unitLandauCrossing :
     ∀ n : ℕ, unitOnsagerOscillation (unitLandauCrossing n) = -1 := by
@@ -168,6 +212,44 @@ theorem shubnikovDeHaasResponse_periodic :
   intro inverseField
   unfold shubnikovDeHaasResponse
   rw [_root_.RHTower.ccmArchimedeanGeometricCompositeDiagonalOscillation_periodic]
+
+/-! ## Finite Onsager harmonic packets -/
+
+/-- Entire finite Onsager packet from corpus period-one Fourier modes. -/
+def finiteOnsagerPacket {k : ℕ} (amplitude : Fin k → ℂ) (z : ℂ) : ℂ :=
+  HTGeometry.gammaPeriodicFourierPolynomial amplitude z
+
+/-- Every finite Onsager packet is exactly period-one in inverse field. -/
+theorem finiteOnsagerPacket_periodic :
+    ∀ {k : ℕ} (amplitude : Fin k → ℂ),
+      Function.Periodic (finiteOnsagerPacket amplitude) 1 := by
+  intro k amplitude
+  simpa [finiteOnsagerPacket] using
+    HTGeometry.gammaPeriodicFourierPolynomial_periodic amplitude
+
+/-- Arbitrary finite local response jets have a unique finite period-one Onsager packet. -/
+theorem existsUnique_finiteOnsagerPacket_jet :
+    ∀ {k : ℕ} (jet : Fin k → ℂ),
+      ∃! amplitude : Fin k → ℂ,
+        Function.Periodic (finiteOnsagerPacket amplitude) 1 ∧
+          ∀ n : Fin k,
+            iteratedDeriv (n : ℕ) (finiteOnsagerPacket amplitude) 0 = jet n := by
+  intro k jet
+  unfold finiteOnsagerPacket
+  exact HTGeometry.existsUnique_gammaPeriodicFourierPolynomial_jet jet
+
+/-- Real observable obtained from a complex finite Onsager packet. -/
+def finiteOnsagerSignal {k : ℕ} (amplitude : Fin k → ℂ)
+    (inverseField : ℝ) : ℝ :=
+  (finiteOnsagerPacket amplitude inverseField).re
+
+/-- Real finite Onsager signals inherit exact inverse-field period one. -/
+theorem finiteOnsagerSignal_periodic :
+    ∀ {k : ℕ} (amplitude : Fin k → ℂ),
+      Function.Periodic (finiteOnsagerSignal amplitude) 1 := by
+  intro k amplitude inverseField
+  have h := finiteOnsagerPacket_periodic amplitude (inverseField : ℂ)
+  simpa [finiteOnsagerSignal] using congrArg Complex.re h
 
 /-! ## dHvA response as thermodynamic differentiation -/
 
@@ -231,6 +313,21 @@ theorem lifshitzKosevichThermalFactor_strictAntiOn :
   simpa [lifshitzKosevichThermalFactor, hXpos.ne', hYpos.ne'] using
     _root_.RHTower.div_sinh_strictAntiOn hX hY hXY
 
+/-- On its physical half-line the LK thermal factor lies in `(0, 1]`. -/
+theorem lifshitzKosevichThermalFactor_mapsTo_Ioc :
+    MapsTo lifshitzKosevichThermalFactor (Ici 0) (Ioc 0 1) := by
+  intro X hX
+  have hXnonneg : 0 ≤ X := hX
+  rcases hXnonneg.eq_or_lt with hXzero | hXpos
+  · subst X
+    simp
+  · have hsinh : 0 < Real.sinh X := Real.sinh_pos_iff.mpr hXpos
+    have hlt : X < Real.sinh X := _root_.RHTower.self_lt_sinh hXpos
+    constructor
+    · simp [lifshitzKosevichThermalFactor, hXpos.ne', div_pos hXpos hsinh]
+    · simpa [lifshitzKosevichThermalFactor, hXpos.ne'] using
+        ((div_lt_one hsinh).2 hlt).le
+
 /-- The LK thermal factor vanishes in the high-temperature limit. -/
 theorem lifshitzKosevichThermalFactor_tendsto_atTop :
     Tendsto lifshitzKosevichThermalFactor atTop (𝓝 0) := by
@@ -248,6 +345,12 @@ theorem dingleFactor_add :
   intro x y
   rw [dingleFactor, dingleFactor, dingleFactor,
     show -(x + y) = -x + -y by ring, Real.exp_add]
+
+/-- On its physical half-line the Dingle factor lies in `(0, 1]`. -/
+theorem dingleFactor_mapsTo_Ioc :
+    MapsTo dingleFactor (Ici 0) (Ioc 0 1) := by
+  intro scatteringExponent h
+  exact ⟨Real.exp_pos _, Real.exp_le_one_iff.mpr (neg_nonpos.mpr h)⟩
 
 /-- Dingle attenuation vanishes at large scattering exponent. -/
 theorem dingleFactor_tendsto_atTop :
@@ -276,6 +379,35 @@ theorem lifshitzKosevichSpinFactor_periodic :
   rw [show Real.pi * (spinPhase + 2) =
       Real.pi * spinPhase + 2 * Real.pi by ring,
     Real.cos_add_two_pi]
+
+/-- Translating spin phase by one reverses the LK spin factor. -/
+theorem lifshitzKosevichSpinFactor_add_one :
+    ∀ spinPhase : ℝ,
+      lifshitzKosevichSpinFactor (spinPhase + 1) =
+        -lifshitzKosevichSpinFactor spinPhase := by
+  intro spinPhase
+  unfold lifshitzKosevichSpinFactor
+  rw [show Real.pi * (spinPhase + 1) =
+      Real.pi * spinPhase + Real.pi by ring,
+    Real.cos_add_pi]
+
+/-- Every nonnegative half-integer spin phase is an exact LK spin-zero node. -/
+theorem lifshitzKosevichSpinFactor_halfInteger_zero :
+    ∀ n : ℕ,
+      lifshitzKosevichSpinFactor ((n : ℝ) + 1 / 2) = 0 := by
+  intro n
+  induction n with
+  | zero =>
+      unfold lifshitzKosevichSpinFactor
+      norm_num only [Nat.cast_zero, zero_add]
+      rw [show Real.pi * (1 / 2 : ℝ) = Real.pi / 2 by ring,
+        Real.cos_pi_div_two]
+  | succ n ih =>
+      rw [show ((Nat.succ n : ℕ) : ℝ) + 1 / 2 =
+          ((n : ℝ) + 1 / 2) + 1 by
+        push_cast
+        ring,
+        lifshitzKosevichSpinFactor_add_one, ih, neg_zero]
 
 /-- Single-harmonic Lifshitz--Kosevich amplitude. -/
 def lifshitzKosevichAmplitude
@@ -308,5 +440,28 @@ theorem lifshitzKosevichAmplitude_tendsto_temperature_atTop :
     lifshitzKosevichThermalFactor_tendsto_atTop.mul_const
       (dingleFactor scatteringExponent *
         lifshitzKosevichSpinFactor spinPhase)
+
+/-- Physical thermal and scattering damping keep the complete LK harmonic in `[-1,1]`. -/
+theorem abs_lifshitzKosevichAmplitude_le_one :
+    ∀ X ∈ Ici (0 : ℝ), ∀ scatteringExponent ∈ Ici (0 : ℝ), ∀ spinPhase : ℝ,
+      |lifshitzKosevichAmplitude X scatteringExponent spinPhase| ≤ 1 := by
+  intro X hX scatteringExponent hscattering spinPhase
+  have hthermal := lifshitzKosevichThermalFactor_mapsTo_Ioc hX
+  have hdingle := dingleFactor_mapsTo_Ioc hscattering
+  have hspin := Real.abs_cos_le_one (Real.pi * spinPhase)
+  have hthermalDingle :
+      lifshitzKosevichThermalFactor X * dingleFactor scatteringExponent ≤ 1 := by
+    calc
+      lifshitzKosevichThermalFactor X * dingleFactor scatteringExponent ≤
+          1 * 1 := mul_le_mul hthermal.2 hdingle.2 hdingle.1.le (by norm_num)
+      _ = 1 := by ring
+  rw [lifshitzKosevichAmplitude, abs_mul, abs_mul,
+    abs_of_pos hthermal.1, abs_of_pos hdingle.1]
+  calc
+    lifshitzKosevichThermalFactor X * dingleFactor scatteringExponent *
+        |lifshitzKosevichSpinFactor spinPhase| ≤ 1 * 1 := by
+      unfold lifshitzKosevichSpinFactor
+      exact mul_le_mul hthermalDingle hspin (abs_nonneg _) (by norm_num)
+    _ = 1 := by norm_num
 
 end GaloisForLFunctions.RHTower

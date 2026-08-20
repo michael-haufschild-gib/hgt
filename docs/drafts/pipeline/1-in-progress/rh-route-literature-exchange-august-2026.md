@@ -6921,7 +6921,9 @@ v2 projective identity. Its open producer is
 identification of the subsequential limit with that global pair across the finite divisor chart and
 then the reciprocal pole chart. CLG has exact critical Loewner-generator RH classifier,
 Euler--Gamma split, and safe-kernel-minus-Cauchy-loss factorization; every positive-shift generator
-is non-PSD and an explicit two-node model rules out diagonal loss control. PBM has exact
+is non-PSD and an explicit two-node model rules out diagonal loss control. Its safe Poisson density
+has a full summed boundary Cauchy representation, but source-level inverse-Poisson quadratic-form
+order remains open. PBM has exact
 quantized prime-boundary monodromy and compact-chart escape; its no-charge law is exactly RH and no
 independent singular source producer exists. PCS is a candidate: its closed all-prime co-shift complex
 detects the zeta divisor homologically but has zero ordinary index and lacks a completed secondary
@@ -6942,7 +6944,10 @@ equal-weight and vanishing-slope rows, exact disc/annulus/nonexceptional block b
 Ramaré/rough and Halász--Montgomery control, a one-head mean-square gate, and a signed
 squarefree--Euler unitary whose
 logarithmic current obeys `b_sigma = a_sigma + 2 b_(2 sigma)`; the fixed physical Hall relation is
-still absent. L has exact completed multiplicity jets, cosine-closed lower-jet annihilation, and
+still absent. T's two-range five-term majorant and contour block geometry are formal, but its signed
+short-current producer is unchanged. In the CGL side branch, nonprincipal certified safe rectangles
+have zero contour integral and the principal translated L-pole has explicit residue; global
+large-height conductor-uniform zero counting remains open. L has exact completed multiplicity jets, cosine-closed lower-jet annihilation, and
 zeroth-jet divisor detection, but not bounded higher-jet closure or singular physical descent. O's
 remote reciprocal-square divisor tail is closed, not its finite true-ground sign. HC has a sharp
 singleton-fibre charging law and now eliminates critical-edge and admissible-height hypotheses from
