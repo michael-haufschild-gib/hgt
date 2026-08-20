@@ -93,7 +93,6 @@ theorem moment_ratio_max_le {Bc θ B₀ kk : ℝ} (hBc : 0 ≤ Bc) (hθ : 0 < θ
     have hden : (0 : ℝ) < θ * Bc * B₀ := by positivity
     refine (div_le_div_of_nonneg_left hnum hden hsq).trans (le_of_eq ?_)
     field_simp
-    ring
 
 /-- **One block's exceptional measure at a maximum threshold.**  Unconditional in the block: the
 ratio `k/(θ·B₀)` does not see `#B` at all. -/

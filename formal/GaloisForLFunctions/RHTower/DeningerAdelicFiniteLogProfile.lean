@@ -95,8 +95,11 @@ noncomputable def deningerGlobalLogProfileToKernel :
     change Multiplicative.ofAdd
       (⟨Multiplicative.toAdd (deningerGlobalLogProfile (K := K) 1), _⟩ :
         (deningerGlobalLogSum (K := K)).ker) = 1
-    rw [(deningerGlobalLogProfile (K := K)).map_one]
-    rfl
+    apply (Multiplicative.toAdd : Multiplicative (deningerGlobalLogSum (K := K)).ker ≃
+      (deningerGlobalLogSum (K := K)).ker).injective
+    apply Subtype.ext
+    change Multiplicative.toAdd (deningerGlobalLogProfile (K := K) 1) = 0
+    simp
   map_mul' α β := by
     change Multiplicative.ofAdd
       (⟨Multiplicative.toAdd (deningerGlobalLogProfile (K := K) (α * β)), _⟩ :
@@ -107,8 +110,13 @@ noncomputable def deningerGlobalLogProfileToKernel :
         Multiplicative.ofAdd
           (⟨Multiplicative.toAdd (deningerGlobalLogProfile (K := K) β), _⟩ :
             (deningerGlobalLogSum (K := K)).ker)
-    rw [(deningerGlobalLogProfile (K := K)).map_mul]
-    rfl
+    apply (Multiplicative.toAdd : Multiplicative (deningerGlobalLogSum (K := K)).ker ≃
+      (deningerGlobalLogSum (K := K)).ker).injective
+    apply Subtype.ext
+    change Multiplicative.toAdd (deningerGlobalLogProfile (K := K) (α * β)) =
+      Multiplicative.toAdd (deningerGlobalLogProfile (K := K) α) +
+        Multiplicative.toAdd (deningerGlobalLogProfile (K := K) β)
+    simp
 
 theorem deningerGlobalLogProfileToKernel_coe (α : Kˣ) :
     ((Multiplicative.toAdd (deningerGlobalLogProfileToKernel (K := K) α) :

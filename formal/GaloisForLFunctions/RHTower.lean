@@ -9489,6 +9489,7 @@ import GaloisForLFunctions.RHTower.WindingFloor
 import GaloisForLFunctions.RHTower.WindingFull
 import GaloisForLFunctions.RHTower.WindingHomotopy
 import GaloisForLFunctions.RHTower.WindingNumber
+import GaloisForLFunctions.RHTower.LoopGaugeApplications
 import GaloisForLFunctions.RHTower.WindingRigidity
 import GaloisForLFunctions.RHTower.WindingXi
 import GaloisForLFunctions.RHTower.WindingXiCircle

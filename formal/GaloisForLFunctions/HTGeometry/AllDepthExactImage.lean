@@ -352,12 +352,12 @@ theorem exists_class_member_with_prescribed_pairSig
       have hmemijl : ∀ u : ι, u ∈ ({i, j, l} : Finset ι) → True := fun _ _ => trivial
       have hifree : ∀ nn : ℤ, (nn : ℂ) * τ l ∈ tripticPeriodGroup (τ j) (τ i) → nn = 0 := by
         intro nn hmem
-        refine tripticPeriodGroup_free τ hQ (Ne.symm hil) (Ne.symm hjl) nn ?_
+        refine tripticPeriodGroup_free τ hQ hil hjl nn ?_
         rw [zsmul_eq_mul]
         exact hmem
       have hjfree : ∀ nn : ℤ, (nn : ℂ) * τ j ∈ tripticPeriodGroup (τ l) (τ i) → nn = 0 := by
         intro nn hmem
-        refine tripticPeriodGroup_free τ hQ (Ne.symm hij) hjl nn ?_
+        refine tripticPeriodGroup_free τ hQ hij (Ne.symm hjl) nn ?_
         rw [zsmul_eq_mul]
         exact hmem
       have hkfreeSpan : ∀ nn : ℤ, nn • τ k ∈ periodSpan τ ({i, j, l} : Finset ι) → nn = 0 := by
@@ -506,9 +506,8 @@ theorem exists_class_member_with_prescribed_pairSig
     · intro z
       filter_upwards [hF₀mixed z, hF₁mixedS z] with wv h1 h2
       have hsplit : HTGeometry.diffCube τ s (fun z => F₀ z + F₁ z) wv
-          = HTGeometry.diffCube τ s F₀ wv + HTGeometry.diffCube τ s F₁ wv := by
-        rw [HTGeometry.diffCube_add τ s F₀ F₁]
-        rfl
+          = HTGeometry.diffCube τ s F₀ wv + HTGeometry.diffCube τ s F₁ wv :=
+        congrFun (HTGeometry.diffCube_add τ s F₀ F₁) wv
       rw [hsplit, h1, h2, add_zero]
     · intro i hi j hj hij ℓ hℓ p
       rw [pairSig_add τ hτ hQ s hij hi hj hF₀mero hF₀per hF₀mixed hF₁mero hF₁per hF₁mixedS hℓ p]

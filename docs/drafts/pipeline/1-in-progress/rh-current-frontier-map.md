@@ -143,8 +143,10 @@ maps generate a hidden residual, a resolving family reads it as positive paralla
 repeated work selects the neutral residual kernel, and a fusion-frame lower bound controls squared
 distance to that kernel. In its Poisson model, total Jeffreys work splits exactly into visible
 Boolean occupancy and nonnegative hidden-history work; occupancy saturates while hidden history
-remains extensive and vanishes only for equal rates. It has no arithmetic formation, completed
-reflection action, or Xi reader.
+remains extensive and vanishes only for equal rates. The reflected-prime reserve has sharp scale
+`t log(p) p^(-2(1-t))` and is summable over all primes exactly for `t<1/2`; without an Xi reader this
+half-aperture transition is not RH. SFP has no completed arithmetic formation, reflection action,
+or Xi reader.
 `SL_2` cocycle rigidity likewise rules out regular one-entry cocycle shortcuts. No open producer is
 closed; RH status is unchanged.
 
@@ -157,13 +159,17 @@ diagonal/off-diagonal decomposition. Exact detector-tail formation and `M_X L = 
 critical-strip zero the apparent Gamma residue at `w=0` cancels. In the nonprincipal branch the
 zero-cancelled integrand is analytic on `Re(w)>-1`, and every certified finite rectangle in that
 half-plane enclosing zero has boundary integral zero. In the principal branch the additional pole
-`w=1-rho` has an explicit residue. No large-height contour passage, horizontal-edge estimate,
-refined off-diagonal bound, detector zero-density inequality, signed short-block bound, or absolute
+`w=1-rho` has an explicit residue and exact finite contour. Separated finite character packets have
+harmonic same-character off-diagonal budgets. No large-height contour passage, horizontal-edge estimate,
+refined conductor-uniform off-diagonal bound, detector zero-density inequality, signed short-block bound, or absolute
 off-line upper count follows. CLG has exact W2C realization, finite-aperture index retention, a
 multi-node formulation, and a two-node no-go. Safe boundary densities form one Poisson semigroup
-orbit, and their full summed Cauchy transform equals the safe Caratheodory kernel. Inverse Poisson
-conjugation removes safe offset from each prime atom. Missing pieces are source-side
-quadratic-form conjugation and critical source order, not density summation. HC loses critical-edge and height-selection
+orbit; their full finite-packet observability deficit converges, is offset-independent, and equals
+critical kernel energy. Inverse Poisson conjugation removes safe offset from each prime atom.
+Missing piece is the source observability inequality, not density summation or packet evaluation.
+T's normalized full Xi zero packet and zero-free full-density current are discharged, leaving the
+RH-equivalent transfer-current sublinearity as endpoint and signed short cancellation as producer.
+HC loses critical-edge and height-selection
 obstacles but retains absolute detector/off-line control. PLAC can feed PBM/G/L/T with a singular
 coefficient-faithful depth connection; EPC can feed CCM-FU/CLG/G/L with polarized leakage; neither
 has a new source theorem. F2 gains literal trace-class provenance on both semilocal sides and a
@@ -2541,7 +2547,9 @@ CLG/W2C but has a distinct one-sided correlation-flux mechanism and remains a ca
   Boolean occupancy and nonnegative hidden history, with hidden work zero exactly for equal rates.
   `PoissonSuperpositionSaturationProperness.lean` proves visible occupancy work tends to zero under
   superposition while hidden history grows linearly and the induced orbit action is bounded exactly
-  on the diagonal. No RHTower module
+  on the diagonal. `ReflectedPrimeHistoryReserve.lean` computes the reflected-prime reserve, its
+  sharp asymptotic `t log(p) p^(-2(1-t))`, and exact all-prime summability threshold `t<1/2`.
+  This is arithmetic half-aperture structure but has no Xi landing. No RHTower module
   instantiates these formations on the completed prime--Gamma/Möbius source or supplies an Xi
   endpoint, so SFP is not a candidate or live route.
   `PureReplicaCollectiveEnergyLaw.lean` separately proves centered replica energy is linear
@@ -2888,17 +2896,18 @@ already specify which naive specializations cannot work.
 Open cores fall into six classes:
 
 1. **Arithmetic source order:** sign/boundedness/passivity for literal completed prime--Gamma or
-   Möbius object (CCM-FU, D2, E, Q, CLG, T).
+   Möbius/theta object (CCM-FU, D2, E, Q, CLG, T, TTF).
 2. **Ground-relative coercivity:** control exact state selected by full operator, not one seed or
    generic packet (C1, O, G, U).
 3. **Singular boundary descent:** physical comparison across completion boundary without losing
-   coefficient, multiplicity, or orientation (G, L, P, U).
+   coefficient, multiplicity, or orientation; for L this includes arithmetic continuous-restriction
+   formation, global Bessel control, and kernel=boundary classification (G, L, P, U).
 4. **Mixed-incidence control:** preserve cross terms diagonal energies erase (E, Q, HC, T).
 5. **Cofinal synchronization:** one estimate uniform in moving degree/aperture/height
    (CCM-FU, E, F2, O, T, U, SV2).
 6. **Source-native internal dynamics:** projective module, corrected Stokes category, monodromy,
    singular depth action, operator leakage, or analytic continuation on literal completed source
-   before divisor selection (UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS, SEC, BPC;
+   before divisor selection (UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS, SEC, BPC, TTF;
    pre-routes PLAC, EPC, MEG, ZGC, and SFP; W2C/de-Poissonization is a receiver/source bridge).
    Abstract Weyl existence, Arakelov power pullback, all-plane entire Suzuki convergence, and finite
    real quaternionic descent are classified terminal in their stated architectures.
@@ -2920,17 +2929,18 @@ is:
    co-moving flux?
 4. What independent nonlinear/distinct-channel source law forces already-transported Ward
    coefficient to vanish or acquire favorable wall order?
-5. Can Burnol's now-bounded literal first Mellin jet be extended to every required multiplicity jet
-   and completed Sonine closure, and can resulting all-prime Green restriction have common kernel
-   exactly arithmetic boundary with target equal to existing physical landing?
+5. Can literal arithmetic continuous prime-packet restrictions be constructed with a global
+   sup-norm Bessel bound, their simultaneous kernel proved exactly the closed middle boundaries,
+   and their singular target-zero map identified with existing Burnol/Deninger physical landing?
 6. Is completed CCM symbol nonnegative on every canonical actual-head density?
 7. What pre-divisor completed-source law forces moderation of the literal second-Cartier endpoint,
    despite the proved post-selected finite-measure and scalar-short firewalls?
 8. Why are finite matrices of the explicit Euler-safe paired value kernel PSD on all
    Gaussian-rational poles in one absolute-Euler quadrant, from source before divisor selection?
 9. What signed short Möbius-block estimate controls the depth-invariant top-row/translation
-   remainder without splitting cancellation, now that every GS schedule premise, all-frequency
-   distance bound, and smooth Möbius power-saving subgate is closed?
+   remainder—and hence the canonical full-density transfer current—without splitting cancellation,
+   given that full normalized zero-packet vanishing and zero-free aggregate current are closed but
+   transfer-current sublinearity is exactly RH?
 10. What source mechanism excludes exact nonintegrable strict-frontier Christoffel quotient or
     proves shifted reciprocal Hankel tail positivity inside proved parabolic horizon?
 11. Can two-prime source excess be bounded absolutely below collision quantum two, can literal
@@ -2946,8 +2956,8 @@ is:
 14. What source identity forces the canonical Suzuki projective normal-family limit to equal the
     global Xi Livsic/projective target, and how does that identity propagate through the reciprocal
     pole chart?
-15. Can critical Schur monodromy, a difference Picard--Vessiot group, MEG's free coset-face
-    no-telescoping system, a Manin-horizon sharp group, or approximate quantum-return loss be
+15. Can critical Schur monodromy, a difference Picard--Vessiot group, MEG's complete all-depth
+    universal-carrier normal form, a Manin-horizon sharp group, or approximate quantum-return loss be
     instantiated on literal completed arithmetic source and coupled coefficient-faithfully to Xi
     before divisor selection? For MEG the invariant must use global mixed compatibility, since
     every admissible finite-order bottom charge has a differentially-algebraic realization.
@@ -2985,9 +2995,9 @@ is:
 27. Why is the literal critical archimedean Loewner matrix greater than or equal to complete prime
     Loewner matrix on every finite Euler-safe node packet—or equivalently why are W2C's canonical
     finite-aperture even--odd energies nonnegative from source—given that positive-shift flow is
-    non-PSD, the full safe divisor-density Cauchy representation is known, and
-    divisor-polarization positivity is already RH? Can atomwise de-Poissonization be promoted to a
-    convergent ordered source quadratic form?
+    non-PSD and the fully convergent Euler-safe observability deficit is exactly critical kernel
+    energy? What source law proves the explicit amplitude-versus-tail inequality without using that
+    RH-equivalent evaluation as its premise?
 28. What topology or singular invariant escapes the proved AGC collapse of every nonlinear and
    tangent higher-grade tail to grade one while still retaining coefficient-faithful Euler source?
 29. Can PLAC's recovered squarefree action and multiplicity residue, or EPC's polarized boundary
@@ -3002,6 +3012,9 @@ is:
 32. Can SFP be instantiated by three or more coefficient-faithful completed arithmetic formations
     whose hidden residual is the horizontal Xi defect, with source-derived fusion-frame coercivity
     and bounded repeated parallax work before divisor selection?
+33. Can the literal completed theta kernel be instantiated as `ThetaSource` with a global bilateral
+    Laplace transform equal to centered Xi, and can neutral one-sided tilt-flux nonnegativity then be
+    proved directly from source correlation rather than its RH-equivalent Bezoutian endpoint?
 
 Until one is answered, endpoint reformulations, finite real-zero models, seed asymptotics, diagonal
 moment inequalities, or scalar transport identities do not move formal RH frontier.

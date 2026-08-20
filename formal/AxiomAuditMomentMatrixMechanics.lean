@@ -1,0 +1,4 @@
+import GaloisForLFunctions.HTGeometry.MomentMatrixMechanics
+
+#print axioms HTGeometry.momentMechanics_quantumFisher_eq_four_variance
+#print axioms HTGeometry.momentMechanics_centeredSecondMoment_eq_variance
