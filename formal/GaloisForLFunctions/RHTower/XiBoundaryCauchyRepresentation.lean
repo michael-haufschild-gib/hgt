@@ -464,7 +464,7 @@ theorem integrable_boundaryPoissonTerm_mul_invSq {a p : ℝ} (ha : 1 / 2 < a) (h
     Integrable fun t : ℝ => boundaryPoissonTerm a t q * (p ^ 2 + (t - m) ^ 2)⁻¹ := by
   refine ((integrable_boundaryPoissonTerm_mul_poisson ha hp m q).const_mul
     (Real.pi / p)).congr (Filter.Eventually.of_forall fun t => ?_)
-  simp only [Pi.mul_apply]
+  dsimp only
   rw [inv_sq_add_sq_eq_poisson hp]
   ring
 
@@ -494,7 +494,7 @@ theorem integral_norm_boundaryTerm_cauchy_le {a : ℝ} (ha : 1 / 2 < a) {w v : �
     refine (((integrable_boundaryPoissonTerm_mul_invSq ha hwa w.im q).add
       (integrable_boundaryPoissonTerm_mul_invSq ha hva v.im q)).const_mul (1 / 2)).congr
       (Filter.Eventually.of_forall fun t => ?_)
-    simp only [Pi.mul_apply, Pi.add_apply]
+    simp only [Pi.add_apply]
   have hle : ∀ t : ℝ, ‖((boundaryPoissonTerm a t q : ℝ) : ℂ) * boundaryCauchyKernel a w v t‖
       ≤ (1 / 2) * (boundaryPoissonTerm a t q * ((w.re - a) ^ 2 + (t - w.im) ^ 2)⁻¹
         + boundaryPoissonTerm a t q * ((v.re - a) ^ 2 + (t - v.im) ^ 2)⁻¹) := by

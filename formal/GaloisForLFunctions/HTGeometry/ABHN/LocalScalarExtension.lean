@@ -153,6 +153,14 @@ theorem numberFieldLocalBrauerMap_tensorAdd (K : Type u) [Field K] [NumberField 
   funext v
   exact scalarExtensionBrauerMap_tensorAdd K (completion K v) x y
 
+/-- The number-field global-to-local Brauer map as an additive homomorphism.  This is the
+unrestricted product map; finite ramification is the remaining step to the ABHN local term. -/
+noncomputable def numberFieldLocalBrauerAddHom (K : Type u) [Field K] [NumberField K] :
+    BrauerGroup.{u, u} K →+ localBrauerClasses K where
+  toFun := numberFieldLocalBrauerMap K
+  map_zero' := numberFieldLocalBrauerMap_split K
+  map_add' := numberFieldLocalBrauerMap_tensorAdd K
+
 /-- The rational-function-field global-to-local map on Brauer quotients.  Its upgrade to finite
 support is likewise precisely the finite ramification part of ABHN. -/
 noncomputable def rationalFunctionLocalBrauerMap (F : Type u) [Field F] [Finite F] :
@@ -187,6 +195,13 @@ theorem rationalFunctionLocalBrauerMap_tensorAdd (F : Type u) [Field F] [Finite 
         (rationalFunctionLocalBrauerMap F x v) (rationalFunctionLocalBrauerMap F y v) := by
   funext v
   exact scalarExtensionBrauerMap_tensorAdd (RatFunc F) (rationalFunctionCompletion F v) x y
+
+/-- The rational-function-field global-to-local Brauer map as an additive homomorphism. -/
+noncomputable def rationalFunctionLocalBrauerAddHom (F : Type u) [Field F] [Finite F] :
+    BrauerGroup.{u, u} (RatFunc F) →+ rationalFunctionLocalBrauerClasses F where
+  toFun := rationalFunctionLocalBrauerMap F
+  map_zero' := rationalFunctionLocalBrauerMap_split F
+  map_add' := rationalFunctionLocalBrauerMap_tensorAdd F
 
 /-- At every number-field place, the local scalar extension of a split matrix representative is
 definitionally the standard scalar extension of that split matrix algebra. -/

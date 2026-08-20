@@ -6312,7 +6312,9 @@ receive a new title and an independent significance audit.
   orthogonality and `||sum_j A_j v^(tensor r)||^2 = r||Av||^2`.  Vectorized commutator
   representations are automatically centered on every Hermitian matrix by trace cyclicity, so
   every normalized pure-projector boundary realizes this linear law for every finite generator and
-  every replica count.  This converts the `r=O(n)` complete Brown-grid schedule from a worst-case
+  every replica count.  The stronger unnormalized identity is
+  `energy_r = r energy_1 q^(r-1)`, so Hermitian mixed/cavity boundaries retain the same linear
+  factor with their exact Hilbert--Schmidt mass.  This converts the `r=O(n)` complete Brown-grid schedule from a worst-case
   `r^2` energy penalty to the exact physical `r` penalty.  It does not yet compare one-draw
   static-local fixed-time graph measure with the completed-phase incidence mean; next frontier is
   preservation of this centered sector through that quenched transfer.  Formal card:

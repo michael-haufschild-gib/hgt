@@ -144,6 +144,14 @@ theorem MixedConstGermSet.shiftDiff {τ : ι → ℂ} {s : Finset ι} {q : ι} (
   exact hw
 
 omit [DecidableEq ι] in
+/-- The cube is additive in its source. -/
+theorem diffCube_add (τ : ι → ℂ) (s : Finset ι) (F G : ℂ → ℂ) :
+    diffCube τ s (F + G) = diffCube τ s F + diffCube τ s G := by
+  funext z
+  simp only [diffCube, Pi.add_apply, ← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl fun E _ => by ring
+
+omit [DecidableEq ι] in
 /-- The cube commutes with a one-step difference. -/
 theorem diffCube_shiftDiffFun_comm (τ : ι → ℂ) (s : Finset ι) (h : ℂ) (F : ℂ → ℂ) :
     diffCube τ s (shiftDiffFun h F) = shiftDiffFun h (diffCube τ s F) := by

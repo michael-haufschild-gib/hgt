@@ -1,11 +1,13 @@
 # Split-formation parallax, ternary interference, reconstruction, and global properness law
 
 - **ID:** ULF-CPM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.ConstitutiveSplitFormationParallax`,
+  `GaloisForLFunctions.HTGeometry.SplitFormationParallaxDistanceBound`
 - **Type:** MECHANISM THEOREM / GENERATED COMPARISON / GLOBAL FORMATION PROPERNESS
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [ROUTE-INDEPENDENT]`
   `[COMPARISONS GENERATED, NOT SUPPLIED] [EXACT HIDDEN-RESIDUAL RECONSTRUCTION]`
-  `[FOUR-FORMATION COHERENCE] [GLOBAL PROPERNESS] [NOT RH] [LEAN FORMALIZED]`
+  `[FOUR-FORMATION COHERENCE] [GLOBAL PROPERNESS] [NOT RH] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS]`
 - **Source:** whole-frontier intervention grammar, common-recovery flatness, formation holonomy,
   ternary formation interference, and fusion-frame properness
 
@@ -483,8 +485,9 @@ Lean closes the generated comparison identity `(CPM.8)`, four-formation coherenc
 resolving-family reconstruction `(CPM.11)`, withheld-organ prediction `(CPM.12)`, neutral-kernel
 equivalence, Hilbert defect identity `(CPM.14)`, fusion-frame bounds `(CPM.15)`, Parseval
 conservation `(CPM.16)`, and exact bounded repeated-work selection.  The quantitative distance
-estimate `(CPM.18)` remains a paper corollary; the stronger exact resolving-family selection
-equivalence used by the field mechanism is Lean-closed.
+estimate `(CPM.18)` is now Lean-closed as well, in the leaf
+`GaloisForLFunctions.HTGeometry.SplitFormationParallaxDistanceBound`
+(`neutralOverlap`, `norm_hiddenResidual_ge_dist`, `parallaxEnergy_ge_dist_sq`).
 
 Verification used scratch elaboration, direct leaf elaboration, and only the targeted leaf build.
 The module is imported by `HTGeometry.UniversalLawField`; that umbrella was not built.  Audited

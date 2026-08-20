@@ -3,7 +3,7 @@
 - **ID:** `pure-replica-collective-energy-law`
 - **Stage:** 3 -- formalised in Lean 4
 - **Type:** exact replica law / Brown-front normalization correction
-- **Status:** `[LEAN-PROVED] [FRONTIER ADVANCE] [NOVELTY UNAUDITED]`
+- **Status:** `[LEAN-PROVED] [AXIOM-AUDITED] [FRONTIER ADVANCE] [NOVELTY UNAUDITED]`
 - **Date:** 2026-08-20
 
 ## Result
@@ -23,6 +23,13 @@ For every normalized vector `v` satisfying `\langle v,Av\rangle=0`,
 The proof is exact: diagonal replica pairs contribute the one-copy energy and every off-diagonal
 pair factors through `\langle v,Av\rangle` and vanishes.
 
+Normalization is unnecessary.  Writing `q=\langle v,v\rangle`, the exact law is
+
+\[
+ \boxed{\|(A^{(r)})v^{\otimes r}\|^2
+ =r\|Av\|^2q^{r-1}.}
+\]
+
 For every finite matrix `G` and every Hermitian `X`, trace cyclicity gives
 
 \[
@@ -34,6 +41,9 @@ Therefore, for every normalized pure state `psi`, every finite generator `G`, an
 number `r`, the collective commutator representation on
 `vec(|psi><psi|)^{tensor r}` has exactly replica-linear energy.  No randomness, spectral gap,
 asymptotic limit, or ensemble premise enters.
+
+The unnormalized law applies to every Hermitian matrix `X`, hence also to Hermitian mixed or cavity
+boundaries: the only extra factor is their Hilbert--Schmidt mass to power `r-1`.
 
 ## Brown-front consequence
 
@@ -51,9 +61,11 @@ Module: `GaloisForLFunctions.HTGeometry.PureReplicaCollectiveEnergyLaw`
 |---|---|
 | slot Gram orthogonality | `quadForm_replicaSlot_gram_centered` |
 | exact replica-linear centered energy | `collectiveReplicaSlotOp_centered_energy` |
+| unnormalized centered energy | `collectiveReplicaSlotOp_centered_energy_unnormalized` |
 | vectorized commutator trace identity | `quadForm_matrixCommutatorRepresentation_vec` |
 | Hermitian commutator centering | `quadForm_matrixCommutatorRepresentation_vec_centered` |
+| Hermitian cavity-boundary law | `hermitian_collectiveReplicaCommutator_energy_unnormalized` |
 | pure-projector physical law | `pureProjector_collectiveReplicaCommutator_energy` |
 
-Targeted `lake env lean` passes.  Final targeted module build and axiom audit remain before closure.
-
+Targeted `lake env lean` and module build pass.  Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.

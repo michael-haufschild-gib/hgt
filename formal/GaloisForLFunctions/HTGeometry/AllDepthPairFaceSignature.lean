@@ -66,33 +66,58 @@ theorem diffCubeMero_translate_comm (τ : ι → ℂ) (s : Finset ι) (c : ℂ)
     addTranslationMeroEquiv_algebraMap_complex, addTranslationMeroEquiv_add,
     addTranslationMeroEquiv_add, add_comm c (∑ i ∈ E, τ i)]
 
+omit [Fintype ι] [DecidableEq ι] in
+/-- The difference cube of a meromorphic function is meromorphic. -/
+theorem meromorphicOn_diffCube (τ : ι → ℂ) (t : Finset ι) {f : ℂ → ℂ}
+    (hf : MeromorphicOn f (Set.univ : Set ℂ)) :
+    MeromorphicOn (HTGeometry.diffCube τ t f) (Set.univ : Set ℂ) := by
+  classical
+  intro z _
+  have hfun : HTGeometry.diffCube τ t f
+      = ∑ E ∈ t.powerset, fun w => ((-1 : ℂ) ^ (t.card - E.card)) * f (w + ∑ i ∈ E, τ i) := by
+    funext w
+    simp only [HTGeometry.diffCube, Finset.sum_apply]
+  rw [hfun]
+  refine MeromorphicAt.sum fun E _ => ?_
+  exact (analyticAt_const.meromorphicAt).mul
+    (meromorphicAt_comp_add.mpr (hf _ (Set.mem_univ _)))
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- The difference cube of a `1`-periodic germ is `1`-periodic. -/
+theorem periodicOneGerm_diffCube (τ : ι → ℂ) (t : Finset ι) {f : ℂ → ℂ}
+    (hf : PeriodicOneGerm f) : PeriodicOneGerm (HTGeometry.diffCube τ t f) := by
+  classical
+  intro z
+  have hall : ∀ E ∈ t.powerset, ∀ᶠ w in 𝓝[≠] z,
+      f (w + 1 + ∑ i ∈ E, τ i) = f (w + ∑ i ∈ E, τ i) := by
+    intro E _
+    have hpull := (tendsto_nhdsNE_add_const z (∑ i ∈ E, τ i)).eventually
+      (hf (z + ∑ i ∈ E, τ i))
+    filter_upwards [hpull] with w hw
+    rw [show w + 1 + ∑ i ∈ E, τ i = w + ∑ i ∈ E, τ i + 1 from by ring]
+    exact hw
+  rw [← Filter.eventually_all_finset] at hall
+  filter_upwards [hall] with w hw
+  show ∑ E ∈ t.powerset, _ = ∑ E ∈ t.powerset, _
+  exact Finset.sum_congr rfl fun E hE => by rw [hw E hE]
+
 /-- The pair-face witness at function level. -/
 def pairFaceWitnessFun (τ : ι → ℂ) (s : Finset ι) (i j : ι) (f : ℂ → ℂ) : ℂ → ℂ :=
   HTGeometry.diffCube τ (s \ {i, j}) f
 
+omit [Fintype ι] in
 theorem pairFaceWitnessFun_realizesMero (τ : ι → ℂ) (s : Finset ι) (i j : ι)
     {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ} (hf : RealizesMero x f) :
     RealizesMero (pairFaceWitnessMero τ s i j x) (pairFaceWitnessFun τ s i j f) :=
   realizesMero_diffCubeMero τ _ hf
 
-theorem meromorphicOn_pairFaceWitnessFun (τ : ι → ℂ) (s : Finset ι) (i j : ι)
-    {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ} (hf : RealizesMero x f) :
-    MeromorphicOn (pairFaceWitnessFun τ s i j f) (Set.univ : Set ℂ) :=
-  meromorphicOn_of_realizesMero (pairFaceWitnessFun_realizesMero τ s i j hf)
 
-theorem periodicOneGerm_pairFaceWitnessFun (τ : ι → ℂ) (s : Finset ι) (i j : ι)
-    {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ} (hf : RealizesMero x f)
-    (h1 : addTranslationMeroEquiv 1 x = x) :
-    PeriodicOneGerm (pairFaceWitnessFun τ s i j f) := by
-  refine periodicOneGerm_of_realizesMero (pairFaceWitnessFun_realizesMero τ s i j hf) ?_
-  rw [pairFaceWitnessMero, ← diffCubeMero_translate_comm, h1]
 
+omit [Fintype ι] in
 /-- **The pair-face witness lies in the depth-two class.** -/
 theorem mixedConstGerm_pairFaceWitnessFun (τ : ι → ℂ) (s : Finset ι) {i j : ι} (hij : i ≠ j)
-    (hi : i ∈ s) (hj : j ∈ s)
-    {x : meroField (Set.univ : Set ℂ)} {Cst : ℂ} {f : ℂ → ℂ} (hf : RealizesMero x f)
-    (hmixed : diffCubeMero τ s x =
-      algebraMap ℂ (meroField (Set.univ : Set ℂ)) Cst) :
+    (hi : i ∈ s) (hj : j ∈ s) {Cst : ℂ} {f : ℂ → ℂ}
+    (hmixed : MixedConstGermSet τ s f Cst) :
     MixedConstGerm (pairFaceWitnessFun τ s i j f) (τ j) (τ i) Cst := by
   classical
   have hunion : ({i, j} : Finset ι) ∪ (s \ {i, j}) = s := by
@@ -113,18 +138,14 @@ theorem mixedConstGerm_pairFaceWitnessFun (τ : ι → ℂ) (s : Finset ι) {i j
     rw [Finset.disjoint_left]
     intro k hk hk'
     exact (Finset.mem_sdiff.mp hk').2 hk
-  have hcube : diffCubeMero τ ({i, j} : Finset ι) (pairFaceWitnessMero τ s i j x) =
-      algebraMap ℂ (meroField (Set.univ : Set ℂ)) Cst := by
-    rw [pairFaceWitnessMero, ← diffCubeMero_union τ hdisj, hunion]
-    exact hmixed
-  have hreal : RealizesMero (algebraMap ℂ (meroField (Set.univ : Set ℂ)) Cst)
-      (HTGeometry.diffCube τ ({i, j} : Finset ι) (pairFaceWitnessFun τ s i j f)) := by
-    rw [← hcube]
-    exact realizesMero_diffCubeMero τ _ (pairFaceWitnessFun_realizesMero τ s i j hf)
+  have hcube : HTGeometry.diffCube τ ({i, j} : Finset ι) (pairFaceWitnessFun τ s i j f)
+      = HTGeometry.diffCube τ s f := by
+    rw [pairFaceWitnessFun, ← HTGeometry.diffCube_union τ hdisj, hunion]
   have hset : MixedConstGermSet τ ({i, j} : Finset ι) (pairFaceWitnessFun τ s i j f) Cst := by
     intro z
-    have h := realizesMero_congr hreal (realizesMero_const Cst) z
-    exact h
+    filter_upwards [hmixed z] with w hw
+    rw [hcube]
+    exact hw
   exact (mixedConstGermSet_pair_iff hij).mp hset
 
 omit [DecidableEq ι] in
@@ -164,9 +185,7 @@ theorem pairFaceSignature_eq_zero_of_differentialAlgebraicOver
     (τ : ι → ℂ) (hτ : ∀ k, 0 < (τ k).im) (hQ : PeriodsIntegrallyIndependent τ)
     (s : Finset ι) {i j : ι} (hij : i ≠ j) (hi : i ∈ s) (hj : j ∈ s)
     {x : meroField (Set.univ : Set ℂ)} {Cst : ℂ} {f : ℂ → ℂ} (hf : RealizesMero x f)
-    (h1 : addTranslationMeroEquiv 1 x = x)
-    (hmixed : diffCubeMero τ s x =
-      algebraMap ℂ (meroField (Set.univ : Set ℂ)) Cst)
+    (hper : PeriodicOneGerm f) (hmixed : MixedConstGermSet τ s f Cst)
     (hDA : DifferentialAlgebraicOver ℂ x) :
     ∀ (p : ℂ) (ℓ : ℤ), ℓ < 0 →
       additiveOrbitalDivisorAt (pairFaceWitnessFun τ s i j f) (τ i) p ℓ = 0 := by
@@ -177,9 +196,9 @@ theorem pairFaceSignature_eq_zero_of_differentialAlgebraicOver
     differentiallyAlgebraic_of_realizesMero (pairFaceWitnessFun_realizesMero τ s i j hf)
       (differentialAlgebraicOver_ratFunc_of_complex hWDA)
   exact additiveOrbitalDivisorAt_eq_zero_of_differentiallyAlgebraic
-    (meromorphicOn_pairFaceWitnessFun τ s i j hf)
-    (periodicOneGerm_pairFaceWitnessFun τ s i j hf h1)
-    (mixedConstGerm_pairFaceWitnessFun τ s hij hi hj hf hmixed)
+    (meromorphicOn_diffCube τ _ (meromorphicOn_of_realizesMero hf))
+    (periodicOneGerm_diffCube τ _ hper)
+    (mixedConstGerm_pairFaceWitnessFun τ s hij hi hj hmixed)
     (hτ j) (hτ i) (indepPeriods_of_periodsIntegrallyIndependent τ hQ hij)
     (linearIndependent_one_of_im_pos (hτ j)) (linearIndependent_one_of_im_pos (hτ i))
     (linearIndependent_ellipticGammaSourcePeriods_of_periodsIntegrallyIndependent τ hQ hij.symm)

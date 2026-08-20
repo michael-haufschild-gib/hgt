@@ -160,7 +160,7 @@ theorem exists_multiAtomRealization_of_bottomCharge
     (D : ℤ → ℂ → ℂ) (N : ℕ)
     (hDinv : ∀ ℓ : ℤ, ℓ < 0 → ∀ p g : ℂ, g ∈ lineLattice σ → D ℓ (p + g) = D ℓ p)
     (hDtop : ∀ ℓ : ℤ, ℓ < -(N : ℤ) → ∀ p, D ℓ p = 0)
-    (hDfin : ∀ ℓ : ℤ, ∃ S : Finset ℂ, ∀ p, D ℓ p ≠ 0 → ∃ q ∈ S, sameLine σ q p)
+    (hDfin : ∀ ℓ : ℤ, ℓ < 0 → ∃ S : Finset ℂ, ∀ p, D ℓ p ≠ 0 → ∃ q ∈ S, sameLine σ q p)
     (hDline : ∀ i ∈ s, ∀ ℓ : ℤ, ℓ < 0 → ∀ p : ℂ, ∑ᶠ m : ℤ, D ℓ (p + (m : ℂ) * w i) = 0) :
     ∃ (R : Finset ℂ) (c : ℕ → ℂ → ℂ),
       (∀ q ∈ R, ∀ r ∈ R, sameLine σ q r → q = r) ∧
@@ -230,7 +230,7 @@ theorem exists_multiAtomRealization_of_bottomCharge
   have key : ∀ j : ℕ, ∃ (C : Q → ℂ) (S' : Finset Q), (∀ x, C x ≠ 0 → x ∈ S') ∧
       ∀ x, telescopeCube wq s C x = Dbar j x := by
     intro j
-    obtain ⟨S₀, hS₀⟩ := hDfin (-((j : ℤ) + 1))
+    obtain ⟨S₀, hS₀⟩ := hDfin (-((j : ℤ) + 1)) (by omega)
     refine exists_telescopeCube wq s (fun i hi => hwq_free i hi)
       (fun i hi j' hj' hij => hwq_pair i hi j' hj' hij) (Dbar j) (S₀.image mk) ?_ ?_
     · intro x hx

@@ -1,13 +1,13 @@
 # The G–U structure/admission split law
 
 - **ID:** ULF-MECH-4
-- **Stage:** 2-fully-proven (typing theorem; assembly of classical correspondence + in-tree
-  underdetermination witnesses)
+- **Stage:** 3-formalized (typing theorem; clause (ii) Lean-certified, clause (i) cited classical)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.GUStructureAdmissionSplit`
 - **Type:** SPLIT LAW on two named frontier open cores (map §10 chains 4 and 8)
 - **Parents:** ULF-MECH-2 (graph program); frontier map dossiers G, U; in-tree anchors
   `SoninDeBrangesCarrier.lean`, `HedenmalmHankelKreinChamber.lean`,
   `XiShiftedHankelBoundaryHilbertChargeFlow.lean` (+ the U flag layer read earlier)
-- **Scientific status:** `[PROVED — TYPING GRADE]` `[BRIDGE]` `[NOT RH]` `[NO LEAN — directive]`
+- **Scientific status:** `[PROVED — TYPING GRADE]` `[BRIDGE]` `[NOT RH]` `[LEAN-CERTIFIED (clause ii)] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS]`
 
 ## Statement
 
@@ -90,3 +90,6 @@ in-tree as the two holomorphy bricks with the critical-line weld remaining
 
 - 2026-08-09 — written as the G–U edge's stage-2 record, completing the five-pair graph at
   theorem grade on every edge. No Lean.
+- 2026-08-20 — clause (ii) Lean-certified in `HTGeometry/GUStructureAdmissionSplit.lean`: the
+  abstract non-transport law plus both in-tree witnesses. Clause (i) is the cited classical
+  Krein/de Branges correspondence and is not restated in Lean.

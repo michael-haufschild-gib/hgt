@@ -12,8 +12,9 @@ with its local cancellation at the certified zero supplied by
 import GaloisForLFunctions.RHTower.ChenGuptaLiZeroResidue
 import GaloisForLFunctions.RHTower.AnalyticDividedDifference
 import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles
+import GaloisForLFunctions.HTGeometry.RectangleResidue
 
-open Complex LSeries DirichletCharacter Filter MeasureTheory
+open Complex LSeries DirichletCharacter Filter MeasureTheory Set intervalIntegral
 open GaloisForLFunctions.HTGeometry
 
 noncomputable section
@@ -121,5 +122,128 @@ theorem cglNonprincipalRegularizedMellinIntegrand_analyticAt_zero (X q : ℕ)
   · exact (HTGeometry.analyticAt_Gamma_of_re_pos (by norm_num)).comp
       (analyticAt_id.add analyticAt_const)
   · exact cglNonprincipalDetectorZeroQuotient_analyticAt X q z 0
+
+/-- The half-plane in which the regularized Gamma factor `Γ(w+1)` is
+analytic. -/
+def cglGammaSafeHalfPlane : Set ℂ := {w | (-1 : ℝ) < w.re}
+
+/-- A certified finite rectangle for the non-principal detector shift.  It
+contains the cancelled Gamma pole at zero while remaining in the half-plane
+where its regularization is analytic. -/
+structure CGLNonprincipalDetectorRectangle where
+  lower : ℂ
+  upper : ℂ
+  lower_re_gt_neg_one : (-1 : ℝ) < lower.re
+  lower_re_lt_zero : lower.re < 0
+  zero_re_lt_upper : 0 < upper.re
+  lower_im_lt_zero : lower.im < 0
+  zero_im_lt_upper : 0 < upper.im
+
+/-- The regularized non-principal integrand is analytic on the entire safe
+Gamma half-plane. -/
+theorem cglNonprincipalRegularizedMellinIntegrand_analyticOnGammaSafe (X q : ℕ)
+    (z : CGLNonprincipalCriticalStripLZero q) :
+    AnalyticOnNhd ℂ (cglNonprincipalRegularizedMellinIntegrand X q z)
+      cglGammaSafeHalfPlane := by
+  intro w hw
+  unfold cglGammaSafeHalfPlane at hw
+  unfold cglNonprincipalRegularizedMellinIntegrand
+  apply AnalyticAt.mul
+  · change AnalyticAt ℂ (fun u : ℂ => Complex.Gamma (u + 1)) w
+    have hpos : 0 < (w + 1).re := by
+      change (-1 : ℝ) < w.re at hw
+      rw [Complex.add_re]
+      norm_num
+      linarith
+    have hshift : AnalyticAt ℂ (fun u : ℂ => u + 1) w := by
+      exact (analyticAt_id.add analyticAt_const : AnalyticAt ℂ (fun u : ℂ => u + 1) w)
+    have hcomp := AnalyticAt.comp (g := Complex.Gamma) (f := fun u : ℂ => u + 1)
+      (HTGeometry.analyticAt_Gamma_of_re_pos hpos) hshift
+    simpa only [Function.comp_def] using hcomp
+  · exact cglNonprincipalDetectorZeroQuotient_analyticAt X q z w
+
+/-- The closed rectangle supplied by a non-principal rectangle certificate
+lies in the safe Gamma half-plane. -/
+theorem cglNonprincipalDetectorRectangle_subset_gammaSafe
+    (r : CGLNonprincipalDetectorRectangle) :
+    (uIcc r.lower.re r.upper.re ×ℂ uIcc r.lower.im r.upper.im) ⊆
+      cglGammaSafeHalfPlane := by
+  intro w hw
+  rw [Complex.mem_reProdIm] at hw
+  unfold cglGammaSafeHalfPlane
+  have hre : r.lower.re ≤ r.upper.re := by
+    linarith [r.lower_re_lt_zero, r.zero_re_lt_upper]
+  rw [uIcc_of_le hre] at hw
+  rw [mem_Icc] at hw
+  exact r.lower_re_gt_neg_one.trans_le hw.1.1
+
+/-- The lower horizontal edge of a certified non-principal rectangle avoids
+the cancelled pole at zero. -/
+theorem cglNonprincipalDetectorRectangle_bottom_ne_zero
+    (r : CGLNonprincipalDetectorRectangle) (x : ℝ)
+    (_hx : x ∈ uIcc r.lower.re r.upper.re) :
+    (x : ℂ) + r.lower.im * I ≠ 0 := by
+  intro h
+  have him := congrArg Complex.im h
+  simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re,
+    Complex.ofReal_im, Complex.I_re, Complex.I_im, zero_add, mul_one, zero_im] at him
+  linarith [r.lower_im_lt_zero]
+
+/-- The upper horizontal edge of a certified non-principal rectangle avoids
+the cancelled pole at zero. -/
+theorem cglNonprincipalDetectorRectangle_top_ne_zero
+    (r : CGLNonprincipalDetectorRectangle) (x : ℝ)
+    (_hx : x ∈ uIcc r.lower.re r.upper.re) :
+    (x : ℂ) + r.upper.im * I ≠ 0 := by
+  intro h
+  have him := congrArg Complex.im h
+  simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re,
+    Complex.ofReal_im, Complex.I_re, Complex.I_im, zero_add, mul_one, zero_im] at him
+  linarith [r.zero_im_lt_upper]
+
+/-- The right vertical edge of a certified non-principal rectangle avoids
+the cancelled pole at zero. -/
+theorem cglNonprincipalDetectorRectangle_right_ne_zero
+    (r : CGLNonprincipalDetectorRectangle) (y : ℝ)
+    (_hy : y ∈ uIcc r.lower.im r.upper.im) :
+    (r.upper.re : ℂ) + y * I ≠ 0 := by
+  intro h
+  have hre := congrArg Complex.re h
+  simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re,
+    Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_re] at hre
+  linarith [r.zero_re_lt_upper]
+
+/-- The left vertical edge of a certified non-principal rectangle avoids the
+cancelled pole at zero. -/
+theorem cglNonprincipalDetectorRectangle_left_ne_zero
+    (r : CGLNonprincipalDetectorRectangle) (y : ℝ)
+    (_hy : y ∈ uIcc r.lower.im r.upper.im) :
+    (r.lower.re : ℂ) + y * I ≠ 0 := by
+  intro h
+  have hre := congrArg Complex.re h
+  simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re,
+    Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_re] at hre
+  linarith [r.lower_re_lt_zero]
+
+/-- **Finite non-principal contour shift.**  On every certified safe rectangle
+enclosing zero, the original detector integrand has vanishing boundary
+integral: its sole apparent enclosed Gamma pole is removable at the certified
+Dirichlet L-zero. -/
+theorem rectIntegral_cglNonprincipalDetectorMellinIntegrand_eq_zero (X q : ℕ)
+    (z : CGLNonprincipalCriticalStripLZero q) (r : CGLNonprincipalDetectorRectangle) :
+    rectIntegral (cglDetectorMellinIntegrand X q z.toCGLCriticalStripLZero) r.lower r.upper = 0 := by
+  calc
+    rectIntegral (cglDetectorMellinIntegrand X q z.toCGLCriticalStripLZero) r.lower r.upper =
+        rectIntegral (cglNonprincipalRegularizedMellinIntegrand X q z) r.lower r.upper := by
+      apply rectIntegral_congr (S := ({0}ᶜ : Set ℂ))
+      · intro w hw
+        exact cglNonprincipalMellinIntegrand_eq_regularized_off_zero X q z w hw
+      · exact cglNonprincipalDetectorRectangle_bottom_ne_zero r
+      · exact cglNonprincipalDetectorRectangle_top_ne_zero r
+      · exact cglNonprincipalDetectorRectangle_right_ne_zero r
+      · exact cglNonprincipalDetectorRectangle_left_ne_zero r
+    _ = 0 := rectIntegral_eq_zero_of_analyticOnNhd
+      (cglNonprincipalDetectorRectangle_subset_gammaSafe r)
+      (cglNonprincipalRegularizedMellinIntegrand_analyticOnGammaSafe X q z)
 
 end RHTower

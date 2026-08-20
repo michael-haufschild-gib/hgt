@@ -427,16 +427,30 @@ unconditional critical-strip width `xiZeroHalfPlaneBound_half` feeds
 positivity of that imaginary part for `Im z < -1/2`, i.e. for `Re W > 1/2`.  This is the
 Sondow--Dumitrescu mechanism of the card, in the pairing form the corpus already owns.
 
+### `(17)` and `(19)` are now proved
+
+| Card | Lean |
+|---|---|
+| `(2)` boundary density `h_a(t) = Re L(a+it)` | `RHTower.eulerSafeDensity` |
+| `(17)` `K_a(w,v) = pi^{-1} integral h_a(t) ((w-a-it)(conj v-a+it))^{-1} dt` | `RHTower.safeCaratheodoryKernel_eq_boundary_integral`, `RHTower.integral_density_mul_boundaryCauchy` |
+| `(19)` the exact finite source inequality, as an identity for its deficit | `RHTower.eulerSafeDeficit_eq`, `RHTower.eulerSafeDeficitReal_eq` |
+| `(19)` ⟺ RH | `RHTower.riemannHypothesis_iff_eulerSafeDeficitReal_nonneg` |
+
+The realization `(17)` is proved in `RHTower/XiBoundaryCauchyRepresentation`, not through abstract
+Herglotz theory but through the Poisson divisor expansion of `h_a` (each `Re (w -+ i alpha)^{-1}`
+*is* a Poisson kernel) together with the Poisson average of a Cauchy kernel
+`integral P_c(u) (A - iu)^{-1} du = (A + c)^{-1}` (`HTGeometry/PoissonCauchyIntegral`).  The
+deficit of `(19)` is then exactly `pi` times the energy of `K_0`, which is the child card
+`critical-logderivative-euler-safe-depoissonized-weil-stationarity`.
+
 ### What is *not* formalized
 
-The unproved gates of the card are unchanged and are not claimed:
+The one unproved gate of the card is unchanged and is not claimed:
 
-- the boundary Herglotz realization `(17)` of `K_a` as `pi^{-1} integral h_a(t) ...` and the
-  derived observability inequality `(19)`;
 - a proof of `(19)` from the prime--Gamma density, and hence RH.
 
-The Lean development stops exactly where the card's mathematics stops: it certifies the complete
-unconditional decomposition and every equivalence between the domination, the diagonal contraction
+The Lean development certifies the complete unconditional decomposition, the boundary realization,
+and every equivalence between the domination, the diagonal contraction, the observability deficit
 and RH, but proves no instance of the open inequality.
 
 ## Log
@@ -445,3 +459,6 @@ and RH, but proves no instance of the open inequality.
   `HTGeometry/PSDKernelOperations`, `HTGeometry/CaratheodoryKernelPositive`,
   `HTGeometry/PSDKernelDensity`, and the card module `RHTower/XiEulerSafeCauchyLoss`.  All 29
   capstones audit to `propext, Classical.choice, Quot.sound`.  Promoted to stage 3.
+- 2026-08-20 — Gap closed.  The boundary Herglotz realization `(17)` and the observability
+  inequality `(19)` are now Lean-proved; see `RHTower/XiBoundaryCauchyRepresentation` and
+  `RHTower/XiEulerSafeObservability`.  The only remaining open gate is the sign of `(19)` itself.

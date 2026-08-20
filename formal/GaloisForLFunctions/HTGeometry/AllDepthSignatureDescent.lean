@@ -35,37 +35,37 @@ noncomputable section
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
+omit [Fintype ι] in
 /-- **The depth-`d` pair-face witness is the `τ k`-difference of the depth-`(d−1)` one.** -/
-theorem pairFaceWitnessFun_eq_shiftDiffFun (τ : ι → ℂ) {i j k : ι} (hki : k ≠ i) (hkj : k ≠ j)
-    (f : ℂ → ℂ) :
-    pairFaceWitnessFun τ i j f =
+theorem pairFaceWitnessFun_eq_shiftDiffFun (τ : ι → ℂ) (s : Finset ι) {i j k : ι}
+    (hki : k ≠ i) (hkj : k ≠ j) (hk : k ∈ s) (f : ℂ → ℂ) :
+    pairFaceWitnessFun τ s i j f =
       HTGeometry.shiftDiffFun (τ k)
-        (HTGeometry.diffCube τ ((Finset.univ : Finset ι) \ {i, j, k}) f) := by
+        (HTGeometry.diffCube τ (s \ {i, j, k}) f) := by
   classical
-  have hdisj : Disjoint ({k} : Finset ι) ((Finset.univ : Finset ι) \ {i, j, k}) := by
+  have hdisj : Disjoint ({k} : Finset ι) (s \ {i, j, k}) := by
     rw [Finset.disjoint_left]
     intro m hm hm'
     have hmk : m = k := by simpa using hm
     exact (Finset.mem_sdiff.mp hm').2 (by simp [hmk])
-  have hunion : ({k} : Finset ι) ∪ ((Finset.univ : Finset ι) \ {i, j, k}) =
-      (Finset.univ : Finset ι) \ {i, j} := by
+  have hunion : ({k} : Finset ι) ∪ (s \ {i, j, k}) = s \ {i, j} := by
     ext m
-    simp only [Finset.mem_union, Finset.mem_singleton, Finset.mem_sdiff, Finset.mem_univ,
-      true_and, Finset.mem_insert]
+    simp only [Finset.mem_union, Finset.mem_singleton, Finset.mem_sdiff,
+      Finset.mem_insert]
     constructor
     · rintro (rfl | hm)
-      · rintro (h | h)
+      · refine ⟨hk, ?_⟩
+        rintro (h | h)
         · exact hki h
         · exact hkj h
-      · intro h
-        exact hm (h.imp id Or.inl)
+      · exact ⟨hm.1, fun h => hm.2 (h.imp id Or.inl)⟩
     · intro hm
       by_cases hmk : m = k
       · exact Or.inl hmk
-      · refine Or.inr ?_
+      · refine Or.inr ⟨hm.1, ?_⟩
         rintro (h | h | h)
-        · exact hm (Or.inl h)
-        · exact hm (Or.inr h)
+        · exact hm.2 (Or.inl h)
+        · exact hm.2 (Or.inr h)
         · exact hmk h
   rw [pairFaceWitnessFun, ← hunion, HTGeometry.diffCube_union τ hdisj,
     HTGeometry.diffCube_singleton]

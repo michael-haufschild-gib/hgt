@@ -1,8 +1,8 @@
 # Euler-safe Cauchy loss is one stationary de-Poissonized Weil form
 
 - **ID:** `critical-logderivative-euler-safe-depoissonized-weil-stationarity`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[VALUE RELATION]`, `[CONSTRAINT]`, `[BRIDGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean), `[VALUE RELATION]`, `[CONSTRAINT]`, `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `critical-logderivative-euler-safe-cauchy-loss-law.md` and
   `critical-logderivative-two-channel-weil-resolvent-law.md`
@@ -237,14 +237,23 @@ requires a separate continuity theorem.
 The Poisson transport and explicit formula are classical.  This card conservatively records the
 source-specific conjugation and offset collapse as not new scientific knowledge.
 
-## Lean decision
+## Lean decision (SUPERSEDED)
 
-No Lean file is added.  The reusable missing infrastructure is distributional Fourier transport
-for logarithmically growing Herglotz boundary values and continuity of the induced form on the
-chosen exponential source space.  A formal wrapper around the already proved algebraic kernel
-identity would not certify those analytic statements.
+The original decision read:
 
-No Lean build, lint, numerical experiment, or scratch computation was run.
+> No Lean file is added.  The reusable missing infrastructure is distributional Fourier transport
+> for logarithmically growing Herglotz boundary values and continuity of the induced form on the
+> chosen exponential source space.  A formal wrapper around the already proved algebraic kernel
+> identity would not certify those analytic statements.
+
+That reading is wrong about what the theorem needs.  The distributional Fourier transport is not
+part of the statement: the card's own distributional guardrail already says that `(11)`--`(15)` are
+claims about the *induced quadratic form*, not about a product of distributions.  What the form
+statement actually needs is (a) the half-plane Poisson semigroup, (b) the Poisson divisor expansion
+of `h_a` -- which is elementary, because `Re (w -+ i alpha)^(-1)` *is* a Poisson kernel and the
+paired Hadamard expansion of `L` is already in the corpus -- and (c) the Poisson average of a
+Cauchy kernel.  All three are elementary and now proved.  The whole card is formalized
+unconditionally; see the section below.
 
 ## Gates
 
@@ -258,14 +267,13 @@ No Lean build, lint, numerical experiment, or scratch computation was run.
 - [ ] prove the stationary completed form nonnegative from a source-specific orientation theorem
 - [ ] deduce RH
 
-## Lean formalization — IN PROGRESS
+## Lean formalization — COMPLETE
 
-The blocking piece is reusable and is also the one gap left open by the parent card
-`critical-logderivative-euler-safe-cauchy-loss-law` (its equation `(17)`): a half-plane Poisson
-representation of the boundary density `h_a`.
+Every equation of this card is proved unconditionally in Lean.  No hypothesis, no `sorry`, no
+added axiom: every capstone audits to `propext, Classical.choice, Quot.sound`.
 
 The route avoids abstract Herglotz theory.  `RHTower/XiWeilTwoChannelResolvent` already proves the
-paired Hadamard expansion `L w = ∑' α, A_w α` with `A_w (α) = w / (w² + α²)`, and
+paired Hadamard expansion `L w = ∑' α, A_w α` with `A_w (α) = w / (w² + α²)` and
 `A_w = (1/2)[1/(w - iα) + 1/(w + iα)]`.  Writing `w = σ + iτ` and `α = ρ + iν` with `|ν| ≤ 1/2`,
 
 ```text
@@ -274,57 +282,83 @@ Re (1/(w + i alpha)) = pi * P_(sigma-nu)(tau + rho),
 P_c(t) = c / (pi (c^2 + t^2)),
 ```
 
-so `h_a` is an explicit convergent divisor sum of Poisson kernels and `(12)` is the Poisson
-semigroup applied term by term.
+so `h_a` is an explicit convergent divisor sum of Poisson kernels, `(12)` is the Poisson semigroup
+applied term by term, and the parent card's `(17)` is the Poisson--Cauchy evaluation applied term
+by term.  Equations `(3)`--`(4)` then follow by finite algebra plus the half-line Laplace value
+`∫_0^∞ e^{-(w_j + conj w_k)x} dx = (w_j + conj w_k)^{-1}`, which converts the Cauchy-loss
+subtraction into the factor `(w_j + conj w_k - 2a)/(w_j + conj w_k)` that cancels the safe
+denominator exactly.
 
-### Programme
+### Mapping
 
-- **P1 — DONE.** `HTGeometry/HalfPlanePoissonKernel`: `halfPlanePoisson`,
-  `halfPlanePoisson_pos`, `integrable_halfPlanePoisson`, `integral_halfPlanePoisson` (unit mass),
-  `integral_shifted_poisson_product`, and the semigroup `halfPlanePoisson_convolution`
-  (`∫ P_c (t-s) P_d s ds = P_{c+d} t`).  All audit to
-  `propext, Classical.choice, Quot.sound`.  Supporting: `poissonOdd`, `poissonOddPrimitive`,
-  `hasDerivAt_poissonOddPrimitive`, `integral_poissonOdd_interval`,
-  `tendsto_poissonOdd_boundary`, `integral_poissonOdd`, `poisson_partial_fraction`,
-  `integrable_poissonOdd`, `tendsto_lin_div_sq_atTop`, `tendsto_one_div_sq_atTop`.
-  The original P1 sketch:  The semigroup reduces to
-  `∫ ds / ((c² + (s-t)²)(d² + s²)) = π (c+d) / (c d ((c+d)² + t²))`, whose partial fraction is
-  `1/(QR) = (A(s-t)+B)/Q + (-As+D)/R` with
-  `G = ((c+d)²+t²)((c-d)²+t²)`, `A = -2t/G`, `B = (t²-c²+d²)/G`, `D = (c²+t²-d²)/G`;
-  the odd part `A ∫ [(s-t)/Q - s/R]` vanishes because
-  `(1/2) log(((s-t)²+c²)/(s²+d²)) → 0` at both ends.  The two even parts are the corpus's
-  `integral_inv_sq_add_sq`.
-- **P2 - DONE.** `RHTower/XiBoundaryPoissonDensity`: `re_inv_sub_I_mul`, `re_inv_add_I_mul`,
-  `re_weilChannelA` (the even channel is a pair of Poisson kernels), `eulerSafeDensity`,
-  `boundaryPoissonTerm`, `summable_boundaryPoissonTerm`, `eulerSafeDensity_eq_tsum`
-  (`h_a = (pi/2) sum_q [P_(a+nu_q)(t-rho_q) + P_(a-nu_q)(t+rho_q)]`).
-- **`(12)` - DONE.** `eulerSafeDensity_poisson_transport`:
-  `h_b t = integral P_(b-a)(t-s) h_a s ds` for `1/2 < a < b`, by the shifted semigroup
-  (`integral_poisson_shift_product`) applied term by term and the interchange
-  `MeasureTheory.integral_tsum_of_summable_integral_norm`.  Supporting:
-  `integral_boundaryPoissonTerm`, `integrable_poisson_boundaryTerm`, `abs_im_spectral_lt`.
-  All audit to `propext, Classical.choice, Quot.sound`.
-- **P3 - analytic core DONE.** `HTGeometry/HalfPlanePoissonKernel` gained the
-  conjugate kernel `conjugatePoisson`, its product integral `integral_conjugate_product`
-  and semigroup `conjugatePoisson_convolution`; `HTGeometry/PoissonCauchyIntegral`
-  then proves the key lemma
-  `integral_poisson_cauchy : integral P_c(u) (A - i u)^(-1) du = (A + c)^(-1)`
-  for `Re A > 0`, `c > 0`, via `inv_sub_I_mul_real_eq`:
-  `(A - i u)^(-1) = pi (P_(Re A)(u - Im A) + i Q_(Re A)(u - Im A))`.
-  Remaining in P3: assemble the parent card `(17)` from this by the divisor sum,
-  using the constant-sum split
-  `((w-a-it)(conj v-a+it))^(-1) = S^(-1)[(w-a-it)^(-1) + (conj v-a+it)^(-1)]`,
-  `S = w + conj v - 2a`, and the interchange with the divisor tsum.
-  by term-by-term residue evaluation of `∫ P_c(t-ρ) / ((w-a-it)(conj v-a+it)) dt`.
-- **P4** `(3)`, `(4)` and hence `(16)`, `(21)`.
-- **P5 - DONE.** `RHTower/XiDePoissonizedStationarity`: `shiftedExpPacket`, `expPacket`,
-  `expPacket_eq_tilt` (`(5)`), `laplace_shiftedExpPacket` (`(6)`),
-  `laplace_tail_shiftedExpPacket` (`(7)`), `integral_min_exp` (`(8)`),
-  `exp_neg_two_mul_min` (`(9)`).
-- **P6 - DONE.** same module: `primeAtomWeight` (`(18)`), `exp_mul_abs_log` (`(19)`,
-  `exp (a |log n|) = n^a`), `primeAtomWeight_dePoissonized` (`(20)`), and
-  `primeAtomWeight_dePoissonized_offset_free`: the de-Poissonized prime weight is
-  independent of the safe offset.  All audit to `propext, Classical.choice, Quot.sound`.
+| Card | Lean |
+|---|---|
+| `(1)` `X`, `L` | `RHTower.xiCent`, `logDeriv xiCent` |
+| `(2)` `h_a(t) = Re L(a+it)` | `RHTower.eulerSafeDensity`, `RHTower.eulerSafeDensity_pos`, `RHTower.continuous_eulerSafeDensity` |
+| Poisson divisor expansion of `h_a` | `RHTower.boundaryPoissonTerm`, `RHTower.summable_boundaryPoissonTerm`, `RHTower.eulerSafeDensity_eq_tsum_term` |
+| `(3)` `O_a(c,w)` | `RHTower.eulerSafeDeficitReal` (real form), `RHTower.eulerSafeDeficit` (complex form), bridged by `RHTower.eulerSafeDeficit_eq_ofReal` and `RHTower.eulerSafeDeficitReal_eq_re` |
+| `(4)` `O_a = π ∑ c_j conj(c_k) K_0(w_j, w_k)` | `RHTower.eulerSafeDeficit_eq`, `RHTower.eulerSafeDeficitReal_eq` |
+| `(5)` `g_a`, `f` | `RHTower.shiftedExpPacket`, `RHTower.expPacket`, `RHTower.expPacket_eq_tilt` |
+| `(6)` resolvent Laplace identity | `RHTower.laplace_shiftedExpPacket` |
+| `(7)` tail Laplace identity | `RHTower.laplace_tail_shiftedExpPacket` |
+| `(8)` `2a ∫_0^{min} e^{-2ax} dx` | `RHTower.integral_min_exp` |
+| `(9)` complementary factor | `RHTower.exp_neg_two_mul_min` |
+| `(12)` `h_b = P_{b-a} * h_a` | `RHTower.eulerSafeDensity_poisson_transport` |
+| `(13)` `P_c` | `GaloisForLFunctions.HTGeometry.halfPlanePoisson` |
+| Poisson semigroup | `HTGeometry.halfPlanePoisson_convolution`, `HTGeometry.integral_poisson_shift_product` |
+| conjugate Poisson semigroup | `HTGeometry.conjugatePoisson`, `HTGeometry.conjugatePoisson_convolution` |
+| `(15)` offset independence of the form | `RHTower.eulerSafeDeficit_offset_independent` |
+| `(16)` `W_Xi = O_a / (2π)` | `RHTower.xiStationaryForm`, `RHTower.xiStationaryForm_eq_deficit_div` |
+| `(18)` prime atom weight | `RHTower.primeAtomWeight` |
+| `(19)` `exp(a\|log n\|) = n^a` | `RHTower.exp_mul_abs_log` |
+| `(20)` de-Poissonized weight `-Λ(n)/(2√n)` | `RHTower.primeAtomWeight_dePoissonized` |
+| prime weights lose the offset | `RHTower.primeAtomWeight_dePoissonized_offset_free` |
+| `(21)` exact RH chain | `RHTower.riemannHypothesis_iff_eulerSafeDeficit_nonneg`, `RHTower.riemannHypothesis_iff_eulerSafeDeficitReal_nonneg` |
+| parent card `(17)` (the gap this card closed) | `RHTower.safeCaratheodoryKernel_eq_boundary_integral`, `RHTower.integral_density_mul_boundaryCauchy` |
 
-`(11)` in its tempered-distribution form is *not* on the programme: its content is `(4)`, which is
-distribution-free.  The distributional guardrail section of this card is exactly the reason.
+### New modules
+
+- `HTGeometry/HalfPlanePoissonKernel` — the half-plane Poisson kernel, its unit mass and
+  integrability, the shifted product integral, the semigroup `P_c * P_d = P_{c+d}`, the conjugate
+  kernel `Q_p` and the mixed semigroup `P_c * Q_p = Q_{c+p}`.  Both semigroup laws were mathlib
+  gaps.  Mechanism: partial-fraction the shifted rational product into two even pieces (the
+  corpus's `integral_inv_sq_add_sq`) plus one odd piece whose logarithmic primitive
+  `(1/2) log((c² + (s-t)²)/(d² + s²))` has equal limits at `±∞`.
+- `HTGeometry/PoissonCauchyIntegral` — `inv_sub_I_mul_real_eq`
+  (`(A - iu)^{-1} = π (P_{Re A}(u - Im A) + i Q_{Re A}(u - Im A))`) and the Poisson average of a
+  Cauchy kernel `integral_poisson_cauchy : ∫ P_c(u) (A - iu)^{-1} du = (A + c)^{-1}`.
+- `RHTower/XiBoundaryPoissonDensity` — `(2)`, the Poisson divisor expansion, and `(12)`.
+- `RHTower/XiBoundaryCauchyRepresentation` — the parent card's `(17)`.  The constant-sum split
+  `((w-a-it)(conj v-a+it))^{-1} = S^{-1}[(w-a-it)^{-1} + (conj v-a+it)^{-1}]`, `S = w + conj v - 2a`,
+  applied *per divisor term* (the full integrand is not absolutely integrable against the split, but
+  each `P_c(t-ρ)(A-it)^{-1}` is), with the interchange justified by the arithmetic--geometric bound
+  `‖(A-it)^{-1}(B+it)^{-1}‖ ≤ (1/2)[‖(A-it)^{-1}‖² + ‖(B+it)^{-1}‖²]`, which turns each dominating
+  integral back into a boundary Poisson term at the raised heights `a + Re A`, `a + Re B`.
+- `RHTower/XiDePoissonizedStationarity` — `(5)`--`(9)` and `(18)`--`(20)`.
+- `RHTower/XiEulerSafeObservability` — `(3)`, `(4)`, `(15)`, `(16)`, `(21)`.  Integrability of
+  `h_a(t) K_a(w,v,t)` is obtained by Tonelli on the Poisson divisor expansion
+  (`lintegral_tsum` plus the summable dominating integrals), not from a growth bound on `h_a`;
+  no zero counting is used anywhere.
+
+### What is *not* formalized
+
+- Equations `(10)`, `(11)` and `(14)` in their tempered-distribution form.  No object `r_a` is
+  constructed, and the raw product `exp(a|u|) r_a(u)` is never formed.  This is deliberate and is
+  exactly what the distributional guardrail section of this card demands: the content of
+  `(11)`--`(15)` is a statement about the *induced quadratic form*, and that statement is proved
+  directly and distribution-free as `eulerSafeDeficit_offset_independent` together with `(4)`.
+- The identification of `W_Xi` with the completed Weil distribution *beyond* the finite
+  exponential/resolvent span.  On the span itself the identification is the parent two-channel
+  card's `xiWeilPolarization` layer, which is Lean-proved.
+- The two open gates below.  They are the Riemann hypothesis; nothing here claims them.
+
+## Log
+
+- 2026-08-20 — Stage 2 → 3.  The original "no Lean file" decision was overturned: the analytic
+  input the card actually needs is the half-plane Poisson semigroup and the Poisson average of a
+  Cauchy kernel, both elementary and both now proved as mathlib gaps in
+  `HTGeometry/HalfPlanePoissonKernel` and `HTGeometry/PoissonCauchyIntegral`.  P1--P6 all closed;
+  `(3)`, `(4)`, `(15)`, `(16)`, `(21)` proved in `RHTower/XiEulerSafeObservability`; the parent
+  card's `(17)` proved in `RHTower/XiBoundaryCauchyRepresentation`.  Modules wired into
+  `GaloisForLFunctions.RHTower`; `scripts/formal_tools.py lint --check-generated` clean; every
+  capstone audits to `propext, Classical.choice, Quot.sound`.

@@ -67,6 +67,13 @@ noncomputable def algClosedBrauerEquivPUnit (F : Type u) [Field F] [IsAlgClosed 
 noncomputable def algClosedLocalInvariant (F : Type u) [Field F] [IsAlgClosed F] :
     BrauerGroup.{u, u} F → RatModInt := fun _ => 0
 
+/-- The algebraically closed local invariant as an additive homomorphism. -/
+noncomputable def algClosedLocalInvariantAddHom (F : Type u) [Field F] [IsAlgClosed F] :
+    BrauerGroup.{u, u} F →+ RatModInt where
+  toFun := algClosedLocalInvariant F
+  map_zero' := rfl
+  map_add' := by intros; simp [algClosedLocalInvariant]
+
 theorem algClosedLocalInvariant_eq_zero (F : Type u) [Field F] [IsAlgClosed F]
     (x : BrauerGroup.{u, u} F) : algClosedLocalInvariant F x = 0 := rfl
 
@@ -114,6 +121,15 @@ theorem complexInfiniteCompletion_brauer_subsingleton (K : Type u) [Field K] [Nu
 noncomputable def complexInfiniteCompletionLocalInvariant (K : Type u) [Field K] [NumberField K]
     (v : NumberField.InfinitePlace K) (_ : v.IsComplex) :
     BrauerGroup.{u, u} v.Completion → RatModInt := fun _ => 0
+
+/-- The complex infinite-place invariant as an additive homomorphism. -/
+noncomputable def complexInfiniteCompletionLocalInvariantAddHom
+    (K : Type u) [Field K] [NumberField K]
+    (v : NumberField.InfinitePlace K) (hv : v.IsComplex) :
+    BrauerGroup.{u, u} v.Completion →+ RatModInt where
+  toFun := complexInfiniteCompletionLocalInvariant K v hv
+  map_zero' := rfl
+  map_add' := by intros; simp [complexInfiniteCompletionLocalInvariant]
 
 theorem complexInfiniteCompletion_localInvariant_eq_zero (K : Type u) [Field K] [NumberField K]
     (v : NumberField.InfinitePlace K) (hv : v.IsComplex)
@@ -183,6 +199,29 @@ theorem complexInfiniteLocalBrauerMap_invariant_eq_zero (K : Type u) [Field K] [
       0 := by
   exact complexInfiniteCompletion_localInvariant_eq_zero K v hv _
 
+/-- The contribution of one infinite place to the complex part of the ABHN invariant sum.
+Real places contribute zero here by definition; complex places use their actual local invariant. -/
+noncomputable def complexInfiniteInvariantContribution (K : Type u) [Field K] [NumberField K]
+    (v : NumberField.InfinitePlace K) (x : BrauerGroup.{u, u} K) : RatModInt := by
+  classical
+  exact if hv : v.IsComplex then
+    complexInfiniteCompletionLocalInvariant K v hv
+      (scalarExtensionBrauerMap K v.Completion x)
+  else 0
+
+/-- The complex archimedean summand of global reciprocity vanishes.  This is a closed fragment
+of ABHN reciprocity; real and nonarchimedean summands require their local invariant theories. -/
+theorem sum_complexInfiniteInvariantContribution_eq_zero
+    (K : Type u) [Field K] [NumberField K] (x : BrauerGroup.{u, u} K) :
+    ∑ v : NumberField.InfinitePlace K, complexInfiniteInvariantContribution K v x = 0 := by
+  classical
+  apply Finset.sum_eq_zero
+  intro v _
+  by_cases hv : v.IsComplex
+  · simp only [complexInfiniteInvariantContribution, dif_pos hv]
+    exact complexInfiniteLocalBrauerMap_invariant_eq_zero K v hv x
+  · simp [complexInfiniteInvariantContribution, hv]
+
 /-- The nonsplit support of a global Brauer class contains no complex infinite place.  Thus the
 only possible archimedean contribution to ABHN finite ramification is at real places. -/
 theorem numberFieldLocalBrauerMap_nonSplitSupport_subset_notComplexInfinite
@@ -191,5 +230,23 @@ theorem numberFieldLocalBrauerMap_nonSplitSupport_subset_notComplexInfinite
       {w | ∀ v : NumberField.InfinitePlace K, v.IsComplex → w ≠ .infinite v} := by
   rintro w hw v hv rfl
   exact hw (complexInfiniteLocalBrauerMap_eq_split K v hv x)
+
+/-- The infinite-place nonsplit support of a global Brauer class is contained in the real
+places. -/
+theorem numberFieldLocalBrauerMap_infiniteNonSplitSupport_subset_notComplex
+    (K : Type u) [Field K] [NumberField K] (x : BrauerGroup.{u, u} K) :
+    {v : NumberField.InfinitePlace K |
+      numberFieldLocalBrauerMap K x (.infinite v) ≠ brauerSplitClass v.Completion} ⊆
+      {v | ¬v.IsComplex} := by
+  intro v hv hvc
+  exact hv (complexInfiniteLocalBrauerMap_eq_split K v hvc x)
+
+/-- The infinite-place contribution to nonsplit support is finite.  Thus the only unresolved
+part of the ABHN finite-ramification theorem is the nonarchimedean contribution. -/
+theorem numberFieldLocalBrauerMap_infiniteNonSplitSupport_finite
+    (K : Type u) [Field K] [NumberField K] (x : BrauerGroup.{u, u} K) :
+    {v : NumberField.InfinitePlace K |
+      numberFieldLocalBrauerMap K x (.infinite v) ≠ brauerSplitClass v.Completion}.Finite :=
+  Set.finite_univ.subset fun _ _ ↦ Set.mem_univ _
 
 end GaloisForLFunctions.HTGeometry.ABHN

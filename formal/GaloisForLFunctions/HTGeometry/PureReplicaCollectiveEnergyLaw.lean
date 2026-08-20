@@ -78,6 +78,45 @@ theorem quadForm_replicaSlot_gram_centered
     apply Finset.prod_eq_zero (Finset.mem_univ j)
     simp [replicaSlotFactors, Ne.symm hij, hcenter]
 
+/-- Without unit normalization, centering still kills every distinct-slot Gram entry.  The
+diagonal entry is multiplied by the mass of each untouched replica. -/
+theorem quadForm_replicaSlot_gram_centered_unnormalized
+    (r : ℕ) (A : Matrix n n ℂ) (v : n → ℂ)
+    (hcenter : boundedReplicaThresholdProjectorQuadForm A v = 0)
+    (i j : Fin r) :
+    boundedReplicaThresholdProjectorQuadForm
+        ((replicaSlotOp r A i)ᴴ * replicaSlotOp r A j)
+        (replicaVector r v) =
+      if i = j then
+        boundedReplicaThresholdProjectorQuadForm (Aᴴ * A) v *
+          hermInner v v ^ (r - 1)
+      else 0 := by
+  rw [replicaSlotOp, replicaSlotOp, replicaOp_conjTranspose, replicaOp_mul,
+    quadForm_replicaOp]
+  by_cases hij : i = j
+  · subst j
+    rw [if_pos rfl]
+    rw [Fintype.prod_eq_mul_prod_compl i]
+    have hprod :
+        ∏ x ∈ ({i}ᶜ : Finset (Fin r)),
+            boundedReplicaThresholdProjectorQuadForm
+              ((replicaSlotFactors r A i x)ᴴ * replicaSlotFactors r A i x) v =
+          hermInner v v ^ (r - 1) := by
+      calc
+        _ = ∏ _x ∈ ({i}ᶜ : Finset (Fin r)), hermInner v v := by
+          apply Finset.prod_congr rfl
+          intro x hx
+          have hxi : x ≠ i := by simpa using hx
+          simp [replicaSlotFactors, hxi, quadForm_one]
+        _ = hermInner v v ^ (r - 1) := by
+          rw [Finset.prod_const, Finset.card_compl]
+          simp
+    rw [hprod]
+    simp [replicaSlotFactors]
+  · rw [if_neg hij]
+    apply Finset.prod_eq_zero (Finset.mem_univ j)
+    simp [replicaSlotFactors, Ne.symm hij, hcenter]
+
 /-- **Centered collective replica energy law.**  The collective Gram energy is exactly linear,
 not quadratic, in replica number. -/
 theorem collectiveReplicaSlotOp_centered_energy
@@ -93,6 +132,23 @@ theorem collectiveReplicaSlotOp_centered_energy
   simp_rw [quadForm_univ_sum]
   simp_rw [quadForm_replicaSlot_gram_centered r A v hv hcenter]
   simp
+
+/-- **Unnormalized centered collective energy law.**  A centered Hermitian cavity boundary keeps
+the exact replica-linear factor, with only its untouched-copy mass `q^(r-1)`. -/
+theorem collectiveReplicaSlotOp_centered_energy_unnormalized
+    (r : ℕ) (A : Matrix n n ℂ) (v : n → ℂ)
+    (hcenter : boundedReplicaThresholdProjectorQuadForm A v = 0) :
+    boundedReplicaThresholdProjectorQuadForm
+        ((collectiveReplicaSlotOp r A)ᴴ * collectiveReplicaSlotOp r A)
+        (replicaVector r v) =
+      (r : ℂ) * boundedReplicaThresholdProjectorQuadForm (Aᴴ * A) v *
+        hermInner v v ^ (r - 1) := by
+  rw [collectiveReplicaSlotOp, Matrix.conjTranspose_sum, Finset.sum_mul_sum,
+    quadForm_univ_sum]
+  simp_rw [quadForm_univ_sum]
+  simp_rw [quadForm_replicaSlot_gram_centered_unnormalized r A v hcenter]
+  simp
+  ring
 
 /-- The expectation of a commutator representation on a vectorized matrix is its trace pairing
 with the literal commutator. -/
@@ -117,6 +173,21 @@ theorem quadForm_matrixCommutatorRepresentation_vec_centered
     Matrix.mul_sub, Matrix.trace_sub]
   rw [Matrix.trace_mul_comm X (G * X), ← Matrix.mul_assoc X X G,
     Matrix.mul_assoc G X X, Matrix.trace_mul_comm G (X * X), sub_self]
+
+/-- Every Hermitian matrix boundary, including a mixed or cavity-dressed one, obeys the exact
+unnormalized replica-linear commutator law. -/
+theorem hermitian_collectiveReplicaCommutator_energy_unnormalized
+    (r : ℕ) (G X : Matrix n n ℂ) (hX : Xᴴ = X) :
+    boundedReplicaThresholdProjectorQuadForm
+        ((collectiveReplicaSlotOp r (matrixCommutatorRepresentation G))ᴴ *
+          collectiveReplicaSlotOp r (matrixCommutatorRepresentation G))
+        (replicaVector r (Matrix.vec X)) =
+      (r : ℂ) * boundedReplicaThresholdProjectorQuadForm
+        ((matrixCommutatorRepresentation G)ᴴ *
+          matrixCommutatorRepresentation G) (Matrix.vec X) *
+        hermInner (Matrix.vec X) (Matrix.vec X) ^ (r - 1) := by
+  apply collectiveReplicaSlotOp_centered_energy_unnormalized
+  exact quadForm_matrixCommutatorRepresentation_vec_centered G X hX
 
 omit [DecidableEq n] in
 theorem hermInner_vec_rankOne (ψ : n → ℂ) :

@@ -1,9 +1,10 @@
 # Fixed-envelope family amplification, compact admission, and bilateral selection law
 
 - **ID:** `ULF-FAAM-1`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
+- **Lean module:** `GaloisForLFunctions.HTGeometry.FixedEnvelopeFormationAmplification`
 - **Type:** UNIVERSAL FORMATION / ADMISSION / SELECTION THEOREM
-- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [ROUTE-INDEPENDENT]`
+- **Status:** `[PAPER-PROVED] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [ROUTE-INDEPENDENT]`
   `[FORMATION FUSION] [EXACT ADMISSION PHASE DIAGRAM] [GLOBAL PROPERNESS]`
   `[BILATERAL SELECTION] [NOT RH]`
 - **Statement:** A fixed decaying source envelope can hide a radial character at finitely many

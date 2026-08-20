@@ -7324,3 +7324,74 @@ are superseded.
    K > max( 2(3 + c + 2A), (c+1)/2 ) ,   2A₃ > b + c' + 1 ,
    ω = log log x ,   δ = (log log x)^{−1/2} ,   β ∈ (0,1) free.
 ```
+
+### Brick 130 — the Route-T relative majorant at the schedule (2026-08-20)
+
+`Sieve/TwoRangeMajorant`, `lake env lean`-clean, axiom-clean, wired, built.
+
+```text
+twoRangeT₀ b A₃ x = (log x)^{4b+3A₃+3}
+
+twoRangeMajTerms b A₃ Ctot μ q xmin x
+  = Ctot/(2π)·( 4(log x)^{−A₃−1} + (log x)^{2b+2A₃+4}·e^{−μq} + (log x)^{−(6b+4A₃+2)} )
+    + 3(log x)^{−A₃−1} + 4·(log x)^b/√xmin
+
+relScaledMajorant_le_twoRangeMajTerms :
+  ∀ᶠ x, relScaledMajorant Ctot (twoRangeWidth b A₃ x) (twoRangeLx b x) (Hmaj x) (μ x) (q x)
+          (twoRangeT₀ b A₃ x) (xmin x)   ≤   twoRangeMajTerms b A₃ Ctot μ q xmin x
+
+tendsto_logRpow_mul_relScaledMajorant (he1 : e < A₃ + 1) (he3 : e < 6b + 4A₃ + 2) … :
+  (log x)^e · relScaledMajorant … → 0
+```
+
+under only two arithmetic hypotheses, which are exactly the two places the mathematics enters:
+
+```text
+   (log x)^{2b+2A₃+4+e}·e^{−μ q} → 0      (the zero-free region: μ ≍ (log T₀)^{−9/10}, q = (log x)^a)
+   (log x)^{b+e}/√xmin → 0                (the bottom of the high range: xmin = exp((log x)^a))
+```
+
+Everything else is a negative power of the logarithm.  The five summands are bounded term by term
+using `log x ≥ 1`: `Lx ≤ 2(log x)^b`, `D² = (log x)^{2b+2A₃+2}`, `t₀² = (log x)^{8b+6A₃+6}`, giving
+`4(log x)^{−A₃−1}`, `(log x)^{2b+2A₃+4}e^{−μq}`, `(log x)^{−(6b+4A₃+2)}`, `3(log x)^{−A₃−1}` and
+`4(log x)^b/√xmin` respectively.
+
+The margin condition `e < A₃ + 1` is what the large half consumes: it needs
+`ρ²·(log x)^{b+c'+1}(log log x)² → 0`, i.e. `e = (b+c'+1)/2 + o(1)`, so `A₃ > (b+c'−1)/2` suffices.
+
+### Brick 131 — the Route-T side conditions at the schedule (2026-08-20)
+
+`Sieve/TwoRangeRouteT`, `lake env lean`-clean, axiom-clean, wired, built.
+
+The remaining Route-T parameters are fixed,
+
+```text
+   twoRangeQ a x     = (log x)^a                    (the contour frequency)
+   twoRangeXmin a x  = exp((log x)^a)               (its lower cutoff)
+   twoRangeMu A δ β x    = min δ (routeTWidthPolylogLower A (2π·W)) / 2
+   twoRangeHmaj A b A₃ β x = 1/(2π·w₀) + log(3·2π·W/2) / routeTWidthPolylogLower A (2π·W)
+```
+
+and the side conditions of `Sieve/AnnulusBoundUniform.exists_annulus_bound_uniform` are discharged:
+
+| theorem | hypothesis |
+|-|-|
+| `highBlockTop_bounds` | every block top lies between `R'` and `2·exp((log x)^b)` |
+| **`highBlockTop_log_bounds`** | `hLxj`, `hqj`, `hxminj` — the three logarithmic comparisons |
+| `one_le_twoRangeWidth` | `1 ≤ D` |
+| `twoRangeDisc_ge` | `max τ₀ (16π/3) ≤ 2π·w₀` |
+| **`twoRangeDisc_le_top`** | `w₀ ≤ T₀` |
+| `twoRangeMu_nonneg`, `twoRangeMu_le` | `0 ≤ μ`, `μ ≤ min δ (…)/2` |
+| `twoRangeXmin_pos`, `twoRangeQ_nonneg` | `0 < xmin`, `0 ≤ q` |
+
+The two structural observations that make all of them elementary: the base `R'` is a **natural
+number**, so `⌊R'(1+η')^{j+1}⌋ ≥ R'` and every block top is at least the base; and
+`highLadder_le` puts every block top below `2·exp((log x)^b)`.  The disc/window comparison
+`w₀ ≤ T₀` is the one place the window enters — `w₀` is polylogarithmic while
+`T₀ ≍ (√x/h)·log log x`, and the gap is `tendsto_rpow_log_mul_cardLength_div_sqrt`.
+
+**What is left of the whole substitution**: assemble these into the `hbound'` of
+`integral_Icc_normSq_logPoly_moebius_le_twoRange` (one application of `exists_annulus_bound_uniform`
+with the fourteen slots now all filled), and then the five remaining group limits, each a
+composition of `Sieve/TwoRangeLimits`, `Sieve/LadderGroupBudget`, `Sieve/MoebiusHeadBudget.roughGroup_le`
+and `Sieve/TwoRangeMajorant.tendsto_logRpow_mul_relScaledMajorant`.

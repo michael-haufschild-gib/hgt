@@ -1,10 +1,11 @@
 # Ramification Fock filtration, critical-carrier transfer, and bilateral selection law
 
 - **ID:** ULF-SFIM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveRamificationFockExcessSelection`
 - **Type:** SOURCE-GENERATED FUSION / RECONSTRUCTION / GLOBAL FORMATION-PROPERNESS THEOREM
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [SOURCE-SELECTED FOCK FORMATION]`
-  `[THREE-LAYER RECONSTRUCTION] [CRITICAL-CARRIER TRANSFER] [BILATERAL SELECTION]`
+  `[THREE-LAYER RECONSTRUCTION] [CRITICAL-CARRIER TRANSFER] [BILATERAL SELECTION] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS]`
   `[LEAN FORMALIZED] [PRE-ZERO] [NOT RH]`
 - **Lean:** `GaloisForLFunctions.HTGeometry.ConstitutiveRamificationFockExcessSelection`
 - **Parents:**

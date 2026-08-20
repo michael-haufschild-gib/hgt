@@ -1,0 +1,116 @@
+import GaloisForLFunctions.RHTower.DeningerTowerDirectLimit
+
+/-!
+# Global reciprocity in a tower of number fields
+
+The logarithmic product formula cuts out the kernel of the place-sum map.  This file restricts
+the place-transition maps to those reciprocity kernels.  Consequently the sum-zero local currents
+form their own directed system, and a nonzero global element determines a compatible Kummer
+current in its direct limit.
+
+This is a product-formula analogue of the first, necessary part of a local--global sequence:
+global Kummer currents satisfy the sole global reciprocity relation at every finite level.  It does
+not assert the stronger Albert--Brauer--Hasse--Noether surjectivity statement.
+
+* `deningerTowerPullHomKer` : field embeddings preserve reciprocity kernels.
+* `deningerTowerKernelSystem` : the directed system of reciprocity kernels.
+* `DeningerTowerReciprocityLimit` : its direct limit.
+* `deningerKummerKernel_limit_compatible` : global Kummer currents persist in that limit.
+-/
+
+namespace RHTower
+
+open NumberField Module
+
+section PullHom
+
+variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L]
+
+/-- A field embedding carries local currents satisfying the logarithmic product formula to local
+currents satisfying that formula. -/
+noncomputable def deningerTowerPullHomKer (σ : K →+* L) :
+    LinearMap.ker (deningerPlaceSum K) →ₗ[ℝ] LinearMap.ker (deningerPlaceSum L) :=
+  ((deningerTowerPullHom σ).domRestrict (LinearMap.ker (deningerPlaceSum K))).codRestrict
+    (LinearMap.ker (deningerPlaceSum L)) (fun f => by
+    letI : Algebra K L := σ.toAlgebra
+    change deningerPlaceSum L (deningerTowerPull K L f.1) = 0
+    have hf : deningerPlaceSum K f.1 = 0 := f.property
+    rw [deningerTowerPull_sum K L f.1, hf, mul_zero])
+
+/-- Restriction to reciprocity kernels preserves the identity transition map. -/
+theorem deningerTowerPullHomKer_id (f : LinearMap.ker (deningerPlaceSum K)) :
+    deningerTowerPullHomKer (RingHom.id K) f = f := by
+  apply Subtype.ext
+  exact deningerTowerPullHom_id f.1
+
+/-- Restriction to reciprocity kernels preserves composition of field embeddings. -/
+theorem deningerTowerPullHomKer_comp {M : Type*} [Field M] [NumberField M]
+    (σ : K →+* L) (τ : L →+* M) (f : LinearMap.ker (deningerPlaceSum K)) :
+    deningerTowerPullHomKer τ (deningerTowerPullHomKer σ f) = deningerTowerPullHomKer (τ.comp σ) f := by
+  apply Subtype.ext
+  exact deningerTowerPullHom_comp σ τ f.1
+
+/-- A nonzero global element, viewed as its logarithmic Kummer current, satisfies global
+reciprocity. -/
+noncomputable def deningerKummerKernelTest (K : Type*) [Field K] [NumberField K]
+    {α : K} (hα : α ≠ 0) : LinearMap.ker (deningerPlaceSum K) :=
+  ⟨deningerKummerTest K hα, deningerKummer_sum_eq_zero K hα⟩
+
+/-- Kummer currents are functorial after imposing the global reciprocity relation. -/
+theorem deningerKummerKernelTest_towerPull (σ : K →+* L) {α : K} (hα : α ≠ 0) (hσα : σ α ≠ 0) :
+    deningerTowerPullHomKer σ (deningerKummerKernelTest K hα) = deningerKummerKernelTest L hσα := by
+  apply Subtype.ext
+  exact deningerKummerTest_towerPull σ hα hσα
+
+end PullHom
+
+section Limit
+
+variable {ι : Type*} [Preorder ι] [DecidableEq ι] (F : ι → Type*) [∀ i, Field (F i)]
+  [∀ i, NumberField (F i)] (φ : ∀ i j, i ≤ j → F i →+* F j)
+
+/-- The directed-system transition on the kernels of the product-formula maps. -/
+noncomputable def deningerTowerKernelSystem (i j : ι) (h : i ≤ j) :
+    LinearMap.ker (deningerPlaceSum (F i)) →ₗ[ℝ] LinearMap.ker (deningerPlaceSum (F j)) :=
+  deningerTowerPullHomKer (φ i j h)
+
+omit [DecidableEq ι] in
+/-- The reciprocity kernels in a compatible tower form a directed system. -/
+theorem deningerTowerKernelSystem_directed
+    (hid : ∀ i (h : i ≤ i), φ i i h = RingHom.id (F i))
+    (hcomp : ∀ i j k (hij : i ≤ j) (hjk : j ≤ k),
+      (φ j k hjk).comp (φ i j hij) = φ i k (hij.trans hjk)) :
+    DirectedSystem (fun i => (LinearMap.ker (deningerPlaceSum (F i)) : Type _))
+      fun i j h => deningerTowerKernelSystem F φ i j h := by
+  constructor
+  · intro i x
+    show deningerTowerPullHomKer (φ i i le_rfl) x = x
+    rw [hid i le_rfl]
+    exact deningerTowerPullHomKer_id x
+  · intro k j i hij hjk x
+    show deningerTowerPullHomKer (φ j k hjk) (deningerTowerPullHomKer (φ i j hij) x)
+      = deningerTowerPullHomKer (φ i k (hij.trans hjk)) x
+    rw [deningerTowerPullHomKer_comp, hcomp]
+
+/-- Direct limit of the product-formula kernels along a tower of number fields. -/
+noncomputable abbrev DeningerTowerReciprocityLimit : Type _ :=
+  Module.DirectLimit (fun i => LinearMap.ker (deningerPlaceSum (F i)))
+    fun i j h => deningerTowerKernelSystem F φ i j h
+
+/-- The product-formula Kummer current of a global element is independent of the finite tower
+stage used to represent it. -/
+theorem deningerKummerKernel_limit_compatible (i j : ι) (hij : i ≤ j) {α : F i} (hα : α ≠ 0)
+    (hφα : φ i j hij α ≠ 0) :
+    Module.DirectLimit.of ℝ ι (fun i => LinearMap.ker (deningerPlaceSum (F i)))
+        (fun i j h => deningerTowerKernelSystem F φ i j h) j (deningerKummerKernelTest (F j) hφα)
+      = Module.DirectLimit.of ℝ ι (fun i => LinearMap.ker (deningerPlaceSum (F i)))
+        (fun i j h => deningerTowerKernelSystem F φ i j h) i (deningerKummerKernelTest (F i) hα) := by
+  have hpull : deningerTowerKernelSystem F φ i j hij (deningerKummerKernelTest (F i) hα)
+      = deningerKummerKernelTest (F j) hφα :=
+    deningerKummerKernelTest_towerPull (φ i j hij) hα hφα
+  rw [← hpull]
+  exact Module.DirectLimit.of_f
+
+end Limit
+
+end RHTower

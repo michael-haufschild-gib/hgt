@@ -223,7 +223,6 @@ theorem tendsto_logRpow_mul_twoRangeMajTerms {b A₃ Ctot e : ℝ} (hb : 0 < b) 
       = (Real.log x) ^ (e - (6 * b + 4 * A₃ + 2)) := by
     rw [← Real.rpow_add hL0]
     congr 1
-    ring
   have h4 : (Real.log x) ^ e * (Real.log x) ^ b = (Real.log x) ^ (b + e) := by
     rw [← Real.rpow_add hL0]
     congr 1
