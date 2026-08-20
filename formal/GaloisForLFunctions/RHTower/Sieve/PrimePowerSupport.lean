@@ -47,7 +47,7 @@ noncomputable def convPow (N ℓ : ℕ) (a : Fin N → ℂ) : Fin (N ^ ℓ) → 
     ∏ i : Fin ℓ, a (p i)
 
 /-- The phase of a tuple is the phase of its product. -/
-theorem exp_phase_powIdx {N ℓ : ℕ} (t : ℝ) (p : Fin ℓ → Fin N) :
+private theorem exp_phase_powIdx {N ℓ : ℕ} (t : ℝ) (p : Fin ℓ → Fin N) :
     (∏ i : Fin ℓ, Complex.exp (((t * Real.log ((p i : ℕ) + 1) : ℝ) : ℂ) * Complex.I))
       = Complex.exp (((t * Real.log ((powIdx p : ℕ) + 1) : ℝ) : ℂ) * Complex.I) := by
   rw [← Complex.exp_sum]
@@ -184,7 +184,7 @@ theorem sum_normSq_convPow_le_of_support (N ℓ : ℕ) (a : Fin N → ℂ) (S : 
 
 /-- **A prime-supported power fibre has at most `ℓ^ℓ` points.**  Every coordinate of a fibre
 tuple lies among the at most `ℓ` prime factors of the anchored product. -/
-theorem powFibreOn_primeSupport_card_le (N ℓ : ℕ) (j : Fin (N ^ ℓ)) :
+private theorem powFibreOn_primeSupport_card_le (N ℓ : ℕ) (j : Fin (N ^ ℓ)) :
     ((powFibreOn N ℓ (primeSupport N) j).card : ℝ) ≤ (ℓ : ℝ) ^ ℓ := by
   classical
   have hprodEq : ∀ p ∈ powFibreOn N ℓ (primeSupport N) j,
@@ -236,7 +236,7 @@ theorem powFibreOn_primeSupport_card_le (N ℓ : ℕ) (j : Fin (N ^ ℓ)) :
   exact_mod_cast le_trans hnat (le_refl _)
 
 /-- **The `ℓ²` mass of the `ℓ`-th power of a prime-supported vector.** -/
-theorem sum_normSq_convPow_le_of_prime_support (N ℓ : ℕ) (a : Fin N → ℂ)
+theorem primePowerSupportSum_normSq_convPow_le_of_prime_support (N ℓ : ℕ) (a : Fin N → ℂ)
     (hsupp : ∀ n : Fin N, a n ≠ 0 → Nat.Prime ((n : ℕ) + 1)) :
     ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ 2
       ≤ (ℓ : ℝ) ^ ℓ * (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ :=
@@ -264,7 +264,7 @@ theorem largeValues_pow_setOf (N ℓ : ℕ) (hℓ : ℓ ≠ 0) (a : Fin N → �
 /-- **The adapted-moment level-set bound for a prime-supported polynomial.**  Choosing `ℓ` so
 that `N^ℓ` matches the range length makes this the well-spaced large-value count for short prime
 polynomials. -/
-theorem volume_largeValues_pow_symm_le_of_prime_support (N ℓ : ℕ) (hℓ : ℓ ≠ 0)
+private theorem volume_largeValues_pow_symm_le_of_prime_support (N ℓ : ℕ) (hℓ : ℓ ≠ 0)
     (a : Fin N → ℂ)
     (hsupp : ∀ n : Fin N, a n ≠ 0 → Nat.Prime ((n : ℕ) + 1))
     {T V : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V) :
@@ -287,7 +287,7 @@ theorem volume_largeValues_pow_symm_le_of_prime_support (N ℓ : ℕ) (hℓ : �
   have hfactor : (0 : ℝ)
       ≤ T + 4 * ((N ^ ℓ : ℕ) : ℝ) * (1 + Real.log ((N ^ ℓ : ℕ) : ℝ)) := by nlinarith
   have hstep := mul_le_mul_of_nonneg_left
-    (sum_normSq_convPow_le_of_prime_support N ℓ a hsupp) hfactor
+    (primePowerSupportSum_normSq_convPow_le_of_prime_support N ℓ a hsupp) hfactor
   linarith
 
 end RHTower.Sieve

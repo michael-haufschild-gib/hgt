@@ -73,7 +73,7 @@ theorem linearIndependent_rat_primeLog_pair {p q : Nat.Primes} (hpq : p ≠ q) :
     exact Rat.zero_iff_num_zero.mpr this
 
 /-- Two real numbers are `ℝ`-dependent in `ℂ` when one of them is nonzero. -/
-theorem not_linearIndependent_real_ofReal_pair {x y : ℝ} (hx : x ≠ 0) :
+private theorem not_linearIndependent_real_ofReal_pair {x y : ℝ} (hx : x ≠ 0) :
     ¬ LinearIndependent ℝ ![((x : ℝ) : ℂ), ((y : ℝ) : ℂ)] := by
   intro h
   rw [LinearIndependent.pair_iff] at h

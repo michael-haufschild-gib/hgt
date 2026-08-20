@@ -28,10 +28,10 @@ def gammaLadderCoeff {r : ℕ} (lam : Fin r → ℝ) (g : Fin r → ℤ) : ℕ �
 
 /-- The truncated transseries of a balanced gamma monomial. -/
 def gammaExpPoly {r : ℕ} (lam : Fin r → ℝ) (g : Fin r → ℤ) (N : ℕ) : Polynomial ℂ :=
-  expPoly (gammaLadderCoeff lam g) N
+  inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) N
 
 theorem gammaExpPoly_eq {r : ℕ} (lam : Fin r → ℝ) (g : Fin r → ℤ) (N : ℕ) :
-    gammaExpPoly lam g N = expPoly (gammaLadderCoeff lam g) N := rfl
+    gammaExpPoly lam g N = inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) N := rfl
 
 theorem eval_lamPoly_inv (D : ℕ → ℂ) (N : ℕ) (z : ℂ) :
     (lamPoly D N).eval z⁻¹ = -∑ m ∈ Finset.range (N + 1), D m / z ^ (m + 1) := by
@@ -41,7 +41,7 @@ theorem eval_lamPoly_inv (D : ℕ → ℂ) (N : ℕ) (z : ℂ) :
   rw [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X,
     inv_pow, div_eq_mul_inv]
 
-theorem eval_zero_expPoly (D : ℕ → ℂ) (N : ℕ) : (expPoly D N).eval 0 = 1 := by
+theorem eval_zero_expPoly (D : ℕ → ℂ) (N : ℕ) : (inverseSeriesLadderExpPoly D N).eval 0 = 1 := by
   rw [← Polynomial.coeff_zero_eq_eval_zero, coeff_zero_expPoly]
 
 /-- The gamma monomial tends to `1` along every horizontal ray in the half plane. -/
@@ -92,7 +92,7 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
       obtain ⟨A, R₀, hA0, hR₀, hb⟩ := exists_norm_gammaMonomial_sub_one_le lam hlam g hdeg hmom
       refine ⟨A, R₀, hA0, hR₀, fun s hs => ?_⟩
       have hev : (gammaExpPoly lam g 0).eval s⁻¹ = 1 := by
-        rw [gammaExpPoly, expPoly]
+        rw [gammaExpPoly, inverseSeriesLadderExpPoly]
         simp
       rw [hev]
       simpa using hb s hs
@@ -107,11 +107,11 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
         have h := X_pow_dvd_resPoly (gammaLadderCoeff lam g) hD0 (N + 1)
         rwa [show N + 1 + 2 = N + 3 from by omega] at h
       obtain ⟨Cres, hCres0, hResb⟩ := exists_norm_polyEval_div_pow_le_of_dvd hdvd 0
-      set B : ℝ := ∑ j ∈ Finset.range ((expPoly (gammaLadderCoeff lam g) (N + 1)).natDegree + 1),
-        ‖(expPoly (gammaLadderCoeff lam g) (N + 1)).coeff j‖ with hBdef
+      set B : ℝ := ∑ j ∈ Finset.range ((inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).natDegree + 1),
+        ‖(inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).coeff j‖ with hBdef
       have hB0 : 0 ≤ B := Finset.sum_nonneg fun _ _ => norm_nonneg _
       set cN : ℂ := expLadderCoeffOf (gammaLadderCoeff lam g)
-        (expPoly (gammaLadderCoeff lam g) N) N with hcNdef
+        (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) N) N with hcNdef
       set S : ℝ := ∑ j, |lam j| with hSdef
       have hS0 : 0 ≤ S := Finset.sum_nonneg fun _ _ => abs_nonneg _
       set R₀ : ℝ := max (max (max RN RM) (max RL RL1)) (max (S + 1) 2) with hR₀def
@@ -142,15 +142,15 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
         simp only [Complex.zero_re] at hz
         linarith
       -- the truncation splits off the new coefficient
-      have hPsplit : ∀ z : ℂ, (expPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹
-          = (expPoly (gammaLadderCoeff lam g) N).eval z⁻¹ + cN * (z⁻¹) ^ (N + 1) := by
+      have hPsplit : ∀ z : ℂ, (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹
+          = (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) N).eval z⁻¹ + cN * (z⁻¹) ^ (N + 1) := by
         intro z
-        rw [hcNdef, expPoly, Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
+        rw [hcNdef, inverseSeriesLadderExpPoly, Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
           Polynomial.eval_pow, Polynomial.eval_X]
       -- analyticity
       have hana : ∀ z : ℂ, R₀ < z.re → AnalyticAt ℂ
           (fun w : ℂ => gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g w
-            - (expPoly (gammaLadderCoeff lam g) (N + 1)).eval w⁻¹) z := by
+            - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval w⁻¹) z := by
         intro z hz
         exact (analyticAt_gammaMonomial_of_gt_sum_abs _ g (hSlt z hz)).sub
           (analyticAt_polyEval_inv _ (hzne z hz))
@@ -178,9 +178,9 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
         rwa [show N + 2 + 1 = N + 3 from by omega] at hb
       -- the truncation is bounded
       have hPnorm : ∀ z : ℂ, R₀ < z.re →
-          ‖(expPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹‖ ≤ B := by
+          ‖(inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹‖ ≤ B := by
         intro z hz
-        have := norm_polyEval_inv_le (expPoly (gammaLadderCoeff lam g) (N + 1))
+        have := norm_polyEval_inv_le (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1))
           (by linarith [hnormlt z hz] : (1:ℝ) ≤ ‖z‖)
         rw [hBdef]
         exact this
@@ -202,7 +202,7 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
       -- the previous error is small
       have hfbound : ∀ z : ℂ, R₀ < z.re →
           ‖gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g z
-            - (expPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹‖
+            - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹‖
             ≤ (AN + ‖cN‖) / ‖z‖ ^ (N + 1) := by
         intro z hz
         have hzpos : (0:ℝ) < ‖z‖ := by linarith [hnormlt z hz]
@@ -210,9 +210,9 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
         rw [gammaExpPoly_eq] at hih
         rw [hPsplit z]
         have hsplit : gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g z
-            - ((expPoly (gammaLadderCoeff lam g) N).eval z⁻¹ + cN * (z⁻¹) ^ (N + 1))
+            - ((inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) N).eval z⁻¹ + cN * (z⁻¹) ^ (N + 1))
             = (gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g z
-                - (expPoly (gammaLadderCoeff lam g) N).eval z⁻¹) - cN * (z⁻¹) ^ (N + 1) := by
+                - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) N).eval z⁻¹) - cN * (z⁻¹) ^ (N + 1) := by
           ring
         rw [hsplit]
         refine le_trans (norm_sub_le _ _) ?_
@@ -225,7 +225,7 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
       -- the derivative bound
       have hderivb : ∀ z : ℂ, R₀ < z.re →
           ‖deriv (fun w : ℂ => gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g w
-              - (expPoly (gammaLadderCoeff lam g) (N + 1)).eval w⁻¹) z‖
+              - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval w⁻¹) z‖
             ≤ (K1 * (AN + ‖cN‖) + K * B + Cres) / ‖z‖ ^ (N + 1 + 2) := by
         intro z hz
         have hzpos : (0:ℝ) < ‖z‖ := by linarith [hnormlt z hz]
@@ -235,25 +235,25 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
           have hd := (analyticAt_gammaMonomial_of_gt_sum_abs _ g (hSlt z hz)).differentiableAt
           have h := hd.hasDerivAt
           rwa [deriv_gammaMonomial _ g (hSlt z hz)] at h
-        have hPd := hasDerivAt_polyEval_inv (expPoly (gammaLadderCoeff lam g) (N + 1)) (hzne z hz)
+        have hPd := hasDerivAt_polyEval_inv (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)) (hzne z hz)
         have hfd0 := hMd.sub hPd
         have hfun : (gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g
-              - fun w : ℂ => (expPoly (gammaLadderCoeff lam g) (N + 1)).eval w⁻¹)
+              - fun w : ℂ => (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval w⁻¹)
             = fun w : ℂ => gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g w
-              - (expPoly (gammaLadderCoeff lam g) (N + 1)).eval w⁻¹ := by
+              - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval w⁻¹ := by
           funext w
           rfl
         rw [hfun] at hfd0
         rw [hfd0.deriv]
         have hid : (∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ)))
               * gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g z
-            - (derivative (expPoly (gammaLadderCoeff lam g) (N + 1))).eval z⁻¹ * (-(z ^ 2)⁻¹)
+            - (derivative (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1))).eval z⁻¹ * (-(z ^ 2)⁻¹)
             = (∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ)))
                 * (gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g z
-                  - (expPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)
+                  - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)
               + ((∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ)))
                   - (lamPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)
-                * (expPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹
+                * (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹
               + (resPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹ := by
           rw [resPoly, Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_mul,
             Polynomial.eval_pow, Polynomial.eval_X]
@@ -262,7 +262,7 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
         have hpowsplit : ‖z‖ ^ (N + 1 + 2) = ‖z‖ ^ 2 * ‖z‖ ^ (N + 1) := by ring
         have ha : ‖(∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ)))
               * (gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g z
-                - (expPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)‖
+                - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)‖
             ≤ K1 * (AN + ‖cN‖) / ‖z‖ ^ (N + 1 + 2) := by
           rw [norm_mul]
           have hmul := mul_le_mul (hLnorm z hz) (hfbound z hz) (norm_nonneg _)
@@ -272,7 +272,7 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
           field_simp
         have hb2 : ‖((∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ)))
                 - (lamPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)
-              * (expPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹‖
+              * (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹‖
             ≤ K * B / ‖z‖ ^ (N + 1 + 2) := by
           rw [norm_mul]
           have hmul := mul_le_mul (hLtail z hz) (hPnorm z hz) (norm_nonneg _)
@@ -287,20 +287,20 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
         have htri2 := norm_add_le
           ((∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ)))
             * (gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g z
-              - (expPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹))
+              - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹))
           (((∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ)))
               - (lamPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)
-            * (expPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)
+            * (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)
         refine le_trans (norm_add_le _ _) ?_
         linarith [ha, hb2, hc2, htri2]
       -- the ray limit
       have hlim : ∀ s : ℂ, R₀ < s.re → Tendsto (fun x : ℝ =>
           gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g (s + (x : ℂ))
-            - (expPoly (gammaLadderCoeff lam g) (N + 1)).eval (s + (x : ℂ))⁻¹)
+            - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval (s + (x : ℂ))⁻¹)
           atTop (nhds 0) := by
         intro s hs
         have h1 := hMray s (by linarith)
-        have h2 := tendsto_polyEval_inv_ray (expPoly (gammaLadderCoeff lam g) (N + 1))
+        have h2 := tendsto_polyEval_inv_ray (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1))
           (show 0 < s.re by linarith)
         rw [eval_zero_expPoly] at h2
         have h3 := h1.sub h2
@@ -313,7 +313,7 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
       have hfinal := norm_le_of_deriv_decay (R₀ := R₀)
         (A := K1 * (AN + ‖cN‖) + K * B + Cres) (k := N + 1)
         (f := fun w : ℂ => gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g w
-          - (expPoly (gammaLadderCoeff lam g) (N + 1)).eval w⁻¹)
+          - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval w⁻¹)
         (by linarith) hAtot hana hderivb hlim
       refine ⟨2 ^ (N + 1 + 2) * (K1 * (AN + ‖cN‖) + K * B + Cres), R₀,
         mul_nonneg (by positivity) hAtot, hR₀1, fun s hs => ?_⟩

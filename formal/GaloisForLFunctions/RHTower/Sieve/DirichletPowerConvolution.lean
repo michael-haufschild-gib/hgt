@@ -25,35 +25,35 @@ theorem powIdx_lt {N k : ℕ} (p : Fin k → Fin N) :
   omega
 
 /-- The index of a `k`-tuple in `Fin (N^k)`: the product of its entries, shifted down by one. -/
-def powIdx {N k : ℕ} (p : Fin k → Fin N) : Fin (N ^ k) :=
+def dirichletPowerConvolutionPowIdx {N k : ℕ} (p : Fin k → Fin N) : Fin (N ^ k) :=
   ⟨(∏ i, ((p i : ℕ) + 1)) - 1, powIdx_lt p⟩
 
-theorem powIdx_val_add_one {N k : ℕ} (p : Fin k → Fin N) :
-    ((powIdx p : ℕ) + 1) = ∏ i, ((p i : ℕ) + 1) := by
+theorem dirichletPowerConvolutionPowIdx_val_add_one {N k : ℕ} (p : Fin k → Fin N) :
+    ((dirichletPowerConvolutionPowIdx p : ℕ) + 1) = ∏ i, ((p i : ℕ) + 1) := by
   have hpos : 0 < ∏ i, ((p i : ℕ) + 1) := Finset.prod_pos fun i _ => Nat.succ_pos _
-  simp only [powIdx]
+  simp only [dirichletPowerConvolutionPowIdx]
   omega
 
-/-- The fibre of `powIdx` over an index. -/
+/-- The fibre of `dirichletPowerConvolutionPowIdx` over an index. -/
 noncomputable def powFibre (k N : ℕ) (j : Fin (N ^ k)) : Finset (Fin k → Fin N) :=
-  (Finset.univ : Finset (Fin k → Fin N)).filter (fun p => powIdx p = j)
+  (Finset.univ : Finset (Fin k → Fin N)).filter (fun p => dirichletPowerConvolutionPowIdx p = j)
 
 /-- The `k`-fold Dirichlet convolution of a coefficient vector, indexed by `Fin (N^k)`. -/
-noncomputable def convPow (k N : ℕ) (a : Fin N → ℂ) : Fin (N ^ k) → ℂ := fun j =>
+noncomputable def dirichletPowerConvolutionConvPow (k N : ℕ) (a : Fin N → ℂ) : Fin (N ^ k) → ℂ := fun j =>
   ∑ p ∈ powFibre k N j, ∏ i, a (p i)
 
 /-- The phase of a tuple is the phase of its product. -/
 theorem exp_phase_powIdx {N k : ℕ} (t : ℝ) (p : Fin k → Fin N) :
     (∏ i, Complex.exp (((t * Real.log ((p i : ℕ) + 1) : ℝ) : ℂ) * Complex.I))
-      = Complex.exp (((t * Real.log ((powIdx p : ℕ) + 1) : ℝ) : ℂ) * Complex.I) := by
+      = Complex.exp (((t * Real.log ((dirichletPowerConvolutionPowIdx p : ℕ) + 1) : ℝ) : ℂ) * Complex.I) := by
   have hne : ∀ i ∈ (Finset.univ : Finset (Fin k)), (((p i : ℕ) + 1 : ℕ) : ℝ) ≠ 0 := by
     intro i _
     positivity
-  have hcast : (((powIdx p : ℕ) + 1 : ℕ) : ℝ) = ∏ i, (((p i : ℕ) + 1 : ℕ) : ℝ) := by
-    rw [powIdx_val_add_one]
+  have hcast : (((dirichletPowerConvolutionPowIdx p : ℕ) + 1 : ℕ) : ℝ) = ∏ i, (((p i : ℕ) + 1 : ℕ) : ℝ) := by
+    rw [dirichletPowerConvolutionPowIdx_val_add_one]
     push_cast
     ring
-  have hlog : Real.log ((powIdx p : ℕ) + 1)
+  have hlog : Real.log ((dirichletPowerConvolutionPowIdx p : ℕ) + 1)
       = ∑ i, Real.log ((p i : ℕ) + 1) := by
     have h := Real.log_prod (s := (Finset.univ : Finset (Fin k)))
       (f := fun i => (((p i : ℕ) + 1 : ℕ) : ℝ)) hne
@@ -67,8 +67,8 @@ theorem exp_phase_powIdx {N k : ℕ} (t : ℝ) (p : Fin k → Fin N) :
   rw [Finset.mul_sum, Finset.sum_mul]
 
 /-- **The `k`-th power of a Dirichlet polynomial is a Dirichlet polynomial.** -/
-theorem dirPoly_convPow (k N : ℕ) (a : Fin N → ℂ) (t : ℝ) :
-    dirPoly (N ^ k) (convPow k N a) t = (dirPoly N a t) ^ k := by
+theorem dirichletPowerConvolutionDirPoly_convPow (k N : ℕ) (a : Fin N → ℂ) (t : ℝ) :
+    dirPoly (N ^ k) (dirichletPowerConvolutionConvPow k N a) t = (dirPoly N a t) ^ k := by
   classical
   set E : Fin N → ℂ := fun n =>
     Complex.exp (((t * Real.log ((n : ℕ) + 1) : ℝ) : ℂ) * Complex.I) with hE
@@ -84,24 +84,24 @@ theorem dirPoly_convPow (k N : ℕ) (a : Fin N → ℂ) (t : ℝ) :
   have hsplit : ∀ p : Fin k → Fin N,
       (∏ i, (a (p i) * E (p i)))
         = (∏ i, a (p i))
-          * Complex.exp (((t * Real.log ((powIdx p : ℕ) + 1) : ℝ) : ℂ) * Complex.I) := by
+          * Complex.exp (((t * Real.log ((dirichletPowerConvolutionPowIdx p : ℕ) + 1) : ℝ) : ℂ) * Complex.I) := by
     intro p
     rw [Finset.prod_mul_distrib, hE, exp_phase_powIdx t p]
   rw [hexpand]
   simp only [hsplit]
   have hfib := Finset.sum_fiberwise_of_maps_to
     (s := (Finset.univ : Finset (Fin k → Fin N)))
-    (t := (Finset.univ : Finset (Fin (N ^ k)))) (g := fun p => powIdx p)
+    (t := (Finset.univ : Finset (Fin (N ^ k)))) (g := fun p => dirichletPowerConvolutionPowIdx p)
     (f := fun p : Fin k → Fin N => (∏ i, a (p i))
-      * Complex.exp (((t * Real.log ((powIdx p : ℕ) + 1) : ℝ) : ℂ) * Complex.I))
+      * Complex.exp (((t * Real.log ((dirichletPowerConvolutionPowIdx p : ℕ) + 1) : ℝ) : ℂ) * Complex.I))
     (fun p _ => Finset.mem_univ _)
   rw [← hfib]
-  have hpoly2 : dirPoly (N ^ k) (convPow k N a) t
-      = ∑ j : Fin (N ^ k), convPow k N a j
+  have hpoly2 : dirPoly (N ^ k) (dirichletPowerConvolutionConvPow k N a) t
+      = ∑ j : Fin (N ^ k), dirichletPowerConvolutionConvPow k N a j
           * Complex.exp (((t * Real.log ((j : ℕ) + 1) : ℝ) : ℂ) * Complex.I) := rfl
   rw [hpoly2]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [convPow, powFibre, Finset.sum_mul]
+  rw [dirichletPowerConvolutionConvPow, powFibre, Finset.sum_mul]
   refine Finset.sum_congr rfl fun p hp => ?_
   rw [Finset.mem_filter] at hp
   rw [hp.2]
@@ -109,17 +109,17 @@ theorem dirPoly_convPow (k N : ℕ) (a : Fin N → ℂ) (t : ℝ) :
 /-- **The `ℓ²` norm of the `k`-fold convolution.** -/
 theorem sum_normSq_convPow_le (k N : ℕ) (a : Fin N → ℂ) {D : ℝ}
     (hD : ∀ j : Fin (N ^ k), ((powFibre k N j).card : ℝ) ≤ D) :
-    ∑ j : Fin (N ^ k), ‖convPow k N a j‖ ^ 2
+    ∑ j : Fin (N ^ k), ‖dirichletPowerConvolutionConvPow k N a j‖ ^ 2
       ≤ D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ k := by
   classical
   set g : (Fin k → Fin N) → ℝ := fun p => ‖∏ i, a (p i)‖ with hg
   have hfibre : ∀ j : Fin (N ^ k),
-      ‖convPow k N a j‖ ^ 2 ≤ D * ∑ p ∈ powFibre k N j, g p ^ 2 := by
+      ‖dirichletPowerConvolutionConvPow k N a j‖ ^ 2 ≤ D * ∑ p ∈ powFibre k N j, g p ^ 2 := by
     intro j
-    have hnorm : ‖convPow k N a j‖ ≤ ∑ p ∈ powFibre k N j, g p := by
-      rw [convPow]
+    have hnorm : ‖dirichletPowerConvolutionConvPow k N a j‖ ≤ ∑ p ∈ powFibre k N j, g p := by
+      rw [dirichletPowerConvolutionConvPow]
       exact norm_sum_le _ _
-    have hsq : ‖convPow k N a j‖ ^ 2 ≤ (∑ p ∈ powFibre k N j, g p) ^ 2 :=
+    have hsq : ‖dirichletPowerConvolutionConvPow k N a j‖ ^ 2 ≤ (∑ p ∈ powFibre k N j, g p) ^ 2 :=
       pow_le_pow_left₀ (norm_nonneg _) hnorm 2
     have hcs : (∑ p ∈ powFibre k N j, g p) ^ 2
         ≤ ((powFibre k N j).card : ℝ) * ∑ p ∈ powFibre k N j, g p ^ 2 :=
@@ -130,12 +130,12 @@ theorem sum_normSq_convPow_le (k N : ℕ) (a : Fin N → ℂ) {D : ℝ}
         ≤ D * ∑ p ∈ powFibre k N j, g p ^ 2 :=
       mul_le_mul_of_nonneg_right (hD j) hsum0
     linarith
-  have hsum : ∑ j : Fin (N ^ k), ‖convPow k N a j‖ ^ 2
+  have hsum : ∑ j : Fin (N ^ k), ‖dirichletPowerConvolutionConvPow k N a j‖ ^ 2
       ≤ ∑ j : Fin (N ^ k), D * ∑ p ∈ powFibre k N j, g p ^ 2 :=
     Finset.sum_le_sum fun j _ => hfibre j
   have hfib := Finset.sum_fiberwise_of_maps_to
     (s := (Finset.univ : Finset (Fin k → Fin N)))
-    (t := (Finset.univ : Finset (Fin (N ^ k)))) (g := fun p => powIdx p)
+    (t := (Finset.univ : Finset (Fin (N ^ k)))) (g := fun p => dirichletPowerConvolutionPowIdx p)
     (f := fun p : Fin k → Fin N => g p ^ 2)
     (fun p _ => Finset.mem_univ _)
   have hcollect : ∑ j : Fin (N ^ k), D * ∑ p ∈ powFibre k N j, g p ^ 2
@@ -170,11 +170,11 @@ theorem powMoment_dirPoly (k N : ℕ) (hk : 1 ≤ k) (hN : 2 ≤ N) (a : Fin N �
           * (D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ k) := by
   classical
   have hNk : 2 ≤ N ^ k := le_trans hN (Nat.le_self_pow (by omega) N)
-  have hmv := largeValues_dirPoly (N ^ k) hNk (convPow k N a) hδ hT hgap hlow R hhigh
+  have hmv := largeValues_dirPoly (N ^ k) hNk (dirichletPowerConvolutionConvPow k N a) hδ hT hgap hlow R hhigh
   have hrewrite : ∀ r : ℕ,
-      ‖dirPoly (N ^ k) (convPow k N a) (lam r)‖ ^ 2 = ‖dirPoly N a (lam r)‖ ^ (2 * k) := by
+      ‖dirPoly (N ^ k) (dirichletPowerConvolutionConvPow k N a) (lam r)‖ ^ 2 = ‖dirPoly N a (lam r)‖ ^ (2 * k) := by
     intro r
-    rw [dirPoly_convPow, norm_pow, ← pow_mul, mul_comm k 2]
+    rw [dirichletPowerConvolutionDirPoly_convPow, norm_pow, ← pow_mul, mul_comm k 2]
   simp only [hrewrite] at hmv
   refine le_trans hmv ?_
   have hlogNk : (0 : ℝ) ≤ Real.log ((N ^ k : ℕ) : ℝ) := by

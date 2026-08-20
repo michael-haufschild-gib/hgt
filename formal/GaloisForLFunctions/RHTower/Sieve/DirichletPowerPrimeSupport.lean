@@ -16,33 +16,33 @@ namespace RHTower.Sieve
 open Finset
 
 /-- The part of a `k`-fold convolution fibre whose entries all lie in a support. -/
-noncomputable def powFibreOn (k N : ℕ) (S : Finset (Fin N)) (j : Fin (N ^ k)) :
+private noncomputable def powFibreOn (k N : ℕ) (S : Finset (Fin N)) (j : Fin (N ^ k)) :
     Finset (Fin k → Fin N) :=
   (powFibre k N j).filter (fun p => ∀ i, p i ∈ S)
 
 /-- **The `ℓ²` norm of the `k`-fold convolution, through a support.** -/
-theorem sum_normSq_convPow_le_of_support (k N : ℕ) (a : Fin N → ℂ) (S : Finset (Fin N))
+private theorem sum_normSq_convPow_le_of_support (k N : ℕ) (a : Fin N → ℂ) (S : Finset (Fin N))
     (hsupp : ∀ n : Fin N, a n ≠ 0 → n ∈ S) {D : ℝ}
     (hD : ∀ j : Fin (N ^ k), ((powFibreOn k N S j).card : ℝ) ≤ D) (hD0 : 0 ≤ D) :
-    ∑ j : Fin (N ^ k), ‖convPow k N a j‖ ^ 2
+    ∑ j : Fin (N ^ k), ‖dirichletPowerConvolutionConvPow k N a j‖ ^ 2
       ≤ D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ k := by
   classical
   set g : (Fin k → Fin N) → ℝ := fun p => ‖∏ i, a (p i)‖ with hg
   have hconv : ∀ j : Fin (N ^ k),
-      convPow k N a j = ∑ p ∈ powFibreOn k N S j, ∏ i, a (p i) := by
+      dirichletPowerConvolutionConvPow k N a j = ∑ p ∈ powFibreOn k N S j, ∏ i, a (p i) := by
     intro j
-    rw [convPow, powFibreOn]
+    rw [dirichletPowerConvolutionConvPow, powFibreOn]
     refine (Finset.sum_filter_of_ne (fun p _ hne => ?_)).symm
     intro i
     refine hsupp _ (fun hzero => hne ?_)
     exact Finset.prod_eq_zero (Finset.mem_univ i) hzero
   have hfibre : ∀ j : Fin (N ^ k),
-      ‖convPow k N a j‖ ^ 2 ≤ D * ∑ p ∈ powFibreOn k N S j, g p ^ 2 := by
+      ‖dirichletPowerConvolutionConvPow k N a j‖ ^ 2 ≤ D * ∑ p ∈ powFibreOn k N S j, g p ^ 2 := by
     intro j
-    have hnorm : ‖convPow k N a j‖ ≤ ∑ p ∈ powFibreOn k N S j, g p := by
+    have hnorm : ‖dirichletPowerConvolutionConvPow k N a j‖ ≤ ∑ p ∈ powFibreOn k N S j, g p := by
       rw [hconv j]
       exact norm_sum_le _ _
-    have hsq : ‖convPow k N a j‖ ^ 2 ≤ (∑ p ∈ powFibreOn k N S j, g p) ^ 2 :=
+    have hsq : ‖dirichletPowerConvolutionConvPow k N a j‖ ^ 2 ≤ (∑ p ∈ powFibreOn k N S j, g p) ^ 2 :=
       pow_le_pow_left₀ (norm_nonneg _) hnorm 2
     have hcs : (∑ p ∈ powFibreOn k N S j, g p) ^ 2
         ≤ ((powFibreOn k N S j).card : ℝ) * ∑ p ∈ powFibreOn k N S j, g p ^ 2 :=
@@ -53,7 +53,7 @@ theorem sum_normSq_convPow_le_of_support (k N : ℕ) (a : Fin N → ℂ) (S : Fi
         ≤ D * ∑ p ∈ powFibreOn k N S j, g p ^ 2 :=
       mul_le_mul_of_nonneg_right (hD j) hsum0
     linarith
-  have hsum : ∑ j : Fin (N ^ k), ‖convPow k N a j‖ ^ 2
+  have hsum : ∑ j : Fin (N ^ k), ‖dirichletPowerConvolutionConvPow k N a j‖ ^ 2
       ≤ ∑ j : Fin (N ^ k), D * ∑ p ∈ powFibreOn k N S j, g p ^ 2 :=
     Finset.sum_le_sum fun j _ => hfibre j
   have hsubset : ∀ j : Fin (N ^ k), powFibreOn k N S j ⊆ powFibre k N j := by
@@ -68,7 +68,7 @@ theorem sum_normSq_convPow_le_of_support (k N : ℕ) (a : Fin N → ℂ) (S : Fi
     Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_left (hstep j) hD0
   have hfib := Finset.sum_fiberwise_of_maps_to
     (s := (Finset.univ : Finset (Fin k → Fin N)))
-    (t := (Finset.univ : Finset (Fin (N ^ k)))) (g := fun p => powIdx p)
+    (t := (Finset.univ : Finset (Fin (N ^ k)))) (g := fun p => dirichletPowerConvolutionPowIdx p)
     (f := fun p : Fin k → Fin N => g p ^ 2)
     (fun p _ => Finset.mem_univ _)
   have hcollect : ∑ j : Fin (N ^ k), D * ∑ p ∈ powFibre k N j, g p ^ 2
@@ -106,7 +106,7 @@ theorem powFibreOn_primeSupport_card_le (k N : ℕ) (j : Fin (N ^ k)) :
       rw [powFibreOn, Finset.mem_filter, powFibre, Finset.mem_filter] at hp
       obtain ⟨⟨-, hidx⟩, hS⟩ := hp
       refine ⟨?_, fun i => ?_⟩
-      · rw [← powIdx_val_add_one p, hidx]
+      · rw [← dirichletPowerConvolutionPowIdx_val_add_one p, hidx]
       · have := hS i
         rw [primeSupport, Finset.mem_filter] at this
         exact this.2
@@ -155,7 +155,7 @@ theorem powFibreOn_primeSupport_card_le (k N : ℕ) (j : Fin (N ^ k)) :
 /-- **The `ℓ²` norm of the `k`-th power of a prime-supported coefficient vector.** -/
 theorem sum_normSq_convPow_le_of_prime_support (k N : ℕ) (a : Fin N → ℂ)
     (hsupp : ∀ n : Fin N, a n ≠ 0 → Nat.Prime ((n : ℕ) + 1)) :
-    ∑ j : Fin (N ^ k), ‖convPow k N a j‖ ^ 2
+    ∑ j : Fin (N ^ k), ‖dirichletPowerConvolutionConvPow k N a j‖ ^ 2
       ≤ (k : ℝ) ^ k * (∑ n : Fin N, ‖a n‖ ^ 2) ^ k := by
   classical
   refine sum_normSq_convPow_le_of_support k N a (primeSupport N) (fun n hn => ?_)
@@ -176,11 +176,11 @@ theorem powMoment_dirPoly_prime_support (k N : ℕ) (hk : 1 ≤ k) (hN : 2 ≤ N
           * ((k : ℝ) ^ k * (∑ n : Fin N, ‖a n‖ ^ 2) ^ k) := by
   classical
   have hNk : 2 ≤ N ^ k := le_trans hN (Nat.le_self_pow (by omega) N)
-  have hmv := largeValues_dirPoly (N ^ k) hNk (convPow k N a) hδ hT hgap hlow R hhigh
+  have hmv := largeValues_dirPoly (N ^ k) hNk (dirichletPowerConvolutionConvPow k N a) hδ hT hgap hlow R hhigh
   have hrewrite : ∀ r : ℕ,
-      ‖dirPoly (N ^ k) (convPow k N a) (lam r)‖ ^ 2 = ‖dirPoly N a (lam r)‖ ^ (2 * k) := by
+      ‖dirPoly (N ^ k) (dirichletPowerConvolutionConvPow k N a) (lam r)‖ ^ 2 = ‖dirPoly N a (lam r)‖ ^ (2 * k) := by
     intro r
-    rw [dirPoly_convPow, norm_pow, ← pow_mul, mul_comm k 2]
+    rw [dirichletPowerConvolutionDirPoly_convPow, norm_pow, ← pow_mul, mul_comm k 2]
   simp only [hrewrite] at hmv
   refine le_trans hmv ?_
   have hlogNk : (0 : ℝ) ≤ Real.log ((N ^ k : ℕ) : ℝ) := by

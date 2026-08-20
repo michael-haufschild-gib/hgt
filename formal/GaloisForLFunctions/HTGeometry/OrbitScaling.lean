@@ -62,32 +62,32 @@ theorem gradShift_sum_smul (m : ℕ) (s : Finset ℕ) (c : ℕ → CascadeField)
 /-! ## The triangular coefficients -/
 
 /-- The coefficients expressing the orbit of `f·u` in the orbit of `u`. -/
-noncomputable def shiftCoeff (Q v : ℕ → Polynomial ℂ) (f : CascadeField) :
+noncomputable def orbitScalingShiftCoeff (Q v : ℕ → Polynomial ℂ) (f : CascadeField) :
     ℕ → ℕ → CascadeField
   | 0, j => if j = 0 then f else 0
-  | (i + 1), 0 => prodDerivation Q v (shiftCoeff Q v f i 0)
-  | (i + 1), (j + 1) => prodDerivation Q v (shiftCoeff Q v f i (j + 1)) + shiftCoeff Q v f i j
+  | (i + 1), 0 => prodDerivation Q v (orbitScalingShiftCoeff Q v f i 0)
+  | (i + 1), (j + 1) => prodDerivation Q v (orbitScalingShiftCoeff Q v f i (j + 1)) + orbitScalingShiftCoeff Q v f i j
 
 theorem shiftCoeff_eq_zero_of_lt (f : CascadeField) :
-    ∀ {i j : ℕ}, i < j → shiftCoeff Q v f i j = 0 := by
+    ∀ {i j : ℕ}, i < j → orbitScalingShiftCoeff Q v f i j = 0 := by
   intro i
   induction i with
   | zero =>
       intro j hj
-      rw [shiftCoeff, if_neg (by omega)]
+      rw [orbitScalingShiftCoeff, if_neg (by omega)]
   | succ i ih =>
       intro j hj
       match j with
       | 0 => omega
       | (j + 1) =>
-          rw [shiftCoeff, ih (by omega : i < j + 1), ih (by omega : i < j), map_zero, add_zero]
+          rw [orbitScalingShiftCoeff, ih (by omega : i < j + 1), ih (by omega : i < j), map_zero, add_zero]
 
-theorem shiftCoeff_diag (f : CascadeField) : ∀ i : ℕ, shiftCoeff Q v f i i = f := by
+theorem shiftCoeff_diag (f : CascadeField) : ∀ i : ℕ, orbitScalingShiftCoeff Q v f i i = f := by
   intro i
   induction i with
-  | zero => rw [shiftCoeff, if_pos rfl]
+  | zero => rw [orbitScalingShiftCoeff, if_pos rfl]
   | succ i ih =>
-      rw [shiftCoeff, shiftCoeff_eq_zero_of_lt Q v f (by omega : i < i + 1), ih, map_zero, zero_add]
+      rw [orbitScalingShiftCoeff, shiftCoeff_eq_zero_of_lt Q v f (by omega : i < i + 1), ih, map_zero, zero_add]
 
 /-! ## The orbit of a rescaled vector -/
 
@@ -95,47 +95,47 @@ theorem shiftCoeff_diag (f : CascadeField) : ∀ i : ℕ, shiftCoeff Q v f i i =
 theorem iterate_gradShift_smul (m : ℕ) (f : CascadeField) (u : ℕ → CascadeField) (i : ℕ) :
     ((gradShift Q v m)^[i]) (fun l => f * u l)
       = fun k => ∑ j ∈ Finset.range (i + 1),
-          shiftCoeff Q v f i j * (((gradShift Q v m)^[j]) u k) := by
+          orbitScalingShiftCoeff Q v f i j * (((gradShift Q v m)^[j]) u k) := by
   induction i with
   | zero =>
       funext k
-      simp [shiftCoeff]
+      simp [orbitScalingShiftCoeff]
   | succ i ih =>
       rw [Function.iterate_succ_apply', ih]
       funext k
       rw [gradShift_sum_smul]
-      rw [Finset.sum_range_succ' (fun j => shiftCoeff Q v f (i + 1) j
+      rw [Finset.sum_range_succ' (fun j => orbitScalingShiftCoeff Q v f (i + 1) j
         * (((gradShift Q v m)^[j]) u k)) (i + 1)]
-      have hzero : shiftCoeff Q v f i (i + 1) = 0 :=
+      have hzero : orbitScalingShiftCoeff Q v f i (i + 1) = 0 :=
         shiftCoeff_eq_zero_of_lt Q v f (by omega)
-      have hsplit : ∀ j : ℕ, prodDerivation Q v (shiftCoeff Q v f i j)
+      have hsplit : ∀ j : ℕ, prodDerivation Q v (orbitScalingShiftCoeff Q v f i j)
             * ((gradShift Q v m)^[j]) u k
-          + shiftCoeff Q v f i j * gradShift Q v m (((gradShift Q v m)^[j]) u) k
-          = prodDerivation Q v (shiftCoeff Q v f i j) * ((gradShift Q v m)^[j]) u k
-            + shiftCoeff Q v f i j * ((gradShift Q v m)^[j + 1]) u k := by
+          + orbitScalingShiftCoeff Q v f i j * gradShift Q v m (((gradShift Q v m)^[j]) u) k
+          = prodDerivation Q v (orbitScalingShiftCoeff Q v f i j) * ((gradShift Q v m)^[j]) u k
+            + orbitScalingShiftCoeff Q v f i j * ((gradShift Q v m)^[j + 1]) u k := by
         intro j
         rw [Function.iterate_succ_apply']
       simp only [hsplit]
       rw [Finset.sum_add_distrib, Finset.sum_range_succ' (fun j =>
-        prodDerivation Q v (shiftCoeff Q v f i j) * ((gradShift Q v m)^[j]) u k) i]
-      have hhead : shiftCoeff Q v f (i + 1) 0
-          = prodDerivation Q v (shiftCoeff Q v f i 0) := rfl
-      have hstep : ∀ j : ℕ, shiftCoeff Q v f (i + 1) (j + 1)
-          = prodDerivation Q v (shiftCoeff Q v f i (j + 1)) + shiftCoeff Q v f i j := fun j => rfl
+        prodDerivation Q v (orbitScalingShiftCoeff Q v f i j) * ((gradShift Q v m)^[j]) u k) i]
+      have hhead : orbitScalingShiftCoeff Q v f (i + 1) 0
+          = prodDerivation Q v (orbitScalingShiftCoeff Q v f i 0) := rfl
+      have hstep : ∀ j : ℕ, orbitScalingShiftCoeff Q v f (i + 1) (j + 1)
+          = prodDerivation Q v (orbitScalingShiftCoeff Q v f i (j + 1)) + orbitScalingShiftCoeff Q v f i j := fun j => rfl
       simp only [hhead, hstep]
       have key : ∑ x ∈ Finset.range (i + 1),
-            (prodDerivation Q v (shiftCoeff Q v f i (x + 1)) + shiftCoeff Q v f i x)
+            (prodDerivation Q v (orbitScalingShiftCoeff Q v f i (x + 1)) + orbitScalingShiftCoeff Q v f i x)
               * ((gradShift Q v m)^[x + 1]) u k
           = (∑ x ∈ Finset.range (i + 1),
-              prodDerivation Q v (shiftCoeff Q v f i (x + 1)) * ((gradShift Q v m)^[x + 1]) u k)
+              prodDerivation Q v (orbitScalingShiftCoeff Q v f i (x + 1)) * ((gradShift Q v m)^[x + 1]) u k)
             + ∑ x ∈ Finset.range (i + 1),
-              shiftCoeff Q v f i x * ((gradShift Q v m)^[x + 1]) u k := by
+              orbitScalingShiftCoeff Q v f i x * ((gradShift Q v m)^[x + 1]) u k := by
         rw [← Finset.sum_add_distrib]
         exact Finset.sum_congr rfl fun x _ => by ring
       have key2 : ∑ x ∈ Finset.range (i + 1),
-            prodDerivation Q v (shiftCoeff Q v f i (x + 1)) * ((gradShift Q v m)^[x + 1]) u k
+            prodDerivation Q v (orbitScalingShiftCoeff Q v f i (x + 1)) * ((gradShift Q v m)^[x + 1]) u k
           = ∑ x ∈ Finset.range i,
-            prodDerivation Q v (shiftCoeff Q v f i (x + 1))
+            prodDerivation Q v (orbitScalingShiftCoeff Q v f i (x + 1))
               * ((gradShift Q v m)^[x + 1]) u k := by
         rw [Finset.sum_range_succ, hzero, map_zero, zero_mul, add_zero]
       rw [key, key2]
@@ -144,14 +144,14 @@ theorem iterate_gradShift_smul (m : ℕ) (f : CascadeField) (u : ℕ → Cascade
 /-- **The orbit matrix of a rescaled vector factors.** -/
 theorem jetOrbitMatrix_smul (m k : ℕ) (f : CascadeField) (u : ℕ → CascadeField) :
     jetOrbitMatrix Q v m k (fun l => f * u l)
-      = (Matrix.of fun i j : Fin k => shiftCoeff Q v f (i : ℕ) (j : ℕ))
+      = (Matrix.of fun i j : Fin k => orbitScalingShiftCoeff Q v f (i : ℕ) (j : ℕ))
         * jetOrbitMatrix Q v m k u := by
   classical
   funext i j
   rw [Matrix.mul_apply]
   simp only [jetOrbitMatrix, Matrix.of_apply]
   rw [iterate_gradShift_smul Q v m f u (i : ℕ)]
-  rw [Fin.sum_univ_eq_sum_range (fun j' => shiftCoeff Q v f (i : ℕ) j'
+  rw [Fin.sum_univ_eq_sum_range (fun j' => orbitScalingShiftCoeff Q v f (i : ℕ) j'
     * (((gradShift Q v m)^[j']) u ((j : ℕ) + 1))) k]
   refine Finset.sum_subset ?_ ?_
   · intro x hx
@@ -170,7 +170,7 @@ theorem det_jetOrbitMatrix_smul (m k : ℕ) (f : CascadeField) (u : ℕ → Casc
   rw [jetOrbitMatrix_smul, Matrix.det_mul]
   congr 1
   rw [Matrix.det_of_lowerTriangular]
-  · have hdiag : ∀ x : Fin k, shiftCoeff Q v f (x : ℕ) (x : ℕ) = f :=
+  · have hdiag : ∀ x : Fin k, orbitScalingShiftCoeff Q v f (x : ℕ) (x : ℕ) = f :=
       fun x => shiftCoeff_diag Q v f (x : ℕ)
     simp only [Matrix.of_apply, hdiag]
     simp

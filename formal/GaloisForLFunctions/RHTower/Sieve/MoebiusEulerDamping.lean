@@ -26,14 +26,14 @@ open Finset ArithmeticFunction
 /-- The Möbius function as a complex-valued function. -/
 noncomputable def moebiusC (n : ℕ) : ℂ := (((moebius n : ℤ) : ℝ) : ℂ)
 
-theorem abs_moebius_le_one (n : ℕ) : |((moebius n : ℤ) : ℝ)| ≤ 1 := by
+theorem moebiusEulerDampingAbs_moebius_le_one (n : ℕ) : |((moebius n : ℤ) : ℝ)| ≤ 1 := by
   rcases eq_or_ne (moebius n) 0 with h | h
   · simp [h]
   · rcases moebius_ne_zero_iff_eq_or.mp h with h1 | h1 <;> simp [h1]
 
 theorem norm_moebiusC_le_one (n : ℕ) : ‖moebiusC n‖ ≤ 1 := by
   rw [moebiusC, Complex.norm_real, Real.norm_eq_abs]
-  exact abs_moebius_le_one n
+  exact moebiusEulerDampingAbs_moebius_le_one n
 
 theorem moebiusC_one : moebiusC 1 = 1 := by simp [moebiusC]
 

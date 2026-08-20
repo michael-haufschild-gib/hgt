@@ -60,7 +60,7 @@ theorem coe_image_preimage_sphereMap (f : E ≃ₗᵢ[ℝ] E) (s : Set (sphere (
 
 omit [MeasurableSpace E] [BorelSpace E] [FiniteDimensional ℝ E] in
 /-- A linear isometry commutes with dilation of sets. -/
-theorem smul_preimage_linearIsometryEquiv (f : E ≃ₗᵢ[ℝ] E) (I : Set ℝ) (A : Set E) :
+private theorem smul_preimage_linearIsometryEquiv (f : E ≃ₗᵢ[ℝ] E) (I : Set ℝ) (A : Set E) :
     I • (f ⁻¹' A) = f ⁻¹' (I • A) := by
   ext y
   constructor

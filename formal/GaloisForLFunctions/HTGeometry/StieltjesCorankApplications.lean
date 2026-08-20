@@ -168,7 +168,7 @@ def DFinite (f : ℂ → ℂ) : Prop :=
   ∃ (m : ℕ) (q : Fin (m + 1) → Polynomial ℂ), (∃ i, q i ≠ 0) ∧
     ∀ z : ℂ, ∑ i : Fin (m + 1), (q i).eval z * iteratedDeriv (i : ℕ) f z = 0
 
-theorem eval_aeval_X_zero {m : ℕ} (p : Polynomial ℂ) (v : Fin (m + 2) → ℂ) :
+private theorem eval_aeval_X_zero {m : ℕ} (p : Polynomial ℂ) (v : Fin (m + 2) → ℂ) :
     MvPolynomial.eval v (Polynomial.aeval (MvPolynomial.X (0 : Fin (m + 2))) p)
       = p.eval (v 0) := by
   induction p using Polynomial.induction_on' with

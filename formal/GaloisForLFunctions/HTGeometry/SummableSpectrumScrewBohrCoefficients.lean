@@ -221,7 +221,7 @@ theorem bohrCoefficient_complex_screwSeries
     (hseries.congr' (Filter.Eventually.of_forall fun S => (hfinite S).symm))
 
 /-- A Bohr almost-periodic function cannot decay at positive infinity unless it vanishes. -/
-theorem eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero
+private theorem eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero
     {E : Type*} [NormedAddCommGroup E] {g : ℝ → E}
     (hap : IsBohrAlmostPeriodic g)
     (hzero : Tendsto g atTop (nhds 0)) :

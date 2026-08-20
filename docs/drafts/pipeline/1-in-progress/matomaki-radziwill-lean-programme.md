@@ -6720,3 +6720,123 @@ independent estimates:
                    cofactor mean square from `Sieve/LogPolySetScaling.setIntegral_normSq_logPoly_le_HM`
                    with |𝒰| from `Sieve/Section4RelativeThreshold`
 ```
+
+### Bricks 104–107 — the two-range window bound, assembled (2026-08-20)
+
+| module | theorem | content |
+|-|-|-|
+| `Sieve/MoebiusDiscRate` | `sum_range_moebiusTwist_eq_Icc`, **`exists_setIntegral_disc_normSq_logPoly_moebius_le_rate`** | the disc `\|w\| ≤ w₀`: Route T at every frequency below the length of the sum gives `∫ ≤ 2w₀·(K·N·e^{−(log N)^{1/20}})²` |
+| `Sieve/RamareRoughSetSplit` (extended) | **`integral_Icc_normSq_roughPoly_le_harmonic`** | the rough polynomial's mean square with the count discharged by Turán: `(5π/2·W + 5e/2·M)·((M + 2\|P\|)/A)`, `A = ∑_{p∈P}1/p` |
+| `Sieve/LogPolyWindowHM` | **`setIntegral_normSq_logPoly_le_HM_window`** | integral Halász–Montgomery over a measurable set of **Gallagher** frequencies (the `2π` rescaling absorbed) |
+| `Sieve/RamareLadderHM` | `geomCofactorBlock_subset_Icc`, `ladderHMBound`, `setIntegral_normSq_cofactorBlock_le_HM`, **`setIntegral_normSq_ramareBilinear_le_ladder_HM`** | the ladder on the exceptional set: prime sup from arithmetic, cofactor from Halász–Montgomery — **no height term anywhere** |
+| `Sieve/MoebiusTwoRangeWindow` | `setIntegral_annulusSmall_normSq_logPoly_moebius_le`, `setIntegral_annulusLarge_normSq_logPoly_moebius_le`, **`integral_Icc_normSq_logPoly_moebius_le_twoRange`** | the whole window, with a low range on `allBlocksSmall` and a high range on its complement |
+
+All five `lake env lean`-clean, axiom-clean `[propext, Classical.choice, Quot.sound]`, wired.
+
+**The shape of the final statement.**
+
+```text
+∫_{|w| ≤ W} ‖logPoly μ (Icc 1 M) w‖²
+  ≤ Bdisc
+    + (1+δ)·L ·∑_{j<L } ( 2 V_j² ·(5π/2·W + 5e/2·⌊M/R_j⌋)·#C_j  + 2 (#B_j )²·defect_j )
+      + (1+1/δ)·∫_{|w| ≤ W} ‖rough_P ‖²
+    + (1+δ)·L'·∑_{j<L'} ( 2 V'_j²·ladderHMBound M R' η' W |𝒰| j + 2 (#B'_j)²·defect'_j )
+      + (1+1/δ)·∫_{|w| ≤ W} ‖rough_P'‖²
+```
+
+with `𝒰 = annulusLarge (allBlocksSmall P R η L V W) W w₀`.  Every one of the five groups is now a
+named quantity in the tree; what remains is the substitution
+
+```text
+   log R ≍ (log x)^{A},  log(R(1+η)^L) = log h ,   V_j = θ·#B_j ,  θ = (log x)^{−A'} ,
+   log R' ≍ (log x)^{a}, log(R'(1+η')^{L'}) = (log x)^{b},  9/10 < a < b < 1 ,
+   V'_j from `Sieve/AnnulusBoundUniform.exists_annulus_bound_uniform` ,
+   |𝒰| from `Sieve/Section4RelativeThreshold.volume_blockExceptional_le_relative` ,
+   W = T₀ ≍ (M/h)·ω(1) ,   w₀ = max(τ₀, 16π/3)/(2π)  (a constant) ,
+```
+
+and the verification that each group is `o(M²)`.
+
+### Brick 108 — the gate is ONE mean square at ONE height (2026-08-20)
+
+Two modules, `lake env lean`-clean, axiom-clean, wired.
+
+**`Sieve/AffineFromHead`**
+
+```text
+integral_Icc_normSq_logPoly_affine_of_head (ha : ∀ n, ‖a n‖ ≤ 1) (hs0 : 0 ∉ s) (hsN : ∀ n ∈ s, n ≤ N)
+    (hG : 1 ≤ G) (hGT₀ : G ≤ T₀) (hB0 : 0 ≤ B)
+    (hB : ∫_{|w| ≤ T₀} ‖logPoly a s w‖² ≤ B) :
+  ∀ T ≥ G,  ∫_{|w| ≤ T} ‖logPoly a s w‖² ≤ (5π/2·#s + 5e/2·N·#s/T₀)·T + B
+```
+
+Below `T₀` the mean square is monotone in the height, so the constant `B` already majorises it;
+above `T₀` the mean value theorem does, once its height-free term `5e/2·N·#s` is loaded onto the
+slope divided by `T₀`.  So Gallagher's "affine majorant at every height" is *equivalent* to a single
+bound at a single height.
+
+**`Sieve/MoebiusHeadGate`**
+
+```text
+moebiusHeadSlope x h T₀ = 5π/2·⌊√x+h⌋ + 5e/2·⌊√x+h⌋²/T₀
+
+averagedMeanSquare_moebius_of_headBound
+    (hgrow : hh → ∞) (hhx : hh ≤ √x)
+    (hdata : ∀ᶠ x, 1 ≤ G x ∧ G x ≤ T₀ x ∧ 0 ≤ B x
+       ∧ ∫_{|w| ≤ T₀ x} ‖logPoly μ (fibreIndex x (hh x)) w‖² ≤ B x)
+    (hlim : (2·fibreWidth²·(slope·G + B) + 4·slope/(π²G) + 4B/(3π²G²)) / hh² → 0) :
+  AveragedMeanSquare μ hh
+```
+
+**This is the reduction the whole programme was after.**  Every other ingredient — Ramaré, the
+ladder, the frequency partition, Halász–Montgomery, Route T — now exists only to produce `B(x)`, and
+the parameter analysis says the requirement is
+
+```text
+   G ≍ M/h ,   T₀ = G·ω(1) ,   B = o(M²) ,   M = ⌊√x + h⌋ .
+```
+
+No slope condition survives: `moebiusHeadSlope ≍ M + M²/T₀ ≍ M·h/ω`, and `4·slope/(π²G·h²) ≍ 1/(ω·h)
+→ 0` automatically.
+
+### Bricks 109–110 — the gate is now ONE relative smallness statement (2026-08-20)
+
+**`Sieve/MoebiusHeadBudget`** (`headBudget_le`).  At the optimal Gallagher cutoff `G = M/h` and any
+height `T₀ = G·ω` above it, the whole budget of `averagedMeanSquare_of_gallagherBudget` obeys the
+completely explicit majorant
+
+```text
+   (2δ²·(slope·G + B) + 4·slope/(π²G) + 4B/(3π²G²)) / h²  ≤  90/h + 60/ω + 9·B/M²
+```
+
+whenever `δ ≤ 2h/M`, `1 ≤ h`, `1 ≤ ω`, `0 ≤ B`, `0 < M`.  The proof is pure algebra plus
+`3 < π ≤ 4` and `e < 2.7182818286`; every occurrence of the slope cancels against `G`.
+
+**`Sieve/MoebiusHeadSmall`** (`headG`, `headT₀`, **`averagedMeanSquare_moebius_of_headSmall`**).
+
+```text
+averagedMeanSquare_moebius_of_headSmall
+    (hgrow : hh → ∞)
+    (hdata : ∀ᶠ x, 4 ≤ x ∧ 1 ≤ hh x ∧ hh x ≤ √x ∧ 1 ≤ ω x ∧ 0 ≤ B x
+        ∧ ∫_{|w| ≤ headT₀ x (hh x) (ω x)} ‖logPoly μ (fibreIndex x (hh x)) w‖² ≤ B x)
+    (hωgrow : ω → ∞)
+    (hrel : B x / ⌊√x + hh x⌋² → 0) :
+  AveragedMeanSquare μ hh
+```
+
+with `headG x h = ⌊√x+h⌋/h` and `headT₀ x h ω = headG x h · ω`.
+
+**This is the entire Matomäki–Radziwiłł input for cards 3, 4, 5, in one line.**  It is unconditional,
+axiom-clean, and holds for *every* window law `hh → ∞` with `hh ≤ √x` — the exponent `β` has
+disappeared from the interface.  Whatever `β` a card needs, it needs exactly
+
+```text
+   ( ∫_{|w| ≤ (M/h)·ω} ‖∑_{n ≤ M} μ(n)n^{−2πiw}‖² dw ) / M²  →  0 ,   M = ⌊√x + h⌋ ,
+```
+
+for some `ω → ∞`, and nothing else.  `Sieve/MoebiusTwoRangeWindow` is the machine that produces that
+quantity; the remaining work is the substitution of the two prime ranges and the verification that
+each of its five groups is `o(M²)`.
+
+Note the interface also shows what the *existing* `9/10 < β` theorem is spending: nothing in the
+Gallagher layer, only in the head bound.

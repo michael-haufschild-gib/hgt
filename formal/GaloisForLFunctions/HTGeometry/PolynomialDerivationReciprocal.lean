@@ -24,7 +24,7 @@ variable {K R M : Type*} [CommRing K] [CommRing R] [Algebra K R]
 variable [AddCommGroup M] [Module R M] [Module K M]
 
 /-- Coefficientwise extension of a derivation to polynomials. -/
-noncomputable def polyD (d : Derivation K R M) (p : R[X]) : PolynomialModule R M :=
+private noncomputable def polyD (d : Derivation K R M) (p : R[X]) : PolynomialModule R M :=
   ∑ n ∈ p.support, PolynomialModule.single R n (d (p.coeff n))
 
 @[simp] theorem polyD_coeff (d : Derivation K R M) (p : R[X]) (n : ℕ) :

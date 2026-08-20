@@ -36,7 +36,7 @@ noncomputable section
 
 /-- `f_r(t) = r(log t / L)/(t log t)`, the Abel weight whose Chebyshev sum is
 `∑_{p ≤ x} r(log p / L)/p`. -/
-def jetWeight (r : ℝ → ℝ) (L t : ℝ) : ℝ := r (Real.log t / L) / (t * Real.log t)
+private def jetWeight (r : ℝ → ℝ) (L t : ℝ) : ℝ := r (Real.log t / L) / (t * Real.log t)
 
 /-- The derivative of the Abel weight. -/
 def derivJetWeight (r r' : ℝ → ℝ) (L t : ℝ) : ℝ :=

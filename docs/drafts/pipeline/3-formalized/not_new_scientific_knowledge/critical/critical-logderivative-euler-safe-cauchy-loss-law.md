@@ -1,8 +1,8 @@
 # The critical logarithmic-derivative RH kernel is an Euler-safe Cauchy-loss contraction
 
 - **ID:** `critical-logderivative-euler-safe-cauchy-loss-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[BRIDGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `ccm-safe-kernel-diagonal-fock-lift-rh-law.md` and
   `critical-logderivative-two-channel-weil-resolvent-law.md`
@@ -333,15 +333,11 @@ data and nonpositive continued-source terms from the premise.
 - `critical-logderivative-two-channel-weil-resolvent-law.md`.
 - `xi-shift-loewner-prime-generator-law.md`.
 
-## Lean decision
+## Lean decision (SUPERSEDED)
 
-No Lean file is added.  The exact kernel subtraction is elementary, but wrapping only that identity
-would add a theorem facade without certifying the analytic content.  Formalization should begin
-only with reusable half-plane positive-kernel and Herglotz/RKHS infrastructure, then connect it to
-the existing finite Cauchy-packet source formulas.
-
-No Lean build, lint, numerical experiment, or scratch computation was run in producing this paper
-theorem, in accordance with the active instruction.
+The original decision deferred formalization until reusable half-plane positive-kernel
+infrastructure existed.  That infrastructure has now been built, and every proved statement of this
+card is certified in Lean; see the section below.
 
 ## Gates
 
@@ -355,3 +351,97 @@ theorem, in accordance with the active instruction.
 - [x] generic positive-real shortcut ruled out by a two-node theorem
 - [ ] prove `(19)` from exact relations of the canonical density `h_a`
 - [ ] deduce RH
+
+## Lean formalization — the proved content is COMPLETE (unconditional)
+
+Every `[PROVED]` statement and every checked gate of this card is now a Lean theorem with a clean
+axiom audit (`propext, Classical.choice, Quot.sound` only).  The missing reusable infrastructure
+named in "Interfaces with the formal corpus" — the half-plane Carathéodory kernel and the RKHS Gram
+dictionary — was built for this card and is stated for arbitrary functions, not for `L` alone.
+
+### Reusable infrastructure (HTGeometry)
+
+| Statement | Lean name | Module |
+|---|---|---|
+| Kernel form is natural in the index type | `kernelForm_mapDomain` | `HTGeometry/PSDKernelOperations` |
+| Pullback of a positive kernel | `IsPSDKernel.comp` | `HTGeometry/PSDKernelOperations` |
+| Every finite Gram matrix of a positive kernel is PSD | `IsPSDKernel.posSemidef` | `HTGeometry/PSDKernelOperations` |
+| Schur (entrywise) product of positive kernels `(10)` | `IsPSDKernel.mul` | `HTGeometry/PSDKernelOperations` |
+| Sums, the constant kernel, rank-one kernels | `IsPSDKernel.add`, `isPSDKernel_one`, `isPSDKernel_rankOne` | `HTGeometry/PSDKernelOperations` |
+| Finite kernel energy and its Gram matrix form | `kernelEnergy`, `dotProduct_mulVec_kernelMatrix` | `HTGeometry/PSDKernelOperations` |
+| `(13)` energy = squared Gram norm | `inner_self_kernelCombination`, `norm_sq_kernelCombination` | `HTGeometry/PSDKernelOperations` |
+| Hermitian + nonnegative real form ⟹ PSD matrix | `posSemidef_of_isHermitian_of_re_nonneg` | `HTGeometry/PSDKernelOperations` |
+| `(14)` domination ⟺ energy domination on every finite system | `isPSDKernel_sub_iff_forall_energy_le` | `HTGeometry/PSDKernelOperations` |
+| Circle representation of the Carathéodory kernel | `circle_caratheodory_representation` | `HTGeometry/CaratheodoryKernelPositive` |
+| Circle Gram positivity from a nonnegative boundary real part | `posSemidef_circleCaratheodoryGram` | `HTGeometry/CaratheodoryKernelPositive` |
+| Unit-disc Carathéodory Gram positivity | `posSemidef_discCaratheodoryGram` | `HTGeometry/CaratheodoryKernelPositive` |
+| **Half-plane Carathéodory kernel of a positive-real function is PSD** | `posSemidef_halfPlaneCaratheodoryGram`, `isPSDKernel_halfPlaneCaratheodory` | `HTGeometry/CaratheodoryKernelPositive` |
+| Shifted half-plane version (offset `a`) | `isPSDKernel_shiftedCaratheodory` | `HTGeometry/CaratheodoryKernelPositive` |
+| Energy is continuous in nodes and coefficients | `continuous_kernelEnergy` | `HTGeometry/PSDKernelDensity` |
+| `(21)` dense test families decide positivity | `isPSDKernel_of_dense_energy` | `HTGeometry/PSDKernelDensity` |
+
+The half-plane theorem is proved from scratch: the Cauchy integral formula applied to
+`f / (r² − conj(y)·ζ)` gives
+
+```text
+(f x + conj (f y)) / (r² - x conj y)
+  = (2 pi)^(-1) integral_0^(2 pi) 2 Re f(r e^(i theta)) (r e^(i theta) - x)^(-1)
+      conj((r e^(i theta) - y)^(-1)) d theta,
+```
+
+a circle average of rank-one kernels with nonnegative weight; rescaling `f` and letting the radius
+tend to `1` gives the disc, and the Cayley identity
+`1 - z_u conj z_v = 2 (u + conj v) / ((u+1)(conj v + 1))` transports it to the half plane.
+
+### Card statements (RHTower/XiEulerSafeCauchyLoss)
+
+| Card item | Lean name |
+|---|---|
+| `(1)`–`(3)` the three kernels `K_a`, `C_a`, `K_0` | `safeCaratheodoryKernel`, `cauchyLossKernel`, `criticalLogDerivKernel` |
+| `(5)` unconditional Euler-safe positivity `Re L > 0` on `Re W > 1/2` | `re_logDeriv_xiCent_pos` |
+| `(4)` `C_a(W,W) = a / Re W` and `< 1` on `H_a` | `cauchyLossKernel_diag`, `cauchyLossKernel_diag_lt_one` |
+| `(6)` Laplace Gram representation of `C_a` | `cauchyLossKernel_eq_laplace` |
+| `K_a` is an unconditional positive Carathéodory kernel | `isPSDKernel_safeCaratheodoryKernel` |
+| `C_a` is positive on `H_a` | `isPSDKernel_cauchyLossKernel` |
+| `(10)` the Schur loss `K_a ∘ C_a` is positive | `isPSDKernel_schurLoss` |
+| `(9)` `K_a (1 - C_a) = K_0` | `safeCaratheodoryKernel_mul_one_sub_cauchyLossKernel` |
+| `(7)` `K_0 = K_a - K_a ∘ C_a` | `criticalLogDerivKernel_eq_sub` |
+| `(8)`, first equivalence: RH ⟺ `K_0 ≥ 0` on every `H_a`, `a ≥ 1/2` | `riemannHypothesis_iff_isPSDKernel_criticalLogDerivKernel` |
+| `(8)`, `(15)`: RH ⟺ `K_a ∘ C_a ≤ K_a` | `riemannHypothesis_iff_kernelDominates` |
+| `(13)`–`(14)`: RH ⟺ the diagonal map does not increase any finite energy | `riemannHypothesis_iff_energy_le` |
+| `(21)` countable Gaussian-rational test family | `riemannHypothesis_iff_rational_energy_le`, `countable_gaussianRationalSet`, `dense_safeGaussianRational` |
+| `(22)`–`(23)` model positive-real function and its Carathéodory kernel | `modelCaratheodoryKernel`, `modelCaratheodoryKernel_eq` |
+| `(24)`–`(25)` two-node determinant `-a(x+y-a)(x-y)²/(xy(x+y)²) < 0` | `modelLossSymbol`, `det_modelLossSymbol`, `det_modelLossSymbol_neg` |
+| the generic positive-real shortcut fails | `not_isPSDKernel_modelLoss` |
+
+Supporting continuity facts: `differentiableAt_logDeriv_xiCent`,
+`continuous_logDeriv_xiCent_subtype`, `continuous_safeCaratheodoryKernel`,
+`continuous_cauchyLossKernel`.
+
+### How `(5)` is discharged unconditionally
+
+`xiCent W = XiC (-i W)` (`xiCent_eq_XiC`), so `logDeriv xiCent W = -i · logDeriv XiC (-i W)`
+(`logDeriv_xiCent_eq`) and `Re (logDeriv xiCent W) = Im (logDeriv XiC (-i W))`.  The corpus's
+unconditional critical-strip width `xiZeroHalfPlaneBound_half` feeds
+`xiRelativeResolventTrace_im_pos_of_halfPlaneBound`, whose conclusion is exactly the strict
+positivity of that imaginary part for `Im z < -1/2`, i.e. for `Re W > 1/2`.  This is the
+Sondow--Dumitrescu mechanism of the card, in the pairing form the corpus already owns.
+
+### What is *not* formalized
+
+The unproved gates of the card are unchanged and are not claimed:
+
+- the boundary Herglotz realization `(17)` of `K_a` as `pi^{-1} integral h_a(t) ...` and the
+  derived observability inequality `(19)`;
+- a proof of `(19)` from the prime--Gamma density, and hence RH.
+
+The Lean development stops exactly where the card's mathematics stops: it certifies the complete
+unconditional decomposition and every equivalence between the domination, the diagonal contraction
+and RH, but proves no instance of the open inequality.
+
+## Log
+
+- 2026-08-20 — Formalized in Lean 4.  New reusable modules
+  `HTGeometry/PSDKernelOperations`, `HTGeometry/CaratheodoryKernelPositive`,
+  `HTGeometry/PSDKernelDensity`, and the card module `RHTower/XiEulerSafeCauchyLoss`.  All 29
+  capstones audit to `propext, Classical.choice, Quot.sound`.  Promoted to stage 3.

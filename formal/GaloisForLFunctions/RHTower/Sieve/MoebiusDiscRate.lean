@@ -66,11 +66,8 @@ theorem exists_setIntegral_disc_normSq_logPoly_moebius_le_rate :
     ((continuous_logPoly _ _).norm).pow 2
   have hint : IntegrableOn (fun w : ℝ => ‖logPoly moebiusCoeff (Finset.Icc 1 ⌊N⌋₊) w‖ ^ 2)
       (Set.Icc (-w₀) w₀) volume := hcont.integrableOn_Icc
-  have hintC : IntegrableOn (fun _ : ℝ => C ^ 2) (Set.Icc (-w₀) w₀) volume := by
-    rw [MeasureTheory.integrableOn_const]
-    exact Or.inr (by
-      rw [Real.volume_Icc]
-      exact ENNReal.ofReal_lt_top)
+  have hintC : IntegrableOn (fun _ : ℝ => C ^ 2) (Set.Icc (-w₀) w₀) volume :=
+    integrableOn_const (by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top)
   have hmono := setIntegral_mono_on hint hintC measurableSet_Icc hpt
   have hvol : (volume.real (Set.Icc (-w₀) w₀)) = 2 * w₀ := by
     rw [MeasureTheory.measureReal_def, Real.volume_Icc,
@@ -78,6 +75,32 @@ theorem exists_setIntegral_disc_normSq_logPoly_moebius_le_rate :
     ring
   rw [MeasureTheory.setIntegral_const, hvol, smul_eq_mul] at hmono
   exact hmono
+
+/-- **The disc bound at the fibre index set.**  Specialising the length to `√x + h`, which is what
+the fibre index set truncates. -/
+theorem exists_eventually_setIntegral_disc_fibre_le {hh : ℝ → ℝ}
+    (hh0 : ∀ᶠ x : ℝ in Filter.atTop, 0 ≤ hh x) {w₀ : ℝ} (hw₀ : 0 ≤ w₀) :
+    ∃ K : ℝ, 0 < K ∧ ∀ᶠ x : ℝ in Filter.atTop,
+      (∫ w in Set.Icc (-w₀) w₀,
+          ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ))
+            (Finset.Icc 1 ⌊Real.sqrt x + hh x⌋₊) w‖ ^ 2)
+        ≤ 2 * w₀ * (K * (Real.sqrt x + hh x)
+            * Real.exp (-((Real.log (Real.sqrt x + hh x)) ^ ((1 : ℝ) / 20)))) ^ 2 := by
+  obtain ⟨K, hK, hmain⟩ := exists_setIntegral_disc_normSq_logPoly_moebius_le_rate
+  obtain ⟨N₀, hN₀⟩ := Filter.eventually_atTop.1 hmain
+  refine ⟨K, hK, ?_⟩
+  set C : ℝ := max (max N₀ (2 * Real.pi * w₀)) 0 with hC
+  have hC0 : 0 ≤ C := le_max_right _ _
+  filter_upwards [hh0, Filter.eventually_ge_atTop (C ^ 2)] with x hx hxC
+  have hsqrt : C ≤ Real.sqrt x := by
+    rw [show C = Real.sqrt (C ^ 2) by rw [Real.sqrt_sq hC0]]
+    exact Real.sqrt_le_sqrt hxC
+  have hN : N₀ ≤ Real.sqrt x + hh x :=
+    le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) (by linarith)
+  have hpi : 2 * Real.pi * w₀ ≤ Real.sqrt x + hh x :=
+    le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) (by linarith)
+  have hbase := hN₀ (Real.sqrt x + hh x) hN w₀ hw₀ hpi
+  exact hbase
 
 end
 

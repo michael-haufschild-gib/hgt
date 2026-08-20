@@ -97,7 +97,7 @@ theorem aeval_slotPoly_coeff (g : Fin (m + 2) → ℂ⟦X⟧) (hg : g 0 = PowerS
 /-! ## The shift automorphism -/
 
 /-- The substitution `Y₀ ↦ Y₀`, `Y_{j+1} ↦ Y_{j+1} + Qⱼ`. -/
-def jetTranslate (Q : ℕ → MvPolynomial (Fin (m + 2)) ℂ) :
+private def jetTranslate (Q : ℕ → MvPolynomial (Fin (m + 2)) ℂ) :
     Fin (m + 2) → MvPolynomial (Fin (m + 2)) ℂ :=
   Fin.cons (MvPolynomial.X 0) (fun j : Fin (m + 1) => MvPolynomial.X j.succ + Q (j : ℕ))
 

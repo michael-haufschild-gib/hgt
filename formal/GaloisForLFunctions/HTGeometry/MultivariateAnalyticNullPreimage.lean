@@ -48,7 +48,7 @@ theorem slicePair_preimage_prod_univ {n : ℕ} (T : Set (Fin n → ℝ)) :
   simp [slicePair]
 
 /-- Peeling off the first coordinate is an analytic map. -/
-theorem analyticAt_tail {n : ℕ} (w₀ : Fin (n + 1) → ℝ) :
+private theorem analyticAt_tail {n : ℕ} (w₀ : Fin (n + 1) → ℝ) :
     AnalyticAt ℝ (fun w : Fin (n + 1) → ℝ => (Fin.tail w : Fin n → ℝ)) w₀ := by
   refine AnalyticAt.pi fun j => ?_
   exact (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (n + 1) => ℝ) j.succ).analyticAt w₀

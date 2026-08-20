@@ -70,7 +70,7 @@ theorem contDiff_charMode (μ : ℂ) (k : ℕ) : ContDiff ℝ (⊤ : ℕ∞) (ch
 
 theorem blockOp_X_pow_eq_zero {L : Polynomial ℂ} {μ : ℂ} {k : ℕ}
     (hk : k < L.rootMultiplicity μ) :
-    blockOp L μ (Polynomial.X ^ k) = 0 := by
+    exponentialPolynomialModesBlockOp L μ (Polynomial.X ^ k) = 0 := by
   set m := L.rootMultiplicity μ with hm
   have hfac : (Polynomial.X - Polynomial.C μ) ^ m * (L /ₘ (Polynomial.X - Polynomial.C μ) ^ m)
       = L := Polynomial.pow_mul_divByMonic_rootMultiplicity_eq L μ

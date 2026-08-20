@@ -52,7 +52,7 @@ theorem norm_exp_le_exp_norm (x : 𝔸) : ‖NormedSpace.exp x‖ ≤ Real.exp �
 /-! ## A telescoping bound for powers -/
 
 omit [NormedAlgebra ℝ 𝔸] [CompleteSpace 𝔸] in
-theorem norm_pow_sub_pow_le {x y : 𝔸} {M : ℝ} (hM : 1 ≤ M) (hx : ‖x‖ ≤ M) (hy : ‖y‖ ≤ M) :
+private theorem norm_pow_sub_pow_le {x y : 𝔸} {M : ℝ} (hM : 1 ≤ M) (hx : ‖x‖ ≤ M) (hy : ‖y‖ ≤ M) :
     ∀ n : ℕ, ‖x ^ n - y ^ n‖ ≤ n * M ^ n * ‖x - y‖ := by
   have hM0 : (0 : ℝ) ≤ M := le_trans zero_le_one hM
   intro n

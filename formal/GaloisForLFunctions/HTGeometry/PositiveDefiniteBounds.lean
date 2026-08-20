@@ -24,7 +24,7 @@ variable {n : ℕ}
 noncomputable def quadForm (A : posDefCone n) (x : Fin n → ℝ) : ℝ :=
   x ⬝ᵥ (((A : symmMatrices n) : Matrix (Fin n) (Fin n) ℝ) *ᵥ x)
 
-theorem continuous_quadForm :
+private theorem continuous_quadForm :
     Continuous (fun p : (posDefCone n) × (Metric.sphere (0 : Fin n → ℝ) 1) =>
       quadForm p.1 (p.2 : Fin n → ℝ)) := by
   unfold quadForm
@@ -128,7 +128,7 @@ theorem quadForm_smul_group (g : Matrix.SpecialLinearGroup (Fin n) ℤ) (A : pos
     rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec]]
   rw [Matrix.dotProduct_mulVec, Matrix.mulVec_transpose]
 
-theorem norm_single_one (j : Fin n) : ‖(Pi.single j (1 : ℝ) : Fin n → ℝ)‖ = 1 := by
+private theorem norm_single_one (j : Fin n) : ‖(Pi.single j (1 : ℝ) : Fin n → ℝ)‖ = 1 := by
   refine le_antisymm (pi_norm_le_iff_of_nonneg zero_le_one |>.2 fun i => ?_) ?_
   · by_cases hij : i = j
     · subst hij; simp

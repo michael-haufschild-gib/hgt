@@ -96,15 +96,15 @@ theorem range_smul_exchangeE12 {c : k} (hc : c ≠ 0) :
 
 /-- The maximal coherent framed subspace: the common kernel of every pairwise exchange
 curvature. -/
-def coherentKernel (χ : ℕ+ →* kˣ) : Submodule k (Fin 2 → k) :=
+def rankOnePolarizedExchangeCoherentKernelCoherentKernel (χ : ℕ+ →* kˣ) : Submodule k (Fin 2 → k) :=
   ⨅ m : ℕ+, ⨅ n : ℕ+, LinearMap.ker (Matrix.mulVecLin (exchangeCurvature χ m n))
 
 theorem mem_coherentKernel_iff {χ : ℕ+ →* kˣ} {v : Fin 2 → k} :
-    v ∈ coherentKernel χ ↔ ∀ m n : ℕ+, Matrix.mulVec (exchangeCurvature χ m n) v = 0 := by
-  simp only [coherentKernel, Submodule.mem_iInf, LinearMap.mem_ker, Matrix.mulVecLin_apply]
+    v ∈ rankOnePolarizedExchangeCoherentKernelCoherentKernel χ ↔ ∀ m n : ℕ+, Matrix.mulVec (exchangeCurvature χ m n) v = 0 := by
+  simp only [rankOnePolarizedExchangeCoherentKernelCoherentKernel, Submodule.mem_iInf, LinearMap.mem_ker, Matrix.mulVecLin_apply]
 
 /-- **At the trivial character the whole frame is coherent.** -/
-theorem coherentKernel_one : coherentKernel (1 : ℕ+ →* kˣ) = ⊤ := by
+theorem coherentKernel_one : rankOnePolarizedExchangeCoherentKernelCoherentKernel (1 : ℕ+ →* kˣ) = ⊤ := by
   refine eq_top_iff.2 fun v _ => ?_
   rw [mem_coherentKernel_iff]
   intro m n
@@ -113,7 +113,7 @@ theorem coherentKernel_one : coherentKernel (1 : ℕ+ →* kˣ) = ⊤ := by
 
 /-- **Off the trivial character only the permanent conormal line is coherent.** -/
 theorem coherentKernel_of_ne_one {χ : ℕ+ →* kˣ} (h : χ ≠ 1) :
-    coherentKernel χ = permanentLine k := by
+    rankOnePolarizedExchangeCoherentKernelCoherentKernel χ = permanentLine k := by
   obtain ⟨n₀, hn₀⟩ : ∃ n : ℕ+, χ n ≠ 1 := by
     by_contra hc
     exact h (MonoidHom.ext fun n => not_not.1 fun hn => hc ⟨n, hn⟩)
@@ -142,7 +142,7 @@ theorem permanentLine_invariant (χ : ℕ+ →* kˣ) {v : Fin 2 → k} (hv : v �
   simp [exchangeTransport, Matrix.mulVec, dotProduct, Fin.sum_univ_succ, hv]
 
 /-- **The coherent subspace carries a genuine monoid representation.** -/
-theorem coherentKernel_isRep {χ : ℕ+ →* kˣ} {v : Fin 2 → k} (hv : v ∈ coherentKernel χ)
+theorem coherentKernel_isRep {χ : ℕ+ →* kˣ} {v : Fin 2 → k} (hv : v ∈ rankOnePolarizedExchangeCoherentKernelCoherentKernel χ)
     (m n : ℕ+) :
     Matrix.mulVec (exchangeTransport χ m) (Matrix.mulVec (exchangeTransport χ n) v) =
       Matrix.mulVec (exchangeTransport χ (m * n)) v := by
@@ -177,7 +177,7 @@ theorem wordDefect_pair (χ : ℕ+ →* kˣ) (m n : ℕ+) :
 
 /-- **Pairwise coherence controls every strict reassociation defect.** -/
 theorem wordKernel_eq_coherentKernel (χ : ℕ+ →* kˣ) :
-    wordKernel χ = coherentKernel χ := by
+    wordKernel χ = rankOnePolarizedExchangeCoherentKernelCoherentKernel χ := by
   refine le_antisymm ?_ ?_
   · intro v hv
     rw [mem_coherentKernel_iff]

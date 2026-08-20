@@ -44,7 +44,7 @@ theorem split_realCoeffPart (p : MvPolynomial σ ℂ) :
 
 variable {N : ℕ}
 
-theorem eval_split (G : MvPolynomial (Fin N) ℂ) (θ : Fin N → ℝ) :
+private theorem eval_split (G : MvPolynomial (Fin N) ℂ) (θ : Fin N → ℝ) :
     MvPolynomial.eval (fun i => ((θ i : ℝ) : ℂ)) G
       = ((MvPolynomial.eval θ (realCoeffPart G) : ℝ) : ℂ)
         + Complex.I * ((MvPolynomial.eval θ (imagCoeffPart G) : ℝ) : ℂ) := by

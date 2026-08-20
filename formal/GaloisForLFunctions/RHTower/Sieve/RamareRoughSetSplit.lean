@@ -24,7 +24,7 @@ theorem setIntegral_normSq_logPoly_moebius_le_ramare_rough {P : Finset ℕ}
     (∫ w in E, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
       ≤ (1 + δ) * (∫ w in E, ‖ramareBilinear P M w‖ ^ 2)
         + (1 + 1 / δ)
-            * (∫ w in E, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2) := by
+            * (∫ w in E, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2) := by
   classical
   have hcontF : Continuous fun w : ℝ =>
       ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 :=
@@ -32,11 +32,11 @@ theorem setIntegral_normSq_logPoly_moebius_le_ramare_rough {P : Finset ℕ}
   have hcontB : Continuous fun w : ℝ => ‖ramareBilinear P M w‖ ^ 2 :=
     ((continuous_ramareBilinear P M).norm).pow 2
   have hcontR : Continuous fun w : ℝ =>
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2 :=
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2 :=
     ((continuous_logPoly _ _).norm).pow 2
   set F : ℝ → ℝ := fun w =>
     (1 + δ) * ‖ramareBilinear P M w‖ ^ 2
-      + (1 + 1 / δ) * ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2 with hFdef
+      + (1 + 1 / δ) * ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2 with hFdef
   have hcontMaj : Continuous F := by
     rw [hFdef]
     exact (hcontB.const_mul _).add (hcontR.const_mul _)
@@ -53,12 +53,12 @@ theorem setIntegral_normSq_logPoly_moebius_le_ramare_rough {P : Finset ℕ}
   have hintB : IntegrableOn (fun w : ℝ => ‖ramareBilinear P M w‖ ^ 2) E volume :=
     (hcontB.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hintR : IntegrableOn (fun w : ℝ =>
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2) E volume :=
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2) E volume :=
     (hcontR.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hmono := setIntegral_mono_on hintF hintMaj hEm hle
   refine le_trans hmono (le_of_eq ?_)
   show (∫ w in E, ((1 + δ) * ‖ramareBilinear P M w‖ ^ 2
-      + (1 + 1 / δ) * ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2)) = _
+      + (1 + 1 / δ) * ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)) = _
   rw [integral_add (hintB.const_mul _) (hintR.const_mul _), integral_const_mul,
     integral_const_mul]
 
@@ -66,14 +66,32 @@ theorem setIntegral_normSq_logPoly_moebius_le_ramare_rough {P : Finset ℕ}
 whole window: only the **count** of rough integers enters, never a short-interval sieve. -/
 theorem setIntegral_normSq_logPoly_moebius_roughSet_le {P : Finset ℕ} (M : ℕ) {W : ℝ}
     {E : Set ℝ} (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2)
-      ≤ ∫ w in Set.Icc (-W) W, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2 := by
+    (∫ w in E, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)
+      ≤ ∫ w in Set.Icc (-W) W, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2 := by
   have hcontR : Continuous fun w : ℝ =>
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2 :=
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2 :=
     ((continuous_logPoly _ _).norm).pow 2
   exact MeasureTheory.setIntegral_mono_set hcontR.integrableOn_Icc
     (Filter.Eventually.of_forall fun w => by positivity)
     (Filter.Eventually.of_forall hEs)
+
+/-- **The rough polynomial's mean square, with the rough count discharged by Turán's bound.**  Only
+the harmonic mass of the designated range enters: the rough integers have density `1/A`, and the
+prime-counting correction `2|P|/A` is harmless whenever the range is shorter than the sum. -/
+theorem integral_Icc_normSq_roughPoly_le_harmonic {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime)
+    (M : ℕ) {W : ℝ} (hW : 1 ≤ W) (hA : 0 < ∑ p ∈ P, (1 : ℝ) / (p : ℝ)) :
+    (∫ w in Set.Icc (-W) W, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)
+      ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
+          * ((M : ℝ) / (∑ p ∈ P, (1 : ℝ) / (p : ℝ))
+            + 2 * (P.card : ℝ) / (∑ p ∈ P, (1 : ℝ) / (p : ℝ))) := by
+  have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
+  have hcoef : (0 : ℝ) ≤ 5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ) := by
+    have := Real.pi_pos
+    have := (Real.exp_pos 1).le
+    have : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg _
+    positivity
+  refine le_trans (integral_Icc_normSq_roughPoly_le P M hW) ?_
+  exact mul_le_mul_of_nonneg_left (card_roughSet_le hPprime M hA) hcoef
 
 end
 

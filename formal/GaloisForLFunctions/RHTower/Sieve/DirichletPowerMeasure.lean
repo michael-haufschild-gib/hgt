@@ -18,14 +18,14 @@ namespace RHTower.Sieve
 open MeasureTheory
 
 /-- Raising to the `k`-th power does not change the level set. -/
-theorem largeValues_pow_setOf (k N : ℕ) (hk : 1 ≤ k) (a : Fin N → ℂ) (S : Set ℝ) {V : ℝ}
+private theorem largeValues_pow_setOf (k N : ℕ) (hk : 1 ≤ k) (a : Fin N → ℂ) (S : Set ℝ) {V : ℝ}
     (hV : 0 ≤ V) :
-    {t ∈ S | V ^ k ≤ ‖dirPoly (N ^ k) (convPow k N a) t‖}
+    {t ∈ S | V ^ k ≤ ‖dirPoly (N ^ k) (dirichletPowerConvolutionConvPow k N a) t‖}
       = {t ∈ S | V ≤ ‖dirPoly N a t‖} := by
   ext t
   simp only [Set.mem_setOf_eq, and_congr_right_iff]
   intro _
-  rw [dirPoly_convPow, norm_pow]
+  rw [dirichletPowerConvolutionDirPoly_convPow, norm_pow]
   constructor
   · intro h
     exact le_of_pow_le_pow_left₀ (by omega) (norm_nonneg _) h
@@ -40,7 +40,7 @@ theorem volume_largeValues_pow_le_of_prime_support (k N : ℕ) (hk : 1 ≤ k) (a
       ≤ (T + 4 * ((N ^ k : ℕ) : ℝ) * (1 + Real.log ((N ^ k : ℕ) : ℝ)))
           * ((k : ℝ) ^ k * (∑ n : Fin N, ‖a n‖ ^ 2) ^ k) := by
   have hVk : (0 : ℝ) ≤ V ^ k := by positivity
-  have hbase := volume_largeValues_le (N ^ k) (convPow k N a) hT hVk
+  have hbase := volume_largeValues_le (N ^ k) (dirichletPowerConvolutionConvPow k N a) hT hVk
   rw [largeValues_pow_setOf k N hk a _ hV] at hbase
   have hpow : (V ^ k) ^ 2 = V ^ (2 * k) := by
     rw [← pow_mul, mul_comm]
@@ -65,7 +65,7 @@ theorem volume_largeValues_pow_symm_le_of_prime_support (k N : ℕ) (hk : 1 ≤ 
       ≤ 2 * ((T + 4 * ((N ^ k : ℕ) : ℝ) * (1 + Real.log ((N ^ k : ℕ) : ℝ)))
           * ((k : ℝ) ^ k * (∑ n : Fin N, ‖a n‖ ^ 2) ^ k)) := by
   have hVk : (0 : ℝ) ≤ V ^ k := by positivity
-  have hbase := volume_largeValues_symm_le (N ^ k) (convPow k N a) hT hVk
+  have hbase := volume_largeValues_symm_le (N ^ k) (dirichletPowerConvolutionConvPow k N a) hT hVk
   rw [largeValues_pow_setOf k N hk a (Set.Icc (-T) T) hV] at hbase
   have hpow : (V ^ k) ^ 2 = V ^ (2 * k) := by
     rw [← pow_mul, mul_comm]

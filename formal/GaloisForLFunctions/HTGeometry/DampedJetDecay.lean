@@ -89,7 +89,7 @@ theorem norm_iteratedDeriv_cexp_mul_mul_le (a : ℂ) {g : ℂ → ℂ} {z : ℂ}
 
 /-! ### Decay -/
 
-theorem tendsto_pow_mul_exp_neg_mul {k : ℕ} {c : ℝ} (hc : 0 < c) :
+private theorem tendsto_pow_mul_exp_neg_mul {k : ℕ} {c : ℝ} (hc : 0 < c) :
     Tendsto (fun t : ℝ => t ^ k * Real.exp (-(c * t))) atTop (nhds 0) := by
   have hbase : Tendsto (fun u : ℝ => u ^ k * Real.exp (-u)) atTop (nhds 0) :=
     Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero k

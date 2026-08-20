@@ -27,15 +27,15 @@ theorem coeff_lamPoly (D : ℕ → ℂ) {N m : ℕ} (h : m ≤ N) :
   · intro hmem
     exact absurd (Finset.mem_range.mpr (by omega : m < N + 1)) hmem
 
-theorem natDegree_expPoly_le (D : ℕ → ℂ) (N : ℕ) : (expPoly D N).natDegree ≤ N := by
+theorem natDegree_expPoly_le (D : ℕ → ℂ) (N : ℕ) : (inverseSeriesLadderExpPoly D N).natDegree ≤ N := by
   induction N with
   | zero =>
-      have : expPoly D 0 = 1 := rfl
+      have : inverseSeriesLadderExpPoly D 0 = 1 := rfl
       rw [this]
       simp
   | succ n ih =>
-      have hstep : expPoly D (n + 1)
-          = expPoly D n + C (expLadderCoeffOf D (expPoly D n) n) * X ^ (n + 1) := rfl
+      have hstep : inverseSeriesLadderExpPoly D (n + 1)
+          = inverseSeriesLadderExpPoly D n + C (expLadderCoeffOf D (inverseSeriesLadderExpPoly D n) n) * X ^ (n + 1) := rfl
       rw [hstep]
       refine le_trans (Polynomial.natDegree_add_le _ _) ?_
       refine max_le (by omega) ?_
@@ -43,23 +43,23 @@ theorem natDegree_expPoly_le (D : ℕ → ℂ) (N : ℕ) : (expPoly D N).natDegr
       rw [Polynomial.natDegree_X_pow]
 
 /-- The coefficient produced at order `n`. -/
-def expCoeffSeq (D : ℕ → ℂ) (n : ℕ) : ℂ := (expPoly D n).coeff n
+def expCoeffSeq (D : ℕ → ℂ) (n : ℕ) : ℂ := (inverseSeriesLadderExpPoly D n).coeff n
 
 theorem expPoly_succ_eq (D : ℕ → ℂ) (N : ℕ) :
-    expPoly D (N + 1) = expPoly D N + C (expCoeffSeq D (N + 1)) * X ^ (N + 1) := by
-  have hstep : expPoly D (N + 1)
-      = expPoly D N + C (expLadderCoeffOf D (expPoly D N) N) * X ^ (N + 1) := rfl
-  have hc : expCoeffSeq D (N + 1) = expLadderCoeffOf D (expPoly D N) N := by
+    inverseSeriesLadderExpPoly D (N + 1) = inverseSeriesLadderExpPoly D N + C (expCoeffSeq D (N + 1)) * X ^ (N + 1) := by
+  have hstep : inverseSeriesLadderExpPoly D (N + 1)
+      = inverseSeriesLadderExpPoly D N + C (expLadderCoeffOf D (inverseSeriesLadderExpPoly D N) N) * X ^ (N + 1) := rfl
+  have hc : expCoeffSeq D (N + 1) = expLadderCoeffOf D (inverseSeriesLadderExpPoly D N) N := by
     rw [expCoeffSeq, hstep, Polynomial.coeff_add, Polynomial.coeff_C_mul,
       Polynomial.coeff_X_pow, if_pos rfl, mul_one]
-    have hz : (expPoly D N).coeff (N + 1) = 0 :=
+    have hz : (inverseSeriesLadderExpPoly D N).coeff (N + 1) = 0 :=
       Polynomial.coeff_eq_zero_of_natDegree_lt (by have := natDegree_expPoly_le D N; omega)
     rw [hz, zero_add]
   rw [hc]
   exact hstep
 
 theorem expPoly_eq_one_of_coeffs (D : ℕ → ℂ) (N : ℕ)
-    (h : ∀ n, 1 ≤ n → n ≤ N → expCoeffSeq D n = 0) : expPoly D N = 1 := by
+    (h : ∀ n, 1 ≤ n → n ≤ N → expCoeffSeq D n = 0) : inverseSeriesLadderExpPoly D N = 1 := by
   induction N with
   | zero => rfl
   | succ n ih =>
@@ -68,7 +68,7 @@ theorem expPoly_eq_one_of_coeffs (D : ℕ → ℂ) (N : ℕ)
       simp
 
 theorem forall_eq_zero_of_expPoly_eq_one (D : ℕ → ℂ) (hD0 : D 0 = 0)
-    (h : ∀ N, expPoly D N = 1) : ∀ m, D m = 0 := by
+    (h : ∀ N, inverseSeriesLadderExpPoly D N = 1) : ∀ m, D m = 0 := by
   intro m
   have hres : resPoly D m = lamPoly D m := by
     rw [resPoly, h m]
@@ -83,12 +83,12 @@ theorem forall_eq_zero_of_expPoly_eq_one (D : ℕ → ℂ) (hD0 : D 0 = 0)
 /-- **A nonzero moment sequence produces a first nonzero ladder coefficient.** -/
 theorem exists_first_expCoeffSeq_ne_zero (D : ℕ → ℂ) (hD0 : D 0 = 0)
     (hD : ∃ m, D m ≠ 0) :
-    ∃ M : ℕ, expCoeffSeq D (M + 1) ≠ 0 ∧ expPoly D M = 1 := by
+    ∃ M : ℕ, expCoeffSeq D (M + 1) ≠ 0 ∧ inverseSeriesLadderExpPoly D M = 1 := by
   classical
   have hex : ∃ n : ℕ, expCoeffSeq D (n + 1) ≠ 0 := by
     by_contra hcon
     push Not at hcon
-    have hall : ∀ N, expPoly D N = 1 := by
+    have hall : ∀ N, inverseSeriesLadderExpPoly D N = 1 := by
       intro N
       refine expPoly_eq_one_of_coeffs D N fun n hn1 _ => ?_
       obtain ⟨j, rfl⟩ : ∃ j, n = j + 1 := ⟨n - 1, by omega⟩

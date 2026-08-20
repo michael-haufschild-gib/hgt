@@ -27,13 +27,13 @@ def expLadderCoeffOf (D : ℕ → ℂ) (P : ℂ[X]) (N : ℕ) : ℂ :=
   (D (N + 1) - (lamPoly D N * P + X ^ 2 * derivative P).coeff (N + 2)) / ((N : ℂ) + 1)
 
 /-- The forced truncation of the exponential series. -/
-def expPoly (D : ℕ → ℂ) : ℕ → ℂ[X]
+def inverseSeriesLadderExpPoly (D : ℕ → ℂ) : ℕ → ℂ[X]
   | 0 => 1
-  | (N + 1) => expPoly D N + C (expLadderCoeffOf D (expPoly D N) N) * X ^ (N + 1)
+  | (N + 1) => inverseSeriesLadderExpPoly D N + C (expLadderCoeffOf D (inverseSeriesLadderExpPoly D N) N) * X ^ (N + 1)
 
 /-- The residual of the differential equation at truncation order `N`. -/
 def resPoly (D : ℕ → ℂ) (N : ℕ) : ℂ[X] :=
-  lamPoly D N * expPoly D N + X ^ 2 * derivative (expPoly D N)
+  lamPoly D N * inverseSeriesLadderExpPoly D N + X ^ 2 * derivative (inverseSeriesLadderExpPoly D N)
 
 theorem lamPoly_succ (D : ℕ → ℂ) (N : ℕ) :
     lamPoly D (N + 1) = lamPoly D N - C (D (N + 1)) * X ^ (N + 2) := by
@@ -55,24 +55,24 @@ theorem coeff_one_lamPoly (D : ℕ → ℂ) (N : ℕ) : (lamPoly D N).coeff 1 = 
   · intro h
     exact absurd (Finset.mem_range.mpr (Nat.succ_pos N)) h
 
-theorem coeff_zero_expPoly (D : ℕ → ℂ) (N : ℕ) : (expPoly D N).coeff 0 = 1 := by
+theorem coeff_zero_expPoly (D : ℕ → ℂ) (N : ℕ) : (inverseSeriesLadderExpPoly D N).coeff 0 = 1 := by
   induction N with
-  | zero => simp [expPoly]
+  | zero => simp [inverseSeriesLadderExpPoly]
   | succ n ih =>
-      rw [expPoly, Polynomial.coeff_add, ih, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
+      rw [inverseSeriesLadderExpPoly, Polynomial.coeff_add, ih, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
       simp
 
 theorem resPoly_succ (D : ℕ → ℂ) (N : ℕ) :
     resPoly D (N + 1)
       = resPoly D N
-        + C (expLadderCoeffOf D (expPoly D N) N) * X ^ (N + 1) * lamPoly D N
-        - C (D (N + 1)) * X ^ (N + 2) * expPoly D (N + 1)
-        + C (expLadderCoeffOf D (expPoly D N) N) * C (((N + 1 : ℕ) : ℂ)) * X ^ (N + 2) := by
-  have hexp : expPoly D (N + 1)
-      = expPoly D N + C (expLadderCoeffOf D (expPoly D N) N) * X ^ (N + 1) := rfl
-  have hder : derivative (expPoly D (N + 1))
-      = derivative (expPoly D N)
-        + C (expLadderCoeffOf D (expPoly D N) N) * (C (((N + 1 : ℕ) : ℂ)) * X ^ N) := by
+        + C (expLadderCoeffOf D (inverseSeriesLadderExpPoly D N) N) * X ^ (N + 1) * lamPoly D N
+        - C (D (N + 1)) * X ^ (N + 2) * inverseSeriesLadderExpPoly D (N + 1)
+        + C (expLadderCoeffOf D (inverseSeriesLadderExpPoly D N) N) * C (((N + 1 : ℕ) : ℂ)) * X ^ (N + 2) := by
+  have hexp : inverseSeriesLadderExpPoly D (N + 1)
+      = inverseSeriesLadderExpPoly D N + C (expLadderCoeffOf D (inverseSeriesLadderExpPoly D N) N) * X ^ (N + 1) := rfl
+  have hder : derivative (inverseSeriesLadderExpPoly D (N + 1))
+      = derivative (inverseSeriesLadderExpPoly D N)
+        + C (expLadderCoeffOf D (inverseSeriesLadderExpPoly D N) N) * (C (((N + 1 : ℕ) : ℂ)) * X ^ N) := by
     rw [hexp, derivative_add, derivative_C_mul, derivative_X_pow]
     simp
   rw [resPoly, resPoly, lamPoly_succ, hder, hexp]
@@ -87,12 +87,12 @@ theorem X_pow_dvd_resPoly (D : ℕ → ℂ) (hD0 : D 0 = 0) (N : ℕ) :
       have h : lamPoly D 0 = 0 := by
         rw [lamPoly]
         simp [hD0]
-      have hexp : expPoly D 0 = 1 := rfl
+      have hexp : inverseSeriesLadderExpPoly D 0 = 1 := rfl
       rw [resPoly, h, hexp]
       simp
   | succ n ih =>
       have hstep := resPoly_succ D n
-      set c := expLadderCoeffOf D (expPoly D n) n with hc
+      set c := expLadderCoeffOf D (inverseSeriesLadderExpPoly D n) n with hc
       have hdvd : X ^ (n + 2) ∣ resPoly D (n + 1) := by
         rw [hstep]
         obtain ⟨q, hq⟩ := X_dvd_lamPoly D n
@@ -100,7 +100,7 @@ theorem X_pow_dvd_resPoly (D : ℕ → ℂ) (hD0 : D 0 = 0) (N : ℕ) :
         · refine ⟨C c * q, ?_⟩
           rw [hq]
           ring
-        · exact ⟨C (D (n + 1)) * expPoly D (n + 1), by ring⟩
+        · exact ⟨C (D (n + 1)) * inverseSeriesLadderExpPoly D (n + 1), by ring⟩
         · exact ⟨C c * C (((n + 1 : ℕ) : ℂ)), by ring⟩
       have hcoeff : (resPoly D (n + 1)).coeff (n + 2) = 0 := by
         have h2 : (C c * X ^ (n + 1) * lamPoly D n).coeff (n + 2) = 0 := by
@@ -109,11 +109,11 @@ theorem X_pow_dvd_resPoly (D : ℕ → ℂ) (hD0 : D 0 = 0) (N : ℕ) :
           rw [show 1 + (n + 1) = n + 2 from by omega] at hx
           rw [hrw, Polynomial.coeff_C_mul, hx, coeff_one_lamPoly, hD0]
           ring
-        have h3 : (C (D (n + 1)) * X ^ (n + 2) * expPoly D (n + 1)).coeff (n + 2)
+        have h3 : (C (D (n + 1)) * X ^ (n + 2) * inverseSeriesLadderExpPoly D (n + 1)).coeff (n + 2)
             = D (n + 1) := by
-          have hrw : C (D (n + 1)) * X ^ (n + 2) * expPoly D (n + 1)
-              = C (D (n + 1)) * (X ^ (n + 2) * expPoly D (n + 1)) := by ring
-          have hx := Polynomial.coeff_X_pow_mul (expPoly D (n + 1)) (n + 2) 0
+          have hrw : C (D (n + 1)) * X ^ (n + 2) * inverseSeriesLadderExpPoly D (n + 1)
+              = C (D (n + 1)) * (X ^ (n + 2) * inverseSeriesLadderExpPoly D (n + 1)) := by ring
+          have hx := Polynomial.coeff_X_pow_mul (inverseSeriesLadderExpPoly D (n + 1)) (n + 2) 0
           rw [zero_add] at hx
           rw [hrw, Polynomial.coeff_C_mul, hx, coeff_zero_expPoly]
           ring
@@ -129,7 +129,7 @@ theorem X_pow_dvd_resPoly (D : ℕ → ℂ) (hD0 : D 0 = 0) (N : ℕ) :
           linarith
         have hcval : c * (((n + 1 : ℕ) : ℂ)) = D (n + 1) - (resPoly D n).coeff (n + 2) := by
           rw [hc, expLadderCoeffOf]
-          have hres : (lamPoly D n * expPoly D n + X ^ 2 * derivative (expPoly D n)).coeff (n + 2)
+          have hres : (lamPoly D n * inverseSeriesLadderExpPoly D n + X ^ 2 * derivative (inverseSeriesLadderExpPoly D n)).coeff (n + 2)
               = (resPoly D n).coeff (n + 2) := rfl
           rw [hres]
           push_cast

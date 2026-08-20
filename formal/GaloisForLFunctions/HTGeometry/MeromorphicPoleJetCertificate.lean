@@ -38,7 +38,7 @@ noncomputable def jetVector (f : ℂ → ℂ) (n : ℕ) (z : ℂ) : Fin (n + 2) 
   Fin.cons z fun j : Fin (n + 1) => iteratedDeriv (j : ℕ) f z
 
 /-- The differential monomial `z ^ m 0 * ∏ⱼ (f⁽ʲ⁾ z) ^ m (j + 1)` attached to an exponent vector. -/
-noncomputable def jetMonomial (f : ℂ → ℂ) (n : ℕ) (m : Fin (n + 2) →₀ ℕ) : ℂ → ℂ :=
+private noncomputable def jetMonomial (f : ℂ → ℂ) (n : ℕ) (m : Fin (n + 2) →₀ ℕ) : ℂ → ℂ :=
   fun z => ∏ i ∈ m.support, jetVector f n z i ^ m i
 
 /-- The row of Laurent coefficients at `a` of a differential monomial. -/

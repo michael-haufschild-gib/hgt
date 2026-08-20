@@ -369,7 +369,7 @@ theorem lSeries_vonMangoldt_eq_tsum_primeGradeSource {s : ℂ} (hs : 1 < s.re) :
 /-! ### Möbius inversion of the grade-one source -/
 
 /-- The absolute prime-log mass at abscissa `σ`. -/
-def primeLogMass (σ : ℝ) : ℝ := ∑' p : Nat.Primes, Real.log ((p : ℕ) : ℝ) * ((p : ℕ) : ℝ) ^ (-σ)
+private def primeLogMass (σ : ℝ) : ℝ := ∑' p : Nat.Primes, Real.log ((p : ℕ) : ℝ) * ((p : ℕ) : ℝ) ^ (-σ)
 
 theorem summable_primeLogMassTerm {σ : ℝ} (hσ : 1 < σ) :
     Summable fun p : Nat.Primes => Real.log ((p : ℕ) : ℝ) * ((p : ℕ) : ℝ) ^ (-σ) := by
@@ -381,7 +381,7 @@ theorem summable_primeLogMassTerm {σ : ℝ} (hσ : 1 < σ) :
   refine hlogp.congr fun p => ?_
   rw [pow_one, abs_of_nonneg (Real.log_natCast_nonneg _)]
 
-theorem primeLogMass_nonneg (σ : ℝ) : 0 ≤ primeLogMass σ := by
+private theorem primeLogMass_nonneg (σ : ℝ) : 0 ≤ primeLogMass σ := by
   refine tsum_nonneg fun p => ?_
   have h1 : (0 : ℝ) ≤ Real.log ((p : ℕ) : ℝ) := Real.log_natCast_nonneg _
   have h2 : (0 : ℝ) < (((p : ℕ) : ℝ)) ^ (-σ) := by

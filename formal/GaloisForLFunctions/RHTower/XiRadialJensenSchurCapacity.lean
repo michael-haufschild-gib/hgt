@@ -26,7 +26,7 @@ theorem norm_xiZeroCopyReciprocalSquare_eq (q : XiZeroCopy) :
     ‖xiZeroCopyReciprocalSquare q‖ = ‖xiReciprocalCoordinate q‖ ^ 2 := by
   rw [xiZeroCopyReciprocalSquare, xiReciprocalCoordinate, norm_pow]
 
-theorem norm_xiZeroCopyReciprocalSquare_le (q : XiZeroCopy) :
+private theorem norm_xiZeroCopyReciprocalSquare_le (q : XiZeroCopy) :
     ‖xiZeroCopyReciprocalSquare q‖ ≤ 2 / 41 := by
   have hgap := xiZeroCopy_fortyOne_div_two_lt_im_sq q
   have hnorm : ‖xiSpectralPoint q‖ = ‖(q.1 : ℂ) - 1 / 2‖ := norm_xiSpectralPoint q

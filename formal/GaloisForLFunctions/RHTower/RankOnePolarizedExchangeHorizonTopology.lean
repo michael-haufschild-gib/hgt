@@ -98,16 +98,16 @@ theorem isOpen_induced_scott_iff {α : Type*} (κ : α → Submodule k (Fin 2 �
 /-! ## The exchange horizon profile -/
 
 theorem coherentKernel_modularGain_zero :
-    coherentKernel (modularGain 0) = (⊤ : Submodule ℝ (Fin 2 → ℝ)) := by
+    rankOnePolarizedExchangeCoherentKernelCoherentKernel (modularGain 0) = (⊤ : Submodule ℝ (Fin 2 → ℝ)) := by
   rw [(modularGain_eq_one_iff 0).2 rfl, coherentKernel_one]
 
 theorem coherentKernel_modularGain_of_ne_zero {θ : ℝ} (h : θ ≠ 0) :
-    coherentKernel (modularGain θ) = permanentLine ℝ :=
+    rankOnePolarizedExchangeCoherentKernelCoherentKernel (modularGain θ) = permanentLine ℝ :=
   coherentKernel_of_ne_one fun hc => h ((modularGain_eq_one_iff θ).1 hc)
 
 /-- The modular weight line with the initial Scott topology of its coherent framed profile. -/
 @[reducible] def exchangeHorizonTopology : TopologicalSpace ℝ :=
-  induced (fun θ : ℝ => coherentKernel (modularGain θ))
+  induced (fun θ : ℝ => rankOnePolarizedExchangeCoherentKernelCoherentKernel (modularGain θ))
     (Topology.scott (Submodule ℝ (Fin 2 → ℝ)) univ)
 
 /-- **The exchange horizon topology.**  The initial Scott topology of the coherent framed profile
@@ -195,7 +195,7 @@ theorem card_separationQuotient_exchangeHorizon :
 /-- **The universal character horizon topology.**  On the full character set the initial Scott
 topology of `χ ↦ H χ` has exactly three opens. -/
 theorem isOpen_characterHorizon_iff (U : Set (ℕ+ →* kˣ)) :
-    IsOpen[induced (fun χ : ℕ+ →* kˣ => coherentKernel χ)
+    IsOpen[induced (fun χ : ℕ+ →* kˣ => rankOnePolarizedExchangeCoherentKernelCoherentKernel χ)
       (Topology.scott (Submodule k (Fin 2 → k)) univ)] U ↔
       U = ∅ ∨ U = {1} ∨ U = univ := by
   refine isOpen_induced_scott_iff _ {1} ?_ ?_ U

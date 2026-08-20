@@ -22,7 +22,7 @@ noncomputable section
 variable {S : Type*} [Fintype S] [DecidableEq S] {m : ℕ}
 
 omit [Fintype S] [DecidableEq S] in
-theorem real_smul_matrix (r : ℝ) (N : Matrix S S ℂ) : r • N = ((r : ℂ)) • N := by
+private theorem real_smul_matrix (r : ℝ) (N : Matrix S S ℂ) : r • N = ((r : ℂ)) • N := by
   ext x y
   simp [Matrix.smul_apply, Complex.real_smul]
 

@@ -38,7 +38,7 @@ variable {K L : Type u} [Field K] [Field L] [Algebra K L]
 
 omit [Differential K] [DifferentialAlgebra K L] in
 /-- Every jet of an element of a derivation-closed field stays inside it. -/
-theorem differentialJet_mem_of_derivationClosed {B : IntermediateField K L}
+private theorem differentialJet_mem_of_derivationClosed {B : IntermediateField K L}
     (hB : DerivationClosed B) {w : L} (hw : w ∈ B) (n : ℕ) : differentialJet n w ∈ B := by
   induction n with
   | zero => simpa using hw

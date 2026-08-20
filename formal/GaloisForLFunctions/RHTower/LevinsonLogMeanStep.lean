@@ -19,7 +19,7 @@ namespace RHTower
 the mean of `log ‖f‖` is at most half the logarithm of the mean of `‖f‖²`.  This is Jensen's
 inequality for the concave logarithm, obtained here from the elementary tangent-line bound
 `log u ≤ u/c + log c − 1`. -/
-theorem two_mul_integral_log_norm_le {f : ℝ → ℂ} {a b : ℝ} (hab : a < b)
+private theorem two_mul_integral_log_norm_le {f : ℝ → ℂ} {a b : ℝ} (hab : a < b)
     (hcont : ContinuousOn f (Icc a b)) (hf : ∀ t ∈ Icc a b, f t ≠ 0) :
     2 * (∫ t in a..b, Real.log ‖f t‖)
       ≤ (b - a) * Real.log ((b - a)⁻¹ * ∫ t in a..b, ‖f t‖ ^ 2) := by

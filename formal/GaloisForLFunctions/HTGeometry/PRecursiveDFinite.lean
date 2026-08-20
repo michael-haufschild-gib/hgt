@@ -152,7 +152,7 @@ theorem eval_risingPoly_succ (i : ℕ) (w : ℂ) :
   rw [eval_risingPoly, eval_risingPoly, Finset.prod_range_succ]
   ring
 
-theorem coeff_iterate_derivative : ∀ (i : ℕ) (F : PowerSeries ℂ) (n : ℕ),
+private theorem coeff_iterate_derivative : ∀ (i : ℕ) (F : PowerSeries ℂ) (n : ℕ),
     PowerSeries.coeff n ((PowerSeries.derivative ℂ)^[i] F)
       = (risingPoly i).eval (n : ℂ) * PowerSeries.coeff (n + i) F := by
   intro i
@@ -284,14 +284,14 @@ theorem exists_opApply_eventually_zero (F : PowerSeries ℂ)
 
 /-! ## Taylor series of an entire function -/
 
-theorem differentiable_iteratedDeriv {h : ℂ → ℂ} (hh : Differentiable ℂ h) :
+private theorem differentiable_iteratedDeriv {h : ℂ → ℂ} (hh : Differentiable ℂ h) :
     ∀ n, Differentiable ℂ (iteratedDeriv n h)
   | 0 => by simpa using hh
   | (n + 1) => by
       rw [iteratedDeriv_succ]
       exact (differentiable_iteratedDeriv hh n).deriv
 
-theorem iteratedDeriv_id_mul {h : ℂ → ℂ} (hh : Differentiable ℂ h) : ∀ n : ℕ,
+private theorem iteratedDeriv_id_mul {h : ℂ → ℂ} (hh : Differentiable ℂ h) : ∀ n : ℕ,
     iteratedDeriv (n + 1) (fun z : ℂ => z * h z)
       = fun z => ((n : ℂ) + 1) * iteratedDeriv n h z + z * iteratedDeriv (n + 1) h z := by
   intro n

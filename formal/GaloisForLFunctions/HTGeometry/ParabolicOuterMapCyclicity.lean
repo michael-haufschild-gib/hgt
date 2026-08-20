@@ -29,7 +29,7 @@ theorem norm_herglotzSigma_lt_one (hmPos : ∀ z : ℂ, 0 < z.im → 0 < (m z).i
   rw [herglotzSigma_eq_cayleyToDisc]
   exact norm_cayleyToDisc_lt_one (hmPos z hz)
 
-theorem analyticAt_cayleyToUpper {w : ℂ} (hw : w ∈ Metric.ball (0 : ℂ) 1) :
+private theorem analyticAt_cayleyToUpper {w : ℂ} (hw : w ∈ Metric.ball (0 : ℂ) 1) :
     AnalyticAt ℂ cayleyToUpper w := by
   have hw1 : ‖w‖ < 1 := by
     rw [Metric.mem_ball, dist_zero_right] at hw

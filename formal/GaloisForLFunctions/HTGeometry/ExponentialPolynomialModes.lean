@@ -11,10 +11,10 @@ The engine is the block calculus.  Applying `L(D)` to a block `P(x) e^{μ x}` re
 the same frequency,
 
 ```text
-L(D) (P e^{μ ·}) = (blockOp L μ P) e^{μ ·} ,     blockOp L μ = L (derivative + μ) ,
+L(D) (P e^{μ ·}) = (exponentialPolynomialModesBlockOp L μ P) e^{μ ·} ,     exponentialPolynomialModesBlockOp L μ = L (derivative + μ) ,
 ```
 
-and the top coefficient of `blockOp L μ P` is `L(μ)` times that of `P`, because differentiation
+and the top coefficient of `exponentialPolynomialModesBlockOp L μ P` is `L(μ)` times that of `P`, because differentiation
 strictly lowers degree.  Three consequences follow at once:
 
 * `blockOp_ne_zero` — a frequency that is not a root of `L` is annihilated only if its polynomial
@@ -46,26 +46,26 @@ theorem expShiftLM_apply (μ : ℂ) (P : Polynomial ℂ) :
 
 /-- The **block operator**: the action of `L(D)` on the polynomial factor of a block of
 frequency `μ`. -/
-def blockOp (L : Polynomial ℂ) (μ : ℂ) : Module.End ℂ (Polynomial ℂ) :=
+def exponentialPolynomialModesBlockOp (L : Polynomial ℂ) (μ : ℂ) : Module.End ℂ (Polynomial ℂ) :=
   Polynomial.aeval (expShiftLM μ) L
 
 theorem blockOp_mul (L M : Polynomial ℂ) (μ : ℂ) (P : Polynomial ℂ) :
-    blockOp (L * M) μ P = blockOp L μ (blockOp M μ P) := by
-  rw [blockOp, map_mul, Module.End.mul_apply]
+    exponentialPolynomialModesBlockOp (L * M) μ P = exponentialPolynomialModesBlockOp L μ (exponentialPolynomialModesBlockOp M μ P) := by
+  rw [exponentialPolynomialModesBlockOp, map_mul, Module.End.mul_apply]
   rfl
 
 theorem blockOp_XsubC (μ : ℂ) (P : Polynomial ℂ) :
-    blockOp (Polynomial.X - Polynomial.C μ) μ P = Polynomial.derivative P := by
-  rw [blockOp, map_sub, Polynomial.aeval_X, Polynomial.aeval_C,
+    exponentialPolynomialModesBlockOp (Polynomial.X - Polynomial.C μ) μ P = Polynomial.derivative P := by
+  rw [exponentialPolynomialModesBlockOp, map_sub, Polynomial.aeval_X, Polynomial.aeval_C,
     Algebra.algebraMap_eq_smul_one]
   simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, expShiftLM_apply,
     expShiftPoly]
   abel
 
 theorem blockOp_XsubC_pow (μ : ℂ) (m : ℕ) (P : Polynomial ℂ) :
-    blockOp ((Polynomial.X - Polynomial.C μ) ^ m) μ P = (⇑Polynomial.derivative)^[m] P := by
+    exponentialPolynomialModesBlockOp ((Polynomial.X - Polynomial.C μ) ^ m) μ P = (⇑Polynomial.derivative)^[m] P := by
   induction m generalizing P with
-  | zero => simp [blockOp]
+  | zero => simp [exponentialPolynomialModesBlockOp]
   | succ m ih =>
       rw [pow_succ, blockOp_mul, ih, blockOp_XsubC, Function.iterate_succ_apply']
       exact (Function.iterate_succ_apply' _ _ _).symm ▸ rfl
@@ -84,9 +84,9 @@ theorem iteratedDeriv_polyExp (k : ℕ) (P : Polynomial ℂ) (μ : ℂ) :
 /-- **The block rule.**  A constant-coefficient operator maps a block to a block of the same
 frequency. -/
 theorem realConstCoeffOp_polyExp (L P : Polynomial ℂ) (μ : ℂ) :
-    realConstCoeffOp L (polyExp P μ) = polyExp (blockOp L μ P) μ := by
+    realConstCoeffOp L (polyExp P μ) = polyExp (exponentialPolynomialModesBlockOp L μ P) μ := by
   funext x
-  rw [realConstCoeffOp_eq_sum_range, blockOp, Polynomial.aeval_eq_sum_range (x := expShiftLM μ)]
+  rw [realConstCoeffOp_eq_sum_range, exponentialPolynomialModesBlockOp, Polynomial.aeval_eq_sum_range (x := expShiftLM μ)]
   simp only [iteratedDeriv_polyExp, polyExp, polyExpC, LinearMap.coe_sum, Finset.sum_apply,
     LinearMap.smul_apply, Polynomial.eval_finsetSum, Polynomial.eval_smul, smul_eq_mul,
     Finset.sum_mul]
@@ -129,8 +129,8 @@ theorem coeff_expShiftLM_pow (μ : ℂ) (k : ℕ) {d : ℕ} (P : Polynomial ℂ)
 /-- **The top coefficient of a block image.** -/
 theorem coeff_blockOp (L : Polynomial ℂ) (μ : ℂ) {d : ℕ} (P : Polynomial ℂ)
     (hd : P.natDegree ≤ d) :
-    (blockOp L μ P).coeff d = L.eval μ * P.coeff d := by
-  rw [blockOp, Polynomial.aeval_eq_sum_range (x := expShiftLM μ)]
+    (exponentialPolynomialModesBlockOp L μ P).coeff d = L.eval μ * P.coeff d := by
+  rw [exponentialPolynomialModesBlockOp, Polynomial.aeval_eq_sum_range (x := expShiftLM μ)]
   simp only [LinearMap.coe_sum, Finset.sum_apply, LinearMap.smul_apply, Polynomial.finsetSum_coeff,
     Polynomial.coeff_smul, smul_eq_mul]
   rw [Polynomial.eval_eq_sum_range, Finset.sum_mul]
@@ -138,7 +138,7 @@ theorem coeff_blockOp (L : Polynomial ℂ) (μ : ℂ) {d : ℕ} (P : Polynomial 
 
 /-- **A nonroot frequency is not annihilated.** -/
 theorem blockOp_ne_zero {L P : Polynomial ℂ} {μ : ℂ} (hL : L.eval μ ≠ 0) (hP : P ≠ 0) :
-    blockOp L μ P ≠ 0 := by
+    exponentialPolynomialModesBlockOp L μ P ≠ 0 := by
   intro h
   have hc := coeff_blockOp L μ P (le_refl P.natDegree)
   rw [h, Polynomial.coeff_zero] at hc
@@ -194,13 +194,13 @@ theorem eq_zero_of_sum_polyExp_eq_zero {S : Finset ℂ} {P : ℂ → Polynomial 
   classical
   set L : Polynomial ℂ :=
     ∏ μ ∈ S.erase ν, (Polynomial.X - Polynomial.C μ) ^ ((P μ).natDegree + 1) with hL
-  have hop : ∑ μ ∈ S, polyExp (blockOp L μ (P μ)) μ = 0 := by
+  have hop : ∑ μ ∈ S, polyExp (exponentialPolynomialModesBlockOp L μ (P μ)) μ = 0 := by
     have hsum := realConstCoeffOp_sum S L (fun μ => polyExp (P μ) μ)
       (fun μ => contDiff_polyExp _ _)
     rw [h, realConstCoeffOp_zero] at hsum
     exact (Finset.sum_congr rfl fun κ _ =>
       (realConstCoeffOp_polyExp L (P κ) κ).symm).trans hsum.symm
-  have hkill : ∀ μ ∈ S, μ ≠ ν → polyExp (blockOp L μ (P μ)) μ = 0 := by
+  have hkill : ∀ μ ∈ S, μ ≠ ν → polyExp (exponentialPolynomialModesBlockOp L μ (P μ)) μ = 0 := by
     intro μ hμS hμν
     have hmem : μ ∈ S.erase ν := Finset.mem_erase.mpr ⟨hμν, hμS⟩
     have hfac : L = (∏ κ ∈ (S.erase ν).erase μ,
@@ -209,10 +209,10 @@ theorem eq_zero_of_sum_polyExp_eq_zero {S : Finset ℂ} {P : ℂ → Polynomial 
       rw [hL, ← Finset.prod_erase_mul _ _ hmem]
     rw [hfac, blockOp_mul, blockOp_XsubC_pow,
       Polynomial.iterate_derivative_eq_zero (by omega), map_zero, polyExp_eq_zero_poly]
-  have hsingle : polyExp (blockOp L ν (P ν)) ν = 0 := by
+  have hsingle : polyExp (exponentialPolynomialModesBlockOp L ν (P ν)) ν = 0 := by
     rw [← hop]
     exact (Finset.sum_eq_single ν hkill (fun hc => absurd hν hc)).symm
-  have hblock : blockOp L ν (P ν) = 0 := (polyExp_eq_zero_iff _ _).mp hsingle
+  have hblock : exponentialPolynomialModesBlockOp L ν (P ν) = 0 := (polyExp_eq_zero_iff _ _).mp hsingle
   by_contra hPν
   refine blockOp_ne_zero ?_ hPν hblock
   rw [hL, Polynomial.eval_prod]
@@ -239,7 +239,7 @@ theorem iterate_derivative_ne_zero {P : Polynomial ℂ} (hP : P ≠ 0) {m : ℕ}
 
 /-- **The degree at a root is below its multiplicity.** -/
 theorem natDegree_lt_rootMultiplicity_of_blockOp_eq_zero {L P : Polynomial ℂ} {μ : ℂ}
-    (hL : L ≠ 0) (hP : P ≠ 0) (h : blockOp L μ P = 0) :
+    (hL : L ≠ 0) (hP : P ≠ 0) (h : exponentialPolynomialModesBlockOp L μ P = 0) :
     P.natDegree < L.rootMultiplicity μ := by
   by_contra hcon
   rw [not_lt] at hcon
@@ -296,13 +296,13 @@ theorem exists_characteristic_modes {g : ℝ → ℂ} (hg : ContDiff ℝ (⊤ : 
   obtain ⟨P, hP⟩ := expMonomialSpace_le_blockSpan N S hmem
   refine ⟨S, P, hP, ?_⟩
   intro μ hμ hPμ
-  have hop : ∑ κ ∈ S, polyExp (blockOp L κ (P κ)) κ = 0 := by
+  have hop : ∑ κ ∈ S, polyExp (exponentialPolynomialModesBlockOp L κ (P κ)) κ = 0 := by
     have hsum := realConstCoeffOp_sum S L (fun κ => polyExp (P κ) κ)
       (fun κ => contDiff_polyExp _ _)
     rw [← hP, hzero] at hsum
     exact (Finset.sum_congr rfl fun κ _ =>
       (realConstCoeffOp_polyExp L (P κ) κ).symm).trans hsum.symm
-  have hblock : blockOp L μ (P μ) = 0 := eq_zero_of_sum_polyExp_eq_zero hop hμ
+  have hblock : exponentialPolynomialModesBlockOp L μ (P μ) = 0 := eq_zero_of_sum_polyExp_eq_zero hop hμ
   have hdeg := natDegree_lt_rootMultiplicity_of_blockOp_eq_zero hL hPμ hblock
   refine ⟨?_, hdeg⟩
   have hpos : 0 < L.rootMultiplicity μ := by omega

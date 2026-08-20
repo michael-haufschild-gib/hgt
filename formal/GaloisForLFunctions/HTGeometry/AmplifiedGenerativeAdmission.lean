@@ -30,14 +30,14 @@ def rankOneAdmissionPencil (z : ι → ℂ) (r c : ℝ) : Matrix ι ι ℂ :=
 
 omit [DecidableEq ι] in
 private theorem quadForm_sub_for_admission (M N : Matrix ι ι ℂ) (z : ι → ℂ) :
-    quadForm (M - N) z = quadForm M z - quadForm N z := by
+    boundedReplicaThresholdProjectorQuadForm (M - N) z = boundedReplicaThresholdProjectorQuadForm M z - boundedReplicaThresholdProjectorQuadForm N z := by
   simp only [quadForm_eq_sum, Matrix.sub_apply, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
 omit [DecidableEq ι] in
 private theorem quadForm_real_smul_for_admission (a : ℝ) (M : Matrix ι ι ℂ) (z : ι → ℂ) :
-    quadForm (a • M) z = (a : ℂ) * quadForm M z := by
+    boundedReplicaThresholdProjectorQuadForm (a • M) z = (a : ℂ) * boundedReplicaThresholdProjectorQuadForm M z := by
   simp only [quadForm_eq_sum, Matrix.smul_apply]
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -70,8 +70,8 @@ theorem rankOneAdmissionPencil_posSemidef_iff {z : ι → ℂ} (hz : hermInner z
   constructor
   · intro h
     have hq := h.dotProduct_mulVec_nonneg z
-    change 0 ≤ quadForm (rankOneAdmissionPencil z r c) z at hq
-    have hval : quadForm (rankOneAdmissionPencil z r c) z = ((c - r : ℝ) : ℂ) := by
+    change 0 ≤ boundedReplicaThresholdProjectorQuadForm (rankOneAdmissionPencil z r c) z at hq
+    have hval : boundedReplicaThresholdProjectorQuadForm (rankOneAdmissionPencil z r c) z = ((c - r : ℝ) : ℂ) := by
       rw [rankOneAdmissionPencil, quadForm_sub_for_admission,
         quadForm_real_smul_for_admission, quadForm_real_smul_for_admission,
         quadForm_one, hz, quadForm_rankOne, hz]

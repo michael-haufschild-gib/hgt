@@ -26,7 +26,7 @@ noncomputable section
 variable {d : Type} [Fintype d] [DecidableEq d]
 
 /-- The jet shift of a polynomial relation. -/
-def jetShift {N : ℕ} (Q : MvPolynomial (Fin N) ℂ) :
+private def jetShift {N : ℕ} (Q : MvPolynomial (Fin N) ℂ) :
     MvPolynomial (Fin (N + 1)) ℂ :=
   ∑ i : Fin N, MvPolynomial.rename Fin.castSucc (MvPolynomial.pderiv i Q)
     * MvPolynomial.X i.succ

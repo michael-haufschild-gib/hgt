@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- The open tube of radius `η` around the real segment `[a, b]`. -/
-def realTube (a b η : ℝ) : Set ℂ := ⋃ t ∈ Set.Icc a b, Metric.ball ((t : ℝ) : ℂ) η
+private def realTube (a b η : ℝ) : Set ℂ := ⋃ t ∈ Set.Icc a b, Metric.ball ((t : ℝ) : ℂ) η
 
 theorem isOpen_realTube (a b η : ℝ) : IsOpen (realTube a b η) :=
   isOpen_biUnion fun _ _ => Metric.isOpen_ball

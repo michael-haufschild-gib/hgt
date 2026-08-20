@@ -264,7 +264,7 @@ theorem mobiusCompletedSquarefreeTransfer_eq_quotient
   ring
 
 /-- The doubled-argument zeta has the doubled logarithmic derivative. -/
-theorem logDeriv_riemannZeta_two_mul {s : ℂ} (h2 : 2 * s ≠ 1) :
+private theorem logDeriv_riemannZeta_two_mul {s : ℂ} (h2 : 2 * s ≠ 1) :
     logDeriv (fun z : ℂ => riemannZeta (2 * z)) s = 2 * logDeriv riemannZeta (2 * s) := by
   have hchain := logDeriv_comp (f := riemannZeta) (g := fun z : ℂ => 2 * z)
     (differentiableAt_riemannZeta h2)

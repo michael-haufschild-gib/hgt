@@ -18,7 +18,7 @@ open Filter Topology
 
 noncomputable section
 
-theorem periodic_shift_nat {R₀ : ℝ} {F : ℂ → ℂ}
+private theorem periodic_shift_nat {R₀ : ℝ} {F : ℂ → ℂ}
     (hper : ∀ s : ℂ, R₀ < s.re → F (s + 1) = F s) :
     ∀ (n : ℕ) (s : ℂ), R₀ < s.re → F (s + (n : ℂ)) = F s := by
   intro n

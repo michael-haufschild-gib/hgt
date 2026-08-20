@@ -32,14 +32,14 @@ variable (F : Type*) [Fintype F] [DecidableEq F]
 def facetVector : F → ℝ := fun _ => 1
 
 /-- The facet coboundary of a monomial block: exterior multiplication by the all-facet vector. -/
-def facetCoboundary : ExteriorAlgebra ℝ (F → ℝ) →ₗ[ℝ] ExteriorAlgebra ℝ (F → ℝ) :=
+def simplexFacetHodgeBlockFacetCoboundary : ExteriorAlgebra ℝ (F → ℝ) →ₗ[ℝ] ExteriorAlgebra ℝ (F → ℝ) :=
   LinearMap.mulLeft ℝ (ExteriorAlgebra.ι ℝ (facetVector F))
 
 /-- The dual functional summing all facet coordinates: the metric dual of the all-facet vector. -/
 def facetDual : Module.Dual ℝ (F → ℝ) := ∑ i : F, LinearMap.proj i
 
 /-- The dual functional reading a single facet coordinate. -/
-def coordDual (a : F) : Module.Dual ℝ (F → ℝ) := LinearMap.proj a
+private def coordDual (a : F) : Module.Dual ℝ (F → ℝ) := LinearMap.proj a
 
 omit [DecidableEq F] in
 @[simp] theorem facetDual_facetVector : facetDual F (facetVector F) = (Fintype.card F : ℝ) := by
@@ -57,18 +57,18 @@ contraction by `d` and exterior multiplication by the all-facet vector anticommu
 `d(u)`. -/
 theorem contract_facetCoboundary_add (d : Module.Dual ℝ (F → ℝ))
     (x : ExteriorAlgebra ℝ (F → ℝ)) :
-    CliffordAlgebra.contractLeft d (facetCoboundary F x)
-        + facetCoboundary F (CliffordAlgebra.contractLeft d x)
+    CliffordAlgebra.contractLeft d (simplexFacetHodgeBlockFacetCoboundary F x)
+        + simplexFacetHodgeBlockFacetCoboundary F (CliffordAlgebra.contractLeft d x)
       = d (facetVector F) • x := by
-  rw [facetCoboundary, LinearMap.mulLeft_apply, LinearMap.mulLeft_apply,
+  rw [simplexFacetHodgeBlockFacetCoboundary, LinearMap.mulLeft_apply, LinearMap.mulLeft_apply,
     CliffordAlgebra.contractLeft_ι_mul]
   abel
 
 omit [DecidableEq F] in
 /-- **The block Hodge operator is the facet count.**  `d d* + d* d = n · id`. -/
 theorem facetHodge_apply (x : ExteriorAlgebra ℝ (F → ℝ)) :
-    CliffordAlgebra.contractLeft (facetDual F) (facetCoboundary F x)
-        + facetCoboundary F (CliffordAlgebra.contractLeft (facetDual F) x)
+    CliffordAlgebra.contractLeft (facetDual F) (simplexFacetHodgeBlockFacetCoboundary F x)
+        + simplexFacetHodgeBlockFacetCoboundary F (CliffordAlgebra.contractLeft (facetDual F) x)
       = (Fintype.card F : ℝ) • x := by
   rw [contract_facetCoboundary_add, facetDual_facetVector]
 
@@ -76,8 +76,8 @@ omit [Fintype F] [DecidableEq F] in
 /-- **The integral cone contraction.**  Contracting by a single facet coordinate is a contracting
 homotopy with coefficients in `{0, 1, -1}`. -/
 theorem facetCone_apply (a : F) (x : ExteriorAlgebra ℝ (F → ℝ)) :
-    CliffordAlgebra.contractLeft (coordDual F a) (facetCoboundary F x)
-        + facetCoboundary F (CliffordAlgebra.contractLeft (coordDual F a) x)
+    CliffordAlgebra.contractLeft (coordDual F a) (simplexFacetHodgeBlockFacetCoboundary F x)
+        + simplexFacetHodgeBlockFacetCoboundary F (CliffordAlgebra.contractLeft (coordDual F a) x)
       = x := by
   rw [contract_facetCoboundary_add, coordDual_facetVector, one_smul]
 
@@ -93,8 +93,8 @@ omit [DecidableEq F] in
 contraction of the block complex. -/
 theorem facetHermitianHomotopy [Nonempty F] (x : ExteriorAlgebra ℝ (F → ℝ)) :
     CliffordAlgebra.contractLeft (facetDual F)
-          (facetCoboundary F ((Fintype.card F : ℝ)⁻¹ • x))
-        + facetCoboundary F
+          (simplexFacetHodgeBlockFacetCoboundary F ((Fintype.card F : ℝ)⁻¹ • x))
+        + simplexFacetHodgeBlockFacetCoboundary F
           ((Fintype.card F : ℝ)⁻¹ • CliffordAlgebra.contractLeft (facetDual F) x)
       = x := by
   have hne : (Fintype.card F : ℝ) ≠ 0 := by
@@ -107,8 +107,8 @@ omit [Fintype F] [DecidableEq F] in
 /-- **Exactness of the block complex, integrally.**  Every cocycle is the coboundary of its cone
 contraction, whose coefficients are integral. -/
 theorem facetCoboundary_eq_of_facetCoboundary_eq_zero (a : F) {x : ExteriorAlgebra ℝ (F → ℝ)}
-    (hx : facetCoboundary F x = 0) :
-    facetCoboundary F (CliffordAlgebra.contractLeft (coordDual F a) x) = x := by
+    (hx : simplexFacetHodgeBlockFacetCoboundary F x = 0) :
+    simplexFacetHodgeBlockFacetCoboundary F (CliffordAlgebra.contractLeft (coordDual F a) x) = x := by
   have h := facetCone_apply F a x
   rw [hx, map_zero, zero_add] at h
   exact h
@@ -116,8 +116,8 @@ theorem facetCoboundary_eq_of_facetCoboundary_eq_zero (a : F) {x : ExteriorAlgeb
 omit [DecidableEq F] in
 /-- **Exactness of the block complex, Hermitially.** -/
 theorem facetCoboundary_eq_of_facetCoboundary_eq_zero' [Nonempty F]
-    {x : ExteriorAlgebra ℝ (F → ℝ)} (hx : facetCoboundary F x = 0) :
-    facetCoboundary F ((Fintype.card F : ℝ)⁻¹ • CliffordAlgebra.contractLeft (facetDual F) x)
+    {x : ExteriorAlgebra ℝ (F → ℝ)} (hx : simplexFacetHodgeBlockFacetCoboundary F x = 0) :
+    simplexFacetHodgeBlockFacetCoboundary F ((Fintype.card F : ℝ)⁻¹ • CliffordAlgebra.contractLeft (facetDual F) x)
       = x := by
   have h := facetHermitianHomotopy F x
   rw [map_smul, hx, smul_zero, map_zero, zero_add] at h

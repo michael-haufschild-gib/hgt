@@ -492,7 +492,7 @@ theorem tendsto_pow_mul_log_div_zero_of_exponent {z r : ℕ → ℕ} {H R : ℕ 
   linarith
 
 /-- The sieving level realised as a natural number: `z = ⌈exp L⌉`. -/
-noncomputable def sieveLevel (L : ℝ) : ℕ := ⌈Real.exp L⌉₊
+private noncomputable def sieveLevel (L : ℝ) : ℕ := ⌈Real.exp L⌉₊
 
 theorem two_le_sieveLevel {L : ℝ} (hL : 0 < L) : 2 ≤ sieveLevel L := by
   rw [sieveLevel]

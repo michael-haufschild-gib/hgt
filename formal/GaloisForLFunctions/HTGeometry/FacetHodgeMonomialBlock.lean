@@ -52,8 +52,8 @@ theorem monomialBlock_hodge {facets : Finset (Finset α)} {J : Finset α}
     (_h : IsFaceOf (↑facets : Set (Finset α)) J)
     (x : ExteriorAlgebra ℝ (↥(monomialBlock facets J) → ℝ)) :
     CliffordAlgebra.contractLeft (facetDual ↥(monomialBlock facets J))
-          (facetCoboundary ↥(monomialBlock facets J) x)
-        + facetCoboundary ↥(monomialBlock facets J)
+          (simplexFacetHodgeBlockFacetCoboundary ↥(monomialBlock facets J) x)
+        + simplexFacetHodgeBlockFacetCoboundary ↥(monomialBlock facets J)
           (CliffordAlgebra.contractLeft
             (facetDual ↥(monomialBlock facets J)) x)
       = (Fintype.card ↥(monomialBlock facets J) : ℝ) • x :=
@@ -84,8 +84,8 @@ theorem monomialBlock_hodge_skeletonFacets {k : ℕ} (hk : k ≤ Fintype.card σ
     (x : ExteriorAlgebra ℝ (↥(monomialBlock (skeletonFacets σ k) J) → ℝ)) :
     CliffordAlgebra.contractLeft
           (facetDual ↥(monomialBlock (skeletonFacets σ k) J))
-          (facetCoboundary ↥(monomialBlock (skeletonFacets σ k) J) x)
-        + facetCoboundary ↥(monomialBlock (skeletonFacets σ k) J)
+          (simplexFacetHodgeBlockFacetCoboundary ↥(monomialBlock (skeletonFacets σ k) J) x)
+        + simplexFacetHodgeBlockFacetCoboundary ↥(monomialBlock (skeletonFacets σ k) J)
           (CliffordAlgebra.contractLeft
             (facetDual ↥(monomialBlock (skeletonFacets σ k) J)) x)
       = (Fintype.card ↥(monomialBlock (skeletonFacets σ k) J) : ℝ) • x :=

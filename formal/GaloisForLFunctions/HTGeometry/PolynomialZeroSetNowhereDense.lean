@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- Every complex ball of positive radius is infinite. -/
-theorem infinite_ball_complex (c : ℂ) {r : ℝ} (hr : 0 < r) : (Metric.ball c r).Infinite := by
+private theorem infinite_ball_complex (c : ℂ) {r : ℝ} (hr : 0 < r) : (Metric.ball c r).Infinite := by
   refine Set.infinite_of_injective_forall_mem
     (f := fun n : ℕ => c + ((r / ((n : ℝ) + 2) : ℝ) : ℂ)) ?_ ?_
   · intro m n hmn

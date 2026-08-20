@@ -14,7 +14,7 @@ open Filter Topology
 noncomputable section
 
 /-- The truncation of a series in `1/s`. -/
-def truncSeries (c : ℕ → ℂ) (N : ℕ) (s : ℂ) : ℂ :=
+private def truncSeries (c : ℕ → ℂ) (N : ℕ) (s : ℂ) : ℂ :=
   ∑ n ∈ Finset.range (N + 1), c n * s ^ (-(n : ℤ))
 
 theorem truncSeries_eq_head_add (c : ℕ → ℂ) (N : ℕ) (s : ℂ) :

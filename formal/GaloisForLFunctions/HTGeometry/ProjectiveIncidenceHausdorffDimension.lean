@@ -28,7 +28,7 @@ theorem finrank_complex_pi
 
 /-- Evaluation commutes with the equivalence between a polynomial ring on a sum and an iterated
 polynomial ring. -/
-theorem eval_sumAlgEquiv
+private theorem eval_sumAlgEquiv
     {σ τ : Type*}
     (w : (σ ⊕ τ) → ℂ) (p : MvPolynomial (σ ⊕ τ) ℂ) :
     MvPolynomial.eval₂ (MvPolynomial.eval (w ∘ Sum.inr)) (w ∘ Sum.inl)

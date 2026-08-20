@@ -8,7 +8,7 @@ law along every line of a parameter space, and it is what makes the multivariabl
 coefficientwise.
 
 Main results:
-* `lineRestrict`, `eval_lineRestrict` — the restriction and its evaluation law.
+* `polynomialLineRestrictionLineRestrict`, `eval_lineRestrict` — the restriction and its evaluation law.
 * `lineRestrict_eq_sum` — its monomial expansion.
 * `natDegree_lineRestrict_le` — **the degree does not grow**.
 * `tendsto_eval_of_line_coeff` — pointwise jet convergence from coefficient convergence on lines.
@@ -24,24 +24,24 @@ noncomputable section
 variable {m : ℕ}
 
 /-- The restriction of a multivariable polynomial to the line through `v`. -/
-def lineRestrict (v : Fin m → ℂ) : MvPolynomial (Fin m) ℂ →+* Polynomial ℂ :=
+def polynomialLineRestrictionLineRestrict (v : Fin m → ℂ) : MvPolynomial (Fin m) ℂ →+* Polynomial ℂ :=
   MvPolynomial.eval₂Hom (Polynomial.C : ℂ →+* Polynomial ℂ)
     (fun i => Polynomial.C (v i) * Polynomial.X)
 
 theorem eval_lineRestrict (v : Fin m → ℂ) (P : MvPolynomial (Fin m) ℂ) (t : ℂ) :
-    Polynomial.eval t (lineRestrict v P) = MvPolynomial.eval (fun i => t * v i) P := by
+    Polynomial.eval t (polynomialLineRestrictionLineRestrict v P) = MvPolynomial.eval (fun i => t * v i) P := by
   induction P using MvPolynomial.induction_on with
-  | C a => simp [lineRestrict]
+  | C a => simp [polynomialLineRestrictionLineRestrict]
   | add p q hp hq => simp [hp, hq]
   | mul_X p i hp =>
-      simp only [lineRestrict, map_mul, MvPolynomial.eval₂Hom_X', Polynomial.eval_mul,
+      simp only [polynomialLineRestrictionLineRestrict, map_mul, MvPolynomial.eval₂Hom_X', Polynomial.eval_mul,
         Polynomial.eval_C, Polynomial.eval_X, MvPolynomial.eval_X]
       rw [show (MvPolynomial.eval₂Hom (Polynomial.C : ℂ →+* Polynomial ℂ)
-        (fun j => Polynomial.C (v j) * Polynomial.X)) p = lineRestrict v p from rfl, hp]
+        (fun j => Polynomial.C (v j) * Polynomial.X)) p = polynomialLineRestrictionLineRestrict v p from rfl, hp]
       ring
 
 theorem lineRestrict_eq_sum (v : Fin m → ℂ) (P : MvPolynomial (Fin m) ℂ) :
-    lineRestrict v P = ∑ s ∈ P.support,
+    polynomialLineRestrictionLineRestrict v P = ∑ s ∈ P.support,
       Polynomial.C (MvPolynomial.coeff s P)
         * ∏ i, (Polynomial.C (v i) * Polynomial.X) ^ (s i) := by
   classical
@@ -51,7 +51,7 @@ theorem lineRestrict_eq_sum (v : Fin m → ℂ) (P : MvPolynomial (Fin m) ℂ) :
 
 /-- **The line restriction does not raise the degree.** -/
 theorem natDegree_lineRestrict_le (v : Fin m → ℂ) {P : MvPolynomial (Fin m) ℂ} {d : ℕ}
-    (hP : P.totalDegree ≤ d) : (lineRestrict v P).natDegree ≤ d := by
+    (hP : P.totalDegree ≤ d) : (polynomialLineRestrictionLineRestrict v P).natDegree ≤ d := by
   classical
   rw [lineRestrict_eq_sum]
   refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun s hs => ?_
@@ -79,7 +79,7 @@ theorem natDegree_lineRestrict_le (v : Fin m → ℂ) {P : MvPolynomial (Fin m) 
 theorem tendsto_eval_of_line_coeff {d : ℕ} {P : ℕ → MvPolynomial (Fin m) ℂ}
     (hdeg : ∀ n, (P n).totalDegree ≤ d) (v : Fin m → ℂ) {Q : Polynomial ℂ}
     (hQ : Q.natDegree ≤ d)
-    (hc : ∀ h : ℕ, Tendsto (fun n => (lineRestrict v (P n)).coeff h) atTop
+    (hc : ∀ h : ℕ, Tendsto (fun n => (polynomialLineRestrictionLineRestrict v (P n)).coeff h) atTop
       (nhds (Q.coeff h))) :
     Tendsto (fun n => MvPolynomial.eval v (P n)) atTop (nhds (Polynomial.eval 1 Q)) := by
   have hbase := tendsto_eval_of_tendsto_coeff

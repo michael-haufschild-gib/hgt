@@ -266,7 +266,7 @@ theorem integral_Icc_normSq_logPoly_sub_le {a : ℕ → ℂ} (hA : ∀ n, ‖a n
 /-! ## The divisibility filter -/
 
 /-- The multiples of `p` in a block are few. -/
-theorem card_multiples_le (a b p : ℕ) :
+private theorem card_multiples_le (a b p : ℕ) :
     ((((Finset.Icc a b).filter (fun m => p ∣ m)).card : ℕ) : ℝ) ≤ (b : ℝ) / (p : ℝ) + 1 := by
   classical
   have hmaps : ∀ m ∈ (Finset.Icc a b).filter (fun m => p ∣ m),

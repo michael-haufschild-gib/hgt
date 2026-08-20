@@ -27,7 +27,7 @@ open Finset
 noncomputable section
 
 /-- The telescoping sum `∑_{2 ≤ n ≤ h} 1/(n(n−1)) = 1 − 1/h`. -/
-theorem sum_inv_mul_pred_eq {h : ℕ} (hh : 1 ≤ h) :
+private theorem sum_inv_mul_pred_eq {h : ℕ} (hh : 1 ≤ h) :
     ∑ n ∈ Finset.Icc 2 h, 1 / ((n : ℝ) * ((n : ℝ) - 1)) = 1 - 1 / (h : ℝ) := by
   induction h with
   | zero => omega

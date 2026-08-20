@@ -30,7 +30,7 @@ open Finset
 noncomputable section
 
 /-- A nonnegative sum over a union of fibres is at most the sum of the fibre sums. -/
-theorem sum_biUnion_le_of_nonneg {ι : Type*} [DecidableEq ι] (s : Finset ι) (t : ι → Finset ℕ)
+private theorem sum_biUnion_le_of_nonneg {ι : Type*} [DecidableEq ι] (s : Finset ι) (t : ι → Finset ℕ)
     (f : ℕ → ℝ) (hf : ∀ i, 0 ≤ f i) :
     ∑ i ∈ s.biUnion t, f i ≤ ∑ p ∈ s, ∑ i ∈ t p, f i := by
   classical

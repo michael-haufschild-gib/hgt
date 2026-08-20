@@ -40,7 +40,7 @@ section SeparatedNet
 variable {m : ℕ}
 
 /-- A separated subset of a Euclidean ball has cardinality bounded by the ball volume ratio. -/
-theorem card_le_of_separated {R δ : ℝ} (hm : 0 < m) (hδ : 0 < δ) (hR : 0 ≤ R)
+private theorem card_le_of_separated {R δ : ℝ} (hm : 0 < m) (hδ : 0 < δ) (hR : 0 ≤ R)
     {t : Finset (EuclideanSpace ℝ (Fin m))}
     (hball : ∀ x ∈ t, x ∈ closedBall (0 : EuclideanSpace ℝ (Fin m)) R)
     (hsep : ∀ x ∈ t, ∀ y ∈ t, x ≠ y → δ ≤ dist x y) :

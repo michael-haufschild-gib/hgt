@@ -159,7 +159,7 @@ theorem sum_card_primeFactorsIn_Icc_le (P : Finset ℕ) (M : ℕ) :
 
 /-- **Turán's second-moment bound on the rough count.** -/
 theorem card_roughSet_mul_sq_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime) (M : ℕ) :
-    ((roughSet P M).card : ℝ) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ 2
+    ((supportMeanSquareRoughSet P M).card : ℝ) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ 2
       ≤ (M : ℝ) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ))
         + 2 * (P.card : ℝ) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) := by
   classical
@@ -182,19 +182,19 @@ theorem card_roughSet_mul_sq_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime
     rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_const,
       nsmul_eq_mul, hcardIcc, hS1def, hS2def]
     ring
-  have hlow : ((roughSet P M).card : ℝ) * A ^ 2
+  have hlow : ((supportMeanSquareRoughSet P M).card : ℝ) * A ^ 2
       ≤ ∑ n ∈ Finset.Icc 1 M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2 := by
-    have hsub : roughSet P M ⊆ Finset.Icc 1 M := by
-      rw [roughSet]
+    have hsub : supportMeanSquareRoughSet P M ⊆ Finset.Icc 1 M := by
+      rw [supportMeanSquareRoughSet]
       exact Finset.filter_subset _ _
-    have hmono : ∑ n ∈ roughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2
+    have hmono : ∑ n ∈ supportMeanSquareRoughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2
         ≤ ∑ n ∈ Finset.Icc 1 M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2 :=
       Finset.sum_le_sum_of_subset_of_nonneg hsub fun n _ _ => by positivity
-    have heq : ∑ n ∈ roughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2
-        = ((roughSet P M).card : ℝ) * A ^ 2 := by
-      have hz : ∀ n ∈ roughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2 = A ^ 2 := by
+    have heq : ∑ n ∈ supportMeanSquareRoughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2
+        = ((supportMeanSquareRoughSet P M).card : ℝ) * A ^ 2 := by
+      have hz : ∀ n ∈ supportMeanSquareRoughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2 = A ^ 2 := by
         intro n hn
-        rw [roughSet, Finset.mem_filter] at hn
+        rw [supportMeanSquareRoughSet, Finset.mem_filter] at hn
         rw [hn.2]
         norm_num
       rw [Finset.sum_congr rfl hz, Finset.sum_const, nsmul_eq_mul]
@@ -219,7 +219,7 @@ theorem card_roughSet_mul_sq_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime
 divisible by no member of `P` number at most `M/A + 2|P|/A`. -/
 theorem card_roughSet_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime) (M : ℕ)
     (hA : 0 < ∑ p ∈ P, (1 : ℝ) / (p : ℝ)) :
-    ((roughSet P M).card : ℝ)
+    ((supportMeanSquareRoughSet P M).card : ℝ)
       ≤ (M : ℝ) / (∑ p ∈ P, (1 : ℝ) / (p : ℝ))
         + 2 * (P.card : ℝ) / (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) := by
   set A : ℝ := ∑ p ∈ P, (1 : ℝ) / (p : ℝ) with hAdef
@@ -229,7 +229,7 @@ theorem card_roughSet_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime) (M : 
   have hcomb : (M : ℝ) / A + 2 * (P.card : ℝ) / A = ((M : ℝ) + 2 * (P.card : ℝ)) / A := by
     field_simp
   rw [hcomb, le_div_iff₀ hA]
-  have hstep : ((roughSet P M).card : ℝ) * A * A ≤ ((M : ℝ) + 2 * (P.card : ℝ)) * A := by
+  have hstep : ((supportMeanSquareRoughSet P M).card : ℝ) * A * A ≤ ((M : ℝ) + 2 * (P.card : ℝ)) * A := by
     nlinarith [hbase]
   exact le_of_mul_le_mul_right hstep hA
 
@@ -242,7 +242,7 @@ theorem integral_Icc_normSq_roughPoly_le_budget {P : Finset ℕ} (hPprime : ∀ 
     (hPM : (P.card : ℝ) ≤ (M : ℝ))
     (hA : 15 * Real.exp 1 / (2 * ε) ≤ ∑ p ∈ P, (1 : ℝ) / (p : ℝ)) :
     (∫ w in Set.Icc (-W) W,
-      ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2)
+      ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)
       ≤ 2 * W * (M : ℝ) + ε * (M : ℝ) ^ 2 := by
   have hexp1 : (2 : ℝ) ≤ Real.exp 1 := by
     have := Real.add_one_le_exp (1 : ℝ)
@@ -255,7 +255,7 @@ theorem integral_Icc_normSq_roughPoly_le_budget {P : Finset ℕ} (hPprime : ∀ 
   have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
   have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
   -- the rough count
-  have hcount : ((roughSet P M).card : ℝ) ≤ 3 * (M : ℝ) / A := by
+  have hcount : ((supportMeanSquareRoughSet P M).card : ℝ) ≤ 3 * (M : ℝ) / A := by
     refine le_trans (card_roughSet_le hPprime M hA0) ?_
     have h1 : 2 * (P.card : ℝ) / A ≤ 2 * (M : ℝ) / A := by
       refine div_le_div_of_nonneg_right (by linarith) hA0.le
@@ -268,7 +268,7 @@ theorem integral_Icc_normSq_roughPoly_le_budget {P : Finset ℕ} (hPprime : ∀ 
     positivity
   have hms := integral_Icc_normSq_roughPoly_le P M hW
   have hstep : (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
-      * ((roughSet P M).card : ℝ)
+      * ((supportMeanSquareRoughSet P M).card : ℝ)
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (3 * (M : ℝ) / A) :=
     mul_le_mul_of_nonneg_left hcount hcoef0
   -- the harmonic mass converts the count into the budget

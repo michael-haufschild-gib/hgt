@@ -20,7 +20,7 @@ namespace RHTower.Sieve
 open Finset
 
 /-- **The adapted-moment cap on well-spaced large values of a prime-supported polynomial.** -/
-theorem card_largeValues_pow_le (N ℓ : ℕ) (hℓ : ℓ ≠ 0) (hN : 2 ≤ N) (a : Fin N → ℂ)
+private theorem card_largeValues_pow_le (N ℓ : ℕ) (hℓ : ℓ ≠ 0) (hN : 2 ≤ N) (a : Fin N → ℂ)
     (hsupp : ∀ n : Fin N, a n ≠ 0 → Nat.Prime ((n : ℕ) + 1))
     {lam : ℕ → ℝ} {δ T V : ℝ}
     (hδ : 0 < δ) (hT : 0 ≤ T) (hV : 0 < V)
@@ -51,7 +51,7 @@ theorem card_largeValues_pow_le (N ℓ : ℕ) (hℓ : ℓ ≠ 0) (hN : 2 ≤ N) 
   have hA : (0 : ℝ)
       ≤ T + 4 * ((N ^ ℓ : ℕ) : ℝ) * (1 + Real.log ((N ^ ℓ : ℕ) : ℝ)) := by nlinarith
   have hB : (0 : ℝ) ≤ 1 / δ + 2 * Real.log ((N ^ ℓ : ℕ) : ℝ) := by positivity
-  have hmass := sum_normSq_convPow_le_of_prime_support N ℓ a hsupp
+  have hmass := primePowerSupportSum_normSq_convPow_le_of_prime_support N ℓ a hsupp
   have hstep := mul_le_mul_of_nonneg_left hmass (mul_nonneg hA hB)
   calc ((R : ℝ) + 1) * V ^ (2 * ℓ)
       ≤ (T + 4 * ((N ^ ℓ : ℕ) : ℝ) * (1 + Real.log ((N ^ ℓ : ℕ) : ℝ)))

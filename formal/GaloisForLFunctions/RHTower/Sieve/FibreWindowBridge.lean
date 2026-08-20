@@ -247,7 +247,7 @@ theorem norm_logWindowSum_osc_le {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {x 
     rw [Complex.norm_real, Real.norm_eq_abs]
     exact hf n
   have hs1 : ∀ n ∈ fibreIndex x h, 1 ≤ n := fun n hn => (mem_fibreIndex.1 hn).1
-  have hbase := norm_logWindowSum_sub_le (fun n => ((f n : ℝ) : ℂ)) (fibreIndex x h) hs1 hM
+  have hbase := logWindowDiscreteTransferNorm_logWindowSum_sub_le (fun n => ((f n : ℝ) : ℂ)) (fibreIndex x h) hs1 hM
     (δ := fibreWidth x h) (u := u) (u' := v) hv.1
   refine hbase.trans ?_
   -- the exponential increments

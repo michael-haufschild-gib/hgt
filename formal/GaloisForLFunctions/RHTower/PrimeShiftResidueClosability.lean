@@ -289,7 +289,7 @@ theorem memCriticalSummableLayer_absField_finsetSum {ι : Type*} (S : Finset ι)
 def RightStrip : Set ℂ := {z | 1 / 2 < z.re ∧ z.re < 1}
 
 /-- A point of the open right half of the critical strip. -/
-abbrev StripPoint := {z : ℂ // z ∈ RightStrip}
+private abbrev StripPoint := {z : ℂ // z ∈ RightStrip}
 
 theorem stripPoint_ne_one (z : StripPoint) : (z : ℂ) ≠ 1 := by
   intro h

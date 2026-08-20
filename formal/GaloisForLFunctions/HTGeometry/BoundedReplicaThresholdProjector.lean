@@ -31,20 +31,20 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 /-! ### Sesquilinear forms in a finite product basis -/
 
 /-- The sesquilinear form of a matrix, in the convention conjugate-linear in the first slot. -/
-def quadForm {m : Type*} [Fintype m] (M : Matrix m m ℂ) (w : m → ℂ) : ℂ :=
+def boundedReplicaThresholdProjectorQuadForm {m : Type*} [Fintype m] (M : Matrix m m ℂ) (w : m → ℂ) : ℂ :=
   star w ⬝ᵥ (M *ᵥ w)
 
 theorem quadForm_eq_sum {m : Type*} [Fintype m] (M : Matrix m m ℂ) (w : m → ℂ) :
-    quadForm M w = ∑ f, ∑ g, conj (w f) * M f g * w g := by
-  simp [quadForm, dotProduct, mulVec, Finset.mul_sum, mul_assoc]
+    boundedReplicaThresholdProjectorQuadForm M w = ∑ f, ∑ g, conj (w f) * M f g * w g := by
+  simp [boundedReplicaThresholdProjectorQuadForm, dotProduct, mulVec, Finset.mul_sum, mul_assoc]
 
 theorem quadForm_add {m : Type*} [Fintype m] (M N : Matrix m m ℂ) (w : m → ℂ) :
-    quadForm (M + N) w = quadForm M w + quadForm N w := by
+    boundedReplicaThresholdProjectorQuadForm (M + N) w = boundedReplicaThresholdProjectorQuadForm M w + boundedReplicaThresholdProjectorQuadForm N w := by
   simp only [quadForm_eq_sum, Matrix.add_apply, ← Finset.sum_add_distrib]
   exact Finset.sum_congr rfl fun f _ => Finset.sum_congr rfl fun g _ => by ring
 
 theorem quadForm_sum {m ι : Type*} [Fintype m] (s : Finset ι) (M : ι → Matrix m m ℂ)
-    (w : m → ℂ) : quadForm (∑ i ∈ s, M i) w = ∑ i ∈ s, quadForm (M i) w := by
+    (w : m → ℂ) : boundedReplicaThresholdProjectorQuadForm (∑ i ∈ s, M i) w = ∑ i ∈ s, boundedReplicaThresholdProjectorQuadForm (M i) w := by
   classical
   induction s using Finset.induction with
   | empty => simp [quadForm_eq_sum]
@@ -61,8 +61,8 @@ theorem star_dotProduct_self {m : Type*} [Fintype m] (u : m → ℂ) :
 /-- The Gram identity: the form of `Mᴴ * M` is the squared norm of the image vector, hence real
 and nonnegative. -/
 theorem quadForm_conjTranspose_mul {m : Type*} [Fintype m] (M : Matrix m m ℂ) (w : m → ℂ) :
-    quadForm (Mᴴ * M) w = ((∑ c, Complex.normSq ((M *ᵥ w) c) : ℝ) : ℂ) := by
-  rw [quadForm, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, ← Matrix.star_mulVec,
+    boundedReplicaThresholdProjectorQuadForm (Mᴴ * M) w = ((∑ c, Complex.normSq ((M *ᵥ w) c) : ℝ) : ℂ) := by
+  rw [boundedReplicaThresholdProjectorQuadForm, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, ← Matrix.star_mulVec,
     star_dotProduct_self]
 
 /-! ### Replica tensor powers in the product basis -/
@@ -109,8 +109,8 @@ theorem replicaOp_eq_zero_of_factor {r : ℕ} (A : Fin r → Matrix n n ℂ) (i 
 omit [DecidableEq n] in
 /-- **The product factorization of the replica expectation.** -/
 theorem quadForm_replicaOp (r : ℕ) (A : Fin r → Matrix n n ℂ) (v : n → ℂ) :
-    quadForm (replicaOp r A) (replicaVector r v) = ∏ i, quadForm (A i) v := by
-  have hstep : ∀ i : Fin r, quadForm (A i) v = ∑ p, ∑ q, conj (v p) * A i p q * v q :=
+    boundedReplicaThresholdProjectorQuadForm (replicaOp r A) (replicaVector r v) = ∏ i, boundedReplicaThresholdProjectorQuadForm (A i) v := by
+  have hstep : ∀ i : Fin r, boundedReplicaThresholdProjectorQuadForm (A i) v = ∑ p, ∑ q, conj (v p) * A i p q * v q :=
     fun i => quadForm_eq_sum (A i) v
   simp only [hstep]
   rw [Finset.prod_univ_sum (fun _ => (Finset.univ : Finset n))
@@ -135,7 +135,7 @@ theorem rankOne_apply (z : n → ℂ) (p q : n) : rankOne z p q = z p * conj (z 
 
 omit [DecidableEq n] in
 theorem quadForm_rankOne (z v : n → ℂ) :
-    quadForm (rankOne z) v = ((Complex.normSq (hermInner z v) : ℝ) : ℂ) := by
+    boundedReplicaThresholdProjectorQuadForm (rankOne z) v = ((Complex.normSq (hermInner z v) : ℝ) : ℂ) := by
   rw [quadForm_eq_sum, Complex.normSq_eq_conj_mul_self]
   have hleft : conj (hermInner z v) = ∑ p, conj (v p) * z p := by
     simp only [hermInner, map_sum, map_mul, Complex.conj_conj]
@@ -145,7 +145,7 @@ theorem quadForm_rankOne (z v : n → ℂ) :
   rw [rankOne_apply]
   ring
 
-theorem quadForm_one (v : n → ℂ) : quadForm (1 : Matrix n n ℂ) v = hermInner v v := by
+theorem quadForm_one (v : n → ℂ) : boundedReplicaThresholdProjectorQuadForm (1 : Matrix n n ℂ) v = hermInner v v := by
   rw [quadForm_eq_sum, hermInner]
   simp only [Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
     if_true, ite_mul, zero_mul]
@@ -205,7 +205,7 @@ theorem outcomeFactor_mul_of_ne {z : n → ℂ} (hz : hermInner z z = 1) {r : �
 
 theorem quadForm_outcomeFactor {z v : n → ℂ} {r : ℕ} (S : Finset (Fin r)) (i : Fin r)
     (hv : hermInner v v = 1) :
-    quadForm (outcomeFactor z S i) v
+    boundedReplicaThresholdProjectorQuadForm (outcomeFactor z S i) v
       = if i ∈ S then ((Complex.normSq (hermInner z v) : ℝ) : ℂ)
           else 1 - ((Complex.normSq (hermInner z v) : ℝ) : ℂ) := by
   unfold outcomeFactor
@@ -214,7 +214,7 @@ theorem quadForm_outcomeFactor {z v : n → ℂ} {r : ℕ} (S : Finset (Fin r)) 
   · rw [show (1 : Matrix n n ℂ) - rankOne z = (1 : Matrix n n ℂ) + (-1 : ℂ) • rankOne z by
         rw [neg_one_smul]; abel]
     rw [quadForm_add]
-    have hsmul : quadForm ((-1 : ℂ) • rankOne z) v = -quadForm (rankOne z) v := by
+    have hsmul : boundedReplicaThresholdProjectorQuadForm ((-1 : ℂ) • rankOne z) v = -boundedReplicaThresholdProjectorQuadForm (rankOne z) v := by
       simp only [quadForm_eq_sum, Matrix.smul_apply, smul_eq_mul, ← Finset.sum_neg_distrib]
       exact Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => by ring
     rw [hsmul, quadForm_one, hv, quadForm_rankOne]
@@ -292,13 +292,13 @@ theorem boundedReplicaProjector_mul_self {z : n → ℂ} (hz : hermInner z z = 1
 weight. -/
 theorem quadForm_outcomeProjector {z v : n → ℂ} (hv : hermInner v v = 1) (r : ℕ)
     (S : Finset (Fin r)) :
-    quadForm (outcomeProjector z r S) (replicaVector r v)
+    boundedReplicaThresholdProjectorQuadForm (outcomeProjector z r S) (replicaVector r v)
       = ((Complex.normSq (hermInner z v) : ℝ) : ℂ) ^ S.card
         * (1 - ((Complex.normSq (hermInner z v) : ℝ) : ℂ)) ^ (r - S.card) := by
   classical
   unfold outcomeProjector
   rw [quadForm_replicaOp]
-  have hfac : ∀ i : Fin r, quadForm (outcomeFactor z S i) v
+  have hfac : ∀ i : Fin r, boundedReplicaThresholdProjectorQuadForm (outcomeFactor z S i) v
       = if i ∈ S then ((Complex.normSq (hermInner z v) : ℝ) : ℂ)
           else 1 - ((Complex.normSq (hermInner z v) : ℝ) : ℂ) :=
     fun i => quadForm_outcomeFactor S i hv
@@ -315,14 +315,14 @@ theorem quadForm_outcomeProjector {z v : n → ℂ} (hv : hermInner v v = 1) (r 
 polynomial of the squared overlap. -/
 theorem quadForm_boundedReplicaProjector {z v : n → ℂ}
     (hv : hermInner v v = 1) (r k : ℕ) :
-    quadForm (boundedReplicaProjector z r k) (replicaVector r v)
+    boundedReplicaThresholdProjectorQuadForm (boundedReplicaProjector z r k) (replicaVector r v)
       = ((binomialTail r k (Complex.normSq (hermInner z v)) : ℝ) : ℂ) := by
   classical
   set x : ℝ := Complex.normSq (hermInner z v) with hx
   unfold boundedReplicaProjector
   rw [quadForm_sum]
   have hterm : ∀ S ∈ (Finset.univ : Finset (Finset (Fin r))).filter fun S => k ≤ S.card,
-      quadForm (outcomeProjector z r S) (replicaVector r v)
+      boundedReplicaThresholdProjectorQuadForm (outcomeProjector z r S) (replicaVector r v)
         = ((x : ℂ)) ^ S.card * (1 - (x : ℂ)) ^ (r - S.card) := by
     intro S _
     exact quadForm_outcomeProjector hv r S
@@ -368,7 +368,7 @@ theorem quadForm_boundedReplicaProjector {z v : n → ℂ}
 is a nonnegative real. -/
 theorem quadForm_boundedReplicaProjector_eq_normSq {z : n → ℂ} (hz : hermInner z z = 1)
     (r k : ℕ) (w : (Fin r → n) → ℂ) :
-    quadForm (boundedReplicaProjector z r k) w
+    boundedReplicaThresholdProjectorQuadForm (boundedReplicaProjector z r k) w
       = ((∑ c, Complex.normSq ((boundedReplicaProjector z r k *ᵥ w) c) : ℝ) : ℂ) := by
   have hherm : (boundedReplicaProjector z r k)ᴴ = boundedReplicaProjector z r k :=
     boundedReplicaProjector_conjTranspose z r k
@@ -382,7 +382,7 @@ theorem quadForm_boundedReplicaProjector_eq_normSq {z : n → ℂ} (hz : hermInn
 bounded replica projector never exceeds the identity. -/
 theorem quadForm_one_sub_boundedReplicaProjector_eq_normSq {z : n → ℂ} (hz : hermInner z z = 1)
     (r k : ℕ) (w : (Fin r → n) → ℂ) :
-    quadForm (1 - boundedReplicaProjector z r k) w
+    boundedReplicaThresholdProjectorQuadForm (1 - boundedReplicaProjector z r k) w
       = ((∑ c, Complex.normSq (((1 - boundedReplicaProjector z r k) *ᵥ w) c) : ℝ) : ℂ) := by
   set Q := boundedReplicaProjector z r k with hQ
   have hherm : (1 - Q)ᴴ = 1 - Q := by
@@ -405,7 +405,7 @@ def replicaTest (z v : n → ℂ) (r k : ℕ) : ℝ :=
 
 theorem quadForm_boundedReplicaProjector_eq_replicaTest {z v : n → ℂ}
     (hv : hermInner v v = 1) (r k : ℕ) :
-    quadForm (boundedReplicaProjector z r k) (replicaVector r v)
+    boundedReplicaThresholdProjectorQuadForm (boundedReplicaProjector z r k) (replicaVector r v)
       = ((replicaTest z v r k : ℝ) : ℂ) :=
   quadForm_boundedReplicaProjector hv r k
 
@@ -424,16 +424,16 @@ theorem normSq_hermInner_le_one {z v : n → ℂ} (hz : hermInner z z = 1)
     simp only [one_mul, mul_one]
     rw [rankOne_mul_rankOne hz]
     abel
-  have hpos : quadForm ((1 : Matrix n n ℂ) - rankOne z) v
+  have hpos : boundedReplicaThresholdProjectorQuadForm ((1 : Matrix n n ℂ) - rankOne z) v
       = ((∑ c, Complex.normSq ((((1 : Matrix n n ℂ) - rankOne z) *ᵥ v) c) : ℝ) : ℂ) := by
     have key := quadForm_conjTranspose_mul ((1 : Matrix n n ℂ) - rankOne z) v
     rw [hherm, hidem] at key
     exact key
-  have hval : quadForm ((1 : Matrix n n ℂ) - rankOne z) v
+  have hval : boundedReplicaThresholdProjectorQuadForm ((1 : Matrix n n ℂ) - rankOne z) v
       = ((1 - Complex.normSq (hermInner z v) : ℝ) : ℂ) := by
     rw [show (1 : Matrix n n ℂ) - rankOne z = (1 : Matrix n n ℂ) + (-1 : ℂ) • rankOne z by
         rw [neg_one_smul]; abel, quadForm_add]
-    have hsmul : quadForm ((-1 : ℂ) • rankOne z) v = -quadForm (rankOne z) v := by
+    have hsmul : boundedReplicaThresholdProjectorQuadForm ((-1 : ℂ) • rankOne z) v = -boundedReplicaThresholdProjectorQuadForm (rankOne z) v := by
       simp only [quadForm_eq_sum, Matrix.smul_apply, smul_eq_mul, ← Finset.sum_neg_distrib]
       exact Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => by ring
     rw [hsmul, quadForm_one, hv, quadForm_rankOne]

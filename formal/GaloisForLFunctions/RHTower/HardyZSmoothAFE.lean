@@ -18,7 +18,7 @@ noncomputable section
 
 namespace RHTower
 
-theorem exp_neg_half_log (a : ℝ) (ha : 0 < a) :
+private theorem exp_neg_half_log (a : ℝ) (ha : 0 < a) :
     Real.exp (-(Real.log a) / 2) = (Real.sqrt a)⁻¹ := by
   have hsqrt : Real.sqrt a = Real.exp (Real.log a / 2) := by
     rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos ha]

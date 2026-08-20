@@ -45,7 +45,7 @@ theorem selbergBoundingSum_ge_mertens_zero (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤
 
 /-- **The discarded set is small.**  The classical sieve bound, from the pair sieve at shift
 zero. -/
-theorem card_roughSet_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : ℕ} (k : ℕ) {z : ℝ}
+theorem roughSetCountCard_roughSet_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : ℕ} (k : ℕ) {z : ℝ}
     (hz : 1 ≤ z) (hY : 0 ≤ Y) (hh1 : 1 ≤ h) (hP₁h : P₁ ≤ h) (hlev : ((h : ℝ)) ^ (2 * k) ≤ z)
     (hk : Real.exp 1
         * (∑ p ∈ rangePrimes P₁ h, pairClassCount 0 p / ((p : ℝ) - pairClassCount 0 p))

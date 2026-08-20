@@ -350,6 +350,7 @@ import GaloisForLFunctions.RHTower.BohrMeanDichotomy
 import GaloisForLFunctions.RHTower.BohrMomentDensity
 import GaloisForLFunctions.RHTower.BohrMoments
 import GaloisForLFunctions.RHTower.BohrTransfer
+import GaloisForLFunctions.RHTower.BogomolnyPrasadSommerfieldBounds
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaFourCompletion
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaSeven
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaNine
@@ -6834,13 +6835,6 @@ import GaloisForLFunctions.RHTower.Sieve.LiftedMarkerBlockInstance
 import GaloisForLFunctions.RHTower.Sieve.LiftedMarkerFrame
 import GaloisForLFunctions.RHTower.Sieve.LinearBlockEstimate
 import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareBounded
-import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareBoundedExplicit
-import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareBoundedFinal
-import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareBoundedNormalized
-import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareBoundedPieces
-import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareBoundedRange
-import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareBoundedRealForm
-import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareBoundedUnconditional
 import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareCapstone
 import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareGeneric
 import GaloisForLFunctions.RHTower.Sieve.LinearMollifierVonMangoldt
@@ -6868,6 +6862,7 @@ import GaloisForLFunctions.RHTower.Sieve.LogPolyMoebius
 import GaloisForLFunctions.RHTower.Sieve.LogPolyProductScale
 import GaloisForLFunctions.RHTower.Sieve.LogPolyRestrict
 import GaloisForLFunctions.RHTower.Sieve.LogPolySetScaling
+import GaloisForLFunctions.RHTower.Sieve.LogPolyWindowHM
 import GaloisForLFunctions.RHTower.Sieve.LogPolyTranslation
 import GaloisForLFunctions.RHTower.Sieve.LogPowerLimits
 import GaloisForLFunctions.RHTower.Sieve.LogSeparation
@@ -7428,6 +7423,7 @@ import GaloisForLFunctions.RHTower.Sieve.RouteTMoebiusPowerSaving
 import GaloisForLFunctions.RHTower.Sieve.RouteTMoebiusSharp
 import GaloisForLFunctions.RHTower.Sieve.RouteTMoebiusTwistAllHeights
 import GaloisForLFunctions.RHTower.Sieve.RouteTMoebiusTwistRate
+import GaloisForLFunctions.RHTower.Sieve.MoebiusDiscRate
 import GaloisForLFunctions.RHTower.Sieve.RouteTPolyMajorants
 import GaloisForLFunctions.RHTower.Sieve.RouteTReceiverThresholdGrowth
 import GaloisForLFunctions.RHTower.Sieve.RouteTScheduleHats
@@ -7580,6 +7576,10 @@ import GaloisForLFunctions.RHTower.Sieve.StepMassCard
 import GaloisForLFunctions.RHTower.Sieve.SumCellMatching
 import GaloisForLFunctions.RHTower.Sieve.SupportKernelLargeValues
 import GaloisForLFunctions.RHTower.Sieve.SupportMeanSquare
+import GaloisForLFunctions.RHTower.Sieve.AffineFromHead
+import GaloisForLFunctions.RHTower.Sieve.MoebiusHeadGate
+import GaloisForLFunctions.RHTower.Sieve.MoebiusHeadBudget
+import GaloisForLFunctions.RHTower.Sieve.MoebiusHeadSmall
 import GaloisForLFunctions.RHTower.Sieve.SymbolBound
 import GaloisForLFunctions.RHTower.Sieve.SymbolImaginaryPart
 import GaloisForLFunctions.RHTower.Sieve.SymbolReflection
@@ -8420,6 +8420,7 @@ import GaloisForLFunctions.RHTower.SummableWeightedHeadReduction
 import GaloisForLFunctions.RHTower.SummableWeightedInfinitePhaseQuantile
 import GaloisForLFunctions.RHTower.SummationGraphDenseCollapse
 import GaloisForLFunctions.RHTower.SuperPoincareApplications
+import GaloisForLFunctions.RHTower.SuperPoincareBPSApplications
 import GaloisForLFunctions.RHTower.SuperPoincareReflectionApplications
 import GaloisForLFunctions.RHTower.SuperlinearSamplingAperiodicity
 import GaloisForLFunctions.RHTower.SuperzetaResolvent
@@ -9682,6 +9683,7 @@ import GaloisForLFunctions.RHTower.XiEuclideanKrylovJensenReflectionUniversality
 import GaloisForLFunctions.RHTower.XiEulerContractionResiduePairing
 import GaloisForLFunctions.RHTower.XiEulerSafePairedClosure
 import GaloisForLFunctions.RHTower.XiEulerSafePairedCompleteness
+import GaloisForLFunctions.RHTower.XiEulerSafeCauchyLoss
 import GaloisForLFunctions.RHTower.XiEulerSafePairedRationalCriterion
 import GaloisForLFunctions.RHTower.XiEulerSafePairedValueKernel
 import GaloisForLFunctions.RHTower.XiEvaluationReporterIsometricDataProcessingUniversalityLaw
@@ -10823,10 +10825,12 @@ import GaloisForLFunctions.RHTower.ZetaZerosBridge
 import GaloisForLFunctions.RHTower.Sieve.TwistedDiagonalReindex
 import GaloisForLFunctions.RHTower.Sieve.RamareBlockSplitOn
 import GaloisForLFunctions.RHTower.Sieve.RamareLadderSupMeanSquare
+import GaloisForLFunctions.RHTower.Sieve.RamareLadderHM
 import GaloisForLFunctions.RHTower.SmoothAFEZetaGeneralHorizontal
 import GaloisForLFunctions.RHTower.PrimeBoundaryMonodromyEscape
 import GaloisForLFunctions.RHTower.Sieve.RamarePartitionedLadder
 import GaloisForLFunctions.RHTower.Sieve.MoebiusWindowPartition
+import GaloisForLFunctions.RHTower.Sieve.MoebiusTwoRangeWindow
 import GaloisForLFunctions.RHTower.ZetaVerticalLineGrowth
 import GaloisForLFunctions.RHTower.GaussianShiftedMoment
 import GaloisForLFunctions.RHTower.SmoothAFEZetaGeneralVertical

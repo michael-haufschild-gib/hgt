@@ -25,7 +25,7 @@ open MvPolynomial
 
 variable {σ R : Type*} [CommRing R] [Nontrivial R]
 
-theorem natDegree_prod_X_sub_C {ι : Type*} (s : Finset ι) (a : ι → MvPolynomial σ R) :
+private theorem natDegree_prod_X_sub_C {ι : Type*} (s : Finset ι) (a : ι → MvPolynomial σ R) :
     (∏ i ∈ s, (Polynomial.X - Polynomial.C (a i))).natDegree = s.card := by
   rw [Polynomial.natDegree_prod_of_monic _ _ (fun i _ => Polynomial.monic_X_sub_C (a i))]
   simp

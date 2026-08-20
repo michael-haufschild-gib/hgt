@@ -168,4 +168,100 @@ theorem isPSDKernel_rankOne (e : X → ℂ) :
     rw [hval, mul_comm, ← Complex.normSq_eq_conj_mul_self]
     exact Complex.zero_le_real.mpr (Complex.normSq_nonneg _)
 
+/-! ## Finite kernel energies -/
+
+/-- The energy of a finite node/coefficient system against a kernel. -/
+def kernelEnergy (K : X → X → ℂ) {n : ℕ} (c : Fin n → ℂ) (w : Fin n → X) : ℂ :=
+  ∑ j, ∑ k, conj (c j) * c k * K (w j) (w k)
+
+theorem dotProduct_mulVec_kernelMatrix (K : X → X → ℂ) {n : ℕ} (c : Fin n → ℂ)
+    (w : Fin n → X) :
+    star c ⬝ᵥ (Matrix.of fun j k => K (w j) (w k)).mulVec c = kernelEnergy K c w := by
+  simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, RCLike.star_def,
+    kernelEnergy]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [Finset.mul_sum]
+  exact Finset.sum_congr rfl fun k _ => by ring
+
+theorem kernelEnergy_sub (K₁ K₂ : X → X → ℂ) {n : ℕ} (c : Fin n → ℂ) (w : Fin n → X) :
+    kernelEnergy (fun x y => K₁ x y - K₂ x y) c w
+      = kernelEnergy K₁ c w - kernelEnergy K₂ c w := by
+  simp only [kernelEnergy, ← Finset.sum_sub_distrib]
+  exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => by ring
+
+/-- **The Gram realization of a finite kernel energy.**  The energy is the squared norm of the
+corresponding combination of Gram vectors. -/
+theorem inner_self_kernelCombination (K : X → X → ℂ) [Fact (IsPSDKernel K)]
+    {n : ℕ} (c : Fin n → ℂ) (w : Fin n → X) :
+    ⟪∑ j, conj (c j) • KernelHilbert.vector K (w j),
+        ∑ j, conj (c j) • KernelHilbert.vector K (w j)⟫_ℂ = kernelEnergy K c w := by
+  have hL : ⟪∑ j, conj (c j) • KernelHilbert.vector K (w j),
+        ∑ j, conj (c j) • KernelHilbert.vector K (w j)⟫_ℂ
+      = ∑ j, ∑ k, c j * conj (c k) * K (w k) (w j) := by
+    rw [sum_inner]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [inner_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [inner_smul_left, inner_smul_right, Complex.conj_conj, KernelHilbert.inner_vector]
+    ring
+  rw [hL, kernelEnergy, Finset.sum_comm]
+  exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => by ring
+
+theorem norm_sq_kernelCombination (K : X → X → ℂ) [Fact (IsPSDKernel K)]
+    {n : ℕ} (c : Fin n → ℂ) (w : Fin n → X) :
+    ((‖∑ j, conj (c j) • KernelHilbert.vector K (w j)‖ : ℂ)) ^ 2 = kernelEnergy K c w := by
+  rw [← inner_self_kernelCombination K c w, inner_self_eq_norm_sq_to_K]
+  rfl
+
+/-- A Hermitian matrix whose quadratic forms have nonnegative real part is positive
+semidefinite. -/
+theorem posSemidef_of_isHermitian_of_re_nonneg {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ}
+    (hH : M.IsHermitian) (h : ∀ x : Fin n → ℂ, 0 ≤ (star x ⬝ᵥ M.mulVec x).re) : M.PosSemidef := by
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg hH ?_
+  intro x
+  have hexp : ∀ y : Fin n → ℂ,
+      star y ⬝ᵥ M.mulVec y = ∑ j, ∑ k, conj (y j) * (M j k * y k) := by
+    intro y
+    simp only [dotProduct, Matrix.mulVec, Pi.star_apply, RCLike.star_def]
+    exact Finset.sum_congr rfl fun j _ => Finset.mul_sum _ _ _
+  have hconj : conj (star x ⬝ᵥ M.mulVec x) = star x ⬝ᵥ M.mulVec x := by
+    rw [hexp]
+    simp only [map_sum, map_mul, Complex.conj_conj]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+    have hMab : conj (M b a) = M a b := by
+      have hstar := hH.apply a b
+      simpa only [RCLike.star_def] using hstar
+    rw [hMab]
+    ring
+  exact Complex.le_def.mpr ⟨by simpa using h x,
+    by simpa using (Complex.conj_eq_iff_im.mp hconj).symm⟩
+
+/-- **Kernel domination.**  One positive semidefinite kernel dominates another exactly when it
+dominates it on every finite node/coefficient system. -/
+theorem isPSDKernel_sub_iff_forall_energy_le {K₁ K₂ : X → X → ℂ} (h₁ : IsPSDKernel K₁)
+    (h₂ : IsPSDKernel K₂) :
+    IsPSDKernel (fun x y => K₁ x y - K₂ x y) ↔
+      ∀ (n : ℕ) (c : Fin n → ℂ) (w : Fin n → X),
+        (kernelEnergy K₂ c w).re ≤ (kernelEnergy K₁ c w).re := by
+  constructor
+  · intro hD n c w
+    have hnn := (hD.posSemidef w).dotProduct_mulVec_nonneg c
+    have hrw := dotProduct_mulVec_kernelMatrix (fun x y => K₁ x y - K₂ x y) c w
+    rw [hrw, kernelEnergy_sub] at hnn
+    have hre := (Complex.le_def.mp hnn).1
+    simp only [Complex.zero_re, Complex.sub_re] at hre
+    linarith
+  · intro hle
+    refine isPSDKernel_of_forall_posSemidef (fun x y => ?_) (fun n w => ?_)
+    · rw [map_sub, h₁.conj_symm, h₂.conj_symm]
+    · refine posSemidef_of_isHermitian_of_re_nonneg ?_ (fun c => ?_)
+      · ext j k
+        simp only [Matrix.conjTranspose_apply, Matrix.of_apply, RCLike.star_def, map_sub]
+        rw [h₁.conj_symm, h₂.conj_symm]
+      · have hrw := dotProduct_mulVec_kernelMatrix (fun x y => K₁ x y - K₂ x y) c w
+        rw [hrw, kernelEnergy_sub, Complex.sub_re]
+        have := hle n c w
+        linarith
+
 end GaloisForLFunctions.HTGeometry

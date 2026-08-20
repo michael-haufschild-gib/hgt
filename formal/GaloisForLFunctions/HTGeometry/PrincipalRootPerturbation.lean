@@ -15,7 +15,7 @@ open Complex
 namespace HTGeometry
 
 /-- **The root difference is controlled by the argument difference over the root.** -/
-theorem norm_csqrt_sub_le {z w : ℂ} (hz : 0 < z.re) (hw : 0 < w.re) :
+private theorem norm_csqrt_sub_le {z w : ℂ} (hz : 0 < z.re) (hw : 0 < w.re) :
     ‖csqrt z - csqrt w‖ ≤ ‖z - w‖ / csqrtRe w := by
   have hzr : 0 < csqrtRe z := csqrtRe_pos hz
   have hwr : 0 < csqrtRe w := csqrtRe_pos hw

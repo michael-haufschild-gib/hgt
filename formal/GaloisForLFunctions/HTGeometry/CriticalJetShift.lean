@@ -29,7 +29,7 @@ open scoped ENNReal
 namespace GaloisForLFunctions.HTGeometry
 
 /-- The normalized vertical jet space: square-summable Taylor coordinates. -/
-abbrev JetSpace : Type := lp (fun _ : ℕ => ℂ) 2
+private abbrev JetSpace : Type := lp (fun _ : ℕ => ℂ) 2
 
 /-- The critical (Gevrey-one) vertical jet shift on raw coordinate sequences. -/
 def criticalJetShift (a : ℕ → ℂ) : ℕ → ℂ := fun k => ((k : ℂ) + 1) * a (k + 1)

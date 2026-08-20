@@ -37,7 +37,7 @@ theorem sum_sq_card_fibre_roughSet_explicit {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 
                     (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)))) := by
   classical
   refine sum_sq_card_fibre_roughSet_le hx hh0 (roughSet P₁ hN ⌊Y⌋₊) ?_ ?_
-  · refine le_trans ?_ (card_roughSet_le Y hP₁ k hz hY hh1 hP₁h hlev (hk 0))
+  · refine le_trans ?_ (roughSetCountCard_roughSet_le Y hP₁ k hz hY hh1 hP₁h hlev (hk 0))
     exact_mod_cast Finset.card_le_card Finset.inter_subset_left
   · exact sum_shift_roughSet_le Y hP₁ k ⌊h⌋₊ hz hY hh1 hP₁h hlev hk hcorr
       (fibreDyadicIndex x h)

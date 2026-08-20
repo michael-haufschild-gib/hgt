@@ -13,9 +13,9 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 10834 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 10845 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
-| 9503 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 9524 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |
 | 6194 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Decomposition.lean` |

@@ -40,7 +40,7 @@ theorem poleFunctionalZeta_eq_lseries {σ : ℝ} (hσ : 1 < σ) :
     poleFunctionalZeta σ = (σ - 1) * ‖LSeries 1 (σ : ℂ)‖ := by
   rw [poleFunctionalZeta, LSeries_one_eq_riemannZeta (by simpa using hσ)]
 
-theorem tendsto_ofReal_nhdsGT_one_ne :
+private theorem tendsto_ofReal_nhdsGT_one_ne :
     Tendsto (fun σ : ℝ => (σ : ℂ)) (𝓝[>] (1 : ℝ)) (𝓝[≠] (1 : ℂ)) := by
   refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
   · have hcont : Tendsto (fun σ : ℝ => (σ : ℂ)) (𝓝 (1 : ℝ)) (𝓝 (((1 : ℝ) : ℂ))) :=

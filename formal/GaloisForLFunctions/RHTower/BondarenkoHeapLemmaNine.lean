@@ -8,7 +8,9 @@ that exact finite-field factor and transports its zero branch through the
 source inverse-incidence shift `r m⁻¹`.
 -/
 import GaloisForLFunctions.RHTower.BondarenkoHeapLemmaSeven
+import GaloisForLFunctions.RHTower.DirichletCharacterSecondMoment
 import GaloisForLFunctions.RHTower.QuadraticJacobiSum
+import GaloisForLFunctions.RHTower.SpikeBandConvolution
 
 open scoped BigOperators
 
@@ -30,6 +32,65 @@ theorem oddPrime_quadraticRamanujanLocalSum
       if y = 0 then (p.1 : ℂ) - 1 else -1 := by
   simpa [oddPrimeQuadraticRamanujanLocalSum] using
     oddPrime_quadratic_shiftCorrelation p y 0
+
+/-- The standard additive-character definition of the prime Ramanujan sum. -/
+def oddPrimeRamanujanAdditiveSum (p : OddPrime) (y : ZMod p.1) : ℂ :=
+  ∑ u ∈ (Finset.univ.erase (0 : ZMod p.1)), ZMod.stdAddChar (u * y)
+
+/-- The additive prime Ramanujan sum is `p - 1` at zero and `-1` elsewhere. -/
+theorem oddPrime_ramanujanAdditiveSum
+    (p : OddPrime) (y : ZMod p.1) :
+    oddPrimeRamanujanAdditiveSum p y =
+      if y = 0 then (p.1 : ℂ) - 1 else -1 := by
+  have hsum : ∑ u : ZMod p.1, ZMod.stdAddChar (u * y) =
+      if y = 0 then (p.1 : ℂ) else 0 := by
+    simpa using AddChar.sum_mulShift (ψ := ZMod.stdAddChar (N := p.1)) y
+      (ZMod.isPrimitive_stdAddChar p.1)
+  unfold oddPrimeRamanujanAdditiveSum
+  have hsplit := Finset.sum_erase_add (s := Finset.univ) (f := fun u : ZMod p.1 =>
+    ZMod.stdAddChar (u * y)) (Finset.mem_univ 0)
+  rw [show ZMod.stdAddChar (0 * y) = (1 : ℂ) by simp] at hsplit
+  rw [hsum] at hsplit
+  by_cases hy : y = 0
+  · rw [if_pos hy] at hsplit
+    rw [if_pos hy]
+    calc
+      _ = (∑ u ∈ Finset.univ.erase (0 : ZMod p.1), ZMod.stdAddChar (u * y)) + 1 - 1 := by
+        ring
+      _ = (p.1 : ℂ) - 1 := by rw [hsplit]
+  · rw [if_neg hy] at hsplit
+    rw [if_neg hy]
+    calc
+      _ = (∑ u ∈ Finset.univ.erase (0 : ZMod p.1), ZMod.stdAddChar (u * y)) + 1 - 1 := by
+        ring
+      _ = (0 : ℂ) - 1 := by rw [hsplit]
+      _ = -1 := by ring
+
+/-- The absolute value of a prime additive Ramanujan sum is at most the prime. -/
+theorem oddPrime_ramanujanAdditiveSum_norm_le_prime
+    (p : OddPrime) (y : ZMod p.1) :
+    ‖oddPrimeRamanujanAdditiveSum p y‖ ≤ (p.1 : ℝ) := by
+  rw [oddPrime_ramanujanAdditiveSum]
+  by_cases hy : y = 0
+  · rw [if_pos hy]
+    let t : ℝ := (p.1 : ℝ) - 1
+    have ht : ((p.1 : ℂ) - 1) = (t : ℂ) := by
+      dsimp [t]
+      norm_cast
+    rw [ht, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg]
+    · dsimp [t]
+      linarith [show (1 : ℝ) ≤ p.1 by exact_mod_cast p.2.1.one_le]
+    · dsimp [t]
+      linarith [show (1 : ℝ) ≤ p.1 by exact_mod_cast p.2.1.one_le]
+  · rw [if_neg hy]
+    simpa using (show (1 : ℝ) ≤ p.1 by exact_mod_cast p.2.1.one_le)
+
+/-- The exceptional quadratic local Jacobi factor is the literal additive
+Ramanujan sum, not merely a function with the same two displayed values. -/
+theorem oddPrime_quadraticRamanujanLocalSum_eq_additive
+    (p : OddPrime) (y : ZMod p.1) :
+    oddPrimeQuadraticRamanujanLocalSum p y = oddPrimeRamanujanAdditiveSum p y := by
+  rw [oddPrime_quadraticRamanujanLocalSum, oddPrime_ramanujanAdditiveSum]
 
 /-- The same local factor at the source shift `r m⁻¹`; its zero branch is
 exactly the zero branch of `r`, because the denominator is explicit unit data. -/
@@ -236,6 +297,56 @@ theorem oddPrime_generalizedJacobiLocal_quadratic
   simp_rw [MulChar.star_apply', (oddPrimeQuadraticCharacter_isQuadratic p).inv]
   exact oddPrime_quadraticRamanujanLocalSum p y
 
+/-- Internal character algebra for the zero-shift local-factor split. -/
+private theorem oddPrimeQuadratic_mul_inv_eq_one_iff
+    (p : OddPrime) (ψ : MulChar (ZMod p.1) ℂ) :
+    oddPrimeQuadraticCharacter p * ψ⁻¹ = 1 ↔ ψ = oddPrimeQuadraticCharacter p := by
+  constructor
+  · intro h
+    have hmul := congrArg (fun φ : MulChar (ZMod p.1) ℂ => φ * ψ) h
+    simpa only [mul_assoc, MulChar.inv_mul, mul_one, one_mul] using hmul.symm
+  · intro h
+    subst ψ
+    rw [mul_comm, MulChar.inv_mul]
+
+/-- Exact zero-shift local dichotomy: the exceptional quadratic character
+contributes `p-1`; every other local character cancels completely. -/
+theorem oddPrime_generalizedJacobiLocal_zero_cases
+    (p : OddPrime) (ψ : MulChar (ZMod p.1) ℂ) :
+    (ψ = oddPrimeQuadraticCharacter p ∧
+      oddPrimeGeneralizedJacobiLocal p ψ 0 = (p.1 : ℂ) - 1) ∨
+    (ψ ≠ oddPrimeQuadraticCharacter p ∧
+      oddPrimeGeneralizedJacobiLocal p ψ 0 = 0) := by
+  by_cases hψ : ψ = oddPrimeQuadraticCharacter p
+  · left
+    refine ⟨hψ, ?_⟩
+    rw [hψ, oddPrime_generalizedJacobiLocal_quadratic]
+    simp
+  · right
+    refine ⟨hψ, ?_⟩
+    unfold oddPrimeGeneralizedJacobiLocal
+    simp only [add_zero, MulChar.star_apply']
+    simp_rw [← MulChar.mul_apply]
+    apply MulChar.sum_eq_zero_of_ne_one
+    intro h
+    exact hψ (oddPrimeQuadratic_mul_inv_eq_one_iff p ψ |>.mp h)
+
+/-- Internal nonexceptional local factorization, with the zero branch
+discharged by exact multiplicative-character cancellation. -/
+private theorem oddPrime_generalizedJacobiLocal_of_ne_quadratic
+    (p : OddPrime) (ψ : MulChar (ZMod p.1) ℂ)
+    (hψ : ψ ≠ oddPrimeQuadraticCharacter p) (y : ZMod p.1) :
+    oddPrimeGeneralizedJacobiLocal p ψ y =
+      (oddPrimeQuadraticCharacter p y * star (ψ y)) *
+        oddPrimeGeneralizedJacobiCore p ψ := by
+  by_cases hy : y = 0
+  · rcases oddPrime_generalizedJacobiLocal_zero_cases p ψ with h | h
+    · exact (hψ h.1).elim
+    · subst y
+      rw [h.2]
+      simp only [MulChar.map_zero, star_zero, zero_mul]
+  · rw [oddPrime_generalizedJacobiLocal_scale, if_neg hy]
+
 namespace OddPrimeFamily
 
 variable {I : Type*} [Fintype I] [DecidableEq I]
@@ -309,6 +420,24 @@ def exceptionalRamanujanProduct (P : OddPrimeFamily I)
   ∏ i ∈ exceptionalPrimeIndices P ψ,
     if P.crtEquiv y i = 0 then ((P.prime i).1 : ℂ) - 1 else -1
 
+/-- The exceptional square-free Ramanujan product in literal additive-character form. -/
+def exceptionalRamanujanAdditiveProduct (P : OddPrimeFamily I)
+    (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ) (y : ZMod P.modulus) : ℂ :=
+  ∏ i ∈ exceptionalPrimeIndices P ψ,
+    oddPrimeRamanujanAdditiveSum (P.prime i) (P.crtEquiv y i)
+
+omit [DecidableEq I] in
+/-- The displayed exceptional factor is exactly the additive-character
+Ramanujan product, factor by factor. -/
+theorem exceptionalRamanujanProduct_eq_additive
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ)
+    (y : ZMod P.modulus) :
+    exceptionalRamanujanProduct P ψ y = exceptionalRamanujanAdditiveProduct P ψ y := by
+  unfold exceptionalRamanujanProduct exceptionalRamanujanAdditiveProduct
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [oddPrime_ramanujanAdditiveSum]
+
 /-- Exact source-factor split: the global generalized Jacobi sum is its
 exceptional Ramanujan product times the remaining local generalized factors. -/
 theorem generalizedJacobiLocalSum_exceptional_split
@@ -334,6 +463,341 @@ theorem generalizedJacobiLocalSum_exceptional_split
       have hψ : ψ i = oddPrimeQuadraticCharacter (P.prime i) :=
         (mem_exceptionalPrimeIndices P ψ i).mp hi
       rw [hψ, oddPrime_generalizedJacobiLocal_quadratic]
+
+/-- The global generalized Jacobi sum split with its exceptional factor written
+as a literal square-free additive Ramanujan product. -/
+theorem generalizedJacobiLocalSum_exceptional_additive_split
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ)
+    (y : ZMod P.modulus) :
+    generalizedJacobiLocalSum P ψ y =
+      exceptionalRamanujanAdditiveProduct P ψ y *
+        ∏ i ∈ Finset.univ \ exceptionalPrimeIndices P ψ,
+          oddPrimeGeneralizedJacobiLocal (P.prime i) (ψ i) (P.crtEquiv y i) := by
+  rw [generalizedJacobiLocalSum_exceptional_split, exceptionalRamanujanProduct_eq_additive]
+
+/-- The residual local-character phase in the source Lemma-9 factorization. -/
+def residualJacobiPhase (P : OddPrimeFamily I)
+    (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ) (y : ZMod P.modulus) : ℂ :=
+  ∏ i ∈ Finset.univ \ exceptionalPrimeIndices P ψ,
+    oddPrimeQuadraticCharacter (P.prime i) (P.crtEquiv y i) *
+      star (ψ i (P.crtEquiv y i))
+
+/-- Product of the residual fixed local Jacobi cores. -/
+def residualJacobiCoreProduct (P : OddPrimeFamily I)
+    (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ) : ℂ :=
+  ∏ i ∈ Finset.univ \ exceptionalPrimeIndices P ψ,
+    oddPrimeGeneralizedJacobiCore (P.prime i) (ψ i)
+
+/-- Integer norm-square factor of the residual fixed Jacobi cores.  The
+trivial nonexceptional local character contributes one; every other
+nonexceptional local character contributes its prime. -/
+def residualJacobiCoreNormSqFactor (P : OddPrimeFamily I)
+    (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ) : ℕ := by
+  classical
+  exact ∏ i ∈ Finset.univ \ exceptionalPrimeIndices P ψ,
+    if ψ i = 1 then 1 else (P.prime i).1
+
+/-- Exact norm-square factorization of the residual Jacobi-core product. -/
+theorem residualJacobiCoreProduct_normSq
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ) :
+    residualJacobiCoreProduct P ψ * star (residualJacobiCoreProduct P ψ) =
+      (residualJacobiCoreNormSqFactor P ψ : ℂ) := by
+  classical
+  unfold residualJacobiCoreProduct residualJacobiCoreNormSqFactor
+  simp only [star_prod, ← Finset.prod_mul_distrib, Nat.cast_prod, Nat.cast_ite, Nat.cast_one]
+  apply Finset.prod_congr rfl
+  intro i hi
+  have hneq : ψ i ≠ oddPrimeQuadraticCharacter (P.prime i) := by
+    intro h
+    exact (Finset.mem_sdiff.mp hi).2 ((mem_exceptionalPrimeIndices P ψ i).mpr h)
+  rcases oddPrime_generalizedJacobiCore_normSq (P.prime i) (ψ i) with h | h | h
+  · simpa [h.1] using h.2
+  · have hquad : oddPrimeQuadraticCharacter (P.prime i) = ψ i := by
+      calc
+        oddPrimeQuadraticCharacter (P.prime i) =
+            oddPrimeQuadraticCharacter (P.prime i) * 1 := by simp
+        _ = oddPrimeQuadraticCharacter (P.prime i) * ((ψ i)⁻¹ * ψ i) := by
+          rw [MulChar.inv_mul]
+        _ = (oddPrimeQuadraticCharacter (P.prime i) * (ψ i)⁻¹) * ψ i := by
+          rw [mul_assoc]
+        _ = 1 * ψ i := by rw [h.2.1]
+        _ = ψ i := by simp
+    exact (hneq hquad.symm).elim
+  · simpa [h.1] using h.2.2
+
+/-- The residual Jacobi-core norm-square factor never exceeds the certified
+odd square-free ambient modulus. -/
+theorem residualJacobiCoreNormSqFactor_le_modulus
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ) :
+    residualJacobiCoreNormSqFactor P ψ ≤ P.modulus := by
+  classical
+  unfold residualJacobiCoreNormSqFactor
+  calc
+    (∏ i ∈ Finset.univ \ exceptionalPrimeIndices P ψ,
+        if ψ i = 1 then 1 else (P.prime i).1) ≤
+      ∏ i ∈ Finset.univ \ exceptionalPrimeIndices P ψ, (P.prime i).1 := by
+        apply Finset.prod_le_prod
+        · intro i hi
+          exact Nat.zero_le _
+        · intro i hi
+          split_ifs
+          · exact (P.prime i).2.1.one_le
+          · exact Nat.le_refl _
+    _ ≤ P.modulus := by
+      have hdiv : (∏ i ∈ Finset.univ \ exceptionalPrimeIndices P ψ, (P.prime i).1) ∣ P.modulus := by
+        rw [modulus]
+        exact Finset.prod_dvd_prod_of_subset _ _ _ (Finset.subset_univ _)
+      have hmodpos : 0 < P.modulus := P.modulus_neZero.out |> Nat.pos_of_ne_zero
+      exact Nat.le_of_dvd hmodpos hdiv
+
+/-- The residual Jacobi-core product has exactly the real norm square encoded
+by its finite natural factor. -/
+theorem residualJacobiCoreProduct_complexNormSq
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ) :
+    Complex.normSq (residualJacobiCoreProduct P ψ) =
+      (residualJacobiCoreNormSqFactor P ψ : ℝ) := by
+  have hcomplex : (Complex.normSq (residualJacobiCoreProduct P ψ) : ℂ) =
+      (residualJacobiCoreNormSqFactor P ψ : ℂ) := by
+    simpa only [Complex.star_def, Complex.mul_conj] using
+      residualJacobiCoreProduct_normSq P ψ
+  exact_mod_cast hcomplex
+
+/-- Exact squared complex norm of the residual Jacobi-core product. -/
+theorem residualJacobiCoreProduct_sq_norm
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ) :
+    ‖residualJacobiCoreProduct P ψ‖ ^ 2 =
+      (residualJacobiCoreNormSqFactor P ψ : ℝ) := by
+  rw [← Complex.normSq_eq_norm_sq]
+  exact residualJacobiCoreProduct_complexNormSq P ψ
+
+/-- The squared norm of the residual Jacobi-core product is at most the
+certified odd square-free ambient modulus. -/
+theorem residualJacobiCoreProduct_sq_norm_le_modulus
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ) :
+    ‖residualJacobiCoreProduct P ψ‖ ^ 2 ≤ (P.modulus : ℝ) := by
+  rw [residualJacobiCoreProduct_sq_norm]
+  exact_mod_cast residualJacobiCoreNormSqFactor_le_modulus P ψ
+
+/-- Closed square-root estimate for the residual product of nonexceptional
+fixed Jacobi cores. -/
+theorem residualJacobiCoreProduct_norm_le_sqrt_modulus
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ) :
+    ‖residualJacobiCoreProduct P ψ‖ ≤ Real.sqrt (P.modulus : ℝ) := by
+  have hsq := residualJacobiCoreProduct_sq_norm_le_modulus P ψ
+  have hq : 0 ≤ (P.modulus : ℝ) := by positivity
+  have hsqrt : Real.sqrt (P.modulus : ℝ) ^ 2 = (P.modulus : ℝ) :=
+    Real.sq_sqrt hq
+  nlinarith [norm_nonneg (residualJacobiCoreProduct P ψ),
+    Real.sqrt_nonneg (P.modulus : ℝ)]
+
+/-- Exact odd square-free version of source equation (30): the generalized
+Jacobi sum is the additive exceptional Ramanujan product times the residual
+character phase and residual Jacobi-core product. -/
+theorem generalizedJacobiLocalSum_source_factor
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ)
+    (y : ZMod P.modulus) :
+    generalizedJacobiLocalSum P ψ y =
+      exceptionalRamanujanAdditiveProduct P ψ y *
+        residualJacobiPhase P ψ y * residualJacobiCoreProduct P ψ := by
+  rw [generalizedJacobiLocalSum_exceptional_additive_split]
+  unfold residualJacobiPhase residualJacobiCoreProduct
+  rw [show (∏ i ∈ Finset.univ \ exceptionalPrimeIndices P ψ,
+      oddPrimeGeneralizedJacobiLocal (P.prime i) (ψ i) (P.crtEquiv y i)) =
+      ∏ i ∈ Finset.univ \ exceptionalPrimeIndices P ψ,
+        (oddPrimeQuadraticCharacter (P.prime i) (P.crtEquiv y i) *
+          star (ψ i (P.crtEquiv y i))) *
+          oddPrimeGeneralizedJacobiCore (P.prime i) (ψ i) by
+    apply Finset.prod_congr rfl
+    intro i hi
+    apply oddPrime_generalizedJacobiLocal_of_ne_quadratic
+    intro h
+    exact (Finset.mem_sdiff.mp hi).2 ((mem_exceptionalPrimeIndices P ψ i).mpr h)]
+  rw [Finset.prod_mul_distrib]
+  ring
+
+omit [DecidableEq I] in
+/-- The exceptional additive Ramanujan product is bounded by its certified
+square-free ambient modulus. -/
+theorem exceptionalRamanujanAdditiveProduct_norm_le_modulus
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ)
+    (y : ZMod P.modulus) :
+    ‖exceptionalRamanujanAdditiveProduct P ψ y‖ ≤ (P.modulus : ℝ) := by
+  rw [exceptionalRamanujanAdditiveProduct, norm_prod]
+  calc
+    ∏ i ∈ exceptionalPrimeIndices P ψ,
+        ‖oddPrimeRamanujanAdditiveSum (P.prime i) (P.crtEquiv y i)‖ ≤
+        ∏ i ∈ exceptionalPrimeIndices P ψ, ((P.prime i).1 : ℝ) := by
+      apply Finset.prod_le_prod
+      · intro i hi
+        exact norm_nonneg _
+      · intro i hi
+        exact oddPrime_ramanujanAdditiveSum_norm_le_prime _ _
+    _ ≤ (P.modulus : ℝ) := by
+      have hdiv : (∏ i ∈ exceptionalPrimeIndices P ψ, (P.prime i).1) ∣ P.modulus := by
+        rw [modulus]
+        exact Finset.prod_dvd_prod_of_subset _ _ _ (Finset.subset_univ _)
+      have hmodpos : 0 < P.modulus := P.modulus_neZero.out |> Nat.pos_of_ne_zero
+      exact_mod_cast Nat.le_of_dvd hmodpos hdiv
+
+omit [DecidableEq I] in
+/-- At every integer shift, the literal exceptional additive Ramanujan product
+is bounded by the source gcd majorant `gcd(q, |r|)`. -/
+theorem exceptionalRamanujanAdditiveProduct_norm_le_gcd
+    (P : OddPrimeFamily I) (ψ : ∀ i, MulChar (ZMod (P.prime i).1) ℂ)
+    (r : ℤ) :
+    ‖exceptionalRamanujanAdditiveProduct P ψ (r : ZMod P.modulus)‖ ≤
+      (P.modulus.gcd r.natAbs : ℝ) := by
+  let g : I → ℕ := fun i => if ((P.prime i).1 : ℤ) ∣ r then (P.prime i).1 else 1
+  have hcoord (i : I) :
+      P.crtEquiv (r : ZMod P.modulus) i = 0 ↔ ((P.prime i).1 : ℤ) ∣ r := by
+    simpa using P.crtEquiv_intCast_eq_iff_dvd_sub r 0 i
+  have hlocal (i : I) :
+      ‖oddPrimeRamanujanAdditiveSum (P.prime i)
+        (P.crtEquiv (r : ZMod P.modulus) i)‖ ≤ (g i : ℝ) := by
+    by_cases h : ((P.prime i).1 : ℤ) ∣ r
+    · simpa only [g, if_pos h] using
+        oddPrime_ramanujanAdditiveSum_norm_le_prime (P.prime i)
+          (P.crtEquiv (r : ZMod P.modulus) i)
+    · have hz : P.crtEquiv (r : ZMod P.modulus) i ≠ 0 := fun hz => h (hcoord i |>.mp hz)
+      rw [oddPrime_ramanujanAdditiveSum, if_neg hz]
+      simp only [g, if_neg h]
+      norm_num
+  rw [exceptionalRamanujanAdditiveProduct, norm_prod]
+  calc
+    ∏ i ∈ exceptionalPrimeIndices P ψ,
+        ‖oddPrimeRamanujanAdditiveSum (P.prime i)
+          (P.crtEquiv (r : ZMod P.modulus) i)‖ ≤
+        ∏ i ∈ exceptionalPrimeIndices P ψ, (g i : ℝ) := by
+      apply Finset.prod_le_prod
+      · intro i hi
+        exact norm_nonneg _
+      · intro i hi
+        exact hlocal i
+    _ ≤ ∏ i, (g i : ℝ) := by
+      have hdiv : (∏ i ∈ exceptionalPrimeIndices P ψ, g i) ∣ ∏ i, g i :=
+        Finset.prod_dvd_prod_of_subset _ _ _ (Finset.subset_univ _)
+      have hpos : 0 < ∏ i, g i := by
+        apply Finset.prod_pos
+        intro i hi
+        dsimp [g]
+        split_ifs
+        · exact (P.prime i).2.1.pos
+        · norm_num
+      exact_mod_cast Nat.le_of_dvd hpos hdiv
+    _ = quadraticShiftDivisorMajorant P r := by
+      unfold quadraticShiftDivisorMajorant
+      dsimp [g]
+      apply Finset.prod_congr rfl
+      intro i hi
+      norm_cast
+    _ ≤ P.modulus.gcd r.natAbs := quadraticShiftDivisorMajorant_le_gcd P r
+
+/-- Positive-shift gcd mass underlying the Ramanujan-product summation in
+source Lemma 9. -/
+def ramanujanGcdIntervalMass (P : OddPrimeFamily I) (R : ℕ) : ℝ :=
+  ∑ r ∈ Finset.Icc 1 R, (P.modulus.gcd r : ℝ)
+
+omit [DecidableEq I] in
+/-- Exact totient/divisor evaluation of the positive-shift gcd mass. -/
+theorem ramanujanGcdIntervalMass_eq_totient
+    (P : OddPrimeFamily I) (R : ℕ) :
+    ramanujanGcdIntervalMass P R =
+      ∑ e ∈ P.modulus.divisors, (Nat.totient e : ℝ) * ((R / e : ℕ) : ℝ) := by
+  classical
+  unfold ramanujanGcdIntervalMass
+  have hmodpos : 0 < P.modulus := P.modulus_neZero.out |> Nat.pos_of_ne_zero
+  have hsub : P.modulus - 1 + 1 = P.modulus := Nat.sub_add_cancel hmodpos
+  calc
+    _ = ∑ r ∈ Finset.Icc 1 R, ∑ e ∈ P.modulus.divisors,
+        if r % e = 0 then (Nat.totient e : ℝ) else 0 := by
+      apply Finset.sum_congr rfl
+      intro r hr
+      have hdist : Nat.dist r 0 = r := by
+        rw [Nat.dist_comm, Nat.dist_eq_sub_of_le (Nat.zero_le r), Nat.sub_zero]
+      have h := gcd_succ_eq_sum_totient_residueClasses (P.modulus - 1) r 0
+      rw [hsub, hdist] at h
+      exact h
+    _ = ∑ e ∈ P.modulus.divisors, (Nat.totient e : ℝ) * ((R / e : ℕ) : ℝ) := by
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro e he
+      rw [← Finset.sum_filter]
+      have hfilter : (Finset.Icc 1 R).filter (fun r => r % e = 0) =
+          (Finset.Icc 1 R).filter (fun r => e ∣ r) := by
+        ext r
+        simp [Nat.dvd_iff_mod_eq_zero]
+      rw [hfilter, Finset.sum_const, nsmul_eq_mul]
+      have hIcc : Finset.Icc 1 R = Finset.Ioc 0 R := by
+        ext r
+        simp only [Finset.mem_Icc, Finset.mem_Ioc]
+        omega
+      rw [hIcc, Nat.Ioc_filter_dvd_card_eq_div]
+      ring
+
+omit [DecidableEq I] in
+/-- Closed divisor-count bound for the positive-shift gcd mass. -/
+theorem ramanujanGcdIntervalMass_le_divisorCount
+    (P : OddPrimeFamily I) (R : ℕ) :
+    ramanujanGcdIntervalMass P R ≤
+      (R : ℝ) * (P.modulus.divisors.card : ℝ) := by
+  rw [ramanujanGcdIntervalMass_eq_totient]
+  calc
+    _ ≤ ∑ e ∈ P.modulus.divisors, (R : ℝ) := by
+      apply Finset.sum_le_sum
+      intro e he
+      have hterm : Nat.totient e * (R / e) ≤ R := by
+        calc
+          Nat.totient e * (R / e) ≤ e * (R / e) :=
+            Nat.mul_le_mul_right (R / e) (Nat.totient_le e)
+          _ = (R / e) * e := Nat.mul_comm _ _
+          _ ≤ R := Nat.div_mul_le_self R e
+      exact_mod_cast hterm
+    _ = (R : ℝ) * (P.modulus.divisors.card : ℝ) := by
+      rw [Finset.sum_const, nsmul_eq_mul]
+      ring
+
+/-- Literal two-sided nonzero integer gcd mass from the final summation step
+of source Lemma 9. -/
+def ramanujanGcdSymmetricIntervalMass (P : OddPrimeFamily I) (R : ℕ) : ℝ :=
+  ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0,
+    (P.modulus.gcd r.natAbs : ℝ)
+
+omit [DecidableEq I] in
+/-- The source range `0 < |r| ≤ R` is exactly two copies of the positive
+gcd interval mass. -/
+theorem ramanujanGcdSymmetricIntervalMass_eq_two_mul
+    (P : OddPrimeFamily I) (R : ℕ) :
+    ramanujanGcdSymmetricIntervalMass P R = 2 * ramanujanGcdIntervalMass P R := by
+  let f : ℤ → ℝ := fun r => (P.modulus.gcd r.natAbs : ℝ)
+  have hsplit := sum_Icc_symm_split (0 : ℤ) f R
+  have hfull : ∑ r ∈ Finset.Icc (-(R : ℤ)) (R : ℤ), f r =
+      (P.modulus : ℝ) + 2 * ramanujanGcdIntervalMass P R := by
+    calc
+      _ = f 0 + ∑ r ∈ Finset.Icc 1 R, (f (0 + (r : ℤ)) + f (0 - (r : ℤ))) := by
+        simpa only [zero_sub, zero_add] using hsplit
+      _ = (P.modulus : ℝ) + 2 * ramanujanGcdIntervalMass P R := by
+        simp [f, ramanujanGcdIntervalMass, Finset.sum_add_distrib]
+        ring
+  have hzero : (0 : ℤ) ∈ Finset.Icc (-(R : ℤ)) (R : ℤ) := by
+    simp only [Finset.mem_Icc]
+    omega
+  have herase := Finset.sum_erase_add (s := Finset.Icc (-(R : ℤ)) (R : ℤ)) f hzero
+  unfold ramanujanGcdSymmetricIntervalMass
+  change ∑ r ∈ (Finset.Icc (-(R : ℤ)) (R : ℤ)).erase 0, f r = _
+  rw [← add_left_inj (a := f 0)]
+  rw [herase, hfull]
+  simp [f]
+  ring
+
+omit [DecidableEq I] in
+/-- Closed `2R·d(q)` envelope for the literal two-sided Ramanujan/gcd
+summation range. -/
+theorem ramanujanGcdSymmetricIntervalMass_le_two_mul_divisorCount
+    (P : OddPrimeFamily I) (R : ℕ) :
+    ramanujanGcdSymmetricIntervalMass P R ≤
+      2 * (R : ℝ) * (P.modulus.divisors.card : ℝ) := by
+  rw [ramanujanGcdSymmetricIntervalMass_eq_two_mul]
+  nlinarith [ramanujanGcdIntervalMass_le_divisorCount P R]
 
 end OddPrimeFamily
 

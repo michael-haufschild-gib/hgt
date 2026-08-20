@@ -52,7 +52,7 @@ theorem shift_expCombo (t : ℝ) :
   congr 2
   ring
 
-theorem shift_re (t : ℝ) :
+private theorem shift_re (t : ℝ) :
     (∑ z ∈ shiftSupport S β, shiftCoeff C β z * Complex.exp (z * t)).re
       = Real.exp (-(β * t)) * (∑ y ∈ S, C y * Complex.exp (y * t)).re := by
   rw [shift_expCombo S C β t]

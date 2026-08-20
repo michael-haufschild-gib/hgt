@@ -91,7 +91,7 @@ theorem exists_mvPoly_of_line_closures {m d p : ℕ}
     (hP0 : ∀ n, MvPolynomial.eval (0 : Fin m → ℂ) (P n) = 0)
     {Qline : (Fin m → ℂ) → Polynomial ℂ}
     (hQdeg : ∀ v, (Qline v).natDegree ≤ d)
-    (hQc : ∀ v, ∀ h : ℕ, Tendsto (fun n => (lineRestrict v (P n)).coeff h) atTop
+    (hQc : ∀ v, ∀ h : ℕ, Tendsto (fun n => (polynomialLineRestrictionLineRestrict v (P n)).coeff h) atTop
       (nhds ((Qline v).coeff h)))
     (hconv : ∀ v, Tendsto (fun n => opSchattenDet p (A n v) 1) atTop
       (nhds (opSchattenDet p (B v) 1)))

@@ -18,7 +18,7 @@ open Finset Filter ArithmeticFunction
 noncomputable section
 
 /-- **A squared logarithm is eventually below any fixed power.** -/
-theorem eventually_log_sq_le (c₁ : ℝ) {c₂ : ℝ} (hc₂ : 0 < c₂) :
+private theorem eventually_log_sq_le (c₁ : ℝ) {c₂ : ℝ} (hc₂ : 0 < c₂) :
     ∀ᶠ M : ℕ in atTop, c₁ * (Real.log (M : ℝ)) ^ 2 ≤ c₂ * (M : ℝ) ^ ((1 : ℝ) / 4) := by
   have hlo : (fun y : ℝ => Real.log y ^ (2 : ℝ)) =o[atTop] fun y : ℝ => y ^ ((1 : ℝ) / 4) :=
     isLittleO_log_rpow_rpow_atTop 2 (by norm_num)

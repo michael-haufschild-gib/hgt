@@ -114,7 +114,7 @@ theorem integral_Icc_normSq_logPoly_le_support (a : ℕ → ℂ) {s : Finset ℕ
   exact hbound
 
 /-- The integers of `[1, M]` carrying no designated prime factor. -/
-def roughSet (P : Finset ℕ) (M : ℕ) : Finset ℕ :=
+def supportMeanSquareRoughSet (P : Finset ℕ) (M : ℕ) : Finset ℕ :=
   {n ∈ Finset.Icc 1 M | primeFactorsIn P n = ∅}
 
 /-- **The mean square of the rough Möbius polynomial.**  Only the rough *count* enters, so the
@@ -122,17 +122,17 @@ height-free part is `(5e/2)·M·#rough`: the factorisation can be afforded exact
 integers have density `o(1)`. -/
 theorem integral_Icc_normSq_roughPoly_le (P : Finset ℕ) (M : ℕ) {W : ℝ} (hW : 1 ≤ W) :
     (∫ w in Set.Icc (-W) W,
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2)
-      ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * ((roughSet P M).card : ℝ) := by
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)
+      ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * ((supportMeanSquareRoughSet P M).card : ℝ) := by
   classical
   refine integral_Icc_normSq_logPoly_le_support _ ?_ ?_ ?_ hW
-  · rw [roughSet]
+  · rw [supportMeanSquareRoughSet]
     intro hcon
     have := (Finset.mem_filter.1 hcon).1
     rw [Finset.mem_Icc] at this
     omega
   · intro n hn
-    rw [roughSet, Finset.mem_filter, Finset.mem_Icc] at hn
+    rw [supportMeanSquareRoughSet, Finset.mem_filter, Finset.mem_Icc] at hn
     exact hn.1.2
   · intro n
     have hnorm : ‖((μ n : ℤ) : ℂ)‖ = |((μ n : ℤ) : ℝ)| := by

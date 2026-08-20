@@ -50,7 +50,7 @@ namespace RHTower
 /-! ## The four points of a quartet -/
 
 /-- The four points `α, -α, conj α, -conj α` of a quartet. -/
-def quartetPoint (α : ℂ) : Fin 4 → ℂ
+private def quartetPoint (α : ℂ) : Fin 4 → ℂ
   | 0 => α
   | 1 => -α
   | 2 => (starRingEnd ℂ) α

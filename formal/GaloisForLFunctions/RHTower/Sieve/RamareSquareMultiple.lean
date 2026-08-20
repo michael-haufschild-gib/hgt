@@ -236,7 +236,7 @@ theorem logPoly_moebius_eq_ramare_decomp {P : Finset ℕ} (hPprime : ∀ q ∈ P
     logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w
       = ramareBilinear P M w
         + logPoly (sqMultCoeff P) (Finset.Icc 1 M) w
-        + logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w := by
+        + logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w := by
   classical
   have hinner : ∀ p ∈ P,
       ∑ n ∈ {n ∈ Finset.Icc 1 M | p ∣ n}, moebiusPhase w n / ((primeFactorsIn P n).card : ℂ)
@@ -267,8 +267,8 @@ theorem logPoly_moebius_eq_ramare_decomp {P : Finset ℕ} (hPprime : ∀ q ∈ P
     rw [ramareBilinear]
     exact Finset.sum_congr rfl fun p _ => by rw [sum_moebiusPhase_div_eq_logPoly]
   have hrough : ∑ n ∈ {n ∈ Finset.Icc 1 M | primeFactorsIn P n = ∅}, moebiusPhase w n
-      = logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w := by
-    rw [roughSet, logPoly_moebius_eq_sum_moebiusPhase]
+      = logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w := by
+    rw [supportMeanSquareRoughSet, logPoly_moebius_eq_sum_moebiusPhase]
   rw [hbil, hrough]
 
 /-- **Exact two-way Möbius Ramaré decomposition.**  The apparent square-multiple error in the
@@ -277,7 +277,7 @@ theorem logPoly_moebius_eq_ramare_add_rough {P : Finset ℕ}
     (hPprime : ∀ q ∈ P, q.Prime) (M : ℕ) (w : ℝ) :
     logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w
       = ramareBilinear P M w
-        + logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w := by
+        + logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w := by
   simpa [logPoly_sqMultCoeff_eq_zero hPprime (Finset.Icc 1 M) w] using
     logPoly_moebius_eq_ramare_decomp hPprime M w
 
@@ -304,7 +304,7 @@ theorem integral_Icc_normSq_logPoly_moebius_le_decomp {P : Finset ℕ}
         + 2 * (1 + 1 / δ)
             * ((∫ w in Set.Icc (-W) W, ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2)
               + (∫ w in Set.Icc (-W) W,
-                  ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2)) := by
+                  ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)) := by
   classical
   have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
   have hcontF : Continuous fun w : ℝ =>
@@ -315,12 +315,12 @@ theorem integral_Icc_normSq_logPoly_moebius_le_decomp {P : Finset ℕ}
   have hcontS : Continuous fun w : ℝ => ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2 :=
     ((continuous_logPoly _ _).norm).pow 2
   have hcontR : Continuous fun w : ℝ =>
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2 :=
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2 :=
     ((continuous_logPoly _ _).norm).pow 2
   set F : ℝ → ℝ := fun w =>
     (1 + δ) * ‖ramareBilinear P M w‖ ^ 2
       + 2 * (1 + 1 / δ) * (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2
-        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2) with hFdef
+        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2) with hFdef
   have hcontMaj : Continuous F := by
     rw [hFdef]
     exact (hcontB.const_mul _).add ((hcontS.add hcontR).const_mul _)
@@ -329,20 +329,20 @@ theorem integral_Icc_normSq_logPoly_moebius_le_decomp {P : Finset ℕ}
     intro w _
     rw [logPoly_moebius_eq_ramare_decomp hPprime M w, hFdef]
     have hgroup : ramareBilinear P M w + logPoly (sqMultCoeff P) (Finset.Icc 1 M) w
-        + logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w
+        + logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w
         = ramareBilinear P M w + (logPoly (sqMultCoeff P) (Finset.Icc 1 M) w
-            + logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w) := by ring
+            + logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w) := by ring
     rw [hgroup]
     refine le_trans (normSq_add_le_weighted _ _ hδ) ?_
     have hpair : ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w
-          + logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2
+          + logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2
         ≤ 2 * (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2
-            + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2) := by
+            + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2) := by
       have h1 := pow_le_pow_left₀ (norm_nonneg _)
         (norm_add_le (logPoly (sqMultCoeff P) (Finset.Icc 1 M) w)
-          (logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w)) 2
+          (logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w)) 2
       nlinarith [h1, sq_nonneg (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖
-        - ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖)]
+        - ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖)]
     have hc0 : (0 : ℝ) ≤ 1 + 1 / δ := by positivity
     nlinarith [hpair, hc0]
   have hintF : IntegrableOn (fun w : ℝ =>
@@ -355,18 +355,18 @@ theorem integral_Icc_normSq_logPoly_moebius_le_decomp {P : Finset ℕ}
   have hintS : IntegrableOn (fun w : ℝ => ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2)
       (Set.Icc (-W) W) volume := hcontS.integrableOn_Icc
   have hintR : IntegrableOn (fun w : ℝ =>
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2)
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)
       (Set.Icc (-W) W) volume := hcontR.integrableOn_Icc
   have h1 : IntegrableOn (fun w : ℝ => (1 + δ) * ‖ramareBilinear P M w‖ ^ 2)
       (Set.Icc (-W) W) volume := hintB.const_mul _
   have h2 : IntegrableOn (fun w : ℝ => 2 * (1 + 1 / δ) *
       (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2
-        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2))
+        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2))
       (Set.Icc (-W) W) volume := (hintS.add hintR).const_mul _
   refine le_trans hmono (le_of_eq ?_)
   show (∫ w in Set.Icc (-W) W, ((1 + δ) * ‖ramareBilinear P M w‖ ^ 2
       + 2 * (1 + 1 / δ) * (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2
-        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2))) = _
+        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2))) = _
   rw [integral_add h1 h2, integral_const_mul, integral_const_mul, integral_add hintS hintR]
 
 /-- **Everything except the bilinear form is inside the budget.**  With the designated primes

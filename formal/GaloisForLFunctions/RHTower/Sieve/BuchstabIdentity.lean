@@ -219,7 +219,7 @@ theorem rho_eq_sum_divisors_moebius {n z : ℕ} (hn : 0 < n) :
     norm_num
 
 open ArithmeticFunction in
-theorem abs_moebius_le_one (e : ℕ) : |moebius e| ≤ 1 := by
+private theorem abs_moebius_le_one (e : ℕ) : |moebius e| ≤ 1 := by
   by_cases h : moebius e = 0
   · rw [h]; norm_num
   · rcases ArithmeticFunction.moebius_ne_zero_iff_eq_or.1 h with h1 | h1 <;> rw [h1] <;> norm_num
