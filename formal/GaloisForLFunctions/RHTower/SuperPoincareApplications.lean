@@ -4,6 +4,8 @@ import GaloisForLFunctions.RHTower.CCMParityInvolutionGrading
 import GaloisForLFunctions.RHTower.RankTwoCommutatorParityMultiplicityBalance
 import GaloisForLFunctions.RHTower.RealCoronaQuaternionicCyclic
 import GaloisForLFunctions.RHTower.PrimeArchThetaMorseAnomalousDarboux
+import GaloisForLFunctions.RHTower.SuzukiPositiveResolventParityNoGo
+import GaloisForLFunctions.RHTower.DeningerArithmeticQuaternionicTransitionNoReal
 
 /-!
 # Super-Poincare applications in RHTower
@@ -54,6 +56,96 @@ def residualParityD1N2 (L : ℕ) :
 end GaloisForLFunctions.RHTower
 
 namespace RHTower
+
+/-- Linear parity reflection in the Suzuki four-space. -/
+def suzukiParityReflectionEnd : Module.End ℝ SuzukiParityFourSpace where
+  toFun := suzukiParityReflection
+  map_add' u v := by
+    rcases u with ⟨⟨u0, u1⟩, ⟨u2, u3⟩⟩
+    rcases v with ⟨⟨v0, v1⟩, ⟨v2, v3⟩⟩
+    ext <;> simp [suzukiParityReflection, add_comm]
+  map_smul' c v := by
+    rcases v with ⟨⟨v0, v1⟩, ⟨v2, v3⟩⟩
+    ext <;> simp [suzukiParityReflection, smul_eq_mul]
+
+/-- Linear parity-changing Suzuki position operator. -/
+def suzukiParityPositionEnd : Module.End ℝ SuzukiParityFourSpace where
+  toFun := suzukiParityPosition
+  map_add' u v := by
+    rcases u with ⟨⟨u0, u1⟩, ⟨u2, u3⟩⟩
+    rcases v with ⟨⟨v0, v1⟩, ⟨v2, v3⟩⟩
+    rfl
+  map_smul' c v := by
+    rcases v with ⟨⟨v0, v1⟩, ⟨v2, v3⟩⟩
+    rfl
+
+/-- Suzuki position and reflection are unit-momentum `N = 2` supercharges. -/
+def suzukiParityD1N2 :
+    SuperPoincare.D1N2 (Module.End ℝ SuzukiParityFourSpace) where
+  supercharge0 := suzukiParityPositionEnd
+  supercharge1 := suzukiParityReflectionEnd
+  momentum := 1
+  supercharge0_sq := by
+    apply LinearMap.ext
+    rintro ⟨⟨v0, v1⟩, ⟨v2, v3⟩⟩
+    rfl
+  supercharge1_sq := by
+    apply LinearMap.ext
+    rintro ⟨⟨v0, v1⟩, ⟨v2, v3⟩⟩
+    simp [suzukiParityReflectionEnd, suzukiParityReflection]
+  mixed_anticommutator := by
+    apply LinearMap.ext
+    intro v
+    change suzukiParityPosition (suzukiParityReflection v) +
+      suzukiParityReflection (suzukiParityPosition v) = 0
+    rw [suzukiParityPosition_anticommutes_reflection]
+    exact neg_add_cancel _
+
+/-- First Deninger quaternion transition as a complex-linear endomorphism. -/
+def deningerQuaternionTransitionIEnd : Module.End ℂ (ℂ × ℂ) where
+  toFun := deningerQuaternionTransitionI
+  map_add' u v := by
+    rcases u with ⟨u0, u1⟩
+    rcases v with ⟨v0, v1⟩
+    ext <;> simp [deningerQuaternionTransitionI] <;> ring
+  map_smul' c v := by
+    rcases v with ⟨v0, v1⟩
+    ext <;> simp [deningerQuaternionTransitionI, smul_eq_mul] <;> ring
+
+/-- Second Deninger quaternion transition as a complex-linear endomorphism. -/
+def deningerQuaternionTransitionKEnd : Module.End ℂ (ℂ × ℂ) where
+  toFun := deningerQuaternionTransitionK
+  map_add' u v := by
+    rcases u with ⟨u0, u1⟩
+    rcases v with ⟨v0, v1⟩
+    ext <;> simp [deningerQuaternionTransitionK, add_comm]
+  map_smul' c v := by
+    rcases v with ⟨v0, v1⟩
+    ext <;> simp [deningerQuaternionTransitionK, smul_eq_mul]
+
+/-- Quaternionic transitions form an `N = 2` sector with negative unit momentum. -/
+def deningerQuaternionD1N2 :
+    SuperPoincare.D1N2 (Module.End ℂ (ℂ × ℂ)) where
+  supercharge0 := deningerQuaternionTransitionIEnd
+  supercharge1 := deningerQuaternionTransitionKEnd
+  momentum := -1
+  supercharge0_sq := by
+    apply LinearMap.ext
+    intro v
+    change deningerQuaternionTransitionI (deningerQuaternionTransitionI v) = -v
+    exact deningerQuaternionTransitionI_sq v
+  supercharge1_sq := by
+    apply LinearMap.ext
+    intro v
+    change deningerQuaternionTransitionK (deningerQuaternionTransitionK v) = -v
+    exact deningerQuaternionTransitionK_sq v
+  mixed_anticommutator := by
+    apply LinearMap.ext
+    intro v
+    change deningerQuaternionTransitionI (deningerQuaternionTransitionK v) +
+      deningerQuaternionTransitionK (deningerQuaternionTransitionI v) = 0
+    rw [deningerQuaternionTransitionI_anticommutes_K]
+    exact neg_add_cancel _
 
 /-- CCM centered clock and parity reflection form a split-momentum `N = 2` sector. -/
 def ccmParityClockReflectionD1N2Split (N : ℕ) :

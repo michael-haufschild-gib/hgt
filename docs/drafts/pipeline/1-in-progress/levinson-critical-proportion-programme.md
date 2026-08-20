@@ -770,3 +770,21 @@ At the fixed edge `c = 1` and Levinson's abscissa `σ₀ = ½ − R/log T` the s
 **Next:** the dual expansion itself — `ζ(s+w) = χ(s+w)·ζ(1−s−w)`, termwise, with Fubini justified
 by the χ bound times the Gaussian.  That is the last structural piece of the AFE side; after it the
 mollified second moment is an assembly of `twisted_meanValue_error` over the two edges.
+
+### The χ input for the dual expansion (2026-08-20)
+
+`RHTower/ZetaChiVerticalGrowth.lean` (scratch-clean):
+
+* `vertical_ne_neg_two_mul`, `one_sub_vertical_ne_neg_two_mul` — on the strip `-1 ≤ σ ≤ 1/2` with
+  `σ ≠ 0`, neither `s` nor `1-s` meets the pole ladder of `Γ_ℝ`;
+* `Gammaℝ_vertical_ne_zero`, `Gammaℝ_one_sub_vertical_ne_zero`, `continuousAt_Gammaℝ_of_ne_poles`,
+  `continuousAt_zetaChi_vertical`;
+* **`exists_bound_norm_zetaChi_vertical`** — `‖χ(σ+it)‖ ≤ C(1+|t|)²` for *every* `t`, on
+  `-1 ≤ σ ≤ 1/2`, `σ ≠ 0`.
+
+The corpus already owned the two strip bounds above ordinate `2`
+(`norm_zetaChi_le_negative_one_strip` on `[-1,-1/2]` and `norm_zetaChi_le_half_strip` on
+`[-1/2,1/2]`); what was missing is the compact part, exactly as for `ζ`.  Note this also shows the
+fixed edge `Re w = -1` is already usable at the Levinson abscissa: `Re(s+w) = σ₀ - 1 ∈ (-1,0)` lies
+in the covered range and `Re(1-s-w) = 2 - σ₀ > 1` converges, so the movable edge of
+`SmoothAFEZetaGeneralEdge` is a convenience rather than a necessity.

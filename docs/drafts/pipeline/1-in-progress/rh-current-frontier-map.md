@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 20 August 2026, commit
-`f6bc1474f76446e2f92efb3018deaf21f509d41d`, plus declaration-index review of current Lean
+`13cec320a5eedd6b75ac095c8fba107df5a4d913`, plus declaration-index review of current Lean
 working-tree additions. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified and not claimed build-audited in this
@@ -58,7 +58,7 @@ Current formal state adds one live route and one candidate. Live `CLG` proves
 that the critical logarithmic-derivative Loewner kernel is PSD exactly under RH, splits it on the
 Euler region into an archimedean kernel minus the complete von-Mangoldt phase kernel, and proves
 every positively shifted generator is non-PSD. Its viable premise is critical source domination,
-not a positive Loewner flow through shifted generators. Candidate working-tree `PBM` identifies the continued
+not a positive Loewner flow through shifted generators. Candidate `PBM` identifies the continued
 grade-one prime current's quantized residue at every right-strip zero, proves this charge escapes
 every fixed endpoint chart, and makes absence of charge exactly RH. Entire cumulants and locally
 uniform limits of zero-free finite Euler fields cannot create that charge. PBM therefore requires a
@@ -76,7 +76,18 @@ finite off-line ordinate packet by at least its squared multiplicity, while prim
 has natural double-logarithmic divergence. Without a relative subtraction or absolute finite upper
 budget, this is not HC's producer. Random Euler, Fisher, prime-boundary Poisson/Wick, determinant
 completion, difference-Galois, and finite-conductor Dirichlet additions are classified below as
-pre-route infrastructure or firewalls. No open producer is closed; RH status is unchanged.
+pre-route infrastructure or firewalls.
+
+Latest committed delta adds an exact Gaussian smooth AFE with movable reflected edge, certified
+fundamental discriminants for all three quadratic CRT families, a positive block Hodge identity on
+every surviving multiple-sine face, finite-dimensional closure of finite-pencil trace jets, and
+finite paired Super-Poincare packages for existing CCM/reflection operators. Current working tree
+adds the all-grade prime-power Marcinkiewicz carrier, `SL_2` elementary factorization, and three
+Gamma pole-avoidance/continuity lemmas. These additions change no live or candidate count. The
+all-grade carrier is a genuine infinite, multi-grade, nonphysical pre-route adjacent to PBM/PPM:
+Lean proves the grade-one embedding is isometric and projection contractive, but does **not yet**
+prove the file-level advertised nonlinear Euler-ray tail or equality of all-grade and grade-one
+corona classes. No open producer is closed; RH status is unchanged.
 
 Many exact source criteria below are formal equivalences with RH. Rewriting RH as positivity,
 boundedness, passivity, flatness, or collision absence advances nothing unless corpus also supplies an
@@ -1079,7 +1090,7 @@ identifies this current with von-Mangoldt source over infinitely many dilations.
 residue is positive integer multiplicity. In boundary coordinate `z=log(N)(s-1)`, that charged
 branch point escapes every compact chart.
 
-**Proved in current working tree.** `PrimeBoundaryMonodromyEscape.lean` proves: prime-zeta
+**Proved.** `PrimeBoundaryMonodromyEscape.lean` proves: prime-zeta
 derivative equals negative grade-one source on absolute half-plane; continued current has residue
 `m>=1` at every right-strip zero; archimedean factor has zero strip monodromy; divisor charge escapes
 every fixed endpoint chart; and
@@ -1091,8 +1102,7 @@ RH iff continued prime-log current has no positive integer charge
 
 It also proves two exact firewalls. Derivatives of entire finite cumulants have zero contour charge,
 and locally uniform limits of zero-free entire finite Euler fields cannot acquire a zero inside a
-protected contour. PBM therefore promotes former grade--Lambert pre-route to candidate, subject to
-build audit of working-tree module.
+protected contour. PBM therefore promotes former grade--Lambert pre-route to candidate.
 
 **Open core.** Produce absence/cancellation of quantized monodromy from global continued
 prime--Gamma source before selecting a zero. Neither Gamma completion nor any fixed compact
@@ -1280,7 +1290,7 @@ boundary point `R` is a genuine noncontinuable singularity. `SegmentAnalyticCont
 propagates germ equality along a real segment. `PrimeArchBernsteinPringsheimCollar.lean` combines
 these facts and proves `riemannHypothesis_of_collarContinuation`; the endpoint `1` is not assumed
 to belong to the continuation domain. The prior prime--arch Mobius pullback identifies the central
-moment germ with the continued prime--Gamma source near its starting point. Working-tree
+moment germ with the continued prime--Gamma source near its starting point.
 `PrimeArchBernsteinBranchDecomposition.lean` makes non-RH singularity exact: at critical radius the
 susceptibility is one explicit finite maximal-packet square-root kernel plus a remainder whose
 coefficients have strictly smaller geometric rate and whose Abel series is holomorphic across that
