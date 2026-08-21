@@ -14,6 +14,31 @@ noncomputable section
 
 namespace BackwardsLightCone
 
+/-- The prefix preceding a bundled terminal gate is literally the corresponding
+`take` of its lifted physical gate word. -/
+theorem TerminalBlockData.take_liftedWord_prefix
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root} {P : Fin n → Option (Fin 3)}
+    (block : TerminalBlockData cone P) :
+    List.take block.prefixGates.length
+      (List.zipWith totalTwoQubitLift edges block.gates) =
+      List.zipWith totalTwoQubitLift block.prefixEdges block.prefixGates := by
+  conv_lhs => rw [block.edges_decomp]
+  rw [block.gates_decomp, List.zipWith_append block.prefix_length]
+  apply List.take_append_of_le_length
+  simp [List.length_zipWith, block.prefix_length]
+
+/-- The retained terminal position lies inside its lifted physical block word. -/
+theorem TerminalBlockData.prefix_length_lt_liftedWord_length
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root} {P : Fin n → Option (Fin 3)}
+    (block : TerminalBlockData cone P) :
+    block.prefixGates.length <
+      (List.zipWith totalTwoQubitLift edges block.gates).length := by
+  conv_rhs => rw [block.edges_decomp]
+  rw [block.gates_decomp, List.zipWith_append block.prefix_length, List.length_append]
+  simp [List.length_zipWith, block.prefix_length, block.suffix_length]
+
 /-- The literal chronological local-gate word of a recursive BLC assembly. -/
 def TerminalBlockPrefixAssembly.gateWord
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
@@ -96,11 +121,10 @@ theorem TerminalBlockPrefixAssembly.reverse_prod_mul_eq_finalPrefix
     (assembly : TerminalBlockPrefixAssembly cone pre labels) :
     assembly.liftedWord.reverse.prod * pre = assembly.finalPrefix := by
   induction assembly with
-  | nil => rfl
+  | nil => simp [liftedWord, finalPrefix]
   | cons step tail ih =>
-      change (tail.liftedWord.reverse.prod *
-        (List.zipWith totalTwoQubitLift edges step.block.gates).reverse.prod) * _ = _
-      rw [← mul_assoc]
+      simp only [liftedWord, finalPrefix, List.reverse_append, List.prod_append]
+      rw [mul_assoc]
       change tail.liftedWord.reverse.prod *
         (edgeListBlockContraction edges step.block.gates * _) = tail.finalPrefix
       exact ih

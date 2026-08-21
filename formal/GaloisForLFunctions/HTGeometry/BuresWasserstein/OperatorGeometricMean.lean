@@ -425,6 +425,76 @@ theorem gm_concave {s : Finset ι} (hs : s.Nonempty) {w : ι → ℝ} {f g : ι 
     (fun i _ => (gm_nonneg (f i) (g i)).isSelfAdjoint) hf) ?_
   exact le_of_eq (Finset.sum_congr rfl fun i hi => by rw [gm_riccati (hf i hi) (hg i hi)])
 
+/-! ### Scalar multiples and inverses -/
+
+lemma ringInverse_smul {r : ℝ} (hr : 0 < r) (ha : IsStrictlyPositive a) :
+    (r • a)⁻¹ʳ = r⁻¹ • a⁻¹ʳ := by
+  rw [← mul_one ((r • a)⁻¹ʳ), Ring.inverse_mul_eq_iff_eq_mul _ _ _ (ha.smul hr).isUnit,
+    smul_mul_smul_comm, Ring.mul_inverse_cancel _ ha.isUnit]
+  field_simp
+  simp
+
+lemma rpow_half_ringInverse (ha : IsStrictlyPositive a) :
+    (a⁻¹ʳ) ^ (1/2 : ℝ) = a ^ (-(1/2) : ℝ) := by
+  rw [CFC.inverse_eq_rpow_neg_one ha, CFC.rpow_rpow _ _ _ (by norm_num)]
+  norm_num
+
+lemma rpow_neg_half_ringInverse (ha : IsStrictlyPositive a) :
+    (a⁻¹ʳ) ^ (-(1/2) : ℝ) = a ^ (1/2 : ℝ) := by
+  rw [CFC.inverse_eq_rpow_neg_one ha, CFC.rpow_rpow _ _ _ (by norm_num)]
+  norm_num
+
+/-- The geometric mean of the inverse: `a⁻¹ # b = a^{-1/2}(a^{1/2} b a^{1/2})^{1/2} a^{-1/2}`. -/
+lemma gm_ringInverse_left (ha : IsStrictlyPositive a) (b : A) :
+    gm a⁻¹ʳ b = a ^ (-(1/2) : ℝ) * CFC.sqrt (a ^ (1/2 : ℝ) * b * a ^ (1/2 : ℝ))
+      * a ^ (-(1/2) : ℝ) := by
+  rw [gm_eq_sqrt, rpow_half_ringInverse ha, rpow_neg_half_ringInverse ha]
+
+/-- **Joint homogeneity** of the geometric mean. -/
+theorem gm_smul {r t : ℝ} (hr : 0 < r) (ht : 0 < t) (ha : IsStrictlyPositive a)
+    (hb : IsStrictlyPositive b) :
+    gm (r • a) (t • b) = Real.sqrt (r * t) • gm a b := by
+  refine (gm_unique (ha.smul hr) (smul_nonneg (Real.sqrt_nonneg _) (gm_nonneg a b)) ?_).symm
+  rw [ringInverse_smul hr ha]
+  have hrt : Real.sqrt (r * t) * Real.sqrt (r * t) = r * t := Real.mul_self_sqrt (by positivity)
+  calc Real.sqrt (r * t) • gm a b * (r⁻¹ • a⁻¹ʳ) * (Real.sqrt (r * t) • gm a b)
+      = (Real.sqrt (r * t) * (r⁻¹ * Real.sqrt (r * t))) • (gm a b * a⁻¹ʳ * gm a b) := by
+        simp only [smul_mul_assoc, mul_smul_comm, smul_smul]
+    _ = t • b := by
+        rw [gm_riccati ha hb]
+        congr 1
+        rw [show Real.sqrt (r * t) * (r⁻¹ * Real.sqrt (r * t))
+          = r⁻¹ * (Real.sqrt (r * t) * Real.sqrt (r * t)) by ring, hrt]
+        field_simp
+
+/-- Homogeneity in a single common scalar. -/
+theorem gm_smul_self {r : ℝ} (hr : 0 < r) (ha : IsStrictlyPositive a)
+    (hb : IsStrictlyPositive b) : gm (r • a) (r • b) = r • gm a b := by
+  rw [gm_smul hr hr ha hb, Real.sqrt_mul_self hr.le]
+
+/-! ### Weighted geometric means -/
+
+@[simp] lemma wgm_half (a b : A) : wgm (1/2 : ℝ) a b = gm a b := rfl
+
+lemma wgm_zero (ha : IsStrictlyPositive a) (hb : 0 ≤ b) : wgm 0 a b = a := by
+  have hc : (0 : A) ≤ a ^ (-(1/2) : ℝ) * b * a ^ (-(1/2) : ℝ) :=
+    nonneg_conjugate (isSelfAdjoint_rpow a _) hb
+  rw [wgm_def, CFC.rpow_zero _ hc, mul_one]
+  exact rpow_half_mul_rpow_half ha
+
+lemma wgm_one (ha : IsStrictlyPositive a) (hb : 0 ≤ b) : wgm 1 a b = b := by
+  have hc : (0 : A) ≤ a ^ (-(1/2) : ℝ) * b * a ^ (-(1/2) : ℝ) :=
+    nonneg_conjugate (isSelfAdjoint_rpow a _) hb
+  rw [wgm_def, CFC.rpow_one _ hc]
+  exact sandwich_peel ha b
+
+/-- Operator monotonicity of `a #_t ·` for `t ∈ [0,1]`. -/
+theorem wgm_mono_right {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) (a : A) {b c : A} (h : b ≤ c) :
+    wgm t a b ≤ wgm t a c := by
+  rw [wgm_def, wgm_def]
+  exact (isSelfAdjoint_rpow a _).conjugate_le_conjugate
+    (CFC.rpow_le_rpow ht ((isSelfAdjoint_rpow a _).conjugate_le_conjugate h))
+
 end
 
 end GaloisForLFunctions.HTGeometry.BuresWasserstein

@@ -339,3 +339,22 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
 
   CORRECTION to an earlier line in this log: B5's `V(f_n) → 1` is **not** open — it was closed on
   2026-08-21 as `ConnesApproximateUnitStrong.connes_approxUnit_tendsto`.
+
+- 2026-08-22 — Tier B batch 12 (**App I (39)-(46) closed for `k = ℚ`; Lemma 2 complete**).
+  Corpus search found `RHTower.ccmRationalFiniteAdele_isCompact_rationalDiagonalDenominator`
+  ("diagonal rationals in a compact finite-adele set lie in one fractional integer lattice"),
+  which *is* Connes' (42)/(45) for `k = ℚ`; it is reused, not rebuilt.
+  * `ConnesAdelicLatticeDecay` — `connesLatticeSum_neg` (the punctured lattice sum is even in the
+    spacing), `connes_latticeSum_rapidDecay'` (App I (46) for any nonzero spacing),
+    `connes_rationalDiagonal_lattice` (**(42)/(45)** in the form `q = m/d`), and
+    **`connes_adelicShadow_rapidDecay`** = **App I (44)-(46)**: for a weight bounded and supported
+    on the rational diagonal of a compact set of finite adeles, tested against the archimedean
+    Schwartz factor,
+    `λ^k · ∑_{q ∈ ℚ^*} |w(q)| ‖f₁(q λ x_∞)‖ → 0` for every `k`.
+    The proof reindexes the `ℚ`-sum along the injection `m ↦ m/d` (`Function.Injective.tsum_eq`,
+    the support condition being exactly the denominator confinement) and then applies the
+    Schwartz lattice decay.
+  With this, **Appendix I Lemma 2 is closed for `k = ℚ`**: (36)/(37) and the reflection (38) in
+  `ConnesArchPeriodization`, the two-sided rapid decay in `ConnesArchPeriodizationDecay`, and the
+  tensor-splitting/denominator-confinement chain (39)-(46) here.
+  All `#print axioms` clean.
