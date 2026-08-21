@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 21 August 2026, commit
-`9c39823cf0859823d64c8c8fed8c263298d471c9`, plus declaration-index review of current Lean
+`03f74812c183c049a2637c4116f78878b97a0d06`, plus declaration-index review of current Lean
 working-tree additions. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified and not claimed build-audited in this
@@ -51,7 +51,7 @@ final open producer and proves neither RH nor its negation.
 | F2 | all-prime principal-relative Sonin residual -> positive trace-class energy -> one intrinsic Hankel moment curve -> continued prime--Gamma moment germ -> RH | Prove one source-derived cofinal aperture section, positive aperture barycenter, or equivalent all-moment weld from the Sonin energy moments to the fixed prime--Gamma moments. |
 | G | Suzuki/Mobius/Gamma source -> marked pre-scalar or signed-channel carrier -> exact Ward landing -> wall orientation -> RH | Independent source law forcing the already-transported Ward coefficient to vanish or have the required signed order; Schur coisometry and causal limit do not supply four-unit orientation. |
 | L | completed Green/BV/co-Poisson source -> strict resolved Xi boundary with prime/depth/multiplicity provenance -> singular source-to-physical comparison -> coefficient-faithful Burnol/Deninger reader -> RH | Construct one source-derived singular comparison, before divisor specialization, which sends the already resolved boundary to the existing physical landing and makes its physical reader annihilate that boundary. The comparison must preserve the nonzero Xi coefficient and cannot assume the conormal defect vanishes. |
-| O | exact restricted-Weil operator -> canonical true-ground heads -> finite matched autocorrelation/coverage-seam producer -> nonnegative floor -> RH | Prove the cancellation-preserving sign on canonical true-ground heads, equivalently eventual reverse-prime control. Remote cells vanish, but the physical cutoff differs from the all-prime matched sum by an explicit finite prime-power boundary collar; this seam is now exact, not open bookkeeping. |
+| O | exact restricted-Weil operator -> canonical true-ground heads -> finite matched autocorrelation/coverage-seam producer -> nonnegative floor -> RH | Prove cancellation-preserving sign on canonical true-ground heads. Oriented light completes scalar chord to the full wall-Gram circle and welds positively to CCM's cubic jet, but chord magnitude does not select orientation sheet. Missing theorem is global two-channel sheet/sign control including center reserve and finite boundary collar. |
 | P | source-horizontal second-Cartier orbit -> Route-N capacity/radial-work bridge -> radial Krein energy -> endpoint moderation -> RH | Produce endpoint order globally before divisor selection; regular reflection-pair extraction, finite circle measure, and literal scalar short are formally ruled out. |
 | Q | continued Hurwitz/Cauchy source -> countable Gaussian-rational Euler-pole paired kernel -> orientation zero -> RH | Prove source nonnegativity of the explicit exterior paired diagonal, equivalently passivity of every finite paired-value matrix. Lean proves this scalar collapse only through Xi-specific RH capstones, so it is a smaller receiver, not a source proof. |
 | CLG/TTF | literal completed theta source -> neutral correlation flux = Xi Bezoutian -> invertible diagonal congruence -> Euler-safe observability deficit = reflection-even minus reflection-odd two-channel Weil energy -> RH | Exclude, directly from the completed source, every admissible cofinal regular two-pole Cauchy sequence with reflection-even energy tending to zero and reflection-odd energy tending to its positive fibre multiplicity. This moving rank-two no-escape law is exact: any off-line fibre produces source energy tending to the negative multiplicity. |
@@ -59,7 +59,7 @@ final open producer and proves neither RH nor its negation.
 | T1 | finite Xi-Taylor/theta-tail source -> exact reflection bridge -> zero-free full-density channel plus canonical transfer current -> raw core-current bound -> RH | Produce a source-first sublinear bound for the canonical full-density transfer current, concretely by signed short Möbius-block cancellation preserving the combined top-row/finite-translation current. The full normalized Xi zero packet, zero-free aggregate channel, and differentiated primal square-AFE affine mean square are discharged; transfer-current sublinearity is exactly RH. |
 | T2 | ordered-prime Wold source -> centered log holonomy -> Wold-minus-log-mesh residual Hardy kernel -> continued prime-zeta/mesh ODE -> RH | Assemble the canonical degree-60 packet, the literal `11/5` derivative receiver, the order-500 subcritical phase, and weighted cell-energy `L2` into critical gap-energy summability; then prove signed/renormalized continuation from `Im z<0` to `Im z<1/2`. Absolute critical graph norm is impossible. |
 | U | shifted hard-edge source -> cofinal shifted Hankel tail or first-contact exclusion -> RH | Non-scalar source mechanism excluding the exact nonintegrable strict-frontier quotient, or uniform cofinal tail order. |
-| HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Absolute subquantum estimate, source-first prime-summability, or the still-unproved analytic two-term conductor-uniform CGL bound for the literal not-all-equal weighted six-label correlation. Primitive-conductor zero/multiplicity transport, fixed-modulus primitive-family partition, `h_0` trace--Poisson identity, and `7/3` exponent consolidation are exact; large-height aggregation must still close an absolute detector census. |
+| HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Absolute subquantum estimate, source-first prime-summability, or a conductor/height-uniform CGL bound for the literal not-all-equal weighted six-label correlation. Character subdivision, primitive-divisor reindexing, fixed-modulus Jensen capacity, separated selection, source Lemmas 4.1/4.2, `h_0` trace--Poisson, and `7/3` arithmetic are exact; none is uniform enough for absolute census. |
 | SV2 | literal Suzuki energy space -> paired self-adjoint characteristics -> bounded projective normal family -> global Xi projective target -> corrected two-chart spherical limit -> RH | Identify the canonical cofinal subsequential limit with the divisor-faithful global target, then extend convergence over the full finite chart and reciprocal pole chart. |
 
 Among current architectures, live `CLG/TTF` proves
@@ -946,7 +946,31 @@ translation `delta_n` satisfying
 
 where `R_n` is the outgoing completed error. The whole coverage seam is the finite sum of these
 cell translations minus one terminal quantile interval. This is a coefficient-faithful reduction
-of O's sign problem to completed-error-controlled finite transport; it proves no sign.
+of O's sign problem to completed-error-controlled finite transport. The unconditional
+de la Vallee Poussin estimate in `CCMActualHeadMatchedQuantilePolarDLVPRate.lean` proves its
+normalized Chebyshev driver is `O(exp(h/2-c*sqrt(h)))` and becomes negligible after division by
+the polar mass scale `exp(h/2)`. This controls high-coordinate displacement rate; it does not
+orient the finite seam or terminal interval.
+
+The matched cell also has a source-forced orientation channel.
+`CCMActualHeadMatchedOrientedCharacteristicCocycle.lean` combines even cosine rebate and odd
+Suzuki current into one Hermitian characteristic cocycle and proves every prime-power wall has a
+strictly positive odd first moment. `CCMActualHeadMatchedOrientedWallLightIncidence.lean` identifies
+the arithmetic sine coordinate with positive-light minus negative-light energy and realizes each
+actual matched cell as a division-free spectral incidence. It also proves a sharp firewall:
+incidence vanishes at spectral center while raw negative light retains a strict center reserve, so
+incidence alone cannot dominate it pointwise.
+
+`CCMActualHeadMatchedWallLightQuadraticJet.lean` proves strict positive quadratic contact at every
+prime power. Current working-tree `CCMActualHeadMatchedWallLightThirdJetTransmutation.lean`
+identifies this coefficient atomwise as a positive dressing of the literal CCM prime-entry cubic
+jet; every finite packet is PSD on the zero-sum sector and strictly positive when its first clock
+moment is visible. This is a new O--CCM-FU/G weld, not a new route: it controls one center jet and
+proves neither domination of the center reserve nor sign of the complete actual-head symbol.
+Current working-tree `CCMActualHeadWallGramLightConeCircleCompletion.lean` completes the atom:
+actual chord plus light orientation is exactly the complex anti-diagonal wall Gram and obeys a
+critical-mass circle law. Chord determines orientation magnitude but not sign; negative light is
+one sheet. Atomwise completion is therefore closed, while global sheet selection is not.
 
 The finite/low-height block now has a sharper source normal form. Equal-mass prime--polar quantile
 cells are exact cosine-characteristic discrepancies with quadratic contact at zero; the terminal
@@ -979,6 +1003,12 @@ Formal sources: `CCMRestrictedWeilCanonicalGroundHeadEnergy.lean`,
 `CCMActualHeadMatchedApertureFiniteSupport.lean`,
 `CCMActualHeadMatchedBoundaryCoverageSeam.lean`,
 `CCMActualHeadMatchedQuantilePolarCoordinateTransport.lean`,
+`CCMActualHeadMatchedQuantilePolarDLVPRate.lean`,
+`CCMActualHeadMatchedOrientedCharacteristicCocycle.lean`,
+`CCMActualHeadMatchedOrientedWallLightIncidence.lean`,
+`CCMActualHeadMatchedWallLightQuadraticJet.lean`,
+`CCMActualHeadMatchedWallLightThirdJetTransmutation.lean`,
+`CCMActualHeadWallGramLightConeCircleCompletion.lean`,
 `CCMActualHeadExteriorCosineMeasureGauge.lean`.
 
 **Open core.** At every aperture, prove cofinally on canonical actual heads the literal
@@ -986,7 +1016,9 @@ reverse-prime bound, equivalently nonnegativity of the exact finite matched-auto
 including its boundary coverage seam. The sharp constructive sufficient target remains: produce two finite
 signed exterior measures, supported beyond aperture diameter and with controlled mass, whose gauge
 correction makes the explicit completed-head characteristic symbol nonnegative on the compact
-coercive core. Superoscillatory density without mass control is insufficient.
+coercive core. Equivalently, globally select and control the correct sheet of the exact wall-Gram
+circle while retaining center reserve and coverage seam. Local positive quadratic/cubic jets cannot
+supply either global statement; superoscillatory density without mass control is insufficient.
 
 This supersedes old prolate-seed frontier. Canonical heads are now selected from true ground and
 converge to it. Remaining problem is arithmetic sign on those heads, not constructing/evaluating a
@@ -1878,8 +1910,31 @@ primitive completed `L`-functions have the same zeros there.
 `DirichletCharacterPrimitiveZeroTransport.lean` and
 `ChenGuptaLiPrimitiveDetectorTransport.lean` carry critical-strip zero records and both finite CGL
 detectors to the primitive conductor. Ambient-to-primitive transport is therefore not HC's gap.
-These are characterwise identities; they do not reindex the full divisor globally or make any
-constant conductor-uniform.
+These characterwise identities alone do not create uniform constants. Full finite reindexing is
+also closed:
+`DirichletCharacterPrimitiveConductorFamilyTransport.lean` injects every ambient nonprincipal
+character into the literal family of primitive characters at conductor divisors and bounds its
+positive-window count by the complete divisor-family count.
+`DirichletCharacterPrimitiveDivisorFamilyAlignment.lean` identifies that family exactly with the
+existing primitive-divisor aggregate, while
+`DirichletCharacterPrimitiveZeroDensityTransport.lean` preserves pointwise divisor multiplicity
+and the full centered-window count. Characterwise transport and fixed-modulus family alignment are
+therefore closed; conductor uniformity is not.
+
+Local analytic packet formation is also closed at fixed arithmetic data.
+`DirichletLZeroDensityAnalyticSpacing.lean` turns the proved character-dependent Jensen bound into
+an internal natural-number capacity and canonical `(K+1)`-separated selection;
+`ChenGuptaLiPrimitiveAnalyticSpacing.lean` retains actual primitive zeros and character labels and
+sums exact selection loss over the finite primitive family.
+`ChenGuptaLiPositiveWindowZeroDensity.lean` gives every fixed ambient modulus an unconditional
+positive-window envelope, but its constant may depend on that modulus.
+`ChenGuptaLiLemma33.lean` closes source character subdivision: every ambient character is a
+divisor-level lift times one member of a finite pointwise-one-bounded factor set of the correct
+totient-ratio size.
+`ChenGuptaLiLemma41.lean` and `ChenGuptaLiLemma42.lean` prove the literal source-matrix cardinality
+and centered-cubic/Hilbert--Schmidt singular-value reductions. Lemma 4.1's large-value assertion is
+carried by its certified packet; none of these theorems supplies a conductor/height-uniform
+capacity or estimates the remaining off-diagonal correlation.
 `ChenGuptaLiWeightedCharacterMatrix.lean` also installs arbitrary complex dyadic weights—including
 the literal smooth source weight—and proves weighted Lemma 4.1.
 `ChenGuptaLiWeightedCharacterGram.lean` constructs its literal weighted row Gram and closes weighted
@@ -1956,6 +2011,12 @@ Primitive-conductor sources: `DirichletCharacterPrimitiveReduction.lean`,
 `DirichletCharacterPrimitiveZeroMultiplicity.lean`,
 `DirichletCharacterPrimitiveZeroTransport.lean`, and
 `ChenGuptaLiPrimitiveDetectorTransport.lean`.
+Family/spacing sources: `DirichletCharacterPrimitiveConductorFamilyTransport.lean`,
+`DirichletCharacterPrimitiveDivisorFamilyAlignment.lean`,
+`DirichletCharacterPrimitiveZeroDensityTransport.lean`,
+`DirichletLZeroDensityAnalyticSpacing.lean`, `ChenGuptaLiPrimitiveAnalyticSpacing.lean`,
+`ChenGuptaLiPositiveWindowZeroDensity.lean`, `ChenGuptaLiLemma33.lean`, `ChenGuptaLiLemma41.lean`, and
+`ChenGuptaLiLemma42.lean`.
 
 **Open core.** Prove from coefficient-faithful prime--Gamma source, before divisor specialization,
 either an absolute strict-subquantum bound for source excess/information loss on all late windows or
@@ -1965,7 +2026,10 @@ correlation after affine reduced-residue Poisson transformation, plus large-heig
 strong enough to eliminate every off-line fibre.
 Normalized
 `o(N(T))` is insufficient: first branch must cross integer quantum two, while second must be an
-upstream source estimate rather than already RH-equivalent global summability.
+upstream source estimate rather than already RH-equivalent global summability. First missing CGL
+producer is uniform arithmetic control of selected packets across conductor and height, not
+character subdivision, primitive reduction, divisor-family reindexing, local Jensen counting,
+natural-scale spacing, or Lemma 4.1/4.2 matrix algebra.
 
 HC is genuinely new architecture because mechanism is source-resolution loss versus quantized
 reflection incidence, not positivity of classical explicit formula. Global strict-two law is itself
@@ -2361,10 +2425,11 @@ continuation producer is absent.
   orthogonal patches, geodesic discs, warped models, polyhedral surfaces, graphs, and tori; the HLS
   modules include the finite odd-weight spin-`1/2` classification, while formation-current modules
   add exact finite conservation/duality laws. Borel apolarity and the finite Hall-solvable-group
-  complement/minimal-normal-subgroup modules are likewise source-independent algebra. New
-  Poincare--Hopf, Borsuk--Ulam, group-character, knot/R-matrix, finite two-level synthesis, and
-  abelian Seiberg--Witten/HLS bridge modules also remain generic topology, representation theory,
-  or finite control, with no arithmetic occurrence.
+  complement/minimal-normal-subgroup modules are likewise source-independent algebra. New big-cell
+  coordinates/trivializations, Hilbert-irreducibility Taylor tails, Kleinbock--Margulis polynomial
+  goodness, Poincare--Hopf, Borsuk--Ulam, group-character, knot/R-matrix, finite two-level synthesis,
+  and abelian Seiberg--Witten/HLS bridge modules remain generic topology, representation theory,
+  Diophantine geometry, or finite control, with no arithmetic occurrence.
   None contains a completed prime--Gamma source, Xi-divisor reader, restricted-Weil ground sign,
   or RH endpoint. They strengthen future realization/variation infrastructure but add no route or
   candidate.
@@ -2969,10 +3034,16 @@ continuation producer is absent.
   palindromic (`ChannelInverseRigidity.lean`, `MarkovianExactReturn.lean`). Thus genuinely
   dissipative exact-return variants are closed. `StaticChoiPhaseTargetEntropy.lean` and the static
   Choi first-return modules add basis-free phase-target entropy, finite circuit-dictionary union
-  bounds, Gaussian crowding bounds, and return-excised hard-gap laws. They still assume an abstract
+  bounds, Gaussian crowding bounds, and return-excised hard-gap laws. The latest law brackets every
+  complete-dictionary hard block between consecutive visits under maximal projective spectral
+  rank; one ordinary nearest-neighbor Gaussian draw supplies both growth and those returns. They still assume an abstract
   spectral target/action and contain no prime--Gamma specialization. Approximate-return information loss remains a
   paired, non-scalar mechanism potentially relevant to HC or a successor to J, but no prime--Gamma
   channel, collision quantum comparison, or RH endpoint is instantiated.
+  `ClosedPrimeBraid.lean` supplies a separate exact firewall: prime clocks `2,3` form one positive
+  full twist whose framed phase is `-1`, while scalar Markov closure is `1` and erases it. This
+  supports G/HC/SEC's need for framed non-scalar orientation, but a fixed two-prime braid has no
+  completed source exhaustion or Xi endpoint and is neither live route nor candidate.
 - Semidefinite Caratheodory--Fejer data now have exact finite unit-circle atomic factorization,
   active-node support extraction, and corank-one kernel-root control. The Connes--van Suijlekom
   Toeplitz theorem and its real form are formal. Regularized determinants exist at every finite

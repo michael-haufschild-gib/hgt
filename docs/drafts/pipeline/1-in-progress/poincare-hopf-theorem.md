@@ -215,12 +215,95 @@ and the **only** missing input for topological Mayer–Vietoris is
 
 That is the gate for the whole of Stage IV.  Its proof needs, in order:
 
-- IV.1 affine singular simplices in a convex subset of a real vector space, and the cone operator,
-  with `∂(b ∗ c) + b ∗ (∂ c) = c − ε(c)·b`;
-- IV.2 the barycentric subdivision operator `S` on singular chains and a chain homotopy `T` with
-  `∂T + T∂ = 1 − S`;
-- IV.3 iterated subdivision plus the Lebesgue number lemma, giving IV.★;
-- IV.4 topological Mayer–Vietoris and excision from IV.★ plus `mvChainShortExact`;
+- IV.1 **(landed)** `AffineChainComplex`: `affSimplicial` (the free `R`-module simplicial object on
+  the codiscrete simplicial set of a type), `affChainComplex` (its alternating face map complex, so
+  `∂² = 0` is free), `affSimplicial_δ` and `d_single` (the boundary is the alternating sum of the
+  vertex-omitting faces), `coneMap` (prepend a fixed point), `cons_comp_succAbove_zero` and
+  `cons_comp_succAbove_succ` (the zeroth face of a cone is the simplex, the higher faces are the
+  cones of the faces), and **`d_coneMap_single`**: `∂ (b ∗ v) + b ∗ (∂ v) = v`.
+  Note mathlib's topological simplex is `stdSimplex ℝ (Fin (n+1))`, a convex subset of a real
+  vector space, so affine simplices in it are exactly tuples of points and the cone is prepending a
+  vertex — no continuity argument at the apex is needed;
+- IV.2 **(started)** `BarycentricSubdivision`: `bary` (barycenter of a tuple), `d_coneMap_single_zero`
+  (`∂ (b ∗ v) = v − [b]` in the lowest degree), **`sd`** (the subdivision operator, defined by the
+  recursion `Sd v = b(v) ∗ Sd (∂ v)` with `Sd = id` in degree zero), `sd_single` (its recursion
+  equation), and **`d_coneMap_add`** (the cone identity for arbitrary chains, obtained from the
+  basis case by `Finsupp.lhom_ext'`).
+  Also landed: `sd_zero_apply`, `aug` (the augmentation of a `0`-chain), `aug_single`,
+  **`aug_d`** (the augmentation of a boundary vanishes), `d_coneMap_zero`
+  (`∂ (b ∗ c) = c − ε(c)·[b]` in degree zero), and **`d_sd`: `∂ ∘ Sd = Sd ∘ ∂`** — the subdivision
+  operator is a chain map, by induction on the degree: in degree zero the cone identity contributes
+  the augmentation term, which vanishes on a boundary; in higher degree `∂ Sd v = ∂ (b ∗ X)
+  = X − b ∗ (∂ X)` with `X = Sd (∂ v)`, and `∂ X = Sd (∂∂ v) = 0` by the inductive hypothesis.
+  **IV.2 is complete.**  `affBd`, `affCone`, `affSd`, `affT` name the boundary, cone, subdivision
+  and homotopy as honest linear maps between the `Finsupp` modules (all definitional), which removes
+  the `ModuleCat` carrier coercion that otherwise blocks elaborating differences of chains.  On top
+  of them: `affBd_affCone` (cone identity), `affBd_affSd` (`Sd` is a chain map), `affBd_affBd`
+  (`∂∂ = 0`), `affT` (the homotopy `T v = b(v) ∗ (Sd v − v − T (∂ v))`, zero in degree zero),
+  `affT_single`, and **`affBd_affT`: `∂T + T∂ = Sd − 1`** — the subdivision is chain homotopic to
+  the identity.
+- IV.3 iterated subdivision plus the Lebesgue number lemma, giving IV.★.
+  **Started**: `SubdivisionDiameter` proves the shrinking estimate — `norm_bary_sub_vertex_le`
+  (`‖b(v) − vᵢ‖ ≤ n/(n+1) · D` when all vertex distances are at most `D`, since `b(v) − vᵢ` is the
+  average of the `n` nonzero differences `vⱼ − vᵢ`) and `norm_bary_sub_combination_le` (the same
+  bound against every convex combination of the vertices, hence against every point of the
+  simplex).  Mathlib supplies the Lebesgue number lemma (`lebesgue_number_lemma_of_emetric`).
+  `SubdivisionSupport` adds the support bookkeeping: the predicates `VerticesIn` (all vertices of
+  every simplex occurring in a chain lie in a set) and `DiamLe` (all those simplices have diameter
+  at most `D`), with `VerticesIn.mono`, `DiamLe.mono`, `support_affCone_subset` (the simplices of a
+  cone are cones of the original simplices), `VerticesIn.affCone`, `affBd_single`, and
+  `support_affBd_single_subset` (the simplices of a boundary are the faces).
+  It also proves `support_linear_apply_subset` (the simplices of a linear image of a chain come
+  from the simplices of the chain), `norm_bary_sub_mem_hull_le` (the barycenter is within
+  `n/(n+1)·D` of the whole convex hull, since a closed ball is convex and contains the vertices),
+  `bary_mem_hull`, and the mesh estimate itself:
+
+  **`sd_mesh`** : every simplex occurring in `Sd v` has its vertices in `convexHull ℝ (range v)`
+  and diameter at most `n/(n+1)` times the diameter of `v`.  The induction is exactly the classical
+  one: the simplices of `Sd v = b(v) ∗ Sd (∂ v)` are cones on simplices of the subdivisions of the
+  faces, whose vertices stay in the hull, and the new vertex `b(v)` is within `(n+1)/(n+2)·D` of
+  that hull.
+
+  Iteration is also done: `sd_mesh_chain` (the mesh estimate for an arbitrary chain contained in a
+  convex set), `sdIter` (iterated subdivision), and **`sdIter_mesh`**: inside a convex set, the
+  simplices of `Sd^k c` still lie in it and have diameter at most `(n/(n+1))^k · D`.
+  **IV.3 is complete.**  Five further modules carry the subdivision to singular chains.
+
+  `TopologicalSingularChains` builds the concrete singular chain complex: the singular `n`-simplices
+  are `C(topSimplex n, X)` with `topSimplex n = stdSimplex ℝ (Fin (n+1))`, the free `R`-module
+  simplicial object on them has the alternating face map complex as its chain complex, and
+  `sing_d_single` / `singBd` name the boundary concretely.  `∂∘∂ = 0` is inherited.
+
+  `AffineToSingular` builds the bridge.  Its device is a **continuous retraction of the ambient
+  space onto the standard simplex**: take positive parts, add a defect term `max 0 (1 − M)/(n+1)`
+  spread over the coordinates and divide by `M + max 0 (1 − M) ≥ 1`.  It is the identity on the
+  simplex, so the pushforward `affSing σ v = σ ∘ retr ∘ affComb v` of an affine simplex is total —
+  defined for every tuple of ambient points, not only for tuples inside the simplex — and
+  `singBd_comp_affToSing` is a chain map identity with no side conditions.
+
+  `AffineNaturality` proves that a linear map of the ambient space commutes with everything:
+  `affPush_affBd`, `affPush_affCone` (via `bary_map`), and by induction on the degree
+  **`affPush_affSd`** and **`affPush_affT`**.  It also proves that all these operators keep the
+  vertices of a chain inside a fixed convex set (`verticesIn_affSd`, `verticesIn_affT`).
+
+  `SingularSubdivision` defines `singSd` and `singT` by pushing the affine subdivision of the
+  standard simplex forward along each singular simplex, and proves
+  **`singBd_singSd`** (subdivision is a chain map) and **`singBd_singT`**
+  (`∂T + T∂ = Sd − 1`) by transporting the affine identities: the faces of the standard simplex are
+  the images of the standard simplex one dimension lower under `ambMap`, so naturality converts the
+  face terms exactly into the affine boundary.
+
+  `SmallSimplices` closes IV.3.  `ambComb` is the linear extension of an affine simplex, and
+  `affSing_ambComb` shows that pushing forward along an affine simplex of the standard simplex is
+  the same as pushing forward along the singular simplex it determines — with no hypothesis on the
+  affine simplex, because the retraction is applied on the outside in both readings.  Hence
+  **`singSd_iterate`** : `Sd^N σ = σ_*(Sd^N Δ)`, and combining the geometric mesh decay with the
+  Lebesgue number of the cover pulled back along `σ ∘ retr` over the compact `stdSimplex`:
+
+  **`exists_iterate_small`** : for every open cover `𝒰` of `X` and every singular simplex `σ`
+  there is an `N` such that every simplex of `Sd^N σ` has image inside a member of `𝒰`.
+- IV.4 the small-simplices subcomplex is a quasi-isomorphism (assemble `exists_iterate_small` with
+  the iterated homotopy `D_m = ∑_{i<m} T Sd^i`), then excision and topological Mayer–Vietoris;
 - IV.5 `H_*(Sⁿ)` and `H_*(Dⁿ, Sⁿ⁻¹)`;
 - IV.6 Morse theory: sublevel sets, handle attachment, gradient flow retractions, and
   `χ(M) = ∑ (−1)^λ`.

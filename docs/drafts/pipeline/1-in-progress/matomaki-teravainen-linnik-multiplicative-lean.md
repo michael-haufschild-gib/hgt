@@ -78,8 +78,10 @@ Numbering is `\numberwithin{theorem}{section}`; environments share one counter.
 - `L0.5` triple convolution dichotomy (paper 3.14).
 
 **L1 — character sums mod q, second-moment layer.**
-- `L1.1` mean value theorem (paper 3.7) from orthogonality.  The corpus already owns
-  `RHTower.DirichletCharacterOrthogonality.dirichletCharacterFamily_orthogonality`.
+- `L1.1` **CLOSED** — `RHTower/CharacterSumMeanValue.lean`: `charSum`, `classSum`,
+  `sum_normSq_charSum` (exact orthogonality diagonalisation) and `meanValue_charSum`
+  (paper Lemma 3.7).  Built on the corpus's `dirichletCharacterFamily_bilinear` and
+  `sum_residueClassL1Mass_sq_le`.
 - `L1.2` `le:squarecontr` (6.1), `le:shortscontr` (6.2).
 - `L1.3` `le:amplify` (6.3).
 
@@ -105,13 +107,23 @@ Numbering is `\numberwithin{theorem}{section}`; environments share one counter.
 
 | Item | State | Lean module / theorem |
 |---|---|---|
-| L0.1 | — | |
-| L0.2 | — | |
-| L0.3 | — | |
-| L0.4 | — | |
-| L0.5 | — | |
+| L0.1 | **CLOSED** | `AdditiveCombinatorics/Convolution.lean` — `rep`, `rep3`, `card_add_card_le_rep_add_card` (ambient), `card_add_card_le_rep_add_card_coset` (coset form), plus `rep_mono`, `rep3_mono`, `rep3_ge_of_le_on`. |
+| L0.2 | **CLOSED** | `HTGeometry/AdditiveCombinatorics/Kneser.lean` — `AddComb.card_mul_le_card_mul_mulStab` (`#(A·H) + #(B·H) ≤ #(A·B) + #H`, `H = S(A·B)`), weak form `card_add_card_le_card_mul_add_card_mulStab`.  Axioms: `propext, Classical.choice, Quot.sound` only.  Support module `HTGeometry/AdditiveCombinatorics/SubgroupFinset.lean` (`IsSubgroupFinset`, `mulStab`, `stabSubgroup`, Lagrange `card_dvd_card_mul`, quotient count `card_mul_subgroupFinset_eq`). |
+| L0.3 | OPEN — own sub-card `grynkiewicz-pollard-extension-lean.md`; its layers G0 and half of G1 are already Lean-closed (`RepresentationCount.lean`).  Needs **Grynkiewicz, Theorem 1.1** (*On extending Pollard's theorem for t-representable sums*, Israel J. Math. 177 (2010) 413–439).  This is the one genuinely hard prerequisite in L0. | |
+| L0.4 | **CLOSED** | `AdditiveCombinatorics/SmallDoubling.lean` — `indexF`, `indexF_mul_card`, `card_mul_eq_card_image_mul`, `small_doubling_index` (paper Lemma 3.13). |
+| L0.5 | blocked on L0.3 | |
 
 ## Log
+- 2026-08-21 — **L1.1 closed** (paper Lemma 3.7, the mean value theorem for character sums), in
+  `RHTower/CharacterSumMeanValue.lean`; axiom-clean and wired into `GaloisForLFunctions.RHTower`.
+- 2026-08-21 — **L0.1 and L0.4 closed** (`Convolution.lean`, `SmallDoubling.lean`); all three
+  modules axiom-clean and wired into `GaloisForLFunctions.HTGeometry`.  L0 now reduces to
+  Grynkiewicz's Pollard-extension theorem (L0.3), after which L0.5 (paper Lemma 3.14) is routine.
+- 2026-08-21 — **L0.2 closed**: Kneser's addition theorem is now Lean-proved for finite commutative
+  groups, via Matt DeVos's short proof (arXiv:1303.3539).  New reusable modules
+  `AdditiveCombinatorics/SubgroupFinset.lean` and `AdditiveCombinatorics/Kneser.lean`, both wired
+  into `GaloisForLFunctions.HTGeometry`.  This is a genuine mathlib gap (mathlib has only
+  `Combinatorics/Additive/CauchyDavenport.lean`).
 - 2026-08-21 — created; paper source fetched and read end to end; inventory and layer plan written.
   Corpus/mathlib audit: Kneser absent from both; fundamental lemma of the sieve absent; Burgess
   absent (only exponent bookkeeping in `HTGeometry.SmoothMultiplicativeDichotomy`); character-sum

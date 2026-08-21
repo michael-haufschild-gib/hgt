@@ -45,11 +45,42 @@ The paper's own final Remark states that Prop 0005 and Prop 0020 hold for arbitr
 4. **Real-period duality** — assembly of (1) into `#π₀(A(ℝ)) = #π₀(B(ℝ))` and equality of the
    two real-period integrals.
 
+## Lean modules built (all unconditional, `#print axioms` = `propext, Classical.choice, Quot.sound`)
+
+| Module | Content |
+|---|---|
+| `HTGeometry/InvolutionTateCohomology.lean` | Tate `Ĥ⁰`/`Ĥ¹` of an involution on a `ℤ`-module; the exact sequence `0 → Λ/(Λ⁺⊕Λ⁻) → Λ⁻/2Λ⁻ → Ĥ¹ → 0`; `card_defect_mul_card_H1`; the `σ ↦ -σ` symmetry; **`herbrand`** (`#Ĥ⁰·2^{rk Λ⁻} = #Ĥ¹·2^{rk Λ⁺}`); finiteness; `card_H0_eq_card_H1` in the balanced case; rank additivity `rk Λ⁺ + rk Λ⁻ = rk Λ`; a balanced model on `ℤ × ℤ`. |
+| `HTGeometry/InvolutionTateDualLattice.lean` | The transposed involution on `Λ^∨`; `finrank_eigenParts_dual` (equal eigenranks, via injective restriction of functionals); `Λ⁺ ⊔ Λ⁻ = (σ-1)^{-1}(2Λ)`; `defect ≅ image of σ-1 in Λ/2Λ`; the mod-2 evaluation pairing `Λ^∨/2Λ^∨ ≅ Dual_{𝔽₂}(Λ/2Λ)`; **`card_defect_dual`**, **`card_H1_dual`**, **`card_H0_dual`** — Tate duality for `ℤ/2`. |
+| `HTGeometry/RealTorusComponentGroup.lean` | **`quotEquivTateH1`**: `A^σ / image(V^σ) ≅ Ĥ¹(⟨σ⟩, Λ)` for `A = V/Λ`, i.e. `π₀(A(ℝ)) ≅ Ĥ¹` (Milne I.3.7 / Suzuki's step), by the vanishing of `H¹(⟨σ⟩, V)`. |
+| `HTGeometry/RealTorusDualPeriodComponents.lean` | **`card_H1_eq_card_H1_neg_dualInvolution`**: `#π₀(A(ℝ)) = #π₀(B(ℝ))` — the final reduction of Prop 5.1 — and its geometric form `card_quot_eq_card_tateH1_neg_dual`. |
+| `HTGeometry/DualZLatticeCovolume.lean` | The dual lattice `Λ*` for the standard pairing; `dual_span_eq`; `covolume_span_eq_abs_det`; **`covolume_mul_covolume_dual`** (`covol Λ · covol Λ* = 1`); the matrix form `dual_rowLattice`, `covolume_rowLattice`. |
+| `HTGeometry/ComplexTorusFaltingsPeriod.lean` | `det_dzFrame`/**`norm_det_dzFrame`** (`|det| = 2^g`, the source of the `2^g` in `‖dz₁∧…∧dz_g‖²`); `faltingsNormSq` and **`faltingsNormSq_eq_sq_det_mul_dual`** — the Faltings metric is preserved by the `det M`-scaling isomorphism `ω_A ≅ ω_B`. |
+| `HTGeometry/SelfInverseLatticeValuationRing.lean` | **`span_eq_span_one_of_span_eq_span_inv`**: over a valuation ring the only rank-one lattice equal to its own inverse is the unit lattice; `span_eq_of_ratio_eq_inv_ratio` — the exact step used in the proof of Prop 3.4. |
+
+## What is proved vs. what is out of reach
+
+**Proved unconditionally in Lean.**  The entire arithmetic engine of §5 (Prop 5.1) up to and
+including `#π₀(A(ℝ)) = #π₀(B(ℝ))`; the component-group computation `π₀(A(ℝ)) ≅ Ĥ¹(⟨c⟩, Λ)`; Tate
+duality for `ℤ/2`-lattices (a mathlib gap, and the input Suzuki quotes implicitly when passing from
+`Λ` to `Λ^∨`); the covolume duality and the `2^g` frame determinant behind §4 (Prop 4.1), together
+with the metric-preservation identity; the valuation-ring step of §3 (Prop 3.4).
+
+**Out of reach on the present mathlib base.**  Everything requiring Néron models, Illusie's Lie
+complex and determinants of perfect complexes, fppf quotients (Anantharaman), Raynaud group schemes,
+Chai's base change conductor, Suzuki's Tate–Shafarevich group schemes and Breen–Serre duality:
+Theorems 1.1/2.5 (`h(A) = h(B)`), Prop 2.1, Prop 2.2, Prop 2.3, Prop 2.4, Prop 3.1, Prop 3.2,
+Prop 3.3, Thm 3.5, and the two assembly Theorems 4.2 and 5.2.  None of these are in mathlib, and
+none can be introduced as hypotheses without breaking unconditionality; Serre duality on a complex
+torus (needed to identify the transition factor `±det M` with the canonical isomorphism `(1.2)`) is
+likewise absent.
+
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven (per formalisable item)
-- [ ] 2 → 3  formalized in Lean
+- [x] 1 → 2  fully-proven on paper for every formalisable item
+- [x] 2 → 3  formalized in Lean (all seven modules above, `scripts/formal_tools.py lint` green)
 - [ ] 3 → 4  publication-ready
 
 ## Log
 - 2026-08-21 — created; paper source read in full; inventory above frozen.
+- 2026-08-21 — seven Lean modules landed and wired into `GaloisForLFunctions.HTGeometry`; formal
+  lint green; axiom audit clean.

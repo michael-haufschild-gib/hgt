@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.WittenPhasePolynomialRigidity
+import GaloisForLFunctions.HTGeometry.SU2TorusModularData
 
 /-!
 # Finite-order mapping-torus WRT calibration
@@ -20,6 +21,24 @@ open RHTower
 mapping-torus calibration case. -/
 def su2MinusIdentityTorusMappingTorusWRTFormula (k : ℕ) : ℂ :=
   (k : ℂ) + 1
+
+/-- The shifted finite Weyl-odd torus trace at level `k`.  This is a directly constructed
+modular-data quantity; identifying it with a WRT invariant still requires the absent RT/TQFT
+surgery theorem. -/
+noncomputable def su2MinusIdentityTorusMappingTorusWeylSquareTrace (k : ℕ) : ℂ := by
+  letI : NeZero (2 * (k + 2)) := ⟨by omega⟩
+  exact LinearMap.trace ℂ (su2TorusWeylOddSubmodule (k + 2))
+    (su2TorusWeylS (k + 2) * su2TorusWeylS (k + 2))
+
+/-- The directly constructed torus modular trace equals the published numerical calibration.
+This is a calibration equality only, not an RT/TQFT identification of either expression. -/
+theorem su2MinusIdentityTorusMappingTorusWRTFormula_eq_weylSquareTrace (k : ℕ) :
+    su2MinusIdentityTorusMappingTorusWRTFormula k =
+      su2MinusIdentityTorusMappingTorusWeylSquareTrace k := by
+  unfold su2MinusIdentityTorusMappingTorusWeylSquareTrace
+  rw [su2TorusWeylS_square_trace (by omega)]
+  simp [su2MinusIdentityTorusMappingTorusWRTFormula]
+  ring
 
 /-- Its unique phase has constant and linear amplitudes. -/
 def su2MinusIdentityTorusMappingTorusCoefficient (_ : Fin 1) (j : ℕ) : ℂ :=

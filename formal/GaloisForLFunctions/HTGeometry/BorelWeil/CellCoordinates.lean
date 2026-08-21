@@ -257,8 +257,9 @@ theorem cellCoord_mem_cellSections (i j : Fin N) :
     cellCoord (k := k) i j ∈ cellSections N k {(1 : Equiv.Perm (Fin N))} (fun _ => 0) := by
   refine ⟨cellCoord_mem_flagSemiInv i j, ?_⟩
   refine denomBounded_mul (algebraMap_mem_denomBounded _ _) ?_
-  have h := (minorUnit_mem_denomStable (k := k) (1 : Equiv.Perm (Fin N))
-    (j := (j : ℕ) + 1) j.isLt).2 1 (one_mem_denomBounded _)
+  have h := (minorUnit_mem_denomStable (k := k)
+    (Finset.mem_singleton_self (1 : Equiv.Perm (Fin N))) (j := (j : ℕ) + 1) j.isLt).2 1
+    (one_mem_denomBounded _)
   rwa [one_mul] at h
 
 theorem cellCoordAlg_mem_cellSections (p : MvPolynomial (Fin N × Fin N) k) :
@@ -307,15 +308,14 @@ variable {N : ℕ} {k : Type*} [Field k] [Infinite k]
 
 theorem borderPoly_diag (j : Fin N) :
     borderPoly (k := k) j j = minorPolyAt N k (1 : Equiv.Perm (Fin N)) ((j : ℕ) + 1) := by
-  rw [borderPoly, minorPolyAt]
-  congr 2
-  ext r c
-  rw [Matrix.submatrix_apply, Matrix.submatrix_apply, id_eq, id_eq]
-  by_cases h : r = j
-  · rw [h, Function.update_self]
-    rfl
-  · rw [Function.update_of_ne h]
-    rfl
+  have hupd : Function.update (id : Fin N → Fin N) j j = id := by
+    funext r
+    by_cases h : r = j
+    · rw [h, Function.update_self]
+      rfl
+    · rw [Function.update_of_ne h]
+  rw [borderPoly, minorPolyAt, hupd]
+  rfl
 
 @[simp] theorem cellCoord_diag (j : Fin N) : cellCoord (k := k) j j = 1 := by
   rw [cellCoord, borderPoly_diag, ← coe_minorUnit (1 : Equiv.Perm (Fin N)) j.isLt,

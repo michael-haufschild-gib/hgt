@@ -5,9 +5,10 @@ import GaloisForLFunctions.HTGeometry.SeibergWitten.Geometry
 
 This file supplies the exact four-dimensional Clifford relations between positive and negative
 rank-two complex spinor fibers.  Combined with `SmoothSpinCBundlePrelude`, it is the local algebra
-needed by a genuine `Spinᶜ` bundle.  `SeibergWitten.PrincipalSpinC` now supplies the algebraic
-principal lift; its association to these fibers and smooth determinant compatibility remain a
-distinct implementation layer.
+needed by a genuine `Spinᶜ` bundle.  `SeibergWitten.PrincipalSpinC` supplies the algebraic
+principal lift and `SeibergWitten.AssociatedBundles` its torsor-level association mechanism.
+`SeibergWitten.FlatClifford` supplies the flat pointwise chiral representation.  Its integration
+to the principal group action and smooth determinant compatibility remain distinct layers.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.SeibergWitten

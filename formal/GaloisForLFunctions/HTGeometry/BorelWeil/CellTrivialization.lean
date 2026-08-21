@@ -208,12 +208,12 @@ theorem mem_flagSemiInv_mul_cellTriv (σ : Equiv.Perm (Fin N)) (lam mu : Fin N �
     have h2 := mul_mem_flagSemiInv h (cellTriv_mem_flagSemiInv (k := k) σ lam)
     exact h2
 
-/-- The units of the localization that preserve the denominator bound of a cell. -/
-def denomStable (σ : Equiv.Perm (Fin N)) : Subgroup (FlagLoc N k)ˣ where
-  carrier := {u | (∀ x : FlagLoc N k, x ∈ denomBounded N k {σ} →
-      x * (u : FlagLoc N k) ∈ denomBounded N k {σ})
-    ∧ (∀ x : FlagLoc N k, x ∈ denomBounded N k {σ} →
-      x * ((u⁻¹ : (FlagLoc N k)ˣ) : FlagLoc N k) ∈ denomBounded N k {σ})}
+/-- The units of the localization that preserve the denominator bound of a set of cells. -/
+def denomStable (I : Finset (Equiv.Perm (Fin N))) : Subgroup (FlagLoc N k)ˣ where
+  carrier := {u | (∀ x : FlagLoc N k, x ∈ denomBounded N k I →
+      x * (u : FlagLoc N k) ∈ denomBounded N k I)
+    ∧ (∀ x : FlagLoc N k, x ∈ denomBounded N k I →
+      x * ((u⁻¹ : (FlagLoc N k)ˣ) : FlagLoc N k) ∈ denomBounded N k I)}
   mul_mem' := by
     rintro a b ⟨ha1, ha2⟩ ⟨hb1, hb2⟩
     refine ⟨fun x hx => ?_, fun x hx => ?_⟩
@@ -227,21 +227,24 @@ def denomStable (σ : Equiv.Perm (Fin N)) : Subgroup (FlagLoc N k)ˣ where
     rintro a ⟨ha1, ha2⟩
     exact ⟨ha2, by simpa using ha1⟩
 
-theorem minorUnit_mem_denomStable (σ : Equiv.Perm (Fin N)) {j : ℕ} (hj : j ≤ N) :
-    minorUnit (k := k) σ j hj ∈ denomStable σ := by
+theorem minorUnit_mem_denomStable {I : Finset (Equiv.Perm (Fin N))} {σ : Equiv.Perm (Fin N)}
+    (hσ : σ ∈ I) {j : ℕ} (hj : j ≤ N) :
+    minorUnit (k := k) σ j hj ∈ denomStable I := by
   classical
   have hfac : ∀ j : Fin N, minorPolyAt N k σ ((j : ℕ) + 1) ∣ cellDenomPoly N k σ := by
     intro j
     rw [cellDenomPoly]
     exact Finset.dvd_prod_of_mem (fun j : Fin N => minorPolyAt N k σ ((j : ℕ) + 1))
       (Finset.mem_univ j)
-  have hdvd : minorPolyAt N k σ j ∣ denomOf N k {σ} := by
-    rw [denomOf_singleton]
+  have hcellI : cellDenomPoly N k σ ∣ denomOf N k I := by
+    rw [denomOf]
+    exact Finset.dvd_prod_of_mem _ hσ
+  have hdvd : minorPolyAt N k σ j ∣ denomOf N k I := by
     cases j with
     | zero => rw [minorPolyAt_zero]; exact one_dvd _
     | succ m =>
       have hm : m < N := by omega
-      exact hfac ⟨m, hm⟩
+      exact (hfac ⟨m, hm⟩).trans hcellI
   obtain ⟨s, hs⟩ := hdvd
   refine ⟨fun x hx => ?_, fun x hx => ?_⟩
   · obtain ⟨m, p, hp⟩ := hx
@@ -250,9 +253,9 @@ theorem minorUnit_mem_denomStable (σ : Equiv.Perm (Fin N)) {j : ℕ} (hj : j �
     ring
   · obtain ⟨m, p, hp⟩ := hx
     refine ⟨m + 1, p * s, ?_⟩
-    have hkey : (algebraMap (MvPolynomial (Fin N × Fin N) k) (FlagLoc N k) (denomOf N k {σ}))
+    have hkey : (algebraMap (MvPolynomial (Fin N × Fin N) k) (FlagLoc N k) (denomOf N k I))
         ^ (m + 1)
-        = (algebraMap _ _ (denomOf N k {σ})) ^ m
+        = (algebraMap _ _ (denomOf N k I)) ^ m
           * ((minorUnit (k := k) σ j hj : (FlagLoc N k)ˣ) : FlagLoc N k)
             * algebraMap _ _ s := by
       rw [pow_succ, hs, map_mul, coe_minorUnit]
@@ -264,27 +267,27 @@ theorem minorUnit_mem_denomStable (σ : Equiv.Perm (Fin N)) {j : ℕ} (hj : j �
         * (((minorUnit (k := k) σ j hj : (FlagLoc N k)ˣ) : FlagLoc N k)) = 1 := by
       rw [← Units.val_mul, hinv, Units.val_one]
     calc x * (((minorUnit (k := k) σ j hj)⁻¹ : (FlagLoc N k)ˣ) : FlagLoc N k)
-          * ((algebraMap _ (FlagLoc N k) (denomOf N k {σ})) ^ m
+          * ((algebraMap _ (FlagLoc N k) (denomOf N k I)) ^ m
             * ((minorUnit (k := k) σ j hj : (FlagLoc N k)ˣ) : FlagLoc N k)
             * algebraMap _ _ s)
-        = x * (algebraMap _ (FlagLoc N k) (denomOf N k {σ})) ^ m * algebraMap _ _ s
+        = x * (algebraMap _ (FlagLoc N k) (denomOf N k I)) ^ m * algebraMap _ _ s
           * ((((minorUnit (k := k) σ j hj)⁻¹ : (FlagLoc N k)ˣ) : FlagLoc N k)
             * (((minorUnit (k := k) σ j hj : (FlagLoc N k)ˣ) : FlagLoc N k))) := by ring
-      _ = x * (algebraMap _ (FlagLoc N k) (denomOf N k {σ})) ^ m * algebraMap _ _ s := by
+      _ = x * (algebraMap _ (FlagLoc N k) (denomOf N k I)) ^ m * algebraMap _ _ s := by
           rw [hinv', mul_one]
 
-theorem cellTriv_mem_denomStable (σ : Equiv.Perm (Fin N)) (lam : Fin N → ℤ) :
-    cellTriv (k := k) σ lam ∈ denomStable σ := by
+theorem cellTriv_mem_denomStable {I : Finset (Equiv.Perm (Fin N))} {σ : Equiv.Perm (Fin N)}
+    (hσ : σ ∈ I) (lam : Fin N → ℤ) : cellTriv (k := k) σ lam ∈ denomStable I := by
   refine Subgroup.prod_mem _ fun i _ => Subgroup.zpow_mem _ ?_ _
-  exact Subgroup.div_mem _ (minorUnit_mem_denomStable σ _) (minorUnit_mem_denomStable σ _)
+  exact Subgroup.div_mem _ (minorUnit_mem_denomStable hσ _) (minorUnit_mem_denomStable hσ _)
 
 /-- **The line bundle is trivial on each Bruhat cell.**  Multiplying by the trivializing section
 identifies the invariant functions on the cell with the sections of `L_λ` over it. -/
-theorem mem_cellSections_mul_cellTriv (σ : Equiv.Perm (Fin N)) (lam : Fin N → ℤ)
-    {x : FlagLoc N k} :
+theorem mem_cellSections_mul_cellTriv {I : Finset (Equiv.Perm (Fin N))}
+    {σ : Equiv.Perm (Fin N)} (hσ : σ ∈ I) (lam : Fin N → ℤ) {x : FlagLoc N k} :
     x * ((cellTriv σ lam : (FlagLoc N k)ˣ) : FlagLoc N k)
-        ∈ cellSections N k {σ} lam
-      ↔ x ∈ cellSections N k {σ} (fun _ => 0) := by
+        ∈ cellSections N k I lam
+      ↔ x ∈ cellSections N k I (fun _ => 0) := by
   rw [cellSections, cellSections, Submodule.mem_inf, Submodule.mem_inf]
   constructor
   · rintro ⟨h1, h2⟩
@@ -293,10 +296,10 @@ theorem mem_cellSections_mul_cellTriv (σ : Equiv.Perm (Fin N)) (lam : Fin N →
       refine (flagSemiInv_congr ?_ _).mp h1
       funext i
       ring
-    · have := (cellTriv_mem_denomStable (k := k) σ lam).2 _ h2
+    · have := (cellTriv_mem_denomStable (k := k) hσ lam).2 _ h2
       rwa [mul_assoc, Units.mul_inv, mul_one] at this
   · rintro ⟨h1, h2⟩
-    refine ⟨?_, (cellTriv_mem_denomStable (k := k) σ lam).1 _ h2⟩
+    refine ⟨?_, (cellTriv_mem_denomStable (k := k) hσ lam).1 _ h2⟩
     have := (mem_flagSemiInv_mul_cellTriv σ lam (fun _ => 0)).mpr h1
     refine (flagSemiInv_congr ?_ _).mp this
     funext i

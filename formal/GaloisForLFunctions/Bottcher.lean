@@ -391,3 +391,4 @@ import GaloisForLFunctions.Bottcher.Q62BrolinRootTower
 import GaloisForLFunctions.Bottcher.Q62CofinalRootTower
 import GaloisForLFunctions.Bottcher.Q62RootTower
 import GaloisForLFunctions.Bottcher.SeibergWittenTopologicalShadow
+import GaloisForLFunctions.Bottcher.SeibergWittenFlatDiracShadow

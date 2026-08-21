@@ -281,3 +281,152 @@ faithful because `k` is infinite.
   `BottRankOne`.  The remaining input is the identification of the weight-zero sections on a cell
   with a polynomial ring in the cell coordinates — the bordered-minor ratios — which is the next
   brick.
+
+  **The chart model and the Weyl action (bricks 16–18).**
+  Sixteenth brick: `LowerCellSubstitution` — `lowerMat` and the substitution `lowerSubst` that
+  restricts a polynomial to the big cell, `leadingMinorMat_of_isLowerUni` (all leading minors of a
+  lower unitriangular matrix are `1`, by lower triangularity of the truncation),
+  `matEval_cellDenomPoly_one_of_isLowerUni`, and — via the `LU` factorization of a point where the
+  cover equation is nonzero — `exists_isLowerUni_matEval_totalDenom_ne_zero`: the big cell meets
+  every Bruhat cell, hence `lowerSubst_totalDenom_ne_zero`.
+  Seventeenth brick: `CellCoordinates`.  `borderPoly i j` is the leading `(j+1)`-minor with its last
+  row replaced by row `i`; `leadingMinorMat_update_of_isLowerUni` evaluates it on a lower
+  unitriangular matrix to the entry `L i j`, and `substRight_borderPoly` shows it scales by the same
+  Borel character as the `(j+1)`-st leading minor.  So `cellCoord i j`, the ratio, is an invariant
+  section with `flagEval_cellCoord : cellCoord i j ↦ L i j`; it is `1` on the diagonal and `0` above
+  it.  With `cellCoordAlg` the substitution of the coordinates into a polynomial, the chart theorem
+  is **`exists_cellCoordAlg_eq`: the invariant sections regular on the big cell are exactly the
+  polynomials in the cell coordinates**, and more generally **`exists_cellCoordAlg_denom`**: over an
+  intersection of cells they are those polynomials with denominators the restricted cell equations.
+  Both directions rest on `eq_zero_of_flagEval_lowerUni_eq_zero`.
+  Eighteenth brick: `WeylAction`.  `permMat w * g = g.submatrix w⁻¹ id`, so left translation by a
+  permutation matrix carries `minorPolyAt σ j` to `minorPolyAt (w⁻¹σ) j` and therefore fixes
+  `totalDenom`; it extends to `weylSubst w`, a ring endomorphism of the localization commuting with
+  the right Borel translation (`weylSubst_substRightAway`), preserving every weight
+  (`weylSubst_mem_flagSemiInv`) and permuting the denominator bounds, so
+  **`weylSubst_mem_cellSections`: the Weyl group permutes the cells**.  This transports the chart
+  theorem from the identity cell to every Bruhat cell — in particular a coset pair `{σ, σ s}` can be
+  moved to `{1, s}`.
+  All of these audit to `[propext, Classical.choice, Quot.sound]`.
+
+  **The fibre of `G/B → G/P_i` (bricks 19–20).**
+  Nineteenth brick: `SimpleReflectionMinors`.  Since `(σ s)`-permuted rows are the `σ`-permuted rows
+  with two adjacent ones exchanged, `minorPolyAt_mul_swapNext_of_le` (below the step the minors are
+  literally equal) and `minorPolyAt_mul_swapNext_of_gt` (above the step they differ by the sign of a
+  transposition) hold; the exceptional index `i+1` is where the two flags actually differ.  The
+  supporting lemma `truncate_submatrix_perm` says truncation commutes with any row permutation that
+  preserves the truncation block.
+  Twentieth brick: `PairTransition`.  With `fibreCoord σ hi` the ratio of the two exceptional minors,
+  the four cases of the minor comparison give the four cases of the ratio of diagonal ratios (`1`
+  away from the step, `fibreCoord` at `i`, `−fibreCoord⁻¹` at `i+1`), and the product over the Weyl
+  index collapses to the pair `{i, i+1}`:
+  **`cellTriv σ λ / cellTriv (σ s_i) λ = fibreCoord ^ (λ_i − λ_{i+1}) · (−1)^{λ_{i+1}}`.**
+  So the two cell trivializations of `L_λ` glue by `± u^d` with `d = ⟨λ, α_i^∨⟩` — the transition
+  function of `O(d)` on the fibre `ℙ¹`, in the exact form the rank-one computation of `BottRankOne`
+  consumes.
+  `denomStable` and `mem_cellSections_mul_cellTriv` were generalized from a single cell to any set of
+  cells containing it, which is what the pair `{σ, σ s_i}` and its intersection need.
+  All audit to `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py lint` reports no
+  issue in `BorelWeil` (its nine errors are other agents' unwired modules).
+
+  **What remains for Bott, in dependency order.**
+  (i) The pair model: identify `Γ(C_σ ∩ C_{σ s}, O)` as the localization of the chart ring at the
+  restricted cell equation, and `Γ(C_{σ s}, O)` as the Weyl translate of the chart ring — both are
+  now one step from `exists_cellCoordAlg_denom` plus `weylSubst`.
+  (ii) `GL(2)`: there `W = {1, s}` is the whole cover, so the Čech complex is exactly the two-chart
+  complex and (i) plus the transition function gives Bott outright — the first full case.
+  (iii) The relative version of (ii) over a base cell, i.e. the Mayer–Vietoris of a coset pair with
+  the base directions carried along.
+  (iv) Assembling the pair statements into the cohomology of the whole Bruhat complex — the Bruhat
+  cover is a product cover over the cosets of `⟨s_i⟩`, so this is a two-row comparison, not a general
+  Leray argument.
+  (v) Demazure induction on `permLength` using `BottCombinatorics`.
+
+  **Toward `GL(2)`: the pair chart (bricks 21–25).**
+  Twenty-first brick: the Weyl action is an action — `permMat_mul_permMat`, `weylSubst_weylSubst`,
+  `weylSubst_one`, hence `weylSubst w` is bijective with inverse `weylSubst w⁻¹`.  That transports
+  the chart theorem off the identity cell: **`exists_weylSubst_cellCoordAlg_eq`** — the sections on
+  the `σ`-cell are `weylSubst σ⁻¹` of the polynomials in the big-cell coordinates.
+  Twenty-second brick: `FibreCoordinate`.  The exceptional minor of the cell `s_i` *is* a bordered
+  minor of the identity cell (`borderPoly_succ_eq_minorPolyAt_swapNext`, via
+  `truncate_submatrix_congr`), so **`cellCoord_succ_eq_fibreCoord_inv`: the coordinate of the big
+  cell along the simple root is the inverse of the fibre coordinate** — the `ℙ¹` coordinate of the
+  fibre is an affine coordinate of the chart.  `weylSubst_minorUnit` then gives
+  `weylSubst_fibreCoord`: the reflection inverts it.
+  Twenty-third brick: `PairChart`.  All the leading minors of the `s_i`-cell restrict to `±1` on the
+  big cell except the exceptional one, which restricts to the fibre coordinate, so
+  `exists_smul_cellCoordAlg_lowerSubst_swapNext` and hence
+  **`exists_cellCoordAlg_fibre_denom`: the sections over the intersection of a coset pair are the
+  chart functions with denominators a power of the fibre coordinate** — the intersection is the big
+  cell minus the zero locus of that coordinate.  (`eq_of_flagEval_lowerUni_eq` packages the
+  determination-by-restriction argument used throughout.)
+  Twenty-fourth brick: `CellAlgebra` — `cellSubalg`, the ring of functions on an intersection of
+  cells, and `weylAlg`, the Weyl action as a `k`-algebra map with `weylAlg_map_adjoin`.
+  Twenty-fifth brick: `RankTwoChart` — for `N = 2`: `perm_fin_two_eq` and `univ_perm_fin_two`
+  (the Weyl group is `{1, s}`), the affine coordinate `tCoord` and its inverse `tInv`, and the two
+  chart identifications **`cellSubalg_one_eq_adjoin : Γ(C_1, O) = k[t]`** and
+  **`cellSubalg_swap_eq_adjoin : Γ(C_s, O) = k[t⁻¹]`**.
+  All audit to `[propext, Classical.choice, Quot.sound]`.
+  Still to do for `GL(2)` Bott: the Laurent description of the intersection ring
+  (`Γ(C_1 ∩ C_s, O) = k[t, t⁻¹]`, one step from `exists_cellCoordAlg_fibre_denom`), the
+  decomposition `k[t,t⁻¹] = k[t] + t^d k[t⁻¹] ⟺ d ≥ −1` with the dimension count in the remaining
+  case, and the Čech assembly for the two-element cover.  For general `N` the missing input is local
+  triviality of the `ℙ¹`-bundle — `Γ(C_1, O) = B[t]` and `Γ(C_s, O) = B[t⁻¹]` over the common base
+  ring `B` — which is the transition formula between the two charts' coordinates.
+
+  **Bott for `GL(2)`: dominant and singular cases CLOSED (bricks 26–28).**
+  Twenty-sixth brick: `RankTwoLaurent` — the affine coordinate as a unit `tUnit`, its integer powers
+  `tPow`, `tPow_mem_cellSubalg_one` / `tPow_neg_mem_cellSubalg_swap` (nonnegative powers are regular
+  on one cell, nonpositive on the other), and **`exists_sum_tPow`**: every function on the
+  intersection is a finite `k`-combination of Laurent monomials (via `exists_cellCoordAlg_fibre_denom`
+  and `Polynomial.aeval_eq_sum_range`).
+  Twenty-seventh brick: `RankTwoVanishing` — `tPow_mul_cellTriv` computes the ratio of the two
+  trivializations as `c · tPow d` with `c = ±1` a nonzero scalar (from the transition function), so
+  `tPow_mul_cellTriv_mem_one` and `tPow_mul_cellTriv_mem_swap` place each Laurent monomial in one of
+  the two cell section spaces as soon as `n ≥ 0` or `n ≤ d`.  Hence
+  **`cellSections_pair_le_sup`: for `d ≥ −1` the two cells span the intersection.**
+  Twenty-eighth brick: `RankTwoBott` — the Čech assembly.  `eq_pair_of_card_two` (the only
+  two-element index set is the whole Weyl group), the explicit `0`-cochain `pairCochain` and its
+  differential, and hence **`flagCocycles_one_le_flagCoboundaries`** and
+  **`flagCohomology_one_subsingleton` : `H¹(G/B, L_λ) = 0` for `d ≥ −1`**, together with
+  `flagCohomology_subsingleton_of_two_le`.  Capstones:
+  * **`rankTwo_bott_dominant`** — for a dominant weight the cohomology of `L_λ` on the flag variety
+    of `GL(2)` is nonzero in degree `0` (where `polySectionsEquivH0` identifies it with the
+    irreducible module) and vanishes in every positive degree;
+  * **`rankTwo_bott_singular`** — if `⟨λ, α^∨⟩ = −1`, i.e. `λ + ρ` is singular, the cohomology
+    vanishes in *every* degree.
+  Everything audits to `[propext, Classical.choice, Quot.sound]`.
+  Remaining for `GL(2)`: the case `d ≤ −2`, where Bott predicts `H¹ ≠ 0` of dimension `−d−1`.  The
+  route is fixed: `exists_matEval_cellDenomPoly_swapNext` (now in `PairChart`) evaluates the cover
+  equation on the explicit lower unitriangular matrices `[[1,0],[c,1]]`, so the coordinate `t` is
+  transcendental over `k` inside the localization; the Laurent monomials are then linearly
+  independent, and comparing coefficients shows `tPow (−1)` is not in
+  `A_1 + tPow d · A_s` once `d ≤ −2`.
+
+  **BOTT FOR `GL(2)` IS CLOSED (bricks 29–30).**
+  Twenty-ninth brick: `RankTwoIndependence`.  `flagEvalAlg` makes evaluation at a point of the big
+  cell a `k`-algebra map; `lowerTwo c = [[1,0],[c,1]]` is lower unitriangular with
+  `matEval_totalDenom_lowerTwo : c ≠ 0 → ` the cover equation is nonzero there (using the new
+  `exists_matEval_cellDenomPoly_swapNext`), and the coordinate evaluates to `c`.  Hence
+  **`aeval_tCoord_eq_zero` / `aeval_tCoord_injective`: the affine coordinate is transcendental over
+  `k`** — a polynomial relation would have infinitely many roots.
+  Thirtieth brick: `RankTwoNonvanishing`.  Clearing denominators turns a hypothetical decomposition
+  `t⁻¹ = a + b·t^d` (`a` regular on one cell, `b` on the other) into a polynomial identity in the
+  transcendental coordinate; comparing the coefficient in degree `M−1` reads `1 = 0` once `d ≤ −2`.
+  So `tPow_neg_one_not_mem_add`, then `tPow_neg_one_not_mem_sup`, then the Čech-level
+  `sepCochain` — a `1`-cocycle that is not a coboundary — and finally
+  **`flagCohomology_one_nontrivial` : `H¹(G/B, L_λ) ≠ 0` for `d ≤ −2`**.
+  Capstone **`rankTwo_bott_antidominant`**: for `d ≤ −2` the cohomology of `L_λ` on the flag variety
+  of `GL(2)` vanishes in degree `0`, is nonzero in degree `1`, vanishes above, and the Weyl element
+  making `λ` dominant for the dot action is `s` with `permLength s = 1` — the degree of
+  concentration, exactly as Bott predicts.
+  Together with `rankTwo_bott_dominant` and `rankTwo_bott_singular` this is **Bott's theorem for
+  `GL(2)` in all three cases**, unconditional and axiom-clean.
+
+  **Next: general `N`.**  The rank-one computation is now available as a fully worked model.  The
+  remaining input for a general flag variety is local triviality of the `ℙ¹`-bundle over a coset
+  pair — concretely `A_1 ⊆ t·A_1 + A_s`, which by the reduction
+  `A_1[1/t] = A_1 + t^d A_s ⟸ (d = −1 case) ⟸ A_1 ⊆ t·A_1 + A_s` is the only missing algebra.
+  That in turn is the chart transition formula: the expression of `weylSubst s_i (cellCoord r j)` in
+  the coordinates of the big cell — classical Gaussian elimination on the two flags, and the next
+  multi-brick build.

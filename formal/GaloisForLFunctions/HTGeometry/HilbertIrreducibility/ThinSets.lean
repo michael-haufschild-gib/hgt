@@ -32,6 +32,13 @@ theorem thin_of_bddAbove {S : Set ℤ} {T : ℝ} (h : ∀ n ∈ S, (n : ℝ) ≤
   ⟨0, 1, 1, T, 1, one_pos, one_pos, one_pos, fun t _ hT hS =>
     absurd (h (t 0) (hS 0)) (not_le.mpr (hT 0))⟩
 
+/-- Gap thinness only sees the far-out part of a set. -/
+theorem thin_of_inter {S : Set ℤ} {T₀ : ℝ} (h : Thin {n | n ∈ S ∧ T₀ < (n : ℝ)}) : Thin S := by
+  obtain ⟨m, q, E, T, α, hα, hq, hE, hthin⟩ := h
+  refine ⟨m, q, E, max T T₀, α, hα, hq, hE, fun t hmono hT hS => ?_⟩
+  exact hthin t hmono (fun i => lt_of_le_of_lt (le_max_left _ _) (hT i))
+    (fun i => ⟨hS i, lt_of_le_of_lt (le_max_right _ _) (hT i)⟩)
+
 /-- A gap-thin set meets a short far-out window in at most `m` points. -/
 theorem card_filter_le_of_thin {S : Set ℤ} [DecidablePred (· ∈ S)] {m q E : ℕ} {T α : ℝ}
     (hα : 0 < α)
@@ -66,12 +73,13 @@ theorem card_filter_le_of_thin {S : Set ℤ} [DecidablePred (· ∈ S)] {m q E :
   linarith
 
 /-- **Assembly.**  Finitely many gap-thin sets leave arbitrarily large integers uncovered. -/
-theorem exists_gt_notMem_of_thin {r : ℕ} (S : Fin r → Set ℤ) (h : ∀ j, Thin (S j)) (B : ℝ) :
+theorem exists_gt_notMem_of_thin {ι : Type*} [Fintype ι] (S : ι → Set ℤ) (h : ∀ j, Thin (S j))
+    (B : ℝ) :
     ∃ n : ℤ, B < (n : ℝ) ∧ ∀ j, n ∉ S j := by
   classical
   choose m q E T α hα hq hE hthin using h
   set M : ℕ := Finset.univ.sup m with hM
-  set W : ℕ := r * M + 1 with hWdef
+  set W : ℕ := Fintype.card ι * M + 1 with hWdef
   have hWpos : 0 < W := Nat.succ_pos _
   obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ j, max (T j) (((W : ℝ) ^ (E j)) / α j) ≤ C := by
     refine ⟨∑ k, max (max (T k) (((W : ℝ) ^ (E k)) / α k)) 0, fun j => ?_⟩
@@ -130,7 +138,7 @@ theorem exists_gt_notMem_of_thin {r : ℕ} (S : Fin r → Set ℤ) (h : ∀ j, T
     intro n hn
     obtain ⟨hn1, j, hj⟩ := Finset.mem_filter.mp hn
     exact Finset.mem_biUnion.mpr ⟨j, Finset.mem_univ j, Finset.mem_filter.mpr ⟨hn1, hj⟩⟩
-  have hcov : (X.filter (fun n => ∃ j, n ∈ S j)).card ≤ r * M := by
+  have hcov : (X.filter (fun n => ∃ j, n ∈ S j)).card ≤ Fintype.card ι * M := by
     refine le_trans (Finset.card_le_card hsub) (le_trans Finset.card_biUnion_le ?_)
     refine le_trans (Finset.sum_le_sum fun j _ => hjcard j) ?_
     refine le_trans (Finset.sum_le_sum fun j (_ : j ∈ Finset.univ) =>
@@ -149,7 +157,7 @@ theorem exists_gt_notMem_of_thin {r : ℕ} (S : Fin r → Set ℤ) (h : ∀ j, T
     exact hn2
 
 /-- **Finitely many gap-thin sets do not cover the integers.** -/
-theorem infinite_compl_of_thin {r : ℕ} (S : Fin r → Set ℤ) (h : ∀ j, Thin (S j)) :
+theorem infinite_compl_of_thin {ι : Type*} [Fintype ι] (S : ι → Set ℤ) (h : ∀ j, Thin (S j)) :
     {n : ℤ | ∀ j, n ∉ S j}.Infinite := by
   intro hfin
   obtain ⟨A, hA⟩ := hfin.bddAbove

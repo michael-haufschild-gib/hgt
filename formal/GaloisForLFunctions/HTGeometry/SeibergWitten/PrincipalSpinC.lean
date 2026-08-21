@@ -10,9 +10,9 @@ module fills the algebraic core needed by Seiberg--Witten theory.  It constructs
 `Spin(4)` group from the negative Euclidean Clifford form, proves its central sign is available,
 forms `(Spin(4) × U(1)) / ⟨(-1,-1)⟩`, and supplies its squared determinant character.
 
-`PrincipalSpinCBundle` records a free and transitive right action on each fiber.  It is deliberately
-the algebraic principal-bundle core: topology, smooth local trivializations, and association to the
-smooth vector-bundle prelude remain separate layers.
+`PrincipalSpinCBundle` records a free and transitive right action on each fiber.
+`SeibergWitten.AssociatedBundles` supplies its algebraic associated-bundle layer.  Topology and
+smooth local trivializations remain separate from this torsor-level core.
 -/
 
 noncomputable section

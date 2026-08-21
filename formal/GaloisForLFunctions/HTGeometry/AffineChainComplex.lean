@@ -1,6 +1,8 @@
 import Mathlib.AlgebraicTopology.AlternatingFaceMapComplex
 import Mathlib.Algebra.Category.ModuleCat.Basic
 import Mathlib.LinearAlgebra.Finsupp.Defs
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.Abel
 
 /-!
 # The affine chain complex of a set, and the cone operator
@@ -105,5 +107,54 @@ theorem cons_comp_succAbove_succ {n : ℕ} (b : K) (v : Fin (n + 2) → K) (j : 
   · simp
   · intro m
     simp [Fin.succ_succAbove_succ]
+
+theorem coneMap_single' (b : K) (n : ℕ) (v : Fin (n + 1) → K) (c : R) :
+    (coneMap R K b n).hom (Finsupp.single v c)
+      = Finsupp.single (Fin.cons b v) c := by
+  show Finsupp.mapDomain
+      (fun w : Fin (n + 1) → K => (Fin.cons b w : Fin (n + 2) → K)) (Finsupp.single v c) = _
+  rw [Finsupp.mapDomain_single]
+
+/-- **The cone identity**: `∂ (b ∗ v) + b ∗ (∂ v) = v`. -/
+theorem d_coneMap_single {n : ℕ} (b : K) (v : Fin (n + 2) → K) :
+    ((affChainComplex R K).d (n + 2) (n + 1)).hom
+        ((coneMap R K b (n + 1)).hom (Finsupp.single v (1 : R)))
+      + (coneMap R K b n).hom
+          (((affChainComplex R K).d (n + 1) n).hom (Finsupp.single v (1 : R)))
+      = Finsupp.single v (1 : R) := by
+  show ((((affChainComplex R K).d (n + 2) (n + 1)).hom
+      ((coneMap R K b (n + 1)).hom (Finsupp.single v (1 : R)))
+    + (coneMap R K b n).hom
+        (((affChainComplex R K).d (n + 1) n).hom (Finsupp.single v (1 : R))) :
+      (Fin (n + 2) → K) →₀ R)) = Finsupp.single v (1 : R)
+  rw [coneMap_single, d_single, d_single, Fin.sum_univ_succ]
+  have h0 : Finsupp.single
+      ((Fin.cons b v : Fin (n + 3) → K) ∘ (0 : Fin (n + 3)).succAbove)
+      ((-1 : R) ^ ((0 : Fin (n + 3)) : ℕ)) = Finsupp.single v (1 : R) := by
+    rw [cons_comp_succAbove_zero]
+    norm_num
+  have hstep : ∀ j : Fin (n + 2), Finsupp.single
+      ((Fin.cons b v : Fin (n + 3) → K) ∘ (j.succ).succAbove)
+      ((-1 : R) ^ ((j.succ : Fin (n + 3)) : ℕ))
+      = -(Finsupp.single ((Fin.cons b (v ∘ j.succAbove) : Fin (n + 2) → K))
+          ((-1 : R) ^ (j : ℕ))) := by
+    intro j
+    rw [cons_comp_succAbove_succ]
+    rw [show ((j.succ : Fin (n + 3)) : ℕ) = (j : ℕ) + 1 from rfl, pow_succ]
+    rw [← Finsupp.single_neg]
+    congr 1
+    ring
+  rw [h0, Finset.sum_congr rfl (fun j _ => hstep j), Finset.sum_neg_distrib]
+  have hsum : (coneMap R K b n).hom
+      (∑ i : Fin (n + 2), Finsupp.single (v ∘ i.succAbove) ((-1 : R) ^ (i : ℕ)))
+      = ∑ i : Fin (n + 2),
+        Finsupp.single ((Fin.cons b (v ∘ i.succAbove) : Fin (n + 2) → K)) ((-1 : R) ^ (i : ℕ)) := by
+    rw [map_sum]
+    exact Finset.sum_congr rfl fun j _ => coneMap_single' R K b n _ _
+  have key : ∀ a s c : (Fin (n + 2) → K) →₀ R, c = s → a + -s + c = a := by
+    intro a s c h
+    rw [h]
+    abel
+  exact key _ _ _ hsum
 
 end GaloisForLFunctions.HTGeometry

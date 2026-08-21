@@ -47,6 +47,10 @@ theorem flatFourSpace_isSmooth :
     IsManifold fourModel (⊤ : WithTop ℕ∞) FourSpace :=
   inferInstance
 
+/-- The Euclidean four-model, registered as a smooth four-manifold. -/
+instance flatFourSpace_smoothFourManifold : SmoothFourManifold FourSpace :=
+  ⟨flatFourSpace_isSmooth⟩
+
 /-- Canonical orientation of Euclidean four-space, transported from its coordinate basis. -/
 noncomputable def flatFourSpaceOrientation : Orientation ℝ FourSpace (Fin 4) :=
   Orientation.map (Fin 4) (EuclideanSpace.equiv (Fin 4) ℝ).symm
@@ -62,8 +66,8 @@ noncomputable def flatModelOrientedFourSpace :
 bundle, expressed using mathlib's vector-bundle predicates.
 
 This is the smooth vector-bundle layer.  `SeibergWitten.PrincipalSpinC` separately constructs the
-algebraic principal `Spinᶜ(4)` lift; associating that lift to these smooth bundles and proving
-determinant compatibility remain separate layers. -/
+algebraic principal `Spinᶜ(4)` lift.  `SeibergWitten.FlatAssociatedSmooth` identifies the associated
+and smooth total spaces in the closed flat case; nontrivial global association remains separate. -/
 structure SmoothSpinCBundlePrelude
     (M : Type u) [TopologicalSpace M] [ChartedSpace FourSpace M] [SmoothFourManifold M]
     (SPlus SMinus Determinant : M → Type v)
@@ -83,6 +87,23 @@ structure SmoothSpinCBundlePrelude
   positiveSmooth : ContMDiffVectorBundle (⊤ : WithTop ℕ∞) (Fin 2 → ℂ) SPlus fourModel
   negativeSmooth : ContMDiffVectorBundle (⊤ : WithTop ℕ∞) (Fin 2 → ℂ) SMinus fourModel
   determinantSmooth : ContMDiffVectorBundle (⊤ : WithTop ℕ∞) ℂ Determinant fourModel
+
+/-- Constant positive-chirality rank-two complex bundle on Euclidean four-space. -/
+abbrev flatPositiveSpinorBundle : FourSpace → Type := fun _ => Fin 2 → ℂ
+
+/-- Constant negative-chirality rank-two complex bundle on Euclidean four-space. -/
+abbrev flatNegativeSpinorBundle : FourSpace → Type := fun _ => Fin 2 → ℂ
+
+/-- Constant complex determinant line on Euclidean four-space. -/
+abbrev flatDeterminantLineBundle : FourSpace → Type := fun _ => ℂ
+
+/-- The constant spinor fibers form actual smooth complex vector bundles in mathlib. -/
+theorem flatSmoothSpinCBundlePrelude :
+    SmoothSpinCBundlePrelude FourSpace flatPositiveSpinorBundle flatNegativeSpinorBundle
+      flatDeterminantLineBundle where
+  positiveSmooth := inferInstance
+  negativeSmooth := inferInstance
+  determinantSmooth := inferInstance
 
 /-- A real Hodge-star operator on a space of two-forms. -/
 structure HodgeStar (TwoForms : Type*) [AddCommGroup TwoForms] [Module ℝ TwoForms] where

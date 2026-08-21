@@ -260,4 +260,297 @@ theorem supGe_ball_sSup {ψ : (Fin d → ℝ) → ℝ} {ρ r₀ : ℝ} {x₀ x :
     have : R < min (δ + R) (2 * r₀) := lt_min (by linarith) hRlt
     linarith
 
+/-- **Lemma 4.4.**  Around a point of `B` at which some `|ψ_s|` drops below `ρ` there is a ball
+`B(x, r)` of radius at most `2r₀` on which one distinguished `ψ_{s₁}` stays at most `ρ`, while
+every `ψ_s` still has supremum norm at least `ρ`. -/
+theorem exists_marking_radius {ψ : ι → (Fin d → ℝ) → ℝ} {S : Set ι} {ρ r₀ : ℝ} {x₀ x : Fin d → ℝ}
+    (hr₀ : 0 < r₀) (hx : x ∈ ball x₀ r₀)
+    (hcont : ∀ s ∈ S, ContinuousOn (ψ s) (ball x₀ (3 * r₀)))
+    (hsup : ∀ s ∈ S, SupGe (ψ s) (ball x₀ r₀) ρ)
+    (hfin : {s | s ∈ S ∧ |ψ s x| < ρ}.Finite) (hne : ∃ s ∈ S, |ψ s x| < ρ) :
+    ∃ (r : ℝ) (s₁ : ι), 0 < r ∧ r ≤ 2 * r₀ ∧ s₁ ∈ S ∧
+      (∀ y ∈ ball x r, |ψ s₁ y| ≤ ρ) ∧ ∀ s ∈ S, SupGe (ψ s) (ball x r) ρ := by
+  classical
+  set H : Set ι := {s | s ∈ S ∧ |ψ s x| < ρ} with hH
+  have hHne : H.Nonempty := by obtain ⟨s, hs, hs'⟩ := hne; exact ⟨s, hs, hs'⟩
+  have hx3 : x ∈ ball x₀ (3 * r₀) := ball_subset_ball (by linarith) hx
+  have hradne : ∀ s ∈ H, (goodRadii (ψ s) ρ r₀ x).Nonempty := fun s hs =>
+    goodRadii_nonempty hr₀ hx3 (hcont s hs.1) hs.2
+  obtain ⟨s₁, hs₁H, hs₁max⟩ :=
+    Set.exists_max_image H (fun s => sSup (goodRadii (ψ s) ρ r₀ x)) hfin hHne
+  refine ⟨sSup (goodRadii (ψ s₁) ρ r₀ x), s₁, sSup_goodRadii_pos (hradne s₁ hs₁H),
+    sSup_goodRadii_le (hradne s₁ hs₁H), hs₁H.1,
+    fun y hy => abs_le_of_mem_ball_sSup (hradne s₁ hs₁H) hy, ?_⟩
+  intro s hs
+  by_cases hsH : s ∈ H
+  · exact (supGe_ball_sSup hr₀ hx (hcont s hs) (hsup s hs) (hradne s hsH)).mono
+      (ball_subset_ball (hs₁max s hsH))
+  · have : ρ ≤ |ψ s x| := by
+      by_contra hcon
+      exact hsH ⟨hs, not_le.mp hcon⟩
+    exact supGe_of_mem (mem_ball_self (sSup_goodRadii_pos (hradne s₁ hs₁H))) this
+
+/-! ### Besicovitch summation -/
+
+/-- Assembling local estimates on the balls `B(x, r_x)`, `x ∈ E`, by Besicovitch's covering
+theorem: the multiplicity of the extracted subcovering is bounded by `N_d`, and each ball is
+contained in `B(x₀, 3r₀)`, whose volume is `3^d |B(x₀, r₀)|`. -/
+theorem measure_inter_le_of_local {E : Set (Fin d → ℝ)} {x₀ : Fin d → ℝ} {r₀ : ℝ} (hr₀ : 0 < r₀)
+    (hE : E ⊆ ball x₀ r₀) (rad : E → ℝ) (hrad : ∀ j, 0 < rad j) (hrad' : ∀ j, rad j ≤ 2 * r₀)
+    (A : Set (Fin d → ℝ)) (K : ℝ≥0∞)
+    (hloc : ∀ j : E, volume (ball (j : Fin d → ℝ) (rad j) ∩ A)
+      ≤ K * volume (ball (j : Fin d → ℝ) (rad j))) :
+    volume (E ∩ A)
+      ≤ (Besicovitch.multiplicity (Fin d → ℝ) : ℝ≥0∞) * ((3 : ℝ≥0∞) ^ d * K)
+        * volume (ball x₀ r₀) := by
+  classical
+  set N := Besicovitch.multiplicity (Fin d → ℝ) with hN
+  set q : Besicovitch.BallPackage E (Fin d → ℝ) :=
+    { c := fun j => (j : Fin d → ℝ)
+      r := rad
+      rpos := hrad
+      r_bound := 2 * r₀
+      r_le := hrad' } with hq
+  obtain ⟨u, hu_disj, hu_cover⟩ :=
+    Besicovitch.exist_disjoint_covering_families (Besicovitch.one_lt_goodτ (Fin d → ℝ))
+      (Besicovitch.isEmpty_satelliteConfig_multiplicity (Fin d → ℝ)) q
+  -- each closed ball of the package lies in `B(x₀, 3r₀)`
+  have hsubball : ∀ j : E, closedBall (j : Fin d → ℝ) (rad j) ⊆ ball x₀ (3 * r₀) := by
+    intro j y hy
+    have h1 : dist y (j : Fin d → ℝ) ≤ rad j := mem_closedBall.mp hy
+    have h2 : dist (j : Fin d → ℝ) x₀ < r₀ := mem_ball.mp (hE j.2)
+    have h3 : rad j ≤ 2 * r₀ := hrad' j
+    rw [mem_ball]
+    calc dist y x₀ ≤ dist y (j : Fin d → ℝ) + dist (j : Fin d → ℝ) x₀ := dist_triangle _ _ _
+      _ < 2 * r₀ + r₀ := by linarith
+      _ = 3 * r₀ := by ring
+  -- for each colour, the disjoint balls have total volume at most `|B(x₀, 3r₀)|`
+  have hcount : ∀ i : Fin N, (u i).Countable := by
+    intro i
+    refine (hu_disj i).countable_of_nonempty_interior fun j _ => ?_
+    exact ⟨(j : Fin d → ℝ), isOpen_ball.subset_interior_iff.mpr ball_subset_closedBall
+      (mem_ball_self (hrad j))⟩
+  have hsum : ∀ i : Fin N, ∑' j : (u i), volume (ball ((j : E) : Fin d → ℝ) (rad (j : E)))
+      ≤ volume (ball x₀ (3 * r₀)) := by
+    intro i
+    have h1 : ∑' j : (u i), volume (closedBall ((j : E) : Fin d → ℝ) (rad (j : E)))
+        = volume (⋃ j ∈ u i, closedBall ((j : E) : Fin d → ℝ) (rad (j : E))) :=
+      (measure_biUnion (hcount i) (hu_disj i) (fun j _ => measurableSet_closedBall)).symm
+    calc ∑' j : (u i), volume (ball ((j : E) : Fin d → ℝ) (rad (j : E)))
+        ≤ ∑' j : (u i), volume (closedBall ((j : E) : Fin d → ℝ) (rad (j : E))) :=
+          ENNReal.tsum_le_tsum fun j => measure_mono ball_subset_closedBall
+      _ = volume (⋃ j ∈ u i, closedBall ((j : E) : Fin d → ℝ) (rad (j : E))) := h1
+      _ ≤ volume (ball x₀ (3 * r₀)) :=
+          measure_mono (iUnion₂_subset fun j _ => hsubball j)
+  -- the covering estimate
+  have hcov : E ∩ A ⊆ ⋃ i : Fin N, ⋃ j ∈ u i, (ball ((j : E) : Fin d → ℝ) (rad (j : E)) ∩ A) := by
+    rintro y ⟨hyE, hyA⟩
+    have : y ∈ range q.c := ⟨⟨y, hyE⟩, rfl⟩
+    obtain ⟨-, ⟨i, rfl⟩, hy⟩ := hu_cover this
+    simp only [mem_iUnion, exists_prop] at hy ⊢
+    obtain ⟨j, hj, hyj⟩ := hy
+    exact ⟨i, j, hj, hyj, hyA⟩
+  calc volume (E ∩ A)
+      ≤ ∑' i : Fin N, volume (⋃ j ∈ u i, (ball ((j : E) : Fin d → ℝ) (rad (j : E)) ∩ A)) :=
+        le_trans (measure_mono hcov) (measure_iUnion_le _)
+    _ ≤ ∑' _i : Fin N, K * volume (ball x₀ (3 * r₀)) := by
+        refine ENNReal.tsum_le_tsum fun i => ?_
+        calc volume (⋃ j ∈ u i, (ball ((j : E) : Fin d → ℝ) (rad (j : E)) ∩ A))
+            ≤ ∑' j : (u i), volume (ball ((j : E) : Fin d → ℝ) (rad (j : E)) ∩ A) :=
+              measure_biUnion_le _ (hcount i) _
+          _ ≤ ∑' j : (u i), K * volume (ball ((j : E) : Fin d → ℝ) (rad (j : E))) :=
+              ENNReal.tsum_le_tsum fun j => hloc (j : E)
+          _ = K * ∑' j : (u i), volume (ball ((j : E) : Fin d → ℝ) (rad (j : E))) :=
+              ENNReal.tsum_mul_left
+          _ ≤ K * volume (ball x₀ (3 * r₀)) := mul_le_mul_left' (hsum i) K
+    _ = (N : ℝ≥0∞) * (K * volume (ball x₀ (3 * r₀))) := by
+        rw [tsum_fintype]
+        simp [Finset.sum_const, Finset.card_univ]
+    _ = (N : ℝ≥0∞) * ((3 : ℝ≥0∞) ^ d * K) * volume (ball x₀ r₀) := by
+        have hv : volume (ball x₀ (3 * r₀)) = (3 : ℝ≥0∞) ^ d * volume (ball x₀ r₀) := by
+          rw [Real.volume_pi_ball _ (by linarith : (0:ℝ) < 3 * r₀),
+            Real.volume_pi_ball _ hr₀]
+          rw [show (2 : ℝ) * (3 * r₀) = 3 * (2 * r₀) by ring, mul_pow,
+            ENNReal.ofReal_mul (by positivity : (0:ℝ) ≤ (3:ℝ) ^ Fintype.card (Fin d)),
+            ENNReal.ofReal_pow (by norm_num : (0:ℝ) ≤ 3)]
+          simp
+        rw [hv]
+        ring
+
+/-! ### Theorem 4.1 -/
+
+/-- The Besicovitch covering constant of `ℝ^d` is at least `1`. -/
+theorem one_le_besicovitch_multiplicity (d : ℕ) : 1 ≤ Besicovitch.multiplicity (Fin d → ℝ) := by
+  have h := Besicovitch.card_le_multiplicity (E := (Fin d → ℝ)) (s := ({0} : Finset (Fin d → ℝ)))
+    (by simp) (by simp)
+  simpa using h
+
+/-- **Theorem 4.1.**  The unmarked points of `B = B(x₀, r₀)` have measure at most
+`k C (3^d N_d)^k (ε/ρ)^α |B|`. -/
+theorem measure_not_marked_le {C α ρ : ℝ} (hC : 0 < C) (hα : 0 < α) (hρ : 0 < ρ) (k : ℕ) :
+    ∀ (S : Set ι) (ψ : ι → (Fin d → ℝ) → ℝ) (x₀ : Fin d → ℝ) (r₀ : ℝ), 0 < r₀ →
+      LengthLE S k →
+      (∀ s ∈ S, ContinuousOn (ψ s) (ball x₀ (3 ^ k * r₀))) →
+      (∀ s ∈ S, IsGood C α (ψ s) (ball x₀ (3 ^ k * r₀))) →
+      (∀ s ∈ S, SupGe (ψ s) (ball x₀ r₀) ρ) →
+      (∀ x ∈ ball x₀ (3 ^ k * r₀), {s | s ∈ S ∧ |ψ s x| < ρ}.Finite) →
+      ∀ ε : ℝ, 0 < ε →
+        volume {z ∈ ball x₀ r₀ | ¬ IsMarked ε ρ S ψ z}
+          ≤ ENNReal.ofReal ((k : ℝ) * C
+              * ((3 : ℝ) ^ d * (Besicovitch.multiplicity (Fin d → ℝ) : ℝ)) ^ k
+              * (ε / ρ) ^ α) * volume (ball x₀ r₀) := by
+  classical
+  set N := Besicovitch.multiplicity (Fin d → ℝ) with hNdef
+  set M : ℝ := (3 : ℝ) ^ d * (N : ℝ) with hMdef
+  have hNpos : 1 ≤ (N : ℝ) := by exact_mod_cast one_le_besicovitch_multiplicity d
+  have hM1 : 1 ≤ M := by
+    have : (1 : ℝ) ≤ (3 : ℝ) ^ d := one_le_pow₀ (by norm_num)
+    rw [hMdef]; nlinarith
+  induction k with
+  | zero =>
+    intro S ψ x₀ r₀ hr₀ hlen _ _ _ _ ε hε
+    have hS : S = ∅ := hlen.eq_empty
+    have hempty : {z ∈ ball x₀ r₀ | ¬ IsMarked ε ρ S ψ z} = ∅ := by
+      ext z
+      simp only [mem_setOf_eq, mem_empty_iff_false, iff_false, not_and, not_not]
+      intro _
+      exact isMarked_of_forall_le (by simp [hS])
+    rw [hempty]
+    simp
+  | succ k ih =>
+    intro S ψ x₀ r₀ hr₀ hlen hcont hgood hsup hfin ε hε
+    have hMk : (1 : ℝ) ≤ M ^ k := one_le_pow₀ hM1
+    have hεραnn : (0 : ℝ) ≤ (ε / ρ) ^ α := Real.rpow_nonneg (by positivity) _
+    -- inclusions between the various balls
+    have hb3 : ball x₀ (3 * r₀) ⊆ ball x₀ (3 ^ (k + 1) * r₀) := by
+      refine ball_subset_ball ?_
+      have : (3 : ℝ) ≤ 3 ^ (k + 1) := by
+        calc (3:ℝ) = 3 ^ 1 := (pow_one 3).symm
+          _ ≤ 3 ^ (k + 1) := pow_le_pow_right₀ (by norm_num) (by omega)
+      nlinarith
+    have hb1 : ball x₀ r₀ ⊆ ball x₀ (3 ^ (k + 1) * r₀) := by
+      refine ball_subset_ball ?_
+      have : (1 : ℝ) ≤ 3 ^ (k + 1) := one_le_pow₀ (by norm_num)
+      nlinarith
+    have hcont3 : ∀ s ∈ S, ContinuousOn (ψ s) (ball x₀ (3 * r₀)) := fun s hs =>
+      (hcont s hs).mono hb3
+    -- the "bad" set
+    set E : Set (Fin d → ℝ) := {x ∈ ball x₀ r₀ | ∃ s ∈ S, |ψ s x| < ρ} with hEdef
+    set NM : Set (Fin d → ℝ) := {z | ¬ IsMarked ε ρ S ψ z} with hNMdef
+    have hEB : E ⊆ ball x₀ r₀ := fun _ hx => hx.1
+    have hstep1 : {z ∈ ball x₀ r₀ | ¬ IsMarked ε ρ S ψ z} ⊆ E ∩ NM := by
+      rintro z ⟨hzB, hznm⟩
+      refine ⟨⟨hzB, ?_⟩, hznm⟩
+      by_contra hcon
+      push_neg at hcon
+      exact hznm (isMarked_of_forall_le hcon)
+    -- choose a marking radius at every point of `E`
+    have hEx : ∀ j : E, ∃ (r : ℝ) (s₁ : ι), 0 < r ∧ r ≤ 2 * r₀ ∧ s₁ ∈ S ∧
+        (∀ y ∈ ball (j : Fin d → ℝ) r, |ψ s₁ y| ≤ ρ) ∧
+        ∀ s ∈ S, SupGe (ψ s) (ball (j : Fin d → ℝ) r) ρ := by
+      intro j
+      exact exists_marking_radius hr₀ j.2.1 hcont3 hsup (hfin _ (hb1 j.2.1)) j.2.2
+    choose rad sel hradpos hradle hselmem hselle hselsup using hEx
+    -- the local estimate on each ball `B(x, r_x)`
+    have hlocal : ∀ j : E, volume (ball (j : Fin d → ℝ) (rad j) ∩ NM)
+        ≤ ENNReal.ofReal (((k : ℝ) + 1) * C * M ^ k * (ε / ρ) ^ α)
+          * volume (ball (j : Fin d → ℝ) (rad j)) := by
+      intro j
+      set x : Fin d → ℝ := (j : Fin d → ℝ) with hx
+      set r : ℝ := rad j with hr
+      set s₁ : ι := sel j with hs₁
+      have hxB : x ∈ ball x₀ r₀ := j.2.1
+      have hxx₀ : dist x x₀ < r₀ := mem_ball.mp hxB
+      have hrpos : 0 < r := hradpos j
+      have hrle : r ≤ 2 * r₀ := hradle j
+      have hincl1 : ball x r ⊆ ball x₀ (3 ^ (k + 1) * r₀) := by
+        intro y hy
+        have h1 : dist y x < r := mem_ball.mp hy
+        have h2 : (1 : ℝ) ≤ 3 ^ k := one_le_pow₀ (by norm_num)
+        rw [mem_ball]
+        calc dist y x₀ ≤ dist y x + dist x x₀ := dist_triangle _ _ _
+          _ < 2 * r₀ + r₀ := by linarith
+          _ = 3 * r₀ := by ring
+          _ ≤ 3 ^ (k + 1) * r₀ := by
+              have : (3:ℝ) * 1 ≤ 3 * 3 ^ k := by linarith
+              rw [pow_succ]
+              nlinarith
+      have hincl2 : ball x (3 ^ k * r) ⊆ ball x₀ (3 ^ (k + 1) * r₀) := by
+        intro y hy
+        have h1 : dist y x < 3 ^ k * r := mem_ball.mp hy
+        have h2 : (1 : ℝ) ≤ 3 ^ k := one_le_pow₀ (by norm_num)
+        have h3 : (3:ℝ) ^ k * r ≤ 3 ^ k * (2 * r₀) := by nlinarith [pow_pos (by norm_num : (0:ℝ) < 3) k]
+        rw [mem_ball]
+        calc dist y x₀ ≤ dist y x + dist x x₀ := dist_triangle _ _ _
+          _ < 3 ^ k * (2 * r₀) + r₀ := by linarith
+          _ ≤ 3 ^ (k + 1) * r₀ := by rw [pow_succ]; nlinarith
+      -- Lemma 4.6 splits the unmarked points of `B(x, r)`
+      have hsplit : ball x r ∩ NM
+          ⊆ {z ∈ ball x r | ¬ IsMarked ε ρ (subPoset S {s₁}) ψ z}
+            ∪ {z ∈ ball x r | |ψ s₁ z| < ε} := by
+        rintro z ⟨hz, hznm⟩
+        by_cases hm : IsMarked ε ρ (subPoset S {s₁}) ψ z
+        · right
+          refine ⟨hz, ?_⟩
+          by_contra hlt
+          push_neg at hlt
+          exact hznm (IsMarked.of_subPoset (hselmem j) hlt (hselle j z hz) hm)
+        · exact Or.inl ⟨hz, hm⟩
+      -- the induction hypothesis on the shortened poset
+      have hIH := ih (subPoset S {s₁}) ψ x r hrpos (hlen.subPoset_singleton (hselmem j))
+        (fun s hs => (hcont s (subPoset_subset _ _ hs)).mono hincl2)
+        (fun s hs => (hgood s (subPoset_subset _ _ hs)).mono_set hincl2)
+        (fun s hs => hselsup j s (subPoset_subset _ _ hs))
+        (fun y hy => (hfin y (hincl2 hy)).subset
+          (fun s hs => ⟨subPoset_subset _ _ hs.1, hs.2⟩))
+        ε hε
+      -- the goodness estimate for the distinguished function
+      have hgoodj : IsGood C α (ψ s₁) (ball x r) := (hgood s₁ (hselmem j)).mono_set hincl1
+      have hmeas := hgoodj.measure_mul_ofReal_rpow_le hC.le hα x hrpos (subset_refl _) hε hρ.le
+        (hselsup j s₁ (hselmem j))
+      have hρα : (0:ℝ) < ρ ^ α := Real.rpow_pos_of_pos hρ _
+      have hsecond : volume {z ∈ ball x r | |ψ s₁ z| < ε}
+          ≤ ENNReal.ofReal (C * (ε / ρ) ^ α) * volume (ball x r) := by
+        have hkey : volume {z ∈ ball x r | |ψ s₁ z| < ε} * ENNReal.ofReal (ρ ^ α)
+            ≤ ENNReal.ofReal (C * (ε / ρ) ^ α) * volume (ball x r) * ENNReal.ofReal (ρ ^ α) := by
+          refine hmeas.trans (le_of_eq ?_)
+          rw [mul_right_comm, ← ENNReal.ofReal_mul (by positivity : (0:ℝ) ≤ C * (ε / ρ) ^ α)]
+          congr 2
+          rw [Real.div_rpow hε.le hρ.le]
+          field_simp
+        exact (ENNReal.mul_le_mul_iff_left (by simpa using hρα) ENNReal.ofReal_ne_top).mp hkey
+      calc volume (ball x r ∩ NM)
+          ≤ volume ({z ∈ ball x r | ¬ IsMarked ε ρ (subPoset S {s₁}) ψ z}
+              ∪ {z ∈ ball x r | |ψ s₁ z| < ε}) := measure_mono hsplit
+        _ ≤ volume {z ∈ ball x r | ¬ IsMarked ε ρ (subPoset S {s₁}) ψ z}
+              + volume {z ∈ ball x r | |ψ s₁ z| < ε} := measure_union_le _ _
+        _ ≤ ENNReal.ofReal ((k : ℝ) * C * M ^ k * (ε / ρ) ^ α) * volume (ball x r)
+              + ENNReal.ofReal (C * (ε / ρ) ^ α) * volume (ball x r) := add_le_add hIH hsecond
+        _ = ENNReal.ofReal ((k : ℝ) * C * M ^ k * (ε / ρ) ^ α + C * (ε / ρ) ^ α)
+              * volume (ball x r) := by
+            rw [← add_mul, ← ENNReal.ofReal_add (by positivity) (by positivity)]
+        _ ≤ ENNReal.ofReal (((k : ℝ) + 1) * C * M ^ k * (ε / ρ) ^ α) * volume (ball x r) := by
+            refine mul_le_mul_right' (ENNReal.ofReal_le_ofReal ?_) _
+            have h1 : C * (ε / ρ) ^ α ≤ C * M ^ k * (ε / ρ) ^ α := by
+              nlinarith [mul_nonneg (mul_nonneg hC.le hεραnn) (sub_nonneg.mpr hMk)]
+            have h2 : ((k:ℝ) + 1) * C * M ^ k * (ε / ρ) ^ α
+                = (k:ℝ) * C * M ^ k * (ε / ρ) ^ α + C * M ^ k * (ε / ρ) ^ α := by ring
+            rw [h2]
+            linarith
+    -- assemble by Besicovitch
+    have hfinal := measure_inter_le_of_local hr₀ hEB rad hradpos hradle NM
+      (ENNReal.ofReal (((k : ℝ) + 1) * C * M ^ k * (ε / ρ) ^ α)) hlocal
+    refine le_trans (measure_mono hstep1) (hfinal.trans (le_of_eq ?_))
+    congr 1
+    have h3 : (3 : ℝ≥0∞) ^ d = ENNReal.ofReal ((3:ℝ) ^ d) := by
+      rw [ENNReal.ofReal_pow (by norm_num : (0:ℝ) ≤ 3)]
+      norm_num
+    rw [← ENNReal.ofReal_natCast N, h3,
+      ← ENNReal.ofReal_mul (by positivity : (0:ℝ) ≤ (3:ℝ) ^ d),
+      ← ENNReal.ofReal_mul (by positivity : (0:ℝ) ≤ (N:ℝ))]
+    congr 1
+    push_cast
+    rw [hMdef]
+    ring
+
 end GaloisForLFunctions.HTGeometry.KleinbockMargulis
