@@ -43,7 +43,7 @@ structure SandwichedChains (k : ℕ) (V : Set (Fin d → ℝ)) (f : (Fin d → �
   cont : ContinuousOn f V
   chain : ∀ (i : Fin d) (x : Fin d → ℝ), ∃ F : ℕ → ℝ → ℝ,
     (∀ t, F 0 t = f (Function.update x i t)) ∧
-    IsDerivChain F {t | Function.update x i t ∈ V} ∧
+    IsDerivChain k F {t | Function.update x i t ∈ V} ∧
     (∀ t, Function.update x i t ∈ V → |F k t| ≤ A₁ ∧ A₂ ≤ |F k t|)
 
 theorem SandwichedChains.mono {k : ℕ} {V W : Set (Fin d → ℝ)} {f : (Fin d → ℝ) → ℝ} {A₁ A₂ : ℝ}
@@ -52,7 +52,7 @@ theorem SandwichedChains.mono {k : ℕ} {V W : Set (Fin d → ℝ)} {f : (Fin d 
   chain := by
     intro i x
     obtain ⟨F, hF0, hFc, hFb⟩ := H.chain i x
-    exact ⟨F, hF0, fun j t ht => hFc j t (h ht), fun t ht => hFb t (h ht)⟩
+    exact ⟨F, hF0, fun j hj t ht => hFc j hj t (h ht), fun t ht => hFb t (h ht)⟩
 
 /-! ### Fubini in the first coordinate -/
 
@@ -142,11 +142,11 @@ theorem SandwichedChains.slice {k : ℕ} {V : Set (Fin (d + 1) → ℝ)}
   chain := by
     intro i x'
     obtain ⟨F, hF0, hFc, hFb⟩ := H.chain i.succ (Fin.cons t x')
-    refine ⟨F, fun u => ?_, fun j u hu => ?_, fun u hu => ?_⟩
+    refine ⟨F, fun u => ?_, fun j hj u hu => ?_, fun u hu => ?_⟩
     · rw [hF0 u, update_cons_succ]
     · simp only [Set.mem_setOf_eq] at hu
       rw [← update_cons_succ t x' i u] at hu
-      exact hFc j u hu
+      exact hFc j hj u hu
     · simp only [Set.mem_setOf_eq] at hu
       rw [← update_cons_succ t x' i u] at hu
       exact hFb u hu
@@ -157,14 +157,14 @@ theorem SandwichedChains.line {k : ℕ} {V : Set (Fin (d + 1) → ℝ)}
     {f : (Fin (d + 1) → ℝ) → ℝ} {A₁ A₂ : ℝ} (H : SandwichedChains k V f A₁ A₂)
     (x' : Fin d → ℝ) :
     ∃ F : ℕ → ℝ → ℝ, (∀ t, F 0 t = f (Fin.cons t x')) ∧
-      IsDerivChain F {t | (Fin.cons t x' : Fin (d + 1) → ℝ) ∈ V} ∧
+      IsDerivChain k F {t | (Fin.cons t x' : Fin (d + 1) → ℝ) ∈ V} ∧
       ∀ t, (Fin.cons t x' : Fin (d + 1) → ℝ) ∈ V → |F k t| ≤ A₁ ∧ A₂ ≤ |F k t| := by
   obtain ⟨F, hF0, hFc, hFb⟩ := H.chain 0 (Fin.cons 0 x')
-  refine ⟨F, fun u => ?_, fun j u hu => ?_, fun u hu => ?_⟩
+  refine ⟨F, fun u => ?_, fun j hj u hu => ?_, fun u hu => ?_⟩
   · rw [hF0 u, update_cons_zero]
   · simp only [Set.mem_setOf_eq] at hu
     rw [← update_cons_zero (0 : ℝ) x' u] at hu
-    exact hFc j u hu
+    exact hFc j hj u hu
   · rw [← update_cons_zero (0 : ℝ) x' u] at hu
     exact hFb u hu
 
@@ -244,7 +244,7 @@ theorem cubeEstimate_one {k : ℕ} (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA₁ : 0 �
     show Function.update z 0 t ∈ V
     rw [hupd]
     exact hsub ((mem_ball_one hr).mpr ht)
-  have hchain : IsDerivChain F (Ioo a b) := IsDerivChain.mono hFc hIsub
+  have hchain : IsDerivChain k F (Ioo a b) := IsDerivChain.mono hFc hIsub
   have hup : ∀ t ∈ Ioo a b, |F k t| ≤ A₁ := fun t ht => (hFb t (hIsub ht)).1
   have hlow : ∀ t ∈ Ioo a b, A₂ ≤ |F k t| := fun t ht => (hFb t (hIsub ht)).2
   have hz0 : z 0 ∈ Ioo a b := by

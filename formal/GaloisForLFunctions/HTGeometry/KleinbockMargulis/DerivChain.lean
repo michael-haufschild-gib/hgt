@@ -24,23 +24,29 @@ open Set Polynomial
 
 namespace GaloisForLFunctions.HTGeometry.KleinbockMargulis
 
-/-- `F` is a derivative chain on `U`: each `F (j+1)` is the derivative of `F j` on `U`. -/
-def IsDerivChain (F : ℕ → ℝ → ℝ) (U : Set ℝ) : Prop :=
-  ∀ j, ∀ x ∈ U, HasDerivAt (F j) (F (j + 1) x) x
+/-- `F` is a derivative chain of length `k` on `U`: each `F (j+1)`, for `j < k`, is the derivative
+of `F j` on `U`.  Only finitely many links are required, so a `C^k` function supplies one. -/
+def IsDerivChain (k : ℕ) (F : ℕ → ℝ → ℝ) (U : Set ℝ) : Prop :=
+  ∀ j < k, ∀ x ∈ U, HasDerivAt (F j) (F (j + 1) x) x
 
-theorem IsDerivChain.shift {F : ℕ → ℝ → ℝ} {U : Set ℝ} (hF : IsDerivChain F U) :
-    IsDerivChain (fun j => F (j + 1)) U := fun j x hx => hF (j + 1) x hx
+theorem IsDerivChain.shift {k : ℕ} {F : ℕ → ℝ → ℝ} {U : Set ℝ}
+    (hF : IsDerivChain (k + 1) F U) : IsDerivChain k (fun j => F (j + 1)) U :=
+  fun j hj x hx => hF (j + 1) (by omega) x hx
 
-theorem IsDerivChain.mono {F : ℕ → ℝ → ℝ} {U W : Set ℝ} (hF : IsDerivChain F U) (h : W ⊆ U) :
-    IsDerivChain F W := fun j x hx => hF j x (h hx)
+theorem IsDerivChain.mono {k : ℕ} {F : ℕ → ℝ → ℝ} {U W : Set ℝ} (hF : IsDerivChain k F U)
+    (h : W ⊆ U) : IsDerivChain k F W := fun j hj x hx => hF j hj x (h hx)
 
-theorem IsDerivChain.continuousOn {F : ℕ → ℝ → ℝ} {U : Set ℝ} (hF : IsDerivChain F U)
-    (j : ℕ) {s : Set ℝ} (hs : s ⊆ U) : ContinuousOn (F j) s :=
-  fun x hx => ((hF j x (hs hx)).differentiableAt.continuousAt).continuousWithinAt
+theorem IsDerivChain.mono_order {k k' : ℕ} {F : ℕ → ℝ → ℝ} {U : Set ℝ}
+    (hF : IsDerivChain k F U) (h : k' ≤ k) : IsDerivChain k' F U :=
+  fun j hj x hx => hF j (lt_of_lt_of_le hj h) x hx
+
+theorem IsDerivChain.continuousOn {k : ℕ} {F : ℕ → ℝ → ℝ} {U : Set ℝ} (hF : IsDerivChain k F U)
+    (j : ℕ) (hj : j < k) {s : Set ℝ} (hs : s ⊆ U) : ContinuousOn (F j) s :=
+  fun x hx => ((hF j hj x (hs hx)).differentiableAt.continuousAt).continuousWithinAt
 
 /-- **Iterated Rolle for a chain.** -/
 theorem exists_chain_eq_zero {U : Set ℝ} (hUc : U.OrdConnected) :
-    ∀ (k : ℕ) (F : ℕ → ℝ → ℝ), IsDerivChain F U →
+    ∀ (k : ℕ) (F : ℕ → ℝ → ℝ), IsDerivChain k F U →
       ∀ (pts : Fin (k + 1) → ℝ), StrictMono pts → (∀ i, pts i ∈ U) →
       (∀ i, F 0 (pts i) = 0) → ∃ ξ ∈ Icc (pts 0) (pts (Fin.last k)), F k ξ = 0 := by
   intro k
@@ -54,7 +60,7 @@ theorem exists_chain_eq_zero {U : Set ℝ} (hUc : U.OrdConnected) :
         ∃ c ∈ Ioo (pts i.castSucc) (pts i.succ), deriv (F 0) c = 0 := by
       intro i
       refine exists_deriv_eq_zero (hmono Fin.castSucc_lt_succ) ?_ ?_
-      · refine hF.continuousOn 0 ?_
+      · refine hF.continuousOn 0 (by omega) ?_
         exact hUc.out (hmem i.castSucc) (hmem i.succ)
       · rw [hz i.castSucc, hz i.succ]
     choose qts hqmem hqz using hR
@@ -73,7 +79,7 @@ theorem exists_chain_eq_zero {U : Set ℝ} (hUc : U.OrdConnected) :
       linarith
     have hqz' : ∀ i, F 1 (qts i) = 0 := by
       intro i
-      rw [← (hF 0 (qts i) (hqmem' i)).deriv]
+      rw [← (hF 0 (by omega) (qts i) (hqmem' i)).deriv]
       exact hqz i
     obtain ⟨ξ, hξmem, hξ⟩ := ih (fun j => F (j + 1)) hF.shift qts hqmono hqmem' hqz'
     refine ⟨ξ, ⟨le_of_lt ?_, le_of_lt ?_⟩, hξ⟩
@@ -94,19 +100,19 @@ theorem exists_chain_eq_zero {U : Set ℝ} (hUc : U.OrdConnected) :
 /-! ### Polynomial chains -/
 
 /-- The evaluations of the iterated derivatives of a polynomial form a derivative chain. -/
-theorem isDerivChain_polynomial (P : Polynomial ℝ) (U : Set ℝ) :
-    IsDerivChain (fun j x => ((Polynomial.derivative (R := ℝ))^[j] P).eval x) U := by
-  intro j x _
+theorem isDerivChain_polynomial (k : ℕ) (P : Polynomial ℝ) (U : Set ℝ) :
+    IsDerivChain k (fun j x => ((Polynomial.derivative (R := ℝ))^[j] P).eval x) U := by
+  intro j _ x _
   show HasDerivAt (fun y => ((Polynomial.derivative (R := ℝ))^[j] P).eval y)
     (((Polynomial.derivative (R := ℝ))^[j + 1] P).eval x) x
   rw [Function.iterate_succ_apply']
   exact Polynomial.hasDerivAt _ x
 
-theorem IsDerivChain.sub_polynomial {F : ℕ → ℝ → ℝ} {U : Set ℝ} (hF : IsDerivChain F U)
-    (P : Polynomial ℝ) :
-    IsDerivChain (fun j x => F j x - ((Polynomial.derivative (R := ℝ))^[j] P).eval x) U := by
-  intro j x hx
-  exact (hF j x hx).sub (isDerivChain_polynomial P U j x hx)
+theorem IsDerivChain.sub_polynomial {k : ℕ} {F : ℕ → ℝ → ℝ} {U : Set ℝ}
+    (hF : IsDerivChain k F U) (P : Polynomial ℝ) :
+    IsDerivChain k (fun j x => F j x - ((Polynomial.derivative (R := ℝ))^[j] P).eval x) U := by
+  intro j hj x hx
+  exact (hF j hj x hx).sub (isDerivChain_polynomial k P U j hj x hx)
 
 /-- The `k`-th derivative of a polynomial of degree at most `k` is the constant `k!` times the
 top coefficient. -/
@@ -127,7 +133,7 @@ theorem eval_iterate_derivative_top {P : Polynomial ℝ} {k : ℕ} (hP : P.natDe
 /-- **The divided-difference mean value theorem.**  For `k+1` nodes, some chain value of order `k`
 equals `k!` times the top coefficient of the Lagrange interpolant. -/
 theorem exists_chain_eq_factorial_mul_coeff {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ → ℝ}
-    (hF : IsDerivChain F U) (k : ℕ) (v : Fin (k + 1) → ℝ) (hmono : StrictMono v)
+    (k : ℕ) (hF : IsDerivChain k F U) (v : Fin (k + 1) → ℝ) (hmono : StrictMono v)
     (hmem : ∀ i, v i ∈ U) :
     ∃ ξ ∈ Icc (v 0) (v (Fin.last k)),
       F k ξ = (k.factorial : ℝ)
@@ -168,8 +174,8 @@ theorem iterate_derivative_add' (p q : Polynomial ℝ) (j : ℕ) :
 
 /-- **Lagrange interpolation remainder for a chain.**  The error of the interpolant at `m` nodes
 is at most `sup|F m| / m!` times the nodal product. -/
-theorem abs_sub_interpolate_le {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ → ℝ}
-    (hF : IsDerivChain F U) {m : ℕ} (v : Fin m → ℝ) (hmono : StrictMono v) (hmem : ∀ i, v i ∈ U)
+theorem abs_sub_interpolate_le {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ → ℝ} {m : ℕ}
+    (hF : IsDerivChain m F U) (v : Fin m → ℝ) (hmono : StrictMono v) (hmem : ∀ i, v i ∈ U)
     {M : ℝ} (hM : ∀ y ∈ U, |F m y| ≤ M) {x : ℝ} (hx : x ∈ U) :
     |F 0 x - (Lagrange.interpolate Finset.univ v fun i => F 0 (v i)).eval x|
       ≤ M / m.factorial * ∏ i, |x - v i| := by

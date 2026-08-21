@@ -113,4 +113,22 @@ theorem tameResidueDirectSum_exact :
   · rintro ⟨y, rfl⟩
     exact y.property
 
+/-- The finite-place Hasse criterion for tame symbols: two degree-two Milnor classes have the
+same restricted residue profile exactly when their difference is everywhere tamely unramified. -/
+theorem tameResidueDirectSum_eq_iff_sub_mem_tameKernel (x y : MilnorKDeg K 2) :
+    tameResidueDirectSum (R := R) K x = tameResidueDirectSum (R := R) K y ↔
+      x - y ∈ tameKernel (fun v : HeightOneSpectrum R => tameDataAtPlace K v) := by
+  constructor
+  · intro hxy
+    rw [← tameResidueDirectSum_ker (R := R) K]
+    change tameResidueDirectSum (R := R) K (x - y) = 0
+    rw [sub_eq_add_neg, map_add, map_neg, hxy, add_neg_cancel]
+  · intro hxy
+    have hker : x - y ∈ (tameResidueDirectSum (R := R) K).ker := by
+      rw [tameResidueDirectSum_ker (R := R) K]
+      exact hxy
+    change tameResidueDirectSum (R := R) K (x - y) = 0 at hker
+    rw [sub_eq_add_neg, map_add, map_neg] at hker
+    exact sub_eq_zero.mp (by simpa [sub_eq_add_neg] using hker)
+
 end GaloisForLFunctions.HTGeometry

@@ -34,6 +34,14 @@ theorem numberFieldFiniteTameResidueDirectSum_exact
       (numberFieldFiniteTameResidueDirectSum K) :=
   tameResidueDirectSum_exact (R := RingOfIntegers K) K
 
+/-- Two number-field `K₂^M` classes have the same finite tame profile exactly when they differ
+by a class unramified at every finite place. -/
+theorem numberFieldFiniteTameResidueDirectSum_eq_iff_sub_mem_tameKernel
+    (K : Type u) [Field K] [NumberField K] (x y : MilnorKDeg K 2) :
+    numberFieldFiniteTameResidueDirectSum K x = numberFieldFiniteTameResidueDirectSum K y ↔
+      x - y ∈ tameKernel (fun v : HeightOneSpectrum (RingOfIntegers K) => tameDataAtPlace K v) :=
+  tameResidueDirectSum_eq_iff_sub_mem_tameKernel (R := RingOfIntegers K) K x y
+
 /-- Quotienting number-field `K₂^M` by its finite tame kernel gives the image of its restricted
 finite tame-residue map. -/
 noncomputable def numberFieldFiniteTameResidueQuotientTameKernelEquiv
@@ -60,6 +68,16 @@ theorem rationalFunctionFiniteTameResidueDirectSum_exact
         tameDataAtPlace (RatFunc F) v)).subtype
       (rationalFunctionFiniteTameResidueDirectSum F) :=
   tameResidueDirectSum_exact (R := Polynomial F) (RatFunc F)
+
+/-- Two global-function-field `K₂^M` classes have the same finite tame profile exactly when
+their difference is unramified at every finite polynomial place. -/
+theorem rationalFunctionFiniteTameResidueDirectSum_eq_iff_sub_mem_tameKernel
+    (F : Type u) [Field F] [Finite F] (x y : MilnorKDeg (RatFunc F) 2) :
+    rationalFunctionFiniteTameResidueDirectSum F x =
+      rationalFunctionFiniteTameResidueDirectSum F y ↔
+      x - y ∈ tameKernel (fun v : HeightOneSpectrum (Polynomial F) =>
+        tameDataAtPlace (RatFunc F) v) :=
+  tameResidueDirectSum_eq_iff_sub_mem_tameKernel (R := Polynomial F) (RatFunc F) x y
 
 /-- Quotienting `K₂^M(F(t))` by its finite tame kernel gives the image of its restricted finite
 tame-residue map. -/

@@ -57,7 +57,7 @@ theorem rep_sdiff_add_rep_sdiff_le {A A' B B' : Finset G} (hA' : A' ⊆ A) (hB' 
 `t`-representable products, `repSum` dominates `t·#(A'·B')` plus every mixed representation whose
 product falls outside `A'·B'`. -/
 theorem repSum_ge_of_repSet_eq (A B A' B' : Finset G) (t : ℕ)
-    (hA' : A' ⊆ A) (hB' : B' ⊆ B) (heq : A' * B' = repSet A B t)
+    (hA' : A' ⊆ A) (hB' : B' ⊆ B) (heq : A' * B' ⊆ repSet A B t)
     (hl : defect A A' B B' ≤ t) :
     t * (A' * B').card
       + ∑ c ∈ Finset.univ \ (A' * B'), (rep (A \ A') B' c + rep A' (B \ B') c)
@@ -70,8 +70,9 @@ theorem repSum_ge_of_repSet_eq (A B A' B' : Finset G) (t : ℕ)
   have hin : ∑ c ∈ A' * B', min (rep A B c) t = t * (A' * B').card := by
     have hval : ∀ c ∈ A' * B', min (rep A B c) t = t := by
       intro c hc
-      rw [heq, mem_repSet] at hc
-      exact min_eq_right hc
+      have hc' := heq hc
+      rw [mem_repSet] at hc'
+      exact min_eq_right hc'
     rw [Finset.sum_congr rfl hval, Finset.sum_const, smul_eq_mul, mul_comm]
   have hout : ∑ c ∈ Finset.univ \ (A' * B'), (rep (A \ A') B' c + rep A' (B \ B') c)
       ≤ ∑ c ∈ Finset.univ \ (A' * B'), min (rep A B c) t := by

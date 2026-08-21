@@ -112,6 +112,31 @@ theorem milnorTotalResidue_exact (n : ℕ) :
   · rintro ⟨y, rfl⟩
     exact y.property
 
+/-- The finite-place Hasse criterion for Milnor residues: two global classes have the same
+restricted residue profile exactly when their difference is everywhere unramified. -/
+theorem milnorTotalResidue_eq_iff_sub_mem_tameKernel (n : ℕ) (x y : MilnorKDeg K n) :
+    milnorTotalResidue (R := R) K n x = milnorTotalResidue (R := R) K n y ↔
+      x - y ∈ milnorTameKernel R K n := by
+  constructor
+  · intro hxy
+    apply (milnorTotalResidue_mem_ker_iff (R := R) K n (x - y)).mp
+    change milnorTotalResidue (R := R) K n (x - y) = 0
+    rw [(milnorTotalResidue (R := R) K n).map_sub, hxy, sub_self]
+  · intro hxy
+    have hzero : milnorTotalResidue (R := R) K n (x - y) = 0 :=
+      (milnorTotalResidue_mem_ker_iff (R := R) K n (x - y)).mpr hxy
+    rw [(milnorTotalResidue (R := R) K n).map_sub, sub_eq_zero] at hzero
+    exact hzero
+
+/-- First-isomorphism form of finite-place Milnor localization: classes modulo the unramified
+tame kernel are exactly the residue profiles that occur globally. -/
+noncomputable def milnorTotalResidueQuotientTameKernelEquivRange (n : ℕ) :
+    MilnorKDeg K n ⧸ milnorTameKernel R K n ≃+
+      (milnorTotalResidue (R := R) K n).range :=
+  (QuotientAddGroup.quotientAddEquivOfEq
+    (milnorTameKernel_eq_ker_milnorTotalResidue (R := R) K n)).trans
+    (QuotientAddGroup.quotientKerEquivRange (milnorTotalResidue (R := R) K n))
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -45,10 +45,17 @@ of the transitive closure and is tracked here as separate future layers.
 - [x] `L1.1` augmentation ideal, co-Lie module `omega_A = I/I^2`, the universal differential `d`
       with its Leibniz rule, point derivations, and `PointDerivation ≃ Hom_R(omega_A, R) = Lie A`
       → `HTGeometry/AffineGroupSchemeCoLie.lean`
-- [x] `L1.2a` functoriality: `coLieMap (f : A →ₐc[R] B) : omega_A →ₗ omega_B` with `coLieMap_d`
+- [x] `L1.2a` functoriality: `coLieMap (f : A →ₐc[R] B) : omega_A →ₗ omega_B` with `coLieMap_d`,
+      the functor laws `coLieMap_id`, `coLieMap_comp`, and `Subsingleton (coLie R R)` (the trivial
+      group scheme has zero Lie algebra)
 - [x] `L1.5` **inversion acts by `-1` on the co-Lie module**: `d (S a) = - d a`, equivalently
       `S x + x ∈ I^2` for `x ∈ I` → `HTGeometry/HopfAntipodeCoLie.lean`
 - [ ] `L1.2b` base change `omega_{A ⊗ S} ≅ omega_A ⊗ S`
+- [x] `L1.7` **the co-Lie module is `e^* Ω¹`** → `HTGeometry/CoLieKaehler.lean`:
+      `smul_coLie` (the `A`-action on `I/I²` is through the counit), `dDerivation`,
+      `kaehlerToCoLie`, and **`coLieEquivKaehlerQuotient : I/I² ≅ Ω[A⁄R] / I·Ω[A⁄R]`** — this is
+      exactly Suzuki's definition `omega_A = e^* Omega^1` matched with the construction of `L1.1`,
+      and the entry point into `L4` (the cotangent complex)
 - [ ] `L1.6` `omega` of a product: `omega_{A ⊗ B} ≅ omega_A ⊕ omega_B`
 - [x] `L1.3` dual-numbers description `dualNumberEquiv : pointDerivations ≃ {f : A →ₐ R[e] | fst∘f = ε}`
 - [x] `L1.4a` non-vacuity certificate: the group algebra `R[G]` of a finite abelian group is a
@@ -133,3 +140,9 @@ of the transitive closure and is tracked here as separate future layers.
   Remaining open bricks: `L1.2b` (base change of `omega`), `L2.1b`/`L2.2b` (bundling the Cartier
   dual as a Hopf algebra, `A^{dual dual} ≅ A`), `L2.4` (the Cartier pairing), `L3.2` (determinant of
   a perfect complex), all of `L4` (Lie complex) and all of `L5` (Neron models).
+- 2026-08-21 — bricks `L1.5` (antipode acts by `-1`), `L2.1c` (`T2` multiplicative) and `L1.7`
+  (**the co-Lie module is `e^* Omega^1`**) landed.  `L1.7` is the entry point into `L4`: mathlib's
+  naive cotangent complex has `H^0 = Omega`, so the co-Lie complex `NL ⊗_A A/I` has
+  `H^0 = omega_A` by `coLieEquivKaehlerQuotient` plus right-exactness of `⊗`.  For `L1.2b`, mathlib's
+  `KaehlerDifferential.tensorKaehlerEquivBase` supplies the Kaehler half; what is still missing is a
+  bialgebra structure on the base change `S ⊗_R A`.

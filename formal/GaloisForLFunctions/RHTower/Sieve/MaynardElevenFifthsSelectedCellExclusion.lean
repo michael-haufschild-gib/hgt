@@ -7,6 +7,10 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardSelectedCellFibreMontgomery
 import GaloisForLFunctions.RHTower.Sieve.MaynardSelectedCellGlobalMiddleHuxley
 import GaloisForLFunctions.RHTower.Sieve.MaynardSelectedCellGlobalMontgomery
 import GaloisForLFunctions.RHTower.Sieve.MaynardUpperSeamSelectedCell
+import GaloisForLFunctions.RHTower.Sieve.MaynardSelectedCellGlobalCount
+import GaloisForLFunctions.RHTower.Sieve.RouteTMoebiusEndpoint
+import GaloisForLFunctions.RHTower.Sieve.RouteTEndpointAmplitudeExclusion
+import GaloisForLFunctions.RHTower.Sieve.MaynardSelectedCellRouteTAllAmplitudeCount
 
 /-!
 # Route-T selected-cell exclusion through height ratio `11/5`
@@ -808,7 +812,7 @@ theorem eventually_maynard_perronRelevant_moderate_global_amplitude_le_997_eleve
       (perronRelevant_heathBrownBox_coreLower_le hrel) hbeta j hkind hwitness
       hsize' hslackMass hlarge
 
-+theorem sum_positive_dyadicLogExponent_eq_heathBrownBoxTotalExponent_elevenFifths
+theorem sum_positive_dyadicLogExponent_eq_heathBrownBoxTotalExponent_elevenFifths
     {L X k : ℕ} {T : ℝ} (box : HeathBrownBoxChoice L X k) :
     (∑ i : PositiveHeathBrownBoxFactorIndex box,
       dyadicLogExponent T
@@ -984,7 +988,7 @@ theorem eventually_exists_maynardWindowRelevantSelectedCell_label_of_subHeight_b
   · simpa [IsMaynardSelectedCellBranch, maynardSubHeightSelectedExponent,
       label, beta] using hbranch
 
-+theorem eventually_exists_maynardWindowRelevantSelectedCell_coloring_of_subHeight_box_elevenFifths :
+theorem eventually_exists_maynardWindowRelevantSelectedCell_coloring_of_subHeight_box_elevenFifths :
     ∀ᶠ T : ℝ in Filter.atTop,
       ∀ {L X : ℕ} {mu N0 c alpha : ℝ},
         1 ≤ L → 1 ≤ X → 4 / 3 ≤ mu → mu ≤ 11 / 5 →
@@ -1035,7 +1039,7 @@ theorem eventually_exists_maynardWindowRelevantSelectedCell_label_of_subHeight_b
   intro r hr
   simpa [color, hr] using hselected r hr
 
-+/-- Upper-height-free adjacent-optimizer reserve. The historical upper endpoint is absent from
+/-- Upper-height-free adjacent-optimizer reserve. The historical upper endpoint is absent from
 every inequality in the proof. -/
 theorem routeT_adjacent_optimizer_with_reserve_of_amplitude_le_997_unbounded
     {mu alpha : ℝ}
@@ -1983,6 +1987,757 @@ theorem eventually_card_le_maynard_first_or_second_of_selected_cell_coloring_mid
         _ = nlabels * B1 := by
           rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     simpa only [B1, d] using (mul_le_mul_iff_right₀ hnlabelsPos).mp hsum
+
+/-- **Global exact Maynard dichotomy for literal selected-cell colors.** -/
+theorem eventually_card_le_maynard_first_or_second_of_selected_cell_coloring_elevenFifths (A : ℝ) :
+    ∀ᶠ T : ℝ in atTop,
+      ∀ {L X K : ℕ} {mu N0 c alpha delta : ℝ},
+      1 ≤ X → 1 ≤ L →
+      (X : ℝ) ≤ T ^ mu → (L : ℝ) ≤ T ^ (2 * (mu / 120)) →
+      4 / 3 ≤ mu → mu ≤ 11 / 5 →
+      1 / 2 ≤ c → 997 / 1000 < alpha →
+      alpha ≤ 1 - routeTEndpointGlobalDeficit A T →
+      0 < delta →
+      ∀ (S : Finset ℕ), S ⊆ Finset.range K →
+      ∀ (lam : ℕ → ℝ),
+      (∀ i, lam i + delta ≤ lam (i + 1)) →
+      (∀ r ∈ S, ∀ s ∈ S, |lam s - lam r| ≤ T) →
+      ∀ (color : ℕ → HeathBrownSelectionLabel L X 60),
+      (∀ r ∈ S, IsMaynardWindowRelevantSelectedCell
+        L X T mu N0 c (lam r) alpha (color r)) →
+      (S.card : ℝ) ≤
+          maynardHarmonicFactor K delta *
+            T ^ (mu * (1 - alpha) - routeTEndpointGlobalDeficit A T / 200) ∨
+        (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
+          T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha) -
+            routeTEndpointGlobalDeficit A T / 200) := by
+  filter_upwards [
+    eventually_maynardWindowRelevantSelectedCell_scaled_fibre_first_or_second_unbounded A,
+    eventually_maynardOptimizerFixedLogCost_absorbed A maynardUpperSeamLabelPolylogConstant
+      (by
+        dsimp only [maynardUpperSeamLabelPolylogConstant]
+        positivity)
+      120 400 (by norm_num),
+    Real.tendsto_log_atTop.eventually_ge_atTop 1,
+    eventually_gt_atTop (1 : ℝ)] with T hscaled hlabelCost hlogT hT
+  intro L X K mu N0 c alpha delta hX hL hXscale hLscale hmuLo hmuHi hc
+    halphaLo halphaEndpoint hdelta S hS lam hgap hdiam color hcolor
+  classical
+  let d := routeTEndpointGlobalDeficit A T
+  let nlabels : ℝ := Fintype.card (HeathBrownSelectionLabel L X 60)
+  let B1 : ℝ := maynardHarmonicFactor K delta *
+    T ^ (mu * (1 - alpha) - d / 200)
+  let B2 : ℝ := maynardHarmonicFactor K delta *
+    T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha) - d / 200)
+  have hd : 0 < d := routeTEndpointGlobalDeficit_pos A (by linarith)
+  have hT0 : 0 < T := by linarith
+  have hnlabelsPos : 0 < nlabels := by
+    dsimp only [nlabels]
+    exact_mod_cast Fintype.card_pos_iff.mpr
+      (nonempty_heathBrownSelectionLabel L X 60 (by norm_num))
+  have hlabel := heathBrownSelectionLabel_sixty_polylog_bound_eight
+    hT0 hlogT (by linarith : mu ≤ 8) (by rfl : mu / 120 = mu / 120)
+      hX hL hXscale hLscale
+  have hlabelRaw : nlabels ≤
+      maynardUpperSeamLabelPolylogConstant * (Real.log T) ^ 120 := by
+    simpa only [nlabels, maynardUpperSeamLabelPolylogConstant] using hlabel
+  have hlabelAbsorbedRaw := hlabelCost 1 0 (by norm_num)
+    (by exact_mod_cast hT.le) (by omega : 0 ≤ maynardFixedPolylogExponentBound)
+  have hlabelAbsorbed :
+      maynardUpperSeamLabelPolylogConstant * (Real.log T) ^ 120 ≤ T ^ (d / 400) := by
+    norm_num [d] at hlabelAbsorbedRaw ⊢
+    exact hlabelAbsorbedRaw
+  have hnlabels : nlabels ≤ T ^ (d / 400) := hlabelRaw.trans hlabelAbsorbed
+  have hB10 : 0 ≤ B1 := by
+    dsimp only [B1]
+    exact mul_nonneg (maynardHarmonicFactor_pos K hdelta).le
+      (Real.rpow_nonneg hT0.le _)
+  have hB20 : 0 ≤ B2 := by
+    dsimp only [B2]
+    exact mul_nonneg (maynardHarmonicFactor_pos K hdelta).le
+      (Real.rpow_nonneg hT0.le _)
+  have hfibre : ∀ label : HeathBrownSelectionLabel L X 60,
+      nlabels * (((S.filter fun r => color r = label).card : ℕ) : ℝ) ≤ B1 ∨
+      nlabels * (((S.filter fun r => color r = label).card : ℕ) : ℝ) ≤ B2 := by
+    intro label
+    let Sf : Finset ℕ := S.filter fun r => color r = label
+    by_cases hSf : Sf.Nonempty
+    · have hSfS : Sf ⊆ S := Finset.filter_subset _ _
+      have hSfRange : Sf ⊆ Finset.range K := hSfS.trans hS
+      have hSfDiam : ∀ r ∈ Sf, ∀ s ∈ Sf, |lam s - lam r| ≤ T := by
+        intro r hr s hs
+        exact hdiam r (hSfS hr) s (hSfS hs)
+      have hSfSelection : ∀ r ∈ Sf,
+          IsMaynardWindowRelevantSelectedCell
+            L X T mu N0 c (lam r) alpha label := by
+        intro r hr
+        have hrS := hSfS hr
+        have hrcolor : color r = label := (Finset.mem_filter.mp hr).2
+        simpa only [hrcolor] using hcolor r hrS
+      simpa only [Sf, B1, B2] using
+        hscaled hmuLo hc halphaLo halphaEndpoint hdelta
+          nlabels hnlabelsPos.le hnlabels label Sf hSf hSfRange lam hgap
+          hSfDiam hSfSelection
+    · have hzero : Sf.card = 0 :=
+        Finset.card_eq_zero.mpr (not_nonempty_iff_eq_empty.mp hSf)
+      left
+      simpa only [Sf, hzero, Nat.cast_zero, mul_zero] using hB10
+  have hcardCast : (S.card : ℝ) =
+      ∑ label : HeathBrownSelectionLabel L X 60,
+        (((S.filter fun r => color r = label).card : ℕ) : ℝ) := by
+    exact_mod_cast card_eq_sum_color_fibres S color
+  by_cases htargets : B1 ≤ B2
+  · right
+    have hsum : nlabels * (S.card : ℝ) ≤ nlabels * B2 := by
+      rw [hcardCast, mul_sum]
+      calc
+        ∑ label : HeathBrownSelectionLabel L X 60,
+            nlabels * (((S.filter fun r => color r = label).card : ℕ) : ℝ) ≤
+            ∑ _label : HeathBrownSelectionLabel L X 60, B2 :=
+          Finset.sum_le_sum fun label _ => (hfibre label).elim
+            (fun h => h.trans htargets) (fun h => h)
+        _ = nlabels * B2 := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    simpa only [B2] using (mul_le_mul_iff_right₀ hnlabelsPos).mp hsum
+  · left
+    have htargets' : B2 ≤ B1 := le_of_not_ge htargets
+    have hsum : nlabels * (S.card : ℝ) ≤ nlabels * B1 := by
+      rw [hcardCast, mul_sum]
+      calc
+        ∑ label : HeathBrownSelectionLabel L X 60,
+            nlabels * (((S.filter fun r => color r = label).card : ℕ) : ℝ) ≤
+            ∑ _label : HeathBrownSelectionLabel L X 60, B1 :=
+          Finset.sum_le_sum fun label _ => (hfibre label).elim
+            (fun h => h) (fun h => h.trans htargets')
+        _ = nlabels * B1 := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    simpa only [B1] using (mul_le_mul_iff_right₀ hnlabelsPos).mp hsum
+
+/-- The canonical cutoff is so short that every fourth power of a dyadic Möbius length fits below
+half the endpoint height.  The coarse exponent `1/8` deliberately avoids any fragile decimal
+arithmetic: `mu/60 <= 19/540 < 1/8`. -/
+theorem fourth_power_le_half_height_of_maynard_cutoff_elevenFifths
+    {T mu N : ℝ} (hT : 4 ≤ T) (hmu : mu ≤ 11 / 5)
+    (hN : 0 ≤ N) (hcut : N ≤ T ^ (mu / 60)) :
+    N ^ (4 : ℕ) ≤ T / 2 := by
+  have hT0 : 0 < T := by linarith
+  have hT1 : 1 ≤ T := by linarith
+  have hexp : mu / 60 ≤ 1 / 8 := by linarith
+  have hroot : N ≤ T ^ (1 / 8 : ℝ) :=
+    hcut.trans (Real.rpow_le_rpow_of_exponent_le hT1 hexp)
+  have hpow : N ^ (4 : ℕ) ≤ (T ^ (1 / 8 : ℝ)) ^ (4 : ℕ) :=
+    pow_le_pow_left₀ hN hroot 4
+  have hcollapse : (T ^ (1 / 8 : ℝ)) ^ (4 : ℕ) = T ^ (1 / 2 : ℝ) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hT0.le]
+    norm_num
+  rw [hcollapse] at hpow
+  have hroot2 : 2 ≤ Real.sqrt T := Real.le_sqrt_of_sq_le (by nlinarith)
+  have hsqrtSq : (Real.sqrt T) ^ (2 : ℕ) = T := Real.sq_sqrt hT0.le
+  have hsqrtHalf : Real.sqrt T ≤ T / 2 := by nlinarith
+  rw [← Real.sqrt_eq_rpow] at hpow
+  exact hpow.trans hsqrtHalf
+
+/-- **Unconditional endpoint-long Möbius exclusion.**  The constants are the literal constants
+delivered by the Route-T reciprocal contour.  Every positive-length Möbius coordinate above the
+Maynard endpoint threshold has a common amplitude deficit at all sufficiently large heights. -/
+theorem exists_eventually_maynard_endpoint_moebius_amplitude_deficit_elevenFifths :
+    ∃ (A C C' delta : ℝ), 0 ≤ C ∧ 0 ≤ C' ∧ 0 < delta ∧
+      ∀ᶠ T : ℝ in atTop,
+        ∀ (L X : ℕ), 1 ≤ L → ∀ mu : ℝ, 4 / 3 ≤ mu → mu ≤ 11 / 5 →
+          (L : ℝ) ≤ T ^ (mu / 60) →
+          ∀ box : HeathBrownBoxChoice L X 60,
+            IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
+            ∀ j : PositiveHeathBrownBoxFactorIndex box,
+              heathBrownBoxFactorKind 60 box.m j = .moebius →
+              (∑ i : PositiveHeathBrownBoxFactorIndex box,
+                  dyadicLogExponent T
+                    (heathBrownBoxFactorExponent box.a box.b box.q i)) /
+                    (40 * 60 : ℕ) ≤
+                dyadicLogExponent T
+                  (heathBrownBoxFactorExponent box.a box.b box.q j) →
+              ∀ c y : ℝ, 0 ≤ c → T ≤ y → y ≤ 2 * T →
+                0 < ‖heathBrownBoxFactorValue L X 60 box
+                  ((c : ℂ) + (y : ℝ) * Complex.I) j‖ →
+                maynardAmplitude c
+                    (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ))
+                    ‖heathBrownBoxFactorValue L X 60 box
+                      ((c : ℂ) + (y : ℝ) * Complex.I) j‖ ≤
+                  1 - routeTEndpointMoebiusDeficit A delta T := by
+  obtain ⟨A, C, C', delta, hC, hC', hdelta, hmain⟩ :=
+    exists_norm_LSeries_truncatedMoebius_dyadic_le_routeTPower
+  refine ⟨A, C, C', delta, hC, hC', hdelta, ?_⟩
+  filter_upwards [eventually_routeT_endpoint_moebius_coefficient_ready
+      A C C' delta hC hC' hdelta,
+    eventually_ge_atTop (4 : ℝ)] with T hready hT4
+  intro L X hL mu hmu_lo hmu_hi hcut box helig j hkind hlong c y hc hylo hyhi hV
+  let q : ℕ := heathBrownBoxFactorExponent box.a box.b box.q j
+  let N : ℝ := (((2 ^ q : ℕ) : ℝ))
+  let U : ℝ := |y| / 2
+  let S : ℝ := |y| + U
+  have hT : 1 < T := by linarith
+  have hy0 : 0 < y := lt_trans zero_lt_one (hT.trans_le hylo)
+  have hq : 1 ≤ q := by simpa only [q] using j.property
+  have hNL : 2 ^ q ≤ L := by
+    dsimp only [q]
+    exact box.moebius_factor_pow_le_cutoff hL j hkind
+  have hNcut : N ≤ T ^ (mu / 60) := by
+    have hreal : (((2 ^ q : ℕ) : ℝ)) ≤ (L : ℝ) := by exact_mod_cast hNL
+    exact hreal.trans hcut
+  have hNU : N ^ (4 : ℕ) ≤ U := by
+    have hpow := fourth_power_le_half_height_of_maynard_cutoff_elevenFifths
+      hT4 hmu_hi (by dsimp only [N]; positivity) hNcut
+    dsimp only [U]
+    rw [abs_of_pos hy0]
+    linarith
+  have hlongTotal :
+      heathBrownBoxTotalExponent L X 60 T box / (40 * 60 : ℕ) ≤
+        dyadicLogExponent T q := by
+    rw [← sum_positive_dyadicLogExponent_eq_heathBrownBoxTotalExponent box]
+    simpa only [q] using hlong
+  have hNroot : T ^ (1 / 216000 : ℝ) ≤ N := by
+    simpa only [N, q] using
+      dyadic_length_ge_maynard_endpoint_root box hT hmu_lo helig j hlongTotal
+  have hroot0 : 0 < T ^ (1 / 216000 : ℝ) := by positivity
+  have hlogN : (1 / 216000 : ℝ) * Real.log T ≤ Real.log N := by
+    have hlog := Real.log_le_log hroot0 hNroot
+    rwa [Real.log_rpow (by linarith : 0 < T)] at hlog
+  have hready' :
+      2 * Real.log
+          (2 * routeTMoebiusPowerConstant C C' * routeTContourEdgeBound A S) ≤
+        (routeTContourShift A delta S / 3) * (Real.log T / 216000) ∧
+      routeTContourShift A delta (3 * T) ≤ routeTContourShift A delta S ∧
+      routeTInverseBaseHeight + U ≤ |y| := by
+    simpa only [U, S] using hready y hylo hyhi
+  rcases hready' with ⟨hcost, hcommon, hsep⟩
+  have hshift0 : 0 ≤ routeTContourShift A delta S / 3 := by
+    exact div_nonneg (routeTContourShift_pos (A := A) (T := S) hdelta).le (by norm_num)
+  have hlogN' : Real.log T / 216000 ≤ Real.log N := by
+    calc
+      Real.log T / 216000 = (1 / 216000 : ℝ) * Real.log T := by ring
+      _ ≤ Real.log N := hlogN
+  have hsize :
+      2 * Real.log
+          (2 * routeTMoebiusPowerConstant C C' * routeTContourEdgeBound A S) ≤
+        (routeTContourShift A delta S / 3) * Real.log N :=
+    hcost.trans (mul_le_mul_of_nonneg_left hlogN' hshift0)
+  have hatom := hmain L q c y U hq hNL hc hNU hsep
+  have hlocal := maynard_moebius_amplitude_le_routeTEndpointDeficit
+    (A := A) (C := C) (C' := C') (delta := delta) (T := T) (S := S)
+      hC hC' hq (by rfl) hsize hcommon (by
+        simpa only [heathBrownBoxFactorValue, hkind, q, heathBrownFactorBase] using hV) (by
+        simpa only [q, S] using hatom)
+  simpa only [heathBrownBoxFactorValue, hkind, q, heathBrownFactorBase] using hlocal
+
+/-- Exact endpoint-long zeta/log factor theorem at fixed order `216002`. -/
+theorem maynard_heathBrown_endpoint_zeta_log_amplitude_le_one_sub_half_elevenFifths
+    {L X : ℕ} (box : HeathBrownBoxChoice L X 60)
+    (j : HeathBrownBoxFactorIndex 60 box.m)
+    (hkind : heathBrownBoxFactorKind 60 box.m j = .zeta ∨
+      heathBrownBoxFactorKind 60 box.m j = .log)
+    (hX : 1 ≤ X) {T mu c y : ℝ}
+    (hT : 1 < T) (hmu_lo : 4 / 3 ≤ mu) (hmu_hi : mu ≤ 11 / 5)
+    (hXscale : (X : ℝ) ≤ T ^ mu)
+    (helig : IsHeathBrownBoxEligible L X 60 T (mu / 120) box)
+    (hlong : heathBrownBoxTotalExponent L X 60 T box / (40 * 60 : ℕ) ≤
+      dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q j))
+    (hc : 0 ≤ c) (hylo : T ≤ y) (hyupper : y ≤ 2 * T)
+    (hpi : 8 * Real.pi ≤ T ^ (4 / 15 : ℝ))
+    (hfactorial : ((Nat.factorial 216001 : ℕ) : ℝ) ≤ T ^ (1 / 216000 : ℝ))
+    (hsize : 2 * Real.log
+        (heathBrownDerivativeConstant X
+          (heathBrownBoxFactorKind 60 box.m j)
+          (heathBrownBoxFactorExponent box.a box.b box.q j)) ≤
+      maynardEndpointDerivativeDeficit *
+        Real.log
+          (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ)))
+    (hV : 0 < ‖heathBrownBoxFactorValue L X 60 box
+      ((c : ℂ) + (y : ℝ) * Complex.I) j‖) :
+    maynardAmplitude c
+        (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ))
+        ‖heathBrownBoxFactorValue L X 60 box
+          ((c : ℂ) + (y : ℝ) * Complex.I) j‖ ≤
+      1 - maynardEndpointDerivativeDeficit / 2 := by
+  let q := heathBrownBoxFactorExponent box.a box.b box.q j
+  let N : ℝ := (((2 ^ q : ℕ) : ℝ))
+  let C : ℝ := heathBrownDerivativeConstant X
+    (heathBrownBoxFactorKind 60 box.m j) q
+  have hNbase := dyadic_length_ge_maynard_endpoint_root box hT hmu_lo helig j hlong
+  have hroot1 : 1 < T ^ (1 / 216000 : ℝ) := by
+    simpa using (Real.strictMono_rpow_of_base_gt_one hT)
+      (by norm_num : (0 : ℝ) < 1 / 216000)
+  have hN : 1 < N := hroot1.trans_le hNbase
+  have hC : 1 ≤ C := by
+    dsimp [C, q]
+    exact one_le_heathBrownDerivativeConstant_of_zeta_or_log _ _ hX hkind
+  have hfac := maynard_endpoint_fixedOrder_factorial box hT hmu_lo helig j hlong hfactorial
+  have hlow := maynard_zeta_log_factor_low_window_elevenFifths
+    box j hkind hX hT hmu_hi hXscale hylo hpi
+  have hhigh := maynard_endpoint_fixedOrder_high_window
+    box hT hmu_lo helig j hlong hyupper
+  have hy0 : 0 < y := lt_trans zero_lt_one (hT.trans_le hylo)
+  have hqX := box.factorExponent_le_log_X_of_zeta_or_log j hkind
+  have hupper := norm_heathBrownBoxFactorValue_le_derivative_defect
+    L X 60 box j hkind hX hc hy0
+      (k₀ := maynardEndpointDerivativeOrder) (by
+        dsimp [maynardEndpointDerivativeOrder]
+        norm_num) hqX hfac hlow hhigh
+  exact maynardAmplitude_le_one_sub_half_of_pointwise_power_saving
+    hN hV hC (by simpa [N, C, q, maynardEndpointDerivativeDeficit] using hsize)
+      (by simpa [N, C, q, maynardEndpointDerivativeDeficit] using hupper)
+
+/-- Uniform eventual absorption of every endpoint-long zeta/log derivative constant. -/
+theorem eventually_maynard_endpoint_zeta_log_size_ready_eight :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ X : ℕ, 1 ≤ X → ∀ mu : ℝ, mu ≤ 8 → (X : ℝ) ≤ T ^ mu →
+        ∀ L : ℕ, ∀ box : HeathBrownBoxChoice L X 60,
+          ∀ j : HeathBrownBoxFactorIndex 60 box.m,
+            (heathBrownBoxFactorKind 60 box.m j = .zeta ∨
+              heathBrownBoxFactorKind 60 box.m j = .log) →
+            IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
+            4 / 3 ≤ mu →
+            heathBrownBoxTotalExponent L X 60 T box / (40 * 60 : ℕ) ≤
+              dyadicLogExponent T
+                (heathBrownBoxFactorExponent box.a box.b box.q j) →
+            2 * Real.log
+                (heathBrownDerivativeConstant X
+                  (heathBrownBoxFactorKind 60 box.m j)
+                  (heathBrownBoxFactorExponent box.a box.b box.q j)) ≤
+              maynardEndpointDerivativeDeficit *
+                Real.log
+                  (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ)) := by
+  let eps : ℝ := maynardEndpointDerivativeDeficit / (4 * 216000)
+  have heps : 0 < eps := by
+    dsimp [eps]
+    positivity [maynardEndpointDerivativeDeficit_pos]
+  have hconst : ∀ᶠ T : ℝ in Filter.atTop,
+      Real.log 5120 ≤ eps * Real.log T := by
+    have hlogGrow : Filter.Tendsto (fun T : ℝ => eps * Real.log T)
+        Filter.atTop Filter.atTop :=
+      Filter.Tendsto.const_mul_atTop heps Real.tendsto_log_atTop
+    exact hlogGrow.eventually_ge_atTop (Real.log 5120)
+  filter_upwards [eventually_log_maynardLongPolylogEnvelope_le_lowOrdinate heps,
+    hconst, Filter.eventually_gt_atTop (1 : ℝ)] with T hE hconstT hT
+  intro X hX mu hmu_hi hXscale L box j hkind helig hmu_lo hlong
+  let C : ℝ := heathBrownDerivativeConstant X
+    (heathBrownBoxFactorKind 60 box.m j)
+    (heathBrownBoxFactorExponent box.a box.b box.q j)
+  let N : ℝ :=
+    (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ))
+  have hC : 0 < C := by
+    dsimp [C]
+    exact heathBrownDerivativeConstant_pos_of_zeta_or_log _ _ hX hkind
+  have hCup : C ≤ 5120 * maynardLongPolylogEnvelope X :=
+    heathBrownDerivativeConstant_le_polylogEnvelope box j hkind hX
+  have hlogC : Real.log C ≤ Real.log 5120 +
+      Real.log (maynardLongPolylogEnvelope X) := by
+    have hEpos : 0 < maynardLongPolylogEnvelope X :=
+      lt_of_lt_of_le zero_lt_one (one_le_maynardLongPolylogEnvelope X)
+    calc
+      Real.log C ≤ Real.log (5120 * maynardLongPolylogEnvelope X) :=
+        Real.log_le_log hC hCup
+      _ = Real.log 5120 + Real.log (maynardLongPolylogEnvelope X) := by
+        rw [Real.log_mul (by norm_num) hEpos.ne']
+  have hlogE := hE X hX mu hmu_hi hXscale
+  have hlogCsmall : Real.log C ≤ 2 * eps * Real.log T := by
+    linarith
+  have hN := dyadic_length_ge_maynard_endpoint_root box hT hmu_lo helig j hlong
+  have hT0 : 0 < T := lt_trans zero_lt_one hT
+  have hroot0 : 0 < T ^ (1 / 216000 : ℝ) := Real.rpow_pos_of_pos hT0 _
+  have hN0 : 0 < N := hroot0.trans_le hN
+  have hlogN : (1 / 216000 : ℝ) * Real.log T ≤ Real.log N := by
+    have h := Real.log_le_log hroot0 hN
+    rwa [Real.log_rpow hT0] at h
+  have hdelta : 0 ≤ maynardEndpointDerivativeDeficit :=
+    maynardEndpointDerivativeDeficit_pos.le
+  have hscaled := mul_le_mul_of_nonneg_left hlogN hdelta
+  calc
+    2 * Real.log C ≤ 4 * eps * Real.log T := by linarith
+    _ = maynardEndpointDerivativeDeficit * ((1 / 216000 : ℝ) * Real.log T) := by
+      dsimp [eps]
+      ring
+    _ ≤ maynardEndpointDerivativeDeficit * Real.log N := hscaled
+
+/-- **Unconditional endpoint zeta/log exclusion.**  At all sufficiently large heights, every
+
+endpoint-long zeta or logarithm factor of every eligible degree-`60` box has one fixed local
+amplitude deficit. -/
+theorem eventually_maynard_endpoint_zeta_log_amplitude_deficit_elevenFifths :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ X : ℕ, 1 ≤ X → ∀ mu : ℝ, 4 / 3 ≤ mu → mu ≤ 11 / 5 →
+        (X : ℝ) ≤ T ^ mu →
+        ∀ L : ℕ, ∀ box : HeathBrownBoxChoice L X 60,
+          IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
+          ∀ j : HeathBrownBoxFactorIndex 60 box.m,
+            (heathBrownBoxFactorKind 60 box.m j = .zeta ∨
+              heathBrownBoxFactorKind 60 box.m j = .log) →
+            heathBrownBoxTotalExponent L X 60 T box / (40 * 60 : ℕ) ≤
+              dyadicLogExponent T
+                (heathBrownBoxFactorExponent box.a box.b box.q j) →
+            ∀ c y : ℝ, 0 ≤ c → T ≤ y → y ≤ 2 * T →
+              0 < ‖heathBrownBoxFactorValue L X 60 box
+                ((c : ℂ) + (y : ℝ) * Complex.I) j‖ →
+              maynardAmplitude c
+                  (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ))
+                  ‖heathBrownBoxFactorValue L X 60 box
+                    ((c : ℂ) + (y : ℝ) * Complex.I) j‖ ≤
+                1 - maynardEndpointDerivativeDeficit / 2 := by
+  have hpi : Filter.Tendsto (fun T : ℝ => T ^ (4 / 15 : ℝ))
+      Filter.atTop Filter.atTop := tendsto_rpow_atTop (by norm_num)
+  have hfac : Filter.Tendsto (fun T : ℝ => T ^ (1 / 216000 : ℝ))
+      Filter.atTop Filter.atTop := tendsto_rpow_atTop (by norm_num)
+  filter_upwards [Filter.eventually_gt_atTop (1 : ℝ),
+    hpi.eventually_ge_atTop (8 * Real.pi),
+    hfac.eventually_ge_atTop (((Nat.factorial 216001 : ℕ) : ℝ)),
+    eventually_maynard_endpoint_zeta_log_size_ready_eight]
+      with T hT hpiT hfacT hsize
+  intro X hX mu hmu_lo hmu_hi hXscale L box helig j hkind hlong
+    c y hc hylo hyupper hV
+  exact maynard_heathBrown_endpoint_zeta_log_amplitude_le_one_sub_half_elevenFifths
+    box j hkind hX hT hmu_lo hmu_hi hXscale helig hlong hc hylo hyupper
+      hpiT hfacT (hsize X hX mu (by linarith : mu ≤ 8) hXscale
+        L box j hkind helig hmu_lo hlong) hV
+
+/-- The logarithm of the uniform Maynard polylog envelope fits inside one Route-T edge envelope.
+This is a direct comparison on the `log log` scale, not an `o(log T)` weakening. -/
+theorem log_maynardLongPolylogEnvelope_le_routeTContourEdgeLogEnvelope_eight
+    {A T mu : ℝ} {X : ℕ} (hX : 1 ≤ X) (hT : 0 < T)
+    (hlogT : 1 ≤ Real.log T) (hmu : mu ≤ 8)
+    (hXscale : (X : ℝ) ≤ T ^ mu) :
+    Real.log (maynardLongPolylogEnvelope X) ≤
+      routeTContourEdgeLogEnvelope A (3 * T) := by
+  let Z : ℝ := routeTLogHeightEnvelope (4 * (3 * T + 1))
+  let W : ℝ := 1 + Real.log Z
+  have hE := maynardLongPolylogEnvelope_le_twelve_log_of_mu_le_eight hX hT hlogT hmu hXscale
+  have hE0 : 0 < maynardLongPolylogEnvelope X :=
+    lt_of_lt_of_le zero_lt_one (one_le_maynardLongPolylogEnvelope X)
+  have hlogT0 : 0 < Real.log T := by linarith
+  have hlogE : Real.log (maynardLongPolylogEnvelope X) ≤
+      Real.log (12 * Real.log T) := Real.log_le_log hE0 hE
+  have harg0 : 0 < 4 * (3 * T + 1) + 2 := by positivity
+  have harg : T ≤ 4 * (3 * T + 1) + 2 := by linarith
+  have hlogArg : Real.log T ≤ Real.log (4 * (3 * T + 1) + 2) :=
+    Real.log_le_log hT harg
+  have hZlogT : Real.log T ≤ Z := by
+    dsimp only [Z, routeTLogHeightEnvelope]
+    linarith
+  have hZ0 : 0 < Z := hlogT0.trans_le hZlogT
+  have hloglog : Real.log (Real.log T) ≤ Real.log Z :=
+    Real.log_le_log hlogT0 hZlogT
+  have hlog12 : Real.log 12 < 11 := by
+    have h := Real.log_lt_sub_one_of_pos
+      (by norm_num : (0 : ℝ) < 12) (by norm_num : (12 : ℝ) ≠ 1)
+    norm_num at h ⊢
+    exact h
+  have hsplit : Real.log (12 * Real.log T) =
+      Real.log 12 + Real.log (Real.log T) := by
+    rw [Real.log_mul (by norm_num) hlogT0.ne']
+  have hW1 : 1 ≤ W := by
+    dsimp only [W]
+    linarith [Real.log_nonneg (by linarith : 1 ≤ Z)]
+  have hlog12T : Real.log (12 * Real.log T) ≤ 12 * W := by
+    rw [hsplit]
+    dsimp only [W]
+    linarith
+  have hB : 2 ≤ routeTZeroFreeBudgetEnvelopeConstant A + 2 := by
+    linarith [routeTZeroFreeBudgetEnvelopeConstant_pos A]
+  have hBsq : 4 ≤ (routeTZeroFreeBudgetEnvelopeConstant A + 2) ^ (2 : ℕ) := by
+    nlinarith
+  have hWsq : 12 * W ≤ 1600 * W ^ (2 : ℕ) := by
+    nlinarith
+  calc
+    Real.log (maynardLongPolylogEnvelope X) ≤ Real.log (12 * Real.log T) := hlogE
+    _ ≤ 12 * W := hlog12T
+    _ ≤ 1600 * W ^ (2 : ℕ) := hWsq
+    _ ≤ 400 * (routeTZeroFreeBudgetEnvelopeConstant A + 2) ^ (2 : ℕ) *
+        W ^ (2 : ℕ) := by
+      exact mul_le_mul_of_nonneg_right (by nlinarith [hBsq]) (sq_nonneg W)
+    _ = routeTContourEdgeLogEnvelope A (3 * T) := by
+      rfl
+
+/-- The unique logarithmic atom's complete amplitude slack is eventually at most one quarter of
+the common endpoint deficit times the exact box logarithmic length. -/
+theorem eventually_routeT_endpoint_slack_mass_le_eight (A : ℝ) :
+    ∀ᶠ T : ℝ in atTop,
+      ∀ X : ℕ, 1 ≤ X → ∀ mu : ℝ, 4 / 3 ≤ mu → mu ≤ 8 →
+        (X : ℝ) ≤ T ^ mu →
+        ∀ L : ℕ, ∀ box : HeathBrownBoxChoice L X 60, 1 ≤ box.q →
+          IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
+          ∑ i : HeathBrownBoxFactorIndex 60 box.m,
+              heathBrownFactorAmplitudeSlack (heathBrownBoxFactorKind 60 box.m i)
+                (heathBrownBoxFactorExponent box.a box.b box.q i) *
+                Real.log
+                  (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ)) ≤
+            (routeTEndpointCommonDeficit A T / 4) *
+              Real.log
+                ((groupedDyadicLower
+                  (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) := by
+  obtain ⟨a, ha⟩ := eventually_atTop.1
+    (eventually_const_mul_routeTContourEdgeLogEnvelope_le_shiftGain
+      A 4320 (by norm_num))
+  filter_upwards [eventually_ge_atTop (a / 3),
+    Real.tendsto_log_atTop.eventually_ge_atTop 1,
+    eventually_ge_atTop 3] with T hTa hlogT hT3
+  intro X hX mu hmu_lo hmu_hi hXscale L box hq helig
+  let total : ℝ := heathBrownBoxTotalExponent L X 60 T box
+  let D : ℝ :=
+    ((groupedDyadicLower
+      (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ)
+  have hT0 : 0 < T := by linarith
+  have htotal : mu / 120 ≤ total := by
+    simpa [IsHeathBrownBoxEligible, total] using helig
+  have htotalMin : (1 / 90 : ℝ) ≤ total := by linarith
+  have hD : D = T ^ total := by
+    dsimp [D, total]
+    simpa [heathBrownBoxTotalExponent, groupedDyadicLower] using
+      (cast_prod_twoPow_eq_rpow_sum_dyadicLogExponent (by linarith : 1 < T)
+        (heathBrownBoxFactorExponent box.a box.b box.q)
+        (Finset.univ : Finset (HeathBrownBoxFactorIndex 60 box.m)))
+  have hlogD : Real.log D = total * Real.log T := by
+    rw [hD, Real.log_rpow hT0]
+  have hlogDlower : (1 / 90 : ℝ) * Real.log T ≤ Real.log D := by
+    rw [hlogD]
+    exact mul_le_mul_of_nonneg_right htotalMin (Real.log_nonneg (by linarith))
+  have hslack :
+      (∑ i : HeathBrownBoxFactorIndex 60 box.m,
+          heathBrownFactorAmplitudeSlack (heathBrownBoxFactorKind 60 box.m i)
+            (heathBrownBoxFactorExponent box.a box.b box.q i) *
+            Real.log
+              (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ))) ≤
+        routeTContourEdgeLogEnvelope A (3 * T) := by
+    rw [sum_heathBrownBoxFactorAmplitudeSlack_mul_log box.a box.b hq]
+    exact (log_heathBrown_log_trivialConstant_le_log_polylogEnvelope box hX hq).trans
+      (log_maynardLongPolylogEnvelope_le_routeTContourEdgeLogEnvelope_eight
+        hX hT0 hlogT hmu_hi hXscale)
+  have habsorb := ha (3 * T) (by linarith)
+  have hlog3T : Real.log (3 * T) ≤ 2 * Real.log T := by
+    have hthree : 3 * T ≤ T ^ (2 : ℕ) := by nlinarith
+    have hlog := Real.log_le_log (by positivity : 0 < 3 * T) hthree
+    rw [Real.log_pow] at hlog
+    norm_num at hlog ⊢
+    exact hlog
+  have henv0 : 0 ≤ routeTContourShiftEnvelope A (3 * T) :=
+    (routeTContourShiftEnvelope_pos A (by positivity)).le
+  have hedge : routeTContourEdgeLogEnvelope A (3 * T) ≤
+      routeTContourShiftEnvelope A (3 * T) * Real.log T / 2160 := by
+    have htransfer : routeTContourShiftEnvelope A (3 * T) * Real.log (3 * T) ≤
+        2 * routeTContourShiftEnvelope A (3 * T) * Real.log T := by
+      calc
+        routeTContourShiftEnvelope A (3 * T) * Real.log (3 * T) ≤
+            routeTContourShiftEnvelope A (3 * T) * (2 * Real.log T) :=
+          mul_le_mul_of_nonneg_left hlog3T henv0
+        _ = 2 * routeTContourShiftEnvelope A (3 * T) * Real.log T := by ring
+    nlinarith
+  have hscaled := mul_le_mul_of_nonneg_left hlogDlower
+    (show 0 ≤ routeTContourShiftEnvelope A (3 * T) / 24 by positivity)
+  calc
+    (∑ i : HeathBrownBoxFactorIndex 60 box.m,
+        heathBrownFactorAmplitudeSlack (heathBrownBoxFactorKind 60 box.m i)
+          (heathBrownBoxFactorExponent box.a box.b box.q i) *
+          Real.log
+            (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ))) ≤
+        routeTContourEdgeLogEnvelope A (3 * T) := hslack
+    _ ≤ routeTContourShiftEnvelope A (3 * T) * Real.log T / 2160 := hedge
+    _ ≤ (routeTContourShiftEnvelope A (3 * T) / 24) * Real.log D := by
+      nlinarith
+    _ = (routeTEndpointCommonDeficit A T / 4) *
+        Real.log
+          ((groupedDyadicLower
+            (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) := by
+      simp only [routeTEndpointCommonDeficit, D]
+      ring
+
+/-- **Every endpoint-long atom is excluded.**  Möbius, zeta, and logarithm factors share one
+explicit vanishing deficit, and the complete literal box loses `7/10` of it globally. -/
+theorem exists_eventually_routeT_endpoint_box_amplitude_exclusion_elevenFifths :
+    ∃ (A C C' delta : ℝ), 0 ≤ C ∧ 0 ≤ C' ∧ 0 < delta ∧
+      ∀ᶠ T : ℝ in atTop,
+        ∀ X : ℕ, 1 ≤ X → ∀ mu : ℝ, 4 / 3 ≤ mu → mu ≤ 11 / 5 →
+          (X : ℝ) ≤ T ^ mu →
+          ∀ L : ℕ, 1 ≤ L → (L : ℝ) ≤ T ^ (mu / 60) →
+            ∀ box : HeathBrownBoxChoice L X 60,
+              IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
+              ∀ c y alpha : ℝ, 0 ≤ c → T ≤ y → y ≤ 2 * T →
+                ((groupedDyadicLower
+                  (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) ^
+                    (alpha - c) ≤
+                  ‖heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q
+                    ((c : ℂ) + (y : ℝ) * Complex.I)‖ →
+                alpha ≤ 1 - routeTEndpointGlobalDeficit A T := by
+  obtain ⟨A, C, C', delta, hC, hC', hdelta, hmobius⟩ :=
+    exists_eventually_maynard_endpoint_moebius_amplitude_deficit_elevenFifths
+  refine ⟨A, C, C', delta, hC, hC', hdelta, ?_⟩
+  filter_upwards [hmobius,
+    eventually_maynard_endpoint_zeta_log_amplitude_deficit_elevenFifths,
+    eventually_routeTEndpointCommonDeficit_le_zetaLog A,
+    eventually_routeTEndpointCommonDeficit_le_moebius hdelta,
+    eventually_routeT_endpoint_slack_mass_le_eight A,
+    eventually_gt_atTop (1 : ℝ)]
+      with T hmob hzeta hcommonZeta hcommonMob hslack hT
+  intro X hX mu hmu_lo hmu_hi hXscale L hL hcut box helig c y alpha hc hylo hyhi hlarge
+  let s : ℂ := (c : ℂ) + (y : ℝ) * Complex.I
+  let D : ℝ :=
+    ((groupedDyadicLower
+      (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ)
+  have hq : 1 ≤ box.q :=
+    heathBrownBox_log_exponent_pos_of_large_core box s (by simpa only [s] using hlarge)
+  have hD0 : 0 < D := by
+    dsimp only [D]
+    exact_mod_cast (show 0 < groupedDyadicLower
+      (heathBrownBoxFactorExponent box.a box.b box.q) by
+        exact lt_of_lt_of_le Nat.zero_lt_one
+          (one_le_groupedDyadicLower
+            (heathBrownBoxFactorExponent box.a box.b box.q)))
+  have hthreshold : 0 < D ^ (alpha - c) := Real.rpow_pos_of_pos hD0 _
+  have hcorePos : 0 < ‖heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q s‖ :=
+    hthreshold.trans_le (by simpa only [D, s] using hlarge)
+  have hprod :
+      (∏ i : PositiveHeathBrownBoxFactorIndex box,
+        heathBrownBoxFactorValue L X 60 box s i) =
+        heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q s :=
+    prod_positive_heathBrownBoxFactorValue_eq_core box hL hX hq s
+  have hfactorPos : ∀ i : PositiveHeathBrownBoxFactorIndex box,
+      0 < ‖heathBrownBoxFactorValue L X 60 box s i‖ := by
+    intro i
+    by_contra hi
+    have hi0 : ‖heathBrownBoxFactorValue L X 60 box s i‖ = 0 :=
+      le_antisymm (le_of_not_gt hi) (norm_nonneg _)
+    have hvalue0 : heathBrownBoxFactorValue L X 60 box s i = 0 := norm_eq_zero.mp hi0
+    have hprod0 : (∏ r : PositiveHeathBrownBoxFactorIndex box,
+        heathBrownBoxFactorValue L X 60 box s r) = 0 :=
+      Finset.prod_eq_zero (Finset.mem_univ i) hvalue0
+    rw [hprod] at hprod0
+    rw [hprod0, norm_zero] at hcorePos
+    exact (lt_irrefl 0) hcorePos
+  have hDelta : 0 ≤ routeTEndpointCommonDeficit A T :=
+    (routeTEndpointCommonDeficit_pos A (by linarith)).le
+  have hlong : ∀ j : PositiveHeathBrownBoxFactorIndex box,
+      (∑ i : PositiveHeathBrownBoxFactorIndex box,
+          dyadicLogExponent T
+            (heathBrownBoxFactorExponent box.a box.b box.q i)) /
+            (40 * 60 : ℕ) ≤
+        dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q j) →
+      maynardAmplitude c
+          (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ))
+          ‖heathBrownBoxFactorValue L X 60 box s j‖ ≤
+        1 - routeTEndpointCommonDeficit A T := by
+    intro j hj
+    have hV := hfactorPos j
+    have htotal :
+        heathBrownBoxTotalExponent L X 60 T box / (40 * 60 : ℕ) ≤
+          dyadicLogExponent T
+            (heathBrownBoxFactorExponent box.a box.b box.q j) := by
+      rw [← sum_positive_dyadicLogExponent_eq_heathBrownBoxTotalExponent box]
+      exact hj
+    cases hkind : heathBrownBoxFactorKind 60 box.m j with
+    | moebius =>
+        have hm := hmob L X hL mu hmu_lo hmu_hi hcut box helig j hkind hj
+          c y hc hylo hyhi (by simpa only [s] using hV)
+        linarith
+    | zeta =>
+        have hz := hzeta X hX mu hmu_lo hmu_hi hXscale L box helig j
+          (Or.inl hkind) htotal c y hc hylo hyhi (by simpa only [s] using hV)
+        linarith
+    | log =>
+        have hz := hzeta X hX mu hmu_lo hmu_hi hXscale L box helig j
+          (Or.inr hkind) htotal c y hc hylo hyhi (by simpa only [s] using hV)
+        linarith
+  have hslackMass := hslack X hX mu hmu_lo (by linarith : mu ≤ 8) hXscale L box hq helig
+  have hbox := maynard_heathBrownBox_endpoint_long_deficits_trimmed
+    (k := 60) (by norm_num) box hL hX hT hc hDelta hlong hslackMass
+      (by simpa only [s] using hlarge)
+  unfold routeTEndpointGlobalDeficit
+  linarith
+
+/-- One fixed eligible all-subheight box satisfies a complete all-amplitude Route-T count through
+the natural height ceiling mu <= 11/5. -/
+theorem exists_eventually_routeT_subHeightBox_all_amplitude_first_or_second_elevenFifths :
+    ∃ A : ℝ, ∀ᶠ T : ℝ in atTop,
+      ∀ {L X K : ℕ} {mu N0 c alpha delta : ℝ},
+      1 ≤ X → 1 ≤ L →
+      (X : ℝ) ≤ T ^ mu →
+      (L : ℝ) ≤ T ^ (2 * (mu / 120)) →
+      4 / 3 ≤ mu → mu ≤ 11 / 5 →
+      1 / 2 ≤ c → 3 / 4 ≤ alpha →
+      0 < delta → delta ≤ 2 * T →
+      ∀ box : HeathBrownBoxChoice L X 60,
+      IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
+      IsHeathBrownBoxWindowRelevant N0 X 60 box →
+      (∀ i : HeathBrownBoxFactorIndex 60 box.m,
+        heathBrownBoxFactorKind 60 box.m i = .moebius →
+          dyadicLogExponent T
+            (heathBrownBoxFactorExponent box.a box.b box.q i) ≤
+              2 * (mu / 120)) →
+      (∀ i : HeathBrownBoxFactorIndex 60 box.m,
+        dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q i) < 1) →
+      ∀ (S : Finset ℕ), S ⊆ Finset.range K →
+      ∀ (lam : ℕ → ℝ),
+      (∀ r ∈ S, T ≤ lam r ∧ lam r ≤ 2 * T) →
+      (∀ i, lam i + delta ≤ lam (i + 1)) →
+      (∀ r ∈ S, ∀ s ∈ S, |lam s - lam r| ≤ T) →
+      (∀ r ∈ S,
+        ((groupedDyadicLower
+          (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) ^
+            (alpha - c) ≤
+          ‖heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q
+            ((c : ℂ) + (lam r : ℝ) * Complex.I)‖) →
+      ((S.card : ℝ) ≤ maynardHarmonicFactor K delta *
+          T ^ (mu * (1 - alpha) -
+            routeTSelectedCellAmplitudeReserve A T alpha) ∨
+        (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
+          T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha) -
+            routeTSelectedCellAmplitudeReserve A T alpha)) := by
+  obtain ⟨A, _C, _C', _delta0, _hC, _hC', _hdelta0, hboxExclude⟩ :=
+    exists_eventually_routeT_endpoint_box_amplitude_exclusion_elevenFifths
+  refine ⟨A, ?_⟩
+  filter_upwards [hboxExclude,
+    eventually_exists_maynardWindowRelevantSelectedCell_coloring_of_subHeight_box_elevenFifths,
+    eventually_card_le_maynard_second_of_selected_cell_coloring_low_amplitude_elevenFifths,
+    eventually_card_le_maynard_first_or_second_of_selected_cell_coloring_middle_elevenFifths,
+    eventually_card_le_maynard_first_or_second_of_selected_cell_coloring_elevenFifths A,
+    eventually_gt_atTop (1 : ℝ)] with T hbox hcolorT hlowT hmiddleT hglobal hT
+  intro L X K mu N0 c alpha delta hX hL hXscale hLscale hmuLo hmuHi hc
+    halphaLo hdelta hdeltaHi box helig hrel hmobius hsubHeight
+    S hS lam hband hgap hdiam hcore
+  obtain ⟨color, hcolorBox⟩ := hcolorT hL hX hmuLo hmuHi hXscale
+    box helig hrel hmobius hsubHeight (by linarith) halphaLo S lam hband hcore
+  have hcolor : ∀ r ∈ S, IsMaynardWindowRelevantSelectedCell
+      L X T mu N0 c (lam r) alpha (color r) := by
+    intro r hr
+    exact (hcolorBox r hr).2
+  by_cases hlow : alpha ≤ 19 / 25
+  · refine Or.inr ?_
+    simpa only [routeTSelectedCellAmplitudeReserve, if_pos hlow] using
+      hlowT hX hL hXscale hLscale hmuLo hmuHi (by linarith) halphaLo hlow
+        hdelta hdeltaHi S hS lam hgap hband color hcolor
+  · have halphaMiddleLo : 19 / 25 ≤ alpha := le_of_not_ge hlow
+    by_cases hmiddle : alpha ≤ 997 / 1000
+    · simpa only [routeTSelectedCellAmplitudeReserve, if_neg hlow, if_pos hmiddle] using
+        hmiddleT hX hL hXscale hLscale hmuLo hmuHi hc halphaMiddleLo hmiddle
+          hdelta S hS lam hgap hband color hcolor
+    · have halphaHigh : 997 / 1000 < alpha := lt_of_not_ge hmiddle
+      by_cases halphaEndpoint : alpha ≤ 1 - routeTEndpointGlobalDeficit A T
+      · simpa only [routeTSelectedCellAmplitudeReserve, if_neg hlow, if_neg hmiddle] using
+          hglobal hX hL hXscale hLscale hmuLo hmuHi hc halphaHigh
+            halphaEndpoint hdelta S hS lam hgap hdiam color hcolor
+      · have hcut : (L : ℝ) ≤ T ^ (mu / 60) := by
+          have hexp : 2 * (mu / 120) = mu / 60 := by ring
+          simpa only [hexp] using hLscale
+        have hSempty : S = ∅ := by
+          apply Finset.not_nonempty_iff_eq_empty.mp
+          intro hSne
+          obtain ⟨r, hr⟩ := hSne
+          have hbound := hbox X hX mu hmuLo hmuHi hXscale L hL hcut
+            box helig c (lam r) alpha (by linarith)
+              (hband r hr).1 (hband r hr).2 (hcore r hr)
+          exact halphaEndpoint hbound
+        left
+        rw [hSempty]
+        simp only [Finset.card_empty, Nat.cast_zero]
+        exact mul_nonneg (maynardHarmonicFactor_pos K hdelta).le
+          (Real.rpow_nonneg (by linarith) _)
 
 end RHTower.Sieve
 

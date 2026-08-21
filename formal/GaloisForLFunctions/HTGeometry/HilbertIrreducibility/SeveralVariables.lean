@@ -169,7 +169,9 @@ theorem hilbert_several : ∀ (m : ℕ) (G : Polynomial (MvPolynomial (Fin m) �
       have heq : (MvPolynomial.eval (Fin.elim0 : Fin 0 → ℚ))
           = (MvPolynomial.isEmptyAlgEquiv ℚ (Fin 0)).toRingEquiv.toRingHom := by
         refine MvPolynomial.ringHom_ext (fun r => ?_) (fun i => i.elim0)
-        simp [MvPolynomial.coeff_C]
+        simp only [MvPolynomial.eval_C, MvPolynomial.isEmptyAlgEquiv,
+          RingEquiv.toRingHom_eq_coe]
+        exact (MvPolynomial.coeff_zero_C r).symm
       refine ⟨Fin.elim0, ?_, ?_, ?_⟩
       · rw [heq]
         exact fun h => hg ((MvPolynomial.isEmptyAlgEquiv ℚ (Fin 0)).toRingEquiv.injective

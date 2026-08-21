@@ -160,8 +160,15 @@ so `Q = ∑_x r'^2_x ≤ kM + |T||B|(|B|−k) = |B|·( k|A| + |T|(|B|−k) )`, a
   has the coset-transfer layer that the induction needs for the auxiliary claim SP1
   (`mul_card_le_repSum`, `rep_eq_sum_inter_cosets`, `repSum_eq_sum_inter_cosets`,
   `pollardWeak_of_inter_coset`).
-  Next: STEP 2's structural branch; CASE 4 (4.1, 4.2 with SUBCASES 4.2.1–4.2.3); the induction
-  assembly (which also discharges SP1 and the spread hypothesis).
+  **STEP 2 is now closed as well**: `PollardStepTwoStruct.lean` has `rep_le_defect_of_notMem`,
+  `repSum_le_repSum_erase_add`, `pollard_step2_struct` and `pollard_step2_struct_left`, together
+  with the symmetry lemmas `repSet_comm`, `pollardWeak_comm`, `pollardStruct_comm`.
+  `PollardInclude.lean` has `PollardConclusion`, `pollardWeak_of_boundTSq`,
+  `pollardWeak_of_small_deficiency`, `pollardWeak_of_repSet_empty`, the adjunction identities
+  `repSet_insert_left/right`, `repSum_insert_left/right` and the transfers
+  `pollardConclusion_of_insert_left/right`.
+  Next: CASE 4 (4.1, 4.2 with SUBCASES 4.2.1–4.2.3); the induction assembly (which also
+  discharges SP1 and the spread hypothesis).
   The main triple induction (on `∑_{i=1}^t |A +_i B|`, then `|A|+|B|`, then `min(|A|,|B|)`).
 
 ## G4: design of the main induction
@@ -240,6 +247,18 @@ Combining with Kneser (`t·#(A'·B') ≥ t(#A' + #B' + ρ − |H|)`) gives exact
 - [ ] 2 → 3  formalized: Lean theorem, `lake build` green, axioms ⊆ {propext, Classical.choice, Quot.sound}
 
 ## Log
+- 2026-08-21 — **STEP 2 is Lean-closed** and the CASE 4 infrastructure is in place.  Two more
+  modules, axiom-clean and wired: `PollardStepTwoStruct`, `PollardInclude`.  Two hypotheses of
+  the STEP 1 engine were relaxed so that it serves STEP 2 as well: the defect bound in
+  `pollard_step1_smallDoubling` is now `defect ≤ t` (at `defect = t` its conclusion degenerates
+  to exactly the `t²` bound that STEP 2 needs), and the `t`-representability hypothesis in
+  `repSum_ge_of_repSet_eq`, `pollard_step1_smallDoubling` and `pollard_step1_largeProduct` is now
+  the inclusion `A' · B' ⊆ A ·_t B` rather than an equality.
+  Two more source gaps filled: the source's appeal to `|H| − ρ ≥ t+1` "else (weak) holds" is
+  replaced by the direct and stronger `pollardWeak_of_small_deficiency`
+  (`#A' + #B' ≤ #(A'·B') + t ⟹ weak`), which avoids needing the equality case of Kneser's
+  theorem; and the source's claim that `A ·_t (B∖y) = A ·_{t−1} (B∖y)` in STEP 2 is proved from
+  the correct mechanism, `rep_le_defect_of_notMem`.
 - 2026-08-21 — **STEP 3 is Lean-closed** (both CASE 3.1 and CASE 3.2), together with the spread
   condition and the coset-decomposition transfer layer.  Four more modules, axiom-clean and wired:
   `PollardCosetDecomposition`, `PollardSidon`, `PollardCaseThreeOne`, `PollardStepThreeCase1`,

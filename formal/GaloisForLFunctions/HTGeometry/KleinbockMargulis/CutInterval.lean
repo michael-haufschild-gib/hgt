@@ -28,7 +28,7 @@ namespace GaloisForLFunctions.HTGeometry.KleinbockMargulis
 
 /-- A derivative chain whose `k`-th member never vanishes takes each value at most `k` times. -/
 theorem card_le_of_chain_ne_zero {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ → ℝ}
-    (hF : IsDerivChain F U) {k : ℕ} (hk : 1 ≤ k) (hne : ∀ x ∈ U, F k x ≠ 0) (c : ℝ)
+    {k : ℕ} (hF : IsDerivChain k F U) (hk : 1 ≤ k) (hne : ∀ x ∈ U, F k x ≠ 0) (c : ℝ)
     (s : Finset ℝ) (hs : ∀ x ∈ s, x ∈ U ∧ F 0 x = c) : s.card ≤ k := by
   classical
   obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
@@ -39,11 +39,11 @@ theorem card_le_of_chain_ne_zero {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ �
   have hmono : StrictMono pts := fun i j hij => (t.orderIsoOfFin hcard).strictMono hij
   have hmem : ∀ i, pts i ∈ t := fun i => (t.orderIsoOfFin hcard i).2
   set G : ℕ → ℝ → ℝ := fun j => Nat.casesOn j (fun x => F 0 x - c) fun j' => F (j' + 1) with hG
-  have hGchain : IsDerivChain G U := by
-    intro j x hx
-    match j with
-    | 0 => exact (hF 0 x hx).sub_const c
-    | (j + 1) => exact hF (j + 1) x hx
+  have hGchain : IsDerivChain (k' + 1) G U := by
+    intro j hj x hx
+    rcases j with _ | j
+    · exact (hF 0 (by omega) x hx).sub_const c
+    · exact hF (j + 1) hj x hx
   obtain ⟨ξ, hξmem, hξ⟩ :=
     exists_chain_eq_zero hUc (k' + 1) G hGchain pts hmono
       (fun i => (hs _ (hts (hmem i))).1)

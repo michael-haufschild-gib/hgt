@@ -396,9 +396,30 @@ That is the gate for the whole of Stage IV.  Its proof needs, in order:
   homology in positive degrees, by the straight-line contraction), and `PairSequence` adds
   **`isIso_homologyMap_proj`** (when the subcomplex is acyclic in two consecutive degrees, the
   projection to the quotient is a homology isomorphism) — the second LES collapse the induction
-  needs.  Still needed: the induction step itself (assemble excision with the two collapses and the
-  homotopy equivalence `A ∩ B ≃ (W ∖ {0}) × ℝ ≃ W ∖ {0}`), and the base case
-  `H̃_0(ℝ ∖ {0}) ≅ R` from the clopen splitting plus `range_singBd_zero_eq_ker_singAug`;
+  needs.  **The induction step is proved.**  `TopologyHelpers` (a subset of a subspace is the
+  corresponding subspace, and `Y × ℝ ≃ₕ Y`), `PuncturedSpace` (the two pieces, their openness,
+  star-convexity, union and intersection, and `↥{p | p.1 ≠ 0} ≃ₜ ↥(punct W) × ℝ`),
+  `HomologyTransport` (vanishing homology passes along homotopy equivalences and between a subspace
+  and the chains supported in it), and `PunctureInduction` assemble into
+
+  **`nonempty_homology_punct_iso`** : `H_{k+2}(punct (W × ℝ)) ≅ H_{k+1}(punct W)`.
+
+  The seven-step chain is: the projection collapse for the lower piece, excision
+  (`closure (upperᶜ) ⊆ interior lower`, both being clopen complements), the connecting-map collapse
+  for the upper piece, the second-isomorphism comparison `restrictHom`, the subspace/subcomplex
+  identification, and the two homotopy equivalences.  Excision was re-parameterised by the open
+  piece `U` (rather than the excised `Z = Uᶜ`) so the pair reads `(U, A ∩ U)` with no double
+  complement.  `HomologyZeroExplicit` supplies the degree-zero
+  layer the base case needs: in degree zero the outgoing differential vanishes, so
+  **`homologyZeroIso`** identifies `H_0(K)` with `K_0` modulo the boundaries for any chain complex
+  of modules, and **`homologyZeroIsoRing`** identifies `H_0(X)` with the coefficient ring for a
+  path-connected space (via the augmentation, whose kernel is the boundaries).
+
+  Still needed for the base case: `H_0` of a clopen two-piece space as `R ⊕ R` (from
+  `isCompl_subChains` plus `homologyZeroIsoRing` on each piece), the observation that the map into
+  the ambient path-connected space is the sum, and the degree-one instance of the excision chain
+  (where the two collapses have to be run against the *reduced* vanishing, i.e. against the kernel
+  of the augmentation rather than against `H_0 = 0`);
 - IV.6 Morse theory: sublevel sets, handle attachment, gradient flow retractions, and
   `χ(M) = ∑ (−1)^λ`.
 - III manifolds: charts, vector fields, index sum, independence of the field.  Mathlib supplies

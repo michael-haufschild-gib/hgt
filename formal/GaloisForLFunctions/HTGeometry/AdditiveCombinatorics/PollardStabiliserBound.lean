@@ -96,7 +96,7 @@ so that the same statement also serves the structural branch of STEP 2, where it
 theorem pollard_step1_smallDoubling (A B A' B' : Finset G) (t : ℕ)
     (hA' : A' ⊆ A) (hB' : B' ⊆ B) (hA'ne : A'.Nonempty) (hB'ne : B'.Nonempty)
     (hl : defect A A' B B' ≤ t)
-    (heq2 : A' * B' = repSet A B t)
+    (heq2 : A' * B' ⊆ repSet A B t)
     (hsmall : (A' * B').card + 2 ≤ A'.card + B'.card)
     (hsatA : ∀ x ∈ A, x ∈ A' * mulStab (A' * B') → x ∈ A')
     (hsatB : ∀ y ∈ B, y ∈ B' * mulStab (A' * B') → y ∈ B') :

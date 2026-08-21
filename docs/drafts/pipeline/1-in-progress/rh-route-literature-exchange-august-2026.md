@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`50406be2a4f4b5b775b9f7b36a6b0934f85b470d` on 21 August, plus declaration-level working-tree
+`a1f6d082a8f4973e674d680067e2ceec3382ec38` on 21 August, plus declaration-level working-tree
 review. Historical `Active-tree Lean` wording records former provenance. Current
 formal route status is maintained in `rh-current-frontier-map.md`; detailed sections below are a
 literature-exchange record and may retain older intermediate formulations. External literature was
@@ -58,9 +58,9 @@ aperture height and ranges over every positive target independently of the shift
 normal-coordinate receiver survives; a viable successor must use a source-native invariant fixed
 before aperture selection and is not SNR.
 
-New Borel--Weil top-degree vanishing, multivariate Hilbert irreducibility, Pollard--Dyson coset
-machinery, smooth-cube Kleinbock--Margulis estimates, affine/Cartier co-Lie and antipode theory, singular
-homology excision/pair sequences, cyclic-Galois `H^2`, cyclic algebras, and restricted tame-residue
+New Borel--Weil top-degree vanishing, multivariate Hilbert irreducibility, multilinear diagonal
+rigidity, Pollard--Dyson machinery, smooth-cube Kleinbock--Margulis estimates, affine/Cartier co-Lie and antipode theory, punctured/star-shaped
+homology transport/excision/pair sequences, cyclic-Galois `H^2`, cyclic algebras, and projective-line Milnor `K₂` Hasse
 modules strengthen the general toolkit but do not alter exchange classification. None has a
 completed Xi source/reader landing. The static-Choi
 layer now brackets complete-dictionary hard blocks by consecutive visits; one nearest-neighbor

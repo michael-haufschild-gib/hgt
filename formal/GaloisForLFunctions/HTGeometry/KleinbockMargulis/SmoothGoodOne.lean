@@ -28,7 +28,7 @@ namespace GaloisForLFunctions.HTGeometry.KleinbockMargulis
 
 /-- **An interval on which `|F 0| < ε` is short.** -/
 theorem interval_length_le {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ → ℝ}
-    (hF : IsDerivChain F U) {k : ℕ} (hk : 1 ≤ k) {A₂ : ℝ} (hA₂ : 0 < A₂)
+    {k : ℕ} (hF : IsDerivChain k F U) (hk : 1 ≤ k) {A₂ : ℝ} (hA₂ : 0 < A₂)
     (hlow : ∀ x ∈ U, A₂ ≤ |F k x|) {ε : ℝ} (hε : 0 < ε)
     {u v : ℝ} (huv : u < v) (hsub : Ioo u v ⊆ U) (hval : ∀ x ∈ Ioo u v, |F 0 x| < ε) :
     v - u ≤ ((k : ℝ) + 2) * (((k + 1).factorial : ℝ) * ε / A₂) ^ ((k : ℝ)⁻¹) := by
@@ -65,7 +65,7 @@ theorem interval_length_le {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ
     have : ((i : ℕ) : ℝ) < ((j : ℕ) : ℝ) := by exact_mod_cast hij
     nlinarith
   obtain ⟨ξ, hξmem, hξ⟩ :=
-    exists_chain_eq_factorial_mul_coeff hUc hF k x hxmono (fun i => hsub (hxmem i))
+    exists_chain_eq_factorial_mul_coeff hUc k hF x hxmono (fun i => hsub (hxmem i))
   have hξU : ξ ∈ U := hUc.out (hsub (hxmem 0)) (hsub (hxmem (Fin.last k))) hξmem
   set P : Polynomial ℝ := Lagrange.interpolate Finset.univ x fun i => F 0 (x i) with hP
   have hinj : Set.InjOn x (Finset.univ : Finset (Fin (k + 1))) := hxmono.injective.injOn
@@ -180,7 +180,7 @@ theorem interval_length_le {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ
 Interpolating at `k` points of an interval on which `|F 0| < ε` and adding the interpolation
 remainder bounds `|F 0|` everywhere. -/
 theorem abs_le_of_interval {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ → ℝ}
-    (hF : IsDerivChain F U) {k : ℕ} (hk : 1 ≤ k) {A₁ : ℝ}
+    {k : ℕ} (hF : IsDerivChain k F U) (hk : 1 ≤ k) {A₁ : ℝ}
     (hup : ∀ x ∈ U, |F k x| ≤ A₁) {ε : ℝ} (_hε : 0 < ε)
     {u v : ℝ} (huv : u < v) (hsub : Ioo u v ⊆ U) (hval : ∀ x ∈ Ioo u v, |F 0 x| < ε)
     {a b : ℝ} (hab : Ioo a b ⊆ U) (hbb : ∀ y ∈ Ioo a b, ∀ w ∈ Ioo u v, |y - w| ≤ b - a)
@@ -303,7 +303,7 @@ theorem abs_le_of_interval {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ
 /-! ### Level sets are finite -/
 
 theorem finite_level_set {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ → ℝ}
-    (hF : IsDerivChain F U) {k : ℕ} (hk : 1 ≤ k) (hne : ∀ x ∈ U, F k x ≠ 0) (c : ℝ) :
+    {k : ℕ} (hF : IsDerivChain k F U) (hk : 1 ≤ k) (hne : ∀ x ∈ U, F k x ≠ 0) (c : ℝ) :
     {x | x ∈ U ∧ F 0 x = c}.Finite := by
   by_contra hinf
   rw [Set.not_finite] at hinf
@@ -431,7 +431,7 @@ private theorem good_endgame {k : ℕ} (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA₁ :
 `F 0` `(C, 1/k)`-good on every subinterval, with `C` depending only on `k`, `A₁` and `A₂`. -/
 theorem exists_good_const_one_dim (k : ℕ) (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA₁ : 0 ≤ A₁)
     (hA₂ : 0 < A₂) :
-    ∃ C : ℝ, 0 < C ∧ ∀ (U : Set ℝ) (F : ℕ → ℝ → ℝ), U.OrdConnected → IsDerivChain F U →
+    ∃ C : ℝ, 0 < C ∧ ∀ (U : Set ℝ) (F : ℕ → ℝ → ℝ), U.OrdConnected → IsDerivChain k F U →
       (∀ x ∈ U, |F k x| ≤ A₁) → (∀ x ∈ U, A₂ ≤ |F k x|) →
       ∀ a b : ℝ, a < b → Ioo a b ⊆ U → ∀ ε : ℝ, 0 < ε → ∀ z ∈ Ioo a b,
         (volume {x ∈ Ioo a b | |F 0 x| < ε}).toReal * |F 0 z| ^ ((k : ℝ)⁻¹)
@@ -514,7 +514,7 @@ theorem exists_good_const_one_dim (k : ℕ) (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA
     by_contra hcon
     push Not at hcon
     have hcont : ContinuousOn (fun t => |F 0 t|) (Icc x w) := by
-      refine (hF.continuousOn 0 ?_).abs
+      refine (hF.continuousOn 0 (by omega) ?_).abs
       exact hUc.out (hsubU hxS.1) (hsubU hwab)
     have hmemIcc : ε ∈ Icc (|F 0 x|) (|F 0 w|) := ⟨hxS.2.le, hcon⟩
     obtain ⟨w', hw'mem, hw'val⟩ :=

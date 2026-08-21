@@ -36,7 +36,10 @@ H1, H2 / Baker's conjecture).
 ## Missing infrastructure (mathlib gaps) to build
 1. `(C,α)`-good functions — new.
 2. Higher-order symmetry of `iteratedFDeriv` (mathlib has only `second_derivative_symmetric`),
-   and polarization: symmetric multilinear map with vanishing diagonal is zero.
+   and polarization: symmetric multilinear map with vanishing diagonal is zero.  **DONE** —
+   `HTGeometry/IteratedFDerivSymmetric.lean` (`iteratedFDeriv_comp_perm`) and
+   `HTGeometry/MultilinearDiagonal.lean` (`continuousMultilinearMap_eq_zero_of_diagonal`,
+   `exists_diagonal_ne_zero_of_iteratedFDeriv_ne_zero`).
 3. Sup-norm ("Plücker") norm on `⋀^j ℝ^k` for subgroups of `ℤ^k`, basis independence,
    and `‖w ∧ v‖ ≤ k‖w‖‖v‖`.
 4. Poset of nonzero primitive subgroups of `ℤ^k`; length = rank.
@@ -95,3 +98,9 @@ paper's `C_{k,A₁,A₂} = k(k+1)((A₁/A₂)(k+1)(2k^k+1))^{1/k}`; only the dep
   the line; the paper's use of Lemma 3.1(c) on the face-supremum function is therefore avoided.
   Both modules compile with zero warnings and are wired into `GaloisForLFunctions.HTGeometry`.
   Remaining: Prop 3.4, Prop 2.3, Theorem A, Theorem 5.3, Theorem B.
+- 2026-08-21 — mathlib gap closed: all-order symmetry of `iteratedFDeriv` for `C^n` maps
+  (`IteratedFDerivSymmetric.lean`), by induction with `iteratedFDeriv_succ_apply_right`, Clairaut
+  at nearby points pushed through `ContinuousLinearMap.iteratedFDeriv_comp_left`, and generation of
+  the symmetric group by adjacent transpositions.  `MultilinearDiagonal.lean` then shows a
+  symmetric continuous multilinear map with vanishing diagonal is zero (by differentiating the
+  diagonal restriction), giving the polarization step Proposition 3.4 needs.

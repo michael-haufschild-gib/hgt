@@ -30,11 +30,11 @@ theorem repSet_mono {A A' B B' : Finset G} (hA : A' ⊆ A) (hB : B' ⊆ B) (i : 
 theorem pollard_step1_largeProduct (A B A' B' : Finset G) (t : ℕ)
     (hA' : A' ⊆ A) (hB' : B' ⊆ B)
     (hl : defect A A' B B' + 1 ≤ t)
-    (heq2 : A' * B' = repSet A B t)
+    (heq2 : A' * B' ⊆ repSet A B t)
     (hlarge : A'.card + B'.card ≤ (A' * B').card + 1) :
     t * A.card + t * B.card ≤ repSum A B t + t ^ 2 := by
-  have h1 : t * (repSet A B t).card ≤ repSum A B t := mul_card_repSet_le_repSum A B t
-  rw [← heq2] at h1
+  have h1 : t * (A' * B').card ≤ repSum A B t :=
+    le_trans (Nat.mul_le_mul_left t (Finset.card_le_card heq2)) (mul_card_repSet_le_repSum A B t)
   have hcardA := Finset.card_sdiff_add_card_eq_card hA'
   have hcardB := Finset.card_sdiff_add_card_eq_card hB'
   have h2 : t * (A'.card + B'.card) ≤ t * ((A' * B').card + 1) := Nat.mul_le_mul_left t hlarge
@@ -143,11 +143,12 @@ theorem pollard_step1 (A B A' B' : Finset G) (t : ℕ) (ht : 1 ≤ t)
     rw [hcomm]
     exact hmem
   rcases le_or_gt (A''.card + B''.card) ((A'' * B'').card + 1) with hlarge | hsmall
-  · exact Or.inr (pollard_step1_largeProduct A B A'' B'' t hA''sub hB''sub hdef'' heq2'' hlarge)
+  · exact Or.inr (pollard_step1_largeProduct A B A'' B'' t hA''sub hB''sub hdef''
+      (le_of_eq heq2'') hlarge)
   · left
     refine ⟨A'', B'', hA''sub, hB''sub, hdef'', heq1'', heq2'', ?_⟩
     have hmain := pollard_step1_smallDoubling A B A'' B'' t hA''sub hB''sub hA''ne hB''ne
-      (by omega) heq2'' (by omega) hsatA hsatB
+      (by omega) (le_of_eq heq2'') (by omega) hsatA hsatB
     rw [← heq2'']
     exact hmain
 

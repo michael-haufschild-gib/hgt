@@ -344,4 +344,34 @@ theorem primitives_le_augIdeal :
   counit_eq_zero_of_mem_primitives hx
 
 
+
+/-! ### `ω` is a functor -/
+
+theorem coLieMap_id : coLieMap (BialgHom.id R A) = LinearMap.id := by
+  refine LinearMap.ext fun m => ?_
+  obtain ⟨a, rfl⟩ := d_surjective m
+  rw [coLieMap_d]
+  rfl
+
+variable {C : Type*} [CommRing C] [Bialgebra R C]
+
+theorem coLieMap_comp (f : A →ₐc[R] B) (g : B →ₐc[R] C) :
+    coLieMap (g.comp f) = (coLieMap g).comp (coLieMap f) := by
+  refine LinearMap.ext fun m => ?_
+  obtain ⟨a, rfl⟩ := d_surjective m
+  rw [coLieMap_d, LinearMap.comp_apply, coLieMap_d, coLieMap_d]
+  rfl
+
+/-! ### The trivial group scheme -/
+
+theorem augIdeal_self : augIdeal R R = ⊥ := by
+  ext r
+  rw [mem_augIdeal, Submodule.mem_bot]
+  exact ⟨fun h => by simpa using h, fun h => by rw [h]; simp⟩
+
+instance : Subsingleton (coLie R R) :=
+  (Ideal.cotangent_subsingleton_iff (augIdeal R R)).mpr (by
+    rw [IsIdempotentElem, augIdeal_self]
+    simp)
+
 end GaloisForLFunctions.HTGeometry.AffineGroupScheme

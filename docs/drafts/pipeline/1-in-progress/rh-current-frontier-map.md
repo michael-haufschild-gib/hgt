@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 21 August 2026, commit
-`50406be2a4f4b5b775b9f7b36a6b0934f85b470d`, plus declaration-index review of current Lean
+`a1f6d082a8f4973e674d680067e2ceec3382ec38`, plus declaration-index review of current Lean
 working tree. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified and not claimed build-audited in this
@@ -2175,7 +2175,7 @@ real-zero approximants, phase-pair provenance, reflection compatibility, or tang
 all-plane entire wall stays terminal and cannot be repaired by finite holomorphic exponential
 gauges.
 
-### TTF presentation of CLG/TTF
+**TTF presentation of CLG/TTF.**
 
 TTF is the literal theta-correlation presentation of the CLG/TTF architecture, not an independent
 live route. `ThetaTiltFluxCarrier.lean` identifies neutral tilt derivative with the source
@@ -2503,14 +2503,15 @@ continuation producer is absent.
   add exact finite conservation/duality laws. Borel apolarity and the finite Hall-solvable-group
   complement/minimal-normal-subgroup modules are likewise source-independent algebra. New big-cell
   coordinates/trivializations and top-degree flag-cohomology vanishing, multivariate
-  Hilbert-irreducibility/Kronecker reduction, Pollard--Dyson coset and deletion machinery,
+  Hilbert-irreducibility/Kronecker reduction, multilinear diagonal rigidity, Pollard--Dyson machinery,
   smooth-cube Kleinbock--Margulis sublevel bounds, affine/Cartier group-scheme co-Lie and antipode
-  laws, singular homology functoriality/excision/pair sequences, and real-torus duality remain generic
+  laws, punctured/star-shaped homology transport/excision/pair sequences, and real-torus duality remain generic
   topology, representation theory, Diophantine geometry, or finite control. Same-draw Choi
   first-return and trace-heap laws strengthen finite complexity infrastructure only.
   None contains a completed prime--Gamma source, Xi-divisor reader, restricted-Weil ground sign,
   or RH endpoint. They strengthen future realization/variation infrastructure but add no route or
-  candidate.
+  candidate. Pollard spread/coset inequalities do not define E's fixed signed relation or flux;
+  co-Lie, antipode, and homology exactness do not supply L's singular physical comparison.
 - **ABHN infrastructure remains pre-route.** The corpus now has concrete Brauer-group operations,
   scalar extension, restricted invariant sums, real-quaternion splitting, cyclic Hilbert 90,
   cyclic-Galois `H^2` as fixed units modulo norms, bounded cyclic-algebra normal form, and formal target
@@ -3356,7 +3357,7 @@ continuation producer is absent.
   infinity-sensitive data are required.
 - **ABHN remains pre-route.** Lean has Brauer/restricted-invariant interfaces, local completion
   carriers, cyclic-Galois `H^2` as fixed units modulo norms, skew cyclic-algebra relations and
-  monomial reduction, restricted tame-residue exactness, Milnor reciprocity for `F(t)`, and broad
+  monomial reduction, restricted tame-residue and projective-line Milnor `K₂` Hasse exactness, and broad
   scalar-extension detection. Missing are full cyclic-algebra central simplicity, finite
   ramification, local Brauer invariant isomorphisms, and global ABHN exactness. No RHTower theorem
   identifies these carriers with completed Xi source or L's physical reader; new layers strengthen
