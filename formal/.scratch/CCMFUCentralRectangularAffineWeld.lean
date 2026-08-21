@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeRectangularPrimitiveCurrent
 import GaloisForLFunctions.RHTower.CCMFirstClockVolterra
+import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularGammaPolarSourceLaw
+import GaloisForLFunctions.RHTower.CCMGuinandWeilXiScrewGreenConnection
 
 open Complex MeasureTheory Set
 
@@ -10,7 +12,7 @@ namespace GaloisForLFunctions.RHTower
 open _root_.RHTower
 
 private theorem centralPolarTriangleIntegral
-    {t : ℝ} (ht : 0 ≤ t) :
+    (t : ℝ) :
     (∫ h in (0 : ℝ)..t, (t - h) * (2 * Real.cosh (h / 2))) =
       8 * (Real.cosh (t / 2) - 1) := by
   let P : ℝ → ℝ := fun h =>
@@ -49,7 +51,7 @@ private theorem centralPolarTriangleSetIntegral
   rw [← intervalIntegral.integral_of_le ht]
   rw [intervalIntegral.integral_ofReal]
   norm_cast
-  exact centralPolarTriangleIntegral ht
+  exact centralPolarTriangleIntegral t
 
 private theorem centralRectangularPrimePolarSource_eq_stieltjesPairing
     {t : ℝ} (ht : 0 ≤ t) :
@@ -115,8 +117,8 @@ theorem centralRectangularPrimePolarSource_eq_completedErrorPrimitive
       have hid : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 x := by
         simpa using (hasDerivAt_id (x : ℂ)).comp_ofReal
       simpa only [Complex.ofReal_sub] using hid.const_sub (t : ℂ))
-    (continuous_const.intervalIntegrable 0 t)
-    (by norm_num; push_cast; ring)
+    (continuous_const.intervalIntegrable 0 (2 * (t / 2)))
+    (by norm_num; ring)
   rw [show 2 * (t / 2) = t by ring] at hibp
   rw [centralRectangularPrimePolarSource_eq_stieltjesPairing ht, hibp]
   have hreal :
@@ -129,11 +131,31 @@ theorem centralRectangularPrimePolarSource_eq_completedErrorPrimitive
       funext h
       push_cast
       ring]
-    rw [integral_re, ← intervalIntegral.integral_of_le ht]
-    simp only [Complex.ofReal_re]
-    rw [← MeasureTheory.integral_neg]
-  rw [hreal]
+    have hcast :
+        (∫ h in Set.Ioc (0 : ℝ) t,
+          ((-criticalMellinCompletedError h : ℝ) : ℂ)) =
+        ((∫ h in Set.Ioc (0 : ℝ) t,
+          -criticalMellinCompletedError h : ℝ) : ℂ) := by
+      exact integral_ofReal
+    rw [hcast, Complex.ofReal_re,
+      ← intervalIntegral.integral_of_le ht,
+      intervalIntegral.integral_neg]
+  rw [Complex.neg_re, hreal]
   ring
+
+/-- Central prime--polar source is the Gamma-renormalized real Xi screw coordinate. This is the
+exact source/spectral dictionary at variable central aperture. -/
+theorem centralRectangularPrimePolarSource_eq_xiScrew_sub_gamma
+    {t : ℝ} (ht : 0 ≤ t) :
+    rectangularPrimePolarSourceCoefficient (t / 2) (t / 2) =
+      2 * (xiScrewDivisor t).re -
+        rectangularGammaPolarCorrection (t / 2) (t / 2) := by
+  have hsource := xiWeilPolarization_rectangular_eq_primePolarSource_add_gammaCorrection
+    (L := t / 2) (a := t / 2) (by positivity : 0 ≤ t / 2) (le_refl (t / 2))
+  rw [xiWeilPolarization_central_rectangular_eq_two_mul_screw] at hsource
+  have hre := congrArg Complex.re hsource
+  norm_num at hre
+  linarith
 
 /-- Affine-renormalized central source increment. Its subtracted jet is the literal completed
 prime--polar coefficient at the fixed lower wall. -/
@@ -141,6 +163,24 @@ def ccmFUCentralRectangularAffineRemainder (b t : ℝ) : ℝ :=
   rectangularPrimePolarSourceCoefficient (t / 2) (t / 2) -
     rectangularPrimePolarSourceCoefficient (b / 2) (b / 2) -
       2 * (t - b) * criticalMellinCompletedError b
+
+/-- The FU affine remainder in the actual Xi-screw/Gamma chart. -/
+def ccmFUCentralScrewGammaAffineRemainder (b t : ℝ) : ℝ :=
+  (2 * (xiScrewDivisor t).re -
+      rectangularGammaPolarCorrection (t / 2) (t / 2)) -
+    (2 * (xiScrewDivisor b).re -
+      rectangularGammaPolarCorrection (b / 2) (b / 2)) -
+      2 * (t - b) * criticalMellinCompletedError b
+
+/-- Source and Xi-screw/Gamma affine remainders agree without a limit or RH premise. -/
+theorem ccmFUCentralRectangularAffineRemainder_eq_screwGamma
+    {b t : ℝ} (hb : 0 ≤ b) (hbt : b ≤ t) :
+    ccmFUCentralRectangularAffineRemainder b t =
+      ccmFUCentralScrewGammaAffineRemainder b t := by
+  rw [ccmFUCentralRectangularAffineRemainder,
+    ccmFUCentralScrewGammaAffineRemainder,
+    centralRectangularPrimePolarSource_eq_xiScrew_sub_gamma (hb.trans hbt),
+    centralRectangularPrimePolarSource_eq_xiScrew_sub_gamma hb]
 
 /-- **FU--Suzuki central weld.** Every marked FU rectangular slice is exactly negative one half
 of the affine-renormalized central two-edge prime--polar source. Fixed-wall memory is the true
@@ -169,6 +209,98 @@ theorem ccmThirdGradeCesaroRectangularPrimePolarSlice_eq_neg_half_centralAffineR
   rw [show (∫ h in (0 : ℝ)..t, criticalMellinCompletedError h) =
       (∫ h in (0 : ℝ)..b, criticalMellinCompletedError h) +
         ∫ h in b..t, criticalMellinCompletedError h by linarith]
+  ring
+
+/-- Positive marked mixture of affine-renormalized central rectangular sources. This is a
+pre-scalar source family: all aperture slices remain coupled until the final integration. -/
+def ccmFUCentralRectangularAffineMixture (b H : ℝ) : ℝ :=
+  (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
+    ccmFUCentralRectangularAffineRemainder b t) +
+  (32 / H ^ 4) * ccmFUCentralRectangularAffineRemainder b H
+
+/-- The literal marked FU prime--polar current is negative one half of the full positive marked
+mixture of central affine remainders. This is an exact cross-aperture identity, not an atomwise
+estimate or a positivity replacement. -/
+theorem ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent_eq_neg_half_centralAffineMixture
+    {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
+    ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent b H =
+      -(1 / 2 : ℝ) * ccmFUCentralRectangularAffineMixture b H := by
+  rw [ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent_eq_fubini hb hbH]
+  have hbulk :
+      (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
+        ccmThirdGradeCesaroRectangularPrimePolarSlice b H t) =
+      -(1 / 2 : ℝ) *
+        ∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
+          ccmFUCentralRectangularAffineRemainder b t := by
+    rw [← intervalIntegral.integral_const_mul]
+    apply intervalIntegral.integral_congr
+    intro t ht
+    rw [Set.uIcc_of_le hbH] at ht
+    change ccmThirdGradeCesaroRectangularMixDensity H t *
+        ccmThirdGradeCesaroRectangularPrimePolarSlice b H t =
+      -(1 / 2 : ℝ) *
+        (ccmThirdGradeCesaroRectangularMixDensity H t *
+          ccmFUCentralRectangularAffineRemainder b t)
+    rw [ccmThirdGradeCesaroRectangularPrimePolarSlice_eq_neg_half_centralAffineRemainder
+      hb ht.1 ht.2]
+    ring
+  rw [hbulk,
+    ccmThirdGradeCesaroRectangularPrimePolarSlice_eq_neg_half_centralAffineRemainder
+      hb hbH (le_refl H)]
+  unfold ccmFUCentralRectangularAffineMixture
+  ring
+
+/-- Source-faithful FU landing in the central rectangular chart. -/
+theorem ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_eq_neg_half_centralAffineMixture
+    {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
+    ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H =
+      -(1 / 2 : ℝ) * ccmFUCentralRectangularAffineMixture b H := by
+  rw [ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_eq_markedRectangularCurrent
+    hb hbH]
+  exact
+    ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent_eq_neg_half_centralAffineMixture
+      hb hbH
+
+/-- On the moving central diagonal, the Gamma--polar correction is exactly an affine term plus
+the decaying Lerch remainder.  This is the variable-length law; fixed-length aperture bounds do
+not imply it. -/
+theorem rectangularGammaPolarCorrection_central_eq_screwLerch
+    {t : ℝ} (ht : 0 < t) :
+    rectangularGammaPolarCorrection (t / 2) (t / 2) =
+      screwLinearCoeff * t + 2 * (screwLerchConst - screwLerchTail t) := by
+  have hcancel :=
+    normalizedRectangularBottomArchContribution_sub_two_mul_polar_sq
+      (L := t / 2) (a := t / 2) (by positivity : 0 ≤ t / 2) (le_refl (t / 2))
+  have hre := congrArg Complex.re hcancel
+  norm_num only [Complex.sub_re, Complex.ofReal_re] at hre
+  rw [normalizedRectangularBottomArchContribution_central_explicit ht,
+    rectangularEvenPolarFeature_central_sq ht.le] at hre
+  rw [screwLinearCoeff]
+  linarith
+
+/-- The residual central Gamma chart after subtracting its tangent at the fixed FU wall. -/
+def ccmFUCentralGammaLerchAffineDefect (b t : ℝ) : ℝ :=
+  screwLerchTail t - screwLerchTail b - (t - b) * screwLerchTail₁ b
+
+/-- **FU--Xi-screw affine decomposition.** The central rectangular FU remainder is twice the
+literal Xi-screw codiagonal plus twice an explicit Lerch Taylor defect.  Thus all arithmetic
+prime--polar cancellation stays inside one unscalarized Xi-screw codiagonal; the chart-change
+error is purely archimedean. -/
+theorem ccmFUCentralRectangularAffineRemainder_eq_two_mul_xiScrewCodiagonal_add_lerchDefect
+    {b t : ℝ} (hb : 0 < b) (hbt : b ≤ t) :
+    ccmFUCentralRectangularAffineRemainder b t =
+      2 * ccmGuinandWeilXiScrewCodiagonal b t +
+        2 * ccmFUCentralGammaLerchAffineDefect b t := by
+  rw [ccmFUCentralRectangularAffineRemainder,
+    centralRectangularPrimePolarSource_eq_xiScrew_sub_gamma (hb.le.trans hbt),
+    centralRectangularPrimePolarSource_eq_xiScrew_sub_gamma hb.le,
+    rectangularGammaPolarCorrection_central_eq_screwLerch (hb.trans_le hbt),
+    rectangularGammaPolarCorrection_central_eq_screwLerch hb,
+    ccmGuinandWeilXiScrewCodiagonal,
+    ccmGuinandWeilXiScrewRightSlope_eq_completedError_add_arch,
+    suzukiPsi_eq_xiScrewDivisor_re (hb.le.trans hbt),
+    suzukiPsi_eq_xiScrewDivisor_re hb.le]
+  unfold ccmFUCentralGammaLerchAffineDefect
   ring
 
 end GaloisForLFunctions.RHTower

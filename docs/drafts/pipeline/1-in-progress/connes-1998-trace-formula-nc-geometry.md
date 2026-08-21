@@ -51,17 +51,17 @@ compaction-surviving ledger.
 | A27 | App I(27)(28): `φ·α = 0` for `α ∈ 𝒟'`, `φ` smooth with finite-order zeros ⟹ `α ∈ span{δ^{(k)}_{x_i}}` | `ConnesDivisionDistribution` (reuses corpus `HTGeometry.exists_delta_representation`, `jetTest`) | DONE |
 
 ### Tier B — heavy analytic layers
-| Tag | Statement | Blocking input |
+| Tag | Statement | Status |
 |---|---|---|
-| B1 | §V Thm 3 (local trace formula) | symbol calculus + `F(−log|u|) = ρ^{-1}/|a|` on a general local field |
-| B2 | §VII Lemma 1 | `L²(X_S)` completion + Fubini on the `O_S^*` orbit |
-| B3 | §VII Thm 4 | B1 + B2 + Lemma VII.2 |
-| B4 | §VII Lemma 2 | Besov-type `‖ε_Λ η‖_{(1,α,v)} = O(Λ^{-N})` |
-| B5 | App I Lemmas 1–5 | Tate/Iwasawa homogeneous distributions on `A` |
-| B6 | App I / Thm III.1 | B5 + growth of `L(χ₀,½+it)` |
-| B7 | App II Thm 6 | Weil's explicit formula (cited [W3], not proved in the paper) |
-| B8 | §VIII Lemma 1, Cor 2, Thm 5, Lemma 3 | B3 + B6 + Weil positivity criterion |
-| B9 | App II (35) in limit form | dominated convergence for `∫_{|x|≥ε} h d*x → ∫ h d*x` and `∫ h\|x\|^ε d*x → ∫ h d*x` on `h = f − f(0)1_box`; the reduction to `h(0)=0` is exactly the two indicator computations already proved |
+| B1 | §V Thm 3 (local trace formula) | **analytic chain DONE at the real place**: `ConnesSymbolChangeOfVariables.connes_symbol_changeOfVariables` is (29)=(31); `ConnesLocalTraceCore.connes_traceCore_tendsto` is (31)⟶(33); `connes_symbolIntegral_tendsto` chains them.  Remaining: the operator-theoretic step (23)(24) identifying `Trace (R_Λ U(h))` with the symbol integral — needs a trace-class Schwartz-kernel layer for an operator that is not Hilbert–Schmidt |
+| B2 | §VII Lemma 1 | for `k = ℚ` the corpus already owns Lemma 1(a) as `FieldOneFiniteStageBruhatOrbit_summable` / `…BruhatPeriodization` (Connes–Marcolli Lemma 2.29).  Lemma 1(b) (Fourier unitary on `L²(X_S)`) still open |
+| B3 | §VII Thm 4 | needs B1 + B2 + B4 |
+| B4 | §VII Lemma 2 | (43) done (A5); (45) scaling done (`ConnesLogShiftKernel.connes_logShift_substitution`); (44) finiteness of `c'_α` and the Besov estimate (42) open |
+| B5 | App I Lemmas 1–5 | Lemma 4/5 (approximate units) partially reachable from `ConnesSobolevWeight`; Lemmas 1–3 need Tate/Iwasawa homogeneous distributions on `A` |
+| B6 | App I / Thm III.1 | needs B5 + growth of `L(χ₀,½+it)`; the *conclusion* steps (27)(28)(29)(34) are already Lean-owned (A27, A3, A9) |
+| B7 | App II Thm 6 | Lemma 3 done (`ConnesCharacterRescaling.connes_logDistribution_character_rescale`); (54) done at both archimedean places and non-archimedean (`ConnesGaussianLogMoment`, `ConnesNonArchPrincipalValue`); the global sum needs Weil's explicit formula, which the paper *quotes* |
+| B8 | §VIII Lemma 1, Cor 2, Thm 5, Lemma 3 | window count (9)/(12)/(13) done (`ConnesFunctionFieldWindow`); Lemma 3's model computation done (A26); the rest needs B3 + B6 |
+| B9 | App II (35) in limit form | **DONE** — `ConnesArchPrincipalValue.connes_logPV_sub_powerPV_tendsto` |
 
 Note: App II Theorem 1 (Weil's explicit formula) is *quoted*, not proved, in this paper; it is not in
 the "provable propositions of this paper" scope except through the corpus's own explicit-formula
@@ -109,3 +109,8 @@ layer (`XiGuinandWeilExplicitFormula`, `xi_explicitFormula_logDeriv`).
 `ConnesArchPrincipalValue`, `ConnesFlowTrace`, `ConnesDivisionDistribution`,
 `ConnesGaussianLogMoment`, `ConnesGraphDelta`, `ConnesResonanceModel`,
 `ConnesComplexLogAreaAsymptotics`.
+- 2026-08-21 — Tier B batch 1: B9 complete (`connes_logPV_sub_powerPV_tendsto`);
+  B7a (`ConnesCharacterRescaling`), B8a (`ConnesFunctionFieldWindow`),
+  B4a-scaling (`ConnesLogShiftKernel`), and the whole analytic chain of Theorem V.3 at the real
+  place (`ConnesLocalTraceCore` + `ConnesSymbolChangeOfVariables`).  5 new modules wired into
+  `GaloisForLFunctions.RHTower`.

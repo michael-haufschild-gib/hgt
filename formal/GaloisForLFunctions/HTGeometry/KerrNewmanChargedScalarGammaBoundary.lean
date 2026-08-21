@@ -30,7 +30,7 @@ open scoped Differential
 
 namespace GaloisForLFunctions
 
-open Bottcher Polynomial
+open Bottcher Polynomial ComplexOrder
 
 noncomputable section
 
@@ -41,6 +41,51 @@ coupling `charge` represents `q_e Q`. -/
 def kerrNewmanChargedScalarEffectiveMultipoleGap
     (ell : ℕ) (charge : ℂ) : ℂ :=
   Complex.sqrt ((2 * (ell : ℂ) + 1) ^ 2 - 4 * charge ^ 2)
+
+/-- At zero scalar charge, the principal effective-multipole gap is the positive odd integer
+selected by the neutral Kerr--Newman sector. -/
+theorem kerrNewmanChargedScalarEffectiveMultipoleGap_neutral
+    (ell : ℕ) :
+    kerrNewmanChargedScalarEffectiveMultipoleGap ell 0 = 2 * (ell : ℂ) + 1 := by
+  unfold kerrNewmanChargedScalarEffectiveMultipoleGap
+  let x : ℝ := 2 * (ell : ℝ) + 1
+  have hx : 0 ≤ x := by
+    dsimp [x]
+    positivity
+  have hcast : 2 * (ell : ℂ) + 1 = (x : ℂ) := by
+    dsimp [x]
+    push_cast
+    ring
+  rw [show ((2 * (ell : ℂ) + 1) ^ 2 - 4 * (0 : ℂ) ^ 2) =
+    (2 * (ell : ℂ) + 1) ^ 2 by ring, hcast]
+  have hnonneg : (0 : ℂ) ≤ (x : ℂ) ^ 2 := by
+    refine RCLike.nonneg_iff_exists_ofReal.mpr ⟨x ^ 2, sq_nonneg x, ?_⟩
+    simp
+  rw [Complex.sqrt_of_nonneg hnonneg]
+  have hre : ((x : ℂ) ^ 2).re = x ^ 2 := by
+    simp [pow_two]
+  rw [hre]
+  simpa using congrArg (fun y : ℝ => (y : ℂ)) (Real.sqrt_sq hx)
+
+/-- The real critical charge amplitude `sqrt (ell (ell + 1))` selects the unit effective gap. -/
+theorem kerrNewmanChargedScalarEffectiveMultipoleGap_criticalCharge
+    (ell : ℕ) :
+    kerrNewmanChargedScalarEffectiveMultipoleGap ell
+      (Real.sqrt ((ell : ℝ) * ((ell : ℝ) + 1)) : ℂ) = 1 := by
+  unfold kerrNewmanChargedScalarEffectiveMultipoleGap
+  let x : ℝ := (ell : ℝ) * ((ell : ℝ) + 1)
+  have hx : 0 ≤ x := by
+    dsimp [x]
+    positivity
+  have hchargeSq : (Real.sqrt x : ℂ) ^ 2 = (x : ℂ) := by
+    rw [← Complex.ofReal_pow]
+    exact_mod_cast Real.sq_sqrt hx
+  rw [show ((2 * (ell : ℂ) + 1) ^ 2 - 4 * (Real.sqrt x : ℂ) ^ 2) = 1 by
+    rw [hchargeSq]
+    dsimp [x]
+    push_cast
+    ring]
+  simp
 
 /-- Frequency-dependent Gamma core of the charged-scalar response, parameterized by its effective
 multipole gap.  Frequency-independent Gamma factors from equation (21) are omitted. -/
@@ -53,6 +98,28 @@ def kerrNewmanChargedScalarPhysicalGammaResponseMero
     (ell : ℕ) (charge : ℂ) : meroField Set.univ :=
   kerrNewmanChargedScalarGammaResponseMero
     (kerrNewmanChargedScalarEffectiveMultipoleGap ell charge)
+
+/-- At the critical real charge amplitude, the physical response is the unit-gap finite
+Gamma-orbit factor. -/
+theorem kerrNewmanChargedScalarPhysicalGammaResponseMero_criticalCharge_eq_linearOrbit
+    (ell : ℕ) :
+    kerrNewmanChargedScalarPhysicalGammaResponseMero ell
+      (Real.sqrt ((ell : ℝ) * ((ell : ℝ) + 1)) : ℂ) =
+      algebraMap (RatFunc ℂ) (meroField Set.univ)
+        (gammaOrbitNatFactor 0 1) := by
+  unfold kerrNewmanChargedScalarPhysicalGammaResponseMero
+  rw [kerrNewmanChargedScalarEffectiveMultipoleGap_criticalCharge]
+  simpa using kerrNewmanNeutralScalarGammaResponseMero_eq_pochhammer 0
+
+/-- The critical-charge physical Kerr--Newman response lies in the differential-algebraic sector
+because its Gamma core is a finite unit-gap orbit factor. -/
+theorem differentialAlgebraicOver_kerrNewmanChargedScalarPhysicalGammaResponseMero_criticalCharge
+    (ell : ℕ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (kerrNewmanChargedScalarPhysicalGammaResponseMero ell
+        (Real.sqrt ((ell : ℝ) * ((ell : ℝ) + 1)) : ℂ)) := by
+  rw [kerrNewmanChargedScalarPhysicalGammaResponseMero_criticalCharge_eq_linearOrbit]
+  exact HTGeometry.differentialAlgebraicOver_algebraMap _
 
 /-- **Kerr--Newman Gamma value relation.**  The normalized frequency response is exactly the
 quotient with shifts `(1+Delta)/2` and `(1-Delta)/2`. -/

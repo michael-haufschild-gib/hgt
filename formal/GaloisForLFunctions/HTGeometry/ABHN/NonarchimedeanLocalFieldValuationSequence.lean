@@ -41,6 +41,41 @@ attribute [local instance] Ideal.Quotient.field
 
 universe u
 
+/-- The canonical valuation relation on the fraction field of a discrete valuation ring. -/
+@[reducible] noncomputable def discreteValuationRingFractionFieldValuativeRel
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F] : ValuativeRel F :=
+  ValuativeRel.ofValuation ((IsDiscreteValuationRing.maximalIdeal A).valuation F)
+
+/-- The valuation topology induced by a specified valuation relation on a DVR fraction field. -/
+@[reducible] noncomputable def discreteValuationRingFractionFieldTopology
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F]
+    [ValuativeRel F] : TopologicalSpace F :=
+  ValuativeRel.topologicalSpace F
+
+/-- The canonical DVR fraction-field topology is valuative. -/
+theorem discreteValuationRingFractionField_isValuativeTopology
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F] :
+    letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+    letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+    IsValuativeTopology F := by
+  infer_instance
+
+/-- The canonical DVR fraction-field topology makes inversion and field operations continuous. -/
+theorem discreteValuationRingFractionField_isTopologicalDivisionRing
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F] :
+    letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+    letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+    IsTopologicalDivisionRing F := by
+  letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+  letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+  letI := IsTopologicalAddGroup.rightUniformSpace F
+  letI := isUniformAddGroup_of_addCommGroup (G := F)
+  infer_instance
+
 /-- The valuation of a nonarchimedean local field, normalized to values in `ℤᵐ⁰`. -/
 noncomputable def nonarchimedeanLocalFieldIntValuation
     (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]

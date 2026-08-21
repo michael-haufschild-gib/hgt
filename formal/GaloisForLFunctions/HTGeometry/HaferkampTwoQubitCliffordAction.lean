@@ -97,9 +97,13 @@ private theorem boolTwoQubitCNOT_conj_none_none :
         boolTwoQubitPauli none none *
         Matrix.conjTranspose (boolTwoQubitCNOT : Matrix (Bool × Bool) (Bool × Bool) ℂ) =
       boolTwoQubitPauli none none := by
-  rw [boolTwoQubitPauli, boolPauliOption]
-  simp only [Matrix.kronecker_one, Matrix.mul_one]
-  exact mul_eq_one_comm.mp (Matrix.mem_unitaryGroup_iff.mp boolTwoQubitCNOT.2)
+  ext i j
+  rcases i with ⟨i₁, i₂⟩
+  rcases j with ⟨j₁, j₂⟩
+  fin_cases i₁ <;> fin_cases i₂ <;> fin_cases j₁ <;> fin_cases j₂ <;>
+    simp +decide [boolTwoQubitCNOT, boolTwoQubitCNOTMatrix, boolTwoQubitPauli,
+      boolPauliOption, Matrix.mul_apply, Matrix.conjTranspose_apply,
+      Fintype.sum_prod_type, Matrix.kronecker, Bool.xor]
 
 private theorem boolTwoQubitCNOT_conj_none_X :
     (boolTwoQubitCNOT : Matrix (Bool × Bool) (Bool × Bool) ℂ) *
@@ -293,25 +297,207 @@ theorem boolTwoQubitCNOT_conj_boolTwoQubitPauli
       boolTwoQubitCNOTScalar p q •
         boolTwoQubitPauli (boolTwoQubitCNOTTarget p q).1
           (boolTwoQubitCNOTTarget p q).2 := by
-  fin_cases p <;> fin_cases q <;>
-    simp only [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget, one_smul] <;>
-    first
-    | exact boolTwoQubitCNOT_conj_none_none
-    | exact boolTwoQubitCNOT_conj_none_X
-    | exact boolTwoQubitCNOT_conj_none_Y
-    | exact boolTwoQubitCNOT_conj_none_Z
-    | exact boolTwoQubitCNOT_conj_X_none
-    | exact boolTwoQubitCNOT_conj_X_X
-    | exact boolTwoQubitCNOT_conj_X_Y
-    | exact boolTwoQubitCNOT_conj_X_Z
-    | exact boolTwoQubitCNOT_conj_Y_none
-    | exact boolTwoQubitCNOT_conj_Y_X
-    | exact boolTwoQubitCNOT_conj_Y_Y
-    | exact boolTwoQubitCNOT_conj_Y_Z
-    | exact boolTwoQubitCNOT_conj_Z_none
-    | exact boolTwoQubitCNOT_conj_Z_X
-    | exact boolTwoQubitCNOT_conj_Z_Y
-    | exact boolTwoQubitCNOT_conj_Z_Z
+  fin_cases p
+  · fin_cases q
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_none_none
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_none_X
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_none_Y
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_none_Z
+  · fin_cases q
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_X_none
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_X_X
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_X_Y
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_X_Z
+  · fin_cases q
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_Y_none
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_Y_X
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_Y_Y
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_Y_Z
+  · fin_cases q
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_Z_none
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_Z_X
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_Z_Y
+    · simpa [boolTwoQubitCNOTScalar, boolTwoQubitCNOTTarget] using
+        boolTwoQubitCNOT_conj_Z_Z
+
+theorem isBoolOneQubitPauliClifford_mul
+    (U V : Matrix.unitaryGroup Bool ℂ)
+    (hU : IsBoolOneQubitPauliClifford (U : Matrix Bool Bool ℂ))
+    (hV : IsBoolOneQubitPauliClifford (V : Matrix Bool Bool ℂ)) :
+    IsBoolOneQubitPauliClifford ((U * V : Matrix.unitaryGroup Bool ℂ) : Matrix Bool Bool ℂ) := by
+  intro p
+  obtain ⟨cV, q, hcV, hVq⟩ := hV p
+  obtain ⟨cU, r, hcU, hUr⟩ := hU q
+  refine ⟨cV * cU, r, mul_ne_zero hcV hcU, ?_⟩
+  rw [unitary_mul_conjugation_smul U V _ _ _ hVq, hUr, smul_smul]
+
+theorem boolHadamard_isBoolOneQubitPauliClifford :
+    IsBoolOneQubitPauliClifford (boolHadamard : Matrix Bool Bool ℂ) := by
+  intro p
+  fin_cases p
+  · refine ⟨1, none, one_ne_zero, ?_⟩
+    simp only [boolPauliOption, Matrix.mul_one, one_smul]
+    rw [← star_eq_conjTranspose]
+    exact Matrix.mem_unitaryGroup_iff.mp boolHadamard.2
+  · exact ⟨1, some 2, one_ne_zero, by
+      simpa [boolPauliOption] using boolHadamard_conj_X⟩
+  · exact ⟨-1, some 1, neg_ne_zero.mpr one_ne_zero, by
+      simpa [boolPauliOption] using boolHadamard_conj_Y⟩
+  · exact ⟨1, some 0, one_ne_zero, by
+      simpa [boolPauliOption] using boolHadamard_conj_Z⟩
+
+theorem boolPhase_isBoolOneQubitPauliClifford :
+    IsBoolOneQubitPauliClifford (boolPhase : Matrix Bool Bool ℂ) := by
+  intro p
+  fin_cases p
+  · refine ⟨1, none, one_ne_zero, ?_⟩
+    simp only [boolPauliOption, Matrix.mul_one, one_smul]
+    rw [← star_eq_conjTranspose]
+    exact Matrix.mem_unitaryGroup_iff.mp boolPhase.2
+  · exact ⟨1, some 1, one_ne_zero, by
+      simpa [boolPauliOption] using boolPhase_conj_X⟩
+  · exact ⟨-1, some 0, neg_ne_zero.mpr one_ne_zero, by
+      simpa [boolPauliOption] using boolPhase_conj_Y⟩
+  · exact ⟨1, some 2, one_ne_zero, by
+      simpa [boolPauliOption] using boolPhase_conj_Z⟩
+
+theorem boolHadamardPhase_isBoolOneQubitPauliClifford :
+    IsBoolOneQubitPauliClifford (boolHadamardPhase : Matrix Bool Bool ℂ) := by
+  simpa [boolHadamardPhase] using
+    isBoolOneQubitPauliClifford_mul boolHadamard boolPhase
+      boolHadamard_isBoolOneQubitPauliClifford boolPhase_isBoolOneQubitPauliClifford
+
+theorem boolTwoQubitCNOT_isBoolTwoQubitPauliClifford :
+    IsBoolTwoQubitPauliClifford
+      (boolTwoQubitCNOT : Matrix (Bool × Bool) (Bool × Bool) ℂ) := by
+  intro p q
+  refine ⟨boolTwoQubitCNOTScalar p q, (boolTwoQubitCNOTTarget p q).1,
+    (boolTwoQubitCNOTTarget p q).2, ?_,
+    boolTwoQubitCNOT_conj_boolTwoQubitPauli p q⟩
+  fin_cases p <;> fin_cases q <;> simp +decide [boolTwoQubitCNOTScalar]
+
+theorem boolTwoQubitSWAP_conj_boolTwoQubitPauli
+    (p q : Option (Fin 3)) :
+    (boolTwoQubitSWAP : Matrix (Bool × Bool) (Bool × Bool) ℂ) *
+        boolTwoQubitPauli p q *
+        Matrix.conjTranspose (boolTwoQubitSWAP : Matrix (Bool × Bool) (Bool × Bool) ℂ) =
+      boolTwoQubitPauli q p := by
+  ext i j
+  rcases i with ⟨i₁, i₂⟩
+  rcases j with ⟨j₁, j₂⟩
+  fin_cases i₁ <;> fin_cases i₂ <;> fin_cases j₁ <;> fin_cases j₂ <;>
+    simp [boolTwoQubitSWAP, boolTwoQubitSWAPMatrix, boolTwoQubitPauli,
+      Matrix.mul_apply, Matrix.conjTranspose_apply, Fintype.sum_prod_type, Matrix.kronecker] <;>
+    ring
+
+theorem boolTwoQubitSWAP_isBoolTwoQubitPauliClifford :
+    IsBoolTwoQubitPauliClifford
+      (boolTwoQubitSWAP : Matrix (Bool × Bool) (Bool × Bool) ℂ) := by
+  intro p q
+  exact ⟨1, q, p, one_ne_zero, by
+    simpa using boolTwoQubitSWAP_conj_boolTwoQubitPauli p q⟩
+
+theorem one_isBoolTwoQubitPauliClifford :
+    IsBoolTwoQubitPauliClifford (1 : Matrix (Bool × Bool) (Bool × Bool) ℂ) := by
+  intro p q
+  exact ⟨1, p, q, one_ne_zero, by simp⟩
+
+theorem isBoolTwoQubitPauliClifford_mul
+    (U V : Matrix.unitaryGroup (Bool × Bool) ℂ)
+    (hU : IsBoolTwoQubitPauliClifford (U : Matrix (Bool × Bool) (Bool × Bool) ℂ))
+    (hV : IsBoolTwoQubitPauliClifford (V : Matrix (Bool × Bool) (Bool × Bool) ℂ)) :
+    IsBoolTwoQubitPauliClifford
+      ((U * V : Matrix.unitaryGroup (Bool × Bool) ℂ) : Matrix (Bool × Bool) (Bool × Bool) ℂ) := by
+  intro p q
+  obtain ⟨cV, r, s, hcV, hVpq⟩ := hV p q
+  obtain ⟨cU, t, u, hcU, hUrs⟩ := hU r s
+  refine ⟨cV * cU, t, u, mul_ne_zero hcV hcU, ?_⟩
+  rw [unitary_mul_conjugation_smul U V _ _ _ hVpq, hUrs, smul_smul]
+
+theorem isBoolTwoQubitPauliClifford_tensor
+    (U V : Matrix.unitaryGroup Bool ℂ)
+    (hU : IsBoolOneQubitPauliClifford (U : Matrix Bool Bool ℂ))
+    (hV : IsBoolOneQubitPauliClifford (V : Matrix Bool Bool ℂ)) :
+    IsBoolTwoQubitPauliClifford
+      (Quantum.tensorGate U V : Matrix (Bool × Bool) (Bool × Bool) ℂ) := by
+  intro p q
+  obtain ⟨c, r, hc, hUp⟩ := hU p
+  obtain ⟨d, s, hd, hVq⟩ := hV q
+  refine ⟨c * d, r, s, mul_ne_zero hc hd, ?_⟩
+  rw [boolTwoQubitPauli, twoQubitTensor_conjugation, hUp, hVq]
+  ext i j
+  rcases i with ⟨i₁, i₂⟩
+  rcases j with ⟨j₁, j₂⟩
+  simp [boolTwoQubitPauli, Matrix.kronecker, smul_eq_mul, mul_assoc, mul_left_comm]
+
+theorem boolAxisNormalizer_isBoolOneQubitPauliClifford (p : Option (Fin 3)) :
+    IsBoolOneQubitPauliClifford (boolAxisNormalizer p : Matrix Bool Bool ℂ) := by
+  fin_cases p
+  · intro q
+    exact ⟨1, q, one_ne_zero, by simp [boolAxisNormalizer]⟩
+  · simpa [boolAxisNormalizer] using boolHadamard_isBoolOneQubitPauliClifford
+  · simpa [boolAxisNormalizer] using boolHadamardPhase_isBoolOneQubitPauliClifford
+  · intro q
+    exact ⟨1, q, one_ne_zero, by simp [boolAxisNormalizer]⟩
+
+theorem boolTwoQubitLocalNormalizer_isBoolTwoQubitPauliClifford
+    (p q : Option (Fin 3)) :
+    IsBoolTwoQubitPauliClifford
+      (boolTwoQubitLocalNormalizer p q : Matrix (Bool × Bool) (Bool × Bool) ℂ) := by
+  exact isBoolTwoQubitPauliClifford_tensor (boolAxisNormalizer p) (boolAxisNormalizer q)
+    (boolAxisNormalizer_isBoolOneQubitPauliClifford p)
+    (boolAxisNormalizer_isBoolOneQubitPauliClifford q)
+
+theorem boolTwoQubitTransport_isBoolTwoQubitPauliClifford
+    (p q : Option (Fin 3)) :
+    IsBoolTwoQubitPauliClifford
+      (boolTwoQubitTransport p q : Matrix (Bool × Bool) (Bool × Bool) ℂ) := by
+  by_cases hp : p = none
+  · rw [boolTwoQubitTransport, if_pos hp]
+    exact boolTwoQubitLocalNormalizer_isBoolTwoQubitPauliClifford p q
+  · by_cases hq : q = none
+    · rw [boolTwoQubitTransport, if_neg hp, if_pos hq]
+      exact isBoolTwoQubitPauliClifford_mul boolTwoQubitSWAP
+        (boolTwoQubitLocalNormalizer p q) boolTwoQubitSWAP_isBoolTwoQubitPauliClifford
+        (boolTwoQubitLocalNormalizer_isBoolTwoQubitPauliClifford p q)
+    · rw [boolTwoQubitTransport, if_neg hp, if_neg hq]
+      exact isBoolTwoQubitPauliClifford_mul boolTwoQubitCNOT
+        (boolTwoQubitLocalNormalizer p q) boolTwoQubitCNOT_isBoolTwoQubitPauliClifford
+        (boolTwoQubitLocalNormalizer_isBoolTwoQubitPauliClifford p q)
+
+theorem scalarSpecialUnitaryRepresentative_isBoolTwoQubitPauliClifford
+    (U : Matrix.unitaryGroup (Bool × Bool) ℂ)
+    (hU : IsBoolTwoQubitPauliClifford (U : Matrix (Bool × Bool) (Bool × Bool) ℂ)) :
+    IsBoolTwoQubitPauliClifford
+      (scalarSpecialUnitaryRepresentative U : Matrix (Bool × Bool) (Bool × Bool) ℂ) := by
+  intro p q
+  obtain ⟨c, r, s, hc, htransport⟩ := hU p q
+  refine ⟨c, r, s, hc, ?_⟩
+  rw [scalarSpecialUnitaryRepresentative_conjugation_eq]
+  exact htransport
+
+theorem boolTwoQubitTransportSpecial_isBoolTwoQubitPauliClifford
+    (p q : Option (Fin 3)) :
+    IsBoolTwoQubitPauliClifford
+      (scalarSpecialUnitaryRepresentative (boolTwoQubitTransport p q) :
+        Matrix (Bool × Bool) (Bool × Bool) ℂ) :=
+  scalarSpecialUnitaryRepresentative_isBoolTwoQubitPauliClifford _
+    (boolTwoQubitTransport_isBoolTwoQubitPauliClifford p q)
 
 end
 
