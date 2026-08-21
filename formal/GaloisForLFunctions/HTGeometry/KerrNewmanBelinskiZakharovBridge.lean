@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.KerrLowFrequencyGammaCollapse
 import GaloisForLFunctions.HTGeometry.KerrNewmanChargedScalarGammaBoundary
 import GaloisForLFunctions.HTGeometry.ClockDynamicsUnderdetermination
 import GaloisForLFunctions.HTGeometry.ContinuumChronometricGravity
+import GaloisForLFunctions.HTGeometry.HLSKinematics
 
 /-!
 # Kerr, Kerr--Newman, Einstein-form, and Belinski--Zakharov algebraic bridges
@@ -143,6 +144,54 @@ theorem kerrNewmanBoyerLindquistMetric_flatLimit :
   fin_cases i <;> fin_cases j <;>
     simp [kerrNewmanBoyerLindquistMetric, kerrNewmanKillingBlock,
       kerrNewmanSigma, kerrNewmanDelta, minkowskiMetric4]
+
+/-- The flat Kerr--Newman specialization realizes the complete one-tick and nine-null-probe
+profile used by the chronometric Minkowski rigidity theorem.  Thus the flat limit is not only a
+matrix equality: it has the corpus's operational clock normalization. -/
+theorem kerrNewmanBoyerLindquistMetric_flatLimit_clockProbes :
+    clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) clockTime4 = -1 ∧
+      clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) clockXPlus4 = 0 ∧
+      clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) clockXMinus4 = 0 ∧
+      clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) clockYPlus4 = 0 ∧
+      clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) clockYMinus4 = 0 ∧
+      clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) clockZPlus4 = 0 ∧
+      clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) clockZMinus4 = 0 ∧
+      clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) clockXYNull4 = 0 ∧
+      clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) clockXZNull4 = 0 ∧
+      clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) clockYZNull4 = 0 := by
+  rw [kerrNewmanBoyerLindquistMetric_flatLimit]
+  repeat' apply And.intro
+  all_goals
+    norm_num [clockSquaredInterval4, dotProduct, Matrix.mulVec, Fin.sum_univ_succ,
+      clockTime4, clockXPlus4, clockXMinus4, clockYPlus4, clockYMinus4,
+      clockZPlus4, clockZMinus4, clockXYNull4, clockXZNull4, clockYZNull4, minkowskiMetric4]
+
+/-- The HLS kinematics use the opposite Lorentzian sign convention to the chronometric metric. -/
+theorem hlsMinkowskiMetric_eq_neg_minkowskiMetric4 :
+    hlsMinkowskiMetric = -minkowskiMetric4 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [hlsMinkowskiMetric, minkowskiMetric4]
+
+/-- In the flat Kerr--Newman specialization, the signed chronometric interval is the negative of
+the HLS Minkowski quadratic form.  This transports HLS null, time-like, and mass-shell
+normalizations to the asymptotic Kerr--Newman background. -/
+theorem kerrNewmanBoyerLindquistMetric_flatLimit_interval_eq_neg_hlsMinkowskiForm
+    (p : HLSMinkowskiVector) :
+    clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)) p =
+      -hlsMinkowskiForm p := by
+  rw [kerrNewmanBoyerLindquistMetric_flatLimit, hlsMinkowskiForm_apply]
+  simp [clockSquaredInterval4, minkowskiMetric4, dotProduct, Matrix.mulVec,
+    Fin.sum_univ_four]
+  ring
+
+/-- Every HLS rest momentum has its expected negative mass square in the flat Kerr--Newman
+background. -/
+theorem kerrNewmanBoyerLindquistMetric_flatLimit_restMomentum_interval (mass : ℝ) :
+    clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2))
+      (hlsRestMomentum mass) = -mass ^ 2 := by
+  rw [kerrNewmanBoyerLindquistMetric_flatLimit_interval_eq_neg_hlsMinkowskiForm,
+    hlsRestMomentum_mass_shell]
 
 /-- The full Kerr--Newman metric is symmetric. -/
 theorem kerrNewmanBoyerLindquistMetric_transpose

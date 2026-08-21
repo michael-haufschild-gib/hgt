@@ -542,9 +542,13 @@ theorem nonarchimedeanLocalFieldAdjoinRootFractionField_finiteDimensional
     (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
     (hg : Irreducible g) :
     letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
-    letI : Algebra 𝒪[K] (FractionRing (AdjoinRoot f)) :=
-      RingHom.toAlgebra <|
-        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+    letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+        (AdjoinRoot f)).mpr ?_
+      change Function.Injective <|
+        AdjoinRoot.of f
+      exact AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
     letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
       refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
         (FractionRing (AdjoinRoot f))).mpr ?_
