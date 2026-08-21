@@ -144,13 +144,56 @@ Verification:
 - forbidden-token scan passed;
 - no umbrella/full build was run; module is wired into `RHTower.lean`.
 
+## Source-normal renewal phase dichotomy
+
+Corpus search first tested finite Stokes-conditioned coenergy against constitutive KL renewal
+price. That conjecture fails at a precise seam: coenergy is a summable scalar prime-power family,
+but corpus has no measure realization identifying it with, or bounding, renewal KL action. Treating
+the two as interchangeable would be unsupported.
+
+The nonlinear shifted-Xi Weyl corpus supplies a genuine replacement. Lean now proves fixed actual
+abelian class-law scale-orbit certificates exist exactly when Schwarz-pair normal coefficient is
+zero. Off zero fibre, every finite degree admits an unconditional far-right positive Hankel block
+whose nonlinear Jacobi/Weyl renewal injects exactly `|Im(xiSpectralPoint q)|`. Quantitatively,
+
+```text
+normSq(a) * normalCoefficient(q) = multiplicity(q) * |centeredRate(q)|,
+2 * multiplicity(q) * WeylIncrement(q,w,n)
+  = normSq(a) * normalCoefficient(q).
+```
+
+Hence fixed-source contiguity and changing-admission renewal are two complementary phases:
+neutral normal charge is realized by a fixed class law, while nonzero normal charge necessarily
+survives through positive nonlinear degree renewal. The obstruction is no longer existence at any
+finite degree. It is cofinal degree--mass synchronization: current far-right witness may depend on
+degree.
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairNormalRenewalWeld.lean`
+
+Key closed declarations:
+
+```text
+sourceHorizontalXiAdaptiveClassLawScaleOrbitCertificate_nonempty_iff_normalCoefficient_eq_zero
+xiSchwarzPairSourceNormalRate_eq_abs_centeredRate_div_normSq
+normSq_mul_xiSchwarzPairSourceNormalCoefficient_eq_multiplicity_mul_abs_centeredRate
+xiSchwarzPairCompletedSourceWeylNormalizedIncrement_eq_normalDisplacement
+xiSchwarzPair_offLine_finiteDegree_nonlinearRenewal
+xiSchwarzPair_classLaw_or_nonlinearRenewalPhase
+```
+
+Verification:
+
+- corpus research search, scratch proof, direct source check, and exact target build passed;
+- audited theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`;
+- forbidden-token and whitespace scans passed;
+- module is wired into `RHTower.lean`; no umbrella/full build was run.
+
 ## Next hard conjecture
 
-Boundary nullity and negative tangent orientation are now fully classified; they are detector
-geometry, not producer. Next target is source-normal channel: combine exact entropy-normal rate
-with corpus nonlinear degree renewal or completed prime--archimedean source law to force
-`m N(q) = 0`. Linear budget reporters are already firewalled, so viable producer must be nonlinear,
-admission-sensitive, or conserved across degree renewal.
+Construct one cofinal degree--mass schedule, or a compactness/diagonal limit replacing it, on which
+shifted-Xi positive admission and exact source-normal Weyl renewal persist simultaneously. Then
+compare resulting persistent nonlinear source capital with an actual finite source-action budget.
+Do not identify Stokes coenergy with KL without a proved measure bridge.
 
 ## Log
 
@@ -159,3 +202,6 @@ admission-sensitive, or conserved across degree renewal.
   coordinates).
 - 2026-08-21 — Proved exact tangent/normal Lorentz decomposition; crossing coefficient is always
   negative, while orthogonal source-normal coefficient is RH-bearing and globally zero iff RH.
+- 2026-08-21 — Proved fixed-class-law/positive-nonlinear-renewal phase dichotomy and exact
+  coefficient transfer at every finite degree; isolated cofinal degree--mass synchronization as
+  remaining producer seam.

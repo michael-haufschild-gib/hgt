@@ -1626,3 +1626,13 @@ hypotheses with no model.
 Repaired by `IsSemicharacterOn H χ Γ` (the law on the period group) plus
 `appellHumbertFactor_cocycle_at` (the cocycle from the law at one pair).  Ten modules, thirteen
 sites, no proof body changed; all rebuild green and axiom-clean.
+
+## Card 4: the growth rate exists
+
+`HTGeometry.TwistedChainDegreeRate` (wired, built, axiom-clean): `matDeg_twistedChain_add_le`
+(subadditivity from `A_{m+n} = A_m·σ^m(A_n)`) and `tendsto_matDeg_twistedChain` (Fekete) — the
+asymptotic rate `twistedChainRate` exists as an actual limit, with **no** invertibility, leading-matrix
+or completion hypothesis.
+
+So the card's open point is now purely about *attainment*: `λ` exists; whether some `(N, S)` realises
+it is the semisimplicity statement, equivalently the restart bound.

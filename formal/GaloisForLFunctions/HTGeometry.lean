@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.ABHN.BrauerFoundations
 import GaloisForLFunctions.HTGeometry.AbelianRepairLeastAction
 import GaloisForLFunctions.HTGeometry.AmbidextrousKummerCalkinProperness
 import GaloisForLFunctions.HTGeometry.ClosedRangeTransgression
+import GaloisForLFunctions.HTGeometry.TernaryFormationComplex
 import GaloisForLFunctions.HTGeometry.SerialObserverFormationCharge
 import GaloisForLFunctions.HTGeometry.OperatorAbsoluteValueBetween
 import GaloisForLFunctions.HTGeometry.PagewiseHodgeFlag
@@ -99,6 +100,7 @@ import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixUnits
 import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixEquations
 import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixRelations
 import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixIsometries
+import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixAdjoints
 import GaloisForLFunctions.HTGeometry.ABHN.HasseClassicalMatrixGroups
 import GaloisForLFunctions.HTGeometry.ABHN.HasseMatrixNilpotence
 import GaloisForLFunctions.HTGeometry.ABHN.HasseAlgebraEquations
@@ -9456,6 +9458,7 @@ import GaloisForLFunctions.HTGeometry.PseudoDiffOpDegree
 import GaloisForLFunctions.HTGeometry.ShiftedMatrixDegree
 import GaloisForLFunctions.HTGeometry.InvertibleLeadingChainVanishes
 import GaloisForLFunctions.HTGeometry.ShiftedTopMatrix
+import GaloisForLFunctions.HTGeometry.TwistedChainDegreeRate
 import GaloisForLFunctions.HTGeometry.TwistedMatrixChain
 import GaloisForLFunctions.HTGeometry.TwistedMeanValueSplit
 import GaloisForLFunctions.HTGeometry.TwistedReparametrizationAutomorphism

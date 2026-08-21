@@ -1,13 +1,13 @@
 # Complete-history invariant metric cone
 
 - **ID:** `complete-history-invariant-metric-cone`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / EXACT CLASSIFICATION / POSITIVE SURVIVOR
 - **Source:** `../../1-in-progress/self-noncontainment-minimal-repair-law.md`
 - **Statement:** Once one positive metric invariant under every closed history exists, all such
   metrics are exactly that metric multiplied by the positive self-adjoint units in the
   closed-history commutant.
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [REDISCOVERED] [LEAN OPEN]`
+- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [REDISCOVERED] [LEAN COMPLETE]`
 
 ## Goal
 
@@ -280,7 +280,7 @@ Primary parent boundary:
 - [x] 0 → 1: exact invariant-form classification isolated from physical interpretation
 - [x] 1 → 2: matrix proof, ray criterion, spectator corollary, and groupoid reduction
   dependency-closed
-- [ ] 2 → 3: exact Lean theorem suite, direct check, axiom audit, lint, and targeted final build
+- [x] 2 → 3: exact Lean theorem suite, direct check, axiom audit, lint, and targeted final build
 - [ ] 3 → 4: not eligible as Nature result; supporting theorem only
 
 ## Lean target
@@ -384,3 +384,39 @@ This is not a derivation of observed couplings, and it is not new representation
 grand-unified groups and irreducible representations already exploit the same rigidity mechanism.
 The new programme would have to derive the role-crossing history action from a source before a
 unified algebra, spacetime, metric, or canonical normalization is supplied.
+
+## Lean formalization — COMPLETE
+
+Module: `formal/GaloisForLFunctions/HTGeometry/CompleteHistoryInvariantMetricCone.lean`, wired
+into `GaloisForLFunctions.HTGeometry`, self-contained over mathlib.  `#print axioms` on every
+capstone returns exactly `[propext, Classical.choice, Quot.sound]`.  All ten required targets are
+present.
+
+| Target | Lean declaration |
+|---|---|
+| 1. invariant positive-history metric predicate | `IsInvariantMetric` |
+| 2. positive `H`-self-adjoint commutant-factor predicate | `IsCommutantFactor` |
+| 3. construction `A = H⁻¹K` | `isCommutantFactor_inv_mul` |
+| 4. commutation theorem `(8)` | the `commutes` field of `isCommutantFactor_inv_mul`, via `mul_transport_eq` and `inv_mul_transport_eq` |
+| 5. adjointness and positivity identities | the `selfAdjoint` and `positive` fields of `isCommutantFactor_inv_mul`; `isInvariantMetric_mul` |
+| 6. inverse constructions `(3)`–`(4)` | `isCommutantFactor_inv_mul_mul`, `mul_inv_mul`, `invariantMetric_image_eq` |
+| 7. ray-rigidity equivalence `(5)` | `invariantMetric_eq_ray_iff` |
+| 8. spectator two-weight family and non-proportionality | `isSectorSystem_pair`, `spectator_two_weight` |
+| 9. connected-history root transport and path independence | `metricField_eq_root_transport`, `conjTranspose_transport_cancel`, `metricField_transport_congr` |
+| 10. finite-sector weight family, projective injectivity, `m−1` ratios | `IsSectorSystem`, `sectorFactor`, `isCommutantFactor_sectorFactor`, `sectorFactor_eq_smul_iff` |
+
+Three points worth recording.
+
+*Transports need no invertibility hypothesis.*  `isUnit_det_transport` derives it: taking
+determinants in `T_gᴴ K T_g = K` and cancelling `det K ≠ 0` gives
+`conj(det T_g) · det T_g = 1`.
+
+*The positivity of the sector family is a Gram argument, not a spectral one.*
+`mul_sectorFactor_eq` rewrites `H A_w` as `∑_j w_j P_jᴴ H P_j`, `dotProduct_sector_term` turns each
+quadratic form into `⟨P_j x, H P_j x⟩`, and `∑_j P_j = 1` forces some `P_j x ≠ 0` when `x ≠ 0`.
+The `Finsupp`-based mathlib definition of `PosDef` is avoided throughout by working with
+`posDef_iff_dotProduct_mulVec`.
+
+*Path independence needs only the second transport to be invertible.*  In
+`metricField_transport_congr` the loop identity is proved by conjugating with `c'` alone; the
+first transport's invertibility never enters.

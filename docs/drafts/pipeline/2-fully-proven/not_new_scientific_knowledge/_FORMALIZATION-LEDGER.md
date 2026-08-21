@@ -1790,3 +1790,27 @@ Reusable pieces exported: `polyDivDiff`, `polyDivDiff_spec`, `analyticAt_polyDiv
 `iteratedDeriv_eq_zero_of_flat_factor` (an HTGeometry-layer copy of the flat-factor jet lemma —
 the RHTower one in `MultiQuartetPassportRealization.lean` cannot be imported downward),
 `exists_localInverse_analytic`, `analyticAt_polyEval`.
+
+## `complete-history-invariant-metric-cone` — PROMOTED to stage 3
+
+Module `formal/GaloisForLFunctions/HTGeometry/CompleteHistoryInvariantMetricCone.lean`, wired into
+`GaloisForLFunctions.HTGeometry`; self-contained over mathlib; all capstones audited at
+`[propext, Classical.choice, Quot.sound]`.  The card listed ten required Lean targets and stated
+that "no weaker support theorem counts"; all ten are present (the table in the card maps them).
+
+Three reusable observations.
+
+1. **Invertibility of the transports is free.**  `isUnit_det_transport`: taking determinants in
+   `T_gᴴ K T_g = K` and cancelling `det K ≠ 0` (`K` positive definite) yields
+   `conj(det T_g) * det T_g = 1`.  No `GL` hypothesis is needed anywhere in the card.
+2. **Never unfold `Matrix.PosDef` directly.**  Its mathlib definition quantifies over `Finsupp`
+   vectors, which is unusable by hand.  Use `Matrix.posDef_iff_dotProduct_mulVec`,
+   `Matrix.PosDef.of_dotProduct_mulVec_pos`, `Matrix.PosSemidef.dotProduct_mulVec_nonneg` and
+   `Matrix.PosDef.smul` instead; positivity of `∑_j w_j P_jᴴ H P_j` then reduces to
+   `Finset.sum_pos'` plus `∑_j P_j = 1`.
+3. **Complex order needs `open scoped ComplexOrder`.**  `Matrix.PosDef` requires
+   `[PartialOrder R]`, and `ℂ` carries none outside that scope.
+
+Reusable pieces exported: `IsInvariantMetric`, `IsCommutantFactor`, `IsSectorSystem`,
+`sectorFactor`, `mul_transport_eq`, `inv_mul_transport_eq`, `dotProduct_sector_term`,
+`metricField_eq_root_transport`, `metricField_transport_congr`.

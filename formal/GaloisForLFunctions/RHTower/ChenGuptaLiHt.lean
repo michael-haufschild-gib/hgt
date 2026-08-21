@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ChenGuptaLiAffinePoisson
+import GaloisForLFunctions.RHTower.ChenGuptaLiMellinPhase
 
 open scoped FourierTransform Topology
 
@@ -9,7 +9,7 @@ namespace RHTower
 /-- CGL's literal oscillatory kernel `h_t(u)=w(u)^2u^{it}`, represented by its positive-axis
 Mellin phase.  The cutoff makes this globally smooth despite the logarithm at zero. -/
 def cglSmoothBumpHtValue (w : CGLSmoothBump) (t x : ℝ) : ℂ :=
-  w.value x * w.value x * Complex.exp ((t : ℂ) * (Real.log x : ℂ) * Complex.I)
+  w.value x * w.value x * cglMellinPhase t x
 
 /-- The CGL oscillatory kernel is smooth everywhere: directly on the positive axis and identically
 zero on a neighborhood of each nonpositive point. -/
@@ -49,10 +49,8 @@ def cglSmoothBumpHt (w : CGLSmoothBump) (t : ℝ) : SchwartzMap ℝ ℂ :=
 
 /-- The Mellin phase in `h_t` has unit modulus. -/
 theorem norm_cglSmoothBumpHt_phase (t x : ℝ) :
-    ‖Complex.exp ((t : ℂ) * (Real.log x : ℂ) * Complex.I)‖ = 1 := by
-  rw [Complex.norm_exp]
-  have him : (((t : ℂ) * (Real.log x : ℂ) * Complex.I).re) = 0 := by simp
-  rw [him, Real.exp_zero]
+    ‖cglMellinPhase t x‖ = 1 := by
+  exact norm_cglMellinPhase t x
 
 /-- The norm of `h_t` is exactly the squared norm of the cutoff, uniformly in `t`. -/
 theorem norm_cglSmoothBumpHt_eq_normSq (w : CGLSmoothBump) (t x : ℝ) :

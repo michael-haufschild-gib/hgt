@@ -1120,3 +1120,28 @@ This settles the shape of what is left.  The restart of `twistedChain_restart` i
 the presentation but a real feature, and the missing statement is exactly the bound on the number of
 restarts — equivalently, that the slopes have denominator at most `r`, which is the Newton-polygon
 statement for the twisted product and the one thing the elementary layer cannot reach.
+
+### Lean progress — the growth rate exists, unconditionally
+
+`GaloisForLFunctions.HTGeometry.TwistedChainDegreeRate` (wired, built, axiom-clean) proves the
+existence half of `(14)`/`(20)` for the matrix degree, with no hypotheses at all:
+
+```text
+matDeg_map_le                    a degree-preserving twist does not raise the matrix degree
+matDeg_twistedChain_add_le       **subadditivity**: `matDeg A_{m+n} ≤ matDeg A_m + matDeg A_n`
+subadditive_matDeg_twistedChain
+twistedChainRate                 the asymptotic clock speed
+tendsto_matDeg_twistedChain      **Fekete: an actual limit, not a limsup**
+```
+
+Subadditivity is the chain-splitting identity `A_{m+n} = A_m · σ^m(A_n)` of `twistedChain_add`,
+together with `matDeg_mul_le` and the fact that twisting by a degree-preserving endomorphism leaves
+a matrix degree alone.  What is notable is what it does *not* need: no invertibility over the
+operator ring, no hypothesis on the leading matrices, no shear, no completion.
+
+Effect on the open point.  The card's `λ` is now a *theorem*, not a conditional object, so the
+remaining question is sharpened from "does the limit exist" to "is it attained".  Concretely, with
+`InvertibleLeadingChainVanishes` in hand: for the companion matrix of `t³ + ∂t + 1` the rate exists
+and equals `1/2`, no integer shear witnesses it, and the missing statement is exactly that some
+pair `(N, S)` realises the infimum — the semisimplicity of the building isometry, equivalently the
+bound on the number of restarts.

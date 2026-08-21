@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 21 August 2026, commit
-`d321799f4d0937747b68eedf626f2b90ac6a8193`, plus declaration-index review of current Lean
+`0f2071646827d552fd8a782deec53f32eb78529b`, plus declaration-index review of current Lean
 working-tree additions. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified and not claimed build-audited in this
@@ -31,9 +31,9 @@ RH and its negation remain unproved.
 
 ## Executive map
 
-Formal corpus currently supports sixteen named live producer architectures, distinguished by their
+Formal corpus currently supports seventeen named live producer architectures, distinguished by their
 first source premise rather than by pairwise-independent receivers:
-`CCM-FU, C1, D2, E, F2, G, L, O, P, Q, CLG/TTF, T1, T2, U, HC`, and
+`CCM-FU, C1, D2, E, F2, G, L, O, P, Q, CLG/TTF, SNR, T1, T2, U, HC`, and
 **SV2 (Suzuki spherical characteristic convergence)**. CLG and TTF are now one architecture, not
 two: Lean proves their finite-packet order problems equivalent by an invertible Xi diagonal
 rescaling. Conversely, the name Route T now covers two independent source mechanisms, recorded
@@ -55,6 +55,7 @@ final open producer and proves neither RH nor its negation.
 | P | source-horizontal second-Cartier orbit -> Route-N capacity/radial-work bridge -> radial Krein energy -> endpoint moderation -> RH | Produce endpoint order globally before divisor selection; regular reflection-pair extraction, finite circle measure, and literal scalar short are formally ruled out. |
 | Q | continued Hurwitz/Cauchy source -> countable Gaussian-rational Euler-pole paired kernel -> orientation zero -> RH | Prove source nonnegativity of the explicit exterior paired diagonal, equivalently passivity of every finite paired-value matrix. Lean proves this scalar collapse only through Xi-specific RH capstones, so it is a smaller receiver, not a source proof. |
 | CLG/TTF | literal completed theta source -> neutral correlation flux = Xi Bezoutian -> invertible diagonal congruence -> Euler-safe observability deficit = reflection-even minus reflection-odd two-channel Weil energy -> RH | Exclude, directly from the completed source, every admissible cofinal regular two-pole Cauchy sequence with reflection-even energy tending to zero and reflection-odd energy tending to its positive fibre multiplicity. This moving rank-two no-escape law is exact: any off-line fibre produces source energy tending to the negative multiplicity. |
+| SNR | completed shifted-Xi Weyl source -> Schwarz-pair Lorentz normal coordinate -> fixed-law-neutral/nonlinear-renewal phase dichotomy -> global normal-coordinate vanishing -> RH | Synchronize the degree-dependent far-right positive-admission parameters by one source-predeclared cofinal law and prove its normalized completed-source Weyl increments vanish, or otherwise cannot retain a fixed positive normal displacement. Fixed-degree renewal is unconditional but not synchronized. |
 | T1 | finite Xi-Taylor/theta-tail source -> exact reflection bridge -> zero-free full-density channel plus canonical transfer current -> raw core-current bound -> RH | Produce a source-first sublinear bound for the canonical full-density transfer current, concretely by signed short Möbius-block cancellation preserving the combined top-row/finite-translation current. The full normalized Xi zero packet and zero-free aggregate channel are discharged; transfer-current sublinearity is exactly RH. |
 | T2 | ordered-prime Wold source -> centered log holonomy -> Wold-minus-log-mesh residual Hardy kernel -> continued prime-zeta/mesh ODE -> RH | Prove one uniform logarithmic scalar tail envelope for the fixed Heath--Brown source aggregate and aggregate the resulting literal large packets over gap shells to obtain critical gap energy; then prove signed/renormalized continuation from `Im z<0` to `Im z<1/2`. Absolute critical graph norm is impossible. |
 | U | shifted hard-edge source -> cofinal shifted Hankel tail or first-contact exclusion -> RH | Non-scalar source mechanism excluding the exact nonintegrable strict-frontier quotient, or uniform cofinal tail order. |
@@ -141,7 +142,13 @@ first-crossing coefficient is strictly negative at every Xi divisor, including c
 divisors, so tangential crossing or its vanishing is terminal as an RH mechanism. The complementary
 source-normal coefficient is the multiplicity-scaled reflected-source entropy, vanishes exactly on
 the critical line, and satisfies an exact Lorentz/Pythagorean conservation law with the tangential
-rate. This identifies the surviving RH-bearing coordinate but does not produce its vanishing.
+rate. Working-tree `ThetaCuspTiltFluxWeilParitySchwarzPairNormalRenewalWeld.lean` now gives that
+coordinate two literal source phases. Fixed abelian class-law scale-orbit certificates exist
+exactly at zero normal charge; away from zero, every finite degree admits a positive nonlinear
+completed-source Weyl renewal whose normalized increment is exactly the absolute normal
+displacement, with analytic multiplicity recovered after reciprocal-metric scaling. This is the
+new SNR architecture. It does not yet synchronize far-right admission across degree or prove the
+cofinal source estimate forcing those increments to vanish.
 
 The corpus also exposes live **T2**, distinct from the Xi-Taylor branch now called T1. Its ordered
 prime Wold current has an unconditional holomorphic residual Hardy kernel on `Im z<0`, an exact
@@ -1273,6 +1280,37 @@ unimodality, positivity, and rapid decay cannot prove the actual theta packet or
 its arithmetic global structure. Viable proof must use global source-specific cross-node incidence. CLG/TTF is infinite, paired, and
 nonphysical; its producer is concrete complete-prime versus archimedean/Cauchy-loss domination.
 
+### SNR — Schwarz-normal nonlinear renewal
+
+**Architecture.** Use Lorentz-normal coordinate of canonical Schwarz-paired Xi fibre rather than
+tangential crossing. Realize zero coordinate by fixed abelian source law and nonzero coordinate by
+changing-admission nonlinear Weyl renewal of actual completed shifted-Xi source. A cofinal source
+law forcing normalized renewal increments to vanish forces every normal coordinate to vanish and
+hence RH.
+
+**Proved.** Source-normal rate is absolute adaptive-Fisher centered rate in reciprocal spectral
+metric. Multiplying by reciprocal metric recovers analytic multiplicity times absolute centered
+rate. Fixed abelian class-law scale-orbit certificate exists exactly when normal coefficient is
+zero. For every off-line Xi copy and every positive finite degree, far-right Hankel positivity
+admits a nonlinear completed-source Weyl renewal whose normalized increment equals absolute normal
+displacement and whose multiplicity-scaled value equals Lorentz normal coefficient. Thus each copy
+is in exactly one of two source phases: fixed-law neutral, or positive nonlinear renewal at every
+finite degree. Global vanishing of normal coefficient is already Lean-equivalent to RH.
+
+Formal source: working-tree
+`ThetaCuspTiltFluxWeilParitySchwarzPairNormalRenewalWeld.lean`, with imported completed-source Weyl,
+adaptive-Fisher class-law, radial-work, and Lorentz-weld modules.
+
+**Open core.** Construct one source-predeclared cofinal synchronization of degree-dependent
+far-right admission parameters and prove normalized completed-source Weyl increments vanish, or
+prove an equivalent source conservation/compactness law excluding a persistent positive increment.
+Current theorem gives `for every degree, there exists an admission parameter`; it does not give a
+single controlled cofinal law or a vanishing estimate. Copywise fixed abelian certificates are
+terminal because their global existence is already RH. Tangential Schwarz crossing is terminal
+because it is negative even on critical-line copies. SNR is therefore a new nonlinear,
+changing-admission, paired, infinite, nonphysical producer architecture, not a revival of AF and
+not the Cauchy no-escape premise of CLG/TTF.
+
 ### T1 — Xi-Taylor/theta-tail finite-arithmetic core current
 
 **Architecture.** Canonical theta-tail core current is represented through finite arithmetic at
@@ -1621,6 +1659,10 @@ and beyond each block's terminal frontier, the adaptive mixed source has an unco
 dimensionless cumulative Jacobi-flux floor `1/4`, uniform while mass and degree escape together
 (`XiShiftedCanonicalAdmissionAdaptiveMixedSourceParabolicFluxCorridor.lean`). Thus cofinal producer admission and
 degree--mass synchronization are closed; favorable sign/exclusion is not.
+SNR now extracts exact Schwarz-normal displacement from same nonlinear Weyl renewal at each fixed
+degree. This supplies a coefficient-faithful normal reader but does not prove U's uniform cofinal
+tail order: its far-right admission parameter still changes with degree and no source vanishing
+estimate is available.
 
 Formal sources: `XiShiftedReciprocalHankelTailCriterion.lean`,
 `XiShiftedCanonicalAdmissionAdaptiveArithmeticSourceDegreeConnection.lean`,
@@ -1742,7 +1784,10 @@ supplies repeated-integration-by-parts Fourier decay; `ChenGuptaLiRamanujanFouri
 exact reduced-residue finite Fourier identity; and `ChenGuptaLiAffinePoisson.lean`
 proves affine residue-class Poisson summation, the additive-character form, and justified
 finite/infinite interchange for the reduced-residue sum. Thus diagonal cancellation, literal
-Schwartz input, and affine/reduced-residue Poisson mechanics are closed.
+Schwartz input, and affine/reduced-residue Poisson mechanics are closed. Working-tree
+`ChenGuptaLiMellinPhase.lean` also defines the literal positive-axis phase `x^(it)`, proves unit
+norm, and gives its exact derivative away from zero. This closes only local Mellin-phase calculus;
+it supplies no conductor-uniform correlation estimate or large-height aggregation.
 
 Remaining finite-to-global burden is an actual conductor-uniform estimate of the transformed
 not-all-equal weighted six-label correlation and its large-height aggregation. Corpus does not
@@ -1772,6 +1817,7 @@ Formal sources: `XiHorizontalCollisionChargeEndpoint.lean`,
 `HedenmalmCoefficientFaithfulExteriorSourceContour.lean`,
 `HedenmalmExteriorSourceThetaBoundaryGap.lean`,
 `ChenGuptaLiWeightedCubicDiagonal.lean`, `ChenGuptaLiAffinePoisson.lean`,
+`ChenGuptaLiMellinPhase.lean`,
 `ChenGuptaLiRamanujanFourier.lean`, and `ChenGuptaLiHt.lean`.
 
 **Open core.** Prove from coefficient-faithful prime--Gamma source, before divisor specialization,
@@ -2731,7 +2777,12 @@ continuation producer is absent.
   a fixed shear bounds twisted matrix-chain degree by its spread.
   `ShiftedTopMatrix.lean` further makes shifted leading matrices multiplicative and proves exact
   linear chain growth whenever their accumulated leading product is nonzero (`PlacePeelColumn.lean`,
-  `PlaceShiftIterate.lean`, `ShiftedMatrixDegree.lean`). `RationalMapComposition.lean` supplies
+  `PlaceShiftIterate.lean`, `ShiftedMatrixDegree.lean`). Working-tree
+  `TwistedChainDegreeRate.lean` proves unconditional subadditivity under every degree-preserving
+  twist and, by Fekete's lemma, existence of the normalized degree-growth limit without
+  invertibility or a leading-product hypothesis. This adds an asymptotic clock to the generic
+  difference carrier but no arithmetic occurrence, Xi reader, or route.
+  `RationalMapComposition.lean` supplies
   degree-controlled rational iteration and preserves noncriticality/deck descent through every
   iterate. These are source-independent
   differential/formation laws; no theorem specializes the place, shift, or border residue to the
@@ -2847,16 +2898,23 @@ continuation producer is absent.
   recurrence for finite sink-connected repair systems. It supplies a nontrivial SFP/IRK-style
   action mechanism, but no prime--Gamma source, Xi receiver, or cofinal infinite law; no route is
   added.
-- Working-tree `CompleteHistoryInvariantMetricCone.lean` classifies every positive invariant metric
+- `CompleteHistoryInvariantMetricCone.lean` classifies every positive invariant metric
   for a finite transport history as a fixed invariant metric multiplied by a positive
   self-adjoint commutant factor; scalar-ray uniqueness is exactly absence of nonscalar such factors.
   This sharpens metric-selection language for G/L/P but supplies neither arithmetic transport
   occurrence nor orientation of its commutant cone. It is not a new RH route.
-- Working-tree `GoldenRuleKernel.lean` and `GoldenRuleSincIntegral.lean` close the continuum
+- `GoldenRuleKernel.lean` and `GoldenRuleSincIntegral.lean` close the continuum
   first-order resonance kernel: it is nonnegative, integrable, exactly a squared transition
-  amplitude, and has total mass `2*pi*t`. Without a literal prime--Gamma spectral measure and an Xi
+  amplitude, and has total mass `2*pi*t`. Working-tree `GoldenRuleLimit.lean` adds a time-uniform
+  integrable tail majorant and tail estimates, then proves the full normalized Dirac limit against
+  every integrable weight continuous at resonance and its translated density form with slope
+  `2*pi*rho(E0)`. Without a literal prime--Gamma spectral measure and an Xi
   collision/position reader this is universal analytic infrastructure, not an HC producer or a new
   route.
+- `CoupledShortcutCollision.lean` proves a deterministic finite-dimensional capacity statement:
+  the embedded path patch is diagonal, and every Hamiltonian in a separated carrier tube keeps the
+  uniform seed below the explicit spectral-collision bound. It has no completed arithmetic source,
+  divisor reader, or infinite/cofinal passage, so it is not an RH route or an HC producer.
 - Polynomial-matrix quadratic-rate relations now have endpoint-complete extension charts, exact
   six-real-coordinate physical leaf charts, and a shell-global nonflatness/orbit-escape capstone:
   one simple-spectrum witness forces failure inside every nonempty real open set of interaction
@@ -3023,7 +3081,11 @@ continuation producer is absent.
   `HasseMatrixIsometries.lean` add local detection of rank, nilpotence, separable characteristic
   polynomial, triangular form, and form-preserving/infinitesimal isometries over every completion.
   `HasseClassicalMatrixGroups.lean` extends this to orthogonal, special-orthogonal, and symplectic
-  group membership; working-tree `HassePolynomialCoprime.lean` adds coprimality of polynomial pairs.
+  group membership. `HassePolynomialCoprime.lean` adds coprimality of polynomial pairs, while
+  `HassePolynomialDivisibility.lean` proves that divisibility by a prescribed monic polynomial is
+  reflected by scalar extension and hence detected across all number-field or rational-function
+  completions. The reverse directions use one completion and faithful scalar extension; they are
+  local detection laws, not an ABHN reciprocity or local-invariant theorem.
   These close function-field local-field and elementary matrix-detection bridges, not finite
   ramification, local Brauer invariant isomorphisms, or global ABHN exactness.
   `ABHN/RealQuaternionCSA.lean` constructs the real Hamilton
@@ -3207,7 +3269,9 @@ raw-positive/passive handoff and proves exact non-domination survivor. It does n
 signed/indefinite C1 class-space architecture. `SourceHorizontalAdaptiveFisherGlobalClassLawProducer.lean`
 constructs neutral source certificate, proves certificate existence exactly at centered rate zero,
 and proves global all-Xi-copy producer equivalent to RH. AF is therefore closed as independent
-copywise convergent class-law mechanism, not promoted to live route.
+copywise convergent class-law mechanism, not promoted to live route. SNR does not revive AF: it
+uses fixed class law only to classify zero phase and switches to nonlinear changing-admission Weyl
+renewal off that phase.
 
 ### Cross-cutting formal no-go laws
 

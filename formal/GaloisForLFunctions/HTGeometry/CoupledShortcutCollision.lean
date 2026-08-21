@@ -94,8 +94,10 @@ theorem spectralCollision_uniformSeed_le_of_mem_patchThickening
       - Matrix.diagonal (fun x => ((pathDiagEnergy (pathPatchIsometry (k + 1)
           (WithLp.toLp 2 (v, (0 : EuclideanSpace ℝ (Fin (10 * (k + 1) + 12)))))) x : ℝ) : ℂ))‖
       ≤ Real.sqrt (Fintype.card (PathLabel (k + 1))) * r := by
-    rw [← patchHamLM_embed_eq_diagonal v, hvy]
-    refine le_trans (norm_patchHamLM_sub_le _ _) ?_
+    have hvy' : (WithLp.toLp 2 (v, (0 : EuclideanSpace ℝ (Fin (10 * (k + 1) + 12)))) :
+        PatchSpace (2 * (k + 1) + 3) (10 * (k + 1) + 12)) = y := hvy
+    rw [← patchHamLM_embed_eq_diagonal v, hvy']
+    refine le_trans (norm_patchHamLM_sub_le k _ y) ?_
     refine mul_le_mul_of_nonneg_left ?_ (Real.sqrt_nonneg _)
     rw [← dist_eq_norm]
     exact hle
