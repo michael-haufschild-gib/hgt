@@ -61,6 +61,12 @@ theorem subChains_inter (A B : Set X) (k : ℕ) :
   ext σ
   simp [Set.subset_inter_iff]
 
+theorem subChains_mono {S T : Set X} (h : S ⊆ T) (k : ℕ) :
+    subChains R S k ≤ subChains R T k := by
+  intro c hc
+  rw [mem_subChains] at hc ⊢
+  exact fun σ hσ => (hc σ hσ).trans h
+
 theorem singBd_mem_subChains {S : Set X} {k : ℕ} {c : C(topSimplex (k + 1), X) →₀ R}
     (hc : c ∈ subChains R S (k + 1)) : singBd R X k c ∈ subChains R S k := by
   rw [← smallChain_singleton_iff] at hc ⊢

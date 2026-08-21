@@ -430,3 +430,49 @@ faithful because `k` is infinite.
   That in turn is the chart transition formula: the expression of `weylSubst s_i (cellCoord r j)` in
   the coordinates of the big cell — classical Gaussian elimination on the two flags, and the next
   multi-brick build.
+
+  **GENERAL `N`: local triviality and the pair splitting are CLOSED (bricks 31–36).**
+  Thirty-first brick: `PairBaseCoordinate`.  `det_of_almost_lowerTriangular` — a matrix vanishing
+  above the diagonal except at one position `(i,i+1)`, with `1` there and unit diagonal elsewhere,
+  has determinant the `2×2` determinant of the exceptional block (proved by a column swap and one
+  column operation, then `Matrix.det_of_lowerTriangular`).  Applied to the truncated permuted generic
+  matrix this gives `leadingMinorMat_pairUpdate_of_isLowerUni`.  With the general `rowMinorPoly`
+  layer (minor with prescribed rows and the first columns, its evaluation and Borel character) the
+  **base coordinate** `baseCoord i hi b` — the ratio of the `(i+2)`-minor with rows `(0,…,i−1,i+1,b)`
+  to the `(i+2)`-nd leading minor — is regular on *both* cells of the pair, and
+  **`baseCoord_eq : baseCoord = t·c_{b,i+1} − c_{b,i}`**.  Also
+  `cellCoord_mem_cellSubalg_swap`: every cell coordinate whose denominator is not the exceptional
+  minor is already regular on both cells (their minors agree up to sign, from
+  `SimpleReflectionMinors`).  Hence `cellCoord_eq_fibre_mul_add`: every coordinate is the fibre
+  coordinate times a chart function plus a function regular on both cells.
+  Thirty-second brick: `LocalTriviality` — that property is stable under sums and products and holds
+  for the coordinates, so **`exists_fibre_decomposition`: it holds for every chart function.**  This
+  is local triviality of `G/B → G/P_i` over the base cell, and it was the one missing input.
+  Thirty-third brick: `FibrePowers` — the fibre coordinate as a unit, its integer powers, their
+  membership in the two cell rings, and `fibrePow_mul_cellTriv`: the two trivializations differ by
+  the `⟨λ,α_i^∨⟩`-th fibre power up to a nonzero scalar (general `N`).
+  Thirty-fourth brick: `PairSplitting` — the induction on the pole order, using local triviality at
+  each step, gives `exists_split_of_fibrePow` and hence
+  **`cellSections_pair_le_sup_general` : for `⟨λ,α_i^∨⟩ ≥ −1` the two cells of a coset pair span the
+  sections over their intersection — the vanishing of the fibre `H¹`, for every `N`.**
+  Thirty-fifth brick: `CellEquationWeight` + `RelativeSplitting`.  All cell equations scale by the
+  same character `weightD`, whose value drops by a nonnegative amount along a simple root; the
+  product of the cell equations of a set `J` is a unit of the localization, and multiplying by it
+  trades `J`-denominators for a weight shift that *preserves* `⟨λ,α_i^∨⟩ ≥ −1`.  Hence
+  **`cellSections_pair_le_sup_relative`: the splitting holds relative to any further set of cells** —
+  the form the Čech assembly needs.
+  Thirty-sixth brick: `TopDegreeVanishing` — the top Čech degree is carried by the single full
+  intersection, and the relative splitting exhibits its every cochain as a coboundary:
+  **`flagCohomology_top_subsingleton` : `H^{|W|−1}(G/B, L_λ) = 0` whenever `⟨λ,α_i^∨⟩ ≥ −1` for some
+  simple `i` — for every `N`.**
+  All audit to `[propext, Classical.choice, Quot.sound]`.
+
+  **What the general case still needs, precisely.**  The pair decomposition of the Čech complex
+  (indices meeting the pair or not) exhibits it as the total complex of a square whose vertical map
+  is exactly the relative Mayer–Vietoris map.  Surjectivity of that map — now proved — identifies the
+  cohomology with that of the *coarsened* cover, whose members are the `ℙ¹`-bundles `π_i^{-1}(V_p)`;
+  that is Leray's comparison for this refinement, and it is the remaining homological step.  Its
+  target is the cohomology of the partial flag variety `G/P_i` with the pushed-forward bundle, so the
+  Demazure induction also needs the parabolic analogue of the present machinery (cells indexed by
+  `W/⟨s_i⟩`, cell equations built from the minors at levels other than `i+1`).  Both are natural
+  extensions of what is now in place, and neither needs new geometry: the fibre analysis is complete.

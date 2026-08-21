@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardOverweightZetaLogExclusion
 import GaloisForLFunctions.RHTower.Sieve.MaynardDerivativeCountDuality
+import GaloisForLFunctions.RHTower.Sieve.MaynardSelectedCellColoring
 
 /-!
 # Route-T selected-cell exclusion through height ratio `11/5`
@@ -800,5 +801,236 @@ theorem eventually_maynard_perronRelevant_moderate_global_amplitude_le_997_eleve
     box hready hpi hmuLo hmuHi hL hX hXscale hc hylo hyupper
       (perronRelevant_heathBrownBox_coreLower_le hrel) hbeta j hkind hwitness
       hsize' hslackMass hlarge
+
++theorem sum_positive_dyadicLogExponent_eq_heathBrownBoxTotalExponent_elevenFifths
+    {L X k : ℕ} {T : ℝ} (box : HeathBrownBoxChoice L X k) :
+    (∑ i : PositiveHeathBrownBoxFactorIndex box,
+      dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i)) =
+      heathBrownBoxTotalExponent L X k T box := by
+  classical
+  let q : HeathBrownBoxFactorIndex k box.m → ℕ :=
+    heathBrownBoxFactorExponent box.a box.b box.q
+  let u : Finset (HeathBrownBoxFactorIndex k box.m) :=
+    Finset.univ.filter fun i => 1 ≤ q i
+  have hu (i : HeathBrownBoxFactorIndex k box.m) : i ∈ u ↔ 1 ≤ q i := by
+    simp [u]
+  have hreindex := Finset.sum_subtype
+    (F := Subtype.fintype fun i : HeathBrownBoxFactorIndex k box.m => 1 ≤ q i)
+    u hu (fun i => dyadicLogExponent T (q i))
+  calc
+    (∑ i : PositiveHeathBrownBoxFactorIndex box,
+        dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q i)) =
+        ∑ i ∈ u, dyadicLogExponent T (q i) := by
+      simpa [PositiveHeathBrownBoxFactorIndex, q] using hreindex.symm
+    _ = ∑ i : HeathBrownBoxFactorIndex k box.m, dyadicLogExponent T (q i) := by
+      apply Finset.sum_subset (Finset.filter_subset _ _)
+      intro i _hi hiu
+      have hqi : q i = 0 := by
+        have : ¬ 1 ≤ q i := by simpa [u] using hiu
+        omega
+      simp [hqi, dyadicLogExponent]
+    _ = heathBrownBoxTotalExponent L X k T box := by rfl
+
+theorem eventually_exists_maynardWindowRelevantSelectedCell_label_of_subHeight_box_elevenFifths :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ {L X : ℕ} {mu N0 c y alpha : ℝ},
+        1 ≤ L → 1 ≤ X → 4 / 3 ≤ mu → mu ≤ 11 / 5 →
+        (X : ℝ) ≤ T ^ mu →
+        ∀ box : HeathBrownBoxChoice L X 60,
+          IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
+          IsHeathBrownBoxWindowRelevant N0 X 60 box →
+          (∀ i : HeathBrownBoxFactorIndex 60 box.m,
+            heathBrownBoxFactorKind 60 box.m i = .moebius →
+              dyadicLogExponent T
+                (heathBrownBoxFactorExponent box.a box.b box.q i) ≤
+                  2 * (mu / 120)) →
+          (∀ i : HeathBrownBoxFactorIndex 60 box.m,
+            dyadicLogExponent T
+              (heathBrownBoxFactorExponent box.a box.b box.q i) < 1) →
+          0 ≤ c → T ≤ y → y ≤ 2 * T → 3 / 4 ≤ alpha →
+          ((groupedDyadicLower
+            (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) ^
+              (alpha - c) ≤
+            ‖heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q
+              ((c : ℂ) + (y : ℝ) * Complex.I)‖ →
+          ∃ label : HeathBrownSelectionLabel L X 60,
+            label.1 = box ∧
+            IsMaynardWindowRelevantSelectedCell
+              L X T mu N0 c y alpha label := by
+  filter_upwards [
+    eventually_maynard_perronRelevant_moderate_global_amplitude_le_997_elevenFifths,
+    eventually_maynard_perronRelevant_overweight_global_amplitude_le_nineEightyThree_div_thousand_elevenFifths,
+    Filter.eventually_gt_atTop (1 : ℝ)] with T hmoderate hoverweight hT
+  intro L X mu N0 c y alpha hL hX hmuLo hmuHi hXscale box helig hrel
+    hmobius hsubHeight hc hylo hyupper halpha hcore
+  have htotal : mu / 120 ≤ heathBrownBoxTotalExponent L X 60 T box := by
+    simpa [IsHeathBrownBoxEligible, heathBrownBoxTotalExponent] using helig
+  have hfilter :
+      (Finset.univ.filter fun i : PositiveHeathBrownBoxFactorIndex box =>
+        dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q i) < 1) =
+        Finset.univ := by
+    ext i
+    simp [hsubHeight i]
+  have hmass : mu / 120 ≤ ∑ i ∈ (Finset.univ.filter
+      fun i : PositiveHeathBrownBoxFactorIndex box =>
+        dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q i) < 1),
+      dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i) := by
+    rw [hfilter]
+    simpa using htotal.trans_eq
+      (sum_positive_dyadicLogExponent_eq_heathBrownBoxTotalExponent_elevenFifths
+        (T := T) box).symm
+  have hsmall : ∀ i : PositiveHeathBrownBoxFactorIndex box,
+      1 ≤ dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i) →
+      ‖heathBrownBoxFactorValue L X 60 box
+        ((c : ℂ) + (y : ℝ) * Complex.I) i‖ ≤
+        (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ)) ^
+          (alpha - c) := by
+    intro i hi
+    exfalso
+    have := hsubHeight i
+    linarith
+  obtain ⟨u, hune, husub, hbetaLo, hbetaHi, hlength, hlarge,
+      hlocal, hheight⟩ :=
+    exists_heathBrown_box_subHeight_group_of_mass
+      L X 60 box hL hX hT (by linarith : 0 < mu / 120)
+        ((c : ℂ) + (y : ℝ) * Complex.I) hmass hsmall hcore
+  let beta : ℝ := ∑ i ∈ u, dyadicLogExponent T
+    (heathBrownBoxFactorExponent box.a box.b box.q i)
+  have hlocalKind (hbeta : 5 / 12 < beta) : ∃ j ∈ u,
+      (heathBrownBoxFactorKind 60 box.m j = .zeta ∨
+        heathBrownBoxFactorKind 60 box.m j = .log) ∧
+      beta - 2 * (mu / 120) < dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q j) := by
+    obtain ⟨j, hju, hjweight⟩ := hlocal
+    refine ⟨j, hju, ?_, by simpa [beta] using hjweight⟩
+    cases hkind : heathBrownBoxFactorKind 60 box.m j with
+    | moebius =>
+        have hjupper := hmobius j hkind
+        dsimp only [beta] at hbeta
+        exfalso
+        linarith
+    | zeta => exact Or.inl rfl
+    | log => exact Or.inr rfl
+  have hheightKind : beta < 1 ∨ ∃ j ∈ u,
+      (heathBrownBoxFactorKind 60 box.m j = .zeta ∨
+        heathBrownBoxFactorKind 60 box.m j = .log) ∧
+      1 - 2 * (mu / 120) < dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q j) := by
+    rcases hheight with hregular | ⟨j, hju, hjweight⟩
+    · exact Or.inl hregular
+    · right
+      refine ⟨j, hju, ?_, hjweight⟩
+      cases hkind : heathBrownBoxFactorKind 60 box.m j with
+      | moebius =>
+          have hjupper := hmobius j hkind
+          exfalso
+          linarith
+      | zeta => exact Or.inl rfl
+      | log => exact Or.inr rfl
+  have hbranch :
+      beta ≤ 5 / 12 ∨
+        (5 / 12 < beta ∧ beta < 1 ∧ alpha ≤ 997 / 1000 ∧
+          ∃ j ∈ u,
+            (heathBrownBoxFactorKind 60 box.m j = .zeta ∨
+              heathBrownBoxFactorKind 60 box.m j = .log) ∧
+            beta - 2 * (mu / 120) < dyadicLogExponent T
+              (heathBrownBoxFactorExponent box.a box.b box.q j)) ∨
+        (1 ≤ beta ∧ alpha ≤ 983 / 1000 ∧
+          ∃ j ∈ u,
+            (heathBrownBoxFactorKind 60 box.m j = .zeta ∨
+              heathBrownBoxFactorKind 60 box.m j = .log) ∧
+            1 - 2 * (mu / 120) < dyadicLogExponent T
+              (heathBrownBoxFactorExponent box.a box.b box.q j)) := by
+    by_cases hsmallBeta : beta ≤ 5 / 12
+    · exact Or.inl hsmallBeta
+    · have hbeta : 5 / 12 < beta := lt_of_not_ge hsmallBeta
+      by_cases hregular : beta < 1
+      · obtain ⟨j, hju, hkind, hjweight⟩ := hlocalKind hbeta
+        have halpha997 := hmoderate X hX mu hmuLo hmuHi hXscale
+          L hL 60 box helig hrel.1 c y alpha beta hc hylo hyupper
+            hbeta j hkind hjweight hcore
+        exact Or.inr (Or.inl
+          ⟨hbeta, hregular, halpha997, j, hju, hkind, hjweight⟩)
+      · have hbetaOne : 1 ≤ beta := le_of_not_gt hregular
+        rcases hheightKind with hfalse | ⟨j, hju, hkind, hjweight⟩
+        · exact (not_lt_of_ge hbetaOne hfalse).elim
+        · have halpha983 := hoverweight X hX mu hmuLo hmuHi hXscale
+            L hL 60 box helig hrel.1 c y alpha hc hylo hyupper
+              j hkind hjweight hcore
+          exact Or.inr (Or.inr
+            ⟨hbetaOne, halpha983, j, hju, hkind, hjweight⟩)
+  let label : HeathBrownSelectionLabel L X 60 := ⟨box, u⟩
+  refine ⟨label, rfl, ?_⟩
+  dsimp only [IsMaynardWindowRelevantSelectedCell]
+  refine ⟨helig, hrel, hcore, hune, husub, ?_, ?_, ?_, ?_, ?_⟩
+  · simpa [maynardSubHeightSelectedExponent, label, beta] using hbetaLo
+  · simpa [maynardSubHeightSelectedExponent, label, beta] using hbetaHi
+  · simpa [maynardSubHeightSelectedExponent, label, beta,
+      heathBrownSelectedExponent] using hlength
+  · simpa [label, heathBrownSelectedExponent, heathBrownSelectedKind,
+      HeathBrownSelectedFactor] using hlarge
+  · simpa [IsMaynardSelectedCellBranch, maynardSubHeightSelectedExponent,
+      label, beta] using hbranch
+
++theorem eventually_exists_maynardWindowRelevantSelectedCell_coloring_of_subHeight_box_elevenFifths :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ {L X : ℕ} {mu N0 c alpha : ℝ},
+        1 ≤ L → 1 ≤ X → 4 / 3 ≤ mu → mu ≤ 11 / 5 →
+        (X : ℝ) ≤ T ^ mu →
+        ∀ box : HeathBrownBoxChoice L X 60,
+          IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
+          IsHeathBrownBoxWindowRelevant N0 X 60 box →
+          (∀ i : HeathBrownBoxFactorIndex 60 box.m,
+            heathBrownBoxFactorKind 60 box.m i = .moebius →
+              dyadicLogExponent T
+                (heathBrownBoxFactorExponent box.a box.b box.q i) ≤
+                  2 * (mu / 120)) →
+          (∀ i : HeathBrownBoxFactorIndex 60 box.m,
+            dyadicLogExponent T
+              (heathBrownBoxFactorExponent box.a box.b box.q i) < 1) →
+          0 ≤ c → 3 / 4 ≤ alpha →
+          ∀ S : Finset ℕ, ∀ y : ℕ → ℝ,
+            (∀ r ∈ S, T ≤ y r ∧ y r ≤ 2 * T) →
+            (∀ r ∈ S,
+              ((groupedDyadicLower
+                (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) ^
+                  (alpha - c) ≤
+                ‖heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q
+                  ((c : ℂ) + (y r : ℝ) * Complex.I)‖) →
+            ∃ color : ℕ → HeathBrownSelectionLabel L X 60,
+              ∀ r ∈ S, (color r).1 = box ∧
+                IsMaynardWindowRelevantSelectedCell
+                  L X T mu N0 c (y r) alpha (color r) := by
+  filter_upwards [
+    eventually_exists_maynardWindowRelevantSelectedCell_label_of_subHeight_box_elevenFifths
+  ] with T hpoint
+  intro L X mu N0 c alpha hL hX hmuLo hmuHi hXscale box helig hrel
+    hmobius hsubHeight hc halpha S y hy hcore
+  classical
+  have hchoose : ∀ r : ℕ, r ∈ S →
+      ∃ label : HeathBrownSelectionLabel L X 60,
+        label.1 = box ∧ IsMaynardWindowRelevantSelectedCell
+          L X T mu N0 c (y r) alpha label := by
+    intro r hr
+    exact hpoint hL hX hmuLo hmuHi hXscale box helig hrel hmobius hsubHeight
+      hc (hy r hr).1 (hy r hr).2 halpha (hcore r hr)
+  choose selected hselected using hchoose
+  let fallback : HeathBrownSelectionLabel L X 60 :=
+    Classical.choice (nonempty_heathBrownSelectionLabel L X 60 (by norm_num))
+  let color : ℕ → HeathBrownSelectionLabel L X 60 := fun r =>
+    if hr : r ∈ S then selected r hr else fallback
+  refine ⟨color, ?_⟩
+  intro r hr
+  simpa [color, hr] using hselected r hr
+
+end RHTower.Sieve
+
+end RHTower.Sieve
 
 end RHTower.Sieve

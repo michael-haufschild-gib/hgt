@@ -291,4 +291,229 @@ theorem abs_sum_ccmThirdGradeCesaroMatchedQuadratureDefect_le
   _root_.RHTower.abs_sum_ccmMatchedPrimePolarQuadratureDefect_le
     (lipschitzWith_ccmThirdGradeCesaroClippedTriangularWeight hb hbH) s
 
+/-- Physical finite matched-cell block: same cutoff and strict lower-wall convention as the
+literal Guinand--Weil prime window. -/
+def ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock (b H : ℝ) : ℝ :=
+  ∑ n ∈ Finset.Icc 2 ⌊Real.exp H⌋₊,
+    if b < Real.log n then
+      _root_.RHTower.ccmMatchedPrimePolarQuadratureDefect
+        (ccmThirdGradeCesaroClippedTriangularWeight b H) n
+    else 0
+
+theorem abs_ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock_le
+    {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
+    |ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock b H| ≤
+      (ccmThirdGradeCesaroTriangularLipschitzConstant b : ℝ) / 2 *
+        ∑' n : ℕ, criticalMellinAtomWeight n ^ 2 /
+          Real.exp (Real.log n / 2) := by
+  let s := (Finset.Icc 2 ⌊Real.exp H⌋₊).filter
+    (fun n : ℕ => b < Real.log n)
+  have h := abs_sum_ccmThirdGradeCesaroMatchedQuadratureDefect_le hb hbH s
+  simpa only [ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock, s,
+    Finset.sum_filter] using h
+
+/-- Polar part of one matched scalar cell, tested by the globally clipped moving reporter. -/
+def ccmThirdGradeCesaroMatchedPolarCell (b H : ℝ) (n : ℕ) : ℝ :=
+  ∫ h in
+      (Real.log n - ccmActualHeadMatchedPrimePolarRadius n)..
+      (Real.log n + ccmActualHeadMatchedPrimePolarRadius n),
+    Real.exp (h / 2) * ccmThirdGradeCesaroClippedTriangularWeight b H h
+
+/-- Signed failure of physical matched scalar cells to cover the literal outgoing polar interval.
+This is the global term not controlled by atomwise mass matching. -/
+def ccmThirdGradeCesaroMatchedCoverageSeam (b H : ℝ) : ℝ :=
+  (∑ n ∈ Finset.Icc 2 ⌊Real.exp H⌋₊,
+      if b < Real.log n then
+        ccmThirdGradeCesaroMatchedPolarCell b H n else 0) -
+    ∫ h in b..H,
+      Real.exp (h / 2) *
+        ccmGuinandWeilThirdGradeCesaroTriangularWeight H h
+
+/-- Incoming exponential half of the literal hyperbolic polar density. -/
+def ccmThirdGradeCesaroIncomingPolarTail (b H : ℝ) : ℝ :=
+  ∫ h in b..H,
+    Real.exp (-(h / 2)) *
+      ccmGuinandWeilThirdGradeCesaroTriangularWeight H h
+
+private theorem ccmThirdGradeCesaro_primeSum_eq_matchedBlock_add_cells
+    {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
+    (∑ n ∈ Finset.Icc 2 ⌊Real.exp H⌋₊,
+        if b < Real.log n then
+          criticalMellinAtomWeight n *
+            ccmGuinandWeilThirdGradeCesaroTriangularWeight H (Real.log n)
+        else 0) =
+      ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock b H +
+        ∑ n ∈ Finset.Icc 2 ⌊Real.exp H⌋₊,
+          if b < Real.log n then
+            ccmThirdGradeCesaroMatchedPolarCell b H n else 0 := by
+  rw [ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock,
+    ← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro n hn
+  by_cases hbn : b < Real.log n
+  · have hn2 : 2 ≤ n := (Finset.mem_Icc.mp hn).1
+    have hnpos : (0 : ℝ) < n := by
+      exact_mod_cast (show 0 < n by omega)
+    have hnexp : (n : ℝ) ≤ Real.exp H :=
+      (Nat.le_floor_iff (Real.exp_pos H).le).mp (Finset.mem_Icc.mp hn).2
+    have hlogH : Real.log n ≤ H :=
+      (Real.log_le_iff_le_exp hnpos).mpr hnexp
+    simp only [if_pos hbn]
+    rw [ccmThirdGradeCesaroMatchedPolarCell,
+      _root_.RHTower.ccmMatchedPrimePolarQuadratureDefect]
+    rw [ccmThirdGradeCesaroClippedTriangularWeight_eq hb hbn.le hlogH]
+    ring
+  · simp only [hbn, if_false, zero_add]
+
+private theorem integral_thirdGradeCesaroTriangularWeight_mul_two_cosh_eq_split
+    {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
+    (∫ h in b..H,
+        ccmGuinandWeilThirdGradeCesaroTriangularWeight H h *
+          (2 * Real.cosh (h / 2))) =
+      (∫ h in b..H,
+        Real.exp (h / 2) *
+          ccmGuinandWeilThirdGradeCesaroTriangularWeight H h) +
+      ∫ h in b..H,
+        Real.exp (-(h / 2)) *
+          ccmGuinandWeilThirdGradeCesaroTriangularWeight H h := by
+  have hF : ContinuousOn
+      (ccmGuinandWeilThirdGradeCesaroTriangularWeight H) (Set.uIcc b H) := by
+    rw [Set.uIcc_of_le hbH]
+    intro h hh
+    exact (hasDerivAt_ccmGuinandWeilThirdGradeCesaroTriangularWeight
+      (ne_of_gt (hb.trans_le hh.1))).continuousAt.continuousWithinAt
+  have hplus : IntervalIntegrable
+      (fun h : ℝ => Real.exp (h / 2) *
+        ccmGuinandWeilThirdGradeCesaroTriangularWeight H h) volume b H :=
+    ((by fun_prop : Continuous fun h : ℝ => Real.exp (h / 2)).continuousOn.mul hF).intervalIntegrable
+  have hminus : IntervalIntegrable
+      (fun h : ℝ => Real.exp (-(h / 2)) *
+        ccmGuinandWeilThirdGradeCesaroTriangularWeight H h) volume b H :=
+    ((by fun_prop : Continuous fun h : ℝ => Real.exp (-(h / 2))).continuousOn.mul hF).intervalIntegrable
+  rw [← intervalIntegral.integral_add hplus hminus]
+  apply intervalIntegral.integral_congr
+  intro h hh
+  change ccmGuinandWeilThirdGradeCesaroTriangularWeight H h *
+      (2 * Real.cosh (h / 2)) =
+    Real.exp (h / 2) * ccmGuinandWeilThirdGradeCesaroTriangularWeight H h +
+      Real.exp (-(h / 2)) * ccmGuinandWeilThirdGradeCesaroTriangularWeight H h
+  rw [Real.cosh_eq]
+  ring
+
+/-- Exact frontier decomposition for the RH-bearing literal triangular window. Local matched-cell
+quadrature and the incoming exponential polar half are separated from the sole global outgoing
+coverage seam; prime and outgoing polar masses are never estimated separately. -/
+theorem ccmGuinandWeilPrimePolarTriangularWindow_eq_matchedBlock_add_coverageSeam_sub_incoming
+    {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
+    ccmGuinandWeilPrimePolarWeightedWindow b H
+        (ccmGuinandWeilThirdGradeCesaroTriangularWeight H) =
+      ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock b H +
+        ccmThirdGradeCesaroMatchedCoverageSeam b H -
+          ccmThirdGradeCesaroIncomingPolarTail b H := by
+  rw [ccmGuinandWeilPrimePolarWeightedWindow,
+    ccmThirdGradeCesaro_primeSum_eq_matchedBlock_add_cells hb hbH,
+    integral_thirdGradeCesaroTriangularWeight_mul_two_cosh_eq_split hb hbH]
+  unfold ccmThirdGradeCesaroMatchedCoverageSeam
+    ccmThirdGradeCesaroIncomingPolarTail
+  ring
+
+/-- Incoming hyperbolic branch is uniformly harmless. Its bound depends only on the fixed lower
+wall and uses no arithmetic information. -/
+theorem abs_ccmThirdGradeCesaroIncomingPolarTail_le
+    {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
+    |ccmThirdGradeCesaroIncomingPolarTail b H| ≤ 64 / b ^ 3 := by
+  have hH : 0 < H := hb.trans_le hbH
+  have htriNonneg : ∀ h ∈ Set.Icc b H,
+      0 ≤ ccmGuinandWeilThirdGradeCesaroTriangularWeight H h := by
+    intro h hh
+    have hhpos : 0 < h := hb.trans_le hh.1
+    have hfac : 0 ≤ 1 - h / H := by
+      rw [sub_nonneg, div_le_one hH]
+      exact hh.2
+    unfold ccmGuinandWeilThirdGradeCesaroTriangularWeight
+      ccmGuinandWeilThirdGradeWeight
+    positivity
+  have htriLe : ∀ h ∈ Set.Icc b H,
+      ccmGuinandWeilThirdGradeCesaroTriangularWeight H h ≤ 32 / b ^ 3 := by
+    intro h hh
+    have hhpos : 0 < h := hb.trans_le hh.1
+    have hb3 : 0 < b ^ 3 := pow_pos hb 3
+    have hpow : b ^ 3 ≤ h ^ 3 := pow_le_pow_left₀ hb.le hh.1 3
+    have hw : 32 / h ^ 3 ≤ 32 / b ^ 3 :=
+      div_le_div_of_nonneg_left (by norm_num) hb3 hpow
+    have hfac0 : 0 ≤ 1 - h / H := by
+      rw [sub_nonneg, div_le_one hH]
+      exact hh.2
+    have hfac1 : 1 - h / H ≤ 1 := by
+      have : 0 ≤ h / H := by positivity
+      linarith
+    unfold ccmGuinandWeilThirdGradeCesaroTriangularWeight
+      ccmGuinandWeilThirdGradeWeight
+    calc
+      (32 / h ^ 3) * (1 - h / H) ≤
+          (32 / b ^ 3) * (1 - h / H) :=
+        mul_le_mul_of_nonneg_right hw hfac0
+      _ ≤ (32 / b ^ 3) * 1 :=
+        mul_le_mul_of_nonneg_left hfac1 (by positivity)
+      _ = 32 / b ^ 3 := by ring
+  have htriCont : ContinuousOn
+      (ccmGuinandWeilThirdGradeCesaroTriangularWeight H) (Set.uIcc b H) := by
+    rw [Set.uIcc_of_le hbH]
+    intro h hh
+    exact (hasDerivAt_ccmGuinandWeilThirdGradeCesaroTriangularWeight
+      (ne_of_gt (hb.trans_le hh.1))).continuousAt.continuousWithinAt
+  have hintegrable : IntervalIntegrable
+      (fun h : ℝ => Real.exp (-(h / 2)) *
+        ccmGuinandWeilThirdGradeCesaroTriangularWeight H h) volume b H :=
+    ((by fun_prop : Continuous fun h : ℝ => Real.exp (-(h / 2))).continuousOn.mul
+      htriCont).intervalIntegrable
+  have hmajorIntegrable : IntervalIntegrable
+      (fun h : ℝ => Real.exp (-(h / 2)) * (32 / b ^ 3)) volume b H :=
+    (by fun_prop : Continuous fun h : ℝ =>
+      Real.exp (-(h / 2)) * (32 / b ^ 3)).intervalIntegrable _ _
+  have hnonneg : 0 ≤ ccmThirdGradeCesaroIncomingPolarTail b H := by
+    unfold ccmThirdGradeCesaroIncomingPolarTail
+    apply intervalIntegral.integral_nonneg hbH
+    intro h hh
+    exact mul_nonneg (Real.exp_pos _).le (htriNonneg h hh)
+  have hmono : ccmThirdGradeCesaroIncomingPolarTail b H ≤
+      ∫ h in b..H, Real.exp (-(h / 2)) * (32 / b ^ 3) := by
+    unfold ccmThirdGradeCesaroIncomingPolarTail
+    apply intervalIntegral.integral_mono_on hbH hintegrable hmajorIntegrable
+    intro h hh
+    exact mul_le_mul_of_nonneg_left (htriLe h hh) (Real.exp_pos _).le
+  have hexpInt : IntervalIntegrable
+      (fun h : ℝ => Real.exp (-(h / 2))) volume b H :=
+    (by fun_prop : Continuous fun h : ℝ => Real.exp (-(h / 2))).intervalIntegrable _ _
+  have hexpVal : (∫ h in b..H, Real.exp (-(h / 2))) =
+      -2 * Real.exp (-(H / 2)) - (-2 * Real.exp (-(b / 2))) := by
+    apply intervalIntegral.integral_eq_sub_of_hasDerivAt
+    · intro h hh
+      have hinner : HasDerivAt (fun t : ℝ => -t / 2) (-1 / 2 : ℝ) h := by
+        simpa using ((hasDerivAt_id h).neg.div_const 2)
+      have hderiv := hinner.exp.const_mul (-2 : ℝ)
+      have hval : (-2 : ℝ) * (Real.exp (-h / 2) * (-1 / 2)) =
+          Real.exp (-h / 2) := by ring
+      rw [hval] at hderiv
+      simpa only [neg_div] using hderiv
+    · exact hexpInt
+  have hexpLe : (∫ h in b..H, Real.exp (-(h / 2))) ≤ 2 := by
+    rw [hexpVal]
+    have hHb : 0 < Real.exp (-(H / 2)) := Real.exp_pos _
+    have hbe : Real.exp (-(b / 2)) ≤ 1 := by
+      simpa only [← Real.exp_zero] using Real.exp_le_exp.mpr (by linarith : -(b / 2) ≤ 0)
+    linarith
+  rw [abs_of_nonneg hnonneg]
+  calc
+    ccmThirdGradeCesaroIncomingPolarTail b H ≤
+        ∫ h in b..H, Real.exp (-(h / 2)) * (32 / b ^ 3) := hmono
+    _ = (32 / b ^ 3) * ∫ h in b..H, Real.exp (-(h / 2)) := by
+      rw [← intervalIntegral.integral_const_mul]
+      apply intervalIntegral.integral_congr
+      intro h hh
+      ring
+    _ ≤ (32 / b ^ 3) * 2 :=
+      mul_le_mul_of_nonneg_left hexpLe (by positivity)
+    _ = 64 / b ^ 3 := by ring
+
 end GaloisForLFunctions.RHTower

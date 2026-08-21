@@ -113,6 +113,29 @@ theorem cyclicAlgebraC_one (L : Type*) [CommRing L] (sigma : L ≃+* L)
     (n : ℕ) (a : L) : cyclicAlgebraC sigma n a 1 = 1 := by
   rfl
 
+/-- The coefficient inclusion into the skew polynomial carrier, as a ring homomorphism. -/
+noncomputable def cyclicSkewCRingHom (L : Type*) [CommRing L] (sigma : L ≃+* L) :
+    L →+* CyclicSkewPolynomial L sigma where
+  toFun := cyclicSkewC sigma
+  map_one' := rfl
+  map_mul' := fun b c => (cyclicSkewC_mul L sigma b c).symm
+  map_zero' := by
+    unfold cyclicSkewC
+    exact SkewMonoidAlgebra.single_zero _
+  map_add' := by
+    intro b c
+    exact SkewMonoidAlgebra.single_add 1 b c
+
+/-- The coefficient inclusion into the cyclic-algebra quotient, as a ring homomorphism. -/
+noncomputable def cyclicAlgebraCRingHom (L : Type*) [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (a : L) : L →+* CyclicAlgebra sigma n a :=
+  (Ideal.Quotient.mk _).comp (cyclicSkewCRingHom L sigma)
+
+/-- Evaluation of the coefficient ring homomorphism is the named quotient coefficient. -/
+theorem cyclicAlgebraCRingHom_apply (L : Type*) [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (a b : L) : cyclicAlgebraCRingHom L sigma n a b =
+      cyclicAlgebraC sigma n a b := rfl
+
 /-- The imposed cyclic relation holds in the quotient. -/
 theorem cyclicAlgebraX_pow (L : Type*) [CommRing L] (sigma : L ≃+* L)
     (n : ℕ) (a : L) : cyclicAlgebraX sigma n a ^ n = cyclicAlgebraC sigma n a a := by

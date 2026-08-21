@@ -32,6 +32,18 @@ noncomputable abbrev cyclicGaloisAlgebraC (a : K) (b : L) : cyclicGaloisAlgebra 
   cyclicAlgebraC (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
     (algebraMap K L a) b
 
+/-- The prospective base-field coefficient map.  Upgrading it to an `Algebra K` structure waits
+for the proof that its image commutes with every quotient element. -/
+noncomputable def cyclicGaloisAlgebraBaseRingHom (a : K) :
+    K →+* cyclicGaloisAlgebra K L a :=
+  (cyclicAlgebraCRingHom L (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+    (algebraMap K L a)).comp (algebraMap K L)
+
+/-- Evaluation of the prospective base-field map is the named embedded coefficient. -/
+theorem cyclicGaloisAlgebraBaseRingHom_apply (a b : K) :
+    cyclicGaloisAlgebraBaseRingHom K L a b =
+      cyclicGaloisAlgebraC K L a (algebraMap K L b) := rfl
+
 /-- The Galois cyclic generator satisfies its degree relation. -/
 theorem cyclicGaloisAlgebraX_pow (a : K) :
     cyclicGaloisAlgebraX K L a ^ Module.finrank K L =

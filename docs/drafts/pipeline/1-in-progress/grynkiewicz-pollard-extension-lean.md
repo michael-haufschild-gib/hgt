@@ -146,8 +146,13 @@ so `Q = ∑_x r'^2_x ≤ kM + |T||B|(|B|−k) = |B|·( k|A| + |T|(|B|−k) )`, a
   `card_le_card_inter_add_holes` and `card_dysonFull_add_card_le` (`#T + #B + 1 ≤ #A + t` under
   (qubal)).  `PollardStepThreePoly.lean` has the two polynomial inequalities that end STEP 3
   (`case32_poly`, `case31_poly`) — the source's "routine calculation".
-  Next: STEP 2's structural branch; the (qubal) condition and the Sidon argument of CASE 3.1;
-  CASE 4; the induction assembly.
+  `PollardQubal.lean` has `mulStab_subset_mulStab_mul`, `mem_dysonFull_of_card_ge` (how
+  maximality of the Dyson witness is used), `mulStab_dysonFull_eq` (`S(T) = S(T·B)`) and **the
+  condition (qubal)**.  `PollardCaseThreeTwo.lean` has the real-arithmetic pieces
+  (`half_le_first_term`, `case32_first_branch`, `case32_denominator`, `case32_key`), and
+  `PollardStepThreeCase2.lean` assembles **`case32_false`: CASE 3.2 of STEP 3 is closed**.
+  Next: the spread condition `#φ_H(B) ≥ 2`; CASE 3.1 (the `t = 2` Sidon argument); STEP 2's
+  structural branch; CASE 4; the induction assembly.
   The main triple induction (on `∑_{i=1}^t |A +_i B|`, then `|A|+|B|`, then `min(|A|,|B|)`).
 
 ## G4: design of the main induction
@@ -226,6 +231,9 @@ Combining with Kneser (`t·#(A'·B') ≥ t(#A' + #B' + ρ − |H|)`) gives exact
 - [ ] 2 → 3  formalized: Lean theorem, `lake build` green, axioms ⊆ {propext, Classical.choice, Quot.sound}
 
 ## Log
+- 2026-08-21 — **CASE 3.2 of STEP 3 is Lean-closed** (`case32_false`), together with the condition
+  (qubal) and the periodicity `S(dysonFull A B) = S(dysonFull A B · B)`.  Three more modules,
+  axiom-clean and wired.
 - 2026-08-21 — the analytic core of STEP 3 is Lean-closed: the bridge from the Dyson transform to
   Lemma 2.1, the bound on `#dysonFull`, and both terminal polynomial inequalities.  Three more
   modules, axiom-clean and wired.

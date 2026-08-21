@@ -1,16 +1,17 @@
 /-
 # The Kronecker specialization
 
-`S_d` sends a multivariate polynomial to a two-variable one by `X_{i+1} ↦ Y ^ (d ^ i)`, keeping the
-first variable.  It is an algebra map, hence automatically multiplicative; the content is that it is
-a *bijection* between the polynomials of degree `< d` in each of `X_1,…,X_{k-1}` and the polynomials
-of degree `< d ^ k` in `Y`.  Both directions are base-`d` digit statements.
+`S_d` collapses a multivariate polynomial to a one-variable one by `X_i ↦ Y ^ (d ^ i)`.  It is an
+algebra map, hence automatically multiplicative; the content is that it is a *bijection* between
+the polynomials of degree `< d` in each variable and the polynomials of degree `< d ^ k` in `Y`.
+Both directions are base-`d` digit statements.
 
-This is §3 of Coleman--Zwald, and it is what turns Hilbert's irreducibility theorem in one parameter
-into the statement for several parameters, with no need for "K(t) is Hilbertian".
+The variable to be specialized is carried in the coefficient ring, so that with coefficients in
+`F[X]` the image lies in `F[X][Y]`, the shape consumed by the one-parameter irreducibility theorem.
 -/
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Algebra.MvPolynomial.Equiv
+import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
 import Mathlib.Algebra.Polynomial.Eval.Degree
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.Common
@@ -194,14 +195,14 @@ theorem kron_injOn {d k : ℕ} (hd : 1 ≤ d) {p q : MvPolynomial (Fin k) R}
   refine MvPolynomial.ext p q fun a => ?_
   by_cases ha : ∀ j : Fin k, a j < d
   · rw [← coeff_kron_eq_coeff hd hp a ha, ← coeff_kron_eq_coeff hd hq a ha, h]
-  · push_neg at ha
+  · rw [not_forall] at ha
     obtain ⟨j, hj⟩ := ha
     have hpa : p.coeff a = 0 := by
       by_contra hc
-      exact absurd (hp a (MvPolynomial.mem_support_iff.mpr hc) j) (not_lt.mpr hj)
+      exact absurd (hp a (MvPolynomial.mem_support_iff.mpr hc) j) hj
     have hqa : q.coeff a = 0 := by
       by_contra hc
-      exact absurd (hq a (MvPolynomial.mem_support_iff.mpr hc) j) (not_lt.mpr hj)
+      exact absurd (hq a (MvPolynomial.mem_support_iff.mpr hc) j) hj
     rw [hpa, hqa]
 
 /-! ### The pullback -/
@@ -260,7 +261,7 @@ theorem exists_kron_eq {d k : ℕ} (hd : 1 ≤ d) {P : Polynomial R}
       · rw [if_neg h]
     · intro hcon
       exact absurd (Finset.mem_range.mpr hn) hcon
-  · push_neg at hn
+  · rw [not_lt] at hn
     rw [hP n hn, coeff_kron]
     refine Finset.sum_eq_zero fun b hb => ?_
     have hlt : kexp d b < d ^ k := by
@@ -311,5 +312,57 @@ theorem kBounded_of_degreeOf {d k : ℕ} {p : MvPolynomial (Fin k) R}
   have := h j
   omega
 
+@[simp] theorem kron_C (d k : ℕ) (c : R) : kron R d k (MvPolynomial.C c) = Polynomial.C c := by
+  simp [kron]
+
+theorem kBounded_zero {d k : ℕ} : KBounded d (0 : MvPolynomial (Fin k) R) := by
+  intro b hb j
+  simp at hb
+
+theorem kron_ne_zero {d k : ℕ} (hd : 1 ≤ d) {p : MvPolynomial (Fin k) R} (hp : KBounded d p)
+    (h : p ≠ 0) : kron R d k p ≠ 0 := fun hz =>
+  h (kron_injOn hd hp kBounded_zero (by rw [hz, map_zero]))
+
+theorem degreeOf_lt_of_kBounded {d k : ℕ} (hd : 0 < d) {p : MvPolynomial (Fin k) R}
+    (hp : KBounded d p) (j : Fin k) : MvPolynomial.degreeOf j p < d := by
+  have hle : MvPolynomial.degreeOf j p ≤ d - 1 :=
+    MvPolynomial.degreeOf_le_iff.mpr fun b hb => by have := hp b hb j; omega
+  omega
+
+theorem kBounded_C_mul {d k : ℕ} (c : R) {p : MvPolynomial (Fin k) R} (hp : KBounded d p) :
+    KBounded d (MvPolynomial.C c * p) := by
+  intro b hb j
+  rw [MvPolynomial.C_mul'] at hb
+  exact hp b (MvPolynomial.support_smul hb) j
+
+theorem kBounded_mul_C {d k : ℕ} (c : R) {p : MvPolynomial (Fin k) R} (hp : KBounded d p) :
+    KBounded d (p * MvPolynomial.C c) := by
+  rw [mul_comm]
+  exact kBounded_C_mul c hp
+
+theorem kBounded_of_mul_left {d k : ℕ} [IsDomain R] (hd : 0 < d) {u v : MvPolynomial (Fin k) R}
+    (hu : u ≠ 0) (hv : v ≠ 0) (h : KBounded d (u * v)) : KBounded d u := by
+  refine kBounded_of_degreeOf fun j => ?_
+  have h1 := degreeOf_lt_of_kBounded hd h j
+  rw [MvPolynomial.degreeOf_mul_eq hu hv] at h1
+  omega
+
+theorem kBounded_of_mul_right {d k : ℕ} [IsDomain R] (hd : 0 < d) {u v : MvPolynomial (Fin k) R}
+    (hu : u ≠ 0) (hv : v ≠ 0) (h : KBounded d (u * v)) : KBounded d v :=
+  kBounded_of_mul_left hd hv hu (by rwa [mul_comm] at h)
+
+theorem kBounded_C {d k : ℕ} (hd : 0 < d) (c : R) :
+    KBounded d (MvPolynomial.C c : MvPolynomial (Fin k) R) := by
+  classical
+  intro b hb j
+  rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_C] at hb
+  by_cases h : (0 : Fin k →₀ ℕ) = b
+  · rw [← h]
+    simpa using hd
+  · rw [if_neg h] at hb
+    exact absurd rfl hb
+
 end GaloisForLFunctions.HTGeometry.HilbertIrreducibility
+
+
 

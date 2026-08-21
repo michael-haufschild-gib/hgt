@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.AffineGroupSchemeCoLie
 import GaloisForLFunctions.HTGeometry.DualCoalgebraFiniteFree
 import Mathlib.LinearAlgebra.Dual.Lemmas
+import Mathlib.RingTheory.Bialgebra.TensorProduct
 
 /-!
 # The Lie algebra of the Cartier dual
@@ -142,10 +143,11 @@ theorem convOf_comp_coalgHom {C D : Type*} [AddCommGroup C] [Module R C] [Coalge
     [AddCommGroup D] [Module R D] [Coalgebra R D] (h : C →ₗc[R] D) (f g : Dual R D) :
     convOf (f ∘ₗ (h : C →ₗ[R] D)) (g ∘ₗ (h : C →ₗ[R] D))
       = (convOf f g) ∘ₗ (h : C →ₗ[R] D) := by
-  rw [convOf, convOf, ← TensorProduct.map_comp, ← LinearMap.comp_assoc,
-    ← LinearMap.comp_assoc, LinearMap.comp_assoc (TensorProduct.map _ _)]
-  rw [CoalgHomClass.map_comp_comul h]
-  rw [← LinearMap.comp_assoc, ← LinearMap.comp_assoc]
+  refine LinearMap.ext fun c => ?_
+  show (LinearMap.mul' R R) (TensorProduct.map (f ∘ₗ (h : C →ₗ[R] D)) (g ∘ₗ (h : C →ₗ[R] D))
+      (Coalgebra.comul c))
+    = (LinearMap.mul' R R) (TensorProduct.map f g (Coalgebra.comul (h c)))
+  rw [TensorProduct.map_comp, LinearMap.comp_apply, ← CoalgHomClass.map_comp_comul_apply h]
 
 theorem T2_dualComul_eq (f : Dual R A) :
     T2 R A (dualComul R A f) = f ∘ₗ (LinearMap.mul' R A) := by
@@ -158,8 +160,7 @@ the right being the convolution of the tensor-square coalgebra. -/
 theorem T2_dualComul_conv (f g : Dual R A) :
     T2 R A (dualComul R A (conv R A f g))
       = convOf (T2 R A (dualComul R A f)) (T2 R A (dualComul R A g)) := by
-  rw [T2_dualComul_eq, T2_dualComul_eq, T2_dualComul_eq, conv_eq_convOf,
-    ← Bialgebra.coe_mulCoalgHom R A]
+  rw [T2_dualComul_eq, T2_dualComul_eq, T2_dualComul_eq, conv_eq_convOf]
   exact (convOf_comp_coalgHom (Bialgebra.mulCoalgHom R A) f g).symm
 
 /-- **The dual counit is multiplicative**: `ε'(f ⋆ g) = ε' f · ε' g`. -/
@@ -198,9 +199,9 @@ theorem T2_dualComul_counit :
       = (Coalgebra.counit : Dual R (A ⊗[R] A)) := by
   refine TensorProduct.ext' fun a b => ?_
   rw [T2_dualComul]
-  show (Coalgebra.counit : A →ₗ[R] R) (a * b) = _
-  rw [Bialgebra.counit_mul]
-  rfl
+  show (Coalgebra.counit : A →ₗ[R] R) (a * b)
+    = (Coalgebra.counit : A →ₗ[R] R) b • (Coalgebra.counit : A →ₗ[R] R) a
+  rw [Bialgebra.counit_mul, smul_eq_mul, mul_comm]
 
 /-- `ε'` sends the unit of `A^∨` to `1`. -/
 @[simp] theorem dualCounit_counit :

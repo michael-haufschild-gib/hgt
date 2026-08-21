@@ -237,8 +237,7 @@ theorem cubeEstimate_one {k : ℕ} (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA₁ : 0 �
     show Function.update z 0 t ∈ V
     rw [hupd]
     exact hsub ((mem_ball_one hr).mpr ht)
-  have hFc' : IsDerivChain F {t | Function.update z 0 t ∈ V} := hFc
-  have hchain : IsDerivChain F (Ioo a b) := hFc'.mono hIsub
+  have hchain : IsDerivChain F (Ioo a b) := IsDerivChain.mono hFc hIsub
   have hup : ∀ t ∈ Ioo a b, |F k t| ≤ A₁ := fun t ht => (hFb t (hIsub ht)).1
   have hlow : ∀ t ∈ Ioo a b, A₂ ≤ |F k t| := fun t ht => (hFb t (hIsub ht)).2
   have hz0 : z 0 ∈ Ioo a b := by
@@ -270,5 +269,174 @@ theorem cubeEstimate_one {k : ℕ} (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA₁ : 0 �
   have hba : b - a = 2 * r := by rw [ha, hb]; ring
   rw [hba] at hmain
   linarith [hmain]
+
+
+/-! ### Sublemma 3.3.2 -/
+
+theorem measurable_slice_volume {s : Set (Fin (d + 1) → ℝ)} (hs : MeasurableSet s) :
+    Measurable fun t : ℝ => volume {x' : Fin d → ℝ | (Fin.cons t x' : Fin (d + 1) → ℝ) ∈ s} :=
+  measurable_measure_prodMk_left (measurable_cons hs)
+
+/-- **Sublemma 3.3.2.**  Splitting a cube along the first coordinate, the sublevel set is
+controlled by the measure of the set of "fat" slices plus the threshold times the side length. -/
+theorem sublemma_3_3_2 {V : Set (Fin (d + 1) → ℝ)} {f : (Fin (d + 1) → ℝ) → ℝ}
+    (hcont : ContinuousOn f V) {x₀ : Fin (d + 1) → ℝ} {r : ℝ} (hr : 0 < r)
+    (hsub : ball x₀ r ⊆ V) (ε : ℝ) (L : ℝ≥0∞) :
+    volume {x ∈ ball x₀ r | |f x| < ε}
+      ≤ ENNReal.ofReal ((2 * r) ^ d)
+          * volume {t ∈ ball (x₀ 0) r | L ≤ volume {x' ∈ ball (Fin.tail x₀) r |
+              |f (Fin.cons t x')| < ε}}
+        + L * ENNReal.ofReal (2 * r) := by
+  classical
+  set S : Set (Fin (d + 1) → ℝ) := {x ∈ ball x₀ r | |f x| < ε} with hSdef
+  have hSm : MeasurableSet S := (isOpen_sublevel hcont hsub).measurableSet
+  set G : ℝ → ℝ≥0∞ := fun t => volume {x' : Fin d → ℝ | (Fin.cons t x' : Fin (d + 1) → ℝ) ∈ S}
+    with hG
+  have hGm : Measurable G := measurable_slice_volume hSm
+  -- the slice is empty outside the first-coordinate ball, and is the face sublevel set inside it
+  have hsliceset : ∀ t ∈ ball (x₀ 0) r,
+      {x' : Fin d → ℝ | (Fin.cons t x' : Fin (d + 1) → ℝ) ∈ S}
+        = {x' ∈ ball (Fin.tail x₀) r | |f (Fin.cons t x')| < ε} := by
+    intro t ht
+    ext x'
+    constructor
+    · rintro ⟨h1, h2⟩
+      exact ⟨((cons_mem_ball hr).mp h1).2, h2⟩
+    · rintro ⟨h1, h2⟩
+      exact ⟨(cons_mem_ball hr).mpr ⟨ht, h1⟩, h2⟩
+  have hGzero : ∀ t, t ∉ ball (x₀ 0) r → G t = 0 := by
+    intro t ht
+    have : {x' : Fin d → ℝ | (Fin.cons t x' : Fin (d + 1) → ℝ) ∈ S} = ∅ := by
+      ext x'
+      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+      exact fun hx => ht ((cons_mem_ball hr).mp hx.1).1
+    rw [hG]
+    simp only
+    rw [this, measure_empty]
+  set E : Set ℝ := {t ∈ ball (x₀ 0) r | L ≤ G t} with hE
+  have hEm : MeasurableSet E := measurableSet_ball.inter (hGm measurableSet_Ici)
+  have hEeq : E = {t ∈ ball (x₀ 0) r | L ≤ volume {x' ∈ ball (Fin.tail x₀) r |
+      |f (Fin.cons t x')| < ε}} := by
+    ext t
+    constructor
+    · rintro ⟨h1, h2⟩
+      refine ⟨h1, ?_⟩
+      rw [← hsliceset t h1]
+      exact h2
+    · rintro ⟨h1, h2⟩
+      refine ⟨h1, ?_⟩
+      show L ≤ volume {x' : Fin d → ℝ | (Fin.cons t x' : Fin (d + 1) → ℝ) ∈ S}
+      rw [hsliceset t h1]
+      exact h2
+  have hGle : ∀ t, G t ≤ ENNReal.ofReal ((2 * r) ^ d) := by
+    intro t
+    calc G t ≤ volume (ball (Fin.tail x₀) r) := by
+          refine measure_mono fun x' hx' => ?_
+          exact ((cons_mem_ball hr).mp hx'.1).2
+      _ = ENNReal.ofReal ((2 * r) ^ d) := volume_ball_pow hr
+  have hbound : ∀ t, G t ≤ E.indicator (fun _ => ENNReal.ofReal ((2 * r) ^ d)) t + L := by
+    intro t
+    by_cases ht : t ∈ E
+    · rw [Set.indicator_of_mem ht]
+      exact le_trans (hGle t) le_self_add
+    · rw [Set.indicator_of_notMem ht, zero_add]
+      by_cases ht1 : t ∈ ball (x₀ 0) r
+      · exact le_of_not_ge fun hc => ht ⟨ht1, hc⟩
+      · rw [hGzero t ht1]; exact zero_le
+  have hint : ∫⁻ t : ℝ, G t = ∫⁻ t in ball (x₀ 0) r, G t := by
+    rw [← lintegral_indicator measurableSet_ball]
+    refine lintegral_congr fun t => ?_
+    by_cases ht : t ∈ ball (x₀ 0) r
+    · rw [Set.indicator_of_mem ht]
+    · rw [Set.indicator_of_notMem ht, hGzero t ht]
+  rw [hEeq] at hEm
+  calc volume S = ∫⁻ t : ℝ, G t := volume_eq_lintegral_slice hSm
+    _ = ∫⁻ t in ball (x₀ 0) r, G t := hint
+    _ ≤ ∫⁻ t in ball (x₀ 0) r,
+        ({t | t ∈ ball (x₀ 0) r ∧ L ≤ volume {x' ∈ ball (Fin.tail x₀) r |
+          |f (Fin.cons t x')| < ε}}.indicator (fun _ => ENNReal.ofReal ((2 * r) ^ d)) t + L) := by
+        refine lintegral_mono fun t => ?_
+        rw [← hEeq]
+        exact hbound t
+    _ = (∫⁻ t in ball (x₀ 0) r,
+          {t | t ∈ ball (x₀ 0) r ∧ L ≤ volume {x' ∈ ball (Fin.tail x₀) r |
+            |f (Fin.cons t x')| < ε}}.indicator (fun _ => ENNReal.ofReal ((2 * r) ^ d)) t)
+        + L * volume (ball (x₀ 0) r) := by
+        rw [lintegral_add_right _ measurable_const, setLIntegral_const]
+    _ ≤ ENNReal.ofReal ((2 * r) ^ d)
+          * volume {t ∈ ball (x₀ 0) r | L ≤ volume {x' ∈ ball (Fin.tail x₀) r |
+              |f (Fin.cons t x')| < ε}}
+        + L * ENNReal.ofReal (2 * r) := by
+        gcongr
+        · calc (∫⁻ t in ball (x₀ 0) r,
+                {t | t ∈ ball (x₀ 0) r ∧ L ≤ volume {x' ∈ ball (Fin.tail x₀) r |
+                  |f (Fin.cons t x')| < ε}}.indicator
+                  (fun _ => ENNReal.ofReal ((2 * r) ^ d)) t)
+              ≤ ∫⁻ t : ℝ, {t | t ∈ ball (x₀ 0) r ∧ L ≤ volume {x' ∈ ball (Fin.tail x₀) r |
+                  |f (Fin.cons t x')| < ε}}.indicator
+                  (fun _ => ENNReal.ofReal ((2 * r) ^ d)) t := setLIntegral_le_lintegral _ _
+            _ = ENNReal.ofReal ((2 * r) ^ d)
+                  * volume {t ∈ ball (x₀ 0) r | L ≤ volume {x' ∈ ball (Fin.tail x₀) r |
+                    |f (Fin.cons t x')| < ε}} := by
+                rw [lintegral_indicator hEm, setLIntegral_const]
+        · rw [Real.volume_ball]
+
+
+/-! ### The optimisation in the induction step -/
+
+/-- Optimising `λ ↦ λ^d (σ - λ)` at `λ = σd/(d+1)` turns the estimate coming from the inductive
+hypothesis and the one-dimensional case into the estimate in dimension `d + 1`. -/
+private theorem step_endgame {d k : ℕ} (hd : 1 ≤ d) (hk : 1 ≤ k) {C K σ sz ε lam : ℝ}
+    (hCp : 0 < C) (hKp : 0 < K) (hσ : 0 < σ) (hsz : 0 < sz) (hε : 0 < ε)
+    (hlam : lam = σ * (d : ℝ) / ((d : ℝ) + 1))
+    (hmain : lam ^ d * (σ - lam) * sz ^ ((k : ℝ)⁻¹)
+      ≤ C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ε ^ ((k : ℝ)⁻¹)) :
+    σ * sz ^ ((((d : ℝ) + 1) * (k : ℝ))⁻¹)
+      ≤ (C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ((d : ℝ) + 1) ^ (d + 1) / (d : ℝ) ^ d) ^ (((d : ℝ) + 1)⁻¹)
+        * ε ^ ((((d : ℝ) + 1) * (k : ℝ))⁻¹) := by
+  have hdR : (0:ℝ) < (d : ℝ) := by exact_mod_cast hd
+  have hkR : (0:ℝ) < (k : ℝ) := by exact_mod_cast hk
+  have hd1 : (0:ℝ) < (d : ℝ) + 1 := by linarith
+  have h2p : (0:ℝ) < (2:ℝ) ^ ((k : ℝ)⁻¹) := Real.rpow_pos_of_pos (by norm_num) _
+  set R : ℝ := C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ((d : ℝ) + 1) ^ (d + 1) / (d : ℝ) ^ d with hR
+  have hRpos : 0 < R := by rw [hR]; positivity
+  set α : ℝ := (((d : ℝ) + 1) * (k : ℝ))⁻¹ with hα
+  have hαpos : 0 < α := by rw [hα]; positivity
+  -- the optimised value of `λ^d (σ - λ)`
+  have h1 : σ - lam = σ / ((d : ℝ) + 1) := by rw [hlam]; field_simp; ring
+  have h2 : lam ^ d = σ ^ d * (d : ℝ) ^ d / ((d : ℝ) + 1) ^ d := by
+    rw [hlam, div_pow, mul_pow]
+  have hprod : lam ^ d * (σ - lam) = σ ^ (d + 1) * (d : ℝ) ^ d / ((d : ℝ) + 1) ^ (d + 1) := by
+    rw [h1, h2, pow_succ ((d : ℝ) + 1), pow_succ σ]
+    field_simp
+  -- clear the constants
+  have hstep : σ ^ (d + 1) * sz ^ ((k : ℝ)⁻¹) ≤ R * ε ^ ((k : ℝ)⁻¹) := by
+    rw [hprod, div_mul_eq_mul_div,
+      div_le_iff₀ (by positivity : (0:ℝ) < ((d : ℝ) + 1) ^ (d + 1))] at hmain
+    rw [hR, div_mul_eq_mul_div, le_div_iff₀ (by positivity : (0:ℝ) < (d : ℝ) ^ d)]
+    calc σ ^ (d + 1) * sz ^ ((k : ℝ)⁻¹) * (d : ℝ) ^ d
+        = σ ^ (d + 1) * (d : ℝ) ^ d * sz ^ ((k : ℝ)⁻¹) := by ring
+      _ ≤ C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ε ^ ((k : ℝ)⁻¹) * ((d : ℝ) + 1) ^ (d + 1) := hmain
+      _ = C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ((d : ℝ) + 1) ^ (d + 1) * ε ^ ((k : ℝ)⁻¹) := by ring
+  -- take the `(d+1)`-st root
+  have hbase : (0:ℝ) ≤ σ * sz ^ α := by positivity
+  have hpow : (σ * sz ^ α) ^ (d + 1) = σ ^ (d + 1) * sz ^ ((k : ℝ)⁻¹) := by
+    rw [mul_pow, ← Real.rpow_natCast (sz ^ α) (d + 1), ← Real.rpow_mul hsz.le]
+    congr 2
+    rw [hα]
+    push_cast
+    field_simp
+  have hroot : σ * sz ^ α = ((σ * sz ^ α) ^ (d + 1)) ^ (((d : ℝ) + 1)⁻¹) := by
+    rw [← Real.rpow_natCast (σ * sz ^ α) (d + 1), ← Real.rpow_mul hbase]
+    push_cast
+    rw [mul_inv_cancel₀ (ne_of_gt hd1), Real.rpow_one]
+  rw [hroot, hpow]
+  calc (σ ^ (d + 1) * sz ^ ((k : ℝ)⁻¹)) ^ (((d : ℝ) + 1)⁻¹)
+      ≤ (R * ε ^ ((k : ℝ)⁻¹)) ^ (((d : ℝ) + 1)⁻¹) :=
+        Real.rpow_le_rpow (by positivity) hstep (by positivity)
+    _ = R ^ (((d : ℝ) + 1)⁻¹) * ε ^ α := by
+        rw [Real.mul_rpow hRpos.le (by positivity), ← Real.rpow_mul hε.le, hα]
+        congr 2
+        field_simp
 
 end GaloisForLFunctions.HTGeometry.KleinbockMargulis

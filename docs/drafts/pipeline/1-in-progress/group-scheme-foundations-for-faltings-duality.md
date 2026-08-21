@@ -56,10 +56,17 @@ of the transitive closure and is tracked here as separate future layers.
       `dual_rTensor_counit_comp_comul`, `dual_lTensor_counit_comp_comul`, `dualCoalgebra`)
 - [ ] `L2.1b` dual algebra of a coalgebra on `Module.Dual R A` itself (mathlib has it only on
       `WithConv (C →ₗ[R] A)`)
-- [ ] `L2.2` for `A` finite free Hopf: `A^dual` is a commutative Hopf algebra; `A^{dual dual} ≅ A`
+- [x] `L2.2a` **bialgebra compatibility of the Cartier dual** → `HTGeometry/CartierDualLieAlgebra.lean`:
+      `convOf` (convolution on the dual of any coalgebra), `convOf_comp_coalgHom`
+      (functoriality — the engine), `T2_dualComul_conv` (`Δ'` is multiplicative, via mathlib's
+      `Bialgebra.mulCoalgHom`), `dualCounit_conv`, `convOf_counit_left/right`,
+      `T2_dualComul_counit`, `dualCounit_counit`
+- [ ] `L2.2b` bundle these as a `Bialgebra`/`HopfAlgebra` structure on `A^dual`; `A^{dual dual} ≅ A`
+      as a bialgebra
 - [x] `L2.3a` `primitives R A : Submodule R A`, `counit_eq_zero_of_mem_primitives`,
       `primitives_le_augIdeal`
-- [ ] `L2.3b` `Lie (Spec A^dual) ≅ Prim A`
+- [x] `L2.3b` **`Lie (Spec A^dual) ≅ Prim A`** → `primitivesEquivCartierLie`, together with
+      `cartierPointDerivations`, `evalEquiv_mem_cartierPointDerivations_iff`, `eq_of_T2_tmul_eq`
 - [ ] `L2.4` the canonical pairing `N x N^dual → Gm` and its perfectness
 
 **L3 — determinants.**
@@ -93,3 +100,9 @@ of the transitive closure and is tracked here as separate future layers.
   `TensorProduct.dualDistribEquiv`, characterisation lemmas by `TensorProduct.induction_on`, and
   `TensorProduct.ext'` at the end.  Next brick: `L2.1b` / `L2.2` — the dual algebra structure on
   `Module.Dual R A` and the bialgebra compatibility, then `A^{∨∨} ≅ A`.
+- 2026-08-21 — bricks `L2.2a` and `L2.3b` landed in `HTGeometry/CartierDualLieAlgebra.lean`:
+  the convolution product on the dual of a coalgebra, its functoriality along coalgebra morphisms
+  (the lemma that makes the bialgebra compatibility a one-liner via `Bialgebra.mulCoalgHom`), and
+  **Cartier duality on Lie algebras**, `Lie (N^∨) ≅ Prim A`.  Next: `L1.4` (worked examples: the
+  truncated polynomial Hopf algebra `R[X]/(X^p)` in characteristic `p`, giving `α_p` with
+  `Prim ≠ 0`, and the group algebra `R[G]`), then `L3` determinants.

@@ -195,6 +195,16 @@ instance isIso_restrictHom_subMap' (P Q : ModuleSubcomplex R K)
   exact HomologicalComplex.Hom.isIso_of_components _
 
 
+/-- The chain map between two subcomplexes ordered by inclusion. -/
+noncomputable def leHom {P Q : ModuleSubcomplex R K} (h : ∀ k, P.carrier k ≤ Q.carrier k) :
+    P.complex ⟶ Q.complex where
+  f k := ModuleCat.ofHom (Submodule.inclusion (h k))
+  comm' := by
+    rintro i j (hij : j + 1 = i)
+    subst hij
+    rw [ModuleSubcomplex.complex_d, ModuleSubcomplex.complex_d]
+    exact ModuleCat.hom_ext (LinearMap.ext fun x => rfl)
+
 end ModuleSubcomplex
 
 /-- Singular homology of a space. -/
