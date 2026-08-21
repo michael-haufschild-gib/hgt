@@ -6,7 +6,9 @@ noncomputable section
 
 namespace GaloisForLFunctions.RHTower
 
-/-- Positive aperture density obtained by differentiating the third-grade anchored kernel. -/
+open _root_.RHTower
+
+/-- Positive aperture density forced by differentiating the third-grade anchored kernel. -/
 def ccmThirdGradeCesaroRectangularMixDensity (H t : ℝ) : ℝ :=
   192 * (2 * H - t) / (H * t ^ 5)
 
@@ -24,11 +26,13 @@ theorem hasDerivAt_ccmGuinandWeilThirdGradeCesaroErrorKernel
     HasDerivAt (ccmGuinandWeilThirdGradeCesaroErrorKernel H)
       (-ccmThirdGradeCesaroRectangularMixDensity H t) t := by
   have hlin : HasDerivAt (fun x : ℝ => 64 * x / H) (64 / H) t := by
-    convert ((hasDerivAt_id t).const_mul 64).div_const H using 1 <;> ring
+    simpa only [id_eq, one_mul, mul_one] using
+      ((hasDerivAt_id t).const_mul 64).div_const H
   have hnum : HasDerivAt (fun x : ℝ => 96 - 64 * x / H) (-64 / H) t := by
-    convert (hasDerivAt_const (x := t) (c := (96 : ℝ))).sub hlin using 1 <;> ring
+    simpa only [Pi.sub_apply, zero_sub, neg_div] using!
+      (hasDerivAt_const (x := t) (c := (96 : ℝ))).sub hlin
   have hden : HasDerivAt (fun x : ℝ => x ^ 4) (4 * t ^ 3) t := by
-    convert hasDerivAt_pow 4 t using 1 <;> ring
+    simpa using hasDerivAt_pow 4 t
   apply (hnum.div hden (pow_ne_zero 4 ht)).congr_deriv
   unfold ccmThirdGradeCesaroRectangularMixDensity
   field_simp [hH, ht]
@@ -59,7 +63,12 @@ theorem integral_rectangularMixDensity_add_endpoint_eq_errorKernel
   have hint : IntervalIntegrable (ccmThirdGradeCesaroRectangularMixDensity H) volume h H := by
     apply ContinuousOn.intervalIntegrable
     intro t ht
-    exact (hderiv t ht).continuousAt.neg
+    rw [Set.uIcc_of_le hhH] at ht
+    have ht0 : t ≠ 0 := ne_of_gt (hh.trans_le ht.1)
+    unfold ccmThirdGradeCesaroRectangularMixDensity
+    exact ((continuousAt_const.mul (continuousAt_const.sub continuousAt_id)).div
+      (continuousAt_const.mul (continuousAt_id.pow 5))
+      (mul_ne_zero hH.ne' (pow_ne_zero 5 ht0))).continuousWithinAt
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
   rw [ccmGuinandWeilThirdGradeCesaroErrorKernel_endpoint hH.ne']
   ring
@@ -88,18 +97,22 @@ theorem ccmGuinandWeilThirdGradeCesaroTriangularWeight_eq_rectangularMixture
     have hw := hasDerivAt_ccmGuinandWeilThirdGradeCesaroTriangularWeight
       (H := H) ht0
     apply ((hk.mul hlin).sub hw).congr_deriv
-    dsimp only [A]
     ring
   have hint : IntervalIntegrable
       (fun t => ccmThirdGradeCesaroRectangularMixDensity H t * (t - h)) volume h H := by
     apply ContinuousOn.intervalIntegrable
     intro t ht
-    exact (hderiv t ht).continuousAt
+    rw [Set.uIcc_of_le hhH] at ht
+    have ht0 : t ≠ 0 := ne_of_gt (hh.trans_le ht.1)
+    have hdensity : ContinuousAt (ccmThirdGradeCesaroRectangularMixDensity H) t := by
+      unfold ccmThirdGradeCesaroRectangularMixDensity
+      exact (continuousAt_const.mul (continuousAt_const.sub continuousAt_id)).div
+        (continuousAt_const.mul (continuousAt_id.pow 5))
+        (mul_ne_zero hH.ne' (pow_ne_zero 5 ht0))
+    exact (hdensity.mul (continuousAt_id.sub continuousAt_const)).continuousWithinAt
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
   have hweightH : ccmGuinandWeilThirdGradeCesaroTriangularWeight H H = 0 := by
-    unfold ccmGuinandWeilThirdGradeCesaroTriangularWeight
-      ccmGuinandWeilThirdGradeWeight
-    field_simp [hH.ne']
+    simp [ccmGuinandWeilThirdGradeCesaroTriangularWeight, hH.ne']
   have hkernelH := ccmGuinandWeilThirdGradeCesaroErrorKernel_endpoint hH.ne'
   dsimp only [A] at hftc
   rw [hweightH, hkernelH] at hftc

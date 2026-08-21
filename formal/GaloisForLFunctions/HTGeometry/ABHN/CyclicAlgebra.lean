@@ -200,6 +200,29 @@ theorem cyclicAlgebraX_pow (L : Type*) [CommRing L] (sigma : L ≃+* L)
   rw [Ideal.Quotient.eq_zero_iff_mem]
   exact TwoSidedIdeal.subset_span (by simp [cyclicRelation])
 
+/-- If the parameter is a unit and the cyclic degree is nonzero, then the cyclic variable is a
+unit.  This is the first structural distinction between the nonzero cyclic algebras used for
+Brauer classes and the degenerate parameter-zero quotient. -/
+theorem cyclicAlgebraX_isUnit {L : Type*} [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (hn : n ≠ 0) (a : L) (ha : IsUnit a) :
+    IsUnit (cyclicAlgebraX sigma n a) := by
+  apply (isUnit_pow_iff hn).mp
+  rw [cyclicAlgebraX_pow]
+  rw [← cyclicAlgebraCRingHom_apply]
+  exact IsUnit.map _ ha
+
+/-- The distinguished unit represented by the cyclic variable at a unit parameter. -/
+noncomputable def cyclicAlgebraXUnit {L : Type*} [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (hn : n ≠ 0) (a : L) (ha : IsUnit a) : (CyclicAlgebra sigma n a)ˣ :=
+  (cyclicAlgebraX_isUnit sigma n hn a ha).unit
+
+/-- The distinguished cyclic unit has underlying quotient element `X`. -/
+theorem cyclicAlgebraXUnit_coe {L : Type*} [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (hn : n ≠ 0) (a : L) (ha : IsUnit a) :
+    (cyclicAlgebraXUnit sigma n hn a ha : CyclicAlgebra sigma n a) =
+      cyclicAlgebraX sigma n a :=
+  IsUnit.unit_spec _
+
 /-- The skew variable commutes with coefficients by the automorphism `sigma`. -/
 theorem cyclicSkewX_mul_cyclicSkewC (L : Type*) [CommRing L] (sigma : L ≃+* L)
     (b : L) : cyclicSkewX sigma * cyclicSkewC sigma b =
@@ -225,6 +248,20 @@ theorem cyclicAlgebraX_mul_cyclicAlgebraC (L : Type*) [CommRing L] (sigma : L �
     Ideal.Quotient.mk _ (cyclicSkewC sigma (sigma b)) * Ideal.Quotient.mk _ (cyclicSkewX sigma)
   rw [← map_mul, ← map_mul]
   exact congrArg (Ideal.Quotient.mk _) (cyclicSkewX_mul_cyclicSkewC L sigma b)
+
+/-- Conjugation by the cyclic unit acts on coefficients by the twisting automorphism.  This is the
+crossed-product relation needed to turn a nonzero cyclic algebra into a Brauer representative. -/
+theorem cyclicAlgebraXUnit_conj_C {L : Type*} [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (hn : n ≠ 0) (a b : L) (ha : IsUnit a) :
+    (cyclicAlgebraXUnit sigma n hn a ha : CyclicAlgebra sigma n a) *
+        cyclicAlgebraC sigma n a b *
+        (↑((cyclicAlgebraXUnit sigma n hn a ha)⁻¹) : CyclicAlgebra sigma n a) =
+      cyclicAlgebraC sigma n a (sigma b) := by
+  rw [cyclicAlgebraXUnit_coe]
+  rw [cyclicAlgebraX_mul_cyclicAlgebraC]
+  rw [mul_assoc]
+  rw [← cyclicAlgebraXUnit_coe sigma n hn a ha]
+  simp
 
 /-- The relation `X^n = a` reduces every monomial power of `X` to exponent less than `n`.
 This is the monomial normal-form step; spanning and linear independence of these normal forms are

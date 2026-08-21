@@ -29,6 +29,21 @@ theorem cyclicGaloisGenerator_spec :
     ∀ sigma : Gal(L/K), sigma ∈ Subgroup.zpowers (cyclicGaloisGenerator K L) :=
   (IsCyclic.exists_generator (α := Gal(L/K))).choose_spec
 
+/-- In a finite cyclic Galois extension, the chosen cyclic generator has order equal to the
+extension degree. -/
+theorem cyclicGaloisGenerator_orderOf [FiniteDimensional K L] [IsGalois K L] :
+    orderOf (cyclicGaloisGenerator K L) = Module.finrank K L := by
+  calc
+    orderOf (cyclicGaloisGenerator K L) = Nat.card Gal(L/K) :=
+      orderOf_eq_card_of_forall_mem_zpowers (cyclicGaloisGenerator_spec K L)
+    _ = Module.finrank K L := IsGalois.card_aut_eq_finrank K L
+
+/-- The degree-th power of the chosen cyclic Galois generator is the identity. -/
+theorem cyclicGaloisGenerator_pow_finrank [FiniteDimensional K L] [IsGalois K L] :
+    cyclicGaloisGenerator K L ^ Module.finrank K L = 1 := by
+  rw [← cyclicGaloisGenerator_orderOf K L]
+  exact pow_orderOf_eq_one _
+
 section H2
 
 variable [FiniteDimensional K L]
@@ -154,6 +169,45 @@ theorem cyclicGaloisH2FixedUnit_existsUnique_base_unit [IsGalois K L]
   apply Units.ext
   apply FaithfulSMul.algebraMap_injective K L
   exact congrArg Units.val (hz.trans hy.symm)
+
+/-- The additive group of generator-fixed unit representatives for cyclic degree-two
+cohomology.  Naming this kernel keeps the cohomology-to-cyclic-algebra interface independent of
+the implementation of the periodic resolution. -/
+noncomputable abbrev cyclicGaloisH2FixedUnits :=
+  LinearMap.ker
+    ((Rep.ofAlgebraAutOnUnits K L).applyAsHom (cyclicGaloisGenerator K L) -
+      𝟙 (Rep.ofAlgebraAutOnUnits K L)).hom.toLinearMap
+
+/-- Degree-two Galois cohomology of the unit representation, named for the cyclic-algebra
+interface. -/
+noncomputable abbrev cyclicGaloisH2 :=
+  groupCohomology (Rep.ofAlgebraAutOnUnits K L) 2
+
+/-- A chosen generator-fixed unit representative of every cyclic degree-two cohomology class. -/
+noncomputable def cyclicGaloisH2Representative (z : cyclicGaloisH2 K L) :
+    cyclicGaloisH2FixedUnits K L :=
+  (cyclicGaloisH2Projection_surjective K L z).choose
+
+/-- The chosen representative projects to its original degree-two cohomology class. -/
+theorem cyclicGaloisH2Representative_projection (z : cyclicGaloisH2 K L) :
+    cyclicGaloisH2Projection K L (cyclicGaloisH2Representative K L z) = z :=
+  (cyclicGaloisH2Projection_surjective K L z).choose_spec
+
+/-- The unique base-field unit represented by a generator-fixed cyclic degree-two cocycle. -/
+noncomputable def cyclicGaloisH2FixedBaseUnit [IsGalois K L]
+    (x : LinearMap.ker
+      ((Rep.ofAlgebraAutOnUnits K L).applyAsHom (cyclicGaloisGenerator K L) -
+        𝟙 (Rep.ofAlgebraAutOnUnits K L)).hom.toLinearMap) : Kˣ :=
+  (cyclicGaloisH2FixedUnit_existsUnique_base_unit K L x).choose
+
+/-- The canonical base unit maps to the fixed unit underlying the degree-two representative. -/
+theorem cyclicGaloisH2FixedBaseUnit_map [IsGalois K L]
+    (x : LinearMap.ker
+      ((Rep.ofAlgebraAutOnUnits K L).applyAsHom (cyclicGaloisGenerator K L) -
+        𝟙 (Rep.ofAlgebraAutOnUnits K L)).hom.toLinearMap) :
+    Units.map (algebraMap K L) (cyclicGaloisH2FixedBaseUnit K L x) =
+      cyclicGaloisH2FixedUnit K L x :=
+  (cyclicGaloisH2FixedUnit_existsUnique_base_unit K L x).choose_spec.1
 
 /-- A cyclic degree-two representative is cohomologically zero precisely when its underlying
 fixed unit is a field norm. -/

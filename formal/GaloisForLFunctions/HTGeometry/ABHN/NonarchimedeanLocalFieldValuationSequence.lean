@@ -20,6 +20,8 @@ namespace GaloisForLFunctions.HTGeometry.ABHN
 
 open scoped ValuativeRel WithZero WithZeroMulInt
 
+attribute [local instance] Ideal.Quotient.field
+
 universe u
 
 /-- The valuation of a nonarchimedean local field, normalized to values in `ℤᵐ⁰`. -/
@@ -173,6 +175,20 @@ theorem nonarchimedeanLocalField_henselianRing
   letI : UniformSpace K := IsTopologicalAddGroup.rightUniformSpace K
   letI : IsUniformAddGroup K := isUniformAddGroup_of_addCommGroup (G := K)
   infer_instance
+
+/-- A simple root modulo the maximal ideal of a nonarchimedean local field lifts to an integral
+root.  This is the Hensel-lifting input needed to construct unramified local extensions from
+separable residue-field polynomials. -/
+theorem nonarchimedeanLocalField_hensel_lift
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic) (a₀ : 𝒪[K])
+    (hroot : Ideal.Quotient.mk 𝓂[K] (f.eval a₀) = 0)
+    (hsimple : Ideal.Quotient.mk 𝓂[K] (f.derivative.eval a₀) ≠ 0) :
+    ∃ a : 𝒪[K], f.IsRoot a ∧ a - a₀ ∈ 𝓂[K] := by
+  letI : HenselianRing 𝒪[K] 𝓂[K] := nonarchimedeanLocalField_henselianRing K
+  apply HenselianRing.is_henselian f hf a₀
+  · exact Ideal.Quotient.eq_zero_iff_mem.mp hroot
+  · exact Ne.isUnit hsimple
 
 /-- The valuation ring of a nonarchimedean local field is a Henselian local ring. -/
 theorem nonarchimedeanLocalField_henselianLocalRing

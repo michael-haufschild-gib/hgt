@@ -49,15 +49,15 @@ variable {R A}
 
 theorem T2_tmul (φ ψ : Dual R A) (a b : A) :
     T2 R A (φ ⊗ₜ[R] ψ) (a ⊗ₜ[R] b) = φ a * ψ b := by
-  simp [TensorProduct.dualDistrib_apply]
+  simp
 
 theorem T3_tmul (φ : Dual R A) (u : Dual R A ⊗[R] Dual R A) (a : A) (x : A ⊗[R] A) :
     T3 R A (φ ⊗ₜ[R] u) (a ⊗ₜ[R] x) = φ a * T2 R A u x := by
-  simp [TensorProduct.dualDistrib_apply]
+  simp
 
 theorem T3L_tmul (u : Dual R A ⊗[R] Dual R A) (ψ : Dual R A) (x : A ⊗[R] A) (c : A) :
     T3L R A (u ⊗ₜ[R] ψ) (x ⊗ₜ[R] c) = T2 R A u x * ψ c := by
-  simp [TensorProduct.dualDistrib_apply]
+  simp
 
 variable (R A)
 
@@ -70,6 +70,7 @@ noncomputable def dualCounit : Dual R A →ₗ[R] R := LinearMap.applyₗ (1 : A
 
 variable {R A}
 
+omit [Module.Free R A] [Module.Finite R A] in
 @[simp] theorem dualCounit_apply (f : Dual R A) : dualCounit R A f = f 1 := rfl
 
 /-- The defining property of the dual comultiplication. -/

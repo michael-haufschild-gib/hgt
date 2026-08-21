@@ -98,3 +98,15 @@ likewise absent.
   group to the genuine topological one.  Nine modules total.
 - 2026-08-21 — two more: the Haar-measure index law and the real-period identity
   `μ(A(ℝ)) = #π₀ · μ(A(ℝ)⁰)`.  Eleven modules total; lint green; axiom audit clean.
+
+- 2026-08-21 — five more foundation modules landed (details on the companion card
+  `group-scheme-foundations-for-faltings-duality.md`):
+  `HTGeometry/CoLieComplex.lean` (the co-Lie complex of an affine group scheme, `H^0 = omega_A`),
+  `HTGeometry/CoLieProduct.lean` (`omega_{A ⊗ B} ≅ omega_A × omega_B`),
+  `HTGeometry/CoLieBaseChange.lean` (`omega_{S ⊗ A} ≅ S ⊗ omega_A`),
+  `HTGeometry/CartierDualBialgebra.lean` (the Cartier dual `A^dual` as a commutative bialgebra,
+  again finite free and cocommutative),
+  `HTGeometry/CartierDoubleDual.lean` (**Cartier duality is an involution**: `A ≅ A^{dual dual}`
+  as bialgebras — the perfectness of the canonical pairing).
+  All wired into the `HTGeometry` umbrella; every capstone audits to
+  `[propext, Classical.choice, Quot.sound]`.

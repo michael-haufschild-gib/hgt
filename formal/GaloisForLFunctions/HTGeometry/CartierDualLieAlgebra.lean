@@ -70,6 +70,7 @@ def cartierPointDerivations : Submodule R (Dual R (Dual R A)) where
 
 variable {R A}
 
+omit [Module.Free R A] [Module.Finite R A] in
 theorem mem_cartierPointDerivations {D : Dual R (Dual R A)} :
     D ∈ cartierPointDerivations R A
       ↔ ∀ f g : Dual R A, D (conv R A f g) = f 1 * D g + g 1 * D f := Iff.rfl
@@ -136,6 +137,7 @@ noncomputable def convOf {C : Type*} [AddCommGroup C] [Module R C] [Coalgebra R 
     (f g : Dual R C) : Dual R C :=
   (LinearMap.mul' R R) ∘ₗ (TensorProduct.map f g) ∘ₗ (Coalgebra.comul : C →ₗ[R] C ⊗[R] C)
 
+omit [Module.Free R A] [Module.Finite R A] in
 theorem conv_eq_convOf (f g : Dual R A) : conv R A f g = convOf f g := rfl
 
 /-- **Functoriality of convolution**: pulling back along a coalgebra morphism is a ring map. -/
@@ -163,6 +165,7 @@ theorem T2_dualComul_conv (f g : Dual R A) :
   rw [T2_dualComul_eq, T2_dualComul_eq, T2_dualComul_eq, conv_eq_convOf]
   exact (convOf_comp_coalgHom (Bialgebra.mulCoalgHom R A) f g).symm
 
+omit [Module.Free R A] [Module.Finite R A] in
 /-- **The dual counit is multiplicative**: `ε'(f ⋆ g) = ε' f · ε' g`. -/
 theorem dualCounit_conv (f g : Dual R A) :
     dualCounit R A (conv R A f g) = dualCounit R A f * dualCounit R A g := by
@@ -170,6 +173,7 @@ theorem dualCounit_conv (f g : Dual R A) :
   rw [conv, LinearMap.comp_apply, LinearMap.comp_apply, Bialgebra.comul_one]
   rfl
 
+omit [Module.Free R A] [Module.Finite R A] in
 /-- The unit of the convolution algebra on `A^∨` is the counit of `A`. -/
 theorem convOf_counit_right (f : Dual R A) : convOf f (Coalgebra.counit : Dual R A) = f := by
   refine LinearMap.ext fun a => ?_
@@ -182,6 +186,7 @@ theorem convOf_counit_right (f : Dual R A) : convOf f (Coalgebra.counit : Dual R
   rw [hmap, LinearMap.comp_apply, Coalgebra.lTensor_counit_comul, LinearMap.rTensor_tmul,
     LinearMap.mul'_apply, mul_one]
 
+omit [Module.Free R A] [Module.Finite R A] in
 theorem convOf_counit_left (f : Dual R A) : convOf (Coalgebra.counit : Dual R A) f = f := by
   refine LinearMap.ext fun a => ?_
   show (LinearMap.mul' R R) (TensorProduct.map (Coalgebra.counit : Dual R A) f
@@ -203,6 +208,7 @@ theorem T2_dualComul_counit :
     = (Coalgebra.counit : A →ₗ[R] R) b • (Coalgebra.counit : A →ₗ[R] R) a
   rw [Bialgebra.counit_mul, smul_eq_mul, mul_comm]
 
+omit [Module.Free R A] [Module.Finite R A] in
 /-- `ε'` sends the unit of `A^∨` to `1`. -/
 @[simp] theorem dualCounit_counit :
     dualCounit R A (Coalgebra.counit : Dual R A) = 1 := Bialgebra.counit_one

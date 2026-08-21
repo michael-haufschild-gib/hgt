@@ -54,6 +54,103 @@ theorem cyclicGaloisAlgebraX_pow (a : K) :
   exact cyclicAlgebraX_pow L (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
     (algebraMap K L a)
 
+/-- For a nonzero base-field parameter, the cyclic generator is invertible.  The finite extension
+assumption supplies the positive degree needed to recover invertibility of `X` from `X^n = a`. -/
+theorem cyclicGaloisAlgebraX_isUnit [FiniteDimensional K L] (a : K) (ha : a ≠ 0) :
+    IsUnit (cyclicGaloisAlgebraX K L a) := by
+  apply cyclicAlgebraX_isUnit
+  · exact Module.finrank_pos.ne'
+  · apply Ne.isUnit
+    intro h
+    apply ha
+    apply FaithfulSMul.algebraMap_injective K L
+    simpa using h
+
+omit [IsCyclic Gal(L/K)] in
+/-- A nonzero base-field parameter remains a unit in the coefficient field. -/
+theorem cyclicGaloisAlgebraParameter_isUnit (a : K) (ha : a ≠ 0) :
+    IsUnit (algebraMap K L a) := by
+  apply Ne.isUnit
+  intro h
+  apply ha
+  apply FaithfulSMul.algebraMap_injective K L
+  simpa using h
+
+/-- The distinguished unit represented by the cyclic generator of a nonzero finite cyclic
+Galois algebra. -/
+noncomputable def cyclicGaloisAlgebraXUnit [FiniteDimensional K L]
+    (a : K) (ha : a ≠ 0) : (cyclicGaloisAlgebra K L a)ˣ :=
+  cyclicAlgebraXUnit (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+    Module.finrank_pos.ne' (algebraMap K L a)
+    (cyclicGaloisAlgebraParameter_isUnit K L a ha)
+
+/-- The Galois cyclic unit has underlying quotient element `X`. -/
+theorem cyclicGaloisAlgebraXUnit_coe [FiniteDimensional K L]
+    (a : K) (ha : a ≠ 0) :
+    (cyclicGaloisAlgebraXUnit K L a ha : cyclicGaloisAlgebra K L a) =
+      cyclicGaloisAlgebraX K L a := by
+  exact cyclicAlgebraXUnit_coe (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+    Module.finrank_pos.ne' (algebraMap K L a)
+    (cyclicGaloisAlgebraParameter_isUnit K L a ha)
+
+/-- Conjugation by the Galois cyclic unit realizes the chosen Galois generator on coefficient
+field elements. -/
+theorem cyclicGaloisAlgebraXUnit_conj_C [FiniteDimensional K L]
+    (a : K) (ha : a ≠ 0) (b : L) :
+    (cyclicGaloisAlgebraXUnit K L a ha : cyclicGaloisAlgebra K L a) *
+        cyclicGaloisAlgebraC K L a b *
+        (↑((cyclicGaloisAlgebraXUnit K L a ha)⁻¹) : cyclicGaloisAlgebra K L a) =
+      cyclicGaloisAlgebraC K L a (cyclicGaloisGenerator K L b) := by
+  exact cyclicAlgebraXUnit_conj_C (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+    Module.finrank_pos.ne' (algebraMap K L a) b
+    (cyclicGaloisAlgebraParameter_isUnit K L a ha)
+
+/-- The raw cyclic algebra attached to a generator-fixed degree-two Galois cohomology
+representative.  Its parameter is a canonical nonzero base-field unit.  Proving that its Brauer
+class depends only on the cohomology class is the subsequent central-simple-algebra step. -/
+noncomputable abbrev cyclicGaloisH2CyclicAlgebra [FiniteDimensional K L] [IsGalois K L]
+    (x : cyclicGaloisH2FixedUnits K L) :=
+  cyclicGaloisAlgebra K L (cyclicGaloisH2FixedBaseUnit K L x)
+
+/-- The parameter selected from a cyclic degree-two representative is nonzero. -/
+theorem cyclicGaloisH2CyclicAlgebra_parameter_ne_zero [FiniteDimensional K L] [IsGalois K L]
+    (x : cyclicGaloisH2FixedUnits K L) :
+    (cyclicGaloisH2FixedBaseUnit K L x : K) ≠ 0 :=
+  (cyclicGaloisH2FixedBaseUnit K L x).ne_zero
+
+/-- The cyclic generator in the algebra of a degree-two representative is a unit. -/
+noncomputable def cyclicGaloisH2CyclicAlgebraXUnit [FiniteDimensional K L] [IsGalois K L]
+    (x : cyclicGaloisH2FixedUnits K L) : (cyclicGaloisH2CyclicAlgebra K L x)ˣ :=
+  cyclicGaloisAlgebraXUnit K L (cyclicGaloisH2FixedBaseUnit K L x)
+    (cyclicGaloisH2CyclicAlgebra_parameter_ne_zero K L x)
+
+/-- The cyclic-algebra parameter of a degree-two representative maps to precisely the fixed unit
+underlying that representative. -/
+theorem cyclicGaloisH2CyclicAlgebra_parameter_map [FiniteDimensional K L] [IsGalois K L]
+    (x : cyclicGaloisH2FixedUnits K L) :
+    Units.map (algebraMap K L) (cyclicGaloisH2FixedBaseUnit K L x) =
+      cyclicGaloisH2FixedUnit K L x :=
+  cyclicGaloisH2FixedBaseUnit_map K L x
+
+/-- A selected raw cyclic algebra for every cyclic degree-two cohomology class.  The selection is
+made through the surjective periodic-resolution projection; its descent to a Brauer class awaits
+the proof that norm-equivalent parameters define Brauer-equivalent cyclic central simple algebras. -/
+noncomputable abbrev cyclicGaloisH2ClassCyclicAlgebra [FiniteDimensional K L] [IsGalois K L]
+    (z : cyclicGaloisH2 K L) :=
+  cyclicGaloisH2CyclicAlgebra K L (cyclicGaloisH2Representative K L z)
+
+/-- The selected representative defining a class-level raw cyclic algebra projects back to the
+given degree-two class. -/
+theorem cyclicGaloisH2ClassCyclicAlgebra_projection [FiniteDimensional K L] [IsGalois K L]
+    (z : cyclicGaloisH2 K L) :
+    cyclicGaloisH2Projection K L (cyclicGaloisH2Representative K L z) = z :=
+  cyclicGaloisH2Representative_projection K L z
+
+/-- The selected raw cyclic algebra of a degree-two class has an invertible cyclic generator. -/
+noncomputable def cyclicGaloisH2ClassCyclicAlgebraXUnit [FiniteDimensional K L] [IsGalois K L]
+    (z : cyclicGaloisH2 K L) : (cyclicGaloisH2ClassCyclicAlgebra K L z)ˣ :=
+  cyclicGaloisH2CyclicAlgebraXUnit K L (cyclicGaloisH2Representative K L z)
+
 /-- The cyclic generator commutes with coefficients embedded from the base field. -/
 theorem cyclicGaloisAlgebraX_mul_baseC (a b : K) :
     cyclicGaloisAlgebraX K L a * cyclicGaloisAlgebraC K L a (algebraMap K L b) =

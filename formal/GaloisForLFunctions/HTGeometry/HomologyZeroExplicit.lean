@@ -24,15 +24,13 @@ theorem sc'_zero_g_eq_zero (K : ChainComplex (ModuleCat.{v} R) ℕ) :
   intro h
   exact absurd h (by simp [ComplexShape.down_Rel])
 
-/-- In degree zero the homology is the chains modulo the boundaries. -/
-noncomputable def homologyZeroIso (K : ChainComplex (ModuleCat.{v} R) ℕ) :
-    K.homology 0 ≅ ModuleCat.of R ((K.X 0) ⧸ LinearMap.range (K.d 1 0).hom) := by
-  refine ShortComplex.homologyMapIso
-    (K.isoSc' 1 0 ((ComplexShape.down ℕ).next 0) (ComplexShape.prev_eq' _ rfl) rfl) ≪≫ ?_
-  refine (K.sc' 1 0 ((ComplexShape.down ℕ).next 0)).moduleCatHomologyIso ≪≫ ?_
-  refine LinearEquiv.toModuleIso ?_
+/-- For a short complex of modules whose second map vanishes, the homology is the middle term
+modulo the image of the first map. -/
+noncomputable def shortComplexHomologyIsoQuot (S : ShortComplex (ModuleCat.{v} R))
+    (hg : S.g = 0) : S.homology ≅ ModuleCat.of R (S.X₂ ⧸ LinearMap.range S.f.hom) := by
+  refine S.moduleCatHomologyIso ≪≫ LinearEquiv.toModuleIso ?_
   refine Submodule.Quotient.equiv _ _
-    ((LinearEquiv.ofEq _ _ (by rw [sc'_zero_g_eq_zero]; exact LinearMap.ker_zero)).trans
+    ((LinearEquiv.ofEq _ _ (by rw [hg]; exact LinearMap.ker_zero)).trans
       Submodule.topEquiv) ?_
   refine le_antisymm ?_ ?_
   · rintro y ⟨z, hz, rfl⟩
@@ -40,6 +38,13 @@ noncomputable def homologyZeroIso (K : ChainComplex (ModuleCat.{v} R) ℕ) :
     exact ⟨x, rfl⟩
   · rintro y ⟨x, rfl⟩
     exact ⟨_, ⟨x, rfl⟩, rfl⟩
+
+/-- In degree zero the homology is the chains modulo the boundaries. -/
+noncomputable def homologyZeroIso (K : ChainComplex (ModuleCat.{v} R) ℕ) :
+    K.homology 0 ≅ ModuleCat.of R ((K.X 0) ⧸ LinearMap.range (K.d 1 0).hom) :=
+  ShortComplex.homologyMapIso
+      (K.isoSc' 1 0 ((ComplexShape.down ℕ).next 0) (ComplexShape.prev_eq' _ rfl) rfl) ≪≫
+    shortComplexHomologyIsoQuot R _ (sc'_zero_g_eq_zero R K)
 
 theorem singAug_surjective [Nonempty X] : Function.Surjective (singAug R (X := X)) := by
   intro r

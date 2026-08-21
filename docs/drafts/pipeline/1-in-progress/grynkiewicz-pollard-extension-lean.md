@@ -167,8 +167,54 @@ so `Q = ∑_x r'^2_x ≤ kM + |T||B|(|B|−k) = |B|·( k|A| + |T|(|B|−k) )`, a
   `pollardWeak_of_small_deficiency`, `pollardWeak_of_repSet_empty`, the adjunction identities
   `repSet_insert_left/right`, `repSum_insert_left/right` and the transfers
   `pollardConclusion_of_insert_left/right`.
-  Next: CASE 4 (4.1, 4.2 with SUBCASES 4.2.1–4.2.3); the induction assembly (which also
+  **CASE 4.1 is closed** (`PollardCaseFourOne.lean`: `case41_arith`, `case41_core`,
+  `case41_branch`, `case41_branch_two`), resting on `PollardBoost.lean` (`repSum_ge_boost`,
+  `mixed_sum_ge`) and `PollardTranslation.lean` (so the Dyson witness may be normalised to
+  `x = 1`, where `dysonLarge A B 1 = A ∪ B` and `dysonSmall A B 1 = A ∩ B`).
+  **CASE 4.2 is closed up to the three subcases.**  `PollardCaseFourTwo.lean` has
+  `mem_mul_of_mem_mulStab`, `case42_notPeriodic` (step 1) and `subset_dysonSmall_of_periodic`
+  (the source's `(cue)`).  `PollardCaseFourTwoMixed.lean` has `dysonSmall_full_of_mixed` — a coset
+  meeting both `A ∖ B` and `B` yields a translation carrying **all** of `B` into `A`, which is the
+  engine of the whole case — together with `case42_no_mixed_coset`, `t_le_rep_of_coset`,
+  `case42_coset_card`, `case42_repSet_eq`, `case42_holes_ge` and `case42_step3` (so `B₁ = ∅`).
+  `PollardCaseFourTwoStructure.lean` has `vitadel` (`C_α · D_α⁻¹ · D_β ⊆ C_β`), `card_C_eq`,
+  `smul_C_eq`, `mulStab_C_eq` (the common stabiliser `K`), `D_sub_smul_mulStab`,
+  `mul_eq_smul_of_periodic` and `card_D_le_rep` (every element of `C_α · D_β` has at least `#D_β`
+  representations).  `PollardCaseFourTwoBlock.lean` has `repSum_ge_block`,
+  `case42_holes_ge_one` and `case42_extra_block`.
+  Next: assemble SUBCASES 4.2.1–4.2.3 from those pieces, then the induction assembly (which also
   discharges SP1 and the spread hypothesis).
+
+## CASE 4.2, analysed for formalisation
+
+Throughout `X = A ∪ B`, `Y = A ∩ B`, `H = S(X · Y)`, `l = 0` so `A' = X`, `B' = Y` and
+`X ·_t Y = X · Y`.
+
+1. **`Y` not `H`-periodic ⟹ done.**  Pick `α ∈ (Y·H) \ Y`.  Since `Y = A ∩ B`, `α` is missing
+   from `A` or from `B`; adjoin it there.  Every new product is already `t`-representable:
+   `α · b ∈ (Y·H)·X = (X·Y)·H = X·Y = X ·_t Y ⊆ A ·_t B`.  So
+   `pollardConclusion_of_insert_left/right` applies and the induction hypothesis finishes (the
+   pair grows by one point at unchanged `repSum`, so the middle component of the measure drops).
+   Hence `Y · H = Y`, and consequently `Y ⊆ dysonSmall A B y` for every `y ∈ H` — the source's
+   `(cue)`.
+2. **The partition.**  `A = Y ⊔ A₀ ⊔ A₁` where `A₀ = {a ∈ A \ Y : φ_H(a) ∈ φ_H(A) ∩ φ_H(B)}`;
+   likewise `B`.  `H`-periodicity of `Y` gives `φ_H(A₀) = φ_H(B₀)` (a coset meeting `Y` lies
+   inside `Y`).  With `r = #φ_H(A₀)` and `ρ₁` the hole count of `A₁, B₁`:
+   `ρ ≥ ρ₁ + r·#H − #A₀ − #B₀ ≥ ρ₁`.
+3. **`B₁ = ∅`.**  If `B₁ ≠ ∅` then `A₀ = B₀ = ∅` (else a difference `y` of two representatives in
+   the same `H`-coset contradicts the maximality of the Dyson witness, using `(cue)`), whence
+   `A₁ ≠ ∅` and a two-coset count gives `ρ ≥ ρ₁ ≥ #H − t + 1`, contradicting `#H − ρ ≥ t + 1`.
+4. **The `C_i`, `D_i` and `K`.**  With `α₁, …, α_r` representatives of `φ_H(A₀) = φ_H(B₀)`,
+   `C_i = (α_i·H) ∩ A` and `D_i = (α_i·H) ∩ B`.  Maximality plus `(cue)` gives
+   `C_j · D_j⁻¹ · D_i ⊆ C_i`, so the `C_i` are translates of one another, `K := S(C_j)` is
+   independent of `j`, and `α_i⁻¹ · D_i ⊆ K`.  `C_i ∩ D_i = ∅` forces `#K < #H` and `#C_i < #H`.
+   For each `i` some `D_{σ(i)}` has `C_i · D_{σ(i)} ⊄ A' · B'` (else adjoin a point of
+   `(α_i·H) \ C_i` to `A` and use step 1), and then `ρ ≥ ρ₁ + #H − #C_i − #D_{σ(i)}`.
+5. **SUBCASE 4.2.1** (`#D_j ≥ t` for all `j`), **4.2.2** (`#D_{σ(i)} ≥ t` for all `i`, `σ`) and
+   **4.2.3** (`#D_{σ(i)} ≤ t − 1` for some `i`, `σ`) each end in a linear count against
+   `(whacky) ∑_{i≤t} #(A ·_i B) < t#A + t#B − t²`.  The `t`-representability of the extra
+   products comes from Proposition A(i) applied to the pair `(C_i, D_{σ(i)})`, which is a
+   `K`-periodic set times a subset of a `K`-coset.
   The main triple induction (on `∑_{i=1}^t |A +_i B|`, then `|A|+|B|`, then `min(|A|,|B|)`).
 
 ## G4: design of the main induction
@@ -247,6 +293,17 @@ Combining with Kneser (`t·#(A'·B') ≥ t(#A' + #B' + ρ − |H|)`) gives exact
 - [ ] 2 → 3  formalized: Lean theorem, `lake build` green, axioms ⊆ {propext, Classical.choice, Quot.sound}
 
 ## Log
+- 2026-08-21 — **CASE 4.2 is Lean-closed through the `C_i`/`D_i`/`K` structure.**  Five more
+  modules, axiom-clean and wired: `PollardCaseFourTwo`, `PollardCaseFourTwoMixed`,
+  `PollardCaseFourTwoStructure`, `PollardCaseFourTwoBlock` (and `PollardCaseFourOne` above).
+  A third source gap was filled: the source derives `T + B = A` in the spread step from
+  `|φ_H(A)| = 1`, which fails when `T = ∅`; that branch is instead disposed of directly, since
+  `(T-bone)` is then trivial.  Only SUBCASES 4.2.1–4.2.3 and the induction assembly remain.
+- 2026-08-21 — **CASE 4.1 is Lean-closed**, together with the two devices it needs.  Four more
+  modules, axiom-clean and wired: `PollardTranslation` (translation invariance of both
+  alternatives, so the Dyson witness normalises to `x = 1`), `PollardBoost` (`repSum_ge_boost`,
+  the three-term counting bound, and `mixed_sum_ge`, the cumulative coset contribution extracted
+  from the STEP 1 engine), `PollardCaseFourOne`.  The analysis of CASE 4.2 is recorded above.
 - 2026-08-21 — **STEP 2 is Lean-closed** and the CASE 4 infrastructure is in place.  Two more
   modules, axiom-clean and wired: `PollardStepTwoStruct`, `PollardInclude`.  Two hypotheses of
   the STEP 1 engine were relaxed so that it serves STEP 2 as well: the defect bound in

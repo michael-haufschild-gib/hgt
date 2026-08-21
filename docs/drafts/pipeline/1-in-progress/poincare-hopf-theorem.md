@@ -415,11 +415,43 @@ That is the gate for the whole of Stage IV.  Its proof needs, in order:
   of modules, and **`homologyZeroIsoRing`** identifies `H_0(X)` with the coefficient ring for a
   path-connected space (via the augmentation, whose kernel is the boundaries).
 
-  Still needed for the base case: `H_0` of a clopen two-piece space as `R ⊕ R` (from
-  `isCompl_subChains` plus `homologyZeroIsoRing` on each piece), the observation that the map into
-  the ambient path-connected space is the sum, and the degree-one instance of the excision chain
-  (where the two collapses have to be run against the *reduced* vanishing, i.e. against the kernel
-  of the augmentation rather than against `H_0 = 0`);
+  The degree-one gap is being closed by **reduced homology**, built as the augmented complex:
+  `AugmentedComplex` defines `augObj`/`augD`/`augChain` (the coefficient ring in degree zero, the
+  augmentation as the new differential — `ULift`ed so the whole complex stays in one universe) and
+  `augSub`, the chains supported in a subspace as a `ModuleSubcomplex` of it, so the *entire*
+  `ModuleSubcomplex` long-exact-sequence machinery applies verbatim.  `AugmentedShift` proves
+  `augChain_d_eq` and **`augHomologyShift`** : `H_{n+2}(augChain X) ≅ H_{n+1}(X)` — the reduced and
+  ordinary homologies agree in positive degrees.
+
+  All the shifts and vanishings are now in place: `augSubHomologyShift`,
+  `augQuotHomologyShiftSucc` and `augQuotHomologyShiftZero` (the last two transfer excision into the
+  reduced world; the degree-zero case goes through `shortComplexHomologyIsoQuot`, since both outgoing
+  maps vanish there), together with `exactAt_augChain_one`, `isZero_augHomology_zero`,
+  `isZero_augSub_homology_zero` and `isZero_augSub_homology_one`.  `isIso_connecting_of_isZero'` and
+  `isIso_homologyMap_proj'` state the two collapses in *every* degree.
+
+  `AugmentedPairShift` adds the same quotient shift for a `restrictTo` pair
+  (**`augPairQuotHomologyShiftSucc`**), which transfers excision for the pair `(A', A' ∩ B')`.
+  `AugmentedSubspaceIso` proves **`augSubComplexIso`** : `(augSub S).complex ≅ augChain ↥S` — the
+  augmented chains supported in a subspace *are* the augmented chains of that subspace (degree zero
+  by `Submodule.topEquiv`, higher degrees by `subspaceChainEquiv`; the squares commute because both
+  the augmentation and the boundary are preserved by pushforward), with `augSubHomologyIso` the
+  consequence on homology.  This is what lets the remaining computation be done for an honest space
+  rather than inside nested submodules.  `AugmentedSubspace` also now exports
+  **`exists_singBd_supported`** (on a path-connected subspace a supported `0`-chain of total
+  coefficient zero bounds within that subspace), and `AugmentedShift` exports the element-level
+  `augChain_d_one_apply` / `augChain_d_succ_apply`.
+
+  `TwoComponent` sets up the splitting layer for the base case: for `U, V` disjoint open covering
+  `Y`, `compProj` is the projection onto the chains supported in `U` (via
+  `Submodule.projectionOnto` applied to `isCompl_subChains`), with `compProj_add`, `exists_split`
+  and `sub_compProj_mem`.
+
+  Still needed: (i) `H_1(augChain Y) ≅ R` for such a `Y` — the map is
+  `c ↦ singAug (compProj c)` on `ker(singAug)`, surjective by `single (const u) r − single (const v) r`
+  and with kernel the boundaries by `exists_singBd_supported` applied to `U` and to `V`; and (ii) the
+  assembly of the degree-one chain, which in the reduced world runs at augmented degree two and is
+  uniform with the higher degrees already proved;
 - IV.6 Morse theory: sublevel sets, handle attachment, gradient flow retractions, and
   `χ(M) = ∑ (−1)^λ`.
 - III manifolds: charts, vector fields, index sum, independence of the field.  Mathlib supplies

@@ -231,6 +231,33 @@ theorem isIso_homologyMap_proj (P : ModuleSubcomplex R K) (k : ℕ)
     exact h2.eq_zero_of_tgt _
   exact isIso_of_mono_of_epi _
 
+/-- **The connecting map is an isomorphism whenever the ambient complex is acyclic in the two
+relevant degrees**, in any degree. -/
+theorem isIso_connecting_of_isZero' (P : ModuleSubcomplex R K) (j : ℕ)
+    (hz1 : Limits.IsZero (K.homology (j + 1))) (hz2 : Limits.IsZero (K.homology j)) :
+    IsIso (P.connecting (j + 1) j rfl) := by
+  have hmono : Mono (P.connecting (j + 1) j rfl) := by
+    refine ShortComplex.Exact.mono_g (P.homology_exact₃ (j + 1) j rfl) ?_
+    exact hz1.eq_zero_of_src _
+  have hepi : Epi (P.connecting (j + 1) j rfl) := by
+    refine ShortComplex.Exact.epi_f (P.homology_exact₁ (j + 1) j rfl) ?_
+    exact hz2.eq_zero_of_tgt _
+  exact isIso_of_mono_of_epi _
+
+/-- **The projection to the quotient is an isomorphism on homology whenever the subcomplex is
+acyclic in the two relevant degrees**, in any degree. -/
+theorem isIso_homologyMap_proj' (P : ModuleSubcomplex R K) (j : ℕ)
+    (h1 : Limits.IsZero (P.complex.homology (j + 1)))
+    (h2 : Limits.IsZero (P.complex.homology j)) :
+    IsIso (HomologicalComplex.homologyMap P.proj (j + 1)) := by
+  have hmono : Mono (HomologicalComplex.homologyMap P.proj (j + 1)) := by
+    refine ShortComplex.Exact.mono_g (P.homology_exact₂ (j + 1)) ?_
+    exact h1.eq_zero_of_src _
+  have hepi : Epi (HomologicalComplex.homologyMap P.proj (j + 1)) := by
+    refine ShortComplex.Exact.epi_f (P.homology_exact₃ (j + 1) j rfl) ?_
+    exact h2.eq_zero_of_tgt _
+  exact isIso_of_mono_of_epi _
+
 end ModuleSubcomplex
 
 /-- Singular homology of a space. -/

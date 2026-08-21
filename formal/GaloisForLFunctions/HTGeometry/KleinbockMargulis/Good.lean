@@ -268,4 +268,26 @@ theorem IsGood.mono_exponent (hf : IsGood C α f V) (hC : 1 ≤ C) (hα' : 0 < �
         _ = C * ε ^ α' * b * ε ^ (α - α') := by rw [hsplit']; ring
     exact le_of_mul_le_mul_right step hpos
 
+/-- A constant function is `(1, α)`-good on any set. -/
+theorem isGood_const (hα : 0 < α) (c : ℝ) (V : Set (Fin d → ℝ)) :
+    IsGood 1 α (fun _ => c) V := by
+  refine isGood_of_toReal ?_
+  intro x₀ r hr _ ε hε z _
+  by_cases hc : |c| < ε
+  · have hset : {x ∈ ball x₀ r | |(fun _ => c) x| < ε} = ball x₀ r := by
+      ext x
+      simp [hc]
+    rw [hset]
+    have h1 : |c| ^ α ≤ ε ^ α := Real.rpow_le_rpow (abs_nonneg _) hc.le hα.le
+    have h2 : (0:ℝ) ≤ (volume (ball x₀ r)).toReal := ENNReal.toReal_nonneg
+    have h3 : (0:ℝ) ≤ |c| ^ α := Real.rpow_nonneg (abs_nonneg _) _
+    nlinarith [h1, h2, h3]
+  · have hset : {x ∈ ball x₀ r | |(fun _ => c) x| < ε} = (∅ : Set (Fin d → ℝ)) := by
+      ext x
+      simp [hc]
+    rw [hset, measure_empty, ENNReal.toReal_zero, zero_mul]
+    have h1 : (0:ℝ) ≤ ε ^ α := Real.rpow_nonneg hε.le _
+    have h2 : (0:ℝ) ≤ (volume (ball x₀ r)).toReal := ENNReal.toReal_nonneg
+    nlinarith [h1, h2]
+
 end GaloisForLFunctions.HTGeometry.KleinbockMargulis

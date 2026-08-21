@@ -1,7 +1,7 @@
 # Hilbert irreducibility, strength two: multivariate + Galois-preserving
 
 - **ID:** hilbert-irreducibility-strength-two
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized  (**CLOSED** 2026-08-21, unconditional, axiom-clean)
 - **Type:** THEOREM (paper complete) — target is an unconditional Lean 4 proof
 - **Depends on:** `3-formalized/hilbert-irreducibility-theorem.md` (strength one, CLOSED)
 
@@ -69,10 +69,10 @@ this is the payoff of the resolvent being universal.
 | 17 | `Multivariate` | `exists_factorisation`, `exists_exclusion`, `exists_infinite_specialisation` (CZ Thm 4) | **DONE** |
 | 17b | `SeveralVariables` | `killFirst`/`kill1`/`spec0` frame, `step_emb`, `hilbert_several`, `hilbert_multivariate` | **DONE** |
 | 17c | `HTGeometry/PrimeSubsetFactor` | divisor of a product of primes is a sub-product (reusable UFD lemma) | **DONE** |
-| 18 | `GaloisResolvent` | `resolvent` of a monic polynomial; product formula; specialization | |
-| 19 | `SeparatingLabel` | a `k : Fin D → ℚ` making the `D!` labelled actions distinct | |
-| 20 | `ResolventIrreducible` | `card Gal(F) = D!` ⇒ `resolvent F` irreducible over `K` | |
-| 21 | `GaloisSpecialization` | `card Gal(f_y) = D!` avoiding a prescribed `g` | |
+| 18 | `GaloisResolvent` | `resolvent`, `resolvent_map`, `resolvent_eq_prod`, `monic_resolvent`, `natDegree_resolvent` | **DONE** |
+| 19 | `SeparatingLabel` | `exists_ratPoint`, `exists_separating_label` | **DONE** |
+| 20 | `ResolventIrreducible` | `irreducible_resolvent_of_indexing` | **DONE** |
+| 21 | `GaloisSpecialization` | `exists_root_index`, `exists_irreducible_resolvent`, `gal_card_of_irreducible_resolvent`, `gal_card_of_specialisation` | **DONE** |
 
 ### Step 3–4 detailed plan (the Galois layer)
 
@@ -131,7 +131,44 @@ Castillo–Dietmann, *On Hilbert's irreducibility theorem* (arXiv:1602.00314): t
 `O_{f,η}(H^{m-1+[G:K]^{-1}+η})`.  This is a genuine counting theorem (large sieve / Lang–Weil
 input) and is a separate project.  Record it as *not* on the critical path.
 
+## Closed statement
+
+    gal_card_of_specialisation :
+      ∀ {m D : ℕ} {f : Polynomial (MvPolynomial (Fin m) ℚ)}, f.Monic → f.natDegree = D →
+        (f.map (algebraMap A K)).Separable →
+        Nat.card (f.map (algebraMap A K)).Gal = D ! →
+        ∀ {g : MvPolynomial (Fin m) ℚ}, g ≠ 0 →
+          ∃ y : Fin m → ℚ, MvPolynomial.eval y g ≠ 0 ∧
+            Nat.card (f.map (MvPolynomial.eval y)).Gal = D !
+
+`[propext, Classical.choice, Quot.sound]`, with `A = MvPolynomial (Fin m) ℚ` and `K = FractionRing A`.
+This is exactly the input both consuming cards ask for: **several parameters, Galois group preserved,
+and the zero locus of any prescribed nonzero polynomial avoided.**  The Castillo–Dietmann counting
+citation in `arithmetic-static-local-hardness-recurrence-window-law` can be dropped.
+
 ## Log
+- 2026-08-21 — Steps 20–21 done; the card is closed.  Two things that cost real time and are worth
+  remembering:
+  * **`ResolventIrreducible` should take explicit ring homs, not `[Algebra ℚ _]` instances.**  The
+    `Algebra ℚ _` instance on a splitting field collides with the canonical char-zero one, so
+    `Polynomial.IsSplittingField ℚ p.SplittingField p` fails to synthesize *for the base field `ℚ`
+    specifically* while succeeding for a general field variable.  Both `ResolventIrreducible` and
+    `gal_card_of_irreducible_resolvent` are therefore stated over a **generic** base field with an
+    explicit `φ : ℚ →+* F`, and instantiated at `ℚ` only in the capstone, where the statement no
+    longer mentions `algebraMap ℚ p.SplittingField`.
+  * The upper bound `Nat.card p.Gal ≤ D !` needs no separability: `Gal.galActionHom_injective` into
+    `Equiv.Perm (p.rootSet _)` plus `Polynomial.ncard_rootSet_le` gives it directly.  The lower
+    bound is the tower `D ! = finrank ℚ ℚ⟮θ⟯ ∣ finrank ℚ (SplittingField)`, and
+    `IsGalois.card_aut_eq_finrank` closes the sandwich.
+- 2026-08-21 — Steps 18–19 done.  The universal resolvent was **already in the corpus**
+  (`LabeledActionSymmetricPolynomial`); `GaloisResolvent` only had to turn it into a construction on
+  coefficients: `resolvent k φ p = ∑_m C (eval₂ φ (esymmCoord σ p) (resolventRepr k m)) * X^m`,
+  where `resolventRepr` is the `esymm` representative of `(labeledActionPoly k).coeff m`.  With that
+  shape `resolvent_map` (commutation with every ring hom) is three rewrites, and monicity comes from
+  `resolventRepr k (D !) = 1`, proved by `MvPolynomial.esymmAlgHom_injective`.
+  `SeparatingLabel` needed a lemma the corpus did not have — the corpus's `exists_eval_ne_zero`
+  produces a point in the *ambient* field, and the label must be **rational**; `exists_ratPoint_fin`
+  is the induction on the number of variables through `MvPolynomial.finSuccEquiv`.
 - 2026-08-21 — Step 2 done, axiom-clean.  `exists_infinite_specialisation` (CZ Theorem 4) and
   `hilbert_multivariate`:
 

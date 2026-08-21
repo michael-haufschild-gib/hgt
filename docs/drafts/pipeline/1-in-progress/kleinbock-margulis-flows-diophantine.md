@@ -19,19 +19,19 @@ H1, H2 / Baker's conjecture).
 |---|---|---|---|
 | Lemma 2.1 | `(1.1M)` ⟹ `δ(g_t Λ_y) ≤ r` | `KleinbockMargulis/Reduction.lean` `lemma_2_1` | **DONE** |
 | Cor 2.2 | VWMA ⟹ ∞ many `t ∈ ℤ₊ⁿ` with `δ(g_tΛ_y) ≤ e^{-γt}` | `Reduction.lean` `corollary_2_2` | **DONE** |
-| Prop 2.3 | measure bound `|{x∈B : δ(g_tΛ_{f(x)})<ε}| ≤ D(ε/ρ)^{1/dl}|B|` | | TODO |
+| Prop 2.3 | measure bound `|{x∈B : δ(g_tΛ_{f(x)})<ε}| ≤ D(ε/ρ)^{1/dl}|B|` | `KleinbockMargulis/Prop23.lean` `prop_2_3` | **DONE** |
 | Theorem A | a.e. nondegenerate ⟹ strongly extremal | | TODO |
 | Lemma 3.1 | (a) `|f|`, (b) `λf`, (c) `sup_i|f_i|` stay `(C,α)`-good | `Good.lean` `isGood_abs_iff`, `IsGood.const_mul`, `IsGood.sup` | **DONE** |
 | Prop 3.2 | `deg f ≤ k` ⟹ `(2k(k+1)^{1/k},1/k)`-good on ℝ | `PolynomialGood.lean` `isGood_polynomial` | **DONE** |
 | Lemma 3.3 (+3.3.1, 3.3.2) | `C^k` derivative-sandwich ⟹ cube estimate `(3.5)` | `SmoothGoodOne.lean` `exists_good_const_one_dim`, `SmoothGoodCube.lean` `exists_isGood_of_sandwichedChains` | **DONE** |
-| Prop 3.4 | nondegenerate point ⟹ all linear combos of `1,f_1,…,f_n` are `(C,1/dl)`-good near it | `KleinbockMargulis/Nondegenerate.lean` | TODO |
+| Prop 3.4 | nondegenerate point ⟹ all linear combos of `1,f_1,…,f_n` are `(C,1/dl)`-good near it | `KleinbockMargulis/Nondegenerate.lean` `prop_3_4` | **DONE** |
 | Theorem 4.1 | measure of unmarked points `≤ kC(3^d N_d)^k (ε/ρ)^α |B|` | `Marked.lean` `measure_not_marked_le` | **DONE** |
 | Lemmas 4.2–4.6 | supporting | `Marked.lean` | **DONE** |
 | Lemma 5.1 | `‖Λ‖ ≤ k‖Γ‖·‖v‖` | `LatticeNorm.lean` `lemma_5_1` (sharper constant `rank Γ + 1`) | **DONE** |
 | Theorem 5.2 | quantitative nondivergence | `Nondivergence.lean` `theorem_5_2` | **DONE** |
 | Theorem 5.3 | unipotent one-parameter version | | TODO |
 | Theorem 5.4 | `h = g_t u_{f(x)}` version | `LinearForms.lean` `theorem_5_4` | **DONE** |
-| Theorem B (§6.3) | Khintchine-type convergence statement | | TODO |
+| Theorem B (§6.3) | Khintchine-type convergence statement | | TODO — **the paper states it without proof** ("the details will appear elsewhere"); only a recipe is given (modify Lemma 2.1 in the spirit of [K1, Thm 8.3], then apply Prop 2.3 with `t = (t/n,…,t/n)`) |
 
 ## Missing infrastructure (mathlib gaps) to build
 1. `(C,α)`-good functions — new.
@@ -104,3 +104,39 @@ paper's `C_{k,A₁,A₂} = k(k+1)((A₁/A₂)(k+1)(2k^k+1))^{1/k}`; only the dep
   the symmetric group by adjacent transpositions.  `MultilinearDiagonal.lean` then shows a
   symmetric continuous multilinear map with vanishing diagonal is zero (by differentiating the
   diagonal restriction), giving the polarization step Proposition 3.4 needs.
+- 2026-08-21 — Proposition 3.4 complete (`Nondegenerate.lean` `prop_3_4`).  Supporting modules:
+  `GoodLinearChange.lean` (goodness under an invertible linear change of variables, replacing the
+  paper's circumscribed-cube step, with constant `C |det T| ‖T⁻¹‖^d`), `BasisDirections.lean`
+  (a basis `v + s eᵢ` of directions avoiding the zero set of a continuous function, replacing the
+  paper's "appropriate rotation"), `LineChain.lean` (directional derivative chains, so the
+  hypotheses of Lemma 3.3 for `f ∘ T` are bounds on directional derivatives of `f`).
+  `IsDerivChain` was refactored to a *bounded* chain `IsDerivChain k F U` (`∀ j < k`), since a
+  `C^k` function only supplies `k` links.  The uniformity in the coefficient vector is obtained by
+  compactness of the coefficient sphere; the constant term `c₀` is carried through because chains
+  of order `k ≥ 1` do not see it.  Remaining: Prop 2.3, Theorem A, Theorem 5.3, Theorem B.
+- 2026-08-21 — Proposition 2.3 complete (`Prop23.lean` `prop_2_3`), together with
+  `indep_of_nondegenerate` (nondegeneracy ⟹ `1, f₁, …, f_n` linearly independent near the point,
+  via `EventuallyEq.iteratedFDeriv`) and `exists_supGe` (hypothesis (ii) of Theorem 5.4, by
+  compactness of the coefficient sphere — only linearity in the coefficients is used, no
+  continuity of `f`).  Also added `isGood_const` to `Good.lean`.
+  All new modules are wired into `GaloisForLFunctions.HTGeometry`; the formal lint gate reports no
+  problem in any of them (its single error concerns `HTGeometry.TwoComponent`, an untracked module
+  owned by another agent).
+  Remaining: Theorem A, Theorem 5.3, Theorem B.
+
+## Plan for Theorem A (next step)
+`prop_2_3` + `corollary_2_2` + Borel–Cantelli.  Concretely:
+1. Fix a nondegenerate `x₀`; `prop_2_3` gives `r₀, D, ρ`.
+2. For `j ≥ 1` put `E_m = {x ∈ B(x₀,r₀) | δ(g_m Λ_{f(x)}) ≤ e^{-(1/j)∑ m_i}}` and apply `prop_2_3`
+   with `ε = 2 e^{-(1/j)∑ m_i}`.  A *global* majorant `volume (E_m) ≤ K e^{-(α/j)∑ m_i}` is
+   available: for the finitely many `m` with `2e^{-(1/j)∑m} > ρ` one has `∑ m < j log(2/ρ)`, so the
+   trivial bound `volume (E_m) ≤ volume B` is itself of that form.  This avoids splitting off a
+   finite exceptional set.
+3. `MeasureTheory.ae_finite_setOf_mem` (Borel–Cantelli, arbitrary countable index) then gives
+   `∀ᵐ x, {m | x ∈ E_m}.Finite`.  Still needed: summability of `∑_{m : Fin n → ℕ} r^{∑ m_i}` for
+   `0 ≤ r < 1` — mathlib has no pi-type product-summability lemma, so induct on `n` with
+   `Summable.mul_of_nonneg` along `(Fin (n+1) → ℕ) ≃ ℕ × (Fin n → ℕ)`.
+4. `corollary_2_2` turns `VWMA (f x)` into an infinite such set for some `γ > 0`; taking `1/j ≤ γ`
+   puts `x` in the `j`-th null set, so `{x ∈ B | VWMA (f x)}` is null.
+5. Globalise with `MeasureTheory.measure_null_of_locally_null` applied to
+   `{x ∈ U | VWMA (f x)} ∩ {nondegenerate points}`, plus the null set of degenerate points.

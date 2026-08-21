@@ -50,13 +50,18 @@ of the transitive closure and is tracked here as separate future layers.
       group scheme has zero Lie algebra)
 - [x] `L1.5` **inversion acts by `-1` on the co-Lie module**: `d (S a) = - d a`, equivalently
       `S x + x ∈ I^2` for `x ∈ I` → `HTGeometry/HopfAntipodeCoLie.lean`
-- [ ] `L1.2b` base change `omega_{A ⊗ S} ≅ omega_A ⊗ S`
+- [x] `L1.2b` **base change** `omega_{S ⊗ A} ≅ S ⊗ omega_A` → `HTGeometry/CoLieBaseChange.lean`:
+      `baseChangeD` with its Leibniz rule for the counit of `S ⊗ A`, `coLieToBaseChange`, and
+      `coLieBaseChangeEquiv`
 - [x] `L1.7` **the co-Lie module is `e^* Ω¹`** → `HTGeometry/CoLieKaehler.lean`:
       `smul_coLie` (the `A`-action on `I/I²` is through the counit), `dDerivation`,
       `kaehlerToCoLie`, and **`coLieEquivKaehlerQuotient : I/I² ≅ Ω[A⁄R] / I·Ω[A⁄R]`** — this is
       exactly Suzuki's definition `omega_A = e^* Omega^1` matched with the construction of `L1.1`,
       and the entry point into `L4` (the cotangent complex)
-- [ ] `L1.6` `omega` of a product: `omega_{A ⊗ B} ≅ omega_A ⊕ omega_B`
+- [x] `L1.6` **`omega` of a product**: `omega_{A ⊗ B} ≅ omega_A × omega_B` →
+      `HTGeometry/CoLieProduct.lean`: the four structural bialgebra morphisms
+      `inclLeft`/`inclRight`/`projLeft`/`projRight`, the splitting identity
+      `coLieInl ∘ coLieFst + coLieInr ∘ coLieSnd = id`, and `coLieProdEquiv`
 - [x] `L1.3` dual-numbers description `dualNumberEquiv : pointDerivations ≃ {f : A →ₐ R[e] | fst∘f = ε}`
 - [x] `L1.4a` non-vacuity certificate: the group algebra `R[G]` of a finite abelian group is a
       finite free commutative Hopf algebra with nonzero augmentation ideal
@@ -73,20 +78,28 @@ of the transitive closure and is tracked here as separate future layers.
       `dual_rTensor_counit_comp_comul`, `dual_lTensor_counit_comp_comul`, `dualCoalgebra`)
 - [x] `L2.1c` **`T2` is multiplicative on pure tensors** (`T2_tmul_convOf`) together with
       `convOf_apply_repr` — the last compatibility needed to see `A^dual` as a bialgebra
-- [ ] `L2.1b` bundle the algebra structure on `Module.Dual R A` itself (mathlib has it only on
-      the structure `WithConv (C →ₗ[R] A)`, so this is type-synonym bookkeeping)
+- [x] `L2.1b` **the convolution algebra on the Cartier dual itself** → `HTGeometry/CartierDualBialgebra.lean`:
+      the type synonym `cartierDual R A` with `toDual`/`ofDual`, a `CommRing` instance whose
+      multiplication is `convOf` and whose unit is the counit of `A` (all ring axioms transported
+      from mathlib's `WithConv (A →ₗ[R] R)`), and an `Algebra R` instance via `Algebra.ofModule`
 - [x] `L2.2a` **bialgebra compatibility of the Cartier dual** → `HTGeometry/CartierDualLieAlgebra.lean`:
       `convOf` (convolution on the dual of any coalgebra), `convOf_comp_coalgHom`
       (functoriality — the engine), `T2_dualComul_conv` (`Δ'` is multiplicative, via mathlib's
       `Bialgebra.mulCoalgHom`), `dualCounit_conv`, `convOf_counit_left/right`,
       `T2_dualComul_counit`, `dualCounit_counit`
-- [ ] `L2.2b` bundle these as a `Bialgebra`/`HopfAlgebra` structure on `A^dual`; `A^{dual dual} ≅ A`
-      as a bialgebra
+- [x] `L2.2b` **`A^dual` is a bialgebra, and `A^{dual dual} ≅ A`**:
+      `CartierDualBialgebra.instBialgebra` (via `Bialgebra.mk'`, using the comparison
+      `T2c : A^dual ⊗ A^dual ≃ (A ⊗ A)^dual` and its multiplicativity `T2c_mul`), together with
+      `instFree`, `instFinite` and `instIsCocomm` — so the construction can be iterated — and
+      `HTGeometry/CartierDoubleDual.lean`'s **`doubleDualBialgEquiv : A ≃ₐc[R] cartierDual R (cartierDual R A)`**,
+      evaluation `a ↦ (f ↦ f a)`
 - [x] `L2.3a` `primitives R A : Submodule R A`, `counit_eq_zero_of_mem_primitives`,
       `primitives_le_augIdeal`
 - [x] `L2.3b` **`Lie (Spec A^dual) ≅ Prim A`** → `primitivesEquivCartierLie`, together with
       `cartierPointDerivations`, `evalEquiv_mem_cartierPointDerivations_iff`, `eq_of_T2_tmul_eq`
-- [ ] `L2.4` the canonical pairing `N x N^dual → Gm` and its perfectness
+- [~] `L2.4` the canonical pairing `N x N^dual → Gm`.  **Perfectness is done**: it is exactly
+      `doubleDualBialgEquiv` (`L2.2b`).  Still open: writing the pairing itself as a morphism of
+      group schemes `N x N^dual → Gm`, i.e. a bialgebra map `R[t, t^{-1}] → A ⊗ A^dual`
 
 **L3 — determinants.**
 - [x] `L3.1` **`exteriorPower.pairingDual` is an isomorphism for finite free modules**; the
@@ -95,8 +108,11 @@ of the transitive closure and is tracked here as separate future layers.
 - [ ] `L3.2` determinant of a two-term perfect complex; multiplicativity in exact sequences
 
 **L4 — the Lie complex.**
-- [ ] `L4.1` naive cotangent complex of a finite flat group scheme (mathlib has
-      `Algebra.Extension.Cotangent` / `Algebra.H1Cotangent`)
+- [x] `L4.1` **the co-Lie complex** → `HTGeometry/CoLieComplex.lean`: for any presentation
+      `P` of `A` over `R`, the naive cotangent complex base-changed along the identity section,
+      `coLieComplex P : P.Cotangent ⊗_A A/I → P.CotangentSpace ⊗_A A/I`, is exact at its middle
+      term with cokernel `omega_A` (`coLieComplex_exact_h0`, `coLieComplex_surjective_h0`),
+      i.e. `H^0(ell_A) = omega_A`
 - [ ] `L4.2` `RLie N` and `det RLie N`; Illusie VII 3.1.1.5 triangle → Prop 2.1
 
 **L5 — Néron models.**  (largest layer; not started)
@@ -146,3 +162,23 @@ of the transitive closure and is tracked here as separate future layers.
   `H^0 = omega_A` by `coLieEquivKaehlerQuotient` plus right-exactness of `⊗`.  For `L1.2b`, mathlib's
   `KaehlerDifferential.tensorKaehlerEquivBase` supplies the Kaehler half; what is still missing is a
   bialgebra structure on the base change `S ⊗_R A`.
+- 2026-08-21 — bricks `L4.1`, `L1.6` and `L1.2b` landed.  `L1.2b` did **not** need the Kaehler
+  route: `Ideal.Cotangent.lift` applied to `LinearMap.baseChange S (d R A)` works directly, once
+  that map is shown to satisfy the counit Leibniz rule on `S ⊗_R A`; mathlib's
+  `TensorProduct.instBialgebra` supplies the bialgebra structure on `S ⊗_R A`.  The same
+  `d`-surjectivity + `TensorProduct.ext'` pattern proves the product splitting of `L1.6`.
+  Remaining open bricks: `L2.1b`/`L2.2b` (bundling the Cartier dual as a Hopf algebra,
+  `A^{dual dual} ≅ A`), `L2.4` (the Cartier pairing), `L3.2` (determinant of a perfect complex),
+  `L4.2` (Illusie's triangle) and all of `L5` (Neron models).
+- 2026-08-21 — bricks `L2.1b`, `L2.2b` and the perfectness half of `L2.4` landed in
+  `HTGeometry/CartierDualBialgebra.lean` and `HTGeometry/CartierDoubleDual.lean`.  Design notes for
+  whoever continues: the Cartier dual is a *plain* `def` synonym of `Module.Dual R A` (not
+  `WithConv`, which is a structure and would force the coalgebra structure to be transported); its
+  ring axioms are one-line `congrArg ofDual` transports of mathlib's `WithConv` convolution ring.
+  The one real friction is that `cartierDual R A ⊗ cartierDual R A` and `Dual R A ⊗ Dual R A` are
+  defeq but not syntactically equal, which breaks `rw` at `instances` transparency; the fix is to
+  work exclusively through `T2c` (built from `toDualEquiv`) instead of `T2`.  Cocommutativity of
+  `A` is now a standing hypothesis of that module — it is what makes the convolution product
+  commutative, and hence what lets `cartierDual` be applied twice.
+  Remaining open bricks: the `Gm`-valued pairing of `L2.4`, `L3.2` (determinant of a perfect
+  complex), `L4.2` (Illusie's triangle) and all of `L5` (Neron models).
