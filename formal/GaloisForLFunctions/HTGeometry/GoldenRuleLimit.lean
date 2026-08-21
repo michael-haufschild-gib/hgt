@@ -281,14 +281,14 @@ theorem tendsto_goldenRuleKernel_density {ρ : ℝ → ℝ} {E₀ : ℝ}
     have hcont : Continuous (fun x : ℝ => x + E₀) := by fun_prop
     have h1 : Filter.Tendsto (fun x : ℝ => x + E₀) (nhds (0 : ℝ)) (nhds E₀) := by
       simpa using hcont.tendsto (0 : ℝ)
-    have h2 : Filter.Tendsto g (nhds (0 : ℝ)) (nhds (ρ E₀)) := hc.comp h1
+    have h2 : Filter.Tendsto g (nhds (0 : ℝ)) (nhds (ρ E₀)) := Filter.Tendsto.comp hc h1
     show Filter.Tendsto g (nhds (0 : ℝ)) (nhds (g 0))
     rw [hg0]
     exact h2
   have hshift : ∀ t : ℝ, (∫ E : ℝ, goldenRuleKernel t (E - E₀) * ρ E)
       = ∫ x : ℝ, goldenRuleKernel t x * g x := by
     intro t
-    have h := MeasureTheory.integral_add_right_eq_self
+    have h := MeasureTheory.integral_add_right_eq_self (μ := (volume : Measure ℝ))
       (fun E : ℝ => goldenRuleKernel t (E - E₀) * ρ E) E₀
     rw [← h]
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)

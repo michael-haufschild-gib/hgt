@@ -1,11 +1,11 @@
 # Base-preserving affine formation current and four-organ Bianchi law
 
 - **ID:** ULF-FHM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** Formation Holonomy Mechanics; strict vertical theorem ULF-FHM-1
 - **Statement:** Every linear comparison preserving a common recovered base has a unique affine vertical normal form consisting of a formation current and a vertical transport; composition couples them by a semidirect law, triangle defects are purely vertical, and associativity imposes exact four-organ Bianchi identities on both current and transport defects.
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [GENERATION + TRANSPORT FUSION] [FINITE PACKET/KMS REALIZATION] [LEAN OPEN: READ-ONLY FORMAL PHASE] [NOT RH]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [GENERATION + TRANSPORT FUSION] [FINITE PACKET/KMS REALIZATION] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]
 
 ## 1. Setup
 
@@ -393,7 +393,7 @@ exact four-organ falsifier. No external priority claim is made.
 - [x] joint triangle defect proved
 - [x] coupled four-organ Bianchi identities proved
 - [x] finite diagonal/reset/KMS realization proved
-- [ ] Lean formalization (deferred in current read-only Lean audit phase)
+- [x] Lean formalization (`GaloisForLFunctions.HTGeometry.AffineFormationCurrent`)
 - [ ] literal arithmetic three-organ comparison
 - [ ] source-generated positive properness law
 

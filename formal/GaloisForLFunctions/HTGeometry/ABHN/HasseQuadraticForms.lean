@@ -10,10 +10,11 @@ import Mathlib.LinearAlgebra.QuadraticForm.TensorProduct
 /-!
 # Hasse detection for quadratic forms over number fields
 
-Because two is invertible in a number field, Mathlib's quadratic-form base change is available at
-every completion.  Equality of fixed forms and nondegeneracy then descend through a completion.
-This is not a local-global classification theorem for quadratic forms up to isometry.  The same
-construction deliberately does not cover rational function fields of characteristic two.
+When two is invertible, nondegeneracy of a finite-dimensional quadratic form is invariant under
+field scalar extension. Thus it is detected at all completions of a number field and, in odd
+characteristic, of a rational function field. Equality of fixed forms is likewise detected at
+number-field completions. This is not a local-global classification theorem for quadratic forms up
+to isometry.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
@@ -55,6 +56,29 @@ theorem quadraticForm_nondegenerate_of_baseChange {K : Type u} {L : Type v} {M :
   rw [← QuadraticForm.polarBilin_baseChange]
   exact QuadraticMap.nondegenerate_polar_iff.mpr h
 
+/-- Nondegeneracy of a finite-dimensional quadratic form is preserved by field scalar extension
+when two is invertible. -/
+theorem quadraticForm_nondegenerate_baseChange {K : Type u} {L : Type v} {M : Type w}
+    [Field K] [Field L] [Algebra K L] [AddCommGroup M] [Module K M] [Invertible (2 : K)]
+    [FiniteDimensional K M] (Q : QuadraticForm K M) (h : Q.Nondegenerate) :
+    (Q.baseChange L).Nondegenerate := by
+  letI : Invertible (2 : L) :=
+    (Invertible.map (algebraMap K L) 2).copy 2 (map_ofNat _ _).symm
+  apply QuadraticMap.nondegenerate_polar_iff.mp
+  rw [QuadraticForm.polarBilin_baseChange]
+  apply bilinForm_nondegenerate_baseChange Q.polarBilin
+  exact QuadraticMap.nondegenerate_polar_iff.mpr h
+
+/-- Nondegeneracy of a finite-dimensional quadratic form is detected by field scalar extension
+when two is invertible. -/
+theorem quadraticForm_nondegenerate_iff_baseChange {K : Type u} {L : Type v} {M : Type w}
+    [Field K] [Field L] [Algebra K L] [AddCommGroup M] [Module K M] [Invertible (2 : K)]
+    [FiniteDimensional K M] (Q : QuadraticForm K M) :
+    Q.Nondegenerate ↔ (Q.baseChange L).Nondegenerate := by
+  constructor
+  · exact quadraticForm_nondegenerate_baseChange Q
+  · exact quadraticForm_nondegenerate_of_baseChange Q
+
 /-- Equality of quadratic forms over a number field is detected at every completed place. -/
 theorem numberField_quadraticForm_eq_iff_forall_place (K : Type u) [Field K] [NumberField K]
     {M : Type w} [AddCommGroup M] [Module K M]
@@ -79,6 +103,49 @@ theorem numberField_quadraticForm_nondegenerate_of_forall_place (K : Type u)
   letI : Invertible (2 : K) := invertibleOfNonzero two_ne_zero
   apply quadraticForm_nondegenerate_of_baseChange (L := completion K (witnessPlace K)) Q
   simpa only [numberFieldQuadraticFormBaseChange] using h (witnessPlace K)
+
+/-- Nondegeneracy of a finite-dimensional quadratic form over a number field is detected at every
+completed place. -/
+theorem numberField_quadraticForm_nondegenerate_iff_forall_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    [FiniteDimensional K M] (Q : QuadraticForm K M) :
+    Q.Nondegenerate ↔ ∀ p : NumberFieldPlace K,
+      (numberFieldQuadraticFormBaseChange K Q p).Nondegenerate := by
+  letI : Invertible (2 : K) := invertibleOfNonzero two_ne_zero
+  constructor
+  · intro h p
+    simpa only [numberFieldQuadraticFormBaseChange] using
+      (quadraticForm_nondegenerate_iff_baseChange (L := completion K p) Q).mp h
+  · intro h
+    apply (quadraticForm_nondegenerate_iff_baseChange
+      (L := completion K (witnessPlace K)) Q).mpr
+    simpa only [numberFieldQuadraticFormBaseChange] using h (witnessPlace K)
+
+/-- The scalar extension of a quadratic form to a rational-function completion, when two is
+invertible. -/
+noncomputable def rationalFunctionQuadraticFormBaseChange (F : Type u) [Field F] [Finite F]
+    [Invertible (2 : RatFunc F)] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (Q : QuadraticForm (RatFunc F) M) (p : RationalFunctionPlace F) :
+    QuadraticForm (rationalFunctionCompletion F p)
+      (rationalFunctionCompletion F p ⊗[RatFunc F] M) :=
+  Q.baseChange (rationalFunctionCompletion F p)
+
+/-- Nondegeneracy of a finite-dimensional quadratic form over `F(t)` is detected at every finite
+and infinite completed place whenever two is invertible in `F(t)`. -/
+theorem rationalFunction_quadraticForm_nondegenerate_iff_forall_place (F : Type u)
+    [Field F] [Finite F] [Invertible (2 : RatFunc F)] {M : Type w} [AddCommGroup M]
+    [Module (RatFunc F) M] [FiniteDimensional (RatFunc F) M] (Q : QuadraticForm (RatFunc F) M) :
+    Q.Nondegenerate ↔ ∀ p : RationalFunctionPlace F,
+      (rationalFunctionQuadraticFormBaseChange F Q p).Nondegenerate := by
+  constructor
+  · intro h p
+    simpa only [rationalFunctionQuadraticFormBaseChange] using
+      (quadraticForm_nondegenerate_iff_baseChange
+        (L := rationalFunctionCompletion F p) Q).mp h
+  · intro h
+    apply (quadraticForm_nondegenerate_iff_baseChange
+      (L := rationalFunctionCompletion F .infinite) Q).mpr
+    simpa only [rationalFunctionQuadraticFormBaseChange] using h .infinite
 
 /-- Anisotropy of a quadratic form descends through field scalar extension when two is
 invertible. -/

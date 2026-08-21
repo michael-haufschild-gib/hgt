@@ -190,7 +190,7 @@ theorem measurable_ampSymbol_comp (E₀ : ℝ) {ω : α → ℝ} (hω : Measurab
 /-- Multiplication by the first-order amplitude symbol. -/
 def ampOp (E₀ : ℝ) (ω : α → ℝ) (hω : Measurable ω) (t : ℝ) : Lp ℂ 2 μ →L[ℂ] Lp ℂ 2 μ :=
   lpBoundedMulCLM (p := 2) (μ := μ) (measurable_ampSymbol_comp E₀ hω t) (abs_nonneg t)
-    (fun x => norm_ampSymbol_le t _)
+    (fun x => norm_ampSymbol_le t (ω x - E₀))
 
 theorem ampOp_coeFn (E₀ : ℝ) (ω : α → ℝ) (hω : Measurable ω) (t : ℝ) (f : Lp ℂ 2 μ) :
     ((ampOp (μ := μ) E₀ ω hω t f : Lp ℂ 2 μ) : α → ℂ)
@@ -230,7 +230,7 @@ theorem hasDerivAt_ampOp (E₀ : ℝ) (ω : α → ℝ) (hω : Measurable ω) {C
     HasDerivAt (ampOp (μ := μ) E₀ ω hω) (intOp (μ := μ) E₀ ω hω t) t := by
   have hD : ∀ x : α, |ω x - E₀| ≤ C + |E₀| := by
     intro x
-    have hx := hC x
+    have hx : |ω x| ≤ C := hC x
     have h1 : |ω x - E₀| ≤ |ω x| + |E₀| := by
       rw [abs_le]
       constructor <;>

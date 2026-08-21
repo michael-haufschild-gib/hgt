@@ -1,13 +1,14 @@
 # Symmetric formation homology, observer-created overlap, recovery duality, and Fisher-nullity law
 
 - **ID:** ULF-TFIM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / ROUTE-INDEPENDENT FORMATION MECHANISM
 - **Source:** `../../../1-in-progress/universal-law-field/ternary-formation-interference-mechanics/field-programme.md`
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [SYMMETRIC THREE-FORMATION LAW]`
   `[OBSERVER-CREATED OVERLAP] [EXACT RECOVERY CONSERVATION] [DUAL REPORTER]`
   `[POSITIVE HODGE CARRIER] [FOURTH-ORGAN FISHER PREDICTION]`
-  `[COFINAL PROPERNESS SELECTION] [LEAN CORE FORMALIZED] [HODGE/FISHER LEAN OPEN] [NOT RH]`
+  `[COFINAL PROPERNESS SELECTION] [NOT RH]`
+  `[LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS]`
 - **Statement:** Three relation formations carry a canonical first homology.  Choosing one formation
   as an observer kernel identifies that homology with overlap created by observation, with excess
   joint recovery loss, with a dual reporter quotient, and with the exact missing rank of the fused
@@ -799,27 +800,19 @@ positivity, and recurrence are then consumers of the same charge, not independen
 
 ## 13. Lean status
 
-`GaloisForLFunctions.HTGeometry.ConstitutiveSymmetricFormationHomology` now certifies the
-route-independent algebraic core:
-
-1. the canonical distributivity quotient `FormationCharge`;
-2. the symmetric inclusion--exclusion rank conservation `(TFIM.6)`;
-3. exact observer-overlap rank conservation, identifying the charge rank with
-   `dim((L(W) cap L(Z))/L(W cap Z))`;
-4. vanishing charge iff image formation preserves the intersection;
-5. under pairwise injectivity, vanishing charge iff the fused observer is jointly injective.
-
-Scratch elaboration, direct leaf elaboration, and the targeted leaf build pass.  Axiom audit reports
-only `propext`, `Classical.choice`, and `Quot.sound`.  The module is imported by
-`HTGeometry.UniversalLawField`; that umbrella was not built.  Explicit chain-complex permutation
-isomorphisms, reporter duality, Hodge projector, and Fisher-nullity realization remain Lean-open.
+Fully Lean-certified.  `GaloisForLFunctions.HTGeometry.ConstitutiveSymmetricFormationHomology`
+holds the algebraic core (`FormationCharge`, the inclusion--exclusion balance `(TFIM.6)`, the
+observer-overlap rank conservation and the joint-recovery criterion).
+`GaloisForLFunctions.HTGeometry.TernaryFormationComplex` adds the explicit incidence complex and
+all of §2--§4; `GaloisForLFunctions.HTGeometry.TernaryFormationDualityHodge` adds §5--§9.  See the
+`-formalized.md` companion for the statement-by-statement map.
 
 ## Gates
 
 - [x] 0 -> 1: source-pure mechanism, falsifiers, and corpus collision search
 - [x] 1 -> 2: complete coordinate-free paper proof and sharp countermodel
-- [~] 2 -> 3: algebraic charge, overlap conservation, and joint-recovery criterion formalized;
-  explicit complex, duality, Hodge carrier, and Fisher-nullity theorem remain
+- [x] 2 -> 3: algebraic charge, overlap conservation, joint-recovery criterion, explicit complex,
+  duality, Hodge carrier, and Fisher-nullity theorem all formalized
 - [ ] 3 -> 4: publication paper and literal arithmetic three-formation realization
 
 ## Log

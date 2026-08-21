@@ -85,8 +85,7 @@ theorem isSelfAdjoint_coupling : IsSelfAdjoint M.coupling := by
   rw [ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric]
   intro f g
   simp only [ContinuousLinearMap.coe_coe, coupling_apply, inner_add_left, inner_add_right,
-    inner_smul_left, inner_smul_right]
-  rw [← inner_conj_symm M.form f, ← inner_conj_symm M.bound f]
+    inner_smul_left, inner_smul_right, inner_conj_symm]
   ring
 
 theorem isSelfAdjoint_ham (lam : ℝ) : IsSelfAdjoint (M.ham lam) := by
@@ -105,6 +104,8 @@ theorem coupling_bound : M.coupling M.bound = M.form := by
 
 theorem freeProp_bound (t : ℝ) :
     M.freeProp t M.bound = Complex.exp (((-(t * M.level) : ℝ) : ℂ) * Complex.I) • M.bound := by
+  have hrw : M.freeProp t M.bound = freeGroup M.energy M.measurable_energy t M.bound := rfl
+  rw [hrw]
   refine Lp.ext ?_
   filter_upwards [freeGroup_coeFn M.energy M.measurable_energy t M.bound, M.eigen,
     Lp.coeFn_smul (Complex.exp (((-(t * M.level) : ℝ) : ℂ) * Complex.I)) M.bound] with x h1 h2 h3
@@ -156,18 +157,24 @@ def duhamelIntegrand (lam t s : ℝ) : Lp ℂ 2 μ →L[ℂ] Lp ℂ 2 μ :=
 
 theorem continuous_duhamelIntegrand (lam t : ℝ) : Continuous (M.duhamelIntegrand lam t) := by
   unfold duhamelIntegrand
-  refine continuous_const.smul (Continuous.mul ?_ ?_)
-  · exact M.continuous_freeProp.comp (continuous_const.sub continuous_id)
-  · exact continuous_const.mul (M.continuous_evol lam)
+  have hsub : Continuous fun r : ℝ => t - r := by fun_prop
+  have h1 : Continuous fun s : ℝ => M.freeProp (t - s) * (M.coupling * M.evol lam s) :=
+    (M.continuous_freeProp.comp hsub).mul (continuous_const.mul (M.continuous_evol lam))
+  exact h1.const_smul (-Complex.I * (lam : ℂ))
 
 theorem hasDerivAt_duhamel (lam t s : ℝ) :
     HasDerivAt (fun r : ℝ => M.freeProp (t - r) * M.evol lam r) (M.duhamelIntegrand lam t s) s := by
   have hA : HasDerivAt (fun r : ℝ => M.freeProp (t - r))
       (Complex.I • (M.freeHam * M.freeProp (t - s))) s := by
     have h1 : HasDerivAt (fun r : ℝ => t - r) (-1) s := by
-      simpa using (hasDerivAt_const s t).sub (hasDerivAt_id s)
-    have h3 := (M.hasDerivAt_freeProp (t - s)).comp s h1
-    simpa [neg_one_smul, smul_neg, neg_neg] using h3
+      simpa using (hasDerivAt_id s).const_sub t
+    have h3 := (M.hasDerivAt_freeProp (t - s)).scomp s h1
+    have h4 : ((-1 : ℝ) • ((-Complex.I) • (M.freeHam ∘L M.freeProp (t - s))))
+        = Complex.I • (M.freeHam * M.freeProp (t - s)) := by
+      rw [neg_one_smul, ← neg_smul, neg_neg]
+      rfl
+    rw [h4] at h3
+    exact h3
   have hB := M.hasDerivAt_evol lam s
   have hmul := hA.mul hB
   have hcomm := M.freeHam_comm (t - s)
@@ -177,14 +184,13 @@ theorem hasDerivAt_duhamel (lam t s : ℝ) :
   have e2 : M.freeProp (t - s) * ((-Complex.I) • (M.ham lam * M.evol lam s))
       = (-Complex.I) • (M.freeProp (t - s) * M.freeHam * M.evol lam s)
         + (-Complex.I * (lam : ℂ)) • (M.freeProp (t - s) * (M.coupling * M.evol lam s)) := by
-    rw [mul_smul_comm, ham, add_mul, mul_add, smul_add]
-    congr 1
-    · rw [← mul_assoc]
-    · rw [smul_mul_assoc, mul_smul_comm, smul_smul]
+    rw [ham, mul_smul_comm, add_mul, mul_add, smul_add, ← mul_assoc, smul_mul_assoc,
+      mul_smul_comm, smul_smul]
   have key : (Complex.I • (M.freeHam * M.freeProp (t - s))) * M.evol lam s
       + M.freeProp (t - s) * ((-Complex.I) • (M.ham lam * M.evol lam s))
       = M.duhamelIntegrand lam t s := by
-    rw [e1, e2, ← add_assoc, ← add_smul, duhamelIntegrand]
+    rw [e1, e2, ← add_assoc, ← add_smul]
+    simp only [duhamelIntegrand]
     simp
   rw [← key]
   exact hmul
@@ -209,6 +215,7 @@ theorem duhamel_apply (lam t : ℝ) (f : Lp ℂ 2 μ) :
     ← M.duhamel lam t]
   simp
 
+omit M in
 theorem norm_neg_I_mul_ofReal (lam : ℝ) : ‖(-Complex.I * (lam : ℂ))‖ = |lam| := by
   rw [norm_mul, norm_neg, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
 
@@ -216,7 +223,7 @@ theorem norm_duhamelIntegrand_apply_le (lam t s : ℝ) (f : Lp ℂ 2 μ) :
     ‖(M.duhamelIntegrand lam t s) f‖ ≤ |lam| * ‖M.coupling‖ * ‖f‖ := by
   have hval : (M.duhamelIntegrand lam t s) f
       = (-Complex.I * (lam : ℂ)) • (M.freeProp (t - s) (M.coupling (M.evol lam s f))) := rfl
-  rw [hval, norm_smul, M.norm_neg_I_mul_ofReal, M.norm_freeProp_apply]
+  rw [hval, norm_smul, norm_neg_I_mul_ofReal, M.norm_freeProp_apply]
   calc |lam| * ‖M.coupling (M.evol lam s f)‖
       ≤ |lam| * (‖M.coupling‖ * ‖M.evol lam s f‖) :=
         mul_le_mul_of_nonneg_left (M.coupling.le_opNorm _) (abs_nonneg _)
@@ -254,6 +261,10 @@ theorem firstOrder_eq (lam t : ℝ) :
     congr 1
     rw [M.freeProp_bound s, map_smul, M.coupling_bound, map_smul,
       show t - s = t + (-s) by ring, ← M.freeProp_comp t (-s)]
+    have hint : (intOp M.level M.energy M.measurable_energy s) M.form
+        = Complex.exp (((-(s * M.level) : ℝ) : ℂ) * Complex.I) •
+          ((freeGroup M.energy M.measurable_energy (-s)) M.form) := rfl
+    rw [hint, map_smul]
     rfl
   have hcong : (∫ s in (0 : ℝ)..t, (-Complex.I * (lam : ℂ)) •
         (M.freeProp (t - s) (M.coupling (M.freeProp s M.bound))))
@@ -275,7 +286,7 @@ form-factor density. -/
 theorem normSq_firstOrder (lam t : ℝ) :
     ‖M.firstOrder lam t‖ ^ 2
       = lam ^ 2 * ∫ x, goldenRuleKernel t (M.energy x - M.level) * ‖(M.form : α → ℂ) x‖ ^ 2 ∂μ := by
-  rw [firstOrder, norm_smul, M.norm_neg_I_mul_ofReal, M.norm_freeProp_apply, mul_pow, sq_abs,
+  rw [firstOrder, norm_smul, norm_neg_I_mul_ofReal, M.norm_freeProp_apply, mul_pow, sq_abs,
     norm_sq_ampOp_apply]
 
 /-- **Second-order remainder.**  The true evolution agrees with the first-order Dyson term up to
@@ -287,11 +298,12 @@ theorem norm_sub_firstOrder_le (lam : ℝ) {t : ℝ} (ht : 0 ≤ t) :
     (M.continuous_duhamelIntegrand lam t).clm_apply continuous_const
   have hcont2 : Continuous fun s : ℝ => (-Complex.I * (lam : ℂ)) •
       (M.freeProp (t - s) (M.coupling (M.freeProp s M.bound))) := by
-    refine continuous_const.smul ?_
-    refine Continuous.clm_apply (M.continuous_freeProp.comp
-      (continuous_const.sub continuous_id)) ?_
-    exact (ContinuousLinearMap.continuous _).comp
-      (M.continuous_freeProp.clm_apply continuous_const)
+    have hsub : Continuous fun r : ℝ => t - r := by fun_prop
+    have h1 : Continuous fun s : ℝ =>
+        M.freeProp (t - s) (M.coupling (M.freeProp s M.bound)) := by
+      refine Continuous.clm_apply (M.continuous_freeProp.comp hsub) ?_
+      exact M.coupling.continuous.comp (M.continuous_freeProp.clm_apply continuous_const)
+    exact h1.const_smul (-Complex.I * (lam : ℂ))
   rw [M.duhamel_apply lam t M.bound, M.firstOrder_eq lam t,
     ← intervalIntegral.integral_sub (hcont1.intervalIntegrable 0 t)
       (hcont2.intervalIntegrable 0 t)]
@@ -310,7 +322,7 @@ theorem norm_sub_firstOrder_le (lam : ℝ) {t : ℝ} (ht : 0 ≤ t) :
           = (-Complex.I * (lam : ℂ)) •
             (M.freeProp (t - s) (M.coupling (M.evol lam s M.bound))) := rfl
       rw [hval, ← smul_sub, map_sub, map_sub]
-    rw [hdiff, norm_smul, M.norm_neg_I_mul_ofReal, M.norm_freeProp_apply]
+    rw [hdiff, norm_smul, norm_neg_I_mul_ofReal, M.norm_freeProp_apply]
     have h1 : ‖M.coupling (M.evol lam s M.bound - M.freeProp s M.bound)‖
         ≤ ‖M.coupling‖ * (|lam| * ‖M.coupling‖ * s) :=
       le_trans (M.coupling.le_opNorm _)
@@ -320,9 +332,13 @@ theorem norm_sub_firstOrder_le (lam : ℝ) {t : ℝ} (ht : 0 ≤ t) :
       mul_le_mul_of_nonneg_left h1 (abs_nonneg _)
     have h3 : |lam| * (‖M.coupling‖ * (|lam| * ‖M.coupling‖ * s))
         ≤ lam ^ 2 * ‖M.coupling‖ ^ 2 * t := by
-      have hnn : (0 : ℝ) ≤ ‖M.coupling‖ := norm_nonneg _
-      have hla : |lam| * |lam| = lam ^ 2 := by rw [← abs_mul, abs_of_nonneg (mul_self_nonneg lam)]; ring
-      nlinarith [hs.2, abs_nonneg lam, hnn, hs0]
+      have hla : |lam| * |lam| = lam ^ 2 := by
+        rw [← abs_mul, abs_of_nonneg (mul_self_nonneg lam)]; ring
+      have heq : |lam| * (‖M.coupling‖ * (|lam| * ‖M.coupling‖ * s))
+          = lam ^ 2 * ‖M.coupling‖ ^ 2 * s := by
+        rw [← hla]; ring
+      rw [heq]
+      exact mul_le_mul_of_nonneg_left hs.2 (by positivity)
     linarith
   have h := intervalIntegral.norm_integral_le_of_norm_le_const hb
   have hfin : lam ^ 2 * ‖M.coupling‖ ^ 2 * t * |t - 0| = lam ^ 2 * ‖M.coupling‖ ^ 2 * t ^ 2 := by
@@ -330,6 +346,13 @@ theorem norm_sub_firstOrder_le (lam : ℝ) {t : ℝ} (ht : 0 ≤ t) :
     ring
   rw [hfin] at h
   exact h
+
+/-- **The exact transition amplitude out of the initial state agrees with the first-order Dyson
+term to second order in the coupling.** -/
+theorem abs_norm_sub_norm_firstOrder_le (lam : ℝ) {t : ℝ} (ht : 0 ≤ t) :
+    |‖M.evol lam t M.bound - M.freeProp t M.bound‖ - ‖M.firstOrder lam t‖|
+      ≤ lam ^ 2 * ‖M.coupling‖ ^ 2 * t ^ 2 :=
+  le_trans (abs_norm_sub_norm_le _ _) (M.norm_sub_firstOrder_le lam ht)
 
 /-! ## Fermi's golden rule -/
 

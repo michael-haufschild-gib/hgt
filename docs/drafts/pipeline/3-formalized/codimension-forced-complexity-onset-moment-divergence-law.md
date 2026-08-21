@@ -640,3 +640,49 @@ carrier compiler certificate -- `(4)` for Theorem A, `(16)` for the weak cut, an
 universal alphabet" with a uniform compiler), not a step of this card's proof; the sibling card
 `capacity-compatible-fast-forwardable-incubation-law` carries it in exactly the same position and
 was promoted on that basis.
+
+## Lean progress -- the compiler certificate is discharged (2026-08-21)
+
+The last hypothesis is gone.  `(4)`/`(16)`/`hcert` asserted that some gate alphabet compiles the
+carrier evolution; on the *diagonal* carrier that is not an assumption about an alphabet but a
+theorem about an explicit one, because a diagonal Hamiltonian is a sum of `2n+3` commuting `Z` and
+`ZZ` words and its evolution is the product of the corresponding `2n+3` diagonal rotations.
+Discretizing the rotation angle into `m` equal steps makes the alphabet finite.
+
+`formal/GaloisForLFunctions/HTGeometry/PhaseGridApproximation.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the circle is `1`-Lipschitz in its angle | `norm_exp_mul_I_sub_one_le`, `norm_exp_sub_exp_le` |
+| unit-modulus products telescope | `norm_prod_map_eq_one`, `norm_prod_sub_prod_le` |
+| **grid approximation**: `m` equally spaced angles match *every* real phase to within `2π/m`, simultaneously for both signs `±1` | `gridAngle`, `exists_gridIndex` |
+
+`formal/GaloisForLFunctions/HTGeometry/DiagonalRotationCompiler.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the `±1` sign of a diagonal label, and the diagonality of its Pauli word | `diagSignOf`, `finitePauliMatrix_pathWord_of_isDiag` |
+| **the carrier Hamiltonian in patch coordinates** | `carrierEnergy`, `pathHamiltonian_embed_eq_diagonal_carrierEnergy` |
+| its evolution is the diagonal of the phases | `unitaryEvolution_diagonal_phase` |
+| **the alphabet**: one carrier generator, one discretized angle | `DiagAlphabet`, `diagAlphabetGate`, `diagAlphabetAct` |
+| a word acts by the product of its rotations | `wordAct_diagAlphabetAct`, `prod_map_diagAlphabetGate` |
+| **the certificate at a fixed grid**: depth `2n+3`, error `(2n+3)·2π/m`, for *every* unit seed, every carrier point and every time | `exists_diagAlphabet_word` |
+| **the certificate**: for every tolerance a finite alphabet exists | `exists_diagAlphabet_compiler` |
+| **Theorem C on the tube, with no hypothesis on any gate alphabet** | `coupled_shortcut_tube_compiled` |
+
+The alphabet has `(2n+3)m` letters with `m = O(n/η)`, so `M_n = O(n²/η)` and `log M_n = O(log n)`,
+which is the regime the card's `s_n = Ω(D/log M_n)` assumes.  The word length is `2n+3` for every
+carrier point and every time -- uniform in both, as `(4)` requires -- and the error estimate uses
+nothing about the seed except that it is a unit vector, so the same alphabet serves any seed.
+
+Two points where the periodicity matters.  The angles `s·c_i` are arbitrary reals while the grid
+lives in `[0,2π)`; `exists_gridIndex` reduces modulo `2π` by rounding `α m/2π` down and taking the
+residue of the floor modulo `m`, and the identification of the rounded grid point with the residue
+costs nothing because `e^{-2πikg} = 1` for `g = ±1`.  And the grid index is chosen from the angle
+alone, so the *same* index serves both signs `g = ±1` -- which is what lets one word work for all
+`2^{n+2}` configurations at once.
+
+Theorem C is therefore unconditional: `coupled_shortcut_tube_compiled`, `coupled_tail_lower`,
+`lintegral_coupled_onset_pow_eq_top`, `lintegral_coupled_onset_rpow_eq_top`.

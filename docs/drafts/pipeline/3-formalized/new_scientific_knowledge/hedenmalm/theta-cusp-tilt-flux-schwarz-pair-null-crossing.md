@@ -151,10 +151,12 @@ price. That conjecture fails at a precise seam: coenergy is a summable scalar pr
 but corpus has no measure realization identifying it with, or bounding, renewal KL action. Treating
 the two as interchangeable would be unsupported.
 
-The nonlinear shifted-Xi Weyl corpus supplies a genuine replacement. Lean now proves fixed actual
-abelian class-law scale-orbit certificates exist exactly when Schwarz-pair normal coefficient is
-zero. Off zero fibre, every finite degree admits an unconditional far-right positive Hankel block
-whose nonlinear Jacobi/Weyl renewal injects exactly `|Im(xiSpectralPoint q)|`. Quantitatively,
+The nonlinear shifted-Xi Weyl corpus supplies an exact receiver identity, but a later universality
+audit below rules it out as a source-native producer. Lean proves fixed actual abelian class-law
+scale-orbit certificates exist exactly when Schwarz-pair normal coefficient is zero. Off zero
+fibre, every finite degree admits a far-right positive Hankel block whose nonlinear Jacobi/Weyl
+renewal returns `|Im(xiSpectralPoint q)|` after that displacement is supplied as reporter aperture.
+Quantitatively,
 
 ```text
 normSq(a) * normalCoefficient(q) = multiplicity(q) * |centeredRate(q)|,
@@ -162,10 +164,10 @@ normSq(a) * normalCoefficient(q) = multiplicity(q) * |centeredRate(q)|,
   = normSq(a) * normalCoefficient(q).
 ```
 
-Hence fixed-source contiguity and changing-admission renewal are two complementary phases:
-neutral normal charge is realized by a fixed class law, while nonzero normal charge necessarily
-survives through positive nonlinear degree renewal. At this stage the obstruction was reduced from
-existence to cofinal degree--mass synchronization; the next corpus search closes that seam below.
+Hence fixed-source contiguity and changing-admission renewal give a formal phase classification,
+but this statement alone supplies no vanishing pressure: nonzero normal charge is inserted into
+the receiver through the externally selected aperture. The later universality no-go identifies
+this dependence exactly.
 
 `formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairNormalRenewalWeld.lean`
 
@@ -205,9 +207,9 @@ increment on this explicit `O(n)` schedule at every degree, with exact coefficie
   = normSq(xiSpectralPoint q) * normalCoefficient(q).
 ```
 
-This eliminates both arbitrary delayed far-right witnesses and Xi-dependent schedule selection.
-Fixed class-law realization still exists exactly in neutral phase; otherwise this canonical
-parabolic nonlinear orbit carries positive normal charge at every rung.
+This eliminates delayed far-right witnesses and Xi-dependent schedule selection for the fitted
+receiver. It does not make its amplitude source-native: the reporter still receives the spectral
+displacement as external aperture data.
 
 `formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairParabolicRenewalWeld.lean`
 
@@ -226,12 +228,35 @@ Verification:
 - audited theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`;
 - module is wired into `RHTower.lean`; no umbrella/full build was run.
 
+## External-aperture universality no-go
+
+Hostile audit of the parabolic receiver proves its normalized Weyl increment is universal in the
+wrong sense. For every positive external height `h`, the same admitted moment sequence returns
+exactly `h`; on the parabolic schedule its positive range is all of `(0,∞)`. The Xi-indexed theorem
+is definitionally the specialization `h = |Im(xiSpectralPoint q)|`.
+
+Therefore neither positivity nor persistence of this increment detects the source. It is a fitted
+reporter, not an arithmetic producer, and cannot force the Schwarz-pair normal coefficient to
+vanish.
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairParabolicRenewalUniversalityNoGo.lean`
+
+Key closed declarations:
+
+```text
+xiSchwarzPairCompletedSourceWeylNormalizedIncrement_eq_external
+xiSchwarzPairExternalWeylNormalizedIncrement_eq_height
+xiSchwarzPairExternalParabolicWeylNormalizedIncrement_eq_height
+range_xiSchwarzPairExternalParabolicWeylNormalizedIncrement
+```
+
 ## Next hard conjecture
 
-Synchronization is closed. Compare persistent parabolic Weyl normal injection with an actual
-finite global source-action budget. Existing normalized adaptive mixed source action diverges on
-cofinal positive schedules, so it is not such a budget. Do not identify Stokes coenergy with KL or
-Weyl source action without a proved measure/energy bridge.
+Abandon external-aperture renewal as producer. Search for a source-native coefficient fixed before
+reporter choice, then compare that coefficient with an actual finite global source-action budget.
+Existing normalized adaptive mixed source action diverges on cofinal positive schedules, so it is
+not such a budget. Do not identify Stokes coenergy with KL or Weyl source action without a proved
+measure/energy bridge.
 
 ## Log
 
@@ -244,4 +269,7 @@ Weyl source action without a proved measure/energy bridge.
   coefficient transfer at every finite degree; isolated cofinal degree--mass synchronization as
   remaining producer seam.
 - 2026-08-21 — Closed synchronization seam using explicit universal parabolic schedule; every
-  off-line Xi copy carries exact positive normal renewal at every degree on one `O(n)` orbit.
+  fitted off-line receiver returns its prescribed normal displacement at every degree on one
+  `O(n)` orbit.
+- 2026-08-21 — Proved external-aperture universality no-go: the same receiver realizes every
+  positive target, so parabolic Weyl renewal is not source-native and supplies no RH pressure.

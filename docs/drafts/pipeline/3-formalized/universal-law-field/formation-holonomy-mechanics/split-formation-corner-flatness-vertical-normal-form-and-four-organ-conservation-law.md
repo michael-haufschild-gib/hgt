@@ -1,11 +1,11 @@
 # Split-formation corner flatness, vertical normal form, and four-organ conservation law
 
 - **ID:** ULF-FHM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** Formation Holonomy Mechanics
 - **Statement:** Split formations over a common recovered object form a flat pair groupoid in the Karoubi corner; every base-compatible linear comparison is uniquely a vertical transport, every three-organ composition defect is purely vertical, and four-organ defects obey an exact associativity conservation law.
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [UNIVERSAL FINITE MECHANISM] [LEAN OPEN: READ-ONLY FORMAL PHASE] [NOT RH]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [UNIVERSAL FINITE MECHANISM] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]
 
 ## 1. Arbitrary-category split formations
 
@@ -433,7 +433,7 @@ dependency-closed and materially sharpen the universal-law-field acceptance gate
 - [x] three-organ defect formula proved
 - [x] four-organ conservation identity proved
 - [x] common-recovery and frozen-history overclaims explicitly killed
-- [ ] Lean formalization (deferred during the current read-only Lean audit phase)
+- [x] Lean formalization (`GaloisForLFunctions.HTGeometry.SplitFormationCornerFlatness`)
 - [ ] three literal heterogeneous corpus realizations
 - [ ] source-generated positive vertical-work theorem
 
