@@ -27,6 +27,88 @@ namespace RHTower.Sieve
 
 open Finset ArithmeticFunction Filter Topology
 
+private theorem routeT_gapMoment_halfBoundary_le_threeQuarters :
+    (1 + routeTGapMomentNu) / 2 ≤ (3 / 4 : ℝ) := by
+  dsimp only [routeTGapMomentNu]
+  linarith [maynardLongGlobalAmplitudeDeficit_pos]
+
+private theorem montgomery_two_term_envelope
+    {W HF B U V A : ℝ} {e : ℕ}
+    (hW : 1 ≤ W) (hHF : 1 ≤ HF) (hB : 1 ≤ B)
+    (hU : 0 ≤ U) (hV : 0 ≤ V) (hA : A ≤ 3 * HF * B) :
+    W * A * B ^ e * (3 * U + W * (4 * B) * V) ≤
+      HF * (12 * W ^ 2 * B ^ (e + 2)) * (U + V) := by
+  have hW0 : 0 ≤ W := zero_le_one.trans hW
+  have hHF0 : 0 ≤ HF := zero_le_one.trans hHF
+  have hB0 : 0 ≤ B := zero_le_one.trans hB
+  have htail0 : 0 ≤ 3 * U + W * (4 * B) * V :=
+    add_nonneg (mul_nonneg (by norm_num) hU)
+      (mul_nonneg (mul_nonneg hW0 (mul_nonneg (by norm_num) hB0)) hV)
+  have hreplace :
+      W * A * B ^ e * (3 * U + W * (4 * B) * V) ≤
+        W * (3 * HF * B) * B ^ e * (3 * U + W * (4 * B) * V) :=
+    mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hA hW0) (pow_nonneg hB0 e)) htail0
+  have hpow : B ^ (e + 1) ≤ B ^ (e + 2) :=
+    pow_le_pow_right₀ hB (by omega)
+  have hWsqCore : W ≤ W ^ 2 := by
+    calc
+      W = W * 1 := by ring
+      _ ≤ W * W := mul_le_mul_of_nonneg_left hW hW0
+      _ = W ^ 2 := by ring
+  have hWsq : 9 * W ≤ 12 * W ^ 2 := by
+    calc
+      9 * W ≤ 12 * W := mul_le_mul_of_nonneg_right (by norm_num) hW0
+      _ ≤ 12 * W ^ 2 := mul_le_mul_of_nonneg_left hWsqCore (by norm_num)
+  have hcoef : 9 * W * HF * B ^ (e + 1) ≤
+      12 * W ^ 2 * HF * B ^ (e + 2) := by
+    calc
+      9 * W * HF * B ^ (e + 1) ≤
+          12 * W ^ 2 * HF * B ^ (e + 1) :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right hWsq hHF0) (pow_nonneg hB0 _)
+      _ ≤ 12 * W ^ 2 * HF * B ^ (e + 2) :=
+        mul_le_mul_of_nonneg_left hpow
+          (mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg W)) hHF0)
+  calc
+    W * A * B ^ e * (3 * U + W * (4 * B) * V) ≤
+        W * (3 * HF * B) * B ^ e * (3 * U + W * (4 * B) * V) := hreplace
+    _ = (9 * W * HF * B ^ (e + 1)) * U +
+        (12 * W ^ 2 * HF * B ^ (e + 2)) * V := by
+      rw [pow_succ, show e + 2 = (e + 1) + 1 by omega, pow_succ]
+      ring
+    _ ≤ (12 * W ^ 2 * HF * B ^ (e + 2)) * U +
+        (12 * W ^ 2 * HF * B ^ (e + 2)) * V :=
+      add_le_add (mul_le_mul_of_nonneg_right hcoef hU) le_rfl
+    _ = HF * (12 * W ^ 2 * B ^ (e + 2)) * (U + V) := by ring
+
+private theorem twelve_mul_le_half_of_twentyFour_mul_le
+    {x y z : ℝ} (h : 24 * x * y ≤ z) :
+    12 * x * y ≤ (1 / 2 : ℝ) * z := by
+  calc
+    12 * x * y = (1 / 2 : ℝ) * (24 * x * y) := by ring
+    _ ≤ (1 / 2 : ℝ) * z := mul_le_mul_of_nonneg_left h (by norm_num)
+
+private theorem mul_rpow_of_eq_rpow
+    {T Y r a : ℝ} (hT : 0 < T) (hY : Y = T ^ r) :
+    T * Y ^ a = T ^ (1 + r * a) := by
+  rw [hY, ← Real.rpow_mul hT.le]
+  calc
+    T * T ^ (r * a) = T ^ (1 : ℝ) * T ^ (r * a) := by rw [Real.rpow_one]
+    _ = T ^ (1 + r * a) := (Real.rpow_add hT _ _).symm
+
+private theorem rpow_of_eq_rpow
+    {T Y r a : ℝ} (hT : 0 ≤ T) (hY : Y = T ^ r) :
+    Y ^ a = T ^ (r * a) := by
+  rw [hY]
+  exact (Real.rpow_mul hT r a).symm
+
+private theorem two_fourHundredths_absorb_into_oneHundredth
+    {x target : ℝ} (h : x + 1 / 100 ≤ target) :
+    1 / 400 + 1 / 400 + x ≤ target - 1 / 200 := by
+  linarith
+
 theorem dyadic_length_ge_twentySixTwentySeven_root_of_overweight_elevenFifths
     {T mu : ℝ} (hT : 1 < T) (hmuHi : mu ≤ 11 / 5) {q : ℕ}
     (hover : 1 - 2 * (mu / 120) < dyadicLogExponent T q) :
@@ -1471,6 +1553,8 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
   rcases hselection r0 hr0 with
     ⟨_helig, _hrel, _hcore, _hlabel, _husub, hbetaLo, hbetaHi,
       hlength, _hlarge, _hbranch⟩
+  have hbetaLo' : mu / 120 ≤ beta := by
+    simpa only [beta] using hbetaLo
   obtain ⟨ell, hell, hell90, hcross, hover, hMont⟩ :=
     exists_maynardWindowRelevantSelectedCell_fibre_tuned_montgomery_elevenFifths
       L X hT hc hmuLo hmuHi label S hSne' lam hdelta hdeltaHi hgap hband hselection
@@ -1521,7 +1605,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
   have hWY1 : 1 ≤ W * Y := one_le_mul_of_one_le_of_one_le hW1 hY1
   have hB01 : 1 ≤ B0 := by
     dsimp only [B0]
-    linarith [Real.log_nonneg hWY1]
+    exact le_add_of_nonneg_right (Real.log_nonneg hWY1)
   have hB00 : 0 ≤ B0 := zero_le_one.trans hB01
   have hHFpos : 0 < HF := by
     simpa only [HF] using maynardHarmonicFactor_pos K hdelta
@@ -1555,22 +1639,28 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
     dsimp only [HF, maynardHarmonicFactor]
     linarith
   have hdeltaLog : 1 / delta + 2 * Real.log (W * Y) ≤ 3 * HF * B0 := by
-    have hlog0 : 0 ≤ Real.log (W * Y) := Real.log_nonneg hWY1
     have hfirst : 1 / delta ≤ HF * B0 := by
       exact honeDivHF.trans (by
         calc
-          HF = HF * 1 := by ring
+          HF = HF * 1 := (mul_one HF).symm
           _ ≤ HF * B0 := mul_le_mul_of_nonneg_left hB01 hHFpos.le)
     have hsecond : 2 * Real.log (W * Y) ≤ 2 * HF * B0 := by
       have hlogB : Real.log (W * Y) ≤ B0 := by
         dsimp only [B0]
-        linarith
-      have := hlogB.trans (by
+        exact le_add_of_nonneg_left (by norm_num)
+      have hBHF : B0 ≤ HF * B0 := by
         calc
-          B0 = 1 * B0 := by ring
-          _ ≤ HF * B0 := mul_le_mul_of_nonneg_right hHF1 hB00)
-      linarith
-    linarith
+          B0 = 1 * B0 := (one_mul B0).symm
+          _ ≤ HF * B0 := mul_le_mul_of_nonneg_right hHF1 hB00
+      calc
+        2 * Real.log (W * Y) ≤ 2 * B0 :=
+          mul_le_mul_of_nonneg_left hlogB (by norm_num)
+        _ ≤ 2 * (HF * B0) := mul_le_mul_of_nonneg_left hBHF (by norm_num)
+        _ = 2 * HF * B0 := by ring
+    calc
+      1 / delta + 2 * Real.log (W * Y) ≤ HF * B0 + 2 * HF * B0 :=
+        add_le_add hfirst hsecond
+      _ = 3 * HF * B0 := by ring
   have heBound : e ≤ maynardMontgomeryFixedPolylogExponentBound := by
     dsimp only [e]
     exact heathBrownSelected_montgomeryFixedPolylogExponent_le label hell90
@@ -1582,113 +1672,42 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
     simpa only [W, Y, N, e, B0, U, V, mul_assoc] using hraw
   have hU0 : 0 ≤ U := by
     dsimp only [U]
-    positivity
+    exact mul_nonneg hT0.le (Real.rpow_nonneg hYpos.le _)
   have hV0 : 0 ≤ V := by
     dsimp only [V]
-    positivity
+    exact Real.rpow_nonneg hYpos.le _
   have hrawEnvelope : (S.card : ℝ) ≤
       HF * (12 * W ^ 2 * B0 ^ (e + 2)) * (U + V) := by
-    have hreplace :
-        W * (1 / delta + 2 * Real.log (W * Y)) * B0 ^ e *
-            (3 * U + W * (4 * B0) * V) ≤
-          W * (3 * HF * B0) * B0 ^ e *
-            (3 * U + W * (4 * B0) * V) := by
-      have htail0 : 0 ≤ 3 * U + W * (4 * B0) * V :=
-        add_nonneg (mul_nonneg (by norm_num) hU0)
-          (mul_nonneg (mul_nonneg hW0 (mul_nonneg (by norm_num) hB00)) hV0)
-      exact mul_le_mul_of_nonneg_right
-        (mul_le_mul_of_nonneg_right
-          (mul_le_mul_of_nonneg_left hdeltaLog hW0)
-          (pow_nonneg hB00 e)) htail0
-    have hcoef : 9 * W * HF * B0 ^ (e + 1) ≤
-        12 * W ^ 2 * HF * B0 ^ (e + 2) := by
-      have hpow : B0 ^ (e + 1) ≤ B0 ^ (e + 2) :=
-        pow_le_pow_right₀ hB01 (by omega)
-      have hWsqCore : W ≤ W ^ 2 := by
-        calc
-          W = W * 1 := by ring
-          _ ≤ W * W := mul_le_mul_of_nonneg_left hW1 hW0
-          _ = W ^ 2 := by ring
-      have hWsq : 9 * W ≤ 12 * W ^ 2 := by
-        calc
-          9 * W ≤ 12 * W := mul_le_mul_of_nonneg_right (by norm_num) hW0
-          _ ≤ 12 * W ^ 2 := mul_le_mul_of_nonneg_left hWsqCore (by norm_num)
-      calc
-        9 * W * HF * B0 ^ (e + 1) ≤
-            12 * W ^ 2 * HF * B0 ^ (e + 1) := by
-          exact mul_le_mul_of_nonneg_right
-            (mul_le_mul_of_nonneg_right hWsq hHFpos.le)
-            (pow_nonneg hB00 _)
-        _ ≤ 12 * W ^ 2 * HF * B0 ^ (e + 2) := by
-          exact mul_le_mul_of_nonneg_left hpow
-            (mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg W)) hHFpos.le)
-    calc
-      (S.card : ℝ) ≤
-          W * (1 / delta + 2 * Real.log (W * Y)) * B0 ^ e *
-            (3 * U + W * (4 * B0) * V) := hraw'
-      _ ≤ W * (3 * HF * B0) * B0 ^ e *
-            (3 * U + W * (4 * B0) * V) := hreplace
-      _ = (9 * W * HF * B0 ^ (e + 1)) * U +
-          (12 * W ^ 2 * HF * B0 ^ (e + 2)) * V := by
-        rw [pow_succ, show e + 2 = (e + 1) + 1 by omega, pow_succ]
-        ring
-      _ ≤ (12 * W ^ 2 * HF * B0 ^ (e + 2)) * U +
-          (12 * W ^ 2 * HF * B0 ^ (e + 2)) * V := by
-        exact add_le_add (mul_le_mul_of_nonneg_right hcoef hU0) le_rfl
-      _ = HF * (12 * W ^ 2 * B0 ^ (e + 2)) * (U + V) := by ring
+    exact hraw'.trans
+      (montgomery_two_term_envelope hW1 hHF1 hB01 hU0 hV0 hdeltaLog)
   have hcostFull := hcost N e hN1 hNscale heBound
   have hcostHalf : 12 * W ^ 2 * B0 ^ (e + 2) ≤
       (1 / 2 : ℝ) * T ^ (1 / 400 : ℝ) := by
     dsimp only [W, B0, Y]
-    calc
-      12 * maynardMontgomeryRaisedWidthConstant ^ 2 *
-          (1 + Real.log (maynardMontgomeryRaisedWidthConstant * (N : ℝ))) ^
-            (e + 2) =
-          (1 / 2 : ℝ) *
-            (24 * maynardMontgomeryRaisedWidthConstant ^ 2 *
-              (1 + Real.log (maynardMontgomeryRaisedWidthConstant * (N : ℝ))) ^
-                (e + 2)) := by ring
-      _ ≤ (1 / 2 : ℝ) * T ^ (1 / 400 : ℝ) :=
-        mul_le_mul_of_nonneg_left hcostFull (by norm_num)
+    exact twelve_mul_le_half_of_twentyFour_mul_le hcostFull
   let target : ℝ := 1 + mu * (1 + routeTGapMomentNu - 2 * alpha)
+  have halphaRoute : (1 + routeTGapMomentNu) / 2 ≤ alpha :=
+    routeT_gapMoment_halfBoundary_le_threeQuarters.trans halphaLo
   obtain ⟨hwidthExp, hheightExp⟩ :=
     routeT_wide_tunedMontgomery_exponents_with_polylog_le_second_elevenFifths
-      hmuLo hmuHi
-      (by linarith [routeTGapMomentNu_lt_half]) halphaHi
-      (by simpa only [beta] using hbetaLo) hbetaHi' hrLo hrHi
+      hmuLo hmuHi halphaRoute halphaHi
+      hbetaLo' hbetaHi' hrLo hrHi
   have hUeq : U = T ^ (1 + r * (1 - 2 * alpha)) := by
-    have hYpow : Y ^ (1 - 2 * alpha) = T ^ (r * (1 - 2 * alpha)) := by
-      calc
-        Y ^ (1 - 2 * alpha) = (T ^ r) ^ (1 - 2 * alpha) := by rw [hYeq]
-        _ = T ^ (r * (1 - 2 * alpha)) :=
-          (Real.rpow_mul hT0.le r (1 - 2 * alpha)).symm
-    calc
-      U = T * Y ^ (1 - 2 * alpha) := by rfl
-      _ = T * T ^ (r * (1 - 2 * alpha)) := by rw [hYpow]
-      _ = T ^ (1 : ℝ) * T ^ (r * (1 - 2 * alpha)) := by rw [Real.rpow_one]
-      _ = T ^ (1 + r * (1 - 2 * alpha)) := (Real.rpow_add hT0 _ _).symm
+    dsimp only [U]
+    exact mul_rpow_of_eq_rpow hT0 hYeq
   have hVeq : V = T ^ (r * (2 - 2 * alpha)) := by
-    have hYpow : Y ^ (2 - 2 * alpha) = T ^ (r * (2 - 2 * alpha)) := by
-      calc
-        Y ^ (2 - 2 * alpha) = (T ^ r) ^ (2 - 2 * alpha) := by rw [hYeq]
-        _ = T ^ (r * (2 - 2 * alpha)) :=
-          (Real.rpow_mul hT0.le r (2 - 2 * alpha)).symm
-    calc
-      V = Y ^ (2 - 2 * alpha) := by rfl
-      _ = T ^ (r * (2 - 2 * alpha)) := hYpow
-  have hbudget : (1 / 400 : ℝ) + 1 / 400 ≤ 1 / 100 := by norm_num
+    dsimp only [V]
+    exact rpow_of_eq_rpow hT0.le hYeq
   have hUfinal : T ^ (1 / 400 : ℝ) * T ^ (1 / 400 : ℝ) * U ≤
       T ^ (target - 1 / 200) := by
     rw [hUeq, ← Real.rpow_add hT0, ← Real.rpow_add hT0]
     apply Real.rpow_le_rpow_of_exponent_le hT.le
-    dsimp only [target]
-    linarith
+    exact two_fourHundredths_absorb_into_oneHundredth hheightExp
   have hVfinal : T ^ (1 / 400 : ℝ) * T ^ (1 / 400 : ℝ) * V ≤
       T ^ (target - 1 / 200) := by
     rw [hVeq, ← Real.rpow_add hT0, ← Real.rpow_add hT0]
     apply Real.rpow_le_rpow_of_exponent_le hT.le
-    dsimp only [target]
-    linarith
+    exact two_fourHundredths_absorb_into_oneHundredth hwidthExp
   have hsum0 : 0 ≤ U + V := add_nonneg hU0 hV0
   calc
     M * (S.card : ℝ) ≤

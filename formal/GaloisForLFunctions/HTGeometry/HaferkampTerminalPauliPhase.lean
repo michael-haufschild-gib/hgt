@@ -29,7 +29,7 @@ theorem terminalPauliPhaseMatrix_det (t : ℝ) : (terminalPauliPhaseMatrix t).de
     rw [← Complex.exp_add]
     have hzero : -(Complex.I * (t : ℂ)) + Complex.I * (t : ℂ) = 0 := by ring
     rw [hzero, Complex.exp_zero]
-  simpa [terminalPauliPhaseEigenvalue, hphase]
+  simp [terminalPauliPhaseEigenvalue, hphase]
 
 theorem terminalPauliPhaseMatrix_mem_specialUnitary (t : ℝ) :
     terminalPauliPhaseMatrix t ∈ Matrix.specialUnitaryGroup (Bool × Bool) ℂ := by
@@ -63,25 +63,27 @@ def EntrywiseMatrixHasDerivAt {ι κ : Type*}
 theorem entrywiseHasDerivAt_terminalPauliPhaseMatrix :
     EntrywiseMatrixHasDerivAt terminalPauliPhaseMatrix
       (Complex.I • boolTwoQubitPauli none (some 2)) 0 := by
-  have hplusInner : HasDerivAt (fun t : ℝ => Complex.I * (t : ℂ)) Complex.I 0 := by
-    simpa using (Complex.ofRealCLM.hasDerivAt (x := (0 : ℝ))).const_mul Complex.I
-  have hminusInner : HasDerivAt (fun t : ℝ => -(Complex.I * (t : ℂ))) (-Complex.I) 0 := by
-    convert ((Complex.ofRealCLM.hasDerivAt (x := (0 : ℝ))).const_mul Complex.I).neg using 1 <;>
-      simp
   have hplus : HasDerivAt (fun t : ℝ => Complex.exp (Complex.I * (t : ℂ))) Complex.I 0 := by
-    simpa [Function.comp_def] using (Complex.hasDerivAt_exp (0 : ℂ)).scomp hplusInner
+    have hcomplex : HasDerivAt (fun z : ℂ => Complex.exp (Complex.I * z)) Complex.I 0 := by
+      simpa [Function.comp_def] using
+        (Complex.hasDerivAt_exp (Complex.I * (0 : ℂ))).comp (𝕜 := ℂ) 0
+          (hasDerivAt_const_mul Complex.I)
+    exact hcomplex.comp_ofReal
   have hminus : HasDerivAt (fun t : ℝ => Complex.exp (-(Complex.I * (t : ℂ)))) (-Complex.I) 0 := by
-    simpa [Function.comp_def] using (Complex.hasDerivAt_exp (0 : ℂ)).scomp hminusInner
-  intro x
-  intro y
+    have hcomplex : HasDerivAt (fun z : ℂ => Complex.exp (-(Complex.I * z))) (-Complex.I) 0 := by
+      simpa [Function.comp_def] using
+        (Complex.hasDerivAt_exp (-Complex.I * (0 : ℂ))).comp (𝕜 := ℂ) 0
+          (hasDerivAt_const_mul (-Complex.I))
+    exact hcomplex.comp_ofReal
+  intro x y
   by_cases hxy : x = y
   · subst y
     rcases x with ⟨a, b⟩
     fin_cases b
     · simpa [terminalPauliPhaseMatrix, terminalPauliPhaseEigenvalue,
-        boolTwoQubitPauli, boolPauliOption, finiteQubitPauli, Matrix.kronecker] using hplus
-    · simpa [terminalPauliPhaseMatrix, terminalPauliPhaseEigenvalue,
         boolTwoQubitPauli, boolPauliOption, finiteQubitPauli, Matrix.kronecker] using hminus
+    · simpa [terminalPauliPhaseMatrix, terminalPauliPhaseEigenvalue,
+        boolTwoQubitPauli, boolPauliOption, finiteQubitPauli, Matrix.kronecker] using hplus
   · have hpauli : boolTwoQubitPauli none (some 2) x y = 0 := by
       rcases x with ⟨x₁, x₂⟩
       rcases y with ⟨y₁, y₂⟩
@@ -111,8 +113,8 @@ theorem entrywiseHasDerivAt_terminalPauliGatePath
     ((Complex.I • (boolTwoQubitPauli none (some 2) *
       (U : Matrix (Bool × Bool) (Bool × Bool) ℂ)) :
       Matrix (Bool × Bool) (Bool × Bool) ℂ) x y) 0
-  simpa only [Matrix.smul_mul, Matrix.mul_apply] using
-    (HasDerivAt.fun_sum (fun z _ =>
+  simpa only [Matrix.smul_apply, Matrix.mul_apply, smul_eq_mul, Finset.mul_sum, mul_assoc] using
+    (HasDerivAt.fun_sum (u := Finset.univ) (fun z _ =>
       (entrywiseHasDerivAt_terminalPauliPhaseMatrix x z).mul_const
         ((U : Matrix (Bool × Bool) (Bool × Bool) ℂ) z y)))
 

@@ -10,7 +10,6 @@ internalizes box selection, finite coloring, endpoint exclusion, and the canonic
 -/
 
 set_option maxRecDepth 10000
-set_option maxHeartbeats 1500000
 
 noncomputable section
 namespace RHTower.Sieve

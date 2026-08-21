@@ -254,3 +254,50 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
     this is Lemma 1(b) for any concrete realization of `L²(X_S)`.
   All `#print axioms` clean.  Remaining in this lane: §VII (41) (the Besov–Fourier sup inequality),
   (48), and the adelic realization of `E(f)` for `k = ℚ`.
+
+- 2026-08-22 — Tier B batch 8.  Three more modules:
+  * `ConnesLogExcessTail` — **§VII (48)**: the exact tail integral
+    `∫_T^∞ (log x − log T) x^{-δ-1} dx = T^{-δ}/δ²` (substitution `x = Tu` plus the corpus's
+    `integral_rpow_mul_log_Ioi_one`), and `connes_logExcess_schwartz_rapidDecay`:
+    `T^N ∫_{Ioi T}(log x − log T)‖η x‖ dx → 0` for every `N`.
+  * `ConnesOrbitGeometricConvergence` — **§VII Lemma 1(a)**: `connes_exp_neg_le_rpow_inv`
+    (an exponential is dominated by every reciprocal power), `connes_summable_exp_neg_latticeL1`
+    (exponentially decaying families on `ℤ^d` are summable, via the corpus's
+    `summable_polyDecay_fin`), and `connes_summable_of_exp_bound`: an orbit family bounded by
+    `C·exp(−c·d(q,1))` is absolutely summable — the geometric convergence Lemma 1(a) asserts.
+  * `ConnesFlowTransverseMap` — **App III (37)-(42)**: `connesOneSubDescend` (the descent of
+    `1 − (F_t)_*` to `N_x = T_x/ℝv_x`), `connesFlowTransverseMap` (App III (41)
+    `φ_*(X, λ∂_t) = (1 − (F_t)_*)X − λv`), and
+    `connesFlowTransverseMap_bijective_iff`: along a periodic orbit `φ_*` is an isomorphism
+    exactly when `1 − P` is one on the transverse space.  This is the periodic-orbit half of the
+    transversality condition, complementing A22's fixed-point half.
+  All `#print axioms` clean; lint shows no error against any `Connes*` module.
+  **Corpus assets found for the remaining B1 step** (do not rebuild): `HTGeometry.HilbertSchmidtTrace`
+  (`opTrace_comp_eq_hsInner`, `opTrace_comp_comm`, `norm_opTrace_comp_le`) and
+  `RHTower.KernelOperatorPolarization` (`hsInner_kernelOperator`) already give
+  `Trace(A∘B) = ∫∫ kernel pairing` for Hilbert–Schmidt kernel operators — but only for a *finite*
+  base measure, so §V (23) still needs that layer generalized to Lebesgue measure on a local field.
+
+- 2026-08-22 — Tier B batch 9 (**the finiteness obstruction in B1's trace step removed**).
+  * `ConnesKernelOperatorGeneral` — the corpus's kernel-operator layer is built with
+    `Lp.const ∞ μ e`, which forces `[IsFiniteMeasure μ]` and therefore excludes the additive Haar
+    measure of a local field.  The constant field is only a Hölder device: for `K ∈ L²(μ; E* )`
+    the function `x ↦ K x e` is already in `L²` because `‖K x e‖ ≤ ‖K x‖‖e‖`.  Rebuilt that way:
+    `connesKernelApply`, `connesKernelOperator`, `connes_norm_l2_sq`,
+    `norm_connesKernelApply_sq`, and **`isHilbertSchmidt_connesKernelOperator`** — the
+    Hilbert–Schmidt kernel theorem over an *arbitrary* base measure.
+  * `ConnesKernelTracePairing` — `connes_inner_kernelApply`,
+    **`connes_hsInner_kernelOperator`** (the polarized kernel energy over an arbitrary measure),
+    `connes_opTrace_comp_kernelOperator`, and the hypothesis-free
+    **`connes_opTrace_adjoint_kernel`**: `Trace(T_K† ∘ T_L) = ∫ ⟪l_x, k_x⟫ dμ(x)` — Connes'
+    §V (23) `Trace(R_Λ T) = ∫∫ k(x,y) r_Λ^t(x,y) dx dy`, no longer restricted to finite measures.
+  * `ConnesScalingSymbol` — **§V (25)-(27)**: `connes_symbol_translate`, the symbol of the scaling
+    operator is the Fourier transform of the chart function `g(λ) = h((λ+1)^{-1})|λ+1|^{-1}`,
+    by translation invariance of the additive Haar measure alone (no property of the character).
+  Also noted: **§V (24)** — the Parseval step turning the kernel pairing into the symbol integral —
+  is literally mathlib's `VectorFourier.integral_fourierIntegral_smul_eq_flip`, valid for any
+  locally compact abelian group with a character and a bilinear pairing, hence for every local
+  field; it does not need to be rebuilt.
+  What remains of B1: exhibiting `R_Λ = P̂_Λ P_Λ` and `U(h)` concretely as `connesKernelOperator`s
+  over the additive Haar measure of `K`, i.e. the Schwartz-kernel identification (19)/(21).
+  All `#print axioms` clean.

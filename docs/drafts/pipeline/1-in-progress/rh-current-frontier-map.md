@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 22 August 2026, commit
-`17eedc1f2f4a8500c025c3fa70acc2981e1d3204`, plus declaration-index review of the current working
+`4435d3c940c751412972bf6c5424024bda0636e2`, plus declaration-index review of the current working
 tree. Scientific status below comes only from Lean declarations, dependencies, theorem docstrings,
 and explicit gap/no-go markers. Pipeline cards and papers are not evidence. This was a
 documentation-only audit, not a rebuild. Syntactically incomplete declarations and declarations
@@ -412,10 +412,10 @@ strong-continuous translations; `ConnesApproximateUnitStrong.lean` proves rescal
 translations converge strongly to the identity for every weighted-integrable unit-mass profile.
 `ConnesLogShiftKernel.lean` gives the real log-shift law, while
 `ConnesCutoffCommutator.lean` proves exact leading-term cancellation and Connes' scalar
-`|x|^(-alpha)` cutoff-commutator bound. Working-tree `ConnesCutoffTailDecay.lean` then proves the thickened
+`|x|^(-alpha)` cutoff-commutator bound. `ConnesCutoffTailDecay.lean` then proves the thickened
 Schwartz tail decays faster than every cutoff power. These close the scalar estimates (46)--(47),
 not compactness or trace-class control of the global quotient commutator.
-Working-tree `ConnesOrbitFormFourier.lean` proves the abstract orbit-sum mechanism behind Fourier
+`ConnesOrbitFormFourier.lean` proves the abstract orbit-sum mechanism behind Fourier
 descent: any ambient inner-product isometry intertwining the group action with inversion preserves
 summability and the quotient orbit form. `ConnesFourierUnitaryExtension.lean` extends an isometric
 linear automorphism uniquely to the Hilbert completion. These close the formal descent once its
@@ -1899,7 +1899,7 @@ intervals. `MaynardPhysicalSlicePrimeFreeComposition.lean` upgrades arbitrary-or
 localization: on every strict margin `1 < mu(1-alpha)`, an inverse-log adjacent defect forces the
 literal physical slice into the second alternative once its explicit envelope is paid. Central and
 outer base layers become strictly smaller than the surviving defect.
-Working-tree `MaynardWeightedSpatialMellinBadMeasure.lean` converts actual-coefficient spatial `L2` into a
+`MaynardWeightedSpatialMellinBadMeasure.lean` converts actual-coefficient spatial `L2` into a
 restricted bad-base estimate and retains the pole-cancelled low-cell factor `(R/N)^2 K^3`, removing
 the old maximum-envelope-times-cardinality loss. Independently,
 `MaynardTrivialBoundaryShellCap.lean` absorbs the entire fixed polylog envelope through
@@ -2166,7 +2166,7 @@ literal epsilon packet, the exact `Z + Z' + sum_(m!=0) I_m` expansion together w
 `base^(-100)` bound for `Z'`. Thus no separate zero-mode estimate remains after packet occurrence;
 the first missing step is proving actual selected rows instantiate that certified packet.
 `ChenGuptaLiProposition46.lean` now places Lemmas 4.1 and 4.2 on that same literal packet, with the
-large-value condition internal to the certificate. Working-tree additions identify the exact
+large-value condition internal to the certificate. Its capstone identifies the exact
 centered-cubic matrix trace, after all-equal diagonal subtraction, with the real part of its zero-
 frequency term plus the full nonzero-frequency sum. They do not construct the certificate or bound
 those frequency terms.
@@ -2510,7 +2510,7 @@ exact positive weight `2^r log(p) z^2`, even depths kill the top Euler coefficie
 realize the maximal `2^r` packet. Arithmetic tower formation and the unbounded divisibility
 receiver are closed.
 
-Working-tree `EulerSquarefreeWickBinaryGaugeOrientationNoGo.lean` sharply limits that endpoint.
+`EulerSquarefreeWickBinaryGaugeOrientationNoGo.lean` sharply limits that endpoint.
 Positive regular-orbit energy erases common unit phases, opposite roots, and every higher dyadic
 phase. The top Walsh character has order two and already acts on one dimension. Tensoring an
 arbitrary multiplicity space with the `2^r` regular orbit makes extended dimension divisible by
@@ -2635,7 +2635,7 @@ continuation producer is absent.
   Kleinbock--Margulis, and finite-`SU` modules close substantial source-independent mathematics.
   Haferkamp modules now phase-normalize/lift finite Clifford words, prove every nonidentity Pauli
   label in a backward light cone is carried by one ordered Clifford subword to literal root-only
-  `Z`; working-tree terminal-block code embeds that transport in a full light-cone block while
+  `Z`; terminal-block code embeds that transport in a full light-cone block while
   retaining a selected root-targeting gate. `HaferkampTerminalPauliPhase.lean` realizes its local
   `I tensor Z` direction as an explicit differentiable `SU(4)` path. Temporal rank/merge laws are exact.
   Complete-pairing/Wick/vacuum, signed-position
@@ -2660,6 +2660,8 @@ continuation producer is absent.
   such bound, and no curved/Boyer--Lindquist arithmetic occurrence is proved. This is an exact
   physical receiver for an existing prime-tail criterion, not an independent producer, route, or
   candidate. Parity splitting still orients neither floor, and Wick expansion supplies no source law.
+  Working-tree `DaiYoshikawa/PowerExpSup.lean` evaluates exact power--exponential suprema and the
+  corresponding Gaussian heat-time absorption bound; it has no arithmetic occurrence or Xi landing.
 - `XiCenteredOrderTwentyOneFourthTraceReduction.lean` proves each residual-annulus atom spends more
   than `3/100000` of fourth reciprocal trace; one off-line orbit spends more than `3/25000`.
   Therefore `normalizedPrimeArchMoment 1 <= 3/25000` empties that annulus and makes moment 20
@@ -2681,12 +2683,14 @@ continuation producer is absent.
   `CyclicGaloisH2CyclicAlgebraDescent.lean` proves equal `H^2` parameters differ by a norm and yield
   equivalent raw cyclic algebras, removing representative choice. For split parameter one,
   `CyclicGaloisAlgebraSplit.lean` proves the raw representation both surjective and injective,
-  obtains a `K`-algebra equivalence with `End_K(L)`. Working-tree additions package the raw algebra
+  obtains a `K`-algebra equivalence with `End_K(L)`. The same chain packages the raw algebra
   as a central simple algebra, prove norm parameters have split Brauer class, and in
   `CyclicGaloisH2Split.lean` turn a zero `H^2` parameter into an actual norm witness and a
   selected split Brauer class. `FiniteFieldCyclicGaloisAlgebra.lean` then proves every finite-field
   cyclic parameter is zero in `H^2`, has a norm witness, and gives a split, simple raw cyclic
-  algebra. What remains is the arbitrary-parameter CSA/Brauer assignment over relevant local fields,
+  algebra. Working-tree `FiniteFieldMilnorHasse.lean` proves the adjacent degree-two Milnor Hasse
+  kernel: over `F(t)` for finite `F`, the complete projective-line residue profile is injective.
+  What remains is the arbitrary-parameter CSA/Brauer assignment over relevant local fields,
   finite ramification into the restricted product, local reciprocity/invariants, global ABHN
   exactness, and coefficient-faithful Xi landing. No adelic RH candidate is added.
 - **W2C (two-channel Weil resolvent/aperture)** is a cross-route bridge, not a new route.

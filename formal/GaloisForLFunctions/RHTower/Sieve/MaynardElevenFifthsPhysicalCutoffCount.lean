@@ -2,7 +2,6 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardElevenFifthsWindowRelevantAggreg
 import GaloisForLFunctions.RHTower.Sieve.MaynardDyadicBlockSelectedCount
 
 set_option maxRecDepth 10000
-set_option maxHeartbeats 1500000
 
 /-!
 # Route T selected-cell counting through 11/5 at a physical cutoff
