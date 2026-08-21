@@ -4,12 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.LocalValuationSequence
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteEtale
 import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.FieldTheory.PrimitiveElement
 import Mathlib.FieldTheory.Separable
 import Mathlib.NumberTheory.LocalField.Basic
 import Mathlib.RingTheory.AdjoinRoot
 import Mathlib.RingTheory.AdicCompletion.AsTensorProduct
+import Mathlib.RingTheory.AdicCompletion.Topology
 import Mathlib.RingTheory.Algebraic.Integral
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Ideal.GoingUp
@@ -20,6 +22,8 @@ import Mathlib.RingTheory.Polynomial.IrreducibleRing
 import Mathlib.RingTheory.Smooth.Fiber
 import Mathlib.RingTheory.Unramified.Dedekind
 import Mathlib.RingTheory.Unramified.LocalRing
+import Mathlib.RingTheory.Valuation.Discrete.RankOne
+import Mathlib.RingTheory.Valuation.DiscreteValuativeRel
 import Mathlib.RingTheory.Valuation.Discrete.IsDiscreteValuationRing
 
 /-!
@@ -75,6 +79,65 @@ theorem discreteValuationRingFractionField_isTopologicalDivisionRing
   letI := IsTopologicalAddGroup.rightUniformSpace F
   letI := isUniformAddGroup_of_addCommGroup (G := F)
   infer_instance
+
+/-- The canonical valuation on a DVR fraction field is nontrivial. -/
+theorem discreteValuationRingFractionField_isNontrivial
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F] :
+    letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+    ValuativeRel.IsNontrivial F := by
+  letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+  let v : Valuation F ℤᵐ⁰ := (IsDiscreteValuationRing.maximalIdeal A).valuation F
+  letI : v.Compatible := .ofValuation v
+  letI : v.IsRankOneDiscrete := by
+    change ((IsDiscreteValuationRing.maximalIdeal A).valuation F).IsRankOneDiscrete
+    infer_instance
+  letI : v.RankOne := Valuation.IsRankOneDiscrete.rankOne v
+    (show (1 : NNReal) < 2 from one_lt_two)
+  exact (ValuativeRel.isNontrivial_iff_isNontrivial v).mpr inferInstance
+
+/-- The canonical valuation on a DVR fraction field has rank at most one. -/
+theorem discreteValuationRingFractionField_isRankLeOne
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F] :
+    letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+    ValuativeRel.IsRankLeOne F := by
+  letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+  let v : Valuation F ℤᵐ⁰ := (IsDiscreteValuationRing.maximalIdeal A).valuation F
+  letI : v.Compatible := .ofValuation v
+  exact ValuativeRel.IsRankLeOne.of_compatible_mulArchimedean v
+
+/-- The canonical valuation on a DVR fraction field is discrete. -/
+theorem discreteValuationRingFractionField_isDiscrete
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F] :
+    letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+    ValuativeRel.IsDiscrete F := by
+  letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+  let v : Valuation F ℤᵐ⁰ := (IsDiscreteValuationRing.maximalIdeal A).valuation F
+  letI : v.Compatible := .ofValuation v
+  exact ValuativeRel.IsDiscrete.of_compatible_withZeroMulInt v
+
+/-- For the canonical valuation topology on a DVR fraction field, local compactness is exactly
+the remaining condition needed to obtain a nonarchimedean local field. -/
+theorem discreteValuationRingFractionField_isNonarchimedeanLocalField_iff
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F] :
+    letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+    letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+    IsNonarchimedeanLocalField F ↔ LocallyCompactSpace F := by
+  letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+  letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+  constructor
+  · intro h
+    letI : IsNonarchimedeanLocalField F := h
+    infer_instance
+  · intro h
+    letI : LocallyCompactSpace F := h
+    exact
+      { toIsValuativeTopology := discreteValuationRingFractionField_isValuativeTopology A F
+        toLocallyCompactSpace := h
+        toIsNontrivial := discreteValuationRingFractionField_isNontrivial A F }
 
 /-- The valuation of a nonarchimedean local field, normalized to values in `ℤᵐ⁰`. -/
 noncomputable def nonarchimedeanLocalFieldIntValuation
@@ -267,6 +330,24 @@ theorem adicComplete_of_finiteModule_of_baseAdicComplete
     obtain ⟨q, hq⟩ :=
       (AdicCompletion.ofTensorProduct_bijective_of_finite_of_isNoetherian I M).surjective z
     exact ⟨e q, (he q).symm.trans hq⟩
+
+/-- An algebraically adically complete ring is complete for its canonical adic topology. -/
+theorem completeSpace_of_isAdicComplete_adicTopology
+    (R : Type u) [CommRing R] (I : Ideal R) [IsAdicComplete I R] :
+    letI : WithIdeal R := ⟨I⟩
+    CompleteSpace R := by
+  letI : WithIdeal R := ⟨I⟩
+  have hI : IsAdic I := rfl
+  exact (hI.isAdicComplete_iff.mp inferInstance).1
+
+/-- An algebraically adically complete ring is Hausdorff for its canonical adic topology. -/
+theorem t2Space_of_isAdicComplete_adicTopology
+    (R : Type u) [CommRing R] (I : Ideal R) [IsAdicComplete I R] :
+    letI : WithIdeal R := ⟨I⟩
+    T2Space R := by
+  letI : WithIdeal R := ⟨I⟩
+  have hI : IsAdic I := rfl
+  exact (hI.isAdicComplete_iff.mp inferInstance).2
 
 /-- The valuation ring of a nonarchimedean local field is Henselian. -/
 theorem nonarchimedeanLocalField_henselianRing
@@ -965,6 +1046,19 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_etale
     Algebra.FormallyUnramified.of_map_maximalIdeal hmap
   exact Algebra.Etale.of_formallyUnramified_of_flat
 
+/-- A monic lift of an irreducible residue polynomial is finite étale over the valuation ring of
+the local field.  This packages its finite unramified integral extension structure. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_finiteEtale
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    Algebra.FiniteEtale 𝒪[K] (AdjoinRoot f) := by
+  letI : Module.Finite 𝒪[K] (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : Algebra.Etale 𝒪[K] (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_etale K f hf g hgmonic hfg hg
+  infer_instance
+
 /-- The map from the base valuation ring to a monic irreducible lift is local.  Hence it induces
 the canonical extension map between their residue fields. -/
 theorem nonarchimedeanLocalFieldAdjoinRoot_isLocalHom
@@ -1021,6 +1115,32 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_isAdicComplete
       (algebraMap 𝒪[K] (AdjoinRoot f))) (AdjoinRoot f) :=
     IsPrecomplete.map_algebraMap_iff.mpr hcomplete.2
   exact { haus' := hhaus.haus', prec' := hprec.prec' }
+
+/-- A finite unramified root algebra is complete and Hausdorff for its canonical maximal-ideal
+adic uniform structure.  This turns its algebraic adic completeness into the topological input
+used by the local-field extension layer. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_completeSpace_t2Space_adicTopology
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : WithIdeal (AdjoinRoot f) := ⟨IsLocalRing.maximalIdeal (AdjoinRoot f)⟩
+    CompleteSpace (AdjoinRoot f) ∧ T2Space (AdjoinRoot f) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : WithIdeal (AdjoinRoot f) := ⟨IsLocalRing.maximalIdeal (AdjoinRoot f)⟩
+  letI : IsAdicComplete (IsLocalRing.maximalIdeal (AdjoinRoot f)) (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isAdicComplete K f hf g hfg hg
+  exact ⟨completeSpace_of_isAdicComplete_adicTopology (AdjoinRoot f)
+      (IsLocalRing.maximalIdeal (AdjoinRoot f)),
+    t2Space_of_isAdicComplete_adicTopology (AdjoinRoot f)
+      (IsLocalRing.maximalIdeal (AdjoinRoot f))⟩
 
 /-- The finite unramified lift is Henselian at its maximal ideal.  This transfers the root-lifting
 mechanism from the base local field to every finite unramified integral extension constructed

@@ -30,4 +30,18 @@ theorem finrank_range_ge_of_linearIndependent_images
     _ = Module.finrank ℂ (Submodule.span ℂ (Set.range values)) := rfl
     _ ≤ Module.finrank ℂ D.range := Submodule.finrank_le _
 
+/-- Nonzero pointwise complex rescaling preserves a finite independent family.
+This is used after stripping the circuit's total unitary from the Appendix-B
+derivative images. -/
+theorem linearIndependent_smul_of_ne_zero
+    {V : Type*} [AddCommGroup V] [Module ℂ V]
+  {T : Type*} (v : T → V) (hv : LinearIndependent ℂ v)
+    (c : T → ℂ) (hc : ∀ i, c i ≠ 0) :
+    LinearIndependent ℂ (fun i => c i • v i) := by
+  let u : T → ℂˣ := fun i => Units.mk0 (c i) (hc i)
+  rw [show (fun i => c i • v i) = u • v by
+    funext i
+    simp [u, Pi.smul_apply']]
+  exact hv.units_smul u
+
 end GaloisForLFunctions.HTGeometry

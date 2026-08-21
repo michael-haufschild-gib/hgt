@@ -2,7 +2,7 @@
 
 - **ID:** euler-wick-sign-gauge-interaction-cohomology
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** FORMALIZED SURVIVOR / DIRECT XI ROUTE KILLED
 - **Source:** `rh-current-frontier-map.md` question 28; corpus bridge from raw Euler Wick defect to finite-quotient interaction cohomology
 - **Statement:** The two-leg sign-gauge orbit of the raw four-factor Euler Wick defect canonically generates the full `Fin 2 × Fin 2` joint-observable quotient modulo row and column marginals, is invariant under every marginal counterterm, and vanishes exactly on the four local coordinate hyperplanes.
 
@@ -13,7 +13,7 @@ Answer frontier question 28 with a coefficient-faithful source invariant that su
 ## Gates
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
 - [ ] 2 → 3  formalized: Lean theorem `<name>`, exact leaf `lake build` green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
@@ -61,15 +61,28 @@ Use `EulerSquarefreeWickDefect` for the literal source scalar and `CoprimePrimeR
 - **C1:** Hall visible-kernel recovery solves Route E neighbor expansion. **FAIL/PIVOT.** Generic quotient injectivity is Hall's missing condition in another form; no automatic graph expansion follows from the QEC theorem.
 - **C2:** Chern--Simons/Wilson secondary holonomy solves PCS zero-index blindness. **FAIL/PIVOT.** Wilson holonomy supplies a homological detector, but no corpus theorem forces its completed Euler-source class to vanish precisely in the right strip.
 - **C3:** Rainich square reconstruction linearizes Route O determinant positivity. **FAIL/PIVOT.** Corpus has forward Rainich identities but no inverse source reconstruction; Route O is also inside the excluded classical operator family.
-- **C4:** Raw Euler Wick defect becomes a canonical sign-gauge interaction class solving AGC's detector problem. **ACTIVE.** Strong anti-theatre target is `[EWIC-1]` above.
+- **C4:** Raw Euler Wick defect becomes a canonical sign-gauge interaction class solving AGC's detector problem. **PROVED.** `EulerSquarefreeWickInteractionCohomology.lean` proves the exact anchored law, marginal-counterterm invariance, kernel, dimension-one quotient, and generation.
+- **C5:** Pauli character projection turns the EWQ class into a ZGC orientation producer. **FAIL/PIVOT.** The Pauli projector preserves/extracts a character sector but supplies no source law annihilating the selected Xi endpoint.
+- **C6:** Actual mod-3/mod-4 prime recurrence upgrades EWQ to an analytic source channel. **PROVED SURVIVOR.** `EulerSquarefreeWickPrimeResidueHT.lean` and `EulerSquarefreeWickQuadraticCharacterBridge.lean` identify the carrier with the canonical modulo-twelve quadratic character and prove relative differential independence over every separate marginal field; no analytic marginal counterterm cancels it.
+- **C7:** Pauli/Clifford/Wick zero-mode cancellation closes HC/CGL. **FAIL/PIVOT.** Equal-character off-diagonal triples survive the zero mode; a Clifford twirl would require a complete invariant orbit, while Wick pairings are nonzero.
+- **C8:** Deninger's prime--Gamma mixed secant carries the modulo-twelve interaction. **FAIL/PIVOT.** The literal source trace has no residue coordinate and sums residue labels away. Twisting it changes the Xi resolvent and destroys the divisor-side polarization identity.
+- **C9:** Exterior/Fock or Rainich reconstruction orients Route O. **FAIL/PIVOT.** Route O already linearly recovers both coordinates through two fixed shears; determinant polarization still lacks order. The corpus contains only forward Rainich algebraic identities, not a source inverse/dynamics theorem.
+- **C10:** ZGC class-law chirality plus valuation-depth renewal supplies a completed involution. **FAIL/PIVOT.** Exact two-class conditionals exist, but their actual aperture mass evacuates. Relative HT creates new algebraic directions, not probability mass, and the non-atomic theta/Hasse packet cannot be KL-isometrically identified with a countably atomic class law.
+- **C11:** Constitutive prime-interaction formation phase or Route-N vacuum fusion orients EWQ. **FAIL/PIVOT.** Formation work squares away the quadratic sign, so attaching EWQ labels is theatre. Vacuum fusion requires a uniform positive admission; the actual moving abelian apertures tend to zero, and character recurrence does not replenish mass.
+- **C12:** The algebraic EWQ phase closes the quadratic Gelfond--Schneider endpoint. **FAIL/PIVOT.** Equality of the EWQ value with the Xi multiplicity phase is exactly the missing divisor-to-source monodromy; by the endpoint theorem that equality already forces zero multiplicity.
+- **C13:** Complete EWQ through all prime-power depths and test a gauge-equivariant Xi landing. **PROVED NO-GO / POSITIVE SURVIVOR.** `EulerSquarefreeWickArtinInteractionNoGo.lean` proves the four-sector virtual coefficient
+  `1 + (χ₃χ₄)^k - χ₃^k - χ₄^k = (1-χ₃^k)(1-χ₄^k)`. Every even depth is zero and every odd depth is the original anchored EWQ class. This is the local logarithmic coefficient of `ζ L(χ₁₂)/(L(χ₃)L(χ₄))`. The same module proves every residue-translation-invariant scalar linear reader annihilates the joint character, so no scalar Xi landing is both gauge equivariant and coefficient faithful.
 
 ## No-go closure (mandatory when falsified)
 
-- **Exact killing theorem/mechanism:** pending
-- **Strongest positive survivor:** pending
-- **New insight:** pending
-- **Status:** active
+- **Exact killing theorem/mechanism:** `no_quadraticResidueGaugeInvariantScalarReader_product_one`. A scalar Xi target carries the trivial residue action; equivariance annihilates the nontrivial `χ₃ ⊗ χ₄` isotypic class. Independently, `primeResidueValuationInteractionGridCarrier_vacuum_eq_zetaGhost` identifies the untwisted zeta tower with the unique empty-support sector, while EWQ lies in the full two-coordinate sector. A non-equivariant map would discard the route's defining gauge/marginal quotient and is not coefficient faithful.
+- **Strongest positive survivor:** the all-depth virtual Artin interaction. Odd valuation layers retain EWQ, even layers cancel, and its natural completed target is the four-function cross-ratio `ζ L(χ₁₂)/(L(χ₃)L(χ₄))`, not Xi. This vector/twisted system has its own three nonprincipal Dirichlet-L divisors; existing Stark, Artin, functional-equation, and zero-count laws do not isolate the zeta divisor or orient its zeros.
+- **New insight:** interaction cohomology is a superselection label, not a scalar correction. Completion preserving the label necessarily leaves the trivial zeta representation; completion forgetting the label kills the invariant. This explains why marginal cancellation is strong yet cannot become an Xi producer. The obstruction is representation-theoretic, not missing analytic estimates.
+- **Status:** direct EWQ-to-Xi route killed; virtual Artin survivor formalized and retained as a no-go/diagnostic, not a live RH route.
 
 ## Log
 
 - 2026-08-21 — Created directly in stage 1 after whole-corpus search and three explicit bridge kill tests. Scratch formalization started; frontier map remains read-only.
+- 2026-08-21 — Closed `[EWIC-1]` in Lean; realized actual prime residue carrier and canonical `χ₁₂`; proved relative HT and analytic marginal no-cancellation.
+- 2026-08-21 — Ran formation, vacuum-fusion, ZGC, Gelfond--Schneider, Artin/Stark, hyperbolic-quartic, Deninger mixed-secant, Route O, Pauli/QEC, Rainich, and valuation-superselection attacks. Each failed at an exact source/receiver handoff rather than by analogy.
+- 2026-08-21 — Proved the all-depth virtual Artin coefficient law and scalar gauge-equivariant Xi-landing no-go in `EulerSquarefreeWickArtinInteractionNoGo.lean`. `rh-current-frontier-map.md` remained read-only.

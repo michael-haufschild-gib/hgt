@@ -5,6 +5,7 @@ Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.Places
 import GaloisForLFunctions.HTGeometry.ABHN.RationalFunctionPlaces
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteEtale
 import Mathlib.RingTheory.Etale.Descent
 
 /-!
@@ -138,6 +139,34 @@ theorem rationalFunction_algebra_etale_iff_forall_place (F : Type u)
       (L := rationalFunctionCompletion F p)).mp h
   · intro h
     exact (algebra_etale_iff_tensorProduct_etale
+      (L := rationalFunctionCompletion F .infinite)).mpr (h .infinite)
+
+/-- A commutative algebra over a number field is finite étale exactly when all completed scalar
+extensions are finite étale. -/
+theorem numberField_algebra_finiteEtale_iff_forall_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] :
+    Algebra.FiniteEtale K A ↔ ∀ p : NumberFieldPlace K,
+      Algebra.FiniteEtale (completion K p) (completion K p ⊗[K] A) := by
+  constructor
+  · intro h p
+    exact (Algebra.finiteEtale_iff_tensorProduct (L := completion K p)).mp h
+  · intro h
+    exact (Algebra.finiteEtale_iff_tensorProduct
+      (L := completion K (witnessPlace K))).mpr (h (witnessPlace K))
+
+/-- A commutative algebra over `F(t)` is finite étale exactly when all finite and infinite
+completed scalar extensions are finite étale. -/
+theorem rationalFunction_algebra_finiteEtale_iff_forall_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] :
+    Algebra.FiniteEtale (RatFunc F) A ↔ ∀ p : RationalFunctionPlace F,
+      Algebra.FiniteEtale (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] A) := by
+  constructor
+  · intro h p
+    exact (Algebra.finiteEtale_iff_tensorProduct
+      (L := rationalFunctionCompletion F p)).mp h
+  · intro h
+    exact (Algebra.finiteEtale_iff_tensorProduct
       (L := rationalFunctionCompletion F .infinite)).mpr (h .infinite)
 
 end GaloisForLFunctions.HTGeometry.ABHN

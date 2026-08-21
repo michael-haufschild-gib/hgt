@@ -24,6 +24,127 @@ def IsFinitePauliClifford
         Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) =
       c • finitePauliMatrix R
 
+/-- The literal all-identity finite Pauli label is the identity matrix. -/
+theorem haferkamp_finitePauliMatrix_const_none
+    {Q : Type*} [Fintype Q] [DecidableEq Q] :
+    finitePauliMatrix (fun _ : Q => (none : Option (Fin 3))) = 1 := by
+  ext x y
+  by_cases hxy : x = y
+  · subst y
+    rw [Matrix.one_apply_eq]
+    refine Finset.prod_eq_one fun q _ => ?_
+    simp [boolPauliOptionEntry, boolPauliOption]
+  · rw [Matrix.one_apply_ne hxy]
+    obtain ⟨q, hq⟩ : ∃ q, x q ≠ y q := Function.ne_iff.mp hxy
+    refine Finset.prod_eq_zero (Finset.mem_univ q) ?_
+    simp [boolPauliOptionEntry, boolPauliOption, hq]
+
+theorem trace_unitary_conjugation
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (U : Matrix.unitaryGroup (Q → Bool) ℂ)
+    (M : Matrix (Q → Bool) (Q → Bool) ℂ) :
+    Matrix.trace ((U : Matrix (Q → Bool) (Q → Bool) ℂ) * M *
+      Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ)) = Matrix.trace M := by
+  rw [Matrix.trace_mul_cycle]
+  have hU : Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) *
+      (U : Matrix (Q → Bool) (Q → Bool) ℂ) = 1 := by
+    rw [← star_eq_conjTranspose]
+    exact mul_eq_one_comm.mp (Matrix.mem_unitaryGroup_iff.mp U.2)
+  rw [hU, Matrix.one_mul]
+
+/-- A Pauli-Clifford transport of a nonidentity label cannot have the
+identity label as its Pauli output. -/
+theorem IsFinitePauliClifford.target_ne_identity
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    {U : Matrix.unitaryGroup (Q → Bool) ℂ}
+    (_hU : IsFinitePauliClifford U)
+    {P R : Q → Option (Fin 3)} {c : ℂ}
+    (hP : P ≠ fun _ => none) (hc : c ≠ 0)
+    (htransport :
+      (U : Matrix (Q → Bool) (Q → Bool) ℂ) * finitePauliMatrix P *
+          Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) =
+        c • finitePauliMatrix R) :
+    R ≠ fun _ => none := by
+  intro hR
+  have htrace := congrArg Matrix.trace htransport
+  rw [trace_unitary_conjugation, hR, haferkamp_finitePauliMatrix_const_none,
+    Matrix.trace_smul, Matrix.trace_one,
+    finitePauliMatrix_trace_eq_zero_of_ne_identity P hP] at htrace
+  exact mul_ne_zero hc (by exact_mod_cast Fintype.card_ne_zero) htrace.symm
+
+theorem IsFinitePauliClifford.exists_transport_of_nonidentity
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    {U : Matrix.unitaryGroup (Q → Bool) ℂ}
+    (hU : IsFinitePauliClifford U)
+    (P : Q → Option (Fin 3)) (hP : P ≠ fun _ => none) :
+    ∃ c : ℂ, ∃ R : Q → Option (Fin 3), c ≠ 0 ∧ (R ≠ fun _ => none) ∧
+      (U : Matrix (Q → Bool) (Q → Bool) ℂ) * finitePauliMatrix P *
+          Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) =
+        c • finitePauliMatrix R := by
+  obtain ⟨c, R, hc, htransport⟩ := hU P
+  exact ⟨c, R, hc, hU.target_ne_identity hP hc htransport, htransport⟩
+
+/-- Reverse a nonzero scalar Pauli-conjugation identity through a unitary. -/
+theorem reverse_unitary_conjugation_of_smul_finitePauli
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (U : Matrix.unitaryGroup (Q → Bool) ℂ)
+    (P R : Q → Option (Fin 3)) (c : ℂ) (hc : c ≠ 0)
+    (h : (U : Matrix (Q → Bool) (Q → Bool) ℂ) * finitePauliMatrix P *
+        Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) =
+      c • finitePauliMatrix R) :
+    Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) * finitePauliMatrix R *
+        (U : Matrix (Q → Bool) (Q → Bool) ℂ) = c⁻¹ • finitePauliMatrix P := by
+  have hconj : Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) *
+      (U : Matrix (Q → Bool) (Q → Bool) ℂ) = 1 := by
+    rw [← star_eq_conjTranspose]
+    exact mul_eq_one_comm.mp (Matrix.mem_unitaryGroup_iff.mp U.2)
+  have h' := congrArg (fun X : Matrix (Q → Bool) (Q → Bool) ℂ =>
+    Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) * X *
+      (U : Matrix (Q → Bool) (Q → Bool) ℂ)) h
+  simp only [Matrix.mul_smul, Matrix.smul_mul] at h'
+  have hleft : Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) *
+      ((U : Matrix (Q → Bool) (Q → Bool) ℂ) * finitePauliMatrix P *
+        Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ)) *
+      (U : Matrix (Q → Bool) (Q → Bool) ℂ) = finitePauliMatrix P := by
+    calc
+      Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) *
+          ((U : Matrix (Q → Bool) (Q → Bool) ℂ) * finitePauliMatrix P *
+            Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ)) *
+          (U : Matrix (Q → Bool) (Q → Bool) ℂ) =
+        (Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) *
+          (U : Matrix (Q → Bool) (Q → Bool) ℂ)) * finitePauliMatrix P *
+          (Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) *
+            (U : Matrix (Q → Bool) (Q → Bool) ℂ)) := by
+              simp only [Matrix.mul_assoc]
+      _ = finitePauliMatrix P := by rw [hconj, Matrix.one_mul, Matrix.mul_one]
+  rw [hleft] at h'
+  calc
+    Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) * finitePauliMatrix R *
+        (U : Matrix (Q → Bool) (Q → Bool) ℂ) =
+      (c⁻¹ * c) • (Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) *
+        finitePauliMatrix R * (U : Matrix (Q → Bool) (Q → Bool) ℂ)) := by
+          rw [inv_mul_cancel₀ hc, one_smul]
+    _ = c⁻¹ • finitePauliMatrix P := by
+      rw [← smul_smul, ← h']
+
+/-- A finite Pauli Clifford transports every nonidentity label to another
+nonidentity label, with mutually compatible forward and reverse identities. -/
+theorem IsFinitePauliClifford.exists_forward_reverse_transport_of_nonidentity
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    {U : Matrix.unitaryGroup (Q → Bool) ℂ}
+    (hU : IsFinitePauliClifford U)
+    (P : Q → Option (Fin 3)) (hP : P ≠ fun _ => none) :
+    ∃ c : ℂ, ∃ R : Q → Option (Fin 3), c ≠ 0 ∧ (R ≠ fun _ => none) ∧
+      ((U : Matrix (Q → Bool) (Q → Bool) ℂ) * finitePauliMatrix P *
+          Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) =
+        c • finitePauliMatrix R) ∧
+      (Matrix.conjTranspose (U : Matrix (Q → Bool) (Q → Bool) ℂ) *
+          finitePauliMatrix R * (U : Matrix (Q → Bool) (Q → Bool) ℂ) =
+        c⁻¹ • finitePauliMatrix P) := by
+  obtain ⟨c, R, hc, hR, hforward⟩ := hU.exists_transport_of_nonidentity P hP
+  exact ⟨c, R, hc, hR, hforward,
+    reverse_unitary_conjugation_of_smul_finitePauli U P R c hc hforward⟩
+
 theorem one_isFinitePauliClifford
     {Q : Type*} [Fintype Q] [DecidableEq Q] :
     IsFinitePauliClifford (1 : Matrix.unitaryGroup (Q → Bool) ℂ) := by

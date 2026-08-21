@@ -7,7 +7,7 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 21 August 2026, commit
-`002aa02e97beb6aa7ef6ee4e4ad36850f36c525c`, plus declaration-index review of current Lean
+`8bd2c2c1bf9a1568a28e171b0e3d59230f3a5af4`, plus declaration-index review of current Lean
 working tree. Scientific status below comes only from Lean declarations, dependencies,
 theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
 this map. Working-tree declarations are identified and not claimed build-audited in this
@@ -148,8 +148,8 @@ proves that the tempting two-sided absolute critical graph norm is empty. T2 the
 signed or renormalized subhalf continuation, not absolute boundary variation. Gap-square shells are
 bounded by literal prime-free base measure in the same physical block. Canonical fixed-width packet
 and rung modules, transition-strip counting, both physical parity alternatives, complete positive
-amplitude-band coverage, and the trivial base-layer measure are now formal. A working-tree
-logarithmic schedule covers every literal cell maximum. What remains is one global composition:
+amplitude-band coverage, trivial base-layer measure, and a canonical logarithmic schedule covering
+every literal cell maximum are now formal. What remains is one global composition:
 assemble those fixed rungs and bands on each actual shell, absorb finite logarithmic union costs,
 and sum at critical shell weight.
 **W2C**, the
@@ -288,7 +288,7 @@ from `b` to any `c>=b` changes the moment only by an earlier anchored moment, on
 and one compact cubic memory term; boundedness at `b` implies boundedness at `c`. Lower-wall choice
 is therefore not a scientific obstruction.
 
-Working-tree scratch `CCMFUCentralRectangularAffineWeld.lean` gives a sharper central normal form.
+Committed scratch `CCMFUCentralRectangularAffineWeld.lean` gives a sharper central normal form.
 The two-edge prime--polar source is both `2*integral_0^t E(h)dh` and the Gamma-renormalized real Xi
 screw coordinate; each rectangular slice is `-1/2` times its affine remainder; and the full marked
 current and anchored error moment are `-1/2` times one positive cross-aperture mixture of those
@@ -393,7 +393,12 @@ translation/integrability laws strengthen the weighted quotient layer.
 `ConnesLocalTraceCore.lean` and `ConnesSymbolChangeOfVariables.lean` now close Connes' local cut-off
 trace chain from the square symbol integral to its logarithmic limit. Graph-delta/transversality,
 return-map, resonance, character-rescaling, complex-area, function-field-window, and log-shift
-formulas are also exact. None assembles the completed global class-space quotient or its correction.
+formulas are also exact. `ConnesApproximateUnit.lean` proves the uniform weighted-mass
+half of Appendix-I approximate units, while `ConnesLogShiftKernel.lean` proves the real-place
+log-shift substitution, integrability, and fractional bound. Working-tree
+`ConnesWeilRewriting.lean` further proves the two polar moments and the inversion rewriting of
+Weil's `D` term; it is not build-audited. None proves strong approximate-unit convergence or
+assembles the completed global class-space quotient/correction.
 
 These modules close internal identities of the classical trace-formula architecture, not C1's
 nonclassical producer. No declaration forms the infinite normalized local tensor product as the
@@ -1884,9 +1889,9 @@ to the upper-amplitude theorem, so every positive band above canonical base is r
 that exact boundary, while `MaynardTrivialBoundaryBaseMeasure.lean` gives the base layer the same
 critical bad-measure scale. `MaynardAdaptiveParityBadMeasure.lean` remains the amplitude-free
 equation-(111) receiver. Amplitude floor, parity choice, finite label entropy, fixed width, and base
-layer are therefore closed; no repaired `11/5` theorem is scientifically required. Working-tree
+layer are therefore closed; no repaired `11/5` theorem is scientifically required.
 `MaynardTrivialBoundaryBandSchedule.lean` supplies a canonical logarithmic band count and proves
-its terminal band exceeds every literal unit-cell maximum. It is not umbrella/build-audited.
+its terminal band exceeds every literal unit-cell maximum.
 
 Missing arithmetic composition is now literal: combine the fixed rung cover, amplitude-band cover,
 base layer, and packet lower threshold into one bad-base estimate on each ordered-prime gap shell;
@@ -1942,7 +1947,7 @@ Formal sources: `XiHeatCassiniWoldCenteredLogConnection.lean`,
 `Sieve/MaynardTrivialBoundaryBandCoverage.lean`,
 `Sieve/MaynardTrivialBoundaryAdaptiveEnvelope.lean`,
 `Sieve/MaynardTrivialBoundaryBaseMeasure.lean`, and
-`Sieve/MaynardAdaptiveParityBadMeasure.lean`; working-tree schedule:
+`Sieve/MaynardAdaptiveParityBadMeasure.lean`; band schedule:
 `Sieve/MaynardTrivialBoundaryBandSchedule.lean`.
 
 ### U — shifted Hankel hard edge and completed-boundary first contact
@@ -2168,9 +2173,9 @@ centered cubic trace = Z + Z' + sum_(m != 0) I_m.
 Here `Z` is the explicit all-equal diagonal mass and `Z'` is the off-diagonal zero mode.
 Fibrewise character orthogonality kills every unequal-character row; surviving equal-character
 separated triples have arbitrary reciprocal order in one coordinate and order-zero bounds in the
-other two. Thus every row of `Z'` has an explicit budget. Working-tree
+other two. Thus every row of `Z'` has an explicit budget.
 `ChenGuptaLiLemma45FibreZeroModeAggregate.lean` closes its finite triangle-inequality aggregation
-as exactly row-cardinality times that budget, but is not umbrella/build-audited. It does not bound
+as exactly row-cardinality times that budget. It does not bound
 that cardinal-weighted quantity uniformly in the physical conductor/height parameters.
 
 The `h_0` trace-to-Poisson passage is now exact rather than an interface premise.
@@ -2216,7 +2221,7 @@ modules are `ChenGuptaLiWeightedCubicDiagonal.lean`, `ChenGuptaLiHtAllOrder.lean
 `ChenGuptaLiHtReciprocalAllOrder.lean`, `ChenGuptaLiLemma45TracePoisson.lean`,
 `ChenGuptaLiLemma45FrequencySplit.lean`, `ChenGuptaLiLemma45DiagonalPoisson.lean`,
 `ChenGuptaLiLemma45OffDiagonalSplit.lean`, `ChenGuptaLiLemma45FibreZeroModeBound.lean`, and the
-working-tree `ChenGuptaLiLemma45FibreZeroModeAggregate.lean`. Primitive/family transport is in
+`ChenGuptaLiLemma45FibreZeroModeAggregate.lean`. Primitive/family transport is in
 `DirichletCharacterPrimitive*.lean`, `DirichletLZeroDensityAnalyticSpacing.lean`, and
 `ChenGuptaLiPrimitive*.lean`; finite density endpoints are `ChenGuptaLiLemma33.lean`,
 `ChenGuptaLiLemma41.lean`, and `ChenGuptaLiLemma42.lean`.
@@ -2640,12 +2645,15 @@ continuation producer is absent.
   HLS, Hilbert irreducibility, finite Hall/Pollard, augmented homology, Cartier/co-Lie,
   Kleinbock--Margulis, and finite-`SU` modules close substantial source-independent mathematics.
   Haferkamp modules now select every nonidentity Pauli direction, phase-normalize Clifford seeds
-  into `SU(4)`, and lift ordered two-qubit merge words. Complete-pairing/Wick/vacuum, signed-position
+  into `SU(4)`, and lift/reverse finite gate words inside the finite Clifford action.
+  Complete-pairing/Wick/vacuum, signed-position
   pairing/Pfaffian combinatorics and abstract parity-Rayleigh decompositions are exact. BZ bridges
   identify Suzuki's two-height wall Gram and the two-level shifted-Xi Jacobi source with rank-one
   BZ residues, then reindex the nilpotent residue as Suzuki/Heisenberg flow; the Xi mass profile also
-  solves the flat Kerr--Newman scalar wave equation. These are finite algebraic dictionaries, not
-  an inverse-scattering construction. None contains
+  solves the flat Kerr--Newman scalar wave equation. Neutral Kerr--Newman response is a finite
+  Pochhammer/differential-algebraic orbit shared with the Kerr and scalaron-throat carriers; the
+  nonintegral-gap charged sector is hypertranscendental. These are finite algebraic dictionaries,
+  not an inverse-scattering construction. None contains
   completed prime--Gamma occurrence, Xi-divisor landing, restricted-Weil floor sign, or an RH
   endpoint. In particular, parity splitting does not orient either parity floor and Wick expansion
   supplies no arithmetic source law; no route or candidate is added.
@@ -2661,7 +2669,9 @@ continuation producer is absent.
   placewise number-field and rational-function formulations; co-Lie base change is an equivalence.
   Nonarchimedean local-field modules now split valuation and residue-unit sequences, construct
   Teichmuller/principal-unit decomposition, realize every positive residue-extension degree by a
-  finite unramified root algebra, and identify its cyclic arithmetic-Frobenius powers. They still do not construct local reciprocity/Brauer invariants or
+  finite unramified root algebra, and identify its cyclic arithmetic-Frobenius powers. Working-tree
+  additions make the canonical DVR fraction-field valuation nontrivial, rank-at-most-one, discrete,
+  and topologically compatible. They still do not construct local reciprocity/Brauer invariants or
   global Albert--Brauer--Hasse--Noether localization exactness, and have no coefficient-faithful Xi
   landing. Therefore they neither close C1/L nor create a new adelic route.
 - **W2C (two-channel Weil resolvent/aperture)** is a cross-route bridge, not a new route.

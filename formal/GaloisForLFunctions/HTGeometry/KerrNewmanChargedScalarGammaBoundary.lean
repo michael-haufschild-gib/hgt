@@ -99,28 +99,6 @@ def kerrNewmanChargedScalarPhysicalGammaResponseMero
   kerrNewmanChargedScalarGammaResponseMero
     (kerrNewmanChargedScalarEffectiveMultipoleGap ell charge)
 
-/-- At the critical real charge amplitude, the physical response is the unit-gap finite
-Gamma-orbit factor. -/
-theorem kerrNewmanChargedScalarPhysicalGammaResponseMero_criticalCharge_eq_linearOrbit
-    (ell : ℕ) :
-    kerrNewmanChargedScalarPhysicalGammaResponseMero ell
-      (Real.sqrt ((ell : ℝ) * ((ell : ℝ) + 1)) : ℂ) =
-      algebraMap (RatFunc ℂ) (meroField Set.univ)
-        (gammaOrbitNatFactor 0 1) := by
-  unfold kerrNewmanChargedScalarPhysicalGammaResponseMero
-  rw [kerrNewmanChargedScalarEffectiveMultipoleGap_criticalCharge]
-  simpa using kerrNewmanNeutralScalarGammaResponseMero_eq_pochhammer 0
-
-/-- The critical-charge physical Kerr--Newman response lies in the differential-algebraic sector
-because its Gamma core is a finite unit-gap orbit factor. -/
-theorem differentialAlgebraicOver_kerrNewmanChargedScalarPhysicalGammaResponseMero_criticalCharge
-    (ell : ℕ) :
-    DifferentialAlgebraicOver (RatFunc ℂ)
-      (kerrNewmanChargedScalarPhysicalGammaResponseMero ell
-        (Real.sqrt ((ell : ℝ) * ((ell : ℝ) + 1)) : ℂ)) := by
-  rw [kerrNewmanChargedScalarPhysicalGammaResponseMero_criticalCharge_eq_linearOrbit]
-  exact HTGeometry.differentialAlgebraicOver_algebraMap _
-
 /-- **Kerr--Newman Gamma value relation.**  The normalized frequency response is exactly the
 quotient with shifts `(1+Delta)/2` and `(1-Delta)/2`. -/
 theorem kerrNewmanChargedScalarGammaResponseMero_eq_gammaRatio
@@ -205,11 +183,39 @@ theorem differentialAlgebraicOver_kerrNewmanNeutralScalarGammaResponseMero
   rw [kerrNewmanNeutralScalarGammaResponseMero_eq_pochhammer]
   exact HTGeometry.differentialAlgebraicOver_algebraMap _
 
+/-- At the critical real charge amplitude, the physical response is the unit-gap finite
+Gamma-orbit factor. -/
+theorem kerrNewmanChargedScalarPhysicalGammaResponseMero_criticalCharge_eq_linearOrbit
+    (ell : ℕ) :
+    kerrNewmanChargedScalarPhysicalGammaResponseMero ell
+      (Real.sqrt ((ell : ℝ) * ((ell : ℝ) + 1)) : ℂ) =
+      algebraMap (RatFunc ℂ) (meroField Set.univ)
+        (gammaOrbitNatFactor 0 1) := by
+  unfold kerrNewmanChargedScalarPhysicalGammaResponseMero
+  rw [kerrNewmanChargedScalarEffectiveMultipoleGap_criticalCharge]
+  simpa using kerrNewmanNeutralScalarGammaResponseMero_eq_pochhammer 0
+
+/-- The critical-charge physical Kerr--Newman response lies in the differential-algebraic sector
+because its Gamma core is a finite unit-gap orbit factor. -/
+theorem differentialAlgebraicOver_kerrNewmanChargedScalarPhysicalGammaResponseMero_criticalCharge
+    (ell : ℕ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (kerrNewmanChargedScalarPhysicalGammaResponseMero ell
+        (Real.sqrt ((ell : ℝ) * ((ell : ℝ) + 1)) : ℂ)) := by
+  rw [kerrNewmanChargedScalarPhysicalGammaResponseMero_criticalCharge_eq_linearOrbit]
+  exact HTGeometry.differentialAlgebraicOver_algebraMap _
+
 /-- Logarithmic response clock of the normalized charged-scalar Gamma coefficient. -/
 def kerrNewmanChargedScalarLogResponseClockMero
     (gap : ℂ) : meroField Set.univ :=
   HTGeometry.wignerSmithLogClock
     (kerrNewmanChargedScalarGammaResponseMero gap)
+
+/-- Physical logarithmic response clock after specializing the charged effective multipole gap. -/
+def kerrNewmanChargedScalarPhysicalLogResponseClockMero
+    (ell : ℕ) (charge : ℂ) : meroField Set.univ :=
+  kerrNewmanChargedScalarLogResponseClockMero
+    (kerrNewmanChargedScalarEffectiveMultipoleGap ell charge)
 
 /-- **Logarithmic clock value relation.**  The response clock is the difference of the two
 digamma observations selected by the effective multipole gap. -/
@@ -235,6 +241,33 @@ theorem hypertranscendentalOver_kerrNewmanChargedScalarLogResponseClockMero_iff_
   rw [kerrNewmanChargedScalarLogResponseClockMero,
     HTGeometry.hypertranscendentalOver_wignerSmithLogClock_iff,
     hypertranscendentalOver_kerrNewmanChargedScalarGammaResponseMero_iff_nonintegerGap]
+
+/-- The unit-gap logarithmic response clock is differentially algebraic. -/
+theorem differentialAlgebraicOver_kerrNewmanChargedScalarLogResponseClockMero_unitGap :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (kerrNewmanChargedScalarLogResponseClockMero 1) := by
+  unfold kerrNewmanChargedScalarLogResponseClockMero
+    HTGeometry.wignerSmithLogClock Differential.logDeriv
+  apply differentialAlgebraicOver_deriv_div_self
+  simpa using differentialAlgebraicOver_kerrNewmanNeutralScalarGammaResponseMero 0
+
+/-- Critical charge selects the universal unit-gap logarithmic response clock. -/
+theorem kerrNewmanChargedScalarPhysicalLogResponseClockMero_criticalCharge_eq_unitGap
+    (ell : ℕ) :
+    kerrNewmanChargedScalarPhysicalLogResponseClockMero ell
+      (Real.sqrt ((ell : ℝ) * ((ell : ℝ) + 1)) : ℂ) =
+      kerrNewmanChargedScalarLogResponseClockMero 1 := by
+  unfold kerrNewmanChargedScalarPhysicalLogResponseClockMero
+  rw [kerrNewmanChargedScalarEffectiveMultipoleGap_criticalCharge]
+
+/-- The physical Wigner--Smith/logarithmic clock at critical charge remains in the DA sector. -/
+theorem differentialAlgebraicOver_kerrNewmanChargedScalarPhysicalLogResponseClockMero_criticalCharge
+    (ell : ℕ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (kerrNewmanChargedScalarPhysicalLogResponseClockMero ell
+        (Real.sqrt ((ell : ℝ) * ((ell : ℝ) + 1)) : ℂ)) := by
+  rw [kerrNewmanChargedScalarPhysicalLogResponseClockMero_criticalCharge_eq_unitGap]
+  exact differentialAlgebraicOver_kerrNewmanChargedScalarLogResponseClockMero_unitGap
 
 end
 

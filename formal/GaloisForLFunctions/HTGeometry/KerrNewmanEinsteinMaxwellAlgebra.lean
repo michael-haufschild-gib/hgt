@@ -103,6 +103,31 @@ theorem kerrNewmanCanonicalMaxwellStress_sq (electric magnetic : ℝ) :
     simp [Matrix.mul_apply, kerrNewmanCanonicalMaxwellStress,
       kerrNewmanCanonicalMaxwellStressMagnitude, Fin.sum_univ_succ] <;> ring
 
+/-- The canonical Maxwell stress can be nilpotent only when both electromagnetic amplitudes
+vanish.  Thus it cannot be identified with a nonzero nilpotent BZ residue. -/
+theorem kerrNewmanCanonicalMaxwellStress_sq_eq_zero_iff
+    (electric magnetic : ℝ) :
+    kerrNewmanCanonicalMaxwellStress electric magnetic *
+        kerrNewmanCanonicalMaxwellStress electric magnetic = 0 ↔
+      electric = 0 ∧ magnetic = 0 := by
+  constructor
+  · intro h
+    have h00 := congrFun (congrFun h 0) 0
+    simp [Matrix.mul_apply, kerrNewmanCanonicalMaxwellStress,
+      kerrNewmanCanonicalMaxwellStressMagnitude, Fin.sum_univ_succ] at h00
+    have hsum : electric ^ 2 + magnetic ^ 2 = 0 := by
+      nlinarith [sq_nonneg (electric ^ 2 + magnetic ^ 2)]
+    have helectricSq : electric ^ 2 = 0 := by
+      nlinarith [sq_nonneg magnetic]
+    have hmagneticSq : magnetic ^ 2 = 0 := by
+      nlinarith [sq_nonneg electric]
+    exact ⟨(sq_eq_zero_iff).mp helectricSq, (sq_eq_zero_iff).mp hmagneticSq⟩
+  · rintro ⟨rfl, rfl⟩
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      simp [kerrNewmanCanonicalMaxwellStress,
+        kerrNewmanCanonicalMaxwellStressMagnitude]
+
 /-- The canonical Maxwell stress is tracefree. -/
 theorem kerrNewmanCanonicalMaxwellStress_trace (electric magnetic : ℝ) :
     Matrix.trace (kerrNewmanCanonicalMaxwellStress electric magnetic) = 0 := by

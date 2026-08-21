@@ -57,7 +57,7 @@ def cglLemma45FibreZeroModeFiniteBudget
     (w : CGLRealSmoothBump) (N : CGLPositiveLength) (n : ℕ) :
     CGLFiniteComplexBudget (CGLLemma45FibreOffDiagonalTriple R) := by
   letI : Fintype (CGLLemma45FibreOffDiagonalTriple R) :=
-    Fintype.ofInjective Subtype.val Subtype.val_injective
+    cglLemma45FibreOffDiagonalTripleFintype R
   exact
     { index := Finset.univ
       term := fun u => cglLemma45ZeroModeRowTerm w N (cglLemma45FibreModulus q) R
@@ -96,7 +96,7 @@ theorem cglLemma45FibreZeroModeFilteredSum_eq_budgetValue
       (cglLemma45FibreZeroModeFiniteBudget P w N n).value := by
   classical
   letI : Fintype (CGLLemma45FibreOffDiagonalTriple R) :=
-    Fintype.ofInjective Subtype.val Subtype.val_injective
+    cglLemma45FibreOffDiagonalTripleFintype R
   unfold cglLemma45FibreZeroModeFiniteBudget CGLFiniteComplexBudget.value
   apply Finset.sum_subtype
   intro rst
@@ -135,5 +135,39 @@ theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_cardRowBudget
   refine le_trans
     (norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_totalBudget P w N n) ?_
   rw [cglLemma45FibreZeroModeFiniteBudget_totalBudget_eq]
+
+/-- The stored finite aggregate index has exactly the certified off-diagonal
+cubic-row cardinality. -/
+theorem cglLemma45FibreZeroModeFiniteBudget_index_card
+    {q R : ℕ} (P : CGLFibreSeparatedPacket q R)
+    (w : CGLRealSmoothBump) (N : CGLPositiveLength) (n : ℕ) :
+    (cglLemma45FibreZeroModeFiniteBudget P w N n).index.card =
+      cglLemma45FibreOffDiagonalTripleCard R := by
+  classical
+  letI : Fintype (CGLLemma45FibreOffDiagonalTriple R) :=
+    cglLemma45FibreOffDiagonalTripleFintype R
+  rfl
+
+/-- Closed cubic-cardinality form of CGL's zero-frequency off-diagonal
+estimate. -/
+theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_cubicRowBudget
+    {q R : ℕ} (P : CGLFibreSeparatedPacket q R)
+    (w : CGLRealSmoothBump) (N : CGLPositiveLength) (n : ℕ) :
+    ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
+      (cglLemma45FibreRows P) 0‖ ≤
+      (R : ℝ) ^ 3 * cglLemma45FibreZeroModeRowBound P w N n := by
+  calc
+    ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
+        (cglLemma45FibreRows P) 0‖ ≤
+        ((cglLemma45FibreZeroModeFiniteBudget P w N n).index.card : ℝ) *
+          cglLemma45FibreZeroModeRowBound P w N n :=
+      norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_cardRowBudget P w N n
+    _ = (cglLemma45FibreOffDiagonalTripleCard R : ℝ) *
+          cglLemma45FibreZeroModeRowBound P w N n := by
+      rw [cglLemma45FibreZeroModeFiniteBudget_index_card]
+    _ ≤ (R : ℝ) ^ 3 * cglLemma45FibreZeroModeRowBound P w N n := by
+      apply mul_le_mul_of_nonneg_right
+      · exact_mod_cast cglLemma45FibreOffDiagonalTriple_card_le R
+      · exact cglLemma45FibreZeroModeRowBound_nonneg P w N n
 
 end RHTower

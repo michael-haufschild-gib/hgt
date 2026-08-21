@@ -1648,3 +1648,40 @@ symbol `(FS1)` until a genuine source trace evaluates it.
   explicit nonvanishing Hedenmalm kernel, complete four-term absolute-Euler prime--Gamma
   polarization, and forced boundary discontinuity.  No unconditional density improvement is
   claimed; open core is the height-local Hermitian source budget above.
+
+## Positive-shift reflection--Loewner source covariance
+
+`[OWN CONJECTURE LEAN-PROVED] [PRE-DIVISOR] [4/25 TRACE BOUND OPEN]`
+
+The moving reflection hyperplane admits a legal absolute-Euler specialization.  For completed
+arithmetic current `A`, source point `Re z>1`, and real `eps>0`, choose opposite-chamber nodes
+
+```text
+s=1-z,  t=conjugate(z+eps).
+```
+
+Then the reflection--Loewner current is exactly
+
+```text
+K(s,t)=[A(z+eps)-A(z)]/eps.                             (PS1)
+```
+
+Its arithmetic split is pole--Gamma difference quotient plus the sign-oriented von Mangoldt
+increment `[L_Lambda(z)-L_Lambda(z+eps)]/eps`.  Its punctured diagonal finite part is `A'(z)`.
+Thus positive-shift covariance and diagonal finite part are both formed before Xi divisor
+selection.  This is the correct replacement for the naive moving-pole contour, whose ordinary
+residue evaluation double-counts the kernel hyperplane.
+
+The theorem does not yet dominate `criticalFeaturePrimeGammaOffLineLatticeBudget`.  Remaining
+target is a height-local trace of `(PS1)` weighted by W-H191's bichamber cubic feature, followed by
+an arithmetic pole--Gamma--von-Mangoldt estimate at `4N/25`.  Scalar zero-trace capacity cannot be
+used as a premise: P-G176 proves that shortcut RH-equivalent.
+
+Lean module `XiWardCubicPositiveShiftArithmeticCovariance.lean` proves `(PS1)`, exact source split,
+and punctured derivative limit.  Target build, formal lint, and axiom audit pass.
+
+- 2026-08-21 — corpus re-audit found W-H190/W-H191 and P-G174/P-G175 as strongest compatible
+  chains; originated and formalized positive-shift source covariance connecting them.  Continuous
+  critical-feature aperture was also tested: holomorphic polarization is identically `2pi`, so
+  subtracting total multiplicity cancels every zero, not only critical-line copies.  That route
+  supplies no positive corrected budget without the nonholomorphic Hermitian excess.

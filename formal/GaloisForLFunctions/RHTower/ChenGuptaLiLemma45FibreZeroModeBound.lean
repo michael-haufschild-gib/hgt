@@ -110,6 +110,28 @@ theorem cglLemma45FibreEqualCharacterRowTerm_eq
 def CGLLemma45FibreOffDiagonalTriple (R : ℕ) :=
   {rst : Fin R × Fin R × Fin R // ¬ (rst.1 = rst.2.1 ∧ rst.2.1 = rst.2.2)}
 
+/-- A fixed finite enumeration of the certified off-diagonal row triples. -/
+@[reducible] noncomputable def cglLemma45FibreOffDiagonalTripleFintype (R : ℕ) :
+    Fintype (CGLLemma45FibreOffDiagonalTriple R) :=
+  Fintype.ofInjective Subtype.val Subtype.val_injective
+
+/-- Cardinality of the certified off-diagonal cubic-row carrier. -/
+noncomputable def cglLemma45FibreOffDiagonalTripleCard (R : ℕ) : ℕ :=
+  @Fintype.card (CGLLemma45FibreOffDiagonalTriple R)
+    (cglLemma45FibreOffDiagonalTripleFintype R)
+
+/-- The non-all-equal cubic-row carrier injects into all `R³` row triples. -/
+theorem cglLemma45FibreOffDiagonalTriple_card_le (R : ℕ) :
+    cglLemma45FibreOffDiagonalTripleCard R ≤ R ^ 3 := by
+  letI : Fintype (CGLLemma45FibreOffDiagonalTriple R) :=
+    cglLemma45FibreOffDiagonalTripleFintype R
+  change Fintype.card (CGLLemma45FibreOffDiagonalTriple R) ≤ R ^ 3
+  calc
+    Fintype.card (CGLLemma45FibreOffDiagonalTriple R) ≤
+        Fintype.card (Fin R × Fin R × Fin R) :=
+      Fintype.card_le_of_injective Subtype.val Subtype.val_injective
+    _ = R ^ 3 := by simp [pow_three]
+
 /-- Explicit bound for one zero-frequency row term after three complete
 character sums. -/
 def cglLemma45FibreZeroModeRowBound {q R : ℕ} (P : CGLFibreSeparatedPacket q R)

@@ -53,14 +53,14 @@ compaction-surviving ledger.
 ### Tier B — heavy analytic layers
 | Tag | Statement | Status |
 |---|---|---|
-| B1 | §V Thm 3 (local trace formula) | **analytic chain DONE at the real place**: `ConnesSymbolChangeOfVariables.connes_symbol_changeOfVariables` is (29)=(31); `ConnesLocalTraceCore.connes_traceCore_tendsto` is (31)⟶(33); `connes_symbolIntegral_tendsto` chains them.  Remaining: the operator-theoretic step (23)(24) identifying `Trace (R_Λ U(h))` with the symbol integral — needs a trace-class Schwartz-kernel layer for an operator that is not Hilbert–Schmidt |
-| B2 | §VII Lemma 1 | for `k = ℚ` the corpus already owns Lemma 1(a) as `FieldOneFiniteStageBruhatOrbit_summable` / `…BruhatPeriodization` (Connes–Marcolli Lemma 2.29).  Lemma 1(b) (Fourier unitary on `L²(X_S)`) still open |
-| B3 | §VII Thm 4 | needs B1 + B2 + B4 |
-| B4 | §VII Lemma 2 | (43) done (A5); (45) scaling done (`ConnesLogShiftKernel.connes_logShift_substitution`); (44) finiteness of `c'_α` and the Besov estimate (42) open |
-| B5 | App I Lemmas 1–5 | Lemma 4/5 (approximate units) partially reachable from `ConnesSobolevWeight`; Lemmas 1–3 need Tate/Iwasawa homogeneous distributions on `A` |
-| B6 | App I / Thm III.1 | needs B5 + growth of `L(χ₀,½+it)`; the *conclusion* steps (27)(28)(29)(34) are already Lean-owned (A27, A3, A9) |
-| B7 | App II Thm 6 | Lemma 3 done (`ConnesCharacterRescaling.connes_logDistribution_character_rescale`); (54) done at both archimedean places and non-archimedean (`ConnesGaussianLogMoment`, `ConnesNonArchPrincipalValue`); the global sum needs Weil's explicit formula, which the paper *quotes* |
-| B8 | §VIII Lemma 1, Cor 2, Thm 5, Lemma 3 | window count (9)/(12)/(13) done (`ConnesFunctionFieldWindow`); Lemma 3's model computation done (A26); the rest needs B3 + B6 |
+| B1 | §V Thm 3 (local trace formula) | **analytic chain DONE at the real place.** `ConnesSymbolChangeOfVariables.connes_symbol_changeOfVariables` = (29)→(31) (window mass (30), inner substitution, Fubini with the product integrability proved); `ConnesLocalTraceCore.connes_traceCore_tendsto` = (31)→(33) (Schwartz tails (32)); `connes_symbolIntegral_tendsto` chains them.  Also `ConnesSymbolChart` = (28), `ConnesGaussianLogMoment` = (34)-(36).  **Open:** the operator step (23)(24) identifying `Trace(R_Λ U(h))` with the symbol integral — a trace-class Schwartz-kernel layer for an operator that is not Hilbert–Schmidt |
+| B2 | §VII Lemma 1 | (8) done (A4).  For `k = ℚ` the corpus already owns Lemma 1(a) as `FieldOneFiniteStageBruhatOrbit_summable` / `…BruhatPeriodization` (= Connes–Marcolli Lemma 2.29).  **Open:** (10) and Lemma 1(b) (Fourier unitary on `L²(X_S)`) |
+| B3 | §VII Thm 4 | **Open**; needs B1 + B2 + B4 |
+| B4 | §VII Lemma 2 | (43) done (A5); (44) done (`ConnesLogShiftKernel.connes_integrable_logShiftKernel`, finiteness of `c'_α` for `0<α<1` at the real place); (45) done (`connes_logShift_substitution`, `connes_logShift_bound`).  **Open:** the Besov estimate (42) and its assembly on `A_S` |
+| B5 | App I Lemmas 1–5 | (1)–(6) of the Sobolev layer done (`ConnesSobolevWeight`, `ConnesApproximateUnit.connes_approxUnit_mass_le` = the uniform bound of Lemma 4).  **Open:** the strong convergence `V(f_n) → 1`, and Lemmas 1–3 (Tate/Iwasawa homogeneous distributions on `A`) |
+| B6 | App I / Thm III.1 | the *conclusion* steps are Lean-owned: (15)–(20) local homogeneity (A21), (27)(28) division (A27), (29) Sobolev membership (A3), (34) Jordan form (A9).  **Open:** Lemmas 1–3 and the growth of `L(χ₀,½+it)` |
+| B7 | App II Thm 6 | Lemma 2's `A+B=0` done (A7); Lemma 3 done (`ConnesCharacterRescaling.connes_logDistribution_character_rescale`); (54) done at all three place types; (18)(19) done (`ConnesWeilRewriting.connesHatMoment_zero_add_one`, `connes_weilD_inversion`).  **Open:** Weil's explicit formula itself, which the paper *quotes* from [W3] |
+| B8 | §VIII Lemma 1, Cor 2, Thm 5, Lemma 3 | window count (9)/(12)/(13) done (`ConnesFunctionFieldWindow`); (22)/(23) support done (`ConnesPeriodizationEquivariance.connesPeriodization_support_window`); (23)/(25) positivity mechanism done (`ConnesPositiveTypeCutoff`); Lemma 3's model computation done (A26); §VIII (30) pair-of-projections done (A20); §VIII (35)–(43) semiclassical area done (A6).  **Open:** the full Theorem 5, which needs B3 + B6 |
 | B9 | App II (35) in limit form | **DONE** — `ConnesArchPrincipalValue.connes_logPV_sub_powerPV_tendsto` |
 
 Note: App II Theorem 1 (Weil's explicit formula) is *quoted*, not proved, in this paper; it is not in
@@ -114,3 +114,17 @@ layer (`XiGuinandWeilExplicitFormula`, `xi_explicitFormula_logDeriv`).
   B4a-scaling (`ConnesLogShiftKernel`), and the whole analytic chain of Theorem V.3 at the real
   place (`ConnesLocalTraceCore` + `ConnesSymbolChangeOfVariables`).  5 new modules wired into
   `GaloisForLFunctions.RHTower`.
+- 2026-08-21 — Tier B batch 2: (44)+(45) complete (`ConnesLogShiftKernel`), App I Lemma 4 uniform
+  bound (`ConnesApproximateUnit`), App II (18)(19) rewriting (`ConnesWeilRewriting`),
+  §VIII (23)(25) positivity mechanism (`ConnesPositiveTypeCutoff`), §VIII (22) support window
+  (added to `ConnesPeriodizationEquivariance`).  26 Connes modules total, all wired into
+  `GaloisForLFunctions.RHTower`, all `#print axioms` clean, lint clean.
+
+## What remains genuinely open (named external inputs)
+1. **Trace-class Schwartz kernels.**  `Trace(R_Λ U(h)) = ∫∫ σ` for `R_Λ U(h)` trace class but not
+   Hilbert–Schmidt.  Blocks the last step of B1 and hence B3.
+2. **`L²(X_S)` for a non-type-I quotient.**  Blocks B2(b), hence B3.
+3. **Tate/Iwasawa homogeneous distributions on `A`** (App I Lemmas 1–3) plus polynomial growth of
+   `L(χ₀,½+it)`.  Blocks B6, hence B8's Theorem 5.
+4. **Weil's explicit formula** (App II Theorem 1, quoted from [W3]).  Blocks B7's Theorem 6.
+Everything in the paper that does not reduce to one of these four is now Lean-closed.

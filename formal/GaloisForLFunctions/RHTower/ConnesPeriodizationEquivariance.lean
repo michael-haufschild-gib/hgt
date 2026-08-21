@@ -106,6 +106,43 @@ theorem connesPeriodization_reflect {A : Type*} [CommMonoid A] {Γ : Type*} (ι 
   rw [hsq]
   exact hpunct.symm
 
+/-- **§VIII (22), support half.**  If `f` vanishes where the module exceeds `Λ`, so does its
+periodization: every term of the orbit sum has the same module as `g`, because the elements of
+`k^*` have module one (the product formula). -/
+theorem connesPeriodization_eq_zero_of_lt {A : Type*} [CommMonoid A] {Γ : Type*} (ι : Γ → A)
+    (mod : A → ℝ) (hmod : ∀ x y : A, mod (x * y) = mod x * mod y)
+    (hunit : ∀ q : Γ, mod (ι q) = 1) (f : A → ℂ) {Λ : ℝ}
+    (hf : ∀ x : A, Λ < mod x → f x = 0) {g : A} (hg : Λ < mod g) :
+    connesPeriodization ι mod f g = 0 := by
+  have hterm : ∀ q : Γ, f (ι q * g) = 0 := by
+    intro q
+    refine hf _ ?_
+    rw [hmod, hunit q, one_mul]
+    exact hg
+  simp only [connesPeriodization, hterm, tsum_zero, mul_zero]
+
+/-- **§VIII (22)/(23).**  If both `f` and its Fourier transform vanish where the module exceeds
+`Λ`, the periodization `E(f)` is supported in the module window `[Λ^{-1}, Λ]`; this is the
+inclusion `E(B_{Λ,0}) ⊆ S_Λ` that produces the operator inequality `Q'_{Λ,0} ≤ S_Λ`. -/
+theorem connesPeriodization_support_window {A : Type*} [CommMonoid A] {Γ : Type*} (ι : Γ → A)
+    (mod : A → ℝ) (hmod : ∀ x y : A, mod (x * y) = mod x * mod y)
+    (hunit : ∀ q : Γ, mod (ι q) = 1) (f fhat : A → ℂ) {Λ : ℝ}
+    (hf : ∀ x : A, Λ < mod x → f x = 0)
+    (hfhat : ∀ x : A, Λ < mod x → fhat x = 0)
+    (x : Aˣ)
+    (hmodpos : 0 < mod ((x : Aˣ) : A))
+    (hmodinv : mod (((x⁻¹ : Aˣ) : A)) = (mod ((x : Aˣ) : A))⁻¹)
+    (hpunct : (mod ((x : Aˣ) : A) : ℂ) * ∑' q : Γ, f (ι q * ((x : Aˣ) : A))
+      = ∑' q : Γ, fhat (ι q * (((x⁻¹ : Aˣ) : A))))
+    (hout : Λ < mod ((x : Aˣ) : A) ∨ Λ < (mod ((x : Aˣ) : A))⁻¹) :
+    connesPeriodization ι mod f ((x : Aˣ) : A) = 0 := by
+  rcases hout with h | h
+  · exact connesPeriodization_eq_zero_of_lt ι mod hmod hunit f hf h
+  · rw [connesPeriodization_reflect ι mod f fhat x hmodpos hmodinv hpunct]
+    refine connesPeriodization_eq_zero_of_lt ι mod hmod hunit fhat hfhat ?_
+    rw [hmodinv]
+    exact h
+
 end
 
 end GaloisForLFunctions.RHTower
