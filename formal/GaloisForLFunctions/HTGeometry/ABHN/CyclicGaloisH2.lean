@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicHilbert90
+import Mathlib.FieldTheory.Galois.Basic
 
 /-!
 # Degree-two cohomology of cyclic Galois extensions
@@ -74,6 +75,124 @@ theorem cyclicGaloisH2Projection_eq_iff
   Rep.FiniteCyclicGroup.groupCohomologyπEven_eq_iff
     (Rep.ofAlgebraAutOnUnits K L) (cyclicGaloisGenerator K L)
       (cyclicGaloisGenerator_spec K L) 2 even_two x y
+
+/-- The unit underlying a generator-fixed representative for cyclic degree-two cohomology. -/
+noncomputable def cyclicGaloisH2FixedUnit
+    (x : LinearMap.ker
+      ((Rep.ofAlgebraAutOnUnits K L).applyAsHom (cyclicGaloisGenerator K L) -
+        𝟙 (Rep.ofAlgebraAutOnUnits K L)).hom.toLinearMap) : Lˣ :=
+  Additive.toMul (Rep.toAdditive (M := Gal(L/K)) (G := Lˣ) x.1)
+
+omit [FiniteDimensional K L] in
+/-- A cyclic degree-two representative is fixed by the chosen generator. -/
+theorem cyclicGaloisH2FixedUnit_generator_fixed
+    (x : LinearMap.ker
+      ((Rep.ofAlgebraAutOnUnits K L).applyAsHom (cyclicGaloisGenerator K L) -
+        𝟙 (Rep.ofAlgebraAutOnUnits K L)).hom.toLinearMap) :
+    Units.map (cyclicGaloisGenerator K L).toMonoidHom (cyclicGaloisH2FixedUnit K L x) =
+      cyclicGaloisH2FixedUnit K L x := by
+  have hx := x.property
+  change Additive.ofMul (Units.map (cyclicGaloisGenerator K L).toMonoidHom
+    (Additive.toMul (Rep.toAdditive (M := Gal(L/K)) (G := Lˣ) x.1))) -
+      Rep.toAdditive (M := Gal(L/K)) (G := Lˣ) x.1 = 0 at hx
+  exact congrArg Additive.toMul (sub_eq_zero.mp hx)
+
+omit [FiniteDimensional K L] in
+/-- In a cyclic Galois extension, a cyclic degree-two representative is fixed by every Galois
+automorphism. -/
+theorem cyclicGaloisH2FixedUnit_fixed [IsGalois K L]
+    (x : LinearMap.ker
+      ((Rep.ofAlgebraAutOnUnits K L).applyAsHom (cyclicGaloisGenerator K L) -
+        𝟙 (Rep.ofAlgebraAutOnUnits K L)).hom.toLinearMap) (sigma : Gal(L/K)) :
+    Units.map sigma.toMonoidHom (cyclicGaloisH2FixedUnit K L x) =
+      cyclicGaloisH2FixedUnit K L x := by
+  let u := cyclicGaloisH2FixedUnit K L x
+  let H : Subgroup Gal(L/K) := MulAction.stabilizer Gal(L/K) u
+  have hgen : Units.map (cyclicGaloisGenerator K L).toMonoidHom u = u := by
+    change Units.map (cyclicGaloisGenerator K L).toMonoidHom (cyclicGaloisH2FixedUnit K L x) =
+      cyclicGaloisH2FixedUnit K L x
+    exact cyclicGaloisH2FixedUnit_generator_fixed K L x
+  have hgmem : cyclicGaloisGenerator K L ∈ H := by
+    change Units.map (cyclicGaloisGenerator K L).toMonoidHom u = u
+    exact hgen
+  have hsigmamem : sigma ∈ H :=
+    (Subgroup.zpowers_le.mpr hgmem) (cyclicGaloisGenerator_spec K L sigma)
+  change Units.map sigma.toMonoidHom u = u at hsigmamem
+  exact hsigmamem
+
+/-- A generator-fixed degree-two representative of a finite cyclic Galois extension comes from a
+base-field unit. -/
+theorem cyclicGaloisH2FixedUnit_exists_base_unit [IsGalois K L]
+    (x : LinearMap.ker
+      ((Rep.ofAlgebraAutOnUnits K L).applyAsHom (cyclicGaloisGenerator K L) -
+        𝟙 (Rep.ofAlgebraAutOnUnits K L)).hom.toLinearMap) :
+    ∃ y : Kˣ, Units.map (algebraMap K L) y = cyclicGaloisH2FixedUnit K L x := by
+  let u := cyclicGaloisH2FixedUnit K L x
+  have hfixed : ∀ sigma : Gal(L/K), sigma (u : L) = u := by
+    intro sigma
+    have hs : Units.map sigma.toMonoidHom u = u := by
+      exact cyclicGaloisH2FixedUnit_fixed K L x sigma
+    simpa using congrArg Units.val hs
+  obtain ⟨y, hy⟩ := (IsGalois.mem_range_algebraMap_iff_fixed (u : L)).mpr hfixed
+  have hy_ne : y ≠ 0 := by
+    intro hy0
+    rw [hy0, map_zero] at hy
+    exact u.ne_zero hy.symm
+  refine ⟨Units.mk0 y hy_ne, ?_⟩
+  apply Units.ext
+  exact hy
+
+/-- The base-field unit underlying a generator-fixed degree-two representative is unique. -/
+theorem cyclicGaloisH2FixedUnit_existsUnique_base_unit [IsGalois K L]
+    (x : LinearMap.ker
+      ((Rep.ofAlgebraAutOnUnits K L).applyAsHom (cyclicGaloisGenerator K L) -
+        𝟙 (Rep.ofAlgebraAutOnUnits K L)).hom.toLinearMap) :
+    ∃! y : Kˣ, Units.map (algebraMap K L) y = cyclicGaloisH2FixedUnit K L x := by
+  obtain ⟨y, hy⟩ := cyclicGaloisH2FixedUnit_exists_base_unit K L x
+  refine ⟨y, hy, ?_⟩
+  intro z hz
+  apply Units.ext
+  apply FaithfulSMul.algebraMap_injective K L
+  exact congrArg Units.val (hz.trans hy.symm)
+
+/-- A cyclic degree-two representative is cohomologically zero precisely when its underlying
+fixed unit is a field norm. -/
+theorem cyclicGaloisH2Projection_eq_zero_iff_exists_field_norm [IsGalois K L]
+    (x : LinearMap.ker
+      ((Rep.ofAlgebraAutOnUnits K L).applyAsHom (cyclicGaloisGenerator K L) -
+        𝟙 (Rep.ofAlgebraAutOnUnits K L)).hom.toLinearMap) :
+    cyclicGaloisH2Projection K L x = 0 ↔
+      ∃ y : Lˣ, cyclicGaloisH2FixedUnit K L x =
+        Units.map (algebraMap K L) (cyclicGaloisNormUnits K L y) := by
+  let e := Rep.toAdditive (M := Gal(L/K)) (G := Lˣ)
+  constructor
+  · intro hx
+    obtain ⟨z, hz⟩ := (cyclicGaloisH2Projection_eq_zero_iff K L x).mp hx
+    let y : Lˣ := Additive.toMul (e z)
+    have hzy : z = e.symm (Additive.ofMul y) := by
+      apply e.injective
+      simp [y]
+    rw [hzy] at hz
+    refine ⟨y, ?_⟩
+    apply Units.ext
+    have hval := congrArg (fun w => ((Additive.toMul (e w) : Lˣ) : L)) hz
+    change ((Additive.toMul (e ((Rep.ofAlgebraAutOnUnits K L).norm.hom
+      (e.symm (Additive.ofMul y)))) : Lˣ) : L) =
+        ((Additive.toMul (e x.1) : Lˣ) : L) at hval
+    rw [show e = Rep.toAdditive (M := Gal(L/K)) (G := Lˣ) by rfl] at hval
+    rw [groupCohomology.norm_ofAlgebraAutOnUnits_eq y] at hval
+    exact hval.symm
+  · rintro ⟨y, hy⟩
+    apply (cyclicGaloisH2Projection_eq_zero_iff K L x).mpr
+    refine ⟨e.symm (Additive.ofMul y), ?_⟩
+    apply e.injective
+    apply Additive.toMul.injective
+    apply Units.ext
+    change ((Additive.toMul (e ((Rep.ofAlgebraAutOnUnits K L).norm.hom
+      (e.symm (Additive.ofMul y)))) : Lˣ) : L) = cyclicGaloisH2FixedUnit K L x
+    rw [show e = Rep.toAdditive (M := Gal(L/K)) (G := Lˣ) by rfl]
+    rw [groupCohomology.norm_ofAlgebraAutOnUnits_eq y]
+    exact congrArg Units.val hy.symm
 
 /-- The subgroup of generator-fixed units that are norms. -/
 noncomputable def cyclicGaloisH2NormImage :

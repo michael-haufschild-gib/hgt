@@ -331,9 +331,39 @@ That is the gate for the whole of Stage IV.  Its proof needs, in order:
   **`isIso_homologyMap_smallIncl`** : for an open cover, the inclusion of the small chains induces
   an isomorphism on homology in every degree.
 
-- IV.4 remaining: excision (second isomorphism theorem for the pair `C(X∖Z)/C(A∖Z) ≅ C^𝒰/C(A)`
-  plus the five lemma) and topological Mayer–Vietoris (the submodule sequence
-  `0 → C(A∩B) → C(A) ⊕ C(B) → C(A)+C(B) → 0`);
+- IV.4 **excision is proved.**  `ChainSubcomplex` was generalised to `ModuleSubcomplex`: a
+  differential-stable degreewise submodule of *any* chain complex of modules.  `RelativeSingularHomology`
+  adds `ModuleSubcomplex.Hom` (a chain map carrying one subcomplex into another) with the induced
+  maps on subcomplexes, quotients and short exact sequences, and `restrictTo`/`restrictHom`, which
+  realise a subcomplex sitting inside a larger subcomplex — the comparison being a degreewise
+  isomorphism.  `Excision` then compares
+
+    `0 → C(A) → C^{A,Zᶜ} → C^{A,Zᶜ}/C(A) → 0`   with   `0 → C(A) → C(X) → C(X)/C(A) → 0`,
+
+  where the left map is an isomorphism and the middle one is the small-chains quasi-isomorphism
+  (`isIso_homologyMap_smallIncl`, applied with the open cover `{int A, int Zᶜ}` refining `{A, Zᶜ}`),
+  so `HomologicalComplex.HomologySequence.quasiIso_τ₃` gives
+
+  **`quasiIso_excHom_quotMap`** : if `closure Z ⊆ interior A`, chains avoiding `Z` compute the
+  relative homology of `(X, A)`.
+
+- **Functoriality and homotopy invariance are proved.**  `SingularFunctoriality` gives `singMap`,
+  the chain map induced by a continuous map, with `singMap_id` and `singMap_comp`.
+
+  `HomotopyInvariance` observes that the singular simplices used here differ from mathlib's only by
+  a universe lift, and that mathlib's `TopCat.toSSetObjEquiv` intertwines the faces *definitionally*.
+  With the free module functor `freeMod` (index type and ring in different universes), the two
+  models of the singular simplicial object are isomorphic (`singSimplicialIso`), hence so are their
+  alternating face map complexes (`singChainComplexIso`), naturally in the space
+  (`singChainComplexIso_naturality`).  Mathlib's chain of constructions
+  `TopCat.Homotopy.toSSet → toSimplicialObjectHomotopy → whiskerRight → toChainHomotopy` then gives
+
+  **`homologyMap_singMap_eq_of_homotopy`** : homotopic maps induce the same map on the homology of
+  the concrete singular chain complex.
+
+- IV.4 remaining: the second isomorphism theorem identifying `C^{A,Zᶜ}/C(A)` with the pair complex
+  of `(Zᶜ, A ∩ Zᶜ)`, and — only if a Mayer–Vietoris route is preferred to the pair route for
+  `H_*(Sⁿ)` — the submodule sequence `0 → C(A∩B) → C(A) ⊕ C(B) → C(A)+C(B) → 0`;
 - IV.5 `H_*(Sⁿ)` and `H_*(Dⁿ, Sⁿ⁻¹)`;
 - IV.6 Morse theory: sublevel sets, handle attachment, gradient flow retractions, and
   `χ(M) = ∑ (−1)^λ`.

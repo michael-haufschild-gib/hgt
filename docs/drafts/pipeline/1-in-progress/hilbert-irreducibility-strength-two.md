@@ -64,8 +64,8 @@ this is the payoff of the resolvent being universal.
 ## Lean module plan (`HTGeometry/HilbertIrreducibility/`)
 | # | module | content | state |
 |---|---|---|---|
-| 15 | `Family` | `s₀`-parameterised thin-bad-set form; HIT for a finite family | |
-| 16 | `Kronecker` | `S_d`, injectivity on bounded-degree polynomials | |
+| 15 | (in `Main`) | `exists_thin_bad`, `infinite_of_thin_bad`, `exists_regular_int_family`, `hilbert_irreducibility_family` | **DONE** |
+| 16 | `Kronecker` | digits, `kron`, `kron_injOn`, `exists_kron_eq` (pullback) | **DONE** |
 | 17 | `Multivariate` | CZ Theorem 4; Corollary 2 (avoidance, several variables) | |
 | 18 | `GaloisResolvent` | universal `Res(f)`, `Res(f)_y = Res(f_y)`, separating `c` | |
 | 19 | `GaloisSpecialization` | `Gal(f_y) = S_D` for a Zariski-dense set of `y` | |
@@ -86,5 +86,11 @@ Castillo–Dietmann, *On Hilbert's irreducibility theorem* (arXiv:1602.00314): t
 input) and is a separate project.  Record it as *not* on the critical path.
 
 ## Log
+- 2026-08-21 — Step 0 and Step 1 done.  `hilbert_irreducibility_family` (finite families) is proved
+  and axiom-clean — obtained by splitting the strength-one proof at the regular parameter `s₀` and
+  indexing the gap-thin sets by `Σ i, Idx i`, which is *much* cheaper than Coleman–Zwald's own
+  route to it (their Theorem 2 goes through the Lemma-2 Galois machinery).  `Kronecker` is complete:
+  `kron_injOn` (base-`d` digit uniqueness) and `exists_kron_eq` (digit existence).  Next: CZ
+  Theorem 4.
 - 2026-08-21 — created after strength one closed; both cards analysed and shown to need the same
   multivariate Galois-preserving statement; Castillo–Dietmann shown to be used only existentially.

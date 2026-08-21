@@ -131,7 +131,23 @@ so `Q = ∑_x r'^2_x ≤ kM + |T||B|(|B|−k) = |B|·( k|A| + |T|(|B|−k) )`, a
   `PollardStepOne.lean` (`rep_sdiff_add_rep_sdiff_le`, `repSum_ge_of_repSet_eq`),
   `PollardCoset.lean` (`exists_mul_notMem`, `card_mulStab_le_filter_add_holes'`) and
   `PollardStabiliserBound.lean` (`rep_comm`, the two Fubini lemmas,
-  `pollard_step1_smallDoubling`).  Next: STEP 2, STEP 3 (CASES 3.1/3.2) and CASE 4.
+  `pollard_step1_smallDoubling`) and `PollardStepOneMain.lean` (`satur`, `satur_mul_satur`,
+  `defect_satur_le`, `satur_saturated`, `pollard_step1_largeProduct`, and **`pollard_step1`**).
+  `PollardStepTwo.lean` has STEP 2's weak branch (`pollardWeak_of_erase_left/right`) and the
+  monotonicity facts that make the induction measure drop.  `PollardDeletion.lean` has
+  `rep_smul_mulStab` (representation counts are constant on `S(A)`-cosets), the exact deletion
+  costs `repSum_erase_left_add_le`/`repSum_erase_right_add_le`, and the "unstuff" pigeonhole
+  `exists_erase_drop`.  `PollardDysonWitness.lean` has `exists_dyson_witness` and
+  `exists_max_dyson_witness`.  `PollardStabSmall.lean` has `repSet_eq_or_exists_erase_drop`
+  (`#S(A) ≥ t` forces STEP 1 or STEP 2).  `PollardDysonMeasure.lean` has `repSum_dyson_le` and
+  `dyson_measure_drop`.  `PollardDysonEnergy.lean` has `dysonFull`, the bridge
+  `rep_inv_eq_card_dysonSmall` (`r_{A,B⁻¹}(x) = #((x·B) ∩ A)`) and the instance
+  `repSum_ge_min_dyson` of Lemma 2.1 in the Dyson setting.  `PollardFullTranslations.lean` has
+  `card_le_card_inter_add_holes` and `card_dysonFull_add_card_le` (`#T + #B + 1 ≤ #A + t` under
+  (qubal)).  `PollardStepThreePoly.lean` has the two polynomial inequalities that end STEP 3
+  (`case32_poly`, `case31_poly`) — the source's "routine calculation".
+  Next: STEP 2's structural branch; the (qubal) condition and the Sidon argument of CASE 3.1;
+  CASE 4; the induction assembly.
   The main triple induction (on `∑_{i=1}^t |A +_i B|`, then `|A|+|B|`, then `min(|A|,|B|)`).
 
 ## G4: design of the main induction
@@ -210,6 +226,14 @@ Combining with Kneser (`t·#(A'·B') ≥ t(#A' + #B' + ρ − |H|)`) gives exact
 - [ ] 2 → 3  formalized: Lean theorem, `lake build` green, axioms ⊆ {propext, Classical.choice, Quot.sound}
 
 ## Log
+- 2026-08-21 — the analytic core of STEP 3 is Lean-closed: the bridge from the Dyson transform to
+  Lemma 2.1, the bound on `#dysonFull`, and both terminal polynomial inequalities.  Three more
+  modules, axiom-clean and wired.
+- 2026-08-21 — the scaffolding around STEP 1 is Lean-closed: deletion costs and the unstuff
+  pigeonhole, the Dyson witness selection, the smallness of `S(A)`, and the measure-decrease facts
+  for the Dyson transform.  Four more modules, all axiom-clean and wired.
+- 2026-08-21 — **`pollard_step1` is Lean-proved in full** (both branches, with the saturation
+  construction).  STEP 1 is complete.
 - 2026-08-21 — **G4 STEP 1 is Lean-closed** across four new modules, with a quotient-free proof of
   the coset claim that is shorter than the source's.  All axiom-clean and wired.
 - 2026-08-21 — **G3 Lean-closed** in `HTGeometry/AdditiveCombinatorics/AdditiveEnergy.lean`:

@@ -299,9 +299,9 @@ theorem routeT_optimizer_amplitude_reserve_first_or_second
 /-- **Moving-endpoint crossing dichotomy.**  Retaining the exact crossing length removes the
 fixed-deficit hypothesis.  Either its width plus one percent reserve fits the first target, or
 crossing geometry forces `mu < 1.87`, where the second target has a fixed positive margin. -/
-theorem routeT_exact_crossing_first_or_second
+theorem routeT_exact_crossing_first_or_second_unbounded
     {mu alpha alpha0 beta r d : ℝ}
-    (hmuLo : 4 / 3 ≤ mu) (_hmuHi : mu ≤ 19 / 9)
+    (hmuLo : 4 / 3 ≤ mu)
     (halphaLo : 997 / 1000 ≤ alpha) (halphaHi : alpha < 1)
     (halpha0 : alpha0 = alpha - (1 - alpha) / 100)
     (hbetaHi : beta ≤ 5 / 12)
@@ -357,6 +357,21 @@ theorem routeT_exact_crossing_first_or_second
       nlinarith [hmulQ]
     dsimp only [q] at hrhs
     exact hlhs.trans (by linarith)
+
+/-- Compatibility wrapper on Maynard's historical height range. -/
+theorem routeT_exact_crossing_first_or_second
+    {mu alpha alpha0 beta r d : ℝ}
+    (hmuLo : 4 / 3 ≤ mu) (_hmuHi : mu ≤ 19 / 9)
+    (halphaLo : 997 / 1000 ≤ alpha) (halphaHi : alpha < 1)
+    (halpha0 : alpha0 = alpha - (1 - alpha) / 100)
+    (hbetaHi : beta ≤ 5 / 12)
+    (hr : r < maynardHuxleyOptimizer alpha0 + beta)
+    (hd : 0 ≤ d) (hdGap : d ≤ 1 - alpha) :
+    2 * r * (1 - alpha) + d / 100 ≤ mu * (1 - alpha) ∨
+      2 * r * (1 - alpha) + d / 100 ≤
+        1 + mu * (1 + routeTGapMomentNu - 2 * alpha) := by
+  exact routeT_exact_crossing_first_or_second_unbounded
+    hmuLo halphaLo halphaHi halpha0 hbetaHi hr hd hdGap
 
 /-- A fixed logarithmic factor and the canonical raised-polynomial factor are
 absorbed by one contour-edge envelope.  This is the reusable logarithmic form

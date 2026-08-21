@@ -156,6 +156,8 @@ noncomputable def shortComplexHom (φ : Hom P Q) : P.shortComplex ⟶ Q.shortCom
     refine HomologicalComplex.hom_ext _ _ fun k => ?_
     exact ModuleCat.hom_ext (LinearMap.ext fun x => rfl)
 
+end Hom
+
 /-! ### Restricting a subcomplex to a larger subcomplex -/
 
 set_option linter.unusedVariables false in
@@ -192,7 +194,6 @@ instance isIso_restrictHom_subMap' (P Q : ModuleSubcomplex R K)
     fun k => isIso_restrictHom_subMap P Q hle k
   exact HomologicalComplex.Hom.isIso_of_components _
 
-end Hom
 
 end ModuleSubcomplex
 

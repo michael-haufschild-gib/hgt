@@ -33,12 +33,14 @@ theorem subChains_le_smallPair (k : ℕ) :
 /-- The chains supported in `A`, viewed inside the chains small for `{A, Zᶜ}`. -/
 noncomputable def excSub : ModuleSubcomplex R
     (subcomplexOfFamily R ({A, Zᶜ} : Set (Set X))).complex :=
-  ModuleSubcomplex.restrictTo _ _ (subChains_le_smallPair R A Z)
+  ModuleSubcomplex.restrictTo (subcomplexOfFamily R ({A, Zᶜ} : Set (Set X)))
+    (subcomplexOfSubset R A) (subChains_le_smallPair R A Z)
 
 /-- The comparison of the two pairs. -/
 noncomputable def excHom :
     ModuleSubcomplex.Hom (excSub R A Z) (subcomplexOfSubset R A) :=
-  ModuleSubcomplex.restrictHom _ _ (subChains_le_smallPair R A Z)
+  ModuleSubcomplex.restrictHom (subcomplexOfFamily R ({A, Zᶜ} : Set (Set X)))
+    (subcomplexOfSubset R A) (subChains_le_smallPair R A Z)
 
 theorem excision_cover (hZ : closure Z ⊆ interior A) :
     (Set.univ : Set X) ⊆ ⋃₀ ({interior A, interior (Zᶜ)} : Set (Set X)) := by
@@ -77,9 +79,13 @@ theorem quasiIso_excHom_quotMap (hZ : closure Z ⊆ interior A) :
     QuasiIso (excHom R A Z).quotMap := by
   have h₁ : QuasiIso ((excHom R A Z).shortComplexHom).τ₁ := by
     have : IsIso ((excHom R A Z).shortComplexHom).τ₁ :=
-      ModuleSubcomplex.isIso_restrictHom_subMap' _ _ (subChains_le_smallPair R A Z)
+      ModuleSubcomplex.isIso_restrictHom_subMap'
+        (subcomplexOfFamily R ({A, Zᶜ} : Set (Set X)))
+        (subcomplexOfSubset R A) (subChains_le_smallPair R A Z)
     infer_instance
-  have h₂ : QuasiIso ((excHom R A Z).shortComplexHom).τ₂ := quasiIso_smallPairIncl R A Z hZ
+  have h₂ : QuasiIso ((excHom R A Z).shortComplexHom).τ₂ := by
+    show QuasiIso (subcomplexOfFamily R ({A, Zᶜ} : Set (Set X))).incl
+    exact quasiIso_smallPairIncl R A Z hZ
   exact HomologicalComplex.HomologySequence.quasiIso_τ₃ ((excHom R A Z).shortComplexHom)
     (ModuleSubcomplex.shortExact _) (ModuleSubcomplex.shortExact _) h₁ h₂
 

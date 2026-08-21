@@ -31,6 +31,9 @@ def IsDerivChain (F : ℕ → ℝ → ℝ) (U : Set ℝ) : Prop :=
 theorem IsDerivChain.shift {F : ℕ → ℝ → ℝ} {U : Set ℝ} (hF : IsDerivChain F U) :
     IsDerivChain (fun j => F (j + 1)) U := fun j x hx => hF (j + 1) x hx
 
+theorem IsDerivChain.mono {F : ℕ → ℝ → ℝ} {U W : Set ℝ} (hF : IsDerivChain F U) (h : W ⊆ U) :
+    IsDerivChain F W := fun j x hx => hF j x (h hx)
+
 theorem IsDerivChain.continuousOn {F : ℕ → ℝ → ℝ} {U : Set ℝ} (hF : IsDerivChain F U)
     (j : ℕ) {s : Set ℝ} (hs : s ⊆ U) : ContinuousOn (F j) s :=
   fun x hx => ((hF j x (hs hx)).differentiableAt.continuousAt).continuousWithinAt

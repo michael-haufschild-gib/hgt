@@ -3,7 +3,24 @@ import GaloisForLFunctions.HilbertMetric.GaussianJetPositivity
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 /-!
-# Scratch: trace-free CCM phase disks as one coherent Fock packet
+# Trace-free coherent-Fock tomography of matched CCM phase disks
+
+Primewise Schur completion fails globally because every local phase disk contributes a
+nonsummable positive scalar trace.  This module removes that trace before positivity.  The two
+remaining Bloch coordinates are inserted, together with two fixed tomography anchors, into one
+HilbertMetric exponential-inner-product Gram packet.
+
+Every finite arithmetic packet is positive semidefinite by the corpus's Gaussian-Fock theorem.
+Taking real logarithms of the atom--anchor entries recovers the matched cosine and sine channels
+exactly.  The literal oriented CCM symbol, including its critical Mellin coefficient, is therefore
+a nonlinear reporter of one positive cross-prime kernel.  Cross-atom entries are forced by the
+anchor entries through an exact rank-two logarithmic covariance identity; no target-fitted
+off-diagonal completion is introduced.
+
+Finally, every finite actual matched prime--polar block is identified with the spectral integral
+of this tomography reporter.  This is an unconditional source-faithful carrier, not an RH proof:
+the remaining problem is a nonlocal cofinal limit or compactness principle for the coherent
+kernel that preserves the logarithmic reporter.
 -/
 
 open Complex MeasureTheory Set
@@ -131,6 +148,40 @@ theorem ccmActualHeadMatchedPhaseFockMatrix_atom_atom
     GaloisForLFunctions.HilbertMetric.hilbertExponentialInnerMatrix,
     CCMActualHeadMatchedPhaseFockIndex.feature]
 
+theorem ccmActualHeadMatchedPhaseFockMatrix_atom_atom_cross
+    {ι : Type*} (n : ι → ℕ) (xi : ℝ) (i j : ι) :
+    ccmActualHeadMatchedPhaseFockMatrix n xi (.atom i) (.atom j) =
+      Real.exp (inner ℝ
+        (ccmActualHeadMatchedPhaseBlochFeature (n i) xi)
+        (ccmActualHeadMatchedPhaseBlochFeature (n j) xi)) := by
+  simp [ccmActualHeadMatchedPhaseFockMatrix,
+    GaloisForLFunctions.HilbertMetric.hilbertExponentialInnerMatrix,
+    CCMActualHeadMatchedPhaseFockIndex.feature]
+
+/-- Cross-prime logarithmic covariance is forced by the two anchor reporters; no free
+off-diagonal completion is inserted. -/
+theorem log_ccmActualHeadMatchedPhaseFockMatrix_atom_atom_eq_anchor_products
+    {ι : Type*} (n : ι → ℕ) (xi : ℝ) (i j : ι) :
+    Real.log (ccmActualHeadMatchedPhaseFockMatrix n xi (.atom i) (.atom j)) =
+      Real.log (ccmActualHeadMatchedPhaseFockMatrix n xi
+          (.atom i) (.cosineAnchor)) *
+        Real.log (ccmActualHeadMatchedPhaseFockMatrix n xi
+          (.atom j) (.cosineAnchor)) +
+      Real.log (ccmActualHeadMatchedPhaseFockMatrix n xi
+          (.atom i) (.sineAnchor)) *
+        Real.log (ccmActualHeadMatchedPhaseFockMatrix n xi
+          (.atom j) (.sineAnchor)) := by
+  rw [ccmActualHeadMatchedPhaseFockMatrix_atom_atom_cross, Real.log_exp,
+    log_ccmActualHeadMatchedPhaseFockMatrix_atom_cosineAnchor,
+    log_ccmActualHeadMatchedPhaseFockMatrix_atom_cosineAnchor,
+    log_ccmActualHeadMatchedPhaseFockMatrix_atom_sineAnchor,
+    log_ccmActualHeadMatchedPhaseFockMatrix_atom_sineAnchor]
+  rw [PiLp.inner_apply, Fin.sum_univ_two]
+  simp only [ccmActualHeadMatchedPhaseBlochFeature_apply_zero,
+    ccmActualHeadMatchedPhaseBlochFeature_apply_one, RCLike.inner_apply,
+    starRingEnd_apply, star_trivial]
+  ring
+
 theorem ccmActualHeadMatchedPhaseFockMatrix_atom_atom_le_weightDisk
     {ι : Type*} (n : ι → ℕ) (xi : ℝ) (i : ι) :
     ccmActualHeadMatchedPhaseFockMatrix n xi (.atom i) (.atom i) ≤
@@ -138,5 +189,38 @@ theorem ccmActualHeadMatchedPhaseFockMatrix_atom_atom_le_weightDisk
   rw [ccmActualHeadMatchedPhaseFockMatrix_atom_atom]
   exact Real.exp_le_exp.mpr
     (ccmActualHeadMatchedPhaseBlochFeature_norm_sq_le (n i) xi)
+
+/-- Finite matched source reporter read from one coherent atom--anchor packet. -/
+def ccmActualHeadMatchedPhaseFiniteFockTomographyReporter
+    (F : Finset ℕ) (xi : ℝ) : ℝ :=
+  ∑ i : ↥F,
+    ccmActualHeadMatchedPhaseFockTomographyReporter
+      (fun j : ↥F => (j : ℕ)) xi i
+
+theorem ccmActualHeadMatchedPhaseFiniteFockTomographyReporter_eq_orientedFiniteSymbol_re
+    (F : Finset ℕ) (xi : ℝ) :
+    ccmActualHeadMatchedPhaseFiniteFockTomographyReporter F xi =
+      (ccmActualHeadMatchedOrientedPhaseFiniteSymbol F xi).re := by
+  unfold ccmActualHeadMatchedPhaseFiniteFockTomographyReporter
+    ccmActualHeadMatchedOrientedPhaseFiniteSymbol
+  rw [Complex.re_sum]
+  rw [Finset.sum_subtype F (fun i => Iff.rfl)]
+  apply Finset.sum_congr rfl
+  intro i hi
+  exact ccmActualHeadMatchedPhaseFockTomographyReporter_eq_orientedPhaseSymbol_re
+    (fun j : ↥F => (j : ℕ)) xi i
+
+/-- Every finite actual matched prime--polar block is an exact nonlinear reporter of one
+positive-semidefinite coherent Fock matrix. -/
+theorem ccmActualHeadMatchedPrimePolarFiniteBlock_eq_phaseFockTomography
+    (F : Finset ℕ) (f : SoninL2) :
+    ccmActualHeadMatchedPrimePolarFiniteBlock F f =
+      -2 * ∫ xi : ℝ,
+        ccmActualHeadMatchedPhaseFiniteFockTomographyReporter F xi *
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by
+  rw [ccmActualHeadMatchedPrimePolarFiniteBlock_eq_orientedPhaseFiniteSymbol]
+  congr 2
+  funext xi
+  rw [ccmActualHeadMatchedPhaseFiniteFockTomographyReporter_eq_orientedFiniteSymbol_re]
 
 end RHTower

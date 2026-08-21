@@ -1,0 +1,95 @@
+# Group-scheme foundations for the Faltings-height duality theorems
+
+- **ID:** gs-foundations-faltings
+- **Stage:** 1-in-progress
+- **Type:** THEOREM (Lean) — infrastructure programme
+- **Source:** required by `suzuki-duality-faltings-heights-2504.04993.md` (arXiv:2504.04993)
+- **Statement:** Build, in Lean 4 and unconditionally, the algebraic-geometry stack that Sections 2
+  and 3 of Suzuki's paper stand on, until Theorems 2.5 and 3.5 (and hence 1.1, 1.2, 4.2, 5.2)
+  become provable.
+
+## Why this card exists
+
+Sections 4 and 5 of the paper are Lean-closed (see the companion card).  Every remaining statement
+— Thm 1.1 = Thm 2.5, Props 2.1–2.4, Props 3.1–3.4, Thm 3.5, and the assembly Thms 4.2 and 5.2 —
+needs objects that do not exist in mathlib.  This card holds the bottom-up build of those objects.
+
+## Dependency tree of the paper's open statements
+
+```
+Thm 1.3 = Thm 4.2 + Thm 5.2      (metrized omega_A ≅ omega_B)
+ |- Prop 4.1  DONE quantitative core; needs Serre duality for the transition factor ±det M
+ |- Prop 5.1  DONE arithmetic core; needs form integration for the normalisation
+ |- Thm 1.2 = Thm 3.5            (omega_A ≅ omega_B as line bundles on X)
+      |- Prop 3.4
+           |- semistable case  <- Prop 3.3 + [self-inverse lattice DONE]
+           |    |- Prop 3.3    (det RLie N <-> (det RLie M)^{-1} as lattices)
+           |         |- Prop 3.2  perfectness of the extended pairing <- Raynaud group schemes
+           |         |- Prop 3.1  extension of the Cartier pairing to Neron models
+           |         |             <- derived category of fppf sheaves, [Mil06 III C.10]
+           |         |- Prop 2.2(2)(4)  det RLie N ≅ (det RLie M)^{-1}, Cartier duals
+           |- general case <- Chai base change conductor, [OS23 Thm 1.2]   (EXTERNAL PAPER)
+Thm 1.1 = Thm 2.5                (deg Lie A = deg Lie B)
+ |- Prop 2.4 <- [GRS24 Thm 10.3]                                          (EXTERNAL PAPER)
+ |- Prop 2.3 <- Prop 2.1 + deg on Pic of a curve
+ |- Prop 2.1 <- Illusie's Lie-complex triangle + determinants of perfect complexes
+ |- Suzuki20a Tate-Shafarevich duality + Breen-Serre duality              (EXTERNAL PAPER)
+```
+
+Three of the leaves are theorems of *other* papers (GRS24, OS23, Suz20a).  Formalising them is part
+of the transitive closure and is tracked here as separate future layers.
+
+## Brick order (bottom-up)
+
+**L1 — affine commutative group schemes as commutative bialgebras/Hopf algebras.**
+- [x] `L1.1` augmentation ideal, co-Lie module `omega_A = I/I^2`, the universal differential `d`
+      with its Leibniz rule, point derivations, and `PointDerivation ≃ Hom_R(omega_A, R) = Lie A`
+      → `HTGeometry/AffineGroupSchemeCoLie.lean`
+- [x] `L1.2a` functoriality: `coLieMap (f : A →ₐc[R] B) : omega_A →ₗ omega_B` with `coLieMap_d`
+- [ ] `L1.2b` base change `omega_{A ⊗ S} ≅ omega_A ⊗ S`
+- [x] `L1.3` dual-numbers description `dualNumberEquiv : pointDerivations ≃ {f : A →ₐ R[e] | fst∘f = ε}`
+- [ ] `L1.4` `omega` of `Ga`, `Gm`, `mu_n`, `alpha_p` — worked examples and non-vacuity
+
+**L2 — Cartier duality.**
+- [x] `L2.1a` **dual coalgebra of a finite free algebra** → `HTGeometry/DualCoalgebraFiniteFree.lean`
+      (`dualComul`, `dualCounit`, `T2_dualComul`, `dual_coassoc`,
+      `dual_rTensor_counit_comp_comul`, `dual_lTensor_counit_comp_comul`, `dualCoalgebra`)
+- [ ] `L2.1b` dual algebra of a coalgebra on `Module.Dual R A` itself (mathlib has it only on
+      `WithConv (C →ₗ[R] A)`)
+- [ ] `L2.2` for `A` finite free Hopf: `A^dual` is a commutative Hopf algebra; `A^{dual dual} ≅ A`
+- [x] `L2.3a` `primitives R A : Submodule R A`, `counit_eq_zero_of_mem_primitives`,
+      `primitives_le_augIdeal`
+- [ ] `L2.3b` `Lie (Spec A^dual) ≅ Prim A`
+- [ ] `L2.4` the canonical pairing `N x N^dual → Gm` and its perfectness
+
+**L3 — determinants.**
+- [ ] `L3.1` `det M = top exterior power` for f.g. projective modules; `det M ⊗ det M^dual ≅ R`
+- [ ] `L3.2` determinant of a two-term perfect complex; multiplicativity in exact sequences
+
+**L4 — the Lie complex.**
+- [ ] `L4.1` naive cotangent complex of a finite flat group scheme (mathlib has
+      `Algebra.Extension.Cotangent` / `Algebra.H1Cotangent`)
+- [ ] `L4.2` `RLie N` and `det RLie N`; Illusie VII 3.1.1.5 triangle → Prop 2.1
+
+**L5 — Néron models.**  (largest layer; not started)
+
+## Gates
+- [x] 0 → 1  in-progress
+- [ ] 1 → 2  fully-proven on paper for each brick
+- [ ] 2 → 3  formalized in Lean
+- [ ] 3 → 4  publication-ready
+
+## Log
+- 2026-08-21 — card created; dependency tree frozen.  Bricks `L1.1`, `L1.2a`, `L1.3`, `L2.3a`
+  landed in `HTGeometry/AffineGroupSchemeCoLie.lean` (wired into the HTGeometry umbrella, axiom
+  audit clean).  Next brick: `L2.1`, the dual coalgebra of a finite free algebra —
+  `comul' = (TensorProduct.dualDistribEquiv R A A).symm ∘ Dual.transpose (LinearMap.mul' R A)`,
+  `counit' = evaluation at 1`; the work is coassociativity, to be proved by transporting along
+  `dualDistribEquiv` and testing on pure tensors (`f (a*b*c)` on both sides).
+- 2026-08-21 — brick `L2.1a` landed: `HTGeometry/DualCoalgebraFiniteFree.lean` proves all three
+  coalgebra axioms for the linear dual of a finite free commutative algebra and bundles them as
+  `dualCoalgebra` (a `@[reducible] def`, deliberately not a global instance).  The proof technique
+  that worked: comparison equivalences `T2 : A'⊗A' ≃ (A⊗A)'`, `T3`, `T3L` built from
+  `TensorProduct.dualDistribEquiv`, characterisation lemmas by `TensorProduct.induction_on`, and
+  `TensorProduct.ext'` at the end.  Next brick: `L2.1b` / `L2.2` — the dual algebra structure on
+  `Module.Dual R A` and the bialgebra compatibility, then `A^{∨∨} ≅ A`.

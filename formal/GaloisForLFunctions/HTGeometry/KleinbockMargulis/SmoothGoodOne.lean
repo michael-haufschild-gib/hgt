@@ -313,6 +313,120 @@ theorem finite_level_set {U : Set ℝ} (hUc : U.OrdConnected) {F : ℕ → ℝ �
 
 /-! ### The one-dimensional estimate -/
 
+/-- The real-arithmetic core of the one-dimensional case of Lemma 3.3: combining the two halves
+of Sublemma 3.3.1 with the length lower bound coming from the covering argument. -/
+private theorem good_endgame {k : ℕ} (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA₁ : 0 ≤ A₁) (hA₂ : 0 < A₂)
+    {m s bb ε r : ℝ} (hmpos : 0 < m) (hspos : 0 < s) (hbbpos : 0 < bb) (hε : 0 < ε)
+    (hmbb : m ≤ bb) (hrpos : 0 < r) (hm2 : m < (2 * (k : ℝ) + 2) * r)
+    (hA : r ≤ ((k : ℝ) + 2) * (((k + 1).factorial : ℝ) * ε / A₂) ^ ((k : ℝ)⁻¹))
+    (hB : s ≤ (k : ℝ) * ε * (bb * ((k : ℝ) + 1) / r) ^ (k - 1)
+      + A₁ * bb ^ k / (k.factorial : ℝ)) :
+    m * s ^ ((k : ℝ)⁻¹)
+      ≤ max (((k : ℝ) + 1) * (2 * (k : ℝ) + 2) * (2 * (k : ℝ)) ^ ((k : ℝ)⁻¹))
+          ((2 * (k : ℝ) + 2) * ((k : ℝ) + 2) * (2 * ((k : ℝ) + 1) * A₁ / A₂) ^ ((k : ℝ)⁻¹))
+        * ε ^ ((k : ℝ)⁻¹) * bb := by
+  have hkR : (0:ℝ) < (k : ℝ) := by exact_mod_cast hk
+  have hkfac : (0:ℝ) < (k.factorial : ℝ) := by positivity
+  set C₁ : ℝ := ((k : ℝ) + 1) * (2 * (k : ℝ) + 2) * (2 * (k : ℝ)) ^ ((k : ℝ)⁻¹) with hC₁
+  set C₂ : ℝ := (2 * (k : ℝ) + 2) * ((k : ℝ) + 2)
+    * (2 * ((k : ℝ) + 1) * A₁ / A₂) ^ ((k : ℝ)⁻¹) with hC₂
+  clear_value C₁ C₂
+  rcases le_or_gt (A₁ * bb ^ k / (k.factorial : ℝ)) (s / 2) with hcase | hcase
+  · -- Case 1: the Taylor remainder is at most half of `s`
+    have hstep : s / 2 ≤ (k : ℝ) * ε * (bb * ((k : ℝ) + 1) / r) ^ (k - 1) := by linarith
+    set D : ℝ := bb * ((k : ℝ) + 1) * (2 * (k : ℝ) + 2) with hD
+    clear_value D
+    have hDpos : 0 < D := by
+      rw [hD]; exact mul_pos (mul_pos hbbpos (by positivity)) (by positivity)
+    have hmono : (bb * ((k : ℝ) + 1) / r) ^ (k - 1) ≤ (D / m) ^ (k - 1) := by
+      refine pow_le_pow_left₀ (by positivity) ?_ _
+      rw [hD, div_le_div_iff₀ hrpos hmpos]
+      nlinarith [mul_pos (mul_pos hbbpos (by positivity : (0:ℝ) < (k : ℝ) + 1))
+        (sub_pos.mpr hm2)]
+    set σ : ℝ := m / D with hσ
+    clear_value σ
+    have hσpos : 0 < σ := by rw [hσ]; exact div_pos hmpos hDpos
+    have hσle : σ ≤ 1 := by
+      rw [hσ, div_le_one hDpos, hD]
+      have h1 : (1:ℝ) ≤ ((k : ℝ) + 1) * (2 * (k : ℝ) + 2) := by nlinarith
+      nlinarith [mul_le_mul_of_nonneg_left h1 hbbpos.le]
+    have hPpos : (0:ℝ) < σ ^ (k - 1) := pow_pos hσpos _
+    have hkey : σ ^ (k - 1) ≤ 2 * (k : ℝ) * ε / s := by
+      have h1 : s / 2 ≤ (k : ℝ) * ε * (D / m) ^ (k - 1) :=
+        le_trans hstep (mul_le_mul_of_nonneg_left hmono (by positivity))
+      have h2 : (D / m) ^ (k - 1) = (σ ^ (k - 1))⁻¹ := by
+        rw [hσ, ← inv_pow, inv_div]
+      rw [h2] at h1
+      rw [le_div_iff₀ hspos]
+      have h3 : s / 2 * σ ^ (k - 1) ≤ (k : ℝ) * ε := by
+        calc s / 2 * σ ^ (k - 1) ≤ ((k : ℝ) * ε * (σ ^ (k - 1))⁻¹) * σ ^ (k - 1) :=
+              mul_le_mul_of_nonneg_right h1 hPpos.le
+          _ = (k : ℝ) * ε := by field_simp
+      linarith
+    have hσk : σ ^ k ≤ 2 * (k : ℝ) * ε / s := by
+      have hkk : k = (k - 1) + 1 := by omega
+      calc σ ^ k = σ ^ (k - 1) * σ := by
+            conv_lhs => rw [hkk]
+            rw [pow_succ]
+        _ ≤ σ ^ (k - 1) * 1 := mul_le_mul_of_nonneg_left hσle hPpos.le
+        _ = σ ^ (k - 1) := by ring
+        _ ≤ 2 * (k : ℝ) * ε / s := hkey
+    have hσroot : σ ≤ (2 * (k : ℝ) * ε / s) ^ ((k : ℝ)⁻¹) := by
+      have h1 : (σ ^ k) ^ ((k : ℝ)⁻¹) ≤ (2 * (k : ℝ) * ε / s) ^ ((k : ℝ)⁻¹) :=
+        Real.rpow_le_rpow (pow_nonneg hσpos.le k) hσk (by positivity)
+      rwa [← Real.rpow_natCast σ k, ← Real.rpow_mul hσpos.le,
+        mul_inv_cancel₀ (ne_of_gt hkR), Real.rpow_one] at h1
+    have hfin : m * s ^ ((k : ℝ)⁻¹) ≤ C₁ * ε ^ ((k : ℝ)⁻¹) * bb := by
+      have hm_eq : m = σ * D := by rw [hσ]; field_simp
+      have h2 : (2 * (k : ℝ) * ε / s) ^ ((k : ℝ)⁻¹) * s ^ ((k : ℝ)⁻¹)
+          = (2 * (k : ℝ)) ^ ((k : ℝ)⁻¹) * ε ^ ((k : ℝ)⁻¹) := by
+        rw [← Real.mul_rpow (by positivity) hspos.le, div_mul_cancel₀ _ (ne_of_gt hspos),
+          Real.mul_rpow (by positivity) hε.le]
+      have hDs : (0:ℝ) ≤ D * s ^ ((k : ℝ)⁻¹) := by positivity
+      calc m * s ^ ((k : ℝ)⁻¹) = σ * (D * s ^ ((k : ℝ)⁻¹)) := by rw [hm_eq]; ring
+        _ ≤ (2 * (k : ℝ) * ε / s) ^ ((k : ℝ)⁻¹) * (D * s ^ ((k : ℝ)⁻¹)) :=
+            mul_le_mul_of_nonneg_right hσroot hDs
+        _ = D * ((2 * (k : ℝ) * ε / s) ^ ((k : ℝ)⁻¹) * s ^ ((k : ℝ)⁻¹)) := by ring
+        _ = D * ((2 * (k : ℝ)) ^ ((k : ℝ)⁻¹) * ε ^ ((k : ℝ)⁻¹)) := by rw [h2]
+        _ = C₁ * ε ^ ((k : ℝ)⁻¹) * bb := by rw [hC₁, hD]; ring
+    exact le_trans hfin (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (le_max_left C₁ C₂) (by positivity)) hbbpos.le)
+  · -- Case 2: the value `s` is dominated by the Taylor remainder
+    have hsroot : s ^ ((k : ℝ)⁻¹) ≤ (2 * A₁ / (k.factorial : ℝ)) ^ ((k : ℝ)⁻¹) * bb := by
+      have h1 : s ≤ 2 * A₁ / (k.factorial : ℝ) * bb ^ k := by
+        rw [div_mul_eq_mul_div, le_div_iff₀ hkfac]
+        rw [lt_div_iff₀ hkfac] at hcase
+        linarith
+      have h2 : s ^ ((k : ℝ)⁻¹) ≤ (2 * A₁ / (k.factorial : ℝ) * bb ^ k) ^ ((k : ℝ)⁻¹) :=
+        Real.rpow_le_rpow hspos.le h1 (by positivity)
+      refine le_trans h2 (le_of_eq ?_)
+      rw [Real.mul_rpow (by positivity) (by positivity), ← Real.rpow_natCast bb k,
+        ← Real.rpow_mul hbbpos.le, mul_inv_cancel₀ (ne_of_gt hkR), Real.rpow_one]
+    have hmA : m ≤ (2 * (k : ℝ) + 2) * (((k : ℝ) + 2)
+        * (((k + 1).factorial : ℝ) * ε / A₂) ^ ((k : ℝ)⁻¹)) := by
+      have := mul_le_mul_of_nonneg_left hA (by positivity : (0:ℝ) ≤ 2 * (k : ℝ) + 2)
+      linarith
+    have hprod : (((k + 1).factorial : ℝ) * ε / A₂) ^ ((k : ℝ)⁻¹)
+        * ((2 * A₁ / (k.factorial : ℝ)) ^ ((k : ℝ)⁻¹))
+        = (2 * ((k : ℝ) + 1) * A₁ / A₂) ^ ((k : ℝ)⁻¹) * ε ^ ((k : ℝ)⁻¹) := by
+      rw [← Real.mul_rpow (by positivity) (by positivity),
+        ← Real.mul_rpow (by positivity) hε.le]
+      congr 1
+      have hfacs : ((k + 1).factorial : ℝ) = (k.factorial : ℝ) * ((k : ℝ) + 1) := by
+        rw [Nat.factorial_succ]; push_cast; ring
+      rw [hfacs]
+      field_simp
+    calc m * s ^ ((k : ℝ)⁻¹)
+        ≤ ((2 * (k : ℝ) + 2) * (((k : ℝ) + 2)
+            * (((k + 1).factorial : ℝ) * ε / A₂) ^ ((k : ℝ)⁻¹)))
+          * ((2 * A₁ / (k.factorial : ℝ)) ^ ((k : ℝ)⁻¹) * bb) :=
+          mul_le_mul hmA hsroot (by positivity) (by positivity)
+      _ = C₂ * ε ^ ((k : ℝ)⁻¹) * bb := by
+          rw [hC₂]
+          linear_combination ((2 * (k : ℝ) + 2) * ((k : ℝ) + 2) * bb) * hprod
+      _ ≤ max C₁ C₂ * ε ^ ((k : ℝ)⁻¹) * bb := mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right (le_max_right C₁ C₂) (by positivity)) hbbpos.le
+
 /-- **Lemma 3.3, one-dimensional case.**  A chain with `|F k| ≤ A₁` and `|F k| ≥ A₂ > 0` has
 `F 0` `(C, 1/k)`-good on every subinterval, with `C` depending only on `k`, `A₁` and `A₂`. -/
 theorem exists_good_const_one_dim (k : ℕ) (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA₁ : 0 ≤ A₁)
@@ -327,6 +441,7 @@ theorem exists_good_const_one_dim (k : ℕ) (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA
   set C₁ : ℝ := ((k : ℝ) + 1) * (2 * (k : ℝ) + 2) * (2 * (k : ℝ)) ^ ((k : ℝ)⁻¹) with hC₁
   set C₂ : ℝ := (2 * (k : ℝ) + 2) * ((k : ℝ) + 2)
     * (2 * ((k : ℝ) + 1) * A₁ / A₂) ^ ((k : ℝ)⁻¹) with hC₂
+  clear_value C₁ C₂
   have hC₁pos : 0 < C₁ := by
     rw [hC₁]
     have : (0:ℝ) < (2 * (k : ℝ)) ^ ((k : ℝ)⁻¹) := Real.rpow_pos_of_pos (by positivity) _
@@ -377,7 +492,8 @@ theorem exists_good_const_one_dim (k : ℕ) (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA
       card_le_of_chain_ne_zero hUc hF hk hne (-ε) _ fun x hx => by
         have := (Set.Finite.mem_toFinset _).mp hx
         exact ⟨hsubU this.1, this.2⟩
-    have := Finset.card_union_le ((hfin ε).toFinset) ((hfin (-ε)).toFinset)
+    have h3 := Finset.card_union_le ((hfin ε).toFinset) ((hfin (-ε)).toFinset)
+    rw [hZ]
     omega
   have hZmem : ∀ w ∈ Z, w ∈ Ioo a b ∧ |F 0 w| = ε := by
     intro w hw
@@ -388,9 +504,9 @@ theorem exists_good_const_one_dim (k : ℕ) (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA
       exact ⟨this.1, by rw [this.2, abs_neg, abs_of_pos hε]⟩
   have hZnotS : ∀ w ∈ Z, w ∉ S := by
     intro w hw hwS
-    have := (hZmem w hw).2
-    have := hwS.2
-    linarith [(hZmem w hw).2]
+    have h1 := (hZmem w hw).2
+    have h2 := hwS.2
+    linarith
   have hconv : ∀ x ∈ S, ∀ y ∈ S, x < y → (∀ w ∈ Ioo x y, w ∉ Z) → Ioo x y ⊆ S := by
     intro x hxS y hyS hxy hnoZ w hw
     have hwab : w ∈ Ioo a b := ⟨lt_trans hxS.1.1 hw.1, lt_trans hw.2 hyS.1.2⟩
@@ -434,8 +550,10 @@ theorem exists_good_const_one_dim (k : ℕ) (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA
       have : (Z.card : ℝ) ≤ 2 * (k : ℝ) := by exact_mod_cast hZcard
       linarith
     have h4 : (0:ℝ) < 2 * (k : ℝ) + 2 := by positivity
-    rw [div_eq_mul_inv] at h1
-    nlinarith [mul_pos hmpos (inv_pos.mpr h4)]
+    have h5 : ((Z.card : ℝ) + 1) * (m / (2 * (k : ℝ) + 2))
+        = ((Z.card : ℝ) + 1) * m / (2 * (k : ℝ) + 2) := by ring
+    rw [h5, le_div_iff₀ h4] at h1
+    nlinarith [mul_le_mul_of_nonneg_right h3 hmpos.le]
   have huv : u < v := by
     have : (0:ℝ) < m / (2 * (k : ℝ) + 2) := by positivity
     linarith
@@ -450,7 +568,15 @@ theorem exists_good_const_one_dim (k : ℕ) (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA
     rw [abs_le, hbb]
     constructor <;> [linarith [hy.1, hy.2, hwab.1, hwab.2]; linarith [hy.1, hy.2, hwab.1, hwab.2]]
   have hB := abs_le_of_interval hUc hF hk hup hε huv hIooU hIooval hsubU hBB hz
-  rw [← hsdef] at hB
-  sorry
+  rw [← hsdef, ← hbb] at hB
+  have hm2 : m < (2 * (k : ℝ) + 2) * (v - u) := by
+    rw [div_lt_iff₀ (by positivity : (0:ℝ) < 2 * (k : ℝ) + 2)] at huvlen
+    linarith
+  clear_value m
+  clear_value s bb S
+  have hkfac : (0:ℝ) < (k.factorial : ℝ) := by positivity
+  have hvu : 0 < v - u := by linarith
+  rw [hC₁, hC₂] at *
+  exact good_endgame hk hA₁ hA₂ hmpos hspos hbbpos hε hmbb hvu hm2 hA hB
 
 end GaloisForLFunctions.HTGeometry.KleinbockMargulis

@@ -19,10 +19,11 @@ open Finset ArithmeticFunction Complex Filter Topology
 /-- After charging a second half-reserve to an external multiplier, every moving-endpoint literal
 selected-cell fibre satisfies one exact Maynard alternative.  This is the form stable under a
 finite-colour sum. -/
-theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_first_or_second (A : ℝ) :
+theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_first_or_second_unbounded
+    (A : ℝ) :
     ∀ᶠ T : ℝ in atTop,
       ∀ {L X K : ℕ} {mu N0 c alpha delta : ℝ},
-      4 / 3 ≤ mu → mu ≤ 19 / 9 →
+      4 / 3 ≤ mu →
       1 / 2 ≤ c → 997 / 1000 < alpha →
       alpha ≤ 1 - routeTEndpointGlobalDeficit A T →
       0 < delta →
@@ -50,7 +51,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_first_or_secon
           maynardEnergyEnvelopeConstant_pos)
         0 400 (by norm_num),
     eventually_gt_atTop (1 : ℝ)] with T hcost hT
-  intro L X K mu N0 c alpha delta hmuLo hmuHi hc halphaLo halphaEndpoint
+  intro L X K mu N0 c alpha delta hmuLo hc halphaLo halphaEndpoint
     hdelta M hM0 hM label S hSne hS lam hgap hdiam hselection
   let d := routeTEndpointGlobalDeficit A T
   let alpha0 := alpha - (1 - alpha) / 100
@@ -214,7 +215,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_first_or_secon
         rw [← Real.rpow_add (by linarith : 0 < T)]
         congr 2
         ring
-  rcases routeT_exact_crossing_first_or_second hmuLo hmuHi
+  rcases routeT_exact_crossing_first_or_second_unbounded hmuLo
     halphaLo.le halphaHi (by rfl) hsmall
     (by simpa [r, beta] using hover) hd.le hdGap with hfirst | hsecond
   · left
@@ -228,7 +229,84 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_first_or_secon
     exact hcount.trans (mul_le_mul_of_nonneg_left
       (Real.rpow_le_rpow_of_exponent_le hT.le hsecondStrong) hHF0)
 
+/-- Compatibility wrapper on Maynard's historical height range. -/
+theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_first_or_second (A : ℝ) :
+    ∀ᶠ T : ℝ in atTop,
+      ∀ {L X K : ℕ} {mu N0 c alpha delta : ℝ},
+      4 / 3 ≤ mu → mu ≤ 19 / 9 →
+      1 / 2 ≤ c → 997 / 1000 < alpha →
+      alpha ≤ 1 - routeTEndpointGlobalDeficit A T →
+      0 < delta →
+      ∀ M : ℝ, 0 ≤ M →
+      M ≤ T ^ (routeTEndpointGlobalDeficit A T / 400) →
+      ∀ (label : HeathBrownSelectionLabel L X 60) (S : Finset ℕ),
+      S.Nonempty → S ⊆ Finset.range K →
+      ∀ (lam : ℕ → ℝ),
+      (∀ i, lam i + delta ≤ lam (i + 1)) →
+      (∀ r ∈ S, ∀ s ∈ S, |lam s - lam r| ≤ T) →
+      (∀ r ∈ S, IsMaynardWindowRelevantSelectedCell
+        L X T mu N0 c (lam r) alpha label) →
+      M * (S.card : ℝ) ≤
+          maynardHarmonicFactor K delta *
+            T ^ (mu * (1 - alpha) - routeTEndpointGlobalDeficit A T / 200) ∨
+        M * (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
+          T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha) -
+            routeTEndpointGlobalDeficit A T / 200) := by
+  filter_upwards [
+    eventually_maynardWindowRelevantSelectedCell_scaled_fibre_first_or_second_unbounded A
+  ] with T hT
+  intro L X K mu N0 c alpha delta hmuLo _hmuHi hc halphaLo halphaEndpoint
+    hdelta M hM0 hM label S hSne hS lam hgap hdiam hselection
+  exact hT hmuLo hc halphaLo halphaEndpoint hdelta M hM0 hM
+    label S hSne hS lam hgap hdiam hselection
+
 /-- Unscaled one-fibre consequence of the finite-sum-stable theorem. -/
+theorem eventually_maynardWindowRelevantSelectedCell_fibre_first_or_second_unbounded
+    (A : ℝ) :
+    ∀ᶠ T : ℝ in atTop,
+      ∀ {L X K : ℕ} {mu N0 c alpha delta : ℝ},
+      4 / 3 ≤ mu →
+      1 / 2 ≤ c → 997 / 1000 < alpha →
+      alpha ≤ 1 - routeTEndpointGlobalDeficit A T →
+      0 < delta →
+      ∀ (label : HeathBrownSelectionLabel L X 60) (S : Finset ℕ),
+      S.Nonempty → S ⊆ Finset.range K →
+      ∀ (lam : ℕ → ℝ),
+      (∀ i, lam i + delta ≤ lam (i + 1)) →
+      (∀ r ∈ S, ∀ s ∈ S, |lam s - lam r| ≤ T) →
+      (∀ r ∈ S, IsMaynardWindowRelevantSelectedCell
+        L X T mu N0 c (lam r) alpha label) →
+      (S.card : ℝ) ≤
+          maynardHarmonicFactor K delta * T ^ (mu * (1 - alpha)) ∨
+        (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
+          T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha)) := by
+  filter_upwards [
+    eventually_maynardWindowRelevantSelectedCell_scaled_fibre_first_or_second_unbounded A,
+    eventually_gt_atTop (1 : ℝ)] with T hscaled hT
+  intro L X K mu N0 c alpha delta hmuLo hc halphaLo halphaEndpoint
+    hdelta label S hSne hS lam hgap hdiam hselection
+  have hd : 0 ≤ routeTEndpointGlobalDeficit A T :=
+    (routeTEndpointGlobalDeficit_pos A (by linarith)).le
+  have hM : (1 : ℝ) ≤ T ^ (routeTEndpointGlobalDeficit A T / 400) :=
+    Real.one_le_rpow hT.le (div_nonneg hd (by norm_num))
+  have hHF0 : 0 ≤ maynardHarmonicFactor K delta :=
+    (maynardHarmonicFactor_pos K hdelta).le
+  rcases hscaled hmuLo hc halphaLo halphaEndpoint hdelta
+    1 (by norm_num) hM label S hSne hS lam hgap hdiam hselection with hfirst | hsecond
+  · left
+    have hexponent : mu * (1 - alpha) - routeTEndpointGlobalDeficit A T / 200 ≤
+        mu * (1 - alpha) := by linarith
+    simpa using hfirst.trans (mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow_of_exponent_le hT.le hexponent) hHF0)
+  · right
+    have hexponent :
+        1 + mu * (1 + routeTGapMomentNu - 2 * alpha) -
+            routeTEndpointGlobalDeficit A T / 200 ≤
+          1 + mu * (1 + routeTGapMomentNu - 2 * alpha) := by linarith
+    simpa using hsecond.trans (mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow_of_exponent_le hT.le hexponent) hHF0)
+
+/-- Compatibility wrapper on Maynard's historical height range. -/
 theorem eventually_maynardWindowRelevantSelectedCell_fibre_first_or_second (A : ℝ) :
     ∀ᶠ T : ℝ in atTop,
       ∀ {L X K : ℕ} {mu N0 c alpha delta : ℝ},
@@ -247,29 +325,12 @@ theorem eventually_maynardWindowRelevantSelectedCell_fibre_first_or_second (A : 
           maynardHarmonicFactor K delta * T ^ (mu * (1 - alpha)) ∨
         (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
           T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha)) := by
-  filter_upwards [eventually_maynardWindowRelevantSelectedCell_scaled_fibre_first_or_second A,
-    eventually_gt_atTop (1 : ℝ)] with T hscaled hT
-  intro L X K mu N0 c alpha delta hmuLo hmuHi hc halphaLo halphaEndpoint
+  filter_upwards [
+    eventually_maynardWindowRelevantSelectedCell_fibre_first_or_second_unbounded A
+  ] with T hT
+  intro L X K mu N0 c alpha delta hmuLo _hmuHi hc halphaLo halphaEndpoint
     hdelta label S hSne hS lam hgap hdiam hselection
-  have hd : 0 ≤ routeTEndpointGlobalDeficit A T :=
-    (routeTEndpointGlobalDeficit_pos A (by linarith)).le
-  have hM : (1 : ℝ) ≤ T ^ (routeTEndpointGlobalDeficit A T / 400) :=
-    Real.one_le_rpow hT.le (div_nonneg hd (by norm_num))
-  have hHF0 : 0 ≤ maynardHarmonicFactor K delta :=
-    (maynardHarmonicFactor_pos K hdelta).le
-  rcases hscaled hmuLo hmuHi hc halphaLo halphaEndpoint hdelta
-    1 (by norm_num) hM label S hSne hS lam hgap hdiam hselection with hfirst | hsecond
-  · left
-    have hexponent : mu * (1 - alpha) - routeTEndpointGlobalDeficit A T / 200 ≤
-        mu * (1 - alpha) := by linarith
-    simpa using hfirst.trans (mul_le_mul_of_nonneg_left
-      (Real.rpow_le_rpow_of_exponent_le hT.le hexponent) hHF0)
-  · right
-    have hexponent :
-        1 + mu * (1 + routeTGapMomentNu - 2 * alpha) -
-            routeTEndpointGlobalDeficit A T / 200 ≤
-          1 + mu * (1 + routeTGapMomentNu - 2 * alpha) := by linarith
-    simpa using hsecond.trans (mul_le_mul_of_nonneg_left
-      (Real.rpow_le_rpow_of_exponent_le hT.le hexponent) hHF0)
+  exact hT hmuLo hc halphaLo halphaEndpoint hdelta
+    label S hSne hS lam hgap hdiam hselection
 
 end RHTower.Sieve
