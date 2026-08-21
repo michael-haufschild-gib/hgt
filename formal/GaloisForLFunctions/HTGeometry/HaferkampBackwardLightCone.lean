@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.HaferkampQubitPathTransport
+import GaloisForLFunctions.HTGeometry.HaferkampTemporalMergePlan
 
 /-!
 # Time-ordered backwards-light-cone certificates
@@ -20,6 +20,7 @@ structure BackwardsLightCone (n : ℕ) (edges : List (Fin n × Fin n))
   path : ∀ source : Fin n, source ≠ root → QubitMergePath (Fin n) source root
   path_sublist : ∀ source hsource,
     List.Sublist (path source hsource).edgeList edges
+  mergePlan : TemporalRootMergePlan (Fin n) root edges
 
 namespace BackwardsLightCone
 

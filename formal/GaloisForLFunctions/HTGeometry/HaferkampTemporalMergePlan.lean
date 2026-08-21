@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.HaferkampBackwardLightCone
+import GaloisForLFunctions.HTGeometry.HaferkampQubitPathTransport
 
 /-!
 # Coalescing temporal merge plans for a backwards light cone
@@ -24,11 +24,54 @@ structure TemporalRootMergePlan
   order_nodup : order.Nodup
   mem_order_iff : ∀ q, q ∈ order ↔ q ≠ root
   parent : Q → Q
+  height : Q → ℕ
+  height_zero_iff : ∀ q, height q = 0 ↔ q = root
+  parent_ne_self : ∀ q, q ≠ root → q ≠ parent q
+  parent_height_lt : ∀ q, q ≠ root → height (parent q) < height q
   parent_later : ∀ q, q ≠ root → parent q ≠ root →
-    order.indexOf q < order.indexOf (parent q)
+    ∃ before between after,
+      order = before ++ q :: between ++ parent q :: after
+  no_later_targets : ∀ before q after r,
+    order = before ++ q :: after → r ∈ after → parent r ≠ q
   selected_sublist : (order.map fun q => (q, parent q)).Sublist blockEdges
 
 namespace TemporalRootMergePlan
+
+/-- Perform one planned support merge.  A locally trivial pair receives the
+identity action; every other pair is replaced by a rootward `Z`. -/
+def mergeLabel
+    {Q : Type*} [DecidableEq Q] (P : Q → Option (Fin 3)) (a b : Q) :
+    Q → Option (Fin 3) :=
+  if P a = none ∧ P b = none then P
+  else updateTwoQubitPauliLabel P a b none (some 2)
+
+/-- A genuine planned merge clears its source coordinate. -/
+theorem mergeLabel_source_eq_none
+    {Q : Type*} [DecidableEq Q] (P : Q → Option (Fin 3))
+    {a b : Q} (hab : a ≠ b) :
+    mergeLabel P a b a = none := by
+  by_cases hlocal : P a = none ∧ P b = none
+  · simp [mergeLabel, hlocal]
+  · simp [mergeLabel, hlocal, updateTwoQubitPauliLabel, hab]
+
+/-- A planned merge leaves every unaddressed coordinate unchanged. -/
+theorem mergeLabel_apply_of_ne
+    {Q : Type*} [DecidableEq Q] (P : Q → Option (Fin 3))
+    {a b q : Q} (hqa : q ≠ a) (hqb : q ≠ b) :
+    mergeLabel P a b q = P q := by
+  by_cases hlocal : P a = none ∧ P b = none
+  · simp [mergeLabel, hlocal]
+  · simp [mergeLabel, hlocal, updateTwoQubitPauliLabel, hqa, hqb]
+
+/-- One planned merge cannot erase the last nonidentity Pauli support. -/
+theorem exists_nonidentity_mergeLabel
+    {Q : Type*} [DecidableEq Q] (P : Q → Option (Fin 3))
+    {a b : Q} (hP : ∃ q, P q ≠ none) :
+    ∃ q, mergeLabel P a b q ≠ none := by
+  by_cases hlocal : P a = none ∧ P b = none
+  · obtain ⟨q, hq⟩ := hP
+    exact ⟨q, by simpa [mergeLabel, hlocal] using hq⟩
+  · exact ⟨b, by simp [mergeLabel, hlocal, updateTwoQubitPauliLabel]⟩
 
 /-- The ordered gate locations used by a temporal merge plan. -/
 def selectedEdges
@@ -37,16 +80,11 @@ def selectedEdges
   plan.order.map fun q => (q, plan.parent q)
 
 /-- Each selected location is genuinely two-qubit. -/
-theorem parent_ne_self
+theorem source_ne_parent
     {Q : Type*} [DecidableEq Q] {root : Q} {blockEdges : List (Q × Q)}
     (plan : TemporalRootMergePlan Q root blockEdges)
     {q : Q} (hq : q ≠ root) : q ≠ plan.parent q := by
-  by_cases hparent : plan.parent q = root
-  · simpa [hparent] using hq
-  · intro hEq
-    have hlt := plan.parent_later q hq hparent
-    rw [hEq] at hlt
-    exact Nat.lt_irrefl _ hlt
+  exact plan.parent_ne_self q hq
 
 /-- Every selected edge has distinct endpoints. -/
 theorem selectedEdges_edge_distinct
@@ -57,7 +95,7 @@ theorem selectedEdges_edge_distinct
   rw [selectedEdges] at hedge
   obtain ⟨q, hq, hEdge⟩ := List.mem_map.1 hedge
   subst edge
-  exact plan.parent_ne_self ((plan.mem_order_iff q).mp hq)
+  exact plan.source_ne_parent ((plan.mem_order_iff q).mp hq)
 
 /-- The merge locations occur in the original physical block word. -/
 theorem selectedEdges_sublist

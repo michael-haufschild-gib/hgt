@@ -73,6 +73,33 @@ noncomputable def kerrNewmanCanonicalMaxwellStress
      0, 0, rho, 0;
      0, 0, 0, rho]
 
+/-- Electromagnetic duality rotation of the canonical parallel electric/magnetic amplitudes. -/
+noncomputable def kerrNewmanMaxwellDualityRotate
+    (angle electric magnetic : ℝ) : ℝ × ℝ :=
+  (Real.cos angle * electric - Real.sin angle * magnetic,
+    Real.sin angle * electric + Real.cos angle * magnetic)
+
+/-- Electromagnetic duality preserves the canonical Maxwell stress magnitude. -/
+theorem kerrNewmanCanonicalMaxwellStressMagnitude_dualityRotate
+    (angle electric magnetic : ℝ) :
+    kerrNewmanCanonicalMaxwellStressMagnitude
+      (kerrNewmanMaxwellDualityRotate angle electric magnetic).1
+      (kerrNewmanMaxwellDualityRotate angle electric magnetic).2 =
+      kerrNewmanCanonicalMaxwellStressMagnitude electric magnetic := by
+  unfold kerrNewmanMaxwellDualityRotate
+    kerrNewmanCanonicalMaxwellStressMagnitude
+  nlinarith [Real.sin_sq_add_cos_sq angle]
+
+/-- The canonical Kerr--Newman mixed Maxwell stress is invariant under electromagnetic duality. -/
+theorem kerrNewmanCanonicalMaxwellStress_dualityRotate
+    (angle electric magnetic : ℝ) :
+    kerrNewmanCanonicalMaxwellStress
+      (kerrNewmanMaxwellDualityRotate angle electric magnetic).1
+      (kerrNewmanMaxwellDualityRotate angle electric magnetic).2 =
+      kerrNewmanCanonicalMaxwellStress electric magnetic := by
+  unfold kerrNewmanCanonicalMaxwellStress
+  rw [kerrNewmanCanonicalMaxwellStressMagnitude_dualityRotate]
+
 /-- Direct invariant calculation for the canonical Maxwell two-form. -/
 theorem kerrNewmanCanonicalMaxwellTwoForm_invariant (electric magnetic : ℝ) :
     kerrNewmanTwoFormQuadraticInvariant (kerrNewmanCanonicalMaxwellTwoForm electric magnetic) =
@@ -147,6 +174,17 @@ noncomputable def kerrNewmanFlatLimitCanonicalEinsteinTensor
     (cosmological electric magnetic : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
   kerrNewmanCanonicalMaxwellStress electric magnetic - cosmological •
     kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2)
+
+/-- The explicit flat-background Einstein-tensor representative is likewise invariant under
+electromagnetic duality: this algebraic Einstein-form sector sees only `E² + B²`. -/
+theorem kerrNewmanFlatLimitCanonicalEinsteinTensor_dualityRotate
+    (cosmological angle electric magnetic : ℝ) :
+    kerrNewmanFlatLimitCanonicalEinsteinTensor cosmological
+      (kerrNewmanMaxwellDualityRotate angle electric magnetic).1
+      (kerrNewmanMaxwellDualityRotate angle electric magnetic).2 =
+      kerrNewmanFlatLimitCanonicalEinsteinTensor cosmological electric magnetic := by
+  unfold kerrNewmanFlatLimitCanonicalEinsteinTensor
+  rw [kerrNewmanCanonicalMaxwellStress_dualityRotate]
 
 /-- Closed unit-coupling Einstein-form equation for the explicit flat-background Maxwell source. -/
 theorem kerrNewmanFlatLimit_canonicalMaxwellEinsteinEquation
