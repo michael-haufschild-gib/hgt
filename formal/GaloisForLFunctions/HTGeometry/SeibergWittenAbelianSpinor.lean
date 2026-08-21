@@ -8,10 +8,12 @@ the quadratic spinor map is the Hermitian outer square of a complex two-componen
 proves that this equation, its curvature invariant, and its gauge-orbit curves are preserved by
 the existing common `U(1)` phase action.
 
-This is deliberately not a formalization of continuum Seiberg--Witten theory.  The corpus has no
-smooth oriented four-manifold, `Spinᶜ` bundle, connection, Hodge self-duality operator, or coupled
-Dirac operator.  Consequently `seibergWittenEquation` below records only the algebraic
-spinor--curvature component `F = q(ψ)`.
+This remains a deliberately finite pointwise skeleton.  The separate
+`SeibergWitten.Geometry`, `Orientation`, `PrincipalSpinC`, `Connections`, `Hodge`, and `Equations`
+modules now supply the corresponding smooth-manifold, algebraic principal-`Spinᶜ`, connection,
+Hodge, and coupled-equation layers.  Consequently `seibergWittenEquation` below still records
+only the algebraic spinor--curvature component `F = q(ψ)`, rather than identifying this matrix
+carrier with the curvature of a continuum connection.
 -/
 
 noncomputable section

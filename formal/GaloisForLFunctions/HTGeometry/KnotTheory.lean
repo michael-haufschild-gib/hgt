@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.KnotTheory.RMatrix
+import GaloisForLFunctions.HTGeometry.KnotTheory.QuantumTrace
 import GaloisForLFunctions.HTGeometry.KnotTheory.ChordData
 import GaloisForLFunctions.HTGeometry.KnotTheory.KhovanovFrobenius
 import GaloisForLFunctions.HTGeometry.KnotTheory.KhovanovHomologyBridge

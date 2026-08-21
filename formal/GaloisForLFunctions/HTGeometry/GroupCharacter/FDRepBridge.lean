@@ -31,7 +31,7 @@ theorem finrank_invariants_linHom_eq_one (ρ : Representation ℂ G V)
     rw [Representation.linHom_apply]
     refine LinearMap.ext fun v => ?_
     simp only [LinearMap.coe_comp, Function.comp_apply, LinearMap.id_coe, id_eq]
-    rw [← LinearMap.mul_apply, ← map_mul, mul_inv_cancel, map_one]
+    rw [← Module.End.mul_apply, ← map_mul, mul_inv_cancel, map_one]
     rfl
   obtain ⟨v0, hv0⟩ := exists_ne (0 : V)
   have hidne : (⟨LinearMap.id, hid⟩ : ↥(Representation.linHom ρ ρ).invariants) ≠ 0 := by
@@ -43,13 +43,11 @@ theorem finrank_invariants_linHom_eq_one (ρ : Representation ℂ G V)
   refine (finrank_eq_one_iff_of_nonzero' _ hidne).mpr ?_
   rintro ⟨f, hf⟩
   rw [Representation.mem_invariants] at hf
-  obtain ⟨c, hc⟩ := hschur f ?_
-  · refine ⟨c, Subtype.ext (LinearMap.ext fun v => ?_)⟩
-    simpa using (hc v).symm
-  · intro g
+  have hequiv : ∀ g : G, (ρ g) ∘ₗ f = f ∘ₗ (ρ g) := by
+    intro g
     have hinv : ∀ w : V, (ρ g⁻¹) ((ρ g) w) = w := by
       intro w
-      rw [← LinearMap.mul_apply, ← map_mul, inv_mul_cancel, map_one]
+      rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one]
       rfl
     refine LinearMap.ext fun v => ?_
     have h := hf g
@@ -57,6 +55,8 @@ theorem finrank_invariants_linHom_eq_one (ρ : Representation ℂ G V)
     have h2 := congrArg (fun (φ : V →ₗ[ℂ] V) => φ ((ρ g) v)) h
     simp only [LinearMap.coe_comp, Function.comp_apply, hinv] at h2
     simpa using h2
+  obtain ⟨c, hc⟩ := hschur f hequiv
+  exact ⟨c, Subtype.ext (LinearMap.ext fun v => by simpa using (hc v).symm)⟩
 
 /-- Simplicity criterion for `FDRep.of ρ`: every intertwiner is a scalar. -/
 theorem simple_of_schur (ρ : Representation ℂ G V)

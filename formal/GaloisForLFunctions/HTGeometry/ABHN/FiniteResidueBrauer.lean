@@ -6,6 +6,7 @@ Authors: Michael Barenbaum
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldBrauer
 import GaloisForLFunctions.HTGeometry.ABHN.LaurentSeriesFiniteLocalField
 import GaloisForLFunctions.HTGeometry.ABHN.RationalFunctionFiniteLocalField
+import GaloisForLFunctions.HTGeometry.ABHN.RationalFunctionInfinityCompletion
 
 /-!
 # Trivial residue Brauer groups at concrete ABHN places
@@ -37,5 +38,41 @@ theorem rationalFunctionFinitePlace_residueBrauerGroup_subsingleton (F : Type u)
     [Finite F] (v : HeightOneSpectrum F[X]) :
     Subsingleton (BrauerGroup.{u, u} 𝓀[rationalFunctionCompletion F (.finite v)]) :=
   finiteField_brauerGroup_subsingleton _
+
+/-- The residue Brauer group at the infinite completion of `F(t)` is trivial. -/
+theorem rationalFunctionInfinitePlace_residueBrauerGroup_subsingleton (F : Type u) [Field F]
+    [Finite F] :
+    Subsingleton (BrauerGroup.{u, u} 𝓀[rationalFunctionCompletion F .infinite]) :=
+  finiteField_brauerGroup_subsingleton _
+
+/-- The residue Brauer group at every finite rational completion has its canonical zero-valued
+invariant.  It concerns the residue field, not the Brauer group of the completion itself. -/
+noncomputable def rationalFinitePlace_residueBrauerInvariantAddEquivBot
+    (v : NumberField.FinitePlace ℚ) :
+    BrauerGroup.{0, 0} 𝓀[completion ℚ (.finite v)] ≃+ (⊥ : AddSubgroup RatModInt) :=
+  finiteFieldBrauerInvariantAddEquivBot _
+
+/-- The residue Brauer group of a Laurent-series field over a finite field has its canonical
+zero-valued invariant. -/
+noncomputable def laurentSeries_residueBrauerInvariantAddEquivBot
+    (F : Type u) [Field F] [Finite F] :
+    BrauerGroup.{u, u} 𝓀[F⸨X⸩] ≃+ (⊥ : AddSubgroup RatModInt) :=
+  finiteFieldBrauerInvariantAddEquivBot _
+
+/-- The residue Brauer group at every finite completion of `F(t)` has its canonical zero-valued
+invariant. -/
+noncomputable def rationalFunctionFinitePlace_residueBrauerInvariantAddEquivBot
+    (F : Type u) [Field F] [Finite F] (v : HeightOneSpectrum F[X]) :
+    BrauerGroup.{u, u} 𝓀[rationalFunctionCompletion F (.finite v)] ≃+
+      (⊥ : AddSubgroup RatModInt) :=
+  finiteFieldBrauerInvariantAddEquivBot _
+
+/-- The residue Brauer group at the infinite completion of `F(t)` has its canonical zero-valued
+invariant. -/
+noncomputable def rationalFunctionInfinitePlace_residueBrauerInvariantAddEquivBot
+    (F : Type u) [Field F] [Finite F] :
+    BrauerGroup.{u, u} 𝓀[rationalFunctionCompletion F .infinite] ≃+
+      (⊥ : AddSubgroup RatModInt) :=
+  finiteFieldBrauerInvariantAddEquivBot _
 
 end GaloisForLFunctions.HTGeometry.ABHN

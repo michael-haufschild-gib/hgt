@@ -22,6 +22,7 @@ The main results are the facet counts `card_alt_erase_of_alt` and `card_alt_eras
 -/
 
 set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
 
 namespace GaloisForLFunctions.BorsukUlam
 
@@ -185,6 +186,13 @@ theorem alt_no_defect (h : alt lab s σ) : ∀ u v, ¬ Defect lab σ u v := by
 theorem altSet_of_alt (h : alt lab s σ) : AltSet lab σ :=
   ⟨alt_nz h, alt_magInj h, alt_no_defect h⟩
 
+theorem altSet_of_card_le_one (hnz : Nz lab σ) (h : σ.card ≤ 1) : AltSet lab σ := by
+  refine ⟨hnz, fun u hu v hv _ => card_le_one.mp h u hu v hv, ?_⟩
+  rintro u v ⟨hc, -⟩
+  have huv : u = v := card_le_one.mp h u hc.1 v hc.2.1
+  rw [huv] at hc
+  exact lt_irrefl _ hc.2.2.1
+
 /-- Reconstruct the alternating pattern from the absence of defects. -/
 theorem alt_of_altSet (h : AltSet lab σ) {v₀ : V} (hv₀ : v₀ ∈ σ) (hr₀ : rk lab σ v₀ = 0) :
     alt lab (pos lab v₀) σ := by
@@ -245,11 +253,13 @@ theorem rk_insert {x : V} (hx : x ∉ σ) (v : V) :
   by_cases h : |lab x| < |lab v|
   · rw [if_pos h, if_pos h, card_insert_of_notMem (fun hcon => hx (mem_of_mem_filter _ hcon))]
   · rw [if_neg h, if_neg h]
+    simp
 
 theorem rk_erase_add {w : V} (hw : w ∈ σ) (v : V) :
     rk lab (σ.erase w) v + (if |lab w| < |lab v| then 1 else 0) = rk lab σ v := by
   have hfe : ((σ.erase w).filter (fun z => |lab z| < |lab v|)) =
-      ((σ.filter (fun z => |lab z| < |lab v|)).erase w) := filter_erase _ _
+      ((σ.filter (fun z => |lab z| < |lab v|)).erase w) := by
+    rw [Finset.filter_erase]
   rw [rk, rk, hfe]
   by_cases h : |lab w| < |lab v|
   · have hmem : w ∈ σ.filter (fun z => |lab z| < |lab v|) := mem_filter.mpr ⟨hw, h⟩
@@ -259,6 +269,7 @@ theorem rk_erase_add {w : V} (hw : w ∈ σ) (v : V) :
   · have hnot : w ∉ σ.filter (fun z => |lab z| < |lab v|) := fun hcon =>
       h (mem_filter.mp hcon).2
     rw [if_neg h, erase_eq_of_notMem hnot]
+    simp
 
 theorem exists_pred {v : V} (hmi : MagInj lab σ) (hv : v ∈ σ) (hr : 0 < rk lab σ v) :
     ∃ u ∈ σ, Consec lab σ u v ∧ rk lab σ u + 1 = rk lab σ v := by
@@ -330,6 +341,437 @@ theorem consec_erase_iff (hmi : MagInj lab σ) {w x y : V} (hw : w ∈ σ) (hx :
       · exact hzw (hmi z hzσ w hw hc)
       · exact hno2 z hzσ ⟨hc, hz2⟩
 
+theorem altSet_erase_iff (hnz : Nz lab σ) (hmi : MagInj lab σ) {w : V} (hw : w ∈ σ) :
+    AltSet lab (σ.erase w) ↔
+      ((∀ x y, Defect lab σ x y → x = w ∨ y = w) ∧
+       (∀ x y, Consec lab σ x w → Consec lab σ w y → pos lab x ≠ pos lab y)) := by
+  constructor
+  · rintro ⟨-, -, hnd⟩
+    constructor
+    · rintro x y ⟨hc, hp⟩
+      by_contra hcon
+      push Not at hcon
+      exact hnd x y ⟨(consec_erase_iff hmi hw (mem_erase.mpr ⟨hcon.1, hc.1⟩)
+        (mem_erase.mpr ⟨hcon.2, hc.2.1⟩)).mpr (Or.inl hc), hp⟩
+    · intro x y hxw hwy hp
+      have hxe : x ∈ σ.erase w := mem_erase.mpr ⟨by rintro rfl; exact lt_irrefl _ hxw.2.2.1, hxw.1⟩
+      have hye : y ∈ σ.erase w := mem_erase.mpr ⟨by rintro rfl; exact lt_irrefl _ hwy.2.2.1,
+        hwy.2.1⟩
+      exact hnd x y ⟨(consec_erase_iff hmi hw hxe hye).mpr (Or.inr ⟨hxw, hwy⟩), hp⟩
+  · rintro ⟨h1, h2⟩
+    refine ⟨hnz.subset' (erase_subset _ _), hmi.subset' (erase_subset _ _), ?_⟩
+    rintro x y ⟨hc, hp⟩
+    have hxe := hc.1
+    have hye := hc.2.1
+    rcases (consec_erase_iff hmi hw hxe hye).mp hc with hc' | ⟨hc1, hc2⟩
+    · rcases h1 x y ⟨hc', hp⟩ with rfl | rfl
+      · exact (mem_erase.mp hxe).1 rfl
+      · exact (mem_erase.mp hye).1 rfl
+    · exact h2 x y hc1 hc2 hp
+
+theorem alt_sign_unique {s' : Bool} (hne : σ.Nonempty) (h1 : alt lab s σ) (h2 : alt lab s' σ) :
+    s = s' := by
+  obtain ⟨m, hm, hrm⟩ := exists_min (alt_magInj h1) hne
+  rw [alt_sign_of_min h1 hm hrm, alt_sign_of_min h2 hm hrm]
+
+/-- The minimum of `σ.erase w` when `w` is not itself the minimum. -/
+theorem rk_erase_zero_of_ne_min (hmi : MagInj lab σ) {w m : V} (hw : w ∈ σ) (hm : m ∈ σ)
+    (hrm : rk lab σ m = 0) (hne : m ≠ w) : m ∈ σ.erase w ∧ rk lab (σ.erase w) m = 0 := by
+  refine ⟨mem_erase.mpr ⟨hne, hm⟩, ?_⟩
+  have h := rk_erase_add (lab := lab) hw m
+  omega
+
+/-- The minimum of `σ.erase w` when `w` is the minimum: it is the successor of `w`. -/
+theorem rk_erase_zero_of_min (hmi : MagInj lab σ) {w y : V} (hw : w ∈ σ) (hy : y ∈ σ)
+    (hrw : rk lab σ w = 0) (hry : rk lab σ y = 1) : y ∈ σ.erase w ∧ rk lab (σ.erase w) y = 0 := by
+  have hne : y ≠ w := by
+    intro hcon
+    rw [hcon] at hry
+    omega
+  refine ⟨mem_erase.mpr ⟨hne, hy⟩, ?_⟩
+  have hlt : |lab w| < |lab y| := mag_lt_of_rk_lt hmi hw hy (by omega)
+  have h := rk_erase_add (lab := lab) hw y
+  rw [if_pos hlt] at h
+  omega
+
+theorem altSet_erase_iff_of_altSet (h : AltSet lab σ) {w : V} (hw : w ∈ σ) :
+    AltSet lab (σ.erase w) ↔ (rk lab σ w = 0 ∨ rk lab σ w + 1 = σ.card) := by
+  obtain ⟨hnz, hmi, hnd⟩ := h
+  rw [altSet_erase_iff hnz hmi hw]
+  constructor
+  · rintro ⟨-, h2⟩
+    by_contra hcon
+    push Not at hcon
+    obtain ⟨hzero, htop⟩ := hcon
+    obtain ⟨x, hx, hcx, -⟩ := exists_pred hmi hw (Nat.pos_of_ne_zero hzero)
+    have hlt : rk lab σ w + 1 < σ.card := by
+      have := rk_lt_card (lab := lab) hw
+      omega
+    obtain ⟨y, hy, hcy⟩ := exists_succ hmi hw hlt
+    have hxw : pos lab x ≠ pos lab w := fun hp => hnd x w ⟨hcx, hp⟩
+    have hwy : pos lab w ≠ pos lab y := fun hp => hnd w y ⟨hcy, hp⟩
+    refine h2 x y hcx hcy ?_
+    revert hxw hwy
+    cases pos lab x <;> cases pos lab w <;> cases pos lab y <;> simp
+  · intro hcase
+    refine ⟨fun x y hd => absurd hd (hnd x y), ?_⟩
+    intro x y hxw hwy hp
+    rcases hcase with h0 | h1
+    · exact no_pred_of_rk_zero hmi h0 hxw
+    · exact no_succ_of_rk_top hmi h1 hwy
+
+theorem alt_erase_max (h : alt lab s σ) (hcard : 2 ≤ σ.card) {w : V} (hw : w ∈ σ)
+    (hrw : rk lab σ w + 1 = σ.card) : alt lab s (σ.erase w) := by
+  have hAS : AltSet lab (σ.erase w) :=
+    (altSet_erase_iff_of_altSet (altSet_of_alt h) hw).mpr (Or.inr hrw)
+  obtain ⟨m, hm, hrm⟩ := exists_min (alt_magInj h) ⟨w, hw⟩
+  have hne : m ≠ w := by
+    rintro rfl
+    omega
+  obtain ⟨hme, hrme⟩ := rk_erase_zero_of_ne_min (alt_magInj h) hw hm hrm hne
+  have hgot := alt_of_altSet hAS hme hrme
+  rwa [← alt_sign_of_min h hm hrm] at hgot
+
+theorem alt_erase_min (h : alt lab s σ) (hcard : 2 ≤ σ.card) {w : V} (hw : w ∈ σ)
+    (hrw : rk lab σ w = 0) : alt lab (!s) (σ.erase w) := by
+  have hAS : AltSet lab (σ.erase w) :=
+    (altSet_erase_iff_of_altSet (altSet_of_alt h) hw).mpr (Or.inl hrw)
+  obtain ⟨y, hy, hry⟩ := rk_surj (alt_magInj h) (show 1 < σ.card by omega)
+  obtain ⟨hye, hrye⟩ := rk_erase_zero_of_min (alt_magInj h) hw hy hrw hry
+  have h1 := alt_of_altSet hAS hye hrye
+  have h2 : pos lab y = !s := by
+    have hh := h.2.2 y hy
+    rw [hry] at hh
+    simpa using hh
+  rwa [h2] at h1
+
+theorem alt_erase_cases (h : alt lab s σ) (hcard : 2 ≤ σ.card) {ε : Bool} {v : V}
+    (hv : v ∈ σ) (hav : alt lab ε (σ.erase v)) :
+    (ε = s ∧ rk lab σ v + 1 = σ.card) ∨ (ε = !s ∧ rk lab σ v = 0) := by
+  have hne : (σ.erase v).Nonempty := by
+    rw [← card_pos, card_erase_of_mem hv]
+    omega
+  rcases (altSet_erase_iff_of_altSet (altSet_of_alt h) hv).mp (altSet_of_alt hav) with h0 | h1
+  · exact Or.inr ⟨alt_sign_unique hne hav (alt_erase_min h hcard hv h0), h0⟩
+  · exact Or.inl ⟨alt_sign_unique hne hav (alt_erase_max h hcard hv h1), h1⟩
+
+/-- An alternating set with at least two elements has, for each sign, exactly one vertex whose
+removal leaves an alternating set of that sign. -/
+theorem exists_unique_alt_erase_of_alt (h : alt lab s σ) (hcard : 2 ≤ σ.card) (ε : Bool) :
+    ∃ a ∈ σ, alt lab ε (σ.erase a) ∧ ∀ v ∈ σ, alt lab ε (σ.erase v) → v = a := by
+  have hmi := alt_magInj h
+  rcases Bool.eq_or_eq_not ε s with rfl | rfl
+  · obtain ⟨a, ha, hra⟩ := rk_surj hmi (show σ.card - 1 < σ.card by omega)
+    have hra' : rk lab σ a + 1 = σ.card := by omega
+    refine ⟨a, ha, alt_erase_max h hcard ha hra', ?_⟩
+    intro v hv hav
+    rcases alt_erase_cases h hcard hv hav with ⟨-, hv1⟩ | ⟨hcon, -⟩
+    · exact rk_injOn hmi hv ha (by omega)
+    · simp at hcon
+  · obtain ⟨a, ha, hra⟩ := rk_surj hmi (show 0 < σ.card by omega)
+    refine ⟨a, ha, alt_erase_min h hcard ha hra, ?_⟩
+    intro v hv hav
+    rcases alt_erase_cases h hcard hv hav with ⟨hcon, -⟩ | ⟨-, hv0⟩
+    · simp at hcon
+    · exact rk_injOn hmi hv ha (by omega)
+
 end Erase
+
+section AlmostAlt
+
+variable {lab : V → ℤ} {σ : Finset V} {s : Bool}
+
+/-- Two vertices carrying the same label may be exchanged without affecting alternation. -/
+theorem alt_insert_congr {C : Finset V} {x y : V} (hx : x ∉ C) (hy : y ∉ C)
+    (hlab : lab x = lab y) (h : alt lab s (insert x C)) : alt lab s (insert y C) := by
+  obtain ⟨hnz, hmi, hsg⟩ := h
+  have hmag : |lab x| = |lab y| := by rw [hlab]
+  have hrkC : ∀ v : V, rk lab (insert y C) v = rk lab (insert x C) v := by
+    intro v
+    rw [rk_insert hx, rk_insert hy, hmag]
+  have hrkxy : rk lab (insert y C) y = rk lab (insert x C) x := by
+    rw [hrkC, rk_insert hx, rk_insert hx]
+    simp only [rk, hmag]
+  refine ⟨?_, ?_, ?_⟩
+  · intro v hv
+    rcases mem_insert.mp hv with rfl | hv'
+    · rw [← hlab]
+      exact hnz x (mem_insert_self _ _)
+    · exact hnz v (mem_insert_of_mem hv')
+  · intro u hu v hv huv
+    rcases mem_insert.mp hu with rfl | hu' <;> rcases mem_insert.mp hv with rfl | hv'
+    · rfl
+    · exact absurd (hmi x (mem_insert_self _ _) v (mem_insert_of_mem hv')
+        (by rw [hmag]; exact huv)) (by rintro rfl; exact hx hv')
+    · exact absurd (hmi u (mem_insert_of_mem hu') x (mem_insert_self _ _)
+        (by rw [hmag]; exact huv)) (by rintro rfl; exact hx hu')
+    · exact hmi u (mem_insert_of_mem hu') v (mem_insert_of_mem hv') huv
+  · intro v hv
+    rcases mem_insert.mp hv with rfl | hv'
+    · have hposeq : pos lab v = pos lab x := by simp [pos, hlab]
+      rw [hrkxy, hposeq]
+      exact hsg x (mem_insert_self _ _)
+    · rw [hrkC]
+      exact hsg v (mem_insert_of_mem hv')
+
+/-- Repeated-label case: if two distinct vertices of `σ` carry the same label and removing one of
+them leaves an alternating set, then exactly those two removals work, with the same sign. -/
+theorem alt_erase_repeat {x y : V} (hx : x ∈ σ) (hy : y ∈ σ) (hxy : x ≠ y)
+    (hlab : lab x = lab y) (hax : alt lab s (σ.erase x)) :
+    alt lab s (σ.erase y) ∧
+      ∀ v ∈ σ, ∀ ε : Bool, alt lab ε (σ.erase v) → (v = x ∨ v = y) ∧ ε = s := by
+  set C : Finset V := (σ.erase x).erase y with hC
+  have hyC : y ∉ C := notMem_erase _ _
+  have hxC : x ∉ C := fun hcon => (notMem_erase x σ) (mem_of_mem_erase hcon)
+  have hex : σ.erase x = insert y C := by
+    rw [hC, insert_erase (mem_erase.mpr ⟨Ne.symm hxy, hy⟩)]
+  have hey : σ.erase y = insert x C := by
+    rw [hC]
+    ext z
+    simp only [mem_insert, mem_erase]
+    constructor
+    · rintro ⟨hzy, hzσ⟩
+      by_cases hzx : z = x
+      · exact Or.inl hzx
+      · exact Or.inr ⟨hzy, hzx, hzσ⟩
+    · rintro (rfl | ⟨hzy, hzx, hzσ⟩)
+      · exact ⟨hxy, hx⟩
+      · exact ⟨hzy, hzσ⟩
+  have hay : alt lab s (σ.erase y) := by
+    rw [hey]
+    rw [hex] at hax
+    exact alt_insert_congr hyC hxC hlab.symm hax
+  refine ⟨hay, ?_⟩
+  intro v hv ε hav
+  have hvxy : v = x ∨ v = y := by
+    by_contra hcon
+    push Not at hcon
+    have hxe : x ∈ σ.erase v := mem_erase.mpr ⟨fun hcc => hcon.1 hcc.symm, hx⟩
+    have hye : y ∈ σ.erase v := mem_erase.mpr ⟨fun hcc => hcon.2 hcc.symm, hy⟩
+    exact hxy (alt_magInj hav x hxe y hye (by rw [hlab]))
+  refine ⟨hvxy, ?_⟩
+  rcases hvxy with rfl | rfl
+  · exact alt_sign_unique (by rw [hex]; exact ⟨y, mem_insert_self _ _⟩) hav hax
+  · exact alt_sign_unique (by rw [hey]; exact ⟨x, mem_insert_self _ _⟩) hav hay
+
+/-- Distinct-magnitude case: a non-alternating set with an alternating facet has exactly two
+alternating facets, obtained by deleting the two ends of its unique defect, and both have the
+same sign. -/
+theorem alt_erase_defect (hnz : Nz lab σ) (hmi : MagInj lab σ) (hnotAlt : ¬ AltSet lab σ)
+    {u : V} (hu : u ∈ σ) (hau : alt lab s (σ.erase u)) :
+    ∃ a ∈ σ, ∃ b ∈ σ, a ≠ b ∧ alt lab s (σ.erase a) ∧ alt lab s (σ.erase b) ∧
+      ∀ v ∈ σ, ∀ ε : Bool, alt lab ε (σ.erase v) → (v = a ∨ v = b) ∧ ε = s := by
+  have hexdef : ∃ x y, Defect lab σ x y := by
+    by_contra hcon
+    push Not at hcon
+    exact hnotAlt ⟨hnz, hmi, fun x y => hcon x y⟩
+  obtain ⟨d₁, d₂, hd⟩ := hexdef
+  obtain ⟨hall, hbridge⟩ := (altSet_erase_iff hnz hmi hu).mp (altSet_of_alt hau)
+  have hdef2 : ∀ x y x' y', Defect lab σ x y → Defect lab σ x' y' → x = x' ∧ y = y' := by
+    intro x y x' y' h1 h2
+    rcases hall x y h1 with hxu | hyu <;> rcases hall x' y' h2 with hxu' | hyu'
+    · refine ⟨by rw [hxu, hxu'], ?_⟩
+      refine consec_right_unique hmi (u := u) ?_ ?_
+      · rw [← hxu]; exact h1.1
+      · rw [← hxu']; exact h2.1
+    · exfalso
+      refine hbridge x' y ?_ ?_ ?_
+      · rw [← hyu']; exact h2.1
+      · rw [← hxu]; exact h1.1
+      · rw [h2.2, hyu', ← hxu, h1.2]
+    · exfalso
+      refine hbridge x y' ?_ ?_ ?_
+      · rw [← hyu]; exact h1.1
+      · rw [← hxu']; exact h2.1
+      · rw [h1.2, hyu, ← hxu', h2.2]
+    · refine ⟨?_, by rw [hyu, hyu']⟩
+      refine consec_left_unique hmi (v := u) ?_ ?_
+      · rw [← hyu]; exact h1.1
+      · rw [← hyu']; exact h2.1
+  have huniq : ∀ x y, Defect lab σ x y → x = d₁ ∧ y = d₂ := fun x y h => hdef2 x y d₁ d₂ h hd
+  have hd1σ : d₁ ∈ σ := hd.1.1
+  have hd2σ : d₂ ∈ σ := hd.1.2.1
+  have hd12 : d₁ ≠ d₂ := by
+    intro hcon
+    rw [hcon] at hd
+    exact lt_irrefl _ hd.1.2.2.1
+  have hrk12 : rk lab σ d₂ = rk lab σ d₁ + 1 := rk_succ_of_consec hmi hd.1
+  have hne1 : (σ.erase d₁).Nonempty := ⟨d₂, mem_erase.mpr ⟨Ne.symm hd12, hd2σ⟩⟩
+  have hne2 : (σ.erase d₂).Nonempty := ⟨d₁, mem_erase.mpr ⟨hd12, hd1σ⟩⟩
+  have hAS1 : AltSet lab (σ.erase d₁) := by
+    rw [altSet_erase_iff hnz hmi hd1σ]
+    refine ⟨fun x y hxy => Or.inl (huniq x y hxy).1, ?_⟩
+    intro x y hx hy hp
+    have hy2 : y = d₂ := consec_right_unique hmi hy hd.1
+    have hnd : ¬ Defect lab σ x d₁ := by
+      intro hcon
+      exact hd12 (huniq x d₁ hcon).2
+    have hxd : pos lab x ≠ pos lab d₁ := fun hpp => hnd ⟨hx, hpp⟩
+    rw [hy2, ← hd.2] at hp
+    exact hxd hp
+  have hAS2 : AltSet lab (σ.erase d₂) := by
+    rw [altSet_erase_iff hnz hmi hd2σ]
+    refine ⟨fun x y hxy => Or.inr (huniq x y hxy).2, ?_⟩
+    intro x y hx hy hp
+    have hx1 : x = d₁ := consec_left_unique hmi hx hd.1
+    have hnd : ¬ Defect lab σ d₂ y := by
+      intro hcon
+      exact hd12 (huniq d₂ y hcon).1.symm
+    have hyd : pos lab d₂ ≠ pos lab y := fun hpp => hnd ⟨hy, hpp⟩
+    rw [hx1, hd.2] at hp
+    exact hyd hp
+  obtain ⟨m, hm, hrm⟩ := exists_min hmi ⟨d₁, hd1σ⟩
+  have hd2m : d₂ ≠ m := by
+    intro hcon
+    rw [hcon, hrm] at hrk12
+    omega
+  have hsign2 : alt lab (pos lab m) (σ.erase d₂) := by
+    obtain ⟨hme, hrme⟩ := rk_erase_zero_of_ne_min hmi hd2σ hm hrm (Ne.symm hd2m)
+    exact alt_of_altSet hAS2 hme hrme
+  have hsign1 : alt lab (pos lab m) (σ.erase d₁) := by
+    by_cases hcase : d₁ = m
+    · have hrk2 : rk lab σ d₂ = 1 := by rw [hrk12, hcase, hrm]
+      obtain ⟨hme, hrme⟩ := rk_erase_zero_of_min hmi hd1σ hd2σ (by rw [hcase]; exact hrm) hrk2
+      have hgot := alt_of_altSet hAS1 hme hrme
+      rw [← hd.2] at hgot
+      rw [← hcase]
+      exact hgot
+    · obtain ⟨hme, hrme⟩ := rk_erase_zero_of_ne_min hmi hd1σ hm hrm (fun hcc => hcase hcc.symm)
+      exact alt_of_altSet hAS1 hme hrme
+  have hsm : s = pos lab m := by
+    rcases hall d₁ d₂ hd with h1 | h2
+    · rw [← h1] at hau
+      exact alt_sign_unique hne1 hau hsign1
+    · rw [← h2] at hau
+      exact alt_sign_unique hne2 hau hsign2
+  subst hsm
+  refine ⟨d₁, hd1σ, d₂, hd2σ, hd12, hsign1, hsign2, ?_⟩
+  intro v hv ε hav
+  obtain ⟨hallv, -⟩ := (altSet_erase_iff hnz hmi hv).mp (altSet_of_alt hav)
+  have hvd : v = d₁ ∨ v = d₂ := by
+    rcases hallv d₁ d₂ hd with h1 | h2
+    · exact Or.inl h1.symm
+    · exact Or.inr h2.symm
+  refine ⟨hvd, ?_⟩
+  rcases hvd with rfl | rfl
+  · exact alt_sign_unique hne1 hav hsign1
+  · exact alt_sign_unique hne2 hav hsign2
+
+/-- `σ` is almost-alternating with sign `s`: not alternating, but some facet is alternating with
+sign `s`. -/
+def almostAlt (lab : V → ℤ) (s : Bool) (σ : Finset V) : Prop :=
+  ¬ AltSet lab σ ∧ ∃ v ∈ σ, alt lab s (σ.erase v)
+
+/-- **Two facets.**  An almost-alternating set without a complementary pair of labels has exactly
+two alternating facets, and both carry its sign. -/
+theorem exists_pair_alt_erase_of_almostAlt (hnz : Nz lab σ)
+    (hcompl : ∀ x ∈ σ, ∀ y ∈ σ, lab x + lab y ≠ 0) (h : almostAlt lab s σ) :
+    ∃ a ∈ σ, ∃ b ∈ σ, a ≠ b ∧ alt lab s (σ.erase a) ∧ alt lab s (σ.erase b) ∧
+      ∀ v ∈ σ, ∀ ε : Bool, alt lab ε (σ.erase v) → (v = a ∨ v = b) ∧ ε = s := by
+  obtain ⟨hnotAlt, u, hu, hau⟩ := h
+  by_cases hmi : MagInj lab σ
+  · exact alt_erase_defect hnz hmi hnotAlt hu hau
+  · rw [MagInj] at hmi
+    push Not at hmi
+    obtain ⟨x, hx, y, hy, hmag, hxy⟩ := hmi
+    have hlab : lab x = lab y := by
+      rcases abs_eq_abs.mp hmag with hcase | hcase
+      · exact hcase
+      · exact absurd (by rw [hcase]; ring) (hcompl x hx y hy)
+    have huxy : u = x ∨ u = y := by
+      by_contra hcon
+      push Not at hcon
+      have hxe : x ∈ σ.erase u := mem_erase.mpr ⟨fun hcc => hcon.1 hcc.symm, hx⟩
+      have hye : y ∈ σ.erase u := mem_erase.mpr ⟨fun hcc => hcon.2 hcc.symm, hy⟩
+      exact hxy (alt_magInj hau x hxe y hye hmag)
+    rcases huxy with rfl | rfl
+    · obtain ⟨hay, huniq⟩ := alt_erase_repeat hu hy hxy hlab hau
+      exact ⟨u, hu, y, hy, hxy, hau, hay, huniq⟩
+    · obtain ⟨hax, huniq⟩ := alt_erase_repeat hu hx (Ne.symm hxy) hlab.symm hau
+      refine ⟨u, hu, x, hx, Ne.symm hxy, hau, hax, ?_⟩
+      intro v hv ε hav
+      obtain ⟨hor, hε⟩ := huniq v hv ε hav
+      exact ⟨hor, hε⟩
+
+/-- Adding one vertex to an alternating set gives an alternating or an almost-alternating set. -/
+theorem altSet_or_almostAlt {τ : Finset V} {v : V} (hv : v ∈ τ) (h : alt lab s (τ.erase v)) :
+    AltSet lab τ ∨ almostAlt lab s τ := by
+  by_cases hcase : AltSet lab τ
+  · exact Or.inl hcase
+  · exact Or.inr ⟨hcase, v, hv, h⟩
+
+/-- An alternating set whose labels have absolute value at most `n` has at most `n` elements. -/
+theorem alt_card_le {n : ℕ} (h : alt lab s σ) (hb : ∀ v ∈ σ, |lab v| ≤ (n : ℤ)) :
+    σ.card ≤ n := by
+  have hmaps : ∀ v ∈ σ, (|lab v|).toNat ∈ Finset.Icc 1 n := by
+    intro v hv
+    have h0 : lab v ≠ 0 := h.1 v hv
+    have h1 : 1 ≤ |lab v| := by
+      rcases lt_trichotomy (lab v) 0 with hc | hc | hc
+      · rw [abs_of_neg hc]; omega
+      · exact absurd hc h0
+      · rw [abs_of_pos hc]; omega
+    have h2 := hb v hv
+    simp only [Finset.mem_Icc]
+    omega
+  have hinj : ∀ u ∈ σ, ∀ v ∈ σ, (|lab u|).toNat = (|lab v|).toNat → u = v := by
+    intro u hu v hv huv
+    refine h.2.1 u hu v hv ?_
+    have h1 : 0 ≤ |lab u| := abs_nonneg _
+    have h2 : 0 ≤ |lab v| := abs_nonneg _
+    omega
+  have := Finset.card_le_card_of_injOn (fun v => (|lab v|).toNat) hmaps hinj
+  simpa using this
+
+/-- Alternation transported along a label-negating injection, with the sign flipped. -/
+theorem alt_image_neg {ν : V → V} (hν : Function.Injective ν) (hlab : ∀ v, lab (ν v) = -(lab v))
+    (h : alt lab s σ) : alt lab (!s) (σ.image ν) := by
+  obtain ⟨hnz, hmi, hsg⟩ := h
+  have habs : ∀ v, |lab (ν v)| = |lab v| := by
+    intro v
+    rw [hlab, abs_neg]
+  have hrk : ∀ v : V, rk lab (σ.image ν) (ν v) = rk lab σ v := by
+    intro v
+    have himg : (σ.image ν).filter (fun w => |lab w| < |lab (ν v)|) =
+        (σ.filter (fun w => |lab w| < |lab v|)).image ν := by
+      ext z
+      constructor
+      · intro hz
+        rw [mem_filter] at hz
+        obtain ⟨w, hw, rfl⟩ := mem_image.mp hz.1
+        have h2 := hz.2
+        rw [habs, habs] at h2
+        exact mem_image.mpr ⟨w, mem_filter.mpr ⟨hw, h2⟩, rfl⟩
+      · intro hz
+        obtain ⟨w, hw, rfl⟩ := mem_image.mp hz
+        rw [mem_filter] at hw
+        refine mem_filter.mpr ⟨mem_image.mpr ⟨w, hw.1, rfl⟩, ?_⟩
+        rw [habs, habs]
+        exact hw.2
+    rw [rk, rk, himg, card_image_of_injective _ hν]
+  refine ⟨?_, ?_, ?_⟩
+  · rintro z hz
+    obtain ⟨w, hw, rfl⟩ := mem_image.mp hz
+    rw [hlab]
+    simpa using hnz w hw
+  · rintro z hz z' hz' hzz
+    obtain ⟨w, hw, rfl⟩ := mem_image.mp hz
+    obtain ⟨w', hw', rfl⟩ := mem_image.mp hz'
+    rw [habs, habs] at hzz
+    rw [hmi w hw w' hw' hzz]
+  · rintro z hz
+    obtain ⟨w, hw, rfl⟩ := mem_image.mp hz
+    have hposneg : pos lab (ν w) = !(pos lab w) := by
+      have h0 : lab w ≠ 0 := hnz w hw
+      simp only [pos, hlab]
+      rcases lt_trichotomy (lab w) 0 with hc | hc | hc
+      · simp [hc, not_lt.mpr (le_of_lt hc)]
+      · exact absurd hc h0
+      · simp [hc, not_lt.mpr (le_of_lt hc)]
+    rw [hposneg, hrk, hsg w hw]
+    rcases Bool.eq_false_or_eq_true s with rfl | rfl <;>
+      rcases Bool.eq_false_or_eq_true (decide (rk lab σ w % 2 = 1)) with h1 | h1 <;> simp [h1]
+
+end AlmostAlt
 
 end GaloisForLFunctions.BorsukUlam

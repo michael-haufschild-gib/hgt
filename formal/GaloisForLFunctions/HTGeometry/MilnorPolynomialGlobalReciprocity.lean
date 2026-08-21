@@ -23,7 +23,8 @@ noncomputable section
 
 variable {F : Type*} [Field F]
 
-local instance : DecidableEq (MonicIrred F) := Classical.decEq _
+local instance milnorPolynomialGlobalReciprocityDecidableEqMonicIrred :
+    DecidableEq (MonicIrred F) := Classical.decEq _
 
 /-- The finite sum of the Bass--Tate norm maps over all monic irreducible
 places of `F(t)`. -/

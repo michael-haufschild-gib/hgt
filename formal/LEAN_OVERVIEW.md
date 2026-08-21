@@ -7,11 +7,11 @@ Use this as the quick map before opening large proof files.
 
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 11666 | 128765 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
-| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 10656 | 107021 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 11683 | 128897 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 10741 | 107779 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 58 | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 74 | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 381 | 5399 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 382 | 5402 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 | `hilbert_metric` | `GaloisForLFunctions.HilbertMetric` | 59 | 1151 | `gaussianCorrectedDeterminant_mul_sq_le`, `gaussianDistanceMatrix_det_mul_sq_le` |
 | `selberg_class` | `GaloisForLFunctions.SelbergClass` | 24 | 172 | `SelbergClass.differentiable_dampedMultipleStandardTwist` |
 | `quantum_alg` | `GaloisForLFunctions.QuantumAlg` | 232 | 8971 | `QuantumAlg.Factoring.ShorStyle.main_factorization`, `QuantumAlg.Factoring.EkeraHastadStyle.main_factorization`, `QuantumAlg.GroverSearch.main_success_probability`, `QuantumAlg.DeutschJozsa.main` |
@@ -19,7 +19,7 @@ Use this as the quick map before opening large proof files.
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
-- Package-level declarations outside the five theorem areas: **4201**.
+- Package-level declarations outside the five theorem areas: **4208**.
 - Active proof-debt findings: **0**.
 
 ## Local Commands
@@ -38,8 +38,8 @@ Use this as the quick map before opening large proof files.
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 11171 | `formal/GaloisForLFunctions/RHTower.lean` |
-| 10036 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 11189 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 10116 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |

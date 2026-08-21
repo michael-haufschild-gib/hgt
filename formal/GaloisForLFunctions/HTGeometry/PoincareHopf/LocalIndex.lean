@@ -74,9 +74,14 @@ theorem frontier_ball_norm {x : Fin n → ℝ} (hx : x ∈ frontier (Metric.ball
   rw [← dist_eq_norm]
   linarith [not_lt.mp h2]
 
-/-- **The index at a nondegenerate zero is the sign of the determinant of the linearization.** -/
-theorem index_eq_sign_det (hv : ContDiff ℝ 2 v) (hp : v p = 0) (hdet : (jac v p).det ≠ 0) :
-    index v p = if 0 < (jac v p).det then 1 else -1 := by
+/-- An invertible matrix is bounded below, and near a nondegenerate zero the field is dominated by
+its linearization. -/
+theorem exists_isolating_of_nondegenerate (hv : ContDiff ℝ 2 v) (hp : v p = 0)
+    (hdet : (jac v p).det ≠ 0) :
+    ∃ c > 0, ∃ ε > 0, IsolatingRadius v p ε ∧
+      (∀ w : Fin n → ℝ, c * ‖w‖ ≤ ‖matVec (jac v p) w‖) ∧
+      (∀ x ∈ Metric.closedBall p ε,
+        ‖v x - matVec (jac v p) (x - p)‖ ≤ c / 2 * ‖x - p‖) := by
   classical
   set A := jac v p with hA
   haveI : Invertible A := A.invertibleOfIsUnitDet (Ne.isUnit hdet)
@@ -97,30 +102,36 @@ theorem index_eq_sign_det (hv : ContDiff ℝ 2 v) (hp : v p = 0) (hdet : (jac v 
       exact h0
     rw [hc, inv_mul_le_iff₀ (by linarith)]
     nlinarith [norm_nonneg (matVec A w)]
-  -- the linearization dominates the remainder near `p`
   have hdiff : HasFDerivAt v (fderiv ℝ v p) p := (hv.differentiable (by simp) p).hasFDerivAt
   obtain ⟨δ, hδpos, hδ⟩ := Metric.eventually_nhds_iff_ball.mp (hdiff.isLittleO.def
     (c := c / 2) (by positivity))
-  set ε := δ / 2 with hε
-  have hεpos : 0 < ε := by rw [hε]; linarith
-  have hclos : Metric.closedBall p ε ⊆ Metric.ball p δ := by
-    intro x hx
-    rw [Metric.mem_closedBall, hε] at hx
-    rw [Metric.mem_ball]
-    linarith
-  have hest : ∀ x ∈ Metric.closedBall p ε, ‖v x - matVec A (x - p)‖ ≤ c / 2 * ‖x - p‖ := by
-    intro x hx
-    have h := hδ x (hclos hx)
-    rw [hp, sub_zero, fderiv_eq_matVec v p (x - p), ← hA] at h
-    exact h
-  have hisol : IsolatingRadius v p ε := by
-    refine ⟨hεpos, fun x hx hxp hv0 => ?_⟩
+  refine ⟨c, hcpos, δ / 2, by linarith, ?_, hlow, ?_⟩
+  · refine ⟨by linarith, fun x hx hxp hv0 => ?_⟩
+    have hxb : x ∈ Metric.ball p δ := by
+      rw [Metric.mem_closedBall] at hx
+      rw [Metric.mem_ball]
+      linarith
+    have h := hδ x hxb
+    rw [hp, sub_zero, fderiv_eq_matVec v p (x - p), ← hA, hv0, zero_sub, norm_neg] at h
     have hn : 0 < ‖x - p‖ := by rw [norm_pos_iff, sub_ne_zero]; exact hxp
     have h1 : c * ‖x - p‖ ≤ ‖matVec A (x - p)‖ := hlow _
-    have h2 := hest x hx
-    rw [hv0, zero_sub, norm_neg] at h2
     nlinarith
-  -- the affine homotopy to the linearization misses the origin on the sphere
+  · intro x hx
+    have hxb : x ∈ Metric.ball p δ := by
+      rw [Metric.mem_closedBall] at hx
+      rw [Metric.mem_ball]
+      linarith
+    have h := hδ x hxb
+    rw [hp, sub_zero, fderiv_eq_matVec v p (x - p), ← hA] at h
+    exact h
+
+/-- **The index at a nondegenerate zero is the sign of the determinant of the linearization.** -/
+theorem index_eq_sign_det (hv : ContDiff ℝ 2 v) (hp : v p = 0) (hdet : (jac v p).det ≠ 0) :
+    index v p = if 0 < (jac v p).det then 1 else -1 := by
+  classical
+  obtain ⟨c, hcpos, ε, hεpos, hisol, hlow, hest⟩ :=
+    exists_isolating_of_nondegenerate hv hp hdet
+  set A := jac v p with hA
   set L : (Fin n → ℝ) → (Fin n → ℝ) := fun z => matVec A (z - p) with hL
   have hLcd : ContDiff ℝ 2 L := (matVec A).contDiff.comp (contDiff_id.sub contDiff_const)
   set ρ := c * ε / 6 with hρ

@@ -655,3 +655,33 @@ Two generalizations, both from one replica to all finite `r`:
 
 Theorem A, all of Theorem B, `(13)`, `(21)`, the abstract form of Theorem C, and the quantitative
 cores of D and E are formal.
+
+## Lean status -- `(25)` at `r > 1` is not a replicated instantiation
+
+The earlier note claimed that `(25)` for `r > 1` is "the replicated instantiation rather than new
+analysis".  That is wrong, and the reason is structural.
+
+The whole one-replica chain runs through
+`MatrixFamilyHasSubsingletonColumns`: every column of every coefficient matrix has at most one
+nonzero entry.  That hypothesis is what makes the matrix Dyson equation *diagonal*
+(`matrixSemicircleCovariance_diagonal_of_subsingletonColumns`,
+`matrixDysonFormalCoeff_diagonal_of_subsingletonColumns`), so the coordinate Stieltjes transforms
+satisfy decoupled scalar equations and
+`atomless_reciprocal_algebraic_stieltjes_absolutelyContinuous` applies.
+
+At one replica the coefficient matrix is the adjoint action `ad_P` in the Pauli basis, and
+`[P, Q] = 0` or `2PQ`, so each basis element has a single image: columns are subsingleton.  At `r`
+replicas the generator is the Kronecker sum
+`ad_{P_{[r]}}(Q_1 ⊗ ⋯ ⊗ Q_r) = ∑_a Q_1 ⊗ ⋯ ⊗ [P, Q_a] ⊗ ⋯ ⊗ Q_r`,
+whose image is a sum over every slot that anticommutes with `P`.  Columns then carry up to `r`
+nonzeros, the covariance map no longer preserves diagonal matrices, and the Dyson equation is a
+genuine *matrix* equation.
+
+There is also no reduction of the replicated family to `r` free copies: in
+`∑_p \sqrt{v_p}\,(A_p)_{[r]} ⊗ s_p = ∑_a T_a` the slot operators `T_a` share the *same*
+semicirculars `s_p`, and the matrix parts commuting does not make the `T_a` commute.
+
+So `(25)` at `r > 1` genuinely needs the matrix Dyson equation -- existence, uniqueness and the
+Stieltjes regularity giving absolute continuity of the matrix-valued semicircle law -- which is the
+Kargin input the card already cites as external.  The card's remaining Lean content is therefore
+exactly two named imports, not one import and one instantiation.

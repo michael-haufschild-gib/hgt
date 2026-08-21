@@ -1,7 +1,7 @@
 # P. Hall's solvable-group theorem (E_pi, C_pi, and the solvability converse)
 
 - **ID:** hall-solvable
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** user goal 2026-08-21 (mathlib gap: mathlib owns only Hall's *marriage* theorem)
 - **Statement:** For a finite solvable `G` and any factorisation `card G = m * n` with `Nat.Coprime m n`
@@ -75,3 +75,39 @@ three-subgroup theorem (to be built) closes it. Two prime divisors is Burnside.
   `Integrality.lean` (`chi_isIntegral`, `chi_conj`, `exists_classSum_scalar`).
   Remaining: the algebraic-integer norm bound (`|chi x| = finrank` when `chi x / finrank` is an
   algebraic integer), the scalar criterion, Burnside `p^a q^b`, and Hall's converse.
+
+## CLOSED — 2026-08-21 (stage 3)
+
+All three parts are Lean-proved, unconditional, and axiom-clean
+(`propext`, `Classical.choice`, `Quot.sound` only); `scripts/formal_tools.py lint` reports no
+`sorry`/`admit`/`axiom`/`opaque`/`unsafe` and every module is reachable from
+`GaloisForLFunctions.HTGeometry`.
+
+### Capstones
+
+| Statement | Lean name | Module |
+|---|---|---|
+| **E_π** (existence) | `exists_subgroup_card_of_coprime`, `exists_isHallPiSubgroup` | `HallSolvable/Existence.lean`, `HallSolvable/PiSubgroup.lean` |
+| **C_π** (conjugacy) | `conj_eq_of_card_eq_of_coprime`, `conj_of_isHallPiSubgroup` | `HallSolvable/Conjugacy.lean`, `HallSolvable/PiSubgroup.lean` |
+| **Converse** | `isSolvable_of_hasHallProperty` | `HallSolvable/Converse.lean` |
+| **Characterisation** | `isSolvable_iff_hasHallProperty`, `isSolvable_iff_forall_exists_isHallPiSubgroup` | `HallSolvable/Converse.lean` |
+
+### New mathlib gaps closed along the way
+
+* `exists_conj_eq_of_isComplement'` — the **conjugacy half of Schur–Zassenhaus** for an abelian
+  normal subgroup of coprime index (mathlib exports only the existence half).
+* `exists_abelian_normal_prime_pow_card` — **minimal normal subgroups** of finite solvable groups.
+* A complete **complex character theory of finite groups** in
+  `HTGeometry/GroupCharacter/`: regular-representation decomposition into minimal `G`-stable
+  subspaces, `chi`, raw column orthogonality (`sum_chi`), Schur's lemma (`schur`), the unique
+  trivial summand (`existsUnique_isTrivialOn`), characters as sums of roots of unity
+  (`exists_eigen_multiset`), integrality of characters and of the central character
+  (`chi_isIntegral`, `exists_classSum_scalar`), the Kronecker norm lemma
+  (`eq_const_of_isIntegral_avg`), the scalar criterion (`exists_rho_eq_smul`), the bridge to
+  mathlib's `FDRep` orthogonality (`simple_fdRepOf`) and the multiplicity theorem
+  (`card_iso_eq_finrank`).
+* **Burnside's `p ^ a q ^ b` theorem** (`isSolvable_of_card_dvd_prime_pow_mul_prime_pow`, and
+  `isSolvable_of_card_dvd_two_prime_powers` in an arbitrary universe).
+* **Wielandt's theorem** (`isSolvable_of_three_coprime_index`): three solvable subgroups of pairwise
+  coprime indices force solvability.
+* `mul_eq_univ_of_coprime_index`, `index_inf_eq_mul` — subgroups of coprime index.

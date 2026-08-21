@@ -41,6 +41,55 @@ theorem subalgebra_mem_baseChange_iff {K : Type u} {L : Type v} {A : Type w}
         exact Submodule.tmul_mem_baseChange_of_mem l c.property
     exact hle ha
 
+/-- Two fixed subalgebras are equal exactly when their field scalar extensions are equal. -/
+theorem subalgebra_eq_iff_baseChange_eq {K : Type u} {L : Type v} {A : Type w}
+    [Field K] [Field L] [Algebra K L] [Ring A] [Algebra K A]
+    (C D : Subalgebra K A) : C = D ↔ C.baseChange L = D.baseChange L := by
+  constructor
+  · intro h
+    rw [h]
+  · intro h
+    ext a
+    constructor
+    · intro ha
+      have hbase : 1 ⊗ₜ[K] a ∈ C.baseChange L :=
+        (subalgebra_mem_baseChange_iff (L := L) C a).mp ha
+      rw [h] at hbase
+      exact (subalgebra_mem_baseChange_iff (L := L) D a).mpr hbase
+    · intro ha
+      have hbase : 1 ⊗ₜ[K] a ∈ D.baseChange L :=
+        (subalgebra_mem_baseChange_iff (L := L) D a).mp ha
+      rw [← h] at hbase
+      exact (subalgebra_mem_baseChange_iff (L := L) C a).mpr hbase
+
+/-- Two subalgebras of a number-field algebra are equal exactly when their base changes agree at
+every completed place. -/
+theorem numberField_subalgebra_eq_iff_forall_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [Ring A] [Algebra K A]
+    (C D : Subalgebra K A) : C = D ↔
+      ∀ p : NumberFieldPlace K, C.baseChange (completion K p) = D.baseChange (completion K p) := by
+  constructor
+  · intro h p
+    rw [h]
+  · intro h
+    exact (subalgebra_eq_iff_baseChange_eq
+      (L := completion K (witnessPlace K)) C D).mpr (h (witnessPlace K))
+
+/-- Two subalgebras of an `F(t)`-algebra are equal exactly when their base changes agree at every
+finite and infinite completed place. -/
+theorem rationalFunction_subalgebra_eq_iff_forall_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [Ring A] [Algebra (RatFunc F) A]
+    (C D : Subalgebra (RatFunc F) A) : C = D ↔
+      ∀ p : RationalFunctionPlace F,
+        C.baseChange (rationalFunctionCompletion F p) =
+          D.baseChange (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h p
+    rw [h]
+  · intro h
+    exact (subalgebra_eq_iff_baseChange_eq
+      (L := rationalFunctionCompletion F .infinite) C D).mpr (h .infinite)
+
 /-- A central-simple-algebra element belongs to a fixed subalgebra exactly when its scalar
 extension belongs to the base-changed subalgebra. -/
 theorem scalarExtensionMap_mem_subalgebraBaseChange_iff {K : Type u} {L : Type v}

@@ -17,7 +17,8 @@ noncomputable section
 
 variable {F : Type*} [Field F]
 
-local instance : DecidableEq (MonicIrred F) := Classical.decEq _
+local instance milnorPolynomialGlobalReciprocityQuotientDecidableEqMonicIrred :
+    DecidableEq (MonicIrred F) := Classical.decEq _
 
 /-- The all-place residue map, with codomain restricted to data satisfying global reciprocity. -/
 noncomputable def milnorPolynomialAllResidueToGlobalSumKer (n : ℕ) :

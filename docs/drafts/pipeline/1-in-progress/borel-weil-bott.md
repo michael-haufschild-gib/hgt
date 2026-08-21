@@ -63,7 +63,13 @@ faithful because `k` is infinite.
 | `ColumnScaling` | formal scaling of one column; column-degree decomposition | DONE |
 | `SLSurjectivity` | **surjectivity** of `polySections λ → bwSections λ`; the bijection | DONE |
 | `CechSupport` | Čech complex relative to an abstract support function; general vanishing | DONE |
-| `BottGeneral` | Bott for a general `G/B` | OPEN — see log |
+| `BruhatCover` | **the Bruhat covering**: `g.submatrix σ id = L·B` for some permutation `σ` | DONE |
+| `CellMinors` | cell equations `minorPolyAt σ j`, nonvanishing, Borel semi-invariance, covering | DONE |
+| `CellLocalization` | `FlagLoc = R[1/totalDenom]`; the Borel action extended to it | DONE |
+| `CellSections` | `Γ(C_I, L_λ) = flagSemiInv ⊓ denomBounded I`, monotone in `I` | DONE |
+| `FlagCech` | Čech cochains and differential for the Bruhat cover; `d² = 0` | DONE |
+| `FlagCohomology` | cochains/cocycles/coboundaries as submodules; `H^p(G/B, L_λ)` defined; vanishing above `|W|` | DONE |
+| `BottGeneral` | Bott for a general `G/B` — geometric route, in progress | OPEN — see log |
 
 ## Approach
 1. Non-vanishing: `Δ_λ = ∏_j (leading j×j minor)^{m_j}` is a section, `Δ_λ(1) = 1`.  DONE.
@@ -110,10 +116,143 @@ faithful because `k` is infinite.
   and support function `supp : A → Finset T`, a positive-degree cocycle all of whose basis vectors
   have `supp a ≠ univ` is a coboundary.  This is the shape the Bruhat cover of `G/B` takes, with
   `T` the Weyl group and `A` the torus weights.
-  **Open core.**  A closed proof of Bott for a general `G/B` still needs (i) the Bruhat/Schubert
+- 2026-08-21 — **Bott on `G/B`, geometric route started** (route chosen by the user).  First pillar
+  landed: `exists_perm_leadingMinor_ne_zero` / `exists_bruhat_factorization` — every invertible
+  matrix has a row permutation after which *all* leading principal minors are nonzero, hence
+  factors as `P_σ · L · B`.  This is exactly the statement that the `|W|` translates of the big
+  cell cover `G/B`, i.e. the affine open cover the Čech computation will use.  Proof is Gaussian
+  elimination with pivoting: the greedy step `exists_extend_minor` shows a nonvanishing `j × j`
+  leading minor always extends, because otherwise the cofactor column of the enlarged minor is a
+  nonzero kernel vector of `g`.
+  Second brick: `CellMinors` — the cell equations as polynomials, their nonvanishing, the covering
+  restated polynomially (`exists_cellDenomPoly_ne_zero`), and the key transformation law
+  `substRight B (minorPolyAt σ j) = (∏_{i<j} B i i) · minorPolyAt σ j`.  The last one is what makes
+  the multiplicative set of cell equations Borel-stable up to units, hence what lets the `B`-action
+  extend to the localizations at the cell equations — the sections of `L_λ` over the cells and
+  their intersections.
+  Third brick: `CellLocalization` — `totalDenom` (the product of every cell equation, nonzero),
+  its Borel semi-invariance, the ambient localization `FlagLoc N k = R[1/totalDenom]` in which every
+  `Γ(C_I, L_λ)` will sit, and `substRightAway`: the right Borel translation extended to that
+  localization, restricting to `substRight` on polynomials.  Built on `IsLocalization.Away.lift`,
+  the unit hypothesis being exactly the semi-invariance from `CellMinors`.
+  Fourth and fifth bricks: `CellSections` — `Γ(C_I, L_λ) := flagSemiInv λ ⊓ denomBounded I` inside
+  `FlagLoc`, monotone in `I`, with every global polynomial section a section over each cell; and
+  `FlagCech` — the Čech cochains `IsFlagCochain λ p ω` of the Bruhat cover and the differential
+  `flagCechD`, proved to raise the Čech degree by one (`flagCechD_isFlagCochain`).  The Weyl group
+  is given an arbitrary linear order, which only fixes the Čech signs.
+  Sixth and seventh bricks: `cechDModule_cechDModule` (`d² = 0`, by `Finset.sum_involution` on
+  ordered pairs `(u,v) ↦ (v,u)`, the sign cancellation reducing to `belowCard_erase_of_lt` /
+  `belowCard_erase_of_not_lt`), and `FlagCohomology` — the cochains, cocycles and coboundaries as
+  submodules, `flagCoboundaries_le_flagCocycles`, and hence **`flagCohomology N k lam p` =
+  `H^p(G/B, L_λ)` is defined for a general flag variety**.  In degree zero there are no
+  coboundaries and `globalCochain_injective` shows the Borel–Weil module injects into `H⁰`.
+  Also landed: `flagCohomology_subsingleton_of_card_lt` — the cohomology vanishes in degrees `≥ |W|`,
+  the first genuine vanishing statement about `H^p(G/B, L_λ)`.
+
+  **Precise obstruction found for `H⁰(G/B, L_λ) = polySections λ`.**  Unwinding the definitions,
+  `H⁰` is the `λ`-semi-invariant part of `⋂_σ R[1/D_σ]`, where `D_σ = cellDenomPoly σ`.  Since the
+  top leading minor of `g.submatrix σ id` is `± det g`, we have `det ∣ D_σ` for every `σ`, hence
+  `R[1/det] ⊆ ⋂_σ R[1/D_σ]`, and `exists_eq_detPow_mul` converts the `R[1/det]` side into
+  `polySections λ` exactly.  The *reverse* inclusion `⋂_σ R[1/D_σ] ⊆ R[1/det]` is equivalent to a
+  Nullstellensatz certificate for the covering `⋃_σ {D_σ ≠ 0} = GL` — concretely an identity
+  `∑_σ c_σ D_σ = det^M` in `R`.  `exists_cellDenomPoly_ne_zero` gives the set-theoretic covering but
+  not the certificate.  So the next task on this branch is that certificate (or a Nullstellensatz
+  over the relevant base), not more Čech machinery.
+  Remaining pillars after that:
+  the comparison of Čech with derived sheaf cohomology; higher direct images and Leray for the
+  `ℙ¹`-bundle `G/B → G/P_i`; Bott by Demazure induction on Weyl length.
+  **Superseded note (kept for the record).**  A closed proof of Bott for a general `G/B` still needs (i) the Bruhat/Schubert
   cover of `G/B` and the sections of `L_λ` over each cell, (ii) the torus-weight decomposition of
   that Čech complex, and (iii) the concentration theorem: for each weight the reduced cohomology of
   the "bad set" subcomplex on the Weyl group is concentrated in degree `ℓ(w)`.  Unlike the
   projective-space case, (iii) genuinely produces intermediate degrees — that is exactly the
   `ρ`-shifted dot action — so the vanishing mechanism above does not by itself finish it.  Neither
   mathlib nor this corpus has any of (i)–(iii); they are the next multi-module build.
+
+  **The Nullstellensatz certificate is not needed: `H⁰(G/B, L_λ)` is now identified.**
+  The obstruction recorded above dissolved.  The reverse inclusion `⋂_σ R[1/D_σ] ⊆ R[1/det]` is a
+  statement about *codimension-one* data only, so it does not need an ideal-membership certificate;
+  it needs the prime-divisor statement, and that follows by base changing the greedy factorization
+  theorem to the residue field at the prime.
+  Eighth brick: `CellCoprime` — `exists_cellDenom_not_dvd`: if a prime `π` of `R` does not divide
+  `det`, then it fails to divide some cell equation `D_σ`.  Proof: `R/(π)` is a domain, so the
+  generic matrix maps to a matrix over `K = Frac(R/(π))` whose determinant is the nonzero image of
+  `det`; `exists_perm_leadingMinor_ne_zero` over `K` produces a permutation with all leading minors
+  nonzero there, i.e. `π ∤ D_σ`.  Supporting lemmas: `truncate_map` (truncation commutes with
+  entrywise ring maps), `truncate_self_commRing`, `map_minorPolyAt`, `detPoly_eq_det_genericMatrix`.
+  Ninth brick: `FlagDenominator` — `denomIdeal x`, the ideal of polynomials clearing `x ∈ FlagLoc`;
+  `mem_denomIdeal_of_prime_mul` (a prime can be stripped from a denominator once some admissible
+  denominator escapes it — the cancellation happens in the domain `FlagLoc`); and, using that `R` is
+  a UFD together with `exists_cellDenom_not_dvd`, `exists_detPow_mem_denomIdeal`: **a power of the
+  determinant clears the denominator of anything regular on every Bruhat cell.**  The induction is
+  `UniqueFactorizationMonoid.induction_on_prime` run twice, first to replace a denominator by one all
+  of whose prime factors divide `det`, then to show such an element divides a power of `det`.
+  Tenth brick: `FlagGlobalSections` — the identification itself.
+  `exists_shifted_polySections`: multiplying by `det^M` turns an element regular on every cell into a
+  polynomial section of weight `λ + M` (the semi-invariance is multiplicative, and a polynomial
+  semi-invariant in the localization is a polynomial section since `algebraMap` is injective and
+  equivariant).  Then `exists_eq_detPow_mul` divides `det^M` back out:
+  * `exists_polySections_eq_algebraMap` — everything regular on every cell is a global polynomial
+    section (`λ` dominant);
+  * `eq_zero_of_not_antitone` — and nothing nonzero is, when `λ` is not dominant;
+  * `cocycle_singleton_eq` — a Čech `0`-cocycle takes one value on all singletons;
+  * `exists_globalCochain_eq` — hence every `0`-cocycle is a global polynomial section;
+  * `polySectionsEquivH0 : polySections λ ≃ₗ[k] flagCohomology N k lam 0` — **Borel–Weil for the flag
+    variety itself**: `H⁰(G/B, L_λ)` is the irreducible representation of highest weight `λ`;
+  * `flagCohomology_zero_nontrivial_iff` — `H⁰(G/B, L_λ) ≠ 0 ⟺ λ dominant;`
+  * `flagCohomology_zero_subsingleton_of_not_antitone` — the vanishing half, unconditionally.
+  All audit to `[propext, Classical.choice, Quot.sound]`.
+
+  **Next: integer weights.**  Bott's theorem is about the `ρ`-shifted dot action `w · λ = w(λ+ρ) − ρ`,
+  which leaves the cone of natural-number weights, so the Čech complex must be indexed by
+  `lam : Fin N → ℤ`.  This is a refactor rather than a duplication: `flagSemiInv` is the only place
+  the weight is used (through `borelCharMat`), so it is replaced by a `zpow` character `borelCharZ`
+  agreeing with `borelCharMat` on cast weights; `cellSections`, `IsFlagCochain`, `flagCochains`,
+  `flagCocycles`, `flagCoboundaries`, `flagCohomology` and `globalCochain` merely carry the weight
+  along.  The `polySections`-level statements keep natural-number weights and refer to the cast.
+
+  **Integer weights, the determinant twist, and the Bott combinatorics (bricks 11–13).**
+  Eleventh brick: the weight type of the Čech layer was widened from `ℕ` to `ℤ` — a refactor, not a
+  duplication.  `borelCharZ` is the `zpow` character, `borelCharZ_natCast` identifies it with
+  `borelCharMat` on cast weights, and `flagSemiInv`, `cellSections`, `IsFlagCochain`, `flagCochains`,
+  `flagCocycles`, `flagCoboundaries`, `flagCohomology` and `globalCochain` now carry integer weights.
+  The `polySections`-level statements keep natural-number weights and refer to the cast; all of the
+  degree-zero results above were re-proved in that form.
+  Twelfth brick: `FlagDetTwist`.  `detPoly_dvd_cellDenomPoly` (the top leading minor of the permuted
+  generic matrix is `± det`), hence `isUnit_algebraMap_detPoly`: the determinant is invertible in the
+  localization at the Bruhat cover.  Multiplication by `det^c` then raises the weight by `c`
+  (`flagSemiInv_mul_detPow`) and preserves the denominator bounds over a nonempty set of cells
+  (`denomBounded_mul_detPow` — the point being `det ∣ D_σ`), so it is an isomorphism of the whole
+  Čech complex: `twistCochains`, `isFlagCochain_twist`, `cechDModule_twist` (it commutes with the
+  differential), `mem_flagCocycles_twist`, `mem_flagCoboundaries_twist`, and finally
+  **`flagCohomologyTwistEquiv : H^p(L_λ) ≃ₗ H^p(L_{λ+c})`**.  With `exists_natCast_twist` (any
+  integer weight becomes a natural one after a twist) this yields
+  **`flagCohomology_zero_nontrivial_iff_int`**: for an arbitrary integer weight, `H⁰(G/B, L_λ) ≠ 0`
+  exactly when `λ` is dominant.
+  Thirteenth brick: `BottCombinatorics` — the statement side of Bott.  `rhoWeight`, the dot action
+  `w · λ = w(λ+ρ) − ρ` with `dotAction_dotAction`, regularity `IsRegularWeight`,
+  `exists_dotAction_antitone` and `dotAction_antitone_unique` (a regular weight has exactly one
+  dominant conjugate; uniqueness needs no regularity), the Coxeter length `permLength` as the number
+  of inversions with `permLength_eq_zero_iff`, the simple reflections `swapNext` with the explicit
+  dot action, and `exists_dotAction_adjacent_eq`: a singular weight can be moved so that an adjacent
+  pair drops by exactly one — the configuration that kills the rank-one cohomology in both degrees.
+  Supporting lemmas: `strictAnti_int_gap`, `eq_one_of_strictMono`, `sortDescPerm`.
+  All audit to `[propext, Classical.choice, Quot.sound]`.
+
+  **Route decided for the higher cohomology.**  The weight decomposition that worked for `ℙⁿ` cannot
+  work here: for `ℙⁿ` each torus weight space of each chart is at most one dimensional because the
+  charts are Laurent-monomial algebras, whereas for `G/B` the left torus fixes row degrees and the
+  right Borel fixes column degrees, so a weight space is the span of all monomials with prescribed
+  row and column sums — a Kostka number, not `1`.  The route is therefore the geometric one:
+  the projection `π_i : G/B → G/P_i` is a `ℙ¹`-bundle, and the Bruhat cover is *already* fibrewise a
+  two-chart cover for it — the cells `C_σ` and `C_{σ s_i}` are the two charts over the same cell of
+  `G/P_i`, because their flags differ only in step `i+1`.  So no change of cover, and no comparison
+  of Čech with derived functors, is needed: the analysis stays inside the fixed Bruhat complex.
+  The concrete next layer is the big-cell coordinate system: `G = U⁻ · B` on the big cell
+  (`exists_lu_of_leadingMinor_ne_zero` already provides the factorization), so restricting a
+  semi-invariant to the lower unitriangular matrices is injective and turns sections into explicit
+  rational functions of the `N(N−1)/2` cell coordinates, with the cell conditions becoming
+  divisibility conditions on denominators.  For `N = 2` this identifies the two cell sections with
+  `k[u]` and `k[u⁻¹]` and their intersection with `k[u,u⁻¹]`, which is exactly the model already
+  computed in `BottRankOne` — so `GL(2)` Bott is the first target, and the relative version of the
+  same computation over a base cell is the general one.

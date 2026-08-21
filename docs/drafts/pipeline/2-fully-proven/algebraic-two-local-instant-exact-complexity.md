@@ -1773,3 +1773,64 @@ specialisation argument consumes.
   still to build are: the ramified Puiseux branch as a series in `t^{1/e}` (available from
   `NewtonPuiseuxSplitting` after `expand`), and the valuation bookkeeping in `ℚ_p`.
 - §4: complete.
+
+## The valuation half of the ramification step (2026-08-21)
+
+`HTGeometry/PadicRamifiedSpecialisation.lean` (new, umbrella-wired, axiom-clean) supplies the local
+arithmetic of §1's specialisation argument.
+
+| Card item | Declaration |
+|---|---|
+| the valuation of an `e`-th power is divisible by `e` | `dvd_valuation_pow` |
+| **no `e`-th root of a `p`-adic number of indivisible valuation** | `not_pow_eq_of_not_dvd_valuation`, `not_pow_eq_ppow` |
+| coprimality is the usable form of indivisibility | `not_dvd_of_coprime` |
+| the specialised polynomial has no `p`-adic root once every root determines an `e`-th root of the parameter | `no_padic_root_of_ramified_branch` |
+| hence no rational root | `no_rational_root_of_ramified_branch` |
+| `e·v(y) = k·v(π)` from the norm identity | `valuation_eq_of_norm_pow_eq`, `not_norm_pow_eq` |
+| **the branch value is irrational**: a branch `y = c·s^k·u` of ramification index `e` over a parameter of valuation coprime to `e`, with unit leading coefficient and unit factor, takes no value in `ℚ_p` | `not_padic_branch_value` |
+
+`not_padic_branch_value` is the form the card actually needs, and it deliberately avoids Galois
+theory of `ℚ_p((s))/ℚ_p((t))`: it does not show that the root *generates* the ramified extension,
+only that its **norm** is forced into `p^{ℤ/e} \ p^ℤ`.  The only inputs are multiplicativity of the
+norm on an extension field and the isometry of the embedding, so no theory of the spectral norm, of
+ramification indices, or of valuation rings of extensions is used.
+
+### Remaining Lean layers for the card
+
+- §1: with the local half in place, HIT still needs its **global** half — the Puiseux branch of a
+  branch point presented as `y = c·s^k·u` with `s^e = t - b`, `gcd(k, e) = 1`, `c` a unit, and the
+  identification of the branch's ramification index.  `exists_prod_X_sub_C_map_expand`
+  (`NewtonPuiseuxSplitting`) gives the splitting after one ramification `t = s^N`; what is missing is
+  the *primitivity* bookkeeping that extracts the exact index `e | N` of one branch and its leading
+  exponent `k` coprime to `e`.  After that, the specialisation `t - b = p^m·(unit)` with
+  `gcd(m, e) = 1` and `not_padic_branch_value` rule out a rational root, which is the
+  no-rational-root case of Hilbert irreducibility.
+- §1: the step from "no rational root of the specialisation" to "the specialised Galois group is
+  `S_D`" needs the same argument on the resolvents.  Note that §2 does **not** need the full
+  symmetric group: for any 2-transitive `G` the permutation module `ℚ^D` is the trivial line plus an
+  irreducible standard summand, which is all `(6)` uses.
+- §4: complete.
+
+## The Dumas no-root criterion (2026-08-21)
+
+The ramification step does not need Puiseux branches at all when the specialised polynomial is
+presented by its coefficients: the Newton condition on the coefficients already forces the root
+valuation, and `ℚ_p` has integral value group.  Added to
+`HTGeometry/PadicRamifiedSpecialisation.lean`:
+
+| Card item | Declaration |
+|---|---|
+| **the Dumas criterion, no-root form**: `‖a_i‖^e < ‖a_0‖^{e-i}` for `0 < i < e` and `e ∤ v(a_0)` leave no root in `ℚ_p` | `no_padic_root_of_dumas` |
+| the same for a monic polynomial | `no_padic_root_of_dumas_poly` |
+| **hence no rational root** | `no_rational_root_of_dumas` |
+
+The proof is the trichotomy of `‖y‖^e` against `‖a_0‖`.  Above it, every term of
+`y^e = -∑_{i<e} a_i y^i` is strictly smaller than `‖y‖^e`; below it, every term of
+`a_0 = -(y^e + ∑_{0<i<e} a_i y^i)` is strictly smaller than `‖a_0‖`; and at equality
+`e·v(y) = v(a_0)`, contradicting indivisibility.  Only the ultrametric inequality
+(`IsUltrametricDist.norm_add_le_max`, `norm_sum_le_of_forall_le_of_nonneg`) and the finite `sup'`
+are used -- no Newton polygon, no valuation ring, no extension field.
+
+This is the sharper of the two local forms: `not_padic_branch_value` needs the branch presented
+as `c·s^k·u` inside an extension, whereas `no_padic_root_of_dumas` needs only the coefficients of
+the specialised polynomial, which is exactly what a specialisation produces.

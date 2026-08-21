@@ -4,6 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.BrauerFoundations
+import GaloisForLFunctions.HTGeometry.ABHN.BrauerGroupStructure
+import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtensionBrauer
+import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtensionTensorProduct
+import GaloisForLFunctions.HTGeometry.ABHN.Specification
 import Mathlib.RingTheory.LittleWedderburn
 import Mathlib.RingTheory.SimpleModule.WedderburnArtin
 
@@ -52,5 +56,87 @@ theorem finiteField_brauerGroup_subsingleton (K : Type u) [Field K] [Finite K] :
     Subsingleton (BrauerGroup.{u, u} K) where
   allEq x y := (finiteField_brauerGroup_eq_split K x).trans
     (finiteField_brauerGroup_eq_split K y).symm
+
+/-- Scalar extension sends every finite-field Brauer class to the split class.  This is a
+functorial form of finite-field Brauer triviality, suitable for future residue-field transports. -/
+theorem finiteField_scalarExtensionBrauerMap_eq_split
+    (K L : Type u) [Field K] [Field L] [Algebra K L] [Finite K]
+    (x : BrauerGroup.{u, u} K) :
+    scalarExtensionBrauerMap K L x = brauerSplitClass L := by
+  rw [finiteField_brauerGroup_eq_split K x]
+  exact scalarExtensionBrauerMap_split K L
+
+/-- Scalar extension out of a finite-field Brauer group is the zero additive homomorphism. -/
+theorem finiteField_scalarExtensionBrauerAddHom_eq_zero
+    (K L : Type u) [Field K] [Field L] [Algebra K L] [Finite K] :
+    scalarExtensionBrauerAddHom K L = 0 := by
+  ext x
+  change scalarExtensionBrauerMap K L x = brauerSplitClass L
+  exact finiteField_scalarExtensionBrauerMap_eq_split K L x
+
+/-- The finite-field Brauer invariant is the unique zero-valued map to `ℚ/ℤ`.  The meaningful
+local invariant for a complete discretely valued field requires further ramification theory;
+this is the residue-field contribution to that construction. -/
+noncomputable def finiteFieldBrauerInvariant (K : Type u) [Field K] [Finite K] :
+    BrauerGroup.{u, u} K →+ RatModInt where
+  toFun := fun _ ↦ 0
+  map_zero' := rfl
+  map_add' := by intros; simp
+
+theorem finiteFieldBrauerInvariant_eq_zero (K : Type u) [Field K] [Finite K]
+    (x : BrauerGroup.{u, u} K) : finiteFieldBrauerInvariant K x = 0 := rfl
+
+/-- The finite-field Brauer invariant is injective because every finite-field Brauer class is
+split. -/
+theorem finiteFieldBrauerInvariant_injective (K : Type u) [Field K] [Finite K] :
+    Function.Injective (finiteFieldBrauerInvariant K) := by
+  letI : Subsingleton (BrauerGroup.{u, u} K) := finiteField_brauerGroup_subsingleton K
+  intro x y _
+  exact Subsingleton.elim _ _
+
+/-- The image of the finite-field Brauer invariant is precisely `{0}`. -/
+theorem finiteFieldBrauerInvariant_range (K : Type u) [Field K] [Finite K] :
+    Set.range (finiteFieldBrauerInvariant K) = {0} := by
+  ext q
+  constructor
+  · rintro ⟨x, rfl⟩
+    rfl
+  · intro hq
+    rw [Set.mem_singleton_iff] at hq
+    subst q
+    exact ⟨brauerSplitClass K, rfl⟩
+
+/-- The finite-field Brauer invariant is an additive equivalence onto the zero subgroup of
+`ℚ/ℤ`. -/
+noncomputable def finiteFieldBrauerInvariantAddEquivBot (K : Type u) [Field K] [Finite K] :
+    BrauerGroup.{u, u} K ≃+ (⊥ : AddSubgroup RatModInt) := by
+  let invariantToBot : BrauerGroup.{u, u} K →+ (⊥ : AddSubgroup RatModInt) :=
+    { toFun := fun x => ⟨finiteFieldBrauerInvariant K x, by
+        simpa using finiteFieldBrauerInvariant_eq_zero K x⟩
+      map_zero' := by
+        apply Subtype.ext
+        change finiteFieldBrauerInvariant K 0 = 0
+        exact finiteFieldBrauerInvariant_eq_zero K 0
+      map_add' := by
+        intro x y
+        apply Subtype.ext
+        exact (finiteFieldBrauerInvariant K).map_add x y }
+  apply AddEquiv.ofBijective invariantToBot
+  constructor
+  · intro x y h
+    exact finiteFieldBrauerInvariant_injective K (congrArg Subtype.val h)
+  · intro y
+    refine ⟨brauerSplitClass K, ?_⟩
+    apply Subtype.ext
+    change finiteFieldBrauerInvariant K (brauerSplitClass K) = y.val
+    have hy : (y : RatModInt) = 0 := y.property
+    rw [finiteFieldBrauerInvariant_eq_zero, hy]
+
+/-- The additive finite-field invariant equivalence has the defined invariant as its underlying
+`ℚ/ℤ`-valued map. -/
+theorem finiteFieldBrauerInvariantAddEquivBot_apply (K : Type u) [Field K] [Finite K]
+    (x : BrauerGroup.{u, u} K) :
+    ((finiteFieldBrauerInvariantAddEquivBot K x : (⊥ : AddSubgroup RatModInt)) : RatModInt) =
+      finiteFieldBrauerInvariant K x := rfl
 
 end GaloisForLFunctions.HTGeometry.ABHN

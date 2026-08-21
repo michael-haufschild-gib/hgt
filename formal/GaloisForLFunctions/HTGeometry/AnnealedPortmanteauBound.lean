@@ -28,7 +28,7 @@ variable {Omega : Type*} [MetricSpace Omega] [CompactSpace Omega] [MeasurableSpa
   [BorelSpace Omega] [Nonempty Omega]
 variable {gamma : Type*} {l : Filter gamma} [l.NeBot]
 
-theorem integrable_of_bounded {mu : Measure Omega} [IsFiniteMeasure mu] {f : Omega → ℝ}
+theorem integrable_of_bounded_norm {mu : Measure Omega} [IsFiniteMeasure mu] {f : Omega → ℝ}
     (hmeas : Measurable f) {M : ℝ} (hM : ∀ x, |f x| ≤ M) : Integrable f mu :=
   (MeasureTheory.integrable_const M).mono' hmeas.aestronglyMeasurable
     (Filter.Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact hM x)
@@ -61,8 +61,8 @@ theorem limsup_integral_le_of_tendsto_of_upperSemicontinuous
       exact hgconv (Iio_mem_nhds (by linarith))
     refine hnear.mono fun i hi => ?_
     have hmono : (∫ x, f x ∂(mus i : Measure Omega)) ≤ ∫ x, g x ∂(mus i : Measure Omega) :=
-      MeasureTheory.integral_mono (integrable_of_bounded hmeas habs)
-        (integrable_of_bounded hgc.measurable hgabs) (Pi.le_def.mpr hfg)
+      MeasureTheory.integral_mono (integrable_of_bounded_norm hmeas habs)
+        (integrable_of_bounded_norm hgc.measurable hgabs) (Pi.le_def.mpr hfg)
     linarith [hgint]
   refine Filter.limsup_le_of_le ?_ hev
   refine Filter.IsBoundedUnder.isCoboundedUnder_le ?_
@@ -76,7 +76,7 @@ theorem measureReal_ge_le_integral_div {nu : Measure Omega} [IsProbabilityMeasur
     nu.real {x | theta ≤ f x} ≤ (∫ x, f x ∂nu) / theta := by
   have hmark := MeasureTheory.mul_meas_ge_le_integral_of_nonneg
     (Filter.Eventually.of_forall (Pi.le_def.mpr h0))
-    (integrable_of_bounded (mu := nu) hmeas hM) theta
+    (integrable_of_bounded_norm (mu := nu) hmeas hM) theta
   rw [le_div_iff₀ htheta, mul_comm]
   exact hmark
 
@@ -114,7 +114,7 @@ theorem limsup_measureReal_ge_le_of_tendsto
           (fun i => ∫ x, f x ∂(mus i : Measure Omega)) := by
         refine ⟨M, Filter.eventually_map.mpr (Filter.Eventually.of_forall fun i => ?_)⟩
         have := MeasureTheory.integral_mono
-          (integrable_of_bounded (mu := (mus i : Measure Omega)) hmeas habs)
+          (integrable_of_bounded_norm (mu := (mus i : Measure Omega)) hmeas habs)
           (MeasureTheory.integrable_const (μ := (mus i : Measure Omega)) M) (Pi.le_def.mpr hM)
         simpa using this
       have hlt : (∫ x, f x ∂(mu : Measure Omega)) + eps * theta

@@ -71,6 +71,46 @@ theorem realQuaternion_no_scalarAlgEquiv : ¬ Nonempty (ℝ ≃ₐ[ℝ] ℍ) := 
     _ = e (b * a) := by rw [mul_comm]
     _ = e b * e a := map_mul e b a
 
+/-- The real `2 × 2` matrix algebra has a nonzero nonunit, exhibited by a square-zero matrix. -/
+private theorem realMatrix_two_exists_nonunit :
+    ∃ M : Matrix (Fin 2) (Fin 2) ℝ, M ≠ 0 ∧ ¬ IsUnit M := by
+  let N : Matrix (Fin 2) (Fin 2) ℝ := !![(0 : ℝ), 1; 0, 0]
+  refine ⟨N, ?_, ?_⟩
+  · intro h
+    have h01 := congr_fun (congr_fun h 0) 1
+    simp [N] at h01
+  · intro hunit
+    have hsq : N * N = 0 := by
+      ext i j
+      fin_cases i <;> fin_cases j <;> simp [N, Matrix.mul_apply]
+    have : IsUnit (N * N) := hunit.mul hunit
+    rw [hsq] at this
+    exact not_isUnit_zero this
+
+/-- Hamilton quaternions are not isomorphic to a split real matrix algebra of any degree.
+This proves nonsplitness as a central simple algebra.  It does not identify their Brauer class:
+Brauer equivalence permits matrix stabilization on both sides. -/
+theorem realQuaternion_no_matrixAlgEquiv (n : ℕ) :
+    ¬ Nonempty (ℍ ≃ₐ[ℝ] Matrix (Fin n) (Fin n) ℝ) := by
+  rintro ⟨e⟩
+  have hn : n = 2 := by
+    have hdim : 4 = n * n := by
+      simpa [Quaternion.finrank_eq_four, Module.finrank_matrix] using e.toLinearEquiv.finrank_eq
+    have hdim' : (4 : ℝ) = (n : ℝ) * (n : ℝ) := by
+      exact_mod_cast hdim
+    have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    have hn' : (n : ℝ) = 2 := by
+      nlinarith [sq_nonneg ((n : ℝ) - 2)]
+    exact_mod_cast hn'
+  subst n
+  obtain ⟨N, hN, hNunit⟩ := realMatrix_two_exists_nonunit
+  apply hNunit
+  have he : e.symm N ≠ 0 := by
+    intro h
+    apply hN
+    simpa using congrArg e h
+  simpa using he.isUnit.map e
+
 /-- Quaternion conjugation is an algebra equivalence from the real quaternions to their
 opposite algebra, so the opposite represents the same Brauer class. -/
 theorem realQuaternionBrauerClass_opposite :

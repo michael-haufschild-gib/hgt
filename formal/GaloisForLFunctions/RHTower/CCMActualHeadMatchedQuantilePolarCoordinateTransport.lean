@@ -384,4 +384,97 @@ theorem ccmActualHeadMatchedPolarCell_sub_quantilePolarCell_eq_rigidTransport
   rw [ccmActualHeadMatchedPolarCell_eq_polarMassCoordinate,
     ccmActualHeadOutgoingQuantilePolarCell_eq_matchedCoordinateTranslate]
 
+private theorem sum_range_succ_eq_sum_Icc_two
+    (M : ℕ) (H : ℕ → ℝ) (h0 : H 0 = 0) (h1 : H 1 = 0) :
+    (∑ n ∈ Finset.range (M + 1), H n) = ∑ n ∈ Finset.Icc 2 M, H n := by
+  symm
+  apply Finset.sum_subset
+  · intro n hn
+    simp only [Finset.mem_Icc] at hn
+    simp only [Finset.mem_range]
+    omega
+  · intro n hnrange hnnot
+    simp only [Finset.mem_range] at hnrange
+    have hnlt : n < 2 := by
+      by_contra h
+      have hn2 : 2 ≤ n := Nat.le_of_not_gt h
+      exact hnnot (Finset.mem_Icc.mpr ⟨hn2, by omega⟩)
+    interval_cases n
+    · exact h0
+    · exact h1
+
+/-- **Global rigid coverage decomposition.** The whole matched coverage seam is the finite sum of
+cellwise rigid mass-coordinate translations, followed by one terminal quantile interval. Every
+cell displacement in this formula is controlled by the one-atom completed-error corridor. -/
+theorem ccmActualHeadMatchedPolarCoverageSeam_eq_rigidCellTransports_sub_terminal
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) :
+    ccmActualHeadMatchedPolarCoverageSeam a f =
+      (∑ n ∈ Finset.Icc 2 (Nat.floor (Real.exp (2 * a.1))),
+        ((∫ y in ccmActualHeadMatchedPolarLowerCoordinate n..
+              ccmActualHeadMatchedPolarUpperCoordinate n,
+            ccmActualHeadPolarMassDefectProfile f.1 y) -
+          ∫ y in ccmActualHeadMatchedPolarLowerCoordinate n..
+              ccmActualHeadMatchedPolarUpperCoordinate n,
+            ccmActualHeadPolarMassDefectProfile f.1
+              (ccmActualHeadMatchedQuantilePolarDisplacement n + y))) -
+      ∫ h in ccmOutgoingPrimeQuantileBoundary
+          (Nat.floor (Real.exp (2 * a.1)) + 1)..(2 * a.1),
+        Real.exp (h / 2) * ccmActualHeadTranslationDefect h f.1 := by
+  let M := Nat.floor (Real.exp (2 * a.1))
+  let N := M + 1
+  let F := Finset.Icc 2 M
+  let P : ℕ → ℝ := fun n => ccmActualHeadOutgoingPolarSymmetricCell
+    (Real.log n) (ccmActualHeadMatchedPrimePolarRadius n) f.1
+  let Q : ℕ → ℝ := fun n => ccmActualHeadOutgoingQuantilePolarCell n f.1
+  let W : ℝ → ℝ := fun h =>
+    Real.exp (h / 2) * ccmActualHeadTranslationDefect h f.1
+  have hQ0 : Q 0 = 0 := by
+    simp [Q, ccmActualHeadOutgoingQuantilePolarCell,
+      ccmOutgoingPrimeQuantileBoundary, ccmOutgoingPrimeCumulative,
+      criticalMellinAtomWeight]
+  have hQ1 : Q 1 = 0 := by
+    simp [Q, ccmActualHeadOutgoingQuantilePolarCell,
+      ccmOutgoingPrimeQuantileBoundary, ccmOutgoingPrimeCumulative,
+      Finset.sum_range_succ, criticalMellinAtomWeight,
+      ArithmeticFunction.vonMangoldt]
+  have hQsum : (∑ n ∈ Finset.range N, Q n) = ∑ n ∈ F, Q n := by
+    dsimp only [N, F]
+    exact sum_range_succ_eq_sum_Icc_two M Q hQ0 hQ1
+  have hQpartition : (∑ n ∈ F, Q n) =
+      ∫ h in (0 : ℝ)..ccmOutgoingPrimeQuantileBoundary N, W h := by
+    rw [← hQsum]
+    simpa only [Q, W, ccmActualHeadOutgoingQuantilePolarCell] using
+      (integral_exp_half_translationDefect_zero_to_quantileBoundary N f.1).symm
+  have hW : Continuous W := by
+    dsimp only [W]
+    exact (by fun_prop : Continuous fun h : ℝ => Real.exp (h / 2)).mul
+      ((((continuous_logTranslationCLM f.1).sub continuous_const).norm).pow 2)
+  have hsplit : (∫ h in (0 : ℝ)..(2 * a.1), W h) =
+      (∫ h in (0 : ℝ)..ccmOutgoingPrimeQuantileBoundary N, W h) +
+        ∫ h in ccmOutgoingPrimeQuantileBoundary N..(2 * a.1), W h :=
+    (intervalIntegral.integral_add_adjacent_intervals
+      (hW.intervalIntegrable (μ := volume) 0
+        (ccmOutgoingPrimeQuantileBoundary N))
+      (hW.intervalIntegrable (μ := volume)
+        (ccmOutgoingPrimeQuantileBoundary N) (2 * a.1))).symm
+  unfold ccmActualHeadMatchedPolarCoverageSeam
+  rw [ccmActualHeadOutgoingPolarEnergy,
+    MeasureTheory.integral_Icc_eq_integral_Ioc,
+    ← intervalIntegral.integral_of_le (by linarith [a.property])]
+  change (∑ n ∈ F, P n) - (∫ h in (0 : ℝ)..(2 * a.1), W h) = _
+  rw [hsplit, ← hQpartition]
+  rw [show (∑ n ∈ F, P n) -
+      ((∑ n ∈ F, Q n) +
+        ∫ h in ccmOutgoingPrimeQuantileBoundary N..(2 * a.1), W h) =
+      (∑ n ∈ F, (P n - Q n)) -
+        ∫ h in ccmOutgoingPrimeQuantileBoundary N..(2 * a.1), W h by
+    rw [Finset.sum_sub_distrib]
+    ring]
+  apply congrArg₂ (· - ·)
+  · apply Finset.sum_congr rfl
+    intro n hn
+    dsimp only [P, Q]
+    exact ccmActualHeadMatchedPolarCell_sub_quantilePolarCell_eq_rigidTransport n f.1
+  · rfl
+
 end RHTower

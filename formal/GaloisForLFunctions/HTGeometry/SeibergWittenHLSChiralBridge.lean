@@ -30,7 +30,8 @@ def hlsLeftWeylSeibergWittenInvariant (Ψ : HLSDiracSpinorField) :
 theorem hlsLeftWeylSpinor_gaugeEquivariant (u : Circle) (Ψ : HLSDiracSpinorField) :
     hlsLeftWeylSpinor (u • Ψ) = u • hlsLeftWeylSpinor Ψ := by
   funext i
-  simp [hlsLeftWeylSpinor]
+  change (u : ℂ) * Ψ (.inl i) = (u : ℂ) * Ψ (.inl i)
+  rfl
 
 /-- The HLS left-Weyl finite Seiberg--Witten invariant is phase-gauge invariant. -/
 theorem hlsLeftWeylSeibergWittenInvariant_gaugeInvariant

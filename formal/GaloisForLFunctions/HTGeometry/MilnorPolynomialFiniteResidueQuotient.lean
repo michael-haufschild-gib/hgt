@@ -16,7 +16,8 @@ noncomputable section
 
 variable {F : Type*} [Field F]
 
-local instance : DecidableEq (MonicIrred F) := Classical.decEq _
+local instance milnorPolynomialFiniteResidueQuotientDecidableEqMonicIrred :
+    DecidableEq (MonicIrred F) := Classical.decEq _
 
 /-- **Finite-place local-to-global quotient.** Milnor classes of `F(t)` modulo constants are
 equivalent to arbitrary finite-support residue data at finite polynomial places. -/
