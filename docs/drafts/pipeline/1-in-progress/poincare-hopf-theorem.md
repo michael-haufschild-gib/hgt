@@ -191,8 +191,39 @@ pushforward law along the transition map.
   is that it does not depend on `V`.  Mathlib supplies the Whitney embedding for compact manifolds;
   the missing analytic input for Milnor's route is the tubular neighbourhood theorem.  The
   alternative is transversality/intersection theory for sections of the tangent bundle.
-- IV Euler characteristic (excision for singular homology, Mayer–Vietoris, the long exact sequence
-  of a pair, and Morse theory).
+### Stage IV inventory and plan
+
+The corpus already owns more of this than expected.  Existing assets:
+
+| Module | What it gives |
+|---|---|
+| `CoproductMayerVietoris`, `CoproductMayerVietorisSup` | `subCoproduct`, `inclFull`, `restrFull`, `inclCop`, `restr`, and the split short complex of a coproduct over two subsets |
+| `SimplicialMayerVietoris`, `…Sup`, `…Family`, `…Mono` | `mvChainShortExact`: two subcomplexes covering a simplicial set give a degreewise split short exact sequence of chain complexes, plus Mayer–Vietoris vanishing corollaries |
+| `SingularHomologyContractible` | higher singular homology of a contractible space vanishes; `H₀` is the coefficient object |
+| `RelativeSimplicialHomology` (**new**) | `relChainComplex`, `relChainShortExact`, `relConnecting`, `rel_homology_exact₁/₂/₃`: the long exact sequence of a pair |
+
+`SimplicialMayerVietoris` is Mayer–Vietoris for *subcomplexes of a simplicial set*.  Applied to
+`A = Sing A`, `B = Sing B` inside `Sing X`, the union subcomplex is exactly the subcomplex of
+simplices small with respect to `{A, B}`, so that theorem already delivers
+
+  `… → Hₙ(A ∩ B) → Hₙ(A) ⊕ Hₙ(B) → Hₙ(Sing^{A,B} X) → …`
+
+and the **only** missing input for topological Mayer–Vietoris is
+
+  **(IV.★) the small simplices theorem**: the inclusion `C^𝒰(X) → C(X)` is a homology isomorphism
+  when the interiors of `𝒰` cover `X`.
+
+That is the gate for the whole of Stage IV.  Its proof needs, in order:
+
+- IV.1 affine singular simplices in a convex subset of a real vector space, and the cone operator,
+  with `∂(b ∗ c) + b ∗ (∂ c) = c − ε(c)·b`;
+- IV.2 the barycentric subdivision operator `S` on singular chains and a chain homotopy `T` with
+  `∂T + T∂ = 1 − S`;
+- IV.3 iterated subdivision plus the Lebesgue number lemma, giving IV.★;
+- IV.4 topological Mayer–Vietoris and excision from IV.★ plus `mvChainShortExact`;
+- IV.5 `H_*(Sⁿ)` and `H_*(Dⁿ, Sⁿ⁻¹)`;
+- IV.6 Morse theory: sublevel sets, handle attachment, gradient flow retractions, and
+  `χ(M) = ∑ (−1)^λ`.
 - III manifolds: charts, vector fields, index sum, independence of the field.  Mathlib supplies
   `IsManifold`, the tangent bundle, `ContMDiffSection`, partitions of unity and the **Whitney
   embedding theorem for compact manifolds** (`Geometry/Manifold/WhitneyEmbedding.lean`), so

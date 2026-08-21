@@ -82,17 +82,20 @@ Let `n = deg_Y f ≥ 1`. Pick `s₀ ∈ ℚ` with `a_n(s₀) ≠ 0` and `f(s₀,
 | # | module | content | state |
 |---|---|---|---|
 | 1 | `AnalyticBranches` | analytic root branches + product formula on a disc | |
-| 2 | `GermIntegral` | `y` integral over `ℚ[X][1/a_n]` in the germ ring ⇒ `P ∈ ℚ[X][Y]` | |
-| 3 | `ReflectSubstitution` | `X ↦ s₀+1/T` on `ℚ[X]`; `taylor`/`reflect` evaluation identity | |
+| 2 | `GermIntegral` | `y` integral over `ℚ[X]` in the germ ring ⇒ `0 ≠ P ∈ ℚ[X][Y]` | |
+| 3 | `ReflectSubstitution` | `X ↦ s₀+1/T`; `taylor`/`reflect` evaluation identity | |
 | 4 | `MonicIntegerRelation` | monic `Q ∈ ℤ[T][Y]`, `z(t) ∈ ℤ` | |
-| 5 | `DividedDifference` | Vandermonde/`W_m/V_m = f^{(m)}(u)/m!` (iterated Rolle) | |
-| 6 | `RationalInterpolation` | poly with `deg+1` rational values at rationals is rational | |
-| 7 | `TailRecursion` | `A_j` recursion, `z^{(j)}(t) = A_j(1/t)`, leading coefficients | |
-| 8 | `GapCounting` | the gap lemma + window packing | |
-| 9 | `Core` | for finitely many non-rational algebraic analytic germs, infinitely many good `t` | |
+| 5 | `DividedDifference` | Vandermonde/`W_m/V_m = f^{(m)}(u)/m!` (iterated Rolle) | **DONE** |
+| 6 | `RationalInterpolation` | poly with `deg+1` rational values at rationals is rational | **DONE** |
+| 7 | `TaylorTail` | `A_j` recursion, order bookkeeping, `thin_or_eventually_poly` (cases a/c) | **DONE** |
+| 8 | `ThinSets` | gap-thin sets + the window-packing assembly | **DONE** |
+| 9 | `Core` | case (b) + assembly: finitely many non-rational algebraic germs ⇒ infinitely many good `t` | |
 | 10 | `SubsetCoefficients` | Step 1 and Step 2 | |
 | 11 | `Main` | `hilbert_irreducibility` | |
 
 ## Log
+- 2026-08-21 — `ThinSets`, `DividedDifference`, `RationalInterpolation`, `TaylorTail` all green
+  (`lake env lean`).  `TaylorTail.thin_or_eventually_poly` is the analytic heart: cases (a)/(c).
+  Remaining: case (b) (complex→real), the algebraic-relation layer, subset coefficients, main.
 - 2026-08-21 — created; mathlib absence verified; p-adic route retired with reason; Coleman–Zwald
   route frozen; corpus analytic engine (`U0.HolomorphicIFT`) located.

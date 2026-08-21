@@ -256,3 +256,28 @@ faithful because `k` is infinite.
   `k[u]` and `k[u⁻¹]` and their intersection with `k[u,u⁻¹]`, which is exactly the model already
   computed in `BottRankOne` — so `GL(2)` Bott is the first target, and the relative version of the
   same computation over a base cell is the general one.
+
+  **Big-cell evaluation and cell trivializations (bricks 14–15).**
+  Fourteenth brick: `BigCellEvaluation`.  `flagEval hg : FlagLoc N k →+* k` evaluates a section at any
+  matrix where the cover equation is nonzero (via `IsLocalization.Away.lift` on `matEvalHom`);
+  `flagEval_substRightAway` shows evaluation intertwines the extended right translation with matrix
+  multiplication, `flagEval_of_mem_flagSemiInv` turns semi-invariance into the scaling law
+  `x(gB) = χ_λ(B) x(g)`, and `exists_lu_of_matEval_totalDenom_ne_zero` extracts the `LU`
+  factorization from nonvanishing of the cover equation.  The payoff is
+  **`eq_zero_of_flagEval_lowerUni_eq_zero`**: a semi-invariant section vanishing on the lower
+  unitriangular matrices is zero — sections are determined by their restriction to the big cell.
+  Fifteenth brick: `CellTrivialization`.  Every leading minor of the `σ`-permuted generic matrix
+  divides the cover equation, so it is a unit `minorUnit σ j` of the localization; the consecutive
+  ratios `diagRatio σ i = minorUnit σ (i+1) / minorUnit σ i` scale by exactly the `i`-th diagonal
+  entry of a Borel element (`map_diagRatio`, from `minorChar_succ`).  Hence
+  `cellTriv σ λ = ∏ᵢ (diagRatio σ i)^{λ i}` is a unit of weight `λ` (`cellTriv_mem_flagSemiInv`) —
+  an explicit trivializing section of `L_λ` on the cell.  The subgroup `denomStable σ` of units
+  preserving the denominator bound of the cell contains every `minorUnit`, hence every `cellTriv`,
+  which gives **`mem_cellSections_mul_cellTriv`: `Γ(C_σ, L_λ) ≅ Γ(C_σ, O)` — the line bundle is
+  trivial on each Bruhat cell**, by an explicit unit.  Everything audits clean.
+  What this sets up: with the bundle trivialized on each chart, the Čech complex of a coset pair
+  `{σ, σ s_i}` becomes the two-chart complex of a `ℙ¹` with transition function the ratio
+  `cellTriv σ λ / cellTriv (σ s_i) λ`, which is exactly the `O(d)` situation already computed in
+  `BottRankOne`.  The remaining input is the identification of the weight-zero sections on a cell
+  with a polynomial ring in the cell coordinates — the bordered-minor ratios — which is the next
+  brick.
