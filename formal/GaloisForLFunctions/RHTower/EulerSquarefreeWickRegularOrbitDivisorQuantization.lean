@@ -12,7 +12,10 @@ derivative has integral residue.  Therefore cell orders must lie in the integral
 This module proves the exact rank-two lattice reconstruction and its sharp pure-vacuum
 consequence: if the three auxiliary Dirichlet-L sectors are units at a point, cell landing forces
 the Xi order to be divisible by four.  For a rank-`r` binary gauge cube the required divisor is
-`2^r`.  Integral landings at every rank annihilate any finite integer order.  The analytic version
+`2^r`.  More sharply, after unitizing every proper marginal sector while retaining an arbitrary
+top interaction order, opposite parity cells force `2^(r-1)` to divide the Xi order.  Integral
+landings at every rank therefore annihilate any finite integer order without requiring top-sector
+nonvanishing.  The analytic version
 uses the corpus unbounded-root theorem to show that genuine meromorphic binary regular-orbit roots
 at every rank annihilate the local divisor.
 
@@ -136,6 +139,51 @@ theorem not_all_binaryPureVacuumCellOrderLandings_of_ne_zero
     ¬ ∀ r : ℕ, BinaryPureVacuumCellOrderLanding r m := by
   intro h
   exact hm (vacuumOrder_eq_zero_of_all_binaryPureVacuumCellOrderLandings m h)
+
+/-- After all proper marginal sectors are unitized, the two parity classes of a rank-`r` cube
+carry numerators `vacuum + top` and `vacuum - top`. -/
+def BinaryVacuumTopCellOrderLanding (r : ℕ) (vacuum top : ℤ) : Prop :=
+  ∃ cPlus cMinus : ℤ,
+    ((2 ^ r : ℕ) : ℤ) * cPlus = vacuum + top ∧
+    ((2 ^ r : ℕ) : ℤ) * cMinus = vacuum - top
+
+/-- At positive rank, retaining an arbitrary top interaction still forces `2^(r-1)` to divide
+the vacuum order.  The top order cancels between opposite parity cells. -/
+theorem pow_two_pred_dvd_vacuum_of_binaryVacuumTopCellOrderLanding
+    {r : ℕ} {vacuum top : ℤ} (hr : 1 ≤ r)
+    (h : BinaryVacuumTopCellOrderLanding r vacuum top) :
+    (((2 ^ (r - 1) : ℕ) : ℤ)) ∣ vacuum := by
+  obtain ⟨cPlus, cMinus, hPlus, hMinus⟩ := h
+  obtain ⟨k, rfl⟩ : ∃ k, r = k + 1 := ⟨r - 1, by omega⟩
+  refine ⟨cPlus + cMinus, ?_⟩
+  have hTwo :
+      (2 : ℤ) * (((2 ^ k : ℕ) : ℤ) * (cPlus + cMinus)) =
+        (2 : ℤ) * vacuum := by
+    rw [pow_succ] at hPlus hMinus
+    push_cast at hPlus hMinus
+    have hSum := congrArg₂ (· + ·) hPlus hMinus
+    calc
+      (2 : ℤ) * (((2 ^ k : ℕ) : ℤ) * (cPlus + cMinus)) =
+          (((2 ^ k : ℕ) : ℤ) * 2) * cPlus +
+            (((2 ^ k : ℕ) : ℤ) * 2) * cMinus := by ring
+      _ = (vacuum + top) + (vacuum - top) := hSum
+      _ = (2 : ℤ) * vacuum := by ring
+  have hcancel := mul_left_cancel₀ (show (2 : ℤ) ≠ 0 by norm_num) hTwo
+  simpa using hcancel.symm
+
+/-- Binary cell landings at every positive rank annihilate the vacuum order even when the full
+interaction order is arbitrary and rank-dependent. -/
+theorem vacuumOrder_eq_zero_of_all_binaryVacuumTopCellOrderLandings
+    (vacuum : ℤ)
+    (h : ∀ r : ℕ, 1 ≤ r → ∃ top : ℤ,
+      BinaryVacuumTopCellOrderLanding r vacuum top) :
+    vacuum = 0 := by
+  apply GaloisForLFunctions.HTGeometry.int_eq_zero_of_unbounded_natCast_dvd
+  intro N
+  obtain ⟨top, hlanding⟩ := h (N + 1) (by omega)
+  exact ⟨2 ^ N, nat_le_two_pow_self N,
+    pow_two_pred_dvd_vacuum_of_binaryVacuumTopCellOrderLanding
+      (r := N + 1) (by omega) hlanding⟩
 
 /-- Genuine meromorphic root landing for one rank of a binary regular orbit. -/
 def BinaryRegularOrbitRootLandingAt

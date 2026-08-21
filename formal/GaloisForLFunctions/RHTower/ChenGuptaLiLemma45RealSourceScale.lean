@@ -154,4 +154,78 @@ theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_paperSourcePower {q R : 
   simpa [CGLLemma45PaperSourcePacket.toSourceScale] using
     norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_any_sourcePower S.toSourceScale w targetExponent
 
+structure CGLLemma45LiteralEpsilonSourcePacket {q R : ℕ}
+    (P : CGLFibreSeparatedPacket q R) (N : CGLPositiveLength)
+    extends CGLLemma45PaperSourcePacket P N where
+  epsilon : ℝ
+  epsilon_pos : 0 < epsilon
+  spacing_epsilon : base ^ epsilon ≤ P.spacing
+
+noncomputable def CGLLemma45LiteralEpsilonSourcePacket.epsilonDenominator
+    {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
+    (S : CGLLemma45LiteralEpsilonSourcePacket P N) : ℕ :=
+  (exists_nat_one_div_lt S.epsilon_pos).choose + 1
+
+theorem cglLemma45LiteralEpsilonSourcePacket_epsilonDenominator_pos
+    {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
+    (S : CGLLemma45LiteralEpsilonSourcePacket P N) : 0 < S.epsilonDenominator :=
+  Nat.succ_pos _
+
+theorem cglLemma45LiteralEpsilonSourcePacket_epsilonDenominator_inv_lt
+    {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
+    (S : CGLLemma45LiteralEpsilonSourcePacket P N) :
+    (1 : ℝ) / S.epsilonDenominator < S.epsilon := by
+  simpa [CGLLemma45LiteralEpsilonSourcePacket.epsilonDenominator, Nat.cast_add, Nat.cast_one] using
+    (exists_nat_one_div_lt S.epsilon_pos).choose_spec
+
+theorem cglLemma45LiteralEpsilonSourcePacket_spacing_power
+    {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
+    (S : CGLLemma45LiteralEpsilonSourcePacket P N) :
+    S.base ^ 1 ≤ P.spacing ^ S.epsilonDenominator := by
+  have hb : (1 : ℝ) ≤ S.base := by linarith [S.base_five]
+  have hd : 0 < (S.epsilonDenominator : ℝ) := by
+    exact_mod_cast cglLemma45LiteralEpsilonSourcePacket_epsilonDenominator_pos S
+  have hr : S.base ^ ((1 : ℝ) / S.epsilonDenominator) ≤ P.spacing :=
+    (Real.rpow_le_rpow_of_exponent_le hb
+      (cglLemma45LiteralEpsilonSourcePacket_epsilonDenominator_inv_lt S).le).trans
+      S.spacing_epsilon
+  have hp := Real.rpow_le_rpow (Real.rpow_nonneg (by linarith [S.base_five]) _) hr hd.le
+  rw [← Real.rpow_mul (by linarith [S.base_five])] at hp
+  rw [Real.rpow_natCast] at hp
+  have hmul : (1 / (S.epsilonDenominator : ℝ)) * S.epsilonDenominator = 1 := by
+    field_simp
+  rw [hmul, Real.rpow_one] at hp
+  simpa using hp
+
+def CGLLemma45LiteralEpsilonSourcePacket.toPaperSourcePacket
+    {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
+    (S : CGLLemma45LiteralEpsilonSourcePacket P N) : CGLLemma45PaperSourcePacket P N where
+  time := S.time
+  time_one := S.time_one
+  base := S.base
+  base_eq_modulus_mul_time := S.base_eq_modulus_mul_time
+  base_five := S.base_five
+  length_le := S.length_le
+  numerator := 1
+  numerator_pos := Nat.succ_pos _
+  denominator := S.epsilonDenominator
+  denominator_pos := cglLemma45LiteralEpsilonSourcePacket_epsilonDenominator_pos S
+  spacing_power := cglLemma45LiteralEpsilonSourcePacket_spacing_power S
+  ordinate_bound := S.ordinate_bound
+
+theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_literalEpsilonSourcePower
+    {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
+    (S : CGLLemma45LiteralEpsilonSourcePacket P N) (w : CGLRealSmoothBump)
+    (targetExponent : ℕ) :
+    ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
+      (cglLemma45FibreRows P) 0‖ ≤
+      (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump
+        (S.epsilonDenominator * (15 + targetExponent)) *
+        cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
+        cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0) /
+          S.base ^ targetExponent := by
+  simpa [CGLLemma45LiteralEpsilonSourcePacket.toPaperSourcePacket] using
+    norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_paperSourcePower
+      S.toPaperSourcePacket w targetExponent
+
 end RHTower

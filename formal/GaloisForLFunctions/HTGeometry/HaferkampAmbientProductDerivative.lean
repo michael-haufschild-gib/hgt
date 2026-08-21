@@ -63,6 +63,38 @@ theorem ambientOrderedMatrixProductDerivative_apply_coordinateDirection
     simp [ambientCoordinateDirection, hxi]
   · simp
 
+/-- If a physical gate word factors at one selected coordinate and every
+later gate is the identity, the ordered-product derivative at that coordinate
+is its inserted matrix followed by the reverse product of earlier gates. -/
+theorem ambientOrderedMatrixProductDerivative_list_coordinate_of_suffix_one
+    {N : Type*} [Fintype N] [DecidableEq N]
+    (matrices before after : List (Matrix N N ℂ)) (gate : Matrix N N ℂ)
+    (hmatrices : matrices = before ++ gate :: after)
+    (hafter : ∀ M ∈ after, M = 1) (H : Matrix N N ℂ) :
+    let i : Fin matrices.length := ⟨before.length, by rw [hmatrices]; simp⟩
+    ambientOrderedMatrixProductDerivative matrices.length (fun j => matrices.get j)
+      (ambientCoordinateDirection i H) = H * before.reverse.prod := by
+  dsimp
+  rw [ambientOrderedMatrixProductDerivative_apply_coordinateDirection]
+  change ((List.ofFn matrices.get).drop before.length.succ).reverse.prod * H *
+      ((List.ofFn matrices.get).take before.length).reverse.prod =
+    H * before.reverse.prod
+  rw [List.ofFn_get]
+  rw [hmatrices]
+  have hdrop : List.drop before.length.succ (before ++ gate :: after) = after := by
+    rw [List.drop_append, List.drop_eq_nil_of_le (Nat.le_succ _)]
+    rw [Nat.succ_sub (Nat.le_refl _)]
+    simp only [Nat.sub_self, List.drop_succ_cons,
+      List.drop_zero, List.nil_append]
+  have htake : List.take before.length (before ++ gate :: after) = before := by
+    rw [List.take_append_of_le_length (Nat.le_refl _), List.take_length]
+  rw [hdrop, htake]
+  have hafterReverse : ∀ M ∈ after.reverse, M = 1 := by
+    intro M hM
+    exact hafter M (by simpa using hM)
+  rw [List.prod_eq_one hafterReverse]
+  simp
+
 /-- The ambient product specializes exactly to the matrix underlying the
 paper's fixed-architecture contraction. -/
 theorem ambientOrderedMatrixProduct_eq_contraction

@@ -113,6 +113,25 @@ theorem exists_embedded_root_only_schedule_of_nontrivial
   obtain ⟨schedule, hsub⟩ := cone.mergePlan.exists_schedule_to_root_Z P hP
   exact ⟨schedule, hsub.trans cone.mergePlan.selectedEdges_sublist⟩
 
+/-- The root-only schedule can retain the merge plan's designated terminal
+edge as its final selected location inside the physical block word. -/
+theorem exists_embedded_root_only_schedule_ending_terminal_of_nontrivial
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    (cone : BackwardsLightCone n edges root) (hn : 1 < n)
+    (P : Fin n → Option (Fin 3)) (hP : ∃ q, P q ≠ none) :
+    ∃ schedule : PauliMergeSchedule (Fin n) P
+        (Function.update (fun _ => none) root (some 2)),
+      ∃ beforeEdges,
+        schedule.edgeList = beforeEdges ++ [(cone.mergePlan.terminal, root)] ∧
+        schedule.edgeList.Sublist edges := by
+  let zero : Fin n := ⟨0, lt_trans Nat.zero_lt_one hn⟩
+  let one : Fin n := ⟨1, hn⟩
+  letI : Nontrivial (Fin n) := ⟨zero, one, by simp [zero, one]⟩
+  obtain ⟨schedule, beforeEdges, hlast, hsub⟩ :=
+    cone.mergePlan.exists_schedule_to_root_Z_ending_terminal P hP
+  exact ⟨schedule, beforeEdges, hlast,
+    hsub.trans cone.mergePlan.selectedEdges_sublist⟩
+
 end BackwardsLightCone
 
 end

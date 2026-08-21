@@ -1,8 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardPhysicalSliceOuterCellReceiver
 import GaloisForLFunctions.HTGeometry.WindowRpowIntegral
 
-set_option maxHeartbeats 800000
-
 noncomputable section
 namespace RHTower.Sieve
 
@@ -291,6 +289,43 @@ theorem eventually_card_largeValues_routeT_physicalSlice_secondAlternative
     hTtwoT rfl hNtwoT hR hwidth hdelta hTord hTordN hamp hpolyT hbudget
       hgap hband hbig
 
+private theorem selectedCell_mem_physicalSlice_band
+    {a delta Tord : ℝ} {n : ℕ} {S : Finset ℕ} {lam : ℕ → ℝ}
+    (hdelta : 0 ≤ delta) (hS : S ⊆ Finset.range n)
+    (hmem : ∀ j < n,
+      lam j ∈ Set.Icc (a + ((2 * j : ℕ) : ℝ) * delta)
+          (a + (((2 * j : ℕ) : ℝ) + 1) * delta) ∨
+      lam j ∈ Set.Icc (a + ((2 * j + 1 : ℕ) : ℝ) * delta)
+          (a + (((2 * j + 1 : ℕ) : ℝ) + 1) * delta))
+    (ha : delta / 2 ≤ a)
+    (hTband : a + ((2 * n : ℕ) : ℝ) * delta + delta / 2 ≤ Tord) :
+    ∀ r ∈ S, delta / 2 ≤ lam r ∧ lam r + delta / 2 ≤ Tord := by
+  intro r hr
+  have hrn : r < n := Finset.mem_range.mp (hS hr)
+  rcases hmem r hrn with heven | hodd
+  · have hindex : (((2 * r : ℕ) : ℝ) + 1) ≤ ((2 * n : ℕ) : ℝ) := by
+      exact_mod_cast (show 2 * r + 1 ≤ 2 * n by omega)
+    constructor
+    · have hnonneg : 0 ≤ ((2 * r : ℕ) : ℝ) * delta :=
+        mul_nonneg (Nat.cast_nonneg _) hdelta
+      linarith [heven.1]
+    · nlinarith [heven.2]
+  · have hindex : (((2 * r + 1 : ℕ) : ℝ) + 1) ≤ ((2 * n : ℕ) : ℝ) := by
+      exact_mod_cast (show 2 * r + 1 + 1 ≤ 2 * n by omega)
+    constructor
+    · have hnonneg : 0 ≤ ((2 * r + 1 : ℕ) : ℝ) * delta :=
+        mul_nonneg (Nat.cast_nonneg _) hdelta
+      linarith [hodd.1]
+    · nlinarith [hodd.2]
+
+private theorem rpow_le_two_pow_mul_rpow
+    {N alpha : ℝ} (hN : 0 ≤ N) (q : ℕ) :
+    N ^ (alpha - 1) ≤ (((2 ^ q : ℕ) : ℝ) * N ^ (alpha - 1)) := by
+  have hpow : (1 : ℝ) ≤ ((2 ^ q : ℕ) : ℝ) := by
+    exact_mod_cast Nat.one_le_two_pow
+  simpa only [one_mul] using
+    mul_le_mul_of_nonneg_right hpow (Real.rpow_nonneg hN _)
+
 /-- Complete central physical-slice dichotomy at Route-T scale: either the low-amplitude layer
 already carries the signed defect, or the extracted literal von-Mangoldt superlevel satisfies
 Maynard's exact second count alternative. -/
@@ -384,35 +419,10 @@ theorem eventually_physicalSlice_central_base_or_secondAlternative_of_adjacent_d
   · right
     obtain ⟨lam, S, q, hgap, hS, hq, hmem, hlarge, hmass, _henergy⟩ := hhigh
     have hband : ∀ r ∈ S,
-        delta / 2 ≤ lam r ∧ lam r + delta / 2 ≤ Tord := by
-      intro r hr
-      have hrn : r < n := Finset.mem_range.mp (hS hr)
-      rcases hmem r hrn with heven | hodd
-      · constructor
-        · have har : a ≤ lam r := by
-            have hr0 : (0 : ℝ) ≤ ((2 * r : ℕ) : ℝ) := by positivity
-            nlinarith [heven.1]
-          exact ha.trans har
-        · have hcast : ((2 * r : ℕ) : ℝ) + 1 ≤ (2 * n : ℕ) := by
-            norm_cast
-            omega
-          nlinarith [heven.2]
-      · constructor
-        · have har : a ≤ lam r := by
-            have hr0 : (0 : ℝ) ≤ ((2 * r + 1 : ℕ) : ℝ) := by positivity
-            nlinarith [hodd.1]
-          exact ha.trans har
-        · have hcast : ((2 * r + 1 : ℕ) : ℝ) + 1 ≤ (2 * n : ℕ) := by
-            norm_cast
-            omega
-          nlinarith [hodd.2]
+        delta / 2 ≤ lam r ∧ lam r + delta / 2 ≤ Tord :=
+      selectedCell_mem_physicalSlice_band (by positivity) hS hmem ha hTband
     have hamp : N ^ (alpha - 1) ≤ (((2 ^ q : ℕ) : ℝ) * v) := by
-      have hpow : (1 : ℝ) ≤ ((2 ^ q : ℕ) : ℝ) := by exact_mod_cast Nat.one_le_two_pow
-      dsimp only [v]
-      calc
-        N ^ (alpha - 1) = 1 * N ^ (alpha - 1) := by ring
-        _ ≤ ((2 ^ q : ℕ) : ℝ) * N ^ (alpha - 1) :=
-          mul_le_mul_of_nonneg_right hpow hv.le
+      simpa only [v] using rpow_le_two_pow_mul_rpow hN0.le q
     have hcount : (S.card : ℝ) ≤
         T * N ^ (1 + routeTGapMomentNu - 2 * alpha) := by
       exact hsecondT hR hwidth hdelta hTord hTordN hamp hgap hband
@@ -526,35 +536,10 @@ theorem exists_eventually_physicalSlice_tail_base_or_secondAlternative_of_adjace
   · right
     obtain ⟨lam, S, q, hgap, hS, hq, hmem, hlarge, hmass, _henergy⟩ := hhigh
     have hband : ∀ r ∈ S,
-        delta / 2 ≤ lam r ∧ lam r + delta / 2 ≤ Tord := by
-      intro r hr
-      have hrn : r < n := Finset.mem_range.mp (hS hr)
-      rcases hmem r hrn with heven | hodd
-      · constructor
-        · have har : a ≤ lam r := by
-            have hr0 : (0 : ℝ) ≤ ((2 * r : ℕ) : ℝ) := by positivity
-            nlinarith [heven.1]
-          exact ha.trans har
-        · have hcast : ((2 * r : ℕ) : ℝ) + 1 ≤ (2 * n : ℕ) := by
-            norm_cast
-            omega
-          nlinarith [heven.2]
-      · constructor
-        · have har : a ≤ lam r := by
-            have hr0 : (0 : ℝ) ≤ ((2 * r + 1 : ℕ) : ℝ) := by positivity
-            nlinarith [hodd.1]
-          exact ha.trans har
-        · have hcast : ((2 * r + 1 : ℕ) : ℝ) + 1 ≤ (2 * n : ℕ) := by
-            norm_cast
-            omega
-          nlinarith [hodd.2]
+        delta / 2 ≤ lam r ∧ lam r + delta / 2 ≤ Tord :=
+      selectedCell_mem_physicalSlice_band (by positivity) hS hmem ha hTband
     have hamp : N ^ (alpha - 1) ≤ (((2 ^ q : ℕ) : ℝ) * v) := by
-      have hpow : (1 : ℝ) ≤ ((2 ^ q : ℕ) : ℝ) := by exact_mod_cast Nat.one_le_two_pow
-      dsimp only [v]
-      calc
-        N ^ (alpha - 1) = 1 * N ^ (alpha - 1) := by ring
-        _ ≤ ((2 ^ q : ℕ) : ℝ) * N ^ (alpha - 1) :=
-          mul_le_mul_of_nonneg_right hpow hv.le
+      simpa only [v] using rpow_le_two_pow_mul_rpow hN0.le q
     have hcount : (S.card : ℝ) ≤
         T * N ^ (1 + routeTGapMomentNu - 2 * alpha) := by
       exact hsecondT hR hwidth hdelta hTord hTordN hamp hgap hband

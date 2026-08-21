@@ -187,3 +187,44 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
   * `connes_traceFormula_resolvent_complex` — for every `z` with `Re(1/2 + zi) > 1`,
     `∑'_q (a_q^{-1} − (a_q − z)^{-1}) = −i · connesGeometricSideC (1/2 + zi)`.
   All `#print axioms` clean; `scripts/formal_tools.py lint` exits 0 with no errors.
+
+- 2026-08-21 — Tier B batch 6 (open item 3, App I Lemma 1 local half; and the B5 Sobolev layer).
+  * `ConnesTateLocalZeta` — **App I (25)**: with `vol(ℤ_p^*) = 1`,
+    `∫_{ℤ_p ∩ ℚ_p^*} |x|^s d^*x = (1 - p^{-s})^{-1}` (`connes_padic_tate_local_zeta`), and
+    `connes_tate_local_zeta_tprod`: the product of these local integrals over the primes is
+    `riemannZeta s` for `Re s > 1` (mathlib's `riemannZeta_eulerProduct_tprod`).  This is
+    Appendix I Lemma 1 for `k = ℚ`, `Χ_0 = 1`, in the shape the paper proves it.
+    NOTE: the *other* half of open item 3 — polynomial growth of `L(χ₀,½+it)` — is already
+    corpus-owned for `k = ℚ` (`RHTower.exists_bound_norm_riemannZeta_vertical`,
+    `…_strip`); it does not need to be rebuilt.
+  * `ConnesSobolevMeasure` — the measure `ρ_δ(u) du`, its finiteness on compacts (hence
+    regularity, hence density of `C_c`), the `eLpNorm` form of the translation bound
+    `‖V(v)‖ ≤ (2^{δ/2} ρ_δ(v))^{1/2}`, and `ρ_δ ≤ 2^{δ/2}` on `[-1,1]`.
+  * `ConnesSobolevTranslationContinuity` — **continuity of translation on `L²_δ(ℝ)`**:
+    `connes_translation_tendsto_of_compactSupport` (dominated convergence against a fixed
+    compact neighbourhood) and `connes_translation_tendsto` (density + the uniform operator
+    bound on `|v| ≤ 1`).
+  * `ConnesSobolevTranslationOperator` — `connesTranslate` as an operator of
+    `Lp ℂ 2 (ρ_δ du)`, its a.e. formula, `V(0) = 1`, the norm bound, the identity
+    `V(v) − V(w) = V(w)(V(v−w) − 1)` in `eLpNorm` form, and **strong continuity**
+    `continuous_connesTranslate`.
+  Remaining for B5: assemble `V(f) = ∫ f(v)V(v)dv` as a Bochner integral in `L²_δ` and prove
+  `V(f_n) → 1` strongly for `f_n(v) = n f(nv)` (approximate identity + dominated convergence,
+  using `ρ_δ(v/n) ≤ ρ_δ(v)`).
+
+- 2026-08-21 — **B5 CLOSED.**  `ConnesApproximateUnitStrong` completes Appendix I Lemma 4:
+  * `connesTranslateBound δ v = (2^{δ/2} ρ_δ(v))^{1/2}`, its continuity, monotonicity in `|v|`,
+    and `1 ≤ connesTranslateBound`.
+  * `connesV hδ f ξ = ∫ f(v) V(v)ξ dv` as a Bochner integral in `L²_δ(ℝ)`, with
+    `connes_integrable_smul_translate`, `connesV_sub` (`V(f)ξ − ξ = ∫ f(v)(V(v)ξ − ξ)dv` when
+    `∫ f = 1`) and `norm_connesV_sub_le`.
+  * `connesDilate f a v = a f(av)`, `integral_connesDilate` (mass is preserved),
+    `connes_integrable_dilate` (the same profile dominates every dilate, via
+    `connesTranslateBound_mono`).
+  * **`connes_approxUnit_tendsto`**: for `f` with `∫ |f(v)| ρ_δ(v)^{1/2} dv < ∞` and `∫ f = 1`,
+    `V(f_n) → 1` strongly on `L²_δ(ℝ)` with `f_n(v) = n f(nv)`.  Proof: change of variables plus
+    dominated convergence against `‖f(w)‖(ρ_δ(w)^{1/2}·2^{δ/4} + 1)‖ξ‖`, using the strong
+    continuity of the translation group.
+  Everything unconditional; all `#print axioms` clean.  Open item 3 is now reduced to Appendix I
+  Lemmas 2–3 for the adele class space (the `E(f)` periodization decay and the analytic
+  continuation of `Δ_s`); the local Lemma-1 computation and the `L(χ₀,½+it)` growth are done.

@@ -2,8 +2,6 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardMultiscaleReferenceTelescope
 import GaloisForLFunctions.RHTower.Sieve.MaynardPhysicalSliceCountNormalization
 import GaloisForLFunctions.RHTower.Sieve.MaynardPhysicalSliceArbitraryOrderLocalization
 
-set_option maxHeartbeats 800000
-
 /-!
 # Prime-free composition for the physical Route-T slice
 
@@ -320,7 +318,18 @@ theorem eventually_routeT_natOrder_surplus_gt_base_layers
         mul_le_mul_of_nonneg_right hE' hcoef0
       _ ≤ 6 * Cloc * (((2 ^ (j + 1) : ℕ) : ℝ)) *
           (1 + Real.log (3 * N)) * T ^ (-aTail) := by
-        nlinarith
+        have hlogLe : Real.log (3 * N) ≤ 1 + Real.log (3 * N) := by
+          linarith
+        calc
+          (6 * Real.log (3 * N)) *
+              (Cloc * (((2 ^ (j + 1) : ℕ) : ℝ)) * T ^ (-aTail)) =
+              (6 * Cloc * (((2 ^ (j + 1) : ℕ) : ℝ)) * T ^ (-aTail)) *
+                Real.log (3 * N) := by ring
+          _ ≤ (6 * Cloc * (((2 ^ (j + 1) : ℕ) : ℝ)) * T ^ (-aTail)) *
+                (1 + Real.log (3 * N)) :=
+            mul_le_mul_of_nonneg_left hlogLe (by positivity)
+          _ = 6 * Cloc * (((2 ^ (j + 1) : ℕ) : ℝ)) *
+              (1 + Real.log (3 * N)) * T ^ (-aTail) := by ring
   have hBcentral : Bcentral ≤
       32 * (1 + Real.log (3 * N)) * T ^ (-aCentral) := by
     dsimp only [Bcentral]
@@ -336,7 +345,8 @@ theorem eventually_routeT_natOrder_surplus_gt_base_layers
       _ ≤ 32 * (1 + Real.log (3 * N)) * T ^ (-aCentral) := by
         have hpow0 : 0 ≤ T ^ (-aCentral) := Real.rpow_nonneg hT0.le _
         have hcoef : (32 : ℝ) ≤ 32 * (1 + Real.log (3 * N)) := by
-          nlinarith
+          simpa only [mul_one] using
+            mul_le_mul_of_nonneg_left hlogPacket (by norm_num : (0 : ℝ) ≤ 32)
         exact mul_le_mul_of_nonneg_right hcoef hpow0
   have hBouter : Bouter ≤
       (2080 * Ccell) * (1 + Real.log (3 * N)) * T ^ (-aOuter) := by
@@ -386,6 +396,69 @@ theorem eventually_routeT_natOrder_surplus_gt_base_layers
     simpa only [routeTPhysicalSliceNatOrderLocalizationSurplus,
       Llow, Ltail, E, one_pow, mul_one] using hcore
   simpa only [N, R, V, Bcentral, Bouter] using ⟨hcentralSurplus, houterSurplus⟩
+
+private theorem routeT_natOrder_localization_geometry
+    {T mu v : ℝ} (hv : 1 < v) (hT : 3 ≤ T)
+    (hRratio : 2 ≤ T ^ (mu - 1))
+    (hVratio : 2 ≤ T ^ (v - 1))
+    (hNVratio : 2 ≤ T ^ (mu - v)) :
+    let N : ℝ := T ^ mu
+    let R : ℝ := N / (2 * T)
+    let V : ℝ := T ^ v
+    1 ≤ R ∧ R ≤ 2 * N / T ∧ N / (2 * R) = T ∧
+      (1 : ℝ) + 2 ≤ N / (2 * R) ∧ N / (2 * R) + 2 ≤ V ∧
+      V + 1 ≤ N := by
+  dsimp only
+  let N : ℝ := T ^ mu
+  let R : ℝ := N / (2 * T)
+  let V : ℝ := T ^ v
+  have hT0 : 0 < T := by linarith
+  have hTone : 1 ≤ T := by linarith
+  have hN0 : 0 < N := by dsimp only [N]; positivity
+  have hV0 : 0 < V := by dsimp only [V]; positivity
+  have hNdecomp : N = T ^ (mu - 1) * T := by
+    dsimp only [N]
+    calc
+      T ^ mu = T ^ ((mu - 1) + 1) := by congr 1; ring
+      _ = T ^ (mu - 1) * T ^ (1 : ℝ) := Real.rpow_add hT0 _ _
+      _ = T ^ (mu - 1) * T := by rw [Real.rpow_one]
+  have hVdecomp : V = T ^ (v - 1) * T := by
+    dsimp only [V]
+    calc
+      T ^ v = T ^ ((v - 1) + 1) := by congr 1; ring
+      _ = T ^ (v - 1) * T ^ (1 : ℝ) := Real.rpow_add hT0 _ _
+      _ = T ^ (v - 1) * T := by rw [Real.rpow_one]
+  have hNVdecomp : N = T ^ (mu - v) * V := by
+    dsimp only [N, V]
+    calc
+      T ^ mu = T ^ ((mu - v) + v) := by congr 1; ring
+      _ = T ^ (mu - v) * T ^ v := Real.rpow_add hT0 _ _
+  have hRone : 1 ≤ R := by
+    dsimp only [R]
+    rw [hNdecomp]
+    field_simp
+    nlinarith
+  have hwidth : R ≤ 2 * N / T := by
+    dsimp only [R]
+    field_simp
+    nlinarith [hN0]
+  have htransition : N / (2 * R) = T := by
+    dsimp only [R]
+    field_simp
+  have hcentralLen : (1 : ℝ) + 2 ≤ N / (2 * R) := by
+    rw [htransition]
+    norm_num at hT ⊢
+    exact hT
+  have houterLen : N / (2 * R) + 2 ≤ V := by
+    rw [htransition, hVdecomp]
+    nlinarith [mul_le_mul_of_nonneg_right hVratio hT0.le]
+  have hTordTop : V + 1 ≤ N := by
+    rw [hNVdecomp]
+    have hVone : 1 ≤ V := by
+      dsimp only [V]
+      exact Real.one_le_rpow hTone (by linarith : 0 ≤ v)
+    nlinarith [mul_le_mul_of_nonneg_right hNVratio hV0.le]
+  exact ⟨hRone, hwidth, htransition, hcentralLen, houterLen, hTordTop⟩
 
 
 /-- On every strict base-phase margin, an inverse-log adjacent defect forces the literal
@@ -467,54 +540,17 @@ theorem exists_eventually_physicalSlice_natOrder_secondAlternative_of_inverseLog
   have hT0 : 0 < T := by linarith
   have hTone : 1 ≤ T := by linarith
   have hN0 : 0 < N := by dsimp only [N]; positivity
-  have hV0 : 0 < V := by dsimp only [V]; positivity
-  have hNdecomp : N = T ^ (mu - 1) * T := by
-    dsimp only [N]
-    calc
-      T ^ mu = T ^ ((mu - 1) + 1) := by congr 1; ring
-      _ = T ^ (mu - 1) * T ^ (1 : ℝ) := Real.rpow_add hT0 _ _
-      _ = T ^ (mu - 1) * T := by rw [Real.rpow_one]
-  have hVdecomp : V = T ^ (v - 1) * T := by
-    dsimp only [V]
-    calc
-      T ^ v = T ^ ((v - 1) + 1) := by congr 1; ring
-      _ = T ^ (v - 1) * T ^ (1 : ℝ) := Real.rpow_add hT0 _ _
-      _ = T ^ (v - 1) * T := by rw [Real.rpow_one]
-  have hNVdecomp : N = T ^ (mu - v) * V := by
-    dsimp only [N, V]
-    calc
-      T ^ mu = T ^ ((mu - v) + v) := by congr 1; ring
-      _ = T ^ (mu - v) * T ^ v := Real.rpow_add hT0 _ _
-  have hRone : 1 ≤ R := by
-    dsimp only [R]
-    rw [hNdecomp]
-    have hTne : T ≠ 0 := hT0.ne'
-    field_simp
-    nlinarith
-  have hwidth : R ≤ 2 * N / T := by
-    dsimp only [R]
-    field_simp
-    nlinarith [hN0]
-  have htransition : N / (2 * R) = T := by
-    dsimp only [R]
-    field_simp
-  have hcentralLen : (1 : ℝ) + 2 ≤ N / (2 * R) := by
-    rw [htransition]
-    norm_num at hT ⊢
-    exact hT
-  have houterLen : N / (2 * R) + 2 ≤ V := by
-    rw [htransition, hVdecomp]
-    nlinarith [mul_le_mul_of_nonneg_right hVratioT hT0.le]
-  have hTordTop : V + 1 ≤ N := by
-    rw [hNVdecomp]
-    have hVone : 1 ≤ V := by
-      dsimp only [V]
-      exact Real.one_le_rpow hTone (by linarith : 0 ≤ v)
-    nlinarith [mul_le_mul_of_nonneg_right hNVratioT hV0.le]
+  have hgeometry := routeT_natOrder_localization_geometry
+    hvOne hT hRratioT hVratioT hNVratioT
+  dsimp only at hgeometry
+  obtain ⟨hRone, hwidth, htransition, hcentralLen, houterLen, hTordTop⟩ :=
+    hgeometry
   have hdomPair := hdomT hJ hJlog hD
   have hbaseCentral0 : 0 ≤ 32 * (N / (2 * R) - 1) * N ^ (alpha - 1) := by
     rw [htransition]
-    positivity
+    exact mul_nonneg
+      (mul_nonneg (by norm_num) (sub_nonneg.mpr hTone))
+      (Real.rpow_nonneg hN0.le _)
   have hsurplus : 0 <
       routeTPhysicalSliceNatOrderLocalizationSurplus j Cloc N R 1 V D :=
     hbaseCentral0.trans_lt (by simpa only [N, R, V] using hdomPair.1)
@@ -527,6 +563,6 @@ theorem exists_eventually_physicalSlice_natOrder_secondAlternative_of_inverseLog
       hbaseCentral)
   · exact False.elim ((not_le_of_gt (by simpa only [N, R, V] using hdomPair.2))
       hbaseOuter)
-  · simpa only [N, R, V] using hhigh
+  · exact hhigh
 
 end RHTower.Sieve
