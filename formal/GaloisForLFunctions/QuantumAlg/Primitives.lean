@@ -12,6 +12,7 @@ public import GaloisForLFunctions.QuantumAlg.Primitives.WalshHadamard
 public import GaloisForLFunctions.QuantumAlg.Primitives.PhaseKickback
 public import GaloisForLFunctions.QuantumAlg.Primitives.HadamardTest
 public import GaloisForLFunctions.QuantumAlg.Primitives.SwapTest
+public import GaloisForLFunctions.QuantumAlg.Primitives.SymmetricBraid
 public import GaloisForLFunctions.QuantumAlg.Primitives.QFT
 public import GaloisForLFunctions.QuantumAlg.Primitives.QSP
 public import GaloisForLFunctions.QuantumAlg.Primitives.LCU

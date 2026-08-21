@@ -57,6 +57,25 @@ theorem continuous_px (hF : ContDiff ℝ ∞ F) : Continuous (px F) := (contDiff
 
 theorem continuous_py (hF : ContDiff ℝ ∞ F) : Continuous (py F) := (contDiff_py hF).continuous
 
+/-- The differential of a smooth planar field in terms of its two partial derivatives. -/
+theorem fderiv_apply_eq (p : ℝ × ℝ) (a b : ℝ) :
+    fderiv ℝ F p (a, b) = a * px F p + b * py F p := by
+  have h : ((a, b) : ℝ × ℝ) = a • ((1 : ℝ), (0 : ℝ)) + b • ((0 : ℝ), (1 : ℝ)) := by
+    simp
+  rw [h, map_add, map_smul, map_smul]
+  simp [px, py, smul_eq_mul]
+
+/-- **The chain rule along a plane curve.** -/
+theorem hasDerivAt_comp_curve (hF : ContDiff ℝ ∞ F) {u v : ℝ → ℝ} {u' v' t : ℝ}
+    (hu : HasDerivAt u u' t) (hv : HasDerivAt v v' t) :
+    HasDerivAt (fun s : ℝ => F (u s, v s)) (u' * px F (u t, v t) + v' * py F (u t, v t)) t := by
+  have h1 : HasFDerivAt F (fderiv ℝ F (u t, v t)) (u t, v t) :=
+    (hF.differentiable (by simp) _).hasFDerivAt
+  have h2 : HasDerivAt (fun s : ℝ => (u s, v s)) (u', v') t := hu.prodMk hv
+  have h3 := h1.comp_hasDerivAt t h2
+  rw [fderiv_apply_eq] at h3
+  simpa [Function.comp_def] using h3
+
 /-- Slicing a continuous planar field in the first coordinate. -/
 theorem continuous_sliceFst {f : ℝ × ℝ → ℝ} (hf : Continuous f) (v : ℝ) :
     Continuous fun u : ℝ => f (u, v) := by fun_prop

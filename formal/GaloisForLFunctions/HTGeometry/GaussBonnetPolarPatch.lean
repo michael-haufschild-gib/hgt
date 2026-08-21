@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.GaussBonnetOrthogonalPatch
+import GaloisForLFunctions.HTGeometry.GaussBonnetGeodesicCurvature
 import GaloisForLFunctions.HTGeometry.GaussBonnetGeodesicPolar
 
 /-!
@@ -56,6 +56,22 @@ theorem area_eq (p : ℝ × ℝ) : (polarPatch hf hpos).area p = f p := by
 theorem py_E (p : ℝ × ℝ) : py (polarPatch hf hpos).E p = 0 := by
   simp [py, show (polarPatch hf hpos).E = fun _ : ℝ × ℝ => (1 : ℝ) from rfl]
 
+theorem px_E (p : ℝ × ℝ) : px (polarPatch hf hpos).E p = 0 := by
+  simp [px, show (polarPatch hf hpos).E = fun _ : ℝ × ℝ => (1 : ℝ) from rfl]
+
+/-- **The meridians of a geodesic polar chart are geodesics.**  Their covariant acceleration
+vanishes identically; this is the intrinsic content of the name "geodesic polar coordinates". -/
+theorem isGeodesicJet_meridian (p : ℝ × ℝ) :
+    (polarPatch hf hpos).IsGeodesicJet p 1 0 0 0 := by
+  constructor
+  · simp [OrthogonalPatch.covAccU, OrthogonalPatch.chr111, px_E hf hpos]
+  · simp [OrthogonalPatch.covAccV, OrthogonalPatch.chr211, py_E hf hpos]
+
+/-- The intrinsic geodesic curvature of a meridian is zero. -/
+theorem geodesicCurvature_meridian (p : ℝ × ℝ) :
+    (polarPatch hf hpos).geodesicCurvature p 1 0 0 0 = 0 :=
+  OrthogonalPatch.geodesicCurvature_eq_zero _ (isGeodesicJet_meridian hf hpos p)
+
 theorem Q_eq (p : ℝ × ℝ) : (polarPatch hf hpos).Q p = 0 := by
   simp [OrthogonalPatch.Q, py_E hf hpos]
 
@@ -72,6 +88,38 @@ theorem px_G (r θ : ℝ) : px (polarPatch hf hpos).G (r, θ) = 2 * f (r, θ) * 
     push_cast
     ring
   exact h1.unique h2
+
+theorem py_G (r θ : ℝ) :
+    py (polarPatch hf hpos).G (r, θ) = 2 * f (r, θ) * py f (r, θ) := by
+  have h1 : HasDerivAt (fun t : ℝ => (polarPatch hf hpos).G (r, t))
+      (py (polarPatch hf hpos).G (r, θ)) θ :=
+    hasDerivAt_py (polarPatch hf hpos).smoothG r θ
+  have h2 : HasDerivAt (fun t : ℝ => f (r, t) ^ 2) (2 * f (r, θ) * py f (r, θ)) θ := by
+    refine ((hasDerivAt_py hf r θ).pow 2).congr_deriv ?_
+    push_cast
+    ring
+  exact h1.unique h2
+
+/-- **Liouville's formula for a radial graph.**  The intrinsic geodesic curvature of a curve
+`θ ↦ (R(θ), θ)` with velocity `R₁` and acceleration `R₂` in the radial direction. -/
+theorem geodesicCurvature_radialGraph (r θ R₁ R₂ : ℝ) :
+    (polarPatch hf hpos).geodesicCurvature (r, θ) R₁ 1 R₂ 0
+      = (2 * px f (r, θ) * R₁ ^ 2 + R₁ * py f (r, θ) - f (r, θ) * R₂
+          + f (r, θ) ^ 2 * px f (r, θ)) / Real.sqrt (R₁ ^ 2 + f (r, θ) ^ 2) ^ 3 := by
+  have hne : f (r, θ) ≠ 0 := (hpos (r, θ)).ne'
+  have hspeed : (polarPatch hf hpos).speed (r, θ) R₁ 1
+      = Real.sqrt (R₁ ^ 2 + f (r, θ) ^ 2) := by
+    simp [OrthogonalPatch.speed]
+  have hs0 : Real.sqrt (R₁ ^ 2 + f (r, θ) ^ 2) ≠ 0 := by
+    have : (0 : ℝ) < R₁ ^ 2 + f (r, θ) ^ 2 := by positivity
+    exact (Real.sqrt_pos.mpr this).ne'
+  unfold OrthogonalPatch.geodesicCurvature OrthogonalPatch.covAccU OrthogonalPatch.covAccV
+    OrthogonalPatch.chr111 OrthogonalPatch.chr112 OrthogonalPatch.chr122 OrthogonalPatch.chr211
+    OrthogonalPatch.chr212 OrthogonalPatch.chr222
+  rw [hspeed, area_eq hf hpos, px_E hf hpos, py_E hf hpos, px_G hf hpos, py_G hf hpos, G_eq,
+    E_eq hf hpos]
+  field_simp
+  ring
 
 /-- The `dθ` component of the Liouville one-form is `∂_r f`. -/
 theorem P_eq (r θ : ℝ) : (polarPatch hf hpos).P (r, θ) = px f (r, θ) := by

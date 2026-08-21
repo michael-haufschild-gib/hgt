@@ -496,3 +496,43 @@ Reused rather than rebuilt:
 
 All statements are unconditional and axiom-clean (`propext`, `Classical.choice`, `Quot.sound`
 only).  The card is fully formalized.
+
+## Lean progress -- the carrier compiler certificate is discharged (2026-08-21)
+
+`hcert` in `exists_incubating_cubicSeed` asserted that some gate alphabet compiles the carrier
+evolution of the cubic seed.  On the diagonal carrier that is not an assumption but a theorem about
+an explicit alphabet, and the alphabet is exactly the one the card describes: one gate per
+multilinear monomial of degree at most three, plus one rotation per carrier generator.
+
+`formal/GaloisForLFunctions/HTGeometry/PhaseGridApproximation.lean` and
+`formal/GaloisForLFunctions/HTGeometry/DiagonalRotationCompiler.lean` (new, umbrella-wired,
+axiom-clean) supply the rotation half:
+
+| Card item | Declaration |
+|---|---|
+| the circle is `1`-Lipschitz in its angle; unit-modulus products telescope | `norm_exp_sub_exp_le`, `norm_prod_sub_prod_le` |
+| **grid approximation**: `m` equally spaced angles match every real phase to within `2π/m`, for both signs at once | `gridAngle`, `exists_gridIndex` |
+| the carrier Hamiltonian is diagonal, and its evolution is the diagonal of the phases | `pathHamiltonian_embed_eq_diagonal_carrierEnergy`, `unitaryEvolution_diagonal_phase` |
+| **the rotation certificate**: depth `2n+3`, error `(2n+3)·2π/m`, for *any* unit seed, every carrier point and every time | `exists_diagAlphabet_word`, `exists_diagAlphabet_compiler` |
+
+`formal/GaloisForLFunctions/HTGeometry/CubicSeedPhaseCompiler.lean` (new, umbrella-wired,
+axiom-clean) supplies the seed half:
+
+| Card item | Declaration |
+|---|---|
+| the eighth-root character is additive-to-multiplicative | `charEight_add`, `charEight_sum`, `norm_charEight` |
+| **one diagonal phase gate per monomial** | `monPhaseGate`, `prod_monPhaseGate` |
+| **the cubic seed is exactly that word applied to `\|+>^{⊗n}`** | `registerCubicSeed_eq_mulVec` |
+| the combined alphabet | `CubicDiagAlphabet`, `cubicDiagGate`, `cubicDiagAct` |
+| **the certificate for every cubic seed, from one reference state** | `exists_cubicDiagAlphabet_compiler` |
+| **the incubation law with no hypothesis on any gate alphabet** | `exists_incubating_cubicSeed_compiled` |
+
+The word is `(2n+3)` rotations followed by one gate per monomial, so its length is
+`card (MonLe) + (2n+3) = O(n³)` -- the card's own `O(n³)` preparability -- and the monomial half is
+*exact*: all the error comes from discretizing the rotation angles, and is `(2n+3)·2π/m`.  The
+alphabet has `8·card (MonLe) + (2n+3)m` letters with `m = O(n/η)`, so `log M_n = O(log n)`, the
+regime the plateau counting condition assumes.
+
+The seed enters the rotation estimate only through `‖ψ‖ = 1`, which is why the same alphabet serves
+every cubic seed with a single reference state: the monomial word prepares the seed, the rotation
+word evolves it, and the two commute because both are diagonal.

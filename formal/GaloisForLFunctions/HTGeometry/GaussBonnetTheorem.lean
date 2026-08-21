@@ -2,6 +2,9 @@ import GaloisForLFunctions.HTGeometry.GaussBonnetModelSurfaces
 import GaloisForLFunctions.HTGeometry.GaussBonnetTorus
 import GaloisForLFunctions.HTGeometry.GaussBonnetWarpedPatch
 import GaloisForLFunctions.HTGeometry.GaussBonnetPolarPatch
+import GaloisForLFunctions.HTGeometry.GaussBonnetStarShaped
+import GaloisForLFunctions.HTGeometry.GaussBonnetRiemann
+import GaloisForLFunctions.HTGeometry.GaussBonnetPolygon
 import GaloisForLFunctions.HTGeometry.GaussBonnetTriangulatedTorus
 import GaloisForLFunctions.HTGeometry.GaussBonnetGraph
 
@@ -14,6 +17,15 @@ unconditional Lean statements proved in
 * `GaussBonnetPlanarPartials` — planar partial derivatives and interval Fubini;
 * `GaussBonnetOrthogonalPatch` — the local theorem on a coordinate rectangle;
 * `GaussBonnetGeodesicPolar` — the local theorem for a geodesic disc on an arbitrary surface;
+* `GaussBonnetGeodesicCurvature` — the intrinsic (covariant-derivative) geodesic curvature, and
+  Liouville's formulas as theorems;
+* `GaussBonnetPartialCalculus`, `GaussBonnetRiemann` — the Riemann curvature tensor of an
+  orthogonal metric, and the theorem that the Gaussian curvature used here is the intrinsic
+  sectional curvature;
+* `GaussBonnetStarShaped` — the local theorem for an arbitrary star-shaped region on an arbitrary
+  surface;
+* `GaussBonnetRadialArc`, `GaussBonnetPolygon` — the arc identity, and the local theorem with
+  corners for an arbitrary star-shaped geodesic polygon;
 * `GaussBonnetPolarPatch`, `GaussBonnetWarpedPatch` — identification of the curvatures used there
   with the Gaussian curvature of the general orthogonal-coordinate formula;
 * `GaussBonnetTorus` — the global theorem for doubly periodic metrics;
@@ -58,6 +70,46 @@ geodesic polar coordinates,
 theorem gaussBonnet_geodesic_disc (C : GeodesicPolarChart) {R : ℝ} (hR : 0 < R) :
     C.totalCurvature R + C.boundaryTurning R = 2 * π :=
   C.gauss_bonnet_geodesic_disc hR
+
+/-- **Gauss--Bonnet, star-shaped form.**  For every closed star-shaped region about the pole of a
+geodesic polar chart on an arbitrary smooth Riemannian surface,
+
+```text
+∫∫_D K dA + ∮_{∂D} κ_g ds = 2π = 2π·χ(disc).
+```
+-/
+theorem gaussBonnet_star_shaped {C : GeodesicPolarChart} (S : StarCurve C) :
+    S.totalCurvature + S.boundaryTurning = 2 * π :=
+  S.gauss_bonnet_star
+
+/-- **Liouville's formula is a theorem.**  The geodesic curvature of the coordinate curves of an
+orthogonal patch, defined intrinsically by the covariant derivative, is `-E_v/(2E√G)` and
+`G_u/(2G√E)`. -/
+theorem liouville_uCurve (M : OrthogonalPatch) (p : ℝ × ℝ) :
+    M.geodesicCurvature p 1 0 0 0 = -py M.E p / (2 * M.E p * M.vSpeed p) :=
+  M.geodesicCurvature_uCurve p
+
+/-- Liouville's formula for the other family of coordinate curves. -/
+theorem liouville_vCurve (M : OrthogonalPatch) (p : ℝ × ℝ) :
+    M.geodesicCurvature p 0 1 0 0 = px M.G p / (2 * M.G p * M.uSpeed p) :=
+  M.geodesicCurvature_vCurve p
+
+/-- **Gauss--Bonnet with corners.**  For every closed star-shaped polygon about the pole of a
+geodesic polar chart on an arbitrary smooth Riemannian surface,
+
+```text
+∫∫_D K dA + ∮_{∂D} κ_g ds + Σ_i ε_i = 2π = 2π·χ(disc).
+```
+-/
+theorem gaussBonnet_polygon {C : GeodesicPolarChart} (P : StarPolygon C) :
+    P.totalCurvature + P.boundaryTurning + P.totalExteriorAngle = 2 * π :=
+  P.gauss_bonnet_polygon
+
+/-- **Both curvatures in the Gauss--Bonnet identity are intrinsic.**  The Gaussian curvature used
+throughout is the sectional curvature `R₁₂₁₂/(EG)` of the Levi-Civita connection. -/
+theorem gaussCurvature_eq_sectional (M : OrthogonalPatch) (u v : ℝ) :
+    M.sectionalCurvature (u, v) = M.gaussCurvature (u, v) :=
+  M.sectionalCurvature_eq_gaussCurvature u v
 
 /-- **Gauss--Bonnet, global form on the torus.**  Every smooth doubly periodic orthogonal
 Riemannian metric — a coordinate-orthogonal metric on `T²` — satisfies

@@ -23,7 +23,7 @@ noncomputable section
 namespace RHTower
 
 /-- A Schwartz density has finite absolute first moment after squaring. -/
-theorem SchwartzMap.integrable_abs_mul_normSq (F : SchwartzMap ℝ ℂ) :
+theorem integrable_abs_mul_normSq_schwartzMap (F : SchwartzMap ℝ ℂ) :
     Integrable (fun xi : ℝ => |xi| * ‖F xi‖ ^ 2) := by
   let C : ℝ := SchwartzMap.seminorm ℂ 0 0 F
   let XF : SchwartzMap ℝ ℂ :=
@@ -75,7 +75,7 @@ theorem integrable_ccmComplexSmoothFormVector_fourierFirstMoment
   have hae : ((fourierUnitary f : SoninL2) : ℝ → ℂ) =ᵐ[volume] F := by
     rw [hfourier]
     exact F.coeFn_toLp 2 volume
-  have hF := F.integrable_abs_mul_normSq
+  have hF := integrable_abs_mul_normSq_schwartzMap F
   apply hF.congr
   filter_upwards [hae] with xi hxi
   rw [hxi]

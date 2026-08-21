@@ -89,12 +89,12 @@ theorem bwVectorMat_mul_borel (m : Fin N → ℕ) (g : Matrix (Fin N) (Fin N) k)
       Finset.prod_pow_eq_pow_sum, weightOfMult]
 
 /-- The generic matrix of indeterminates. -/
-noncomputable def genericMatrix (N : ℕ) (k : Type*) [Field k] :
+noncomputable def genericMatrix (N : ℕ) (k : Type*) [CommRing k] :
     Matrix (Fin N) (Fin N) (MvPolynomial (Fin N × Fin N) k) :=
   Matrix.of fun i j => MvPolynomial.X (i, j)
 
 /-- The `j`-th leading principal minor as a polynomial. -/
-noncomputable def minorPoly (j : ℕ) (N : ℕ) (k : Type*) [Field k] :
+noncomputable def minorPoly (j : ℕ) (N : ℕ) (k : Type*) [CommRing k] :
     MvPolynomial (Fin N × Fin N) k :=
   (truncate j (genericMatrix N k)).det
 
@@ -114,7 +114,7 @@ theorem matEval_minorPoly (j : ℕ) (g : Matrix (Fin N) (Fin N) k) :
   rfl
 
 /-- The Borel–Weil highest weight vector in the polynomial model. -/
-noncomputable def bwPoly (m : Fin N → ℕ) (k : Type*) [Field k] :
+noncomputable def bwPoly (m : Fin N → ℕ) (k : Type*) [CommRing k] :
     MvPolynomial (Fin N × Fin N) k :=
   ∏ j : Fin N, (minorPoly ((j : ℕ) + 1) N k) ^ (m j)
 

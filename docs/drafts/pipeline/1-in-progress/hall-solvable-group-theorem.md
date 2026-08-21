@@ -1,0 +1,61 @@
+# P. Hall's solvable-group theorem (E_pi, C_pi, and the solvability converse)
+
+- **ID:** hall-solvable
+- **Stage:** 1-in-progress
+- **Type:** THEOREM (Lean)
+- **Source:** user goal 2026-08-21 (mathlib gap: mathlib owns only Hall's *marriage* theorem)
+- **Statement:** For a finite solvable `G` and any factorisation `card G = m * n` with `Nat.Coprime m n`
+  there is a subgroup of order `m` (E_pi); any two such are conjugate (C_pi); and conversely, if a
+  finite `G` has a Hall `p'`-subgroup for every prime `p`, then `G` is solvable.
+
+## Goal
+Closes a genuine mathlib gap. The converse contains **Burnside's `p^a q^b` theorem** as its two-prime
+case (for `card G = p^a q^b` the Hall `p'`-subgroups are exactly the Sylow subgroups, so the
+hypothesis is vacuous), so the project necessarily builds complex character theory of finite groups:
+class sums, the central character, integrality of `chi(g)` and of `|K| chi(g) / chi(1)`, and column
+orthogonality. All of that is reusable corpus infrastructure.
+
+## Gates
+- [ ] 0 → 1  in-progress
+- [ ] 1 → 2  fully-proven on paper
+- [ ] 2 → 3  formalized: Lean theorems below, `lake build` green, axiom audit PASS
+- [ ] 3 → 4  publication-ready
+
+## Corpus / mathlib audit (2026-08-21)
+mathlib **has**: `Subgroup.exists_right_complement'_of_coprime` (Schur–Zassenhaus, existence half,
+normal `N`, no solvability needed); `IsSolvable.commutator_lt_of_ne_bot`; `Subgroup.commutator_normal`;
+`powCoprime`; Sylow theory; `Maschke`; `FDRep.char_orthonormal`;
+`FDRep.scalar_product_char_eq_finrank_equivariant`.
+mathlib **lacks**: any `IsHall` predicate; minimal normal subgroups; conjugacy half of
+Schur–Zassenhaus; class functions; count of irreducibles; column orthogonality; integrality of
+character values; Burnside `p^a q^b`; Wielandt's three-subgroup solvability theorem.
+corpus **lacks** all of the above (only `RHTower/ArtinVirtualCharacter.lean` touches `FDRep`
+characters; no Sylow/solvable material at all).
+
+## Approach
+**Phase A — E_pi and C_pi.** Induct on `card G` through a minimal normal subgroup `N` of the solvable
+group `G`; `N` is elementary abelian, so `card N = p ^ a`.
+- `p ∣ m` branch: lift a Hall subgroup of `G ⧸ N`.
+- `p ∣ n` branch: the preimage `K` of a Hall subgroup of `G ⧸ N` has order `m * p ^ a`; if `K < G`
+  recurse into `K`, else `N` is a normal Hall `pi'`-subgroup and Schur–Zassenhaus supplies a complement.
+Conjugacy needs the conjugacy half of Schur–Zassenhaus for **abelian** `N`, proved here by the
+explicit cocycle-averaging argument: a complement is `{ gamma h * h }` for a 1-cocycle `gamma`, and
+`u := (prod over H of gamma)^(-1/m)` conjugates it back, using bijectivity of `x ↦ x ^ m` on `N`.
+
+**Phase B — complex character theory.** Regular representation, multiplicities via
+`scalar_product_char_eq_finrank_equivariant`, column orthogonality
+`∑_chi chi 1 * chi g = 0 (g ≠ 1)`; trace of a finite-order operator is a sum of roots of unity, hence
+an algebraic integer; class sums span the centre of the group algebra, giving integrality of the
+central character `omega_chi(K) = |K| chi(g) / chi(1)`.
+
+**Phase C — Burnside `p^a q^b`.** From `gcd(|K|, chi(1)) = 1` and `chi(g) ≠ 0` conclude `rho g` scalar
+(algebraic-integer norm argument through `Q(zeta_n)` embeddings), then the class of size `p^k` in a
+Sylow-centre element gives a proper nontrivial normal subgroup.
+
+**Phase D — the converse.** Induct on `card G`. Each Hall `p_i'`-subgroup inherits the hypothesis and is
+proper, hence solvable; a proper nontrivial normal subgroup and its quotient inherit the hypothesis;
+so a minimal counterexample is simple with at least three prime divisors, and Wielandt's
+three-subgroup theorem (to be built) closes it. Two prime divisors is Burnside.
+
+## Log
+- 2026-08-21 — created; mathlib/corpus audit done; Phase A started.

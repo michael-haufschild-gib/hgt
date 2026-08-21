@@ -37,7 +37,7 @@ variable {N : ℕ} {k : Type*} [Field k]
 def rowW (N : ℕ) : Fin N × Fin N → ℕ := fun ij => (ij.1 : ℕ)
 
 /-- The row weight of a monomial exponent. -/
-def rowWeight (d : (Fin N × Fin N) →₀ ℕ) : ℕ := Finsupp.weight (rowW N) d
+noncomputable def rowWeight (d : (Fin N × Fin N) →₀ ℕ) : ℕ := Finsupp.weight (rowW N) d
 
 theorem rowWeight_add (d e : (Fin N × Fin N) →₀ ℕ) :
     rowWeight (d + e) = rowWeight d + rowWeight e := by
@@ -88,10 +88,12 @@ theorem Flt_mono {a b : ℕ} (h : a ≤ b) : Flt k (N := N) a ≤ Flt k b :=
 
 theorem C_mem_Fle (c : k) : (MvPolynomial.C c : MvPolynomial (Fin N × Fin N) k) ∈ Fle k 0 := by
   intro d hd
-  have : d = 0 := by
-    have := MvPolynomial.support_C_subset (a := c) (σ := Fin N × Fin N) hd
-    simpa using this
-  simp [this]
+  have hd0 : d = 0 := by
+    rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_C] at hd
+    by_contra hne
+    rw [if_neg fun h => hne h.symm] at hd
+    exact hd rfl
+  simp [hd0]
 
 theorem X_mem_Fle (ij : Fin N × Fin N) :
     (MvPolynomial.X ij : MvPolynomial (Fin N × Fin N) k) ∈ Fle k (rowW N ij) := by
@@ -145,7 +147,8 @@ theorem substLeft_X_sub_mem_Flt {L : Matrix (Fin N) (Fin N) k} (hL : IsLowerUni 
   refine Submodule.sum_mem _ fun r hr => ?_
   have hrne : r ≠ ij.1 := (Finset.mem_erase.mp hr).1
   rcases lt_or_gt_of_ne hrne with hlt | hgt
-  · refine mul_mem_Flt_right (C_mem_Fle _) ?_
+  · rw [show rowW N ij = 0 + rowW N ij from (zero_add _).symm]
+    refine mul_mem_Flt_right (C_mem_Fle (k := k) (N := N) _) ?_
     intro d hd
     have hd' : d = Finsupp.single (r, ij.2) 1 := by
       have := MvPolynomial.support_X (R := k) (n := (r, ij.2))
@@ -157,7 +160,7 @@ theorem substLeft_X_sub_mem_Flt {L : Matrix (Fin N) (Fin N) k} (hL : IsLowerUni 
     exact Submodule.zero_mem _
 
 /-- Multiplicativity of the filtration estimate. -/
-theorem substLeft_prod_sub_mem {L : Matrix (Fin N) (Fin N) k} (hL : IsLowerUni L)
+theorem substLeft_prod_sub_mem {L : Matrix (Fin N) (Fin N) k}
     {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (x : ι → MvPolynomial (Fin N × Fin N) k) (a : ι → ℕ)
     (hx : ∀ i ∈ s, x i ∈ Fle k (a i))
@@ -190,5 +193,66 @@ theorem substLeft_prod_sub_mem {L : Matrix (Fin N) (Fin N) k} (hL : IsLowerUni L
       rw [map_mul]; ring
     rw [hsplit]
     exact Submodule.add_mem _ (mul_mem_Flt_left hdxi hphiP) (mul_mem_Flt_right hxi hdP)
+
+end GaloisForLFunctions.HTGeometry.BorelWeil
+
+namespace GaloisForLFunctions.HTGeometry.BorelWeil
+
+open Matrix MvPolynomial
+
+variable {N : ℕ} {k : Type*} [Field k]
+
+theorem substLeft_X_pow_sub_mem {L : Matrix (Fin N) (Fin N) k} (hL : IsLowerUni L)
+    (ij : Fin N × Fin N) (m : ℕ) :
+    (MvPolynomial.X ij : MvPolynomial (Fin N × Fin N) k) ^ m ∈ Fle k (m * rowW N ij) ∧
+      substLeft L ((MvPolynomial.X ij : MvPolynomial (Fin N × Fin N) k) ^ m)
+        - (MvPolynomial.X ij : MvPolynomial (Fin N × Fin N) k) ^ m
+        ∈ Flt k (m * rowW N ij) := by
+  classical
+  have h := substLeft_prod_sub_mem (L := L) (Finset.range m)
+    (fun _ => (MvPolynomial.X ij : MvPolynomial (Fin N × Fin N) k)) (fun _ => rowW N ij)
+    (fun _ _ => X_mem_Fle ij) (fun _ _ => substLeft_X_sub_mem_Flt hL ij)
+  simpa [Finset.prod_const, Finset.sum_const, Finset.card_range, smul_eq_mul] using h
+
+theorem substLeft_monomial_sub_mem {L : Matrix (Fin N) (Fin N) k} (hL : IsLowerUni L)
+    (d : (Fin N × Fin N) →₀ ℕ) (c : k) :
+    substLeft L (MvPolynomial.monomial d c) - MvPolynomial.monomial d c
+      ∈ Flt k (rowWeight d) := by
+  classical
+  have hsum : ∑ ij ∈ d.support, d ij * rowW N ij = rowWeight d := by
+    rw [rowWeight, Finsupp.weight_apply, Finsupp.sum]
+    exact Finset.sum_congr rfl fun ij _ => by simp [smul_eq_mul]
+  have hprod := substLeft_prod_sub_mem (L := L) d.support
+    (fun ij => (MvPolynomial.X ij : MvPolynomial (Fin N × Fin N) k) ^ d ij)
+    (fun ij => d ij * rowW N ij)
+    (fun ij _ => (substLeft_X_pow_sub_mem hL ij (d ij)).1)
+    (fun ij _ => (substLeft_X_pow_sub_mem hL ij (d ij)).2)
+  rw [hsum] at hprod
+  obtain ⟨hP, hdP⟩ := hprod
+  have hmono : (MvPolynomial.monomial d c : MvPolynomial (Fin N × Fin N) k)
+      = MvPolynomial.C c * ∏ ij ∈ d.support, (MvPolynomial.X ij) ^ d ij := by
+    rw [MvPolynomial.monomial_eq, Finsupp.prod]
+  rw [hmono, map_mul]
+  have hCc : substLeft L (MvPolynomial.C c : MvPolynomial (Fin N × Fin N) k)
+      = MvPolynomial.C c := by simp [substLeft]
+  rw [hCc]
+  have hfac : MvPolynomial.C c * substLeft L (∏ ij ∈ d.support, (MvPolynomial.X ij) ^ d ij)
+      - MvPolynomial.C c * ∏ ij ∈ d.support, (MvPolynomial.X ij) ^ d ij
+      = MvPolynomial.C c * (substLeft L (∏ ij ∈ d.support, (MvPolynomial.X ij) ^ d ij)
+          - ∏ ij ∈ d.support, (MvPolynomial.X ij) ^ d ij) := by ring
+  rw [hfac]
+  have := mul_mem_Flt_right (C_mem_Fle (k := k) (N := N) c) hdP
+  simpa using this
+
+/-- **Unipotence of the lower unitriangular action.**  Left translation by a lower unitriangular
+matrix changes a polynomial by terms of strictly smaller row weight. -/
+theorem substLeft_sub_mem_Flt {L : Matrix (Fin N) (Fin N) k} (hL : IsLowerUni L) {a : ℕ}
+    {p : MvPolynomial (Fin N × Fin N) k} (hp : p ∈ Fle k a) :
+    substLeft L p - p ∈ Flt k a := by
+  classical
+  have hrepr := MvPolynomial.support_sum_monomial_coeff p
+  rw [← hrepr, map_sum, ← Finset.sum_sub_distrib]
+  refine Submodule.sum_mem _ fun d hd => ?_
+  exact Flt_mono (hp d hd) (substLeft_monomial_sub_mem hL d _)
 
 end GaloisForLFunctions.HTGeometry.BorelWeil

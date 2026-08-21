@@ -58,6 +58,23 @@ only `c ∈ {-1,0,1}`.
 Non-vacuity: build the `N = 1` super-Poincaré algebra as an explicit model of the input
 structure (memory: `check-hypotheses-have-models`).
 
+## Lean modules landed
+- `HTGeometry/HLSEvenAlgebra.lean` — the even Coleman–Mandula algebra `𝔤₀` in spinorial
+  coordinates, its bracket, Jacobi identity, Cartan pair `(adL, adR)`, and the
+  diagonal-weight rigidity theorem `hlsEven_joint_weight_eq_zero`.
+- `HTGeometry/HLSGradedSymmetry.lean` — the real-form conjugation `hlsEvenConj`, the
+  `HLSGradedSymmetry` input structure (graded Jacobi + star + state positivity), the
+  `𝔰𝔩₂ ⊕ 𝔰𝔩₂` action on the odd part, and `hlsGenEigen_bilinear` (weights add along an
+  equivariant bilinear map).
+- `HTGeometry/HLSOddWeights.lean` — `wt_constraint` (positivity confines `a + b̄` to
+  `{0, ±1}`), `wt_weights` (the odd weights are exactly `(0,0), (±1,0), (0,±1)`),
+  the exact Cartan eigenvalues on each sector, the `eL/fL` sector isomorphism, and
+  `wt_sectors_eq_top`.
+- `HTGeometry/HLSMomentumAction.lean` — `act_mom_eq_zero`: `[P_μ, Q] = 0`, unconditional.
+
 ## Log
 - 2026-08-21 — created; corpus audited (no existing classification theorem), mathlib
   audited (no supersymmetry content at all).  Weight route fixed.
+- 2026-08-21 — spin-½ forcing and `[P, Q] = 0` proved in Lean; four modules wired into
+  the `HTGeometry` umbrella.  Remaining: `{Q, Q̄} = 2 δ σ P` normalization, `{Q,Q} = ε Z`,
+  centrality of `Z`, the capstone statement, and the non-vacuity model.
