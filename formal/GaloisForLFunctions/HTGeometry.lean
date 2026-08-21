@@ -155,6 +155,7 @@ import GaloisForLFunctions.HTGeometry.ABHN.CyclicHilbert90
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldNormSequence
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCohomology
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldBrauer
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteResidueBrauer
 import GaloisForLFunctions.HTGeometry.ABHN.RealQuaternionCSA
 import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtensionBrauer
 import GaloisForLFunctions.HTGeometry.ABHN.ScalarExtensionTensorProduct
@@ -2767,6 +2768,8 @@ import GaloisForLFunctions.HTGeometry.PoincareHopf.GeneralDivergenceForm
 import GaloisForLFunctions.HTGeometry.PoincareHopf.JacobiFormula
 import GaloisForLFunctions.HTGeometry.PoincareHopf.HomotopyDerivative
 import GaloisForLFunctions.HTGeometry.PoincareHopf.HomotopyInvariance
+import GaloisForLFunctions.HTGeometry.PoincareHopf.DegreeProperties
+import GaloisForLFunctions.HTGeometry.PoincareHopf.DegreeLinear
 import GaloisForLFunctions.HTGeometry.DivergenceEuclidean
 import GaloisForLFunctions.HTGeometry.DivergentSeriesThinning
 import GaloisForLFunctions.HTGeometry.DividedDifferencePolynomial
@@ -9112,6 +9115,9 @@ import GaloisForLFunctions.HTGeometry.SymmetrizationRetraction
 import GaloisForLFunctions.HTGeometry.SymmetryCagedTranslationFreeness
 import GaloisForLFunctions.HTGeometry.SymmetryFractureDefectConservation
 import GaloisForLFunctions.HTGeometry.SyndeticDenseOrbitLaw
+import GaloisForLFunctions.HTGeometry.UpperSemicontinuousMajorant
+import GaloisForLFunctions.HTGeometry.AnnealedPortmanteauBound
+import GaloisForLFunctions.HTGeometry.PhaseFlowSemicontinuousTransfer
 import GaloisForLFunctions.HTGeometry.SyzygyConstantTerm
 import GaloisForLFunctions.HTGeometry.SzegoBoundaryH2
 import GaloisForLFunctions.HTGeometry.SzegoBoundaryLimit
@@ -10053,3 +10059,7 @@ import GaloisForLFunctions.HTGeometry.GaussBonnetGlobalAssembly
 import GaloisForLFunctions.HTGeometry.BorelWeil.BottRankOne
 import GaloisForLFunctions.HTGeometry.BorelWeil.CechHomotopy
 import GaloisForLFunctions.HTGeometry.BorelWeil.BottProjectiveSpace
+import GaloisForLFunctions.HTGeometry.BorelWeil.DetTwist
+import GaloisForLFunctions.HTGeometry.BorelWeil.ColumnScaling
+import GaloisForLFunctions.HTGeometry.BorelWeil.SLSurjectivity
+import GaloisForLFunctions.HTGeometry.BorelWeil.CechSupport

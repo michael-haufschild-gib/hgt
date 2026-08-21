@@ -76,15 +76,36 @@ Key design decisions that made this work:
   `φ (w - t z)` is the divergence of the explicit field `-φ (w - t z) · z`, so the fundamental
   vanishing lemma applies slicewise and FTC + Fubini finish.
 
-## Next layers (Stage I remainder)
-- I.8b general divergence form: `div (x ↦ (j ↦ ∑ i, cof (Du x)_{i j} G_i x)) = ∑ i j, cof_{i j} ∂_j G_i`
-  for an arbitrary `C¹` field `G` of `x` (generalizes `fieldDivergence_piolaField`).
-- I.9 Jacobi's formula `∂_t det M t = ∑ i j, cof (M t)_{i j} · ∂_t M t _{i j}`, same reindexing as
-  `piola`.
-- I.10 general homotopy invariance (FTC in `t` + Fubini, exactly as in `degIntegral_translate`).
-- I.11 excision and additivity (immediate from the integral formula: the integrand is supported in
-  `{x : ‖f x - y‖ < ρ}`), and normalization `degree id Ω y = 1` for `y ∈ Ω`.
-- I.12 the regular value formula `degree f Ω y = ∑ sign det`, hence integrality.
+### Stage I completion (all landed)
+
+| Module | Main declarations |
+|---|---|
+| `GeneralDivergenceForm` | `cofField`, `fieldDivergence_cofField`, `integral_cofSum_mul_jac_eq_zero` |
+| `JacobiFormula` | `hasDerivAt_det` (Jacobi's formula) |
+| `HomotopyDerivative` | `linPath`, `homField`, `homDeriv`, `sum_cofSum_mul_apply_col`, `jac_smul_field`, `hasDerivAt_homIntegrand`, `homDeriv_eq_cofPairing` |
+| `HomotopyInvariance` | `continuous_matrix_det`, `continuous_cofSum`, `degIntegral_linPath_eq` |
+| `DegreeProperties` | `degree_eq_of_linPath`, `degree_eq_of_subset` (excision), `degree_id` (normalization) |
+| `DegreeLinear` | `AdmissibleRadius.mono`, `exists_eq_of_degree_ne_zero`, `matVec`, `degree_matVec` (degree of an invertible matrix is the sign of its determinant) |
+
+Design note: **general homotopy invariance is reduced to the affine path**, whose Jacobian is a
+*linear* matrix path, so Jacobi's formula is the plain matrix statement and no mixed `(t,x)` partial
+derivatives are needed.  A general smooth homotopy will be handled by subdividing `[0,1]` and
+chaining affine paths between nearby maps.
+
+## Next layers
+- I.12 the regular value formula `degree f Ω y = ∑ sign det`, hence integrality (needs the inverse
+  function theorem and mathlib's `addHaar_image_eq_zero_of_det_fderivWithin_eq_zero` for the
+  density of regular values; local constancy in `y` is already available from translation
+  invariance).
+- II.1 `IsolatingRadius`, `index v p := degree v (ball p ε) 0`, independence of `ε` by excision.
+- II.2 index of a nondegenerate zero `= sign det (Dv p)` (affine homotopy to the linearization plus
+  `degree_matVec`).
+- II.3 invariance of the index under a diffeomorphism of the chart (needs the multiplication
+  theorem for degrees, or Milnor's isotopy argument).
+- III manifolds: charts, vector fields, index sum, independence of the field.
+- IV Euler characteristic.  Mathlib has singular homology but no excision, no Mayer–Vietoris and no
+  long exact sequence of a pair, so `χ` of a space has to be built from scratch; that is the largest
+  remaining block.
 
 ## Log
 - 2026-08-21 — created; mathlib audit done (no Poincaré–Hopf, no degree, no Sard, no χ of a space);

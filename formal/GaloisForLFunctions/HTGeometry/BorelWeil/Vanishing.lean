@@ -1,8 +1,3 @@
-/-
-Copyright (c) 2026 Michael Barenbaum. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Michael Barenbaum
--/
 import GaloisForLFunctions.HTGeometry.BorelWeil.Sections
 import GaloisForLFunctions.HTGeometry.BorelWeil.RootSL2
 import GaloisForLFunctions.HTGeometry.BorelWeil.PolynomialCurve

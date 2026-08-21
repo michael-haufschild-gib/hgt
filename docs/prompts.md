@@ -258,9 +258,13 @@ make sure you don't leave stale lean processes running - clean up after yourself
 
 Goal is met when there is a full RH proof chain start to finish.
 
+-----
+2-form integration + Stokes on manifolds or Radó's triangulation theorem 
+What I did not prove, explicitly: the manifold-level statement ∫∫_M K dA = 2πχ(M) for an abstract compact Riemannian surface. It needs either 2-form integration + Stokes on manifolds or Radó's triangulation theorem — neither exists in mathlib,
+
 ## Formalize
 
-Formalize and proove fully, unconditional and closed in our lean corpus the proof for the Sokhotski–Plemelj theorem.
+Formalize and proove fully, unconditional and closed in our lean corpus the proof for Borsuk–Ulam theorem .
 
 Stop if mathlib already has that proof.
 
@@ -369,7 +373,7 @@ how would a fields medal mathematician approach this problem? what our corpus is
 
 
 ## theorem experiment
-find as many places as possible in our lean corpus to apply any form of the Mordell-Weil theorem, Matsusaka´s theorem, Mittag-Leffler´s theorem, formalize it and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
+find as many places as possible in our lean corpus to apply any form of the Seiberg–Witten flow, Seiberg–Witten invariants, Seiberg–Witten equations, Seiberg–Witten theory, Seiberg–Witten curves, formalize it and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -377,8 +381,10 @@ Lean rules:
 3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
 4. No computations.
 5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
-6. make sure you don't leave stale lean processes running - clean up after yourself.
+6. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+7. make sure you don't leave stale lean processes running - clean up after yourself.
    
-use the search tool for our lean corpus. do not read cards or anything, only work directly on lean.&#x20;
+Non-negotiable working mode rules:
+1. If an application would be interesting, but is missing lean infrastructure, build it no matter the effort.
+2. use the search tool for our lean corpus. do not read cards or anything, only work directly on lean.
 
-do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.

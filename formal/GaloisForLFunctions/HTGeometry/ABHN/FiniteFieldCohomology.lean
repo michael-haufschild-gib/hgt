@@ -80,6 +80,58 @@ theorem finiteField_cyclicGalois_evenCohomology_eq_zero {K L : Type} [Field K] [
   exact (groupCohomologyπEven_eq_zero_iff (Rep.ofAlgebraAutOnUnits K L) g hg i hi x).mpr
     (finiteField_cyclicGalois_invariantUnit_is_norm hg x)
 
+/-- Every positive odd cohomology class of the unit Galois representation of a finite-field
+extension is zero.  Cyclic Hilbert 90 identifies the kernel of the norm with the image of the
+generator-minus-identity map. -/
+theorem finiteField_cyclicGalois_oddCohomology_eq_zero {K L : Type} [Field K] [Field L]
+    [Algebra K L] [Finite L] {g : Gal(L/K)} (hg : ∀ sigma, sigma ∈ Subgroup.zpowers g)
+    (i : ℕ) (hi : Odd i)
+    (z : groupCohomology (Rep.ofAlgebraAutOnUnits K L) i) : z = 0 := by
+  obtain ⟨x, hx⟩ :=
+    (ModuleCat.epi_iff_surjective (groupCohomologyπOdd
+      (Rep.ofAlgebraAutOnUnits K L) g hg i hi)).mp inferInstance z
+  rw [← hx]
+  apply (groupCohomologyπOdd_eq_zero_iff
+    (Rep.ofAlgebraAutOnUnits K L) g hg i hi x).mpr
+  let e := Rep.toAdditive (M := Gal(L/K)) (G := Lˣ)
+  let u : Lˣ := (e x.1).toMul
+  have hxu : e.symm (Additive.ofMul u) = x.1 := by
+    apply e.injective
+    simp [u]
+  have hnorm_u :
+      ((Rep.ofAlgebraAutOnUnits K L).norm.hom (e.symm (Additive.ofMul u))) = 0 := by
+    rw [hxu]
+    exact x.2
+  have hnorm_add := congrArg e hnorm_u
+  have hnorm_L : algebraMap K L (Algebra.norm K (u : L)) = 1 := by
+    rw [← groupCohomology.norm_ofAlgebraAutOnUnits_eq u, hnorm_add]
+    rfl
+  have hnorm : Algebra.norm K (u : L) = 1 := by
+    apply FaithfulSMul.algebraMap_injective K L
+    simpa using hnorm_L
+  obtain ⟨y, hy⟩ :=
+    (cyclicGalois_norm_eq_one_iff_exists_div_apply hg (u : L)).mp hnorm
+  refine ⟨e.symm (Additive.ofMul y⁻¹), ?_⟩
+  apply e.injective
+  rw [← hxu]
+  simp only [sub_hom, Rep.hom_id,
+    Representation.IntertwiningMap.sub_toLinearMap, Representation.IntertwiningMap.toLinearMap_id,
+    LinearMap.sub_apply, Representation.IntertwiningMap.coe_toLinearMap, applyAsHom_apply,
+    LinearMap.id_coe, id_eq, AddEquiv.apply_symm_apply]
+  change Additive.ofMul (Units.map g.toMonoidHom y⁻¹) - Additive.ofMul y⁻¹ =
+    Additive.ofMul u
+  apply Additive.toMul.injective
+  change Units.map g.toMonoidHom y⁻¹ / y⁻¹ = u
+  apply Units.ext
+  simp only [Units.val_div_eq_div_val, Units.coe_map, Units.val_inv_eq_inv_val]
+  change g ((y : L)⁻¹) / (y : L)⁻¹ = (u : L)
+  field_simp
+  have hginv : g (1 / (y : L)) = 1 / g (y : L) := by
+    change g.toAlgHom (1 / (y : L)) = 1 / g.toAlgHom (y : L)
+    simpa only [map_one] using (map_div₀ g.toAlgHom 1 (y : L))
+  rw [hginv]
+  simpa [div_eq_mul_inv] using hy
+
 end
 
 /-- Positive even cohomology of the unit Galois representation vanishes for every finite-field
@@ -89,6 +141,30 @@ theorem finiteField_evenCohomology_eq_zero {K L : Type} [Field K] [Field L] [Alg
     (z : groupCohomology (Rep.ofAlgebraAutOnUnits K L) i) : z = 0 := by
   obtain ⟨g, hg⟩ := IsCyclic.exists_generator (α := Gal(L/K))
   exact finiteField_cyclicGalois_evenCohomology_eq_zero hg i hi z
+
+/-- Positive odd cohomology of the unit Galois representation vanishes for every finite-field
+extension, without choosing a generator in the statement. -/
+theorem finiteField_oddCohomology_eq_zero {K L : Type} [Field K] [Field L] [Algebra K L]
+    [Finite L] (i : ℕ) (hi : Odd i)
+    (z : groupCohomology (Rep.ofAlgebraAutOnUnits K L) i) : z = 0 := by
+  obtain ⟨g, hg⟩ := IsCyclic.exists_generator (α := Gal(L/K))
+  exact finiteField_cyclicGalois_oddCohomology_eq_zero hg i hi z
+
+/-- Every positive Galois cohomology group of units of a finite-field extension vanishes. -/
+theorem finiteField_positiveCohomology_eq_zero {K L : Type} [Field K] [Field L] [Algebra K L]
+    [Finite L] (i : ℕ) (hi : i ≠ 0)
+    (z : groupCohomology (Rep.ofAlgebraAutOnUnits K L) i) : z = 0 := by
+  rcases Nat.even_or_odd i with h | h
+  · letI : NeZero i := ⟨hi⟩
+    exact finiteField_evenCohomology_eq_zero i h z
+  · exact finiteField_oddCohomology_eq_zero i h z
+
+/-- All positive Galois cohomology of units is trivial for a finite-field extension. -/
+theorem finiteField_positiveCohomology_subsingleton {K L : Type} [Field K] [Field L]
+    [Algebra K L] [Finite L] (i : ℕ) (hi : i ≠ 0) :
+    Subsingleton (groupCohomology (Rep.ofAlgebraAutOnUnits K L) i) where
+  allEq x y := (finiteField_positiveCohomology_eq_zero i hi x).trans
+    (finiteField_positiveCohomology_eq_zero i hi y).symm
 
 /-- The degree-two Galois cohomology of units of a finite-field extension is zero. -/
 theorem finiteField_H2_eq_zero {K L : Type} [Field K] [Field L] [Algebra K L] [Finite L]

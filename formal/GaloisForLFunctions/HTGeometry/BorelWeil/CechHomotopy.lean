@@ -1,8 +1,3 @@
-/-
-Copyright (c) 2026 Michael Barenbaum. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Michael Barenbaum
--/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Algebra.Order.Ring.Abs

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.DivisorSquareTail
+import GaloisForLFunctions.RHTower.FourthMomentDiagonal
 import Mathlib.NumberTheory.AbelSummation
 
 namespace RHTower.Sieve
@@ -27,16 +28,13 @@ private theorem hasDerivAt_logSquareInverseSquare {t : ℝ} (ht : 0 < t) :
   unfold logSquareInverseSquare
   convert ((Real.hasDerivAt_log ht.ne').pow 2).div
       ((hasDerivAt_id t).pow 2) (pow_ne_zero 2 ht.ne') using 1 <;> try rfl
+  simp only [Pi.pow_apply, id_eq]
   field_simp [ht.ne']
-  ring
+  ring_nf
 
-private theorem logSquareInverseSquare_differentiableAt {t : ℝ} (ht : t ≠ 0) :
+private theorem logSquareInverseSquare_differentiableAt {t : ℝ} (ht : 0 < t) :
     DifferentiableAt ℝ logSquareInverseSquare t := by
-  rcases lt_or_gt_of_ne ht with htneg | htpos
-  · unfold logSquareInverseSquare
-    exact ((((Real.differentiableAt_log (by positivity)).pow 2).div
-      ((differentiableAt_id.pow 2))) (pow_ne_zero 2 ht))
-  · exact (hasDerivAt_logSquareInverseSquare htpos).differentiableAt
+  exact (hasDerivAt_logSquareInverseSquare ht).differentiableAt
 
 private theorem logSquareInverseSquare_deriv {t : ℝ} (ht : 0 < t) :
     deriv logSquareInverseSquare t =
@@ -51,20 +49,18 @@ private theorem hasDerivAt_logQuinticTailPrimitive {t : ℝ} (ht : 0 < t) :
     HasDerivAt logQuinticTailPrimitive
       (-((1 + Real.log t) ^ 5 / t ^ 2)) t := by
   unfold logQuinticTailPrimitive
-  convert (((((Real.hasDerivAt_log ht.ne').pow 5).add
-      ((hasDerivAt_const (x := t) (c := (10 : ℝ))).mul
-        ((Real.hasDerivAt_log ht.ne').pow 4))) |>.add
-      ((hasDerivAt_const (x := t) (c := (50 : ℝ))).mul
-        ((Real.hasDerivAt_log ht.ne').pow 3))) |>.add
-      ((hasDerivAt_const (x := t) (c := (160 : ℝ))).mul
-        ((Real.hasDerivAt_log ht.ne').pow 2))) |>.add
-      ((hasDerivAt_const (x := t) (c := (325 : ℝ))).mul
-        (Real.hasDerivAt_log ht.ne')) |>.add
-      (hasDerivAt_const (x := t) (c := (326 : ℝ)))).div
-        (hasDerivAt_id t) ht.ne' using 1 <;> try rfl
+  have hlog := Real.hasDerivAt_log ht.ne'
+  have h5 := hlog.pow 5
+  have h4 := (hasDerivAt_const (x := t) (c := (10 : ℝ))).mul (hlog.pow 4)
+  have h3 := (hasDerivAt_const (x := t) (c := (50 : ℝ))).mul (hlog.pow 3)
+  have h2 := (hasDerivAt_const (x := t) (c := (160 : ℝ))).mul (hlog.pow 2)
+  have h1 := (hasDerivAt_const (x := t) (c := (325 : ℝ))).mul hlog
+  have h0 := hasDerivAt_const (x := t) (c := (326 : ℝ))
+  have hnum := ((((h5.add h4).add h3).add h2).add h1).add h0
+  convert hnum.div (hasDerivAt_id t) ht.ne' using 1 <;> try rfl
   simp
   field_simp [ht.ne']
-  ring
+  ring_nf
 
 private noncomputable def logQuinticKernel (t : ℝ) : ℝ :=
   (1 + Real.log t) ^ 5 / t ^ 2
@@ -103,7 +99,8 @@ private theorem logQuintic_le_tailNumerator {t : ℝ} (ht : 1 ≤ t) :
         160 * Real.log t ^ 2 + 325 * Real.log t + 326 := by
   have hlog : 0 ≤ Real.log t := Real.log_nonneg ht
   ring_nf
-  positivity
+  nlinarith [pow_nonneg hlog 2, pow_nonneg hlog 3, pow_nonneg hlog 4,
+    pow_nonneg hlog 5]
 
 private theorem tailNumerator_le_threeHundredTwentySix_logQuintic
     {t : ℝ} (ht : 1 ≤ t) :
@@ -112,7 +109,8 @@ private theorem tailNumerator_le_threeHundredTwentySix_logQuintic
       326 * (1 + Real.log t) ^ 5 := by
   have hlog : 0 ≤ Real.log t := Real.log_nonneg ht
   ring_nf
-  positivity
+  nlinarith [pow_nonneg hlog 2, pow_nonneg hlog 3, pow_nonneg hlog 4,
+    pow_nonneg hlog 5]
 
 private theorem logQuinticTailPrimitive_nonneg {t : ℝ} (ht : 1 ≤ t) :
     0 ≤ logQuinticTailPrimitive t := by
@@ -166,8 +164,12 @@ private theorem abelLogIntegrand_le_logQuinticKernel {t : ℝ} (ht : 1 ≤ t) :
         2 * (1 + Real.log t) ^ 2 / t ^ 3 := by
     rw [logSquareInverseSquare_deriv ht0]
     have ht30 : 0 < t ^ 3 := by positivity
-    rw [div_le_div_iff₀ ht30 ht30]
-    nlinarith [sq_nonneg (Real.log t), sq_nonneg (1 + Real.log t)]
+    calc
+      -(2 * Real.log t * (1 - Real.log t) / t ^ 3) =
+          (- (2 * Real.log t * (1 - Real.log t))) / t ^ 3 := by ring
+      _ ≤ 2 * (1 + Real.log t) ^ 2 / t ^ 3 :=
+        (div_le_div_iff₀ ht30 ht30).2 (by
+          nlinarith [sq_nonneg (Real.log t), sq_nonneg (1 + Real.log t)])
   calc
     -deriv logSquareInverseSquare t *
           (∑ n ∈ Icc 0 ⌊t⌋₊, divisorSquareLogCoeff n)
@@ -176,11 +178,11 @@ private theorem abelLogIntegrand_le_logQuinticKernel {t : ℝ} (ht : 1 ≤ t) :
             mul_le_mul_of_nonneg_right hfactor hsum0
     _ ≤ (2 * (1 + Real.log t) ^ 2 / t ^ 3) *
           (t * (1 + Real.log t) ^ 3) := by
-            gcongr
+            exact mul_le_mul_of_nonneg_left
+              (divisorSquareLogPartialSum_floor_le ht) (by positivity)
     _ = 2 * logQuinticKernel t := by
       unfold logQuinticKernel
       field_simp [ht0.ne']
-      ring
 
 private theorem logSquareInverseSquare_boundary_le (M : ℕ) (hM : 1 ≤ M) :
     logSquareInverseSquare M *
@@ -201,10 +203,15 @@ private theorem logSquareInverseSquare_boundary_le (M : ℕ) (hM : 1 ≤ M) :
     _ = Real.log (M : ℝ) ^ 2 * (1 + Real.log (M : ℝ)) ^ 3 / (M : ℝ) := by
       unfold logSquareInverseSquare
       field_simp [hM0.ne']
-      ring
     _ ≤ (1 + Real.log (M : ℝ)) ^ 5 / (M : ℝ) := by
-      gcongr
-      exact pow_le_pow_left₀ hlog0 hlog_le 2
+      apply (div_le_div_iff_of_pos_right hM0).2
+      calc
+        Real.log (M : ℝ) ^ 2 * (1 + Real.log (M : ℝ)) ^ 3
+            ≤ (1 + Real.log (M : ℝ)) ^ 2 *
+                (1 + Real.log (M : ℝ)) ^ 3 :=
+          mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hlog0 hlog_le 2)
+            (pow_nonneg (by linarith) 3)
+        _ = (1 + Real.log (M : ℝ)) ^ 5 := by ring
     _ ≤ logQuinticTailPrimitive M := by
       unfold logQuinticTailPrimitive
       exact (div_le_div_iff_of_pos_right hM0).mpr
@@ -238,9 +245,8 @@ private theorem divisorSquareLog_abel_identity (N M : ℕ)
               ∑ k ∈ Icc 0 ⌊t⌋₊, divisorSquareLogCoeff k := by
   apply sum_mul_eq_sub_sub_integral_mul' (c := divisorSquareLogCoeff) hNM
   · intro t ht
-    exact logSquareInverseSquare_differentiableAt (by
-      have : 0 < t := lt_of_lt_of_le (by exact_mod_cast hN) ht.1
-      positivity)
+    exact logSquareInverseSquare_differentiableAt
+      (lt_of_lt_of_le (by exact_mod_cast hN) ht.1)
   · exact (logSquareInverseSquare_deriv_continuousOn
       (b := (M : ℝ)) (by exact_mod_cast hN)).integrableOn_Icc
 
@@ -370,6 +376,7 @@ theorem tsum_shift_divisorSquare_log_sq_div_sq_le (N : ℕ) (hN : 1 ≤ N) :
               apply tsum_congr
               intro k
               unfold logSquareInverseSquare divisorSquareLogCoeff
+              push_cast
               ring
     _ ≤ 2 * logQuinticTailPrimitive N := hraw
     _ ≤ 2 * (326 * (1 + Real.log (N : ℝ)) ^ 5 / (N : ℝ)) :=
@@ -391,23 +398,25 @@ theorem tsum_shift_divisorSquare_log_sq_div_cube_le (N : ℕ) (hN : 1 ≤ N) :
     intro a b hab
     exact Nat.add_left_cancel hab
   have hsummableSq : Summable (fun k : ℕ => sq (N + 1 + k)) := by
-    have hbase := summable_divisor_sq_log_rpow (σ := (1 : ℝ)) (by norm_num)
+    have hbase := RHTower.summable_divisor_sq_log_rpow (σ := (1 : ℝ)) (by norm_num)
     apply (hbase.comp_injective hinj).congr
     intro k
     unfold sq
-    have hk : (0 : ℝ) < (N + 1 + k : ℕ) := by positivity
-    rw [show (-2 * (1 : ℝ)) = (-2 : ℝ) by norm_num, Real.rpow_neg_two]
-    field_simp [hk.ne']
+    simp only [Function.comp_apply]
+    have hk : (0 : ℝ) < ((N + 1 + k : ℕ) : ℝ) := by positivity
+    rw [show (-2 * (1 : ℝ)) = (-2 : ℝ) by norm_num, Real.rpow_neg hk.le]
+    norm_num [one_div]
+    ring
   have hsummableCube : Summable (fun k : ℕ => cube (N + 1 + k)) := by
-    have hbase := summable_divisor_sq_log_rpow (σ := (3 / 2 : ℝ)) (by norm_num)
+    have hbase := RHTower.summable_divisor_sq_log_rpow (σ := (3 / 2 : ℝ)) (by norm_num)
     apply (hbase.comp_injective hinj).congr
     intro k
     unfold cube
-    have hk : (0 : ℝ) < (N + 1 + k : ℕ) := by positivity
-    rw [show (-2 * (3 / 2 : ℝ)) = (-3 : ℝ) by norm_num,
-      show (N + 1 + k : ℝ) ^ (-3 : ℝ) = 1 / (N + 1 + k : ℝ) ^ 3 by
-        rw [Real.rpow_neg (by positivity), Real.rpow_natCast]; norm_num]
-    field_simp [hk.ne']
+    simp only [Function.comp_apply]
+    have hk : (0 : ℝ) < ((N + 1 + k : ℕ) : ℝ) := by positivity
+    rw [show (-2 * (3 / 2 : ℝ)) = (-3 : ℝ) by norm_num, Real.rpow_neg hk.le]
+    norm_num [one_div]
+    ring
   have hpoint : ∀ k : ℕ,
       cube (N + 1 + k) ≤ (1 / (N + 1 : ℝ)) * sq (N + 1 + k) := by
     intro k

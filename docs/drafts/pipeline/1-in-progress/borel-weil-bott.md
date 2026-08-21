@@ -59,8 +59,11 @@ faithful because `k` is infinite.
 | `BottRankOne` | `H^i(ℙ¹, O(d))`, dot action `s·d = -d-2`, Euler characteristic | DONE |
 | `CechHomotopy` | contracting homotopy of the Čech complex of a simplex | DONE |
 | `BottProjectiveSpace` | `H^i(ℙⁿ, O(d))`: middle vanishing, `H⁰`, top-degree image | DONE |
-| `GroupComparison` | surjectivity of `polySections λ → bwSections λ` (needs `det` irreducible) | TODO |
-| `BottGeneral` | Bott for a general `G/B` (needs derived functors of induction) | TODO |
+| `DetTwist` | `detᶜ · H⁰(λ) = H⁰(λ+c)`; divisibility of sections by `detᶜ` | DONE |
+| `ColumnScaling` | formal scaling of one column; column-degree decomposition | DONE |
+| `SLSurjectivity` | **surjectivity** of `polySections λ → bwSections λ`; the bijection | DONE |
+| `CechSupport` | Čech complex relative to an abstract support function; general vanishing | DONE |
+| `BottGeneral` | Bott for a general `G/B` | OPEN — see log |
 
 ## Approach
 1. Non-vanishing: `Δ_λ = ∏_j (leading j×j minor)^{m_j}` is a section, `Δ_λ(1) = 1`.  DONE.
@@ -92,6 +95,25 @@ faithful because `k` is infinite.
   multidegree-wise: the contracting homotopy of `CechHomotopy` gives middle-degree vanishing for
   `1 ≤ p` and `p + 1 < #T`, `H⁰` is exactly the space of degree-`d` forms, and the top-degree
   coboundaries are exactly the exponents that are nonnegative in some coordinate.
-  Still open: the surjectivity half of the `GL`/`SL` model comparison (needs irreducibility of the
-  determinant polynomial, itself a mathlib gap), and Bott for a general flag variety `G/B`, which
-  would need derived functors of algebraic induction.
+  Still open at that point: the surjectivity half of the `GL`/`SL` model comparison, and Bott for a
+  general flag variety `G/B`.
+- 2026-08-21 — **Model comparison closed.**  The divisibility that the classical account extracts
+  from irreducibility of the determinant polynomial is instead obtained from Borel–Weil itself:
+  `detᶜ · H⁰(λ)` is a nonzero `GL`-stable subspace of `H⁰(λ+c)`, so irreducibility forces equality,
+  giving `exists_eq_detPow_mul`.  Extending a group-model section then only needs to divide one
+  column by the determinant (`ColumnScaling`), which produces a polynomial section of weight
+  `λ + R·1`; the divisibility removes the `detᴿ` again.  Hence `restrictToSL` is a **bijection**
+  `polySections λ ≃ bwSections λ` (`restrictToSL_bijective`), and no determinant-irreducibility
+  result is needed anywhere.
+- 2026-08-21 — **Bott for a general `G/B`: foundation only.**  The Čech machinery was abstracted
+  away from projective space (`CechSupport`): for an arbitrary cover index `T`, basis index `A`
+  and support function `supp : A → Finset T`, a positive-degree cocycle all of whose basis vectors
+  have `supp a ≠ univ` is a coboundary.  This is the shape the Bruhat cover of `G/B` takes, with
+  `T` the Weyl group and `A` the torus weights.
+  **Open core.**  A closed proof of Bott for a general `G/B` still needs (i) the Bruhat/Schubert
+  cover of `G/B` and the sections of `L_λ` over each cell, (ii) the torus-weight decomposition of
+  that Čech complex, and (iii) the concentration theorem: for each weight the reduced cohomology of
+  the "bad set" subcomplex on the Weyl group is concentrated in degree `ℓ(w)`.  Unlike the
+  projective-space case, (iii) genuinely produces intermediate degrees — that is exactly the
+  `ρ`-shifted dot action — so the vanishing mechanism above does not by itself finish it.  Neither
+  mathlib nor this corpus has any of (i)–(iii); they are the next multi-module build.

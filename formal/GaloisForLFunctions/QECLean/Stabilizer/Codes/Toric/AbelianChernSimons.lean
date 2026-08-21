@@ -6,7 +6,7 @@ import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.WrappingInvariants
 The toric-code corpus already identifies first homology of the smallest nondegenerate torus with
 `(Z/2Z)²`.  Its alternating intersection form is the linking exponent of the abelian `Z₂`
 Chern--Simons/BF Wilson observable.  This is an abelian linking invariant, not a Jones polynomial:
-the development contains no non-symmetric braid `R`-matrix or Markov trace.
+the non-symmetric braid and Markov infrastructure lives separately in `HTGeometry.KnotTheory`.
 -/
 
 namespace Quantum.Stabilizer.Lattice

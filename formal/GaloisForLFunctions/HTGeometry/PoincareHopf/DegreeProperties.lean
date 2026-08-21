@@ -55,7 +55,7 @@ theorem degree_eq_of_subset (hf : ContDiff ℝ 2 f)
   classical
   have hΩ'b : Bornology.IsBounded Ω' := hΩb.subset hsub
   have hK : IsCompact (closure Ω \ Ω') := by
-    refine Metric.isCompact_of_isClosed_isBounded ?_ (hΩb.closure.subset diff_subset)
+    refine Metric.isCompact_of_isClosed_isBounded ?_ (hΩb.closure.subset Set.sdiff_subset)
     exact isClosed_closure.sdiff hΩ'
   rcases eq_empty_or_nonempty (closure Ω \ Ω') with hemp | hne
   · have hΩΩ' : Ω = Ω' := by

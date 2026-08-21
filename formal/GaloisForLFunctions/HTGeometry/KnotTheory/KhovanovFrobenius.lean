@@ -143,8 +143,10 @@ def standardKhovanovFrobenius : KhovanovFrobeniusSystem where
   frobenius_right := khFrobenius_right
   frobenius_left := khFrobenius_left
 
-/-- A two-step chain complex, retaining its closed square-zero witness. -/
-structure TwoStepChainComplex where
+/-- A two-step square-zero diagram of functions.
+
+No additivity is assumed here; this records the label-level associativity picture only. -/
+structure TwoStepSquareZeroDiagram where
   C0 : Type
   C1 : Type
   C2 : Type
@@ -201,19 +203,20 @@ def khAllMergeResolutionSquare : ResolutionSquare where
 def khMergeD0 (x : KhovanovMergeC0) : KhovanovMergeC1 :=
   (khMergeLeft x, khMergeRight x)
 
-/-- The terminal differential is the mod-two sum of the two final merge maps. -/
+/-- The terminal mod-two sum of the two final label-level merge maps. -/
 def khMergeD1 (x : KhovanovMergeC1) : KhovanovA :=
   khMergeFinal x.1 + khMergeFinal x.2
 
-/-- The all-merge two-crossing face anticommutes over `𝔽₂`, hence its unsigned differential squares
-to zero. -/
+/-- The all-merge two-crossing label-level face cancels over `𝔽₂`. -/
 theorem khMerge_d_squared (x : KhovanovMergeC0) : khMergeD1 (khMergeD0 x) = 0 := by
   change khMergeFinal (khMergeLeft x) + khMergeFinal (khMergeRight x) = 0
   rw [khMerge_square_commutes]
   ext <;> exact CharTwo.add_self_eq_zero _
 
-/-- Closed two-crossing all-merge cube-of-resolutions complex. -/
-def khAllMergeResolutionCube : TwoStepChainComplex where
+/-- Label-level square-zero picture for the two-crossing all-merge face.
+
+For the actual `𝔽₂`-linear Khovanov complex, use `khTensorAllMergeResolutionCube` below. -/
+def khLabelMergeResolutionSquareZeroDiagram : TwoStepSquareZeroDiagram where
   C0 := KhovanovMergeC0
   C1 := KhovanovMergeC1
   C2 := KhovanovA
@@ -221,5 +224,77 @@ def khAllMergeResolutionCube : TwoStepChainComplex where
   d0 := khMergeD0
   d1 := khMergeD1
   d_squared := khMerge_d_squared
+
+/-- Linear merge of the first two tensor factors in `A ⊗ A ⊗ A`. -/
+def khTensorMergeLeft : KhovanovTensorCube →ₗ[ZMod 2] KhovanovTensorSquare where
+  toFun t := fun u k => if u = 0 then t 0 0 k else t 0 1 k + t 1 0 k
+  map_add' t s := by
+    funext u k
+    by_cases h : u = 0
+    · simp [h]
+    · simp [h]
+      abel
+  map_smul' c t := by
+    funext u k
+    by_cases h : u = 0
+    · simp [h]
+    · simp [h, mul_add]
+
+/-- Linear merge of the last two tensor factors in `A ⊗ A ⊗ A`. -/
+def khTensorMergeRight : KhovanovTensorCube →ₗ[ZMod 2] KhovanovTensorSquare where
+  toFun t := fun i u => if u = 0 then t i 0 0 else t i 0 1 + t i 1 0
+  map_add' t s := by
+    funext i u
+    by_cases h : u = 0
+    · simp [h]
+    · simp [h]
+      abel
+  map_smul' c t := by
+    funext i u
+    by_cases h : u = 0
+    · simp [h]
+    · simp [h, mul_add]
+
+/-- Linear terminal merge `A ⊗ A → A`. -/
+def khTensorMergeFinal : KhovanovTensorSquare →ₗ[ZMod 2] KhovanovA where
+  toFun t := (t 0 0, t 0 1 + t 1 0)
+  map_add' t s := by
+    ext <;> simp
+    abel
+  map_smul' c t := by
+    ext <;> simp [mul_add]
+
+/-- The two outgoing linear saddle maps of the all-merge resolution face. -/
+def khTensorMergeD0 : KhovanovTensorCube →ₗ[ZMod 2]
+    (KhovanovTensorSquare × KhovanovTensorSquare) :=
+  khTensorMergeLeft.prod khTensorMergeRight
+
+/-- The total terminal differential of the all-merge face. -/
+def khTensorMergeD1 : (KhovanovTensorSquare × KhovanovTensorSquare) →ₗ[ZMod 2] KhovanovA :=
+  khTensorMergeFinal.comp (LinearMap.fst (ZMod 2) KhovanovTensorSquare KhovanovTensorSquare) +
+    khTensorMergeFinal.comp (LinearMap.snd (ZMod 2) KhovanovTensorSquare KhovanovTensorSquare)
+
+/-- The two linear all-merge paths around the resolution face agree. -/
+theorem khTensorMerge_paths_agree (t : KhovanovTensorCube) :
+    khTensorMergeFinal (khTensorMergeLeft t) = khTensorMergeFinal (khTensorMergeRight t) := by
+  ext <;> simp [khTensorMergeLeft, khTensorMergeRight, khTensorMergeFinal]
+  ac_rfl
+
+/-- A concrete `𝔽₂`-linear two-step Khovanov complex with fixed tensor-coordinate chain groups. -/
+structure KhovanovTensorResolutionComplex where
+  d0 : KhovanovTensorCube →ₗ[ZMod 2] (KhovanovTensorSquare × KhovanovTensorSquare)
+  d1 : (KhovanovTensorSquare × KhovanovTensorSquare) →ₗ[ZMod 2] KhovanovA
+  d_squared : ∀ t, d1 (d0 t) = 0
+
+/-- The actual `𝔽₂`-linear all-merge two-crossing Khovanov resolution complex. -/
+def khTensorAllMergeResolutionCube : KhovanovTensorResolutionComplex where
+  d0 := khTensorMergeD0
+  d1 := khTensorMergeD1
+  d_squared := by
+    intro t
+    change khTensorMergeFinal (khTensorMergeLeft t) +
+      khTensorMergeFinal (khTensorMergeRight t) = 0
+    rw [khTensorMerge_paths_agree]
+    exact CharTwo.add_self_eq_zero _
 
 end GaloisForLFunctions.HTGeometry.KnotTheory

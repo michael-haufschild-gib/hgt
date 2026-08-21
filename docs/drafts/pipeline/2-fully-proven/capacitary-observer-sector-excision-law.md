@@ -2130,3 +2130,47 @@ The Neumann identity is the `n → ∞` limit of `sum_occupation_expand`: the pa
 proved without calculus: with `u = (s+1)a/s`, `v = (s+1)(1−a)` one has `su + v = s+1`, and
 `u ≤ e^{u−1}`, `v ≤ e^{v−1}` give `u^s v ≤ e^{su+v−s−1} = 1`, which is exactly weighted AM--GM at
 the two weights `s/(s+1)`, `1/(s+1)`.
+
+## Lean progress -- Corollary A.3 and Corollary I.1's physical-time transfer
+
+Three new umbrella-wired, axiom-clean modules.
+
+`formal/GaloisForLFunctions/HTGeometry/CopySectorTranslationSymmetry.lean` -- **Corollary A.3**:
+
+| Card item | Declaration |
+|---|---|
+| a measure-preserving symmetry preserves the Gram matrix, so its coefficient matrix is orthogonal | `IsIntegralInvariant`, `IsOrthonormalFamily`, `isFeatureSymmetry_of_measureInvariant` |
+| **`(8c)` over a probability measure**: a constant kernel diagonal is the number of centred modes | `featureKernel_diag_eq_card_of_const_measure` |
+| **`(8c)`, transitive form**: a transitive measure-preserving symmetry makes the leverage exactly the centred dimension | `featureKernel_diag_eq_card_of_transitive_measure` |
+| the copy representation `U ↦ U^{⊗k} ⊗ \bar U^{⊗k}` and its multiplicativity | `copyIndex`, `copyRep`, `copyRep_mul`, `copyRep_unitaryGroup_mul` |
+| its complex dimension is `D^{2k}` | `card_copyIndex`, `two_mul_card_copyIndex_sq` |
+| **the sector is translation invariant**: left translation carries every matrix coefficient into the span of the matrix coefficients | `coeffFamily`, `coeffFamily_translate_mem_span` |
+| an orthonormal family is linearly independent | `linearIndependent_of_orthonormalFamily` |
+| **`(8e)`, the dimension count**: a *centred* orthonormal family in the sector has at most `2·card n ^ 2` members, the constant taking the remaining dimension | `augmentedFamily`, `card_le_of_centred_orthonormal_in_span` |
+| **`(8e)`**: `B_{E_k,a} ≤ 2D^{4k}/(1-a)` | `abs_spectralResolventKernel_le_copySector` |
+
+The transitive-action hypothesis is discharged, not assumed: on a group carrying a left-invariant
+probability measure the translations already act transitively, and orthogonality of the coefficient
+matrix is forced by invariance of the integral.
+
+`formal/GaloisForLFunctions/HTGeometry/UpperSemicontinuousMajorant.lean` and
+`formal/GaloisForLFunctions/HTGeometry/PhaseFlowSemicontinuousTransfer.lean` --
+**Corollary I.1's physical-time transfer and syndetic clause**:
+
+| Card item | Declaration |
+|---|---|
+| the Lipschitz regularization from above, `g_n(x) = sup_y (f(y) - n·d(x,y))` | `lipMajorant`, `lipschitzWith_lipMajorant`, `continuous_lipMajorant` |
+| it decreases to an upper semicontinuous function | `le_lipMajorant`, `lipMajorant_le`, `tendsto_lipMajorant` |
+| **a continuous majorant with almost the same integral** | `exists_continuous_majorant` |
+| the phase flow as a one-parameter subgroup | `finiteClockPhaseHom` |
+| **`(11aw)`**: the upper time average of an upper semicontinuous statistic is at most its Haar mean | `limsup_integral_phaseMeasure_le_of_upperSemicontinuous` |
+| a statistic with Haar mean below `θ` dips below `θ` somewhere | `exists_lt_of_integral_lt` |
+| **the syndetic clause**: it then dips below `θ` in every interval of one fixed length | `exists_syndetic_lt_of_upperSemicontinuous` |
+
+The card's proof truncates the all-word majorant at length `N`, calls the truncation a finite sum of
+closed-set indicators, and passes to the limit.  The formalisation proves the general statement
+instead: an upper semicontinuous bounded statistic is squeezed from above by *continuous* majorants
+with almost the same Haar mean, so no truncation, no word enumeration and no tail estimate is used,
+and the closed-set Portmanteau (`rationallyIndependent_closedTarget_limsup_le_volume`) is a special
+case.  The syndetic clause is `denseAddOrbit_open_hits_syndetically` at the open strict sublevel set,
+whose nonemptiness is the Haar bound itself.
