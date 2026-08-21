@@ -242,7 +242,7 @@ enumerates the same data as marking a letter of the word and then expanding what
 theorem pairingExpand_positionSum (c : α → α → K) (ψ : α → List α → M) (t : List α) :
     pairingExpand c (fun s => positionSum s ψ) t
       = positionSum t (fun a s => pairingExpand c (ψ a) s) :=
-  pairingExpand_positionSum_aux c l.length t le_rfl ψ
+  pairingExpand_positionSum_aux c t.length t le_rfl ψ
 
 /-! ## Left multiplication -/
 

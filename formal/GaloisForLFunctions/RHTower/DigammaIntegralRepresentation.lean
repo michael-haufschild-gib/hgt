@@ -393,4 +393,68 @@ theorem digamma_eq_integral_gauss {s : ℂ} (hs : 0 < s.re) :
   push_cast
   ring
 
+
+theorem integrableOn_digammaGaussIntegrand {s : ℂ} (hs : 0 < s.re) :
+    IntegrableOn (digammaGaussIntegrand s) (Ioi (0 : ℝ)) volume := by
+  have hgauss : IntegrableOn (fun t : ℝ => ((gaussKernel t : ℝ) : ℂ)) (Ioi (0 : ℝ)) volume :=
+    Complex.ofRealCLM.integrable_comp integrableOn_gaussKernel
+  have hlap := integrableOn_gaussLaplaceKernel hs
+  refine (hgauss.add hlap).congr_fun ?_ measurableSet_Ioi
+  intro t ht
+  exact (digammaGaussIntegrand_eq s ht).symm
+
+theorem div_ofReal_re (w : ℂ) (r : ℝ) : (w / ((r : ℝ) : ℂ)).re = w.re / r := by
+  simp [Complex.div_re, Complex.normSq_ofReal]
+  ring
+
+/-- **The archimedean real-part form.**  For real `z`,
+`∫_0^∞ ( e^{-u/4} cos(zu/2)/(1 - e^{-u}) - e^{-u}/u ) du = - Re ψ(1/4 + iz/2)`.
+This is the identity Suzuki uses to evaluate the Fourier transform of the smooth remainder in the
+origin expansion of the screw function. -/
+theorem integral_archimedean_gaussKernel (z : ℝ) :
+    (∫ u in Ioi (0 : ℝ),
+        (Real.exp (-u / 4) * Real.cos (z * u / 2) / (1 - Real.exp (-u))
+          - Real.exp (-u) / u))
+      = -(Complex.digamma (1 / 4 + ((z / 2 : ℝ) : ℂ) * Complex.I)).re := by
+  set s : ℂ := 1 / 4 + ((z / 2 : ℝ) : ℂ) * Complex.I with hs_def
+  have hsre : s.re = 1 / 4 := by
+    rw [hs_def]
+    simp
+  have hs : 0 < s.re := by rw [hsre]; norm_num
+  have hsim : s.im = z / 2 := by
+    rw [hs_def]
+    simp
+  have hre : ∀ t : ℝ, t ∈ Ioi (0 : ℝ) → (digammaGaussIntegrand s t).re
+      = Real.exp (-t) / t - Real.exp (-t / 4) * Real.cos (z * t / 2) / (1 - Real.exp (-t)) := by
+    intro t ht
+    have ht0 : 0 < t := ht
+    rw [digammaGaussIntegrand, Complex.sub_re, Complex.ofReal_re,
+      one_sub_exp_neg_ofReal_eq, div_ofReal_re, Complex.exp_re]
+    have hmulre : (-s * (t : ℂ)).re = -t / 4 := by
+      simp only [Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
+        Complex.ofReal_im, hsre, hsim]
+      ring
+    have hmulim : (-s * (t : ℂ)).im = -(z * t / 2) := by
+      simp only [Complex.mul_im, Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
+        Complex.ofReal_im, hsre, hsim]
+      ring
+    rw [hmulre, hmulim, Real.cos_neg]
+  have hint := integrableOn_digammaGaussIntegrand hs
+  have hkey : (Complex.digamma s).re
+      = ∫ t in Ioi (0 : ℝ),
+          (Real.exp (-t) / t
+            - Real.exp (-t / 4) * Real.cos (z * t / 2) / (1 - Real.exp (-t))) := by
+    rw [digamma_eq_integral_gauss hs, _root_.integral_re hint]
+    exact MeasureTheory.setIntegral_congr_fun measurableSet_Ioi hre
+  have hneg : (∫ u in Ioi (0 : ℝ),
+      (Real.exp (-u / 4) * Real.cos (z * u / 2) / (1 - Real.exp (-u)) - Real.exp (-u) / u))
+      = -∫ t in Ioi (0 : ℝ),
+          (Real.exp (-t) / t
+            - Real.exp (-t / 4) * Real.cos (z * t / 2) / (1 - Real.exp (-t))) := by
+    rw [← MeasureTheory.integral_neg]
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
+    intro t _
+    ring
+  rw [hneg, hkey]
+
 end RHTower
