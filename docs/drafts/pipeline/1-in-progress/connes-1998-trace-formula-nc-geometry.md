@@ -376,3 +376,52 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
   Together these are exactly Connes' *"since both sides are analytic in `s` it holds in general"*:
   Lemma 3's continuation from `Re s > 1` (where Lemma 1 gives it) to the whole plane.
   Note: `f 0 = 0` and `∫ f = 0` are the definition of `𝒮(A)_0` (App I (31)), not added premises.
+
+- 2026-08-22 — Tier B batch 14 (**§VII (11) — the orbit form IS the quotient inner product**).
+  Corpus search: `RHTower.fieldOneFiniteStageBruhatCorrelation_integral_multiplicative_eq_sourceInner`
+  already has the Connes–Marcolli finite-stage version; mathlib already has the unfolding
+  `MeasureTheory.IsFundamentalDomain.integral_eq_tsum'`.  Neither was rebuilt.  What was missing
+  is the abstract identity, which this module supplies.
+  * `ConnesOrbitEnergy` — `connes_conj_mul_self`, `connesOrbitReindex` (the bijection
+    `(q,p) ↦ (p, q p)` of the double orbit), and the pointwise core
+    **`connes_periodization_normSq_eq_orbitSum`**:
+    `‖∑'_p f(p·x)‖² = ∑'_{(q,p)} conj(f(p·x))·f((q p)·x)` for an absolutely summable orbit —
+    no measure theory at all.
+    Then **`connes_orbitForm_eq_fundamentalDomain_energy`** = **§VII (11)**:
+    `∑'_q ∫_X conj(f) · f(q·) dμ = ∫_F ‖∑'_p f(p·x)‖² dμ`,
+    by unfolding each `q`-term over the fundamental domain, regrouping the double sum, and
+    applying the pointwise core.  This is exactly Lemma 1(a)'s second half — *"its sum is equal to
+    the inner product of `f₁` and `f₂` in `L²(X_S)`"* — and together with
+    `ConnesOrbitGeometricConvergence` (Lemma 1(a) first half) and
+    `ConnesOrbitFormFourier` + `ConnesFourierUnitaryExtension` (Lemma 1(b)) it closes the
+    mechanism of §VII Lemma 1 in full.
+  The four convergence hypotheses of (11) are Lemma 1(a)'s own content (per-`q` integrability,
+  summability of the fundamental-domain norms, and pointwise absolute summability of the orbit);
+  the identity is false without them.
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 15 (**App I (25)/(26) for an arbitrary unramified quasi-character**).
+  * `ConnesUnramifiedLocalZeta` — `connesPadicUnitBallProfile`, its summability, and
+    **`connes_padic_unitBall_geometric`**: for `‖w‖ < 1`,
+    `∫_{ℤ_p ∩ ℚ_p^*} (radial profile w) d^*x = (1 - w)^{-1}`.  With `w = Χ(π) q^{-s}` this is
+    Connes' local factor `(1 - Χ_{0,v}(π) q_v^{-s})^{-1}` of `L(Χ_0, s)`; `Χ = 1` recovers
+    `connes_padic_tate_local_zeta` (batch: App I (25)).
+    **`connes_padic_unramified_pow`** = **App I (26)**: an unramified quasi-character is a power of
+    its value at the uniformizer, `Χ(a) = Χ(π)^{v(a)}` on every nonnegative valuation shell —
+    proved by induction through the corpus's valuation/unit `MulEquiv`, so the integrand of (25)
+    is genuinely radial for every unramified `Χ`.
+  All `#print axioms` clean.
+
+  STATUS OF THE THREE NAMED GAPS (unchanged by this batch, restated precisely):
+  1. §V (19)/(23) for `U(h)`: `U(h)` has kernel `h(x/y)/(ρ|y|)`, whose `L²(dx dy)` energy diverges
+     logarithmically at `y = 0`, so it is **not** Hilbert–Schmidt and no factorization into two
+     HS factors is available (`P_Λ U(h)` and `U(h) P_Λ` both inherit the divergence).  Connes'
+     `Trace(R_Λ T) = ∫∫ k r^t` therefore needs the trace-class (Mercer/Brislawn) kernel theorem,
+     which neither mathlib nor the corpus has.  Everything else in §V Theorem 3 — (21), (23) for
+     HS pairs, (24) = mathlib's multiplication formula, (25)-(28), (29)-(33) — is Lean-closed.
+  2. App I Lemma 1 over `𝔸`: the local factors (25)/(26) and their Euler product over the finite
+     places of `ℚ` are Lean-closed; what is missing is the *tensor factorization of the adelic
+     integral*, i.e. `∫_{𝔸^*} = ∏_v ∫_{k_v^*}`, which needs the restricted-product multiplicative
+     Haar measure on `𝔸^*` (the corpus has it only at a finite stage `A_S`).
+  3. App I Lemma 3: the continuation step is closed (batch 13); the identity it continues is
+     item 2.

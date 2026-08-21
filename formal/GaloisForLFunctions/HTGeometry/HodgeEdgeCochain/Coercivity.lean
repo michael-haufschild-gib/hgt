@@ -362,4 +362,81 @@ theorem not_coercive_of_harmonic_ne_bot (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ
 
 end Complex
 
+/-! ## Modal coordinates (§2.1) -/
+
+section Modal
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+
+/-- **Modal calibration.**  In the linear unforced limit an eigenmode of the dissipative operator
+decays exponentially at the rate fixed by its eigenvalue: `u(t) = e^{-ν λ t} u(0)` solves
+`u' = -ν A u`. -/
+theorem hasDerivAt_eigenmode (A : E →ₗ[ℝ] E) {v : E} {lam : ℝ} (hv : A v = lam • v)
+    (nu t : ℝ) :
+    HasDerivAt (fun s : ℝ => Real.exp (-(nu * lam) * s) • v)
+      (-(nu • A (Real.exp (-(nu * lam) * t) • v))) t := by
+  have h1 : HasDerivAt (fun s : ℝ => -(nu * lam) * s) (-(nu * lam)) t := by
+    simpa using (hasDerivAt_id t).const_mul (-(nu * lam))
+  have hexp : HasDerivAt (fun s : ℝ => Real.exp (-(nu * lam) * s))
+      (Real.exp (-(nu * lam) * t) * -(nu * lam)) t := (Real.hasDerivAt_exp _).comp t h1
+  have h2 := hexp.smul_const v
+  have hrhs : -(nu • A (Real.exp (-(nu * lam) * t) • v))
+      = (Real.exp (-(nu * lam) * t) * -(nu * lam)) • v := by
+    rw [map_smul, hv, smul_smul, smul_smul, ← neg_smul]
+    congr 1
+    ring
+  rw [hrhs]
+  exact h2
+
+/-- **Harmonic modes are undamped.**  A kernel vector of the dissipative operator is a stationary
+solution of the linear unforced equation. -/
+theorem hasDerivAt_harmonicMode (A : E →ₗ[ℝ] E) {v : E} (hv : A v = 0) (nu t : ℝ) :
+    HasDerivAt (fun _ : ℝ => v) (-(nu • A v)) t := by
+  rw [hv, smul_zero, neg_zero]
+  exact hasDerivAt_const t v
+
+end Modal
+
+/-! ## Non-vacuity of the criterion
+
+Both sides of Theorem 1 occur, so the criterion is not vacuous.  The complex `ℝ → ℝ → ℝ` with
+`d₀ = 0`, `d₁ = id` is coercive, and the complex with `d₀ = d₁ = 0` is not. -/
+
+section Models
+
+/-- A coercive model: `d₀ = 0`, `d₁ = id` gives a trivial harmonic space. -/
+theorem harmonic_zero_id_eq_bot :
+    harmonic (0 : ℝ →ₗ[ℝ] ℝ) (LinearMap.id : ℝ →ₗ[ℝ] ℝ) = ⊥ := by
+  rw [harmonic_eq_inf, LinearMap.ker_id, bot_inf_eq]
+
+/-- The coercive model really is a cochain complex. -/
+theorem comp_zero_id : (LinearMap.id : ℝ →ₗ[ℝ] ℝ) ∘ₗ (0 : ℝ →ₗ[ℝ] ℝ) = 0 := by
+  simp
+
+/-- Consequently Theorem 1 yields a genuine coercivity constant on this complex. -/
+theorem exists_coercivity_constant_zero_id :
+    ∃ lam : ℝ, 0 < lam ∧ ∀ v ∈ divFree (0 : ℝ →ₗ[ℝ] ℝ),
+      lam * ‖v‖ ^ 2 ≤ ⟪hodgeLaplacian (0 : ℝ →ₗ[ℝ] ℝ) (LinearMap.id : ℝ →ₗ[ℝ] ℝ) v, v⟫_ℝ :=
+  (hodge_coercive_iff_harmonic_eq_bot _ _).mp harmonic_zero_id_eq_bot
+
+/-- A noncoercive model: `d₀ = d₁ = 0` makes the whole edge space harmonic. -/
+theorem harmonic_zero_zero_ne_bot :
+    harmonic (0 : ℝ →ₗ[ℝ] ℝ) (0 : ℝ →ₗ[ℝ] ℝ) ≠ ⊥ := by
+  intro h
+  have h1 : (1 : ℝ) ∈ harmonic (0 : ℝ →ₗ[ℝ] ℝ) (0 : ℝ →ₗ[ℝ] ℝ) := by
+    rw [harmonic_eq_inf]
+    refine ⟨by simp, ?_⟩
+    show LinearMap.adjoint (0 : ℝ →ₗ[ℝ] ℝ) (1 : ℝ) = 0
+    simp
+  rw [h] at h1
+  simp at h1
+
+/-- Hence full-space coercivity genuinely fails on that complex. -/
+theorem not_coercive_zero_zero :
+    ¬ ∃ lam : ℝ, 0 < lam ∧ ∀ v ∈ divFree (0 : ℝ →ₗ[ℝ] ℝ),
+        lam * ‖v‖ ^ 2 ≤ ⟪hodgeLaplacian (0 : ℝ →ₗ[ℝ] ℝ) (0 : ℝ →ₗ[ℝ] ℝ) v, v⟫_ℝ :=
+  not_coercive_of_harmonic_ne_bot _ _ harmonic_zero_zero_ne_bot
+
+end Models
+
 end GaloisForLFunctions.HTGeometry.HodgeEdgeCochain

@@ -73,4 +73,17 @@ theorem sum_sq_mul_le_of_le
   calc c i ^ 2 * E i ≤ c i ^ 2 * (M * N i) := this
     _ = M * (c i ^ 2 * N i) := by ring
 
+
+/-- **Lemma 3.2 of Dai–Yoshikawa, comparison chain.**
+
+A spectral gap proved for one pair of metrics transfers to any uniformly comparable pair, at the
+cost of the cube of the comparison constant: from `E' ≤ C₀ E`, `M' ≤ E'` and `M ≤ C₀² M'` one gets
+`M ≤ C₀³ E`.  In the paper `E = ‖∂̄f‖²`, `M = ‖f‖²` for the ambient metric and `E'`, `M'` are the
+same quantities for the metric with positive curvature, for which Bochner–Kodaira–Nakano supplies
+`M' ≤ E'`. -/
+theorem le_of_comparable_gap {C E E' M M' : ℝ}
+    (h1 : E' ≤ C * E) (h2 : M' ≤ E') (h3 : M ≤ C ^ 2 * M') :
+    M ≤ C ^ 3 * E := by
+  nlinarith [sq_nonneg C]
+
 end GaloisForLFunctions.HTGeometry.DaiYoshikawa

@@ -35,6 +35,53 @@ def rationalFunctionCompletionAtInfty_uniformEquiv_laurentSeries :
     ((IsDedekindDomain.HeightOneSpectrum.adicCompletion.uniformEquiv (RatFunc F)
       (Polynomial.idealX F)).symm.trans (LaurentSeries.comparePkg F))
 
+/-- The coordinate inversion, viewed as a ring equivalence between the valued-field type
+synonyms at infinity and at the `X`-adic place. -/
+def rationalFunctionInftyValuation_ringEquiv_polynomialValuationX :
+    WithVal (RatFunc.inftyValuation F) ≃+*
+      WithVal (RatFunc.polynomialValuationX F) :=
+  (WithVal.congr (RatFunc.inftyValuation F)
+    (rationalFunctionInversionComapPolynomialValuation F) (.refl _)).trans
+  (WithVal.congr (rationalFunctionInversionComapPolynomialValuation F)
+    (RatFunc.polynomialValuationX F) (rationalFunctionInversionAlgEquiv F).toRingEquiv)
+
+/-- The infinity-to-`X` coordinate ring equivalence is continuous. -/
+theorem rationalFunctionInftyValuation_ringEquiv_polynomialValuationX_continuous :
+    Continuous (rationalFunctionInftyValuation_ringEquiv_polynomialValuationX F) := by
+  exact (rationalFunctionInftyValuation_uniformEquiv_polynomialValuationX F).continuous
+
+/-- The inverse infinity-to-`X` coordinate ring equivalence is continuous. -/
+theorem rationalFunctionInftyValuation_ringEquiv_polynomialValuationX_symm_continuous :
+    Continuous (rationalFunctionInftyValuation_ringEquiv_polynomialValuationX F).symm := by
+  exact (rationalFunctionInftyValuation_uniformEquiv_polynomialValuationX F).symm.continuous
+
+/-- The completion of `F(t)` at infinity is ring-isomorphic to `F((X))`; the Laurent-series
+coordinate represents `t⁻¹`.  This is the algebraic companion to
+`rationalFunctionCompletionAtInfty_uniformEquiv_laurentSeries`. -/
+def rationalFunctionCompletionAtInfty_ringEquiv_laurentSeries :
+    RatFunc.CompletionAtInfty F ≃+* LaurentSeries F :=
+  (UniformSpace.Completion.mapRingEquiv
+    (WithVal.equiv (RatFunc.inftyValuation F)).symm
+    (by
+      change Continuous
+        (WithVal.uniformEquiv (v := RatFunc.inftyValuation F)
+          (w := RatFunc.inftyValuation F) (by rfl) Valuation.IsEquiv.refl).symm
+      exact (WithVal.uniformEquiv (v := RatFunc.inftyValuation F)
+        (w := RatFunc.inftyValuation F) (by rfl) Valuation.IsEquiv.refl).symm.continuous)
+    (by
+      change Continuous
+        (WithVal.uniformEquiv (v := RatFunc.inftyValuation F)
+          (w := RatFunc.inftyValuation F) (by rfl) Valuation.IsEquiv.refl)
+      exact (WithVal.uniformEquiv (v := RatFunc.inftyValuation F)
+        (w := RatFunc.inftyValuation F) (by rfl) Valuation.IsEquiv.refl).continuous)).trans
+      ((UniformSpace.Completion.mapRingEquiv
+        (rationalFunctionInftyValuation_ringEquiv_polynomialValuationX F)
+        (rationalFunctionInftyValuation_ringEquiv_polynomialValuationX_continuous F)
+        (rationalFunctionInftyValuation_ringEquiv_polynomialValuationX_symm_continuous F)).trans
+          ((IsDedekindDomain.HeightOneSpectrum.adicCompletion.equiv (RatFunc F)
+            (Polynomial.idealX F)).symm.trans
+              (LaurentSeries.ratfuncAdicComplRingEquiv F)))
+
 /-- The valuation on the infinity completion defines its valuative relation. -/
 noncomputable instance rationalFunctionCompletionAtInftyValuativeRel :
     ValuativeRel (RatFunc.CompletionAtInfty F) :=

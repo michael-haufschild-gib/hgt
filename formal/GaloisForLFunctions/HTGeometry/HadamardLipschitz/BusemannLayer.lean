@@ -150,6 +150,7 @@ theorem productLayer_sum_sq_le (F : BusemannFlow X) (a : (Fin m → ℝ) → (Fi
   rw [hsplit] at hsum
   linarith
 
+omit [NPCSpace X] in
 /-- The `ℓ²`-product distance on `Mᵐ` in squared form. -/
 theorem piLp_dist_sq (x y : PiLp 2 (fun _ : Fin m => X)) :
     dist x y ^ 2 = ∑ i, dist (x i) (y i) ^ 2 := by

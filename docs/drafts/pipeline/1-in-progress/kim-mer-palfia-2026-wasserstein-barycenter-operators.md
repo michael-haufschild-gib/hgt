@@ -54,3 +54,55 @@ Sec 6: **Prop 6.1** (1)–(5)+fixed point, **Thm 6.2** (Loewner bounds), **Cor 6
 
 ## Log
 - 2026-08-22 — created; paper downloaded to `scratchpad/paper/`; corpus + mathlib audit done.
+
+## Lean progress ledger
+
+Directory: `formal/GaloisForLFunctions/HTGeometry/BuresWasserstein/`
+(all wired into `GaloisForLFunctions.HTGeometry`; all `lake build` green, no `sorry`).
+
+### `OperatorGeometricMean.lean` — new mathlib-gap layer (C*-algebraic geometric mean)
+`wgm`, `gm` (`#ᴳ`), `gm_riccati`, `gm_unique`, `riccati_symm`, `gm_comm`, `ringInverse_sandwich`,
+`gm_ringInverse` (self-duality), `gm_conjugate` (congruence), `gm_one_left/right`,
+`gm_mono_right/left/mono`, `le_gm_of_conj_le` (maximality), `le_sqrt_of_mul_self_le`,
+`conj_sqrt_le_sqrt_conj` (**Hansen inequality for √, proved by the maximality characterisation**),
+`mul_self_le_of_le_smul_one`, `smul_one_le_mul_self_of_le`, `sqrt_add_sqrt_le_one_add`,
+`gm_add_gm_le`, `gm_le_arith` (AM–GM), `harm_le_gm` (GM–HM), `ringInverse_smul`,
+`rpow_half_ringInverse`, `gm_ringInverse_left`, `gm_smul` (joint homogeneity), `gm_smul_self`,
+`wgm_half/zero/one`, `wgm_mono_right`, `conj_ringInverse_sub_eq`, `le_conj_ringInverse`,
+`conj_ringInverse_eq_at`, `isStrictlyPositive_sum_smul`, `conj_ringInverse_convex`
+(**joint operator convexity of `(x,a) ↦ x a⁻¹ x`, no weight normalisation needed**),
+`gm_concave` (**joint operator concavity of `#`**), `gm_ringInverse_self`, `sum_smul_conjugate`.
+
+### `WassersteinEquation.lean`
+`IsWassersteinPoint`, `isWassersteinPoint_iff_sqrt` (the two forms of (gradF) agree),
+`IsWassersteinPoint.mem_Icc` (**Lemma 3.3**), `isWassersteinPoint_smul` (**Lemma 3.4**),
+`isWassersteinPoint_reindex` (**Prop 6.1(3)**), `isWassersteinPoint_repeat` (**Prop 6.1(4)**),
+`IsWassersteinPoint.unitary_conjugate` (**Prop 6.1(5)**),
+`isWassersteinPoint_insert_self` (**Prop 6.1 "furthermore"**).
+
+### `WassersteinBounds.lean`
+`sq_sum_smul_le_sum_smul_sq` (operator convexity of `t²`),
+`ringInverse_sum_le_sum_ringInverse` (harmonic–arithmetic),
+`IsWassersteinPoint.le_arithMean` + `two_sub_harm_le` (**Theorem 6.2**),
+`two_sub_arithMean_le_ringInverse` (**Corollary 6.3, second inequality, operator form**),
+`le_sqrtMean_ringInverse` / `sqrtMean_ringInverse_le` (**Theorem 6.7 (i),(ii)**).
+
+### `SqrtOperatorConcavity.lean`
+`smul_sqrt_add_smul_sqrt_le`, `eq_of_sqrt_smul_add_eq` (**Theorem 3.2, operator core**),
+`eq_zero_of_isSelfAdjoint_of_mul_self_eq_zero`.
+
+### `EtemadiWeightRecursion.lean`
+`etemadiProd`, `etemadiWeight`, `etemadiTotal`, `etemadi_recursion`, `etemadiTotal_eq`,
+`etemadiWeight_antitone`, `etemadiTotal_tendsto_atTop` (**Lemma 5.2**).
+
+## No-go recorded
+`X ↦ (X^{1/2} A X^{1/2})^{1/2}` is **not** operator monotone, so the Thompson-metric
+contraction route to existence/uniqueness (the commented-out Lemma in the source `.tex`) is dead.
+Counterexample mechanism: for `A = P + ε` with `P = |e⟩⟨e|` rank one, `f(X) → ⟨e,Xe⟩^{1/2}·P_{X^{1/2}e}`,
+and two rank-one positive operators are comparable only when their ranges coincide; take
+`X = 1 ≤ Y = 1 + tQ` with `Y^{1/2}e ∦ e` and test against `z ⊥ Y^{1/2}e`, `⟨e,z⟩ ≠ 0`.
+Hence existence/uniqueness needs the paper's Fréchet-derivative + homotopy (or ODE) machinery.
+
+## Log
+- 2026-08-22 — created; paper downloaded; corpus + mathlib audit done.
+- 2026-08-22 — five modules landed (list above); no-go on the Thompson route recorded.

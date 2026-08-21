@@ -82,4 +82,54 @@ theorem norm_cglProposition51FibreEqualCharacterOffDiagonalTriple_axialAnalytic_
         gcongr
       _ = D * U * ‖A₃‖ := by ring
 
+/-- Summing the analytic axial estimate leaves exactly the closed punctured
+Fourier-tail mass. -/
+theorem cglProposition51FibreEqualCharacterOffDiagonalTriple_axialAnalytic_tsum_le
+    {q R : ℕ} (P : CGLFibreSeparatedPacket q R)
+    (w : CGLRealSmoothBump) (N : CGLPositiveLength) (n : ℕ)
+    (u : CGLLemma45FibreEqualCharacterOffDiagonalTriple P) :
+    ∑' m : CGLProposition51PuncturedFrequency,
+      ‖cglProposition51AxialAnalyticAmplitude w N (cglLemma45FibreModulus q)
+        (P.ordinate u.1.1 - P.ordinate u.1.2.1)
+        (P.ordinate u.1.2.1 - P.ordinate u.1.2.2)
+        (P.ordinate u.1.2.2 - P.ordinate u.1.1) m.val‖ ≤
+      cglProposition51FibreAxialAnalyticBudget P w N n *
+        cglProposition51AxialFrequencyTailMass w N (cglLemma45FibreModulus q)
+          (P.ordinate u.1.2.2 - P.ordinate u.1.1) := by
+  have hbudget : 0 ≤ cglProposition51FibreAxialAnalyticBudget P w N n := by
+    unfold cglProposition51FibreAxialAnalyticBudget
+    apply mul_nonneg
+    · apply mul_nonneg
+      · exact (cglAffineFourierScale_pos N (cglLemma45FibreModulus q)).le
+      · exact div_nonneg (cglLogFourierAmplitudeAllOrderBudget_nonneg w.toCGLSmoothBump n)
+          (pow_nonneg P.spacing_pos.le _)
+    · exact mul_nonneg (cglAffineFourierScale_pos N (cglLemma45FibreModulus q)).le
+        (cglLogFourierAmplitudeAllOrderBudget_nonneg w.toCGLSmoothBump 0)
+  have hleft : Summable fun m : CGLProposition51PuncturedFrequency =>
+      ‖cglProposition51AxialAnalyticAmplitude w N (cglLemma45FibreModulus q)
+        (P.ordinate u.1.1 - P.ordinate u.1.2.1)
+        (P.ordinate u.1.2.1 - P.ordinate u.1.2.2)
+        (P.ordinate u.1.2.2 - P.ordinate u.1.1) m.val‖ := by
+    have hmajor := (cglProposition51_axialFrequencyTail_summable w N
+      (cglLemma45FibreModulus q) (P.ordinate u.1.2.2 - P.ordinate u.1.1)).mul_left
+        (cglProposition51FibreAxialAnalyticBudget P w N n)
+    refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun m => ?_) hmajor
+    exact norm_cglProposition51FibreEqualCharacterOffDiagonalTriple_axialAnalytic_le P w N n u m
+  have hright := (cglProposition51_axialFrequencyTail_summable w N
+    (cglLemma45FibreModulus q) (P.ordinate u.1.2.2 - P.ordinate u.1.1)).mul_left
+      (cglProposition51FibreAxialAnalyticBudget P w N n)
+  calc
+    ∑' m : CGLProposition51PuncturedFrequency,
+        ‖cglProposition51AxialAnalyticAmplitude w N (cglLemma45FibreModulus q)
+          (P.ordinate u.1.1 - P.ordinate u.1.2.1)
+          (P.ordinate u.1.2.1 - P.ordinate u.1.2.2)
+          (P.ordinate u.1.2.2 - P.ordinate u.1.1) m.val‖ ≤
+      ∑' m : CGLProposition51PuncturedFrequency,
+        cglProposition51FibreAxialAnalyticBudget P w N n *
+          ‖cglProposition51AxialNonzeroFourierAmplitude w N (cglLemma45FibreModulus q)
+            (P.ordinate u.1.2.2 - P.ordinate u.1.1) m‖ :=
+      hleft.tsum_le_tsum (fun m =>
+        norm_cglProposition51FibreEqualCharacterOffDiagonalTriple_axialAnalytic_le P w N n u m) hright
+    _ = _ := tsum_mul_left
+
 end RHTower

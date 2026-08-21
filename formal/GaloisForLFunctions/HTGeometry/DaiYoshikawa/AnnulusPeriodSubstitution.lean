@@ -92,6 +92,18 @@ theorem substCoeff_zero_zero (S : Finset (ℕ × ℕ)) (a : ℕ × ℕ → ℂ) 
     · exact absurd (by rw [← hfib p hp hp2]; exact (Finset.mem_filter.mp hp).1) h00
     · rw [zero_pow hp2, mul_zero]
 
+
+/-- **Proposition 5.1 (2).**
+
+If the residue vanishes — that is, if the `x⁰y⁰` coefficient of `α` is zero — then so does the
+coefficient of the logarithm. -/
+theorem substCoeff_zero_zero_eq_zero_of_residue (S : Finset (ℕ × ℕ)) (a : ℕ × ℕ → ℂ)
+    (h : ((0, 0) : ℕ × ℕ) ∈ S → a (0, 0) = 0) : substCoeff S a 0 0 = 0 := by
+  rw [substCoeff_zero_zero]
+  split_ifs with hmem
+  · exact h hmem
+  · rfl
+
 /-- The `k = 0` coefficient is continuous in `t`, so it tends to `α(0,0)`. -/
 theorem tendsto_substCoeff_zero (S : Finset (ℕ × ℕ)) (a : ℕ × ℕ → ℂ) :
     Tendsto (fun t => substCoeff S a 0 t) (𝓝 0) (𝓝 (substCoeff S a 0 0)) := by

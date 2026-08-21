@@ -13,8 +13,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 11311 | `formal/GaloisForLFunctions/RHTower.lean` |
-| 10399 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 11411 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 10468 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |
@@ -35,7 +35,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3532 | `formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/EkeraHastadStyle.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
 | 3337 | `formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/ShorStyle.lean` |
-| 3157 | `formal/GaloisForLFunctions/RHTower/Sieve/MaynardElevenFifthsSelectedCellExclusion.lean` |
+| 3177 | `formal/GaloisForLFunctions/RHTower/Sieve/MaynardElevenFifthsSelectedCellExclusion.lean` |
 
 ## Gap Markers
 
