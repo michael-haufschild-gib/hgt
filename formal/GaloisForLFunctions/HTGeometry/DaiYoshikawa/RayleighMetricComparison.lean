@@ -57,4 +57,20 @@ theorem mul_sum_le_sum_mul_weight
   rw [mul_comm]
   exact mul_le_mul_of_nonneg_left (hw i hi) (he i hi)
 
+
+/-- **The min–max step of Proposition 6.1.**
+
+A family of trial functions with pairwise disjoint supports diagonalizes both the energy and the
+norm, so the Rayleigh quotient on their span is bounded by the largest individual quotient:
+if `Eᵢ ≤ M Nᵢ` for every `i`, then `Σ cᵢ² Eᵢ ≤ M Σ cᵢ² Nᵢ`. -/
+theorem sum_sq_mul_le_of_le
+    {ι : Type*} [Fintype ι] (c E N : ι → ℝ) {M : ℝ}
+    (hM : ∀ i, E i ≤ M * N i) :
+    ∑ i, c i ^ 2 * E i ≤ M * ∑ i, c i ^ 2 * N i := by
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun i _ => ?_
+  have := mul_le_mul_of_nonneg_left (hM i) (sq_nonneg (c i))
+  calc c i ^ 2 * E i ≤ c i ^ 2 * (M * N i) := this
+    _ = M * (c i ^ 2 * N i) := by ring
+
 end GaloisForLFunctions.HTGeometry.DaiYoshikawa

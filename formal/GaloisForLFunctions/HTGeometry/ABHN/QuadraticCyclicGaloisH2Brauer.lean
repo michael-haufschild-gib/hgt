@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.QuadraticCyclicGaloisAlgebra
+import GaloisForLFunctions.HTGeometry.ABHN.QuadraticCyclicGaloisAlgebraSplit
+import GaloisForLFunctions.HTGeometry.ABHN.QuadraticCyclicGaloisAlgebraSplittingFields
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2Split
 
 /-!
@@ -78,5 +80,33 @@ theorem quadraticCyclicGaloisH2BrauerMap_zero_eq_split
     quadraticCyclicGaloisH2BrauerMap K L hdeg 0 = brauerSplitClass K := by
   apply quadraticCyclicGaloisH2Parameter_brauerClass_eq_split_of_baseProjection_eq_zero K L hdeg
   exact cyclicGaloisH2ClassCyclicAlgebra_baseParameter_projection K L 0
+
+/-- Every quadratic cyclic degree-two class is split by its defining quadratic Galois
+extension. -/
+theorem scalarExtensionBrauerMap_quadraticCyclicGaloisH2BrauerMap_eq_split
+    [FiniteDimensional K L] [IsGalois K L]
+    (hdeg : Module.finrank K L = 2) (z : cyclicGaloisH2 K L) :
+    scalarExtensionBrauerMap K L (quadraticCyclicGaloisH2BrauerMap K L hdeg z) =
+      brauerSplitClass L := by
+  change scalarExtensionBrauerMap K L
+      (brauerClass (quadraticCyclicGaloisH2ParameterCSA K L hdeg
+        (Additive.ofMul (cyclicGaloisH2FixedBaseUnit K L
+          (cyclicGaloisH2Representative K L z))))) = brauerSplitClass L
+  apply scalarExtensionBrauerMap_quadraticCyclicGaloisAlgebraCSA_eq_split K L hdeg
+
+/-- Every scalar extension through the defining quadratic Galois field kills the Brauer class of
+a quadratic cyclic degree-two cohomology class. -/
+theorem scalarExtensionBrauerMap_quadraticCyclicGaloisH2BrauerMap_eq_split_of_scalarTower
+    {E : Type} [Field E] [Algebra L E] [Algebra K E] [IsScalarTower K L E]
+    [FiniteDimensional K L] [IsGalois K L]
+    (hdeg : Module.finrank K L = 2) (z : cyclicGaloisH2 K L) :
+    scalarExtensionBrauerMap K E (quadraticCyclicGaloisH2BrauerMap K L hdeg z) =
+      brauerSplitClass E := by
+  change scalarExtensionBrauerMap K E
+      (brauerClass (quadraticCyclicGaloisH2ParameterCSA K L hdeg
+        (Additive.ofMul (cyclicGaloisH2FixedBaseUnit K L
+          (cyclicGaloisH2Representative K L z))))) = brauerSplitClass E
+  apply scalarExtensionBrauerMap_quadraticCyclicGaloisAlgebraCSA_eq_split_of_scalarTower
+    K L E hdeg
 
 end GaloisForLFunctions.HTGeometry.ABHN

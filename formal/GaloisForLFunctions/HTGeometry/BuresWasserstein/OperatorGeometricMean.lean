@@ -176,6 +176,7 @@ theorem gm_unique (ha : IsStrictlyPositive a) {x : A}
 
 /-! ### Symmetry, self-duality and congruence invariance -/
 
+omit [StarOrderedRing A] in
 /-- If `x a⁻¹ x = b` with `x` invertible, then `x b⁻¹ x = a`. -/
 lemma riccati_symm {x : A} (ha : IsStrictlyPositive a) (hx : IsUnit x)
     (h : x * a⁻¹ʳ * x = b) : x * b⁻¹ʳ * x = a := by
@@ -191,6 +192,7 @@ theorem gm_comm (ha : IsStrictlyPositive a) (hb : IsStrictlyPositive b) : gm a b
   gm_unique hb (gm_nonneg a b)
     (riccati_symm ha (gm_strictlyPositive ha hb).isUnit (gm_riccati ha hb))
 
+omit [StarOrderedRing A] in
 /-- Inverting a Riccati sandwich. -/
 lemma ringInverse_sandwich {x : A} (ha : IsStrictlyPositive a) (hx : IsUnit x) :
     (x * a⁻¹ʳ * x)⁻¹ʳ = x⁻¹ʳ * a * x⁻¹ʳ := by
@@ -494,6 +496,75 @@ theorem wgm_mono_right {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) (a : A) {b c :
   rw [wgm_def, wgm_def]
   exact (isSelfAdjoint_rpow a _).conjugate_le_conjugate
     (CFC.rpow_le_rpow ht ((isSelfAdjoint_rpow a _).conjugate_le_conjugate h))
+
+/-! ### Scalar comparisons and a square-root Hansen inequality -/
+
+/-- `x⋆ = x` and `x x ≤ b` force `x ≤ √b`. -/
+theorem le_sqrt_of_mul_self_le {x b : A} (hx : IsSelfAdjoint x) (h : x * x ≤ b) :
+    x ≤ CFC.sqrt b := by
+  have := le_gm_of_conj_le (b := b) isStrictlyPositive_one hx (by simpa using h)
+  rwa [gm_one_left] at this
+
+/-- **Hansen's inequality for the square root**: `z⋆ √a z ≤ √(z⋆ a z)` whenever `z z⋆ ≤ 1`. -/
+theorem conj_sqrt_le_sqrt_conj {z : A} (hz : z * star z ≤ 1) (a : A) :
+    star z * CFC.sqrt a * z ≤ CFC.sqrt (star z * a * z) := by
+  by_cases ha : 0 ≤ a
+  · have hxsa : IsSelfAdjoint (star z * CFC.sqrt a * z) := by
+      show star (star z * CFC.sqrt a * z) = star z * CFC.sqrt a * z
+      rw [star_mul, star_mul, star_star, (CFC.sqrt_nonneg a).isSelfAdjoint.star_eq, mul_assoc]
+    refine le_sqrt_of_mul_self_le hxsa ?_
+    have hstep : CFC.sqrt a * (z * star z) * CFC.sqrt a ≤ CFC.sqrt a * 1 * CFC.sqrt a :=
+      (CFC.sqrt_nonneg a).isSelfAdjoint.conjugate_le_conjugate hz
+    have hmid : star z * (CFC.sqrt a * (z * star z) * CFC.sqrt a) * z
+        ≤ star z * (CFC.sqrt a * 1 * CFC.sqrt a) * z :=
+      star_left_conjugate_le_conjugate hstep z
+    rw [mul_one, CFC.sqrt_mul_sqrt_self a ha] at hmid
+    calc star z * CFC.sqrt a * z * (star z * CFC.sqrt a * z)
+        = star z * (CFC.sqrt a * (z * star z) * CFC.sqrt a) * z := by simp only [mul_assoc]
+      _ ≤ star z * a * z := hmid
+  · rw [CFC.sqrt_of_not_nonneg ha]
+    simp only [mul_zero, zero_mul]
+    exact CFC.sqrt_nonneg _
+
+/-- Auxiliary sandwich identity `√t · t · √t = t · t`. -/
+lemma sqrt_mul_mul_sqrt {t : A} (ht : 0 ≤ t) : CFC.sqrt t * t * CFC.sqrt t = t * t := by
+  have key : ∀ u : A, u * u = t → u * t * u = t * t := by rintro u rfl; noncomm_ring
+  exact key _ (CFC.sqrt_mul_sqrt_self t ht)
+
+/-- `t ≤ c` forces `t² ≤ c²` for nonnegative `t` and a nonnegative scalar `c`. -/
+theorem mul_self_le_of_le_smul_one {t : A} (ht : 0 ≤ t) {c : ℝ} (hc : 0 ≤ c)
+    (h : t ≤ c • (1 : A)) : t * t ≤ (c * c) • (1 : A) := by
+  have h1 : t * t ≤ c • t := by
+    have hcj := (CFC.sqrt_nonneg t).isSelfAdjoint.conjugate_le_conjugate h
+    rwa [sqrt_mul_mul_sqrt ht, show CFC.sqrt t * (c • (1 : A)) * CFC.sqrt t = c • t by
+      rw [mul_smul_comm, smul_mul_assoc, mul_one, CFC.sqrt_mul_sqrt_self t ht]] at hcj
+  refine h1.trans ?_
+  rw [mul_smul]
+  exact smul_le_smul_of_nonneg_left h hc
+
+/-- `c ≤ t` forces `c² ≤ t²` for nonnegative `t` and a nonnegative scalar `c`. -/
+theorem smul_one_le_mul_self_of_le {t : A} (ht : 0 ≤ t) {c : ℝ} (hc : 0 ≤ c)
+    (h : c • (1 : A) ≤ t) : (c * c) • (1 : A) ≤ t * t := by
+  have h1 : c • t ≤ t * t := by
+    have hcj := (CFC.sqrt_nonneg t).isSelfAdjoint.conjugate_le_conjugate h
+    rwa [sqrt_mul_mul_sqrt ht, show CFC.sqrt t * (c • (1 : A)) * CFC.sqrt t = c • t by
+      rw [mul_smul_comm, smul_mul_assoc, mul_one, CFC.sqrt_mul_sqrt_self t ht]] at hcj
+  refine le_trans ?_ h1
+  rw [mul_smul]
+  exact smul_le_smul_of_nonneg_left h hc
+
+/-- `a # a⁻¹ = 1`. -/
+@[simp]
+theorem gm_ringInverse_self (ha : IsStrictlyPositive a) : gm a a⁻¹ʳ = 1 := by
+  refine (gm_unique ha zero_le_one ?_).symm
+  rw [one_mul, mul_one]
+
+omit [PartialOrder A] [StarOrderedRing A] in
+/-- Two-sided multiplication commutes with weighted finite sums. -/
+lemma sum_smul_conjugate {ι : Type*} {s : Finset ι} (w : ι → ℝ) (u : ι → A) (c d : A) :
+    ∑ i ∈ s, w i • (c * u i * d) = c * (∑ i ∈ s, w i • u i) * d := by
+  rw [Finset.mul_sum, Finset.sum_mul]
+  exact Finset.sum_congr rfl fun i _ => by rw [mul_smul_comm, smul_mul_assoc]
 
 end
 

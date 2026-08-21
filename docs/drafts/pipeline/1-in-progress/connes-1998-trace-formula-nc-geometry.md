@@ -358,3 +358,21 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
   `ConnesArchPeriodization`, the two-sided rapid decay in `ConnesArchPeriodizationDecay`, and the
   tensor-splitting/denominator-confinement chain (39)-(46) here.
   All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 13 (**App I Lemma 3's continuation step closed**).
+  Corpus search found `RHTower.RapidDecayRay` and
+  `RHTower.differentiable_mellin_of_rapidDecayRay` ("rapid decay at both ends makes the Mellin
+  transform entire") in `BoundedExponentPoissonNonlanding`; reused, not rebuilt.
+  * `ConnesMellinContinuation` —
+    `connes_archPunctured_continuousOn` / `connes_archPeriodization_continuousOn` (local uniform
+    convergence of the punctured lattice series, via the second Schwartz seminorm and
+    `continuous_tsum` on `↥(Ioi c)`);
+    `connes_archPeriodization_isBigO_atTop` and `connes_archPeriodization_isBigO_zero`
+    (the two Tendsto decay statements of batch 11 converted to `IsBigO` against every real power);
+    `connes_archPeriodization_rapidDecayRay`; **`connes_differentiable_mellin_archPeriodization`**
+    — the Mellin transform of `E(f)` for `f ∈ 𝒮(ℝ)_0` is **entire**; and
+    **`connes_entire_eq_of_eqOn_halfPlane`** — two entire functions agreeing on `Re s > 1` agree
+    everywhere (mathlib's identity theorem on the preconnected `univ`).
+  Together these are exactly Connes' *"since both sides are analytic in `s` it holds in general"*:
+  Lemma 3's continuation from `Re s > 1` (where Lemma 1 gives it) to the whole plane.
+  Note: `f 0 = 0` and `∫ f = 0` are the definition of `𝒮(A)_0` (App I (31)), not added premises.

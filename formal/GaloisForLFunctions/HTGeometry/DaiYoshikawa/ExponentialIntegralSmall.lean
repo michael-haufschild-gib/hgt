@@ -119,6 +119,41 @@ theorem tendsto_expIntegralE1_add_log :
   filter_upwards [self_mem_nhdsWithin, hlt] with a ha ha1
   exact (expIntegralE1_add_log_eq ha ha1.le).symm
 
+
+/-! ## The sum over the small eigenvalues -/
+
+/-- **The identity of Theorem 3.9.**
+
+For finitely many parameters in `(0,1]`,
+`Σᵢ E₁(λᵢ) = −log ∏ᵢ λᵢ + Σᵢ Ein(λᵢ) − m γ`, and the error `Σᵢ Ein(λᵢ)` is squeezed between `0`
+and `Σᵢ λᵢ`.  This is the step converting the large-time part of the analytic torsion into the
+logarithm of the product of the small eigenvalues. -/
+theorem sum_expIntegralE1_eq {m : ℕ} (lam : Fin m → ℝ)
+    (hpos : ∀ i, 0 < lam i) (hle : ∀ i, lam i ≤ 1) :
+    ∑ i, expIntegralE1 (lam i)
+      = -Real.log (∏ i, lam i) + (∑ i, RHTower.ein (lam i))
+        - (m : ℝ) * Real.eulerMascheroniConstant := by
+  have hterm : ∀ i : Fin m,
+      expIntegralE1 (lam i) + Real.log (lam i)
+        = RHTower.ein (lam i) - Real.eulerMascheroniConstant :=
+    fun i => expIntegralE1_add_log_eq (hpos i) (hle i)
+  have hsum : (∑ i, expIntegralE1 (lam i)) + ∑ i, Real.log (lam i)
+      = (∑ i, RHTower.ein (lam i)) - (m : ℝ) * Real.eulerMascheroniConstant := by
+    rw [← Finset.sum_add_distrib, Finset.sum_congr rfl fun i _ => hterm i,
+      Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+      nsmul_eq_mul]
+  have hlog : Real.log (∏ i, lam i) = ∑ i, Real.log (lam i) :=
+    Real.log_prod fun i _ => (hpos i).ne'
+  rw [hlog]
+  linarith [hsum]
+
+/-- The error term of Theorem 3.9 is nonnegative and at most the sum of the parameters. -/
+theorem sum_ein_bounds {m : ℕ} (lam : Fin m → ℝ) (hpos : ∀ i, 0 < lam i) :
+    0 ≤ (∑ i, RHTower.ein (lam i)) ∧ (∑ i, RHTower.ein (lam i)) ≤ ∑ i, lam i := by
+  constructor
+  · exact Finset.sum_nonneg fun i _ => ein_nonneg (hpos i).le
+  · exact Finset.sum_le_sum fun i _ => ein_le_self (hpos i).le
+
 /-- **Dai–Yoshikawa's constant `c`.**  In Theorem 3.9 the constant is
 `c = (N−1)(∫_1^∞ e^{−t}dt/t + ∫_0^1 (e^{−t}−1)dt/t)`; it equals `−(N−1)γ`. -/
 theorem daiYoshikawa_constant (N : ℕ) :

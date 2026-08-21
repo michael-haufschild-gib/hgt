@@ -23,21 +23,41 @@ theorem TerminalBlockData.take_liftedWord_prefix
     List.take block.prefixGates.length
       (List.zipWith totalTwoQubitLift edges block.gates) =
       List.zipWith totalTwoQubitLift block.prefixEdges block.prefixGates := by
-  conv_lhs => rw [block.edges_decomp]
-  rw [block.gates_decomp, List.zipWith_append block.prefix_length]
-  apply List.take_append_of_le_length
-  simp [List.length_zipWith, block.prefix_length]
+  rcases block with ⟨gates, terminalGate, prefixEdges, suffixEdges, prefixGates, suffixGates,
+    gatesLength, gatesClifford, edgesDecomp, gatesDecomp, prefixLength, suffixLength,
+    suffixIdentity, transportCoeff, transportCoeffNonzero, transport, curveLength, curveZero,
+    contractionDerivative⟩
+  simp only
+  rw [edgesDecomp, gatesDecomp, List.zipWith_append prefixLength.symm]
+  have hlength : prefixGates.length =
+      (List.zipWith totalTwoQubitLift prefixEdges prefixGates).length := by
+    rw [List.length_zipWith]
+    symm
+    exact Nat.min_eq_right (Nat.le_of_eq prefixLength)
+  have hle : prefixGates.length ≤
+      (List.zipWith totalTwoQubitLift prefixEdges prefixGates).length := by
+    rw [← hlength]
+  rw [List.take_append_of_le_length hle, hlength,
+    List.take_length]
 
-/-- The retained terminal position lies inside its lifted physical block word. -/
-theorem TerminalBlockData.prefix_length_lt_liftedWord_length
+/-- The lifted word of a bundled block decomposes at its retained terminal
+gate, with the terminal interpreted at the root-targeting edge. -/
+theorem TerminalBlockData.liftedWord_decomp_at
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root} {P : Fin n → Option (Fin 3)}
-    (block : TerminalBlockData cone P) :
-    block.prefixGates.length <
-      (List.zipWith totalTwoQubitLift edges block.gates).length := by
-  conv_rhs => rw [block.edges_decomp]
-  rw [block.gates_decomp, List.zipWith_append block.prefix_length, List.length_append]
-  simp [List.length_zipWith, block.prefix_length, block.suffix_length]
+    (block : TerminalBlockData cone P) (terminalEdge : Fin n × Fin n)
+    (hedges : edges = block.prefixEdges ++ terminalEdge :: block.suffixEdges) :
+    List.zipWith totalTwoQubitLift edges block.gates =
+      List.zipWith totalTwoQubitLift block.prefixEdges block.prefixGates ++
+        totalTwoQubitLift terminalEdge block.terminalGate ::
+          List.zipWith totalTwoQubitLift block.suffixEdges block.suffixGates := by
+  rcases block with ⟨gates, terminalGate, prefixEdges, suffixEdges, prefixGates, suffixGates,
+    gatesLength, gatesClifford, edgesDecomp, gatesDecomp, prefixLength, suffixLength,
+    suffixIdentity, transportCoeff, transportCoeffNonzero, transport, curveLength, curveZero,
+    contractionDerivative⟩
+  simp only
+  rw [hedges, gatesDecomp, List.zipWith_append prefixLength.symm]
+  rfl
 
 /-- The literal chronological local-gate word of a recursive BLC assembly. -/
 def TerminalBlockPrefixAssembly.gateWord
