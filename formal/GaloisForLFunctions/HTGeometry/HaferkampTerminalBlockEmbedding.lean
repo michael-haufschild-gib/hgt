@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HaferkampTerminalPauliCoordinate
+import GaloisForLFunctions.HTGeometry.HaferkampAmbientProductDerivative
 
 /-!
 # Terminal-aware full light-cone blocks
@@ -34,6 +35,8 @@ theorem exists_full_block_transport_root_Z_with_terminal_gate
         List (Matrix.specialUnitaryGroup (Bool × Bool) ℂ),
         edges = beforeBlockEdges ++ ((cone.mergePlan.terminal, root) :: afterBlockEdges) ∧
         blockGates = beforeBlockGates ++ (terminalGate :: afterBlockGates) ∧
+        beforeBlockGates.length = beforeBlockEdges.length ∧
+        afterBlockGates.length = afterBlockEdges.length ∧
         (∀ U ∈ afterBlockGates, U = 1) ∧
         IsBoolTwoQubitPauliClifford
           (terminalGate : Matrix (Bool × Bool) (Bool × Bool) ℂ) ∧
@@ -79,7 +82,8 @@ theorem exists_full_block_transport_root_Z_with_terminal_gate
       · exact hEarlierClifford U hU
       · exact hTerminalClifford)
   obtain ⟨beforeBlockEdges, afterBlockEdges, beforeBlockGates, afterBlockGates,
-    hBlockEdges, hBlockGates, hSuffixIdentity⟩ := embedding.terminal_gate_suffix
+    hBlockEdges, hBlockGates, hBeforeLength, hAfterLength, hSuffixIdentity⟩ :=
+    embedding.terminal_gate_suffix
       ⟨earlierSchedule.edgeList, rfl⟩ ⟨earlierGates, rfl⟩
   have hTerminalTotal : totalTwoQubitLift (cone.mergePlan.terminal, root) terminalGate =
       twoQubitLift cone.mergePlan.terminal root cone.mergePlan.terminal_ne_root terminalGate :=
@@ -141,7 +145,7 @@ theorem exists_full_block_transport_root_Z_with_terminal_gate
     simp [smul_smul]
   refine ⟨blockGates, embedding.blockGates_length_eq, hBlockClifford,
     terminalGate, beforeBlockEdges, afterBlockEdges, beforeBlockGates, afterBlockGates,
-    hBlockEdges, hBlockGates, hSuffixIdentity, hTerminalClifford,
+    hBlockEdges, hBlockGates, hBeforeLength, hAfterLength, hSuffixIdentity, hTerminalClifford,
     cEarlier * cTerminal, mul_ne_zero hcEarlier hcTerminal, ?_⟩
   change ((haferkampGateWordReverseProduct totalTwoQubitLift edges blockGates :
       Matrix.unitaryGroup (Fin n → Bool) ℂ) :

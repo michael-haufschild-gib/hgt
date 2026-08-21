@@ -88,17 +88,20 @@ theorem contDiffOn_kerrNewmanBoyerLindquistCoordinateMetric
       (x 1 ^ 2 + spin ^ 2)) U :=
     ((contDiff_kerrNewmanBoyerLindquist_radius.pow 2).add contDiff_const).contDiffOn
   fin_cases i <;> fin_cases j
-  · simpa [kerrNewmanBoyerLindquistCoordinateMetric, kerrNewmanBoyerLindquistMetric,
-      kerrNewmanKillingBlock] using
-      ((hDelta.sub (contDiffOn_const.mul hSinSq)).neg.div hSigma hSigmaNe)
+  · change ContDiffOn ℝ ∞ (fun x : Fin 4 → ℝ =>
+      -(kerrNewmanDelta mass spin charge (x 1) - spin ^ 2 * Real.sin (x 2) ^ 2) /
+        kerrNewmanSigma spin (x 1) (x 2)) U
+    exact ((hDelta.sub ((contDiffOn_const (c := spin ^ 2)).mul hSinSq)).neg.div hSigma hSigmaNe)
   · exact contDiffOn_const
   · exact contDiffOn_const
-  · simpa [kerrNewmanBoyerLindquistCoordinateMetric, kerrNewmanBoyerLindquistMetric,
-      kerrNewmanKillingBlock] using
-      (((contDiffOn_const.mul hSinSq).mul hCross).neg.div hSigma hSigmaNe)
+  · change ContDiffOn ℝ ∞ (fun x : Fin 4 → ℝ =>
+      -(spin * Real.sin (x 2) ^ 2 * (2 * mass * x 1 - charge ^ 2)) /
+        kerrNewmanSigma spin (x 1) (x 2)) U
+    exact ((((contDiffOn_const (c := spin)).mul hSinSq).mul hCross).neg.div hSigma hSigmaNe)
   · exact contDiffOn_const
-  · simpa [kerrNewmanBoyerLindquistCoordinateMetric, kerrNewmanBoyerLindquistMetric,
-      kerrNewmanKillingBlock] using hSigma.div hDelta hDeltaNe
+  · change ContDiffOn ℝ ∞ (fun x : Fin 4 → ℝ =>
+      kerrNewmanSigma spin (x 1) (x 2) / kerrNewmanDelta mass spin charge (x 1)) U
+    exact hSigma.div hDelta hDeltaNe
   · exact contDiffOn_const
   · exact contDiffOn_const
   · exact contDiffOn_const
@@ -106,15 +109,19 @@ theorem contDiffOn_kerrNewmanBoyerLindquistCoordinateMetric
   · simpa [kerrNewmanBoyerLindquistCoordinateMetric, kerrNewmanBoyerLindquistMetric,
       kerrNewmanKillingBlock] using hSigma
   · exact contDiffOn_const
-  · simpa [kerrNewmanBoyerLindquistCoordinateMetric, kerrNewmanBoyerLindquistMetric,
-      kerrNewmanKillingBlock] using
-      (((contDiffOn_const.mul hSinSq).mul hCross).neg.div hSigma hSigmaNe)
+  · change ContDiffOn ℝ ∞ (fun x : Fin 4 → ℝ =>
+      -(spin * Real.sin (x 2) ^ 2 * (2 * mass * x 1 - charge ^ 2)) /
+        kerrNewmanSigma spin (x 1) (x 2)) U
+    exact ((((contDiffOn_const (c := spin)).mul hSinSq).mul hCross).neg.div hSigma hSigmaNe)
   · exact contDiffOn_const
   · exact contDiffOn_const
-  · simpa [kerrNewmanBoyerLindquistCoordinateMetric, kerrNewmanBoyerLindquistMetric,
-      kerrNewmanKillingBlock] using
-      (hSinSq.mul ((hRadialSqPlusSpinSq.pow 2).sub
-        ((contDiffOn_const.mul hDelta).mul hSinSq))).div hSigma hSigmaNe
+  · change ContDiffOn ℝ ∞ (fun x : Fin 4 → ℝ =>
+      Real.sin (x 2) ^ 2 *
+          ((x 1 ^ 2 + spin ^ 2) ^ 2 - spin ^ 2 *
+            kerrNewmanDelta mass spin charge (x 1) * Real.sin (x 2) ^ 2) /
+        kerrNewmanSigma spin (x 1) (x 2)) U
+    exact (hSinSq.mul ((hRadialSqPlusSpinSq.pow 2).sub
+      (((contDiffOn_const (c := spin ^ 2)).mul hDelta).mul hSinSq))).div hSigma hSigmaNe
 
 end
 

@@ -12,9 +12,9 @@ For the parameter `1`, a cyclic Galois algebra acts on the coefficient field vie
 `K`-vector space.  Coefficients act by left multiplication and the cyclic variable acts by the
 chosen Galois generator.  This gives a concrete representation of the raw quotient in
 `End_K(L)`, proves that its coefficient copy is faithful, and proves the quotient is nontrivial.
-
-Surjectivity or injectivity of the entire representation is the remaining normal-form/descent
-step needed to identify this split cyclic algebra with `End_K(L)`.
+The Galois automorphisms form an `L`-basis of `End_K(L)`, and all occur in the representation;
+therefore the representation is surjective.  Injectivity remains the normal-form step needed to
+identify the raw split quotient with `End_K(L)`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
@@ -33,8 +33,8 @@ field. -/
 noncomputable abbrev cyclicGaloisAlgebraSplitGeneratorAction : Module.End K L :=
   (cyclicGaloisGenerator K L).toLinearMap
 
-/-- Taking powers commutes with passage from the Galois automorphism to its linear action. -/
 omit [FiniteDimensional K L] [IsGalois K L] in
+/-- Taking powers commutes with passage from the Galois automorphism to its linear action. -/
 theorem cyclicGaloisGenerator_toLinearMap_pow (q : ℕ) :
     (cyclicGaloisGenerator K L).toLinearMap ^ q =
       ((cyclicGaloisGenerator K L) ^ q).toLinearMap := by
@@ -55,6 +55,7 @@ theorem cyclicGaloisAlgebraSplitGeneratorAction_pow_finrank :
   rw [pow_orderOf_eq_one]
   simp
 
+omit [FiniteDimensional K L] [IsGalois K L] in
 /-- The coefficient and generator actions satisfy every skew commutation relation required by
 the universal cyclic-algebra lift. -/
 theorem cyclicGaloisAlgebraSplit_actions_commute (m : Multiplicative ℕ) (x : L) :
@@ -114,6 +115,78 @@ theorem cyclicGaloisAlgebraSplit_C_injective :
   have hone := LinearMap.congr_fun hrepresentation 1
   change x * 1 = y * 1 at hone
   simpa using hone
+
+/-- The Galois automorphisms, viewed as `K`-linear maps, form an `L`-basis of `End_K(L)`. -/
+noncomputable def cyclicGaloisAlgebraSplitEndBasis :
+    Module.Basis Gal(L/K) L (Module.End K L) :=
+  basisOfLinearIndependentOfCardEqFinrank
+    ((linearIndependent_algHom_toLinearMap K L L).comp _ (algEquivEquivAlgHom K L).injective)
+    (by
+      calc
+        Fintype.card Gal(L/K) = Nat.card Gal(L/K) := Fintype.card_eq_nat_card
+        _ = Module.finrank K L := IsGalois.card_aut_eq_finrank K L
+        _ = Module.finrank L (Module.End K L) := by
+          rw [Module.finrank_linearMap K L L L]
+          simp)
+
+omit [IsCyclic Gal(L/K)] in
+/-- The Galois endomorphisms span all `K`-linear endomorphisms of the coefficient field. -/
+theorem cyclicGaloisAlgebraSplitEndBasis_span_eq_top :
+    Submodule.span L (Set.range fun σ : Gal(L/K) => σ.toLinearMap) = ⊤ := by
+  have heq : (AlgHom.toLinearMap ∘ ⇑(algEquivEquivAlgHom K L)) =
+      fun σ : Gal(L/K) => σ.toLinearMap := by
+    rfl
+  simpa only [cyclicGaloisAlgebraSplitEndBasis, coe_basisOfLinearIndependentOfCardEqFinrank,
+    heq] using (cyclicGaloisAlgebraSplitEndBasis K L).span_eq
+
+/-- The image of the split representation is closed under the natural `L`-scalar action on
+`End_K(L)`. -/
+noncomputable def cyclicGaloisAlgebraSplitRepresentationRange : Submodule L (Module.End K L) where
+  carrier := Set.range (cyclicGaloisAlgebraSplitRepresentation K L)
+  zero_mem' := ⟨0, map_zero _⟩
+  add_mem' hx hy := by
+    obtain ⟨x, rfl⟩ := hx
+    obtain ⟨y, rfl⟩ := hy
+    exact ⟨x + y, map_add _ _ _⟩
+  smul_mem' c f hf := by
+    obtain ⟨x, rfl⟩ := hf
+    refine ⟨cyclicGaloisAlgebraC K L 1 c * x, ?_⟩
+    rw [map_mul, cyclicGaloisAlgebraSplitRepresentation_C]
+    ext z
+    simp [Module.End.mul_apply, Algebra.coe_lmul_eq_mul, LinearMap.mul]
+
+/-- Every Galois automorphism occurs in the range of the split cyclic-algebra representation. -/
+theorem cyclicGaloisAlgebraSplitGeneratorAction_mem_range (σ : Gal(L/K)) :
+    σ.toLinearMap ∈ cyclicGaloisAlgebraSplitRepresentationRange K L := by
+  classical
+  change σ.toLinearMap ∈ Set.range (cyclicGaloisAlgebraSplitRepresentation K L)
+  have hfull := IsCyclic.image_range_orderOf (cyclicGaloisGenerator_spec K L)
+  have hmem : σ ∈ (Finset.range (orderOf (cyclicGaloisGenerator K L))).image
+      (cyclicGaloisGenerator K L ^ ·) := by
+    rw [hfull]
+    simp
+  obtain ⟨i, _hi, hpower⟩ := Finset.mem_image.mp hmem
+  refine ⟨cyclicGaloisAlgebraC K L 1 1 * cyclicGaloisAlgebraX K L 1 ^ i, ?_⟩
+  rw [map_mul, map_pow, cyclicGaloisAlgebraSplitRepresentation_C,
+    cyclicGaloisAlgebraSplitRepresentation_X]
+  simp only [map_one, one_mul]
+  rw [cyclicGaloisGenerator_toLinearMap_pow, hpower]
+
+/-- The raw split cyclic Galois algebra maps surjectively onto `End_K(L)`. -/
+theorem cyclicGaloisAlgebraSplitRepresentation_surjective :
+    Function.Surjective (cyclicGaloisAlgebraSplitRepresentation K L) := by
+  classical
+  have htop : cyclicGaloisAlgebraSplitRepresentationRange K L = ⊤ := by
+    apply top_unique
+    rw [← cyclicGaloisAlgebraSplitEndBasis_span_eq_top K L]
+    apply Submodule.span_le.2
+    rintro _ ⟨σ, rfl⟩
+    exact cyclicGaloisAlgebraSplitGeneratorAction_mem_range K L σ
+  intro f
+  change f ∈ Set.range (cyclicGaloisAlgebraSplitRepresentation K L)
+  change f ∈ cyclicGaloisAlgebraSplitRepresentationRange K L
+  rw [htop]
+  trivial
 
 /-- The split raw cyclic Galois algebra is not the zero ring. -/
 theorem cyclicGaloisAlgebraSplit_one_ne_zero : (1 : cyclicGaloisAlgebra K L 1) ≠ 0 := by
