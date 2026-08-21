@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.KerrLowFrequencyGammaCollapse
 import GaloisForLFunctions.HTGeometry.KerrNewmanChargedScalarGammaBoundary
 import GaloisForLFunctions.HTGeometry.ClockDynamicsUnderdetermination
+import GaloisForLFunctions.HTGeometry.ContinuumChronometricGravity
 
 /-!
 # Kerr, Kerr--Newman, Einstein-form, and Belinski--Zakharov algebraic bridges
@@ -8,9 +9,11 @@ import GaloisForLFunctions.HTGeometry.ClockDynamicsUnderdetermination
 This module formalizes exact algebraic interfaces, not the full differential-geometric proof that
 Kerr--Newman solves the Einstein--Maxwell equations.  It gives the Boyer--Lindquist `4 × 4`
 metric, identifies the stationary `t--φ` Killing block, proves its denominator-cleared determinant
-law, and proves that a constant unipotent `SL(2, ℝ)` congruence preserves that determinant and
-symmetry.  This is the constant algebraic seed of a Belinski--Zakharov dressing, not a
-spectral-parameter soliton construction.
+law, and proves that constant and one-pole unipotent `SL(2, ℝ)` congruences preserve that
+determinant and symmetry.  It also formalizes rank-one residues and a nonconstant two-coordinate
+nilpotent Lax pair satisfying the zero-curvature equation.  This is a BZ-type algebraic sector,
+not a proof of the full spectral-parameter soliton construction or the reduced Einstein--Maxwell
+equations.
 
 It also identifies the existing low-frequency Kerr response Gamma ratios with exact
 Kerr--Newman response-gap specializations.  These are response-theory identities; they do not
@@ -22,7 +25,7 @@ they do not calculate curvature or establish a physical source model.
 -/
 
 open Filter Set Topology Function Complex
-open scoped BigOperators
+open scoped BigOperators Matrix
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -131,6 +134,16 @@ def kerrNewmanBoyerLindquistMetric
 def kerrBoyerLindquistMetric (mass spin radius polar : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
   kerrNewmanBoyerLindquistMetric mass spin 0 radius polar
 
+/-- At unit radius on the equatorial slice, the zero mass--spin--charge Kerr--Newman metric is
+the corpus's standard Minkowski metric.  This anchors the Boyer--Lindquist representative to the
+existing chronometric metric interface. -/
+theorem kerrNewmanBoyerLindquistMetric_flatLimit :
+    kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2) = minkowskiMetric4 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [kerrNewmanBoyerLindquistMetric, kerrNewmanKillingBlock,
+      kerrNewmanSigma, kerrNewmanDelta, minkowskiMetric4]
+
 /-- The full Kerr--Newman metric is symmetric. -/
 theorem kerrNewmanBoyerLindquistMetric_transpose
     (mass spin charge radius polar : ℝ) :
@@ -178,10 +191,59 @@ def belinskiZakharovDressing
     (dressing metric : Matrix (Fin 2) (Fin 2) ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
   dressing * metric * Matrix.transpose dressing
 
+/-- The quadratic form carried by a stationary two-Killing metric block. -/
+def belinskiZakharovKillingQuadratic
+    (metric : Matrix (Fin 2) (Fin 2) ℝ) (vector : Fin 2 → ℝ) : ℝ :=
+  dotProduct vector (metric *ᵥ vector)
+
+/-- BZ congruence dressing transports the Killing quadratic form along the transposed dressing.
+Consequently its null directions are carried by an explicit linear transformation. -/
+theorem belinskiZakharovDressing_killingQuadratic
+    (dressing metric : Matrix (Fin 2) (Fin 2) ℝ) (vector : Fin 2 → ℝ) :
+    belinskiZakharovKillingQuadratic (belinskiZakharovDressing dressing metric) vector =
+      belinskiZakharovKillingQuadratic metric (Matrix.transpose dressing *ᵥ vector) := by
+  simp [belinskiZakharovKillingQuadratic, belinskiZakharovDressing, dotProduct,
+    Matrix.mulVec, Matrix.mul_apply, Fin.sum_univ_two]
+  ring
+
 /-- The elementary dressing is unimodular. -/
 theorem belinskiZakharovUnipotentDressing_det (parameter : ℝ) :
     (belinskiZakharovUnipotentDressing parameter).det = 1 := by
   simp [belinskiZakharovUnipotentDressing, Matrix.det_fin_two]
+
+/-- A rank-at-most-one BZ residue written as a column times a row. -/
+def belinskiZakharovRankOneResidue
+    (column row : Fin 2 → ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  Matrix.vecMulVec column row
+
+/-- Every column--row BZ residue has zero determinant.  Exact rank one would additionally require
+the two factors to be nonzero, which is intentionally not assumed here. -/
+theorem belinskiZakharovRankOneResidue_det
+    (column row : Fin 2 → ℝ) : (belinskiZakharovRankOneResidue column row).det = 0 := by
+  rw [Matrix.det_fin_two]
+  simp [belinskiZakharovRankOneResidue, Matrix.vecMulVec]
+  ring
+
+/-- The canonical nilpotent rank-one residue used by the unipotent spectral dressing. -/
+def belinskiZakharovNilpotentResidue (residue : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  !![0, residue; 0, 0]
+
+/-- The canonical residue has the declared column--row factorization. -/
+theorem belinskiZakharovNilpotentResidue_eq_rankOne (residue : ℝ) :
+    belinskiZakharovNilpotentResidue residue =
+      belinskiZakharovRankOneResidue ![residue, 0] ![0, 1] := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [belinskiZakharovNilpotentResidue, belinskiZakharovRankOneResidue,
+      Matrix.vecMulVec]
+
+/-- The canonical rank-one residue squares to zero. -/
+theorem belinskiZakharovNilpotentResidue_sq (residue : ℝ) :
+    belinskiZakharovNilpotentResidue residue *
+        belinskiZakharovNilpotentResidue residue = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [belinskiZakharovNilpotentResidue, Matrix.mul_apply, Fin.sum_univ_two]
 
 /-- A one-pole unipotent spectral dressing.  At the pole this totalized algebraic model equals
 the identity, so every theorem below is unconditional. -/
@@ -215,6 +277,84 @@ theorem belinskiZakharovOnePoleDressing_cancel
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [belinskiZakharovOnePoleDressing, belinskiZakharovUnipotentDressing]
+
+/-- A one-pole dressing is identity plus its explicit rank-one nilpotent residue. -/
+theorem belinskiZakharovOnePoleDressing_eq_one_add_residue
+    (spectral pole residue : ℝ) :
+    belinskiZakharovOnePoleDressing spectral pole residue = 1 +
+      belinskiZakharovNilpotentResidue (residue / (spectral - pole)) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [belinskiZakharovOnePoleDressing, belinskiZakharovUnipotentDressing,
+      belinskiZakharovNilpotentResidue]
+
+/-- Entrywise partial derivative in the radial coordinate.  This coordinatewise definition builds
+the finite-matrix derivative layer missing from the pre-existing Lax API. -/
+def belinskiZakharovPartialRho
+    (F : ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℝ) (rho z : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  fun i j => deriv (fun r => F r z i j) rho
+
+/-- Entrywise partial derivative in the axial coordinate. -/
+def belinskiZakharovPartialZ
+    (F : ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℝ) (rho z : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  fun i j => deriv (fun w => F rho w i j) z
+
+/-- The zero-curvature residual `∂ρ V - ∂z U + [U,V]` of a two-coordinate BZ-type Lax pair. -/
+def belinskiZakharovZeroCurvature
+    (U V : ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℝ) (rho z : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  belinskiZakharovPartialRho V rho z - belinskiZakharovPartialZ U rho z +
+    U rho z * V rho z - V rho z * U rho z
+
+/-- A nonconstant nilpotent Lax coefficient in the axial coordinate. -/
+def belinskiZakharovNilpotentLaxU
+    (residue : ℝ) : ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℝ :=
+  fun _ z => z • belinskiZakharovNilpotentResidue residue
+
+/-- A nonconstant nilpotent Lax coefficient in the radial coordinate. -/
+def belinskiZakharovNilpotentLaxV
+    (residue : ℝ) : ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℝ :=
+  fun rho _ => rho • belinskiZakharovNilpotentResidue residue
+
+/-- The radial derivative of the nilpotent `V` coefficient is its residue. -/
+theorem belinskiZakharovPartialRho_nilpotentLaxV (residue rho z : ℝ) :
+    belinskiZakharovPartialRho (belinskiZakharovNilpotentLaxV residue) rho z =
+      belinskiZakharovNilpotentResidue residue := by
+  ext i j
+  change deriv (fun r : ℝ => r * belinskiZakharovNilpotentResidue residue i j) rho =
+    belinskiZakharovNilpotentResidue residue i j
+  simpa only [id_eq, one_mul] using
+    ((hasDerivAt_id rho).mul_const (belinskiZakharovNilpotentResidue residue i j)).deriv
+
+/-- The axial derivative of the nilpotent `U` coefficient is its residue. -/
+theorem belinskiZakharovPartialZ_nilpotentLaxU (residue rho z : ℝ) :
+    belinskiZakharovPartialZ (belinskiZakharovNilpotentLaxU residue) rho z =
+      belinskiZakharovNilpotentResidue residue := by
+  ext i j
+  change deriv (fun w : ℝ => w * belinskiZakharovNilpotentResidue residue i j) z =
+    belinskiZakharovNilpotentResidue residue i j
+  simpa only [id_eq, one_mul] using
+    ((hasDerivAt_id z).mul_const (belinskiZakharovNilpotentResidue residue i j)).deriv
+
+/-- A nonconstant rank-one BZ-type Lax pair satisfies the exact zero-curvature equation. -/
+theorem belinskiZakharovNilpotentLax_zeroCurvature (residue rho z : ℝ) :
+    belinskiZakharovZeroCurvature
+      (belinskiZakharovNilpotentLaxU residue)
+      (belinskiZakharovNilpotentLaxV residue) rho z = 0 := by
+  unfold belinskiZakharovZeroCurvature
+  rw [belinskiZakharovPartialRho_nilpotentLaxV,
+    belinskiZakharovPartialZ_nilpotentLaxU]
+  have hUV : belinskiZakharovNilpotentLaxU residue rho z *
+      belinskiZakharovNilpotentLaxV residue rho z = 0 := by
+    simp only [belinskiZakharovNilpotentLaxU, belinskiZakharovNilpotentLaxV]
+    rw [Matrix.smul_mul, Matrix.mul_smul, belinskiZakharovNilpotentResidue_sq]
+    simp
+  have hVU : belinskiZakharovNilpotentLaxV residue rho z *
+      belinskiZakharovNilpotentLaxU residue rho z = 0 := by
+    simp only [belinskiZakharovNilpotentLaxU, belinskiZakharovNilpotentLaxV]
+    rw [Matrix.smul_mul, Matrix.mul_smul, belinskiZakharovNilpotentResidue_sq]
+    simp
+  rw [hUV, hVU]
+  abel
 
 /-- Congruence dressing changes a metric-block determinant by the square of the dressing
 determinant. -/

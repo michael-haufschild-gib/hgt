@@ -52,4 +52,23 @@ theorem cglLemma45_threeFrequencyProduct_eq_tsum
       rw [tsum_mul_tsum_of_summable_norm h₁₂ h₃]
       rfl
 
+/-- The exact CGL three-frequency kernel is absolutely summable on `Z³`.
+This is a derived Schwartz certificate, available for later frequency splits. -/
+theorem cglLemma45TripleFrequencyTerm_summable_norm
+    (w : CGLRealSmoothBump) (N : CGLPositiveLength)
+    (Q : CGLPositiveModulus)
+    (χ₁ ψ₁ χ₂ ψ₂ χ₃ ψ₃ : DirichletCharacter ℂ Q.value)
+    (t₁ t₂ t₃ : ℝ) (a₁ a₂ a₃ : ZMod Q.value) :
+    Summable fun m : (ℤ × ℤ) × ℤ =>
+      ‖cglLemma45TripleFrequencyTerm w N Q χ₁ ψ₁ χ₂ ψ₂ χ₃ ψ₃
+        t₁ t₂ t₃ a₁ a₂ a₃ m‖ := by
+  have h₁ := cglLemma45CharacterPairFourierTerm_summable_norm w N Q χ₁ ψ₁ t₁ a₁
+  have h₂ := cglLemma45CharacterPairFourierTerm_summable_norm w N Q χ₂ ψ₂ t₂ a₂
+  have h₃ := cglLemma45CharacterPairFourierTerm_summable_norm w N Q χ₃ ψ₃ t₃ a₃
+  have h₁₂ : Summable fun m : ℤ × ℤ =>
+      ‖cglLemma45CharacterPairFourierTerm w N Q χ₁ ψ₁ t₁ a₁ m.1 *
+        cglLemma45CharacterPairFourierTerm w N Q χ₂ ψ₂ t₂ a₂ m.2‖ := by
+    simpa only [norm_mul] using h₁.mul_norm h₂
+  simpa only [cglLemma45TripleFrequencyTerm] using h₁₂.mul_norm h₃
+
 end RHTower

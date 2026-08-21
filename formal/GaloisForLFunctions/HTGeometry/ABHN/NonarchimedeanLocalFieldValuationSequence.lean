@@ -7,8 +7,10 @@ import GaloisForLFunctions.HTGeometry.ABHN.LocalValuationSequence
 import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.NumberTheory.LocalField.Basic
 import Mathlib.RingTheory.AdjoinRoot
+import Mathlib.RingTheory.Algebraic.Integral
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Ideal.GoingUp
+import Mathlib.RingTheory.Polynomial.IrreducibleRing
 import Mathlib.RingTheory.Smooth.Fiber
 import Mathlib.RingTheory.Unramified.LocalRing
 
@@ -489,6 +491,78 @@ theorem nonarchimedeanLocalFieldAdjoinRootMapMaximalIdealIsMaximal
   letI : Fact (Irreducible g) := ⟨hg⟩
   exact (nonarchimedeanLocalFieldAdjoinRootReductionEquivOfMapEq K f g hfg).toMulEquiv.isField
     (Field.toIsField _)
+
+/-- An irreducible residue polynomial lifts to a prime monic polynomial over the valuation ring
+of a nonarchimedean local field. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_isPrime
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) : Prime f := by
+  have hnil : nilradical 𝒪[K] = ⊥ := nilradical_eq_bot_iff.mpr inferInstance
+  letI : (nilradical 𝒪[K]).IsPrime := hnil ▸ Ideal.isPrime_bot
+  have hmap : Irreducible (f.map (Ideal.Quotient.mk 𝓂[K])) := by
+    rw [hfg]
+    exact hg
+  have hirr : Irreducible f :=
+    hf.irreducible_of_irreducible_map_of_isPrime_nilradical
+      (Ideal.Quotient.mk 𝓂[K]) f hmap
+  exact hirr.prime
+
+/-- An irreducible residue polynomial stays irreducible after a monic lift to the valuation
+ring of a nonarchimedean local field.  Consequently its root algebra is a domain, so this
+finite étale local algebra has a genuine fraction field. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_isDomain
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) : IsDomain (AdjoinRoot f) :=
+  AdjoinRoot.isDomain_of_prime (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+
+/-- A monic lift of an irreducible residue polynomial has positive degree. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) : f.degree ≠ 0 := by
+  have hpos : 0 < f.natDegree := by
+    rw [← hf.natDegree_map (Ideal.Quotient.mk 𝓂[K]), hfg]
+    exact hg.natDegree_pos
+  intro h
+  apply hpos.ne'
+  rw [Polynomial.degree_eq_natDegree hf.ne_zero] at h
+  exact WithBot.coe_eq_zero.mp h
+
+/-- The fraction field of the lifted root algebra is finite-dimensional over the fraction field
+of the local valuation ring.  The displayed local scalar structures are explicit because
+Mathlib deliberately does not register fraction-field lift structures globally. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionField_finiteDimensional
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : Algebra 𝒪[K] (FractionRing (AdjoinRoot f)) :=
+      RingHom.toAlgebra <|
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+    letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+        (FractionRing (AdjoinRoot f))).mpr ?_
+      change Function.Injective <|
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+        (AdjoinRoot.of.injective_of_degree_ne_zero
+          (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+    letI : Algebra (FractionRing 𝒪[K]) (FractionRing (AdjoinRoot f)) :=
+      FractionRing.liftAlgebra 𝒪[K] (FractionRing (AdjoinRoot f))
+    FiniteDimensional (FractionRing 𝒪[K]) (FractionRing (AdjoinRoot f)) := by
+  letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : Module.Finite 𝒪[K] (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : Module.IsTorsionFree 𝒪[K] (AdjoinRoot f) :=
+    AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  infer_instance
 
 /-- A monic lift of an irreducible residue polynomial has local root algebra.  Its unique
 maximal ideal is the extension of the maximal ideal of the valuation ring. -/
