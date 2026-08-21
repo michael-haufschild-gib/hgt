@@ -9997,3 +9997,27 @@ inductions themselves over `(PlaceDegLE, PlaceFree, PlaceLim)` in place of
 (`PlaceDerivationValuationDrop`, `AlgebraicCascadeDifferentDrop`) and now the limit layer are in
 place, so that restatement is a transcription rather than new mathematics.  Item 3's analytic half
 — Reduction I's selection of the branch, quoting Goldberg and Strelitz — is untouched.
+
+### Log — the algebraic model, part 15: the dominant term of a sum at a place
+
+`HTGeometry/PlaceLimit.lean` gained `valuation_sum_of_lt` (wired, built, axiom-clean):
+
+```text
+valuation_sum_of_lt
+    **a finite sum with one strictly dominant term has that term's valuation**
+```
+
+Both branches are needed and both are proved: if the dominant value is nonzero, the tail is
+strictly smaller by `Valuation.map_sum_lt` and `valuation_add_of_lt` finishes; if it is zero, no
+other term can be strictly smaller (valuations are non-negative), so the index set is a singleton
+and the sum is the term itself.
+
+This is the shape the border-shape inductions of the peel consume — a leading term surviving a sum
+of strictly smaller ones — and it completes the place-level toolkit alongside `PlaceGrading`
+(the grading algebra), `PlaceDerivationValuationDrop` (the derivation drop) and the rest of
+`PlaceLimit` (values at the place, uniqueness, determinants, and the transport of coordinate
+freeness through an algebraic extension).
+
+What remains of item 3a is transcribing the peel-step and border-shape inductions themselves from
+`(TopDegLE, TopFree, TopLim)` to `(PlaceDegLE, PlaceFree, PlaceLim)`; every lemma those inductions
+call now has its place-level counterpart.

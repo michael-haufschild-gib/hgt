@@ -524,3 +524,34 @@ annihilating polynomial itself: `g` is a root of `alpha^n(X) − alpha^n(g)`, of
 morphism, with no jet or prolongation content: the whole differential layer of item 1 of the
 Lean-status list has been discharged by
 `DifferentialAlgebraicAdjoin.differentialAdjoin_singleton_eq_adjoin`.
+
+## Lean progress — the deck-closure step in the `fixedField` idiom
+
+`GaloisForLFunctions.HTGeometry.FixedFieldSupremum` (wired, built, axiom-clean)
+
+```text
+iInf_fixedField
+    **the infimum of fixed fields is the fixed field of the supremum**
+iInf_eq_fixedField_iSup_of_eq
+    hence if each `E i` is the fixed field of `Γ i`, then `⨅ i, E i = K^{⨆ i, Γ i}`
+```
+
+The proof is `Subgroup.iSup_induction`: an element fixed by every member of each `Γ i` is fixed by
+the subgroup they generate, because the elements it fixes form a subgroup.
+
+Combined with the previous entry this makes Theorem A's chain complete in the automorphism-group
+idiom, for any tower whose levels satisfy the degree criterion:
+
+* `(1)` per level, `alpha^{n*} K = K^{Gamma_n}`:
+  `IsogenyDegreeFixedField.eq_fixedField_of_annihilating_poly`, needing only the annihilating
+  polynomial of the covering degree;
+* `(2)` intersecting the levels: `FixedFieldSupremum.iInf_eq_fixedField_iSup_of_eq`, giving
+  `⋂_n alpha^{n*} K = K^{⋃_n Gamma_n}`;
+* `(3)` passing to the Zariski/Kolchin closure:
+  `DifferentialKolchinClosure.differentialTranslationFixedField_eq_of_kolchinClosureOver_eq`,
+  already in the tree.
+
+So Theorem A is now assembled from three Lean theorems plus the one order-zero geometric input.
+Items 2–5 of the Lean-status list — the quotient sheaf/atlas for `G/H`, the DCF generic-point bridge
+for the logarithmic derivative, the reduced presentation, and the finite-action quotient — are
+untouched and still gate Theorems B, C and D.

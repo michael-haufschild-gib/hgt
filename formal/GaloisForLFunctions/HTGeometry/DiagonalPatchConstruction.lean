@@ -81,7 +81,7 @@ theorem nonempty_embedPatch_sphericalCap {d : ℕ} {u₀ : EuclideanSpace ℝ (F
   ⟨_, ⟨u₀, ⟨hu₀, by rw [dist_self]; exact hρ⟩, rfl⟩⟩
 
 
-theorem abs_coord_le_norm (v : EuclideanSpace ℝ (Fin f)) (i : Fin f) :
+theorem abs_coord_le_norm {ι : Type*} [Fintype ι] (v : EuclideanSpace ℝ ι) (i : ι) :
     |WithLp.ofLp v i| ≤ ‖v‖ := by
   have hle : |WithLp.ofLp v i| ^ 2 ≤ ∑ j, ‖WithLp.ofLp v j‖ ^ 2 := by
     refine le_trans (le_of_eq ?_) (Finset.single_le_sum

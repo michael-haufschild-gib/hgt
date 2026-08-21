@@ -1564,3 +1564,28 @@ prescribed-passport version.  Its components (`FiniteHermiteCRT`, `FiniteFluxPas
 `ImaginaryAxisPositiveRepair`, plus the new `MultiQuartetEnvelope` layer) are all present; what
 remains is the assembly, which needs the degree-controlled equivariant CRT to be matched against
 the new product envelope.
+
+### PROMOTED: `rational-hurwitz-lorentz-boost-colligation` (2026-08-21)
+
+`formal/GaloisForLFunctions/RHTower/RationalHurwitzLorentzBoost.lean`.  Cheap card: the seam-energy
+half was already in `XiRationalHurwitzDyadicRefinement` (`normalizedScaleSeamEnergy_eq_sinh` is
+`(11)`, `normalizedScaleSeamEnergy_sq_sub_linear` is `(12)`), so only the colligation was new.
+
+- `lorentzBoost u = !![cosh u, sinh u; sinh u, cosh u]`, `kreinMatrix`, `lightConeChart`;
+- `lorentzBoost_krein`, `det_lorentzBoost`, `lorentzBoost_mul` (rapidity additivity),
+  `lorentzBoost_pow`, `lorentzBoost_mulVec_plus/minus` (the light-cone eigenvectors);
+- `hurwitzBoost`, `hurwitzBoost_mul`, `hurwitzBoost_pow`, **`hurwitzBoost_lightCone`** (the two
+  inverse reflected responses `n^{±(Re ρ − 1/2)}`);
+- `normalizedScaleSeamEnergy_eq_boost_offDiagonal_sq`, `arsinh_sqrt_normalizedScaleSeamEnergy`;
+- **`metricForm`, `IsPositiveMetric`, `IsContractionIn`, `rapidity_eq_zero_of_contraction_pair`,
+  `re_eq_half_of_contraction_pair`, `hurwitzBoost_eq_one_iff`** — the positive-metric rigidity
+  `(15)`, stated with no hypothesis beyond the definitions.
+
+The card's last gate was a deferral *policy* ("formalize only if the source supplies
+contractivity"), not a mathematical gap; the theorem is unconditional and is now machine-checked.
+
+**Direct sibling, next in line:** `local-euler-valuation-lorentz-log-colligation` builds the matrix
+logarithm `C_p(ρ) = ∑_m T^m/m = −Log(I − T)` on top of exactly this boost.  Items `(1)`–`(10)` are
+algebra plus a geometrically convergent series; item `(16)` (the Gamma–Meixner threshold
+`θ > 2|a|`) additionally needs `∑_p (log p)² p^{-σ}` convergence for `σ > 1` and divergence at
+`σ = 1` — the latter follows from the corpus's `log_log_sub_one_le_sum_primesBelow_inv`.

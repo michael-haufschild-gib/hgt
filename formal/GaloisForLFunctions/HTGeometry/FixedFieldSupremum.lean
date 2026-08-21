@@ -27,30 +27,29 @@ theorem iInf_fixedField {ι : Type*} (Γ : ι → Subgroup (K ≃ₐ[C] K)) :
       = IntermediateField.fixedField (⨆ i, Γ i) := by
   refine le_antisymm ?_ ?_
   · intro x hx
+    have hmem : ∀ i, x ∈ IntermediateField.fixedField (Γ i) := by
+      intro i
+      have hset : x ∈ (↑(⨅ i, IntermediateField.fixedField (Γ i)) : Set K) := hx
+      rw [IntermediateField.coe_iInf] at hset
+      exact Set.mem_iInter.mp hset i
     rw [IntermediateField.mem_fixedField_iff]
     intro g hg
-    refine Subgroup.iSup_induction (fun i => Γ i) (motive := fun g _ => g x = x) hg
-      (fun i g hgi => ?_) ?_ (fun a b _ _ ha hb => ?_) (fun a _ ha => ?_)
-    · have := (IntermediateField.mem_iInf ..).mp hx i
-      rw [IntermediateField.mem_fixedField_iff] at this
-      exact this g hgi
-    · rfl
-    · show (a * b) x = x
-      change a (b x) = x
+    refine Subgroup.iSup_induction (C := fun g : K ≃ₐ[C] K => g x = x) (fun i => Γ i) hg
+      (fun i a hai => ?_) rfl (fun a b ha hb => ?_)
+    · have h := hmem i
+      rw [IntermediateField.mem_fixedField_iff] at h
+      exact h a hai
+    · show a (b x) = x
       rw [hb, ha]
-    · show a⁻¹ x = x
-      have : a (a⁻¹ x) = a x := by rw [ha]
-      have h2 : a (a⁻¹ x) = x := by
-        change (a * a⁻¹) x = x
-        rw [mul_inv_cancel]
-        rfl
-      have h3 := a.injective (h2.trans ha.symm)
-      exact h3
   · intro x hx
-    refine (IntermediateField.mem_iInf ..).mpr fun i => ?_
-    rw [IntermediateField.mem_fixedField_iff] at hx ⊢
-    intro g hg
-    exact hx g (le_iSup (fun i => Γ i) i hg)
+    have hset : x ∈ (↑(⨅ i, IntermediateField.fixedField (Γ i)) : Set K) := by
+      rw [IntermediateField.coe_iInf]
+      refine Set.mem_iInter.mpr fun i => ?_
+      rw [SetLike.mem_coe, IntermediateField.mem_fixedField_iff]
+      rw [IntermediateField.mem_fixedField_iff] at hx
+      intro g hg
+      exact hx g (le_iSup (fun i => Γ i) i hg)
+    exact hset
 
 /-- **The deck-closure step.**  If each member of a family of intermediate fields is the fixed field
 of the corresponding group, their infimum is the fixed field of the group the family generates. -/

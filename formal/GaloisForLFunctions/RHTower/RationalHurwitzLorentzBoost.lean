@@ -92,6 +92,26 @@ theorem lorentzBoost_mulVec_minus (u : ℝ) :
     simp [lorentzBoost, Matrix.mulVec, dotProduct, Fin.sum_univ_two, Real.cosh_eq, Real.sinh_eq] <;>
     ring
 
+/-- The light-cone change of basis. -/
+def lightConeChart : Matrix (Fin 2) (Fin 2) ℝ := !![1, 1; 1, -1]
+
+theorem lorentzBoost_mulVec_e0 (u : ℝ) :
+    (lorentzBoost u).mulVec ![1, 0] = ![Real.cosh u, Real.sinh u] := by
+  funext i
+  fin_cases i <;> simp [lorentzBoost, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+
+/-- **The light-cone coordinates of the reflected pair.**  The boost applied to the even generator
+has light-cone components `exp (±u)`. -/
+theorem lightConeChart_mulVec_boost (u : ℝ) :
+    lightConeChart.mulVec ((lorentzBoost u).mulVec ![1, 0])
+      = ![Real.exp u, Real.exp (-u)] := by
+  rw [lorentzBoost_mulVec_e0]
+  funext i
+  fin_cases i <;>
+    simp [lightConeChart, Matrix.mulVec, dotProduct, Fin.sum_univ_two, Real.cosh_eq,
+      Real.sinh_eq] <;>
+    ring
+
 /-! ## The seam boost -/
 
 /-- The boost attached to a strip point and an integer modulus. -/
@@ -112,6 +132,18 @@ theorem hurwitzBoost_pow (n : ℕ) (rho : ℂ) (k : ℕ) :
   rw [Nat.cast_pow, Real.log_pow]
   ring
 
+/-- **Equation `(4)`.**  The light-cone components of the seam boost are the two inverse reflected
+rational-Hurwitz responses after removal of their common scalar. -/
+theorem hurwitzBoost_lightCone (rho : ℂ) {n : ℕ} (hn : n ≠ 0) :
+    lightConeChart.mulVec ((hurwitzBoost rho n).mulVec ![1, 0])
+      = ![(n : ℝ) ^ (rho.re - 1 / 2), (n : ℝ) ^ (-(rho.re - 1 / 2))] := by
+  have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast Nat.pos_of_ne_zero hn
+  rw [hurwitzBoost, lightConeChart_mulVec_boost]
+  funext i
+  fin_cases i <;>
+    simp [Real.rpow_def_of_pos hnpos] <;>
+    ring_nf
+
 /-- **The seam energy is the squared off-diagonal transfer of the boost.** -/
 theorem normalizedScaleSeamEnergy_eq_boost_offDiagonal_sq (rho : ℂ) (n : ℕ) :
     normalizedScaleSeamEnergy n rho = (hurwitzBoost rho n 0 1) ^ 2 := by
@@ -125,8 +157,8 @@ theorem arsinh_sqrt_normalizedScaleSeamEnergy (rho : ℂ) (n : ℕ) :
   rw [normalizedScaleSeamEnergy_eq_sinh, Real.sqrt_sq_eq_abs]
   set x : ℝ := (rho.re - 1 / 2) * Real.log n with hx
   rcases le_or_gt 0 x with hpos | hneg
-  · rw [abs_of_nonneg (Real.sinh_nonneg hpos), Real.arsinh_sinh, abs_of_nonneg hpos]
-  · rw [abs_of_neg (Real.sinh_neg_of_neg hneg), ← Real.sinh_neg, Real.arsinh_sinh,
+  · rw [abs_of_nonneg (Real.sinh_nonneg_iff.mpr hpos), Real.arsinh_sinh, abs_of_nonneg hpos]
+  · rw [abs_of_neg (Real.sinh_neg_iff.mpr hneg), ← Real.sinh_neg, Real.arsinh_sinh,
       abs_of_neg hneg]
 
 /-! ## Positive-metric rigidity -/

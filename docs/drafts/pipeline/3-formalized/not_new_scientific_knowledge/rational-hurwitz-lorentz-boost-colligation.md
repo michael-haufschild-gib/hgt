@@ -183,3 +183,49 @@ seam is an exact bridge and is not claimed as new scientific knowledge.
   formalized
 - [ ] formalize the Lorentz colligation only if the completed source supplies contractivity or a
   cofinal zero-loss upgrade, not merely Hilbert membership
+
+## Lean formalization — COMPLETE (2026-08-21)
+
+Module: `formal/GaloisForLFunctions/RHTower/RationalHurwitzLorentzBoost.lean`
+(wired into `GaloisForLFunctions.RHTower`; every capstone has axiom footprint
+`propext, Classical.choice, Quot.sound`).
+
+The seam-energy half of the card was already Lean-proved in
+`RHTower/XiRationalHurwitzDyadicRefinement.lean` (`normalizedScaleSeamEnergy_eq_sinh` is `(11)`,
+`normalizedScaleSeamEnergy_sq_sub_linear` is `(12)`), so only the colligation itself was new.
+
+| Card equation | Lean declaration |
+|---|---|
+| `(5)` the boost `B_a(n)` | `lorentzBoost`, `hurwitzBoost` |
+| `(6)` its action on the even generator | `lorentzBoost_mulVec_e0` |
+| `(4)` the light-cone vector `(n^a, n^{-a})` | `lightConeChart`, `lightConeChart_mulVec_boost`, `hurwitzBoost_lightCone` |
+| `(7)`–`(8)` `BᵀJB = J`, `det B = 1`, `B⁻¹ = B_{-a}` | `lorentzBoost_krein`, `det_lorentzBoost`, `lorentzBoost_mul_neg`, `lorentzBoost_neg_mul` |
+| `(9)` `B_a(mn) = B_a(m)B_a(n)` | `hurwitzBoost_mul` (from `lorentzBoost_mul`, the rapidity group law) |
+| `(10)` `B_a(n^k) = B_a(n)^k` | `hurwitzBoost_pow` (from `lorentzBoost_pow`) |
+| `(11)` `H_n = sinh(aL)²` = squared off-diagonal transfer | `normalizedScaleSeamEnergy_eq_boost_offDiagonal_sq` |
+| `(12)` the dyadic law | `normalizedScaleSeamEnergy_sq_sub_linear` (already in the corpus) |
+| `(13)` `arsinh √H_n = |a| log n` | `arsinh_sqrt_normalizedScaleSeamEnergy` |
+| `(14)` the eigenvalues `e^{±aL}` | `lorentzBoost_mulVec_plus`, `lorentzBoost_mulVec_minus` |
+| `(15)` positive-metric rigidity | `rapidity_eq_zero_of_contraction_pair`, `re_eq_half_of_contraction_pair`, `hurwitzBoost_eq_one_iff` |
+
+Proof mechanisms:
+
+* **Krein conservation and unimodularity** reduce, after `fin_cases` on the two indices, to
+  `cosh² − sinh² = 1` (`Real.cosh_sq_sub_sinh_sq`); the group law `(9)` is the hyperbolic addition
+  formula together with `log(mn) = log m + log n`, and `(10)` is `log(n^k) = k log n`.
+* **The light-cone chart** `!![1,1;1,-1]` sends `(cosh u, sinh u)` to `(e^u, e^{-u})`, and
+  `hurwitzBoost_lightCone` identifies these with `n^{±(Re ρ − 1/2)}` through
+  `Real.rpow_def_of_pos`. This is exactly the card's `(4)`.
+* **Positive-metric rigidity `(15)`** is stated with no hypothesis beyond the definitions:
+  `IsPositiveMetric P` (`0 < vᵀPv` for `v ≠ 0`) and `IsContractionIn P B` (`(Bv)ᵀP(Bv) ≤ vᵀPv`).
+  The light-cone vector `(1,1)` is an eigenvector of eigenvalue `e^u`, and `metricForm` is
+  quadratic-homogeneous, so contractivity of the boost gives `e^{2u} ≤ 1` and contractivity of its
+  inverse gives `e^{-2u} ≤ 1`; hence `u = 0`. With `n ≥ 2` this forces `Re ρ = 1/2`
+  (`re_eq_half_of_contraction_pair`), and `hurwitzBoost_eq_one_iff` records the equivalent
+  statement `B_a(n) = I ↔ Re ρ = 1/2`.
+
+The card's last gate ("formalize the Lorentz colligation only if the completed source supplies
+contractivity") was a *deferral policy*, not a mathematical gap: the theorem as stated is
+unconditional and is now machine-checked. The open successor it names — proving that the completed
+prime–Gamma source selects one positive metric in which the reflected pair is contractive — is a
+separate statement about the source and is untouched here.

@@ -137,4 +137,29 @@ theorem rationalFunction_algebra_traceForm_nondegenerate_iff_forall_place
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) e).mpr
       (h RationalFunctionPlace.infinite)
 
+/-- A finite free number-field algebra is reduced if its trace pairing is nondegenerate after
+every completed scalar extension. -/
+theorem numberField_algebra_isReduced_of_forall_place_traceForm_nondegenerate
+    (K : Type u) [Field K] [NumberField K] {B : Type w} [CommRing B] [Algebra K B]
+    [Module.Free K B] [Module.Finite K B] {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (e : Module.Basis ι K B)
+    (h : ∀ p : NumberFieldPlace K,
+      (Algebra.traceForm (completion K p) (completion K p ⊗[K] B)).Nondegenerate) :
+    IsReduced B := by
+  exact GaloisForLFunctions.HTGeometry.isReduced_of_traceForm_nondegenerate (K := K)
+    ((numberField_algebra_traceForm_nondegenerate_iff_forall_place K e).mpr h)
+
+/-- A finite free rational-function-field algebra is reduced if its trace pairing is
+nondegenerate after every finite and infinite completed scalar extension. -/
+theorem rationalFunction_algebra_isReduced_of_forall_place_traceForm_nondegenerate
+    (F : Type u) [Field F] [Finite F] {B : Type w} [CommRing B] [Algebra (RatFunc F) B]
+    [Module.Free (RatFunc F) B] [Module.Finite (RatFunc F) B]
+    {ι : Type*} [Fintype ι] [DecidableEq ι] (e : Module.Basis ι (RatFunc F) B)
+    (h : ∀ p : RationalFunctionPlace F,
+      (Algebra.traceForm (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] B)).Nondegenerate) :
+    IsReduced B := by
+  exact GaloisForLFunctions.HTGeometry.isReduced_of_traceForm_nondegenerate (K := RatFunc F)
+    ((rationalFunction_algebra_traceForm_nondegenerate_iff_forall_place F e).mpr h)
+
 end GaloisForLFunctions.HTGeometry.ABHN

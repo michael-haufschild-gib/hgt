@@ -608,3 +608,32 @@ That is jet ampleness of the *lower* factor at the enlarged finite packet — th
 of the card — together with a growth estimate.  The remaining structural input is that the enlarged
 packet is a legitimate packet: the points `w i + comp z` must be pairwise distinct modulo `ΓH`,
 which is `PairwiseDistinctModulo` for the enlarged family.
+
+## Lean status 2026-08-21 (third entry) — finite interpolation with vanishing, solved
+
+`GaloisForLFunctions.HTGeometry.EnlargedPacketInterpolant` (wired, built, axiom-clean)
+
+```text
+exists_mvPolynomial_packet_and_vanishing
+    **one multivariable polynomial with prescribed jets at the packet and vanishing jets at the
+    translates**
+```
+
+Prescribing jets at the packet *and* zero jets at finitely many translates is a single
+interpolation problem on the enlarged packet, so the corpus's own packet surjectivity
+(`exists_mvPolynomial_multiIndexJetEvalCLM_eq_arbitrary`) solves it outright — one polynomial
+realises every mixed partial below the prescribed order at finitely many distinct points.  The
+points are distinct by the previous entry's `pairwiseDistinctModulo_enlargedPacketPoints`, used here
+through plain injectivity.
+
+So the *interpolation* half of the card's remaining analytic obligation is closed, and closed
+constructively: the interpolant is a polynomial, whose growth is polynomial in the degree.
+
+What the obligation still asks for is that the interpolant be **lower-automorphic**, which a
+polynomial is not.  The card's own route supplies that from jet ampleness of the lower factor at the
+enlarged packet — the induction hypothesis — and what this entry settles is that the enlarged
+packet is a legitimate interpolation problem with a solution, so the induction hypothesis has
+something to be applied to.  The residue is therefore exactly the growth estimate: the
+lower-automorphic interpolant's complement Poincaré jets must be bounded by
+`C₀·B^r·exp(−σ₀ ∑ z_k²)`, which combined with `AbeDampingPacketData.ofFiniteVanishing` closes the
+damping datum.

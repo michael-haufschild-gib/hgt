@@ -1260,3 +1260,36 @@ and one nonzero `q ∈ E[X]` with `q(g) = 0` and `deg q ≤ |Γ|`.
 Card 6's `(1)` therefore needs from geometry only the annihilating polynomial `alpha^n(X) −
 alpha^n(g)`, of degree `deg alpha^n = |Gamma_n|` — the definition of the degree of a finite
 morphism, with no jet or prolongation content.  Items 2–5 of that card's Lean status are untouched.
+
+## Card 6: the deck-closure step
+
+`HTGeometry.FixedFieldSupremum` (wired, built, axiom-clean): `iInf_fixedField` (the infimum of fixed
+fields is the fixed field of the supremum, by `Subgroup.iSup_induction`) and
+`iInf_eq_fixedField_iSup_of_eq`.
+
+Card 6's Theorem A is now assembled from three Lean theorems — `(1)` per level from
+`eq_fixedField_of_annihilating_poly`, `(2)` from `iInf_eq_fixedField_iSup_of_eq`, `(3)` from the
+existing `DifferentialKolchinClosure` — plus the single order-zero geometric input (the annihilating
+polynomial of the covering degree).  Items 2–5 of the card's Lean status still gate Theorems B–D.
+
+## Card 8 item 3a: the dominant-term lemma at a place
+
+`HTGeometry.PlaceLimit` gained `valuation_sum_of_lt` (wired, built, axiom-clean) — a finite sum with
+one strictly dominant term has that term's valuation, with the degenerate zero case handled (no term
+can be strictly below zero, so the index set collapses to a singleton).
+
+That completes the place-level toolkit the peel's border-shape inductions call: grading
+(`PlaceGrading`), derivation drop (`PlaceDerivationValuationDrop`), values and determinants
+(`PlaceLimit`), and now the dominant term.  What is left of item 3a is transcribing the inductions
+themselves.
+
+## Card 7: finite interpolation with vanishing, solved
+
+`HTGeometry.EnlargedPacketInterpolant.exists_mvPolynomial_packet_and_vanishing` (wired, built,
+axiom-clean) — one multivariable polynomial with prescribed jets at the packet and vanishing jets at
+the translates, from the corpus's packet surjectivity applied to the enlarged packet (whose points
+are distinct by `pairwiseDistinctModulo_enlargedPacketPoints`).
+
+So the interpolation half of card 7's analytic obligation is closed constructively.  The residue is
+the growth estimate for a *lower-automorphic* interpolant, which with
+`AbeDampingPacketData.ofFiniteVanishing` closes the damping datum, plus `IsAbePositiveTorusless`.

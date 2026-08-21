@@ -19,7 +19,8 @@ elements stay coordinate-free after the algebraic extension.
 * `PlaceLim`, `placeLim_self`, `PlaceLim.add/neg/sub/mul`;
 * `placeLim_sum`, `placeLim_prod`, `placeLim_det`;
 * `PlaceTrivialOn`, `eq_zero_of_mem_of_placeDegLE_lt`, `placeLim_unique`;
-* `one_le_valuation_of_isIntegral`, `placeFree_of_isIntegral`.
+* `one_le_valuation_of_isIntegral`, `placeFree_of_isIntegral`;
+* `valuation_sum_of_lt` — the dominant term of a finite sum.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -212,5 +213,29 @@ theorem placeFree_of_isIntegral {F : Subfield K} (hF : PlaceTrivialOn v F)
       _ ≤ v.valuation K x * v.valuation K x⁻¹ := mul_le_mul' le_rfl h2
       _ = 1 := hmul
   exact le_antisymm hle h1
+
+/-! ### The dominant term of a sum -/
+
+/-- **A finite sum with one strictly dominant term has that term's valuation.**  This is the form
+the border-shape inductions consume: a leading term survives a sum of strictly smaller ones. -/
+theorem valuation_sum_of_lt {ι : Type*} [DecidableEq ι] {s : Finset ι} {i₀ : ι} (hi₀ : i₀ ∈ s)
+    (f : ι → K) {γ : ℤᵐ⁰} (h0 : v.valuation K (f i₀) = γ)
+    (hlt : ∀ i ∈ s, i ≠ i₀ → v.valuation K (f i) < γ) :
+    v.valuation K (∑ i ∈ s, f i) = γ := by
+  classical
+  have hsplit : ∑ i ∈ s, f i = f i₀ + ∑ i ∈ s.erase i₀, f i :=
+    (Finset.add_sum_erase s f hi₀).symm
+  by_cases hγ : γ = 0
+  · subst hγ
+    have herase : s.erase i₀ = ∅ := by
+      refine Finset.eq_empty_iff_forall_notMem.mpr fun i hi => ?_
+      exact absurd (hlt i (Finset.mem_of_mem_erase hi) (Finset.ne_of_mem_erase hi)) not_lt_zero
+    rw [hsplit, herase, Finset.sum_empty, add_zero]
+    exact h0
+  · have htail : v.valuation K (∑ i ∈ s.erase i₀, f i) < γ := by
+      refine Valuation.map_sum_lt _ hγ fun i hi => ?_
+      exact hlt i (Finset.mem_of_mem_erase hi) (Finset.ne_of_mem_erase hi)
+    rw [hsplit]
+    exact valuation_add_of_lt v h0 htail
 
 end GaloisForLFunctions.HTGeometry
