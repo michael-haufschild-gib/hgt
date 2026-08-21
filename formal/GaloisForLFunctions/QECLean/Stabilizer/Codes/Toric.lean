@@ -5,6 +5,7 @@ import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.Homology
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.H1Dimension
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.WrappingInvariants
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.AbelianChernSimons
+import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.KnotChernSimonsBridge
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.OperatorChains
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.ChainOps
 import GaloisForLFunctions.QECLean.Stabilizer.Codes.Toric.LogicalCorrespondenceX

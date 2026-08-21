@@ -219,6 +219,203 @@ theorem summable_ccmActualHeadMatchedBoundaryCollar
   exact
     (summable_ccmActualHeadMatchedPrimePolarCellDifference_of_aperture a f).indicator _
 
+/-- A boundary collar vanishes once its matched cell begins at or beyond the physical aperture
+diameter. This includes the equality case omitted by the strict remote-cell theorem. -/
+theorem ccmActualHeadMatchedBoundaryCollar_eq_zero_of_two_aperture_le_lowerEndpoint
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) (n : ℕ)
+    (hsep : 2 * a.1 ≤
+      Real.log n - ccmActualHeadMatchedPrimePolarRadius n) :
+    ccmActualHeadMatchedBoundaryCollar a f n = 0 := by
+  unfold ccmActualHeadMatchedBoundaryCollar
+  split_ifs with hn
+  · have hint : (∫ h in
+        (Real.log n - ccmActualHeadMatchedPrimePolarRadius n)..(2 * a.1),
+        Real.exp (h / 2) * ccmActualHeadSymmetricAutocorrelation h f.1) = 0 := by
+      calc
+        _ = ∫ _h in
+            (Real.log n - ccmActualHeadMatchedPrimePolarRadius n)..(2 * a.1),
+            (0 : ℝ) := by
+          apply intervalIntegral.integral_congr
+          intro h hh
+          rw [uIcc_comm, uIcc_of_le hsep] at hh
+          change Real.exp (h / 2) * ccmActualHeadSymmetricAutocorrelation h f.1 = 0
+          rw [ccmActualHeadSymmetricAutocorrelation_eq_zero_of_two_aperture_le
+            a f hh.1]
+          ring
+        _ = 0 := by simp
+    rw [hint, mul_zero]
+  · rfl
+
+/-- Nonzero boundary packets necessarily lie beyond the canonical physical cutoff. -/
+theorem ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_cutoff_lt
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) (n : ℕ)
+    (hne : ccmActualHeadMatchedBoundaryCollar a f n ≠ 0) :
+    Nat.floor (Real.exp (2 * a.1)) < n := by
+  by_contra hn
+  exact hne (by simp [ccmActualHeadMatchedBoundaryCollar, hn])
+
+/-- A nonzero collar packet is equivalent to a matched cell that genuinely crosses the physical
+aperture boundary, at least at the level of its necessary support condition. -/
+theorem ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_lowerEndpoint_lt_two_aperture
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) (n : ℕ)
+    (hne : ccmActualHeadMatchedBoundaryCollar a f n ≠ 0) :
+    Real.log n - ccmActualHeadMatchedPrimePolarRadius n < 2 * a.1 := by
+  by_contra h
+  exact hne
+    (ccmActualHeadMatchedBoundaryCollar_eq_zero_of_two_aperture_le_lowerEndpoint
+      a f n (le_of_not_gt h))
+
+/-- A nonzero collar index lies in a critical-Mellin-thin arithmetic strip immediately above
+the physical exponential boundary. -/
+theorem ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_criticalMellin_width
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) (n : ℕ)
+    (hne : ccmActualHeadMatchedBoundaryCollar a f n ≠ 0) :
+    (n : ℝ) - Real.exp (2 * a.1) <
+      (n : ℝ) * criticalMellinAtomWeight n /
+        (2 * Real.exp (Real.log n / 2)) := by
+  let T := 2 * a.1
+  let ρ := ccmActualHeadMatchedPrimePolarRadius n
+  have hcut := ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_cutoff_lt a f n hne
+  have hnpos : (0 : ℝ) < n := by
+    exact_mod_cast (Nat.zero_lt_of_lt hcut)
+  have hratio : 0 < (n : ℝ) / Real.exp T :=
+    div_pos hnpos (Real.exp_pos T)
+  have hlog := Real.one_sub_inv_le_log_of_pos hratio
+  have hlogdiv : Real.log ((n : ℝ) / Real.exp T) = Real.log n - T := by
+    rw [Real.log_div (ne_of_gt hnpos) (Real.exp_ne_zero T), Real.log_exp]
+  rw [inv_div, hlogdiv] at hlog
+  have hquot : ((n : ℝ) - Real.exp T) / n ≤ Real.log n - T := by
+    calc
+      ((n : ℝ) - Real.exp T) / n = 1 - Real.exp T / n := by
+        field_simp
+      _ ≤ Real.log n - T := hlog
+  have hwidth0 : (n : ℝ) - Real.exp T ≤
+      (Real.log n - T) * n :=
+    (div_le_iff₀ hnpos).mp hquot
+  have hlower :=
+    ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_lowerEndpoint_lt_two_aperture
+      a f n hne
+  have hgap : Real.log n - T < ρ := by
+    dsimp only [T, ρ] at hlower ⊢
+    linarith
+  have hwidth1 : (Real.log n - T) * n < ρ * n :=
+    mul_lt_mul_of_pos_right hgap hnpos
+  have hρ := ccmActualHeadMatchedPrimePolarRadius_le_weight_div n
+  have hwidth2 : ρ * n ≤
+      (criticalMellinAtomWeight n /
+        (2 * Real.exp (Real.log n / 2))) * n :=
+    mul_le_mul_of_nonneg_right hρ hnpos.le
+  dsimp only [T, ρ] at hwidth0 hwidth1 hwidth2 ⊢
+  calc
+    (n : ℝ) - Real.exp (2 * a.1) ≤
+        (Real.log n - 2 * a.1) * n := hwidth0
+    _ < ccmActualHeadMatchedPrimePolarRadius n * n := hwidth1
+    _ ≤ (criticalMellinAtomWeight n /
+          (2 * Real.exp (Real.log n / 2))) * n := hwidth2
+    _ = (n : ℝ) * criticalMellinAtomWeight n /
+          (2 * Real.exp (Real.log n / 2)) := by ring
+
+/-- The critical-Mellin strip width is exactly half of the ordinary von Mangoldt atom. -/
+theorem ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_vonMangoldt_width
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) (n : ℕ)
+    (hne : ccmActualHeadMatchedBoundaryCollar a f n ≠ 0) :
+    (n : ℝ) - Real.exp (2 * a.1) <
+      ArithmeticFunction.vonMangoldt n / 2 := by
+  have hcut := ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_cutoff_lt a f n hne
+  have hn : 0 < n := Nat.zero_lt_of_lt hcut
+  have hnpos : (0 : ℝ) < n := by exact_mod_cast hn
+  have hweight := criticalMellinAtomWeight_mul_exp_log_half hn
+  have hsquare :
+      Real.exp (Real.log n / 2) * Real.exp (Real.log n / 2) = (n : ℝ) := by
+    rw [← Real.exp_add]
+    rw [show Real.log n / 2 + Real.log n / 2 = Real.log n by ring,
+      Real.exp_log hnpos]
+  have hnormalize :
+      (n : ℝ) * criticalMellinAtomWeight n /
+          (2 * Real.exp (Real.log n / 2)) =
+        ArithmeticFunction.vonMangoldt n / 2 := by
+    calc
+      (n : ℝ) * criticalMellinAtomWeight n /
+            (2 * Real.exp (Real.log n / 2)) =
+          (Real.exp (Real.log n / 2) * Real.exp (Real.log n / 2)) *
+              criticalMellinAtomWeight n /
+            (2 * Real.exp (Real.log n / 2)) := by rw [hsquare]
+      _ = (criticalMellinAtomWeight n * Real.exp (Real.log n / 2)) / 2 := by
+        field_simp [Real.exp_ne_zero]
+      _ = ArithmeticFunction.vonMangoldt n / 2 := by rw [hweight]
+  rw [← hnormalize]
+  exact ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_criticalMellin_width
+    a f n hne
+
+/-- Logarithmic corollary of the exact von Mangoldt strip width. -/
+theorem ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_log_width
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) (n : ℕ)
+    (hne : ccmActualHeadMatchedBoundaryCollar a f n ≠ 0) :
+    (n : ℝ) - Real.exp (2 * a.1) < Real.log n / 2 := by
+  exact lt_of_lt_of_le
+    (ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_vonMangoldt_width
+      a f n hne)
+    (div_le_div_of_nonneg_right ArithmeticFunction.vonMangoldt_le_log (by norm_num))
+
+/-- **Prime-power thin-collar theorem.** A nonzero matched boundary packet can occur only at a
+prime power in an additive strip of width `a + 1/2` above the physical boundary `exp (2a)`. -/
+theorem ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_primePower_mem_thinStrip
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) (n : ℕ)
+    (hne : ccmActualHeadMatchedBoundaryCollar a f n ≠ 0) :
+    IsPrimePow n ∧
+      Real.exp (2 * a.1) < (n : ℝ) ∧
+      (n : ℝ) < Real.exp (2 * a.1) + a.1 + 1 / 2 := by
+  have hcut := ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_cutoff_lt a f n hne
+  have hn : 0 < n := Nat.zero_lt_of_lt hcut
+  have hexp : Real.exp (2 * a.1) < (n : ℝ) :=
+    (Nat.floor_lt (Real.exp_pos (2 * a.1)).le).mp hcut
+  have hvwidth :=
+    ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_vonMangoldt_width a f n hne
+  have hvpos : 0 < ArithmeticFunction.vonMangoldt n := by
+    nlinarith
+  have hprimePower : IsPrimePow n :=
+    ArithmeticFunction.vonMangoldt_pos_iff.mp hvpos
+  have hlower :=
+    ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_lowerEndpoint_lt_two_aperture
+      a f n hne
+  have hρ := ccmActualHeadMatchedPrimePolarRadius_le_one_of_one_le
+    (Nat.one_le_iff_ne_zero.mpr hn.ne')
+  have hlog : Real.log n < 2 * a.1 + 1 := by linarith
+  have hlogwidth :=
+    ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_log_width a f n hne
+  refine ⟨hprimePower, hexp, ?_⟩
+  linarith
+
+/-- Explicit additive collar containing every possible nonzero post-cutoff matched packet. Its
+width is only `a + 1/2`, rather than multiplicative in the physical boundary `exp (2a)`. -/
+def ccmActualHeadMatchedThinBoundaryCollarFinset
+    (a : SuzukiPositiveAperture) : Finset ℕ :=
+  Finset.Ioc (Nat.floor (Real.exp (2 * a.1)))
+    (Nat.floor (Real.exp (2 * a.1) + a.1 + 1 / 2))
+
+/-- The boundary collar vanishes outside its explicit additive thin-strip finset. -/
+theorem ccmActualHeadMatchedBoundaryCollar_eq_zero_of_not_mem_thinBoundaryCollarFinset
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) (n : ℕ)
+    (hn : n ∉ ccmActualHeadMatchedThinBoundaryCollarFinset a) :
+    ccmActualHeadMatchedBoundaryCollar a f n = 0 := by
+  by_contra hne
+  have hcut := ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_cutoff_lt a f n hne
+  have hstrip :=
+    ccmActualHeadMatchedBoundaryCollar_ne_zero_imp_primePower_mem_thinStrip
+      a f n hne
+  apply hn
+  rw [ccmActualHeadMatchedThinBoundaryCollarFinset, Finset.mem_Ioc]
+  exact ⟨hcut, Nat.le_floor hstrip.2.2.le⟩
+
+/-- The summable all-prime collar is in fact the sum over an explicit additive thin strip. -/
+theorem tsum_ccmActualHeadMatchedBoundaryCollar_eq_thinBoundaryCollarFinset_sum
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) :
+    (∑' n : ℕ, ccmActualHeadMatchedBoundaryCollar a f n) =
+      ∑ n ∈ ccmActualHeadMatchedThinBoundaryCollarFinset a,
+        ccmActualHeadMatchedBoundaryCollar a f n := by
+  rw [tsum_eq_sum (s := ccmActualHeadMatchedThinBoundaryCollarFinset a)
+    (ccmActualHeadMatchedBoundaryCollar_eq_zero_of_not_mem_thinBoundaryCollarFinset a f)]
+
 /-- Total local polar mass carried by a finite family of matched symmetric cells. -/
 def ccmActualHeadMatchedPolarFiniteBlock
     (F : Finset ℕ) (f : SoninL2) : ℝ :=
@@ -463,5 +660,22 @@ theorem tsum_ccmActualHeadMatchedPrimePolarCellDifference_eq_physicalBlock_add_b
       rw [tsum_eq_sum (s := F) (fun n hn => by simp [I, hn])]
       simp [I]
     _ = _ := by rfl
+
+/-- **Finite thin-collar sewing law.** The unconditional all-prime matched family is exactly the
+canonical physical block plus a finite sum over prime-power candidates in the additive strip of
+width `a + 1/2` immediately above `exp (2a)`. -/
+theorem tsum_ccmActualHeadMatchedPrimePolarCellDifference_eq_physicalBlock_add_thinBoundaryCollar
+    (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) :
+    (∑' n : ℕ, (criticalMellinAtomWeight n *
+          ccmActualHeadTranslationDefect (Real.log n) f.1 -
+        ccmActualHeadOutgoingPolarSymmetricCell
+          (Real.log n) (ccmActualHeadMatchedPrimePolarRadius n) f.1)) =
+      ccmActualHeadMatchedPrimePolarFiniteBlock
+          (Finset.Icc 2 (Nat.floor (Real.exp (2 * a.1)))) f.1 +
+        ∑ n ∈ ccmActualHeadMatchedThinBoundaryCollarFinset a,
+          ccmActualHeadMatchedBoundaryCollar a f n := by
+  rw [
+    tsum_ccmActualHeadMatchedPrimePolarCellDifference_eq_physicalBlock_add_boundaryCollar,
+    tsum_ccmActualHeadMatchedBoundaryCollar_eq_thinBoundaryCollarFinset_sum]
 
 end RHTower

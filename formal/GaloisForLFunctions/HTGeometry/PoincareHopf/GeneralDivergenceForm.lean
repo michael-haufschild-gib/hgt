@@ -65,7 +65,7 @@ theorem fieldDivergence_cofField (hu : ContDiff ℝ 2 u) (hG : ContDiff ℝ 1 G)
   have hterm : ∀ j : Fin n, cofFieldD u G x j (Pi.single j 1)
       = ∑ i, (cofSum (jac u x) i j * jac G x i j + G x i * cofD u x i j (Pi.single j 1)) := by
     intro j
-    rw [cofFieldD, ContinuousLinearMap.sum_apply]
+    rw [cofFieldD, _root_.sum_apply]
     refine Finset.sum_congr rfl fun i _ => ?_
     simp [jac]
   rw [hstep]

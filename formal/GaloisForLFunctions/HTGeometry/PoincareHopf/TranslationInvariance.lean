@@ -66,7 +66,7 @@ theorem fieldDivergence_transField (hφ : ContDiff ℝ 1 φ) (z : Fin n → ℝ)
     rw [clm_apply_eq_sum (F := ℝ) (fderiv ℝ φ (w - t • z)) z]
     simp [smul_eq_mul]
   rw [fieldDivergence, hfd.fderiv, transDeriv, hexp]
-  simp only [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.neg_apply, Pi.smul_apply,
+  simp only [ContinuousLinearMap.smulRight_apply, _root_.neg_apply, Pi.smul_apply,
     smul_eq_mul]
   rw [← Finset.sum_neg_distrib]
   exact Finset.sum_congr rfl fun j _ => by ring

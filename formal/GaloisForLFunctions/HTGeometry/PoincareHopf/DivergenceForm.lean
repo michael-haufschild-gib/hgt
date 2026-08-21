@@ -84,10 +84,10 @@ theorem fieldDivergence_piolaField (hu : ContDiff ℝ 2 u) (hW : ContDiff ℝ 1 
               + W (u x) i * cofD u x i j (Pi.single j 1)) := by
     intro j
     rw [piolaFieldD]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [_root_.sum_apply]
     refine Finset.sum_congr rfl fun i _ => ?_
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.coe_comp', Function.comp_apply, smul_eq_mul]
+    simp only [_root_.add_apply, _root_.smul_apply,
+      ContinuousLinearMap.coe_comp, Function.comp_apply, smul_eq_mul]
     congr 1
     congr 1
     rw [clm_apply_eq_sum (fderiv ℝ W (u x)) ((fderiv ℝ u x) (Pi.single j 1))]

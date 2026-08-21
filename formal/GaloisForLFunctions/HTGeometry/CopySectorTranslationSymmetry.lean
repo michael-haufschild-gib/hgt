@@ -415,6 +415,29 @@ theorem abs_spectralResolventKernel_le_copySector
 
 end CopySectorBound
 
+
+section UnitaryCopySector
+
+variable {D : ℕ}
+
+/-- The copy representation of the unitary group is multiplicative. -/
+theorem copyRep_unitaryGroup_mul (k : ℕ) (U V : Matrix.unitaryGroup (Fin D) ℂ) :
+    copyRep k ((U * V : Matrix.unitaryGroup (Fin D) ℂ) : Matrix (Fin D) (Fin D) ℂ)
+      = copyRep k (U : Matrix (Fin D) (Fin D) ℂ) * copyRep k (V : Matrix (Fin D) (Fin D) ℂ) := by
+  rw [show ((U * V : Matrix.unitaryGroup (Fin D) ℂ) : Matrix (Fin D) (Fin D) ℂ)
+      = (U : Matrix (Fin D) (Fin D) ℂ) * (V : Matrix (Fin D) (Fin D) ℂ) from rfl]
+  exact copyRep_mul k _ _
+
+/-- **The copy-sector dimension.**  The `k`-fold copy representation of a `D`-level register has
+complex dimension `D^{2k}`, so its real matrix-coefficient sector has leverage at most `2D^{4k}`. -/
+theorem two_mul_card_copyIndex_sq (k D : ℕ) :
+    2 * (Fintype.card (copyIndex k D) : ℝ) ^ 2 = 2 * (D : ℝ) ^ (4 * k) := by
+  rw [card_copyIndex]
+  push_cast
+  ring
+
+end UnitaryCopySector
+
 end GaloisForLFunctions.HTGeometry
 
 end

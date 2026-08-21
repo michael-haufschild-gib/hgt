@@ -96,7 +96,7 @@ theorem jac_smul_field {s : (Fin n → ℝ) → ℝ} {Y : (Fin n → ℝ) → (F
       (s x • fderiv ℝ Y x + (fderiv ℝ s x).smulRight (Y x)) x :=
     hs.hasFDerivAt.smul hY.hasFDerivAt
   rw [jac, Matrix.of_apply, h.fderiv]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp only [_root_.add_apply, _root_.smul_apply,
     ContinuousLinearMap.smulRight_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul, jac,
     Matrix.of_apply]
   ring

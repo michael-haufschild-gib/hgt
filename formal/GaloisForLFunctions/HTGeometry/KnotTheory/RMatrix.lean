@@ -35,6 +35,64 @@ theorem rMatrix_eq_rightFlip_phaseIdentity :
   ext x y
   simp [rMatrix, rPermutation, rightFlip, twoParticleFlipMatrix]
 
+private theorem rMatrix_leg12_phase :
+    threeParticleLeg12 Qubit rMatrix =
+      Complex.I • threeParticleLeg12 Qubit (twoParticleFlipMatrix Qubit) := by
+  ext x y
+  simp [rMatrix, rPermutation, twoParticleFlipMatrix, threeParticleLeg12]
+
+private theorem rMatrix_leg23_phase :
+    threeParticleLeg23 Qubit rMatrix =
+      Complex.I • threeParticleLeg23 Qubit (twoParticleFlipMatrix Qubit) := by
+  ext x y
+  by_cases h : x.2.swap = y.2
+  · simp [rMatrix, rPermutation, twoParticleFlipMatrix, threeParticleLeg23, h, mul_comm]
+  · simp [rMatrix, rPermutation, twoParticleFlipMatrix, threeParticleLeg23, h]
+
+private theorem rMatrix_leg13_phase :
+    threeParticleLeg13 Qubit rMatrix =
+      Complex.I • threeParticleLeg13 Qubit (twoParticleFlipMatrix Qubit) := by
+  simp only [threeParticleLeg13, rMatrix_leg23_phase, Matrix.mul_smul, Matrix.smul_mul]
+
+private theorem flipMatrix_quantum_yang_baxter :
+    threeParticleLeg12 Qubit (twoParticleFlipMatrix Qubit) *
+          threeParticleLeg13 Qubit (twoParticleFlipMatrix Qubit) *
+          threeParticleLeg23 Qubit (twoParticleFlipMatrix Qubit) =
+        threeParticleLeg23 Qubit (twoParticleFlipMatrix Qubit) *
+          threeParticleLeg13 Qubit (twoParticleFlipMatrix Qubit) *
+          threeParticleLeg12 Qubit (twoParticleFlipMatrix Qubit) := by
+  have h := (matrix_rightFlip_adjacentBraid_iff_quantumYangBaxter
+    (κ := Qubit) (fun _ : ℤ => 1)).mp (by
+      intro x y
+      simp)
+  simpa [rightFlip] using h
+
+/-- Matrix-leg quantum Yang--Baxter equation for the non-symmetric phase braiding. -/
+theorem rMatrix_quantum_yang_baxter :
+    threeParticleLeg12 Qubit rMatrix * threeParticleLeg13 Qubit rMatrix *
+          threeParticleLeg23 Qubit rMatrix =
+        threeParticleLeg23 Qubit rMatrix * threeParticleLeg13 Qubit rMatrix *
+          threeParticleLeg12 Qubit rMatrix := by
+  rw [rMatrix_leg12_phase, rMatrix_leg13_phase, rMatrix_leg23_phase]
+  calc
+    (Complex.I • threeParticleLeg12 Qubit (twoParticleFlipMatrix Qubit)) *
+          (Complex.I • threeParticleLeg13 Qubit (twoParticleFlipMatrix Qubit)) *
+          (Complex.I • threeParticleLeg23 Qubit (twoParticleFlipMatrix Qubit)) =
+        (Complex.I * Complex.I * Complex.I) •
+          (threeParticleLeg12 Qubit (twoParticleFlipMatrix Qubit) *
+            threeParticleLeg13 Qubit (twoParticleFlipMatrix Qubit) *
+            threeParticleLeg23 Qubit (twoParticleFlipMatrix Qubit)) := by
+          rw [smul_mul_smul, smul_mul_smul]
+    _ = (Complex.I * Complex.I * Complex.I) •
+          (threeParticleLeg23 Qubit (twoParticleFlipMatrix Qubit) *
+            threeParticleLeg13 Qubit (twoParticleFlipMatrix Qubit) *
+            threeParticleLeg12 Qubit (twoParticleFlipMatrix Qubit)) := by
+          rw [flipMatrix_quantum_yang_baxter]
+    _ = (Complex.I • threeParticleLeg23 Qubit (twoParticleFlipMatrix Qubit)) *
+          (Complex.I • threeParticleLeg13 Qubit (twoParticleFlipMatrix Qubit)) *
+          (Complex.I • threeParticleLeg12 Qubit (twoParticleFlipMatrix Qubit)) := by
+          rw [smul_mul_smul, smul_mul_smul]
+
 def rAction (f : PairState) : PairState := fun (i, j) => Complex.I * f (j, i)
 def rInverseAction (f : PairState) : PairState := fun (i, j) => -Complex.I * f (j, i)
 
