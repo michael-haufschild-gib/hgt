@@ -42,15 +42,17 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable (A : E →L[ℝ] E) (B : E →L[ℝ] E →L[ℝ] E) (nu eta : ℝ) (f g : E)
 
 /-- The velocity-like field of equation (5). -/
-noncomputable def velocityField (u h : E) : E := -(nu • A u) + B u u - B h h + f
+noncomputable def velocityField (c : ℝ) (u h : E) : E :=
+  -(nu • A u) + c • (B u u - B h h) + f
 
 /-- The magnetic-like field of equation (6). -/
-noncomputable def magneticField (u h : E) : E := -(eta • A h) + B u h - B h u + g
+noncomputable def magneticField (c : ℝ) (u h : E) : E :=
+  -(eta • A h) + c • (B u h - B h u) + g
 
 /-- `(u,h)` solves the two-field system (5)–(6) on the set `s`. -/
-def IsSolutionOn (u h : ℝ → E) (s : Set ℝ) : Prop :=
-  ∀ t ∈ s, HasDerivAt u (velocityField A B nu f (u t) (h t)) t ∧
-    HasDerivAt h (magneticField A B eta g (u t) (h t)) t
+def IsSolutionOn (c : ℝ → ℝ) (u h : ℝ → E) (s : Set ℝ) : Prop :=
+  ∀ t ∈ s, HasDerivAt u (velocityField A B nu f (c t) (u t) (h t)) t ∧
+    HasDerivAt h (magneticField A B eta g (c t) (u t) (h t)) t
 
 /-- The total energy `E = ‖u‖² + ‖h‖²`. -/
 def energy (u h : ℝ → E) (t : ℝ) : ℝ := ‖u t‖ ^ 2 + ‖h t‖ ^ 2
@@ -62,37 +64,37 @@ noncomputable def dissipation (u h : ℝ → E) (t : ℝ) : ℝ :=
 /-- The instantaneous forcing power `⟨f,u⟩ + ⟨g,h⟩`. -/
 def forcingPower (u h : ℝ → E) (t : ℝ) : ℝ := ⟪f, u t⟫_ℝ + ⟪g, h t⟫_ℝ
 
-variable {A B nu eta f g}
+variable {A B nu eta f g} {c : ℝ → ℝ}
 
 /-- **Theorem 2 (exact energy identity).**  Every solution of the cancellation class obeys
 `½ dE/dt + ν⟨Δu,u⟩ + η⟨Δh,h⟩ = ⟨f,u⟩ + ⟨g,h⟩`. -/
 theorem hasDerivAt_energy (hB : IsCancelling B) {u h : ℝ → E} {t : ℝ}
-    (hu : HasDerivAt u (velocityField A B nu f (u t) (h t)) t)
-    (hh : HasDerivAt h (magneticField A B eta g (u t) (h t)) t) :
+    (hu : HasDerivAt u (velocityField A B nu f (c t) (u t) (h t)) t)
+    (hh : HasDerivAt h (magneticField A B eta g (c t) (u t) (h t)) t) :
     HasDerivAt (energy u h)
       (2 * (-(dissipation A nu eta u h t) + forcingPower f g u h t)) t := by
-  have e1 : ⟪velocityField A B nu f (u t) (h t), u t⟫_ℝ
-      = -(nu * ⟪A (u t), u t⟫_ℝ) + ⟪B (u t) (u t), u t⟫_ℝ - ⟪B (h t) (h t), u t⟫_ℝ
+  have e1 : ⟪velocityField A B nu f (c t) (u t) (h t), u t⟫_ℝ
+      = -(nu * ⟪A (u t), u t⟫_ℝ) + c t * (⟪B (u t) (u t), u t⟫_ℝ - ⟪B (h t) (h t), u t⟫_ℝ)
         + ⟪f, u t⟫_ℝ := by
     simp only [velocityField, inner_add_left, inner_sub_left, inner_neg_left,
       real_inner_smul_left]
-  have e2 : ⟪magneticField A B eta g (u t) (h t), h t⟫_ℝ
-      = -(eta * ⟪A (h t), h t⟫_ℝ) + ⟪B (u t) (h t), h t⟫_ℝ - ⟪B (h t) (u t), h t⟫_ℝ
+  have e2 : ⟪magneticField A B eta g (c t) (u t) (h t), h t⟫_ℝ
+      = -(eta * ⟪A (h t), h t⟫_ℝ) + c t * (⟪B (u t) (h t), h t⟫_ℝ - ⟪B (h t) (u t), h t⟫_ℝ)
         + ⟪g, h t⟫_ℝ := by
     simp only [magneticField, inner_add_left, inner_sub_left, inner_neg_left,
       real_inner_smul_left]
   have c1 : ⟪B (u t) (u t), u t⟫_ℝ = 0 := hB.inner_self_eq_zero _ _
   have c2 : ⟪B (u t) (h t), h t⟫_ℝ = 0 := hB.inner_self_eq_zero _ _
   have c3 : ⟪B (h t) (h t), u t⟫_ℝ = -⟪B (h t) (u t), h t⟫_ℝ := hB _ _ _
-  have hval : ⟪u t, velocityField A B nu f (u t) (h t)⟫_ℝ
-        + ⟪velocityField A B nu f (u t) (h t), u t⟫_ℝ
-        + (⟪h t, magneticField A B eta g (u t) (h t)⟫_ℝ
-          + ⟪magneticField A B eta g (u t) (h t), h t⟫_ℝ)
+  have hval : ⟪u t, velocityField A B nu f (c t) (u t) (h t)⟫_ℝ
+        + ⟪velocityField A B nu f (c t) (u t) (h t), u t⟫_ℝ
+        + (⟪h t, magneticField A B eta g (c t) (u t) (h t)⟫_ℝ
+          + ⟪magneticField A B eta g (c t) (u t) (h t), h t⟫_ℝ)
       = 2 * (-(dissipation A nu eta u h t) + forcingPower f g u h t) := by
-    have s1 : ⟪u t, velocityField A B nu f (u t) (h t)⟫_ℝ
-        = ⟪velocityField A B nu f (u t) (h t), u t⟫_ℝ := real_inner_comm _ _
-    have s2 : ⟪h t, magneticField A B eta g (u t) (h t)⟫_ℝ
-        = ⟪magneticField A B eta g (u t) (h t), h t⟫_ℝ := real_inner_comm _ _
+    have s1 : ⟪u t, velocityField A B nu f (c t) (u t) (h t)⟫_ℝ
+        = ⟪velocityField A B nu f (c t) (u t) (h t), u t⟫_ℝ := real_inner_comm _ _
+    have s2 : ⟪h t, magneticField A B eta g (c t) (u t) (h t)⟫_ℝ
+        = ⟪magneticField A B eta g (c t) (u t) (h t), h t⟫_ℝ := real_inner_comm _ _
     rw [s1, s2, e1, e2, c1, c2, c3]
     simp only [dissipation, forcingPower]
     ring
@@ -104,7 +106,7 @@ theorem hasDerivAt_energy (hB : IsCancelling B) {u h : ℝ → E} {t : ℝ}
 
 /-- The energy of a solution is differentiable, hence continuous. -/
 theorem continuousOn_energy (hB : IsCancelling B) {u h : ℝ → E} {s : Set ℝ}
-    (hsol : IsSolutionOn A B nu eta f g u h s) : ContinuousOn (energy u h) s := by
+    (hsol : IsSolutionOn A B nu eta f g c u h s) : ContinuousOn (energy u h) s := by
   intro t ht
   exact ((hasDerivAt_energy hB (hsol t ht).1 (hsol t ht).2).continuousAt).continuousWithinAt
 
@@ -137,11 +139,11 @@ end Comparison
 section Estimates
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-variable {A : E →L[ℝ] E} {B : E →L[ℝ] E →L[ℝ] E} {nu eta : ℝ} {f g : E}
+variable {A : E →L[ℝ] E} {B : E →L[ℝ] E →L[ℝ] E} {nu eta : ℝ} {f g : E} {c : ℝ → ℝ}
 
 /-- **The integrated energy identity (15)–(16).** -/
 theorem integral_dissipation_identity (hB : IsCancelling B) {u h : ℝ → E} {T : ℝ}
-    (hsol : IsSolutionOn A B nu eta f g u h (uIcc 0 T)) :
+    (hsol : IsSolutionOn A B nu eta f g c u h (uIcc 0 T)) :
     2 * ∫ t in (0 : ℝ)..T, dissipation A nu eta u h t
       = energy u h 0 - energy u h T + 2 * ∫ t in (0 : ℝ)..T, forcingPower f g u h t := by
   have hcontu : ContinuousOn u (uIcc 0 T) := fun t ht =>
@@ -182,7 +184,7 @@ end Estimates
 section Coercive
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-variable {A : E →L[ℝ] E} {B : E →L[ℝ] E →L[ℝ] E} {nu eta lam : ℝ} {f g : E}
+variable {A : E →L[ℝ] E} {B : E →L[ℝ] E →L[ℝ] E} {nu eta lam : ℝ} {f g : E} {c : ℝ → ℝ}
 
 /-- The decay rate `β = min(ν,η) λ` of the paper. -/
 def decayRate (nu eta lam : ℝ) : ℝ := min nu eta * lam
@@ -247,7 +249,7 @@ theorem energy_deriv_le_forced
 theorem energy_le_forced (hB : IsCancelling B)
     (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
     (hlam : 0 < lam) {u h : ℝ → E} {T : ℝ}
-    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T)) :
+    (hsol : IsSolutionOn A B nu eta f g c u h (Icc 0 T)) :
     ∀ t ∈ Icc (0 : ℝ) T, energy u h t
       ≤ energy u h 0 * Real.exp (-(decayRate nu eta lam) * t)
         + (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam ^ 2
@@ -275,7 +277,7 @@ trajectory at the exponential rate `2β`. -/
 theorem energy_le_unforced (hB : IsCancelling B)
     (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
     (hlam : 0 < lam) {u h : ℝ → E} {T : ℝ}
-    (hsol : IsSolutionOn A B nu eta (0 : E) (0 : E) u h (Icc 0 T)) :
+    (hsol : IsSolutionOn A B nu eta (0 : E) (0 : E) c u h (Icc 0 T)) :
     ∀ t ∈ Icc (0 : ℝ) T, energy u h t
       ≤ energy u h 0 * Real.exp (-(2 * decayRate nu eta lam) * t) := by
   have hbeta := decayRate_pos (nu := nu) (eta := eta) (lam := lam) hnu heta hlam
@@ -300,7 +302,7 @@ positively invariant. -/
 theorem energy_le_sq_of_le_sq (hB : IsCancelling B)
     (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
     (hlam : 0 < lam) {u h : ℝ → E} {T R : ℝ}
-    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T))
+    (hsol : IsSolutionOn A B nu eta f g c u h (Icc 0 T))
     (hR : Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam < R)
     (h0 : energy u h 0 ≤ R ^ 2) :
     ∀ t ∈ Icc (0 : ℝ) T, energy u h t ≤ R ^ 2 := by
@@ -330,7 +332,7 @@ theorem exists_absorbing_time
     (hnu : 0 < nu) (heta : 0 < eta) (hlam : 0 < lam) {R rho : ℝ}
     (hR : Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam < R) (hrho : 0 ≤ rho) :
     ∃ T₀ : ℝ, 0 ≤ T₀ ∧ ∀ {u h : ℝ → E} {T : ℝ},
-      IsCancelling B → IsSolutionOn A B nu eta f g u h (Icc 0 T) →
+      IsCancelling B → IsSolutionOn A B nu eta f g c u h (Icc 0 T) →
       (∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) →
       energy u h 0 ≤ rho → ∀ t ∈ Icc (0 : ℝ) T, T₀ ≤ t → energy u h t ≤ R ^ 2 := by
   have hbeta := decayRate_pos (nu := nu) (eta := eta) (lam := lam) hnu heta hlam
@@ -387,7 +389,7 @@ theorem exists_absorbing_time
 solution grows at most exponentially.  This is what rules out finite-time blow-up. -/
 theorem energy_le_apriori (hB : IsCancelling B) (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ)
     (hnu : 0 ≤ nu) (heta : 0 ≤ eta) {u h : ℝ → E} {T : ℝ}
-    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T)) :
+    (hsol : IsSolutionOn A B nu eta f g c u h (Icc 0 T)) :
     ∀ t ∈ Icc (0 : ℝ) T, energy u h t
       ≤ energy u h 0 * Real.exp t + (‖f‖ ^ 2 + ‖g‖ ^ 2) * (Real.exp t - 1) := by
   have hgb := le_gronwallBound_of_hasDerivAt (φ := energy u h)
@@ -419,33 +421,33 @@ end Coercive
 section ContinuousDependence
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-variable {A : E →L[ℝ] E} {B : E →L[ℝ] E →L[ℝ] E} {nu eta : ℝ} {f g : E}
+variable {A : E →L[ℝ] E} {B : E →L[ℝ] E →L[ℝ] E} {nu eta : ℝ} {f g : E} {c : ℝ → ℝ}
 
 /-- The difference of the two velocity fields is forcing free. -/
 theorem velocityField_sub (u h ubar hbar : E) :
-    velocityField A B nu f u h - velocityField A B nu f ubar hbar
+    velocityField A B nu f 1 u h - velocityField A B nu f 1 ubar hbar
       = -(nu • A (u - ubar)) + (B u u - B ubar ubar) - (B h h - B hbar hbar) := by
-  simp only [velocityField, map_sub, smul_sub]
+  simp only [velocityField, map_sub, smul_sub, one_smul]
   abel
 
 /-- The difference of the two magnetic fields is forcing free. -/
 theorem magneticField_sub (u h ubar hbar : E) :
-    magneticField A B eta g u h - magneticField A B eta g ubar hbar
+    magneticField A B eta g 1 u h - magneticField A B eta g 1 ubar hbar
       = -(eta • A (h - hbar)) + (B u h - B ubar hbar) - (B h u - B hbar ubar) := by
-  simp only [magneticField, map_sub, smul_sub]
+  simp only [magneticField, map_sub, smul_sub, one_smul]
   abel
 
 /-- The energy of the difference of two solutions is differentiable, with the expected
 derivative. -/
 theorem hasDerivAt_energyDiff {u h ubar hbar : ℝ → E} {t : ℝ}
-    (hu : HasDerivAt u (velocityField A B nu f (u t) (h t)) t)
-    (hh : HasDerivAt h (magneticField A B eta g (u t) (h t)) t)
-    (hu2 : HasDerivAt ubar (velocityField A B nu f (ubar t) (hbar t)) t)
-    (hh2 : HasDerivAt hbar (magneticField A B eta g (ubar t) (hbar t)) t) :
+    (hu : HasDerivAt u (velocityField A B nu f (c t) (u t) (h t)) t)
+    (hh : HasDerivAt h (magneticField A B eta g (c t) (u t) (h t)) t)
+    (hu2 : HasDerivAt ubar (velocityField A B nu f (c t) (ubar t) (hbar t)) t)
+    (hh2 : HasDerivAt hbar (magneticField A B eta g (c t) (ubar t) (hbar t)) t) :
     HasDerivAt (fun s => ‖u s - ubar s‖ ^ 2 + ‖h s - hbar s‖ ^ 2)
-      (2 * (⟪velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t),
+      (2 * (⟪velocityField A B nu f (c t) (u t) (h t) - velocityField A B nu f (c t) (ubar t) (hbar t),
               u t - ubar t⟫_ℝ
-            + ⟪magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t),
+            + ⟪magneticField A B eta g (c t) (u t) (h t) - magneticField A B eta g (c t) (ubar t) (hbar t),
               h t - hbar t⟫_ℝ)) t := by
   have hw := hu.sub hu2
   have hz := hh.sub hh2
@@ -454,24 +456,24 @@ theorem hasDerivAt_energyDiff {u h ubar hbar : ℝ → E} {t : ℝ}
     funext s
     simp
   have s1 : ⟪u t - ubar t,
-        velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t)⟫_ℝ
-      = ⟪velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t),
+        velocityField A B nu f (c t) (u t) (h t) - velocityField A B nu f (c t) (ubar t) (hbar t)⟫_ℝ
+      = ⟪velocityField A B nu f (c t) (u t) (h t) - velocityField A B nu f (c t) (ubar t) (hbar t),
         u t - ubar t⟫_ℝ := real_inner_comm _ _
   have s2 : ⟪h t - hbar t,
-        magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t)⟫_ℝ
-      = ⟪magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t),
+        magneticField A B eta g (c t) (u t) (h t) - magneticField A B eta g (c t) (ubar t) (hbar t)⟫_ℝ
+      = ⟪magneticField A B eta g (c t) (u t) (h t) - magneticField A B eta g (c t) (ubar t) (hbar t),
         h t - hbar t⟫_ℝ := real_inner_comm _ _
   have hval : ⟪u t - ubar t,
-        velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t)⟫_ℝ
-        + ⟪velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t),
+        velocityField A B nu f (c t) (u t) (h t) - velocityField A B nu f (c t) (ubar t) (hbar t)⟫_ℝ
+        + ⟪velocityField A B nu f (c t) (u t) (h t) - velocityField A B nu f (c t) (ubar t) (hbar t),
           u t - ubar t⟫_ℝ
       + (⟪h t - hbar t,
-          magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t)⟫_ℝ
-        + ⟪magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t),
+          magneticField A B eta g (c t) (u t) (h t) - magneticField A B eta g (c t) (ubar t) (hbar t)⟫_ℝ
+        + ⟪magneticField A B eta g (c t) (u t) (h t) - magneticField A B eta g (c t) (ubar t) (hbar t),
           h t - hbar t⟫_ℝ)
-      = 2 * (⟪velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t),
+      = 2 * (⟪velocityField A B nu f (c t) (u t) (h t) - velocityField A B nu f (c t) (ubar t) (hbar t),
               u t - ubar t⟫_ℝ
-            + ⟪magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t),
+            + ⟪magneticField A B eta g (c t) (u t) (h t) - magneticField A B eta g (c t) (ubar t) (hbar t),
               h t - hbar t⟫_ℝ) := by
     rw [s1, s2]; ring
   rw [hrw, ← hval]
@@ -487,36 +489,78 @@ theorem inner_field_diff_le (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 �
       ≤ 8 * ‖B‖ * R * (‖u - ubar‖ ^ 2 + ‖h - hbar‖ ^ 2) := by
   have hR : 0 ≤ R := le_trans (norm_nonneg u) hu
   have hBn : (0 : ℝ) ≤ ‖B‖ := norm_nonneg B
-  set w := u - ubar with hw
-  set z := h - hbar with hz
-  have hwn : 0 ≤ ‖w‖ := norm_nonneg w
-  have hzn : 0 ≤ ‖z‖ := norm_nonneg z
-  -- expand the two differences
-  rw [velocityField_sub, magneticField_sub]
-  rw [inner_sub_left, inner_add_left, inner_sub_left, inner_add_left]
-  -- the dissipative parts are nonpositive
-  have d1 : ⟪-(nu • A w), w⟫_ℝ ≤ 0 := by
+  have hwn : 0 ≤ ‖u - ubar‖ := norm_nonneg _
+  have hzn : 0 ≤ ‖h - hbar‖ := norm_nonneg _
+  have hV : ⟪velocityField A B nu f u h - velocityField A B nu f ubar hbar, u - ubar⟫_ℝ
+      = ⟪-(nu • A (u - ubar)), u - ubar⟫_ℝ + ⟪B u u - B ubar ubar, u - ubar⟫_ℝ
+        - ⟪B h h - B hbar hbar, u - ubar⟫_ℝ := by
+    rw [velocityField_sub, inner_sub_left, inner_add_left]
+  have hM : ⟪magneticField A B eta g u h - magneticField A B eta g ubar hbar, h - hbar⟫_ℝ
+      = ⟪-(eta • A (h - hbar)), h - hbar⟫_ℝ + ⟪B u h - B ubar hbar, h - hbar⟫_ℝ
+        - ⟪B h u - B hbar ubar, h - hbar⟫_ℝ := by
+    rw [magneticField_sub, inner_sub_left, inner_add_left]
+  have d1 : ⟪-(nu • A (u - ubar)), u - ubar⟫_ℝ ≤ 0 := by
     rw [inner_neg_left, real_inner_smul_left]
-    have := hA w
+    have := hA (u - ubar)
     nlinarith
-  have d2 : ⟪-(eta • A z), z⟫_ℝ ≤ 0 := by
+  have d2 : ⟪-(eta • A (h - hbar)), h - hbar⟫_ℝ ≤ 0 := by
     rw [inner_neg_left, real_inner_smul_left]
-    have := hA z
+    have := hA (h - hbar)
     nlinarith
-  -- the quadratic parts
-  have q1 : ⟪B u u - B ubar ubar, w⟫_ℝ ≤ 2 * ‖B‖ * R * ‖w‖ * ‖w‖ := by
+  have q1 : ⟪B u u - B ubar ubar, u - ubar⟫_ℝ ≤ 2 * ‖B‖ * R * ‖u - ubar‖ * ‖u - ubar‖ := by
     refine le_trans (real_inner_le_norm _ _) ?_
     exact mul_le_mul_of_nonneg_right (norm_interaction_diag_sub_le B hu hub) hwn
-  have q2 : -⟪B h h - B hbar hbar, w⟫_ℝ ≤ 2 * ‖B‖ * R * ‖z‖ * ‖w‖ := by
+  have q2 : -⟪B h h - B hbar hbar, u - ubar⟫_ℝ
+      ≤ 2 * ‖B‖ * R * ‖h - hbar‖ * ‖u - ubar‖ := by
     refine le_trans (neg_le_abs _) (le_trans (abs_real_inner_le_norm _ _) ?_)
     exact mul_le_mul_of_nonneg_right (norm_interaction_diag_sub_le B hh hhb) hwn
-  have q3 : ⟪B u h - B ubar hbar, z⟫_ℝ ≤ ‖B‖ * R * (‖w‖ + ‖z‖) * ‖z‖ := by
+  have q3 : ⟪B u h - B ubar hbar, h - hbar⟫_ℝ
+      ≤ ‖B‖ * R * (‖u - ubar‖ + ‖h - hbar‖) * ‖h - hbar‖ := by
     refine le_trans (real_inner_le_norm _ _) ?_
     exact mul_le_mul_of_nonneg_right (norm_interaction_mixed_sub_le B hu hh hub hhb) hzn
-  have q4 : -⟪B h u - B hbar ubar, z⟫_ℝ ≤ ‖B‖ * R * (‖z‖ + ‖w‖) * ‖z‖ := by
+  have q4 : -⟪B h u - B hbar ubar, h - hbar⟫_ℝ
+      ≤ ‖B‖ * R * (‖h - hbar‖ + ‖u - ubar‖) * ‖h - hbar‖ := by
     refine le_trans (neg_le_abs _) (le_trans (abs_real_inner_le_norm _ _) ?_)
     exact mul_le_mul_of_nonneg_right (norm_interaction_mixed_sub_le B hh hu hhb hub) hzn
-  nlinarith [q1, q2, q3, q4, d1, d2, sq_nonneg (‖w‖ - ‖z‖), mul_nonneg hBn hR]
+  rw [hV, hM]
+  nlinarith [q1, q2, q3, q4, d1, d2, sq_nonneg (‖u - ubar‖ - ‖h - hbar‖),
+    mul_nonneg hBn hR]
+
+/-- **Continuous dependence, §3.4 estimate (11).**  Two solutions whose four component norms
+stay bounded by `R` on `[0,T]` satisfy `E(t) ≤ E(0) e^{C R t}` with `C = 8‖B‖`. -/
+theorem energy_diff_le (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 ≤ nu) (heta : 0 ≤ eta)
+    {u h ubar hbar : ℝ → E} {T R : ℝ}
+    (hsol : IsSolutionOn A B nu eta f g c u h (Icc 0 T))
+    (hsol2 : IsSolutionOn A B nu eta f g c ubar hbar (Icc 0 T))
+    (hbu : ∀ t ∈ Icc (0 : ℝ) T, ‖u t‖ ≤ R) (hbh : ∀ t ∈ Icc (0 : ℝ) T, ‖h t‖ ≤ R)
+    (hbu2 : ∀ t ∈ Icc (0 : ℝ) T, ‖ubar t‖ ≤ R) (hbh2 : ∀ t ∈ Icc (0 : ℝ) T, ‖hbar t‖ ≤ R) :
+    ∀ t ∈ Icc (0 : ℝ) T, ‖u t - ubar t‖ ^ 2 + ‖h t - hbar t‖ ^ 2
+      ≤ (‖u 0 - ubar 0‖ ^ 2 + ‖h 0 - hbar 0‖ ^ 2) * Real.exp (8 * ‖B‖ * R * t) := by
+  have hderiv : ∀ t ∈ Icc (0 : ℝ) T,
+      HasDerivAt (fun s => ‖u s - ubar s‖ ^ 2 + ‖h s - hbar s‖ ^ 2)
+        (2 * (⟪velocityField A B nu f (c t) (u t) (h t) - velocityField A B nu f (c t) (ubar t) (hbar t),
+                u t - ubar t⟫_ℝ
+              + ⟪magneticField A B eta g (c t) (u t) (h t)
+                  - magneticField A B eta g (c t) (ubar t) (hbar t), h t - hbar t⟫_ℝ)) t :=
+    fun t ht => hasDerivAt_energyDiff (hsol t ht).1 (hsol t ht).2 (hsol2 t ht).1 (hsol2 t ht).2
+  have hcont : ContinuousOn (fun s => ‖u s - ubar s‖ ^ 2 + ‖h s - hbar s‖ ^ 2) (Icc 0 T) :=
+    fun t ht => ((hderiv t ht).continuousAt).continuousWithinAt
+  have hgb := le_gronwallBound_of_hasDerivAt
+    (φ := fun s => ‖u s - ubar s‖ ^ 2 + ‖h s - hbar s‖ ^ 2)
+    (φ' := fun t => 2 * (⟪velocityField A B nu f (c t) (u t) (h t)
+            - velocityField A B nu f (c t) (ubar t) (hbar t), u t - ubar t⟫_ℝ
+          + ⟪magneticField A B eta g (c t) (u t) (h t) - magneticField A B eta g (c t) (ubar t) (hbar t),
+              h t - hbar t⟫_ℝ))
+    (K := 8 * ‖B‖ * R) (c := 0) (T := T) hcont
+    (fun t ht => hderiv t (Ico_subset_Icc_self ht))
+    (fun t ht => by
+      have ht' := Ico_subset_Icc_self ht
+      have := inner_field_diff_le (A := A) (B := B) (nu := nu) (eta := eta) (f := f) (g := g)
+        hA hnu heta (hbu t ht') (hbh t ht') (hbu2 t ht') (hbh2 t ht')
+      linarith)
+  intro t ht
+  have hb := hgb t ht
+  rwa [gronwallBound_ε0] at hb
 
 end ContinuousDependence
 

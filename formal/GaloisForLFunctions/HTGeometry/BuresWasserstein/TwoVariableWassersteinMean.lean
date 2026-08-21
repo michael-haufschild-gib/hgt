@@ -250,7 +250,7 @@ theorem wass2_unique (ha : IsStrictlyPositive a) (hb : IsStrictlyPositive b) {x 
     rw [hc, hZdef, hYdef]
   have hconj : (1 - t) • R + t • gm Z Y = a⁻¹ʳ := by
     have hL := congrArg (fun z : A => a ^ (-(1/2) : ℝ) * z * a ^ (-(1/2) : ℝ)) hxe
-    simp only [mul_add, add_mul, mul_smul_comm, smul_mul_assoc, mul_one, one_mul] at hL
+    simp only [mul_add, add_mul, mul_smul_comm, smul_mul_assoc, mul_one] at hL
     rw [hcA, hcB, rpow_neg_half_mul_rpow_neg_half ha] at hL
     exact hL
   -- the Riccati equation for the second geometric mean
@@ -353,6 +353,115 @@ theorem wass2_unique (ha : IsStrictlyPositive a) (hb : IsStrictlyPositive b) {x 
     rw [hxinv, ← hRR, hR, mul_assoc]
   rw [← Ring.inverse_inverse hx.isUnit, hxeq,
     Ring.inverse_inverse ((hPu.mul (hNu.mul hNu)).mul hPu)]
+
+/-! ### Minimality (Theorem 6.9) -/
+
+omit [PartialOrder A] [StarOrderedRing A] in
+lemma conj_ringInverse_cancel {m : A} (hm : IsUnit m) (z : A) : m * (m⁻¹ʳ * z * m⁻¹ʳ) * m = z := by
+  have hL : ∀ y : A, m * (m⁻¹ʳ * y) = y := fun y => Ring.mul_inverse_cancel_left _ y hm
+  have hR : m⁻¹ʳ * m = 1 := Ring.inverse_mul_cancel _ hm
+  simp only [mul_assoc, hR, mul_one, hL]
+
+omit [PartialOrder A] [StarOrderedRing A] in
+lemma ringInverse_conj_cancel {m : A} (hm : IsUnit m) (z : A) :
+    m⁻¹ʳ * (m * z * m) * m⁻¹ʳ = z := by
+  have hL : ∀ y : A, m⁻¹ʳ * (m * y) = y := fun y => Ring.inverse_mul_cancel_left _ y hm
+  have hR : m * m⁻¹ʳ = 1 := Ring.mul_inverse_cancel _ hm
+  simp only [mul_assoc, hR, mul_one, hL]
+
+/-- The Schur-complement equality attained by `a ◇_t b`. -/
+theorem wass2_conj_ringInverse (hM : IsStrictlyPositive (wassParam t a b))
+    (ha : IsStrictlyPositive a) :
+    wassParam t a b * (wass2 t a b)⁻¹ʳ * wassParam t a b = a⁻¹ʳ := by
+  rw [wass2_ringInverse hM ha]
+  exact conj_ringInverse_cancel hM.isUnit _
+
+/-- **Theorem 6.9**: `a ◇_t b` is the least strictly positive `x` with
+`[1 ∇_t (a⁻¹ # b)] x⁻¹ [1 ∇_t (a⁻¹ # b)] ≤ a⁻¹`. -/
+theorem wass2_le_of_conj_ringInverse_le (hM : IsStrictlyPositive (wassParam t a b))
+    (ha : IsStrictlyPositive a) {x : A} (hx : IsStrictlyPositive x)
+    (h : wassParam t a b * x⁻¹ʳ * wassParam t a b ≤ a⁻¹ʳ) : wass2 t a b ≤ x := by
+  have hMi : IsSelfAdjoint ((wassParam t a b)⁻¹ʳ) := hM.ringInverse.nonneg.isSelfAdjoint
+  have h1 := hMi.conjugate_le_conjugate h
+  rw [ringInverse_conj_cancel hM.isUnit, ← wass2_ringInverse hM ha] at h1
+  have h2 := CStarAlgebra.ringInverse_le_ringInverse h1 hx.ringInverse
+  rwa [Ring.inverse_inverse hx.isUnit,
+    Ring.inverse_inverse (wass2_isStrictlyPositive hM ha).isUnit] at h2
+
+/-! ### The near order and the dual comparison (Proposition 6.15) -/
+
+/-- The near order `p ⪯ q ↔ 1 ≤ p⁻¹ # q`. -/
+def NearLE (p q : A) : Prop := 1 ≤ gm p⁻¹ʳ q
+
+@[inherit_doc] scoped infix:50 " ⪯ᴳ " => NearLE
+
+/-- `g + g⁻¹ ≥ 2` for strictly positive `g`. -/
+lemma two_le_add_ringInverse {g : A} (hg : IsStrictlyPositive g) :
+    (2 : ℝ) • (1 : A) ≤ g + g⁻¹ʳ := by
+  have hsa : IsSelfAdjoint (g ^ (1/2 : ℝ) - g ^ (-(1/2) : ℝ)) :=
+    (isSelfAdjoint_rpow g _).sub (isSelfAdjoint_rpow g _)
+  have hpos : (0 : A) ≤ (g ^ (1/2 : ℝ) - g ^ (-(1/2) : ℝ))
+      * (g ^ (1/2 : ℝ) - g ^ (-(1/2) : ℝ)) := by
+    nth_rewrite 1 [← hsa.star_eq]
+    exact star_mul_self_nonneg _
+  rw [sub_mul, mul_sub, mul_sub, rpow_half_mul_rpow_half hg, rpow_half_mul_rpow_neg_half hg,
+    rpow_neg_half_mul_rpow_half hg, rpow_neg_half_mul_rpow_neg_half hg,
+    show g - 1 - (1 - g⁻¹ʳ) = g + g⁻¹ʳ - (2 : ℝ) • (1 : A) by rw [two_smul]; abel] at hpos
+  exact sub_nonneg.mp hpos
+
+/-- **Proposition 6.15**: `(a⁻¹ ◇_t b⁻¹)⁻¹ ⪯ a ◇_t b` for `t ∈ [0,1]`. -/
+theorem wass2_ringInverse_nearLE (ht : t ∈ Set.Icc (0 : ℝ) 1) (ha : IsStrictlyPositive a)
+    (hb : IsStrictlyPositive b) :
+    NearLE (wass2 t a⁻¹ʳ b⁻¹ʳ)⁻¹ʳ (wass2 t a b) := by
+  obtain ⟨ht0, ht1⟩ := ht
+  have htt : (0 : ℝ) ≤ t * (1 - t) := mul_nonneg ht0 (by linarith)
+  have hg : IsStrictlyPositive (gm a⁻¹ʳ b) := gmInv_strictlyPositive ha hb
+  have hswap : gm (a⁻¹ʳ)⁻¹ʳ b⁻¹ʳ = (gm a⁻¹ʳ b)⁻¹ʳ := (gm_ringInverse ha.ringInverse hb).symm
+  have hM : IsStrictlyPositive (wassParam t a b) :=
+    wassParam_isStrictlyPositive_of_mem_Icc ⟨ht0, ht1⟩ ha hb
+  have hM' : IsStrictlyPositive (wassParam t a⁻¹ʳ b⁻¹ʳ) :=
+    wassParam_isStrictlyPositive_of_mem_Icc ⟨ht0, ht1⟩ ha.ringInverse hb.ringInverse
+  have hU : IsStrictlyPositive (wass2 t a⁻¹ʳ b⁻¹ʳ) :=
+    wass2_isStrictlyPositive hM' ha.ringInverse
+  have hginv : gm a⁻¹ʳ b * (gm a⁻¹ʳ b)⁻¹ʳ = 1 := Ring.mul_inverse_cancel _ hg.isUnit
+  have hginv' : (gm a⁻¹ʳ b)⁻¹ʳ * gm a⁻¹ʳ b = 1 := Ring.inverse_mul_cancel _ hg.isUnit
+  have hcomm : wassParam t a b * wassParam t a⁻¹ʳ b⁻¹ʳ
+      = wassParam t a⁻¹ʳ b⁻¹ʳ * wassParam t a b := by
+    unfold wassParam
+    rw [hswap]
+    simp only [add_mul, mul_add, smul_mul_assoc, mul_smul_comm, one_mul, mul_one,
+      hginv, hginv']
+    module
+  have hS : wassParam t a b * wassParam t a⁻¹ʳ b⁻¹ʳ
+      = ((1 - t) * (1 - t) + t * t) • (1 : A)
+        + (t * (1 - t)) • (gm a⁻¹ʳ b + (gm a⁻¹ʳ b)⁻¹ʳ) := by
+    unfold wassParam
+    rw [hswap]
+    simp only [add_mul, mul_add, smul_mul_assoc, mul_smul_comm, one_mul, mul_one, hginv]
+    module
+  have hSge : (1 : A) ≤ wassParam t a b * wassParam t a⁻¹ʳ b⁻¹ʳ := by
+    rw [hS]
+    have hmul := smul_le_smul_of_nonneg_left (two_le_add_ringInverse hg) htt
+    rw [smul_smul] at hmul
+    refine le_trans (le_of_eq ?_) (add_le_add (le_refl _) hmul)
+    rw [← add_smul, show (1 - t) * (1 - t) + t * t + t * (1 - t) * 2 = 1 by ring, one_smul]
+  have hriccati : wassParam t a b * wassParam t a⁻¹ʳ b⁻¹ʳ * (wass2 t a⁻¹ʳ b⁻¹ʳ)⁻¹ʳ
+      * (wassParam t a b * wassParam t a⁻¹ʳ b⁻¹ʳ) = wass2 t a b := by
+    rw [wass2_ringInverse hM' ha.ringInverse, Ring.inverse_inverse ha.isUnit]
+    have hcL : ∀ y : A, wassParam t a⁻¹ʳ b⁻¹ʳ * ((wassParam t a⁻¹ʳ b⁻¹ʳ)⁻¹ʳ * y) = y := fun y =>
+      Ring.mul_inverse_cancel_left _ y hM'.isUnit
+    have hcL2 : ∀ y : A, (wassParam t a⁻¹ʳ b⁻¹ʳ)⁻¹ʳ * (wassParam t a⁻¹ʳ b⁻¹ʳ * y) = y := fun y =>
+      Ring.inverse_mul_cancel_left _ y hM'.isUnit
+    unfold wass2
+    simp only [mul_assoc, hcL]
+    rw [hcomm]
+    simp only [hcL2]
+  have hgmeq : gm (wass2 t a⁻¹ʳ b⁻¹ʳ) (wass2 t a b)
+      = wassParam t a b * wassParam t a⁻¹ʳ b⁻¹ʳ :=
+    (gm_unique hU (le_trans zero_le_one hSge) hriccati).symm
+  unfold NearLE
+  rw [Ring.inverse_inverse hU.isUnit, hgmeq]
+  exact hSge
 
 end
 

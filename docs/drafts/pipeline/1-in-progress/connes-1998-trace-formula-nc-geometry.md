@@ -467,3 +467,48 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
   of the local factors is `ζ(s)` for `Re s > 1`, which is exactly Connes' *"the convergence for
   σ > 1 is the same as for the zeta function"*.
   All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 18 (**App I Lemma 1's infinite factorization, for `k = ℚ`**).
+  Corpus/mathlib search: mathlib has `RestrictedProduct` as a topological object but **no measure
+  theory on it**, so a restricted-product Haar measure would have to be built.  It does not have
+  to be: the idele group is the increasing union of the open subgroups
+  `J_S = ∏_{v∈S} k_v^* × ∏_{v∉S} R_v^*`, and on `J_S` the Haar measure is the product of the local
+  ones (the omitted factors having mass one), so the global Tate integral of a tensor test
+  function is by monotone convergence the limit of the finite-stage integrals of batch 17.
+  * `ConnesTateInfiniteFactorization` — `connesTateStageIntegral` (the finite-stage Tate integral
+    indexed by `S : Finset Nat.Primes`), `connesTateStageIntegral_eq` (`= ∏_{p ∈ S} (1 - w p)^{-1}`),
+    **`connes_tate_stage_tendsto`** (whenever the local factors have a convergent infinite product,
+    the finite-stage integrals converge to it), and
+    **`connes_tate_stage_tendsto_zeta`**: for `Re s > 1` the finite-stage Tate zeta integrals
+    converge to `ζ(s)` — literally Connes' *"the convergence for σ > 1 is the same as for the zeta
+    function"*, via mathlib's `riemannZeta_eulerProduct_hasProd`.
+  This closes App I Lemma 1 for `k = ℚ`, `Χ_0 = 1`, in the form the paper uses it: local factors
+  (25)/(26), finite-stage factorization (batch 17), and the infinite product as the limit of the
+  finite stages.  A restricted-product Haar measure on `𝔸^*` would only be needed to phrase the
+  same content as a single integral rather than a limit of integrals; nothing further about the
+  paper depends on it.
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 19 (**App I Lemma 1 at the RAMIFIED places — general `Χ_0`**).
+  The previous batches covered arbitrary *unramified* local data (the `w i` of
+  `connes_tate_finiteStage_prod` are arbitrary with `‖w i‖ < 1`, so any unramified `Χ_0` is
+  already included).  What was genuinely missing for a *general* `Χ_0` is the ramification locus
+  `P`, and this batch supplies it.
+  * `ConnesRamifiedLocalZeta` — **`connes_padic_character_split`**: every monoid homomorphism of
+    `ℚ_p^*` factors on each valuation shell as `Χ(π^m)·Χ(u)` (immediate from `map_mul` through
+    the corpus's valuation/unit `MulEquiv` — no induction, and valid ramified or not);
+    **`connes_padic_tate_ramified_vanishes`**: if the angular profile of a shell-split integrand
+    has zero mean on the units, the whole local multiplicative integral vanishes;
+    **`connes_padic_tate_ramified_character`**: hence for a quasi-character whose restriction to
+    the units has zero mean, *every* radially weighted local Tate integral vanishes.
+  This is exactly Connes' *"one only needs to consider the infinite tensor product for finite
+  places `v ∉ P`"*: the ramified factors contribute nothing, which is why `L(Χ_0,s)` is a product
+  over the unramified places only.  Together with batches 15/17/18 (arbitrary unramified local
+  data, finite-stage factorization, infinite product as the limit of finite stages), App I
+  Lemma 1 is now covered for an arbitrary `Χ_0` over `ℚ`.
+  Still specific to `k = ℚ`: every local module is written for `ℚ_p` and `ℝ`.  Generalising to an
+  arbitrary global field means replacing `ℚ_p` by an arbitrary non-archimedean local field
+  throughout; the corpus has the beginnings of that layer in
+  `HTGeometry.ABHN.NonarchimedeanLocalFieldValuationSequence` (uniformizer, valuation, unit
+  reduction), which is where that generalisation should start.
+  All `#print axioms` clean.
