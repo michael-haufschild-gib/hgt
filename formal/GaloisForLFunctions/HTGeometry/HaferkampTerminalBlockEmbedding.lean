@@ -159,6 +159,135 @@ theorem exists_full_block_transport_root_Z_with_terminal_gate
   rw [embedding.reverseProduct_eq totalTwoQubitLift_one]
   exact hSelectedTransport
 
+/-- Equation (B6) at a concrete final root-targeting gate: the ambient
+ordered-product derivative in the local `I ⊗ Z` coordinate is root-Pauli
+left multiplication of the full block word. -/
+theorem exists_terminal_ambient_derivative_coordinate
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    (cone : BackwardsLightCone n edges root) (hn : 1 < n)
+    (P : Fin n → Option (Fin 3)) (hP : ∃ q, P q ≠ none) :
+    ∃ blockGates : List (Matrix.specialUnitaryGroup (Bool × Bool) ℂ),
+      ∃ terminalGate : Matrix.specialUnitaryGroup (Bool × Bool) ℂ,
+      ∃ matrices : List (Matrix (Fin n → Bool) (Fin n → Bool) ℂ),
+      ∃ i : Fin matrices.length, ∃ H : Matrix (Fin n → Bool) (Fin n → Bool) ℂ,
+        blockGates.length = edges.length ∧
+        matrices = List.zipWith (fun edge gate =>
+          (totalTwoQubitLift edge gate : Matrix (Fin n → Bool) (Fin n → Bool) ℂ))
+          edges blockGates ∧
+        H = twoQubitLiftMatrix cone.mergePlan.terminal root
+          cone.mergePlan.terminal_ne_root
+          (boolTwoQubitPauli none (some 2) *
+            (terminalGate : Matrix (Bool × Bool) (Bool × Bool) ℂ)) ∧
+        ambientOrderedMatrixProductDerivative matrices.length (fun j => matrices.get j)
+          (ambientCoordinateDirection i H) =
+          finitePauliMatrix (Function.update (fun _ => none) root (some 2)) *
+            matrices.reverse.prod := by
+  obtain ⟨blockGates, hBlockLength, hBlockClifford, terminalGate,
+    beforeBlockEdges, afterBlockEdges, beforeBlockGates, afterBlockGates,
+    hBlockEdges, hBlockGates, hBeforeLength, hAfterLength, hSuffixIdentity,
+    hTerminalClifford, c, hc, hTransport⟩ :=
+    cone.exists_full_block_transport_root_Z_with_terminal_gate hn P hP
+  let matrices := List.zipWith (fun edge gate =>
+    (totalTwoQubitLift edge gate : Matrix (Fin n → Bool) (Fin n → Bool) ℂ))
+    edges blockGates
+  let beforeMatrices := List.zipWith (fun edge gate =>
+    (totalTwoQubitLift edge gate : Matrix (Fin n → Bool) (Fin n → Bool) ℂ))
+    beforeBlockEdges beforeBlockGates
+  let afterMatrices := List.zipWith (fun edge gate =>
+    (totalTwoQubitLift edge gate : Matrix (Fin n → Bool) (Fin n → Bool) ℂ))
+    afterBlockEdges afterBlockGates
+  have hmatrices : matrices = beforeMatrices ++
+      (totalTwoQubitLift (cone.mergePlan.terminal, root) terminalGate :
+        Matrix (Fin n → Bool) (Fin n → Bool) ℂ) :: afterMatrices := by
+    change List.zipWith (fun edge gate =>
+      (totalTwoQubitLift edge gate : Matrix (Fin n → Bool) (Fin n → Bool) ℂ))
+      edges blockGates = _
+    conv_lhs => rw [hBlockEdges]
+    rw [hBlockGates, List.zipWith_append hBeforeLength.symm]
+    rfl
+  have hzipSuffix : ∀ (suffixEdges : List (Fin n × Fin n))
+      (suffixGates : List (Matrix.specialUnitaryGroup (Bool × Bool) ℂ)),
+      suffixGates.length = suffixEdges.length →
+      (∀ U ∈ suffixGates, U = 1) →
+      ∀ M ∈ List.zipWith (fun edge gate =>
+        (totalTwoQubitLift edge gate : Matrix (Fin n → Bool) (Fin n → Bool) ℂ))
+        suffixEdges suffixGates, M = 1 := by
+    intro suffixEdges
+    induction suffixEdges with
+    | nil =>
+        intro suffixGates hlength hidentity
+        have hnil : suffixGates = [] := by
+          apply List.eq_nil_of_length_eq_zero
+          simpa using hlength
+        subst suffixGates
+        simp
+    | cons edge suffixEdges ih =>
+        intro suffixGates hlength hidentity
+        cases suffixGates with
+        | nil => simp at hlength
+        | cons gate suffixGates =>
+            simp only [List.length_cons, Nat.succ.injEq] at hlength
+            intro M hM
+            change M ∈
+              (totalTwoQubitLift edge gate : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) ::
+                List.zipWith (fun edge gate =>
+                  (totalTwoQubitLift edge gate : Matrix (Fin n → Bool) (Fin n → Bool) ℂ))
+                  suffixEdges suffixGates at hM
+            simp only [List.mem_cons] at hM
+            rcases hM with rfl | hM
+            · rw [hidentity gate (by simp)]
+              exact congrArg (fun V : Matrix.unitaryGroup (Fin n → Bool) ℂ =>
+                (V : Matrix (Fin n → Bool) (Fin n → Bool) ℂ))
+                (totalTwoQubitLift_one edge)
+            · exact ih suffixGates hlength
+                (fun U hU => hidentity U (by simp only [List.mem_cons]; exact Or.inr hU)) M hM
+  have hafterMatrices : ∀ M ∈ afterMatrices, M = 1 := by
+    exact hzipSuffix afterBlockEdges afterBlockGates hAfterLength hSuffixIdentity
+  let H := twoQubitLiftMatrix cone.mergePlan.terminal root
+    cone.mergePlan.terminal_ne_root
+    (boolTwoQubitPauli none (some 2) *
+      (terminalGate : Matrix (Bool × Bool) (Bool × Bool) ℂ))
+  have hH : H = finitePauliMatrix
+      (Function.update (fun _ => none) root (some 2)) *
+      (totalTwoQubitLift (cone.mergePlan.terminal, root) terminalGate :
+        Matrix (Fin n → Bool) (Fin n → Bool) ℂ) := by
+    dsimp [H]
+    rw [twoQubitLiftMatrix_terminal_coordinate]
+    rw [← totalTwoQubitLift_eq_twoQubitLift
+      (cone.mergePlan.terminal, root) cone.mergePlan.terminal_ne_root terminalGate]
+    congr 2
+    funext q
+    by_cases hq : q = root
+    · subst q
+      simp [updateTwoQubitPauliLabel]
+    · simp [updateTwoQubitPauliLabel, hq]
+  let i : Fin matrices.length := ⟨beforeMatrices.length, by
+    rw [hmatrices]
+    simp [beforeMatrices, List.length_zipWith, hBeforeLength]⟩
+  have hafterReverse : ∀ M ∈ afterMatrices.reverse, M = 1 := by
+    intro M hM
+    exact hafterMatrices M (by simpa using hM)
+  have hmatricesProduct : matrices.reverse.prod =
+      (totalTwoQubitLift (cone.mergePlan.terminal, root) terminalGate :
+        Matrix (Fin n → Bool) (Fin n → Bool) ℂ) * beforeMatrices.reverse.prod := by
+    rw [hmatrices, List.reverse_append, List.prod_append]
+    rw [List.reverse_cons, List.prod_append, List.prod_eq_one hafterReverse]
+    simp
+  refine ⟨blockGates, terminalGate, matrices, i, H,
+    hBlockLength, rfl, rfl, ?_⟩
+  have hderivative :=
+    ambientOrderedMatrixProductDerivative_list_coordinate_of_suffix_one
+      matrices beforeMatrices afterMatrices
+      (totalTwoQubitLift (cone.mergePlan.terminal, root) terminalGate :
+        Matrix (Fin n → Bool) (Fin n → Bool) ℂ)
+      hmatrices hafterMatrices H
+  change ambientOrderedMatrixProductDerivative matrices.length (fun j => matrices.get j)
+      (ambientCoordinateDirection i H) = _
+  rw [show i = ⟨beforeMatrices.length, by
+    rw [hmatrices]
+    simp [beforeMatrices, List.length_zipWith, hBeforeLength]⟩ by rfl]
+  rw [hderivative, hH, Matrix.mul_assoc, hmatricesProduct]
+
 end BackwardsLightCone
 
 end

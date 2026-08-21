@@ -234,10 +234,7 @@ https://arxiv.org/pdf/2607.24830
 
 ## Formalize
 
-Formalize and prove fully, unconditional and closed in our lean corpus the proofs for all lemmas and theorems and provable propositions as far as mathlib or our lean corpus not already proof them from this paper: https://arxiv.org/pdf/math/9811068
-
-
-Formalize and prove fully, unconditional and closed in our lean corpus Wick's theorem
+Formalize and prove fully, unconditional and closed in our lean corpus the proofs for all lemmas and theorems and provable propositions as far as mathlib or our lean corpus not already proof them from this paper: https://arxiv.org/pdf/2509.06151v2
 
 Skip if already present in our corpus or mathlib.
 Any missing infrastructure you build no matter the effort.

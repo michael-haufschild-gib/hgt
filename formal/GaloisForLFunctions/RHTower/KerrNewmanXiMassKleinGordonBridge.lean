@@ -60,9 +60,28 @@ Kerr--Newman wave profile. -/
 theorem xiMassPrimeTailPositionProfile_unit_eq_kerrNewmanFlatWave
     (u : ℝ) :
     xiMassPrimeTailPositionProfile 1 1 u =
-      fun h => (h : ℂ) * xiMassUnitProfile u h := by
+      fun h : ℝ => (h : ℂ) * xiMassUnitProfile u h := by
   funext h
   rfl
+
+/-- The prime-tail profile used in the RH current has the stated first coordinate derivative. -/
+theorem hasDerivAt_kerrNewmanFlatXiMassWeightedProfile
+    (u h : ℝ) :
+    HasDerivAt (fun q : ℝ => (q : ℂ) * xiMassUnitProfile u q)
+      (xiMassPrimeTailPositionProfileDeriv 1 1 u h) h := by
+  change HasDerivAt (xiMassPrimeTailPositionProfile 1 1 u)
+    (xiMassPrimeTailPositionProfileDeriv 1 1 u h) h
+  exact hasDerivAt_xiMassPrimeTailPositionProfile (a := 1) (sigma := 1)
+    (by norm_num) (by norm_num) u h
+
+/-- The derivative from the coordinate-weighted flat Kerr--Newman profile has the exact second
+derivative used to define the prime-tail Green current. -/
+theorem hasDerivAt_kerrNewmanFlatXiMassWeightedProfileDeriv
+    (u h : ℝ) :
+    HasDerivAt (xiMassPrimeTailPositionProfileDeriv 1 1 u)
+      (xiMassPrimeTailPositionProfileSecond 1 1 u h) h :=
+  hasDerivAt_xiMassPrimeTailPositionProfileDeriv (a := 1) (sigma := 1)
+    (by norm_num) (by norm_num) u h
 
 /-- The prime-tail Green current used by the Xi-mass criterion, specialized to the same unit
 profile that solves the flat Kerr--Newman wave equation. -/

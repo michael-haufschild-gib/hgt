@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisAlgebra
+import GaloisForLFunctions.HTGeometry.ABHN.BrauerFoundations
 import Mathlib.RingTheory.MatrixAlgebra
 import Mathlib.RingTheory.SimpleRing.Congr
 
@@ -258,6 +259,63 @@ theorem isSimpleRing_moduleEnd : IsSimpleRing (Module.End K L) := by
 theorem isSimpleRing_cyclicGaloisAlgebra_split : IsSimpleRing (cyclicGaloisAlgebra K L 1) :=
   IsSimpleRing.of_ringEquiv (cyclicGaloisAlgebraSplitAlgEquiv K L).symm.toRingEquiv
     (isSimpleRing_moduleEnd K L)
+
+/-- The split raw cyclic Galois algebra is a finite-dimensional central simple algebra. -/
+noncomputable def cyclicGaloisAlgebraSplitCSA : CSA K where
+  carrier := cyclicGaloisAlgebra K L 1
+  isCentral := by
+    letI : Nonempty (Fin (Module.finrank K L)) :=
+      ⟨⟨0, Module.finrank_pos (R := K) (M := L)⟩⟩
+    letI : Algebra.IsCentral K
+        (Matrix (Fin (Module.finrank K L)) (Fin (Module.finrank K L)) K) := inferInstance
+    exact Algebra.IsCentral.of_algEquiv K _ _
+      ((cyclicGaloisAlgebraSplitAlgEquiv K L).trans
+        (LinearMap.toMatrixAlgEquiv (Module.finBasis K L))).symm
+  isSimple := isSimpleRing_cyclicGaloisAlgebra_split K L
+  fin_dim := cyclicGaloisAlgebra_finiteDimensional K L 1
+
+/-- The split cyclic Galois algebra represents the split Brauer class. -/
+theorem brauerClass_cyclicGaloisAlgebraSplitCSA_eq_split :
+    brauerClass (cyclicGaloisAlgebraSplitCSA K L) = brauerSplitClass K := by
+  letI : NeZero (Module.finrank K L) :=
+    ⟨Nat.ne_of_gt (Module.finrank_pos (R := K) (M := L))⟩
+  calc
+    brauerClass (cyclicGaloisAlgebraSplitCSA K L) =
+        brauerClass (matrixFinCSA (scalarCSA K) (Module.finrank K L)) :=
+      brauerClass_eq_of_algEquiv (cyclicGaloisAlgebraSplitCSA K L)
+        (matrixFinCSA (scalarCSA K) (Module.finrank K L))
+        ((cyclicGaloisAlgebraSplitAlgEquiv K L).trans
+          (LinearMap.toMatrixAlgEquiv (Module.finBasis K L)))
+    _ = brauerSplitClass K :=
+      brauerClass_matrixFinCSA_scalar_eq (K := K) (Module.finrank K L)
+
+/-- A cyclic Galois parameter that is a field norm gives a central simple algebra: its raw
+cyclic algebra is transported along the explicit norm-scaling equivalence to the split algebra. -/
+noncomputable def cyclicGaloisAlgebraNormCSA (a : K) (c : Lˣ)
+    (hforward : a = Algebra.norm K (c : L)) : CSA K where
+  carrier := cyclicGaloisAlgebra K L a
+  isCentral := by
+    letI : Algebra.IsCentral K (cyclicGaloisAlgebra K L 1) :=
+      (cyclicGaloisAlgebraSplitCSA K L).isCentral
+    exact Algebra.IsCentral.of_algEquiv K _ _
+      (cyclicGaloisAlgebraNormScaleAlgEquiv K L a 1 c (by simpa using hforward)).symm
+  isSimple := by
+    exact IsSimpleRing.of_ringEquiv
+      (cyclicGaloisAlgebraNormScaleAlgEquiv K L a 1 c (by simpa using hforward)).symm.toRingEquiv
+      (cyclicGaloisAlgebraSplitCSA K L).isSimple
+  fin_dim := cyclicGaloisAlgebra_finiteDimensional K L a
+
+/-- A norm parameter represents the split Brauer class. -/
+theorem brauerClass_cyclicGaloisAlgebraNormCSA_eq_split (a : K) (c : Lˣ)
+    (hforward : a = Algebra.norm K (c : L)) :
+    brauerClass (cyclicGaloisAlgebraNormCSA K L a c hforward) = brauerSplitClass K := by
+  calc
+    brauerClass (cyclicGaloisAlgebraNormCSA K L a c hforward) =
+        brauerClass (cyclicGaloisAlgebraSplitCSA K L) :=
+      brauerClass_eq_of_algEquiv (cyclicGaloisAlgebraNormCSA K L a c hforward)
+        (cyclicGaloisAlgebraSplitCSA K L)
+        (cyclicGaloisAlgebraNormScaleAlgEquiv K L a 1 c (by simpa using hforward))
+    _ = brauerSplitClass K := brauerClass_cyclicGaloisAlgebraSplitCSA_eq_split K L
 
 /-- The split raw cyclic Galois algebra is not the zero ring. -/
 theorem cyclicGaloisAlgebraSplit_one_ne_zero : (1 : cyclicGaloisAlgebra K L 1) ≠ 0 := by

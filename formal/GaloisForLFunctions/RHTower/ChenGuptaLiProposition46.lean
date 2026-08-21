@@ -95,4 +95,107 @@ theorem cglProposition46_lemma42_spectral_bound
         (R + 1 : ℝ)) :=
   cglLemma42_source_bound S.toLemma42
 
+/-- CGL Lemma 4.5 after subtracting the exact all-equal diagonal from the
+centered cubic trace in Lemma 4.2.  The zero-frequency remainder stays explicit
+at this stage. -/
+theorem cglProposition46_centeredCubicTrace_eq_zero_add_nonzero
+    {q R : ℕ} {P : CGLFibreSeparatedPacket q (R + 1)} {N : CGLPositiveLength}
+    (S : CGLProposition46Packet P N) :
+    ((cglCharacterDyadicWeightedGram N.value (cglLemma45FibreModulus q).value (R + 1)
+      (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+      (cglLemma45FibreRows P)) ^ 3).trace.re -
+      (cglCharacterDyadicWeightedGram N.value (cglLemma45FibreModulus q).value (R + 1)
+        (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+        (cglLemma45FibreRows P)).trace.re ^ 3 / (R + 1 : ℝ) ^ 2 =
+      (cglLemma45OffDiagonalFrequencyTerm S.cutoff.toCGLRealSmoothBump N
+        (cglLemma45FibreModulus q) (R + 1) (cglLemma45FibreRows P) 0 +
+        ∑' m : {m : (ℤ × ℤ) × ℤ // m ∉ ({0} : Finset ((ℤ × ℤ) × ℤ))},
+          cglLemma45OffDiagonalNonzeroFrequencyTerm S.cutoff.toCGLRealSmoothBump N
+            (cglLemma45FibreModulus q) (R + 1) (cglLemma45FibreRows P) m).re := by
+  have hsource :=
+    (cglLemma45_literalEpsilon_expansion_and_zeroBound S.source
+      S.cutoff.toCGLRealSmoothBump).1
+  have hsourceQ :
+      cglCharacterDyadicWeightedGramCubicTrace N.value (cglLemma45FibreModulus q).value (R + 1)
+        (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+        (cglLemma45FibreRows P) =
+        ((R + 1 : ℕ) : ℂ) * cglLemma45DiagonalPoissonMass
+          S.cutoff.toCGLRealSmoothBump N (cglLemma45FibreModulus q) ^ 3 +
+          cglLemma45OffDiagonalFrequencyTerm S.cutoff.toCGLRealSmoothBump N
+            (cglLemma45FibreModulus q) (R + 1) (cglLemma45FibreRows P) 0 +
+          ∑' m : {m : (ℤ × ℤ) × ℤ // m ∉ ({0} : Finset ((ℤ × ℤ) × ℤ))},
+            cglLemma45OffDiagonalNonzeroFrequencyTerm S.cutoff.toCGLRealSmoothBump N
+              (cglLemma45FibreModulus q) (R + 1) (cglLemma45FibreRows P) m := by
+    simpa only [cglLemma45FibreModulus] using hsource
+  have hsplit := cglLemma45_cubicTrace_eq_diagonalPoisson_add_offDiagonal
+    S.cutoff.toCGLRealSmoothBump N (cglLemma45FibreModulus q) (R + 1)
+    (cglLemma45FibreRows P)
+  have hoff :
+      cglCharacterDyadicWeightedGramCubicOffDiagonal N.value (cglLemma45FibreModulus q).value (R + 1)
+        (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+        (cglLemma45FibreRows P) =
+        cglLemma45OffDiagonalFrequencyTerm S.cutoff.toCGLRealSmoothBump N
+          (cglLemma45FibreModulus q) (R + 1) (cglLemma45FibreRows P) 0 +
+          ∑' m : {m : (ℤ × ℤ) × ℤ // m ∉ ({0} : Finset ((ℤ × ℤ) × ℤ))},
+            cglLemma45OffDiagonalNonzeroFrequencyTerm S.cutoff.toCGLRealSmoothBump N
+              (cglLemma45FibreModulus q) (R + 1) (cglLemma45FibreRows P) m := by
+    calc
+      cglCharacterDyadicWeightedGramCubicOffDiagonal N.value (cglLemma45FibreModulus q).value (R + 1)
+          (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+          (cglLemma45FibreRows P) =
+          cglCharacterDyadicWeightedGramCubicTrace N.value (cglLemma45FibreModulus q).value (R + 1)
+            (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+            (cglLemma45FibreRows P) -
+              ((R + 1 : ℕ) : ℂ) * cglLemma45DiagonalPoissonMass
+                S.cutoff.toCGLRealSmoothBump N (cglLemma45FibreModulus q) ^ 3 := by
+          rw [hsplit]
+          ring
+      _ = _ := by
+          rw [hsourceQ]
+          ring
+  calc
+    ((cglCharacterDyadicWeightedGram N.value (cglLemma45FibreModulus q).value (R + 1)
+      (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+      (cglLemma45FibreRows P)) ^ 3).trace.re -
+        (cglCharacterDyadicWeightedGram N.value (cglLemma45FibreModulus q).value (R + 1)
+          (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+          (cglLemma45FibreRows P)).trace.re ^ 3 / (R + 1 : ℝ) ^ 2 =
+        (cglCharacterDyadicWeightedGramCubicOffDiagonal N.value (cglLemma45FibreModulus q).value (R + 1)
+          (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+          (cglLemma45FibreRows P)).re :=
+      cglCharacterDyadicWeighted_centeredCubicTrace_re_eq_offDiagonal_re
+        N.value (cglLemma45FibreModulus q).value R
+          (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+          (cglLemma45FibreRows P)
+    _ = _ := congrArg Complex.re hoff
+
+/-- Matrix form of the exact centered-cubic identity needed in Proposition 4.6. -/
+theorem cglProposition46_matrix_centeredCubicTrace_eq_zero_add_nonzero
+    {q R : ℕ} {P : CGLFibreSeparatedPacket q (R + 1)} {N : CGLPositiveLength}
+    (S : CGLProposition46Packet P N) :
+    (((cglLemma42Matrix S.toLemma42 * (cglLemma42Matrix S.toLemma42)ᴴ) ^ 3).trace.re -
+      ((cglLemma42Matrix S.toLemma42 * (cglLemma42Matrix S.toLemma42)ᴴ).trace.re ^ 3) /
+        (R + 1 : ℝ) ^ 2) =
+      (cglLemma45OffDiagonalFrequencyTerm S.cutoff.toCGLRealSmoothBump N
+        (cglLemma45FibreModulus q) (R + 1) (cglLemma45FibreRows P) 0 +
+        ∑' m : {m : (ℤ × ℤ) × ℤ // m ∉ ({0} : Finset ((ℤ × ℤ) × ℤ))},
+          cglLemma45OffDiagonalNonzeroFrequencyTerm S.cutoff.toCGLRealSmoothBump N
+            (cglLemma45FibreModulus q) (R + 1) (cglLemma45FibreRows P) m).re := by
+  change
+    (((cglCharacterDyadicWeightedEvaluationMatrix N.value (cglLemma45FibreModulus q).value
+      (R + 1) (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+      (cglLemma45FibreRows P) *
+      (cglCharacterDyadicWeightedEvaluationMatrix N.value (cglLemma45FibreModulus q).value
+        (R + 1) (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+        (cglLemma45FibreRows P))ᴴ) ^ 3).trace.re -
+      ((cglCharacterDyadicWeightedEvaluationMatrix N.value (cglLemma45FibreModulus q).value
+        (R + 1) (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+        (cglLemma45FibreRows P) *
+        (cglCharacterDyadicWeightedEvaluationMatrix N.value (cglLemma45FibreModulus q).value
+          (R + 1) (cglSmoothBumpDyadicWeight S.cutoff.toCGLRealSmoothBump.toCGLSmoothBump N)
+          (cglLemma45FibreRows P))ᴴ).trace.re ^ 3) /
+        (R + 1 : ℝ) ^ 2) = _
+  rw [cglCharacterDyadicWeightedEvaluationMatrix_self_mul_conjTranspose_eq_gram]
+  exact cglProposition46_centeredCubicTrace_eq_zero_add_nonzero S
+
 end RHTower

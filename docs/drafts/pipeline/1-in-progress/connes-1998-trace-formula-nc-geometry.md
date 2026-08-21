@@ -228,3 +228,29 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
   Everything unconditional; all `#print axioms` clean.  Open item 3 is now reduced to Appendix I
   Lemmas 2–3 for the adele class space (the `E(f)` periodization decay and the analytic
   continuation of `Δ_s`); the local Lemma-1 computation and the `L(χ₀,½+it)` growth are done.
+
+- 2026-08-22 — Tier B batch 7 (App I Lemma 2's decay, §VII Lemma 2's Besov chain, §VII Lemma 1(b)).
+  Five new modules, all built and wired:
+  * `ConnesLatticeRapidDecay` — **App I (46)**: `connesLatticeSum f a = ∑_{n ≠ 0} ‖f(a n)‖` for a
+    Schwartz `f`, its summability (reusing the corpus's
+    `ccmRationalArchimedeanSchwartz_lattice_summable`), and
+    `connes_latticeSum_rapidDecay`: `λ^k · ∑_{n ≠ 0} ‖f(λ c n)‖ → 0` for every `k`.  This is the
+    archimedean estimate that makes `E(f)` decay faster than every power of `|x|`.
+  * `ConnesCutoffCommutator` — **§VII (43)/(46)**: `connesCutoffExcess L x = (log|x| − L)^+`, its
+    1-Lipschitz bound in `log|x|`, the exact commutator identity (the two leading terms cancel),
+    the integrability of the cut-off logarithmic-difference kernel, and
+    `connes_cutoff_commutator_bound`: the commutator is at most
+    `c'_α |x|^{-α} · sup_{|ε| ≤ 1} ‖η(x+ε)‖`.
+  * `ConnesCutoffTailDecay` — **§VII (47)**: `connesUnitSup`, the thickened Schwartz bound
+    `connesUnitSup η x ≤ 2^m σ_m(η)/|x|^m` for `|x| ≥ 2`, and `connes_cutoff_tail_rapidDecay`:
+    `L^N ∫_{Ioi L} x^{-α} sup_{|ε|≤1}‖η(x+ε)‖ dx → 0` for every `N`.
+  * `ConnesOrbitFormFourier` — **§VII Lemma 1(b), the mechanism**: `connesOrbitForm U f g =
+    ∑'_q ⟪f, U(q)g⟫` and `connes_orbitForm_invariant`: an ambient isometry intertwining the group
+    action with inversion preserves the orbit form (the inversion is a bijection of the group, so
+    it only reindexes the sum).  Also the summability transfer.
+  * `ConnesFourierUnitaryExtension` — `connesCompletionUnitary`: an isometric linear automorphism
+    of a pre-Hilbert space extends to a unitary of its Hilbert completion, agreeing with it on the
+    dense subspace (mathlib's `LinearEquiv.extendOfIsometry`).  Together with the previous item
+    this is Lemma 1(b) for any concrete realization of `L²(X_S)`.
+  All `#print axioms` clean.  Remaining in this lane: §VII (41) (the Besov–Fourier sup inequality),
+  (48), and the adelic realization of `E(f)` for `k = ℚ`.

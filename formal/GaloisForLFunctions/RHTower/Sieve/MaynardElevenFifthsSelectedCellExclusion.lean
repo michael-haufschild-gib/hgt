@@ -25,7 +25,7 @@ amplitude caps `983/1000` and `997/1000` through `mu = 11/5`.
 noncomputable section
 namespace RHTower.Sieve
 
-open Finset ArithmeticFunction
+open Finset ArithmeticFunction Filter Topology
 
 theorem dyadic_length_ge_twentySixTwentySeven_root_of_overweight_elevenFifths
     {T mu : ℝ} (hT : 1 < T) (hmuHi : mu ≤ 11 / 5) {q : ℕ}
@@ -1441,7 +1441,6 @@ theorem exists_maynardWindowRelevantSelectedCell_fibre_tuned_montgomery_elevenFi
   · simpa [beta] using hover
   · simpa [IsMaynardSelectedMontgomeryBound, Y] using hMont
 
-set_option maxHeartbeats 1000000 in
 /-- **Literal lower-strip selected-cell count.**  First crossing of `T^(4/5)`, exact two-term
 Montgomery cancellation, and one fixed-polylog absorption put every selected-cell fibre with
 `3/4 ≤ alpha ≤ 19/25` directly inside Route T's second alternative.  The theorem already
@@ -1571,7 +1570,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
           B0 = 1 * B0 := by ring
           _ ≤ HF * B0 := mul_le_mul_of_nonneg_right hHF1 hB00)
       linarith
-    nlinarith
+    linarith
   have heBound : e ≤ maynardMontgomeryFixedPolylogExponentBound := by
     dsimp only [e]
     exact heathBrownSelected_montgomeryFixedPolylogExponent_le label hell90
@@ -1640,11 +1639,17 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
   have hcostFull := hcost N e hN1 hNscale heBound
   have hcostHalf : 12 * W ^ 2 * B0 ^ (e + 2) ≤
       (1 / 2 : ℝ) * T ^ (1 / 400 : ℝ) := by
-    simpa only [W, B0, Y] using (show
+    dsimp only [W, B0, Y]
+    calc
       12 * maynardMontgomeryRaisedWidthConstant ^ 2 *
           (1 + Real.log (maynardMontgomeryRaisedWidthConstant * (N : ℝ))) ^
-            (e + 2) ≤
-        (1 / 2 : ℝ) * T ^ (1 / 400 : ℝ) by nlinarith [hcostFull])
+            (e + 2) =
+          (1 / 2 : ℝ) *
+            (24 * maynardMontgomeryRaisedWidthConstant ^ 2 *
+              (1 + Real.log (maynardMontgomeryRaisedWidthConstant * (N : ℝ))) ^
+                (e + 2)) := by ring
+      _ ≤ (1 / 2 : ℝ) * T ^ (1 / 400 : ℝ) :=
+        mul_le_mul_of_nonneg_left hcostFull (by norm_num)
   let target : ℝ := 1 + mu * (1 + routeTGapMomentNu - 2 * alpha)
   obtain ⟨hwidthExp, hheightExp⟩ :=
     routeT_wide_tunedMontgomery_exponents_with_polylog_le_second_elevenFifths
@@ -3149,9 +3154,5 @@ theorem exists_eventually_routeT_lowOrdinateBox_all_amplitude_first_or_second_el
         simp only [Finset.card_empty, Nat.cast_zero]
         exact mul_nonneg (maynardHarmonicFactor_pos K hdelta).le
           (Real.rpow_nonneg (by linarith) _)
-
-end RHTower.Sieve
-
-end RHTower.Sieve
 
 end RHTower.Sieve

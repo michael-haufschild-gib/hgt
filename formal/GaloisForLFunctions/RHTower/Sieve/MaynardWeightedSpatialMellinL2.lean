@@ -308,7 +308,6 @@ theorem integral_norm_sq_maynardFixedAmbientPhysicalDefectPacket_le_weighted_env
         (1 + 2 * (1 + Real.log cellCount)) *
           ∑ m ∈ S, (A m) ^ 2 := hL2
 
-
 theorem integral_norm_sq_fixedSource_lowRange_le_cube
     (L X k K : ℕ) (hX : 1 ≤ X) (T0 t M x N H R : ℝ)
     (hM : 0 < M) (hx : 1 ≤ x) (hN : 0 < N)

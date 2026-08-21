@@ -181,6 +181,8 @@ import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisAlgebraSplit
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldNormSequence
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2NormQuotient
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2CyclicAlgebraDescent
+import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2Split
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCyclicGaloisAlgebra
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldArithmeticFrobenius
 import GaloisForLFunctions.HTGeometry.ABHN.LocalFrobenius
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCohomology
