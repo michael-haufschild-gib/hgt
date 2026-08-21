@@ -577,3 +577,61 @@ functions on a connected group are constant.  The rational-function version at a
 of the one-dimensional case are now owned; what `(6)` still needs is the passage from one
 coordinate to a general connected commutative algebraic group, which is part of item 2 of the
 Lean-status list.
+
+## Lean progress — the iterates of a rational map, and their degrees
+
+Item `1` of the Lean-status list needs the deck descent along a rational prefix for *every* iterate
+`αⁿ`, not just for `α`.  `RationalPrefixDeckDescent.differentialAdjoin_ratMapEval_eq_fixedField`
+already gives `αⁿ*K = K^{Γ}` for one rational map whose degree is at most `|Γ|`; what was missing was
+that an iterate *is* a rational map, together with its degree.
+
+`GaloisForLFunctions.HTGeometry.RationalMapComposition` (wired, built, axiom-clean) supplies both:
+
+```text
+ratComp S m P Q = ∑_{i ≤ m} S_i · P^i · Q^{m−i}      the homogenisation of the outer map
+natDegree_ratComp_le      deg (ratComp S m P Q) ≤ m · max(deg P, deg Q)
+aeval_ratComp             **it evaluates to `Q(g)^m · S(P(g)/Q(g))`**
+ratMapEval_ratComp        **the composite of two rational maps is a rational map**
+ratIter P Q d n           the iterated pair, starting from `(X, 1)`
+natDegree_ratIter_le      **deg αⁿ ≤ dⁿ**
+ratMapEval_ratIter        **it evaluates to the `n`-fold iterate**, as long as the forward orbit
+                          avoids the poles of the denominator
+```
+
+The mechanism is the classical homogenisation: the common factor `Q(g)^m` produced by the outer
+numerator and denominator cancels in the quotient, so no new hypothesis beyond `Q(g) ≠ 0` along the
+orbit is needed.
+
+Effect on item `1`.  For a one-dimensional isogeny given by a rational map of degree `d`, the
+composite chain is now formal: `αⁿ` is `ratMapEval (ratIter P Q d n).1 (ratIter P Q d n).2` and its
+degree is at most `dⁿ`.  Feeding this into `differentialAdjoin_ratMapEval_eq_fixedField` gives
+`αⁿ*K = K^{Γₙ}` as soon as `dⁿ ≤ |Γₙ|`, which is the order-zero geometric input `|ker αⁿ| = dⁿ`
+that the card names.  The noncriticality of the iterate — `ratMapWronskian` of the composite — is the
+chain rule and is the one analytic-side item still to be transcribed at this level.
+
+## Lean progress — item `1` closed for a one-dimensional isogeny
+
+`RationalMapComposition` gained the noncriticality layer and the capstone:
+
+```text
+aeval_ratIter_snd_ne_zero        the iterate's denominator is a product of denominators along the
+                                 orbit, so it does not vanish
+ratMapWronskian_ratComp_ne_zero  **the composite of two noncritical rational maps is noncritical**
+ratMapWronskian_ratIter_ne_zero  **hence so is every iterate**, along its orbit
+differentialAdjoin_ratIter_eq_fixedField
+    **`C⟨αⁿ(g)⟩ = K^{Γ}` for every `n`** — the deck descent along the `n`-th iterate
+```
+
+Mechanism of the noncriticality step: the Wronskian is not computed.  The chain rule
+`deriv_ratMapEval` makes `(α∘β)′(g)` a product of three factors — the outer Wronskian at `β(g)`, the
+inner Wronskian at `g`, and `g′` — so if the composite Wronskian vanished the derivative would be
+zero while the product of the three is not.  The only extra hypothesis is `g′ ≠ 0`, i.e. that the
+generator is not a constant.
+
+**This closes item `1` in the one-dimensional case.**  Since `K = C⟨g⟩`, the differential field
+`αⁿ*K` is `C⟨αⁿ(g)⟩`, and the theorem identifies it with `K^{Γ}` for any finite group of
+`C`-automorphisms of order at least `dⁿ` fixing it.  The remaining input is the geometric degree
+count `dⁿ ≤ |ker αⁿ|`, which for a separable isogeny is the definition of its degree.
+
+What is *not* covered: a higher-dimensional group, where `α` is not a one-variable rational map.
+That is what items `2`–`5` need the quotient-sheaf and jet-scheme layers for.

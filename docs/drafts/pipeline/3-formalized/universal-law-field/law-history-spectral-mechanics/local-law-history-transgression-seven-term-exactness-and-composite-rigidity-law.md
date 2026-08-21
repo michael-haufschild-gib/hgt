@@ -1,7 +1,7 @@
 # Local law-history transgression, seven-term exactness, and composite rigidity law
 
 - **ID:** ULF-LHSM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ROUTE-INDEPENDENT MECHANISM THEOREM / FIRST LAW-HISTORY DIFFERENTIAL
 - **Statement:** Two composable law-forming maps carry a canonical transgression from later
   erasure to earlier nonattainment. Its kernel and cokernel are exactly the two corrections needed
@@ -9,7 +9,7 @@
   failures cancel to an invertible total law.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM NOT OBJECT]
   [SEVEN-TERM EXACT] [COMPOSITE RIGIDITY] [INDEX CONSERVATION]
-  [LEAN-CERTIFIED] [UMBRELLA-WIRED] [UMBRELLA-NOT-BUILT BY POLICY] [NOT RH]
+  [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]
 
 ## 1. Why this is the next field law
 

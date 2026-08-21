@@ -1659,3 +1659,106 @@ Capstones: `physical_anchor_sign_conjecture_false`,
 Arithmetic facts that carry the falsification, each proved from a single integer inequality:
 `physWeight_two_lt_three` (`2^3 < 3^2`), `two_physWeight_three_lt_three_physWeight_two`
 (`3^4 < 2^9`), `log_two_lt_three_physCellWidth` (`2 < 64/27`).
+
+## `zeta-fisher-superspace-global-negative-curvature` — PROMOTED to stage 3
+
+New module `formal/GaloisForLFunctions/RHTower/EulerFisherPoincareBoundary.lean`, wired into
+`GaloisForLFunctions.RHTower`.  The card already had the moment determinant and the strict
+negativity; the two open items were the curvature identification and the Poincare asymptotic.
+Both are now unconditional; `#print axioms` returns exactly
+`[propext, Classical.choice, Quot.sound]` on every capstone.
+
+Two decisions worth remembering.
+
+1. **Mathlib has Riemannian metrics but no curvature tensor.**  `Mathlib.Geometry.Manifold.
+   Riemannian.Basic` and the Riemannian vector-bundle files carry metrics only; there is no
+   `scalarCurvature`.  The module therefore defines the two-dimensional conformal scalar
+   curvature by the Liouville formula `-Laplacian(log G)/G` and proves the classical identity
+   `-(G G'' - (G')^2)/G^3`.  Any later card needing surface curvature should reuse
+   `conformalScalarCurvature` rather than reinventing it.
+
+2. **The pole is reached through mathlib's Hurwitz machinery, not through a Laurent expansion.**
+   `HurwitzZeta.differentiableAt_hurwitzZetaEven_sub_one_div 0` plus `hurwitzZetaEven_zero` gives
+   differentiability of `zeta(s) - 1/((s-1) Gamma_R(s))` at `s = 1`; adding back
+   `Gamma_R(s)^{-1}` (entire, value `1` at `1`) produces an entire `zetaPoleUnit` agreeing with
+   `(s-1) zeta(s)`.  This is much cheaper than building the Laurent series.
+
+The link between the corpus Euler logarithm and the moment family is
+`canonicalEulerLogZeta_ofReal`, proved by `Function.Injective.tsum_eq` along
+`(p, k) |-> p^{k+1}`; it also yields reality and positivity of `zeta` on `(1, infinity)`
+without a separate argument.
+
+Termwise differentiation `M_j' = -M_{j+1}` uses `hasDerivAt_tsum_of_isPreconnected` on `Ioi c`
+with `1 < c < beta`; the dominating series is the harmonic-weight-free
+`summable_eulerPrimePowerEnergy_pow_rpow`.
+
+## `compact-group-minimax-return-volume-law` — PROMOTED to stage 3
+
+Three new modules under `formal/GaloisForLFunctions/HTGeometry/`:
+`CompactConnectedAbelianGenerators.lean`, `CompactGroupCoveringVolume.lean`,
+`CompactGroupMinimaxReturn.lean`; all wired into `GaloisForLFunctions.HTGeometry`, all capstones
+audited at `[propext, Classical.choice, Quot.sound]`.
+
+**The key fact for future cards: mathlib has no Pontryagin duality.**
+`Mathlib/Topology/Algebra/PontryaginDual.lean` defines the dual and proves it discrete for a
+compact group, and nothing else — no double-dual theorem, no separation, no classification of
+closed subgroups of the circle.  Any card whose paper proof uses duality has to be re-routed.
+Two replacements were built here and are reusable:
+
+1. *A proper closed subgroup is invisible to Haar without duality.*
+   `measure_character_fibre_eq_zero` shows a nontrivial character of a **connected** compact
+   abelian group has null kernel by observing that its fibres are translates of the kernel (so
+   all of equal measure) and that its image is infinite — the latter from
+   `infinite_range_of_character`, which applies `IsPreconnected.Icc_subset` to
+   `z |-> ‖z - 1‖` on the image.  No circle subgroup classification is needed.
+
+2. *The dual is countable because `L²` is separable.*  `countable_charSet` maps characters into
+   `Lp ℂ 2 μ` (second countable, since `MeasureTheory.IsSeparable μ` is an instance for a finite
+   Borel measure on a second-countable space — remember to
+   `import Mathlib.MeasureTheory.Measure.SeparableMeasure`, it is not in the usual closure),
+   where distinct characters sit at distance `√2`.  The generic helper
+   `countable_of_separated` (a uniformly separated set in a second-countable metric space is
+   countable) is reusable.
+
+Divisibility of a compact connected abelian group (`exists_pow_eq_of_connected`) is what mathlib's
+`Measure.measurePreserving_zpow` is missing: it takes `RootableBy G ℤ` as a hypothesis, and
+`rootableByIntOfCompactConnected` now supplies it.
+
+Bridging additive Peter-Weyl (`CompactAbelian.exists_character_ne_one`, stated for
+`AddCommGroup`) to a multiplicative group needs `letI : MeasurableSpace (Additive G) := ‹_›` and
+`letI : SecondCountableTopology (Additive G) := ‹_›` — those two type-synonym instances are
+missing in mathlib, while `CompactSpace`, `T2Space` and `IsTopologicalAddGroup` transfer
+automatically.
+
+For the covering side, mathlib's `Metric.coveringNumber` / `packingNumber` API in
+`Mathlib/Topology/MetricSpace/CoveringNumbers.lean` is complete enough that the sandwich is only
+translation invariance of balls plus `coveringNumber_le_packingNumber`.  Note the current names
+are `Metric.closedEBall` / `Metric.eball`; `EMetric.closedBall` is deprecated.
+
+Only the "external specialist audit" gate remains unchecked; it is not a Lean gate.
+
+## `euler-support-energy-position-uncertainty` — PROMOTED to stage 3
+
+Module `formal/GaloisForLFunctions/RHTower/EulerSupportEnergyUncertainty.lean`, wired into
+`GaloisForLFunctions.RHTower`; capstones audited at `[propext, Classical.choice, Quot.sound]`.
+
+Two reusable pieces:
+
+1. `summable_mul_of_rpow_summable` — Hölder for **summable real families** (mathlib only exposes
+   the `ℝ≥0` version `NNReal.summable_and_inner_le_Lp_mul_Lq_tsum`).  Any card needing an
+   `ℓ^p`–`ℓ^q` pairing on a countable index should call this instead of re-deriving it.
+2. `summable_absDiscrepancy_of_holder` — the abstract weighted-Hölder abscissa bound in the
+   generalized-Dirichlet framework of `RelativeStripDivisorReflection.lean`.  It turns an
+   `ℓ^q` energy abscissa plus a support exponent into an absolute-convergence abscissa.
+
+**Technique worth copying.**  The paper proof of the support half compares
+`∑_{k≥1} p^{-ku}/k = -log(1 - p^{-u})` with `C_u p^{-u}`, which is only valid once `p^{-u}` is
+bounded away from `1` — in Lean that forces a cofinite exception argument.  Replacing it with
+`p^{-(k+1)u} ≤ p^{-u} (2^{-u})^k` (true because every prime is at least `2`) gives a uniform
+geometric majorant with no exceptional set.  The same device handles the deep prime powers
+`k ≥ 2` with the shift `p^{-(j+2)σ} ≤ p^{-2σ}(2^{-σ})^j`.
+
+The position half `(U)`/`(P)` is a one-line consequence of the parent card's
+`abs_re_sub_half_le_of_reflection`; the parent
+(`3-formalized/.../euler-support-transverse-divisor-rigidity.md`) already owns the
+divisor-avoids-the-half-plane step, so nothing is assumed here.

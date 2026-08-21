@@ -150,6 +150,7 @@ theorem exists_measurable_goodSet_quenched [Nonempty C]
     {M : ℝ} (hM : 1 < M) {s : ℕ} (hcard : (Fintype.card C : ℝ) ≤ M ^ (s + 1))
     (hs : ((s : ℝ) + 1) * Real.log M ≤ ((r : ℝ) / 2) * Real.log 2) :
     ∃ G : Set ((Fin n → Option (Fin 3)) → ℝ), MeasurableSet G ∧
+      G ⊆ gaussianGoodSet w B 4 ∧
       1 / 2 ≤ centredProductGaussian (Fin n → Option (Fin 3)) 1 G ∧
       ∀ J ∈ G, limsup (fun T => quenchedTimeFraction
           (hardCircuitEvent w (zeroProductState (Fin n)) eps Z)ᶜ J T) atTop
@@ -169,7 +170,7 @@ theorem exists_measurable_goodSet_quenched [Nonempty C]
     rw [← ENNReal.toReal_le_toReal (measure_ne_top _ _) (by norm_num)]
     simpa [Measure.real] using hcomplreal
   obtain ⟨G₀, hG₀meas, hG₀sub, hG₀mass⟩ := exists_measurableSet_subset_of_measure_compl_le hcompl
-  refine ⟨G₀ ∩ A, hG₀meas.inter hAmeas, ?_, ?_⟩
+  refine ⟨G₀ ∩ A, hG₀meas.inter hAmeas, fun J hJ => hG₀sub hJ.1, ?_, ?_⟩
   · calc (1 : ℝ≥0∞) / 2 = 1 - 1 / 2 := (ENNReal.sub_half (by norm_num)).symm
       _ ≤ centredProductGaussian (Fin n → Option (Fin 3)) 1 G₀ := hG₀mass
       _ ≤ centredProductGaussian (Fin n → Option (Fin 3)) 1 (G₀ ∩ A) :=
@@ -178,6 +179,127 @@ theorem exists_measurable_goodSet_quenched [Nonempty C]
     refine le_trans (limsup_le_limsup ?_) (hA J hJA (hG₀sub hJG₀))
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
     exact quenchedTimeFraction_compl_le_windowProbability hOmega heps0 hZ J hT
+
+
+/-! ## The deterministic fixed-time law -/
+
+/-- **`(8)`.**  The long-run average of the fixed-time hardness probability is at least
+`(1-2^{-r/2})/2`. -/
+theorem half_mul_one_sub_le_liminf_quenchedWindowAverage_pauliEnsemble [Nonempty C]
+    (w : (Fin n → Option (Fin 3)) → ℝ) (hq : 2 ≤ q)
+    (hwsupp : SupportInvariantWeight w)
+    (hw : ∀ P : Fin n → Option (Fin 3),
+      ¬ (pauliWeight P ≤ q ∧ P ≠ pauliIdentityLabel n) → w P = 0)
+    (hwne : ∀ t : Fin (Fintype.card (PauliTracelessLabel n q)),
+      w (((pauliTracelessLabelEquivFin n q).symm t).1) ≠ 0)
+    (hcard0 : 0 < Fintype.card (Fin n → Option (Fin 3)))
+    {B : ℝ} (hB0 : 0 ≤ B)
+    (hB : 2 * Real.log (8 * Fintype.card (Fin n → Option (Fin 3))) ≤ B ^ 2)
+    (Z : C → (FiniteQubitConfiguration (Fin n) → ℂ))
+    (hZ : ∀ κ, finiteComplexInner (Z κ) (Z κ) = 1)
+    {eps : ℝ} (heps0 : 0 ≤ eps) (heps1 : eps < 1)
+    {r : ℕ} (hr : 1 ≤ r)
+    (hscale : 16 * (4 * (2 / 3 : ℝ) ^ n) / (1 - eps ^ 2) ^ 2 ≤ 1 / (2 * r))
+    {M : ℝ} (hM : 1 < M) {s : ℕ} (hcard : (Fintype.card C : ℝ) ≤ M ^ (s + 1))
+    (hs : ((s : ℝ) + 1) * Real.log M ≤ ((r : ℝ) / 2) * Real.log 2) :
+    (1 - ENNReal.ofReal ((2 : ℝ) ^ (-((r : ℝ) / 2)))) / 2
+      ≤ liminf (fun T => quenchedWindowAverage
+          (centredProductGaussian (Fin n → Option (Fin 3)) 1)
+          (hardCircuitEvent w (zeroProductState (Fin n)) eps Z) T) atTop := by
+  obtain ⟨G, hGmeas, -, hGmass, hGquench⟩ := exists_measurable_goodSet_quenched w hq hwsupp hw hwne
+    hcard0 hB0 hB Z hZ heps0 heps1 hr hscale hM hcard hs
+  exact half_mul_one_sub_le_liminf_quenchedWindowAverage
+    (measurableSet_hardCircuitEvent w (zeroProductState (Fin n)) eps Z) hGmeas hGmass hGquench
+
+/-- **`(9)`.**  A positive fraction of the ensemble is hard at an unbounded sequence of common
+deterministic times. -/
+theorem le_limsup_quenchedFixedTimeProb_pauliEnsemble [Nonempty C]
+    (w : (Fin n → Option (Fin 3)) → ℝ) (hq : 2 ≤ q)
+    (hwsupp : SupportInvariantWeight w)
+    (hw : ∀ P : Fin n → Option (Fin 3),
+      ¬ (pauliWeight P ≤ q ∧ P ≠ pauliIdentityLabel n) → w P = 0)
+    (hwne : ∀ t : Fin (Fintype.card (PauliTracelessLabel n q)),
+      w (((pauliTracelessLabelEquivFin n q).symm t).1) ≠ 0)
+    (hcard0 : 0 < Fintype.card (Fin n → Option (Fin 3)))
+    {B : ℝ} (hB0 : 0 ≤ B)
+    (hB : 2 * Real.log (8 * Fintype.card (Fin n → Option (Fin 3))) ≤ B ^ 2)
+    (Z : C → (FiniteQubitConfiguration (Fin n) → ℂ))
+    (hZ : ∀ κ, finiteComplexInner (Z κ) (Z κ) = 1)
+    {eps : ℝ} (heps0 : 0 ≤ eps) (heps1 : eps < 1)
+    {r : ℕ} (hr : 1 ≤ r)
+    (hscale : 16 * (4 * (2 / 3 : ℝ) ^ n) / (1 - eps ^ 2) ^ 2 ≤ 1 / (2 * r))
+    {M : ℝ} (hM : 1 < M) {s : ℕ} (hcard : (Fintype.card C : ℝ) ≤ M ^ (s + 1))
+    (hs : ((s : ℝ) + 1) * Real.log M ≤ ((r : ℝ) / 2) * Real.log 2) :
+    (1 - ENNReal.ofReal ((2 : ℝ) ^ (-((r : ℝ) / 2)))) / 2
+      ≤ limsup (fun t => quenchedFixedTimeProb
+          (centredProductGaussian (Fin n → Option (Fin 3)) 1)
+          (hardCircuitEvent w (zeroProductState (Fin n)) eps Z) t) atTop :=
+  le_limsup_quenchedFixedTimeProb _
+    (half_mul_one_sub_le_liminf_quenchedWindowAverage_pauliEnsemble w hq hwsupp hw hwne hcard0
+      hB0 hB Z hZ heps0 heps1 hr hscale hM hcard hs)
+
+/-- Restricting an event to a slab over a parameter set does not change the time sections above
+that set. -/
+theorem preimage_compl_inter_prod_univ {Ω : Type*} {S : Set (Ω × ℝ)} {G : Set Ω} {J : Ω}
+    (hJ : J ∈ G) :
+    Prod.mk J ⁻¹' (S ∩ G ×ˢ (Set.univ : Set ℝ))ᶜ = Prod.mk J ⁻¹' Sᶜ := by
+  ext t
+  simp [hJ]
+
+/-- **`(8a)`--`(9)` restricted.**  The same floor holds for the probability of the joint event that
+the coefficient vector lies in the bounded, collision-good set *and* the endpoint is hard.  This is
+the form that supplies bounded coefficients. -/
+theorem exists_restricted_goodSet_common_time_hardness [Nonempty C]
+    (w : (Fin n → Option (Fin 3)) → ℝ) (hq : 2 ≤ q)
+    (hwsupp : SupportInvariantWeight w)
+    (hw : ∀ P : Fin n → Option (Fin 3),
+      ¬ (pauliWeight P ≤ q ∧ P ≠ pauliIdentityLabel n) → w P = 0)
+    (hwne : ∀ t : Fin (Fintype.card (PauliTracelessLabel n q)),
+      w (((pauliTracelessLabelEquivFin n q).symm t).1) ≠ 0)
+    (hcard0 : 0 < Fintype.card (Fin n → Option (Fin 3)))
+    {B : ℝ} (hB0 : 0 ≤ B)
+    (hB : 2 * Real.log (8 * Fintype.card (Fin n → Option (Fin 3))) ≤ B ^ 2)
+    (Z : C → (FiniteQubitConfiguration (Fin n) → ℂ))
+    (hZ : ∀ κ, finiteComplexInner (Z κ) (Z κ) = 1)
+    {eps : ℝ} (heps0 : 0 ≤ eps) (heps1 : eps < 1)
+    {r : ℕ} (hr : 1 ≤ r)
+    (hscale : 16 * (4 * (2 / 3 : ℝ) ^ n) / (1 - eps ^ 2) ^ 2 ≤ 1 / (2 * r))
+    {M : ℝ} (hM : 1 < M) {s : ℕ} (hcard : (Fintype.card C : ℝ) ≤ M ^ (s + 1))
+    (hs : ((s : ℝ) + 1) * Real.log M ≤ ((r : ℝ) / 2) * Real.log 2) :
+    ∃ G : Set ((Fin n → Option (Fin 3)) → ℝ), MeasurableSet G ∧
+      G ⊆ gaussianGoodSet w B 4 ∧
+      1 / 2 ≤ centredProductGaussian (Fin n → Option (Fin 3)) 1 G ∧
+      (1 - ENNReal.ofReal ((2 : ℝ) ^ (-((r : ℝ) / 2)))) / 2
+        ≤ liminf (fun T => quenchedWindowAverage
+            (centredProductGaussian (Fin n → Option (Fin 3)) 1)
+            (hardCircuitEvent w (zeroProductState (Fin n)) eps Z ∩
+              G ×ˢ (Set.univ : Set ℝ)) T) atTop ∧
+      (1 - ENNReal.ofReal ((2 : ℝ) ^ (-((r : ℝ) / 2)))) / 2
+        ≤ limsup (fun t => quenchedFixedTimeProb
+            (centredProductGaussian (Fin n → Option (Fin 3)) 1)
+            (hardCircuitEvent w (zeroProductState (Fin n)) eps Z ∩
+              G ×ˢ (Set.univ : Set ℝ)) t) atTop := by
+  obtain ⟨G, hGmeas, hGsub, hGmass, hGquench⟩ := exists_measurable_goodSet_quenched w hq hwsupp hw
+    hwne hcard0 hB0 hB Z hZ heps0 heps1 hr hscale hM hcard hs
+  have hSmeas : MeasurableSet (hardCircuitEvent w (zeroProductState (Fin n)) eps Z ∩
+      G ×ˢ (Set.univ : Set ℝ)) :=
+    (measurableSet_hardCircuitEvent w (zeroProductState (Fin n)) eps Z).inter
+      (hGmeas.prod MeasurableSet.univ)
+  have hquench : ∀ J ∈ G, limsup (fun T => quenchedTimeFraction
+      (hardCircuitEvent w (zeroProductState (Fin n)) eps Z ∩
+        G ×ˢ (Set.univ : Set ℝ))ᶜ J T) atTop
+      ≤ ENNReal.ofReal ((2 : ℝ) ^ (-((r : ℝ) / 2))) := by
+    intro J hJ
+    have hpre : ∀ T : ℝ, quenchedTimeFraction
+        (hardCircuitEvent w (zeroProductState (Fin n)) eps Z ∩
+          G ×ˢ (Set.univ : Set ℝ))ᶜ J T
+        = quenchedTimeFraction (hardCircuitEvent w (zeroProductState (Fin n)) eps Z)ᶜ J T := by
+      intro T
+      rw [quenchedTimeFraction, quenchedTimeFraction, preimage_compl_inter_prod_univ hJ]
+    simp only [hpre]
+    exact hGquench J hJ
+  have hwin := half_mul_one_sub_le_liminf_quenchedWindowAverage hSmeas hGmeas hGmass hquench
+  exact ⟨G, hGmeas, hGsub, hGmass, hwin, le_limsup_quenchedFixedTimeProb _ hwin⟩
 
 end GaloisForLFunctions.HTGeometry
 

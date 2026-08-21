@@ -1,7 +1,7 @@
 # The zeta Fisher superspace has globally negative curvature and a Poincare critical boundary
 
 - **ID:** `zeta-fisher-superspace-global-negative-curvature`
-- **Stage:** 2-fully-proven / Lean core verified
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NOVELTY DEFERRED
 - **Source:** user inner-metric/scale-factor conjecture; `critical-line-fisher-signature-wall`;
   `moonshot-arithmetic-bulk-hyperbolic`; separate from RHTower Routes A--D
@@ -9,7 +9,8 @@
   `g=(log zeta)''(beta)(d beta^2+d tau^2)` has strictly negative scalar curvature everywhere and
   converges to the Poincare metric at `beta=1`, with scalar curvature tending to `-2`.
 - **Lean:** `formal/GaloisForLFunctions/RHTower/FisherCurvatureMoment.lean`;
-  `formal/GaloisForLFunctions/RHTower/EulerFisherCurvature.lean`
+  `formal/GaloisForLFunctions/RHTower/EulerFisherCurvature.lean`;
+  `formal/GaloisForLFunctions/RHTower/EulerFisherPoincareBoundary.lean`
 
 ## Goal
 
@@ -25,11 +26,10 @@ the critical wall.
   Poincare limit, and RH interpretation are explicit.
 - [x] 1 -> 2 fully-proven: all differentiations, convergence, curvature identities, strict
   Cauchy--Schwarz, and boundary asymptotics written as a complete proof.
-- [ ] 2 -> 3 formalized: Lean proves the finite and infinite pairwise-dispersion identities,
+- [x] 2 -> 3 formalized: Lean proves the finite and infinite pairwise-dispersion identities,
   absolute convergence of the actual Euler prime-power moments, strict determinant positivity,
-  and negativity of the scalar-curvature expression. The remaining formal gap is identifying this
-  expression with the differential-geometric scalar curvature of the conformal metric and proving
-  the Poincare asymptotic inside Lean.
+  and negativity of the scalar-curvature expression, the identification of this expression with
+  the Liouville scalar curvature of the conformal metric, and the Poincare asymptotic.
 - [ ] 3 -> 4 publication-ready: pass exact information-geometry, thermodynamic-geometry,
   number-theory, and AdS2 literature audits.
 
@@ -218,3 +218,74 @@ distributional scalar section. A new completed Euler--Gamma no-bulk-source const
   Euler prime-power absolute convergence, strict determinant positivity, and negative curvature
   expression for every `beta>1`. The metric-only RH route was then terminated by unimodular-phase
   blindness.
+
+## Lean formalization — COMPLETE
+
+New module: `formal/GaloisForLFunctions/RHTower/EulerFisherPoincareBoundary.lean`
+(namespace `RHTower`), wired into `GaloisForLFunctions.RHTower`.  It closes the two gaps the
+`2 -> 3` gate recorded.  `#print axioms` on every capstone returns exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+### Equation (1): termwise differentiation
+
+`hasDerivAt_eulerMoment j` proves `M_j' = -M_{j+1}` on `beta > 1` by
+`hasDerivAt_tsum_of_isPreconnected` over `Ioi c` with `1 < c < beta`, dominated by
+`summable_eulerPrimePowerEnergy_pow_rpow`.  Since `M_0 = F`, this gives
+`deriv_eulerLogMoment` and `deriv_deriv_eulerLogMoment` (`F'' = M_2`), the card's `(1)`--`(2)`.
+
+### Equation (4): the curvature identification
+
+`conformalScalarCurvature G beta := -(deriv (deriv (log o G)) beta) / G beta` is the Liouville
+form of the scalar curvature of the two-dimensional conformal metric `G (dbeta^2 + dtau^2)` for a
+scale factor depending on the first coordinate only.  Mathlib carries Riemannian metrics but no
+curvature tensor, so the Liouville formula is the definition; the classical content is the
+identity
+
+- `conformalScalarCurvature_eq_of_hasDerivAt`:
+  `conformalScalarCurvature G beta = -(G G'' - (G')^2)/G^3`,
+
+and its specialization
+
+- `conformalScalarCurvature_eulerMoment_two`:
+  `conformalScalarCurvature M_2 beta = eulerFisherScalarCurvature beta` for every `beta > 1`,
+
+which is exactly `(4)` once `G = M_2`, `G' = -M_3`, `G'' = M_4` are supplied by `(1)`.
+
+### Equations (7): the Poincare boundary
+
+- `zetaPoleUnit s = (s-1)(zeta(s) - 1/((s-1) Gamma_R(s))) + Gamma_R(s)^{-1}` agrees with
+  `(s-1) zeta(s)` off `s = 1`, equals `1` at `s = 1`, and is entire.  Differentiability at the
+  pole is mathlib's `differentiableAt_hurwitzZetaEven_sub_one_div` at `a = 0`.
+- `canonicalEulerLogZeta_ofReal`: the corpus Euler logarithm at a real point is the real zeroth
+  moment `M_0`, by reindexing the Dirichlet series along the injection
+  `(p, k) |-> p^{k+1}` whose range contains the support of the coefficient sequence.  Hence
+  `riemannZeta_ofReal_eq_exp_eulerLogMoment`: `zeta(beta) = exp(M_0(beta))`, real and positive.
+- `eulerLogRegular beta = Re log zetaPoleUnit(beta)` is real-analytic at `1`
+  (`analyticAt_eulerLogRegular`) and satisfies `eulerLogRegular = log(beta-1) + M_0(beta)`
+  for `beta > 1` (`eulerLogRegular_eq`).
+- Four applications of derivative uniqueness on the window `Ioo 1 (1+eps)` give the exact
+  singular splittings
+  `M_1 = (beta-1)^{-1} - R_1`, `M_2 = (beta-1)^{-2} + R_2`,
+  `M_3 = 2(beta-1)^{-3} - R_3`, `M_4 = 6(beta-1)^{-4} + R_4`
+  with `R_k` the `k`-th derivative of the analytic regular part
+  (`eulerMoment_one_eq_of_window` ... `eulerMoment_four_eq_of_window`).
+- Clearing `delta^{-6}` turns the curvature into `-poincareNum/poincareDen`, whose limits are
+  `2` and `1`.  Hence
+  `tendsto_eulerFisherScalarCurvature_nhdsGT_one : Tendsto Scal (nhdsWithin 1 (Ioi 1)) (nhds (-2))`,
+  the card's `(7)`.
+
+### Capstone
+
+`zeta_fisher_superspace_negative_curvature_poincare_boundary` bundles: `F'' = M_2`, the curvature
+identification, strict negativity for every `beta > 1` (from the existing
+`eulerFisherScalarCurvature_neg`), and the Poincare boundary value `-2`.
+
+### Reusable infrastructure added
+
+- `conformalScalarCurvature` and `conformalScalarCurvature_eq_of_hasDerivAt` — the Liouville
+  curvature of any positive conformal scale factor of one variable.
+- `hasDerivAt_eulerMoment` — termwise differentiation of an arbitrary Euler prime-power moment.
+- `zetaPoleUnit`, `differentiable_zetaPoleUnit`, `zetaPoleLog`, `analyticAt_zetaPoleLog` — the
+  entire unit of the zeta pole and its analytic logarithm at `s = 1`.
+- `canonicalEulerLogZeta_ofReal` and `riemannZeta_ofReal_eq_exp_eulerLogMoment` — the real Euler
+  logarithm of zeta, and positivity/reality of `zeta` on `(1, infinity)`.

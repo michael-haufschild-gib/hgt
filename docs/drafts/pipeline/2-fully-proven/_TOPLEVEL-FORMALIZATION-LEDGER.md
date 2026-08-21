@@ -25,6 +25,7 @@ Unblocked by the fixed-shell promotion: `stabilizer-seeded-static-local-double-e
 
 | date | card | evidence |
 |---|---|---|
+| 2026-08-21 | `computable-static-local-exponential-state-complexity-law` | Theorems A and B in full, including the uniform-computability clause: `half_mul_one_sub_le_liminf_quenchedWindowAverage_pauliEnsemble` `(8)`, `le_limsup_quenchedFixedTimeProb_pauliEnsemble` `(9)`, `exists_restricted_goodSet_common_time_hardness` `(8a)`, `exists_rational_common_time_witness` `(17)`--`(20)`, `exists_integer_coefficient_witness`, and the executable rational certificate `HardCertificate` / `exists_certifiedIndex` / `hard_searchIndex` — 7 new modules (`GateWordDictionary`, `CommonTimeCircuitHardness`, `GateWordCommonTimeHardness`, `RationalCommonTimeWitness`, `GaussianIntegerPauliModel`, `ExponentialFactorialRemainder`, `RationalOrbitCertificate`), all axiom-clean, wired |
 | 2026-08-21 | `suzuki-v2-spherical-atlas-convergence` | `RHTower/SuzukiV2SphericalConvergence.lean` — 3 theorems, axiom-clean, wired |
 | 2026-08-21 | `suzuki-v2-actual-projective-characteristic` | `RHTower/SuzukiTaV2ProjectiveCharacteristic.lean` — Theorems A/B/C, axiom-clean, wired |
 | 2026-08-21 | `stabilizer-seeded-static-local-double-exponential-plateau-law` | Theorems A/B/C and the low--plateau--recurrence corollary: `exists_stabilizer_family_collision_eq`, `limsup_sphereLaw_seedCapture_le`, `limsup_sphereLaw_stabilizerSeeded_sum_le`, `exists_time_forall_interval_hard_of_speed`, `ae_exists_late_seed_recurrence_chainShell` — 4 new modules |
@@ -131,7 +132,7 @@ keystone are now at stage 3, so the shared collision bound is available:
 | `onset-recurrence-dimension-independence-law` | its parent `capacity-compatible-fast-forwardable-incubation-law` is now at stage 3, so clauses 1, 3, 4, 6, 7 and the measure bound `(3)` are `exists_incubating_cubicSeed` verbatim; what is left is clause 5, the recurrence *exponent* `(D-2)/2`, which is `relationPhaseEnsemble_temporalDimension_eq_projectiveRank` plus the fidelity reading of `(2)`.  Previously: the same path-shell apparatus as the weak-cut card (clauses 1, 3, 4, 6, 7, 8 of its Theorem); the recurrence-dimension clauses 2 and 5 are already corpus laws (`relationPhaseEnsemble_temporalDimension_eq_projectiveRank`, `lbitTemporalRank_eq_maximal_iff_maximallyProjectiveEnergy`) |
 | `capacitary-observer-sector-excision-law` | Corollary I.1's physical-time transfer, Corollary A.3, `(8c)`'s transitive action, `(11be)`; Corollary I.3 and Theorem K are now ungated and need the Choi-trajectory instantiation of the fixed-shell Portmanteau |
 | `all-replica-static-centralizer-planar-separation-law` | Theorems B–E from one replica to all finite `r`; also Kargin's matrix Dyson equation |
-| `computable-static-local-exponential-state-complexity-law` | joint measurability is **closed** (`measurableSet_hardPairEvent`, `JointHardEventMeasurability`): `NormedSpace.exp_continuous` applies directly on the matrix C⋆-algebra and `M ↦ M *ᵥ ψ` is continuous by `LinearMap.continuous_of_finiteDimensional`, so no topology reconciliation was needed.  Left: Theorem A's dictionary packaging (gate action on the seed, `CircuitDictionaryCounting`, unit norms), then `(8)`/`(8a)`/`(9)` are `QuenchedFixedTimeTransfer` verbatim; and Theorem B's three layers (Duhamel to a rational time and a rational coefficient vector -- both owned -- rational density in the positive-measure hard fibre, and the dovetailed search, which is the only part with no corpus antecedent) |
+| ~~`computable-static-local-exponential-state-complexity-law`~~ (promoted) | joint measurability is **closed** (`measurableSet_hardPairEvent`, `JointHardEventMeasurability`): `NormedSpace.exp_continuous` applies directly on the matrix C⋆-algebra and `M ↦ M *ᵥ ψ` is continuous by `LinearMap.continuous_of_finiteDimensional`, so no topology reconciliation was needed.  Left: Theorem A's dictionary packaging (gate action on the seed, `CircuitDictionaryCounting`, unit norms), then `(8)`/`(8a)`/`(9)` are `QuenchedFixedTimeTransfer` verbatim; and Theorem B's three layers (Duhamel to a rational time and a rational coefficient vector -- both owned -- rational density in the positive-measure hard fibre, and the dovetailed search, which is the only part with no corpus antecedent).  **All closed.**  Theorem A: `half_mul_one_sub_le_liminf_quenchedWindowAverage_pauliEnsemble`, `le_limsup_quenchedFixedTimeProb_pauliEnsemble`, `exists_restricted_goodSet_common_time_hardness`, and at the circuit ball `le_limsup_quenchedFixedTimeProb_gateWord`; Theorem B: `exists_rational_common_time_witness`, `exists_integer_coefficient_witness`, and for uniform computability the decidable rational certificate `HardCertificate` with `hardCircuitEvent_of_hardCertificate`, `exists_hardCertificate_of_hard`, `exists_certifiedIndex`, `hard_searchIndex` |
 | `circuit-complexity-selection-synthesis-divergence-law` | Theorem B's measurable selection and the continuum joint layer |
 | `algebraic-two-local-instant-exact-complexity` | §1's specialisation argument (the last content of Hilbert irreducibility) |
 | `arithmetic-static-local-hardness-recurrence-window-law` | Castillo--Dietmann quantitative Hilbert irreducibility |
@@ -153,13 +154,12 @@ keystone are now at stage 3, so the shared collision bound is available:
 | `schanuel-defects-algebraic-coefficient-independent` | the algebraic-group/Kähler layer |
 | `schanuel-stage-two-defect-slope-normal-form` | Kirby's exponential-algebraic closure |
 
-## Open (14)
+## Open (13)
 
 algebraic-two-local-instant-exact-complexity, all-replica-static-centralizer-planar-separation-law,
 arithmetic-static-local-hardness-recurrence-window-law, capacitary-observer-sector-excision-law,
 circuit-complexity-selection-synthesis-divergence-law,
 codimension-forced-complexity-onset-moment-divergence-law,
-computable-static-local-exponential-state-complexity-law,
 cusp-spectrum-radius-law,
 local-chain-metric-recurrence-exponents, onset-recurrence-dimension-independence-law,
 route-e-cofactor-amplified-e3-token-supply, route-e-forbidden-support-e3-stability,

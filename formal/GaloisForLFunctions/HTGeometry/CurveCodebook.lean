@@ -66,6 +66,7 @@ theorem exists_curve_codebook (endpoint : List Γ → X) (gamma : ℝ → X)
     (hfin : ∀ t ∈ Set.Icc (0 : ℝ) W, ∃ w, Qualifies endpoint eps (gamma t) w) :
     ∃ (code : ℝ → List Γ) (s : Finset (List Γ)),
       s.card ≤ plateauGridCount W (delta / v) ∧
+      (∀ w : List Γ, MeasurableSet (code ⁻¹' {w})) ∧
       (∀ t ∈ Set.Icc (0 : ℝ) W, code t ∈ s) ∧
       (∀ t ∈ Set.Icc (0 : ℝ) W, dist (endpoint (code t)) (gamma t) ≤ eps + delta) ∧
       (∀ t ∈ Set.Icc (0 : ℝ) W,
@@ -102,8 +103,16 @@ theorem exists_curve_codebook (endpoint : List Γ → X) (gamma : ℝ → X)
       simp only [hNdef, plateauGridCount]
       omega
   refine ⟨code, (Finset.range N).image (fun j => firstQualifying endpoint eps (gamma (grid j))),
-    ?_, ?_, ?_, ?_⟩
+    ?_, ?_, ?_, ?_, ?_⟩
   · exact le_trans (Finset.card_image_le) (by simp)
+  · intro w
+    have hidxmeas : Measurable idx := by
+      rw [hidxdef]
+      exact Nat.measurable_floor.comp (measurable_id.div_const mesh)
+    have hpre : code ⁻¹' {w}
+        = idx ⁻¹' ((fun j : ℕ => firstQualifying endpoint eps (gamma (grid j))) ⁻¹' {w}) := rfl
+    rw [hpre]
+    exact hidxmeas (MeasurableSpace.measurableSet_top)
   · intro t ht
     obtain ⟨_, _, hlt⟩ := hgridmem t ht
     exact Finset.mem_image.mpr ⟨idx t, Finset.mem_range.mpr hlt, rfl⟩

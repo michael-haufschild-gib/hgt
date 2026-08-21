@@ -1,11 +1,11 @@
 # Computable static-local exponential state-complexity law
 
 - **ID:** `computable-static-local-exponential-state-complexity-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** quenched-to-fixed-time transfer / nonuniform circuit lower bound
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`
 - **Input theorem:** `local-clifford-return-excised-phase-incidence-law`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Status:** `[FORMALIZED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-08
 
 ## Public sentence
@@ -359,9 +359,10 @@ Computability is strictly weaker than efficient constructibility and is stated a
    novelty is their composition with the quenched ordinary-static-local plateau to produce
    `(8)--(10)`, the positive-mass rational common time `(18)`, and the autonomous rational witness
    `(19)--(20)`.
-8. **Publication gate remains closed.**  The input phase-incidence theorem is paper-proved but its
-   Lean formalization is deferred during corpus refactoring.  Therefore this card is Stage 2 and
-   cannot authorize a final manuscript claim under the Lean-only publication rule.
+8. **Publication gate.**  The input phase-incidence bound `(6)` is now Lean-proved unconditionally
+   on the ensemble (`ae_limsup_physicalCapture_le_of_gaussianGoodSet`), and Theorems A and B are
+   Lean-proved on top of it, so the Lean-only publication rule is satisfied for this card's own
+   statements.
 
 ## External separation audit
 
@@ -632,3 +633,162 @@ vector to a nearby rational one (`norm_unitaryEvolution_mulVec_sub_le`, owned); 
 rationals in the positive-measure hard fibre; and the dovetailed search, which is a computability
 statement about enumerating `ℚ^{m_n} × ℚ_{>0}` and testing a decidable predicate -- the only part
 with no corpus antecedent.
+
+## Lean progress -- Theorem A is closed, and Theorem B's `(17)`--`(20)` (2026-08-21)
+
+Four new umbrella-wired, axiom-clean modules.  Theorem A is now complete in Lean, in the generality
+the card states it, and Theorem B's boxed statements `(18)` and `(20)` follow with the same
+threshold rather than the relaxed one.
+
+`formal/GaloisForLFunctions/HTGeometry/GateWordDictionary.lean` -- the depth-`s` dictionary:
+
+| Card item | Declaration |
+|---|---|
+| a unitary preserves the register pairing | `finiteComplexInner_mulVec_unitary` |
+| the ordered product of a word of gates, and its unitarity | `gateWord`, `gateWord_mem_unitary` |
+| concatenation is composition | `gateWord_append` |
+| the state reached from the seed by a word | `wordState` |
+| **every dictionary member is a unit vector** | `finiteComplexInner_wordState_self` |
+| **padding**: with the identity gate available the depth-`s` dictionary contains every endpoint of a shorter word, so it is the circuit ball `Z_{n,s}` | `exists_wordState_pad` |
+
+`formal/GaloisForLFunctions/HTGeometry/CommonTimeCircuitHardness.lean` -- **`(5)`--`(9)`**:
+
+| Card item | Declaration |
+|---|---|
+| a set of large outer mass contains a measurable set of the same mass | `exists_measurableSet_subset_of_measure_compl_le` |
+| intersecting with a conull set loses nothing | `le_measure_inter_of_ae_mem` |
+| the hard event `{(J,t)}` of the ensemble | `hardCircuitEvent` |
+| it is jointly measurable | `measurableSet_hardCircuitEvent` |
+| the easy time section is inside the capture set, so its window fraction is a window probability | `quenchedTimeFraction_compl_le_windowProbability` |
+| **`(5)`--`(6)`**: a *measurable* half-mass coefficient set with quenched lower density `1-η_n` | `exists_measurable_goodSet_quenched` |
+| **`(8)`** | `half_mul_one_sub_le_liminf_quenchedWindowAverage_pauliEnsemble` |
+| **`(9)`** | `le_limsup_quenchedFixedTimeProb_pauliEnsemble` |
+| **`(8a)`** and its restricted `(9)` | `exists_restricted_goodSet_common_time_hardness` |
+
+The one structural point.  `G_n` itself is *not* known to be measurable -- it is cut out by the
+spectral collision, a function of a chosen eigenbasis -- and `QuenchedFixedTimeTransfer`'s Fatou
+step needs a measurable parameter set.  The fix costs three lines and no mathematics: only an
+*outer* bound `γ(G_nᶜ) ≤ 1/2` is available, so take the complement of a measurable hull of `G_nᶜ`.
+That is a measurable subset of `G_n` of mass at least `1/2`, and intersecting it with the conull set
+on which the a.e. statement `(6)` holds keeps both properties.
+
+`formal/GaloisForLFunctions/HTGeometry/GateWordCommonTimeHardness.lean` -- the instantiation at the
+circuit ball:
+
+| Card item | Declaration |
+|---|---|
+| the depth-`s` dictionary of the ensemble's seed | `circuitBallDictionary` |
+| **`(9)` against `Z_{n,s}`** | `le_limsup_quenchedFixedTimeProb_gateWord` |
+| **`(8a)` against `Z_{n,s}`** | `exists_restricted_goodSet_gateWord` |
+
+The counting condition is `card_wordIndex_le_pow` at `|Γ| ≤ M_n`, and `(14)` is
+`circuitCount_log_le`, so `(10)` is the card's arithmetic on `(2)`--`(3)`.
+
+`formal/GaloisForLFunctions/HTGeometry/RationalCommonTimeWitness.lean` -- **`(17)`--`(20)`** and the
+integer-coefficient rescaling:
+
+| Card item | Declaration |
+|---|---|
+| `(23)`: the generator is bounded on the coefficient box | `norm_pauliEnsemble_le_of_box` |
+| the generator is Lipschitz in the coefficients | `norm_pauliEnsemble_sub_le` |
+| `(21)`--`(22)`: a strict miss of a finite dictionary is a uniform margin | `exists_uniform_margin` |
+| `(24)`: Duhamel in the generator | `dist_orbitVec_generator_le` |
+| **`(17)`--`(20)`**: beyond every horizon, a positive rational time carrying positive mass, and a rational coefficient vector in `[-B_n-1,B_n+1]^{m_n}` hard at that time | `exists_rational_common_time_witness` |
+| rescaling the generator is the inverse rescaling of the time | `unitaryEvolution_smul_generator` |
+| a finite family of rationals has a common denominator | `exists_common_denominator` |
+| **the integer-coefficient form** | `exists_integer_coefficient_witness` |
+
+Two improvements on the card's own proof.  First, the margin decomposition `(22)` needs no
+measurability of `A_k`: countable subadditivity of the outer measure already forces one `A_k` to
+carry positive mass.  Second, the card relaxes the threshold from `2ε` to `ε` to absorb the two
+Duhamel losses; that is unnecessary, because the margin `δ` supplied by `(22)` is strictly positive
+and both losses can be taken below `δ/4`.  The Lean statement therefore concludes at the *same*
+threshold as Theorem A, which implies the card's `C_ε` form.
+
+### What remains on this card
+
+Only the last sentence of Theorem B: the *uniform computability* claim, i.e. that the dovetailed
+search over `ℕ × ℚ^{m_n} × ℚ_{>0}` terminates.  Everything mathematical that this rests on --
+strictness of the margin in `(20)` and existence of a witness -- is now Lean-proved; what is
+missing is the certificate scheme itself, namely a **decidable** predicate `Cert` on rational data
+with
+
+* soundness -- `Cert` implies the pair is a hard witness, and
+* completeness -- every hard witness satisfies `Cert` at some finite precision,
+
+so that `Nat.find` on `∃ i, Cert (enum i)` is the total selection algorithm.  Building it needs a
+rational-arithmetic model of the truncated matrix exponential (a pair of rational matrices with a
+homomorphic map to `ℂ`), the factorial remainder bound `‖exp X - ∑_{k<N} X^k/k!‖ ≤ 2‖X‖^N/N!` valid
+for `2‖X‖ ≤ N+1`, and the dictionary's own rational approximants -- which is exactly the card's
+"uniformly computable matrix entries" clause, supplied as data of the dictionary.
+
+## Lean progress -- Theorem B is closed, certificate and all (2026-08-21)
+
+Three further umbrella-wired, axiom-clean modules close the last sentence of Theorem B.  The
+"dovetailed search" is now an actual decision procedure: the certificate is exact rational
+arithmetic on Gaussian-integer matrices, it is `Decidable`, it is sound, it is complete at finite
+precision, and it accepts.
+
+`formal/GaloisForLFunctions/HTGeometry/GaussianIntegerPauliModel.lean` -- exact arithmetic for the
+ensemble:
+
+| Card item | Declaration |
+|---|---|
+| Pauli `X`, `Y`, `Z` over `ℤ[i]`, and the Pauli words | `gaussQubitPauli`, `gaussPauliMatrix` |
+| they present the complex Pauli words | `map_gaussPauliMatrix` |
+| the seed over `ℤ[i]` | `gaussZeroProductState`, `map_gaussZeroProductState` |
+| **at rational coefficients the Hamiltonian is `D⁻¹` times a Gaussian-integer matrix** | `pauliEnsemble_eq_smul_map_gaussPauliEnsemble` |
+
+Every Pauli entry lies in `{0,±1,±i}`, so the whole register algebra is defined over `ℤ[i]`, whose
+ring structure and decidable equality mathlib already carries, and `GaussianInt.toComplex` is the
+ring homomorphism that presents the complex data.  No new number system is needed.
+
+`formal/GaloisForLFunctions/HTGeometry/ExponentialFactorialRemainder.lean` -- the explicit
+truncation error:
+
+| Card item | Declaration |
+|---|---|
+| `N!(N+1)^k ≤ (k+N)!` | `factorial_mul_pow_le_factorial_add` |
+| past twice the size the factorial tail is geometric of ratio `1/2` | `tsum_factorial_tail_le` |
+| **`‖exp X - ∑_{k<N} X^k/k!‖ ≤ 2b^N/N!` whenever `‖X‖ ≤ b` and `2b ≤ N+1`** | `norm_exp_sub_partialSum_le` |
+
+The bound is rational whenever `b` is, which is what makes the certificate rational: no appeal to
+`e^{‖X‖}` is needed, because the truncation order is already past twice the size.
+
+`formal/GaloisForLFunctions/HTGeometry/RationalOrbitCertificate.lean` -- the certificate and the
+search:
+
+| Card item | Declaration |
+|---|---|
+| a complex register vector by its rational parts; the rational squared distance | `ratVecToC`, `ratSqDist`, `ratSqDist_eq_dist_sq` |
+| the common denominator of the coefficient products | `coeffDen`, `coeffNum`, `coeffNum_spec` |
+| the generator as one rational scalar times a Gaussian-integer matrix | `certGen`, `certScale`, `smul_map_certGen` |
+| **the truncated orbit in exact rational arithmetic** | `certOrbit`, `ratVecToC_certOrbit` |
+| the rational size bound `‖-iτH‖ ≤ \|τ\|∑\|w_PJ_P\|` and remainder | `certBound`, `norm_certFlow_le`, `certRemainder` |
+| the truncation error of the orbit | `dist_orbit_certOrbit_le` |
+| **the certificate, and its decidability** | `HardCertificate`, `decidableHardCertificate` |
+| **soundness** | `hardCircuitEvent_of_hardCertificate` |
+| **completeness at finite precision** | `exists_hardCertificate_of_hard` |
+| the enumeration of `ℕ × ℕ × ℚ^{m_n} × ℚ` and its surjectivity | `certEnum`, `certEnum_surjective` |
+| **the search accepts** | `exists_certifiedIndex` |
+| **the first accepted index, and that it is a witness** | `searchIndex`, `hard_searchIndex` |
+
+The dictionary enters through its own rational approximants -- `Zapp κ m` within `1/(m+1)` of
+`Z κ` -- which is precisely the card's "uniformly computable matrix entries" clause, supplied as
+data of the dictionary rather than as an unproved input.  Soundness spends the two slacks
+`2b^N/N!` and `1/(m+1)`; completeness reclaims them from the strict margin of `(20)`, which is why
+`(20)` had to be strict.
+
+The whole certificate is executable: `certOrbit` and `HardCertificate` reduce by `decide`, so the
+"dovetailed search" is `Nat.find` over a decidable predicate on an `Encodable` index, and
+`searchIndex` is the total selection function the card asserts.
+
+### What remains on this card
+
+Nothing.  Theorem A is `half_mul_one_sub_le_liminf_quenchedWindowAverage_pauliEnsemble`,
+`le_limsup_quenchedFixedTimeProb_pauliEnsemble` and `exists_restricted_goodSet_common_time_hardness`
+(at the circuit ball, `le_limsup_quenchedFixedTimeProb_gateWord` and
+`exists_restricted_goodSet_gateWord`); Theorem B is `exists_rational_common_time_witness`,
+`exists_integer_coefficient_witness` and, for the uniform-computability clause, `exists_certifiedIndex`
+with `hard_searchIndex`.  All are unconditional and depend only on `propext`, `Classical.choice`
+and `Quot.sound`.

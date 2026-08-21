@@ -1,7 +1,7 @@
 # Finite law-history obstruction spectral machine and joint reconstruction law
 
 - **ID:** ULF-LHSM-3
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ROUTE-INDEPENDENT MECHANISM / FUSION THEOREM
 - **Statement:** Every finite composable history of linear laws carries canonical higher
   transgressions.  Page `r` transports a defect surviving `r-1` intermediate laws from a later
@@ -9,8 +9,7 @@
   page.  The stable page is the associated graded of the total kernel and total cokernel.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [GENERAL FINITE HISTORY]
   [HIGHER TRANSGRESSION] [EXACT PAGE DERIVATION] [JOINT RECONSTRUCTION]
-  [INDEX CONSERVATION] [CORE LEAN-CERTIFIED] [GENERAL PAGE PACKAGING LEAN REQUIRED]
-  [UMBRELLA-WIRED] [UMBRELLA-NOT-BUILT BY POLICY] [NOT RH]
+  [INDEX CONSERVATION] [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]
 
 ## 1. Why another mechanism is required
 

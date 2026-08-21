@@ -743,3 +743,181 @@ it needs `‖seed‖ ≤ M_s` on one fixed ball around the packet point, with `M
 the induction hypothesis, and `D ⪰ 0` with `(D y y).re ≤ C²` on the same ball.  Both are compact
 statements about a single ball, and the whole `exp(−σ₀ ∑ z_k²)` decay is now proved rather than
 assumed, with `σ₀ = π/4` measured in the difference form.
+
+## Lean status 2026-08-21 (seventh entry) — Abe positivity in coordinates, and the majorant
+
+`GaloisForLFunctions.HTGeometry.AbePositiveGaussianMajorant` (wired, built, axiom-clean)
+
+```text
+hermitian_sum_left, hermitian_sum_right    the bilinear expansion of a Hermitian form on sums
+abeGram D v                                the real Gram matrix `Re D(v_i, v_j)` of the difference
+                                           form on a complement basis
+re_hermitian_latticeSum
+    **the form at a lattice point is the real quadratic form of the Gram matrix**:
+    `Re D(∑ z_i v_i, ∑ z_i v_i) = z ⬝ (abeGram D v) *ᵥ z`
+exists_gaussian_of_posDef
+    **positive definiteness of that Gram matrix turns the Gaussian in the form value into a
+    Gaussian in the lattice coordinates**: `exp(−t·D(γ,γ)) ≤ exp(−σ ∑ z_i²)` with `σ = t·μ > 0`
+norm_multiIndexJetEvalCLM_le_gaussianLatticeWeight
+    **the damping majorant**: `‖jet‖ ≤ (exp(π C₀²)·M_s/ρⁿ) · polynomialGaussianLatticeWeight`
+```
+
+The coercivity step is the corpus's own `posDef_coercive`, so the only new input is the bilinear
+identification of the form on the lattice with a real quadratic form.
+
+**This closes the `majorant` field of `AbeDampingPacketData` for Appell--Humbert data.**  Its
+hypotheses are, in full:
+
+* upper and lower factors both of Appell--Humbert type, for Hermitian forms `H_u`, `H_l` and
+  unit-modulus semicharacters — and the factors are *constructed*, not assumed
+  (`appellHumbertAutomorphicFactor`);
+* the seed transforms by the lower factor — which is `seed_mem` of the damping datum itself;
+* **Abe positivity**, in the exact coordinate form `Matrix.PosDef (abeGram (H_u − H_l) v)` for the
+  complement basis `v`, plus `(H_u − H_l) ⪰ 0` on the whole space;
+* the seed's size `M_s` and the difference form's size `C₀²`, both on a **single fixed ball** around
+  the packet point.
+
+So `IsAbePositiveTorusless` is no longer an interface at this level: it is the positive-definiteness
+of one explicit `c × c` real matrix.  What the card still needs to assemble a full
+`AbeDampingPacketData` is the remaining fields — `normal` (locally uniform summability of the
+complement Poincaré series, for which the majorant is the standard input), `seed`/`seed_jet` (the
+induction hypothesis together with `EnlargedPacketInterpolant`), and the bookkeeping fields
+`compat`, `decomp`.
+
+## Lean status 2026-08-21 (eighth entry) — the `normal` field, closed
+
+`GaloisForLFunctions.HTGeometry.AbePoincareLocalNormal` (wired, built, axiom-clean)
+
+```text
+hermitian_self_eq_sum        a Hermitian form on `ℂ^d` expands in the standard basis
+continuous_hermitian_self_re **hence `y ↦ Re D(y,y)` is continuous**
+summableLocallyUniformlyOn_poincareTerm_appellHumbert
+    **the complement Poincaré series of a lower-automorphic seed converges locally normally**
+```
+
+This is the `normal` field of `AbeDampingPacketData`, proved rather than assumed.  The mechanism is
+the Weierstrass M-test through the corpus's own
+`summableLocallyUniformlyOn_of_polynomialGaussianLattice_bound`: on a compact set the difference
+form and the seed are bounded — both bounds are *free*, the first by the standard-basis expansion
+and the second because the seed is continuous — and the lattice dependence is the Gaussian weight
+of the previous entry, which is summable.
+
+Status of the damping datum for Appell--Humbert data.  Of the fields of `AbeDampingPacketData`:
+
+* `majorant` — **proved** (seventh entry), from `Matrix.PosDef (abeGram (H_u − H_l) v)`;
+* `normal` — **proved** (this entry), from the same positivity;
+* `le`, `compat`, `comp`, `comp_mem`, `decomp` — bookkeeping about the two period groups and the
+  complement embedding, fixed by the choice of `H_l` agreeing with `H_u` along `ΓH`;
+* `seed`, `seed_mem`, `seed_jet` — the induction hypothesis (jet ampleness of the lower factor),
+  together with `EnlargedPacketInterpolant` for the finite interpolation with vanishing.
+
+So the two analytic fields are closed, and what remains is the group bookkeeping and the induction's
+own supply of seeds.
+
+## Lean status 2026-08-21 (ninth entry) — `hbound` in the exact shape the majorant consumes
+
+`GaloisForLFunctions.HTGeometry.AbeDampingBoundBridge` (wired, built, axiom-clean)
+
+```text
+abeDampingBound_of_appellHumbert
+    **the hypothesis `hbound` of `abeDampingMajorant_of_finite_vanishing`**, for Appell--Humbert
+    data: `‖jet‖ ≤ C₀·B^r·exp(−σ₀ ∑ z_k²)` with a single `σ₀ > 0` and a single `C₀ ≥ 0`, uniform in
+    the packet index, the seed index, the lattice point and `B`
+```
+
+Its inputs are exactly three, and no analytic estimate is among them:
+
+1. the two factors are Appell--Humbert, and the seed family transforms by the lower one;
+2. Abe positivity, as `Matrix.PosDef (abeGram (H_u − H_l) v)` on the complement basis;
+3. two sup bounds on one ball of radius `Rad` around each packet point — `(H_u − H_l)(y,y) ≤ C₀²`,
+   which is a property of the forms alone, and `‖seed B j‖ ≤ C_s·B^r`, which is the induction
+   hypothesis's own growth bound.
+
+The Cauchy estimate is taken at **unit radius**, which is what makes the constant independent of the
+jet order: the radius of the ball is the jet order itself, and the hypothesis `hrad` only asks that
+the finitely many jet orders of the packet fit inside `Rad`.
+
+Chain status for the card's analytic obligation.  `abeDampingBound_of_appellHumbert` feeds
+`abeDampingMajorant_of_finite_vanishing` (which adds the `exp(−δB)` from vanishing on a disc, and is
+already in the tree), and that produces the `majorant` field; `normal` is the eighth entry.  So both
+analytic fields of `AbeDampingPacketData` are proved from positivity and the induction hypothesis's
+growth bound, with no remaining estimate.
+
+`AbeDampingBoundBridge` also gained `appellHumbertAutomorphicFactor_compat`, the `compat` field: the
+upper factor restricts to the lower one along `ΓH` exactly when the two Hermitian forms and the two
+semicharacters agree there.  Of `AbeDampingPacketData`'s ten fields, the ones still not supplied by
+a theorem are the pure lattice data (`le`, `comp`, `comp_mem`, `decomp`) and the seeds
+(`seed`, `seed_mem`, `seed_jet`), which are the induction hypothesis itself.
+
+## Lean status 2026-08-21 (tenth entry) — CORRECTION to entries six, seven, eight, nine
+
+The sixth entry claimed that "for a lower-automorphic seed the lattice dependence collapses",
+using the transformation law `seed(x + γ) = e_l(γ,x)·seed(x)` for `γ ∈ Γ`.  **That hypothesis is
+unsatisfiable in the intended application.**  The seed is automorphic only for the *smaller* group
+`ΓH`; the complement translates `comp z` are precisely the elements of `Γ` that are *not* in `ΓH`,
+so `seed(x + comp z)` is a genuinely new value.  A seed satisfying the law for all of `Γ` would make
+the complement Poincaré series degenerate.  The theorems as stated were true implications, but with
+a hypothesis no seed of the induction can meet.
+
+The four modules are corrected.  The right invariant is the **normalised modulus**
+`|θ(y)|·exp(−(π/2)·Re H_l(y,y))`, which is `ΓH`-periodic (`thetaNorm_add`, already in the tree), so
+the honest hypothesis is that it is bounded:
+
+```text
+‖seed y‖ ≤ M · exp((π/2) · Re H_l(y,y))     for every y
+```
+
+With it the computation goes through unchanged, and for the same reason: expanding
+`Re H_l(x+γ, x+γ) = Re H_l(x,x) + 2·Re H_l(x,γ) + H_l(γ,γ)` cancels the lower form against the upper
+one, leaving the exponent
+
+```text
+(π/2)·Re H_l(x,x)  −  π·Re D(x,γ)  −  (π/2)·D(γ,γ),      D = H_u − H_l,
+```
+
+whose second and third terms are exactly the exponent of the inverse Appell--Humbert factor of `D`.
+So `norm_inv_appellHumbertFactor_le` applies verbatim and the Gaussian decay is the same.  The only
+change downstream is that the seed's contribution is the global constant `M` together with a bound
+on `Re H_l` over the ball — the latter free by `continuous_hermitian_self_re`.
+
+Corrected statements (all wired, built, axiom-clean):
+
+```text
+IsHermitianForm.re_add_self                       the expansion of the square
+norm_poincareTerm_appellHumbert_le                 hypothesis is now `hseednorm`
+norm_multiIndexJetEvalCLM_poincareTerm_appellHumbert_le
+                                                   hypotheses `hzsup` and `hLsup` on one ball
+norm_multiIndexJetEvalCLM_le_gaussianLatticeWeight the majorant, same shape
+summableLocallyUniformlyOn_poincareTerm_appellHumbert
+                                                   the `normal` field, same conclusion
+abeDampingBound_of_appellHumbert                   `hbound`, with `M = C_s·B^r`
+```
+
+Effect on the card.  The conclusions of entries seven to nine are unchanged; what changed is the
+hypothesis that the induction must supply.  It is now: **the lower-automorphic interpolant has
+normalised modulus at most `C_s·B^r`** — a statement about the seed alone, with no reference to the
+complement lattice, and exactly the quantity Abe's argument controls.
+
+## Lean status 2026-08-21 (eleventh entry) — the damping datum is constructible
+
+`GaloisForLFunctions.HTGeometry.AbeDampingPacketConstruction` (wired, built, axiom-clean)
+
+```text
+abeDampingPacketDataAppellHumbert
+    **every field of `AbeDampingPacketData`, for a pair of Appell--Humbert factors**
+```
+
+`normal` and `majorant` are the theorems of the eighth and ninth entries; `compat` is the
+Appell--Humbert compatibility; the remaining fields are the induction step's own data:
+
+* the two period groups and their complement — `le`, `comp`, `comp_mem`, `decomp`;
+* the seed family — with prescribed jets (`seed_jet`), lower-automorphic (`seed_mem`), of bounded
+  normalised modulus `C_s·B^r` (`hseednorm`), and vanishing at the complement translates inside a
+  disc of squared radius at least `κ·B` (`hvanish`).
+
+The `exp(−δB)` of the majorant is produced with `δ = (σ₀/2)·κ`, so the vanishing radius `√(κB)` and
+the Gaussian rate `σ₀` of Abe positivity determine the damping rate outright.
+
+Consequently `HasAbeDampingFamily` is now precisely the statement that the induction hypothesis
+supplies such a seed family for every finite jet packet, and
+`jetAmpleEveryFiniteOrder_of_hasAbeDampingFamily`, already in the tree, closes the induction step.

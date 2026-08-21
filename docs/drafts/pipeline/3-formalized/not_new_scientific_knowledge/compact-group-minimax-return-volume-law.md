@@ -5,7 +5,8 @@
 - **Type:** COMPACT-GROUP RECURRENCE / METRIC ENTROPY INFRASTRUCTURE
 - **Scientific status:** `[PAPER-PROVED] [THEOREM A LEAN-PROVED]`
   `[HAAR BUDGET LOWER LAW LEAN-PROVED]`
-  `[CONNECTED-DENSE-GENERATOR SPECIALIZATION LEAN OPEN]`
+  `[CONNECTED-DENSE-GENERATOR SPECIALIZATION LEAN-PROVED]`
+  `[COVERING-VOLUME SANDWICH LEAN-PROVED]`
   `[CLASSICAL INFRASTRUCTURE] [NO NOVELTY CLAIM]`
 - **Parent:** `../../1-in-progress/predictive-relation-spectrum-universal-law.md`
 - **Freeze date:** 2026-07-30
@@ -288,6 +289,74 @@ counterpart passes direct elaboration and axiom audit.
 - [x] covering-deadline Lean theorem
 - [x] covering-deadline axiom audit
 - [x] conull Haar-budget minimax lower mechanism
-- [ ] connected-group dense-generator corollary
-- [ ] covering-volume sandwich
+- [x] connected-group dense-generator corollary
+- [x] covering-volume sandwich
 - [ ] external specialist audit
+
+## Lean formalization — COMPLETE
+
+Three new modules, all wired into `GaloisForLFunctions.HTGeometry`; every capstone has axiom
+footprint `[propext, Classical.choice, Quot.sound]`.
+
+### `HTGeometry/CompactConnectedAbelianGenerators.lean`
+
+Closes the *connected-group dense-generator corollary*.
+
+- **Lemma 1 (integer multiplication is surjective).**  `exists_pow_eq_of_connected`: in a compact
+  connected second-countable abelian group every element is an `n`-th power.  Proof: the image of
+  the `n`-th power map is compact, hence a proper closed subgroup if not everything; a nontrivial
+  character of the quotient (corpus Peter-Weyl, `CompactAbelian.exists_character_ne_one`, used
+  through the multiplicative wrapper `exists_character_ne_one_mul`) pulls back to a character of
+  `G` with values in the `n`-th roots of unity, and `character_eq_one_of_connected` shows any such
+  character is trivial.  This yields the instance `rootableByIntOfCompactConnected :
+  RootableBy G ℤ`, which is exactly the hypothesis mathlib's
+  `Measure.measurePreserving_zpow` needs — so the measure-preservation half of Lemma 1 is
+  supplied by mathlib once divisibility is available.
+- **Lemma 2 (dense generators have full Haar measure).**
+  `measure_compl_denseGenerators_eq_zero`.  Three ingredients:
+  `infinite_range_of_character` (the image of a connected group under a nontrivial character
+  contains a whole interval of distances from `1`, hence is infinite);
+  `measure_character_fibre_eq_zero` (the fibres of a character are translates of its kernel and
+  have equal measure, so infinitely many distinct values force the kernel to be null — this
+  replaces the Pontryagin-duality argument of the paper proof, which mathlib cannot support);
+  and `countable_charSet` (distinct characters are orthonormal in `L²` of the Haar probability
+  measure, which is second countable, and `countable_of_separated` makes any `1`-separated set of
+  a second-countable metric space countable).  `exists_character_of_notMem_denseGenerators`
+  supplies the character killing a non-generator, again through the quotient by the closed
+  subgroup it generates.
+- **The lower mechanism.** `exists_denseGenerator_avoiding_of_measure_budget` combines the above
+  with the card's already-formalized `exists_mem_avoids_first_powers_of_haar_budget`.
+
+### `HTGeometry/CompactGroupCoveringVolume.lean`
+
+Closes the *covering-volume sandwich*, in the multiplicative form that avoids dividing by a
+possibly zero volume:
+
+- `one_le_coveringNumber_mul_measure_closedEBall`:
+  `1 <= N_eps * mu(closedBall 1 eps)` — subadditivity over `Metric.minimalCover`.
+- `coveringNumber_mul_measure_eball_le_one`:
+  `N_eps * mu(ball 1 (eps/2)) <= 1` — the half-radius balls around a separated set are disjoint
+  (`card_mul_measure_eball_le_one`, `encard_mul_measure_eball_le_one`), which also gives
+  `packingNumber_ne_top`, and mathlib's `coveringNumber_le_packingNumber` finishes.
+- Support lemmas `closedEBall_eq_image`, `eball_eq_image`, `measure_closedEBall_eq`,
+  `measure_eball_eq`: every ball is a translate of the ball at the identity, so all balls of a
+  given radius have the same Haar measure.  Only left invariance of the metric is used.
+
+### `HTGeometry/CompactGroupMinimaxReturn.lean`
+
+`compactGroup_minimax_return_volume_law` bundles the three halves of `(2)`:
+
+1. every rotation returns inside `eps` by the covering number at radius `eps/2` (Theorem A, from
+   `exists_pow_return_le_two_mul_coveringNumber`);
+2. whenever `L * mu(ball 1 eps) < 1` some topological generator avoids `ball 1 eps` through its
+   first `L` powers (the lower mechanism);
+3. `N_(eps/2) * mu(ball 1 (eps/4)) <= 1` and `1 <= N_eps * mu(closedBall 1 eps)` (the sandwich).
+
+### Deviation from the paper proof
+
+The paper derives Lemmas 1 and 2 from Pontryagin duality.  Mathlib carries `PontryaginDual` but
+no duality theorem, so both lemmas are re-proved from the corpus's Peter-Weyl separation theorem
+plus quotients by closed subgroups; the null-kernel step uses equal-measure fibres instead of
+pushing Haar forward to the circle, and the countability of the dual uses `L²` orthonormality
+instead of countability of the discrete dual.  Nothing is assumed that the paper proof did not
+already use.

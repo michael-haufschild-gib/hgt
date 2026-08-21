@@ -1,7 +1,7 @@
 # Euler support--energy--position uncertainty for off-line divisor motion
 
 - **ID:** euler-support-energy-position-uncertainty
-- **Stage:** 2-fully-proven/needs-audit
+- **Stage:** 3-formalized/needs-audit
 - **Type:** THEOREM (paper) -- novelty audit open
 - **Source:** `euler-support-transverse-divisor-rigidity.md`; user request for a significant global
   constraint on zeros entering the critical line
@@ -41,7 +41,7 @@ This is a global infinite-data theorem, not a height bound, local jet condition,
 
 - [x] 0 -> 1: exact three quantities and interpolation route stated.
 - [x] 1 -> 2: full paper proof below.
-- [ ] 2 -> 3: formalize the weighted Holder and exponent arithmetic in Lean.
+- [x] 2 -> 3: formalize the weighted Holder and exponent arithmetic in Lean.
 - [ ] 3 -> 4: primary-literature novelty audit and sharpness analysis.
 
 ## Setup
@@ -350,3 +350,53 @@ realizability would prove the uncertainty law optimal.
 
 - 2026-07-10 -- theorem generated and paper proof completed from the relative-strip result plus
   weighted Holder interpolation.
+
+## Lean formalization — COMPLETE
+
+Module: `formal/GaloisForLFunctions/RHTower/EulerSupportEnergyUncertainty.lean`, wired into
+`GaloisForLFunctions.RHTower`.  It builds on the parent card's already-formalized
+`RHTower/RelativeStripDivisorReflection.lean`.  Every capstone has axiom footprint
+`[propext, Classical.choice, Quot.sound]`.
+
+### The weighted Hölder step
+
+- `summable_mul_of_rpow_summable` — Hölder for summable real families, obtained from mathlib's
+  `NNReal.summable_and_inner_le_Lp_mul_Lq_tsum`.
+- `summable_absDiscrepancy_of_holder` — equation `(1)`, in the parent's generalized-Dirichlet
+  framework: with a nonnegative weight `wt` and Hölder conjugates `q, q'`, summability of
+  `‖a‖^q e^{-q v μ} wt` and of `e^{-q' w μ} wt` gives summability of `‖a‖ wt e^{-(v+w) μ}`.
+  The split is `f = ‖a‖ e^{-vμ} wt^{1/q}`, `g = e^{-wμ} wt^{1/q'}`, so that
+  `f^q`, `g^{q'}` are exactly the two hypotheses and `f g` is the conclusion.
+
+### The prime-power index
+
+`primePowerNat`, `primePowerMu (p,k) = (k+1) log p`, `primePowerWeight (p,k) = 1/(k+1)`, with
+`exp_primePowerMu` converting `e^{-μσ}` into `p^{-(k+1)σ}`.
+
+- `summable_primePowerSupport` — the second factor: `∑_{p ∈ S} ∑_{k ≥ 1} p^{-ku}/k` converges
+  whenever `∑_{p ∈ S} p^{-u}` does, for every `u > 0`.  The paper proof compares with
+  `-log(1 - p^{-u}) ≤ C_u p^{-u}`, which needs `p^{-u}` bounded away from `1`; the Lean proof
+  instead uses `p^{-(k+1)u} ≤ p^{-u} (2^{-u})^k` (valid because `p ≥ 2`), which is a **uniform**
+  geometric bound and needs no cofinite exception.
+
+### The theorem
+
+- `summable_eulerDiscrepancy_of_holder` — `(H)` at one pair of exponents.
+- `summable_eulerDiscrepancy_abscissa` — `(H)` in abscissa form: convergence of the `ℓ^q` energy
+  strictly right of `σ_q` plus convergence of the prime support series strictly right of `δ`
+  forces absolute convergence of the discrepancy series strictly right of `σ_q + δ/q'`.  The
+  witnesses are `v = σ_q + ε/2`, `w = δ/q' + ε/2` with `ε = σ - (σ_q + δ/q')`.
+- `summable_eulerDiscrepancy_squareEnergy` — the `q = 2` case `(4)`, using
+  `holderConjugate_two`.
+- `holderBudget_ge_of_divisorPoint` — `(U)`/`(P)`: from the parent's
+  `abs_re_sub_half_le_of_reflection`, a reflection-stable divisor confined to `Re s ≤ A` has
+  `1/2 + |Re ρ - 1/2| ≤ A` for every point.  Instantiating `A = σ_q + δ/q'` is exactly `(P)`.
+- `summable_primePowerSupport_deep`, `summable_highPrimePower_of_bounded` — `(2)`: with
+  `‖c(p,k)‖ ≤ B` the deep prime powers `k ≥ 2` converge for every `Re s > 1/2`, by the same
+  geometric device with the shifted exponent `p^{-(j+2)σ} ≤ p^{-2σ}(2^{-σ})^j`.
+- `euler_support_energy_position_uncertainty` — the three halves in one statement.
+
+### Deviation from the paper proof
+
+None mathematically.  The only change is the uniform geometric majorant `(2^{-u})^k` in place of
+the `-log(1-x)` expansion; it proves the same convergence with no exceptional finite set.

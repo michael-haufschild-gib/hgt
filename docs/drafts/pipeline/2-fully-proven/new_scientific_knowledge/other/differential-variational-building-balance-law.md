@@ -936,3 +936,121 @@ some index on and `twistedChain_restart` reproduces a twisted chain with generat
 `σ^N`.
 
 The one open point of the card is unchanged: the bound on the number of restarts.
+
+### Lean progress — the shear invariant, and the bounded branch in its strongest elementary form
+
+`GaloisForLFunctions.HTGeometry.ShiftedMatrixDegree` (wired, built, axiom-clean).
+
+Conjugating an operator matrix by `diag(∂^{k_1},…,∂^{k_r})` changes the degree of the entry `(i,j)`
+by `k_j − k_i`.  The conjugate does not lie in `K[∂;δ]`, but the *bound* on its degrees never needs
+the conjugate to be formed — it is a purely arithmetic predicate on the entry degrees:
+
+```text
+ShiftDegLE k P c  :  deg P_{ij} + k_j − k_i ≤ c   for every nonzero entry
+```
+
+```text
+ShiftDegLE.mono, shiftDegLE_one
+shearSpread, le_shearSpread, shearSpread_nonneg
+ShiftDegLE.matDeg_le             the plain degree is within `spread(k)` of the shifted one
+ShiftDegLE.mul                   **submultiplicativity**
+ShiftDegLE.map                   invariance under a degree-preserving map of the entries
+shiftDegLE_twistedChain          **the chain's shifted degree is at most `n·c`**
+matDeg_twistedChain_le_of_shiftDegLE
+    **every shear bounds the growth rate**: `matDeg A_n ≤ n·c + spread(k)`
+matDeg_twistedChain_le_of_shiftDegLE_zero
+    **the bounded branch**: a shear with `c = 0` forces `matDeg A_n ≤ spread(k)` for *every* `n`
+```
+
+Why this matters for the open point.  The card's bounded phase was previously available only in the
+degree-zero case `deg A = 0` (`isUnit_det_of_map_C_mul_eq_one`), which is the shear `k = 0`.  The
+shear predicate covers every diagonal change of lattice at once, with a uniform explicit bound, and
+it is stated without leaving the operator ring — no completion, no Ore field, no inverse of `∂`.
+
+Two facts fix the exact remaining gap, and both are now visible.
+
+* **Diagonal shears alone do not decide the phase.**  For `A = [[0,1],[∂,0]]` the true rate is `1/2`
+  while `min_k ShiftDegLE`-value is `1`: an integer shear cannot see a slope with denominator `2`.
+  Passing to `A_2 = ∂·I` repairs it, which is exactly why the restart of `twistedChain_restart` is
+  needed and why the bound on the number of restarts is the crux.
+* **Constant base changes are also needed.**  For `A = I + ∂M` with `M` a nonzero nilpotent constant
+  matrix, `A_n = I + n∂M`, so `matDeg A_n = 1` is bounded, yet every diagonal shear has shifted
+  degree at least `1`.  A constant change of basis putting `M` in Jordan form turns it into
+  `[[1,∂],[0,1]]`, for which the shear `k = (0,−1)` gives `c = 0`.
+
+So the right invariant is `min over (N, S ∈ GL_r(Frac R)) of matDeg(S⁻¹ A_N S)/N`, and the two
+examples show that neither the `N` nor the general `S` can be dropped.  That min is the translation
+length of the card's building isometry; the elementary layer above supplies the direction
+`min ≤ ⇒ bounded`, and what is still missing is the reverse — that the min is attained, i.e. the
+semisimplicity of the isometry.
+
+### Lean progress — the shifted leading matrix, and exact linear growth against a shear
+
+`GaloisForLFunctions.HTGeometry.ShiftedTopMatrix` (wired, built, axiom-clean) completes the shear
+layer with its leading-matrix half.
+
+Against a shear the top degree of the entry `(i,j)` is `c + k_i − k_j`, an *integer* which may be
+negative — in which case the entry must vanish, since operator degrees are nonnegative.  Reading the
+coefficient at an integer index handles both cases uniformly:
+
+```text
+coeffZ p n = if 0 ≤ n then coeff p n.toNat else 0
+coeffZ_add, coeffZ_sum
+coeffZ_mul                     **the leading coefficient of a product, at integer indices**
+shiftTopMatrix k P c           the leading matrix against the shear
+shiftTopMatrix_mul             **multiplicativity**: `(PQ)^top_{c+d} = P^top_c · Q^top_d`
+degree_eq_of_shiftTopMatrix_ne_zero
+le_matDeg_of_shiftTopMatrix_ne_zero
+shiftDegLE_chainProd, shiftTopMatrix_chainProd
+    the ordered product's shifted leading matrix is the ordered product of theirs
+matDeg_chainProd_sub_le        **exact linear growth**: `|matDeg (B₀⋯B_{n−1}) − ∑ c_m| ≤ spread(k)`
+                               whenever the accumulated shifted leading matrices never vanish
+shiftTopMatrix_twistedFamily, matDeg_twistedChain_sub_le
+    the same for a twisted chain: `|matDeg A_n − n·c| ≤ spread(k)`, uniformly in `n`
+```
+
+What this settles.  Relative to **any** shear `k` with `ShiftDegLE k A c` and `0 ≤ c`, the phase is
+completely decided as soon as the accumulated shifted leading matrices never vanish:
+
+* `c = 0` — the degree stays inside a band of width `spread(k)`: the **bounded phase**, `λ = 0`;
+* `c ≥ 1` — `matDeg A_n = n·c + O(1)` with an explicit uniform constant: the **boundary phase**,
+  `λ = c` exactly, not merely asymptotically.
+
+This is the shear-relative form of `matDeg_chainProd_eq`, which was the unsheared case `k = 0`, and
+it is what makes the shear a genuine change of lattice rather than a bookkeeping device: the whole
+Cartan invariant `μ₁` is computed to `O(1)` from the shifted leading matrix alone.
+
+What is still missing is unchanged and is exactly one statement: that some pair `(N, S)` attains the
+minimum of `matDeg(S⁻¹ A_N S)/N`, i.e. that the building isometry is semisimple.  Everything
+downstream of such a pair — the exact rate, the `O(1)` band, the two phases — is now proved.
+
+### Lean progress — constant changes of basis, and the bounded phase from a lattice
+
+`GaloisForLFunctions.HTGeometry.ConstantConjugationDegree` (wired, built, axiom-clean)
+
+```text
+matDeg_mul_le, matDeg_mul_le_of_deg_zero
+    multiplying by matrices of degree zero cannot raise the matrix degree
+twistedChain_conj
+    **the twisted chain of a constant conjugate is the constant conjugate of the twisted chain**:
+    `(S⁻¹ A σ(S))_n = S⁻¹ · A_n · σⁿ(S)`
+matDeg_map_eq_zero, matDeg_twistedChain_le_conj
+matDeg_twistedChain_le_of_conj_shiftDegLE_zero
+    **the bounded phase from a constant basis and a shear**: if some constant change of basis makes
+    the shifted degree vanish for some shear, then `matDeg A_n ≤ spread(k)` for every `n`
+```
+
+This removes the second of the two obstructions recorded earlier.  The example `A = I + ∂M` with `M`
+a nonzero nilpotent constant matrix has bounded chain degree but shifted degree at least one for
+*every* shear; a constant change of basis putting `M` in Jordan form turns it into `[[1,∂],[0,1]]`,
+for which the shear `k = (0,−1)` gives `c = 0`.  The criterion above covers exactly that.
+
+Note that a constant conjugation is legitimate inside `K[∂;δ]`: `S⁻¹ A σ(S)` has entries in the
+operator ring, unlike a shear, which is why the two are treated differently — the shear only ever
+appears as the arithmetic predicate `ShiftDegLE`, never as an actual conjugate.
+
+What the pair `(S, k)` still does not cover.  Every lattice of `K((∂⁻¹))^r` is `U·diag(∂^{k})·O^r`
+with `U ∈ GL_r(O)`, and constant `S ∈ GL_r(K)` is a proper subgroup of `GL_r(O)`.  So the criterion
+is sufficient for the bounded phase but not yet known to be necessary; making it necessary is the
+completion step, and is where the degree valuation on the Ore field `Frac(K[∂;δ])` — not yet in the
+tree — becomes unavoidable.

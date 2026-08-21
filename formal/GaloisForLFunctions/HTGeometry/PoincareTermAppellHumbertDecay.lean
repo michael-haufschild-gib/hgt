@@ -2,20 +2,22 @@ import GaloisForLFunctions.HTGeometry.AppellHumbertAutomorphicFactor
 import GaloisForLFunctions.HTGeometry.PoincareTermJetGrowth
 
 /-!
-# The Poincaré term of a lower-automorphic seed decays with the difference form
+# The Poincaré term of a seed of bounded normalised modulus
 
-For a seed transforming by a *lower* Appell--Humbert factor, the whole lattice dependence of the
-Poincaré term `ψ(γ,·)⁻¹·seed(· + γ)` collapses: the translate of the seed is the lower factor times
-the seed itself, so the term is `(upper/lower)(γ, z)⁻¹ · seed(z)` and the seed appears only at the
-base point.  The ratio is again an Appell--Humbert expression, for the difference form, and its
-inverse decays like `exp(−(π/4)·D(γ,γ))` when the difference is positive semidefinite.
+A seed for the complement Poincaré series is automorphic only for the *smaller* period group, so its
+value at a complement translate `x + γ` is genuinely a new value and cannot be pulled back to the
+base point.  What is invariant is the **normalised modulus** `|θ(y)|·exp(−(π/2)·Re H_l(y,y))`, which
+is periodic for the lower period group; a seed of bounded normalised modulus therefore satisfies
+`‖seed y‖ ≤ M·exp((π/2)·Re H_l(y,y))` globally.
 
-This is the exact form of Abe positivity used by the damping estimate: no growth hypothesis on the
-seed over the whole lattice is needed, only its size on one fixed ball.
+With that bound the complement translate contributes `exp((π/2)·Re H_l(x+γ, x+γ))`, and expanding
+the square cancels the lower form against the upper one:  the exponent is
+`(π/2)·Re H_l(x,x) − π·Re D(x,γ) − (π/2)·D(γ,γ)` with `D = H_u − H_l`.  That is exactly the
+exponent of the inverse Appell--Humbert factor of `D`, so Abe positivity gives the Gaussian decay.
 
-* `IsHermitianForm.sub`;
+* `re_hermitian_add_self`;
 * `norm_poincareTerm_appellHumbert_le` — **the Poincaré term's Gaussian bound**;
-* `norm_multiIndexJetEvalCLM_poincareTerm_appellHumbert_le` — the packet-jet form of the same bound.
+* `norm_multiIndexJetEvalCLM_poincareTerm_appellHumbert_le` — its packet-jet form.
 -/
 
 open Complex
@@ -37,96 +39,130 @@ theorem sub (h₁ : IsHermitianForm H₁) (h₂ : IsHermitianForm H₂) :
   symm := fun x y => by
     rw [h₁.symm, h₂.symm, star_sub]
 
+theorem re_add_self (h : IsHermitianForm H₁) (x y : V) :
+    (H₁ (x + y) (x + y)).re = (H₁ x x).re + 2 * (H₁ x y).re + (H₁ y y).re := by
+  rw [h.add_left, h.add_right, h.add_right]
+  simp only [Complex.add_re]
+  have := h.re_symm x y
+  linarith
+
 end IsHermitianForm
 
 section Decay
 
 variable {d : ℕ} {Hu Hl : (Fin d → ℂ) → (Fin d → ℂ) → ℂ}
-variable {χu χl : (Fin d → ℂ) → ℂ}
+variable {χu : (Fin d → ℂ) → ℂ}
 
-/-- **The Poincaré term of a lower-automorphic seed decays like the difference form.** -/
+/-- **The Poincaré term of a seed of bounded normalised modulus decays like the difference
+form.** -/
 theorem norm_poincareTerm_appellHumbert_le (hHu : IsHermitianForm Hu) (hHl : IsHermitianForm Hl)
-    (hχu : ∀ γ, ‖χu γ‖ = 1) (hχl : ∀ γ, ‖χl γ‖ = 1)
+    (hχu : ∀ γ, ‖χu γ‖ = 1)
     (hpos : ∀ w : Fin d → ℂ, 0 ≤ (Hu w w - Hl w w).re)
     {C : ℝ} (hC : 0 ≤ C) {z : Fin d → ℂ} (hz : (Hu z z - Hl z z).re ≤ C ^ 2)
     {Γ : AddSubgroup (Fin d → ℂ)}
     (hsemiu : ∀ γ γ' : Fin d → ℂ, χu (γ + γ')
       = χu γ * χu γ' * Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hu γ γ').im : ℝ))))
-    (seed : MultivariateEntire d)
-    (hseed : ∀ (γ : Γ) (x : Fin d → ℂ),
-      seed.1 (x + γ.1) = appellHumbertFactor Hl χl γ.1 x * seed.1 x)
+    (seed : MultivariateEntire d) {M : ℝ}
+    (hseednorm : ∀ y : Fin d → ℂ, ‖seed.1 y‖ ≤ M * Real.exp (Real.pi / 2 * (Hl y y).re))
     (γ : Γ) :
     ‖poincareTerm (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) seed γ z‖
-      ≤ Real.exp (Real.pi * C ^ 2)
-          * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) * ‖seed.1 z‖ := by
+      ≤ M * Real.exp (Real.pi / 2 * (Hl z z).re) * Real.exp (Real.pi * C ^ 2)
+          * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by
   have hD : IsHermitianForm fun x y => Hu x y - Hl x y := hHu.sub hHl
-  have hone : ∀ γ : Fin d → ℂ, ‖(1 : ℂ)‖ = 1 := fun _ => norm_one
+  have hM : 0 ≤ M := by
+    have h := hseednorm z
+    have h0 : (0 : ℝ) ≤ ‖seed.1 z‖ := norm_nonneg _
+    nlinarith [Real.exp_pos (Real.pi / 2 * (Hl z z).re), h, h0]
+  set A : ℝ := -(Real.pi * (Hu z γ.1).re + Real.pi / 2 * (Hu γ.1 γ.1).re) with hAdef
+  set B : ℝ := Real.pi / 2 * ((Hl z z).re + 2 * (Hl z γ.1).re + (Hl γ.1 γ.1).re) with hBdef
+  set P : ℝ := Real.pi / 2 * (Hl z z).re with hPdef
+  set Q : ℝ := -(Real.pi * (Hu z γ.1 - Hl z γ.1).re
+      + Real.pi / 2 * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) with hQdef
   have hval : poincareTerm (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) seed γ z
-      = (appellHumbertFactor Hu χu γ.1 z)⁻¹ * (appellHumbertFactor Hl χl γ.1 z * seed.1 z) := by
-    rw [poincareTerm, hseed γ z]
-    rfl
-  have hnormu : ‖(appellHumbertFactor Hu χu γ.1 z)⁻¹‖
-      = (Real.exp (Real.pi * (Hu z γ.1).re + Real.pi / 2 * (Hu γ.1 γ.1).re))⁻¹ := by
-    rw [norm_inv, norm_appellHumbertFactor hHu hχu]
-  have hnorml : ‖appellHumbertFactor Hl χl γ.1 z‖
-      = Real.exp (Real.pi * (Hl z γ.1).re + Real.pi / 2 * (Hl γ.1 γ.1).re) :=
-    norm_appellHumbertFactor hHl hχl _ _
-  have hR : ‖(appellHumbertFactor (fun x y => Hu x y - Hl x y) (fun _ => 1) γ.1 z)⁻¹‖
-      = Real.exp (-(Real.pi * (Hu z γ.1 - Hl z γ.1).re
-          + Real.pi / 2 * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re)) := by
-    rw [norm_inv, norm_appellHumbertFactor hD (fun _ => norm_one), ← Real.exp_neg]
-  have hratio : ‖(appellHumbertFactor Hu χu γ.1 z)⁻¹‖ * ‖appellHumbertFactor Hl χl γ.1 z‖
-      = ‖(appellHumbertFactor (fun x y => Hu x y - Hl x y) (fun _ => 1) γ.1 z)⁻¹‖ := by
-    rw [hnormu, hnorml, hR, ← Real.exp_neg, ← Real.exp_add]
-    congr 1
+      = (appellHumbertFactor Hu χu γ.1 z)⁻¹ * seed.1 (z + γ.1) := rfl
+  have hnormu : ‖(appellHumbertFactor Hu χu γ.1 z)⁻¹‖ = Real.exp A := by
+    rw [norm_inv, norm_appellHumbertFactor hHu hχu, ← Real.exp_neg, hAdef]
+  have hseedz : ‖seed.1 (z + γ.1)‖ ≤ M * Real.exp B := by
+    have h := hseednorm (z + γ.1)
+    rwa [hHl.re_add_self z γ.1] at h
+  have hstep : ‖poincareTerm (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) seed γ z‖
+      ≤ Real.exp A * (M * Real.exp B) := by
+    rw [hval, norm_mul, hnormu]
+    exact mul_le_mul_of_nonneg_left hseedz (Real.exp_nonneg _)
+  have hexpsum : A + B = P + Q := by
+    rw [hAdef, hBdef, hPdef, hQdef]
     simp only [Complex.sub_re]
     ring
-  have hbound : ‖(appellHumbertFactor (fun x y => Hu x y - Hl x y) (fun _ => 1) γ.1 z)⁻¹‖
-      ≤ Real.exp (Real.pi * C ^ 2)
-        * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by
+  have hsplit : Real.exp A * (M * Real.exp B) = M * Real.exp P * Real.exp Q := by
+    rw [show Real.exp A * (M * Real.exp B) = M * (Real.exp A * Real.exp B) from by ring,
+      ← Real.exp_add, hexpsum, Real.exp_add]
+    ring
+  have hR : ‖(appellHumbertFactor (fun x y => Hu x y - Hl x y) (fun _ => 1) γ.1 z)⁻¹‖
+      = Real.exp Q := by
+    rw [norm_inv, norm_appellHumbertFactor hD (fun _ => norm_one), ← Real.exp_neg, hQdef]
+  have hbound : Real.exp Q ≤ Real.exp (Real.pi * C ^ 2)
+      * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by
+    rw [← hR]
     have h := norm_inv_appellHumbertFactor_le hD hpos (χ := fun _ => 1)
       (fun _ => norm_one) hC hz γ.1
     simpa using h
-  rw [hval, norm_mul, norm_mul, ← mul_assoc, hratio]
-  exact mul_le_mul_of_nonneg_right hbound (norm_nonneg _)
+  have hnn : (0 : ℝ) ≤ M * Real.exp P := by positivity
+  rw [hsplit] at hstep
+  refine le_trans hstep ?_
+  calc M * Real.exp P * Real.exp Q
+      ≤ M * Real.exp P * (Real.exp (Real.pi * C ^ 2)
+          * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re)) :=
+        mul_le_mul_of_nonneg_left hbound hnn
+    _ = M * Real.exp P * Real.exp (Real.pi * C ^ 2)
+          * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by ring
 
-/-- **The packet-jet form of the same bound.**  This is the damping estimate's hypothesis with the
-seed entering only through its size on one fixed ball. -/
+/-- **The packet-jet form of the same bound.** -/
 theorem norm_multiIndexJetEvalCLM_poincareTerm_appellHumbert_le
-    (hHu : IsHermitianForm Hu) (hHl : IsHermitianForm Hl)
-    (hχu : ∀ γ, ‖χu γ‖ = 1) (hχl : ∀ γ, ‖χl γ‖ = 1)
+    (hHu : IsHermitianForm Hu) (hHl : IsHermitianForm Hl) (hχu : ∀ γ, ‖χu γ‖ = 1)
     (hpos : ∀ w : Fin d → ℂ, 0 ≤ (Hu w w - Hl w w).re)
     {C : ℝ} (hC : 0 ≤ C) {Γ : AddSubgroup (Fin d → ℂ)}
     (hsemiu : ∀ γ γ' : Fin d → ℂ, χu (γ + γ')
       = χu γ * χu γ' * Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hu γ γ').im : ℝ))))
-    (seed : MultivariateEntire d)
-    (hseed : ∀ (γ : Γ) (x : Fin d → ℂ),
-      seed.1 (x + γ.1) = appellHumbertFactor Hl χl γ.1 x * seed.1 x)
-    (p : Fin d → ℂ) (a : Fin d →₀ ℕ) {ρ Ms : ℝ} (hρ : 0 < ρ)
+    (seed : MultivariateEntire d) {M : ℝ}
+    (hseednorm : ∀ y : Fin d → ℂ, ‖seed.1 y‖ ≤ M * Real.exp (Real.pi / 2 * (Hl y y).re))
+    (p : Fin d → ℂ) (a : Fin d →₀ ℕ) {ρ L : ℝ} (hρ : 0 < ρ)
     (hzsup : ∀ y : Fin d → ℂ,
       ‖y - p‖ ≤ ((Fintype.card (MultiIndexSlot a) : ℕ) : ℝ) * ρ → (Hu y y - Hl y y).re ≤ C ^ 2)
-    (hseedsup : ∀ y : Fin d → ℂ,
-      ‖y - p‖ ≤ ((Fintype.card (MultiIndexSlot a) : ℕ) : ℝ) * ρ → ‖seed.1 y‖ ≤ Ms)
+    (hLsup : ∀ y : Fin d → ℂ,
+      ‖y - p‖ ≤ ((Fintype.card (MultiIndexSlot a) : ℕ) : ℝ) * ρ → (Hl y y).re ≤ L)
     (γ : Γ) :
     ‖multiIndexJetEvalCLM p a
         (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) seed γ)‖
-      ≤ (Real.exp (Real.pi * C ^ 2) * Ms / ρ ^ (Fintype.card (MultiIndexSlot a)))
+      ≤ (M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C ^ 2)
+            / ρ ^ (Fintype.card (MultiIndexSlot a)))
           * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by
+  have hM : 0 ≤ M := by
+    have h := hseednorm p
+    have h0 : (0 : ℝ) ≤ ‖seed.1 p‖ := norm_nonneg _
+    nlinarith [Real.exp_pos (Real.pi / 2 * (Hl p p).re), h, h0]
+  set ψ := appellHumbertAutomorphicFactor hHu hχu hsemiu Γ with hψ
   set E : ℝ := Real.exp (Real.pi * C ^ 2)
       * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) with hE
-  have hEnonneg : 0 ≤ E := by positivity
+  have hEnn : 0 ≤ E := by positivity
   have hstep : ∀ y : Fin d → ℂ,
       ‖y - p‖ ≤ ((Fintype.card (MultiIndexSlot a) : ℕ) : ℝ) * ρ →
-        ‖(poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) seed γ).1 y‖
-          ≤ E * Ms := by
+        ‖(poincareTermEntire ψ seed γ).1 y‖ ≤ M * Real.exp (Real.pi / 2 * L) * E := by
     intro y hy
-    have h1 : ‖poincareTerm (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) seed γ y‖
-        ≤ E * ‖seed.1 y‖ :=
-      norm_poincareTerm_appellHumbert_le hHu hHl hχu hχl hpos hC (hzsup y hy) hsemiu seed hseed γ
-    refine le_trans h1 ?_
-    exact mul_le_mul_of_nonneg_left (hseedsup y hy) hEnonneg
-  have h := norm_multiIndexJetEvalCLM_le p a
-    (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) seed γ) hρ hstep
+    have h1 := norm_poincareTerm_appellHumbert_le hHu hHl hχu hpos hC (hzsup y hy) hsemiu
+      seed hseednorm γ
+    have hmono : Real.exp (Real.pi / 2 * (Hl y y).re) ≤ Real.exp (Real.pi / 2 * L) := by
+      refine Real.exp_le_exp.mpr ?_
+      have hL := hLsup y hy
+      nlinarith [Real.pi_pos]
+    have hle : M * Real.exp (Real.pi / 2 * (Hl y y).re) * E
+        ≤ M * Real.exp (Real.pi / 2 * L) * E :=
+      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmono hM) hEnn
+    calc ‖(poincareTermEntire ψ seed γ).1 y‖
+        ≤ M * Real.exp (Real.pi / 2 * (Hl y y).re) * Real.exp (Real.pi * C ^ 2)
+            * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := h1
+      _ = M * Real.exp (Real.pi / 2 * (Hl y y).re) * E := by rw [hE]; ring
+      _ ≤ M * Real.exp (Real.pi / 2 * L) * E := hle
+  have h := norm_multiIndexJetEvalCLM_le p a (poincareTermEntire ψ seed γ) hρ hstep
   refine le_trans h (le_of_eq ?_)
   rw [hE]
   field_simp

@@ -1440,3 +1440,119 @@ difference form `D = H_u − H_l`, so Abe positivity `D ⪰ 0` gives
 `‖jet‖ ≤ (exp(πC²)·M_s/ρⁿ)·exp(−(π/4)·D(γ,γ))` with `M_s` the seed's sup on ONE fixed ball.
 
 That is `hbound` of `abeDampingMajorant_of_finite_vanishing`, no longer an assumption.
+
+## Card 4: the shear invariant
+
+`HTGeometry.ShiftedMatrixDegree` (wired, built, axiom-clean): `ShiftDegLE k P c` — the shifted
+matrix degree as a predicate, with submultiplicativity, map-invariance, `matDeg_le`, and the two
+chain theorems `matDeg_twistedChain_le_of_shiftDegLE` (every shear bounds the growth rate) and
+`matDeg_twistedChain_le_of_shiftDegLE_zero` (**the bounded branch**, with the explicit bound
+`spread(k)` uniform in `n`).  Nothing leaves the operator ring: no completion and no `∂⁻¹`.
+
+Two recorded counterexamples pin the remaining gap: `[[0,1],[∂,0]]` shows integer shears cannot see
+a slope of denominator 2 (so the restart `N` is unavoidable), and `I + ∂M` with `M` nilpotent
+constant shows a constant base change is also unavoidable.  The invariant is therefore
+`min over (N, S) of matDeg(S⁻¹A_N S)/N`, and the missing half is that this min is attained.
+
+## Card 6 item 1: iterates of a rational map
+
+`HTGeometry.RationalMapComposition` (wired, built, axiom-clean): `ratComp`, `aeval_ratComp`,
+`ratMapEval_ratComp` (the composite of two rational maps is a rational map), `ratIter`,
+`natDegree_ratIter_le` (`deg αⁿ ≤ dⁿ`), `ratMapEval_ratIter` (it computes the `n`-fold iterate).
+
+With `RationalPrefixDeckDescent.differentialAdjoin_ratMapEval_eq_fixedField` — which the tree already
+owned — item 1 for a one-dimensional isogeny now needs only `dⁿ ≤ |Γₙ|` and the noncriticality of the
+iterate.
+
+Card 6 item 1 is now closed for a one-dimensional isogeny:
+`RationalMapComposition.differentialAdjoin_ratIter_eq_fixedField` gives `C⟨αⁿ(g)⟩ = K^{Γ}` for every
+`n`, with noncriticality of the iterate proved from the chain rule rather than computed.  The only
+remaining input is `dⁿ ≤ |ker αⁿ|`.
+
+## Card 4: the shifted leading matrix
+
+`HTGeometry.ShiftedTopMatrix` (wired, built, axiom-clean): `coeffZ` (coefficients at integer
+indices), `shiftTopMatrix`, `shiftTopMatrix_mul` (multiplicativity), `shiftTopMatrix_chainProd`, and
+the two growth theorems `matDeg_chainProd_sub_le` and `matDeg_twistedChain_sub_le`:
+
+> `|matDeg A_n − n·c| ≤ spread(k)` uniformly in `n`, whenever the accumulated shifted leading
+> matrices of the twisted chain never vanish.
+
+So relative to any shear the phase is completely decided — `c = 0` bounded, `c ≥ 1` exactly linear
+with rate `c` — and the residue is the single statement that some `(N, S)` attains the minimum of
+`matDeg(S⁻¹A_N S)/N`.
+
+## Card 7: the majorant is closed from Abe positivity in coordinates
+
+`HTGeometry.AbePositiveGaussianMajorant` (wired, built, axiom-clean): `abeGram`,
+`re_hermitian_latticeSum`, `exists_gaussian_of_posDef`, and
+`norm_multiIndexJetEvalCLM_le_gaussianLatticeWeight` — the `majorant` field of
+`AbeDampingPacketData`, proved for Appell–Humbert data from `Matrix.PosDef (abeGram (H_u − H_l) v)`
+plus the seed's sup bound on one fixed ball.  Coercivity reuses the corpus's `posDef_coercive`.
+
+Remaining for a full damping datum: `normal` (summability), `seed`/`seed_jet` (induction hypothesis
+plus `EnlargedPacketInterpolant`), and the bookkeeping fields `compat`, `decomp`.
+
+## Card 7: the `normal` field is closed too
+
+`HTGeometry.AbePoincareLocalNormal` (wired, built, axiom-clean):
+`summableLocallyUniformlyOn_poincareTerm_appellHumbert` — the complement Poincaré series converges
+locally normally, by the M-test through the corpus's
+`summableLocallyUniformlyOn_of_polynomialGaussianLattice_bound`.  Both compact bounds are free:
+`continuous_hermitian_self_re` (new) and continuity of the seed.
+
+Of `AbeDampingPacketData`'s fields, `majorant` and `normal` are now both proved for Appell–Humbert
+data; what remains is the group bookkeeping (`le`, `compat`, `comp`, `decomp`) and the seeds, which
+are the induction hypothesis.
+
+## Card 7: `hbound` in the shape the finite-vanishing majorant consumes
+
+`HTGeometry.AbeDampingBoundBridge.abeDampingBound_of_appellHumbert` (wired, built, axiom-clean):
+`‖jet‖ ≤ C₀·B^r·exp(−σ₀∑z_k²)` uniformly in packet index, seed index, lattice point and `B`, from
+(1) Appell–Humbert factors with a lower-automorphic seed family, (2) `Matrix.PosDef (abeGram ...)`,
+(3) two sup bounds on one ball.  The Cauchy estimate is at unit radius, so the constant does not
+depend on the jet order.
+
+This feeds `abeDampingMajorant_of_finite_vanishing`, so both analytic fields of
+`AbeDampingPacketData` — `majorant` and `normal` — are now proved.
+
+`AbeDampingBoundBridge` also gained `appellHumbertAutomorphicFactor_compat` — the `compat` field of
+the damping datum: the upper factor restricts to the lower one along `ΓH` exactly when the two forms
+and the two semicharacters agree there.  Of `AbeDampingPacketData`'s ten fields, only `le`, `comp`,
+`comp_mem`, `decomp` (pure lattice data) and `seed`/`seed_mem`/`seed_jet` (the induction hypothesis)
+are not yet supplied by a theorem.
+
+## Card 7: CORRECTION — the seed hypothesis
+
+The earlier Poincaré-decay entries used `seed(x+γ) = e_l(γ,x)·seed(x)` for `γ ∈ Γ`.  That is
+unsatisfiable for a seed of the induction: the seed is automorphic only for `ΓH`, and the complement
+translates are exactly the elements outside `ΓH`.  Corrected across
+`PoincareTermAppellHumbertDecay`, `AbePositiveGaussianMajorant`, `AbePoincareLocalNormal`,
+`AbeDampingBoundBridge` (all rebuilt, axiom-clean): the hypothesis is now the bounded **normalised
+modulus** `‖seed y‖ ≤ M·exp((π/2)·Re H_l(y,y))`, which is the `ΓH`-periodic invariant.  All
+conclusions are unchanged; the new ingredient is `IsHermitianForm.re_add_self`, and the bound on
+`Re H_l` over a ball is free by `continuous_hermitian_self_re`.
+
+## Card 4: constant changes of basis
+
+`HTGeometry.ConstantConjugationDegree` (wired, built, axiom-clean): `twistedChain_conj`
+(`(S⁻¹Aσ(S))_n = S⁻¹A_nσⁿ(S)`) and `matDeg_twistedChain_le_of_conj_shiftDegLE_zero` — the bounded
+phase from a *pair* (constant basis, shear), which covers the `I + ∂M` counterexample that no shear
+alone can.  Constant conjugation stays inside `K[∂;δ]`, unlike a shear.
+
+Still open: whether the criterion is necessary.  General lattices are `U·diag(∂^k)·O^r` with
+`U ∈ GL_r(O)`, and constant `S ∈ GL_r(K)` is a proper subgroup; closing that gap needs the degree
+valuation on `Frac(K[∂;δ])`, which the tree does not yet have.
+
+## Card 7: the damping datum is constructible
+
+`HTGeometry.AbeDampingPacketConstruction.abeDampingPacketDataAppellHumbert` (wired, built,
+axiom-clean) assembles **every field** of `AbeDampingPacketData` for a pair of Appell–Humbert
+factors.  `normal` and `majorant` are discharged by the theorems of the previous entries; the
+remaining fields are the induction step's own data — the two period groups with their complement
+(`le`, `comp`, `comp_mem`, `decomp`), and the seed family with prescribed jets, bounded normalised
+modulus `C_s·B^r`, and vanishing on a disc of squared radius `≥ κB`.
+
+With it, `HasAbeDampingFamily` is exactly "the induction hypothesis supplies such a seed family for
+every finite jet packet", and `jetAmpleEveryFiniteOrder_of_hasAbeDampingFamily` (already in the
+tree) closes the induction step.

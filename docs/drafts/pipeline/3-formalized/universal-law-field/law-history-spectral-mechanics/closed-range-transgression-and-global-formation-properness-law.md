@@ -1,7 +1,7 @@
 # Closed-range transgression and global formation properness law
 
 - **ID:** ULF-LHSM-4
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** FOURTH-ORGAN PREDICTION / TOPOLOGICAL FORMATION THEOREM
 - **Statement:** For composable closed-range Hilbert laws, the composite has closed range exactly
   when the law-history transgression has closed range.  A finite history is globally proper at
@@ -9,7 +9,7 @@
   hide an earlier loss of properness.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [HILBERT CLOSED RANGE]
   [TRANSGRESSION STRICTNESS] [GLOBAL PREFIX PROPERNESS] [SHARP COUNTERMODEL]
-  [LEAN REQUIRED] [NOT RH]
+  [LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]
 
 ## 1. Setup
 

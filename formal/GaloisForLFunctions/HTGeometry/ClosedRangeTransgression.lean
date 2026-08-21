@@ -359,4 +359,78 @@ theorem globally_proper_iff_transgressions_closed
 
 end History
 
+/-! ## Terminal closedness is not global properness -/
+
+section Countermodel
+
+variable {𝕜 H : Type*} [RCLike 𝕜] [NormedAddCommGroup H] [InnerProductSpace 𝕜 H]
+  [CompleteSpace H]
+
+omit [CompleteSpace H] in
+/-- The inclusion of a closed subspace has closed range. -/
+theorem isClosed_range_subtypeL {M : Submodule 𝕜 H} (hM : IsClosed (M : Set H)) :
+    IsClosed ((LinearMap.range (M.subtypeL : M →ₗ[𝕜] H) : Submodule 𝕜 H) : Set H) := by
+  have hr : (LinearMap.range (M.subtypeL : M →ₗ[𝕜] H) : Submodule 𝕜 H) = M := by
+    ext x
+    constructor
+    · rintro ⟨y, rfl⟩
+      exact y.2
+    · intro hx
+      exact ⟨⟨x, hx⟩, rfl⟩
+  rw [hr]
+  exact hM
+
+/-- The orthogonal projection onto the complement of a closed subspace has that subspace as
+kernel and the complement as range. -/
+theorem ker_range_starProjection_orthogonal {N : Submodule 𝕜 H} (hN : IsClosed (N : Set H)) :
+    LinearMap.ker ((Nᗮ.starProjection : H →L[𝕜] H) : H →ₗ[𝕜] H) = N
+      ∧ (LinearMap.range ((Nᗮ.starProjection : H →L[𝕜] H) : H →ₗ[𝕜] H) : Submodule 𝕜 H) = Nᗮ := by
+  haveI : CompleteSpace N := hN.completeSpace_coe
+  constructor
+  · rw [Submodule.ker_starProjection, N.orthogonal_orthogonal]
+  · rw [Submodule.range_starProjection]
+
+/-- **Theorem 7.1.**  Two closed subspaces with non-closed sum give closed-range maps whose
+composite is non-closed, while appending the zero map restores terminal closedness. -/
+theorem terminal_closedness_not_global_properness
+    {M N : Submodule 𝕜 H} (hN : IsClosed (N : Set H))
+    (hMN : ¬ IsClosed ((M ⊔ N : Submodule 𝕜 H) : Set H)) :
+    ¬ IsClosed ((LinearMap.range
+        (((Nᗮ.starProjection : H →L[𝕜] H).comp M.subtypeL) : M →ₗ[𝕜] H)
+        : Submodule 𝕜 H) : Set H)
+      ∧ IsClosed ((LinearMap.range
+        ((((0 : H →L[𝕜] H)).comp ((Nᗮ.starProjection : H →L[𝕜] H).comp M.subtypeL))
+          : M →ₗ[𝕜] H) : Submodule 𝕜 H) : Set H) := by
+  haveI : CompleteSpace N := hN.completeSpace_coe
+  obtain ⟨hker, hrange⟩ := ker_range_starProjection_orthogonal hN
+  have hgclosed : IsClosed ((LinearMap.range
+      ((Nᗮ.starProjection : H →L[𝕜] H) : H →ₗ[𝕜] H) : Submodule 𝕜 H) : Set H) := by
+    rw [hrange]
+    exact N.isClosed_orthogonal
+  have hiff := closedRange_transgression_tfae (M.subtypeL) (Nᗮ.starProjection) hgclosed
+  have hsum : (LinearMap.range (M.subtypeL : M →ₗ[𝕜] H)
+      ⊔ LinearMap.ker ((Nᗮ.starProjection : H →L[𝕜] H) : H →ₗ[𝕜] H) : Submodule 𝕜 H)
+      = (M ⊔ N : Submodule 𝕜 H) := by
+    rw [hker]
+    congr 1
+    ext x
+    constructor
+    · rintro ⟨y, rfl⟩
+      exact y.2
+    · intro hx
+      exact ⟨⟨x, hx⟩, rfl⟩
+  constructor
+  · intro hc
+    exact hMN (hsum ▸ ((hiff.out 0 1).1 hc))
+  · have hzero : (LinearMap.range
+        ((((0 : H →L[𝕜] H)).comp ((Nᗮ.starProjection : H →L[𝕜] H).comp M.subtypeL))
+          : M →ₗ[𝕜] H) : Submodule 𝕜 H) = ⊥ := by
+      rw [Submodule.eq_bot_iff]
+      rintro x ⟨y, rfl⟩
+      rfl
+    rw [hzero]
+    simp
+
+end Countermodel
+
 end GaloisForLFunctions.HTGeometry
