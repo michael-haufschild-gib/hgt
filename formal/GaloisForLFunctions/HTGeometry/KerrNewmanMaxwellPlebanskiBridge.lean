@@ -73,4 +73,55 @@ theorem kerrNewmanCanonicalMaxwell_invariant_quadrature
   simp [kerrNewmanCanonicalMaxwellStressMagnitude]
   ring
 
+/-- Within the canonical parallel electric/magnetic ansatz, vanishing exterior square selects
+exactly the pure-electric or pure-magnetic axes. -/
+theorem kerrNewmanCanonicalMaxwellPlebanskiForm_sq_eq_zero_iff
+    (electric magnetic : ℝ) :
+    kerrNewmanCanonicalMaxwellPlebanskiForm electric magnetic *
+        kerrNewmanCanonicalMaxwellPlebanskiForm electric magnetic = 0 ↔
+      electric = 0 ∨ magnetic = 0 := by
+  constructor
+  · intro h
+    rw [kerrNewmanCanonicalMaxwellPlebanskiForm_sq] at h
+    have hscalar : 2 * (electric : ℂ) * (magnetic : ℂ) = 0 :=
+      (smul_eq_zero.mp h).resolve_right eventPlebanskiVolume_ne_zero
+    rcases mul_eq_zero.mp hscalar with htwoElectric | hmagnetic
+    · rcases mul_eq_zero.mp htwoElectric with htwo | helectric
+      · exact False.elim (two_ne_zero htwo)
+      · exact Or.inl (Complex.ofReal_eq_zero.mp helectric)
+    · exact Or.inr (Complex.ofReal_eq_zero.mp hmagnetic)
+  · rintro (rfl | rfl)
+    · rw [kerrNewmanCanonicalMaxwellPlebanskiForm_sq]
+      simp
+    · rw [kerrNewmanCanonicalMaxwellPlebanskiForm_sq]
+      simp
+
+/-- In the canonical two-plane ansatz, simultaneous vanishing of the Lorentz quadratic and
+exterior pseudoscalar invariants forces the field itself to vanish. -/
+theorem kerrNewmanCanonicalMaxwell_both_invariants_zero_iff
+    (electric magnetic : ℝ) :
+    kerrNewmanTwoFormQuadraticInvariant
+        (kerrNewmanCanonicalMaxwellTwoForm electric magnetic) = 0 ∧
+      kerrNewmanCanonicalMaxwellPlebanskiForm electric magnetic *
+        kerrNewmanCanonicalMaxwellPlebanskiForm electric magnetic = 0 ↔
+      electric = 0 ∧ magnetic = 0 := by
+  constructor
+  · rintro ⟨hquadratic, hwedge⟩
+    rw [kerrNewmanCanonicalMaxwellTwoForm_invariant] at hquadratic
+    rcases kerrNewmanCanonicalMaxwellPlebanskiForm_sq_eq_zero_iff electric magnetic |>.mp
+      hwedge with helectric | hmagnetic
+    · subst electric
+      have hmagneticSq : magnetic ^ 2 = 0 := by
+        nlinarith
+      exact ⟨rfl, (sq_eq_zero_iff).mp hmagneticSq⟩
+    · subst magnetic
+      have helectricSq : electric ^ 2 = 0 := by
+        nlinarith
+      exact ⟨(sq_eq_zero_iff).mp helectricSq, rfl⟩
+  · rintro ⟨rfl, rfl⟩
+    constructor
+    · simp [kerrNewmanCanonicalMaxwellTwoForm_invariant]
+    · rw [kerrNewmanCanonicalMaxwellPlebanskiForm_sq]
+      simp
+
 end GaloisForLFunctions.HTGeometry
