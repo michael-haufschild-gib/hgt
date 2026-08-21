@@ -77,10 +77,9 @@ private theorem pairingExpand_zero_aux (c : α → α → K) :
       | [] => simp
       | (u :: t) =>
         have ht : t.length ≤ n := by simpa using hl
-        rw [pairingExpand_cons, ih t ht, add_zero]
-        refine (positionSum_zero t).symm.trans ?_ |>.symm
-        refine positionSum_congr' fun k => ?_
-        show c u t[(k : ℕ)] • pairingExpand c (fun _ => (0 : M)) (t.eraseIdx (k : ℕ)) = 0
+        rw [pairingExpand_cons, ih t ht, zero_add]
+        simp only [positionSum]
+        refine Finset.sum_eq_zero fun k _ => ?_
         rw [ih _ (le_trans (le_of_lt (length_eraseIdx_lt k)) ht), smul_zero]
 
 @[simp] theorem pairingExpand_zero (c : α → α → K) (l : List α) :

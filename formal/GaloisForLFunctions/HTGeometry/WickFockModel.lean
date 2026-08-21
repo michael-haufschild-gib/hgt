@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.WickVacuumExpectation
+import GaloisForLFunctions.HTGeometry.WickFieldTheorem
 import GaloisForLFunctions.HTGeometry.CoordinateDerivationCommute
 
 /-!
@@ -104,5 +104,21 @@ theorem bosonicFock_vacuum_prod_op (l : List (WickMode ι)) :
     constantCoeff ((l.map (bosonicFock K ι).op).prod (1 : MvPolynomial ι K))
       = completePairing (bosonicFock K ι).contract l :=
   (fockVacuum K ι).vacuum_prod_op l
+
+@[simp] theorem bosonicFock_κ (i j : ι) :
+    (bosonicFock K ι).κ i j = if j = i then 1 else 0 := rfl
+
+/-- The free bosonic field of a mode: creation plus annihilation, i.e. multiplication by the
+variable plus differentiation in its direction. -/
+theorem bosonicFock_field_apply (i : ι) (p : MvPolynomial ι K) :
+    (bosonicFock K ι).field i p = X i * p + pderiv i p := rfl
+
+/-- **Wick's theorem for the free bosonic field.**  The vacuum expectation of a product of the
+fields `Xᵢ · + ∂ᵢ` is the sum over the perfect matchings of the word of the products of the
+Kronecker propagators. -/
+theorem bosonicFock_vacuum_prod_field (l : List ι) :
+    constantCoeff ((l.map (bosonicFock K ι).field).prod (1 : MvPolynomial ι K))
+      = completePairing (fun i j => if j = i then (1 : K) else 0) l :=
+  (fockVacuum K ι).vacuum_prod_field l
 
 end GaloisForLFunctions.HTGeometry

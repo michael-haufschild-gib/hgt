@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.HaferkampEdgeListArchitecture
 import GaloisForLFunctions.HTGeometry.HaferkampLiftedPauliTransport
 
 /-!
@@ -22,11 +23,39 @@ inductive PauliMergeSchedule
     (Q → Option (Fin 3)) → (Q → Option (Fin 3)) → Type _
   | done (P : Q → Option (Fin 3)) : PauliMergeSchedule Q P P
   | step (P : Q → Option (Fin 3)) (a b : Q) (hab : a ≠ b)
-      (ha : P a ≠ none) {R : Q → Option (Fin 3)} :
+      (hlocal : P a ≠ none ∨ P b ≠ none) {R : Q → Option (Fin 3)} :
       PauliMergeSchedule Q (updateTwoQubitPauliLabel P a b none (some 2)) R →
         PauliMergeSchedule Q P R
 
 namespace PauliMergeSchedule
+
+/-- Ordered edge word underlying a certified merge schedule. -/
+def edgeList
+    {Q : Type*} [DecidableEq Q] {P R : Q → Option (Fin 3)} :
+    PauliMergeSchedule Q P R → List (Q × Q)
+  | .done _ => []
+  | .step _ a b _ _ tail => (a, b) :: tail.edgeList
+
+/-- Every edge in a schedule is a genuine two-qubit location. -/
+theorem edgeList_distinct
+    {Q : Type*} [DecidableEq Q] {P R : Q → Option (Fin 3)}
+    (schedule : PauliMergeSchedule Q P R) :
+    ∀ e ∈ schedule.edgeList, e.1 ≠ e.2 := by
+  induction schedule with
+  | done P => simp [edgeList]
+  | @step P a b hab hlocal R tail ih =>
+      intro e he
+      simp only [edgeList, List.mem_cons] at he
+      rcases he with rfl | he
+      · exact hab
+      · exact ih e he
+
+/-- The literal ordered architecture implementing the schedule's edge word. -/
+def architecture
+    {n : ℕ} {P R : Fin n → Option (Fin 3)}
+    (schedule : PauliMergeSchedule (Fin n) P R) :
+    TwoQubitArchitecture n schedule.edgeList.length :=
+  TwoQubitArchitecture.ofEdgeList schedule.edgeList schedule.edgeList_distinct
 
 /-- Every certified schedule is implemented by a product of lifted local
 `SU(4)` gates, up to an explicit nonzero scalar on its Pauli direction. -/
@@ -41,15 +70,28 @@ theorem exists_transport
   induction schedule with
   | done P =>
       exact ⟨1, 1, one_ne_zero, by simp⟩
-  | @step P a b hab ha R tail ih =>
+  | @step P a b hab hlocal R tail ih =>
       obtain ⟨U₁, c₁, hc₁, hU₁⟩ :=
-        finitePauliMatrix_exists_twoQubitLift_transport P a b hab (Or.inl ha)
+        finitePauliMatrix_exists_twoQubitLift_transport P a b hab hlocal
       obtain ⟨W₂, c₂, hc₂, hW₂⟩ := ih
       refine ⟨W₂ * twoQubitLift a b hab U₁, c₁ * c₂,
         mul_ne_zero hc₁ hc₂, ?_⟩
       rw [unitary_mul_conjugation_smul W₂ (twoQubitLift a b hab U₁) _ _ c₁ hU₁]
       rw [hW₂]
       simp [smul_smul]
+
+/-- A schedule whose terminal label is `Z` at `root` implements the exact
+root-targeted Pauli transport required of one backwards-light-cone block. -/
+theorem exists_transport_to_root
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    {P R : Q → Option (Fin 3)} (root : Q)
+    (schedule : PauliMergeSchedule Q P R) (hroot : R root = some 2) :
+    ∃ W : Matrix.unitaryGroup (Q → Bool) ℂ, ∃ c : ℂ, c ≠ 0 ∧
+      (W : Matrix (Q → Bool) (Q → Bool) ℂ) * finitePauliMatrix P *
+        Matrix.conjTranspose (W : Matrix (Q → Bool) (Q → Bool) ℂ) =
+      c • finitePauliMatrix R ∧ R root = some 2 := by
+  obtain ⟨W, c, hc, hW⟩ := schedule.exists_transport
+  exact ⟨W, c, hc, hW, hroot⟩
 
 end PauliMergeSchedule
 

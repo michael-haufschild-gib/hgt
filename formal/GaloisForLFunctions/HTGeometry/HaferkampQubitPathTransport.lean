@@ -22,6 +22,12 @@ inductive QubitMergePath (Q : Type*) : Q → Q → Type _
 
 namespace QubitMergePath
 
+/-- Ordered edge word of a certified directed path. -/
+def edgeList
+    {Q : Type*} {a t : Q} : QubitMergePath Q a t → List (Q × Q)
+  | @single _ a t _ => [(a, t)]
+  | @extend _ a b _ _ tail => (a, b) :: tail.edgeList
+
 /-- Pauli label left after the successive local support merges along a path. -/
 def transportLabel
     {Q : Type*} [DecidableEq Q] {a t : Q}
@@ -52,12 +58,33 @@ def toPauliMergeSchedule
     PauliMergeSchedule Q P (path.transportLabel P) :=
   match path with
   | @single _ a t hab =>
-      PauliMergeSchedule.step P a t hab ha (PauliMergeSchedule.done _)
+      PauliMergeSchedule.step P a t hab (Or.inl ha) (PauliMergeSchedule.done _)
   | @extend _ a b t hab tail =>
       let P₁ := updateTwoQubitPauliLabel P a b none (some 2)
       have hb : P₁ b ≠ none := by
         simp [P₁, updateTwoQubitPauliLabel]
-      PauliMergeSchedule.step P a b hab ha (tail.toPauliMergeSchedule P₁ hb)
+      PauliMergeSchedule.step P a b hab (Or.inl ha) (tail.toPauliMergeSchedule P₁ hb)
+
+/-- The schedule generated from a path uses exactly the path's ordered edge
+word. -/
+theorem toPauliMergeSchedule_edgeList
+    {Q : Type*} [DecidableEq Q] {a t : Q}
+    (path : QubitMergePath Q a t) (P : Q → Option (Fin 3))
+    (ha : P a ≠ none) :
+    (path.toPauliMergeSchedule P ha).edgeList = path.edgeList := by
+  induction path generalizing P with
+  | @single a t hab =>
+      simp [toPauliMergeSchedule, edgeList, PauliMergeSchedule.edgeList]
+  | @extend a b t hab tail ih =>
+      let P₁ := updateTwoQubitPauliLabel P a b none (some 2)
+      have hb : P₁ b ≠ none := by
+        simp [P₁, updateTwoQubitPauliLabel]
+      change (a, b) :: (tail.toPauliMergeSchedule P₁ _).edgeList =
+        (a, b) :: tail.edgeList
+      simp only [List.cons.injEq]
+      constructor
+      · trivial
+      · convert ih P₁ hb
 
 /-- A product of lifted local gates transports initial nonidentity support at
 the source through the certified path. -/

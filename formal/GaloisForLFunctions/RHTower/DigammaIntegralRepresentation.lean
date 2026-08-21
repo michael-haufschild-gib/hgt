@@ -404,8 +404,11 @@ theorem integrableOn_digammaGaussIntegrand {s : ℂ} (hs : 0 < s.re) :
   exact (digammaGaussIntegrand_eq s ht).symm
 
 theorem div_ofReal_re (w : ℂ) (r : ℝ) : (w / ((r : ℝ) : ℂ)).re = w.re / r := by
-  simp [Complex.div_re, Complex.normSq_ofReal]
-  ring
+  rcases eq_or_ne r 0 with rfl | hr
+  · simp
+  · simp only [Complex.div_re, Complex.normSq_ofReal, Complex.ofReal_re, Complex.ofReal_im]
+    field_simp
+    ring
 
 /-- **The archimedean real-part form.**  For real `z`,
 `∫_0^∞ ( e^{-u/4} cos(zu/2)/(1 - e^{-u}) - e^{-u}/u ) du = - Re ψ(1/4 + iz/2)`.
@@ -444,7 +447,9 @@ theorem integral_archimedean_gaussKernel (z : ℝ) :
       = ∫ t in Ioi (0 : ℝ),
           (Real.exp (-t) / t
             - Real.exp (-t / 4) * Real.cos (z * t / 2) / (1 - Real.exp (-t))) := by
-    rw [digamma_eq_integral_gauss hs, _root_.integral_re hint]
+    have hcomm := Complex.reCLM.integral_comp_comm hint
+    simp only [Complex.reCLM_apply] at hcomm
+    rw [digamma_eq_integral_gauss hs, ← hcomm]
     exact MeasureTheory.setIntegral_congr_fun measurableSet_Ioi hre
   have hneg : (∫ u in Ioi (0 : ℝ),
       (Real.exp (-u / 4) * Real.cos (z * u / 2) / (1 - Real.exp (-u)) - Real.exp (-u) / u))

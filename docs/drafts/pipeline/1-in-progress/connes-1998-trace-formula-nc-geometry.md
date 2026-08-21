@@ -44,11 +44,11 @@ compaction-surviving ledger.
 | A20 | §VIII(30): pairs of projections; `sin Θ = |P₁−P₂|`; `Θ` commutes with `P_i`; ℤ/2∗ℤ/2 irreps ≤ 2-dim | `ConnesProjectionPair` | DONE |
 | A21 | App I(15)–(20): `⟨1_R,Δ'_s⟩=1`, homogeneity `⟨f^a,Δ'_s⟩=|a|^{-s}⟨f,Δ'_s⟩`, `Δ'_s=(1−q^{-s})Δ_s` | `ConnesLocalHomogeneousDistribution` | DONE |
 | A22 | App III: graph δ-section, `∫δ(y−f(x))ξ(y)dy = ξ(f(x))`; transversality ⟺ `1−P` invertible | `ConnesGraphDelta` | TODO |
-| A23 | §IV(19)–(21): 1-D flow trace `∫ h(t)/|1−e^t| dt`; multiplicative form `∫ h(u)/|1−u| d*u` | `ConnesGraphDelta` | TODO |
+| A23 | §IV(19)–(21): 1-D flow trace `∫ h(t)/|1−e^t| dt`; multiplicative form `∫ h(u)/|1−u| d*u` | `ConnesFlowTrace` (reuses corpus `MellinL2.exp_measurePreserving`) | DONE |
 | A24 | §V(7): `(φ∘L)^ = |det L|^{-1} φ̂∘(L^{-1})^t` | `ConnesLinearFourier` | DONE |
 | A25 | §V(10)(11): convolution of the two line measures gives the constant `|1−λ|^{-1}` | `ConnesLinearFourier` | DONE |
 | A26 | §VIII Lemma 3 model: `Lim ⟨V(f)η_z,η_z⟩ = ∫_{|u|=1} P_z(u) f̂(u) du`; asymptotic orthogonality | `ConnesResonanceModel` | TODO |
-| A27 | App I(27)(28): `φ·α = 0` for `α ∈ 𝒟'`, `φ` smooth with finite-order zeros ⟹ `α ∈ span{δ^{(k)}_{x_i}}` | `ConnesDivisionDistribution` | TODO |
+| A27 | App I(27)(28): `φ·α = 0` for `α ∈ 𝒟'`, `φ` smooth with finite-order zeros ⟹ `α ∈ span{δ^{(k)}_{x_i}}` | `ConnesDivisionDistribution` (reuses corpus `HTGeometry.exists_delta_representation`, `jetTest`) | DONE |
 
 ### Tier B — heavy analytic layers
 | Tag | Statement | Blocking input |
@@ -87,3 +87,6 @@ layer (`XiGuinandWeilExplicitFormula`, `xi_explicitFormula_logDeriv`).
 - 2026-08-21 — A8 (`ConnesModulatedHaar`), A20 (`ConnesProjectionPair`),
   A21 (`ConnesLocalHomogeneousDistribution`), A19 + A16-indicators
   (`ConnesArchPrincipalValue`) landed.  A16's limit form split off as B9.
+- 2026-08-21 — A23 (`ConnesFlowTrace`) and A27 (`ConnesDivisionDistribution`) landed, both built on
+  existing corpus assets (`RHTower.MellinL2` exponential measure-preserving equivalence;
+  `HTGeometry.PointSupportStructure.exists_delta_representation` + `jetTest`) rather than rebuilt.

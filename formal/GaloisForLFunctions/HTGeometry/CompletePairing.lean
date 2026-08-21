@@ -49,4 +49,45 @@ theorem completePairing_cons (c : α → α → K) (u : α) (t : List α) :
   rw [completePairing_cons]
   simp
 
+/-- A word of odd length has no perfect matching at all. -/
+theorem completePairing_eq_zero_of_odd (c : α → α → K) :
+    ∀ (n : ℕ) (l : List α), l.length ≤ n → Odd l.length → completePairing c l = 0 := by
+  intro n
+  induction n with
+  | zero =>
+      intro l hl hodd
+      rw [Nat.odd_iff] at hodd
+      omega
+  | succ n ih =>
+      intro l hl hodd
+      match l with
+      | [] => rw [Nat.odd_iff] at hodd; simp at hodd
+      | (u :: t) =>
+        rw [completePairing_cons]
+        simp only [positionSum]
+        refine Finset.sum_eq_zero fun k _ => ?_
+        have hk := k.isLt
+        have hlen : (t.eraseIdx (k : ℕ)).length = t.length - 1 :=
+          List.length_eraseIdx_of_lt hk
+        rw [Nat.odd_iff] at hodd
+        simp only [List.length_cons] at hodd hl
+        rw [ih _ (by omega) (by rw [Nat.odd_iff]; omega), mul_zero]
+
+/-- The two-point value is the kernel itself. -/
+@[simp] theorem completePairing_pair (c : α → α → K) (x y : α) :
+    completePairing c [x, y] = c x y := by
+  rw [completePairing_cons]
+  simp [positionSum]
+
+/-- **The four-point function has three terms**: the three ways of splitting four letters into two
+pairs. -/
+theorem completePairing_quadruple (c : α → α → K) (x y z w : α) :
+    completePairing c [x, y, z, w] = c x y * c z w + c x z * c y w + c x w * c y z := by
+  rw [completePairing_cons]
+  simp only [positionSum, List.length_cons, List.length_nil, Fin.sum_univ_succ, Fin.sum_univ_zero,
+    Fin.val_zero, Fin.val_succ, List.getElem_cons_zero, List.getElem_cons_succ,
+    List.eraseIdx_cons_zero, List.eraseIdx_cons_succ, List.eraseIdx_nil, completePairing_pair,
+    add_zero]
+  ring
+
 end GaloisForLFunctions.HTGeometry

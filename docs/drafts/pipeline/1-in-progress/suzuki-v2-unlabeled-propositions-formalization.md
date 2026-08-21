@@ -1,7 +1,9 @@
 # Suzuki v2: formalization of the unlabeled propositions
 
-**Status:** in progress — Sections 8.2, 8.5, 7 (kernel algebra) and the Section 3 displayed
-estimates closed in Lean; (2.7)–(2.8), (4.10) and the cut-off convergence remain
+**Status:** in progress — Sections 8.2, 8.5, 7 (kernel algebra), the Section 3 displayed
+estimates, the (4.10) parity identity and the digamma integral representation behind (2.7)–(2.8)
+are closed in Lean; the conditionally convergent cosine-integral half of (2.7)–(2.8) and the
+cut-off convergence remain
 **Primary source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
 arXiv:2606.09096v2, 17 August 2026 (source file `screwzelf_9.tex`, 3823 lines).
 
@@ -141,17 +143,63 @@ structure and the `θ = π` collapse agree with the source.
   `|ŵ(z)| ≤ (|w(a)| + |w(-a)| + ‖w'‖_{L¹})/|z|`, by interval integration by parts against
   `e^{izx}/(iz)`.
 
+## (4.10): the parity decomposition of the ground energy
+
+`GaloisForLFunctions/HTGeometry/ParityRayleighDecomposition.lean` — stated for an arbitrary
+inner-product-symmetric linear involution `J`, which is exactly the structure the source uses
+(`J u = u(-·)` commutes with `G_a`, hence with `B_a` and its Friedrichs extension).
+
+* `parityEven`, `parityOdd`, `parityEven_add_parityOdd`, `inner_parityEven_parityOdd`,
+  `norm_sq_parity_split` — the orthogonal parity splitting;
+* `parity_rayleigh_lower_bound` — `Q(v) ≥ min(λ⁺,λ⁻)·‖v‖²` from the two parity bounds;
+* `isGLB_rayleigh_min_parity` — `λ = min(λ⁺, λ⁻)` as an identity of greatest lower bounds, the
+  source's (4.10).
+
+The only hypothesis beyond `J` being a symmetric involution is that `Q` splits additively along the
+decomposition, which is the vanishing of the even–odd cross term the source verifies; `Q 0 = 0`
+comes free from that splitting.
+
+## The digamma integral representation behind (2.7)–(2.8)
+
+Two modules.
+
+`GaloisForLFunctions/RHTower/EulerMascheroniGaussKernel.lean`:
+
+* `integral_geometricGaussKernel_Ioi` — `∫_ε^∞ e^{-t}/(1-e^{-t}) dt = -log(1-e^{-ε})`;
+* `integral_expNegDiv_Ioi_small` — `∫_ε^∞ e^{-t}/t dt = -log ε + Ein(ε) - γ` for `0 < ε ≤ 1`;
+* `abs_ein_le`, `tendsto_ein_nhdsWithin_zero` — `|Ein(ε)| ≤ ε`;
+* `integral_gaussKernel` — **`∫_0^∞ (e^{-t}/t - e^{-t}/(1-e^{-t})) dt = -γ`**, the two logarithmic
+  divergences cancelling because `(1-e^{-ε})/ε → 1`.
+
+`GaloisForLFunctions/RHTower/DigammaIntegralRepresentation.lean`:
+
+* `sum_gaussDigammaLaplaceTerm` — the geometric partial sum
+  `∑_{n<N}(e^{-(n+1)u} - e^{-(s+n)u}) = (1 - e^{-Nu})·(e^{-u}-e^{-su})/(1-e^{-u})`;
+* `norm_exp_neg_sub_exp_neg_mul_le` — `‖e^{-u} - e^{-su}‖ ≤ (1+‖s‖)u`, by the fundamental theorem
+  of calculus; together with `1 - e^{-u} ≥ u e^{-u}` this bounds the dominating profile by
+  `e(1+‖s‖)` on `(0,1]`;
+* `integral_gaussLaplaceKernel_eq_tsum` — dominated convergence turns the corpus's Gauss *series*
+  into `∑_n (1/(n+1) - 1/(s+n)) = ∫_0^∞ (e^{-u}-e^{-su})/(1-e^{-u}) du`;
+* `digamma_eq_integral_gauss` — **`ψ(s) = ∫_0^∞ (e^{-u}/u - e^{-su}/(1-e^{-u})) du`** for
+  `Re s > 0`;
+* `integral_archimedean_gaussKernel` — the source's archimedean specialization
+  `∫_0^∞ (e^{-u/4}cos(zu/2)/(1-e^{-u}) - e^{-u}/u) du = -Re ψ(1/4 + iz/2)`.
+
+What remains of (2.7)–(2.8) is the *other* half of the source's split,
+`∫_ε^R (e^{-u} - cos(zu/2))/u du → log|z| - log 2`.  That integrand is only conditionally
+convergent at infinity, so it is not a Bochner integral on `(0,∞)`; the honest statement is a
+truncated limit built on the cosine integral `Ci`.  Note the source's `r_1''` is likewise not `L¹`,
+which is why the corpus's own route to (2.6) goes through Abel limits rather than a literal Fourier
+transform.
+
 ## Remaining audit
 
 Still open:
 
-* (2.7)–(2.8), the Fourier-side form of `Q_{B_a}` carrying `Re ψ(1/4 + iz/2) - log π`.  The
-  archimedean half is corpus-owned (`integral_fourier_mul_logPi_sub_re_quarterDigamma_eq_weilDistribution`);
-  the missing piece is the identification of `\hat{r_1''}(z) = -Re ψ(1/4+iz/2) + log|z| - log 2`,
-  which needs the digamma integral representation
-  `ψ(s) = ∫_0^∞ (e^{-u}/u - e^{-su}/(1-e^{-u})) du`.  The corpus owns `gauss_digamma` and a Frullani
-  layer, so this is a bounded analytic project rather than a gap.
-* (4.10) `λ_a = min(λ_a^+, λ_a^-)`, the parity decomposition of the ground energy.
+* The cosine-integral half of (2.7)–(2.8): `∫_ε^R (e^{-u} - cos(au))/u du → log a`.  Route: the
+  corpus's complex Frullani integral `integral_frullani` at `b = ε + ia` gives `½log(ε²+a²)`, and
+  the `ε → 0` Abel limit needs one integration by parts on `[1,∞)` plus the `E₁` asymptotic already
+  proved in `EulerMascheroniGaussKernel`.
 * The cut-off convergence `I_ε ≪ ε log(1/ε) → 0` completing (3.3)–(3.4) into the form-core density
   used by Theorem 1.1 (whose statement is already corpus-owned).
 * The scaling identities (4.1)–(4.6) and the small-aperture expansion (5.1) in their displayed
@@ -159,12 +207,15 @@ Still open:
 
 ## Verification
 
-All four modules
+All seven modules
 
 * `HTGeometry/TriangularIntervalFubini.lean`
+* `HTGeometry/ParityRayleighDecomposition.lean`
 * `RHTower/SuzukiInverseNeumannLaplacian.lean`
 * `RHTower/SuzukiDeBrangesDeficiencyKernel.lean`
 * `RHTower/SuzukiApertureFourierDecay.lean`
+* `RHTower/EulerMascheroniGaussKernel.lean`
+* `RHTower/DigammaIntegralRepresentation.lean`
 
 pass `lake env lean` with no warnings, have fresh `.olean` builds, and are wired into their
 theorem-area umbrellas.  `#print axioms` on every capstone reports only `propext`,
