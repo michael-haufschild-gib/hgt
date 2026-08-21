@@ -67,8 +67,7 @@ theorem summableLocallyUniformlyOn_poincareTerm_appellHumbert
     (hχu : ∀ γ, ‖χu γ‖ = 1)
     (hpos : ∀ w : Fin d → ℂ, 0 ≤ (Hu w w - Hl w w).re)
     {Γ : AddSubgroup (Fin d → ℂ)}
-    (hsemiu : ∀ γ γ' : Fin d → ℂ, χu (γ + γ')
-      = χu γ * χu γ' * Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hu γ γ').im : ℝ))))
+    (hsemiu : IsSemicharacterOn Hu χu Γ)
     (seed : MultivariateEntire d) {M : ℝ}
     (hseednorm : ∀ y : Fin d → ℂ, ‖seed.1 y‖ ≤ M * Real.exp (Real.pi / 2 * (Hl y y).re))
     (v : Fin c → (Fin d → ℂ))
@@ -77,7 +76,7 @@ theorem summableLocallyUniformlyOn_poincareTerm_appellHumbert
     (hcomp : ∀ z : Fin c → ℤ, comp z = ∑ i, ((z i : ℂ)) • v i) :
     SummableLocallyUniformlyOn
       (fun (z : Fin c → ℤ) (x : Fin d → ℂ) =>
-        poincareTerm (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) seed
+        poincareTerm (appellHumbertAutomorphicFactor hHu hχu hsemiu) seed
           (complementEmbedding comp comp_mem z) x) Set.univ := by
   have hD : IsHermitianForm fun x y => Hu x y - Hl x y := hHu.sub hHl
   have hM : 0 ≤ M := by

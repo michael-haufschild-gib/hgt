@@ -123,8 +123,7 @@ theorem norm_multiIndexJetEvalCLM_le_gaussianLatticeWeight
     (hχu : ∀ γ, ‖χu γ‖ = 1)
     (hpos : ∀ w : Fin d → ℂ, 0 ≤ (Hu w w - Hl w w).re)
     {C₀ : ℝ} (hC₀ : 0 ≤ C₀) {Γ : AddSubgroup (Fin d → ℂ)}
-    (hsemiu : ∀ γ γ' : Fin d → ℂ, χu (γ + γ')
-      = χu γ * χu γ' * Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hu γ γ').im : ℝ))))
+    (hsemiu : IsSemicharacterOn Hu χu Γ)
     (seed : MultivariateEntire d) {M : ℝ}
     (hseednorm : ∀ y : Fin d → ℂ, ‖seed.1 y‖ ≤ M * Real.exp (Real.pi / 2 * (Hl y y).re))
     (pt : Fin d → ℂ) (a : Fin d →₀ ℕ) {ρ L : ℝ} (hρ : 0 < ρ)
@@ -138,7 +137,7 @@ theorem norm_multiIndexJetEvalCLM_le_gaussianLatticeWeight
       (∀ y : Fin d → ℂ,
         ‖y - pt‖ ≤ ((Fintype.card (MultiIndexSlot a) : ℕ) : ℝ) * ρ → (Hl y y).re ≤ L) →
       ‖multiIndexJetEvalCLM pt a
-          (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) seed γ)‖
+          (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu) seed γ)‖
         ≤ (M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ 2)
               / ρ ^ (Fintype.card (MultiIndexSlot a)))
             * polynomialGaussianLatticeWeight (Fin c) (fun _ => 0) (fun _ => sigma) z := by

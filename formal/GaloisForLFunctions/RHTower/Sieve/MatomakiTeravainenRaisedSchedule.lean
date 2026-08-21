@@ -40,13 +40,14 @@ theorem huxleyThresholdLossSigma_mem_interval
 all literal dyadic blocks. -/
 theorem matomakiTeravainen_raised_block_window
     {T eps : ℝ} {A ell L : ℕ}
-    (hT : 1 < T) (_heps : 0 < eps) (hellL : ell ≤ L)
+    (hT : 1 < T) (heps : 0 < eps) (hepss : eps ≤ 1 / 1000) (hellL : ell ≤ L)
     (hwidth : (((2 ^ L : ℕ) : ℝ)) ≤ T ^ eps)
-    (hlo : T ^ ((9 : ℝ) / 11) ≤ ((A ^ ell : ℕ) : ℝ))
+    (hlo : T ^ ((9 : ℝ) / 11 - 10 * eps) ≤ ((A ^ ell : ℕ) : ℝ))
     (hhi : ((A ^ ell : ℕ) : ℝ) ≤ T ^ (1 - 2 * eps)) :
     ∀ r : Fin (ell + 1),
       2 ≤ A ^ ell * 2 ^ (r : ℕ) ∧
-      T ^ ((9 : ℝ) / 11) ≤ ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ∧
+      T ^ ((9 : ℝ) / 11 - 10 * eps) ≤
+        ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ∧
       ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ≤ T ^ (1 - eps) := by
   intro r
   have hT0 : 0 < T := by linarith
@@ -57,7 +58,7 @@ theorem matomakiTeravainen_raised_block_window
   have htwo : (((2 ^ (r : ℕ) : ℕ) : ℝ)) ≤ T ^ eps := htwoCast.trans hwidth
   have htwo1 : (1 : ℝ) ≤ ((2 ^ (r : ℕ) : ℕ) : ℝ) := by
     exact_mod_cast (Nat.one_le_iff_ne_zero.mpr (pow_ne_zero _ (by omega)))
-  have hloBlock : T ^ ((9 : ℝ) / 11) ≤
+  have hloBlock : T ^ ((9 : ℝ) / 11 - 10 * eps) ≤
       ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) := by
     rw [Nat.cast_mul]
     exact hlo.trans (le_mul_of_one_le_right (by positivity) htwo1)
@@ -72,19 +73,21 @@ theorem matomakiTeravainen_raised_block_window
         congr 1
         ring
   have hone : (1 : ℝ) < ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) := by
-    have : (1 : ℝ) < T ^ ((9 : ℝ) / 11) := Real.one_lt_rpow hT (by norm_num)
+    have : (1 : ℝ) < T ^ ((9 : ℝ) / 11 - 10 * eps) :=
+      Real.one_lt_rpow hT (by linarith)
     exact this.trans_le hloBlock
   refine ⟨?_, hloBlock, hhiBlock⟩
   have hnat : 1 < A ^ ell * 2 ^ (r : ℕ) := by exact_mod_cast hone
   omega
 
-/-- The bounded pigeonhole count is uniformly absorbed into `kappa` once the raised lower edge is
-at least `T^(9/11)`. -/
+/-- The bounded pigeonhole count is uniformly absorbed into `kappa` at the literature lower edge. -/
 theorem matomakiTeravainen_raised_threshold_loss
-    {T kappa : ℝ} {A ell L : ℕ} (hT : 1 < T) (hkappa : 0 < kappa)
+    {T kappa eps : ℝ} {A ell L : ℕ} (hT : 1 < T) (hkappa : 0 < kappa)
+    (heps : 0 < eps) (hepss : eps ≤ 1 / 1000)
     (hellL : ell ≤ L)
-    (hloss : (((L + 1 : ℕ) : ℝ)) ≤ T ^ (((9 : ℝ) / 11) * kappa))
-    (hlo : T ^ ((9 : ℝ) / 11) ≤ ((A ^ ell : ℕ) : ℝ)) :
+    (hloss : (((L + 1 : ℕ) : ℝ)) ≤
+      T ^ (((9 : ℝ) / 11 - 10 * eps) * kappa))
+    (hlo : T ^ ((9 : ℝ) / 11 - 10 * eps) ≤ ((A ^ ell : ℕ) : ℝ)) :
     ∀ r : Fin (ell + 1), ∀ sigma : ℝ,
       sigma ≤ huxleyThresholdLossSigma (A ^ ell * 2 ^ (r : ℕ))
           sigma (ell + 1 : ℝ) ∧
@@ -94,15 +97,15 @@ theorem matomakiTeravainen_raised_threshold_loss
   let D : ℕ := A ^ ell * 2 ^ (r : ℕ)
   have hT0 : 0 < T := by linarith
   have hbase1 : (1 : ℝ) < ((A ^ ell : ℕ) : ℝ) :=
-    (Real.one_lt_rpow hT (by norm_num)).trans_le hlo
+    (Real.one_lt_rpow hT (by linarith)).trans_le hlo
   have hDbase : ((A ^ ell : ℕ) : ℝ) ≤ (D : ℝ) := by
     dsimp [D]
     rw [Nat.cast_mul]
     exact le_mul_of_one_le_right (by positivity) (by exact_mod_cast
       (Nat.one_le_iff_ne_zero.mpr (pow_ne_zero _ (by omega))))
   have hD : 2 ≤ D := by exact_mod_cast (hbase1.trans_le hDbase)
-  have hcollapse : T ^ (((9 : ℝ) / 11) * kappa) =
-      (T ^ ((9 : ℝ) / 11)) ^ kappa := by
+  have hcollapse : T ^ (((9 : ℝ) / 11 - 10 * eps) * kappa) =
+      (T ^ ((9 : ℝ) / 11 - 10 * eps)) ^ kappa := by
     rw [← Real.rpow_mul hT0.le]
   have hpowBase : (((ell + 1 : ℕ) : ℝ)) ≤ ((A ^ ell : ℕ) : ℝ) ^ kappa := by
     have hellcast : (((ell + 1 : ℕ) : ℝ)) ≤ ((L + 1 : ℕ) : ℝ) := by
@@ -128,7 +131,7 @@ theorem huxley_energy_threshold_of_subpower
     (heps : 0 < eps) (hepss : eps ≤ 1 / 1000)
     (hready : 2400 ≤ T ^ ((1 : ℝ) / 32))
     (hQ : 1 ≤ Q) (hQ3 : Q ^ 3 ≤ T ^ (eps ^ 2))
-    (hNlo : T ^ ((9 : ℝ) / 11) ≤ N)
+    (hNlo : T ^ ((9 : ℝ) / 11 - 10 * eps) ≤ N)
     (hsigma : sigma ≤ 7 / 32 - 5 * eps) :
     2400 * Q ≤ N ^ ((1 : ℝ) / 2 - 2 * sigma) := by
   have hT0 : 0 < T := lt_of_lt_of_le zero_lt_one hT
@@ -144,22 +147,23 @@ theorem huxley_energy_threshold_of_subpower
         mul_le_mul hready hQle (by positivity) (by positivity)
       _ = T ^ ((1 : ℝ) / 32 + eps ^ 2) := by rw [← Real.rpow_add hT0]
   have hexp : (1 : ℝ) / 32 + eps ^ 2 ≤
-      ((9 : ℝ) / 11) * ((1 : ℝ) / 16 + 10 * eps) := by
+      ((9 : ℝ) / 11 - 10 * eps) * ((1 : ℝ) / 16 + 10 * eps) := by
     nlinarith [sq_nonneg eps]
   have htoBase : T ^ ((1 : ℝ) / 32 + eps ^ 2) ≤
-      (T ^ ((9 : ℝ) / 11)) ^ ((1 : ℝ) / 16 + 10 * eps) := by
+      (T ^ ((9 : ℝ) / 11 - 10 * eps)) ^ ((1 : ℝ) / 16 + 10 * eps) := by
     rw [← Real.rpow_mul hT0.le]
     exact Real.rpow_le_rpow_of_exponent_le hT hexp
   have hN0 : 0 ≤ N := le_trans (Real.rpow_nonneg hT0.le _) hNlo
   have hsmallExp : 0 ≤ (1 : ℝ) / 16 + 10 * eps := by positivity
-  have htoN : (T ^ ((9 : ℝ) / 11)) ^ ((1 : ℝ) / 16 + 10 * eps) ≤
+  have htoN : (T ^ ((9 : ℝ) / 11 - 10 * eps)) ^ ((1 : ℝ) / 16 + 10 * eps) ≤
       N ^ ((1 : ℝ) / 16 + 10 * eps) :=
     Real.rpow_le_rpow (Real.rpow_nonneg hT0.le _) hNlo hsmallExp
   have hexpN : (1 : ℝ) / 16 + 10 * eps ≤ (1 : ℝ) / 2 - 2 * sigma := by
     linarith
   exact hconst.trans (htoBase.trans (htoN.trans
     (Real.rpow_le_rpow_of_exponent_le (by
-      have : 1 ≤ T ^ ((9 : ℝ) / 11) := Real.one_le_rpow hT (by norm_num)
+      have : 1 ≤ T ^ ((9 : ℝ) / 11 - 10 * eps) :=
+        Real.one_le_rpow hT (by linarith)
       exact this.trans hNlo) hexpN)))
 
 /-- Uniform completion of every scalar condition imposed by the raised energy-form Lemma 4.1.
@@ -170,13 +174,14 @@ theorem exists_matomakiTeravainen_raised_huxley_schedule
     (hkappa : 0 < kappa) (L : ℕ) :
     ∃ T₀ : ℝ, 1 ≤ T₀ ∧ ∀ (T : ℝ) (A ell : ℕ) (rho Q : ℝ),
       T₀ ≤ T → 0 < ell → ell ≤ L →
-      T ^ ((9 : ℝ) / 11) ≤ ((A ^ ell : ℕ) : ℝ) →
+      T ^ ((9 : ℝ) / 11 - 10 * eps) ≤ ((A ^ ell : ℕ) : ℝ) →
       ((A ^ ell : ℕ) : ℝ) ≤ T ^ (1 - 2 * eps) →
       5 * eps + kappa ≤ rho → rho + kappa ≤ 7 / 32 - 5 * eps →
       1 ≤ Q → Q ^ 3 ≤ T ^ (eps ^ 2) →
       ∀ r : Fin (ell + 1),
         2 ≤ A ^ ell * 2 ^ (r : ℕ) ∧
-        T ^ ((9 : ℝ) / 11) ≤ ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ∧
+        T ^ ((9 : ℝ) / 11 - 10 * eps) ≤
+          ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ∧
         ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ≤ T ^ (1 - eps) ∧
         5 * eps ≤ huxleyThresholdLossSigma
           (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ) ∧
@@ -189,15 +194,18 @@ theorem exists_matomakiTeravainen_raised_huxley_schedule
           (A ^ ell * 2 ^ (r : ℕ)) rho (ell + 1 : ℝ) ≤ rho + kappa := by
   have hwidthGrowth : Tendsto (fun T : ℝ => T ^ eps) atTop atTop :=
     tendsto_rpow_atTop heps
-  have hlossExp : 0 < ((9 : ℝ) / 11) * kappa := by positivity
-  have hlossGrowth : Tendsto (fun T : ℝ => T ^ (((9 : ℝ) / 11) * kappa)) atTop atTop :=
+  have hlossExp : 0 < ((9 : ℝ) / 11 - 10 * eps) * kappa := by
+    exact mul_pos (by linarith) hkappa
+  have hlossGrowth : Tendsto
+      (fun T : ℝ => T ^ (((9 : ℝ) / 11 - 10 * eps) * kappa)) atTop atTop :=
     tendsto_rpow_atTop hlossExp
   have hreadyGrowth : Tendsto (fun T : ℝ => T ^ ((1 : ℝ) / 32)) atTop atTop :=
     tendsto_rpow_atTop (by norm_num)
   have hevent : ∀ᶠ T : ℝ in atTop,
       1 < T ∧
       (((2 ^ L : ℕ) : ℝ)) ≤ T ^ eps ∧
-      (((L + 1 : ℕ) : ℝ)) ≤ T ^ (((9 : ℝ) / 11) * kappa) ∧
+      (((L + 1 : ℕ) : ℝ)) ≤
+        T ^ (((9 : ℝ) / 11 - 10 * eps) * kappa) ∧
       2400 ≤ T ^ ((1 : ℝ) / 32) := by
     filter_upwards [eventually_gt_atTop (1 : ℝ),
       hwidthGrowth.eventually_ge_atTop (((2 ^ L : ℕ) : ℝ)),
@@ -208,9 +216,9 @@ theorem exists_matomakiTeravainen_raised_huxley_schedule
   refine ⟨max 1 T₀, le_max_left _ _, ?_⟩
   intro T A ell rho Q hT hell hellL hlo hhi hrhoLo hrhoHi hQ hQ3
   have hdata := hT₀ T (le_trans (le_max_right _ _) hT)
-  have hblocks := matomakiTeravainen_raised_block_window hdata.1 heps hellL
+  have hblocks := matomakiTeravainen_raised_block_window hdata.1 heps hepss hellL
     hdata.2.1 hlo hhi
-  have hloss0 := matomakiTeravainen_raised_threshold_loss hdata.1 hkappa hellL
+  have hloss0 := matomakiTeravainen_raised_threshold_loss hdata.1 hkappa heps hepss hellL
     hdata.2.2.1 hlo
   intro r
   obtain ⟨hD, hDlo, hDhi⟩ := hblocks r

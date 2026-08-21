@@ -1,7 +1,7 @@
 # Zero-residue parabolic finite jets are realized by algebraic germs with rational Fatou coordinate
 
 - **ID:** parabolic-zero-residue-finite-jet-da-fatou-realization
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / FINITE-JET NONIDENTIFIABILITY FOR PARABOLIC FATOU HT
 - **Source:** Haiku, extending `parabolic-da-fatou-nonrational-exception`
 - **Priority:** HIGH as a gatekeeper for parabolic Fatou-coordinate HT claims
@@ -149,7 +149,7 @@ realization statement has a consequence-bearing novelty beyond standard local pa
 
 - [x] 0 -> 1 in-progress: finite-jet target and triangular mechanism identified.
 - [x] 1 -> 2 fully-proven: proof written with algebraic branch and jet-matching argument.
-- [ ] 2 -> 3 formalized: possible as formal-power-series triangular linear algebra.
+- [x] 2 -> 3 formalized: triangular linear algebra plus the analytic branch, unconditionally in Lean.
 - [ ] 3 -> 4 publication-ready: only as a warning lemma in a parabolic HT note.
 
 ## Log
@@ -194,3 +194,85 @@ Sources found:
   and the global-solution normal form.
 
 Disposition unchanged: **BRIDGE / gatekeeper**, not goal-completing new knowledge.
+
+## Lean formalization — COMPLETE
+
+Module: `formal/GaloisForLFunctions/HTGeometry/ParabolicFatouJetRealization.lean`, wired into
+`GaloisForLFunctions.HTGeometry`.  It is self-contained over mathlib.  `#print axioms` on every
+capstone returns exactly `[propext, Classical.choice, Quot.sound]`.
+
+### The triangular half
+
+Cleared of denominators by `X h`, the Abel residual of `Phi_P = -1/X + P` is
+
+```text
+fatouResidual h P = (h - X - X h) + X h (P o h - P),
+```
+
+so that `(Phi_P o h - Phi_P - 1) * (X h) = fatouResidual h P` as rational functions.
+
+- `X_mul_mul_sub_pow` — the pullback increment: writing `h = X u` with `u(0) = u'(0) = 1`,
+  `X h (h^j - X^j) = X^{j+2} u (u^j - 1)` vanishes to order `j + 3` with coefficient exactly `j`
+  there.  This is the diagonal `1, 2, ..., N-3` of the card's triangular map.
+- `fatouResidual_add_monomial` — adding `c X^k` to `P` changes the residual by
+  `c * X h (h^k - X^k)`.
+- `exists_fatouPolynomial` — the induction: from a `P` whose residual vanishes to order `m + 1`,
+  the choice `c = -[residual]_{m+1}/(m-2)` produces one whose residual vanishes to order `m + 2`.
+  The base case `m = 3` is `P = 0`, and `X^4 ∣ h - X - X h` is exactly the normalization
+  `h = z + z^2 + z^3 + O(z^4)`.
+
+### The analytic half
+
+The paper proof asserts that the branch `f_P` of `Phi_P^{-1}(Phi_P + 1)` exists and is algebraic.
+In Lean this is built from the *reciprocal* Fatou coordinate
+
+```text
+fatouRecip P w = w / (-1 + w P(w)),
+```
+
+which is analytic at the origin with value `0` and derivative `-1` (`analyticAt_fatouRecip`,
+`deriv_fatouRecip`) — the pole of `Phi_P` is never touched.  `exists_localInverse_analytic`
+(mathlib's strict-derivative local inverse plus `AnalyticAt.analyticAt_localInverse`) supplies a
+local analytic inverse `γ`, and
+
+```text
+parabolicGerm P γ z = γ (fatouRecip P z / (1 + fatouRecip P z))
+```
+
+is the branch: `fatouRecip P (f z) = fatouRecip P z / (1 + fatouRecip P z)` near `0`, which is the
+Abel equation in reciprocal form.
+
+### Jet matching
+
+The card's first paragraph is formalized without any two-variable analytic divided difference.
+`polyDivDiff` is the explicit two-variable *polynomial* divided difference, with
+`polyDivDiff_spec` from `geom_sum₂_mul`, so
+
+```text
+fatouDen P a - fatouDen P b = (a - b) (a * polyDivDiff P a b + P(b))     (fatouDen_sub)
+```
+
+is an identity of analytic functions.  Combining it with `eval_fatouResidual` (the cleared Abel
+identity for the jet polynomial) and the cleared Abel identity for the germ gives
+
+```text
+(h(z) - f(z)) * B(z) = -(z^{N+1} R(z)),        B(0) = -1,
+```
+
+with `B` analytic, hence `f - h = z^{N+1} * (R/B)` near the origin.  `iteratedDeriv_eq_zero_of_flat_factor`
+(an induction on the jet order through the product rule) then kills every jet below `N + 1`.
+
+### Capstones
+
+- `exists_algebraicFatouGerm` — for `h = X u` normalized and `N ≥ 4`: a polynomial `P` with
+  `P(0) = 0`, `deg P ≤ N - 3`, and an analytic germ `f` at `0` with `f(0) = 0` which satisfies
+  the polynomial relation `f (1 - z - z P(z) + z P(f)) = z` (the algebraicity claim, obtained by
+  clearing denominators in the Abel equation), carries an explicit flat factor `z^{N+1}` against
+  `h`, and has all jets `j ≤ N` equal to those of `h`.
+- `exists_algebraicFatouGerm_of_coeff` — the same statement from the coefficient normalization
+  `h_0 = 0`, `h_1 = h_2 = h_3 = 1`.
+
+### Reusable infrastructure added
+
+`polyDivDiff` / `polyDivDiff_spec` / `analyticAt_polyDivDiff`,
+`iteratedDeriv_eq_zero_of_flat_factor`, `exists_localInverse_analytic`, `analyticAt_polyEval`.

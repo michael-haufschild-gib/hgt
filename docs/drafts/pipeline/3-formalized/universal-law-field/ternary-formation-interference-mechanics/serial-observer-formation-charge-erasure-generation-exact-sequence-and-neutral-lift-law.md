@@ -1,12 +1,13 @@
 # Serial observer formation charge, erasure--generation exact sequence, and neutral-lift law
 
 - **ID:** ULF-TFIM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SERIAL COMPOSITION LAW
 - **Parent:** `symmetric-formation-homology-observer-overlap-recovery-duality-and-fisher-nullity-law.md`
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [FIVE-TERM EXACT SEQUENCE]`
   `[ERASURE--GENERATION CONSERVATION] [INFORMATION-NEUTRAL LIFT CLASSIFICATION]`
-  `[SERIAL TELESCOPING] [DUAL REPORTER SEQUENCE] [NOT RH] [LEAN OPEN: READ-ONLY AUDIT]`
+  `[SERIAL TELESCOPING] [DUAL REPORTER SEQUENCE] [NOT RH]`
+  `[LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS]`
 - **Statement:** Under serial linear observation, composite formation interference is upstream
   interference minus the part killed by the new recovery kernel plus interference newly created by
   the downstream observer.  A canonical five-term exact sequence proves the law and classifies
@@ -482,15 +483,14 @@ The live final gate is now typed: construct one literal arithmetic stage with ei
 
 ## 12. Lean status
 
-Read-only corpus search found the ingredients for submodule maps, kernels, quotients, finrank, and
-supermodularity, but no declaration of `(SOF.6)` or `(SOF.28)`.  Per the active goal, no Lean file
-was written and no Lean build was run.  This card is paper-proved, not Lean-certified.
+Fully Lean-certified in `GaloisForLFunctions.HTGeometry.SerialObserverFormationCharge`; see the
+`-formalized.md` companion for the statement-by-statement map.
 
 ## Gates
 
 - [x] 0 -> 1: exact serial question and independent erasure/generation falsifiers
 - [x] 1 -> 2: five-term proof, duality, neutral classification, countermodels, and telescoping law
-- [ ] 2 -> 3: Lean formalization of quotient sequence and finite-rank corollaries
+- [x] 2 -> 3: Lean formalization of quotient sequence and finite-rank corollaries
 - [ ] 3 -> 4: literal arithmetic serial-observer realization and specialist priority review
 
 ## Log

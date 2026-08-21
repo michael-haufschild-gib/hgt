@@ -485,3 +485,45 @@ inputs that identify `tau` with the first full-complexity time: the uniform spli
 certificate `(16)` for the fixed product cubic seed, and the plateau height `s_n` that separates it
 from the cap.  The carrier/patch/conull route of Theorem A remains available as the abstract
 alternative; the instance above bypasses it.
+
+## Lean progress -- Theorem C's collision bound `(22)` (2026-08-21)
+
+`(22)` is the analytic crux of the fully coupled law: on the tube around the diagonal carrier the
+fixed seed `|+>^{⊗n}` must stay capacity-good.  The card's proof invokes the rank-one Davis--Kahan
+theorem; the Lean proof does not need it, and is elementary.
+
+`formal/GaloisForLFunctions/HTGeometry/NearDiagonalOverlapFlatness.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the basis directions whose carrier energy misses an eigenvalue by half a gap | `farSet` |
+| separated energies leave at most one near direction | `card_compl_farSet_le_one` |
+| **the eigenvector's weight on the far directions is at most `4δ²/γ²`** | `sum_sq_far_le` |
+| **the flat-overlap bound**: every unit eigenvector of a `δ`-nearby operator overlaps a constant-modulus seed by at most `c + 2δ/γ` | `norm_inner_eigenvector_uniform_le` |
+| **`(22)`**: hence the spectral collision is at most `(c + 2δ/γ)²`, which is `O(1/D)` at `c = D^{-1/2}` and `δ ≤ γ/(4√D)` | `spectralCollision_le_of_near_diagonal` |
+
+The mechanism is one Parseval split, not a perturbation theorem.  If `He = μe` and
+`‖H - diag E‖ ≤ δ` then `‖(diag E - μ)e‖ ≤ δ`, so `∑_k |E_k-μ|²|e_k|² ≤ δ²`; separation of the
+carrier energies leaves at most one `k` with `|E_k-μ| < γ/2`, so the weight of `e` off that single
+direction is at most `(2δ/γ)²`.  Against a seed of constant modulus `c` the near term contributes
+at most `c` and the far term at most `2δ/γ` by Cauchy--Schwarz.  Finally
+`∑_j p_j² ≤ (max_j p_j)∑_j p_j = max_j p_j`, so the collision inherits the square of the overlap
+bound.  No eigenvector labelling, no contour and no sin-theta theorem appears, and the bound holds
+for *every* eigenvector rather than a matched one -- which is what the collision functional needs.
+
+At `c = D^{-1/2}` (the uniform superposition) and tube radius `δ ≤ γ_n/(4√D)` this gives
+collision `≤ 9/(4D)`, sharper than the card's `81/(16D)`.
+
+### What remains
+
+Theorem C's remaining data, all on the concrete path shell: that the diagonal carrier
+`F_diag = span{Z_i} + span{Z_iZ_{i+1}}` gives a *diagonal* matrix with the computational-basis
+energies (the corpus already has the all-`Z` diagonalization at `pauliEnsembleOp_center` /
+`zProfile`), the compact patch with distinct energies and its uniform gap `γ_n`, the carrier
+compiler certificate for `|+>^{⊗n}`, and then `(23)`--`(24)` are `incubation_tail_lower` and the
+moment divergence at `d = 10n-8` in place of `9`.  The transverse splitting itself is owned:
+`IsDiagLabel`, `card_diagLabel = 2n+3`, `card_offDiagLabel = 10n+12` and `pathPatchIsometry` in
+`HTGeometry/PathShellPatchTransport`, with the patch and its annulus in
+`HTGeometry/DiagonalPatchConstruction`.  Section 2's `(16)` and the plateau height `s_n` are
+unchanged.

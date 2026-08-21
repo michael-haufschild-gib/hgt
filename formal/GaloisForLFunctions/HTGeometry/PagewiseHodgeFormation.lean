@@ -411,6 +411,54 @@ theorem isClosed_range_formationK (d : ℕ → (K →L[ℂ] C)) (m : ℕ)
   (ContinuousLinearMap.hasTransverseLowerBound_iff_isClosed_range (formationK d m)).mp
     (formationK_hasTransverseLowerBound d m hcl)
 
+/-- The assembled response acts on a single death layer by its own page differential. -/
+theorem norm_formationK_of_mem_deathPos (d : ℕ → (K →L[ℂ] C)) (m : ℕ) {r : ℕ} (hr : r < m)
+    {x : K} (hx : x ∈ deathPos d r) : ‖formationK d m x‖ = ‖d r x‖ := by
+  have hproj : ∀ s, s < m →
+      (deathPos d s).starProjection x = if s = r then x else 0 := by
+    intro s hs
+    by_cases hsr : s = r
+    · subst hsr
+      rw [if_pos rfl]
+      exact (Submodule.starProjection_eq_self_iff).mpr hx
+    · rw [if_neg hsr]
+      refine (starProjection_eq_zero_iff (deathPos d s) x).mpr ?_
+      rw [Submodule.mem_orthogonal]
+      intro v hv
+      rcases Nat.lt_or_ge s r with hlt | hge
+      · exact inner_eq_zero_symm.mp (inner_deathPos_eq_zero d hlt hv hx)
+      · have hrs : r < s := by omega
+        exact inner_deathPos_eq_zero d hrs hx hv
+  have hsum : ‖formationK d m x‖ * ‖formationK d m x‖ = ‖d r x‖ * ‖d r x‖ := by
+    rw [norm_sq_formationK]
+    rw [Finset.sum_eq_single r]
+    · rw [hproj r hr, if_pos rfl]
+    · intro s hs hsr
+      rw [hproj s (Finset.mem_range.mp hs), if_neg hsr, map_zero, norm_zero, mul_zero]
+    · intro hnr
+      exact absurd (Finset.mem_range.mpr hr) hnr
+  nlinarith [norm_nonneg (formationK d m x), norm_nonneg (d r x), hsum]
+
+/-- **(PHF.19), necessity.**  A unit escape sequence in the complement of the kernel along which
+the response tends to zero forbids closed range. -/
+theorem not_isClosed_range_of_escape {E F : Type*} [NormedAddCommGroup E]
+    [InnerProductSpace ℂ E] [CompleteSpace E] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
+    [CompleteSpace F] (A : E →L[ℂ] F) (x : ℕ → E) (hx : ∀ j, ‖x j‖ = 1)
+    (hxk : ∀ j, x j ∈ (LinearMap.ker (A : E →ₗ[ℂ] F))ᗮ)
+    (hA : Filter.Tendsto (fun j => ‖A (x j)‖) Filter.atTop (nhds 0)) :
+    ¬ IsClosed (Set.range A) := by
+  intro hclosed
+  obtain ⟨c, hc, hbound⟩ :=
+    (ContinuousLinearMap.hasTransverseLowerBound_iff_isClosed_range A).mpr hclosed
+  have hev : ∀ᶠ j in Filter.atTop, ‖A (x j)‖ < c := by
+    have := hA (Metric.ball_mem_nhds (0 : ℝ) hc)
+    filter_upwards [this] with j hj
+    simpa [Real.dist_eq, abs_of_nonneg (norm_nonneg (A (x j)))] using hj
+  obtain ⟨j, hj⟩ := hev.exists
+  have := hbound (x j) (hxk j)
+  rw [hx j, mul_one] at this
+  linarith
+
 /-! ## Stable-organ selection -/
 
 section Selection

@@ -1762,3 +1762,31 @@ The position half `(U)`/`(P)` is a one-line consequence of the parent card's
 `abs_re_sub_half_le_of_reflection`; the parent
 (`3-formalized/.../euler-support-transverse-divisor-rigidity.md`) already owns the
 divisor-avoids-the-half-plane step, so nothing is assumed here.
+
+## `parabolic-zero-residue-finite-jet-da-fatou-realization` — PROMOTED to stage 3
+
+Module `formal/GaloisForLFunctions/HTGeometry/ParabolicFatouJetRealization.lean`, wired into
+`GaloisForLFunctions.HTGeometry`; self-contained over mathlib; capstones audited at
+`[propext, Classical.choice, Quot.sound]`.
+
+The card's gate only asked for the "formal-power-series triangular linear algebra"; the module
+does the whole theorem, including the analytic branch.  Three techniques are worth reusing.
+
+1. **Clear the pole before formalizing.**  Never work with `Phi_P = -1/z + P(z)` directly.  The
+   reciprocal `fatouRecip P w = w/(-1 + w P(w))` is analytic at the origin with derivative `-1`,
+   and the Abel equation `Phi_P(f) = Phi_P + 1` becomes
+   `fatouRecip P (f z) = fatouRecip P z / (1 + fatouRecip P z)`, which has no singularity at all.
+   The germ is then `γ` (mathlib's local analytic inverse) applied to that.
+2. **Polynomial divided differences instead of analytic ones.**  Two-variable analytic divided
+   differences are painful in Lean; but when the outer function is a *polynomial*, the divided
+   difference is the explicit expression `polyDivDiff` and `geom_sum₂_mul` proves it.  That is
+   enough to factor `fatouDen P a - fatouDen P b = (a-b)(...)` and so to convert a bound on
+   `Phi(a) - Phi(b)` into a bound on `a - b`.
+3. **Triangular solving by `Nat.le_induction` on the vanishing order.**  Rather than inverting a
+   triangular matrix, add one monomial `c X^{m-2}` to `P` at each step and choose `c` from the
+   single coefficient it has to kill.  `X_mul_mul_sub_pow` provides the diagonal entry `m - 2`.
+
+Reusable pieces exported: `polyDivDiff`, `polyDivDiff_spec`, `analyticAt_polyDivDiff`,
+`iteratedDeriv_eq_zero_of_flat_factor` (an HTGeometry-layer copy of the flat-factor jet lemma —
+the RHTower one in `MultiQuartetPassportRealization.lean` cannot be imported downward),
+`exists_localInverse_analytic`, `analyticAt_polyEval`.

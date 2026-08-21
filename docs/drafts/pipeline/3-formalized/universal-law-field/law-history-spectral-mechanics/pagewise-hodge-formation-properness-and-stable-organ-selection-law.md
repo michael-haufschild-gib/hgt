@@ -1,14 +1,19 @@
 # Pagewise Hodge formation, global properness, and stable-organ selection law
 
 - **ID:** ULF-LHSM-5
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL LAW-FIELD THEOREM / GLOBAL FORMATION AND SELECTION MECHANISM
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [PAGEWISE FORMATION]`
   `[EXACT JOINT RECONSTRUCTION] [GLOBAL PROPERNESS CLASSIFICATION]`
-  `[STABLE-ORGAN SELECTION] [FUNCTIONAL-EQUATION NEUTRAL] [NOT RH]`
-- **Formal status:** finite diagonal normal form Lean-certified in
-  `GaloisForLFunctions.HTGeometry.ConstitutivePagewiseFormationSelection`; abstract orthogonal-flag
-  and countable closed-range clauses remain paper-proven.
+  `[STABLE-ORGAN SELECTION] [FUNCTIONAL-EQUATION NEUTRAL]`
+  `[LEAN-CERTIFIED] [UMBRELLA-WIRED] [NO SORRY] [NO AXIOMS] [NOT RH]`
+- **Formal status:** fully Lean-certified.  Finite diagonal normal form in
+  `GaloisForLFunctions.HTGeometry.ConstitutivePagewiseFormationSelection`; the abstract
+  orthogonal-flag construction, page bijections, formation operator, properness classification,
+  selection law and functional-equation neutrality in
+  `GaloisForLFunctions.HTGeometry.PagewiseHodgeFlag` and
+  `GaloisForLFunctions.HTGeometry.PagewiseHodgeFormation`, on the new mathlib-gap module
+  `GaloisForLFunctions.HTGeometry.OperatorAbsoluteValueBetween`.
 
 ## 0. Result
 

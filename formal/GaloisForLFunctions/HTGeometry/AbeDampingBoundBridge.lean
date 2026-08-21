@@ -33,8 +33,7 @@ theorem abeDampingBound_of_appellHumbert
     (hχu : ∀ γ, ‖χu γ‖ = 1)
     (hpos : ∀ y : Fin d → ℂ, 0 ≤ (Hu y y - Hl y y).re)
     {Γ : AddSubgroup (Fin d → ℂ)}
-    (hsemiu : ∀ γ γ' : Fin d → ℂ, χu (γ + γ')
-      = χu γ * χu γ' * Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hu γ γ').im : ℝ))))
+    (hsemiu : IsSemicharacterOn Hu χu Γ)
     {I : Type*} [Fintype I] [DecidableEq I] {w : I → Fin d → ℂ} {m : I → ℕ}
     (seed : ℝ → FiniteJetPacketIndex d I m → MultivariateEntire d)
     (v : Fin c → (Fin d → ℂ))
@@ -53,7 +52,7 @@ theorem abeDampingBound_of_appellHumbert
     ∃ sigma0 : ℝ, 0 < sigma0 ∧ ∃ C0 : ℝ, 0 ≤ C0 ∧
       ∀ B : ℝ, 0 ≤ B → ∀ (z : Fin c → ℤ) (i j : FiniteJetPacketIndex d I m),
         ‖multiIndexJetEvalCLM (w i.1) i.2.1
-            (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) (seed B j)
+            (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu) (seed B j)
               (complementEmbedding comp comp_mem z))‖
           ≤ C0 * B ^ r * Real.exp (-sigma0 * ∑ k, ((z k : ℝ)) ^ 2) := by
   have hD : IsHermitianForm fun x y => Hu x y - Hl x y := hHu.sub hHl
@@ -98,18 +97,16 @@ restricts to the lower one along `ΓH` exactly when the two forms and the two se
 there. -/
 theorem appellHumbertAutomorphicFactor_compat
     {Hu Hl : (Fin d → ℂ) → (Fin d → ℂ) → ℂ} {χu χl : (Fin d → ℂ) → ℂ}
+    {ΓH Γ : AddSubgroup (Fin d → ℂ)}
     (hHu : IsHermitianForm Hu) (hχu : ∀ γ, ‖χu γ‖ = 1)
-    (hsemiu : ∀ γ γ' : Fin d → ℂ, χu (γ + γ')
-      = χu γ * χu γ' * Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hu γ γ').im : ℝ))))
+    (hsemiu : IsSemicharacterOn Hu χu Γ)
     (hHl : IsHermitianForm Hl) (hχl : ∀ γ, ‖χl γ‖ = 1)
-    (hsemil : ∀ γ γ' : Fin d → ℂ, χl (γ + γ')
-      = χl γ * χl γ' * Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hl γ γ').im : ℝ))))
-    {ΓH Γ : AddSubgroup (Fin d → ℂ)} (hle : ΓH ≤ Γ)
+    (hsemil : IsSemicharacterOn Hl χl ΓH) (hle : ΓH ≤ Γ)
     (hH : ∀ η ∈ ΓH, ∀ x : Fin d → ℂ, Hu x η = Hl x η)
     (hχ : ∀ η ∈ ΓH, χu η = χl η) :
     ∀ (η : Fin d → ℂ) (hη : η ∈ ΓH),
-      ((appellHumbertAutomorphicFactor hHu hχu hsemiu Γ).factor ⟨η, hle hη⟩).1
-        = ((appellHumbertAutomorphicFactor hHl hχl hsemil ΓH).factor ⟨η, hη⟩).1 := by
+      ((appellHumbertAutomorphicFactor hHu hχu hsemiu).factor ⟨η, hle hη⟩).1
+        = ((appellHumbertAutomorphicFactor hHl hχl hsemil).factor ⟨η, hη⟩).1 := by
   intro η hη
   ext x
   show appellHumbertFactor Hu χu η x = appellHumbertFactor Hl χl η x

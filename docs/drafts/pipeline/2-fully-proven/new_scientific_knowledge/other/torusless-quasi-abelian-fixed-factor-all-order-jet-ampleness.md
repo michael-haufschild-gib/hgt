@@ -951,3 +951,62 @@ compact set, and the second term is `≤ 0` by positive semidefiniteness.  The c
 So the majorant hypothesis of the corpus's own chain, previously an unverified analytic field of
 `AbePositiveFactorPresentation`, is now a theorem for every Appell--Humbert factor of a positive
 form — which is exactly the class the card's `L` positive produces.
+
+## Lean status 2026-08-21 (thirteenth entry) — polynomially bounded seeds
+
+The seeds the induction actually produces are a lower-automorphic form of bounded normalised
+modulus multiplied by an **interpolating polynomial** (`EnlargedPacketInterpolant`), so their
+normalised modulus is bounded only polynomially.  The previous entries required it to be bounded,
+which a polynomial multiple never is.  Two changes close that gap.
+
+First, `PoincareTermAppellHumbertDecay` was refactored so that the normalised-modulus bound is
+needed **only at the translated point**:
+
+```text
+norm_poincareTerm_appellHumbert_le_at    the hypothesis is `‖seed (z+γ)‖ ≤ M·exp((π/2)Re H_l(z+γ,z+γ))`
+norm_poincareTerm_appellHumbert_le       the earlier global-hypothesis form, now a corollary
+```
+
+The proof never used more than that; making it explicit is what lets the constant depend on `γ`.
+
+Second, `GaloisForLFunctions.HTGeometry.PoincareTermPolynomialSeed` (wired, built, axiom-clean):
+
+```text
+one_add_pow_le_exp        `(1 + t)^N ≤ exp(N·t)`, from `1 + t ≤ exp t`
+poly_gaussian_absorb      **a Gaussian in the lattice index absorbs any power of the index**:
+                          `(1+t)^N · exp(−σ s) ≤ exp((N·Cv)²/(2σ)) · exp(−(σ/2) s)` when `t ≤ Cv√s`
+norm_poincareTerm_appellHumbert_poly_le
+                          the decay estimate for `‖seed y‖ ≤ M·(1+‖y‖)^N·exp((π/2)Re H_l(y,y))`
+```
+
+The absorption is algebraic, not asymptotic: it is the maximum of `a·u − (σ/2)u²`, which
+`(σu − a)² ≥ 0` gives outright.  Half the Gaussian rate pays for any power of the lattice index, so
+the polynomial factor of the interpolant costs a constant and nothing else.
+
+Effect on the card.  The seed hypothesis of the damping datum is now exactly Abe's own admissible
+class — the card's "subquadratic lattice growth" — rather than a strengthening of it that the
+induction could not deliver.
+
+## Lean status 2026-08-21 (fourteenth entry) — the seed hypothesis is a local condition
+
+`GaloisForLFunctions.HTGeometry.AppellHumbertNormalisedModulus` (wired, built, axiom-clean)
+
+```text
+thetaNorm_add_of                     **invariance of the normalised modulus under one period**,
+                                     from the transformation law at that period alone
+thetaNorm_invariant_of_mem_forms     hence invariance under the whole period group of the factor
+norm_le_of_thetaNorm_le              the bound in the shape the decay estimate consumes
+thetaNorm_le_of_orbitReaching        **a bound on any set meeting every period orbit is a bound
+norm_le_of_orbitReaching             everywhere**
+```
+
+The tree's `thetaNorm_add` assumes the transformation law for *every* vector of the ambient space,
+which a seed of the induction never has — it is automorphic only for its own period group.  The
+pointwise version above needs the law at the one period being translated by, which is exactly what
+membership in `lower.forms` supplies.
+
+Effect on the card.  The seed hypothesis of the damping datum —
+`‖seed y‖ ≤ M·exp((π/2)·Re H_l(y,y))`, or its polynomial version — is now a **local** condition: it
+suffices to bound the normalised modulus on any set `S` with `∀ y, ∃ γ ∈ ΓH, y − γ ∈ S`.  For a
+period group of rank `k` in `ℂ^d` such an `S` can be taken to be a slab, so the condition is
+checkable where Abe checks it, and no global estimate over the lattice is required.

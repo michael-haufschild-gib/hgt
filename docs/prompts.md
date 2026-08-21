@@ -34,7 +34,7 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 /goal
 
 formalize UNCONDITIONALLY in lean any proven theorem from all of the cards in these cards: 
-- docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/xi
+- docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge (exclude subfolders)
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -198,9 +198,9 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about the "HC — horizontal-collision quantum" route from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge towards creating an unconditional RH proof in lean.
 
-collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you. 
+collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you. start here: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md but be route agnostic and use everything our lean corpus offers you in the htgeometry and rhtower folders.
 
 research rules:
 - use heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... 
@@ -240,12 +240,13 @@ goal is met when lean corpus has an uncondtional formal proof for rh.
 Use the hgt-fields-medalist skill to research this any possibility to close a proof chain to prove or disprove RH.
 Mandatory: Do not assume a proof chain and then look for building blocks. Let the lean code speak. We have much more knowledge encoded there than the literature or your training data contain. Check the lean code, see what chains could be possible, identify the gaps and attack the gaps using the hgt-fields-medalist skill, bold conjecturing and the scientific method.
 
-lean rules:
-1. You work independent from other agents and can run 1 build process in the foreground at a time yourself, parallel to builds of other agents.
-2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
-3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
-4. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
-5. no computations.
+Lean rules:
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
 
 folders:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
@@ -257,37 +258,33 @@ make sure you don't leave stale lean processes running - clean up after yourself
 
 Goal is met when there is a full RH proof chain start to finish.
 
-## Ñawe
+## Formalize
 
-Use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research our whole lean corpus and take 2 or more theorems and attempt to subsume them into a universal law that cannot be found in our corpus nor in the literature. 
+Formalize and proove fully, unconditional and closed in our lean corpus the proof for the Sokhotski–Plemelj theorem.
 
-lean rules:
-1. You work independent from other agents and can run 1 build process in the foreground at a time yourself, parallel to builds of other agents.
-2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
-3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
-4. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
-5. no computations.
-
-folders to check for already existing research:
-- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
-- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
-- formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
-
-**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
-make sure you don't leave stale lean processes running - clean up after yourself
-
-Goal is met when after honest scan of the whole lean body no such universal law can be found.
-
+Stop if mathlib already has that proof.
 
 lean rules:
-1. You work independent from other agents and can run 1 build process in the foreground at a time yourself, parallel to builds of other agents.
-2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
-3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
-4. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
-5. no computations.
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
+7. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
 
-Always use  lake env lean <file>  and only lake build <module> for the final audit.
-goal is met when rh is proven.
+Non-negotiable working mode rules:
+1. If it cannot be done in a single session -> Does not matter. Do it!
+2. If it cannot be done in a single context window -> Does not matter. Do it!
+3. If it takes months -> Does not matter. Do it!
+4. If it is "research-level construction" -> Does not matter. If there is any way you could build it you build it no matter what.
+5. Missing in mathlib -> Build it no matter the effort.
+   
+where mathematical knowledge is missing use the /hgtl7 skill to create it.
+
+do not add hypotheses.
+
+always use our custom search tool check first what the lean corpus already contains, to not duplicate existing work.
 
 
 ## frontier paper
@@ -303,42 +300,6 @@ Goal is met when after honest and extensive review you cannot add or change anyt
 
 Mandatory: You let the lean corpus speak and tell you what is. You do not assume what a proof route should look like or what an obstacle is - your training data is biased towards classical proof routes and has not seen all of our research which in part is novel scientific discovery. Do not assume anything, just read lean code.
 
-
-
-## loop 
-/loop 1m (use the croncreate tool)
-
-if you are not idle, keep going.
-else your task is:
-
-search our htgeometry and rhtower lean corpus for any opportunity of a value relation or value reflection that can do either of these:
-1. allows to discharge of simplify a tractable premise
-2. create and formally prove missing connector theorems
-3. subsume theorems under a larger universal law which is nontrivial
-4. opens a new proof route for the riemann hypothesis
-5. simplifies the proof burden towards the riemann hypothesis
-
-then formalize everything useful in lean.
-  
-lean rules:
-1. You always build in the foreground, 1 build process at a time - other agents are also building in parallel.
-2. Always use  lake env lean <file>  and only lake build <module> for the final audit.
-3. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
-4. make sure you don't leave stale lean processes running - clean up after yourself
-
-Mandatory:
-1. no computations.
-2. LEAN PROOFS MUST BE UNCONDTIONAL!!! 
-3. no subagents or background tasks
-4. You are not allowed to change the cron timing.
-5. Effort is not a criterion:
-   1. If it cannot be done in a single session -> Does not matter. Do it!
-   2. If it cannot be done in a single context window -> Does not matter. Do it!
-   3. If it takes months -> Does not matter. Do it!
-
-You are not allowed to change the cron timing.
-
-LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
 
 ## research paper only
 
@@ -399,13 +360,7 @@ Lean rules:
 6. make sure you don't leave stale lean processes running - clean up after yourself.
 
 
-## universal law
 
-Using the hgtl7 skill and the HTGeometry / RhTower lean corpus, create a genuinely new geometry/topology through sustained conjecture→paper-proof-or-failure loops that does more than rename or classify known RH obstructions: it must yield new unconditional mathematical leverage on all live RH proof-route obstructions. 
-
-Audit Lean corpus without writing or building Lean; search broad current arXiv literature; pivot aggressively; subject every claim to hostile novelty, correctness, and significance review. Put this research program's cards in dedicated subfolders under pipeline 1 and pipeline 2, promote only dependency-closed unconditional paper proofs, record failed routes and positive survivors, and do not mark the goal complete while the work remains merely explanatory. Completion requires that exhaustive hostile review finds no further meaningful conjecture, proof attack, salvage, or pivot capable of adding new knowledge to the topic.
-
-prior research: docs/drafts/pipeline/2-fully-proven/universal-law-field
 
 
 
@@ -414,23 +369,16 @@ how would a fields medal mathematician approach this problem? what our corpus is
 
 
 ## theorem experiment
-find as many places as possible in our lean corpus to apply any form of noether´s theorem, formalize it and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
-
-
+find as many places as possible in our lean corpus to apply any form of the Mordell-Weil theorem, Matsusaka´s theorem, Mittag-Leffler´s theorem, formalize it and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 Lean rules:
-
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
 2. Always build in the foreground, 1 process per single agent.
 3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
 4. No computations.
 5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
 6. make sure you don't leave stale lean processes running - clean up after yourself.
-
-
-
+   
 use the search tool for our lean corpus. do not read cards or anything, only work directly on lean.&#x20;
-
-
 
 do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.

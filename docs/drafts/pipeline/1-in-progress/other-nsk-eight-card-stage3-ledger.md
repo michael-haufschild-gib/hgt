@@ -1589,3 +1589,27 @@ of a positive semidefinite Hermitian form — with growth rate zero, since the r
 bounded on compacta.  That is the single hypothesis of the tree's own
 `gaussianMajorant_of_hasLatticeExponentialGrowth`, so the corpus's majorant chain no longer has an
 unverified analytic field for this class.
+
+## Card 7: polynomially bounded seeds
+
+`PoincareTermAppellHumbertDecay` refactored so the normalised-modulus hypothesis is needed only at
+the translated point (`norm_poincareTerm_appellHumbert_le_at`; the global form is now a corollary).
+`HTGeometry.PoincareTermPolynomialSeed` (wired, built, axiom-clean) then covers
+`‖seed y‖ ≤ M·(1+‖y‖)^N·exp((π/2)Re H_l(y,y))` — the class the interpolant actually lands in, since
+it is a bounded form times a polynomial.  `poly_gaussian_absorb` makes the polynomial factor free:
+half the Gaussian rate absorbs any power of the lattice index, by `(σu − a)² ≥ 0` alone.
+
+## Card 7: the seed hypothesis is local
+
+`HTGeometry.AppellHumbertNormalisedModulus` (wired, built, axiom-clean): `thetaNorm_add_of` (the
+tree's `thetaNorm_add` assumes the transformation law for every ambient vector, which a seed never
+has), `thetaNorm_invariant_of_mem_forms`, and `norm_le_of_orbitReaching` — a bound on the normalised
+modulus over any set meeting every `ΓH`-orbit is a bound everywhere.  So the damping datum's seed
+hypothesis is a local condition on a slab, not a global estimate over the lattice.
+
+## Card 8 item 3a: values of rational functions at the place
+
+`HTGeometry.PlaceRationalLimit` (wired, built, axiom-clean): `placeLim_div_of_natDegree_eq` (equal
+degrees ⟹ value = ratio of leading coefficients) and `placeLim_div_of_natDegree_lt` (smaller degree
+⟹ value zero), from the cancellation `natDegree_leadingCombination_lt` plus `valuation_eval_eq`.
+The constant/constant case is handled separately — there the numerator vanishes identically.

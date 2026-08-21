@@ -56,7 +56,8 @@ theorem exists_matomakiTeravainen_typeII_left_raised_cell_count_energy
       0 < V₁ →
       (∀ r : Fin (ell + 1), 2 ≤ A ^ ell * 2 ^ (r : ℕ)) →
       (∀ r : Fin (ell + 1),
-        T ^ ((9 : ℝ) / 11) ≤ ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ)) →
+        T ^ ((9 : ℝ) / 11 - 10 * eps) ≤
+          ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ)) →
       (∀ r : Fin (ell + 1),
         ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ≤ T ^ (1 - eps)) →
       (∀ r : Fin (ell + 1),
@@ -147,7 +148,8 @@ theorem exists_matomakiTeravainen_typeII_right_raised_cell_count_energy
       0 < V₂ →
       (∀ r : Fin (ell + 1), 2 ≤ A ^ ell * 2 ^ (r : ℕ)) →
       (∀ r : Fin (ell + 1),
-        T ^ ((9 : ℝ) / 11) ≤ ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ)) →
+        T ^ ((9 : ℝ) / 11 - 10 * eps) ≤
+          ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ)) →
       (∀ r : Fin (ell + 1),
         ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ≤ T ^ (1 - eps)) →
       (∀ r : Fin (ell + 1),
@@ -212,7 +214,8 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_energy
       (∀ q ∈ S, matomakiTeravainenDirichletAmplitude N₂ a₂ q ≤ 1) →
       (∀ r : Fin (ell₁ + 1), 2 ≤ A₁ ^ ell₁ * 2 ^ (r : ℕ)) →
       (∀ r : Fin (ell₁ + 1),
-        T ^ ((9 : ℝ) / 11) ≤ ((A₁ ^ ell₁ * 2 ^ (r : ℕ) : ℕ) : ℝ)) →
+        T ^ ((9 : ℝ) / 11 - 10 * eps) ≤
+          ((A₁ ^ ell₁ * 2 ^ (r : ℕ) : ℕ) : ℝ)) →
       (∀ r : Fin (ell₁ + 1),
         ((A₁ ^ ell₁ * 2 ^ (r : ℕ) : ℕ) : ℝ) ≤ T ^ (1 - eps)) →
       (∀ ij ∈ matomakiTeravainenActiveAmplitudeIndices S
@@ -259,7 +262,8 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_energy
               matomakiTeravainenAmplitudeSigma (A₁ : ℝ) V₁ ij.1 + kappa₁) →
       (∀ r : Fin (ell₂ + 1), 2 ≤ A₂ ^ ell₂ * 2 ^ (r : ℕ)) →
       (∀ r : Fin (ell₂ + 1),
-        T ^ ((9 : ℝ) / 11) ≤ ((A₂ ^ ell₂ * 2 ^ (r : ℕ) : ℕ) : ℝ)) →
+        T ^ ((9 : ℝ) / 11 - 10 * eps) ≤
+          ((A₂ ^ ell₂ * 2 ^ (r : ℕ) : ℕ) : ℝ)) →
       (∀ r : Fin (ell₂ + 1),
         ((A₂ ^ ell₂ * 2 ^ (r : ℕ) : ℕ) : ℝ) ≤ T ^ (1 - eps)) →
       (∀ ij ∈ matomakiTeravainenActiveAmplitudeIndices S

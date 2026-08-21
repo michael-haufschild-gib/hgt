@@ -1,12 +1,12 @@
 # Circuit-complexity selection--synthesis divergence law
 
 - **ID:** `circuit-complexity-selection-synthesis-divergence-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** universal information identity / gate-relative rate--distortion law / recurrence split
 - **Parents:** `gate-walk-green-bellman-tropicalization-law.md`,
   `fixed-time-phase-graph-sobolev-blindness-law.md`,
   `cubic-phase-seeded-static-local-full-scale-plateau-law.md`
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN DEFERRED DURING REFACTOR]`
+- **Status:** `[FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-10
 
 ## Public sentence
@@ -415,9 +415,9 @@ Therefore one ordinary autonomous trajectory has an exact information--preparati
  \end{array}}                                                          \tag{26}
 \]
 
-The plateau theorem used here is presently paper-proved, not Lean-proved.  Accordingly `(22)--(26)`
-remain Stage 2 and are barred from a final manuscript until that parent and this composition pass
-the formal gate.
+The plateau theorem used here is Lean-proved (`cubic-phase-seeded-static-local-full-scale-plateau-law`
+is at stage 3), and so is this composition: `exists_late_plateau_codebook_split` and
+`recurrence_row` are the two rows of `(26)`.
 
 ## 7. Conjecturing / failure / replacement loop
 
@@ -646,3 +646,47 @@ residue, and by the card's own statement it is barred until the parent
 composition needs on *this* side is now formal: `(23)` is `entropy_le_log_card` at the mesh count
 `plateauGridCount`, `(24)` is `le_relEntropy_wordPrior_of_codebook`, and `(25)` is
 `relEntropy_pointLaw_wordPrior`.
+
+## Lean progress -- section 6, the composition `(22)`--`(26)` (2026-08-21)
+
+The bar is lifted: the parent `cubic-phase-seeded-static-local-full-scale-plateau-law` is now at
+stage 3, so the composition may be built.  One new umbrella-wired, axiom-clean module, plus one
+non-invasive strengthening of `HTGeometry/CurveCodebook.lean` (its `exists_curve_codebook` now also
+returns that every fibre of the encoder is Borel -- the encoder factors through the mesh index, and
+`Nat.measurable_floor` supplies the rest; every other clause is unchanged).
+
+`formal/GaloisForLFunctions/HTGeometry/PlateauSelectionSynthesisSplit.lean`:
+
+| Card item | Declaration |
+|---|---|
+| one gate acting on a register state, and a word acting by the ordered product | `gateAct`, `wordAct_gateAct` |
+| the depth-`s` tuple dictionary is the length-`s` list dictionary | `gateWord_eq_prod_map`, `exists_ofFn_of_length_eq` |
+| **padding**: with the identity gate, a word of length at most `s` acts like one of length exactly `s` | `exists_length_eq_prod_map_eq` |
+| **`(22)`**: missing the depth-`S` circuit ball bounds the complexity below for words of *every* length at most `S` | `lt_wordComplexity_of_forall_notMem` |
+| **`(23)`+`(24)`**: the selection--synthesis split on a plateau segment | `exists_plateau_codebook_split` |
+| the same at arbitrarily late windows of an autonomous orbit | `exists_late_plateau_codebook_split` |
+| the constant encoder's word law is a point mass | `encoderLaw_const` |
+| **`(25)`** and the second row of `(26)`: zero selection information, surprisal-only divergence | `recurrence_row` |
+
+The composition is literal.  The plateau input is exactly the shape the plateau cluster produces,
+`∀ u ∈ [t₀, t₀+W], u ∉ metricEasySet H ψ (ε+δ) Z` at the depth-`S` circuit ball, and the orbit's
+Lipschitz constant is `dist_orbitVec_le` at `‖H‖ ≤ v`, which on the card's shell is
+`v_n = √(12n-9)`.  `exists_curve_codebook` then produces the mesh codebook of at most
+`plateauGridCount W (δ/v)` words -- the card's `N ≤ ⌈vW/δ⌉+1` -- the pushforward of the uniform
+window measure along it is a genuine probability law on words (`hasSum_encoderLaw`, now applicable
+because the fibres are Borel), its entropy is its selection information (`selectionInfo_eq_entropy`)
+and is at most `log N` (`entropy_le_log_card`), and every word it emits has length at least `S+1`,
+so `le_relEntropy_wordPrior_of_codebook` gives `(24)`.
+
+Two points where the formalization is sharper than the prose.  First, `(22)` as stated bounds the
+complexity of words of length *exactly* `S`; the padding lemma is what upgrades that to all lengths
+at most `S`, and it is the reason the alphabet must contain the identity gate.  Second, the encoder
+of `(19)` had to be shown Borel before its word law could be called a distribution at all; that is
+now part of `exists_curve_codebook`'s conclusion rather than an unstated assumption.
+
+### Card status
+
+Lean-plan items 1--6 are complete.  Item 6 is `exists_late_plateau_codebook_split` together with
+`recurrence_row`: the first row of `(26)` is `selectionInfo ≤ log N` with `N ≤ ⌈vW/δ⌉+1` against a
+synthesis divergence at least `(S+1)log(M/a) − log N − log(1−a)`, and the second row is
+`selectionInfo = 0` with divergence exactly `−log(1−a) + |w₀|log(M/a)`.  Nothing remains.

@@ -31,11 +31,9 @@ variable {d c : ℕ} {Hu Hl : (Fin d → ℂ) → (Fin d → ℂ) → ℂ} {χu 
 /-- **The damping datum for a pair of Appell--Humbert factors.** -/
 def abeDampingPacketDataAppellHumbert
     (hHu : IsHermitianForm Hu) (hχu : ∀ γ, ‖χu γ‖ = 1)
-    (hsemiu : ∀ γ γ' : Fin d → ℂ, χu (γ + γ')
-      = χu γ * χu γ' * Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hu γ γ').im : ℝ))))
+    (hsemiu : IsSemicharacterOn Hu χu Γ)
     (hHl : IsHermitianForm Hl) (hχl : ∀ γ, ‖χl γ‖ = 1)
-    (hsemil : ∀ γ γ' : Fin d → ℂ, χl (γ + γ')
-      = χl γ * χl γ' * Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hl γ γ').im : ℝ))))
+    (hsemil : IsSemicharacterOn Hl χl ΓH)
     {ΓH Γ : AddSubgroup (Fin d → ℂ)} (hle : ΓH ≤ Γ)
     (hH : ∀ η ∈ ΓH, ∀ x : Fin d → ℂ, Hu x η = Hl x η) (hχ : ∀ η ∈ ΓH, χu η = χl η)
     (hpos : ∀ y : Fin d → ℂ, 0 ≤ (Hu y y - Hl y y).re)
@@ -46,9 +44,9 @@ def abeDampingPacketDataAppellHumbert
     (hdecomp : ∀ δ ∈ Γ, ∃ η ∈ ΓH, ∃ z : Fin c → ℤ, δ = η + comp z)
     {I : Type u} [Fintype I] [DecidableEq I] {w : I → Fin d → ℂ} {m : I → ℕ}
     (lowerColumn : FiniteJetPacketIndex d I m →
-      (appellHumbertAutomorphicFactor hHl hχl hsemil ΓH).forms)
+      (appellHumbertAutomorphicFactor hHl hχl hsemil).forms)
     (seed : ℝ → FiniteJetPacketIndex d I m → MultivariateEntire d)
-    (seed_mem : ∀ B j, seed B j ∈ (appellHumbertAutomorphicFactor hHl hχl hsemil ΓH).forms)
+    (seed_mem : ∀ B j, seed B j ∈ (appellHumbertAutomorphicFactor hHl hχl hsemil).forms)
     (seed_jet : ∀ (B : ℝ) (i j : FiniteJetPacketIndex d I m),
       multiIndexJetEvalCLM (w i.1) i.2.1 (seed B j)
         = multiIndexJetEvalCLM (w i.1) i.2.1 (lowerColumn j).1)
@@ -67,10 +65,10 @@ def abeDampingPacketDataAppellHumbert
     (hvanish : ∀ B : ℝ, 0 ≤ B → ∀ (z : Fin c → ℤ) (i j : FiniteJetPacketIndex d I m), z ≠ 0 →
       (∑ k, ((z k : ℝ)) ^ 2) ≤ Z B →
       multiIndexJetEvalCLM (w i.1) i.2.1
-          (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) (seed B j)
+          (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu) (seed B j)
             (complementEmbedding comp comp_mem z)) = 0) :
-    AbeDampingPacketData (c := c) (appellHumbertAutomorphicFactor hHl hχl hsemil ΓH)
-      (appellHumbertAutomorphicFactor hHu hχu hsemiu Γ) w m lowerColumn where
+    AbeDampingPacketData (c := c) (appellHumbertAutomorphicFactor hHl hχl hsemil)
+      (appellHumbertAutomorphicFactor hHu hχu hsemiu) w m lowerColumn where
   le := hle
   compat := appellHumbertAutomorphicFactor_compat hHu hχu hsemiu hHl hχl hsemil hle hH hχ
   comp := comp

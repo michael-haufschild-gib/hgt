@@ -28,9 +28,9 @@ theorem exists_matomakiTeravainen_typeII_actual_cell_counts_scheduled_energy
       0 < V₁ → 0 < V₂ →
       (∀ q ∈ S, matomakiTeravainenDirichletAmplitude N₁ a₁ q ≤ 1) →
       (∀ q ∈ S, matomakiTeravainenDirichletAmplitude N₂ a₂ q ≤ 1) →
-      T ^ ((9 : ℝ) / 11) ≤ ((A₁ ^ ell₁ : ℕ) : ℝ) →
+      T ^ ((9 : ℝ) / 11 - 10 * eps) ≤ ((A₁ ^ ell₁ : ℕ) : ℝ) →
       ((A₁ ^ ell₁ : ℕ) : ℝ) ≤ T ^ (1 - 2 * eps) →
-      T ^ ((9 : ℝ) / 11) ≤ ((A₂ ^ ell₂ : ℕ) : ℝ) →
+      T ^ ((9 : ℝ) / 11 - 10 * eps) ≤ ((A₂ ^ ell₂ : ℕ) : ℝ) →
       ((A₂ ^ ell₂ : ℕ) : ℝ) ≤ T ^ (1 - 2 * eps) →
       (∀ ij ∈ matomakiTeravainenActiveAmplitudeIndices S
           (matomakiTeravainenDirichletAmplitude N₁ a₁)

@@ -28,10 +28,8 @@ variable {d : ℕ} {H : (Fin d → ℂ) → (Fin d → ℂ) → ℂ} {χ : (Fin 
 growth condition**, with growth rate zero. -/
 theorem hasLatticeExponentialGrowth_appellHumbert (hH : IsHermitianForm H)
     (hpos : ∀ y : Fin d → ℂ, 0 ≤ (H y y).re) (hχ : ∀ γ, ‖χ γ‖ = 1)
-    (hsemi : ∀ γ γ' : Fin d → ℂ, χ (γ + γ')
-      = χ γ * χ γ' * Complex.exp (-((Real.pi : ℂ) * Complex.I * ((H γ γ').im : ℝ)))) :
-    (appellHumbertAutomorphicFactor hH hχ hsemi
-      (standardIntegerLattice d)).HasLatticeExponentialGrowth := by
+    (hsemi : IsSemicharacterOn H χ (standardIntegerLattice d)) :
+    (appellHumbertAutomorphicFactor hH hχ hsemi).HasLatticeExponentialGrowth := by
   intro K hK
   obtain ⟨CD, hCD⟩ := hK.exists_bound_of_continuousOn
     (f := fun y : Fin d → ℂ => (H y y).re) ((continuous_hermitian_self_re hH).continuousOn)
@@ -44,8 +42,8 @@ theorem hasLatticeExponentialGrowth_appellHumbert (hH : IsHermitianForm H)
   have hxsup : (H x x).re ≤ C₀ ^ 2 := by
     refine le_trans (le_trans (le_abs_self _) ?_) hC₀sq
     simpa using hCD x hx
-  have hbase := norm_inv_appellHumbertAutomorphicFactor_le hH hpos hχ hsemi
-    (standardIntegerLattice d) hC₀ hxsup (standardIntegerLatticeEquiv d k)
+  have hbase := norm_inv_appellHumbertAutomorphicFactor_le hH hpos hχ hsemi hC₀ hxsup
+    (standardIntegerLatticeEquiv d k)
   refine le_trans hbase ?_
   rw [zero_mul, Real.exp_zero, mul_one]
   refine mul_le_of_le_one_right (Real.exp_nonneg _) ?_

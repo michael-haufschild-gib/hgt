@@ -63,7 +63,8 @@ theorem exists_lemma41_huxley_raised_energy
       1 ≤ A → 0 < ell → 0 ≤ rho →
       (∀ r : Fin (ell + 1), 2 ≤ A ^ ell * 2 ^ (r : ℕ)) →
       (∀ r : Fin (ell + 1),
-        T ^ ((9 : ℝ) / 11) ≤ ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ)) →
+        T ^ ((9 : ℝ) / 11 - 10 * eps) ≤
+          ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ)) →
       (∀ r : Fin (ell + 1),
         ((A ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ) ≤ T ^ (1 - eps)) →
       (∀ r : Fin (ell + 1),
@@ -104,7 +105,7 @@ theorem exists_lemma41_huxley_raised_energy
         T ^ (2 * (rho + kappa) - eps ^ 2 / 5) := by
       apply Finset.sum_le_sum
       intro r _hr
-      have hcount := lemma41_huxley_energy
+      have hcount := lemma41_huxley_energy_slack
         (dyadicWeightedCoeff (N ^ ell) (convPow N ell a) 1
           (A ^ ell * 2 ^ (r : ℕ)))
         (raisedDyadicBlockLargeSet S N A ell a rho r)

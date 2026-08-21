@@ -10181,3 +10181,24 @@ response of unit size and in the class, and the Wronskian fact that the operator
 logarithmic factor two place-degrees down.  The last is the only remaining law-specific input at
 this level; the accuracy `(v x)⁻¹` and the two-degree window `(v x)⁻¹·(v x)⁻¹` carry the
 ramification automatically.
+
+### Log — the algebraic model, part 20: the value of a rational function at the place
+
+`HTGeometry/PlaceRationalLimit.lean` (wired, built, axiom-clean) supplies the place-level form of the
+coordinate model's value at infinity for a general ratio, not only for a logarithmic factor:
+
+```text
+CoeffsIn.leadingCoeff_mem
+natDegree_leadingCombination_lt   the leading terms of `b·p − a·q` cancel
+placeLim_div_of_natDegree_eq      **equal degrees: the value is `p.leadingCoeff / q.leadingCoeff`**
+placeLim_div_of_natDegree_lt      **smaller degree: the value is zero**
+```
+
+Both come from the same observation — the numerator of `p/q − a/b` is `b·p − a·q`, whose degree drops
+by one — combined with `valuation_eval_eq` for the exact valuation of the denominator.  The constant
+case `deg p = deg q = 0` is genuinely separate: there the numerator is identically zero rather than
+merely of lower degree, and the accuracy `(v x)⁻¹` would not be available from a degree count.
+
+This is what the peel's coefficient bookkeeping reads: every ratio appearing in a border row is a
+quotient of two polynomials in the newest coordinate, and its value at the place is now computable
+from the leading coefficients alone.
