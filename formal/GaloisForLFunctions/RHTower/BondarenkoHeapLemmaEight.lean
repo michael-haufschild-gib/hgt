@@ -245,3 +245,146 @@ theorem eightOddPrime_fundamentalKronecker_windowShiftSum_sourceScale [Decidable
 
 end OddPrimeFamily
 end RHTower
+
+namespace RHTower
+namespace OddPrimeFamily
+
+variable {I : Type*} [Fintype I]
+
+/-- Certified positive exponent for the direct form of Bondarenko--Heap Lemma 8.
+The positivity condition is stored with the parameter, so source-facing estimates have no
+caller-supplied proof premise. -/
+structure BHLemmaEightPositiveExponent where
+  exponent : ℝ
+  positive : 0 < exponent
+
+/-- Certified positive modulus for the common elementary coefficient comparison. -/
+private structure BHLemmaEightConductor where
+  value : ℕ
+  one_le : 1 ≤ value
+
+/-- An explicit permitted constant in the source-scale Lemma-8 bound. -/
+def bhLemmaEightSourceConstant (ε : BHLemmaEightPositiveExponent) : ℝ :=
+  1 + Sieve.divisorBoundConst ε.exponent
+
+/-- The divisor-power coefficient from the finite moment bound is bounded by the exact
+`q^ε(q + K)` source shape, for certified positive data only. -/
+private theorem bhLemmaEight_coefficient_le_sourceScale
+    (q : BHLemmaEightConductor) (M : ℕ) (ε : BHLemmaEightPositiveExponent) :
+    (M : ℝ) * (Sieve.divisorBoundConst ε.exponent * (q.value : ℝ) ^ ε.exponent) +
+        (q.value : ℝ) ≤
+      bhLemmaEightSourceConstant ε * (q.value : ℝ) ^ ε.exponent *
+        ((q.value : ℝ) + M) := by
+  have hq : 1 ≤ (q.value : ℝ) := by
+    exact_mod_cast q.one_le
+  have hM : 0 ≤ (M : ℝ) := by positivity
+  have hC : 0 ≤ Sieve.divisorBoundConst ε.exponent :=
+    (Sieve.divisorBoundConst_pos ε.positive).le
+  have hp : 1 ≤ (q.value : ℝ) ^ ε.exponent :=
+    Real.one_le_rpow hq ε.positive.le
+  have hp0 : 0 ≤ (q.value : ℝ) ^ ε.exponent := le_trans (by norm_num) hp
+  have hq0 : 0 ≤ (q.value : ℝ) := le_trans (by norm_num) hq
+  have hqterm : (q.value : ℝ) ≤ (q.value : ℝ) ^ ε.exponent * (q.value : ℝ) := by
+    nlinarith [mul_nonneg hq0 (sub_nonneg.mpr hp)]
+  have hmterm : (M : ℝ) * (Sieve.divisorBoundConst ε.exponent *
+      (q.value : ℝ) ^ ε.exponent) ≤
+      bhLemmaEightSourceConstant ε * (q.value : ℝ) ^ ε.exponent * (M : ℝ) := by
+    dsimp [bhLemmaEightSourceConstant]
+    nlinarith [mul_nonneg hM hC, mul_nonneg hM (sub_nonneg.mpr hp)]
+  dsimp [bhLemmaEightSourceConstant]
+  nlinarith [mul_nonneg (show 0 ≤ 1 + Sieve.divisorBoundConst ε.exponent by linarith)
+    (mul_nonneg hp0 hq0)]
+
+private def bhLemmaEightOddConductor (P : OddPrimeFamily I) : BHLemmaEightConductor :=
+  ⟨P.modulus, Nat.one_le_iff_ne_zero.mpr P.modulus_neZero.out⟩
+
+private def bhLemmaEightFourOddConductor (P : OddPrimeFamily I) : BHLemmaEightConductor :=
+  ⟨fourOddModulus P, Nat.one_le_iff_ne_zero.mpr (fourOddModulus_neZero P).out⟩
+
+private def bhLemmaEightEightOddConductor (P : OddPrimeFamily I) : BHLemmaEightConductor :=
+  ⟨eightOddModulus P, Nat.one_le_iff_ne_zero.mpr (eightOddModulus_neZero P).out⟩
+
+/-- Direct closed source-scale form of Lemma 8 for the odd square-free quadratic family. -/
+theorem odd_quadratic_windowShiftSum_sourceScale_closed [DecidableEq I]
+    (P : OddPrimeFamily I) (A M : ℕ) (b : ℕ → ℂ) (ε : BHLemmaEightPositiveExponent) :
+    ∑ x : ZMod P.modulus,
+      Complex.normSq (quadraticWindowShiftSum P A M b x) ≤
+        bhLemmaEightSourceConstant ε * (P.modulus : ℝ) ^ ε.exponent *
+          ((P.modulus : ℝ) + M) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
+  have hbase := quadratic_windowShiftSum_normSq_le_divisorRpow P A M b ε.positive
+  have henergy : 0 ≤ ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by positivity
+  calc
+    _ ≤ ((M : ℝ) * (Sieve.divisorBoundConst ε.exponent *
+        (P.modulus : ℝ) ^ ε.exponent) + (P.modulus : ℝ)) *
+          ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := hbase
+    _ ≤ bhLemmaEightSourceConstant ε * (P.modulus : ℝ) ^ ε.exponent *
+        ((P.modulus : ℝ) + M) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
+      simpa only [bhLemmaEightOddConductor] using
+        mul_le_mul_of_nonneg_right
+          (bhLemmaEight_coefficient_le_sourceScale (bhLemmaEightOddConductor P) M ε) henergy
+
+/-- Direct closed source-scale form of Lemma 8 for the level-four fundamental-discriminant
+quadratic family. -/
+theorem fourOdd_fundamentalKronecker_windowShiftSum_sourceScale_closed [DecidableEq I]
+    (P : OddPrimeFamily I) (A M : ℕ) (b : ℕ → ℂ) (ε : BHLemmaEightPositiveExponent) :
+    ∑ x : ZMod (fourOddModulus P),
+      Complex.normSq (fourOddFundamentalKroneckerWindowShiftSum P A M b x) ≤
+        bhLemmaEightSourceConstant ε * (fourOddModulus P : ℝ) ^ ε.exponent *
+          ((fourOddModulus P : ℝ) + M) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
+  simp_rw [fourOddFundamentalKroneckerWindowShiftSum_eq]
+  have hbase := fourOdd_quadratic_windowShiftSum_normSq_le_divisorRpow P A M b ε.positive
+  have henergy : 0 ≤ ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by positivity
+  calc
+    _ ≤ ((M : ℝ) * (Sieve.divisorBoundConst ε.exponent *
+        (fourOddModulus P : ℝ) ^ ε.exponent) + (fourOddModulus P : ℝ)) *
+          ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := hbase
+    _ ≤ bhLemmaEightSourceConstant ε * (fourOddModulus P : ℝ) ^ ε.exponent *
+        ((fourOddModulus P : ℝ) + M) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
+      simpa only [bhLemmaEightFourOddConductor] using
+        mul_le_mul_of_nonneg_right
+          (bhLemmaEight_coefficient_le_sourceScale (bhLemmaEightFourOddConductor P) M ε) henergy
+
+/-- Direct closed source-scale form of Lemma 8 for either conductor-eight quadratic family. -/
+theorem eightOdd_quadratic_windowShiftSum_sourceScale_closed [DecidableEq I]
+    (κ : EightQuadraticKind) (P : OddPrimeFamily I) (A M : ℕ) (b : ℕ → ℂ)
+    (ε : BHLemmaEightPositiveExponent) :
+    ∑ x : ZMod (eightOddModulus P),
+      Complex.normSq (eightOddQuadraticWindowShiftSum κ P A M b x) ≤
+        bhLemmaEightSourceConstant ε * (eightOddModulus P : ℝ) ^ ε.exponent *
+          ((eightOddModulus P : ℝ) + M) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
+  have hbase := eightOdd_quadratic_windowShiftSum_normSq_le_divisorRpow κ P A M b ε.positive
+  have henergy : 0 ≤ ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by positivity
+  calc
+    _ ≤ ((M : ℝ) * (Sieve.divisorBoundConst ε.exponent *
+        (eightOddModulus P : ℝ) ^ ε.exponent) + (eightOddModulus P : ℝ)) *
+          ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := hbase
+    _ ≤ bhLemmaEightSourceConstant ε * (eightOddModulus P : ℝ) ^ ε.exponent *
+        ((eightOddModulus P : ℝ) + M) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
+      simpa only [bhLemmaEightEightOddConductor] using
+        mul_le_mul_of_nonneg_right
+          (bhLemmaEight_coefficient_le_sourceScale (bhLemmaEightEightOddConductor P) M ε) henergy
+
+/-- Direct closed source-scale form of Lemma 8 for the first conductor-eight
+fundamental-discriminant Kronecker family. -/
+theorem eightOdd_fundamentalKronecker_windowShiftSum_sourceScale_closed [DecidableEq I]
+    (P : OddPrimeFamily I) (A M : ℕ) (b : ℕ → ℂ) (ε : BHLemmaEightPositiveExponent) :
+    ∑ x : ZMod (eightOddModulus P),
+      Complex.normSq (eightOddFundamentalKroneckerWindowShiftSum P A M b x) ≤
+        bhLemmaEightSourceConstant ε * (eightOddModulus P : ℝ) ^ ε.exponent *
+          ((eightOddModulus P : ℝ) + M) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
+  simpa only [eightOddFundamentalKroneckerWindowShiftSum_eq] using
+    (eightOdd_quadratic_windowShiftSum_sourceScale_closed .first P A M b ε)
+
+/-- Direct closed source-scale form of Lemma 8 for the second conductor-eight
+fundamental-discriminant Kronecker family. -/
+theorem eightOddPrime_fundamentalKronecker_windowShiftSum_sourceScale_closed [DecidableEq I]
+    (P : OddPrimeFamily I) (A M : ℕ) (b : ℕ → ℂ) (ε : BHLemmaEightPositiveExponent) :
+    ∑ x : ZMod (eightOddModulus P),
+      Complex.normSq (eightOddPrimeFundamentalKroneckerWindowShiftSum P A M b x) ≤
+        bhLemmaEightSourceConstant ε * (eightOddModulus P : ℝ) ^ ε.exponent *
+          ((eightOddModulus P : ℝ) + M) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
+  simpa only [eightOddPrimeFundamentalKroneckerWindowShiftSum_eq] using
+    (eightOdd_quadratic_windowShiftSum_sourceScale_closed .second P A M b ε)
+
+end OddPrimeFamily
+end RHTower

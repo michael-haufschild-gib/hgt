@@ -40,25 +40,29 @@ noncomputable def numberFieldRestrictedLocalBrauerSingle
 /-- The one-place number-field section is additive. -/
 noncomputable def numberFieldRestrictedLocalBrauerSingleAddHom
     (K : Type u) [Field K] [NumberField K] (v : NumberFieldPlace K) :
-    BrauerGroup (completion K v) →+ RestrictedLocalBrauerClasses K where
-  toFun := numberFieldRestrictedLocalBrauerSingle K v
-  map_zero' := by
-    apply RestrictedLocalBrauerClasses.ext
+    BrauerGroup (completion K v) →+ RestrictedLocalBrauerClasses K := by
+  classical
+  refine
+    { toFun := numberFieldRestrictedLocalBrauerSingle K v
+      map_zero' := ?_
+      map_add' := ?_ }
+  · apply RestrictedLocalBrauerClasses.ext
     funext w
     change (Pi.single v (0 : BrauerGroup (completion K v)) : localBrauerClasses K) w = 0
     rw [Pi.single_zero]
     rfl
-  map_add' a b := by
+  · intro a b
     apply RestrictedLocalBrauerClasses.ext
-    exact Pi.single_add v a b
+    exact Pi.single_add (f := fun w : NumberFieldPlace K => BrauerGroup (completion K w)) v a b
 
 /-- Evaluation at the selected place recovers the inserted number-field local class. -/
 theorem numberFieldRestrictedLocalBrauerSingle_apply
     (K : Type u) [Field K] [NumberField K] (v : NumberFieldPlace K)
     (a : BrauerGroup (completion K v)) :
     (numberFieldRestrictedLocalBrauerSingle K v a).toLocalBrauerClasses v = a := by
+  classical
   change (Pi.single v a : localBrauerClasses K) v = a
-  exact Pi.single_eq_same v a
+  exact Pi.single_eq_same (M := fun w : NumberFieldPlace K => BrauerGroup (completion K w)) v a
 
 /-- The additive number-field one-place section is injective. -/
 theorem numberFieldRestrictedLocalBrauerSingleAddHom_injective
@@ -148,26 +152,32 @@ noncomputable def rationalFunctionRestrictedLocalBrauerSingle
 noncomputable def rationalFunctionRestrictedLocalBrauerSingleAddHom
     (F : Type u) [Field F] [Finite F] (v : RationalFunctionPlace F) :
     BrauerGroup (rationalFunctionCompletion F v) →+
-      RationalFunctionRestrictedLocalBrauerClasses F where
-  toFun := rationalFunctionRestrictedLocalBrauerSingle F v
-  map_zero' := by
-    apply RationalFunctionRestrictedLocalBrauerClasses.ext
+      RationalFunctionRestrictedLocalBrauerClasses F := by
+  classical
+  refine
+    { toFun := rationalFunctionRestrictedLocalBrauerSingle F v
+      map_zero' := ?_
+      map_add' := ?_ }
+  · apply RationalFunctionRestrictedLocalBrauerClasses.ext
     funext w
     change (Pi.single v (0 : BrauerGroup (rationalFunctionCompletion F v)) :
       rationalFunctionLocalBrauerClasses F) w = 0
     rw [Pi.single_zero]
     rfl
-  map_add' a b := by
+  · intro a b
     apply RationalFunctionRestrictedLocalBrauerClasses.ext
-    exact Pi.single_add v a b
+    exact Pi.single_add (f := fun w : RationalFunctionPlace F =>
+      BrauerGroup (rationalFunctionCompletion F w)) v a b
 
 /-- Evaluation at the selected place recovers the inserted rational-function-field local class. -/
 theorem rationalFunctionRestrictedLocalBrauerSingle_apply
     (F : Type u) [Field F] [Finite F] (v : RationalFunctionPlace F)
     (a : BrauerGroup (rationalFunctionCompletion F v)) :
     (rationalFunctionRestrictedLocalBrauerSingle F v a).toLocalBrauerClasses v = a := by
+  classical
   change (Pi.single v a : rationalFunctionLocalBrauerClasses F) v = a
-  exact Pi.single_eq_same v a
+  exact Pi.single_eq_same (M := fun w : RationalFunctionPlace F =>
+    BrauerGroup (rationalFunctionCompletion F w)) v a
 
 /-- The additive rational-function-field one-place section is injective. -/
 theorem rationalFunctionRestrictedLocalBrauerSingleAddHom_injective

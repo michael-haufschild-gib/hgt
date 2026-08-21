@@ -1,12 +1,12 @@
 # Capacity-compatible fast-forwardable strata create complexity incubation tails
 
 - **ID:** capacity-compatible-fast-forwardable-incubation-law
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** theorem / static-local complexity onset / fast-forwarding singularity
 - **Parents:** ../3-formalized/fast-forwardable-stratum-codimension-obstruction.md,
   ../3-formalized/weak-interaction-recurrence-singularity-law.md,
   cubic-phase-seeded-static-local-full-scale-plateau-law.md
-- **Status:** [PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]
+- **Status:** `[FORMALIZED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-09
 
 ## Public sentence
@@ -368,7 +368,7 @@ Primary sources:
 6. Scientific novelty lies only in the capacity-compatible composition and its ordinary-local
    instantiation. Duhamel continuity, commuting compilation, beta tubes, and fast-forwarding are
    established mechanisms.
-7. No final-paper claim is authorized before exact Lean formalization and axiom audit.
+7. The Lean formalization and axiom audit are complete; audit items 1--6 stand unchanged.
 
 ## Lean status -- Theorem A is formal; the instantiation needs its parent cards
 
@@ -399,25 +399,100 @@ because normalization is two-Lipschitz, and the product volume of that tube is t
 times `(r/8)^d` times the unit transverse ball.  This is the same `d = m - f` exponent with an
 explicit constant, and it avoids the `Beta(d/2,f/2)` density entirely.
 
-### What remains
+## Lean progress -- Theorem B, the ordinary nearest-neighbour instantiation (2026-08-21)
 
-The conjunction `(8)` and Theorem B quote three inputs that are theorems of *other* cards, not of
-this one: the generic-completion package (item 3), the completed-phase capacity depth `(6)`
-(item 4), and the cubic-phase collision bound `(19)`, whose own card
-(`cubic-phase-seeded-static-local-full-scale-plateau-law`) is still at stage 2.  With those in hand
-`(8)` is `measureReal_inter_conull` applied to `exists_seed_measureReal_ge`, and `(20)` is
-`incubation_tail_lower` with `d = 10n-8`.  The compiler cost `(18)` is a gate-synthesis count for
-the commuting diagonal family, which needs the Solovay--Kitaev compilation layer.
+Theorem A is abstract in the coefficient space; Theorem B needs the nearest-neighbour shell to *be*
+one, with the diagonal family `(14)` as carrier.  Five new modules supply the identification and the
+certificates.
 
-## 6. Lean realization after corpus refactor
+`formal/GaloisForLFunctions/HTGeometry/CrossSphereIsometryTransport.lean`:
 
-Reuse rather than rebuild:
+| Card item | Declaration |
+|---|---|
+| a linear isometry equivalence restricted to the unit spheres | `crossSphereMap`, `continuous_crossSphereMap` |
+| it commutes with dilation of sets and preserves the cone | `image_smul_set_isometry`, `image_crossSphereMap_preimage` |
+| **the spherical measure transports** | `toSphere_preimage_crossSphereMap` |
 
-1. HTGeometry/FastForwardableStratumCodimension.lean for Duhamel tube transport;
-2. cubic-phase collision modules once their parent card reaches Stage 3;
-3. path-local maximal-projective-rank and cyclicity modules;
-4. completed phase plateau, recurrence, and local-separator modules;
-5. add only finite Fubini seed selection, shell beta-tube specialization, diagonal compiler
-   certificate, and final conjunction.
+`formal/GaloisForLFunctions/HTGeometry/PathShellPatchTransport.lean`:
 
-No Lean source or process was touched during the active refactor.
+| Card item | Declaration |
+|---|---|
+| the diagonal labels `(14)`: one `Z` per site and one `ZZ` per edge | `IsDiagLabel`, `diagLabelEquiv` |
+| **`(15)`**: `f = 2n+3` and `d = 10n+12` at `n+2` qubits | `card_diagLabel`, `offDiagLabelEquiv`, `card_offDiagLabel` |
+| **the shell is the patch space of the diagonal splitting** | `pathPatchEquiv`, `pathPatchIsometry` |
+| the shell map as a real-linear map, and **`(22)`** its `√m` Lipschitz constant | `pathHamiltonianLM`, `norm_pathHamiltonian_le`, `norm_pathHamiltonianLM_sub_le` |
+| the degenerate directions stay null after the transport | `toSphere_preimage_pathBadSphere_eq_zero` |
+
+`formal/GaloisForLFunctions/HTGeometry/DiagonalPatchConstruction.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the normalized all-positive direction | `uniformDir`, `norm_uniformDir` |
+| the compact carrier patch: the closed cap of radius `ρ` | `sphericalCap`, `isCompact_embedPatch_sphericalCap`, `nonempty_embedPatch_sphericalCap` |
+| **`(16)`**: every coordinate of the cap is at least `f^{-1/2} − ρ` | `sphericalCap_coord_ge` |
+| the carrier factor `a_P` is positive | `volume_patchAnnulus_sphericalCap_pos` |
+
+`formal/GaloisForLFunctions/HTGeometry/PatchChainPullback.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the chain-coefficient reading of the patch space | `pathToChainIsometry`, `patchCoeffIsometry`, `patchToCoeff`, `toSphere_preimage_patchToCoeff` |
+| item 3, **the conull generic completion** | `chainBadSphere`, `toSphere_chainBadSphere_eq_zero`, `toSphere_preimage_chainBadSphere_eq_zero` |
+| the eigenbasis at a patch direction, and its maximal projectivity | `patchEigenBasis`, `isOrthoEigenBasis_patchEigenBasis`, `maximallyProjectiveEnergy_patchEigenValues`, `mem_simpleLocus_of_notMem_chainBadSphere` |
+| item 2, **the density certificate `(19)`**: all but `96/(κ²D)` of the cubic seeds are good at *every* direction | `patchGood`, `measurableSet_patchGood`, `density_patchGood` |
+| the Hilbert--Schmidt norm of a Pauli combination, and hence `ρ_e ≤ ‖V_e‖` on the register | `hsNormSq_matrix_eq_trace`, `hsNormSq_pauliCombination`, `edgeRho_le_norm_edgePart` |
+| **`(21)`**: inside the tube every edge stays coupled | `edgeCoupling_lower` |
+
+The collision is read through the *gauge-invariant* `crossCollision`, which is continuous on the
+simple locus and therefore measurable; the Fubini seed selection needs measurability, and
+eigenvector measurability is not available.  On the simple locus `crossCollision_cubicSeed` converts
+it back to the eigenbasis collision.
+
+`formal/GaloisForLFunctions/HTGeometry/CapacityIncubationInstantiation.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the shell map on the patch space, self-adjoint and Lipschitz | `patchHamLM`, `isSelfAdjoint_patchHamLM`, `norm_patchHamLM_sub_le`, `norm_patchHam_le` |
+| the cubic seed on the register, and its unit norm | `registerCubicSeed`, `finiteComplexInner_registerCubicSeed` |
+| the collision at a good nondegenerate direction | `occupationCollision_eq_phaseCollision`, `phaseCollision_le_of_good` |
+| **`(9)` at the constructed patch** | `toSphere_patchThickening_cap_ge`, `volume_patchAnnulus_cap_pos` |
+| **Theorem B `(20)` and clauses 1--5, 7** | `exists_incubating_cubicSeed` |
+
+`exists_incubating_cubicSeed` produces one cubic seed together with the measure bound
+`(1−β)·σ(tube) ≤ σ(tube ∩ good ∩ generic)` -- which is `(8)`, and with
+`toSphere_patchThickening_cap_ge` and `incubation_tail_lower` is `(20)` at `d = 10n−8` -- and, at
+every direction of that set, clause 1 (`approxComplexity … ≤ B` through the whole window), clause 2
+(maximal projective rank), clause 3 (collision `≤ (2+κ)/D`), clause 4 (hard at every instant of
+arbitrarily late windows of length `W`), clause 5 (recurrence to the seed) and clause 7 (`(21)`).
+Clause 6 is the seed-independent corpus separator
+`haarBenchmark_lt_literalTwoQueryScore_of_trace_eq_zero`.
+
+The gate model -- the alphabet `Γ`, its action, the reference state and the uniform compiler bound
+`B` with its certificate -- is the card's own certificate datum 1, carried as data exactly as in
+Theorem A; `(18)` is the value of that datum for the commuting diagonal family and is a
+compilation count, not a theorem of this card.
+
+## 6. Lean realization
+
+Reused rather than rebuilt:
+
+1. `HTGeometry/FastForwardableStratumCodimension.lean` for Duhamel tube transport;
+2. the cubic-phase collision modules of the parent card;
+3. the path-local maximal-projective-rank locus;
+4. the completed-phase plateau, recurrence and local-separator modules;
+5. added: the diagonal splitting isometry, the spherical-cap carrier, the patch pullback, and the
+   final conjunction.
+
+## Status of the card
+
+| Card statement | Declaration |
+|---|---|
+| **Theorem A `(7)`--`(10)`** -- the codimension incubation law | `approxComplexity_le_of_mem_patchThickening`, `toSphere_patchThickening_ge`, `incubation_tail_lower`, `exists_seed_measureReal_ge`, `measureReal_inter_conull` |
+| **`(13)`--`(16)`** -- the nearest-neighbour shell, its diagonal subspace, and the carrier patch | `card_diagLabel`, `card_offDiagLabel`, `pathPatchIsometry`, `sphericalCap_coord_ge` |
+| **`(19)`** -- the cubic-phase collision density | `density_patchGood` |
+| **`(20)`--`(21)`** and clauses 1--5, 7 of Theorem B | `exists_incubating_cubicSeed` |
+| clause 6, permanent non-Haar locality | `haarBenchmark_lt_literalTwoQueryScore_of_trace_eq_zero` |
+| **`(22)`** -- the shell is `√m`-Lipschitz | `norm_pathHamiltonianLM_sub_le` |
+
+All statements are unconditional and axiom-clean (`propext`, `Classical.choice`, `Quot.sound`
+only).  The card is fully formalized.

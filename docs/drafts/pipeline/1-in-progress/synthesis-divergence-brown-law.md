@@ -415,3 +415,27 @@ must still be classified quantitatively.  This action gap is the exact open core
 growing-replica route.  It is sufficient, not necessary, for a direct Brown lower-tail proof: a
 rare easy carrier can be harmless to the desired event probability yet dominate `Z_r`.  Lean
 remains read only during refactor.
+
+## 2026-08-21 canonical endpoint-design correction
+
+For finite projective endpoint dictionaries, raw label unions, worst action degree, and squared
+incidence-action budgets are no longer sharp frontier. Formalized determinant-design law retains
+actual occupied replica endpoint image and every post-return source sheet. Its exact same-draw
+sufficient statistic is
+
+\[
+ \dim\operatorname{span}\{\phi_c^{\otimes r}\}
+ \left[{r!\over d^r}+\sum_c w_c^*A_{r,\delta}(E_H,\phi_{H,c})
+ +e^{-(T\delta)^2/2}\right],
+\]
+
+with `w*` supplied unconditionally by endpoint determinant optimum. A strict bound below explicit
+later-hit cell mass proves first return to complete dictionary is later than `T`; same fixed
+nearest-neighbour Hamiltonian also obeys certified laboratory ramp. Infinite or adaptive target
+classes reduce to finite nets without selector measurability.
+
+This does not prove Brown onset. Active ordinary-ensemble core is now a quenched growing-replica
+lower-tail estimate for canonical weighted near-action term, uniform over Brown times and an
+entropy-efficient continuous-circuit net. Unlike global Haar/design convergence, this statistic
+allows permanent locality and uses only spectral direction selected by occupied circuit image.
+Formal card: `../3-formalized/optimal-design-weighted-static-choi-first-return-law.md`.

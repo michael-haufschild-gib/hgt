@@ -132,6 +132,14 @@ instance {gate : Type*} [Fintype gate] (s : ℕ) :
     Fintype (PaddedCircuitWord gate s) :=
   inferInstanceAs (Fintype (Fin (s + 1) → gate))
 
+instance {gate : Type*} [Nonempty gate] (s : ℕ) :
+    Nonempty (PaddedCircuitWord gate s) :=
+  inferInstanceAs (Nonempty (Fin (s + 1) → gate))
+
+instance {gate : Type*} [DecidableEq gate] (s : ℕ) :
+    DecidableEq (PaddedCircuitWord gate s) :=
+  inferInstanceAs (DecidableEq (Fin (s + 1) → gate))
+
 theorem card_paddedCircuitWord (gate : Type*) [Fintype gate] (s : ℕ) :
     Fintype.card (PaddedCircuitWord gate s) = Fintype.card gate ^ (s + 1) := by
   change Fintype.card (Fin (s + 1) → gate) = Fintype.card gate ^ (s + 1)

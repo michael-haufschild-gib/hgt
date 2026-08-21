@@ -1589,3 +1589,42 @@ logarithm `C_p(ρ) = ∑_m T^m/m = −Log(I − T)` on top of exactly this boost
 algebra plus a geometrically convergent series; item `(16)` (the Gamma–Meixner threshold
 `θ > 2|a|`) additionally needs `∑_p (log p)² p^{-σ}` convergence for `σ > 1` and divergence at
 `σ = 1` — the latter follows from the corpus's `log_log_sub_one_le_sum_primesBelow_inv`.
+
+### PROMOTED: `local-euler-valuation-lorentz-log-colligation` (2026-08-21)
+
+`formal/GaloisForLFunctions/RHTower/EulerValuationLorentzLog.lean` is **built, wired and
+axiom-clean**, and already covers items `(1)`–`(10)` and `(17)` of the card:
+
+- `eulerLightConePlus/Minus` = `p^{-(1-ρ)}`, `p^{-conj ρ}`, with `norm_eulerLightConePlus/Minus`
+  and the strip bounds `..._lt_one` — this is `(4)`;
+- `eulerLogEven`, `eulerLogOdd` = `(f(z₊)±f(z₋))/2` — `(7)`–`(8)`;
+- `eulerPhase`, `eulerRapidity`, `eulerTransfer`, **`eulerTransfer_pow`**,
+  `eulerTransfer_pow_entry_diagonal/offDiagonal` — `(2)`, `(3)`, `(5)` degreewise, built on
+  `RationalHurwitzLorentzBoost.lorentzBoost_mul`;
+- **`hasSum_eulerLogOdd`**, `hasSum_eulerLogEven` — `(9)`: the connected-cycle series
+  `∑_m (T^m)_{ij}/m` converges to the even/odd coordinates (via
+  `Complex.hasSum_taylorSeries_neg_log`);
+- **`eulerLightCone_eq_iff`**, **`eulerLogOdd_eq_zero_iff`** — `(10)`: the odd coordinate vanishes
+  *exactly* on the critical line;
+- `max_norm_eulerLightCone`, `max_norm_eulerLightCone_lt_one` — `(17)`.
+
+**The Gamma–Meixner threshold `(11)`–`(16)` is now proved as well**, so the card is promoted:
+
+- `eulerConeScale p ρ = p^{|a|-1/2}`, `eulerConeCoScale p ρ = p^{-|a|-1/2}`,
+  `norm_eulerLightCone_sub` (`‖z₊ − z₋‖ = X − Y` exactly);
+- **`norm_eulerLogOdd_le`** (`‖v_p‖ ≤ 2X` once `X ≤ 1/2`) and **`le_norm_eulerLogOdd`**
+  (`‖v_p‖ ≥ X/8` once `X ≤ 1/8` and `Y ≤ X/2`), both from the corpus's *order-two* uniform Taylor
+  estimate `HTGeometry.ComplexLogTaylorUniform.norm_log_one_add_sub_taylor_le'`
+  (`‖−log(1−z) − z‖ ≤ ‖z‖²`) — no series manipulation at all;
+- `gammaMeixnerWeight`, `cosh_two_log_bounds`, `gammaMeixnerWeight_le`, `le_gammaMeixnerWeight`;
+- `tendsto_primes_cofinite_atTop`, `eventually_eulerConeScale_le`,
+  `eventually_eulerConeCoScale_le`, `eventually_sq_log_ge` — the "for all but finitely many primes"
+  layer, obtained from `Function.Injective.tendsto_cofinite` and `Nat.cofinite_eq_atTop`;
+- **`summable_eulerAntiReflectionTerm_iff`** — the exact threshold, by
+  `Summable.of_norm_bounded_eventually` in *both* directions, against
+  `summable_abs_log_natCast_pow_mul_rpow_neg` (restricted to primes) above the threshold and
+  against `not_summable_one_div_primes` at or below it.
+
+**Reusable pattern:** the cofinite/`atTop` transfer plus `Summable.of_norm_bounded_eventually` in
+both directions is the cheapest way to prove an *exact* prime-Dirichlet convergence threshold from
+two-sided eventual bounds — no `Set.Finite.summable_compl_iff` juggling is needed.

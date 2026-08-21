@@ -873,3 +873,66 @@ lives at the new, lower degree `deg A_N`, not at `N · deg A`.  The remaining in
 lattice-level filtration, i.e. exactly one of the two routes recorded above (CAT(0) semisimplicity
 of the affine building, or a Dieudonné–Manin slope decomposition for `σ`-modules over `Qhat_K`);
 the restart algebra those routes are applied to is now formal.
+
+### Lean progress — the accumulated leading matrices have a stable rank
+
+`GaloisForLFunctions.HTGeometry.ChainRankStabilization` (wired, built, axiom-clean)
+
+```text
+rank_chainProdK_antitone_le      the ranks of an ordered product are non-increasing, iterated
+exists_rank_chainProdK_stabilize **the rank stabilises**: it attains its minimum at some index and
+                                 stays there
+```
+
+`chainProdK_dichotomy` already separated the two regimes — the accumulated leading matrix chain
+either never vanishes or vanishes from some index on.  The stable rank refines that: there is an
+index `N` beyond which the rank is constant, and the dichotomy is the case distinction on whether
+that constant is positive.
+
+This is the entry point of the slope filtration in the exact form the remaining open point needs.
+In the positive-rank regime `matDeg_chainProd_eq` already gives `deg A_n = n·e` exactly, so the
+dichotomy of Theorem B is settled there; in the zero-rank regime `twistedChain_restart` reproduces a
+twisted chain with generator `A_N` and twist `σ^N`, and what is missing is still the bound on the
+number of restarts — for which the stable rank is the natural candidate invariant, since a restart
+that lowers it can happen at most `r` times.
+
+### Lean progress — the stable image
+
+`GaloisForLFunctions.HTGeometry.ChainStableImage` (wired, built, axiom-clean)
+
+```text
+range_chainProdK_antitone, range_chainProdK_antitone_le
+    **the images of an ordered product decrease** — each further factor is applied first
+exists_range_chainProdK_stabilize
+    **the image stabilises**: beyond the index where the rank is minimal it no longer changes
+```
+
+Together with `twistedChain_left` — `P_{n+1} = C · σ(P_n)` — this identifies the stable image as the
+subspace the accumulated leading matrices carry onto itself: `im P_{n+1} = C · σ(im P_n)`, so on the
+stable image the twisted operator is a bijection.  That is the sub-object of the slope filtration in
+the non-vanishing regime, and it is nonzero exactly there.
+
+The open point of the card is unchanged in statement but is now equipped: the two regimes are
+separated by `chainProdK_dichotomy`, indexed by the stable rank
+(`exists_rank_chainProdK_stabilize`), and carry a stable subspace
+(`exists_range_chainProdK_stabilize`); the restart is an identity (`twistedChain_restart`); and what
+is still missing is the bound on the number of restarts.
+
+### Lean progress — the stable rank decides the dichotomy
+
+`ChainRankStabilization` gained (wired, built, axiom-clean):
+
+```text
+rank_eq_zero_iff                  **a matrix has rank zero exactly when it vanishes** — a mathlib
+                                  gap, proved by evaluating the linear map at the standard basis
+chainProdK_ne_zero_iff_rank_pos   **the accumulated chain never vanishes exactly when its stable
+                                  rank is positive**
+```
+
+So `chainProdK_dichotomy` is now a genuine numerical criterion rather than a case split: compute the
+stable rank of the accumulated leading matrices; if it is positive, `matDeg_chainProd_eq` gives
+`deg A_n = n·e` exactly and Theorem B's dichotomy is settled; if it is zero, the chain vanishes from
+some index on and `twistedChain_restart` reproduces a twisted chain with generator `A_N` and twist
+`σ^N`.
+
+The one open point of the card is unchanged: the bound on the number of restarts.

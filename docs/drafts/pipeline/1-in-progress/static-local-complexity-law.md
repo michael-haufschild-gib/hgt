@@ -6330,3 +6330,19 @@ receive a new title and an independent significance audit.
   exclude an arbitrarily long transient before the first hard block.  Remaining task is precisely
   quenched fixed-time/first-entry control connecting the laboratory window to that first block.
   Formal card: `../3-formalized/completed-occupation-quantitative-same-draw-hard-gap-law.md`.
+- 2026-08-21 -- Replaced return-excised incidence-action square by a sharper determinant-design
+  first-return law. For every finite normalized endpoint dictionary, one probability design on
+  actual occupied replica endpoints controls complete post-return capture union with single
+  intrinsic factor `m_r=finrank(span{phi_c^tensor r})`; target labels and source fibre sheets are not
+  discarded. Static Choi moments are exactly phase-twisted spectral moments and obey
+  `r!/d^r + A_(r,delta)(E,phi) + exp(-(T delta)^2/2)`. Keeping canonical design weights inside `A`
+  removes worst-spectrum crowding degree: sufficient first-return invariant is now
+  `m_r [r!/d^r + sum_c w*_c A_(r,delta)(E,phi_c) + GaussianTail]`.
+  Lean also proves transfer from arbitrary infinite/adaptive target classes through one finite
+  projective net and couples canonical weighted law to same nearest-neighbour draw supplying robust
+  laboratory growth. This is frontier reduction, not Brown closure. Exact remaining problem is a
+  quenched growing-replica lower-tail estimate for this canonical
+  spectrum--eigenbasis--circuit-image statistic in an ordinary fixed-`q` static local ensemble,
+  uniform on Brown schedule; continuous gates additionally require an entropy-efficient circuit
+  net. Formal card:
+  `../3-formalized/optimal-design-weighted-static-choi-first-return-law.md`.

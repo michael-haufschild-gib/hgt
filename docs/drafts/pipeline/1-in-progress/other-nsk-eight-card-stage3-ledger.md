@@ -1293,3 +1293,117 @@ are distinct by `pairwiseDistinctModulo_enlargedPacketPoints`).
 So the interpolation half of card 7's analytic obligation is closed constructively.  The residue is
 the growth estimate for a *lower-automorphic* interpolant, which with
 `AbeDampingPacketData.ofFiniteVanishing` closes the damping datum, plus `IsAbePositiveTorusless`.
+
+## Card 4: stable rank of the accumulated leading matrices
+
+`HTGeometry.ChainRankStabilization` (wired, built, axiom-clean): `rank_chainProdK_antitone_le` and
+`exists_rank_chainProdK_stabilize` — the ranks of an ordered product are non-increasing and attain
+their minimum at some index, beyond which they are constant.
+
+This refines `chainProdK_dichotomy` into a case distinction on the stable rank, and is the natural
+candidate invariant for the restart bound: a restart that lowers the stable rank can happen at most
+`r` times.  The positive-rank regime is already settled by `matDeg_chainProd_eq`.
+
+## Card 4: the stable image
+
+`HTGeometry.ChainStableImage` (wired, built, axiom-clean): `range_chainProdK_antitone`,
+`range_chainProdK_antitone_le`, `exists_range_chainProdK_stabilize` — the images of an ordered
+product decrease and stabilise beyond the index of minimal rank.
+
+With `twistedChain_left` (`P_{n+1} = C·σ(P_n)`) this is the sub-object of the slope filtration: on
+the stable image the twisted operator is a bijection.  Card 4's open point still needs the restart
+bound.
+
+## Card 8 item 3a: the place toolkit is complete; one design constraint recorded
+
+`PlaceLimit` gained `PlaceLim.mul_of_mem`, `placeLim_prod_of_mem`, `placeLim_det_of_mem` — the limit
+API with values in a trivially valued subfield.
+
+**Design constraint (found by auditing `TopCoordinateDegree`'s exports against the place toolkit):**
+`TopFree` is closed under addition but `PlaceFree` is not — coordinate-freeness is a subfield
+condition, being a unit at a place is not (`1`, `−1` are units, `1 + (−1)` is not).  The
+transcription must translate `TopFree` as `PlaceTrivialOn F`, not as `PlaceFree`.  With that, every
+general lemma of the coordinate model has its place-level counterpart; what is left of item 3a is
+the model-specific layer (`fact`, `logFactor`, `univFactor` over the algebraic extension) and the
+inductions.
+
+## Card 4: the stable rank decides the dichotomy
+
+`ChainRankStabilization` gained `rank_eq_zero_iff` (a mathlib gap: a matrix has rank zero exactly
+when it vanishes) and `chainProdK_ne_zero_iff_rank_pos` — the accumulated chain never vanishes
+exactly when its stable rank is positive.  `chainProdK_dichotomy` is now a numerical criterion.
+
+## Card 6: translation invariance at arbitrary shift
+
+`HTGeometry.PolynomialShiftInvariant.comp_X_add_C_eq_self` (wired, built, axiom-clean) — a
+polynomial invariant under one nonzero translation is constant, by rescaling the variable to reduce
+to the corpus's unit-shift version.  A single translation suffices; characteristic zero already
+rules out a nonconstant periodic polynomial.
+
+With `shift_invariant_rational_constant_gen` this owns both halves of the one-dimensional case of
+Corollary C's `(6)`; the passage to a general connected commutative group is part of item 2.
+
+## Card 6: translation invariance in several variables is a linear condition
+
+`HTGeometry.MvPolynomialTranslationSpan` (wired, built, axiom-clean).  Over any characteristic-zero
+field the translation directions fixing a multivariate polynomial form a **linear subspace**
+(`translationSubmodule`), not merely a subgroup: restricting to the affine line `x + t·v` gives a
+one-variable polynomial with the same value at every nonnegative integer, hence constant, hence
+invariance under `c·v` for every scalar `c` (`mvShift_smul_of_mvShift`).
+
+Consequences: `eq_C_of_span_translations_eq_top` — a spanning set of invariance directions forces
+constancy; and `eq_C_of_coordinate_shift_invariant` — **one nonzero translation per coordinate
+already forces constancy**, with no density hypothesis.
+
+This is the multivariate half of Corollary C's `(6)`.  The corpus previously owned only the
+ℂ-specific `Hurwitz.PowerOrbitAdditiveSaturation.translationInvariantSubmodule`; the general-field
+version now lives in the reusable area with the constancy corollaries stated.
+
+`PolynomialShiftInvariant` also gained `comp_X_add_one_eq_self_domain` and
+`comp_X_add_C_eq_self_domain` — the one-variable rigidity over an arbitrary characteristic-zero
+integral domain, which is what a coefficient ring of remaining variables is.
+
+## Card 8 item 3a: the univariate factor at a place
+
+`HTGeometry.PlaceUnivFactor` (wired, built, axiom-clean) is the first model-specific layer of the
+algebraic model: `valuation_eval_eq` (`v(p(x)) = v(x)^{deg p}` exactly for `v(x) > 1`),
+`placeDegLE_logFactor`, and `placeLim_mul_logFactor` — the place-level counterparts of
+`topDegLE_logFactor` and `topLim_fx_mul_logFactor`.
+
+The only hypothesis is that the coefficients lie in a subfield on which the place is trivial, which
+`placeFree_of_isIntegral` makes automatic after any algebraic extension.  The accuracy is `(v x)⁻¹`
+rather than the coordinate model's fixed `−1`, which is exactly the ramification bookkeeping
+`PlaceLimit`'s parametrised accuracy was built for.
+
+## Card 8 item 3a: the derivation drop and the peel column at a place
+
+`HTGeometry.PlaceRationalDerivationDrop` (wired, built, axiom-clean): `valuation_derivation_mul_le`
+— `v(D f)·v(x) ≤ v(f)` for a rational function `f = p(x)/q(x)` of a large element, the place-level
+form of `TopDegLE.fpderiv_top`.  Proved from the Wronskian identity plus the exact valuations of
+part 17; the constant/constant case is handled separately because the quotient then lies in the
+trivially valued subfield.
+
+`HTGeometry.PlaceShiftIterate` (wired, built, axiom-clean): `placeShift`,
+`placeDegLE_placeShift`, `placeDegLE_iterate_placeShift`, `placeDegLE_placeShift_of_split`,
+`placeLim_mul_of_split`, `placeLim_mul_zero_of_placeDegLE` — the peel's operator does not raise the
+place degree, every iterate keeps it, and the scaled column has value `(deg Q_m, 0, …, 0)`.
+
+Remaining on item 3a: instantiate the abstract column at the cascade's own derivation and response
+over the algebraic extension — the closed class `S` (the analogue of `lowSub`) and the bound
+`v(c) ≤ 1` have to come from the model rather than be assumed.
+
+## Card 8 item 3a: the peel column at a place, assembled
+
+`HTGeometry.PlaceRationalClass` — `RatIn F x` (the place-level `lowSub`), its closure under the
+field operations and under a derivation killing `F`, and the drop `v(D f)·v(x) ≤ v(f)` on the whole
+class.  `HTGeometry.PlacePeelColumn` — `placeDegLE_placeShift_of_borderShape`,
+`placeLim_border_of_borderShape`, `placeLim_below_of_borderShape`: the scaled newest column of a
+border-shaped vector has value `(deg p, 0, …, 0)` at the place.  Both wired, built, axiom-clean.
+
+The only law-specific input left at this level is the Wronskian fact that `E` sends the logarithmic
+factor two place-degrees down.
+
+`PlacePeelColumn` also gained `placeDegLE_placeShift_logFactor`: a response one place-degree down
+already sends the logarithmic factor two degrees down, discharging the leading hypothesis of the
+border-shape lemmas.  When the response is only of unit size the same conclusion is the law's
+Wronskian cancellation, which is the one law-specific input still outstanding at this level.

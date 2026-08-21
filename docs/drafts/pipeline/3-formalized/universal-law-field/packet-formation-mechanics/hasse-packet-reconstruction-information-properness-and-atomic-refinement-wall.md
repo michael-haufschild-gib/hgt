@@ -1,7 +1,7 @@
 # Hasse packet reconstruction, information properness, and the atomic-refinement wall
 
 - **ID:** ULF-PFM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `../../../../1-in-progress/rh-current-frontier-map.md` and the certified Salem Fermi
   carrier
@@ -31,6 +31,7 @@ formation kernel at zero information cost.  The properness theorem would then fo
 - [x] 2 -> 3 formalized: certified core in
   `GaloisForLFunctions.HTGeometry.ConstitutiveHassePacketFormation`; umbrella build, lint, and
   axiom audit passed
+- [x] 2 -> 3 formalized (complete): complex Hasse integral, eta identity, phase orthogonality, quantum Fisher bound and the response chain in four further modules
 - [ ] 3 -> 4 publication-ready
 
 ## 1. The finite-difference packet
@@ -377,5 +378,10 @@ instantiation.  No RH conclusion is claimed.
   and atomic-refinement wall proved on paper; Lean gate opened.
 - 2026-08-11 — finite packet formation, common-kernel reconstruction, exact atomic wall, finite
   positive formation measures, parameter recovery, and reflected Jeffreys selection certified in
-  Lean.  The complex Hasse integral, eta phase identity, and QFI corollary remain paper-level source
-  links and are not counted among the certified declarations.
+  Lean.
+- 2026-08-21 — the remaining source links are certified: the complex Hasse integral `(PFM.2)`, its
+  majorant `(PFM.4)`, the eta summation `(PFM.3)`, the zero relation `(PFM.11)`, the eta phase
+  identity `(PFM.10)` with its orthogonality `(PFM.12)`, the response chain `(PFM.16)` with strict
+  convexity, the likelihood-ratio and Jeffreys formulas `(PFM.17)`--`(PFM.18)` with the centre
+  selection `(PFM.19)`, and the quantum Fisher corollary `(PFM.13)`--`(PFM.14)`.  Every displayed
+  equation of the card is now a Lean theorem.

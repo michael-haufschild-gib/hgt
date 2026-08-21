@@ -555,3 +555,25 @@ So Theorem A is now assembled from three Lean theorems plus the one order-zero g
 Items 2–5 of the Lean-status list — the quotient sheaf/atlas for `G/H`, the DCF generic-point bridge
 for the logarithmic derivative, the reduced presentation, and the finite-action quotient — are
 untouched and still gate Theorems B, C and D.
+
+## Lean progress — translation invariance forces constancy, at arbitrary shift
+
+`GaloisForLFunctions.HTGeometry.PolynomialShiftInvariant` (wired, built, axiom-clean)
+
+```text
+FieldShift.comp_X_add_C_eq_self
+    **a polynomial invariant under one nonzero translation is constant**
+```
+
+The corpus already had this for the unit shift.  An arbitrary nonzero shift reduces to it by
+rescaling the variable: if `p(X + a) = p(X)` then `q(X) = p(aX)` satisfies `q(X + 1) = q(X)`, so `q`
+is constant, and rescaling back makes `p` constant.  Note that a *single* nonzero translation
+suffices — no density of the translation group is needed, because characteristic zero already
+rules out a nonconstant periodic polynomial.
+
+This is the order-zero half of Corollary C's `(6)`, `Tail(alpha) ∩ C(G) = C`: translation-invariant
+functions on a connected group are constant.  The rational-function version at a general shift is
+`ShiftDefectRationalPole.shift_invariant_rational_constant_gen`, already in the tree, so both halves
+of the one-dimensional case are now owned; what `(6)` still needs is the passage from one
+coordinate to a general connected commutative algebraic group, which is part of item 2 of the
+Lean-status list.

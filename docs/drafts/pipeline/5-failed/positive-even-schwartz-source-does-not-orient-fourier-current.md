@@ -136,3 +136,44 @@ positive, Schwartz, even, or moment-positive is not such a property.
 - [x] explicit simple nonreal Fourier zero proved
 - [x] raw-moment Hankel positivity shown irrelevant
 - [x] qualitative positive-source route retired
+
+## 2026-08-21: Lean closure in the live TTF coordinate
+
+The paper obstruction is now dependency-closed in the exact `ThetaSource`/tilt-flux interface used
+by live route TTF. The formal witness is
+
+```text
+k(x) = exp(-x^2) * (1 + epsilon*cos(3*x)),
+epsilon = exp(9/4)/cosh(8) < 1/8.
+```
+
+Lean proves positivity, evenness, continuity, every-rate exponential decay, and global strict
+concavity of `log k`. Its bilateral Laplace transform has normalized factor
+
+```text
+1 + cos(3*w/2)/cosh(8),
+```
+
+hence vanishes exactly at `w = 2*pi/3 + (16/3)*I`, while its value at `(16/3)*I` is nonzero.
+The reusable horizontal mean-value extractor then produces `0<a<2*pi/3` where the diagonal source
+Bezoutian is negative. `exists_modulatedGaussianSource_tiltCorrelation_deriv_neg` identifies this
+as the literal derivative at neutral tilt of a one-mode correlation, with a strictly negative
+derivative value.
+
+**Exact killing theorem/mechanism.**
+`exists_strictLogConcave_thetaSource_with_negative_flux` and
+`exists_modulatedGaussianSource_tiltCorrelation_deriv_neg` show that positivity, evenness,
+superexponential decay, and global strict log-concavity do not imply TTF neutral-flux positivity.
+
+**Strongest positive survivor.** Any successful TTF producer must use a property coupling the
+literal theta source to its global frequency behavior. Local physical-space shape, including all
+reflected midpoint and correlation-angle consequences derived solely from strict log-concavity,
+cannot suffice. The reusable positive theorem
+`exists_sourceBezoutian_diagonal_neg_of_horizontal_zero` says more generally that any off-axis zero
+with nonzero vertical projection forces a negative diagonal flux somewhere on the intervening
+horizontal segment.
+
+**Lean status.** Closed in
+`RHTower/ThetaSourceHorizontalFluxExtractor.lean` and
+`RHTower/ThetaSourceStrictLogConcavityFluxNoGo.lean`; direct source checks and exact target builds
+pass. `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.

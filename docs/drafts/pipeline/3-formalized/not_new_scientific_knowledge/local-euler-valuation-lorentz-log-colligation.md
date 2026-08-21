@@ -185,3 +185,53 @@ valuation-resolved HT module is a useful bridge, not a claim of new scientific k
 - [x] prove its exact Gamma--Meixner convergence threshold
 - [x] replace the local-completion no-go by a nontrivial positive RH consumer
 - [ ] formalize only if the completed all-prime source metric uses this logarithmic colligation
+
+## Lean formalization — COMPLETE (2026-08-21)
+
+Module: `formal/GaloisForLFunctions/RHTower/EulerValuationLorentzLog.lean`
+(wired into `GaloisForLFunctions.RHTower`; every capstone has axiom footprint
+`propext, Classical.choice, Quot.sound`).  It sits on
+`RHTower/RationalHurwitzLorentzBoost.lean` (the parent card's colligation, formalized first).
+
+| Card equation | Lean declaration |
+|---|---|
+| `(1)`–`(3)` the normalized prime transfer `T = p^{-1/2+it}·B(a log p)` | `eulerPhase`, `eulerRapidity`, `eulerTransfer` |
+| `(4)` the light-cone eigenvalues `z_± = p^{-(1-ρ)}, p^{-conj ρ}` | `eulerLightConePlus/Minus`, `eulerLightConePlus_eq_phase_mul`, `eulerLightConeMinus_eq_phase_mul` |
+| `|z_±| < 1` inside the open strip | `norm_eulerLightConePlus_lt_one`, `norm_eulerLightConeMinus_lt_one` |
+| every valuation degree is a power of one transfer | **`eulerTransfer_pow`**, `eulerTransfer_pow_entry_diagonal/offDiagonal` |
+| `(5)`–`(8)` the matrix logarithm in even/odd coordinates | `eulerLogEven`, `eulerLogOdd`, **`hasSum_eulerLogEven`**, **`hasSum_eulerLogOdd`** |
+| `(9)` the explicit connected-cycle series | `eulerTransfer_offDiagonal_div_eq` together with `hasSum_eulerLogOdd` |
+| `(10)` `v_p = 0 ⟺ a = 0` | `eulerLightCone_eq_iff`, **`eulerLogOdd_eq_zero_iff`** |
+| `(11)`–`(13)` `|v_p| ≍ p^{|a|-1/2}` | `eulerConeScale`, `eulerConeCoScale`, **`norm_eulerLogOdd_le`**, **`le_norm_eulerLogOdd`** |
+| `(14)` `w_θ(p) ≍ p^{-θ}` | `gammaMeixnerWeight`, `cosh_two_log_bounds`, `gammaMeixnerWeight_le`, `le_gammaMeixnerWeight` |
+| `(15)`–`(16)` the exact threshold | `eulerAntiReflectionTerm`, **`summable_eulerAntiReflectionTerm_iff`** |
+| the energy vanishes identically on the critical line | `eulerAntiReflectionTerm_eq_zero` |
+| `(17)` the spectral radius `p^{|a|-1/2} < 1` | `max_norm_eulerLightCone`, `max_norm_eulerLightCone_lt_one` |
+
+Proof mechanisms:
+
+1. **Degreewise transfer.**  `eulerTransfer = p^{-1/2+it} • B(a log p)` with the *real* boost of the
+   parent card mapped into `ℂ`; `eulerTransfer_pow` is an induction using `lorentzBoost_mul`
+   (rapidity additivity) and `Matrix.map_mul`.  The `(0,0)` and `(0,1)` entries of `T^m` are then
+   `w^m cosh(m u)` and `w^m sinh(m u)`.
+2. **The series.**  `Complex.hasSum_taylorSeries_neg_log` at `z_+` and `z_-`, added and subtracted;
+   the entrywise identity `w^m sinh(mu) = (z_+^m − z_-^m)/2` comes from `z_± = w·e^{±u}`.
+3. **`(10)` exactly.**  `v_p = 0` gives `log(1−z_+) = log(1−z_-)`; exponentiating (both arguments
+   are nonzero because `‖z_±‖ < 1`) gives `z_+ = z_-`, and comparing moduli gives
+   `p^{Re ρ − 1} = p^{−Re ρ}`, i.e. `Re ρ = 1/2`.
+4. **Two-sided size of `v_p`.**  Both bounds come from the corpus's uniform Taylor estimate
+   `HTGeometry.ComplexLogTaylorUniform.norm_log_one_add_sub_taylor_le'` at order two:
+   `‖−log(1−z) − z‖ ≤ ‖z‖²`.  Upper: `‖v_p‖ ≤ 2X` once `X ≤ 1/2`.  Lower: writing
+   `2v_p = (z_+ − z_-) + E` with `‖E‖ ≤ 2X²` and `‖z_+ − z_-‖ = X − Y` (`norm_eulerLightCone_sub`)
+   gives `‖v_p‖ ≥ X/8` once `X ≤ 1/8` and `Y ≤ X/2`; both conditions hold for all but finitely
+   many primes (`eventually_eulerConeScale_le`, `eventually_eulerConeCoScale_le`).
+5. **The threshold.**  Comparison in both directions through `Summable.of_norm_bounded_eventually`:
+   above the threshold against the corpus's log-weighted Dirichlet series
+   `summable_abs_log_natCast_pow_mul_rpow_neg` restricted to primes; at or below it against
+   `not_summable_one_div_primes`, using `(log p)² ≥ 16` for all but finitely many primes.
+
+The card's final gate ("formalize only if the completed all-prime source metric uses this
+logarithmic colligation") was a deferral *policy*; the theorem itself is unconditional and is now
+machine-checked.  The open successor it names — the cofinal all-prime source metric or singular
+Mertens-corona boundary turning the faithful odd coordinate into a uniformly finite positive trace
+— is a separate statement and is untouched.

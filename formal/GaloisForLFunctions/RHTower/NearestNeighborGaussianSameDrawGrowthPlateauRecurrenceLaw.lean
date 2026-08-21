@@ -6,6 +6,8 @@ import GaloisForLFunctions.RHTower.StaticChoiQuantitativeHardGapLaw
 import GaloisForLFunctions.RHTower.StaticChoiFiniteOnsetHardBlockLaw
 import GaloisForLFunctions.RHTower.StaticChoiGaussianFirstReturnLaw
 import GaloisForLFunctions.RHTower.StaticChoiReturnExcisedGaussianFirstReturnLaw
+import GaloisForLFunctions.RHTower.StaticChoiOptimalDesignFirstReturnLaw
+import GaloisForLFunctions.RHTower.StaticChoiOptimalDesignWeightedCrowdingFirstReturnLaw
 
 /-!
 # One-draw nearest-neighbour growth, completed plateau, and recurrence alternation
@@ -536,5 +538,185 @@ theorem nearestNeighborPath_sameDraw_growth_firstCircuitReturn_of_returnExcisedI
     (Nat.succ_pos (nearestNeighborPathProjectiveDimension L))
     (nearestNeighborPathChoiEnergy L p) target htarget hr hTreturn hepsn hgap
     hepswOne honset haction
+
+/-- **Same-draw growth and intrinsic-rank first circuit return.**  A single ordinary
+nearest-neighbour Hamiltonian supplies both the laboratory complexity ramp and exclusion of every
+later capture by the complete padded depth-`s` circuit dictionary.  Target multiplicity is replaced
+by the occupied replica-span dimension, and the remaining quantitative input is an explicit
+same-spectrum replica crowding budget. -/
+theorem nearestNeighborPath_sameDraw_growth_firstCircuitReturn_of_optimalDesignCrowding
+    {L : ℕ} {Tgrow εGrow : ℝ}
+    {p : Fin (nearestNeighborPathLocalParameterCount L) → ℝ}
+    (hp : p ∈ nearestNeighborPathGaussianGrowthMaximalEvent L Tgrow εGrow)
+    {gate : Type*} [Fintype gate] (s : ℕ)
+    (target : PaddedCircuitWord gate s →
+      EuclideanSpace ℂ
+        (Fin (nearestNeighborPathProjectiveDimension L + 1) ×
+          Fin (nearestNeighborPathProjectiveDimension L + 1)))
+    (htarget : ∀ w, ‖target w‖ = 1)
+    (identity : PaddedCircuitWord gate s)
+    {r : ℕ} {Treturn δ epsn epsw : ℝ}
+    (hTreturn : 0 < Treturn) (hδ : 0 < δ)
+    (hepsn : 0 ≤ epsn) (hgap : epsn < epsw)
+    (hepswOne : epsw < 1)
+    (honset : epsw / staticChoiSpeed
+      (nearestNeighborPathChoiEnergy L p) ≤ Treturn)
+    (hbudget :
+      (Module.finrank ℂ (replicaTargetSpan r
+          (fun w : PaddedCircuitWord gate s => (target w).ofLp)) : ℝ) *
+        ((r.factorial : ℝ) *
+            ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ)⁻¹ ^ r +
+          (replicaActionCrowdingDegree
+              (nearestNeighborPathChoiEnergy L p) r δ : ℝ) *
+            ((r.factorial : ℝ) *
+              ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ)⁻¹ ^ r) +
+          Real.exp (-((Treturn * δ) ^ 2) / 2)) <
+        gaussianFloorTwo *
+          ((epsw - epsn) / staticChoiSpeed
+            (nearestNeighborPathChoiEnergy L p) / (2 * Treturn)) *
+          (1 - epsw ^ 2) ^ r) :
+    (∀ t : ℝ,
+      2048 * Real.pi * εGrow ≤ t →
+      t ≤ εGrow * L →
+      t ≤ Tgrow →
+      ((⌊t / (256 * Real.pi * εGrow)⌋₊ : ℕ) : ℕ∞) ≤
+        operatorTwoGateComplexityTo L εGrow
+          (unitaryEvolution (nearestNeighborPathLocalHamiltonian L p) t)) ∧
+    ¬ ∃ t ∈ Set.Icc
+        (epsw / staticChoiSpeed (nearestNeighborPathChoiEnergy L p) +
+          (epsw - epsn) / staticChoiSpeed (nearestNeighborPathChoiEnergy L p))
+        Treturn,
+      ∃ w, pureStateTraceDistance
+        (staticSpectralChoiVector
+          (nearestNeighborPathProjectiveDimension L + 1) t
+          (nearestNeighborPathChoiEnergy L p))
+        (target w) ≤ epsn := by
+  classical
+  letI : Nonempty (PaddedCircuitWord gate s) := ⟨identity⟩
+  refine ⟨hp.2, ?_⟩
+  exact no_forward_pureChoiCircuitReturn_of_gaussianReplicaCrowding
+    (Nat.succ_pos (nearestNeighborPathProjectiveDimension L))
+    (maximallyProjectiveEnergy_nearestNeighborPathChoiEnergy hp.1)
+    target htarget hTreturn hδ hepsn hgap hepswOne honset hbudget
+
+/-- **Strongest same-draw growth--first-return reduction.**  Laboratory complexity growth and
+complete circuit-dictionary exclusion hold for one fixed ordinary nearest-neighbour draw once its
+determinant design has small weighted replica near-action mass.  This retains the coupling between
+the draw's spectrum, eigenbasis, and occupied circuit endpoint image. -/
+theorem nearestNeighborPath_sameDraw_growth_firstCircuitReturn_of_optimalDesignWeightedCrowding
+    {L : ℕ} {Tgrow εGrow : ℝ}
+    {p : Fin (nearestNeighborPathLocalParameterCount L) → ℝ}
+    (hp : p ∈ nearestNeighborPathGaussianGrowthMaximalEvent L Tgrow εGrow)
+    {gate : Type*} [Fintype gate] (s : ℕ)
+    (target : PaddedCircuitWord gate s →
+      EuclideanSpace ℂ
+        (Fin (nearestNeighborPathProjectiveDimension L + 1) ×
+          Fin (nearestNeighborPathProjectiveDimension L + 1)))
+    (htarget : ∀ word, ‖target word‖ = 1)
+    {r : ℕ} {Treturn δ epsn epsw : ℝ}
+    (hTreturn : 0 < Treturn) (hδ : 0 < δ)
+    (hepsn : 0 ≤ epsn) (hgap : epsn < epsw)
+    (hepswOne : epsw < 1)
+    (honset : epsw / staticChoiSpeed
+      (nearestNeighborPathChoiEnergy L p) ≤ Treturn)
+    (w : PaddedCircuitWord gate s → ℝ)
+    (hw : w ∈ stdSimplex ℝ (PaddedCircuitWord gate s))
+    (hdesign : ∀
+        (φ : (Fin (nearestNeighborPathProjectiveDimension L + 1) ×
+          Fin (nearestNeighborPathProjectiveDimension L + 1)) → ℂ)
+        (word : PaddedCircuitWord gate s),
+      finitePureStateFidelity φ (target word).ofLp ^ r ≤
+        (Module.finrank ℂ (replicaTargetSpan r
+          (fun v : PaddedCircuitWord gate s => (target v).ofLp)) : ℝ) *
+          ∑ v, w v * finitePureStateFidelity φ (target v).ofLp ^ r)
+    (hbudget :
+      (Module.finrank ℂ (replicaTargetSpan r
+          (fun word : PaddedCircuitWord gate s => (target word).ofLp)) : ℝ) *
+        ((r.factorial : ℝ) *
+            ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ)⁻¹ ^ r +
+          ∑ word, w word * directStaticChoiTargetNearActionMass
+            (target word) (nearestNeighborPathChoiEnergy L p) r δ +
+          Real.exp (-((Treturn * δ) ^ 2) / 2)) <
+        gaussianFloorTwo *
+          ((epsw - epsn) / staticChoiSpeed
+            (nearestNeighborPathChoiEnergy L p) / (2 * Treturn)) *
+          (1 - epsw ^ 2) ^ r) :
+    (∀ t : ℝ,
+      2048 * Real.pi * εGrow ≤ t →
+      t ≤ εGrow * L →
+      t ≤ Tgrow →
+      ((⌊t / (256 * Real.pi * εGrow)⌋₊ : ℕ) : ℕ∞) ≤
+        operatorTwoGateComplexityTo L εGrow
+          (unitaryEvolution (nearestNeighborPathLocalHamiltonian L p) t)) ∧
+    ¬ ∃ t ∈ Set.Icc
+        (epsw / staticChoiSpeed (nearestNeighborPathChoiEnergy L p) +
+          (epsw - epsn) / staticChoiSpeed (nearestNeighborPathChoiEnergy L p))
+        Treturn,
+      ∃ word, pureStateTraceDistance
+        (staticSpectralChoiVector
+          (nearestNeighborPathProjectiveDimension L + 1) t
+          (nearestNeighborPathChoiEnergy L p))
+        (target word) ≤ epsn := by
+  refine ⟨hp.2, ?_⟩
+  exact no_forward_pureChoiCircuitReturn_of_optimalDesignWeightedCrowding
+    (Nat.succ_pos (nearestNeighborPathProjectiveDimension L))
+    (maximallyProjectiveEnergy_nearestNeighborPathChoiEnergy hp.1)
+    target htarget hTreturn hδ hepsn hgap hepswOne honset
+    w hw hdesign hbudget
+
+/-- **Canonical strongest same-draw growth--first-return law.**  Optimal circuit-image design is
+automatic.  The same ordinary nearest-neighbour draw supplies the laboratory ramp and the spectrum,
+eigenbasis, and target image entering the sole remaining weighted near-action budget. -/
+theorem nearestNeighborPath_sameDraw_growth_firstCircuitReturn_of_canonicalWeightedCrowding
+    {L : ℕ} {Tgrow εGrow : ℝ}
+    {p : Fin (nearestNeighborPathLocalParameterCount L) → ℝ}
+    (hp : p ∈ nearestNeighborPathGaussianGrowthMaximalEvent L Tgrow εGrow)
+    {gate : Type*} [Fintype gate] [Nonempty gate] [DecidableEq gate] (s : ℕ)
+    (target : PaddedCircuitWord gate s →
+      EuclideanSpace ℂ
+        (Fin (nearestNeighborPathProjectiveDimension L + 1) ×
+          Fin (nearestNeighborPathProjectiveDimension L + 1)))
+    (htarget : ∀ word, ‖target word‖ = 1)
+    {r : ℕ} {Treturn δ epsn epsw : ℝ}
+    (hTreturn : 0 < Treturn) (hδ : 0 < δ)
+    (hepsn : 0 ≤ epsn) (hgap : epsn < epsw)
+    (hepswOne : epsw < 1)
+    (honset : epsw / staticChoiSpeed
+      (nearestNeighborPathChoiEnergy L p) ≤ Treturn)
+    (hbudget :
+      (Module.finrank ℂ (replicaTargetSpan r
+          (fun word : PaddedCircuitWord gate s => (target word).ofLp)) : ℝ) *
+        ((r.factorial : ℝ) *
+            ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ)⁻¹ ^ r +
+          ∑ word, staticChoiTargetOptimalDesignWeight r target htarget word *
+            directStaticChoiTargetNearActionMass
+              (target word) (nearestNeighborPathChoiEnergy L p) r δ +
+          Real.exp (-((Treturn * δ) ^ 2) / 2)) <
+        gaussianFloorTwo *
+          ((epsw - epsn) / staticChoiSpeed
+            (nearestNeighborPathChoiEnergy L p) / (2 * Treturn)) *
+          (1 - epsw ^ 2) ^ r) :
+    (∀ t : ℝ,
+      2048 * Real.pi * εGrow ≤ t →
+      t ≤ εGrow * L →
+      t ≤ Tgrow →
+      ((⌊t / (256 * Real.pi * εGrow)⌋₊ : ℕ) : ℕ∞) ≤
+        operatorTwoGateComplexityTo L εGrow
+          (unitaryEvolution (nearestNeighborPathLocalHamiltonian L p) t)) ∧
+    ¬ ∃ t ∈ Set.Icc
+        (epsw / staticChoiSpeed (nearestNeighborPathChoiEnergy L p) +
+          (epsw - epsn) / staticChoiSpeed (nearestNeighborPathChoiEnergy L p))
+        Treturn,
+      ∃ word, pureStateTraceDistance
+        (staticSpectralChoiVector
+          (nearestNeighborPathProjectiveDimension L + 1) t
+          (nearestNeighborPathChoiEnergy L p))
+        (target word) ≤ epsn := by
+  classical
+  refine ⟨hp.2, ?_⟩
+  exact no_forward_pureChoiCircuitReturn_of_canonicalOptimalDesignWeightedCrowding
+    (Nat.succ_pos (nearestNeighborPathProjectiveDimension L))
+    (maximallyProjectiveEnergy_nearestNeighborPathChoiEnergy hp.1)
+    target htarget hTreturn hδ hepsn hgap hepswOne honset hbudget
 
 end RHTower

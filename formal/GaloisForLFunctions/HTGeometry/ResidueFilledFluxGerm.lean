@@ -190,4 +190,57 @@ theorem fluxGerm_comp_affine {f : ℂ → ℂ} {μ ν z : ℂ} {n : ℕ} (hμ : 
     rw [fluxGerm_of_ne_zero _ _ hx, fluxGerm_of_ne_zero _ _ hmx, hd, hval]
     ring
 
+/-! ## Stability of the normalized logarithmic derivative under a flat perturbation -/
+
+/-- **Flat-perturbation stability.**  If two germs that are units at the centre differ by a factor
+`x^{K+1}`, then their `-x`-normalized logarithmic derivatives differ by the same flat factor times
+an analytic function.  This is the exact statement behind "matching a finite jet of the function
+matches the corresponding finite jet of its completed flux". -/
+theorem exists_pow_mul_of_normalizedLogDeriv_sub {m n E : ℂ → ℂ} {K : ℕ}
+    (hm : AnalyticAt ℂ m 0) (hn : AnalyticAt ℂ n 0) (hm0 : m 0 ≠ 0) (hn0 : n 0 ≠ 0)
+    (hE : AnalyticAt ℂ E 0)
+    (he : ∀ᶠ x in 𝓝 (0 : ℂ), m x - n x = x ^ (K + 1) * E x) :
+    ∃ W : ℂ → ℂ, AnalyticAt ℂ W 0 ∧ ∀ᶠ x in 𝓝 (0 : ℂ),
+      (-x * deriv m x / m x) - (-x * deriv n x / n x) = x ^ (K + 1) * W x := by
+  classical
+  refine ⟨fun x => -((((K : ℂ) + 1) * E x + x * deriv E x) * n x - x * deriv n x * E x)
+      / (m x * n x), ?_, ?_⟩
+  · refine AnalyticAt.div (AnalyticAt.neg ?_) (hm.mul hn) (mul_ne_zero hm0 hn0)
+    exact (((analyticAt_const.mul hE).add (analyticAt_id.mul hE.deriv)).mul hn).sub
+      ((analyticAt_id.mul hn.deriv).mul hE)
+  · have hmne : ∀ᶠ x in 𝓝 (0 : ℂ), m x ≠ 0 := hm.continuousAt.eventually_ne hm0
+    have hnne : ∀ᶠ x in 𝓝 (0 : ℂ), n x ≠ 0 := hn.continuousAt.eventually_ne hn0
+    have hEan : ∀ᶠ x in 𝓝 (0 : ℂ), AnalyticAt ℂ E x := hE.eventually_analyticAt
+    have hnan : ∀ᶠ x in 𝓝 (0 : ℂ), AnalyticAt ℂ n x := hn.eventually_analyticAt
+    have hderive : ∀ᶠ x in 𝓝 (0 : ℂ),
+        deriv (fun y : ℂ => m y - n y) x
+          = ((K : ℂ) + 1) * x ^ K * E x + x ^ (K + 1) * deriv E x := by
+      filter_upwards [he.eventually_nhds, hEan] with x hx hEx
+      have hx' : (fun y : ℂ => m y - n y) =ᶠ[𝓝 x] fun y : ℂ => y ^ (K + 1) * E y := hx
+      rw [hx'.deriv_eq]
+      have hpow : HasDerivAt (fun y : ℂ => y ^ (K + 1)) (((K : ℂ) + 1) * x ^ K) x := by
+        simpa using (hasDerivAt_id x).fun_pow (K + 1)
+      have hmul := hpow.fun_mul hEx.differentiableAt.hasDerivAt
+      rw [hmul.deriv]
+    have hderivm : ∀ᶠ x in 𝓝 (0 : ℂ), deriv m x = deriv n x
+        + (((K : ℂ) + 1) * x ^ K * E x + x ^ (K + 1) * deriv E x) := by
+      filter_upwards [hderive, hm.eventually_analyticAt, hnan] with x hx hmx hnx
+      have hsub : deriv (fun y : ℂ => m y - n y) x = deriv m x - deriv n x :=
+        deriv_sub hmx.differentiableAt hnx.differentiableAt
+      rw [hsub] at hx
+      linear_combination hx
+    filter_upwards [he, hmne, hnne, hderivm] with x hx hmx hnx hdx
+    have hmval : m x = n x + x ^ (K + 1) * E x := by linear_combination hx
+    have hnum : deriv m x * n x - deriv n x * m x
+        = x ^ K * (((((K : ℂ) + 1) * E x + x * deriv E x) * n x - x * deriv n x * E x)) := by
+      rw [hdx, hmval]
+      ring
+    have hLHS : (-x * deriv m x / m x) - (-x * deriv n x / n x)
+        = -x * (deriv m x * n x - deriv n x * m x) / (m x * n x) := by
+      field_simp
+      ring
+    rw [hLHS, hnum]
+    field_simp
+    ring
+
 end GaloisForLFunctions.HTGeometry

@@ -10021,3 +10021,163 @@ freeness through an algebraic extension).
 What remains of item 3a is transcribing the peel-step and border-shape inductions themselves from
 `(TopDegLE, TopFree, TopLim)` to `(PlaceDegLE, PlaceFree, PlaceLim)`; every lemma those inductions
 call now has its place-level counterpart.
+
+### Log — the algebraic model, part 16: the place toolkit is complete, and one design constraint
+
+`PlaceLimit` gained the limit API with values in a trivially valued subfield (wired, built,
+axiom-clean):
+
+```text
+PlaceLim.mul_of_mem, placeLim_prod_of_mem, placeLim_det_of_mem
+```
+
+A side-by-side audit of `TopCoordinateDegree`'s exports against the place-level toolkit shows every
+general lemma of the coordinate model now has its counterpart — `TopDegLE.add/mono/mul/neg/sub`,
+`topDegLE_zero`, `TopFree.topDegLE`, `topFree_one/zero`, `eq_zero_of_topFree_of_topDegLE_neg`,
+`topLim_const/unique/sum/prod/det`, `TopLim.add/neg/mul/topDegLE_zero` — with one structural
+difference that has to be respected in the transcription:
+
+> **`TopFree` is closed under addition; `PlaceFree` is not.**  Coordinate-freeness is a subfield
+> condition, while being a unit at a place is not: `1` and `−1` are units but `1 + (−1)` is not.
+
+So the transcription must not translate `TopFree` as `PlaceFree`.  The correct analogue is
+`PlaceTrivialOn F` — membership in a subfield on which the place's valuation is trivial — which is
+additively closed for free and, by `placeFree_of_isIntegral`, stays trivial on everything algebraic
+over `F`.  The three lemmas above are the `TopLim.mul` / `topLim_prod` / `topLim_det` shapes stated
+that way, so the peel's uses transcribe directly.
+
+What is left of item 3a is the model-specific layer — the analogues of `fact`, `logFactor` and
+`univFactor` over the algebraic extension — and the inductions that consume them; every *general*
+lemma they call is now present.
+
+### Log — the algebraic model, part 17: the univariate factor at a place
+
+The first *model-specific* layer of item 3a is now Lean.  `HTGeometry/PlaceUnivFactor.lean` (wired,
+built, axiom-clean) reproduces, at a place of an arbitrary algebraic extension, everything the
+coordinate model proves about a univariate factor `p(X_m)`:
+
+```text
+CoeffsIn F p                       every coefficient lies in the trivially valued subfield
+CoeffsIn.derivative/X_mul/const_mul/sub
+valuation_coeff_le_one
+placeDegLE_eval_of_natDegree_le    v(p(x)) ≤ v(x)^k whenever deg p ≤ k and v(x) ≥ 1
+valuation_eval_eq                  **v(p(x)) = v(x)^{deg p} exactly, when v(x) > 1**
+eval_ne_zero_of_valuation          hence a nonzero factor does not vanish at a large element
+placeDegLE_logFactor               **v(p'(x)/p(x)) ≤ v(x)^{-1}** — the analogue of
+                                   `topDegLE_logFactor`
+placeLim_mul_logFactor             **PlaceLim v (v x)⁻¹ (x·p'(x)/p(x)) (deg p)** — the analogue of
+                                   `topLim_fx_mul_logFactor`, the residue the peel of the newest
+                                   column reads off
+inv_valuation_le_one               the accuracy `(v x)⁻¹` is below the unit level, which is the
+                                   side condition `PlaceLim.mul` and `placeLim_prod` require
+```
+
+Mechanism.  `valuation_eval_eq` is `valuation_sum_of_lt` applied to `∑_{i ≤ d} a_i x^i` with the
+top term dominant: the leading coefficient is a unit of the place because it lies in `F`, and every
+lower term has valuation at most `v(x)^i < v(x)^d`.  The residue theorem is then the same algebraic
+identity the coordinate model uses — `x·p'(x)/p(x) − d = r(x)/p(x)` with
+`r = X·p' − C d·p` of degree at most `d − 1` — read through the two valuation facts instead of
+through `degreeOf`.
+
+Two things are worth recording about the transcription.
+
+* The hypothesis is *only* that the coefficients lie in a subfield on which the place is trivial.
+  By `placeFree_of_isIntegral` that is automatic for the coefficient field of the cascade after any
+  algebraic extension, so this layer applies to a Puiseux branch with no extra work.
+* The accuracy is `(v x)⁻¹`, not the fixed `−1` of the coordinate model.  At a place of ramification
+  index `e` above the coordinate place, `v(x) = γ^e`, so `(v x)⁻¹ = γ^{−e}`: one step of the
+  coordinate degree is `e` steps of the place, exactly as `PlaceLimit`'s parametrised accuracy was
+  designed for.
+
+What is left of item 3a: the `fact`/`prodHead` bookkeeping over the extension — which is
+`placeFree_of_isIntegral` plus `placeLim_prod_of_mem`, already present — and the border-shape and
+peel-step inductions themselves.
+
+### Log — the algebraic model, part 18: the derivation drops, and the peel's column at a place
+
+Two more layers of item 3a are Lean, both wired, built and axiom-clean.
+
+**`HTGeometry/PlaceRationalDerivationDrop.lean`** — the place-level form of `TopDegLE.fpderiv_top`,
+the single inequality the whole peel rests on:
+
+```text
+derivation_eval_of_coeff        the chain rule `D (p(x)) = p'(x)·D x` for a polynomial whose
+                                coefficients the derivation kills
+placeDegLE_eval_derivative_mul  `p'(x)·q(x)` is one degree below `p(x)·q(x)`
+placeDegLE_wronskian            the same for `p'q − pq'`
+valuation_derivation_mul_le     **`v(D f)·v(x) ≤ v(f)` for `f = p(x)/q(x)`** — differentiating a
+                                rational function of a large element drops exactly one degree
+```
+
+The hypotheses are the ones the model supplies and no others: the coefficients lie in a subfield
+on which the place is trivial, the derivation kills that subfield, and `v(D x) ≤ 1`.  The proof is
+the Wronskian identity `D(p/q) = (p'q − pq')·D x / q²` together with the exact valuations
+`v(p(x)) = v(x)^{deg p}`, `v(q(x)) = v(x)^{deg q}` of part 17.  The degenerate case `deg p = deg q = 0`
+is genuinely different — the quotient then lies in the subfield and the derivative is zero — and is
+handled separately rather than by the degree count.
+
+**`HTGeometry/PlaceShiftIterate.lean`** — the peel's operator and its column:
+
+```text
+placeShift D c                       `E g = D g + c·g`
+placeDegLE_placeShift                **`E` does not raise the degree at the place**
+placeDegLE_iterate_placeShift        **every iterate keeps it**, on a class closed under `E` on
+                                     which the derivation drops — the place-level form of
+                                     `topDegLE_iterate_of_borderShape`'s engine
+placeDegLE_placeShift_of_split       the border-shape step: leading term with small image plus
+                                     small remainder
+placeLim_mul_of_split                **the residue survives the border shape**
+placeLim_mul_zero_of_placeDegLE      **the entries below the border have value zero after scaling**
+```
+
+Together with `placeLim_mul_logFactor` of part 17 this is the place-level statement of the peel's
+column value `(deg Q_m, 0, …, 0)`: the border entry has the degree of the newest factor as its value
+at the place, and every entry below it has value zero.
+
+What is left of item 3a: instantiating this abstract column at the cascade's own derivation and
+response over the algebraic extension — that is, producing the closed class `S` (the analogue of
+`lowSub`) and the response bound `v(c) ≤ 1` from the model, rather than assuming them.
+
+### Log — the algebraic model, part 19: the peel's newest column at a place, assembled
+
+The abstract column of part 18 is now instantiated on a class the model actually produces, and the
+two statements the peel reads off are Lean.
+
+**`HTGeometry/PlaceRationalClass.lean`** (wired, built, axiom-clean) — the place-level `lowSub`:
+
+```text
+CoeffsIn.add/mul/neg/C/X/pow      the coefficient condition is a ring condition
+RatIn F x                         the rational functions of `x` with coefficients in `F`, with the
+                                  denominator required not to vanish at `x`
+ratIn_C, ratIn_X, ratIn_poly, ratIn_add, ratIn_mul, ratIn_neg, ratIn_sub, ratIn_inv
+ratIn_derivation                  **the class is stable under a derivation that kills `F` and keeps
+                                  `x` inside the class**
+valuation_derivation_mul_le_of_ratIn
+                                  **the drop `v(D f)·v(x) ≤ v(f)` holds on the whole class**
+```
+
+Requiring `q(x) ≠ 0` rather than `q ≠ 0` in the definition is what makes the closure lemmas true
+without carrying the place hypotheses; under `v(x) > 1` and coefficients in `F` the two conditions
+agree by `eval_ne_zero_of_valuation`.
+
+**`HTGeometry/PlacePeelColumn.lean`** (wired, built, axiom-clean) — the column itself:
+
+```text
+ratIn_logFactor                       the logarithmic factor is in the class
+ratIn_placeShift                      the class is closed under `E g = D g + c·g`
+placeDegLE_placeShift_of_borderShape  **`E` keeps a border-shaped vector at its degree**
+placeLim_border_of_borderShape        **the border entry has `deg p` as its value at the place**
+placeLim_below_of_borderShape         **every entry below the border has value zero**
+```
+
+Together these are the place-level statement of the coordinate model's
+`topLim_fx_mul_of_borderShape` and `topDegLE_iterate_of_borderShape`: on a vector whose newest entry
+agrees with the logarithmic factor of the newest polynomial to two place-degrees, the scaled newest
+column has value `(deg p, 0, …, 0)`.
+
+The hypotheses are exactly the model's data and nothing else: coefficients in a subfield on which
+the place is trivial, a derivation killing that subfield with `D x` in the class and of unit size, a
+response of unit size and in the class, and the Wronskian fact that the operator sends the
+logarithmic factor two place-degrees down.  The last is the only remaining law-specific input at
+this level; the accuracy `(v x)⁻¹` and the two-degree window `(v x)⁻¹·(v x)⁻¹` carry the
+ramification automatically.

@@ -1,63 +1,71 @@
-# Hasse packet formation, reconstruction, information properness, and atomic wall — Lean certification
+# ULF-PFM-1 — Lean certification record
 
-- **ID:** ULF-PFM-1-CERT
-- **Paper card:**
-  `packet-formation-mechanics/hasse-packet-reconstruction-information-properness-and-atomic-refinement-wall.md`
-- **Lean module:**
-  `GaloisForLFunctions.HTGeometry.ConstitutiveHassePacketFormation`
-- **Universal-law umbrella:**
-  `GaloisForLFunctions.HTGeometry.UniversalLawField`
+**Card:** `hasse-packet-reconstruction-information-properness-and-atomic-refinement-wall.md`
+**Status:** every displayed result of the card is Lean-certified, unconditional and axiom-clean.
 
-## Certified mechanism
+## Card result → Lean declaration
 
-This module certifies one formation mechanism, not another route receiver.
+| Card | Statement | Lean |
+|---|---|---|
+| (PFM.1) | the finite-difference row | `hasseRow`, `hasseRowReal`, `hasseFiniteDifference_packet` |
+| (PFM.2) | the Euler integral for the row | `hasseKernel`, `hasseKernel_eq_sum`, `mellin_hasseKernel`, `gamma_mul_hasseRowReal` |
+| (PFM.3) | the geometric depth tower sums to eta | `hasSum_hasseRow_eq_eta` |
+| (PFM.4) | the complex row majorant | `norm_gamma_mul_hasseRow_le` |
+| (PFM.5)–(PFM.9) | the joint packet law and its exact reconstruction | `hassePacketJointAtom`, `hassePacketJointAtom_factor`, `hasSum_hassePacketJointAtom`, `hassePacketRecovery`, `HasseHistoryProfile.kernel` |
+| (PFM.6) | the Fermi–Mellin scale marginal | `fermiMellinDensity`, `fermiMellinNormalizer`, `fermiMellinMeasure`, `fermiMellinMeasure_isProbabilityMeasure` |
+| (PFM.10) | the characteristic exponent is the completed eta quotient | `integral_phase_fermiMellinMeasure`, `fermiMellinNormalizer_eq_gamma_mul_eta` |
+| (PFM.11) | the source zero relation | `hasSum_hasseRow_eq_zero_of_zetaZero` |
+| (PFM.12) | exact phase orthogonality at a zero | `integral_phase_fermiMellinMeasure_eq_zero` |
+| (PFM.13) | pure-state quantum Fisher information is four times the variance | `pureStateQuantumFisher_fermiMellin`, `momentNormalizedVariance_fermiLogMoment` |
+| (PFM.14) | the Fisher lower bound `4τ⁻²` | `one_le_sq_mul_fermiLogVariance_of_zetaZero` (via `norm_one_sub_exp_mul_I_le`) |
+| (PFM.15) | the log partition | `fermiLogPartition` |
+| (PFM.16) | `F' = E[log T]`, `F'' = Var(log T) > 0` | `hasDerivAt_fermiLogPartition`, `hasDerivAt_fermiLogMean`, `fermiLogVariance_pos` |
+| (PFM.17) | the likelihood ratio depends only on the scale | `llr_fermiMellinMeasure` |
+| (PFM.18) | directed and symmetric costs | `toReal_klDiv_fermiMellinMeasure`, `jeffreys_fermiMellinMeasure` |
+| (PFM.19) | centre selection | `jeffreys_fermiMellinMeasure_eq_zero_iff_center`, `fermiLogMean_strictMonoOn`; also the pre-existing `reflected_fermiFormationJeffreys_eq_zero_iff_center` |
+| (PFM.20)–(PFM.23) | the atomic-refinement wall | `hasseAtomicMass`, `hasSum_hasseAtomicMass_fixedColumn`, `summable_hasseAtomicMass_iff`, `packet_formation_atomic_refinement_wall` |
+| (PFM.24) | the conservation identity | `hassePacketJointAtom_factor` + `klDiv_splitFormation` |
 
-1. `hasseFiniteDifference_packet` proves that each finite alternating Hasse row forms the single
-   cancellation packet `(1-q)^n` before any infinite refinement.
-2. `hasSum_hassePacketRecovery`, `hassePacketJointAtom_factor`, and
-   `hasSum_hassePacketJointAtom` prove a parameter-independent geometric recovery kernel and the
-   exact factorization
-   `joint packet atom = Fermi scale × recovered packet depth`.
-3. `coe_hassePacketScale_eq_salemFermiKernel` identifies the scale marginal with the already
-   certified Salem Fermi kernel.
-4. `hasSum_hasseAtomicMass_fixedColumn` and `summable_hasseAtomicMass_iff` classify the unsigned
-   atomic refinement exactly: it is summable iff `1 < sigma`.
-5. `packet_formation_atomic_refinement_wall` proves the critical-strip separation: every formed
-   depth kernel is summable while the coefficientwise atomic refinement is not.
-6. `finite_fermiFormationMeasure` proves positive Fermi formation is a finite measure for every
-   positive exponent and normalizer.
-7. `fermiFormationMeasure_eq_imp_parameter_eq` proves global parameter recovery from formation
-   measure equality.
-8. `reflected_fermiFormationJeffreys_eq_zero_iff_center` proves the exact reflected-information
-   selector: for `0 < sigma < 1`, symmetric KL work vanishes iff `sigma = 1/2`.
+## Modules
 
-Together these declarations certify the paper's load-bearing law:
+| Module | Public declarations | Role |
+|---|---|---|
+| `HTGeometry/ConstitutiveHassePacketFormation.lean` | pre-existing | §2, §4 selector, §5 wall |
+| `HTGeometry/ConstitutiveHasseGlobalRenewal.lean` | pre-existing | the recovery kernel as a Markov kernel |
+| `RHTower/HasseSondowRowMellin.lean` | 14 (new) | §1: the row, its Mellin representation, majorant, eta summation, zero relation |
+| `RHTower/FermiMellinObserver.lean` | 30 (new) | §2–§4: the observer law, its normalizer, the log-moment exponential family, the response chain |
+| `RHTower/FermiMellinPhaseProperness.lean` | 17 (new) | §3–§4: the phase identity, orthogonality, the Fisher bound, and reflected properness |
 
-> formation can remain admitted after every coefficientwise refinement has ceased to exist, while
-> one common recovery kernel preserves enough positive information to identify reflection center.
+All wired into `GaloisForLFunctions.RHTower` and `GaloisForLFunctions.HTGeometry.UniversalLawField`.
+
+## Proof notes
+
+* (PFM.2) is proved by expanding the kernel `e^{-t}(1−e^{-t})^n` into the alternating exponential sum
+  and integrating term by term; each term is `((k+1))^{-s} Γ(s)` by `mellin_comp_mul_left` applied to
+  the Gamma integral.  (PFM.4) is then just `‖(t)^{s−1}‖ = t^{σ−1}` under the integral sign.
+* (PFM.3) uses dominated convergence for series
+  (`hasSum_integral_of_dominated_convergence`) with the majorant `t^{σ−1}(e^t+1)^{-1}`, whose
+  integrability is the Mellin convergence of the corpus's Fermi kernel; the limit is the corpus's
+  closed form `Γ(s)(1−2^{1−s})ζ(s)`, valid on the whole punctured right half-plane.
+* The log-moment integrability that (PFM.13)–(PFM.18) need is obtained without any new
+  `|log t|^k` estimate: the observer family is an exponential family with statistic `log t`, its
+  `integrableExpSet` contains `(−σ, ∞)`, and mathlib's
+  `integrable_pow_of_mem_interior_integrableExpSet` supplies every moment.  The response chain
+  `M_n' = M_{n+1}` is `hasDerivAt_iteratedDeriv_mgf` transported through the tilt shift.
+* `F'' > 0` is proved directly: the centred square integrates positively because its support
+  contains an interval `(e^m, e^m+1)`.
+* (PFM.14) combines the corpus chord identity `‖1 − e^{ix}‖² = 4 sin²(x/2)`, `|sin y| ≤ |y|`, and the
+  corpus's weighted Cauchy–Schwarz `integral_mul_le_sqrt_mul_sqrt_measure`.
 
 ## Verification
 
-```text
-lake env lean GaloisForLFunctions/HTGeometry/ConstitutiveHassePacketFormation.lean
-lake build GaloisForLFunctions.HTGeometry.UniversalLawField
-scripts/formal_tools.py lint
-```
+* `lake env lean` on all three new modules: 0 errors, 0 warnings.
+* `#print axioms` over their 61 public declarations: only `propext`, `Classical.choice`,
+  `Quot.sound`.
+* No `sorry`, `admit`, `axiom`, `opaque`, `unsafe`, and no added hypotheses beyond the card's own
+  `σ > 0` / `s ≠ 1` conditions.
 
-All checks passed.  A separate `#print axioms` audit of reconstruction, atomic-wall, measure,
-parameter-recovery, and reflected-Jeffreys declarations reports only `propext`,
-`Classical.choice`, and `Quot.sound`.  There is no project axiom, `sorry`, `admit`, `opaque`, or
-`unsafe` declaration.
+## Not claimed
 
-## Exact scope
-
-Certified declarations cover formation, reconstruction, admission wall, finite positive measures,
-identifiability, and reflected-information selection.  The complex Hasse row integral, its full
-eta-series identity, the zero-phase orthogonality, and the QFI lower bound remain paper-level in the
-source card.  They are not claimed as Lean theorems here.
-
-Consequently this certificate does **not** prove RH.  The successor paper theorem now proves that
-functional reflection does lift information-neutrally through every common packet-recovery kernel,
-but also proves that this is an isometry and therefore preserves, rather than kills, reflected
-Jeffreys work.  The remaining selector conditional is strictly stronger: a pre-zero source relation
-must force that conserved symmetric work to vanish.
+The card's open core — a pre-zero source relation forcing the conserved symmetric work
+`J(Q_σ, Q_{1−σ})` to vanish — is future work.  No RH conclusion is claimed.

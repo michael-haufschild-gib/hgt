@@ -20,7 +20,9 @@ elements stay coordinate-free after the algebraic extension.
 * `placeLim_sum`, `placeLim_prod`, `placeLim_det`;
 * `PlaceTrivialOn`, `eq_zero_of_mem_of_placeDegLE_lt`, `placeLim_unique`;
 * `one_le_valuation_of_isIntegral`, `placeFree_of_isIntegral`;
-* `valuation_sum_of_lt` — the dominant term of a finite sum.
+* `valuation_sum_of_lt` — the dominant term of a finite sum;
+* `PlaceLim.mul_of_mem`, `placeLim_prod_of_mem`, `placeLim_det_of_mem` — the same with limits valued
+  in a trivially valued subfield, which is the place-level analogue of coordinate-freeness.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -237,5 +239,28 @@ theorem valuation_sum_of_lt {ι : Type*} [DecidableEq ι] {s : Finset ι} {i₀ 
       exact hlt i (Finset.mem_of_mem_erase hi) (Finset.ne_of_mem_erase hi)
     rw [hsplit]
     exact valuation_add_of_lt v h0 htail
+
+/-! ### Limits valued in a trivially valued subfield -/
+
+/-- The product rule with both limits in a trivially valued subfield. -/
+theorem PlaceLim.mul_of_mem {F : Subfield K} (hF : PlaceTrivialOn v F) {γ : ℤᵐ⁰} (hγ : γ ≤ 1)
+    {f g a b : K} (ha : a ∈ F) (hb : b ∈ F)
+    (hf : PlaceLim v γ f a) (hg : PlaceLim v γ g b) :
+    PlaceLim v γ (f * g) (a * b) :=
+  PlaceLim.mul v hγ (hF.placeDegLE_one v ha) (hF.placeDegLE_one v hb) hf hg
+
+/-- The finite-product rule with all limits in a trivially valued subfield. -/
+theorem placeLim_prod_of_mem {F : Subfield K} (hF : PlaceTrivialOn v F) {γ : ℤᵐ⁰} (hγ : γ ≤ 1)
+    {ι : Type*} (s : Finset ι) (G L : ι → K) (hL : ∀ i ∈ s, L i ∈ F)
+    (h : ∀ i ∈ s, PlaceLim v γ (G i) (L i)) :
+    PlaceLim v γ (∏ i ∈ s, G i) (∏ i ∈ s, L i) :=
+  placeLim_prod v hγ s G L (fun i hi => hF.placeDegLE_one v (hL i hi)) h
+
+/-- **A matrix of limits valued in a trivially valued subfield has the limit determinant.** -/
+theorem placeLim_det_of_mem {F : Subfield K} (hF : PlaceTrivialOn v F) {γ : ℤᵐ⁰} (hγ : γ ≤ 1)
+    {n : ℕ} (A L : Matrix (Fin n) (Fin n) K) (hL : ∀ i j, L i j ∈ F)
+    (h : ∀ i j, PlaceLim v γ (A i j) (L i j)) :
+    PlaceLim v γ A.det L.det :=
+  placeLim_det v hγ A L (fun i j => hF.placeDegLE_one v (hL i j)) h
 
 end GaloisForLFunctions.HTGeometry

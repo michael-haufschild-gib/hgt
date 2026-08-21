@@ -12,6 +12,8 @@ Main results:
 * `lowTracePoly` — the polynomial of the trace coordinates below the order.
 * `opSchattenDet_one_eq_mul_exp_lowTracePoly` — **the plain determinant factors**.
 * `differentiableOn_opSchattenDet_one`, `opSchattenDet_apply_zero` — it is holomorphic and unital.
+* `exists_poly_coeff_of_tendstoLocallyUniformlyOn_opSchattenDet` — the necessity half with the
+  coefficient convergence of the low-trace jets.
 * `exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet` — **the necessity half of `(DC)`,
   unconditionally**: a locally uniform limit of plain determinants of a Schatten-converging
   finite-rank family is `exp(Q)` times the order-`p` regularized determinant of the limit.
@@ -137,7 +139,7 @@ set_option maxHeartbeats 1000000 in
 operators converge in the Schatten `p`-norm and their plain determinants converge locally uniformly
 on a disc, then on a possibly smaller disc the limit is the order-`p` regularized determinant of the
 limit operator times the exponential of a jet of degree below `p` with vanishing constant term. -/
-theorem exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet {p : ℕ} (hp : 0 < p)
+theorem exists_poly_coeff_of_tendstoLocallyUniformlyOn_opSchattenDet {p : ℕ} (hp : 0 < p)
     {A : ℕ → H →L[ℂ] H} {T : H →L[ℂ] H}
     (hA : ∀ n, MemSchattenClass (p : ℝ) (A n)) (hT : MemSchattenClass (p : ℝ) T)
     (hD : ∀ n, MemSchattenClass (p : ℝ) (A n - T))
@@ -148,6 +150,7 @@ theorem exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet {p : ℕ} (hp : 0
     (hF : TendstoLocallyUniformlyOn (fun n z => opSchattenDet 1 (A n) z) F atTop
       (ball (0 : ℂ) r)) :
     ∃ (ρ : ℝ) (Q : Polynomial ℂ), 0 < ρ ∧ ρ ≤ r ∧ Q.natDegree ≤ p - 1 ∧ Q.coeff 0 = 0 ∧
+      (∀ h : ℕ, Tendsto (fun n => (lowTracePoly p (A n)).coeff h) atTop (nhds (Q.coeff h))) ∧
       ∀ z ∈ ball (0 : ℂ) ρ, F z = opSchattenDet p T z * Complex.exp (Polynomial.eval z Q) := by
   classical
   have hC0 : (0 : ℝ) < C := lt_of_lt_of_le one_pos hC1
@@ -160,7 +163,14 @@ theorem exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet {p : ℕ} (hp : 0
   · -- order one: there is no polynomial factor at all
     have hpe : p = 1 := by omega
     subst hpe
-    refine ⟨r, 0, hr, le_rfl, by simp, by simp, fun z hz => ?_⟩
+    refine ⟨r, 0, hr, le_rfl, by simp, by simp, ?_, fun z hz => ?_⟩
+    · intro h
+      have hzero : ∀ n, (lowTracePoly 1 (A n)).coeff h = 0 := by
+        intro n
+        rw [lowTracePoly]
+        simp
+      rw [funext hzero]
+      simp
     have h1 := hF.tendsto_at hz
     have h2 := tendsto_opSchattenDet_of_tendsto_schattenNorm hp hA hT hD hC1 hCA htend
       (z := z) (hsmall z hz)
@@ -239,14 +249,32 @@ theorem exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet {p : ℕ} (hp : 0
       refine Filter.EventuallyEq.deriv_eq ?_
       filter_upwards [isOpen_ball.mem_nhds (hsub (hvU i))] with w hw
       exact hfact n w hw
-    obtain ⟨Q, hQdeg, hQ0, -, hQval⟩ :=
+    obtain ⟨Q, hQdeg, hQ0, hQcoeff, hQval⟩ :=
       exists_poly_limit_of_tendsto_opSchattenDet (J := p - 2) hp hA hT hD hC1 hCA hCT htend
         hρpos hρB (P := fun n => lowTracePoly p (A n))
         (fun n => by
           have := natDegree_lowTracePoly_le p (A n)
           omega)
         (fun n => coeff_zero_lowTracePoly p (A n)) hv hvU hFval hFder hvne
-    refine ⟨ρ, Q, hρpos, hρr, by omega, hQ0, hQval⟩
+    refine ⟨ρ, Q, hρpos, hρr, by omega, hQ0, hQcoeff, hQval⟩
+
+/-- **The necessity half of `(DC)`, unconditionally.** -/
+theorem exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet {p : ℕ} (hp : 0 < p)
+    {A : ℕ → H →L[ℂ] H} {T : H →L[ℂ] H}
+    (hA : ∀ n, MemSchattenClass (p : ℝ) (A n)) (hT : MemSchattenClass (p : ℝ) T)
+    (hD : ∀ n, MemSchattenClass (p : ℝ) (A n - T))
+    {C : ℝ} (hC1 : 1 ≤ C) (hCA : ∀ n, schattenNorm (p : ℝ) (A n) ≤ C)
+    (hCT : schattenNorm (p : ℝ) T ≤ C)
+    (htend : Tendsto (fun n => schattenNorm (p : ℝ) (A n - T)) atTop (nhds 0))
+    {r : ℝ} (hr : 0 < r) (hrB : r * (2 * C) < 1) {F : ℂ → ℂ}
+    (hF : TendstoLocallyUniformlyOn (fun n z => opSchattenDet 1 (A n) z) F atTop
+      (ball (0 : ℂ) r)) :
+    ∃ (ρ : ℝ) (Q : Polynomial ℂ), 0 < ρ ∧ ρ ≤ r ∧ Q.natDegree ≤ p - 1 ∧ Q.coeff 0 = 0 ∧
+      ∀ z ∈ ball (0 : ℂ) ρ, F z = opSchattenDet p T z * Complex.exp (Polynomial.eval z Q) := by
+  obtain ⟨ρ, Q, hρ, hρr, hdeg, h0, -, hval⟩ :=
+    exists_poly_coeff_of_tendstoLocallyUniformlyOn_opSchattenDet hp hA hT hD hC1 hCA hCT htend
+      hr hrB hF
+  exact ⟨ρ, Q, hρ, hρr, hdeg, h0, hval⟩
 
 end
 

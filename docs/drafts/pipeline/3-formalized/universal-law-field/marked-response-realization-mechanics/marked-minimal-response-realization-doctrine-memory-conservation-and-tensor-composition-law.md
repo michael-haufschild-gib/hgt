@@ -1,9 +1,9 @@
 # Marked minimal response realization, doctrine-memory conservation, and tensor composition law
 
 - **ID:** ULF-MRRM-1
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM / GENERAL MARKED PRESENTATION-INVARIANCE GATE
-- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [DEPENDENCY-CLOSED] [UNCONDITIONAL]`
+- **Status:** `[PAPER-PROVED] [FULLY LEAN-FORMALIZED] [DEPENDENCY-CLOSED] [UNCONDITIONAL]`
   `[MINIMAL-PRESENTATION UNIQUENESS] [EXACT MEMORY CONSERVATION]`
   `[HIGHER-SLOT TENSOR COMPOSITION] [POSITIVE GNS SHADOW] [NOT RH]`
 
@@ -330,3 +330,23 @@ noncommutative formal series and Hankel rank. A modern reference is Berstel--Reu
 proved similar. The positive realization is the usual cyclic GNS construction. The exact
 reachability/observability debt decomposition is recorded here because it is the load-bearing field
 interpretation, not as a priority claim for realization theory.
+
+
+## 10. Lean formalization boundary
+
+Every displayed theorem of this card is Lean-certified in
+`GaloisForLFunctions.HTGeometry.MarkedWordRealization`, unconditionally and without added
+hypotheses: the word action and complete response `(MR.1)`, reachability `(MR.2)`, observability
+`(MR.3)`, the unique minimal marked realization `(MR.4)`--`(MR.6)`, the restricted reachable and
+invisible spaces `(MR.7)`--`(MR.9)`, the restricted minimal realization and its dimension
+`(MR.10)`, memory conservation `(MR.11)`, the exact no-go classification `(MR.12)`, the tensor
+presentation `(MR.13)` with its product law `(MR.14)` and memory bound `(MR.15)`, the complete
+star response with its Gram radical `(MR.16)`--`(MR.17)` and GNS realization, and the cofinal rank
+law `(MR.18)`.
+
+The earlier leaf `ConstitutiveMarkedResponseRealization` remains as the abstract linear surrogate;
+the word-level statements are now proved directly.
+
+`#print axioms` over the 62 public declarations reports only `propext`, `Classical.choice` and
+`Quot.sound`.  No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is used.  The leaf
+is wired into `GaloisForLFunctions.HTGeometry` and `UniversalLawField.lean`.

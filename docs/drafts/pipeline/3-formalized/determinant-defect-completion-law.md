@@ -1,7 +1,7 @@
 # Determinant-defect completion law
 
 - **ID:** `determinant-defect-completion-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** THEOREM (paper) / candidate parent law
 - **Source:** user-directed parent-law search above `residue-corrected-determinant-cofinal-torsion-spectrum`
 - **Statement:** Completing finite-rank spectral determinants in Schatten order `p` forgets exactly
@@ -1651,8 +1651,72 @@ survives in the exponential factor.
 | homeomorphism | `detCompletionFibre_jet_unique` + coefficient convergence | `linearJet_eq_of_completedPencilDet_eq` (order two) |
 | naturality | `opSchattenDet_add_of_orthogonal`, `opSchattenDet_conj`, `opSchattenDet_pencil_line` | same |
 
-### What remains on this card
+### Lean progress -- the packaging layer (2026-08-21)
 
-Only the packaging of the several-variable halves as one set equality, in the shape of
-`detGraphClosure_eq_detCompletionFibre`.  Both halves, and every mathematical input to them, are
-proved and axiom-clean.
+Two assets landed, and the packaging design is now fully determined.
+
+`formal/GaloisForLFunctions/HTGeometry/DeterminantGraphLocallyUniform.lean` (edited):
+`exists_poly_coeff_of_tendstoLocallyUniformlyOn_opSchattenDet` is the one-variable necessity with
+the **coefficient convergence of the low-trace jets** exposed -- the component
+`∀ h, Tendsto (fun n => (lowTracePoly p (A n)).coeff h) atTop (nhds (Q.coeff h))` that the previous
+statement discarded.  `exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet` is now a corollary,
+so no user changes.
+
+`formal/GaloisForLFunctions/HTGeometry/PencilLowTraceJet.lean` (new, umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the power trace of a finite-rank pencil as a multivariable polynomial | `pencilTraceMv`, `eval_pencilTraceMv`, `totalDegree_pencilTraceMv_le` |
+| the jet of trace coordinates below the order | `lowTraceMv`, `totalDegree_lowTraceMv_le`, `eval_zero_lowTraceMv` |
+| **its line restriction is the one-variable low-trace polynomial** | `lineRestrict_pencilTraceMv`, `lineRestrict_lowTraceMv` |
+
+### Lean progress -- the packaging is closed (2026-08-21)
+
+`formal/GaloisForLFunctions/HTGeometry/PencilDeterminantCompletion.lean` (new, umbrella-wired,
+axiom-clean) packages the two several-variable halves as one set equality.
+
+| Card item | Declaration |
+|---|---|
+| a monomial function of total degree `k` is a combination of `k`-th powers of linear forms | `monomialFun_mem_span_clmPow` |
+| **the polarization bridge**: so is every homogeneous component of a polynomial | `eval_homogeneousComponent_mem_span_clmPow` |
+| a Schatten-convergent family has a uniform Schatten bound covering the limit | `exists_uniform_schattenBound` |
+| **the one-variable jet along a line, with its coefficient convergence** | `exists_lineJet_of_locallyUniform` |
+| a homogeneous polynomial scales like a power | `eval_smul_of_isHomogeneous` |
+| a uniformly convergent family times a continuous factor | `tendstoUniformlyOn_mul_continuousOn` |
+| the two sides | `PencilGraphClosure`, `PencilCompletionFibre` |
+| **necessity in several variables** | `pencilGraphClosure_subset_pencilCompletionFibre` |
+| **sufficiency in several variables** | `pencilCompletionFibre_subset_pencilGraphClosure` |
+| **`(DC)` in several variables** | `pencilGraphClosure_eq_pencilCompletionFibre` |
+
+Both sides are stated *locally along every line through the origin*, which is forced rather than
+chosen: `opSchattenDet 1` is the plain determinant only where its trace series converges, and
+`opSchattenDet_pencil_line` carries the spectral variable into the parameter, so the natural domain
+of the plain determinant of a pencil is a neighbourhood of the origin.
+
+Two anticipated obstacles did not arise.  The **necessity** route bypasses
+`exists_mvPoly_of_line_closures` -- whose `hconv` hypothesis is unavailable at large parameters,
+where `opSchattenDet p _ 1` lies outside its disc of convergence -- and instead feeds
+`exists_mvPolynomial_of_tendsto_pointwise` with the line-restriction coefficient convergence
+(`lineRestrict_lowTraceMv` plus `tendsto_eval_of_line_coeff`), which is available at *every*
+parameter.  The **sufficiency** route needs no Vitali/Montel upgrade: using
+`exists_finiteRankPencil_tendsto_lowTrace` rather than `exists_finiteRankPencil_tendsto_plainDet`,
+the low power traces of the approximants are prescribed exactly, so their low-trace polynomial is
+independent of the approximation index and the locally uniform convergence of the plain
+determinants is `tendstoLocallyUniformlyOn_opSchattenDet` times a fixed continuous factor.
+
+`formal/GaloisForLFunctions/HTGeometry/DeterminantGraphLocallyUniform.lean` was extended with
+`exists_poly_coeff_of_tendstoLocallyUniformlyOn_opSchattenDet`, the one-variable necessity carrying
+the coefficient convergence of the low-trace jets; the previous statement is now a corollary.
+
+## Status of `(DC)` -- final
+
+| direction | one variable | several variables |
+|---|---|---|
+| necessity | `exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet` | `pencilGraphClosure_subset_pencilCompletionFibre` |
+| sufficiency | `exists_finiteRank_tendstoLocallyUniformlyOn_opSchattenDet_one` | `pencilCompletionFibre_subset_pencilGraphClosure` |
+| **set equality** | `detGraphClosure_eq_detCompletionFibre` | **`pencilGraphClosure_eq_pencilCompletionFibre`** |
+| homeomorphism | `detCompletionFibre_jet_unique` + coefficient convergence | `linearJet_eq_of_completedPencilDet_eq` (order two) |
+| naturality | `opSchattenDet_add_of_orthogonal`, `opSchattenDet_conj`, `opSchattenDet_pencil_line` | same |
+
+All statements are unconditional and axiom-clean (`propext`, `Classical.choice`, `Quot.sound`
+only).  The card is fully formalized.
