@@ -9,6 +9,7 @@ import Mathlib.FieldTheory.PrimitiveElement
 import Mathlib.FieldTheory.Separable
 import Mathlib.NumberTheory.LocalField.Basic
 import Mathlib.RingTheory.AdjoinRoot
+import Mathlib.RingTheory.AdicCompletion.AsTensorProduct
 import Mathlib.RingTheory.Algebraic.Integral
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Ideal.GoingUp
@@ -32,6 +33,7 @@ calculation of the local Brauer group.
 namespace GaloisForLFunctions.HTGeometry.ABHN
 
 open Polynomial
+open TensorProduct
 open scoped ValuativeRel WithZero WithZeroMulInt
 
 attribute [local instance] Ideal.Quotient.field
@@ -181,6 +183,54 @@ theorem nonarchimedeanLocalField_isAdicComplete
   letI : UniformSpace K := IsTopologicalAddGroup.rightUniformSpace K
   letI : IsUniformAddGroup K := isUniformAddGroup_of_addCommGroup (G := K)
   infer_instance
+
+/-- A finite module over a Noetherian adically complete ring is adically complete.  Completion
+commutes with finite modules, and completeness of the base identifies the resulting tensor
+product with the original module. -/
+theorem adicComplete_of_finiteModule_of_baseAdicComplete
+    (R M : Type u) [CommRing R] [AddCommGroup M] [Module R M]
+    (I : Ideal R) [Module.Finite R M] [IsNoetherianRing R] [IsAdicComplete I R] :
+    IsAdicComplete I M := by
+  let e : AdicCompletion I R ⊗[R] M ≃ₗ[R] M :=
+    (TensorProduct.congr (AdicCompletion.ofLinearEquiv I R).symm
+      (LinearEquiv.refl R M)).trans (TensorProduct.lid R M)
+  have he : ∀ q : AdicCompletion I R ⊗[R] M,
+      AdicCompletion.ofTensorProduct I M q = AdicCompletion.of I M (e q) := by
+    intro q
+    induction q using TensorProduct.induction_on with
+    | zero => simp [e]
+    | add q q' hq hq' => simp [map_add, hq, hq']
+    | tmul r x =>
+      simp only [AdicCompletion.ofTensorProduct_tmul, e, LinearEquiv.trans_apply,
+        TensorProduct.congr_tmul, LinearEquiv.refl_apply, TensorProduct.lid_tmul]
+      rw [← AdicCompletion.of_ofLinearEquiv_symm I r]
+      simp only [AdicCompletion.ofLinearEquiv_symm_of]
+      change (algebraMap R (AdicCompletion I R) ((AdicCompletion.ofLinearEquiv I R).symm r)) •
+          AdicCompletion.of I M x = _
+      rw [IsScalarTower.algebraMap_smul]
+      exact ((AdicCompletion.of I M).map_smul _ _).symm
+  apply AdicCompletion.of_bijective_iff.mp
+  constructor
+  · intro x y hxy
+    have h : (1 : AdicCompletion I R) ⊗ₜ[R] x = 1 ⊗ₜ[R] y := by
+      rw [← AdicCompletion.ofTensorProductEquivOfFiniteNoetherian_symm_of I M x,
+        ← AdicCompletion.ofTensorProductEquivOfFiniteNoetherian_symm_of I M y, hxy]
+    calc
+      x = e ((1 : AdicCompletion I R) ⊗ₜ[R] x) := by
+        change x = (AdicCompletion.ofLinearEquiv I R).symm 1 • x
+        rw [show (1 : AdicCompletion I R) = AdicCompletion.of I R 1 by rfl,
+          AdicCompletion.ofLinearEquiv_symm_of]
+        simp
+      _ = e ((1 : AdicCompletion I R) ⊗ₜ[R] y) := congrArg e h
+      _ = y := by
+        change (AdicCompletion.ofLinearEquiv I R).symm 1 • y = y
+        rw [show (1 : AdicCompletion I R) = AdicCompletion.of I R 1 by rfl,
+          AdicCompletion.ofLinearEquiv_symm_of]
+        simp
+  · intro z
+    obtain ⟨q, hq⟩ :=
+      (AdicCompletion.ofTensorProduct_bijective_of_finite_of_isNoetherian I M).surjective z
+    exact ⟨e q, (he q).symm.trans hq⟩
 
 /-- The valuation ring of a nonarchimedean local field is Henselian. -/
 theorem nonarchimedeanLocalField_henselianRing
@@ -899,6 +949,90 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_isLocalHom
   exact ((IsLocalRing.local_hom_TFAE (algebraMap 𝒪[K] (AdjoinRoot f))).out 2 0).mp
     (le_of_eq hmap)
 
+/-- A finite unramified root algebra over a nonarchimedean local valuation ring is complete for
+its maximal-ideal adic topology.  Thus its fraction field is supplied with the integral
+completeness prerequisite for the local-field extension layer. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_isAdicComplete
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    IsAdicComplete (IsLocalRing.maximalIdeal (AdjoinRoot f)) (AdjoinRoot f) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : Module.Finite 𝒪[K] (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : IsAdicComplete 𝓂[K] 𝒪[K] := nonarchimedeanLocalField_isAdicComplete K
+  have hcomplete : IsAdicComplete 𝓂[K] (AdjoinRoot f) :=
+    adicComplete_of_finiteModule_of_baseAdicComplete 𝒪[K] (AdjoinRoot f) 𝓂[K]
+  have hmap : (IsLocalRing.maximalIdeal 𝒪[K]).map (algebraMap 𝒪[K] (AdjoinRoot f)) =
+      IsLocalRing.maximalIdeal (AdjoinRoot f) := by
+    change (Ideal.map (AdjoinRoot.of f) 𝓂[K]) = IsLocalRing.maximalIdeal (AdjoinRoot f)
+    exact IsLocalRing.eq_maximalIdeal
+      (nonarchimedeanLocalFieldAdjoinRootMapMaximalIdealIsMaximal K f g hfg hg)
+  rw [← hmap]
+  let hhaus : IsHausdorff ((IsLocalRing.maximalIdeal 𝒪[K]).map
+      (algebraMap 𝒪[K] (AdjoinRoot f))) (AdjoinRoot f) :=
+    IsHausdorff.map_algebraMap_iff.mpr hcomplete.1
+  let hprec : IsPrecomplete ((IsLocalRing.maximalIdeal 𝒪[K]).map
+      (algebraMap 𝒪[K] (AdjoinRoot f))) (AdjoinRoot f) :=
+    IsPrecomplete.map_algebraMap_iff.mpr hcomplete.2
+  exact { haus' := hhaus.haus', prec' := hprec.prec' }
+
+/-- The finite unramified lift is Henselian at its maximal ideal.  This transfers the root-lifting
+mechanism from the base local field to every finite unramified integral extension constructed
+above. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_henselianRing
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    HenselianRing (AdjoinRoot f) (IsLocalRing.maximalIdeal (AdjoinRoot f)) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsAdicComplete (IsLocalRing.maximalIdeal (AdjoinRoot f)) (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isAdicComplete K f hf g hfg hg
+  infer_instance
+
+/-- A simple residue root over a finite unramified lift has a root in that lift.  This is the
+iteration form of Hensel lifting needed to build successive unramified local extensions. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_hensel_lift
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    ∀ (p : Polynomial (AdjoinRoot f)) (_ : p.Monic) (a₀ : AdjoinRoot f),
+      Ideal.Quotient.mk (IsLocalRing.maximalIdeal (AdjoinRoot f)) (p.eval a₀) = 0 →
+      Ideal.Quotient.mk (IsLocalRing.maximalIdeal (AdjoinRoot f)) (p.derivative.eval a₀) ≠ 0 →
+      ∃ a : AdjoinRoot f, p.IsRoot a ∧ a - a₀ ∈ IsLocalRing.maximalIdeal (AdjoinRoot f) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : HenselianRing (AdjoinRoot f) (IsLocalRing.maximalIdeal (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_henselianRing K f hf g hfg hg
+  intro p hp a₀ hroot hsimple
+  apply HenselianRing.is_henselian p hp a₀
+  · exact Ideal.Quotient.eq_zero_iff_mem.mp hroot
+  · exact Ne.isUnit hsimple
+
 /-- A monic irreducible lift has residue degree equal to the degree of its defining polynomial.
 Together with its DVR property, this is the unramified degree calculation at the integral level. -/
 theorem nonarchimedeanLocalFieldAdjoinRootResidueField_finrank
@@ -1105,6 +1239,48 @@ theorem nonarchimedeanLocalFieldAdjoinRootResidueFrobenius_orderOf
   rw [FiniteField.orderOf_frobeniusAlgEquivOfAlgebraic]
   exact nonarchimedeanLocalFieldAdjoinRootResidueField_finrank K f hf g hgmonic hfg hg
 
+/-- Every automorphism of the lifted residue extension is a power of relative Frobenius, with
+exponent strictly below the residue degree. -/
+theorem nonarchimedeanLocalFieldAdjoinRootResidueFrobenius_exists_pow_eq
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g)
+    (σ :
+      letI : IsDomain (AdjoinRoot f) :=
+        nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+      letI : IsLocalRing (AdjoinRoot f) :=
+        nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+      letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+        nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+      Gal(IsLocalRing.ResidueField (AdjoinRoot f) / 𝓀[K])) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    ∃ i < f.natDegree,
+      nonarchimedeanLocalFieldAdjoinRootResidueFrobenius K f hf g hgmonic hfg hg ^ i = σ := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
+  letI : Module.Finite 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    Module.Finite.of_finite
+  letI : Algebra.IsAlgebraic 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    Algebra.IsAlgebraic.of_finite 𝓀[K] _
+  letI := Fintype.ofFinite 𝓀[K]
+  obtain ⟨⟨i, hi⟩, hσ⟩ :=
+    (FiniteField.bijective_frobeniusAlgEquivOfAlgebraic_pow 𝓀[K]
+      (IsLocalRing.ResidueField (AdjoinRoot f))).surjective σ
+  refine ⟨i, ?_, hσ⟩
+  rwa [nonarchimedeanLocalFieldAdjoinRootResidueField_finrank K f hf g hgmonic hfg hg] at hi
+
 /-- The absolute Frobenius automorphism of the finite residue field of a monic irreducible lift.
 This is the residue-field automorphism which an arithmetic Frobenius lift must induce. -/
 noncomputable def nonarchimedeanLocalFieldAdjoinRootResidueAbsoluteFrobenius
@@ -1171,7 +1347,7 @@ the unramified-extension construction. -/
 theorem nonarchimedeanLocalField_exists_finiteUnramifiedDVRLift_of_natDegree
     (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
     [IsNonarchimedeanLocalField K] (n : ℕ) [NeZero n] :
-    ∃ (f : Polynomial 𝒪[K]) (g : Polynomial 𝓀[K]), ∃ hf : f.Monic, ∃ hgmonic : g.Monic,
+    ∃ (f : Polynomial 𝒪[K]) (g : Polynomial 𝓀[K]), ∃ hf : f.Monic, g.Monic ∧
       ∃ hg : Irreducible g, ∃ hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g, f.natDegree = n ∧
       letI : IsDomain (AdjoinRoot f) :=
         nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg

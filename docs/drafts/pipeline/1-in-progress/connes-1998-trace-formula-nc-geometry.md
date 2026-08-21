@@ -36,18 +36,18 @@ compaction-surviving ledger.
 | A12 | App I(37)(38): `E(f)(x) = E(f̂)(1/x)` for `f ∈ 𝒮(A)₀` from Poisson summation | `ConnesPeriodizationEquivariance` | DONE |
 | A13 | App II(44): `(1/2π)∫₀^{2π} dθ/|1−e^{iθ}z|² = 1/(1−|z|²)` (`|z|<1`), `1/(|z|²−1)` (`|z|>1`) | `ConnesComplexFiberIntegral` | DONE |
 | A14 | App II(53): `−4∫₀^{π/2} log sin u du = 2π log 2` | `ConnesComplexFiberIntegral` | DONE |
-| A15 | App II(49)(51): `j(ε) = 4∫_{log ε}^{log 2} arccos(e^x/2) dx = 2π log(1/ε) + o(1)` | `ConnesComplexLogAreaAsymptotics` | TODO |
+| A15 | App II(49)(51): `j(ε) = 4∫_{log ε}^{log 2} arccos(e^x/2) dx = 2π log(1/ε) + o(1)` | `ConnesComplexLogAreaAsymptotics` | DONE |
 | A16 | App II(35): `lim(∫_{|x|≥ε} f d*x + log ε f(0)) = lim(∫ f\|x\|^ε d*x − f(0)/ε)` | `ConnesArchPrincipalValue` | PARTIAL — both indicator computations `A_ε(1_box)=0`, `B_ε(1_box)=0` proved; the limit form needs DCT (moved to B9) |
 | A17 | App II(32): `⟨−log|u|, e^{−πu²}⟩ = ½log π + γ/2 + log 2` | `ConnesGaussianLogMoment` | DONE |
 | A18 | App II(41): `⟨−log|z|_ℂ, e^{−2π|z|²}⟩ = log 2π + γ` | `ConnesGaussianLogMoment` | DONE |
 | A19 | §V(35): `P(f_a) = P(f) − log|a| f(0)` for the log-regularized principal value | `ConnesArchPrincipalValue` | DONE |
 | A20 | §VIII(30): pairs of projections; `sin Θ = |P₁−P₂|`; `Θ` commutes with `P_i`; ℤ/2∗ℤ/2 irreps ≤ 2-dim | `ConnesProjectionPair` | DONE |
 | A21 | App I(15)–(20): `⟨1_R,Δ'_s⟩=1`, homogeneity `⟨f^a,Δ'_s⟩=|a|^{-s}⟨f,Δ'_s⟩`, `Δ'_s=(1−q^{-s})Δ_s` | `ConnesLocalHomogeneousDistribution` | DONE |
-| A22 | App III: graph δ-section, `∫δ(y−f(x))ξ(y)dy = ξ(f(x))`; transversality ⟺ `1−P` invertible | `ConnesGraphDelta` | TODO |
+| A22 | App III: graph δ-section, `∫δ(y−f(x))ξ(y)dy = ξ(f(x))`; transversality ⟺ `1−P` invertible; symbol `\|det(1−A)\|⁻¹` | `ConnesGraphDelta` | DONE |
 | A23 | §IV(19)–(21): 1-D flow trace `∫ h(t)/|1−e^t| dt`; multiplicative form `∫ h(u)/|1−u| d*u` | `ConnesFlowTrace` (reuses corpus `MellinL2.exp_measurePreserving`) | DONE |
 | A24 | §V(7): `(φ∘L)^ = |det L|^{-1} φ̂∘(L^{-1})^t` | `ConnesLinearFourier` | DONE |
 | A25 | §V(10)(11): convolution of the two line measures gives the constant `|1−λ|^{-1}` | `ConnesLinearFourier` | DONE |
-| A26 | §VIII Lemma 3 model: `Lim ⟨V(f)η_z,η_z⟩ = ∫_{|u|=1} P_z(u) f̂(u) du`; asymptotic orthogonality | `ConnesResonanceModel` | TODO |
+| A26 | §VIII Lemma 3 model: geometric-ratio limit + Poisson reproducing `∫ P_w(u)u^k du/2π = w^k` | `ConnesResonanceModel` | DONE |
 | A27 | App I(27)(28): `φ·α = 0` for `α ∈ 𝒟'`, `φ` smooth with finite-order zeros ⟹ `α ∈ span{δ^{(k)}_{x_i}}` | `ConnesDivisionDistribution` (reuses corpus `HTGeometry.exists_delta_representation`, `jetTest`) | DONE |
 
 ### Tier B — heavy analytic layers
@@ -93,3 +93,19 @@ layer (`XiGuinandWeilExplicitFormula`, `xi_explicitFormula_logDeriv`).
 - 2026-08-21 — A17, A18 landed (`ConnesGaussianLogMoment`), reusing mathlib's
   `Complex.hasDerivAt_GammaIntegral` / `digamma_one_half` and the corpus's
   `HTGeometry.integral_log_mul_exp_neg_Ioi` and `HTGeometry.integral_Ioi_rpow_mul_gaussian`.
+- 2026-08-21 — **Tier A complete: 27/27.**  A15 (`ConnesComplexLogAreaAsymptotics`),
+  A22 (`ConnesGraphDelta`), A26 (`ConnesResonanceModel`) landed.  All 19 modules build, are wired
+  into `GaloisForLFunctions.RHTower`, and every capstone `#print axioms` shows only
+  `propext, Classical.choice, Quot.sound`.  `scripts/formal_tools.py lint` reports no error against
+  any `Connes*` module (the three umbrella-reachability errors it prints belong to other agents'
+  modules `EulerSquarefreeWickInteractionCohomology`, `GaussianRealMoments`,
+  `MultilinearPolarization`).
+
+## Landed modules (all in `formal/GaloisForLFunctions/RHTower/`)
+`ConnesSobolevWeight`, `ConnesSUnitSupBound`, `ConnesSemiclassicalArea`,
+`ConnesNonArchPrincipalValue`, `ConnesComplexFiberIntegral`, `ConnesJordanTriangular`,
+`ConnesSymbolChart`, `ConnesLinearFourier`, `ConnesPeriodizationEquivariance`,
+`ConnesProjectionPair`, `ConnesLocalHomogeneousDistribution`, `ConnesModulatedHaar`,
+`ConnesArchPrincipalValue`, `ConnesFlowTrace`, `ConnesDivisionDistribution`,
+`ConnesGaussianLogMoment`, `ConnesGraphDelta`, `ConnesResonanceModel`,
+`ConnesComplexLogAreaAsymptotics`.

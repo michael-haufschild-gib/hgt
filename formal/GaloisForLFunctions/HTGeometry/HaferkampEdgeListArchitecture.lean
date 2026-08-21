@@ -31,7 +31,7 @@ theorem ofEdgeList_contraction
     (ofEdgeList edges hdistinct).contraction gates =
       (List.ofFn fun r =>
         twoQubitLift (edges.get r).1 (edges.get r).2
-          (hdistinct (edges.get r) (List.get_mem _ _)) (gates r)).prod := rfl
+          (hdistinct (edges.get r) (List.get_mem _ _)) (gates r)).reverse.prod := rfl
 
 end TwoQubitArchitecture
 

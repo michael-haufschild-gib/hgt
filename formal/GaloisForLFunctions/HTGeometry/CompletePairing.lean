@@ -90,4 +90,40 @@ theorem completePairing_quadruple (c : α → α → K) (x y z w : α) :
     add_zero]
   ring
 
+/-! ## Words of equal letters -/
+
+/-- The complete-pairing sum of a word of equal letters with constant kernel satisfies a two-step
+recursion: the head can be paired with any of the `n + 1` later letters, and every choice leaves the
+same shorter word. -/
+theorem completePairing_replicate_succ_succ (c : K) (a : α) (n : ℕ) :
+    completePairing (fun _ _ : α => c) (List.replicate (n + 2) a)
+      = (n + 1 : K) * c * completePairing (fun _ _ : α => c) (List.replicate n a) := by
+  rw [show List.replicate (n + 2) a = a :: List.replicate (n + 1) a from rfl,
+    completePairing_cons]
+  simp only [positionSum]
+  have hterm : ∀ k : Fin (List.replicate (n + 1) a).length,
+      c * completePairing (fun _ _ : α => c) ((List.replicate (n + 1) a).eraseIdx (k : ℕ))
+        = c * completePairing (fun _ _ : α => c) (List.replicate n a) := by
+    intro k
+    have hk : (k : ℕ) < n + 1 := by simpa using k.isLt
+    rw [List.eraseIdx_replicate, if_pos hk]
+    simp
+  rw [Finset.sum_congr rfl (fun k _ => hterm k), Finset.sum_const, Finset.card_univ,
+    Fintype.card_fin, List.length_replicate, nsmul_eq_mul]
+  push_cast
+  ring
+
+/-- The complete-pairing sum of a constant word depends only on its length and its kernel value. -/
+theorem completePairing_replicate_const {β : Type*} (c : K) (a : α) (b : β) (n : ℕ) :
+    completePairing (fun _ _ : α => c) (List.replicate n a)
+      = completePairing (fun _ _ : β => c) (List.replicate n b) := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    match n with
+    | 0 => simp
+    | 1 => simp
+    | (m + 2) =>
+      rw [completePairing_replicate_succ_succ, completePairing_replicate_succ_succ,
+        ih m (by omega)]
+
 end GaloisForLFunctions.HTGeometry

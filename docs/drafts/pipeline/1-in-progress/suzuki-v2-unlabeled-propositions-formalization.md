@@ -1,9 +1,9 @@
 # Suzuki v2: formalization of the unlabeled propositions
 
 **Status:** in progress — Sections 8.2, 8.5, 7 (kernel algebra), the Section 3 displayed estimates
-and their `I_ε → 0` consequence, the (4.10) parity identity, and the digamma integral
-representation behind (2.7)–(2.8) are closed in Lean; the conditionally convergent
-cosine-integral half of (2.7)–(2.8) remains
+and their `I_ε → 0` consequence, the (4.10) parity identity, and **both** analytic halves behind
+(2.7)–(2.8) (the digamma integral representation and the cosine-integral cancellation) are closed
+in Lean
 **Primary source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
 arXiv:2606.09096v2, 17 August 2026 (source file `screwzelf_9.tex`, 3823 lines).
 
@@ -212,20 +212,56 @@ transform.
 Together with (3.3)–(3.4) from `SuzukiApertureFourierDecay` this is exactly the source's
 `I_ε ≪ ε log(1/ε) → 0`.
 
+## The cosine-integral half of (2.7)–(2.8)
+
+`GaloisForLFunctions/RHTower/CosineIntegralAsymptotic.lean`.
+
+The source's step `E₁(ε) + Ci(|z/2|ε) = log|z| - log 2 + O(ε)` is about an integral that is only
+*conditionally* convergent at infinity, so it is not a Bochner integral on `(0,∞)`.  The module
+builds it as a genuine improper limit.
+
+* `intervalIntegral_cos_div` — integration by parts against `t⁻¹`:
+  `∫_1^y cos t/t dt = sin y/y - sin 1 + ∫_1^y sin t/t² dt`, with `sin t/t²` absolutely integrable;
+* `cosTailValue`, `tendsto_intervalIntegral_cos_div` — the truncated integrals converge to
+  `-sin 1 + ∫_1^∞ sin t/t² dt`;
+* `intervalIntegral_damped_cos_div`, `integral_damped_cos_div_Ioi` — the same parts formula for the
+  damped kernel `e^{-εt}cos t/t`, which *is* Lebesgue integrable;
+* `integral_exp_neg_mul_Ioi`, `integral_exp_neg_mul_div_Ioi_le` — `∫_1^∞ e^{-εt}/t dt ≤ log(1/ε)+1`,
+  by splitting at `1/ε`;
+* `tendsto_dampedCosTail` — **the Abel limit** `∫_1^∞ e^{-εt}cos t/t dt → cosTailValue`: the extra
+  parts term carries the factor `ε·∫_1^∞ e^{-εt}/t dt ≤ ε(log(1/ε)+1) → 0`, and the remaining
+  `sin t e^{-εt}/t²` converges by dominated convergence against `1/t²`;
+* `integral_dampedFrullani` — the real part of the corpus's complex Frullani integral at rates `1`
+  and `ε - i`:  `∫_0^∞ (e^{-t} - e^{-εt}cos t)/t dt = log √(ε²+1)`;
+* `gaussCosineIdentity` — **letting `ε → 0` gives `∫_0^1 (e^{-t} - cos t)/t dt + ∫_1^∞ e^{-t}/t dt
+  = cosTailValue`**, i.e. the improper integral `∫_0^∞ (e^{-t} - cos t)/t dt` vanishes;
+* `cinNeg`, `abs_cinNeg_le`, `intervalIntegral_cos_div_head`, `neg_cinNeg_one`,
+  `cosIntegralTail`, `tendsto_cosIntegralTail` — the regularized head `∫_0^x (cos t - 1)/t dt` and
+  the closed form of the improper tail;
+* `tendsto_expIntegralTail_sub_cosIntegralTail` — **the source's identity**: for `a > 0`,
+
+  `∫_ε^∞ e^{-u}/u du - ∫_{aε}^∞ cos u/u du → log a`  as `ε → 0+`.
+
+  Both terms diverge like `-log ε`; the divergences cancel and the constants collapse by
+  `-cinNeg 1 = γ + cosTailValue`, which is `gaussCosineIdentity` combined with
+  `γ = frullaniHead - frullaniTail`.
+
 ## Remaining audit
 
 Still open:
 
-* The cosine-integral half of (2.7)–(2.8): `∫_ε^R (e^{-u} - cos(au))/u du → log a`.  Route: the
-  corpus's complex Frullani integral `integral_frullani` at `b = ε + ia` gives `½log(ε²+a²)`, and
-  the `ε → 0` Abel limit needs one integration by parts on `[1,∞)` plus the `E₁` asymptotic already
-  proved in `EulerMascheroniGaussKernel`.
+* The final assembly of (2.7)–(2.8) themselves: both analytic halves are now closed
+  (`integral_archimedean_gaussKernel` and `tendsto_expIntegralTail_sub_cosIntegralTail`), and what
+  remains is the algebraic identification of the source's `r_1''` from the Bernoulli generating
+  function together with the regularized Fourier bookkeeping.  Note `r_1''` is not `L¹`, so the
+  displayed `\hat{r_1''}` is itself a regularized object; the corpus's own route to (2.6) uses Abel
+  limits for exactly this reason.
 * The scaling identities (4.1)–(4.6) and the small-aperture expansion (5.1) in their displayed
   forms; their consequences (Theorems 1.3 and 1.4) are corpus-owned.
 
 ## Verification
 
-All eight modules
+All nine modules
 
 * `HTGeometry/TriangularIntervalFubini.lean`
 * `HTGeometry/ParityRayleighDecomposition.lean`
@@ -235,6 +271,7 @@ All eight modules
 * `RHTower/EulerMascheroniGaussKernel.lean`
 * `RHTower/DigammaIntegralRepresentation.lean`
 * `RHTower/SuzukiCutoffLogWindow.lean`
+* `RHTower/CosineIntegralAsymptotic.lean`
 
 pass `lake env lean` with no warnings, have fresh `.olean` builds, and are wired into their
 theorem-area umbrellas.  `#print axioms` on every capstone reports only `propext`,

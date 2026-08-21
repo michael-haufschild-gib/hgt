@@ -19,7 +19,7 @@ noncomputable section
 /-- Ordered ambient matrix product underlying a fixed circuit contraction. -/
 def ambientOrderedMatrixProduct {N : Type*} [Fintype N] [DecidableEq N]
     (R : ℕ) (gates : Fin R → Matrix N N ℂ) : Matrix N N ℂ :=
-  (List.ofFn gates).prod
+  (List.ofFn gates).reverse.prod
 
 /-- Algebraic first variation of an ordered ambient matrix product.  The
 `i`-th summand inserts its input variation at location `i`, retaining the
@@ -30,9 +30,9 @@ def ambientOrderedMatrixProductDerivative
     (Fin R → Matrix N N ℂ) →ₗ[ℂ] Matrix N N ℂ :=
   ∑ i : Fin R,
     (LinearMap.mulLeft ℂ
-      ((List.ofFn gates).take i.1).prod).comp
+      ((List.ofFn gates).drop i.1.succ).reverse.prod).comp
       ((LinearMap.mulRight ℂ
-        ((List.ofFn gates).drop i.1.succ).prod).comp
+        ((List.ofFn gates).take i.1).reverse.prod).comp
         (LinearMap.proj i))
 
 /-- A variation supported at exactly one gate location. -/
@@ -48,15 +48,15 @@ theorem ambientOrderedMatrixProductDerivative_apply_coordinateDirection
     (gates : Fin R → Matrix N N ℂ) (i : Fin R) (H : Matrix N N ℂ) :
     ambientOrderedMatrixProductDerivative R gates
       (ambientCoordinateDirection i H) =
-      ((List.ofFn gates).take i.1).prod * H *
-        ((List.ofFn gates).drop i.1.succ).prod := by
+      ((List.ofFn gates).drop i.1.succ).reverse.prod * H *
+        ((List.ofFn gates).take i.1).reverse.prod := by
   classical
   unfold ambientOrderedMatrixProductDerivative
   simp only [LinearMap.sum_apply]
   change (∑ x : Fin R,
-      ((List.ofFn gates).take x.1).prod *
+      ((List.ofFn gates).drop x.1.succ).reverse.prod *
         (ambientCoordinateDirection i H x *
-          ((List.ofFn gates).drop x.1.succ).prod)) = _
+          ((List.ofFn gates).take x.1).reverse.prod)) = _
   rw [Finset.sum_eq_single i]
   · simp [ambientCoordinateDirection, mul_assoc]
   · intro x _ hxi

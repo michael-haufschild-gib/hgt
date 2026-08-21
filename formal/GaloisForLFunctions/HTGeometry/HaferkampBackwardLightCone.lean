@@ -16,6 +16,7 @@ noncomputable section
 /-- A time-ordered backwards light cone in an ordered two-qubit block. -/
 structure BackwardsLightCone (n : ℕ) (edges : List (Fin n × Fin n))
     (root : Fin n) where
+  edge_distinct : ∀ e ∈ edges, e.1 ≠ e.2
   path : ∀ source : Fin n, source ≠ root → QubitMergePath (Fin n) source root
   path_sublist : ∀ source hsource,
     List.Sublist (path source hsource).edgeList edges

@@ -109,7 +109,7 @@ to the implemented `n`-qubit unitary. -/
 def contraction {n R : ℕ} (A : TwoQubitArchitecture n R)
     (gates : Fin R → Matrix.specialUnitaryGroup (Bool × Bool) ℂ) :
     Matrix.unitaryGroup (Fin n → Bool) ℂ :=
-  (List.ofFn fun r => A.gateLift r (gates r)).prod
+  (List.ofFn fun r => A.gateLift r (gates r)).reverse.prod
 
 /-- Independent Haar law for every local `SU(4)` parameter of a fixed
 architecture. -/

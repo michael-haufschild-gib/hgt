@@ -462,4 +462,53 @@ theorem integral_archimedean_gaussKernel (z : ℝ) :
     ring
   rw [hneg, hkey]
 
+
+/-- The real part of the Gauss integrand on the archimedean line `s = 1/4 + iz/2`. -/
+theorem digammaGaussIntegrand_archimedean_re (z : ℝ) (t : ℝ) :
+    (digammaGaussIntegrand (1 / 4 + ((z / 2 : ℝ) : ℂ) * Complex.I) t).re
+      = Real.exp (-t) / t
+        - Real.exp (-t / 4) * Real.cos (z * t / 2) / (1 - Real.exp (-t)) := by
+  set s : ℂ := 1 / 4 + ((z / 2 : ℝ) : ℂ) * Complex.I with hs_def
+  have hsre : s.re = 1 / 4 := by rw [hs_def]; simp
+  have hsim : s.im = z / 2 := by rw [hs_def]; simp
+  rw [digammaGaussIntegrand, Complex.sub_re, Complex.ofReal_re,
+    one_sub_exp_neg_ofReal_eq, div_ofReal_re, Complex.exp_re]
+  have hmulre : (-s * (t : ℂ)).re = -t / 4 := by
+    simp only [Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
+      Complex.ofReal_im, hsre, hsim]
+    ring
+  have hmulim : (-s * (t : ℂ)).im = -(z * t / 2) := by
+    simp only [Complex.mul_im, Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
+      Complex.ofReal_im, hsre, hsim]
+    ring
+  rw [hmulre, hmulim, Real.cos_neg]
+
+/-- The archimedean Gauss kernel, i.e. minus the real part of the Gauss integrand. -/
+def suzukiArchKernel (z u : ℝ) : ℝ :=
+  Real.exp (-u / 4) * Real.cos (z * u / 2) / (1 - Real.exp (-u)) - Real.exp (-u) / u
+
+theorem integrableOn_suzukiArchKernel (z : ℝ) :
+    IntegrableOn (suzukiArchKernel z) (Ioi (0 : ℝ)) volume := by
+  set s : ℂ := 1 / 4 + ((z / 2 : ℝ) : ℂ) * Complex.I with hs_def
+  have hs : 0 < s.re := by
+    rw [hs_def]
+    simp
+  have hbase : IntegrableOn (fun t : ℝ => (digammaGaussIntegrand s t).re)
+      (Ioi (0 : ℝ)) volume :=
+    Complex.reCLM.integrable_comp (integrableOn_digammaGaussIntegrand hs)
+  refine (hbase.neg).congr_fun (fun t ht => ?_) measurableSet_Ioi
+  have ht0 : (0 : ℝ) < t := ht
+  simp only [Pi.neg_apply]
+  rw [hs_def, digammaGaussIntegrand_archimedean_re z t, suzukiArchKernel]
+  ring
+
+theorem integral_suzukiArchKernel (z : ℝ) :
+    (∫ u in Ioi (0 : ℝ), suzukiArchKernel z u)
+      = -(Complex.digamma (1 / 4 + ((z / 2 : ℝ) : ℂ) * Complex.I)).re := by
+  have h := integral_archimedean_gaussKernel z
+  rw [← h]
+  refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
+  intro u hu
+  rfl
+
 end RHTower

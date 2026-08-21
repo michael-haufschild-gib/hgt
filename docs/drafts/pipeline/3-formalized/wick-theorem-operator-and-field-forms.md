@@ -82,13 +82,38 @@ those two enumerations is the exchange law.
     `FermionSystem` and `FermionVacuum` for an arbitrary family of vectors and dual vectors, with
     `exteriorFermion_vacuum_prod_field`.
 
+## The probabilistic branch
+
+14. `MultilinearPolarization` — polarization for plain `MultilinearMap`s over an arbitrary
+    commutative ring: `∑_{s} (-1)^{n-|s|} • B(∑_{j∈s} v j, …) = n! • B(v)`, and
+    `multilinearMap_eq_of_diagonal_eq`: a symmetric multilinear map is determined by its diagonal
+    whenever `n!` is invertible.  (`SymmetricMultilinearPolarization`'s combinatorial core
+    `sum_Icc_neg_one_pow_card_sub` was generalised from `ℂ` to any commutative ring for this; the
+    `ContinuousMultilinearMap`/`ℂ` statements there are unchanged.)
+15. `GaussianRealMoments` — the moments of `gaussianReal 0 v` as derivatives of `t ↦ exp (v t²/2)`,
+    the Leibniz rule `iteratedDeriv n (t ↦ t · h t)`, the recursion `m_{n+2} = (n+1) v m_n`, and
+    `integral_pow_gaussianReal_eq_completePairing`: the `n`-th moment is the complete-pairing sum of
+    a constant word.  Mathlib has no general Gaussian moment formula; this closes that gap.
+16. `WickGaussianMoments` — `integral_pow_centered_dual`: for a Gaussian measure on a Banach space
+    and one continuous linear form, the centred moments are the complete-pairing sums of the
+    variance (the single-functional case of Isserlis).  And `scalarFock`, a one-mode bosonic system
+    with an arbitrary propagator `v`, giving
+    `integral_pow_gaussianReal_eq_vacuum_prod_field`: **Gaussian moments are vacuum expectation
+    values of a free field.**
+
 ## Open continuations
 
 - Identify `completePairing` with an explicit sum over fixed-point-free involutions, and
   `pfaffianPairing` with the Pfaffian of a matrix.
-- The probabilistic form (Isserlis): moments of a Gaussian measure as a complete-pairing sum of
-  covariances.
+- The **multivariate** Isserlis theorem, `∫ ∏ᵢ (Lᵢ - μ[Lᵢ]) dμ = completePairing cov [L₁,…,Lₙ]`.
+  Everything analytic is in place (polarization, the diagonal moments, the pushforward reduction);
+  the missing algebra is that `completePairing` is multilinear in the letters of the word.  The
+  route: prove `positionSum` respects `List.Perm` for a permutation-invariant summand, deduce
+  `completePairing`-invariance under `List.Perm` for a symmetric kernel (the head-swap case is
+  exactly `positionSum_swap`), and then upgrade head-linearity to linearity in every slot.  The
+  second ingredient, integrability of `∏ᵢ (Lᵢ - mᵢ)`, follows from
+  `|∏ᵢ zᵢ| ≤ ∑ᵢ |zᵢ|ⁿ` and `IsGaussian.memLp_dual`.
 
 ## Log
-- 2026-08-21 — created directly at stage 3; all thirteen modules compile, axiom audits clean
+- 2026-08-21 — created directly at stage 3; all sixteen modules compile, axiom audits clean
   (`propext`, `Classical.choice`, `Quot.sound` only).
