@@ -7,11 +7,10 @@ It maps architectures, theorem chains, open cores, and terminal mechanisms. It i
 work log, literature survey, or inventory of every RH-equivalent proposition.
 
 **Formal-corpus cutoff:** 21 August 2026, commit
-`c5af1ea8406de3554fe670dce72f160a25e5eecc`, plus declaration-index review of current Lean
-working tree. Scientific status below comes only from Lean declarations, dependencies,
-theorem docstrings, and explicit gap/no-go markers. Pipeline cards and papers are not evidence for
-this map. Working-tree declarations are identified and not claimed build-audited in this
-documentation-only pass. Declarations in a syntactically incomplete file, or containing `sorry`,
+`bcfc7bbb2869cc96d2cd31f48841c736eba7b830`, with declaration-index review through that clean
+tree. Scientific status below comes only from Lean declarations, dependencies, theorem docstrings,
+and explicit gap/no-go markers. Pipeline cards and papers are not evidence for this map. This was a
+documentation-only audit, not a rebuild. Declarations in a syntactically incomplete file, or containing `sorry`,
 `admit`, or an equivalent placeholder, are excluded from proved evidence and route counts.
 
 Terms:
@@ -43,8 +42,8 @@ Routes R, IW, AP, and scalar EWQ are terminal as independent producers. RH and i
 
 | Architecture | Proved chain | First open core |
 |---|---|---|
-| CCM-FU | completed Guinand--Weil source -> marked rectangular current -> Suzuki average -> floor-selected affine checkpoint current plus bounded curvature -> Xi-screw Green -> RH | For one fixed `b>0`, uniformly bound the signed positive-aperture average of literal affine checkpoint jets. Gamma/Lerch, wall memory, and smooth within-cell Bregman curvature are bounded; only discrete event-current cancellation remains. |
-| C1 | corrected theta/prime--Gamma source -> global class-space quotient -> Weil/Connes form or real spectral realization -> RH | Construct a source-derived non-dominating or signed global carrier excluding the explicit cofinal two-pole antisymmetric escape. Local real/p-adic terms, safe prime/arch source, resolvent trace formula, and finite-cutoff positivity are exact; global tensor/source assembly, quotient exhaustion, and correction are not. |
+| CCM-FU | completed Guinand--Weil source -> marked rectangular current -> Suzuki average -> floor-selected affine checkpoint current -> signed prime--arch event curvature/Green potential -> Xi-screw Green -> RH | For one fixed `b>0`, uniformly bound the signed positive-aperture average of literal affine checkpoint jets. Smooth curvature and positive endpoint resets are now summably harmless; only the signed cross-event curvature current remains. Its first moment is exactly the central unit-Riesz/HG prime-minus-polar source after explicit archimedean renormalization. |
+| C1 | corrected theta/prime--Gamma source -> global class-space quotient -> Weil/Connes form or real spectral realization -> RH | Construct a source-derived non-dominating or signed global carrier excluding the explicit cofinal two-pole antisymmetric escape. Local real/p-adic terms, complex resolvent trace, strong approximate unit, and scalar cutoff-commutator decay are exact; global tensor/source assembly, quotient exhaustion, operator-level correction, and orientation are not. |
 | D2 | continued prime--arch trace -> one-sided anti-Herglotz/finite ceiling -> RH | Source control of sole positive-frequency tail by a reflected signed/non-dominating law; canonical directed passive limits are impossible. |
 | E | squarefree Wold source -> two-sign half-power marker supply -> exact integer-pair incidence -> unit-load Hall transport with moving flux -> RH | Build one Ramaré-supported relation joining proved marker supply to relation-specific subinterval Hall, unit load, co-moving flux, and Gibbs cost. Finite unsigned Type-II, character-mean-value, and Bohr dense-model adapters are exact; none defines this relation. |
 | F2 | all-prime principal-relative Sonin residual -> positive trace-class energy -> one intrinsic Hankel moment curve -> continued prime--Gamma moment germ -> RH | Prove one source-derived cofinal aperture section, positive aperture barycenter, or equivalent all-moment weld from the Sonin energy moments to the fixed prime--Gamma moments. |
@@ -57,9 +56,9 @@ Routes R, IW, AP, and scalar EWQ are terminal as independent producers. RH and i
 | SP-E | natural Suzuki reporter -> coherent prime outgoing amplitude minus regular-screw continuum -> completed Green/Ward wall -> RH; prime increments equal quarter-dilation gain minus debt | Compare this exact signed prime dilation flux with the continuum increment and deduce a uniform amplitude imbalance. Separate positive estimates lose the required cross-scale cancellation; raw Cauchy energy diverges. |
 | SCE | Mangoldt event history plus archimedean reservoir -> unique strict-convex checkpoint -> restricted Legendre conjugate -> nonnegative checkpoint floors -> RH | Prove source-first `suzukiCheckpointConjugate N <= suzukiCheckpointMoment N` for every `N>=2`, or an event-recursion law forcing it. Bregman drawdown controls displacement from the minimum, not its absolute sign; universal checkpoint nonnegativity is already exactly RH. |
 | T1 | finite Xi-Taylor/theta-tail source -> exact reflection bridge -> zero-free full-density channel plus canonical transfer current -> raw core-current bound -> RH | Produce a source-first sublinear bound for the canonical full-density transfer current, concretely by signed short Möbius-block cancellation preserving the combined top-row/finite-translation current. The normalized Xi packet and literal differentiated primal square-AFE source-field `L2` law are discharged; transfer-current sublinearity is exactly RH. |
-| T2 | ordered-prime Wold source -> central adjacent-defect interval -> spaced gap sequence -> forced second Maynard count -> critical gap energy -> residual Hardy continuation/ODE -> RH | First-branch exclusion, all bands, base layer, arbitrary-interval discretization, and positive-band second-count forcing are closed. Prove actual ordered-prime source supplies the interval defect/cap/base-smallness/scale hypotheses, sum resulting bounds, and separately prove signed/renormalized subhalf continuation. |
+| T2 | ordered-prime Wold source -> inverse-log adjacent defect -> literal physical von-Mangoldt slice -> forced second Maynard count -> critical gap energy -> residual Hardy continuation/ODE -> RH | Arbitrary-order localization now sends an inverse-log defect to the second alternative on every strict base-phase margin; shell cap and exact base-or-second dichotomy are closed. Prove that actual ordered-prime shells supply this defect and remaining scale envelope, sum at critical weight, and separately prove signed/renormalized subhalf continuation. |
 | U | shifted hard-edge source -> cofinal shifted Hankel tail or first-contact exclusion -> RH | Non-scalar source mechanism excluding the exact nonintegrable strict-frontier quotient, or uniform cofinal tail order. |
-| HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Exact Lemma 4.5 is `Z+Z'+sum_(m!=0) I_m`; Euclidean height packing now supplies cubic row capacity and arbitrary source-power zero-mode decay. Instantiate its natural-height packet on actual selected rows, control nonzero `I_m` uniformly in conductor/height, and aggregate; or obtain the alternative absolute subquantum/prime-summability producer. |
+| HC | two-prime/Cayley/Gauss--Hodge source -> quantized horizontal collision charge -> strict sub-two or prime-summability law -> RH | Literal Lemma 4.5, normalized real cutoff, height packing, and arbitrary-power `Z'` decay in the real `qT`/epsilon regime are exact. Show actual selected rows satisfy that certified packet, control `sum_(m!=0) I_m` uniformly in conductor/height, and aggregate; or obtain the alternative absolute subquantum/prime-summability producer. |
 | SV2 | literal Suzuki energy space -> paired self-adjoint characteristics -> bounded projective normal family -> global Xi projective target -> corrected two-chart spherical limit -> RH | Deficiency-kernel boundary/spectral relations and inverse-Neumann energy identities are now exact. Identify the canonical cofinal subsequential limit with the divisor-faithful global target, then extend convergence over the full finite chart and reciprocal pole chart. |
 
 Among current architectures, live `CLG/TTF` proves
@@ -286,12 +285,35 @@ is therefore not a scientific obstruction.
 
 `CCMFUCentralRectangularAffineWeld.lean` and `CCMFUSuzukiPositiveMixture.lean` identify the marked
 prime--polar current with a positive weighted signed-Suzuki average after bounded Gamma/Lerch and
-wall memory. Working-tree `CCMFUSuzukiCheckpointAffineReduction.lean` splits every Suzuki value
-into its floor-selected affine event jet plus positive within-cell Bregman curvature, and gives the
-curvature mixture a uniform fixed-wall budget. Thus the Suzuki-mixture bound is equivalent to
-uniform boundedness of `ccmFUSuzukiCheckpointAffineMixture b H`, which implies RH.
-`CCMFUSuzukiCheckpointAffineEventCurrent.lean` gives its exact new-weight slope update and positive
-unit-bounded endpoint curvature; both files are unbuilt. SP-E implies this average, while SCE's pointwise sign does not bound it.
+wall memory. `CCMFUSuzukiCheckpointAffineReduction.lean` splits every Suzuki value into its
+floor-selected affine event jet plus positive within-cell Bregman curvature and uniformly bounds
+the curvature mixture. Hence the Suzuki-mixture bound is equivalent to uniform boundedness of
+`ccmFUSuzukiCheckpointAffineMixture b H`, which implies RH.
+
+The discrete residue is now exact. `CCMFUSuzukiSignedCurvatureMeasure.lean` defines
+
+```text
+signedCell(N) = integral_[log N,log(N+1)] screwRegularKernel
+                - criticalMellinAtomWeight(N+1)
+```
+
+and proves `slope(N+1)-slope(N)=signedCell(N)`. The positive endpoint reset is
+`O(sqrt(N+1)/N^2)`, absolutely summable, and uniformly bounded over every prefix. The exact endpoint
+formula is a base affine memory plus the discrete Green potential of these signed cells plus that
+summable reset prefix. Thus smooth within-cell curvature and endpoint resetting are no longer part
+of the RH-bearing estimate; the remaining arithmetic object is the signed prime--archimedean event
+measure and its Green accumulation.
+
+Two source landings determine where that current can survive. In
+`CCMFUSuzukiSignedCurvatureActualHeadBridge.lean`, multiplication by the wall rate sends a
+prime-power signed cell to actual-head archimedean curvature minus the literal wall-chord polar
+jet. But the quadratically matched actual-head lift is absolutely summable, so post-matching
+damping compactifies away the cofinal Green growth and cannot be the producer. Before damping,
+`CCMFUSuzukiSignedCurvatureUnitRieszBridge.lean` proves the central square-root-weighted
+prime-minus-polar unit-Riesz/HG source equals the event-label first moment of the same signed cells
+plus one explicit source-free archimedean renormalization. This is a genuine CCM-FU/UR/HG/O source
+identification, not a new route and not a bound. SP-E implies the marked average, while SCE's
+pointwise sign still does not bound it.
 
 Formal sources: `CCMGuinandWeilPrimeEntryThirdJetTransverse.lean`,
 `CCMGuinandWeilXiScrewGreenConnection.lean`,
@@ -304,7 +326,11 @@ Formal sources: `CCMGuinandWeilPrimeEntryThirdJetTransverse.lean`,
 `CCMGuinandWeilThirdGradeMarkedRectangularCurrent.lean`,
 `CCMGuinandWeilThirdGradeRectangularFubiniCurrent.lean`,
 `CCMGuinandWeilThirdGradeRectangularPrimitiveCurrent.lean`,
-`CCMFUCentralRectangularAffineWeld.lean`, `CCMFUSuzukiPositiveMixture.lean`, `CCMFUSuzukiCheckpointAffineReduction.lean`, `CCMFUSuzukiCheckpointAffineEventCurrent.lean`,
+`CCMFUCentralRectangularAffineWeld.lean`, `CCMFUSuzukiPositiveMixture.lean`,
+`CCMFUSuzukiCheckpointAffineReduction.lean`, `CCMFUSuzukiCheckpointAffineEventCurrent.lean`,
+`CCMFUSuzukiSignedCurvatureMeasure.lean`,
+`CCMFUSuzukiSignedCurvatureActualHeadBridge.lean`,
+`CCMFUSuzukiSignedCurvatureUnitRieszBridge.lean`,
 `CCMActualHeadWallGramLightConeJetRecovery.lean`,
 `CCMUnitRieszCesaroSignedReporterSymbol.lean`,
 `CCMUnitRieszCesaroSourceRelativeReporter.lean`,
@@ -316,10 +342,13 @@ Formal sources: `CCMGuinandWeilPrimeEntryThirdJetTransverse.lean`,
 |ccmFUSuzukiCheckpointAffineMixture b H| <= C
 ```
 
-for every `H>=b`. This current is piecewise affine with exact prime-weight slope resets. Gamma/Lerch, wall
-memory, and smooth within-cell curvature are uniformly bounded. Completed quantile, triangular
-window, anchored moment, Suzuki average, and linear Cesaro remain equivalent interfaces. Only
-cross-event arithmetic cancellation is open.
+for every `H>=b`. This current is piecewise affine; its slope jumps are exactly the signed Suzuki
+curvature cells. Gamma/Lerch, wall memory, smooth within-cell curvature, and positive endpoint
+resets are uniformly or summably controlled. Completed quantile, triangular window, anchored
+moment, Suzuki average, and linear Cesaro remain equivalent interfaces. Only signed cross-event
+arithmetic cancellation is open. The unit-Riesz first-moment identity supplies a second source
+coordinate for that cancellation but no theorem bounding it or converting its pointwise center
+value into the required marked aperture average.
 
 **Closed detours.** First/second jets, arbitrary scalar dressing, and fixed finite quotient are
 blind. Unit-Riesz Volterra/Laplace weld is exact and its two lower laws are equivalent without
@@ -333,7 +362,10 @@ codiagonal positivity is an identity `E^2/2`, not an upper bound on `E`, so it d
 Cesaro source estimate. Actual-head wall-chord curvature is now an exact positive dressing of same
 cubic prime-entry scale. This closes a coefficient seam into O; it supplies no uniform triangular-
 window cancellation. Quantile theorem shows cancellation lives in global oriented transport, not
-inside individual cells or a separately estimated terminal mismatch.
+inside individual cells or a separately estimated terminal mismatch. The actual-head bridge now
+closes another tempting detour: multiplying signed cells by the matched quadratic O current makes
+the lift absolutely summable, so the RH-bearing growth must land in a pre-damping wall-light,
+Robin, or unit-Riesz channel rather than the compactified matched current.
 
 ### C1 — Weil/Connes positive spectral realization
 

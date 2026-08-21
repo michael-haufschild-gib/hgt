@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisAlgebra
+import Mathlib.RingTheory.MatrixAlgebra
+import Mathlib.RingTheory.SimpleRing.Congr
 
 /-!
 # The split cyclic algebra representation
@@ -12,9 +14,9 @@ For the parameter `1`, a cyclic Galois algebra acts on the coefficient field vie
 `K`-vector space.  Coefficients act by left multiplication and the cyclic variable acts by the
 chosen Galois generator.  This gives a concrete representation of the raw quotient in
 `End_K(L)`, proves that its coefficient copy is faithful, and proves the quotient is nontrivial.
-The Galois automorphisms form an `L`-basis of `End_K(L)`, and all occur in the representation;
-therefore the representation is surjective.  Injectivity remains the normal-form step needed to
-identify the raw split quotient with `End_K(L)`.
+The Galois automorphisms form an `L`-basis of `End_K(L)`, and all occur in the representation.
+The normal-form dimension bound then upgrades surjectivity to an explicit `K`-algebra equivalence
+with `End_K(L)`.  In particular the raw split cyclic Galois algebra is a simple ring.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
@@ -187,6 +189,75 @@ theorem cyclicGaloisAlgebraSplitRepresentation_surjective :
   change f ∈ cyclicGaloisAlgebraSplitRepresentationRange K L
   rw [htop]
   trivial
+
+/-- The split representation preserves the base-field algebra map. -/
+theorem cyclicGaloisAlgebraSplitRepresentation_algebraMap (b : K) :
+    cyclicGaloisAlgebraSplitRepresentation K L (algebraMap K (cyclicGaloisAlgebra K L 1) b) =
+      algebraMap K (Module.End K L) b := by
+  change cyclicGaloisAlgebraSplitRepresentation K L
+    (cyclicGaloisAlgebraC K L 1 (algebraMap K L b)) = _
+  rw [cyclicGaloisAlgebraSplitRepresentation_C]
+  ext x
+  simp
+
+/-- The split representation promoted to a `K`-algebra homomorphism. -/
+noncomputable def cyclicGaloisAlgebraSplitRepresentationAlgHom :
+    cyclicGaloisAlgebra K L 1 →ₐ[K] Module.End K L :=
+  AlgHom.mk' (cyclicGaloisAlgebraSplitRepresentation K L) (by
+    intro c x
+    rw [Algebra.smul_def, Algebra.smul_def, map_mul]
+    rw [cyclicGaloisAlgebraSplitRepresentation_algebraMap])
+
+/-- The split algebra homomorphism is surjective. -/
+theorem cyclicGaloisAlgebraSplitRepresentationAlgHom_surjective :
+    Function.Surjective (cyclicGaloisAlgebraSplitRepresentationAlgHom K L) :=
+  cyclicGaloisAlgebraSplitRepresentation_surjective K L
+
+/-- The normal-form bound is sharp for the split cyclic Galois algebra. -/
+theorem cyclicGaloisAlgebraSplit_finrank_eq_end :
+    Module.finrank K (cyclicGaloisAlgebra K L 1) = Module.finrank K (Module.End K L) := by
+  apply le_antisymm
+  · calc
+      Module.finrank K (cyclicGaloisAlgebra K L 1) ≤
+          Module.finrank K L * Module.finrank K L :=
+        cyclicGaloisAlgebra_finrank_le K L 1
+      _ = Module.finrank K (Module.End K L) := by
+        rw [Module.finrank_linearMap K K L L]
+  · calc
+      Module.finrank K (Module.End K L) ≤ Module.finrank K (cyclicGaloisAlgebra K L 1) :=
+        LinearMap.finrank_le_finrank_of_surjective
+          (f := (cyclicGaloisAlgebraSplitRepresentationAlgHom K L).toLinearMap)
+          (cyclicGaloisAlgebraSplitRepresentationAlgHom_surjective K L)
+
+/-- The split algebra homomorphism is injective. -/
+theorem cyclicGaloisAlgebraSplitRepresentationAlgHom_injective :
+    Function.Injective (cyclicGaloisAlgebraSplitRepresentationAlgHom K L) :=
+  (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+    (cyclicGaloisAlgebraSplit_finrank_eq_end K L)
+    (f := (cyclicGaloisAlgebraSplitRepresentationAlgHom K L).toLinearMap)).mpr
+      (cyclicGaloisAlgebraSplitRepresentationAlgHom_surjective K L)
+
+/-- **Split cyclic-algebra theorem.** The raw cyclic Galois algebra with parameter `1` is the
+full endomorphism algebra of the coefficient field. -/
+noncomputable def cyclicGaloisAlgebraSplitAlgEquiv :
+    cyclicGaloisAlgebra K L 1 ≃ₐ[K] Module.End K L :=
+  AlgEquiv.ofBijective (cyclicGaloisAlgebraSplitRepresentationAlgHom K L)
+    ⟨cyclicGaloisAlgebraSplitRepresentationAlgHom_injective K L,
+      cyclicGaloisAlgebraSplitRepresentationAlgHom_surjective K L⟩
+
+omit [IsCyclic Gal(L/K)] [IsGalois K L] in
+/-- The endomorphism algebra of a nonzero finite-dimensional vector space over a field is simple. -/
+theorem isSimpleRing_moduleEnd : IsSimpleRing (Module.End K L) := by
+  letI : Nonempty (Fin (Module.finrank K L)) :=
+    ⟨⟨0, Module.finrank_pos (R := K) (M := L)⟩⟩
+  exact IsSimpleRing.of_ringEquiv (LinearMap.toMatrixAlgEquiv (Module.finBasis K L)).symm
+    (inferInstance : IsSimpleRing
+      (Matrix (Fin (Module.finrank K L)) (Fin (Module.finrank K L)) K))
+
+/-- The raw split cyclic Galois algebra is a simple ring. -/
+theorem isSimpleRing_cyclicGaloisAlgebra_split : IsSimpleRing (cyclicGaloisAlgebra K L 1) :=
+  IsSimpleRing.of_ringEquiv (cyclicGaloisAlgebraSplitAlgEquiv K L).symm.toRingEquiv
+    (isSimpleRing_moduleEnd K L)
 
 /-- The split raw cyclic Galois algebra is not the zero ring. -/
 theorem cyclicGaloisAlgebraSplit_one_ne_zero : (1 : cyclicGaloisAlgebra K L 1) ≠ 0 := by

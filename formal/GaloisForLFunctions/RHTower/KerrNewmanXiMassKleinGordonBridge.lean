@@ -55,4 +55,31 @@ theorem xiMassUnitProfile_kerrNewmanFlatKillingWave
   norm_num at hkg
   linear_combination -hkg
 
+/-- The prime-tail position profile in the RH criterion is the coordinate-weighted unit
+Kerr--Newman wave profile. -/
+theorem xiMassPrimeTailPositionProfile_unit_eq_kerrNewmanFlatWave
+    (u : ℝ) :
+    xiMassPrimeTailPositionProfile 1 1 u =
+      fun h => (h : ℂ) * xiMassUnitProfile u h := by
+  funext h
+  rfl
+
+/-- The prime-tail Green current used by the Xi-mass criterion, specialized to the same unit
+profile that solves the flat Kerr--Newman wave equation. -/
+noncomputable def kerrNewmanFlatXiMassPrimeTailGreenCurrent (u : ℝ) : ℂ :=
+  xiMassCriticalPrimeTailGreenCurrent 1 1 u
+
+/-- **Exact RH interface.** RH is equivalent to uniform boundedness of the prime-tail
+Green--Stokes current driven by the coordinate-weighted unit flat Kerr--Newman wave profile.
+
+The preceding wave equation alone gives no such bound: the prime-tail source is the indispensable
+arithmetic input. -/
+theorem riemannHypothesis_iff_kerrNewmanFlatXiMassPrimeTailGreenCurrentLineBound :
+    RiemannHypothesis ↔
+      ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u →
+        ‖kerrNewmanFlatXiMassPrimeTailGreenCurrent u‖ ≤ C := by
+  simpa [kerrNewmanFlatXiMassPrimeTailGreenCurrent] using
+    (riemannHypothesis_iff_xiMassCriticalPrimeTailGreenCurrentLineBound
+      (a := 1) (sigma := 1) (by norm_num) (by norm_num))
+
 end RHTower
