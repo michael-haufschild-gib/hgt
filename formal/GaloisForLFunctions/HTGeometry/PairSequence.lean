@@ -54,15 +54,12 @@ noncomputable def subspaceComplexIso (S : Set X) :
 
 /-! ### The connecting map of a pair in a contractible space -/
 
-/-- **In a contractible space the connecting map of a pair is an isomorphism in degrees ≥ 2.** -/
-theorem isIso_connecting_of_homotopy_const {x : X}
-    (H : ContinuousMap.Homotopy (ContinuousMap.id X) (ContinuousMap.const X x))
-    (S : Set X) (k : ℕ) :
+/-- **When the ambient space is acyclic in two consecutive degrees the connecting map of a pair is
+an isomorphism.** -/
+theorem isIso_connecting_of_isZero (S : Set X) (k : ℕ)
+    (hz1 : IsZero ((singChainComplex R X).homology (k + 2)))
+    (hz2 : IsZero ((singChainComplex R X).homology (k + 1))) :
     IsIso ((subcomplexOfSubset R S).connecting (k + 2) (k + 1) rfl) := by
-  have hz1 : IsZero ((singChainComplex R X).homology (k + 2)) :=
-    isZero_homology_of_homotopy_const R H (k + 1)
-  have hz2 : IsZero ((singChainComplex R X).homology (k + 1)) :=
-    isZero_homology_of_homotopy_const R H k
   have hmono : Mono ((subcomplexOfSubset R S).connecting (k + 2) (k + 1) rfl) := by
     refine ShortComplex.Exact.mono_g
       (ModuleSubcomplex.homology_exact₃ (subcomplexOfSubset R S) (k + 2) (k + 1) rfl) ?_
@@ -72,5 +69,27 @@ theorem isIso_connecting_of_homotopy_const {x : X}
       (ModuleSubcomplex.homology_exact₁ (subcomplexOfSubset R S) (k + 2) (k + 1) rfl) ?_
     exact hz2.eq_zero_of_tgt _
   exact isIso_of_mono_of_epi _
+
+/-- **When the subcomplex is acyclic in two consecutive degrees, the projection to the quotient is
+an isomorphism on homology.** -/
+theorem isIso_homologyMap_proj {K : ChainComplex (ModuleCat.{v} R) ℕ}
+    (P : ModuleSubcomplex R K) (k : ℕ)
+    (h1 : IsZero (P.complex.homology (k + 1))) (h2 : IsZero (P.complex.homology k)) :
+    IsIso (HomologicalComplex.homologyMap P.proj (k + 1)) := by
+  have hmono : Mono (HomologicalComplex.homologyMap P.proj (k + 1)) := by
+    refine ShortComplex.Exact.mono_g (ModuleSubcomplex.homology_exact₂ P (k + 1)) ?_
+    exact h1.eq_zero_of_src _
+  have hepi : Epi (HomologicalComplex.homologyMap P.proj (k + 1)) := by
+    refine ShortComplex.Exact.epi_f (ModuleSubcomplex.homology_exact₃ P (k + 1) k rfl) ?_
+    exact h2.eq_zero_of_tgt _
+  exact isIso_of_mono_of_epi _
+
+/-- **In a contractible space the connecting map of a pair is an isomorphism in degrees ≥ 2.** -/
+theorem isIso_connecting_of_homotopy_const {x : X}
+    (H : ContinuousMap.Homotopy (ContinuousMap.id X) (ContinuousMap.const X x))
+    (S : Set X) (k : ℕ) :
+    IsIso ((subcomplexOfSubset R S).connecting (k + 2) (k + 1) rfl) :=
+  isIso_connecting_of_isZero R S k (isZero_homology_of_homotopy_const R H (k + 1))
+    (isZero_homology_of_homotopy_const R H k)
 
 end GaloisForLFunctions.HTGeometry

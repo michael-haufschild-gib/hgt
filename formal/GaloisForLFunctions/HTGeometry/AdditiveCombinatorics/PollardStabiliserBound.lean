@@ -91,10 +91,11 @@ theorem sum_rep_eq_sum_card_filter' (X Y S : Finset G) :
 
 
 /-- **STEP 1, small-doubling branch.**  Under saturation and `#(A'·B') + 2 ≤ #A' + #B'`, the
-stabiliser bound of Grynkiewicz's theorem holds. -/
+stabiliser bound of Grynkiewicz's theorem holds.  The defect is only required to be at most `t`,
+so that the same statement also serves the structural branch of STEP 2, where it equals `t`. -/
 theorem pollard_step1_smallDoubling (A B A' B' : Finset G) (t : ℕ)
     (hA' : A' ⊆ A) (hB' : B' ⊆ B) (hA'ne : A'.Nonempty) (hB'ne : B'.Nonempty)
-    (hl : defect A A' B B' + 1 ≤ t)
+    (hl : defect A A' B B' ≤ t)
     (heq2 : A' * B' = repSet A B t)
     (hsmall : (A' * B').card + 2 ≤ A'.card + B'.card)
     (hsatA : ∀ x ∈ A, x ∈ A' * mulStab (A' * B') → x ∈ A')
@@ -112,7 +113,7 @@ theorem pollard_step1_smallDoubling (A B A' B' : Finset G) (t : ℕ)
   have hhB := Finset.card_sdiff_add_card_eq_card (hHgrp.subset_mul B')
   have hrho : holes H A' B' = ((A' * H) \ A').card + ((B' * H) \ B').card := rfl
   -- the counting bound
-  have hcount := repSum_ge_of_repSet_eq A B A' B' t hA' hB' heq2 (by omega)
+  have hcount := repSum_ge_of_repSet_eq A B A' B' t hA' hB' heq2 hl
   -- the two mixed sums, bounded by the coset claim
   have hAsum : (A \ A').card * (H.card - holes H A' B')
       ≤ ∑ c ∈ Finset.univ \ (A' * B'), rep (A \ A') B' c := by

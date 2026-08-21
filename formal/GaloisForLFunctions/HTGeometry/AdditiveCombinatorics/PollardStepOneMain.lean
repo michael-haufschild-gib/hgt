@@ -147,7 +147,7 @@ theorem pollard_step1 (A B A' B' : Finset G) (t : ℕ) (ht : 1 ≤ t)
   · left
     refine ⟨A'', B'', hA''sub, hB''sub, hdef'', heq1'', heq2'', ?_⟩
     have hmain := pollard_step1_smallDoubling A B A'' B'' t hA''sub hB''sub hA''ne hB''ne
-      hdef'' heq2'' (by omega) hsatA hsatB
+      (by omega) heq2'' (by omega) hsatA hsatB
     rw [← heq2'']
     exact hmain
 

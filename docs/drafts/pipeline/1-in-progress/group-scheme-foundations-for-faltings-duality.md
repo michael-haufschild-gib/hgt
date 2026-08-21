@@ -46,20 +46,28 @@ of the transitive closure and is tracked here as separate future layers.
       with its Leibniz rule, point derivations, and `PointDerivation ≃ Hom_R(omega_A, R) = Lie A`
       → `HTGeometry/AffineGroupSchemeCoLie.lean`
 - [x] `L1.2a` functoriality: `coLieMap (f : A →ₐc[R] B) : omega_A →ₗ omega_B` with `coLieMap_d`
+- [x] `L1.5` **inversion acts by `-1` on the co-Lie module**: `d (S a) = - d a`, equivalently
+      `S x + x ∈ I^2` for `x ∈ I` → `HTGeometry/HopfAntipodeCoLie.lean`
 - [ ] `L1.2b` base change `omega_{A ⊗ S} ≅ omega_A ⊗ S`
+- [ ] `L1.6` `omega` of a product: `omega_{A ⊗ B} ≅ omega_A ⊕ omega_B`
 - [x] `L1.3` dual-numbers description `dualNumberEquiv : pointDerivations ≃ {f : A →ₐ R[e] | fst∘f = ε}`
 - [x] `L1.4a` non-vacuity certificate: the group algebra `R[G]` of a finite abelian group is a
       finite free commutative Hopf algebra with nonzero augmentation ideal
       → `HTGeometry/GroupAlgebraCoLieExample.lean` (`Spec R[G] = D(G)`, e.g. `mu_n`)
-- [ ] `L1.4b` `alpha_p = R[X]/(X^p)` in characteristic `p` with `X` primitive — the example where
-      `Prim ≠ 0` and where the naive Lie algebra and the Lie complex differ
+- [x] `L1.4b` **`alpha_2 = Spec R[eps]` in characteristic 2** → `HTGeometry/AlphaTwoHopfAlgebra.lean`:
+      the bialgebra structure with `eps` primitive (`epsTensor_sq` needs `2 = 0`), built with
+      `DualNumber.lift` and `Bialgebra.ofAlgHom`, plus `Module.Free`/`Module.Finite`, and
+      **`primitives_ne_bot`** — so `CartierDual.primitivesEquivCartierLie` is not a statement about
+      zero modules
 
 **L2 — Cartier duality.**
 - [x] `L2.1a` **dual coalgebra of a finite free algebra** → `HTGeometry/DualCoalgebraFiniteFree.lean`
       (`dualComul`, `dualCounit`, `T2_dualComul`, `dual_coassoc`,
       `dual_rTensor_counit_comp_comul`, `dual_lTensor_counit_comp_comul`, `dualCoalgebra`)
-- [ ] `L2.1b` dual algebra of a coalgebra on `Module.Dual R A` itself (mathlib has it only on
-      `WithConv (C →ₗ[R] A)`)
+- [x] `L2.1c` **`T2` is multiplicative on pure tensors** (`T2_tmul_convOf`) together with
+      `convOf_apply_repr` — the last compatibility needed to see `A^dual` as a bialgebra
+- [ ] `L2.1b` bundle the algebra structure on `Module.Dual R A` itself (mathlib has it only on
+      the structure `WithConv (C →ₗ[R] A)`, so this is type-synonym bookkeeping)
 - [x] `L2.2a` **bialgebra compatibility of the Cartier dual** → `HTGeometry/CartierDualLieAlgebra.lean`:
       `convOf` (convolution on the dual of any coalgebra), `convOf_comp_coalgHom`
       (functoriality — the engine), `T2_dualComul_conv` (`Δ'` is multiplicative, via mathlib's
@@ -117,5 +125,11 @@ of the transitive closure and is tracked here as separate future layers.
   and `HTGeometry/GroupAlgebraCoLieExample.lean` (non-vacuity of the whole layer).
   Next: `L2.2b` — `T2` is a ring isomorphism from the tensor-square algebra `A^∨ ⊗ A^∨` to the
   convolution algebra `Dual (A ⊗ A)`, which upgrades the compatibility lemmas of `L2.2a` into a
-  genuine `Bialgebra`/`HopfAlgebra` structure on the Cartier dual; then `L1.4b` (`alpha_p`) and
-  `L3.2` (determinant of a two-term perfect complex).
+  genuine `Bialgebra`/`HopfAlgebra` structure on the Cartier dual; then `L3.2` (determinant of a
+  two-term perfect complex).
+- 2026-08-21 — brick `L1.4b` landed (`alpha_2`).  Session total for this card: six modules
+  (`AffineGroupSchemeCoLie`, `DualCoalgebraFiniteFree`, `CartierDualLieAlgebra`, `DeterminantLine`,
+  `GroupAlgebraCoLieExample`, `AlphaTwoHopfAlgebra`), all wired, all axiom-clean.
+  Remaining open bricks: `L1.2b` (base change of `omega`), `L2.1b`/`L2.2b` (bundling the Cartier
+  dual as a Hopf algebra, `A^{dual dual} ≅ A`), `L2.4` (the Cartier pairing), `L3.2` (determinant of
+  a perfect complex), all of `L4` (Lie complex) and all of `L5` (Neron models).

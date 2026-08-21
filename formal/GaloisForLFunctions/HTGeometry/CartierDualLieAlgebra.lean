@@ -207,4 +207,37 @@ theorem T2_dualComul_counit :
 @[simp] theorem dualCounit_counit :
     dualCounit R A (Coalgebra.counit : Dual R A) = 1 := Bialgebra.counit_one
 
+
+/-! ### `T2` transports the tensor-square product to the convolution product
+
+The last compatibility needed to see the Cartier dual as a bialgebra: the comparison
+`T2 : A^∨ ⊗ A^∨ ≃ (A ⊗ A)^∨` carries the product of the tensor square of the convolution algebra
+to the convolution product of the tensor-square coalgebra.  On pure tensors this is the identity
+
+`(f ⋆ f')(a) · (g ⋆ g')(b) = ((f ⊗ g) ⋆ (f' ⊗ g'))(a ⊗ b)`,
+
+which is exactly `Coalgebra.Repr.tmul`. -/
+
+theorem convOf_apply_repr {C : Type*} [AddCommGroup C] [Module R C] [Coalgebra R C]
+    (f g : Dual R C) (c : C) {κ : Type*} (rep : Coalgebra.Repr R c κ) :
+    convOf f g c = ∑ i ∈ rep.index, f (rep.left i) * g (rep.right i) := by
+  show (LinearMap.mul' R R) (TensorProduct.map f g (Coalgebra.comul c)) = _
+  rw [← rep.eq, map_sum, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [TensorProduct.map_tmul, LinearMap.mul'_apply]
+
+/-- **`T2` is multiplicative on pure tensors.** -/
+theorem T2_tmul_convOf (f g f' g' : Dual R A) (a b : A) :
+    T2 R A ((convOf f f') ⊗ₜ[R] (convOf g g')) (a ⊗ₜ[R] b)
+      = convOf (T2 R A (f ⊗ₜ[R] g)) (T2 R A (f' ⊗ₜ[R] g')) (a ⊗ₜ[R] b) := by
+  classical
+  set Ra := Coalgebra.Repr.arbitrary R a with hRa
+  set Rb := Coalgebra.Repr.arbitrary R b with hRb
+  rw [T2_tmul, convOf_apply_repr f f' a Ra, convOf_apply_repr g g' b Rb,
+    convOf_apply_repr _ _ (a ⊗ₜ[R] b) (Ra.tmul Rb)]
+  simp only [Coalgebra.Repr.tmul_left, Coalgebra.Repr.tmul_right, Coalgebra.Repr.tmul_index,
+    T2_tmul]
+  rw [Finset.sum_product, Finset.sum_mul_sum]
+  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+
 end GaloisForLFunctions.HTGeometry.CartierDual

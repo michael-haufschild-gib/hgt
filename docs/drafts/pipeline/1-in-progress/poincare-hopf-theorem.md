@@ -373,7 +373,32 @@ That is the gate for the whole of Stage IV.  Its proof needs, in order:
 
   **`isIso_homologyMap_excision`** : if `closure Z ⊆ interior A` then the relative homology of
   `(Zᶜ, A ∩ Zᶜ)` is the relative homology of `(X, A)`.
-- IV.5 `H_*(Sⁿ)` and `H_*(Dⁿ, Sⁿ⁻¹)`;
+- IV.5 **local homology, by a star-shaped induction that needs neither spheres nor Mayer–Vietoris.**
+  The invariant that actually appears in Morse theory is `H_n(ℝ^m, ℝ^m ∖ {0})`, and it is computed
+  by puncturing one coordinate at a time.  Writing the ambient space as `W × ℝ` and setting
+
+    `A := {p | ¬(p.1 = 0 ∧ p.2 ≤ 0)}`,  `B := {p | ¬(p.1 = 0 ∧ p.2 ≥ 0)}`,
+
+  one has `A ∪ B = {p | p ≠ 0}`, `A ∩ B = {p | p.1 ≠ 0}`, and `A` (resp. `B`) is star-shaped about
+  `(0, 1)` (resp. `(0, −1)`), hence contractible by a straight-line homotopy.  Excision with
+  `Z := {0}ᶜᶜ`-style complement gives `H_n(A, A∩B) ≅ H_n(P, B)`; the two pair sequences collapse
+  against contractibility; and `A ∩ B ≃ (W ∖ {0}) × ℝ ≃ W ∖ {0}`.  Hence
+
+    `H_n(punct (W × ℝ)) ≅ H_{n−1}(punct W)`  for `n ≥ 2`,
+
+  and the bottom of the induction is `H̃_0(ℝ ∖ {0}) ≅ R`.  Landed so far: `ZerothHomology` — the
+  augmentation `singAug`, `singAug_singBd`, paths as `1`-simplices (`pathSimplex`,
+  `singBd_pathSimplex`), and **`range_singBd_zero_eq_ker_singAug`**: on a path-connected space the
+  `0`-boundaries are exactly the chains of total coefficient zero.  `ChainSplitting` adds the clopen additivity —
+  the topological simplex is convex hence connected, so every simplex lands in one piece and
+  **`isCompl_subChains`** : the chains supported in the two pieces are complementary submodules in
+  every degree.  `StarShaped` adds **`isZero_homology_starConvex`** (a star-shaped set has no
+  homology in positive degrees, by the straight-line contraction), and `PairSequence` adds
+  **`isIso_homologyMap_proj`** (when the subcomplex is acyclic in two consecutive degrees, the
+  projection to the quotient is a homology isomorphism) — the second LES collapse the induction
+  needs.  Still needed: the induction step itself (assemble excision with the two collapses and the
+  homotopy equivalence `A ∩ B ≃ (W ∖ {0}) × ℝ ≃ W ∖ {0}`), and the base case
+  `H̃_0(ℝ ∖ {0}) ≅ R` from the clopen splitting plus `range_singBd_zero_eq_ker_singAug`;
 - IV.6 Morse theory: sublevel sets, handle attachment, gradient flow retractions, and
   `χ(M) = ∑ (−1)^λ`.
 - III manifolds: charts, vector fields, index sum, independence of the field.  Mathlib supplies

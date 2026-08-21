@@ -151,8 +151,17 @@ so `Q = ∑_x r'^2_x ≤ kM + |T||B|(|B|−k) = |B|·( k|A| + |T|(|B|−k) )`, a
   condition (qubal)**.  `PollardCaseThreeTwo.lean` has the real-arithmetic pieces
   (`half_le_first_term`, `case32_first_branch`, `case32_denominator`, `case32_key`), and
   `PollardStepThreeCase2.lean` assembles **`case32_false`: CASE 3.2 of STEP 3 is closed**.
-  Next: the spread condition `#φ_H(B) ≥ 2`; CASE 3.1 (the `t = 2` Sidon argument); STEP 2's
-  structural branch; CASE 4; the induction assembly.
+  **STEP 3 is now closed in both cases.**  CASE 3.1 (`t = 2`) is `case31_false` in
+  `PollardStepThreeCase1.lean`, resting on `PollardSidon.lean` (`card_choose_le_card_mul_self`:
+  a Sidon set has `#(B·B) ≥ binom(#B+1,2)`, via `Finset.sym2`) and `PollardCaseThreeOne.lean`
+  (`card_uniqueExpr_le_of_right`, `dysonFull_mul_eq_of_uniqueExpr`, `sidon_of_dysonFull_mul_eq`,
+  `card_dysonFull_add_card_mul_self_le`).  The spread condition is
+  `not_subset_smul_mulStab_dysonFull_mul` in `PollardSpread.lean`.  `PollardCosetDecomposition.lean`
+  has the coset-transfer layer that the induction needs for the auxiliary claim SP1
+  (`mul_card_le_repSum`, `rep_eq_sum_inter_cosets`, `repSum_eq_sum_inter_cosets`,
+  `pollardWeak_of_inter_coset`).
+  Next: STEP 2's structural branch; CASE 4 (4.1, 4.2 with SUBCASES 4.2.1–4.2.3); the induction
+  assembly (which also discharges SP1 and the spread hypothesis).
   The main triple induction (on `∑_{i=1}^t |A +_i B|`, then `|A|+|B|`, then `min(|A|,|B|)`).
 
 ## G4: design of the main induction
@@ -231,6 +240,14 @@ Combining with Kneser (`t·#(A'·B') ≥ t(#A' + #B' + ρ − |H|)`) gives exact
 - [ ] 2 → 3  formalized: Lean theorem, `lake build` green, axioms ⊆ {propext, Classical.choice, Quot.sound}
 
 ## Log
+- 2026-08-21 — **STEP 3 is Lean-closed** (both CASE 3.1 and CASE 3.2), together with the spread
+  condition and the coset-decomposition transfer layer.  Four more modules, axiom-clean and wired:
+  `PollardCosetDecomposition`, `PollardSidon`, `PollardCaseThreeOne`, `PollardStepThreeCase1`,
+  `PollardSpread`.  Two gaps in the source were filled: the `T = ∅` branch, where the source's
+  derivation of `T + B = A` from `|φ_H(A)| = 1` breaks (`T + B = ∅`), is instead disposed of
+  directly since `(T-bone)` is then trivial; and the trivial bound
+  `∑_{i≤t} #(A ·_i B) ≥ t·#A` for `#B ≥ t`, which the source asserts without proof, is proved by
+  counting the `t` translates `A · b` against `min(r(c), t)`.
 - 2026-08-21 — **CASE 3.2 of STEP 3 is Lean-closed** (`case32_false`), together with the condition
   (qubal) and the periodicity `S(dysonFull A B) = S(dysonFull A B · B)`.  Three more modules,
   axiom-clean and wired.

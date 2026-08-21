@@ -343,4 +343,5 @@ theorem primitives_le_augIdeal :
     primitives R A ≤ (augIdeal R A).restrictScalars R := fun _ hx =>
   counit_eq_zero_of_mem_primitives hx
 
+
 end GaloisForLFunctions.HTGeometry.AffineGroupScheme

@@ -2,6 +2,9 @@ import GaloisForLFunctions.HTGeometry.CartierDualLieAlgebra
 import Mathlib.Algebra.DualNumber
 import Mathlib.RingTheory.Bialgebra.Basic
 import Mathlib.RingTheory.TensorProduct.Basic
+import Mathlib.LinearAlgebra.Basis.Prod
+import Mathlib.RingTheory.Finiteness.Prod
+import Mathlib.RingTheory.Finiteness.Basic
 
 /-!
 # `α₂`: a finite free bialgebra with nonzero primitives
@@ -80,7 +83,7 @@ noncomputable instance instBialgebraDualNumber : Bialgebra R (DualNumber R) :=
     (by
       apply DualNumber.algHom_ext
       simp [comulAlg_eps, epsTensor, Algebra.TensorProduct.map_tmul,
-        TensorProduct.add_tmul, TensorProduct.tmul_add]
+        Algebra.TensorProduct.one_def, TensorProduct.add_tmul, TensorProduct.tmul_add]
       abel)
     (by
       apply DualNumber.algHom_ext
@@ -114,7 +117,7 @@ theorem primitives_ne_bot [Nontrivial R] :
   rw [DualNumber.snd_eps] at this
   exact one_ne_zero this
 
-example : Module.Free R (DualNumber R) := inferInstance
-example : Module.Finite R (DualNumber R) := inferInstance
+instance : Module.Free R (DualNumber R) := inferInstanceAs (Module.Free R (R × R))
+instance : Module.Finite R (DualNumber R) := inferInstanceAs (Module.Finite R (R × R))
 
 end GaloisForLFunctions.HTGeometry.AlphaTwo

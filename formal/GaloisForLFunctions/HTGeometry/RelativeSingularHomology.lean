@@ -205,6 +205,32 @@ noncomputable def leHom {P Q : ModuleSubcomplex R K} (h : ∀ k, P.carrier k ≤
     rw [ModuleSubcomplex.complex_d, ModuleSubcomplex.complex_d]
     exact ModuleCat.hom_ext (LinearMap.ext fun x => rfl)
 
+/-- **When the ambient complex is acyclic in two consecutive degrees, the connecting map of a
+subcomplex is an isomorphism.** -/
+theorem isIso_connecting_of_isZero (P : ModuleSubcomplex R K) (k : ℕ)
+    (hz1 : Limits.IsZero (K.homology (k + 2))) (hz2 : Limits.IsZero (K.homology (k + 1))) :
+    IsIso (P.connecting (k + 2) (k + 1) rfl) := by
+  have hmono : Mono (P.connecting (k + 2) (k + 1) rfl) := by
+    refine ShortComplex.Exact.mono_g (P.homology_exact₃ (k + 2) (k + 1) rfl) ?_
+    exact hz1.eq_zero_of_src _
+  have hepi : Epi (P.connecting (k + 2) (k + 1) rfl) := by
+    refine ShortComplex.Exact.epi_f (P.homology_exact₁ (k + 2) (k + 1) rfl) ?_
+    exact hz2.eq_zero_of_tgt _
+  exact isIso_of_mono_of_epi _
+
+/-- **When a subcomplex is acyclic in two consecutive degrees, the projection to the quotient is an
+isomorphism on homology.** -/
+theorem isIso_homologyMap_proj (P : ModuleSubcomplex R K) (k : ℕ)
+    (h1 : Limits.IsZero (P.complex.homology (k + 1))) (h2 : Limits.IsZero (P.complex.homology k)) :
+    IsIso (HomologicalComplex.homologyMap P.proj (k + 1)) := by
+  have hmono : Mono (HomologicalComplex.homologyMap P.proj (k + 1)) := by
+    refine ShortComplex.Exact.mono_g (P.homology_exact₂ (k + 1)) ?_
+    exact h1.eq_zero_of_src _
+  have hepi : Epi (HomologicalComplex.homologyMap P.proj (k + 1)) := by
+    refine ShortComplex.Exact.epi_f (P.homology_exact₃ (k + 1) k rfl) ?_
+    exact h2.eq_zero_of_tgt _
+  exact isIso_of_mono_of_epi _
+
 end ModuleSubcomplex
 
 /-- Singular homology of a space. -/

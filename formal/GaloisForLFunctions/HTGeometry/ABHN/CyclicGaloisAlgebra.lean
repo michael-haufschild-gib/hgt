@@ -9,8 +9,9 @@ finite cyclic Galois case, its parameter comes from `K`, its degree is `finrank 
 automorphism is the chosen Galois generator.  The resulting relations are the algebraic input for
 the map from cyclic degree-two cohomology to Brauer classes.
 
-It does not yet prove that the quotient is a finite-dimensional central simple `K`-algebra.  That
-requires the remaining all-polynomial normal form, centrality, and simplicity arguments.
+It proves centrality of the base-field map and a bounded normal-form spanning theorem, hence
+finite dimensionality whenever `L/K` is finite.  It does not prove simplicity: that requires the
+usual nonzero cyclic parameter together with a Galois-descent argument.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
@@ -151,5 +152,97 @@ noncomputable instance (a : K) : Algebra K (cyclicGaloisAlgebra K L a) := by
 theorem cyclicGaloisAlgebra_algebraMap_apply (a b : K) :
     algebraMap K (cyclicGaloisAlgebra K L a) b =
       cyclicGaloisAlgebraC K L a (algebraMap K L b) := rfl
+
+/-- The `i`th normal-form coefficient map, linear over the base field. -/
+noncomputable def cyclicGaloisAlgebraCoefficientLinearMap (a : K) (i : ℕ) :
+    L →ₗ[K] cyclicGaloisAlgebra K L a where
+  toFun := fun c => cyclicGaloisAlgebraC K L a c * cyclicGaloisAlgebraX K L a ^ i
+  map_add' := by
+    intro c d
+    change cyclicAlgebraCRingHom L (cyclicGaloisGenerator K L).toRingEquiv
+      (Module.finrank K L) (algebraMap K L a) (c + d) * cyclicGaloisAlgebraX K L a ^ i = _
+    rw [map_add, add_mul]
+    rfl
+  map_smul' := by
+    intro r c
+    simp only [RingHom.id_apply, Algebra.smul_def]
+    rw [cyclicGaloisAlgebra_algebraMap_apply]
+    rw [← mul_assoc, cyclicAlgebraC_mul]
+
+/-- The bounded normal-form map: one coefficient from `L` for each variable exponent below
+`finrank K L`. -/
+noncomputable def cyclicGaloisAlgebraNormalFormLinearMap (a : K) :
+    (Fin (Module.finrank K L) → L) →ₗ[K] cyclicGaloisAlgebra K L a :=
+  LinearMap.lsum K (fun _ : Fin (Module.finrank K L) => L) K
+    (fun i => cyclicGaloisAlgebraCoefficientLinearMap K L a i)
+
+/-- Evaluation of the bounded normal-form map on one nonzero coordinate. -/
+theorem cyclicGaloisAlgebraNormalFormLinearMap_single (a : K)
+    (i : Fin (Module.finrank K L)) (c : L) :
+    cyclicGaloisAlgebraNormalFormLinearMap K L a (Pi.single i c) =
+      cyclicGaloisAlgebraC K L a c * cyclicGaloisAlgebraX K L a ^ (i : ℕ) := by
+  simp [cyclicGaloisAlgebraNormalFormLinearMap, LinearMap.lsum_apply,
+    cyclicGaloisAlgebraCoefficientLinearMap]
+  rw [Finset.sum_eq_single i]
+  · simp
+  · intro j _ hji
+    simp [hji]
+    change cyclicAlgebraCRingHom L (cyclicGaloisGenerator K L).toRingEquiv
+      (Module.finrank K L) (algebraMap K L a) 0 * cyclicGaloisAlgebraX K L a ^ (j : ℕ) = 0
+    rw [map_zero, zero_mul]
+  · simp
+
+/-- Every cyclic quotient element has a bounded normal-form representative. -/
+theorem cyclicGaloisAlgebraNormalFormLinearMap_surjective [FiniteDimensional K L] (a : K) :
+    Function.Surjective (cyclicGaloisAlgebraNormalFormLinearMap K L a) := by
+  intro x
+  obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective x
+  induction p using SkewMonoidAlgebra.induction_on with
+  | zero =>
+    refine ⟨0, ?_⟩
+    simp
+  | add p q hp hq =>
+    obtain ⟨fp, hfp⟩ := hp
+    obtain ⟨fq, hfq⟩ := hq
+    refine ⟨fp + fq, ?_⟩
+    rw [map_add, hfp, hfq, map_add]
+  | single g c =>
+    let i : Fin (Module.finrank K L) :=
+      ⟨toAdd g % Module.finrank K L,
+        Nat.mod_lt _ (Module.finrank_pos (R := K) (M := L))⟩
+    refine ⟨Pi.single i (c * (algebraMap K L a) ^ (toAdd g / Module.finrank K L)), ?_⟩
+    rw [cyclicGaloisAlgebraNormalFormLinearMap_single]
+    change cyclicGaloisAlgebraC K L a
+        (c * (algebraMap K L a) ^ (toAdd g / Module.finrank K L)) *
+        cyclicGaloisAlgebraX K L a ^ (toAdd g % Module.finrank K L) =
+      (Ideal.Quotient.mk
+        (cyclicRelationIdeal (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+          (algebraMap K L a))
+        (SkewPolynomial.monomial (toAdd g) c) : cyclicGaloisAlgebra K L a)
+    exact (cyclicAlgebraMonomial_mod_normalForm (cyclicGaloisGenerator K L).toRingEquiv
+      (Module.finrank K L) (algebraMap K L a) c (toAdd g)).symm
+
+/-- A cyclic Galois quotient is finite-dimensional whenever its coefficient field is. -/
+theorem cyclicGaloisAlgebra_finiteDimensional [FiniteDimensional K L] (a : K) :
+    FiniteDimensional K (cyclicGaloisAlgebra K L a) := by
+  exact FiniteDimensional.of_surjective (cyclicGaloisAlgebraNormalFormLinearMap K L a)
+    (cyclicGaloisAlgebraNormalFormLinearMap_surjective K L a)
+
+noncomputable instance (a : K) [FiniteDimensional K L] :
+    FiniteDimensional K (cyclicGaloisAlgebra K L a) :=
+  cyclicGaloisAlgebra_finiteDimensional K L a
+
+/-- The bounded normal form gives the expected square upper bound on the dimension. -/
+theorem cyclicGaloisAlgebra_finrank_le [FiniteDimensional K L] (a : K) :
+    Module.finrank K (cyclicGaloisAlgebra K L a) ≤
+      Module.finrank K L * Module.finrank K L := by
+  calc
+    Module.finrank K (cyclicGaloisAlgebra K L a) ≤
+        Module.finrank K (Fin (Module.finrank K L) → L) :=
+      LinearMap.finrank_le_finrank_of_surjective
+        (cyclicGaloisAlgebraNormalFormLinearMap_surjective K L a)
+    _ = Module.finrank K L * Module.finrank K L := by
+      rw [Module.finrank_pi_fintype]
+      simp
 
 end GaloisForLFunctions.HTGeometry.ABHN

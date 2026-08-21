@@ -71,6 +71,56 @@ theorem rationalFunctionMilnorKTwo_projectiveLine_exact :
       Function.Surjective (milnorPolynomialGlobalSum (F := F) 1) :=
   milnorPolynomialProjectiveLine_exact (F := F) 1
 
+/-- The degree-two Hasse principle in difference form: two global Milnor classes have identical
+residue profiles exactly when their difference comes from the constant field. -/
+theorem rationalFunctionMilnorKTwo_allResidue_eq_iff_sub_eq_constant
+    (x y : MilnorKDeg (RatFunc F) 2) :
+    milnorPolynomialAllResidue (F := F) 1 x =
+      milnorPolynomialAllResidue (F := F) 1 y ↔
+      ∃ c : MilnorKDeg F 2,
+        x - y = milnorKDegMap (ratFuncConstHom (F := F)) 2 c := by
+  have hExact := (rationalFunctionMilnorKTwo_projectiveLine_exact (F := F)).2.1
+  constructor
+  · intro hxy
+    have hzero : milnorPolynomialAllResidue (F := F) 1 (x - y) = 0 := by
+      rw [map_sub, hxy, sub_self]
+    obtain ⟨c, hc⟩ := hExact _ |>.mp hzero
+    exact ⟨c, hc.symm⟩
+  · rintro ⟨c, hc⟩
+    have hzero : milnorPolynomialAllResidue (F := F) 1 (x - y) = 0 :=
+      hExact _ |>.mpr ⟨c, hc.symm⟩
+    rw [map_sub, sub_eq_zero] at hzero
+    exact hzero
+
+/-- A global degree-two Milnor class is locally trivial at every projective-line place exactly
+when it is a constant-field class. -/
+theorem rationalFunctionMilnorKTwo_allResidue_eq_zero_iff_constant
+    (x : MilnorKDeg (RatFunc F) 2) :
+    milnorPolynomialAllResidue (F := F) 1 x = 0 ↔
+      ∃ c : MilnorKDeg F 2, x = milnorKDegMap (ratFuncConstHom (F := F)) 2 c := by
+  have hExact := (rationalFunctionMilnorKTwo_projectiveLine_exact (F := F)).2.1
+  constructor
+  · intro hx
+    obtain ⟨c, hc⟩ := hExact _ |>.mp hx
+    exact ⟨c, hc.symm⟩
+  · rintro ⟨c, rfl⟩
+    exact hExact _ |>.mpr ⟨c, rfl⟩
+
+/-- Equality of projective-line degree-two residue profiles is equality modulo a constant
+Milnor class. -/
+theorem rationalFunctionMilnorKTwo_allResidue_eq_iff_eq_constant_add
+    (x y : MilnorKDeg (RatFunc F) 2) :
+    milnorPolynomialAllResidue (F := F) 1 x =
+      milnorPolynomialAllResidue (F := F) 1 y ↔
+      ∃ c : MilnorKDeg F 2,
+        x = milnorKDegMap (ratFuncConstHom (F := F)) 2 c + y := by
+  rw [rationalFunctionMilnorKTwo_allResidue_eq_iff_sub_eq_constant]
+  constructor
+  · rintro ⟨c, hc⟩
+    exact ⟨c, sub_eq_iff_eq_add.mp hc⟩
+  · rintro ⟨c, hc⟩
+    exact ⟨c, sub_eq_iff_eq_add.mpr hc⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry.ABHN
