@@ -278,10 +278,13 @@ theorem tendsto_goldenRuleKernel_density {ρ : ℝ → ℝ} {E₀ : ℝ}
     (hmp.integrable_comp hρ.aestronglyMeasurable).mpr hρ
   have hg0 : g 0 = ρ E₀ := by simp [hgdef]
   have hgc : ContinuousAt g 0 := by
-    have h1 : ContinuousAt (fun x : ℝ => x + E₀) 0 := by fun_prop
-    have h2 : ContinuousAt ρ ((fun x : ℝ => x + E₀) 0) := by simpa using hc
-    have hcomp := h2.comp h1
-    simpa [hgdef, Function.comp] using hcomp
+    have hcont : Continuous (fun x : ℝ => x + E₀) := by fun_prop
+    have h1 : Filter.Tendsto (fun x : ℝ => x + E₀) (nhds (0 : ℝ)) (nhds E₀) := by
+      simpa using hcont.tendsto (0 : ℝ)
+    have h2 : Filter.Tendsto g (nhds (0 : ℝ)) (nhds (ρ E₀)) := hc.comp h1
+    show Filter.Tendsto g (nhds (0 : ℝ)) (nhds (g 0))
+    rw [hg0]
+    exact h2
   have hshift : ∀ t : ℝ, (∫ E : ℝ, goldenRuleKernel t (E - E₀) * ρ E)
       = ∫ x : ℝ, goldenRuleKernel t x * g x := by
     intro t

@@ -5,23 +5,24 @@ import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionTerminalSourceWeyl
 import GaloisForLFunctions.RHTower.XiShiftedHankelFarRightPositiveDefinite
 
 /-!
-# Source-normal renewal phase of the Schwarz-pair Lorentz decomposition
+# Source-normal certificate/receiver phase of the Schwarz-pair Lorentz decomposition
 
-The Lorentz source-normal coefficient admits two complementary source realizations.
+The Lorentz source-normal coefficient admits one actual fixed-source realization and one nonlinear
+receiver coordinate.
 
 At zero normal charge, an actual fixed abelian class law carries the complete adaptive Fisher
 scale orbit.  Conversely, cofinal contiguity forbids that fixed-law orbit at every nonzero normal
 charge.  Thus certificate existence is exactly the zero fibre of the Schwarz-pair normal channel.
 
-Off the zero fibre, the actual shifted-Xi terminal-source Weyl aggregate supplies a different
-producer.  At every finite degree, unconditional far-right Hankel positivity admits a nonlinear
-Jacobi renewal whose normalized source increment is exactly the absolute centered spectral
-displacement.  After analytic-multiplicity and reciprocal-metric scaling, this is precisely the
-Schwarz-pair normal coefficient.
+Off the zero fibre, the shifted-Xi terminal-source Weyl aggregate can be evaluated at a purely
+imaginary aperture chosen to have the absolute centered spectral displacement.  At every finite
+degree, unconditional far-right Hankel positivity then admits a nonlinear Jacobi renewal whose
+normalized increment returns that chosen aperture height.  After analytic-multiplicity and
+reciprocal-metric scaling, the fitted value is precisely the Schwarz-pair normal coefficient.
 
-The resulting phase dichotomy explains why fixed-source contiguity and changing-admission renewal
-behave oppositely.  It does not synchronize the degree-dependent far-right admission parameters;
-that cofinal synchronization is the next source-forced vanishing problem.
+The resulting formal phase dichotomy separates fixed-source contiguity from changing-admission
+receiver geometry.  It does not by itself exert source-native vanishing pressure: the aperture is
+external data.  The later universality no-go makes that limitation exact.
 -/
 
 open Complex Filter Topology
@@ -77,7 +78,7 @@ theorem normSq_mul_xiSchwarzPairSourceNormalCoefficient_eq_multiplicity_mul_abs_
     xiSchwarzPairSourceNormalRate_eq_abs_centeredRate_div_normSq]
   field_simp
 
-/-- Normalized nonlinear source injection in the shifted-Xi terminal Weyl degree renewal. -/
+/-- Normalized nonlinear receiver increment in the shifted-Xi terminal Weyl degree renewal. -/
 def xiSchwarzPairCompletedSourceWeylNormalizedIncrement
     (q : XiZeroCopy) (w : ℝ) (n : ℕ) : ℝ :=
   let z := xiSchwarzPairSourceNormalAperture q
@@ -86,8 +87,8 @@ def xiSchwarzPairCompletedSourceWeylNormalizedIncrement
   (-Wnext.im) / Complex.normSq Wnext -
     HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n * (-Wcurrent.im)
 
-/-- Inside any positive admission block, nonlinear Weyl renewal injects exactly the source-normal
-spectral displacement. -/
+/-- Inside any positive admission block, nonlinear Weyl renewal returns the chosen source-normal
+aperture height. -/
 theorem xiSchwarzPairCompletedSourceWeylNormalizedIncrement_eq_normalDisplacement
     (q : XiZeroCopy) {w : ℝ} {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
@@ -103,7 +104,7 @@ theorem xiSchwarzPairCompletedSourceWeylNormalizedIncrement_eq_normalDisplacemen
       hn hH hz
 
 /-- Every off-line Xi copy has, at each finite degree, an unconditionally admitted nonlinear Weyl
-renewal carrying exactly its multiplicity-weighted Lorentz normal coefficient. -/
+receiver fitted to its multiplicity-weighted Lorentz normal coefficient. -/
 theorem xiSchwarzPair_offLine_finiteDegree_nonlinearRenewal
     (q : XiZeroCopy) (him : (xiSpectralPoint q).im ≠ 0) {n : ℕ} (hn : 0 < n) :
     ∃ w : ℝ, 1 < w ∧
@@ -138,8 +139,8 @@ theorem xiSchwarzPair_offLine_finiteDegree_nonlinearRenewal
     xiSchwarzPairSourceNormalRate_eq]
   field_simp
 
-/-- Closed renewal-phase dichotomy: a Xi copy either lies in the fixed-law neutral certificate
-phase, or every finite degree admits a strictly positive nonlinear source-normal renewal. -/
+/-- Closed certificate/receiver dichotomy: a Xi copy either lies in the fixed-law neutral
+certificate phase, or every finite degree admits a positive fitted nonlinear receiver value. -/
 theorem xiSchwarzPair_classLaw_or_nonlinearRenewalPhase
     (q : XiZeroCopy) (p : Nat.Primes) {d : ℝ} (hd : 1 < d) :
     Nonempty (SourceHorizontalXiAdaptiveClassLawScaleOrbitCertificate q p d) ∨

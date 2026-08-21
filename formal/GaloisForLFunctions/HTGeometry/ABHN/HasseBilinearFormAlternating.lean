@@ -8,9 +8,9 @@ import GaloisForLFunctions.HTGeometry.ABHN.HasseBilinearFormEquality
 /-!
 # Hasse certification of alternating and reflexive bilinear forms
 
-Alternation and reflexivity descend through field scalar extension.  Consequently, the indicated
-property at every completion, or at one selected completion, certifies it globally.  These are
-one-way certification statements; preservation in the other direction is not asserted here.
+Alternation is invariant under field scalar extension. Consequently, it can be detected at every
+completion, and it holds globally exactly when it holds locally everywhere. Reflexivity descends
+through field scalar extension, so local reflexivity still certifies the global property.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
@@ -26,6 +26,64 @@ theorem bilinForm_isAlt_of_baseChange {K : Type u} {L : Type v} {M : Type w}
   intro x
   apply FaithfulSMul.algebraMap_injective K L
   simpa [Algebra.smul_def] using h (1 ⊗ₜ[K] x)
+
+/-- Alternation of a bilinear form is preserved by field scalar extension. -/
+theorem bilinForm_isAlt_baseChange {K : Type u} {L : Type v} {M : Type w}
+    [Field K] [Field L] [Algebra K L] [AddCommGroup M] [Module K M]
+    (B : LinearMap.BilinForm K M) (h : B.IsAlt) : (B.baseChange L).IsAlt := by
+  have hskew : ∀ x y : L ⊗[K] M,
+      B.baseChange L x y + B.baseChange L y x = 0 := by
+    intro x y
+    induction x using TensorProduct.induction_on with
+    | zero => simp
+    | add x z hx hz =>
+      calc
+        B.baseChange L (x + z) y + B.baseChange L y (x + z) =
+            (B.baseChange L x y + B.baseChange L z y) +
+              (B.baseChange L y x + B.baseChange L y z) := by
+                simp only [map_add, LinearMap.add_apply]
+        _ = (B.baseChange L x y + B.baseChange L y x) +
+              (B.baseChange L z y + B.baseChange L y z) := by ac_rfl
+        _ = 0 := by rw [hx, hz, add_zero]
+    | tmul a x =>
+      induction y using TensorProduct.induction_on with
+      | zero => simp
+      | add y z hy hz =>
+        calc
+          B.baseChange L (a ⊗ₜ[K] x) (y + z) +
+              B.baseChange L (y + z) (a ⊗ₜ[K] x) =
+              (B.baseChange L (a ⊗ₜ[K] x) y + B.baseChange L (a ⊗ₜ[K] x) z) +
+                (B.baseChange L y (a ⊗ₜ[K] x) + B.baseChange L z (a ⊗ₜ[K] x)) := by
+                  simp only [map_add, LinearMap.add_apply]
+          _ = (B.baseChange L (a ⊗ₜ[K] x) y + B.baseChange L y (a ⊗ₜ[K] x)) +
+                (B.baseChange L (a ⊗ₜ[K] x) z + B.baseChange L z (a ⊗ₜ[K] x)) := by ac_rfl
+          _ = 0 := by rw [hy, hz, add_zero]
+      | tmul b y =>
+        rw [LinearMap.BilinForm.baseChange_tmul,
+          LinearMap.BilinForm.baseChange_tmul, ← h.neg_eq x y, mul_comm b a,
+          neg_smul, add_neg_cancel]
+  intro x
+  induction x using TensorProduct.induction_on with
+  | zero => simp
+  | add x y hx hy =>
+    calc
+      B.baseChange L (x + y) (x + y) =
+          (B.baseChange L x x + B.baseChange L x y) +
+            (B.baseChange L y x + B.baseChange L y y) := by
+              simp only [map_add, LinearMap.add_apply]
+              ac_rfl
+      _ = (B.baseChange L x x + B.baseChange L y y) +
+            (B.baseChange L x y + B.baseChange L y x) := by ac_rfl
+      _ = 0 := by rw [hx, hy, hskew, add_zero, zero_add]
+  | tmul a x => simp [LinearMap.BilinForm.baseChange_tmul, h.self_eq_zero x]
+
+/-- Alternation of a bilinear form is detected by field scalar extension. -/
+theorem bilinForm_isAlt_iff_baseChange {K : Type u} {L : Type v} {M : Type w}
+    [Field K] [Field L] [Algebra K L] [AddCommGroup M] [Module K M]
+    (B : LinearMap.BilinForm K M) : B.IsAlt ↔ (B.baseChange L).IsAlt := by
+  constructor
+  · exact bilinForm_isAlt_baseChange B
+  · exact bilinForm_isAlt_of_baseChange B
 
 /-- Reflexivity of a bilinear form descends through field scalar extension. -/
 theorem bilinForm_isRefl_of_baseChange {K : Type u} {L : Type v} {M : Type w}
@@ -46,6 +104,18 @@ theorem numberField_bilinForm_isAlt_of_forall_place (K : Type u)
   exact bilinForm_isAlt_of_baseChange (L := completion K (witnessPlace K)) B
     (h (witnessPlace K))
 
+/-- Alternation of a bilinear form over a number field is detected at every completed place. -/
+theorem numberField_bilinForm_isAlt_iff_forall_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (B : LinearMap.BilinForm K M) :
+    B.IsAlt ↔ ∀ p : NumberFieldPlace K, (B.baseChange (completion K p)).IsAlt := by
+  constructor
+  · intro h p
+    exact (bilinForm_isAlt_iff_baseChange (L := completion K p) B).mp h
+  · intro h
+    exact (bilinForm_isAlt_iff_baseChange (L := completion K (witnessPlace K)) B).mpr
+      (h (witnessPlace K))
+
 /-- Reflexivity of a bilinear form over a number field follows from reflexivity at every completed
 place. -/
 theorem numberField_bilinForm_isRefl_of_forall_place (K : Type u)
@@ -65,6 +135,21 @@ theorem rationalFunction_bilinForm_isAlt_of_forall_place (F : Type u)
   exact bilinForm_isAlt_of_baseChange
     (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) B
     (h RationalFunctionPlace.infinite)
+
+/-- Alternation of a bilinear form over `F(t)` is detected at every finite and infinite completed
+place. -/
+theorem rationalFunction_bilinForm_isAlt_iff_forall_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (B : LinearMap.BilinForm (RatFunc F) M) :
+    B.IsAlt ↔ ∀ p : RationalFunctionPlace F,
+      (B.baseChange (rationalFunctionCompletion F p)).IsAlt := by
+  constructor
+  · intro h p
+    exact (bilinForm_isAlt_iff_baseChange
+      (L := rationalFunctionCompletion F p) B).mp h
+  · intro h
+    exact (bilinForm_isAlt_iff_baseChange
+      (L := rationalFunctionCompletion F .infinite) B).mpr (h .infinite)
 
 /-- Reflexivity of a bilinear form over `F(t)` follows from reflexivity at every finite and
 infinite completed place. -/

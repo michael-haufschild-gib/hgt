@@ -1814,3 +1814,45 @@ Three reusable observations.
 Reusable pieces exported: `IsInvariantMetric`, `IsCommutantFactor`, `IsSectorSystem`,
 `sectorFactor`, `mul_transport_eq`, `inv_mul_transport_eq`, `dotProduct_sector_term`,
 `metricField_eq_root_transport`, `metricField_transport_congr`.
+
+## `shifted-euler-quotient-finite-tangent-prime-support-filtration` — IN PROGRESS (not promoted)
+
+New module `formal/GaloisForLFunctions/HTGeometry/ShiftedEulerTangentFiltration.lean`, wired into
+`GaloisForLFunctions.HTGeometry`, built, all declarations audited at
+`[propext, Classical.choice, Quot.sound]`.
+
+**Already formalized (the card's Statement, Theorem A and Theorem B in full):**
+
+- `shiftedEulerCoeff n ω = exp(ω log n) ∏_{p ∣ n} (1 - exp(-2ω log p))` — written with
+  exponentials so it is manifestly entire.
+- `exists_flatFactor_shiftedEulerCoeff` — the exact flat factor `ω^{ω(n)}` with leading value
+  `2^{ω(n)} ∏ log p`, obtained by extracting a simple zero from each local factor.
+- `iteratedDeriv_shiftedEulerCoeff_eq_zero` — Theorem A's vanishing half and the Dirichlet
+  support statement (`k < ω(n) ⟹ k`-th transverse derivative vanishes).
+- `iteratedDeriv_shiftedEulerCoeff_card` — Theorem A's equation `(2)`:
+  `2^{ω(n)} ω(n)! ∏_{p ∣ n} log p`.
+- `iteratedDeriv_one_shiftedEulerCoeff` — the one-prime layer `= 2 Λ(n)`, by trichotomy on
+  `ω(n)` and `isPrimePow_iff_card_primeFactors_eq_one`.
+- `iteratedDeriv_two_shiftedEulerCoeff_primePow` — the prime-power second layer
+  `4(a-1)(log p)^2` (the two-distinct-prime case is Theorem A at `k = ω(n) = 2`).
+- `iteratedDeriv_reflectedLog` — Theorem B `(5)` in jet form: the `k`-th transverse jet of
+  `log F(s-ω) - log F(s+ω)` is `((-1)^k - 1)` times the `k`-th `s`-derivative, so even jets
+  cancel and odd jets double.
+- `iteratedDeriv_exp_congr_of_flat` — Theorem B's triangularity: the `k`-jet of the reflected
+  quotient depends only on the `k`-jet of the logarithm (proved by writing
+  `exp L₁ - exp L₂ = exp L₂ · (L₁ - L₂) · ψ(L₁ - L₂)` and re-using the flat-factor jet lemma).
+- `iteratedDeriv_reflectedQuotient_affine` — Theorem B `(8)`: for an affine logarithm, i.e. when
+  every higher odd derivative vanishes, the `k`-th jet is the pure power `(-2 ∂_s log F)^k`.
+
+**Single residual before promotion:** the card also records the shorthand
+`∂_ω² c_ω(n)|_0 = 4 (Λ * Λ)(n)`.  The two explicit layer values are proved above, but the
+identification with the Dirichlet convolution `Λ * Λ` is not: the tree has no
+`vonMangoldt`-convolution layer (`(Λ*Λ)(p^a) = (a-1)(log p)^2`,
+`(Λ*Λ)(p^a q^b) = 2 log p log q`, zero otherwise).  That layer is the next step; the card stays
+at stage 2 until it lands.
+
+**Reusable pieces exported:** `exists_mul_of_apply_eq_zero` (simple-zero extraction via `dslope`
+and `Complex.differentiableOn_dslope` — the clean way to write `f = z · g` for an entire `f` with
+`f 0 = 0`), `iteratedDeriv_pow_mul` (top jet of an exact flat factor, `= m! · g 0`),
+`iteratedDeriv_fun_sub`, `iteratedDeriv_comp_const_add`, `iteratedDeriv_comp_const_sub`,
+`iteratedDeriv_cexp_const_mul`, `analyticAt_of_differentiable`.

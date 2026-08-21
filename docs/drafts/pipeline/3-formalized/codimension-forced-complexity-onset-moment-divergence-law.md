@@ -1,12 +1,12 @@
 # Shortcut codimension forces divergent complexity-onset moments
 
 - **ID:** `codimension-forced-complexity-onset-moment-divergence-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** theorem / static-local complexity onset / heavy-tail obstruction
 - **Parents:** `weak-cut-complexity-onset-capacity-separation-law.md`,
   `capacity-compatible-fast-forwardable-incubation-law.md`,
   `onset-recurrence-dimension-independence-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Status:** `[FORMALIZED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-09
 
 ## Public sentence
@@ -578,3 +578,65 @@ with `pathHamiltonian_eq_diagonal`, and its `gap` is `gap_near_sepCarrier`), the
 The carrier compiler certificate `(4)` for `|+>^{⊗n}` under commuting `Z` and `ZZ` rotations stays an
 input, exactly as it is in the sibling incubation card's `hcert`.  Section 2's `(16)` and the
 plateau height `s_n` are unchanged.
+
+## Lean progress -- Theorem C is closed (2026-08-21)
+
+Two further umbrella-wired, axiom-clean modules complete the fully coupled shortcut law on the
+concrete path shell.
+
+`formal/GaloisForLFunctions/HTGeometry/NearUniformSeparatingCarrier.lean` -- the direction that
+satisfies `(25)` *and* separates the energies:
+
+| Card item | Declaration |
+|---|---|
+| the integer sign of a bit, and the evenness of sign differences | `signZ`, `even_signZ_sub`, `even_signZ_mul_sub` |
+| **the direction**: uniform carrier plus an `ε`-scaled base-three onsite profile | `nearUniformCarrier` |
+| every diagonal coordinate lies in `[1,2]` | `nearUniformCarrier_coord_mem` |
+| the integer part of an energy difference, and its evenness | `energyIntDiff`, `even_energyIntDiff` |
+| **separation by `2ε`** | `separation_nearUniformCarrier` |
+| the normalized direction, its unit norm and coordinate floor `1/(2√(2n+3))` | `nearUniformDir`, `norm_nearUniformDir`, `nearUniformDir_coord_ge` |
+| **separation by `ε/√(2n+3)`** after normalization | `separation_nearUniformDir` |
+| separation is stable on a ball of radius `g/(4(2n+3))` | `gap_near_of_gap`, `gap_near_nearUniformDir` |
+
+The base-three direction of the previous round separates the energies but makes the edge couplings
+exponentially smaller than the onsite ones, so on the unit sphere it *fails* `(25)`.  The fix is to
+perturb the uniform carrier instead: the unperturbed part of an energy difference is an even
+integer, so it is either zero -- in which case the base-three part alone gives `2ε` -- or at least
+two, while the base-three part is below `2/3`.  Every coordinate stays in `[1,2]`, so after
+normalization every edge coupling is at least `1/(2√(2n+3))`, which is the card's `b₀/(2√n)`.
+
+`formal/GaloisForLFunctions/HTGeometry/CoupledShortcutCollision.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the embedded patch lies in the carrier | `pathPatchEquiv_symm_notDiag`, `pathPatchIsometry_embed_offDiag` |
+| **the patch Hamiltonian is diagonal** | `patchHamLM_embed_eq_diagonal` |
+| **`(22)` on the whole tube** | `spectralCollision_uniformSeed_le_of_mem_patchThickening` |
+| the carrier direction in patch coordinates, and its unit norm | `carrierPatchDir`, `norm_carrierPatchDir` |
+| the cap around it has separated energies | `separation_on_carrierPatchCap` |
+| **`(25)`** at that direction | `edgeCoupling_lower_carrier` |
+| **Theorem C on the tube**: incubation through `L`, collision `O(1/D)`, every bond coupled | `coupled_shortcut_tube` |
+
+`formal/GaloisForLFunctions/HTGeometry/CoupledShortcutOnsetMoments.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the shell-mass constant of the diagonal tube, positive and finite | `diagTubeConst`, `diagTubeConst_pos`, `diagTubeConst_ne_top` |
+| **`(23)`**: the tube of radius `c/L` carries mass at least `A L^{-(10n+12)}` | `coupled_tail_lower` |
+| the boundary layer-cake divergence at a general exponent | `lintegral_rpow_eq_top_of_boundary_tail_gen` |
+| **`(24)` above the exponent** | `lintegral_coupled_onset_pow_eq_top` |
+| **`(24)` at the boundary exponent** | `lintegral_coupled_onset_rpow_eq_top` |
+
+The transverse codimension is `card_offDiagLabel = 10(n+2)+12`, which on a register of `n+2` qubits
+is the card's `10n-8`, and the carrier dimension is `card_diagLabel = 2(n+2)-1`.  So the exponent in
+`(23)`--`(24)` is exactly `(20)`.
+
+### Card status
+
+Theorems A, B and C are Lean-realized.  Theorem A's machine, section 2's `(17)`--`(18)`, and now
+Theorem C's `(22)`--`(25)` are all axiom-clean.  The one input that remains a hypothesis is the
+carrier compiler certificate -- `(4)` for Theorem A, `(16)` for the weak cut, and `hcert` in
+`coupled_shortcut_tube` -- which is a property of the chosen gate alphabet ("a finite inverse-closed
+universal alphabet" with a uniform compiler), not a step of this card's proof; the sibling card
+`capacity-compatible-fast-forwardable-incubation-law` carries it in exactly the same position and
+was promoted on that basis.

@@ -29,6 +29,7 @@ variable {𝓗 : Type*} [NormedAddCommGroup 𝓗] [InnerProductSpace ℂ 𝓗] [
 def propagator (H : 𝓗 →L[ℂ] 𝓗) (t : ℝ) : 𝓗 →L[ℂ] 𝓗 :=
   NormedSpace.exp (t • ((-Complex.I) • H))
 
+omit [CompleteSpace 𝓗] in
 @[simp] theorem propagator_zero (H : 𝓗 →L[ℂ] 𝓗) : propagator H 0 = 1 := by
   simp [propagator]
 
@@ -52,6 +53,7 @@ theorem propagator_comp (H : 𝓗 →L[ℂ] 𝓗) (s t : ℝ) :
     exact Commute.refl _
   have hadd : (s + t) • ((-Complex.I) • H) = s • ((-Complex.I) • H) + t • ((-Complex.I) • H) :=
     add_smul _ _ _
+  letI : NormedAlgebra ℚ (𝓗 →L[ℂ] 𝓗) := NormedAlgebra.restrictScalars ℚ ℂ _
   rw [propagator, propagator, propagator, hadd, NormedSpace.exp_add_of_commute hc]
   rfl
 
@@ -64,16 +66,17 @@ theorem star_propagator {H : 𝓗 →L[ℂ] 𝓗} (hH : IsSelfAdjoint H) (t : �
   rw [propagator, propagator, NormedSpace.star_exp, hstar]
 
 /-- **Unitarity of the propagator.** -/
-theorem propagator_comp_neg {H : 𝓗 →L[ℂ] 𝓗} (t : ℝ) :
-    propagator H (-t) ∘L propagator H t = 1 := by
-  rw [propagator_comp]
-  simp
+theorem propagator_mem_unitary {H : 𝓗 →L[ℂ] 𝓗} (hH : IsSelfAdjoint H) (t : ℝ) :
+    propagator H t ∈ unitary (𝓗 →L[ℂ] 𝓗) := by
+  letI : NormedAlgebra ℚ (𝓗 →L[ℂ] 𝓗) := NormedAlgebra.restrictScalars ℚ ℂ _
+  refine NormedSpace.exp_mem_unitary_of_mem_skewAdjoint ?_
+  rw [skewAdjoint.mem_iff, star_smul, star_smul, hH.star_eq]
+  simp [neg_smul]
 
 theorem norm_propagator_apply {H : 𝓗 →L[ℂ] 𝓗} (hH : IsSelfAdjoint H) (t : ℝ) (x : 𝓗) :
     ‖propagator H t x‖ = ‖x‖ := by
   have hone : (ContinuousLinearMap.adjoint (propagator H t)) (propagator H t x) = x := by
-    have h := propagator_comp_neg (H := H) t
-    rw [← star_propagator hH t] at h
+    have h := (Unitary.mem_iff.mp (propagator_mem_unitary hH t)).1
     have h2 := congrArg (fun T : 𝓗 →L[ℂ] 𝓗 => T x) h
     simpa [ContinuousLinearMap.star_eq_adjoint] using h2
   have hinner : (inner ℂ (propagator H t x) (propagator H t x) : ℂ) = inner ℂ x x := by

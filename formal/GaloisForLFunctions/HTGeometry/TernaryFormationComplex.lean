@@ -593,7 +593,593 @@ def formationChargeEquivObserverOverlap (L : V →ₗ[K] Y) (W Z : Submodule K V
     ((Submodule.quotEquivOfEq _ _ (ker_pairCharge_eq_ker_pairOverlap L W Z)).trans
       ((pairOverlap L W Z).quotKerEquivOfSurjective (pairOverlap_surjective L W Z)))
 
+/-! ### Corollaries of the observer realization -/
+
+theorem formationBoundary_ker_eq_bot (L : V →ₗ[K] Y) (W Z : Submodule K V)
+    (hW : Disjoint W (LinearMap.ker L)) (hZ : Disjoint Z (LinearMap.ker L)) :
+    formationBoundary (LinearMap.ker L) W Z = ⊥ := by
+  rw [formationBoundary, inf_comm (LinearMap.ker L) W, inf_comm (LinearMap.ker L) Z,
+    disjoint_iff.mp hW, disjoint_iff.mp hZ, sup_idem]
+
+/-- **Corollary 3.2 `(TFIM.11)`.**  With both legs separately observable, the formation charge is
+the excess joint kernel. -/
+def formationChargeEquivExcessKernel (L : V →ₗ[K] Y) (W Z : Submodule K V)
+    (hW : Disjoint W (LinearMap.ker L)) (hZ : Disjoint Z (LinearMap.ker L)) :
+    FormationCharge (LinearMap.ker L) W Z ≃ₗ[K] ↥(LinearMap.ker L ⊓ (W ⊔ Z)) :=
+  Submodule.quotEquivOfEqBot _ (by
+    show (formationBoundary (LinearMap.ker L) W Z).comap
+      (formationCore (LinearMap.ker L) W Z).subtype = ⊥
+    rw [formationBoundary_ker_eq_bot L W Z hW hZ, Submodule.comap_bot, Submodule.ker_subtype])
+
+/-- **Corollary 3.2 `(TFIM.12)`.**  Pairwise observability plus exact overlap preservation is
+joint observability. -/
+theorem disjoint_sup_iff_overlap_le (L : V →ₗ[K] Y) (W Z : Submodule K V)
+    (hW : Disjoint W (LinearMap.ker L)) (hZ : Disjoint Z (LinearMap.ker L)) :
+    Disjoint (W ⊔ Z) (LinearMap.ker L) ↔ overlapNum L W Z ≤ overlapDen L W Z := by
+  have h1 : (∀ q : FormationCharge (LinearMap.ker L) W Z, q = 0)
+      ↔ formationCore (LinearMap.ker L) W Z ≤ formationBoundary (LinearMap.ker L) W Z :=
+    subQuot_forall_eq_zero_iff _ _
+  have hcharge : (∀ q : FormationCharge (LinearMap.ker L) W Z, q = 0)
+      ↔ Disjoint (W ⊔ Z) (LinearMap.ker L) := by
+    rw [h1, formationBoundary_ker_eq_bot L W Z hW hZ, le_bot_iff, formationCore, disjoint_iff,
+      inf_comm]
+  have hover : (∀ q : ObserverOverlap L W Z, q = 0) ↔ overlapNum L W Z ≤ overlapDen L W Z :=
+    subQuot_forall_eq_zero_iff _ _
+  rw [← hcharge, ← hover]
+  constructor
+  · intro h q
+    obtain ⟨p, rfl⟩ := (formationChargeEquivObserverOverlap L W Z).surjective q
+    rw [h p, map_zero]
+  · intro h p
+    have hp := h (formationChargeEquivObserverOverlap L W Z p)
+    exact (formationChargeEquivObserverOverlap L W Z).injective (by rw [hp, map_zero])
+
+/-! ### The quotient-created overlap form -/
+
+/-- Subquotients only depend on the submodules. -/
+def subQuotCongr {M : Type*} [AddCommGroup M] [Module K M] {N N' D D' : Submodule K M}
+    (hN : N = N') (hD : D = D') :
+    (↥N ⧸ Submodule.comap N.subtype D) ≃ₗ[K] (↥N' ⧸ Submodule.comap N'.subtype D') := by
+  subst hN
+  subst hD
+  exact LinearEquiv.refl _ _
+
+/-- Formation charge only depends on the three subspaces. -/
+def formationChargeCongr {U U' W W' Z Z' : Submodule K V}
+    (hU : U = U') (hW : W = W') (hZ : Z = Z') :
+    FormationCharge U W Z ≃ₗ[K] FormationCharge U' W' Z' := by
+  subst hU
+  subst hW
+  subst hZ
+  exact LinearEquiv.refl _ _
+
+section Correspondence
+
+variable (U : Submodule K V) (A B : Submodule K (V ⧸ U))
+
+/-- Comparison of a subquotient of `V ⧸ U` with the corresponding subquotient of `V`. -/
+def mkQSubQuotMap : ↥(Submodule.comap U.mkQ A) →ₗ[K] (↥A ⧸ Submodule.comap A.subtype B) :=
+  (Submodule.comap A.subtype B).mkQ.comp
+    (LinearMap.codRestrict A (U.mkQ.comp (Submodule.comap U.mkQ A).subtype) fun x => x.2)
+
+theorem mkQSubQuotMap_surjective : Function.Surjective (mkQSubQuotMap U A B) := by
+  intro q
+  induction q using Submodule.Quotient.induction_on with | _ a => ?_
+  obtain ⟨v, hv⟩ := U.mkQ_surjective (a : V ⧸ U)
+  have hva : v ∈ Submodule.comap U.mkQ A := by
+    rw [Submodule.mem_comap, hv]
+    exact a.2
+  refine ⟨⟨v, hva⟩, ?_⟩
+  show Submodule.Quotient.mk (⟨U.mkQ v, hva⟩ : ↥A) = Submodule.Quotient.mk a
+  congr 1
+  exact Subtype.ext hv
+
+theorem ker_mkQSubQuotMap :
+    LinearMap.ker (mkQSubQuotMap U A B)
+      = Submodule.comap (Submodule.comap U.mkQ A).subtype (Submodule.comap U.mkQ B) := by
+  ext x
+  constructor
+  · intro hx
+    have h0 : Submodule.Quotient.mk (⟨U.mkQ (x : V), x.2⟩ : ↥A) = 0 := hx
+    rw [Submodule.Quotient.mk_eq_zero] at h0
+    exact h0
+  · intro hx
+    show Submodule.Quotient.mk (⟨U.mkQ (x : V), x.2⟩ : ↥A) = 0
+    rw [Submodule.Quotient.mk_eq_zero]
+    exact hx
+
+/-- **Subquotients of a quotient are subquotients upstairs.** -/
+def mkQSubQuotEquiv :
+    (↥(Submodule.comap U.mkQ A) ⧸
+        Submodule.comap (Submodule.comap U.mkQ A).subtype (Submodule.comap U.mkQ B))
+      ≃ₗ[K] (↥A ⧸ Submodule.comap A.subtype B) :=
+  (Submodule.quotEquivOfEq _ _ (ker_mkQSubQuotMap U A B).symm).trans
+    ((mkQSubQuotMap U A B).quotKerEquivOfSurjective (mkQSubQuotMap_surjective U A B))
+
+end Correspondence
+
+/-- **Corollary 3.3 `(TFIM.13)`.**  Quotienting by one leg creates an intersection: the formation
+charge is the quotient-created overlap. -/
+def formationChargeEquivQuotientOverlap (U W Z : Submodule K V) :
+    FormationCharge U W Z ≃ₗ[K]
+      (↥((U ⊔ W) ⊓ (U ⊔ Z)) ⧸
+        Submodule.comap ((U ⊔ W) ⊓ (U ⊔ Z)).subtype (U ⊔ (W ⊓ Z))) := by
+  have hnum : Submodule.comap U.mkQ (overlapNum U.mkQ W Z) = (U ⊔ W) ⊓ (U ⊔ Z) := by
+    show Submodule.comap U.mkQ (Submodule.map U.mkQ W ⊓ Submodule.map U.mkQ Z) = _
+    rw [Submodule.comap_inf, Submodule.comap_map_eq, Submodule.comap_map_eq,
+      Submodule.ker_mkQ, sup_comm W U, sup_comm Z U]
+  have hden : Submodule.comap U.mkQ (overlapDen U.mkQ W Z) = U ⊔ (W ⊓ Z) := by
+    show Submodule.comap U.mkQ (Submodule.map U.mkQ (W ⊓ Z)) = _
+    rw [Submodule.comap_map_eq, Submodule.ker_mkQ, sup_comm (W ⊓ Z) U]
+  exact ((formationChargeCongr (Submodule.ker_mkQ U).symm rfl rfl).trans
+    ((formationChargeEquivObserverOverlap U.mkQ W Z).trans
+      (mkQSubQuotEquiv U (overlapNum U.mkQ W Z) (overlapDen U.mkQ W Z)).symm)).trans
+    (subQuotCongr hnum hden)
+
+/-! ### The observer Mayer--Vietoris complex (Theorem 3.5) -/
+
+theorem map_sup_eq (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    Submodule.map L (W ⊔ Z) = Submodule.map L W ⊔ Submodule.map L Z := Submodule.map_sup _ _ _
+
+/-- The diagonal of the observed Mayer--Vietoris complex. -/
+def mvDiag (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    ↥(Submodule.map L (W ⊓ Z)) →ₗ[K] ↥(Submodule.map L W) × ↥(Submodule.map L Z) :=
+  (LinearMap.codRestrict (Submodule.map L W) (Submodule.map L (W ⊓ Z)).subtype
+      fun y => Submodule.map_mono inf_le_left y.2).prod
+    (-LinearMap.codRestrict (Submodule.map L Z) (Submodule.map L (W ⊓ Z)).subtype
+      fun y => Submodule.map_mono inf_le_right y.2)
+
+@[simp] theorem mvDiag_fst (L : V →ₗ[K] Y) (W Z : Submodule K V)
+    (y : ↥(Submodule.map L (W ⊓ Z))) : ((mvDiag L W Z y).1 : Y) = (y : Y) := rfl
+
+@[simp] theorem mvDiag_snd (L : V →ₗ[K] Y) (W Z : Submodule K V)
+    (y : ↥(Submodule.map L (W ⊓ Z))) : ((mvDiag L W Z y).2 : Y) = -(y : Y) := rfl
+
+theorem mvDiag_injective (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    Function.Injective (mvDiag L W Z) := by
+  intro x y hxy
+  refine Subtype.ext ?_
+  have := congrArg (fun s : ↥(Submodule.map L W) × ↥(Submodule.map L Z) => ((s.1 : Y))) hxy
+  simpa using this
+
+/-- The addition map of the observed Mayer--Vietoris complex. -/
+def mvAdd (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    ↥(Submodule.map L W) × ↥(Submodule.map L Z) →ₗ[K] ↥(Submodule.map L (W ⊔ Z)) :=
+  LinearMap.codRestrict (Submodule.map L (W ⊔ Z))
+    ((Submodule.map L W).subtype.coprod (Submodule.map L Z).subtype)
+    (fun s => by
+      rw [map_sup_eq]
+      exact Submodule.add_mem _
+        ((le_sup_left : Submodule.map L W ≤ _) s.1.2)
+        ((le_sup_right : Submodule.map L Z ≤ _) s.2.2))
+
+@[simp] theorem mvAdd_coe (L : V →ₗ[K] Y) (W Z : Submodule K V)
+    (s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)) :
+    ((mvAdd L W Z s : ↥(Submodule.map L (W ⊔ Z))) : Y) = (s.1 : Y) + (s.2 : Y) := rfl
+
+theorem mvAdd_surjective (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    Function.Surjective (mvAdd L W Z) := by
+  intro y
+  have hy : (y : Y) ∈ Submodule.map L W ⊔ Submodule.map L Z := by
+    rw [← map_sup_eq]
+    exact y.2
+  obtain ⟨p, hp, q, hq, hpq⟩ := Submodule.mem_sup.mp hy
+  exact ⟨(⟨p, hp⟩, ⟨q, hq⟩), Subtype.ext hpq⟩
+
+theorem range_mvDiag_le_ker_mvAdd (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    LinearMap.range (mvDiag L W Z) ≤ LinearMap.ker (mvAdd L W Z) := by
+  rintro s ⟨y, rfl⟩
+  rw [LinearMap.mem_ker]
+  refine Subtype.ext ?_
+  rw [mvAdd_coe, mvDiag_fst, mvDiag_snd]
+  show (y : Y) + -(y : Y) = 0
+  rw [add_neg_cancel]
+
+/-- The middle chart map of the observed Mayer--Vietoris complex. -/
+def mvMiddle (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    ↥(LinearMap.ker (mvAdd L W Z)) →ₗ[K] ObserverOverlap L W Z :=
+  (Submodule.comap (overlapNum L W Z).subtype (overlapDen L W Z)).mkQ.comp
+    (LinearMap.codRestrict (overlapNum L W Z)
+      ((Submodule.map L W).subtype.comp
+        ((LinearMap.fst K ↥(Submodule.map L W) ↥(Submodule.map L Z)).comp
+          (LinearMap.ker (mvAdd L W Z)).subtype))
+      (fun s => by
+        refine ⟨(s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1.2, ?_⟩
+        have h0 : (mvAdd L W Z (s : ↥(Submodule.map L W) × ↥(Submodule.map L Z))) = 0 := s.2
+        have hz : ((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y) + ((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).2 : Y) = 0 := congrArg Subtype.val h0
+        have he : ((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y) = -((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).2 : Y) := by
+          linear_combination (norm := abel) hz
+        show ((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y) ∈ Submodule.map L Z
+        rw [he]
+        exact Submodule.neg_mem _ (s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).2.2))
+
+theorem mvMiddle_surjective (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    Function.Surjective (mvMiddle L W Z) := by
+  intro q
+  induction q using Submodule.Quotient.induction_on with | _ y => ?_
+  have hker : mvAdd L W Z (⟨(y : Y), y.2.1⟩, ⟨-(y : Y), Submodule.neg_mem _ y.2.2⟩) = 0 := by
+    refine Subtype.ext ?_
+    rw [mvAdd_coe]
+    show (y : Y) + -(y : Y) = 0
+    rw [add_neg_cancel]
+  refine ⟨⟨(⟨(y : Y), y.2.1⟩, ⟨-(y : Y), Submodule.neg_mem _ y.2.2⟩), hker⟩, ?_⟩
+  show Submodule.Quotient.mk (⟨(y : Y), _⟩ : ↥(overlapNum L W Z)) = Submodule.Quotient.mk y
+  congr 1
+
+theorem ker_mvMiddle (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    LinearMap.ker (mvMiddle L W Z)
+      = Submodule.comap (LinearMap.ker (mvAdd L W Z)).subtype
+        (LinearMap.range (mvDiag L W Z)) := by
+  ext s
+  constructor
+  · intro hs
+    have h0 : Submodule.Quotient.mk (⟨((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y), _⟩ : ↥(overlapNum L W Z))
+        = (0 : ObserverOverlap L W Z) := hs
+    rw [Submodule.Quotient.mk_eq_zero] at h0
+    have hmem : ((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y) ∈ overlapDen L W Z := h0
+    have hzero : (mvAdd L W Z (s : ↥(Submodule.map L W) × ↥(Submodule.map L Z))) = 0 := s.2
+    have hz : ((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y) + ((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).2 : Y) = 0 := congrArg Subtype.val hzero
+    refine ⟨⟨((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y), hmem⟩, ?_⟩
+    refine Prod.ext (Subtype.ext rfl) (Subtype.ext ?_)
+    show -(((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y))
+      = ((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).2 : Y)
+    linear_combination (norm := abel) -hz
+  · rintro ⟨y, hy⟩
+    rw [LinearMap.mem_ker]
+    show Submodule.Quotient.mk (⟨((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y), _⟩ : ↥(overlapNum L W Z))
+      = (0 : ObserverOverlap L W Z)
+    rw [Submodule.Quotient.mk_eq_zero]
+    have hfst : ((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y) = (y : Y) := by
+      rw [← mvDiag_fst L W Z y, hy]
+      rfl
+    show ((s : ↥(Submodule.map L W) × ↥(Submodule.map L Z)).1 : Y) ∈ overlapDen L W Z
+    rw [hfst]
+    exact y.2
+
+/-- **Theorem 3.5 `(TFIM.13e)`.**  Degreewise observation of the Mayer--Vietoris sequence of two
+subspaces creates exactly the formation charge as middle homology. -/
+def mvMiddleHomologyEquiv (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    (↥(LinearMap.ker (mvAdd L W Z)) ⧸
+        Submodule.comap (LinearMap.ker (mvAdd L W Z)).subtype (LinearMap.range (mvDiag L W Z)))
+      ≃ₗ[K] ObserverOverlap L W Z :=
+  (Submodule.quotEquivOfEq _ _ (ker_mvMiddle L W Z).symm).trans
+    ((mvMiddle L W Z).quotKerEquivOfSurjective (mvMiddle_surjective L W Z))
+
 end Observer
+
+/-! ## Rank identities -/
+
+section Ranks
+
+variable [FiniteDimensional K V]
+
+theorem finrank_formationCharge_add (U W Z : Submodule K V) :
+    Module.finrank K (FormationCharge U W Z) + Module.finrank K (formationBoundary U W Z)
+      = Module.finrank K (formationCore U W Z) := by
+  have h := Submodule.finrank_quotient_add_finrank (formationBoundaryInCore U W Z)
+  have he := finrank_formationBoundaryInCore U W Z
+  have hb : Module.finrank K (↥(formationCore U W Z) ⧸ formationBoundaryInCore U W Z)
+      = Module.finrank K (FormationCharge U W Z) := rfl
+  omega
+
+/-- **`(TFIM.20)`.**  The exact local-loss plus generated-loss budget. -/
+theorem finrank_formationCore_eq (U W Z : Submodule K V) :
+    (Module.finrank K (formationCore U W Z) : ℤ)
+      = (Module.finrank K ↥(U ⊓ W) : ℤ) + (Module.finrank K ↥(U ⊓ Z) : ℤ)
+        - (Module.finrank K ↥(U ⊓ W ⊓ Z) : ℤ)
+        + (Module.finrank K (FormationCharge U W Z) : ℤ) := by
+  have h1 := finrank_formationCharge_add U W Z
+  have h2 := Submodule.finrank_sup_add_finrank_inf_eq (U ⊓ W) (U ⊓ Z)
+  have h3 : (U ⊓ W) ⊓ (U ⊓ Z) = U ⊓ W ⊓ Z := by
+    ext x
+    constructor
+    · rintro ⟨⟨hu, hw⟩, -, hz⟩
+      exact ⟨⟨hu, hw⟩, hz⟩
+    · rintro ⟨⟨hu, hw⟩, hz⟩
+      exact ⟨⟨hu, hw⟩, hu, hz⟩
+  rw [h3] at h2
+  have h4 : formationBoundary U W Z = (U ⊓ W) ⊔ (U ⊓ Z) := rfl
+  rw [h4] at h1
+  omega
+
+variable {Y : Type*} [AddCommGroup Y] [Module K Y] [FiniteDimensional K Y]
+
+/-- **Corollary 3.4 `(TFIM.13b)`, rank form.**  Formation homology is the submodularity slack of
+observer rank. -/
+theorem finrank_formationCharge_eq_rank_slack (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    (Module.finrank K (FormationCharge (LinearMap.ker L) W Z) : ℤ)
+      = (Module.finrank K ↥(Submodule.map L W) : ℤ)
+        + (Module.finrank K ↥(Submodule.map L Z) : ℤ)
+        - (Module.finrank K ↥(Submodule.map L (W ⊔ Z)) : ℤ)
+        - (Module.finrank K ↥(Submodule.map L (W ⊓ Z)) : ℤ) := by
+  have hiso : Module.finrank K (FormationCharge (LinearMap.ker L) W Z)
+      = overlapRank L W Z :=
+    (formationChargeEquivObserverOverlap L W Z).finrank_eq
+  rw [hiso]
+  exact overlapRank_eq_slack L W Z
+
+/-- **Corollary 3.4 `(TFIM.13b)`, nullity form.**  Equivalently, it is the supermodularity slack
+of observer nullity. -/
+theorem finrank_formationCharge_eq_nullity_slack (L : V →ₗ[K] Y) (W Z : Submodule K V) :
+    (Module.finrank K (FormationCharge (LinearMap.ker L) W Z) : ℤ)
+      = (Module.finrank K ↥((W ⊔ Z) ⊓ LinearMap.ker L) : ℤ)
+        + (Module.finrank K ↥((W ⊓ Z) ⊓ LinearMap.ker L) : ℤ)
+        - (Module.finrank K ↥(W ⊓ LinearMap.ker L) : ℤ)
+        - (Module.finrank K ↥(Z ⊓ LinearMap.ker L) : ℤ) := by
+  have hslack := finrank_formationCharge_eq_rank_slack L W Z
+  have hgen : ∀ A : Submodule K V, Module.finrank K ↥(Submodule.map L A)
+      + Module.finrank K ↥(A ⊓ LinearMap.ker L) = Module.finrank K A := by
+    intro A
+    have hrn := (L.domRestrict A).finrank_range_add_finrank_ker
+    rw [LinearMap.range_domRestrict, LinearMap.ker_domRestrict] at hrn
+    have hEq : Module.finrank K ((LinearMap.ker L).comap A.subtype)
+        = Module.finrank K ↥(A ⊓ LinearMap.ker L) := by
+      rw [← Submodule.map_comap_subtype A (LinearMap.ker L)]
+      exact (Submodule.equivMapOfInjective A.subtype (Submodule.injective_subtype A) _).finrank_eq
+    rw [hEq] at hrn
+    exact hrn
+  have hW := hgen W
+  have hZ := hgen Z
+  have hS := hgen (W ⊔ Z)
+  have hI := hgen (W ⊓ Z)
+  have hdim := Submodule.finrank_sup_add_finrank_inf_eq W Z
+  omega
+
+end Ranks
+
+/-! ## The reduced fusion complex (Theorem 4.1) -/
+
+section ReducedFusion
+
+variable (U W Z : Submodule K V)
+
+/-- Degree-two chains of the reduced fusion complex: pre-existing overlap. -/
+abbrev RedTwo : Type _ := ↥(W ⊓ Z) ⧸ Submodule.comap (W ⊓ Z).subtype (U ⊓ W ⊓ Z)
+
+/-- Degree-one chains: the two legs reduced by the common recovery kernel. -/
+abbrev RedOne : Type _ :=
+  (↥W ⧸ Submodule.comap W.subtype (U ⊓ W)) × (↥Z ⧸ Submodule.comap Z.subtype (U ⊓ Z))
+
+/-- Degree-zero chains: the fused carrier reduced after formation. -/
+abbrev RedZero : Type _ := ↥(U ⊔ W ⊔ Z) ⧸ Submodule.comap (U ⊔ W ⊔ Z).subtype U
+
+/-- The leg-to-fusion map on the `W` side. -/
+def redLegW : (↥W ⧸ Submodule.comap W.subtype (U ⊓ W)) →ₗ[K] RedZero U W Z :=
+  Submodule.liftQ _
+    ((Submodule.comap (U ⊔ W ⊔ Z).subtype U).mkQ.comp
+      (LinearMap.codRestrict (U ⊔ W ⊔ Z) W.subtype
+        fun w => (le_sup_left : U ⊔ W ≤ U ⊔ W ⊔ Z) ((le_sup_right : W ≤ U ⊔ W) w.2)))
+    (by
+      intro w hw
+      show Submodule.Quotient.mk (⟨(w : V), _⟩ : ↥(U ⊔ W ⊔ Z)) = 0
+      rw [Submodule.Quotient.mk_eq_zero]
+      exact hw.1)
+
+/-- The leg-to-fusion map on the `Z` side. -/
+def redLegZ : (↥Z ⧸ Submodule.comap Z.subtype (U ⊓ Z)) →ₗ[K] RedZero U W Z :=
+  Submodule.liftQ _
+    ((Submodule.comap (U ⊔ W ⊔ Z).subtype U).mkQ.comp
+      (LinearMap.codRestrict (U ⊔ W ⊔ Z) Z.subtype
+        fun z => (le_sup_right : Z ≤ U ⊔ W ⊔ Z) z.2))
+    (by
+      intro z hz
+      show Submodule.Quotient.mk (⟨(z : V), _⟩ : ↥(U ⊔ W ⊔ Z)) = 0
+      rw [Submodule.Quotient.mk_eq_zero]
+      exact hz.1)
+
+/-- The degree-one differential of the reduced fusion complex. -/
+def redD1 : RedOne U W Z →ₗ[K] RedZero U W Z := (redLegW U W Z).coprod (redLegZ U W Z)
+
+/-- The degree-two differential of the reduced fusion complex. -/
+def redD2 : RedTwo U W Z →ₗ[K] RedOne U W Z :=
+  Submodule.liftQ _
+    (((Submodule.comap W.subtype (U ⊓ W)).mkQ.comp
+        (Submodule.inclusion (inf_le_left : W ⊓ Z ≤ W))).prod
+      (-((Submodule.comap Z.subtype (U ⊓ Z)).mkQ.comp
+        (Submodule.inclusion (inf_le_right : W ⊓ Z ≤ Z)))))
+    (by
+      intro a ha
+      refine Prod.ext ?_ ?_
+      · show Submodule.Quotient.mk (⟨(a : V), _⟩ : ↥W) = 0
+        rw [Submodule.Quotient.mk_eq_zero]
+        exact ⟨ha.1.1, ha.1.2⟩
+      · show -Submodule.Quotient.mk (⟨(a : V), _⟩ : ↥Z) = 0
+        rw [neg_eq_zero, Submodule.Quotient.mk_eq_zero]
+        exact ⟨ha.1.1, ha.2⟩)
+
+theorem redD2_injective : Function.Injective (redD2 U W Z) := by
+  rw [← LinearMap.ker_eq_bot, Submodule.eq_bot_iff]
+  intro q hq
+  induction q using Submodule.Quotient.induction_on with | _ a => ?_
+  have h0 : redD2 U W Z (Submodule.Quotient.mk a) = 0 := hq
+  have h1 : (Submodule.Quotient.mk (⟨(a : V), (inf_le_left : W ⊓ Z ≤ W) a.2⟩ : ↥W)
+      : ↥W ⧸ Submodule.comap W.subtype (U ⊓ W)) = 0 := congrArg Prod.fst h0
+  rw [Submodule.Quotient.mk_eq_zero] at h1
+  rw [Submodule.Quotient.mk_eq_zero]
+  exact ⟨⟨h1.1, a.2.1⟩, a.2.2⟩
+
+theorem redD1_surjective : Function.Surjective (redD1 U W Z) := by
+  intro q
+  induction q using Submodule.Quotient.induction_on with | _ x => ?_
+  obtain ⟨p, hp, z, hz, hpz⟩ := Submodule.mem_sup.mp x.2
+  obtain ⟨u, hu, w, hw, huw⟩ := Submodule.mem_sup.mp hp
+  have hwmem : w ∈ U ⊔ W ⊔ Z :=
+    (le_sup_left : U ⊔ W ≤ U ⊔ W ⊔ Z) ((le_sup_right : W ≤ U ⊔ W) hw)
+  have hzmem : z ∈ U ⊔ W ⊔ Z := (le_sup_right : Z ≤ U ⊔ W ⊔ Z) hz
+  refine ⟨(Submodule.Quotient.mk ⟨w, hw⟩, Submodule.Quotient.mk ⟨z, hz⟩), ?_⟩
+  show (Submodule.Quotient.mk (⟨w, hwmem⟩ : ↥(U ⊔ W ⊔ Z)) : RedZero U W Z)
+    + Submodule.Quotient.mk (⟨z, hzmem⟩ : ↥(U ⊔ W ⊔ Z)) = Submodule.Quotient.mk x
+  rw [← Submodule.Quotient.mk_add]
+  refine (Submodule.Quotient.eq _).mpr ?_
+  show w + z - (x : V) ∈ U
+  have hx : (x : V) = u + w + z := by rw [← hpz, ← huw]
+  rw [hx]
+  have hneg : w + z - (u + w + z) = -u := by abel
+  rw [hneg]
+  exact Submodule.neg_mem _ hu
+
+/-- Pairs of leg vectors whose sum lies in the common recovery kernel. -/
+def redPairs : Submodule K (↥W × ↥Z) := Submodule.comap (W.subtype.coprod Z.subtype) U
+
+theorem redPairs_mem (t : ↥(redPairs U W Z)) :
+    ((t : ↥W × ↥Z).1 : V) + ((t : ↥W × ↥Z).2 : V) ∈ U := t.2
+
+/-- Such a pair forms a direction of the ternary core. -/
+def redPairToCore : ↥(redPairs U W Z) →ₗ[K] ↥(formationCore U W Z) :=
+  LinearMap.codRestrict (formationCore U W Z)
+    ((W.subtype.coprod Z.subtype).comp (redPairs U W Z).subtype)
+    (fun t => ⟨redPairs_mem U W Z t, Submodule.add_mem _
+      ((le_sup_left : W ≤ W ⊔ Z) (t : ↥W × ↥Z).1.2)
+      ((le_sup_right : Z ≤ W ⊔ Z) (t : ↥W × ↥Z).2.2)⟩)
+
+/-- Such a pair is a cycle of the reduced fusion complex. -/
+def redPairToCycle : ↥(redPairs U W Z) →ₗ[K] ↥(LinearMap.ker (redD1 U W Z)) :=
+  LinearMap.codRestrict (LinearMap.ker (redD1 U W Z))
+    ((((Submodule.comap W.subtype (U ⊓ W)).mkQ.comp (LinearMap.fst K ↥W ↥Z)).prod
+      ((Submodule.comap Z.subtype (U ⊓ Z)).mkQ.comp (LinearMap.snd K ↥W ↥Z))).comp
+        (redPairs U W Z).subtype)
+    (fun t => by
+      have hmem : ((t : ↥W × ↥Z).1 : V) + ((t : ↥W × ↥Z).2 : V) ∈ U := redPairs_mem U W Z t
+      have hw : ((t : ↥W × ↥Z).1 : V) ∈ U ⊔ W ⊔ Z :=
+        (le_sup_left : U ⊔ W ≤ U ⊔ W ⊔ Z) ((le_sup_right : W ≤ U ⊔ W) (t : ↥W × ↥Z).1.2)
+      have hz : ((t : ↥W × ↥Z).2 : V) ∈ U ⊔ W ⊔ Z :=
+        (le_sup_right : Z ≤ U ⊔ W ⊔ Z) (t : ↥W × ↥Z).2.2
+      rw [LinearMap.mem_ker]
+      show (Submodule.Quotient.mk (⟨((t : ↥W × ↥Z).1 : V), hw⟩ : ↥(U ⊔ W ⊔ Z))
+          : RedZero U W Z)
+        + Submodule.Quotient.mk (⟨((t : ↥W × ↥Z).2 : V), hz⟩ : ↥(U ⊔ W ⊔ Z)) = 0
+      rw [← Submodule.Quotient.mk_add, Submodule.Quotient.mk_eq_zero]
+      exact hmem)
+
+/-- The `U`-chart map from unobserved pairs. -/
+def redPairCharge : ↥(redPairs U W Z) →ₗ[K] FormationCharge U W Z :=
+  (formationBoundaryInCore U W Z).mkQ.comp (redPairToCore U W Z)
+
+/-- The homology map from unobserved pairs. -/
+def redPairHomology : ↥(redPairs U W Z) →ₗ[K]
+    (↥(LinearMap.ker (redD1 U W Z)) ⧸
+      Submodule.comap (LinearMap.ker (redD1 U W Z)).subtype
+        (LinearMap.range (redD2 U W Z))) :=
+  (Submodule.comap (LinearMap.ker (redD1 U W Z)).subtype
+    (LinearMap.range (redD2 U W Z))).mkQ.comp (redPairToCycle U W Z)
+
+theorem redPairCharge_surjective : Function.Surjective (redPairCharge U W Z) := by
+  intro q
+  induction q using Submodule.Quotient.induction_on with | _ x => ?_
+  obtain ⟨w, hw, z, hz, hwz⟩ := Submodule.mem_sup.mp x.2.2
+  have hmem : ((⟨w, hw⟩ : ↥W) : V) + ((⟨z, hz⟩ : ↥Z) : V) ∈ U := by
+    show w + z ∈ U
+    rw [hwz]
+    exact x.2.1
+  refine ⟨⟨(⟨w, hw⟩, ⟨z, hz⟩), hmem⟩, ?_⟩
+  show Submodule.Quotient.mk (redPairToCore U W Z _) = Submodule.Quotient.mk x
+  congr 1
+  exact Subtype.ext hwz
+
+theorem redPairToCycle_surjective : Function.Surjective (redPairToCycle U W Z) := by
+  intro c
+  obtain ⟨w, hw⟩ := (Submodule.comap W.subtype (U ⊓ W)).mkQ_surjective (c : RedOne U W Z).1
+  obtain ⟨z, hz⟩ := (Submodule.comap Z.subtype (U ⊓ Z)).mkQ_surjective (c : RedOne U W Z).2
+  have hker : (redD1 U W Z) (c : RedOne U W Z) = 0 := c.2
+  have hwmem : ((w : V)) ∈ U ⊔ W ⊔ Z :=
+    (le_sup_left : U ⊔ W ≤ U ⊔ W ⊔ Z) ((le_sup_right : W ≤ U ⊔ W) w.2)
+  have hzmem : ((z : V)) ∈ U ⊔ W ⊔ Z := (le_sup_right : Z ≤ U ⊔ W ⊔ Z) z.2
+  have hsum : (Submodule.Quotient.mk (⟨(w : V), hwmem⟩ : ↥(U ⊔ W ⊔ Z)) : RedZero U W Z)
+      + Submodule.Quotient.mk (⟨(z : V), hzmem⟩ : ↥(U ⊔ W ⊔ Z)) = 0 := by
+    have hc : (c : RedOne U W Z) = (Submodule.Quotient.mk w, Submodule.Quotient.mk z) :=
+      Prod.ext hw.symm hz.symm
+    rw [hc] at hker
+    exact hker
+  rw [← Submodule.Quotient.mk_add, Submodule.Quotient.mk_eq_zero] at hsum
+  have hmem : ((w : V)) + ((z : V)) ∈ U := hsum
+  refine ⟨⟨(w, z), hmem⟩, ?_⟩
+  refine Subtype.ext (Prod.ext ?_ ?_)
+  · exact hw
+  · exact hz
+
+theorem ker_redPairCharge_eq_ker_redPairHomology :
+    LinearMap.ker (redPairCharge U W Z) = LinearMap.ker (redPairHomology U W Z) := by
+  ext t
+  constructor
+  · intro ht
+    have h0 : Submodule.Quotient.mk (redPairToCore U W Z t)
+        = (0 : FormationCharge U W Z) := ht
+    rw [Submodule.Quotient.mk_eq_zero] at h0
+    have hmem : ((t : ↥W × ↥Z).1 : V) + ((t : ↥W × ↥Z).2 : V)
+        ∈ formationBoundary U W Z := h0
+    obtain ⟨p, hp, q, hq, hpq⟩ := Submodule.mem_sup.mp hmem
+    have haWZ : ((t : ↥W × ↥Z).1 : V) - p ∈ W ⊓ Z := by
+      constructor
+      · exact Submodule.sub_mem _ (t : ↥W × ↥Z).1.2 hp.2
+      · have he : ((t : ↥W × ↥Z).1 : V) - p = q - ((t : ↥W × ↥Z).2 : V) := by
+          linear_combination (norm := abel) -hpq
+        rw [he]
+        exact Submodule.sub_mem _ hq.2 (t : ↥W × ↥Z).2.2
+    rw [LinearMap.mem_ker]
+    show Submodule.Quotient.mk (redPairToCycle U W Z t) = 0
+    rw [Submodule.Quotient.mk_eq_zero]
+    refine ⟨Submodule.Quotient.mk ⟨((t : ↥W × ↥Z).1 : V) - p, haWZ⟩, ?_⟩
+    refine Prod.ext ?_ ?_
+    · show Submodule.Quotient.mk (⟨((t : ↥W × ↥Z).1 : V) - p, haWZ.1⟩ : ↥W)
+        = Submodule.Quotient.mk ((t : ↥W × ↥Z).1)
+      refine (Submodule.Quotient.eq _).mpr ?_
+      show (((t : ↥W × ↥Z).1 : V) - p) - ((t : ↥W × ↥Z).1 : V) ∈ U ⊓ W
+      have hn : (((t : ↥W × ↥Z).1 : V) - p) - ((t : ↥W × ↥Z).1 : V) = -p := by abel
+      rw [hn]
+      exact Submodule.neg_mem _ hp
+    · show -Submodule.Quotient.mk (⟨((t : ↥W × ↥Z).1 : V) - p, haWZ.2⟩ : ↥Z)
+        = Submodule.Quotient.mk ((t : ↥W × ↥Z).2)
+      rw [← Submodule.Quotient.mk_neg]
+      refine (Submodule.Quotient.eq _).mpr ?_
+      show (-(((t : ↥W × ↥Z).1 : V) - p)) - ((t : ↥W × ↥Z).2 : V) ∈ U ⊓ Z
+      have hn : (-(((t : ↥W × ↥Z).1 : V) - p)) - ((t : ↥W × ↥Z).2 : V) = -q := by
+        linear_combination (norm := abel) hpq
+      rw [hn]
+      exact Submodule.neg_mem _ hq
+  · intro ht
+    have h0 : Submodule.Quotient.mk (redPairToCycle U W Z t) = 0 := ht
+    rw [Submodule.Quotient.mk_eq_zero] at h0
+    obtain ⟨d, hd⟩ := h0
+    induction d using Submodule.Quotient.induction_on with | _ a => ?_
+    have h1 : Submodule.Quotient.mk (⟨(a : V), (inf_le_left : W ⊓ Z ≤ W) a.2⟩ : ↥W)
+        = Submodule.Quotient.mk ((t : ↥W × ↥Z).1) := congrArg Prod.fst hd
+    have h2 : -Submodule.Quotient.mk (⟨(a : V), (inf_le_right : W ⊓ Z ≤ Z) a.2⟩ : ↥Z)
+        = Submodule.Quotient.mk ((t : ↥W × ↥Z).2) := congrArg Prod.snd hd
+    rw [← Submodule.Quotient.mk_neg] at h2
+    have hp : (a : V) - ((t : ↥W × ↥Z).1 : V) ∈ U ⊓ W := by
+      have hh := (Submodule.Quotient.eq _).mp h1
+      exact hh
+    have hq : (-(a : V)) - ((t : ↥W × ↥Z).2 : V) ∈ U ⊓ Z := by
+      have hh := (Submodule.Quotient.eq _).mp h2
+      exact hh
+    rw [LinearMap.mem_ker]
+    show Submodule.Quotient.mk (redPairToCore U W Z t) = (0 : FormationCharge U W Z)
+    rw [Submodule.Quotient.mk_eq_zero]
+    show ((t : ↥W × ↥Z).1 : V) + ((t : ↥W × ↥Z).2 : V) ∈ formationBoundary U W Z
+    refine Submodule.mem_sup.mpr ⟨-((a : V) - ((t : ↥W × ↥Z).1 : V)), Submodule.neg_mem _ hp,
+      -((-(a : V)) - ((t : ↥W × ↥Z).2 : V)), Submodule.neg_mem _ hq, ?_⟩
+    abel
+
+/-- **Theorem 4.1 `(TFIM.17)`.**  The first homology of the reduced fusion complex is the
+formation charge. -/
+def redHomologyEquiv :
+    (↥(LinearMap.ker (redD1 U W Z)) ⧸
+        Submodule.comap (LinearMap.ker (redD1 U W Z)).subtype
+          (LinearMap.range (redD2 U W Z)))
+      ≃ₗ[K] FormationCharge U W Z := by
+  have hsurj : Function.Surjective (redPairHomology U W Z) := by
+    intro q
+    induction q using Submodule.Quotient.induction_on with | _ c => ?_
+    obtain ⟨t, ht⟩ := redPairToCycle_surjective U W Z c
+    exact ⟨t, by
+      show Submodule.Quotient.mk (redPairToCycle U W Z t) = Submodule.Quotient.mk c
+      rw [ht]⟩
+  exact (((redPairHomology U W Z).quotKerEquivOfSurjective hsurj).symm.trans
+    ((Submodule.quotEquivOfEq _ _
+      (ker_redPairCharge_eq_ker_redPairHomology U W Z).symm).trans
+      ((redPairCharge U W Z).quotKerEquivOfSurjective (redPairCharge_surjective U W Z))))
+
+end ReducedFusion
 
 end
 

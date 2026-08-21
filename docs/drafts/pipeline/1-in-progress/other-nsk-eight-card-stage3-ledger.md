@@ -1636,3 +1636,13 @@ or completion hypothesis.
 
 So the card's open point is now purely about *attainment*: `λ` exists; whether some `(N, S)` realises
 it is the semisimplicity statement, equivalently the restart bound.
+
+## Card 4: the rate is identified
+
+`HTGeometry.TwistedChainRateIdentification` (wired, built, axiom-clean): `twistedChainRate_nonneg`,
+`twistedChainRate_le_matDeg`, `twistedChainRate_eq_zero_of_shiftDegLE`, and `twistedChainRate_eq` —
+**`λ = c` exactly** when a shear puts the generator at shifted degree `c` with surviving leading
+chain, by dividing the band estimate by `n` and squeezing.
+
+So `(14)` is closed in the non-degenerate regime: `λ` exists always and is computed whenever the
+leading chain survives.  The residue is purely attainment — the restart bound.

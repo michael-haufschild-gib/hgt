@@ -164,9 +164,8 @@ normSq(a) * normalCoefficient(q) = multiplicity(q) * |centeredRate(q)|,
 
 Hence fixed-source contiguity and changing-admission renewal are two complementary phases:
 neutral normal charge is realized by a fixed class law, while nonzero normal charge necessarily
-survives through positive nonlinear degree renewal. The obstruction is no longer existence at any
-finite degree. It is cofinal degree--mass synchronization: current far-right witness may depend on
-degree.
+survives through positive nonlinear degree renewal. At this stage the obstruction was reduced from
+existence to cofinal degree--mass synchronization; the next corpus search closes that seam below.
 
 `formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairNormalRenewalWeld.lean`
 
@@ -188,12 +187,51 @@ Verification:
 - forbidden-token and whitespace scans passed;
 - module is wired into `RHTower.lean`; no umbrella/full build was run.
 
+## Explicit parabolic synchronization
+
+Route-agnostic corpus search found the later parabolic shifted-Xi Hankel theorem, stronger than
+fixed-degree far-right recession. It supplies one universal square-root-mass schedule
+
+```text
+w_n = sqrt(routeUParabolicDegreeHorizon) * (n + 5)
+```
+
+independent of Xi copy. Lean proves its degree-`n+5` actual shifted-Xi moment block is positive
+definite. Therefore every off-line Xi copy carries the same strictly positive source-normal Weyl
+increment on this explicit `O(n)` schedule at every degree, with exact coefficient law
+
+```text
+2 * multiplicity(q) * WeylIncrement(q,w_n,n+1)
+  = normSq(xiSpectralPoint q) * normalCoefficient(q).
+```
+
+This eliminates both arbitrary delayed far-right witnesses and Xi-dependent schedule selection.
+Fixed class-law realization still exists exactly in neutral phase; otherwise this canonical
+parabolic nonlinear orbit carries positive normal charge at every rung.
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairParabolicRenewalWeld.lean`
+
+Key closed declarations:
+
+```text
+xiSchwarzPairParabolicNormalRenewalSchedule_sq
+xiSchwarzPairParabolicNormalRenewalSchedule_posDef
+xiSchwarzPair_offLine_parabolic_nonlinearRenewal
+xiSchwarzPair_classLaw_or_parabolic_nonlinearRenewalPhase
+```
+
+Verification:
+
+- corpus research search, scratch proof, direct source check, and exact target build passed;
+- audited theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`;
+- module is wired into `RHTower.lean`; no umbrella/full build was run.
+
 ## Next hard conjecture
 
-Construct one cofinal degree--mass schedule, or a compactness/diagonal limit replacing it, on which
-shifted-Xi positive admission and exact source-normal Weyl renewal persist simultaneously. Then
-compare resulting persistent nonlinear source capital with an actual finite source-action budget.
-Do not identify Stokes coenergy with KL without a proved measure bridge.
+Synchronization is closed. Compare persistent parabolic Weyl normal injection with an actual
+finite global source-action budget. Existing normalized adaptive mixed source action diverges on
+cofinal positive schedules, so it is not such a budget. Do not identify Stokes coenergy with KL or
+Weyl source action without a proved measure/energy bridge.
 
 ## Log
 
@@ -205,3 +243,5 @@ Do not identify Stokes coenergy with KL without a proved measure bridge.
 - 2026-08-21 — Proved fixed-class-law/positive-nonlinear-renewal phase dichotomy and exact
   coefficient transfer at every finite degree; isolated cofinal degree--mass synchronization as
   remaining producer seam.
+- 2026-08-21 — Closed synchronization seam using explicit universal parabolic schedule; every
+  off-line Xi copy carries exact positive normal renewal at every degree on one `O(n)` orbit.

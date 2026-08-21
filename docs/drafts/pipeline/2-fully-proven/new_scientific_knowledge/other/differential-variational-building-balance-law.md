@@ -1145,3 +1145,28 @@ remaining question is sharpened from "does the limit exist" to "is it attained".
 and equals `1/2`, no integer shear witnesses it, and the missing statement is exactly that some
 pair `(N, S)` realises the infimum — the semisimplicity of the building isometry, equivalently the
 bound on the number of restarts.
+
+### Lean progress — the rate is identified, not merely approximated
+
+`GaloisForLFunctions.HTGeometry.TwistedChainRateIdentification` (wired, built, axiom-clean)
+
+```text
+twistedChainRate_nonneg                 `0 ≤ λ`
+twistedChainRate_le_matDeg              `λ ≤ matDeg C`
+twistedChainRate_eq_zero_of_shiftDegLE  a shear with `c = 0` forces `λ = 0` — the bounded phase
+twistedChainRate_eq                     **`λ = c` exactly**, whenever a shear puts the generator at
+                                        shifted degree `c` and the accumulated shifted leading
+                                        matrices never vanish
+```
+
+The last is the band estimate `|matDeg A_n − n·c| ≤ spread(k)` divided by `n`: the error is
+`spread(k)/n → 0`, so an order squeeze pins the Fekete limit and uniqueness of limits identifies it
+with `c`.  This is `(14)` of the card in the non-degenerate regime — the asymptotic invariant is
+*computed*, not merely shown to exist.
+
+Status of the card's asymptotic law.  Existence of `λ` is unconditional
+(`tendsto_matDeg_twistedChain`); its value is `c` whenever the leading chain survives, and `0`
+whenever some shear reaches `c = 0`.  What remains is exactly the attainment question: whether every
+`A` admits a pair `(N, S)` reaching one of those two regimes.  `InvertibleLeadingChainVanishes`
+shows the naive answer is no — for the companion matrix of `t³ + ∂t + 1` the rate is `1/2` and no
+integer shear sees it — so the missing statement is the bound on the number of restarts.
