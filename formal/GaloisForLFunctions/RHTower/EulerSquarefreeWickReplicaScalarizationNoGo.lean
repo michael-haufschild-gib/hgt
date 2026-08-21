@@ -52,15 +52,10 @@ theorem eulerWickReplicaFlippedDensity_apply_zero_one
     (x : PrimePowerClockIndex) :
     eulerWickReplicaFlippedDensity x 0 1 =
       -eulerWickQuadraticEulerLogReplica x := by
-  simp only [eulerWickReplicaFlippedDensity, eulerWickReplicaFlippedVector,
-    finiteBuresTargetRay, Matrix.smul_apply, Matrix.vecMulVec_apply,
-    Matrix.cons_val_zero, Matrix.cons_val_one, Pi.star_apply,
-    Complex.real_smul,
-    eulerWickQuadraticEulerLogReplica]
-  rw [map_neg, star_eulerWickQuadraticDepthCharacter]
-  rw [div_eq_mul_inv]
-  push_cast
-  ring
+  rcases eulerWickQuadraticDepthCharacter_eq_one_or_neg_one x with h | h <;>
+    simp [eulerWickReplicaFlippedDensity, eulerWickReplicaFlippedVector,
+      finiteBuresTargetRay, Matrix.vecMulVec,
+      eulerWickQuadraticEulerLogReplica, h] <;> ring
 
 /-- Gauge flip reverses the reverse character channel. -/
 theorem eulerWickReplicaFlippedDensity_apply_one_zero
@@ -116,22 +111,11 @@ theorem eulerWickReplicaDensity_add_flippedDensity_eq_smul_one
     eulerWickReplicaDensity x + eulerWickReplicaFlippedDensity x =
       (2 * (((x.2 + 1 : ℕ) : ℝ))⁻¹) •
         (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
-  ext i j
-  fin_cases i <;> fin_cases j
-  · rw [Matrix.add_apply, eulerWickReplicaDensity_apply_zero_zero,
-      eulerWickReplicaFlippedDensity_apply_zero_zero]
-    simp [eulerLogValuationProfile]
-    ring
-  · rw [Matrix.add_apply, eulerWickReplicaDensity_apply_zero_one,
-      eulerWickReplicaFlippedDensity_apply_zero_one]
-    simp
-  · rw [Matrix.add_apply, eulerWickReplicaDensity_apply_one_zero,
-      eulerWickReplicaFlippedDensity_apply_one_zero]
-    simp
-  · rw [Matrix.add_apply, eulerWickReplicaDensity_apply_one_one,
-      eulerWickReplicaFlippedDensity_apply_one_one]
-    simp [eulerLogValuationProfile]
-    ring
+  rcases eulerWickQuadraticDepthCharacter_eq_one_or_neg_one x with h | h <;>
+    ext i j <;> fin_cases i <;> fin_cases j <;>
+      simp [eulerWickReplicaDensity, eulerWickReplicaVector,
+        eulerWickReplicaFlippedDensity, eulerWickReplicaFlippedVector,
+        finiteBuresTargetRay, Matrix.vecMulVec, h] <;> ring
 
 /-- Gauge-orbit completion converts the pair of rank-one states into a positive-definite
 two-channel carrier at every prime depth. -/
@@ -147,7 +131,8 @@ theorem det_eulerWickReplicaDensity_add_flippedDensity
     (eulerWickReplicaDensity x + eulerWickReplicaFlippedDensity x).det =
       (((2 * (((x.2 + 1 : ℕ) : ℝ))⁻¹ : ℝ) : ℂ) ^ 2) := by
   rw [eulerWickReplicaDensity_add_flippedDensity_eq_smul_one,
-    Matrix.det_smul, Matrix.det_one, Fintype.card_fin]
+    Matrix.det_fin_two]
+  simp
   ring
 
 /-- Arithmetic matrix source of the gauge-flipped lift. -/
@@ -160,10 +145,9 @@ theorem eulerWickReplicaFlippedDensitySource_zero_zero_eq_densitySource :
     eulerWickReplicaFlippedDensitySource 0 0 =
       eulerWickReplicaDensitySource 0 0 := by
   unfold eulerWickReplicaFlippedDensitySource eulerWickReplicaDensitySource
-  apply arithmeticFunctionOfPrimePowerProfile_injective
-  funext x
-  rw [eulerWickReplicaFlippedDensity_apply_zero_zero,
-    eulerWickReplicaDensity_apply_zero_zero]
+  exact congrArg arithmeticFunctionOfPrimePowerProfile (funext fun x => by
+    rw [eulerWickReplicaFlippedDensity_apply_zero_zero,
+      eulerWickReplicaDensity_apply_zero_zero])
 
 /-- The flipped off-diagonal source is exactly the negative character carrier. -/
 theorem eulerWickReplicaFlippedDensitySource_zero_one_eq_neg_characterSource :
@@ -171,10 +155,17 @@ theorem eulerWickReplicaFlippedDensitySource_zero_one_eq_neg_characterSource :
       -eulerWickQuadraticEulerLogCharacterSource := by
   unfold eulerWickReplicaFlippedDensitySource
     eulerWickQuadraticEulerLogCharacterSource
-  rw [← map_neg]
-  apply arithmeticFunctionOfPrimePowerProfile_injective
-  funext x
-  exact eulerWickReplicaFlippedDensity_apply_zero_one x
+  calc
+    arithmeticFunctionOfPrimePowerProfile
+          (fun x => eulerWickReplicaFlippedDensity x 0 1) =
+        arithmeticFunctionOfPrimePowerProfile
+          (-eulerWickQuadraticEulerLogReplica) := by
+            congr 1
+            funext x
+            exact eulerWickReplicaFlippedDensity_apply_zero_one x
+    _ = -arithmeticFunctionOfPrimePowerProfile
+          eulerWickQuadraticEulerLogReplica :=
+      map_neg arithmeticFunctionOfPrimePowerProfile _
 
 /-- The gauge-flipped diagonal has the same coefficient-faithful Euler-log stream. -/
 theorem eulerWickReplicaFlippedDensitySource_zero_zero_eq_eulerLogDirichletCoeff :

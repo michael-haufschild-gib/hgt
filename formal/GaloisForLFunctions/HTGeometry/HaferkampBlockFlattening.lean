@@ -34,6 +34,37 @@ theorem list_before_length_lt_of_decomp
   rw [List.length_append, List.length_cons]
   exact Nat.lt_add_of_pos_right (Nat.succ_pos _)
 
+/-- Taking past an entire left word in an append retains that word and takes
+the remaining number of entries from the right word. -/
+theorem list_take_append_length_add
+    {α : Type*} (left right : List α) (k : ℕ) :
+    List.take (left.length + k) (left ++ right) = left ++ List.take k right := by
+  rw [List.take_append, List.take_of_length_le (Nat.le_add_right _ _),
+    Nat.add_sub_cancel_left]
+
+/-- A `Fin` index shifted by the full left-word length reads the corresponding
+entry of the right word. -/
+theorem list_get_append_right
+    {α : Type*} (left right : List α) (i : Fin right.length) :
+    (left ++ right).get
+      ⟨left.length + i.1, by
+        rw [List.length_append]
+        exact Nat.add_lt_add_left i.2 _⟩ = right.get i := by
+  simp only [List.get_eq_getElem]
+  rw [List.getElem_append_right (Nat.le_add_right _ _)]
+  simp
+
+/-- A coordinate within a left word reads the same entry after appending any
+right word. -/
+theorem list_get_append_left
+    {α : Type*} (left right : List α) (i : Fin left.length) :
+    (left ++ right).get
+      ⟨i.1, by
+        rw [List.length_append]
+        exact lt_of_lt_of_le i.2 (Nat.le_add_right _ _)⟩ = left.get i := by
+  simp only [List.get_eq_getElem]
+  rw [List.getElem_append_left i.2]
+
 /-- A suffix of local identity gates contributes identity to the reverse
 physical product, even when its edge list is only aligned by `zipWith`. -/
 theorem suffix_lifted_reverse_prod_eq_one
@@ -124,17 +155,10 @@ theorem TerminalBlockData.contraction_eq_terminal_mul_prefix
     edgeListBlockContraction edges block.gates =
       totalTwoQubitLift (cone.mergePlan.terminal, root) block.terminalGate *
         (List.zipWith totalTwoQubitLift block.prefixEdges block.prefixGates).reverse.prod := by
-  rcases block with ⟨gates, terminalGate, prefixEdges, suffixEdges, prefixGates, suffixGates,
-    gatesLength, gatesClifford, edgesDecomp, gatesDecomp, prefixLength, suffixLength,
-    suffixIdentity, transportCoeff, transportCoeffNonzero, transport, curveLength, curveZero,
-    contractionDerivative⟩
-  change haferkampGateWordReverseProduct totalTwoQubitLift edges gates = _
-  rw [edgesDecomp, gatesDecomp,
-    haferkampGateWordReverseProduct_append totalTwoQubitLift prefixEdges
-      ((cone.mergePlan.terminal, root) :: suffixEdges) prefixGates
-      (terminalGate :: suffixGates) prefixLength,
-    haferkampGateWordReverseProduct_cons]
-  rw [suffix_lifted_reverse_prod_eq_one suffixEdges suffixGates suffixIdentity]
+  change (List.zipWith totalTwoQubitLift edges block.gates).reverse.prod = _
+  rw [block.liftedWord_decomp_at (cone.mergePlan.terminal, root) block.edges_decomp,
+    List.reverse_append, List.prod_append, List.reverse_cons, List.prod_append,
+    suffix_lifted_reverse_prod_eq_one _ _ block.suffix_identity]
   simp
 
 /-- The terminal Pauli conjugation written at the local coordinate is exactly
@@ -159,10 +183,31 @@ theorem TerminalBlockData.local_conjugation_eq_block_conjugation
           Matrix (Fin n → Bool) (Fin n → Bool) ℂ) =
       Matrix.conjTranspose (edgeListBlockContraction edges block.gates :
         Matrix (Fin n → Bool) (Fin n → Bool) ℂ) * Z *
-        (edgeListBlockContraction edges block.gates :
+    (edgeListBlockContraction edges block.gates :
           Matrix (Fin n → Bool) (Fin n → Bool) ℂ) := by
-  rw [block.contraction_eq_terminal_mul_prefix]
-  simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
+  let beforeProduct : Matrix.unitaryGroup (Fin n → Bool) ℂ :=
+    (List.zipWith totalTwoQubitLift block.prefixEdges block.prefixGates).reverse.prod
+  let terminalLift : Matrix.unitaryGroup (Fin n → Bool) ℂ :=
+    totalTwoQubitLift (cone.mergePlan.terminal, root) block.terminalGate
+  have hblock : edgeListBlockContraction edges block.gates = terminalLift * beforeProduct := by
+    simpa only [beforeProduct, terminalLift] using block.contraction_eq_terminal_mul_prefix
+  have hcoe := congrArg (fun U : Matrix.unitaryGroup (Fin n → Bool) ℂ =>
+    (U : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)) hblock
+  have hcoeMatrices :
+      (edgeListBlockContraction edges block.gates :
+        Matrix (Fin n → Bool) (Fin n → Bool) ℂ) =
+      (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
+        (beforeProduct : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) := hcoe
+  change Matrix.conjTranspose (beforeProduct : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
+      Matrix.conjTranspose (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) * Z *
+      (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
+      (beforeProduct : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) =
+    Matrix.conjTranspose (edgeListBlockContraction edges block.gates :
+      Matrix (Fin n → Bool) (Fin n → Bool) ℂ) * Z *
+      (edgeListBlockContraction edges block.gates :
+        Matrix (Fin n → Bool) (Fin n → Bool) ℂ)
+  rw [hcoeMatrices, Matrix.conjTranspose_mul]
+  simp only [Matrix.mul_assoc]
 
 /-- The retained local index evaluates to the lifted terminal gate at the
 root-targeting edge. -/
@@ -228,6 +273,18 @@ def TerminalBlockPrefixAssembly.terminalOffsets
       step.block.prefixGates.length ::
         (tail.terminalOffsets.map (step.block.gates.length + ·))
 
+/-- The nonzero scalar attached to each retained terminal coordinate, in the
+same order as the requested Pauli labels. -/
+def TerminalBlockPrefixAssembly.terminalCoefficients
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {labels : List (Fin n → Option (Fin 3))} :
+    TerminalBlockPrefixAssembly cone pre labels → List ℂ
+  | .nil _ => []
+  | .cons step tail =>
+      (step.block.transportCoeff * step.prefixCoeff)⁻¹ :: tail.terminalCoefficients
+
 /-- The unitary obtained after executing every block in an assembly. -/
 def TerminalBlockPrefixAssembly.finalPrefix
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
@@ -264,6 +321,60 @@ theorem TerminalBlockPrefixAssembly.terminalOffsets_length_eq_labels_length
   induction assembly with
   | nil => rfl
   | cons step tail ih => simp [terminalOffsets, ih]
+
+/-- There is one retained nonzero scalar per requested Pauli label. -/
+theorem TerminalBlockPrefixAssembly.terminalCoefficients_length_eq_labels_length
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {labels : List (Fin n → Option (Fin 3))}
+    (assembly : TerminalBlockPrefixAssembly cone pre labels) :
+    assembly.terminalCoefficients.length = labels.length := by
+  induction assembly with
+  | nil => rfl
+  | cons step tail ih => simp [terminalCoefficients, ih]
+
+/-- Every scalar retained from a terminal-aware block is nonzero. -/
+theorem TerminalBlockPrefixAssembly.terminalCoefficient_ne_zero
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {labels : List (Fin n → Option (Fin 3))}
+    (assembly : TerminalBlockPrefixAssembly cone pre labels) {c : ℂ}
+    (hmem : c ∈ assembly.terminalCoefficients) : c ≠ 0 := by
+  induction assembly with
+  | nil => simp [terminalCoefficients] at hmem
+  | cons step tail ih =>
+      simp only [terminalCoefficients, List.mem_cons] at hmem
+      rcases hmem with hhead | htail
+      · subst c
+        exact inv_ne_zero (mul_ne_zero step.block.transportCoeff_ne_zero step.prefixCoeff_ne_zero)
+      · exact ih htail
+
+/-- The scalar associated to a requested label, extracted from the terminal
+coefficient word with the same finite index. -/
+def TerminalBlockPrefixAssembly.terminalCoefficient
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {labels : List (Fin n → Option (Fin 3))}
+    (assembly : TerminalBlockPrefixAssembly cone pre labels)
+    (i : Fin labels.length) : ℂ :=
+  assembly.terminalCoefficients.get ⟨i.1, by
+    rw [assembly.terminalCoefficients_length_eq_labels_length]
+    exact i.2⟩
+
+/-- The scalar at every selected terminal coordinate is nonzero. -/
+theorem TerminalBlockPrefixAssembly.terminalCoefficient_apply_ne_zero
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {labels : List (Fin n → Option (Fin 3))}
+    (assembly : TerminalBlockPrefixAssembly cone pre labels)
+    (i : Fin labels.length) : assembly.terminalCoefficient i ≠ 0 := by
+  unfold terminalCoefficient
+  apply assembly.terminalCoefficient_ne_zero
+  exact List.get_mem _ _
 
 /-- Every retained terminal offset is a valid coordinate of the flattened
 physical word. -/
@@ -314,14 +425,149 @@ def TerminalBlockPrefixAssembly.terminalIndices
     {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
     {labels : List (Fin n → Option (Fin 3))}
     (assembly : TerminalBlockPrefixAssembly cone pre labels) :
-    Fin labels.length → Fin assembly.liftedWord.length := fun i =>
-  let offsetIndex : Fin assembly.terminalOffsets.length :=
-    ⟨i.1, by
-      rw [assembly.terminalOffsets_length_eq_labels_length]
-      exact i.2⟩
-  ⟨assembly.terminalOffsets.get offsetIndex,
-    assembly.terminalOffset_lt_liftedWord_length
-      (List.get_mem assembly.terminalOffsets offsetIndex)⟩
+    Fin labels.length → Fin assembly.liftedWord.length := by
+  induction assembly with
+  | nil => exact Fin.elim0
+  | cons step tail ih =>
+      intro i
+      refine Fin.cases ?_ ?_ i
+      · refine ⟨step.block.prefixGates.length, ?_⟩
+        have hlocal := step.block.prefixGates_length_lt_gates_length
+        have hlifted :
+            (List.zipWith totalTwoQubitLift edges step.block.gates).length =
+              step.block.gates.length := by
+          rw [List.length_zipWith]
+          simp [step.block.gates_length]
+        simp only [TerminalBlockPrefixAssembly.liftedWord, List.length_append]
+        exact lt_of_lt_of_le (by simpa [hlifted] using hlocal) (Nat.le_add_right _ _)
+      · intro j
+        refine ⟨step.block.gates.length + (ih j).1, ?_⟩
+        have hlifted :
+            (List.zipWith totalTwoQubitLift edges step.block.gates).length =
+              step.block.gates.length := by
+          rw [List.length_zipWith]
+          simp [step.block.gates_length]
+        simp only [TerminalBlockPrefixAssembly.liftedWord, List.length_append]
+        rw [hlifted]
+        exact Nat.add_lt_add_left (ih j).2 _
+
+/-- The full reverse-chronological prefix immediately before a selected
+terminal coordinate, including the assembly's incoming Clifford prefix. -/
+def TerminalBlockPrefixAssembly.terminalPrefix
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {labels : List (Fin n → Option (Fin 3))}
+    (assembly : TerminalBlockPrefixAssembly cone pre labels)
+    (i : Fin labels.length) : Matrix.unitaryGroup (Fin n → Bool) ℂ :=
+  (assembly.liftedWord.take (assembly.terminalIndices i).1).reverse.prod * pre
+
+/-- The first label of a nonempty assembly selects the current block's
+retained terminal position. -/
+theorem TerminalBlockPrefixAssembly.terminalIndices_cons_zero_val
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {P : Fin n → Option (Fin 3)} {Ps : List (Fin n → Option (Fin 3))}
+    (step : TerminalBlockPrefixStep cone pre P)
+    (tail : TerminalBlockPrefixAssembly cone
+      (edgeListBlockContraction edges step.block.gates * pre) Ps) :
+    ((TerminalBlockPrefixAssembly.cons step tail).terminalIndices 0).1 =
+      step.block.prefixGates.length := rfl
+
+/-- Every later label selects the corresponding tail terminal coordinate,
+shifted by the complete current block length. -/
+theorem TerminalBlockPrefixAssembly.terminalIndices_cons_succ_val
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {P : Fin n → Option (Fin 3)} {Ps : List (Fin n → Option (Fin 3))}
+    (step : TerminalBlockPrefixStep cone pre P)
+    (tail : TerminalBlockPrefixAssembly cone
+      (edgeListBlockContraction edges step.block.gates * pre) Ps)
+    (i : Fin Ps.length) :
+    ((TerminalBlockPrefixAssembly.cons step tail).terminalIndices (Fin.succ i)).1 =
+      step.block.gates.length + (tail.terminalIndices i).1 := rfl
+
+/-- The first terminal scalar is the stripped-coordinate scalar supplied by
+the current block. -/
+theorem TerminalBlockPrefixAssembly.terminalCoefficient_cons_zero
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {P : Fin n → Option (Fin 3)} {Ps : List (Fin n → Option (Fin 3))}
+    (step : TerminalBlockPrefixStep cone pre P)
+    (tail : TerminalBlockPrefixAssembly cone
+      (edgeListBlockContraction edges step.block.gates * pre) Ps) :
+    (TerminalBlockPrefixAssembly.cons step tail).terminalCoefficient 0 =
+      (step.block.transportCoeff * step.prefixCoeff)⁻¹ := rfl
+
+/-- Later terminal scalars are exactly the recursively retained tail
+scalars. -/
+theorem TerminalBlockPrefixAssembly.terminalCoefficient_cons_succ
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {P : Fin n → Option (Fin 3)} {Ps : List (Fin n → Option (Fin 3))}
+    (step : TerminalBlockPrefixStep cone pre P)
+    (tail : TerminalBlockPrefixAssembly cone
+      (edgeListBlockContraction edges step.block.gates * pre) Ps)
+    (i : Fin Ps.length) :
+    (TerminalBlockPrefixAssembly.cons step tail).terminalCoefficient (Fin.succ i) =
+      tail.terminalCoefficient i := rfl
+
+/-- The first terminal prefix is the selected local prefix followed by the
+incoming Clifford prefix. -/
+theorem TerminalBlockPrefixAssembly.terminalPrefix_cons_zero
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {P : Fin n → Option (Fin 3)} {Ps : List (Fin n → Option (Fin 3))}
+    (step : TerminalBlockPrefixStep cone pre P)
+    (tail : TerminalBlockPrefixAssembly cone
+      (edgeListBlockContraction edges step.block.gates * pre) Ps) :
+    (TerminalBlockPrefixAssembly.cons step tail).terminalPrefix 0 =
+      (List.zipWith totalTwoQubitLift step.block.prefixEdges step.block.prefixGates).reverse.prod *
+        pre := by
+  unfold terminalPrefix
+  rw [TerminalBlockPrefixAssembly.terminalIndices_cons_zero_val]
+  simp only [TerminalBlockPrefixAssembly.liftedWord]
+  have hp : step.block.prefixGates.length ≤
+      (List.zipWith totalTwoQubitLift edges step.block.gates).length := by
+    have hlocal := step.block.prefixGates_length_lt_gates_length
+    have hlifted : (List.zipWith totalTwoQubitLift edges step.block.gates).length =
+        step.block.gates.length := by
+      rw [List.length_zipWith]
+      simp [step.block.gates_length]
+    exact Nat.le_of_lt (by simpa [hlifted] using hlocal)
+  rw [List.take_append_of_le_length hp, step.block.take_liftedWord_prefix]
+
+/-- Every later terminal prefix is exactly its recursively indexed tail
+prefix after the current full block has been executed. -/
+theorem TerminalBlockPrefixAssembly.terminalPrefix_cons_succ
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root}
+    {pre : Matrix.unitaryGroup (Fin n → Bool) ℂ}
+    {P : Fin n → Option (Fin 3)} {Ps : List (Fin n → Option (Fin 3))}
+    (step : TerminalBlockPrefixStep cone pre P)
+    (tail : TerminalBlockPrefixAssembly cone
+      (edgeListBlockContraction edges step.block.gates * pre) Ps)
+    (i : Fin Ps.length) :
+    (TerminalBlockPrefixAssembly.cons step tail).terminalPrefix (Fin.succ i) =
+      tail.terminalPrefix i := by
+  unfold terminalPrefix
+  rw [TerminalBlockPrefixAssembly.terminalIndices_cons_succ_val]
+  simp only [TerminalBlockPrefixAssembly.liftedWord]
+  have hlifted : (List.zipWith totalTwoQubitLift edges step.block.gates).length =
+      step.block.gates.length := by
+    rw [List.length_zipWith]
+    simp [step.block.gates_length]
+  rw [← hlifted, list_take_append_length_add, List.reverse_append, List.prod_append]
+  change ((tail.liftedWord.take (tail.terminalIndices i).1).reverse.prod *
+      edgeListBlockContraction edges step.block.gates) * pre =
+    (tail.liftedWord.take (tail.terminalIndices i).1).reverse.prod *
+      (edgeListBlockContraction edges step.block.gates * pre)
+  exact mul_assoc _ _ _
 
 /-- The reverse product of the flattened lifted word composes exactly with
 its incoming prefix to the final recursively indexed prefix. -/

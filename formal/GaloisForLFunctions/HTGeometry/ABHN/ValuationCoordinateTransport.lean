@@ -107,6 +107,50 @@ def uniformEquiv_congr_of_valuation_eq
       v (e.symm y) = w (e (e.symm y)) := (h _).symm
       _ = w y := by rw [e.apply_symm_apply]
 
+/-- Completing a composite uniform equivalence agrees with composing the completed equivalences. -/
+theorem completion_mapEquiv_trans {α β γ : Type*}
+    [UniformSpace α] [UniformSpace β] [UniformSpace γ]
+    (e : α ≃ᵤ β) (f : β ≃ᵤ γ) :
+    (UniformSpace.Completion.mapEquiv e).trans (UniformSpace.Completion.mapEquiv f) =
+      UniformSpace.Completion.mapEquiv (e.trans f) := by
+  apply UniformEquiv.ext
+  intro x
+  refine UniformSpace.Completion.induction_on x ?_ ?_
+  · exact isClosed_eq
+      ((UniformSpace.Completion.mapEquiv e).trans
+        (UniformSpace.Completion.mapEquiv f)).continuous
+      (UniformSpace.Completion.mapEquiv (e.trans f)).continuous
+  · intro a
+    simp only [UniformSpace.Completion.mapEquiv_coe, UniformEquiv.trans_apply]
+
+/-- A completed ring equivalence agrees with the completed uniform equivalence having the same
+underlying map. -/
+theorem completion_mapRingEquiv_toEquiv_eq_mapEquiv
+    {R : Type u} {S : Type v}
+    [Ring R] [UniformSpace R] [IsTopologicalRing R] [IsUniformAddGroup R]
+    [Ring S] [UniformSpace S] [IsTopologicalRing S] [IsUniformAddGroup S]
+    (e : R ≃+* S) (he : Continuous e) (he' : Continuous e.symm)
+    (u : R ≃ᵤ S) (h : e.toEquiv = u.toEquiv) :
+    (UniformSpace.Completion.mapRingEquiv e he he').toEquiv =
+      (UniformSpace.Completion.mapEquiv u).toEquiv := by
+  apply Equiv.ext
+  intro x
+  refine UniformSpace.Completion.induction_on x ?_ ?_
+  · apply isClosed_eq
+    · change Continuous (UniformSpace.Completion.mapRingEquiv e he he')
+      change Continuous (UniformSpace.Completion.map e)
+      exact UniformSpace.Completion.continuous_map
+    · exact (UniformSpace.Completion.mapEquiv u).continuous
+  · intro x
+    change (UniformSpace.Completion.mapRingEquiv e he he') (x : UniformSpace.Completion R) =
+      (UniformSpace.Completion.mapEquiv u) (x : UniformSpace.Completion R)
+    rw [UniformSpace.Completion.mapRingEquiv_apply,
+      UniformSpace.Completion.map_coe
+        (uniformContinuous_addMonoidHom_of_continuous he),
+      UniformSpace.Completion.mapEquiv_coe]
+    exact congrArg (fun y : S => (y : UniformSpace.Completion S))
+      (congrArg (fun q => q x) h)
+
 end
 
 end GaloisForLFunctions.HTGeometry.ABHN

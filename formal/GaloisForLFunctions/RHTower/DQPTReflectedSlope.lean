@@ -55,7 +55,7 @@ theorem dqpt_altTail_normal_tendsto {s : ℂ} (hs : 0 < s.re) :
         = dqptRp (-s) ((N : ℝ) + 1)
             * (dqptAltTail s N - (1 / 2 : ℂ) * dqptRp s ((N : ℝ) + 1)) := by
       have h := hmulinv
-      linear_combination (-(1 : ℂ) / 2) * h
+      linear_combination ((1 : ℂ) / 2) * h
     rw [hfactor, norm_mul]
     have hnorm : ‖dqptRp (-s) ((N : ℝ) + 1)‖ = ((N : ℝ) + 1) ^ (s.re) := by
       rw [dqptRp_norm hM0]
@@ -99,7 +99,7 @@ theorem dqpt_altPartialSum_normal_tendsto {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠
       have : ((-1 : ℂ) ^ N) * ((-1 : ℂ) ^ N) = 1 := by
         rw [← pow_add, ← two_mul, pow_mul]
         norm_num
-      linear_combination -this
+      linear_combination this
     rw [hS]
     linear_combination (dqptRp (-s) ((N : ℝ) + 1) * dqptAltTail s N) * hsign
   exact Tendsto.congr (fun N => (heq N).symm) (dqpt_altTail_normal_tendsto hs)
@@ -153,7 +153,6 @@ theorem dqpt_reflected_ratio_bounds {s s' : ℂ} (hs : 0 < s.re) (hs' : 0 < s'.r
         = 1 / 4 * ((N : ℝ) + 1) ^ (-s.re) := by
       rw [← hratio]
       field_simp
-      ring
     rw [hval]
     exact hlow
   · rw [div_le_iff₀ hApos']
@@ -163,9 +162,8 @@ theorem dqpt_reflected_ratio_bounds {s s' : ℂ} (hs : 0 < s.re) (hs' : 0 < s'.r
         = 3 * ((N : ℝ) + 1) ^ (s'.re - s.re) * (1 / 4 * ((N : ℝ) + 1) ^ (-s'.re)) := by
       rw [← hratio]
       field_simp
-      ring
     rw [hval]
-    refine mul_le_mul_of_nonneg_left hlow ?_
+    refine mul_le_mul_of_nonneg_left hlow' ?_
     positivity
 
 /-- **Card equation (2).**  The two reflected raw tail rates `β ln2` and `(1−β) ln2` agree exactly

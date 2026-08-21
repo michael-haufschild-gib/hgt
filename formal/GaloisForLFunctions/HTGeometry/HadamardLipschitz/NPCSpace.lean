@@ -87,6 +87,21 @@ theorem dist_sq_le_of_between (x q p z : X) (t : ℝ) (ht₀ : 0 ≤ t) (ht₁ :
   rw [eq_gd_of_dist x q p t ht₀ ht₁ h1 h2]
   exact dist_gd_sq_le x q z t ht₀ ht₁
 
+/-- **Convexity of the distance function.**  `d(·, z)` is convex along geodesics. -/
+theorem dist_gd_le (x y z : X) (t : ℝ) (ht₀ : 0 ≤ t) (ht₁ : t ≤ 1) :
+    dist (gd x y t) z ≤ (1 - t) * dist x z + t * dist y z := by
+  have h := dist_gd_sq_le x y z t ht₀ ht₁
+  have htri : |dist x z - dist y z| ≤ dist x y := abs_dist_sub_le _ _ _
+  have hsq : (dist x z - dist y z) ^ 2 ≤ dist x y ^ 2 := by
+    nlinarith [sq_abs (dist x z - dist y z), abs_nonneg (dist x z - dist y z),
+      dist_nonneg (x := x) (y := y), htri]
+  have hrhs : 0 ≤ (1 - t) * dist x z + t * dist y z := by
+    have := dist_nonneg (x := x) (y := z)
+    have := dist_nonneg (x := y) (y := z)
+    nlinarith
+  nlinarith [h, hsq, dist_nonneg (x := gd x y t) (y := z), hrhs, ht₀, ht₁,
+    mul_nonneg ht₀ (by linarith : (0:ℝ) ≤ 1 - t)]
+
 end NPCSpace
 
 /-- **Non-vacuity.** Every real inner-product space is an NPC space; there the NPC inequality

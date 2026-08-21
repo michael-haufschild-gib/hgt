@@ -43,6 +43,10 @@ infrastructure.
 | §7 | product law + individual upper bounds ⟹ individual lower bounds | `DaiYoshikawa/ProductLawTwoSided` | **stage 3** `le_of_prod_le_of_le_div` |
 | §10 Appendix | Gauss–Bonnet defect `2δ_p + Σ(N_q−1) > 0` forces `min K_s → −∞` | `DaiYoshikawa/NormalizationEulerDefect` | **stage 3** `gaussBonnet_normalization_incompatible` |
 | Lemma 2.8, Prop 2.10 | the Duhamel Gaussian constant `(8π)^n t^{k+1−n}/(k+1)` | `DaiYoshikawa/GaussianDuhamelConstant` | **stage 3** `integral_duhamelGaussian_mul_inv` |
+| Lemma 2.3 (extension step) | heat trace antitone in `t`; `(0,1]` bound extends to `(0,∞)` | `DaiYoshikawa/HeatTraceMonotone` | **stage 3** `le_mul_add_one_of_antitoneOn` |
+| §3.1 (3.3) | heat-trace form of `log det'`, convergence, and the cancellation (3.19) | `DaiYoshikawa/RegularizedLogDeterminant` | **stage 3** `logTorsion_sub_logTorsion` |
+| §3.1 (ζ side) | `∫_0^∞ e^{−λt}t^{s−1}dt = Γ(s)λ^{−s}` and `Γ(s)ζ(s) = ∫_0^∞ Θ(t)t^{s−1}dt` | `DaiYoshikawa/SpectralZetaMellin`, `SpectralZetaMellinSum` | **stage 3** `gamma_mul_tsum_rpow_neg_heatTrace` |
+| Corollary 0.4 | comparable power scales have comparable logarithms | `DaiYoshikawa/ComparableLogScales` | **stage 3** `log_inv_le_and_le_of_rpow_bounds` |
 
 ## Out of reach (recorded, not faked)
 Analytic torsion `τ(M,E)` and its zeta-regularized definition; Quillen metrics and the
@@ -56,7 +60,7 @@ content is one of these are not restated as Lean hypotheses.
 ## Gates
 - [x] 0 → 1  in-progress
 - [ ] 1 → 2  paper proof of each extracted core
-- [x] 2 → 3  18 Lean modules green, wired into `GaloisForLFunctions.HTGeometry`; every extracted
+- [x] 2 → 3  24 Lean modules green, wired into `GaloisForLFunctions.HTGeometry`; every extracted
       item at stage 3; axiom audit clean
 - [ ] 3 → 4  n/a (external paper)
 
@@ -70,3 +74,9 @@ content is one of these are not restated as Lean hypotheses.
   comparison chain, Proposition 3.5's uniform spectral tail, Theorem 3.9's summed identity, the
   min–max step of Proposition 6.1, and the Appendix defect.  Every formalizable item of the
   inventory is now at stage 3.
+- 2026-08-22 — 24 modules.  Added the §3.1 regularization layer: the heat-trace form (3.3) of the
+  zeta-regularized log-determinant with both convergence criteria and the cancellation (3.19); the
+  scaled Gamma integral `∫_0^∞ e^{−λt}t^{s−1}dt = Γ(s)λ^{−s}` (a mathlib gap) and the Mellin
+  representation `Γ(s)ζ(s) = ∫_0^∞ Θ(t)t^{s−1}dt`; Lemma 2.3's antitonicity/extension step; and
+  Corollary 0.4's logarithmic comparison.  Open frontier: the meromorphic continuation identifying
+  `ζ'(0)` with (3.3), and everything resting on Quillen metrics.

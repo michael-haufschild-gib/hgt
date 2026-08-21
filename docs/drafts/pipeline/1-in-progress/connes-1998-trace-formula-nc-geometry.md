@@ -425,3 +425,45 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
      Haar measure on `𝔸^*` (the corpus has it only at a finite stage `A_S`).
   3. App I Lemma 3: the continuation step is closed (batch 13); the identity it continues is
      item 2.
+
+- 2026-08-22 — Tier B batch 16 (**§V (19)/(23) closed for the non-Hilbert–Schmidt factor**).
+  The earlier diagnosis "this needs Mercer/Brislawn" was wrong: the trace-class kernel theorem is
+  not required, because only *one* factor has to be Hilbert–Schmidt.
+  * `ConnesFieldTracePairing` — `connes_finset_inner_bound` (Bessel plus Cauchy–Schwarz: on any
+    finite index set `∑ ‖⟪v,b i⟫‖·‖⟪b i,w⟫‖ ≤ ‖v‖·‖w‖`), and
+    **`connes_hsInner_kernelOperator_field`**:
+    `hsInner (T_K) B = ∫ ⟪L x, k_x⟫ dμ`
+    for `T_K` a kernel operator and `B` *any* operator whose rows `L x` are square integrable,
+    provided `∫ ‖K x‖·‖L x‖ dμ < ∞`.  `B` need not be Hilbert–Schmidt.  The finite-index bound is
+    what makes the basis sum uniformly dominated, so the sum/integral exchange is legitimate.
+  * `connes_hsInner_kernelOperator_field_of_kernel` — the hypotheses have models: two kernel
+    operators satisfy them (row field `(toDual)⁻¹ ∘ L'`, product of row norms integrable by
+    Hölder), and the value agrees with `connes_hsInner_kernelOperator`.  So the field pairing
+    genuinely extends the polarized energy rather than being vacuous.
+  Why this settles Connes' `Trace(R_Λ U(h)) = ∫∫ k r^t`: `R_Λ^†` is a kernel operator
+  (`connesConvKernel`, batch 10) with `‖K x‖ = ρ_Λ(x)‖ρ̂_Λ‖`; `U(h)` has kernel
+  `h(x/y)/(ρ|y|)`, and the substitution `u = x/y` gives `‖L x‖ = ‖h‖/√|x|` — finite for a.e. `x`,
+  though `∫‖L x‖² dx = ∞`, which is exactly why `U(h)` is not Hilbert–Schmidt.  The *pairing*
+  integrand is only `ρ_Λ(x)‖ρ̂_Λ‖‖h‖/√|x|`, and `1/√|x|` is integrable in one dimension, so
+  `∫ ‖K x‖‖L x‖ dx < ∞` holds.  The `1/|y|` singularity that destroys Hilbert–Schmidt membership
+  is only a `1/√|x|` in the trace pairing.
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 17 (**App I Lemma 1 at a finite stage — the Tate factorization**).
+  * `ConnesTateFiniteStage` — `connes_padic_sigmaCompact` (`ℚ_p^*` is σ-compact: the corpus's
+    valuation/unit homeomorphism carries `ℤ × ℤ_p^*` onto it) and the instance
+    `connes_padic_multHaar_sigmaFinite`, which is what makes the product measure usable;
+    **`connes_tate_finiteStage_prod`** — for any finite family of primes and any unramified local
+    data `w i` with `‖w i‖ < 1`,
+    `∫_{∏_i ℚ_{p_i}^*} ∏_i (radial profile w_i) d^*x = ∏_i (1 - w_i)^{-1}`,
+    i.e. Lemma 1's factorization `Δ_s = ∏_v Δ_{s,v}` over a finite set of places, by mathlib's
+    `integral_fintype_prod_eq_prod` and the local geometric evaluation of batch 15;
+    **`connes_tate_finiteStage_eulerProduct`** — the `Χ_0 = 1` case,
+    `= ∏_i (1 - p_i^{-s})^{-1}`, the partial Euler product, for every `Re s > 0`.
+  This is Lemma 1 over `A_S`, which is the stage at which §VII actually works.  What is still
+  missing is only the passage to the *full* adele ring: a restricted-product multiplicative Haar
+  measure on `𝔸^*` and the corresponding infinite factorization.  Note the convergence half of
+  that passage is already Lean-owned — `connes_tate_local_zeta_tprod` shows the infinite product
+  of the local factors is `ζ(s)` for `Re s > 1`, which is exactly Connes' *"the convergence for
+  σ > 1 is the same as for the zeta function"*.
+  All `#print axioms` clean.

@@ -61,6 +61,13 @@ theorem dist_flow_flow_line {t s : ℝ} (ht : 0 ≤ t) (hts : t ≤ s) (x : X) :
   rw [h]
   exact F.dist_flow (s - t) (by linarith) (F.flow t x)
 
+/-- Distance along a single flow line, without an ordering hypothesis. -/
+theorem dist_flow_flow_abs {t s : ℝ} (ht : 0 ≤ t) (hs : 0 ≤ s) (x : X) :
+    dist (F.flow t x) (F.flow s x) = |s - t| := by
+  rcases le_total t s with h | h
+  · rw [F.dist_flow_flow_line ht h x, abs_of_nonneg (by linarith)]
+  · rw [dist_comm, F.dist_flow_flow_line hs h x, abs_of_nonpos (by linarith)]; ring
+
 /-- The Busemann function decreases at unit rate along the flow. -/
 theorem fn_flow {t : ℝ} (ht : 0 ≤ t) (x : X) : F.fn (F.flow t x) = F.fn x - t := by
   have h := F.tendsto_fn x (F.flow t x)

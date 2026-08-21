@@ -71,13 +71,6 @@ theorem hasDerivAt_energy (hB : IsCancelling B) {u h : ℝ → E} {t : ℝ}
     (hh : HasDerivAt h (magneticField A B eta g (u t) (h t)) t) :
     HasDerivAt (energy u h)
       (2 * (-(dissipation A nu eta u h t) + forcingPower f g u h t)) t := by
-  have hrw : energy u h = fun s => ⟪u s, u s⟫_ℝ + ⟪h s, h s⟫_ℝ := by
-    funext s
-    simp [energy, real_inner_self_eq_norm_sq]
-  have hdu := (hu.inner ℝ hu).add (hh.inner ℝ hh)
-  rw [hrw]
-  convert hdu using 1
-  -- expand the inner products of the two field equations
   have e1 : ⟪velocityField A B nu f (u t) (h t), u t⟫_ℝ
       = -(nu * ⟪A (u t), u t⟫_ℝ) + ⟪B (u t) (u t), u t⟫_ℝ - ⟪B (h t) (h t), u t⟫_ℝ
         + ⟪f, u t⟫_ℝ := by
@@ -91,13 +84,23 @@ theorem hasDerivAt_energy (hB : IsCancelling B) {u h : ℝ → E} {t : ℝ}
   have c1 : ⟪B (u t) (u t), u t⟫_ℝ = 0 := hB.inner_self_eq_zero _ _
   have c2 : ⟪B (u t) (h t), h t⟫_ℝ = 0 := hB.inner_self_eq_zero _ _
   have c3 : ⟪B (h t) (h t), u t⟫_ℝ = -⟪B (h t) (u t), h t⟫_ℝ := hB _ _ _
-  have s1 : ⟪u t, velocityField A B nu f (u t) (h t)⟫_ℝ
-      = ⟪velocityField A B nu f (u t) (h t), u t⟫_ℝ := real_inner_comm _ _
-  have s2 : ⟪h t, magneticField A B eta g (u t) (h t)⟫_ℝ
-      = ⟪magneticField A B eta g (u t) (h t), h t⟫_ℝ := real_inner_comm _ _
-  rw [s1, s2, e1, e2, c1, c2, c3]
-  simp only [dissipation, forcingPower]
-  ring
+  have hval : ⟪u t, velocityField A B nu f (u t) (h t)⟫_ℝ
+        + ⟪velocityField A B nu f (u t) (h t), u t⟫_ℝ
+        + (⟪h t, magneticField A B eta g (u t) (h t)⟫_ℝ
+          + ⟪magneticField A B eta g (u t) (h t), h t⟫_ℝ)
+      = 2 * (-(dissipation A nu eta u h t) + forcingPower f g u h t) := by
+    have s1 : ⟪u t, velocityField A B nu f (u t) (h t)⟫_ℝ
+        = ⟪velocityField A B nu f (u t) (h t), u t⟫_ℝ := real_inner_comm _ _
+    have s2 : ⟪h t, magneticField A B eta g (u t) (h t)⟫_ℝ
+        = ⟪magneticField A B eta g (u t) (h t), h t⟫_ℝ := real_inner_comm _ _
+    rw [s1, s2, e1, e2, c1, c2, c3]
+    simp only [dissipation, forcingPower]
+    ring
+  have hrw : energy u h = fun s => ⟪u s, u s⟫_ℝ + ⟪h s, h s⟫_ℝ := by
+    funext s
+    simp [energy]
+  rw [hrw, ← hval]
+  exact (hu.inner ℝ hu).add (hh.inner ℝ hh)
 
 /-- The energy of a solution is differentiable, hence continuous. -/
 theorem continuousOn_energy (hB : IsCancelling B) {u h : ℝ → E} {s : Set ℝ}
@@ -106,5 +109,415 @@ theorem continuousOn_energy (hB : IsCancelling B) {u h : ℝ → E} {s : Set ℝ
   exact ((hasDerivAt_energy hB (hsol t ht).1 (hsol t ht).2).continuousAt).continuousWithinAt
 
 end TwoField
+
+/-! ## A scalar comparison lemma -/
+
+section Comparison
+
+/-- Grönwall comparison in the form used below: a real function with `φ' ≤ K φ + c` is bounded by
+the corresponding Grönwall envelope. -/
+theorem le_gronwallBound_of_hasDerivAt {φ φ' : ℝ → ℝ} {K c T : ℝ}
+    (hcont : ContinuousOn φ (Icc 0 T))
+    (hderiv : ∀ t ∈ Ico 0 T, HasDerivAt φ (φ' t) t)
+    (hbound : ∀ t ∈ Ico 0 T, φ' t ≤ K * φ t + c) :
+    ∀ t ∈ Icc 0 T, φ t ≤ gronwallBound (φ 0) K c t := by
+  have key := le_gronwallBound_of_liminf_deriv_right_le (f := φ) (f' := φ') (δ := φ 0)
+    (K := K) (ε := c) (a := 0) (b := T) hcont
+    (fun x hx r hr => by
+      have hs := ((hderiv x hx).hasDerivWithinAt (s := Ici x)).liminf_right_slope_le hr
+      simpa [slope, smul_eq_mul] using hs)
+    le_rfl hbound
+  intro t ht
+  simpa using key t ht
+
+end Comparison
+
+/-! ## The energy inequalities -/
+
+section Estimates
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {A : E →L[ℝ] E} {B : E →L[ℝ] E →L[ℝ] E} {nu eta : ℝ} {f g : E}
+
+/-- **The integrated energy identity (15)–(16).** -/
+theorem integral_dissipation_identity (hB : IsCancelling B) {u h : ℝ → E} {T : ℝ}
+    (hsol : IsSolutionOn A B nu eta f g u h (uIcc 0 T)) :
+    2 * ∫ t in (0 : ℝ)..T, dissipation A nu eta u h t
+      = energy u h 0 - energy u h T + 2 * ∫ t in (0 : ℝ)..T, forcingPower f g u h t := by
+  have hcontu : ContinuousOn u (uIcc 0 T) := fun t ht =>
+    ((hsol t ht).1.continuousAt).continuousWithinAt
+  have hconth : ContinuousOn h (uIcc 0 T) := fun t ht =>
+    ((hsol t ht).2.continuousAt).continuousWithinAt
+  have hcd : ContinuousOn (dissipation A nu eta u h) (uIcc 0 T) := by
+    refine ContinuousOn.add (ContinuousOn.mul continuousOn_const ?_)
+      (ContinuousOn.mul continuousOn_const ?_)
+    · exact (continuous_inner.comp_continuousOn ((A.continuous.comp_continuousOn hcontu).prodMk
+        hcontu))
+    · exact (continuous_inner.comp_continuousOn ((A.continuous.comp_continuousOn hconth).prodMk
+        hconth))
+  have hcf : ContinuousOn (forcingPower f g u h) (uIcc 0 T) := by
+    refine ContinuousOn.add ?_ ?_
+    · exact (continuous_inner.comp_continuousOn (continuousOn_const.prodMk hcontu))
+    · exact (continuous_inner.comp_continuousOn (continuousOn_const.prodMk hconth))
+  have hd : IntervalIntegrable (dissipation A nu eta u h) volume 0 T := hcd.intervalIntegrable
+  have hf' : IntervalIntegrable (forcingPower f g u h) volume 0 T := hcf.intervalIntegrable
+  have hint : ∫ t in (0 : ℝ)..T, (2 * (-(dissipation A nu eta u h t) + forcingPower f g u h t))
+      = energy u h T - energy u h 0 :=
+    intervalIntegral.integral_eq_sub_of_hasDerivAt
+      (fun t ht => hasDerivAt_energy hB (hsol t ht).1 (hsol t ht).2)
+      ((hd.neg.add hf').const_mul 2)
+  have hsplit : ∫ x in (0 : ℝ)..T, (-(dissipation A nu eta u h x) + forcingPower f g u h x)
+      = (∫ x in (0 : ℝ)..T, -(dissipation A nu eta u h x))
+        + ∫ x in (0 : ℝ)..T, forcingPower f g u h x :=
+    intervalIntegral.integral_add hd.neg hf'
+  have hneg : ∫ x in (0 : ℝ)..T, -(dissipation A nu eta u h x)
+      = -∫ x in (0 : ℝ)..T, dissipation A nu eta u h x := intervalIntegral.integral_neg
+  rw [intervalIntegral.integral_const_mul, hsplit, hneg] at hint
+  linarith
+
+end Estimates
+
+/-! ## Coercive long-time dynamics -/
+
+section Coercive
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {A : E →L[ℝ] E} {B : E →L[ℝ] E →L[ℝ] E} {nu eta lam : ℝ} {f g : E}
+
+/-- The decay rate `β = min(ν,η) λ` of the paper. -/
+def decayRate (nu eta lam : ℝ) : ℝ := min nu eta * lam
+
+theorem decayRate_pos (hnu : 0 < nu) (heta : 0 < eta) (hlam : 0 < lam) :
+    0 < decayRate nu eta lam := mul_pos (lt_min hnu heta) hlam
+
+/-- Nonnegativity of the dissipation. -/
+theorem dissipation_nonneg (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 ≤ nu) (heta : 0 ≤ eta)
+    (u h : ℝ → E) (t : ℝ) : 0 ≤ dissipation A nu eta u h t :=
+  add_nonneg (mul_nonneg hnu (hA _)) (mul_nonneg heta (hA _))
+
+/-- Coercivity of `Δ` transfers to the two-field dissipation with the rate `β`. -/
+theorem decayRate_mul_energy_le_dissipation
+    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+    (hlam : 0 ≤ lam) (u h : ℝ → E) (t : ℝ) :
+    decayRate nu eta lam * energy u h t ≤ dissipation A nu eta u h t := by
+  have h1 : min nu eta * (lam * ‖u t‖ ^ 2) ≤ nu * ⟪A (u t), u t⟫_ℝ := by
+    have hmin : min nu eta ≤ nu := min_le_left _ _
+    have hpos : (0 : ℝ) ≤ lam * ‖u t‖ ^ 2 := mul_nonneg hlam (sq_nonneg _)
+    nlinarith [hcoe (u t)]
+  have h2 : min nu eta * (lam * ‖h t‖ ^ 2) ≤ eta * ⟪A (h t), h t⟫_ℝ := by
+    have hmin : min nu eta ≤ eta := min_le_right _ _
+    have hpos : (0 : ℝ) ≤ lam * ‖h t‖ ^ 2 := mul_nonneg hlam (sq_nonneg _)
+    nlinarith [hcoe (h t)]
+  simp only [decayRate, energy, dissipation]
+  nlinarith
+
+/-- Young's inequality applied to the forcing power. -/
+theorem two_mul_forcingPower_le (hbeta : 0 < decayRate nu eta lam) (u h : ℝ → E) (t : ℝ) :
+    2 * forcingPower f g u h t
+      ≤ decayRate nu eta lam * energy u h t
+        + (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam := by
+  set b := decayRate nu eta lam with hb
+  have hbne : b ≠ 0 := ne_of_gt hbeta
+  have hfu : ⟪f, u t⟫_ℝ ≤ ‖f‖ * ‖u t‖ := real_inner_le_norm _ _
+  have hgh : ⟪g, h t⟫_ℝ ≤ ‖g‖ * ‖h t‖ := real_inner_le_norm _ _
+  have hcf : ‖f‖ ^ 2 / b * b = ‖f‖ ^ 2 := div_mul_cancel₀ _ hbne
+  have hcg : ‖g‖ ^ 2 / b * b = ‖g‖ ^ 2 := div_mul_cancel₀ _ hbne
+  have y1 : 2 * (‖f‖ * ‖u t‖) ≤ b * ‖u t‖ ^ 2 + ‖f‖ ^ 2 / b := by
+    nlinarith [sq_nonneg (b * ‖u t‖ - ‖f‖), hbeta, hcf]
+  have y2 : 2 * (‖g‖ * ‖h t‖) ≤ b * ‖h t‖ ^ 2 + ‖g‖ ^ 2 / b := by
+    nlinarith [sq_nonneg (b * ‖h t‖ - ‖g‖), hbeta, hcg]
+  have hsplit : (‖f‖ ^ 2 + ‖g‖ ^ 2) / b = ‖f‖ ^ 2 / b + ‖g‖ ^ 2 / b := by ring
+  simp only [forcingPower, energy]
+  rw [hsplit]
+  nlinarith [hfu, hgh, y1, y2]
+
+/-- **Proposition 2 (the forced scalar inequality (13)).** -/
+theorem energy_deriv_le_forced
+    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+    (hlam : 0 < lam) (u h : ℝ → E) (t : ℝ) :
+    2 * (-(dissipation A nu eta u h t) + forcingPower f g u h t)
+      ≤ -(decayRate nu eta lam) * energy u h t
+        + (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam := by
+  have hbeta := decayRate_pos hnu heta hlam
+  have h1 := decayRate_mul_energy_le_dissipation hcoe hnu heta hlam.le u h t
+  have h2 := two_mul_forcingPower_le (f := f) (g := g) hbeta u h t
+  linarith
+
+/-- **Proposition 2, explicit envelope (14).** -/
+theorem energy_le_forced (hB : IsCancelling B)
+    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+    (hlam : 0 < lam) {u h : ℝ → E} {T : ℝ}
+    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T)) :
+    ∀ t ∈ Icc (0 : ℝ) T, energy u h t
+      ≤ energy u h 0 * Real.exp (-(decayRate nu eta lam) * t)
+        + (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam ^ 2
+          * (1 - Real.exp (-(decayRate nu eta lam) * t)) := by
+  have hbeta := decayRate_pos (nu := nu) (eta := eta) (lam := lam) hnu heta hlam
+  have hne : -(decayRate nu eta lam) ≠ 0 := by
+    intro hc
+    exact absurd (neg_eq_zero.mp hc) (ne_of_gt hbeta)
+  have hgb := le_gronwallBound_of_hasDerivAt (φ := energy u h)
+    (φ' := fun t => 2 * (-(dissipation A nu eta u h t) + forcingPower f g u h t))
+    (K := -(decayRate nu eta lam)) (c := (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam) (T := T)
+    (continuousOn_energy hB hsol)
+    (fun t ht => hasDerivAt_energy hB (hsol t (Ico_subset_Icc_self ht)).1
+      (hsol t (Ico_subset_Icc_self ht)).2)
+    (fun t _ => energy_deriv_le_forced hcoe hnu heta hlam u h t)
+  intro t ht
+  have hb := hgb t ht
+  rw [gronwallBound_of_K_ne_0 hne] at hb
+  refine le_trans hb (le_of_eq ?_)
+  field_simp
+  ring
+
+/-- **Theorem 4 (unforced coercive decay).**  With zero forcing the origin attracts every
+trajectory at the exponential rate `2β`. -/
+theorem energy_le_unforced (hB : IsCancelling B)
+    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+    (hlam : 0 < lam) {u h : ℝ → E} {T : ℝ}
+    (hsol : IsSolutionOn A B nu eta (0 : E) (0 : E) u h (Icc 0 T)) :
+    ∀ t ∈ Icc (0 : ℝ) T, energy u h t
+      ≤ energy u h 0 * Real.exp (-(2 * decayRate nu eta lam) * t) := by
+  have hbeta := decayRate_pos (nu := nu) (eta := eta) (lam := lam) hnu heta hlam
+  have hzero : ∀ t : ℝ, forcingPower (0 : E) (0 : E) u h t = 0 := by
+    intro t; simp [forcingPower]
+  have hgb := le_gronwallBound_of_hasDerivAt (φ := energy u h)
+    (φ' := fun t => 2 * (-(dissipation A nu eta u h t) + forcingPower (0 : E) (0 : E) u h t))
+    (K := -(2 * decayRate nu eta lam)) (c := 0) (T := T)
+    (continuousOn_energy hB hsol)
+    (fun t ht => hasDerivAt_energy hB (hsol t (Ico_subset_Icc_self ht)).1
+      (hsol t (Ico_subset_Icc_self ht)).2)
+    (fun t _ => by
+      have h1 := decayRate_mul_energy_le_dissipation hcoe hnu heta hlam.le u h t
+      rw [hzero t]
+      linarith)
+  intro t ht
+  have hb := hgb t ht
+  rwa [gronwallBound_ε0] at hb
+
+/-- **Theorem 3 (positively invariant absorbing ball).**  For `R > F/β` the ball `E ≤ R²` is
+positively invariant. -/
+theorem energy_le_sq_of_le_sq (hB : IsCancelling B)
+    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+    (hlam : 0 < lam) {u h : ℝ → E} {T R : ℝ}
+    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T))
+    (hR : Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam < R)
+    (h0 : energy u h 0 ≤ R ^ 2) :
+    ∀ t ∈ Icc (0 : ℝ) T, energy u h t ≤ R ^ 2 := by
+  have hbeta := decayRate_pos (nu := nu) (eta := eta) (lam := lam) hnu heta hlam
+  have hF2 : (0 : ℝ) ≤ ‖f‖ ^ 2 + ‖g‖ ^ 2 := by positivity
+  have hFsq : Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) ^ 2 = ‖f‖ ^ 2 + ‖g‖ ^ 2 := Real.sq_sqrt hF2
+  have hFnn : 0 ≤ Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) := Real.sqrt_nonneg _
+  have hquot : 0 ≤ Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam :=
+    div_nonneg hFnn hbeta.le
+  have hkey : (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam ^ 2 ≤ R ^ 2 := by
+    have hsq : (Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam) ^ 2 ≤ R ^ 2 := by
+      nlinarith [hquot, hR]
+    rw [div_pow, hFsq] at hsq
+    exact hsq
+  intro t ht
+  have hbnd := energy_le_forced hB hcoe hnu heta hlam hsol t ht
+  have hexp : Real.exp (-(decayRate nu eta lam) * t) ≤ 1 := by
+    rw [Real.exp_le_one_iff]
+    have : 0 ≤ t := ht.1
+    nlinarith
+  have hexp0 : 0 < Real.exp (-(decayRate nu eta lam) * t) := Real.exp_pos _
+  nlinarith [hbnd, hkey, h0, hexp, hexp0]
+
+/-- **Theorem 3 (absorption).**  Every bounded set of initial data enters the ball `E ≤ R²`
+after a uniform time. -/
+theorem exists_absorbing_time
+    (hnu : 0 < nu) (heta : 0 < eta) (hlam : 0 < lam) {R rho : ℝ}
+    (hR : Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam < R) (hrho : 0 ≤ rho) :
+    ∃ T₀ : ℝ, 0 ≤ T₀ ∧ ∀ {u h : ℝ → E} {T : ℝ},
+      IsCancelling B → IsSolutionOn A B nu eta f g u h (Icc 0 T) →
+      (∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) →
+      energy u h 0 ≤ rho → ∀ t ∈ Icc (0 : ℝ) T, T₀ ≤ t → energy u h t ≤ R ^ 2 := by
+  have hbeta := decayRate_pos (nu := nu) (eta := eta) (lam := lam) hnu heta hlam
+  have hF2 : (0 : ℝ) ≤ ‖f‖ ^ 2 + ‖g‖ ^ 2 := by positivity
+  have hFsq : Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) ^ 2 = ‖f‖ ^ 2 + ‖g‖ ^ 2 := Real.sq_sqrt hF2
+  have hFnn : 0 ≤ Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) := Real.sqrt_nonneg _
+  have hquot : 0 ≤ Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam :=
+    div_nonneg hFnn hbeta.le
+  set c : ℝ := R ^ 2 - (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam ^ 2 with hc
+  have hcpos : 0 < c := by
+    have hsq : (Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam) ^ 2 < R ^ 2 := by
+      nlinarith [hquot, hR]
+    rw [div_pow, hFsq] at hsq
+    simp only [hc]
+    linarith
+  refine ⟨Real.log ((rho + c) / c) / decayRate nu eta lam, ?_, ?_⟩
+  · have h1 : 1 ≤ (rho + c) / c := by
+      rw [le_div_iff₀ hcpos]
+      linarith
+    exact div_nonneg (Real.log_nonneg h1) hbeta.le
+  · intro u h T hB hsol hcoe h0 t ht hT
+    have hbnd := energy_le_forced hB hcoe hnu heta hlam hsol t ht
+    have hexp0 : 0 < Real.exp (-(decayRate nu eta lam) * t) := Real.exp_pos _
+    have hexp1 : Real.exp (-(decayRate nu eta lam) * t) ≤ 1 := by
+      rw [Real.exp_le_one_iff]
+      nlinarith [ht.1]
+    have hlogle : Real.log ((rho + c) / c) ≤ decayRate nu eta lam * t := by
+      have := (div_le_iff₀ hbeta).mp hT
+      linarith [this]
+    have hexp2 : (rho + c) / c ≤ Real.exp (decayRate nu eta lam * t) := by
+      have hpos : 0 < (rho + c) / c := by positivity
+      calc (rho + c) / c = Real.exp (Real.log ((rho + c) / c)) := (Real.exp_log hpos).symm
+        _ ≤ Real.exp (decayRate nu eta lam * t) := Real.exp_le_exp.mpr hlogle
+    have hinv : Real.exp (-(decayRate nu eta lam) * t)
+        = (Real.exp (decayRate nu eta lam * t))⁻¹ := by
+      rw [← Real.exp_neg]; ring_nf
+    have hepos : 0 < Real.exp (decayRate nu eta lam * t) := Real.exp_pos _
+    have hle : rho * Real.exp (-(decayRate nu eta lam) * t) ≤ c := by
+      rw [hinv, mul_inv_le_iff₀ hepos]
+      have hrc : 0 < rho + c := by linarith
+      have := (div_le_iff₀ hcpos).mp hexp2
+      nlinarith [hcpos, hrho]
+    have hQnn : (0 : ℝ) ≤ (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam ^ 2 := by positivity
+    have hEe : energy u h 0 * Real.exp (-(decayRate nu eta lam) * t)
+        ≤ rho * Real.exp (-(decayRate nu eta lam) * t) :=
+      mul_le_mul_of_nonneg_right h0 hexp0.le
+    have hQ1 : (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam ^ 2
+          * (1 - Real.exp (-(decayRate nu eta lam) * t))
+        ≤ (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam ^ 2 := by
+      nlinarith [hQnn, hexp0]
+    linarith [hc]
+
+/-- An unconditional a priori bound: dropping the dissipation entirely, the energy of any
+solution grows at most exponentially.  This is what rules out finite-time blow-up. -/
+theorem energy_le_apriori (hB : IsCancelling B) (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ)
+    (hnu : 0 ≤ nu) (heta : 0 ≤ eta) {u h : ℝ → E} {T : ℝ}
+    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T)) :
+    ∀ t ∈ Icc (0 : ℝ) T, energy u h t
+      ≤ energy u h 0 * Real.exp t + (‖f‖ ^ 2 + ‖g‖ ^ 2) * (Real.exp t - 1) := by
+  have hgb := le_gronwallBound_of_hasDerivAt (φ := energy u h)
+    (φ' := fun t => 2 * (-(dissipation A nu eta u h t) + forcingPower f g u h t))
+    (K := 1) (c := ‖f‖ ^ 2 + ‖g‖ ^ 2) (T := T)
+    (continuousOn_energy hB hsol)
+    (fun t ht => hasDerivAt_energy hB (hsol t (Ico_subset_Icc_self ht)).1
+      (hsol t (Ico_subset_Icc_self ht)).2)
+    (fun t _ => by
+      have hd := dissipation_nonneg hA hnu heta u h t
+      have hfu : ⟪f, u t⟫_ℝ ≤ ‖f‖ * ‖u t‖ := real_inner_le_norm _ _
+      have hgh : ⟪g, h t⟫_ℝ ≤ ‖g‖ * ‖h t‖ := real_inner_le_norm _ _
+      have y1 : 2 * (‖f‖ * ‖u t‖) ≤ ‖u t‖ ^ 2 + ‖f‖ ^ 2 := by
+        nlinarith [sq_nonneg (‖u t‖ - ‖f‖)]
+      have y2 : 2 * (‖g‖ * ‖h t‖) ≤ ‖h t‖ ^ 2 + ‖g‖ ^ 2 := by
+        nlinarith [sq_nonneg (‖h t‖ - ‖g‖)]
+      simp only [forcingPower, energy]
+      linarith)
+  intro t ht
+  have hb := hgb t ht
+  rw [gronwallBound_of_K_ne_0 (one_ne_zero)] at hb
+  simpa using hb
+
+
+end Coercive
+
+/-! ## Continuous dependence on bounded sets (§3.4) -/
+
+section ContinuousDependence
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {A : E →L[ℝ] E} {B : E →L[ℝ] E →L[ℝ] E} {nu eta : ℝ} {f g : E}
+
+/-- The difference of the two velocity fields is forcing free. -/
+theorem velocityField_sub (u h ubar hbar : E) :
+    velocityField A B nu f u h - velocityField A B nu f ubar hbar
+      = -(nu • A (u - ubar)) + (B u u - B ubar ubar) - (B h h - B hbar hbar) := by
+  simp only [velocityField, map_sub, smul_sub]
+  abel
+
+/-- The difference of the two magnetic fields is forcing free. -/
+theorem magneticField_sub (u h ubar hbar : E) :
+    magneticField A B eta g u h - magneticField A B eta g ubar hbar
+      = -(eta • A (h - hbar)) + (B u h - B ubar hbar) - (B h u - B hbar ubar) := by
+  simp only [magneticField, map_sub, smul_sub]
+  abel
+
+/-- The energy of the difference of two solutions is differentiable, with the expected
+derivative. -/
+theorem hasDerivAt_energyDiff {u h ubar hbar : ℝ → E} {t : ℝ}
+    (hu : HasDerivAt u (velocityField A B nu f (u t) (h t)) t)
+    (hh : HasDerivAt h (magneticField A B eta g (u t) (h t)) t)
+    (hu2 : HasDerivAt ubar (velocityField A B nu f (ubar t) (hbar t)) t)
+    (hh2 : HasDerivAt hbar (magneticField A B eta g (ubar t) (hbar t)) t) :
+    HasDerivAt (fun s => ‖u s - ubar s‖ ^ 2 + ‖h s - hbar s‖ ^ 2)
+      (2 * (⟪velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t),
+              u t - ubar t⟫_ℝ
+            + ⟪magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t),
+              h t - hbar t⟫_ℝ)) t := by
+  have hw := hu.sub hu2
+  have hz := hh.sub hh2
+  have hrw : (fun s => ‖u s - ubar s‖ ^ 2 + ‖h s - hbar s‖ ^ 2)
+      = fun s => ⟪u s - ubar s, u s - ubar s⟫_ℝ + ⟪h s - hbar s, h s - hbar s⟫_ℝ := by
+    funext s
+    simp
+  have s1 : ⟪u t - ubar t,
+        velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t)⟫_ℝ
+      = ⟪velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t),
+        u t - ubar t⟫_ℝ := real_inner_comm _ _
+  have s2 : ⟪h t - hbar t,
+        magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t)⟫_ℝ
+      = ⟪magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t),
+        h t - hbar t⟫_ℝ := real_inner_comm _ _
+  have hval : ⟪u t - ubar t,
+        velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t)⟫_ℝ
+        + ⟪velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t),
+          u t - ubar t⟫_ℝ
+      + (⟪h t - hbar t,
+          magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t)⟫_ℝ
+        + ⟪magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t),
+          h t - hbar t⟫_ℝ)
+      = 2 * (⟪velocityField A B nu f (u t) (h t) - velocityField A B nu f (ubar t) (hbar t),
+              u t - ubar t⟫_ℝ
+            + ⟪magneticField A B eta g (u t) (h t) - magneticField A B eta g (ubar t) (hbar t),
+              h t - hbar t⟫_ℝ) := by
+    rw [s1, s2]; ring
+  rw [hrw, ← hval]
+  exact (hw.inner ℝ hw).add (hz.inner ℝ hz)
+
+/-- **Estimate (11).**  On a ball of radius `R` the difference energy obeys a linear differential
+inequality with constant `8‖B‖R`. -/
+theorem inner_field_diff_le (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 ≤ nu) (heta : 0 ≤ eta)
+    {R : ℝ} {u h ubar hbar : E} (hu : ‖u‖ ≤ R) (hh : ‖h‖ ≤ R) (hub : ‖ubar‖ ≤ R)
+    (hhb : ‖hbar‖ ≤ R) :
+    2 * (⟪velocityField A B nu f u h - velocityField A B nu f ubar hbar, u - ubar⟫_ℝ
+        + ⟪magneticField A B eta g u h - magneticField A B eta g ubar hbar, h - hbar⟫_ℝ)
+      ≤ 8 * ‖B‖ * R * (‖u - ubar‖ ^ 2 + ‖h - hbar‖ ^ 2) := by
+  have hR : 0 ≤ R := le_trans (norm_nonneg u) hu
+  have hBn : (0 : ℝ) ≤ ‖B‖ := norm_nonneg B
+  set w := u - ubar with hw
+  set z := h - hbar with hz
+  have hwn : 0 ≤ ‖w‖ := norm_nonneg w
+  have hzn : 0 ≤ ‖z‖ := norm_nonneg z
+  -- expand the two differences
+  rw [velocityField_sub, magneticField_sub]
+  rw [inner_sub_left, inner_add_left, inner_sub_left, inner_add_left]
+  -- the dissipative parts are nonpositive
+  have d1 : ⟪-(nu • A w), w⟫_ℝ ≤ 0 := by
+    rw [inner_neg_left, real_inner_smul_left]
+    have := hA w
+    nlinarith
+  have d2 : ⟪-(eta • A z), z⟫_ℝ ≤ 0 := by
+    rw [inner_neg_left, real_inner_smul_left]
+    have := hA z
+    nlinarith
+  -- the quadratic parts
+  have q1 : ⟪B u u - B ubar ubar, w⟫_ℝ ≤ 2 * ‖B‖ * R * ‖w‖ * ‖w‖ := by
+    refine le_trans (real_inner_le_norm _ _) ?_
+    exact mul_le_mul_of_nonneg_right (norm_interaction_diag_sub_le B hu hub) hwn
+  have q2 : -⟪B h h - B hbar hbar, w⟫_ℝ ≤ 2 * ‖B‖ * R * ‖z‖ * ‖w‖ := by
+    refine le_trans (neg_le_abs _) (le_trans (abs_real_inner_le_norm _ _) ?_)
+    exact mul_le_mul_of_nonneg_right (norm_interaction_diag_sub_le B hh hhb) hwn
+  have q3 : ⟪B u h - B ubar hbar, z⟫_ℝ ≤ ‖B‖ * R * (‖w‖ + ‖z‖) * ‖z‖ := by
+    refine le_trans (real_inner_le_norm _ _) ?_
+    exact mul_le_mul_of_nonneg_right (norm_interaction_mixed_sub_le B hu hh hub hhb) hzn
+  have q4 : -⟪B h u - B hbar ubar, z⟫_ℝ ≤ ‖B‖ * R * (‖z‖ + ‖w‖) * ‖z‖ := by
+    refine le_trans (neg_le_abs _) (le_trans (abs_real_inner_le_norm _ _) ?_)
+    exact mul_le_mul_of_nonneg_right (norm_interaction_mixed_sub_le B hh hu hhb hub) hzn
+  nlinarith [q1, q2, q3, q4, d1, d2, sq_nonneg (‖w‖ - ‖z‖), mul_nonneg hBn hR]
+
+end ContinuousDependence
 
 end GaloisForLFunctions.HTGeometry.HodgeEdgeCochain
