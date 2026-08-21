@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.HaferkampLiftedPauliTransport
+import GaloisForLFunctions.HTGeometry.HaferkampPauliMergeSchedule
 
 /-!
 # Pauli transport along certified qubit paths
@@ -42,6 +42,22 @@ theorem transportLabel_target_eq_Z
       simp [transportLabel, updateTwoQubitPauliLabel]
   | @extend a b t hab tail ih =>
       exact ih _
+
+/-- A certified path canonically induces the corresponding ordered merge
+schedule. -/
+def toPauliMergeSchedule
+    {Q : Type*} [DecidableEq Q] {a t : Q}
+    (path : QubitMergePath Q a t) (P : Q → Option (Fin 3))
+    (ha : P a ≠ none) :
+    PauliMergeSchedule Q P (path.transportLabel P) :=
+  match path with
+  | @single _ a t hab =>
+      PauliMergeSchedule.step P a t hab ha (PauliMergeSchedule.done _)
+  | @extend _ a b t hab tail =>
+      let P₁ := updateTwoQubitPauliLabel P a b none (some 2)
+      have hb : P₁ b ≠ none := by
+        simp [P₁, updateTwoQubitPauliLabel]
+      PauliMergeSchedule.step P a b hab ha (tail.toPauliMergeSchedule P₁ hb)
 
 /-- A product of lifted local gates transports initial nonidentity support at
 the source through the certified path. -/

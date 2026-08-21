@@ -198,11 +198,10 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge towards creating an unconditional RH proof in lean.
-
-collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you. start here: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md but be route agnostic and use everything our lean corpus offers you in the htgeometry and rhtower folders.
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge towards creating an unconditional proof of the Witten's asymptotic expansion conjecture.
 
 research rules:
+- do not waste time on rediscovering what literature already proves - instead formalize what literature proves and only then start your own research to expand beyond that.
 - use heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... 
 - always check that you do not play theatre and actually are creating new knowledge
 - focus on hard problems, NO THEATRE, NO INFRASTRUCTURE, EVERY STEP MUST DELIVER PROGRESS
@@ -216,57 +215,32 @@ Lean rules:
 2. Always build in the foreground, 1 process per single agent.
 3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
 4. No computations.
-5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
-6. make sure you don't leave stale lean processes running - clean up after yourself.
-
+5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+7. make sure you don't leave stale lean processes running - clean up after yourself.
+   
 Non-negotiable working mode rules:
-1. If it cannot be done in a single session -> Does not matter. Do it!
-2. If it cannot be done in a single context window -> Does not matter. Do it!
-3. If it takes months -> Does not matter. Do it!
-4. If it is "research-level construction" -> Does not matter. If there is any way you could build it you build it no matter what.
-5. Missing in mathlib -> Build it no matter the effort.
-6. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
+1. If an application would be interesting, but is missing lean infrastructure, build it no matter the effort.
+2. use the search tool for our lean corpus. do not read cards or anything, only work directly on lean.
 
-folders to check for already existing research:
-- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
-- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
-- formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
-
-goal is met when lean corpus has an uncondtional formal proof for rh.
+goal is met when lean corpus has an uncondtional formal proof/falsification of the conjecture.
 
 
-## Revert
-
-Use the hgt-fields-medalist skill to research this any possibility to close a proof chain to prove or disprove RH.
-Mandatory: Do not assume a proof chain and then look for building blocks. Let the lean code speak. We have much more knowledge encoded there than the literature or your training data contain. Check the lean code, see what chains could be possible, identify the gaps and attack the gaps using the hgt-fields-medalist skill, bold conjecturing and the scientific method.
-
-Lean rules:
-1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
-2. Always build in the foreground, 1 process per single agent.
-3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
-4. No computations.
-5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
-6. make sure you don't leave stale lean processes running - clean up after yourself.
-
-folders:
-- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
-- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
-- formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
-
-Always use  lake env lean <file>  and only lake build <module> for the final audit. Wire everything into the right umbrella.
-make sure you don't leave stale lean processes running - clean up after yourself
-
-Goal is met when there is a full RH proof chain start to finish.
 
 -----
 2-form integration + Stokes on manifolds or Radó's triangulation theorem 
 What I did not prove, explicitly: the manifold-level statement ∫∫_M K dA = 2πχ(M) for an abstract compact Riemannian surface. It needs either 2-form integration + Stokes on manifolds or Radó's triangulation theorem — neither exists in mathlib,
+https://arxiv.org/pdf/2607.24830
 
 ## Formalize
 
-Formalize and proove fully, unconditional and closed in our lean corpus the proof for Borsuk–Ulam theorem .
+Formalize and prove fully, unconditional and closed in our lean corpus the proofs for all lemmas and theorems and provable propositions as far as mathlib or our lean corpus not already proof them from this paper: https://arxiv.org/pdf/math/9811068
 
-Stop if mathlib already has that proof.
+
+Formalize and prove fully, unconditional and closed in our lean corpus Wick's theorem
+
+Skip if already present in our corpus or mathlib.
+Any missing infrastructure you build no matter the effort.
 
 lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -284,8 +258,6 @@ Non-negotiable working mode rules:
 4. If it is "research-level construction" -> Does not matter. If there is any way you could build it you build it no matter what.
 5. Missing in mathlib -> Build it no matter the effort.
    
-where mathematical knowledge is missing use the /hgtl7 skill to create it.
-
 do not add hypotheses.
 
 always use our custom search tool check first what the lean corpus already contains, to not duplicate existing work.
@@ -309,9 +281,7 @@ Mandatory: You let the lean corpus speak and tell you what is. You do not assume
 
 /goal 
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about this problem:
-
-"All our attempts and different routes towards a proof of the Riemann Hypothesis indicate that the key to the problem is to develop a completely new, unknown to literature, geometry or topology in which all the obstacles we have met translate into a new representation object that becomes clear and solvable."
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about this problem: 
 
 research rules:
 - you can and should also check lean corpus, but not write lean  
@@ -373,7 +343,7 @@ how would a fields medal mathematician approach this problem? what our corpus is
 
 
 ## theorem experiment
-find as many places as possible in our lean corpus to apply any form of the Seiberg–Witten flow, Seiberg–Witten invariants, Seiberg–Witten equations, Seiberg–Witten theory, Seiberg–Witten curves, formalize it and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
+find as many places as possible in our lean corpus to apply any form of the Kerr metric,  Einstein field equations, Kerr–Newman metric, and Belinski–Zakharov transform, formalize it and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -388,3 +358,6 @@ Non-negotiable working mode rules:
 1. If an application would be interesting, but is missing lean infrastructure, build it no matter the effort.
 2. use the search tool for our lean corpus. do not read cards or anything, only work directly on lean.
 
+
+
+use the search tool for the lean corpus to check what already was formalized so you do not duplicate existing work.

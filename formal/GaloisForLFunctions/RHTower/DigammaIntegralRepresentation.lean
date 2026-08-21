@@ -273,4 +273,124 @@ theorem integrableOn_gaussLaplaceKernel {s : ℂ} (hs : 0 < s.re) :
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   rw [norm_gaussLaplaceKernel s ht]
 
+
+/-! ## Dominated convergence -/
+
+theorem continuous_gaussDigammaLaplaceTerm (s : ℂ) (n : ℕ) :
+    Continuous (gaussDigammaLaplaceTerm s n) := by
+  unfold gaussDigammaLaplaceTerm
+  fun_prop
+
+theorem norm_one_sub_exp_neg_pow_le {t : ℝ} (ht : 0 < t) (N : ℕ) :
+    ‖(1 : ℂ) - Complex.exp (-(t : ℂ)) ^ N‖ ≤ 1 := by
+  have hrN : Complex.exp (-(t : ℂ)) ^ N = ((Real.exp (-t) ^ N : ℝ) : ℂ) := by
+    rw [exp_neg_ofReal_eq]
+    push_cast
+    ring
+  have hx0 : 0 < Real.exp (-t) ^ N := by positivity
+  have hx1 : Real.exp (-t) ^ N ≤ 1 := by
+    apply pow_le_one₀ (le_of_lt (Real.exp_pos _))
+    rw [Real.exp_le_one_iff]
+    linarith
+  rw [hrN, show (1 : ℂ) - ((Real.exp (-t) ^ N : ℝ) : ℂ) = ((1 - Real.exp (-t) ^ N : ℝ) : ℂ) from by
+    push_cast; ring, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith)]
+  linarith
+
+theorem tendsto_partialSum_gaussDigammaLaplaceTerm (s : ℂ) {t : ℝ} (ht : 0 < t) :
+    Filter.Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, gaussDigammaLaplaceTerm s n t)
+      Filter.atTop (nhds (gaussLaplaceKernel s t)) := by
+  have hnorm : ‖Complex.exp (-(t : ℂ))‖ < 1 := by
+    rw [norm_exp_neg_ofReal, Real.exp_lt_one_iff]
+    linarith
+  have hpow : Filter.Tendsto (fun N : ℕ => Complex.exp (-(t : ℂ)) ^ N) Filter.atTop (nhds 0) :=
+    tendsto_pow_atTop_nhds_zero_of_norm_lt_one hnorm
+  have hfac : Filter.Tendsto (fun N : ℕ => (1 - Complex.exp (-(t : ℂ)) ^ N) *
+      gaussLaplaceKernel s t) Filter.atTop (nhds (gaussLaplaceKernel s t)) := by
+    have h1 : Filter.Tendsto (fun N : ℕ => (1 : ℂ) - Complex.exp (-(t : ℂ)) ^ N)
+        Filter.atTop (nhds 1) := by
+      simpa using (tendsto_const_nhds (x := (1 : ℂ)) (f := Filter.atTop (α := ℕ))).sub hpow
+    simpa using h1.mul (tendsto_const_nhds (x := gaussLaplaceKernel s t))
+  refine hfac.congr ?_
+  intro N
+  exact (sum_gaussDigammaLaplaceTerm s ht N).symm
+
+theorem integral_gaussLaplaceKernel_eq_tsum {s : ℂ} (hs : 0 < s.re) :
+    (∫ t in Ioi (0 : ℝ), gaussLaplaceKernel s t)
+      = ∑' n : ℕ, gaussDigammaSeriesTerm s n := by
+  have hFint : ∀ N : ℕ,
+      (∫ t in Ioi (0 : ℝ), ∑ n ∈ Finset.range N, gaussDigammaLaplaceTerm s n t)
+        = ∑ n ∈ Finset.range N, gaussDigammaSeriesTerm s n := by
+    intro N
+    rw [MeasureTheory.integral_finsetSum _
+      (fun n _ => integrableOn_gaussDigammaLaplaceTerm hs n)]
+    exact Finset.sum_congr rfl (fun n _ => integral_gaussDigammaLaplaceTerm hs n)
+  have hmeas : ∀ N : ℕ, AEStronglyMeasurable
+      (fun t : ℝ => ∑ n ∈ Finset.range N, gaussDigammaLaplaceTerm s n t)
+      (volume.restrict (Ioi (0 : ℝ))) := by
+    intro N
+    refine Continuous.aestronglyMeasurable ?_
+    exact continuous_finsetSum _ (fun n _ => continuous_gaussDigammaLaplaceTerm s n)
+  have hbound : ∀ N : ℕ, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))),
+      ‖∑ n ∈ Finset.range N, gaussDigammaLaplaceTerm s n t‖ ≤ gaussLaplaceBound s t := by
+    intro N
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    have ht0 : 0 < t := ht
+    rw [sum_gaussDigammaLaplaceTerm s ht0 N, norm_mul, norm_gaussLaplaceKernel s ht0]
+    have h1 := norm_one_sub_exp_neg_pow_le ht0 N
+    have h2 := gaussLaplaceBound_nonneg s ht0
+    nlinarith
+  have hlim : ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))),
+      Filter.Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, gaussDigammaLaplaceTerm s n t)
+        Filter.atTop (nhds (gaussLaplaceKernel s t)) := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    exact tendsto_partialSum_gaussDigammaLaplaceTerm s ht
+  have hDCT := MeasureTheory.tendsto_integral_of_dominated_convergence
+    (gaussLaplaceBound s) hmeas (integrableOn_gaussLaplaceBound hs) hbound hlim
+  simp only [hFint] at hDCT
+  have hsum : Filter.Tendsto
+      (fun N : ℕ => ∑ n ∈ Finset.range N, gaussDigammaSeriesTerm s n) Filter.atTop
+      (nhds (∑' n : ℕ, gaussDigammaSeriesTerm s n)) :=
+    (summable_gaussDigammaSeriesTerm hs).hasSum.tendsto_sum_nat
+  exact tendsto_nhds_unique hDCT hsum
+
+/-! ## The integral representation -/
+
+/-- The Gauss integrand `e^{-t}/t - e^{-st}/(1 - e^{-t})`. -/
+def digammaGaussIntegrand (s : ℂ) (t : ℝ) : ℂ :=
+  ((Real.exp (-t) / t : ℝ) : ℂ)
+    - Complex.exp (-s * (t : ℂ)) / (1 - Complex.exp (-(t : ℂ)))
+
+theorem digammaGaussIntegrand_eq (s : ℂ) {t : ℝ} (ht : 0 < t) :
+    digammaGaussIntegrand s t = ((gaussKernel t : ℝ) : ℂ) + gaussLaplaceKernel s t := by
+  have hden : (1 : ℂ) - Complex.exp (-(t : ℂ)) ≠ 0 := one_sub_exp_neg_ofReal_ne_zero ht
+  have hdenR : (1 : ℝ) - Real.exp (-t) ≠ 0 := ne_of_gt (one_sub_exp_neg_pos ht)
+  rw [digammaGaussIntegrand, gaussKernel, gaussLaplaceKernel, one_sub_exp_neg_ofReal_eq,
+    exp_neg_ofReal_eq]
+  push_cast
+  field_simp
+  ring
+
+/-- **Gauss's integral representation of the digamma function.**  For `Re s > 0`,
+`ψ(s) = ∫_0^∞ ( e^{-u}/u - e^{-su}/(1 - e^{-u}) ) du`. -/
+theorem digamma_eq_integral_gauss {s : ℂ} (hs : 0 < s.re) :
+    Complex.digamma s = ∫ t in Ioi (0 : ℝ), digammaGaussIntegrand s t := by
+  have hgauss : IntegrableOn (fun t : ℝ => ((gaussKernel t : ℝ) : ℂ)) (Ioi (0 : ℝ)) volume := by
+    have := integrableOn_gaussKernel
+    exact (Complex.ofRealCLM.integrable_comp this)
+  have hlap := integrableOn_gaussLaplaceKernel hs
+  have hcongr : (∫ t in Ioi (0 : ℝ), digammaGaussIntegrand s t)
+      = ∫ t in Ioi (0 : ℝ),
+          (((gaussKernel t : ℝ) : ℂ) + gaussLaplaceKernel s t) := by
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
+    intro t ht
+    exact digammaGaussIntegrand_eq s ht
+  rw [hcongr, MeasureTheory.integral_add hgauss hlap,
+    integral_gaussLaplaceKernel_eq_tsum hs]
+  have hreal : (∫ t in Ioi (0 : ℝ), ((gaussKernel t : ℝ) : ℂ))
+      = ((-Real.eulerMascheroniConstant : ℝ) : ℂ) := by
+    rw [_root_.integral_complex_ofReal, integral_gaussKernel]
+  rw [hreal, digamma_eq_neg_euler_add_tsum_gauss hs]
+  push_cast
+  ring
+
 end RHTower

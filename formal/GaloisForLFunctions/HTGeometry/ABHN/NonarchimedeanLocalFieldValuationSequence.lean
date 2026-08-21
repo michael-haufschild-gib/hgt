@@ -568,6 +568,77 @@ theorem nonarchimedeanLocalFieldAdjoinRootFractionField_finiteDimensional
       (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
   infer_instance
 
+/-- The fraction field of a lifted irreducible residue polynomial is a finite-dimensional field
+extension of the original nonarchimedean local field.  This transports the preceding fraction
+field construction along the canonical identification `FractionRing 𝒪[K] ≃ₐ[𝒪[K]] K`. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionField_finiteDimensionalOverBase
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+      change Function.Injective <| AdjoinRoot.of f
+      exact AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+    letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+        (FractionRing (AdjoinRoot f))).mpr ?_
+      change Function.Injective <|
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+        (AdjoinRoot.of.injective_of_degree_ne_zero
+          (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+    letI : Algebra (FractionRing 𝒪[K]) (FractionRing (AdjoinRoot f)) :=
+      FractionRing.liftAlgebra 𝒪[K] (FractionRing (AdjoinRoot f))
+    letI : Algebra K (FractionRing (AdjoinRoot f)) := by
+      let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      have hg₀ : Function.Injective g₀ :=
+        (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+          (AdjoinRoot.of.injective_of_degree_ne_zero
+            (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+      exact RingHom.toAlgebra (IsFractionRing.lift hg₀)
+    FiniteDimensional K (FractionRing (AdjoinRoot f)) := by
+  letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+    change Function.Injective <| AdjoinRoot.of f
+    exact AdjoinRoot.of.injective_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+      (FractionRing (AdjoinRoot f))).mpr ?_
+    change Function.Injective <|
+      (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+    exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  letI : Algebra (FractionRing 𝒪[K]) (FractionRing (AdjoinRoot f)) :=
+    FractionRing.liftAlgebra 𝒪[K] (FractionRing (AdjoinRoot f))
+  letI : FiniteDimensional (FractionRing 𝒪[K]) (FractionRing (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionField_finiteDimensional K f hf g hfg hg
+  let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+    (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+  have hg₀ : Function.Injective g₀ :=
+    (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  letI : Algebra K (FractionRing (AdjoinRoot f)) := RingHom.toAlgebra (IsFractionRing.lift hg₀)
+  apply Module.Finite.of_equiv_equiv (FractionRing.algEquiv (A := 𝒪[K]) K).toRingEquiv
+    (RingEquiv.refl (FractionRing (AdjoinRoot f)))
+  apply IsFractionRing.ringHom_ext (A := 𝒪[K])
+  intro r
+  simp only [RingHom.comp_apply]
+  change (algebraMap K (FractionRing (AdjoinRoot f)))
+    ((FractionRing.algEquiv (A := 𝒪[K]) K) (algebraMap 𝒪[K] (FractionRing 𝒪[K]) r)) = _
+  rw [(FractionRing.algEquiv (A := 𝒪[K]) K).commutes]
+  change IsFractionRing.lift hg₀ (algebraMap 𝒪[K] K r) =
+    IsFractionRing.lift hg₀ (algebraMap 𝒪[K] (FractionRing 𝒪[K]) r)
+  rw [IsFractionRing.lift_algebraMap]
+  rw [IsFractionRing.lift_algebraMap]
+
 /-- A monic lift of an irreducible residue polynomial has local root algebra.  Its unique
 maximal ideal is the extension of the maximal ideal of the valuation ring. -/
 theorem nonarchimedeanLocalFieldAdjoinRootIsLocalRing
@@ -609,8 +680,8 @@ noncomputable def nonarchimedeanLocalFieldAdjoinRootResidueFieldEquivOfMapEq
 
 /-- A monic lift of a monic irreducible residue polynomial gives a finite étale local algebra
 over the valuation ring.  This is the finite-étale lifting bridge from a prescribed finite
-residue extension to a concrete local algebra; passing from this algebra to an unramified field
-extension is a separate fraction-field step. -/
+residue extension to a concrete local algebra; the preceding fraction-field theorems promote
+its irreducible lifts to finite field extensions of the local field. -/
 theorem nonarchimedeanLocalFieldAdjoinRoot_etale
     (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
     [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
@@ -645,8 +716,7 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_etale
 
 /-- Every monic residue polynomial admits a same-degree monic lift whose root algebra is finite
 and free over the valuation ring and whose reduction is the prescribed residue root algebra.
-This is the algebra-presentation part of an unramified-extension construction; showing that this
-algebra is the valuation ring of a field extension still requires the finite étale lifting bridge. -/
+This is the algebra-presentation part of an unramified-extension construction. -/
 theorem nonarchimedeanLocalField_exists_finite_free_residuePolynomial_lift
     (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
     [IsNonarchimedeanLocalField K] (g : Polynomial 𝓀[K]) (hg : g.Monic) :
@@ -658,8 +728,8 @@ theorem nonarchimedeanLocalField_exists_finite_free_residuePolynomial_lift
   exact ⟨f, hf, hmap, hdegree, hf.free_adjoinRoot, hf.finite_adjoinRoot⟩
 
 /-- Chosen finite extension of the residue field of degree `n`.  This is only a residue-field
-extension; promoting it to an unramified extension of `K` requires the still-missing lifting
-theorem for finite étale algebras over complete valuation rings. -/
+extension; promoting it to an unramified extension of `K` additionally requires a chosen
+monogenic presentation and an identification of the lifted root algebra as a valuation ring. -/
 noncomputable abbrev nonarchimedeanLocalFieldResidueExtension
     (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
     [IsNonarchimedeanLocalField K] (n : ℕ) [NeZero n] : Type := by

@@ -135,6 +135,55 @@ def kerrNewmanBoyerLindquistMetric
 def kerrBoyerLindquistMetric (mass spin radius polar : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
   kerrNewmanBoyerLindquistMetric mass spin 0 radius polar
 
+/-- Reissner--Nordström is the spin-zero Kerr--Newman specialization. -/
+def reissnerNordstromBoyerLindquistMetric
+    (mass charge radius polar : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
+  kerrNewmanBoyerLindquistMetric mass 0 charge radius polar
+
+/-- Schwarzschild is the charge-zero Reissner--Nordström specialization. -/
+def schwarzschildBoyerLindquistMetric
+    (mass radius polar : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
+  reissnerNordstromBoyerLindquistMetric mass 0 radius polar
+
+/-- The spin-zero Kerr--Newman representative is the diagonal Reissner--Nordström metric in the
+same totalized Boyer--Lindquist algebra. -/
+theorem reissnerNordstromBoyerLindquistMetric_explicit
+    (mass charge radius polar : ℝ) :
+    reissnerNordstromBoyerLindquistMetric mass charge radius polar =
+      !![
+        -kerrNewmanDelta mass 0 charge radius / radius ^ 2, 0, 0, 0;
+        0, radius ^ 2 / kerrNewmanDelta mass 0 charge radius, 0, 0;
+        0, 0, radius ^ 2, 0;
+        0, 0, 0, Real.sin polar ^ 2 * radius ^ 2
+      ] := by
+  unfold reissnerNordstromBoyerLindquistMetric
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [kerrNewmanBoyerLindquistMetric, kerrNewmanKillingBlock,
+      kerrNewmanSigma, kerrNewmanDelta]
+  by_cases hr : radius = 0
+  · simp [hr]
+  · field_simp [hr]
+
+/-- The Schwarzschild member of the metric family is the explicit charge-zero static limit. -/
+theorem schwarzschildBoyerLindquistMetric_explicit
+    (mass radius polar : ℝ) :
+    schwarzschildBoyerLindquistMetric mass radius polar =
+      !![
+        -(radius ^ 2 - 2 * mass * radius) / radius ^ 2, 0, 0, 0;
+        0, radius ^ 2 / (radius ^ 2 - 2 * mass * radius), 0, 0;
+        0, 0, radius ^ 2, 0;
+        0, 0, 0, Real.sin polar ^ 2 * radius ^ 2
+      ] := by
+  unfold schwarzschildBoyerLindquistMetric reissnerNordstromBoyerLindquistMetric
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [kerrNewmanBoyerLindquistMetric, kerrNewmanKillingBlock,
+      kerrNewmanSigma, kerrNewmanDelta]
+  by_cases hr : radius = 0
+  · simp [hr]
+  · field_simp [hr]
+
 /-- At unit radius on the equatorial slice, the zero mass--spin--charge Kerr--Newman metric is
 the corpus's standard Minkowski metric.  This anchors the Boyer--Lindquist representative to the
 existing chronometric metric interface. -/
