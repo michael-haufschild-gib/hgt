@@ -215,7 +215,7 @@ theorem IsWassersteinPoint.unitary_conjugate {U : A} (hU : U ∈ unitary A)
       = w i • (U * gm (Av i) X⁻¹ʳ * star U) := fun i hi => by rw [hterm i hi]
   calc ∑ i ∈ s, w i • ((fun i => U * Av i * star U) i #ᴳ (U * X⁻¹ʳ * star U))
       = ∑ i ∈ s, w i • (U * gm (Av i) X⁻¹ʳ * star U) := Finset.sum_congr rfl hterm'
-    _ = U * (∑ i ∈ s, w i • gm (Av i) X⁻¹ʳ) * star U := sum_smul_conjugate _ _ _
+    _ = U * (∑ i ∈ s, w i • gm (Av i) X⁻¹ʳ) * star U := sum_smul_conjugate _ _ _ _
     _ = 1 := by rw [heq, mul_one, hUs]
 
 /-- **Self-reference**: adjoining `X` itself with weight `w j` to the family is equivalent to

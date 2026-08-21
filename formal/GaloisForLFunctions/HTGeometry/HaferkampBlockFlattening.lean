@@ -14,6 +14,16 @@ noncomputable section
 
 namespace BackwardsLightCone
 
+/-- The element immediately after a list prefix is the head of the remaining
+suffix.  Stating this independently of a dependent record avoids index
+transport when selecting terminal gates. -/
+theorem list_get_terminal_of_decomp
+    {α : Type*} (before after : List α) (terminal : α)
+    (gates : List α) (hdecomp : gates = before ++ terminal :: after) :
+    gates.get ⟨before.length, by rw [hdecomp]; simp⟩ = terminal := by
+  subst gates
+  simp
+
 /-- The prefix preceding a bundled terminal gate is literally the corresponding
 `take` of its lifted physical gate word. -/
 theorem TerminalBlockData.take_liftedWord_prefix
@@ -56,8 +66,23 @@ theorem TerminalBlockData.liftedWord_decomp_at
     suffixIdentity, transportCoeff, transportCoeffNonzero, transport, curveLength, curveZero,
     contractionDerivative⟩
   simp only
+  change edges = prefixEdges ++ terminalEdge :: suffixEdges at hedges
   rw [hedges, gatesDecomp, List.zipWith_append prefixLength.symm]
   rfl
+
+/-- The retained terminal coordinate is a valid local gate index. -/
+theorem TerminalBlockData.prefixGates_length_lt_gates_length
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    {cone : BackwardsLightCone n edges root} {P : Fin n → Option (Fin 3)}
+    (block : TerminalBlockData cone P) :
+    block.prefixGates.length < block.gates.length := by
+  rcases block with ⟨gates, terminalGate, prefixEdges, suffixEdges, prefixGates, suffixGates,
+    gatesLength, gatesClifford, edgesDecomp, gatesDecomp, prefixLength, suffixLength,
+    suffixIdentity, transportCoeff, transportCoeffNonzero, transport, curveLength, curveZero,
+    contractionDerivative⟩
+  simp only
+  rw [gatesDecomp, List.length_append, List.length_cons]
+  exact Nat.lt_add_of_pos_right (Nat.succ_pos _)
 
 /-- The literal chronological local-gate word of a recursive BLC assembly. -/
 def TerminalBlockPrefixAssembly.gateWord
