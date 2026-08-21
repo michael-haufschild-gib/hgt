@@ -23,10 +23,10 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- The alternating sum over all supersets of `r` vanishes unless `r` is the whole finite type. -/
-theorem sum_Icc_neg_one_pow_card_sub
+theorem sum_Icc_neg_one_pow_card_sub {R : Type*} [CommRing R]
     {α : Type*} [Fintype α] [DecidableEq α] (r : Finset α) :
     (∑ s ∈ Finset.Icc r (Finset.univ : Finset α),
-      (-1 : ℂ) ^ (Fintype.card α - s.card)) =
+      (-1 : R) ^ (Fintype.card α - s.card)) =
         if r = Finset.univ then 1 else 0 := by
   have hinj : Set.InjOn (fun t : Finset α ↦ r ∪ t)
       ((Finset.univ \ r).powerset : Set (Finset α)) := by
@@ -60,12 +60,12 @@ theorem sum_Icc_neg_one_pow_card_sub
       Finset.card_sdiff_of_subset (Finset.subset_univ r)]
     omega
   trans ∑ t ∈ (Finset.univ \ r).powerset,
-      (-1 : ℂ) ^ ((Finset.univ \ r).card - t.card)
+      (-1 : R) ^ ((Finset.univ \ r).card - t.card)
   · apply Finset.sum_congr rfl
     intro t ht
     rw [hcard t ht]
   have hsum := Finset.sum_pow_mul_eq_add_pow
-    (1 : ℂ) (-1 : ℂ) (Finset.univ \ r)
+    (1 : R) (-1 : R) (Finset.univ \ r)
   by_cases hr : r = Finset.univ
   · subst r
     simp
@@ -127,7 +127,7 @@ theorem continuousMultilinearMap_polarization_sum_eq_surjective
     ext s
     simp
   rw [hfilter, ← Finset.sum_smul]
-  have hcoeff := sum_Icc_neg_one_pow_card_sub
+  have hcoeff := sum_Icc_neg_one_pow_card_sub (R := ℂ)
     (r := Finset.univ.image r)
   simp only [Fintype.card_fin] at hcoeff
   rw [hcoeff]

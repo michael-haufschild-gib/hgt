@@ -61,13 +61,34 @@ pairing together with a marked free letter*, while the recursion defining the ex
 longer word indexes them by *a letter together with a partial pairing of the rest*. Identifying
 those two enumerations is the exchange law.
 
+9. `WickMomentBridge` — `completePairing_eq_wickMoment`, identifying the complete-pairing sum with
+   the pre-existing `QuasiFreeWickExpansion.wickMoment`, hence
+   `vacuum_prod_field_eq_wickMoment`: a vacuum state of a creation/annihilation system *is*
+   quasi-free.  What that development assumed is now a theorem.
+
+## The fermionic branch
+
+10. `ListSignedPositionSum` — `signedPositionSum`, whose head/tail recursion carries a minus sign
+    and whose exchange law `signedPositionSum_swap` is an **anti**symmetry.
+11. `SignedPairingExpansion` — `signedPairingExpand`, `pfaffianPairing` (the signed sum over the
+    perfect matchings), and the exchange law, which holds in the *same* form as in the unsigned
+    case because the antisymmetry cancels the sign of the recursion.
+12. `FermionWickTheorem` — `FermionSystem` (canonical anticommutation relations), the mutual
+    recursion `nordField` / `nordFieldAlt` which removes all `(-1) ^ n` bookkeeping,
+    `prod_field_eq_signedPairingExpand`, and `FermionVacuum.vacuum_prod_field`: a fermionic
+    correlation function is the **Pfaffian** of the two-point matrix.
+13. `FermionExteriorModel` — the exterior algebra `CliffordAlgebra (0 : QuadraticForm K M)` with
+    `cre i = ι (v i) ·`, `ann i = contractLeft (d i)`, vacuum = scalar part: a concrete
+    `FermionSystem` and `FermionVacuum` for an arbitrary family of vectors and dual vectors, with
+    `exteriorFermion_vacuum_prod_field`.
+
 ## Open continuations
 
-- Identify `completePairing` with an explicit sum over fixed-point-free involutions.
-- Bridge `completePairing` to the pre-existing `QuasiFreeWickExpansion.wickMoment`.
+- Identify `completePairing` with an explicit sum over fixed-point-free involutions, and
+  `pfaffianPairing` with the Pfaffian of a matrix.
 - The probabilistic form (Isserlis): moments of a Gaussian measure as a complete-pairing sum of
   covariances.
-- The fermionic (CAR) form, with the sign of the sorting permutation.
 
 ## Log
-- 2026-08-21 — created directly at stage 3; all eight modules compile, axiom audit clean.
+- 2026-08-21 — created directly at stage 3; all thirteen modules compile, axiom audits clean
+  (`propext`, `Classical.choice`, `Quot.sound` only).

@@ -28,6 +28,37 @@ def edgeList
   | @single _ a t _ => [(a, t)]
   | @extend _ a b _ _ tail => (a, b) :: tail.edgeList
 
+/-- Final local location on a directed path. -/
+def finalEdge
+    {Q : Type*} {a t : Q} : QubitMergePath Q a t → Q × Q
+  | @single _ a t _ => (a, t)
+  | @extend _ _ _ _ _ tail => tail.finalEdge
+
+/-- The final location of a path targets its endpoint. -/
+theorem finalEdge_second_eq_target
+    {Q : Type*} {a t : Q} (path : QubitMergePath Q a t) :
+    path.finalEdge.2 = t := by
+  induction path with
+  | single hab => rfl
+  | extend hab tail ih => exact ih
+
+/-- The final location of a path is a genuine two-qubit location. -/
+theorem finalEdge_fst_ne_snd
+    {Q : Type*} {a t : Q} (path : QubitMergePath Q a t) :
+    path.finalEdge.1 ≠ path.finalEdge.2 := by
+  induction path with
+  | single hab => exact hab
+  | extend hab tail ih => exact ih
+
+/-- The final path location occurs in its ordered edge word. -/
+theorem singleton_finalEdge_sublist_edgeList
+    {Q : Type*} {a t : Q} (path : QubitMergePath Q a t) :
+    [path.finalEdge].Sublist path.edgeList := by
+  induction path with
+  | single hab => simp [finalEdge, edgeList]
+  | extend hab tail ih =>
+      exact List.Sublist.cons _ ih
+
 /-- Pauli label left after the successive local support merges along a path. -/
 def transportLabel
     {Q : Type*} [DecidableEq Q] {a t : Q}

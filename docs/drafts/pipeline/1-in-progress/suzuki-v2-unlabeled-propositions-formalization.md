@@ -1,9 +1,9 @@
 # Suzuki v2: formalization of the unlabeled propositions
 
-**Status:** in progress — Sections 8.2, 8.5, 7 (kernel algebra), the Section 3 displayed
-estimates, the (4.10) parity identity and the digamma integral representation behind (2.7)–(2.8)
-are closed in Lean; the conditionally convergent cosine-integral half of (2.7)–(2.8) and the
-cut-off convergence remain
+**Status:** in progress — Sections 8.2, 8.5, 7 (kernel algebra), the Section 3 displayed estimates
+and their `I_ε → 0` consequence, the (4.10) parity identity, and the digamma integral
+representation behind (2.7)–(2.8) are closed in Lean; the conditionally convergent
+cosine-integral half of (2.7)–(2.8) remains
 **Primary source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
 arXiv:2606.09096v2, 17 August 2026 (source file `screwzelf_9.tex`, 3823 lines).
 
@@ -192,6 +192,26 @@ truncated limit built on the cosine integral `Ci`.  Note the source's `r_1''` is
 which is why the corpus's own route to (2.6) goes through Abel limits rather than a literal Fourier
 transform.
 
+## The cut-off logarithmic window (the `I_ε → 0` step of Theorem 1.1)
+
+`GaloisForLFunctions/RHTower/SuzukiCutoffLogWindow.lean`.
+
+* `log_add_three_le` — `log(3+z) ≤ log(3+R) + log z - log R` for `z ≥ R > 0`, because
+  `3 + z ≤ (3+R)z/R`;
+* `integral_logMajorant_Ioi` — the closed evaluation
+  `∫_R^∞ (log(3+R) + log z - log R)/z² dz = (log(3+R)+1)/R`, by the primitive
+  `-((log(3+R) - log R + 1 + log v)/v)`;
+* `integral_logWindow_tail_le` — hence `∫_R^∞ log(3+z)/z² dz ≤ (log(3+R)+1)/R`;
+* `integral_logWindow_head_le` — `∫_{-R}^R log(3+|z|) dz ≤ 2R log(3+R)`;
+* `setIntegral_Iic_neg_eq_Ioi_of_even` — reflection invariance of an even majorant;
+* `integral_logWindow_le` — **the assembled estimate**: a frequency profile with
+  `|ŵ(z)| ≤ 2ε` and `|ŵ(z)| ≤ M/|z|` satisfies
+  `∫_ℝ log(3+|z|)|ŵ(z)|² dz ≤ 8ε log(3+1/ε) + 2M²(ε log(3+1/ε) + ε)`;
+* `tendsto_cutoffLogWindowBound` — that bound tends to `0` as `ε → 0+`.
+
+Together with (3.3)–(3.4) from `SuzukiApertureFourierDecay` this is exactly the source's
+`I_ε ≪ ε log(1/ε) → 0`.
+
 ## Remaining audit
 
 Still open:
@@ -200,14 +220,12 @@ Still open:
   corpus's complex Frullani integral `integral_frullani` at `b = ε + ia` gives `½log(ε²+a²)`, and
   the `ε → 0` Abel limit needs one integration by parts on `[1,∞)` plus the `E₁` asymptotic already
   proved in `EulerMascheroniGaussKernel`.
-* The cut-off convergence `I_ε ≪ ε log(1/ε) → 0` completing (3.3)–(3.4) into the form-core density
-  used by Theorem 1.1 (whose statement is already corpus-owned).
 * The scaling identities (4.1)–(4.6) and the small-aperture expansion (5.1) in their displayed
   forms; their consequences (Theorems 1.3 and 1.4) are corpus-owned.
 
 ## Verification
 
-All seven modules
+All eight modules
 
 * `HTGeometry/TriangularIntervalFubini.lean`
 * `HTGeometry/ParityRayleighDecomposition.lean`
@@ -216,6 +234,7 @@ All seven modules
 * `RHTower/SuzukiApertureFourierDecay.lean`
 * `RHTower/EulerMascheroniGaussKernel.lean`
 * `RHTower/DigammaIntegralRepresentation.lean`
+* `RHTower/SuzukiCutoffLogWindow.lean`
 
 pass `lake env lean` with no warnings, have fresh `.olean` builds, and are wired into their
 theorem-area umbrellas.  `#print axioms` on every capstone reports only `propext`,
