@@ -1628,3 +1628,34 @@ axiom-clean**, and already covers items `(1)`–`(10)` and `(17)` of the card:
 **Reusable pattern:** the cofinite/`atTop` transfer plus `Summable.of_norm_bounded_eventually` in
 both directions is the cheapest way to prove an *exact* prime-Dirichlet convergence threshold from
 two-sided eventual bounds — no `Set.Finite.summable_compl_iff` juggling is needed.
+
+## `physical-interval-anchor-coarea-phase-law` — PROMOTED to stage 3
+
+Module `formal/GaloisForLFunctions/RHTower/PhysicalIntervalAnchorCoarea.lean`
+(namespace `RHTower.PhysicalAnchor`), wired into `GaloisForLFunctions.RHTower`.
+
+The only open gate was `(PI3)`–`(PI4)` and `(PI12)`–`(PI16)`.  All are now closed
+unconditionally; `#print axioms` on every capstone returns exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+Key design decision: the aperture pairing `anchorInner A f g = ∫_{Ioc 0 A} f g` is used as a
+plain bilinear form on functions, not as an `L^2` inner product.  This avoids the `MeasureTheory.Lp`
+instance stack entirely; every overlap integral reduces to
+`volume.real (Ioc 0 A ∩ Ioc (max a c) (min b d))` through `cellIndicator_mul` +
+`setIntegral_indicator`.  The price is that the corpus lemma
+`RHTower.commonGramBooleanAnchorCurvature` (stated for `InnerProductSpace ℝ E`) does not apply
+directly, so the module proves the strictly more general `gramBooleanAnchorCurvature` for an
+arbitrary real Gram kernel `G : κ → κ → ℝ`.  That generalization is reusable and should be
+preferred over the inner-product version whenever the "energy" is a bilinear pairing rather than
+a genuine norm.
+
+Reused from the corpus without change: `coordinatePacketWeight`, `commonAnchorWeight`,
+`coordinatePacketWeight_union`, `sum_powerset_signed_commonCoordinateWeight`
+(`RHTower.CommonProfileBooleanAnchorCurvature`).
+
+Capstones: `physical_anchor_sign_conjecture_false`,
+`physical_interval_anchor_coarea_phase_law`.
+
+Arithmetic facts that carry the falsification, each proved from a single integer inequality:
+`physWeight_two_lt_three` (`2^3 < 3^2`), `two_physWeight_three_lt_three_physWeight_two`
+(`3^4 < 2^9`), `log_two_lt_three_physCellWidth` (`2 < 64/27`).

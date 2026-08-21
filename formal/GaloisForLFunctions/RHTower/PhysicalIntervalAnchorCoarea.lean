@@ -541,6 +541,327 @@ theorem log_two_lt_three_physCellWidth : Real.log 2 < 3 * physCellWidth := by
   rw [← e]
   exact h
 
+theorem anchorInner_cell_disjoint' {A a b c d : ℝ} (h : d ≤ a) :
+    anchorInner A (cellIndicator a b) (cellIndicator c d) = 0 := by
+  rw [anchorInner_cellIndicator, Set.Ioc_inter_Ioc]
+  refine measureReal_Ioc_of_ge ?_
+  calc min A (min b d) ≤ min b d := min_le_right _ _
+    _ ≤ d := min_le_right _ _
+    _ ≤ a := h
+    _ ≤ max a c := le_max_left _ _
+    _ ≤ max 0 (max a c) := le_max_right _ _
+
+/-! ## The physical Gram matrix -/
+
+theorem physGap_le_log_two : physGap ≤ Real.log 2 := by
+  have := physGap_add_physCellWidth
+  have := physCellWidth_pos
+  linarith
+
+theorem cellLength_phys_three {A : ℝ} (hA : Real.log 2 ≤ A) :
+    cellLength A (physLo 3) (physHi 3) = physCellWidth := by
+  rw [physLo_three, physHi_three,
+    cellLength_of_subset le_rfl physCellWidth_pos.le
+      (le_trans physCellWidth_lt_log_two.le hA)]
+  ring
+
+theorem cellLength_phys_two {A : ℝ} (hA : Real.log 2 ≤ A) :
+    cellLength A (physLo 2) (physHi 2) = physCellWidth := by
+  rw [physLo_two, physHi_two,
+    cellLength_of_subset physGap_pos.le physGap_le_log_two hA]
+  linarith [physGap_add_physCellWidth]
+
+theorem apertureGram_phys_three_three {A : ℝ} (hA : Real.log 2 ≤ A) :
+    apertureGram A physLo physHi 3 3 = physCellWidth := by
+  simp only [apertureGram, physLo_three, physHi_three]
+  rw [anchorInner_cell_self le_rfl physCellWidth_pos.le
+    (le_trans physCellWidth_lt_log_two.le hA)]
+  ring
+
+theorem apertureGram_phys_two_two {A : ℝ} (hA : Real.log 2 ≤ A) :
+    apertureGram A physLo physHi 2 2 = physCellWidth := by
+  simp only [apertureGram, physLo_two, physHi_two]
+  rw [anchorInner_cell_self physGap_pos.le physGap_le_log_two hA]
+  linarith [physGap_add_physCellWidth]
+
+theorem apertureGram_phys_three_two {A : ℝ} : apertureGram A physLo physHi 3 2 = 0 := by
+  simp only [apertureGram, physLo_three, physHi_three, physLo_two, physHi_two]
+  exact anchorInner_cell_disjoint physCellWidth_lt_physGap.le
+
+theorem apertureGram_phys_two_three {A : ℝ} : apertureGram A physLo physHi 2 3 = 0 := by
+  simp only [apertureGram, physLo_three, physHi_three, physLo_two, physHi_two]
+  exact anchorInner_cell_disjoint' physCellWidth_lt_physGap.le
+
+/-- **(PI11)** The centered physical Gram matrix of the two-atom packet. -/
+theorem centeredGram_phys {A : ℝ} (hA : Real.log 2 ≤ A) :
+    centeredGram A physLo physHi 3 3 = physCellWidth - physCellWidth ^ 2 / A ∧
+      centeredGram A physLo physHi 2 2 = physCellWidth - physCellWidth ^ 2 / A ∧
+        centeredGram A physLo physHi 2 3 = -(physCellWidth ^ 2 / A) ∧
+          centeredGram A physLo physHi 3 2 = -(physCellWidth ^ 2 / A) := by
+  refine ⟨?_, ?_, ?_, ?_⟩ <;>
+    simp only [centeredGram, centeringGram, apertureGram_phys_three_three hA,
+      apertureGram_phys_two_two hA, apertureGram_phys_two_three, apertureGram_phys_three_two,
+      cellLength_phys_two hA, cellLength_phys_three hA] <;>
+    ring
+
+/-! ## The complete two-prime aperture phase law -/
+
+theorem coordinatePacketWeight_empty_phys (m : ℕ) :
+    coordinatePacketWeight (∅ : Finset ℕ) avoidCoordinate m = 1 := by
+  simp [coordinatePacketWeight]
+
+theorem coordinatePacketWeight_two_phys_two :
+    coordinatePacketWeight ({2} : Finset ℕ) avoidCoordinate 2 = 0 := by
+  simp [coordinatePacketWeight, avoidCoordinate]
+
+theorem coordinatePacketWeight_two_phys_three :
+    coordinatePacketWeight ({2} : Finset ℕ) avoidCoordinate 3 = 1 := by
+  norm_num [coordinatePacketWeight, avoidCoordinate]
+
+/-- The physical packet energy of an arbitrary sieve set in terms of the two surviving atoms. -/
+theorem physicalEnergy_phys {A : ℝ} (hA : Real.log 2 ≤ A) (S : Finset ℕ) :
+    physicalEnergy A physAtoms S avoidCoordinate physWeight physLo physHi =
+      (coordinatePacketWeight S avoidCoordinate 2 * physWeight 2) ^ 2 *
+          (physCellWidth - physCellWidth ^ 2 / A) -
+        2 * (coordinatePacketWeight S avoidCoordinate 2 * physWeight 2) *
+          (coordinatePacketWeight S avoidCoordinate 3 * physWeight 3) *
+            (physCellWidth ^ 2 / A) +
+        (coordinatePacketWeight S avoidCoordinate 3 * physWeight 3) ^ 2 *
+          (physCellWidth - physCellWidth ^ 2 / A) := by
+  obtain ⟨g33, g22, g23, g32⟩ := centeredGram_phys (A := A) hA
+  simp only [physicalEnergy, gramSiftedEnergy, physAtoms, weightedGram]
+  rw [Finset.sum_pair (by norm_num : (2 : ℕ) ≠ 3)]
+  rw [Finset.sum_pair (by norm_num : (2 : ℕ) ≠ 3),
+    Finset.sum_pair (by norm_num : (2 : ℕ) ≠ 3)]
+  rw [g33, g22, g23, g32]
+  ring
+
+/-- The transition aperture `A_* = c(1 + 2a/b)`. -/
+def physTransitionAperture : ℝ :=
+  physCellWidth * (1 + 2 * physWeight 3 / physWeight 2)
+
+/-- **(PI12)** The complete physical one-anchor curvature of the two-prime packet. -/
+theorem physicalTwoPrimeCurvature {A : ℝ} (hA : Real.log 2 ≤ A) :
+    (∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+      physicalEnergy A physAtoms (∅ ∪ d) avoidCoordinate physWeight physLo physHi) =
+      physWeight 2 * physCellWidth / A *
+        (physWeight 2 * (A - physCellWidth) - 2 * physWeight 3 * physCellWidth) := by
+  have hA0 : (0 : ℝ) < A := lt_of_lt_of_le (Real.log_pos (by norm_num)) hA
+  rw [show ({2} : Finset ℕ).powerset = {∅, {2}} from by decide, Finset.sum_pair (by simp)]
+  rw [Finset.card_empty, Finset.card_singleton]
+  rw [Finset.empty_union, Finset.empty_union]
+  rw [physicalEnergy_phys hA, physicalEnergy_phys hA]
+  rw [coordinatePacketWeight_empty_phys, coordinatePacketWeight_empty_phys,
+    coordinatePacketWeight_two_phys_two, coordinatePacketWeight_two_phys_three]
+  field_simp
+  ring
+
+/-- **(PI13)** The curvature is a positive multiple of the aperture defect `A − A_*`. -/
+theorem physicalTwoPrimeCurvature_eq_defect {A : ℝ} (hA : Real.log 2 ≤ A) :
+    (∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+      physicalEnergy A physAtoms (∅ ∪ d) avoidCoordinate physWeight physLo physHi) =
+      physWeight 2 ^ 2 * physCellWidth / A * (A - physTransitionAperture) := by
+  rw [physicalTwoPrimeCurvature hA, physTransitionAperture]
+  have hb := physWeight_two_pos.ne'
+  field_simp
+  ring
+
+theorem physicalTwoPrimeCurvature_coefficient_pos {A : ℝ} (hA : Real.log 2 ≤ A) :
+    0 < physWeight 2 ^ 2 * physCellWidth / A := by
+  have hA0 : (0 : ℝ) < A := lt_of_lt_of_le (Real.log_pos (by norm_num)) hA
+  exact div_pos (mul_pos (pow_pos physWeight_two_pos 2) physCellWidth_pos) hA0
+
+theorem mul_sign_iff {C x : ℝ} (hC : 0 < C) :
+    (C * x < 0 ↔ x < 0) ∧ (C * x = 0 ↔ x = 0) ∧ (0 < C * x ↔ 0 < x) := by
+  refine ⟨?_, ?_, ?_⟩
+  · rw [mul_neg_iff]
+    constructor
+    · rintro (⟨_, h⟩ | ⟨h, _⟩)
+      · exact h
+      · exact absurd h (not_lt.mpr hC.le)
+    · exact fun h => Or.inl ⟨hC, h⟩
+  · rw [mul_eq_zero]
+    constructor
+    · rintro (h | h)
+      · exact absurd h hC.ne'
+      · exact h
+    · exact fun h => Or.inr h
+  · rw [mul_pos_iff]
+    constructor
+    · rintro (⟨_, h⟩ | ⟨h, _⟩)
+      · exact h
+      · exact absurd h (not_lt.mpr hC.le)
+    · exact fun h => Or.inl ⟨hC, h⟩
+
+/-- **(PI14)** The complete aperture phase law: exactly one transition aperture, with strictly
+negative curvature below it and strictly positive curvature above it. -/
+theorem physicalTwoPrimeCurvature_phase_law {A : ℝ} (hA : Real.log 2 ≤ A) :
+    ((∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+        physicalEnergy A physAtoms (∅ ∪ d) avoidCoordinate physWeight physLo physHi) < 0 ↔
+      A < physTransitionAperture) ∧
+    ((∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+        physicalEnergy A physAtoms (∅ ∪ d) avoidCoordinate physWeight physLo physHi) = 0 ↔
+      A = physTransitionAperture) ∧
+    (0 < (∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+        physicalEnergy A physAtoms (∅ ∪ d) avoidCoordinate physWeight physLo physHi) ↔
+      physTransitionAperture < A) := by
+  have hC := physicalTwoPrimeCurvature_coefficient_pos hA
+  rw [physicalTwoPrimeCurvature_eq_defect hA]
+  obtain ⟨h1, h2, h3⟩ := mul_sign_iff (x := A - physTransitionAperture) hC
+  refine ⟨?_, ?_, ?_⟩
+  · rw [h1]; constructor <;> intro h <;> linarith
+  · rw [h2]; constructor <;> intro h <;> linarith
+  · rw [h3]; constructor <;> intro h <;> linarith
+
+/-- **(PI15)** The transition aperture is strictly between `3c` and `4c`. -/
+theorem physTransitionAperture_mem_Ioo :
+    3 * physCellWidth < physTransitionAperture ∧
+      physTransitionAperture < 4 * physCellWidth := by
+  have hb := physWeight_two_pos
+  have hc := physCellWidth_pos
+  constructor
+  · have key : 2 < 2 * physWeight 3 / physWeight 2 := by
+      rw [lt_div_iff₀ hb]
+      linarith [physWeight_two_lt_three]
+    rw [physTransitionAperture]
+    nlinarith
+  · have key : 2 * physWeight 3 / physWeight 2 < 3 := by
+      rw [div_lt_iff₀ hb]
+      linarith [two_physWeight_three_lt_three_physWeight_two]
+    rw [physTransitionAperture]
+    nlinarith
+
+/-- **(PI16)** Both integer apertures `3c` and `4c` lie in the full-cell range and realize the
+two curvature signs. -/
+theorem physicalTwoPrimeCurvature_sign_witnesses :
+    Real.log 2 ≤ 3 * physCellWidth ∧ Real.log 2 ≤ 4 * physCellWidth ∧
+      (∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+        physicalEnergy (3 * physCellWidth) physAtoms (∅ ∪ d) avoidCoordinate physWeight
+          physLo physHi) < 0 ∧
+      0 < (∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+        physicalEnergy (4 * physCellWidth) physAtoms (∅ ∪ d) avoidCoordinate physWeight
+          physLo physHi) := by
+  have h3 : Real.log 2 ≤ 3 * physCellWidth := log_two_lt_three_physCellWidth.le
+  have h4 : Real.log 2 ≤ 4 * physCellWidth := by
+    linarith [physCellWidth_pos, log_two_lt_three_physCellWidth]
+  obtain ⟨hlo, hhi⟩ := physTransitionAperture_mem_Ioo
+  exact ⟨h3, h4, (physicalTwoPrimeCurvature_phase_law h3).1.mpr hlo,
+    (physicalTwoPrimeCurvature_phase_law h4).2.2.mpr hhi⟩
+
+/-- **Falsification of the physical anchor-sign conjecture.**  The complete physical packet with
+`M = 3`, `K = 4` has a one-anchor Boolean curvature that is strictly negative at one admissible
+aperture and strictly positive at another. -/
+theorem physical_anchor_sign_conjecture_false :
+    ∃ A₀ A₁ : ℝ, Real.log 2 ≤ A₀ ∧ Real.log 2 ≤ A₁ ∧
+      (∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+        physicalEnergy A₀ physAtoms (∅ ∪ d) avoidCoordinate physWeight physLo physHi) < 0 ∧
+      0 < (∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+        physicalEnergy A₁ physAtoms (∅ ∪ d) avoidCoordinate physWeight physLo physHi) := by
+  obtain ⟨h3, h4, hneg, hpos⟩ := physicalTwoPrimeCurvature_sign_witnesses
+  exact ⟨3 * physCellWidth, 4 * physCellWidth, h3, h4, hneg, hpos⟩
+
+/-! ## The arithmetic anchor factor -/
+
+/-- **(PI7)** For the Boolean avoidance coordinate the common-anchor factor is the indicator that
+every anchor prime hits at least one of the two source indices. -/
+theorem commonAnchorWeight_avoidCoordinate (C : Finset ℕ) (m n : ℕ) :
+    commonAnchorWeight C avoidCoordinate m n =
+      if ∀ p ∈ C, p ∣ m ∨ p ∣ n then 1 else 0 := by
+  classical
+  induction C using Finset.induction with
+  | empty => simp [commonAnchorWeight]
+  | insert q C hq ih =>
+      rw [commonAnchorWeight, Finset.prod_insert hq, ← commonAnchorWeight, ih]
+      by_cases hqm : q ∣ m
+      · by_cases hrest : ∀ p ∈ C, p ∣ m ∨ p ∣ n
+        · rw [if_pos hrest, if_pos ?_]
+          · simp [avoidCoordinate, hqm]
+          · intro p hp
+            rcases Finset.mem_insert.mp hp with h | h
+            · exact Or.inl (h ▸ hqm)
+            · exact hrest p h
+        · rw [if_neg hrest, if_neg ?_]
+          · ring
+          · intro hall
+            exact hrest fun p hp => hall p (Finset.mem_insert_of_mem hp)
+      · by_cases hqn : q ∣ n
+        · by_cases hrest : ∀ p ∈ C, p ∣ m ∨ p ∣ n
+          · rw [if_pos hrest, if_pos ?_]
+            · simp [avoidCoordinate, hqn]
+            · intro p hp
+              rcases Finset.mem_insert.mp hp with h | h
+              · exact Or.inr (h ▸ hqn)
+              · exact hrest p h
+          · rw [if_neg hrest, if_neg ?_]
+            · ring
+            · intro hall
+              exact hrest fun p hp => hall p (Finset.mem_insert_of_mem hp)
+        · have hnot : ¬ ∀ p ∈ insert q C, p ∣ m ∨ p ∣ n := by
+            intro hall
+            rcases hall q (Finset.mem_insert_self q C) with h | h
+            · exact hqm h
+            · exact hqn h
+          rw [if_neg hnot]
+          simp [avoidCoordinate, hqm, hqn]
+
+/-- For a finite set of primes the anchor factor is the indicator of divisibility of the product
+of the two source indices by the anchor radical. -/
+theorem commonAnchorWeight_avoidCoordinate_prime (C : Finset ℕ)
+    (hC : ∀ p ∈ C, Nat.Prime p) (m n : ℕ) :
+    commonAnchorWeight C avoidCoordinate m n =
+      if (∏ p ∈ C, p) ∣ m * n then 1 else 0 := by
+  rw [commonAnchorWeight_avoidCoordinate]
+  by_cases h : ∀ p ∈ C, p ∣ m ∨ p ∣ n
+  · have hdvd : (∏ p ∈ C, p) ∣ m * n :=
+      Finset.prod_primes_dvd _ (fun p hp => (hC p hp).prime)
+        fun p hp => ((hC p hp).dvd_mul).mpr (h p hp)
+    rw [if_pos h, if_pos hdvd]
+  · have hnot : ¬ (∏ p ∈ C, p) ∣ m * n := by
+      intro hdvd
+      exact h fun p hp =>
+        ((hC p hp).dvd_mul).mp (dvd_trans (Finset.dvd_prod_of_mem _ hp) hdvd)
+    rw [if_neg h, if_neg hnot]
+
+/-! ## Capstone -/
+
+/-- **Physical interval-anchor coarea and aperture phase law.**  For every base and anchor of the
+physical Boolean sieve, the anchor curvature of the centered clipped-interval packet energy is an
+exact difference of two nonnegative masses, the anchored Boolean-cover overlap mass and the
+anchored rank-one centering mass; and the complete two-atom physical packet realizes both
+curvature signs, with exactly one transition aperture strictly between `3c` and `4c`. -/
+theorem physical_interval_anchor_coarea_phase_law :
+    (∀ (A : ℝ) (indices : Finset ℕ) (base anchor : Finset ℕ), Disjoint base anchor →
+        ∀ lo hi : ℕ → ℝ,
+        (∑ d ∈ anchor.powerset, (-1 : ℝ) ^ d.card *
+            physicalEnergy A indices (base ∪ d) avoidCoordinate physWeight lo hi) =
+          anchorCoareaMass A indices base anchor avoidCoordinate physWeight lo hi -
+            anchorCenteringMass A indices base anchor avoidCoordinate physWeight lo hi / A) ∧
+      (∀ (A : ℝ) (indices : Finset ℕ) (base anchor : Finset ℕ) (lo hi : ℕ → ℝ),
+        0 ≤ anchorCoareaMass A indices base anchor avoidCoordinate physWeight lo hi ∧
+          0 ≤ anchorCenteringMass A indices base anchor avoidCoordinate physWeight lo hi) ∧
+      3 * physCellWidth < physTransitionAperture ∧
+        physTransitionAperture < 4 * physCellWidth ∧
+      (∀ A : ℝ, Real.log 2 ≤ A →
+        ((∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+            physicalEnergy A physAtoms (∅ ∪ d) avoidCoordinate physWeight physLo physHi) < 0 ↔
+          A < physTransitionAperture)) ∧
+      (∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+        physicalEnergy (3 * physCellWidth) physAtoms (∅ ∪ d) avoidCoordinate physWeight
+          physLo physHi) < 0 ∧
+      0 < (∑ d ∈ ({2} : Finset ℕ).powerset, (-1 : ℝ) ^ d.card *
+        physicalEnergy (4 * physCellWidth) physAtoms (∅ ∪ d) avoidCoordinate physWeight
+          physLo physHi) := by
+  obtain ⟨hlo, hhi⟩ := physTransitionAperture_mem_Ioo
+  obtain ⟨_, _, hneg, hpos⟩ := physicalTwoPrimeCurvature_sign_witnesses
+  refine ⟨fun A indices base anchor hdisj lo hi =>
+      physicalAnchorCurvature_eq A indices base anchor hdisj avoidCoordinate physWeight lo hi,
+    fun A indices base anchor lo hi =>
+      ⟨anchorCoareaMass_nonneg A indices base anchor avoidCoordinate physWeight lo hi
+        avoidCoordinate_zero_or_one physWeight_nonneg,
+       anchorCenteringMass_nonneg A indices base anchor avoidCoordinate physWeight lo hi
+        avoidCoordinate_zero_or_one physWeight_nonneg⟩,
+    hlo, hhi, fun A hA => (physicalTwoPrimeCurvature_phase_law hA).1, hneg, hpos⟩
+
 end
 
 end PhysicalAnchor

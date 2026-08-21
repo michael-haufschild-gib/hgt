@@ -1,7 +1,7 @@
 # Physical interval anchor coarea and aperture phase law
 
 - **ID:** `physical-interval-anchor-coarea-phase-law`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** `[PAPER-PROVED] [FALSIFIED SIGN CONJECTURE] [POSITIVE SALVAGE] [SOURCE-SPECIFIC BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `rh-proof-shape-1707.md`, `(35m20a)`--`(35m20c)`;
   `common-profile-boolean-anchor-curvature.md`, `(CG5)`--`(CG7)`;
@@ -289,9 +289,88 @@ Since `2` and `3` are prime, it is also the complete nonzero von Mangoldt packet
 - [x] Supplied an exact complete physical-packet falsification with no numerical evidence.
 - [x] Extracted the strongest positive coarea and phase-classification survivor.
 - [x] Classified the result as an internal source-specific bridge, not external novelty.
-- [ ] Formalize `(PI3)`--`(PI4)` and `(PI12)`--`(PI16)` in Lean and run the axiom/lint gates.
+- [x] Formalize `(PI3)`--`(PI4)` and `(PI12)`--`(PI16)` in Lean and run the axiom/lint gates.
 
 ## Log
 
 - 2026-07-18 — paper proof completed; `PI-SIGN` falsified; positive survivor and AC25 join
   recorded.
+
+## Lean formalization — COMPLETE
+
+Module: `formal/GaloisForLFunctions/RHTower/PhysicalIntervalAnchorCoarea.lean`
+(namespace `RHTower.PhysicalAnchor`), wired into `GaloisForLFunctions.RHTower`.
+
+Everything is unconditional: no `sorry`, no `axiom`, no added hypotheses beyond the aperture
+parameter constraint `log 2 ≤ A` that the card itself imposes.  `#print axioms` on every capstone
+returns exactly `[propext, Classical.choice, Quot.sound]`.
+
+### The aperture pairing and the cell packet
+
+| Card object | Lean |
+|---|---|
+| `chi_m=1_(I_m)` | `cellIndicator (lo m) (hi m)` |
+| `integral_0^A f g` | `anchorInner A f g` |
+| `ell_m=|I_m|` | `cellLength A (lo m) (hi m)` |
+| `F_S` | `siftedProfile indices S coordinate w lo hi` |
+| `L_S` | `siftedMass A indices S coordinate w lo hi` |
+| `Energy(S)` | `physicalEnergy A indices S coordinate w lo hi` |
+| `P_S(m)` | `coordinatePacketWeight S coordinate m` |
+| `1_(c_C|mn)` | `commonAnchorWeight anchor coordinate m n` |
+
+`cellIndicator_mul`, `integrableOn_cellIndicator` and `anchorInner_cellIndicator` reduce every
+overlap integral to `volume.real (Ioc 0 A ∩ Ioc (max a c) (min b d))`, so no `L^2` Hilbert-space
+instance is needed anywhere.
+
+### Equations formalized
+
+- `(PI1)` — `physicalEnergy_eq_integral_sub`: orthogonal mean removal,
+  `Energy(S) = ∫_0^A F_S^2 − L_S^2/A`, via `integral_siftedProfile_sq`,
+  `integral_siftedProfile` and `gramSiftedEnergy_centering`.
+- `(PI7)` — `sum_powerset_signed_commonCoordinateWeight` (already owned by
+  `RHTower.CommonProfileBooleanAnchorCurvature`) together with the two new arithmetic
+  identifications `commonAnchorWeight_avoidCoordinate` (the anchor factor is the indicator that
+  every anchor prime hits `m` or `n`) and `commonAnchorWeight_avoidCoordinate_prime`
+  (for a finite set of primes this is exactly `1_(c_C|mn)`).
+- `(PI2)`–`(PI3)` — `alternating_integral_sq_eq_anchorCoareaMass`,
+  `alternating_mass_sq_eq_anchorCenteringMass`, `anchorCoareaMass_nonneg`,
+  `anchorCenteringMass_nonneg`.  The general Boolean inclusion–exclusion step is the new
+  `gramBooleanAnchorCurvature`, proved for an arbitrary real Gram kernel (the corpus version was
+  stated only for an inner-product space, which the aperture pairing is not).
+- `(PI4)` — `physicalAnchorCurvature_eq`:
+  `kappa_C Energy(N) = anchorCoareaMass − anchorCenteringMass / A`.
+- `(PI5)`–`(PI6)` — `anchorOverlapConcentration` and
+  `physicalAnchorCurvature_eq_concentration_defect`.
+- `(PI10)`–`(PI11)` — `physLo`, `physHi`, `physWeight`, `physAtoms`, `avoidCoordinate`, with
+  `physLo_three = 0`, `physHi_three = physCellWidth`, `physLo_two = physGap`,
+  `physHi_two = log 2`, `physGap_add_physCellWidth`, and the complete centered Gram matrix
+  `centeredGram_phys`: diagonal `c − c^2/A`, off-diagonal `−c^2/A`.
+- `(PI12)` — `physicalTwoPrimeCurvature`:
+  `kappa_{2}Energy(∅) = (bc/A)(b(A−c) − 2ac)`, computed from `physicalEnergy_phys`
+  with `coordinatePacketWeight {2} avoidCoordinate 2 = 0`.
+- `(PI13)` — `physTransitionAperture` and `physicalTwoPrimeCurvature_eq_defect`:
+  `kappa = b^2 c/A · (A − A_*)`.
+- `(PI14)` — `physicalTwoPrimeCurvature_phase_law`: the three-way sign equivalence.
+- `(PI15)` — `physTransitionAperture_mem_Ioo`, resting on `physWeight_two_lt_three` (`8 < 9`)
+  and `two_physWeight_three_lt_three_physWeight_two` (`3^4 < 2^9`).
+- `(PI16)` — `physicalTwoPrimeCurvature_sign_witnesses`, using
+  `log_two_lt_three_physCellWidth` (`2 < 64/27`) to place both integer apertures in the
+  full-cell range.
+
+### Capstones
+
+- `physical_anchor_sign_conjecture_false` — `CONJECTURE PI-SIGN` is false: two admissible
+  apertures realize opposite curvature signs for the complete physical packet.
+- `physical_interval_anchor_coarea_phase_law` — the surviving positive statement: the exact
+  signed coarea law for every base/anchor pair, nonnegativity of both masses, the transition
+  aperture strictly inside `(3c, 4c)`, the sign law, and the two explicit witnesses.
+
+### Reusable infrastructure added
+
+- `gramBooleanAnchorCurvature` — Boolean anchor curvature for an arbitrary real Gram kernel,
+  removing the inner-product-space requirement of the corpus version.
+- `cellIndicator` / `anchorInner` / `cellLength` toolkit with `cellIndicator_mul`,
+  `anchorInner_cell_self`, `anchorInner_cell_disjoint`, `anchorInner_cell_disjoint'`,
+  `measureReal_Ioc_of_le`, `measureReal_Ioc_of_ge`.
+- `commonAnchorWeight_avoidCoordinate(_prime)` — the arithmetic reading of the Boolean anchor
+  factor as a radical-divisibility indicator.

@@ -637,3 +637,109 @@ something to be applied to.  The residue is therefore exactly the growth estimat
 lower-automorphic interpolant's complement Poincaré jets must be bounded by
 `C₀·B^r·exp(−σ₀ ∑ z_k²)`, which combined with `AbeDampingPacketData.ofFiniteVanishing` closes the
 damping datum.
+
+## Lean status 2026-08-21 (fourth entry) — the growth estimate, reduced to two sup bounds
+
+`GaloisForLFunctions.HTGeometry.PoincareTermJetGrowth` (wired, built, axiom-clean)
+
+```text
+norm_poincareTermEntire_le
+    the sup bound for a Poincaré term from the two factors
+norm_multiIndexJetEvalCLM_poincareTermEntire_le
+    **Cauchy's estimate for a packet jet of a Poincaré term** — the jet at `p` of total degree `n`
+    is bounded by `Mψ·Ms/ρⁿ`, where the two sups are taken over the ball of radius `n·ρ` about `p`
+norm_multiIndexJetEvalCLM_poincareTermEntire_le_gaussian
+    **the damping bound itself**: a Gaussian bound `Cψ·exp(−σ₀·S)` on the inverse automorphy factor
+    and a polynomial bound `Cs·B^r` on the seed give
+    `‖jet‖ ≤ (Cψ·Cs/ρⁿ)·B^r·exp(−σ₀·S)`
+```
+
+This is exactly the hypothesis `hbound` of `abeDampingMajorant_of_finite_vanishing`, so the card's
+remaining analytic obligation is now split into two *sup* bounds on one fixed polydisc, with no
+derivatives left in either:
+
+1. `‖ψ(γ_z, y)⁻¹‖ ≤ Cψ · exp(−σ₀ ∑ z_k²)` for `y` in a ball about the packet point — this is the
+   Riemann-form positivity of the lattice, i.e. `IsAbePositiveTorusless`;
+2. `‖seed(y + γ_z)‖ ≤ Cs · B^r` on the same ball — the induction hypothesis's own growth bound on
+   the lower-automorphic interpolant.
+
+No estimate on jets of the seed is needed: Cauchy's inequality converts a sup bound into every
+mixed partial, and the Leibniz layer of the second entry converts vanishing jets in the same way.
+So the card's residue is now a *pointwise* statement about the automorphy factor and a *pointwise*
+statement about the interpolant, both on a compact set.
+
+## Lean status 2026-08-21 (fifth entry) — the positive factor, and its Gaussian decay
+
+The first of the two pointwise inputs named in the fourth entry is now Lean, unconditionally.
+
+`GaloisForLFunctions.HTGeometry.AppellHumbertGaussianBound` (wired, built, axiom-clean)
+
+```text
+IsHermitianForm.self_eq_re, star_self, smul_right, re_smul_add
+IsHermitianForm.norm_sq_le    **Cauchy--Schwarz for a positive semidefinite Hermitian form**
+IsHermitianForm.norm_le_sqrt  its square-root form
+norm_inv_appellHumbertFactor_le
+    **the Gaussian bound**: for `(H z z).re ≤ C²`,
+    `‖e(γ, z)⁻¹‖ ≤ exp(π C²)·exp(−(π/4)·(H γ γ).re)`
+```
+
+The mechanism is that half of the quadratic exponent pays for the cross term and half survives:
+`‖e(γ,z)⁻¹‖ = exp(−π·Re H(z,γ) − (π/2)·H(γ,γ))`, Cauchy--Schwarz gives
+`−Re H(z,γ) ≤ C·√(H(γ,γ))`, and `π C u − (π/2) u² ≤ π C² − (π/4) u²` because the difference is
+`π (C − u/2)²`.  Cauchy--Schwarz itself is proved from scratch for this Hermitian form — the
+positivity `0 ≤ Re H(x + λ y, x + λ y)` at `λ = −s·H(x,y)` gives
+`0 ≤ a − 2s‖w‖² + s²‖w‖² b` for every real `s`, and the two cases `b = 0`, `b > 0` are settled by
+`s = (a+1)/(2‖w‖²)` and `s = 1/b`.
+
+`GaloisForLFunctions.HTGeometry.AppellHumbertAutomorphicFactor` (wired, built, axiom-clean)
+
+```text
+IsHermitianForm.zero_left, zero_right, hermLeft
+semicharacter_zero                     a unit-modulus semicharacter is `1` at zero
+continuous_appellHumbertFactor         continuity, from finite dimensionality
+lineEntire_appellHumbertFactor         **entireness on every line**: the exponent is affine there
+appellHumbertAutomorphicFactor         **the Appell--Humbert factor is an `AutomorphicFactor` for
+                                       every period group**
+norm_inv_appellHumbertAutomorphicFactor_le
+                                       **the Gaussian bound in the form the damping estimate
+                                       consumes**
+```
+
+So the card's positivity input is no longer an interface: a positive semidefinite Hermitian form
+and a unit-modulus semicharacter *produce* an automorphic factor whose inverse decays like
+`exp(−(π/4)·H(γ,γ))` uniformly on any set where the base point has bounded form-size.  Composed with
+`norm_multiIndexJetEvalCLM_poincareTermEntire_le_gaussian` of the fourth entry, the damping
+hypothesis `hbound` now needs only the seed's own sup bound `‖seed(y + γ)‖ ≤ Cs·B^r`.
+
+## Lean status 2026-08-21 (sixth entry) — the damping hypothesis, closed against a fixed ball
+
+`GaloisForLFunctions.HTGeometry.PoincareTermAppellHumbertDecay` (wired, built, axiom-clean)
+
+```text
+IsHermitianForm.sub
+norm_poincareTerm_appellHumbert_le
+    **the Poincaré term of a lower-automorphic seed decays like the difference form**:
+    `‖ψ(γ,z)⁻¹·seed(z+γ)‖ ≤ exp(π C²)·exp(−(π/4)·(H_u − H_l)(γ,γ))·‖seed(z)‖`
+norm_multiIndexJetEvalCLM_poincareTerm_appellHumbert_le
+    **its packet-jet form**:
+    `‖jet‖ ≤ (exp(π C²)·M_s/ρⁿ)·exp(−(π/4)·(H_u − H_l)(γ,γ))`
+```
+
+The structural point is that for a *lower-automorphic* seed the lattice dependence collapses.
+`seed(z + γ) = e_l(γ, z)·seed(z)`, so
+
+```text
+poincareTerm ψ_u seed γ z = (e_u(γ,z)⁻¹ · e_l(γ,z)) · seed z,
+```
+
+and the bracket is the Appell--Humbert expression of the **difference form** `D = H_u − H_l` with
+the quotient semicharacter — whose modulus does not depend on the semicharacter at all.  So Abe
+positivity in the exact form `D ⪰ 0` gives the Gaussian factor, and the seed enters **only through
+its size at the base point**.
+
+Consequence for the card.  The damping hypothesis `hbound` of
+`abeDampingMajorant_of_finite_vanishing` no longer needs any control of the seed over the lattice:
+it needs `‖seed‖ ≤ M_s` on one fixed ball around the packet point, with `M_s = C_s·B^r` supplied by
+the induction hypothesis, and `D ⪰ 0` with `(D y y).re ≤ C²` on the same ball.  Both are compact
+statements about a single ball, and the whole `exp(−σ₀ ∑ z_k²)` decay is now proved rather than
+assumed, with `σ₀ = π/4` measured in the difference form.

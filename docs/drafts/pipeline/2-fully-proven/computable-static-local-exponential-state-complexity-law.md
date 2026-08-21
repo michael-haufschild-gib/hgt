@@ -597,14 +597,38 @@ axiom-clean) connects `(6)` to `(15)`--`(16)`.
 | hence their upper limits agree | `limsup_quenchedTimeFraction_eq_limsup_windowProbability` |
 | **`(6) ⇒ liminf_T f_T(J) ≥ 1 − η`** | `le_liminf_quenchedTimeFraction_of_windowProbability` |
 
-### The exact next brick
+## Lean progress -- the joint measurability of the hard event (2026-08-21)
 
-Joint measurability of the hard event `S = {(J,t) : C_{2ε}(e^{-itH_n(J)}Ω) > s_n} ⊆ Ω × ℝ`, which
-`le_liminf_quenchedTimeFraction_of_limsup_compl_le` consumes.  Mathematically it is immediate --
-`Sᶜ` is a finite union of closed distance conditions, and the corpus already owns both Lipschitz
-estimates (`norm_unitaryEvolution_mulVec_sub_le` in the generator,
-`norm_unitaryEvolution_mulVec_time_sub_le` in the time) -- but it needs the matrix operator-norm
-topology (`Matrix.Norms.L2Operator`) to be reconciled with the entrywise topology before
-`NormedSpace.exp_continuous` can be composed into a joint continuity statement.  That reconciliation
-is the only remaining obstacle between `ae_limsup_physicalCapture_le_of_gaussianGoodSet` and the
-card's `(8)`, `(8a)`, `(9)`, all three of which are then `QuenchedFixedTimeTransfer` verbatim.
+`formal/GaloisForLFunctions/HTGeometry/JointHardEventMeasurability.lean` (new, umbrella-wired,
+axiom-clean) closes the brick named above.
+
+| Card item | Declaration |
+|---|---|
+| the propagator is jointly continuous in the generator and the time | `continuous_unitaryEvolution` |
+| matrix action on a fixed vector is a continuous linear map | `continuous_mulVec_const` |
+| hence the orbit is jointly continuous | `continuous_orbit_pair` |
+| the easy event is a finite union of closed distance conditions | `isClosed_easyPairEvent` |
+| **the hard event `S ⊆ Ω × ℝ` is jointly measurable** | `measurableSet_hardPairEvent` |
+
+The reconciliation of the two topologies is not needed as such: `unitaryEvolution H t` is
+`NormedSpace.exp (t • (-I • H))`, and `NormedSpace.exp_continuous` applies directly on the matrix
+C⋆-algebra (with `NormedAlgebra.restrictScalars ℚ ℂ`, exactly as `ObserverProfileStability` already
+does), while `M ↦ M *ᵥ ψ` is a *linear* map of a finite-dimensional space and so continuous by
+`LinearMap.continuous_of_finiteDimensional` whatever norm the codomain carries.  The composite is
+continuous, the easy event is closed, and its complement is measurable in the product σ-algebra
+(second countability of the coefficient space gives `Prod.borelSpace`).
+
+### What remains on this card
+
+Theorem A: the packaging of the depth-`s` word dictionary `Z_{n,s}` as the target family `Z` -- the
+gate action on the fixed seed, `Fintype.card (Fin s → Γ) = M^s` from `CircuitDictionaryCounting`,
+and unit norm of each gate image -- after which `(15)`--`(16)`, `(8)`, `(8a)`, `(9)` are
+`QuenchedFixedTimeTransfer` verbatim, now that both its hypotheses
+(`ae_limsup_physicalCapture_le_of_gaussianGoodSet` and `measurableSet_hardPairEvent`) are owned.
+
+Theorem B: `(17)`--`(20)`.  Three layers: Duhamel time perturbation from a real common time to a
+nearby rational one (`norm_unitaryEvolution_mulVec_time_sub_le`, owned) and from a real coefficient
+vector to a nearby rational one (`norm_unitaryEvolution_mulVec_sub_le`, owned); density of the
+rationals in the positive-measure hard fibre; and the dovetailed search, which is a computability
+statement about enumerating `ℚ^{m_n} × ℚ_{>0}` and testing a decidable predicate -- the only part
+with no corpus antecedent.

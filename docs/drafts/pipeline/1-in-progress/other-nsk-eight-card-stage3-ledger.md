@@ -1407,3 +1407,36 @@ factor two place-degrees down.
 already sends the logarithmic factor two degrees down, discharging the leading hypothesis of the
 border-shape lemmas.  When the response is only of unit size the same conclusion is the law's
 Wronskian cancellation, which is the one law-specific input still outstanding at this level.
+
+## Card 7: the growth estimate is now two sup bounds
+
+`HTGeometry.PoincareTermJetGrowth` (wired, built, axiom-clean):
+`norm_multiIndexJetEvalCLM_poincareTermEntire_le_gaussian` produces exactly `hbound` of
+`abeDampingMajorant_of_finite_vanishing` from a Gaussian sup bound on the inverse automorphy factor
+and a polynomial sup bound on the seed, both over one fixed ball.  Cauchy's inequality does the rest,
+so no jet estimate on the seed is required.
+
+Card 7's residue is therefore two pointwise statements on a compact set: the Riemann-form positivity
+`IsAbePositiveTorusless` for the factor, and the induction hypothesis's growth bound for the
+interpolant.
+
+## Card 7: the positive automorphic factor is built, with its Gaussian decay
+
+`HTGeometry.AppellHumbertGaussianBound` — Cauchy–Schwarz for a positive semidefinite Hermitian form
+(`IsHermitianForm.norm_sq_le`, proved from scratch) and `norm_inv_appellHumbertFactor_le`:
+`‖e(γ,z)⁻¹‖ ≤ exp(πC²)·exp(−(π/4)(H γ γ).re)` for base points with `(H z z).re ≤ C²`.
+
+`HTGeometry.AppellHumbertAutomorphicFactor` — `appellHumbertAutomorphicFactor`: the expression *is*
+an `AutomorphicFactor` for every period group (normalised, cocycle, nowhere zero, line-entire,
+continuous), and `norm_inv_appellHumbertAutomorphicFactor_le` states the decay in that language.
+
+Both wired, built, axiom-clean.  Card 7's damping hypothesis now needs only the seed's own sup bound.
+
+## Card 7: the damping hypothesis is proved against a fixed ball
+
+`HTGeometry.PoincareTermAppellHumbertDecay` (wired, built, axiom-clean).  For a lower-automorphic
+seed the lattice dependence of the Poincaré term collapses to the Appell–Humbert expression of the
+difference form `D = H_u − H_l`, so Abe positivity `D ⪰ 0` gives
+`‖jet‖ ≤ (exp(πC²)·M_s/ρⁿ)·exp(−(π/4)·D(γ,γ))` with `M_s` the seed's sup on ONE fixed ball.
+
+That is `hbound` of `abeDampingMajorant_of_finite_vanishing`, no longer an assumption.

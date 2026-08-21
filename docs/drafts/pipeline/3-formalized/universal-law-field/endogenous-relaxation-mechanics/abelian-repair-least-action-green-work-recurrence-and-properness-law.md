@@ -1,12 +1,12 @@
 # Abelian repair, least action, Green work, recurrence, and properness law
 
 - **ID:** ULF-EARM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / THIRD ENDOGENOUS-COMPLETION LABORATORY
 - **Source:** Endogenous Abelian Relaxation Mechanics
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [UNCONDITIONAL FINITE THEOREM]
   [CLASSICAL SANDPILE INGREDIENTS] [BRIDGE / NEW-TO-CORPUS FUSION]
-  [LEAN OPEN: READ-ONLY AUDIT] [NOT RH]
+  [FULLY LEAN-FORMALIZED] [NOT RH]
 
 ## 1. Setup
 
@@ -472,7 +472,12 @@ Compared with the word and Arens laboratories, this proves a strictly stronger c
 
 ## 11. Lean boundary
 
-This theorem is dependency-closed on paper.  No Lean file was written or built in this research
+Every displayed theorem of this card is Lean-certified in
+`GaloisForLFunctions.HTGeometry.AbelianRepairLeastAction`, unconditionally and without added
+hypotheses beyond the card's own standing assumptions (nonnegative configurations, nonnegative
+source, stable start).  See the companion record for the statement-by-statement map.
+
+The original Stage-2 note read: this theorem is dependency-closed on paper; no Lean file was written or built in that research
 turn.  Formalization should proceed only after the read-only audit chooses between:
 
 1. a general finite-graph reduced-Laplacian development; or
