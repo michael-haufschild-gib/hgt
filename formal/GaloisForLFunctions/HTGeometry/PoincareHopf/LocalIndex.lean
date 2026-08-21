@@ -91,8 +91,10 @@ theorem index_eq_sign_det (hv : ContDiff ℝ 2 v) (hp : v p = 0) (hdet : (jac v 
     intro w
     have h1 : ‖w‖ ≤ M * ‖matVec A w‖ := by
       have h0 := (E.symm : (Fin n → ℝ) →L[ℝ] (Fin n → ℝ)).le_opNorm (E w)
-      rw [hEapp w] at h0
-      simpa [hM] using h0
+      have hsym : (E.symm : (Fin n → ℝ) →L[ℝ] (Fin n → ℝ)) (E w) = w := by simp
+      rw [hsym, hEapp w] at h0
+      rw [hM]
+      exact h0
     rw [hc, inv_mul_le_iff₀ (by linarith)]
     nlinarith [norm_nonneg (matVec A w)]
   -- the linearization dominates the remainder near `p`

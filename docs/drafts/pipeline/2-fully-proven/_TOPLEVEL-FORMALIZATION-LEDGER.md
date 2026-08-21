@@ -168,10 +168,26 @@ with the alphabet supplied).  Cap `2\cdot\dim`, matching the cards' `(2)`.  New 
 `TwoLevelStateSynthesis`, `SynthesisWordApproximation`, `UniversalSynthesisCertificate`,
 `WeakCutUnconditionalPlateau` — all axiom-clean, umbrella-wired.
 
-## Open (11)
+## `capacitary-observer-sector-excision-law` promoted (2026-08-21)
+
+The three remaining items are theorems.  **Corollary A.3**: on a group with a left-invariant
+probability measure, translations act transitively and invariance of the integral forces the
+coefficient matrix of an orthonormal family to be orthogonal, so `(8c)` needs no hypothesis; the
+copy representation `U ↦ U^{⊗k} ⊗ \bar U^{⊗k}` is built with its multiplicativity and dimension
+`D^{2k}`, and a *centred* orthonormal family in its matrix-coefficient sector has at most `2D^{4k}`
+members (`CopySectorTranslationSymmetry`).  **Corollary I.1**: an upper semicontinuous statistic is
+squeezed from above by continuous majorants with almost the same Haar mean, so the physical-time
+transfer needs no word truncation (`UpperSemicontinuousMajorant`,
+`PhaseFlowSemicontinuousTransfer`); the syndetic clause is the dense-orbit law at the open strict
+sublevel set.  **Corollary I.3 and Theorem K**: the same majorant argument along any weakly
+convergent family, plus Markov, gives `(11az)`--`(11bb)`, instantiated unconditionally at the
+nearest-neighbour Pauli chain (`AnnealedPortmanteauBound`, `AnnealedAccessibilityPlateau`);
+Theorem K is that bound plus the elementary hardening-cone containment.
+
+## Open (10)
 
 algebraic-two-local-instant-exact-complexity, all-replica-static-centralizer-planar-separation-law,
-arithmetic-static-local-hardness-recurrence-window-law, capacitary-observer-sector-excision-law,
+arithmetic-static-local-hardness-recurrence-window-law,
 cusp-spectrum-radius-law,
 local-chain-metric-recurrence-exponents, onset-recurrence-dimension-independence-law,
 route-e-cofactor-amplified-e3-token-supply, route-e-forbidden-support-e3-stability,

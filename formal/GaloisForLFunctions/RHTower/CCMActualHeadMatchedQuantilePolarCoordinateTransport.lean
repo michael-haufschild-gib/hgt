@@ -31,6 +31,87 @@ noncomputable section
 
 namespace RHTower
 
+/-- Canonical exponential coordinate in which outgoing polar measure becomes Lebesgue measure. -/
+def ccmActualHeadPolarMassCoordinate (h : ℝ) : ℝ :=
+  2 * Real.exp (h / 2)
+
+/-- Inverse logarithmic height coordinate on the positive polar mass ray. -/
+def ccmActualHeadPolarHeightCoordinate (y : ℝ) : ℝ :=
+  2 * Real.log (y / 2)
+
+theorem ccmActualHeadPolarHeightCoordinate_massCoordinate (h : ℝ) :
+    ccmActualHeadPolarHeightCoordinate (ccmActualHeadPolarMassCoordinate h) = h := by
+  unfold ccmActualHeadPolarHeightCoordinate ccmActualHeadPolarMassCoordinate
+  rw [show 2 * Real.exp (h / 2) / 2 = Real.exp (h / 2) by ring,
+    Real.log_exp]
+  ring
+
+/-- **Polar mass-coordinate substitution.** The growing exponential polar density is exactly the
+Jacobian of `Y(h) = 2 exp(h/2)`, so weighted height integrals become unweighted coordinate
+integrals on every oriented finite interval. -/
+theorem intervalIntegral_exp_half_mul_eq_polarMassCoordinate
+    (lo hi : ℝ) (G : ℝ → ℝ) (hG : Continuous G) :
+    (∫ h in lo..hi, Real.exp (h / 2) * G h) =
+      ∫ y in ccmActualHeadPolarMassCoordinate lo..
+          ccmActualHeadPolarMassCoordinate hi,
+        G (ccmActualHeadPolarHeightCoordinate y) := by
+  let Y : ℝ → ℝ := ccmActualHeadPolarMassCoordinate
+  let Y' : ℝ → ℝ := fun h => Real.exp (h / 2)
+  let H : ℝ → ℝ := ccmActualHeadPolarHeightCoordinate
+  let g : ℝ → ℝ := fun y => G (H y)
+  have hderiv : ∀ h ∈ uIcc lo hi, HasDerivAt Y (Y' h) h := by
+    intro h hh
+    dsimp only [Y, Y']
+    unfold ccmActualHeadPolarMassCoordinate
+    apply (((Real.hasDerivAt_exp (h / 2)).comp h
+      ((hasDerivAt_id h).div_const 2)).const_mul 2).congr_deriv
+    ring
+  have hderivCont : ContinuousOn Y' (uIcc lo hi) := by
+    dsimp only [Y']
+    fun_prop
+  have hg : ContinuousOn g (Y '' uIcc lo hi) := by
+    intro y hy
+    obtain ⟨h, hh, rfl⟩ := hy
+    have hYpos : 0 < Y h := by
+      dsimp only [Y]
+      unfold ccmActualHeadPolarMassCoordinate
+      positivity
+    have hH : ContinuousAt H (Y h) := by
+      dsimp only [H]
+      unfold ccmActualHeadPolarHeightCoordinate
+      have hdiv : ContinuousAt (fun y : ℝ => y / 2) (Y h) :=
+        continuousAt_id.div_const 2
+      have hlog : ContinuousAt Real.log (Y h / 2) :=
+        Real.continuousAt_log
+          (div_ne_zero hYpos.ne' (by norm_num : (2 : ℝ) ≠ 0))
+      have hlogdiv : ContinuousAt (fun y : ℝ => Real.log (y / 2)) (Y h) :=
+        hlog.comp' (f := fun y : ℝ => y / 2) (x := Y h) hdiv
+      exact hlogdiv.const_mul 2
+    exact (hG.continuousAt.comp hH).continuousWithinAt
+  have hsub := intervalIntegral.integral_comp_mul_deriv' hderiv hderivCont hg
+  change (∫ h in lo..hi, (g ∘ Y) h * Y' h) =
+    ∫ y in Y lo..Y hi, g y at hsub
+  calc
+    (∫ h in lo..hi, Real.exp (h / 2) * G h) =
+        ∫ h in lo..hi, (g ∘ Y) h * Y' h := by
+      apply intervalIntegral.integral_congr
+      intro h hh
+      dsimp only [g, Y, Y', H, Function.comp_apply]
+      rw [ccmActualHeadPolarHeightCoordinate_massCoordinate]
+      ring
+    _ = ∫ y in Y lo..Y hi, g y := hsub
+    _ = _ := by rfl
+
+/-- Translation-defect profile pulled to exponential polar mass coordinate. -/
+def ccmActualHeadPolarMassDefectProfile (f : SoninL2) (y : ℝ) : ℝ :=
+  ccmActualHeadTranslationDefect (ccmActualHeadPolarHeightCoordinate y) f
+
+/-- Outgoing polar defect carried by one monotone quantile cell. -/
+def ccmActualHeadOutgoingQuantilePolarCell (n : ℕ) (f : SoninL2) : ℝ :=
+  ∫ h in ccmOutgoingPrimeQuantileBoundary n..
+      ccmOutgoingPrimeQuantileBoundary (n + 1),
+    Real.exp (h / 2) * ccmActualHeadTranslationDefect h f
+
 /-- Lower endpoint of a matched symmetric cell in exponential polar mass coordinate. -/
 def ccmActualHeadMatchedPolarLowerCoordinate (n : ℕ) : ℝ :=
   2 * Real.exp
@@ -81,6 +162,45 @@ theorem ccmActualHeadMatchedPolarUpper_sub_lower_eq_atomWeight (n : ℕ) :
   rw [intervalIntegral_exp_half_eq] at hmass
   simpa only [ccmActualHeadMatchedPolarUpperCoordinate,
     ccmActualHeadMatchedPolarLowerCoordinate] using hmass
+
+/-- A matched polar cell is an unweighted defect integral on its mass-coordinate interval. -/
+theorem ccmActualHeadMatchedPolarCell_eq_polarMassCoordinate
+    (n : ℕ) (f : SoninL2) :
+    ccmActualHeadOutgoingPolarSymmetricCell
+        (Real.log n) (ccmActualHeadMatchedPrimePolarRadius n) f =
+      ∫ y in ccmActualHeadMatchedPolarLowerCoordinate n..
+          ccmActualHeadMatchedPolarUpperCoordinate n,
+        ccmActualHeadPolarMassDefectProfile f y := by
+  have hE : Continuous fun h : ℝ => ccmActualHeadTranslationDefect h f := by
+    unfold ccmActualHeadTranslationDefect
+    exact (((continuous_logTranslationCLM f).sub continuous_const).norm).pow 2
+  unfold ccmActualHeadOutgoingPolarSymmetricCell
+  simpa only [ccmActualHeadMatchedPolarLowerCoordinate,
+    ccmActualHeadMatchedPolarUpperCoordinate, ccmActualHeadPolarMassCoordinate,
+    ccmActualHeadPolarMassDefectProfile] using
+      intervalIntegral_exp_half_mul_eq_polarMassCoordinate
+        (Real.log n - ccmActualHeadMatchedPrimePolarRadius n)
+        (Real.log n + ccmActualHeadMatchedPrimePolarRadius n)
+        (fun h => ccmActualHeadTranslationDefect h f) hE
+
+/-- A quantile polar cell is the same unweighted defect profile on its quantile-coordinate
+interval. -/
+theorem ccmActualHeadOutgoingQuantilePolarCell_eq_polarMassCoordinate
+    (n : ℕ) (f : SoninL2) :
+    ccmActualHeadOutgoingQuantilePolarCell n f =
+      ∫ y in ccmActualHeadQuantilePolarCoordinate n..
+          ccmActualHeadQuantilePolarCoordinate (n + 1),
+        ccmActualHeadPolarMassDefectProfile f y := by
+  have hE : Continuous fun h : ℝ => ccmActualHeadTranslationDefect h f := by
+    unfold ccmActualHeadTranslationDefect
+    exact (((continuous_logTranslationCLM f).sub continuous_const).norm).pow 2
+  unfold ccmActualHeadOutgoingQuantilePolarCell
+  simpa only [ccmActualHeadQuantilePolarCoordinate,
+    ccmActualHeadPolarMassCoordinate, ccmActualHeadPolarMassDefectProfile] using
+      intervalIntegral_exp_half_mul_eq_polarMassCoordinate
+        (ccmOutgoingPrimeQuantileBoundary n)
+        (ccmOutgoingPrimeQuantileBoundary (n + 1))
+        (fun h => ccmActualHeadTranslationDefect h f) hE
 
 /-- Equal coordinate lengths force lower- and upper-endpoint displacement to agree exactly. -/
 theorem ccmActualHeadMatchedQuantilePolarDisplacement_eq_upper (n : ℕ) :
@@ -218,5 +338,50 @@ theorem ccmActualHeadMatchedPolarCell_le_quantilePolarCell_of_outgoingNodeError_
   · unfold ccmActualHeadMatchedQuantilePolarDisplacement at hδ
     linarith
   · linarith
+
+/-- A quantile polar cell is the matched mass-coordinate interval translated rigidly by the
+completed-error displacement. -/
+theorem ccmActualHeadOutgoingQuantilePolarCell_eq_matchedCoordinateTranslate
+    (n : ℕ) (f : SoninL2) :
+    ccmActualHeadOutgoingQuantilePolarCell n f =
+      ∫ y in ccmActualHeadMatchedPolarLowerCoordinate n..
+          ccmActualHeadMatchedPolarUpperCoordinate n,
+        ccmActualHeadPolarMassDefectProfile f
+          (ccmActualHeadMatchedQuantilePolarDisplacement n + y) := by
+  rw [ccmActualHeadOutgoingQuantilePolarCell_eq_polarMassCoordinate]
+  have hlo : ccmActualHeadQuantilePolarCoordinate n =
+      ccmActualHeadMatchedQuantilePolarDisplacement n +
+        ccmActualHeadMatchedPolarLowerCoordinate n := by
+    unfold ccmActualHeadMatchedQuantilePolarDisplacement
+    ring
+  have hhi : ccmActualHeadQuantilePolarCoordinate (n + 1) =
+      ccmActualHeadMatchedQuantilePolarDisplacement n +
+        ccmActualHeadMatchedPolarUpperCoordinate n := by
+    have hrigid := ccmActualHeadMatchedQuantilePolarDisplacement_eq_upper n
+    linarith
+  rw [hlo, hhi]
+  exact (intervalIntegral.integral_comp_add_left
+    (a := ccmActualHeadMatchedPolarLowerCoordinate n)
+    (b := ccmActualHeadMatchedPolarUpperCoordinate n)
+    (ccmActualHeadPolarMassDefectProfile f)
+    (ccmActualHeadMatchedQuantilePolarDisplacement n)).symm
+
+/-- **Cellwise matched/quantile coverage transport.** Their polar energies differ only by a rigid
+translation of one common mass-coordinate interval. The translation is already trapped in the
+one-atom completed-error corridor. -/
+theorem ccmActualHeadMatchedPolarCell_sub_quantilePolarCell_eq_rigidTransport
+    (n : ℕ) (f : SoninL2) :
+    ccmActualHeadOutgoingPolarSymmetricCell
+          (Real.log n) (ccmActualHeadMatchedPrimePolarRadius n) f -
+        ccmActualHeadOutgoingQuantilePolarCell n f =
+      (∫ y in ccmActualHeadMatchedPolarLowerCoordinate n..
+          ccmActualHeadMatchedPolarUpperCoordinate n,
+        ccmActualHeadPolarMassDefectProfile f y) -
+      ∫ y in ccmActualHeadMatchedPolarLowerCoordinate n..
+          ccmActualHeadMatchedPolarUpperCoordinate n,
+        ccmActualHeadPolarMassDefectProfile f
+          (ccmActualHeadMatchedQuantilePolarDisplacement n + y) := by
+  rw [ccmActualHeadMatchedPolarCell_eq_polarMassCoordinate,
+    ccmActualHeadOutgoingQuantilePolarCell_eq_matchedCoordinateTranslate]
 
 end RHTower

@@ -1,7 +1,7 @@
 # Capacitary observer-sector excision law
 
 - **ID:** `capacitary-observer-sector-excision-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** THEOREM (paper)
 - **Source:** `first-entrance-gate-capacity-discrepancy-law.md`, `first-entrance-gate-renewal-prefix-law.md`
 - **Statement:** Circuit complexity is logarithmic loss of a capacity-normalized gate-accessibility likelihood; every subexponential observer sector sees only target-capacity mass, while the full nonlinear reporter is equivalent at exponential scale to one linear Abel average of circuit incidence.
@@ -22,7 +22,7 @@ invariants.
 
 - [x] 0 -> 1 in-progress: exact survivor isolated after global-Haar and global-resolvent no-gos
 - [x] 1 -> 2 fully-proven: dependency-closed proof below
-- [ ] 2 -> 3 formalized: deferred while the shared Lean corpus is being refactored
+- [x] 2 -> 3 formalized: every theorem and corollary Lean-realized and axiom-clean
 - [ ] 3 -> 4 publication-ready: not a standalone paper; intended as a load-bearing reduction
 
 ## 1. Setting
@@ -2174,3 +2174,40 @@ with almost the same Haar mean, so no truncation, no word enumeration and no tai
 and the closed-set Portmanteau (`rationallyIndependent_closedTarget_limsup_le_volume`) is a special
 case.  The syndetic clause is `denseAddOrbit_open_hits_syndetically` at the open strict sublevel set,
 whose nonemptiness is the Haar bound itself.
+
+## Lean progress -- Corollary I.3 and Theorem K
+
+Two new umbrella-wired, axiom-clean modules complete the card.
+
+`formal/GaloisForLFunctions/HTGeometry/AnnealedPortmanteauBound.lean`:
+
+| Card item | Declaration |
+|---|---|
+| **the annealed Portmanteau bound**: along a weakly convergent family the upper limit of the mean of an upper semicontinuous statistic is at most its limit mean | `limsup_integral_le_of_tendsto_of_upperSemicontinuous` |
+| Markov's inequality for a bounded nonnegative statistic | `measureReal_ge_le_integral_div` |
+| **`(11ba)` in general form** | `limsup_measureReal_ge_le_of_tendsto` |
+| **`(11bb)` in general form**: an event inside a superlevel set | `limsup_measureReal_le_of_subset_ge` |
+| **Theorem K's containment `(11bw)`**: the continuum-time backward event lies inside one endpoint event, with no time mesh and no union loss | `endpoint_le_of_exists_backward`, `exists_backward_of_le_sub` |
+
+`formal/GaloisForLFunctions/HTGeometry/AnnealedAccessibilityPlateau.lean` -- **Corollary I.3**:
+
+| Card item | Declaration |
+|---|---|
+| **`(11az)`** at the joint angular-phase law | `limsup_integral_anglePhaseLaw_le` |
+| **`(11ba)`** | `limsup_measureReal_anglePhaseLaw_ge_le` |
+| **`(11bb)`** | `limsup_measureReal_anglePhaseLaw_le_of_subset_ge` |
+| the same bound for the nearest-neighbour Pauli chain, with the dephasing hypothesis discharged | `limsup_measureReal_chainAnglePhaseLaw_le_of_subset_ge` |
+
+The weak convergence input is `tendsto_anglePhaseLaw`, and for the chain shell its Riemann--Lebesgue
+hypothesis is the unconditional `tendsto_integral_exp_sortedSpectralAction_zero_pauliChain`, so the
+chain instance carries no hypothesis on the ensemble.  The product integral `(11au)` is
+`measureReal_torusCoherenceTarget_le_optimized`: with `η = 1-\sqrt{1-4δ²}` its bound
+`d e^{d/2}(\sqrt{πη/2})^{d-1}` is exactly `B_D(δ)`.
+
+### Card status
+
+Every theorem and corollary of the card is Lean-realized and axiom-clean.  The one item of the
+paper proof that is not formalized is `(11be)`, the renewal identity `h_A(x) = E_x[a^{τ_A}]`: the
+formalisation replaces it by the comparison principle for monotone contractions, which proves the
+same two-sided sandwich `(11bd)` unconditionally and without a path measure, so `(11be)` is used
+nowhere.

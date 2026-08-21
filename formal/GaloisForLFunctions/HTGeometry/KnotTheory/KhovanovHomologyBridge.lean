@@ -23,10 +23,12 @@ def khTensorAllMergeAbelianChainComplex :
   boundary := khTensorMergeD0.toAddMonoidHom
   boundaryPrev := khTensorMergeD1.toAddMonoidHom
   boundary_sq_next := by
-    ext t
+    apply AddMonoidHom.ext
+    intro t
     simp
   boundary_sq := by
-    ext t
+    apply AddMonoidHom.ext
+    intro t
     exact khTensorAllMergeResolutionCube.d_squared t
 
 /-- A Khovanov first differential is zero in the existing additive homology quotient. -/

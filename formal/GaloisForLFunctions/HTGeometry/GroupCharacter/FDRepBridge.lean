@@ -17,13 +17,68 @@ open MonoidAlgebra CategoryTheory
 
 variable {G : Type} [Group G] [Fintype G]
 
+section Abstract
+
+variable {V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] [Nontrivial V]
+
+/-- If every intertwiner of `ρ` is a scalar, the space of intertwiners is a line. -/
+theorem finrank_invariants_linHom_eq_one (ρ : Representation ℂ G V)
+    (hschur : ∀ f : V →ₗ[ℂ] V, (∀ g : G, (ρ g) ∘ₗ f = f ∘ₗ (ρ g)) → ∃ c : ℂ, ∀ v, f v = c • v) :
+    Module.finrank ℂ ↥(Representation.linHom ρ ρ).invariants = 1 := by
+  have hid : (LinearMap.id : V →ₗ[ℂ] V) ∈ (Representation.linHom ρ ρ).invariants := by
+    rw [Representation.mem_invariants]
+    intro g
+    rw [Representation.linHom_apply]
+    refine LinearMap.ext fun v => ?_
+    simp only [LinearMap.coe_comp, Function.comp_apply, LinearMap.id_coe, id_eq]
+    rw [← LinearMap.mul_apply, ← map_mul, mul_inv_cancel, map_one]
+    rfl
+  obtain ⟨v0, hv0⟩ := exists_ne (0 : V)
+  have hidne : (⟨LinearMap.id, hid⟩ : ↥(Representation.linHom ρ ρ).invariants) ≠ 0 := by
+    intro h
+    refine hv0 ?_
+    have h2 := congrArg (fun (w : ↥(Representation.linHom ρ ρ).invariants) =>
+      (w : V →ₗ[ℂ] V) v0) h
+    simpa using h2
+  refine (finrank_eq_one_iff_of_nonzero' _ hidne).mpr ?_
+  rintro ⟨f, hf⟩
+  rw [Representation.mem_invariants] at hf
+  obtain ⟨c, hc⟩ := hschur f ?_
+  · refine ⟨c, Subtype.ext (LinearMap.ext fun v => ?_)⟩
+    simpa using (hc v).symm
+  · intro g
+    have hinv : ∀ w : V, (ρ g⁻¹) ((ρ g) w) = w := by
+      intro w
+      rw [← LinearMap.mul_apply, ← map_mul, inv_mul_cancel, map_one]
+      rfl
+    refine LinearMap.ext fun v => ?_
+    have h := hf g
+    rw [Representation.linHom_apply] at h
+    have h2 := congrArg (fun (φ : V →ₗ[ℂ] V) => φ ((ρ g) v)) h
+    simp only [LinearMap.coe_comp, Function.comp_apply, hinv] at h2
+    simpa using h2
+
+/-- Simplicity criterion for `FDRep.of ρ`: every intertwiner is a scalar. -/
+theorem simple_of_schur (ρ : Representation ℂ G V)
+    (hschur : ∀ f : V →ₗ[ℂ] V, (∀ g : G, (ρ g) ∘ₗ f = f ∘ₗ (ρ g)) → ∃ c : ℂ, ∀ v, f v = c • v) :
+    Simple (FDRep.of ρ) := by
+  haveI : NeZero ((Nat.card G : ℂ)) := ⟨by simp [Nat.card_eq_fintype_card, Fintype.card_ne_zero]⟩
+  rw [FDRep.simple_iff_end_is_rank_one,
+    ← LinearEquiv.finrank_eq (Representation.linHom.invariantsEquivFDRepHom
+      (FDRep.of ρ) (FDRep.of ρ))]
+  rw [FDRep.of_ρ']
+  exact finrank_invariants_linHom_eq_one ρ hschur
+
+end Abstract
+
 /-- The representation of `G` on a `G`-stable subspace of the group algebra. -/
-def repOf {N : Submodule ℂ (MonoidAlgebra ℂ G)} (hN : IsGStable G N) :
+noncomputable def repOf {N : Submodule ℂ (MonoidAlgebra ℂ G)} (hN : IsGStable G N) :
     Representation ℂ G ↥N where
   toFun := rho hN
   map_one' := rho_one hN
   map_mul' g h := rho_mul hN g h
 
+omit [Fintype G] in
 @[simp] theorem repOf_apply {N : Submodule ℂ (MonoidAlgebra ℂ G)} (hN : IsGStable G N) (g : G) :
     repOf hN g = rho hN g := rfl
 
@@ -31,54 +86,12 @@ def repOf {N : Submodule ℂ (MonoidAlgebra ℂ G)} (hN : IsGStable G N) :
 noncomputable def fdRepOf {N : Submodule ℂ (MonoidAlgebra ℂ G)} (hN : IsGStable G N) :
     FDRep ℂ G := FDRep.of (repOf hN)
 
-@[simp] theorem fdRepOf_ρ {N : Submodule ℂ (MonoidAlgebra ℂ G)} (hN : IsGStable G N) :
-    (fdRepOf hN).ρ = repOf hN := FDRep.of_ρ' _
-
 theorem character_fdRepOf {N : Submodule ℂ (MonoidAlgebra ℂ G)} (hN : IsGStable G N) (g : G) :
-    (fdRepOf hN).character g = chi hN g := by
-  rw [FDRep.character, fdRepOf_ρ, repOf_apply]
-  rfl
-
-theorem invariants_linHom {N : Submodule ℂ (MonoidAlgebra ℂ G)} (hN : IsMinimalGStable N) :
-    (Representation.linHom (repOf hN.stable) (repOf hN.stable)).invariants
-      = ℂ ∙ (LinearMap.id : ↥N →ₗ[ℂ] ↥N) := by
-  apply le_antisymm
-  · intro f hf
-    rw [Representation.mem_invariants] at hf
-    refine Submodule.mem_span_singleton.mpr ?_
-    obtain ⟨c, hc⟩ := schur hN f ?_
-    · exact ⟨c, by ext v; simpa using (hc v).symm⟩
-    · intro g
-      refine LinearMap.ext fun v => ?_
-      have h := hf g⁻¹
-      have h2 := congrArg (fun (φ : ↥N →ₗ[ℂ] ↥N) => φ ((rho hN.stable g) v)) h
-      simp only [Representation.linHom_apply, LinearMap.coe_comp, Function.comp_apply,
-        repOf_apply, inv_inv] at h2
-      rw [← rho_mul, inv_mul_cancel, rho_one] at h2
-      simpa using h2.symm
-  · rw [Submodule.span_le, Set.singleton_subset_iff]
-    rw [SetLike.mem_coe, Representation.mem_invariants]
-    intro g
-    refine LinearMap.ext fun v => ?_
-    simp only [Representation.linHom_apply, LinearMap.coe_comp, Function.comp_apply,
-      repOf_apply, LinearMap.id_coe, id_eq]
-    rw [← LinearMap.comp_apply, ← LinearMap.comp_apply]
-    have : rho hN.stable g ∘ₗ rho hN.stable g⁻¹ = LinearMap.id := by
-      rw [← rho_mul, mul_inv_cancel, rho_one]
-    sorry
+    (fdRepOf hN).character g = chi hN g := rfl
 
 theorem simple_fdRepOf {N : Submodule ℂ (MonoidAlgebra ℂ G)} (hN : IsMinimalGStable N) :
     Simple (fdRepOf hN.stable) := by
-  haveI : NeZero ((Nat.card G : ℂ)) := ⟨by
-    simp [Nat.card_eq_fintype_card, Fintype.card_ne_zero]⟩
   haveI : Nontrivial ↥N := Submodule.nontrivial_iff_ne_bot.mpr hN.ne_bot
-  rw [FDRep.simple_iff_end_is_rank_one]
-  rw [← LinearEquiv.finrank_eq
-    (Representation.linHom.invariantsEquivFDRepHom (fdRepOf hN.stable) (fdRepOf hN.stable))]
-  rw [fdRepOf_ρ, invariants_linHom hN]
-  exact finrank_span_singleton (by
-    intro h
-    obtain ⟨v, hv⟩ := exists_ne (0 : ↥N)
-    exact hv (by simpa using congrArg (fun (φ : ↥N →ₗ[ℂ] ↥N) => φ v) h))
+  exact simple_of_schur (repOf hN.stable) (fun f hf => schur hN f hf)
 
 end GaloisForLFunctions.HTGeometry.GroupCharacter

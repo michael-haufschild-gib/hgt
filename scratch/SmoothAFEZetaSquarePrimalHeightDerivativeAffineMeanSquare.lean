@@ -39,6 +39,7 @@ theorem norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_succ
     norm_natSucc_cpow_neg_linePt, norm_neg, norm_I, mul_one]
   rcases hNcases with rfl | hN
   · simp [smoothAFEZetaSquarePrimalCutoff, smoothAFECutoff]
+    ring
   · rw [smoothAFEZetaSquarePrimalCutoff_mul_conductor]
     · ring
     · exact_mod_cast hN
