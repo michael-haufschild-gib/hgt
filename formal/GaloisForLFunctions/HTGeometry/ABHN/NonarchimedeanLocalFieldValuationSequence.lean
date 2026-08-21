@@ -20,6 +20,7 @@ import Mathlib.RingTheory.Polynomial.IrreducibleRing
 import Mathlib.RingTheory.Smooth.Fiber
 import Mathlib.RingTheory.Unramified.Dedekind
 import Mathlib.RingTheory.Unramified.LocalRing
+import Mathlib.RingTheory.Valuation.Discrete.IsDiscreteValuationRing
 
 /-!
 # Split valuation sequence for nonarchimedean local fields
@@ -1105,6 +1106,62 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing
     exact hmap_nonzero
   exact ((IsDiscreteValuationRing.TFAE (AdjoinRoot f) hnotfield).out 2 0).mp
     (inferInstance : IsDedekindDomain (AdjoinRoot f))
+
+/-- The fraction field of a finite unramified lift carries the canonical rank-one discrete
+valuation associated to the maximal ideal of its DVR of integers. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootFractionFieldValuation
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    Valuation (FractionRing (AdjoinRoot f)) ℤᵐ⁰ := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  exact (IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+    (FractionRing (AdjoinRoot f))
+
+/-- The integral root algebra is exactly the valuation ring inside its fraction field for the
+canonical lifted valuation. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootFractionFieldValuationSubringEquiv
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    AdjoinRoot f ≃+* ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).valuationSubring := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  exact IsDiscreteValuationRing.equivValuationSubring
+
+/-- The canonical valuation on the lifted fraction field is rank-one discrete. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldValuation_isRankOneDiscrete
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).IsRankOneDiscrete := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  exact IsDiscreteValuationRing.isRankOneDiscrete (AdjoinRoot f) (FractionRing (AdjoinRoot f))
 
 /-- The residue field of a monic irreducible lift is finite.  Together with the preceding DVR
 theorem, this is the finite residue-field input for its arithmetic Frobenius. -/

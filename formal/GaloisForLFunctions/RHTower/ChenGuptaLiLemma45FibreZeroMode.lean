@@ -18,13 +18,12 @@ noncomputable section
 namespace RHTower
 
 /-- The literal positive modulus underlying a CGL fibrewise packet. -/
-def cglLemma45FibreModulus {q R : ℕ} (_ : CGLFibreSeparatedPacket q R) :
-    CGLPositiveModulus :=
+def cglLemma45FibreModulus (q : ℕ) : CGLPositiveModulus :=
   { value := q + 1, positive := Nat.succ_pos q }
 
 /-- The CGL Lemma 4.5 rows carried by a fibrewise-separated packet. -/
 def cglLemma45FibreRows {q R : ℕ} (P : CGLFibreSeparatedPacket q R) :
-    Fin R → CGLCharacterDyadicRowData (cglLemma45FibreModulus P).value :=
+    Fin R → CGLCharacterDyadicRowData (cglLemma45FibreModulus q).value :=
   fun r => { time := P.ordinate r, character := P.character r }
 
 /-- A distinct finite row pair carrying the same character.  The equality and
@@ -48,12 +47,12 @@ theorem norm_cglLemma45FibrePair_zeroModeAmplitude_le_reciprocal
     {q R : ℕ} (P : CGLFibreSeparatedPacket q R)
     (w : CGLRealSmoothBump) (N : CGLPositiveLength) (n : ℕ)
     (rs : CGLLemma45SameCharacterOffDiagonalPair P) :
-    ‖cglLemma45ZeroModePairAmplitude w N (cglLemma45FibreModulus P)
+    ‖cglLemma45ZeroModePairAmplitude w N (cglLemma45FibreModulus q)
         (P.ordinate rs.1.1 - P.ordinate rs.1.2)‖ ≤
-      cglAffineFourierScale N (cglLemma45FibreModulus P) *
+      cglAffineFourierScale N (cglLemma45FibreModulus q) *
         (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump n / P.spacing ^ n) := by
   simpa [cglLemma45FibrePairDifference] using
-    norm_cglLemma45ZeroModePairAmplitude_le_reciprocal w N (cglLemma45FibreModulus P) n
+    norm_cglLemma45ZeroModePairAmplitude_le_reciprocal w N (cglLemma45FibreModulus q) n
       (cglLemma45FibrePairDifference P rs)
 
 /-- A non-all-equal row triple whose three row characters agree.  This is the
@@ -71,11 +70,11 @@ same-character off-diagonal row term: one reciprocal factor and two
 order-zero factors. -/
 def cglLemma45FibreTripleDecayBudget {q R : ℕ} (P : CGLFibreSeparatedPacket q R)
     (w : CGLRealSmoothBump) (N : CGLPositiveLength) (n : ℕ) : ℝ :=
-  (cglAffineFourierScale N (cglLemma45FibreModulus P) *
+  (cglAffineFourierScale N (cglLemma45FibreModulus q) *
     (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump n / P.spacing ^ n)) *
-      (cglAffineFourierScale N (cglLemma45FibreModulus P) *
+      (cglAffineFourierScale N (cglLemma45FibreModulus q) *
         cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0) *
-      (cglAffineFourierScale N (cglLemma45FibreModulus P) *
+      (cglAffineFourierScale N (cglLemma45FibreModulus q) *
         cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0)
 
 /-- **CGL Lemma 4.5, separated equal-character zero-mode estimate.** Every
@@ -86,12 +85,12 @@ theorem norm_cglLemma45FibreEqualCharacterOffDiagonalTriple_analytic_le
     {q R : ℕ} (P : CGLFibreSeparatedPacket q R)
     (w : CGLRealSmoothBump) (N : CGLPositiveLength) (n : ℕ)
     (u : CGLLemma45FibreEqualCharacterOffDiagonalTriple P) :
-    ‖cglLemma45ZeroModeTripleAnalyticAmplitude w N (cglLemma45FibreModulus P)
+    ‖cglLemma45ZeroModeTripleAnalyticAmplitude w N (cglLemma45FibreModulus q)
       (P.ordinate u.1.1 - P.ordinate u.1.2.1)
       (P.ordinate u.1.2.1 - P.ordinate u.1.2.2)
       (P.ordinate u.1.2.2 - P.ordinate u.1.1)‖ ≤
       cglLemma45FibreTripleDecayBudget P w N n := by
-  let Q := cglLemma45FibreModulus P
+  let Q := cglLemma45FibreModulus q
   let U : ℝ := cglAffineFourierScale N Q *
     cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0
   let D : ℝ := cglAffineFourierScale N Q *

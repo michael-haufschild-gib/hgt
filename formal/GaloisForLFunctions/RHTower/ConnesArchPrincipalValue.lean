@@ -23,6 +23,11 @@ with Weil's `Pfw` at the real place goes through two regularizations of the dive
   annihilate Connes' reference test function `1_{[-1,1]}`, which is exactly the computation the
   paper offers as justification of (35): the two regularizations can only differ by a multiple of
   `f(0)`, and that multiple vanishes.
+* `connesRealLogPV_tendsto_of_zero`, `connesRealPowerPV_tendsto_of_zero` - both regularizations
+  converge to `∫ f d^*x` for a test function vanishing at the origin (dominated convergence).
+* `connes_logPV_sub_powerPV_tendsto` - **Appendix II (35) in full**: for any measurable `f` whose
+  origin-corrected part `f - f(0) 1_{[-1,1]}` is dominated by an integrable `‖·‖(1+|x|) d^*x`,
+  `A_ε(f) - B_ε(f) → 0` as `ε → 0⁺`.
 -/
 
 namespace GaloisForLFunctions.RHTower
@@ -33,6 +38,10 @@ open MeasureTheory Set
 /-- The multiplicative Haar measure of `ℝ^*` in Connes' normalization
 `∫_{|λ| ∈ [1,Λ]} d^*λ ~ log Λ`, i.e. `d^*x = dx / (2|x|)`. -/
 def connesRealMultHaarDensity (x : ℝ) : ℝ := (2 * |x|)⁻¹
+
+theorem measurable_connesRealMultHaarDensity : Measurable connesRealMultHaarDensity := by
+  unfold connesRealMultHaarDensity
+  fun_prop
 
 /-- The logarithmically regularized principal value of §V (35) at cut-off `ε`. -/
 def connesRealLogPV (f : ℝ → ℂ) (ε : ℝ) : ℂ :=
@@ -305,6 +314,303 @@ theorem connesRealPowerPV_unitBox {ε : ℝ} (hε : 0 < ε) :
   rw [connesRealPowerPV, hfull, connesUnitBox_zero]
   push_cast
   simp
+
+/-! ### Integrability of the reference test function -/
+
+theorem connesUnitBox_mul_eq_indicator (g : ℝ → ℂ) (x : ℝ) :
+    connesUnitBox x * g x = Set.indicator (Set.Icc (-1:ℝ) 1) g x := by
+  by_cases hx : x ∈ Set.Icc (-1:ℝ) 1
+  · rw [connesUnitBox, Set.indicator_of_mem hx, Set.indicator_of_mem hx, one_mul]
+  · rw [connesUnitBox, Set.indicator_of_notMem hx, Set.indicator_of_notMem hx, zero_mul]
+
+theorem connesUnitBox_integrableOn_tail {ε : ℝ} (hε : 0 < ε) :
+    IntegrableOn (fun x : ℝ => connesUnitBox x * ((connesRealMultHaarDensity x : ℝ) : ℂ))
+      {x : ℝ | ε ≤ |x|} := by
+  have hfun : (fun x : ℝ => connesUnitBox x * ((connesRealMultHaarDensity x : ℝ) : ℂ))
+      = Set.indicator (Set.Icc (-1:ℝ) 1)
+        (fun x : ℝ => ((connesRealMultHaarDensity x : ℝ) : ℂ)) :=
+    funext (connesUnitBox_mul_eq_indicator _)
+  rw [hfun, integrableOn_indicator_iff measurableSet_Icc]
+  have hinter : Set.Icc (-1:ℝ) 1 ∩ {x : ℝ | ε ≤ |x|}
+      = Set.Icc (-1:ℝ) (-ε) ∪ Set.Icc ε 1 := by
+    rw [Set.inter_comm, connesTail_inter_box hε]
+  rw [hinter]
+  have hcont : ContinuousOn (fun x : ℝ => ((connesRealMultHaarDensity x : ℝ) : ℂ))
+      (Set.Icc (-1:ℝ) (-ε) ∪ Set.Icc ε 1) := by
+    have hofReal : Continuous (fun r : ℝ => (r : ℂ)) := Complex.continuous_ofReal
+    refine hofReal.comp_continuousOn ?_
+    refine ContinuousOn.inv₀ (by fun_prop) ?_
+    rintro x (⟨-, hx2⟩ | ⟨hx1, -⟩)
+    · have hxneg : x < 0 := lt_of_le_of_lt hx2 (by linarith)
+      have : |x| > 0 := abs_pos.mpr (ne_of_lt hxneg)
+      positivity
+    · have hxpos : (0:ℝ) < x := lt_of_lt_of_le hε hx1
+      have : |x| > 0 := abs_pos.mpr (ne_of_gt hxpos)
+      positivity
+  exact ((hcont.mono Set.subset_union_left).integrableOn_compact isCompact_Icc).union
+    ((hcont.mono Set.subset_union_right).integrableOn_compact isCompact_Icc)
+
+theorem connesUnitBox_integrable_power {ε : ℝ} (hε : 0 < ε) :
+    Integrable (fun x : ℝ =>
+      connesUnitBox x * (((|x| ^ ε) * connesRealMultHaarDensity x : ℝ) : ℂ)) := by
+  set g : ℝ → ℂ := fun x => (((|x| ^ ε) * connesRealMultHaarDensity x : ℝ) : ℂ) with hg
+  have hfun : (fun x : ℝ => connesUnitBox x * g x)
+      = Set.indicator (Set.Icc (-1:ℝ) 1) g := funext (connesUnitBox_mul_eq_indicator _)
+  have heven : ∀ x : ℝ, g (-x) = g x := by
+    intro x; simp [hg, connesRealMultHaarDensity]
+  have hrpow : ∀ x : ℝ, 0 < x → g x = ((2:ℂ))⁻¹ * ((x ^ (ε - 1) : ℝ) : ℂ) := by
+    intro x hx
+    simp only [hg, connesRealMultHaarDensity, abs_of_pos hx]
+    rw [Real.rpow_sub hx, Real.rpow_one]
+    push_cast
+    field_simp
+  have hiiR : ∀ a b : ℝ, IntervalIntegrable (fun x : ℝ => ((2:ℂ))⁻¹ * ((x ^ (ε - 1) : ℝ) : ℂ))
+      volume a b := by
+    intro a b
+    have h0 : IntervalIntegrable (fun x : ℝ => x ^ (ε - 1)) volume a b :=
+      intervalIntegral.intervalIntegrable_rpow' (by linarith)
+    exact IntervalIntegrable.const_mul (⟨h0.1.ofReal, h0.2.ofReal⟩) _
+  have hiig : IntervalIntegrable g volume 0 1 := by
+    refine IntervalIntegrable.congr ?_ (hiiR 0 1)
+    intro x hx
+    rw [Set.uIoc_of_le (by norm_num : (0:ℝ) ≤ 1)] at hx
+    exact (hrpow x hx.1).symm
+  have hiig' : IntervalIntegrable g volume (-1) 0 := by
+    have hneg : IntervalIntegrable
+        (fun x : ℝ => ((2:ℂ))⁻¹ * (((-x) ^ (ε - 1) : ℝ) : ℂ)) volume (-1) 0 := by
+      have h := (IntervalIntegrable.iff_comp_neg
+        (f := fun x : ℝ => ((2:ℂ))⁻¹ * ((x ^ (ε - 1) : ℝ) : ℂ)) (a := (1:ℝ)) (b := (0:ℝ))
+        (by finiteness)).mp (hiiR 1 0)
+      simpa using h
+    have hae : (fun x : ℝ => ((2:ℂ))⁻¹ * (((-x) ^ (ε - 1) : ℝ) : ℂ))
+        =ᵐ[volume.restrict (Set.Ioc (-1:ℝ) 0)] g := by
+      have hne : ∀ᵐ x : ℝ, x ≠ 0 := by
+        have h0 : (volume : Measure ℝ) {(0:ℝ)} = 0 := Real.volume_singleton
+        have := compl_mem_ae_iff.2 h0
+        filter_upwards [this] with x hx
+        simpa using hx
+      filter_upwards [MeasureTheory.ae_restrict_of_ae hne,
+        MeasureTheory.ae_restrict_mem measurableSet_Ioc] with x hx0 hxmem
+      have hxlt : x < 0 := lt_of_le_of_ne hxmem.2 hx0
+      have hxneg : 0 < -x := by linarith
+      rw [← heven x]
+      exact (hrpow (-x) hxneg).symm
+    refine ⟨(hneg.1).congr hae, ?_⟩
+    rw [Set.Ioc_eq_empty (by norm_num : ¬ (0:ℝ) < -1)]
+    exact integrableOn_empty
+  have hIcc : IntegrableOn g (Set.Icc (-1:ℝ) 1) := by
+    have hunion : Set.Icc (-1:ℝ) 1 = Set.Icc (-1:ℝ) 0 ∪ Set.Icc (0:ℝ) 1 := by
+      rw [Set.Icc_union_Icc_eq_Icc (by norm_num) (by norm_num)]
+    rw [hunion]
+    have h1 : IntegrableOn g (Set.Icc (-1:ℝ) 0) := by
+      rw [← intervalIntegrable_iff_integrableOn_Icc_of_le (by norm_num : (-1:ℝ) ≤ 0)]
+      exact hiig'
+    have h2 : IntegrableOn g (Set.Icc (0:ℝ) 1) := by
+      rw [← intervalIntegrable_iff_integrableOn_Icc_of_le (by norm_num : (0:ℝ) ≤ 1)]
+      exact hiig
+    exact h1.union h2
+  rw [hfun]
+  rw [← integrableOn_univ, integrableOn_indicator_iff measurableSet_Icc]
+  simpa using hIcc
+
+/-! ### The limit form of Appendix II (35) -/
+
+open Filter Topology
+
+/-- The tail cut-off converges: if `f` vanishes at the origin, the logarithmically regularized
+principal value is just the tail integral and converges to the full integral. -/
+theorem connesRealLogPV_tendsto_of_zero {f : ℝ → ℂ} (hf0 : f 0 = 0)
+    (hint : Integrable (fun x : ℝ => f x * ((connesRealMultHaarDensity x : ℝ) : ℂ))) :
+    Tendsto (fun ε : ℝ => connesRealLogPV f ε) (𝓝[>] 0)
+      (𝓝 (∫ x : ℝ, f x * ((connesRealMultHaarDensity x : ℝ) : ℂ))) := by
+  set F : ℝ → ℂ := fun x => f x * ((connesRealMultHaarDensity x : ℝ) : ℂ) with hF
+  have hpv : ∀ ε : ℝ, connesRealLogPV f ε = ∫ x : ℝ, Set.indicator {x : ℝ | ε ≤ |x|} F x := by
+    intro ε
+    rw [connesRealLogPV, hf0, zero_mul, add_zero,
+      integral_indicator (measurableSet_connesTail ε)]
+  simp only [hpv]
+  refine tendsto_integral_filter_of_dominated_convergence (fun x => ‖F x‖) ?_ ?_ hint.norm ?_
+  · filter_upwards with ε
+    exact (hint.aestronglyMeasurable).indicator (measurableSet_connesTail ε)
+  · filter_upwards with ε
+    filter_upwards with x
+    by_cases hx : x ∈ {x : ℝ | ε ≤ |x|}
+    · rw [Set.indicator_of_mem hx]
+    · rw [Set.indicator_of_notMem hx, norm_zero]
+      exact norm_nonneg _
+  · have hne : ∀ᵐ x : ℝ, x ≠ 0 := by
+      have h0 : (volume : Measure ℝ) {(0:ℝ)} = 0 := Real.volume_singleton
+      have := compl_mem_ae_iff.2 h0
+      filter_upwards [this] with x hx
+      simpa using hx
+    filter_upwards [hne] with x hx
+    have hxpos : (0:ℝ) < |x| := abs_pos.mpr hx
+    refine Tendsto.congr' ?_ (tendsto_const_nhds (x := F x))
+    filter_upwards [nhdsWithin_le_nhds (Iio_mem_nhds hxpos)] with ε hε
+    have hε' : ε < |x| := hε
+    have hmem : x ∈ {y : ℝ | ε ≤ |y|} := le_of_lt hε'
+    exact (Set.indicator_of_mem hmem F).symm
+
+/-- The power regularization converges: if `f` vanishes at the origin and is dominated by an
+integrable weight `‖f‖ (1+|x|) d^*x`, the power-regularized principal value converges to the same
+integral. -/
+theorem connesRealPowerPV_tendsto_of_zero {f : ℝ → ℂ} (hf0 : f 0 = 0)
+    (hmeas : AEStronglyMeasurable f volume)
+    (hdom : Integrable (fun x : ℝ =>
+      ‖f x‖ * ((1 + |x|) * connesRealMultHaarDensity x))) :
+    Tendsto (fun ε : ℝ => connesRealPowerPV f ε) (𝓝[>] 0)
+      (𝓝 (∫ x : ℝ, f x * ((connesRealMultHaarDensity x : ℝ) : ℂ))) := by
+  have hpv : ∀ ε : ℝ, connesRealPowerPV f ε
+      = ∫ x : ℝ, f x * (((|x| ^ ε) * connesRealMultHaarDensity x : ℝ) : ℂ) := by
+    intro ε
+    rw [connesRealPowerPV, hf0, zero_div, sub_zero]
+  simp only [hpv]
+  refine tendsto_integral_filter_of_dominated_convergence
+    (fun x => ‖f x‖ * ((1 + |x|) * connesRealMultHaarDensity x)) ?_ ?_ hdom ?_
+  · filter_upwards with ε
+    refine hmeas.mul ?_
+    exact (Complex.continuous_ofReal.comp_aestronglyMeasurable
+      ((((measurable_norm : Measurable fun x : ℝ => |x|).pow_const ε).mul
+        measurable_connesRealMultHaarDensity).aestronglyMeasurable))
+  · filter_upwards [self_mem_nhdsWithin,
+      nhdsWithin_le_nhds (Iio_mem_nhds (by norm_num : (0:ℝ) < 1))] with ε hε0 hε1
+    have hε0' : (0:ℝ) < ε := hε0
+    have hε1' : ε < 1 := hε1
+    filter_upwards with x
+    have hd : 0 ≤ connesRealMultHaarDensity x := by
+      rw [connesRealMultHaarDensity]; positivity
+    have hpow : |x| ^ ε ≤ 1 + |x| := by
+      rcases le_or_gt |x| 1 with hx | hx
+      · rcases eq_or_lt_of_le (abs_nonneg x) with hx0 | hx0
+        · rw [← hx0, Real.zero_rpow (ne_of_gt hε0')]
+          have : (0:ℝ) ≤ |x| := abs_nonneg x
+          linarith
+        · calc |x| ^ ε ≤ (1:ℝ) ^ ε := Real.rpow_le_rpow (abs_nonneg x) hx hε0'.le
+            _ = 1 := Real.one_rpow ε
+            _ ≤ 1 + |x| := by linarith [abs_nonneg x]
+      · calc |x| ^ ε ≤ |x| ^ (1:ℝ) :=
+              Real.rpow_le_rpow_of_exponent_le (le_of_lt hx) (le_of_lt hε1')
+          _ = |x| := Real.rpow_one _
+          _ ≤ 1 + |x| := by linarith
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hpow hd) (norm_nonneg _)
+  · have hne : ∀ᵐ x : ℝ, x ≠ 0 := by
+      have h0 : (volume : Measure ℝ) {(0:ℝ)} = 0 := Real.volume_singleton
+      have := compl_mem_ae_iff.2 h0
+      filter_upwards [this] with x hx
+      simpa using hx
+    filter_upwards [hne] with x hx
+    have hxpos : (0:ℝ) < |x| := abs_pos.mpr hx
+    have hrpow : Tendsto (fun ε : ℝ => |x| ^ ε) (𝓝[>] 0) (𝓝 1) := by
+      have h : Tendsto (fun ε : ℝ => |x| ^ ε) (𝓝 0) (𝓝 (|x| ^ (0:ℝ))) :=
+        (Real.continuousAt_const_rpow (ne_of_gt hxpos)).tendsto
+      rw [Real.rpow_zero] at h
+      exact h.mono_left nhdsWithin_le_nhds
+    have hmul : Tendsto (fun ε : ℝ => (|x| ^ ε) * connesRealMultHaarDensity x) (𝓝[>] 0)
+        (𝓝 (1 * connesRealMultHaarDensity x)) := hrpow.mul tendsto_const_nhds
+    rw [one_mul] at hmul
+    have hc : Tendsto (fun ε : ℝ => (((|x| ^ ε) * connesRealMultHaarDensity x : ℝ) : ℂ))
+        (𝓝[>] 0) (𝓝 ((connesRealMultHaarDensity x : ℝ) : ℂ)) :=
+      (Complex.continuous_ofReal.tendsto _).comp hmul
+    exact tendsto_const_nhds.mul hc
+
+
+theorem aestronglyMeasurable_connesUnitBox : AEStronglyMeasurable connesUnitBox volume := by
+  refine (aestronglyMeasurable_const (b := (1:ℂ))).indicator measurableSet_Icc
+
+theorem connes_integrable_of_dom {g : ℝ → ℂ} (hmeas : AEStronglyMeasurable g volume)
+    (hdom : Integrable (fun x : ℝ => ‖g x‖ * ((1 + |x|) * connesRealMultHaarDensity x))) :
+    Integrable (fun x : ℝ => g x * ((connesRealMultHaarDensity x : ℝ) : ℂ)) := by
+  refine Integrable.mono' hdom
+    (hmeas.mul (Complex.continuous_ofReal.comp_aestronglyMeasurable
+      measurable_connesRealMultHaarDensity.aestronglyMeasurable)) ?_
+  filter_upwards with x
+  have hd : 0 ≤ connesRealMultHaarDensity x := by
+    rw [connesRealMultHaarDensity]; positivity
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hd]
+  have h1 : connesRealMultHaarDensity x ≤ (1 + |x|) * connesRealMultHaarDensity x := by
+    nlinarith [abs_nonneg x, hd]
+  exact mul_le_mul_of_nonneg_left h1 (norm_nonneg _)
+
+/-- **Appendix II (35).**  The logarithmic and the power regularization of the divergent principal
+value `∫ f d^*x` have the same limit.  Connes' proof is exactly the argument formalized here: the
+difference of the two regularizations is a multiple of `f(0)`, computed on the reference test
+function `1_{[-1,1]}`, where both regularizations vanish. -/
+theorem connes_logPV_sub_powerPV_tendsto {f : ℝ → ℂ}
+    (hmeas : AEStronglyMeasurable f volume)
+    (hdom : Integrable (fun x : ℝ =>
+      ‖f x - f 0 * connesUnitBox x‖ * ((1 + |x|) * connesRealMultHaarDensity x))) :
+    Tendsto (fun ε : ℝ => connesRealLogPV f ε - connesRealPowerPV f ε) (𝓝[>] 0) (𝓝 0) := by
+  set h : ℝ → ℂ := fun x => f x - f 0 * connesUnitBox x with hh
+  have hh0 : h 0 = 0 := by
+    simp only [hh, connesUnitBox_zero, mul_one, sub_self]
+  have hmeash : AEStronglyMeasurable h volume :=
+    hmeas.sub (aestronglyMeasurable_connesUnitBox.const_mul _)
+  have hinth : Integrable (fun x : ℝ => h x * ((connesRealMultHaarDensity x : ℝ) : ℂ)) :=
+    connes_integrable_of_dom hmeash hdom
+  have hL := connesRealLogPV_tendsto_of_zero hh0 hinth
+  have hP := connesRealPowerPV_tendsto_of_zero hh0 hmeash hdom
+  have hdiff : Tendsto (fun ε : ℝ => connesRealLogPV h ε - connesRealPowerPV h ε)
+      (𝓝[>] 0) (𝓝 0) := by
+    have hsub := hL.sub hP
+    rwa [sub_self] at hsub
+  refine hdiff.congr' ?_
+  filter_upwards [self_mem_nhdsWithin,
+    nhdsWithin_le_nhds (Iio_mem_nhds (by norm_num : (0:ℝ) < 1))] with ε hε0 hε1
+  have hε0' : (0:ℝ) < ε := hε0
+  have hε1' : ε < 1 := hε1
+  -- integrability of the power integrand for `h`
+  have hpowh : Integrable (fun x : ℝ =>
+      h x * (((|x| ^ ε) * connesRealMultHaarDensity x : ℝ) : ℂ)) := by
+    refine Integrable.mono' hdom
+      (hmeash.mul (Complex.continuous_ofReal.comp_aestronglyMeasurable
+        ((((measurable_norm : Measurable fun x : ℝ => |x|).pow_const ε).mul
+          measurable_connesRealMultHaarDensity).aestronglyMeasurable))) ?_
+    filter_upwards with x
+    have hd : 0 ≤ connesRealMultHaarDensity x := by
+      rw [connesRealMultHaarDensity]; positivity
+    have hpow : |x| ^ ε ≤ 1 + |x| := by
+      rcases le_or_gt |x| 1 with hx | hx
+      · rcases eq_or_lt_of_le (abs_nonneg x) with hx0 | hx0
+        · rw [← hx0, Real.zero_rpow (ne_of_gt hε0')]
+          linarith [abs_nonneg x]
+        · calc |x| ^ ε ≤ (1:ℝ) ^ ε := Real.rpow_le_rpow (abs_nonneg x) hx hε0'.le
+            _ = 1 := Real.one_rpow ε
+            _ ≤ 1 + |x| := by linarith [abs_nonneg x]
+      · calc |x| ^ ε ≤ |x| ^ (1:ℝ) :=
+              Real.rpow_le_rpow_of_exponent_le (le_of_lt hx) (le_of_lt hε1')
+          _ = |x| := Real.rpow_one _
+          _ ≤ 1 + |x| := by linarith
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hpow hd) (norm_nonneg _)
+  -- split the logarithmic regularization
+  have hsplitLog : connesRealLogPV f ε
+      = connesRealLogPV h ε + f 0 * connesRealLogPV connesUnitBox ε := by
+    have hptf : ∀ x : ℝ, f x * ((connesRealMultHaarDensity x : ℝ) : ℂ)
+        = h x * ((connesRealMultHaarDensity x : ℝ) : ℂ)
+          + f 0 * (connesUnitBox x * ((connesRealMultHaarDensity x : ℝ) : ℂ)) := by
+      intro x; simp only [hh]; ring
+    have hbox := connesUnitBox_integrableOn_tail hε0'
+    simp only [connesRealLogPV, hptf]
+    rw [MeasureTheory.integral_add (hinth.integrableOn) ((hbox.const_mul (f 0)))]
+    rw [MeasureTheory.integral_const_mul]
+    simp only [hh, connesUnitBox_zero, mul_one, sub_self, zero_mul, add_zero]
+    ring
+  have hsplitPow : connesRealPowerPV f ε
+      = connesRealPowerPV h ε + f 0 * connesRealPowerPV connesUnitBox ε := by
+    have hptf : ∀ x : ℝ, f x * (((|x| ^ ε) * connesRealMultHaarDensity x : ℝ) : ℂ)
+        = h x * (((|x| ^ ε) * connesRealMultHaarDensity x : ℝ) : ℂ)
+          + f 0 * (connesUnitBox x * (((|x| ^ ε) * connesRealMultHaarDensity x : ℝ) : ℂ)) := by
+      intro x; simp only [hh]; ring
+    have hbox := connesUnitBox_integrable_power hε0'
+    simp only [connesRealPowerPV, hptf]
+    rw [MeasureTheory.integral_add hpowh (hbox.const_mul (f 0))]
+    rw [MeasureTheory.integral_const_mul]
+    simp only [hh, connesUnitBox_zero, mul_one, sub_self, zero_div, sub_zero]
+    ring
+  rw [hsplitLog, hsplitPow, connesRealLogPV_unitBox hε0' (le_of_lt hε1'),
+    connesRealPowerPV_unitBox hε0']
+  ring
 
 end
 

@@ -300,6 +300,19 @@ theorem eventSigma_simplicity (τ : ℂ) (i j : Fin 3) :
       eventSigmaTwo_mul_eventSigmaOne, eventSigmaTwo_mul_eventSigmaThree,
       eventSigmaThree_mul_eventSigmaOne, eventSigmaThree_mul_eventSigmaTwo]
 
+/-- A two-plane exterior field in the oriented `01` and `23` coordinate planes. -/
+def eventTwoPlaneForm (first second : ℂ) : EventCoframeExterior :=
+  first • (eventCoframeOne 0 * eventCoframeOne 1) +
+    second • (eventCoframeOne 2 * eventCoframeOne 3)
+
+/-- The square of a two-plane field is its oriented pseudoscalar coefficient times volume. -/
+theorem eventTwoPlaneForm_sq (first second : ℂ) :
+    eventTwoPlaneForm first second * eventTwoPlaneForm first second =
+      (2 * first * second) • eventPlebanskiVolume := by
+  simp only [eventTwoPlaneForm, add_mul, mul_add, smul_mul_assoc, mul_smul_comm]
+  rw [eventPair01_sq, eventPair23_pair01, eventPair01_pair23, eventPair23_sq]
+  module
+
 /-- The coordinate four-volume is nonzero in the exterior algebra. -/
 theorem eventPlebanskiVolume_ne_zero : eventPlebanskiVolume ≠ 0 := by
   let coframe : Fin 4 → EventCoframe4 := Pi.basisFun ℂ (Fin 4)

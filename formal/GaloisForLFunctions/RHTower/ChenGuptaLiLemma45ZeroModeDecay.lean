@@ -23,6 +23,18 @@ structure CGLLemma45SeparatedDifference where
   spacing_pos : 0 < spacing
   spacing_le_abs : spacing ≤ |difference|
 
+/-- The explicit all-order reciprocal Fourier budget is nonnegative. -/
+theorem cglLogFourierAmplitudeAllOrderBudget_nonneg (w : CGLSmoothBump) (n : ℕ) :
+    0 ≤ cglLogFourierAmplitudeAllOrderBudget w n := by
+  unfold cglLogFourierAmplitudeAllOrderBudget
+  apply Finset.sum_nonneg
+  intro i hi
+  apply mul_nonneg
+  · apply mul_nonneg
+    · positivity
+    · exact cglLogPhasePolynomialBudget_nonneg _
+  · exact MeasureTheory.integral_nonneg fun _ => norm_nonneg _
+
 /-- Every zero-frequency CGL coordinate has the closed order-zero Fourier
 budget from Lemma 4.3. -/
 theorem norm_cglLemma45ZeroModePairAmplitude_le_uniform

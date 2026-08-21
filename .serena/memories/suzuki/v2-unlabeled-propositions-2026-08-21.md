@@ -1,76 +1,71 @@
-# Suzuki v2 unlabeled propositions (2026-08-21)
+# Suzuki v2 unlabeled propositions — CLOSED (2026-08-21)
 
-Paper: arXiv:2606.09096v2 (`screwzelf_9.tex`). Its **eleven labeled results are already Lean-closed**
-(see `mem:research/suzuki_v2_2606_09096_formal_parity`). This memory covers the *unlabeled displayed
-propositions*.
+Paper: arXiv:2606.09096v2 (`screwzelf_9.tex`). Its **eleven labeled results were already
+Lean-closed** (`mem:research/suzuki_v2_2606_09096_formal_parity`). This memory records the closure
+of the *unlabeled displayed propositions*.
 
-Card: `docs/drafts/pipeline/1-in-progress/suzuki-v2-unlabeled-propositions-formalization.md`.
+Card (stage 3): `docs/drafts/pipeline/3-formalized/suzuki-v2-unlabeled-propositions-formalization.md`.
 
 ## Already corpus-owned (do not rebuild)
 
-- (2.2) origin expansion — `SuzukiOriginLogarithmicRemainder`, `suzukiApertureScrewExpansion`
-- (2.4) — `suzuki_equation_two_four`; (2.5) — `suzuki_equation_two_five`
-- (2.6) — `suzukiFinitePartEnergy_eq_logFourier_add_eulerMass` (`SuzukiFinitePartLogFourier`)
+- (2.2) origin expansion — `SuzukiOriginLogarithmicRemainder`; (2.4) `suzuki_equation_two_four`;
+  (2.5) `suzuki_equation_two_five`; (2.6) `suzukiFinitePartEnergy_eq_logFourier_add_eulerMass`
 - (2.9)–(2.11) — `SuzukiScrewDistributionalAtoms`, `SuzukiScrewOperatorEquationTwoFive`
-- §8.1 `Q_{G̃}=Q_G` on `L²₀` — `suzukiScrewIntervalForm_eq_raw_of_zeroMean`
-- archimedean Fourier block — `integral_fourier_mul_logPi_sub_re_quarterDigamma_eq_weilDistribution`
+- **`r₀''+r₁''` in closed form** — `suzukiWeilRemainderSecondDerivative`
+  (`SuzukiWeilPositionTorqueCurvature`), bridged by `SuzukiOriginRemainderWeilBridge`.
+  So the paper's Bernoulli-generating-function step never has to be redone.
+- Plancherel autocorrelation transform — `fourier_autocorrelation`
+  (`HTGeometry/SchwartzPolynomialDifferentialFrame`)
+- archimedean Weil block — `integral_fourier_mul_logPi_sub_re_quarterDigamma_eq_weilDistribution`
+- second-order digamma asymptotic — `norm_digamma_sub_log_add_half_inv_le_of_re_pos`
+  (`HTGeometry/DigammaHalfPlaneAsymptotic`)
 - Gauss digamma series — `digamma_eq_neg_euler_add_tsum_gauss`, `integral_gaussDigammaLaplaceTerm`
-  (`HTGeometry/DigammaGaussSeries`)
-- `ein`/`frullaniHead`/`frullaniTail`/`frullani_eq_eulerMascheroni`
-  (`RHTower/EulerMascheroniExponentialIntegral`)
-- complex Frullani `integral_frullani` (`HTGeometry/FrullaniIntegral`)
-- product-majorant Fubini `integral_swap_of_dominated_prod` (`HTGeometry/BlockWindowFubini`)
+- `ein`/`frullaniHead`/`frullaniTail`/`frullani_eq_eulerMascheroni`; complex Frullani
+  `integral_frullani`; product-majorant Fubini `integral_swap_of_dominated_prod`
+- §8.1 `Q_{G̃}=Q_G` on `L²₀` — `suzukiScrewIntervalForm_eq_raw_of_zeroMean`
+- §4 scaling — `suzukiWeilIntervalFormRayleigh_eq_scaledUnitPullback`; §5 Dirichlet-form layer —
+  `SuzukiLimitingLogClosedMarkov`, `…IrreducibilityCore`, `…GroundSimplicity`
 
-## Landed here (9 new modules, all axiom-clean, warning-free, wired)
+## Landed (10 modules, all axiom-clean, warning-free, wired)
 
-1. `HTGeometry/TriangularIntervalFubini` — reusable
-   `∫_p^q F(x)(∫_x^q G) = ∫_p^q (∫_p^t F) G(t)`, integrability only.
-2. `RHTower/SuzukiInverseNeumannLaplacian` — **§8.2 + (8.4)**. `N(x,y)=(x²+y²)/(4a)−|x−y|/2+a/6`
-   and `a − max x y` differ by the separable `φ(x)+φ(y)`, hence agree on mean-zero data.
-   `suzuki_equation_802`, positivity, `∫N(x,y)dy=0`, range in `L²₀`, `(K_au)'=−v`, `(K_au)''=−u`,
-   Neumann boundary limits, `D:H_0^1→L²₀` bijective, `suzuki_equation_804`.
-3. `RHTower/SuzukiDeBrangesDeficiencyKernel` — **§7**. `E(∓i)`,`E♯(∓i)` from `ξ(3/2),ξ'(3/2)`;
-   `K(∓i,∓i)=ξ(3/2)ξ'(3/2)/π`; the boundary form with `C_θ` (**valid for every z** — the numerator
-   vanishes at the singular point); `θ=π` collapse; the `f̂_w=K(w̄,·)/E` relation.
-   Correction: the source's last display has `π²`; direct computation gives `π`.
-4. `RHTower/SuzukiApertureFourierDecay` — **§3**: `ê_n`, (3.3), (3.4).
-5. `HTGeometry/ParityRayleighDecomposition` — **(4.10)** `λ = min(λ⁺,λ⁻)` as `IsGLB`, for any
-   inner-product-symmetric linear involution.
-6. `RHTower/SuzukiCutoffLogWindow` — the `I_ε ≪ ε log(1/ε) → 0` step:
-   `∫_R^∞ log(3+z)/z² ≤ (log(3+R)+1)/R`, `∫_{-R}^R log(3+|z|) ≤ 2R log(3+R)`, and the assembled
-   `∫_ℝ log(3+|z|)|ŵ|² ≤ 8ε log(3+1/ε) + 2M²(ε log(3+1/ε)+ε) → 0`.
-7. `RHTower/EulerMascheroniGaussKernel` — `∫_ε^∞ e^{-t}/(1−e^{-t}) = −log(1−e^{-ε})`,
-   `∫_ε^∞ e^{-t}/t = −log ε + Ein(ε) − γ`, and **`∫_0^∞(e^{-t}/t − e^{-t}/(1−e^{-t}))dt = −γ`**.
-8. `RHTower/DigammaIntegralRepresentation` — **`ψ(s)=∫_0^∞(e^{-u}/u − e^{-su}/(1−e^{-u}))du`**
-   (Re s>0), by geometric summation of the corpus's Laplace terms plus dominated convergence;
-   plus `integral_archimedean_gaussKernel`:
-   `∫_0^∞(e^{-u/4}cos(zu/2)/(1−e^{-u}) − e^{-u}/u)du = −Re ψ(1/4+iz/2)`.
-9. `RHTower/CosineIntegralAsymptotic` — the conditionally convergent half.
-   IBP against `t⁻¹` makes `∫_1^y cos t/t` converge; the damped version has the Abel limit
-   `∫_1^∞ e^{-εt}cos t/t → cosTailValue` (the error carries `ε∫_1^∞ e^{-εt}/t ≤ ε(log(1/ε)+1)`);
-   the real part of `integral_frullani` at rates `1, ε−i` is `log√(ε²+1)`, giving
-   `gaussCosineIdentity` (the improper `∫_0^∞(e^{-t}−cos t)/t dt = 0`) and finally
-   **`∫_ε^∞ e^{-u}/u du − ∫_{aε}^∞ cos u/u du → log a`**.
+1. `HTGeometry/TriangularIntervalFubini` — `∫_p^q F(x)(∫_x^q G) = ∫_p^q (∫_p^t F) G(t)`.
+2. `RHTower/SuzukiInverseNeumannLaplacian` — §8.2 + (8.4).
+3. `RHTower/SuzukiDeBrangesDeficiencyKernel` — §7 kernel algebra.
+4. `RHTower/SuzukiApertureFourierDecay` — §3: `ê_n`, (3.3), (3.4).
+5. `HTGeometry/ParityRayleighDecomposition` — (4.10) `λ = min(λ⁺,λ⁻)`.
+6. `RHTower/SuzukiCutoffLogWindow` — the `I_ε ≪ ε log(1/ε) → 0` step.
+7. `RHTower/EulerMascheroniGaussKernel` — `∫₀^∞(e^{-t}/t − e^{-t}/(1−e^{-t}))dt = −γ`.
+8. `RHTower/DigammaIntegralRepresentation` — `ψ(s)=∫₀^∞(e^{-u}/u − e^{-su}/(1−e^{-u}))du`;
+   `suzukiArchKernel`, `integral_suzukiArchKernel = −Re ψ(1/4+iz/2)`.
+9. `RHTower/CosineIntegralAsymptotic` — improper `∫cos t/t`, its Abel limit,
+   `∫₀^∞(e^{-t}−cos t)/t dt = 0`, and `∫_ε^∞ e^{-u}/u − ∫_{aε}^∞ cos u/u → log a`.
+10. `RHTower/SuzukiRemainderFourierTransform` — **(2.7)–(2.8)**:
+    `r'' = r₀'' + r₁''` with `r₁''(t)=e^{-|t|/2}/(1−e^{-2|t|})−1/(2|t|)`
+    (`exp_div_two_sinh_eq` makes this algebraic);
+    `suzukiR1Fourier_regularized`: `\hat{r₁''}(z) = −Reψ(1/4+iz/2) + log z − log 2` as an iterated
+    limit (`R→∞` then `ε→0`) — the only sense it exists, `r₁''` decaying like `−1/(2|t|)`;
+    `suzukiArchimedeanSymbol`/`suzukiR1Fourier_symbol`: `log z − log(2π) − \hat{r₁''} =
+    Reψ(1/4+iz/2) − log π`, the passage (2.7)→(2.8);
+    `abs_re_digamma_half_sub_log_le`: `Re ψ(s/2) = log|s| − log2 + O(|s|^{-2})` with constant
+    `(20+Re s)/|s|²`;
+    `tendsto_setIntegral_Ioi_nhdsWithin_zero` (reusable).
 
-## Still open
+## Two source-independent findings
 
-The *assembly* of (2.7)–(2.8): both analytic halves are closed; what remains is identifying the
-source's `r_1''` from the Bernoulli generating function plus the regularized Fourier bookkeeping.
-`r_1''` is not `L¹`, so `\hat{r_1''}` is itself a regularized object — the corpus's own route to
-(2.6) uses Abel limits for that reason.
+- §7's last display carries `π²`; computed from the paper's own definitions of `K` and `f̂` the
+  constant is `π`. Structure and the `θ=π` collapse agree.
+- The §7 boundary form needs **no** nonvanishing hypothesis: at `z = ∓i` the numerator vanishes.
 
 ## Traps hit
 
-- Narrow imports silently hide `integral_pow`, `integral_id`, `intervalIntegrable_id`,
+- Narrow imports hide `integral_pow`, `integral_id`, `intervalIntegrable_id`,
   `ContinuousLinearMap.hasDerivAt`, `HasDerivAt.cexp`,
   `intervalIntegral.integral_mul_deriv_eq_deriv_mul`, `integral_Ioi_of_hasDerivAt_of_tendsto`,
-  `integrableOn_Ioi_deriv_of_nonneg`. The error is "unknown identifier", not a rename.
-- `HasDerivAt (fun t : ℝ => (t:ℂ)) 1 x` is `Complex.ofRealCLM.hasDerivAt.congr_deriv (by simp)`;
-  going through `hasFDerivAt` hits an `instInnerProductSpaceRealComplex` module-instance mismatch.
-- `HasDerivAt.neg`/`.sub`/`.mul` frequently return Pi forms — use `congr_deriv (by ring)` rather
-  than `simpa`, and `dsimp only` before `intervalIntegral.integral_congr` goals.
-- `exp_neg_integrableOn_Ioi` yields `rexp (-ε * x)`, not `rexp (-(ε * x))`; bridge with
-  `simpa [neg_mul]`.
-- `integral_re`/`integral_ofReal` are stated for `RCLike.re`/`RCLike.ofReal`; for `ℂ` use
-  `Complex.reCLM.integral_comp_comm` + `Complex.reCLM_apply`, and `integral_complex_ofReal`.
-- The repo root contains a stray `GaloisForLFunctions/` tree; always use absolute paths.
+  `integrableOn_Ioi_deriv_of_nonneg` — the error is "unknown identifier", not a rename.
+- `HasDerivAt (fun t : ℝ => (t:ℂ)) 1 x` is `Complex.ofRealCLM.hasDerivAt.congr_deriv (by simp)`.
+- `HasDerivAt.neg/.sub/.mul` return Pi forms — use `congr_deriv (by ring)`, and `dsimp only`
+  before `intervalIntegral.integral_congr` goals.
+- `exp_neg_integrableOn_Ioi` yields `rexp (-ε * x)`, not `rexp (-(ε*x))`; bridge with `simpa [neg_mul]`.
+- `integral_re`/`integral_ofReal` are `RCLike`-stated; for `ℂ` use `Complex.reCLM.integral_comp_comm`
+  + `Complex.reCLM_apply`, and `integral_complex_ofReal`.
+- The repo root holds a stray `GaloisForLFunctions/` tree; always use absolute paths.

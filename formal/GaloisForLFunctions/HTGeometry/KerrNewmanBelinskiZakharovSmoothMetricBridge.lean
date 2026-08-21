@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.BelinskiZakharovConfocalLorentzBridge
 import GaloisForLFunctions.HTGeometry.ConformalMetricDalembertian
+import Mathlib.LinearAlgebra.Matrix.Block
 
 /-!
 # Four-dimensional smooth-metric lift of flat Belinski--Zakharov dressing
@@ -23,6 +24,18 @@ def belinskiZakharovKillingLift (parameter : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :
      0, 1, 0, 0;
      0, 0, 1, 0;
      0, 0, 0, 1]
+
+/-- The lifted BZ unipotent is upper triangular in the full coordinate order. -/
+theorem belinskiZakharovKillingLift_blockTriangular (parameter : ℝ) :
+    (belinskiZakharovKillingLift parameter).BlockTriangular id := by
+  intro i j hij
+  fin_cases i <;> fin_cases j <;> simp_all [belinskiZakharovKillingLift]
+
+/-- The full-coordinate lift of the BZ unipotent remains unimodular. -/
+theorem belinskiZakharovKillingLift_det (parameter : ℝ) :
+    (belinskiZakharovKillingLift parameter).det = 1 := by
+  rw [Matrix.det_of_upperTriangular (belinskiZakharovKillingLift_blockTriangular parameter)]
+  norm_num [belinskiZakharovKillingLift, Fin.prod_univ_succ]
 
 /-- The full flat Kerr--Newman metric after the constant BZ two-Killing congruence. -/
 def kerrNewmanFlatBZDressedMetric (parameter : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
@@ -48,6 +61,22 @@ theorem kerrNewmanFlatBZDressedMetric_eq_liftCongruence (parameter : ℝ) :
     simp [kerrNewmanFlatBZDressedMetric, belinskiZakharovKillingLift,
       minkowskiMetric4, Matrix.transpose_apply, Matrix.mul_apply, Fin.sum_univ_four]
   all_goals ring
+
+/-- The corpus's flat Kerr--Newman representative has Minkowski determinant. -/
+theorem minkowskiMetric4_det : minkowskiMetric4.det = -1 := by
+  have htri : minkowskiMetric4.BlockTriangular id := by
+    intro i j hij
+    fin_cases i <;> fin_cases j <;> simp_all [minkowskiMetric4]
+  rw [Matrix.det_of_upperTriangular htri]
+  norm_num [minkowskiMetric4, Fin.prod_univ_succ]
+
+/-- Full constant BZ dressing preserves the flat Kerr--Newman determinant exactly. -/
+theorem kerrNewmanFlatBZDressedMetric_det (parameter : ℝ) :
+    (kerrNewmanFlatBZDressedMetric parameter).det = -1 := by
+  rw [kerrNewmanFlatBZDressedMetric_eq_liftCongruence, Matrix.det_mul,
+    Matrix.det_mul, Matrix.det_transpose, belinskiZakharovKillingLift_det,
+    minkowskiMetric4_det]
+  ring
 
 /-- The full flat BZ-dressed metric remains symmetric. -/
 theorem kerrNewmanFlatBZDressedMetric_transpose (parameter : ℝ) :
@@ -109,6 +138,12 @@ theorem kerrNewmanFlatBZDressedSmoothMetric_killingBlock
 noncomputable def kerrNewmanFlatOnePoleBZDressedMetric
     (spectral pole residue : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
   kerrNewmanFlatBZDressedMetric (residue / (spectral - pole))
+
+/-- The totalized one-pole full BZ dressing also preserves the flat determinant exactly. -/
+theorem kerrNewmanFlatOnePoleBZDressedMetric_det
+    (spectral pole residue : ℝ) :
+    (kerrNewmanFlatOnePoleBZDressedMetric spectral pole residue).det = -1 := by
+  exact kerrNewmanFlatBZDressedMetric_det _
 
 /-- The one-pole full metric carries the existing one-pole BZ Killing block exactly. -/
 theorem kerrNewmanFlatOnePoleBZDressedMetric_killingBlock

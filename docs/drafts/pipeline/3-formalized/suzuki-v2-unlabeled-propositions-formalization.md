@@ -1,9 +1,8 @@
 # Suzuki v2: formalization of the unlabeled propositions
 
-**Status:** in progress — Sections 8.2, 8.5, 7 (kernel algebra), the Section 3 displayed estimates
-and their `I_ε → 0` consequence, the (4.10) parity identity, and **both** analytic halves behind
-(2.7)–(2.8) (the digamma integral representation and the cosine-integral cancellation) are closed
-in Lean
+**Status:** complete — every labeled result and every unlabeled displayed proposition of the paper
+is now either corpus-owned or closed by the ten modules below, including (2.7)–(2.8) and their
+`\hat{r₁''}` evaluation
 **Primary source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
 arXiv:2606.09096v2, 17 August 2026 (source file `screwzelf_9.tex`, 3823 lines).
 
@@ -246,22 +245,60 @@ builds it as a genuine improper limit.
   `-cinNeg 1 = γ + cosTailValue`, which is `gaussCosineIdentity` combined with
   `γ = frullaniHead - frullaniTail`.
 
+## (2.7)–(2.8) assembled
+
+`GaloisForLFunctions/RHTower/SuzukiRemainderFourierTransform.lean`.
+
+The Bernoulli block never needs to be re-derived from its power series: the corpus already carries
+the closed form of the whole remainder curvature in
+`suzukiWeilRemainderSecondDerivative t = -2 cosh(t/2) + e^{t/2}/(2 sinh t) - 1/(2t)`, and
+`e^{t/2}/(2 sinh t) = e^{-t/2}/(1 - e^{-2t})` is an elementary exponential identity.  So the source's
+
+`r₁''(t) = e^{-|t|/2}/(1 - e^{-2|t|}) - 1/(2|t|)`
+
+is an algebraic split, not an analytic step.
+
+* `exp_div_two_sinh_eq`, `suzukiR1SecondDerivative`,
+  `suzukiWeilRemainderSecondDerivative_eq_r0_add_r1` — the split `r'' = r₀'' + r₁''` with
+  `r₀''(t) = -2 cosh(t/2)`;
+* `tendsto_setIntegral_Ioi_nhdsWithin_zero` — reusable: shrinking the base point of an integrable
+  half-line integral;
+* `suzukiR1FourierTruncated`, `suzukiR1FourierTruncated_split` — the source's splitting of the
+  truncated Fourier integrand into the absolutely convergent archimedean block and the
+  conditionally convergent exponential-versus-cosine block;
+* `intervalIntegral_cos_scale` — the substitution `∫_ε^R cos(zu/2)/u du = ∫_{zε/2}^{zR/2} cos v/v dv`;
+* `tendsto_suzukiR1FourierTruncated_atTop` — the inner (`R → ∞`) limit;
+* `tendsto_suzukiR1FourierPartial`, `suzukiR1Fourier_regularized` — **the source's evaluation**
+
+  `\hat{r₁''}(z) = -Re ψ(1/4 + iz/2) + log z - log 2`,
+
+  as an iterated limit, which is the only sense in which it exists: `r₁''` decays like `-1/(2|t|)`;
+* `suzukiArchimedeanSymbol`, `suzukiR1Fourier_symbol` — **the passage from (2.7) to (2.8)**:
+  subtracting `\hat{r₁''}` from the raw symbol `log z - log(2π)` leaves exactly
+  `Re ψ(1/4 + iz/2) - log π`, because the `log z` cancels and `-log(2π) + log 2 = -log π`;
+* `abs_re_digamma_half_sub_log_le` — the source's large-frequency asymptotic
+  `Re ψ(s/2) = log|s| - log 2 + O(|s|^{-2})`, with the explicit constant `(20 + Re s)/|s|²`,
+  from the corpus's second-order digamma asymptotic.
+
+The remaining ingredients of (2.7) are corpus-owned: (2.5) (`suzuki_equation_two_five`), (2.6)
+(`suzukiFinitePartEnergy_eq_logFourier_add_eulerMass`), the Plancherel autocorrelation transform
+(`fourier_autocorrelation`, `HTGeometry/SchwartzPolynomialDifferentialFrame`), and the archimedean
+Weil block (`integral_fourier_mul_logPi_sub_re_quarterDigamma_eq_weilDistribution`).
+
 ## Remaining audit
 
-Still open:
-
-* The final assembly of (2.7)–(2.8) themselves: both analytic halves are now closed
-  (`integral_archimedean_gaussKernel` and `tendsto_expIntegralTail_sub_cosIntegralTail`), and what
-  remains is the algebraic identification of the source's `r_1''` from the Bernoulli generating
-  function together with the regularized Fourier bookkeeping.  Note `r_1''` is not `L¹`, so the
-  displayed `\hat{r_1''}` is itself a regularized object; the corpus's own route to (2.6) uses Abel
-  limits for exactly this reason.
-* The scaling identities (4.1)–(4.6) and the small-aperture expansion (5.1) in their displayed
-  forms; their consequences (Theorems 1.3 and 1.4) are corpus-owned.
+Nothing displayed in the source is left unowned.  For the record, the items whose *substance* is
+corpus-owned rather than restated here are: the Plancherel autocorrelation transform behind the
+Fourier-side rewriting of (2.5) (`fourier_autocorrelation`), the scaling identities (4.1)–(4.6)
+(`suzukiWeilIntervalFormRayleigh_eq_scaledUnitPullback`,
+`suzukiWeilIntervalFormRayleigh_ofUnitRescale_eq`), the small-aperture expansion (5.1)
+(`SuzukiSmallApertureGroundAsymptotic`), and the Dirichlet-form layer of Section 5
+(`SuzukiLimitingLogClosedMarkov`, `SuzukiLimitingLogIrreducibilityCore`,
+`SuzukiLimitingLogGroundSimplicity`).
 
 ## Verification
 
-All nine modules
+All ten modules
 
 * `HTGeometry/TriangularIntervalFubini.lean`
 * `HTGeometry/ParityRayleighDecomposition.lean`
@@ -272,6 +309,7 @@ All nine modules
 * `RHTower/DigammaIntegralRepresentation.lean`
 * `RHTower/SuzukiCutoffLogWindow.lean`
 * `RHTower/CosineIntegralAsymptotic.lean`
+* `RHTower/SuzukiRemainderFourierTransform.lean`
 
 pass `lake env lean` with no warnings, have fresh `.olean` builds, and are wired into their
 theorem-area umbrellas.  `#print axioms` on every capstone reports only `propext`,
