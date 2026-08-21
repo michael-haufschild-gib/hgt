@@ -48,7 +48,11 @@ of the transitive closure and is tracked here as separate future layers.
 - [x] `L1.2a` functoriality: `coLieMap (f : A →ₐc[R] B) : omega_A →ₗ omega_B` with `coLieMap_d`
 - [ ] `L1.2b` base change `omega_{A ⊗ S} ≅ omega_A ⊗ S`
 - [x] `L1.3` dual-numbers description `dualNumberEquiv : pointDerivations ≃ {f : A →ₐ R[e] | fst∘f = ε}`
-- [ ] `L1.4` `omega` of `Ga`, `Gm`, `mu_n`, `alpha_p` — worked examples and non-vacuity
+- [x] `L1.4a` non-vacuity certificate: the group algebra `R[G]` of a finite abelian group is a
+      finite free commutative Hopf algebra with nonzero augmentation ideal
+      → `HTGeometry/GroupAlgebraCoLieExample.lean` (`Spec R[G] = D(G)`, e.g. `mu_n`)
+- [ ] `L1.4b` `alpha_p = R[X]/(X^p)` in characteristic `p` with `X` primitive — the example where
+      `Prim ≠ 0` and where the naive Lie algebra and the Lie complex differ
 
 **L2 — Cartier duality.**
 - [x] `L2.1a` **dual coalgebra of a finite free algebra** → `HTGeometry/DualCoalgebraFiniteFree.lean`
@@ -70,7 +74,9 @@ of the transitive closure and is tracked here as separate future layers.
 - [ ] `L2.4` the canonical pairing `N x N^dual → Gm` and its perfectness
 
 **L3 — determinants.**
-- [ ] `L3.1` `det M = top exterior power` for f.g. projective modules; `det M ⊗ det M^dual ≅ R`
+- [x] `L3.1` **`exteriorPower.pairingDual` is an isomorphism for finite free modules**; the
+      determinant line `det M = ⋀^{rank M} M` is free of rank one; `det (M^dual) ≅ (det M)^dual`
+      canonically → `HTGeometry/DeterminantLine.lean`
 - [ ] `L3.2` determinant of a two-term perfect complex; multiplicativity in exact sequences
 
 **L4 — the Lie complex.**
@@ -106,3 +112,10 @@ of the transitive closure and is tracked here as separate future layers.
   **Cartier duality on Lie algebras**, `Lie (N^∨) ≅ Prim A`.  Next: `L1.4` (worked examples: the
   truncated polynomial Hopf algebra `R[X]/(X^p)` in characteristic `p`, giving `α_p` with
   `Prim ≠ 0`, and the group algebra `R[G]`), then `L3` determinants.
+- 2026-08-21 — bricks `L3.1` and `L1.4a` landed: `HTGeometry/DeterminantLine.lean`
+  (`pairingDual_bijective`, `pairingDualEquiv`, `detLine`, `finrank_detLine`, `detLineDualEquiv`)
+  and `HTGeometry/GroupAlgebraCoLieExample.lean` (non-vacuity of the whole layer).
+  Next: `L2.2b` — `T2` is a ring isomorphism from the tensor-square algebra `A^∨ ⊗ A^∨` to the
+  convolution algebra `Dual (A ⊗ A)`, which upgrades the compatibility lemmas of `L2.2a` into a
+  genuine `Bialgebra`/`HopfAlgebra` structure on the Cartier dual; then `L1.4b` (`alpha_p`) and
+  `L3.2` (determinant of a two-term perfect complex).

@@ -2856,6 +2856,7 @@ import GaloisForLFunctions.HTGeometry.DualRectangularSection
 import GaloisForLFunctions.HTGeometry.DualSchurVariables
 import GaloisForLFunctions.HTGeometry.DualTriangularInverse
 import GaloisForLFunctions.HTGeometry.CartierDualLieAlgebra
+import GaloisForLFunctions.HTGeometry.GroupAlgebraCoLieExample
 import GaloisForLFunctions.HTGeometry.DeterminantLine
 import GaloisForLFunctions.HTGeometry.DualCoalgebraFiniteFree
 import GaloisForLFunctions.HTGeometry.DualZLatticeCovolume
@@ -8684,6 +8685,9 @@ import GaloisForLFunctions.HTGeometry.SmallQuasiIso
 import GaloisForLFunctions.HTGeometry.Excision
 import GaloisForLFunctions.HTGeometry.HomotopyInvariance
 import GaloisForLFunctions.HTGeometry.PointHomology
+import GaloisForLFunctions.HTGeometry.HomotopyEquivHomology
+import GaloisForLFunctions.HTGeometry.ExcisionPair
+import GaloisForLFunctions.HTGeometry.PairSequence
 import GaloisForLFunctions.HTGeometry.SingularFunctoriality
 import GaloisForLFunctions.HTGeometry.AffineNaturality
 import GaloisForLFunctions.HTGeometry.SimplicialMayerVietorisBase
@@ -10291,3 +10295,4 @@ import GaloisForLFunctions.HTGeometry.BorelWeil.RelativeSplitting
 import GaloisForLFunctions.HTGeometry.AdditiveCombinatorics.PollardStepThreeCase2
 import GaloisForLFunctions.HTGeometry.AdditiveCombinatorics.PollardCosetDecomposition
 import GaloisForLFunctions.HTGeometry.BorelWeil.TopDegreeVanishing
+import GaloisForLFunctions.HTGeometry.KleinbockMargulis.SmoothGoodCube

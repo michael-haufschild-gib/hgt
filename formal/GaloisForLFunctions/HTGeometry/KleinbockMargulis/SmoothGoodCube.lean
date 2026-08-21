@@ -17,6 +17,13 @@ Unlike the paper, the argument here never forms the sup of `|f|` over a face: th
 statement is the pointwise one, so a *fixed* point `z` of the cube is carried through both the
 inductive hypothesis (applied on the face through `z`) and the one-dimensional estimate (applied
 on the line through `z`).  Lemma 3.1(c) is therefore not needed.
+
+## Main results
+
+* `SandwichedChains` — the hypotheses `(3.4≤)`, `(3.4≥)`.
+* `sublemma_3_3_2` — the Fubini splitting of a cube along its first coordinate.
+* `cubeEstimate_one`, `cubeEstimate_succ` — the base case and the induction step.
+* `exists_isGood_of_sandwichedChains` — **Lemma 3.3**, in the form `IsGood K (1/dk) f V`.
 -/
 
 open Set MeasureTheory Metric
@@ -438,5 +445,234 @@ private theorem step_endgame {d k : ℕ} (hd : 1 ≤ d) (hk : 1 ≤ k) {C K σ s
         rw [Real.mul_rpow hRpos.le (by positivity), ← Real.rpow_mul hε.le, hα]
         congr 2
         field_simp
+
+
+/-! ### The induction step -/
+
+/-- **Lemma 3.3, induction step.**  The cube estimate in dimension `d ≥ 1` and the
+one-dimensional estimate together give the cube estimate in dimension `d + 1`. -/
+theorem cubeEstimate_succ {d k : ℕ} (hd : 1 ≤ d) (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA₁ : 0 ≤ A₁)
+    (hA₂ : 0 < A₂) {K : ℝ} (hKpos : 0 < K) (hKest : CubeEstimate d k A₁ A₂ K) :
+    ∃ K' : ℝ, 0 < K' ∧ CubeEstimate (d + 1) k A₁ A₂ K' := by
+  obtain ⟨C, hCpos, hC⟩ := exists_good_const_one_dim k hk hA₁ hA₂
+  have hdR : (0:ℝ) < (d : ℝ) := by exact_mod_cast hd
+  have hkR : (0:ℝ) < (k : ℝ) := by exact_mod_cast hk
+  have hd1 : (0:ℝ) < (d : ℝ) + 1 := by linarith
+  have h2p : (0:ℝ) < (2:ℝ) ^ ((k : ℝ)⁻¹) := Real.rpow_pos_of_pos (by norm_num) _
+  have hnum : (0:ℝ) < C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ((d : ℝ) + 1) ^ (d + 1) :=
+    mul_pos (mul_pos (mul_pos hCpos h2p) (pow_pos hKpos d)) (pow_pos hd1 (d + 1))
+  refine ⟨(C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ((d : ℝ) + 1) ^ (d + 1) / (d : ℝ) ^ d)
+      ^ (((d : ℝ) + 1)⁻¹),
+    Real.rpow_pos_of_pos (div_pos hnum (pow_pos hdR d)) _, ?_⟩
+  intro V f H x₀ r hr hsub ε hε z hz
+  have hbpos : (0:ℝ) < 2 * r := by linarith
+  set b : ℝ := 2 * r with hb
+  set α : ℝ := (((d : ℝ) + 1) * (k : ℝ))⁻¹ with hα
+  have hcast : (((d + 1 : ℕ) : ℝ) * (k : ℝ))⁻¹ = α := by rw [hα]; push_cast; ring_nf
+  rw [hcast]
+  set Mv : ℝ := (volume {x ∈ ball x₀ r | |f x| < ε}).toReal with hMv
+  set sz : ℝ := |f z| with hszdef
+  have hMvnn : (0:ℝ) ≤ Mv := ENNReal.toReal_nonneg
+  have hsznn : (0:ℝ) ≤ sz := abs_nonneg _
+  have hbd : (0:ℝ) < b ^ (d + 1) := pow_pos hbpos _
+  have hRHSnn : (0:ℝ) ≤ (C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ((d : ℝ) + 1) ^ (d + 1) / (d : ℝ) ^ d)
+      ^ (((d : ℝ) + 1)⁻¹) * ε ^ α * b ^ (d + 1) :=
+    mul_nonneg (mul_nonneg (Real.rpow_nonneg (div_pos hnum (pow_pos hdR d)).le _)
+      (Real.rpow_nonneg hε.le _)) hbd.le
+  have hαpos : 0 < α := by rw [hα]; exact inv_pos.mpr (mul_pos hd1 hkR)
+  rcases eq_or_lt_of_le hsznn with hsz0 | hszpos
+  · rw [← hsz0, Real.zero_rpow (ne_of_gt hαpos), mul_zero]
+    exact hRHSnn
+  rcases eq_or_lt_of_le hMvnn with hMv0 | hMvpos
+  · rw [← hMv0, zero_mul]
+    exact hRHSnn
+  -- normalised measure
+  set σ : ℝ := Mv / b ^ (d + 1) with hσdef
+  have hσpos : 0 < σ := by rw [hσdef]; exact div_pos hMvpos hbd
+  have hMveq : Mv = σ * b ^ (d + 1) := by rw [hσdef]; field_simp
+  set lam : ℝ := σ * (d : ℝ) / ((d : ℝ) + 1) with hlam
+  have hlampos : 0 < lam := by rw [hlam]; positivity
+  have hslam : σ - lam = σ / ((d : ℝ) + 1) := by rw [hlam]; field_simp; ring
+  clear_value lam
+  -- the set of fat slices
+  set E : Set ℝ := {t ∈ ball (x₀ 0) r | ENNReal.ofReal (lam * b ^ d)
+    ≤ volume {x' ∈ ball (Fin.tail x₀) r | |f (Fin.cons t x')| < ε}} with hE
+  have hEsubball : E ⊆ ball (x₀ 0) r := fun t ht => ht.1
+  have hEfin : volume E ≠ ⊤ := by
+    refine ne_top_of_le_ne_top ?_ (measure_mono hEsubball)
+    rw [Real.volume_ball]
+    exact ENNReal.ofReal_ne_top
+  set eE : ℝ := (volume E).toReal with heE
+  -- Sublemma 3.3.2 in real form
+  have hfat : (σ - lam) * b ≤ eE := by
+    have hsub2 := sublemma_3_3_2 H.cont hr hsub ε (ENNReal.ofReal (lam * b ^ d))
+    have hfin : ENNReal.ofReal (b ^ d) * volume E
+        + ENNReal.ofReal (lam * b ^ d) * ENNReal.ofReal b ≠ ⊤ := by
+      refine ENNReal.add_ne_top.mpr ⟨ENNReal.mul_ne_top ENNReal.ofReal_ne_top hEfin, ?_⟩
+      exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top
+    have htr := ENNReal.toReal_mono hfin hsub2
+    rw [ENNReal.toReal_add (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hEfin)
+      (ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top),
+      ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity),
+      ENNReal.toReal_ofReal (by positivity), ENNReal.toReal_ofReal hbpos.le] at htr
+    rw [← hMv, hMveq] at htr
+    have hbdd : (0:ℝ) < b ^ d := pow_pos hbpos d
+    have hexp : b ^ (d + 1) = b ^ d * b := by rw [pow_succ]
+    rw [hexp] at htr
+    have : (σ - lam) * b * b ^ d ≤ eE * b ^ d := by nlinarith [htr]
+    exact le_of_mul_le_mul_right (by linarith [this]) hbdd
+  -- every fat slice forces `|f|` to be small on the corresponding line point
+  set z' : Fin d → ℝ := Fin.tail z with hz'
+  have hz'mem : z' ∈ ball (Fin.tail x₀) r := by
+    have := (cons_mem_ball (x₀ := x₀) (r := r) hr (t := z 0) (x' := Fin.tail z)).mp
+      (by rw [Fin.cons_self_tail]; exact hz)
+    exact this.2
+  have hz0mem : z 0 ∈ ball (x₀ 0) r := by
+    have := (cons_mem_ball (x₀ := x₀) (r := r) hr (t := z 0) (x' := Fin.tail z)).mp
+      (by rw [Fin.cons_self_tail]; exact hz)
+    exact this.1
+  set Mcoef : ℝ := (K / lam) ^ (d * k) with hMcoef
+  have hMcoefpos : 0 < Mcoef := by rw [hMcoef]; positivity
+  have hsmall : ∀ t ∈ E, |f (Fin.cons t z')| ≤ Mcoef * ε := by
+    intro t ht
+    have htball : t ∈ ball (x₀ 0) r := ht.1
+    have hsubt : ball (Fin.tail x₀) r ⊆ {x' : Fin d → ℝ | (Fin.cons t x' : Fin (d + 1) → ℝ) ∈ V} :=
+      fun x' hx' => hsub ((cons_mem_ball hr).mpr ⟨htball, hx'⟩)
+    have hIH := hKest {x' : Fin d → ℝ | (Fin.cons t x' : Fin (d + 1) → ℝ) ∈ V}
+      (fun x' => f (Fin.cons t x')) (H.slice t) (Fin.tail x₀) r hr hsubt ε hε z' hz'mem
+    -- the slice has measure at least `lam * b^d`
+    have hslicefin : volume {x' ∈ ball (Fin.tail x₀) r | |f (Fin.cons t x')| < ε} ≠ ⊤ := by
+      refine ne_top_of_le_ne_top ?_ (measure_mono fun x' hx' => hx'.1)
+      rw [volume_ball_pow hr]
+      exact ENNReal.ofReal_ne_top
+    have hlow : lam * b ^ d
+        ≤ (volume {x' ∈ ball (Fin.tail x₀) r | |f (Fin.cons t x')| < ε}).toReal := by
+      have := ENNReal.toReal_mono hslicefin ht.2
+      rwa [ENNReal.toReal_ofReal (by positivity)] at this
+    have hbdd : (0:ℝ) < b ^ d := pow_pos hbpos d
+    have hval : (0:ℝ) ≤ |f (Fin.cons t z')| ^ (((d : ℝ) * (k : ℝ))⁻¹) :=
+      Real.rpow_nonneg (abs_nonneg _) _
+    have hstep : lam * b ^ d * |f (Fin.cons t z')| ^ (((d : ℝ) * (k : ℝ))⁻¹)
+        ≤ K * ε ^ (((d : ℝ) * (k : ℝ))⁻¹) * b ^ d := by
+      refine le_trans (mul_le_mul_of_nonneg_right hlow hval) ?_
+      exact hIH
+    have hdiv : |f (Fin.cons t z')| ^ (((d : ℝ) * (k : ℝ))⁻¹)
+        ≤ (K / lam) * ε ^ (((d : ℝ) * (k : ℝ))⁻¹) := by
+      rw [div_mul_eq_mul_div, le_div_iff₀ hlampos]
+      nlinarith [hstep, hbdd]
+    -- raise to the power `d k`
+    have hexp1 : ((d : ℝ) * (k : ℝ))⁻¹ * ((d * k : ℕ) : ℝ) = 1 := by
+      push_cast
+      exact inv_mul_cancel₀ (ne_of_gt (mul_pos hdR hkR))
+    have hraise : |f (Fin.cons t z')|
+        ≤ ((K / lam) * ε ^ (((d : ℝ) * (k : ℝ))⁻¹)) ^ (d * k) := by
+      have h1 : (|f (Fin.cons t z')| ^ (((d : ℝ) * (k : ℝ))⁻¹)) ^ (d * k)
+          ≤ ((K / lam) * ε ^ (((d : ℝ) * (k : ℝ))⁻¹)) ^ (d * k) :=
+        pow_le_pow_left₀ hval hdiv _
+      rwa [← Real.rpow_natCast (|f (Fin.cons t z')| ^ (((d : ℝ) * (k : ℝ))⁻¹)) (d * k),
+        ← Real.rpow_mul (abs_nonneg _), hexp1, Real.rpow_one] at h1
+    refine le_trans hraise (le_of_eq ?_)
+    rw [mul_pow, hMcoef, ← Real.rpow_natCast (ε ^ (((d : ℝ) * (k : ℝ))⁻¹)) (d * k),
+      ← Real.rpow_mul hε.le, hexp1, Real.rpow_one]
+  -- the one-dimensional estimate on the line through `z`
+  obtain ⟨F, hF0, hFc, hFb⟩ := H.line z'
+  set a₁ : ℝ := x₀ 0 - r with ha₁
+  set b₁ : ℝ := x₀ 0 + r with hb₁
+  have hballIoo : ball (x₀ 0) r = Ioo a₁ b₁ := by rw [Real.ball_eq_Ioo, ha₁, hb₁]
+  have ha₁b₁ : a₁ < b₁ := by rw [ha₁, hb₁]; linarith
+  have hlineV : Ioo a₁ b₁ ⊆ {t | (Fin.cons t z' : Fin (d + 1) → ℝ) ∈ V} := by
+    intro t ht
+    exact hsub ((cons_mem_ball hr).mpr ⟨by rw [hballIoo]; exact ht, hz'mem⟩)
+  set ε' : ℝ := 2 * Mcoef * ε with hε'
+  have hε'pos : 0 < ε' := by rw [hε']; positivity
+  have hEsub : E ⊆ {t ∈ Ioo a₁ b₁ | |F 0 t| < ε'} := by
+    intro t ht
+    refine ⟨by rw [← hballIoo]; exact ht.1, ?_⟩
+    rw [hF0]
+    have := hsmall t ht
+    have hpos : 0 < Mcoef * ε := by positivity
+    rw [hε']
+    linarith
+  have hCest := hC (Ioo a₁ b₁) F ordConnected_Ioo (IsDerivChain.mono hFc hlineV)
+    (fun t ht => (hFb t (hlineV ht)).1) (fun t ht => (hFb t (hlineV ht)).2)
+    a₁ b₁ ha₁b₁ (subset_refl _) ε' hε'pos (z 0) (by rw [← hballIoo]; exact hz0mem)
+  have hFz : F 0 (z 0) = f z := by rw [hF0, hz', Fin.cons_self_tail]
+  rw [hFz, ← hszdef] at hCest
+  have hEle : eE ≤ (volume {t ∈ Ioo a₁ b₁ | |F 0 t| < ε'}).toReal := by
+    refine ENNReal.toReal_mono ?_ (measure_mono hEsub)
+    refine ne_top_of_le_ne_top ?_ (measure_mono fun t ht => ht.1)
+    rw [Real.volume_Ioo]
+    exact ENNReal.ofReal_ne_top
+  have hba : b₁ - a₁ = b := by rw [ha₁, hb₁, hb]; ring
+  rw [hba] at hCest
+  -- combine
+  have hcomb : (σ - lam) * sz ^ ((k : ℝ)⁻¹) ≤ C * ε' ^ ((k : ℝ)⁻¹) := by
+    have h1 : ((σ - lam) * sz ^ ((k : ℝ)⁻¹)) * b ≤ (C * ε' ^ ((k : ℝ)⁻¹)) * b := by
+      calc ((σ - lam) * sz ^ ((k : ℝ)⁻¹)) * b = ((σ - lam) * b) * sz ^ ((k : ℝ)⁻¹) := by ring
+        _ ≤ eE * sz ^ ((k : ℝ)⁻¹) :=
+            mul_le_mul_of_nonneg_right hfat (Real.rpow_nonneg hsznn _)
+        _ ≤ (volume {t ∈ Ioo a₁ b₁ | |F 0 t| < ε'}).toReal * sz ^ ((k : ℝ)⁻¹) :=
+            mul_le_mul_of_nonneg_right hEle (Real.rpow_nonneg hsznn _)
+        _ ≤ C * ε' ^ ((k : ℝ)⁻¹) * b := hCest
+    exact le_of_mul_le_mul_right h1 hbpos
+  have hexp2 : ((d * k : ℕ) : ℝ) * (k : ℝ)⁻¹ = (d : ℝ) := by
+    push_cast
+    field_simp
+  have hMc : Mcoef ^ ((k : ℝ)⁻¹) = (K / lam) ^ d := by
+    rw [hMcoef, ← Real.rpow_natCast (K / lam) (d * k),
+      ← Real.rpow_mul (div_pos hKpos hlampos).le, hexp2, Real.rpow_natCast]
+  have hε'pow : ε' ^ ((k : ℝ)⁻¹) = 2 ^ ((k : ℝ)⁻¹) * (K / lam) ^ d * ε ^ ((k : ℝ)⁻¹) := by
+    rw [hε', Real.mul_rpow (mul_nonneg (by norm_num) hMcoefpos.le) hε.le,
+      Real.mul_rpow (by norm_num) hMcoefpos.le, hMc]
+  have hmain : lam ^ d * (σ - lam) * sz ^ ((k : ℝ)⁻¹)
+      ≤ C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ε ^ ((k : ℝ)⁻¹) := by
+    have hlamd : (0:ℝ) < lam ^ d := pow_pos hlampos d
+    have hlamne : lam ≠ 0 := ne_of_gt hlampos
+    have h2 := mul_le_mul_of_nonneg_left hcomb hlamd.le
+    rw [hε'pow] at h2
+    have h3 : lam ^ d * (C * (2 ^ ((k : ℝ)⁻¹) * (K / lam) ^ d * ε ^ ((k : ℝ)⁻¹)))
+        = C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ε ^ ((k : ℝ)⁻¹) := by
+      rw [div_pow]
+      field_simp
+    rw [h3] at h2
+    calc lam ^ d * (σ - lam) * sz ^ ((k : ℝ)⁻¹)
+        = lam ^ d * ((σ - lam) * sz ^ ((k : ℝ)⁻¹)) := by ring
+      _ ≤ C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ε ^ ((k : ℝ)⁻¹) := h2
+  have hfinal := step_endgame hd hk hCpos hKpos hσpos hszpos hε hlam hmain
+  rw [hMveq]
+  calc σ * b ^ (d + 1) * sz ^ α = (σ * sz ^ α) * b ^ (d + 1) := by ring
+    _ ≤ ((C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ((d : ℝ) + 1) ^ (d + 1) / (d : ℝ) ^ d)
+          ^ (((d : ℝ) + 1)⁻¹) * ε ^ α) * b ^ (d + 1) :=
+        mul_le_mul_of_nonneg_right hfinal hbd.le
+    _ = (C * 2 ^ ((k : ℝ)⁻¹) * K ^ d * ((d : ℝ) + 1) ^ (d + 1) / (d : ℝ) ^ d)
+          ^ (((d : ℝ) + 1)⁻¹) * ε ^ α * b ^ (d + 1) := by ring
+
+
+/-! ### Lemma 3.3 -/
+
+/-- The cube estimate holds in every dimension `d ≥ 1`, with a constant depending only on
+`d`, `k`, `A₁` and `A₂`. -/
+theorem exists_cubeEstimate {d k : ℕ} (hd : 1 ≤ d) (hk : 1 ≤ k) {A₁ A₂ : ℝ} (hA₁ : 0 ≤ A₁)
+    (hA₂ : 0 < A₂) : ∃ K : ℝ, 0 < K ∧ CubeEstimate d k A₁ A₂ K := by
+  induction d, hd using Nat.le_induction with
+  | base => exact cubeEstimate_one hk hA₁ hA₂
+  | succ n hn ih =>
+      obtain ⟨K, hKpos, hK⟩ := ih
+      exact cubeEstimate_succ hn hk hA₁ hA₂ hKpos hK
+
+/-- **Lemma 3.3.**  A function on an open subset of `ℝ^d` whose pure coordinate derivatives of
+order `k` are bounded above by `A₁` and below by `A₂ > 0` in absolute value is
+`(K, 1/dk)`-good there, with `K` depending only on `d`, `k`, `A₁` and `A₂`. -/
+theorem exists_isGood_of_sandwichedChains {d k : ℕ} (hd : 1 ≤ d) (hk : 1 ≤ k) {A₁ A₂ : ℝ}
+    (hA₁ : 0 ≤ A₁) (hA₂ : 0 < A₂) :
+    ∃ K : ℝ, 0 < K ∧ ∀ (V : Set (Fin d → ℝ)) (f : (Fin d → ℝ) → ℝ),
+      SandwichedChains k V f A₁ A₂ → IsGood K (((d : ℝ) * (k : ℝ))⁻¹) f V := by
+  obtain ⟨K, hKpos, hK⟩ := exists_cubeEstimate hd hk hA₁ hA₂
+  refine ⟨K, hKpos, fun V f H => isGood_of_toReal ?_⟩
+  intro x₀ r hr hsub ε hε z hz
+  have hmain := hK V f H x₀ r hr hsub ε hε z hz
+  have hvol : ((2 * r) ^ d : ℝ) = (volume (ball x₀ r)).toReal := by
+    rw [volume_ball_pow hr, ENNReal.toReal_ofReal (pow_nonneg (by linarith) d)]
+  rwa [hvol] at hmain
 
 end GaloisForLFunctions.HTGeometry.KleinbockMargulis

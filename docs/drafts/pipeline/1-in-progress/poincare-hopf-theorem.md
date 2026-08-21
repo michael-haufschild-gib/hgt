@@ -361,9 +361,18 @@ That is the gate for the whole of Stage IV.  Its proof needs, in order:
   **`homologyMap_singMap_eq_of_homotopy`** : homotopic maps induce the same map on the homology of
   the concrete singular chain complex.
 
-- IV.4 remaining: the second isomorphism theorem identifying `C^{A,Zᶜ}/C(A)` with the pair complex
-  of `(Zᶜ, A ∩ Zᶜ)`, and — only if a Mayer–Vietoris route is preferred to the pair route for
-  `H_*(Sⁿ)` — the submodule sequence `0 → C(A∩B) → C(A) ⊕ C(B) → C(A)+C(B) → 0`;
+- **IV.4 is complete.**  `PointHomology` computes the singular chain complex of a one-point space
+  (the boundary is multiplication by `∑_{i<n+1}(-1)^i`, so the complex is exact in every positive
+  degree) and deduces **`isZero_homology_of_homotopy_const`**: a space contractible to a point has
+  no homology in positive degrees.  `PairSequence` identifies the chains of a subspace with the
+  chains supported in it (`subspaceComplexIso`) and proves
+  **`isIso_connecting_of_homotopy_const`**: in a contractible space the connecting map of a pair is
+  an isomorphism in degrees ≥ 2.  `ExcisionPair` adds `pairSub`/`pairComplex` (the relative complex
+  of `S ⊆ T`) and the second isomorphism theorem — injectivity because
+  `C(Zᶜ) ∩ C(A) = C(A ∩ Zᶜ)`, surjectivity because `C^{A,Zᶜ} = C(A) + C(Zᶜ)` — giving
+
+  **`isIso_homologyMap_excision`** : if `closure Z ⊆ interior A` then the relative homology of
+  `(Zᶜ, A ∩ Zᶜ)` is the relative homology of `(X, A)`.
 - IV.5 `H_*(Sⁿ)` and `H_*(Dⁿ, Sⁿ⁻¹)`;
 - IV.6 Morse theory: sublevel sets, handle attachment, gradient flow retractions, and
   `χ(M) = ∑ (−1)^λ`.

@@ -23,7 +23,7 @@ H1, H2 / Baker's conjecture).
 | Theorem A | a.e. nondegenerate ⟹ strongly extremal | | TODO |
 | Lemma 3.1 | (a) `|f|`, (b) `λf`, (c) `sup_i|f_i|` stay `(C,α)`-good | `Good.lean` `isGood_abs_iff`, `IsGood.const_mul`, `IsGood.sup` | **DONE** |
 | Prop 3.2 | `deg f ≤ k` ⟹ `(2k(k+1)^{1/k},1/k)`-good on ℝ | `PolynomialGood.lean` `isGood_polynomial` | **DONE** |
-| Lemma 3.3 (+3.3.1, 3.3.2) | `C^k` derivative-sandwich ⟹ cube estimate `(3.5)` | `KleinbockMargulis/SmoothGood.lean` | TODO |
+| Lemma 3.3 (+3.3.1, 3.3.2) | `C^k` derivative-sandwich ⟹ cube estimate `(3.5)` | `SmoothGoodOne.lean` `exists_good_const_one_dim`, `SmoothGoodCube.lean` `exists_isGood_of_sandwichedChains` | **DONE** |
 | Prop 3.4 | nondegenerate point ⟹ all linear combos of `1,f_1,…,f_n` are `(C,1/dl)`-good near it | `KleinbockMargulis/Nondegenerate.lean` | TODO |
 | Theorem 4.1 | measure of unmarked points `≤ kC(3^d N_d)^k (ε/ρ)^α |B|` | `Marked.lean` `measure_not_marked_le` | **DONE** |
 | Lemmas 4.2–4.6 | supporting | `Marked.lean` | **DONE** |
@@ -85,3 +85,13 @@ paper's `C_{k,A₁,A₂} = k(k+1)((A₁/A₂)(k+1)(2k^k+1))^{1/k}`; only the dep
   theorem, Lagrange interpolation remainder — all for a `C^k` derivative chain, so no `C^∞`
   hypothesis is needed), `CutInterval.lean` (level sets of a chain with nonvanishing top member
   are small; the `|Z|+1`-interval counting estimate), `SmoothGoodOne.lean` (Sublemma 3.3.1 (a)).
+- 2026-08-21 — Lemma 3.3 complete.  `SmoothGoodOne.lean` closes the one-dimensional case
+  (Sublemma 3.3.1 (a), (b) and the `τ`-optimisation, packaged as `exists_good_const_one_dim`);
+  `SmoothGoodCube.lean` adds `SandwichedChains` (the Lean form of `(3.4≤)`, `(3.4≥)` for a `C^k`
+  function: a `k`-fold derivative chain along every coordinate line with the top member between
+  `A₂` and `A₁`), Fubini in the first coordinate, Sublemma 3.3.2, the induction step with the
+  `λ = σd/(d+1)` optimisation, and `exists_isGood_of_sandwichedChains`.  The induction is run in
+  the *pointwise* form of the estimate, which lets the same point `z` be used on the face and on
+  the line; the paper's use of Lemma 3.1(c) on the face-supremum function is therefore avoided.
+  Both modules compile with zero warnings and are wired into `GaloisForLFunctions.HTGeometry`.
+  Remaining: Prop 3.4, Prop 2.3, Theorem A, Theorem 5.3, Theorem B.

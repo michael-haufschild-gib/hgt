@@ -56,6 +56,42 @@ noncomputable def cyclicSkewC {L : Type*} [CommRing L] (sigma : L ≃+* L) (a : 
     CyclicSkewPolynomial L sigma :=
   SkewMonoidAlgebra.single 1 a
 
+/-- A power of the skew variable is the corresponding single-term skew polynomial. -/
+theorem cyclicSkewX_pow_eq_single {L : Type*} [CommRing L] (sigma : L ≃+* L) (m : ℕ) :
+    cyclicSkewX sigma ^ m = SkewMonoidAlgebra.single (ofAdd m) 1 := by
+  induction m with
+  | zero =>
+    rfl
+  | succ m ih =>
+    rw [pow_succ, ih]
+    letI : MulSemiringAction (Multiplicative ℕ) L := cyclicSkewAction sigma
+    unfold cyclicSkewX
+    have h :
+        (SkewMonoidAlgebra.single (ofAdd m) (1 : L) *
+          SkewMonoidAlgebra.single (ofAdd 1) 1 :
+          SkewMonoidAlgebra L (Multiplicative ℕ)) =
+        SkewMonoidAlgebra.single (ofAdd (m + 1)) 1 := by
+      rw [SkewMonoidAlgebra.single_mul_single]
+      congr 1
+      simp
+    exact h
+
+/-- A skew monomial is its coefficient followed by the corresponding variable power. -/
+theorem cyclicSkewMonomial_eq {L : Type*} [CommRing L] (sigma : L ≃+* L) (m : ℕ) (b : L) :
+    SkewPolynomial.monomial m b = cyclicSkewC sigma b * cyclicSkewX sigma ^ m := by
+  rw [cyclicSkewX_pow_eq_single]
+  letI : MulSemiringAction (Multiplicative ℕ) L := cyclicSkewAction sigma
+  unfold cyclicSkewC
+  have h :
+      (SkewMonoidAlgebra.single 1 b * SkewMonoidAlgebra.single (ofAdd m) 1 :
+        SkewMonoidAlgebra L (Multiplicative ℕ)) =
+      SkewPolynomial.monomial m b := by
+    rw [SkewMonoidAlgebra.single_mul_single]
+    congr 1
+    · simp
+    · simp
+  exact h.symm
+
 /-- The relation imposed by a cyclic-algebra parameter. -/
 noncomputable def cyclicRelation {L : Type*} [CommRing L] (sigma : L ≃+* L)
     (n : ℕ) (a : L) : CyclicSkewPolynomial L sigma :=
@@ -86,6 +122,16 @@ noncomputable def cyclicAlgebraC {L : Type*} [CommRing L] (sigma : L ≃+* L)
     (n : ℕ) (a b : L) : CyclicAlgebra sigma n a :=
   Ideal.Quotient.mk _ (cyclicSkewC sigma b)
 
+/-- The quotient image of a skew monomial is its coefficient times a variable power. -/
+theorem cyclicAlgebraMonomial_eq {L : Type*} [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (a b : L) (m : ℕ) :
+    (Ideal.Quotient.mk (cyclicRelationIdeal sigma n a) (SkewPolynomial.monomial m b) :
+      CyclicAlgebra sigma n a) =
+      cyclicAlgebraC sigma n a b * cyclicAlgebraX sigma n a ^ m := by
+  rw [cyclicSkewMonomial_eq]
+  rw [map_mul, map_pow]
+  rfl
+
 /-- Constants multiply as their coefficients do in the skew polynomial carrier. -/
 theorem cyclicSkewC_mul (L : Type*) [CommRing L] (sigma : L ≃+* L)
     (b c : L) : cyclicSkewC sigma b * cyclicSkewC sigma c = cyclicSkewC sigma (b * c) := by
@@ -107,6 +153,13 @@ theorem cyclicAlgebraC_mul (L : Type*) [CommRing L] (sigma : L ≃+* L)
     Ideal.Quotient.mk _ (cyclicSkewC sigma (b * c))
   rw [← map_mul]
   exact congrArg (Ideal.Quotient.mk _) (cyclicSkewC_mul L sigma b c)
+
+/-- Coefficients commute in the cyclic-algebra quotient. -/
+theorem cyclicAlgebraC_comm (L : Type*) [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (a b c : L) :
+    cyclicAlgebraC sigma n a b * cyclicAlgebraC sigma n a c =
+      cyclicAlgebraC sigma n a c * cyclicAlgebraC sigma n a b := by
+  rw [cyclicAlgebraC_mul, cyclicAlgebraC_mul, mul_comm]
 
 /-- The coefficient one is the quotient-ring unit. -/
 theorem cyclicAlgebraC_one (L : Type*) [CommRing L] (sigma : L ≃+* L)
@@ -189,5 +242,23 @@ theorem cyclicAlgebraX_pow_mul_normalForm (L : Type*) [CommRing L]
     rw [ih, ← mul_assoc, cyclicAlgebraC_mul]
     rw [pow_succ]
     rw [mul_comm a (a ^ q)]
+
+/-- A quotient monomial has a representative with variable exponent reduced modulo `n`. -/
+theorem cyclicAlgebraMonomial_normalForm {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n q r : ℕ) (a b : L) :
+    (Ideal.Quotient.mk (cyclicRelationIdeal sigma n a)
+      (SkewPolynomial.monomial (n * q + r) b) : CyclicAlgebra sigma n a) =
+      cyclicAlgebraC sigma n a (b * a ^ q) * cyclicAlgebraX sigma n a ^ r := by
+  rw [cyclicAlgebraMonomial_eq]
+  rw [cyclicAlgebraX_pow_mul_normalForm, ← mul_assoc, cyclicAlgebraC_mul]
+
+/-- Every quotient monomial has a representative whose variable exponent is `m % n`. -/
+theorem cyclicAlgebraMonomial_mod_normalForm {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n : ℕ) (a b : L) (m : ℕ) :
+    (Ideal.Quotient.mk (cyclicRelationIdeal sigma n a) (SkewPolynomial.monomial m b) :
+      CyclicAlgebra sigma n a) =
+      cyclicAlgebraC sigma n a (b * a ^ (m / n)) * cyclicAlgebraX sigma n a ^ (m % n) := by
+  conv_lhs => rw [← Nat.div_add_mod m n]
+  exact cyclicAlgebraMonomial_normalForm sigma n (m / n) (m % n) a b
 
 end GaloisForLFunctions.HTGeometry.ABHN

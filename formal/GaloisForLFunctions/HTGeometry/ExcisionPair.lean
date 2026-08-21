@@ -108,4 +108,19 @@ instance isIso_excPairQuot_f (k : ℕ) : IsIso (((excPairHom R A Z).quotMap).f k
 instance isIso_excPairQuot : IsIso ((excPairHom R A Z).quotMap) :=
   HomologicalComplex.Hom.isIso_of_components _
 
+/-- **Excision for pairs.**  If the closure of `Z` lies in the interior of `A`, the relative
+homology of `(Zᶜ, A ∩ Zᶜ)` is the relative homology of `(X, A)`. -/
+theorem isIso_homologyMap_excision (hZ : closure Z ⊆ interior A) (n : ℕ) :
+    IsIso (HomologicalComplex.homologyMap
+      ((excPairHom R A Z).quotMap ≫ (excHom R A Z).quotMap) n) := by
+  haveI h1 : IsIso (HomologicalComplex.homologyMap ((excPairHom R A Z).quotMap) n) :=
+    inferInstanceAs (IsIso ((HomologicalComplex.homologyFunctor (ModuleCat R)
+      (ComplexShape.down ℕ) n).map ((excPairHom R A Z).quotMap)))
+  haveI h2 : IsIso (HomologicalComplex.homologyMap ((excHom R A Z).quotMap) n) := by
+    haveI := quasiIso_excHom_quotMap R A Z hZ
+    rw [← quasiIsoAt_iff_isIso_homologyMap]
+    infer_instance
+  rw [HomologicalComplex.homologyMap_comp]
+  infer_instance
+
 end GaloisForLFunctions.HTGeometry

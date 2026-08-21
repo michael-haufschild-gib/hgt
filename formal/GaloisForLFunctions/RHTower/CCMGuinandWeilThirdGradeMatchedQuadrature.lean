@@ -336,7 +336,7 @@ def ccmThirdGradeCesaroIncomingPolarTail (b H : ℝ) : ℝ :=
       ccmGuinandWeilThirdGradeCesaroTriangularWeight H h
 
 private theorem ccmThirdGradeCesaro_primeSum_eq_matchedBlock_add_cells
-    {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
+    {b H : ℝ} (hb : 0 < b) :
     (∑ n ∈ Finset.Icc 2 ⌊Real.exp H⌋₊,
         if b < Real.log n then
           criticalMellinAtomWeight n *
@@ -411,7 +411,7 @@ theorem ccmGuinandWeilPrimePolarTriangularWindow_eq_matchedBlock_add_coverageSea
         ccmThirdGradeCesaroMatchedCoverageSeam b H -
           ccmThirdGradeCesaroIncomingPolarTail b H := by
   rw [ccmGuinandWeilPrimePolarWeightedWindow,
-    ccmThirdGradeCesaro_primeSum_eq_matchedBlock_add_cells hb hbH,
+    ccmThirdGradeCesaro_primeSum_eq_matchedBlock_add_cells hb,
     integral_thirdGradeCesaroTriangularWeight_mul_two_cosh_eq_split hb hbH]
   unfold ccmThirdGradeCesaroMatchedCoverageSeam
     ccmThirdGradeCesaroIncomingPolarTail
@@ -515,5 +515,90 @@ theorem abs_ccmThirdGradeCesaroIncomingPolarTail_le
     _ ≤ (32 / b ^ 3) * 2 :=
       mul_le_mul_of_nonneg_left hexpLe (by positivity)
     _ = 64 / b ^ 3 := by ring
+
+/-- Uniform boundedness of the literal triangular prime--polar window is exactly uniform
+boundedness of the outgoing matched-cell coverage seam. All other terms have explicit fixed-wall
+bounds. This equivalence rules out treating local matched quadrature as completion of CCM-FU. -/
+theorem uniformlyBounded_primePolarTriangularWindow_iff_matchedCoverageSeam
+    {b : ℝ} (hb : 0 < b) :
+    (∃ C : ℝ, ∀ H : ℝ, b ≤ H →
+      |ccmGuinandWeilPrimePolarWeightedWindow b H
+        (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)| ≤ C) ↔
+    (∃ C : ℝ, ∀ H : ℝ, b ≤ H →
+      |ccmThirdGradeCesaroMatchedCoverageSeam b H| ≤ C) := by
+  let L : ℝ :=
+    (ccmThirdGradeCesaroTriangularLipschitzConstant b : ℝ) / 2 *
+      ∑' n : ℕ, criticalMellinAtomWeight n ^ 2 /
+        Real.exp (Real.log n / 2)
+  let I : ℝ := 64 / b ^ 3
+  constructor
+  · rintro ⟨C, hC⟩
+    refine ⟨C + L + I, ?_⟩
+    intro H hbH
+    let W := ccmGuinandWeilPrimePolarWeightedWindow b H
+      (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)
+    let B := ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock b H
+    let S := ccmThirdGradeCesaroMatchedCoverageSeam b H
+    let J := ccmThirdGradeCesaroIncomingPolarTail b H
+    have hid :=
+      ccmGuinandWeilPrimePolarTriangularWindow_eq_matchedBlock_add_coverageSeam_sub_incoming
+        hb hbH
+    have hW : |W| ≤ C := hC H hbH
+    have hB := abs_ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock_le hb hbH
+    have hJ := abs_ccmThirdGradeCesaroIncomingPolarTail_le hb hbH
+    change |B| ≤ L at hB
+    change |J| ≤ I at hJ
+    change W = B + S - J at hid
+    have hSid : S = W - B + J := by linarith
+    have htri1 : |W - B + J| ≤ |W - B| + |J| := abs_add_le _ _
+    have htri2 : |W - B| ≤ |W| + |B| := abs_sub _ _
+    change |S| ≤ C + L + I
+    rw [hSid]
+    linarith
+  · rintro ⟨C, hC⟩
+    refine ⟨L + C + I, ?_⟩
+    intro H hbH
+    let W := ccmGuinandWeilPrimePolarWeightedWindow b H
+      (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)
+    let B := ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock b H
+    let S := ccmThirdGradeCesaroMatchedCoverageSeam b H
+    let J := ccmThirdGradeCesaroIncomingPolarTail b H
+    have hid :=
+      ccmGuinandWeilPrimePolarTriangularWindow_eq_matchedBlock_add_coverageSeam_sub_incoming
+        hb hbH
+    have hS : |S| ≤ C := hC H hbH
+    have hB := abs_ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock_le hb hbH
+    have hJ := abs_ccmThirdGradeCesaroIncomingPolarTail_le hb hbH
+    change |B| ≤ L at hB
+    change |J| ≤ I at hJ
+    change W = B + S - J at hid
+    have htri1 : |B + S - J| ≤ |B + S| + |J| := abs_sub _ _
+    have htri2 : |B + S| ≤ |B| + |S| := abs_add_le _ _
+    change |W| ≤ L + C + I
+    rw [hid]
+    linarith
+
+/-- RH-bearing anchored completed-error moment is uniformly bounded exactly when the newly
+isolated outgoing matched-coverage seam is uniformly bounded. -/
+theorem uniformlyBounded_thirdGradeCesaroAnchoredErrorMoment_iff_matchedCoverageSeam
+    {b : ℝ} (hb : 0 < b) :
+    (∃ C : ℝ, ∀ H : ℝ, b ≤ H →
+      |ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H| ≤ C) ↔
+    (∃ C : ℝ, ∀ H : ℝ, b ≤ H →
+      |ccmThirdGradeCesaroMatchedCoverageSeam b H| ≤ C) := by
+  rw [← uniformlyBounded_primePolarTriangularWindow_iff_matchedCoverageSeam hb]
+  constructor
+  · rintro ⟨C, hC⟩
+    refine ⟨C, ?_⟩
+    intro H hbH
+    rw [← ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_eq_primePolarTriangularWindow
+      hb hbH]
+    exact hC H hbH
+  · rintro ⟨C, hC⟩
+    refine ⟨C, ?_⟩
+    intro H hbH
+    rw [ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_eq_primePolarTriangularWindow
+      hb hbH]
+    exact hC H hbH
 
 end GaloisForLFunctions.RHTower

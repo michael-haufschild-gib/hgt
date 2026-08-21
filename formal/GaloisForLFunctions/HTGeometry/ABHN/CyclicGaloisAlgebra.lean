@@ -58,4 +58,15 @@ theorem cyclicGaloisAlgebraX_mul_baseC (a b : K) :
   rw [cyclicAlgebraX_mul_cyclicAlgebraC]
   simp
 
+/-- Every power of the cyclic generator commutes with a base-field coefficient. -/
+theorem cyclicGaloisAlgebraX_pow_mul_baseC (a b : K) (m : ℕ) :
+    cyclicGaloisAlgebraX K L a ^ m * cyclicGaloisAlgebraC K L a (algebraMap K L b) =
+      cyclicGaloisAlgebraC K L a (algebraMap K L b) * cyclicGaloisAlgebraX K L a ^ m := by
+  induction m with
+  | zero =>
+    simp
+  | succ m ih =>
+    rw [pow_succ, mul_assoc, cyclicGaloisAlgebraX_mul_baseC]
+    rw [← mul_assoc, ih, mul_assoc]
+
 end GaloisForLFunctions.HTGeometry.ABHN
