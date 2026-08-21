@@ -51,6 +51,13 @@ theorem riemannZeta_one_sub_eq_sub_mul_integral_fract {s : ℂ} (hs : s.re < 1) 
   rw [show (1 : ℂ) - s - 1 = -s by ring] at h
   exact h
 
+/-- **At a zero the Mellin integral of the fractional part is a pure pole term.**  Equation `(1)`
+with `ζ(s) = 0` and `s ≠ 0` reduces to `∫_1^∞ {x} x^(-s-1) dx = 1/(s-1)`. -/
+theorem integral_Ioi_one_fract_cpow_of_zeta_eq_zero {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1)
+    (hz : riemannZeta s = 0) :
+    (∫ x in Ioi (1 : ℝ), ((Int.fract x : ℝ) : ℂ) * (x : ℂ) ^ (-(s + 1))) = 1 / (s - 1) := by
+  rw [integral_Ioi_one_fract_cpow_of_re_pos hs hs1, hz, zero_div, sub_zero]
+
 /-! ## Polar split of the kernel -/
 
 theorem fract_cpow_re {s : ℂ} {x : ℝ} (hx : 0 < x) :

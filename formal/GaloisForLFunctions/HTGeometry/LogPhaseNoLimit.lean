@@ -1,5 +1,6 @@
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Order.Filter.AtTopBot.Basic
@@ -151,5 +152,13 @@ theorem not_tendsto_rpow_mul_logHarmonic_atTop {A B b d L : ℝ} (hb : b ≠ 0)
     refine this.congr fun n => ?_
     rw [abs_mul, abs_of_pos (Real.exp_pos _)]
   exact not_tendsto_nhds_of_tendsto_atTop hgrow _ habs
+
+/-! ## Positive powers have no limit either -/
+
+/-- A positive real power has no finite limit at `+∞`. -/
+theorem not_exists_tendsto_rpow_atTop {d : ℝ} (hd : 0 < d) :
+    ¬ ∃ L : ℝ, Tendsto (fun N : ℝ => N ^ d) atTop (𝓝 L) := by
+  rintro ⟨L, hL⟩
+  exact not_tendsto_nhds_of_tendsto_atTop (tendsto_rpow_atTop hd) L hL
 
 end GaloisForLFunctions.HTGeometry

@@ -30,11 +30,21 @@ theorem exists_terminal_block_real_derivative_coordinate
       ∃ beforeBlockEdges afterBlockEdges : List (Fin n × Fin n),
       ∃ beforeBlockGates afterBlockGates :
         List (Matrix.specialUnitaryGroup (Bool × Bool) ℂ),
+        blockGates.length = edges.length ∧
+        (∀ U ∈ blockGates, IsBoolTwoQubitPauliClifford
+          (U : Matrix (Bool × Bool) (Bool × Bool) ℂ)) ∧
         edges = beforeBlockEdges ++ ((cone.mergePlan.terminal, root) :: afterBlockEdges) ∧
         blockGates = beforeBlockGates ++ (terminalGate :: afterBlockGates) ∧
         beforeBlockGates.length = beforeBlockEdges.length ∧
         afterBlockGates.length = afterBlockEdges.length ∧
         (∀ U ∈ afterBlockGates, U = 1) ∧
+        ∃ c : ℂ, c ≠ 0 ∧
+          ((edgeListBlockContraction edges blockGates :
+            Matrix (Fin n → Bool) (Fin n → Bool) ℂ) * finitePauliMatrix P *
+            Matrix.conjTranspose
+              (edgeListBlockContraction edges blockGates :
+                Matrix (Fin n → Bool) (Fin n → Bool) ℂ) =
+            c • finitePauliMatrix (Function.update (fun _ => none) root (some 2))) ∧
         (∀ t : ℝ,
           (beforeBlockGates ++ terminalPauliGatePath terminalGate t :: afterBlockGates).length =
             edges.length) ∧
@@ -176,8 +186,8 @@ theorem exists_terminal_block_real_derivative_coordinate
     rw [List.zipWith_append hBeforeLength.symm]
     rfl
   refine ⟨blockGates, terminalGate, beforeBlockEdges, afterBlockEdges,
-    beforeBlockGates, afterBlockGates, hBlockEdges, hBlockGates, hBeforeLength,
-    hAfterLength, hSuffixIdentity, ?_, ?_, ?_⟩
+    beforeBlockGates, afterBlockGates, hBlockLength, hBlockClifford, hBlockEdges,
+    hBlockGates, hBeforeLength, hAfterLength, hSuffixIdentity, c, hc, hTransport, ?_, ?_, ?_⟩
   · intro t
     simp [hBlockEdges, hBeforeLength, hAfterLength]
   · simp [hBlockGates]

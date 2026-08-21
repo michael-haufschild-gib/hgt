@@ -301,3 +301,41 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
   What remains of B1: exhibiting `R_Λ = P̂_Λ P_Λ` and `U(h)` concretely as `connesKernelOperator`s
   over the additive Haar measure of `K`, i.e. the Schwartz-kernel identification (19)/(21).
   All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 10 (**§V (21) identified; the cut-off trace in closed form**).
+  * `ConnesConvolutionKernelField` — `connesL2Translate` (translation on `L²(ℝ)`, via mathlib's
+    `DomAddAct` action: `connesL2Translate_ae`, `norm_connesL2Translate`,
+    `continuous_connesL2Translate`), then **§V (21)**: `connesConvField`,
+    `memLp_connesConvField`, `connesConvKernel`, and
+    `connesKernelOperator_convKernel_integral` — an operator of the shape "convolve with `k`,
+    then multiply by `a`" *is* a `connesKernelOperator` over the additive Haar measure of the
+    line, acting by `ξ ↦ a(x)·∫ conj(c(y−x)) ξ(y) dy`.  With `c(y) = conj ρ̂_Λ(−y)` and `a = ρ_Λ`
+    this is Connes' `r_Λ^t(x,y) = ρ_Λ(x) ρ̂_Λ(x−y)`.  Strong measurability of the field is exactly
+    the norm continuity of translation on `L²`; square integrability is `‖field x‖ = |a x|·‖c‖`.
+  * `ConnesConvolutionTrace` — `inner_connesL2Translate` (translation preserves the `L²` inner
+    product), `toDual_symm_connesConvField`, and the closed form
+    **`connes_trace_convKernel`**: `Trace(T_{a,c}† ∘ T_{b,d}) = ⟪d,c⟫ · ∫ b(x) conj(a(x)) dx`.
+    That is Connes' `∫∫ k(x,y) r^t(x,y) dx dy` evaluated for two convolution cut-off kernels.
+  All `#print axioms` clean.  §V's remaining gap is now only (19): `U(h)` is *not*
+  Hilbert–Schmidt, so its trace pairing against `R_Λ` needs the trace-class (not HS) kernel
+  theorem — the one genuinely missing analytic input of B1.
+
+- 2026-08-22 — Tier B batch 11 (**App I Lemma 2 closed at the archimedean place**).
+  Corpus search found `RHTower.ccmRationalArchimedeanLatticeTrace_poisson` (the scaled Poisson
+  identity `∑_n f(an) = a^{-1}∑_n f̂(n/a)` for Schwartz `f`) and
+  `ccmRationalArchimedeanSchwartz_lattice_summable`; both are reused, not rebuilt.
+  * `ConnesArchPeriodization` — `connesArchPunctured`, its summability, the zero-mode split, and
+    **App I (37)**: `connes_archPoisson_punctured`,
+    `a·∑_{n≠0} f(an) = ∑_{n≠0} f̂(n/a) + (−a f(0) + ∫f)`.  Then `connesArchPeriodization`
+    (`E(f)(a) = √a ∑_{n≠0} f(an)`) and **App I (38)**:
+    `connes_archPeriodization_reflect`, `E(f)(a) = E(f̂)(1/a)` on `𝒮(ℝ)_0`.
+  * `ConnesArchPeriodizationDecay` — `norm_connesArchPunctured_le` and **App I Lemma 2**:
+    `connes_archPeriodization_rapidDecay` (`a^k‖E(f)(a)‖ → 0` for every `k`, from App I (46)) and
+    `connes_archPeriodization_rapidDecay_zero` (the same at the other end, by the reflection).
+  This closes Lemma 2 — statement and proof — in the archimedean model `A = ℝ`, `k = ℤ`.  What is
+  left of it is only the adelic bookkeeping (39)-(45): the tensor splitting `f = f_0 ⊗ f_1`, the
+  compact-support confinement of the finite denominators, and the resulting lattice `Γ`.
+  All `#print axioms` clean; lint reports no error against any `Connes*` module.
+
+  CORRECTION to an earlier line in this log: B5's `V(f_n) → 1` is **not** open — it was closed on
+  2026-08-21 as `ConnesApproximateUnitStrong.connes_approxUnit_tendsto`.

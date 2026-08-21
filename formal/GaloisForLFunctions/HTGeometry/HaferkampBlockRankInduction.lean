@@ -192,6 +192,37 @@ theorem linearIndependent_haferkampUnitaryListCoordinateOutputs
   intro i
   exact haferkampUnitaryListCoordinateOutput_strip gates i (Z i) (P i) (c i) (hprefix i)
 
+/-- The preceding independence argument applies to any selected family of
+coordinates of a longer physical gate word.  The selected terminal gates of
+the BLC block assembly are such a family. -/
+theorem linearIndependent_haferkampSelectedUnitaryListCoordinateOutputs
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (gates : List (Matrix.unitaryGroup (Q → Bool) ℂ)) {T : ℕ}
+    (indices : Fin T → Fin gates.length)
+    (P : Fin T → Q → Option (Fin 3))
+    (hP : LinearIndependent ℂ (fun i => finitePauliMatrix (P i)))
+    (Z : Fin T → Matrix (Q → Bool) (Q → Bool) ℂ)
+    (c : Fin T → ℂ) (hc : ∀ i, c i ≠ 0)
+    (hprefix : ∀ i,
+      Matrix.conjTranspose
+          (((gates.take (indices i).1).reverse.prod :
+            Matrix.unitaryGroup (Q → Bool) ℂ) : Matrix (Q → Bool) (Q → Bool) ℂ) *
+        Matrix.conjTranspose (gates.get (indices i) : Matrix (Q → Bool) (Q → Bool) ℂ) *
+          Z i * (gates.get (indices i) : Matrix (Q → Bool) (Q → Bool) ℂ) *
+        (((gates.take (indices i).1).reverse.prod :
+          Matrix.unitaryGroup (Q → Bool) ℂ) : Matrix (Q → Bool) (Q → Bool) ℂ) =
+        c i • finitePauliMatrix (P i)) :
+    LinearIndependent ℂ (fun i =>
+      haferkampUnitaryListCoordinateOutput gates (indices i) (Z i)) := by
+  apply linearIndependent_of_left_smul_finitePauli P hP
+    (fun i => haferkampUnitaryListCoordinateOutput gates (indices i) (Z i))
+    (Matrix.conjTranspose
+      ((gates.reverse.prod : Matrix.unitaryGroup (Q → Bool) ℂ) :
+        Matrix (Q → Bool) (Q → Bool) ℂ)) c hc
+  intro i
+  exact haferkampUnitaryListCoordinateOutput_strip gates (indices i) (Z i)
+    (P i) (c i) (hprefix i)
+
 end
 
 end GaloisForLFunctions.HTGeometry

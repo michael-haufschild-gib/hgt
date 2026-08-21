@@ -29,14 +29,15 @@ namespace RHTower
 variable {s : ℂ}
 
 theorem zetaTrig_amplitude_ne_zero (h0 : 0 < s.re) : (-s.re) ^ 2 + s.im ^ 2 ≠ 0 := by
-  have : (0 : ℝ) < (-s.re) ^ 2 + s.im ^ 2 := by positivity
-  exact this.ne'
+  have h : (0 : ℝ) < (-s.re) ^ 2 + s.im ^ 2 := by nlinarith [sq_nonneg s.im, mul_pos h0 h0]
+  exact h.ne'
 
 theorem zetaTrig_shifted_amplitude_ne_zero (h1 : s.re < 1) :
     (-s.re + 1) ^ 2 + s.im ^ 2 ≠ 0 := by
-  have hne : -s.re + 1 ≠ 0 := by intro h; linarith
-  have : (0 : ℝ) < (-s.re + 1) ^ 2 + s.im ^ 2 := by positivity
-  exact this.ne'
+  have hpos : (0 : ℝ) < -s.re + 1 := by linarith
+  have h : (0 : ℝ) < (-s.re + 1) ^ 2 + s.im ^ 2 := by
+    nlinarith [sq_nonneg s.im, mul_pos hpos hpos]
+  exact h.ne'
 
 /-- **Truncated cosine integral, expanded over unit intervals.** -/
 theorem integral_one_to_succ_fract_rpow_cos (h0 : 0 < s.re) (h1 : s.re < 1) (m : ℕ) :

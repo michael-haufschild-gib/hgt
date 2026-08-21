@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisAlgebra
+import GaloisForLFunctions.HTGeometry.ABHN.BrauerFoundations
 
 /-!
 # Simple quadratic cyclic Galois algebras
@@ -67,8 +68,8 @@ theorem quadraticCyclicMatrix_base_comm (hdeg : Module.finrank K L = 2) (a : K) 
     simp [quadraticCyclicCoefficientMatrix, quadraticCyclicGeneratorMatrix, Matrix.mul_apply,
       hsq_apply, mul_comm]
 
-/-- The companion matrix satisfies the quadratic parameter relation. -/
 omit [FiniteDimensional K L] [IsGalois K L] in
+/-- The companion matrix satisfies the quadratic parameter relation. -/
 theorem quadraticCyclicMatrix_square (hdeg : Module.finrank K L = 2) (a : K) :
     quadraticCyclicGeneratorMatrix K L a ^ Module.finrank K L =
       quadraticCyclicCoefficientMatrix K L (algebraMap K L a) := by
@@ -130,8 +131,8 @@ theorem quadraticCyclicGaloisAlgebra_one_ne_zero (hdeg : Module.finrank K L = 2)
   rw [map_one, map_zero] at hmap
   exact one_ne_zero hmap
 
-/-- The bounded normal form in degree two has exactly the expected two coefficients. -/
 omit [FiniteDimensional K L] [IsGalois K L] in
+/-- The bounded normal form in degree two has exactly the expected two coefficients. -/
 theorem quadraticCyclicGaloisAlgebra_normalForm (hdeg : Module.finrank K L = 2) (a : K)
     (v : Fin (Module.finrank K L) → L) :
     let i0 : Fin (Module.finrank K L) := Fin.cast hdeg.symm 0
@@ -178,8 +179,8 @@ theorem quadraticCyclicGaloisGenerator_exists_not_fixed (hdeg : Module.finrank K
     simpa [hgen, hdeg] using cyclicGaloisGenerator_orderOf K L
   omega
 
-/-- Commuting a quadratic normal form with a coefficient isolates its nonconstant coefficient. -/
 omit [FiniteDimensional K L] [IsGalois K L] in
+/-- Commuting a quadratic normal form with a coefficient isolates its nonconstant coefficient. -/
 theorem quadraticCyclicGaloisAlgebra_commutator_normalForm (a : K) (c0 c1 b : L) :
     (cyclicGaloisAlgebraC K L a c0 +
         cyclicGaloisAlgebraC K L a c1 * cyclicGaloisAlgebraX K L a) *
@@ -304,5 +305,134 @@ theorem isSimpleRing_cyclicGaloisAlgebra_of_finrank_eq_two
         exact IsUnit.map _ (Ne.isUnit hd)
       · exact cyclicGaloisAlgebraX_isUnit K L a ha
     · exact hunit_mem
+
+/-- Every degree-two cohomological unit parameter has a simple raw quadratic cyclic algebra. -/
+theorem isSimpleRing_cyclicGaloisAlgebra_of_finrank_eq_two_unitParameter
+    (hdeg : Module.finrank K L = 2) (a : Additive Kˣ) :
+    IsSimpleRing (cyclicGaloisAlgebra K L (a.toMul : K)) :=
+  isSimpleRing_cyclicGaloisAlgebra_of_finrank_eq_two K L hdeg (a.toMul : K) a.toMul.ne_zero
+
+omit [IsGalois K L] in
+/-- A nonzero coefficient times the quadratic cyclic generator is a unit. -/
+theorem quadraticCyclicGaloisAlgebra_coefficient_mul_X_isUnit
+    (a : K) (ha : a ≠ 0) (d : L) (hd : d ≠ 0) :
+    IsUnit (cyclicGaloisAlgebraC K L a d * cyclicGaloisAlgebraX K L a) := by
+  apply IsUnit.mul
+  · change IsUnit (cyclicAlgebraCRingHom L (cyclicGaloisGenerator K L).toRingEquiv
+      (Module.finrank K L) (algebraMap K L a) d)
+    exact IsUnit.map _ (Ne.isUnit hd)
+  · exact cyclicGaloisAlgebraX_isUnit K L a ha
+
+/-- Every central element of a nonzero quadratic cyclic algebra comes from the base field. -/
+theorem quadraticCyclicGaloisAlgebra_center_exists_base
+    (hdeg : Module.finrank K L = 2) (a : K) (ha : a ≠ 0)
+    (x : cyclicGaloisAlgebra K L a)
+    (hx : ∀ y : cyclicGaloisAlgebra K L a, y * x = x * y) :
+    ∃ k : K, x = algebraMap K (cyclicGaloisAlgebra K L a) k := by
+  letI : Nontrivial (cyclicGaloisAlgebra K L a) :=
+    ⟨0, 1, (quadraticCyclicGaloisAlgebra_one_ne_zero K L hdeg a).symm⟩
+  let i0 : Fin (Module.finrank K L) := Fin.cast hdeg.symm 0
+  let i1 : Fin (Module.finrank K L) := Fin.cast hdeg.symm 1
+  obtain ⟨v, hv⟩ := cyclicGaloisAlgebraNormalFormLinearMap_surjective K L a x
+  have hform : cyclicGaloisAlgebraNormalFormLinearMap K L a v =
+      cyclicGaloisAlgebraC K L a (v i0) +
+        cyclicGaloisAlgebraC K L a (v i1) * cyclicGaloisAlgebraX K L a := by
+    simpa [i0, i1] using quadraticCyclicGaloisAlgebra_normalForm K L hdeg a v
+  have hxform : x = cyclicGaloisAlgebraC K L a (v i0) +
+      cyclicGaloisAlgebraC K L a (v i1) * cyclicGaloisAlgebraX K L a :=
+    hv.symm.trans hform
+  obtain ⟨b, hb⟩ := quadraticCyclicGaloisGenerator_exists_not_fixed K L hdeg
+  have hcomm : x * cyclicGaloisAlgebraC K L a b -
+      cyclicGaloisAlgebraC K L a b * x = 0 :=
+    sub_eq_zero.mpr (hx _).symm
+  have h1 : v i1 = 0 := by
+    by_contra h1
+    have hd : v i1 * (cyclicGaloisGenerator K L b - b) ≠ 0 :=
+      mul_ne_zero h1 (sub_ne_zero.mpr hb)
+    have hzero : cyclicGaloisAlgebraC K L a
+        (v i1 * (cyclicGaloisGenerator K L b - b)) * cyclicGaloisAlgebraX K L a = 0 := by
+      rw [hxform, quadraticCyclicGaloisAlgebra_commutator_normalForm] at hcomm
+      exact hcomm
+    have hu := quadraticCyclicGaloisAlgebra_coefficient_mul_X_isUnit K L a ha _ hd
+    rw [hzero] at hu
+    exact not_isUnit_zero hu
+  have hx0 : x = cyclicGaloisAlgebraC K L a (v i0) := by
+    rw [hxform, h1]
+    change (cyclicAlgebraCRingHom L (cyclicGaloisGenerator K L).toRingEquiv
+      (Module.finrank K L) (algebraMap K L a)) (v i0) +
+        (cyclicAlgebraCRingHom L (cyclicGaloisGenerator K L).toRingEquiv
+          (Module.finrank K L) (algebraMap K L a)) 0 * cyclicGaloisAlgebraX K L a = _
+    rw [map_zero, zero_mul, add_zero]
+    rfl
+  have hX : cyclicGaloisAlgebraX K L a * cyclicGaloisAlgebraC K L a (v i0) =
+      cyclicGaloisAlgebraC K L a (v i0) * cyclicGaloisAlgebraX K L a := by
+    rw [← hx0]
+    exact hx _
+  have hdiffEq : cyclicGaloisAlgebraC K L a (cyclicGaloisGenerator K L (v i0)) *
+      cyclicGaloisAlgebraX K L a =
+      cyclicGaloisAlgebraC K L a (v i0) * cyclicGaloisAlgebraX K L a := by
+    change cyclicAlgebraC (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+        (algebraMap K L a) (cyclicGaloisGenerator K L (v i0)) *
+        cyclicAlgebraX (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+          (algebraMap K L a) =
+      cyclicAlgebraC (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+        (algebraMap K L a) (v i0) *
+        cyclicAlgebraX (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+          (algebraMap K L a)
+    rw [← show (cyclicGaloisGenerator K L).toRingEquiv (v i0) =
+      cyclicGaloisGenerator K L (v i0) from rfl]
+    rw [← cyclicAlgebraX_mul_cyclicAlgebraC]
+    exact hX
+  have hfix : cyclicGaloisGenerator K L (v i0) = v i0 := by
+    by_contra hne
+    have hzero : cyclicGaloisAlgebraC K L
+        a (cyclicGaloisGenerator K L (v i0) - v i0) * cyclicGaloisAlgebraX K L a = 0 := by
+      change (cyclicAlgebraCRingHom L (cyclicGaloisGenerator K L).toRingEquiv
+        (Module.finrank K L) (algebraMap K L a)
+          (cyclicGaloisGenerator K L (v i0) - v i0)) * cyclicGaloisAlgebraX K L a = 0
+      rw [map_sub, sub_mul]
+      exact sub_eq_zero.mpr hdiffEq
+    have hu := quadraticCyclicGaloisAlgebra_coefficient_mul_X_isUnit K L a ha _
+      (sub_ne_zero.mpr hne)
+    rw [hzero] at hu
+    exact not_isUnit_zero hu
+  have hfixed : ∀ sigma : Gal(L/K), sigma (v i0) = v i0 := by
+    intro sigma
+    let H : Subgroup Gal(L/K) := MulAction.stabilizer Gal(L/K) (v i0)
+    have hgen : cyclicGaloisGenerator K L ∈ H := by
+      change cyclicGaloisGenerator K L (v i0) = v i0
+      exact hfix
+    exact MulAction.mem_stabilizer_iff.mp
+      ((Subgroup.zpowers_le.mpr hgen) (cyclicGaloisGenerator_spec K L sigma))
+  obtain ⟨k, hk⟩ := (IsGalois.mem_range_algebraMap_iff_fixed (v i0)).mpr hfixed
+  refine ⟨k, ?_⟩
+  rw [hx0, cyclicGaloisAlgebra_algebraMap_apply]
+  exact congrArg (cyclicGaloisAlgebraC K L a) hk.symm
+
+/-- A nonzero quadratic cyclic Galois algebra has center exactly its base field. -/
+theorem quadraticCyclicGaloisAlgebra_isCentral
+    (hdeg : Module.finrank K L = 2) (a : K) (ha : a ≠ 0) :
+    Algebra.IsCentral K (cyclicGaloisAlgebra K L a) where
+  out := by
+    intro x hx
+    rw [Algebra.mem_bot]
+    obtain ⟨k, hk⟩ := quadraticCyclicGaloisAlgebra_center_exists_base K L hdeg a ha x
+      (Subalgebra.mem_center_iff.mp hx)
+    exact ⟨k, hk.symm⟩
+
+/-- The raw cyclic algebra for every nonzero quadratic parameter is a finite-dimensional central
+simple algebra. -/
+noncomputable def quadraticCyclicGaloisAlgebraCSA
+    (hdeg : Module.finrank K L = 2) (a : K) (ha : a ≠ 0) : CSA K where
+  carrier := cyclicGaloisAlgebra K L a
+  isCentral := quadraticCyclicGaloisAlgebra_isCentral K L hdeg a ha
+  isSimple := isSimpleRing_cyclicGaloisAlgebra_of_finrank_eq_two K L hdeg a ha
+  fin_dim := cyclicGaloisAlgebra_finiteDimensional K L a
+
+/-- A degree-two cohomological unit parameter canonically determines a quadratic central simple
+algebra. -/
+noncomputable def quadraticCyclicGaloisH2ParameterCSA
+    (hdeg : Module.finrank K L = 2) (a : Additive Kˣ) : CSA K :=
+  quadraticCyclicGaloisAlgebraCSA K L hdeg (a.toMul : K) a.toMul.ne_zero
 
 end GaloisForLFunctions.HTGeometry.ABHN

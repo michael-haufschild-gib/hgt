@@ -1,0 +1,13 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "W_M_of_positive_operators_V16.tex"
+      }
+   ],
+   "spec_version" : 1,
+   "texlive_version" : "2025",
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}
