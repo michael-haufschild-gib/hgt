@@ -1613,3 +1613,16 @@ hypothesis is a local condition on a slab, not a global estimate over the lattic
 degrees ⟹ value = ratio of leading coefficients) and `placeLim_div_of_natDegree_lt` (smaller degree
 ⟹ value zero), from the cancellation `natDegree_leadingCombination_lt` plus `valuation_eval_eq`.
 The constant/constant case is handled separately — there the numerator vanishes identically.
+
+## Card 7: CORRECTION — the semicharacter law was vacuous
+
+The Appell–Humbert entries above (Gaussian bound, factor construction, decay, majorant, `normal`,
+damping datum, lattice growth, polynomial seeds, normalised modulus) all took the semicharacter law
+quantified over all of `ℂ^d`.  Symmetry of `χ(γ+γ')/(χγ·χγ')` against antisymmetry of `Im H` forces
+`Im H(γ,γ') ∈ ℤ` for every pair, hence `Im H ≡ 0`, hence `H = 0`: the chain was about the trivial
+factor only, and the entries citing `Matrix.PosDef` of the difference-form Gram matrix described
+hypotheses with no model.
+
+Repaired by `IsSemicharacterOn H χ Γ` (the law on the period group) plus
+`appellHumbertFactor_cocycle_at` (the cocycle from the law at one pair).  Ten modules, thirteen
+sites, no proof body changed; all rebuild green and axiom-clean.

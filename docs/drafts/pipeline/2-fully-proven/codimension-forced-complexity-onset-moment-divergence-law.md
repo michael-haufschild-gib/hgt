@@ -527,3 +527,54 @@ moment divergence at `d = 10n-8` in place of `9`.  The transverse splitting itse
 `HTGeometry/PathShellPatchTransport`, with the patch and its annulus in
 `HTGeometry/DiagonalPatchConstruction`.  Section 2's `(16)` and the plateau height `s_n` are
 unchanged.
+
+## Lean progress -- Theorem C's carrier and its energy gap (2026-08-21)
+
+Three further umbrella-wired, axiom-clean modules supply the geometric data of `(19)`--`(22)` on the
+concrete path shell.
+
+`formal/GaloisForLFunctions/HTGeometry/PathDiagonalCarrier.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the `Z` onsite word and the `ZZ` coupling word are `Z` strings | `onsiteWord_two`, `couplingWord_zz` |
+| **`(19)`**: the classical Ising energy of a configuration under a carrier coefficient vector | `pathDiagEnergy` |
+| **the carrier Hamiltonian is diagonal**, with those energies | `pathHamiltonian_eq_diagonal` |
+| **`(21)`**: the uniform superposition, a unit state of constant modulus `D^{-1/2}` | `uniformSeed`, `norm_uniformSeed`, `norm_eucVec_uniformSeed` |
+| the energies are continuous in the coefficients | `continuous_pathDiagEnergy` |
+| a compact separated set of carrier coefficients has a uniform energy gap | `exists_uniform_energy_gap` |
+
+`formal/GaloisForLFunctions/HTGeometry/BaseThreeSignSeparation.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the `±1` sign of a configuration at a site | `siteSign` and its modulus/difference laws |
+| the geometric identity `∑_{k<S} 2·3^k = 3^S − 1` | `sum_lt_three_pow` |
+| **base-three separation**: distinct configurations differ by at least two units in the weighted sign sum | `two_le_abs_sum_signDiff` |
+
+`formal/GaloisForLFunctions/HTGeometry/PathCarrierSeparatingDirection.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the singleton and pair `Z` signs as site signs | `zSetSign_singleton_eq`, `zSetSign_pair_eq` |
+| **the separating carrier direction**: onsite weights `A·3^s`, every edge coupling `b` | `sepCarrier`, `sepCarrier_offDiag`, `pathDiagEnergy_sepCarrier` |
+| **the energies are separated** by `2A − 2b(n+1)` | `abs_sub_pathDiagEnergy_sepCarrier_ge` |
+| the energies are `(2n+3)`-Lipschitz in the coefficients | `abs_pathDiagEnergy_sub_le` |
+| **a uniform gap on the whole neighbourhood** of the direction | `gap_near_sepCarrier` |
+
+This settles the card's parenthetical "such a patch exists because degeneracies form a finite union
+of proper hyperplanes, while the strong-edge condition is open": the direction is explicit rather
+than obtained from a genericity argument, its edge couplings are all equal to `b` -- so `(25)`
+holds on it by construction -- and the separation is quantitative, hence survives a ball of radius
+`(2A−2b(n+1))/(4(2n+3))` around it.  Choosing `A > b(n+1)` makes the gap positive.
+
+### What remains
+
+Theorem C's assembly: instantiate `spectralCollision_le_of_near_diagonal` at the diagonal patch
+around `sepCarrier` (its hypothesis `‖H − diag E‖ ≤ δ` is `norm_pathHamiltonianLM_sub_le` composed
+with `pathHamiltonian_eq_diagonal`, and its `gap` is `gap_near_sepCarrier`), then feed the resulting
+`(22)` into `incubation_tail_lower` at the diagonal splitting `card_diagLabel = 2n+3`,
+`card_offDiagLabel = 10n+12`, and finally run the moment divergence at `d = 10n-8` in place of `9`.
+The carrier compiler certificate `(4)` for `|+>^{⊗n}` under commuting `Z` and `ZZ` rotations stays an
+input, exactly as it is in the sibling incubation card's `hcert`.  Section 2's `(16)` and the
+plateau height `s_n` are unchanged.

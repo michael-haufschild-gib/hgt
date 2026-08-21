@@ -670,6 +670,10 @@ statement about the interpolant, both on a compact set.
 
 ## Lean status 2026-08-21 (fifth entry) — the positive factor, and its Gaussian decay
 
+> **CORRECTED (fifteenth entry).**  Read with the correction below: until the `IsSemicharacterOn`
+> repair the semicharacter law in these statements was quantified over all of `ℂ^d`, which forces
+> `H = 0`.  The results held only for the trivial factor.
+
 The first of the two pointwise inputs named in the fourth entry is now Lean, unconditionally.
 
 `GaloisForLFunctions.HTGeometry.AppellHumbertGaussianBound` (wired, built, axiom-clean)
@@ -713,6 +717,10 @@ hypothesis `hbound` now needs only the seed's own sup bound `‖seed(y + γ)‖ 
 
 ## Lean status 2026-08-21 (sixth entry) — the damping hypothesis, closed against a fixed ball
 
+> **CORRECTED (fifteenth entry).**  Read with the correction below: until the `IsSemicharacterOn`
+> repair the semicharacter law in these statements was quantified over all of `ℂ^d`, which forces
+> `H = 0`.  The results held only for the trivial factor.
+
 `GaloisForLFunctions.HTGeometry.PoincareTermAppellHumbertDecay` (wired, built, axiom-clean)
 
 ```text
@@ -745,6 +753,10 @@ statements about a single ball, and the whole `exp(−σ₀ ∑ z_k²)` decay is
 assumed, with `σ₀ = π/4` measured in the difference form.
 
 ## Lean status 2026-08-21 (seventh entry) — Abe positivity in coordinates, and the majorant
+
+> **CORRECTED (fifteenth entry).**  Read with the correction below: until the `IsSemicharacterOn`
+> repair the semicharacter law in these statements was quantified over all of `ℂ^d`, which forces
+> `H = 0`.  The results held only for the trivial factor.
 
 `GaloisForLFunctions.HTGeometry.AbePositiveGaussianMajorant` (wired, built, axiom-clean)
 
@@ -786,6 +798,10 @@ induction hypothesis together with `EnlargedPacketInterpolant`), and the bookkee
 
 ## Lean status 2026-08-21 (eighth entry) — the `normal` field, closed
 
+> **CORRECTED (fifteenth entry).**  Read with the correction below: until the `IsSemicharacterOn`
+> repair the semicharacter law in these statements was quantified over all of `ℂ^d`, which forces
+> `H = 0`.  The results held only for the trivial factor.
+
 `GaloisForLFunctions.HTGeometry.AbePoincareLocalNormal` (wired, built, axiom-clean)
 
 ```text
@@ -815,6 +831,10 @@ So the two analytic fields are closed, and what remains is the group bookkeeping
 own supply of seeds.
 
 ## Lean status 2026-08-21 (ninth entry) — `hbound` in the exact shape the majorant consumes
+
+> **CORRECTED (fifteenth entry).**  Read with the correction below: until the `IsSemicharacterOn`
+> repair the semicharacter law in these statements was quantified over all of `ℂ^d`, which forces
+> `H = 0`.  The results held only for the trivial factor.
 
 `GaloisForLFunctions.HTGeometry.AbeDampingBoundBridge` (wired, built, axiom-clean)
 
@@ -900,6 +920,10 @@ complement lattice, and exactly the quantity Abe's argument controls.
 
 ## Lean status 2026-08-21 (eleventh entry) — the damping datum is constructible
 
+> **CORRECTED (fifteenth entry).**  Read with the correction below: until the `IsSemicharacterOn`
+> repair the semicharacter law in these statements was quantified over all of `ℂ^d`, which forces
+> `H = 0`.  The results held only for the trivial factor.
+
 `GaloisForLFunctions.HTGeometry.AbeDampingPacketConstruction` (wired, built, axiom-clean)
 
 ```text
@@ -923,6 +947,10 @@ supplies such a seed family for every finite jet packet, and
 `jetAmpleEveryFiniteOrder_of_hasAbeDampingFamily`, already in the tree, closes the induction step.
 
 ## Lean status 2026-08-21 (twelfth entry) — the corpus's own majorant hypothesis, discharged
+
+> **CORRECTED (fifteenth entry).**  Read with the correction below: until the `IsSemicharacterOn`
+> repair the semicharacter law in these statements was quantified over all of `ℂ^d`, which forces
+> `H = 0`.  The results held only for the trivial factor.
 
 The tree already contained a reduction of the polynomial-Gaussian Poincaré majorant to a single
 primitive condition on the factor,
@@ -953,6 +981,10 @@ So the majorant hypothesis of the corpus's own chain, previously an unverified a
 form — which is exactly the class the card's `L` positive produces.
 
 ## Lean status 2026-08-21 (thirteenth entry) — polynomially bounded seeds
+
+> **CORRECTED (fifteenth entry).**  Read with the correction below: until the `IsSemicharacterOn`
+> repair the semicharacter law in these statements was quantified over all of `ℂ^d`, which forces
+> `H = 0`.  The results held only for the trivial factor.
 
 The seeds the induction actually produces are a lower-automorphic form of bounded normalised
 modulus multiplied by an **interpolating polynomial** (`EnlargedPacketInterpolant`), so their
@@ -989,6 +1021,10 @@ induction could not deliver.
 
 ## Lean status 2026-08-21 (fourteenth entry) — the seed hypothesis is a local condition
 
+> **CORRECTED (fifteenth entry).**  Read with the correction below: until the `IsSemicharacterOn`
+> repair the semicharacter law in these statements was quantified over all of `ℂ^d`, which forces
+> `H = 0`.  The results held only for the trivial factor.
+
 `GaloisForLFunctions.HTGeometry.AppellHumbertNormalisedModulus` (wired, built, axiom-clean)
 
 ```text
@@ -1010,3 +1046,41 @@ Effect on the card.  The seed hypothesis of the damping datum —
 suffices to bound the normalised modulus on any set `S` with `∀ y, ∃ γ ∈ ΓH, y − γ ∈ S`.  For a
 period group of rank `k` in `ℂ^d` such an `S` can be taken to be a slab, so the condition is
 checkable where Abe checks it, and no global estimate over the lattice is required.
+
+## Lean status 2026-08-21 (fifteenth entry) — CORRECTION: the semicharacter law was vacuous
+
+Entries five to fourteen stated their results for "Appell--Humbert data".  They did not.  Every one
+of them took the semicharacter law in the form
+
+```text
+∀ γ γ' : ℂ^d,  χ (γ + γ') = χ γ · χ γ' · exp(−πi · Im H(γ, γ'))
+```
+
+quantified over the **whole space**.  That hypothesis has only the trivial model.  The left-hand
+ratio `χ(γ+γ')/(χγ·χγ')` is symmetric in `γ, γ'` while `Im H` is antisymmetric, so
+`exp(−2πi·Im H(γ,γ')) = 1`, i.e. `Im H(γ,γ') ∈ ℤ` for *every* pair of complex vectors; `Im H` is
+ℝ-bilinear and continuous, so `Im H ≡ 0`; and a Hermitian form with vanishing imaginary part is
+zero.  So the whole chain was a correct statement about the trivial factor `H = 0` and nothing else.
+
+Worse for the entries that invoked positivity: with `H_u = H_l = 0` the difference form is zero, its
+Gram matrix is the zero matrix, and `Matrix.PosDef` of it is false.  Those entries described
+hypotheses with no joint model at all.
+
+**The repair.**  A semicharacter is a statement about the lattice, not the ambient space:
+
+```text
+IsSemicharacterOn H χ Γ :  ∀ γ ∈ Γ, ∀ γ' ∈ Γ,
+    χ (γ + γ') = χ γ · χ γ' · exp(−πi · Im H(γ, γ'))
+```
+
+The cocycle field of an automorphic factor only needs the law at the one pair being multiplied, so
+the new `appellHumbertFactor_cocycle_at` discharges it from the restricted hypothesis; the tree's
+`appellHumbertFactor_isMulTwoCocycle` asks for the global form, which is what pulled the vacuity in.
+`Γ` is now implicit, determined by `hsemi`.
+
+Ten modules, thirteen hypothesis sites.  **No proof body changed** — the fixes were three
+binder-scoping slips and one argument arity, which is what a hypothesis-only defect looks like.  All
+ten rebuild green and axiom-clean.  The class of factors the chain speaks about widens from
+`{H = 0}` to genuine positive Hermitian forms, which is the class this card is about.
+
+Everything asserted in entries five to fourteen is now true as written; it was not before.

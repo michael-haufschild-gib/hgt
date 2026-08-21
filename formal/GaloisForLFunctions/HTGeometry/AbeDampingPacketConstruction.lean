@@ -30,11 +30,11 @@ variable {d c : ℕ} {Hu Hl : (Fin d → ℂ) → (Fin d → ℂ) → ℂ} {χu 
 
 /-- **The damping datum for a pair of Appell--Humbert factors.** -/
 def abeDampingPacketDataAppellHumbert
+    {ΓH Γ : AddSubgroup (Fin d → ℂ)}
     (hHu : IsHermitianForm Hu) (hχu : ∀ γ, ‖χu γ‖ = 1)
     (hsemiu : IsSemicharacterOn Hu χu Γ)
     (hHl : IsHermitianForm Hl) (hχl : ∀ γ, ‖χl γ‖ = 1)
-    (hsemil : IsSemicharacterOn Hl χl ΓH)
-    {ΓH Γ : AddSubgroup (Fin d → ℂ)} (hle : ΓH ≤ Γ)
+    (hsemil : IsSemicharacterOn Hl χl ΓH) (hle : ΓH ≤ Γ)
     (hH : ∀ η ∈ ΓH, ∀ x : Fin d → ℂ, Hu x η = Hl x η) (hχ : ∀ η ∈ ΓH, χu η = χl η)
     (hpos : ∀ y : Fin d → ℂ, 0 ≤ (Hu y y - Hl y y).re)
     (v : Fin c → (Fin d → ℂ))
