@@ -202,4 +202,162 @@ theorem triangleVertexAugmentation_eq_zero_iff
   · rintro ⟨x, rfl⟩
     exact triangleVertexAugmentation_edgeBoundary x
 
+/-! ### Full `S₃`-equivariance of the orientation line
+
+Relabeling is a group action, so the sign law for the whole symmetric group follows from the
+single-transposition law by the standard generation-by-transpositions induction.  No enumeration
+of the six permutations is used.
+-/
+
+theorem triangleRelabel_one {R : Type*} (c : Matrix (Fin 3) (Fin 3) R) :
+    triangleRelabel 1 c = c := rfl
+
+theorem triangleRelabel_mul {R : Type*} (σ τ : Equiv.Perm (Fin 3))
+    (c : Matrix (Fin 3) (Fin 3) R) :
+    triangleRelabel (σ * τ) c = triangleRelabel σ (triangleRelabel τ c) := rfl
+
+theorem triangleRelabel_zsmul {R : Type*} [Ring R] (σ : Equiv.Perm (Fin 3)) (m : ℤ)
+    (c : Matrix (Fin 3) (Fin 3) R) :
+    triangleRelabel σ (m • c) = m • triangleRelabel σ c := rfl
+
+/-- Every vertex transposition reverses the oriented boundary cycle. -/
+theorem triangleRelabel_swap_orientationCycle (R : Type*) [Ring R] {a b : Fin 3} (hab : a ≠ b) :
+    triangleRelabel (Equiv.swap a b) (triangleOrientationCycle R) =
+      -triangleOrientationCycle R := by
+  have hpair : ∀ p q : Fin 3, p ≠ q →
+      triangleRelabel (Equiv.swap p q) (triangleOrientationCycle R)
+        = -triangleOrientationCycle R := by
+    have h01 : triangleRelabel (Equiv.swap (0 : Fin 3) 1) (triangleOrientationCycle R)
+        = -triangleOrientationCycle R := by
+      ext i j
+      fin_cases i <;> fin_cases j <;>
+        simp [triangleRelabel, triangleOrientationCycle, Equiv.swap_apply_def]
+    have h02 : triangleRelabel (Equiv.swap (0 : Fin 3) 2) (triangleOrientationCycle R)
+        = -triangleOrientationCycle R := by
+      ext i j
+      fin_cases i <;> fin_cases j <;>
+        simp [triangleRelabel, triangleOrientationCycle, Equiv.swap_apply_def]
+    have h12 : triangleRelabel (Equiv.swap (1 : Fin 3) 2) (triangleOrientationCycle R)
+        = -triangleOrientationCycle R := by
+      ext i j
+      fin_cases i <;> fin_cases j <;>
+        simp [triangleRelabel, triangleOrientationCycle, Equiv.swap_apply_def]
+    have h10 : triangleRelabel (Equiv.swap (1 : Fin 3) 0) (triangleOrientationCycle R)
+        = -triangleOrientationCycle R := by rw [Equiv.swap_comm]; exact h01
+    have h20 : triangleRelabel (Equiv.swap (2 : Fin 3) 0) (triangleOrientationCycle R)
+        = -triangleOrientationCycle R := by rw [Equiv.swap_comm]; exact h02
+    have h21 : triangleRelabel (Equiv.swap (2 : Fin 3) 1) (triangleOrientationCycle R)
+        = -triangleOrientationCycle R := by rw [Equiv.swap_comm]; exact h12
+    intro p q hpq
+    fin_cases p <;> fin_cases q <;> simp_all
+  exact hpair a b hab
+
+/-- **Full `S₃`-equivariance.**  The orientation line carries the sign representation: every
+vertex relabeling acts on the oriented boundary cycle by the sign of the permutation. -/
+theorem triangleRelabel_orientationCycle (R : Type*) [Ring R] (σ : Equiv.Perm (Fin 3)) :
+    triangleRelabel σ (triangleOrientationCycle R) =
+      ((Equiv.Perm.sign σ : ℤ)) • triangleOrientationCycle R := by
+  refine Equiv.Perm.swap_induction_on σ ?_ ?_
+  · simp [triangleRelabel_one]
+  · intro f x y hxy hf
+    rw [triangleRelabel_mul, hf, triangleRelabel_zsmul,
+      triangleRelabel_swap_orientationCycle R hxy, map_mul, Equiv.Perm.sign_swap hxy,
+      smul_neg, ← neg_smul]
+    congr 1
+    simp
+
+/-- The sign action on the residual coefficient, for every permutation. -/
+theorem triangleRelabel_orientationResidual (σ : Equiv.Perm (Fin 3)) (a : ℂ) :
+    triangleRelabel σ (triangleOrientationResidual a) =
+      triangleOrientationResidual (((Equiv.Perm.sign σ : ℤ) : ℂ) * a) := by
+  rw [triangleOrientationResidual, triangleRelabel_smul, triangleRelabel_orientationCycle,
+    triangleOrientationResidual]
+  ext i j
+  simp only [Matrix.smul_apply]
+  simp only [smul_eq_mul, zsmul_eq_mul]
+  ring
+
+/-! ### The invariant subspace of the antisymmetric edge module vanishes -/
+
+/-- Antisymmetric edge fields. -/
+def TriangleAntisymm {R : Type*} [Ring R] (c : Matrix (Fin 3) (Fin 3) R) : Prop :=
+  ∀ i j, c i j = -c j i
+
+theorem triangleAntisymm_orientationCycle (R : Type*) [Ring R] :
+    TriangleAntisymm (triangleOrientationCycle R) := by
+  intro i j
+  fin_cases i <;> fin_cases j <;> norm_num [triangleOrientationCycle]
+
+/-- **Equation `(4)` for the whole exterior square.**  Over a ring without `2`-torsion, the only
+relabeling-invariant antisymmetric edge field is zero; in particular the exterior square has no
+trivial summand, so neither `Std` nor `Sgn` contributes an invariant vector. -/
+theorem triangleAntisymm_sourceNatural_eq_zero {R : Type*} [Ring R] [NoZeroDivisors R]
+    [CharZero R] {c : Matrix (Fin 3) (Fin 3) R} (hanti : TriangleAntisymm c)
+    (hnat : TriangleSourceNatural c) : c = 0 := by
+  ext i j
+  rcases eq_or_ne i j with hij | hij
+  · subst hij
+    have h := hanti i i
+    have h2 : (2 : R) * c i i = 0 := by
+      have hsum : c i i + c i i = 0 := by
+        nth_rewrite 2 [h]
+        exact add_neg_cancel _
+      rw [two_mul]
+      exact hsum
+    have := (mul_eq_zero.mp h2).resolve_left (two_ne_zero)
+    simpa using this
+  · have hswap := congrFun (congrFun (hnat (Equiv.swap i j)) i) j
+    have hval : c j i = c i j := by
+      have hi : (Equiv.swap i j).symm i = j := by simp [Equiv.swap_apply_left]
+      have hj : (Equiv.swap i j).symm j = i := by simp [Equiv.swap_apply_right]
+      rw [triangleRelabel, hi, hj] at hswap
+      exact hswap
+    have h := hanti i j
+    rw [hval] at h
+    have h2 : (2 : R) * c i j = 0 := by
+      have hsum : c i j + c i j = 0 := by
+        nth_rewrite 2 [h]
+        exact add_neg_cancel _
+      rw [two_mul]
+      exact hsum
+    have := (mul_eq_zero.mp h2).resolve_left (two_ne_zero)
+    simpa using this
+
+/-! ### The kernel of the edge boundary is the orientation line -/
+
+/-- The antisymmetric matrix attached to edge coordinates `(01, 02, 12)`. -/
+def triangleEdgeMatrix {R : Type*} [Ring R] (x : Fin 3 → R) : Matrix (Fin 3) (Fin 3) R :=
+  !![0, x 0, x 1;
+     -x 0, 0, x 2;
+     -x 1, -x 2, 0]
+
+theorem triangleEdgeMatrix_fillerBoundary (R : Type*) [Ring R] (a : R) :
+    triangleEdgeMatrix (triangleFillerBoundary R a) = a • triangleOrientationCycle R := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [triangleEdgeMatrix, triangleFillerBoundary, triangleOrientationCycle,
+      Matrix.smul_apply]
+
+/-- **Equation `(3)`, matrix form.**  The kernel of the edge boundary is exactly the orientation
+line, on which `S₃` acts by the sign character. -/
+theorem triangleEdgeBoundary_eq_zero_iff_orientationLine {R : Type*} [Ring R]
+    (x : Fin 3 → R) :
+    triangleEdgeBoundary x = 0 ↔
+      ∃ a : R, triangleEdgeMatrix x = a • triangleOrientationCycle R := by
+  constructor
+  · intro h
+    obtain ⟨a, ha⟩ := (triangleEdgeBoundary_eq_zero_iff x).mp h
+    exact ⟨a, by rw [ha, triangleEdgeMatrix_fillerBoundary]⟩
+  · rintro ⟨a, ha⟩
+    have hx : x = triangleFillerBoundary R a := by
+      have h0 := congrFun (congrFun ha (0 : Fin 3)) (1 : Fin 3)
+      have h1 := congrFun (congrFun ha (0 : Fin 3)) (2 : Fin 3)
+      have h2 := congrFun (congrFun ha (1 : Fin 3)) (2 : Fin 3)
+      simp [triangleEdgeMatrix, triangleOrientationCycle, Matrix.smul_apply] at h0 h1 h2
+      ext i
+      fin_cases i <;> simp [triangleFillerBoundary, h0, h1, h2]
+    rw [hx]
+    exact triangleEdgeBoundary_fillerBoundary R a
+
+
 end GaloisForLFunctions.HTGeometry

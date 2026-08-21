@@ -12,33 +12,27 @@ without building it; search the corpus (`scripts/formal_tools.py research`) befo
 
 ## Start state (2026-08-21): 22 cards
 
+Unblocked by the fixed-shell promotion: `stabilizer-seeded-static-local-double-exponential-plateau-law`,
+`cubic-phase-seeded-static-local-full-scale-plateau-law`,
+`capacity-compatible-fast-forwardable-incubation-law`,
+`onset-recurrence-dimension-independence-law`,
+`weak-cut-complexity-onset-capacity-separation-law` (Theorem C),
+`circuit-complexity-selection-synthesis-divergence-law` (§6),
+`capacitary-observer-sector-excision-law` (Corollary I.3, Theorem K),
+`all-replica-static-centralizer-planar-separation-law` (also needs Kargin).
+
 ## Promoted
 
 | date | card | evidence |
 |---|---|---|
 | 2026-08-21 | `suzuki-v2-spherical-atlas-convergence` | `RHTower/SuzukiV2SphericalConvergence.lean` — 3 theorems, axiom-clean, wired |
 | 2026-08-21 | `suzuki-v2-actual-projective-characteristic` | `RHTower/SuzukiTaV2ProjectiveCharacteristic.lean` — Theorems A/B/C, axiom-clean, wired |
+| 2026-08-21 | `stabilizer-seeded-static-local-double-exponential-plateau-law` | Theorems A/B/C and the low--plateau--recurrence corollary: `exists_stabilizer_family_collision_eq`, `limsup_sphereLaw_seedCapture_le`, `limsup_sphereLaw_stabilizerSeeded_sum_le`, `exists_time_forall_interval_hard_of_speed`, `ae_exists_late_seed_recurrence_chainShell` — 4 new modules |
+| 2026-08-21 | `weak-cut-complexity-onset-capacity-separation-law` | Theorem C `(14)` at one fixed pair: `exists_weakCut_delayed_plateau`, on top of `exists_late_hardWindow` (single-orbit plateau), `exists_prodPolyEval_collision_le_four_div` (bipartite eighth-root transfer), `pathShellProb_pathBadSphere_eq_zero` and `norm_pathHamiltonian_le_sqrt` — 5 new modules (`SingleOrbitPlateauWindow`, `PathChainLabelIdentification`, `PathShellProjectiveGenericity`, `BipartiteEighthRootTransfer`, `WeakCutDelayedPlateau`), all axiom-clean, wired |
+| 2026-08-21 | `cubic-phase-seeded-static-local-full-scale-plateau-law` | Theorem A, Theorem B `(8)`/`(9)` in both normalizations, Theorem C `(17)`/`(24)`, and both corollaries: `card_filter_phaseCollision_polyEval_gt_le`, `limsup_sphereLaw_cubicSeeded_le`, `exists_fixed_cubicSeed_sphereLaw_le`, `exists_fixed_cubicSeed_plateau_and_recurrence`, `card_monLe` — 4 new modules (`CubicSeedCollisionTail`, `CubicSeedPlateauLaw`, `CubicFixedSeedSelection`, `CubicSeedFullScalePlateau`), all axiom-clean, wired |
+| 2026-08-21 | `fixed-shell-angular-dephasing-static-local-plateau-law` | Theorems A/B/C on the card's own nearest-neighbour Pauli shell: `exists_shell_energy_witness_pauliChain`, `tendsto_integral_exp_sortedSpectralAction_zero_pauliChain`, `limsup_sphereLaw_chainCapture_le`, `eventually_sphereLaw_chainCapture_le` — 20 new modules, all axiom-clean, wired |
 
 ## In progress
-
-**`fixed-shell-angular-dephasing-static-local-plateau-law`** — root of the static-local cluster
-(blocks `stabilizer-seeded`, `cubic-phase-seeded`, `all-replica-static-centralizer`, and weak-cut
-Theorem C).  2026-08-21: closed the first of its two remaining Theorem-C inputs — the easy-circuit
-tube is now proved closed in the angular-phase bundle, via three new modules
-`HTGeometry/LagrangeSpectralProjector.lean`, `HTGeometry/SpectralBundleCaptureTube.lean`,
-`HTGeometry/EvolvedStateBundlePairing.lean` (all axiom-clean, umbrella-wired, olean-built).
-
-Remaining gap, located exactly: `(23)`/`(24)` live on the **Pauli** coefficient shell
-(`pauliEnsemble w`) while `(16)`/`(17)` live on the **leaf-extended endpoint-complete architecture**
-(`physicalEndpointCompleteQubitPath`, whose `PhysicalState` is only pinned up to cardinality because
-it is produced by `Classical.choose`).  The assembly needs both on one ensemble.  The cheapest route
-found so far: realize the *concrete* `n`-qubit Pauli path as a
-`PhysicallyRealizedEndpointCompleteSystem` (concrete `PhysicalState = Fin n → Bool`, path tree,
-one-site endpoint probe), so that `exists_leafLocal_simple_energy_witness` lands on the concrete
-local-Hamiltonian submodule; then the `hwit`/`hsimple` inputs of
-`tendsto_integral_exp_sortedSpectralAction_zero_of_simple_of_energy_witness` transfer to any
-trace-orthonormal basis of the same real span, in particular to the Pauli basis (both hypotheses
-depend only on the span, since `∑_a θ_a² = Tr(H²)/c`).
 
 **`capacitary-observer-sector-excision-law`** — 2026-08-21: Theorems G, H, I, `(11aa)`, `(11ab)`
 closed with four new modules (`CapacitySoftMinLaw`, `CompletedPhaseAccessibilityPlateau`,
@@ -50,11 +44,114 @@ fixed-shell card — Corollary I.3 and Theorem K.
 **`computable-static-local-exponential-state-complexity-law`** — 2026-08-21: `(5)`, `(12)`, `(13)`,
 `(14)`, the completed-time circuit bound behind `(6)` and the eigenbasis coordinate change are
 closed with `CompletedTimeCircuitDensity`, `GaussianGoodCoefficientSet`, `CircuitDictionaryCounting`
-(plus a strengthening of `GaussianBoxMass`).  Remaining: the instantiation wiring of Theorem A
-(centred-time transport + dictionary in eigencoordinates) and all of Theorem B.  **Not gated on the
+(plus a strengthening of `GaussianBoxMass`).  One-sided Kronecker--Weyl closed the same day
+(`OneSidedCaptureDensity`), so the window transport is no longer a gap.  `(6)` itself is now closed in physical time
+(`ClockPhaseEvolutionBridge`, `PhysicalTimeCircuitCapture`:
+`limsup_oneSided_physicalCapture_le`).  It is now also instantiated at the Gaussian Pauli
+ensemble (`GaussianEnsembleCircuitDensity.ae_limsup_physicalCapture_le_of_gaussianGoodSet`).
+The window/time-fraction bridge is closed too
+(`WindowTimeFractionBridge`).  The single remaining brick for Theorem A is joint measurability of
+the hard event in `(J,t)` — which needs the matrix operator-norm topology reconciled with the
+entrywise topology so that `NormedSpace.exp_continuous` composes.  Then `(8)`/`(8a)`/`(9)` are
+`QuenchedFixedTimeTransfer` verbatim.  Theorem B (Duhamel, rational density, dovetailed search) is
+untouched.  **Not gated on the
 fixed-shell card** — it lives on the Gaussian Pauli ensemble, where `(23)`/`(26)` are available.
 
-## Open (20)
+
+## Shared infrastructure landed (2026-08-21)
+
+**`HTGeometry/SingleOrbitPlateauWindow.lean`** — *the single-orbit continuous plateau*
+(`exists_late_hardWindow`, axiom-clean, wired).  The shell-averaged plateau laws bound the measure
+of the Hamiltonians that are easy at a late time; this one bounds, at *one fixed* Hamiltonian with
+maximally projective spectrum and one seed of small collision, the long-time **density** of the
+times whose forward window of length `W` meets the dictionary, and concludes that windows of length
+`W` that are hard at every instant occur arbitrarily late as soon as
+`plateauGridCount W ((ε₊−ε₋)/speed) · 2^{-r/2} < 1`.  Route: one-sided Kronecker--Weyl
+(`oneSided_closedTarget_limsup_le_volume`) applied to the union of the mesh translates of the closed
+capture target, whose Haar volume is `N_W` times `measure_projectiveAmpCaptureTarget_le_two_rpow`.
+Supporting declarations: `shiftTarget`, `gridTarget`, `metricEasySet`,
+`metricEasySet_subset_physicalCaptureSet`, `metricEasySet_mesh`, `badWindowSet`,
+`limsup_windowProb_badWindowSet_le`, `windowProb_Ioc`,
+`exists_notMem_of_limsup_windowProb_lt_one`, `finiteComplexInner_unitaryEvolution_self`.
+
+This is the tool every cluster-A card needs for the clause "**one fixed pair** `(H, χ)` is hard at
+every instant of a long window", as opposed to the shell-measure clause the parents already had.
+
+**`HTGeometry/PathChainLabelIdentification.lean`** — the path shell *is* the numbered chain shell.
+`pathWord` sends a path label (site+axis, or edge+axis pair) to a Pauli string; it is injective,
+lands in `ChainLabel (n+2)`, and `exists_pathWord_eq` shows every nonidentity label of support
+diameter at most one is a path label -- so `pathLabelEquiv : PathLabel n ≃ ChainLabel (n+2)`, and
+`reindex_pathHamiltonian` identifies `pathHamiltonian u` with
+`spectralEnsembleMatrix (chainPauliFin (n+2))` at the relabelled coefficients.
+
+**`HTGeometry/PathShellProjectiveGenericity.lean`** — maximal projectivity is generic on the path
+shell.  `volume_notMaximallyProjective_eq_zero` generalizes the chain argument to any Hermitian
+family with one maximally projective witness; transported through `pathCoeffEquiv` (pi-Lebesgue
+reindexing) and the cone/`toSphere` step it gives `pathShellProb_pathBadSphere_eq_zero`.  The payoff
+is `exists_pathHamiltonian_orthoEigenBasis` (an orthonormal eigenbasis of `pathHamiltonian v` with
+maximally projective eigenvalues, at every direction outside the null set) and
+`exists_mem_notMem_pathBadSphere` (selecting one inside a positive-measure sector, e.g. the delay
+sector of `pathShellProb_delayEvent_pos`).  Also `MaximallyProjectiveEnergy.comp_equiv`.
+
+**`HTGeometry/CrossSphereIsometryTransport.lean`** — `crossSphereMap` and
+`toSphere_preimage_crossSphereMap`: the spherical measure transports along a linear isometry
+equivalence of finite-dimensional inner product spaces (cone presentation + `LinearIsometryEquiv.measurePreserving`).
+
+**`HTGeometry/PathShellPatchTransport.lean`** — `IsDiagLabel`, `diagLabelEquiv`, `card_diagLabel`
+(`= 2n+3`), `offDiagLabelEquiv`, `card_offDiagLabel` (`= 10n+12`), and
+**`pathPatchIsometry : PatchSpace (2n+3) (10n+12) ≃ₗᵢ[ℝ] PathShell n`**; also `pathHamiltonianLM`
+(the shell map as a real-linear map), `norm_pathHamiltonian_le` and `norm_pathHamiltonianLM_sub_le`
+(Lipschitz constant `√(12(n+2)-9)`), and `toSphere_preimage_pathBadSphere_eq_zero`.
+
+**`HTGeometry/DiagonalPatchConstruction.lean`** — `uniformDir`, `sphericalCap`,
+`isCompact_embedPatch_sphericalCap`, `sphericalCap_coord_ge` (**`(16)`**), and
+`volume_patchAnnulus_sphericalCap_pos` (the carrier factor `a_P > 0`).
+
+Together with `exists_late_hardWindow` these are the missing ingredients of the clause
+"one fixed pair `(H, χ)` is hard at every instant of a long window, at a Hamiltonian inside a
+prescribed positive-measure sector".
+
+## Per-card blocker survey (2026-08-21)
+
+The 16 open cards, with the *exact* remaining item.  Read this before choosing a card.
+
+**Cluster A — the static-local complexity cards.**  Both plateau parents *and* the cubic-phase
+keystone are now at stage 3, so the shared collision bound is available:
+`card_filter_phaseCollision_polyEval_gt_le` (seed normalization),
+`card_filter_finCollision_gt_le` (unnormalized), and at one fixed seed
+`exists_fixed_cubicSeed_sphereLaw_le`.
+
+| card | remaining |
+|---|---|
+| ~~`weak-cut-complexity-onset-capacity-separation-law`~~ (promoted) | Theorem C's late-time clauses.  The chain is now: (a) **the bipartite eighth-root transfer** — `exists_prodPhaseSeed_collision_le_four_div` is stated for *continuous* product phases, but Theorem C needs a *finite* seed family to cover the delay sector, so the mean `4/D` must be transported to the product cubic ensemble `(MonLe ιA 3 → ZMod 8) × (MonLe ιB 3 → ZMod 8)`; only the **first** moment is needed, and the collision is a `trigLift` on `α ⊕ β` with support `≤ 4` and entries in `[-2,2]`, so `average_trigLift_eighthPhase_eq_integral_box` applies once a product-ensemble uniformity lemma (a character of `α ⊕ β` splits, and each factor kills its own nontrivial part) is in place; then (b) `exists_fixed_seed_on_delay` selects one seed on a positive-measure part of the delay sector, (c) `exists_mem_notMem_pathBadSphere` selects a nondegenerate direction inside it, (d) `exists_pathHamiltonian_orthoEigenBasis` supplies the eigenbasis, and (e) `exists_late_hardWindow` gives the continuous hard window at that one pair.  Clauses (b)--(e) are all owned |
+| `capacity-compatible-fast-forwardable-incubation-law` | Theorem A is closed; the transport blocker is **now closed too** (`CrossSphereIsometryTransport`, `PathShellPatchTransport`, `DiagonalPatchConstruction` below).  What is left is one module and one assembly.  **The module**: pull the chain-shell genericity and the *gauge-invariant* collision back to the patch sphere along `patchCoeffIsometry k : PatchSpace f d ≃ₗᵢ EuclideanSpace ℝ (Fin (card (ChainLabel (k+3))))` — the composite of `pathPatchIsometry` with the `pathCoeffEquiv` reindexing.  The pullback must use `crossCollision` (continuous on `simpleLocus`, hence **measurable**) rather than `pathEigenBasis`, because `exists_seed_measureReal_ge` requires `MeasurableSet (G q)` and eigenvector measurability is not available; `crossCollision_eq` converts back to the eigenbasis collision on the simple locus, and `sortedEigenBasis` is the eigenbasis to use (its eigenvalues are a permutation of the canonical ones, and `MaximallyProjectiveEnergy.comp_equiv` transports maximal projectivity).  **The assembly**: `hdensity` from `card_filter_phaseCollision_polyEval_gt_le` (bad fraction `≤ β = 96/(κ²D)`), then `exists_seed_measureReal_ge` + `measureReal_inter_conull` for `(8)`, `toSphere_patchThickening_ge` + `incubation_tail_lower` for `(20)`, `approxComplexity_le_of_mem_patchThickening` for clause 1, `exists_late_hardWindow` for clause 4, `exists_late_seed_recurrence` for clause 5, `norm_ge_half_of_perturbation` + `sphericalCap_coord_ge` for clause 7 |
+| `codimension-forced-complexity-onset-moment-divergence-law` | Theorem C (the coupled `10n-8` shortcut law) and the uniform split synthesis certificate `(16)` |
+| `onset-recurrence-dimension-independence-law` | the same path-shell apparatus as the weak-cut card (clauses 1, 3, 4, 6, 7, 8 of its Theorem); the recurrence-dimension clauses 2 and 5 are already corpus laws (`relationPhaseEnsemble_temporalDimension_eq_projectiveRank`, `lbitTemporalRank_eq_maximal_iff_maximallyProjectiveEnergy`) |
+| `capacitary-observer-sector-excision-law` | Corollary I.1's physical-time transfer, Corollary A.3, `(8c)`'s transitive action, `(11be)`; Corollary I.3 and Theorem K are now ungated and need the Choi-trajectory instantiation of the fixed-shell Portmanteau |
+| `all-replica-static-centralizer-planar-separation-law` | Theorems B–E from one replica to all finite `r`; also Kargin's matrix Dyson equation |
+| `computable-static-local-exponential-state-complexity-law` | joint measurability of the hard event in `(J,t)` (needs the matrix operator-norm topology reconciled with the entrywise one), then Theorem B (Duhamel, rational density, dovetailed search) |
+| `circuit-complexity-selection-synthesis-divergence-law` | Theorem B's measurable selection and the continuum joint layer |
+| `algebraic-two-local-instant-exact-complexity` | §1's specialisation argument (the last content of Hilbert irreducibility) |
+| `arithmetic-static-local-hardness-recurrence-window-law` | Castillo--Dietmann quantitative Hilbert irreducibility |
+
+**Cluster B — assembly-only.**
+
+| card | remaining |
+|---|---|
+| `determinant-defect-completion-law` | package the two several-variable halves as one set equality.  `opSchattenDet_pencil_line` absorbs the `z` variable (`det_p(pencil A (z·v)) 1 = det_p(pencil A v) z`), so both halves can be stated at `z = 1` over the star-shaped set of parameters; the common definitions are a `PencilGraphClosure`/`PencilCompletionFibre` pair keyed on lines through the origin.  Two gaps remain inside the packaging: the sufficiency half `exists_finiteRankPencil_tendsto_plainDet` gives **pointwise** convergence in `z`, while the necessity half needs **locally uniform** convergence -- the bridge is Vitali/Montel from the uniform Schatten bound (`exists_uniform_schattenNorm_bound`) -- and `exists_mvPoly_of_line_closures` needs its `hQc` (line-restriction coefficient convergence) discharged from the one-variable necessity `exists_poly_of_tendstoLocallyUniformlyOn_opSchattenDet` |
+
+**Cluster C — named external theorems.**
+
+| card | imported input |
+|---|---|
+| `cusp-spectrum-radius-law` | Kaczorowski--Perelli standard-twist theory |
+| `local-chain-metric-recurrence-exponents` | Kleinbock--Margulis extremality (plus Lemma 2, nondegeneracy) |
+| `route-e-cofactor-amplified-e3-token-supply` | Matomäki--Teräväinen all-interval `E₃` |
+| `route-e-forbidden-support-e3-stability` | same |
+| `schanuel-defects-algebraic-coefficient-independent` | the algebraic-group/Kähler layer |
+| `schanuel-stage-two-defect-slope-normal-form` | Kirby's exponential-algebraic closure |
+
+## Open (16)
 
 algebraic-two-local-instant-exact-complexity, all-replica-static-centralizer-planar-separation-law,
 arithmetic-static-local-hardness-recurrence-window-law, capacitary-observer-sector-excision-law,
@@ -62,10 +159,8 @@ capacity-compatible-fast-forwardable-incubation-law,
 circuit-complexity-selection-synthesis-divergence-law,
 codimension-forced-complexity-onset-moment-divergence-law,
 computable-static-local-exponential-state-complexity-law,
-cubic-phase-seeded-static-local-full-scale-plateau-law, cusp-spectrum-radius-law,
-determinant-defect-completion-law, fixed-shell-angular-dephasing-static-local-plateau-law,
+cusp-spectrum-radius-law,
+determinant-defect-completion-law,
 local-chain-metric-recurrence-exponents, onset-recurrence-dimension-independence-law,
 route-e-cofactor-amplified-e3-token-supply, route-e-forbidden-support-e3-stability,
-schanuel-defects-algebraic-coefficient-independent, schanuel-stage-two-defect-slope-normal-form,
-stabilizer-seeded-static-local-double-exponential-plateau-law,
-weak-cut-complexity-onset-capacity-separation-law
+schanuel-defects-algebraic-coefficient-independent, schanuel-stage-two-defect-slope-normal-form

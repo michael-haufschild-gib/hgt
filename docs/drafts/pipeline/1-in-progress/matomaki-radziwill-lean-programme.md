@@ -7669,3 +7669,100 @@ implied by `Qf ≥ exp((log x)^{a₀})` for every `K`.
 (steps, top, harmonic mass two-sided, base below the window), then the instantiation of
 `measureReal_annulusLarge_le_growing` at it, and finally the assembly of `B x` into
 `averagedMeanSquare_moebius_of_headSmall`.
+
+### Bricks 141–147 — THE MILESTONE: Matomäki–Radziwiłł for `μ` at every window `exp((log x)^β)`, `0 < β < 1` (2026-08-21)
+
+```text
+RHTower.Sieve.averagedMeanSquare_moebius_cardLength_all
+    {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
+  AveragedMeanSquare (fun n => (μ n : ℝ)) (cardLength β)
+```
+
+`lake env lean`-clean, axiom-clean `[propext, Classical.choice, Quot.sound]`, sorry-free, wired,
+built.  The corpus's previous best was `9/10 < β < 1`
+(`Sieve/MoebiusMeanSquare.averagedMeanSquare_moebius_cardLength`); **β is now free in (0,1)**.
+
+The chosen schedule:
+
+```text
+   low  range : exp((log x)^{β/2}) < p ≤ h = exp((log x)^β) ,  η = (log x)^{−(2+β)} ,
+                relative threshold θ = (log x)^{−(β+2)} ;
+   high range : exp((log x)^{19/20}) < q ≤ exp((log x)^{99/100}) , η' = (log x)^{−3} ,
+                Route-T bound everywhere on the annulus, ρ ≍ (log x)^{−8} ;
+   window W = (M/h)·log log x ,  disc w₀ = (log x)^{4·99/100+27}/(2π) ,  δ = (log log x)^{−1/2} ,
+   moment order  k = ⌈2(log x)^{1−β/2}⌉ .
+```
+
+**Brick 141 — `Sieve/ExpBaseSchedule`.**  The low ladder with an *exponential* bottom
+(`expSteps`, `expTop`) and its five facts: `expBase_lt_cardLength`, `expSteps_le`
+(`L ≤ 2(log x)^{β+c}`), `one_le_expSteps`, `expTop_le_cardLength`, and — the one the rough group
+needs — the **two-sided** harmonic mass `expRange_harmonic_le/_ge`:
+`(β−a)/2·log log x ≤ H ≤ β·log log x`.  Both endpoints now have logarithms that are powers of
+`log x`, which is exactly why the lower bound is available at all.
+
+**Brick 142 — `Sieve/ExceptionalMeasureSchedule`.**  `momentOrder a x = ⌈2(log x)^{1−a}⌉` and
+`expBlock_moment_bounds`: uniformly over the ladder,
+
+```text
+   g_j = log(#B_j·θ²/k) ≥ (log x)^a/2 ,        n_j = log NA_j ≤ log 2 + (log x)^β ,
+   g_j − n_j ≥ −(c + 2A + β + 2)·log log x .
+```
+
+The prime count comes from `Sieve/LadderBlockPrimeCount`; the two decay conditions of the count
+(`16C·e^{−c√log y} + 24 log y/√y ≤ η`) are met with room to spare because
+`log R_j ≥ (log x)^a`.  Then `measureReal_annulusLarge_schedule` gives
+`|𝒰| ≤ L·(2W/x + 2(1+k·nmax)·e^{k·D·log log x})`.
+
+**Brick 143 — `Sieve/TwoRangeAssemblyInputs`.**  `highRange_harmonic_le` (the high range's mass is
+below `log log x`, needed for `S' = (1+η')M·H'`) and the disc bound at a *growing* radius —
+`Sieve/MoebiusDiscRate`'s fibre specialisation fixes the radius, but the schedule's is
+`(log x)^{4b+3A₃+3}/(2π)`.  `discBudget`, `exists_discBudget_bound`, `tendsto_discBudget_div_sq`.
+
+**Bricks 144–146 — `Sieve/TwoRangeAssembly`.**  The budget
+
+```text
+   twoRangeBudget = discBudget
+     + ((1+δ)(smallLadder + 2·smallDefect) + (1+1/δ)·smallRough)
+     + ((1+δ)(largeLadder + 2·largeDefect) + (1+1/δ)·largeRough)
+```
+
+with `twoRangeBudget_bound` (one application of
+`integral_Icc_normSq_logPoly_moebius_le_twoRange`) and `tendsto_twoRangeBudget_div_sq` (the seven
+group limits).  Three of the seven pieces are **range-agnostic** — `tendsto_defectPiece` and
+`tendsto_roughPiece` each serve both halves — so seven limits are carried by five theorems.
+
+**A correction the assembly forced.**  Route T bounds a prime block by its *base* `R_j`, while the
+ladder group `Sieve/LargeLadderGroup.largeLadderGroup_le` is built on its *cardinality*.  The two
+differ by `log R_j/η'`, a polylogarithm, so the high threshold is
+
+```text
+   V'_j = 8·ρ·(log x)^{b+c'}·#B'_j ,
+```
+
+justified by `highBlock_base_le_card` (the same short-interval prime count, now applied to the high
+ladder).  The inflation is absorbed by taking `A₃ = 8`: the Route-T saving beats
+`(log x)^{E+b+c'} = (log x)^{6.99}`.
+
+**Brick 147 — `tendsto_exceptionalFactor`.**  The one hypothesis of the large ladder group that the
+moment method has to supply:
+
+```text
+   (log x)^{b+c'}·(FCmax·2π|𝒰|)·( h_b·log log x/M + h_b²/M² )  →  0 .
+```
+
+`plainKernelFarConst_schedule_le` bounds the kernel's far constant by `10⁶·log x·x^{1/4}`
+(via `natLog_two_le : Nat.log 2 N ≤ 2 log N`), `|𝒰| ≤ 36(log x)^{…}·e^{3D(log x)^{1−a}·log log x}`,
+and the two window factors by `2·exp((log x)^{(b+1)/2})/√x`.  The product is
+`x^{1/4}·x^{o(1)}/x^{1/2} → 0` — `tendsto_expSubLinear_cardLength_div_rpow`.
+
+**Where the `x^{1/4}` margin sits.**  The exceptional half needs `|𝒰|/W ≲ x^{−1/4+o(1)}`, the
+moment method at the growing order delivers `|𝒰| = x^{o(1)}`, and `FCmax ≍ x^{1/4}` while
+`M/R' ≍ x^{1/2−o(1)}`.  Every one of those three exponents is forced; the argument has a quarter of
+`log x` in hand and nothing more.
+
+**What remains for the five Route-E cards**: forward
+`averagedMeanSquare_moebius_cardLength_all` through the six sites that currently carry `9/10 < β`
+(`ScaledBadStart`, `FreeScaleBadStart`, `FreeScaleTileCount`, `FreeScaleCover`,
+`RouteEMarkerHallLaw`, `ScaledBudgetLimit`) to reach
+`averagedMeanSquare_moebius_scaledLength` at every `0 < β < 1`; cards 1–2 stay gated on
+Matomäki–Teräväinen Theorem 1.2.

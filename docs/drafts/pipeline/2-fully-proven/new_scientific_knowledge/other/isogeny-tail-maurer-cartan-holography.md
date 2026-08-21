@@ -418,3 +418,109 @@ The tail identity itself — `⋂_n alpha^(n*) K = K^(closure of ⋃_n Gamma_n)`
 `HTGeometry.MultiplicationTailFixedField.iInf_differentialTranslationFixedField_eq_kolchinClosure`,
 proved for an arbitrary tower of translation labels, with the Zariski/Kolchin density step supplied
 by `DifferentialKolchinClosure.differentialTranslationFixedField_eq_of_kolchinClosureOver_eq`.
+
+## Lean progress — the field-theoretic half of `(1)`
+
+`GaloisForLFunctions.HTGeometry.FixedFieldDegreeCriterion` (wired, built, axiom-clean)
+
+```text
+eq_fixedPoints_subfield_of_finrank
+    **a subfield contained in the fixed field of a finite faithful action, over which the whole
+    field already has degree the order of the group, is the fixed field**
+```
+
+Mechanism: Artin's theorem gives `[K : K^G] = |G|`; the tower `L ⊆ K^G ⊆ K` then forces
+`[K^G : L] = 1`, and a degree-one extension is an equality of fields (the span of `1` is
+everything).
+
+This is exactly the field-theoretic content of `(1)`, `alpha^(n*) K = K^(Gamma_n)`.  With it, the
+remaining input for `(1)` is purely geometric and is now a single statement:
+
+> the pullback `alpha^(n*) K` lands inside `K^(Gamma_n)` — immediate, since `alpha^n` is invariant
+> under translation by `ker(alpha^n)` — **and** `[K : alpha^(n*) K] = deg(alpha^n) = |Gamma_n|`.
+
+The degree equality is the "finite étale of degree `deg alpha^n`" statement at the level of the jet
+function field; everything after it, including `(2)` and `(3)`, is already Lean
+(`FiniteHolonomyTail`, `MultiplicationTailFixedField`, `DifferentialKolchinClosure`).
+
+## Lean progress — `(1)` reduced to the degree of the covering map
+
+Two modules (wired, built, axiom-clean `[propext, Classical.choice, Quot.sound]`):
+
+`GaloisForLFunctions.HTGeometry.DifferentialAlgebraicAdjoin`
+
+```text
+derivPart                                     the derivation-stable part of an intermediate field
+deriv_mem_adjoin_of_isAlgebraic               a' lies in the field a generates
+derivationClosed_adjoin_of_isAlgebraic        F(a) is a differential field
+differentialAdjoin_singleton_eq_adjoin        **an algebraic element has no new jets**
+finrank_differentialAdjoin_singleton          its differential degree is deg(minpoly)
+finrank_eq_of_differentialAdjoin_singleton_eq_top
+finiteDimensional_of_differentialAdjoin_singleton_eq_top
+subfieldDifferential / subfield_differentialAlgebra / derivationClosed_differentialAlgebra
+```
+
+`GaloisForLFunctions.HTGeometry.DeckFixedFieldSimpleGenerator`
+
+```text
+eq_fixedPoints_of_adjoin_simple_eq_top        MulSemiringAction form
+eq_fixedPoints_of_differentialAdjoin_eq_top
+finrank_le_of_differentialAdjoin_eq_top       automorphism-subgroup form
+finiteDimensional_of_differentialAdjoin_eq_top
+eq_fixedField_of_differentialAdjoin_eq_top
+adjoin_differentialJetSet_eq_top_of_base
+eq_fixedField_of_algebraic_generator          **the capstone**
+```
+
+Mechanism.  Implicit differentiation of the minimal equation: `deriv_eval` splits `(m(a))' = 0`
+into the coefficient contribution and `m'(a)·a'`, and `m'(a) ≠ 0` in characteristic zero because
+`deg m' < deg m` and `m` is minimal.  Hence `a' ∈ F(a)`; the elements whose derivative stays in
+`F(a)` form an intermediate field, so `F(a)` is derivation-closed and equals `F⟨a⟩`.
+
+Consequence for the card.  The differential degree `[K : alpha^(n*)K]` collapses to an *order-zero*
+degree.  Combined with the corpus's `DeckDegreeUpperBound.eq_fixedField_of_finrank_le` — which
+already shows only the *upper* bound is a genuine input, Artin supplying the other direction —
+`eq_fixedField_of_algebraic_generator` proves
+
+`alpha^(n*) K = K^(Gamma_n)`
+
+from exactly four inputs, three of which are formal for an isogeny pullback:
+
+1. `E := alpha^(n*)K` is derivation-closed (it is the image of a differential endomorphism);
+2. `E ≤ K^(Gamma_n)` (translation invariance of `alpha^n`);
+3. `K = C<g>` for the generic point `g` (the definition of `K`);
+4. `g` is algebraic over `E` of degree at most `|Gamma_n|`.
+
+Only (4) carries geometry, and it is now an order-zero statement: `g` is a root of
+`alpha^n(X) = alpha^n(g)`, of degree `deg alpha^n = |Gamma_n|` over `C(alpha^n g) ⊆ E`.  The whole
+jet/prolongation layer — item 1 of the Lean-status list, "prolongation commutes with a constant
+finite étale quotient" — is no longer needed for `(1)`: the differential structure is carried by
+`differentialAdjoin_singleton_eq_adjoin`, which shows an algebraic generator adds no jets at all.
+
+Items 2–5 of the Lean-status list (the concrete quotient sheaf/atlas for `G/H`, the DCF
+generic-point bridge for the logarithmic derivative, the reduced presentation, and the finite
+action quotient) are untouched by this pass and still gate the card.
+
+## Lean progress — `(1)` from one annihilating polynomial
+
+`GaloisForLFunctions.HTGeometry.IsogenyDegreeFixedField` (wired, built, axiom-clean)
+
+```text
+eq_fixedField_of_annihilating_poly
+    **the deck description from one annihilating polynomial of the covering degree**
+```
+
+Hypotheses: `E` derivation-closed inside the invariants of a finite automorphism group `Γ`; the
+generic point `g` differentially generates `K` over the constants; and a nonzero `q ∈ E[X]` with
+`q(g) = 0` and `deg q ≤ |Γ|`.  Conclusion: `E = K^Γ`.
+
+The proof composes `eq_fixedField_of_algebraic_generator` with `minpoly.degree_le_of_ne_zero`: the
+minimal polynomial can only be smaller than `q`, so the differential degree bound applies, and
+Artin's theorem closes the other direction.
+
+So the card's `(1)` — `alpha^{n*} K = K^{Gamma_n}` — now needs from geometry **only** the
+annihilating polynomial itself: `g` is a root of `alpha^n(X) − alpha^n(g)`, of degree `deg alpha^n
+= |Gamma_n|` over `C(alpha^n g) ⊆ alpha^{n*}K`.  That is the definition of the degree of a finite
+morphism, with no jet or prolongation content: the whole differential layer of item 1 of the
+Lean-status list has been discharged by
+`DifferentialAlgebraicAdjoin.differentialAdjoin_singleton_eq_adjoin`.

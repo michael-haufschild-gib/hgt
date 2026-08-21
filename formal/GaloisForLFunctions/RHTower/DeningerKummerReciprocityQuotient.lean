@@ -59,6 +59,21 @@ theorem deningerKummerReciprocityQuotientHom_injective (K : Type*) [Field K] [Nu
   apply Multiplicative.toAdd.injective
   exact hxy
 
+/-- The torsion-free Kummer quotient is multiplicatively equivalent to the local currents in the
+product-formula kernel that are globally realized. -/
+noncomputable def deningerKummerReciprocityQuotientEquivRange (K : Type*) [Field K]
+    [NumberField K] : deningerKummerGroup K ≃*
+      (MonoidHom.mrange (deningerKummerReciprocityQuotientHom K)) :=
+  MulEquiv.ofBijective
+    (MonoidHom.mrangeRestrict (deningerKummerReciprocityQuotientHom K))
+    ⟨fun _ _ hxy => deningerKummerReciprocityQuotientHom_injective K (congrArg Subtype.val hxy),
+      MonoidHom.mrangeRestrict_surjective _⟩
+
+/-- Evaluation of the local--global Kummer equivalence. -/
+theorem deningerKummerReciprocityQuotientEquivRange_apply (K : Type*) [Field K] [NumberField K]
+    (x : deningerKummerGroup K) : deningerKummerReciprocityQuotientEquivRange K x =
+      MonoidHom.mrangeRestrict (deningerKummerReciprocityQuotientHom K) x := rfl
+
 end
 
 end RHTower

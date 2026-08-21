@@ -477,3 +477,134 @@ the depth-`s` circuit dictionary as the target family `z` in eigencoordinates th
 `parseval_finiteComplexInner`; and then `QuenchedFixedTimeTransfer` already carries `(15)`--`(16)`,
 `(8)`, `(8a)` and `(9)` verbatim.  Theorem B's Duhamel step, rational density and dovetailed search
 are untouched.
+
+## Lean progress -- one-sided Kronecker--Weyl (2026-08-21)
+
+The card's `(6)` is a density over the **one-sided** window `[0,T]`, while the incidence layer's
+capture-density bounds are stated for centred windows `[-T,T]`.  The one-sided version is now proved
+with the *same* constant -- no factor of two is paid.
+
+`formal/GaloisForLFunctions/HTGeometry/OneSidedCaptureDensity.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| **one-sided Kronecker--Weyl equidistribution**: uniform sampling on `(0,T]` converges weakly to Haar | `clockPhaseWindowLaw_tendsto_haar` |
+| Portmanteau on the one-sided window | `oneSided_closedTarget_limsup_le_volume` |
+| **the one-sided capture-density bound** | `limsup_oneSided_projectiveAmpCapture_le` |
+| the physical evolution sign convention | `limsup_oneSided_evolutionCapture_le` |
+
+The corpus already carried the one-sided window law `clockPhaseWindowLaw` and its Bohr-mean
+character averages; what was missing was the identification of its limit with *full* Haar measure at
+a rationally independent frequency, which is one `by_cases` on the character.
+
+`formal/GaloisForLFunctions/HTGeometry/CompletedTimeCircuitDensity.lean` gained:
+
+| Card item | Declaration |
+|---|---|
+| the counting bound at an arbitrary dictionary exponent: `\|Z\| ≤ 2^u` gives `\|Z\|2^{-r} ≤ 2^{u-r}` | `card_mul_two_pow_le_rpow_gen` |
+| **`(6)` on the one-sided window** | `limsup_oneSided_capture_le_two_rpow` |
+
+At the card's own schedule `u = r_n/4` (which is `(14)`: `M_n^{s_n+1} ≤ 2^{r_n/4}`),
+`card_mul_two_pow_le_rpow_gen` gives exactly `η_n = 2^{-3r_n/4}`.
+
+## Lean progress -- `(6)` is closed in physical time (2026-08-21)
+
+Two further umbrella-wired, axiom-clean modules complete the deferred input theorem `(6)`, in the
+generality the card states it: for **any** Hermitian generator with maximally projective spectrum,
+any unit input, and any finite target dictionary satisfying the counting condition.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockPhaseEvolutionBridge.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the eigencoordinates of a state, and Parseval | `eigenCoords`, `sum_normSq_eigenCoords`, `finiteComplexInner_eigenCoords` |
+| the eigencoordinates of the evolved state | `eigenCoords_unitaryEvolution` |
+| **the one-sided clock phase point carries the Schrödinger orbit** | `projectiveSpectralOrbit_finiteClockPhasePoint` |
+| **the physical fidelity is the orbit fidelity** | `finitePureStateFidelity_unitaryEvolution_eq_orbit` |
+
+`formal/GaloisForLFunctions/HTGeometry/PhysicalTimeCircuitCapture.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the set of physical times at which the dictionary captures the orbit | `physicalCaptureSet` |
+| it is the clock-phase preimage of the relative-phase capture target | `physicalCaptureSet_eq_preimage` |
+| **`(6)`**: the one-sided physical-time density of the complete circuit union is at most `2^{-r/2}` | `limsup_oneSided_physicalCapture_le` |
+| the squared-distance expansion of two states | `sum_normSq_sub_eq` |
+| **an approximation within `ε` is a capture at threshold `1-ε²`** | `le_finitePureStateFidelity_of_dist_le` |
+
+`limsup_oneSided_physicalCapture_le` is literally the card's `(6)`:
+
+```
+theorem limsup_oneSided_physicalCapture_le
+    (heb : IsOrthoEigenBasis H e lam) (hmax : MaximallyProjectiveEnergy lam) (ref : I)
+    (psi : I → ℂ) (hpsi : finiteComplexInner psi psi = 1)
+    (Z : C → (I → ℂ)) (hZ : ∀ κ, finiteComplexInner (Z κ) (Z κ) = 1)
+    {a : ℝ} (ha : 0 < a) {r : ℕ} (hr : 1 ≤ r) {c₀ : ℝ}
+    (hcoll : occupationCollision (fun j => ‖eigenCoords e psi j‖ ^ 2) ≤ c₀)
+    (hscale : 16 * c₀ / a ^ 2 ≤ 1 / (2 * r))
+    {M : ℝ} (hM : 1 < M) {s : ℕ} (hcard : (Fintype.card C : ℝ) ≤ M ^ (s + 1))
+    (hs : ((s : ℝ) + 1) * Real.log M ≤ ((r : ℝ) / 2) * Real.log 2) :
+    atTop.limsup (fun T => (windowProbabilityMeasure T : Measure ℝ)
+        (physicalCaptureSet H psi a Z))
+      ≤ ENNReal.ofReal ((2 : ℝ) ^ (-((r : ℝ) / 2)))
+```
+
+and `le_finitePureStateFidelity_of_dist_le` is the conversion `d ≤ 2ε ⟹ fidelity ≥ 1-(2ε)² = a`
+that makes the low-complexity event a subset of `physicalCaptureSet`.
+
+### What remains on this card
+
+Instantiating `limsup_oneSided_physicalCapture_le` at the Gaussian Pauli ensemble for `J` in
+`gaussianGoodSet` -- which is now purely bookkeeping, since
+`isOrthoEigenBasis_injective_pauliEnsemble_ae` and `maximallyProjectiveEnergy_pauliEnsemble_ae`
+supply `heb` and `hmax` almost surely, `gaussianGoodSet` supplies `hcoll` at `c₀ = 4(2/3)^n`, and
+`QuenchedFixedTimeTransfer` already carries `(15)`--`(16)`, `(8)`, `(8a)`, `(9)` -- and Theorem B.
+
+## Lean progress -- `(6)` on the ensemble (2026-08-21)
+
+`formal/GaloisForLFunctions/HTGeometry/GaussianEnsembleCircuitDensity.lean` (new, umbrella-wired,
+axiom-clean) instantiates the physical-time bound at the centred Pauli Gaussian ensemble.
+
+| Card item | Declaration |
+|---|---|
+| `⟨u,u⟩ = ∑‖u_x‖²` | `finiteComplexInner_self_eq_sum_normSq` |
+| the input collision of `(11)` is the occupation collision of the eigencoordinates | `occupationCollision_eigenCoords` |
+| **`(6)`**: almost every `J ∈ G_n` has completed-time circuit density at most `2^{-r/2}` | `ae_limsup_physicalCapture_le_of_gaussianGoodSet` |
+
+The three inputs are exactly the card's: `isOrthoEigenBasis_injective_pauliEnsemble_ae` and
+`maximallyProjectiveEnergy_pauliEnsemble_ae` (the card's "simple spectrum, maximal projective
+rational spectral rank ... hold outside a Gaussian-null set"), and membership in `gaussianGoodSet`
+(the card's `(12)`--`(13)`).  So `(6)` is no longer a deferred input theorem: it is a Lean theorem
+about the card's own ensemble.
+
+### What remains on this card
+
+Theorem A: only the packaging of the depth-`s` word dictionary `Z_{n,s}` as the target family `Z`
+(gate action on the fixed seed, `Fintype.card (Fin s → Γ) = M^s` from `CircuitDictionaryCounting`,
+unit norm of each gate image), after which `(15)`--`(16)`, `(8)`, `(8a)`, `(9)` are
+`QuenchedFixedTimeTransfer` verbatim.  Theorem B: Duhamel time perturbation, rational density and
+the dovetailed search.
+
+## Lean progress -- the window/time-fraction bridge (2026-08-21)
+
+`formal/GaloisForLFunctions/HTGeometry/WindowTimeFractionBridge.lean` (new, umbrella-wired,
+axiom-clean) connects `(6)` to `(15)`--`(16)`.
+
+| Card item | Declaration |
+|---|---|
+| the quenched time fraction is the sampling probability of the fibre | `quenchedTimeFraction_eq_windowProbability` |
+| hence their upper limits agree | `limsup_quenchedTimeFraction_eq_limsup_windowProbability` |
+| **`(6) ⇒ liminf_T f_T(J) ≥ 1 − η`** | `le_liminf_quenchedTimeFraction_of_windowProbability` |
+
+### The exact next brick
+
+Joint measurability of the hard event `S = {(J,t) : C_{2ε}(e^{-itH_n(J)}Ω) > s_n} ⊆ Ω × ℝ`, which
+`le_liminf_quenchedTimeFraction_of_limsup_compl_le` consumes.  Mathematically it is immediate --
+`Sᶜ` is a finite union of closed distance conditions, and the corpus already owns both Lipschitz
+estimates (`norm_unitaryEvolution_mulVec_sub_le` in the generator,
+`norm_unitaryEvolution_mulVec_time_sub_le` in the time) -- but it needs the matrix operator-norm
+topology (`Matrix.Norms.L2Operator`) to be reconciled with the entrywise topology before
+`NormedSpace.exp_continuous` can be composed into a joint continuity statement.  That reconciliation
+is the only remaining obstacle between `ae_limsup_physicalCapture_le_of_gaussianGoodSet` and the
+card's `(8)`, `(8a)`, `(9)`, all three of which are then `QuenchedFixedTimeTransfer` verbatim.

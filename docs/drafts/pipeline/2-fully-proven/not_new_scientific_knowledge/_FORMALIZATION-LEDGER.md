@@ -1013,3 +1013,554 @@ Folder size at start of this pass: **262** top-level cards.
   constant-term functional (`constantTerm_scaleDeriv : CT ∘ D = 0`) and the residue pairing
   (`residuePairing_single/_swap/_natMode_eq_zero/_opposite_ne_zero`).  Reusable for any
   "constant-term residue seam of a character algebra" argument.
+| 2026-08-21 | `self-dual-quartet-defeats-generic-shift-curvature-bound` | new `RHTower/SelfDualQuartetShiftCurvature.lean` |
+| 2026-08-21 | `anti-causal-cauchy-trace-unique-phase-noncancellation` | new `RHTower/WeightedAntiCausalCauchyTrace.lean` |
+| 2026-08-21 | `shifted-euler-quotient-twisted-cocycle-flatness` | new `RHTower/ShiftedEulerQuotientCocycleFlatness.lean` |
+
+### More reusable infrastructure (2026-08-21)
+
+- `RHTower/SelfDualQuartetShiftCurvature.lean` — the degree-four self-dual counterexample family
+  with its functional equation, Schwarz symmetry, exact zero set, strip geometry, boundary
+  unimodularity (`norm_selfDualShiftRatio_eq_one`), full-shift cocycle, residue profile
+  `4e^{-at}cos(γt)` and exact corner energy `4/a + 4a/(a²+γ²)` (`> 8`, `→ ∞` as `a → 0⁺`).
+- `RHTower/WeightedAntiCausalCauchyTrace.lean` — **the `t^α`-weighted off-line Cauchy Gram law**
+  `weightedOfflineEnergy_eq` (`E_α = 4Γ(α+1)∑ mⱼm_k Re[(conj zⱼ+z_k)^{-(α+1)}]`, every `α > -1`),
+  the polar sign law `re_cpow_neg_ofReal` (`(w^{-c}).re = ‖w‖^{-c} cos(c·arg w)`), entrywise
+  positivity at `α = 0`, an explicit negative cross entry for every `α > 0`, the single-mode floor
+  `E₀ = 2m²/a > 4`, and the **Hankel first-moment identity**
+  `lintegral_hankelSquare_eq_firstMoment` (`∫_{x>0}∫_{y>0} g(x+y) = ∫_{t>0} t·g(t)`) with its
+  half-line translation lemma `lintegral_Ioi_add_left`.  Reuse for any weighted boundary-energy or
+  Hankel Hilbert–Schmidt computation.
+  Key upstream find: `GaloisForLFunctions.HTGeometry.integral_cpow_mul_exp_neg_mul_Ioi` already
+  gives `∫_0^∞ t^{s-1}e^{-wt} = Γ(s)w^{-s}` for **complex** rate `Re w > 0`
+  (`HTGeometry/BarnesMellinRepresentation.lean`).
+- `RHTower/ShiftedEulerQuotientCocycleFlatness.lean` — the abstract shifted-quotient cocycle
+  `shiftedQuotient_cocycle`, its two triple decompositions and the zero-curvature statement, plus
+  the twisted Dirichlet convolution `suzukiCoeffAF_add_eq_twistedConvolution` and
+  `dirichletShift_one`.  The abstract cocycle applies to *any* `F : ℂ → ℂ`.
+| 2026-08-21 | `absolute-euler-paired-gauss-resolvent-autocorrelation-law` | new `HTGeometry/HalfLineExponentialPacketGram.lean` + new `RHTower/PairedCauchyLaplaceIdentities.lean` |
+
+- `HTGeometry/HalfLineExponentialPacketGram.lean` — **the half-line Gram toolkit for finite
+  exponential packets**: `halfLineExpPacket`, `integral_exp_atom_mul`, `integral_expPacket_mul`,
+  `integral_conj_expPacket_mul`, `normSq_sub_re_sq`, `re_conj_mul_sub_re_mul`,
+  `integral_im_sq_expPacket`, `integral_im_mul_im_expPacket`.  Use this for *any* half-line
+  "Hermitian square minus bilinear square" computation; it turns such an expression into the
+  half-line energy of the imaginary part of the packet.
+- `RHTower/PairedCauchyLaplaceIdentities.lean` — `pairedTransform` / `pairedQuadratic` with the
+  three exact laws `paired_const_law` (`8cA`), `paired_cauchyAtom_law` (`4cZ_a²+8acB_a`),
+  `paired_lag_law` (`-8d∫y(x+τ)y(x)`), plus `pairedQuadratic_add` and the contact-mass law
+  `pairedQuadratic_const_shift`.  These serve every `absolute-euler-paired-*` card.
+
+### Blocker triage refresh (2026-08-21)
+
+Cards read in this pass and the *exact* remaining obligation, so the next session does not
+re-diagnose:
+
+- `infinitesimal-euler-leakage-cauchy-energy-threshold` — the finite-profile half is already
+  stage-3-certified (`RHTower/FiniteOfflineCauchyEnergy.lean`, `FiniteOfflineCauchyL2.lean`).
+  What is left: **Theorem A** (`ω⁻¹ ℓ_ω → ℓ₁` from the differentiated Xi leakage quotient),
+  **Theorem B** `(3)`–`(5)` (`∂_ω Θ_ω|₀ = -2ξ'/ξ`; `∂_ω c_ω(n)|₀ = 2Λ(n)`;
+  `∂²_ω c_ω(n)|₀ = 4(Λ⍟Λ)(n)`; the corpus already has
+  `RHTower.hasDerivAt_LSeries_suzukiShiftedCoefficient` and `LSeries_two_mul_vonMangoldt` for the
+  series form), and **Theorem D** (the Toeplitz/Hankel `I - T*T = L*L` construction, which needs a
+  Hardy-space `H²` compression layer).
+- `absolute-euler-paired-{cumulative-critical-error-current,translation-resolvent-functional-calculus,
+  normalized-screw-current-identification}` — their formalization gates are explicitly *conditional
+  on an open analytic inequality*; the reusable algebra they share is now
+  `RHTower/PairedCauchyLaplaceIdentities.lean`.  The translation-resolvent card additionally needs a
+  half-line translation-semigroup functional calculus on `L²(ℝ₊)`.
+- `noisy-binary-tree-channel-rg-clock-hypertranscendence`,
+  `gadc-tree-population-rg-clock-hypertranscendence` — the exact channel algebra is in
+  `HTGeometry/BetheHolographicIsingRG.lean`, but the **headline HT conclusion is not**: it needs
+  hypertranscendence of the Schröder/Abel/Poincaré linearizer of a rational map (the
+  Fernandes-survey theory).  *That brick is shared by both cards.*
+- `thermodynamic-divisor-charge-finite-ancestor-or-boundary-index` — §1 is Lean
+  (`RHTower/PrimeQuasiLocalCharge.nonzero_winding_has_finiteAncestor`); §2 needs **operator
+  K-theory** (six-term exactness), absent from mathlib.
+- `semilocal-prolate-extension-rank-two-ambiguity`,
+  `semilocal-jacobi-linear-growth-prolate-domain-gate` — deficiency indices, von Neumann/Krein
+  extension theory and half-line Jacobi orthogonal-polynomial comparison.  mathlib has no unbounded
+  self-adjoint extension theory.
+- `locally-infinite-repaired-frequency-source-for-compact-markov`,
+  `zero-frequency-repaired-source-mellin-threshold`,
+  `reservoir-density-complete-monotonicity-markov-equivalence` (+ the two other reservoir cards) —
+  need **Carleman's determinacy criterion** and **Bernstein's theorem** (completely monotone ⇒
+  Laplace transform).  The corpus has the *discrete* half
+  (`HTGeometry/CompletelyMonotoneSampling.exists_hausdorffSource_of_completelyMonotoneDiff`).
+- `first-order-autonomous-algebraic-ap-periodicity` — needs algebraic-curve normalization on a
+  compact Riemann surface **plus Schwartz's minimal-set trichotomy for `C²` surface flows**
+  (a Poincaré–Bendixson generalization).  Nothing of either is in mathlib.
+- `first-order-composition-two-defect-decomposition`,
+  `autonomous-cap-derivative-shadow-law`,
+  `asymptotically-exponential-algebraic-cascade-unit-cost` — all gated on **Clunie composition
+  growth**, i.e. the Nevanlinna lane.
+- `drifting-periodic-primitive-ramification-exclusion` — needs the **Nevanlinna second main theorem
+  with ramification** (at most two totally ramified finite values for an entire function).  The
+  omitted-value case alone would follow from little Picard.
+- `verified-height-one-zero-turing-extension` — the generic one-zero implication is already Lean
+  (`RHTower.rhVerifiedThrough_amplify_of_increment_ncard_le_one`); the missing input is a
+  **certified Turing zero count** `N(T₁) = 12363153437139`, i.e. verified interval arithmetic for
+  `ζ`.  This is the one card whose obligation is a computation, not a theorem.
+- `de-branges-ht-gauge-saturation` — needs Hermite–Biehler/de Branges space theory.  The corpus
+  already owns the two nontrivial inputs: Hölder for `Γ` (the whole
+  `HTGeometry/*Gamma*Hypertranscendence*` stack) and Weierstrass products
+  (`HTGeometry/WeierstrassFactorizationTheorem.lean`), plus the finite-order rigidity half
+  (`HTGeometry/FiniteOrderHadamard.exists_polynomial_exp_of_ne_zero_of_growth`).  What is missing is
+  the de Branges space `H(E)` with its bounded-type conditions and the unitary gauge theorem.
+
+**Highest-leverage bricks, in order:** (1) the Nevanlinna lemma on the logarithmic derivative
+→ second main theorem → Clunie/ramification (unblocks the eight `F_s` cards plus at least four
+more); (2) Bernstein + Carleman determinacy (the five reservoir cards); (3) the ADH
+rational-or-hypertranscendental theorem (18 cards); (4) hypertranscendence of rational-map
+linearizers (the two tree-channel cards and the Böttcher family).
+| 2026-08-21 | `shifted-hardy-leakage-static-continuity-no-go` | new `HTGeometry/HardyLeakageRankOne.lean` |
+
+- `HTGeometry/HardyLeakageRankOne.lean` — **the rank-one Hardy leakage channel**, on the corpus's
+  own `H²(D)`: `blaschkeMul` / `blaschkeIsometry` / `adjoint_blaschkeMul_comp`,
+  `modelSpace hb = ℂ ∙ k_β` with `orthogonal_modelSpace`,
+  `starProjection_modelSpace_blaschkeMul` (`P_{K_B} T_A = b_α(β) P_{K_B}`),
+  `norm_sq_adjoint_blaschkeMul` (`‖T_B^* g‖² = ‖g‖² - ‖P_{K_B}g‖²`), and the Schur defect
+  `hardyLeakage_sq : ‖f‖² - ‖T_B^*(T_A f)‖² = |b_α(β)|² ‖P_{K_B} f‖²` with its rank-one and
+  norm corollaries.  Plus `cayleyPoint` and `norm_blaschkeFactor_cayley` (`= ω/a`).
+  **Reuse this for every `…-hardy-leakage-…` card**: the Toeplitz compression of a
+  Blaschke-quotient symbol is `T_B^* T_A`, entirely internal to `H²`, so no ambient `L²(𝕋)` and no
+  half-plane Hardy space is needed.
+| 2026-08-21 | `sonin-relative-resolvent-sylvester-factorization` | new `RHTower/SoninSylvesterFactorization.lean` + new `HTGeometry/DisjointSpectrumIntertwiner.lean` |
+
+- `HTGeometry/DisjointSpectrumIntertwiner.lean` — **Rosenblum for self-adjoint elements** (mathlib
+  gap): `aeval_mul_eq_mul_aeval_of_intertwine`, `cfc_mul_eq_mul_cfc_of_intertwine`
+  (`S X = X T ⇒ f(S) X = X f(T)` for continuous real `f`, via Weierstrass + `norm_cfc_le`), and
+  `eq_zero_of_intertwine_of_disjoint_spectrum` (disjoint spectra ⇒ `X = 0`, via Urysohn).
+  *Import note:* the real cfc instance needs
+  `Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic` **and** `…/Instances`;
+  `NormOneClass A` needs `[Nontrivial A]`.
+- `RHTower/SoninSylvesterFactorization.lean` — the abstract Sonin corner algebra:
+  `sonin_sylvester_factorization`, `sonin_transport`, `isCompactOperator_equiv_comp_iff`,
+  `memSchattenClass_equiv_comp_iff`, `memSchattenClass_one_sylvester`, `sonin_corner_eq_zero_iff`,
+  `sonin_cfc_intertwine`, `soninCross_eq_zero_of_disjoint_spectrum`.
+  **Pattern worth repeating:** a card whose "hypotheses" are its own quantified operator data is
+  fully formalizable as an abstract theorem — that is not a smuggled analytic assumption.
+
+### In flight: `sonin-euler-inverse-polar-corner-noncompact`
+
+Its **"Abstract operator lemma" (items 1–4) is now fully Lean-proved** in the new module
+`HTGeometry/ProjectionCornerCommutator.lean`:
+
+- `crossCorner Q A = (1-Q) A Q`, `upperCorner Q A = Q A (1-Q)`, `projCommutator Q A = [Q,A]`;
+- `projCommutator_eq_corners`, `crossCorner_eq_neg_compression`, `upperCorner_eq_adjoint`;
+- **`isCompactOperator_crossCorner_iff`** (item 1; the hard direction uses the corpus's Schauder
+  theorem `HTGeometry.isCompactOperator_adjoint_rectangular`);
+- `projCommutator_inv`, **`isCompactOperator_projCommutator_inv_iff`** (item 2);
+- `projCommutator_mul`, `isCompactOperator_projCommutator_sq`,
+  **`isCompactOperator_crossCorner_sq`** (items 3–4);
+- **`not_isCompactOperator_crossCorner_inv`**, **`not_isCompactOperator_crossCorner_sqrt`** — the
+  propagation form the card actually uses.
+
+**What is left on that card:** the concrete instantiation at `W_p = M_{|1-p^{-1/2-is}|²}` on
+`SoninL2`.  The parent noncompactness is already stage 3
+(`RHTower.centralPositiveEulerCorner_not_isCompactOperator`, with
+`crossBoundary e a = (1-e) a e` matching `crossCorner`), so what remains is: `W_p` self-adjoint,
+the two-sided bound `(1-p^{-1/2})² ≤ w_p ≤ (1+p^{-1/2})²` giving a bounded inverse, the cfc square
+roots, and the `θ_p`-transport of the polar corner (for which
+`RHTower.isCompactOperator_equiv_comp_iff` is already available).
+
+**Reusable elsewhere:** every "corner is/ is not compact" Sonin card can now argue through
+`projCommutator`.
+
+### Sweep continued (2026-08-21, batch 2)
+
+**Promoted**
+
+| Card | Modules |
+|---|---|
+| `sonin-euler-inverse-polar-corner-noncompact` | `HTGeometry/ProjectionCornerCommutator.lean` (+ `mixedCorner` transport), `RHTower/SoninEulerInversePolarCorner.lean` |
+| `depth-three-face-signature-completeness` | `HTGeometry/DepthThreeFaceSignatureCompleteness.lean` |
+| `absolute-euler-paired-translation-resolvent-functional-calculus` | `RHTower/PairedTranslationResolventCalculus.lean` |
+
+**New reusable infrastructure**
+
+- `HTGeometry/ProjectionCornerCommutator.lean` also gained `mixedCorner P Q A = (1-P) A Q`,
+  `mixedCorner_eq_comp`, `crossCorner_eq_comp` and **`isCompactOperator_mixedCorner_iff`** —
+  transport of corner compactness along a bounded isomorphism carrying `ran Q` onto `ran P`.
+  Only the two range identities are used; no analytic input.
+- `RHTower/SoninEulerInversePolarCorner.lean` — the concrete Euler weight `W_p` on `SoninL2`:
+  self-adjointness, Neumann invertibility (`‖p^{-1/2}(D+D*)‖ ≤ 2/√p < 1+p⁻¹`), positivity of the
+  real spectrum, and the cfc weights `W_p^{-1}`, `W_p^{1/2}`, `W_p^{-1/2}`.
+  **Instance trap:** `ContinuousFunctionalCalculus ℝ (SoninL2 →L[ℂ] SoninL2) IsSelfAdjoint` does
+  *not* resolve by instance search, but the term `IsSelfAdjoint.instContinuousFunctionalCalculus`
+  elaborates.  Declare it as a `local instance` at the top of the module.
+- `HTGeometry/DepthThreeFaceSignatureCompleteness.lean` — the `d = 3` instance of the all-depth
+  pair-face classification, plus the multiplicative face charge `multFaceCharge` and the
+  simple-pole reduction of a logarithmic-derivative face signature to order `-1`.
+- `RHTower/PairedTranslationResolventCalculus.lean` — **the half-line translation-resolvent
+  calculus of the exponential core**: `(4)` the resolvent of a packet is a packet, `(5)`
+  `y_c' = c y_c - y`, `(6)` the exact contact identity `Z_c² + 2 c B_c = 2⟨y, R_c y⟩` (proved by
+  Cauchy-kernel algebra, *not* by integration by parts, so no decay estimate is needed), `(7)` the
+  Cauchy atom is `8 d ⟨y, R_c y⟩`, and the Euler-block operator algebra: geometric resolvent
+  `∑_{k≥1} T^k = T(1-T)^{-1}`, Cayley form `(1+T)(1-T)^{-1} = 1 + 2T(1-T)^{-1}`, accretivity
+  `Re⟨(1+T)v,(1-T)v⟩ = ‖v‖² - ‖Tv‖² ≥ 0`, and `‖p^{-1/2}S‖ < 1`.
+
+**Heavy pile — precise remaining bricks (do not re-triage, build these)**
+
+1. `absolute-euler-paired-cumulative-critical-error-current-law` and
+   `absolute-euler-paired-normalized-screw-current-identification` both reduce to one
+   *infinite-aperture* Stieltjes passage.  The clean route is **not** the card's cutoff argument:
+   generalize `RHTower.criticalMellinStieltjesPairing_integrationByParts` to keep the boundary
+   term (drop `hFend`, add `+ E_crit(2a) F(2a)`), then let `a → ∞`.  Needed:
+   (i) that boundary-term generalization;
+   (ii) `∑_{m ≤ x} Λ(m) m^{-1/2} = O(√x log x)` by partial summation from Chebyshev, giving
+        `|E_crit(h)| = O(h e^{h/2})`;
+   (iii) `C_y ∈ C¹` with `C_y'(h) = ∫_0^∞ y'(x+h) y(x) dx` and `|C_y| + |C_y'| = O(e^{-a h})`,
+        `a > 1/2` — available from the packet Gram algebra of
+        `HTGeometry/HalfLineExponentialPacketGram.lean`;
+   (iv) the limit.
+   The screw-current card additionally needs the exact primitive
+   `A_∞(h) = ∫_h^∞ e^{-t/2}/(1 - e^{-2t}) dt` and the contact laws `C_y'(0) = 0`,
+   `C_y''(0) = -∫ (y')²`, both of which are one integration by parts on the exponential core.
+
+### Sweep continued (2026-08-21, batch 3)
+
+**Promoted**
+
+| Card | Modules |
+|---|---|
+| `absolute-euler-paired-cumulative-critical-error-current-law` | `RHTower/PacketAutocorrelationExplicit.lean`, `RHTower/CriticalMellinBoundaryStieltjes.lean`, `RHTower/PairedInfiniteApertureCurrent.lean`, `RHTower/PacketAutocorrelationLaplace.lean`, `RHTower/PairedCompletedEulerCurrent.lean` |
+
+**New reusable infrastructure — the half-line damped-exponential analysis stack**
+
+Every module below works on the *finite real damped-exponential core*
+`E(x) = ∑ⱼ rⱼ e^{-wⱼ x}`, `y = Im E`, with `1/2 < α ≤ Re wⱼ`.
+
+- `RHTower/PacketAutocorrelationExplicit.lean` — **the key structural fact**: the half-line
+  autocorrelation of a packet is *again a packet in the lag variable*,
+  `2 C_y(h) = Re ∑ₖ qₖ e^{-w_k h}` with
+  `qₖ = r_k ∑ⱼ rⱼ (1/(conj wⱼ + w_k) - 1/(wⱼ + w_k))`.  Smoothness, the explicit derivative, the
+  integral form `C_y'(h) = ∫_0^∞ y(x) y'(x+h) dx`, and the decay `O(e^{-α h})` all follow.  Also
+  `norm_halfLineExpPacket_le`: a uniform `(∑‖qₖ‖) e^{-αx}` bound for any packet.
+- `RHTower/CriticalMellinBoundaryStieltjes.lean` — the corpus finite-aperture Stieltjes law with
+  its **boundary term restored**.  Derived from the existing endpoint-vanishing theorem by
+  applying it to `F - F(2a)` and using the value of the pairing on constants; no new analysis.
+  This is the general device for turning any endpoint-vanishing integration-by-parts law into an
+  aperture-limit law.
+- `RHTower/PairedInfiniteApertureCurrent.lean` — the aperture limit.  Uses only
+  `abs_criticalMellinCompletedError_le_sqrt` (`|E_crit(h)| ≤ 23 e^{h/2}`), so **no PNT remainder
+  and no Chebyshev partial summation was needed** — the corpus already owns the sharp bound.
+  Contains the explicit-tail technique (`‖∫_{Ioi T}‖ ≤ C e^{-cT}/c` from an exponential majorant)
+  that replaces any abstract dominated-convergence argument for `∫_{Ioc 0 T} → ∫_{Ioi 0}`.
+- `RHTower/PacketAutocorrelationLaplace.lean` — `⟨y, R_c y⟩ = ∫_0^∞ e^{-ch} C_y(h) dh`, and the
+  polar pair `⟨y,R_{1/2}y⟩ + ⟨y,R_{-1/2}y⟩ = ∫_0^∞ 2cosh(h/2) C_y(h) dh`.
+- `RHTower/PairedCompletedEulerCurrent.lean` — **`hasSum_pairedQuadratic`**: the paired quadratic
+  form commutes with a convergent series of value functions (only nodewise convergence is needed,
+  because the node set is finite).  Plus the Gauss digamma series as a value function, the prime
+  lag series, and the completed identity.
+
+**Heavy pile — `absolute-euler-paired-normalized-screw-current-identification`**
+
+Sections 1–2 of that card now have all their inputs; what it still needs, in order:
+
+1. `C_y'(0) = 0` and `C_y''(0) = -∫_0^∞ (y')²`.  Both are **pure algebra** on the explicit packet
+   form: with `S = ∑_{j,k} rⱼ r_k w_k/(conj wⱼ + w_k)` and `T = ∑_{j,k} rⱼ r_k w_k/(wⱼ + w_k)`,
+   swapping `(j,k)` gives `2 Re S = (∑ r)²` and `2T = (∑ r)²`, so the two cancel.  No integration
+   by parts is required.
+2. The tail primitive `A_∞(h) = ∫_h^∞ e^{-t/2}/(1-e^{-2t}) dt = artanh(e^{-h/2}) + arctan(e^{-h/2})`.
+   Prove it by FTC: differentiate the closed form to `-k_∞` and show it tends to `0` at `+∞`.
+3. `(11)`: `∑_{n≥0} (C_0/(2(n+1)) - ⟨y,R_{a_n}y⟩) = -∫_0^∞ k_∞(h)(C_y(h) - e^{-3h/2}C_0) dh`.
+   Use `1/(2(n+1)) = ∫_0^∞ e^{-2(n+1)h} dh`, `∑_n e^{-a_n h} = k_∞(h)`,
+   `∑_n e^{-2(n+1)h} = k_∞(h) e^{-3h/2}`, and Tonelli.
+4. `(12)`–`(14)`: integration by parts against `A_∞`, whose `-½ log h` singularity at contact is
+   absorbed by the `O(h)` vanishing from item 1; and the explicit value
+   `∫_0^∞ A_∞ e^{-3h/2} = log 2 + π/6`.
+5. `(19)`–`(21)` are distributional; formalize them as the *function* identity `(20)` plus the
+   Laplace-transform identities `(24)`–`(25)`, which is what the card actually uses.
+
+### Sweep continued (2026-08-21, batch 4)
+
+**Promoted**
+
+| Card | What was missing, and what closed it |
+|---|---|
+| `triangle-fact-orientation-transmutation` | full `S₃`-equivariance — added to `HTGeometry/TriangleFactOrientationTransmutation.lean` |
+| `da-gauge-ht-divisor-blindness` | `HTGeometry/BaseGaugeJetField.lean`, `HTGeometry/DAGaugeDivisorBlindness.lean`, `RHTower/XiFinitePacketGauge.lean` |
+
+**New reusable infrastructure**
+
+- `HTGeometry/BaseGaugeJetField.lean` — **the Leibniz expansion of a base gauge**:
+  `Dⁱ(a x) = ∑_{k≤i} c_{i,k} Dᵏ x` with `c_{i,i} = a`; hence every finite jet field
+  `F(x,…,Dᵐx)` and the "fresh jet algebraic over the prefix" predicate are invariant under
+  multiplication by a nonzero base element.  Use this for any *aperture*/minimal-order claim.
+- `HTGeometry/DAGaugeDivisorBlindness.lean` — the complete gauge-invariant data list, assembled
+  from the corpus's `AffineBaseJetGauge` theorems.
+- `RHTower/XiFinitePacketGauge.lean` — **arbitrary finite off-critical packet implantation**: a
+  product of centered quartic gauges realizes any prescribed finite quartet family while keeping
+  both completed-xi symmetries, real-axis nonvanishing and exact order one.  Also
+  `exists_radius_norm_polynomial_ge` (a nonzero polynomial is bounded below outside a disc), the
+  general device for "a polynomial factor does not lower the order".
+- `RHTower/CommonProfileBooleanAnchorCurvature.lean` gained the **base-general** rank-one
+  sign-surjectivity classification (`rankOneBaseCoordinate`,
+  `rankOneBaseCurvature_eq_one_add_two_mul`, `exists_rankOneBaseCurvature_eq`), i.e. equations
+  `(CG9)`–`(CG12)` over an arbitrary anchor-disjoint base.  That closes the first of the three
+  Lean obligations on `common-profile-boolean-anchor-curvature`.
+
+**Techniques worth reusing**
+
+- To prove an `S_n`-equivariance law without enumerating the group: prove the single-transposition
+  case and close with `Equiv.Perm.swap_induction_on` plus multiplicativity of `sign`.
+- `norm_num` fails to evaluate `!![…] i j` at index `2`; `simp` does.
+- To convert `∀ᶠ z in cocompact ℂ, p z` into `∃ R, ∀ ‖z‖ ≥ R, p z`:
+  `rw [← Metric.cobounded_eq_cocompact, ← comap_norm_atTop (E := ℂ), Filter.eventually_comap]`
+  then `Filter.eventually_atTop`.
+
+**Still open on `common-profile-boolean-anchor-curvature`** (two obligations):
+`(SG2)` rank `2^r` and inertia `(2^{r-1}, 2^{r-1}, l-2^r)` of the shear kernel — needs matrix rank
+of a signed sum of independent outer products and a Sylvester-type inertia statement; `(SG3)` the
+local nonzero eigenvalues `λ_± = p(1 ± √(4p-3))/2` — these are the roots of
+`λ² - pλ + (p² - p³)`, the characteristic polynomial of `diag(1,-1)·G` for the `2×2` Gram
+`G = [[p², p(1-p)], [p(1-p), p²-p]]` of `(a_p, b_p)`; `(SG6)` the Fourier normalization; and
+`(SG7)`–`(SG10)` in the first-crossing section.
+
+### Nevanlinna keystone: the logarithmic-derivative Poisson–Jensen formula is CLOSED (2026-08-21)
+
+`formal/GaloisForLFunctions/HTGeometry/LogDerivPoissonJensen.lean` proves
+
+**`logDeriv_poissonJensen`** — for `f` meromorphic on `closedBall c |R|` with finite order at every
+point, no divisor on the boundary circle, and `w` an interior point where `f` is analytic and
+nonzero:
+
+```text
+f'(w)/f(w) = ∑ᶠ u, m_u ( 1/(w−u) + conj(u−c)/(R² − conj(u−c)(w−c)) )
+             + circleAverage (2(z−c)/(z−w)² · log ‖f z‖) c R .
+```
+
+This is the identity the classical estimate `m(r, f'/f) = O(log r + log T(r,f))` is read off.
+Supporting declarations, all reusable:
+
+- `eventuallyEq_nhdsNE_of_codiscreteWithin`, `eq_of_eventuallyEq_nhdsNE`,
+  `eventuallyEq_nhds_of_codiscreteWithin` — **germ transport across a codiscrete equality**: a
+  codiscrete identity on a neighbourhood of `w`, plus continuity of both sides at `w`, upgrades to
+  an identity of germs at `w`.  This is the general device for turning mathlib's
+  `extract_zeros_poles` factorization into pointwise derivative statements.
+- `logDeriv_sub_zpow`, `finprod_shiftPow_apply`, **`logDeriv_eq_divisorSum_add`** — the logarithmic
+  derivative of an extracted factorization at a point off the divisor.
+- `circleIntegrable_herglotzDeriv_mul` — circle integrability against the differentiated kernel.
+- **`circleAverage_herglotzDeriv_log_split`** — the divisor/zero-free split of the boundary
+  integral, assembling `circleAverage_herglotzDerivKernel_log_norm_sub` (one Blaschke term) and
+  `logDeriv_eq_circleAverage_of_ne_zero` (the zero-free factor) over the finite divisor.
+
+**Steps 1 and 3a are now also closed** in the same module:
+
+- `norm_circleAverage_le` — `‖circleAverage F‖ ≤ circleAverage ‖F‖` for a vector-valued average
+  (mathlib only had the real `abs` version).
+- `norm_circleAverage_herglotzDeriv_log_le` — the boundary term is at most
+  `2R/(R−‖w−c‖)² · circleAverage |log ‖f‖|`, via `norm_herglotzDerivKernel_le` and
+  `circleAverage_mono`.
+- **`norm_logDeriv_le`** — the Nevanlinna pointwise bound:
+  `‖f'(w)/f(w)‖ ≤ ‖divisor sum‖ + 2R/(R−‖w−c‖)² · circleAverage |log ‖f‖|`.
+- `abs_log_eq_posLog_add_posLog_inv` and **`circleAverage_abs_log_norm_eq`** —
+  `circleAverage |log ‖f‖| = m(r,f) + m(r,1/f)` exactly, in mathlib's
+  `ValueDistribution.proximity` language.
+
+**What is still needed** (in order):
+1. `m(r,f) + m(r,1/f) ≤ 2 T(r,f) + O(1)`.  The inversion half is mathlib's
+   `ValueDistribution.characteristic_sub_characteristic_inv_le` together with the corpus's
+   `SecondMainTheoremChain.characteristic_zero_eq_inv_top`; the only missing ingredient is
+   `0 ≤ logCounting f a r` for `1 ≤ r` (mathlib has no `logCounting_nonneg`).
+2. the circle estimate `∫₀^{2π} log⁺ (1/‖Re^{iθ} − a‖) dθ = O(1)`, needed to bound the divisor sum
+   in `norm_logDeriv_le` by `N(r,f) + N(r,1/f)` after averaging in `w` over a circle;
+3. the exceptional-set removal through `HTGeometry.BorelGrowthLemma.borel_growth`.
+
+### PROMOTED: `two-edge-boundary-quartet-amplification-law` (2026-08-21)
+
+`formal/GaloisForLFunctions/RHTower/TwoEdgeBoundaryQuartet.lean` now proves §§1–3 of the card and
+the analytic half of §4, all unconditional and axiom-clean:
+
+- `edgeLaplace`, `twoEdgeTransform`, **`twoEdgeTransform_eq`** — **equation `(4)`**, the exact
+  two-edge identity `G_a(w) = e^{aw}A_f(w) + e^{-aw}A_f(-w)`, by the two boundary-layer
+  substitutions `x = a − s` and `x = s − a` (`intervalIntegral.integral_comp_sub_left` /
+  `integral_comp_add_left`).  No smoothness or decay of `f` is used — only that the layers are the
+  interval `[a−L, a]` and its reflection.
+- `twoEdgeTransform_neg` — **equation `(5)`**, evenness.
+- `quartetEdge`, `quartetContribution`, `quartetContribution_eq_mul`,
+  **`quartetContribution_expand`** — **equations `(7)`–`(8)`**, the three-term aperture expansion.
+- `apertureSeq`, **`exp_apertureSeq_mul_sq`** — **equation `(9)`**: at
+  `a_k = (π − 2 arg A + 2πk)/(2T)` the leading oscillatory factor is *exactly* `−‖A‖²`.
+- `apertureSeq_atTop`, `quartetContribution_apertureSeq_le`,
+  **`tendsto_quartetContribution_atBot`** — **equation `(10)`**: the quartet contribution tends to
+  `−∞` along the aperture sequence, for every `δ > 0`, `T > 0` with `A_f(δ+iT) ≠ 0`.
+- `norm_twoEdgeTransform_imaginary_le` — **equation `(11)`**.
+- `abs_quartetContribution_imaginary_le`, `summable_quartetContribution_imaginary`,
+  **`abs_tsum_quartetContribution_imaginary_le`** — **equation `(12)`**: the all-line background is
+  bounded by `4 ∑ (‖A_f(it_n)‖ + ‖A_f(−it_n)‖)²`, *uniformly in the aperture*.  The summability of
+  that divisor sum is the all-line carrier's own datum.
+- `norm_integral_oscillatory_le`, `abs_integral_trigPolynomial_le` — a finite trigonometric
+  polynomial with strictly positive frequencies has primitive bounded by `∑ ‖c_j‖ / T_j`.
+
+§4 is now closed as well, and its machinery is **reusable for any exponential-sum no-go**:
+
+- `norm_integral_oscillatory_le'` — primitive bound `‖c‖/|T|` at any nonzero frequency;
+- `norm_integral_indexedSum_le` — the same for a finite indexed family;
+- `trigPoly`, `trigPoly_sq`, `conj_trigPoly`, `trigPoly_normSq`, `trigPolyRe_sq` — the expansion
+  `(Re A)² = Re(A²)/2 + ‖A‖²/2` with both halves written as double sums over the frequency pairs
+  `T_j + T_k` and `T_j − T_k`;
+- **`abs_integral_trigPolyRe_sq_sub_le`** — the **mean-square (Parseval) law**
+  `|∫_0^Y P² − (Y/2) ∑ ‖c_j‖²| ≤ C`, from the diagonal split of `‖A‖²`;
+- **`exists_neg_trigPolyRe`** — a nonzero finite real trigonometric polynomial with distinct
+  strictly positive frequencies drops below a fixed negative level at arbitrarily large arguments.
+  The argument is elementary: `P ≥ −η` on a ray gives `Q = P + η ≥ 0`, hence
+  `∫ Q² ≤ (B+η) ∫ Q = O(1) + O(ηY)`, contradicting the linear growth once
+  `(B+η)η < (∑‖c_j‖²)/2`.  **No almost-periodic theory is used** — this replaces the "almost
+  periodic recurrence" step every card in this lane appeals to.
+- `eventually_augmented_neg` — equation `(13)`: against any uniformly bounded background the
+  augmented form is eventually negative.
+
+### PROMOTED: `semilocal-number-form-equivalence` (2026-08-21)
+
+`formal/GaloisForLFunctions/HTGeometry/FiltrationNumberForm.lean` — a **reusable** abstract layer,
+not a card-specific file:
+
+- `filtCost`, `filtForm` — the distance to a filtration member and the total number form
+  (`ℝ≥0∞`-valued, so no summability side conditions anywhere);
+- `mul_filtCost_le`, `filtCost_le_mul`, `mul_filtForm_le`, `filtForm_le_mul`,
+  **`filtForm_ne_top_iff`**, `filtForm_equivalence` — comparable costs give comparable number forms
+  with the *same* constants and a common finiteness domain.  This is the general "two equivalent
+  Hilbert norms on a common filtration have the same form domain" statement, and it needs no
+  Hilbert structure at all;
+- `filtCost_comp_addMonoidHom`, `filtForm_comp_addMonoidHom` — transport along a realisation map;
+- `basisFiltration`, `repr_eq_zero_of_mem_basisFiltration`, `basisTruncation`,
+  **`filtCost_normSq_basisFiltration`**, **`filtForm_normSq_basisFiltration`** — the spectral
+  identity `∑_n dist(f, E_n)² = ∑_j j |c_j|²`, by `ENNReal.tsum_comm` and `#{n : n < j} = j`;
+- `filtForm_realization`, **`number_form_equivalence`** — the card's whole statement for two
+  comparable Hilbert realisations of one filtration;
+- **`abs_bilin_le_of_abs_diagonal_le`** — a symmetric continuous bilinear form with
+  `|B(x,x)| ≤ ‖x‖²` satisfies `|B(x,y)| ≤ ‖x‖‖y‖` (parallelogram law + the `t`/`t⁻¹` rescaling).
+  Reusable for every "indefinite form has a bounded representative" argument;
+- `formRieszMap`, `formRiesz`, `isSelfAdjoint_formRiesz`, `norm_formRiesz_le_one`,
+  **`exists_energy_contraction`** — the canonical self-adjoint contraction representing the form.
+
+### PROMOTED: `high-shell-codiagonal-closability-dichotomy` (2026-08-21)
+
+`formal/GaloisForLFunctions/RHTower/WeightedCodiagonalDichotomy.lean` proves the full dichotomy for
+an arbitrary **complex Banach space** `H` (no inner product of `H` is used):
+
+- `memℓp_finsupp`, `codiagEmbed`, `codiag`, `norm_codiagEmbed_sq` — the algebraic core
+  `c₀₀(ℕ;H) ⊂ ℓ²(ℕ;H)` and the weighted row on it;
+- `codiagMap`, `codiagCLM`, `codiagCLM_codiagEmbed`, `norm_codiagMap_le` — the bounded extension,
+  built **directly as the convergent series** `∑' a_m x_m` (absolute convergence from
+  `‖a_m‖‖x_m‖ ≤ (‖a_m‖²+‖x_m‖²)/2`), so no density-and-extension argument is needed;
+- `testVector`, `codiag_testVector`, `norm_codiagEmbed_testVector_sq`, **`norm_codiagCLM`** — the
+  exact operator norm `‖C_a‖ = ‖a‖₂`;
+- `graphNullVector`, `codiag_graphNullVector`, `norm_codiagEmbed_graphNullVector`,
+  **`not_isSequentiallyClosableBetween_codiag`** — the singular graph sequence;
+- **`codiagonal_closability_dichotomy`**, `not_isSequentiallyClosableBetween_unitCodiag`.
+
+Reuses `RHTower.IsSequentiallyClosableBetween` and
+`not_isSequentiallyClosableBetween_of_exact_norm_graphNull`
+(`RHTower.ArithmeticSchurExactNormRiggingNoGo`), plus
+`ContinuousLinearMap.tsum_mul_le_sqrt_mul_sqrt` and
+`GaloisForLFunctions.summable_mul_of_summable_sq`.  **Read this before building any `ℓ²`
+Cauchy–Schwarz or nonclosability argument.**
+
+### PROMOTED: `semilocal-prolate-extension-rank-two-ambiguity` (2026-08-21)
+
+`formal/GaloisForLFunctions/RHTower/JacobiDeficiencyRankTwoAmbiguity.lean`:
+
+- `IsJacobiSolution`, **`IsJacobiSolution.ext`**, `jacobiSolutions`,
+  **`rank_jacobiSolutions_le_one`** — a half-line Jacobi solution is determined by its first
+  coordinate, so the solution space is at most one-dimensional;
+- `IsJacobiSolution.conj`, `sqSummable`, `jacobiDeficiency`, `mem_jacobiDeficiency_conj`,
+  **`jacobiDeficiency_eq_bot_iff_conj`**, **`jacobi_deficiency_indices`** — the `(0,0)`-or-`(1,1)`
+  alternative, obtained by comparing only *triviality* of the two spaces (no antilinear dimension
+  theory);
+- `exists_isSelfAdjoint_extension_of_deficiency_one` — von Neumann's construction, packaged from
+  `HTGeometry.VonNeumannDeficiency`;
+- `hasRankLE_neg`, `hasRankLE_sub`, **`hasRankLE_add`** — ranks add (a mathlib-gap lemma the corpus
+  did not have in this two-operator form);
+- **`memSchattenClass_congr_of_hasRankLE`**, `memSchattenClass_congr_of_two_block` — Schatten
+  membership is *unchanged* (an `iff`) by a finite-rank perturbation.  Reuse this for every
+  "boundary choice does not affect the ideal" argument.
+
+### PROMOTED: `nodal-charge-character-fan-realization` (2026-08-21, audit only)
+
+No new Lean was needed: `HTGeometry/NodalChargeCharacterRealization.lean` already covered §§1–3 of
+the card in full (all sixteen declarations axiom-clean).  The card's §5 items (1)–(6) are the
+*candidate-new* presentation-invariant construction, which the card itself excludes from what it
+banks.  **Lesson repeated:** re-audit every card whose Lean section predates the current tree
+before assuming work remains.
+
+### PROMOTED: `finite-jet-graded-reality-nonselection` (2026-08-21)
+
+Two new modules, both reusable well beyond this card.
+
+**`formal/GaloisForLFunctions/HTGeometry/ResidueFilledFluxGerm.lean`** — the general layer the whole
+completed-flux lane was missing:
+
+- `fluxGerm f w x = if x = 0 then -(ord_w f) else -x·f'(w+x)/f(w+x)`;
+- **`fluxGerm_analyticAt_zero`** — analyticity at the filled centre for *any* `f` with a zero of
+  finite order (the corpus previously had only `xi`-specific and model-specific versions);
+- `eventually_ne_zero_of_analyticOrderAt_eq` — a finite-order zero is isolated;
+- **`fluxGerm_mul`** — the germ of a product is the sum of the germs, at arbitrary orders.
+
+**`formal/GaloisForLFunctions/RHTower/GradedRealityQuartetRealization.lean`** — the realization.  The
+key structural simplification: **do not rescale the function, rescale the coordinate change.**
+Writing `X_N(s) = F_N(-2πi(s-1/2))` with `F_N(w) = cosh(w-π/2)cosh(w+π/2)·(1 + (w⁴+π⁴/4)^{2N+1})`
+puts the whole construction inside the corpus's *unscaled* `coshQuartetEnvelope`, so
+`CoshQuartetEnvelope`, `CoshPolynomialPeriodClassification` and `CoshPolynomialExactOrderOne` apply
+verbatim.  `(w²-α²)(w²-conj α²)` collapses to the closed form `w⁴ + π⁴/4`.
+
+Contents: `gradedRealityXi_functional_equation`, `gradedRealityXi_conj`,
+`gradedRealityXi_ne_zero_of_real`, the four quartet zeros, simplicity
+(`analyticOrderAt_gradedRealityFn_fePartner`/`_schwarzPartner`), `gradedRealityFn_periodic_iff`,
+`gradedRealityFn_exact_order_one_bounds`, the multiplier germ layer (`quartetShiftPoly`, `multUnit`,
+`multFlux`, `multFlux_eventuallyEq`), the exact separation
+(`four_mul_fePartnerCentre_cube = π³(1-i)`, `four_mul_schwarzPartnerCentre_cube = π³(1+i)`,
+`multUnit_zero_ne` via `1-i = -i(1+i)` and `(-i)^{2N+1} ≠ 1`), and the capstone
+**`finite_jet_graded_reality_nonselection`**.
+
+**Still open in the same lane (two sibling cards).**
+`simultaneous-multiquartet-finite-passport-realization` and
+`finite-completed-flux-passport-surjectivity` need the *multi*-quartet base
+`∏_j cosh(w - A_j) cosh(w + A_j)` with independently prescribed depths.  Everything local
+transfers; the two genuinely missing pieces are
+
+1. the **period classification for a product of envelopes** times a nonconstant polynomial
+   (`CoshPolynomialPeriodClassification` covers only a single envelope), and
+2. the **two-sided order-one sandwich for a product of envelopes**
+   (`CoshPolynomialExactOrderOne` likewise).
+
+Simplicity of each quartet zero is then automatic from distinctness of the positive displacements
+`A_j` (all `±A_j - A_k ≠ 0`), and the germ comparison is the same `fluxGerm_mul` split, one `j` at
+a time.  `FiniteHermiteCRT.lean`, `FiniteFluxPassport.lean` and `ImaginaryAxisPositiveRepair.lean`
+already supply the passport half of the third card.
+
+### PROMOTED: `simultaneous-multiquartet-finite-passport-realization` (2026-08-21)
+
+The multi-quartet layer flagged as missing in the previous entry is now built.
+
+**`formal/GaloisForLFunctions/RHTower/MultiQuartetEnvelope.lean`** — products of displaced cosh
+quartet envelopes: `multiEnvelope`, its evenness/Schwarz/`πi`-periodicity, the zero-set criterion,
+imaginary-axis positivity, **`multiEnvelope_mul_polynomial_periodic_iff`** and
+**`multiEnvelope_mul_polynomial_order_one_bounds`**.  The period proof is *shorter* than the
+corpus's single-envelope one: an infinite orbit of envelope zeros injects its real parts into the
+finite set `{±A_j}`, forcing `Re h = 0`; two consecutive orbit points quantise `Im h` into `πℤ`.
+Also `eventually_norm_polynomial_eval_ofReal_ge` (a nonzero polynomial is eventually
+`≥ ‖lc‖/8` on the positive real ray), extracted from the corpus's `a = 0` envelope bound.
+
+**`formal/GaloisForLFunctions/RHTower/MultiQuartetPassportRealization.lean`** — the realization,
+with independently prescribed depths `M_j` at pairwise distinct positive displacements.  Capstone
+**`simultaneous_multiQuartet_realization`**.  Two reusable pieces beyond the card:
+
+- **`polynomial_wronskian_shift_eq_zero`** — `P'(z)P(z+h) = P'(z+h)P(z)` identically forces `h = 0`
+  for nonconstant `P`, by the leading-coefficient identity `deg P = deg (P(·+h) − P)` (with
+  `leadingCoeff_derivative_eq`).  This replaces every "the ratio is constant" limiting argument in
+  this lane.
+- **`iteratedDeriv_eq_zero_of_eventuallyEq_pow_mul`** — a germ that is eventually `x^M·W(x)` with
+  `W` analytic has vanishing jet below `M`, with the `W ≡ 0` case handled separately.
+
+**`formal/GaloisForLFunctions/HTGeometry/ResidueFilledFluxGerm.lean`** gained the affine dictionary
+**`analyticOrderAt_comp_affine`** and **`fluxGerm_comp_affine`**, so germ statements transfer
+between the entire coordinate and the functional-equation normalization without hand-waving.
+
+**Still open in this lane:** `finite-completed-flux-passport-surjectivity` — the *arbitrary*
+prescribed-passport version.  Its components (`FiniteHermiteCRT`, `FiniteFluxPassport`,
+`ImaginaryAxisPositiveRepair`, plus the new `MultiQuartetEnvelope` layer) are all present; what
+remains is the assembly, which needs the degree-controlled equivariant CRT to be matched against
+the new product envelope.

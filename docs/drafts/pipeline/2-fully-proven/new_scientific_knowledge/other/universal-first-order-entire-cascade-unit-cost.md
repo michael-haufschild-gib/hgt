@@ -9952,3 +9952,48 @@ exactDifferentialOrder_expPolyCascade_all
 so the consolidated status above is superseded on that line: the polynomial-coefficient family is
 unconditional at **every** length, not modulo a determinant.  The card's remaining gap is the
 general first-order cascade — Reduction III and its Wiman initial law.
+
+### Log — the algebraic model, part 14: the value at the place, and the transport of coordinate-freeness
+
+Item 3's algebraic half needs the peel's *value at infinity* over the extended datum.  On the
+coordinate field that is `TopLim m f a := TopDegLE m (-1) (f - a)`, with uniqueness resting on
+`eq_zero_of_topFree_of_topDegLE_neg`.  `HTGeometry/PlaceLimit.lean` (wired, built, axiom-clean)
+reproduces the whole of it at a place, with the accuracy as a parameter rather than the fixed `−1`
+— at a place of ramification index `e` one step of the base coordinate is `e` steps of the place:
+
+```text
+PlaceLim v γ f a := PlaceDegLE v γ (f − a)
+placeLim_self, PlaceLim.add, PlaceLim.neg, PlaceLim.sub
+PlaceLim.placeDegLE_one            a limit of unit size is of unit size
+PlaceLim.mul                       (γ ≤ 1, both limits of unit size)
+placeDegLE_one_prod, placeLim_sum, placeLim_prod
+placeLim_det                       **a matrix of limits has the limit determinant**
+PlaceTrivialOn v F                 the place is trivial on the subfield F
+PlaceTrivialOn.placeDegLE_one
+eq_zero_of_mem_of_placeDegLE_lt    the analogue of `eq_zero_of_topFree_of_topDegLE_neg`
+placeLim_unique                    **the value at the place is unique**
+```
+
+and the transport theorem the card's frontier note named — "a valuation trivial on a field is
+trivial on every element algebraic over it":
+
+```text
+one_le_valuation_of_isIntegral     **no algebraic element has strictly small valuation**
+placeFree_of_isIntegral            **a place trivial on a subfield is trivial on every element
+                                   algebraic over it**
+```
+
+Mechanism of the last two: in the minimal equation of `x` over `F`, the constant term is a unit of
+the place (it is a nonzero element of `F`) while every other term has valuation at most `v(x) < 1`;
+the strict-maximum principle then makes the whole equation a unit, contradicting its vanishing.
+Applying this to `x` and to `x⁻¹` gives `v(x) = 1`.
+
+Effect.  `TopFree`'s two roles in the peel — being a legitimate limit value, and forcing uniqueness
+— both now have their place-level counterparts, and coordinate-free elements of `CascadeField`
+remain unit-valued after *any* algebraic extension, with no further hypothesis.  What is still
+missing from item 3's algebraic half is the restatement of the border-shape and peel-step
+inductions themselves over `(PlaceDegLE, PlaceFree, PlaceLim)` in place of
+`(TopDegLE, TopFree, TopLim)`; the grading algebra (`PlaceGrading`), the derivation drop
+(`PlaceDerivationValuationDrop`, `AlgebraicCascadeDifferentDrop`) and now the limit layer are in
+place, so that restatement is a transcription rather than new mathematics.  Item 3's analytic half
+— Reduction I's selection of the branch, quoting Goldberg and Strelitz — is untouched.

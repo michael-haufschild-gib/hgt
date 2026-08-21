@@ -96,7 +96,10 @@ theorem toric_cross_loop_pairs_commute :
         toricTHooftLoop 1 * toricWilsonLoop 0 ∧
       toricWilsonLoop 0 * toricWilsonLoop 1 =
         toricWilsonLoop 1 * toricWilsonLoop 0 := by
-  exact (toricStabilizerCode 2).logical_commute_cross 0 1 (by decide)
+  apply (toricStabilizerCode 2).logical_commute_cross 0 1
+  intro h
+  have hv := congrArg Fin.val h
+  exact Nat.zero_ne_one hv
 
 open Stabilizer.Lattice
 

@@ -233,6 +233,7 @@ import GaloisForLFunctions.Bottcher.Pi1EscapeOpen
 import GaloisForLFunctions.Bottcher.WindDynamics
 import GaloisForLFunctions.Bottcher.UniversalCover
 import GaloisForLFunctions.Bottcher.BottcherWinding
+import GaloisForLFunctions.Bottcher.LoopGaugeApplications
 import GaloisForLFunctions.Bottcher.PeriodDoubling
 import GaloisForLFunctions.Bottcher.ConnectedBranchAssembly
 import GaloisForLFunctions.Bottcher.ConnectedPi1

@@ -168,13 +168,12 @@ theorem selfDualShiftRatio_cocycle (a gamma omega eta : ℝ) (s : ℂ)
   unfold selfDualShiftRatio
   push_cast
   rw [show (s - (eta : ℂ) + (omega : ℂ)) = (s + (omega : ℂ) - (eta : ℂ)) by ring,
-    show (s - (eta : ℂ) - (omega : ℂ)) = (s - ((omega : ℂ) + (eta : ℂ))) by ring]
-  rw [div_mul_div_comm, mul_comm (selfDualQuartet a gamma (s + (omega : ℂ) - (eta : ℂ)))
-    (selfDualQuartet a gamma (s + (omega : ℂ) + (eta : ℂ)))]
-  rw [show (s + ((omega : ℂ) + (eta : ℂ))) = (s + (omega : ℂ) + (eta : ℂ)) by ring]
-  rw [mul_comm (selfDualQuartet a gamma (s - ((omega : ℂ) + (eta : ℂ))))
-    (selfDualQuartet a gamma (s + (omega : ℂ) - (eta : ℂ)))]
-  rw [mul_div_mul_left _ _ hmid]
+    show (s - (eta : ℂ) - (omega : ℂ)) = (s - ((omega : ℂ) + (eta : ℂ))) by ring,
+    show (s + ((omega : ℂ) + (eta : ℂ))) = (s + (omega : ℂ) + (eta : ℂ)) by ring,
+    div_mul_div_comm,
+    mul_comm (selfDualQuartet a gamma (s - ((omega : ℂ) + (eta : ℂ))))
+      (selfDualQuartet a gamma (s + (omega : ℂ) - (eta : ℂ))),
+    mul_div_mul_left _ _ hmid]
 
 /-! ## Theorem B: the curvature corner is unbounded -/
 
@@ -196,15 +195,14 @@ theorem selfDualQuartetProfile_eq (a gamma : ℝ) (t : ℝ) :
   unfold finiteOfflineProfile finiteOfflineMode selfDualQuartetOffsets
     selfDualQuartetOrdinates selfDualQuartetMultiplicities
   rw [Fin.sum_univ_two]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Nat.cast_one,
-    Complex.ofReal_neg]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Nat.cast_one, Complex.ofReal_neg]
   rw [Complex.cos]
   rw [show (-(a : ℂ) * (t : ℂ) - I * (gamma : ℂ) * (t : ℂ)) =
       (-(a : ℂ) * (t : ℂ)) + (-((gamma : ℂ) * (t : ℂ) * I)) by ring,
     show (-(a : ℂ) * (t : ℂ) - I * (-(gamma : ℂ)) * (t : ℂ)) =
       (-(a : ℂ) * (t : ℂ)) + ((gamma : ℂ) * (t : ℂ) * I) by ring,
     Complex.exp_add, Complex.exp_add]
-  ring
+  ring_nf
 
 /-- **The exact curvature corner** `C_{a,γ}(0,0) = 4/a + 4a/(a²+γ²)`. -/
 theorem selfDualQuartetCornerEnergy_eq {a : ℝ} (ha : 0 < a) (gamma : ℝ) :
@@ -216,14 +214,25 @@ theorem selfDualQuartetCornerEnergy_eq {a : ℝ} (ha : 0 < a) (gamma : ℝ) :
   unfold finiteOfflineCauchyEnergy selfDualQuartetOffsets selfDualQuartetOrdinates
     selfDualQuartetMultiplicities transverseCauchyKernel
   rw [Fin.sum_univ_two, Fin.sum_univ_two, Fin.sum_univ_two]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Nat.cast_one,
-    one_mul, mul_one]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Nat.cast_one, one_mul, mul_one]
   have h1 : (a + a) ^ 2 + (gamma - gamma) ^ 2 = 4 * a ^ 2 := by ring
   have h2 : (a + a) ^ 2 + (gamma - -gamma) ^ 2 = 4 * (a ^ 2 + gamma ^ 2) := by ring
   have h3 : (a + a) ^ 2 + (-gamma - gamma) ^ 2 = 4 * (a ^ 2 + gamma ^ 2) := by ring
   have h4 : (a + a) ^ 2 + (-gamma - -gamma) ^ 2 = 4 * a ^ 2 := by ring
   rw [h1, h2, h3, h4]
-  field_simp
+  have e1 : (a + a) / (4 * a ^ 2) = 1 / (2 * a) := by
+    rw [div_eq_div_iff (by positivity) (by positivity)]; ring
+  have e2 : (a + a) / (4 * (a ^ 2 + gamma ^ 2)) = a / (2 * (a ^ 2 + gamma ^ 2)) := by
+    rw [div_eq_div_iff (by positivity) (by positivity)]; ring
+  rw [e1, e2,
+    div_add_div _ _ (by positivity : (2 : ℝ) * a ≠ 0)
+      (by positivity : (2 : ℝ) * (a ^ 2 + gamma ^ 2) ≠ 0),
+    div_add_div _ _ (by positivity : (2 : ℝ) * (a ^ 2 + gamma ^ 2) ≠ 0)
+      (by positivity : (2 : ℝ) * a ≠ 0),
+    div_add_div _ _ (by positivity : (2 : ℝ) * a * (2 * (a ^ 2 + gamma ^ 2)) ≠ 0)
+      (by positivity : (2 : ℝ) * (a ^ 2 + gamma ^ 2) * (2 * a) ≠ 0),
+    div_add_div _ _ (by positivity : a ≠ 0) (by positivity : a ^ 2 + gamma ^ 2 ≠ 0),
+    ← mul_div_assoc, div_eq_div_iff (by positivity) (by positivity)]
   ring
 
 /-- **The boundary energy of the quartet's anti-causal profile.** -/
@@ -232,7 +241,8 @@ theorem integral_norm_sq_selfDualQuartetProfile {a : ℝ} (ha : 0 < a) (gamma : 
         ‖finiteOfflineProfile (selfDualQuartetOffsets a) (selfDualQuartetOrdinates gamma)
           selfDualQuartetMultiplicities t‖ ^ 2
       = 4 / a + 4 * a / (a ^ 2 + gamma ^ 2) := by
-  rw [integral_norm_sq_finiteOfflineProfile _ (fun _ => ha),
+  rw [integral_norm_sq_finiteOfflineProfile (a := selfDualQuartetOffsets a)
+      (gamma := selfDualQuartetOrdinates gamma) selfDualQuartetMultiplicities (fun _ => ha),
     selfDualQuartetCornerEnergy_eq ha gamma]
 
 /-- **The corner exceeds the four-unit budget by more than a factor two.** -/
@@ -258,9 +268,7 @@ theorem tendsto_selfDualQuartetCornerEnergy_atTop (gamma : ℝ) :
   have ha' : 0 < a := ha
   have hden : (0 : ℝ) < a ^ 2 + gamma ^ 2 := by positivity
   have h2 : 0 ≤ 4 * a / (a ^ 2 + gamma ^ 2) := by positivity
-  rw [ge_iff_le, ← div_eq_inv_mul] at *
-  have : (4 : ℝ) * a⁻¹ = 4 / a := by rw [div_eq_mul_inv]
-  rw [this]
+  rw [← div_eq_mul_inv]
   linarith
 
 end

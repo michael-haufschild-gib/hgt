@@ -203,7 +203,13 @@ backreaction, and collapse stability remain outside the model.
 ## Lean obligations
 
 - [ ] Formalize the needed special case of Dreyfus's DA-to-periodic-exponential theorem, with no
-  axioms.
+  axioms.  As of the linearisation pass this splits into exactly two items, both recorded below:
+  (a) exclude the imprimitive case for the order recurrence — no rank-one sub-`σ`-module of the
+  symmetric square, i.e. no `(α, β, γ) ≠ 0` and `c ∈ ℂ(X)` with
+  `σγ = cα`, `σβ + 2b σγ = cβ`, `σα + b σβ + b² σγ = cγ` for `b = c(X+1)`;
+  (b) Cassidy's structure theorem for Zariski-dense differential algebraic subgroups of `SL₂` — the
+  Galois matrices are controlled by the tangent space of the Kolchin closure at the identity, whose
+  linearity is now `DifferentialTangentLinearization.exists_nonzero_linear_relation_of_tangent`.
 - [x] Define order-variable \(K_\nu(s)\) from `(2)` and prove entire dependence, reflection,
   recurrence, and real positivity.
 - [x] Formalize the symmetric-square system `(5)` and scalar-annihilator existence `(7)`.
@@ -2142,3 +2148,1003 @@ stabiliser, and those are unbounded.  The imprimitive case therefore has to be e
 (the symmetric-square layer of this card), and in the primitive case Cassidy's structure theorem
 makes the traces fill a differential subfield, which the two theorems above then collapse to the
 constants.
+
+## Lean progress — the classification's output, in linear form, closes the endgame
+
+The endgame consumes `hsol`: a monic linear relation among the jets of every scalar `c` with
+`c · 1` in the span of the Galois monoid.  Two new modules turn the two natural shapes of a
+differential constraint into exactly that relation, unconditionally.
+
+`GaloisForLFunctions.HTGeometry.DifferentialGaloisScalarZeroSet`
+
+```text
+deriv_eq_zero_of_scalarSpan_of_zeroSet   **the scalar stabiliser of the span of a multiplicative
+                                         set of matrices consists of constants** as soon as it lies
+                                         in the zero set of one nonzero differential polynomial —
+                                         the stabiliser is a subring, and a subring inside a proper
+                                         differential algebraic set is constant
+jet_relation_of_scalarSpan_of_zeroSet    the same, in the monic jet shape (`δ c = 0`)
+isomonodromy_of_no_riccati_of_zeroSet    **the isomonodromy endgame** with the differential
+                                         constraint replaced by one nonzero differential polynomial
+                                         vanishing on the scalar stabiliser
+linearJetSolutions, matrixLinearJetSolutions
+                                         the solution set of a scalar linear differential operator,
+                                         as a subspace over the differential constants, and the
+                                         matrices with entries there
+linearJetPolynomial, linearJetPolynomial_ne_zero
+                                         the operator as a differential polynomial
+eval_linearJetPolynomial_eq_zero_of_scalarSpan
+                                         **a linear relation on the entries of the group passes to
+                                         the whole span**, because the solution set of a linear
+                                         operator is a subspace over the constants
+deriv_eq_zero_of_scalarSpan_of_linear    hence the scalar stabiliser is constant
+isomonodromy_of_no_riccati_of_linearRelation
+                                         **the endgame from a linear differential relation on the
+                                         Galois matrices** — no other hypothesis
+```
+
+`GaloisForLFunctions.HTGeometry.DifferentialConstantRelationDescent`
+
+```text
+exists_descend_of_coeff_mem_range        a polynomial whose coefficients lie in the image of the
+                                         base is the coefficient extension of one over the base
+exists_constantCoeff_relation_of_sigmaFixed
+                                         **a differential relation over the base satisfied by a
+                                         `σ`-invariant point descends to a relation over the
+                                         `σ`-invariants of the base** — the constants
+differentialPolynomialEvalOver_eq_zero_of_point
+                                         a differential point of the Galois group carries a
+                                         constant-coefficient relation to its own coordinates
+```
+
+Together these two modules split the remaining arrow in two, and settle the second half:
+
+1. *differential algebraicity produces a differential relation on the Galois matrices.*  The
+   comparison matrix has `σ`-invariant entries, so `exists_constantCoeff_relation_of_sigmaFixed`
+   turns a relation over `ℂ(ν)` into one over the constants, and
+   `differentialPolynomialEvalOver_eq_zero_of_point` evaluates it at every differential point.
+2. *a **linear** differential relation on the Galois matrices produces isomonodromy.*  This is
+   `isomonodromy_of_no_riccati_of_linearRelation`, and it is now proved with no side hypothesis.
+
+What separates them is exactly the linearity, and that is the whole remaining mathematical content
+of the classification: the constraint that differential algebraicity supplies is a differential
+algebraic set, while the constraint the collapse consumes is a *linear* differential operator.  The
+card's own counterexample shows the gap is real — for `Z = {x : δ(δx/x) = 0}` the group
+`{diag(a, a⁻¹)} ∪ {antidiag(b, -b⁻¹)}` with `a, b ∈ Z` has all entries in a proper differential
+algebraic set, spans `M₂`, and yet its scalar stabiliser contains the unbounded family `a + a⁻¹`.
+Linearity is what fails there: `Z` is not a subspace over the differential constants.
+
+The classical source of linearity is the tangent space: the Lie algebra of a differential algebraic
+subgroup is cut out by the linearisations of the defining differential polynomials, and those are
+linear differential polynomials.  So the remaining obligation of this card is the differential
+algebraic group layer in the following precise form, and nothing else:
+
+> the Galois matrices of a Zariski-dense differential algebraic subgroup of `SL₂` whose defining
+> ideal is proper satisfy one nonzero **linear** differential operator over the constants.
+
+Every declaration reports `#print axioms` = `[propext, Classical.choice, Quot.sound]`.
+
+### Where the linearity has to come from, in the corpus's own terms
+
+The tree already owns the implication *additive subgroup inside a proper differential algebraic set
+⟹ nonzero linear relation among the jets*
+(`AdditiveDifferentialSubgroupLinear.exists_nonzero_linear_jet_relation_of_addSubgroup`).  So the
+linearity gate is not a missing implication but a missing **additive subgroup**: the scalar
+stabiliser is additive, but nothing yet places it inside a proper differential algebraic set, and
+the counterexample above shows it need not be.
+
+The additive subgroup that does the work in Cassidy's proof is the unipotent parameter set
+
+```text
+k = { t : C | [[1, t], [0, 1]] ∈ H },
+```
+
+for `H` the Kolchin closure of the Galois group.  It is an additive subgroup because
+`u(t) u(t') = u(t + t')`, and it is a differential algebraic set because it is the preimage of `H`
+under a differential morphism — so *if* `H` contains a nontrivial unipotent one-parameter family,
+the corpus's implication immediately produces the linear operator, and
+`isomonodromy_of_no_riccati_of_linearRelation` finishes.  In the monomial counterexample `k = {0}`:
+the group has no unipotents at all, which is exactly the imprimitive case the card's symmetric-square
+layer has to exclude.
+
+So the card's remaining obligation splits once more, into two statements neither of which is about
+scalars:
+
+1. **exclude imprimitivity** for the Bessel order recurrence — no Riccati solution over a quadratic
+   `σ`-extension, equivalently no hyperexponential solution of the symmetric square (the card's
+   `(5)`–`(7)` layer);
+2. **produce a unipotent family** in a Zariski-dense, non-imprimitive differential algebraic
+   subgroup of `SL₂` — the structural half of Cassidy's theorem.
+
+With `(1)` and `(2)` the chain closes with theorems the tree already has.
+
+## Lean progress — the linearisation, which is where linear differential operators come from
+
+The gap identified above is *linearity*: a differential algebraic constraint on a group does not
+descend to its span, a linear one does.  The classical source of linearity is the tangent space, and
+that is now proved in Lean, from scratch, for arbitrary differential polynomials.
+
+`GaloisForLFunctions.HTGeometry.DifferentialTangentLinearization`
+
+```text
+dualMk, dualDifferentialDeriv, dualDifferential
+    **the dual numbers as a differential ring**: `δ(a + εb) = δa + ε δb`, with `ε` constant and
+    square zero; the Leibniz law holds componentwise
+dualDifferentialAlgebra, deriv_dual_fst, deriv_dual_snd, differentialJet_dual
+    the base embeds differentially, and jets act componentwise
+dualPoint, evalOver_dual_X
+    the dual point `p + εX`
+fst_differentialPolynomialEvalOver_dual
+    the `ε`-free part of the value at `p + εX` is the value at `p`
+snd_differentialPolynomialEvalOver_dual
+    **the linearisation formula**: the `ε`-part is `∑_v (∂_v F)(p) · δ^{v.2} X_{v.1}`, summed over
+    any finite set containing the variables of `F`
+exists_linear_form_snd_evalOver_dual
+    so the `ε`-part is a *linear* differential form in the perturbation
+exists_scalar_linear_form
+    for one differential indeterminate, `dF_p(X) = ∑_{i ≤ n} (∂_i F)(p) · δ^i X`, with the tail of
+    the partial derivatives vanishing
+exists_nonzero_linear_relation_of_tangent
+    **a set of tangent directions lies in the solution set of one nonzero scalar linear
+    differential operator** — exactly the hypothesis
+    `DifferentialGaloisScalarZeroSet.isomonodromy_of_no_riccati_of_linearRelation` consumes
+```
+
+The proof of the linearisation formula is the three-case induction on the polynomial, with the
+multiplication step supplying the product rule from `TrivSqZeroExt.snd_mul` and the identity
+`(∂_v)(q · X_n) = q · ∂_v X_n + X_n · ∂_v q`.  Nothing is assumed about the coefficient ring beyond
+being a commutative differential ring.
+
+This closes the *mechanism* half of the linearity gap: a differential algebraic set has a tangent
+space cut out by linear differential operators, and a linear operator's solution set is a subspace
+over the differential constants, which is what makes the span of a group inherit the relation.  What
+remains is the *geometry* half — that the Galois matrices are controlled by the tangent space of
+their Kolchin closure at the identity, i.e. Cassidy's structure theorem for Zariski-dense
+differential algebraic subgroups of `SL₂` — together with the exclusion of the imprimitive case.
+
+Every declaration reports `#print axioms` = `[propext, Classical.choice, Quot.sound]`.
+
+### Item (a) reduced: the discriminant identity and what survives it
+
+Imprimitivity of the order module is the existence of `e, p ∈ ℂ(X)`, `p ≠ 0`, with
+
+```text
+(E)  σe = e/p + 2b,
+(P)  p σp = 1 + b e + b² p,                       b = c(X+1),  c ≠ 0
+```
+
+— `e = r₁ + r₂` and `p = r₁ r₂` for the two Riccati ratios `r_i = σy_i / y_i`, whose symmetric
+functions are rational exactly when the Galois group permutes the two lines.  (These are the
+`(α, β, γ)` equations of the symmetric square after eliminating: `α = 1`, `β`, `γ` are rational
+functions of `e, p`.)
+
+**The discriminant identity.**  Put `Δ = e² − 4p`.  Then `(E)` and `(P)` force
+
+```text
+(D)  σΔ · p² = Δ,
+```
+
+by direct substitution: `σΔ = (σe)² − 4σp = (e/p + 2b)² − 4[(1+be)/p + b²] = (e² − 4p)/p²`.
+Conversely `(E) ∧ (D) ⟹ (P)`, so `(D)` is a faithful reformulation, not a weakening.
+
+Three consequences, each unconditional:
+
+1. `Δ ≠ 0`.  Otherwise `r₁ = r₂ = e/2 ∈ ℂ(X)` is a rational Riccati solution, which
+   `BesselOrderRiccati.orderBesselRiccati_no_ratFunc_solution` refutes.
+2. **`intDegree p = 0` and `ℓ(p)² = 1`.**  The shift preserves both the degree at infinity and the
+   leading coefficient, so `(D)` gives `ν(Δ) + 2ν(p) = ν(Δ)` and `ℓ(Δ)·ℓ(p)² = ℓ(Δ)`.
+3. Feeding `ν(p) = 0` back into `(E)` and `(P)`: `ν(e) = 1` (the other two cases `ν(e) > 1` and
+   `ν(e) < 1` contradict `(P)` and `(E)` respectively), the degree-`2` terms of `(P)` must cancel,
+   giving `ℓ(e) = −c·ℓ(p)`, and `(E)` at degree one gives `ℓ(e)(ℓ(p) − 1)/ℓ(p) = 2c`.  Together:
+   **`ℓ(p) = −1` and `ℓ(e) = c`.**
+
+So the imprimitive branch is pinned to `ν(p) = 0`, `ℓ(p) = −1`, `ν(e) = 1`, `ℓ(e) = c`, and the
+branch `ℓ(p) = +1` is impossible.  The surviving branch admits a formal solution at infinity — the
+asymptotic expansions of the two Bessel ratios — so no further degree count at infinity can close
+it; the remaining argument has to be global, of the denominator/orbit type that
+`orderBesselRiccatiPolynomial_no_solution` uses for the rank-one case.
+
+### The descent step, assembled
+
+`GaloisForLFunctions.HTGeometry.DifferentialConstantRelationDescent` now closes step 1 of the split
+in one statement:
+
+```text
+exists_constantCoeff_relation_eval
+    a nonzero differential relation over `ℂ(ν)` satisfied by a `σ`-invariant point yields a nonzero
+    relation **over the constants** satisfied by the image of that point under every differential
+    point of the ring
+```
+
+which is exactly "differential algebraicity produces a differential relation on the Galois
+matrices", with the comparison matrix as the `σ`-invariant point and the Galois points as the
+differential points.  What separates this from the endgame remains the *linearity* of that relation.
+
+### Item (a) CLOSED on paper: the imprimitive branch is impossible
+
+The previous entry left the imprimitive branch pinned to `ν(p) = 0`, `ℓ(p) = −1`, `ν(e) = 1`,
+`ℓ(e) = c`, and observed that "no further degree count at infinity can close it; the remaining
+argument has to be global".  It is global, and it is short.  `[PROVED HERE]`
+
+**Step 1 — the discriminant identity.**  `(E) ∧ (P) ⟹ (D) σΔ·p² = Δ`, with `Δ = e² − 4p`, and
+conversely; this was already recorded.
+
+**Step 2 — every finite order of `Δ` is even.**  Write `v_a` for the order at `a ∈ ℂ`.  Since the
+shift acts on orders by `v_a(σf) = v_{a+1}(f)`, `(D)` reads
+
+```text
+v_{a+1}(Δ) + 2·v_a(p) = v_a(Δ)      for every a ∈ ℂ.
+```
+
+`Δ ≠ 0` is a rational function, so `v_{a+n}(Δ) = 0` for all large `n`.  Descending from there along
+the orbit `a + ℤ`, each `v_{a+k}(Δ)` is obtained from the next by adding the even number
+`2·v_{a+k}(p)`.  Hence **every** `v_a(Δ)` is even.  The total degree of the divisor of a rational
+function is zero, so the order at infinity is even too.
+
+**Step 3 — `Δ` is a square.**  A rational function over an algebraically closed field whose divisor
+is everywhere even is a square: its numerator and denominator have even root multiplicities, hence
+are squares up to constants, and every constant is a square.  Write `Δ = k²`, `k ∈ ℂ(X)`, and put
+
+```text
+r₁ = (e + k)/2,   r₂ = (e − k)/2,     so   r₁ + r₂ = e,   r₁·r₂ = p.
+```
+
+**Step 4 — the pair `{σr₁, σr₂}` is the pair `{f(r₁), f(r₂)}`, `f(r) = b + 1/r`.**  Both are the
+root pairs of monic quadratics, and the coefficients agree:
+`f(r₁) + f(r₂) = 1/r₁ + 1/r₂ + 2b = e/p + 2b = σe = σr₁ + σr₂` by `(E)`, and
+`f(r₁)·f(r₂) = (1 + b r₁)(1 + b r₂)/p = (1 + be + b²p)/p = σp = σr₁·σr₂` by `(P)`.
+They are distinct (`f(r₁) = f(r₂)` forces `r₁ = r₂`, i.e. `Δ = 0`, excluded), so exactly one of the
+two assignments holds.
+
+**Step 5 — the swap is excluded at infinity.**  Normalise `k` so that `ℓ(k) = ℓ(e) = c`; then
+`ν(r₁) = 1`, `ℓ(r₁) = c`, and from `r₁r₂ = p` with `ν(p) = 0`, `ℓ(p) = −1`: `ν(r₂) = −1`,
+`ℓ(r₂) = −1/c`.  Hence `ν(1/r₂) = 1` with `ℓ(1/r₂) = −c`, which cancels the leading term of
+`b = c(X+1)`:
+
+```text
+ν(f(r₂)) = ν(b + 1/r₂) < 1 = ν(σr₁),
+```
+
+because the shift preserves the degree at infinity.  So `σr₁ ≠ f(r₂)`: the swap assignment is
+impossible.
+
+**Step 6 — the identity assignment is a rational Riccati solution.**  `σr₁ = f(r₁) = b + 1/r₁`,
+i.e. `r₁·σr₁ = 1 + b·r₁` — exactly the Bessel order Riccati equation, with `r₁ ∈ ℂ(X)`.  That is
+refuted by `BesselOrderRiccati.orderBesselRiccati_no_ratFunc_solution`.
+
+Both assignments are impossible, so `(E) ∧ (P)` has no solution with `p ≠ 0`: **the order module of
+the Bessel order operator is not imprimitive**.  Together with the already-recorded exclusion of the
+reducible case (no rational Riccati solution) and of `ℓ(p) = +1`, item (a) of the classification is
+complete, and the Galois group is not contained in the normaliser of a torus.
+
+The Lean formalisation of this argument needs, beyond what the tree already owns
+(`BesselOrderRiccati`, `RatFuncShiftDegree`, `MultiplierDichotomyDegreeObstruction`), one new piece:
+the order function `v_a` on `ℂ(X)` with its shift law and the "everywhere-even divisor implies
+square" theorem.
+
+### Lean progress — the global step of item (a): Steps 2 and 3, unconditionally
+
+Two modules, wired, `lake build`-green, axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
+
+`GaloisForLFunctions.HTGeometry.RatFuncOrderSquare`
+
+```text
+ratOrd g c                          the order of a rational function at a point: zeros positive,
+                                    poles negative
+algebraMap_polynomial_ne_zero, algebraMap_num_eq
+ratOrd_of_rep                       **the order can be read off any representation `g·B = A`**
+ratOrd_mul                          additivity on products
+exists_sq_of_even_rootMultiplicity  a polynomial over an algebraically closed field with
+                                    everywhere-even root multiplicity is a constant times a square
+isSquare_of_even_ratOrd             **a rational function of everywhere-even order is a square**
+```
+
+`GaloisForLFunctions.HTGeometry.RatFuncShiftSquareOrbit`
+
+```text
+rootMultiplicity_comp_X_add_one
+ratOrd_ratShift                     **the shift moves the order along the orbit**:
+                                    `ratOrd (σg) c = ratOrd g (c+1)`
+finite_ratOrd_support               a rational function has finitely many zeros and poles
+even_ratOrd_of_ratShift_mul_sq      **`σf·g² = f ⟹ the order of `f` is even at every point**
+isSquare_of_ratShift_mul_sq         **hence `f` is a square**
+```
+
+This is exactly Steps 2 and 3 of the argument above, in the generality in which they are true: for
+any field of characteristic zero (and algebraically closed for the square), any nonzero `f` and `g`
+with `σf·g² = f`.  The descent is the orbit induction — the order of `f` vanishes from some index on
+because it has finitely many zeros and poles, and each earlier order differs from the next by
+`2·ratOrd g`, so all of them are even.  No degree at infinity is used; this is the global ingredient
+the previous entry said the argument needed.
+
+Applied to the imprimitive branch with `f = Δ = e² − 4p` and `g = p`, the discriminant identity
+`σΔ·p² = Δ` now gives `Δ = k²` in Lean.  What remains of item (a) is the elementary part:
+the identity `(E) ∧ (P) ⟹ (D)` (Step 1), the identification of the pairs `{σr₁, σr₂}` and
+`{f(r₁), f(r₂)}` (Step 4), the degree exclusion of the swap (Step 5), and the appeal to
+`BesselOrderRiccati.orderBesselRiccati_no_ratFunc_solution` (Step 6).
+
+### Item (a) CLOSED IN LEAN — `no_imprimitive_pair`
+
+`GaloisForLFunctions.HTGeometry.BesselOrderImprimitivity` (wired, built, axiom-clean
+`[propext, Classical.choice, Quot.sound]`) proves the whole of item (a) unconditionally:
+
+```text
+intDegree_add_eq_of_lt          the strict ultrametric equality for the degree at infinity
+ratShift_eq_fieldShiftRatShift  the two constructions of the unit shift agree
+besselB, natDegree_besselPoly, besselB_ne_zero, intDegree_besselB, intDegree_two
+no_imprimitive_pair             **there are no `e, p ∈ ℂ(X)` with `p ≠ 0` satisfying
+                                `(E) σe = e/p + 2b` and `(P) p·σp = 1 + b·e + b²·p`**
+```
+
+with `b = c·(X+1)` and `c ≠ 0` — that is, the order module of the Bessel order operator is **not
+imprimitive**.  The Lean proof follows the six steps recorded above exactly:
+
+1. `σp = (1 + be + b²p)/p` and `σ(e² − 4p)·p² = e² − 4p` — the discriminant identity, by
+   `field_simp`;
+2. `e² − 4p ≠ 0`, because otherwise `e/2` solves the Bessel Riccati equation
+   (`orderBesselRiccati_no_ratFunc_solution`);
+3. `IsSquare (e² − 4p)` by `isSquare_of_ratShift_mul_sq` — the global orbit-parity theorem of the
+   previous entry;
+4. with `e² − 4p = k·k`, the ratios `r₁, r₂ = (e ± k)/2` satisfy `r₁ + r₂ = e`, `r₁r₂ = p`, and
+   `(σr₁ − f(r₁))·(σr₁ − f(r₂)) = 0` for `f(r) = b + 1/r`, because the two pairs have the same sum
+   (by `(E)`) and the same product (by `(P)`);
+5. degrees at infinity: `ν(p) = 0` from the discriminant identity, `ν(e) = 1` from `(E)` and `(P)`
+   via the strict ultrametric equality, hence `{ν(r₁), ν(r₂)} = {1, −1}`;
+6. the identity assignment gives a rational Riccati solution, refuted; the swap assignment gives
+   `σr = b + 1/r'` with `ν(1/r') = −1 < 1 = ν(b)`, so the right side has degree `1` while the left
+   has degree `−1` — refuted.
+
+**Consequence for the card.**  Item (a) of the classification is complete.  Together with the
+already-recorded exclusion of the reducible case (no rational Riccati solution) and of the branch
+`ℓ(p) = +1`, the Galois group of the Bessel order recurrence is not contained in the normaliser of
+a torus.  What remains on this card is item (b): the *linearity* of the differential relation
+produced by differential algebraicity, which is a separate open core recorded above.
+
+### Lean progress — the unipotent route of item (b), reduced to one nonvanishing
+
+The entry "Where the linearity has to come from" split the remaining obligation into
+
+1. exclude imprimitivity — **now closed**, `no_imprimitive_pair`;
+2. produce a unipotent family in a Zariski-dense, non-imprimitive differential algebraic subgroup
+   of `SL₂`.
+
+`GaloisForLFunctions.HTGeometry.UnipotentParameterSubgroup` (wired, built, axiom-clean) formalises
+the whole of the mechanism `(2)` feeds:
+
+```text
+unipotentUpper, unipotentUpper_zero, unipotentUpper_mul, unipotentUpper_inv
+unipotentParams          **the parameters `t` with `u(t) ∈ G` form an additive subgroup**, for any
+                         multiplicative subgroup `G` of `2×2` matrices
+unipotentSubstHom, unipotentSubst
+                         substitution of `u(X)` into a differential polynomial in the four entries
+evalOver_unipotentSubst  **the substitution computes the value at the unipotent** — the entries `1`
+                         and `0` are differential constants, so all their jets above order zero
+                         vanish and the substitution is a plain `MvPolynomial` algebra map
+exists_nonzero_linear_jet_relation_of_unipotentParams
+                         **a nonzero linear jet relation on the unipotent parameters**, from a
+                         differential-algebraic constraint on the group
+```
+
+The last theorem is the exact shape
+`DifferentialGaloisScalarZeroSet.isomonodromy_of_no_riccati_of_linearRelation` consumes, and it is
+proved from `AdditiveDifferentialSubgroupLinear.exists_nonzero_linear_jet_relation_of_addSubgroup`
+(Cassidy's additive classification, already in the tree).
+
+Its one hypothesis is `unipotentSubst P ≠ 0`.  That is a *sharper* form of item `(2)`: it does not
+ask for a unipotent in the group, only that the defining differential polynomial does not vanish
+identically along the whole unipotent line — equivalently, that the group's differential-algebraic
+constraint is not blind to the unipotent direction.  Since the group is Zariski dense, its
+Kolchin closure is not contained in the normaliser of a torus (item `(1)`), and the unipotent
+direction is exactly the one such a group cannot ignore; making that last implication a theorem is
+what remains of item (b).
+
+### Lean progress — the tangent space is a module over the constants
+
+`cassidy_sl2` consumes a `C`-submodule `L` of `sl₂(U)`.  The Lie algebra of a differential algebraic
+group is its tangent space at the identity, and
+`GaloisForLFunctions.HTGeometry.DifferentialTangentSubmodule` (wired, built, axiom-clean) proves
+that tangent spaces have exactly that structure, in any number of differential indeterminates:
+
+```text
+differentialJet_eq_zero_zero, differentialJet_const_mul
+    **jets are linear over the differential constants**: `δ^n(c·x) = c·δ^n x` when `δc = 0`
+linearisationForm, linearisationForm_add, linearisationForm_zero, linearisationForm_const_smul
+    the linearisation `∑_v (∂_v F)(p)·δ^{v.2} X_{v.1}` is additive and constant-homogeneous in the
+    perturbation
+tangentSpace p F s : Submodule (differentialConstants C) (ι → C)
+    **the tangent directions at a point of the zero set of `F` form a module over the constants**
+mem_tangentSpace_iff_snd_eq_zero
+    it is exactly the vanishing locus of the `ε`-part at the dual point `p + εX`
+mem_tangentSpace_of_evalOver_dual
+```
+
+So the two hypotheses of `cassidy_sl2` that are about *linear structure* — that `L` is a
+`C`-submodule — are now automatic for the tangent space of any differential algebraic set, with no
+group hypothesis at all.  What the group hypothesis is still needed for is bracket-closure and the
+line-stabiliser condition; those, together with the Zariski-density transfer, are the residue of
+item (b).
+
+### Lean progress — `Ad`-stability of the tangent space
+
+`GaloisForLFunctions.HTGeometry.DifferentialTangentAdjoint` (wired, built, axiom-clean)
+
+```text
+dualMatrix p X                    the dual-number matrix `p + εX`
+dualMk_mul, dualMatrix_mul        **dual-number matrices multiply by the first-order product
+                                  rule**: `(p + εX)(q + εY) = pq + ε(pY + Xq)`
+differentialJet_inl, evalOver_inl **the base embeds through the differential evaluation**
+matrixZeroSet S                   the matrices over a differential `C`-algebra annihilated by every
+                                  member of a family `S` of differential polynomials
+mem_zeroSet_dualMatrix_inl        a constant matrix of the zero set stays in it over the duals
+adjoint_mem_tangent_of_zeroSet    **the adjoint action preserves the tangent directions at the
+                                  identity**: if the dual-number zero set is closed under
+                                  multiplication and `g·h = 1` with `g, h` in the zero set, then
+                                  `1 + εX` in the zero set gives `1 + ε(g X h)` in it
+```
+
+The computation is exact and needs no analysis: `(inl g)(1 + εX)(inl h) = 1 + ε(gXh)` because `ε`
+squares to zero, and the two constant factors are in the dual-number zero set because `inl` is a
+differential algebra map, so it commutes with every jet and hence with the evaluation of every
+differential polynomial.
+
+This is the step between "the tangent space is a module over the constants" and "the tangent space
+is closed under the bracket", since the bracket is the derivative of `Ad` along a one-parameter
+family: applying `Ad`-stability over `DualNumber C` with `g = 1 + ηX` gives
+`Y + η[X, Y]` in the tangent space, and `η·(linearisation at Y)` vanishes exactly when the
+linearisation does.  Formalising that last derivative step, together with the line-stabiliser
+condition and the Zariski-density transfer, is what remains of item (b).
+
+### Lean progress — the transfer lemma the layered dual-number argument needs
+
+`GaloisForLFunctions.HTGeometry.DifferentialEvalTransfer` (wired, built, axiom-clean)
+
+```text
+differentialJet_algHom   **a derivation-compatible ring map moves through every jet**
+evalOver_algHom          **the differential evaluation commutes with a differential algebra map**
+matrixZeroSet_algHom     hence such a map carries the zero set of a family of differential
+                         polynomials into the zero set of the same family over the target
+evalOver_inl'            the base-embedding case, recovered from the general statement
+```
+
+`evalOver` is `aeval` on the jets of the coordinates, so an algebra map commuting with the
+derivation moves through it: through each jet by induction, and through `aeval` because two algebra
+maps out of a polynomial ring agreeing on the variables are equal.
+
+This is the reusable form of the step that the previous entry's `evalOver_inl` did by hand, and it
+is what the bracket argument needs, since that argument moves between three layers — `C`, its dual
+numbers, and their dual numbers — and each move is a differential algebra map.  With it, the
+adjoint derivative `(1 + ηX)(1 + εY)(1 − ηX) = 1 + ε(Y + η[X, Y])` becomes a computation in
+`dualMatrix_mul` plus two applications of `matrixZeroSet_algHom`.
+
+### The two-layer dual-number model is blocked by an instance diamond — use a four-dimensional model
+
+`DifferentialEvalTransfer` gained the ring-map form of the transfer, which asks only for
+compatibility with the derivation and with the constants and so needs no algebra structure of the
+target over the source:
+
+```text
+evalOver_ringHom        φ (evalOver x P) = evalOver (φ ∘ x) P  for a derivation- and
+                        constant-compatible ring map φ
+matrixZeroSet_ringHom   hence φ carries the zero set into the zero set
+```
+
+That was built to run the bracket argument over `DualNumber (DualNumber C)`.  It cannot be run
+there.  **`Differential.deriv` cannot be applied to an element of `DualNumber (DualNumber C)`**: the
+`Differential` instance synthesises, but its `Derivation ℤ R R` is built over
+`CommRing.toCommSemiring` while the elaborator resolves the `CommSemiring` of
+`TrivSqZeroExt (DualNumber C) (DualNumber C)` through `TrivSqZeroExt.commSemiring`.  The two paths
+are a diamond, and every form of the application — notation, explicit universe and instance
+arguments, type ascription, tactic mode — is rejected with the same mismatch.
+
+So the second infinitesimal must not come from iterating `TrivSqZeroExt`.  The replacement is a
+four-dimensional model of `C[ε, η]/(ε², η²)` built directly — components `1, ε, η, εη` with
+
+`(a, b, c, d)·(a', b', c', d') = (aa', ab' + ba', ac' + ca', ad' + da' + bc' + cb')`
+
+— whose `CommRing` and `Differential` instances are one explicit construction each, with no
+inherited diamond.  On it the identity `(1 + ηX)(1 + εY)(1 − ηX) = 1 + ε(Y + η[X, Y])` is the same
+exact computation, and `matrixZeroSet_ringHom` transports along the two layer inclusions exactly as
+intended.  That is the next brick of item (b).
+
+### Lean progress — two independent infinitesimals, built directly
+
+`GaloisForLFunctions.HTGeometry.BiDualNumbers` (wired, built, axiom-clean) supplies the ring the
+previous entry named:
+
+```text
+BiDual C                       `C[ε, η]/(ε², η²)`, by its four coefficients `re, ep, et, mx`
+                               (`1`, `ε`, `η`, `εη`), with explicit `Add`, `Zero`, `Neg`, `One`,
+                               `Mul` and a `CommRing` instance proved componentwise
+coeff, coeffHom, Algebra C     the base inclusion
+derivFun, derivMap             the componentwise derivation, as a `Derivation ℤ`
+Differential, DifferentialAlgebra C
+epsFun/epsHom, etaFun/etaHom   **the two layer inclusions** `a + ηb ↦ a + εb` and `a + ηb ↦ a + ηb`
+                               of the dual numbers, as ring maps
+deriv_epsHom, deriv_etaHom, epsHom_algebraMap, etaHom_algebraMap
+                               each is derivation- and constant-compatible, so
+                               `matrixZeroSet_ringHom` transports along it
+```
+
+**The diamond is gone.**  `z′`, `differentialJet n z` and `differentialPolynomialEvalOver x P` all
+elaborate on `BiDual C`, which none of them do on `DualNumber (DualNumber C)`.  The reason is that
+`BiDual` carries exactly one `CommRing` instance, constructed here, instead of inheriting one
+through `TrivSqZeroExt`.
+
+Building the derivation needed one point of care: giving `Derivation ℤ` a `toFun` with `map_smul'`
+forces a computation of `zsmulRec` on the four coefficients.  Supplying
+`(AddMonoidHom.mk' derivFun _).toIntLinearMap` instead discharges the `ℤ`-linearity from additivity
+alone, which is all that is true over `ℤ`.
+
+With this in place the adjoint derivative is the exact computation
+`(1 + ηX)(1 + εY)(1 − ηX) = 1 + εY + εη(XY − YX)` in `BiDual`, together with two applications of
+`matrixZeroSet_ringHom` along `etaHom` and `epsHom`.
+
+### Lean progress — the adjoint derivative, and with it the bracket
+
+`GaloisForLFunctions.HTGeometry.BiDualAdjointDerivative` (wired, built, axiom-clean)
+
+```text
+biMatrix a b c d          the matrix `a + bε + cη + dεη`
+biMatrix_mul              **the two-parameter first-order product rule**
+                          `(a,b,c,d)(a',b',c',d')
+                             = (aa', ab'+ba', ac'+ca', ad'+da'+bc'+cb')`
+etaMatrix_eq, epsMatrix_eq
+                          `1 ± ηX` and `1 + εY` are the images of the tangent matrices under the
+                          two layer inclusions
+adjointDerivative_mem_zeroSet
+                          **if `1 + ηX`, `1 − ηX` and `1 + ηY` are in the zero set over the dual
+                          numbers, and the zero set is closed under multiplication over
+                          `C[ε,η]/(ε²,η²)`, then `1 + εY + εη(XY − YX)` is in it**
+```
+
+The computation is exact and finite:
+
+`(1 + ηX)(1 + εY)(1 − ηX) = 1 + εY + εη(XY − YX)`,
+
+by two applications of `biMatrix_mul`; the two layer inclusions are derivation- and
+constant-compatible, so `matrixZeroSet_ringHom` carries the three factors into the zero set over
+`BiDual C`, and closure under multiplication does the rest.
+
+**So the commutator is now visibly a coefficient of a member of the zero set.**  This is the
+content of "the Lie algebra of a differential algebraic group is closed under the bracket", up to
+extracting the `εη`-coefficient.  That extraction is the statement that the `εη`-component of an
+evaluation at a point whose `η`-component vanishes is the linearisation at the base applied to the
+`εη`-component of the point — a three-case induction on the differential polynomial, on the same
+pattern as the corpus's `snd_differentialPolynomialEvalOver_dual`.  After it, item (b) needs only
+the line-stabiliser condition and the Zariski-density transfer, the remaining two hypotheses of
+`cassidy_sl2`.
+
+### Lean progress — BRACKET CLOSURE, proved
+
+`GaloisForLFunctions.HTGeometry.BiDualBracketExtraction` (wired, built, axiom-clean)
+
+```text
+BiDual.jet_re, jet_ep, jet_et, jet_mx
+    the derivation is componentwise, so every jet is
+evalOver_biDual_of_et_zero
+    **at a point whose `η`-coefficients vanish, the `η`-coefficient of the value vanishes and its
+    `(1, εη)` pair is the value of the same polynomial at the dual-number point `re + ε·mx`**
+mem_zeroSet_of_biMatrix_et_zero
+    hence the `εη`-coefficient of an `η`-free member of the zero set is a tangent direction
+bracket_mem_zeroSet
+    **the Lie algebra of a differential algebraic group is closed under the bracket**:
+    from `1 + ηX`, `1 − ηX`, `1 + ηY` in the zero set over the dual numbers and closure under
+    multiplication over `C[ε,η]/(ε²,η²)`, one gets `1 + η(XY − YX)` in it
+```
+
+The mechanism is that on `{η-coefficient = 0}` the pair `(1, εη)` multiplies exactly like a dual
+number — `(z·w).re = z.re·w.re` and `(z·w).mx = z.re·w.mx + z.mx·w.re`, the cross terms
+`z.ep·w.et + z.et·w.ep` vanishing — and that this locus is closed under products and under the
+derivation, hence under every jet.  The three-case induction on the differential polynomial then
+transports the whole evaluation.
+
+**Item (b)'s Lie-algebra half is complete.**  Combining with the earlier entries, the tangent space
+at the identity of a differential algebraic subgroup is a module over the differential constants
+(`DifferentialTangentSubmodule`), stable under the adjoint action (`DifferentialTangentAdjoint`),
+and closed under the bracket (here) — the first two hypotheses of `cassidy_sl2`, `htr` being
+immediate for `SL₂`.  What remains of item (b) is the line-stabiliser condition `hline` and the
+Zariski-density transfer `hdense`.
+
+### Lean progress — the tangent space at the identity, packaged
+
+`GaloisForLFunctions.HTGeometry.IdentityTangentSubmodule` (wired, built, axiom-clean)
+
+```text
+matrixTangent S            the tangent directions at the identity, as a
+                           `Submodule (differentialConstants C)` — the intersection of the
+                           linearisation kernels over the family
+dualMatrix_eq_dualPoint
+mem_matrixTangent_iff      **`X` is a tangent direction exactly when `1 + εX` is in the zero set
+                           over the dual numbers**: the `ε`-free part of the value is the value at
+                           the identity, which vanishes because the identity is in the zero set,
+                           and the `ε`-part is the linearisation
+dualMatrix_neg_mem_zeroSet the negative of a tangent direction is a tangent direction
+bracket_mem_zeroSet_of_one **bracket closure with no hypothesis on `−X`**
+```
+
+This closes the gap between the two vocabularies: the Lie-algebra statements are about the
+`Submodule` over the constants, while the group statements are about membership of `1 + εX` in the
+zero set, and `mem_matrixTangent_iff` is the translation.  In particular the earlier
+`bracket_mem_zeroSet` loses its `−X` hypothesis, which was an artefact of stating the adjoint
+conjugation with an explicit inverse.
+
+Status of `cassidy_sl2`'s four hypotheses for the tangent space of a differential algebraic
+subgroup of `SL₂`:
+
+| hypothesis | status |
+|---|---|
+| `L` a `C`-submodule | `matrixTangent` |
+| `htr` (traceless) | immediate for `SL₂` |
+| `hbr` (bracket-closed) | `bracket_mem_zeroSet_of_one` |
+| `hdense` (spans `sl₂(U)`) | **open** — the Zariski-density transfer |
+| `hline` (trivial line stabilisers) | **open** |
+
+### Lean progress — `hline`, reduced to one nonvanishing
+
+`GaloisForLFunctions.HTGeometry.ScalarStabiliserRelation` (wired, built, axiom-clean)
+
+```text
+exists_monic_relation_of_linear
+    **a nonzero linear jet relation becomes a monic one**: divide by the coefficient of the highest
+    jet that occurs, by induction down the index
+scalarStabiliser S Y
+    **the scalars `c` with `c·Y` again in the tangent space form an additive subgroup** — the
+    tangent space is a module over the constants and scaling is additive in the scalar
+exists_monic_relation_scalarStabiliser
+    **hence the scalar stabiliser solves a monic scalar linear differential equation** as soon as it
+    lies in the zero set of one nonzero differential polynomial in one indeterminate
+```
+
+The last statement is exactly the `hsol` hypothesis of
+`DifferentialCassidyClassification.cassidy_sl2_of_differentialSolution`, which is the differential
+form of `cassidy_sl2`'s `hline`.  So `hline` has the same shape of residue as the unipotent route
+of the previous entries: a *nonvanishing*, namely that the family's constraint does not vanish
+identically along the line `c ↦ c·Y`.  Its failure is precisely the degenerate case where the
+tangent space is all of `sl₂(U)` — in which the Galois group is everything and the card's conclusion
+holds for a different and easier reason.
+
+Updated status of `cassidy_sl2_of_differentialSolution` for the tangent space of a differential
+algebraic subgroup of `SL₂`:
+
+| hypothesis | status |
+|---|---|
+| `L` a submodule over the constants | `matrixTangent` |
+| `htr` | immediate for `SL₂` |
+| `hbr` | `bracket_mem_zeroSet_of_one` |
+| `hsol` | `exists_monic_relation_scalarStabiliser`, modulo the nonvanishing |
+| `hdense` | **open** — the Zariski-density transfer |
+
+### Lean progress — `hdense`'s irreducibility half
+
+`GaloisForLFunctions.HTGeometry.Sl2AdjointIrreducible` (wired, built, axiom-clean)
+
+```text
+unipotentLower, upperConj, lowerConj
+upperConj_entry, lowerConj_entry
+    the four entries of `u(t)·A·u(−t)` and `l(t)·A·l(−t)`, explicitly
+raising_mem_of_adStable
+    **the raising matrix is in every nonzero subspace of traceless matrices stable under the upper
+    unipotents**
+sl2_of_adStable
+    **the adjoint action on `sl₂` is irreducible**: a nonzero subspace of traceless matrices stable
+    under conjugation by both unipotent lines is everything
+```
+
+The proof is a finite computation.  Conjugating `A` by `u(t)` moves it by a quadratic polynomial in
+`t`, so evaluating at `t = ±1` and subtracting twice the value at `t = 0` isolates the two
+coefficients: `−2·A₁₀·e` and `2·A₁₀·h − 4·A₀₀·e`.  From a nonzero traceless `A` one of them is a
+nonzero multiple of `e` in every case — `A₁₀ ≠ 0` gives it from the first, `A₁₀ = 0 ≠ A₀₀` from the
+second, and `A₁₀ = A₀₀ = 0` makes `A` itself a multiple of `e`.  Conjugating `e` by the lower
+unipotents then produces `−2f` and `−2h` the same way, and `h, e, f` span the traceless matrices.
+
+This is the irreducibility that makes `hdense` work: the `U`-span of the Lie algebra of a
+Zariski-dense subgroup is stable under the adjoint action of the whole group, hence — being nonzero
+— is all of `sl₂(U)`.  What is left of `hdense` is the two remaining links: that the span is stable
+under conjugation by the *unipotents of `SL₂(U)`* rather than only by group elements (the
+Zariski-closure step), and that the Lie algebra is nonzero.
+
+### Lean progress — `hdense`'s Zariski-closure step
+
+`GaloisForLFunctions.HTGeometry.AdjointStableZariskiClosure` (wired, built, axiom-clean)
+
+```text
+adjugate_two                     the adjugate of a `2×2` matrix, explicitly
+det_unipotentUpper/Lower, adjugate_unipotentUpper/Lower
+                                 the unipotents have determinant one and adjugate `u(−t)`
+conj_mem_of_dense                **adjoint stability passes from `G` to every determinant-one
+                                 matrix**
+upperConj_mem_of_dense, lowerConj_mem_of_dense
+sl2_of_dense                     **the span of the Lie algebra of a Zariski-dense subgroup is all
+                                 of `sl₂`**
+```
+
+For determinant one the inverse *is* the adjugate, which is a polynomial in the entries, so for
+fixed `A` and fixed functional `φ` the map `g ↦ φ(g·A·adj g)` is a polynomial function of `g`.  If
+`V` is stable under conjugation by `G`, that polynomial vanishes on `G` for every `φ` killing `V`;
+density extends the vanishing to all determinant-one matrices; and over a field a subspace is the
+common kernel of the functionals killing it
+(`Submodule.exists_dual_map_eq_bot_of_notMem`), so the conjugate is back in `V`.
+
+The density hypothesis is stated exactly where it is used — as the extension of vanishing for those
+specific polynomial functions — rather than through a topology, so nothing about the Zariski
+topology has to be built.
+
+**`hdense` is now complete except for one point**: that the Lie algebra is nonzero.  Everything
+else in `cassidy_sl2_of_differentialSolution` is supplied:
+
+| hypothesis | status |
+|---|---|
+| `L` a submodule over the constants | `matrixTangent` |
+| `htr` | immediate for `SL₂` |
+| `hbr` | `bracket_mem_zeroSet_of_one` |
+| `hsol` | `exists_monic_relation_scalarStabiliser`, modulo its nonvanishing |
+| `hdense` | `sl2_of_dense`, modulo `L ≠ 0` |
+
+### Lean progress — `htr`, with no nondegeneracy
+
+`GaloisForLFunctions.HTGeometry.Sl2TangentTraceless` (wired, built, axiom-clean)
+
+```text
+detPoly                        the determinant equation `x₀₀x₁₁ − x₀₁x₁₀ = 1`, as a differential
+                               polynomial
+evalOver_detPoly               its value at any point
+trace_eq_zero_of_mem_zeroSet   **a tangent direction at the identity of the determinant equation is
+                               traceless**
+```
+
+Linearising the determinant at the identity gives the trace, exactly:
+
+`det(1 + εX) = (1 + εX₀₀)(1 + εX₁₁) − εX₀₁·εX₁₀ = 1 + ε(X₀₀ + X₁₁)`
+
+because `ε² = 0`.  So `htr` costs nothing beyond the determinant equation being in the family — no
+nondegeneracy, no density, no closure hypothesis.
+
+With this, the four structural hypotheses of `cassidy_sl2_of_differentialSolution` are all
+unconditional for the tangent space of the zero set of a family containing `detPoly`:
+
+| hypothesis | supplied by | residue |
+|---|---|---|
+| `L` a submodule over the constants | `matrixTangent` | none |
+| `htr` | `trace_eq_zero_of_mem_zeroSet` | none |
+| `hbr` | `bracket_mem_zeroSet_of_one` | none |
+| `hsol` | `exists_monic_relation_scalarStabiliser` | the substituted polynomial is nonzero |
+| `hdense` | `sl2_of_dense` | `L ≠ 0` |
+
+The two residues are the content of the word "proper" in Cassidy's theorem — a Zariski-dense
+*proper* differential algebraic subgroup is conjugate to `SL₂` over the constants — and are not
+removable: they fail exactly when the differential Galois group is everything, which is the case in
+which the card's conclusion holds for the direct reason that no differential relation exists at all.
+Turning that observation into a Lean dichotomy is what closes item (b).
+
+### Lean progress — the capstone: Cassidy for the tangent space, assembled
+
+`GaloisForLFunctions.HTGeometry.DifferentialSubgroupCassidy` (wired, built, axiom-clean)
+
+```text
+matrixTangentM S hone            the Lie algebra, as a submodule of *matrices* over the constants
+span_conj_stable                 the span of a conjugation-stable set is conjugation-stable
+mem_scalarStabiliser_iff_smul_mem
+cassidy_of_matrixTangent         **Cassidy's classification for the tangent space of a differential
+                                 algebraic subgroup of `SL₂`**
+```
+
+`cassidy_of_matrixTangent` applies `cassidy_sl2_of_differentialSolution` to `matrixTangentM S hone`,
+discharging its four structural hypotheses from the modules of the previous entries:
+
+* the module structure is `matrixTangentM` itself;
+* `htr` from `trace_eq_zero_of_mem_zeroSet` (needs `detPoly ∈ S`);
+* `hbr` from `bracket_mem_zeroSet_of_one` (needs closure under multiplication over
+  `C[ε,η]/(ε²,η²)`);
+* `hdense` from `sl2_of_dense` via `span_conj_stable`;
+* `hsol` from `exists_monic_relation_scalarStabiliser`.
+
+Its remaining hypotheses are exactly the two nondegeneracies, now carried by one statement rather
+than scattered across eight modules:
+
+```text
+hLne     : ∃ A ∈ matrixTangentM S hone, A ≠ 0
+hsolres  : ∀ Y ∈ matrixTangentM S hone, Y ≠ 0 →
+             ∃ P ≠ 0, ∀ c ∈ scalarStabiliser S Y, evalOver (fun _ => c) P = 0
+```
+
+together with the group data — closure of the dual-number zero set under multiplication, adjoint
+stability of the Lie algebra under `G`, and the polynomial form of Zariski density.  Both
+nondegeneracies are the word *proper* in Cassidy's theorem; they fail exactly when the differential
+Galois group is everything.
+
+**Conclusion for the card.**  Item (b) is reduced from "Cassidy's structure theorem for
+Zariski-dense differential algebraic subgroups of `SL₂`" — a multi-module project — to a single
+named Lean theorem plus the properness dichotomy.  The classification itself is no longer an open
+core of this card.
+
+### Lean progress — the line-stabiliser hypothesis, replaced by finite dimension
+
+`GaloisForLFunctions.HTGeometry.BoundedLineStabiliserFinite` (wired, built, axiom-clean)
+
+```text
+boundedOverBase_smul_of_finiteDimensional
+    **finite dimension bounds the scalars carrying `Y` into `L`**: `finrank L + 1` of them give
+    that many elements of `L`, which are dependent, and the relation divides by `Y`
+cassidy_sl2_of_finiteDimensional
+    **Cassidy's classification for `sl₂` with a finite-dimensional Lie algebra** — no line-stabiliser
+    hypothesis at all
+```
+
+This removes the `hsol`/`hline` residue outright.  In `cassidy_sl2_of_bounded` the line-stabiliser
+condition asks that the scalars carrying a nonzero `Y` into `L` admit a fixed-length linear relation
+over the base; if `L` is finite dimensional that is automatic, because `c ↦ c·Y` is an injective
+base-linear map from those scalars into `L`, so `finrank L + 1` of them are already dependent, and
+the resulting relation can be divided by `Y ≠ 0`.
+
+So the classification now needs only three hypotheses about the Lie algebra — traceless,
+bracket-closed, spanning — plus **finite dimensionality over the constants**, which for a
+differential algebraic group of finite type is automatic and is a far more checkable condition than
+the line-stabiliser bound.
+
+Card 3 item (b) accordingly has one residue left rather than two:
+
+| hypothesis | supplied by | residue |
+|---|---|---|
+| `L` a submodule over the constants | `matrixTangent` / `matrixTangentM` | none |
+| `htr` | `trace_eq_zero_of_mem_zeroSet` | none |
+| `hbr` | `bracket_mem_zeroSet_of_one` | none |
+| line stabilisers | `cassidy_sl2_of_finiteDimensional` | `FiniteDimensional` of the Lie algebra |
+| `hdense` | `sl2_of_dense` | `L ≠ 0` |
+
+### The capstone in its final form, and what item (b) now is
+
+`DifferentialSubgroupCassidy` gained `cassidy_of_matrixTangent_finite` (wired, built, axiom-clean):
+Cassidy's classification for the tangent space of a differential algebraic subgroup of `SL₂`, with
+the line-stabiliser hypothesis replaced by finite dimensionality.  Its complete hypothesis list is
+
+```text
+hone       : the identity is in the zero set
+hdet       : the determinant equation is in the family
+hmulBi     : the zero set is closed under multiplication over `C[ε,η]/(ε²,η²)`
+hGstable   : the Lie algebra is `Ad`-stable under `G`
+hdensePoly : `G` is Zariski dense, in the polynomial form the proof uses
+hLne       : the Lie algebra is nonzero
+hfin       : the Lie algebra is finite dimensional over the constants
+```
+
+and its conclusion is that one conjugation carries the Lie algebra onto the constant span of
+`h`, `e`, `f`.
+
+The first five are structural facts about a differential algebraic subgroup — three of them
+(`hone`, `hdet`, `hmulBi`) say only that the family defines a group containing the identity inside
+`SL₂`, and two (`hGstable`, `hdensePoly`) are the adjoint stability and Zariski density that the
+card's setting supplies.  The last two, `hLne` and `hfin`, are the **dimension** statements, and
+they are equivalent to the group being a *proper* differential algebraic subgroup: for the improper
+group `SL₂(U)` the Lie algebra is all of `sl₂(U)`, which is infinite dimensional over the constants,
+and for a group with no infinitesimal directions it is zero.
+
+So item (b) is now exactly the properness dichotomy, in the parameterised Picard–Vessiot form the
+card already names as its outstanding classical input:
+
+> either the parameterised Galois group is the whole of `SL₂`, in which case the output satisfies no
+> differential relation at all and the card's conclusion is immediate; or it is proper, in which
+> case its Lie algebra is nonzero and finite dimensional over the constants, and
+> `cassidy_of_matrixTangent_finite` conjugates it into the constants, which is what the
+> isomonodromy endgame consumes.
+
+Nothing between those two branches is missing any more: the classification, the Lie-algebra
+structure, the adjoint action, the bracket, the trace, the line stabilisers, the spanning and the
+irreducibility are all Lean theorems in the tree.
+
+### Lean progress — a finite subgroup is not Zariski dense
+
+`GaloisForLFunctions.HTGeometry.FiniteNotZariskiDense` (wired, built, axiom-clean)
+
+```text
+unipotentUpper_entry, unipotentUpper_injective
+    the upper unipotents form an injective line inside the determinant-one matrices, their `(0,1)`
+    entry running over the whole field
+exists_separating_poly_of_finite
+    **a finite set of matrices is separated from `SL₂` by one polynomial in the `(0,1)` entry**:
+    the product of the linear factors at the entries occurring in the set vanishes on it, and
+    — the field being infinite — misses some unipotent
+```
+
+This is the elementary half of `hLne`.  The chain is: a differential algebraic group whose Lie
+algebra is zero has no infinitesimal directions, hence is finite; a finite group is not Zariski
+dense, by the theorem above; but the Galois group of the Bessel order recurrence *is* Zariski dense,
+because it is irreducible (no rational Riccati solution) and not imprimitive
+(`no_imprimitive_pair`), so Burnside puts its span at all of `M₂`.  So the Lie algebra is nonzero.
+
+The one link in that chain still to be formalised is the first: *zero Lie algebra implies finite*,
+which is the Kolchin dimension statement for differential algebraic groups.  It, together with
+finite dimensionality of the Lie algebra of a proper subgroup, is precisely the parameterised
+Picard–Vessiot input the card lists as outstanding — and it is now the *only* input, with both of
+its consumers (`hLne`, `hfin`) and every other step of the classification proved.
+
+### Lean progress — the constant part of the Lie algebra is the classical one
+
+`GaloisForLFunctions.HTGeometry.ConstantTangentDirections` (wired, built, axiom-clean)
+
+```text
+differentialJet_eq_zero_of_deriv_eq_zero
+    a differential constant has no jets above order zero
+linearisationForm_const
+    **at a perturbation with constant entries the linearisation collapses to the algebraic
+    differential**: only the partial derivatives with respect to the order-zero variables contribute
+```
+
+This is what makes `hLne` reachable without Kolchin dimension theory.  The constant part of the Lie
+algebra of a differential algebraic group is the tangent space of the *underlying algebraic
+variety* at the identity, cut out by finitely many ordinary linear equations rather than by
+differential ones — and for a group whose Zariski closure is `SL₂` that tangent space is `sl₂`,
+which is nonzero.
+
+So the route to `hLne` is now:
+
+1. `linearisationForm_const` reduces membership of a constant matrix in the Lie algebra to the
+   vanishing of the order-zero differential;
+2. that differential is the differential of the underlying algebraic variety, whose Zariski closure
+   is `SL₂` because the group is irreducible (no rational Riccati solution) and not imprimitive
+   (`no_imprimitive_pair`);
+3. hence every constant traceless matrix is a tangent direction, and in particular the Lie algebra
+   is nonzero.
+
+Step 2's remaining content is the identification of the order-zero differential with the algebraic
+one for the *specific* family, which is bookkeeping rather than new mathematics; nothing in this
+route needs "zero Lie algebra implies finite".
+
+### Lean progress — `hLne` reduced to the algebraic differential
+
+`GaloisForLFunctions.HTGeometry.ConstantLieAlgebraNonzero` (wired, built, axiom-clean)
+
+```text
+const_mem_matrixTangentM
+    **a constant matrix annihilated by every order-zero differential of the family at the identity
+    is a tangent direction**
+matrixTangentM_ne_bot_of_const
+    **hence the Lie algebra is nonzero as soon as one nonzero constant matrix is annihilated**
+```
+
+This finishes the reroute of `hLne`.  Membership of a *constant* matrix in the Lie algebra is now
+decided by an ordinary linear condition — the vanishing of
+
+`∑_{v ∈ P.vars, v.2 = 0} (∂_v P)(1) · X_{v.1}`
+
+for each `P` in the family — with no differential content at all, because constants have no jets
+above order zero.  For a family defining a group whose Zariski closure is `SL₂`, that sum is the
+differential of the underlying algebraic variety at the identity, which annihilates all of `sl₂`.
+
+`hLne` is therefore no longer a Kolchin-dimension statement.  Combined with the previous entries,
+item (b)'s complete state is:
+
+| hypothesis of `cassidy_of_matrixTangent_finite` | supplied by |
+|---|---|
+| `L` a submodule over the constants | `matrixTangentM` |
+| `htr` | `trace_eq_zero_of_mem_zeroSet` |
+| `hbr` | `bracket_mem_zeroSet_of_one` |
+| line stabilisers | `cassidy_sl2_of_finiteDimensional` |
+| `hdense` | `sl2_of_dense` |
+| `hLne` | `matrixTangentM_ne_bot_of_const` |
+| `hfin` | **open** — finite dimensionality of the Lie algebra |
+
+One hypothesis is left, and it is the one that expresses properness: an improper group has
+`L = sl₂(U)`, infinite dimensional over the constants.
+
+### The properness dichotomy, in Lean
+
+`DifferentialSubgroupCassidy` gained `cassidy_dichotomy` (wired, built, axiom-clean):
+
+> Either the Lie algebra of the differential algebraic subgroup is infinite dimensional over the
+> constants — which is what happens when the group is the whole of `SL₂` — or one conjugation
+> carries it onto the constant span of `h`, `e`, `f`.
+
+Its hypotheses are the six structural ones, all discharged in the tree: `hone`, `hdet`, `hmulBi`
+(the family defines a group inside `SL₂` containing the identity), `hGstable` and `hdensePoly`
+(adjoint stability and Zariski density), and `hLne` (via `matrixTangentM_ne_bot_of_const`).  No
+dimension hypothesis is left in the statement: the dichotomy is unconditional, and its positive
+branch is the full classification.
+
+**This is the final form of item (b) that the corpus can reach without the parameterised
+Picard–Vessiot correspondence.**  What the correspondence supplies, and nothing else does, is that
+differential algebraicity of the output rules out the first branch — a group with an infinite
+dimensional Lie algebra over the constants imposes no differential relation on its matrices.  With
+that one implication, `cassidy_dichotomy` closes item (b), and with it the card:
+`isomonodromy_of_no_riccati_of_linearRelation` consumes the second branch directly, since a Lie
+algebra conjugated into the constants gives `δ` of every entry equal to zero — a linear differential
+relation.

@@ -417,3 +417,459 @@ input — the semilinear action `(7)`–`(10)` on `M_K = Ω/Tor`, i.e. that `T_�
 `GL_r(R_K)` — and the identification of `μ_n` with the Cartan prefix invariants of the corpus's
 `OperatorCartanComparison`.  With those two links the existing `tendsto_normalized_ambient_cartan`
 supplies `(14)` and the balance law supplies `(15)`.
+
+## Lean progress — `(2)`: the canonical connection, and `Ω` as an `R_K`-module
+
+`GaloisForLFunctions.HTGeometry.KaehlerConnection` (wired, built, axiom-clean) constructs the
+connection `(2)` and the module structure it defines, with no presentation and no choice of
+differential generators.
+
+```text
+KaehlerJet                            the twisted first jet module `Ω × Ω` with
+                                      `a • (ω, ω') = (a ω, a ω' + δ(a) ω)`; `AddCommGroup`,
+                                      `Module K`, `Module C`, `IsScalarTower C K`
+kaehlerJetFun, kaehlerJetDerivation   **`b ↦ (d b, d (δ b))` is a `C`-derivation into it** — the
+                                      Leibniz rule for the second component is exactly the two
+                                      cross terms of `δ`
+kaehlerLift, kaehlerLift_D            its factorisation through `Ω[K⁄C]`, by the universal property
+base_kaehlerLift                      the lift is a section: its first component is the identity
+kaehlerConnection                     `∇ := (second component of the lift)`, an additive map
+kaehlerConnection_D                   `∇ (d b) = d (δ b)`
+kaehlerConnection_smul                **`∇ (a • ω) = a • ∇ ω + δ(a) • ω`** — the law `(2)`
+diffOpAux, diffOpSMul, diffOpSMul_mono
+                                      the action `∑ aₙ ∂ⁿ ↦ ∑ aₙ ∇ⁿ`
+diffOpSMul_smul, diffOpSMul_dpartial, diffOpSMul_dpartial_iterate
+                                      `(∂ · p) • ω = ∇ (p • ω)`, and its iterate
+diffOpSMul_mul, diffOpSMul_one, diffOpSMul_add, diffOpSMul_zero
+kaehlerDiffOpModule                   **`Ω[K⁄C]` is a module over the Ore ring `DiffOp K`**
+```
+
+The only hypothesis is that the base is differentially constant, `δ (algebraMap c) = 0`, which is
+what "`C` a field of constants" means in `§1`.  This is `(2)` of the card, and it is the input the
+lattice model (`OperatorLattice`, `OperatorConductorLength`, `OperatorCartanComparison`,
+`OperatorBalanceLaw`) has been waiting for.
+
+What `(3)`--`(4)` still need on top of it: the Ore-torsion quotient `M_K = Ω/Tor` and its freeness
+over the left-and-right Euclidean domain `R_K`, the rank identification
+`rank M_K = differential-trdeg_C K`, and then the semilinear action of a differential automorphism.
+
+Every declaration reports `#print axioms` = `[propext, Classical.choice, Quot.sound]`.
+
+## Lean progress — `(7)`--`(10)`: the semilinear action, before the choice of basis
+
+`GaloisForLFunctions.HTGeometry.KaehlerSemilinearAction` (wired, built, axiom-clean) constructs the
+differential-automorphism input of `(7)`--`(10)` in its basis-free form.
+
+```text
+TwistedKaehler                        `Ω[K⁄C]` with scalars twisted by `σ`, with its
+                                      `AddCommGroup`, `Module K`, `Module C` and tower instances
+twistedKaehlerDerivation              **`b ↦ d (σ b)` is a `C`-derivation into it**, for any ring
+                                      automorphism `σ` of `K` fixing the base
+twistedKaehlerLift                    its factorisation through `Ω[K⁄C]`
+kaehlerSemilinear                     `σ_*`, an additive endomorphism of `Ω[K⁄C]`
+kaehlerSemilinear_D                   `σ_* (d b) = d (σ b)`
+kaehlerSemilinear_smul                **`σ_* (a • ω) = σ(a) • σ_* ω`** — semilinearity
+symm_fixes, kaehlerSemilinear_symm_kaehlerSemilinear
+                                      **`(σ⁻¹)_* ∘ σ_* = id`**: `σ_*` is an automorphism
+kaehlerSemilinear_kaehlerConnection
+                                      **`σ_* ∘ ∇ = ∇ ∘ σ_*`** when `σ` commutes with `δ`
+```
+
+The commutation is proved by span induction over `Submodule.span K (range d) = ⊤`: the generators
+`d b` give `σ(δ b) = δ(σ b)`, and the scalar step is exactly the two Leibniz corrections cancelling,
+`σ_*(∇(a • ω)) = σ(a) • ∇(σ_* ω) + δ(σ a) • σ_* ω = ∇(σ_*(a • ω))`.
+
+So `σ_*` is a `σ`-semilinear automorphism of `Ω[K⁄C]` as a `K[∂; δ]`-module.  Passing to
+`M_K = Ω/Tor` and reading off a matrix in `GL_r(R_K)` now needs only the freeness statement `(4)`.
+
+## Lean progress — the freeness half of `(4)`: submodules over `K[∂;δ]` are free
+
+`GaloisForLFunctions.HTGeometry.DifferentialOperatorSubmoduleFree` (wired, built, axiom-clean)
+
+```text
+exists_basis_card_le        **every submodule of `K[∂;δ]^ι` supported on a finite coordinate set is
+                            free of rank at most its size** — the induction over the coordinate set
+exists_basis_of_submodule   the same for a finite index type
+free_submodule              the same, as `Module.Free`
+```
+
+Mechanism: `DifferentialOperatorSubmoduleSplitting.exists_coord_generator` supplies, for a chosen
+coordinate `i₀`, an element `x` of the submodule whose `i₀`-coordinate generates the image of the
+coordinate projection.  The previous stage lives in the kernel of that projection, so in a relation
+`g₀ x + ∑ gᵢ vᵢ = 0` the `i₀`-coordinate reads `g₀ · (x i₀) = 0`; the operator ring is a domain, so
+`g₀ = 0` and the rest is a relation among the previous basis.  When `x i₀ = 0` the whole submodule
+lies in the kernel and the previous basis already works.
+
+`KaehlerConnection` also gained `kaehlerConnection_unique`: an additive endomorphism sending `d b`
+to `d (δ b)` and satisfying the Leibniz law *is* the connection.  This identifies the construction
+here with the corpus's other one,
+`HypertranscendentalKaehlerClockSymbol.kaehlerConnectionDifferential`, which builds the same map
+from the `kerTotal` presentation.
+
+What `(4)` still needs: that `M_K = Ω/Tor` embeds into a finite free module — clearing denominators
+in `Q_K ⊗ M_K`, for which `OperatorLattice` already has the lattice layer — and the rank identity
+`rank M_K = differential-trdeg_C K`.
+
+## Lean progress — `(4)`: the structure theorem for `K[∂;δ]`-modules
+
+`GaloisForLFunctions.HTGeometry.DifferentialOperatorTorsionFreeQuotient` (wired, built,
+axiom-clean) proves the statement `M_K = Ω/Tor` needs:
+
+```text
+rowSpanR                                   the left row span of a matrix, as a module over the
+                                           operator ring
+rowSpanR_rowAdd                            row operations do not move it
+colAddVecLinR, colAddVecEquivR, rowSpanR_colAdd
+                                           a column operation moves it by an automorphism of the
+                                           ambient module
+exists_equiv_of_rowColEquiv                **hence any two row-column-equivalent matrices have row
+                                           spans related by an automorphism**
+coordIdeal, exists_mul_of_mem_rowSpanR_diagonalized
+                                           on a diagonal matrix every element of the row span has
+                                           its `j`-coordinate in the left ideal of the entry in
+                                           that column
+row_eq_smul_single                         a row of a diagonal matrix is a multiple of a coordinate
+                                           vector
+isUnit_of_torsionFree_quotient             **a torsion-free quotient forces every diagonal entry to
+                                           be a unit**: otherwise `e_j` is outside the row span
+                                           while `d · e_j` is inside, and its class is killed by `d`
+hitCols, rowSpanR_eq_coordSupport          with unit entries the row span *is* the span of its
+                                           coordinate lines
+free_quotient_coordSupport                 the quotient by a coordinate span is the free module on
+                                           the remaining coordinates
+free_of_torsionFree_quotient               **the structure theorem**: a torsion-free quotient of
+                                           `K[∂;δ]^κ` (`κ` finite) is free
+```
+
+Together with `DifferentialOperatorSubmoduleFree` (submodules are free) this is the module theory of
+`(3)`--`(4)`: for a finitely differentially generated `K/C`, `Ω[K⁄C]` is a quotient of a finite free
+`R_K`-module through `kaehlerDiffOpModule`, and `M_K = Ω/Tor` is torsion-free by construction, hence
+free.  The remaining input for `(4)` in the card's exact form is the rank identity
+`rank M_K = differential-trdeg_C K`; the *balance law* `(12)`/`(15)` needs only that some finite
+rank exists, together with `σ_*` becoming a matrix through a basis.
+
+## Lean progress — `(7)`--`(10)`: the differential automorphism acts, and is a matrix
+
+`GaloisForLFunctions.HTGeometry.DifferentialOperatorSemilinearMatrix` (wired, built, axiom-clean)
+
+```text
+map_zero', map_one'
+map_dpartial, map_dpartial_iterate   a derivation-commuting homomorphism intertwines left
+                                     multiplication by `∂`
+map_mul'                             **hence it is multiplicative on operators**
+mapRingHom, symm_deriv_comm, mapRingEquiv
+                                     **a differential automorphism of the coefficient field acts on
+                                     `K[∂;δ]` as a ring automorphism**
+exists_matrix_of_apply               the matrix of a map in a basis
+apply_sum_smul_of_semilinear         a semilinear map carries a basis combination to the twisted
+                                     combination of the images
+sum_mul_matrix_of_semilinear_comp    the composition identity for the two matrices
+isUnit_matrix_of_semilinear_equiv    **a `σ`-semilinear automorphism of a free module of finite rank
+                                     has a matrix `A` with `A · σ(A') = 1 = σ(A') · A`**
+```
+
+Assembling with the previous two passes: `Ω[K⁄C]` is a `K[∂;δ]`-module (`kaehlerDiffOpModule`),
+`M_K = Ω/Tor` is free (`free_of_torsionFree_quotient`), `σ_*` is a `σ`-semilinear automorphism of it
+(`kaehlerSemilinear`, `kaehlerSemilinear_symm_kaehlerSemilinear`), `σ` acts on the operator ring
+(`mapRingEquiv`), and in a basis `σ_*` is an invertible matrix over `R_K`
+(`isUnit_matrix_of_semilinear_equiv`).  That is `(7)`--`(10)`.
+
+What remains on this card: the rank identity `rank M_K = differential-trdeg_C K` of `(4)`, and the
+building dichotomy of Theorem B.
+
+## Lean progress — `(3)`: the Kähler module is finitely generated over `R_K`
+
+`GaloisForLFunctions.HTGeometry.KaehlerDifferentialGeneration` (wired, built, axiom-clean)
+
+```text
+kaehlerMembershipField            the elements whose differential lies in a given `K`-submodule form
+                                  an intermediate field — Leibniz for a product and
+                                  `d(x⁻¹) = −x⁻² d x` for an inverse
+eq_top_of_connection_stable       **a `K`-submodule stable under the connection and containing the
+                                  differentials of a differential generating set is everything**,
+                                  by minimality of differential adjunction: the membership field is
+                                  derivation closed because `d(δ x) = ∇ (d x)`
+connectionOrbit, mem_connectionOrbit_iterate
+span_connectionOrbit_eq_top       **`Ω[K⁄C]` is spanned over `K` by the connection orbit of the
+                                  generators** — that is, generated over `K[∂;δ]` by their
+                                  differentials
+```
+
+This is exactly the sentence of `§1`: "It is finitely generated because any finite differential
+generating tuple for `K/C` supplies `R_K`-generators for `Ω`."  With it, `Ω[K⁄C]` is a quotient of a
+finite free `R_K`-module, so `M_K = Ω/Tor` is free by
+`DifferentialOperatorTorsionFreeQuotient.free_of_torsionFree_quotient`, and `σ_*` becomes an
+invertible matrix by `DifferentialOperatorSemilinearMatrix.isUnit_matrix_of_semilinear_equiv`.
+
+Card status: `(2)`, `(3)`, `(7)`--`(10)` and the freeness half of `(4)` are Lean.  What remains is
+the rank identity `rank M_K = differential-trdeg_C K` and the building dichotomy of Theorem B.
+
+## Lean progress — `(3)`--`(4)` assembled: `M_K` is a free `R_K`-module
+
+`GaloisForLFunctions.HTGeometry.KaehlerModuleFree` (wired, built, axiom-clean), on top of the
+`IsConstantBase` class and the module/tower instances now in `KaehlerConnection`:
+
+```text
+IsConstantBase, kaehlerDiffOpModuleInstance, diffOp_smul_def
+IsScalarTower K (DiffOp K) Ω[K⁄C]            the operator action extends the field action
+partial_smul_eq_connection                   `∂ • ω = ∇ ω`
+span_diffOp_D_eq_top                         **the differentials of a differential generating set
+                                             generate `Ω[K⁄C]` over `K[∂;δ]`**
+free_quotient_kaehler_of_torsionFree         **a torsion-free quotient of `Ω[K⁄C]` for a finitely
+                                             differentially generated `K/C` is a free
+                                             `K[∂;δ]`-module** — this is `M_K = Ω/Tor`
+```
+
+together with `DifferentialOperatorTorsionFreeQuotient.free_of_torsionFree_of_fg`
+("a finitely generated torsion-free module over the operator ring is free").
+
+So `(2)`, `(3)`, the freeness statement of `(4)`, and `(7)`--`(10)` are all Lean, unconditionally.
+
+**What is left on this card.**
+
+1. The rank identity `rank_{R_K} M_K = differential-trdeg_C K` of `(4)`.  Only the *number* `r` is
+   at stake; the balance law itself needs only that some finite rank exists.
+2. The building dichotomy of Theorem B.  This is the deep item.  In the lattice model it says that
+   `μ_n` is bounded whenever `μ_n/n → 0`, i.e. that the isometry `T_σ` is semisimple.  Over a
+   *commutative* complete discretely valued field this follows from the nonarchimedean Jordan
+   estimate — the binomial coefficients have absolute value at most one, so `‖A^n‖ ≍ ρ^n` exactly —
+   but `Q̂_K = K((∂^{-1}))` is a skew field, infinite dimensional over its centre, so there is no
+   eigenvalue or reduced-norm theory to run that argument.  The route that remains is the geometric
+   one: the displacement function of an isometry of the *discrete* affine building takes values in a
+   discrete set, so its infimum is attained, and a semisimple isometry either fixes a point
+   (bounded orbit, `λ = 0`) or translates an axis (`d(L, A^n L) = n·ℓ + O(1)`, `λ ≠ 0`).  That
+   requires the CAT(0) geometry of the building, which is the missing layer.
+
+## Lean progress — the rank lower bound of `(4)`
+
+`GaloisForLFunctions.HTGeometry.KaehlerDifferentialIndependence` (wired, built, axiom-clean)
+
+```text
+kaehlerConnection_iterate_D                  `∇ⁿ (d y) = d (δⁿ y)`
+linearIndependent_diffOp_D_of_differentialIndependent
+    **differentially independent elements have `K[∂;δ]`-independent differentials**: an operator
+    relation `∑ Lᵢ · d yᵢ = 0` expands, through the connection, into a field-linear relation among
+    the `d (δⁿ yᵢ)`, and over a characteristic-zero base algebraic independence of the jets is
+    exactly linear independence of their universal differentials
+    (`KaehlerAlgebraicIndependence.algebraicIndependent_iff_kaehlerD_linearIndependent`)
+linearIndependent_mkQ_of_torsion
+    independence survives the quotient by a submodule of torsion elements — the operator ring is a
+    domain, so multiplying the relation by the annihilator keeps it nontrivial
+```
+
+`KaehlerConnection` gained `diffOpSMul_eq_sum`, the expansion `p • ω = ∑_{n ∈ T} (coeff p n) ∇ⁿ ω`
+over any finite set carrying the support.
+
+With `span_diffOp_D_eq_top` (rank at most the number of differential generators) this is both halves
+of the rank identity `(4)`: `rank_{R_K} M_K = differential-trdeg_C K`.  The only item left on this
+card is the building dichotomy of Theorem B.
+
+### The dichotomy, reduced to a statement about twisted products over `K[∂;δ]`
+
+Reading `(11)` precisely — the base lattice is a *valuation* lattice `O^r`, `O = K[[∂^{-1}]]`, not
+`R_K^r` — the dichotomy is a statement about the twisted iterates
+
+```text
+A_n = A_sigma · sigma(A_sigma) · … · sigma^(n-1)(A_sigma)  in  GL_r(R_K) ⊂ GL_r(Qhat_K),
+```
+
+measured against `O^r`.  Three exact facts follow, all elementary:
+
+* `mu_n = 0` **iff** `A_n ∈ GL_r(K)`.  Indeed `GL_r(R_K) ∩ GL_r(O) = GL_r(R_K ∩ O) = GL_r(K)`,
+  because the operators of degree at most zero are the coefficients.
+* `∑_i mu_i(n) = 0` for every `n` — this is `(12)`, already Lean.
+* `n ↦ d(O^r, A_n O^r)` is subadditive, because `sigma` preserves the degree, so `(14)` follows from
+  Fekete; the corpus proves it directly
+  (`OperatorCartanComparison.tendsto_normalized_ambient_cartan`), independently of the building.
+
+So the dichotomy is exactly: *a subadditive, integer-valued displacement sequence coming from a
+twisted matrix product over `K[∂;δ]` is bounded whenever it is sublinear.*  Two routes are open,
+and neither is a degree count:
+
+1. **Geometric.**  Displacements in the building are integral, so the infimum of the displacement
+   function is attained; a semisimple isometry of a CAT(0) space either fixes a point (`λ = 0`,
+   bounded) or translates an axis (`d(L, T^n L) = nℓ + O(1)`, `λ ≠ 0`).  The missing layer is that
+   the lattice-class complex of `Qhat_K^r` is CAT(0).  For `r = 2` it is a tree and Serre's
+   elementary elliptic/hyperbolic dichotomy suffices.
+2. **Slope-theoretic.**  A formal classification of difference modules over `Qhat_K` with the
+   residue automorphism `sigma` — the analogue of Dieudonné–Manin, and of the formal classification
+   of difference equations over `C((z^{-1}))` — gives a slope decomposition, and with it
+   `mu(A_n) = n·λ + O(1)` directly.
+
+The associated graded of the valuation filtration on `Qhat_K` is the *commutative* ring
+`K[ξ, ξ^{-1}]` (the symbol of `∂ a` is `a ξ`), which is what makes route 2 plausible: the obstruction
+is entirely the degree cancellation in the twisted product, not noncommutativity of the symbols.
+
+### Lean progress — the first structural step of the dichotomy
+
+Two exact identifications make the dichotomy a statement about *degrees*:
+
+* `mu_1(n) = deg(A_n)` and `-mu_r(n) = deg(A_n^{-1})`, where `deg` is the largest entry degree.
+  Indeed `A_n O^r ⊆ ∂^m O^r` exactly when every entry of `A_n` has degree at most `m`, so the
+  largest elementary divisor is the largest entry degree.
+* So the dichotomy reads: *if `deg(A_n)/n → 0` then `deg(A_n)` is bounded*, for the twisted product
+  `A_n = A σ(A) ⋯ σ^(n-1)(A)` of a matrix invertible over `K[∂;δ]`.
+
+`GaloisForLFunctions.HTGeometry.DifferentialOperatorTopCoefficientMatrix` (wired, built,
+axiom-clean) proves the structural constraint this produces:
+
+```text
+coeff_dpartial_iterate_at, coeff_mul_of_degree_le
+    the top coefficient of a product, with degree bounds: `coeff (p q) (d+e) = coeff p d · coeff q e`
+    whenever `deg p ≤ d`, `deg q ≤ e` — commuting `∂^d` past a coefficient changes only lower terms
+topCoeffMatrix, topCoeffMatrix_mul
+    hence the **leading matrix is multiplicative**: `(A B)_{d+e} = A_d · B_e`
+not_isUnit_topCoeffMatrix
+    **a matrix of operators invertible over `K[∂;δ]` with an entry of positive degree has a
+    singular leading matrix** — apply multiplicativity to `A B = 1` with `d + e > 0`
+```
+
+So the degree of the twisted product can drop only along the kernel of the leading matrix, and the
+leading matrix of every `A_n` with `deg A_n > 0` is singular.  This is the entry point of the slope
+theory that route 2 above needs: a Newton-polygon filtration built from the kernels of the leading
+matrices, along which the degrees are eventually exactly linear.
+
+`GaloisForLFunctions.HTGeometry.DifferentialOperatorConstantMatrix` (wired, built, axiom-clean)
+adds the two consequences the induction needs:
+
+```text
+CRingHom, CRingHom_injective          the coefficients as a ring homomorphism into `K[∂;δ]`
+isUnit_det_of_map_C_mul_eq_one        **a constant matrix invertible over the operator ring is
+                                      invertible over the field** — a left kernel vector over `K`
+                                      stays one over `K[∂;δ]`, and an invertible matrix has none.
+                                      So `deg A = 0` forces `A ∈ GL_r(K)`, hence `A_n ∈ GL_r(K)`
+                                      and `mu_n = 0` for every `n`: the degree-zero case of the
+                                      dichotomy is closed
+exists_degree_eq_of_topCoeffMatrix_mul_ne_zero
+                                      **the degree of a product is exactly additive when the
+                                      leading matrices do not annihilate each other**
+```
+
+Combining: the degree of the twisted product is exactly additive except along the kernel of the
+leading matrix, the leading matrix of every `A_n` of positive degree is singular, and `deg A = 0`
+already gives the bounded phase.  What is left is the induction on the kernel filtration — the slope
+theory proper.
+
+`GaloisForLFunctions.HTGeometry.DifferentialOperatorChainDegree` (wired, built, axiom-clean) turns
+that into the generic branch of the dichotomy, for an ordered product of arbitrary factors — which
+is what the twisted product `A σ(A) ⋯ σ^(n-1)(A)` is:
+
+```text
+chainProd, chainProdK                 the ordered products of operator and of coefficient matrices
+degree_matrix_mul_le                  the entrywise degree bound for a matrix product
+topCoeffMatrix_chainProd              **the leading matrix of an ordered product is the ordered
+                                      product of the leading matrices**, together with the degree
+                                      bound `∑ e_k`
+exists_degree_chainProd_eq            **the bound is attained exactly when that product of leading
+                                      matrices is nonzero**
+```
+
+So the whole dichotomy is now reduced to the behaviour of one sequence of matrices *over the
+coefficient field*: `C_n = C_0 σ(C_1) ⋯` — the accumulated leading matrices.  While it stays
+nonzero the degree is exactly `∑ e_k`, hence linear for a twisted power, and `λ ≠ 0` unless every
+`e_k = 0` (the case already closed by `isUnit_det_of_map_C_mul_eq_one`).  A degree drop happens
+exactly when the accumulated leading matrix is annihilated, and the remaining work is the induction
+on that kernel filtration.
+
+### Both branches of the dichotomy are now arithmetic
+
+`GaloisForLFunctions.HTGeometry.SubadditiveDegreeDichotomy` (wired, built, axiom-clean)
+
+```text
+le_mul_of_subadditive              `d m ≤ m · d 1`
+eq_zero_of_mul_of_eq_zero          `d N = 0` forces `d (k N) = 0`
+le_sup_of_subadditive_of_eq_zero   **the bounded branch**: a subadditive sequence vanishing at a
+                                   positive index is bounded by its values below that index
+mul_le_of_subadditive_of_exact     **the linear branch**: if the sequence is exactly additive along
+                                   the multiples of `N`, then `n · d N ≤ N · (d n + N · d 1)`, i.e.
+                                   `d n / n ≥ d N / N − N·d 1 / n`, so the normalized limit is
+                                   `d N / N`
+```
+
+Combining with the operator-matrix layer, the dichotomy of Theorem B follows from a *single*
+remaining input:
+
+> there is an `N ≥ 1` for which the accumulated leading matrices of the `N`-step chain never
+> annihilate — equivalently, `deg` is exactly additive along the multiples of `N`.
+
+Given such an `N`: if `deg A_N = 0` then `A_N ∈ GL_r(K)`
+(`isUnit_det_of_map_C_mul_eq_one`), so every `A_{kN} ∈ GL_r(K)`, and
+`le_sup_of_subadditive_of_eq_zero` bounds the orbit — the *bounded phase*, `λ = 0`.  If
+`deg A_N > 0` then `mul_le_of_subadditive_of_exact` gives `λ = deg A_N / N > 0` — the *boundary
+phase*.  What is left is the existence of such an `N`, i.e. the termination of the kernel
+filtration, which is where the rank bound `r` enters.
+
+`matDeg_chainProd_eq` closes the generic branch in the exact form the card needs: for a chain of
+factors of degree at most `e` whose accumulated leading matrices never vanish, the matrix degree of
+the `n`-fold product is **exactly** `n · e`.  Together with the two arithmetic branches this gives,
+unconditionally:
+
+> if the accumulated leading matrices of the twisted product never vanish, then either `deg A = 0`
+> and the whole orbit is bounded (`λ = 0`), or `deg A > 0` and `λ = deg A > 0`.
+
+Also worth recording, from `P_{n+1} = C₀ · σ(P_n)`: the ranks `rank P_n` are non-increasing, so the
+accumulated leading matrices either never vanish or vanish from some index on.  The only remaining
+gap is the *recursion* across a vanishing: restarting with the generator `A_N` of the first
+vanishing index reproduces the same situation with `σ^N` in place of `σ` and a strictly smaller
+degree ratio, and what is missing is the bound on the number of such restarts — the rank bound `r`,
+which in the classical theory comes from splitting off a proper sub-object at each drop.
+
+The structural dichotomy of the leading chain is Lean as well:
+
+```text
+chainProdK_eq_zero_of_le    once the accumulated leading matrix vanishes it stays zero
+rank_chainProdK_antitone    its ranks are non-increasing
+chainProdK_dichotomy        **either it never vanishes, or it vanishes from some index on**
+```
+
+So exactly one of the two regimes occurs, and in the first the dichotomy of Theorem B is already
+proved.  The card's last open point is therefore a single, sharply stated statement:
+
+> after a vanishing at the first index `N`, the restarted chain — generator `A_N`, automorphism
+> `σ^N` — reaches the non-vanishing regime after finitely many restarts.
+
+Classically this is the rank bound: each vanishing splits off a proper sub-object, so there are at
+most `r` restarts.
+
+### Lean progress — the restart recursion is now an identity
+
+`GaloisForLFunctions.HTGeometry.TwistedMatrixChain` (wired, built, axiom-clean)
+
+```text
+iterHom, iterHom_add, iterHom_iterHom      the iterates of a ring endomorphism, as endomorphisms;
+                                           `(σ^N)^j = σ^{jN}`
+twistedFamily, twistedChain                `σ^n(C)` and the ordered product `C σ(C) ⋯ σ^{n-1}(C)`
+twistedChain_left                          **the chain also recurses from the left**:
+                                           `P_{n+1} = C · σ(P_n)`
+twistedChain_add                           **the chain splits**: `P_{m+n} = P_m · σ^m(P_n)`
+twistedChain_restart                       **restarting at step `N` produces the twisted chain of
+                                           the `N`-step block, with `σ^N` as the twist**
+twistedChain_eq_zero_restart_iff
+DiffOp.twistedChain_eq_chainProdK          agreement with the coefficient ordered product
+DiffOp.twistedChain_eq_chainProd           agreement with the operator ordered product
+```
+
+Everything is stated for an arbitrary ring `R` and endomorphism `σ`, then specialized to both
+`K` and `K[∂;δ]`, so the same identities serve the leading-matrix chain and the operator chain.
+
+What this settles.  The card's last open point was phrased as a *claim about restarts*:
+"restarting with the generator `A_N` reproduces the same situation with `σ^N` in place of `σ`".
+That is no longer a claim — `twistedChain_restart` is it:
+
+`A_{kN} = ` the `k`-th term of the twisted chain of `A_N` with respect to `σ^N`.
+
+So the restart map `(σ, A) ↦ (σ^N, A_N)` sends twisted chains to twisted chains, and any invariant
+of a twisted chain — the degree sequence `d`, its normalized limit, the accumulated leading-matrix
+chain — recurses along restarts without further hypotheses.  In particular `d'(k) = d(kN)`, so
+`λ' = N λ`, exactly as the card asserts.
+
+What remains.  The termination of that recursion.  The restart strictly lowers the degree ratio
+(`deg A_N < N · deg A` at a vanishing), but strictly decreasing positive rationals need not
+terminate, so an extra invariant is required.  The classical one is the *slope filtration*: at each
+drop a proper `σ`-stable sub-object splits off, and its rank bounds the number of drops by `r`.
+Note that the corresponding statement for the accumulated leading matrices alone is *not* the right
+object — at a restart that chain is generated by `P_N = 0` — because the restarted leading matrix
+lives at the new, lower degree `deg A_N`, not at `N · deg A`.  The remaining input is therefore the
+lattice-level filtration, i.e. exactly one of the two routes recorded above (CAT(0) semisimplicity
+of the affine building, or a Dieudonné–Manin slope decomposition for `σ`-modules over `Qhat_K`);
+the restart algebra those routes are applied to is now formal.

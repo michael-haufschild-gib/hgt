@@ -434,3 +434,829 @@ differentialAlgebraicOver_transOp_iff          **`P·F` is DA ⟺ `π_(ij)(P)·S
 ```
 
 Only the card's `Multiplicative theorem` section is now missing for stage 3.
+
+## 2026-08-21 — CARD PROMOTED: `all-depth-pair-face-signature-completeness` → stage 3
+
+All five `[PROVED HERE]` sections of the card are unconditional, axiom-clean Lean, in twenty-four
+`AllDepth*` modules wired into `GaloisForLFunctions.HTGeometry`:
+
+1. main theorem — `AllDepthCompleteness.differentialAlgebraicOver_iff_pairFace_eq_zero`;
+2. exact image / universal normal form — `AllDepthExactImage.exists_class_member_with_prescribed_pairSig_iff`;
+3. multi-telescoping lemma — `AllDepthTelescope.exists_telescopeCube`;
+4. differential-translation module consequences — `AllDepthOperatorCriterion.differentialAlgebraicOver_transOp_iff`;
+5. multiplicative theorem — `AllDepthMultiplicative.differentialAlgebraicOver_iff_pairFace_logDeriv`.
+
+plus the simultaneous lifting lemma (`AllDepthSimultaneousLift.exists_simultaneous_lift`) and the
+bottom-charge kernel (`AllDepthBottomCharge.exists_mixedConstGermSet_erase_of_bottomCharge_eq_zero`).
+The card's depth-two hypothesis is discharged — the base case is the corpus's own unconditional
+triptic completeness theorem.
+
+The card now lives at `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/other/`.
+
+**Seven cards remain in the stage-2 `other` folder.**  Next is
+`all-depth-compatible-pair-face-differential-matroid`, whose own Lean note says its single
+remaining input was exactly the theorem just closed; what is left there is the Lean chaining of
+formula `(1)`: `AllDepthNormalForm.exists_carrierSpan_normal_form` (every `F ∈ Q_d` is an operator
+on `Ψ_(d−1)` modulo DA) into `MultipleEllipticGammaCosetSpanDecomposition.
+arbitraryTranslate_eq_deepSpan_add_differentialAlgebraic` and
+`MultipleEllipticGammaCosetCompleteDifferentialMatroid.cosetCompleteDifferentialMatroid_rationalBase`,
+together with invariance of the differential matroid under a differentially algebraic perturbation.
+
+## 2026-08-21 — CARD PROMOTED: `all-depth-compatible-pair-face-differential-matroid` → stage 3
+
+`GaloisForLFunctions.HTGeometry.AllDepthMatroidChain` (wired, built, axiom-clean) supplies the
+card's last open item — the concrete hierarchy-to-row identification — and with it the rank formula
+for an **arbitrary** finite family in `Q_d`:
+
+```text
+exists_transOp_of_mem_carrierSpan, exists_deepCombination_of_jet_translate,
+exists_deepRow_of_class, exists_operatorRow_of_class_family,
+allDepth_completeDifferentialRank, allDepth_completeDifferentialRank_rationalBase
+```
+
+Chain: `AllDepthNormalForm.exists_carrierSpan_normal_form` → coset span decomposition →
+row assembly → `differentialFamilyMatroid_congr_of_sub_differentialAlgebraic` →
+`cosetCompleteDifferentialRank(_rationalBase)`.
+
+**Six cards remain** in `2-fully-proven/new_scientific_knowledge/other`:
+`bessel-order-intensity-hypertranscendence`, `differential-variational-building-balance-law`,
+`irrational-triptic-source-effectivity-character`, `isogeny-tail-maurer-cartan-holography`,
+`torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`,
+`universal-first-order-entire-cascade-unit-cost`.
+
+## 2026-08-21 — `bessel-order-intensity-hypertranscendence`: the endgame's hypothesis, in two halves
+
+Two new modules, both wired, built and axiom-clean:
+
+* `GaloisForLFunctions.HTGeometry.DifferentialGaloisScalarZeroSet` —
+  `deriv_eq_zero_of_scalarSpan_of_zeroSet`, `jet_relation_of_scalarSpan_of_zeroSet`,
+  `isomonodromy_of_no_riccati_of_zeroSet`, `linearJetSolutions`, `matrixLinearJetSolutions`,
+  `linearJetPolynomial(_ne_zero)`, `eval_linearJetPolynomial_eq_zero_of_scalarSpan`,
+  `deriv_eq_zero_of_scalarSpan_of_linear`, **`isomonodromy_of_no_riccati_of_linearRelation`**.
+* `GaloisForLFunctions.HTGeometry.DifferentialConstantRelationDescent` —
+  `exists_descend_of_coeff_mem_range`, **`exists_constantCoeff_relation_of_sigmaFixed`**,
+  `differentialPolynomialEvalOver_eq_zero_of_point`.
+
+These split the single remaining arrow of the card ("differential algebraicity forces a compatible
+derivation") into two, and close the second one outright:
+
+1. DA over `ℂ(ν)` ⟹ a **differential** relation on the Galois matrices.  The comparison matrix has
+   `σ`-invariant entries, so a relation over the base descends to the constants
+   (`exists_constantCoeff_relation_of_sigmaFixed`) and evaluates at every differential point
+   (`differentialPolynomialEvalOver_eq_zero_of_point`).
+2. A **linear** differential relation on the Galois matrices ⟹ isomonodromy over the base
+   (`isomonodromy_of_no_riccati_of_linearRelation`), unconditionally.
+
+The gap between them is exactly linearity, and the card's own counterexample shows it is real: for
+`Z = {x : δ(δx/x) = 0}` the group `{diag(a,a⁻¹)} ∪ {antidiag(b,-b⁻¹)}` has all entries in a proper
+differential algebraic set, spans `M₂`, and yet its scalar stabiliser contains the unbounded family
+`a + a⁻¹`.  A *linear* operator has a solution set that is a subspace over the differential
+constants, which is what makes the span of the group inherit the relation.
+
+**Remaining obligation of the card, in one sentence:** the Galois matrices of a Zariski-dense
+differential algebraic subgroup of `SL₂` with a proper defining ideal satisfy one nonzero *linear*
+differential operator over the constants.  Classically this is the tangent-space linearisation
+(the Lie algebra of a differential algebraic group is cut out by the linearisations of the defining
+differential polynomials), so the layer it needs is the Hopf/group-scheme structure of the
+parameterized Galois group — which the corpus deliberately avoids today
+(`galoisMonoid` is the *submonoid closure* of the set of Galois matrices, not a group).
+
+A second, equivalent reformulation found while proving the above, worth recording:
+from `(Y ⊗ 1) Z = (1 ⊗ Y)` and `δY = B Y` one gets
+`δZ · Z⁻¹ = (Y ⊗ 1)⁻¹ ((1 ⊗ B) − (B ⊗ 1)) (Y ⊗ 1)`,
+so **`δZ = 0` if and only if `B = ℓδ Y` has entries in the base** — the whole endgame is the single
+statement that the comparison matrix becomes differentially constant after one conjugation.
+
+## 2026-08-21 — CARD PROMOTED: `irrational-triptic-source-effectivity-character` → stage 3
+
+Its two Lean gates are closed.
+
+* *global analytic-subring packaging of the source boundary* — already in the tree and wired:
+  `EllipticGammaThetaBoundaryAnalytic` (`ellipticGammaThetaBoundaryAnalytic(Tau)`, `…Mero(Tau)`,
+  `ellipticGammaMero_add_sigma`, `_add_tau`, `_add_one`).  The card's own audit had recorded this;
+  the checkbox was stale.
+* *FHRZ/differential-character comparison* — new module
+  `GaloisForLFunctions.HTGeometry.TripticGerbeDifferentialCharacter` (wired, built, axiom-clean).
+
+The new module computes the flat-character group of the triptic quotient and proves the comparison:
+
+```text
+cocycleCommutator, cocycleCommutator_add_left, cocycleCommutator_eq_zero_of_basis
+IsSymmNormalCocycle, CocycleExt (+ Add/Zero/Neg/AddCommGroup), split, base_split
+exists_coboundary₁_of_symm_cocycle      a symmetric 2-cocycle on ℤ³ is a coboundary
+exists_coboundary₁_iff_basis            H²(ℤ³, M) is detected by the three basis commutators
+twistedCoboundary₁/₂, exists_twistedCoboundary₁_of_flat_of_basis
+eq_add_twistedCoboundary₁_of_curvature_of_flat_of_holonomy   **the comparison**
+eq_add_twistedCoboundary₁_of_gammaGerbeDD                    the same with curvature = gammaGerbeDD
+```
+
+Mechanism: the commutator pairing `B(a,b) = c a b − c b a` of a 2-cocycle is bi-additive (it is the
+commutator of the central extension), hence determined by the three basis pairs; when it vanishes
+the cocycle is symmetric, the extension is abelian, and the lattice being free the extension splits,
+so the cocycle is a coboundary.  On invariant (flat) coefficients the twisted complex is the
+untwisted one, which transports the statement to a gerbe cochain with the translation action.
+
+The card's remaining unchecked gate, *independent specialist proof and novelty audit*, is a
+3 → 4 item in this pipeline's vocabulary, not a formalization gate.
+
+**Five cards remain** in `2-fully-proven/new_scientific_knowledge/other`:
+`bessel-order-intensity-hypertranscendence`, `differential-variational-building-balance-law`,
+`isogeny-tail-maurer-cartan-holography`,
+`torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`,
+`universal-first-order-entire-cascade-unit-cost`.
+
+## 2026-08-21 — Bessel card: the linearisation layer (new module)
+
+`GaloisForLFunctions.HTGeometry.DifferentialTangentLinearization` (wired, built, axiom-clean):
+the dual numbers as a differential ring, the linearisation formula
+`F(p + εX) = F(p) + ε ∑_v (∂_v F)(p) δ^{v.2} X_{v.1}`, its scalar operator form, and
+`exists_nonzero_linear_relation_of_tangent` — a set of tangent directions lies in the solution set
+of one nonzero scalar linear differential operator, which is exactly the hypothesis of
+`isomonodromy_of_no_riccati_of_linearRelation`.
+
+This is the mechanism half of the linearity gap.  Remaining on this card: the geometry half —
+Cassidy's structure theorem for Zariski-dense differential algebraic subgroups of `SL₂` (the Galois
+matrices are controlled by the tangent space of the Kolchin closure at the identity), plus the
+exclusion of the imprimitive case via the symmetric square.
+
+Corpus assets found while doing this and worth reusing: the tree already owns a substantial
+differential-Hopf layer — `DifferentialHopfIdeal`, `DifferentialHopfPrimitive`
+(`nonzero_additiveHopfIdeal_exists_finite_jet_linear_relation`), `AdditivePolynomialHopfIdeal`,
+`SymmetricHopfIdealLinear`, `GroupAlgebraHopfIdealClassification`, `HopfIdealKernel`,
+`AffineExponentialGroupHopf`, `KolchinAdditiveClosure`, `DifferentialKolchinClosure` —
+so the additive half of Cassidy is already available in Hopf-ideal form.
+
+## 2026-08-21 — `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`: analysis of the last item
+
+The card's sole remaining obligation is Abe's Proposition 8.2, stated in Lean as
+`QuasiAbelianDampedLiftConstruction.HasAbeDampingFamily`.  Two findings from working on it:
+
+1. **The `majorant` field is satisfiable with `C = 0`.**  Its content is a bound on the *packet
+   jets* of the complement Poincaré terms, so a seed vanishing to order `m_i + 1` at every
+   translated packet point `w_i + comp z` (`z ≠ 0`) satisfies it exactly, with no `B` dependence.
+   The `B`-family then collapses, and the whole obligation becomes: lower-automorphic seeds with the
+   prescribed packet jets, vanishing at the translated packet points, whose Poincaré series still
+   converges locally uniformly.  A finite version of this — vanishing only for `0 < |z| ≤ Z(B)` with
+   `Z(B) ~ √(δB/σ)` and the Gaussian tail supplying `e^{-δB}` beyond — is a *finite* interpolation
+   problem, i.e. exactly the induction hypothesis (jet ampleness of the lower factor at a finite
+   packet), provided the interpolant's norm grows at most polynomially in `B`.
+2. **The multiplier route as literally described cannot work.**  A `ΓH`-invariant entire multiplier
+   is a holomorphic function on `ℂ^d/ΓH`; when that quotient is a toroidal group it is constant, and
+   in the remaining cases the only nonconstant candidates are characters `exp(λ(x))` with
+   `λ(ΓH) ⊆ 2πiℤ`, whose modulus is `exp(B Re λ(x))` — linear in the complement index, hence
+   *positive* on half the complement lattice.  Since the automorphy factor contributes only a
+   Gaussian `exp(-σ|z|²)`, and for fixed `z` with `Re λ(comp z) > 0` the product grows like
+   `e^{cB}` while the required bound decays like `e^{-δB}`, no character can damp a full complement
+   lattice.  So the damping in Abe's proof is not a `ΓH`-invariant multiplier on the seed, and the
+   route to the Lean interface has to go through the vanishing-order form in (1) or through a
+   restatement of the interface.
+
+## 2026-08-21 — `differential-variational-building-balance-law`: `(2)` is now Lean
+
+New module `GaloisForLFunctions.HTGeometry.KaehlerConnection` (wired, built, axiom-clean):
+the canonical connection `∇(a db) = δ(a) db + a d(δb)` on `Ω[K⁄C]`, built from the universal
+property via the twisted first-jet module `KaehlerJet`, together with the resulting module
+structure over the Ore ring `DiffOp K = K[∂;δ]` (`kaehlerDiffOpModule`).
+
+Chain: `kaehlerJetDerivation` (a genuine `C`-derivation into the twisted module) →
+`kaehlerLift` → `base_kaehlerLift` (it is a section) → `kaehlerConnection` with
+`kaehlerConnection_D` and `kaehlerConnection_smul` → `diffOpSMul_dpartial` → `diffOpSMul_mul` →
+`kaehlerDiffOpModule`.
+
+Remaining on that card: `M_K = Ω/Tor` free over `R_K` with rank = differential transcendence
+degree; the semilinear action `T_σ ∈ GL_r(R_K)`; the identification of `μ_n` with the Cartan
+prefix invariants of `OperatorCartanComparison`; and the building dichotomy.
+
+## 2026-08-21 — `bessel-order-intensity-hypertranscendence`: item (a) reduced
+
+The imprimitivity system `(E) σe = e/p + 2b`, `(P) p σp = 1 + be + b²p` implies the **discriminant
+identity** `σΔ · p² = Δ` for `Δ = e² − 4p` (and conversely `(E) ∧ (D) ⟹ (P)`).  Since the shift
+preserves both the degree at infinity and the leading coefficient, this forces `intDegree p = 0`
+and `ℓ(p)² = 1`; feeding that back into `(E)` and `(P)` pins the branch to
+`ℓ(p) = −1`, `intDegree e = 1`, `ℓ(e) = c`, and kills `ℓ(p) = +1` outright.  `Δ ≠ 0` because
+`Δ = 0` gives a rational Riccati solution, which `BesselOrderRiccati` refutes.
+The surviving branch has a formal solution at infinity (the asymptotic expansions of the two Bessel
+ratios), so it cannot be closed by any further degree count at infinity; the remaining argument has
+to be global, of the denominator type used in `orderBesselRiccatiPolynomial_no_solution`.
+
+## 2026-08-21 — `differential-variational-building-balance-law`: `(7)`–`(10)` basis-free
+
+New module `GaloisForLFunctions.HTGeometry.KaehlerSemilinearAction` (wired, built, axiom-clean):
+`TwistedKaehler`, `twistedKaehlerDerivation`, `kaehlerSemilinear` with `_D`, `_smul`,
+`symm_fixes`, `kaehlerSemilinear_symm_kaehlerSemilinear` (it is an automorphism) and
+`kaehlerSemilinear_kaehlerConnection` (it commutes with the connection).
+
+With `KaehlerConnection` this gives the card's `(2)` and the basis-free half of `(7)`–`(10)`.
+The remaining links on that card are: `M_K = Ω/Tor` free over `R_K` of rank = differential
+transcendence degree (`(4)`), which converts `σ_*` into a matrix in `GL_r(R_K)`; the identification
+of `μ_n` with the Cartan prefix invariants of `OperatorCartanComparison`; and the building
+dichotomy of Theorem B.
+
+## 2026-08-21 — `differential-variational-building-balance-law`: freeness over `K[∂;δ]`
+
+New module `GaloisForLFunctions.HTGeometry.DifferentialOperatorSubmoduleFree` (wired, built,
+axiom-clean): `exists_basis_card_le`, `exists_basis_of_submodule`, `free_submodule` — every
+submodule of `K[∂;δ]^ι` with `ι` finite is free of rank at most `card ι`.  This upgrades the
+corpus's existing generation statement (`DifferentialOperatorSubmoduleSplitting.
+exists_generators_card_le`) to a basis, using that the previous stage lies in the kernel of the
+coordinate projection while the new generator does not.
+
+`KaehlerConnection` gained `kaehlerConnection_unique`, which identifies it with the corpus's
+pre-existing `HypertranscendentalKaehlerClockSymbol.kaehlerConnectionDifferential` (found on a later
+search; the new construction is kept because it is import-light and is what the operator-ring module
+structure needs).
+
+Card `(4)` now needs only: `M_K = Ω/Tor` embeds into a finite free module (clearing denominators in
+`Q_K ⊗ M_K`, on top of `OperatorLattice`), and `rank M_K = differential-trdeg_C K`.
+
+## 2026-08-21 — `differential-variational-building-balance-law`: the structure theorem
+
+New module `GaloisForLFunctions.HTGeometry.DifferentialOperatorTorsionFreeQuotient` (wired, built,
+axiom-clean): `rowSpanR` and its behaviour under elementary operations, `exists_equiv_of_rowColEquiv`,
+`isUnit_of_torsionFree_quotient`, `rowSpanR_eq_coordSupport`, `free_quotient_coordSupport`, and
+**`free_of_torsionFree_quotient`** — a torsion-free quotient of `K[∂;δ]^κ` is free.
+
+With `DifferentialOperatorSubmoduleFree` this closes the module theory behind `(3)`–`(4)`:
+`Ω[K⁄C]` is an `R_K`-module (`kaehlerDiffOpModule`), a quotient of a finite free module when `K/C`
+is finitely differentially generated, and `M_K = Ω/Tor` is torsion-free, hence free.
+
+Card 4's remaining items: (i) the rank identity `rank M_K = differential-trdeg` — not needed for the
+balance law itself, only for the card's `(4)` as stated; (ii) reading `σ_*` off in a basis as a
+matrix in `GL_r(R_K)`; (iii) the building dichotomy of Theorem B.
+
+## 2026-08-21 — `differential-variational-building-balance-law`: `(7)`–`(10)` complete
+
+New module `GaloisForLFunctions.HTGeometry.DifferentialOperatorSemilinearMatrix` (wired, built,
+axiom-clean): `map_dpartial`, `map_mul'`, `mapRingHom`, **`mapRingEquiv`** (a differential
+automorphism of the coefficients acts on `K[∂;δ]`), and **`isUnit_matrix_of_semilinear_equiv`** (a
+`σ`-semilinear automorphism of a finite free module has an invertible matrix, `A · σ(A') = 1 =
+σ(A') · A`).
+
+With `KaehlerConnection`, `KaehlerSemilinearAction`, `DifferentialOperatorSubmoduleFree` and
+`DifferentialOperatorTorsionFreeQuotient`, the card's `(2)`, `(3)`, the freeness half of `(4)` and
+all of `(7)`–`(10)` are now Lean.  Remaining: the rank identity `rank M_K = differential-trdeg`, and
+the building dichotomy of Theorem B.
+
+## 2026-08-21 — `differential-variational-building-balance-law`: `(3)` finite generation
+
+New module `GaloisForLFunctions.HTGeometry.KaehlerDifferentialGeneration` (wired, built,
+axiom-clean): `kaehlerMembershipField`, **`eq_top_of_connection_stable`**, `connectionOrbit`,
+**`span_connectionOrbit_eq_top`**.  A `K`-submodule of `Ω[K⁄C]` stable under the connection and
+containing the differentials of a differential generating set is everything; hence `Ω[K⁄C]` is
+generated over `K[∂;δ]` by the differentials of any differential generating set.
+
+Card 4 now has `(2)`, `(3)`, `(7)`–`(10)` and the freeness half of `(4)` in Lean.  Remaining: the
+rank identity `rank M_K = differential-trdeg`, and the building dichotomy of Theorem B (Bruhat–Tits
+semisimplicity — the deepest remaining item on this card; the transcript records that a degree
+argument at infinity cannot replace it, since over the skew field `K((∂⁻¹))` there is no eigenvalue
+theory to make the subadditive sequence `μ(A^n)` eventually exactly linear).
+
+## 2026-08-21 — `differential-variational-building-balance-law`: `(4)` freeness assembled
+
+New module `GaloisForLFunctions.HTGeometry.KaehlerModuleFree` (wired, built, axiom-clean):
+`span_diffOp_D_eq_top` and **`free_quotient_kaehler_of_torsionFree`** — for a finitely
+differentially generated `K/C`, every torsion-free quotient of `Ω[K⁄C]` (in particular
+`M_K = Ω/Tor`) is a *free* `K[∂;δ]`-module.  `KaehlerConnection` gained the `IsConstantBase` class,
+the `Module (DiffOp K) Ω[K⁄C]` and `IsScalarTower K (DiffOp K) Ω[K⁄C]` instances, and
+`partial_smul_eq_connection`; `DifferentialOperatorTorsionFreeQuotient` gained
+`free_of_torsionFree_of_fg`.
+
+Card 4 now has `(2)`, `(3)`, the freeness of `(4)`, and `(7)`–`(10)` in Lean.  Two items remain:
+the rank identity `r = differential-trdeg`, and the building dichotomy (semisimplicity), for which
+the transcript records why the nonarchimedean Jordan argument cannot be transplanted to the skew
+field `K((∂⁻¹))` and that the remaining route is the CAT(0) geometry of the discrete affine
+building.
+
+## 2026-08-21 — `differential-variational-building-balance-law`: the rank identity
+
+New module `GaloisForLFunctions.HTGeometry.KaehlerDifferentialIndependence` (wired, built,
+axiom-clean): `kaehlerConnection_iterate_D`,
+**`linearIndependent_diffOp_D_of_differentialIndependent`** (differentially independent elements
+have `K[∂;δ]`-independent differentials, via
+`algebraicIndependent_iff_kaehlerD_linearIndependent`), and `linearIndependent_mkQ_of_torsion`.
+`KaehlerConnection` gained `diffOpSMul_eq_sum`.
+
+Together with `span_diffOp_D_eq_top` this gives both halves of `(4)`.  **The only remaining item on
+card 4 is the building dichotomy of Theorem B.**
+
+## 2026-08-21 — `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`: first Lean
+
+New module `GaloisForLFunctions.HTGeometry.QuasiAbelianVanishingDampingFamily` (wired, built,
+axiom-clean): `abeDampingMajorant_of_jet_vanishing` and `AbeDampingPacketData.ofVanishing`.
+The `majorant` field of `AbeDampingPacketData` constrains only the *packet jets* of the complement
+Poincaré terms, so it holds with constant `0` as soon as those jets vanish.  The card's remaining
+obligation is therefore an interpolation-with-vanishing problem, not a damping-multiplier problem —
+and the transcript records the proof that the multiplier route is impossible (an invariant entire
+multiplier on the toroidal quotient is constant, and a character's modulus is linear in the
+complement index, hence positive on half the lattice).
+
+## 2026-08-21 — two further assemblies
+
+* `DifferentialConstantRelationDescent.exists_constantCoeff_relation_eval` (Bessel card, step 1 of
+  the split, in one statement).
+* Card 4's dichotomy reduced, in the card, to a precise statement about twisted products
+  `A_n = A σ(A) ⋯ σ^{n-1}(A)` in `GL_r(K[∂;δ])` measured against `O^r`, `O = K[[∂^{-1}]]`, with the
+  three elementary facts `μ_n = 0 ⟺ A_n ∈ GL_r(K)`, `∑ μ_i(n) = 0`, and subadditivity, and the two
+  remaining routes named (CAT(0) geometry of the lattice complex — a tree when `r = 2`, where
+  Serre's dichotomy is elementary — or a formal slope classification of difference modules over
+  `K((∂⁻¹))`).  The associated graded of the valuation filtration is the *commutative*
+  `K[ξ,ξ⁻¹]`, so the obstruction is degree cancellation in the twisted product, not
+  noncommutativity.
+
+## 2026-08-21 — `isogeny-tail-maurer-cartan-holography`: first Lean
+
+New module `GaloisForLFunctions.HTGeometry.FixedFieldDegreeCriterion` (wired, built, axiom-clean):
+**`eq_fixedPoints_subfield_of_finrank`** — a subfield inside the fixed field of a finite faithful
+action, over which the whole field already has degree the order of the group, *is* the fixed field
+(Artin's degree computation plus the tower).
+
+This is the field-theoretic half of the card's `(1)`, `α^{n*}K = K^{Γ_n}`.  The remaining input for
+`(1)` is a single geometric statement: `[K : α^{n*}K] = deg(α^n) = |Γ_n|` at the level of the jet
+function field.  `(2)` and `(3)` are already Lean.
+
+## 2026-08-21 — card 4 dichotomy: the first structural step is Lean
+
+New module `GaloisForLFunctions.HTGeometry.DifferentialOperatorTopCoefficientMatrix` (wired, built,
+axiom-clean): `coeff_mul_of_degree_le`, `topCoeffMatrix`, **`topCoeffMatrix_mul`** (the leading
+matrix is multiplicative) and **`not_isUnit_topCoeffMatrix`** (a matrix invertible over `K[∂;δ]`
+with an entry of positive degree has a singular leading matrix).
+
+Recorded in the card: `μ₁(n) = deg(Aₙ)` and `−μ_r(n) = deg(Aₙ⁻¹)` exactly, so the dichotomy is
+*"sublinear degree growth of a twisted product implies bounded"*, and the degree can drop only along
+the kernel of the leading matrix — the entry point of the slope filtration.
+
+## 2026-08-21 — card 4 dichotomy: the degree-zero case is closed
+
+New module `GaloisForLFunctions.HTGeometry.DifferentialOperatorConstantMatrix` (wired, built,
+axiom-clean): `CRingHom`, `CRingHom_injective`, **`isUnit_det_of_map_C_mul_eq_one`** (a constant
+matrix invertible over the operator ring is invertible over the field — so `deg A = 0` forces
+`A ∈ GL_r(K)`, hence `μ_n = 0` for all `n`), and
+**`exists_degree_eq_of_topCoeffMatrix_mul_ne_zero`** (degrees are exactly additive when the leading
+matrices do not annihilate).
+
+Card 4's dichotomy now has: the degree-zero case closed, exact additivity off the kernel of the
+leading matrix, and singularity of that leading matrix whenever the degree is positive.  The
+remaining work is the induction on the kernel filtration.
+
+## 2026-08-21 — card 4 dichotomy: the generic branch is Lean
+
+New module `GaloisForLFunctions.HTGeometry.DifferentialOperatorChainDegree` (wired, built,
+axiom-clean): `chainProd`, `chainProdK`, `degree_matrix_mul_le`,
+**`topCoeffMatrix_chainProd`** (the leading matrix of an ordered product is the ordered product of
+the leading matrices, with the degree bound `∑ eₖ`) and **`exists_degree_chainProd_eq`** (the bound
+is attained exactly when that product is nonzero).
+
+The dichotomy is now reduced to one sequence of matrices over the coefficient field — the
+accumulated leading matrices.  While it is nonzero the degree is exactly `∑ eₖ`; a drop happens
+exactly when it is annihilated; and the all-degrees-zero case is already closed.  What remains is
+the induction on the kernel filtration.
+
+## 2026-08-21 — card 4 dichotomy: both branches are now arithmetic
+
+New module `GaloisForLFunctions.HTGeometry.SubadditiveDegreeDichotomy` (wired, built, axiom-clean):
+`le_mul_of_subadditive`, `eq_zero_of_mul_of_eq_zero`,
+**`le_sup_of_subadditive_of_eq_zero`** (bounded branch) and
+**`mul_le_of_subadditive_of_exact`** (linear branch, `n·d N ≤ N·(d n + N·d 1)`).
+
+The dichotomy of Theorem B now follows from one remaining input: the existence of an `N ≥ 1` whose
+`N`-step chain has non-vanishing accumulated leading matrices (equivalently, `deg` exactly additive
+along multiples of `N`).  Given that `N`, both phases are proved — `deg A_N = 0` gives
+`A_N ∈ GL_r(K)` and a bounded orbit; `deg A_N > 0` gives `λ = deg A_N / N > 0`.  The open point is
+the termination of the kernel filtration, where the rank bound enters.
+
+## 2026-08-21 — card 4: the generic branch closed in the card's own form
+
+`DiffOp.matDeg_chainProd_eq` (in `DifferentialOperatorChainDegree`): for a chain of factors of
+degree at most `e` whose accumulated leading matrices never vanish, the matrix degree of the
+`n`-fold product is exactly `n·e`.  With `SubadditiveDegreeDichotomy` this gives the full dichotomy
+under the single hypothesis "the accumulated leading matrices never vanish".
+
+Recorded: `P_{n+1} = C₀·σ(P_n)`, so `rank P_n` is non-increasing and the accumulated leading
+matrices either never vanish or vanish from some index on.  The remaining gap is the bound on the
+number of restarts after a vanishing (the rank bound, from splitting off a sub-object at each drop).
+
+## 2026-08-21 — card 4: the leading-chain dichotomy is Lean
+
+`chainProdK_eq_zero_of_le`, `rank_chainProdK_antitone`, **`chainProdK_dichotomy`** added to
+`DifferentialOperatorChainDegree`: the accumulated leading matrices either never vanish or vanish
+from some index on.  In the first regime the dichotomy of Theorem B is proved.  The card's single
+open point is now: after a vanishing, the restarted chain reaches the non-vanishing regime after
+finitely many restarts (classically the rank bound `r`).
+
+## 2026-08-21 — consolidated state of the six `other` cards, with the next brick for each
+
+**Promoted this session:** `irrational-triptic-source-effectivity-character` → stage 3.
+
+**`differential-variational-building-balance-law`** — Lean: `(2)` the canonical connection and the
+`K[∂;δ]`-module structure; `(3)` finite generation; `(4)` freeness *and* both halves of the rank
+identity; `(7)`–`(10)` the semilinear action and its invertible matrix; the balance law; and for
+Theorem B: `μ₁(n) = deg Aₙ`, multiplicativity of the leading matrix, singularity of the leading
+matrix in positive degree, exact degree growth of a chain with non-vanishing leading products, the
+regime dichotomy for the leading chain, and both arithmetic branches of the phase dichotomy.
+*Next brick:* the rank bound on the number of restarts — split off a proper sub-object at each
+vanishing of the accumulated leading matrix, i.e. the slope filtration of the `σ`-module.
+
+**`bessel-order-intensity-hypertranscendence`** — Lean: the isomonodromy endgame from a *linear*
+differential relation; the `σ`-descent of a differential relation to the constants and its
+evaluation at every differential point; the dual-number linearisation with the tangent-space linear
+relation.  *Next brick:* the linearity itself — Cassidy's structure theorem for Zariski-dense
+differential algebraic subgroups of `SL₂`, plus the exclusion of the imprimitive case (the explicit
+symmetric-square system is written in the card, with `ℓ(p) = +1` already excluded).
+
+**`torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`** — Lean: the damping majorant from
+exact vanishing, and the packet datum built from it.  Recorded: the multiplier route is impossible.
+*Next brick:* the finite version — vanishing for `0 < |z| ≤ Z(B) ≍ √(δB/σ)` plus the Gaussian tail,
+with the interpolant's majorant constant polynomial in `B`.
+
+**`isogeny-tail-maurer-cartan-holography`** — Lean: the fixed-field degree criterion, the
+field-theoretic half of `(1)`.  *Next brick:* `[K : α^{n*}K] = deg αⁿ` on the jet function field.
+
+**`universal-first-order-entire-cascade-unit-cost`** — the whole Wiman–Valiron layer, the Bell
+reductions and the cascade induction are already in the tree.  *Next brick:* `helim` for an algebraic
+derivative law; the bridge "nonzero output-jet Jacobian ⟹ `helim`" appears not to exist yet and is
+formalizable on its own, leaving the Wiman nested initial law as the analytic input.
+
+## Stretch — algebraic generators and the restart algebra
+
+Three new modules, all wired into `GaloisForLFunctions.HTGeometry`, all `lake build`-green and
+axiom-clean (`[propext, Classical.choice, Quot.sound]`).
+
+`HTGeometry.DifferentialAlgebraicAdjoin` — **an algebraic element carries no new jets**.
+`derivPart`, `deriv_mem_adjoin_of_isAlgebraic`, `derivationClosed_adjoin_of_isAlgebraic`,
+`differentialAdjoin_singleton_eq_adjoin`, `finrank_differentialAdjoin_singleton`,
+`finrank_eq_of_differentialAdjoin_singleton_eq_top`,
+`finiteDimensional_of_differentialAdjoin_singleton_eq_top`, `subfieldDifferential`,
+`subfield_differentialAlgebra`, `derivationClosed_differentialAlgebra`.
+Mechanism: implicit differentiation of the minimal equation via the corpus's `deriv_eval`
+(total derivative of a polynomial value), plus the observation that the elements whose derivative
+stays inside a field form an intermediate field.
+
+`HTGeometry.DeckFixedFieldSimpleGenerator` — **one generator identifies the invariants**.
+`eq_fixedPoints_of_adjoin_simple_eq_top`, `eq_fixedPoints_of_differentialAdjoin_eq_top`
+(`MulSemiringAction` form); `finrank_le_of_differentialAdjoin_eq_top`,
+`finiteDimensional_of_differentialAdjoin_eq_top`, `eq_fixedField_of_differentialAdjoin_eq_top`,
+`adjoin_differentialJetSet_eq_top_of_base`, `eq_fixedField_of_algebraic_generator`
+(automorphism-subgroup form, composing with the pre-existing
+`DeckDegreeUpperBound.eq_fixedField_of_finrank_le`).
+
+Effect on **card 6** (`isogeny-tail-maurer-cartan-holography`): item `(1)`,
+`alpha^{n*}K = K^{Gamma_n}`, is now proved from four inputs, three of them formal for an isogeny
+pullback; the only geometric one is that the generic point is algebraic over the pullback of degree
+at most `|Gamma_n|` — an *order-zero* statement.  The jet/prolongation layer that the card's Lean
+status listed as item 1 is no longer needed for `(1)` at all.  Items 2–5 (quotient sheaf/atlas for
+`G/H`, the DCF generic-point bridge for the logarithmic derivative, the reduced presentation, the
+finite-action quotient) still gate the card.
+
+`HTGeometry.TwistedMatrixChain` — **the restart recursion, as an identity**.
+`iterHom`, `iterHom_add`, `iterHom_iterHom`, `twistedFamily`, `twistedChain`, `twistedChain_left`
+(`P_{n+1} = C σ(P_n)`), `twistedChain_add` (`P_{m+n} = P_m σ^m(P_n)`), `twistedChain_restart`
+(`P_{kN}` is the `k`-th term of the twisted chain of `P_N` with twist `σ^N`),
+`twistedChain_eq_zero_restart_iff`, and the two bridges to `DiffOp.chainProdK` / `DiffOp.chainProd`.
+Stated for an arbitrary ring and endomorphism, so it serves both the coefficient and the operator
+chain.
+
+Effect on **card 4** (`differential-variational-building-balance-law`): the last open point was
+stated as a claim about restarts; that claim is now the identity `twistedChain_restart`.  What is
+left is *termination* of the restart recursion, which needs the lattice-level slope filtration
+(CAT(0) semisimplicity of the affine building, or Dieudonné–Manin for `σ`-modules over `Qhat_K`) —
+and explicitly **not** a statement about the accumulated leading matrices, which at a restart are
+generated by `P_N = 0` while the restarted leading matrix lives at the new lower degree.
+
+Next bricks, unchanged for the other three cards: card 3 Cassidy for Zariski-dense δ-subgroups of
+`SL₂` plus the imprimitive exclusion; card 7 the finite interpolation-with-vanishing; card 8 the
+Wiman nested initial law (the algebraic Jacobian bridge it needed already exists in the corpus —
+`JacobianAlgebraicIndependence`, `JacobianDomainCriterion`, `ArithmeticFunctionJacobianCriterion` —
+and `CascadeExactOrderUnconditional` already reduces the card to that single analytic input).
+
+## Stretch — the value at a place (card 8, item 3a)
+
+`HTGeometry.PlaceLimit` (wired, built, axiom-clean).  The peel's value-at-infinity layer,
+reproduced at a place of an algebraic extension: `PlaceLim`, its algebra (`add`, `neg`, `sub`,
+`mul`, `placeLim_sum`, `placeLim_prod`), `placeLim_det`, and uniqueness against a trivially valued
+subfield (`PlaceTrivialOn`, `eq_zero_of_mem_of_placeDegLE_lt`, `placeLim_unique`).  Plus the
+transport theorem the card's own frontier note asked for: `one_le_valuation_of_isIntegral` and
+`placeFree_of_isIntegral` — **a place trivial on a subfield is trivial on every element algebraic
+over it**, proved from the strict-maximum principle on the minimal equation (constant term a unit,
+every other term strictly small).
+
+So card 8's item 3a now has all three of its supporting layers — grading (`PlaceGrading`),
+derivation drop (`PlaceDerivationValuationDrop`, `AlgebraicCascadeDifferentDrop`), and limits
+(`PlaceLimit`).  What remains of 3a is transcribing the border-shape and peel-step inductions from
+`(TopDegLE, TopFree, TopLim)` to `(PlaceDegLE, PlaceFree, PlaceLim)` — 36 files currently mention
+the coordinate triple.  Item 3b (Reduction I: Goldberg + Strelitz, the analytic branch selection)
+is untouched.
+
+## Stretch — card 7's obligation reduced to finite interpolation
+
+`HTGeometry.MultivariateEntireJetVanishingProduct` and
+`HTGeometry.QuasiAbelianFiniteVanishingDamping` (both wired, built, axiom-clean).
+
+The first proves that vanishing jets survive multiplication (Leibniz induction) and translation,
+hence `allJetsVanish_poincareTermEntire`: a Poincaré summand `ψ(γ,·)⁻¹·G(·+γ)` inherits the
+vanishing of `G` at `p + γ`.  So the damping interface's `hvanish` is a condition on the *seed's*
+jets at the translated packet points — the automorphy factor cannot resurrect a jet.
+
+The second replaces vanishing at *every* nonzero complement translate by vanishing on a disc of
+squared radius `Z B`, with the Gaussian tail supplying `exp(−δB)` outside as soon as
+`δ·B ≤ (σ₀−σ₁)·Z B`, and a polynomial-in-`B` bound on the seed.
+
+Card 7's analytic obligation is therefore now a finite interpolation statement — prescribed jets at
+the packet, zero jets at finitely many translates — which is jet ampleness of the lower factor at
+the enlarged packet, i.e. the card's own induction hypothesis, plus a growth bound.  The remaining
+structural input is that the enlarged packet is pairwise distinct modulo `ΓH`.
+
+## Stretch — card 3 item (a): the imprimitive branch, proved on paper and half in Lean
+
+**New mathematics.**  The card had item (a) pinned to `ν(p) = 0`, `ℓ(p) = −1`, `ν(e) = 1`,
+`ℓ(e) = c` and recorded that no further degree count at infinity could close it.  It is now closed
+on paper by a *global* argument: the discriminant identity `σΔ·p² = Δ` forces every order of `Δ` to
+be even along each integer orbit (descend from where `Δ` has no zeros or poles), hence `Δ` is a
+square, hence the two Riccati ratios `r₁, r₂ = (e ± k)/2` are rational; the pair `{σr₁, σr₂}` equals
+`{b + 1/r₁, b + 1/r₂}` because the two monic quadratics agree; the swap assignment is excluded
+because `1/r₂` cancels the leading term of `b` while the shift preserves the degree at infinity; and
+the identity assignment makes `r₁` a rational solution of the Bessel order Riccati equation, which
+the corpus already refutes.
+
+**Lean.**  `HTGeometry.RatFuncOrderSquare` (`ratOrd`, `ratOrd_of_rep`, `ratOrd_mul`,
+`exists_sq_of_even_rootMultiplicity`, `isSquare_of_even_ratOrd`) and
+`HTGeometry.RatFuncShiftSquareOrbit` (`rootMultiplicity_comp_X_add_one`, `ratOrd_ratShift`,
+`finite_ratOrd_support`, `even_ratOrd_of_ratShift_mul_sq`, `isSquare_of_ratShift_mul_sq`) prove the
+global step in full generality: over any characteristic-zero field, `σf·g² = f` makes the order of
+`f` even everywhere, and over an algebraically closed one it makes `f` a square.  Also new:
+`HTGeometry.QuasiAbelianEnlargedPacket` (`enlargedPacketPoints`,
+`pairwiseDistinctModulo_enlargedPacketPoints`, `PairwiseDistinctModulo.comp`) closes the structural
+input card 7's finite version needed — the enlarged packet is a packet for the lower lattice
+precisely because the base points are distinct modulo the full lattice.
+
+## Card 3 item (a): CLOSED, in Lean
+
+`HTGeometry.BesselOrderImprimitivity.no_imprimitive_pair` — **no `e, p ∈ ℂ(X)` with `p ≠ 0` satisfy
+`σe = e/p + 2b` and `p·σp = 1 + be + b²p`** for `b = c(X+1)`, `c ≠ 0`.  Unconditional, axiom-clean,
+wired.  Supporting: `intDegree_add_eq_of_lt` (strict ultrametric equality for the degree at
+infinity) and `ratShift_eq_fieldShiftRatShift`.
+
+So the imprimitive branch of the Bessel order Galois classification is eliminated in Lean, and item
+(a) of the card is finished.  The card's remaining open core is item (b) — the linearity of the
+differential relation — which is unchanged.
+
+## Card 3 item (b): the unipotent route is Lean, down to one nonvanishing
+
+`HTGeometry.UnipotentParameterSubgroup` (wired, built, axiom-clean): `unipotentParams` (the
+parameters of the upper unipotents in a matrix group form an additive subgroup),
+`unipotentSubstHom` / `evalOver_unipotentSubst` (substituting `u(X)` into a differential polynomial
+in the four entries computes its value at the unipotent — the entries `1`, `0` are differential
+constants), and `exists_nonzero_linear_jet_relation_of_unipotentParams`, which delivers exactly the
+nonzero **linear** differential relation that `isomonodromy_of_no_riccati_of_linearRelation`
+consumes.
+
+Its only hypothesis is `unipotentSubst P ≠ 0` — the defining differential polynomial of the group
+does not vanish identically along the unipotent line.  That is the residue of the card's item (2),
+in a sharper form than "the group contains a unipotent".
+
+## Card 3 item (b): the tangent space is a constants-module
+
+`HTGeometry.DifferentialTangentSubmodule` (wired, built, axiom-clean): `differentialJet_const_mul`
+(jets are linear over the differential constants), `linearisationForm` with additivity and
+constant-homogeneity, and `tangentSpace p F s : Submodule (differentialConstants C) (ι → C)` with
+`mem_tangentSpace_iff_snd_eq_zero` identifying it with the vanishing locus of the `ε`-part at the
+dual point.
+
+This supplies, for free and with no group hypothesis, the `C`-submodule structure that
+`cassidy_sl2` asks of its input `L`.  The residue of item (b) is now bracket-closure of the tangent
+space, the line-stabiliser condition, and the Zariski-density transfer.
+
+## Card 3 item (b): `Ad`-stability of the tangent space
+
+`HTGeometry.DifferentialTangentAdjoint` (wired, built, axiom-clean): `dualMatrix` with the
+first-order product rule `(p + εX)(q + εY) = pq + ε(pY + Xq)`, `evalOver_inl` (the base embeds
+through the differential evaluation, because `inl` commutes with every jet), `matrixZeroSet`, and
+`adjoint_mem_tangent_of_zeroSet` — **the adjoint action preserves the tangent directions at the
+identity** whenever the dual-number zero set is closed under multiplication.
+
+Next step on item (b): differentiate `Ad` along `g = 1 + ηX` over `DualNumber C` to get the
+bracket; then the line-stabiliser condition and the Zariski-density transfer, which are the other
+two hypotheses of `cassidy_sl2`.
+
+## Card 3 item (b): the layer-transfer lemma
+
+`HTGeometry.DifferentialEvalTransfer` (wired, built, axiom-clean): `differentialJet_algHom`,
+`evalOver_algHom` (**the differential evaluation commutes with any differential algebra map**),
+`matrixZeroSet_algHom`, and `evalOver_inl'` recovered from it.
+
+This is the general form of the hand-proved `evalOver_inl` of the adjoint module, and it is what the
+three-layer bracket argument needs: each move between `C`, `DualNumber C` and
+`DualNumber (DualNumber C)` is a differential algebra map, so the zero set transfers along it.
+
+## Card 3 item (b): ring-map transfer landed; iterated dual numbers ruled out
+
+`HTGeometry.DifferentialEvalTransfer` now also carries `evalOver_ringHom` and
+`matrixZeroSet_ringHom` — the transfer for a plain ring map that is compatible with the derivation
+and with the constants, which needs no algebra structure of the target over the source.
+
+**Finding (dead route).**  The bracket cannot be obtained over `DualNumber (DualNumber C)`:
+`Differential.deriv` is inapplicable to elements of that type because its `Derivation ℤ R R` is
+built over `CommRing.toCommSemiring` while the elaborator resolves the `CommSemiring` of
+`TrivSqZeroExt (DualNumber C) (DualNumber C)` through `TrivSqZeroExt.commSemiring` — an instance
+diamond that no form of the application escapes.  Next brick: a direct four-dimensional model of
+`C[ε, η]/(ε², η²)` with explicit `CommRing` and `Differential` instances; the rest of the bracket
+argument is unchanged and already reduced to `dualMatrix_mul` plus two transfers.
+
+## Card 3 item (b): the two-infinitesimal ring, built
+
+`HTGeometry.BiDualNumbers` (wired, built, axiom-clean): `BiDual C` = `C[ε, η]/(ε², η²)` by four
+coefficients, with `CommRing`, `Algebra C`, `Differential` and `DifferentialAlgebra C` instances all
+constructed here, plus the two layer inclusions `epsHom`, `etaHom` of the dual numbers and their
+derivation- and constant-compatibility.
+
+This clears the dead route recorded last stretch: `z′`, `differentialJet` and
+`differentialPolynomialEvalOver` all elaborate on `BiDual C`, none of which they do on
+`DualNumber (DualNumber C)`.  Construction note: build the derivation from
+`(AddMonoidHom.mk' derivFun _).toIntLinearMap`, not from a `toFun` with `map_smul'`, or the `ℤ`-smul
+forces a `zsmulRec` computation on the coefficients.
+
+Next: the adjoint-derivative identity in `BiDual` plus two `matrixZeroSet_ringHom` transports.
+
+## Card 3 item (b): the adjoint derivative is proved
+
+`HTGeometry.BiDualAdjointDerivative` (wired, built, axiom-clean): `biMatrix`, `biMatrix_mul` (the
+two-parameter first-order product rule), `etaMatrix_eq`/`epsMatrix_eq`, and
+`adjointDerivative_mem_zeroSet` — **`1 + εY + εη(XY − YX)` lies in the zero set** whenever
+`1 ± ηX` and `1 + ηY` do and the zero set is closed under multiplication over `C[ε,η]/(ε²,η²)`.
+
+The commutator is now a coefficient of a member of the zero set.  Remaining on item (b): extract the
+`εη`-coefficient (a three-case induction, same pattern as `snd_differentialPolynomialEvalOver_dual`,
+using that the `η`-component of the point vanishes), then the line-stabiliser condition and the
+Zariski-density transfer.
+
+## Card 3 item (b): BRACKET CLOSURE PROVED
+
+`HTGeometry.BiDualBracketExtraction` (wired, built, axiom-clean): `BiDual.jet_*`,
+`evalOver_biDual_of_et_zero` (at an `η`-free point the `(1, εη)` pair of the value is a dual-number
+evaluation), `mem_zeroSet_of_biMatrix_et_zero`, and **`bracket_mem_zeroSet`** — the Lie algebra of a
+differential algebraic group is closed under the bracket.
+
+So the tangent space at the identity is now: a module over the differential constants
+(`DifferentialTangentSubmodule`), `Ad`-stable (`DifferentialTangentAdjoint`), and bracket-closed
+(here).  Those are `cassidy_sl2`'s `hbr` plus its module hypothesis; `htr` is immediate for `SL₂`.
+Item (b)'s remaining gates are `hline` (line stabilisers) and `hdense` (Zariski-density transfer).
+
+## Card 3 item (b): tangent space packaged as a constants-submodule
+
+`HTGeometry.IdentityTangentSubmodule` (wired, built, axiom-clean): `matrixTangent` (the tangent
+directions at the identity as a `Submodule (differentialConstants C)`), `mem_matrixTangent_iff`
+(**`X` is tangent exactly when `1 + εX` is in the zero set**), `dualMatrix_neg_mem_zeroSet`, and
+`bracket_mem_zeroSet_of_one` — bracket closure with the `−X` hypothesis removed.
+
+`cassidy_sl2` now has three of its four hypotheses supplied for the tangent space of a differential
+algebraic subgroup of `SL₂`: the submodule structure, `htr` (immediate for `SL₂`) and `hbr`.  The
+open two are `hdense` (Zariski-density transfer) and `hline` (line stabilisers).
+
+## Card 3 item (b): `hline` reduced to a nonvanishing
+
+`HTGeometry.ScalarStabiliserRelation` (wired, built, axiom-clean): `exists_monic_relation_of_linear`
+(a nonzero linear jet relation becomes monic, by induction down the index), `scalarStabiliser` (the
+scalars `c` with `c·Y` again tangent form an additive subgroup), and
+`exists_monic_relation_scalarStabiliser` — the `hsol` hypothesis of
+`cassidy_sl2_of_differentialSolution`, modulo one nonvanishing.
+
+Four of the five hypotheses of `cassidy_sl2_of_differentialSolution` are now supplied for the
+tangent space of a differential algebraic subgroup of `SL₂`: the submodule structure, `htr`, `hbr`,
+and `hsol`.  The single open one is `hdense` — the Zariski-density transfer.
+
+## Card 3 item (b): `sl₂` adjoint irreducibility proved
+
+`HTGeometry.Sl2AdjointIrreducible` (wired, built, axiom-clean): `unipotentLower`, `upperConj`,
+`lowerConj`, their entry formulas, `raising_mem_of_adStable`, and **`sl2_of_adStable`** — a nonzero
+subspace of traceless matrices stable under conjugation by both unipotent lines is all of `sl₂`.
+
+Finite computation: conjugation by `u(t)` is quadratic in `t`, so `t = ±1` isolates its coefficients
+`−2A₁₀·e` and `2A₁₀·h − 4A₀₀·e`; every nonzero traceless `A` yields `e`, and conjugating `e` by the
+lower unipotents yields `f` and `h`.
+
+This is `hdense`'s irreducibility half.  Left on `hdense`: the Zariski-closure step (stability of the
+span under the unipotents of `SL₂(U)`, not just under group elements) and nonvanishing of the Lie
+algebra.
+
+## Card 3 item (b): `hdense`'s Zariski-closure step proved
+
+`HTGeometry.AdjointStableZariskiClosure` (wired, built, axiom-clean): `adjugate_two`,
+`det_unipotentUpper/Lower`, `adjugate_unipotentUpper/Lower`, `conj_mem_of_dense` (adjoint stability
+passes from `G` to every determinant-one matrix), `upperConj_mem_of_dense`,
+`lowerConj_mem_of_dense`, and `sl2_of_dense`.
+
+Mechanism: for determinant one the inverse is the adjugate, a polynomial in the entries, so
+`g ↦ φ(g·A·adj g)` is polynomial; density extends its vanishing from `G` to all determinant-one
+matrices; and a subspace over a field is the common kernel of the functionals killing it
+(`Submodule.exists_dual_map_eq_bot_of_notMem`).  The density hypothesis is stated where it is used,
+so no Zariski topology is needed.
+
+Card 3 item (b) now has all five hypotheses of `cassidy_sl2_of_differentialSolution` supplied, each
+modulo one explicit nondegeneracy: `hsol` modulo its nonvanishing, `hdense` modulo `L ≠ 0`.
+
+## Card 3 item (b): `htr` proved outright
+
+`HTGeometry.Sl2TangentTraceless` (wired, built, axiom-clean): `detPoly`, `evalOver_detPoly`, and
+`trace_eq_zero_of_mem_zeroSet` — linearising `det = 1` at the identity gives the trace exactly,
+because `ε² = 0`, so tangent directions are traceless with no nondegeneracy hypothesis.
+
+Four structural hypotheses of `cassidy_sl2_of_differentialSolution` are now unconditional for the
+tangent space of a family containing `detPoly`; the two residues (`hsol`'s nonvanishing and
+`hdense`'s `L ≠ 0`) are the content of "proper" in Cassidy's theorem and fail exactly when the
+differential Galois group is everything.  Next: the dichotomy that turns that failure into the
+card's conclusion directly.
+
+## Card 3 item (b): CAPSTONE — Cassidy for the tangent space, assembled
+
+`HTGeometry.DifferentialSubgroupCassidy` (wired, built, axiom-clean): `matrixTangentM`,
+`span_conj_stable`, `mem_scalarStabiliser_iff_smul_mem`, and **`cassidy_of_matrixTangent`** — one
+theorem applying `cassidy_sl2_of_differentialSolution` to the tangent space of a differential
+algebraic subgroup of `SL₂`, with all four structural hypotheses discharged from the eight modules
+built this session.
+
+Remaining hypotheses of the capstone: the two properness nondegeneracies (`hLne : L ≠ 0` and
+`hsolres`), plus the group data (dual-number closure under multiplication, adjoint stability, and
+the polynomial form of Zariski density).
+
+Item (b) is therefore reduced from "Cassidy's structure theorem" — a multi-module project — to one
+named theorem plus the properness dichotomy.
+
+## Card 3 item (b): line-stabiliser hypothesis eliminated
+
+`HTGeometry.BoundedLineStabiliserFinite` (wired, built, axiom-clean):
+`boundedOverBase_smul_of_finiteDimensional` and `cassidy_sl2_of_finiteDimensional` — if the Lie
+algebra is finite dimensional over the base, the line-stabiliser hypothesis of Cassidy's
+classification is automatic, because `c ↦ c·Y` embeds the stabiliser into `L`.
+
+So `hsolres` is gone as a residue: the classification now needs traceless, bracket-closed, spanning,
+and finite dimensionality.  Card 3 item (b)'s only remaining residues are `FiniteDimensional` of the
+Lie algebra and `L ≠ 0` — both of which are dimension statements about the differential algebraic
+group rather than hypotheses about its equations.
+
+## Card 3 item (b): the capstone in final form
+
+`DifferentialSubgroupCassidy.cassidy_of_matrixTangent_finite` (wired, built, axiom-clean) —
+Cassidy's classification for the tangent space of a differential algebraic subgroup of `SL₂` with
+the line-stabiliser hypothesis replaced by finite dimensionality.  Hypotheses: `hone`, `hdet`,
+`hmulBi` (the family defines a group in `SL₂`), `hGstable`, `hdensePoly` (adjoint stability and
+Zariski density), and the two dimension statements `hLne`, `hfin`.
+
+Item (b) is therefore exactly the properness dichotomy: either the parameterised Galois group is all
+of `SL₂` — and then the output satisfies no differential relation and the card's conclusion is
+immediate — or it is proper, and the capstone conjugates its Lie algebra into the constants.  That
+dichotomy is the parameterised Picard–Vessiot input the card already lists as outstanding; every
+other step of the classification is now a Lean theorem.
+
+## Card 3 item (b): finite groups are not Zariski dense
+
+`HTGeometry.FiniteNotZariskiDense` (wired, built, axiom-clean): `unipotentUpper_entry`,
+`unipotentUpper_injective`, and `exists_separating_poly_of_finite` — a finite set of matrices is
+separated from `SL₂` by one polynomial in the `(0,1)` entry, because the unipotent line runs that
+entry over the whole (infinite) field.
+
+This is the elementary half of `hLne`: zero Lie algebra ⟹ finite ⟹ not Zariski dense, contradicting
+the density that Burnside supplies from irreducibility plus `no_imprimitive_pair`.  The remaining
+link is "zero Lie algebra ⟹ finite" — the Kolchin dimension statement — which with finite
+dimensionality is now the single outstanding input of item (b).
+
+## Card 3 item (b): the constant part of the Lie algebra
+
+`HTGeometry.ConstantTangentDirections` (wired, built, axiom-clean):
+`differentialJet_eq_zero_of_deriv_eq_zero` and `linearisationForm_const` — at a perturbation with
+constant entries the linearisation collapses to the algebraic differential, since constants have no
+jets above order zero.
+
+This reroutes `hLne` away from Kolchin dimension theory: the constant part of the Lie algebra is the
+tangent space of the underlying algebraic variety, which for a group with Zariski closure `SL₂` is
+`sl₂` — nonzero.  What remains is identifying the order-zero differential with the algebraic one for
+the specific family, which is bookkeeping.
+
+## Card 3 item (b): `hLne` reduced to the algebraic differential
+
+`HTGeometry.ConstantLieAlgebraNonzero` (wired, built, axiom-clean): `const_mem_matrixTangentM` and
+`matrixTangentM_ne_bot_of_const` — a constant matrix annihilated by the order-zero differentials of
+the family at the identity is a tangent direction, so the Lie algebra is nonzero as soon as one such
+nonzero constant matrix exists.  No differential content: constants have no jets above order zero.
+
+Item (b) now has exactly one open hypothesis in `cassidy_of_matrixTangent_finite`: `hfin`, finite
+dimensionality of the Lie algebra over the constants — the statement that the group is proper.
+
+## Card 3 item (b): the properness dichotomy is Lean
+
+`DifferentialSubgroupCassidy.cassidy_dichotomy` (wired, built, axiom-clean) — either the Lie algebra
+is infinite dimensional over the constants, or one conjugation carries it onto the constant span of
+`h`, `e`, `f`.  Unconditional: no dimension hypothesis remains in the statement, and all six
+structural hypotheses are discharged elsewhere in the tree.
+
+Item (b)'s single outstanding input is now the parameterised Picard–Vessiot implication
+"differential algebraicity of the output rules out the infinite-dimensional branch".  Everything on
+either side of it is proved.
+
+## Card 6: `(1)` from one annihilating polynomial
+
+`HTGeometry.IsogenyDegreeFixedField.eq_fixedField_of_annihilating_poly` (wired, built, axiom-clean)
+— `E = K^Γ` from: `E` derivation-closed inside the invariants, `g` differentially generating `K`,
+and one nonzero `q ∈ E[X]` with `q(g) = 0` and `deg q ≤ |Γ|`.
+
+Card 6's `(1)` therefore needs from geometry only the annihilating polynomial `alpha^n(X) −
+alpha^n(g)`, of degree `deg alpha^n = |Gamma_n|` — the definition of the degree of a finite
+morphism, with no jet or prolongation content.  Items 2–5 of that card's Lean status are untouched.

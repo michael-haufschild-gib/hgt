@@ -484,4 +484,107 @@ theorem exists_rankOneCommonGramCurvature_eq
   rw [rankOneCommonGramCurvature_eq_one_add_two_mul hanchor]
   ring
 
+/-! ## The sharp classification over an arbitrary disjoint base -/
+
+/-- The two-pattern avoidance coordinate adapted to a base packet.  Pattern `0` survives every
+coordinate; pattern `1` survives exactly the coordinates of the base. -/
+def rankOneBaseCoordinate {ι : Type*} [DecidableEq ι] (base : Finset ι) (_p : ι) (i : Fin 2) : ℝ :=
+  if i = 0 then 1 else (if _p ∈ base then 1 else 0)
+
+@[simp] theorem coordinatePacketWeight_rankOneBase_zero
+    {ι : Type*} [DecidableEq ι] (base s : Finset ι) :
+    coordinatePacketWeight s (rankOneBaseCoordinate base) (0 : Fin 2) = 1 := by
+  simp [coordinatePacketWeight, rankOneBaseCoordinate]
+
+theorem coordinatePacketWeight_rankOneBase_one_of_subset
+    {ι : Type*} [DecidableEq ι] {base s : Finset ι} (hs : s ⊆ base) :
+    coordinatePacketWeight s (rankOneBaseCoordinate base) (1 : Fin 2) = 1 := by
+  unfold coordinatePacketWeight
+  refine Finset.prod_eq_one fun p hp => ?_
+  simp [rankOneBaseCoordinate, hs hp]
+
+theorem coordinatePacketWeight_rankOneBase_one_of_not_subset
+    {ι : Type*} [DecidableEq ι] {base s : Finset ι} (hs : ¬ s ⊆ base) :
+    coordinatePacketWeight s (rankOneBaseCoordinate base) (1 : Fin 2) = 0 := by
+  obtain ⟨p, hp, hpb⟩ := Finset.not_subset.mp hs
+  unfold coordinatePacketWeight
+  refine Finset.prod_eq_zero hp ?_
+  simp [rankOneBaseCoordinate, hpb]
+
+theorem commonProfileSiftedEnergy_rankOneBase_of_subset
+    {ι : Type*} [DecidableEq ι] {base s : Finset ι} (hs : s ⊆ base) (t : ℝ) :
+    commonProfileSiftedEnergy (Finset.univ : Finset (Fin 2)) s
+        (rankOneBaseCoordinate base) (rankOneCurvaturePacket t) = (t + 1) ^ 2 := by
+  have hone := coordinatePacketWeight_rankOneBase_one_of_subset hs
+  simp [commonProfileSiftedEnergy, commonProfileSiftedVector,
+    coordinatePacketWeight_rankOneBase_zero, hone, rankOneCurvaturePacket,
+    Fin.sum_univ_two, Real.norm_eq_abs, sq_abs]
+
+theorem commonProfileSiftedEnergy_rankOneBase_of_not_subset
+    {ι : Type*} [DecidableEq ι] {base s : Finset ι} (hs : ¬ s ⊆ base) (t : ℝ) :
+    commonProfileSiftedEnergy (Finset.univ : Finset (Fin 2)) s
+        (rankOneBaseCoordinate base) (rankOneCurvaturePacket t) = t ^ 2 := by
+  have hzero := coordinatePacketWeight_rankOneBase_one_of_not_subset hs
+  simp [commonProfileSiftedEnergy, commonProfileSiftedVector,
+    coordinatePacketWeight_rankOneBase_zero, hzero, rankOneCurvaturePacket,
+    Fin.sum_univ_two, Real.norm_eq_abs, sq_abs]
+
+/-- **Equation `(CG12)` over an arbitrary base.**  The alternating anchor curvature of the
+explicit one-dimensional two-pattern packet is the affine family `1 + 2t`, for every base packet
+disjoint from the anchor. -/
+theorem rankOneBaseCurvature_eq_one_add_two_mul
+    {ι : Type*} [DecidableEq ι] {base anchor : Finset ι} (hdisj : Disjoint base anchor)
+    (hanchor : anchor.Nonempty) (t : ℝ) :
+    (∑ d ∈ anchor.powerset, (-1 : ℝ) ^ d.card *
+      commonProfileSiftedEnergy (Finset.univ : Finset (Fin 2)) (base ∪ d)
+        (rankOneBaseCoordinate base) (rankOneCurvaturePacket t)) = 1 + 2 * t := by
+  classical
+  set P := anchor.powerset with hP
+  have hempty : (∅ : Finset ι) ∈ P := by simp [hP]
+  have hsum : (∑ d ∈ P, (-1 : ℝ) ^ d.card) = 0 := by
+    simpa [hP] using sum_powerset_neg_one_pow_eq_zero_of_nonempty hanchor
+  have htail : (∑ d ∈ P \ {∅}, (-1 : ℝ) ^ d.card) = -1 := by
+    rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem hempty] at hsum
+    simp only [Finset.card_empty, pow_zero] at hsum
+    linarith
+  rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem hempty]
+  have hbase : commonProfileSiftedEnergy (Finset.univ : Finset (Fin 2)) (base ∪ ∅)
+      (rankOneBaseCoordinate base) (rankOneCurvaturePacket t) = (t + 1) ^ 2 := by
+    rw [Finset.union_empty]
+    exact commonProfileSiftedEnergy_rankOneBase_of_subset (le_refl base) t
+  rw [hbase]
+  simp only [Finset.card_empty, pow_zero, one_mul]
+  have htailEnergy :
+      (∑ d ∈ P \ {∅}, (-1 : ℝ) ^ d.card *
+        commonProfileSiftedEnergy (Finset.univ : Finset (Fin 2)) (base ∪ d)
+          (rankOneBaseCoordinate base) (rankOneCurvaturePacket t))
+        = (∑ d ∈ P \ {∅}, (-1 : ℝ) ^ d.card) * t ^ 2 := by
+    rw [Finset.sum_mul]
+    refine Finset.sum_congr rfl fun d hd => ?_
+    have hdP : d ∈ P := (Finset.mem_sdiff.mp hd).1
+    have hdsub : d ⊆ anchor := by simpa [hP] using hdP
+    have hdne : d ≠ ∅ := by simpa using (Finset.mem_sdiff.mp hd).2
+    obtain ⟨p, hp⟩ := Finset.nonempty_iff_ne_empty.mpr hdne
+    have hnotsub : ¬ (base ∪ d) ⊆ base := by
+      intro hsub
+      have hpb : p ∈ base := hsub (Finset.mem_union_right _ hp)
+      exact (Finset.disjoint_left.mp hdisj hpb) (hdsub hp)
+    rw [commonProfileSiftedEnergy_rankOneBase_of_not_subset hnotsub]
+  rw [htailEnergy, htail]
+  ring
+
+/-- **Sharp nonempty-anchor universality over an arbitrary disjoint base.**  Equation `(CG10)`:
+for every target real number there is an explicit one-dimensional common Gram packet on two source
+patterns whose Boolean anchor curvature above the base is exactly that number. -/
+theorem exists_rankOneBaseCurvature_eq
+    {ι : Type*} [DecidableEq ι] {base anchor : Finset ι} (hdisj : Disjoint base anchor)
+    (hanchor : anchor.Nonempty) (y : ℝ) :
+    ∃ coordinate : ι → Fin 2 → ℝ, ∃ g : Fin 2 → ℝ,
+      (∑ d ∈ anchor.powerset, (-1 : ℝ) ^ d.card *
+        commonProfileSiftedEnergy (Finset.univ : Finset (Fin 2)) (base ∪ d) coordinate g) = y := by
+  refine ⟨rankOneBaseCoordinate base, rankOneCurvaturePacket ((y - 1) / 2), ?_⟩
+  rw [rankOneBaseCurvature_eq_one_add_two_mul hdisj hanchor]
+  ring
+
+
 end RHTower

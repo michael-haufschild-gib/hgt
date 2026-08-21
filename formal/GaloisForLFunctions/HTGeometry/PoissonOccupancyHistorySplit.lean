@@ -317,6 +317,11 @@ theorem coe_poissonOccupancyUnit_lt_one (x : ℝ≥0) : (poissonOccupancyUnit x 
 /-- Boolean occupancy report of a Poisson formation. -/
 def occupancyReport (x : ℝ≥0) : Measure Bool := Ber(true, false, poissonOccupancyUnit x)
 
+instance isProbabilityMeasure_occupancyReport (x : ℝ≥0) :
+    IsProbabilityMeasure (occupancyReport x) := by
+  rw [occupancyReport]
+  infer_instance
+
 /-- **Exact occupancy--history chain rule.**  The relative entropy of two Poisson count laws is the
 relative entropy of their Boolean occupancy reports plus the occupancy-weighted relative entropy of
 their excess-count histories. -/

@@ -6319,3 +6319,14 @@ receive a new title and an independent significance audit.
   static-local fixed-time graph measure with the completed-phase incidence mean; next frontier is
   preservation of this centered sector through that quenched transfer.  Formal card:
   `../3-formalized/pure-replica-collective-energy-law.md`.
+- 2026-08-21 -- Closed a separate same-draw plateau obstruction: completed one-sided occupation now
+  yields arbitrarily late continuous circuit-hard blocks without ensemble fixed-time transfer.
+  The deterministic packing law retains every visit sheet: a narrow hit contributes one disjoint
+  widened time cell, so density `b` forces gaps of length `W` whenever
+  `b < delta/(W+delta)`.  For the projective Choi orbit, `delta` is explicit:
+  `(eps_w-eps_n)/(1+sum_i |E_0-E_i|)`.  This gives one ordinary nearest-neighbour Hamiltonian
+  laboratory growth, quantitative continuous complete-dictionary hard blocks, and recurrence
+  alternation.  It does not solve the active first-onset core because completed occupation cannot
+  exclude an arbitrarily long transient before the first hard block.  Remaining task is precisely
+  quenched fixed-time/first-entry control connecting the laboratory window to that first block.
+  Formal card: `../3-formalized/completed-occupation-quantitative-same-draw-hard-gap-law.md`.

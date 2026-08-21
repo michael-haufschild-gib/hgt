@@ -518,3 +518,93 @@ Two structural points.
    `ΓH`-invariant multiplier family `m_B` which is the identity on the finite jet packet and whose
    complement translates carry `C·B^r e^{-δB}` times a polynomial-Gaussian lattice weight; that is
    Abe's Proposition 8.2, and it is the sole analytic obligation left on this card.
+
+## Lean status 2026-08-21 — the damping obligation, re-scoped
+
+Two things were established about the remaining item, `HasAbeDampingFamily`.
+
+**1. The multiplier route cannot work.**  A seed of the form `m_B · G` lies in `lower.forms` only if
+`m_B` is `ΓH`-invariant, i.e. a holomorphic function on `ℂ^d/ΓH`.  When that quotient is a toroidal
+group every such function is constant; otherwise the nonconstant ones are the characters
+`exp(λ(x))` with `λ(ΓH) ⊆ 2πiℤ`, whose modulus `exp(B·Re λ(x))` is **linear** in the complement
+index and therefore *positive* on half of the complement lattice.  The automorphy factor supplies
+only a Gaussian `exp(−σ|z|²)`, so for a fixed `z` with `Re λ(comp z) > 0` the term grows like
+`e^{cB}` while the required bound decays like `e^{−δB}`.  No character damps a full complement
+lattice.
+
+**2. What the interface actually asks for is vanishing, not damping.**
+`GaloisForLFunctions.HTGeometry.QuasiAbelianVanishingDampingFamily` (wired, built, axiom-clean):
+
+```text
+abeDampingMajorant_of_jet_vanishing   the majorant field holds with `C = 0` as soon as the packet
+                                      jets of the complement Poincaré terms vanish — the bound is
+                                      then `0 ≤ 0`, with no `B` dependence
+AbeDampingPacketData.ofVanishing      hence the whole packet datum is constructible from a family
+                                      of lower-automorphic seeds with the prescribed packet jets
+                                      whose complement translates have vanishing packet jets
+```
+
+So the analytic obligation of this card is now, exactly: *construct lower-automorphic forms with
+the prescribed jets at the finite packet whose translates by the nonzero complement lattice have
+vanishing jets there, with the Poincaré series still locally uniformly summable.*  A finite version
+— vanishing only for `0 < |z| ≤ Z(B)` with `Z(B) ≍ √(δB/σ)`, the Gaussian tail supplying `e^{−δB}`
+beyond, and the interpolant's majorant constant growing at most polynomially in `B` — is the
+induction hypothesis of the card (jet ampleness of the lower factor at a finite packet) plus a
+growth bound, and is the natural next target.
+
+## Lean status 2026-08-21 (second entry) — the finite version, and why the factor cannot interfere
+
+Two modules, wired, `lake build`-green, axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
+
+### `HTGeometry/MultivariateEntireJetVanishingProduct.lean` — the factor cannot resurrect a jet
+
+```text
+partialDerivEntire_mul                Leibniz for a coordinate derivative of entire sources
+partialDerivEntire_translate          a coordinate derivative commutes with translation
+orderedPartialJetEvalCLM_translate    jets of a translate are jets at the translated point
+AllJetsVanish n p f                   every ordered mixed jet up to order n vanishes at p
+AllJetsVanish.mono / .value / .partialDeriv
+AllJetsVanish.mul_left, .mul_right    **vanishing jets survive multiplication**
+AllJetsVanish.translate
+allJetsVanish_poincareTermEntire      **a Poincaré summand inherits the vanishing of its seed at
+                                       the translated point**
+AllJetsVanish.multiIndexJet
+multiIndexJetEvalCLM_poincareTermEntire_eq_zero
+```
+
+The induction is the Leibniz rule read backwards: each coordinate derivative of `h · f` splits into
+`(∂h)·f + h·(∂f)`, and both summands again pair an arbitrary entire factor with something vanishing
+to one order less.  Applied to `poincareTermEntire ψ G γ = ψ(γ,·)⁻¹ · G(· + γ)` — the two factors are
+`automorphicFactorInverseEntire` and `multivariateEntireTranslate` — it says the automorphy factor
+cannot create a packet jet the seed does not have.  So `hvanish` of the damping interface is
+*exactly* a condition on the seed's own jets at the translated packet points, which is what jet
+ampleness of the lower factor can prescribe.
+
+### `HTGeometry/QuasiAbelianFiniteVanishingDamping.lean` — the finite version
+
+```text
+polynomialGaussianLatticeWeight_zero_exponent
+abeDampingMajorant_of_finite_vanishing
+AbeDampingPacketData.ofFiniteVanishing
+```
+
+Vanishing is now required only on a disc: for `0 < ∑ z_k² ≤ Z B`.  Outside it the seed's own
+Gaussian decay `exp(−σ₀ ∑ z_k²)` is split as `exp(−(σ₀−σ₁)∑ z_k²)·exp(−σ₁ ∑ z_k²)`; the first
+factor is at most `exp(−δB)` as soon as `δ·B ≤ (σ₀−σ₁)·Z B` — that is, radius `≍ √(δB/σ)`, exactly
+the scale the previous entry named — and the second is the majorant's own Gaussian lattice weight.
+The seed's bound is allowed to grow polynomially in `B` (`C₀·B^r`), as the induction hypothesis
+supplies.
+
+### What is left
+
+The card's analytic obligation is now a *finite* interpolation statement with no damping and no
+infinite vanishing condition:
+
+> for each `B`, produce a lower-automorphic form with the prescribed jets at the packet `{w i}` and
+> vanishing jets at the finitely many translated points `{w i + comp z : 0 < ∑ z_k² ≤ Z B}`, with a
+> bound `C₀ B^r · exp(−σ₀ ∑ z_k²)` on its complement Poincaré jets and locally uniform summability.
+
+That is jet ampleness of the *lower* factor at the enlarged finite packet — the induction hypothesis
+of the card — together with a growth estimate.  The remaining structural input is that the enlarged
+packet is a legitimate packet: the points `w i + comp z` must be pairwise distinct modulo `ΓH`,
+which is `PairwiseDistinctModulo` for the enlarged family.
