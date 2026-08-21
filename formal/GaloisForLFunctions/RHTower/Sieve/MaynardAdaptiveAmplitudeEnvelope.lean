@@ -556,6 +556,74 @@ theorem eventually_routeTPrimeGapPacket_adaptive_second_count_cancellation_sixty
       L X 60 (by norm_num) hX (by simpa only [Nat.reduceMul] using hD) hV
       hY hkappa hSupport hLowerComparable hPhysical hR halpha hsecond)
 
+/-- After the exact adaptive exponent cancellation, every remaining degree-60 selector loss is
+absorbed by an arbitrary positive Route-T power, uniformly in the physical cutoff. -/
+theorem eventually_routeTPrimeGapPacket_adaptive_second_count_cancellation_absorbed_sixty
+    {eta : ℝ} (heta : 0 < eta) :
+    ∀ᶠ T0 : ℝ in Filter.atTop,
+      ∀ {L : ℕ} {V R H : ℝ},
+      L ≤ routeTPrimeGapPacketSupport T0 → 0 ≤ H → 0 < V → 0 ≤ R →
+      3 / 4 ≤ routeTAdaptiveCellAmplitude L (routeTPrimeGapPacketSupport T0) 60
+        (routeTPrimeGapPacketBase T0) V →
+      R ≤ H * (T0 ^ (8 / 5 : ℝ)) ^
+        (1 + routeTGapMomentNu -
+          2 * routeTAdaptiveCellAmplitude L (routeTPrimeGapPacketSupport T0) 60
+            (routeTPrimeGapPacketBase T0) V) →
+      routeTPrimeGapPacketBase T0 * V ^ 2 * R ≤
+        T0 ^ eta * H * (T0 ^ (8 / 5 : ℝ)) ^ routeTGapMomentNu := by
+  have hcancel :=
+    eventually_routeTPrimeGapPacket_adaptive_second_count_cancellation_sixty
+  have hcost := eventually_heathBrownEligibleBoxCost_sq_sixty_routeT_absorbed heta
+  have hbaseTop : Filter.Tendsto routeTPrimeGapPacketBase
+      Filter.atTop Filter.atTop := by
+    unfold routeTPrimeGapPacketBase
+    exact (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 8 / 5)).atTop_div_const
+      (by norm_num)
+  have hbaseLarge : ∀ᶠ T0 : ℝ in Filter.atTop,
+      1 ≤ routeTPrimeGapPacketBase T0 := hbaseTop.eventually_ge_atTop 1
+  filter_upwards [hcancel, hcost, hbaseLarge, Filter.eventually_gt_atTop (0 : ℝ)] with
+    T0 hcancelT hcostT hbase hT0
+  intro L V R H hLX hH hV hR halpha hsecond
+  let N : ℝ := routeTPrimeGapPacketBase T0
+  let X : ℕ := routeTPrimeGapPacketSupport T0
+  let Y : ℝ := T0 ^ (8 / 5 : ℝ)
+  have hceilLower : 3 * N ≤ (X : ℝ) := by
+    dsimp only [X, routeTPrimeGapPacketSupport]
+    exact Nat.le_ceil _
+  have hceilUpper : (X : ℝ) < 3 * N + 1 := by
+    dsimp only [X, routeTPrimeGapPacketSupport]
+    exact Nat.ceil_lt_add_one (by positivity)
+  have hX : 1 ≤ X := by
+    have hXreal : (1 : ℝ) ≤ X := by linarith
+    exact_mod_cast hXreal
+  have hYeq : Y = 4 * N := by
+    dsimp only [Y, N, routeTPrimeGapPacketBase]
+    field_simp
+  have hSupport : (X : ℝ) ≤ Y := by
+    rw [hYeq]
+    linarith
+  have hcostBound :
+      (heathBrownEligibleBoxCost L X 60) ^ 2 *
+          (4 * (2 ^ 120 : ℝ)) ^ (1 / 2 : ℝ) ≤ T0 ^ eta :=
+    hcostT L X hX (by simpa only [X] using hLX) (by simpa only [Y] using hSupport)
+  have hmain := hcancelT hV hR halpha hsecond
+  have hreceiverNonneg : 0 ≤ H * Y ^ routeTGapMomentNu :=
+    mul_nonneg hH (Real.rpow_nonneg (by positivity) _)
+  calc
+    routeTPrimeGapPacketBase T0 * V ^ 2 * R ≤
+        (heathBrownEligibleBoxCost L X 60) ^ 2 *
+          (4 * (2 ^ 120 : ℝ)) ^ (1 / 2 : ℝ) * H *
+            Y ^ routeTGapMomentNu := by
+      simpa only [X, Y] using hmain
+    _ = ((heathBrownEligibleBoxCost L X 60) ^ 2 *
+          (4 * (2 ^ 120 : ℝ)) ^ (1 / 2 : ℝ)) *
+            (H * Y ^ routeTGapMomentNu) := by ac_rfl
+    _ ≤ T0 ^ eta * (H * Y ^ routeTGapMomentNu) :=
+      mul_le_mul_of_nonneg_right hcostBound hreceiverNonneg
+    _ = T0 ^ eta * H * (T0 ^ (8 / 5 : ℝ)) ^ routeTGapMomentNu := by
+      dsimp only [Y]
+      ac_rfl
+
 /-- Degree-60 physical selected-cell cancellation.  This composes the two-edge amplitude envelope
 with the second Maynard alternative at the literal packet base. -/
 theorem routeTAdaptiveCellAmplitude_physical_second_count_cancellation_sixty

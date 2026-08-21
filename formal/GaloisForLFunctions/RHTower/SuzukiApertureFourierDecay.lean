@@ -1,5 +1,8 @@
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Mathlib.Analysis.Calculus.Deriv.Linear
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 
 /-!
 # Fourier transforms on a symmetric aperture: the exponential basis and two decay bounds
@@ -45,7 +48,9 @@ theorem intervalIntegral_exp_phase (a ξ : ℝ) (hξ : ξ ≠ 0) :
         (Complex.exp (((ξ * x : ℝ) : ℂ) * I)) x := by
     intro x _
     have hlin : HasDerivAt (fun t : ℝ => ((ξ : ℂ) * t) * I) ((ξ : ℂ) * I) x := by
-      simpa using (((Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (ξ : ℂ)).mul_const I)
+      have hbase : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 x :=
+        Complex.ofRealCLM.hasDerivAt.congr_deriv (by simp)
+      simpa using ((hbase.const_mul (ξ : ℂ)).mul_const I)
     have hexp : HasDerivAt (fun t : ℝ => Complex.exp (((ξ : ℂ) * t) * I))
         (Complex.exp (((ξ : ℂ) * x) * I) * ((ξ : ℂ) * I)) x := hlin.cexp
     have := hexp.div_const (((ξ : ℝ) : ℂ) * I)
@@ -65,15 +70,13 @@ theorem intervalIntegral_exp_phase (a ξ : ℝ) (hξ : ξ ≠ 0) :
     have h1 : ((ξ : ℂ) * (-a)) = -((ξ : ℂ) * a) := by ring
     rw [h1, Complex.exp_mul_I, show -((ξ : ℂ) * a) * I = (-((ξ : ℂ) * a)) * I by ring,
       Complex.exp_mul_I, Complex.cos_neg, Complex.sin_neg]
-    have : ((Real.sin (ξ * a) : ℝ) : ℂ) = Complex.sin ((ξ : ℂ) * a) := by
-      rw [← Complex.ofReal_sin]
-      push_cast
-      ring_nf
-    rw [this]
+    have hsc : ((Real.sin (ξ * a) : ℝ) : ℂ) = Complex.sin ((ξ : ℂ) * (a : ℂ)) := by
+      rw [show ((ξ : ℂ) * (a : ℂ)) = ((ξ * a : ℝ) : ℂ) from by push_cast; ring]
+      exact Complex.ofReal_sin _
+    rw [hsc]
     ring
-  rw [div_sub_div_same, hsin]
+  rw [Complex.ofReal_neg, div_sub_div_same, hsin]
   field_simp
-  ring
 
 /-- Suzuki's exponential basis `e_n(x) = e^{iπnx/a}` has Fourier transform
 `2 sin(az + nπ)/(z + nπ/a)`. -/
@@ -95,16 +98,14 @@ theorem intervalIntegral_expBasis_fourier (a : ℝ) (ha : a ≠ 0) (n : ℤ) (z 
   simp_rw [hmerge]
   rw [intervalIntegral_exp_phase a _ hξ]
   congr 2
-  have : (z + n * Real.pi / a) * a = a * z + n * Real.pi := by
+  have hprod : (z + n * Real.pi / a) * a = a * z + n * Real.pi := by
     field_simp
-    ring
-  rw [this]
+  rw [hprod]
 
 /-! ## Two decay bounds -/
 
 /-- The trivial `L¹` bound for an aperture Fourier transform. -/
-theorem norm_intervalIntegral_fourier_le_l1 {a : ℝ} (ha : -a ≤ a) (w : ℝ → ℂ) (z : ℝ)
-    (hw : IntervalIntegrable w volume (-a) a) :
+theorem norm_intervalIntegral_fourier_le_l1 {a : ℝ} (ha : -a ≤ a) (w : ℝ → ℂ) (z : ℝ) :
     ‖∫ x in (-a)..a, w x * Complex.exp (((z * x : ℝ) : ℂ) * I)‖
       ≤ ∫ x in (-a)..a, ‖w x‖ := by
   refine (intervalIntegral.norm_integral_le_abs_integral_norm).trans ?_
@@ -112,6 +113,7 @@ theorem norm_intervalIntegral_fourier_le_l1 {a : ℝ} (ha : -a ≤ a) (w : ℝ �
       = ∫ x in (-a)..a, ‖w x‖ := by
     refine intervalIntegral.integral_congr ?_
     intro x _
+    dsimp only
     rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
   rw [hcongr, abs_of_nonneg]
   exact intervalIntegral.integral_nonneg ha fun _ _ => norm_nonneg _
@@ -132,7 +134,9 @@ theorem norm_intervalIntegral_fourier_le_ibp {a : ℝ} (ha : -a ≤ a) {w w' : �
       HasDerivAt V (Complex.exp (((z * x : ℝ) : ℂ) * I)) x := by
     intro x _
     have hlin : HasDerivAt (fun t : ℝ => ((z : ℂ) * t) * I) ((z : ℂ) * I) x := by
-      simpa using (((Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (z : ℂ)).mul_const I)
+      have hbase : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 x :=
+        Complex.ofRealCLM.hasDerivAt.congr_deriv (by simp)
+      simpa using ((hbase.const_mul (z : ℂ)).mul_const I)
     have hexp : HasDerivAt (fun t : ℝ => Complex.exp (((z : ℂ) * t) * I))
         (Complex.exp (((z : ℂ) * x) * I) * ((z : ℂ) * I)) x := hlin.cexp
     have hdiv := hexp.div_const (((z : ℝ) : ℂ) * I)
@@ -167,6 +171,7 @@ theorem norm_intervalIntegral_fourier_le_ibp {a : ℝ} (ha : -a ≤ a) {w w' : �
           = ∫ x in (-a)..a, ‖w' x‖ * (1 / |z|) := by
         refine intervalIntegral.integral_congr ?_
         intro x _
+        dsimp only
         rw [norm_mul, hVnorm]
       rw [hcongr, intervalIntegral.integral_mul_const, abs_of_nonneg]
       have hnn : 0 ≤ ∫ x in (-a)..a, ‖w' x‖ :=

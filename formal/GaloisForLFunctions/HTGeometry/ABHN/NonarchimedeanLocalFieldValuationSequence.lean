@@ -8,6 +8,9 @@ import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.NumberTheory.LocalField.Basic
 import Mathlib.RingTheory.AdjoinRoot
 import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Ideal.GoingUp
+import Mathlib.RingTheory.Smooth.Fiber
+import Mathlib.RingTheory.Unramified.LocalRing
 
 /-!
 # Split valuation sequence for nonarchimedean local fields
@@ -474,6 +477,93 @@ noncomputable def nonarchimedeanLocalFieldAdjoinRootReductionEquivOfMapEq
   let e₂ : AdjoinRoot (f.map (Ideal.Quotient.mk 𝓂[K])) ≃ₐ[𝒪[K]] AdjoinRoot g :=
     AdjoinRoot.algEquivOfEq 𝒪[K] _ g hfg
   exact e₁.trans e₂
+
+/-- If the reduced polynomial is irreducible, the extension of the base maximal ideal to its
+lifted root algebra is maximal. -/
+theorem nonarchimedeanLocalFieldAdjoinRootMapMaximalIdealIsMaximal
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (g : Polynomial 𝓀[K])
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    (Ideal.map (AdjoinRoot.of f) 𝓂[K]).IsMaximal := by
+  apply Ideal.Quotient.maximal_of_isField
+  letI : Fact (Irreducible g) := ⟨hg⟩
+  exact (nonarchimedeanLocalFieldAdjoinRootReductionEquivOfMapEq K f g hfg).toMulEquiv.isField
+    (Field.toIsField _)
+
+/-- A monic lift of an irreducible residue polynomial has local root algebra.  Its unique
+maximal ideal is the extension of the maximal ideal of the valuation ring. -/
+theorem nonarchimedeanLocalFieldAdjoinRootIsLocalRing
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) : IsLocalRing (AdjoinRoot f) := by
+  letI : Module.Finite 𝒪[K] (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : Algebra.IsIntegral 𝒪[K] (AdjoinRoot f) :=
+    Algebra.IsIntegral.of_finite 𝒪[K] (AdjoinRoot f)
+  let m : Ideal (AdjoinRoot f) := Ideal.map (AdjoinRoot.of f) 𝓂[K]
+  have hm : m.IsMaximal := nonarchimedeanLocalFieldAdjoinRootMapMaximalIdealIsMaximal K f g hfg hg
+  refine IsLocalRing.of_unique_max_ideal ⟨m, hm, ?_⟩
+  intro P hP
+  letI : P.IsMaximal := hP
+  have hunder : (P.comap (algebraMap 𝒪[K] (AdjoinRoot f))).IsMaximal :=
+    Ideal.isMaximal_comap_of_isIntegral_of_isMaximal P
+  have hunder_eq : P.comap (algebraMap 𝒪[K] (AdjoinRoot f)) = 𝓂[K] :=
+    IsLocalRing.eq_maximalIdeal hunder
+  apply (hm.eq_of_le hP.ne_top ?_).symm
+  change Ideal.map (algebraMap 𝒪[K] (AdjoinRoot f)) 𝓂[K] ≤ P
+  rw [Ideal.map_le_iff_le_comap, ← hunder_eq]
+
+/-- The residue field of the local root algebra of a monic lift of an irreducible residue
+polynomial is canonically the root field of that residue polynomial. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootResidueFieldEquivOfMapEq
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) :
+    letI : IsLocalRing (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    IsLocalRing.ResidueField (AdjoinRoot f) ≃ₐ[𝒪[K]] AdjoinRoot g := by
+  letI : IsLocalRing (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  let hm : (Ideal.map (AdjoinRoot.of f) 𝓂[K]).IsMaximal :=
+    nonarchimedeanLocalFieldAdjoinRootMapMaximalIdealIsMaximal K f g hfg hg
+  change (AdjoinRoot f ⧸ IsLocalRing.maximalIdeal (AdjoinRoot f)) ≃ₐ[𝒪[K]] AdjoinRoot g
+  rw [← IsLocalRing.eq_maximalIdeal hm]
+  exact nonarchimedeanLocalFieldAdjoinRootReductionEquivOfMapEq K f g hfg
+
+/-- A monic lift of a monic irreducible residue polynomial gives a finite étale local algebra
+over the valuation ring.  This is the finite-étale lifting bridge from a prescribed finite
+residue extension to a concrete local algebra; passing from this algebra to an unramified field
+extension is a separate fraction-field step. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_etale
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    Algebra.Etale 𝒪[K] (AdjoinRoot f) := by
+  letI : Module.Free 𝒪[K] (AdjoinRoot f) := hf.free_adjoinRoot
+  letI : Module.Finite 𝒪[K] (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : IsLocalRing (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  have hmap : (IsLocalRing.maximalIdeal 𝒪[K]).map (algebraMap 𝒪[K] (AdjoinRoot f)) =
+      IsLocalRing.maximalIdeal (AdjoinRoot f) := by
+    change (Ideal.map (AdjoinRoot.of f) 𝓂[K]) = IsLocalRing.maximalIdeal (AdjoinRoot f)
+    exact IsLocalRing.eq_maximalIdeal
+      (nonarchimedeanLocalFieldAdjoinRootMapMaximalIdealIsMaximal K f g hfg hg)
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    ((IsLocalRing.local_hom_TFAE (algebraMap 𝒪[K] (AdjoinRoot f))).out 2 0).mp (le_of_eq hmap)
+  letI : Fact (Irreducible g) := ⟨hg⟩
+  letI : Module.Finite 𝓀[K] (AdjoinRoot g) := hgmonic.finite_adjoinRoot
+  letI : Finite (AdjoinRoot g) := Module.finite_of_finite 𝓀[K]
+  let e := nonarchimedeanLocalFieldAdjoinRootResidueFieldEquivOfMapEq K f hf g hfg hg
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    Finite.of_surjective e.symm e.symm.surjective
+  letI : Module.Finite 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    Module.Finite.of_finite
+  letI : Algebra.IsAlgebraic 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    Algebra.IsAlgebraic.of_finite 𝓀[K] _
+  letI : Algebra.IsSeparable 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    Algebra.IsAlgebraic.isSeparable_of_perfectField
+  letI : Algebra.FormallyUnramified 𝒪[K] (AdjoinRoot f) :=
+    Algebra.FormallyUnramified.of_map_maximalIdeal hmap
+  exact Algebra.Etale.of_formallyUnramified_of_flat
 
 /-- Every monic residue polynomial admits a same-degree monic lift whose root algebra is finite
 and free over the valuation ring and whose reduction is the prescribed residue root algebra.

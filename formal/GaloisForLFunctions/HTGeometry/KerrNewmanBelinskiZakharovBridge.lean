@@ -183,6 +183,39 @@ theorem belinskiZakharovUnipotentDressing_det (parameter : ℝ) :
     (belinskiZakharovUnipotentDressing parameter).det = 1 := by
   simp [belinskiZakharovUnipotentDressing, Matrix.det_fin_two]
 
+/-- A one-pole unipotent spectral dressing.  At the pole this totalized algebraic model equals
+the identity, so every theorem below is unconditional. -/
+def belinskiZakharovOnePoleDressing (spectral pole residue : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  belinskiZakharovUnipotentDressing (residue / (spectral - pole))
+
+/-- Every one-pole unipotent dressing is unimodular. -/
+theorem belinskiZakharovOnePoleDressing_det (spectral pole residue : ℝ) :
+    (belinskiZakharovOnePoleDressing spectral pole residue).det = 1 :=
+  belinskiZakharovUnipotentDressing_det _
+
+/-- Same-pole unipotent dressings add their residues. -/
+theorem belinskiZakharovOnePoleDressing_compose
+    (spectral pole residue₁ residue₂ : ℝ) :
+    belinskiZakharovOnePoleDressing spectral pole residue₁ *
+        belinskiZakharovOnePoleDressing spectral pole residue₂ =
+      belinskiZakharovOnePoleDressing spectral pole (residue₁ + residue₂) := by
+  ext i j
+  fin_cases i <;> fin_cases j
+  all_goals
+    simp [belinskiZakharovOnePoleDressing, belinskiZakharovUnipotentDressing,
+      Matrix.mul_apply, Fin.sum_univ_two]
+  all_goals ring
+
+/-- Opposite same-pole residues give inverse dressings. -/
+theorem belinskiZakharovOnePoleDressing_cancel
+    (spectral pole residue : ℝ) :
+    belinskiZakharovOnePoleDressing spectral pole residue *
+        belinskiZakharovOnePoleDressing spectral pole (-residue) = 1 := by
+  rw [belinskiZakharovOnePoleDressing_compose]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [belinskiZakharovOnePoleDressing, belinskiZakharovUnipotentDressing]
+
 /-- Congruence dressing changes a metric-block determinant by the square of the dressing
 determinant. -/
 theorem belinskiZakharovDressing_det
@@ -212,6 +245,27 @@ theorem belinskiZakharovDressedKerrNewmanKillingBlock_det
   rw [belinskiZakharovDressing_det, belinskiZakharovUnipotentDressing_det]
   ring
 
+/-- One-pole unipotent spectral dressing preserves symmetry of the Kerr--Newman Killing block. -/
+theorem belinskiZakharovOnePoleDressedKerrNewmanKillingBlock_transpose
+    (spectral pole residue mass spin charge radius polar : ℝ) :
+    Matrix.transpose (belinskiZakharovDressing
+      (belinskiZakharovOnePoleDressing spectral pole residue)
+      (kerrNewmanKillingBlock mass spin charge radius polar)) =
+    belinskiZakharovDressing (belinskiZakharovOnePoleDressing spectral pole residue)
+      (kerrNewmanKillingBlock mass spin charge radius polar) := by
+  simp only [belinskiZakharovDressing, Matrix.transpose_mul,
+    Matrix.transpose_transpose, kerrNewmanKillingBlock_transpose]
+  rw [Matrix.mul_assoc]
+
+/-- One-pole unipotent spectral dressing preserves the Kerr--Newman Killing-block determinant. -/
+theorem belinskiZakharovOnePoleDressedKerrNewmanKillingBlock_det
+    (spectral pole residue mass spin charge radius polar : ℝ) :
+    (belinskiZakharovDressing (belinskiZakharovOnePoleDressing spectral pole residue)
+      (kerrNewmanKillingBlock mass spin charge radius polar)).det =
+    (kerrNewmanKillingBlock mass spin charge radius polar).det := by
+  rw [belinskiZakharovDressing_det, belinskiZakharovOnePoleDressing_det]
+  ring
+
 /-- The determinant-normalization law of the Kerr--Newman Killing block survives constant
 unipotent BZ-style dressing. -/
 theorem belinskiZakharovDressedKerrNewmanKillingBlock_det_cleared
@@ -222,6 +276,17 @@ theorem belinskiZakharovDressedKerrNewmanKillingBlock_det_cleared
       -kerrNewmanDelta mass spin charge radius * Real.sin polar ^ 2 *
         kerrNewmanSigma spin radius polar ^ 2 := by
   rw [belinskiZakharovDressedKerrNewmanKillingBlock_det]
+  exact kerrNewmanKillingBlock_det_cleared mass spin charge radius polar
+
+/-- The Kerr--Newman determinant normalization also survives the one-pole spectral dressing. -/
+theorem belinskiZakharovOnePoleDressedKerrNewmanKillingBlock_det_cleared
+    (spectral pole residue mass spin charge radius polar : ℝ) :
+    kerrNewmanSigma spin radius polar ^ 2 *
+        (belinskiZakharovDressing (belinskiZakharovOnePoleDressing spectral pole residue)
+          (kerrNewmanKillingBlock mass spin charge radius polar)).det =
+      -kerrNewmanDelta mass spin charge radius * Real.sin polar ^ 2 *
+        kerrNewmanSigma spin radius polar ^ 2 := by
+  rw [belinskiZakharovOnePoleDressedKerrNewmanKillingBlock_det]
   exact kerrNewmanKillingBlock_det_cleared mass spin charge radius polar
 
 /-- The determinant preservation specializes from Kerr--Newman to Kerr. -/
