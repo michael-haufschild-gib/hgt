@@ -43,8 +43,8 @@ theorem singD_zero {k : ℕ} (c : C(topSimplex k, X) →₀ R) : singD R k 0 c =
 
 theorem singD_succ {k N : ℕ} (c : C(topSimplex k, X) →₀ R) :
     singD R k (N + 1) c = singD R k N c + singT R k (singSdPow R k N c) := by
-  rw [singD, singD, Finset.sum_range_succ, LinearMap.add_apply, LinearMap.sum_apply,
-    LinearMap.sum_apply, LinearMap.comp_apply]
+  rw [singD, singD, Finset.sum_range_succ, LinearMap.add_apply, LinearMap.sum_apply]
+  rfl
 
 /-- **The iterated subdivision is chain homotopic to the identity.** -/
 theorem singBd_singD {k : ℕ} (N : ℕ) (c : C(topSimplex (k + 1), X) →₀ R) :
@@ -81,33 +81,37 @@ theorem smallChain_singD {𝒰 : Set (Set X)} {k : ℕ} (N : ℕ) {c : C(topSimp
 /-! ### Smallness in homology -/
 
 /-- **Every cycle is homologous to a small cycle.** -/
-theorem exists_small_cycle_homologous (𝒰 : Set (Set X)) (hopen : ∀ U ∈ 𝒰, IsOpen U)
-    (hcover : (Set.univ : Set X) ⊆ ⋃₀ 𝒰) {k : ℕ} (z : C(topSimplex (k + 1), X) →₀ R)
+theorem exists_small_cycle_homologous (𝒰 𝒱 : Set (Set X)) (hopen : ∀ U ∈ 𝒰, IsOpen U)
+    (hcover : (Set.univ : Set X) ⊆ ⋃₀ 𝒰) (href : ∀ U ∈ 𝒰, ∃ V ∈ 𝒱, U ⊆ V)
+    {k : ℕ} (z : C(topSimplex (k + 1), X) →₀ R)
     (hz : singBd R X k z = 0) :
-    ∃ z' : C(topSimplex (k + 1), X) →₀ R, SmallChain R 𝒰 z' ∧ singBd R X k z' = 0
+    ∃ z' : C(topSimplex (k + 1), X) →₀ R, SmallChain R 𝒱 z' ∧ singBd R X k z' = 0
       ∧ ∃ b : C(topSimplex (k + 2), X) →₀ R, z' - z = singBd R X (k + 1) b := by
   obtain ⟨N, hN⟩ := exists_singSdPow_small R 𝒰 hopen hcover z
-  refine ⟨singSdPow R (k + 1) N z, hN, ?_, singD R (k + 1) N z, ?_⟩
+  refine ⟨singSdPow R (k + 1) N z, smallChain_refine R href hN, ?_, singD R (k + 1) N z, ?_⟩
   · rw [singBd_singSdPow, hz, map_zero]
   · have h := singBd_singD R N z
     rw [hz, map_zero, add_zero] at h
     exact h.symm
 
 /-- **A small cycle that bounds, bounds a small chain.** -/
-theorem exists_small_bounding (𝒰 : Set (Set X)) (hopen : ∀ U ∈ 𝒰, IsOpen U)
-    (hcover : (Set.univ : Set X) ⊆ ⋃₀ 𝒰) {k : ℕ} (z : C(topSimplex (k + 1), X) →₀ R)
-    (hz : SmallChain R 𝒰 z) (b : C(topSimplex (k + 2), X) →₀ R)
+theorem exists_small_bounding (𝒰 𝒱 : Set (Set X)) (hopen : ∀ U ∈ 𝒰, IsOpen U)
+    (hcover : (Set.univ : Set X) ⊆ ⋃₀ 𝒰) (href : ∀ U ∈ 𝒰, ∃ V ∈ 𝒱, U ⊆ V)
+    {k : ℕ} (z : C(topSimplex (k + 1), X) →₀ R)
+    (hz : SmallChain R 𝒱 z) (b : C(topSimplex (k + 2), X) →₀ R)
     (hb : z = singBd R X (k + 1) b) :
-    ∃ b' : C(topSimplex (k + 2), X) →₀ R, SmallChain R 𝒰 b' ∧ z = singBd R X (k + 1) b' := by
+    ∃ b' : C(topSimplex (k + 2), X) →₀ R, SmallChain R 𝒱 b' ∧ z = singBd R X (k + 1) b' := by
   obtain ⟨N, hN⟩ := exists_singSdPow_small R 𝒰 hopen hcover b
   refine ⟨singSdPow R (k + 2) N b - singD R (k + 1) N z, ?_, ?_⟩
-  · exact smallChain_sub R hN (smallChain_singD R N hz)
+  · exact smallChain_sub R (smallChain_refine R href hN) (smallChain_singD R N hz)
   · have h := singBd_singD R (k := k + 1) N b
     have h2 := congrArg (fun w => singBd R X (k + 1) w) h
     simp only [map_add, map_sub] at h2
     rw [singBd_singBd, zero_add, ← hb] at h2
+    have hz2 : z = singBd R X (k + 1) (singSdPow R (k + 1 + 1) N b)
+        - singBd R X (k + 1) (singD R (k + 1) N z) := by
+      rw [h2]; abel
     rw [map_sub]
-    rw [← h2]
-    abel
+    exact hz2
 
 end GaloisForLFunctions.HTGeometry

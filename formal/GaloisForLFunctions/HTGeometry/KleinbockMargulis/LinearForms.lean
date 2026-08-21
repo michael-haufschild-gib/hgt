@@ -76,7 +76,7 @@ theorem plucker_affineRow_of_not_injective (V : Fin j → (Fin (n + 1) → ℤ))
     (σ : Fin j → Fin (n + 1)) (h : ¬ Function.Injective σ) (y : Fin n → ℝ) :
     plucker (fun a => affineRow y (V a)) σ = 0 := by
   rw [Function.Injective] at h
-  push_neg at h
+  push Not at h
   obtain ⟨b, b', hbb, hne⟩ := h
   rw [plucker]
   exact Matrix.det_zero_of_column_eq hne fun a => by simp [hbb]
@@ -168,7 +168,7 @@ theorem exists_affineCoeff (V : Fin j → (Fin (n + 1) → ℤ)) (σ : Fin j →
         fun y => ?_⟩
       rw [plucker_affineRow_injective V σ hinj hb₀ y]
       simp
-    · push_neg at h0
+    · push Not at h0
       refine ⟨Fin.cons (plucker V σ) fun _ => 0, fun y => ?_⟩
       rw [plucker_affineRow_of_notMem_zero V σ h0 y]
       simp
@@ -230,7 +230,7 @@ theorem det_unipotentMat (y : Fin n → ℝ) : (unipotentMat y).det = 1 := by
     have hi0 : i ≠ 0 := by
       intro h
       subst h
-      exact absurd hib (by simpa using Fin.not_lt_zero b)
+      exact absurd hib (by simp)
     have hib' : i ≠ b := ne_of_gt hib
     simp [unipotentMat, hi0, hib']
   rw [Matrix.det_of_upperTriangular htri]
@@ -326,7 +326,7 @@ theorem theorem_5_4 {d : ℕ} {C α ρ : ℝ} (hC : 0 < C) (hα : 0 < α) (hρ :
       by_cases h0 : ∃ b, τ b = 0
       · obtain ⟨b₀, hb₀⟩ := h0
         exact ⟨τ, b₀, hτinj, hb₀, 0, by simpa using hτZ⟩
-      · push_neg at h0
+      · push Not at h0
         refine ⟨Function.update τ ⟨0, hjpos⟩ 0, ⟨0, hjpos⟩, ?_, by simp, τ ⟨0, hjpos⟩, ?_⟩
         · intro b b' hbb
           by_cases hb : b = ⟨0, hjpos⟩ <;> by_cases hb' : b' = ⟨0, hjpos⟩
@@ -353,7 +353,7 @@ theorem theorem_5_4 {d : ℕ} {C α ρ : ℝ} (hC : 0 < C) (hα : 0 < α) (hρ :
     have hcne : ∃ b, c b ≠ 0 := by
       refine ⟨i₀, ?_⟩
       induction i₀ using Fin.cases with
-      | zero => simpa [hcdef] using (by simpa using hi₀)
+      | zero => simpa [hcdef] using hi₀
       | succ i =>
           have := hi₀
           rw [if_neg (Fin.succ_ne_zero i)] at this

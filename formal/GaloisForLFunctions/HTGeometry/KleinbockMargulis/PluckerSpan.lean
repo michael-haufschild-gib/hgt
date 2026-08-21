@@ -197,7 +197,7 @@ theorem exists_plucker_ne_zero :
       hV.comp _ (Fin.castSucc_injective m)
     obtain ⟨τ', hτ'⟩ := ih hV'
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have hsnoc : (Fin.snoc (fun a : Fin m => V (Fin.castSucc a)) (V (Fin.last m))
         : Fin (m + 1) → (Fin k → K)) = V := by
       funext a

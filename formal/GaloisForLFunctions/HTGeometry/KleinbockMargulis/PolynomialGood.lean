@@ -53,7 +53,7 @@ theorem exists_finset_separated {S : Set ℝ} {δ : ℝ} (hδ : 0 < δ) (k : ℕ
     -- some point of `S` is `δ`-far from every point of `T`
     have hexists : ∃ y ∈ S, ∀ t ∈ T, δ ≤ |y - t| := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       have hcover : S ⊆ ⋃ t ∈ T, ball t δ := by
         intro y hy
         obtain ⟨t, ht, hlt⟩ := hcon y hy
@@ -96,7 +96,7 @@ theorem exists_finset_separated {S : Set ℝ} {δ : ℝ} (hδ : 0 < δ) (k : ℕ
 value at `k + 1` points that are pairwise `δ`-separated is at most `(k+1) ε (b/δ)^k` at any point
 at distance at most `b` from all of them. -/
 theorem abs_eval_le_of_lagrange {k : ℕ} (P : Polynomial ℝ) (hdeg : P.natDegree ≤ k)
-    (v : Fin (k + 1) → ℝ) (hinj : Function.Injective v) {ε δ b : ℝ} (hδ : 0 < δ) (hb : 0 ≤ b)
+    (v : Fin (k + 1) → ℝ) (hinj : Function.Injective v) {ε δ b : ℝ} (hδ : 0 < δ) (_hb : 0 ≤ b)
     (hbound : ∀ i, |P.eval (v i)| ≤ ε) (hsep : ∀ i j, i ≠ j → δ ≤ |v i - v j|)
     {x : ℝ} (hx : ∀ i, |x - v i| ≤ b) :
     |P.eval x| ≤ ((k : ℝ) + 1) * ε * (b / δ) ^ k := by
@@ -146,7 +146,7 @@ theorem abs_eval_le_of_lagrange {k : ℕ} (P : Polynomial ℝ) (hdeg : P.natDegr
         rw [abs_mul]
         exact mul_le_mul (hbound i) (hbasis i) (abs_nonneg _) hεnn
     _ = ((k : ℝ) + 1) * ε * (b / δ) ^ k := by
-        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin]
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
         push_cast
         ring
 

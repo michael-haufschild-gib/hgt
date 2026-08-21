@@ -99,6 +99,19 @@ theorem milnorTameKernel_eq_ker_milnorTotalResidue (n : ℕ) :
   ext x
   exact (milnorTotalResidue_mem_ker_iff (R := R) K n x).symm
 
+/-- The global Milnor group, its everywhere-unramified tame kernel, and the restricted direct
+sum of finite-place residues are exact. -/
+theorem milnorTotalResidue_exact (n : ℕ) :
+    Function.Exact (milnorTameKernel R K n).subtype (milnorTotalResidue (R := R) K n) := by
+  intro x
+  change x ∈ (milnorTotalResidue (R := R) K n).ker ↔ _
+  rw [← milnorTameKernel_eq_ker_milnorTotalResidue (R := R) K n]
+  constructor
+  · intro hx
+    exact ⟨⟨x, hx⟩, rfl⟩
+  · rintro ⟨y, rfl⟩
+    exact y.property
+
 end
 
 end GaloisForLFunctions.HTGeometry

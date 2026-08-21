@@ -99,7 +99,11 @@ Numbering is `\numberwithin{theorem}{section}`; environments share one counter.
 - `L3.5` Halász–Montgomery for character sums on rough numbers (3.8); large values (3.9).
 
 **L4 — transference.**
-- `L4.1` multiplicative dense model theorem (3.3).
+- `L4.1` **CLOSED** (up to constant instantiation) — see `multiplicative-dense-model-lean.md`.
+  Modules: `HTGeometry/AdditiveCombinatorics/BohrAverage.lean`,
+  `HTGeometry/AdditiveCombinatorics/CircleCovering.lean`, `RHTower/BohrSetCharacterSum.lean`,
+  `RHTower/DenseModelBohr.lean`, `RHTower/DenseModelPointwise.lean`,
+  `RHTower/BohrSetExistence.lean`, `RHTower/DenseModelArithmetic.lean`.
 
 **L5 — assembly.**  5.2, 5.4, 5.7–5.9, 7.2, 8.2–8.4, 9.2–9.4, then 1.1, 1.2, 1.3.
 
@@ -114,6 +118,9 @@ Numbering is `\numberwithin{theorem}{section}`; environments share one counter.
 | L0.5 | blocked on L0.3 | |
 
 ## Log
+- 2026-08-21 — **L4.1 closed**: the multiplicative dense model theorem (paper Proposition 3.3) is
+  Lean-proved in all five items, together with the multiplicative Bohr-set construction and the
+  arithmetic bridge.  Seven new modules; all axiom-clean and wired.
 - 2026-08-21 — **L1.1 closed** (paper Lemma 3.7, the mean value theorem for character sums), in
   `RHTower/CharacterSumMeanValue.lean`; axiom-clean and wired into `GaloisForLFunctions.RHTower`.
 - 2026-08-21 — **L0.1 and L0.4 closed** (`Convolution.lean`, `SmallDoubling.lean`); all three

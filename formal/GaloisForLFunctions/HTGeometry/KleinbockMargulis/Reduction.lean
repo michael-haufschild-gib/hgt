@@ -38,7 +38,7 @@ theorem lemma_2_1 {ε r : ℝ} {t : Fin n → ℝ} (hr : 0 < r) (y : Fin n → �
   have hvne : v ≠ 0 := by
     obtain ⟨i, hi⟩ : ∃ i, q i ≠ 0 := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       exact hq0 (funext hcon)
     intro hcon
     have := congrFun hcon i.succ
@@ -170,7 +170,7 @@ theorem lemma_2_1_shift {ε r c : ℝ} {t s : Fin n → ℝ} (hr : 0 < r) (hc : 
   have hvne : v ≠ 0 := by
     obtain ⟨i, hi⟩ : ∃ i, q i ≠ 0 := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       exact hq0 (funext hcon)
     intro hcon
     have := congrFun hcon i.succ
@@ -245,11 +245,11 @@ theorem corollary_2_2 (y : Fin n → ℝ) (h : VWMA y) :
         |dotProd q y + (p : ℝ)| * PiPlus q ≤ PiPlus q ^ (-ε)} ∧
         ¬ PiPlus q ≤ Real.exp (A * ((n : ℝ) + 1) / ((n : ℝ) + 1 + n * ε)) := by
       obtain ⟨q, hq⟩ :=
-        (hQ.diff (finite_PiPlus_le
+        (hQ.sdiff (finite_PiPlus_le
           (Real.exp (A * ((n : ℝ) + 1) / ((n : ℝ) + 1 + n * ε))))).nonempty
       exact ⟨q, hq.1, hq.2⟩
     obtain ⟨p, hp⟩ := hqQ
-    push_neg at hqM
+    push Not at hqM
     -- basic quantities
     have hPgt : Real.exp (A * ((n : ℝ) + 1) / ((n : ℝ) + 1 + n * ε)) < PiPlus q := hqM
     have hPpos : (0:ℝ) < PiPlus q := PiPlus_pos q
@@ -297,7 +297,6 @@ theorem corollary_2_2 (y : Fin n → ℝ) (h : VWMA y) :
     have hmle : ∀ i, ((m i : ℝ)) ≤ t i := fun i => Nat.floor_le (htnn i)
     have hmgap : ∀ i, t i - (m i : ℝ) ≤ 1 := fun i => by
       have := Nat.lt_floor_add_one (t i)
-      push_cast at this ⊢
       linarith
     have hsumle : ∑ i, (m i : ℝ) ≤ ∑ i, t i := Finset.sum_le_sum fun i _ => hmle i
     have hsumge : (∑ i, t i) - n ≤ ∑ i, (m i : ℝ) := by

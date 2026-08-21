@@ -30,7 +30,7 @@ H1, H2 / Baker's conjecture).
 | Lemma 5.1 | `‖Λ‖ ≤ k‖Γ‖·‖v‖` | `LatticeNorm.lean` `lemma_5_1` (sharper constant `rank Γ + 1`) | **DONE** |
 | Theorem 5.2 | quantitative nondivergence | `Nondivergence.lean` `theorem_5_2` | **DONE** |
 | Theorem 5.3 | unipotent one-parameter version | | TODO |
-| Theorem 5.4 | `h = g_t u_{f(x)}` version | | TODO |
+| Theorem 5.4 | `h = g_t u_{f(x)}` version | `LinearForms.lean` `theorem_5_4` | **DONE** |
 | Theorem B (§6.3) | Khintchine-type convergence statement | | TODO |
 
 ## Missing infrastructure (mathlib gaps) to build
@@ -53,6 +53,14 @@ variables (goodness is stable under `GL_d` with constant `C‖T‖^d/|det T|`), 
 basis is produced by a one-parameter polynomial non-vanishing argument (`u_i = v + t e_i`)
 rather than by a Haar-measure genericity argument on `O(d)`.
 
+## Deviation from the paper's constants
+Lemma 3.3 is proved by a route that avoids counting the connected components of `{|f| < ε}`:
+the paper's `k+1` components are replaced by the `|Z| + 1` bound of `CutInterval.volume_le_of_cuts`
+with `|Z| ≤ 2k` (the number of solutions of `f = ±ε`), and the interpolation nodes are `k+2`
+equally spaced points rather than `k+1`.  The resulting constant therefore differs from the
+paper's `C_{k,A₁,A₂} = k(k+1)((A₁/A₂)(k+1)(2k^k+1))^{1/k}`; only the dependence on `k, A₁, A₂`
+(which is all that Prop 3.4 and Theorem A consume) is preserved.
+
 ## Errata found in the published proof
 * Theorem 5.2, last display: the chain `‖h(x)v‖ ≥ ‖h(x)Λ‖/(k‖h(x)Γ_{i-1}‖) ≥ ε/(kρ) ≥ ε` uses
   `‖h(x)Γ_{i-1}‖ ≤ ρ`, which fails for `i = 1`, where `Γ_0 = {0}` and `‖h(x)Γ_0‖ = 1 > ρ`.
@@ -69,3 +77,11 @@ rather than by a Haar-measure genericity argument on `O(d)`.
   `IntegerLattice.lean` (`rank(W ∩ ℤ^k) = dim_ℚ W`), `LatticeNorm.lean` (Lemma 5.1),
   `LatticeFinite.lean` (condition (A3)), `Nondivergence.lean` (Theorem 5.2).
   Remaining: Theorems 5.3, 5.4, Prop 2.3, Theorem A, Lemma 3.3, Prop 3.4, Theorem B.
+- 2026-08-21 — Theorem 5.4 done (`LinearForms.lean`): the Plücker coordinates of `g_t u_y Γ` are
+  positive multiples of affine forms in `y` with integral coefficients.  All twelve modules
+  compile with zero warnings.  Remaining: Lemma 3.3, Prop 3.4, Prop 2.3, Theorem A,
+  Theorem 5.3, Theorem B.
+- 2026-08-21 — §3 infrastructure: `DerivChain.lean` (iterated Rolle, divided-difference mean value
+  theorem, Lagrange interpolation remainder — all for a `C^k` derivative chain, so no `C^∞`
+  hypothesis is needed), `CutInterval.lean` (level sets of a chain with nonvanishing top member
+  are small; the `|Z|+1`-interval counting estimate), `SmoothGoodOne.lean` (Sublemma 3.3.1 (a)).

@@ -55,13 +55,14 @@ theorem leadingCoeff_toC (f : Polynomial (Polynomial ℤ)) (s : ℂ) :
   simp only [Polynomial.coe_mapRingHom, Polynomial.eval_map, Polynomial.aeval_def]
   congr 1
 
-/-- **A regular integer parameter exists.** -/
-theorem exists_regular_int {f : Polynomial (Polynomial ℤ)} {n : ℕ} (hn : f.natDegree = n)
+/-- **The bad locus of parameters is the zero set of one nonzero polynomial.** -/
+theorem exists_regular_poly {f : Polynomial (Polynomial ℤ)} {n : ℕ} (hn : f.natDegree = n)
     (hn1 : 1 ≤ n)
     (hsep : ((toQ f).map (algebraMap (Polynomial ℚ)
       (FractionRing (Polynomial ℚ)))).Separable) :
-    ∃ s₀ : ℤ, Polynomial.aeval ((s₀ : ℤ) : ℂ) f.leadingCoeff ≠ 0 ∧
-      ((toC f).map (Polynomial.evalRingHom ((s₀ : ℤ) : ℂ))).Separable := by
+    ∃ p : Polynomial ℂ, p ≠ 0 ∧ ∀ z : ℂ, p.eval z ≠ 0 →
+      (toC f).leadingCoeff.eval z ≠ 0 ∧
+        ((toC f).map (Polynomial.evalRingHom z)).Separable := by
   classical
   set ψ : Polynomial ℚ →+* Polynomial ℂ := Polynomial.mapRingHom (algebraMap ℚ ℂ) with hψ
   have hcastinj : Function.Injective (algebraMap ℚ ℂ) := (algebraMap ℚ ℂ).injective
@@ -105,18 +106,48 @@ theorem exists_regular_int {f : Polynomial (Polynomial ℤ)} {n : ℕ} (hn : f.n
     refine mul_ne_zero (mul_ne_zero ?_ ?_) hresC
     · exact Polynomial.leadingCoeff_ne_zero.mpr hCne
     · exact Polynomial.leadingCoeff_ne_zero.mpr hderivCne
+  refine ⟨p, hpne, fun z hz => ?_⟩
+  rw [hp] at hz
+  simp only [Polynomial.eval_mul] at hz
+  have h1 : (toC f).leadingCoeff.eval z ≠ 0 := by
+    intro h; rw [h] at hz; simp at hz
+  have h2 : (Polynomial.derivative (toC f)).leadingCoeff.eval z ≠ 0 := by
+    intro h; rw [h] at hz; simp at hz
+  have h3 : (Polynomial.resultant (toC f) (Polynomial.derivative (toC f))).eval z ≠ 0 := by
+    intro h; rw [h] at hz; simp at hz
+  exact ⟨h1, HolomorphicIFT.separable_specialize _ h1 h2 h3⟩
+
+/-- **A regular integer parameter exists.** -/
+theorem exists_regular_int {f : Polynomial (Polynomial ℤ)} {n : ℕ} (hn : f.natDegree = n)
+    (hn1 : 1 ≤ n)
+    (hsep : ((toQ f).map (algebraMap (Polynomial ℚ)
+      (FractionRing (Polynomial ℚ)))).Separable) :
+    ∃ s₀ : ℤ, Polynomial.aeval ((s₀ : ℤ) : ℂ) f.leadingCoeff ≠ 0 ∧
+      ((toC f).map (Polynomial.evalRingHom ((s₀ : ℤ) : ℂ))).Separable := by
+  obtain ⟨p, hpne, hp⟩ := exists_regular_poly hn hn1 hsep
   obtain ⟨s₀, hs₀⟩ := exists_int_not_root hpne
-  rw [hp] at hs₀
-  simp only [Polynomial.eval_mul] at hs₀
-  have h1 : (toC f).leadingCoeff.eval ((s₀ : ℤ) : ℂ) ≠ 0 := by
-    intro h; rw [h] at hs₀; simp at hs₀
-  have h2 : (Polynomial.derivative (toC f)).leadingCoeff.eval ((s₀ : ℤ) : ℂ) ≠ 0 := by
-    intro h; rw [h] at hs₀; simp at hs₀
-  have h3 : (Polynomial.resultant (toC f) (Polynomial.derivative (toC f))).eval
-      ((s₀ : ℤ) : ℂ) ≠ 0 := by
-    intro h; rw [h] at hs₀; simp at hs₀
-  exact ⟨s₀, by rw [← leadingCoeff_toC]; exact h1,
-    HolomorphicIFT.separable_specialize _ h1 h2 h3⟩
+  obtain ⟨h1, h2⟩ := hp _ hs₀
+  exact ⟨s₀, by rw [← leadingCoeff_toC]; exact h1, h2⟩
+
+/-- **One regular integer parameter for a whole finite family.** -/
+theorem exists_regular_int_family {ι : Type} [Fintype ι] (f : ι → Polynomial (Polynomial ℤ))
+    (n : ι → ℕ) (hn : ∀ i, (f i).natDegree = n i) (hn1 : ∀ i, 1 ≤ n i)
+    (hsep : ∀ i, ((toQ (f i)).map (algebraMap (Polynomial ℚ)
+      (FractionRing (Polynomial ℚ)))).Separable) :
+    ∃ s₀ : ℤ, ∀ i, Polynomial.aeval ((s₀ : ℤ) : ℂ) (f i).leadingCoeff ≠ 0 ∧
+      ((toC (f i)).map (Polynomial.evalRingHom ((s₀ : ℤ) : ℂ))).Separable := by
+  classical
+  choose p hpne hp using fun i => exists_regular_poly (hn i) (hn1 i) (hsep i)
+  have hprodne : (∏ i, p i) ≠ 0 := Finset.prod_ne_zero_iff.mpr fun i _ => hpne i
+  obtain ⟨s₀, hs₀⟩ := exists_int_not_root hprodne
+  refine ⟨s₀, fun i => ?_⟩
+  have hi : (p i).eval ((s₀ : ℤ) : ℂ) ≠ 0 := by
+    intro h
+    apply hs₀
+    rw [Polynomial.eval_prod]
+    exact Finset.prod_eq_zero (Finset.mem_univ i) h
+  obtain ⟨h1, h2⟩ := hp i _ hi
+  exact ⟨by rw [← leadingCoeff_toC]; exact h1, h2⟩
 
 theorem bivEval_eq_eval_fibre (f : Polynomial (Polynomial ℤ)) (s y : ℂ) :
     bivEval f s y = ((toC f).map (Polynomial.evalRingHom s)).eval y := by
@@ -148,16 +179,20 @@ theorem isIntegral_scaled_branch {f : Polynomial (Polynomial ℤ)} {n : ℕ} (hn
   filter_upwards [hrel] with s hs
   rw [bivEval_monicScale hn hn1, hs, mul_zero]
 
-/-- **Hilbert's irreducibility theorem, integral form.** -/
-theorem hilbert_irreducibility_int {f : Polynomial (Polynomial ℤ)} {n : ℕ}
+/-- **The gap-thin bad sets at a fixed regular integer parameter.**  Splitting the theorem here is
+what lets a *finite family* of polynomials share one regular parameter `s₀`. -/
+theorem exists_thin_bad {f : Polynomial (Polynomial ℤ)} {n : ℕ}
     (hn : f.natDegree = n) (hn1 : 1 ≤ n)
     (hirr : Irreducible ((toQ f).map (algebraMap (Polynomial ℚ)
-      (FractionRing (Polynomial ℚ))))) :
-    {b : ℚ | Irreducible ((toQ f).map (Polynomial.evalRingHom b))}.Infinite := by
+      (FractionRing (Polynomial ℚ)))))
+    {s₀ : ℤ} (hlead0 : Polynomial.aeval ((s₀ : ℤ) : ℂ) f.leadingCoeff ≠ 0)
+    (hsepfib : ((toC f).map (Polynomial.evalRingHom ((s₀ : ℤ) : ℂ))).Separable) :
+    ∃ (T : ℝ) (S : {A : Finset (Fin n) // A.Nonempty ∧ A ≠ Finset.univ} → Set ℤ),
+      (∀ j, Thin (S j)) ∧
+      ∀ t : ℤ, T < (t : ℝ) → (∀ j, t ∉ S j) →
+        Irreducible ((toQ f).map (Polynomial.evalRingHom
+          (((s₀ : ℤ) : ℚ) + ((t : ℤ) : ℚ)⁻¹))) := by
   classical
-  have hsep : ((toQ f).map (algebraMap (Polynomial ℚ)
-      (FractionRing (Polynomial ℚ)))).Separable := hirr.separable
-  obtain ⟨s₀, hlead0, hsepfib⟩ := exists_regular_int hn hn1 hsep
   have hcastinj : Function.Injective (algebraMap ℚ ℂ) := (algebraMap ℚ ℂ).injective
   have hψinj : Function.Injective (Polynomial.mapRingHom (algebraMap ℚ ℂ) :
       Polynomial ℚ →+* Polynomial ℂ) := fun a b hab => Polynomial.map_injective _ hcastinj hab
@@ -270,21 +305,9 @@ theorem hilbert_irreducibility_int {f : Polynomial (Polynomial ℤ)} {n : ℕ}
     fun j => thin_of_not_isRatGerm (hWana j) (hWint j) (hWnr j)
   obtain ⟨ρ, hρ, hballev⟩ := Metric.eventually_nhds_iff.mp hev
   set T₁ : ℝ := max ρ⁻¹ 1 with hT₁
-  set G : Set ℤ := {t : ℤ | T₁ < (t : ℝ) ∧ ∀ j : Idx, t ∉ {t' : ℤ | ∃ c : ℚ,
-      W j ((((s₀ : ℤ) : ℂ)) + (((t' : ℤ)) : ℂ)⁻¹) = (c : ℂ)}} with hG
-  have hGinf : G.Infinite := by
-    refine Set.infinite_of_not_bddAbove ?_
-    rintro ⟨M, hM⟩
-    obtain ⟨t, ht1, ht2⟩ := exists_gt_notMem_of_thin _ hThin (max T₁ (M : ℝ))
-    have htG : t ∈ G := ⟨lt_of_le_of_lt (le_max_left _ _) ht1, ht2⟩
-    have hle : t ≤ M := hM htG
-    have hlt : (M : ℝ) < (t : ℝ) := lt_of_le_of_lt (le_max_right _ _) ht1
-    have hge : (t : ℝ) ≤ (M : ℝ) := by exact_mod_cast hle
-    linarith
-  have hgood : ∀ t ∈ G, Irreducible ((toQ f).map (Polynomial.evalRingHom
-      (((s₀ : ℤ) : ℚ) + ((t : ℤ) : ℚ)⁻¹))) := by
-    intro t ht
-    obtain ⟨htT, htnot⟩ := ht
+  refine ⟨T₁, fun j => {t : ℤ | ∃ c : ℚ,
+    W j ((((s₀ : ℤ) : ℂ)) + (((t : ℤ)) : ℂ)⁻¹) = (c : ℂ)}, hThin, ?_⟩
+  · intro t htT htnot
     set b : ℚ := ((s₀ : ℤ) : ℚ) + ((t : ℤ) : ℚ)⁻¹ with hb
     have ht1 : (1 : ℝ) < (t : ℝ) := lt_of_le_of_lt (le_max_right _ _) htT
     have ht0 : (0 : ℝ) < (t : ℝ) := lt_trans zero_lt_one ht1
@@ -312,10 +335,27 @@ theorem hilbert_irreducibility_int {f : Polynomial (Polynomial ℤ)} {n : ℕ}
     rw [aeval_int_ratCast, aeval_map_int]
     push_cast
     ring
-  have hsub : (fun t : ℤ => ((s₀ : ℤ) : ℚ) + ((t : ℤ) : ℚ)⁻¹) '' G
-      ⊆ {b : ℚ | Irreducible ((toQ f).map (Polynomial.evalRingHom b))} := by
+
+/-- **Assembly from gap-thin bad sets.**  Shared by the single-polynomial and family forms. -/
+theorem infinite_of_thin_bad {ι : Type} [Fintype ι]
+    {s₀ : ℤ} {T : ℝ} {S : ι → Set ℤ} (hThin : ∀ j, Thin (S j)) {P : ℚ → Prop}
+    (hgood : ∀ t : ℤ, max T 1 < (t : ℝ) → (∀ j, t ∉ S j) →
+      P (((s₀ : ℤ) : ℚ) + ((t : ℤ) : ℚ)⁻¹)) :
+    {b : ℚ | P b}.Infinite := by
+  classical
+  set G : Set ℤ := {t : ℤ | max T 1 < (t : ℝ) ∧ ∀ j, t ∉ S j} with hG
+  have hGinf : G.Infinite := by
+    refine Set.infinite_of_not_bddAbove ?_
+    rintro ⟨M, hM⟩
+    obtain ⟨t, ht1, ht2⟩ := exists_gt_notMem_of_thin _ hThin (max (max T 1) (M : ℝ))
+    have htG : t ∈ G := ⟨lt_of_le_of_lt (le_max_left _ _) ht1, ht2⟩
+    have hle : t ≤ M := hM htG
+    have hlt : (M : ℝ) < (t : ℝ) := lt_of_le_of_lt (le_max_right _ _) ht1
+    have hge : (t : ℝ) ≤ (M : ℝ) := by exact_mod_cast hle
+    linarith
+  have hsub : (fun t : ℤ => ((s₀ : ℤ) : ℚ) + ((t : ℤ) : ℚ)⁻¹) '' G ⊆ {b : ℚ | P b} := by
     rintro b ⟨t, ht, rfl⟩
-    exact hgood t ht
+    exact hgood t ht.1 ht.2
   have hinjon : Set.InjOn (fun t : ℤ => ((s₀ : ℤ) : ℚ) + ((t : ℤ) : ℚ)⁻¹) G := by
     intro a ha b hb hab
     have ha1 : (1 : ℝ) < (a : ℝ) := lt_of_le_of_lt (le_max_right _ _) ha.1
@@ -337,6 +377,18 @@ theorem hilbert_irreducibility_int {f : Polynomial (Polynomial ℤ)} {n : ℕ}
       exact hinv.symm
     exact_mod_cast this
   exact Set.Infinite.mono hsub (hGinf.image hinjon)
+
+/-- **Hilbert's irreducibility theorem, integral form.** -/
+theorem hilbert_irreducibility_int {f : Polynomial (Polynomial ℤ)} {n : ℕ}
+    (hn : f.natDegree = n) (hn1 : 1 ≤ n)
+    (hirr : Irreducible ((toQ f).map (algebraMap (Polynomial ℚ)
+      (FractionRing (Polynomial ℚ))))) :
+    {b : ℚ | Irreducible ((toQ f).map (Polynomial.evalRingHom b))}.Infinite := by
+  classical
+  obtain ⟨s₀, hlead0, hsepfib⟩ := exists_regular_int hn hn1 hirr.separable
+  obtain ⟨T, S, hThin, hgood⟩ := exists_thin_bad hn hn1 hirr hlead0 hsepfib
+  exact infinite_of_thin_bad hThin
+    (fun t htT htnot => hgood t (lt_of_le_of_lt (le_max_left _ _) htT) htnot)
 
 /-! ### Clearing denominators -/
 
@@ -392,9 +444,12 @@ theorem exists_int_clear (F : Polynomial (Polynomial ℚ)) :
 
 /-- **Hilbert's irreducibility theorem.**  An irreducible `F ∈ ℚ[X][Y]` of positive degree in `Y`
 stays irreducible under infinitely many rational specialisations of `X`. -/
-theorem hilbert_irreducibility {F : Polynomial (Polynomial ℚ)} (hirr : Irreducible F)
+theorem exists_int_model {F : Polynomial (Polynomial ℚ)} (hirr : Irreducible F)
     (hdeg : 1 ≤ F.natDegree) :
-    {b : ℚ | Irreducible (F.map (Polynomial.evalRingHom b))}.Infinite := by
+    ∃ f : Polynomial (Polynomial ℤ), 1 ≤ f.natDegree ∧
+      Irreducible ((toQ f).map (algebraMap (Polynomial ℚ) (FractionRing (Polynomial ℚ)))) ∧
+      ∀ b : ℚ, Irreducible ((toQ f).map (Polynomial.evalRingHom b)) →
+        Irreducible (F.map (Polynomial.evalRingHom b)) := by
   classical
   obtain ⟨d, f, hdne, hf⟩ := exists_int_clear F
   set φ : Polynomial ℚ →+* FractionRing (Polynomial ℚ) :=
@@ -421,7 +476,6 @@ theorem hilbert_irreducibility {F : Polynomial (Polynomial ℚ)} (hirr : Irreduc
   have hirrK : Irreducible (F.map φ) :=
     (hprim.irreducible_iff_irreducible_map_fraction_map
       (K := FractionRing (Polynomial ℚ))).mp hirr
-  -- transfer to `toQ f`
   have hunitC : IsUnit (Polynomial.C (Polynomial.C ((d : ℤ) : ℚ)) :
       Polynomial (Polynomial ℚ)) := by
     refine Polynomial.isUnit_C.mpr (Polynomial.isUnit_C.mpr ?_)
@@ -437,16 +491,60 @@ theorem hilbert_irreducibility {F : Polynomial (Polynomial ℚ)} (hirr : Irreduc
   have hfdeg : 1 ≤ f.natDegree := by
     rw [← natDegree_toQ, hdegQ]
     exact hdeg
-  obtain hinf := hilbert_irreducibility_int (n := f.natDegree) rfl hfdeg hirrQK
-  refine Set.Infinite.mono ?_ hinf
-  intro b hb
-  simp only [Set.mem_setOf_eq] at hb ⊢
+  refine ⟨f, hfdeg, hirrQK, fun b hb => ?_⟩
   rw [hf, Polynomial.map_mul, Polynomial.map_C] at hb
   simp only [Polynomial.coe_evalRingHom, Polynomial.eval_C] at hb
   have hCunit : IsUnit (Polynomial.C (((d : ℤ) : ℚ)) : Polynomial ℚ) :=
     Polynomial.isUnit_C.mpr (isUnit_iff_ne_zero.mpr (by exact_mod_cast hdne))
   exact ((associated_unit_mul_left (F.map (Polynomial.evalRingHom b)) _
     hCunit).irreducible_iff).mp hb
+
+/-- **Hilbert's irreducibility theorem.**  An irreducible `F ∈ ℚ[X][Y]` of positive degree in `Y`
+stays irreducible under infinitely many rational specialisations of `X`. -/
+theorem hilbert_irreducibility {F : Polynomial (Polynomial ℚ)} (hirr : Irreducible F)
+    (hdeg : 1 ≤ F.natDegree) :
+    {b : ℚ | Irreducible (F.map (Polynomial.evalRingHom b))}.Infinite := by
+  obtain ⟨f, hfdeg, hirrQK, htrans⟩ := exists_int_model hirr hdeg
+  exact Set.Infinite.mono (fun b hb => htrans b hb)
+    (hilbert_irreducibility_int (n := f.natDegree) rfl hfdeg hirrQK)
+
+/-- **Hilbert's irreducibility theorem for a finite family, integral form.**  One rational
+specialisation makes *every* member of the family irreducible, and there are infinitely many. -/
+theorem hilbert_irreducibility_int_family {ι : Type} [Fintype ι]
+    (f : ι → Polynomial (Polynomial ℤ)) (n : ι → ℕ)
+    (hn : ∀ i, (f i).natDegree = n i) (hn1 : ∀ i, 1 ≤ n i)
+    (hirr : ∀ i, Irreducible ((toQ (f i)).map (algebraMap (Polynomial ℚ)
+      (FractionRing (Polynomial ℚ))))) :
+    {b : ℚ | ∀ i, Irreducible ((toQ (f i)).map (Polynomial.evalRingHom b))}.Infinite := by
+  classical
+  obtain ⟨s₀, hreg⟩ := exists_regular_int_family f n hn hn1 (fun i => (hirr i).separable)
+  choose T S hThin hgood using fun i =>
+    exists_thin_bad (hn i) (hn1 i) (hirr i) (hreg i).1 (hreg i).2
+  set T' : ℝ := ∑ i, max (T i) 0 with hT'
+  have hTle : ∀ i, T i ≤ T' := by
+    intro i
+    refine le_trans (le_max_left _ 0) ?_
+    exact Finset.single_le_sum (f := fun k => max (T k) 0)
+      (fun k _ => le_max_right _ _) (Finset.mem_univ i)
+  refine infinite_of_thin_bad (s₀ := s₀) (T := T')
+    (S := fun j : Σ i, {A : Finset (Fin (n i)) // A.Nonempty ∧ A ≠ Finset.univ} => S j.1 j.2)
+    (fun j => hThin j.1 j.2) ?_
+  intro t htT htnot i
+  refine hgood i t (lt_of_le_of_lt (hTle i) (lt_of_le_of_lt (le_max_left _ 1) htT)) ?_
+  intro j
+  exact htnot ⟨i, j⟩
+
+/-- **Hilbert's irreducibility theorem for a finite family.** -/
+theorem hilbert_irreducibility_family {ι : Type} [Fintype ι]
+    (F : ι → Polynomial (Polynomial ℚ)) (hirr : ∀ i, Irreducible (F i))
+    (hdeg : ∀ i, 1 ≤ (F i).natDegree) :
+    {b : ℚ | ∀ i, Irreducible ((F i).map (Polynomial.evalRingHom b))}.Infinite := by
+  classical
+  choose f hfdeg hirrQK htrans using fun i => exists_int_model (hirr i) (hdeg i)
+  refine Set.Infinite.mono (fun b hb => ?_)
+    (hilbert_irreducibility_int_family f (fun i => (f i).natDegree) (fun _ => rfl) hfdeg hirrQK)
+  simp only [Set.mem_setOf_eq] at hb ⊢
+  exact fun i => htrans i b (hb i)
 
 /-! ### A worked instance: `Y² − X` -/
 

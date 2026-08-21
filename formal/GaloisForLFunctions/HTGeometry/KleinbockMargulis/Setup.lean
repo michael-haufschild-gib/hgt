@@ -107,10 +107,10 @@ theorem unipotentMat_mulVec (y : Fin n → ℝ) (p : ℤ) (q : Fin n → ℤ) :
   classical
   funext i
   refine Fin.cases ?_ (fun i' => ?_) i
-  · simp only [mulVec, dotProduct, unipotentMat, Matrix.of_apply, if_pos rfl, latticeVec,
+  · simp only [mulVec, dotProduct, unipotentMat, Matrix.of_apply, latticeVec,
       Fin.cons_zero, dotProd]
     rw [Fin.sum_univ_succ]
-    simp only [Fin.cases_zero, Fin.cons_zero, Fin.cases_succ, Fin.cons_succ, one_mul]
+    simp only [Fin.cases_zero, Fin.cons_zero, Fin.cases_succ, Fin.cons_succ]
     rw [add_comm]
     congr 1
     all_goals first

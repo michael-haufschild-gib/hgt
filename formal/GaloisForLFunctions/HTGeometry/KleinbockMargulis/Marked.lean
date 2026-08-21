@@ -125,7 +125,7 @@ theorem SupGe.mono {f : (Fin d → ℝ) → ℝ} {B B' : Set (Fin d → ℝ)} {�
   exact ⟨z, hBB hz, hzc⟩
 
 theorem supGe_of_mem {f : (Fin d → ℝ) → ℝ} {B : Set (Fin d → ℝ)} {ρ : ℝ} {z : Fin d → ℝ}
-    (hz : z ∈ B) (hfz : ρ ≤ |f z|) : SupGe f B ρ := fun c hc => ⟨z, hz, lt_of_lt_of_le hc hfz⟩
+    (hz : z ∈ B) (hfz : ρ ≤ |f z|) : SupGe f B ρ := fun _ hc => ⟨z, hz, lt_of_lt_of_le hc hfz⟩
 
 /-- **`(ε, S, ψ)`-marked points.** -/
 def IsMarked (ε ρ : ℝ) (S : Set ι) (ψ : ι → (Fin d → ℝ) → ℝ) (z : Fin d → ℝ) : Prop :=
@@ -222,7 +222,7 @@ theorem supGe_ball_sSup {ψ : (Fin d → ℝ) → ℝ} {ρ r₀ : ℝ} {x₀ x :
   · -- `R < 2r₀`: otherwise `R` could be increased
     intro c hc
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have hballc : ∀ z ∈ ball x R, |ψ z| ≤ c := by
       intro z hz
       exact not_lt.mp (fun h => absurd h (not_lt.mpr (hcon z hz)))
@@ -260,6 +260,7 @@ theorem supGe_ball_sSup {ψ : (Fin d → ℝ) → ℝ} {ρ r₀ : ℝ} {x₀ x :
     have : R < min (δ + R) (2 * r₀) := lt_min (by linarith) hRlt
     linarith
 
+omit [PartialOrder ι] in
 /-- **Lemma 4.4.**  Around a point of `B` at which some `|ψ_s|` drops below `ρ` there is a ball
 `B(x, r)` of radius at most `2r₀` on which one distinguished `ψ_{s₁}` stays at most `ρ`, while
 every `ψ_s` still has supremum norm at least `ρ`. -/
@@ -362,7 +363,7 @@ theorem measure_inter_le_of_local {E : Set (Fin d → ℝ)} {x₀ : Fin d → �
               ENNReal.tsum_le_tsum fun j => hloc (j : E)
           _ = K * ∑' j : (u i), volume (ball ((j : E) : Fin d → ℝ) (rad (j : E))) :=
               ENNReal.tsum_mul_left
-          _ ≤ K * volume (ball x₀ (3 * r₀)) := mul_le_mul_left' (hsum i) K
+          _ ≤ K * volume (ball x₀ (3 * r₀)) := mul_le_mul_right (hsum i) K
     _ = (N : ℝ≥0∞) * (K * volume (ball x₀ (3 * r₀))) := by
         rw [tsum_fintype]
         simp [Finset.sum_const, Finset.card_univ]
@@ -442,7 +443,7 @@ theorem measure_not_marked_le {C α ρ : ℝ} (hC : 0 < C) (hα : 0 < α) (hρ :
       rintro z ⟨hzB, hznm⟩
       refine ⟨⟨hzB, ?_⟩, hznm⟩
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       exact hznm (isMarked_of_forall_le hcon)
     -- choose a marking radius at every point of `E`
     have hEx : ∀ j : E, ∃ (r : ℝ) (s₁ : ι), 0 < r ∧ r ≤ 2 * r₀ ∧ s₁ ∈ S ∧
@@ -493,7 +494,7 @@ theorem measure_not_marked_le {C α ρ : ℝ} (hC : 0 < C) (hα : 0 < α) (hρ :
         · right
           refine ⟨hz, ?_⟩
           by_contra hlt
-          push_neg at hlt
+          push Not at hlt
           exact hznm (IsMarked.of_subPoset (hselmem j) hlt (hselle j z hz) hm)
         · exact Or.inl ⟨hz, hm⟩
       -- the induction hypothesis on the shortened poset
@@ -530,7 +531,7 @@ theorem measure_not_marked_le {C α ρ : ℝ} (hC : 0 < C) (hα : 0 < α) (hρ :
               * volume (ball x r) := by
             rw [← add_mul, ← ENNReal.ofReal_add (by positivity) (by positivity)]
         _ ≤ ENNReal.ofReal (((k : ℝ) + 1) * C * M ^ k * (ε / ρ) ^ α) * volume (ball x r) := by
-            refine mul_le_mul_right' (ENNReal.ofReal_le_ofReal ?_) _
+            refine mul_le_mul_left (ENNReal.ofReal_le_ofReal ?_) _
             have h1 : C * (ε / ρ) ^ α ≤ C * M ^ k * (ε / ρ) ^ α := by
               nlinarith [mul_nonneg (mul_nonneg hC.le hεραnn) (sub_nonneg.mpr hMk)]
             have h2 : ((k:ℝ) + 1) * C * M ^ k * (ε / ρ) ^ α

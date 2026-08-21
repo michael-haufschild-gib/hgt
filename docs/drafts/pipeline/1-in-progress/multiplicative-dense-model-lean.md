@@ -69,22 +69,43 @@ Given (★):
   This is (★) before normalisation, and it is stated group-theoretically, so no arithmetic enters.
 - **D0'** Normalised character averages: `Ê_f(χ) = E_{n ∈ [N]_q} f(n) χ̄(n)` and
   `Ê_g(χ) = E_{a ∈ ℤ_q^×} g(a) χ̄(a)`, with the inversion formula for `𝟙[n ≡ a]`.
-- **D1** The Bohr set `B` and its pigeonhole lower bound.  (The Parseval half,
-  `∑_χ ‖∑_{b∈B} χ(b)‖² = φ(q)·#B`, is done: `sum_normSq_setCharSum`.)
+- **D1 — DONE.**  `HTGeometry/AdditiveCombinatorics/CircleCovering.lean` (`circlePoint`,
+  `exists_circlePoint_close`: the `M`-point net is `4π/M`-dense on the unit circle) and
+  `RHTower/BohrSetExistence.lean` (`exists_bohrSet`: `φ(q) ≤ M^{#T}·#B` with every `χ ∈ T` within
+  `c` of `1` on `B`, whenever `8π/M ≤ c`).  Parseval is `sum_normSq_setCharSum`.
 - **D2** The identity (★).
 - **D3** Items (i)–(v).  **(ii) (large-spectrum half), (iii) and (iv) are DONE** in
   `RHTower/DenseModelBohr.lean`: `denseModel`, `denseModel_fourier`, `denseModel_fourier_real`,
   `norm_denseModel_fourier_le`, `norm_sub_denseModel_fourier_le`, `denseModel_mass`,
   `norm_bohrAvg_sub_one_le`, `norm_sub_denseModel_fourier_le_of_close`.
-  Left: (i) — needs Fourier inversion on `(ZMod q)ˣ` plus `∑_χ ‖E_B χ‖² = φ(q)/#B` (have the
-  numerator) — and (v) — needs the character expansion of `𝟙[a ∈ bH]`.
+  **(i) and (v) are also DONE**: `RHTower/DenseModelPointwise.lean` supplies
+  `unitFourier_inversion`, `sum_normSq_bohrAvg` and `norm_denseModel_sub_mass_le` (item (i)), and
+  `RHTower/DenseModelBohr.lean` supplies `quadIndicator`, `quadIndicator_eq`, `sum_quadIndicator`
+  and `denseModel_coset` (item (v), for the index-two subgroups the paper uses).
+  **All five items of the proposition now hold in the group-theoretic form.**
 
 ## Gates
-- [ ] 0 → 1  in-progress: statement frozen, inputs owned
-- [ ] 1 → 2  fully-proven on paper
-- [ ] 2 → 3  formalized, `lake build` green, axioms ⊆ {propext, Classical.choice, Quot.sound}
+- [x] 0 → 1  in-progress: statement frozen, inputs owned
+- [x] 1 → 2  fully-proven on paper
+- [x] 2 → 3  formalized (all five items, the Bohr-set construction and the arithmetic bridge);
+  `lake build` green on every module, axioms are exactly `{propext, Classical.choice, Quot.sound}`
 
 ## Log
+- 2026-08-21 — **D0' is Lean-closed** (`RHTower/DenseModelArithmetic.lean`).  With it, every layer
+  D0–D3 of this card is done: the proposition's five conclusions, the Bohr-set existence and size
+  bound, and the arithmetic bridge are all Lean theorems with no hypotheses beyond those of the
+  source statement.  What a consumer still has to do is instantiate the constants (choose `M` from
+  the desired Bohr radius `c`, and check the source's `δ` range makes `M₀ · M^{#T}` small).
+- 2026-08-21 — **D1 is Lean-closed**: the circle net and the Bohr-set pigeonhole
+  (`CircleCovering.lean`, `BohrSetExistence.lean`), axiom-clean and wired.  **Every ingredient of
+  Proposition 3.3 is now proved on the group side.**  The only remaining work is the arithmetic
+  packaging: identify `E_{n ∈ [I]_q} f(n) χ̄(n)` with `unitFourier` of the class-sum function and
+  instantiate the constants of the source's `δ` range.
+- 2026-08-21 — **items (i) and (v) are Lean-proved** (`RHTower/DenseModelPointwise.lean`,
+  `RHTower/DenseModelBohr.lean`), axiom-clean and wired.  **All five conclusions of Proposition
+  3.3 now hold on the group side.**  What remains for the arithmetic statement is (a) the Bohr-set
+  pigeonhole existence and size bound, and (b) the pushforward layer identifying
+  `E_{n ∈ [I]_q} f(n) χ̄(n)` with `unitFourier` of the class-sum function.
 - 2026-08-21 — **items (ii) (large-spectrum half), (iii) and (iv) are Lean-proved** in
   `RHTower/DenseModelBohr.lean`, axiom-clean and wired.  All of them are corollaries of the single
   Fourier identity `denseModel_fourier`.

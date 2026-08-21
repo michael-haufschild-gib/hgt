@@ -302,8 +302,38 @@ That is the gate for the whole of Stage IV.  Its proof needs, in order:
 
   **`exists_iterate_small`** : for every open cover `𝒰` of `X` and every singular simplex `σ`
   there is an `N` such that every simplex of `Sd^N σ` has image inside a member of `𝒰`.
-- IV.4 the small-simplices subcomplex is a quasi-isomorphism (assemble `exists_iterate_small` with
-  the iterated homotopy `D_m = ∑_{i<m} T Sd^i`), then excision and topological Mayer–Vietoris;
+- IV.4 **the small-simplices quasi-isomorphism is proved.**  Six further modules.
+
+  `SmallChains` defines `SmallSimplex`/`SmallChain` (image inside a member of a family) and proves
+  that `Sd`, `T` and `∂` never enlarge the image of a simplex, hence preserve smallness; `singSdPow`
+  is the iterated subdivision as a linear map, and **`exists_singSdPow_small`** says one number of
+  subdivisions makes a whole chain small — the finite support means no per-simplex bookkeeping is
+  ever needed.
+
+  `SubdivisionHomotopy` builds `D_N = ∑_{i<N} T ∘ Sd^i` and proves **`singBd_singD`**:
+  `∂D_N + D_N∂ = Sd^N − 1`.  Two consequences, stated for a cover `𝒰` refining a family `𝒱`:
+  `exists_small_cycle_homologous` (every cycle is homologous to a small cycle) and
+  `exists_small_bounding` (a small cycle that bounds, bounds a small chain).
+
+  `SubspaceChains` identifies the chains supported in a subset with the chains of the subspace
+  (`range_subChainIncl`), and records `subChains_inter` and `smallChain_pair_iff` — the two
+  decompositions Mayer–Vietoris needs.
+
+  `ChainSubcomplex` turns a boundary-stable degreewise submodule into a `ChainComplex (ModuleCat R)`
+  with its inclusion; `RelativeSingularHomology` builds the quotient complex, the short exact
+  sequence `0 → P → C(X) → C(X)/P → 0` (**`ChainSubmodule.shortExact`**) and its homology long exact
+  sequence.
+
+  `SmallQuasiIso` closes IV.4's core: the quotient of the singular chains by the small chains is
+  acyclic — degree `0` because every `0`-simplex is small, higher degrees because
+  `c = Sd^N c − ∂D_N c − D_N ∂c` with the two outer terms small whenever `∂c` already is — whence
+
+  **`isIso_homologyMap_smallIncl`** : for an open cover, the inclusion of the small chains induces
+  an isomorphism on homology in every degree.
+
+- IV.4 remaining: excision (second isomorphism theorem for the pair `C(X∖Z)/C(A∖Z) ≅ C^𝒰/C(A)`
+  plus the five lemma) and topological Mayer–Vietoris (the submodule sequence
+  `0 → C(A∩B) → C(A) ⊕ C(B) → C(A)+C(B) → 0`);
 - IV.5 `H_*(Sⁿ)` and `H_*(Dⁿ, Sⁿ⁻¹)`;
 - IV.6 Morse theory: sublevel sets, handle attachment, gradient flow retractions, and
   `χ(M) = ∑ (−1)^λ`.

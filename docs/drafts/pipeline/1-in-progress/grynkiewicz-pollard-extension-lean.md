@@ -123,7 +123,16 @@ so `Q = ∑_x r'^2_x ≤ kM + |T||B|(|B|−k) = |B|·( k|A| + |T|(|B|−k) )`, a
 - **G1 — Prop A(i), A(ii) DONE**; Lemma 2.2 (critical pair) still to do.
 - **G2 — DONE.** Dyson transform.
 - **G3 — DONE.** Additive energy and Lemma 2.1 (`AdditiveEnergy.lean`).
-- **G4 — the only layer left.** The main triple induction (on `∑_{i=1}^t |A +_i B|`, then `|A|+|B|`, then `min(|A|,|B|)`).
+- **G4 — in progress.**  `HTGeometry/AdditiveCombinatorics/PollardGrynkiewicz.lean` fixes the
+  statement (`PollardWeak`, `PollardStruct`, `defect`, `holes`), proves the base case
+  `pollardWeak_of_card_eq`, the evaluations `repSum_eq_of_rep_le`, `repSum_mono`,
+  `card_mul_le_repSum`, `mul_card_repSet_le_repSum`, and the measure facts
+  (`card_add_card_le_two_mul_repSum`, `pollardMeasure`).  **STEP 1 is done:**
+  `PollardStepOne.lean` (`rep_sdiff_add_rep_sdiff_le`, `repSum_ge_of_repSet_eq`),
+  `PollardCoset.lean` (`exists_mul_notMem`, `card_mulStab_le_filter_add_holes'`) and
+  `PollardStabiliserBound.lean` (`rep_comm`, the two Fubini lemmas,
+  `pollard_step1_smallDoubling`).  Next: STEP 2, STEP 3 (CASES 3.1/3.2) and CASE 4.
+  The main triple induction (on `∑_{i=1}^t |A +_i B|`, then `|A|+|B|`, then `min(|A|,|B|)`).
 
 ## G4: design of the main induction
 
@@ -160,12 +169,49 @@ which is what CASE 4.2 does when it inserts a new element — decreases this com
 (Matomäki–Teräväinen Lemma 3.12, with `t = ⌈εφ(q)/10⌉`) only ever needs large `t`, but the
 statement is for all `t ≥ 1`, so CASE 3.1 is still required for a faithful formalisation.
 
+## STEP 1, made rigorous
+
+The source's STEP 1 says the `l` discarded elements "each contribute at least `|H| − ρ` elements to
+`∑_{i=1}^t |A +_i B|` not contained in `A' + B'`", and that "the individual contributions are
+cumulative".  That is a count of *representations*, not of elements, and the clean form is:
+
+**Counting form.**  Since `A' · B' = A ·_t B`, every `c ∈ A'·B'` has `min(r(c), t) = t`, so
+```
+repSum A B t = ∑_c min(r(c), t) ≥ t·#(A'·B') + ∑_{c ∉ A'·B'} min(r(c), t) ,
+```
+and the second sum is at least the number of pairs `(a,b) ∈ A × B` with `a·b ∉ A'·B'` and exactly
+one of `a ∉ A'`, `b ∉ B'` — a bound that needs `min(r(c), t) ≥ r'(c)` for the restricted count
+`r'`, which holds because `r'(c) ≤ l ≤ t − 1`.  Those pairs split as
+```
+∑_{a ∈ A \ A'} #{b ∈ B' : a·b ∉ A'·B'} + ∑_{b ∈ B \ B'} #{a ∈ A' : a·b ∉ A'·B'} ,
+```
+the two families being disjoint.  So it suffices to prove, for each `a ∈ A \ A'`:
+
+**Coset claim.**  If `A ∩ (A'·H) ⊆ A'` (which one may assume, after enlarging `A'` and `B'` by the
+elements of `A`, `B` lying in `A'·H`, `B'·H` — this changes neither `A'·B'` nor the hypotheses),
+then `#{b ∈ B' : a·b ∉ A'·B'} ≥ |H| − ρ`.
+
+*Proof (shorter than the source's, and quotient-free).*  Suppose `a · B' ⊆ A' · B'`.  Then
+`(A' ∪ {a}) · B' = A' · B'`, so Kneser applies to the pair `(A' ∪ {a}, B')` with the same
+stabiliser `H`.  Since `a ∉ A' · H`, the coset `a • H` is disjoint from `A' · H`, whence
+`#((A' ∪ {a}) · H) = #(A' · H) + #H`; Kneser then gives `#(A'·H) + #(B'·H) ≤ #(A'·B')`, and so
+`#A' + #B' ≤ #(A'·B')`, contradicting small doubling.  Therefore some `b' ∈ B'` has
+`a·b' ∉ A'·B'`; since `A'·B'` is `H`-stable, no element of `(a b')•H` lies in `A'·B'`, so every
+`b` in the `H`-coset slice `B' ∩ b'•H` works, and there are at least `|H| − ρ_B ≥ |H| − ρ` of
+them. ∎  (The source instead passes to `G ⧸ H`, establishes
+`#(φA'·φB') = #φA' + #φB' − 1`, and invokes the critical-pair lemma there.)
+
+Combining with Kneser (`t·#(A'·B') ≥ t(#A' + #B' + ρ − |H|)`) gives exactly the stabiliser bound
+`(S)`; the complementary branch `#(A'·B') ≥ #A' + #B' − 1` gives `repSum ≥ t#A + t#B − t²`.
+
 ## Gates
 - [ ] 0 → 1  in-progress: statement frozen, prerequisites mapped
 - [ ] 1 → 2  fully-proven: every step of the source proof checked and gap-free on paper
 - [ ] 2 → 3  formalized: Lean theorem, `lake build` green, axioms ⊆ {propext, Classical.choice, Quot.sound}
 
 ## Log
+- 2026-08-21 — **G4 STEP 1 is Lean-closed** across four new modules, with a quotient-free proof of
+  the coset claim that is shorter than the source's.  All axiom-clean and wired.
 - 2026-08-21 — **G3 Lean-closed** in `HTGeometry/AdditiveCombinatorics/AdditiveEnergy.lean`:
   `energy`, `energy_inv`, `le_min_of_linear_quadratic`, `le_repSum_of_linear_quadratic`,
   `repSum_ge_min`, `energy_le_of_rep_inv_le`, `repSum_ge_min_of_rep_inv_le` (Lemma 2.1).

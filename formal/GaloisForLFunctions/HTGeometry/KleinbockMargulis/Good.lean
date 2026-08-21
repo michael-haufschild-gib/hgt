@@ -102,10 +102,10 @@ theorem IsGood.mono_set (hf : IsGood C α f V) (hWV : W ⊆ V) : IsGood C α f W
   fun x₀ r hr hball ε hε z hz => hf x₀ r hr (hball.trans hWV) ε hε z hz
 
 /-- Enlarging the constant preserves goodness. -/
-theorem IsGood.mono_const (hf : IsGood C α f V) (hα : 0 ≤ α) (hC : C ≤ C') :
+theorem IsGood.mono_const (hf : IsGood C α f V) (_hα : 0 ≤ α) (hC : C ≤ C') :
     IsGood C' α f V := by
   intro x₀ r hr hball ε hε z hz
-  refine (hf x₀ r hr hball ε hε z hz).trans (mul_le_mul_right' ?_ _)
+  refine (hf x₀ r hr hball ε hε z hz).trans (mul_le_mul_left ?_ _)
   refine ENNReal.ofReal_le_ofReal ?_
   have : (0:ℝ) ≤ ε ^ α := Real.rpow_nonneg hε.le _
   nlinarith
@@ -138,7 +138,7 @@ theorem IsGood.const_mul (hf : IsGood C α f V) (hα : 0 < α) (lam : ℝ) :
     have hεdiv : 0 < ε / |lam| := div_pos hε hlam'
     have key := hf x₀ r hr hball (ε / |lam|) hεdiv z hz
     rw [← hset] at key
-    have hmul := mul_le_mul_right' key (ENNReal.ofReal (|lam| ^ α))
+    have hmul := mul_le_mul_left key (ENNReal.ofReal (|lam| ^ α))
     calc volume {x ∈ ball x₀ r | |lam * f x| < ε} * ENNReal.ofReal (|lam * f z| ^ α)
         = volume {x ∈ ball x₀ r | |lam * f x| < ε} * ENNReal.ofReal (|f z| ^ α)
             * ENNReal.ofReal (|lam| ^ α) := by
@@ -154,7 +154,7 @@ theorem IsGood.const_mul (hf : IsGood C α f V) (hα : 0 < α) (lam : ℝ) :
 
 /-- A real-analysis helper: a bound `m t^α ≤ K` follows from the same bound for all smaller
 positive values of `t`.  Used to pass from arbitrary points of a ball to the supremum norm. -/
-theorem mul_rpow_le_of_forall_lt {m K t α : ℝ} (hm : 0 ≤ m) (hK : 0 ≤ K) (hα : 0 < α)
+theorem mul_rpow_le_of_forall_lt {m K t α : ℝ} (_hm : 0 ≤ m) (hK : 0 ≤ K) (hα : 0 < α)
     (ht : 0 ≤ t) (h : ∀ c, 0 < c → c < t → m * c ^ α ≤ K) : m * t ^ α ≤ K := by
   rcases eq_or_lt_of_le ht with rfl | htpos
   · rwa [Real.zero_rpow hα.ne', mul_zero]
@@ -199,7 +199,7 @@ theorem IsGood.sup {ι : Type*} {gi : ι → (Fin d → ℝ) → ℝ} (hC : 0 �
   have hfnn : ∀ x, 0 ≤ f x := by
     intro x
     by_contra hx
-    push_neg at hx
+    push Not at hx
     obtain ⟨i, hi⟩ := hlt x (f x - 1) (by linarith)
     exact absurd (hle i x) (by nlinarith [abs_nonneg (gi i x)])
   intro x₀ r hr hball ε hε z hz

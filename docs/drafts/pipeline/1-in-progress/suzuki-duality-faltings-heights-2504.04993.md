@@ -56,14 +56,23 @@ The paper's own final Remark states that Prop 0005 and Prop 0020 hold for arbitr
 | `HTGeometry/DualZLatticeCovolume.lean` | The dual lattice `Λ*` for the standard pairing; `dual_span_eq`; `covolume_span_eq_abs_det`; **`covolume_mul_covolume_dual`** (`covol Λ · covol Λ* = 1`); the matrix form `dual_rowLattice`, `covolume_rowLattice`. |
 | `HTGeometry/ComplexTorusFaltingsPeriod.lean` | `det_dzFrame`/**`norm_det_dzFrame`** (`|det| = 2^g`, the source of the `2^g` in `‖dz₁∧…∧dz_g‖²`); `faltingsNormSq` and **`faltingsNormSq_eq_sq_det_mul_dual`** — the Faltings metric is preserved by the `det M`-scaling isomorphism `ω_A ≅ ω_B`. |
 | `HTGeometry/SelfInverseLatticeValuationRing.lean` | **`span_eq_span_one_of_span_eq_span_inv`**: over a valuation ring the only rank-one lattice equal to its own inverse is the unit lattice; `span_eq_of_ratio_eq_inv_ratio` — the exact step used in the proof of Prop 3.4. |
+| `HTGeometry/RealTorusEigenLatticeCovolume.lean` | **`covolume_eigenSum`**: `covol(Λ⁺ ⊕ Λ⁻) = #(Λ/(Λ⁺⊕Λ⁻)) · covol(Λ)`, and `covolume_eigenSum_mul_card_H1` — Suzuki's `det Q = (2^g / #π₀(A(ℝ))) · det M` in covolume form. |
+| `HTGeometry/HaarMeasureSubgroupIndex.lean` | **`measure_univ_eq_index_mul`**: for a left-invariant measure and a measurable finite-index subgroup, `μ(G) = [G:H]·μ(H)` (a mathlib gap). |
+| `HTGeometry/RealTorusRealPeriod.lean` | **`measure_univ_realPoints`**: `μ(A(ℝ)) = #Ĥ¹(⟨σ⟩,Λ)·μ(A(ℝ)⁰)` — Suzuki's `(5.1)` `∫_{A(ℝ)} dz₁∧…∧dz_g = #π₀(A(ℝ))` once the identity-component period is normalised to `1`. |
+| `HTGeometry/RealTorusIdentityComponent.lean` | The **topological** upgrade of §5: `span_fixedLattice` (`Λ ∩ V^σ` spans `V^σ`), `isCompact_imageFixed`, **`connectedComponent_eq`** (the image of `V^σ` *is* the identity component of `A(ℝ)`), **`card_quotient_realPoints`** (`#π₀(A(ℝ)) = #Ĥ¹(⟨σ⟩,Λ)` for the genuine topological component group) and `card_piZero_eq_card_H1_neg_dual`. |
 
 ## What is proved vs. what is out of reach
 
 **Proved unconditionally in Lean.**  The entire arithmetic engine of §5 (Prop 5.1) up to and
-including `#π₀(A(ℝ)) = #π₀(B(ℝ))`; the component-group computation `π₀(A(ℝ)) ≅ Ĥ¹(⟨c⟩, Λ)`; Tate
+including `#π₀(A(ℝ)) = #π₀(B(ℝ))` — with `π₀` the *topological* component group, since the image of
+`V^σ` is proved to be the identity component of `A(ℝ)`; the component-group computation `π₀(A(ℝ)) ≅ Ĥ¹(⟨c⟩, Λ)`; Tate
 duality for `ℤ/2`-lattices (a mathlib gap, and the input Suzuki quotes implicitly when passing from
 `Λ` to `Λ^∨`); the covolume duality and the `2^g` frame determinant behind §4 (Prop 4.1), together
 with the metric-preservation identity; the valuation-ring step of §3 (Prop 3.4).
+
+The only ingredient of §5 left outside Lean is the normalisation
+`∫_{A(ℝ)⁰} dz₁ ∧ … ∧ dz_g = 1`, i.e. integration of differential forms over a real torus, which
+mathlib does not support.
 
 **Out of reach on the present mathlib base.**  Everything requiring Néron models, Illusie's Lie
 complex and determinants of perfect complexes, fppf quotients (Anantharaman), Raynaud group schemes,
@@ -84,3 +93,8 @@ likewise absent.
 - 2026-08-21 — created; paper source read in full; inventory above frozen.
 - 2026-08-21 — seven Lean modules landed and wired into `GaloisForLFunctions.HTGeometry`; formal
   lint green; axiom audit clean.
+- 2026-08-21 — two further modules: the eigenlattice covolume identity (`det Q` step) and the
+  topological identity-component theorem, upgrading `#π₀(A(ℝ)) = #Ĥ¹` from the algebraic component
+  group to the genuine topological one.  Nine modules total.
+- 2026-08-21 — two more: the Haar-measure index law and the real-period identity
+  `μ(A(ℝ)) = #π₀ · μ(A(ℝ)⁰)`.  Eleven modules total; lint green; axiom audit clean.

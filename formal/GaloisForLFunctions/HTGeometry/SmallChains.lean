@@ -35,6 +35,14 @@ theorem SmallSimplex.mono {𝒰 : Set (Set X)} {k j : ℕ} {σ : C(topSimplex k,
   obtain ⟨U, hU, hsub⟩ := h
   exact ⟨U, hU, hr.trans hsub⟩
 
+/-- A chain small for a family is small for any coarser family. -/
+theorem smallChain_refine {𝒰 𝒱 : Set (Set X)} (h : ∀ U ∈ 𝒰, ∃ V ∈ 𝒱, U ⊆ V) {k : ℕ}
+    {c : C(topSimplex k, X) →₀ R} (hc : SmallChain R 𝒰 c) : SmallChain R 𝒱 c := by
+  intro σ hσ
+  obtain ⟨U, hU, hsub⟩ := hc σ hσ
+  obtain ⟨V, hV, hUV⟩ := h U hU
+  exact ⟨V, hV, hsub.trans hUV⟩
+
 theorem smallChain_zero (𝒰 : Set (Set X)) {k : ℕ} :
     SmallChain R 𝒰 (0 : C(topSimplex k, X) →₀ R) := by
   intro σ hσ
