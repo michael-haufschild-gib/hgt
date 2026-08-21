@@ -34,6 +34,9 @@ structure TemporalRootMergePlan
   no_later_targets : ∀ before q after r,
     order = before ++ q :: after → r ∈ after → parent r ≠ q
   selected_sublist : (order.map fun q => (q, parent q)).Sublist blockEdges
+  terminal : Q
+  terminal_prefix : ∃ before, order = before ++ [terminal]
+  parent_terminal : parent terminal = root
 
 namespace TemporalRootMergePlan
 
@@ -115,6 +118,19 @@ def execute
     List Q → (Q → Option (Fin 3)) → Q → Option (Fin 3)
   | [], P => P
   | q :: tail, P => execute parent tail (mergeLabel P q (parent q))
+
+/-- Executing consecutive portions of a merge plan is associative in physical
+time order. -/
+theorem execute_append
+    {Q : Type*} [DecidableEq Q] (parent : Q → Q)
+    (left right : List Q) (P : Q → Option (Fin 3)) :
+    execute parent (left ++ right) P =
+      execute parent right (execute parent left P) := by
+  induction left generalizing P with
+  | nil => rfl
+  | cons q tail ih =>
+      simp only [List.cons_append, execute]
+      exact ih (mergeLabel P q (parent q))
 
 /-- A sequence of merges leaves a coordinate untouched when it never appears
 as a source or target. -/
@@ -258,15 +274,15 @@ theorem exists_parent_eq_root
     {Q : Type*} [DecidableEq Q] {root : Q} {blockEdges : List (Q × Q)}
     (plan : TemporalRootMergePlan Q root blockEdges)
     {q : Q} (hq : q ≠ root) :
-    ∃ r, plan.parent r = root := by
+    ∃ r, r ≠ root ∧ plan.parent r = root := by
   have recurse : ∀ k : ℕ, ∀ q : Q, plan.height q = k → q ≠ root →
-      ∃ r, plan.parent r = root := by
+      ∃ r, r ≠ root ∧ plan.parent r = root := by
     intro k
     induction k using Nat.strong_induction_on with
     | h k ih =>
         intro q hheight hqroot
         by_cases hparent : plan.parent q = root
-        · exact ⟨q, hparent⟩
+        · exact ⟨q, hqroot, hparent⟩
         · have hlt : plan.height (plan.parent q) < k := by
             simpa [hheight] using plan.parent_height_lt q hqroot
           exact ih (plan.height (plan.parent q)) hlt (plan.parent q) rfl hparent
@@ -293,22 +309,227 @@ theorem execute_root_eq_Z_of_root_ne_none_of_exists_target
           apply hroot
           simpa [hqtarget] using hlocal.2
         have hZnext : mergeLabel P q (parent q) root = some 2 := by
-          rw [hqtarget]
+          rw [hqtarget] at hlocal ⊢
           simp [mergeLabel, hlocal, updateTwoQubitPauliLabel]
         exact execute_root_eq_Z_of_initial_Z parent tail
           (mergeLabel P q (parent q)) root hroot_source.2 hZnext
-      · apply ih (mergeLabel P q (parent q)) root hroot_source.2 hrootNext
+      · apply ih (mergeLabel P q (parent q)) hroot_source.2 hrootNext
         rcases htarget with ⟨r, hr, hrroot⟩
         simp only [List.mem_cons] at hr
         rcases hr with rfl | hr
         · exact (hqtarget hrroot).elim
         · exact ⟨r, hr, hrroot⟩
 
+/-- A coalescing merge plan sends every nonidentity finite Pauli label to the
+literal root-only `Z`, provided the register has a second qubit. -/
+theorem execute_order_eq_root_Z
+    {Q : Type*} [DecidableEq Q] [Nontrivial Q]
+    {root : Q} {blockEdges : List (Q × Q)}
+    (plan : TemporalRootMergePlan Q root blockEdges)
+    (P : Q → Option (Fin 3)) (hP : ∃ q, P q ≠ none) :
+    execute plan.parent plan.order P = Function.update (fun _ => none) root (some 2) := by
+  funext q
+  by_cases hqroot : q = root
+  · subst q
+    have hroot_source : root ∉ plan.order := by
+      simpa using (plan.mem_order_iff root)
+    have hfinish := plan.execute_order_root_ne_none P hP
+    by_cases hProot : P root = none
+    · rcases execute_root_eq_initial_or_Z plan.parent plan.order P root hroot_source with
+        hpreserve | hZ
+      · exact (hfinish (hpreserve.trans hProot)).elim
+      · simpa using hZ
+    · obtain ⟨source, hsource⟩ := exists_ne root
+      obtain ⟨r, hr, hrparent⟩ := plan.exists_parent_eq_root hsource
+      have htarget : ∃ s ∈ plan.order, plan.parent s = root :=
+        ⟨r, (plan.mem_order_iff r).mpr hr, hrparent⟩
+      simpa using execute_root_eq_Z_of_root_ne_none_of_exists_target
+        plan.parent plan.order P root hroot_source hProot htarget
+  · rw [plan.execute_order_apply_eq_none P hqroot]
+    simp [Function.update_of_ne hqroot]
+
+/-- At the terminal root-targeting merge, at least one addressed Pauli label
+is nontrivial.  Thus that terminal location is an actual, not identity,
+local Clifford gate in the Appendix-B construction. -/
+theorem exists_terminal_prefix_local_nontrivial
+    {Q : Type*} [DecidableEq Q] [Nontrivial Q]
+    {root : Q} {blockEdges : List (Q × Q)}
+    (plan : TemporalRootMergePlan Q root blockEdges)
+    (P : Q → Option (Fin 3)) (hP : ∃ q, P q ≠ none) :
+    ∃ before, plan.order = before ++ [plan.terminal] ∧
+      ¬ (execute plan.parent before P plan.terminal = none ∧
+        execute plan.parent before P root = none) := by
+  obtain ⟨before, horder⟩ := plan.terminal_prefix
+  refine ⟨before, horder, ?_⟩
+  intro hlocal
+  have hfinal : execute plan.parent plan.order P root = some 2 := by
+    have h := congrFun (plan.execute_order_eq_root_Z P hP) root
+    simpa using h
+  rw [horder, execute_append] at hfinal
+  simp only [execute] at hfinal
+  rw [plan.parent_terminal] at hfinal
+  simp [mergeLabel, hlocal] at hfinal
+
+/-- The portion of the plan strictly before its terminal root merge has a
+certified schedule, and the terminal pair is nontrivial in the label state
+left by that schedule. -/
+theorem exists_schedule_before_terminal
+    {Q : Type*} [DecidableEq Q] [Nontrivial Q]
+    {root : Q} {blockEdges : List (Q × Q)}
+    (plan : TemporalRootMergePlan Q root blockEdges)
+    (P : Q → Option (Fin 3)) (hP : ∃ q, P q ≠ none) :
+    ∃ before, ∃ Pbefore : Q → Option (Fin 3),
+      ∃ earlierSchedule : PauliMergeSchedule Q P Pbefore,
+        plan.order = before ++ [plan.terminal] ∧
+        earlierSchedule.edgeList.Sublist (before.map fun q => (q, plan.parent q)) ∧
+        Pbefore = execute plan.parent before P ∧
+        (Pbefore plan.terminal ≠ none ∨ Pbefore root ≠ none) := by
+  obtain ⟨before, horder, hlocal⟩ :=
+    plan.exists_terminal_prefix_local_nontrivial P hP
+  have hsource_ne_parent : ∀ q ∈ before, q ≠ plan.parent q := by
+    intro q hq
+    exact plan.parent_ne_self q ((plan.mem_order_iff q).mp (by
+      rw [horder]
+      simp [hq]))
+  obtain ⟨Pbefore, earlierSchedule, hsub, hbefore⟩ :=
+    exists_schedule_execute plan.parent before P hsource_ne_parent
+  refine ⟨before, Pbefore, earlierSchedule, horder, hsub, hbefore, ?_⟩
+  rw [hbefore]
+  simpa only [not_and_or] using hlocal
+
+/-- A complete schedule can retain the designated terminal root edge as its
+literal final gate location.  This is stronger than merely producing some
+subword schedule with the same terminal Pauli label. -/
+theorem exists_schedule_execute_ending_terminal
+    {Q : Type*} [DecidableEq Q] [Nontrivial Q]
+    {root : Q} {blockEdges : List (Q × Q)}
+    (plan : TemporalRootMergePlan Q root blockEdges)
+    (P : Q → Option (Fin 3)) (hP : ∃ q, P q ≠ none) :
+    ∃ R, ∃ schedule : PauliMergeSchedule Q P R, ∃ beforeEdges,
+      schedule.edgeList = beforeEdges ++ [(plan.terminal, root)] ∧
+      schedule.edgeList.Sublist plan.selectedEdges ∧
+      R = execute plan.parent plan.order P := by
+  obtain ⟨before, Pbefore, earlierSchedule, horder, hsub, hbefore, hlocal⟩ :=
+    plan.exists_schedule_before_terminal P hP
+  let terminalSchedule : PauliMergeSchedule Q Pbefore
+      (updateTwoQubitPauliLabel Pbefore plan.terminal root none (some 2)) :=
+    .step Pbefore plan.terminal root plan.terminal_ne_root hlocal (.done _)
+  let fullSchedule := earlierSchedule.append terminalSchedule
+  refine ⟨_, fullSchedule, earlierSchedule.edgeList, ?_, ?_, ?_⟩
+  · dsimp [fullSchedule]
+    rw [PauliMergeSchedule.edgeList_append]
+    rfl
+  · dsimp [fullSchedule]
+    rw [PauliMergeSchedule.edgeList_append]
+    change (earlierSchedule.edgeList ++ [(plan.terminal, root)]).Sublist
+      plan.selectedEdges
+    rw [selectedEdges, horder, List.map_append]
+    simp only [List.map_cons, List.map_nil]
+    rw [plan.parent_terminal]
+    exact List.Sublist.append hsub (by simp)
+  · have hnot : ¬ (Pbefore plan.terminal = none ∧ Pbefore root = none) := by
+      simpa only [not_and_or] using hlocal
+    rw [horder, execute_append]
+    simp only [execute]
+    rw [plan.parent_terminal]
+    rw [← hbefore]
+    rw [mergeLabel, if_neg hnot]
+
+/-- The symbolic execution of a temporal merge plan is realized by a genuine
+Pauli merge schedule; locally trivial planned locations are omitted. -/
+def castPauliMergeSchedule
+    {Q : Type*} [DecidableEq Q] {P R S : Q → Option (Fin 3)}
+    (h : R = S) (schedule : PauliMergeSchedule Q P R) :
+    PauliMergeSchedule Q P S := h ▸ schedule
+
+/-- Reindexing only a dependent schedule terminal label does not change its
+literal edge word. -/
+theorem edgeList_castPauliMergeSchedule
+    {Q : Type*} [DecidableEq Q] {P R S : Q → Option (Fin 3)}
+    (h : R = S) (schedule : PauliMergeSchedule Q P R) :
+    (castPauliMergeSchedule h schedule).edgeList = schedule.edgeList := by
+  cases h
+  rfl
+
+/-- The symbolic execution of a temporal merge plan is realized by a genuine
+Pauli merge schedule; locally trivial planned locations are omitted. -/
+theorem exists_schedule_execute
+    {Q : Type*} [DecidableEq Q] (parent : Q → Q)
+    (order : List Q) (P : Q → Option (Fin 3))
+    (hsource_ne_parent : ∀ q ∈ order, q ≠ parent q) :
+    ∃ R, ∃ schedule : PauliMergeSchedule Q P R,
+      schedule.edgeList.Sublist (order.map fun q => (q, parent q)) ∧
+        R = execute parent order P := by
+  induction order generalizing P with
+  | nil => exact ⟨P, .done P, .slnil, rfl⟩
+  | cons q tail ih =>
+      have hsourceTail : ∀ r ∈ tail, r ≠ parent r := by
+        intro r hr
+        exact hsource_ne_parent r (by simp [hr])
+      by_cases hlocal : P q = none ∧ P (parent q) = none
+      · obtain ⟨R, schedule, hsub, hR⟩ := ih P hsourceTail
+        refine ⟨R, schedule, List.Sublist.cons _ hsub, ?_⟩
+        simpa [execute, mergeLabel, hlocal] using hR
+      · have hsupport : P q ≠ none ∨ P (parent q) ≠ none := by
+          by_cases hq : P q = none
+          · right
+            intro hparent
+            exact hlocal ⟨hq, hparent⟩
+          · exact Or.inl hq
+        let Pnext := updateTwoQubitPauliLabel P q (parent q) none (some 2)
+        obtain ⟨R, schedule, hsub, hR⟩ := ih Pnext hsourceTail
+        refine ⟨R, .step P q (parent q) (hsource_ne_parent q (by simp)) hsupport schedule,
+          ?_, ?_⟩
+        · change ((q, parent q) :: schedule.edgeList).Sublist
+            ((q, parent q) :: tail.map fun r => (r, parent r))
+          exact List.Sublist.cons_cons _ hsub
+        · simpa [execute, mergeLabel, hlocal, Pnext] using hR
+
+/-- The whole temporal plan is an ordered subword schedule whose terminal
+label is exactly root-only `Z`. -/
+theorem exists_schedule_to_root_Z
+    {Q : Type*} [DecidableEq Q] [Nontrivial Q]
+    {root : Q} {blockEdges : List (Q × Q)}
+    (plan : TemporalRootMergePlan Q root blockEdges)
+    (P : Q → Option (Fin 3)) (hP : ∃ q, P q ≠ none) :
+    ∃ schedule : PauliMergeSchedule Q P (Function.update (fun _ => none) root (some 2)),
+      schedule.edgeList.Sublist (plan.order.map fun q => (q, plan.parent q)) := by
+  have hsource_ne_parent : ∀ q ∈ plan.order, q ≠ plan.parent q := by
+    intro q hq
+    exact plan.parent_ne_self q ((plan.mem_order_iff q).mp hq)
+  obtain ⟨R, schedule, hsub, hR⟩ :=
+    exists_schedule_execute plan.parent plan.order P hsource_ne_parent
+  have hterminal := plan.execute_order_eq_root_Z P hP
+  let hcast : R = Function.update (fun _ => none) root (some 2) := hR.trans hterminal
+  refine ⟨castPauliMergeSchedule hcast schedule, ?_⟩
+  rw [edgeList_castPauliMergeSchedule]
+  exact hsub
+
 /-- The ordered gate locations used by a temporal merge plan. -/
 def selectedEdges
     {Q : Type*} [DecidableEq Q] {root : Q} {blockEdges : List (Q × Q)}
     (plan : TemporalRootMergePlan Q root blockEdges) : List (Q × Q) :=
   plan.order.map fun q => (q, plan.parent q)
+
+/-- The terminal source is non-root and its selected edge is root-targeting. -/
+theorem terminal_ne_root
+    {Q : Type*} [DecidableEq Q] {root : Q} {blockEdges : List (Q × Q)}
+    (plan : TemporalRootMergePlan Q root blockEdges) :
+    plan.terminal ≠ root := by
+  obtain ⟨before, horder⟩ := plan.terminal_prefix
+  apply (plan.mem_order_iff plan.terminal).mp
+  rw [horder]
+  simp
+
+/-- The selected merge word ends with the terminal edge into the root. -/
+theorem selectedEdges_eq_append_terminal
+    {Q : Type*} [DecidableEq Q] {root : Q} {blockEdges : List (Q × Q)}
+    (plan : TemporalRootMergePlan Q root blockEdges) :
+    ∃ before,
+      plan.selectedEdges = before ++ [(plan.terminal, root)] := by
+  obtain ⟨before, horder⟩ := plan.terminal_prefix
+  refine ⟨before.map fun q => (q, plan.parent q), ?_⟩
+  simp [selectedEdges, horder, plan.parent_terminal]
 
 /-- Each selected location is genuinely two-qubit. -/
 theorem source_ne_parent

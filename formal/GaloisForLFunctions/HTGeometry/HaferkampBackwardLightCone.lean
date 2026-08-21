@@ -98,6 +98,21 @@ theorem exists_embedded_root_schedule_of_nontrivial
     obtain ⟨source, hsource⟩ := exists_ne root
     exact cone.exists_embedded_root_schedule_of_root_nontrivial hsource P hroot
 
+/-- The coalescing merge plan in a backwards light cone collapses every
+nonidentity finite Pauli label to root-only `Z` in one ordered subword. -/
+theorem exists_embedded_root_only_schedule_of_nontrivial
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    (cone : BackwardsLightCone n edges root) (hn : 1 < n)
+    (P : Fin n → Option (Fin 3)) (hP : ∃ q, P q ≠ none) :
+    ∃ schedule : PauliMergeSchedule (Fin n) P
+        (Function.update (fun _ => none) root (some 2)),
+      schedule.edgeList.Sublist edges := by
+  let zero : Fin n := ⟨0, lt_trans Nat.zero_lt_one hn⟩
+  let one : Fin n := ⟨1, hn⟩
+  letI : Nontrivial (Fin n) := ⟨zero, one, by simp [zero, one]⟩
+  obtain ⟨schedule, hsub⟩ := cone.mergePlan.exists_schedule_to_root_Z P hP
+  exact ⟨schedule, hsub.trans cone.mergePlan.selectedEdges_sublist⟩
+
 end BackwardsLightCone
 
 end

@@ -153,3 +153,37 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
   (`RHTower.xiGuinandWeilExplicitFormula` on the regularized-Cauchy test algebra), and the finite
   places of the geometric side are now Lean-closed.  What is left of item 4 is the archimedean local
   term and the assembly for a general Bruhat–Schwartz test function.
+
+- 2026-08-21 — Tier B batch 4 (open item 4, archimedean half + global assembly).  Two new modules:
+  * `ConnesArchWeilTerm` — the archimedean Weil kernel in logarithmic coordinates,
+    `e^{t/2}|1-e^t|^{-1} = (2 sinh(t/2))^{-1}`; the Gauss-regularized local term
+    `∫_0^∞ ( e^{-t}/t − e^{-(s−1/2)t}(2 sinh(t/2))^{-1} ) dt = ψ(s)` and its integrability; and the
+    completed form `∫_0^∞ ( e^{-t}/t − e^{-(s/2−1/2)t}(2 sinh(t/2))^{-1} ) dt
+    = 2·(Γ_ℝ'/Γ_ℝ)(s) + log π`.  Built on the corpus's `RHTower.digamma_eq_integral_gauss`
+    (Gauss's integral representation) and `logDeriv_Gammaℝ`.
+  * `ConnesTraceFormulaResolvent` — **`connesGeometricSide σ`** (finite places + the two polar
+    terms + the archimedean term) and the capstone
+    **`connes_traceFormula_resolvent`**: for real `σ > 1`,
+    `∑'_q (a_q^{-1} − (a_q − z)^{-1}) = −i · connesGeometricSide σ`, `z` the centred coordinate of
+    `σ`.  This is Connes' Theorem 6 for the regularized-Cauchy test algebra: the spectral sum over
+    the multiplicity-exact centred Xi divisor equals `−i` times the sum over the places of `ℚ` of
+    the local Weil terms.  Assembled from `connes_weil_primeSide`,
+    `connes_archWeil_eq_logDeriv_Gammaℝ`, `RHTower.logDeriv_archFactor_closed_off_poles`,
+    `RHTower.xiGuinandWeilExplicitFormula_single`.
+  All new capstones `#print axioms` clean (`propext, Classical.choice, Quot.sound`).
+  **Open item 4 is now closed for the resolvent test class at a real abscissa.**  What remains of
+  it is only the general Bruhat–Schwartz test function (a Fourier/Mellin extension of the same
+  identity), not any new arithmetic input.
+
+- 2026-08-21 — Tier B batch 5: `ConnesTraceFormulaComplex` extends the trace formula from a real
+  abscissa to **every admissible centred base point**.  Corpus assets reused rather than rebuilt
+  (`RHTower.support_vonMangoldtTerm_subset_primePow`, `RHTower.primeGradeSource_term_eq`,
+  mathlib's `tsum_eq_tsum_primes_of_support_subset_prime_powers`,
+  `ArithmeticFunction.LSeriesSummable_vonMangoldt`):
+  * `connes_weil_primeSide_complex` — for every `Re s > 1`,
+    `∑_p log p · (local Weil term at p) = L(Λ, s)`.
+  * `connesGeometricSideC` / `connesGeometricSideC_eq` — Connes' geometric side at an arbitrary
+    abscissa equals `L(Λ,s) − (logDeriv archFactor)(s)`.
+  * `connes_traceFormula_resolvent_complex` — for every `z` with `Re(1/2 + zi) > 1`,
+    `∑'_q (a_q^{-1} − (a_q − z)^{-1}) = −i · connesGeometricSideC (1/2 + zi)`.
+  All `#print axioms` clean; `scripts/formal_tools.py lint` exits 0 with no errors.

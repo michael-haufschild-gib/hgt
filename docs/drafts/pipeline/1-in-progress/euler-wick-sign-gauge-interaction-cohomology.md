@@ -2,9 +2,9 @@
 
 - **ID:** euler-wick-sign-gauge-interaction-cohomology
 - **Stage:** 1-in-progress
-- **Type:** FORMALIZED SURVIVOR / DIRECT XI ROUTE KILLED
+- **Type:** ACTIVE REGULAR-ORBIT / OPPOSITE-CROSSING ROUTE; DIRECT SCALAR LANDING KILLED
 - **Source:** `rh-current-frontier-map.md` question 28; corpus bridge from raw Euler Wick defect to finite-quotient interaction cohomology
-- **Statement:** The two-leg sign-gauge orbit of the raw four-factor Euler Wick defect canonically generates the full `Fin 2 × Fin 2` joint-observable quotient modulo row and column marginals, is invariant under every marginal counterterm, and vanishes exactly on the four local coordinate hyperplanes.
+- **Statement:** The two-leg sign-gauge orbit of the raw four-factor Euler Wick defect canonically generates the full `Fin 2 × Fin 2` joint-observable quotient modulo row and column marginals.  Its full regular representation admits an exact completed logarithmic-flux landing whose augmentation is Xi, and source reflection combined with double-negative residue translation gives the strictly positive local crossing `4 log(p) z²`.  Genuine meromorphic cell carriers and transport of this crossing to divisor exclusion remain open.
 
 ## Goal
 
@@ -14,7 +14,7 @@ Answer frontier question 28 with a coefficient-faithful source invariant that su
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, exact leaf `lake build` green, axiom audit PASS
+- [x] 2 → 3  formalized: exact EWQ, Artin no-go, regular-orbit, and opposite-crossing leaf builds green; axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Exact conjecture `[EWIC-1]`
@@ -72,13 +72,16 @@ Use `EulerSquarefreeWickDefect` for the literal source scalar and `CoprimePrimeR
 - **C12:** The algebraic EWQ phase closes the quadratic Gelfond--Schneider endpoint. **FAIL/PIVOT.** Equality of the EWQ value with the Xi multiplicity phase is exactly the missing divisor-to-source monodromy; by the endpoint theorem that equality already forces zero multiplicity.
 - **C13:** Complete EWQ through all prime-power depths and test a gauge-equivariant Xi landing. **PROVED NO-GO / POSITIVE SURVIVOR.** `EulerSquarefreeWickArtinInteractionNoGo.lean` proves the four-sector virtual coefficient
   `1 + (χ₃χ₄)^k - χ₃^k - χ₄^k = (1-χ₃^k)(1-χ₄^k)`. Every even depth is zero and every odd depth is the original anchored EWQ class. This is the local logarithmic coefficient of `ζ L(χ₁₂)/(L(χ₃)L(χ₄))`. The same module proves every residue-translation-invariant scalar linear reader annihilates the joint character, so no scalar Xi landing is both gauge equivariant and coefficient faithful.
+- **C14:** Retain the entire regular residue orbit rather than apply a scalar reader. **PROVED SURVIVOR.** `EulerSquarefreeWickRegularOrbitFlux.lean` proves Fourier inversion onto four literal residue cells, exact recovery of all four sectors, and a completed logarithmic-flux landing with vacuum coordinate `-d log Xi`, three Dirichlet-L coordinates, Xi as cell augmentation, and the virtual Artin interaction as anchored reader.  The canonical split form has signature `(+,-,-,+)`; literal prime packets are null, the joint axis is positive, marginal axes are negative, and real nonnegative cell weights have exact norm `8(ad+bc) ≥ 0`.  Hostile audit: this is initially a direct sum of Fourier sectors, so it does not yet couple an EWQ class to a Xi divisor.
+- **C15:** Use the unique double-negative residue translation as the null-cone crossing operator and pair it with functional-equation group completion. **PROVED SURVIVOR.** `EulerSquarefreeWickOppositeResidueCrossing.lean` proves that `(-1,-1)` fixes vacuum and joint sectors, negates both marginals, sends every odd-depth actual gauge packet to the opposite residue cell, and converts the split form to the positive sum of four coordinate squares.  Tensoring this crossing with the exact Euler residue seam between `p` and `p⁻¹` gives `4 log(p) z² > 0` for every nonzero actual prime packet; every finite nonzero packet family has strictly positive total energy.  This is the first canonical non-block-diagonal source orientation in EWQ.
+- **C16:** Exponentiate each inverse-Fourier cell flux to a genuine completed meromorphic carrier. **FAIL AS AUTOMATIC STEP / DIVISOR-QUANTIZATION PIVOT.** The inverse transform divides logarithmic residues by four.  Therefore a cell carrier exists only if the Walsh--Hadamard combinations of the Xi/Dirichlet-L divisor orders are divisible by four.  With `r` independent quadratic gauges the denominator becomes `2^r`; a pure Xi divisor would need multiplicity divisible by `2^r`.  Unbounded gauge rank would annihilate every finite Xi order, but only after proving either an unbounded family of genuine cell-root landings or enough pointwise nonvanishing of all auxiliary product-character L-functions.  Corpus finite quadratic moments do not currently provide this common-zero avoidance.  Treating the flux direct sum as already exponentiated is theatre.
 
 ## No-go closure (mandatory when falsified)
 
 - **Exact killing theorem/mechanism:** `no_quadraticResidueGaugeInvariantScalarReader_product_one`. A scalar Xi target carries the trivial residue action; equivariance annihilates the nontrivial `χ₃ ⊗ χ₄` isotypic class. Independently, `primeResidueValuationInteractionGridCarrier_vacuum_eq_zetaGhost` identifies the untwisted zeta tower with the unique empty-support sector, while EWQ lies in the full two-coordinate sector. A non-equivariant map would discard the route's defining gauge/marginal quotient and is not coefficient faithful.
 - **Strongest positive survivor:** the all-depth virtual Artin interaction. Odd valuation layers retain EWQ, even layers cancel, and its natural completed target is the four-function cross-ratio `ζ L(χ₁₂)/(L(χ₃)L(χ₄))`, not Xi. This vector/twisted system has its own three nonprincipal Dirichlet-L divisors; existing Stark, Artin, functional-equation, and zero-count laws do not isolate the zeta divisor or orient its zeros.
 - **New insight:** interaction cohomology is a superselection label, not a scalar correction. Completion preserving the label necessarily leaves the trivial zeta representation; completion forgetting the label kills the invariant. This explains why marginal cancellation is strong yet cannot become an Xi producer. The obstruction is representation-theoretic, not missing analytic estimates.
-- **Status:** direct EWQ-to-Xi route killed; virtual Artin survivor formalized and retained as a no-go/diagnostic, not a live RH route.
+- **Status:** direct scalar EWQ-to-Xi route killed.  Full regular-orbit route is live: completed flux landing and canonical positive opposite crossing are formalized.  Open core is now sharp—integral/meromorphic cell descent plus transport of positive source crossing to negative-square exclusion of off-line Xi divisors.
 
 ## Log
 
@@ -86,3 +89,6 @@ Use `EulerSquarefreeWickDefect` for the literal source scalar and `CoprimePrimeR
 - 2026-08-21 — Closed `[EWIC-1]` in Lean; realized actual prime residue carrier and canonical `χ₁₂`; proved relative HT and analytic marginal no-cancellation.
 - 2026-08-21 — Ran formation, vacuum-fusion, ZGC, Gelfond--Schneider, Artin/Stark, hyperbolic-quartic, Deninger mixed-secant, Route O, Pauli/QEC, Rainich, and valuation-superselection attacks. Each failed at an exact source/receiver handoff rather than by analogy.
 - 2026-08-21 — Proved the all-depth virtual Artin coefficient law and scalar gauge-equivariant Xi-landing no-go in `EulerSquarefreeWickArtinInteractionNoGo.lean`. `rh-current-frontier-map.md` remained read-only.
+- 2026-08-21 — Reopened route after scalar no-go.  Proved a coefficient-faithful four-sector completed logarithmic-flux landing, its `(2,2)` Krein/null-cone law, and exact nonnegative source cone `8(ad+bc)` in `EulerSquarefreeWickRegularOrbitFlux.lean`.
+- 2026-08-21 — Combined EWQ with the corpus Euler character group completion and finite-Hankel null-crossing principle.  Proved the canonical opposite-residue reflected crossing `4 log(p) z²`, strict finite source energy, and odd-depth compatibility with actual `(-1,-1)` residue translation in `EulerSquarefreeWickOppositeResidueCrossing.lean`.
+- 2026-08-21 — Hostile divisor audit exposed the next obstruction: inverse Fourier fluxes have quarter-integral residues unless a Walsh divisor congruence holds.  General `2^r` gauge cubes turn completed carrier landing into an unbounded root/divisor-annihilation mechanism, conditional only on constructing genuine cell roots or avoiding common auxiliary L-zeros.  Frontier map remained read-only.

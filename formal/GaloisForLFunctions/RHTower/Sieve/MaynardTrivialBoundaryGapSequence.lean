@@ -427,6 +427,18 @@ theorem routeT_second_alternative_of_shell_mass
     simpa only [P] using (mul_le_mul_iff_left₀ hV).mp hmul'
   exact routeT_second_alternative_of_large_error hlarge halt
 
+private theorem shellBandMass_uniform_of_width_le_two
+    {D delta Q : ℝ} (hD : 0 ≤ D) (hdelta : 0 < delta)
+    (hdeltaTwo : delta ≤ 2) (hQ : 0 < Q) :
+    D / (32 * Q) ≤ D / (16 * delta * Q) := by
+  have hdenSmall : 0 < 16 * delta * Q :=
+    mul_pos (mul_pos (by norm_num) hdelta) hQ
+  have hdeltaBound : 16 * delta ≤ (32 : ℝ) := by
+    exact (mul_le_mul_of_nonneg_left hdeltaTwo (by norm_num)).trans_eq (by ring)
+  have hdenLarge : 16 * delta * Q ≤ 32 * Q :=
+    mul_le_mul_of_nonneg_right hdeltaBound hQ.le
+  exact div_le_div_of_nonneg_left hD hdenSmall hdenLarge
+
 /-- Variable-width shell extraction pays at most twice the unit-cell first-exclusion cost.
 The exact support, rather than the larger ambient comparison scale, is the receiver base. -/
 theorem eventually_routeT_amplitudeBand_shell_firstExclusionThreshold
@@ -768,5 +780,105 @@ theorem eventually_exists_routeT_adjacentDefect_central_gapSequence_forcedSecond
   · simpa only [v] using hlarge
   · simpa only [v] using hmass
   · simpa only [V, v, alpha] using hsecond
+
+/-- Arbitrary central shell form.  Exact adaptive width removes endpoint trimming, while
+`delta ≤ 2` converts the selected-band mass to the uniform lower bound `D/(32 Q)`. -/
+theorem eventually_exists_routeT_adjacentDefect_centralInterval_forcedSecond
+    {D : ℝ} (hD : 0 < D) :
+    ∀ᶠ T : ℝ in atTop,
+      ∀ {L X : ℕ} {mu N0 H R b : ℝ},
+      1 < X → 1 ≤ L → L ≤ X → X < (L + 1) ^ 60 →
+      T ^ mu = (X : ℝ) →
+      (L : ℝ) ≤ T ^ (2 * (mu / 120)) →
+      4 / 3 ≤ mu → mu ≤ 19 / 9 →
+      1 < N0 / (2 ^ 120 : ℝ) →
+      (X : ℝ) ≤ (4 * (2 ^ 120 : ℝ)) * (N0 / (2 ^ 120 : ℝ)) →
+      0 < H → 0 < R → H ≤ R →
+      T + 2 ≤ b → b ≤ 2 * T →
+      (∀ y ∈ Set.Icc T b, |y| ≤ N0 / (2 * R)) →
+      D ≤ ‖∫ y in T..b,
+        heathBrownWindowRelevantEligibleDyadicAggregate L X 60 T (mu / 120) N0
+            ((1 : ℂ) + (y : ℝ) * Complex.I) *
+          (routeTNormalizedSmoothWindowMellin N0 R
+              ((1 : ℂ) + (y : ℝ) * Complex.I) -
+            routeTNormalizedSmoothWindowMellin N0 H
+              ((1 : ℂ) + (y : ℝ) * Complex.I))‖ →
+      heathBrownWindowRelevantFixedPolylogBound L X 60 N0 1 ≤
+        (((2 ^ routeTTrivialBoundaryBandCount T : ℕ) : ℝ) *
+          routeTTrivialBoundaryAmplitudeThreshold L X 60 N0) →
+      (b - T) * routeTTrivialBoundaryAmplitudeThreshold L X 60 N0 ≤ D / 8 →
+      ∃ n : ℕ, ∃ delta : ℝ, ∃ lam : ℕ → ℝ, ∃ S : Finset ℕ, ∃ q : ℕ,
+        0 < n ∧ 1 ≤ delta ∧ delta ≤ 2 ∧
+        b = T + ((2 * n : ℕ) : ℝ) * delta ∧
+        (∀ i, lam i + delta ≤ lam (i + 1)) ∧
+        S ⊆ Finset.range n ∧ q < routeTTrivialBoundaryBandCount T ∧
+        (∀ r ∈ S, T ≤ lam r ∧ lam r ≤ 2 * T) ∧
+        (∀ r ∈ S, (((2 ^ q : ℕ) : ℝ) *
+          routeTTrivialBoundaryAmplitudeThreshold L X 60 N0) ≤
+            ‖heathBrownWindowRelevantEligibleDyadicAggregate
+              L X 60 T (mu / 120) N0
+                ((1 : ℂ) + (lam r : ℝ) * Complex.I)‖) ∧
+        D / (32 * (routeTTrivialBoundaryBandCount T : ℝ)) ≤
+          (((2 ^ q : ℕ) : ℝ) *
+            routeTTrivialBoundaryAmplitudeThreshold L X 60 N0) *
+              (S.card : ℝ) ∧
+        (S.card : ℝ) ≤ T * (T ^ mu) ^
+          (1 + routeTGapMomentNu -
+            2 * routeTAdaptiveCellAmplitude L X 60 N0
+              (((2 ^ q : ℕ) : ℝ) *
+                routeTTrivialBoundaryAmplitudeThreshold L X 60 N0)) := by
+  filter_upwards [
+    eventually_exists_routeT_adjacentDefect_central_gapSequence_forcedSecond hD]
+      with T hforced
+  intro L X mu N0 H R b hX hL hLX hXL hXexact hLscale hmuLo hmuHi hN
+    hcomparable hH hR hHR hlength htop hcentral hdefect hcap hbase
+  obtain ⟨n, delta, hn, hdelta, hdeltaTwo, hb⟩ :=
+    exists_even_cells_unit_two_of_two_le_length hlength
+  have hshellTop : T + ((2 * n : ℕ) : ℝ) * delta ≤ 2 * T := by
+    rw [← hb]
+    exact htop
+  have hcentral' : ∀ y ∈ Set.Icc T
+      (T + ((2 * n : ℕ) : ℝ) * delta), |y| ≤ N0 / (2 * R) := by
+    simpa only [← hb] using hcentral
+  have hdefect' : D ≤ ‖∫ y in T..(T + ((2 * n : ℕ) : ℝ) * delta),
+      heathBrownWindowRelevantEligibleDyadicAggregate L X 60 T (mu / 120) N0
+          ((1 : ℂ) + (y : ℝ) * Complex.I) *
+        (routeTNormalizedSmoothWindowMellin N0 R
+            ((1 : ℂ) + (y : ℝ) * Complex.I) -
+          routeTNormalizedSmoothWindowMellin N0 H
+            ((1 : ℂ) + (y : ℝ) * Complex.I))‖ := by
+    simpa only [← hb] using hdefect
+  have hbase' :
+      2 * (n : ℝ) * delta *
+          routeTTrivialBoundaryAmplitudeThreshold L X 60 N0 ≤ D / 8 := by
+    rw [hb] at hbase
+    push_cast at hbase
+    convert hbase using 1
+    ring
+  have hsmall :
+      (n : ℝ) * routeTTrivialBoundaryAmplitudeThreshold L X 60 N0 ≤
+        D / (16 * delta) := by
+    apply (le_div_iff₀ (by positivity : (0 : ℝ) < 16 * delta)).2
+    calc
+      (n : ℝ) * routeTTrivialBoundaryAmplitudeThreshold L X 60 N0 *
+          (16 * delta) =
+        8 * (2 * (n : ℝ) * delta *
+          routeTTrivialBoundaryAmplitudeThreshold L X 60 N0) := by ring
+      _ ≤ 8 * (D / 8) := mul_le_mul_of_nonneg_left hbase' (by norm_num)
+      _ = D := by ring
+  obtain ⟨lam, S, q, hgap, hS, hq, hband, hlarge, hmass, hsecond⟩ :=
+    hforced hX hL hLX hXL hXexact hLscale hmuLo hmuHi hN hcomparable hH hR
+      hHR hdelta hdeltaTwo hshellTop hcentral' hdefect' hcap hsmall
+  let Q : ℝ := routeTTrivialBoundaryBandCount T
+  have hTone : (1 : ℝ) ≤ T := by linarith [hlength, htop]
+  have hQ : 0 < Q := by
+    dsimp only [Q]
+    exact_mod_cast routeTTrivialBoundaryBandCount_pos hTone
+  have hmassUniform : D / (32 * Q) ≤ D / (16 * delta * Q) :=
+    shellBandMass_uniform_of_width_le_two hD.le
+      (zero_lt_one.trans_le hdelta) hdeltaTwo hQ
+  refine ⟨n, delta, lam, S, q, hn, hdelta, hdeltaTwo, hb, hgap, hS, hq,
+    hband, hlarge, ?_, hsecond⟩
+  simpa only [Q] using hmassUniform.trans hmass
 
 end RHTower.Sieve

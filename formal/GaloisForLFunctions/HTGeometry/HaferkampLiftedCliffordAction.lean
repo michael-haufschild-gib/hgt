@@ -361,6 +361,50 @@ theorem exists_full_block_transport_clifford
     rw [embedding.reverseProduct_eq totalTwoQubitLift_one]
     exact htransport
 
+/-- The coalescing light-cone construction realizes the stronger Appendix-B
+identity: the full block sends every nonidentity Pauli string to the literal
+root-only `Z`, while every local gate remains a Pauli Clifford. -/
+theorem exists_full_block_transport_root_Z_clifford
+    {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
+    (cone : BackwardsLightCone n edges root) (hn : 1 < n)
+    (P : Fin n → Option (Fin 3)) (hP : ∃ q, P q ≠ none) :
+    ∃ gates : List (Matrix.specialUnitaryGroup (Bool × Bool) ℂ),
+      gates.length = edges.length ∧
+      (∀ U ∈ gates, IsBoolTwoQubitPauliClifford
+        (U : Matrix (Bool × Bool) (Bool × Bool) ℂ)) ∧
+      IsFinitePauliClifford (edgeListBlockContraction edges gates) ∧
+      ∃ c : ℂ, c ≠ 0 ∧
+        ((edgeListBlockContraction edges gates :
+          Matrix (Fin n → Bool) (Fin n → Bool) ℂ) * finitePauliMatrix P *
+          Matrix.conjTranspose
+            (edgeListBlockContraction edges gates :
+              Matrix (Fin n → Bool) (Fin n → Bool) ℂ) =
+          c • finitePauliMatrix (Function.update (fun _ => none) root (some 2))) := by
+  obtain ⟨schedule, hsub⟩ :=
+    cone.exists_embedded_root_only_schedule_of_nontrivial hn P hP
+  obtain ⟨selectedGates, hselectedLength, hselectedClifford, c, hc, htransport⟩ :=
+    schedule.exists_localGateWord_transport_clifford
+  obtain ⟨gates, embedding⟩ :=
+    exists_haferkampGateWordEmbedding 1 hsub selectedGates hselectedLength
+  refine ⟨gates, embedding.blockGates_length_eq,
+    embedding.forall_blockGates one_isBoolTwoQubitPauliClifford hselectedClifford,
+    ?_, c, hc, ?_⟩
+  · change IsFinitePauliClifford
+      (haferkampGateWordReverseProduct totalTwoQubitLift edges gates)
+    exact haferkampGateWordReverseProduct_isFinitePauliClifford edges gates
+      embedding.blockGates_length_eq cone.edge_distinct
+      (embedding.forall_blockGates one_isBoolTwoQubitPauliClifford hselectedClifford)
+  · change ((haferkampGateWordReverseProduct totalTwoQubitLift edges gates :
+      Matrix.unitaryGroup (Fin n → Bool) ℂ) :
+      Matrix (Fin n → Bool) (Fin n → Bool) ℂ) * finitePauliMatrix P *
+      Matrix.conjTranspose
+        ((haferkampGateWordReverseProduct totalTwoQubitLift edges gates :
+          Matrix.unitaryGroup (Fin n → Bool) ℂ) :
+          Matrix (Fin n → Bool) (Fin n → Bool) ℂ) =
+        c • finitePauliMatrix (Function.update (fun _ => none) root (some 2))
+    rw [embedding.reverseProduct_eq totalTwoQubitLift_one]
+    exact htransport
+
 end BackwardsLightCone
 
 end

@@ -50,6 +50,27 @@ theorem edgeList_distinct
       · exact hab
       · exact ih e he
 
+/-- Concatenate two certified schedules whose endpoint and starting label
+match.  The physical order of their merge steps is preserved. -/
+def append
+    {Q : Type*} [DecidableEq Q] {P R S : Q → Option (Fin 3)} :
+    PauliMergeSchedule Q P R → PauliMergeSchedule Q R S →
+      PauliMergeSchedule Q P S
+  | .done _, right => right
+  | .step P a b hab hlocal tail, right =>
+      .step P a b hab hlocal (tail.append right)
+
+/-- The edge word of a concatenated schedule is the concatenation of its
+two edge words. -/
+theorem edgeList_append
+    {Q : Type*} [DecidableEq Q] {P R S : Q → Option (Fin 3)}
+    (left : PauliMergeSchedule Q P R) (right : PauliMergeSchedule Q R S) :
+    (left.append right).edgeList = left.edgeList ++ right.edgeList := by
+  induction left with
+  | done P => rfl
+  | step P a b hab hlocal tail ih =>
+      simp [append, edgeList, ih]
+
 /-- The literal ordered architecture implementing the schedule's edge word. -/
 def architecture
     {n : ℕ} {P R : Fin n → Option (Fin 3)}

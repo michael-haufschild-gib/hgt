@@ -105,6 +105,54 @@ theorem cyclicGaloisAlgebraXUnit_conj_C [FiniteDimensional K L]
     Module.finrank_pos.ne' (algebraMap K L a) b
     (cyclicGaloisAlgebraParameter_isUnit K L a ha)
 
+/-- Multiplying a cyclic-Galois parameter by the `n`th power of a base-field unit produces an
+isomorphic raw cyclic algebra.  For a degree-`n` cyclic extension, this factor is the norm of the
+base-field unit, giving a concrete norm-equivalence relation on cyclic-algebra parameters. -/
+noncomputable def cyclicGaloisAlgebraBaseUnitScaleEquiv [FiniteDimensional K L]
+    (a a' : K) (c : Kˣ) (hforward : a = (c : K) ^ Module.finrank K L * a') :
+    cyclicGaloisAlgebra K L a ≃+* cyclicGaloisAlgebra K L a' := by
+  apply cyclicAlgebraScaleUnitEquiv
+    (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+    (algebraMap K L a) (algebraMap K L a') (Units.map (algebraMap K L) c)
+  · change cyclicGaloisGenerator K L (algebraMap K L (c : K)) = algebraMap K L c
+    exact (cyclicGaloisGenerator K L).commutes (c : K)
+  · change algebraMap K L a =
+      ((Units.map (algebraMap K L) c : Lˣ) : L) ^ Module.finrank K L * algebraMap K L a'
+    rw [hforward, map_mul, map_pow]
+    rfl
+
+/-- The explicit cyclic product of the chosen generator's conjugates is the scalar extension of
+the field norm. -/
+theorem cyclicGaloisNormFactor_eq_algebraMap_norm [FiniteDimensional K L] [IsGalois K L]
+    (c : L) :
+    cyclicNormFactor (cyclicGaloisGenerator K L).toRingEquiv c (Module.finrank K L) =
+      algebraMap K L (Algebra.norm K c) := by
+  classical
+  rw [← cyclicGaloisGenerator_orderOf K L]
+  rw [Algebra.norm_eq_prod_automorphisms]
+  rw [← IsCyclic.image_range_orderOf (cyclicGaloisGenerator_spec K L)]
+  rw [Finset.prod_image]
+  · simp [cyclicNormFactor, AlgEquiv.coe_pow]
+  · intro i hi j hj hij
+    exact Nat.ModEq.eq_of_lt_of_lt (pow_eq_pow_iff_modEq.mp hij)
+      (Finset.mem_range.mp hi) (Finset.mem_range.mp hj)
+
+/-- Cyclic-Galois parameters differing by an actual field norm yield isomorphic raw cyclic
+algebras.  This is the parameter-descent relation needed to descend the cyclic `H²` norm
+quotient to cyclic-algebra representatives. -/
+noncomputable def cyclicGaloisAlgebraNormScaleEquiv [FiniteDimensional K L] [IsGalois K L]
+    (a a' : K) (c : Lˣ) (hforward : a = Algebra.norm K (c : L) * a') :
+    cyclicGaloisAlgebra K L a ≃+* cyclicGaloisAlgebra K L a' := by
+  apply cyclicAlgebraNormScaleEquiv
+    (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+    (algebraMap K L a) (algebraMap K L a') (c : L) (↑c⁻¹ : L)
+  · exact Units.mul_inv c
+  · exact Units.inv_mul c
+  · change algebraMap K L a =
+      cyclicNormFactor (cyclicGaloisGenerator K L).toRingEquiv (c : L)
+        (Module.finrank K L) * algebraMap K L a'
+    rw [hforward, map_mul, cyclicGaloisNormFactor_eq_algebraMap_norm]
+
 /-- The raw cyclic algebra attached to a generator-fixed degree-two Galois cohomology
 representative.  Its parameter is a canonical nonzero base-field unit.  Proving that its Brauer
 class depends only on the cohomology class is the subsequent central-simple-algebra step. -/
@@ -249,6 +297,24 @@ noncomputable instance (a : K) : Algebra K (cyclicGaloisAlgebra K L a) := by
 theorem cyclicGaloisAlgebra_algebraMap_apply (a b : K) :
     algebraMap K (cyclicGaloisAlgebra K L a) b =
       cyclicGaloisAlgebraC K L a (algebraMap K L b) := rfl
+
+/-- The norm-parameter equivalence fixes the base-field copy pointwise, hence is an equivalence
+of `K`-algebras rather than merely of rings. -/
+noncomputable def cyclicGaloisAlgebraNormScaleAlgEquiv [FiniteDimensional K L] [IsGalois K L]
+    (a a' : K) (c : Lˣ) (hforward : a = Algebra.norm K (c : L) * a') :
+    cyclicGaloisAlgebra K L a ≃ₐ[K] cyclicGaloisAlgebra K L a' :=
+  AlgEquiv.ofRingEquiv (f := cyclicGaloisAlgebraNormScaleEquiv K L a a' c hforward) (by
+    intro b
+    have hp : algebraMap K L a =
+        cyclicNormFactor (cyclicGaloisGenerator K L).toRingEquiv (c : L)
+          (Module.finrank K L) * algebraMap K L a' := by
+      rw [hforward, map_mul, cyclicGaloisNormFactor_eq_algebraMap_norm]
+    unfold cyclicGaloisAlgebraNormScaleEquiv
+    change cyclicAlgebraNormScaleMap (cyclicGaloisGenerator K L).toRingEquiv
+      (Module.finrank K L) (algebraMap K L a) (algebraMap K L a') (c : L) hp
+      (cyclicGaloisAlgebraC K L a (algebraMap K L b)) =
+        cyclicGaloisAlgebraC K L a' (algebraMap K L b)
+    rw [cyclicAlgebraNormScaleMap_C])
 
 /-- The `i`th normal-form coefficient map, linear over the base field. -/
 noncomputable def cyclicGaloisAlgebraCoefficientLinearMap (a : K) (i : ℕ) :

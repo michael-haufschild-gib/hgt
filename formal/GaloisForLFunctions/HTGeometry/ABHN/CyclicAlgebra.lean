@@ -298,4 +298,426 @@ theorem cyclicAlgebraMonomial_mod_normalForm {L : Type*} [CommRing L]
   conv_lhs => rw [← Nat.div_add_mod m n]
   exact cyclicAlgebraMonomial_normalForm sigma n (m / n) (m % n) a b
 
+/-- The monoid homomorphism sending the formal skew exponent `m` to `y ^ m`. -/
+noncomputable def cyclicPowerMonoidHom {B : Type*} [Monoid B]
+    (y : B) : Multiplicative ℕ →* B where
+  toFun m := y ^ (toAdd m)
+  map_one' := by simp
+  map_mul' m n := by
+    change y ^ (toAdd (m * n)) = y ^ (toAdd m) * y ^ (toAdd n)
+    simpa using (pow_add y (toAdd m) (toAdd n))
+
+/-- A map out of the skew-polynomial carrier is determined by a coefficient map and an element
+which implements every power of the twisting automorphism. -/
+noncomputable def cyclicSkewLift {L B : Type*} [CommRing L] [Ring B]
+    (sigma : L ≃+* L) (f : L →+* B) (y : B)
+    (hcomm : ∀ (m : Multiplicative ℕ) (x : L),
+      f ((cyclicPowerRingAut sigma m) x) * cyclicPowerMonoidHom y m =
+        cyclicPowerMonoidHom y m * f x) :
+    CyclicSkewPolynomial L sigma →+* B := by
+  letI : MulSemiringAction (Multiplicative ℕ) L := cyclicSkewAction sigma
+  exact SkewMonoidAlgebra.liftNCRingHom f (cyclicPowerMonoidHom y) (by
+    intro x m
+    exact hcomm m x)
+
+/-- `cyclicSkewLift` agrees with its prescribed map on constant coefficients. -/
+theorem cyclicSkewLift_C {L B : Type*} [CommRing L] [Ring B]
+    (sigma : L ≃+* L) (f : L →+* B) (y : B)
+    (hcomm : ∀ (m : Multiplicative ℕ) (x : L),
+      f ((cyclicPowerRingAut sigma m) x) * cyclicPowerMonoidHom y m =
+        cyclicPowerMonoidHom y m * f x) (b : L) :
+    cyclicSkewLift sigma f y hcomm (cyclicSkewC sigma b) = f b := by
+  letI : MulSemiringAction (Multiplicative ℕ) L := cyclicSkewAction sigma
+  change SkewMonoidAlgebra.liftNC f (cyclicPowerMonoidHom y)
+    (SkewMonoidAlgebra.single 1 b) = f b
+  rw [SkewMonoidAlgebra.liftNC_single]
+  simp [cyclicPowerMonoidHom]
+
+/-- `cyclicSkewLift` sends the formal skew variable to its prescribed image. -/
+theorem cyclicSkewLift_X {L B : Type*} [CommRing L] [Ring B]
+    (sigma : L ≃+* L) (f : L →+* B) (y : B)
+    (hcomm : ∀ (m : Multiplicative ℕ) (x : L),
+      f ((cyclicPowerRingAut sigma m) x) * cyclicPowerMonoidHom y m =
+        cyclicPowerMonoidHom y m * f x) :
+    cyclicSkewLift sigma f y hcomm (cyclicSkewX sigma) = y := by
+  letI : MulSemiringAction (Multiplicative ℕ) L := cyclicSkewAction sigma
+  change SkewMonoidAlgebra.liftNC f (cyclicPowerMonoidHom y)
+    (SkewMonoidAlgebra.single (ofAdd 1) (1 : L) : CyclicSkewPolynomial L sigma) = y
+  rw [SkewMonoidAlgebra.liftNC_single]
+  simp [cyclicPowerMonoidHom]
+
+/-- The universal map from a raw cyclic algebra: the relation `X^n = a` holds precisely when
+the chosen image `y` satisfies `y^n = f(a)`.  This is the construction needed to compare cyclic
+algebras with norm-equivalent parameters. -/
+noncomputable def cyclicAlgebraLift {L B : Type*} [CommRing L] [Ring B]
+    (sigma : L ≃+* L) (n : ℕ) (a : L) (f : L →+* B) (y : B)
+    (hcomm : ∀ (m : Multiplicative ℕ) (x : L),
+      f ((cyclicPowerRingAut sigma m) x) * cyclicPowerMonoidHom y m =
+        cyclicPowerMonoidHom y m * f x)
+    (hrel : y ^ n = f a) : CyclicAlgebra sigma n a →+* B :=
+  Ideal.Quotient.lift _ (cyclicSkewLift sigma f y hcomm) (by
+    intro q hq
+    have hspan : TwoSidedIdeal.span ({cyclicRelation sigma n a} : Set _) ≤
+        (RingHom.ker (cyclicSkewLift sigma f y hcomm)).toTwoSided := by
+      rw [TwoSidedIdeal.span_le]
+      intro z hz
+      rw [Set.mem_singleton_iff] at hz
+      subst z
+      apply Ideal.mem_toTwoSided.mpr
+      rw [RingHom.mem_ker]
+      unfold cyclicRelation
+      rw [map_sub, map_pow, cyclicSkewLift_X, cyclicSkewLift_C, hrel]
+      exact sub_self _
+    exact RingHom.mem_ker.mp (Ideal.mem_toTwoSided.mp (hspan hq)))
+
+/-- The universal cyclic-algebra map agrees with its coefficient map. -/
+theorem cyclicAlgebraLift_C {L B : Type*} [CommRing L] [Ring B]
+    (sigma : L ≃+* L) (n : ℕ) (a : L) (f : L →+* B) (y : B)
+    (hcomm : ∀ (m : Multiplicative ℕ) (x : L),
+      f ((cyclicPowerRingAut sigma m) x) * cyclicPowerMonoidHom y m =
+        cyclicPowerMonoidHom y m * f x)
+    (hrel : y ^ n = f a) (b : L) :
+    cyclicAlgebraLift sigma n a f y hcomm hrel (cyclicAlgebraC sigma n a b) = f b := by
+  exact cyclicSkewLift_C sigma f y hcomm b
+
+/-- The universal cyclic-algebra map sends the cyclic generator to its chosen image. -/
+theorem cyclicAlgebraLift_X {L B : Type*} [CommRing L] [Ring B]
+    (sigma : L ≃+* L) (n : ℕ) (a : L) (f : L →+* B) (y : B)
+    (hcomm : ∀ (m : Multiplicative ℕ) (x : L),
+      f ((cyclicPowerRingAut sigma m) x) * cyclicPowerMonoidHom y m =
+        cyclicPowerMonoidHom y m * f x)
+    (hrel : y ^ n = f a) :
+    cyclicAlgebraLift sigma n a f y hcomm hrel (cyclicAlgebraX sigma n a) = y := by
+  exact cyclicSkewLift_X sigma f y hcomm
+
+/-- Moving a coefficient past a power of the cyclic variable applies the corresponding power of
+the twisting automorphism. -/
+theorem cyclicAlgebraX_pow_mul_C {L : Type*} [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (a b : L) (m : ℕ) :
+    cyclicAlgebraX sigma n a ^ m * cyclicAlgebraC sigma n a b =
+      cyclicAlgebraC sigma n a ((sigma ^ m) b) * cyclicAlgebraX sigma n a ^ m := by
+  induction m generalizing b with
+  | zero =>
+    simp
+  | succ m ih =>
+    rw [pow_succ, mul_assoc, cyclicAlgebraX_mul_cyclicAlgebraC, ← mul_assoc]
+    rw [ih (sigma b)]
+    rw [mul_assoc, pow_succ]
+    rfl
+
+/-- Every nonnegative power of an automorphism fixes an element fixed by that automorphism. -/
+theorem ringAut_pow_apply_eq_of_fixed {L : Type*} [CommRing L] (sigma : L ≃+* L)
+    (c : L) (hc : sigma c = c) (m : ℕ) : (sigma ^ m) c = c := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+    rw [pow_succ]
+    change (sigma ^ m) (sigma c) = c
+    rw [hc, ih]
+
+/-- Rescaling the cyclic variable by a coefficient fixed under the twist has the expected
+power formula. -/
+theorem cyclicAlgebra_scale_pow {L : Type*} [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (a c : L) (hc : sigma c = c) (m : ℕ) :
+    (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a) ^ m =
+      cyclicAlgebraC sigma n a (c ^ m) * cyclicAlgebraX sigma n a ^ m := by
+  induction m with
+  | zero =>
+    rw [pow_zero, pow_zero, pow_zero, cyclicAlgebraC_one L sigma n a, one_mul]
+  | succ m ih =>
+    calc
+      (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a) ^ (m + 1) =
+          (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a) ^ m *
+            (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a) := pow_succ _ _
+      _ = (cyclicAlgebraC sigma n a (c ^ m) * cyclicAlgebraX sigma n a ^ m) *
+            (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a) := by rw [ih]
+      _ = cyclicAlgebraC sigma n a (c ^ m) *
+            (cyclicAlgebraX sigma n a ^ m * cyclicAlgebraC sigma n a c) *
+              cyclicAlgebraX sigma n a := by simp only [mul_assoc]
+      _ = cyclicAlgebraC sigma n a (c ^ m) *
+            (cyclicAlgebraC sigma n a ((sigma ^ m) c) * cyclicAlgebraX sigma n a ^ m) *
+              cyclicAlgebraX sigma n a := by
+            rw [cyclicAlgebraX_pow_mul_C sigma n a c m]
+      _ = cyclicAlgebraC sigma n a (c ^ m) *
+            (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a ^ m) *
+              cyclicAlgebraX sigma n a := by
+            rw [ringAut_pow_apply_eq_of_fixed sigma c hc]
+      _ = cyclicAlgebraC sigma n a (c ^ m * c) *
+            (cyclicAlgebraX sigma n a ^ m * cyclicAlgebraX sigma n a) := by
+            rw [← mul_assoc, cyclicAlgebraC_mul, mul_assoc]
+      _ = cyclicAlgebraC sigma n a (c ^ (m + 1)) * cyclicAlgebraX sigma n a ^ (m + 1) := by
+            rw [pow_succ, pow_succ]
+
+/-- A fixed coefficient rescales the cyclic generator and changes the parameter by its `n`th
+power.  Over a degree-`n` cyclic field extension, base-field coefficients are fixed and this
+power is their field norm, giving a concrete first norm-equivalence map of cyclic algebras. -/
+noncomputable def cyclicAlgebraScaleMap {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n : ℕ) (a a' c : L) (hc : sigma c = c)
+    (hparameter : a = c ^ n * a') : CyclicAlgebra sigma n a →+* CyclicAlgebra sigma n a' :=
+  cyclicAlgebraLift sigma n a (cyclicAlgebraCRingHom L sigma n a')
+    (cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a') (by
+      intro m x
+      change cyclicAlgebraC sigma n a' ((sigma ^ (toAdd m)) x) *
+          (cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a') ^ (toAdd m) =
+        (cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a') ^ (toAdd m) *
+          cyclicAlgebraC sigma n a' x
+      rw [cyclicAlgebra_scale_pow sigma n a' c hc]
+      calc
+        cyclicAlgebraC sigma n a' ((sigma ^ (toAdd m)) x) *
+            (cyclicAlgebraC sigma n a' (c ^ (toAdd m)) *
+              cyclicAlgebraX sigma n a' ^ (toAdd m)) =
+            (cyclicAlgebraC sigma n a' ((sigma ^ (toAdd m)) x) *
+              cyclicAlgebraC sigma n a' (c ^ (toAdd m))) *
+                cyclicAlgebraX sigma n a' ^ (toAdd m) := (mul_assoc _ _ _).symm
+        _ = (cyclicAlgebraC sigma n a' (c ^ (toAdd m)) *
+              cyclicAlgebraC sigma n a' ((sigma ^ (toAdd m)) x)) *
+                cyclicAlgebraX sigma n a' ^ (toAdd m) := by rw [cyclicAlgebraC_comm]
+        _ = cyclicAlgebraC sigma n a' (c ^ (toAdd m)) *
+              (cyclicAlgebraC sigma n a' ((sigma ^ (toAdd m)) x) *
+                cyclicAlgebraX sigma n a' ^ (toAdd m)) := mul_assoc _ _ _
+        _ = cyclicAlgebraC sigma n a' (c ^ (toAdd m)) *
+              (cyclicAlgebraX sigma n a' ^ (toAdd m) * cyclicAlgebraC sigma n a' x) := by
+              rw [cyclicAlgebraX_pow_mul_C sigma n a' x]
+        _ = (cyclicAlgebraC sigma n a' (c ^ (toAdd m)) *
+              cyclicAlgebraX sigma n a' ^ (toAdd m)) *
+                cyclicAlgebraC sigma n a' x := (mul_assoc _ _ _).symm)
+    (by
+      rw [cyclicAlgebra_scale_pow sigma n a' c hc]
+      rw [cyclicAlgebraX_pow, cyclicAlgebraC_mul, ← hparameter,
+        cyclicAlgebraCRingHom_apply])
+
+/-- The parameter-rescaling map is the identity on coefficient-field elements. -/
+theorem cyclicAlgebraScaleMap_C {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n : ℕ) (a a' c : L) (hc : sigma c = c)
+    (hparameter : a = c ^ n * a') (b : L) :
+    cyclicAlgebraScaleMap sigma n a a' c hc hparameter (cyclicAlgebraC sigma n a b) =
+      cyclicAlgebraC sigma n a' b := by
+  exact cyclicAlgebraLift_C sigma n a (cyclicAlgebraCRingHom L sigma n a')
+    (cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a') _ _ b
+
+/-- The parameter-rescaling map sends the cyclic generator to the rescaled generator. -/
+theorem cyclicAlgebraScaleMap_X {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n : ℕ) (a a' c : L) (hc : sigma c = c)
+    (hparameter : a = c ^ n * a') :
+    cyclicAlgebraScaleMap sigma n a a' c hc hparameter (cyclicAlgebraX sigma n a) =
+      cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a' := by
+  exact cyclicAlgebraLift_X sigma n a (cyclicAlgebraCRingHom L sigma n a')
+    (cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a') _ _
+
+/-- Ring homomorphisms out of a cyclic algebra are equal when they agree on the coefficient ring
+and the cyclic generator.  This supplies the extensionality required to turn explicit inverse
+generator changes into cyclic-algebra isomorphisms. -/
+theorem cyclicAlgebraRingHom_ext {L B : Type*} [CommRing L] [Ring B]
+    (sigma : L ≃+* L) (n : ℕ) (a : L) (F G : CyclicAlgebra sigma n a →+* B)
+    (hC : ∀ b : L, F (cyclicAlgebraC sigma n a b) = G (cyclicAlgebraC sigma n a b))
+    (hX : F (cyclicAlgebraX sigma n a) = G (cyclicAlgebraX sigma n a)) :
+    F = G := by
+  apply RingHom.ext
+  intro z
+  obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective z
+  induction p using SkewMonoidAlgebra.induction_on with
+  | zero => simp
+  | add p q hp hq => simp [hp, hq]
+  | single g b =>
+    rw [show g = ofAdd (toAdd g) by simp]
+    rw [show SkewMonoidAlgebra.single (ofAdd (toAdd g)) b =
+      SkewPolynomial.monomial (toAdd g) b by rfl]
+    rw [cyclicAlgebraMonomial_eq]
+    simp only [map_mul, map_pow, hC, hX]
+
+/-- Parameter rescaling is a ring equivalence when the rescaling coefficient has a fixed
+inverse and both parameter identities hold. -/
+noncomputable def cyclicAlgebraScaleEquiv {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n : ℕ) (a a' c d : L)
+    (hc : sigma c = c) (hd : sigma d = d) (hcd : c * d = 1) (hdc : d * c = 1)
+    (hforward : a = c ^ n * a') (hbackward : a' = d ^ n * a) :
+    CyclicAlgebra sigma n a ≃+* CyclicAlgebra sigma n a' :=
+  RingEquiv.ofRingHom
+    (cyclicAlgebraScaleMap sigma n a a' c hc hforward)
+    (cyclicAlgebraScaleMap sigma n a' a d hd hbackward)
+    (by
+      apply cyclicAlgebraRingHom_ext sigma n a'
+      · intro b
+        rw [RingHom.comp_apply, cyclicAlgebraScaleMap_C, cyclicAlgebraScaleMap_C]
+        rfl
+      · rw [RingHom.comp_apply, cyclicAlgebraScaleMap_X, map_mul,
+          cyclicAlgebraScaleMap_C, cyclicAlgebraScaleMap_X]
+        rw [← mul_assoc, cyclicAlgebraC_mul, hdc, cyclicAlgebraC_one, one_mul]
+        rfl)
+    (by
+      apply cyclicAlgebraRingHom_ext sigma n a
+      · intro b
+        rw [RingHom.comp_apply, cyclicAlgebraScaleMap_C, cyclicAlgebraScaleMap_C]
+        rfl
+      · rw [RingHom.comp_apply, cyclicAlgebraScaleMap_X, map_mul,
+          cyclicAlgebraScaleMap_C, cyclicAlgebraScaleMap_X]
+        rw [← mul_assoc, cyclicAlgebraC_mul, hcd, cyclicAlgebraC_one, one_mul]
+        rfl)
+
+/-- A fixed unit coefficient yields a cyclic-algebra isomorphism after multiplying the parameter
+by its `n`th power.  In a degree-`n` cyclic field extension, this is multiplication by the norm
+of a base-field unit. -/
+noncomputable def cyclicAlgebraScaleUnitEquiv {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n : ℕ) (a a' : L) (c : Lˣ)
+    (hc : sigma (c : L) = c) (hforward : a = (c : L) ^ n * a') :
+    CyclicAlgebra sigma n a ≃+* CyclicAlgebra sigma n a' := by
+  apply cyclicAlgebraScaleEquiv sigma n a a' (c : L) (↑c⁻¹ : L)
+  · exact hc
+  · have hcu : Units.map sigma.toMonoidHom c = c := Units.ext hc
+    have hcinv := congrArg (fun u : Lˣ => (u⁻¹ : Lˣ)) hcu
+    simpa using congrArg (fun u : Lˣ => (u : L)) hcinv
+  · exact Units.mul_inv c
+  · exact Units.inv_mul c
+  · exact hforward
+  · calc
+      a' = 1 * a' := (one_mul _).symm
+      _ = ((↑c⁻¹ : L) ^ n * (c : L) ^ n) * a' := by
+        rw [← mul_pow, Units.inv_mul, one_pow]
+      _ = (↑c⁻¹ : L) ^ n * ((c : L) ^ n * a') := by rw [mul_assoc]
+      _ = (↑c⁻¹ : L) ^ n * a := by rw [← hforward]
+
+/-- The product of the first `m` cyclic conjugates of a coefficient. -/
+noncomputable def cyclicNormFactor {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (c : L) (m : ℕ) : L :=
+  ∏ i ∈ Finset.range m, (sigma ^ i) c
+
+theorem cyclicNormFactor_zero {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (c : L) : cyclicNormFactor sigma c 0 = 1 := by
+  simp [cyclicNormFactor]
+
+theorem cyclicNormFactor_succ {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (c : L) (m : ℕ) :
+    cyclicNormFactor sigma c (m + 1) = cyclicNormFactor sigma c m * (sigma ^ m) c := by
+  simp [cyclicNormFactor, Finset.prod_range_succ]
+
+theorem cyclicNormFactor_mul {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (c d : L) (m : ℕ) :
+    cyclicNormFactor sigma (c * d) m =
+      cyclicNormFactor sigma c m * cyclicNormFactor sigma d m := by
+  simp only [cyclicNormFactor, map_mul, Finset.prod_mul_distrib]
+
+theorem cyclicNormFactor_one {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (m : ℕ) : cyclicNormFactor sigma 1 m = 1 := by
+  simp [cyclicNormFactor]
+
+/-- The `m`th power of a rescaled cyclic generator has coefficient equal to the product of its
+first `m` cyclic conjugates. -/
+theorem cyclicAlgebra_normScale_pow {L : Type*} [CommRing L] (sigma : L ≃+* L)
+    (n : ℕ) (a c : L) (m : ℕ) :
+    (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a) ^ m =
+      cyclicAlgebraC sigma n a (cyclicNormFactor sigma c m) * cyclicAlgebraX sigma n a ^ m := by
+  induction m with
+  | zero =>
+    rw [pow_zero, pow_zero, cyclicNormFactor_zero, cyclicAlgebraC_one L sigma n a, one_mul]
+  | succ m ih =>
+    calc
+      (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a) ^ (m + 1) =
+          (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a) ^ m *
+            (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a) := pow_succ _ _
+      _ = (cyclicAlgebraC sigma n a (cyclicNormFactor sigma c m) *
+            cyclicAlgebraX sigma n a ^ m) *
+              (cyclicAlgebraC sigma n a c * cyclicAlgebraX sigma n a) := by rw [ih]
+      _ = cyclicAlgebraC sigma n a (cyclicNormFactor sigma c m) *
+            (cyclicAlgebraX sigma n a ^ m * cyclicAlgebraC sigma n a c) *
+              cyclicAlgebraX sigma n a := by simp only [mul_assoc]
+      _ = cyclicAlgebraC sigma n a (cyclicNormFactor sigma c m) *
+            (cyclicAlgebraC sigma n a ((sigma ^ m) c) * cyclicAlgebraX sigma n a ^ m) *
+              cyclicAlgebraX sigma n a := by
+            rw [cyclicAlgebraX_pow_mul_C sigma n a c m]
+      _ = cyclicAlgebraC sigma n a
+            (cyclicNormFactor sigma c m * (sigma ^ m) c) *
+              (cyclicAlgebraX sigma n a ^ m * cyclicAlgebraX sigma n a) := by
+            rw [← mul_assoc, cyclicAlgebraC_mul, mul_assoc]
+      _ = cyclicAlgebraC sigma n a (cyclicNormFactor sigma c (m + 1)) *
+            cyclicAlgebraX sigma n a ^ (m + 1) := by
+            rw [cyclicNormFactor_succ, pow_succ]
+
+/-- Rescaling the cyclic variable by `c` gives a map between parameters differing by the cyclic
+norm product of `c`. -/
+noncomputable def cyclicAlgebraNormScaleMap {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n : ℕ) (a a' c : L)
+    (hparameter : a = cyclicNormFactor sigma c n * a') :
+    CyclicAlgebra sigma n a →+* CyclicAlgebra sigma n a' :=
+  cyclicAlgebraLift sigma n a (cyclicAlgebraCRingHom L sigma n a')
+    (cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a') (by
+      intro m x
+      change cyclicAlgebraC sigma n a' ((sigma ^ (toAdd m)) x) *
+          (cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a') ^ (toAdd m) =
+        (cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a') ^ (toAdd m) *
+          cyclicAlgebraC sigma n a' x
+      rw [cyclicAlgebra_normScale_pow sigma n a' c]
+      calc
+        cyclicAlgebraC sigma n a' ((sigma ^ (toAdd m)) x) *
+            (cyclicAlgebraC sigma n a' (cyclicNormFactor sigma c (toAdd m)) *
+              cyclicAlgebraX sigma n a' ^ (toAdd m)) =
+            (cyclicAlgebraC sigma n a' ((sigma ^ (toAdd m)) x) *
+              cyclicAlgebraC sigma n a' (cyclicNormFactor sigma c (toAdd m))) *
+                cyclicAlgebraX sigma n a' ^ (toAdd m) := (mul_assoc _ _ _).symm
+        _ = (cyclicAlgebraC sigma n a' (cyclicNormFactor sigma c (toAdd m)) *
+              cyclicAlgebraC sigma n a' ((sigma ^ (toAdd m)) x)) *
+                cyclicAlgebraX sigma n a' ^ (toAdd m) := by rw [cyclicAlgebraC_comm]
+        _ = cyclicAlgebraC sigma n a' (cyclicNormFactor sigma c (toAdd m)) *
+              (cyclicAlgebraC sigma n a' ((sigma ^ (toAdd m)) x) *
+                cyclicAlgebraX sigma n a' ^ (toAdd m)) := mul_assoc _ _ _
+        _ = cyclicAlgebraC sigma n a' (cyclicNormFactor sigma c (toAdd m)) *
+              (cyclicAlgebraX sigma n a' ^ (toAdd m) * cyclicAlgebraC sigma n a' x) := by
+              rw [cyclicAlgebraX_pow_mul_C sigma n a' x]
+        _ = (cyclicAlgebraC sigma n a' (cyclicNormFactor sigma c (toAdd m)) *
+              cyclicAlgebraX sigma n a' ^ (toAdd m)) *
+                cyclicAlgebraC sigma n a' x := (mul_assoc _ _ _).symm)
+    (by
+      rw [cyclicAlgebra_normScale_pow sigma n a' c]
+      rw [cyclicAlgebraX_pow, cyclicAlgebraC_mul, ← hparameter,
+        cyclicAlgebraCRingHom_apply])
+
+theorem cyclicAlgebraNormScaleMap_C {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n : ℕ) (a a' c : L)
+    (hparameter : a = cyclicNormFactor sigma c n * a') (b : L) :
+    cyclicAlgebraNormScaleMap sigma n a a' c hparameter (cyclicAlgebraC sigma n a b) =
+      cyclicAlgebraC sigma n a' b := by
+  exact cyclicAlgebraLift_C sigma n a (cyclicAlgebraCRingHom L sigma n a')
+    (cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a') _ _ b
+
+theorem cyclicAlgebraNormScaleMap_X {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n : ℕ) (a a' c : L)
+    (hparameter : a = cyclicNormFactor sigma c n * a') :
+    cyclicAlgebraNormScaleMap sigma n a a' c hparameter (cyclicAlgebraX sigma n a) =
+      cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a' := by
+  exact cyclicAlgebraLift_X sigma n a (cyclicAlgebraCRingHom L sigma n a')
+    (cyclicAlgebraC sigma n a' c * cyclicAlgebraX sigma n a') _ _
+
+/-- Cyclic-algebra parameters differing by the full cyclic norm product of an invertible
+coefficient define isomorphic raw cyclic algebras. -/
+noncomputable def cyclicAlgebraNormScaleEquiv {L : Type*} [CommRing L]
+    (sigma : L ≃+* L) (n : ℕ) (a a' c d : L)
+    (hcd : c * d = 1) (hdc : d * c = 1)
+    (hforward : a = cyclicNormFactor sigma c n * a') :
+    CyclicAlgebra sigma n a ≃+* CyclicAlgebra sigma n a' := by
+  apply RingEquiv.ofRingHom
+    (cyclicAlgebraNormScaleMap sigma n a a' c hforward)
+    (cyclicAlgebraNormScaleMap sigma n a' a d (by
+      calc
+        a' = 1 * a' := (one_mul _).symm
+        _ = (cyclicNormFactor sigma d n * cyclicNormFactor sigma c n) * a' := by
+          rw [← cyclicNormFactor_mul, hdc, cyclicNormFactor_one]
+        _ = cyclicNormFactor sigma d n * (cyclicNormFactor sigma c n * a') := by
+          rw [mul_assoc]
+        _ = cyclicNormFactor sigma d n * a := by rw [← hforward]))
+  · apply cyclicAlgebraRingHom_ext sigma n a'
+    · intro b
+      rw [RingHom.comp_apply, cyclicAlgebraNormScaleMap_C, cyclicAlgebraNormScaleMap_C]
+      rfl
+    · rw [RingHom.comp_apply, cyclicAlgebraNormScaleMap_X, map_mul,
+        cyclicAlgebraNormScaleMap_C, cyclicAlgebraNormScaleMap_X]
+      rw [← mul_assoc, cyclicAlgebraC_mul, hdc, cyclicAlgebraC_one, one_mul]
+      rfl
+  · apply cyclicAlgebraRingHom_ext sigma n a
+    · intro b
+      rw [RingHom.comp_apply, cyclicAlgebraNormScaleMap_C, cyclicAlgebraNormScaleMap_C]
+      rfl
+    · rw [RingHom.comp_apply, cyclicAlgebraNormScaleMap_X, map_mul,
+        cyclicAlgebraNormScaleMap_C, cyclicAlgebraNormScaleMap_X]
+      rw [← mul_assoc, cyclicAlgebraC_mul, hcd, cyclicAlgebraC_one, one_mul]
+      rfl
+
 end GaloisForLFunctions.HTGeometry.ABHN
