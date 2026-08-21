@@ -15,6 +15,8 @@ requires the remaining all-polynomial normal form, centrality, and simplicity ar
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
 
+open Multiplicative
+
 variable (K L : Type) [Field K] [Field L] [Algebra K L]
   [IsCyclic Gal(L/K)]
 
@@ -68,5 +70,86 @@ theorem cyclicGaloisAlgebraX_pow_mul_baseC (a b : K) (m : ℕ) :
   | succ m ih =>
     rw [pow_succ, mul_assoc, cyclicGaloisAlgebraX_mul_baseC]
     rw [← mul_assoc, ih, mul_assoc]
+
+/-- A base coefficient commutes with the quotient image of each skew monomial. -/
+theorem cyclicGaloisAlgebraBaseC_commutes_monomial (a b : K) (m : ℕ) (c : L) :
+    cyclicGaloisAlgebraC K L a (algebraMap K L b) *
+      (Ideal.Quotient.mk
+        (cyclicRelationIdeal (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+          (algebraMap K L a))
+        (SkewPolynomial.monomial m c) : cyclicGaloisAlgebra K L a) =
+      (Ideal.Quotient.mk
+        (cyclicRelationIdeal (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+          (algebraMap K L a))
+        (SkewPolynomial.monomial m c) : cyclicGaloisAlgebra K L a) *
+        cyclicGaloisAlgebraC K L a (algebraMap K L b) := by
+  rw [cyclicAlgebraMonomial_eq]
+  calc
+    cyclicGaloisAlgebraC K L a (algebraMap K L b) *
+        (cyclicGaloisAlgebraC K L a c * cyclicGaloisAlgebraX K L a ^ m) =
+      (cyclicGaloisAlgebraC K L a (algebraMap K L b) *
+        cyclicGaloisAlgebraC K L a c) * cyclicGaloisAlgebraX K L a ^ m :=
+          (mul_assoc _ _ _).symm
+    _ = (cyclicGaloisAlgebraC K L a c *
+        cyclicGaloisAlgebraC K L a (algebraMap K L b)) * cyclicGaloisAlgebraX K L a ^ m := by
+          rw [cyclicAlgebraC_comm]
+    _ = cyclicGaloisAlgebraC K L a c *
+        (cyclicGaloisAlgebraC K L a (algebraMap K L b) * cyclicGaloisAlgebraX K L a ^ m) :=
+          mul_assoc _ _ _
+    _ = cyclicGaloisAlgebraC K L a c *
+        (cyclicGaloisAlgebraX K L a ^ m * cyclicGaloisAlgebraC K L a (algebraMap K L b)) := by
+          rw [cyclicGaloisAlgebraX_pow_mul_baseC]
+    _ = (cyclicGaloisAlgebraC K L a c * cyclicGaloisAlgebraX K L a ^ m) *
+        cyclicGaloisAlgebraC K L a (algebraMap K L b) := by
+          rw [mul_assoc]
+
+/-- A base coefficient commutes with the quotient image of every skew polynomial. -/
+theorem cyclicGaloisAlgebraBaseC_commutes_mk (a b : K)
+    (p : CyclicSkewPolynomial L (cyclicGaloisGenerator K L).toRingEquiv) :
+    cyclicGaloisAlgebraC K L a (algebraMap K L b) *
+      Ideal.Quotient.mk
+        (cyclicRelationIdeal (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+          (algebraMap K L a)) p =
+      Ideal.Quotient.mk
+        (cyclicRelationIdeal (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+          (algebraMap K L a)) p *
+        cyclicGaloisAlgebraC K L a (algebraMap K L b) := by
+  induction p using SkewMonoidAlgebra.induction_on with
+  | zero =>
+    simp
+  | single g c =>
+    change cyclicGaloisAlgebraC K L a (algebraMap K L b) *
+        (Ideal.Quotient.mk
+          (cyclicRelationIdeal (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+            (algebraMap K L a))
+          (SkewPolynomial.monomial (toAdd g) c) : cyclicGaloisAlgebra K L a) =
+      (Ideal.Quotient.mk
+          (cyclicRelationIdeal (cyclicGaloisGenerator K L).toRingEquiv (Module.finrank K L)
+            (algebraMap K L a))
+          (SkewPolynomial.monomial (toAdd g) c) : cyclicGaloisAlgebra K L a) *
+          cyclicGaloisAlgebraC K L a (algebraMap K L b)
+    exact cyclicGaloisAlgebraBaseC_commutes_monomial K L a b (toAdd g) c
+  | add p q hp hq =>
+    rw [map_add, mul_add, add_mul, hp, hq]
+
+/-- The prospective base-field map is central in the whole quotient. -/
+theorem cyclicGaloisAlgebraBaseRingHom_commutes (a b : K) (x : cyclicGaloisAlgebra K L a) :
+    Commute (cyclicGaloisAlgebraBaseRingHom K L a b) x := by
+  obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective x
+  exact cyclicGaloisAlgebraBaseC_commutes_mk K L a b p
+
+/-- The cyclic Galois quotient is a `K`-algebra: the preceding theorem supplies centrality. -/
+noncomputable instance (a : K) : Algebra K (cyclicGaloisAlgebra K L a) := by
+  letI : SMul K (cyclicGaloisAlgebra K L a) :=
+    ⟨fun b x => cyclicGaloisAlgebraBaseRingHom K L a b * x⟩
+  exact
+    { algebraMap := cyclicGaloisAlgebraBaseRingHom K L a
+      commutes' := fun b x => (cyclicGaloisAlgebraBaseRingHom_commutes K L a b x).eq
+      smul_def' := fun _ _ => rfl }
+
+/-- The `K`-algebra map is the central coefficient inclusion. -/
+theorem cyclicGaloisAlgebra_algebraMap_apply (a b : K) :
+    algebraMap K (cyclicGaloisAlgebra K L a) b =
+      cyclicGaloisAlgebraC K L a (algebraMap K L b) := rfl
 
 end GaloisForLFunctions.HTGeometry.ABHN

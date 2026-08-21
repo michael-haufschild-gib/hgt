@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardOverweightZetaLogExclusion
 import GaloisForLFunctions.RHTower.Sieve.MaynardDerivativeCountDuality
 import GaloisForLFunctions.RHTower.Sieve.MaynardSelectedCellColoring
+import GaloisForLFunctions.RHTower.Sieve.MaynardSelectedCellMiddleFibreCount
+import GaloisForLFunctions.RHTower.Sieve.MaynardUnboundedHeightScalar
 
 /-!
 # Route-T selected-cell exclusion through height ratio `11/5`
@@ -1028,6 +1030,266 @@ theorem eventually_exists_maynardWindowRelevantSelectedCell_label_of_subHeight_b
   refine ⟨color, ?_⟩
   intro r hr
   simpa [color, hr] using hselected r hr
+
++/-- Upper-height-free adjacent-optimizer reserve. The historical upper endpoint is absent from
+every inequality in the proof. -/
+theorem routeT_adjacent_optimizer_with_reserve_of_amplitude_le_997_unbounded
+    {mu alpha : ℝ}
+    (_hmuLo : 4 / 3 ≤ mu)
+    (halphaLo : 3 / 4 ≤ alpha) (halphaHi : alpha ≤ 997 / 1000) :
+    2 * (1 - alpha) / alpha + maynardLongGlobalAmplitudeDeficit / 100 ≤
+          mu * (1 - alpha) ∨
+      2 * (1 - alpha) / alpha + maynardLongGlobalAmplitudeDeficit / 100 ≤
+          1 + mu * (1 + routeTGapMomentNu - 2 * alpha) := by
+  let d := maynardLongGlobalAmplitudeDeficit
+  let delta := 1 - alpha
+  let q := 1 + routeTGapMomentNu - 2 * alpha
+  have hd : 0 < d := maynardLongGlobalAmplitudeDeficit_pos
+  have hdsmall : d < (1 / 1000000 : ℝ) :=
+    maynardLongGlobalAmplitudeDeficit_lt_one_millionth
+  have halpha0 : 0 < alpha := lt_of_lt_of_le (by norm_num) halphaLo
+  have halphaOne : alpha ≤ 1 := by linarith
+  have hdeltaLo : (3 / 1000 : ℝ) ≤ delta := by
+    dsimp only [delta]
+    linarith
+  have hdelta0 : 0 ≤ delta := (by norm_num : (0 : ℝ) ≤ 3 / 1000).trans hdeltaLo
+  have hqnonpos : q ≤ 0 := by
+    dsimp only [q, routeTGapMomentNu]
+    linarith
+  by_cases hfirst : 2 + delta / 100 ≤ mu * alpha
+  · left
+    have hmargin : delta * delta / (100 * alpha) ≤
+        mu * delta - 2 * delta / alpha := by
+      have hgap : delta / 100 ≤ mu * alpha - 2 := by linarith
+      have hscale := mul_le_mul_of_nonneg_left hgap (by positivity : 0 ≤ delta / alpha)
+      calc
+        delta * delta / (100 * alpha) = (delta / alpha) * (delta / 100) := by ring
+        _ ≤ (delta / alpha) * (mu * alpha - 2) := hscale
+        _ = mu * delta - 2 * delta / alpha := by field_simp [halpha0.ne']
+    have hfixed : d / 100 ≤ delta * delta / (100 * alpha) := by
+      have hdeltaSq : (9 / 1000000 : ℝ) ≤ delta * delta := by nlinarith
+      have halphaD : alpha * d ≤ d := by
+        have hmul := mul_le_mul_of_nonneg_right halphaOne hd.le
+        simpa using hmul
+      have hcore : d ≤ delta * delta / alpha := by
+        rw [le_div_iff₀ halpha0]
+        linarith
+      calc
+        d / 100 ≤ (delta * delta / alpha) / 100 :=
+          div_le_div_of_nonneg_right hcore (by norm_num)
+        _ = delta * delta / (100 * alpha) := by ring
+    dsimp only [delta, d] at hmargin hfixed ⊢
+    linarith
+  · right
+    have hmualpha : mu * alpha < 2 + delta / 100 := lt_of_not_ge hfirst
+    have hmu : mu < (2 + delta / 100) / alpha := by
+      rw [lt_div_iff₀ halpha0]
+      simpa [mul_comm] using hmualpha
+    have hqmul : ((2 + delta / 100) / alpha) * q ≤ mu * q :=
+      mul_le_mul_of_nonpos_right hmu.le hqnonpos
+    have hbase : 2 * delta / alpha + d / 100 ≤
+        1 + ((2 + delta / 100) / alpha) * q := by
+      have hqLower : -(1 / 2 : ℝ) ≤ q := by
+        dsimp only [q, routeTGapMomentNu]
+        linarith
+      have hid : 1 + (2 / alpha) * q - 2 * delta / alpha =
+          (delta - d) / alpha := by
+        dsimp only [q, routeTGapMomentNu, delta, d]
+        field_simp [halpha0.ne']
+        ring
+      have hperturb : (delta / (100 * alpha)) * q ≥
+          -delta / (200 * alpha) := by
+        have hmul := mul_le_mul_of_nonneg_left hqLower
+          (by positivity : 0 ≤ delta / (100 * alpha))
+        calc
+          -delta / (200 * alpha) = (delta / (100 * alpha)) * (-(1 / 2 : ℝ)) := by ring
+          _ ≤ (delta / (100 * alpha)) * q := hmul
+      have hdDelta : d ≤ delta := by linarith
+      have hroom : d / 100 + delta / (200 * alpha) ≤ (delta - d) / alpha := by
+        have halphaD : alpha * d ≤ d := by
+          have hmul := mul_le_mul_of_nonneg_right halphaOne hd.le
+          simpa using hmul
+        have hscaledD : alpha * (d / 100) ≤ d / 100 := by nlinarith
+        have hsmallCore : d + d / 100 + delta / 200 ≤ delta := by linarith
+        rw [le_div_iff₀ halpha0]
+        calc
+          (d / 100 + delta / (200 * alpha)) * alpha =
+              alpha * (d / 100) + delta / 200 := by field_simp [halpha0.ne']
+          _ ≤ d / 100 + delta / 200 := by
+            simpa [add_comm] using add_le_add_right hscaledD (delta / 200)
+          _ ≤ delta - d := by linarith
+      have hsplit : ((2 + delta / 100) / alpha) * q =
+          (2 / alpha) * q + (delta / (100 * alpha)) * q := by ring
+      calc
+        2 * delta / alpha + d / 100 =
+            1 + (2 / alpha) * q - (delta - d) / alpha + d / 100 := by
+          linarith [hid]
+        _ ≤ 1 + (2 / alpha) * q - delta / (200 * alpha) := by linarith
+        _ ≤ 1 + (2 / alpha) * q + (delta / (100 * alpha)) * q := by
+          have hh := add_le_add_left hperturb (1 + (2 / alpha) * q)
+          convert hh using 1 <;> ring
+        _ = 1 + ((2 + delta / 100) / alpha) * q := by
+          rw [hsplit]
+          ring
+    dsimp only [q] at hqmul
+    have hqmul' : 1 + ((2 + delta / 100) / alpha) *
+        (1 + routeTGapMomentNu - 2 * alpha) ≤
+          1 + mu * (1 + routeTGapMomentNu - 2 * alpha) :=
+      by simpa [add_comm] using add_le_add_left hqmul 1
+    have htarget := hbase.trans (by simpa only [q] using hqmul')
+    simpa [delta, d] using htarget
+
+/-- The shifted middle-strip scalar budget has no upper-height restriction. -/
+theorem routeT_middle_shifted_adjacent_with_cost_first_or_second_unbounded
+    {mu alpha : ℝ}
+    (hmuLo : 4 / 3 ≤ mu)
+    (halphaLo : 19 / 25 ≤ alpha) (halphaHi : alpha ≤ 997 / 1000) :
+    2 * (1 - maynardMiddleReferenceAmplitude alpha) /
+          maynardMiddleReferenceAmplitude alpha +
+          maynardLongGlobalAmplitudeDeficit / 1000 ≤ mu * (1 - alpha) ∨
+      2 * (1 - maynardMiddleReferenceAmplitude alpha) /
+          maynardMiddleReferenceAmplitude alpha +
+          maynardLongGlobalAmplitudeDeficit / 1000 ≤
+        1 + mu * (1 + routeTGapMomentNu - 2 * alpha) := by
+  let d : ℝ := maynardLongGlobalAmplitudeDeficit
+  let alpha0 : ℝ := maynardMiddleReferenceAmplitude alpha
+  have hd : 0 < d := maynardLongGlobalAmplitudeDeficit_pos
+  have halphaThree : 3 / 4 ≤ alpha := by linarith
+  have ha0Range := maynardMiddleReferenceAmplitude_range halphaLo halphaHi
+  have ha0pos : 0 < alpha0 := lt_of_lt_of_le (by norm_num) ha0Range.1
+  have halphapos : 0 < alpha := lt_of_lt_of_le (by norm_num) halphaThree
+  have ha0le : alpha0 ≤ alpha := by
+    dsimp only [alpha0, maynardMiddleReferenceAmplitude, d]
+    linarith
+  have hprod : (9 / 16 : ℝ) ≤ alpha * alpha0 := by
+    have h := mul_le_mul halphaThree ha0Range.1 (by norm_num : (0 : ℝ) ≤ 3 / 4)
+      halphapos.le
+    norm_num at h ⊢
+    exact h
+  have hshift : alpha - alpha0 = d / 100000 := by
+    dsimp only [alpha0, maynardMiddleReferenceAmplitude, d]
+    ring
+  have hfrac : 2 * (alpha - alpha0) / (alpha * alpha0) ≤ d / 1000 := by
+    rw [div_le_iff₀ (mul_pos halphapos ha0pos)]
+    rw [hshift]
+    have hmul := mul_le_mul_of_nonneg_left hprod hd.le
+    nlinarith
+  have hcapIdentity :
+      2 * (1 - alpha0) / alpha0 =
+        2 * (1 - alpha) / alpha +
+          2 * (alpha - alpha0) / (alpha * alpha0) := by
+    field_simp [halphapos.ne', ha0pos.ne']
+    ring
+  have hcap :
+      2 * (1 - alpha0) / alpha0 + d / 1000 ≤
+        2 * (1 - alpha) / alpha + d / 100 := by
+    rw [hcapIdentity]
+    nlinarith
+  rcases routeT_adjacent_optimizer_with_reserve_of_amplitude_le_997_unbounded
+      hmuLo halphaThree halphaHi with hfirst | hsecond
+  · left
+    simpa only [alpha0, d] using hcap.trans hfirst
+  · right
+    simpa only [alpha0, d] using hcap.trans hsecond
+
+/-- Through the raw analytic range mu <= 8, every nonempty fixed-label middle fibre reaches
+one Route-T receiver. This removes the historical 19/9 ceiling from both selected branches. -/
+theorem eventually_maynardWindowRelevantSelectedCell_middle_fibre_first_or_second_through_eight :
+    ∀ᶠ T : ℝ in atTop,
+      ∀ {L X K : ℕ} {mu N0 c alpha delta : ℝ},
+      4 / 3 ≤ mu → mu ≤ 8 →
+      1 / 2 ≤ c → 19 / 25 ≤ alpha → alpha ≤ 997 / 1000 →
+      0 < delta →
+      ∀ (label : HeathBrownSelectionLabel L X 60),
+      ∀ (S : Finset ℕ), S.Nonempty → S ⊆ Finset.range K →
+      ∀ (lam : ℕ → ℝ),
+      (∀ i, lam i + delta ≤ lam (i + 1)) →
+      (∀ r ∈ S, T ≤ lam r ∧ lam r ≤ 2 * T) →
+      (∀ r ∈ S, IsMaynardWindowRelevantSelectedCell
+        L X T mu N0 c (lam r) alpha label) →
+      (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
+          T ^ (mu * (1 - alpha) - maynardLongGlobalAmplitudeDeficit / 2000) ∨
+        (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
+          T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha) -
+            maynardLongGlobalAmplitudeDeficit / 2000) := by
+  filter_upwards [eventually_maynardWindowRelevantSelectedCell_middle_adjacent_count,
+    eventually_maynardWindowRelevantSelectedCell_middle_overweight_count,
+    eventually_gt_atTop (1 : ℝ)] with T hadj hover hT
+  intro L X K mu N0 c alpha delta hmuLo hmuEight hc halphaLo halphaHi hdelta
+    label S hSne hS lam hgap hband hselection
+  let d : ℝ := maynardLongGlobalAmplitudeDeficit
+  let beta : ℝ := maynardSubHeightSelectedExponent T label
+  have hd : 0 < d := maynardLongGlobalAmplitudeDeficit_pos
+  have hHF0 : 0 ≤ maynardHarmonicFactor K delta :=
+    (maynardHarmonicFactor_pos K hdelta).le
+  by_cases hbetaOne : beta < 1
+  · have hraw := hadj hmuLo hmuEight hc halphaLo halphaHi hdelta label
+      (by simpa only [beta] using hbetaOne) S hSne hS lam hgap hband hselection
+    rcases routeT_middle_shifted_adjacent_with_cost_first_or_second_unbounded
+        hmuLo halphaLo halphaHi with hfirst | hsecond
+    · left
+      have hexp :
+          2 * (1 - maynardMiddleReferenceAmplitude alpha) /
+              maynardMiddleReferenceAmplitude alpha + d / 100000 ≤
+            mu * (1 - alpha) - d / 2000 := by
+        dsimp only [d] at hfirst ⊢
+        linarith
+      have hpow := Real.rpow_le_rpow_of_exponent_le hT.le hexp
+      exact hraw.trans (mul_le_mul_of_nonneg_left hpow hHF0)
+    · right
+      have hexp :
+          2 * (1 - maynardMiddleReferenceAmplitude alpha) /
+              maynardMiddleReferenceAmplitude alpha + d / 100000 ≤
+            1 + mu * (1 + routeTGapMomentNu - 2 * alpha) - d / 2000 := by
+        dsimp only [d] at hsecond ⊢
+        linarith
+      have hpow := Real.rpow_le_rpow_of_exponent_le hT.le hexp
+      exact hraw.trans (mul_le_mul_of_nonneg_left hpow hHF0)
+  · have hbetaLo : 1 ≤ beta := le_of_not_gt hbetaOne
+    have hraw := hover hmuLo hmuEight hc halphaLo halphaHi hdelta label
+      (by simpa only [beta] using hbetaLo) S hSne hS lam hgap hband hselection
+    obtain ⟨r0, hr0⟩ := hSne
+    rcases hselection r0 hr0 with
+      ⟨_helig, _hrel, _hcore, _hune, _husub, _hbetaT, hbetaUpper,
+        _hlength, _hlarge, hbranch⟩
+    have hbetaHi : beta ≤ 1 + mu / 60 := by
+      have hbetaUpper' : beta < 1 + 2 * (mu / 120) := by
+        simpa only [beta] using hbetaUpper
+      linarith
+    have halpha983 : alpha ≤ 983 / 1000 := by
+      rcases hbranch with hsmall | hmoderate | hoverweight
+      · have hsmall' : beta ≤ 5 / 12 := by
+          simpa only [IsMaynardSelectedCellBranch, beta] using hsmall
+        linarith
+      · have hmoderate' : beta < 1 := by
+          simpa only [IsMaynardSelectedCellBranch, beta] using hmoderate.2.1
+        exact (hbetaOne hmoderate').elim
+      · simpa only [IsMaynardSelectedCellBranch, beta] using hoverweight.2.1
+    rcases routeT_overweight_literal_cap_with_reserve_first_or_second_unbounded
+        hmuLo (by linarith : 3 / 4 ≤ alpha) halpha983 hbetaHi with
+      hfirst | hsecond
+    · left
+      have hexp : beta * (2 - 2 * alpha) + d / 100000 ≤
+          mu * (1 - alpha) - d / 2000 := by
+        dsimp only [d] at hfirst ⊢
+        linarith
+      have hpow := Real.rpow_le_rpow_of_exponent_le hT.le hexp
+      have hraw' : (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
+          T ^ (beta * (2 - 2 * alpha) + d / 100000) := by
+        simpa only [beta, d] using hraw
+      exact hraw'.trans (mul_le_mul_of_nonneg_left hpow hHF0)
+    · right
+      have hexp : beta * (2 - 2 * alpha) + d / 100000 ≤
+          1 + mu * (1 + routeTGapMomentNu - 2 * alpha) - d / 2000 := by
+        dsimp only [d] at hsecond ⊢
+        linarith
+      have hpow := Real.rpow_le_rpow_of_exponent_le hT.le hexp
+      have hraw' : (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
+          T ^ (beta * (2 - 2 * alpha) + d / 100000) := by
+        simpa only [beta, d] using hraw
+      exact hraw'.trans (mul_le_mul_of_nonneg_left hpow hHF0)
+
+
 
 end RHTower.Sieve
 
