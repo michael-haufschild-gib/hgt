@@ -1672,13 +1672,33 @@ Thus positive-shift covariance and diagonal finite part are both formed before X
 selection.  This is the correct replacement for the naive moving-pole contour, whose ordinary
 residue evaluation double-counts the kernel hyperplane.
 
+The continuation has now also been welded to the existing Hedenmalm translated-current divisor
+transgression.  At right endpoint `rho` its removable residue germ is exactly
+
+```text
+[ord_xi(rho)-ord_xi(rho-eps)]/eps.                      (PS2)
+```
+
+On every left translation boundary this is `ord_xi(rho)/eps>0`.  This is the requested order of
+operations: pole--Gamma--von-Mangoldt positive shift is formed first; diagonal multiplicity is
+read only after meromorphic scalarization.  No Abel or exterior-Cesaro Xi projector occurs in
+`(PS1)` or the source side of `(PS2)`.
+
+Fresh cross-route audit also gives a natural fixed displacement.  The Route-T/Ingham corpus has
+an unconditional multiplicity-weighted zeta zero-density estimate above `Re rho=7/10`, with
+power `82571/118590<1`; Riemann--von Mangoldt then makes that deep band lower order than `N(T)`.
+Consequently a three-quarters proof may discard the deep band and attack only
+`1/2<Re rho<7/10`, whose horizontal width is `eps=1/5`.  This explains why the positive-shift
+transgression, rather than an all-strip scalar projector, is the compatible next mechanism.
+
 The theorem does not yet dominate `criticalFeaturePrimeGammaOffLineLatticeBudget`.  Remaining
 target is a height-local trace of `(PS1)` weighted by W-H191's bichamber cubic feature, followed by
 an arithmetic pole--Gamma--von-Mangoldt estimate at `4N/25`.  Scalar zero-trace capacity cannot be
 used as a premise: P-G176 proves that shortcut RH-equivalent.
 
 Lean module `XiWardCubicPositiveShiftArithmeticCovariance.lean` proves `(PS1)`, exact source split,
-and punctured derivative limit.  Target build, formal lint, and axiom audit pass.
+punctured derivative limit, `(PS2)`, and strict positive boundary residue.  Target build, formal
+lint, and axiom audit pass.
 
 - 2026-08-21 — corpus re-audit found W-H190/W-H191 and P-G174/P-G175 as strongest compatible
   chains; originated and formalized positive-shift source covariance connecting them.  Continuous

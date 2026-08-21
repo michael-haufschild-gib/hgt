@@ -102,6 +102,7 @@ theorem xiWardCubicPositiveShiftDivisorTransgression_eq_arithmeticCovariance
           (z - (eps : ℂ)) eps := by
       rw [logDeriv_xi_eq_arithmetic hz', logDeriv_xi_eq_arithmetic hz]
       unfold xiWardCubicPositiveRealShiftArithmeticCovariance
+        xiWardCubicCompletedArithmeticCurrent
       rw [hzeq]
 
 /-- Removable local germ of the continued positive-shift transgression. -/

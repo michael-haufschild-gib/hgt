@@ -6,7 +6,8 @@
 - **Source:** internal W-H190/W-H191 reflection--Loewner chain
 - **Statement:** Opposite-Euler specialization of the reflection--Loewner kernel is exactly a
   positive-real-shift quotient of the completed pole--Gamma--von-Mangoldt current, with derivative
-  as its punctured diagonal finite part.
+  as its punctured diagonal finite part.  Its meromorphic continuation has local residue equal to
+  the normalized discrete derivative of Xi multiplicity.
 
 ## Goal
 
@@ -51,6 +52,23 @@ The quotient splits exactly into pole--Gamma increment plus sign-oriented von Ma
 For complex punctured `eps→0`, any derivative certificate `HasDerivAt A d z` gives convergence of
 the covariance to `d`.  Thus diagonal finite part is fixed before divisor expansion.
 
+There is also an exact source-to-divisor transgression.  Write `F=-xi'/xi`.  On the source chamber,
+
+```text
+[A(z)-A(z-eps)]/eps = -[F(z)-F(z-eps)]/eps.             (PS2)
+```
+
+Continue the right side only after forming the left side.  Its removable local residue germ at
+`rho` has center value
+
+```text
+[ord_xi(rho)-ord_xi(rho-eps)]/eps.                      (PS3)
+```
+
+At a left translation boundary the predecessor is regular, so `(PS3)` is exactly
+`ord_xi(rho)/eps>0`.  Positive shift is therefore source-defined before scalarization, while
+diagonal multiplicity is recovered only as the post-scalarization residue.
+
 ## Reach and open core
 
 This repairs provenance defect in Abel/exterior-Cesàro candidates: reflection covariance can be
@@ -79,7 +97,10 @@ Principal declarations:
 
 - `xiWardCubicReflectionLoewnerKernel_eq_positiveRealShiftArithmeticCovariance`;
 - `xiWardCubicShiftArithmeticCovariance_eq_poleGamma_add_vonMangoldt`;
-- `tendsto_xiWardCubicShiftArithmeticCovariance`.
+- `tendsto_xiWardCubicShiftArithmeticCovariance`;
+- `xiWardCubicPositiveShiftDivisorTransgression_eq_arithmeticCovariance`;
+- `xiWardCubicPositiveShiftDivisorTransgressionGerm_zero`;
+- `xiWardCubicPositiveShiftDivisorTransgressionGerm_zero_re_pos_of_leftBoundary`.
 
 Target build passed. `scripts/formal_tools.py lint` passed. Axiom audit reports only `propext`,
 `Classical.choice`, and `Quot.sound`.
@@ -88,3 +109,5 @@ Target build passed. `scripts/formal_tools.py lint` passed. Axiom audit reports 
 
 - 2026-08-21 — conjectured from moving reflection-hyperplane residue, numerically checked at two
   complex Euler points and three decreasing shifts, then proved and formalized.
+- 2026-08-21 — welded source covariance to Hedenmalm translated-divisor transgression; proved
+  exact multiplicity-difference residue and strict positivity on every positive left boundary.

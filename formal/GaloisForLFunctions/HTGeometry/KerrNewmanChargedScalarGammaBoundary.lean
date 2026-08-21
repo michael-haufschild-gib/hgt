@@ -42,6 +42,12 @@ def kerrNewmanChargedScalarEffectiveMultipoleGap
     (ell : ℕ) (charge : ℂ) : ℂ :=
   Complex.sqrt ((2 * (ell : ℂ) + 1) ^ 2 - 4 * charge ^ 2)
 
+/-- The real charge amplitude selecting a prescribed nonnegative finite effective gap.  The
+`Fin` index makes the required bound `gap ≤ 2 * ell + 1` intrinsic and assumption-free. -/
+def kerrNewmanChargedScalarQuantizedCharge
+    (ell : ℕ) (gap : Fin (2 * ell + 2)) : ℂ :=
+  (Real.sqrt (((2 * (ell : ℝ) + 1) ^ 2 - (gap : ℝ) ^ 2) / 4) : ℂ)
+
 /-- At zero scalar charge, the principal effective-multipole gap is the positive odd integer
 selected by the neutral Kerr--Newman sector. -/
 theorem kerrNewmanChargedScalarEffectiveMultipoleGap_neutral
@@ -268,6 +274,100 @@ theorem differentialAlgebraicOver_kerrNewmanChargedScalarPhysicalLogResponseCloc
         (Real.sqrt ((ell : ℝ) * ((ell : ℝ) + 1)) : ℂ)) := by
   rw [kerrNewmanChargedScalarPhysicalLogResponseClockMero_criticalCharge_eq_unitGap]
   exact differentialAlgebraicOver_kerrNewmanChargedScalarLogResponseClockMero_unitGap
+
+/-- The quantized charge indexed by `gap : Fin (2 * ell + 2)` has exactly that principal
+effective multipole gap. -/
+theorem kerrNewmanChargedScalarEffectiveMultipoleGap_quantizedCharge
+    (ell : ℕ) (gap : Fin (2 * ell + 2)) :
+    kerrNewmanChargedScalarEffectiveMultipoleGap ell
+      (kerrNewmanChargedScalarQuantizedCharge ell gap) = (gap : ℂ) := by
+  unfold kerrNewmanChargedScalarEffectiveMultipoleGap
+    kerrNewmanChargedScalarQuantizedCharge
+  let a : ℝ := 2 * (ell : ℝ) + 1
+  let n : ℝ := gap
+  have hn : 0 ≤ n := by
+    dsimp [n]
+    positivity
+  have hnat : gap.val ≤ 2 * ell + 1 := by
+    omega
+  have hbound : n ≤ a := by
+    dsimp [a, n]
+    exact_mod_cast hnat
+  have hrad : 0 ≤ (a ^ 2 - n ^ 2) / 4 := by
+    nlinarith
+  have hchargeSq : (Real.sqrt ((a ^ 2 - n ^ 2) / 4) : ℂ) ^ 2 =
+      ((a ^ 2 - n ^ 2) / 4 : ℂ) := by
+    rw [← Complex.ofReal_pow]
+    exact_mod_cast Real.sq_sqrt hrad
+  have ha : 2 * (ell : ℂ) + 1 = (a : ℂ) := by
+    dsimp [a]
+    push_cast
+    ring
+  have hgap : (gap : ℂ) = (n : ℂ) := by
+    dsimp [n]
+  rw [show ((2 * (ell : ℂ) + 1) ^ 2 -
+      4 * (Real.sqrt (((2 * (ell : ℝ) + 1) ^ 2 - (gap : ℝ) ^ 2) / 4) : ℂ) ^ 2) =
+        (n : ℂ) ^ 2 by
+    rw [show (Real.sqrt (((2 * (ell : ℝ) + 1) ^ 2 - (gap : ℝ) ^ 2) / 4) : ℂ) =
+        (Real.sqrt ((a ^ 2 - n ^ 2) / 4) : ℂ) by rfl,
+      hchargeSq, ha]
+    dsimp [a, n]
+    push_cast
+    ring]
+  have hnonneg : (0 : ℂ) ≤ (n : ℂ) ^ 2 := by
+    refine RCLike.nonneg_iff_exists_ofReal.mpr ⟨n ^ 2, sq_nonneg n, ?_⟩
+    simp
+  rw [Complex.sqrt_of_nonneg hnonneg]
+  have hre : ((n : ℂ) ^ 2).re = n ^ 2 := by
+    simp [pow_two]
+  rw [hre]
+  simpa [hgap] using congrArg (fun y : ℝ => (y : ℂ)) (Real.sqrt_sq hn)
+
+/-- Every positive integral effective gap has a finite Gamma-orbit/Pochhammer normal form. -/
+theorem kerrNewmanChargedScalarGammaResponseMero_positiveGap_eq_pochhammer
+    (n : ℕ) :
+    kerrNewmanChargedScalarGammaResponseMero ((n + 1 : ℕ) : ℂ) =
+      algebraMap (RatFunc ℂ) (meroField Set.univ)
+        (gammaOrbitNatFactor (-(n : ℂ) / 2) (n + 1)) := by
+  have h := reducedVenezianoAmplitudeMero_negSuccShift ((n : ℂ) / 2 + 1) n
+  rw [kerrNewmanChargedScalarGammaResponseMero]
+  convert h using 1 <;> push_cast <;> ring_nf
+
+/-- A quantized positive gap gives the corresponding finite Pochhammer response core. -/
+theorem kerrNewmanChargedScalarPhysicalGammaResponseMero_quantizedSucc_eq_pochhammer
+    (ell : ℕ) (n : Fin (2 * ell + 1)) :
+    kerrNewmanChargedScalarPhysicalGammaResponseMero ell
+      (kerrNewmanChargedScalarQuantizedCharge ell n.succ) =
+      algebraMap (RatFunc ℂ) (meroField Set.univ)
+        (gammaOrbitNatFactor (-(n : ℂ) / 2) (n + 1)) := by
+  unfold kerrNewmanChargedScalarPhysicalGammaResponseMero
+  rw [kerrNewmanChargedScalarEffectiveMultipoleGap_quantizedCharge]
+  exact kerrNewmanChargedScalarGammaResponseMero_positiveGap_eq_pochhammer n
+
+/-- Every finite quantized-gap charge gives a differentially algebraic physical Gamma response. -/
+theorem differentialAlgebraicOver_kerrNewmanChargedScalarPhysicalGammaResponseMero_quantizedCharge
+    (ell : ℕ) (gap : Fin (2 * ell + 2)) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (kerrNewmanChargedScalarPhysicalGammaResponseMero ell
+        (kerrNewmanChargedScalarQuantizedCharge ell gap)) := by
+  rw [kerrNewmanChargedScalarPhysicalGammaResponseMero]
+  rw [kerrNewmanChargedScalarEffectiveMultipoleGap_quantizedCharge]
+  exact (differentialAlgebraicOver_kerrNewmanChargedScalarGammaResponseMero_iff_integerGap
+    (gap : ℂ)).mpr ⟨gap, by norm_cast⟩
+
+/-- The physical logarithmic response clock is also DA at every finite quantized-gap charge. -/
+theorem differentialAlgebraicOver_kerrNewmanChargedScalarPhysicalLogResponseClockMero_quantizedCharge
+    (ell : ℕ) (gap : Fin (2 * ell + 2)) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (kerrNewmanChargedScalarPhysicalLogResponseClockMero ell
+        (kerrNewmanChargedScalarQuantizedCharge ell gap)) := by
+  unfold kerrNewmanChargedScalarPhysicalLogResponseClockMero
+  rw [kerrNewmanChargedScalarEffectiveMultipoleGap_quantizedCharge]
+  unfold kerrNewmanChargedScalarLogResponseClockMero
+    HTGeometry.wignerSmithLogClock Differential.logDeriv
+  apply differentialAlgebraicOver_deriv_div_self
+  exact (differentialAlgebraicOver_kerrNewmanChargedScalarGammaResponseMero_iff_integerGap
+    (gap : ℂ)).mpr ⟨gap, by norm_cast⟩
 
 end
 

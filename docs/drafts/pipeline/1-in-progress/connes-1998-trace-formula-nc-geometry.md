@@ -128,3 +128,28 @@ layer (`XiGuinandWeilExplicitFormula`, `xi_explicitFormula_logDeriv`).
    `L(χ₀,½+it)`.  Blocks B6, hence B8's Theorem 5.
 4. **Weil's explicit formula** (App II Theorem 1, quoted from [W3]).  Blocks B7's Theorem 6.
 Everything in the paper that does not reduce to one of these four is now Lean-closed.
+
+- 2026-08-21 — Tier B batch 3 (open item 4, non-archimedean half of Weil's explicit formula).
+  Six new modules, all wired into `GaloisForLFunctions.RHTower` and built:
+  * `ConnesPadicWeilKernel` — the ultrametric equality `|1-u| = max(1,|u|)` off the unit sphere, and
+    the shell form `|1-u|^{-1} = min(1, p^m)` on `‖u‖ = p^{-m}`, `m ≠ 0`  (App II (9)/(10)).
+  * `ConnesPadicWeilShellIntegral` — the chart valuation/norm identities, the exact one-shell Weil
+    integral, and the local Weil integral as a series over valuation shells.  Built on the corpus's
+    `FieldOnePadicMultiplicativeHaarDecomposition` / `…ShellIntegral`.
+  * `ConnesPadicWeilRadial` — radial functions on `ℚ_p^*`: integrability ⟺ shell-profile
+    summability, `∫ = ∑' shell values`, and the closed form
+    `∫ f(u)|1-u|^{-1} d^*u = ∑'_m min(1,p^m) h(m)` for a profile vanishing on the unit shell.
+  * `ConnesPadicWeilVonMangoldt` — the half-density weight identity
+    `min(1,p^m)·p^{-m/2} = p^{-|m|/2}` (with `√p` only as an integer power), the two-half-line split
+    of the shell sum, and the local term in von Mangoldt form
+    `∑_{n≥1} p^{-n/2}(G(n)+G(-n))`.
+  * `ConnesPadicWeilEulerFactor` — the geometric profile `h(m) = w^m` (`m ≥ 1`), its summability,
+    local Weil term `w/(1-w)`, and at `w = p^{-s}` the local Euler factor `(p^s-1)^{-1}`.
+  * `ConnesWeilPrimeSide` — **the finite part of Connes' geometric side is the prime side of the
+    explicit formula**: for `σ > 1`,
+    `∑'_p log p · (local Weil term at p) = -ζ'(σ)/ζ(σ)`, using the corpus's
+    `HTGeometry.tsum_vonMangoldt_eq_tsum_primes` and `HTGeometry.ofReal_tsum_vonMangoldt_eq`.
+  This reduces open item 4: the zero-sum side is already corpus-owned
+  (`RHTower.xiGuinandWeilExplicitFormula` on the regularized-Cauchy test algebra), and the finite
+  places of the geometric side are now Lean-closed.  What is left of item 4 is the archimedean local
+  term and the assembly for a general Bruhat–Schwartz test function.

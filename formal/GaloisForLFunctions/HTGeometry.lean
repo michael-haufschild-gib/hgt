@@ -178,6 +178,7 @@ import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicAlgebra
 import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisAlgebra
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldNormSequence
+import GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2NormQuotient
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldArithmeticFrobenius
 import GaloisForLFunctions.HTGeometry.ABHN.LocalFrobenius
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCohomology
