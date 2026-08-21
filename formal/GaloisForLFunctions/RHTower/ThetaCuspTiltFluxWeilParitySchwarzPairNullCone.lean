@@ -22,6 +22,7 @@ namespace RHTower
 
 noncomputable section
 
+/-- Boundary test supported on one divisor fiber and its source-Schwarz partner. -/
 def xiWeilSchwarzPairedFiberTest (alpha z : ℂ) : ℂ :=
   xiWeilFiberIndicator alpha z +
     xiWeilFiberIndicator (-(starRingEnd ℂ) alpha) z
@@ -62,6 +63,7 @@ theorem xiWeilSchwarzPairedFiberTest_product_eq_zero
     · simp [xiWeilSchwarzPairedFiberTest, xiWeilSharp,
         xiWeilFiberIndicator, hza, hzb]
 
+/-- A non-real, nonzero Schwarz-paired fiber test is exactly Weil-isotropic. -/
 theorem xiWeilPolarization_schwarzPairedFiber_eq_zero
     {alpha : ℂ} (h0 : alpha ≠ 0)
     (h : (starRingEnd ℂ) alpha ≠ alpha) :
@@ -71,6 +73,7 @@ theorem xiWeilPolarization_schwarzPairedFiber_eq_zero
   simp_rw [xiWeilSchwarzPairedFiberTest_product_eq_zero h0 h]
   simp
 
+/-- Isotropy is exact equality of critical-line reflection parity energies. -/
 theorem xiWeilSchwarzPairedFiber_evenEnergy_eq_oddEnergy
     {alpha : ℂ} (h0 : alpha ≠ 0)
     (h : (starRingEnd ℂ) alpha ≠ alpha) :
@@ -93,6 +96,7 @@ theorem xiWeilHilbertQuadratic_schwarzPairedFiber_eq_zero
     xiWeilPolarization_schwarzPairedFiber_eq_zero h0 h]
   rfl
 
+/-- On every off-line Xi quartet the common even energy is strictly positive. -/
 theorem xiWeilSchwarzPairedFiber_evenEnergy_pos
     (q : XiZeroCopy)
     (h : (starRingEnd ℂ) (xiSpectralPoint q) ≠ xiSpectralPoint q) :
@@ -144,6 +148,7 @@ theorem xiWeilSchwarzPairedFiber_evenEnergy_pos
     ‖xiWeilEvenPart F (xiSpectralPoint q')‖ ^ 2
   exact hsum.tsum_pos (fun q' => sq_nonneg _) q (by simpa [alpha] using hterm)
 
+/-- On every off-line Xi quartet the common odd energy is strictly positive. -/
 theorem xiWeilSchwarzPairedFiber_oddEnergy_pos
     (q : XiZeroCopy)
     (h : (starRingEnd ℂ) (xiSpectralPoint q) ≠ xiSpectralPoint q) :
@@ -155,4 +160,3 @@ theorem xiWeilSchwarzPairedFiber_oddEnergy_pos
 
 end
 end RHTower
-

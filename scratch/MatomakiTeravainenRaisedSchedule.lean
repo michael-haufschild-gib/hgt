@@ -114,7 +114,8 @@ theorem matomakiTeravainen_raised_threshold_loss
     hpowBase.trans (Real.rpow_le_rpow (by positivity) hDbase hkappa.le)
   have hLone : (1 : ℝ) ≤ (ell + 1 : ℝ) := by
     show (1 : ℝ) ≤ (ell : ℝ) + 1
-    positivity
+    have hell0 : (0 : ℝ) ≤ (ell : ℝ) := Nat.cast_nonneg ell
+    linarith
   have hpowD' : (ell + 1 : ℝ) ≤ (D : ℝ) ^ kappa := by simpa using hpowD
   exact huxleyThresholdLossSigma_mem_interval hD
     (sigma := sigma) (L := (ell + 1 : ℝ)) (kappa := kappa)

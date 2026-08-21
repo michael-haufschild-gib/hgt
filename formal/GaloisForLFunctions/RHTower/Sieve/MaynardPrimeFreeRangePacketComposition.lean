@@ -21,7 +21,9 @@ theorem exists_eventually_routeT_proportional_primeFree_large_range_packet
           ((2 ^ (2 * k) : ℕ) : ℝ) * T0 ^ t ≤ lambda →
           lambda ^ theta ≤ lambda * H0 →
           lambda + 2 * (lambda / 4) ≤ X →
-          (∀ J : ℕ, 0 < J → ∀ j ∈ Finset.range J,
+          (∀ J : ℕ, 0 < J →
+            (((2 ^ (J - 1) : ℕ) : ℝ)) ≤ (1 / 4) / H0 →
+            ∀ j ∈ Finset.range J,
             heathBrownWindowRelevantFixedPolylogBound L X k x 1 *
                 (130 * C *
                   ((lambda * 1) /
@@ -31,7 +33,9 @@ theorem exists_eventually_routeT_proportional_primeFree_large_range_packet
                 (J : ℝ)) / 2) →
           Chebyshev.theta (lambda + 2 * (lambda * H0)) -
               Chebyshev.theta lambda = 0 →
-          ∃ J : ℕ, 0 < J ∧ ∃ j ∈ Finset.range J,
+          ∃ J : ℕ, 0 < J ∧
+            (((2 ^ (J - 1) : ℕ) : ℝ)) ≤ (1 / 4) / H0 ∧
+            ∃ j ∈ Finset.range J,
             (((2 * Real.pi) * (routeTSmoothWindowCentralMargin / 4)) /
                 (J : ℝ)) / 8 ≤
               ‖maynardFixedAmbientPhysicalDefectPacket (Finset.range K)
@@ -49,7 +53,7 @@ theorem exists_eventually_routeT_proportional_primeFree_large_range_packet
       with lambda hdefect
   intro L X k K T0 t x H0 hX hx hlambda hH0 hH0quarter hK hXL hT0 hscale
     hpower hsupport htail hprimeFree
-  obtain ⟨J, hJ, j, hj, hlarge⟩ :=
+  obtain ⟨J, hJ, hbelow, j, hj, hlarge⟩ :=
     hdefect L X k hx hlambda hH0 hH0quarter hXL hT0 hscale hpower hsupport hprimeFree
   have hadj := routeTComparableWidthLadder_adjacent
     hH0 (by norm_num : (0 : ℝ) < 1 / 4) j
@@ -83,8 +87,8 @@ theorem exists_eventually_routeT_proportional_primeFree_large_range_packet
     (by norm_num : (0 : ℝ) < 1)
     (routeTComparableWidthLadder_pos hH0 (j + 1))
     (routeTComparableWidthLadder_pos hH0 j)
-    hadj.1 hadj.2 houter hB hK (htail J hJ j hj) hlarge'
-  exact ⟨J, hJ, j, hj, hresult⟩
+    hadj.1 hadj.2 houter hB hK (htail J hJ hbelow j hj) hlarge'
+  exact ⟨J, hJ, hbelow, j, hj, hresult⟩
 
 end
 

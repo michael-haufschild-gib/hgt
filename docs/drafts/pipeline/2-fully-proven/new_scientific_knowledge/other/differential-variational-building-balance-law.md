@@ -1054,3 +1054,69 @@ with `U ∈ GL_r(O)`, and constant `S ∈ GL_r(K)` is a proper subgroup of `GL_r
 is sufficient for the bounded phase but not yet known to be necessary; making it necessary is the
 completion step, and is where the degree valuation on the Ore field `Frac(K[∂;δ])` — not yet in the
 tree — becomes unavoidable.
+
+### Lean progress — the degree valuation on the Ore field
+
+`GaloisForLFunctions.HTGeometry.PseudoDiffOpDegree` (wired, built, axiom-clean) supplies the
+foundation the previous entry named as missing.
+
+```text
+ordQ                     the degree of a rational pseudodifferential operator, `p/q ↦ deg p − deg q`
+ordQ_oreDiv, ordQ_zero, ordQ_one, ordQ_numeratorRingHom
+ordQ_mul                 **additivity** on nonzero elements
+ordQ_inv                 `ordQ x⁻¹ = −ordQ x`
+```
+
+Well-definedness is the Ore-expansion condition: multiplying numerator and denominator by the same
+nonzero operator shifts both degrees equally, which is `degree_mul`.  Additivity is read off the Ore
+product formula together with `ore_eq`: from `oreDenom·r₁ = oreNum·s₂` the degrees give
+`deg oreNum − deg oreDenom = deg r₁ − deg s₂`, and the rest is bookkeeping.
+
+**Both factors must be nonzero.**  The operator degree uses the convention `deg 0 = 0`, so
+`ordQ 0 = 0` and the multiplicative law fails at zero — `ordQ (0·y) = 0` while
+`ordQ 0 + ordQ y = ordQ y`.  This is a convention artefact, not a defect of the theory, but it has
+to be carried in the statement.
+
+This is the `r = 1` case of the Cartan invariant `μ₁` and the valuation whose completion carries the
+lattice theory of a twisted matrix chain.  Note also, from the same computation, a fact worth
+recording about the remaining gap: the standard slope-`1/2` example `[[0,1],[∂,0]]` is **not** in
+`GL₂(K[∂;δ])` — inverting it forces `∂·B₁₂ = 1`, impossible by degree.  So the denominator-two
+obstruction that defeats integer shears is not available inside the operator ring itself, and
+whether a matrix invertible *over `K[∂;δ]`* can have non-integral slopes is now a sharp, isolated
+question.
+
+### Lean progress — the restart is unavoidable: an invertible matrix whose leading chain dies
+
+The previous entry left one sharp question: can a matrix invertible over `K[∂;δ]` have non-integral
+slopes?  If not, integer shears would suffice and the restart bound would follow.  **The answer is
+no — non-integral slopes do occur, already at rank three.**
+
+`GaloisForLFunctions.HTGeometry.InvertibleLeadingChainVanishes` (wired, built, axiom-clean) exhibits
+the witness: the companion matrix of `t³ + ∂·t + 1`,
+
+```text
+companionMatrix  = !![0, 0, -1; 1, 0, -∂; 0, 1, 0]
+companionInverse = !![-∂, 1, 0; 0, 0, 1; -1, 0, 0]
+companionMatrix_mul_inverse, companionInverse_mul_matrix   **it is invertible over `K[∂;δ]`**
+matDeg_companionMatrix                                     its matrix degree is one
+topCoeffMatrix_companionMatrix                             the leading matrix is `E₂₃`, one entry
+topCoeffMatrix_companionMatrix_sq                          **its square is zero**
+chainProdK_companion_eq_zero                               so the accumulated leading chain dies
+                                                           at the second step
+```
+
+The mechanism is that the only degree-one entry sits in the last column, so the leading matrix is a
+single matrix unit `E₂₃` and `E₂₃² = 0`.  The reason this is possible while the matrix stays
+invertible is that the constant term of the companion polynomial is a unit: the determinant is `±1`,
+and the inverse is written out above.
+
+Newton polygon of `t³ + 0·t² + ∂·t + 1`, with `v = −deg`: the points are `(0,0)`, `(1,−1)`, `(3,0)`,
+so the lower hull has slopes `−1` and `+1/2`, and the root valuations are `1` once and `−1/2` twice
+— sum zero, as the balance law requires.  A slope with denominator two is invisible to every integer
+shear, so **no `(S, k)` with `S` constant and `k` integral can put this matrix in the exact-degree
+branch**; passing to `A₂` is genuinely necessary.
+
+This settles the shape of what is left.  The restart of `twistedChain_restart` is not an artefact of
+the presentation but a real feature, and the missing statement is exactly the bound on the number of
+restarts — equivalently, that the slopes have denominator at most `r`, which is the Newton-polygon
+statement for the twisted product and the one thing the elementary layer cannot reach.

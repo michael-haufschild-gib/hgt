@@ -18,6 +18,7 @@ import GaloisForLFunctions.HTGeometry.EncoderSelectionInformation
 import GaloisForLFunctions.HTGeometry.GateWordDictionary
 import GaloisForLFunctions.HTGeometry.SingleOrbitPlateauWindow
 import GaloisForLFunctions.HTGeometry.ExactPenaltyCircuitBellman
+import GaloisForLFunctions.HTGeometry.WitnessWordDivergence
 
 open Matrix MeasureTheory Set _root_.HTGeometry
 open scoped Matrix Matrix.Norms.L2Operator
@@ -202,7 +203,7 @@ theorem exists_plateau_codebook_split
       rw [hend]
       exact lt_wordComplexity_of_forall_notMem he hne' hx
     have hle := hlenle t htIcc
-    rw [hend] at hle
+    rw [hcodew] at hle
     omega
   have hzero : ∀ (f : List Γ → ℝ), (∀ w, w ∉ cb → q w * f w = 0) →
       Summable fun w => q w * f w := by
@@ -227,6 +228,90 @@ theorem exists_plateau_codebook_split
     exact this
 
 end Split
+
+
+/-! ## The two rows of the separation -/
+
+section Rows
+
+variable {I : Type} [Fintype I] [DecidableEq I]
+variable {Γ : Type} [Fintype Γ] [Encodable Γ] [Nonempty Γ]
+variable [MeasurableSpace (List Γ)] [MeasurableSingletonClass (List Γ)]
+
+/-- **The split at arbitrarily late windows of an autonomous orbit.**  A Hamiltonian with a
+maximally projective spectrum whose seed has small spectral collision has, beyond every horizon, a
+window of length `W` on which the depth-`S` circuit ball is missed; on that window the mesh encoder
+pays at most `log N` in selection information and at least the gate cost of `S+1` minus `log N` in
+synthesis divergence. -/
+theorem exists_late_plateau_codebook_split
+    {g : Γ → Matrix I I ℂ} {ident : Γ} (he : g ident = 1)
+    (hg : ∀ c, g c ∈ Matrix.unitaryGroup I ℂ)
+    {H : Matrix I I ℂ} {ebasis : I → I → ℂ} {lam : I → ℝ}
+    (heb : IsOrthoEigenBasis H ebasis lam) (hmax : MaximallyProjectiveEnergy lam) (ref : I)
+    (hH : IsSelfAdjoint H)
+    {psi : I → ℂ} (hpsi : finiteComplexInner psi psi = 1)
+    {eps delta : ℝ} (heps : 0 ≤ eps) (hdelta : 0 < delta)
+    (hfin : ∀ t : ℝ, ∃ w : List Γ,
+      dist (wordAct (gateAct g) w (eucVec psi)) (orbitVec H psi t) ≤ eps)
+    {epsw : ℝ} (hgap : eps + delta < epsw) (hepsw : epsw < 1)
+    {v : ℝ} (hv : 0 < v) (hHv : ‖H‖ ≤ v)
+    {r : ℕ} (hr : 1 ≤ r) {c₀ : ℝ}
+    (hcoll : occupationCollision (fun j => ‖eigenCoords ebasis psi j‖ ^ 2) ≤ c₀)
+    (hscale : 16 * c₀ / (1 - epsw ^ 2) ^ 2 ≤ 1 / (2 * r))
+    {M : ℝ} (hM : 1 < M) {S : ℕ} (hGamma : (Fintype.card Γ : ℝ) ≤ M)
+    (hs : ((S : ℝ) + 1) * Real.log M ≤ ((r : ℝ) / 2) * Real.log 2)
+    {W : ℝ} (hW : 0 < W)
+    (hgrid : ((plateauGridCount W ((epsw - (eps + delta)) / v) : ℕ) : ℝ) *
+      (2 : ℝ) ^ (-((r : ℝ) / 2)) < 1)
+    {a : ℝ} (ha : 0 < a) (ha1 : a < 1)
+    (A : ℝ) :
+    ∃ t₀ : ℝ, A < t₀ ∧ ∃ (code : ℝ → List Γ) (cb : Finset (List Γ)),
+      cb.card ≤ plateauGridCount W (delta / v) ∧ 0 < cb.card ∧
+      HasSum (encoderLaw (windowProbabilityMeasure W : Measure ℝ) code) 1 ∧
+      selectionInfo (windowProbabilityMeasure W : Measure ℝ) code ≤ Real.log (cb.card : ℝ) ∧
+      ((S : ℝ) + 1) * Real.log ((Fintype.card Γ : ℝ) / a) - Real.log (cb.card : ℝ)
+          - Real.log (1 - a)
+        ≤ relEntropy (encoderLaw (windowProbabilityMeasure W : Measure ℝ) code)
+            (wordPrior a) := by
+  classical
+  have hM0 : 0 < Fintype.card Γ := Fintype.card_pos
+  have hZ : ∀ word : Fin S → Γ,
+      finiteComplexInner (wordState g psi word) (wordState g psi word) = 1 :=
+    fun word => finiteComplexInner_wordState_self hg hpsi word
+  obtain ⟨t₀, ht₀, hhard⟩ := exists_late_hardWindow heb hmax ref hH hpsi
+    (Z := fun word : Fin S → Γ => wordState g psi word) hZ
+    (by linarith : (0 : ℝ) ≤ eps + delta) hgap hepsw hv hHv hr hcoll hscale hM
+    (card_wordIndex_le_pow hGamma (le_of_lt hM) S) hs W hgrid A
+  exact ⟨t₀, ht₀, exists_plateau_codebook_split he hH hpsi hv hHv hdelta hfin hW hhard ha ha1 hM0⟩
+
+/-- The word law of a constant encoder is the point mass at that word. -/
+theorem encoderLaw_const {X : Type*} [MeasurableSpace X] (mu : Measure X)
+    [IsProbabilityMeasure mu] (w₀ : List Γ) :
+    encoderLaw mu (fun _ : X => w₀) = pointLaw w₀ := by
+  funext w
+  by_cases h : w = w₀
+  · subst h
+    have : (fun _ : X => w) ⁻¹' {w} = Set.univ := by
+      ext x
+      simp
+    rw [encoderLaw, this, pointLaw, if_pos rfl, probReal_univ]
+  · have : (fun _ : X => w₀) ⁻¹' {w} = (∅ : Set X) := by
+      ext x
+      simp [Ne.symm h]
+    rw [encoderLaw, this, pointLaw, if_neg h]
+    simp
+
+/-- **`(25)` and the second row of `(26)`.**  One fixed preparation word carries no selection
+information and pays exactly the surprisal of its own length in synthesis divergence. -/
+theorem recurrence_row {X : Type*} [MeasurableSpace X] (mu : Measure X) [IsProbabilityMeasure mu]
+    (w₀ : List Γ) {a : ℝ} (ha : 0 < a) (ha1 : a < 1) (hM : 0 < Fintype.card Γ) :
+    selectionInfo mu (fun _ : X => w₀) = 0 ∧
+      relEntropy (encoderLaw mu (fun _ : X => w₀)) (wordPrior a)
+        = -Real.log (1 - a) + (w₀.length : ℝ) * Real.log ((Fintype.card Γ : ℝ) / a) := by
+  rw [selectionInfo_eq_entropy, encoderLaw_const]
+  exact ⟨entropy_pointLaw w₀, relEntropy_pointLaw_wordPrior ha ha1 hM w₀⟩
+
+end Rows
 
 end GaloisForLFunctions.HTGeometry
 

@@ -921,3 +921,33 @@ the Gaussian rate `σ₀` of Abe positivity determine the damping rate outright.
 Consequently `HasAbeDampingFamily` is now precisely the statement that the induction hypothesis
 supplies such a seed family for every finite jet packet, and
 `jetAmpleEveryFiniteOrder_of_hasAbeDampingFamily`, already in the tree, closes the induction step.
+
+## Lean status 2026-08-21 (twelfth entry) — the corpus's own majorant hypothesis, discharged
+
+The tree already contained a reduction of the polynomial-Gaussian Poincaré majorant to a single
+primitive condition on the factor,
+`QuasiAbelianAbePositivityReduction.gaussianMajorant_of_hasLatticeExponentialGrowth`, whose
+hypothesis is
+
+```text
+AutomorphicFactor.HasLatticeExponentialGrowth ψ :
+  ∀ K compact, ∃ C a ≥ 0, ∀ k x ∈ K, ‖ψ(γ_k)(x)⁻¹‖ ≤ C · exp(a · ∑ |k_i|)
+```
+
+`GaloisForLFunctions.HTGeometry.AppellHumbertLatticeGrowth` (wired, built, axiom-clean) discharges
+it for the Appell--Humbert class:
+
+```text
+hasLatticeExponentialGrowth_appellHumbert
+    **the Appell--Humbert factor of a positive semidefinite Hermitian form satisfies it, with
+    growth rate `a = 0`**
+```
+
+The reciprocal factor is not merely subexponential in the lattice index — it is *bounded*: the
+exponent `−π·Re H(x,γ) − (π/2)·H(γ,γ)` is at most `π·C²` uniformly once `Re H(x,x) ≤ C²` on the
+compact set, and the second term is `≤ 0` by positive semidefiniteness.  The compact bound on
+`Re H(x,x)` is free by `continuous_hermitian_self_re`.
+
+So the majorant hypothesis of the corpus's own chain, previously an unverified analytic field of
+`AbePositiveFactorPresentation`, is now a theorem for every Appell--Humbert factor of a positive
+form — which is exactly the class the card's `L` positive produces.

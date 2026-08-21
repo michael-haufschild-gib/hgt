@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialOperatorOreField
+import GaloisForLFunctions.HTGeometry.ShiftedMatrixDegree
 
 /-!
 # The degree of a rational pseudodifferential operator
@@ -27,6 +28,7 @@ noncomputable section
 open OreLocalization
 open scoped OreLocalization
 open scoped Classical
+open scoped nonZeroDivisors
 
 variable {K : Type u} [Field K] [Differential K]
 
@@ -54,15 +56,16 @@ def ordQ : PseudoDiffOp K → ℤ :=
         ring)
 
 theorem ordQ_oreDiv (r : DiffOp K) (s : (DiffOp K)⁰) :
-    ordQ (r /ₒ s) = if r = 0 then 0 else (degree r : ℤ) - (degree (s : DiffOp K) : ℤ) := rfl
+    ordQ (OreLocalization.oreDiv r s) = if r = 0 then 0 else (degree r : ℤ) - (degree (s : DiffOp K) : ℤ) := rfl
 
 @[simp] theorem ordQ_zero : ordQ (0 : PseudoDiffOp K) = 0 := by
-  rw [show (0 : PseudoDiffOp K) = (0 : DiffOp K) /ₒ 1 from (zero_oreDiv 1).symm, ordQ_oreDiv]
+  rw [show (0 : PseudoDiffOp K) = OreLocalization.oreDiv (0 : DiffOp K) 1 from (zero_oreDiv 1).symm, ordQ_oreDiv]
   simp
 
 theorem ordQ_numeratorRingHom (p : DiffOp K) :
     ordQ (numeratorRingHom p : PseudoDiffOp K) = if p = 0 then 0 else (degree p : ℤ) := by
-  rw [show (numeratorRingHom p : PseudoDiffOp K) = p /ₒ 1 from rfl, ordQ_oreDiv]
+  rw [show (numeratorRingHom p : PseudoDiffOp K) = OreLocalization.oreDiv p 1 from rfl,
+    ordQ_oreDiv]
   by_cases hp : p = 0
   · rw [if_pos hp, if_pos hp]
   · rw [if_neg hp, if_neg hp]
@@ -71,33 +74,27 @@ theorem ordQ_numeratorRingHom (p : DiffOp K) :
     simp
 
 @[simp] theorem ordQ_one : ordQ (1 : PseudoDiffOp K) = 0 := by
-  rw [show (1 : PseudoDiffOp K) = (1 : DiffOp K) /ₒ 1 from rfl, ordQ_oreDiv, if_neg one_ne_zero,
-    degree_one]
+  rw [show (1 : PseudoDiffOp K) = OreLocalization.oreDiv (1 : DiffOp K) 1 from
+      OreLocalization.one_def, ordQ_oreDiv, if_neg one_ne_zero, degree_one]
   have h1 : degree ((1 : (DiffOp K)⁰) : DiffOp K) = 0 := degree_one
   rw [h1]
+  simp
 
-/-- **The degree is additive on the Ore field.** -/
-theorem ordQ_mul (x y : PseudoDiffOp K) : ordQ (x * y) = ordQ x + ordQ y := by
-  refine OreLocalization.ind (fun r₁ s₁ => ?_) x
-  refine OreLocalization.ind (fun r₂ s₂ => ?_) y
+/-- **The degree is additive on the Ore field.**  The convention `deg 0 = 0` makes the statement
+false at zero, so both factors are required nonzero. -/
+theorem ordQ_mul : ∀ (x y : PseudoDiffOp K), x ≠ 0 → y ≠ 0 → ordQ (x * y) = ordQ x + ordQ y := by
+  refine OreLocalization.ind (fun r₁ s₁ => ?_)
+  refine OreLocalization.ind (fun r₂ s₂ => ?_)
+  intro h₁ h₂
   have hs₁ : (s₁ : DiffOp K) ≠ 0 := mem_nonZeroDivisors_iff_ne_zero.mp s₁.2
   have hs₂ : (s₂ : DiffOp K) ≠ 0 := mem_nonZeroDivisors_iff_ne_zero.mp s₂.2
-  rw [oreDiv_mul_oreDiv, ordQ_oreDiv, ordQ_oreDiv, ordQ_oreDiv]
-  by_cases hr₁ : r₁ = 0
-  · subst hr₁
-    have hnum : oreNum (0 : DiffOp K) s₂ * (s₂ : DiffOp K)
-        = (oreDenom (0 : DiffOp K) s₂ : DiffOp K) * 0 := (ore_eq (0 : DiffOp K) s₂).symm
-    rw [mul_zero] at hnum
-    have hnum0 : oreNum (0 : DiffOp K) s₂ = 0 := by
-      rcases mul_eq_zero.mp hnum with h | h
-      · exact h
-      · exact absurd h hs₂
-    rw [hnum0, zero_mul, if_pos rfl, if_pos rfl]
-    ring
-  by_cases hr₂ : r₂ = 0
-  · subst hr₂
-    rw [mul_zero, if_pos rfl, if_pos rfl]
-    ring
+  have hr₁ : r₁ ≠ 0 := by
+    intro h
+    exact h₁ (by rw [h]; exact OreLocalization.zero_oreDiv s₁)
+  have hr₂ : r₂ ≠ 0 := by
+    intro h
+    exact h₂ (by rw [h]; exact OreLocalization.zero_oreDiv s₂)
+  rw [OreLocalization.oreDiv_mul_oreDiv, ordQ_oreDiv, ordQ_oreDiv, ordQ_oreDiv]
   have hsd : (oreDenom r₁ s₂ : DiffOp K) ≠ 0 :=
     mem_nonZeroDivisors_iff_ne_zero.mp (oreDenom r₁ s₂).2
   have hore := ore_eq r₁ s₂
@@ -107,13 +104,10 @@ theorem ordQ_mul (x y : PseudoDiffOp K) : ordQ (x * y) = ordQ x + ordQ y := by
     exact (mul_ne_zero hsd hr₁) hore
   have hprod : oreNum r₁ s₂ * r₂ ≠ 0 := mul_ne_zero hnum0 hr₂
   rw [if_neg hprod, if_neg hr₁, if_neg hr₂]
-  have hdeg : (degree (oreNum r₁ s₂) : ℤ) - (degree (oreDenom r₁ s₂ : DiffOp K) : ℤ)
-      = (degree r₁ : ℤ) - (degree (s₂ : DiffOp K) : ℤ) := by
+  have hdegeq : degree (oreDenom r₁ s₂ : DiffOp K) + degree r₁
+      = degree (oreNum r₁ s₂) + degree (s₂ : DiffOp K) := by
     have h := congrArg degree hore
-    rw [degree_mul hsd hr₁, degree_mul hnum0 hs₂] at h
-    push_cast [h]
-    ring_nf
-    omega
+    rwa [degree_mul hsd hr₁, degree_mul hnum0 hs₂] at h
   have hnumer : degree (oreNum r₁ s₂ * r₂) = degree (oreNum r₁ s₂) + degree r₂ :=
     degree_mul hnum0 hr₂
   have hdenom : degree (((oreDenom r₁ s₂ * s₁ : (DiffOp K)⁰) : DiffOp K))
@@ -121,11 +115,15 @@ theorem ordQ_mul (x y : PseudoDiffOp K) : ordQ (x * y) = ordQ x + ordQ y := by
     show degree ((oreDenom r₁ s₂ : DiffOp K) * (s₁ : DiffOp K)) = _
     exact degree_mul hsd hs₁
   rw [hnumer, hdenom]
+  have hcast : ((degree (oreDenom r₁ s₂ : DiffOp K) : ℤ) + (degree r₁ : ℤ))
+      = ((degree (oreNum r₁ s₂) : ℤ) + (degree (s₂ : DiffOp K) : ℤ)) := by
+    exact_mod_cast hdegeq
   push_cast
-  linarith [hdeg]
+  linarith
 
 theorem ordQ_inv (x : PseudoDiffOp K) (hx : x ≠ 0) : ordQ x⁻¹ = -ordQ x := by
-  have h := ordQ_mul x x⁻¹
+  have hinv : x⁻¹ ≠ 0 := inv_ne_zero hx
+  have h := ordQ_mul x x⁻¹ hx hinv
   rw [mul_inv_cancel₀ hx, ordQ_one] at h
   linarith
 

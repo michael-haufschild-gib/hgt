@@ -1556,3 +1556,36 @@ modulus `C_s·B^r`, and vanishing on a disc of squared radius `≥ κB`.
 With it, `HasAbeDampingFamily` is exactly "the induction hypothesis supplies such a seed family for
 every finite jet packet", and `jetAmpleEveryFiniteOrder_of_hasAbeDampingFamily` (already in the
 tree) closes the induction step.
+
+## Card 4: the degree valuation on the Ore field
+
+`HTGeometry.PseudoDiffOpDegree` (wired, built, axiom-clean): `ordQ` on `PseudoDiffOp K = Frac(K[∂;δ])`
+with `ordQ_mul` (additive on nonzero elements — the convention `deg 0 = 0` makes it false at zero)
+and `ordQ_inv`.  Well-definedness is the Ore-expansion condition; additivity comes from `ore_eq`.
+
+Recorded alongside: the slope-`1/2` example `[[0,1],[∂,0]]` is **not** invertible over `K[∂;δ]`
+(inverting forces `∂·B₁₂ = 1`).  So whether a matrix invertible over the operator ring can have
+non-integral slopes is now a sharp isolated question — if it cannot, integer shears suffice and the
+restart bound follows.
+
+## Card 4: the restart is unavoidable — a proved counterexample
+
+`HTGeometry.InvertibleLeadingChainVanishes` (wired, built, axiom-clean): the companion matrix of
+`t³ + ∂t + 1` is invertible over `K[∂;δ]` (explicit inverse given and both products proved to be the
+identity), has matrix degree one, and its leading matrix is the single matrix unit `E₂₃`, whose
+square is zero — so the accumulated leading chain dies at step two.
+
+Its Newton polygon gives root valuations `1, −1/2, −1/2`: a denominator-two slope, invisible to every
+integer shear.  So the sharp question raised in the previous entry is answered **negatively**: no
+pair (constant basis, integer shear) can put every invertible matrix in the exact-degree branch, and
+the restart is a real feature.  What is left is exactly the bound on the number of restarts, i.e.
+that the slopes have denominator at most `r`.
+
+## Card 7: the corpus's own majorant hypothesis is discharged
+
+`HTGeometry.AppellHumbertLatticeGrowth.hasLatticeExponentialGrowth_appellHumbert` (wired, built,
+axiom-clean) proves `AutomorphicFactor.HasLatticeExponentialGrowth` for every Appell–Humbert factor
+of a positive semidefinite Hermitian form — with growth rate zero, since the reciprocal factor is
+bounded on compacta.  That is the single hypothesis of the tree's own
+`gaussianMajorant_of_hasLatticeExponentialGrowth`, so the corpus's majorant chain no longer has an
+unverified analytic field for this class.
