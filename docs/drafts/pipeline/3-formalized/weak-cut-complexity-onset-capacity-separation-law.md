@@ -590,3 +590,32 @@ The gate model (`Γ`, `act`, `chi`, the synthesis cap `S` and its certificate) i
 Setup `(2)`, carried as data exactly as in Theorems A, D and E; every displayed inequality is
 unconditional and axiom-clean (`propext`, `Classical.choice`, `Quot.sound` only).  The card is fully
 formalized.
+
+## Lean progress -- the state-synthesis cap `(2)` is a theorem
+
+The gate model is no longer a hypothesis anywhere on this card.  Two-level (Givens) synthesis gives,
+for every finite register and every tolerance, one explicit finite alphabet and one reference state
+whose words of length at most twice the dimension reach *every* pure state of the register:
+`K - 1` amplitude rotations in the real coordinate planes `(i, i+1)` bring the first basis vector to
+the modulus profile, `K` diagonal phase gates install the arguments, and discretizing every angle on
+the `m`-point grid `2\pi j/m` makes the alphabet finite at a cost of `O(\sqrt K/m)` per gate.  This
+is exactly `(2)` with `S_k(\eta) = 2\cdot 2^k`.
+
+`formal/GaloisForLFunctions/HTGeometry/TwoLevelStateSynthesis.lean`,
+`formal/GaloisForLFunctions/HTGeometry/SynthesisWordApproximation.lean`,
+`formal/GaloisForLFunctions/HTGeometry/UniversalSynthesisCertificate.lean`,
+`formal/GaloisForLFunctions/HTGeometry/WeakCutUnconditionalPlateau.lean`
+(all new, umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| the two-level rotation and phase gates, and that they preserve the `\ell^2` norm | `rotAct`, `phaseAct`, `sum_normSq_rotAct`, `sum_normSq_phaseAct` |
+| the amplitude staircase and its exact rotation angles | `absState`, `rotAngle`, `rotStep`, `absState_zero`, `absState_last` |
+| the phase staircase | `phState`, `phaseStep`, `phState_of_ge` |
+| each gate is `\ell^2`-Lipschitz in its angle | `norm_rotAct_sub_le`, `norm_phaseAct_sub_le`, `dist_le_of_pointwise` |
+| every gate is an isometry, hence so is every word | `dist_synthAct_eq`, `dist_wordAct_eq` |
+| the two passes | `exists_absWord`, `exists_phWord` |
+| **`(2)`**: a uniform synthesis cap of `2\cdot\dim` at every tolerance | `exists_synthesis_word`, `exists_synthesis_alphabet` |
+| the cap read on an arbitrary finite register | `transportAct`, `exists_universal_synthesis_certificate` |
+| **the certificate along every self-adjoint orbit**, uniformly in Hamiltonian, seed and time | `exists_orbit_synthesis_certificate` |
+| the delayed plateau with the gate model supplied | `exists_weakCut_delayed_plateau_synthesized` |

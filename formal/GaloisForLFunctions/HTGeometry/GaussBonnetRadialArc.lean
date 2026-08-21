@@ -31,6 +31,8 @@ structure RadialArc (C : GeodesicPolarChart) where
   smooth : ContDiff ℝ ∞ R
   /-- The arc avoids the pole. -/
   pos : ∀ θ, 0 < R θ
+  /-- The whole sector under the arc lies in the regular part of the chart. -/
+  regular : ∀ θ, ∀ r ∈ Set.Ioc (0 : ℝ) (R θ), 0 < C.f (r, θ)
 
 namespace RadialArc
 
@@ -51,7 +53,7 @@ noncomputable def Fr (θ : ℝ) : ℝ := px C.f (A.R θ, θ)
 /-- The angular derivative of the warping function along the arc. -/
 noncomputable def Fth (θ : ℝ) : ℝ := py C.f (A.R θ, θ)
 
-theorem F_pos (θ : ℝ) : 0 < A.F θ := C.pos (A.R θ) θ (A.pos θ)
+theorem F_pos (θ : ℝ) : 0 < A.F θ := A.regular θ (A.R θ) ⟨A.pos θ, le_refl _⟩
 
 theorem smooth_R1 : ContDiff ℝ ∞ A.R1 := (contDiff_infty_iff_deriv.mp A.smooth).2
 
@@ -149,7 +151,8 @@ noncomputable def boundaryTurningOn (a b : ℝ) : ℝ := ∫ θ in a..b, A.kappa
 
 theorem totalCurvatureOn_eq (a b : ℝ) :
     A.totalCurvatureOn a b = ∫ θ in a..b, (1 - A.Fr θ) :=
-  intervalIntegral.integral_congr fun θ _ => C.radial_integral (A.pos θ) θ
+  intervalIntegral.integral_congr fun θ _ =>
+    C.radial_integral (A.pos θ) θ fun r hr => (A.regular θ r hr).ne'
 
 theorem boundaryTurningOn_eq (a b : ℝ) :
     A.boundaryTurningOn a b = (∫ θ in a..b, A.Fr θ) - (A.turn b - A.turn a) := by

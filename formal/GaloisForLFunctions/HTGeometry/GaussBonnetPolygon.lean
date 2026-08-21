@@ -174,6 +174,7 @@ def unitArc : RadialArc flatPolarChart where
   R := fun _ => 1
   smooth := contDiff_const
   pos := fun _ => one_pos
+  regular := fun _ _r hr => hr.1
 
 /-- The unit disc of the Euclidean plane, as a one-arc star polygon. -/
 noncomputable def unitDisc : StarPolygon flatPolarChart where

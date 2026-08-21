@@ -132,4 +132,27 @@ theorem fieldDivergence_piolaField (hu : ContDiff ℝ 2 u) (hW : ContDiff ℝ 1 
           rfl
   rw [hstep0, hsplit, hpiola, hmain, add_zero]
 
+/-- Jacobian entries of a `C²` map are `C¹`. -/
+theorem contDiff_jacEntry (hu : ContDiff ℝ 2 u) (a b : Fin n) :
+    ContDiff ℝ 1 (fun x => jac u x a b) := by
+  have h1 : ContDiff ℝ 1 (fderiv ℝ u) := hu.fderiv_right (by norm_num)
+  have hg : ContDiff ℝ 1 (fun x => (fderiv ℝ u x) (Pi.single b (1 : ℝ))) :=
+    h1.clm_apply contDiff_const
+  exact contDiff_pi.mp hg a
+
+theorem contDiff_cofSum_jac (hu : ContDiff ℝ 2 u) (i j : Fin n) :
+    ContDiff ℝ 1 (fun x => cofSum (jac u x) i j) := by
+  classical
+  simp only [cofSum]
+  refine ContDiff.sum fun σ _ => ?_
+  exact contDiff_const.mul (contDiff_prod fun k _ => contDiff_jacEntry hu (σ k) k)
+
+theorem contDiff_piolaField (hu : ContDiff ℝ 2 u) (hW : ContDiff ℝ 1 W) :
+    ContDiff ℝ 1 (piolaField u W) := by
+  rw [contDiff_pi]
+  intro j
+  refine ContDiff.sum fun i _ => ?_
+  exact (contDiff_cofSum_jac hu i j).mul
+    (contDiff_pi.mp (hW.comp (hu.of_le (by norm_num))) i)
+
 end GaloisForLFunctions.HTGeometry.PoincareHopf

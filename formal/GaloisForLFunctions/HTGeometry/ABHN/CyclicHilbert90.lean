@@ -44,4 +44,62 @@ theorem cyclicGalois_norm_eq_one_iff_exists_div_apply {K L : Type} [Field K] [Fi
   · rintro ⟨y, rfl⟩
     exact cyclicGalois_norm_div_apply g y
 
+/-- The multiplicative coboundary associated to a Galois automorphism. -/
+noncomputable def cyclicGaloisCoboundary {K L : Type} [Field K] [Field L] [Algebra K L]
+    (g : Gal(L/K)) : Lˣ → Lˣ := fun y => y / Units.map g.toMonoidHom y
+
+/-- The multiplicative coboundary as a group homomorphism. -/
+noncomputable def cyclicGaloisCoboundaryHom {K L : Type} [Field K] [Field L] [Algebra K L]
+    (g : Gal(L/K)) : Lˣ →* Lˣ where
+  toFun := cyclicGaloisCoboundary g
+  map_one' := by
+    simp [cyclicGaloisCoboundary]
+  map_mul' y z := by
+    simp only [cyclicGaloisCoboundary, map_mul]
+    exact (div_mul_div_comm y (Units.map g.toMonoidHom y) z
+      (Units.map g.toMonoidHom z)).symm
+
+/-- The field norm restricted to units. -/
+noncomputable def cyclicGaloisNormUnits (K L : Type) [Field K] [Field L] [Algebra K L] :
+    Lˣ →* Kˣ := Units.map (Algebra.norm K)
+
+/-- Additive presentation of the cyclic coboundary. -/
+noncomputable def cyclicGaloisAdditiveCoboundary {K L : Type} [Field K] [Field L] [Algebra K L]
+    (g : Gal(L/K)) : Additive Lˣ →+ Additive Lˣ :=
+  (cyclicGaloisCoboundaryHom g).toAdditive
+
+/-- Additive presentation of the norm on units. -/
+noncomputable def cyclicGaloisAdditiveNormUnits (K L : Type) [Field K] [Field L] [Algebra K L] :
+    Additive Lˣ →+ Additive Kˣ :=
+  (cyclicGaloisNormUnits K L).toAdditive
+
+/-- **Cyclic Hilbert 90 exactness.** For a finite cyclic Galois extension, the image of the
+coboundary `y ↦ y / g(y)` is exactly the kernel of the norm on units. -/
+theorem cyclicGalois_hilbert90_exact {K L : Type} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsGalois K L] [IsCyclic Gal(L/K)]
+    {g : Gal(L/K)} (hg : ∀ sigma, sigma ∈ Subgroup.zpowers g) :
+    Function.Exact (cyclicGaloisAdditiveCoboundary g) (cyclicGaloisAdditiveNormUnits K L) := by
+  intro x
+  constructor
+  · intro hx
+    have hx' : Algebra.norm K ((Additive.toMul x : Lˣ) : L) = 1 := by
+      exact Units.ext_iff.mp (congrArg Additive.toMul hx)
+    obtain ⟨y, hy⟩ :=
+      (cyclicGalois_norm_eq_one_iff_exists_div_apply hg ((Additive.toMul x : Lˣ) : L)).mp hx'
+    refine ⟨Additive.ofMul y, ?_⟩
+    apply Additive.toMul.injective
+    change cyclicGaloisCoboundary g y = Additive.toMul x
+    apply Units.ext
+    simpa [cyclicGaloisCoboundary] using hy
+  · rintro ⟨y, hy⟩
+    apply Additive.toMul.injective
+    change cyclicGaloisNormUnits K L (Additive.toMul x) = 1
+    have hxy : cyclicGaloisCoboundaryHom g (Additive.toMul y) = Additive.toMul x := by
+      exact congrArg Additive.toMul hy
+    rw [← hxy]
+    apply Units.ext
+    change Algebra.norm K ((cyclicGaloisCoboundary g (Additive.toMul y) : Lˣ) : L) = 1
+    simp only [cyclicGaloisCoboundary, Units.val_div_eq_div_val, Units.coe_map]
+    exact cyclicGalois_norm_div_apply g (Additive.toMul y : Lˣ)
+
 end GaloisForLFunctions.HTGeometry.ABHN

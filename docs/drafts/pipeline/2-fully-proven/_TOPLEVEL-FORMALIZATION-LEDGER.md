@@ -156,6 +156,18 @@ keystone are now at stage 3, so the shared collision bound is available:
 | `schanuel-defects-algebraic-coefficient-independent` | the algebraic-group/Kähler layer |
 | `schanuel-stage-two-defect-slope-normal-form` | Kirby's exponential-algebraic closure |
 
+## The state-synthesis cap is no longer a hypothesis (2026-08-21)
+
+Three promoted cards (`weak-cut-…`, `codimension-forced-…`, `capacity-compatible-…`) carried the
+gate model as a hypothesis: a finite alphabet with a uniform compiler certificate for the carrier
+orbit.  Two-level (Givens) synthesis now proves it on **every** finite register:
+`exists_synthesis_alphabet` (model register), `exists_universal_synthesis_certificate` (arbitrary
+finite register, via `transportAct`), `exists_orbit_synthesis_certificate` (uniformly in
+Hamiltonian, seed and time), and `exists_weakCut_delayed_plateau_synthesized` (the delayed plateau
+with the alphabet supplied).  Cap `2\cdot\dim`, matching the cards' `(2)`.  New modules:
+`TwoLevelStateSynthesis`, `SynthesisWordApproximation`, `UniversalSynthesisCertificate`,
+`WeakCutUnconditionalPlateau` — all axiom-clean, umbrella-wired.
+
 ## Open (11)
 
 algebraic-two-local-instant-exact-complexity, all-replica-static-centralizer-planar-separation-law,

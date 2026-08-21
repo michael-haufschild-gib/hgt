@@ -349,15 +349,14 @@ theorem coord_le_l2 (v : Fin K → ℂ) (x : Fin K) :
   exact Finset.single_le_sum (f := fun r => ‖v r‖ ^ 2) (fun r _ => by positivity)
     (Finset.mem_univ x)
 
-/-- **The two-level rotation depends on its angle at rate at most two per coordinate.** -/
+/-- **The two-level rotation moves with its trigonometric parameters.** -/
 theorem norm_rotAct_sub_le (i j : Fin K) (θ θ' : ℝ) (v : Fin K → ℂ) (r : Fin K) :
     ‖rotAct i j θ v r - rotAct i j θ' v r‖
-      ≤ 2 * |θ - θ'| * Real.sqrt (∑ x, ‖v x‖ ^ 2) := by
+      ≤ (|Real.cos θ - Real.cos θ'| + |Real.sin θ - Real.sin θ'|) *
+          Real.sqrt (∑ x, ‖v x‖ ^ 2) := by
   classical
   obtain ⟨M, hMdef⟩ : ∃ M : ℝ, M = Real.sqrt (∑ x, ‖v x‖ ^ 2) := ⟨_, rfl⟩
   have hM0 : 0 ≤ M := by rw [hMdef]; exact Real.sqrt_nonneg _
-  have hcos := Real.abs_cos_sub_cos_le θ θ'
-  have hsin := Real.abs_sin_sub_sin_le θ θ'
   have hvi : ∀ x : Fin K, ‖v x‖ ≤ M := by
     intro x
     rw [hMdef]
@@ -376,24 +375,25 @@ theorem norm_rotAct_sub_le (i j : Fin K) (θ θ' : ℝ) (v : Fin K → ℂ) (r :
   split_ifs
   · refine le_trans (norm_ofReal_mul_add_le _ _ _ _) ?_
     rw [abs_neg]
-    nlinarith [hvi i, hvi j, hcos, hsin, hM0, abs_nonneg (Real.cos θ - Real.cos θ'),
+    nlinarith [hvi i, hvi j, hM0, abs_nonneg (Real.cos θ - Real.cos θ'),
       abs_nonneg (Real.sin θ - Real.sin θ'), norm_nonneg (v i), norm_nonneg (v j)]
   · refine le_trans (norm_ofReal_mul_add_le _ _ _ _) ?_
-    nlinarith [hvi i, hvi j, hcos, hsin, hM0, abs_nonneg (Real.cos θ - Real.cos θ'),
+    nlinarith [hvi i, hvi j, hM0, abs_nonneg (Real.cos θ - Real.cos θ'),
       abs_nonneg (Real.sin θ - Real.sin θ'), norm_nonneg (v i), norm_nonneg (v j)]
   · rw [norm_zero]
-    positivity
+    have h1 : (0 : ℝ) ≤ |Real.cos θ - Real.cos θ'| + |Real.sin θ - Real.sin θ'| := by positivity
+    exact mul_nonneg h1 hM0
 
-/-- **The phase gate depends on its angle at rate at most one per coordinate.** -/
+/-- **The phase gate moves with its phase.** -/
 theorem norm_phaseAct_sub_le (i : Fin K) (θ θ' : ℝ) (v : Fin K → ℂ) (r : Fin K) :
     ‖phaseAct i θ v r - phaseAct i θ' v r‖
-      ≤ |θ - θ'| * Real.sqrt (∑ x, ‖v x‖ ^ 2) := by
+      ≤ ‖Complex.exp ((θ : ℝ) * Complex.I) - Complex.exp ((θ' : ℝ) * Complex.I)‖ *
+          Real.sqrt (∑ x, ‖v x‖ ^ 2) := by
   classical
   by_cases hri : r = i
   · subst hri
     rw [phaseAct_apply_self, phaseAct_apply_self, ← sub_mul, norm_mul]
-    refine mul_le_mul (norm_exp_sub_exp_le θ θ') (coord_le_l2 v r) (norm_nonneg _)
-      (abs_nonneg _)
+    exact mul_le_mul_of_nonneg_left (coord_le_l2 v r) (norm_nonneg _)
   · rw [phaseAct_apply_ne i θ v hri, phaseAct_apply_ne i θ' v hri, sub_self, norm_zero]
     positivity
 

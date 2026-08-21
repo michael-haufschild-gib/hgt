@@ -51,7 +51,44 @@ The mollified-determinant (Heinz) definition
 - [ ] 2 → 3  Lean theorem, unconditional, umbrella wired
 - [ ] 3 → 4  preprint
 
+## Landed Lean modules (all unconditional, umbrella-wired)
+
+All under `formal/GaloisForLFunctions/HTGeometry/PoincareHopf/`, namespace
+`GaloisForLFunctions.HTGeometry.PoincareHopf`.
+
+| Module | Main declarations |
+|---|---|
+| `CofactorPermutation` | `cofSum`, `cofSum_eq_adjugate`, `sum_cofSum_mul` |
+| `PiolaIdentity` | `jac`, `hess`, `hess_symm`, `cofD`, `hasFDerivAt_cofSum`, `piola` |
+| `CompactSupportDivergence` | `fieldDivergence`, `integral_fieldDivergence_eq_zero` (wraps the corpus' `HTGeometry.integral_divergence_eq_zero_of_hasCompactSupport`, all dimensions) |
+| `DivergenceForm` | `piolaField`, `hasFDerivAt_piolaField`, `fieldDivergence_piolaField`, `contDiff_piolaField`, `clm_apply_eq_sum` |
+| `VanishingLemma` | `integral_divergence_comp_det_eq_zero` |
+| `TranslationInvariance` | `degIntegral`, `transField`, `transDeriv`, `continuous_det_jac`, `integrableOn_of_continuous`, `degIntegral_translate` |
+| `MollifierIndependence` | `integrable_uncurry_of_continuous`, `degIntegral_convolution`, `degIntegral_eq_of_mass_one` |
+| `Degree` | `bumpWeight`, `AdmissibleRadius`, `degree`, `exists_admissibleRadius`, `degree_eq_degIntegral` |
+
+Key design decisions that made this work:
+- ambient space `Fin n → ℝ` with the sup norm, so `volume` is the pi measure and mathlib's box
+  divergence theorem applies directly;
+- the **mollifier independence** proof avoids the compactly supported Poincaré lemma entirely: it
+  goes through translation invariance plus Fubini on a convolution;
+- **translation invariance** avoids differentiation under the integral sign: the `t`-derivative of
+  `φ (w - t z)` is the divergence of the explicit field `-φ (w - t z) · z`, so the fundamental
+  vanishing lemma applies slicewise and FTC + Fubini finish.
+
+## Next layers (Stage I remainder)
+- I.8b general divergence form: `div (x ↦ (j ↦ ∑ i, cof (Du x)_{i j} G_i x)) = ∑ i j, cof_{i j} ∂_j G_i`
+  for an arbitrary `C¹` field `G` of `x` (generalizes `fieldDivergence_piolaField`).
+- I.9 Jacobi's formula `∂_t det M t = ∑ i j, cof (M t)_{i j} · ∂_t M t _{i j}`, same reindexing as
+  `piola`.
+- I.10 general homotopy invariance (FTC in `t` + Fubini, exactly as in `degIntegral_translate`).
+- I.11 excision and additivity (immediate from the integral formula: the integrand is supported in
+  `{x : ‖f x - y‖ < ρ}`), and normalization `degree id Ω y = 1` for `y ∈ Ω`.
+- I.12 the regular value formula `degree f Ω y = ∑ sign det`, hence integrality.
+
 ## Log
 - 2026-08-21 — created; mathlib audit done (no Poincaré–Hopf, no degree, no Sard, no χ of a space);
   corpus audit done (`BrouwerFixedPoint`, `SmoothNoRetraction`, `DeterminantPolynomialIntegral`
   exist; no degree theory).  Architecture frozen as above.
+- 2026-08-21 — Stage I core complete through the definition of the Brouwer degree and the theorem
+  that it equals the integral against every admissible weight.

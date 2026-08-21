@@ -5,6 +5,7 @@ import GaloisForLFunctions.HTGeometry.GaussBonnetPolarPatch
 import GaloisForLFunctions.HTGeometry.GaussBonnetStarShaped
 import GaloisForLFunctions.HTGeometry.GaussBonnetRiemann
 import GaloisForLFunctions.HTGeometry.GaussBonnetPolygon
+import GaloisForLFunctions.HTGeometry.GaussBonnetGlobalAssembly
 import GaloisForLFunctions.HTGeometry.GaussBonnetTriangulatedTorus
 import GaloisForLFunctions.HTGeometry.GaussBonnetGraph
 
@@ -34,6 +35,8 @@ unconditional Lean statements proved in
 * `GaussBonnetPolyhedral`, `GaussBonnetPolyhedralModels`, `GaussBonnetTriangulatedTorus` — the
   global theorem for closed piecewise-flat surfaces of arbitrary genus, with the tetrahedron and
   the seven-vertex torus;
+* `GaussBonnetGlobalAssembly` — the assembly law turning the local theorem on the faces of a closed
+  surface into the global one;
 * `GaussBonnetGraph` — the theorem for finite simple graphs.
 
 Everything is stated in the same shape,
@@ -67,9 +70,22 @@ geodesic polar coordinates,
 ∫∫_{D_R} K dA + ∮_{∂D_R} κ_g ds = 2π = 2π·χ(disc).
 ```
 -/
-theorem gaussBonnet_geodesic_disc (C : GeodesicPolarChart) {R : ℝ} (hR : 0 < R) :
+theorem gaussBonnet_geodesic_disc (C : GeodesicPolarChart) {R : ℝ} (hR : 0 < R)
+    (hne : ∀ θ : ℝ, ∀ r ∈ Set.Ioc (0 : ℝ) R, C.f (r, θ) ≠ 0) :
     C.totalCurvature R + C.boundaryTurning R = 2 * π :=
-  C.gauss_bonnet_geodesic_disc hR
+  C.gauss_bonnet_geodesic_disc hR hne
+
+/-- **Gauss--Bonnet on the round unit sphere.**  For every geodesic disc of radius below the
+injectivity radius `π`, `∫∫ K dA + ∮ κ_g ds = 2π`, with `K ≡ 1`. -/
+theorem gaussBonnet_sphere_disc {R : ℝ} (h0 : 0 < R) (hpi : R < π) :
+    spherePolarChart.totalCurvature R + spherePolarChart.boundaryTurning R = 2 * π :=
+  spherePolarChart_gauss_bonnet h0 hpi
+
+/-- **Gauss--Bonnet on the hyperbolic plane.**  For every geodesic disc,
+`∫∫ K dA + ∮ κ_g ds = 2π`, with `K ≡ -1`. -/
+theorem gaussBonnet_hyperbolic_disc {R : ℝ} (h0 : 0 < R) :
+    hyperbolicPolarChart.totalCurvature R + hyperbolicPolarChart.boundaryTurning R = 2 * π :=
+  hyperbolicPolarChart_gauss_bonnet h0
 
 /-- **Gauss--Bonnet, star-shaped form.**  For every closed star-shaped region about the pole of a
 geodesic polar chart on an arbitrary smooth Riemannian surface,
@@ -145,6 +161,19 @@ theorem gaussBonnet_sphere_type {W : WarpProfile} {a b : ℝ} (hab : a ≤ b)
 theorem gaussBonnet_polyhedral {V F : Type*} [DecidableEq V] [Fintype V] [Fintype F]
     (T : ClosedTriangulation V F) : T.totalDefect = 2 * π * (T.eulerChar : ℝ) :=
   T.gauss_bonnet_polyhedral
+
+/-- **Gauss--Bonnet, global assembly form.**  For a closed surface cut into Gauss--Bonnet faces
+glued isometrically,
+
+```text
+Σ_f ∫∫_f K dA = 2π · χ,     χ = V - E + F.
+```
+
+The local Gauss--Bonnet identity on each face is a theorem (`gaussBonnet_polygon`), not an
+assumption: `ofStarPolygons` discharges it. -/
+theorem gaussBonnet_global {ι : Type*} [Fintype ι] (A : ClosedSurfaceAssembly ι) :
+    ∑ f, A.curv f = 2 * π * (A.eulerChar : ℝ) :=
+  A.gauss_bonnet_global
 
 /-- **Gauss--Bonnet for finite simple graphs.**  The total combinatorial curvature is the Euler
 characteristic. -/

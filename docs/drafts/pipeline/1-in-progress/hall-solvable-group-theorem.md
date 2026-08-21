@@ -59,3 +59,19 @@ three-subgroup theorem (to be built) closes it. Two prime divisors is Burnside.
 
 ## Log
 - 2026-08-21 — created; mathlib/corpus audit done; Phase A started.
+- 2026-08-21 — **Phase A complete and Lean-closed** (axioms: only `propext`, `Classical.choice`,
+  `Quot.sound`):
+  `HTGeometry/HallSolvable/MinimalNormal.lean` (`exists_abelian_normal_prime_pow_card`),
+  `ComplementConjugacy.lean` (`exists_conj_eq_of_isComplement'` — the conjugacy half of
+  Schur–Zassenhaus for abelian `N`, a mathlib gap), `Existence.lean`
+  (`exists_subgroup_card_of_coprime` = **E_pi**), `Conjugacy.lean`
+  (`conj_eq_of_card_eq_of_coprime` = **C_pi**), `PiSubgroup.lean` (`IsHallPiSubgroup`,
+  `exists_isHallPiSubgroup`, `conj_of_isHallPiSubgroup`).  All wired into `HTGeometry.lean`.
+- 2026-08-21 — Phase B in progress under `HTGeometry/GroupCharacter/`:
+  `RegularDecomposition.lean` (`IsGStable`, `exists_simple_decomposition`, `trace_regLeft`),
+  `Character.lean` (`rho`, `chi`, `sum_chi` = raw column orthogonality),
+  `Schur.lean` (`schur`, `sumRho_dichotomy`), `TrivialSummand.lean`
+  (`existsUnique_isTrivialOn`), `Eigenvalues.lean` (`exists_eigen_multiset`),
+  `Integrality.lean` (`chi_isIntegral`, `chi_conj`, `exists_classSum_scalar`).
+  Remaining: the algebraic-integer norm bound (`|chi x| = finrank` when `chi x / finrank` is an
+  algebraic integer), the scalar criterion, Burnside `p^a q^b`, and Hall's converse.

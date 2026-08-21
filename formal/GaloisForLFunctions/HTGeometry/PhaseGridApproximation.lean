@@ -99,12 +99,11 @@ theorem norm_prod_sub_prod_le {ι : Type*} :
 /-- The `j`-th of `m` equally spaced angles. -/
 def gridAngle (m : ℕ) (j : Fin m) : ℝ := 2 * Real.pi * (j : ℕ) / m
 
-/-- **Grid approximation.**  Every phase is matched to within `2π/m` by one of the `m` grid angles,
-after the sign `g = ±1` is applied. -/
-theorem exists_gridIndex {m : ℕ} (hm : 0 < m) (alpha : ℝ) :
-    ∃ j : Fin m, ∀ g : ℝ, |g| = 1 →
-      ‖Complex.exp ((-(alpha * g) : ℝ) * Complex.I)
-        - Complex.exp ((-(gridAngle m j * g) : ℝ) * Complex.I)‖ ≤ 2 * Real.pi / m := by
+/-- **Grid approximation of an angle modulo `2π`.**  Every real angle is within `2π/m` of one of
+the `m` grid angles, after an integer number of full turns. -/
+theorem exists_gridIndex_angle {m : ℕ} (hm : 0 < m) (alpha : ℝ) :
+    ∃ (j : Fin m) (kk : ℤ),
+      |alpha - (gridAngle m j + 2 * Real.pi * kk)| ≤ 2 * Real.pi / m := by
   classical
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
   have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
@@ -114,9 +113,6 @@ theorem exists_gridIndex {m : ℕ} (hm : 0 < m) (alpha : ℝ) :
     have h0 : 0 ≤ q % (m : ℤ) := Int.emod_nonneg q hmne
     have h1 : q % (m : ℤ) < (m : ℤ) := Int.emod_lt_of_pos q (by exact_mod_cast hm)
     omega
-  refine ⟨⟨(q % (m : ℤ)).toNat, hjlt⟩, ?_⟩
-  intro g hg
-  -- the grid angle of the chosen index differs from `2πq/m` by a multiple of `2π`
   obtain ⟨kk, hkk⟩ : ∃ kk : ℤ, (q : ℝ) = ((q % (m : ℤ)).toNat : ℝ) + (m : ℝ) * kk := by
     refine ⟨q / (m : ℤ), ?_⟩
     have h0 : 0 ≤ q % (m : ℤ) := Int.emod_nonneg q hmne
@@ -126,38 +122,47 @@ theorem exists_gridIndex {m : ℕ} (hm : 0 < m) (alpha : ℝ) :
       rw [hcast]
       linarith [hme]
     exact_mod_cast congrArg (fun z : ℤ => (z : ℝ)) hz
-  obtain ⟨beta, hbetadef⟩ : ∃ beta : ℝ, beta = 2 * Real.pi * (q : ℝ) / (m : ℝ) := ⟨_, rfl⟩
-  have hgrid : gridAngle m ⟨(q % (m : ℤ)).toNat, hjlt⟩ = beta - 2 * Real.pi * kk := by
-    rw [gridAngle, hbetadef, hkk]
+  refine ⟨⟨(q % (m : ℤ)).toNat, hjlt⟩, kk, ?_⟩
+  have hgrid : gridAngle m ⟨(q % (m : ℤ)).toNat, hjlt⟩ + 2 * Real.pi * kk
+      = 2 * Real.pi * (q : ℝ) / (m : ℝ) := by
+    rw [gridAngle, hkk]
     field_simp
-    ring
-  have hclose : |alpha - beta| ≤ 2 * Real.pi / m := by
-    have ht : alpha - beta
-        = (2 * Real.pi / (m : ℝ)) * (alpha * (m : ℝ) / (2 * Real.pi) - (q : ℝ)) := by
-      rw [hbetadef]
-      field_simp
-    rw [ht, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ 2 * Real.pi / (m : ℝ))]
-    have hfl : (q : ℝ) ≤ alpha * (m : ℝ) / (2 * Real.pi) := by
-      rw [hqdef]
-      exact Int.floor_le _
-    have hfl' : alpha * (m : ℝ) / (2 * Real.pi) < (q : ℝ) + 1 := by
-      rw [hqdef]
-      exact Int.lt_floor_add_one _
-    have habs : |alpha * (m : ℝ) / (2 * Real.pi) - (q : ℝ)| ≤ 1 := by
-      rw [abs_le]
-      constructor <;> linarith
-    nlinarith [habs, (by positivity : (0:ℝ) ≤ 2 * Real.pi / (m : ℝ))]
-  -- periodicity
-  have hper : Complex.exp ((-(gridAngle m ⟨(q % (m : ℤ)).toNat, hjlt⟩ * g) : ℝ) * Complex.I)
+  rw [hgrid]
+  have ht : alpha - 2 * Real.pi * (q : ℝ) / (m : ℝ)
+      = (2 * Real.pi / (m : ℝ)) * (alpha * (m : ℝ) / (2 * Real.pi) - (q : ℝ)) := by
+    field_simp
+  rw [ht, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ 2 * Real.pi / (m : ℝ))]
+  have hfl : (q : ℝ) ≤ alpha * (m : ℝ) / (2 * Real.pi) := by
+    rw [hqdef]
+    exact Int.floor_le _
+  have hfl' : alpha * (m : ℝ) / (2 * Real.pi) < (q : ℝ) + 1 := by
+    rw [hqdef]
+    exact Int.lt_floor_add_one _
+  have habs : |alpha * (m : ℝ) / (2 * Real.pi) - (q : ℝ)| ≤ 1 := by
+    rw [abs_le]
+    constructor <;> linarith
+  nlinarith [habs, (by positivity : (0:ℝ) ≤ 2 * Real.pi / (m : ℝ))]
+
+/-- **Grid approximation.**  Every phase is matched to within `2π/m` by one of the `m` grid angles,
+simultaneously for both signs `g = ±1`. -/
+theorem exists_gridIndex {m : ℕ} (hm : 0 < m) (alpha : ℝ) :
+    ∃ j : Fin m, ∀ g : ℝ, |g| = 1 →
+      ‖Complex.exp ((-(alpha * g) : ℝ) * Complex.I)
+        - Complex.exp ((-(gridAngle m j * g) : ℝ) * Complex.I)‖ ≤ 2 * Real.pi / m := by
+  obtain ⟨j, kk, hclose⟩ := exists_gridIndex_angle hm alpha
+  refine ⟨j, fun g hg => ?_⟩
+  obtain ⟨beta, hbetadef⟩ : ∃ beta : ℝ, beta = gridAngle m j + 2 * Real.pi * kk := ⟨_, rfl⟩
+  have hper : Complex.exp ((-(gridAngle m j * g) : ℝ) * Complex.I)
       = Complex.exp ((-(beta * g) : ℝ) * Complex.I) := by
-    rw [hgrid]
+    rw [hbetadef]
     have hgint : ∃ z : ℤ, (g : ℝ) = (z : ℝ) := by
       rcases abs_eq (by norm_num : (0:ℝ) ≤ 1) |>.mp hg with h | h
       · exact ⟨1, by rw [h]; norm_num⟩
       · exact ⟨-1, by rw [h]; norm_num⟩
     obtain ⟨z, hz⟩ := hgint
-    have hsplit : ((-((beta - 2 * Real.pi * kk) * g) : ℝ) : ℂ) * Complex.I
-        = ((-(beta * g) : ℝ) : ℂ) * Complex.I + ((kk * z : ℤ) : ℂ) * (2 * Real.pi * Complex.I) := by
+    have hsplit : ((-((gridAngle m j + 2 * Real.pi * kk) * g) : ℝ) : ℂ) * Complex.I
+        = ((-(gridAngle m j * g) : ℝ) : ℂ) * Complex.I
+          + ((-(kk * z) : ℤ) : ℂ) * (2 * Real.pi * Complex.I) := by
       push_cast
       rw [hz]
       push_cast
@@ -168,8 +173,26 @@ theorem exists_gridIndex {m : ℕ} (hm : 0 < m) (alpha : ℝ) :
   have habs : |(-(alpha * g)) - (-(beta * g))| = |alpha - beta| := by
     rw [show (-(alpha * g)) - (-(beta * g)) = (alpha - beta) * (-g) by ring, abs_mul, abs_neg, hg,
       mul_one]
-  rw [habs]
+  rw [habs, hbetadef]
   exact hclose
+
+
+/-- **Grid approximation for the trigonometric pair.** -/
+theorem exists_gridIndex_trig {m : ℕ} (hm : 0 < m) (alpha : ℝ) :
+    ∃ j : Fin m, |Real.cos alpha - Real.cos (gridAngle m j)| ≤ 2 * Real.pi / m
+      ∧ |Real.sin alpha - Real.sin (gridAngle m j)| ≤ 2 * Real.pi / m := by
+  obtain ⟨j, kk, hclose⟩ := exists_gridIndex_angle hm alpha
+  refine ⟨j, ?_, ?_⟩
+  · have hcos : Real.cos (gridAngle m j + 2 * Real.pi * kk) = Real.cos (gridAngle m j) := by
+      rw [show gridAngle m j + 2 * Real.pi * kk = gridAngle m j + (kk : ℝ) * (2 * Real.pi) by ring]
+      exact Real.cos_add_int_mul_two_pi _ _
+    rw [← hcos]
+    exact le_trans (Real.abs_cos_sub_cos_le _ _) hclose
+  · have hsin : Real.sin (gridAngle m j + 2 * Real.pi * kk) = Real.sin (gridAngle m j) := by
+      rw [show gridAngle m j + 2 * Real.pi * kk = gridAngle m j + (kk : ℝ) * (2 * Real.pi) by ring]
+      exact Real.sin_add_int_mul_two_pi _ _
+    rw [← hsin]
+    exact le_trans (Real.abs_sin_sub_sin_le _ _) hclose
 
 end GaloisForLFunctions.HTGeometry
 
