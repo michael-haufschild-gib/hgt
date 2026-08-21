@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`42036a81cf2cdaf8bb81bef4727a86a288111c57` on 21 August, plus declaration-level working-tree
+`2047e1d7b2c5c8cea78cf968d06f82e5e901325f` on 21 August, plus declaration-level working-tree
 review. Historical `Active-tree Lean` wording records former provenance. Current
 formal route status is maintained in `rh-current-frontier-map.md`; detailed sections below are a
 literature-exchange record and may retain older intermediate formulations. External literature was
@@ -30,23 +30,23 @@ comparison and theorem provenance, not chronological status.
 
 | Route | Corpus-only frontier contribution now established | What external SOTA still offers |
 |---|---|---|
-| CCM-FU | Whole completed source matrix and cubic/anchored/Cesàro endpoint are exact. Triangular-window boundedness is now exactly boundedness of one completed oriented quantile current retaining internal and terminal transports; terminal coefficient cancels exactly. Positive rectangular density plus endpoint atom gives an exact bounded-mass mixture of rectangular reporters. | No located theorem controls completed signed quantile current. Rectangular-mixture identity creates a kernel-level opening, but no external or corpus theorem yet bounds corresponding signed arithmetic rectangular currents. |
-| C1 | Fixed theta inverse realizes Xi divisor with multiplicity, but canonical reflected Stokes carrier overspends completed zeroth mass and no positive dominating supercarrier can repair it. New Cauchy localization identifies exact negative direction any corrected carrier must remove: an off-line fibre forces collision-free continued two-pole packets with `(even,odd,source)->(0,N,-N)`. Full-space density is no longer open; cofinal antisymmetric rank-two escape is exact obstruction. | Existing Fredholm/de Branges/Weil theory neither supplies a signed/non-dominating corrected source carrier nor excludes this moving source escape before divisor selection. |
+| CCM-FU | Triangular window, anchored moment, completed quantile current, and one literal marked rectangular current are exact equivalents. Positive aperture density plus endpoint atom gives bounded-mass autocorrelation mixture; Fubini keeps cancellation inside one signed integral and each slice is a causal first Volterra primitive. Working-tree wall transport shows fixed lower anchor is inessential. | No located theorem uniformly bounds this signed marked prime--polar current. Positive aperture measure cannot justify slice-wise absolute values, and external SOTA offers no source-current order preserving cross-aperture cancellation. |
+| C1 | Fixed theta inverse realizes Xi divisor with multiplicity, but reflected Stokes carrier overspends completed mass and no positive dominating supercarrier repairs it. Off-line fibre forces two-pole packets `(even,odd,source)->(0,N,-N)`. Working-tree modules close Connes' S-unit supremum and Sobolev growth-weight/translation/integrability lemmas, not source occurrence. | Existing Fredholm/de Branges/Weil theory neither supplies a signed/non-dominating corrected source carrier nor excludes moving source escape before divisor selection. Classical Connes analytic infrastructure is no longer first gap. |
 | D2 | Fixed-band reduction remains exact. At `I/4`, canonical directed prime-log KMS and directed Stokes passive responses have strict real signs incompatible with the zero real part of completed response; reflected response repairs parity but positive raw-carrier completion still fails normalization. | Pretentious and zero-free-region literature supplies safe-line inputs, not a reflected signed/non-dominating continuation law controlling completed positive tail. |
 | E | Growing-truncation Step 1, exact Ramaré incidence, both-sign half-power marker supply, joint-omega budgets, and two-range splitting are formal. Large Bohr-set existence and finite pointwise/arithmetic dense-model transference are exact. Final producer remains one fixed relation with subinterval Hall, unit load, co-moving flux, and Gibbs cost. | No located external theorem gives this joint source-fixed relation theorem; finite unsigned dense-model control still does not define adjacency or signed flux. |
 | F2 | Literal all-prime principal-relative Sonin residual is Hilbert--Schmidt; its positive trace-class energy has nonnegative polynomial trace--Hankel forms governed by one moment sequence. One cofinal aperture section or positive aperture barycenter matching it to continued prime--Gamma moments implies RH. Completed cyclic prime-power traces and a positive prolate finite-part carrier are separate. Euler inverse and both polar square-root corrections retain a noncompact Sonin seam; the relative-resolvent corner is its exact Sylvester transform. | Existing exchange found no theorem proving this all-moment arithmetic Sonin/prolate weld. Scalar trace matching and passive polar compactification cannot place the complete prime--Gamma sequence in the positive Sonin Hankel cone. |
 | G | Pre-scalar affine Ward landing is exact. Squarefree Möbius channel is a genuine coisometric signed projection. Actual-head reflection parity proves scalar transport erases wall orientation; odd wall jet paired with odd polar connection gives an exact reflection-even current with forced source coefficient. Four-unit positivity and full half-unit moment tower remain exactly RH. | Need independent source law producing favorable four-unit/Ward order. Exact covariant occurrence does not orient or annihilate its coefficient globally. |
 | L | Strict rational-adelic resolved-Xi chain provenance is formal and retains prime, depth, divisor, and nonzero leading Xi coefficient. A concrete cofinal Tate arithmetic boundary and its completed Xi Green limit are formal; every finite chain and the limit have the same actual Gamma/Sonin physical value, which vanishes exactly on the critical line. | Need one source-derived singular comparison, before divisor specialization, identifying resolved boundary flatness with the existing coefficient-faithful Burnol/Deninger physical landing. Continuous-restriction/Bessel packaging is no longer the first scientific gate. |
-| O | Canonical heads converge to true ground. Scalar reserve is impossible, but one infinite PSD projective Fock kernel now contains every atom and its ± rotating probes. Their positive entry-ratio holonomy has half-log exactly equal to intact finite source, and every finite matched block is its spectral integral. | Need source order comparing positive/negative probe holonomy so its half-log has required integrated sign, while restoring physical cutoff and collar. Carrier and cocycle occurrence are closed; this remains an O subarchitecture. |
+| O | Canonical heads converge to true ground. Source-selected gauge gives summable rank-two PSD/Schatten carrier and trace-class chiral/Hermitian orientation observable. Working-tree `3x3` atom compressions have unique normalized nodal lines whose ratio is exact signed source; finite block is their spectral integral. | Need source order signing nonlinear matrix/nodal-ratio reporter after spectral integration, plus physical cutoff/collar restoration. Carrier, trace class, nodal selection, and orientation occurrence are closed; this remains an O subarchitecture. |
 | P | Second-Cartier radial orbit coercivity is Lean-formal. Genuine reflected shell descent converges to endpoint energy, all regular reflection-pair extractors are excluded off line, and Route N capacity excess is exactly the same radial-work invariant. | Need singular/projective pre-divisor source moderation with one orbit-depth-independent energy budget; universal boundedness and every regular extractor are RH-equivalent. |
 | Q | Orientation vector lies in exact Euler-safe paired closure. Infinite-aperture boundary terms vanish, all prime powers assemble into critical Mellin source, and paired value is compensated Gauss-resolvent quadratic minus critical-error current. At discharged exterior radius, nonnegativity of scalar paired diagonal is Xi-specifically equivalent to all finite matrix passivity and RH. | Need independent source proof of scalar exterior diagonal sign. Matrix evaluation and diagonal collapse are receivers; their reverse implication already passes through RH. |
 | CLG/TTF | Critical Carathéodory energy, Euler-safe observability deficit, completed-theta neutral flux, and even-minus-odd Weil energy are same packet under invertible rescaling. Regular two-pole Cauchy passivity alone is exactly RH. Every off-line fibre forces admissible moving source packets with `(even,odd,source)->(0,N,-N)`. Tangential Schwarz-pair crossing is always strictly negative; only complementary source-normal channel has RH zero set. | Need one completed-source no-escape law excluding those cofinal antisymmetric rank-two sequences. Fixed-node order, generic source shape, tangential crossing, and evaluated deficit do not provide it. |
-| SP-E | Natural Suzuki reporter lower-Hardy amplitude is exactly coherent finite-prime outgoing charge. Subtracting regular-screw continuum gives completed Green/Ward-wall amplitude, and uniform boundedness is exactly RH. Exact secant localization proves why cancellation must occur before energy: the nonnegative transition core diverges along `8n` and dominates squared prime charge even after every favorable pair is removed. | Need a direct source theorem uniformly bounding atomic prime charge minus continuous regular-screw mass. External literature was not re-audited for this newly promoted route in this Lean-only pass; positive-energy substitutes are formally excluded. |
+| SP-E | Natural reporter is coherent prime outgoing charge; subtracting regular-screw continuum gives completed Green/Ward amplitude. Prime one-step change has no local birth term and is exactly quarter-dilation gain minus debt. Secant positive energy still diverges. | Need a source comparison of signed prime dilation flux with continuum increment that telescopes to uniform amplitude imbalance. Separate positive gain/debt estimates destroy required cancellation; external literature was not re-audited in this Lean-only pass. |
 | SCE | Suzuki source is exactly reservoir minus cumulative Mangoldt slope plus first moment on each integer event cell. Positive curvature gives a unique checkpoint; restricted Legendre conjugacy evaluates its floor, and nonnegative floors are exactly RH. | Need source-first conjugate-versus-moment order or event recurrence. External literature was not re-audited for this new corpus-born architecture; convexity and Bregman positivity alone do not orient absolute floor. |
 | T1 | Exact finite-arithmetic bridge shows top-row decay is offset by finite-translation survivor. Full exact-multiplicity Xi Mellin zero series is absolutely summable and its normalized packet tends to zero. The rephased primal derivative `LSeries` is now exactly the literal source field and inherits affine `L2` bound `O(N log^5 N+H log^6 N)`. | Need source-first signed short Möbius-block cancellation retaining joint top-row/translation sign. Source occurrence is closed; variation bound is unsigned and transfer-current sublinearity remains exactly RH. |
-| T2 | Ordered-prime Wold residual has exact continuation receiver and gap-energy endpoint. Canonical packet/envelope, `11/5` derivative receiver, order-500 reserve, and weighted cell `L2` are formal. Exact crossing and fixed-label fibre alternatives now have no upper height-ratio bound. | Need form/color literal selected cells source-first at `11/5`, aggregate them over physical gap shells to get `sum gap(p)^2/p^(3/2)<infinity`, then prove signed/renormalized subhalf continuation allowing forced boundary poles. |
+| T2 | Ordered-prime Wold residual has exact continuation receiver and gap-energy endpoint. The `11/5` theorem bodies close selected-box/color/count formation from literal aggregate-largeness and reserve premises; physical-cutoff retention and adaptive exponent cancellation are explicit. One imported source file has duplicate namespace closures, so this chain is not yet credited as Lean-proved. | Need show actual physical gap shells satisfy aggregate/reserve premises uniformly, sum resulting packets into `sum gap(p)^2/p^(3/2)<infinity`, then prove signed/renormalized subhalf continuation allowing forced boundary poles. |
 | U | Source-only fixed-shift Hankel tail criterion is exact RH. Strict-frontier numerator is regular but exact quotient is nonintegrable; all-frontier local integrability is RH. Non-RH frontier is cofinal inside proved parabolic degree horizon. Beyond each terminal frontier, adaptive mixed source has an unconditional dimensionless cumulative Jacobi-flux floor `1/4`, uniform in joint mass/degree escape. | Need non-scalar source mechanism excluding endogenous frontier zero or favorable uniform tail order; positive flux capital, generic regularity, and schedule delay do not orient the crossing. |
-| HC | Two-prime/exterior Cayley and Gauss--Hodge receivers retain labels, orientation, multiplicity, and phase. CGL closes all-order first Fourier decay, exact log-profile reduction, `j=1` reciprocal bound, and every logarithmic additive-phase jet as an explicit degree-`n` polynomial with `C_n(1+|xi|)^n` control. | Need full higher reciprocal-profile product-rule/L1 and integration-by-parts closure plus conductor/height-uniform selected not-all-equal correlation and large-height aggregation, or another upstream strict-subquantum/prime-summability law. |
+| HC | Two-prime/exterior Cayley and Gauss--Hodge receivers retain labels, orientation, multiplicity, and phase. CGL closes both all-order decay families and all phase jets. Working-tree Lemma-4.5 modules normalize literal Gram entries to `h_t` and cancel three dyadic scale phases in cubic trace. | Need conductor/height-uniform control of resulting not-all-equal six-label correlation after Poisson and large-height aggregation, or another upstream strict-subquantum/prime-summability law. Kernel/normalization seam is closed. |
 | SV2 | Literal Suzuki energy space has self-adjoint boundary-phase extensions and exact entire real-zero characteristics. Fixed phases `0,pi` give a pole-compatible projective characteristic, uniformly bounded in upper half-plane; canonical apertures have a cofinal locally uniform subsequential limit. Deficiency vectors are literal completed restricted-Weil covariance sources. Reflection exchanges channels; actual covariance realizes nonnegative coalescing tangent. Global Xi Livsic pair maps projectively to v2 target without division. The ambient Weil operator/Friedrichs-extension and form-core identification is now closed. | Need identify normal-family limit with global Xi projective target on finite chart containing every Xi zero, then prove reciprocal-chart convergence and eventual zero-freeness at target poles. |
 
 Current candidate count is thirteen: `UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, PCS,
@@ -59,11 +59,15 @@ aperture height and ranges over every positive target independently of the shift
 normal-coordinate receiver survives; a viable successor must use a source-native invariant fixed
 before aperture selection and is not SNR.
 
-New Hilbert rational separating labels and full-symmetric resolvent irreducibility,
-Pollard translation/boost counts, augmented low-degree homology, exact co-Lie products/base change,
-Kleinbock--Margulis line chains, and placewise detection of fixed algebra-map diagrams strengthen
-general toolkit but do not alter exchange classification. None has a completed Xi source/reader
-landing; ABHN still lacks global exactness and arithmetic-Xi specialization. The static-Choi
+Hilbert specialization preserving full symmetric Galois group, completed Pollard Step-1/2/Case-4
+branches, augmented low-degree homology, Cartier bialgebra/double dual/Lie primitives, exact co-Lie
+base change, Kleinbock--Margulis nondegenerate-goodness, and finite `SU` Haar products strengthen
+general toolkit; working-tree Haferkamp Pauli selection and phase-normalized `SU(4)` representatives close exact finite rank-induction/conjugation steps. None alters
+exchange classification or has completed Xi source/reader
+landing; ABHN still lacks global exactness and arithmetic-Xi specialization. Working-tree inverse
+Neumann module gives Suzuki equation (8.2), equating primitive energy with prefix-Gram and Neumann
+Green forms on mean-zero interval data. Working-tree Connes modules close S-unit supremum and
+Sobolev-weight translation/integrability infrastructure. These are connectors, not source sign. Static-Choi
 layer now brackets complete-dictionary hard blocks by consecutive visits; one nearest-neighbor
 Gaussian draw supplies both finite-time growth and these returns, still without arithmetic Xi data.
 `ClosedPrimeBraid.lean` proves that the concrete prime-`2,3` full twist has
@@ -143,8 +147,8 @@ an entire Bezoutian and isolates source-defined Hilbert Gram factorization as ex
 Universal aperture positivity is nevertheless exactly RH because current form still uses
 Xi-divisor polarization; W2C is a cross-route receiver bridge,
 not an additional live route. PBM adds quantized continued-prime monodromy at infinity.
-CCM-FU's anchored moment is now reduced exactly to one completed oriented quantile current; terminal
-coefficient cancels and bounded positive rectangular mixture resolves its test kernel. SCE reduces
+CCM-FU's anchored moment is now the same single signed marked rectangular current as its completed
+quantile transport; positive aperture mixture, Fubini, and causal Volterra slices are exact. SCE reduces
 literal Suzuki source to unique event-cell floors and exact restricted Legendre conjugates, while
 the conjugate-versus-moment order remains RH-bearing. E closes
 unsigned cofactor-band supply, partition rows, and block-cardinality-free exceptional-measure
@@ -153,25 +157,24 @@ aperture-independent sign shortcut. T1 closes all-height
 twisted Mertens and damped cofactor prefix bounds but still lacks signed short-block current
 cancellation. T2 has the exact Wold--mesh/Chebyshev-error residual and multiplicity-faithful ODE
 receiver. Canonical degree-60 cutoff, fixed-source envelope, literal `11/5` derivative receiver,
-order-500 low-cell reserve, and weighted actual-cell `L2` are now formal separately. Exact crossing
-and fixed-label fibre counting no longer impose an upper height-ratio bound. Source formation and
-coloring of those labels at `11/5`, critical-weight gap-shell assembly, and signed subhalf
-continuation remain open; absolute critical
+order-500 low-cell reserve, and weighted actual-cell `L2` are now formal separately. The 11/5
+selected-box/color/count bodies reduce formation to literal aggregate-largeness and reserve inputs,
+but one duplicate namespace closure blocks formal credit. Physical-shell discharge of those inputs,
+critical-weight gap-shell assembly, and signed subhalf continuation remain open; absolute critical
 graph variation is closed negatively.
 L has strict resolved arithmetic provenance and an actual Gamma/Sonin receiver; it still lacks the
 singular source-to-fixed-physical comparison. Q has exact paired-current/resolvent assembly and
-Xi-specific scalar-diagonal collapse, but lacks an independent source sign. O has an exact finite
-two-channel matched seam, positive wall-light orientation jet, strict center-reserve no-go, and one
-global projective PSD Fock kernel whose positive holonomy half-log recovers every finite block. It
-still lacks probe-ratio order and global actual-head sign. HC has full primitive-divisor
+Xi-specific scalar-diagonal collapse, but lacks an independent source sign. O has exact matched
+seam, summable rank-two PSD/Schatten carrier, trace-class chiral readout, and unique normalized
+atomwise nodal lines recovering every finite block; nonlinear reporter order remains. HC has full primitive-divisor
 family reindexing, character-dependent Jensen capacity, natural separated selection, CGL source
 matrix reductions, exact cubic diagonal cancellation, `h_0` trace--Poisson, and `7/3` exponent
-arithmetic, all-order first Fourier decay, first reciprocal-parameter decay, and all logarithmic
-additive-phase jets, but lacks full higher reciprocal-profile assembly and conductor/height-uniform
-correlation control.
+arithmetic, both all-order Fourier-decay families, all additive-phase jets, and exact Lemma-4.5
+entry/cubic normalization. It lacks conductor/height-uniform correlation control and aggregation.
 SV2 now fixes its aperture schedule, phase pair, projective normalization, literal covariance
 source, and local compactness;
-its producer has narrowed to global target identification and pole-chart propagation.
+its producer has narrowed to global target identification and pole-chart propagation. SP-E now
+has exact prime dilation increment as quarter-wall gain minus debt; continuum comparison is open.
 CLG/TTF's sole producer is now exact cofinal two-pole no-escape for moving antisymmetric Cauchy
 packets; the flux, observability, and parity presentations are formally equivalent, not independent
 routes. Schwarz tangential crossing is terminal because it is nonzero at every Xi divisor.
@@ -7111,8 +7114,8 @@ Entire-heat audit adds a clean exclusion: if a one-sided periodic heat orbit is 
 variables and its multiplicative anchor is D-finite, its spectrum is finite. Holonomic infinite
 heat anchoring therefore cannot hide the missing all-prime selector.
 
-Current Lean-only state has seventeen live architectures and thirteen candidates. Independent live
-names are `CCM-FU, C1, D2, E, F2, G, L, O, P, Q, CLG/TTF, SP-E, T1, T2, U, HC, SV2`.
+Current Lean-only state has eighteen live architectures and thirteen candidates. Independent live
+names are `CCM-FU, C1, D2, E, F2, G, L, O, P, Q, CLG/TTF, SP-E, SCE, T1, T2, U, HC, SV2`.
 SNR is terminal: its explicit parabolic synchronization reads arbitrary external aperture height,
 not shifted-Xi source. Live SP-E is instead the amplitude-before-energy atomic--continuous Suzuki
 balance; its older determinant/spectrum-moving children remain terminal.
@@ -7158,19 +7161,20 @@ short-current producer is unchanged; the literal primal derivative source field 
 `O(N log^5 N+H log^6 N)` affine mean square add only unsigned variation control. T2 separately has an exact Wold--mesh/Chebyshev-error residual
 and multiplicity-faithful ODE receiver. Canonical packet/cutoff, full frozen-source envelope,
 `11/5` derivative receiver, order-500 low-cell reserve, and weighted actual-cell `L2` are separate
-theorems; fixed-label count has no upper height ceiling, but source label formation at `11/5`,
+theorems. Selected-cell/count bodies reduce formation to literal aggregate-largeness and reserve,
+but their imported source file has a namespace syntax defect. Physical-shell discharge,
 critical gap-energy assembly, and signed subhalf continuation remain, and absolute
 critical graph variation is impossible. In the CGL side branch, the literal `h_0` support,
 reduced-residue partition, real trace, and trace--Poisson identity are exact; global large-height
-conductor-uniform zero counting remains open; all-order first Fourier decay, exact compact-log
-reduction, and `j=1` reciprocal-parameter bound are closed, but higher reciprocal orders are not;
+conductor-uniform zero counting remains open; both all-order Fourier-decay families, compact-log
+reduction, reciprocal product-rule/`L1` assembly, and additive phase jets are closed;
 primitive-conductor zero/order/detector transport,
 the primitive-family carrier/partition, and final `7/3` exponent arithmetic are closed. L has strict resolved-Xi chain
 provenance and a concrete cofinal arithmetic boundary with actual Gamma/Sonin physical transport;
 only source-derived singular identification with fixed Burnol/Deninger landing remains. O's remote
 reciprocal-square divisor tail, exact matched-cell finite support, physical-block boundary collar,
-rigid matched/quantile coverage seam, and projective Fock holonomy carrier are closed, not probe-ratio
-order or the seam's finite true-ground sign. HC has a sharp
+rigid matched/quantile seam, summable rank-two PSD/Schatten carrier, and trace-class chiral
+orientation observable are closed, not nonlinear reporter order or finite true-ground sign. HC has a sharp
 singleton-fibre charging law and now eliminates critical-edge and admissible-height hypotheses from
 its Levinson branch, but still lacks absolute detector-zero/off-line upper control. Anchor-star adjugate transfer and
 finite-type Nullstellensatz point specialization close spectral-chart and Galois-torsor adapters.
@@ -7238,7 +7242,7 @@ global target identification and reciprocal chart remain open. Legacy Deninger r
 now proved Galois with group `Q8`. The source-authenticated Serre field is also degree eight and
 Galois with group `Q8`, and carries the literal pulled-back two-dimensional symplectic Artin
 representation. Only its global Artin epsilon factor remains, and finite real descent stays
-terminal by parity. Current classification is seventeen live and thirteen candidates. UEB remains
+terminal by parity. Current classification is eighteen live and thirteen candidates. UEB remains
 supported by exact Bezoutian sufficiency and marked unit-residue equivalence; PSRC by exact
 prime-shift residue graph-closability equivalence and explicit nonclosability witnesses; live
 CLG/TTF by exact theta-flux/Euler-observability weld and RH endpoint; candidate PBM by exact continued-prime
