@@ -121,10 +121,11 @@ theorem finite_pairwise_hilbert_dispersion_nonpos_of_sum_eq_zero
     (s : Finset ι) (w : ι → ℝ) (v : ι → E) (hw : ∑ i ∈ s, w i = 0) :
     (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2) ≤ 0 := by
   rw [finite_pairwise_hilbert_dispersion_of_sum_eq_zero s w v hw]
-  positivity
+  nlinarith [sq_nonneg ‖∑ i ∈ s, w i • v i‖]
 
 /-- Equality in conditional negative type is exactly vanishing of the weighted resultant. -/
 theorem finite_pairwise_hilbert_dispersion_eq_zero_iff_of_sum_eq_zero
+    {ι E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     (s : Finset ι) (w : ι → ℝ) (v : ι → E) (hw : ∑ i ∈ s, w i = 0) :
     (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2) = 0 ↔
       ∑ i ∈ s, w i • v i = 0 := by

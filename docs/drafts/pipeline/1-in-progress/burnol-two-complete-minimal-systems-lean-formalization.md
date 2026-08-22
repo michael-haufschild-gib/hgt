@@ -26,7 +26,7 @@ completely-regular-growth theory.  These are the real gaps.
 | (5) | Müntz formula | ζ(s)∫φ tˢ⁻¹ = ∫(modified Poisson sum)tˢ⁻¹ | **TODO** |
 | (6) | Müntz applied to g(1/t)/t | co-Poisson Mellin | **TODO** |
 | (7) | `F₊(f)^(s) = χ(s) f^(1-s)`; χ = ζ(s)/ζ(1−s) | Mellin diagonalization | **TODO** (needs Mellin unitary) |
-| Thm 2.1 | de Branges: `M(f)` entire on `K_a`, evaluations continuous | analytic half **DONE** (continuation to `Re s > 0`, `SoninMellinHalfPlaneExtension`); weld = brick B7 | |
+| Thm 2.1 | de Branges: `M(f)` entire on `K_a`, evaluations continuous | **DONE**: `RHTower/SoninEntireMellin.differentiable_soninEntireMellin` (+ the functional equation `soninEntireMellin_eq_soninChiSide` on `Re s < 1`, and `soninMellinExtension_functional_equation` on the strip) | |
 | Prop 2.2 | `M(f)` meromorphic (poles ⊂ {0,1}) on `L_a`; `M(F₊f)(s)=M(f)(1−s)` | | **TODO** |
 | Def 3,4 | `Y_a` (zero span), co-Poisson subspace `P_a` | | corpus (`burnolCoPoissonSourceSpace`) |
 | Thm 3.1 | `Y^a_{ρ,k}` minimal iff a ≤ 1, complete iff a ≥ 1; `Y_a^⊥ = P_a` (a<1) | capstone | **TODO** |
@@ -127,7 +127,7 @@ Do *not* attempt a boundary-value / edge-of-the-wedge argument.  Use this instea
 | B4 | integration by parts: `‖∫_a^T e^{ilt}t^{-s}dt‖ ≤ (2a^{-σ} + ‖s‖a^{-σ}/σ)/|l|` **uniformly in `T`** | **DONE** `HTGeometry/OscillatoryPowerIntegral.norm_oscPowerIntegral_le` |
 | B5 | Cauchy estimate `‖∫_T^{T'} t^{-s}f(t)dt‖ ≤ T^{-σ}·((2+‖s‖/σ)/2π)·N(a)·‖f‖` | **DONE** `RHTower/SoninTruncatedMellinCauchy.norm_truncMellin_le` (+ tail kernel `HTGeometry/InvAbsTailL2`) |
 | B6 | Weierstrass: the truncations converge locally uniformly on `Re s > 0`; the limit is holomorphic there and equals `f̂` on `Re s > 1/2` | **DONE** `RHTower/SoninMellinHalfPlaneExtension.differentiableOn_soninMellinExtension` + `soninMellinExtension_eq_soninMellinIntegral` |
-| B7 | glue with the reflected brick across `0 < Re s < 1` | **IN PROGRESS.**  The analytic core is now built: `HTGeometry/PowerFourierGamma.tendsto_integral_powerOsc` gives `∫_0^∞ t^{-s}e^{itL}dt = Γ(1−s)(−iL)^{s−1}` for `0 < Re s < 1`, `L > 0` (Abel regularisation + the uniform damped tail bound `HTGeometry/DampedPowerOscillation`).  With it, Burnol's correction kernel `E_s = 𝓕(1_{|t|<a}|t|^{−s})` is band-supported, so `⟪E_s, 𝓕f⟫ = ⟪h_s, f⟫ = 0` for `f ∈ K_a` — that is the functional equation for `0 < Re s < 1/2`, and the identity theorem extends it to the strip.  Remaining: Needs: (i) `fourierUnitary` preserves `centralSoninCarrier a`; (ii) the pointwise functional equation `f̂(s) = χ(s)·(F₊f)^(1−s)` a.e. on the critical line, bridged from `CCMArchimedeanFourierMellinScattering`; (iii) the identity theorem on the strip `0 < Re s < 1`. |
+| B7 | glue with the reflected brick across `0 < Re s < 1` | **DONE** (see the frozen chain below; capstone `RHTower/SoninEntireMellin.differentiable_soninEntireMellin`) |
 
 ### B7 — the weld, fully reduced to a computation (FROZEN PLAN)
 
@@ -163,8 +163,22 @@ bridge needed:
    needed to state the Γ-completed form, and then follows from mathlib's `riemannZeta_one_sub`
    plus the corpus's `zetaChi_eq_pi_cpow_mul_gamma_ratio`.
 
-Prerequisite still open: `fourierUnitary` preserves `centralSoninCarrier a` (the corpus has the
-even-subspace version `SoninApertureFourierParityNoGo.evenFourierTransform_mem_evenCentralSoninCarrier`).
+Steps 6 and 7 are now closed as well:
+* step 6 — `RHTower/SoninFunctionalEquation.lean`: `chiKernel_of_pos` / `chiKernel_of_neg` give the
+  two branch values `(∓i)^{s−1}`, `HTGeometry/ReflectionSplitIntegral.integral_eq_add_reflect`
+  splits the pairing into the two half-lines, evenness of `𝓕f` folds them together, and
+  `HTGeometry/ImaginaryAxisCpow.I_cpow_add_neg_I_cpow` turns the two branch values into
+  `2cos(π(s−1)/2)`.  Capstone `soninMellinExtension_functional_equation`:
+  `f̂(s) = burnolChiFactor s · ĝ(1−s)` on `0 < Re s < 1/2`, with
+  `burnolChiFactor s = Γ(1−s)(2π)^{s−1}·2cos(π(s−1)/2)` (Riemann's `χ(s)`).
+* step 7 — `RHTower/SoninEntireMellin.lean`: `soninChiSide` is holomorphic on `Re s < 1`
+  (`differentiableOn_soninChiSide`), and `HTGeometry/CauchyTransformGluingVertical.glueVert`
+  with `c₁ = 0`, `c₂ = 1/2` glues it to `soninMellinExtension` — **no identity theorem needed for
+  entirety**.  The identity theorem is used only afterwards, to propagate the functional equation
+  from `Re s < 1/2` to the whole half-plane `Re s < 1` (`soninEntireMellin_eq_soninChiSide`).
+
+The prerequisite `fourierUnitary` preserves `centralSoninCarrier a` is closed:
+`RHTower/SoninCarrierFourierInvariance.fourierUnitary_mem_centralSoninCarrier`.
 
 ## Gates
 - [x] 0 → 1  in-progress
@@ -198,3 +212,10 @@ already exists elsewhere in the tree (a collision breaks the area umbrella even 
   framework (`MinimalCompleteSystemChain`), the closed-band-sum bridge (`SoninForbiddenClosedSum`),
   **Prop. 4.6** (`SoninCarrierApertureChain`) and the §2 chain ends
   (`SoninCarrierApertureLimits`) are Lean-closed and umbrella-wired; axioms clean.
+- 2026-08-22 — **Theorem 2.1 CLOSED**, axiom-clean.  Chain: `SoninTruncatedMellinCauchy` →
+  `SoninMellinHalfPlaneExtension` → `SoninKernelPairing` → `SoninNearZeroKernelVanishing` →
+  `SoninPureChiKernel` → `SoninFunctionalEquation` → `SoninEntireMellin`.  New reusable
+  `HTGeometry` bricks: `ImaginaryAxisCpow`, `ReflectionSplitIntegral`, `PowerFourierGamma`,
+  `DampedPowerOscillation`, `OscillatoryPowerIntegral`, `TruncatedPowerFourierBound`,
+  `TruncatedPowerFourierLimit`, `NearZeroTruncatedPower`, `PowerTailL2`, `InvAbsTailL2`,
+  `TruncatedMellinEntire`.

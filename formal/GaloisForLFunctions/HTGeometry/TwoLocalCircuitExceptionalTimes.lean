@@ -90,13 +90,13 @@ theorem finite_twoQubit_circuit_times
   have hone : IsAlgebraic ℚ (((1 : ℝ) : ℝ) : ℂ) := by
     rw [Complex.ofReal_one]
     exact isAlgebraic_one
+  set D : ℕ := Fintype.card (Fin n → Bool) with hD
   have hk := card_sub_one_le_trdeg_orbit heb hlaminj hHalg hlamalg hΩrat hc
     (t := (1 : ℝ)) one_ne_zero hone i₀ hrigid
   obtain ⟨σ₀, hσ₀⟩ := exists_algebraicIndependent_subfamily
     (F := (↥algNum)) (E := ℂ) (I := (Fin n → Bool)) (unitaryEvolution H 1 *ᵥ Ω) hk
   have hσQ : AlgebraicIndependent ℚ (fun l => (unitaryEvolution H 1 *ᵥ Ω) (σ₀ l)) :=
     hσ₀.restrictScalars (algebraMap ℚ (↥algNum)).injective
-  set D : ℕ := Fintype.card (Fin n → Bool) with hD
   set eqv : (Fin n → Bool) ≃ Fin D := Fintype.equivFin _ with heqv
   set γ : Fin D → ℝ → ℂ := fun i t => (unitaryEvolution H t *ᵥ Ω) (eqv.symm i) with hγ
   have hγan : ∀ i, AnalyticOnNhd ℝ (γ i) Set.univ := fun i =>
@@ -124,8 +124,12 @@ theorem finite_twoQubit_circuit_times
   refine Set.mem_biUnion (Set.mem_univ pos) ⟨htS, ?_⟩
   obtain ⟨u, hu⟩ := TwoQubitCircuit.aeval_twoQubitCircuitCoords pos v G hG
   refine ⟨u, fun i => ?_⟩
-  rw [hu (eqv.symm i), ← hprep]
-  rfl
+  have hΩfun : (fun j => algebraMap ℚ ℂ (v j)) = Ω := rfl
+  have h2 := hu (eqv.symm i)
+  rw [hΩfun] at h2
+  show (unitaryEvolution H t *ᵥ Ω) (eqv.symm i)
+      = MvPolynomial.aeval u (TwoQubitCircuit.twoQubitCircuitCoords s pos v (eqv.symm i))
+  rw [h2, ← hprep]
 
 end
 

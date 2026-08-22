@@ -23,17 +23,17 @@ noncomputable section
 
 /-- The real even Fourier density determined by a real sequence. -/
 def symmetricCircleFourierDensity (a : ℕ → ℝ) (z : Circle) : ℝ :=
-  a 0 + 2 * ∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ n).re
+  a 0 + 2 * ∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ (n + 1)).re
 
 /-- Absolute summability of the nonconstant coefficients controls the density series at every
 circle point. -/
 theorem summable_symmetricCircleFourierDensity_terms {a : ℕ → ℝ}
     (ha : Summable fun n : ℕ => |a (n + 1)|) (z : Circle) :
-    Summable (fun n : ℕ => a (n + 1) * ((z : ℂ) ^ n).re) := by
+    Summable (fun n : ℕ => a (n + 1) * ((z : ℂ) ^ (n + 1)).re) := by
   refine Summable.of_norm_bounded ha fun n => ?_
   rw [Real.norm_eq_abs, abs_mul]
-  calc |a (n + 1)| * |((z : ℂ) ^ n).re|
-      ≤ |a (n + 1)| * ‖(z : ℂ) ^ n‖ := by
+  calc |a (n + 1)| * |((z : ℂ) ^ (n + 1)).re|
+      ≤ |a (n + 1)| * ‖(z : ℂ) ^ (n + 1)‖ := by
         gcongr
         exact abs_re_le_norm _
     _ = |a (n + 1)| := by
@@ -47,25 +47,25 @@ theorem abs_symmetricCircleFourierDensity_sub_head_le {a : ℕ → ℝ}
       2 * ∑' n : ℕ, |a (n + 1)| := by
   have hs := summable_symmetricCircleFourierDensity_terms ha z
   have hterm : ∀ n : ℕ,
-      ‖a (n + 1) * ((z : ℂ) ^ n).re‖ ≤ |a (n + 1)| := by
+      ‖a (n + 1) * ((z : ℂ) ^ (n + 1)).re‖ ≤ |a (n + 1)| := by
     intro n
     rw [Real.norm_eq_abs, abs_mul]
-    calc |a (n + 1)| * |((z : ℂ) ^ n).re|
-        ≤ |a (n + 1)| * ‖(z : ℂ) ^ n‖ := by
+    calc |a (n + 1)| * |((z : ℂ) ^ (n + 1)).re|
+        ≤ |a (n + 1)| * ‖(z : ℂ) ^ (n + 1)‖ := by
           gcongr
           exact abs_re_le_norm _
       _ = |a (n + 1)| := by
         rw [norm_pow, Circle.norm_coe, one_pow, mul_one]
-  have htsum : ∑' n : ℕ, ‖a (n + 1) * ((z : ℂ) ^ n).re‖ ≤
+  have htsum : ∑' n : ℕ, ‖a (n + 1) * ((z : ℂ) ^ (n + 1)).re‖ ≤
       ∑' n : ℕ, |a (n + 1)| :=
     hs.norm.tsum_le_tsum hterm ha
   rw [symmetricCircleFourierDensity]
-  have hrewrite : a 0 + 2 * ∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ n).re - a 0 =
-      2 * ∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ n).re := by
+  have hrewrite : a 0 + 2 * ∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ (n + 1)).re - a 0 =
+      2 * ∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ (n + 1)).re := by
     ring
   rw [hrewrite, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
-  calc 2 * ‖∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ n).re‖
-      ≤ 2 * ∑' n : ℕ, ‖a (n + 1) * ((z : ℂ) ^ n).re‖ := by
+  calc 2 * ‖∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ (n + 1)).re‖
+      ≤ 2 * ∑' n : ℕ, ‖a (n + 1) * ((z : ℂ) ^ (n + 1)).re‖ := by
         gcongr
         exact norm_tsum_le_tsum_norm hs.norm
     _ ≤ 2 * ∑' n : ℕ, |a (n + 1)| := by
@@ -103,7 +103,7 @@ theorem measurable_symmetricCircleFourierDensity (a : ℕ → ℝ) :
   intro n
   apply Measurable.mul measurable_const
   have hcoe : Continuous fun z : Circle => (z : ℂ) := continuous_subtype_val
-  exact (Complex.reCLM.continuous.comp (hcoe.pow n)).measurable
+  exact (Complex.reCLM.continuous.comp (hcoe.pow (n + 1))).measurable
 
 /-- Uniform integrability bound for the symmetric density. -/
 theorem norm_symmetricCircleFourierDensity_le {a : ℕ → ℝ}

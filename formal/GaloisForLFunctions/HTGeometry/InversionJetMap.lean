@@ -124,6 +124,18 @@ theorem invJetScalar_iteratedDeriv {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen 
     | succ m => simp [iteratedDeriv_succ']
   rw [← hone, iteratedDeriv_fun_mul hfm hinvm, leibnizJetSum]
 
+/-- A finite jet agreement of nonvanishing smooth functions transfers to their reciprocals. -/
+theorem iteratedDeriv_inv_jet_congr {f g : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hf : ContDiffOn ℂ (⊤ : ℕ∞) f U) (hg : ContDiffOn ℂ (⊤ : ℕ∞) g U)
+    (hfne : ∀ w ∈ U, f w ≠ 0) (hgne : ∀ w ∈ U, g w ≠ 0) {z : ℂ} (hz : z ∈ U)
+    {K : ℕ} (hjet : ∀ j ≤ K, iteratedDeriv j f z = iteratedDeriv j g z) :
+    ∀ k ≤ K, iteratedDeriv k (fun w => (f w)⁻¹) z =
+      iteratedDeriv k (fun w => (g w)⁻¹) z := by
+  intro k hk
+  rw [invJetScalar_iteratedDeriv hU hf hfne hz,
+    invJetScalar_iteratedDeriv hU hg hgne hz]
+  exact invJetScalar_congr hjet k hk
+
 /-! ## Continuity and openness -/
 
 theorem continuousOn_invJetScalar (k : ℕ) :

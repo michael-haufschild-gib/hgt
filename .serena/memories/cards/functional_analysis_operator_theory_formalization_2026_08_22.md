@@ -1,0 +1,9 @@
+Active task: formalize every exact Stage-2 theorem in docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory.
+
+Current changes: HTGeometry/FiniteHilbertDispersion.lean provides finite_pairwise_hilbert_dispersion, finite_weighted_hilbert_dispersion (AH7), and zero-total-weight conditional negative type plus equality classification. HTGeometry.lean imports this leaf. RHTower/XiPhysicalPrimeLogApertureHilbertMetric.lean has xiPhysicalPrimeLogAperture_finite_weighted_dispersion. Physical-aperture card marks finite weighted dispersion and CND done; generic centered-indicator image completeness remains.
+
+Verification: lake env lean passed for both leaf modules. Targeted lake build passed for both. New declaration axioms only propext, Classical.choice, Quot.sound. Diff check passed. Global lint fails only unrelated unreachable modules: RHTower.SuzukiTaV2ActualDefectJetCofinalLimit, HTGeometry.AnalyticImageFinitenessComplex, HTGeometry.TranscendenceSubfamilyExtraction, HTGeometry.TwoQubitGateParametrisation. Do not move cards to Stage 3 until required lint passes, and do not modify those dirty external modules.
+
+Cofinal gamma C-star Shilov card is already exact formalized through RHTower/PrimeGammaCofinalBocksteinCStarShilovBlindness.lean; its lake env lean check passed, but card waits on global ownership lint. FCRJ source bridge exists but does not yet provide source-linked D_M/R_M/E_M saturation identity. Remaining cards require major real analytic infrastructure; avoid wrappers.
+
+Next exact target: generic completeness of finite-measure centered L2 indicator carriers. Existing helper HTGeometry/CenteredApertureCarrierNorm.lean; mathlib has indicatorConstLp_inj, distance symmetric-difference formula, and tendsto_indicatorConstLp_set but no closed-range theorem.

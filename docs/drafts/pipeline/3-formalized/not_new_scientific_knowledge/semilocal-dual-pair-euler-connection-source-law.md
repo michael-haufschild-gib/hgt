@@ -1,8 +1,8 @@
 # The semilocal dual-pair connection is exactly the finite Euler logarithmic source
 
 - **ID:** `semilocal-dual-pair-euler-connection-source-law`
-- **Stage:** 2-fully-proven / not-new
-- **Type:** THEOREM (paper), `[VALUE RELATION]`, `[TOP-DOWN INTERFACE DISCHARGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper) + THEOREM (Lean), `[VALUE RELATION]`, `[TOP-DOWN INTERFACE DISCHARGE]`
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** Connes--Consani--Moscovici, *Zeta zeros and prolate wave operators*;
   `semilocal-euler-kernel-chart-differentiability.md`;
@@ -449,7 +449,48 @@ and source-criterion modules.
 - [x] identify the same curvature with the imaginary-slope trigamma-reflection pair on paper
 - [x] prove paper-level Calkin rigidity of the coefficient-one connection tail
 - [x] replace the refuted bounded projection-correction normalization
-- [ ] formalize the closed logarithmic-position common-core interface
+- [x] formalize the logarithmic-position common-core interface (`commutator_finitePlaceMultiplier`)
 - [ ] prove cutoff/resolvent cyclic descent preserving `(11)`
 - [ ] include the Burnol conductor and prove a completed lower floor
 - [ ] conclude RH
+
+## Lean formalization
+
+New module: `formal/GaloisForLFunctions/RHTower/SemilocalDualPairEulerConnection.lean`.
+Unconditional; every declaration depends only on `propext`, `Classical.choice`, `Quot.sound`.
+The `Lean decision` above is superseded: the connection identity does **not** need an unbounded
+Hilbert-space realization — its whole content is the commutator of `D = -i d/dt` with multiplication
+by the finite-place multiplier, and that is an identity on the common differentiable core.
+
+| paper step | Lean declaration |
+|---|---|
+| `(1)`: the inverse local factor, the multiplier, the source | `RHTower.eulerLocalInverse`, `RHTower.finitePlaceMultiplier`, `RHTower.primeLogSource`, `RHTower.finitePlaceSource` |
+| `p^{-z} = exp(-z log p)` and `‖p^{-z}‖ < 1` on `Re z > 0` | `RHTower.primePow_eq_exp`, `RHTower.norm_primePow_lt_one` |
+| `(8)`: the Lambert expansion | `RHTower.primeLogSource_hasSum`, `RHTower.primeLogSource_hasSum_cpow` |
+| `(7)`: `Φ_p = -L_p'/L_p` | `RHTower.hasDerivAt_eulerLocalInverse`, `RHTower.logDeriv_eulerLocalInverse` |
+| `(7)` for a finite place set | `RHTower.logDeriv_finitePlaceMultiplier` |
+| `(12)`: place multiplicativity and source additivity | `RHTower.finitePlaceMultiplier_union`, `RHTower.finitePlaceSource_union` |
+| `(13)`: Schwarz reflection covariance | `RHTower.conj_primePow`, `RHTower.conj_eulerLocalInverse`, `RHTower.conj_primeLogSource` |
+| `(16)`–`(17)`: the arithmetic contraction of the parameter connection | `RHTower.eulerParameterConnection`, `RHTower.primeLogSource_eq_neg_log_mul_connection`, `RHTower.finitePlaceSource_eq_neg_sum_log_mul_connection` |
+| `(7)` in the critical-line coordinate: `g'(t) = i Φ g(t)` | `RHTower.hasDerivAt_criticalLineEulerLocalInverse`, `RHTower.hasDerivAt_criticalLineFinitePlaceMultiplier` |
+| `(14)`: orientation `Re Φ` and metric `-Im Φ` components | `RHTower.criticalLine_logDeriv_components` |
+| `(5)`: `[D, M_g] = M_{-i g'}` on the common core | `RHTower.commutator_logPosition_mul` |
+| `(5)`–`(6)`: `[D, M_{g_S}] = M_{g_S Φ_S}` on the common core | `RHTower.commutator_symbol_criticalLineEulerLocalInverse`, `RHTower.commutator_finitePlaceMultiplier` |
+| `(18e)`: the actual-point Euler-parameter Hessian | `RHTower.eulerParameterHessian` |
+| `(18h)`: `Φ_p' = -log p · T_p` | `RHTower.hasDerivAt_primeLogSource` |
+| `(18f)`: the polarized two-value defect of `T_p` | `RHTower.eulerParameterHessian_sub` |
+| the seam charge detects the critical line at every scale `> 1` | `RHTower.orbitwiseScaleSeamCharge_eq_zero_iff` |
+| `(18g)`/`(18i)`: **one finite place suffices** | `RHTower.eulerParameterHessian_reflect_eq_iff` |
+| `(18c)`–`(18d)`: the coefficient-one reflected Lambert-tail decomposition | `RHTower.primeEulerUnitFETangent_eq_zeroTangent_add_higherTail` (corpus) |
+| `(18e')`: Calkin rigidity of the connection tail | `RHTower.summableEvenPositiveEulerCorner_not_isCompactOperator` (corpus) |
+
+No statement carries a hypothesis standing in for an unproved fact; the only side conditions are
+`2 ≤ p`, `0 < Re z`, and the open-strip bounds, each of which is discharged where used.
+
+**Literature input that remains outside Lean.**  Equation `(2)`, `U_S θ_S U_∞^{-1} = M_{g_S}`
+(Connes--Consani--Moscovici, Proposition 4.6), and the flat dual pairing `(10)`
+(Proposition 4.7(iii)) are imported, not formalized.  Nothing above assumes them: `(5)`–`(6)` are
+formalized in the Mellin coordinate where they live, as the commutator identity on the common core,
+which is exactly the content the conjugation transports.
+
+`scripts/formal_tools.py lint` → `formal lint passed`.

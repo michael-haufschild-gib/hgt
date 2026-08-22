@@ -208,8 +208,15 @@ another finite passport condition.
   `C (1 + norm z)^d exp(2 norm z)` upper bound and a positive `c exp(2x)` lower bound on a real ray
   for every nonzero polynomial multiplier.  This explicit two-sided sandwich certifies exact entire
   order one.
-- `[OPEN FORMAL INTERFACE]` Assemble the equivariant CRT, positive repair, envelope, exact-growth,
-  and period-classification components into the single arbitrary finite-passport capstone.
+- `[FORMALIZATION]` `QuartetPassportCapstone.lean` now exposes
+  `exists_quartet_passport_polynomial_of_base`: every finite packet of arbitrary local polynomial
+  germs is realized by one real-even, Schwarz-real polynomial that stays strictly positive real on
+  the full imaginary axis and preserves every prescribed jet.  This is the reusable equivariant
+  CRT-plus-repair interface for finite passport Taylor targets.
+- `[OPEN FORMAL INTERFACE]` Transfer each prescribed completed-flux passport to the corresponding
+  envelope-normalized finite local germ, prove preservation of its normalized logarithmic-derivative
+  jet, then assemble the existing exact-growth and period-classification components into the single
+  arbitrary finite-passport capstone.
 
 ## Gates
 

@@ -15,6 +15,7 @@ reflected Hankel orientation, which remains the separate RH-bearing property.
 -/
 
 open scoped BigOperators
+open MeasureTheory
 
 namespace RHTower
 
@@ -45,7 +46,13 @@ theorem normalizedPrimeArchMoment_sub_four_over_thirtyNine_xiShiftAbsoluteMass_l
   have hbase := GaloisForLFunctions.HTGeometry.symmetricCircleFourierDensity_lower
     (summable_abs_primeArchShiftMoment_tail s) z
   have htail := tsum_abs_primeArchShiftMoment_tail_le s
-  dsimp only [primeArchShiftCircleDensity, primeArchShiftMoment] at hbase ⊢
+  change normalizedPrimeArchMoment s - (4 / 39 : ℝ) * xiShiftAbsoluteMass s ≤
+    GaloisForLFunctions.HTGeometry.symmetricCircleFourierDensity
+      (primeArchShiftMoment s) z
+  change normalizedPrimeArchMoment s -
+      2 * ∑' n : ℕ, |primeArchShiftMoment s (n + 1)| ≤
+    GaloisForLFunctions.HTGeometry.symmetricCircleFourierDensity
+      (primeArchShiftMoment s) z at hbase
   nlinarith
 
 /-- The endpoint disk bound gives the quantitative upper density estimate at every shift. -/
@@ -56,7 +63,13 @@ theorem density_le_normalizedPrimeArchMoment_add_four_over_thirtyNine_xiShiftAbs
   have hbase := GaloisForLFunctions.HTGeometry.symmetricCircleFourierDensity_upper
     (summable_abs_primeArchShiftMoment_tail s) z
   have htail := tsum_abs_primeArchShiftMoment_tail_le s
-  dsimp only [primeArchShiftCircleDensity, primeArchShiftMoment] at hbase ⊢
+  change GaloisForLFunctions.HTGeometry.symmetricCircleFourierDensity
+      (primeArchShiftMoment s) z ≤
+    normalizedPrimeArchMoment s + (4 / 39 : ℝ) * xiShiftAbsoluteMass s
+  change GaloisForLFunctions.HTGeometry.symmetricCircleFourierDensity
+      (primeArchShiftMoment s) z ≤
+    normalizedPrimeArchMoment s +
+      2 * ∑' n : ℕ, |primeArchShiftMoment s (n + 1)| at hbase
   nlinarith
 
 private theorem two_tsum_abs_primeArchShiftMoment_tail_lt_head_of_le_eleven

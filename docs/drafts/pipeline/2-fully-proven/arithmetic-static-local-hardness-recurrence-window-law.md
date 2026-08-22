@@ -1058,3 +1058,115 @@ explicit height bound on the selected coefficients; the card's Theorem C as stat
 state and small collision, which `gal_card_of_specialisation` supplies once its hypothesis is in
 place (its avoidance polynomial `g` absorbs the discriminant, the cyclicity determinant and the
 collision condition simultaneously).
+
+## Theorem C's Galois hypothesis is now Lean; the residue is an *open-box* Hilbert theorem (2026-08-22)
+
+The "Formal status" and the 2026-08-22 note above are both stale.  The sibling card
+`../3-formalized/algebraic-two-local-instant-exact-complexity.md` is closed at stage 3, and with it:
+
+| Theorem C clause | Status |
+|---|---|
+| `S_D` Galois group of an *integer two-local* characteristic polynomial | **Lean** — `TwoLocalWitness.exists_integer_twoLocal_symmetric_gal` |
+| `Ω` has nonzero overlap with every eigenvector (cyclicity) | **Lean** — irreducibility of the characteristic polynomial makes *every* nonzero rational vector cyclic (`SymmetricGaloisCyclicity.linearIndependent_krylov_of_irreducible`), and `AlgebraicOrbit.finiteComplexInner_ne_zero_of_linearIndependent` turns that into nonvanishing overlaps |
+| the only rational eigenvalue relation is the trace relation, hence `(1)`'s rational independence of the projective frequencies | **Lean** — `ker_relationForm_eq_constLine_of_gal` |
+| tracelessness `(30)` | **Lean** — `trace_witnessHam` |
+| the collision bound `(31)`, `C_{H_n}(Ω) < 4(2/3)^n` | **open** |
+| `(42)`–`(44)` and the application of `(24)`–`(25)` | elementary, consumes only what is already formal |
+
+### The one remaining crux, stated exactly
+
+`(31)` is an **open** condition on the coefficients, not a Zariski-open one: the collision is a
+continuous function of the Hamiltonian on the simple-spectrum locus, but it is not a polynomial.
+Hilbert irreducibility as the corpus has it (`hilbert_multivariate`, `gal_card_of_specialisation`)
+delivers a rational specialisation avoiding the zero locus of any prescribed nonzero *polynomial*,
+which cannot express `(31)`.  What Theorem C needs is the version the card's own proof uses at
+`(40)`: a specialisation **inside a prescribed rational box**.
+
+### Why this is within reach, and exactly how
+
+Reading the corpus's Hilbert core, the good rational specialisations it produces are
+`b = s₀ + 1/t` with `t` an arbitrarily large integer (`Main.infinite_of_thin_bad`), i.e. they
+accumulate at one integer `s₀` from above.  `s₀` is produced by `exists_regular_int`, which only
+needs `s₀` to avoid the finitely many roots of one nonzero polynomial (`exists_int_not_root`).
+So:
+
+1. **`exists_int_not_root_gt`** — a nonzero polynomial has finitely many roots, so for every `N`
+   there is an integer `> N` that is not a root.  Propagating it gives `exists_regular_int_ge` and
+   hence *good rational specialisations larger than any prescribed bound*.
+2. **The Möbius substitution `(40)`**, `T = (a + bY)/(1+Y)`, maps `Y > 0` into `(a,b)` and is
+   birational, so `ℚ(T) = ℚ(Y)` and the Galois group is unchanged.  Combining 1 and 2 gives
+   Hilbert irreducibility **with the specialisation in any prescribed rational box**.
+3. The multivariate recursion (`SeveralVariables.hilbert_several`) must carry the same bound
+   coordinatewise; it chooses one coordinate at a time, so the same strengthening applies.
+
+### The second half: producing the box
+
+The Gaussian-ensemble half of `(39)` is *already* Lean and unconditional:
+`PauliEnsembleSimpleSpectrum.integral_collision_pauliEnsemble_zeroProductState_le` (mean collision
+`≤ (2/3)^n` at the all-zero product state) and
+`measureReal_collision_pauliEnsemble_zeroProductState_ge_le` (its Markov form, so the set where
+`C_H(Ω) < 4(2/3)^n` has measure at least `3/4`).  Simple spectrum is almost sure
+(`isOrthoEigenBasis_injective_pauliEnsemble_ae`).  What has to be added is that the set
+`{J : simple spectrum ∧ C < 4(2/3)^n}` is **open** — the collision is continuous there because the
+gauge-invariant cross-weight is (`LagrangeSpectralProjector.continuousAt_spectralCrossWeight`),
+given continuity of the eigenvalues along the path — and a nonempty open set contains a rational
+box.
+
+### Why the *generic* Galois group of the full two-local Pauli family is not an extra obstacle
+
+Theorem C's Hamiltonian ranges over all two-local Pauli coefficients, whereas the Lean `S_D` result
+is for the sub-family `∑ a_i Z_i + ∑ b_{ij} Z_iZ_j + ∑ u_i X_i`.  The passage is the **easy**
+direction of specialisation, not the hard one: `card Gal = D!` is equivalent to irreducibility of
+one resolvent (`GaloisSpecialization.gal_card_of_irreducible_resolvent`,
+`exists_irreducible_resolvent`), the resolvent commutes with the coefficient specialisation
+(`resolvent_map`), and *irreducible after specialisation ⟹ irreducible before* is
+`Polynomial.Monic.irreducible_of_irreducible_map` plus Gauss's lemma for the monic (hence
+primitive) resolvent.  So the sub-family's `S_D` transfers upward to the full family for free.
+
+### An alternative that avoids the ensemble entirely
+
+Collision is scale invariant, so for the corpus's own witness family
+`H(R) = D + R·∑_i w_i X_i` one has `C_{H(R)}(Ω) = C_{D/R + ∑ w_i X_i}(Ω) → C_{∑ w_i X_i}(Ω)`.  The
+limit is exactly `2^{-n}`, because the eigenvectors of `∑ w_i X_i` are the `2^n` product states
+`|±⟩^{⊗n}`, each overlapping `|0⟩^{⊗n}` with modulus `2^{-n/2}`; and its spectrum `∑ ± w_i` is
+simple for `w_i = 3^i` by the same signed-digit argument that gives `witnessDiagonal_injective`.
+That replaces `(39)` by an explicit computation, at the cost of eigenvalue continuity along a
+one-parameter path — and it needs Hilbert irreducibility with `R` **large**, which is item 1 above
+in one variable only.
+
+### Sharper form of the missing Hilbert statement (same day, corrected)
+
+The box is *not* the right primitive.  What the corpus's Hilbert core actually produces is
+`b = s₀ + 1/t` with `t` arbitrarily large, so the good set is contained in `(s₀, s₀+1)` for one
+integer `s₀` chosen only to avoid the roots of one nonzero polynomial.  Strengthening
+`exists_int_not_root` to "there is a non-root **greater than any prescribed `N`**" therefore makes
+the good set **unbounded above**, and that single strengthening is enough:
+
+> **Möbius at a chosen centre.**  For any rational `r` and any `N`, apply the unbounded form to the
+> cleared substitution `Y ↦ F(r + 1/Y)`.  Its good points satisfy `Y > N`, so the corresponding
+> specialisations `T = r + 1/Y` of `F` lie in `(r, r + 1/N)` — an arbitrarily small interval around
+> an arbitrarily chosen rational centre.
+
+A box `∏ (a_i, b_i)` is then reached by centring at `r_i = (a_i + b_i)/2` and taking
+`N > 2/(b_i - a_i)`.  No quantitative Hilbert irreducibility (Castillo–Dietmann) is needed: only
+the *qualitative* theorem with an unbounded good set.
+
+### Ordered plan for the remaining work
+
+1. `exists_int_not_root_gt` — a nonzero complex polynomial has a non-root integer above any bound.
+2. `exists_regular_int_gt`, `exists_regular_int_family_gt` — immediate consequences.
+3. `infinite_gt_of_thin_bad` — the assembly, with the extra conjunct `s₀ < b` in the good set.
+4. `hilbert_irreducibility_int_gt`, `hilbert_irreducibility_gt`,
+   `hilbert_irreducibility_int_family_gt`, `hilbert_irreducibility_family_gt`.
+5. `exists_infinite_specialisation_gt` (`Multivariate`) and `hilbert_several_gt`
+   (`SeveralVariables`) — the two long proofs, each a copy of the existing one carrying the extra
+   conjunct through `Set.Infinite.mono` and through the choice of `c` at each recursion step.
+6. `hilbert_multivariate_gt`, `gal_card_of_specialisation_gt`.
+7. The Möbius layer: cleared substitution `T_i = r_i + 1/Y_i` on a multivariate coefficient ring,
+   with the induced isomorphism `ℚ(T) ≅ ℚ(Y)` so the generic Galois group is unchanged.
+8. The collision box: `{J : simple spectrum ∧ C_J(Ω) < 4(2/3)^n}` is open (continuity of the
+   gauge-invariant cross-weight plus continuity of the eigenvalues) and has measure `≥ 3/4`, hence
+   contains a rational box.
+9. Transfer of `S_D` from the corpus's sub-family to the full two-local Pauli family through the
+   *easy* direction of specialisation on the resolvent.
+10. Theorem D, which reuses the selected Hamiltonian and is otherwise elementary.

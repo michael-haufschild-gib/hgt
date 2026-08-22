@@ -8,7 +8,7 @@ Rules in force: no added hypotheses standing for analytic inputs, no axioms, no 
 never full builds / umbrella builds (`lake env lean <file>` to check, `lake build <module>` only for
 the oleans an `#print axioms` scratch needs); search the corpus before building anything.
 
-## Card triage (17 cards) — 5 promoted, 12 remain
+## Card triage (17 cards) — 6 promoted, 11 remain
 
 | # | card | state | notes |
 |---|---|---|---|
@@ -19,12 +19,12 @@ the oleans an `#print axioms` scratch needs); search the corpus before building 
 | 5 | prime-tail-copoisson-essential-boundary-bockstein | TODO | |
 | 6 | rectangular-semilocal-observer-tail-separation | **PROMOTED 2026-08-22** | `RHTower/RectangularSemilocalObserverTailSeparation.lean` |
 | 7 | route-b-semilocal-sonin-interim-verdict | TODO | |
-| 8 | semilocal-dual-pair-euler-connection-source-law | TODO | |
+| 8 | semilocal-dual-pair-euler-connection-source-law | **PROMOTED 2026-08-22** | `RHTower/SemilocalDualPairEulerConnection.lean`; the card's "needs an unbounded operator interface" note was wrong — the content is a commutator identity on the differentiable core |
 | 9 | semilocal-euler-kernel-chart-differentiability | TODO | |
 | 10 | semilocal-jacobi-linear-growth-prolate-domain-gate | **PROMOTED 2026-08-22** | `HTGeometry/MonicOrthoExtremalComparison.lean` + `RHTower/SemilocalJacobiLinearGrowthProlateDomainGate.lean` |
 | 11 | sonin-burnol-conductor-cutoff-bounded-graph-law | TODO | |
 | 12 | sonin-place-transition-cutoff-dichotomy | TODO | |
-| 13 | sonin-prime-seam-exterior-factorization | TODO | |
+| 13 | sonin-prime-seam-exterior-factorization | PARTIAL | `HTGeometry/BilinearExteriorPairFactorization.lean` + `RHTower/SoninPrimeSeamExteriorFactorization.lean` give `(3)`, `(8a)`, `(8g)`; blocked only on card 15's tensor estimate `(4)`–`(5)` |
 | 14 | sonin-small-cutoff-ground-row-survival | TODO | |
 | 15 | sonin-two-particle-prime-coherence | TODO | |
 | 16 | squarefree-cutoff-jump-root-avoidance-inertia | TODO | |
@@ -199,3 +199,40 @@ Riesz and closes the gap.
 Planned module: `RHTower/SoninTwoParticlePrimeCoherence.lean` — the shell amplification plus the
 estimate, carried out in `UniformSpace.Completion (evenSubspace ⊗[ℂ] evenSubspace)` so that Riesz
 is available and `IsCompactOperator` means what the card means.
+
+## State after the 2026-08-22 session — 6 promoted, 11 remain
+
+Promoted: **2** (boolean-sonin-full-history), **3** (connes-semilocal-finite-part),
+**4** (finite-euler-connection-cauchy-phase-chambers), **6** (rectangular-semilocal-observer),
+**8** (semilocal-dual-pair-euler-connection), **10** (semilocal-jacobi-linear-growth).
+
+New modules built this session (all wired, all `#print axioms`-clean, `formal lint passed`):
+
+| module | what it owns |
+|---|---|
+| `HTGeometry/MonicOrthoExtremalComparison.lean` | monic-norm extremality, uniqueness, span-by-degree, identification with any orthogonal family, and the `K`/`K²` comparison of monic norms and Jacobi `β`'s |
+| `HTGeometry/BooleanSoninFullHistory.lean` | reciprocal contraction sections, the full binary-history energy law, the adjoint-mate fracture, the `Λ`-perturbed curvature class, and off-unitary models |
+| `HTGeometry/QuantizedDifferentialCocycle.lean` | `δ(xy)=δ(x)y+xδ(y)`, the Leibniz cocycle `ω(UV)=V⁻¹ω(U)V+ω(V)`, and cyclic-trace additivity over an ordered factorization |
+| `HTGeometry/BilinearExteriorPairFactorization.lean` | `∑∑(aᵢ−aⱼ)•B(Cᵢ)(Dⱼ) = B(∑aᵢCᵢ)(∑Dⱼ) − B(∑Cᵢ)(∑aⱼDⱼ)`, with tensor and algebra specializations |
+| `RHTower/SemilocalJacobiLinearGrowthProlateDomainGate.lean` | the whole of card 10 |
+| `RHTower/FiniteEulerConnectionCauchyPhaseChambers.lean` | the whole of card 4 |
+| `RHTower/ConnesSemilocalOrbitalSourceClass.lean` | card 3's response-quotient nonvanishing |
+| `RHTower/RectangularSemilocalObserverTailSeparation.lean` | the whole of card 6 |
+| `RHTower/SoninPrimeSeamExteriorFactorization.lean` | card 13's `(3)`, `(8a)`, `(8g)` |
+| `RHTower/SemilocalDualPairEulerConnection.lean` | the whole of card 8's scalar/differential layer |
+
+### Exact remaining blocker per card
+
+| card | blocker |
+|---|---|
+| 1 archimedean-prolate-jacobi-limit-circle | the discrete Liouville–Green theorem sketched above, then the deficiency-index transfer |
+| 5 prime-tail-copoisson-essential-boundary | PNT with classical error term + Mellin/`E₁`; the heaviest analytic card |
+| 7 route-b-semilocal-sonin-interim-verdict | a synthesis card: it becomes formalized once its cited bullets are (several already are) |
+| 9 semilocal-euler-kernel-chart | Hardy spaces `H^±` of a half-plane — absent from mathlib and from the corpus (only Cauchy-kernel Grams exist); plus the Hilbert-space closed-range projection formula `(8)` and its derivative `(9)`–`(11)` |
+| 11 sonin-burnol-conductor-cutoff | the Coifman–Rochberg–Weiss/Nehari BMO commutator theorem; the algebraic layer is already Lean (`SoninBurnolConductorReflection`, `…Concrete`) |
+| 12 sonin-place-transition-cutoff-dichotomy | part A is Lean (`CutoffCochain`); part B is the shell noncompactness of `(1−P_λ)D_p P_λ`. **Elementary route found**: in the log coordinate the corner carries the normalized indicators of the disjoint intervals `(c − a/2ⁿ, c − a/2ⁿ⁺¹]` to an orthonormal family, so it maps an orthonormal (hence weakly null) sequence to a norm-one sequence |
+| 13 sonin-prime-seam-exterior-factorization | only card 15's tensor estimate |
+| 14 sonin-small-cutoff-ground-row-survival | the semilocal cyclic spaces `H_P`, the number operators, and strong convergence of the Sonin projections |
+| 15 sonin-two-particle-prime-coherence | the tensor-square Calkin estimate; mathlib supplies everything needed (`TensorProduct.mapL`, `norm_mapL_le`, `UniformSpace.Completion.innerProductSpace`, `ContinuousLinearMap.completion`) — what remains is lifting the corpus shell data to the tensor square |
+| 16 squarefree-cutoff-jump-root-avoidance | Sylvester's law of inertia and Haynsworth additivity — neither in mathlib nor the corpus |
+| 17 transported-prolate-relative-resolvent-corner | Connes–Moscovici prolate spectral theory (uniqueness of the cutoff-commuting self-adjoint extension) and Ramis–Richard-Jung–Thomann order-`1/2` determinants |

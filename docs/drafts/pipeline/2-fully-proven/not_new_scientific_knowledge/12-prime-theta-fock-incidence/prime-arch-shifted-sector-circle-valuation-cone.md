@@ -383,3 +383,27 @@ belong in `RHTower`.
 - [ ] 2 -> 3: formalize the circle-density packaging, coefficient cone, and residual consumer
 - [ ] proof input: establish the restricted Sonin comparison `(19)`, or a different source-value
   theorem covering `R_sector`, without Xi zero orientation or an RH-equivalent representing measure
+
+## Lean progress log — 2026-08-22
+
+Added and wired the reusable unconditional density layer:
+
+```text
+HTGeometry/SummableCircleFourierDensity.lean
+RHTower/PrimeArchShiftedCircleDensity.lean
+```
+
+The generic module defines the literal symmetric Fourier density, proves absolute-tail two-sided
+bounds, measurability, Haar integrability, and finiteness of its density measure.  The Xi
+specialization defines the actual shifted densities
+`m_s + 2 sum_(n>=1) m_(s+n) Re(z^n)` and proves their explicit
+`m_s ± (4/39) J_s` bounds and strict positivity for every `s <= 12`, using the exact
+thirteenth-power endpoint at `s = 12`.  The completed public capstones are
+`symmetricCircleFourierDensityMeasure_finite` and
+`primeArchShiftCircleDensity_pos_of_le_twelve`.
+
+Targeted leaf builds and axiom checks passed; both capstones depend only on Lean's standard
+`propext`, `Classical.choice`, and `Quot.sound` foundations.  This closes the density existence,
+coercivity, and finite-measure portion of the `2 -> 3` gate.  It does **not** close probability
+normalization, Fourier-moment recovery, the weighted `L²` reflection carrier, or the residual
+Sonin comparison; the card remains at Stage 2.

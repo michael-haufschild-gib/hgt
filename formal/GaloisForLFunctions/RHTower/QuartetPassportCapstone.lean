@@ -266,7 +266,7 @@ theorem exists_quartet_passport_polynomial_of_base {J : Type} [Fintype J] [Decid
       (∀ y : ℝ, ∃ r : ℝ, 0 < r ∧ B.eval ((y : ℂ) * I) = (r : ℂ)) ∧
       (∀ (j : J) (n : ℕ), n < N j + 2 →
         (Polynomial.derivative^[n] B).eval (α j)
-          = iteratedDeriv n (fun z => (z - α j) / coshQuartetEnvelope a₀ z) (α j)) := by
+          = (Polynomial.derivative^[n] (base j)).eval (α j)) := by
   classical
   set w : J × Fin 4 → ℂ := fun i => quartetPoint (α i.1) i.2 with hwdef
   set m : J × Fin 4 → ℕ := fun i => N i.1 + 2 with hmdef

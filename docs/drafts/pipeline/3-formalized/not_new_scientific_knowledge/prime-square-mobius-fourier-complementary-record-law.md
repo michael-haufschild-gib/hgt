@@ -525,9 +525,24 @@ audit `[propext, Classical.choice, Quot.sound]`):
   `tendsto_sectorFracture_iterated` `(41)`; `tendsto_squarefreeSafeProduct` `(42)`;
   `tendsto_primeRecordProduct_zero`.
 
-Still to formalize: the *density* half `(33)`--`(37)`.  Davenport is **not** needed; the corpus
-already owns `M(N) = o(N)` as `RHTower.Sieve.tendsto_abs_mertensM_div`.  The remaining bricks are
-`μ·m_P = w_P ⍟ μ` with `w_P` the multiplicative `P`-smooth weight `2^{ω(d)}`, the summability
-`∑_d w_P(d)/d < ∞`, and the dominated-convergence transfer through
-`RHTower.Sieve.sum_Icc_convolution_apply`; plus `∑_{n≤X} μ(n)²/X → 6/π²` from
-`RHTower.Sieve.abs_window_squarefree_sub_le` and the inclusion–exclusion mean of `m_P²`.
+- `formal/GaloisForLFunctions/RHTower/PrimeSquareMobiusDensityFracture.lean` — §6, density half.
+  `localMobiusNat`, `eulerClockNat`, `eulerClockNat_eq_moebius` `(4)`;
+  `clockSqSum_insert` and `tendsto_clockSqSum` `(35)`;
+  `mobiusClockSum_insert`, `mobiusClockDvdSum_rec`, `tendsto_mobiusClockDvdSum`,
+  `tendsto_mobiusClockSum` `(33)`; `tendsto_squarefree_density` `(34)`;
+  `tendsto_density_sector_fracture`, `tendsto_density_sector_fracture_pi` `(36)`--`(37)`.
+
+Davenport's theorem is **not** used: `(33)` is derived by a one-prime geometric transfer from
+`M(N) = o(N)` (`RHTower.Sieve.tendsto_abs_mertensM_div`).  `(34)` comes from the corpus window
+count `RHTower.Sieve.abs_window_squarefree_sub_le` at `R = ⌊√X⌋+1`.
+
+All three modules are `lake build`-green and audit to `[propext, Classical.choice, Quot.sound]`.
+
+## Gates (updated)
+
+- [x] every `[PROVED]` equation of §2--§6 formalized unconditionally in Lean 4
+- [ ] construct renormalized all-prime inter-sector correspondence
+- [ ] prove moving-aperture archimedean--profinite locality
+- [ ] land Meyer/Xi conormal in finite-order record
+- [ ] derive cofinal Möbius--Laplace energy bound
+- [ ] RH

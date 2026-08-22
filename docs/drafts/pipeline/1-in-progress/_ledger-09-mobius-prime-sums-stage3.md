@@ -12,7 +12,7 @@
 
 | # | Card | Lean target | State |
 |---|---|---|---|
-| 1 | prime-square-mobius-fourier-complementary-record-law | §2–§6 finite Fourier / CRT | §2–§5, §6 profinite DONE; §6 density (33)–(37) OPEN |
+| 1 | prime-square-mobius-fourier-complementary-record-law | §2–§6 finite Fourier / CRT | **DONE — promoted to 3-formalized** |
 | 2 | localized-half-density-mobius-curvature-semiprime-fibre-law | (3)–(4), (14)–(15), (18)–(20), (23) | TODO |
 | 3 | shifted-euler-error-floor-mobius-tail-coupling | Thm A (3), Thm B (8)–(9) | TODO |
 | 4 | friable-moment-ladder-finite-dim | Thm A, Thm B | TODO |
@@ -70,7 +70,7 @@ axiom audit = `[propext, Classical.choice, Quot.sound]` only):
   `eulerClockProd_dist_sq` + `tendsto_sectorFracture` + `tendsto_sectorFracture_iterated` (41),
   `tendsto_squarefreeSafeProduct` (42), `tendsto_primeRecordProduct_zero`.
 
-Remaining for card 1: the *density-side* fracture (33)–(37).  Route (no Davenport needed):
+Card 1 is COMPLETE (3 modules, promoted 2026-08-22).  The density half used this route:
 
 1. `μ(n)·m_P(n) = μ(a)²·μ(b)` for `n = a·b`, `a` the `P`-part; so
    `∑_{n≤X} μ(n) m_P(n) = ∑_{a ∣ R} N_R(X/a)` with `N_R(Y) = ∑_{b≤Y,(b,R)=1} μ(b)`.
@@ -94,3 +94,9 @@ Remaining for card 1: the *density-side* fracture (33)–(37).  Route (no Davenp
   `MediumPNT`, Wiener–Ikehara), `PNTPlus/BrunTitchmarsh.lean`.
 - mathlib: `EulerProduct.eulerProduct_completely_multiplicative`, `hasSum_zeta_two`,
   `ZMod.prodEquivPi`, `Finset.prod_univ_sum`.
+
+- `RHTower/PrimeSquareMobiusDensityFracture.lean` (card 1, §6 density half) — landed.
+  Reusable bricks it leaves behind: `localMobiusNat`/`eulerClockNat` (the finite Euler clock as an
+  arithmetic function), `sum_Icc_dvd_reindex` (reindexing a sum over the multiples of `d`),
+  and `tendsto_mobiusClockDvdSum` — a **one-prime geometric transfer**: if `A(X)/X → 0` and
+  `|A(X)| ≤ X` and `B(X) = -A(X/p) + B(X/p)` with `|B(X)| ≤ X`, then `B(X)/X → 0`.

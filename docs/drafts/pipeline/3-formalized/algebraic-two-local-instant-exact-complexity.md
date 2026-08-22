@@ -1,9 +1,9 @@
 # Algebraic two-local instant exact-complexity law
 
 - **ID:** algebraic-two-local-instant-exact-complexity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (Lean 4, unconditional, axiom-clean; 2026-08-22)
 - **Type:** THEOREM / boundary theorem for robust autonomous complexity
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
+- **Status:** `[LEAN-CLOSED] [NOVELTY UNVERIFIED]`
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, obligation O4
 - **External parent:** Y. Jia and M. M. Wolf, *Hay from the haystack: explicit
   examples of exponential quantum circuit complexity*, arXiv:2205.06977
@@ -2457,3 +2457,64 @@ Tarski–Seidenberg.  Instantiating it at the witness needs three further pieces
 3. extraction of `D − 1` algebraically independent members from the `2D` real coordinates, whose
    generated algebra has transcendence degree `≥ D − 1` — a transcendence-basis-inside-a-generating-
    set statement.
+
+## CARD CLOSED: EQUATION (2) IS LEAN TOO (2026-08-22, final)
+
+Both boxed theorems now hold, unconditionally and at one explicit integer two-local Hamiltonian:
+
+```text
+TwoLocalWitness.exists_twoLocal_exact_complexity_and_finiteness (m q : ℕ) :
+  ∃ u N Hz (hH : (Hz.map (Int.castRingHom ℂ)).IsHermitian),
+    0 < N ∧ Hz.trace = 0 ∧
+    Hz.map (Int.castRingHom ℚ) = (N:ℚ) • twoLocalHam (witnessConstant m) 0 witnessCoupling u ∧
+    Function.Injective hH.eigenvalues ∧
+    LinearMap.ker (SpectralExp.relationForm fun i => ((hH.eigenvalues i : ℝ) : ℂ))
+      = PermSubspace.constLine ∧
+    (∀ j, finiteComplexInner (hermitianEigenBasis _ hH j) (zeroCubeState ℂ (m+1)) ≠ 0) ∧
+    -- (1)
+    (∀ t : ℝ, t ≠ 0 → IsAlgebraic ℚ ((t:ℝ):ℂ) → ∀ l,
+       (∀ M ∈ l, CircuitAdjoin.GeneratedBy (↥AlgebraicOrbit.algNum) q M) →
+       l.prod *ᵥ zeroCubeState ℂ (m+1)
+         = unitaryEvolution (Hz.map (Int.castRingHom ℂ)) t *ᵥ zeroCubeState ℂ (m+1) →
+       2^(m+1) - 1 ≤ l.length * q) ∧
+    -- (2)
+    (∀ s, s * 16 < 2^(m+1) - 1 → ∀ S : Set ℝ, IsCompact S →
+       {t ∈ S | ∃ pos G, (∀ k, TwoQubitCircuit.IsTwoQubitGate (pos k).1 (pos k).2 (G k)) ∧
+          (List.ofFn G).prod *ᵥ zeroCubeState ℂ (m+1)
+            = unitaryEvolution (Hz.map (Int.castRingHom ℂ)) t *ᵥ zeroCubeState ℂ (m+1)}.Finite)
+```
+
+With `q = 16` the first clause is equation `(1)`, `C₀ ≥ (D−1)/16`; the second is equation `(2)`,
+`{t ∈ [−T,T] : C₀(e^{−itH}Ω) ≤ s}` finite whenever `16 s < D − 1`, which is the card's hypothesis
+`s < (D−1)/16` verbatim.  Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); the formal
+lint gate reports nothing against any of the eleven new modules.
+
+### The five further modules
+
+| Module | Content |
+|---|---|
+| `HTGeometry/AnalyticImageFinitenessComplex` | `analyticOnNhd_aeval_complex`, `finite_zeros_of_analyticOnNhd_complex`, **`finite_meets_image_subfamily_complex`** — the whole separating-polynomial mechanism with *complex* parameters and a complex-valued analytic curve.  This is what keeps the constant at `16` instead of `32`: a two-qubit gate has sixteen complex entries but thirty-two real ones, and the real-parameter version of the lemma would have charged the latter |
+| `HTGeometry/TranscendenceSubfamilyExtraction` | **`exists_algebraicIndependent_subfamily`** — `k ≤ trdeg` gives `k` algebraically independent *generators*, via `exists_isTranscendenceBasis_subset` |
+| `HTGeometry/TwoQubitGateParametrisation` | `IsTwoQubitGate`, `genericTwoQubitGate`, `exists_param_of_twoQubitGates`, `twoQubitCircuitCoords`, `aeval_twoQubitCircuitCoords` — a word of `s` two-qubit gates on arbitrary pairs is an evaluation of one fixed polynomial family in `16 s` indeterminates.  No unitarity is imposed: constraints only shrink the parameter set, and the argument needs the reachable states to lie *inside* the image |
+| `HTGeometry/TwoLocalCircuitExceptionalTimes` | `analyticOnNhd_phase`, `analyticOnNhd_orbit_coord`, **`finite_twoQubit_circuit_times`** |
+| `HTGeometry/TwoLocalExactComplexityFull` | **`exists_twoLocal_exact_complexity_and_finiteness`** |
+| `HTGeometry/SpectralOrbitComplexityAssembly` (extended) | `card_sub_one_le_trdeg_of_algebraicChange`, `card_sub_one_le_trdeg_orbit` — the transcendence-degree form, which is what the extraction consumes |
+
+### Why no o-minimality
+
+The card's §4 invoked o-minimality of `R_an`.  The Lean proof uses none, and no semialgebraic
+geometry either.  The three steps are:
+
+1. the orbit at time `1` has `D − 1` algebraically independent coordinates (transcendence degree
+   `≥ D − 1` from Lindemann–Weierstrass, then a transcendence basis inside the generating set);
+2. `16 s < D − 1` polynomials in fewer variables than that are algebraically dependent, so one
+   nonzero `h ∈ ℚ[Y_1,…,Y_D]` vanishes identically on the reachable set and not at the orbit point;
+3. `t ↦ h(e^{−itH}Ω)` is a complex-valued real-analytic function, nonzero at `t = 1`, so its zeros
+   on a compact set are finite — and every exceptional time is such a zero.
+
+The finite union over the `(s choose pairs)` gate positions is finite because the position type is
+a `Fintype`.
+
+### Card status
+
+Stage 3.  Nothing on this card is conditional on an unformalized classical theorem.

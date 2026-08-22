@@ -21,7 +21,7 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | `prop_102` | Prop 1.3 | `𝒫̂_φ ∈ L²(ℝ)` for `φ ∈ C_c^∞(ℝ)` | no | OPEN |
 | `thm_1_2` | Thm 1.4 | RH ⟺ `‖𝒫̂_{Dψ}‖²_{L²} = π⟨ψ,ψ⟩_W` for all `ψ ∈ C_c^∞`; countably many `ψ` suffice | ⟺ | OPEN |
 | `cor_1_1` | Cor 1.5 | RH ⟺ `2‖ψ‖²_{L²} = ⟨ψ,ψ⟩_W` for all `ψ ∈ V°(0)` | ⟺ | OPEN |
-| `prop_301` | Prop 3.1 | `𝔓_t(z) = P_t(z)` (prime--arch formula equals the Xi-zero series) | no | **LAPLACE CORE CLOSED** (`integral_suzukiFrakP_laplace_eq_zeroSeries`); only the determinacy endgame + continuity remain |
+| `prop_301` | Prop 3.1 | `𝔓_t(z) = P_t(z)` (prime--arch formula equals the Xi-zero series) | no | **CLOSED** `RHTower.suzukiFrakP_eq_suzukiPtZeroSum` |
 | `lem_301` | Lem 3.2 | `‖ψ‖₀ := π^{-1/2}‖𝒫̂_{Dψ}‖_{L²}` is a norm on `C_c^∞(ℝ)` | no | OPEN |
 | `prop_401` | Prop 4.1 | `{F_γ}` is an orthonormal basis of `K(Θ)`; `Θ'(γ)/2 = -i/m_γ`; `F_γ(γ)=1/√(m_γ π)`, `F_γ(γ')=0` | yes | OPEN (cited to Su23 Prop 3.2) |
 | `thm_4_1` | Thm 4.2 | `t ↦ π^{-1/2}𝔖_t` is a screw line of `g_ξ`: `π⁻¹⟨𝔖_t,𝔖_u⟩ = G_g(t,u)` | yes | OPEN |
@@ -86,6 +86,8 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 |---|---|
 | `RHTower/SuzukiWeilLerchBlock.lean` | `suzukiLerchDiff` / `suzukiLerchKernel` (the regularized `Φ(e^{-2t},1,w) - Φ(e^{-2t},1,1/4)` of eq. (1.6)), its factorization `= (1/4-w)·kernel`, `suzukiLerchKernel t (1/4) = 4e^{t/2}·screwLerchTail t`, the Gauss bridge `ψ(w)-ψ(1/4) = -suzukiLerchDiff 0 w`, and continuity of the kernel at `1/4`. |
 | `RHTower/SuzukiWeilFrakPLaplace.lean` | The five-block split of eq. (1.6) (`suzukiFrakPPolar/Zeta/Prime/Digamma/Lerch`), the prime-ray and Lerch-ray decompositions, all five Laplace transforms with their integrability, and **`integral_suzukiFrakP_laplace`**. |
+| `RHTower/SuzukiWeilPropThreeOneCapstone.lean` | Continuity in `t` of both sides on `(0,∞)` (via the `max(t-log n,0)` form of the prime ray and locally uniform Weierstrass bounds), the a.e.-to-pointwise gluing lemma, and **`suzukiFrakP_eq_suzukiPtZeroSum`** = Proposition 3.1. |
+| `RHTower/SuzukiWeilPropThreeOneDeterminacy.lean` | Exponential growth bounds for all five blocks and for `𝔓`; measurability in `t`; `ae_eq_zero_of_expFourier_eventuallyEq_zero` and `expFourier_eventuallyEq_zero_of_imaginarySegment` (reusable determinacy tools); **`suzukiFrakP_ae_eq_suzukiPtZeroSum`**. |
 | `RHTower/SuzukiWeilPropThreeOne.lean` | `riemannZeta_ne_zero_of_XiC_ne_zero`, the two evaluations of `xiRelativeResolventTrace` in prime--archimedean terms, and **`integral_suzukiFrakP_laplace_eq_zeroSeries`** — the two Laplace transforms agree. |
 | `RHTower/SuzukiWeilZeroSeries.lean` | `suzukiPtZeroTerm` / `suzukiPtZeroSum` (eq. 3.2), summability, `‖P_t(z)‖ ≪_z e^{|t|/2}`, per-copy Laplace transform, and **`integral_suzukiPtZeroSum_laplace`**.  Also `XiC_neg` (evenness of the centered completed Xi source), which the corpus did not have. |
 | `RHTower/SuzukiWeilFrakP.lean` | `suzukiFrakP` (eq. 1.6) and `suzukiFrakPReg`; `suzukiScrewG_eq_screwFn`; `riemannZeta_half_ne_zero`; `logDeriv_riemannZeta_half : ζ'/ζ(1/2) = -screwLinearCoeff/2`; `continuousAt_logDeriv_riemannZeta_half`; **`tendsto_suzukiFrakP_zero`** (eq. 7.1). |
@@ -154,7 +156,7 @@ and their sum is `[ζ'/ζ(s_σ) + A(s_σ) - ζ'/ζ(s_z) - A(s_z)]/(σ(σ+iz))`, 
 (The digamma+Lerch collapse uses the two partial fractions `1/((n+w)(n+a)) = (a-w)^{-1}[...]`,
 `a = 1/4+σ/2`, and the corpus's `digamma_sub_eq_tsum`.)
 
-### Remaining endgame for Prop 3.1 (exact plan)
+### Endgame for Prop 3.1 — EXECUTED
 
 1. **Growth**: `‖P_t(z)‖ ≤ C_z (e^{|t|/2}+1)` is `norm_suzukiPtZeroSum_le` (done).  For `𝔓` combine the
    five block bounds already proved (`norm_suzukiFrakPPrime_le`, `norm_suzukiLerchDiff_le`, and the
@@ -181,6 +183,7 @@ applies.  Continuity of both sides in `t` then upgrades a.e. to pointwise.
 
 ## Log
 - 2026-08-22 — created; source inventoried statement by statement; corpus dictionary established.
+- 2026-08-22 — **Proposition 3.1 CLOSED in Lean, unconditionally** (`suzukiFrakP_eq_suzukiPtZeroSum`), by the Laplace-matching route: five-block Laplace transform of eq. (1.6), Laplace transform of the Xi-zero series, the corpus explicit formula as the bridge, Laplace determinacy through the exponential Fourier transform, and continuity in `t`.  All capstones axiom-clean.
 - 2026-08-22 — L3 started: the Xi-zero-series Laplace transform is closed; the five-block split of eq. (1.6) and the polar/zeta/digamma Laplace transforms are closed.
 - 2026-08-22 — L1 (Lerch block) and eq. (7.1) closed in Lean; two sign typos in the printed proof of
   (7.1) recorded; anti-duplication audit run and one duplicate (`suzukiGXi`) removed.

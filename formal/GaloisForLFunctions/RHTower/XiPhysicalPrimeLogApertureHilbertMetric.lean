@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiPhysicalPrimeLogApertureFusion
+import GaloisForLFunctions.HTGeometry.CenteredIndicatorHilbert
 import GaloisForLFunctions.HTGeometry.FiniteHilbertDispersion
 import Mathlib.MeasureTheory.Function.L2Space
 
@@ -116,6 +117,20 @@ def xiPhysicalPrimeLogCenteredApertureCarrier
   xiPhysicalPrimeLogApertureIndicator A m k p -
     (xiPhysicalPrimeLogApertureLength A m k p / A) •
       xiPhysicalLogApertureIndicator A
+
+/-- The concrete physical carrier is the generic centered-indicator construction on `(0,A]`. -/
+theorem xiPhysicalPrimeLogCenteredApertureCarrier_eq_centeredIndicatorOn
+    {A : ℝ} (hA : 0 < A) (m k : ℝ) (p : Nat.Primes) :
+    xiPhysicalPrimeLogCenteredApertureCarrier A m k p =
+      GaloisForLFunctions.HTGeometry.centeredIndicatorOn (volume : Measure ℝ)
+        (xiPhysicalLogApertureSet A) (xiPhysicalPrimeLogApertureSet A m k p)
+        measurableSet_Ioc (measure_xiPhysicalLogApertureSet_ne_top A)
+        measurableSet_Ioc (measure_xiPhysicalPrimeLogApertureSet_ne_top A m k p) := by
+  rw [xiPhysicalPrimeLogCenteredApertureCarrier,
+    xiPhysicalPrimeLogApertureIndicator, xiPhysicalLogApertureIndicator,
+    GaloisForLFunctions.HTGeometry.centeredIndicatorOn,
+    volume_real_xiPhysicalPrimeLogApertureSet,
+    volume_real_xiPhysicalLogApertureSet hA]
 
 theorem real_inner_xiPhysicalPrimeLogApertureIndicator
     (A m k : ℝ) (p q : Nat.Primes) :

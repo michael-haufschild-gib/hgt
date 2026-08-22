@@ -318,3 +318,36 @@ cusp-spectrum-radius-law,
 onset-recurrence-dimension-independence-law,
 route-e-cofactor-amplified-e3-token-supply, route-e-forbidden-support-e3-stability,
 schanuel-defects-algebraic-coefficient-independent, schanuel-stage-two-defect-slope-normal-form
+
+## `algebraic-two-local-instant-exact-complexity` PROMOTED to stage 3 (2026-08-22)
+
+Both boxed theorems of the card are unconditional Lean theorems at one *explicit* traceless integer
+two-local Hamiltonian: `TwoLocalWitness.exists_twoLocal_exact_complexity_and_finiteness`
+(`HTGeometry/TwoLocalExactComplexityFull`).  Eleven new modules; the card carries the full table.
+The three load-bearing pieces:
+
+1. **§1's generic Galois group.**  `exists_twoLocal_symmetric_gal` — the characteristic polynomial
+   of the hypercube transverse-field family has Galois group `S_D` over `ℚ(u)`, by single-direction
+   block decomposition, Kummer independence of the block discriminants (with **no** `√−1`), and
+   transport of every block flip to the deformed root family through a chain of power-series
+   deformations.  `gal_card_of_specialisation` then produces a rational specialisation avoiding any
+   prescribed nonzero polynomial condition, and clearing denominators makes it integral.
+2. **The Lagrange coefficient matrix.**  The eigenbasis of a rational Hermitian matrix is neither
+   canonical nor algebraic, but `ℓ_j(H) *ᵥ Ω = ⟨e_j,Ω⟩ • e_j` is, so the orbit is
+   `∑_j exp(−itE_j)·(ℓ_j(H) *ᵥ Ω)` with an *algebraic* invertible coefficient matrix.  The whole
+   transcendence comparison is then made over `algebraicClosure ℚ ℂ`, where
+   `AlgebraicIndependent.algebraicClosure` upgrades Lindemann–Weierstrass for free.
+3. **Equation (2) without o-minimality.**  A transcendence basis inside the generating set gives
+   `D−1` algebraically independent orbit coordinates; `16 s` complex gate parameters are fewer, so
+   one polynomial separates; composing it with the orbit gives a complex-valued real-analytic
+   function with finitely many zeros on a compact set.  Keeping the parameters *complex* is what
+   keeps the constant at the card's `16` rather than `32`.
+
+## Open (8)
+
+all-replica-static-centralizer-planar-separation-law,
+arithmetic-static-local-hardness-recurrence-window-law,
+cusp-spectrum-radius-law,
+onset-recurrence-dimension-independence-law,
+route-e-cofactor-amplified-e3-token-supply, route-e-forbidden-support-e3-stability,
+schanuel-defects-algebraic-coefficient-independent, schanuel-stage-two-defect-slope-normal-form
