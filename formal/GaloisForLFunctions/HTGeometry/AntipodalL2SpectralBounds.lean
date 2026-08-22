@@ -132,6 +132,16 @@ theorem integral_norm_sub_sq_le_two {E : Type*} [NormedAddCommGroup E]
   apply integral_mono hsub ((hf.const_mul 2).add (hg.const_mul 2))
   exact fun x => norm_sub_sq_le_two (f x) (g x)
 
+/-- Local two-dimensional cancellation behind equation `(55)`: inverse metric contributes
+`exp (-2 sigma)` while area contributes `exp (2 sigma)`, leaving Dirichlet density unchanged. -/
+theorem conformalDirichletDensity_invariant (sigma gradientSq : ℝ) :
+    Real.exp (-2 * sigma) * gradientSq * Real.exp (2 * sigma) = gradientSq := by
+  calc
+    Real.exp (-2 * sigma) * gradientSq * Real.exp (2 * sigma) =
+        gradientSq * (Real.exp (-2 * sigma) * Real.exp (2 * sigma)) := by ring
+    _ = gradientSq * Real.exp (-2 * sigma + 2 * sigma) := by rw [Real.exp_add]
+    _ = gradientSq := by simp
+
 /-- Equations `(55)`--`(57)`: conformal invariance of Dirichlet energy, the mismatch gradient
 estimate, and a spectral gap imply the sharp factor `lambda / 4`. -/
 theorem spectral_mismatch_energy_lower_bound

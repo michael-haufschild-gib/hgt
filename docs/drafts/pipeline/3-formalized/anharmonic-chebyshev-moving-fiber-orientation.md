@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** Rouyea--Bourgeois (2026), Proposition 6.9 and Remark 6.10; new invariant-coordinate orientation analysis
-- **Statement:** Möbius recentering loses fixed exceptional-point locality but retains an exact finite moving anharmonic fiber; its coordinate-correct Xi standard sector has a nonnegative full-`S₃` Hermitian energy, while every cyclic-invariant scalar holomorphic quadratic is isotropic.
+- **Statement:** Möbius recentering retains an exact finite moving anharmonic fiber. Its actual-Xi q-covariant standard sector is strictly nonzero on every real scan point, and its quotient-invisible Casimir has universal far-sheet ratio `2` to squared descended trace; every scalar holomorphic quadratic alternative is isotropic.
 
 ## Goal
 
@@ -153,3 +153,110 @@ derivatives are taken in invariant quotient coordinate `q`, not source coordinat
 - 2026-08-22 — C2 Hermitian survivor proved on paper and in Lean.
 - 2026-08-22 — C3 strengthened from generic finite jets to exact moving fibers, explicit scan center,
   and actual Xi invariant-coordinate split; formalized and axiom-audited.
+
+## C4 — Noether/Jacobi fibre current is strictly present
+
+**Cross-corpus mechanism audit.** Wide corpus searches covered Noether currents, covariant
+derivatives, Hermitian Casimirs, graph-Laplacian kernel recovery, quantum Fisher variance,
+Jacobi/centre-of-mass coordinates, Hodge splitting, Ward identities, causal cone flux, quotient
+information loss, and holonomy. Two filters removed theatre:
+
+1. Casimir/QFI nonnegativity alone is a renamed sum of squares and cannot select RH.
+2. A transferable mechanism must produce an actual Xi statement stronger than generic positivity.
+
+The surviving synthesis combines three-body Jacobi splitting with the already-formalized strict
+real-axis Xi response. For arbitrary `a,b,c : ℂ`, Lean proves
+
+`3 (‖a‖² + ‖b‖² + ‖c‖²) = ‖a+b+c‖² + E(a,b,c)`.
+
+Thus quotient-visible trace and quotient-invisible Casimir are exact orthogonal energy sectors. For
+the actual q-covariant Xi orbit and every real `s>2`, the three real parts have signs
+
+`(+,+,-)`.
+
+Reason: two orbit points lie right of `1/2`, one lies left, Xi's centered logarithmic derivative is
+strictly positive on the right real ray, the functional equation reverses its sign on the left,
+and `q'` is positive on the real axis. Hence
+
+`E_q(s) > 0`.
+
+**Result `[PROVED HERE]`.** Scalar moving quotient descent is nowhere information-complete on its
+real scan sheet: it discards a strictly nonzero actual-Xi standard current at every `s>2`. This is
+stronger than the prior abstract zero criterion and does not assume RH.
+
+**Formal certificate.**
+
+- `formal/GaloisForLFunctions/RHTower/AnharmonicChebyshevNoetherCasimir.lean`
+  - exact Jacobi/Noether trace--Casimir energy decomposition;
+  - strict right/left real-axis Xi logarithmic-derivative signs;
+  - q-covariant orbit sign pattern `(+,+,-)`;
+  - strict moving-fibre orientation energy.
+
+**Boundary.** Strict fibre energy is a no-collapse theorem, not an RH selector. Source evolution or
+domination of this nontrivial standard sector remains necessary. Prime--Gamma access is immediate
+for two reflected exterior components; the middle point in `(1/2,1)` remains the source bottleneck.
+
+## Log continuation
+
+- 2026-08-22 — wide physics/mathematics corpus search rejected Casimir/QFI positivity as
+  insufficient by itself; retained Noether/Jacobi quotient-current split.
+- 2026-08-22 — C4 proved on paper and in Lean: actual q-fibre Xi signs are `(+,+,-)` and
+  `E_q(s)>0` for every real `s>2`.
+
+## C5 — cofinal one-sheet concentration and universal Casimir ratio
+
+**Conjecture.** The moving three-sheet current has a universal far-sheet energy split, not merely a
+pointwise positive fibre term.
+
+**Hostile test.** Prove component limits from existing Xi asymptotics and quotient Jacobians. Reject
+any statement depending on numerical fitting or on an assumed monotonicity of `E_q`.
+
+**Result `[PROVED HERE]`.** As `s → +∞`, Lean proves
+
+`D_q log xi(s) → +∞`,
+
+`D_q log xi((s-1)/s) → 0`,
+
+`D_q log xi(1/(1-s)) → 0`.
+
+The proof combines the corpus theorem `xiRayLogDeriv → +∞`, continuity at the return points `1`
+and `0`, the exterior law `q'(s)→1`, and exact covariances
+
+`q'(w(s)) = q'(s)s²`,
+
+`q'(w²(s)) = q'(s)(1-s)²`.
+
+Consequently the exterior sheet asymptotically carries all raw component amplitude. Yet the
+three-body Parseval law forces the standard-sector energy to retain twice the scalar energy:
+
+`E_q(s) / (D_q log xi(s))² → 2`.
+
+More invariantly, if `T_q(s)` is the real descended trace
+
+`Re(D_q log(xi(s)xi(w(s))xi(w²(s))))`,
+
+then
+
+`E_q(s) / T_q(s)² → 2`.
+
+This exact constant is the dimension-two standard representation showing up as a universal
+invisible/visible energy ratio. It is unconditional and does not imply RH.
+
+**Novelty audit `[NOVELTY UNVERIFIED]`.** Targeted current searches for Riemann Xi with anharmonic
+orbit logarithmic derivatives, q-coordinate currents, orientation energy, Casimir, and standard
+`S₃` sectors found the Rouyea--Bourgeois descent paper but no indexed statement of the moving
+q-current sign law, strict standard-sector energy, cofinal one-sheet concentration, or ratio `2`.
+Absence from search results is not proof of external novelty; publication label remains unverified.
+
+**Formal additions.** `AnharmonicChebyshevNoetherCasimir.lean` now also proves:
+
+- real quotient-Jacobian covariance and all three component limits;
+- exact identification of real visible trace with logarithmic derivative of cyclic Xi product;
+- real/complex orientation-energy agreement on the scan sheet;
+- exterior-normalized and descended-trace-normalized Casimir limits, both equal to `2`.
+
+## Log continuation II
+
+- 2026-08-22 — C5 proved on paper and in Lean; no monotonicity assumption used.
+- 2026-08-22 — targeted web novelty search found source descent paper, no exact collision; novelty
+  remains unverified rather than claimed.

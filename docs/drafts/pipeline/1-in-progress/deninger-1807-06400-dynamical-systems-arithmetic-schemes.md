@@ -69,7 +69,11 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Prop 1.3 (`t26n`) polynomial correspondence**: `(minpoly F x).map = (minpoly L x)^d` over any purely inseparable `L/F`, in particular over `κ₀^perf` | `RHTower/DeningerDynSysMinpolyPurelyInseparable.lean` | closed |
 | Prop 1.3 (`t26n`) normalization: reversal matches normalized with monic irreducibles; every monic irreducible is a minimal polynomial | `RHTower/DeningerDynSysNormalizedIrreducible.lean` | closed |
 | Prop 1.3 (`t26n`) free basis: normalized polynomials factor uniquely into normalized irreducibles | `RHTower/DeningerDynSysNormalizedFactorization.lean` | closed |
-| **Prop 1.3 (`t26n`) correspondence of normalized irreducibles**, both directions: `α.map = β^d` with `β` normalized irreducible over `κ₀^perf`, and every such `β` arises | `RHTower/DeningerDynSysNormalizedCorrespondence.lean` | closed |
+| **Prop 1.3 (`t26n`) correspondence of normalized irreducibles**, both directions: `α.map = β^d` with `β` normalized irreducible over `κ₀^perf`, and every such `β` arises; a separable irreducible stays irreducible over a purely inseparable extension | `RHTower/DeningerDynSysNormalizedCorrespondence.lean` | closed |
+| **Prop 1.3 (`t26n`)**: the exponent `d` is `q^m` for the separable contraction `expand(q^m) g = minpoly` | `RHTower/DeningerDynSysInseparableExponent.lean` | closed |
+| **Prop 1.3 (`t26n`)**: that exponent **is** the degree of inseparability `d_x` of the corpus's `deningerInsepDegree` | `RHTower/DeningerDynSysInseparableIdentification.lean` | closed |
+| Prop 1.3 (`t26n`) free monoid: the normalized factorization is well defined and additive on products | `RHTower/DeningerDynSysNormalizedFactorization.lean` | closed |
+| **Cor 13.5 (`t45`) algebraic core**: a) ⟺ a'), b) ⟺ b'), `Q⁻¹(0)` and `Q⁻¹(𝔪)` prime with `Q⁻¹(0) ⊆ Q⁻¹(𝔪)`, the factorization through `R/𝔭`, unit values outside `𝔮`, **the extension `Q_𝔮 : R_𝔮 → 𝒪`** and its two preimages `Q_𝔮⁻¹(0) = 𝔭R_𝔮`, `Q_𝔮⁻¹(𝔪) = 𝔮R_𝔮` | `RHTower/DeningerDynSysValuedPointsAffine.lean` | closed |
 
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -119,9 +123,12 @@ AIC-domain comparison.
    (`deningerExists_normalized_factorization`, `deningerNormalized_factorization_unique`);
    (b) the correspondence `α.map = β^d` in **both directions** — **closed**
    (`deningerNormalizedIrreducible_map_eq_pow`, `deningerNormalizedIrreducible_exists_preimage`,
-   both from the core `deningerNormalizedPair`).  What remains: (c) that `d` is exactly the
-   inseparable degree `d_r` of the corpus's `deningerInsepSubring`, and (d) the identification of
-   `(ℤ̲κ/κ₀)^H` with the free abelian group on the normalized irreducibles of `κ₀[t]`.
+   both from the core `deningerNormalizedPair`).  (c) `d = q^m` and (d) `q^m = d_x`, the degree of
+   inseparability, are **closed** (`deningerMinpoly_map_perfectClosure_eq_pow_expChar`,
+   `deningerMinpoly_map_perfectClosure_pow_insepDegree`).  The single remaining step of Prop 1.3 is
+   (e): the identification of `(ℤ̲κ/κ₀)^H` with the free abelian group on the normalized
+   irreducibles of `κ₀[t]`, i.e. assembling the closed correspondence and the closed unique
+   factorization into the isomorphism `(ℤ̲κ/κ₀)^H ≅ W_rat(κ₀)`.
 2. **Prop 3.6 / Cor 3.7.**  Build `lim_{N₀} M` along the `ν`-th power maps (a subgroup of
    `N₀ → M` cut out by `x_{νμ}^μ = x_ν`, with the subspace topology), show `T = ker pr_1` embeds in
    `∏_ν μ_ν(K)` with each `μ_ν(K)` finite hence discrete, so `T` is linearly topologized, and feed
@@ -132,7 +139,11 @@ AIC-domain comparison.
    `𝒪_X(U) → K`, and affine covers by Fatou rings.  `W(𝒪_X)` is now a sheaf
    (`deningerBigWittPresheaf_isSheaf`), which is the ambient sheaf in (c).
 4. **Def 2.4 / Prop 2.4 (`t27xn`).**  Needs stalks of `W_rat(𝒪_X)` and the locality condition.
-5. **§§3, 5, 6, 7, 9–13, 15** are gated on the `S`-valued points of `W_rat(X)`.
+5. **§§3, 5, 6, 7, 9–13, 15** are gated on the `S`-valued points of `W_rat(X)`.  The algebraic
+   core of Cor 13.5 (`t45`) — the description of those points over an affine base as pointed
+   multiplicative maps `Q : R → 𝒪` with a')/b') — is closed; the extension `Q_𝔮 : R_𝔮 → 𝒪` and its two
+   preimages are closed too; what remains there is only the scheme-level bookkeeping of the pair of
+   points `y ∈ closure {x}` and the identification with `Hom(W_rat(𝒪_{X,y}), 𝒪)`.
 6. **§14 remainder.**  14.13 (`t1110`) is pure algebra (the tilting correspondence for
    `p`-adically complete rings, via `PreTilt`/`fontaineTheta`); the rest needs the `𝒪`-valued
    point spaces.

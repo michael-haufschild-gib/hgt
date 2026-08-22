@@ -135,16 +135,18 @@ theorem deriv_compactSineSquaredPulse_start {tau : ℝ} (htau : 0 < tau) (a0 u0 
     · intro x hx
       by_cases hxu : x = u0
       · subst x
-        simp [compactSineSquaredPulse]
+        rw [compactSineSquaredPulse_of_mem ⟨le_rfl, by linarith⟩]
+        simp [sineSquaredPulse]
       · have hlt : x < u0 := lt_of_le_of_ne hx hxu
         simp [compactSineSquaredPulse, not_le_of_gt hlt]
-    · simp [compactSineSquaredPulse]
+    · rw [compactSineSquaredPulse_of_mem ⟨le_rfl, by linarith⟩]
+      simp [sineSquaredPulse]
   have hright : HasDerivWithinAt (compactSineSquaredPulse a0 u0 tau) 0
       (Icc u0 (u0 + tau)) u0 := by
     apply hsine.hasDerivWithinAt.congr
     · intro x hx
       simp [compactSineSquaredPulse, hx]
-    · simp [compactSineSquaredPulse]
+    · exact compactSineSquaredPulse_of_mem ⟨le_rfl, by linarith⟩
   have hunion := hleft.union hright
   have hsets : Iic u0 ∪ Icc u0 (u0 + tau) = Iic (u0 + tau) := by
     ext x
@@ -176,6 +178,12 @@ theorem deriv_compactSineSquaredPulse_end {tau : ℝ} (htau : 0 < tau) (a0 u0 : 
       ring
     rw [sineSquaredPulseVelocity, harg, Real.sin_two_pi]
     ring
+  have hpulseEnd : sineSquaredPulse a0 u0 tau (u0 + tau) = 0 := by
+    have harg : Real.pi * (u0 + tau - u0) / tau = Real.pi := by
+      field_simp
+      ring
+    rw [sineSquaredPulse, harg, Real.sin_pi]
+    ring
   rw [hvel] at hsine
   have hleft : HasDerivWithinAt (compactSineSquaredPulse a0 u0 tau) 0
       (Icc u0 (u0 + tau)) (u0 + tau) := by
@@ -189,12 +197,10 @@ theorem deriv_compactSineSquaredPulse_end {tau : ℝ} (htau : 0 < tau) (a0 u0 : 
     · intro x hx
       by_cases hxe : x = u0 + tau
       · subst x
-        rw [compactSineSquaredPulse_of_mem (by constructor <;> linarith),
-          sineSquaredPulse_end a0 u0 htau.ne']
+        rw [compactSineSquaredPulse_of_mem (by constructor <;> linarith), hpulseEnd]
       · have hgt : u0 + tau < x := lt_of_le_of_ne hx (Ne.symm hxe)
         simp [compactSineSquaredPulse, not_le_of_gt hgt]
-    · rw [compactSineSquaredPulse_of_mem (by constructor <;> linarith),
-        sineSquaredPulse_end a0 u0 htau.ne']
+    · rw [compactSineSquaredPulse_of_mem (by constructor <;> linarith), hpulseEnd]
   have hunion := hleft.union hright
   have hsets : Icc u0 (u0 + tau) ∪ Ici (u0 + tau) = Ici u0 := by
     ext x
@@ -227,7 +233,10 @@ theorem deriv_compactSineSquaredPulse {tau : ℝ} (htau : 0 < tau) (a0 u0 : ℝ)
       have harg : 2 * Real.pi * (u0 + tau - u0) / tau = 2 * Real.pi := by
         field_simp
         ring
-      simp [compactSineSquaredPulseVelocity, sineSquaredPulseVelocity, harg]
+      have hmem : u0 + tau ∈ Icc u0 (u0 + tau) := ⟨by linarith, le_rfl⟩
+      rw [compactSineSquaredPulseVelocity, if_pos hmem, sineSquaredPulseVelocity,
+        harg, Real.sin_two_pi]
+      ring
     · exact deriv_compactSineSquaredPulse_of_ne_endpoints htau a0 u0 u hstart hend
 
 @[simp] theorem sineSquaredPulse_start (a0 u0 tau : ℝ) :

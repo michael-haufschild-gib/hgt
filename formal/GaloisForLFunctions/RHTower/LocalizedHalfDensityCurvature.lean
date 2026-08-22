@@ -14,16 +14,16 @@ so the pure von Mangoldt self-convolution is reached exactly at the half-density
 The proof is the Leibniz rule for the logarithmic derivation `D f = f · log` on the Dirichlet
 convolution ring, applied twice to `μ ⍟ ζ = 1`.
 
-Localizing the flat half-density germ by an even kernel `W` gives the exact boundary-curvature
-law: the second jet of the product fibre is the localized von Mangoldt pair sum minus the two
-trivial endpoint factorizations,
-
-```text
-½ H''_{R,W}(0) = L_W(R) − (Λ ⍟ Λ)(R) W(log R) .
-```
+Unique factorization then classifies every twisted product fibre `C_t = Λ_t ⍟ Λ_{-t}` completely:
+a layer with three distinct prime divisors carries no mass, a two-prime layer `p^a q^b` carries
+exactly two reinforcing orientations and one real cosine mode, and a one-prime layer `p^k` carries
+the Chebyshev polynomial `U_{k-2}` of the second kind in `cos(t log p)`.  Against the centred
+triangular fixed-ratio kernel the two-prime layer changes sign exactly at the ratio threshold
+`c(1 - c/A)`.
 -/
 
 open ArithmeticFunction Finset
+
 open scoped ArithmeticFunction
 
 namespace RHTower
@@ -731,6 +731,338 @@ theorem twistedFibre_two_prime {t : ℝ} {p q : ℕ} (hp : p.Prime) (hq : q.Prim
     twistedVonMangoldt_primePow t hq hb, twistedVonMangoldt_primePow (-t) hp ha, neg_mul, neg_mul,
     mul_sub]
   exact final (t * ((a : ℝ) * Real.log p)) (t * ((b : ℝ) * Real.log q)) (Real.log p) (Real.log q)
+
+/-! ## Equations (9) and (22)--(23): the localized pair sum on a two-prime layer -/
+
+/-- Reduction of an antidiagonal sum over a two-prime product layer to its two prime-power
+orientations. -/
+theorem sum_antidiagonal_two_prime {M : Type*} [AddCommMonoid M]
+    {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0)
+    (F : ℕ → ℕ → M)
+    (hF : ∀ x ∈ (p ^ a * q ^ b).divisorsAntidiagonal,
+      ¬ (IsPrimePow x.1 ∧ IsPrimePow x.2) → F x.1 x.2 = 0) :
+    ∑ x ∈ (p ^ a * q ^ b).divisorsAntidiagonal, F x.1 x.2
+      = F (p ^ a) (q ^ b) + F (q ^ b) (p ^ a) := by
+  classical
+  have hR : p ^ a * q ^ b ≠ 0 :=
+    mul_ne_zero (pow_ne_zero _ hp.ne_zero) (pow_ne_zero _ hq.ne_zero)
+  have hne : p ^ a ≠ q ^ b := by
+    intro h
+    have hpd : p ∣ q ^ b := h ▸ dvd_pow_self p ha
+    exact hpq ((Nat.prime_dvd_prime_iff_eq hp hq).mp (hp.dvd_of_dvd_pow hpd))
+  have hsub : ({(p ^ a, q ^ b), (q ^ b, p ^ a)} : Finset (ℕ × ℕ))
+      ⊆ (p ^ a * q ^ b).divisorsAntidiagonal := by
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+    rcases hx with rfl | rfl
+    · exact Nat.mem_divisorsAntidiagonal.mpr ⟨rfl, hR⟩
+    · exact Nat.mem_divisorsAntidiagonal.mpr ⟨mul_comm _ _, hR⟩
+  have hzero : ∀ x ∈ (p ^ a * q ^ b).divisorsAntidiagonal,
+      x ∉ ({(p ^ a, q ^ b), (q ^ b, p ^ a)} : Finset (ℕ × ℕ)) → F x.1 x.2 = 0 := by
+    intro x hx hxT
+    refine hF x hx ?_
+    rintro ⟨h1, h2⟩
+    obtain ⟨hxR, -⟩ := Nat.mem_divisorsAntidiagonal.mp hx
+    have horient := primePow_pair_of_semiprimePower hp hq hpq (Nat.pos_of_ne_zero ha)
+      (Nat.pos_of_ne_zero hb) hxR h1 h2
+    refine hxT ?_
+    simp only [Finset.mem_insert, Finset.mem_singleton]
+    rcases horient with ⟨e1, e2⟩ | ⟨e1, e2⟩
+    · exact Or.inl (Prod.ext_iff.mpr ⟨e1, e2⟩)
+    · exact Or.inr (Prod.ext_iff.mpr ⟨e1, e2⟩)
+  have hpair : ((p ^ a, q ^ b) : ℕ × ℕ) ≠ (q ^ b, p ^ a) := by
+    simp only [ne_eq, Prod.mk.injEq, not_and]
+    intro h
+    exact absurd h hne
+  rw [← Finset.sum_subset hsub hzero, Finset.sum_pair hpair]
+
+/-- **Equation (9).**  The localized von Mangoldt pair sum of a product layer. -/
+def localizedVonMangoldtPair (W : ℝ → ℝ) (R : ℕ) : ℝ :=
+  ∑ x ∈ R.divisorsAntidiagonal, Λ x.1 * Λ x.2 * W (Real.log x.1 - Real.log x.2)
+
+/-- **Equation (22).**  Against an even ratio kernel a two-prime product layer carries exactly one
+real mode: the two orientations reinforce. -/
+theorem localizedVonMangoldtPair_two_prime (W : ℝ → ℝ) (hW : ∀ x : ℝ, W (-x) = W x)
+    {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) :
+    localizedVonMangoldtPair W (p ^ a * q ^ b)
+      = 2 * Real.log p * Real.log q
+          * W ((a : ℝ) * Real.log p - (b : ℝ) * Real.log q) := by
+  classical
+  have hF : ∀ x ∈ (p ^ a * q ^ b).divisorsAntidiagonal,
+      ¬ (IsPrimePow x.1 ∧ IsPrimePow x.2) →
+        Λ x.1 * Λ x.2 * W (Real.log x.1 - Real.log x.2) = 0 := by
+    intro x _ hx
+    rcases not_and_or.mp hx with h | h
+    · rw [ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr h, zero_mul, zero_mul]
+    · rw [ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr h, mul_zero, zero_mul]
+  have hred := sum_antidiagonal_two_prime hp hq hpq ha hb
+    (fun m n => Λ m * Λ n * W (Real.log m - Real.log n)) hF
+  have hlp : Real.log ((p ^ a : ℕ) : ℝ) = (a : ℝ) * Real.log p := by
+    push_cast
+    rw [Real.log_pow]
+  have hlq : Real.log ((q ^ b : ℕ) : ℝ) = (b : ℝ) * Real.log q := by
+    push_cast
+    rw [Real.log_pow]
+  have hWneg : W ((b : ℝ) * Real.log q - (a : ℝ) * Real.log p)
+      = W ((a : ℝ) * Real.log p - (b : ℝ) * Real.log q) := by
+    rw [show (b : ℝ) * Real.log q - (a : ℝ) * Real.log p
+      = -((a : ℝ) * Real.log p - (b : ℝ) * Real.log q) by ring, hW]
+  rw [localizedVonMangoldtPair, hred, ArithmeticFunction.vonMangoldt_apply_pow ha,
+    ArithmeticFunction.vonMangoldt_apply_pow hb, ArithmeticFunction.vonMangoldt_apply_prime hp,
+    ArithmeticFunction.vonMangoldt_apply_prime hq, hlp, hlq, hWneg]
+  ring
+
+/-- **Equation (22), fixed-ratio kernel.**  The complete centred product layer of an ordinary
+two-prime product. -/
+theorem localizedVonMangoldtPair_centredTriangular {A c : ℝ}
+    {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) :
+    localizedVonMangoldtPair (centredTriangularKernel A c) (p ^ a * q ^ b)
+      = 2 * Real.log p * Real.log q
+          * (triangularKernel c ((a : ℝ) * Real.log p - (b : ℝ) * Real.log q) - c ^ 2 / A) :=
+  localizedVonMangoldtPair_two_prime _ (centredTriangularKernel_even A c) hp hq hpq ha hb
+
+/-- The positive amplitude of a two-prime product layer. -/
+theorem two_prime_amplitude_pos {p q : ℕ} (hp : p.Prime) (hq : q.Prime) :
+    0 < 2 * Real.log p * Real.log q := by
+  have hlp : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
+  have hlq : 0 < Real.log q := Real.log_pos (by exact_mod_cast hq.one_lt)
+  positivity
+
+/-- **Equation (23), positive chamber of a two-prime layer.** -/
+theorem localizedVonMangoldtPair_centredTriangular_pos_iff {A c : ℝ} (hc : 0 < c) (hcA : c < A)
+    {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) :
+    0 < localizedVonMangoldtPair (centredTriangularKernel A c) (p ^ a * q ^ b)
+      ↔ |(a : ℝ) * Real.log p - (b : ℝ) * Real.log q| < c * (1 - c / A) := by
+  have hamp := two_prime_amplitude_pos hp hq
+  rw [localizedVonMangoldtPair_centredTriangular hp hq hpq ha hb,
+    ← centredTriangularKernel, ← centredTriangularKernel_pos_iff (A := A) (c := c)
+      (x := (a : ℝ) * Real.log p - (b : ℝ) * Real.log q) hc hcA]
+  constructor
+  · intro h
+    nlinarith
+  · intro h
+    nlinarith
+
+/-- **Equation (23), zero chamber of a two-prime layer.** -/
+theorem localizedVonMangoldtPair_centredTriangular_eq_zero_iff {A c : ℝ} (hc : 0 < c) (hcA : c < A)
+    {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) :
+    localizedVonMangoldtPair (centredTriangularKernel A c) (p ^ a * q ^ b) = 0
+      ↔ |(a : ℝ) * Real.log p - (b : ℝ) * Real.log q| = c * (1 - c / A) := by
+  have hamp := two_prime_amplitude_pos hp hq
+  rw [localizedVonMangoldtPair_centredTriangular hp hq hpq ha hb,
+    ← centredTriangularKernel, ← centredTriangularKernel_eq_zero_iff (A := A) (c := c)
+      (x := (a : ℝ) * Real.log p - (b : ℝ) * Real.log q) hc hcA]
+  constructor
+  · intro h
+    rcases mul_eq_zero.mp h with h1 | h1
+    · exact absurd h1 (by linarith)
+    · exact h1
+  · intro h
+    rw [h, mul_zero]
+
+/-- **Equation (23), negative chamber of a two-prime layer.** -/
+theorem localizedVonMangoldtPair_centredTriangular_neg_iff {A c : ℝ} (hc : 0 < c) (hcA : c < A)
+    {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) :
+    localizedVonMangoldtPair (centredTriangularKernel A c) (p ^ a * q ^ b) < 0
+      ↔ c * (1 - c / A) < |(a : ℝ) * Real.log p - (b : ℝ) * Real.log q| := by
+  have hamp := two_prime_amplitude_pos hp hq
+  rw [localizedVonMangoldtPair_centredTriangular hp hq hpq ha hb,
+    ← centredTriangularKernel, ← centredTriangularKernel_neg_iff (A := A) (c := c)
+      (x := (a : ℝ) * Real.log p - (b : ℝ) * Real.log q) hc hcA]
+  constructor
+  · intro h
+    nlinarith
+  · intro h
+    nlinarith
+
+/-! ## Equation (20): the prime-power fibre -/
+
+/-- **Equation (20), exponential form.**  A one-prime layer `p^k` carries exactly `k-1` ordered
+`Λ`-supported factorizations, with phases `(2j-k) t log p`. -/
+theorem twistedFibre_primePow {t : ℝ} {p : ℕ} (hp : p.Prime) {k : ℕ} (hk : 2 ≤ k) :
+    twistedFibre t (p ^ k)
+      = (Real.log p : ℂ) ^ 2 * ∑ j ∈ Finset.Ico 1 k,
+          Complex.exp (Complex.I * (((2 * (j : ℝ) - (k : ℝ)) * (t * Real.log p) : ℝ) : ℂ)) := by
+  classical
+  have hppos : 0 < p := hp.pos
+  have hterm : ∀ j ∈ Finset.Ico 1 k,
+      twistedVonMangoldt t (p ^ j) * twistedVonMangoldt (-t) (p ^ k / p ^ j)
+        = (Real.log p : ℂ) ^ 2
+            * Complex.exp (Complex.I
+                * (((2 * (j : ℝ) - (k : ℝ)) * (t * Real.log p) : ℝ) : ℂ)) := by
+    intro j hj
+    obtain ⟨hj1, hjk⟩ := Finset.mem_Ico.mp hj
+    have hj0 : j ≠ 0 := by omega
+    have hkj : k - j ≠ 0 := by omega
+    have hcast : ((k - j : ℕ) : ℝ) = (k : ℝ) - (j : ℝ) := by
+      have hle : j ≤ k := le_of_lt hjk
+      exact Nat.cast_sub hle
+    rw [Nat.pow_div (le_of_lt hjk) hppos, twistedVonMangoldt_primePow t hp hj0,
+      twistedVonMangoldt_primePow (-t) hp hkj, mul_mul_mul_comm, ← Complex.exp_add]
+    have hexp : Complex.I * ((t * ((j : ℝ) * Real.log p) : ℝ) : ℂ)
+          + Complex.I * ((-t * (((k - j : ℕ) : ℝ) * Real.log p) : ℝ) : ℂ)
+        = Complex.I * (((2 * (j : ℝ) - (k : ℝ)) * (t * Real.log p) : ℝ) : ℂ) := by
+      rw [hcast]
+      push_cast
+      ring
+    rw [hexp]
+    ring
+  have hvanish : ∀ j ∈ Finset.range (k + 1), j ∉ Finset.Ico 1 k →
+      twistedVonMangoldt t (p ^ j) * twistedVonMangoldt (-t) (p ^ k / p ^ j) = 0 := by
+    intro j hj hjn
+    have hjk : j ≤ k := by
+      have := Finset.mem_range.mp hj
+      omega
+    have hcase : j = 0 ∨ j = k := by
+      rcases Nat.eq_zero_or_pos j with h | h
+      · exact Or.inl h
+      · right
+        by_contra hc
+        exact hjn (Finset.mem_Ico.mpr ⟨h, lt_of_le_of_ne hjk hc⟩)
+    rcases hcase with rfl | rfl
+    · rw [twistedVonMangoldt_eq_zero_of_vonMangoldt_eq_zero (by simp), zero_mul]
+    · rw [Nat.div_self (pow_pos hppos j),
+        twistedVonMangoldt_eq_zero_of_vonMangoldt_eq_zero
+          (n := 1) (by simp), mul_zero]
+  have hsubIco : Finset.Ico 1 k ⊆ Finset.range (k + 1) := by
+    intro j hj
+    obtain ⟨-, h2⟩ := Finset.mem_Ico.mp hj
+    exact Finset.mem_range.mpr (by omega)
+  rw [twistedFibre, ArithmeticFunction.mul_apply,
+    Nat.sum_divisorsAntidiagonal (fun d e => twistedVonMangoldt t d * twistedVonMangoldt (-t) e),
+    Nat.divisors_prime_pow hp, Finset.sum_map]
+  simp only [Function.Embedding.coeFn_mk]
+  rw [← Finset.sum_subset hsubIco hvanish, Finset.sum_congr rfl hterm, ← Finset.mul_sum]
+
+/-- The symmetric exponential sum `∑_{j=1}^{m-1} e^{i(2j-m)θ}` of a one-prime layer. -/
+def symmetricExpSum (θ : ℂ) (m : ℕ) : ℂ :=
+  ∑ j ∈ Finset.Ico 1 m, Complex.exp (Complex.I * ((2 * (j : ℂ) - (m : ℂ)) * θ))
+
+theorem symmetricExpSum_one (θ : ℂ) : symmetricExpSum θ 1 = 0 := by
+  rw [symmetricExpSum, Finset.Ico_self, Finset.sum_empty]
+
+theorem symmetricExpSum_two (θ : ℂ) : symmetricExpSum θ 2 = 1 := by
+  rw [symmetricExpSum, show Finset.Ico 1 2 = {1} by decide, Finset.sum_singleton]
+  norm_num
+
+/-- The three-term recurrence of the symmetric exponential sums: the Chebyshev recurrence of the
+second kind in the variable `cos θ`. -/
+theorem symmetricExpSum_recurrence (θ : ℂ) {k : ℕ} (hk : 1 ≤ k) :
+    symmetricExpSum θ (k + 2)
+      = 2 * Complex.cos θ * symmetricExpSum θ (k + 1) - symmetricExpSum θ k := by
+  classical
+  set w : ℂ := Complex.I * θ with hw
+  have hfac : ∀ m : ℕ, symmetricExpSum θ m
+      = Complex.exp (-((m : ℂ) * w))
+          * ∑ j ∈ Finset.Ico 1 m, Complex.exp ((2 * (j : ℂ)) * w) := by
+    intro m
+    rw [symmetricExpSum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [← Complex.exp_add]
+    congr 1
+    rw [hw]
+    ring
+  have hP1 : (∑ j ∈ Finset.Ico 1 (k + 1), Complex.exp ((2 * (j : ℂ)) * w))
+      = (∑ j ∈ Finset.Ico 1 k, Complex.exp ((2 * (j : ℂ)) * w))
+        + Complex.exp ((2 * (k : ℂ)) * w) :=
+    Finset.sum_Ico_succ_top hk _
+  have hP2 : (∑ j ∈ Finset.Ico 1 (k + 2), Complex.exp ((2 * (j : ℂ)) * w))
+      = (∑ j ∈ Finset.Ico 1 (k + 1), Complex.exp ((2 * (j : ℂ)) * w))
+        + Complex.exp ((2 * ((k : ℂ) + 1)) * w) := by
+    have hstep := Finset.sum_Ico_succ_top (by omega : 1 ≤ k + 1)
+      (fun j : ℕ => Complex.exp ((2 * (j : ℂ)) * w))
+    rw [show k + 2 = (k + 1) + 1 from rfl, hstep,
+      show ((k + 1 : ℕ) : ℂ) = (k : ℂ) + 1 by push_cast; ring]
+  have hcos : 2 * Complex.cos θ = Complex.exp w + Complex.exp (-w) := by
+    rw [hw, Complex.two_cos]
+    congr 1
+    · congr 1
+      ring
+    · congr 1
+      ring
+  have e2 : Complex.exp (-(((k + 2 : ℕ) : ℂ) * w))
+      = Complex.exp (-((k : ℂ) * w)) * Complex.exp (-w) * Complex.exp (-w) := by
+    rw [← Complex.exp_add, ← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  have e1 : Complex.exp (-(((k + 1 : ℕ) : ℂ) * w))
+      = Complex.exp (-((k : ℂ) * w)) * Complex.exp (-w) := by
+    rw [← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  have e3 : Complex.exp ((2 * (k : ℂ)) * w)
+      = Complex.exp ((k : ℂ) * w) * Complex.exp ((k : ℂ) * w) := by
+    rw [← Complex.exp_add]
+    congr 1
+    ring
+  have e4 : Complex.exp ((2 * ((k : ℂ) + 1)) * w)
+      = Complex.exp ((k : ℂ) * w) * Complex.exp ((k : ℂ) * w) * Complex.exp w * Complex.exp w := by
+    rw [← Complex.exp_add, ← Complex.exp_add, ← Complex.exp_add]
+    congr 1
+    ring
+  have hbc : Complex.exp w * Complex.exp (-w) = 1 := by
+    rw [← Complex.exp_add]
+    simp
+  rw [hfac (k + 2), hfac (k + 1), hfac k, hP2, hP1, hcos, e2, e1, e3, e4]
+  set A : ℂ := Complex.exp (-((k : ℂ) * w))
+  set B : ℂ := Complex.exp w
+  set C : ℂ := Complex.exp (-w)
+  set D : ℂ := Complex.exp ((k : ℂ) * w)
+  set Q : ℂ := ∑ j ∈ Finset.Ico 1 k, Complex.exp ((2 * (j : ℂ)) * w)
+  linear_combination (A * D ^ 2 * B * C - A * Q) * hbc
+
+/-- **Equation (20), Chebyshev form.**  The symmetric exponential sum of a one-prime layer is the
+Chebyshev polynomial of the second kind evaluated at `cos θ`. -/
+theorem symmetricExpSum_eq_chebyshevU (θ : ℂ) {k : ℕ} (hk : 2 ≤ k) :
+    symmetricExpSum θ k
+      = Polynomial.eval (Complex.cos θ) (Polynomial.Chebyshev.U ℂ ((k : ℤ) - 2)) := by
+  have main : ∀ m : ℕ,
+      symmetricExpSum θ (m + 1)
+          = Polynomial.eval (Complex.cos θ) (Polynomial.Chebyshev.U ℂ ((m : ℤ) - 1))
+        ∧ symmetricExpSum θ (m + 2)
+          = Polynomial.eval (Complex.cos θ) (Polynomial.Chebyshev.U ℂ (m : ℤ)) := by
+    intro m
+    induction m with
+    | zero =>
+      refine ⟨?_, ?_⟩
+      · rw [symmetricExpSum_one]
+        norm_num [Polynomial.Chebyshev.U_neg_one]
+      · rw [symmetricExpSum_two]
+        norm_num [Polynomial.Chebyshev.U_zero]
+    | succ n ih =>
+      refine ⟨?_, ?_⟩
+      · rw [show ((n + 1 : ℕ) : ℤ) - 1 = (n : ℤ) by push_cast; ring,
+          show n + 1 + 1 = n + 2 from rfl]
+        exact ih.2
+      · have hrec := symmetricExpSum_recurrence θ (k := n + 1) (by omega)
+        have h1 : symmetricExpSum θ (n + 1 + 1)
+            = Polynomial.eval (Complex.cos θ) (Polynomial.Chebyshev.U ℂ (n : ℤ)) := by
+          rw [show n + 1 + 1 = n + 2 from rfl]
+          exact ih.2
+        rw [hrec, h1, ih.1, show ((n + 1 : ℕ) : ℤ) = ((n : ℤ) - 1) + 2 by push_cast; ring,
+          Polynomial.Chebyshev.U_add_two ℂ ((n : ℤ) - 1),
+          show ((n : ℤ) - 1 + 1) = (n : ℤ) by ring]
+        simp [Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_ofNat, Polynomial.eval_X]
+  obtain ⟨m, rfl⟩ : ∃ m : ℕ, k = m + 2 := ⟨k - 2, by omega⟩
+  rw [show ((m + 2 : ℕ) : ℤ) - 2 = (m : ℤ) by push_cast; ring]
+  exact (main m).2
+
+/-- **Equation (20).**  The prime-power fibre is `(log p)² U_{k-2}(cos(t log p))`. -/
+theorem twistedFibre_primePow_chebyshevU {t : ℝ} {p : ℕ} (hp : p.Prime) {k : ℕ} (hk : 2 ≤ k) :
+    twistedFibre t (p ^ k)
+      = (Real.log p : ℂ) ^ 2
+          * Polynomial.eval (Complex.cos ((t * Real.log p : ℝ) : ℂ))
+              (Polynomial.Chebyshev.U ℂ ((k : ℤ) - 2)) := by
+  rw [twistedFibre_primePow hp hk,
+    ← symmetricExpSum_eq_chebyshevU ((t * Real.log p : ℝ) : ℂ) hk]
+  congr 1
+  rw [symmetricExpSum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  congr 1
+  push_cast
+  ring
 
 end
 

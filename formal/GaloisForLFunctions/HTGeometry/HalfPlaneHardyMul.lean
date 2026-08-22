@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HalfPlaneHardy
+import Mathlib.Analysis.Analytic.Order
 
 /-!
 # Bounded holomorphic multipliers of the Hardy space of a half-plane
@@ -233,22 +234,18 @@ theorem isHalfPlaneHardy_mul_of_bounded_off_ball {F g : ℂ → ℂ} {M C B δ :
     IsHalfPlaneHardy (fun w => F w * g w) (C ^ 2 * M + δ * B ^ 2) :=
   isHalfPlaneHardy_of_bounded_off_ball hF (hF.holo.mul hg) hC hB hδ (fun _ _ _ => rfl) hgb hFB
 
-/-- **Dividing a Hardy function by a zero of the required order.**  If `H` is holomorphic on the
-half-plane, continuous at `w₀`, and satisfies `H·(w - w₀)^l = F` away from `w₀`, then `H` is itself
-a Hardy function. -/
-theorem isHalfPlaneHardy_of_div_pow {F H : ℂ → ℂ} {M : ℝ} (hF : IsHalfPlaneHardy F M)
-    {w₀ : ℂ} {l : ℕ} (hH : DifferentiableOn ℂ H {w : ℂ | 0 < w.re})
-    (hcont : ContinuousAt H w₀)
+/-- **Dividing a Hardy function by a zero of the required order, with a one-sided bound.**  Only
+boundedness of `H` on the part of the ball inside the half-plane is needed, so `w₀` may sit on the
+boundary. -/
+theorem isHalfPlaneHardy_of_div_pow_bounded {F H : ℂ → ℂ} {M B δ : ℝ} {w₀ : ℂ} {l : ℕ}
+    (hF : IsHalfPlaneHardy F M) (hH : DifferentiableOn ℂ H {w : ℂ | 0 < w.re})
+    (hB : 0 ≤ B) (hδ : 0 < δ)
+    (hHB : ∀ w : ℂ, 0 < w.re → ‖w - w₀‖ < δ → ‖H w‖ ≤ B)
     (hHeq : ∀ w : ℂ, 0 < w.re → w ≠ w₀ → H w * (w - w₀) ^ l = F w) :
     ∃ N : ℝ, IsHalfPlaneHardy H N := by
-  have hev : ∀ᶠ w in 𝓝 w₀, ‖H w‖ ≤ ‖H w₀‖ + 1 := by
-    have h : Filter.Tendsto (fun w : ℂ => ‖H w‖) (𝓝 w₀) (𝓝 ‖H w₀‖) := hcont.norm
-    exact (h.eventually (gt_mem_nhds (by linarith : ‖H w₀‖ < ‖H w₀‖ + 1))).mono
-      fun w hw => le_of_lt hw
-  obtain ⟨δ, hδ0, hδ⟩ := Metric.eventually_nhds_iff.1 hev
   refine ⟨_, isHalfPlaneHardy_of_bounded_off_ball (g := fun w => (((w - w₀) ^ l))⁻¹)
-    (w₀ := w₀) hF hH (C := (δ ^ l)⁻¹) (B := ‖H w₀‖ + 1) (δ := δ) (by positivity)
-    (by positivity) hδ0.le ?_ ?_ ?_⟩
+    (w₀ := w₀) hF hH (C := (δ ^ l)⁻¹) (B := B) (δ := δ) (by positivity)
+    hB hδ.le ?_ ?_ hHB⟩
   · intro w hw hge
     have hne : w - w₀ ≠ 0 := by
       intro h
@@ -265,9 +262,66 @@ theorem isHalfPlaneHardy_of_div_pow {F H : ℂ → ℂ} {M : ℝ} (hF : IsHalfPl
       linarith
     rw [norm_inv, norm_pow]
     refine inv_anti₀ (by positivity) ?_
-    exact pow_le_pow_left₀ hδ0.le hge l
-  · intro w _ hball
-    exact hδ (by simpa [dist_eq_norm] using hball)
+    exact pow_le_pow_left₀ hδ.le hge l
+
+/-- **Dividing a Hardy function by a zero of the required order.**  If `H` is holomorphic on the
+half-plane, continuous at `w₀`, and satisfies `H·(w - w₀)^l = F` away from `w₀`, then `H` is itself
+a Hardy function. -/
+theorem isHalfPlaneHardy_of_div_pow {F H : ℂ → ℂ} {M : ℝ} (hF : IsHalfPlaneHardy F M)
+    {w₀ : ℂ} {l : ℕ} (hH : DifferentiableOn ℂ H {w : ℂ | 0 < w.re})
+    (hcont : ContinuousAt H w₀)
+    (hHeq : ∀ w : ℂ, 0 < w.re → w ≠ w₀ → H w * (w - w₀) ^ l = F w) :
+    ∃ N : ℝ, IsHalfPlaneHardy H N := by
+  have hev : ∀ᶠ w in 𝓝 w₀, ‖H w‖ ≤ ‖H w₀‖ + 1 := by
+    have h : Filter.Tendsto (fun w : ℂ => ‖H w‖) (𝓝 w₀) (𝓝 ‖H w₀‖) := hcont.norm
+    exact (h.eventually (gt_mem_nhds (by linarith : ‖H w₀‖ < ‖H w₀‖ + 1))).mono
+      fun w hw => le_of_lt hw
+  obtain ⟨δ, hδ0, hδ⟩ := Metric.eventually_nhds_iff.1 hev
+  refine isHalfPlaneHardy_of_div_pow_bounded (B := ‖H w₀‖ + 1) hF hH (by positivity) hδ0 ?_ hHeq
+  intro w _ hball
+  exact hδ (by simpa [dist_eq_norm] using hball)
+
+/-- **A Hardy function vanishing to order `l` at a point can be divided by `(w - w₀)^l`.** -/
+theorem exists_isHalfPlaneHardy_div_pow {F : ℂ → ℂ} {M : ℝ} (hF : IsHalfPlaneHardy F M)
+    {w₀ : ℂ} {l : ℕ} (hana : AnalyticAt ℂ F w₀) (hord : (l : ℕ∞) ≤ analyticOrderAt F w₀) :
+    ∃ (H : ℂ → ℂ) (N : ℝ), IsHalfPlaneHardy H N ∧
+      ∀ w : ℂ, 0 < w.re → w ≠ w₀ → H w * (w - w₀) ^ l = F w := by
+  classical
+  obtain ⟨g, hg, hfac⟩ := (natCast_le_analyticOrderAt hana).1 hord
+  set H : ℂ → ℂ := fun w => if w = w₀ then g w₀ else F w / (w - w₀) ^ l with hHdef
+  have hHeq : ∀ w : ℂ, w ≠ w₀ → H w = F w / (w - w₀) ^ l := by
+    intro w hw
+    rw [hHdef]
+    simp only [if_neg hw]
+  have hHev : H =ᶠ[𝓝 w₀] g := by
+    filter_upwards [hfac] with z hz
+    by_cases hzw : z = w₀
+    · rw [hzw, hHdef]
+      simp
+    · rw [hHeq z hzw, hz, smul_eq_mul]
+      field_simp [pow_ne_zero l (sub_ne_zero.2 hzw)]
+  have hcont : ContinuousAt H w₀ := hg.continuousAt.congr hHev.symm
+  have hopenHP : IsOpen {v : ℂ | 0 < v.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hHdiff : DifferentiableOn ℂ H {w : ℂ | 0 < w.re} := by
+    intro w hw
+    refine DifferentiableAt.differentiableWithinAt ?_
+    by_cases hww : w = w₀
+    · subst hww
+      exact hg.differentiableAt.congr_of_eventuallyEq hHev
+    · have hnb : {v : ℂ | 0 < v.re} ∩ {v : ℂ | v ≠ w₀} ∈ 𝓝 w :=
+        (hopenHP.inter isOpen_ne).mem_nhds ⟨hw, hww⟩
+      have hev : H =ᶠ[𝓝 w] fun v => F v / (v - w₀) ^ l := by
+        filter_upwards [hnb] with v hv
+        exact hHeq v hv.2
+      refine DifferentiableAt.congr_of_eventuallyEq ?_ hev
+      refine DifferentiableAt.div (hF.holo.differentiableAt (hopenHP.mem_nhds hw))
+        ((differentiableAt_id.sub_const w₀).pow l) (pow_ne_zero _ (sub_ne_zero.2 hww))
+  have hprod : ∀ w : ℂ, 0 < w.re → w ≠ w₀ → H w * (w - w₀) ^ l = F w := by
+    intro w _ hww
+    rw [hHeq w hww]
+    field_simp [pow_ne_zero l (sub_ne_zero.2 hww)]
+  obtain ⟨N, hN⟩ := isHalfPlaneHardy_of_div_pow hF hHdiff hcont hprod
+  exact ⟨H, N, hN, hprod⟩
 
 
 end

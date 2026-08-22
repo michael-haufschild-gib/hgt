@@ -21,6 +21,7 @@ over `L` gives surjectivity.
 -/
 import GaloisForLFunctions.RHTower.DeningerDynSysMinpolyPurelyInseparable
 import GaloisForLFunctions.RHTower.DeningerDynSysNormalizedIrreducible
+import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 
 namespace RHTower
 
@@ -152,5 +153,35 @@ theorem deningerNormalizedIrreducible_exists_preimage {L E : Type*} [Field L] [F
   obtain ⟨d, hd, hα0, hαirr, -, -, hmap⟩ := deningerNormalizedPair (L := L) q hxF hxne
   refine ⟨d, (minpoly F x).reverse, hd, hα0, hαirr, ?_⟩
   rw [hmap, hx, deningerReverse_reverse hβ0']
+
+/-- **A separable irreducible polynomial stays irreducible over a purely inseparable extension.**
+If `g` is monic, irreducible and separable over `F` and `L / F` is purely inseparable, then
+`g` remains irreducible over `L`.  Indeed `g.map` is a power of the minimal polynomial of one of
+its roots over `L`, and separability forbids the exponent from exceeding one. -/
+theorem deningerIrreducible_map_of_separable {L : Type*} [Field L] [Algebra F L]
+    [IsPurelyInseparable F L] (q : ℕ) [ExpChar F q] {g : Polynomial F} (hmonic : g.Monic)
+    (hirr : Irreducible g) (hsep : g.Separable) :
+    Irreducible (g.map (algebraMap F L)) := by
+  classical
+  obtain ⟨x, hx⟩ := deningerExists_minpoly_eq (E := AlgebraicClosure L) hmonic hirr
+  have haeval : (Polynomial.aeval x) g = 0 := by
+    rw [← hx]
+    exact minpoly.aeval F x
+  have hint : IsIntegral F x := ⟨g, hmonic, haeval⟩
+  obtain ⟨k, hk, heq⟩ :=
+    deningerMinpoly_map_eq_pow (F := F) (L := L) (E := AlgebraicClosure L) q x hint
+  rw [hx] at heq
+  have hsqfree : Squarefree (g.map (algebraMap F L)) :=
+    (hsep.map (f := algebraMap F L)).squarefree
+  have hk1 : k = 1 := by
+    by_contra hne
+    have hk2 : 2 ≤ k := by omega
+    have hdvd : (minpoly L x) * (minpoly L x) ∣ g.map (algebraMap F L) := by
+      rw [heq, ← pow_two]
+      exact pow_dvd_pow _ hk2
+    have hxL : IsIntegral L x := hint.tower_top
+    exact (minpoly.irreducible hxL).not_isUnit (hsqfree _ hdvd)
+  rw [heq, hk1, pow_one]
+  exact minpoly.irreducible hint.tower_top
 
 end RHTower

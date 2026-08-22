@@ -10,7 +10,7 @@ This module formalizes Okten--Turan, arXiv:2608.19244v1, equations `(59)`--`(64)
 azimuthal integral and area density give the prefactor `2 * pi * R²`.
 -/
 
-open MeasureTheory
+open MeasureTheory Set
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -95,6 +95,46 @@ theorem roundSphere_dipole_max_sqrt {R a0 : ℝ} (ha0 : 0 ≤ a0) :
     ring
   rw [heq, Real.sqrt_sq_eq_abs, abs_of_nonneg]
   positivity
+
+/-- Time-dependent centered mismatch of the compact round-sphere dipole, equation `(86)`. -/
+noncomputable def roundSphereDipoleMismatchHistory
+    (R a0 u0 tau u : ℝ) : ℝ :=
+  16 * Real.pi * R ^ 2 * sineSquaredPulse a0 u0 tau u ^ 2 / 3
+
+/-- Every value of the compact dipole mismatch is bounded by its peak calibration. -/
+theorem roundSphereDipoleMismatchHistory_le_max {a0 : ℝ} (ha0 : 0 ≤ a0)
+    (R u0 tau u : ℝ) :
+    roundSphereDipoleMismatchHistory R a0 u0 tau u ≤
+      16 * Real.pi * R ^ 2 * a0 ^ 2 / 3 := by
+  have hpulse := sineSquaredPulse_mem_Icc ha0 u0 tau u
+  have hsquares : sineSquaredPulse a0 u0 tau u ^ 2 ≤ a0 ^ 2 :=
+    (sq_le_sq₀ hpulse.1 ha0).2 hpulse.2
+  unfold roundSphereDipoleMismatchHistory
+  have hcoefficient : 0 ≤ 16 * Real.pi * R ^ 2 / 3 := by positivity
+  nlinarith [mul_le_mul_of_nonneg_left hsquares hcoefficient]
+
+/-- Equation `(86)`: the supremum of the mismatch history on the active interval is attained at
+the midpoint and equals `16 * pi * R² * a0² / 3`. -/
+theorem sSup_roundSphereDipoleMismatchHistory {a0 tau : ℝ}
+    (ha0 : 0 ≤ a0) (htau : 0 < tau) (R u0 : ℝ) :
+    sSup (roundSphereDipoleMismatchHistory R a0 u0 tau '' Icc u0 (u0 + tau)) =
+      16 * Real.pi * R ^ 2 * a0 ^ 2 / 3 := by
+  have hmidMem : u0 + tau / 2 ∈ Icc u0 (u0 + tau) := by constructor <;> linarith
+  have hmid : roundSphereDipoleMismatchHistory R a0 u0 tau (u0 + tau / 2) =
+      16 * Real.pi * R ^ 2 * a0 ^ 2 / 3 := by
+    rw [roundSphereDipoleMismatchHistory, sineSquaredPulse_mid a0 u0 htau.ne']
+  have hbounded : BddAbove
+      (roundSphereDipoleMismatchHistory R a0 u0 tau '' Icc u0 (u0 + tau)) := by
+    refine ⟨16 * Real.pi * R ^ 2 * a0 ^ 2 / 3, ?_⟩
+    rintro y ⟨u, _hu, rfl⟩
+    exact roundSphereDipoleMismatchHistory_le_max ha0 R u0 tau u
+  apply le_antisymm
+  · apply csSup_le
+    · exact ⟨_, ⟨u0 + tau / 2, hmidMem, rfl⟩⟩
+    · rintro y ⟨u, _hu, rfl⟩
+      exact roundSphereDipoleMismatchHistory_le_max ha0 R u0 tau u
+  · apply le_csSup hbounded
+    exact ⟨u0 + tau / 2, hmidMem, hmid⟩
 
 /-- Equations `(84)`--`(88)`: for `Jmin = 1`, compact dipole response equals the conformal
 forcing scale. -/

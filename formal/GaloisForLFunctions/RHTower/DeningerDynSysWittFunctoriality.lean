@@ -31,4 +31,16 @@ variable {A B : Type*} [CommRing A] [CommRing B]
   rw [deningerCanonicalRationalWittEmbedding_mapFun,
     deningerCanonicalRationalWittEmbedding_mapFun]
 
+/-- **The rational Witt ring functor respects monomorphisms.**  `W_rat (f)` is injective whenever
+`f` is; in particular `W_rat (κ₀) ↪ W_rat (κ)` for a field extension. -/
+theorem deningerCanonicalRationalWittMap_injective (f : A →+* B) (hf : Function.Injective f) :
+    Function.Injective (deningerCanonicalRationalWittMap f) := by
+  intro x y hxy
+  apply DeningerCanonicalRationalWittRing.ext
+  apply Additive.toMul.injective
+  refine deningerRationalWittAdditiveMap_injective f hf ?_
+  have h : deningerCanonicalRationalWittMapFun f x = deningerCanonicalRationalWittMapFun f y := hxy
+  have h2 := congrArg DeningerCanonicalRationalWittRing.additiveVal h
+  exact congrArg Additive.toMul h2
+
 end RHTower

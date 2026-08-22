@@ -34,16 +34,16 @@ completely-regular-growth theory.  These are the real gaps.
 | Thm 3.3 | `ζ(s)/(s−ρ)^l` minimal and complete in `L̂₁`; dual system | capstone | **TODO** |
 | Prop 4.1 | characterization of `L̂_a` inside `s/(s−1)·A^s H²` | | **TODO** (Hardy) |
 | Prop 4.2 | `ζ(s)/(s−ρ)^l ∈ L̂₁` | | **TODO** |
-| Prop 4.3 | division by `(s−w)` stays in `L̂_a` / `K̂_a` | **corpus-owned for `L_a`**: `BurnolSoninDividedShift.burnolShift_mem_soninExtendedSpace` (range `1/2 < Re ρ < 1`) | `K_a` half TODO |
-| Lem 4.4 | `F ∈ K̂_a ⇒ F/s ∈ L̂_a` | | **TODO** |
+| Prop 4.3 | division by `(s−w)` stays in `L̂_a` / `K̂_a` | **corpus-owned for `L_a`**: `BurnolSoninDividedShift.burnolShift_mem_soninExtendedSpace`; `K_a` half **DONE**: `RHTower/MellinHardyClasses.IsMellinTailHardy.div_sub` | |
+| Lem 4.4 | `F ∈ K̂_a ⇒ F/s ∈ L̂_a` | **DONE**: `RHTower/MellinHardyClasses.IsMellinTailHardy.div_id` and `.div_one_sub` | |
 | Prop 4.5 | `dim(L_a/K_a) = 2` | **DONE (full-line model)**: `RHTower/SoninBandCodimensionTwo.finrank_soninBandComplement_eq_two`, from the abstract `HTGeometry/CodimensionTwoOrthogonalSum.finrank_inf_orthogonal_sub_sup_eq_two` + the `L_a` description `RHTower/SoninExtendedOrthogonalBand.mem_soninExtendedSpace_iff_orthogonal_meanZeroBand` | even-subspace restatement TODO (all pieces present: `A'`,`B'` are reflection-invariant so the 2-dim complement already lies in `evenSubspace`) |
-| Prop 4.6 | `∪_{b>a}K_b` dense in `K_a` (same for `L`) — via the general lattice identity | **DONE (K side)**: `RHTower.topologicalClosure_iSup_centralSoninCarrier` | `L` side TODO |
+| Prop 4.6 | `∪_{b>a}K_b` dense in `K_a` (same for `L`) — via the general lattice identity | **DONE**: `RHTower.topologicalClosure_iSup_centralSoninCarrier` (K) and `RHTower/SoninExtendedApertureChain.topologicalClosure_iSup_centralSoninExtendedCarrier` (L) | |
 | Prop 4.7 | `∪_{b>a}K_b ⊊ K_a`, also for Fourier-(skew-)invariant parts | | **TODO** |
-| Def 10 | L-Property | | **TODO** |
+| Def 10 | L-Property | **DONE**: `RHTower/LPropertyStrips.HasLProperty` (+ `.add`, `.const_mul`) | |
 | Thm 4.8 | functions of `L̂_a` have the L-Property | | **TODO** |
-| Def 12 | `𝓛¹` (quick decrease in vertical strips) | | **TODO** |
+| Def 12 | `𝓛¹` (quick decrease in vertical strips) | **DONE**: `RHTower/LPropertyStrips.HasStripRapidDecrease` (+ `.add`, `.hasLProperty`) | |
 | Thm 4.9 | `𝓛¹` dense in `L¹` | | **TODO** |
-| Lem 4.10 | `𝓛¹` stable under `F₊` | | **TODO** |
+| Lem 4.10 | `𝓛¹` stable under `F₊` | **DONE** (modulo the classical `χ` strip bound as an input): `RHTower/LPropertyStrips.hasStripRapidDecrease_chi_mul_reflect`, from `.mul_stripPolyGrowth` and `.comp_one_sub` | |
 | Prop 5.1 | Titchmarsh IX.7: `|ζ(s)|⁻¹ < |s|^A` on `|Im s| = T_n`, `−1≤Re s≤2` | classical | **TODO** |
 | Thm 5.2 | residue series `Σ_ρ G(ρ)/ζ'(ρ) · ζ(Z)/(Z−ρ) = G(Z)` | | **TODO** |
 | Cor 5.3 | `ζ(s)/(s−ρ)^l` complete in `L̂₁` | | **TODO** |
@@ -67,7 +67,7 @@ completely-regular-growth theory.  These are the real gaps.
 | Prop 7.9 | `Z_g ⊂ Z_f` ⇒ `F/G` of finite exponential type, `a(f) ≤ a(g)` | | **TODO** |
 | Prop 7.10 | `Z_f = Z_g` ⇒ `f`, `g` multiplicative translates (Wiener causal gain) | | **TODO** |
 | §3 Remark | minimal+complete ⇒ unique dual system; dual is minimal, need not be complete (Hardy-disc example `1−zⁿ`) | **DONE**: `HTGeometry/MinimalCompleteSystem.lean` | |
-| §2 chain | `K = ∪_{a>0}K_a`, `{0} = ∩_{a>0}K_a` | **DONE (K side)**: `RHTower/SoninCarrierApertureLimits.lean` | `L` side TODO |
+| §2 chain | `K = ∪_{a>0}K_a`, `{0} = ∩_{a>0}K_a` | **DONE**: `RHTower/SoninCarrierApertureLimits.lean` (K) and `RHTower/SoninExtendedApertureChain.lean` (L: `topologicalClosure_iSup_pos_centralSoninExtendedCarrier`, `iInf_pos_centralSoninExtendedCarrier`) | |
 | §7 indices | `a₁(Z)`, `a₂(Z)` well defined; minimality downward closed, completeness upward closed | **DONE**: `HTGeometry/MinimalCompleteSystemChain.lean` | |
 | §4.5/4.6 input | `L²(0,a) + F₊(L²(0,a))` closed (Burnol [6]) | **DONE**: `RHTower/SoninForbiddenClosedSum.lean` | |
 
@@ -329,8 +329,59 @@ already exists elsewhere in the tree (a collision breaks the area umbrella even 
   (`zeta_div_eq_laplaceRay`), and `(s−1)ζ(s)/s²` is a Hardy function
   (`isHalfPlaneHardy_zetaCore`).  This is the analytic input of Prop. 4.2.
 
-### Prop. 4.2 — what is left
-`(s−1)ζ(s)/(s(s−ρ)^l) ∈ H²` still needs (i) `ζ(s)/(s−ρ)^l` holomorphic at `ρ` from the order of
-vanishing (mathlib `AnalyticAt.order`), (ii) `‖s^l/(s−ρ)^l‖ ≤ (1+‖ρ‖/δ)^l` off the ball, and
-(iii) boundedness of the product on a closed ball around `ρ`.  Then
-`HTGeometry/HalfPlaneHardyMul.isHalfPlaneHardy_mul_of_bounded_off_ball` finishes.
+### Prop. 4.2 — Hardy half CLOSED
+`RHTower/ZetaHardyQuotientPow.lean`: `zetaHardyCore` is the Hardy representative of
+`(s−1)ζ(s)/s²` (`zetaHardyCore_eq`), `zetaHardyPow_eq` identifies
+`zetaHardyCore·((w+1/2)⁻¹)^l` with `(s−1)ζ(s)/s^{l+2}`, and **`isHalfPlaneHardy_zetaQuotient`**:
+any `H` holomorphic on the half-plane, continuous at `ρ − 1/2`, with
+`H·(w − (ρ−1/2))^l = zetaHardyCore·((w+1/2)⁻¹)^l` off `ρ − 1/2`, is a Hardy function.
+The only remaining ζ-specific input for the *literal* Prop. 4.2 is producing that `H` from the
+order of vanishing of `ζ` at `ρ` (mathlib `natCast_le_analyticOrderAt` gives the factorization).
+- 2026-08-22 — `HTGeometry/HalfPlaneHardyMul.lean` generalised:
+  `isHalfPlaneHardy_of_bounded_off_ball` now takes the *product* `H` with its own holomorphy and
+  only needs `H = F·g` away from the bad ball, so the multiplier may have a pole inside the
+  half-plane; and `isHalfPlaneHardy_of_div_pow` packages the case `H·(w−w₀)^l = F` with `H`
+  continuous at `w₀` — dividing a Hardy function by a zero of the required order.
+- 2026-08-22 — Prop. 4.2, Hardy half, in both forms:
+  `RHTower/ZetaHardyQuotientPow.isHalfPlaneHardy_zetaQuotient` (interior zero, via
+  `ContinuousAt`) and `isHalfPlaneHardy_zetaQuotient_bounded` (the zero may sit on the boundary
+  `Re ρ = 1/2`, only a one-sided bound is needed).  Supporting general lemmas in
+  `HTGeometry/HalfPlaneHardyMul`: `isHalfPlaneHardy_of_div_pow_bounded`,
+  `isHalfPlaneHardy_of_div_pow`, and `exists_isHalfPlaneHardy_div_pow` (removable singularity from
+  `natCast_le_analyticOrderAt`).
+  **Note on mathlib's `riemannZeta 1`:** it is a junk value, so the formula
+  `(s−1)·riemannZeta s` is *wrong* at `s = 1` while the true continuous value is `1`.  All the
+  Hardy statements are therefore phrased through `zetaHardyCore` (the honest Laplace
+  representative), with `zetaHardyCore_eq` / `zetaHardyPow_eq` giving the ζ-meaning away from
+  `s = 1`.  Do not try to state them with `riemannZeta` alone.
+- 2026-08-22 — `RHTower/MellinHardyClasses.lean`: `IsMellinTailHardy` (`A^sH²`) and
+  `IsMellinHeadHardy` (`s/(s−1)A^sH²`, defined through a Hardy representative so a pole at `s=1` is
+  allowed); `isMellinTailHardy_mellinTail` and `exists_memLp_of_isMellinTailHardy` (both directions
+  of the Paley–Wiener identification); **Lemma 4.4** (`div_id`, `div_one_sub`) and **Prop. 4.3's
+  `K_a` half** (`div_sub`).
+- 2026-08-22 — `RHTower/SoninExtendedApertureChain.lean`: the extended chain.  Reuses the corpus's
+  `meanZeroBand` (do **not** redefine it) and adds `centralMeanZeroFourier`,
+  `centralSoninExtendedCarrier`.  **Prop. 4.6 for `L_a`**
+  (`topologicalClosure_iSup_centralSoninExtendedCarrier`) and the **§2 chain for `L`**
+  (`topologicalClosure_iSup_pos_centralSoninExtendedCarrier`,
+  `iInf_pos_centralSoninExtendedCarrier`; the latter by "constant on every band ⇒ constant ⇒ 0 in
+  `L²`", using `memLp_const_iff`).
+- 2026-08-22 — `RHTower/LPropertyStrips.lean`: **Definition 10** (`HasLProperty`, with the estimate
+  asked for `1 ≤ |Im s|` so the finitely many poles at `s = 0, 1` are avoided) and **Definition 12**
+  (`HasStripRapidDecrease`), their stability under sums and scalars, `HasStripRapidDecrease →
+  HasLProperty`, stability under multiplication by anything of polynomial vertical growth
+  (reusing the corpus's `GaloisForLFunctions.HasStripPolyGrowth`), stability under `s ↦ 1-s`, and
+  hence **Lemma 4.10** in the form `hasStripRapidDecrease_chi_mul_reflect`.  The only input left for
+  the literal Lemma 4.10 is `HasStripPolyGrowth χ` (Titchmarsh IV.12.3).
+  Refined the same day: `mul_stripPolyGrowth` and `hasStripRapidDecrease_chi_mul_reflect` now take
+  `HasStripPolyGrowthOffReal` (polynomial vertical growth asked only for `1 ≤ |Im s|`).  This is the
+  *correct* hypothesis: `χ = Γ_ℝ(1−s)/Γ_ℝ(s)` has poles at `s = 1, 3, 5, …`, all on the real axis,
+  so the corpus's `GaloisForLFunctions.HasStripPolyGrowth χ` is false while the off-real version is
+  true.  `HasStripPolyGrowth.offReal` records the implication.
+
+### Remaining `χ` input for Lemma 4.10
+`HasStripPolyGrowthOffReal zetaChi` on an arbitrary strip.  The corpus owns pieces:
+`RHTower/ZetaChiVerticalGrowth.exists_bound_norm_zetaChi_vertical` (one fixed line,
+`σ ∈ [-1,1/2] \ {0}`) and `RHTower/TitchmarshZetaInputs.norm_zetaChi_le_negative_one_strip`
+(uniform on `-1 ≤ σ ≤ -1/2`, above ordinate 2).  A general strip needs the Gamma recurrence to
+step the abscissa, plus `HTGeometry/GammaVerticalStripDecay.exists_bound_norm_Gamma_vertical_strip`.

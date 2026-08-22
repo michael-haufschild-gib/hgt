@@ -897,6 +897,38 @@ theorem nonarchimedeanLocalField_mem_principalUnitGroup_iff
       (u : (ValuativeRel.valuation K).integer) = 1
     exact Ideal.Quotient.mk_eq_one_iff_sub_mem _ |>.mpr hu
 
+/-- Every principal unit has a uniformizer-coordinate presentation `1 + bπ`.  This is the
+concrete identification of the first principal-unit quotient with the residue-field direction. -/
+theorem nonarchimedeanLocalField_principalUnit_uniformizer_factor
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K]
+    (u : nonarchimedeanLocalFieldPrincipalUnitGroup K) :
+    ∃ π b : (ValuativeRel.valuation K).integer,
+      Irreducible π ∧ π ∈ IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer ∧
+        ((u : (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) =
+          1 + b * π := by
+  obtain ⟨π, hπ⟩ := IsDiscreteValuationRing.exists_irreducible
+    (ValuativeRel.valuation K).integer
+  have hπmem : π ∈ IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer := by
+    rw [hπ.maximalIdeal_eq]
+    exact Ideal.mem_span_singleton_self π
+  have hu : ((u : (ValuativeRel.valuation K).integerˣ) :
+      (ValuativeRel.valuation K).integer) - 1 ∈
+        IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer :=
+    (nonarchimedeanLocalField_mem_principalUnitGroup_iff K (u :
+      (ValuativeRel.valuation K).integerˣ)).mp u.2
+  have huspan : ((u : (ValuativeRel.valuation K).integerˣ) :
+      (ValuativeRel.valuation K).integer) - 1 ∈ Ideal.span {π} := by
+    rw [← hπ.maximalIdeal_eq]
+    exact hu
+  obtain ⟨b, hb⟩ := Ideal.mem_span_singleton'.mp huspan
+  refine ⟨π, b, hπ, hπmem, ?_⟩
+  calc
+    ((u : (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) =
+        1 + (((u : (ValuativeRel.valuation K).integerˣ) :
+          (ValuativeRel.valuation K).integer) - 1) := by ring
+    _ = 1 + b * π := by rw [← hb]
+
 /-- The principal unit represented by `1 + x` for a maximal-ideal element `x`. -/
 noncomputable def nonarchimedeanLocalFieldPrincipalUnitOfMem
     (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
@@ -986,6 +1018,38 @@ theorem nonarchimedeanLocalField_principalUnitFiltration_antitone
   intro m n hmn u hu
   rw [nonarchimedeanLocalField_mem_principalUnitFiltration_iff] at hu ⊢
   exact Ideal.pow_le_pow_right hmn hu
+
+/-- Every element of the `n`th principal-unit filtration has a uniformizer-coordinate
+presentation `1 + bπⁿ`. -/
+theorem nonarchimedeanLocalField_principalUnitFiltration_uniformizer_factor
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K]
+    (n : ℕ) (u : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+    ∃ π b : (ValuativeRel.valuation K).integer,
+      Irreducible π ∧ π ∈ IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer ∧
+        ((u : (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) =
+          1 + b * π ^ n := by
+  obtain ⟨π, hπ⟩ := IsDiscreteValuationRing.exists_irreducible
+    (ValuativeRel.valuation K).integer
+  have hπmem : π ∈ IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer := by
+    rw [hπ.maximalIdeal_eq]
+    exact Ideal.mem_span_singleton_self π
+  have hu : ((u : (ValuativeRel.valuation K).integerˣ) :
+      (ValuativeRel.valuation K).integer) - 1 ∈
+        (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n :=
+    (nonarchimedeanLocalField_mem_principalUnitFiltration_iff K n (u :
+      (ValuativeRel.valuation K).integerˣ)).mp u.2
+  have huspan : ((u : (ValuativeRel.valuation K).integerˣ) :
+      (ValuativeRel.valuation K).integer) - 1 ∈ Ideal.span {π ^ n} := by
+    rw [hπ.maximalIdeal_eq, Ideal.span_singleton_pow] at hu
+    exact hu
+  obtain ⟨b, hb⟩ := Ideal.mem_span_singleton'.mp huspan
+  refine ⟨π, b, hπ, hπmem, ?_⟩
+  calc
+    ((u : (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) =
+        1 + (((u : (ValuativeRel.valuation K).integerˣ) :
+          (ValuativeRel.valuation K).integer) - 1) := by ring
+    _ = 1 + b * π ^ n := by rw [← hb]
 
 /-- The first-order additive coordinate on `Uⁿ`: `u` is sent to `u - 1` modulo `𝔪ⁿ⁺¹`.
 For `n > 0`, quadratic terms land in `𝔪ⁿ⁺¹`, so this is a multiplicative homomorphism into the
@@ -1721,6 +1785,26 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_isLocalHom
       (nonarchimedeanLocalFieldAdjoinRootMapMaximalIdealIsMaximal K f g hfg hg)
   exact ((IsLocalRing.local_hom_TFAE (algebraMap 𝒪[K] (AdjoinRoot f))).out 2 0).mp
     (le_of_eq hmap)
+
+/-- A finite unramified root lift transports the base maximal ideal onto its own maximal ideal.
+This is the ideal-theoretic form of unramifiedness used to compare higher unit filtrations. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_map_maximalIdeal
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    𝓂[K].map (algebraMap 𝒪[K] (AdjoinRoot f)) = IsLocalRing.maximalIdeal (AdjoinRoot f) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  change Ideal.map (AdjoinRoot.of f) 𝓂[K] = IsLocalRing.maximalIdeal (AdjoinRoot f)
+  exact IsLocalRing.eq_maximalIdeal
+    (nonarchimedeanLocalFieldAdjoinRootMapMaximalIdealIsMaximal K f g hfg hg)
 
 /-- The residue extension carried by a finite unramified root lift is Galois.  This promotes
 the prior residue-field identification to the Galois layer needed for unramified Frobenius. -/

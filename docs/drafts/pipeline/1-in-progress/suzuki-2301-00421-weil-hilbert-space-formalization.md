@@ -18,7 +18,7 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 |---|---|---|---|---|
 | `thm_1_1` | Thm 1.1 | `K(Θ_ξ) → H_W`, `F ↦ [F⁻¹F]`, is a Hilbert isomorphism with `‖E F‖²_{H(E)} = ‖F‖²_{K(Θ)} = π⟨ψ_F,ψ_F⟩_W` | yes | OPEN |
 | `prop_101` | Prop 1.2 | `𝔖_t ∈ L²(ℝ)` for every fixed `t ∈ ℝ` | no | **CLOSED** `RHTower.memLp_suzukiFrakS` |
-| `prop_102` | Prop 1.3 | `𝒫̂_φ ∈ L²(ℝ)` for `φ ∈ C_c^∞(ℝ)` | no | OPEN |
+| `prop_102` | Prop 1.3 | `𝒫̂_φ ∈ L²(ℝ)` for `φ ∈ C_c^∞(ℝ)` | no | **CLOSED** `RHTower.memLp_suzukiPHat_of_compactSupport` |
 | `thm_1_2` | Thm 1.4 | RH ⟺ `‖𝒫̂_{Dψ}‖²_{L²} = π⟨ψ,ψ⟩_W` for all `ψ ∈ C_c^∞`; countably many `ψ` suffice | ⟺ | OPEN |
 | `cor_1_1` | Cor 1.5 | RH ⟺ `2‖ψ‖²_{L²} = ⟨ψ,ψ⟩_W` for all `ψ ∈ V°(0)` | ⟺ | OPEN |
 | `prop_301` | Prop 3.1 | `𝔓_t(z) = P_t(z)` (prime--arch formula equals the Xi-zero series) | no | **CLOSED** `RHTower.suzukiFrakP_eq_suzukiPtZeroSum` |
@@ -69,7 +69,10 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
    `N(T+1)-N(T) = O(log T)`.
 5. **L5 — Lem 3.2** (norm).
 6. **L6 — Hardy/model/de Branges layer**: `H²(ℂ₊)`, `K(Θ)`, `H(E)`, the isometric involution `K`,
-   `V(t)`.  Mathlib has none of this; build it.
+   `V(t)`.  Mathlib has none of this.  **But the corpus now does own `H²` of a half-plane and a full
+   Paley–Wiener theorem** (`HTGeometry.PaleyWienerHalfPlane.isHalfPlaneHardy_eq_laplaceRay`, twelve
+   modules; see the `paley-wiener-half-plane-closed` memory).  Start from there; what is still
+   missing is the model space `K(Θ)` for a meromorphic inner `Θ` and the de Branges space `H(E)`.
 7. **L7 — RH-conditional main theorems** (Prop 4.1, Thm 4.2, Cor 4.3, Thm 4.4/4.5, Cor 4.6,
    Lem 5.1/5.3/5.4, Thm 5.5/5.6/5.7, Prop 5.8, Thm 1.1/1.4/1.5, §6).
 
@@ -165,6 +168,17 @@ off the origin and the countable real Xi zero set (`XiC_zeroSet_countable`), whi
   identity is `= -2 e^{-t/2}Φ(e^{-2t},1,¼)` (second Lerch slot drops from `2` to `1`).  With the
   printed version the theorem is false; with the corrected version eq. (7.2) is exactly right.
 - Eq. (7.2) writes `𝔅_t` for `𝔓_t` (typographic).
+- **The negative-`t` convention is inconsistent (substantive).**  The paper extends `P_t` (3.2) and
+  `𝔖_t` (1.5) to `t < 0` by *evenness* (`𝔖_t := 𝔖_{-t}`), but equations (3.6)–(3.8), Theorem 4.2 and
+  Theorem 1.4 all use the eq. (3.2) series *without* the absolute value.  With the even extension one
+  computes, for `φ = Dψ`,
+  `𝒫̂_{Dψ}(z) = -(i/2)(1+Θ(z))∑_γ m_γ c_γ/(γ(z-γ))` with
+  `c_γ = γ∫_0^∞ e^{iγt}(ψ(t)-ψ(-t))dt`, which vanishes identically for every **even** `ψ`.  Lemma 3.2
+  (that `‖·‖₀` is a norm) and eq. (1.9) would then both be false.  Dropping the absolute value gives
+  `c_γ = γψ̂(γ)`, which is what (3.8) asserts.  Formalized object: `RHTower.suzukiFrakSFull`.
+- Eq. (3.6) as printed also carries a sign/conjugation slip: `𝔖_t = i(1+Θ^♯)/2·P_t` expands with
+  coefficient `(e^{-iγt}-1)/γ` against `F_γ` (not `F_γ^♯`), and with the opposite overall sign from
+  the printed formula.  Immaterial for every norm statement downstream.
 
 ## Landed Lean
 
@@ -180,6 +194,9 @@ off the origin and the countable real Xi zero set (`XiC_zeroSet_countable`), whi
 | `RHTower/SuzukiWeilDigammaOffPoles.lean` | **`digamma_sub_quarter_eq_offPoles`** — Gauss's digamma difference series at *every* `w` off the poles of `Γ`, not just on `Re w > 0` (a mathlib and corpus gap); `summable_suzukiLerchDiffTerm_all` (hypothesis-free summability); `suzukiLerchDiff_zero_add_one` (the shift law `S(w+1) = S(w) - 1/w`); `suzukiLerchDiff_zero_five_quarters`; `norm_suzukiLerchKernel_le_of_one_le_re`. |
 | `RHTower/SuzukiWeilVerticalDecay.lean` | The Titchmarsh-free decay toolkit: reality of the centered Xi jet on ℝ, `norm_XiC_div_ESharp_le_one` and `norm_deriv_XiC_div_ESharp_le_one` (both quotients bounded by one), the `ζ'/ζ ↔ A'/A` bridge `logDeriv_riemannZeta_vertical_eq`, the `(|x|/2)^{-3/4}` Lerch-kernel bound, the weight `decayW x = (1+|x|)^{-3/4}` with its comparison lemmas, the exponential-slope bounds `min(|c|, 2/|x|)`, and `exists_norm_logDeriv_archFactor_vertical_le`. |
 | `RHTower/SuzukiWeilPropOneTwo.lean` | `suzukiThetaSharp`, **`suzukiFrakS`** (eq. 1.5), `suzukiFrakS_ofReal_decomp` (the pole-free five-block form), the blockwise bounds, **`exists_norm_suzukiFrakS_le`** (`‖𝔖_t(x)‖ ≤ C(1+|x|)^{-3/4}`), the measurable model `suzukiFrakSModel` with `measurable_suzukiFrakSModel`, and **`memLp_suzukiFrakS`** = Proposition 1.2. |
+| `RHTower/SuzukiWeilFrakSZeroSeries.lean` | **`suzukiFrakSFull`** — `𝔖_t = i(1+Θ^♯)/2·P_t` for *every* real `t`, the object equations (3.6)–(3.8) actually use; agreement with `suzukiFrakS` for `t > 0` (Prop 3.1); the divisor-reflection identity `P_{-t}(z) = P_t(-z)` (`suzukiPtZeroSum_neg`, through `xiZeroCopyReflectEquiv`); `norm_suzukiFrakSFull_le` for all `t`; joint measurability in `(x,t)`; and `memLp_suzukiFrakSFull`. |
+| `RHTower/SuzukiWeilTransformRaySeries.lean` | `suzukiPHatConj`, `suzukiPHat_ofReal_eq_conj`, `suzukiPHatRayTerm`, and **`suzukiPHatConj_eq_tsum`** = the multiplicity-exact form of Suzuki eq. (3.7).  Also `integral_suzukiPtZeroSum_mul` (the Fubini exchange). |
+| `RHTower/SuzukiWeilPropOneThree.lean` | `suzukiFrakSSharp`, **`suzukiPHat`** (eq. 1.7, built on `suzukiFrakSFull`), the pointwise bound `norm_suzukiPHat_ofReal_le`, and **`memLp_suzukiPHat_of_compactSupport`** = Proposition 1.3.  No Minkowski integral inequality is used: the master bound of Prop 1.2 is pointwise and its constant is monotone (`suzukiFrakSConst_mono`), so `‖∫‖ ≤ ∫‖·‖` suffices. |
 | `RHTower/SuzukiWeilAppendixDerivative.lean` | `hasDerivAt_screwFn_atomFree` (the exact derivative of `g_ξ` off the prime-power atoms); `tendsto_logDeriv_riemannZeta_ofReal_atTop`; `suzukiVerticalLerchTerm` / `suzukiVerticalFilter` / `suzukiVerticalLerchBound` with the three-regime `y`-uniform dominant and `suzukiVerticalFilter_neBot`; `digamma_quarter_sub_logPi` (`screwLinearCoeff = ψ(1/4) - log π`); `suzukiFrakP_vertical_mul`; `suzukiVerticalEnergy_eq` (the five-block decomposition); the five block limits; and **`tendsto_suzukiFrakP_vertical`** = eq. (7.2). |
 
 All capstones audited: only `propext, Classical.choice, Quot.sound`.
@@ -253,7 +270,54 @@ Endgame: Laplace determinacy.  With `σ = m + N₀` and the substitution `u = e^
 supported in `[0,1]`, so `RHTower.ae_eq_zero_of_moments_eq_zero` (`ExpDecayFourierAnalytic.lean`)
 applies.  Continuity of both sides in `t` then upgrades a.e. to pointwise.
 
+## Route for Lemma 3.2 (`‖·‖₀` is a norm) — step 1 DONE, steps 2–4 next
+
+With the corrected object, on the real axis (all that `‖·‖₀` sees),
+
+```text
+𝒫̂_φ(x) = conj( i(1+Θ^♯(x))/2 · ∑_q a_q/(γ_q(x-γ_q)) ),   a_q = ∫(e^{-iγ_q t}-1)·conj(φ(t))dt,
+```
+
+the series being **absolutely** convergent (the extra `1/γ_q` is what makes it so; the printed
+`∑_γ m_γ ψ̂(γ)/(z-γ)` of (3.8) is not absolutely convergent).
+
+1. **DONE** — `RHTower.suzukiPHatConj_eq_tsum` (module `SuzukiWeilTransformRaySeries`), by
+   `integral_tsum_of_summable_integral_norm`; the domination uses `|Im γ| < 1/2`
+   (`norm_suzukiPtZeroExp_le`) so that the exponential factor is `≤ e^{T/2}+1` uniformly in `q` on
+   the support of `φ`.  Companion: `suzukiPHat_ofReal_eq_conj`.
+2. **Integration by parts.** For `φ = Dψ = iψ'` and `η = conj∘ψ`, `a_q = γ_q·η̂(-γ_q)` with
+   `η̂(u) = ∫η(t)e^{iut}dt`.  (`intervalIntegral.integral_mul_deriv_eq_deriv_mul` on a window
+   containing the support, or `MeasureTheory.integral_deriv_mul_eq_...`.)
+3. **Residue extraction.**  `‖·‖₀ = 0` ⟹ the series vanishes a.e. on `ℝ` (because
+   `A(x)/E^♯(x) ≠ 0` off the countable real Xi zero set), and then
+   `lim_{z→γ}(z-γ)·T(z) = m_γ a_γ/γ = 0`.  **The corpus already owns the analytic layer this needs**:
+   `HTGeometry.HerglotzDiscreteSupportSeries.summableLocallyUniformlyOn_discreteHerglotzCauchy_off_poles`
+   and `.differentiableOn_discreteHerglotzCauchySeries_off_poles` (a discrete-support Cauchy series is
+   holomorphic off its poles, with normal convergence), plus
+   `HTGeometry.AnalyticRootFactor.finite_zeros_closedBall`,
+   `RHTower.LocallyFiniteDivisorPresentation.LocallyFiniteDivisor`, and
+   `RHTower.XiWeilDivisorHilbert`'s preconnectedness of the divisor complement for the identity
+   theorem.  Do **not** rebuild these.
+4. `η̂(γ) = 0` for all `γ ∈ Γ` (Γ is negation-symmetric, `xiSpectralPoint_reflect`) ⟹ `η = 0` by
+   `RHTower.suzuki_lemma_two_one` (Su22 Lemma 2.1, already in the corpus: entire of exponential type
+   + vanishing on `{z : ξ(1/2-iz)=0}` ⟹ identically zero) ⟹ `ψ = 0`.  Note `ξ(1/2-iz) = XiC z`.
+
+## Layer L6/L7 — starting points already in the corpus
+
+- `H²` of a half-plane **and a full Paley–Wiener theorem**:
+  `HTGeometry.PaleyWienerHalfPlane.isHalfPlaneHardy_eq_laplaceRay` (twelve modules).  Rotate by
+  `z = iw` to reach Suzuki's `H²(ℂ₊) = 𝖥(L²(0,∞))`.
+- Hermite–Biehler for the Xi pair: `RHTower.StrictHermiteBiehlerGivesRH.strict_hermiteBiehler_of_rh`,
+  `RHTower.SuzukiLagariasMeromorphicInner.suzukiCanonicalHermiteBiehler_of_halfPlaneBound`,
+  `analyticOrderAt_xiHedenmalmDeBrangesE_eq_pred_of_XiC_zero`.
+- **Genuinely missing**: the model space `K(Θ) = H² ⊖ ΘH²` for a meromorphic inner `Θ`, the de
+  Branges space `H(E)`, the Makarov–Poltoratski restriction isometry `K(Θ) → L²(μ_Θ)` (eq. 2.8),
+  and Prop 4.1 (`{F_γ}` an ONB of `K(Θ)`, cited to Su23 Prop 3.2).
+
 ## Log
+- 2026-08-22 — **eq. (3.7) CLOSED** (`suzukiPHatConj_eq_tsum`): the transform expanded over the Xi divisor, multiplicity-exact and absolutely convergent.  This is step 1 of the Lemma 3.2 route.
+- 2026-08-22 — **`suzukiFrakSFull` built** and Proposition 1.3 rebased on it, after discovering that the paper's even extension of `𝔖_t` to negative `t` contradicts (3.6)–(3.8): with it, `𝒫̂_{Dψ} ≡ 0` for every *even* `ψ`, so Lemma 3.2 and eq. (1.9) would be false.  Defect recorded under "Source defects found".
+- 2026-08-22 — **Proposition 1.3 CLOSED in Lean, unconditionally** (`memLp_suzukiPHat_of_compactSupport`, stated for merely continuous compactly supported `φ`).  Minkowski's integral inequality is not needed: the Prop 1.2 bound is pointwise with an explicit monotone constant, so `‖∫‖ ≤ ∫‖·‖` closes it.  The one real ingredient is joint measurability of the Prop 1.2 model in `(x,t)`.
 - 2026-08-22 — **Proposition 1.2 CLOSED in Lean, unconditionally** (`memLp_suzukiFrakS`), by a route that uses *no* Titchmarsh zero-density or `ζ'/ζ` input: the two elementary quotient bounds `|A/E^♯| ≤ 1`, `|A'/E^♯| ≤ 1` on the real axis kill the poles, and a weighted-AM–GM bound gives the Lerch kernel the decay exponent `3/4` (the naive `1/2` would not be square integrable).  Also generalized the corpus's `suzukiFrakP_eq_reg` to `suzukiFrakP_eq_reg_of_re_pos` (hypothesis `‖z‖ < 1/2` weakened to `0 < Re(1/4 - iz/2)`, which the whole real axis satisfies).  All capstones axiom-clean.
 - 2026-08-22 — **eq. (7.2) CLOSED in Lean, unconditionally** (`tendsto_suzukiFrakP_vertical`), completing the whole unconditional appendix Theorem 7.1.  Required a new mathlib/corpus gap module: Gauss's digamma difference series off the poles.  Both new capstones axiom-clean.
 - 2026-08-22 — created; source inventoried statement by statement; corpus dictionary established.

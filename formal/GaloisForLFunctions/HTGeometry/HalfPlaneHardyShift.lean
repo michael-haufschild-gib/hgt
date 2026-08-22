@@ -138,6 +138,18 @@ theorem isHalfPlaneHardy_add {F G : ℂ → ℂ} {M N : ℝ} (hF : IsHalfPlaneHa
           linarith
 
 
+/-- Iterated division by the Cauchy kernel. -/
+theorem isHalfPlaneHardy_mul_inv_shift_pow {F : ℂ → ℂ} {M : ℝ} (hF : IsHalfPlaneHardy F M)
+    {c : ℂ} (hc : 0 < c.re) (l : ℕ) :
+    ∃ N : ℝ, IsHalfPlaneHardy (fun w => F w * ((w + c)⁻¹) ^ l) N := by
+  induction l with
+  | zero => exact ⟨M, hF.congr (fun w _ => by simp)⟩
+  | succ n ih =>
+    obtain ⟨N, hN⟩ := ih
+    refine ⟨_, (isHalfPlaneHardy_mul_inv_shift hN hc).congr (fun w _ => ?_)⟩
+    ring
+
+
 end
 
 end GaloisForLFunctions.HTGeometry

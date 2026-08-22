@@ -232,13 +232,13 @@ New modules built this session (all wired, all `#print axioms`-clean, `formal li
 | 1 archimedean-prolate-jacobi-limit-circle | the discrete Liouville–Green theorem sketched above, then the deficiency-index transfer |
 | 5 prime-tail-copoisson-essential-boundary | PNT with classical error term + Mellin/`E₁`; the heaviest analytic card |
 | 7 route-b-semilocal-sonin-interim-verdict | a synthesis card: it becomes formalized once its cited bullets are (several already are) |
-| 9 semilocal-euler-kernel-chart | Hardy spaces `H^±` of a half-plane — absent from mathlib and from the corpus (only Cauchy-kernel Grams exist); plus the Hilbert-space closed-range projection formula `(8)` and its derivative `(9)`–`(11)` |
+| 9 (CLOSED 2026-08-22) semilocal-euler-kernel-chart | Hardy spaces `H^±` of a half-plane — absent from mathlib and from the corpus (only Cauchy-kernel Grams exist); plus the Hilbert-space closed-range projection formula `(8)` and its derivative `(9)`–`(11)` |
 | 11 sonin-burnol-conductor-cutoff | the Coifman–Rochberg–Weiss/Nehari BMO commutator theorem; the algebraic layer is already Lean (`SoninBurnolConductorReflection`, `…Concrete`) |
 | 12 sonin-place-transition-cutoff-dichotomy | part A is Lean (`CutoffCochain`); part B is the shell noncompactness of `(1−P_λ)D_p P_λ`. **Elementary route found**: in the log coordinate the corner carries the normalized indicators of the disjoint intervals `(c − a/2ⁿ, c − a/2ⁿ⁺¹]` to an orthonormal family, so it maps an orthonormal (hence weakly null) sequence to a norm-one sequence |
-| 13 sonin-prime-seam-exterior-factorization | only card 15's tensor estimate |
+| 13 (CLOSED 2026-08-22) sonin-prime-seam-exterior-factorization | only card 15's tensor estimate |
 | 14 sonin-small-cutoff-ground-row-survival | the semilocal cyclic spaces `H_P`, the number operators, and strong convergence of the Sonin projections |
-| 15 sonin-two-particle-prime-coherence | the tensor-square Calkin estimate; mathlib supplies everything needed (`TensorProduct.mapL`, `norm_mapL_le`, `UniformSpace.Completion.innerProductSpace`, `ContinuousLinearMap.completion`) — what remains is lifting the corpus shell data to the tensor square |
-| 16 squarefree-cutoff-jump-root-avoidance | Sylvester's law of inertia and Haynsworth additivity — neither in mathlib nor the corpus |
+| 15 (CLOSED 2026-08-22) sonin-two-particle-prime-coherence | the tensor-square Calkin estimate; mathlib supplies everything needed (`TensorProduct.mapL`, `norm_mapL_le`, `UniformSpace.Completion.innerProductSpace`, `ContinuousLinearMap.completion`) — what remains is lifting the corpus shell data to the tensor square |
+| 16 squarefree-cutoff-jump-root-avoidance | **STALE**: Sylvester's law of inertia *is* in the corpus — `HTGeometry/HermitianInertia.lean` has `hermPosIndex/hermNegIndex/hermNullIndex`, congruence invariance, the diagonal case and the spectral characterisation. What is missing is Haynsworth additivity (block-diagonal additivity + the Schur congruence) and iterated-tensor inertia |
 | 17 transported-prolate-relative-resolvent-corner | Connes–Moscovici prolate spectral theory (uniqueness of the cutoff-commuting self-adjoint extension) and Ramis–Richard-Jung–Thomann order-`1/2` determinants |
 
 ## 2026-08-22 (continued): cards 15 and 13 closed
@@ -321,3 +321,89 @@ research problems, not formalization gaps.
   degenerate limit `B → −p^{z−1/2}`.
 
 Remaining cards: 1, 5, 7, 11, 14, 16, 17.
+
+## Card 16 `squarefree-cutoff-jump-root-avoidance-inertia`: build plan (2026-08-22)
+
+The corpus already owns Sylvester's law (`HTGeometry/HermitianInertia.lean`:
+`hermPosIndex/hermNegIndex/hermNullIndex`, `posIndex_conjugate`, `posIndex_diagonal`,
+`posIndex_eq_card_pos_eigenvalues`, `posIndex_add_negIndex_add_nullIndex`).
+
+**DONE** `HTGeometry/HaynsworthInertia.lean`: `fromBlocks_diagonal`, `isUnit_fromBlocks_zero`,
+`exists_congr_diagonal`, `posIndex/negIndex/nullIndex_fromBlocks_zero`, `fromBlocks_schur_congr`,
+`isHermitian_schurComplement`, `haynsworth_posIndex/negIndex/nullIndex`.
+
+Identification of the card's local matrices (verified against `(CJ8)` by hand):
+local space `α p` of size `p`, `e` the delta at `0`, `u` the all-one vector,
+
+- `A_p = e eᴴ`  (the `(SG7)` anchor `p⁻² a aᵀ` with `a = p e`),
+- `w = p⁻¹ u − e`, `T_p = e eᴴ − w wᴴ`  (so `T_p = U_p J₀ U_pᴴ` with `U_p = [e, w]`),
+- `Δ_p = 2p⁻¹ e eᴴ − p⁻² 1`  (the normalised diagonal `p⁻² diag(D_p)` of `(SG4)`);
+  `Δ_p` has inertia `(1, p−1, 0)`, `Δ_p|Z_p = −p⁻²`, and `U_pᴴ Δ_p⁻¹ U_p` is exactly the card's
+  `G_p = (2p−1)⁻¹ [[p², −p(p−1)], [−p(p−1), −p(p−1)]]`.
+
+Remaining layers:
+
+1. `HTGeometry/TensorFamilyInertia.lean` — `tensorFamily M x y = ∏ i, M i (x i) (y i)` for
+   rectangular families, `tensorFamily_mul` (via `Finset.prod_univ_sum`), `_conjTranspose`,
+   `_diagonal`, `_one`, `isUnit_tensorFamily`, Hermitian-ness, and
+   `hermPosIndex (tensorFamily M) = card {x | 0 < ∏ i, μ i (x i)}`.
+2. Isometric rectangular congruence: `Cᴴ C = 1 ⟹ In (C X Cᴴ) = In X` on the pos/neg indices
+   (the ambient nullity is the trichotomy complement).  This replaces all the `Q − q` bookkeeping:
+   with `C_p = 1` for `p ∈ U` and `C_p = ` the `p × 1` column `e` for `p ∉ U`,
+   `E_U − R_U = C (D_E − D_R) Cᴴ`.
+3. Block-swap congruence `fromBlocks 0 1 1 0`, so Haynsworth can be applied at either corner.
+4. `In(−J)` (J is diagonal with `±1` entries), `In(−D_E)` (tensor inertia of the local `(1,p−1,0)`),
+   and the balanced nonsingular `In(−(J−G)) = (2^{r−1}, 2^{r−1}, 0)`.
+   Balance: `L_p` with `L_pᵀ J₀ L_p = −J₀`, `L_pᵀ G_p L_p = −G_p`, acting on one factor.
+   Nonsingularity: `J − G = J(1 − JG)`, `JG = tensorFamily (J₀G_p)`; each `M_p = J₀G_p` is a real
+   `2×2` with `tr = p`, `det = p²(p−1)/(2p−1) > 1` and negative discriminant, so with
+   `N_p = M_p − (p/2)1`, `ω_p² = det − p²/4 > 0` and `P_p = 1 + N_pᵀN_p/ω_p²` one gets
+   `M_pᵀ P_p M_p = det(M_p) · P_p` with `P_p` positive definite; then `P = tensorFamily P_p` is
+   positive definite and `(tensorFamily M)ᵀ P (tensorFamily M) = (∏ det) P` with `∏ det > 1`,
+   so `1` is not an eigenvalue and `1 − JG` is invertible.
+5. Assembly of `(CJ1)`--`(CJ6)`, `(CJ16)`, `(CJ17)`.
+
+### Card 16 infrastructure landed (2026-08-22)
+
+All four general inertia modules build clean and are wired into `HTGeometry.lean`:
+
+- `HTGeometry/HaynsworthInertia.lean` — block-diagonal additivity of pos/neg/null, the Schur
+  congruence `Sᴴ diag(A, C − Bᴴ A⁻¹ B) S = [[A,B],[Bᴴ,C]]` with `S = [[1, A⁻¹B],[0,1]]`, and
+  `haynsworth_posIndex/negIndex/nullIndex`.
+- `HTGeometry/IsometricCongruenceInertia.lean` — `hermQuad_rect_conjugate`,
+  `mulVecLin_injective_of_isometry`, `posIndex/negIndex_isometric_congr` for `Cᴴ C = 1`.
+- `HTGeometry/TensorFamilyInertia.lean` — `tensorFamily`, `_mul`, `_conjTranspose`, `_one`,
+  `_diagonal`, `isUnit_tensorFamily`, `isHermitian_tensorFamily`,
+  `posIndex/negIndex_tensorFamily` (counting products of local eigenvalues).
+- `HTGeometry/InertiaScalingSwap.lean` — `posIndex/negIndex_smul_pos`, `equivMatrix` and
+  `posIndex/negIndex_submatrix_equiv` (reindexing by a bijection, proved through the isometric
+  congruence), `posIndex/negIndex_swapBlocks`, `isPosDefOn_top_of_posIndex_eq_card`.
+
+Local-block plan (dimension `k+2`, scale `P = k+2`, so `κ = k`):
+`localAnchorBlock`, `localOccupancyBlock` are **diagonal** (`e eᴴ = diagonal (1,0,…)`), so their
+inertia is a direct count; `localFrame = [e, w]`, `w = P⁻¹ u − e`, `binaryJ = diag(1,−1)` and
+`localDensityBlock = frame * J * frameᴴ`.  The balance matrix may be taken **unscaled**,
+`L = [[−1, 2m],[−2m, 1]]` with `m = P − 1`, giving `Lᴴ J L = −(4m²−1) J` and
+`Lᴴ G L = −(4m²−1) G`; `posIndex_smul_pos` absorbs the positive factor, so no square root is
+needed.  Nonsingularity of `1 − JG` uses only `N² = −ω² 1` for `N = M − (P/2)1`:
+then `P₀ = 1 + NᵀN/ω²` is positive definite, `NᵀP₀ + P₀N = 0`, and `MᵀP₀M = det(M)·P₀`.
+
+### Card 16 progress: local blocks (2026-08-22)
+
+`formal/GaloisForLFunctions/RHTower/SquarefreeCutoffLocalBlocks.lean` builds clean and now holds
+`localScale` (= `k+2`), `localAnchorBlock`, `localOccupancyBlock` (both diagonal), `localColumn`
+(with `Cᴴ C = 1` and `C Cᴴ = A`), `localFrame`, `binaryJ`, `localDensityBlock = U J Uᴴ`,
+`frameRowZero/frameRowOther`, `frameGram_eq` (the general frame Gram against a diagonal weight),
+`localOccupancyInvDiag`, `inv_localOccupancyBlock`, `isUnit_localOccupancyBlock` and the explicit
+
+`localGram_eq : localGram k = (2P−1)⁻¹ • !![P², −P(P−1); −P(P−1), −P(P−1)]`.
+
+Traps met: `field_simp` will not clear `(−1 + P*2)⁻¹` even with the matching `≠ 0` hypothesis in
+context — finish with `ring_nf` then `all_goals linear_combination (P − 1) * hDinv` where
+`hDinv : (−1 + P*2) * (−1 + P*2)⁻¹ = 1`.  `isUnit_of_mul_eq_one` does not apply to matrices
+(noncommutative): build the unit directly and get the left inverse from `mul_eq_one_comm`.
+
+Still to write for card 16: `M = J₀ G` with `tr M = P`, `det M = P²(P−1)/(2P−1)`;
+`N = M − (P/2)1` with `N² = −ω² 1`, `ω² = P²(2P−3)/(4(2P−1)) > 0`; the metric `P₀ = 1 + ω⁻² NᴴN`
+with `NᴴP₀ + P₀N = 0` and `MᴴP₀M = det(M)·P₀`; the unscaled balance `L = !![−1, 2(P−1); −2(P−1), 1]`
+with `Lᴴ J₀ L = −(4(P−1)²−1) J₀` and `Lᴴ G L = −(4(P−1)²−1) G`; then the global assembly.
