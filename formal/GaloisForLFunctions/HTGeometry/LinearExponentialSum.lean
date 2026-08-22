@@ -98,6 +98,36 @@ theorem abs_sin_add_int_mul_pi (x : ℝ) (n : ℤ) :
     · simp [ho.neg_one_zpow]
   rw [hcos, mul_one]
 
+
+/-- An integer approximation bounds the chord of the additive character. -/
+theorem norm_ee_sub_one_le_two_pi_mul_of_integer_approximation
+    {x e : ℝ} (r : ℤ)
+    (happrox : |x - (r : ℝ)| ≤ e) :
+    ‖ee x - 1‖ ≤ 2 * Real.pi * e := by
+  rw [norm_ee_sub_one]
+  have hperiod :
+      |Real.sin (Real.pi * x)| =
+        |Real.sin (Real.pi * (x - (r : ℝ)))| := by
+    calc
+      |Real.sin (Real.pi * x)| =
+          |Real.sin
+            (Real.pi * (x - (r : ℝ)) + (r : ℝ) * Real.pi)| := by
+              congr 2
+              ring
+      _ = |Real.sin (Real.pi * (x - (r : ℝ)))| :=
+        abs_sin_add_int_mul_pi
+          (Real.pi * (x - (r : ℝ))) r
+  rw [hperiod]
+  calc
+    2 * |Real.sin (Real.pi * (x - (r : ℝ)))| ≤
+        2 * |Real.pi * (x - (r : ℝ))| := by
+      exact mul_le_mul_of_nonneg_left Real.abs_sin_le_abs (by norm_num)
+    _ = 2 * Real.pi * |x - (r : ℝ)| := by
+      rw [abs_mul, abs_of_pos Real.pi_pos]
+      ring
+    _ ≤ 2 * Real.pi * e := by
+      exact mul_le_mul_of_nonneg_left happrox (by positivity)
+
 /-- **Jordan's inequality in the form needed for exponential sums.**
 `2‖x‖ ≤ |sin(πx)|`, where `‖x‖` is the distance to the nearest integer. -/
 theorem two_mul_distToInt_le_abs_sin (x : ℝ) :

@@ -119,6 +119,7 @@ import GaloisForLFunctions.HTGeometry.ABHN.AzumayaScalarExtensionSimple
 import GaloisForLFunctions.HTGeometry.ABHN.AzumayaGenericFiber
 import GaloisForLFunctions.HTGeometry.ABHN.AzumayaOrderLocalFiber
 import GaloisForLFunctions.HTGeometry.ABHN.AzumayaFiniteResidueFiber
+import GaloisForLFunctions.HTGeometry.ABHN.BrauerFieldEquiv
 import GaloisForLFunctions.HTGeometry.ABHN.DiagonalScalarExtension
 import GaloisForLFunctions.HTGeometry.ABHN.HassePolynomialEvaluation
 import GaloisForLFunctions.HTGeometry.ABHN.HasseMvPolynomialEvaluation
@@ -10755,6 +10756,7 @@ import GaloisForLFunctions.HTGeometry.CubeSwapGaloisAssembly
 import GaloisForLFunctions.HTGeometry.GalBaseDescent
 import GaloisForLFunctions.HTGeometry.TwoLocalCanonicalRoots
 import GaloisForLFunctions.HTGeometry.BlockDiscriminantIndependence
+import GaloisForLFunctions.HTGeometry.DirectionRadicalField
 import GaloisForLFunctions.HTGeometry.SquarefreeNotSquareInFractionField
 import GaloisForLFunctions.HTGeometry.PowerSeriesSimpleRootLift
 import GaloisForLFunctions.HTGeometry.PowerSeriesSqrtBranch

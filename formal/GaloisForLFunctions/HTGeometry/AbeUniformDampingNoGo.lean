@@ -1,4 +1,5 @@
-import GaloisForLFunctions.RHTower.MixedStateQutritRecurrenceSeparation
+import GaloisForLFunctions.HTGeometry.LinearExponentialSum
+import Mathlib.NumberTheory.DiophantineApproximation.Basic
 
 /-!
 # No uniform damping gap for a periodic complement character
@@ -15,6 +16,7 @@ argument.
 
 namespace GaloisForLFunctions.HTGeometry
 
+open _root_.HTGeometry
 open scoped BigOperators
 
 noncomputable section
@@ -25,11 +27,20 @@ theorem not_exists_uniform_negative_re_ee_sub_one (α : ℝ) :
       (ee ((n : ℝ) * α) - 1).re ≤ -c := by
   rintro ⟨c, hc, hgap⟩
   have hε : 0 < c / (4 * Real.pi) := by positivity
-  obtain ⟨n, hn, r, happrox⟩ :=
-    RHTower.exists_fin_simultaneous_integer_approximation
-      (fun _ : Fin 1 => α) hε
-  have hnorm : ‖ee ((n : ℝ) * α) - 1‖ ≤ 2 * Real.pi * (c / (4 * Real.pi)) :=
-    RHTower.norm_ee_sub_one_le_two_pi_mul_of_integer_approximation (r 0) (happrox 0)
+  obtain ⟨N, hN⟩ := exists_nat_one_div_lt hε
+  obtain ⟨n, hn, hnN, happrox⟩ :=
+    Real.exists_nat_abs_mul_sub_round_le α (n := N + 1) (Nat.succ_pos N)
+  have happrox_lt : |(n : ℝ) * α - round ((n : ℝ) * α)| < c / (4 * Real.pi) :=
+    happrox.trans_lt (by
+      calc
+        1 / ((↑(N + 1) : ℝ) + 1) ≤ 1 / ((N : ℝ) + 1) := by
+          gcongr
+          exact_mod_cast Nat.le_succ N
+        _ < c / (4 * Real.pi) := hN)
+  have hnorm : ‖ee ((n : ℝ) * α) - 1‖ ≤
+      2 * Real.pi * (c / (4 * Real.pi)) :=
+    norm_ee_sub_one_le_two_pi_mul_of_integer_approximation
+      (round ((n : ℝ) * α)) happrox_lt.le
   have hhalf : 2 * Real.pi * (c / (4 * Real.pi)) = c / 2 := by
     field_simp [Real.pi_ne_zero]
     ring

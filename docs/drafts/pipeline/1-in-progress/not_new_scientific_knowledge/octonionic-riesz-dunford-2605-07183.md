@@ -11,6 +11,10 @@
 - Mathlib has real quaternions but no octonion type, Cayley--Dickson multiplication, alternative-algebra class, octonionic module, or slice-functional-calculus library.
 - Existing corpus Cayley/resolvent modules concern different real/complex Hilbert-space operators and do not prove a paper result here.
 
+## Source correction log
+
+- **Lemma 8.5 proof typo:** HTML v1 line 2300 says its zero-determinant condition is “i.e. $s\notin[q]$”.  That contradicts the stated invertibility iff $s\notin[q]$ and the displayed condition `Re q = Re s`, `|Im q| = |Im s|`, which is exactly $s\in[q]$.  Formalize the mathematically consistent statement: `det(R_s-L_q)=0 ↔ s∈[q]`, hence invertible iff `s∉[q]`; do not encode the false sentence.
+
 ## Result inventory and dependency order
 
 | Paper results | Dependency layer | Status |

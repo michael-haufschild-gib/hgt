@@ -27,6 +27,21 @@ open GaloisForLFunctions.HTGeometry.ABHN
 
 noncomputable section
 
+/-- The residue field of the rational local factor at `v` is canonically the prime field indexed
+by `v`. This identifies the finite `q_v` residue layer of the Connes--Tate local factor with the
+actual arithmetic field `𝔽_p`. -/
+noncomputable def ccmRationalLocalResidueFieldEquivZMod
+    (v : HeightOneSpectrum ℤ) :
+    IsLocalRing.ResidueField (CCMRationalLocalIntegers v) ≃+*
+      ZMod (Rat.HeightOneSpectrum.primesEquiv v) := by
+  letI : Fact (Nat.Prime (Rat.HeightOneSpectrum.primesEquiv v)) :=
+    ⟨(Rat.HeightOneSpectrum.primesEquiv v).property⟩
+  letI : Algebra ℤ (CCMRationalLocalIntegers v) := Ring.toIntAlgebra _
+  let e : CCMRationalLocalIntegers v ≃+* ℤ_[Rat.HeightOneSpectrum.primesEquiv v] :=
+    (Rat.HeightOneSpectrum.adicCompletionIntegers.padicIntEquiv v).toRingEquiv
+  exact (IsLocalRing.ResidueField.mapEquiv e).trans
+    (PadicInt.residueField (p := Rat.HeightOneSpectrum.primesEquiv v))
+
 /-- Every local integer ring in the rational finite-adele factorization has finite residue field.
 The proof transports the standard `ℤₚ` residue field along Mathlib's canonical local-ring
 equivalence. -/
@@ -35,15 +50,9 @@ noncomputable instance ccmRationalLocalIntegersFiniteResidueField
     Finite (IsLocalRing.ResidueField (CCMRationalLocalIntegers v)) := by
   letI : Fact (Nat.Prime (Rat.HeightOneSpectrum.primesEquiv v)) :=
     ⟨(Rat.HeightOneSpectrum.primesEquiv v).property⟩
-  letI : Algebra ℤ (CCMRationalLocalIntegers v) := Ring.toIntAlgebra _
-  letI : Finite (IsLocalRing.ResidueField ℤ_[Rat.HeightOneSpectrum.primesEquiv v]) :=
-    Finite.of_equiv (ZMod (Rat.HeightOneSpectrum.primesEquiv v))
-      (PadicInt.residueField (p := Rat.HeightOneSpectrum.primesEquiv v)).toEquiv.symm
-  let e : CCMRationalLocalIntegers v ≃+* ℤ_[Rat.HeightOneSpectrum.primesEquiv v] :=
-    (Rat.HeightOneSpectrum.adicCompletionIntegers.padicIntEquiv v).toRingEquiv
   exact Finite.of_equiv
-    (IsLocalRing.ResidueField ℤ_[Rat.HeightOneSpectrum.primesEquiv v])
-    (IsLocalRing.ResidueField.mapEquiv e).toEquiv.symm
+    (ZMod (Rat.HeightOneSpectrum.primesEquiv v))
+    (ccmRationalLocalResidueFieldEquivZMod v).toEquiv.symm
 
 /-- An integral Azumaya coefficient algebra at an actual rational Connes--Consani local factor
 has split residue Brauer class. This is the finite-place residue endpoint compatible with the

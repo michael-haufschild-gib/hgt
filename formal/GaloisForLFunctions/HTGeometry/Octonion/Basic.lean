@@ -297,6 +297,47 @@ theorem mul_star_associates (x s : RealOctonion) :
   rw [mul_scalarEmbed, scalarEmbed_mul, smul_mul_assoc, mul_smul_comm,
     IsAlternative.mul_alternative_right]
 
+theorem associator_smul_left (r : ℝ) (x y z : RealOctonion) :
+    IsAlternative.associator (r • x) y z = r • IsAlternative.associator x y z := by
+  unfold IsAlternative.associator
+  rw [smul_mul_assoc, smul_mul_assoc, smul_mul_assoc]
+  rw [smul_sub]
+
+theorem associator_smul_mid (r : ℝ) (x y z : RealOctonion) :
+    IsAlternative.associator x (r • y) z = r • IsAlternative.associator x y z := by
+  unfold IsAlternative.associator
+  calc
+    (x * (r • y)) * z - x * ((r • y) * z) =
+        (r • (x * y)) * z - x * (r • (y * z)) := by
+          rw [mul_smul_comm r x y, smul_mul_assoc r y z]
+    _ = r • ((x * y) * z) - r • (x * (y * z)) := by
+          rw [smul_mul_assoc r (x * y) z, mul_smul_comm r x (y * z)]
+    _ = r • ((x * y) * z - x * (y * z)) := by rw [smul_sub]
+
+theorem associator_smul_right (r : ℝ) (x y z : RealOctonion) :
+    IsAlternative.associator x y (r • z) = r • IsAlternative.associator x y z := by
+  unfold IsAlternative.associator
+  rw [mul_smul_comm r (x * y) z, mul_smul_comm r y z,
+    mul_smul_comm r x (y * z), smul_sub]
+
+theorem associator_scalarEmbed_left (r : ℝ) (x y : RealOctonion) :
+    IsAlternative.associator (scalarEmbed r) x y = 0 := by
+  unfold IsAlternative.associator
+  rw [scalarEmbed_mul, scalarEmbed_mul, smul_mul_assoc]
+  abel
+
+theorem associator_scalarEmbed_mid (r : ℝ) (x y : RealOctonion) :
+    IsAlternative.associator x (scalarEmbed r) y = 0 := by
+  unfold IsAlternative.associator
+  rw [mul_scalarEmbed, scalarEmbed_mul, smul_mul_assoc, mul_smul_comm]
+  abel
+
+theorem associator_scalarEmbed_right (r : ℝ) (x y : RealOctonion) :
+    IsAlternative.associator x y (scalarEmbed r) = 0 := by
+  unfold IsAlternative.associator
+  rw [mul_scalarEmbed, mul_scalarEmbed, mul_smul_comm]
+  abel
+
 end
 end RealOctonion
 end GaloisForLFunctions.HTGeometry.Octonion

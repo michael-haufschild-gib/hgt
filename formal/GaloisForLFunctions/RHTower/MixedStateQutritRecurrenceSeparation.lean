@@ -250,34 +250,12 @@ theorem distToInt_nat_mul_sqrt_two_lower
   exact (div_le_iff₀ (by positivity : (0 : ℝ) < 4 * (n : ℝ))).2
     (by simpa [mul_comm] using hprod)
 
-/-- A rational approximation controls the unit-circle chord. -/
+/-- Backward-compatible RHTower name for the generic additive-character chord bound. -/
 theorem norm_ee_sub_one_le_two_pi_mul_of_integer_approximation
     {x e : ℝ} (r : ℤ)
     (happrox : |x - (r : ℝ)| ≤ e) :
-    ‖HTGeometry.ee x - 1‖ ≤ 2 * Real.pi * e := by
-  rw [HTGeometry.norm_ee_sub_one]
-  have hperiod :
-      |Real.sin (Real.pi * x)| =
-        |Real.sin (Real.pi * (x - (r : ℝ)))| := by
-    calc
-      |Real.sin (Real.pi * x)| =
-          |Real.sin
-            (Real.pi * (x - (r : ℝ)) + (r : ℝ) * Real.pi)| := by
-              congr 2
-              ring
-      _ = |Real.sin (Real.pi * (x - (r : ℝ)))| :=
-        HTGeometry.abs_sin_add_int_mul_pi
-          (Real.pi * (x - (r : ℝ))) r
-  rw [hperiod]
-  calc
-    2 * |Real.sin (Real.pi * (x - (r : ℝ)))| ≤
-        2 * |Real.pi * (x - (r : ℝ))| := by
-      exact mul_le_mul_of_nonneg_left Real.abs_sin_le_abs (by norm_num)
-    _ = 2 * Real.pi * |x - (r : ℝ)| := by
-      rw [abs_mul, abs_of_pos Real.pi_pos]
-      ring
-    _ ≤ 2 * Real.pi * e := by
-      exact mul_le_mul_of_nonneg_left happrox (by positivity)
+    ‖HTGeometry.ee x - 1‖ ≤ 2 * Real.pi * e :=
+  HTGeometry.norm_ee_sub_one_le_two_pi_mul_of_integer_approximation r happrox
 
 /-- Every positive tick of the irrational qutrit clock is at least a fixed
 multiple of `1/n` away from recurrence. -/

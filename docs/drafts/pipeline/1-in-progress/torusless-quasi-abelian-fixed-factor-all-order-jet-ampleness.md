@@ -1140,3 +1140,18 @@ ten rebuild green and axiom-clean.  The class of factors the chain speaks about 
 `{H = 0}` to genuine positive Hermitian forms, which is the class this card is about.
 
 Everything asserted in entries five to fourteen is now true as written; it was not before.
+
+## Lean status 2026-08-22 — unconditional uniform-gap obstruction
+
+`GaloisForLFunctions.HTGeometry.AbeUniformDampingNoGo` is now wired into the HTGeometry umbrella.
+Its closed theorem
+`not_exists_uniform_negative_re_ee_sub_one` proves, for every real phase `α`, that there is no
+constant `c > 0` such that every nonzero natural translate satisfies
+`Re(ee(n·α) - 1) ≤ -c`.  The proof uses Mathlib's one-dimensional Dirichlet approximation theorem
+and the additive-character chord bound, with no assumptions about a quasi-Abelian factor, seed,
+normal convergence, or damping multiplier.  Its exact axiom report is
+`[propext, Classical.choice, Quot.sound]`.
+
+This is a closed positive obstruction theorem, not a formalization of the card's public
+all-order jet-ampleness claim.  It rules out only the false uniform-majorant route; the two-scale
+infinite-tail construction remains the dependency-closed open core, so this card stays in Stage 1.
