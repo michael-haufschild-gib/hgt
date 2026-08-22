@@ -52,7 +52,7 @@ noncomputable def coerciveEquiv {T : V →L[ℝ] V} {κ : ℝ} (hκ : 0 < κ)
 
 omit [CompleteSpace V] in
 /-- **Coercivity is a lower bound on a coercive operator.** -/
-lemma norm_le_of_coercive {T : V →L[ℝ] V} {κ : ℝ} (_hκ : 0 < κ)
+private lemma norm_le_of_coercive {T : V →L[ℝ] V} {κ : ℝ} (_hκ : 0 < κ)
     (h : ∀ v : V, κ * ‖v‖ * ‖v‖ ≤ inner ℝ (T v) v) (v : V) : κ * ‖v‖ ≤ ‖T v‖ := by
   rcases eq_or_lt_of_le (norm_nonneg v) with hv | hv
   · rw [← hv, mul_zero]

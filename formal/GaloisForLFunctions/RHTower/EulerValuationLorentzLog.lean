@@ -474,7 +474,7 @@ theorem cosh_two_log_eq {p : ℕ} (hp : 0 < p) :
     rw [Real.rpow_def_of_pos hppos, mul_comm]
   rw [Real.cosh_eq, hexp, Real.exp_neg, hexp]
 
-theorem cosh_two_log_bounds {p : ℕ} (hp : 1 < p) :
+private theorem cosh_two_log_bounds {p : ℕ} (hp : 1 < p) :
     (p : ℝ) ^ (2 : ℝ) / 2 ≤ Real.cosh (2 * Real.log p) ∧
       Real.cosh (2 * Real.log p) ≤ (p : ℝ) ^ (2 : ℝ) := by
   have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast hp

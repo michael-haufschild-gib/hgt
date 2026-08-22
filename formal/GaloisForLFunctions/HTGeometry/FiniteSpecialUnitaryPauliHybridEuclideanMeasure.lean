@@ -16,8 +16,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance finiteSpecialUnitaryPauliHybridEuclideanMeasureDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance finiteSpecialUnitaryPauliHybridEuclideanMeasureFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 /-- The `SU(4)`-valued version of the joint hybrid Euclidean chart. -/
 def boolTwoQubitHybridEuclideanGate (N : ℕ) :

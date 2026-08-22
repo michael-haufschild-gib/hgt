@@ -208,13 +208,13 @@ theorem riemannZeta_ofReal_eq_exp_eulerLogMoment {β : ℝ} (hβ : 1 < β) :
 
 /-- The analytic unit of the simple pole of `ζ` at `s = 1`: it agrees with `(s-1) ζ(s)` away
 from `1` and takes the value `1` at `1`. -/
-def zetaPoleUnit (s : ℂ) : ℂ :=
+private def zetaPoleUnit (s : ℂ) : ℂ :=
   (s - 1) * (riemannZeta s - 1 / (s - 1) / Complex.Gammaℝ s) + (Complex.Gammaℝ s)⁻¹
 
-@[simp] theorem zetaPoleUnit_one : zetaPoleUnit 1 = 1 := by
+@[simp] private theorem zetaPoleUnit_one : zetaPoleUnit 1 = 1 := by
   simp [zetaPoleUnit, Complex.Gammaℝ_one]
 
-theorem zetaPoleUnit_eq_of_ne {s : ℂ} (hs : s ≠ 1) :
+private theorem zetaPoleUnit_eq_of_ne {s : ℂ} (hs : s ≠ 1) :
     zetaPoleUnit s = (s - 1) * riemannZeta s := by
   have h : s - 1 ≠ 0 := sub_ne_zero.mpr hs
   have key : (s - 1) * (1 / (s - 1) / Complex.Gammaℝ s) = (Complex.Gammaℝ s)⁻¹ := by
@@ -223,7 +223,7 @@ theorem zetaPoleUnit_eq_of_ne {s : ℂ} (hs : s ≠ 1) :
     · field_simp
   rw [zetaPoleUnit, mul_sub, key, sub_add_cancel]
 
-theorem differentiable_zetaPoleUnit : Differentiable ℂ zetaPoleUnit := by
+private theorem differentiable_zetaPoleUnit : Differentiable ℂ zetaPoleUnit := by
   intro s
   have hsub : DifferentiableAt ℂ (fun r : ℂ => r - 1) s := differentiableAt_id.sub_const 1
   have hinv : DifferentiableAt ℂ (fun r : ℂ => (Complex.Gammaℝ r)⁻¹) s :=
@@ -245,7 +245,7 @@ theorem differentiable_zetaPoleUnit : Differentiable ℂ zetaPoleUnit := by
       exact ((differentiableAt_const (1 : ℂ)).div hsub hs1).mul hinv
     exact (hsub.mul hz).add hinv
 
-theorem analyticAt_zetaPoleUnit (s : ℂ) : AnalyticAt ℂ zetaPoleUnit s :=
+private theorem analyticAt_zetaPoleUnit (s : ℂ) : AnalyticAt ℂ zetaPoleUnit s :=
   (differentiable_zetaPoleUnit.differentiableOn.analyticOnNhd isOpen_univ) s (Set.mem_univ s)
 
 /-- The analytic logarithm of the pole unit near `s = 1`. -/

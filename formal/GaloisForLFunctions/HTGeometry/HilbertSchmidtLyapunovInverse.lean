@@ -36,7 +36,7 @@ omit [CompleteSpace F] [CompleteSpace G] in
 theorem hsNorm_comp_left_le {S : F →L[𝕜] G} {Y : E →L[𝕜] F} (hY : IsHilbertSchmidt Y) :
     hsNorm (S ∘L Y) ≤ ‖S‖ * hsNorm Y := by
   have h : hsNormSq (S ∘L Y) ≤ ‖S‖ ^ 2 * hsNormSq Y :=
-    hsNormSq_comp_left_le hY fun v => by
+    hsNormSq_comp_left_le_of_bound hY fun v => by
       calc ‖S v‖ ^ 2 ≤ (‖S‖ * ‖v‖) ^ 2 := by gcongr; exact S.le_opNorm v
         _ = ‖S‖ ^ 2 * ‖v‖ ^ 2 := by ring
   have h2 := Real.sqrt_le_sqrt h
@@ -46,7 +46,7 @@ theorem hsNorm_comp_left_le {S : F →L[𝕜] G} {Y : E →L[𝕜] F} (hY : IsHi
 theorem hsNorm_comp_right_le {Y : F →L[𝕜] G} {T : E →L[𝕜] F} (hY : IsHilbertSchmidt Y) :
     hsNorm (Y ∘L T) ≤ hsNorm Y * ‖T‖ := by
   have h : hsNormSq (Y ∘L T) ≤ ‖T‖ ^ 2 * hsNormSq Y :=
-    hsNormSq_comp_right_le hY fun v => by
+    hsNormSq_comp_right_le_of_bound hY fun v => by
       calc ‖adjoint T v‖ ^ 2 ≤ (‖adjoint T‖ * ‖v‖) ^ 2 := by
             gcongr; exact (adjoint T).le_opNorm v
         _ = ‖T‖ ^ 2 * ‖v‖ ^ 2 := by rw [adjoint.norm_map]; ring

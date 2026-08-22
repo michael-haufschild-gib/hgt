@@ -51,10 +51,10 @@ theorem quartetShift_ne_zero : quartetShift ≠ 0 := by
 def gradedEnvelope (w : ℂ) : ℂ := coshQuartetEnvelope quartetShift w
 
 /-- The selected quartet centre `α = π(1+i)/2`. -/
-def quartetPoint : ℂ := (Real.pi / 2 : ℝ) + (Real.pi / 2 : ℝ) * I
+private def quartetPoint : ℂ := (Real.pi / 2 : ℝ) + (Real.pi / 2 : ℝ) * I
 
 /-- The real even quartet polynomial `w⁴ + π⁴/4`, whose four roots are the quartet. -/
-def quartetPoly (w : ℂ) : ℂ := w ^ 4 + (Real.pi : ℂ) ^ 4 / 4
+private def quartetPoly (w : ℂ) : ℂ := w ^ 4 + (Real.pi : ℂ) ^ 4 / 4
 
 /-- The Hermite-flat multiplier of depth `N`. -/
 def flatMultiplier (N : ℕ) (w : ℂ) : ℂ := 1 + quartetPoly w ^ (2 * N + 1)

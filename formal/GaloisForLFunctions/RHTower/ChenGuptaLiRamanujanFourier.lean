@@ -14,7 +14,7 @@ structure CGLPositiveModulus where
   value : ℕ
   positive : 0 < value
 
-instance (Q : CGLPositiveModulus) : NeZero Q.value :=
+instance cglPositiveModulus_neZero (Q : CGLPositiveModulus) : NeZero Q.value :=
   ⟨Nat.ne_of_gt Q.positive⟩
 
 /-- Indicator of the reduced residue classes modulo a CGL modulus. -/

@@ -48,6 +48,8 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | Lemma 1.6(2) (`t212n`), Cor 1.7(1) (`t213n`) | `RHTower/DeningerDynSysValuedPoints.lean` | closed |
 | §1 `Hom(ℤ̲A, R) ≅ (A →*₀ R)` | `RHTower/DeningerDynSysReducedMonoidAlgebra.lean` | closed |
 | Def 9.5 (`t95n`) + its two stated facts | `HTGeometry/AlmostPathConnected.lean` | closed |
+| Thm 1.4 second assertion (`t27n`) for `ℤ A`, incl. the `(!)` finite-orbit step | `RHTower/DeningerDynSysMonoidRingAction.lean` | closed |
+| Thm 1.4 second assertion (`t27n`) for the actual `W_rat (A)` | `RHTower/DeningerDynSysWittRingAction.lean` | closed |
 
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 

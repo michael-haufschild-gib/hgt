@@ -490,7 +490,7 @@ theorem xiRadialJensenBPSCharge_le_energy :
 theorem xiRadialJensenBPSSaturation_iff_rh :
     xiRadialJensenBPSEnergy = xiRadialJensenBPSCharge ↔ RiemannHypothesis := by
   simpa [xiRadialJensenBPSEnergy, xiRadialJensenBPSCharge] using
-    xiReciprocalHermitianMass_eq_curvature_iff_rh
+    xiReciprocalHermitianMass_eq_primeArchCentralCurvature_iff_rh
 
 end
 

@@ -16,8 +16,10 @@ noncomputable section
 
 open scoped Matrix.Norms.L2Operator
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance haferkampTerminalHybridEuclideanRankDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance haferkampTerminalHybridEuclideanRankFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 namespace TwoQubitArchitecture
 

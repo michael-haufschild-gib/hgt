@@ -16,8 +16,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance finiteSpecialUnitaryPauliHybridEuclideanAnalyticDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance finiteSpecialUnitaryPauliHybridEuclideanAnalyticFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 /-- Index set for one Euclidean exponential-word coefficient. -/
 abbrev boolTwoQubitWordCoordinateIndex (N : ℕ) :=

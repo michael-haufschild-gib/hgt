@@ -93,7 +93,7 @@ theorem deriv_localFactor (L : ℂ) :
 
 /-! ## Theorem A: the distinct-prime-support filtration -/
 
-theorem analyticAt_of_differentiable {g : ℂ → ℂ} (hg : Differentiable ℂ g) (z : ℂ) :
+theorem analyticAt_of_differentiable_univariate {g : ℂ → ℂ} (hg : Differentiable ℂ g) (z : ℂ) :
     AnalyticAt ℂ g z :=
   (hg.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z)
 
@@ -114,9 +114,9 @@ theorem exists_flatFactor_shiftedEulerCoeff (n : ℕ) :
   choose φ hφd hφe hφ0 using hchoice
   refine ⟨fun ω => Complex.exp (ω * (Real.log n : ℂ)) * ∏ p ∈ n.primeFactors, φ p ω, ?_, ?_, ?_⟩
   · refine AnalyticAt.fun_mul ?_ ?_
-    · exact analyticAt_of_differentiable
+    · exact analyticAt_of_differentiable_univariate
         (Complex.differentiable_exp.comp (differentiable_id.mul_const _)) 0
-    · exact Finset.analyticAt_fun_prod _ fun p _ => analyticAt_of_differentiable (hφd p) 0
+    · exact Finset.analyticAt_fun_prod _ fun p _ => analyticAt_of_differentiable_univariate (hφd p) 0
   · intro ω
     rw [shiftedEulerCoeff, Finset.prod_congr rfl (fun p _ => hφe p ω), Finset.prod_mul_distrib,
       Finset.prod_const]
@@ -279,13 +279,13 @@ theorem iteratedDeriv_exp_congr_of_flat {L₁ L₂ : ℂ → ℂ} (h₁ : ∀ z,
     ring
   have hWan : AnalyticAt ℂ (fun z : ℂ => Complex.exp (L₂ z) * W z * ψ (L₁ z - L₂ z)) 0 := by
     refine AnalyticAt.fun_mul (AnalyticAt.fun_mul ?_ hW) ?_
-    · exact (analyticAt_of_differentiable Complex.differentiable_exp _).comp (h₂ 0)
-    · exact (analyticAt_of_differentiable hψd _).comp ((h₁ 0).sub (h₂ 0))
+    · exact (analyticAt_of_differentiable_univariate Complex.differentiable_exp _).comp (h₂ 0)
+    · exact (analyticAt_of_differentiable_univariate hψd _).comp ((h₁ 0).sub (h₂ 0))
   have hzero := iteratedDeriv_eq_zero_of_flat_factor (m := k + 1) (n := j) hWan hdiff (by omega)
   have hexp₁ : ∀ z : ℂ, AnalyticAt ℂ (fun x : ℂ => Complex.exp (L₁ x)) z := fun z =>
-    (analyticAt_of_differentiable Complex.differentiable_exp _).comp (h₁ z)
+    (analyticAt_of_differentiable_univariate Complex.differentiable_exp _).comp (h₁ z)
   have hexp₂ : ∀ z : ℂ, AnalyticAt ℂ (fun x : ℂ => Complex.exp (L₂ x)) z := fun z =>
-    (analyticAt_of_differentiable Complex.differentiable_exp _).comp (h₂ z)
+    (analyticAt_of_differentiable_univariate Complex.differentiable_exp _).comp (h₂ z)
   rw [iteratedDeriv_fun_sub j hexp₁ hexp₂ 0] at hzero
   linear_combination hzero
 
@@ -359,7 +359,7 @@ theorem iteratedDeriv_two_shiftedEulerCoeff_primePow {p a : ℕ} (hp : p.Prime) 
   rw [hfun]
   have han : ∀ (b : ℂ) (z : ℂ), AnalyticAt ℂ (fun ω : ℂ => Complex.exp (b * ω)) z := by
     intro b z
-    exact (analyticAt_of_differentiable Complex.differentiable_exp _).comp
+    exact (analyticAt_of_differentiable_univariate Complex.differentiable_exp _).comp
       (analyticAt_const.mul analyticAt_id)
   rw [iteratedDeriv_fun_sub 2 (han _) (han _) 0, iteratedDeriv_cexp_const_mul,
     iteratedDeriv_cexp_const_mul]

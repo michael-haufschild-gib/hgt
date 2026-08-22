@@ -37,7 +37,7 @@ def companionVec (n : ℕ) (N S : MvPolynomial (Fin (n + 2)) ℂ) (v : Fin (n + 
 
 /-! ## The jet solves the companion system -/
 
-theorem analyticOnNhd_iteratedDeriv {f : ℂ → ℂ} {U : Set ℂ}
+private theorem analyticOnNhd_iteratedDeriv {f : ℂ → ℂ} {U : Set ℂ}
     (hf : AnalyticOnNhd ℂ f U) : ∀ j : ℕ, AnalyticOnNhd ℂ (iteratedDeriv j f) U := by
   intro j
   induction j with
@@ -518,7 +518,7 @@ def jetSucc (n : ℕ) (i : Fin (n + 2)) : Fin (n + 2) :=
 
 /-- The polynomial recording the derivative of the `i`-th jet coordinate, except at the top
 index where the derivative is the new coordinate `f⁽ⁿ⁺¹⁾`. -/
-def jetShift (n : ℕ) (i : Fin (n + 2)) : MvPolynomial (Fin (n + 2)) ℂ :=
+private def jetShift (n : ℕ) (i : Fin (n + 2)) : MvPolynomial (Fin (n + 2)) ℂ :=
   if (i : ℕ) = 0 then 1 else if (i : ℕ) ≤ n then MvPolynomial.X (jetSucc n i) else 0
 
 /-- The separant of a differential polynomial in the augmented jet coordinates. -/

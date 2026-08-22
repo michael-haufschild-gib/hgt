@@ -27,7 +27,7 @@ variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {F : Type v} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 /-- The diagonal embedding as a continuous linear map. -/
-noncomputable def diagCLM (E : Type u) [NormedAddCommGroup E] [NormedSpace ℝ E] (k : ℕ) :
+private noncomputable def diagCLM (E : Type u) [NormedAddCommGroup E] [NormedSpace ℝ E] (k : ℕ) :
     E →L[ℝ] (Fin k → E) :=
   ContinuousLinearMap.pi fun _ => ContinuousLinearMap.id ℝ E
 

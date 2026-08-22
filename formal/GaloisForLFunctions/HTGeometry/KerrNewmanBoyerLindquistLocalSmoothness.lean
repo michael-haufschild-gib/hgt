@@ -95,9 +95,9 @@ theorem contDiffOn_kerrNewmanBoyerLindquistCoordinateMetric
   · exact contDiffOn_const
   · exact contDiffOn_const
   · change ContDiffOn ℝ ∞ (fun x : Fin 4 → ℝ =>
-      -(spin * Real.sin (x 2) ^ 2 * (2 * mass * x 1 - charge ^ 2)) /
+      -spin * Real.sin (x 2) ^ 2 * (2 * mass * x 1 - charge ^ 2) /
         kerrNewmanSigma spin (x 1) (x 2)) U
-    exact ((((contDiffOn_const (c := spin)).mul hSinSq).mul hCross).neg.div hSigma hSigmaNe)
+    exact (((contDiffOn_const (c := -spin)).mul hSinSq).mul hCross).div hSigma hSigmaNe
   · exact contDiffOn_const
   · change ContDiffOn ℝ ∞ (fun x : Fin 4 → ℝ =>
       kerrNewmanSigma spin (x 1) (x 2) / kerrNewmanDelta mass spin charge (x 1)) U
@@ -110,9 +110,9 @@ theorem contDiffOn_kerrNewmanBoyerLindquistCoordinateMetric
       kerrNewmanKillingBlock] using hSigma
   · exact contDiffOn_const
   · change ContDiffOn ℝ ∞ (fun x : Fin 4 → ℝ =>
-      -(spin * Real.sin (x 2) ^ 2 * (2 * mass * x 1 - charge ^ 2)) /
+      -spin * Real.sin (x 2) ^ 2 * (2 * mass * x 1 - charge ^ 2) /
         kerrNewmanSigma spin (x 1) (x 2)) U
-    exact ((((contDiffOn_const (c := spin)).mul hSinSq).mul hCross).neg.div hSigma hSigmaNe)
+    exact (((contDiffOn_const (c := -spin)).mul hSinSq).mul hCross).div hSigma hSigmaNe
   · exact contDiffOn_const
   · exact contDiffOn_const
   · change ContDiffOn ℝ ∞ (fun x : Fin 4 → ℝ =>

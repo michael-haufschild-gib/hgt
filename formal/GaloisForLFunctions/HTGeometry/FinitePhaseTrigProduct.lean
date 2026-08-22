@@ -25,7 +25,7 @@ section Product
 variable {d : Type*} [Fintype d] [DecidableEq d]
 variable {κ κ' : Type*}
 
-theorem trigLift_mul (P : Finset κ) (Q : Finset κ') (ν : κ → d → ℤ) (μ : κ' → d → ℤ)
+theorem finiteTrigLift_mul (P : Finset κ) (Q : Finset κ') (ν : κ → d → ℤ) (μ : κ' → d → ℤ)
     (a : κ → ℂ) (b : κ' → ℂ) (x : d → ℝ) :
     trigLift P ν a x * trigLift Q μ b x =
       trigLift (P ×ˢ Q) (fun pq => ν pq.1 + μ pq.2) (fun pq => a pq.1 * b pq.2) x := by

@@ -18,8 +18,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance haferkampSpecialUnitaryPauliL2ChartDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance haferkampSpecialUnitaryPauliL2ChartFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 /-- The terminal `I ⊗ Z` phase matrix is real analytic in the L2 operator norm. -/
 theorem analyticAt_terminalPauliPhaseMatrix_l2

@@ -61,7 +61,7 @@ theorem linearRelationOrbitValue_ne_zero_iff (c : I → K) (energy : I → K) :
 
 omit [IsDomain K] in
 /-- The linear form is nonzero for a nonzero coefficient vector. -/
-theorem linearRelationPoly_ne_zero [DecidableEq I] {c : I → K} (hc : c ≠ 0) :
+private theorem linearRelationPoly_ne_zero [DecidableEq I] {c : I → K} (hc : c ≠ 0) :
     linearRelationPoly c ≠ 0 := by
   classical
   obtain ⟨i, hi⟩ : ∃ i, c i ≠ 0 := by

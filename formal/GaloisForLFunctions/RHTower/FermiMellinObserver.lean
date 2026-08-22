@@ -230,7 +230,7 @@ theorem iteratedDeriv_mgf_log_fermiMellin {σ u : ℝ} (hσ : 0 < σ) (hu : 0 < 
   rw [iteratedDeriv_mgf (mem_interior_integrableExpSet hσ hu) n]
   exact integral_log_pow_mul_exp_fermiMellinMeasure hσ u n
 
-theorem hasDerivAt_shift {g : ℝ → ℝ} {a c : ℝ} (h : HasDerivAt (fun u : ℝ => g (a + u)) c 0) :
+private theorem hasDerivAt_shift {g : ℝ → ℝ} {a c : ℝ} (h : HasDerivAt (fun u : ℝ => g (a + u)) c 0) :
     HasDerivAt g c a := by
   have hsub : HasDerivAt (fun b : ℝ => b - a) 1 a := by
     simpa using (hasDerivAt_id a).sub_const a

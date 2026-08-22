@@ -40,7 +40,7 @@ theorem connes_analyticOnNhd_iteratedDeriv {U : Set ℂ} {f : ℂ → ℂ}
     exact ih.deriv
 
 /-- The real-linear map `s ↦ s i`. -/
-def connesLineMap : ℝ →L[ℝ] ℂ := (ContinuousLinearMap.id ℝ ℝ).smulRight I
+private def connesLineMap : ℝ →L[ℝ] ℂ := (ContinuousLinearMap.id ℝ ℝ).smulRight I
 
 theorem connesLineMap_apply (s : ℝ) : connesLineMap s = (s : ℂ) * I := by
   rw [connesLineMap]

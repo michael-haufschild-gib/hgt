@@ -14,8 +14,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance haferkampTerminalHybridEuclideanArchitectureAnalyticDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance haferkampTerminalHybridEuclideanArchitectureAnalyticFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 namespace TwoQubitArchitecture
 

@@ -18,8 +18,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance haferkampSpecialUnitaryPauliLocalDiffeomorphDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance haferkampSpecialUnitaryPauliLocalDiffeomorphFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 /-- The fifteen-direction Pauli tangent map is injective over the reals. -/
 theorem boolNonidentityTwoQubitPauliTangentMap_injective :

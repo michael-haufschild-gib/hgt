@@ -27,7 +27,7 @@ open GaloisForLFunctions
 variable {C : Type*} [CommRing C] [Differential C]
 
 /-- **A derivation-compatible ring map moves through every jet.** -/
-theorem differentialJet_algHom {A B : Type*} [CommRing A] [CommRing B]
+private theorem differentialJet_algHom {A B : Type*} [CommRing A] [CommRing B]
     [Differential A] [Differential B] (φ : A →+* B)
     (hφ : ∀ a, φ (Differential.deriv a) = Differential.deriv (φ a)) (n : ℕ) (a : A) :
     φ (differentialJet n a) = differentialJet n (φ a) := by

@@ -26,7 +26,7 @@ noncomputable def deningerZeroIdeal : Ideal (MonoidAlgebra ℤ A) :=
   Ideal.span {MonoidAlgebra.single (0 : A) (1 : ℤ)}
 
 /-- Deninger's reduced monoid algebra `ℤ̲A = ℤ A / ℤ (0)`. -/
-abbrev DeningerReducedMonoidAlgebra : Type _ :=
+private abbrev DeningerReducedMonoidAlgebra : Type _ :=
   MonoidAlgebra ℤ A ⧸ deningerZeroIdeal A
 
 variable {A}

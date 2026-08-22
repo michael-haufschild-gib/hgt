@@ -36,7 +36,7 @@ noncomputable section
 /-! ## The prime mass of a logarithmic window -/
 
 /-- `∑_{e^{x-r} < p ≤ e^{x+r}} (log p)² / p`. -/
-def primeLogWindowMass (x r : ℝ) : ℝ :=
+private def primeLogWindowMass (x r : ℝ) : ℝ :=
   primeLogPowSum 2 (Real.exp (x + r)) - primeLogPowSum 2 (Real.exp (x - r))
 
 theorem primeLogWindowMass_eq_sum (x : ℝ) {r : ℝ} (hr : 0 ≤ r) :

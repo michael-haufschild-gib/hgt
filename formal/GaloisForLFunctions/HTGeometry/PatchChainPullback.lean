@@ -269,9 +269,9 @@ theorem maximallyProjectiveEnergy_patchEigenValues {ω : PatchSphere k}
     not_not.mp hω
   have hsorted : MaximallyProjectiveEnergy
       (spectralTuple (chainPauliFin_isHermitian (k + 3)) (sphereCoeff (patchToCoeff k ω))) :=
-    hmax.comp_equiv (Tuple.sort (isHermitian_spectralEnsembleMatrix
+    hmax.comp_equiv_relabel (Tuple.sort (isHermitian_spectralEnsembleMatrix
       (chainPauliFin_isHermitian (k + 3)) (sphereCoeff (patchToCoeff k ω))).eigenvalues)
-  exact hsorted.comp_equiv (qubitConfigFin (k + 3))
+  exact hsorted.comp_equiv_relabel (qubitConfigFin (k + 3))
 
 theorem mem_simpleLocus_of_notMem_chainBadSphere {ω : PatchSphere k}
     (hω : ω ∉ patchToCoeff k ⁻¹' chainBadSphere k) :

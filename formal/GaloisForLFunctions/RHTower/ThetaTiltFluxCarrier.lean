@@ -584,7 +584,7 @@ theorem sourceMoment_neg (S : ThetaSource) {d : ℕ} (c w : Fin d → ℂ) (s : 
 /-! ## The Cauchy Gram of finite exponential sums -/
 
 /-- A finite exponential sum on the positive half line. -/
-def expSum {d : ℕ} (a w : Fin d → ℂ) (s : ℝ) : ℂ :=
+private def expSum {d : ℕ} (a w : Fin d → ℂ) (s : ℝ) : ℂ :=
   ∑ j, a j * Complex.exp (-(w j) * (s : ℂ))
 
 theorem expSum_mul_conj {d : ℕ} (a b w : Fin d → ℂ) (s : ℝ) :

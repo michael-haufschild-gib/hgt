@@ -61,7 +61,7 @@ theorem coeff_natDegree_frequencyCharPoly (omega : d → ℝ) :
 
 /-- The autonomous relation given by the characteristic polynomial: the linear
 differential operator with the frequencies as its characteristic roots. -/
-def linearRelationPoly (omega : d → ℝ) :
+private def linearRelationPoly (omega : d → ℝ) :
     Polynomial (MvPolynomial (Fin (Fintype.card d)) ℂ) :=
   Polynomial.C (∑ k : Fin (Fintype.card d),
       MvPolynomial.C ((frequencyCharPoly omega).coeff (k : ℕ)) * MvPolynomial.X k)

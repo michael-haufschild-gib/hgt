@@ -27,7 +27,7 @@ open GaloisForLFunctions
 variable {C : Type*} [CommRing C] [Differential C] {ι : Type*}
 
 /-- A differential constant has no jets above order zero. -/
-theorem differentialJet_eq_zero_of_deriv_eq_zero {c : C} (hc : c′ = 0) :
+private theorem differentialJet_eq_zero_of_deriv_eq_zero {c : C} (hc : c′ = 0) :
     ∀ n : ℕ, differentialJet (n + 1) c = 0
   | 0 => by rw [differentialJet_succ, differentialJet_zero, hc]
   | (n + 1) => by

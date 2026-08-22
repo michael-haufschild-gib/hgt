@@ -34,9 +34,9 @@ completely-regular-growth theory.  These are the real gaps.
 | Thm 3.3 | `ζ(s)/(s−ρ)^l` minimal and complete in `L̂₁`; dual system | capstone | **TODO** |
 | Prop 4.1 | characterization of `L̂_a` inside `s/(s−1)·A^s H²` | | **TODO** (Hardy) |
 | Prop 4.2 | `ζ(s)/(s−ρ)^l ∈ L̂₁` | | **TODO** |
-| Prop 4.3 | division by `(s−w)` stays in `L̂_a` / `K̂_a` | | **TODO** |
+| Prop 4.3 | division by `(s−w)` stays in `L̂_a` / `K̂_a` | **corpus-owned for `L_a`**: `BurnolSoninDividedShift.burnolShift_mem_soninExtendedSpace` (range `1/2 < Re ρ < 1`) | `K_a` half TODO |
 | Lem 4.4 | `F ∈ K̂_a ⇒ F/s ∈ L̂_a` | | **TODO** |
-| Prop 4.5 | `dim(L_a/K_a) = 2` | second proof's mechanism `HTGeometry/OrthogonalCodimensionOne.lean` **DONE** | rest TODO |
+| Prop 4.5 | `dim(L_a/K_a) = 2` | **DONE (full-line model)**: `RHTower/SoninBandCodimensionTwo.finrank_soninBandComplement_eq_two`, from the abstract `HTGeometry/CodimensionTwoOrthogonalSum.finrank_inf_orthogonal_sub_sup_eq_two` + the `L_a` description `RHTower/SoninExtendedOrthogonalBand.mem_soninExtendedSpace_iff_orthogonal_meanZeroBand` | even-subspace restatement TODO (all pieces present: `A'`,`B'` are reflection-invariant so the 2-dim complement already lies in `evenSubspace`) |
 | Prop 4.6 | `∪_{b>a}K_b` dense in `K_a` (same for `L`) — via the general lattice identity | **DONE (K side)**: `RHTower.topologicalClosure_iSup_centralSoninCarrier` | `L` side TODO |
 | Prop 4.7 | `∪_{b>a}K_b ⊊ K_a`, also for Fourier-(skew-)invariant parts | | **TODO** |
 | Def 10 | L-Property | | **TODO** |

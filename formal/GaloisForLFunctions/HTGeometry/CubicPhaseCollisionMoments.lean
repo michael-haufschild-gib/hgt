@@ -175,7 +175,7 @@ theorem average_finQuarticSum_sq (e : J → (ι → Bool) → ℂ) :
         (fun qq => quarticCoeff e qq.1 * quarticCoeff e qq.2) x := by
     intro x
     rw [sq, quarticSum_eq_trigLift]
-    exact trigLift_mul _ _ _ _ _ _ x
+    exact finiteTrigLift_mul _ _ _ _ _ _ x
   simp only [hfin]
   rw [MeasureTheory.setIntegral_congr_fun measurableSet_torusBox fun x _ => hcont x]
   refine average_trigFinite_eq_integral_box_trigLift _ _ _ (fun qq _ => ?_) (fun qq _ b hb => ?_)

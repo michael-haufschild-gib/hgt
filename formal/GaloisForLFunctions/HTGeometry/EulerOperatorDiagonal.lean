@@ -39,7 +39,7 @@ theorem differentiable_iteratedDeriv {f : ℂ → ℂ} (h : ContDiff ℂ (⊤ : 
 /-! ### The Leibniz identity for multiplication by the coordinate -/
 
 /-- `(u·g)⁽ⁿ⁺¹⁾ = u·g⁽ⁿ⁺¹⁾ + (n+1)·g⁽ⁿ⁾`. -/
-theorem iteratedDeriv_id_mul {g : ℂ → ℂ} (hg : ContDiff ℂ (⊤ : ℕ∞) g) (n : ℕ) :
+private theorem iteratedDeriv_id_mul {g : ℂ → ℂ} (hg : ContDiff ℂ (⊤ : ℕ∞) g) (n : ℕ) :
     iteratedDeriv (n + 1) (fun u => u * g u)
       = fun u => u * iteratedDeriv (n + 1) g u + ((n : ℂ) + 1) * iteratedDeriv n g u := by
   induction n with

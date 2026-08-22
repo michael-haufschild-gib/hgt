@@ -16,7 +16,7 @@ noncomputable section
 
 /-! ## Reciprocals of near-one numbers -/
 
-theorem norm_le_of_norm_sub_one_le {u : ℂ} (h : ‖u - 1‖ ≤ 1 / 2) : 1 / 2 ≤ ‖u‖ := by
+private theorem norm_le_of_norm_sub_one_le {u : ℂ} (h : ‖u - 1‖ ≤ 1 / 2) : 1 / 2 ≤ ‖u‖ := by
   have h1 : ‖(1 : ℂ)‖ - ‖u‖ ≤ ‖(1 : ℂ) - u‖ := norm_sub_norm_le _ _
   rw [norm_one] at h1
   rw [← norm_neg, neg_sub] at h

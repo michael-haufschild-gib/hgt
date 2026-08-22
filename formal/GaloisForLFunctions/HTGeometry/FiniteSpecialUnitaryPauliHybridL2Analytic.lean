@@ -19,8 +19,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance finiteSpecialUnitaryPauliHybridL2AnalyticDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance finiteSpecialUnitaryPauliHybridL2AnalyticFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 /-- Right multiplication by a two-qubit unitary as a real continuous linear map. -/
 def boolTwoQubitMatrixRightMulCLM (U : Matrix.unitaryGroup (Bool × Bool) ℂ) :

@@ -1663,3 +1663,14 @@ This closes the local finite linear algebra of DJS-3.  The unsolved bridge is an
 geometric: prove that Abe's invariant multiplier has this graded local block simultaneously with
 the normalized Poincaré expansion and coefficient summability required by the preceding transfer
 theorem.
+
+### Lean progress (exact Abe exponential multiplier)
+
+`AbeExponentialDampingMultiplier.lean` now constructs the actual entire multiplier
+`exp (t * (Θ - 1))`, proves its exact pointwise formula, inherits its lower-lattice invariance from
+`Θ`, and proves that it equals one at every point where `Θ = 1`.  The targeted module build and
+`#print axioms` audit close with only Lean's standard logical axioms.
+
+This is an exact input to the proposed distinct-speed packet construction.  It does **not** yet
+supply the required all-order jet expansion, seed estimates, or global finite-jet interpolation;
+therefore it provides no basis for advancing this card from Stage 1.

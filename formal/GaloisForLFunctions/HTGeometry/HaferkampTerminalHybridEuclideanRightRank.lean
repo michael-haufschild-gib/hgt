@@ -15,8 +15,10 @@ noncomputable section
 
 open scoped Matrix.Norms.L2Operator
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance haferkampTerminalHybridEuclideanRightRankDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance haferkampTerminalHybridEuclideanRightRankFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 /-- A terminal phase commutes with a fixed right multiplication by associativity. -/
 theorem terminalPauliGatePath_mul_right

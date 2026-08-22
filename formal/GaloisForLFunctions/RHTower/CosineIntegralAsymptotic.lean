@@ -212,11 +212,11 @@ theorem intervalIntegral_damped_cos_div (ε : ℝ) {y : ℝ} (hy : 1 ≤ y) :
 
 /-! ## Exponential tails with a general rate -/
 
-theorem integrableOn_exp_neg_mul_Ioi {ε : ℝ} (hε : 0 < ε) (a : ℝ) :
+private theorem integrableOn_exp_neg_mul_Ioi {ε : ℝ} (hε : 0 < ε) (a : ℝ) :
     IntegrableOn (fun t : ℝ => Real.exp (-(ε * t))) (Ioi a) volume := by
   simpa [neg_mul] using exp_neg_integrableOn_Ioi a hε
 
-theorem integral_exp_neg_mul_Ioi {ε : ℝ} (hε : 0 < ε) (a : ℝ) :
+private theorem integral_exp_neg_mul_Ioi {ε : ℝ} (hε : 0 < ε) (a : ℝ) :
     (∫ t in Ioi a, Real.exp (-(ε * t))) = Real.exp (-(ε * a)) / ε := by
   have hderiv : ∀ t ∈ Ioi a,
       HasDerivAt (fun v : ℝ => -(Real.exp (-(ε * v)) / ε)) (Real.exp (-(ε * t))) t := by

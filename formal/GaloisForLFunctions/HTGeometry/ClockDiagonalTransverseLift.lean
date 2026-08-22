@@ -92,7 +92,7 @@ noncomputable def diagCLM (n : ℕ) : (Fin (n + 4) → ℝ) →L[ℝ] ((ℝ × �
     (diagUnitScale • (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (n + 4) => ℝ) 2
       + ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (n + 4) => ℝ) 3))
 
-theorem diagCLM_apply (x : Fin (n + 4) → ℝ) :
+private theorem diagCLM_apply (x : Fin (n + 4) → ℝ) :
     diagCLM n x = (((x 0 + x 1, x 0 - x 1), diagUnitScale * (x 2 + x 3)) : (ℝ × ℝ) × ℝ) := rfl
 
 /-- The field obtained from a function of the two null coordinates and the transverse diagonal. -/

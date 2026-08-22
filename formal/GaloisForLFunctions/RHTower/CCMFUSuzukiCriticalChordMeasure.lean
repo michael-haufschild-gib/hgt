@@ -580,7 +580,7 @@ theorem hasDerivAt_suzukiShiftedCoefficientComplexFirstJet_zero (n : ℕ) :
     unfold GaloisForLFunctions.HTGeometry.shiftedEulerCoeff
     fun_prop
   have han : AnalyticAt ℂ f 0 :=
-    GaloisForLFunctions.HTGeometry.analyticAt_of_differentiable hdiff 0
+    GaloisForLFunctions.HTGeometry.analyticAt_of_differentiable_univariate hdiff 0
   have hdcomplex : HasDerivAt (deriv f) (iteratedDeriv 2 f 0) 0 := by
     have hraw := han.deriv.differentiableAt.hasDerivAt
     have hiter : iteratedDeriv 2 f 0 = deriv (deriv f) 0 := by
@@ -1812,7 +1812,7 @@ theorem hasDerivAt_suzukiShiftedCoefficientComplexSecondJet_zero (n : ℕ) :
     unfold GaloisForLFunctions.HTGeometry.shiftedEulerCoeff
     fun_prop
   have han : AnalyticAt ℂ f 0 :=
-    GaloisForLFunctions.HTGeometry.analyticAt_of_differentiable hdiff 0
+    GaloisForLFunctions.HTGeometry.analyticAt_of_differentiable_univariate hdiff 0
   have hdcomplex : HasDerivAt (deriv (deriv f)) (iteratedDeriv 3 f 0) 0 := by
     have hraw := han.deriv.deriv.differentiableAt.hasDerivAt
     have hiter : iteratedDeriv 3 f 0 = deriv (deriv (deriv f)) 0 := by
@@ -1880,7 +1880,7 @@ private theorem tendsto_suzukiCriticalChordCoefficient_thirdGrade_of_one_le
         unfold GaloisForLFunctions.HTGeometry.shiftedEulerCoeff
         fun_prop
       have han : AnalyticAt ℂ f (ω : ℂ) :=
-        GaloisForLFunctions.HTGeometry.analyticAt_of_differentiable hdiff (ω : ℂ)
+        GaloisForLFunctions.HTGeometry.analyticAt_of_differentiable_univariate hdiff (ω : ℂ)
       have hdcomplex : HasDerivAt (deriv f) (deriv (deriv f) (ω : ℂ)) (ω : ℂ) :=
         han.deriv.differentiableAt.hasDerivAt
       have hdreal := hdcomplex.comp_ofReal

@@ -16,8 +16,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance haferkampSpecialUnitaryPauliCoordinateMeasureDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance haferkampSpecialUnitaryPauliCoordinateMeasureFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 /-- The actual `SU(4)`-valued Pauli coordinate map is continuous. -/
 theorem continuous_boolNonidentityTwoQubitPauliCoordinateGate :

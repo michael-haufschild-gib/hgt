@@ -18,8 +18,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance haferkampTerminalHybridEuclideanArchitectureMeasureDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance haferkampTerminalHybridEuclideanArchitectureMeasureFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 /-- The actual `SU(4)`-valued terminal-hybrid chart is continuous. -/
 theorem continuous_terminalHybridEuclideanGate

@@ -18,8 +18,10 @@ noncomputable section
 open MeasureTheory
 open scoped Matrix.Norms.L2Operator
 
-local instance : DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
-local instance : Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
+local instance haferkampTerminalHybridEuclideanRightGenericityDecidableEqPauliLabel :
+    DecidableEq boolNonidentityTwoQubitPauliLabel := Classical.decEq _
+local instance haferkampTerminalHybridEuclideanRightGenericityFintypePauliLabel :
+    Fintype boolNonidentityTwoQubitPauliLabel := Fintype.ofFinite _
 
 /-- Reindex every terminal-hybrid gate-coordinate block into one literal
 finite Euclidean source. -/

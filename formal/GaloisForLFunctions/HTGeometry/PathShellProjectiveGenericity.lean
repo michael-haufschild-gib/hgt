@@ -9,7 +9,7 @@ set carries an orthonormal eigenbasis of the path-local Hamiltonian with maximal
 eigenvalues.
 
 Main results:
-* `MaximallyProjectiveEnergy.comp_equiv` — maximal projectivity is a relabelling invariant.
+* `MaximallyProjectiveEnergy.comp_equiv_relabel` — maximal projectivity is a relabelling invariant.
 * `volume_notMaximallyProjective_eq_zero` — one witness makes the property full measure.
 * `pathShellProb_pathBadSphere_eq_zero` — the degenerate path directions are null.
 * `pathEigenBasis`, `isOrthoEigenBasis_pathEigenBasis`, `maximallyProjectiveEnergy_pathEigenValues`
@@ -31,7 +31,7 @@ namespace GaloisForLFunctions.HTGeometry
 set_option linter.unusedSectionVars false
 
 /-- Maximal projectivity does not see a relabelling of the spectrum. -/
-theorem MaximallyProjectiveEnergy.comp_equiv {α β : Type*} [Fintype α] [Fintype β]
+theorem MaximallyProjectiveEnergy.comp_equiv_relabel {α β : Type*} [Fintype α] [Fintype β]
     {mu : β → ℝ} (h : MaximallyProjectiveEnergy mu) (σ : α ≃ β) :
     MaximallyProjectiveEnergy (fun i => mu (σ i)) := by
   intro k hbal hsum
@@ -237,7 +237,7 @@ theorem isOrthoEigenBasis_pathEigenBasis (u : PathShell (k + 1)) :
 theorem maximallyProjectiveEnergy_pathEigenValues {v : sphere (0 : PathShell (k + 1)) 1}
     (hv : v ∉ pathBadSphere k) :
     MaximallyProjectiveEnergy (pathEigenValues k (v : PathShell (k + 1))) :=
-  (not_not.mp hv).comp_equiv (qubitConfigFin (k + 3))
+  (not_not.mp hv).comp_equiv_relabel (qubitConfigFin (k + 3))
 
 /-- **Outside a null set of directions, the path-local Hamiltonian has an orthonormal eigenbasis
 with maximally projective spectrum.** -/
@@ -272,7 +272,7 @@ theorem exists_pathHamiltonian_orthoEigenBasis {v : sphere (0 : PathShell (k + 1
         (pathChainCoeff k (WithLp.ofLp (v : PathShell (k + 1))))).eigenvalues :=
     eigenvalues_congr_of_eq hMherm _ hMdef
   rw [hev]
-  exact hmax.comp_equiv (qubitConfigFin (k + 3))
+  exact hmax.comp_equiv_relabel (qubitConfigFin (k + 3))
 
 
 /-- **Selecting a nondegenerate direction inside a positive-measure sector.** -/

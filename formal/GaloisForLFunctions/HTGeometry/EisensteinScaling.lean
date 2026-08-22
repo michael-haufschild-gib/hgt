@@ -123,7 +123,7 @@ theorem coeffMem_C_pow_mul_defectPoly {A : Subring K} (r : ℕ) {F : Polynomial 
 /-! ## Clearing the first coefficients -/
 
 /-- A single element of `A` clears the denominators of any finite set of coefficients. -/
-theorem exists_common_denominator {A : Subring K}
+private theorem exists_common_denominator {A : Subring K}
     (hfrac : ∀ x : K, ∃ d ∈ A, d ≠ 0 ∧ d * x ∈ A) (y : PowerSeries K) (n : ℕ) :
     ∃ D ∈ A, D ≠ 0 ∧ ∀ N, N < n → D * PowerSeries.coeff N y ∈ A := by
   classical

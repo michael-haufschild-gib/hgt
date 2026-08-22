@@ -188,6 +188,10 @@ def scalarEmbed : ℝ →+* RealOctonion where
 @[simp] theorem scalarEmbed_fst (r : ℝ) : (scalarEmbed r : RealOctonion).1 = r := rfl
 @[simp] theorem scalarEmbed_snd (r : ℝ) : (scalarEmbed r : RealOctonion).2 = 0 := rfl
 
+/-- Cayley--Dickson conjugation fixes the embedded real scalars. -/
+theorem star_scalarEmbed (r : ℝ) : star (scalarEmbed r : RealOctonion) = scalarEmbed r := by
+  apply ext <;> simp [scalarEmbed]
+
 theorem scalarEmbed_mul (r : ℝ) (x : RealOctonion) : scalarEmbed r * x = r • x := by
   apply ext
   · simp [mul_fst, Algebra.smul_def]

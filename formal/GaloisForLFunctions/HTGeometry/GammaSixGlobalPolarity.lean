@@ -58,7 +58,7 @@ theorem poissonMeasure_compl_zero (r : ℝ≥0) :
   rw [ENNReal.ofReal_sub _ (Real.exp_pos _).le]
   simp
 
-theorem one_sub_exp_neg_ge {a : ℝ} (ha : 0 ≤ a) : a / (1 + a) ≤ 1 - Real.exp (-a) := by
+private theorem one_sub_exp_neg_ge {a : ℝ} (ha : 0 ≤ a) : a / (1 + a) ≤ 1 - Real.exp (-a) := by
   have h1 : (0 : ℝ) < 1 + a := by linarith
   have hexp : 1 + a ≤ Real.exp a := by
     simpa [add_comm] using Real.add_one_le_exp a

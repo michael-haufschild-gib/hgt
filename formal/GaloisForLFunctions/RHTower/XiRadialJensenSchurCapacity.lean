@@ -44,7 +44,7 @@ private theorem norm_xiZeroCopyReciprocalSquare_le (q : XiZeroCopy) :
   rw [inv_le_comm₀ hpos (by norm_num)]
   linarith
 
-theorem summable_norm_xiZeroCopyReciprocalSquare :
+private theorem summable_norm_xiZeroCopyReciprocalSquare :
     Summable (fun q : XiZeroCopy => ‖xiZeroCopyReciprocalSquare q‖) := by
   apply summable_norm_xiSpectralPoint_inv_sq.congr
   intro q
@@ -156,7 +156,9 @@ theorem xiReciprocalHermitianMass_sub_curvature :
   have h := xiGlobalReflectionDefectEnergy_eq_mass_sub_source
   linarith
 
-/-- Saturation of the Schur bound by the radial Jensen mass is the Riemann hypothesis. -/
+/-- Deprecated exact alias; use
+`xiReciprocalHermitianMass_eq_primeArchCentralCurvature_iff_rh`. -/
+@[deprecated xiReciprocalHermitianMass_eq_primeArchCentralCurvature_iff_rh (since := "2026-08-22")]
 theorem xiReciprocalHermitianMass_eq_curvature_iff_rh :
     xiReciprocalHermitianMass = primeArchCentralCurvature ↔ RiemannHypothesis :=
   xiReciprocalHermitianMass_eq_primeArchCentralCurvature_iff_rh

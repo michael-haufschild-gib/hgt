@@ -112,7 +112,7 @@ theorem aug_single (u : Fin 1 → E) (r : R) : aug R E (Finsupp.single u r) = r 
 
 omit [AddCommGroup E] [Module ℝ E] in
 /-- The augmentation of a boundary vanishes. -/
-theorem aug_d (c : (Fin 2 → E) →₀ R) :
+private theorem aug_d (c : (Fin 2 → E) →₀ R) :
     aug R E (((affChainComplex R E).d 1 0).hom c) = 0 := by
   have hmap : (aug R E).comp ((affChainComplex R E).d 1 0).hom
       = (0 : ((Fin 2 → E) →₀ R) →ₗ[R] R) := by

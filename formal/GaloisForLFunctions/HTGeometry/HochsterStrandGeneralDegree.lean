@@ -61,7 +61,7 @@ theorem image_eq_insert_image_tail {p : ℕ} (w : Fin (p + 1) → α) :
 
 omit [LinearOrder α] in
 /-- Prepending a vertex outside the image of an injective tuple keeps it injective. -/
-theorem cons_injective {p : ℕ} {w : Fin p → α} {k : α} (hw : Function.Injective w)
+private theorem cons_injective {p : ℕ} {w : Fin p → α} {k : α} (hw : Function.Injective w)
     (hk : k ∉ Finset.image w Finset.univ) :
     Function.Injective (Fin.cons k w : Fin (p + 1) → α) := by
   intro a b hab

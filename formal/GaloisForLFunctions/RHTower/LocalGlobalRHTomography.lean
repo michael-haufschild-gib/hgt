@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ReflectedLambertRHBarrier
+import GaloisForLFunctions.RHTower.PrimeArchThetaAllOrderCumulant
 import GaloisForLFunctions.RHTower.CCMRectangularFullObservableDivisorTomography
 import GaloisForLFunctions.RHTower.CCMPrimeGammaSourceDivisorTomography
 import GaloisForLFunctions.RHTower.CCMCumulativeNegativeMassSpectrum
@@ -37,7 +37,7 @@ theorem localGlobal_two_exact_RH_classifiers
         (xiWeilPolarization
           (xiRectangularTwoEdgeTransform L (Real.log n / 2))
           (xiRectangularTwoEdgeTransform L (Real.log n / 2))).re) := by
-  exact ⟨reflectedLambert_sourceHankel_iff_RH,
+  exact ⟨primeArchSourceTraceHankelIntNonnegative_iff_riemannHypothesis,
     riemannHypothesis_iff_rectangular_logSample_weil_nonneg hL⟩
 
 /-- Deprecated exact alias; use

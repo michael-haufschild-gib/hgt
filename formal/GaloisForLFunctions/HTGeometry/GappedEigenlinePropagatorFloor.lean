@@ -14,7 +14,7 @@ The result is uniform in time, and the time variable does not appear on the righ
 
 namespace HTGeometry
 
-open RHTower
+open RHTower GaloisForLFunctions.HTGeometry
 
 noncomputable section
 

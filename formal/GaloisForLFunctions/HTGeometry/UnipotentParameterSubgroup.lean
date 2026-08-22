@@ -102,7 +102,7 @@ theorem differentialJet_one (n : ℕ) :
   | succ n ih => rw [differentialJet_succ, ih, map_zero]
 
 omit [CharZero U] in
-theorem differentialJet_zero_elt (n : ℕ) : differentialJet n (0 : U) = 0 :=
+private theorem differentialJet_zero_elt (n : ℕ) : differentialJet n (0 : U) = 0 :=
   differentialJet_apply_zero n
 
 omit [CharZero U] in

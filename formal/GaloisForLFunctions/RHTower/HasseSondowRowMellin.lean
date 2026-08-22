@@ -41,7 +41,7 @@ theorem hasseKernel_eq_sum (n : ℕ) (t : ℝ) :
     ← Real.exp_nat_mul]
   ring
 
-theorem mellin_exp_neg_mul {s : ℂ} (hs : 0 < s.re) {a : ℝ} (ha : 0 < a) :
+private theorem mellin_exp_neg_mul {s : ℂ} (hs : 0 < s.re) {a : ℝ} (ha : 0 < a) :
     mellin (fun t : ℝ => ((Real.exp (-(a * t)) : ℝ) : ℂ)) s
       = ((a : ℂ)) ^ (-s) * Complex.Gamma s := by
   have hbase : mellin (fun t : ℝ => ((Real.exp (-t) : ℝ) : ℂ)) s = Complex.Gamma s := by

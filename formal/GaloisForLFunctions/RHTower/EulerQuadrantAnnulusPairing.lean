@@ -112,7 +112,7 @@ def eulerQuadrantLaplace (z w : ℝ) (N : ℕ) : ℝ :=
 /-! ## The Laplace transform is the divided difference of the Euler logarithm -/
 
 /-- A prime power in exponential coordinates. -/
-theorem exp_neg_mul_log_eq_rpow {p : ℕ} (hp : p.Prime) (σ m : ℝ) :
+private theorem exp_neg_mul_log_eq_rpow {p : ℕ} (hp : p.Prime) (σ m : ℝ) :
     Real.exp (-(σ * (m * Real.log (p : ℝ)))) = (p : ℝ) ^ (-σ * m) := by
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
   rw [Real.rpow_def_of_pos hp0]

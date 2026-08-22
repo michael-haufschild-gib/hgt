@@ -63,7 +63,7 @@ def electroweakHiggsMechanism : HiggsMechanism ElectroweakGaugeGroup EventQuater
   vacuum_zero := quaternionHiggsPotential_vacuum
   potential_nonneg := quaternionHiggsPotential_nonneg
 
-def circleQuaternion (z : Circle) : QuaternionGaugeGroup := by
+private def circleQuaternion (z : Circle) : QuaternionGaugeGroup := by
   have hsq : Quaternion.normSq (((z : ℂ) : EventQuaternion)) = 1 :=
     quaternionNormSq_coeCircle z
   have hnorm : ‖(((z : ℂ) : EventQuaternion))‖ = 1 := by

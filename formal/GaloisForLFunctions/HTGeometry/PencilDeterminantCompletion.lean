@@ -304,7 +304,7 @@ theorem pencilGraphClosure_subset_pencilCompletionFibre {p d : ℕ} (hp : 0 < p)
 
 
 /-- A homogeneous polynomial scales like a power under dilation of the argument. -/
-theorem eval_smul_of_isHomogeneous {d n : ℕ} {φ : MvPolynomial (Fin d) ℂ}
+private theorem eval_smul_of_isHomogeneous {d n : ℕ} {φ : MvPolynomial (Fin d) ℂ}
     (h : φ.IsHomogeneous n) (z : ℂ) (v : Fin d → ℂ) :
     MvPolynomial.eval (fun i => z * v i) φ = z ^ n * MvPolynomial.eval v φ := by
   classical

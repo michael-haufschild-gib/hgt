@@ -169,11 +169,11 @@ theorem integral_expNegDiv_Ioi_small {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1)
 /-! ## The Gauss kernel and its integral -/
 
 /-- The integrand `e^{-t}/t - e^{-t}/(1 - e^{-t})` of Gauss's representation at `s = 1`. -/
-def gaussKernel (t : ℝ) : ℝ :=
+def eulerMascheroniIntegrand (t : ℝ) : ℝ :=
   Real.exp (-t) / t - Real.exp (-t) / (1 - Real.exp (-t))
 
-theorem abs_gaussKernel_le {t : ℝ} (ht : 0 < t) (ht1 : t ≤ 1) :
-    |gaussKernel t| ≤ Real.exp 1 := by
+theorem abs_eulerMascheroniIntegrand_le {t : ℝ} (ht : 0 < t) (ht1 : t ≤ 1) :
+    |eulerMascheroniIntegrand t| ≤ Real.exp 1 := by
   have hpos : 0 < 1 - Real.exp (-t) := one_sub_exp_neg_pos ht
   have hlow : t * Real.exp (-t) ≤ 1 - Real.exp (-t) := exp_neg_le_one_sub_exp_neg_div t
   have hexp1 : Real.exp (-1 : ℝ) ≤ Real.exp (-t) := Real.exp_le_exp.mpr (by linarith)
@@ -186,9 +186,9 @@ theorem abs_gaussKernel_le {t : ℝ} (ht : 0 < t) (ht1 : t ≤ 1) :
     have heq : Real.exp (-t) - 1 - -t = -(1 - Real.exp (-t) - t) := by ring
     rw [heq, abs_neg] at h
     simpa using h
-  have hfactor : gaussKernel t
+  have hfactor : eulerMascheroniIntegrand t
       = Real.exp (-t) * (1 - Real.exp (-t) - t) / (t * (1 - Real.exp (-t))) := by
-    rw [gaussKernel]
+    rw [eulerMascheroniIntegrand]
     field_simp
   rw [hfactor, abs_div, abs_mul]
   have hden : |t * (1 - Real.exp (-t))| = t * (1 - Real.exp (-t)) :=
@@ -212,7 +212,7 @@ theorem abs_gaussKernel_le {t : ℝ} (ht : 0 < t) (ht1 : t ≤ 1) :
       (le_of_lt (mul_pos (Real.exp_pos (1 : ℝ)) ht))]
   linarith
 
-theorem continuousOn_gaussKernel : ContinuousOn gaussKernel (Ioi 0) := by
+theorem continuousOn_eulerMascheroniIntegrand : ContinuousOn eulerMascheroniIntegrand (Ioi 0) := by
   intro t ht
   have ht0 : 0 < t := ht
   have hpos : 0 < 1 - Real.exp (-t) := one_sub_exp_neg_pos ht0
@@ -221,23 +221,23 @@ theorem continuousOn_gaussKernel : ContinuousOn gaussKernel (Ioi 0) := by
   · exact ContinuousAt.div (by fun_prop) continuousAt_id (ne_of_gt ht0)
   · exact ContinuousAt.div (by fun_prop) (by fun_prop) (ne_of_gt hpos)
 
-theorem integrableOn_gaussKernel_Ioc :
-    IntegrableOn gaussKernel (Ioc (0 : ℝ) 1) volume := by
-  have hmeas : AEStronglyMeasurable gaussKernel (volume.restrict (Ioc (0 : ℝ) 1)) := by
+theorem integrableOn_eulerMascheroniIntegrand_Ioc :
+    IntegrableOn eulerMascheroniIntegrand (Ioc (0 : ℝ) 1) volume := by
+  have hmeas : AEStronglyMeasurable eulerMascheroniIntegrand (volume.restrict (Ioc (0 : ℝ) 1)) := by
     refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioc
-    exact continuousOn_gaussKernel.mono (fun t ht => ht.1)
+    exact continuousOn_eulerMascheroniIntegrand.mono (fun t ht => ht.1)
   have hconst : IntegrableOn (fun _ : ℝ => Real.exp 1) (Ioc (0 : ℝ) 1) volume :=
     continuous_const.integrableOn_Ioc
   refine hconst.mono' hmeas ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
   rw [Real.norm_eq_abs]
-  exact abs_gaussKernel_le ht.1 ht.2
+  exact abs_eulerMascheroniIntegrand_le ht.1 ht.2
 
-theorem integrableOn_gaussKernel_Ioi_one :
-    IntegrableOn gaussKernel (Ioi (1 : ℝ)) volume := by
-  have hmeas : AEStronglyMeasurable gaussKernel (volume.restrict (Ioi (1 : ℝ))) := by
+theorem integrableOn_eulerMascheroniIntegrand_Ioi_one :
+    IntegrableOn eulerMascheroniIntegrand (Ioi (1 : ℝ)) volume := by
+  have hmeas : AEStronglyMeasurable eulerMascheroniIntegrand (volume.restrict (Ioi (1 : ℝ))) := by
     refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioi
-    exact continuousOn_gaussKernel.mono (Set.Ioi_subset_Ioi zero_le_one)
+    exact continuousOn_eulerMascheroniIntegrand.mono (Set.Ioi_subset_Ioi zero_le_one)
   have hexpInt : IntegrableOn (fun t : ℝ => (1 + (1 - Real.exp (-1 : ℝ))⁻¹) * Real.exp (-t))
       (Ioi (1 : ℝ)) volume := by
     have h : IntegrableOn (fun t : ℝ => Real.exp (-t)) (Ioi (1 : ℝ)) volume :=
@@ -253,7 +253,7 @@ theorem integrableOn_gaussKernel_Ioi_one :
     linarith
   have hpos1 : 0 < 1 - Real.exp (-1 : ℝ) := one_sub_exp_neg_pos zero_lt_one
   have hexppos : 0 < Real.exp (-t) := Real.exp_pos _
-  rw [Real.norm_eq_abs, gaussKernel]
+  rw [Real.norm_eq_abs, eulerMascheroniIntegrand]
   have h1 : |Real.exp (-t) / t| ≤ Real.exp (-t) := by
     rw [abs_of_nonneg (by positivity), div_le_iff₀ ht0]
     nlinarith
@@ -271,17 +271,17 @@ theorem integrableOn_gaussKernel_Ioi_one :
     _ ≤ Real.exp (-t) + (1 - Real.exp (-1 : ℝ))⁻¹ * Real.exp (-t) := by linarith
     _ = (1 + (1 - Real.exp (-1 : ℝ))⁻¹) * Real.exp (-t) := by ring
 
-theorem integrableOn_gaussKernel : IntegrableOn gaussKernel (Ioi (0 : ℝ)) volume := by
+theorem integrableOn_eulerMascheroniIntegrand : IntegrableOn eulerMascheroniIntegrand (Ioi (0 : ℝ)) volume := by
   have hsplit : Ioc (0 : ℝ) 1 ∪ Ioi (1 : ℝ) = Ioi (0 : ℝ) :=
     Set.Ioc_union_Ioi_eq_Ioi (le_of_lt zero_lt_one)
   rw [← hsplit]
-  exact integrableOn_gaussKernel_Ioc.union integrableOn_gaussKernel_Ioi_one
+  exact integrableOn_eulerMascheroniIntegrand_Ioc.union integrableOn_eulerMascheroniIntegrand_Ioi_one
 
 
 /-! ## The truncated integral and its limit -/
 
-theorem integral_gaussKernel_Ioi_eq {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) :
-    (∫ t in Ioi ε, gaussKernel t)
+theorem integral_eulerMascheroniIntegrand_Ioi_eq {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) :
+    (∫ t in Ioi ε, eulerMascheroniIntegrand t)
       = -Real.eulerMascheroniConstant + ein ε
           + Real.log (1 - Real.exp (-ε)) - Real.log ε := by
   have h1 : IntegrableOn (fun t : ℝ => Real.exp (-t) / t) (Ioi ε) volume := by
@@ -324,7 +324,7 @@ theorem integral_gaussKernel_Ioi_eq {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) 
     calc Real.exp (-t) = (1 - Real.exp (-ε))⁻¹ * Real.exp (-t) * (1 - Real.exp (-ε)) := by
           field_simp
       _ ≤ _ := hstep
-  have hsub : (∫ t in Ioi ε, gaussKernel t)
+  have hsub : (∫ t in Ioi ε, eulerMascheroniIntegrand t)
       = (∫ t in Ioi ε, Real.exp (-t) / t)
         - ∫ t in Ioi ε, Real.exp (-t) / (1 - Real.exp (-t)) := by
     rw [← MeasureTheory.integral_sub h1 h2]
@@ -332,15 +332,15 @@ theorem integral_gaussKernel_Ioi_eq {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) 
   rw [hsub, integral_expNegDiv_Ioi_small hε hε1, integral_geometricGaussKernel_Ioi hε]
   ring
 
-theorem norm_integral_gaussKernel_Ioc {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) :
-    |∫ t in Ioc (0 : ℝ) ε, gaussKernel t| ≤ Real.exp 1 * ε := by
+theorem norm_integral_eulerMascheroniIntegrand_Ioc {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) :
+    |∫ t in Ioc (0 : ℝ) ε, eulerMascheroniIntegrand t| ≤ Real.exp 1 * ε := by
   have hfin : volume (Ioc (0 : ℝ) ε) < ⊤ := by
     rw [Real.volume_Ioc]
     exact ENNReal.ofReal_lt_top
-  have hbd : ∀ t ∈ Ioc (0 : ℝ) ε, ‖gaussKernel t‖ ≤ Real.exp 1 := by
+  have hbd : ∀ t ∈ Ioc (0 : ℝ) ε, ‖eulerMascheroniIntegrand t‖ ≤ Real.exp 1 := by
     intro t ht
     rw [Real.norm_eq_abs]
-    exact abs_gaussKernel_le ht.1 (le_trans ht.2 hε1)
+    exact abs_eulerMascheroniIntegrand_le ht.1 (le_trans ht.2 hε1)
   have h := MeasureTheory.norm_setIntegral_le_of_norm_le_const hfin hbd
   rw [Real.norm_eq_abs] at h
   have hmeas : (volume : Measure ℝ).real (Ioc (0 : ℝ) ε) = ε := by
@@ -350,28 +350,28 @@ theorem norm_integral_gaussKernel_Ioc {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1
 
 /-- **Gauss's representation of the Euler–Mascheroni constant.**
 `∫_0^∞ ( e^{-t}/t - e^{-t}/(1-e^{-t}) ) dt = -γ`. -/
-theorem integral_gaussKernel :
-    (∫ t in Ioi (0 : ℝ), gaussKernel t) = -Real.eulerMascheroniConstant := by
+theorem integral_eulerMascheroniIntegrand :
+    (∫ t in Ioi (0 : ℝ), eulerMascheroniIntegrand t) = -Real.eulerMascheroniConstant := by
   have hsmall : ∀ᶠ ε in nhdsWithin (0 : ℝ) (Ioi 0), ε ≤ 1 :=
     Filter.eventually_of_mem
       (mem_nhdsWithin_of_mem_nhds (Iic_mem_nhds (by norm_num))) (fun x hx => hx)
   -- the truncated integral converges to the full one
-  have hlim1 : Tendsto (fun ε : ℝ => ∫ t in Ioi ε, gaussKernel t)
-      (nhdsWithin 0 (Ioi 0)) (nhds (∫ t in Ioi (0 : ℝ), gaussKernel t)) := by
+  have hlim1 : Tendsto (fun ε : ℝ => ∫ t in Ioi ε, eulerMascheroniIntegrand t)
+      (nhdsWithin 0 (Ioi 0)) (nhds (∫ t in Ioi (0 : ℝ), eulerMascheroniIntegrand t)) := by
     have hdiff : ∀ ε : ℝ, 0 < ε → ε ≤ 1 →
-        (∫ t in Ioi (0 : ℝ), gaussKernel t) - (∫ t in Ioi ε, gaussKernel t)
-          = ∫ t in Ioc (0 : ℝ) ε, gaussKernel t := by
+        (∫ t in Ioi (0 : ℝ), eulerMascheroniIntegrand t) - (∫ t in Ioi ε, eulerMascheroniIntegrand t)
+          = ∫ t in Ioc (0 : ℝ) ε, eulerMascheroniIntegrand t := by
       intro ε hε hε1
       have hsplit : Ioc (0 : ℝ) ε ∪ Ioi ε = Ioi (0 : ℝ) := Set.Ioc_union_Ioi_eq_Ioi (le_of_lt hε)
       have hdisj : Disjoint (Ioc (0 : ℝ) ε) (Ioi ε) := by
         rw [Set.disjoint_left]
         intro x hx hx'
         exact absurd hx' (not_lt.mpr hx.2)
-      have hIoc : IntegrableOn gaussKernel (Ioc (0 : ℝ) ε) volume :=
-        integrableOn_gaussKernel.mono_set (fun t ht => ht.1)
-      have hIoi : IntegrableOn gaussKernel (Ioi ε) volume :=
-        integrableOn_gaussKernel.mono_set (Set.Ioi_subset_Ioi (le_of_lt hε))
-      have hunion := MeasureTheory.setIntegral_union (μ := volume) (f := gaussKernel)
+      have hIoc : IntegrableOn eulerMascheroniIntegrand (Ioc (0 : ℝ) ε) volume :=
+        integrableOn_eulerMascheroniIntegrand.mono_set (fun t ht => ht.1)
+      have hIoi : IntegrableOn eulerMascheroniIntegrand (Ioi ε) volume :=
+        integrableOn_eulerMascheroniIntegrand.mono_set (Set.Ioi_subset_Ioi (le_of_lt hε))
+      have hunion := MeasureTheory.setIntegral_union (μ := volume) (f := eulerMascheroniIntegrand)
         hdisj measurableSet_Ioi hIoc hIoi
       rw [hsplit] at hunion
       rw [hunion]
@@ -381,13 +381,13 @@ theorem integral_gaussKernel :
         tendsto_id.mono_left nhdsWithin_le_nhds
       simpa using h0.const_mul (Real.exp 1)
     have hsq : Tendsto (fun ε : ℝ =>
-        (∫ t in Ioi (0 : ℝ), gaussKernel t) - (∫ t in Ioi ε, gaussKernel t))
+        (∫ t in Ioi (0 : ℝ), eulerMascheroniIntegrand t) - (∫ t in Ioi ε, eulerMascheroniIntegrand t))
         (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
       refine squeeze_zero_norm' (a := fun ε : ℝ => Real.exp 1 * ε) ?_ hbound
       filter_upwards [self_mem_nhdsWithin, hsmall] with ε hε hε1
       rw [hdiff ε hε hε1, Real.norm_eq_abs]
-      exact norm_integral_gaussKernel_Ioc hε hε1
-    have := (tendsto_const_nhds (x := ∫ t in Ioi (0 : ℝ), gaussKernel t)
+      exact norm_integral_eulerMascheroniIntegrand_Ioc hε hε1
+    have := (tendsto_const_nhds (x := ∫ t in Ioi (0 : ℝ), eulerMascheroniIntegrand t)
       (f := nhdsWithin (0 : ℝ) (Ioi 0))).sub hsq
     simpa using this
   -- and to `-γ`
@@ -412,7 +412,7 @@ theorem integral_gaussKernel :
     refine hcomp.congr' ?_
     filter_upwards [self_mem_nhdsWithin] with ε hε
     rw [Real.log_div (ne_of_gt (one_sub_exp_neg_pos hε)) (ne_of_gt hε)]
-  have hlim2 : Tendsto (fun ε : ℝ => ∫ t in Ioi ε, gaussKernel t)
+  have hlim2 : Tendsto (fun ε : ℝ => ∫ t in Ioi ε, eulerMascheroniIntegrand t)
       (nhdsWithin 0 (Ioi 0)) (nhds (-Real.eulerMascheroniConstant)) := by
     have hbase : Tendsto (fun ε : ℝ => -Real.eulerMascheroniConstant + ein ε
         + (Real.log (1 - Real.exp (-ε)) - Real.log ε))
@@ -422,7 +422,7 @@ theorem integral_gaussKernel :
       simpa using this
     refine hbase.congr' ?_
     filter_upwards [self_mem_nhdsWithin, hsmall] with ε hε hε1
-    rw [integral_gaussKernel_Ioi_eq hε hε1]
+    rw [integral_eulerMascheroniIntegrand_Ioi_eq hε hε1]
     ring
   exact tendsto_nhds_unique hlim1 hlim2
 

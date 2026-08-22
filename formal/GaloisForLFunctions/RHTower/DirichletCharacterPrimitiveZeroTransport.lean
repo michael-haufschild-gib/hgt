@@ -29,7 +29,8 @@ structure CGLPositiveModulusDivisor (n : ℕ) where
   divides : value ∣ n + 1
   positive : 0 < value
 
-instance (n : ℕ) (d : CGLPositiveModulusDivisor n) : NeZero d.value :=
+instance cglPositiveModulusDivisor_neZero (n : ℕ) (d : CGLPositiveModulusDivisor n) :
+    NeZero d.value :=
   ⟨Nat.ne_of_gt d.positive⟩
 
 /-- A nonprincipal primitive-conductor critical-strip zero together with its

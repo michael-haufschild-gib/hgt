@@ -361,10 +361,10 @@ def digammaGaussIntegrand (s : ℂ) (t : ℝ) : ℂ :=
     - Complex.exp (-s * (t : ℂ)) / (1 - Complex.exp (-(t : ℂ)))
 
 theorem digammaGaussIntegrand_eq (s : ℂ) {t : ℝ} (ht : 0 < t) :
-    digammaGaussIntegrand s t = ((gaussKernel t : ℝ) : ℂ) + gaussLaplaceKernel s t := by
+    digammaGaussIntegrand s t = ((eulerMascheroniIntegrand t : ℝ) : ℂ) + gaussLaplaceKernel s t := by
   have hden : (1 : ℂ) - Complex.exp (-(t : ℂ)) ≠ 0 := one_sub_exp_neg_ofReal_ne_zero ht
   have hdenR : (1 : ℝ) - Real.exp (-t) ≠ 0 := ne_of_gt (one_sub_exp_neg_pos ht)
-  rw [digammaGaussIntegrand, gaussKernel, gaussLaplaceKernel, one_sub_exp_neg_ofReal_eq,
+  rw [digammaGaussIntegrand, eulerMascheroniIntegrand, gaussLaplaceKernel, one_sub_exp_neg_ofReal_eq,
     exp_neg_ofReal_eq]
   push_cast
   field_simp
@@ -374,21 +374,21 @@ theorem digammaGaussIntegrand_eq (s : ℂ) {t : ℝ} (ht : 0 < t) :
 `ψ(s) = ∫_0^∞ ( e^{-u}/u - e^{-su}/(1 - e^{-u}) ) du`. -/
 theorem digamma_eq_integral_gauss {s : ℂ} (hs : 0 < s.re) :
     Complex.digamma s = ∫ t in Ioi (0 : ℝ), digammaGaussIntegrand s t := by
-  have hgauss : IntegrableOn (fun t : ℝ => ((gaussKernel t : ℝ) : ℂ)) (Ioi (0 : ℝ)) volume := by
-    have := integrableOn_gaussKernel
+  have hgauss : IntegrableOn (fun t : ℝ => ((eulerMascheroniIntegrand t : ℝ) : ℂ)) (Ioi (0 : ℝ)) volume := by
+    have := integrableOn_eulerMascheroniIntegrand
     exact (Complex.ofRealCLM.integrable_comp this)
   have hlap := integrableOn_gaussLaplaceKernel hs
   have hcongr : (∫ t in Ioi (0 : ℝ), digammaGaussIntegrand s t)
       = ∫ t in Ioi (0 : ℝ),
-          (((gaussKernel t : ℝ) : ℂ) + gaussLaplaceKernel s t) := by
+          (((eulerMascheroniIntegrand t : ℝ) : ℂ) + gaussLaplaceKernel s t) := by
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
     intro t ht
     exact digammaGaussIntegrand_eq s ht
   rw [hcongr, MeasureTheory.integral_add hgauss hlap,
     integral_gaussLaplaceKernel_eq_tsum hs]
-  have hreal : (∫ t in Ioi (0 : ℝ), ((gaussKernel t : ℝ) : ℂ))
+  have hreal : (∫ t in Ioi (0 : ℝ), ((eulerMascheroniIntegrand t : ℝ) : ℂ))
       = ((-Real.eulerMascheroniConstant : ℝ) : ℂ) := by
-    rw [_root_.integral_complex_ofReal, integral_gaussKernel]
+    rw [_root_.integral_complex_ofReal, integral_eulerMascheroniIntegrand]
   rw [hreal, digamma_eq_neg_euler_add_tsum_gauss hs]
   push_cast
   ring
@@ -396,8 +396,8 @@ theorem digamma_eq_integral_gauss {s : ℂ} (hs : 0 < s.re) :
 
 theorem integrableOn_digammaGaussIntegrand {s : ℂ} (hs : 0 < s.re) :
     IntegrableOn (digammaGaussIntegrand s) (Ioi (0 : ℝ)) volume := by
-  have hgauss : IntegrableOn (fun t : ℝ => ((gaussKernel t : ℝ) : ℂ)) (Ioi (0 : ℝ)) volume :=
-    Complex.ofRealCLM.integrable_comp integrableOn_gaussKernel
+  have hgauss : IntegrableOn (fun t : ℝ => ((eulerMascheroniIntegrand t : ℝ) : ℂ)) (Ioi (0 : ℝ)) volume :=
+    Complex.ofRealCLM.integrable_comp integrableOn_eulerMascheroniIntegrand
   have hlap := integrableOn_gaussLaplaceKernel hs
   refine (hgauss.add hlap).congr_fun ?_ measurableSet_Ioi
   intro t ht
@@ -414,7 +414,7 @@ theorem div_ofReal_re (w : ℂ) (r : ℝ) : (w / ((r : ℝ) : ℂ)).re = w.re / 
 `∫_0^∞ ( e^{-u/4} cos(zu/2)/(1 - e^{-u}) - e^{-u}/u ) du = - Re ψ(1/4 + iz/2)`.
 This is the identity Suzuki uses to evaluate the Fourier transform of the smooth remainder in the
 origin expansion of the screw function. -/
-theorem integral_archimedean_gaussKernel (z : ℝ) :
+theorem integral_archimedean_eulerMascheroniIntegrand (z : ℝ) :
     (∫ u in Ioi (0 : ℝ),
         (Real.exp (-u / 4) * Real.cos (z * u / 2) / (1 - Real.exp (-u))
           - Real.exp (-u) / u))
@@ -505,7 +505,7 @@ theorem integrableOn_suzukiArchKernel (z : ℝ) :
 theorem integral_suzukiArchKernel (z : ℝ) :
     (∫ u in Ioi (0 : ℝ), suzukiArchKernel z u)
       = -(Complex.digamma (1 / 4 + ((z / 2 : ℝ) : ℂ) * Complex.I)).re := by
-  have h := integral_archimedean_gaussKernel z
+  have h := integral_archimedean_eulerMascheroniIntegrand z
   rw [← h]
   refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
   intro u hu

@@ -28,7 +28,7 @@
 | Lemma 6.3; Theorems 6.4--6.7, 6.10--6.13 | Pull-back/push-forward spectra and topology | pending |
 | Lemma 7.6; Theorems 7.7--7.8, 7.12, 7.14--7.15, 7.18 | Riesz--Dunford integral functional calculi | pending |
 | Lemma 8.1; Propositions 8.2--8.3 | Power-associativity criteria for operators | pending |
-| Lemmas 8.4--8.6; Theorems 8.7--8.8 | One-dimensional left-multiplication example | Lemmas 8.4 and 8.6 formalized; Lemma 8.5's exact global invertibility classification formalized, while its displayed determinant factors remain pending; Theorems 8.7--8.8 pending |
+| Lemmas 8.4--8.6; Theorems 8.7--8.8 | One-dimensional left-multiplication example | Lemmas 8.4--8.6 formalized, including 8.6 equations (8.7)--(8.8); Lemma 8.5's exact global invertibility classification formalized, while its displayed determinant factors remain pending; Theorems 8.7--8.8 pending |
 | Proposition 9.1; Lemma 9.2; Theorems 9.4--9.6 | Spectral mapping and composition | pending |
 
 ## Completed foundation
@@ -39,6 +39,7 @@
 - `HTGeometry/Octonion/Artin.lean` and `HTGeometry/Octonion/GeneratedSubalgebra.lean`: word-level Artin theorem, its real-linear/multiplicative subalgebra lift, and Lemma 8.4 equation (8.6), pointwise and subtype-operator forms.  The completed card is `pipeline/3-formalized/not_new_scientific_knowledge/octonionic-riesz-dunford-2605-07183-lemma-8-4.md`.
 - `HTGeometry/Octonion/RestrictedInverse.lean` and `HTGeometry/Octonion/Conjugacy.lean`: the two-sided restricted inverse formula of Lemma 8.6 equation (8.7).  `Conjugacy.lean` proves `Q_s(q)=0 ↔ s∈[q]` for the source-faithful sphere (equal real part and imaginary norm), discharging the paper condition `s∉[q]` without any additional assumption.
 - `HTGeometry/Octonion/Sylvester.lean`: Lemma 8.5's exact global real-linear classification, `Function.Bijective (R_s-L_q) ↔ s∉[q]`, and coordinate-free determinant zero locus, `LinearMap.det (R_s-L_q)=0 ↔ s∈[q]`.  Its sphere-side witness is constructive, including the antipodal case; its off-sphere direction is derived inside the appropriate Artin subalgebra.  The paper's precise determinant factorization is not yet formalized.
+- `HTGeometry/Octonion/ComplexSlice.lean` and `HTGeometry/Octonion/SliceResolvent.lean`: a concrete associative complex-slice carrier, its commutativity law, and Lemma 8.6 equation (8.8).  The latter proves the exact displayed formula on every `C_J` element, including the real-parameter branch where `C_J` is not necessarily contained in the two-generator algebra; `resolventDifference_eq_sliceFormula_iff` additionally gives its unique-preimage form from the global Lemma 8.5 classification.
 
 ## Next closed target
 

@@ -82,7 +82,7 @@ theorem norm_cayleyQuotient_add_one_le {m : ℂ} (hm : ‖m‖ ≤ 1 / 2) :
   nlinarith [norm_nonneg m, hden]
 
 /-- Exponentiating a perturbation of size at most one costs at most a factor two. -/
-theorem norm_exp_sub_exp_le {a b : ℂ} (hb : b.re ≤ 0) (h : ‖a - b‖ ≤ 1) :
+private theorem norm_exp_sub_exp_le {a b : ℂ} (hb : b.re ≤ 0) (h : ‖a - b‖ ≤ 1) :
     ‖Complex.exp a - Complex.exp b‖ ≤ 2 * ‖a - b‖ := by
   have hfac : Complex.exp a - Complex.exp b
       = Complex.exp b * (Complex.exp (a - b) - 1) := by

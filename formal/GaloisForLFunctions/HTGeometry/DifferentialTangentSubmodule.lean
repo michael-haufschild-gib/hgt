@@ -33,7 +33,7 @@ theorem differentialJet_eq_zero_zero (n : ℕ) : differentialJet n (0 : C) = 0 :
   | succ n ih => rw [differentialJet_succ, ih, map_zero]
 
 /-- **Jets are linear over the differential constants.** -/
-theorem differentialJet_const_mul {c : C} (hc : c′ = 0) (x : C) :
+private theorem differentialJet_const_mul {c : C} (hc : c′ = 0) (x : C) :
     ∀ n : ℕ, differentialJet n (c * x) = c * differentialJet n x
   | 0 => by rw [differentialJet_zero, differentialJet_zero]
   | (n + 1) => by

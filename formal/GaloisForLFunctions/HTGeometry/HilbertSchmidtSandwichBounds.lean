@@ -25,7 +25,7 @@ variable {𝕜 E F G : Type*} [RCLike 𝕜]
 
 omit [CompleteSpace F] [CompleteSpace G] in
 /-- **Upper bound for a left composition.** -/
-theorem hsNormSq_comp_left_le {S : F →L[𝕜] G} {Y : E →L[𝕜] F} (hY : IsHilbertSchmidt Y)
+theorem hsNormSq_comp_left_le_of_bound {S : F →L[𝕜] G} {Y : E →L[𝕜] F} (hY : IsHilbertSchmidt Y)
     {C : ℝ} (hC : ∀ y : F, ‖S y‖ ^ 2 ≤ C * ‖y‖ ^ 2) :
     hsNormSq (S ∘L Y) ≤ C * hsNormSq Y := by
   have hsum1 : Summable (fun i => ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ 2) := hY.comp_left S
@@ -50,14 +50,14 @@ theorem le_hsNormSq_comp_left {S : F →L[𝕜] G} {Y : E →L[𝕜] F} (hY : Is
     _ = hsNormSq (S ∘L Y) := rfl
 
 /-- **Upper bound for a right composition**, via adjoints. -/
-theorem hsNormSq_comp_right_le {Y : F →L[𝕜] G} {T : E →L[𝕜] F} (hY : IsHilbertSchmidt Y)
+theorem hsNormSq_comp_right_le_of_bound {Y : F →L[𝕜] G} {T : E →L[𝕜] F} (hY : IsHilbertSchmidt Y)
     {C : ℝ} (hC : ∀ y : F, ‖adjoint T y‖ ^ 2 ≤ C * ‖y‖ ^ 2) :
     hsNormSq (Y ∘L T) ≤ C * hsNormSq Y := by
   have hYT : IsHilbertSchmidt (Y ∘L T) := hY.comp_right T
   have hadj : hsNormSq (Y ∘L T) = hsNormSq (adjoint T ∘L adjoint Y) := by
     rw [← hYT.hsNormSq_adjoint, adjoint_comp]
   rw [hadj, ← hY.hsNormSq_adjoint]
-  exact hsNormSq_comp_left_le hY.adjoint hC
+  exact hsNormSq_comp_left_le_of_bound hY.adjoint hC
 
 /-- **Lower bound for a right composition**, via adjoints. -/
 theorem le_hsNormSq_comp_right {Y : F →L[𝕜] G} {T : E →L[𝕜] F} (hY : IsHilbertSchmidt Y)
@@ -74,12 +74,12 @@ theorem hsNormSq_sandwich_le {S T Y : E →L[𝕜] E} (hY : IsHilbertSchmidt Y) 
     hsNormSq (S ∘L (Y ∘L T)) ≤ (‖S‖ ^ 2 * ‖T‖ ^ 2) * hsNormSq Y := by
   have hYT : IsHilbertSchmidt (Y ∘L T) := hY.comp_right T
   have h1 : hsNormSq (S ∘L (Y ∘L T)) ≤ ‖S‖ ^ 2 * hsNormSq (Y ∘L T) :=
-    hsNormSq_comp_left_le hYT (fun v => by
+    hsNormSq_comp_left_le_of_bound hYT (fun v => by
       calc ‖S v‖ ^ 2 ≤ (‖S‖ * ‖v‖) ^ 2 := by
             gcongr; exact S.le_opNorm v
         _ = ‖S‖ ^ 2 * ‖v‖ ^ 2 := by ring)
   have h2 : hsNormSq (Y ∘L T) ≤ ‖T‖ ^ 2 * hsNormSq Y :=
-    hsNormSq_comp_right_le hY (fun v => by
+    hsNormSq_comp_right_le_of_bound hY (fun v => by
       calc ‖adjoint T v‖ ^ 2 ≤ (‖adjoint T‖ * ‖v‖) ^ 2 := by
             gcongr; exact (adjoint T).le_opNorm v
         _ = ‖T‖ ^ 2 * ‖v‖ ^ 2 := by rw [adjoint.norm_map]; ring)
@@ -114,9 +114,9 @@ theorem hsNormSq_sandwich_bounds {S T Y : E →L[𝕜] E} (hY : IsHilbertSchmidt
       _ ≤ c * hsNormSq (Y ∘L T) :=
           mul_le_mul_of_nonneg_left (le_hsNormSq_comp_right hY hd) hc0
       _ ≤ hsNormSq (S ∘L (Y ∘L T)) := le_hsNormSq_comp_left hYT hc
-  · calc hsNormSq (S ∘L (Y ∘L T)) ≤ C * hsNormSq (Y ∘L T) := hsNormSq_comp_left_le hYT hC
+  · calc hsNormSq (S ∘L (Y ∘L T)) ≤ C * hsNormSq (Y ∘L T) := hsNormSq_comp_left_le_of_bound hYT hC
       _ ≤ C * (D * hsNormSq Y) :=
-          mul_le_mul_of_nonneg_left (hsNormSq_comp_right_le hY hD) hC0
+          mul_le_mul_of_nonneg_left (hsNormSq_comp_right_le_of_bound hY hD) hC0
       _ = (C * D) * hsNormSq Y := by ring
 
 end ContinuousLinearMap
