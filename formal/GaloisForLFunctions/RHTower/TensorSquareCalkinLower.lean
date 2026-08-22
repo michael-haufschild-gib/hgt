@@ -26,6 +26,22 @@ namespace RHTower
 open Filter Topology UniformSpace
 open scoped BigOperators TensorProduct
 
+/-- The uniform-`ℂ`-action instance on a Hilbert tensor product.  Stated as a lemma so that
+concrete carriers can obtain it without a deep instance search. -/
+theorem tensorProduct_uniformContinuousConstSMul {E F : Type*} [NormedAddCommGroup E]
+    [InnerProductSpace ℂ E] [NormedAddCommGroup F] [InnerProductSpace ℂ F] :
+    UniformContinuousConstSMul ℂ (E ⊗[ℂ] F) := inferInstance
+
+/-- The normed group of the completed Hilbert tensor product, as a lemma for shallow instantiation. -/
+@[reducible] noncomputable def tensorCompletion_normedAddCommGroup {E F : Type*} [NormedAddCommGroup E]
+    [InnerProductSpace ℂ E] [NormedAddCommGroup F] [InnerProductSpace ℂ F] :
+    NormedAddCommGroup (Completion (E ⊗[ℂ] F)) := inferInstance
+
+/-- The normed space structure of the completed Hilbert tensor product. -/
+@[reducible] noncomputable def tensorCompletion_normedSpace {E F : Type*} [NormedAddCommGroup E]
+    [InnerProductSpace ℂ E] [NormedAddCommGroup F] [InnerProductSpace ℂ F] :
+    NormedSpace ℂ (Completion (E ⊗[ℂ] F)) := inferInstance
+
 section ShellDatum
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -246,6 +262,20 @@ theorem ShellDatum.inner_pairTest_pairSection_tendsto (d u : ι × ι → ℂ) :
       exact absurd (Finset.mem_univ a) hmem
   rw [← hval]
   exact hlim
+
+omit [CompleteSpace H] in
+/-- Two scalars on the two factors of a tensor map can be merged into the first factor. -/
+theorem mapL_smul_smul (c₁ c₂ : ℂ) (f g : H →L[ℂ] H) :
+    TensorProduct.mapL (c₁ • f) (c₂ • g) = TensorProduct.mapL ((c₁ * c₂) • f) g := by
+  apply ContinuousLinearMap.ext
+  intro x
+  induction x using TensorProduct.induction_on with
+  | zero => simp
+  | tmul p q =>
+      rw [TensorProduct.mapL_tmul, TensorProduct.mapL_tmul, smul_apply, smul_apply, smul_apply,
+        ← TensorProduct.smul_tmul, smul_smul, mul_comm c₂ c₁]
+  | add p q hp hq =>
+      rw [map_add, map_add, hp, hq]
 
 /-! ## The tensor-square Calkin lower bound -/
 

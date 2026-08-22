@@ -58,6 +58,7 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | Lemma 4.3 (`t3`) vector-space layer: `(k^×/μ(k)) ⊗ ℚ`, the independence criterion, `rank ≤ #k`, `#C ≤ #(C^×/μ(C))` | `RHTower/DeningerDynSysUnitClassSpace.lean` | closed |
 | Lemma 4.3 (`t3`) dimension input: `#C ≤ dim_ℚ (C^×/μ(C))`, both characteristics; Euclid for monic irreducible polynomials | `RHTower/DeningerDynSysMultiplicativeRank.lean` | closed |
 | **Lemma 4.3 (`t3`)** itself, for an arbitrary field `k`, plus the injective-character assertion in equal characteristic | `RHTower/DeningerDynSysCharacterExtension.lean` | closed |
+| Lemma 4.3 (`t3`) last assertion, mixed characteristic, via `μ_{p'}(C) ≅ (𝒪/𝔪)^×`; Lemma 4.3 is now closed in full | `RHTower/DeningerDynSysRootsOfUnityReduction.lean` | closed |
 
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -72,14 +73,15 @@ partially: Prop 1.1 (a) and (b) are covered by
 AIC-domain comparison.
 
 ### Known heavy sub-projects (not yet started)
-* Lemma 4.3 (`t3`) is closed.  Its dimension input `#C ≤ dim_ℚ (C^× / μ(C))` was proved by
+* Lemma 4.3 (`t3`) is closed **in full**, including the final "in particular" in both the
+  equal-characteristic and the mixed-characteristic case.  Its dimension input `#C ≤ dim_ℚ (C^× / μ(C))` was proved by
   exhibiting a countably infinite multiplicatively independent family (rational primes in
   characteristic zero; monic irreducible polynomials evaluated at a non-root-of-unity in
   characteristic `p`) and then using `Module.Free.rank_eq_mk_of_infinite_lt`.  The *only* residue
-  is the mixed-characteristic half of the final "in particular": an injective
-  `μ(F̄_p) ↪ μ(C)` for `C` algebraically closed of characteristic `0`.  That needs a coherent
-  system of primitive roots of unity (equivalently, the Prüfer classification of divisible torsion
-  groups, or the reduction isomorphism `μ_{p'}(Q̄) ≅ F̄_p^×`), and is tracked separately.
+  was the mixed-characteristic half of the final "in particular", an injective
+  `μ(F̄_p) ↪ μ(C)` for `C` algebraically closed of characteristic `0`; it is now proved by the
+  reduction isomorphism `μ_{p'}(C) ≅ (𝒪/𝔪)^×` at a maximal ideal of the algebraic integers of `C`
+  above `p`, whose residue field is shown to be algebraically closed.
 * Thm 1.4 (`t27n`) is Kucharczyk–Scholze Lemma 4.9 plus its rational-Witt corollary.  Mathlib now
   supplies the needed profinite invariant theory: `Algebra.IsInvariant.isIntegral_of_profinite`,
   `Algebra.IsInvariant.exists_smul_of_under_eq_of_profinite`, and
@@ -102,6 +104,12 @@ AIC-domain comparison.
 - 2026-08-22 — Theorem 1.4 (`t27n`) and Lemma 1.6(2)/Cor 1.7(1) closed: ten results.
 - 2026-08-22 — reduced monoid algebra representability and Definition 9.5 closed; 13 items in the
   ledger; `formal_tools.py lint` reports no error attributable to these modules.
+- 2026-08-22 — Lemma 4.3 closed **in full**: the mixed-characteristic embedding of roots of
+  unity is proved by reduction to the residue field of the algebraic integers.  New reusable
+  mathlib-gap results: the residue field of `integralClosure ℤ C` at a maximal ideal is
+  algebraically closed; roots of unity of order prime to the residue characteristic reduce
+  injectively; a unit integral over `ℤ` in characteristic `p` has finite order prime to `p`.
+  24 items in the ledger; all axiom-clean.
 - 2026-08-22 — **Lemma 4.3 (`t3`) closed**, for an arbitrary field `k` and in full universe
   generality.  Three new modules: the `ℚ`-vector space `(k^×/μ(k)) ⊗ ℚ` built as a divisible hull,
   the dimension theorem `#C ≤ dim_ℚ (C^×/μ(C))`, and the extension theorem itself.  New reusable

@@ -226,12 +226,29 @@ projection pairing would already have been discarded.
 The proof is an exact change of variables and Hilbert-space encoding of an elementary Möbius
 divisor switch.  It is a route bridge, not claimed as new scientific knowledge.
 
-## 7. Lean decision
+## 7. Lean status (2026-08-22)
 
-The RHTower tree does not yet formalize the shifted summatory error, the logarithmic right shifts,
-or the complementary projection series.  Formalizing the projection identity without the
-arithmetic series would be wrapper bloat.  No Lean file is added before the full incidence `(8)`
-can be represented.
+The full incidence `(8)` is now representable and is formalized, unconditionally, in
+`formal/GaloisForLFunctions/RHTower/CoupledFloorMobiusShiftIncidence.lean` (wired into
+`GaloisForLFunctions.RHTower`, `lake build`-green, axiom audit
+`[propext, Classical.choice, Quot.sound]`):
+
+- `suzukiCoupledErrorReal_eq` — the parent card's Theorem A at a real argument, which is what the
+  logarithmic substitution `X = e^t` consumes.
+- `rightShift`, `lowerIncidence`, `upperIncidence`, `lowerIncidence_add_upperIncidence` —
+  equations `(1)`--`(4)`.
+- `dampingMode`, `floorIncidenceVector`, `coupledErrorVector` — equations `(5)`, `(7)`.
+- `integrableOn_dampingMode_sq`, `abs_floorIncidenceVector_le`,
+  `integrableOn_floorIncidenceVector_sq` — both vectors lie in `H`, equations `(5)`, `(13)`.
+- `incidenceLower`, `incidenceUpper`, `incidenceLower_eq`, `incidenceUpper_eq`,
+  `summable_incidenceLower`, `summable_incidenceUpper`, `tsum_incidenceLower`,
+  `tsum_incidenceUpper`, **`coupledErrorVector_eq_tsum`** — equation `(8)`, with both series
+  absolutely convergent.
+- `coupledErrorVector_eq_tsum_zero`, `incidenceLower_zero_delta` — equations `(15)`, `(17)`: at
+  `δ = 0` both branches carry the identical coefficient `μ(d) d^{-1-2ω}`.
+- `integral_dampingMode_sq` (`= 1/(2δ)`) and `tendsto_integral_dampingMode_sq` — equation `(18)`:
+  the common upper input leaves `H` as `δ ↓ 0`.
+- `incidence_coefficient_eq_signed_square` — equation `(19)`.
 
 ## Gates
 
@@ -240,6 +257,9 @@ can be represented.
 - [x] common-coefficient boundary form proved
 - [x] exact non-`L2` boundary mode isolated
 - [x] Möbius covariance placement identified
+- [x] the complete regularized incidence `(8)`, the common-coefficient boundary form `(15)`, the
+  boundary-mode norm divergence `(18)` and the Möbius covariance placement `(19)` formalized
+  unconditionally in Lean 4
 - [ ] archimedean boundary renormalization theorem
 - [ ] nonexpansive continuation seam
 - [ ] four-unit energy bound

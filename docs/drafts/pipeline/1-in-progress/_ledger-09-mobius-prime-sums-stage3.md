@@ -14,9 +14,9 @@
 |---|---|---|---|
 | 1 | prime-square-mobius-fourier-complementary-record-law | §2–§6 finite Fourier / CRT | **DONE — promoted to 3-formalized** |
 | 2 | localized-half-density-mobius-curvature-semiprime-fibre-law | (3)–(4), (14)–(15), (18)–(20), (23) | TODO |
-| 3 | shifted-euler-error-floor-mobius-tail-coupling | Thm A (3), Thm B (8)–(9) | TODO |
+| 3 | shifted-euler-error-floor-mobius-tail-coupling | Thm A (3), Thm B (8)–(9) | **DONE — promoted** |
 | 4 | friable-moment-ladder-finite-dim | Thm A, Thm B | TODO |
-| 5 | coupled-floor-mobius-complementary-shift-incidence-law | (8), (15), (18) | TODO |
+| 5 | coupled-floor-mobius-complementary-shift-incidence-law | (8), (15), (18) | **DONE — promoted** |
 | 6 | mertens-corona-shift-conormal | (5),(9),(10),(13),(15),(19) | TODO |
 | 7 | baez-duarte-critical-mobius-beta-wavelet-law | (1)–(2),(5),(8)–(10),(7c)–(7f),(14c) | TODO |
 | 8 | mertens-logarithmic-corona-differential-tower | (4),(7),(10),(13)–(15),(19)–(21),(27)–(29),(31) | TODO |
@@ -100,3 +100,17 @@ Card 1 is COMPLETE (3 modules, promoted 2026-08-22).  The density half used this
   arithmetic function), `sum_Icc_dvd_reindex` (reindexing a sum over the multiples of `d`),
   and `tendsto_mobiusClockDvdSum` — a **one-prime geometric transfer**: if `A(X)/X → 0` and
   `|A(X)| ≤ X` and `B(X) = -A(X/p) + B(X/p)` with `|B(X)| ≤ X`, then `B(X)/X → 0`.
+
+## Landed modules (running list)
+
+1. `RHTower/PrimeSquareMobiusComplementaryRecord.lean` (card 1 §2–§5)
+2. `RHTower/PrimeSquareMobiusSectorFracture.lean` (card 1 §6 profinite)
+3. `RHTower/PrimeSquareMobiusDensityFracture.lean` (card 1 §6 density)
+4. `RHTower/ShiftedEulerFloorMobiusTailCoupling.lean` (card 3)
+5. `RHTower/CoupledFloorMobiusShiftIncidence.lean` (card 5)
+
+More reusable bricks now available:
+- `RHTower.suzukiCoupledErrorReal_eq` — Theorem A at a real argument.
+- `RHTower.rightShift` / `lowerIncidence` / `upperIncidence` — half-line shift/projection calculus.
+- `RHTower.measurable_powerSumRemainder`, `RHTower.abs_floorIncidenceVector_le`.
+- `RHTower.sum_Icc_rpow_eq_remainder` — power sum ↔ `powerSumRemainder`.

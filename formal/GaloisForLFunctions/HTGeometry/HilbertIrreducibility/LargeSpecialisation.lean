@@ -529,4 +529,207 @@ theorem gal_card_of_specialisation_gt (N : ℤ) {m D : ℕ}
   exact gal_card_of_irreducible_resolvent (RingHom.id ℚ) (hf.map _)
     (by rw [hf.natDegree_map, hfdeg]) hy2
 
+/-! ### Lacunary specialisations -/
+
+theorem hilbert_several_lacunary : ∀ (m : ℕ) (G : Polynomial (MvPolynomial (Fin m) ℚ))
+    (g : MvPolynomial (Fin m) ℚ), Irreducible G → 1 ≤ G.natDegree → g ≠ 0 → ∀ N : ℤ,
+      ∃ y : Fin m → ℚ, (∀ i, ((N : ℤ) : ℚ) < y i) ∧
+        (∀ i j : Fin m, (i : ℕ) < (j : ℕ) → 3 * y i < y j) ∧ MvPolynomial.eval y g ≠ 0 ∧
+        Irreducible (G.map (MvPolynomial.eval y)) ∧
+        (G.map (MvPolynomial.eval y)).natDegree = G.natDegree := by
+  intro m
+  induction m with
+  | zero =>
+      intro G g hG hdeg hg N
+      have heq : (MvPolynomial.eval (Fin.elim0 : Fin 0 → ℚ))
+          = (MvPolynomial.isEmptyAlgEquiv ℚ (Fin 0)).toRingEquiv.toRingHom := by
+        refine MvPolynomial.ringHom_ext (fun r => ?_) (fun i => i.elim0)
+        simp only [MvPolynomial.eval_C, MvPolynomial.isEmptyAlgEquiv,
+          RingEquiv.toRingHom_eq_coe]
+        exact (MvPolynomial.coeff_zero_C r).symm
+      refine ⟨Fin.elim0, fun i => i.elim0, fun i => i.elim0, ?_, ?_, ?_⟩
+      · rw [heq]
+        exact fun h => hg ((MvPolynomial.isEmptyAlgEquiv ℚ (Fin 0)).toRingEquiv.injective
+          (by simpa using h))
+      · rw [heq]
+        have hmap : Polynomial.map
+            ((MvPolynomial.isEmptyAlgEquiv ℚ (Fin 0)).toRingEquiv.toRingHom) G
+              = Polynomial.mapEquiv (MvPolynomial.isEmptyAlgEquiv ℚ (Fin 0)).toRingEquiv G := rfl
+        rw [hmap]
+        exact (MulEquiv.irreducible_iff
+          (Polynomial.mapEquiv (MvPolynomial.isEmptyAlgEquiv ℚ (Fin 0)).toRingEquiv)).mpr hG
+      · rw [heq]
+        exact Polynomial.natDegree_map_eq_of_injective
+          (MvPolynomial.isEmptyAlgEquiv ℚ (Fin 0)).toRingEquiv.injective G
+  | succ m ih =>
+      intro G g hG hdeg hg N
+      have hGne : G ≠ 0 := hG.ne_zero
+      obtain ⟨f, hf⟩ : ∃ f : MvPolynomial (Fin (m + 1)) (Polynomial ℚ),
+          f = kill1 m ((MvPolynomial.finSuccEquiv ℚ (m + 1)).symm G) := ⟨_, rfl⟩
+      have hfirr : Irreducible f := by
+        rw [hf]
+        exact (MulEquiv.irreducible_iff (kill1 m)).mpr
+          ((MulEquiv.irreducible_iff (MvPolynomial.finSuccEquiv ℚ (m + 1)).symm).mpr hG)
+      have hftd : 0 < f.totalDegree := by
+        rcases Nat.eq_zero_or_pos f.totalDegree with h0 | h
+        · exfalso
+          obtain ⟨q, hq⟩ : ∃ q : Polynomial ℚ, f = MvPolynomial.C q :=
+            ⟨MvPolynomial.coeff 0 f, MvPolynomial.totalDegree_eq_zero_iff_eq_C.mp h0⟩
+          have h1 : (kill1 m).symm (MvPolynomial.C Polynomial.X)
+              = MvPolynomial.X (1 : Fin (m + 2)) := by
+            rw [← kill1_X_one m, AlgEquiv.symm_apply_apply]
+          have h2 : (MvPolynomial.finSuccEquiv ℚ (m + 1)) (MvPolynomial.X (1 : Fin (m + 2)))
+              = Polynomial.C (MvPolynomial.X (0 : Fin (m + 1))) := by
+            rw [one_eq_succ_zero, MvPolynomial.finSuccEquiv_X_succ]
+          have hXi : ∀ r : Polynomial ℚ,
+              (MvPolynomial.finSuccEquiv ℚ (m + 1)) ((kill1 m).symm (MvPolynomial.C r))
+                = Polynomial.C (Polynomial.aeval (MvPolynomial.X (0 : Fin (m + 1))) r) := by
+            intro r
+            have key : ((MvPolynomial.finSuccEquiv ℚ (m + 1)).toAlgHom.comp
+                  ((kill1 m).symm.toAlgHom.comp (IsScalarTower.toAlgHom ℚ (Polynomial ℚ)
+                    (MvPolynomial (Fin (m + 1)) (Polynomial ℚ)))))
+                = Polynomial.CAlgHom.comp
+                    (Polynomial.aeval (MvPolynomial.X (0 : Fin (m + 1)))) := by
+              refine Polynomial.algHom_ext ?_
+              simp [MvPolynomial.algebraMap_eq, h1, h2]
+            have hr := congrArg (fun F => F r) key
+            simpa [MvPolynomial.algebraMap_eq] using hr
+          have hGval : G = Polynomial.C
+              (Polynomial.aeval (MvPolynomial.X (0 : Fin (m + 1))) q) := by
+            have hsymm : (kill1 m).symm f = (MvPolynomial.finSuccEquiv ℚ (m + 1)).symm G := by
+              rw [hf, AlgEquiv.symm_apply_apply]
+            rw [← hXi q, ← hq, hsymm, AlgEquiv.apply_symm_apply]
+          rw [hGval, Polynomial.natDegree_C] at hdeg
+          omega
+        · exact h
+      have hinf := exists_infinite_specialisation_gt N hfirr hftd
+      have hfin1 : {c : ℚ | spec0 c g = 0}.Finite := finite_spec0_zero hg
+      have hfin2 : {c : ℚ | spec0 c G.leadingCoeff = 0}.Finite :=
+        finite_spec0_zero (Polynomial.leadingCoeff_ne_zero.mpr hGne)
+      obtain ⟨c, ⟨⟨⟨hcN, hc⟩, hc1⟩, hc2⟩⟩ := ((hinf.sdiff hfin1).sdiff hfin2).nonempty
+      have hc1' : spec0 c g ≠ 0 := hc1
+      have hc2' : spec0 c G.leadingCoeff ≠ 0 := hc2
+      have hdeg' : (G.map (spec0 c).toRingHom).natDegree = G.natDegree :=
+        Polynomial.natDegree_map_of_leadingCoeff_ne_zero _ hc2'
+      have hGirr' : Irreducible (G.map (spec0 c).toRingHom) := by
+        have h1 : Irreducible
+            ((MvPolynomial.finSuccEquiv ℚ m).symm (G.map (spec0 c).toRingHom)) := by
+          rw [← step_emb c G, ← hf]
+          exact hc
+        exact (MulEquiv.irreducible_iff (MvPolynomial.finSuccEquiv ℚ m).symm).mp h1
+      set N' : ℤ := max N ⌈3 * c⌉ with hN'
+      obtain ⟨y', hy'N, hy'rat, hy'g, hy'irr, hy'deg⟩ :=
+        ih (G.map (spec0 c).toRingHom) (spec0 c g) hGirr' (by omega) hc1' N'
+      have heval : (MvPolynomial.eval (Fin.cons c y') : MvPolynomial (Fin (m + 1)) ℚ →+* ℚ)
+          = (MvPolynomial.eval y').comp (spec0 c).toRingHom := by
+        refine MvPolynomial.ringHom_ext (fun r => ?_) (fun i => ?_)
+        · simp
+        · refine Fin.cases ?_ ?_ i
+          · simp
+          · intro j
+            simp
+      have hNle : ((N : ℤ) : ℚ) ≤ ((N' : ℤ) : ℚ) := by
+        have : (N : ℤ) ≤ N' := le_max_left _ _
+        exact_mod_cast this
+      have h3c : 3 * c ≤ ((N' : ℤ) : ℚ) := by
+        have h1 : (3 * c) ≤ ((⌈3 * c⌉ : ℤ) : ℚ) := Int.le_ceil _
+        have h2 : ((⌈3 * c⌉ : ℤ) : ℚ) ≤ ((N' : ℤ) : ℚ) := by
+          have : (⌈3 * c⌉ : ℤ) ≤ N' := le_max_right _ _
+          exact_mod_cast this
+        linarith
+      have hcons : ∀ k : Fin (m + 1), (Fin.cons c y' : Fin (m + 1) → ℚ) k
+          = if h : (k : ℕ) = 0 then c else y' ⟨(k : ℕ) - 1, by omega⟩ := by
+        intro k
+        refine Fin.cases ?_ ?_ k
+        · simp
+        · intro j
+          have hne : ((j.succ : Fin (m + 1)) : ℕ) ≠ 0 := by simp
+          rw [dif_neg hne]
+          simp
+      refine ⟨Fin.cons c y', ?_, ?_, ?_, ?_, ?_⟩
+      · intro i
+        rw [hcons i]
+        by_cases h0 : (i : ℕ) = 0
+        · rw [dif_pos h0]
+          exact hcN
+        · rw [dif_neg h0]
+          linarith [hy'N ⟨(i : ℕ) - 1, by omega⟩]
+      · intro i j hij
+        have hj0 : (j : ℕ) ≠ 0 := by omega
+        rw [hcons i, hcons j, dif_neg hj0]
+        by_cases h0 : (i : ℕ) = 0
+        · rw [dif_pos h0]
+          linarith [hy'N ⟨(j : ℕ) - 1, by omega⟩]
+        · rw [dif_neg h0]
+          refine hy'rat ⟨(i : ℕ) - 1, by omega⟩ ⟨(j : ℕ) - 1, by omega⟩ ?_
+          simp only []
+          omega
+      · rw [show MvPolynomial.eval (Fin.cons c y') g
+            = (MvPolynomial.eval y').comp (spec0 c).toRingHom g from by rw [heval]]
+        exact hy'g
+      · rw [heval, ← Polynomial.map_map]
+        exact hy'irr
+      · rw [heval, ← Polynomial.map_map, hy'deg, hdeg']
+
+/-- **Hilbert irreducibility with a lacunary specialisation.**  The good rational point can be
+demanded larger than any bound in every coordinate *and* to grow by a factor three from each
+coordinate to every later one. -/
+theorem hilbert_multivariate_lacunary (N : ℤ) {m : ℕ} {G : Polynomial (MvPolynomial (Fin m) ℚ)}
+    (hG : Irreducible G) (hdeg : 1 ≤ G.natDegree) {g : MvPolynomial (Fin m) ℚ} (hg : g ≠ 0) :
+    ∃ y : Fin m → ℚ, (∀ i, ((N : ℤ) : ℚ) < y i) ∧
+      (∀ i j : Fin m, (i : ℕ) < (j : ℕ) → 3 * y i < y j) ∧ MvPolynomial.eval y g ≠ 0 ∧
+      Irreducible (G.map (MvPolynomial.eval y)) ∧
+      (G.map (MvPolynomial.eval y)).natDegree = G.natDegree :=
+  hilbert_several_lacunary m G g hG hdeg hg N
+
+/-! ### Galois-preserving lacunary specialisation -/
+
+theorem gal_card_of_specialisation_lacunary (N : ℤ) {m D : ℕ}
+    {f : Polynomial (MvPolynomial (Fin m) ℚ)} (hf : f.Monic) (hfdeg : f.natDegree = D)
+    (hsep : (f.map (algebraMap (MvPolynomial (Fin m) ℚ)
+        (FractionRing (MvPolynomial (Fin m) ℚ)))).Separable)
+    (hgal : Nat.card (f.map (algebraMap (MvPolynomial (Fin m) ℚ)
+        (FractionRing (MvPolynomial (Fin m) ℚ)))).Gal = D.factorial)
+    {g : MvPolynomial (Fin m) ℚ} (hg : g ≠ 0) :
+    ∃ y : Fin m → ℚ, (∀ i, ((N : ℤ) : ℚ) < y i) ∧
+      (∀ i j : Fin m, (i : ℕ) < (j : ℕ) → 3 * y i < y j) ∧ MvPolynomial.eval y g ≠ 0 ∧
+      Nat.card (f.map (MvPolynomial.eval y)).Gal = D.factorial := by
+  classical
+  have hFm : (f.map (algebraMap (MvPolynomial (Fin m) ℚ)
+      (FractionRing (MvPolynomial (Fin m) ℚ)))).Monic := hf.map _
+  have hFdeg : (f.map (algebraMap (MvPolynomial (Fin m) ℚ)
+      (FractionRing (MvPolynomial (Fin m) ℚ)))).natDegree = D := by
+    rw [hf.natDegree_map, hfdeg]
+  obtain ⟨k, hk⟩ := exists_irreducible_resolvent
+    ((algebraMap (MvPolynomial (Fin m) ℚ) (FractionRing (MvPolynomial (Fin m) ℚ))).comp
+      (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ)) hFm hsep hFdeg hgal
+  have hR0map : (resolvent k (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ) f).map
+      (algebraMap (MvPolynomial (Fin m) ℚ) (FractionRing (MvPolynomial (Fin m) ℚ)))
+      = resolvent k ((algebraMap (MvPolynomial (Fin m) ℚ)
+          (FractionRing (MvPolynomial (Fin m) ℚ))).comp
+        (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ))
+        (f.map (algebraMap (MvPolynomial (Fin m) ℚ)
+          (FractionRing (MvPolynomial (Fin m) ℚ)))) :=
+    resolvent_map k _ _ f
+  have hR0irr : Irreducible (resolvent k (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ) f) :=
+    Polynomial.Monic.irreducible_of_irreducible_map _ _
+      (monic_resolvent k (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ) f)
+      (by rw [hR0map]; exact hk)
+  have hR0deg : (resolvent k (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ) f).natDegree
+      = D.factorial := by
+    rw [natDegree_resolvent, Fintype.card_perm, Fintype.card_fin]
+  obtain ⟨y, hyN, hyrat, hy1, hy2, -⟩ := hilbert_multivariate_lacunary N hR0irr
+    (by rw [hR0deg]; exact Nat.factorial_pos D) hg
+  refine ⟨y, hyN, hyrat, hy1, ?_⟩
+  have hcomp : (MvPolynomial.eval y).comp (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ)
+      = RingHom.id ℚ := by
+    refine RingHom.ext fun q => ?_
+    simp
+  have hspec : (resolvent k (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ) f).map
+      (MvPolynomial.eval y) = resolvent k (RingHom.id ℚ) (f.map (MvPolynomial.eval y)) := by
+    rw [resolvent_map k _ (MvPolynomial.eval y) f, hcomp]
+  rw [hspec] at hy2
+  exact gal_card_of_irreducible_resolvent (RingHom.id ℚ) (hf.map _)
+    (by rw [hf.natDegree_map, hfdeg]) hy2
+
 end GaloisForLFunctions.HTGeometry.HilbertIrreducibility

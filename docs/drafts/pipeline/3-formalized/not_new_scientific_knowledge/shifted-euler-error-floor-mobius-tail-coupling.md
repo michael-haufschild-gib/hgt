@@ -144,5 +144,27 @@ remaining cancellation, not to claim new summatory-function theory.
 
 - [x] 0 -> 1: summatory-error carrier and triangle-inequality falsifier isolated.
 - [x] 1 -> 2: exact decomposition and absolute-value ceiling proved on paper.
-- [ ] 2 -> 3: no Lean formalization selected; the open theorem is the coupled half-power gain.
+- [x] 2 -> 3: Theorem A `(3)` and Theorem B `(8)`--`(9)` formalized unconditionally in Lean 4.
 - [ ] 3 -> 4: no scientific-novelty claim.
+- [ ] open theorem: the coupled half-power gain (cancellation between the two pieces).
+
+## Lean status (2026-08-22)
+
+`formal/GaloisForLFunctions/RHTower/ShiftedEulerFloorMobiusTailCoupling.lean`, wired into
+`GaloisForLFunctions.RHTower`, `lake build`-green, axiom audit
+`[propext, Classical.choice, Quot.sound]`:
+
+- `suzukiShiftedSummatory_eq` — the Möbius divisor switch, equation `(5)`, obtained from the
+  corpus convolution swap `RHTower.Sieve.sum_Icc_convolution_apply` and the coefficient identity
+  `shiftedEulerCoefficient ω n = ∑_{dm=n} μ(d) d^{-ω} m^ω`.
+- `suzukiEulerDensityConstant_eq_tsum`, `tsum_moebius_split`, `mobiusShiftTail` — the exact
+  splitting of `r_ω = 1/ζ(1+2ω)` into its prefix and tail, equation `(7)`.
+- `suzukiCoupledError_eq` — **Theorem A, equation `(3)`**.
+- `abs_suzukiCoupledError_le` — **Theorem B, equations `(8)`--`(9)`**: an explicit absolute
+  constant `C(ω) = 2 + 2/(1-2ω) + 1/((1+ω)2ω)` with `|E_ω(X)| ≤ C(ω) X^{1-ω}` for every `X ≥ 1`.
+
+Reused corpus assets (no duplication): `RHTower.powerSumRemainder` and
+`RHTower.abs_powerSumRemainder_le` (`|R_ω(Y)| ≤ (Y+1)^ω`), `RHTower.sum_rpow_neg_head_le`
+(head of a `p`-series below the abscissa), `RHTower.tsum_add_rpow_neg_le` (tail above it),
+`RHTower.shiftedEulerCoefficient_eq_prod`, `RHTower.ofReal_tsum_moebius_rpow`,
+`RHTower.suzukiMainTermReal_natCast`.

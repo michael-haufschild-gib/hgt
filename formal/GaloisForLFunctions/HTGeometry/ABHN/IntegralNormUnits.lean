@@ -99,6 +99,34 @@ theorem adjoinRootScalarExtensionEquivOfMapEq_norm_tmul_one
   rw [AlgEquiv.trans_apply, Algebra.norm_eq_of_algEquiv]
   exact adjoinRootScalarExtensionEquiv_norm_tmul_one R T p x
 
+/-- The scalar-extension root equivalence sends the canonical tensor of the adjoined root to
+the adjoined root of the scalar-extended polynomial. -/
+theorem adjoinRootScalarExtensionEquivOfMapEq_tmul_one_root
+    (R : Type u) (T : Type v) [CommRing R] [CommRing T] [Algebra R T]
+    (p : Polynomial R) (q : Polynomial T)
+    (h : p.map (algebraMap R T) = q) :
+    adjoinRootScalarExtensionEquivOfMapEq R T p q h
+      ((1 : T) ⊗ₜ[R] AdjoinRoot.root p) = AdjoinRoot.root q := by
+  unfold adjoinRootScalarExtensionEquivOfMapEq
+  rw [AlgEquiv.trans_apply]
+  have hroot : adjoinRootScalarExtensionEquiv R T p
+      ((1 : T) ⊗ₜ[R] AdjoinRoot.root p) =
+      AdjoinRoot.root (p.map (algebraMap R T)) := by
+    unfold adjoinRootScalarExtensionEquiv
+    dsimp only
+    rw [AlgEquiv.trans_apply, AdjoinRoot.tensorAlgEquiv_root]
+    let q' : Polynomial (TensorProduct R T R) :=
+      p.map Algebra.TensorProduct.includeRight.toRingHom
+    have hq : q'.map (Algebra.TensorProduct.rid R T T) =
+        p.map (algebraMap R T) := by
+      ext i
+      simp [q', Algebra.smul_def]
+    change AdjoinRoot.map (Algebra.TensorProduct.rid R T T).toRingHom q'
+      (p.map (algebraMap R T)) hq.symm.dvd (AdjoinRoot.root q') =
+        AdjoinRoot.root (p.map (algebraMap R T))
+    rw [AdjoinRoot.map_root]
+  rw [hroot, AdjoinRoot.algEquivOfEq_root]
+
 /-- A coefficientwise map of root algebras is surjective whenever its coefficient map is.
 This supplies the lifting step from a residue root algebra back to an integral root model. -/
 theorem adjoinRoot_map_surjective_of_surjective
