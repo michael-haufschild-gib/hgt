@@ -248,5 +248,43 @@ theorem resolventDifference_eq_sliceFormula_iff
     rw [hy]
     exact resolventDifference_sliceFormula_apply s q J hs hx hquad
 
+/-- On the real part, the restricted inverse is precisely the left-multiplication
+candidate in paper equation (8.9). -/
+theorem restrictedResolventInverse_apply_scalar
+    (s q : RealOctonion) (r : ℝ) :
+    restrictedResolventInverse s q (scalarEmbed r) =
+      (inverse (quadratic s q) * (star s - q)) * scalarEmbed r := by
+  let M := generatedSubmodule s q
+  have hscalar : scalarEmbed r ∈ M := by
+    simpa only [M] using scalarEmbed_mem_generatedSubmodule s q r
+  have hquad : quadratic s q ∈ M := by
+    simpa only [M] using quadratic_mem_generatedSubmodule s q
+  have hinv : inverse (quadratic s q) ∈ M := by
+    simpa only [M] using inverse_mem_generatedSubmodule s q _ hquad
+  have hdiff : star s - q ∈ M := by
+    simpa only [M] using Submodule.sub_mem (generatedSubmodule s q)
+      (star_s_mem_generatedSubmodule s q) (q_mem_generatedSubmodule s q)
+  have hcomm : scalarEmbed r * star s = star s * scalarEmbed r := by
+    rw [scalarEmbed_mul, mul_scalarEmbed]
+  unfold restrictedResolventInverse resolventDifference leftAction rightAction
+  calc
+    inverse (quadratic s q) *
+        (scalarEmbed r * star s - q * scalarEmbed r) =
+      inverse (quadratic s q) * ((star s - q) * scalarEmbed r) := by
+        rw [hcomm, sub_mul]
+    _ = (inverse (quadratic s q) * (star s - q)) * scalarEmbed r :=
+      (sub_eq_zero.mp (associator_eq_zero_of_mem_generatedSubmodule s q
+        (inverse (quadratic s q)) (star s - q) (scalarEmbed r) hinv hdiff hscalar)).symm
+
+/-- The left-multiplication expression in paper equation (8.9) is an inverse of
+`R_s - L_q` on the real part whenever its quadratic denominator is nonzero. -/
+theorem resolventDifference_regularInverse_apply_scalar
+    (s q : RealOctonion) (r : ℝ) (hquad : quadratic s q ≠ 0) :
+    resolventDifference s q
+      ((inverse (quadratic s q) * (star s - q)) * scalarEmbed r) = scalarEmbed r := by
+  rw [← restrictedResolventInverse_apply_scalar]
+  exact resolventDifference_restrictedResolventInverse_apply s q (scalarEmbed r) hquad
+    (scalarEmbed_mem_generatedSubmodule s q r)
+
 end
 end GaloisForLFunctions.HTGeometry.Octonion.RealOctonion

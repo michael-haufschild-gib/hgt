@@ -519,23 +519,74 @@ end DilationCharacter
 
 section Curvature
 
-variable {H0 H1 : Type*} [NormedAddCommGroup H0]
-  [NormedAddCommGroup H1] [InnerProductSpace ℂ H1]
+variable {H : ℕ → Type*} [∀ j, NormedAddCommGroup (H j)] [∀ j, InnerProductSpace ℂ (H j)]
+  [∀ j, CompleteSpace (H j)]
 
-/-- **Mate curvature modulo the boundary ideal.**  If the two adjoint lifts differ from the
-algebraic inverse lifts by multiples of one boundary multiplier `Λ`, then the normalized mate
-difference is the character curvature `‖λ‖² − ‖λ‖⁻²` on `‖y₁‖²` plus a `Λ`-multiple. -/
-theorem mateCurvature_eq_character_add_ideal {lam Lam : ℂ}
-    {y0 : H0} {y1 dp dm ep em : H1}
-    (hplus : inner ℂ y1 dp =
-      lam * ((‖y0‖ ^ 2 : ℝ) : ℂ) - Lam * inner ℂ y1 ep
-        - (starRingEnd ℂ) lam⁻¹ * ((‖y1‖ ^ 2 : ℝ) : ℂ))
-    (hminus : inner ℂ y1 dm =
-      lam⁻¹ * ((‖y0‖ ^ 2 : ℝ) : ℂ) - Lam * inner ℂ y1 em
-        - (starRingEnd ℂ) lam * ((‖y1‖ ^ 2 : ℝ) : ℂ)) :
-    lam⁻¹ * inner ℂ y1 dp - lam * inner ℂ y1 dm =
-      (((‖lam‖ ^ 2 : ℝ) : ℂ) - (((‖lam‖ ^ 2)⁻¹ : ℝ) : ℂ)) * ((‖y1‖ ^ 2 : ℝ) : ℂ)
-        + Lam * (lam * inner ℂ y1 em - lam⁻¹ * inner ℂ y1 ep) := by
+/-- A reciprocal contraction section whose eigenray relation holds only **modulo one boundary
+multiplier** `Λ`: the two downward maps carry `y (j+1)` to the reciprocal characters up to
+`Λ`-multiples of explicit error vectors.  This is the shape of the co-Poisson down-map errors. -/
+structure IdealPerturbedSection (H : ℕ → Type*)
+    [∀ j, NormedAddCommGroup (H j)] [∀ j, InnerProductSpace ℂ (H j)] (lam Lam : ℂ) where
+  /-- The two downward maps, indexed by a Boolean sign. -/
+  T : Bool → ∀ j : ℕ, H (j + 1) →L[ℂ] H j
+  /-- Both maps are contractions. -/
+  contract : ∀ (b : Bool) (j : ℕ) (x : H (j + 1)), ‖T b j x‖ ≤ ‖x‖
+  /-- The distinguished vectors. -/
+  y : ∀ j : ℕ, H j
+  /-- They are nonzero. -/
+  y_ne : ∀ j : ℕ, y j ≠ 0
+  /-- The plus-direction boundary error. -/
+  ep : ∀ j : ℕ, H j
+  /-- The minus-direction boundary error. -/
+  em : ∀ j : ℕ, H j
+  /-- The plus map acts by `conj λ` modulo `Λ`. -/
+  T_true : ∀ j : ℕ, T true j (y (j + 1)) = (starRingEnd ℂ) lam • y j - Lam • ep j
+  /-- The minus map acts by `conj λ⁻¹` modulo `Λ`. -/
+  T_false : ∀ j : ℕ, T false j (y (j + 1)) = (starRingEnd ℂ) lam⁻¹ • y j - Lam • em j
+
+variable {lam Lam : ℂ}
+
+/-- The mate defect of a `Λ`-perturbed section. -/
+noncomputable def IdealPerturbedSection.mateDefect (S : IdealPerturbedSection H lam Lam)
+    (b : Bool) (j : ℕ) : H (j + 1) :=
+  (ContinuousLinearMap.adjoint (S.T b j)) (S.y j) -
+    (starRingEnd ℂ) (if b then lam⁻¹ else lam) • S.y (j + 1)
+
+/-- `(25)`: the radial mate curvature. -/
+noncomputable def IdealPerturbedSection.mateCurvature (S : IdealPerturbedSection H lam Lam)
+    (j : ℕ) : ℂ :=
+  lam⁻¹ * inner ℂ (S.y (j + 1)) (S.mateDefect true j) -
+    lam * inner ℂ (S.y (j + 1)) (S.mateDefect false j)
+
+/-- `(30)`, plus direction. -/
+theorem IdealPerturbedSection.inner_mateDefect_true (S : IdealPerturbedSection H lam Lam)
+    (j : ℕ) :
+    inner ℂ (S.y (j + 1)) (S.mateDefect true j) =
+      lam * ((‖S.y j‖ ^ 2 : ℝ) : ℂ) - (starRingEnd ℂ) Lam * inner ℂ (S.ep j) (S.y j)
+        - (starRingEnd ℂ) lam⁻¹ * ((‖S.y (j + 1)‖ ^ 2 : ℝ) : ℂ) := by
+  rw [IdealPerturbedSection.mateDefect, inner_sub_right, inner_smul_right,
+    ContinuousLinearMap.adjoint_inner_right, S.T_true j, inner_sub_left, inner_smul_left,
+    inner_smul_left, inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K]
+  simp
+
+/-- `(30)`, minus direction. -/
+theorem IdealPerturbedSection.inner_mateDefect_false (S : IdealPerturbedSection H lam Lam)
+    (j : ℕ) :
+    inner ℂ (S.y (j + 1)) (S.mateDefect false j) =
+      lam⁻¹ * ((‖S.y j‖ ^ 2 : ℝ) : ℂ) - (starRingEnd ℂ) Lam * inner ℂ (S.em j) (S.y j)
+        - (starRingEnd ℂ) lam * ((‖S.y (j + 1)‖ ^ 2 : ℝ) : ℂ) := by
+  rw [IdealPerturbedSection.mateDefect, inner_sub_right, inner_smul_right,
+    ContinuousLinearMap.adjoint_inner_right, S.T_false j, inner_sub_left, inner_smul_left,
+    inner_smul_left, inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K]
+  simp
+
+/-- **`(28)`: mate curvature modulo the boundary ideal.**  The aperture norms cancel and the class
+of the curvature modulo the `Λ`-ideal is exactly the character curvature on `‖y_{j+1}‖²`. -/
+theorem IdealPerturbedSection.mateCurvature_eq (S : IdealPerturbedSection H lam Lam) (j : ℕ) :
+    S.mateCurvature j =
+      (((‖lam‖ ^ 2 : ℝ) : ℂ) - (((‖lam‖ ^ 2)⁻¹ : ℝ) : ℂ)) * ((‖S.y (j + 1)‖ ^ 2 : ℝ) : ℂ)
+        + (starRingEnd ℂ) Lam *
+            (lam * inner ℂ (S.em j) (S.y j) - lam⁻¹ * inner ℂ (S.ep j) (S.y j)) := by
   have hmul : lam * (starRingEnd ℂ) lam = ((‖lam‖ ^ 2 : ℝ) : ℂ) := by
     rw [mul_comm, Complex.conj_mul']
     push_cast
@@ -544,29 +595,24 @@ theorem mateCurvature_eq_character_add_ideal {lam Lam : ℂ}
     rw [mul_comm, Complex.conj_mul', norm_inv]
     push_cast
     ring
-  rw [hplus, hminus]
-  linear_combination ((‖y1‖ ^ 2 : ℝ) : ℂ) * hmul - ((‖y1‖ ^ 2 : ℝ) : ℂ) * hmulinv
+  rw [IdealPerturbedSection.mateCurvature, S.inner_mateDefect_true j, S.inner_mateDefect_false j]
+  linear_combination ((‖S.y (j + 1)‖ ^ 2 : ℝ) : ℂ) * hmul -
+    ((‖S.y (j + 1)‖ ^ 2 : ℝ) : ℂ) * hmulinv
 
-/-- **At an annihilator character the class is exactly the curvature.**  Vanishing of the mate
-curvature on a nonzero ray with `Λ = 0` forces the unitary locus. -/
-theorem norm_eq_one_of_mateCurvature_eq_zero {lam : ℂ} (hlam : lam ≠ 0)
-    {y0 : H0} {y1 dp dm ep em : H1}
-    (hplus : inner ℂ y1 dp =
-      lam * ((‖y0‖ ^ 2 : ℝ) : ℂ) - (0 : ℂ) * inner ℂ y1 ep
-        - (starRingEnd ℂ) lam⁻¹ * ((‖y1‖ ^ 2 : ℝ) : ℂ))
-    (hminus : inner ℂ y1 dm =
-      lam⁻¹ * ((‖y0‖ ^ 2 : ℝ) : ℂ) - (0 : ℂ) * inner ℂ y1 em
-        - (starRingEnd ℂ) lam * ((‖y1‖ ^ 2 : ℝ) : ℂ))
-    (hy1 : y1 ≠ 0)
-    (hzero : lam⁻¹ * inner ℂ y1 dp - lam * inner ℂ y1 dm = 0) :
-    ‖lam‖ = 1 := by
-  have hkey := mateCurvature_eq_character_add_ideal (Lam := (0 : ℂ)) hplus hminus
+/-- **`(31)`–`(32)`: at an annihilator character the class is exactly the curvature.**  When the
+boundary multiplier vanishes, vanishing of the mate curvature forces the unitary locus. -/
+theorem IdealPerturbedSection.norm_eq_one_of_mateCurvature_eq_zero
+    {lam : ℂ} (hlam : lam ≠ 0) (S : IdealPerturbedSection H lam 0) (j : ℕ)
+    (hzero : S.mateCurvature j = 0) : ‖lam‖ = 1 := by
+  have hkey := S.mateCurvature_eq j
   rw [hzero] at hkey
-  have hy1pos : (0 : ℝ) < ‖y1‖ ^ 2 := by positivity
-  have hne : ((‖y1‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
+  have hy1pos : (0 : ℝ) < ‖S.y (j + 1)‖ ^ 2 := by
+    have := S.y_ne (j + 1)
+    positivity
+  have hne : ((‖S.y (j + 1)‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
     simpa [Complex.ofReal_ne_zero] using hy1pos.ne'
   have hprod : (((‖lam‖ ^ 2 : ℝ) : ℂ) - (((‖lam‖ ^ 2)⁻¹ : ℝ) : ℂ)) *
-      ((‖y1‖ ^ 2 : ℝ) : ℂ) = 0 := by
+      ((‖S.y (j + 1)‖ ^ 2 : ℝ) : ℂ) = 0 := by
     have := hkey.symm
     simpa using this
   have hcur : ((‖lam‖ ^ 2 : ℝ) : ℂ) - (((‖lam‖ ^ 2)⁻¹ : ℝ) : ℂ) = 0 :=
@@ -582,6 +628,18 @@ theorem norm_eq_one_of_mateCurvature_eq_zero {lam : ℂ} (hlam : lam ≠ 0)
       _ = 1 := inv_mul_cancel₀ hpos2.ne'
   have h1 : ‖lam‖ ^ 2 = 1 := by nlinarith
   nlinarith
+
+/-- Every genuine reciprocal contraction section is the `Λ = 0` case. -/
+def ReciprocalContractionSection.toIdealPerturbed (S : ReciprocalContractionSection H lam) :
+    IdealPerturbedSection H lam 0 where
+  T := S.T
+  contract := S.contract
+  y := S.y
+  y_ne := S.y_ne
+  ep := fun _ => 0
+  em := fun _ => 0
+  T_true := by intro j; simpa using S.T_true j
+  T_false := by intro j; simpa using S.T_false j
 
 end Curvature
 
@@ -638,21 +696,23 @@ ray `y j = c^j` grows exactly at the character rate. -/
 noncomputable def scalarReciprocalSection {c : ℝ} (hc : 1 ≤ c) :
     ReciprocalContractionSection (fun _ : ℕ => ℂ) ((c : ℝ) : ℂ) where
   T := fun b _ =>
-    if b then ContinuousLinearMap.id ℂ ℂ
-    else ((((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹) • ContinuousLinearMap.id ℂ ℂ)
+    match b with
+    | true => ContinuousLinearMap.id ℂ ℂ
+    | false => ((((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹) • ContinuousLinearMap.id ℂ ℂ)
   contract := by
     have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
+    have h1 : c⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hc
+    have h2 : (0 : ℝ) < c⁻¹ := inv_pos.mpr hc0
+    have h3 : c⁻¹ * c⁻¹ ≤ 1 := by nlinarith
     intro b j x
     cases b with
     | true => simp
     | false =>
-        simp only [if_neg (by simp : ¬ (false = true))]
-        rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply, norm_smul]
-        have hnorm : ‖(((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹)‖ = (c ⁻¹) * (c ⁻¹) := by
-          rw [norm_mul, norm_inv, norm_inv, Complex.norm_real, Real.norm_of_nonneg hc0.le]
-        rw [hnorm]
-        have h1 : c⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hc
-        have h2 : (0 : ℝ) < c⁻¹ := inv_pos.mpr hc0
+        have happ : ((((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹) • ContinuousLinearMap.id ℂ ℂ) x
+            = (((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹) * x := by simp
+        show ‖((((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹) • ContinuousLinearMap.id ℂ ℂ) x‖ ≤ ‖x‖
+        rw [happ, norm_mul, norm_mul, norm_inv, Complex.norm_real,
+          Real.norm_of_nonneg hc0.le]
         nlinarith [norm_nonneg x]
   y := fun j => (((c : ℝ) : ℂ)) ^ j
   y_ne := by
@@ -661,15 +721,26 @@ noncomputable def scalarReciprocalSection {c : ℝ} (hc : 1 ≤ c) :
     exact pow_ne_zero _ (by simpa [Complex.ofReal_ne_zero] using hc0.ne')
   T_true := by
     intro j
-    simp [pow_succ, mul_comm]
+    show ContinuousLinearMap.id ℂ ℂ ((((c : ℝ) : ℂ)) ^ (j + 1))
+      = (starRingEnd ℂ) ((c : ℝ) : ℂ) • (((c : ℝ) : ℂ)) ^ j
+    simp [Complex.conj_ofReal, pow_succ, mul_comm]
   T_false := by
     have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
     have hne : ((c : ℝ) : ℂ) ≠ 0 := by simpa [Complex.ofReal_ne_zero] using hc0.ne'
     intro j
-    simp only [if_neg (by simp : ¬ (false = true)), ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.id_apply, smul_eq_mul, map_inv₀, Complex.conj_ofReal]
+    show ((((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹) • ContinuousLinearMap.id ℂ ℂ)
+        ((((c : ℝ) : ℂ)) ^ (j + 1))
+      = (starRingEnd ℂ) ((c : ℝ) : ℂ)⁻¹ • (((c : ℝ) : ℂ)) ^ j
+    have happ : ((((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹) • ContinuousLinearMap.id ℂ ℂ)
+        ((((c : ℝ) : ℂ)) ^ (j + 1))
+        = (((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹) * (((c : ℝ) : ℂ)) ^ (j + 1) := by simp
+    rw [happ, map_inv₀, Complex.conj_ofReal, smul_eq_mul, pow_succ]
     field_simp
-    ring
+
+/-- The `Λ = 0` perturbed model, showing `IdealPerturbedSection` is inhabited. -/
+noncomputable def scalarIdealPerturbedSection {c : ℝ} (hc : 1 ≤ c) :
+    IdealPerturbedSection (fun _ : ℕ => ℂ) ((c : ℝ) : ℂ) 0 :=
+  (scalarReciprocalSection hc).toIdealPerturbed
 
 /-- **The structure is inhabited strictly off the unitary locus**, so the full-history energy law
 and the mate-fracture law are not vacuous. -/

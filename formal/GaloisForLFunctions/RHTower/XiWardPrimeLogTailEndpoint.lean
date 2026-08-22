@@ -18,6 +18,12 @@ def ContinuedXiWardPrimeLogTailScalarLaw : Prop :=
   ∃ y₀ : ℝ, ∀ Y : ℝ, y₀ ≤ Y →
     ContinuedXiWardSampledScalarLaw (xiWardPrimeLogSampleSet Y)
 
+/-- The same prime-log tail criterion with the four-unit budget relaxed by the
+local zero-free margin.  This is the weaker scalar endpoint. -/
+def ContinuedXiWardPrimeLogTailMergedSlackLaw : Prop :=
+  ∃ y₀ : ℝ, ∀ Y : ℝ, y₀ ≤ Y →
+    ContinuedXiWardMergedSlackSampledScalarLaw (xiWardPrimeLogSampleSet Y)
+
 /-- Eventual four-unit Gram positivity on canonical prime-log samples. -/
 def ContinuedXiWardPrimeLogTailBoundaryGramLaw : Prop :=
   ∃ y₀ : ℝ, ∀ Y : ℝ, y₀ ≤ Y →
@@ -37,6 +43,23 @@ theorem riemannHypothesis_iff_continuedXiWardPrimeLogTailScalarLaw :
     obtain ⟨y₁, _hy₁, hcover⟩ :=
       exists_cutoff_xiWardDetectionCover_primeLogSampleSet
     apply riemannHypothesis_of_continuedXiWardSampledScalarLaw
+      (hcover (max y₀ y₁) (le_max_right _ _))
+    exact htail (max y₀ y₁) (le_max_left _ _)
+
+/-- **Lower-burden prime-log endpoint.**  The scalar budget may be relaxed by
+the full local zero-free margin at every canonical sample point.  This remains
+RH-complete and, like the other tail endpoints, carries no cover premise. -/
+theorem riemannHypothesis_iff_continuedXiWardPrimeLogTailMergedSlackLaw :
+    RiemannHypothesis ↔ ContinuedXiWardPrimeLogTailMergedSlackLaw := by
+  constructor
+  · intro hRH
+    obtain ⟨y₀, _hy₀, htail⟩ :=
+      exists_cutoff_riemannHypothesis_iff_primeLogMergedSlackScalarLaw
+    exact ⟨y₀, fun Y hY => (htail Y hY).mp hRH⟩
+  · rintro ⟨y₀, htail⟩
+    obtain ⟨y₁, _hy₁, hcover⟩ :=
+      exists_cutoff_xiWardDetectionCover_primeLogSampleSet
+    apply riemannHypothesis_of_continuedXiWardMergedSlackSampledScalarLaw
       (hcover (max y₀ y₁) (le_max_right _ _))
     exact htail (max y₀ y₁) (le_max_left _ _)
 
@@ -63,5 +86,13 @@ theorem continuedXiWardPrimeLogTailScalarLaw_iff_boundaryGramLaw :
       ContinuedXiWardPrimeLogTailBoundaryGramLaw :=
   riemannHypothesis_iff_continuedXiWardPrimeLogTailScalarLaw.symm.trans
     riemannHypothesis_iff_continuedXiWardPrimeLogTailBoundaryGramLaw
+
+/-- The margin-relaxed tail law is equivalent to the strict four-unit scalar
+tail law, while requiring only the weaker pointwise inequality. -/
+theorem continuedXiWardPrimeLogTailScalarLaw_iff_mergedSlackLaw :
+    ContinuedXiWardPrimeLogTailScalarLaw ↔
+      ContinuedXiWardPrimeLogTailMergedSlackLaw :=
+  riemannHypothesis_iff_continuedXiWardPrimeLogTailScalarLaw.symm.trans
+    riemannHypothesis_iff_continuedXiWardPrimeLogTailMergedSlackLaw
 
 end RHTower

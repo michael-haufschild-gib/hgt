@@ -8,12 +8,12 @@ Rules in force: no added hypotheses standing for analytic inputs, no axioms, no 
 never full builds / umbrella builds (`lake env lean <file>` to check, `lake build <module>` only for
 the oleans an `#print axioms` scratch needs); search the corpus before building anything.
 
-## Card triage (17 cards)
+## Card triage (17 cards) — 2 promoted, 15 remain
 
 | # | card | state | notes |
 |---|---|---|---|
 | 1 | archimedean-prolate-jacobi-limit-circle-transition | TODO | needs discrete limit-circle theory; card's λ=0 exponents are wrong (see below) |
-| 2 | boolean-sonin-full-history-mate-fracture-law | TODO | |
+| 2 | boolean-sonin-full-history-mate-fracture-law | **PROMOTED 2026-08-22** | `HTGeometry/BooleanSoninFullHistory.lean` |
 | 3 | connes-semilocal-finite-part-orbital-source-class | TODO | |
 | 4 | finite-euler-connection-cauchy-phase-chambers | TODO | |
 | 5 | prime-tail-copoisson-essential-boundary-bockstein | TODO | |
@@ -21,7 +21,7 @@ the oleans an `#print axioms` scratch needs); search the corpus before building 
 | 7 | route-b-semilocal-sonin-interim-verdict | TODO | |
 | 8 | semilocal-dual-pair-euler-connection-source-law | TODO | |
 | 9 | semilocal-euler-kernel-chart-differentiability | TODO | |
-| 10 | semilocal-jacobi-linear-growth-prolate-domain-gate | IN PROGRESS | best-positioned; corpus already owns the archimedean Gamma measure + Jacobi coefficients |
+| 10 | semilocal-jacobi-linear-growth-prolate-domain-gate | **PROMOTED 2026-08-22** | `HTGeometry/MonicOrthoExtremalComparison.lean` + `RHTower/SemilocalJacobiLinearGrowthProlateDomainGate.lean` |
 | 11 | sonin-burnol-conductor-cutoff-bounded-graph-law | TODO | |
 | 12 | sonin-place-transition-cutoff-dichotomy | TODO | |
 | 13 | sonin-prime-seam-exterior-factorization | TODO | |

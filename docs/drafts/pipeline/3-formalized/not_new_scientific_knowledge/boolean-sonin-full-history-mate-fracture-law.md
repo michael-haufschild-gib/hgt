@@ -1,8 +1,8 @@
 # Boolean--Sonin full-history and adjoint-mate fracture law
 
 - **ID:** `boolean-sonin-full-history-mate-fracture-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[PROVED HERE] [BRIDGE] [NOT AN RH PROOF]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper) + THEOREM (Lean), `[PROVED HERE] [BRIDGE] [NOT AN RH PROOF]`
 - **Scientific status:** `[CORPUS-NEW SYNTHESIS] [PARENT CONTRACTION THEORY]`
   `[CURVATURE COLLIDES WITH EXISTING BURNOL DEFECT-ENERGY LAW]`
 - **Parents:**
@@ -616,6 +616,7 @@ interfaces exist.
 - [x] identify curvature with the existing Burnol bilateral defect-energy law
 - [x] exclude finite-Rees and after-closure source-linear reporters
 - [ ] prove co-Poisson mate-curvature ideal exactness `(26)`
+- [x] formalize every `[PAPER-PROVED]` statement in Lean (see `## Lean formalization`)
 - [ ] add Burnol analytic interfaces to Lean
 
 ## Log
@@ -624,3 +625,51 @@ interfaces exist.
   quotient maps.  Proved exact hyperbolic-cosine history energy and persistent off-unitary
   adjoint-mate fracture.  Replaced vague “couple Boolean and Wold channels” with an explicit finite
   object and isolated radial mate control as the remaining RH-bearing theorem.
+
+## Lean formalization
+
+Module: `formal/GaloisForLFunctions/HTGeometry/BooleanSoninFullHistory.lean`.
+Unconditional; every declaration below depends only on `propext`, `Classical.choice`, `Quot.sound`.
+The `Lean decision` above is superseded: the abstract data is formalized as a structure, and the
+non-vacuity of that structure strictly off the unitary locus is proved, so the laws are not empty
+wrappers.
+
+| paper step | Lean declaration |
+|---|---|
+| `(1)`–`(2)`: the reciprocal contraction section | `HTGeometry.ReciprocalContractionSection` |
+| `(3)`: the word map `T_ω` | `HTGeometry.ReciprocalContractionSection.wordMap` |
+| `(4)`: the normalized full-history object | `HTGeometry.ReciprocalContractionSection.historyEnergy` (with `…_zero`, `…_succ`) |
+| `(8)` and `(5)`: `‖ℬ_N‖ ≤ 1` | `HTGeometry.ReciprocalContractionSection.historyEnergy_le` |
+| `(9)`–`(6)`: exact history energy `((a²+a⁻²)/2)^N‖y₀‖²` | `HTGeometry.ReciprocalContractionSection.historyEnergy_y` |
+| `(7)`: lower growth of `‖y_N‖` | `HTGeometry.ReciprocalContractionSection.norm_y_lower` |
+| `(11)`: the two mate defects | `HTGeometry.ReciprocalContractionSection.mateDefect` |
+| `(12)`: the radial mate coefficients | `HTGeometry.ReciprocalContractionSection.mateCoeff` |
+| `(13)` and `(19)`: `R_j ≥ max(a, a⁻¹)` | `HTGeometry.ReciprocalContractionSection.norm_le_ratio`, `…inv_norm_le_ratio` |
+| `(18)`+`(14)`: `d_j^+ = λ/R_j² − conj(λ⁻¹)`, `d_j^- = λ⁻¹/R_j² − conj λ` | `HTGeometry.ReciprocalContractionSection.mateCoeff_true`, `…mateCoeff_false` |
+| `(15)`: `λ⁻¹d_j^+ − λ d_j^- = \|λ\|² − \|λ\|⁻²` | `HTGeometry.ReciprocalContractionSection.mate_difference` |
+| projection is norm-decreasing | `HTGeometry.ReciprocalContractionSection.norm_mateCoeff_smul_le` |
+| `(16)`+`(20)`–`(21)`: persistent mate fracture | `HTGeometry.ReciprocalContractionSection.mate_fracture` |
+| `(17)`: simultaneous smallness forces `\|λ\| = 1` | `HTGeometry.ReciprocalContractionSection.norm_eq_one_of_mates_small` |
+| `(22a)`: `λ_r(ρ) = r^{ρ−1/2}`, `\|λ\| = r^{Re ρ − 1/2}` | `HTGeometry.dilationCharacter`, `HTGeometry.norm_dilationCharacter` |
+| `(10)`/`(22b)`: history excess is `cosh(2(Re ρ−1/2)log r)` | `HTGeometry.avg_sq_add_inv_sq_rpow`, `HTGeometry.ReciprocalContractionSection.historyEnergy_y_dilationCharacter` |
+| `(22d)`: fracture size `2\|sinh(2(Re ρ−1/2)log r)\|` | `HTGeometry.sq_sub_inv_sq_rpow`, `HTGeometry.ReciprocalContractionSection.mate_fracture_dilationCharacter` |
+| `(22e)`: aperture-free radial curvature | `HTGeometry.ReciprocalContractionSection.mate_difference_dilationCharacter` |
+| curvature vanishes exactly on the critical line | `HTGeometry.sq_sub_inv_sq_rpow_eq_zero_iff` |
+| `(27)`: the `Λ`-perturbed section carrying the co-Poisson down-map errors | `HTGeometry.IdealPerturbedSection` |
+| `(25)`: the radial mate curvature `𝔎_j` | `HTGeometry.IdealPerturbedSection.mateCurvature` |
+| `(30)`: the two inner-product expansions | `HTGeometry.IdealPerturbedSection.inner_mateDefect_true`, `…inner_mateDefect_false` |
+| `(28)`–`(29)`: mate curvature modulo the boundary ideal | `HTGeometry.IdealPerturbedSection.mateCurvature_eq` |
+| `(31)`–`(32)`: at an annihilator character the class is the curvature, and its vanishing forces `\|λ\| = 1` | `HTGeometry.IdealPerturbedSection.norm_eq_one_of_mateCurvature_eq_zero` |
+| every genuine section is the `Λ = 0` case | `HTGeometry.ReciprocalContractionSection.toIdealPerturbed` |
+| non-vacuity strictly off the unitary locus | `HTGeometry.scalarReciprocalSection`, `HTGeometry.scalarIdealPerturbedSection`, `HTGeometry.exists_reciprocalContractionSection_norm_ne_one` |
+
+No statement above carries a hypothesis standing in for an unproved fact: `(30)` is *derived* from
+the structure fields of `IdealPerturbedSection`, not assumed, and every side condition is either
+structure data or is discharged (`λ ≠ 0`, `y j ≠ 0`).
+
+`scripts/formal_tools.py lint` → `formal lint passed`.
+
+What is **not** formalized, and is not a formalization debt: the `[BOLD CONJECTURE]`
+`COPOISSON_MATE_CURVATURE_IDEAL_EXACTNESS` `(26)` and its `[OPEN CORE]` producer.  Those are
+research targets, not proved statements of this card.  Every statement the card marks
+`[PAPER-PROVED]` is Lean-closed above.

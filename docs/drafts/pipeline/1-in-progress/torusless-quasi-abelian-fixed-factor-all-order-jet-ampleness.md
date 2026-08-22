@@ -1687,3 +1687,27 @@ new declarations passed `#print axioms` with only `propext`, `Classical.choice`,
 This closes one genuine all-order local transport component.  It does not establish the card's
 missing global Poincare jet expansion or all-order interpolation theorem, so Stage 3 is still not
 justified.
+
+### Lean progress (all-order exponential jet recurrence)
+
+`AbeExponentialDampingJetRecurrence.lean` now proves, without any analytic premise, that every
+repeated derivative in a fixed complex direction of Abe's literal multiplier factors as the
+multiplier times a recursively defined finite jet factor.  Each recursion step has exactly one
+new `t · ∂Θ` term and one differentiated prior factor; this is the algebraic source of the finite
+polynomial dependence on the damping time needed in `DJS-3`.
+
+The leaf source check, targeted build, and axiom reports for both public recurrence theorems passed
+with only `[propext, Classical.choice, Quot.sound]`.  This does not yet bound the recursively
+produced coefficient sources on complement translates, nor prove their Poincare summability.
+
+### Lean progress (all-order damped-seed jet recurrence)
+
+`AbeExponentialDampingJetRecurrence.lean` now also gives the exact all-order recurrence for
+`exp(t * (Θ - 1)) · seed`.  Thus every repeated directional seed jet, before translation into a
+Poincare summand, is literally the exponential multiplier times a finite recursively generated
+source.  No seed-growth, phase-gap, or summability field was assumed.  The changed leaf source
+check and targeted build passed; the new public theorem's axiom report is
+`[propext, Classical.choice, Quot.sound]`.
+
+The remaining step is quantitative: derive a summable complement-translate majorant for these
+recursively generated coefficient sources from the concrete quasi-Abelian seed construction.
