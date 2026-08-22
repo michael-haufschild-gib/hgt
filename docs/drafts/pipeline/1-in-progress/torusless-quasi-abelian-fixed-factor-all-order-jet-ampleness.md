@@ -1155,3 +1155,421 @@ normal convergence, or damping multiplier.  Its exact axiom report is
 This is a closed positive obstruction theorem, not a formalization of the card's public
 all-order jet-ampleness claim.  It rules out only the false uniform-majorant route; the two-scale
 infinite-tail construction remains the dependency-closed open core, so this card stays in Stage 1.
+
+## Lean status 2026-08-22 — closed concrete positive survivor
+
+`GaloisForLFunctions.HTGeometry.StandardPositiveAppellHumbertJetAmple` supplies a fully concrete
+all-order theorem with no analytic or geometric premises: for each `d`, the standard coordinate
+Hermitian form and trivial semicharacter define an explicit Appell--Humbert automorphic factor on
+`standardIntegerLattice d`, and
+`standardPositiveAppellHumbertFactor_jetAmpleEveryFiniteOrder` proves that this one fixed factor
+interpolates every finite mixed-jet packet.  The proof constructs the Hermitian, positivity, and
+restricted semicharacter certificates rather than accepting them as theorem arguments.
+
+Direct Lean checking and the exact target build passed.  The theorem's axiom report is
+`[propext, Classical.choice, Quot.sound]`.  This closes a nontrivial concrete positive case of the
+card's intended phenomenon; it is not a substitute for the still-open arbitrary-torusless
+quasi-Abelian theorem, whose missing two-scale tail construction prevents a Stage-3 move.
+
+## Rank-zero bounded-seed route is impossible (Lean-closed)
+
+The narrowed finite-disc route still cannot be started by taking the lower factor to be rank zero
+and feeding its ordinary entire interpolants into `AbeDampingBoundBridge`.  At rank zero the lower
+Hermitian form is zero, so that bridge's normalised estimate is literally
+
+```text
+‖seed_B(y)‖ <= C · B^r     for every y in C^d.
+```
+
+For each fixed `B` this is a global bound on an entire function.  Liouville therefore makes the
+seed constant.  It cannot simultaneously retain a target value `1` and vanish at one nonzero
+complement translate.  This is an obstruction to this *route*, not a disproof of the public
+all-order theorem: the known positive rank-zero construction uses Gaussian-flat Poincare seeds
+directly rather than lower-automorphic bounded seeds.
+
+Lean module `HTGeometry/QuasiAbelianBoundedSeedNoGo` now proves, without added hypotheses:
+
+```text
+multivariateEntire_apply_eq_of_norm_le
+not_exists_bounded_multivariateEntire_one_zero
+not_exists_polynomially_bounded_seed_family_one_zero
+```
+
+The exact axiom report of all three is `[propext, Classical.choice, Quot.sound]`; isolated
+`lake env lean` and target-only `lake build
+GaloisForLFunctions.HTGeometry.QuasiAbelianBoundedSeedNoGo` passed.  Thus the remaining open
+producer cannot be an ordinary globally bounded rank-zero seed family.  A valid completion must
+construct a different base-to-extension mechanism, or a lower positive factor whose normalised
+modulus is controlled without collapsing to a globally bounded entire function.
+
+## Correct pointwise-damping boundary for jets (Lean-closed)
+
+A re-read of Abe §7--§9 identifies why his point-separation limit is valid despite the absence of a
+uniform phase gap.  For values, the damping exponential has norm at most `1` on Abe's ray; the
+original normally convergent complement series is therefore a parameter-independent summable
+dominator, and Tannery/dominated convergence passes the pointwise limit through the full sum.
+`HTGeometry/AbeDerivativeDampingNoGo` formalizes that valid abstract step as
+`Tendsto (tsum f_B) 0` from pointwise convergence and one summable norm majorant.
+
+That repair does **not** lift to arbitrary jets automatically.  The first derivative already adds a
+factor `B`.  With a phase deficit `a > 0`, its size is `B exp(-a B)`.  The closed theorem
+
+```text
+not_exists_uniform_linear_exponential_damping_bound
+```
+
+proves that no single real constant bounds this expression for all `B >= 0` and all arbitrarily
+small `a > 0`.  Its proof chooses `B = (C+1) exp(1)` and `a = B^{-1}`, so no numerical computation
+or asymptotic assumption is involved.  Thus pointwise strict negativity plus normal convergence is
+sufficient for Abe's value-level argument but insufficient for the derivative-stable domination
+needed by the card's all-order jet claim.
+
+The module's axiom report is `[propext, Classical.choice, Quot.sound]`; isolated `lake env lean`
+and target-only `lake build GaloisForLFunctions.HTGeometry.AbeDerivativeDampingNoGo` passed.
+
+**Refined open core:** prove a summable phase-degeneracy estimate in Abe's period-matrix coordinates
+strong enough to dominate `B^R exp(-B a_gamma)` for every fixed jet order `R`, or construct an
+alternative all-order seed family that supplies such a dominator.  Positivity, finite jet
+surjectivity, and strict pointwise phase negativity alone cannot provide it.
+
+### Superseding gate ledger (2026-08-22)
+
+The earlier checked boxes headed “Gates” record the invalid proposed proof and are superseded by
+this audit.  In particular, “all finite derivatives of complement terms decay” only holds termwise;
+it is **not** a proved statement about their infinite Poincare sum.  “subgroup-rank induction lifted
+from values to complete finite jet packets” is Lean-proved only under the explicit damping datum,
+whose derivative-stable majorant is now identified as unconstructed and not implied by positivity.
+Neither item may be used to justify Stage 2 or Stage 3.
+
+## Correct convergence-level extension infrastructure (Lean-closed)
+
+`HTGeometry/QuasiAbelianConvergentDampedExtension` now proves the subgroup-rank determinant
+induction from its mathematically minimal analytic output:
+
+```text
+AbeConvergentJetPacketLift.remainder_tendsto_zero
+```
+
+For every finite packet and every pair of jet indices, this is literal convergence of the actual
+complement `tsum` to zero.  The module proves
+`AbeConvergentDampedFactorExtension.jetAmpleEveryFiniteOrder` using only that convergence, finite
+jet interpolation below the extension, and determinant continuity.  It does **not** assume or
+recreate a global `exp(-delta B)` rate.
+
+This is infrastructure, not a new premise for the public theorem and not a completion claim: a
+valid period-matrix construction must build these lifts and prove their `remainder_tendsto_zero`
+fields.  The prior stronger `AbeDampedJetPacketLift` remains a valid sufficient route but cannot be
+silently substituted for that missing construction.
+
+The new theorem has axiom report `[propext, Classical.choice, Quot.sound]`; isolated `lake env lean`
+and target-only `lake build GaloisForLFunctions.HTGeometry.QuasiAbelianConvergentDampedExtension`
+passed.
+
+### Conjecture `DJS-1` (current construction target)
+
+For each fixed finite packet and jet order `R`, Abe's period-matrix damping ray admits lower seed
+columns for which every complement packet-jet term has a parameter-independent summable envelope
+and converges pointwise to zero after all derivatives of order at most `R`.  By
+`tendsto_tsum_zero_of_pointwise_damping_of_summable_majorant`, this would construct the
+`remainder_tendsto_zero` field of `AbeConvergentJetPacketLift`; the new convergence-level extension
+would then complete the subgroup-rank induction.
+
+`DJS-1` is **not proved**.  The uniform-phase-gap and globally bounded rank-zero variants are
+Lean-refuted above.  Any proof must exploit quantitative structure of Abe's actual period matrix
+and seed functions beyond strict nonresonance.
+
+## Primary-literature audit extension (2026-08-22)
+
+Three independent primary sources now delimit the known result precisely.
+
+1. Abe, *Construction of automorphic forms for ample factors of quasi-Abelian
+   varieties*, Kyushu J. Math. 57 (2003), Theorems 8.1 and 9.1, constructs sections
+   separating finite reduced point sets and one tangent direction.  Its §9
+   differentiation argument does not state a summable all-order complement-jet
+   majorant.
+2. Capocasa--Catanese, *Linear systems on quasi-abelian varieties*, Math. Ann.
+   301 (1995), Theorem A, proves that a positive line bundle has nonzero sections,
+   infinite-dimensional in the noncompact case.  Its embedding results concern
+   base-point freedom or projective embedding under divisibility/reducibility
+   conditions; the paper contains no finite-Artin-jet surjectivity result.
+3. Ghanmi--Intissar--Souid El Ainin, *On holomorphic theta functions associated
+   to rank \(r\) isotropic discrete subgroups of a \(g\)-dimensional complex space*,
+   arXiv:1506.06353, constructs an explicit reproducing-kernel Fock theta space
+   only for a positive-definite Hermitian form and an isotropic subgroup of rank
+   \(r\le g\).  This is a restrictive special model, not the general
+   quasi-Abelian period-matrix setting of this card; it supplies no proof of
+   `DJS-1`.
+
+Thus the external audit neither proves nor refutes the public theorem.  It does
+confirm that replacing `DJS-1` by “infinite-dimensional section space” or by
+very ampleness would be an invalid implication.  The theorem remains **Stage 1**
+until the derivative-stable Poincare-tail construction is paper-proved and then
+formalized without assumptions.
+
+## Super-Gaussian small-divisor boundary (Lean-closed)
+
+The two-scale finite-disc route needs a quantitative seed construction, not merely
+an unspecified Gaussian factor in the complement index.  The new closed theorem
+`HTGeometry/AbeGaussianSmallDivisorNoGo`
+
+```text
+not_exists_gaussian_small_divisor_uniform_damping_bound
+```
+
+proves that there is no constant `C` bounding, simultaneously for all `B >= 0`
+and all natural `n`,
+
+```text
+B · exp(-n^2) · exp(-B · exp(-n^3)).
+```
+
+At `B = exp(n^3)` this term is exactly `exp(n^3 - n^2 - 1)` and is unbounded.
+Thus even a Gaussian lattice amplitude cannot provide a derivative-stable envelope
+when a phase deficit is permitted to be super-Gaussianly small in its lattice
+index.  The result has no premises and its axiom report is exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+This **does not refute the public theorem**: it is a no-go for the claim that
+strict phase damping plus a generic Gaussian tail automatically proves `DJS-1`.
+A completion must either derive an explicit quantitative lower bound on the
+actual period-matrix phase deficits, or build seeds whose dependence on those
+small divisors supplies a different summable envelope.
+
+## Period-matrix arithmetic gate: toruslessness is not quantitative
+
+Otiman--Toma, *Hodge decomposition for Cousin groups and for
+Oeljeklaus--Toma manifolds*, arXiv:1811.02541, Definition 2.4 and its Vogt
+examples, distinguish the qualitative Cousin condition from **weak/strong
+ dispersiveness**.  For the rank-three lattice in `C^2` with columns
+
+```text
+lambda_1 = (0,1),   lambda_2 = (1,alpha),   lambda_3 = (i,0),
+```
+
+irrationality of `alpha` makes `C^2 / Lambda_alpha` a Cousin group, while
+Vogt's explicit Liouville choice is not even weakly dispersive.  Weak
+ dispersiveness is exactly an exponential lower bound on `|q alpha - p|`;
+it is an extra arithmetic condition, not a consequence of irrationality.
+
+This family lies inside the geometric scope relevant here.  With the standard
+positive Hermitian form
+
+```text
+H((z,w),(z',w')) = z·conj(z') + w·conj(w'),
+```
+
+its imaginary part on the displayed lattice basis is integral: the only
+nonzero pair is `Im H(lambda_2, lambda_3) = -1`.  Hence it is an ample
+Riemann form.  It is torusless: if two lattice vectors
+`(b+i c, a+alpha b)` and `(b'+i c', a'+alpha b')` spanned a complex line,
+separating real and imaginary parts of their determinant and using
+irrationality of `alpha` forces all `2 x 2` minors of
+`(a,b,c)` and `(a',b',c')` to vanish.  They are real-proportional, so the
+line cannot meet the lattice in rank two.
+
+**Route verdict.**  The public theorem is not refuted, but no proof may infer
+a derivative-stable `DJS-1` envelope from toruslessness plus strict phase
+nonresonance.  The class contains Liouville period matrices with arbitrarily
+bad small divisors.  A proof by the current damping ray must add a *proved*
+replacement mechanism (not a new public hypothesis): either a seed family
+that cancels those divisors, or a wholly different construction.  The
+unconditional Lean theorem in `AbeGaussianSmallDivisorNoGo` is the exact
+analytic boundary once such deficits are present.
+
+## Normalized multiplier branch: first-jet small divisors remain (Lean-closed)
+
+A local normalization by the nonzero damping multiplier is legitimate for the
+finite determinant: multiplying every packet jet block by the inverse local
+multiplication matrix preserves invertibility.  It improves the complement
+phase factor from a raw derivative factor `B` to `B·|δ|`, where
+`δ = exp(2πiθ) - 1`, while value damping is of order
+`exp(-B·|δ|²)`.  This is still not a derivative-stable summable envelope under
+toruslessness alone.
+
+`HTGeometry/AbeGaussianSmallDivisorNoGo` now additionally proves the closed
+unconditional theorem
+
+```text
+not_exists_gaussian_normalized_small_divisor_uniform_damping_bound
+```
+
+which rules out a uniform bound on
+
+```text
+B · exp(-n²) · exp(-n³) · exp(-B · exp(-2n³)).
+```
+
+Here `exp(-n²)` is a Gaussian lattice amplitude and
+`δ_n = exp(-n³)` is the normalized phase scale.  At
+`B = exp(2n³)` the term is exactly `exp(n³ - n² - 1)`, hence unbounded.
+The proof is closed in Lean with axiom report
+`[propext, Classical.choice, Quot.sound]`; isolated source checking and the
+single required target build passed.
+
+Thus local jet normalization removes one phase factor but does not prove
+`DJS-1`: the derivative of a holomorphic damping phase is linear in `δ`, while
+its real-part loss is quadratic in `|δ|`.  For Liouville period data the
+remaining factor defeats a generic Gaussian tail.  Any successful all-order
+construction must provide cancellation beyond local multiplier normalization,
+or use a genuinely different seed/periodization mechanism.  This is a
+no-go for that branch, not a new hypothesis and not a refutation of the
+public theorem; the card remains Stage 1.
+
+### Conjecture `DJS-2` — spectral coefficient extraction (unproved)
+
+A possible replacement for the failed real-ray derivative limit is to use the
+entire dependence on Abe's damping parameter.  At value level, the complement
+sum is an absolutely summable atomic exponential series in `B`; the subgroup
+term has phase `t=1` and every complement phase lies on the unit circle away
+from `1`.  The peak polynomials
+
+```text
+((1 + t) / 2)^N
+```
+
+are bounded by `1`, equal `1` at `t=1`, and tend to zero at every other unit
+phase.  Applied to the Taylor moments of an identically zero parameter-family,
+this isolates the subgroup coefficient without requiring a uniform real-part
+gap.
+
+For a jet of order `R`, however, differentiation in the source variable turns
+the parameter family into a finite-order spectral distribution:
+`B^k exp(B(t-1))` occurs for `k <= R`.  Differentiating the peak polynomial
+costs powers of `N`; phases that approach `1` faster than any prescribed rate
+can defeat the resulting envelope.  The normalized first-jet no-go above is
+the concrete manifestation of this loss.  Therefore the value-level peak
+argument does not currently extend to `DJS-1`.
+
+**Current exact target.** Prove an atomic spectral uniqueness theorem for the
+specific coefficient families imposed by Abe automorphy that controls these
+finite distribution orders, or prove that those coefficient families can
+realize the obstruction.  No such theorem is yet proved; no public hypothesis
+has been added.
+
+### Revision of `DJS-2`: finite-order atomic peak extraction may close the jet step
+
+The preceding caution about differentiated peak polynomials was incomplete.
+For a fixed jet order `R`, suppose the parameter-dependent complement jets have
+an absolutely summable atomic expansion
+
+```text
+Σ_(λ,k≤R) a_(λ,k) · B^k · exp(B(t_λ - 1)),
+|t_λ| ≤ 1,  t_λ != 1,  Σ_(λ,k) |a_(λ,k)| < ∞.             (DJS-2.1)
+```
+
+The factor `B^k` is the Laplace transform of a `k`-th derivative of an atom at
+`t_λ`.  For the peak `p(t)=(1+t)/2`, differentiation of `p(t)^N` costs at most
+`O(N^k |p(t)|^(N-k))`.  Divide the test by `N^R`.  At a target atom `t=1` this
+isolates the top derivative order; at every fixed complement atom it tends to
+zero, and the normalized derivatives are uniformly bounded.  Absolute
+summability therefore gives dominated convergence even when `t_λ -> 1`
+super-Gaussianly.  Descending through `R` extracts every target coefficient.
+
+For a determinant block, take the mean of its finitely many phase coordinates;
+the closed unit disc is convex and equality in the triangle inequality shows
+that the peak `1` occurs only when every selected term is a subgroup term.
+Thus the subgroup determinant coefficient is spectrally isolable without a
+uniform phase gap.
+
+This avoids the false claim that each differentiated complement **sum** tends
+to zero on Abe's real ray.  It instead proves that the evaluation determinant
+cannot be identically zero as an entire parameter function, which is all the
+induction needs.
+
+**New exact open analytic obligation.** Derive (DJS-2.1), with its finite
+source-jet polynomial factors, from Abe's admissible seed class and the normal
+Poincare estimates, and carry the finite-order atomic peak-extraction lemma
+through the block determinant.  Abe's `rho < 2` growth condition is designed
+to absorb every fixed polynomial lattice factor, so this is now a concrete
+proof target rather than an unquantified small-divisor condition.  No new
+public hypothesis has been introduced.
+
+### `DJS-3` — graded Vandermonde damping determinant (current positive route)
+
+The zero-order target determinant in `DJS-2` is not enough by itself: a local
+multiplication matrix has determinant `1`, so finite-order complement spectral
+distributions can still mask its constant coefficient.  There is a stronger
+construction that forces a nonzero **top** parameter coefficient.
+
+Fix a local damping coordinate `u` with `du(p) != 0`.  Complete `u` to local
+coordinates.  For every transverse jet monomial and every `u`-order `r`, take
+a lower-automorphic seed that has that transverse target jet and vanishes to
+full packet order at earlier blocks.  Lift several copies using distinct
+positive damping speeds `c_0,...,c_R`:
+
+```text
+seed_alpha · exp(c_j B (u - u(p))).                       (DJS-3.1)
+```
+
+At the new target block, the degree-`r` `u`-jet has leading term
+`(c_j B)^r/r!`.  The leading evaluation block is Vandermonde in the distinct
+`c_j`; tensoring it with the transverse lower-jet basis gives a nonzero
+coefficient of `B^D` in the full packet determinant.  At earlier packet blocks
+full seed vanishing is preserved by multiplication.
+
+Every complement entry is a finite polynomial in `B` times its phase
+exponential.  Expand the finite determinant after termwise Poincare summation
+and divide by `B^D`.  The admissible `rho < 2` Poincare estimate supplies an
+absolute summable coefficient majorant with every fixed lattice-polynomial
+factor.  The normalized complement terms are bounded by that majorant and
+converge pointwise to zero along Abe's ray.  Tannery then shows
+
+```text
+B^(-D) det M(B)  ->  nonzero Vandermonde target coefficient.
+```
+
+Hence `det M(B) != 0` for some finite `B`, without claiming that any
+unnormalized differentiated remainder tends to zero.  Super-Gaussian phase
+recurrence cannot defeat this leading-coefficient argument because no positive
+power of `B` remains after normalization.
+
+**Proof obligations before promotion.** Derive the finite polynomial-exponential
+jet expansion and its summable coefficient majorant from Abe's `Phi_2` seed
+class; formalize the local-coordinate/Vandermonde jet block; formalize the
+normalized determinant Tannery lemma; then instantiate each subgroup-rank
+extension.  These are construction obligations, not new public hypotheses.
+
+## Graded damping Vandermonde core (Lean-closed)
+
+`HTGeometry/AbeGradedVandermonde` now formalizes the finite algebraic block of
+`DJS-3`.  For distinct complex speeds `c_i` and nonzero parameter `B`, the
+matrix
+
+```text
+((c_i B)^j)_(i,j)
+```
+
+is an invertible Vandermonde matrix.  The closed theorem
+`abeGradedVandermonde_det_ne_zero` is proved from Mathlib's exact
+Vandermonde determinant formula; its axiom report is
+`[propext, Classical.choice, Quot.sound]`, and isolated source checking plus
+`lake build GaloisForLFunctions.HTGeometry.AbeGradedVandermonde` passed.
+
+Existing `DampedJetDecay.iteratedDeriv_cexp_mul` identifies these entries with
+the jets at a normalization point of the literal damping columns
+`w ↦ exp((c_i B) w)`.  The new module is wired into the HTGeometry umbrella.
+It proves the local leading block only; the Poincare coefficient expansion and
+normalized determinant Tannery argument required by `DJS-3` remain to be
+constructed.
+
+## Normalized leading-determinant transfer (Lean-closed)
+
+`HTGeometry/AbeLeadingDeterminant` now proves
+
+```text
+eventually_det_ne_zero_of_tendsto_smul_matrix
+```
+
+for every finite complex matrix family.  If `s(B) • M(B)` converges to a matrix
+with nonzero determinant, then `det M(B) != 0` eventually.  The proof uses
+continuity of determinant and the exact identity
+`det(s • M) = s^card · det M`; it does not require `s(B)` to be nonzero.
+
+This is the formal transfer endpoint of `DJS-3`: after proving the normalized
+Poincare evaluation matrix tends to its nonzero graded-Vandermonde leading
+matrix, it yields an actual finite parameter with invertible jet evaluation
+matrix.  The theorem is axiom-clean (`[propext, Classical.choice, Quot.sound]`),
+was source-checked, target-built with
+`lake build GaloisForLFunctions.HTGeometry.AbeLeadingDeterminant`, and wired
+into the HTGeometry umbrella.  It is unconditional infrastructure; it does not
+supply the still-open normalized Poincare convergence itself.

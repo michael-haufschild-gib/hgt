@@ -99,4 +99,109 @@ theorem not_isSquare_prod_sq_add_four_sq {ι : Type*} [Fintype ι] [Nonempty ι]
   field_simp
   linear_combination hr
 
+
+/-! ### The independence without a square root of `−1`
+
+The factorization into linear polynomials is not needed: each block discriminant is separable
+because its only critical point is the origin, where it takes the nonzero value `δ²`, and two block
+discriminants are coprime because they differ by a nonzero constant.  A product of pairwise coprime
+separable polynomials is separable, hence squarefree, hence not a square in the rational function
+field.  This removes the hypothesis that the base field contains `√(−1)`.
+-/
+
+namespace BlockDiscriminant
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+theorem four_ne_zero (h2 : (2 : K) ≠ 0) : (4 : K) ≠ 0 := by
+  have h : (4 : K) = 2 * 2 := by norm_num
+  rw [h]
+  exact mul_ne_zero h2 h2
+
+theorem eight_ne_zero (h2 : (2 : K) ≠ 0) : (8 : K) ≠ 0 := by
+  have h : (8 : K) = 2 * 2 * 2 := by norm_num
+  rw [h]
+  exact mul_ne_zero (mul_ne_zero h2 h2) h2
+
+theorem derivative_block (c : K) :
+    Polynomial.derivative (C c ^ 2 + 4 * X ^ 2 : K[X]) = C (8 : K) * X := by
+  rw [map_ofNat, sq (C c), ← map_mul]
+  simp
+  ring
+
+theorem separable_block (h2 : (2 : K) ≠ 0) {c : K} (hc : c ≠ 0) :
+    (C c ^ 2 + 4 * X ^ 2 : K[X]).Separable := by
+  have hcc : c * c ≠ 0 := mul_ne_zero hc hc
+  have hsq : (C c : K[X]) ^ 2 = C (c * c) := by rw [sq, ← map_mul]
+  have hcoX : IsCoprime (C c ^ 2 + 4 * X ^ 2 : K[X]) X := by
+    refine ⟨C (c * c)⁻¹, -(C (c * c)⁻¹ * 4 * X), ?_⟩
+    have h1 : (C (c * c)⁻¹ : K[X]) * C (c * c) = 1 := by
+      rw [← map_mul, inv_mul_cancel₀ hcc, map_one]
+    rw [hsq]
+    linear_combination h1
+  have hco8 : IsCoprime (C c ^ 2 + 4 * X ^ 2 : K[X]) (C (8 : K)) := by
+    refine ⟨0, C ((8 : K)⁻¹), ?_⟩
+    rw [zero_mul, zero_add, ← map_mul, inv_mul_cancel₀ (eight_ne_zero h2), map_one]
+  show IsCoprime _ (Polynomial.derivative _)
+  rw [derivative_block]
+  exact hco8.mul_right hcoX
+
+theorem isCoprime_block {c c' : K} (hcc : c * c - c' * c' ≠ 0) :
+    IsCoprime (C c ^ 2 + 4 * X ^ 2 : K[X]) (C c' ^ 2 + 4 * X ^ 2 : K[X]) := by
+  refine ⟨C (c * c - c' * c')⁻¹, -C (c * c - c' * c')⁻¹, ?_⟩
+  have h1 : (C (c * c - c' * c')⁻¹ : K[X]) * C (c * c - c' * c') = 1 := by
+    rw [← map_mul, inv_mul_cancel₀ hcc, map_one]
+  rw [map_sub] at h1
+  rw [show (C c : K[X]) ^ 2 = C (c * c) from by rw [sq, ← map_mul],
+    show (C c' : K[X]) ^ 2 = C (c' * c') from by rw [sq, ← map_mul]]
+  linear_combination h1
+
+theorem natDegree_block (h2 : (2 : K) ≠ 0) (c : K) :
+    (C c ^ 2 + 4 * X ^ 2 : K[X]).natDegree = 2 := by
+  have hsq : (C c : K[X]) ^ 2 = C (c * c) := by rw [sq, ← map_mul]
+  have h4 : (4 : K[X]) ≠ 0 := by
+    intro hcon
+    exact four_ne_zero h2 (by simpa using congrArg (fun p : K[X] => p.coeff 0) hcon)
+  have hX : (X : K[X]) ^ 2 ≠ 0 := pow_ne_zero 2 Polynomial.X_ne_zero
+  rw [hsq, add_comm, Polynomial.natDegree_add_C, Polynomial.natDegree_mul h4 hX,
+    Polynomial.natDegree_X_pow]
+  simp
+
+theorem block_ne_zero (h2 : (2 : K) ≠ 0) (c : K) : (C c ^ 2 + 4 * X ^ 2 : K[X]) ≠ 0 := by
+  intro hcon
+  have := congrArg Polynomial.natDegree hcon
+  rw [natDegree_block h2 c] at this
+  simp at this
+
+end BlockDiscriminant
+
+/-- **Independence of the block discriminants, over any field of characteristic `≠ 2`.**  If the
+detunings are pairwise distinct and never opposite, no nonempty product of `δ² + 4u²` is a square in
+`K(u)`.  No square root of `−1` is needed. -/
+theorem not_isSquare_prod_sq_add_four_sq' {ι : Type*} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    (h2 : (2 : K) ≠ 0) {δ : ι → K}
+    (hinj : Function.Injective δ) (hne : ∀ z z', δ z ≠ -δ z') :
+    ¬ IsSquare (algebraMap K[X] (RatFunc K)
+      (∏ z, (C (δ z) ^ 2 + 4 * X ^ 2))) := by
+  classical
+  have hδ0 : ∀ z, δ z ≠ 0 := fun z hz => hne z z (by rw [hz, neg_zero])
+  have hdiff : ∀ z z' : ι, z ≠ z' → δ z * δ z - δ z' * δ z' ≠ 0 := by
+    intro z z' hzz hcon
+    have hfac : (δ z - δ z') * (δ z + δ z') = 0 := by linear_combination hcon
+    rcases mul_eq_zero.mp hfac with h | h
+    · exact hzz (hinj (sub_eq_zero.mp h))
+    · exact hne z z' (by linear_combination h)
+  refine not_isSquare_algebraMap_of_squarefree ?_ ?_
+  · refine (Polynomial.separable_prod' ?_ ?_).squarefree
+    · intro z _ z' _ hzz
+      exact BlockDiscriminant.isCoprime_block (hdiff z z' hzz)
+    · intro z _
+      exact BlockDiscriminant.separable_block h2 (hδ0 z)
+  · intro hu
+    have hz := Polynomial.natDegree_eq_zero_of_isUnit hu
+    rw [Polynomial.natDegree_prod _ _ (fun z _ => BlockDiscriminant.block_ne_zero h2 (δ z))] at hz
+    have hz0 := (Finset.sum_eq_zero_iff.mp hz) (Classical.arbitrary ι) (Finset.mem_univ _)
+    rw [BlockDiscriminant.natDegree_block h2] at hz0
+    exact absurd hz0 (by norm_num)
+
 end GaloisForLFunctions.HTGeometry

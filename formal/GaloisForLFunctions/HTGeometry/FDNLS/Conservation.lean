@@ -306,20 +306,20 @@ theorem hamiltonian_derivative_zero (C σ : ℝ) (D : ι → ι → ℝ) (hD : �
 theorem hasDerivAt_latticeHamiltonian {C σ : ℝ} {D : ι → ι → ℝ} (hD : ∀ n m, D n m = D m n)
     {u : ℝ → ι → ℂ} (hu : IsLatticeNLSSolution C σ D u) (t : ℝ) :
     HasDerivAt (fun s => latticeHamiltonian C σ D (u s)) 0 t := by
-  set v : ι → ℂ := fun n => -Complex.I * latticeNLSField C σ D (u t) n with hv
   have hinner : ∀ n : ι, HasDerivAt (fun s => ∑ m : ι, D n m * rePair (u s n) (u s m))
-      (∑ m : ι, D n m * (rePair (v n) (u t m) + rePair (u t n) (v m))) t := by
-    intro n
-    exact hasDerivAt_finsetSum (A := fun m s => D n m * rePair (u s n) (u s m))
+      (∑ m : ι, D n m * (rePair (-Complex.I * latticeNLSField C σ D (u t) n) (u t m)
+        + rePair (u t n) (-Complex.I * latticeNLSField C σ D (u t) m))) t := fun n =>
+    hasDerivAt_finsetSum (A := fun m s => D n m * rePair (u s n) (u s m))
       fun m => HasDerivAt.const_mul (D n m) (hasDerivAt_rePair (hu t n) (hu t m))
   have hd1 : HasDerivAt (fun s => ∑ n : ι, ∑ m : ι, D n m * rePair (u s n) (u s m))
-      (∑ n : ι, ∑ m : ι, D n m * (rePair (v n) (u t m) + rePair (u t n) (v m))) t := by
-    exact hasDerivAt_finsetSum (A := fun n s => ∑ m : ι, D n m * rePair (u s n) (u s m)) hinner
+      (∑ n : ι, ∑ m : ι, D n m * (rePair (-Complex.I * latticeNLSField C σ D (u t) n) (u t m)
+        + rePair (u t n) (-Complex.I * latticeNLSField C σ D (u t) m))) t :=
+    hasDerivAt_finsetSum (A := fun n s => ∑ m : ι, D n m * rePair (u s n) (u s m)) hinner
   have hquart : ∀ n : ι, HasDerivAt (fun s => ‖u s n‖ ^ 4)
-      (2 * ‖u t n‖ ^ 2 * (2 * rePair (u t n) (v n))) t := by
+      (2 * ‖u t n‖ ^ 2 * (2 * rePair (u t n)
+        (-Complex.I * latticeNLSField C σ D (u t) n))) t := by
     intro n
-    have hbase := hasDerivAt_normSqPair (hu t n)
-    have hp := hbase.pow 2
+    have hp := (hasDerivAt_normSqPair (hu t n)).pow 2
     have hfun : ((fun s => ‖u s n‖ ^ 2) ^ (2 : ℕ) : ℝ → ℝ) = fun s => ‖u s n‖ ^ 4 := by
       funext s
       simp only [Pi.pow_apply]
@@ -328,10 +328,10 @@ theorem hasDerivAt_latticeHamiltonian {C σ : ℝ} {D : ι → ι → ℝ} (hD :
     refine hp.congr_deriv ?_
     norm_num
   have hd2 : HasDerivAt (fun s => ∑ n : ι, ‖u s n‖ ^ 4)
-      (∑ n : ι, 2 * ‖u t n‖ ^ 2 * (2 * rePair (u t n) (v n))) t := by
-    exact hasDerivAt_finsetSum (A := fun n s => ‖u s n‖ ^ 4) hquart
+      (∑ n : ι, 2 * ‖u t n‖ ^ 2 * (2 * rePair (u t n)
+        (-Complex.I * latticeNLSField C σ D (u t) n))) t :=
+    hasDerivAt_finsetSum (A := fun n s => ‖u s n‖ ^ 4) hquart
   have hd := (hd1.const_mul C).sub (hd2.const_mul (σ / 2))
-  rw [hv] at hd
   rw [hamiltonian_derivative_zero C σ D hD (u t)] at hd
   exact hd
 

@@ -107,7 +107,7 @@ theorem directionFieldRadical_sq (h2 : (2 : A) ≠ 0) {δ : ι → A} (hδ : ∀
   rfl
 
 /-- **Every radical flip of one transverse direction is realized.** -/
-theorem exists_directionFlip (h2 : (2 : A) ≠ 0) {I : A} (hI : I * I = -1) {δ : ι → A}
+theorem exists_directionFlip (h2 : (2 : A) ≠ 0) {δ : ι → A}
     (hδ : ∀ z, δ z ≠ 0) (hinj : Function.Injective δ) (hne : ∀ z z', δ z ≠ -δ z') (z₀ : ι) :
     ∃ σ : ↥(directionField h2 hδ) ≃ₐ[RatFunc A] ↥(directionField h2 hδ),
       (∀ z, z ≠ z₀ → σ (directionFieldRadical h2 hδ z) = directionFieldRadical h2 hδ z) ∧
@@ -147,7 +147,7 @@ theorem exists_directionFlip (h2 : (2 : A) ≠ 0) {I : A} (hI : I * I = -1) {δ 
     have hsquare : algebraMap (Polynomial A) (RatFunc A)
         (∏ z ∈ T, (Polynomial.C (δ z * δ z) + Polynomial.C (4 : A) * Polynomial.X ^ 2))
         = v * v := hinj' (by rw [hw, map_mul])
-    refine not_isSquare_prod_sq_add_four_sq (K := A) hI h2
+    refine not_isSquare_prod_sq_add_four_sq' (K := A) h2
       (δ := fun z : T => δ (z : ι)) (fun a b hab => Subtype.ext (hinj hab))
       (fun a b => hne _ _) ⟨v, ?_⟩
     rw [← hsquare]

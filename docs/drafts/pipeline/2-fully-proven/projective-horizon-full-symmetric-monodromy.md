@@ -5545,3 +5545,130 @@ Remaining for `∀ σ, e(Q_σ/𝔪_A) ≤ 2`: assemble `(c)` from `ringReciproca
 to the residue map plus `criticalGeometricSheetToSchurReducedFibre`; then `(d)` the centre's
 localization is `criticalSchurSourceValuationSubring`, a DVR, so `ValuationSubring.eq_of_le_of_ne_top`
 identifies the pullbacks; then `(e)` `ramificationIdx'_algEquiv`.
+
+## Lean progress — `(R)` IS CLOSED: the Schur inertia group has order exactly two
+
+`natCard_criticalSchurInertiaGroup_le_two_of_ramification` no longer carries a hypothesis.  Six
+further modules landed, all `lake build`-green and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), all wired into `HTGeometry.lean`:
+
+```text
+HTGeometry/CriticalSheetResidueCongruence.lean
+    coe_criticalSheetJetCoeff        the j-th jet coefficient IS the sheet's j-th raw coordinate
+    criticalSheetToUpper, criticalSheetResidue
+    criticalSheetRaw_residue_congr   ** equal labels ⟹ equal residues on every raw coordinate **
+HTGeometry/CriticalSheetSchurCoordinateResidue.lean
+    criticalSheetSchurCoordinates_residue_congr
+                                     ** … hence on every Schur coordinate **
+HTGeometry/CriticalSheetCoordRingResidue.lean
+    coe_algebraMap_criticalSchurSourceValuationSubring
+    criticalSheetAevalHom, criticalSheetCoordResidue
+    criticalSheetCoordResidue_congr  ** … hence on the whole Schur coordinate ring **
+HTGeometry/CriticalSheetSchurPlacePullback.lean
+    criticalSheetPullbackValuation, criticalSheetPullbackValuation_canonical
+    isUnit_criticalSheetAeval
+    criticalSheetPullbackValuation_eq
+        ** a sheet with the canonical label cuts out exactly the source Schur place **
+HTGeometry/CriticalSheetPlaceRamificationIndex.lean
+    criticalSheetFieldEquiv, criticalSheetIntegralClosureEquiv
+    criticalSheetIntermediateCentre_comap
+    criticalSheetRamificationIdx_eq_two   ** e(Q_σ) = 2 for such a sheet **
+HTGeometry/CriticalSchurInertiaOrderTwo.lean
+    criticalSourceNormalClosureEmbedding_mem_collisionSupport
+    criticalSheetRamificationIdx_le_two   ** every sheet: e(Q_σ) ≤ 2 **
+    natCard_criticalSchurInertiaGroup_le_two
+    natCard_criticalSchurInertiaGroup_eq_two   ** |I| = 2 **
+```
+
+### The argument, and why it is not circular
+
+`e(Q_σ)` is by the orbit formula the size of the `I`-orbit of `σ`, so bounding it looks equivalent
+to the collision count.  It is not, because it is computed *arithmetically*, from the place the
+sheet cuts out, and not from any orbit:
+
+1. the reduced label of a sheet is the residue of its fibre point, so two sheets with the same label
+   have the same residue on every raw coordinate — below the depth those residues are the label's
+   own coefficients, above it the coordinate is an observation coordinate that every sheet fixes;
+2. the scale is a unit of the upper valuation ring at every sheet (`isUnit_criticalSheetScale`), and
+   the Schur coordinates are a division-free polynomial construction in the normalised raws
+   (`RingSchurCoordinates`), so the residues agree on every Schur coordinate, hence — the coordinate
+   ring being a polynomial ring — on the whole coordinate ring;
+3. the source Schur valuation ring is the localization of that polynomial ring at the Schur prime,
+   so its elements are ratios whose denominators lie outside the prime; those denominators have
+   nonzero residue along the sheet, hence are invertible there, hence the sheet's pullback contains
+   the source Schur valuation ring; being a proper valuation ring over a one-dimensional one, it
+   equals it;
+4. a sheet is an isomorphism onto its own field range, and carries the integral closure and its
+   centre along, so `e(Q_σ)` is the ramification index of the *source Schur place*, already computed
+   as `2` by `criticalSchur_source_ramificationIdx_eq_two`;
+5. the canonical embedding cuts out the source Schur place, so it is ramified, so it lies in the
+   collision support; every colliding sheet therefore shares its label; every non-colliding sheet is
+   unramified.  Hence `∀ σ, e(Q_σ) ≤ 2`, and cyclicity of tame inertia gives `|I| ≤ 2`.
+
+With `criticalSchur_two_le_ramificationIdxIn` (already unconditional) this pins `|I| = 2`.
+
+### What `(D)` still needs
+
+`|I| = 2` gives `e(w_std / p) = 2` and hence `t := e(w / w_std) = 1`: the normal-closure place is
+unramified over the source Schur place.  The reduction-degree bound `hdeg` of
+`criticalGeometricMonodromy_eq_top_of_isPreprimitive_of_reducedFibre_degree` still needs the *fibre
+count*: at most two sheets carry the canonical label.  Two routes, both now short of one step:
+
+```text
+(A)  the derivative count.  Choose θ integral over the observation Schur DVR A with E(θ) = F_src;
+     every sheet sends it into W (a valuation ring is integrally closed), the minimal polynomial is
+     monic over A and splits in L, and RootCongruenceValuationCount.
+     card_congruent_roots_le_addVal_eval_derivative bounds the label fibre by 1 + w(p'(θ_σ)).
+     With t = 1 that is 1 + v_{w_std}(p'(θ)), and the missing step is exactly LOCAL MONOGENICITY —
+     V = A_p[θ] — which turns v(p'(θ)) into the different exponent, equal to e − 1 = 1 in the tame
+     case (DifferentIdealMonogenic + DifferentExponentTame.differentIdeal_eq_span_pow).
+(B)  the residue degree.  The label fibre is the set of sheets over the source Schur place with one
+     fixed residue, of size e·f/f = e = 2 as soon as f(w_std / p) = 1, which is §3's birationality
+     of the ramification divisor onto the branch divisor
+     (criticalFibre_eq_of_shared_coprime_tangent, already Lean).  The missing step is the counting
+     identity "#sheets over a place = e·f".
+```
+
+### Correction — the exact remaining statement of `(D)`, after `(R)`
+
+Chasing the two routes above to the end shows they are the same statement, and identifies it
+exactly.  With `|I| = 2` in hand:
+
+* every sheet whose place is the source Schur place has `e(Q_σ) = 2`
+  (`criticalSheetRamificationIdx_eq_two`, whose hypothesis is the *place*, not the label), hence a
+  free inertia orbit, hence collides;
+* conversely a colliding sheet shares the canonical label (`criticalSchur_collisionSupport_reducedFibre_eq`)
+  and therefore cuts out the source Schur place (`criticalSheetPullbackValuation_eq`).
+
+So the collision support is exactly the set of sheets over the source Schur place, and it is a
+single fibre of the reduced label.  Its size is `e·f = 2·f(w_std / p)`.  Hence
+
+```text
+(D)   ⟺   f(w_std / p) = 1   ⟺   the label fibre of a sheet is a single inertia orbit.
+```
+
+`(A)` above also reduces to this: the corpus's tame-different theorems
+(`DifferentExponentTame.differentIdeal_eq_span_pow`,
+`TameDifferentMonogenic.addVal_eval_derivative_of_monic_uniformizer_root`) all assume a *trivial
+residue extension*, i.e. exactly `f = 1`; and a uniformizer of the source place satisfies an
+Eisenstein relation of degree `e` over the base only in the totally ramified case.
+
+Geometrically `f = 1` is §3: the ramification divisor maps birationally onto the branch divisor.
+The Lean route does not go through coordinates, but through the decomposition dictionary at the
+level of valuation subrings — two general theorems, neither in mathlib, both worth having:
+
+```text
+(i)   transitivity: for L/F Galois and two valuation subrings of L with the same restriction to an
+      intermediate field M, some element of Gal(L/M) carries one to the other.
+      Mathlib has the ideal-theoretic form, Ideal.exists_smul_eq_of_isGaloisGroup; the bridge is
+      ValuationSubringInertiaDictionary.valuationSubringAtPrime_eq.
+(ii)  |D_W over M| = |I_W over M| · f, together with Nat.card (Aut (k_W / k_w)) ≤ f.
+      Mathlib has Ideal.card_stabilizer_eq_card_inertia_mul_finrank; the same bridge transports it.
+```
+
+Given (i) and (ii): a sheet `τ` with the canonical label cuts out `w_std`, so `τ = g ∘ σ₀` for some
+`g ∈ Gal(L/E)` (normality), which (i) lets us take in the decomposition group; its residue fixes
+`k_{w_std}` because the labels agree, and since `|I_{W/σ₀F}| = e(W/w_std) = t = 1` the map
+`D_{W/σ₀F} → Aut(k_W / k_{w_std})` is injective between sets of the same size `f(W/w_std)`, hence
+surjective, so `g` can be corrected by an element of `Gal(L/σ₀F)` into the inertia group.  Then the
+label fibre is the inertia orbit of `σ₀`, of size `|I| = 2`, which is `(D)` and hence `hdeg`.

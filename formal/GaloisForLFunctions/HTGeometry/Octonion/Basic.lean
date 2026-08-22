@@ -22,6 +22,8 @@ instance : Module ℝ RealOctonion :=
   (inferInstance : Module ℝ (ℍ[ℝ] × ℍ[ℝ]))
 instance : Module.Free ℝ RealOctonion :=
   (inferInstance : Module.Free ℝ (ℍ[ℝ] × ℍ[ℝ]))
+instance : FiniteDimensional ℝ RealOctonion :=
+  (inferInstance : FiniteDimensional ℝ (ℍ[ℝ] × ℍ[ℝ]))
 
 @[ext]
 theorem ext {x y : RealOctonion} (hfst : x.1 = y.1) (hsnd : x.2 = y.2) : x = y :=
@@ -336,6 +338,52 @@ theorem associator_scalarEmbed_right (r : ℝ) (x y : RealOctonion) :
     IsAlternative.associator x y (scalarEmbed r) = 0 := by
   unfold IsAlternative.associator
   rw [mul_scalarEmbed, mul_scalarEmbed, mul_smul_comm]
+  abel
+
+/-- An octonion and its inverse generate an associative pair on the left. -/
+theorem inverse_mul_associates (x y : RealOctonion) :
+    (inverse x * x) * y = inverse x * (x * y) := by
+  apply sub_eq_zero.mp
+  change IsAlternative.associator (inverse x) x y = 0
+  have hstar : IsAlternative.associator (star x) x y = 0 := by
+    rw [star_eq_scalarEmbed_sub, sub_eq_add_neg, IsAlternative.associator_add_left,
+      associator_scalarEmbed_left]
+    have hneg : IsAlternative.associator (-x) x y = 0 := by
+      rw [show -x = (-1 : ℝ) • x by simp, associator_smul_left,
+        IsAlternative.associator_self_left, smul_zero]
+    rw [hneg, zero_add]
+  calc
+    IsAlternative.associator (inverse x) x y =
+        IsAlternative.associator ((normSq x)⁻¹ • star x) x y := by
+          rw [inverse, scalarEmbed_mul]
+    _ = (normSq x)⁻¹ • IsAlternative.associator (star x) x y :=
+      associator_smul_left _ _ _ _
+    _ = 0 := by rw [hstar, smul_zero]
+
+/-- An octonion and its inverse generate an associative pair on the right. -/
+theorem mul_inverse_associates (x y : RealOctonion) :
+    (y * x) * inverse x = y * (x * inverse x) := by
+  apply sub_eq_zero.mp
+  change IsAlternative.associator y x (inverse x) = 0
+  have hstar : IsAlternative.associator y x (star x) = 0 := by
+    rw [star_eq_scalarEmbed_sub, sub_eq_add_neg, IsAlternative.associator_add_right,
+      associator_scalarEmbed_right]
+    have hneg : IsAlternative.associator y x (-x) = 0 := by
+      rw [show -x = (-1 : ℝ) • x by simp, associator_smul_right,
+        IsAlternative.associator_right_self, smul_zero]
+    rw [hneg, zero_add]
+  calc
+    IsAlternative.associator y x (inverse x) =
+        IsAlternative.associator y x ((normSq x)⁻¹ • star x) := by
+          rw [inverse, scalarEmbed_mul]
+    _ = (normSq x)⁻¹ • IsAlternative.associator y x (star x) :=
+      associator_smul_right _ _ _ _
+    _ = 0 := by rw [hstar, smul_zero]
+
+/-- Every real octonion satisfies its real quadratic characteristic relation. -/
+theorem quadratic_characteristic (x : RealOctonion) :
+    x * x - scalarEmbed (2 * x.1.re) * x + scalarEmbed (normSq x) = 0 := by
+  rw [← add_star_eq_scalarEmbed, ← star_mul_self_eq_scalarEmbed, add_mul]
   abel
 
 end

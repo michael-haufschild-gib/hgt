@@ -199,3 +199,83 @@ Landed: `CriticalSheetJetUnit`, `CriticalSheetScaleUnit`, `SubringPolynomialCoef
 Note: `σ⁻¹(W) ⊇ criticalSchurSourceValuationSubring` is **false** for a general sheet (different
 sheets induce different places over the same base), so (c) genuinely needs the residue comparison —
 do not try to shortcut it.
+
+## SEVENTH BATCH — `(R)` CLOSED.  `|I| = 2` is unconditional
+
+`natCard_criticalSchurInertiaGroup_le_two_of_ramification`'s hypothesis `hram` is DISCHARGED.
+Six modules (all axiom-clean, wired):
+
+* `CriticalSheetResidueCongruence` — `coe_criticalSheetJetCoeff`, `criticalSheetToUpper`,
+  `criticalSheetResidue`, `criticalSheetRaw_residue_congr`, `criticalSheetScale_residue_congr`.
+* `CriticalSheetSchurCoordinateResidue` — `criticalSourceNormalizedPositive_mul_scale`,
+  `criticalSheetSchurCoordinate_succ_lift`, `criticalSheetSchurCoordinates_residue_congr`.
+* `CriticalSheetCoordRingResidue` — `coe_algebraMap_criticalSchurSourceValuationSubring`,
+  `criticalSheetAevalHom`, `criticalSheetCoordResidue`, `criticalSheetCoordResidue_congr`.
+* `CriticalSheetSchurPlacePullback` — `criticalSheetPullbackValuation(_canonical/_ne_top/_eq)`,
+  `isUnit_criticalSheetAeval`, `criticalSchurSourceValuationSubring_le_sheet`.
+* `CriticalSheetPlaceRamificationIndex` — `isUnit_valuationSubring_iff`, `criticalSheetFieldEquiv`,
+  `criticalSheetIntegralClosureEquiv`, `criticalSheetIntermediateCentre_comap`,
+  `criticalSheetRamificationIdx_eq_two`.
+* `CriticalSchurInertiaOrderTwo` — `criticalSourceNormalClosureEmbedding_mem_collisionSupport`,
+  `criticalSheetRamificationIdx_le_two`, `natCard_criticalSchurInertiaGroup_le_two`,
+  `natCard_criticalSchurInertiaGroup_eq_two`.
+
+**Why it is not circular.**  `e(Q_σ)` = orbit size by the orbit formula, but it is computed from the
+PLACE, not the orbit: same label ⟹ same residues on the coordinate ring ⟹ the sheet's pullback
+contains the (DVR) source Schur valuation ring ⟹ equals it ⟹ its ramification index is
+`criticalSchur_source_ramificationIdx_eq_two` = 2.  The canonical embedding cuts out that place, so
+it collides; every collision shares its label; everything else is unramified.
+
+## Remaining for `(D)` = `hdeg`: the label fibre has at most two sheets
+
+`|I| = 2` gives `t = e(w / w_std) = 1`.  Two routes, each one step from done:
+* (A) derivative count: θ integral over A with `E(θ) = F_src` (a valuation ring is integrally
+  closed, so every sheet sends it into W); `card_congruent_roots_le_addVal_eval_derivative` bounds
+  the fibre by `1 + w(p'(θ_σ))`; with `t = 1` that is `1 + v_{w_std}(p'(θ))`.  MISSING: local
+  monogenicity `V = A_p[θ]`, which makes `v(p'(θ))` the different exponent `= e − 1 = 1`
+  (`DifferentIdealMonogenic` + `DifferentExponentTame.differentIdeal_eq_span_pow`).
+* (B) residue degree: fibre `= e = 2` once `f(w_std/p) = 1`, which is §3's birationality
+  (`criticalFibre_eq_of_shared_coprime_tangent`, already Lean).  MISSING: "#sheets over a place
+  = e·f".
+
+## Lean traps added this batch
+
+* `(by omega : 0 < m)` inside a MULTIPLICATION or a `residue` argument elaborates as "No goals to be
+  solved"; use the pure term `Nat.zero_lt_of_lt hm` everywhere on this card.
+* `rw` inside a dependent `⟨x, proof⟩` literal fails on the motive; state the equation as a separate
+  `have` about the bare elements and close with `Subtype.ext`.
+* `AlgEquiv.restrictScalars` needs `(S := …)` given explicitly or it unifies `S` with `R`.
+* `IsIntegral.map` on the horizon needs the *field-level* AlgHom (over the observation field), not
+  the A-level one: `IsScalarTower A A ↥M` is not found, `IsScalarTower A F ↥M` is.
+* `Ideal.map_comap_of_surjective` must be given the coercion `(ψ : _ →+* _)` explicitly.
+* `Finite.one_lt_card`, not `Nat.one_lt_card` (the `Nat`-namespace one is about `ENat.card`).
+* `Module.isTorsionFree_iff_algebraMap_injective`, not `NoZeroSMulDivisors.of_algebraMap_injective`.
+
+## `(D)` — the exact remaining statement (sharpened after closing `(R)`)
+
+collisionSupport = {sheets over the source Schur place} = ONE label fibre, of size `e·f = 2·f₁`.
+So `(D) ⟺ f(w_std / p) = 1 ⟺ the label fibre is a single inertia orbit`.  Route (A) of the previous
+section reduces to the same thing: every tame-different theorem in the corpus assumes a trivial
+residue extension.
+
+The Lean route is the decomposition dictionary at valuation-subring level — two general theorems,
+neither in mathlib:
+* (i) transitivity of `Gal(L/M)` on valuation subrings of `L` with a fixed restriction to `M`
+  (mathlib has `Ideal.exists_smul_eq_of_isGaloisGroup`; bridge = `valuationSubringAtPrime_eq`);
+* (ii) `|D_W over M| = |I_W over M| · f` (mathlib: `Ideal.card_stabilizer_eq_card_inertia_mul_finrank`)
+  plus `Nat.card (Aut (k_W / k_w)) ≤ f`.
+Then: τ with the canonical label ⟹ τ = g∘σ₀ with g ∈ D_W; ḡ fixes k_{w_std}; `t = 1` makes
+`D_{W/σ₀F} → Aut(k_W/k_{w_std})` injective between sets of size `f(W/w_std)`, hence surjective;
+correct g into I.  Label fibre = I-orbit of σ₀, size 2 = `(D)`.
+
+## Eighth batch — brick (i) landed
+
+`HTGeometry/ValuationSubringGaloisTransport.lean`:
+`smul_valuationSubring_eq_of_smul_centerPrime` — `g • centre W₁ = centre W₂ ⟹ g • W₁ = W₂`.
+Proof is the fraction description on both sides.  With `Ideal.exists_smul_eq_of_isGaloisGroup` this
+is transitivity of the Galois action on valuation subrings over a fixed one.
+
+Still to build for `(D)`: brick (ii) — transport of
+`Ideal.card_stabilizer_eq_card_inertia_mul_finrank` to valuation subrings — and the assembly
+"label fibre = inertia orbit".  Note mathlib also has `Ideal.IsFractionRing.normal`, so the residue
+extension being Galois is available.

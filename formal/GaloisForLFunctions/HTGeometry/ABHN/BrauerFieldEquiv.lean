@@ -57,6 +57,64 @@ theorem brauerGroupAddEquivOfRingEquiv_symm_apply
       @scalarExtensionBrauerMap L K _ _ e.symm.toRingHom.toAlgebra y :=
   rfl
 
+/-- Precompose an additive Brauer invariant with transport along a field isomorphism.  In
+particular, an invariant on a standard local-field presentation induces one on any isomorphic
+presentation. -/
+noncomputable def brauerInvariantPrecomposeRingEquiv
+    {K L T : Type u} [Field K] [Field L] [AddMonoid T]
+    (e : K ≃+* L) (invariant : BrauerGroup.{u, u} L →+ T) :
+    BrauerGroup.{u, u} K →+ T :=
+  invariant.comp (brauerGroupAddEquivOfRingEquiv e).toAddMonoidHom
+
+/-- The transported invariant evaluates by first transporting the Brauer class. -/
+theorem brauerInvariantPrecomposeRingEquiv_apply
+    {K L T : Type u} [Field K] [Field L] [AddMonoid T]
+    (e : K ≃+* L) (invariant : BrauerGroup.{u, u} L →+ T)
+    (x : BrauerGroup.{u, u} K) :
+    brauerInvariantPrecomposeRingEquiv e invariant x =
+      invariant (brauerGroupAddEquivOfRingEquiv e x) :=
+  rfl
+
+/-- Transport along a field isomorphism preserves injectivity of a Brauer invariant. -/
+theorem brauerInvariantPrecomposeRingEquiv_injective_iff
+    {K L T : Type u} [Field K] [Field L] [AddMonoid T]
+    (e : K ≃+* L) (invariant : BrauerGroup.{u, u} L →+ T) :
+    Function.Injective (brauerInvariantPrecomposeRingEquiv e invariant) ↔
+      Function.Injective invariant := by
+  constructor
+  · intro h y z hyz
+    obtain ⟨x, hx⟩ := (brauerGroupAddEquivOfRingEquiv e).surjective y
+    obtain ⟨w, hw⟩ := (brauerGroupAddEquivOfRingEquiv e).surjective z
+    have hEq : x = w := h (by
+      change invariant (brauerGroupAddEquivOfRingEquiv e x) =
+        invariant (brauerGroupAddEquivOfRingEquiv e w)
+      rw [hx, hw, hyz])
+    rw [← hx, ← hw, hEq]
+  · intro h x y hxy
+    apply (brauerGroupAddEquivOfRingEquiv e).injective
+    apply h
+    change invariant (brauerGroupAddEquivOfRingEquiv e x) =
+      invariant (brauerGroupAddEquivOfRingEquiv e y) at hxy
+    exact hxy
+
+/-- Transport along a field isomorphism preserves surjectivity of a Brauer invariant. -/
+theorem brauerInvariantPrecomposeRingEquiv_surjective_iff
+    {K L T : Type u} [Field K] [Field L] [AddMonoid T]
+    (e : K ≃+* L) (invariant : BrauerGroup.{u, u} L →+ T) :
+    Function.Surjective (brauerInvariantPrecomposeRingEquiv e invariant) ↔
+      Function.Surjective invariant := by
+  constructor
+  · intro h t
+    obtain ⟨x, hx⟩ := h t
+    exact ⟨brauerGroupAddEquivOfRingEquiv e x, hx⟩
+  · intro h t
+    obtain ⟨y, hy⟩ := h t
+    obtain ⟨x, hx⟩ := (brauerGroupAddEquivOfRingEquiv e).surjective y
+    refine ⟨x, ?_⟩
+    change invariant (brauerGroupAddEquivOfRingEquiv e x) = t
+    rw [hx]
+    exact hy
+
 end
 
 end GaloisForLFunctions.HTGeometry.ABHN

@@ -70,6 +70,52 @@ theorem ccmRationalLocalBrauerGroupAddEquivPadic_apply
   brauerGroupAddEquivOfRingEquiv_apply
     (Rat.HeightOneSpectrum.adicCompletion.padicEquiv v).toRingEquiv x
 
+/-- Any additive invariant of the standard `p`-adic Brauer group pulls back to the corresponding
+Connes--Consani local factor. This is the source-local landing point for a future ABHN local
+invariant `Br(ℚₚ) ≃ ℚ/ℤ`. -/
+noncomputable def ccmRationalLocalInvariantPrecomposePadic
+    (v : HeightOneSpectrum ℤ)
+    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] →+ RatModInt) :
+    BrauerGroup (CCMRationalLocalField v) →+ RatModInt :=
+  brauerInvariantPrecomposeRingEquiv
+    (Rat.HeightOneSpectrum.adicCompletion.padicEquiv v).toRingEquiv invariant
+
+/-- The pulled-back local invariant is injective exactly when the standard `p`-adic invariant
+is injective. -/
+theorem ccmRationalLocalInvariantPrecomposePadic_injective_iff
+    (v : HeightOneSpectrum ℤ)
+    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] →+ RatModInt) :
+    Function.Injective (ccmRationalLocalInvariantPrecomposePadic v invariant) ↔
+      Function.Injective invariant :=
+  brauerInvariantPrecomposeRingEquiv_injective_iff
+    (Rat.HeightOneSpectrum.adicCompletion.padicEquiv v).toRingEquiv invariant
+
+/-- The pulled-back local invariant is surjective exactly when the standard `p`-adic invariant
+is surjective. -/
+theorem ccmRationalLocalInvariantPrecomposePadic_surjective_iff
+    (v : HeightOneSpectrum ℤ)
+    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] →+ RatModInt) :
+    Function.Surjective (ccmRationalLocalInvariantPrecomposePadic v invariant) ↔
+      Function.Surjective invariant :=
+  brauerInvariantPrecomposeRingEquiv_surjective_iff
+    (Rat.HeightOneSpectrum.adicCompletion.padicEquiv v).toRingEquiv invariant
+
+/-- A `p`-adic local-invariant additive equivalence transports to the corresponding local factor
+of the rational Connes--Consani source. -/
+noncomputable def ccmRationalLocalInvariantAddEquivOfPadic
+    (v : HeightOneSpectrum ℤ)
+    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] ≃+ RatModInt) :
+    BrauerGroup (CCMRationalLocalField v) ≃+ RatModInt :=
+  (ccmRationalLocalBrauerGroupAddEquivPadic v).trans invariant
+
+/-- The transported additive equivalence has the invariant pullback as its underlying map. -/
+theorem ccmRationalLocalInvariantAddEquivOfPadic_toAddMonoidHom
+    (v : HeightOneSpectrum ℤ)
+    (invariant : BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] ≃+ RatModInt) :
+    (ccmRationalLocalInvariantAddEquivOfPadic v invariant).toAddMonoidHom =
+      ccmRationalLocalInvariantPrecomposePadic v invariant.toAddMonoidHom :=
+  rfl
+
 /-- Every local integer ring in the rational finite-adele factorization has finite residue field.
 The proof transports the standard `ℤₚ` residue field along Mathlib's canonical local-ring
 equivalence. -/

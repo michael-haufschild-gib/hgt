@@ -38,7 +38,7 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | `thm_5_3` | Thm 5.7 | `E·F(V(t))` is a de Branges subspace of `H(E)` for all `t ≥ 0`, isomorphic to `H_W(t)` | yes | OPEN |
 | `prop_5_1` | Prop 5.8 | RH ⟺ (1) `‖ψ‖² = ½⟨ψ,ψ⟩_W` on `V(0)` and (2) the peaked-test condition | ⟺ | OPEN |
 | §6 | — | `(H_W, A_{W,π/2})` is a Hilbert--Pólya space; eigenvalue multiplicity one | yes | OPEN |
-| §7 (unnumbered) | Thm 7.1 | UNCONDITIONAL: `𝔓_t(0) = -g_ξ(t)` and `lim_{y→∞}[y𝔓_t(-iy) - ½ψ(¼+y/2) + ½log π] = -g_ξ'(t)` for `t ≠ log n` | no | OPEN |
+| §7 (unnumbered) | Thm 7.1 | UNCONDITIONAL: `𝔓_t(0) = -g_ξ(t)` and `lim_{y→∞}[y𝔓_t(-iy) - ½ψ(¼+y/2) + ½log π] = -g_ξ'(t)` for `t ≠ log n` | no | **(7.1) CLOSED** `RHTower.tendsto_suzukiFrakP_zero`; (7.2) open |
 | `thm_4` | — | inside `\comment{...}` in the source: NOT a paper statement.  Excluded. | — | N/A |
 
 ## Corpus dictionary (checked with `scripts/formal_tools.py research`)
@@ -80,5 +80,48 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
   printed version the theorem is false; with the corrected version eq. (7.2) is exactly right.
 - Eq. (7.2) writes `𝔅_t` for `𝔓_t` (typographic).
 
+## Landed Lean
+
+| Module | Content |
+|---|---|
+| `RHTower/SuzukiWeilLerchBlock.lean` | `suzukiLerchDiff` / `suzukiLerchKernel` (the regularized `Φ(e^{-2t},1,w) - Φ(e^{-2t},1,1/4)` of eq. (1.6)), its factorization `= (1/4-w)·kernel`, `suzukiLerchKernel t (1/4) = 4e^{t/2}·screwLerchTail t`, the Gauss bridge `ψ(w)-ψ(1/4) = -suzukiLerchDiff 0 w`, and continuity of the kernel at `1/4`. |
+| `RHTower/SuzukiWeilFrakP.lean` | `suzukiFrakP` (eq. 1.6) and `suzukiFrakPReg`; `suzukiScrewG_eq_screwFn`; `riemannZeta_half_ne_zero`; `logDeriv_riemannZeta_half : ζ'/ζ(1/2) = -screwLinearCoeff/2`; `continuousAt_logDeriv_riemannZeta_half`; **`tendsto_suzukiFrakP_zero`** (eq. 7.1). |
+
+All capstones audited: only `propext, Classical.choice, Quot.sound`.
+
+## Anti-duplication audit (2026-08-22)
+
+Checked with `scripts/formal_tools.py research` before and after writing:
+
+- `g_ξ` of eq. (4.3) **already exists** as `RHTower.suzukiScrewG` (`SuzukiScrewFunctionCriterion.lean`).
+  A private `suzukiGXi` was written and then **deleted**; the corpus object is used instead.
+- `ζ(1/2) ≠ 0` reuses `riemannZeta_real_strip_ne_zero` (`ZetaRealStrip.lean`) instead of a new proof.
+- the shifted `p`-series reuses `summable_one_div_nat_add_one_rpow` (`ZetaRealBound.lean`).
+- the explicit affine slope of `screwPrimeSum` on an atom-free window is
+  `screwPrimeSum_eq_checkpoint_affine` with `suzukiCheckpointMass` (`SuzukiCheckpointEventDynamics.lean`);
+  do not re-derive it.
+- `𝔓_t`, `𝔖_t`, `P_t`, and the complex-parameter Lerch difference are genuinely absent from the corpus
+  (confirmed by grep for `frakP`/`𝔓` and by the standing parity card).
+
+## Open core of eq. (7.2)
+
+The printed limit is over a function whose *printed formula* has removable poles at
+`y ∈ {1/2 + 2m : m ∈ ℕ}` (trivial zeros of `ζ(1/2-y)` and poles of `ψ(1/4-y/2)` and of the Lerch
+block).  Away from them the Lean expression is the true value; at them it is Lean junk.  Reflection
+(`logDeriv_riemannZeta_add_reflect_off_poles`) plus the Gauss bridge reduces the whole singular part
+to the single object
+
+```text
+W_t(y) = e^{-yt} (ζ'/ζ)(1/2-y) - (1/2) e^{-t/2} suzukiLerchDiff t (1/4-y/2)   →   -screwLerchTail₁ t,
+```
+
+whose two poles cancel exactly (residues `-e^{-y_m t}/(y-y_m)` and `+e^{-y_m t}/(y-y_m)`).  Plan:
+state the limit along `atTop ⊓ 𝓟 {y | ∀ m, 1/4 ≤ |y - (1/2+2m)|}` (cofinal, non-vacuous), where the
+Lerch block has the uniform majorant `9 e^{-2nt}` and dominated convergence applies, and where
+`|ψ(1/4-y/2)| = O(y log y)` gives `e^{-yt}·(ζ'/ζ)(1/2-y) → 0`.  The `-g_ξ'(t)` side is
+`hasDerivAt_screwFn_of_affine` fed by `screwPrimeSum_eq_checkpoint_affine`.
+
 ## Log
 - 2026-08-22 — created; source inventoried statement by statement; corpus dictionary established.
+- 2026-08-22 — L1 (Lerch block) and eq. (7.1) closed in Lean; two sign typos in the printed proof of
+  (7.1) recorded; anti-duplication audit run and one duplicate (`suzukiGXi`) removed.

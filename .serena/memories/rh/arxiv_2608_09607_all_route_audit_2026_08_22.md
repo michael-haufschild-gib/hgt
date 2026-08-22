@@ -1,0 +1,9 @@
+arXiv:2608.09607 all-route audit:
+- Paper's stated two-time reconstructed commutator is algebraically false at zero memory. Correct law attenuates original commutator by 1/(1+x^2); it does not create curvature.
+- Exact signed repair is present-vs-memory lag commutator [M_x(c,s), X(c,s)] = x(c^2+s^2)/(1+x^2)[A,B]. Formalized in HTGeometry/ExponentialMemoryTransportCurvature.lean.
+- DQPT/Pauli-Y reporter detects the common Riemann source-horizontal grade exactly; global vanishing iff RH. Formalized RHTower/RiemannSourceDQPTMemoryLag.lean. This is a landing/receiver, not an annihilation producer.
+- Whole-route tests: Ward/BRST and ordinary trace annihilate commutators by cyclicity and are nonfaithful; co-Poisson quotient erases source coordinate; FE pair cancellation is not pointwise; KMS odd moments cancel pairs, not gaps; Sonin cofinal commutators lose uniform faithfulness; character/Haar twists either stay cyclic/blind or break annihilation.
+- Gamma-six positive curvature + Sonin Ward splice is tautological: corpus already proves negative ghost + positive paired curvature = 0. No independent term vanishing.
+- New route-agnostic annealing/Cartier firewall in RHTower/SourceHorizontalAnnealedSecondCartierOrbitFirewall.lean: on each strict-right Xi fibre, coefficient-faithful annealed second-Cartier orbit bounded iff alpha=0; universal boundedness iff alpha=0 or RH. Zero alpha regularizes only by horizontal collapse. Nonzero annealing/tempering/memory attenuation cannot supply bounded recurrent/unitary landing.
+- All three new modules direct-check and exact leaf-build clean; axiom audit only propext/Classical.choice/Quot.sound. Wired into HTGeometry.lean/RHTower.lean. No umbrella builds.
+- Still no unconditional RH proof. Hard producer remains: coefficient-faithful pointwise source annihilation/physical moderation.

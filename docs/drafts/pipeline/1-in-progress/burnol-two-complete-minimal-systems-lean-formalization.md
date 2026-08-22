@@ -36,8 +36,8 @@ completely-regular-growth theory.  These are the real gaps.
 | Prop 4.2 | `ζ(s)/(s−ρ)^l ∈ L̂₁` | | **TODO** |
 | Prop 4.3 | division by `(s−w)` stays in `L̂_a` / `K̂_a` | | **TODO** |
 | Lem 4.4 | `F ∈ K̂_a ⇒ F/s ∈ L̂_a` | | **TODO** |
-| Prop 4.5 | `dim(L_a/K_a) = 2` | | **TODO** |
-| Prop 4.6 | `∪_{b>a}K_b` dense in `K_a` (same for `L`) — via the general lattice identity | **general lemma DONE-able** | **LAYER 2** |
+| Prop 4.5 | `dim(L_a/K_a) = 2` | second proof's mechanism `HTGeometry/OrthogonalCodimensionOne.lean` **DONE** | rest TODO |
+| Prop 4.6 | `∪_{b>a}K_b` dense in `K_a` (same for `L`) — via the general lattice identity | **DONE (K side)**: `RHTower.topologicalClosure_iSup_centralSoninCarrier` | `L` side TODO |
 | Prop 4.7 | `∪_{b>a}K_b ⊊ K_a`, also for Fourier-(skew-)invariant parts | | **TODO** |
 | Def 10 | L-Property | | **TODO** |
 | Thm 4.8 | functions of `L̂_a` have the L-Property | | **TODO** |
@@ -66,7 +66,10 @@ completely-regular-growth theory.  These are the real gaps.
 | Thm 7.8 | `a(Z_g) = a(g)` | | **TODO** |
 | Prop 7.9 | `Z_g ⊂ Z_f` ⇒ `F/G` of finite exponential type, `a(f) ≤ a(g)` | | **TODO** |
 | Prop 7.10 | `Z_f = Z_g` ⇒ `f`, `g` multiplicative translates (Wiener causal gain) | | **TODO** |
-| §3 Remark | minimal+complete ⇒ unique dual system; dual is minimal, need not be complete (Hardy-disc example `1−zⁿ`) | **general** | **LAYER 1** |
+| §3 Remark | minimal+complete ⇒ unique dual system; dual is minimal, need not be complete (Hardy-disc example `1−zⁿ`) | **DONE**: `HTGeometry/MinimalCompleteSystem.lean` | |
+| §2 chain | `K = ∪_{a>0}K_a`, `{0} = ∩_{a>0}K_a` | **DONE (K side)**: `RHTower/SoninCarrierApertureLimits.lean` | `L` side TODO |
+| §7 indices | `a₁(Z)`, `a₂(Z)` well defined; minimality downward closed, completeness upward closed | **DONE**: `HTGeometry/MinimalCompleteSystemChain.lean` | |
+| §4.5/4.6 input | `L²(0,a) + F₊(L²(0,a))` closed (Burnol [6]) | **DONE**: `RHTower/SoninForbiddenClosedSum.lean` | |
 
 ## Layer plan (build order)
 
@@ -88,11 +91,73 @@ completely-regular-growth theory.  These are the real gaps.
 6. **LAYER 6 — Levin CRG theory** (proximate order `r log r`, indicator, CRG rays, zero-density).
 7. **LAYER 7 — the ζ-specific §5/§6** (Titchmarsh 5.1, residue series, capstones 3.1/3.2/3.3).
 
+## The Theorem 2.1 route (de Branges entirety) — FROZEN PLAN
+
+The corpus already owns the **two de Branges bricks** (`RHTower/SoninDeBrangesCarrier.lean`):
+`soninDeBrangesTransform f` is holomorphic on `Re z > 1/2` and `soninDeBrangesDualTransform f`
+(i.e. `M(F₊f)(1−z)`) on `Re z < 1/2`.  What is missing is the **weld** across the critical line.
+Do *not* attempt a boundary-value / edge-of-the-wedge argument.  Use this instead:
+
+1. **Truncated kernel.**  `K_{a,T}(s)(u) := F₊(1_{(a,T)} t^{-s})(u) = 2∫_a^T cos(2πtu) t^{-s} dt`.
+   For each `T` this is *entire* in `s` (finite interval, bounded kernel).
+2. **Parseval.**  For `f ∈ K_a` with `g := F₊f` (both vanishing on `(0,a)`),
+   `∫_a^T f(t) t^{-s} dt = ∫_a^∞ g(u) K_{a,T}(s)(u) du`.
+3. **One integration by parts** gives, for `Re s > 0`,
+   `K_{a,T}(s)(u) = (sin(2πTu)T^{-s} − sin(2πau)a^{-s})/(πu) + (s/(πu))∫_a^T sin(2πtu) t^{-s-1} dt`,
+   hence `|K_{a,T}(s)(u)| ≤ C(s)/u` **uniformly in `T`**, with `C` locally bounded on `Re s > 0`,
+   and `‖K_{a,T}(s) − C_a(s)‖_{L²(a,∞)} ≤ C(s) T^{-Re s} ‖1/u‖_{L²(a,∞)} → 0`, locally uniformly.
+4. **Weierstrass.**  `F_T(s) := ∫_a^T f(t)t^{-s}dt` is entire and converges locally uniformly on
+   `Re s > 0`; the limit `F` is therefore holomorphic on `Re s > 0` and equals `f̂` on `Re s > 1/2`.
+   So `M(f)` continues holomorphically to `Re s > 0` — **only one** integration by parts is needed,
+   no `k`-fold iteration and no explicit `χ(s)u^{s-1}` series.
+5. **Glue.**  By the same argument `M(F₊f)(1−·)` is holomorphic on `Re s < 1`.  On the critical line
+   the two agree (functional equation `M(F₊f)(s) = M(f)(1−s)`; corpus candidate
+   `CCMArchimedeanFourierMellinScattering.archimedeanMellinUnitary_evenFourierTransform`).  Both are
+   continuous on the open strip `0 < Re s < 1`, so a.e. agreement on the line upgrades to agreement
+   on the line and then, by the identity theorem, on the strip.  Gluing the two half-planes gives an
+   entire function: **Theorem 2.1**, and with the pole bookkeeping of `L_a`, **Prop. 2.2**.
+
+### Brick list for the Theorem 2.1 route
+
+| Brick | Statement | Status |
+|---|---|---|
+| B1 | `s ↦ ∫_a^b φ(t)t^{-s}dt` entire for `0 < a ≤ b`, `φ ∈ L¹(a,b)` | **DONE** `HTGeometry/TruncatedMellinEntire.differentiable_truncatedMellin` |
+| B2 | Parseval `⟪h, f⟫ = ⟪𝓕h, 𝓕f⟫` (mathlib `inner_map_map`) plus the `L¹∩L²` agreement of the unitary `L²` Fourier transform with the Fourier integral | **corpus-owned**: `RHTower/L2FourierIntegralBridge.l2_fourier_coeFn_eq_l1_fourier_of_integrable` |
+| B3 | `K_{a,T}(s)(u) = F(1_{a<|t|<T}|t|^{-s})(u) = 2∫_a^T cos(2πtu)t^{-s}dt` (even-function form of B4's `oscPowerIntegral`) | TODO |
+| B4 | integration by parts: `‖∫_a^T e^{ilt}t^{-s}dt‖ ≤ (2a^{-σ} + ‖s‖a^{-σ}/σ)/|l|` **uniformly in `T`** | **DONE** `HTGeometry/OscillatoryPowerIntegral.norm_oscPowerIntegral_le` |
+| B5 | `‖K_{a,T}(s) − K_{a,∞}(s)‖_{L²(|u|>a)} ≤ C(s,a)·T^{-Re s}` → locally uniform convergence | TODO |
+| B6 | Weierstrass: locally uniform limit of entire functions is holomorphic (mathlib `TendstoLocallyUniformlyOn.differentiableOn`) | mathlib |
+| B7 | glue with the reflected brick across `0 < Re s < 1` using the corpus scattering identity | TODO |
+
 ## Gates
 - [x] 0 → 1  in-progress
 - [ ] 1 → 2  fully-proven on paper (the paper itself supplies the proofs)
 - [ ] 2 → 3  formalized: all layers Lean-closed, no `sorry`/`axiom`
 - [ ] 3 → 4  publication-ready
 
+## Corpus assets REUSED (do not rebuild)
+
+| Need | Corpus/mathlib owner |
+|---|---|
+| Mellin--Plancherel unitary `L²(ℝ₊,dˣx) ≃ L²(ℝ)` | `RHTower/L2MellinUnitary.lean` (`mellinUnitary`) |
+| Extended Sonine space `L_a`, aperture monotonicity, closedness | `BurnolSoninEvenCosineAperture`, `BurnolSoninApertureMonotone`, `BurnolSoninRieszVector` |
+| Completed right Mellin evaluator `M(f)(w)` | `BurnolSoninEvaluationAperture.soninMellinEvaluation` |
+| Sonine carrier `K_a` (full line) | `SoninEulerCornerConcrete.centralSoninCarrier` |
+| `K_a` antitone | `SoninApertureRestrictionDefect.centralSoninCarrier_antitone` |
+| Time/frequency band transversality | `SoninL2ShellNull.physicalForbidden_inf_fourierForbidden_eq_bot` |
+| Band-product compactness, strict alternating block | `SoninEulerCornerConcrete.norm_centralSoninAlternatingBlock_lt_one` |
+| Friedrichs angle ⇔ closed sum | `HTGeometry/FriedrichsClosedSum.lean` |
+| co-Poisson source space, quotient, intertwining | 572 `Burnol*`/`*CoPoisson*` modules in `RHTower/` |
+
+## Duplicate guard
+`scripts/lean_dupcheck.py <new files...>` reports any declaration name in the new files that
+already exists elsewhere in the tree (a collision breaks the area umbrella even though
+`lake build <module>` of the new file alone succeeds).  One collision was caught this way:
+`centralSoninCarrier_antitone`.
+
 ## Log
-- 2026-08-22 — created; paper inventory extracted; layer plan fixed; LAYER 1 + LAYER 2 started.
+- 2026-08-22 — created; paper inventory extracted; layer plan fixed.
+- 2026-08-22 — LAYER 1 (`MinimalCompleteSystem`), LAYER 2 (`MonotoneDisjointInfiSup`), §7 index
+  framework (`MinimalCompleteSystemChain`), the closed-band-sum bridge (`SoninForbiddenClosedSum`),
+  **Prop. 4.6** (`SoninCarrierApertureChain`) and the §2 chain ends
+  (`SoninCarrierApertureLimits`) are Lean-closed and umbrella-wired; axioms clean.

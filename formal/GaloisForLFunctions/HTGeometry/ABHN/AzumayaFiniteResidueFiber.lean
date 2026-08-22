@@ -6,8 +6,10 @@ Authors: Michael Barenbaum
 import GaloisForLFunctions.HTGeometry.ABHN.AzumayaGenericFiber
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldBrauer
 import GaloisForLFunctions.HTGeometry.ABHN.LocalFieldResidueBrauer
+import GaloisForLFunctions.HTGeometry.ABHN.LaurentSeriesFiniteLocalField
 import GaloisForLFunctions.HTGeometry.ABHN.NumberFieldFiniteLocalField
 import GaloisForLFunctions.HTGeometry.ABHN.RationalFunctionFiniteLocalField
+import GaloisForLFunctions.HTGeometry.ABHN.RationalFunctionInfinityCompletion
 
 /-!
 # Finite residue fibers of Azumaya algebras
@@ -25,7 +27,7 @@ the remaining local bridge toward finite ramification in ABHN.
 
 namespace GaloisForLFunctions.HTGeometry.ABHN
 
-open scoped ValuativeRel TensorProduct Polynomial
+open scoped LaurentSeries ValuativeRel TensorProduct Polynomial
 open IsDedekindDomain
 
 universe u
@@ -95,6 +97,47 @@ theorem rationalFunctionFinitePlace_azumayaResidueBrauerClass_eq_split
       brauerSplitClass (F[X] ⧸ v.asIdeal) := by
   letI : v.asIdeal.IsMaximal := v.isPrime.isMaximal v.ne_bot
   exact azumayaScalarExtensionBrauerClass_eq_split_of_finite F[X] (F[X] ⧸ v.asIdeal) A
+
+/-- The residue fiber of an Azumaya algebra over every finite completion of a number field is
+split. This is the complete-local-field form of the finite-residue endpoint. -/
+theorem numberFieldFinitePlaceCompletion_azumayaResidueBrauerClass_eq_split
+    (K A : Type u) [Field K] [NumberField K] (v : NumberField.FinitePlace K)
+    [Ring A] [Algebra 𝒪[completion K (.finite v)] A]
+    [IsAzumaya 𝒪[completion K (.finite v)] A] :
+    azumayaScalarExtensionBrauerClass 𝒪[completion K (.finite v)]
+      𝓀[completion K (.finite v)] A = brauerSplitClass 𝓀[completion K (.finite v)] := by
+  exact azumayaResidueBrauerClass_eq_split 𝒪[completion K (.finite v)] A
+
+/-- The residue fiber of an Azumaya algebra over every finite completion of `F(t)` is split. -/
+theorem rationalFunctionFinitePlaceCompletion_azumayaResidueBrauerClass_eq_split
+    (F A : Type u) [Field F] [Finite F] (v : HeightOneSpectrum F[X])
+    [Ring A] [Algebra 𝒪[rationalFunctionCompletion F (.finite v)] A]
+    [IsAzumaya 𝒪[rationalFunctionCompletion F (.finite v)] A] :
+    azumayaScalarExtensionBrauerClass 𝒪[rationalFunctionCompletion F (.finite v)]
+      𝓀[rationalFunctionCompletion F (.finite v)] A =
+        brauerSplitClass 𝓀[rationalFunctionCompletion F (.finite v)] := by
+  exact azumayaResidueBrauerClass_eq_split
+    𝒪[rationalFunctionCompletion F (.finite v)] A
+
+/-- The residue fiber of an Azumaya algebra over the infinite completion of `F(t)` is split. -/
+theorem rationalFunctionInfinitePlaceCompletion_azumayaResidueBrauerClass_eq_split
+    (F A : Type u) [Field F] [Finite F] [Ring A]
+    [Algebra 𝒪[rationalFunctionCompletion F .infinite] A]
+    [IsAzumaya 𝒪[rationalFunctionCompletion F .infinite] A] :
+    azumayaScalarExtensionBrauerClass 𝒪[rationalFunctionCompletion F .infinite]
+      𝓀[rationalFunctionCompletion F .infinite] A =
+        brauerSplitClass 𝓀[rationalFunctionCompletion F .infinite] := by
+  exact azumayaResidueBrauerClass_eq_split
+    𝒪[rationalFunctionCompletion F .infinite] A
+
+/-- The residue fiber of an Azumaya algebra over a finite-coefficient Laurent-series valuation
+ring is split. -/
+theorem laurentSeries_azumayaResidueBrauerClass_eq_split
+    (F A : Type u) [Field F] [Finite F] [Ring A] [Algebra 𝒪[F⸨X⸩] A]
+    [IsAzumaya 𝒪[F⸨X⸩] A] :
+    azumayaScalarExtensionBrauerClass 𝒪[F⸨X⸩] 𝓀[F⸨X⸩] A =
+      brauerSplitClass 𝓀[F⸨X⸩] := by
+  exact azumayaResidueBrauerClass_eq_split 𝒪[F⸨X⸩] A
 
 end
 

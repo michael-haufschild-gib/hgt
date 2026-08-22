@@ -32,7 +32,41 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | 15 Fargues–Fontaine | Thm 15.1, Prop 15.2, Thm 15.3, Cor 15.4, Thm 15.5, Prop 15.6/15.7 | |
 
 ## Ledger (Lean modules landed)
-(see Log)
+
+| Paper result | Lean module | Status |
+|---|---|---|
+| Thm 1.8 (`t29`) `V_N(W) ∩ W_rat = V_N(W_rat)` | `RHTower/DeningerDynSysVerschiebungRational.lean` | closed (Fatou hypothesis removed: holds over every commutative ring) |
+| Prop 1.2(a) (`t21n`) finite-orbit Galois descent | `RHTower/DeningerDynSysWittGaloisFiniteOrbits.lean` | closed |
+| Lemma 4.6 (`t46n`) `N`-th roots of pointed multiplicative maps, incl. the value of `N'` | `RHTower/DeningerDynSysPointedMultiplicativeRoot.lean` | closed |
+| Lemma 5.3 (`t5`) Frobenius-twist quotient | `RHTower/DeningerDynSysFrobeniusTwistQuotient.lean` | closed |
+| Prop 7.7 (`t87`) compact-orbit quotient metric | `HTGeometry/CompactOrbitQuotientMetric.lean` | closed |
+| Prop 1.2(b) (`t21n`) field case of Galois descent | `RHTower/DeningerDynSysWittGaloisField.lean` | closed (integrally-closed-domain case still open) |
+| Prop 14.7(c) (`t125`) perfection surjects along a quotient | `RHTower/DeningerDynSysPerfectionLocal.lean` | closed |
+| Prop 14.14(2) (`t1213`) locality of the tilt | `RHTower/DeningerDynSysPerfectionLocal.lean` | closed |
+
+Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
+
+### Duplication audit (2026-08-22)
+The corpus's `Deninger*RationalWitt*` modules formalize a **different** Deninger paper (the 2025
+rational-Witt paper: the `ω`-comparison `ℤ̲A → W_rat(A)`, absolute-Galois descent over perfect
+fields, the corrected normal-domain descent, and the Fatou intersection).  A grep for this paper's
+internal labels (`t29`, `t87`, `t46n`, `t21n`, `t1213`, `t125`, `t1110`, …) over `formal/` and over
+the 77 pipeline cards citing arXiv:1807.06400 returns only the modules listed above.  §1 overlaps
+partially: Prop 1.1 (a) and (b) are covered by
+`deningerRationalWittReducedMonoidAlgebraToAdditive_injective` / `..._surjective` and the
+AIC-domain comparison.
+
+### Known heavy sub-projects (not yet started)
+* Lemma 4.3 (`t3`) needs `dim_ℚ (C^× / μ(C)) = |C|` for an algebraically closed `C ≠ F̄_p`.
+* Thm 1.4 (`t27n`) is Kucharczyk–Scholze Lemma 4.9 plus its rational-Witt corollary.  Mathlib now
+  supplies the needed profinite invariant theory: `Algebra.IsInvariant.isIntegral_of_profinite`,
+  `Algebra.IsInvariant.exists_smul_of_under_eq_of_profinite`, and
+  `Ideal.Quotient.stabilizerHom_surjective_of_profinite`.  Remaining work: extend a hom
+  `A^H → C` along the integral extension (lying over + `IsAlgClosed.lift`), and turn the two
+  transitivity statements into transitivity of `H` on `Hom (A, C)`.
+* §§2, 3, 13, 14 need the ringed space `W_rat(X)` and its `S`-valued points as scheme-level
+  infrastructure.
+* Claim 8.1 is an open conjecture in the source; Thm 8.2 is conditional on it in dimension ≥ 2.
 
 ## Gates
 - [x] 0 → 1  in-progress
@@ -41,3 +75,5 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 
 ## Log
 - 2026-08-22 — created; paper source downloaded, 78-result inventory extracted.
+- 2026-08-22 — five results closed in Lean (see Ledger); duplication audit recorded.
+- 2026-08-22 — eight results closed; axiom audit clean; next target is Theorem 1.4 (`t27n`).
