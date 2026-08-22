@@ -23,4 +23,6 @@ theorem pickKernel_mul (f g : ℂ → ℂ) (z w : ℂ) :
   rw [map_mul]
   ring
 
+end
+
 end GaloisForLFunctions.HTGeometry

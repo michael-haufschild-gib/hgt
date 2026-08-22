@@ -364,7 +364,7 @@ theorem prod_primesBelow_one_sub_inv_ne_zero (N : ℕ) :
   have : ((p : ℝ))⁻¹ = 1 := by linarith [hcon]
   linarith
 
-theorem primesBelow_subset {N M : ℕ} (h : N ≤ M) : N.primesBelow ⊆ M.primesBelow := by
+private theorem primesBelow_subset {N M : ℕ} (h : N ≤ M) : N.primesBelow ⊆ M.primesBelow := by
   intro p hp
   rw [show N.primesBelow = (Finset.range N).filter Nat.Prime from rfl,
     Finset.mem_filter, Finset.mem_range] at hp

@@ -249,16 +249,20 @@ theorem ShellDatum.inner_pairTest_pairSection_tendsto (d u : ι × ι → ℂ) :
 
 /-! ## The tensor-square Calkin lower bound -/
 
+omit [CompleteSpace H] in
 /-- **Card `(1)`/`(2)`: the full weighted coefficient energy of a finite ordered pair section
 survives every compact perturbation of the Hilbert tensor square.** -/
 theorem ShellDatum.tensor_calkin_lower (d : ι × ι → ℂ)
     (K : Completion (H ⊗[ℂ] H) →L[ℂ] Completion (H ⊗[ℂ] H)) (hK : IsCompactOperator K) :
     Real.sqrt (∑ a : ι × ι, ‖d a‖ ^ 2) ≤ ‖(S.pairSection d).completion - K‖ := by
   set E : ℝ := ∑ a : ι × ι, ‖d a‖ ^ 2 with hE
-  have hEnonneg : 0 ≤ E := Finset.sum_nonneg fun a _ => by positivity
+  have hEnonneg : 0 ≤ E := by
+    rw [hE]
+    refine Finset.sum_nonneg fun a _ => ?_
+    positivity
   rcases eq_or_lt_of_le hEnonneg with hE0 | hEpos
   · rw [← hE0, Real.sqrt_zero]
-    exact norm_nonneg _
+    exact norm_nonneg ((S.pairSection d).completion - K)
   set R : ℝ := Real.sqrt E with hR
   have hRpos : 0 < R := Real.sqrt_pos.mpr hEpos
   have hRsq : R * R = E := Real.mul_self_sqrt hEnonneg
@@ -276,7 +280,7 @@ theorem ShellDatum.tensor_calkin_lower (d : ι × ι → ℂ)
       push_cast
       ring
     rw [Finset.sum_congr rfl fun a _ => hterm a, ← Finset.sum_div]
-    rw [show ((R : ℂ) * (R : ℂ)) = ((E : ℝ) : ℂ) by exact_mod_cast congrArg _ hRsq]
+    rw [show ((R : ℂ) * (R : ℂ)) = ((E : ℝ) : ℂ) by exact_mod_cast hRsq]
     rw [← Complex.ofReal_sum]
     rw [hE]
     exact div_self (by exact_mod_cast hEpos.ne')
@@ -289,22 +293,21 @@ theorem ShellDatum.tensor_calkin_lower (d : ι × ι → ℂ)
       push_cast
       ring
     rw [Finset.sum_congr rfl fun a _ => hterm a, ← Finset.sum_div, ← Complex.ofReal_sum, ← hE]
-    rw [show ((E : ℝ) : ℂ) = ((R : ℂ) * (R : ℂ)) by exact_mod_cast (congrArg _ hRsq).symm]
+    rw [show ((E : ℝ) : ℂ) = ((R : ℂ) * (R : ℂ)) by exact_mod_cast hRsq.symm]
     field_simp
   -- the two-particle sequences
   have hsq : ∀ n, ((‖S.pairInput u n‖ ^ 2 : ℝ) : ℂ)
       = inner ℂ (S.pairInput u n) (S.pairInput u n) := by
     intro n
-    rw [inner_self_eq_norm_sq_to_K]
-    push_cast
-    ring
+    exact_mod_cast (inner_self_eq_norm_sq_to_K (S.pairInput u n)).symm
   have hnormsq : Tendsto (fun n => ‖S.pairInput u n‖ ^ 2) atTop (𝓝 1) := by
     have h := S.inner_pairInput_tendsto u
     rw [husum] at h
     have h2 : Tendsto (fun n => ((‖S.pairInput u n‖ ^ 2 : ℝ) : ℂ)) atTop (𝓝 (1 : ℂ)) := by
       simpa [hsq] using h
     have h3 := (Complex.continuous_re.tendsto (1 : ℂ)).comp h2
-    simpa using h3
+    simp only [Function.comp_def, Complex.ofReal_re, Complex.one_re] at h3
+    exact h3
   have hnorm1 : Tendsto (fun n => ‖S.pairInput u n‖) atTop (𝓝 1) := by
     have h := (Real.continuous_sqrt.tendsto (1 : ℝ)).comp hnormsq
     simp only [Function.comp_def] at h

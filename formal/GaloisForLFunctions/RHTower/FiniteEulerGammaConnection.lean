@@ -25,9 +25,11 @@ theorem finiteEulerLocalFactor_eq_eulerLocalInverse (p : Nat.Primes) (s : ℂ) :
 theorem hasDerivAt_finiteEulerLocalFactor (p : Nat.Primes) (s : ℂ) :
     HasDerivAt (finiteEulerLocalFactor p)
       ((Real.log p : ℂ) * Complex.exp (-s * (Real.log p : ℂ))) s := by
-  rw [finiteEulerLocalFactor_eq_eulerLocalInverse]
+  have hfun : finiteEulerLocalFactor (p : ℕ) = _root_.RHTower.eulerLocalInverse (p : ℕ) :=
+    funext fun z => finiteEulerLocalFactor_eq_eulerLocalInverse p z
+  rw [hfun]
   convert _root_.RHTower.hasDerivAt_eulerLocalInverse p.property.two_le s using 1
-  rw [_root_.RHTower.primePow_eq_exp p.property.two_le]
+  rw [_root_.RHTower.primePow_eq_exp p.property.two_le, neg_mul]
 
 /-- The ordinary derivative form of the finite Euler entire-factor identity. -/
 theorem deriv_finiteEulerLocalFactor (p : Nat.Primes) (s : ℂ) :
@@ -43,10 +45,22 @@ theorem hasDerivAt_finiteEulerLocalQuartet (p : Nat.Primes) (s : ℂ) :
         finiteEulerLocalFactor p s * (Real.log p : ℂ) *
           Complex.exp (-(1 - s) * (Real.log p : ℂ))) s := by
   have hfirst := hasDerivAt_finiteEulerLocalFactor p s
-  have hshift : HasDerivAt (fun z : ℂ => 1 - z) (-1) s := by
-    simpa using (hasDerivAt_const (x := s) (c := (1 : ℂ))).sub (hasDerivAt_id s)
-  have hsecond := (hasDerivAt_finiteEulerLocalFactor p (1 - s)).comp s hshift
-  convert hfirst.mul hsecond using 1 <;> simp [finiteEulerLocalQuartet] <;> ring
+  have hshift : HasDerivAt (fun z : ℂ => 1 - z) (-1) s :=
+    (hasDerivAt_id s).const_sub (1 : ℂ)
+  have hsecond : HasDerivAt (fun z : ℂ => finiteEulerLocalFactor p (1 - z))
+      ((Real.log p : ℂ) * Complex.exp (-(1 - s) * (Real.log p : ℂ)) * -1) s :=
+    (hasDerivAt_finiteEulerLocalFactor p (1 - s)).comp s hshift
+  have hval : (Real.log p : ℂ) * Complex.exp (-s * (Real.log p : ℂ)) *
+        finiteEulerLocalFactor p (1 - s) -
+      finiteEulerLocalFactor p s * (Real.log p : ℂ) *
+        Complex.exp (-(1 - s) * (Real.log p : ℂ))
+      = (Real.log p : ℂ) * Complex.exp (-s * (Real.log p : ℂ)) *
+          finiteEulerLocalFactor p (1 - s) +
+        finiteEulerLocalFactor p s *
+          ((Real.log p : ℂ) * Complex.exp (-(1 - s) * (Real.log p : ℂ)) * -1) := by
+    ring
+  rw [hval]
+  exact hfirst.mul hsecond
 
 /-- The ordinary derivative form of the finite Euler quartet identity. -/
 theorem deriv_finiteEulerLocalQuartet (p : Nat.Primes) (s : ℂ) :

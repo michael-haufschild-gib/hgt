@@ -142,7 +142,7 @@ theorem deningerAmbientRangeEquiv_coe (hA : ∀ x, p x = ‖A x‖)
       = deningerAmbientEmbeddingC hA v := rfl
 
 /-- **The bounded section of the completed quotient projection.** -/
-noncomputable def deningerQuotientSection (N : Submodule 𝕜 E) (hA : ∀ x, p x = ‖A x‖) :
+private noncomputable def deningerQuotientSection (N : Submodule 𝕜 E) (hA : ∀ x, p x = ‖A x‖) :
     DeningerSeminormCompletion (deningerQuotientSeminorm N p) →L[𝕜]
       DeningerSeminormCompletion p :=
   ((deningerAmbientRangeEquiv hA).symm.toLinearIsometry.toContinuousLinearMap).comp

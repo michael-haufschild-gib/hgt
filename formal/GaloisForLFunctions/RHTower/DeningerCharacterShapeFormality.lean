@@ -23,7 +23,7 @@ exterior algebras of its lattices, so forming exterior algebras commutes with th
 The `n`-th power map of the units acts on the unit space as multiplication by `n`, which is the
 Frobenius equivariance of the whole picture.
 
-* `DeningerUnitSpace`, `deningerUnitSpace_isTorsionFree` : the unit space is torsion-free.
+* `DeningerUnitLattice`, `deningerUnitSpace_isTorsionFree` : the unit space is torsion-free.
 * `deningerUnitClass_zpow` : the `n`-th power map is multiplication by `n`.
 * `deningerLatticeFree` : finitely generated subgroups of a torsion-free group are free.
 * `deningerFGSubmodule_directed`, `deningerFGSubmodule_iSup_top` : the lattices are filtered and
@@ -41,19 +41,19 @@ variable (F : Type*) [Field F]
 
 /-- **The unit space of a field**: the units modulo their torsion, that is modulo the roots of
 unity. -/
-abbrev DeningerUnitSpace : Type _ :=
+abbrev DeningerUnitLattice : Type _ :=
   (Additive Fˣ) ⧸ Submodule.torsion ℤ (Additive Fˣ)
 
 /-- **The unit space is torsion-free.**  The torsion subgroup of the units is exactly the group of
 roots of unity, and a quotient by the full torsion is torsion-free. -/
 theorem deningerUnitSpace_isTorsionFree :
-    Module.IsTorsionFree ℤ (DeningerUnitSpace F) :=
+    Module.IsTorsionFree ℤ (DeningerUnitLattice F) :=
   Submodule.QuotientTorsion.instIsTorsionFree
 
 variable {F}
 
 /-- The class of a unit in the unit space. -/
-def deningerUnitClass (x : Fˣ) : DeningerUnitSpace F :=
+def deningerUnitClass (x : Fˣ) : DeningerUnitLattice F :=
   Submodule.Quotient.mk (Additive.ofMul x)
 
 theorem deningerUnitClass_surjective : Function.Surjective (deningerUnitClass (F := F)) := by

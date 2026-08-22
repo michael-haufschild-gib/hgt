@@ -42,7 +42,7 @@ variable {F : Type*} [Field F]
 /-- **`(3)`, unconditionally.**  Realification is insensitive to torsion, and the torsion subgroup
 of `F^×` is exactly the roots of unity, so `F^× ⊗ ℝ ≅ (F^×/μ_∞) ⊗ ℝ`. -/
 noncomputable def deningerAlgebraicUnitRealification :
-    ((Additive Fˣ) ⊗[ℤ] ℝ) ≃ₗ[ℤ] ((DeningerUnitSpace F) ⊗[ℤ] ℝ) :=
+    ((Additive Fˣ) ⊗[ℤ] ℝ) ≃ₗ[ℤ] ((DeningerUnitLattice F) ⊗[ℤ] ℝ) :=
   deningerRealificationTorsionEquiv (A := Additive Fˣ)
 
 /-- **`(1)` and `(2)` of the card, from the single classical hypothesis.**  Assuming only that the

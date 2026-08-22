@@ -22,17 +22,18 @@ def finiteEulerGammaSlope (p : Nat.Primes) : ℂ :=
 /-- The Euler--Gamma slope has no real component. -/
 theorem finiteEulerGammaSlope_re (p : Nat.Primes) :
     (finiteEulerGammaSlope p).re = 0 := by
-  simp [finiteEulerGammaSlope, Complex.div_re]
+  rw [finiteEulerGammaSlope]
+  generalize (Real.log ((p : ℕ) : ℝ)) = L
+  simp [Complex.div_re]
 
 /-- Every prime produces a genuinely upper-imaginary Gamma slope. -/
 theorem finiteEulerGammaSlope_im_pos (p : Nat.Primes) :
     0 < (finiteEulerGammaSlope p).im := by
+  have hlog : 0 < Real.log ((p : ℕ) : ℝ) :=
+    Real.log_pos (by exact_mod_cast p.property.one_lt)
   rw [finiteEulerGammaSlope]
-  simp only [Complex.div_im, mul_re, mul_im, I_re, ofReal_re, I_im, ofReal_im,
-    zero_mul, one_mul, sub_zero, zero_pow, add_zero, mul_zero]
-  have hlog : 0 < Real.log (p : ℝ) :=
-    Real.log_pos (by
-      simpa using (Nat.cast_lt (α := ℝ)).mpr p.property.one_lt)
+  generalize hgen : (Real.log ((p : ℕ) : ℝ)) = L at hlog ⊢
+  simp [Complex.div_im]
   positivity
 
 /-- The reciprocal Gamma pair associated with one finite Euler factor. -/
@@ -116,9 +117,14 @@ theorem finiteEulerLocalQuartet_eq_gammaReciprocalQuartet
   rw [finiteEulerLocalQuartet,
     finiteEulerLocalFactor_eq_gammaReciprocalPair p s,
     finiteEulerLocalFactor_eq_gammaReciprocalPair p (1 - s)]
-  rw [← Complex.exp_add]
-  congr 2
-  ring
+  have hexp : Complex.exp (-((Real.log p : ℂ) * s) / 2) *
+      Complex.exp (-((Real.log p : ℂ) * (1 - s)) / 2)
+      = Complex.exp (-((Real.log p : ℂ) / 2)) := by
+    rw [← Complex.exp_add]
+    congr 1
+    ring
+  linear_combination ((-2 * Complex.I * (Real.pi : ℂ)) ^ 2 *
+    finiteEulerGammaReciprocalPair p s * finiteEulerGammaReciprocalPair p (1 - s)) * hexp
 
 /-- A finite semilocal Euler multiplier is the product of its reciprocal Gamma pairs with the
 combined cardinality and logarithmic-exponential gauge. -/

@@ -8,8 +8,8 @@ This source-independent `L²` package gives the exact Hilbert geometry of measur
 finite positive-measure aperture.  It is the reusable core of the physical hard-aperture metric.
 -/
 
-open scoped BigOperators symmDiff
-open MeasureTheory Set
+open scoped BigOperators symmDiff Topology
+open MeasureTheory Set Filter
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -126,8 +126,8 @@ theorem isClosed_indicatorConstLp_one_of_subset
       (c := (1 : ℝ))] with x hx
     rw [hx]
     by_cases hxE : x ∈ E
-    · exact Or.inr (Set.indicator_of_mem hxE)
-    · exact Or.inl (Set.indicator_of_notMem hxE)
+    · exact Or.inr (Set.indicator_of_mem hxE _)
+    · exact Or.inl (Set.indicator_of_notMem hxE _)
   have hfzero : ∀ n, IsAEZeroOutside μ Ω (f n) := by
     intro n
     rcases hf n with ⟨E, hE, hEfin, hEΩ, hfn⟩
@@ -138,18 +138,18 @@ theorem isClosed_indicatorConstLp_one_of_subset
     rw [hx, Set.indicator_of_notMem]
     exact fun hxE => hxΩ (hEΩ hxE)
   exact exists_indicatorConstLp_eq_of_isAEBoolean_of_ae_zero_outside μ Ω hΩ hΩfin g
-    (isSeqClosed_isAEBoolean μ f g hfbool hfg)
-    (isSeqClosed_isAEZeroOutside μ Ω f g hfzero hfg)
+    (isSeqClosed_isAEBoolean μ hfbool hfg)
+    (isSeqClosed_isAEZeroOutside μ Ω hfzero hfg)
 
 /-- Measures of arbitrary aperture subsets admit a convergent subsequence in the closed measure
 interval. -/
 theorem exists_subseq_tendsto_measureReal_of_subset
     {X : Type*} [MeasurableSpace X] (μ : Measure X) (Ω : Set X) (E : ℕ → Set X)
-    (hEΩ : ∀ n, E n ⊆ Ω) :
+    (hΩfin : μ Ω ≠ ⊤) (hEΩ : ∀ n, E n ⊆ Ω) :
     ∃ a ∈ Set.Icc 0 (μ.real Ω), ∃ φ : ℕ → ℕ, StrictMono φ ∧
       Tendsto (fun n => μ.real (E (φ n))) atTop (𝓝 a) := by
   exact isCompact_Icc.tendsto_subseq fun n =>
-    ⟨measureReal_nonneg, MeasureTheory.measureReal_mono (hEΩ n)⟩
+    ⟨measureReal_nonneg, MeasureTheory.measureReal_mono (hEΩ n) hΩfin⟩
 
 /-- Along convergent subset measures, convergence of centered indicators reconstructs convergence
 of the corresponding uncentered indicators. -/
@@ -164,7 +164,8 @@ theorem tendsto_indicatorConstLp_of_tendsto_centeredIndicatorOn_of_tendsto_measu
     Tendsto (fun n => indicatorConstLp 2 (hE n) (hEfin n) (1 : ℝ)) atTop
       (𝓝 (g + (a / μ.real Ω) • indicatorConstLp 2 hΩ hΩfin (1 : ℝ))) := by
   simpa only [centeredIndicatorOn, sub_add_cancel] using
-    hcentered.add (hmeasure.div_const (μ.real Ω)).smul_const
+    hcentered.add ((hmeasure.div_const (μ.real Ω)).smul_const
+      (indicatorConstLp 2 hΩ hΩfin (1 : ℝ)))
 
 /-- Exact Gram formula for centered indicators in a finite positive-measure aperture. -/
 theorem real_inner_centeredIndicatorOn

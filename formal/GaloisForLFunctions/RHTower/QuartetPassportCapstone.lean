@@ -167,9 +167,7 @@ theorem quartetTarget_jet_conj (P : Polynomial ℂ) (α : ℂ) (k : Fin 4) (n : 
 theorem X_sub_C_dvd_quartetFlatPolynomial (α : ℂ) (k : Fin 4) :
     (X - Polynomial.C (quartetPoint α k)) ∣ quartetFlatPolynomial α := by
   have hroot : (quartetFlatPolynomial α).IsRoot (quartetPoint α k) := by
-    fin_cases k <;>
-      simp [quartetFlatPolynomial, quartetPoint, Polynomial.IsRoot, Complex.ext_iff] <;> ring_nf <;>
-      simp
+    fin_cases k <;> simp [quartetFlatPolynomial, quartetPoint, Polynomial.IsRoot]
   exact Polynomial.dvd_iff_isRoot.mpr hroot
 
 theorem X_sub_C_pow_dvd_simultaneousFlatPolynomial {J : Type} [Fintype J] [DecidableEq J]
@@ -377,9 +375,9 @@ theorem exists_quartet_passport_realizer_of_base {J : Type} [Fintype J] [Decidab
         iteratedDeriv n (fun z => coshQuartetEnvelope a₀ z * (base j).eval z) (α j) := by
     intro j n hn
     change iteratedDeriv n (fun z => coshQuartetEnvelope a₀ z * B.eval z) (α j) = _
-    apply iteratedDeriv_mul_congr (coshQuartetEnvelope_analyticAt a₀ (α j))
+    refine iteratedDeriv_mul_congr (N := N j + 1) (coshQuartetEnvelope_analyticAt a₀ (α j))
       ((Polynomial.differentiable B).analyticAt (α j))
-      ((Polynomial.differentiable (base j)).analyticAt (α j))
+      ((Polynomial.differentiable (base j)).analyticAt (α j)) ?_ n (by omega)
     intro m hm
     rw [GaloisForLFunctions.HTGeometry.iteratedDeriv_polynomial_eval,
       GaloisForLFunctions.HTGeometry.iteratedDeriv_polynomial_eval]

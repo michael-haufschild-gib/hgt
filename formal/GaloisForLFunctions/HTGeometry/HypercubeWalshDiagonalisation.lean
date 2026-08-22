@@ -78,14 +78,12 @@ theorem sum_cubeSign_mul (x y : Fin n → Bool) :
     rw [cubeSign, cubeSign, ← Finset.prod_mul_distrib]
   have hswap : ∑ z : Fin n → Bool, ∏ i, (boolSign (x i && z i) * boolSign (y i && z i))
       = ∏ i, ∑ b : Bool, (boolSign (x i && b) * boolSign (y i && b)) := by
-    rw [Finset.prod_univ_sum]
-    refine Finset.sum_nbij' (fun p _ => fun i => p i (Finset.mem_univ i))
-      (fun z _ => fun i _ => z i) ?_ ?_ ?_ ?_ ?_ <;> intros <;> rfl
+    rw [Finset.prod_univ_sum, Fintype.piFinset_univ]
   have hcoord : ∀ i : Fin n, ∑ b : Bool, (boolSign (x i && b) * boolSign (y i && b))
       = if x i = y i then (2 : ℂ) else 0 := by
     intro i
     rw [Fintype.sum_bool]
-    cases hx : x i <;> cases hy : y i <;> simp [boolSign]
+    cases hx : x i <;> cases hy : y i <;> norm_num [boolSign]
   rw [Finset.sum_congr rfl (fun z _ => hfac z), hswap,
     Finset.prod_congr rfl (fun i _ => hcoord i)]
   by_cases hxy : x = y
@@ -106,9 +104,7 @@ theorem cubeNorm_pos (n : ℕ) : 0 < cubeNorm n := by
   exact inv_pos.mpr (Real.sqrt_pos.mpr (by positivity))
 
 theorem cubeNorm_sq (n : ℕ) : cubeNorm n * cubeNorm n = ((2 : ℝ) ^ n)⁻¹ := by
-  rw [cubeNorm, ← mul_inv, ← Real.sqrt_mul_self (le_of_lt (by positivity : (0:ℝ) < Real.sqrt ((2:ℝ)^n)))]
-  congr 1
-  rw [Real.mul_self_sqrt (by positivity)]
+  rw [cubeNorm, ← mul_inv, Real.mul_self_sqrt (by positivity)]
 
 /-- The Walsh–Hadamard matrix of the Boolean hypercube. -/
 def walshMatrix (n : ℕ) : Matrix (Fin n → Bool) (Fin n → Bool) ℂ :=

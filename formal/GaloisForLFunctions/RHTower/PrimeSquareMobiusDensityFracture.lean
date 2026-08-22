@@ -513,7 +513,7 @@ theorem tendsto_mobiusClockSum {P : Finset ℕ} (hP : ∀ q ∈ P, Nat.Prime q) 
 
 /-! ## The squarefree density -/
 
-theorem tendsto_natSqrt_atTop : Tendsto (fun X : ℕ => Nat.sqrt X) atTop atTop := by
+private theorem tendsto_natSqrt_atTop : Tendsto (fun X : ℕ => Nat.sqrt X) atTop atTop := by
   refine Filter.tendsto_atTop_atTop.mpr fun b => ⟨b * b, fun a ha => ?_⟩
   exact Nat.le_sqrt.mpr ha
 
