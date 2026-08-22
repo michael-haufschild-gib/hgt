@@ -379,11 +379,6 @@ theorem wass2_le_of_conj_ringInverse_le (hM : IsStrictlyPositive (wassParam t a 
 
 /-! ### The near order and the dual comparison (Proposition 6.15) -/
 
-/-- The near order `p ⪯ q ↔ 1 ≤ p⁻¹ # q`. -/
-def NearLE (p q : A) : Prop := 1 ≤ gm p⁻¹ʳ q
-
-@[inherit_doc] scoped infix:50 " ⪯ᴳ " => NearLE
-
 /-- `g + g⁻¹ ≥ 2` for strictly positive `g`. -/
 lemma two_le_add_ringInverse {g : A} (hg : IsStrictlyPositive g) :
     (2 : ℝ) • (1 : A) ≤ g + g⁻¹ʳ := by

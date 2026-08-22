@@ -26,6 +26,36 @@ def algHomBaseChange {K : Type u} {L : Type v} {A : Type w} {B : Type x}
     (f : A →ₐ[K] B) : L ⊗[K] A →ₐ[L] L ⊗[K] B :=
   Algebra.TensorProduct.map (AlgHom.id L L) f
 
+/-- Injectivity of an algebra homomorphism is reflected by every field scalar extension. -/
+theorem algHom_injective_iff_baseChange_injective {K : Type u} {L : Type v} {A : Type w}
+    {B : Type x} [Field K] [Field L] [Algebra K L] [Ring A] [Algebra K A]
+    [Ring B] [Algebra K B] (f : A →ₐ[K] B) :
+    Function.Injective f ↔ Function.Injective (algHomBaseChange (L := L) f) := by
+  change Function.Injective f.toLinearMap ↔
+    Function.Injective (algHomBaseChange (L := L) f).toLinearMap
+  change Function.Injective f.toLinearMap ↔ Function.Injective (f.toLinearMap.baseChange L)
+  exact linearMap_injective_iff_baseChange_injective (L := L) f.toLinearMap
+
+/-- Surjectivity of an algebra homomorphism is reflected by every field scalar extension. -/
+theorem algHom_surjective_iff_baseChange_surjective {K : Type u} {L : Type v} {A : Type w}
+    {B : Type x} [Field K] [Field L] [Algebra K L] [Ring A] [Algebra K A]
+    [Ring B] [Algebra K B] (f : A →ₐ[K] B) :
+    Function.Surjective f ↔ Function.Surjective (algHomBaseChange (L := L) f) := by
+  change Function.Surjective f.toLinearMap ↔
+    Function.Surjective (algHomBaseChange (L := L) f).toLinearMap
+  change Function.Surjective f.toLinearMap ↔ Function.Surjective (f.toLinearMap.baseChange L)
+  exact linearMap_surjective_iff_baseChange_surjective (L := L) f.toLinearMap
+
+/-- Bijectivity of an algebra homomorphism is reflected by every field scalar extension. -/
+theorem algHom_bijective_iff_baseChange_bijective {K : Type u} {L : Type v} {A : Type w}
+    {B : Type x} [Field K] [Field L] [Algebra K L] [Ring A] [Algebra K A]
+    [Ring B] [Algebra K B] (f : A →ₐ[K] B) :
+    Function.Bijective f ↔ Function.Bijective (algHomBaseChange (L := L) f) := by
+  change Function.Bijective f.toLinearMap ↔
+    Function.Bijective (algHomBaseChange (L := L) f).toLinearMap
+  change Function.Bijective f.toLinearMap ↔ Function.Bijective (f.toLinearMap.baseChange L)
+  exact linearMap_bijective_iff_baseChange_bijective (L := L) f.toLinearMap
+
 /-- Two algebra homomorphisms are equal exactly when their scalar extensions are equal. -/
 theorem algHom_eq_iff_baseChange_eq {K : Type u} {L : Type v} {A : Type w} {B : Type x}
     [Field K] [Field L] [Algebra K L] [Ring A] [Algebra K A] [Ring B] [Algebra K B]
@@ -177,5 +207,95 @@ theorem rationalFunction_algEquiv_eq_iff_forall_place (F : Type u)
   · intro h
     exact (algEquiv_eq_iff_baseChange_eq
       (L := rationalFunctionCompletion F .infinite) e f).mpr (h .infinite)
+
+/-- An algebra homomorphism over a number field is injective exactly when all of its completed
+scalar extensions are injective. -/
+theorem numberField_algHom_injective_iff_forall_place (K : Type u)
+    [Field K] [NumberField K] {A : Type v} {B : Type w}
+    [Ring A] [Algebra K A] [Ring B] [Algebra K B] (f : A →ₐ[K] B) :
+    Function.Injective f ↔ ∀ p : NumberFieldPlace K,
+      Function.Injective (algHomBaseChange (L := completion K p) f) := by
+  constructor
+  · intro h p
+    exact (algHom_injective_iff_baseChange_injective (L := completion K p) f).mp h
+  · intro h
+    exact (algHom_injective_iff_baseChange_injective
+      (L := completion K (witnessPlace K)) f).mpr (h (witnessPlace K))
+
+/-- An algebra homomorphism over a number field is surjective exactly when all of its completed
+scalar extensions are surjective. -/
+theorem numberField_algHom_surjective_iff_forall_place (K : Type u)
+    [Field K] [NumberField K] {A : Type v} {B : Type w}
+    [Ring A] [Algebra K A] [Ring B] [Algebra K B] (f : A →ₐ[K] B) :
+    Function.Surjective f ↔ ∀ p : NumberFieldPlace K,
+      Function.Surjective (algHomBaseChange (L := completion K p) f) := by
+  constructor
+  · intro h p
+    exact (algHom_surjective_iff_baseChange_surjective (L := completion K p) f).mp h
+  · intro h
+    exact (algHom_surjective_iff_baseChange_surjective
+      (L := completion K (witnessPlace K)) f).mpr (h (witnessPlace K))
+
+/-- An algebra homomorphism over a number field is bijective exactly when all of its completed
+scalar extensions are bijective. -/
+theorem numberField_algHom_bijective_iff_forall_place (K : Type u)
+    [Field K] [NumberField K] {A : Type v} {B : Type w}
+    [Ring A] [Algebra K A] [Ring B] [Algebra K B] (f : A →ₐ[K] B) :
+    Function.Bijective f ↔ ∀ p : NumberFieldPlace K,
+      Function.Bijective (algHomBaseChange (L := completion K p) f) := by
+  constructor
+  · intro h p
+    exact (algHom_bijective_iff_baseChange_bijective (L := completion K p) f).mp h
+  · intro h
+    exact (algHom_bijective_iff_baseChange_bijective
+      (L := completion K (witnessPlace K)) f).mpr (h (witnessPlace K))
+
+/-- An algebra homomorphism over `F(t)` is injective exactly when all finite and infinite
+completed scalar extensions are injective. -/
+theorem rationalFunction_algHom_injective_iff_forall_place (F : Type u)
+    [Field F] [Finite F] {A : Type v} {B : Type w}
+    [Ring A] [Algebra (RatFunc F) A] [Ring B] [Algebra (RatFunc F) B]
+    (f : A →ₐ[RatFunc F] B) :
+    Function.Injective f ↔ ∀ p : RationalFunctionPlace F,
+      Function.Injective (algHomBaseChange (L := rationalFunctionCompletion F p) f) := by
+  constructor
+  · intro h p
+    exact (algHom_injective_iff_baseChange_injective
+      (L := rationalFunctionCompletion F p) f).mp h
+  · intro h
+    exact (algHom_injective_iff_baseChange_injective
+      (L := rationalFunctionCompletion F .infinite) f).mpr (h .infinite)
+
+/-- An algebra homomorphism over `F(t)` is surjective exactly when all finite and infinite
+completed scalar extensions are surjective. -/
+theorem rationalFunction_algHom_surjective_iff_forall_place (F : Type u)
+    [Field F] [Finite F] {A : Type v} {B : Type w}
+    [Ring A] [Algebra (RatFunc F) A] [Ring B] [Algebra (RatFunc F) B]
+    (f : A →ₐ[RatFunc F] B) :
+    Function.Surjective f ↔ ∀ p : RationalFunctionPlace F,
+      Function.Surjective (algHomBaseChange (L := rationalFunctionCompletion F p) f) := by
+  constructor
+  · intro h p
+    exact (algHom_surjective_iff_baseChange_surjective
+      (L := rationalFunctionCompletion F p) f).mp h
+  · intro h
+    exact (algHom_surjective_iff_baseChange_surjective
+      (L := rationalFunctionCompletion F .infinite) f).mpr (h .infinite)
+
+/-- An algebra homomorphism over `F(t)` is bijective exactly when all finite and infinite
+completed scalar extensions are bijective. -/
+theorem rationalFunction_algHom_bijective_iff_forall_place (F : Type u)
+    [Field F] [Finite F] {A : Type v} {B : Type w}
+    [Ring A] [Algebra (RatFunc F) A] [Ring B] [Algebra (RatFunc F) B]
+    (f : A →ₐ[RatFunc F] B) :
+    Function.Bijective f ↔ ∀ p : RationalFunctionPlace F,
+      Function.Bijective (algHomBaseChange (L := rationalFunctionCompletion F p) f) := by
+  constructor
+  · intro h p
+    exact (algHom_bijective_iff_baseChange_bijective
+      (L := rationalFunctionCompletion F p) f).mp h
+  · intro h
+    exact (algHom_bijective_iff_baseChange_bijective
+      (L := rationalFunctionCompletion F .infinite) f).mpr (h .infinite)
 
 end GaloisForLFunctions.HTGeometry.ABHN

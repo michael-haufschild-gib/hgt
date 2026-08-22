@@ -137,3 +137,140 @@ coordinate-free Hilbert–Schmidt layer that mathlib lacks: `ContinuousLinearMap
 conjugate symmetry, positive definiteness, Cauchy–Schwarz, triangle inequality), the two-sided
 ideal property `IsHilbertSchmidt.comp_left/comp_right`, and `IsHilbertSchmidt.adjoint`.
 This is the layer Lemma 3.10/3.11 need.
+
+### `KantorovichConverse.lean`
+`kantorovich` (`K(h) = (1+h)/(2√h)`), `kantorovich_inv`, `one_add_div_two_le_mul_sqrt`
+(convexity of `t² - 2κt + 1` propagates endpoint inequalities), `smul_one_add_le_smul_cfcSqrt`
+(the CFC transfer), `ringInverse_le_of_smul_one_le`, `smul_one_le_ringInverse_of_le_smul_one`,
+**`arith_le_smul_gm`** (Lemma 6.16).
+
+### `WassersteinNearOrder.lean`
+`wassKappa`, `one_le_kantorovich`, `one_le_wassKappa`, `wassKappa_pos`, `kappa_eq_max`,
+`mem_Icc_ringInverse`, `mem_Icc_of_ringInverse`, **`gm_dual_primalInv_bounds`**
+(`κ⁻² ≤ D # P⁻¹ ≤ 2κ-1`), **`nearLE_smul_primal_dual`** and **`nearLE_dual_smul_primal`**
+(Theorem 6.17, both halves).
+
+### `WassersteinDual.lean` (added)
+`isDualWassersteinPoint_smul`, **`IsDualWassersteinPoint.norm_quasiArith_le`** (Corollary 6.14).
+
+### `HTGeometry/OperatorLyapunovEquation.lean` (new general asset)
+`lyapunov` (`Λ_x : y ↦ xy + yx` as `A →L[ℝ] A`), `lyapunov_apply/add/smul_one`,
+`norm_lyapunov_le`, `norm_sub_midpoint_le`, **`isUnit_lyapunov`** (Neumann-series proof from a
+Loewner interval), **`isUnit_lyapunov_of_isStrictlyPositive`**.
+This replaces the integral representation `∫₀^∞ e^{-tx} · e^{-tx} dt` used by the paper: the
+Lyapunov operator is a Neumann perturbation of `2c·id` around the midpoint of `[α,β]`, with
+`‖Λ_{x-c}‖ ≤ β - α < α + β = 2c`.
+
+## Analytic-core plan (Sections 3–5)
+Established route, replacing the paper's semigroup-integral machinery where possible:
+1. **Lyapunov invertibility** ✅ (`OperatorLyapunovEquation.lean`).
+2. **Fréchet derivative of `CFC.sqrt`**: apply the inverse-function theorem to `y ↦ y*y`
+   (a bounded bilinear map, so strictly differentiable with derivative `Λ_y`); step 1 gives
+   invertibility at `y = √a`, so `D(√)(a) = Λ_{√a}⁻¹`.
+3. **Derivative of `X ↦ Aᵢ # X⁻¹`** by the chain rule with mathlib's derivative of `Ring.inverse`.
+4. **Lemma 3.10** (two-sided HS bounds) on top of the corpus HS layer.
+5. **Lemma 3.11**: positivity of `⟨DΦ(X)Y, Y⟩_HS`.  Key discovery: the paper's
+   `∫ B(t) Y B(t) dt ≥ 0` can be replaced by the Lyapunov identity — if `u y + y u = v` then
+   `⟨y, u⁻²-weighted v⟩` reduces to `tr(y a y b) = ‖√a y √b‖²_HS ≥ 0` by trace cyclicity alone.
+6. **Theorem 3.12** (`Σ₂` case) by the implicit function theorem in the Hilbert space
+   `SL²_ex(H)`, where coercivity gives invertibility directly (Lax–Milgram).
+7. **Theorem 3.16** (general `ℙ`) additionally needs Lemma 3.14 (duality `S¹* = S`) and
+   Theorem 3.15 (spectral permanence `σ(L|_{S¹}) ⊆ σ(L|_{S²})`, Drivaliaris–Yannakakis).
+8. Sections 4–5 (renorming, Banach–Finsler contraction, no-dice, SLLN) sit on top of 6–7.
+
+## Log
+- 2026-08-22 — Section 6 essentially complete (6.1–6.3, 6.5, 6.7, 6.9–6.11, 6.13–6.17);
+  Section 3 partial (3.2, 3.3, 3.4); Section 5 Lemma 5.2.  Analytic core started with the
+  Lyapunov layer.
+
+### `HTGeometry/CFCSqrtDerivative.lean` (new mathlib gap: differentiability of `CFC.sqrt`)
+`saProj` (self-adjoint projection `x ↦ (x+x⋆)/2`, as `A →L[ℝ] A`) with `saProj_apply`,
+`isSelfAdjoint_saProj`, `saProj_of_isSelfAdjoint`, `saProj_saProj`, `saProj_mul_saProj`,
+`norm_saProj_le`, `commute_lyapunov_saProj`;
+`saSquare` / `saSqrt` (the twist that makes both maps globally defined on `A`),
+`saProj_saSqrt`, `saSquare_saSqrt`, `saSqrt_of_isSelfAdjoint`, `saProj_saSquare`,
+`saSqrt_saSquare`, `saSquare_of_isSelfAdjoint`;
+`hasStrictFDerivAt_saSquare` (derivative `Λ_{Py} ∘ P + (1 - P)`);
+`Units.val_inv_commute`, `isUnit_mul_idem_add_compl` (general ring lemma: `L P + (1-P)` is a unit
+when `P` is idempotent, commutes with `L`, and `L` is a unit), `isUnit_saSquare_fderiv`;
+`unitsToEquiv` (a unit of `E →L[ℝ] E` as a `ContinuousLinearEquiv`);
+`isStrictlyPositive_saProj_of_norm_lt`;
+**`hasStrictFDerivAt_saSqrt`** — the CFC square root is strictly Fréchet differentiable at every
+strictly positive element, the derivative being the inverse of `Λ_{√a} ∘ P + (1-P)`;
+**`lyapunov_fderiv_saSqrt`** — the derivative solves `√a · (D√(a)h) + (D√(a)h) · √a = h`
+on self-adjoint directions.
+Plus `exists_pos_smul_one_le` in `OperatorLyapunovEquation.lean`.
+
+The subtype `selfAdjoint A` is avoided entirely: `saSquare` and `saSqrt` are globally defined
+mutually inverse maps near a strictly positive point, and the derivative of `saSquare` is block
+diagonal for the decomposition `A = A_sa ⊕ A_asa`, so its invertibility is exactly the
+invertibility of the Lyapunov operator.
+
+### `HTGeometry/HilbertSchmidtSandwichBounds.lean` (**Lemma 3.10**)
+`ContinuousLinearMap.hsNormSq_comp_left_le`, `le_hsNormSq_comp_left`,
+`hsNormSq_comp_right_le`, `le_hsNormSq_comp_right`, **`hsNormSq_sandwich_bounds`**.
+Stated vector-wise (`c‖y‖² ≤ ‖S y‖² ≤ C‖y‖²`) so no trace theory is needed; the right factor is
+handled by adjoints, using `IsHilbertSchmidt.hsNormSq_adjoint` from the corpus HS layer.
+
+## Next concrete steps
+1. HS inner-product adjunctions `⟨A∘S, T⟩_HS = ⟨S, A†∘T⟩_HS` and `⟨S∘B, T⟩_HS = ⟨S, T∘B†⟩_HS`
+   (the second from `hsInner_adjoint_adjoint` + conjugate symmetry).
+2. Positivity `⟨a Y b, Y⟩_HS = ‖√a Y √b‖²_HS ≥ 0` for `a, b ≥ 0` and `Y` self-adjoint — this is
+   the replacement for the paper's `∫ B(t) Y B(t) dt` computation.
+3. Chain rule for `Z ↦ a # Z` (conjugation maps as CLMs + `hasStrictFDerivAt_saSqrt`) and for
+   `X ↦ Aᵢ # X⁻¹` (mathlib's derivative of `Ring.inverse`).
+4. Lemma 3.11 from 2 + 3 + Lemma 3.10.
+5. Implicit function theorem + homotopy continuation ⇒ Theorems 3.6, 3.8, 3.12, 3.16.
+
+### `HTGeometry/HilbertSchmidtSandwichPositivity.lean` (**core of Lemma 3.11**)
+`ContinuousLinearMap.hsInner_comp_left` (`⟨A∘S, T⟩_HS = ⟨S, A†∘T⟩_HS`, termwise),
+`hsInner_comp_right` (`⟨S∘B, T⟩_HS = ⟨S, T∘B†⟩_HS`, via `hsInner_adjoint_adjoint` and conjugate
+symmetry), **`hsInner_sandwich_eq`** (`⟨(s†s) Y (t t†), Y⟩_HS = ⟨sYt, sYt⟩_HS`),
+**`re_hsInner_sandwich_nonneg`**, **`re_hsInner_sandwich_eq_hsNormSq`**.
+This is the trace-free replacement for the paper's `∫₀^∞ B(t) Y B(t) dt ≥ 0`: no trace, no
+semigroup integral, only the two adjunctions of the Hilbert–Schmidt inner product.
+
+## Log
+- 2026-08-22 (cont.) — analytic core layers 1–2 and the HS positivity landed:
+  `OperatorLyapunovEquation`, `CFCSqrtDerivative`, `HilbertSchmidtSandwichBounds` (Lemma 3.10),
+  `HilbertSchmidtSandwichPositivity` (core of Lemma 3.11).
+
+## mathlib inputs verified available for step 3
+* `NormedRing.hasFDerivAt_ringInverse (x : Rˣ) : HasFDerivAt Ring.inverse (-mulLeftRight 𝕜 R ↑x⁻¹ ↑x⁻¹) x`
+  (needs `[HasSummableGeomSeries R]`, automatic for a complete normed ring);
+* `contDiffAt_ringInverse 𝕜 (x : Rˣ) : ContDiffAt 𝕜 n Ring.inverse x`, hence
+  `ContDiffAt.hasStrictFDerivAt` gives the **strict** derivative needed by the inverse function
+  theorem;
+* `HasStrictFDerivAt.mul'` (noncommutative product rule), `HasStrictFDerivAt.comp`,
+  `HasStrictFDerivAt.to_local_left_inverse`, `ContinuousLinearEquiv.equivOfInverse`;
+* `CFC.continuousOn_sqrt`, `CFC.sqrt_mul_self`, `CFC.sqrt_mul_sqrt_self`;
+* `CStarAlgebra (E →L[ℂ] E)` from `Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap`
+  (the order instances `PartialOrder`/`StarOrderedRing` are *not* global — carry them as
+  instance-implicit variables, as the BuresWasserstein modules do).
+
+### `BuresWasserstein/GeometricMeanDerivative.lean`
+`conjMap` (`x ↦ b x b` as `A →L[ℝ] A`), `conjMap_apply`, `conjMap_apply'`,
+`isSelfAdjoint_conjMap`, `gmMap` (the geometric mean in its second argument, extended to all of
+`A`), `gmMap_eq_gm`, **`hasStrictFDerivAt_gmMap`** (strict differentiability of `Z ↦ a # Z` at
+strictly positive `Z`, derivative `h ↦ a^{1/2} Λ_{√c}⁻¹(a^{-1/2} h a^{-1/2}) a^{1/2}`),
+`isStrictlyPositive_conjMap_rpow`.
+
+Note for reuse: `HasStrictFDerivAt.comp` needs `(f := …) (g := …)` supplied explicitly here —
+higher-order unification picks `f := id` otherwise.
+
+### `BuresWasserstein/WassersteinFieldDerivative.lean`
+`hasStrictFDerivAt_ringInverse` (strict version, via `contDiffAt_ringInverse`), `gmInvMap`
+(`X ↦ a # X⁻¹`), `gmInvMap_eq_gm`, **`hasStrictFDerivAt_gmInvMap`**, `wassField`
+(the paper's `Φ(X) = ∑ wᵢ (1 - Aᵢ # X⁻¹)`), **`wassField_eq_zero_iff`** (zeros = Wasserstein
+points), **`hasStrictFDerivAt_wassField`**.
+
+### `HTGeometry/OperatorLoewnerVectorBounds.lean`
+`re_inner_nonneg_of_nonneg`, `smul_one_le_re_inner`, `sq_mul_norm_sq_le_norm_apply_sq`
+(`m ≤ T ⟹ m²‖v‖² ≤ ‖Tv‖²`), the bridge that feeds the Hilbert–Schmidt sandwich estimates.
+
+### `BuresWasserstein/LyapunovFormPositivity.lean` (**Lemma 3.11 core, quantitative**)
+`lyapunov_solution` (`u²(u⁻¹yu⁻² + u⁻²yu⁻¹)u² = uy + yu`),
+**`re_hsInner_lyapunovSolution`** (`Re⟨q, y⟩_HS = ‖u^{-1/2}yu⁻¹‖²_HS + ‖u⁻¹yu^{-1/2}‖²_HS`),
+`re_hsInner_lyapunovSolution_nonneg`, `smul_one_le_rpow_neg_half`,
+**`re_hsInner_lyapunovSolution_lower`** (`2β⁻³‖y‖²_HS ≤ Re⟨q, y⟩_HS` when `u ≤ β`).
+Plus `le_hsNormSq_sandwich` added to `HilbertSchmidtSandwichBounds.lean`.

@@ -212,4 +212,26 @@ theorem tendsto_unitRieszOutgoing_sub_primePolarGammaCurvature_sub_normalizedChe
     rw [unitRieszCoherentOutgoingCharge_eq_primePolarGammaCurvature_add_boundaryDefect N]
     ring)
 
+/-- Cofinal transport is coefficient-faithful in both directions: outgoing charge minus normalized
+prime--polar--Gamma curvature has a limit exactly when normalized completed Chebyshev error has the
+same limit. -/
+theorem tendsto_unitRieszOutgoing_sub_primePolarGammaCurvature_iff_normalizedChebyshevError
+    (L : ℝ) :
+    Tendsto (fun N : ℕ =>
+      unitRieszCoherentCompletedOutgoingCharge (N + 3) -
+        ccmSuzukiWeightedPrimePolarGammaCurvaturePrefix (N + 1) /
+          ((N + 3 : ℕ) : ℝ)) atTop (nhds L) ↔
+      Tendsto (fun N : ℕ =>
+        criticalMellinNormalizedChebyshevError
+          (Real.log (((N + 3 : ℕ) : ℝ)))) atTop (nhds L) := by
+  have hdiff :=
+    tendsto_unitRieszOutgoing_sub_primePolarGammaCurvature_sub_normalizedChebyshevError_zero
+  constructor
+  · intro hout
+    have h := hout.sub hdiff
+    simpa only [sub_zero] using h.congr' (Eventually.of_forall fun N => by ring)
+  · intro herr
+    have h := hdiff.add herr
+    simpa only [zero_add] using h.congr' (Eventually.of_forall fun N => by ring)
+
 end RHTower

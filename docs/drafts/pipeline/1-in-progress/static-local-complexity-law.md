@@ -6346,3 +6346,14 @@ receive a new title and an independent significance audit.
   uniform on Brown schedule; continuous gates additionally require an entropy-efficient circuit
   net. Formal card:
   `../3-formalized/optimal-design-weighted-static-choi-first-return-law.md`.
+- 2026-08-22 -- Split the canonical weighted near-action obstruction exactly into transverse and
+  carrier parts. For every unitary circuit target, replica near-action mass is at most
+  `S(W)^(2r)`, where `S(W)=d^(-1) sum_i |W_ii|`; `S(W)>beta` is exactly a Choi tube around the
+  explicit radial diagonal unitary in the spectral centralizer. Consequently the canonical
+  determinant-design first-return law now costs `beta^(2r)` plus literal optimal-design weight in
+  that tube. A second exact theorem maps this tube into a normalized Hilbert--Schmidt commutator
+  small ball, with no minimum-gap premise. This retires generic spectral crowding as the remaining
+  carrier. Exact open core is now a quenched, circuit-uniform pseudodeterminant lower tail for the
+  shared-draw fixed-`q` Pauli commutator incidence map after return/centralizer stratification;
+  current Pauli Casimir and Hall laws give rank/leakage but not determinant conditioning. Formal
+  card: `../3-formalized/static-choi-centralizer-carrier-replica-law.md`.

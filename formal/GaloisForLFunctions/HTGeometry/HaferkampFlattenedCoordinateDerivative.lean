@@ -26,6 +26,31 @@ theorem EntrywiseMatrixHasDerivAt.mul_left_const
     (HasDerivAt.fun_sum (u := Finset.univ) (fun j _ =>
       (hasDerivAt_const (x := t) (c := C i j)).mul (hF j k)))
 
+/-- An entrywise derivative of a finite complex matrix curve packages into
+its ordinary real Fréchet derivative. -/
+theorem EntrywiseMatrixHasDerivAt.hasFDerivAt
+    {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+    {F : ℝ → Matrix ι κ ℂ} {F' : Matrix ι κ ℂ} {t : ℝ}
+    (hF : EntrywiseMatrixHasDerivAt F F' t) :
+    HasFDerivAt F (ContinuousLinearMap.toSpanSingleton ℝ F') t := by
+  have hpi : HasFDerivAt (fun s => fun i => fun j => F s i j)
+      (ContinuousLinearMap.pi fun i => ContinuousLinearMap.pi fun j =>
+        ContinuousLinearMap.toSpanSingleton ℝ (F' i j)) t := by
+    apply (hasFDerivAt_pi).2
+    intro i
+    apply (hasFDerivAt_pi).2
+    intro j
+    exact (hF i j).hasFDerivAt
+  change HasFDerivAt (fun s => fun i => fun j => F s i j)
+    (ContinuousLinearMap.toSpanSingleton ℝ (fun i j => F' i j)) t
+  have hderiv : (ContinuousLinearMap.pi fun i => ContinuousLinearMap.pi fun j =>
+      ContinuousLinearMap.toSpanSingleton ℝ (F' i j)) =
+      ContinuousLinearMap.toSpanSingleton ℝ (fun i j => F' i j) := by
+    ext s i
+    simp [ContinuousLinearMap.toSpanSingleton_apply]
+  rw [← hderiv]
+  exact hpi
+
 /-- Replacing one gate in a reverse-chronological finite word differentiates
 to the later suffix, the gate derivative, and the earlier prefix, in that
 order. -/
@@ -96,15 +121,22 @@ theorem entrywiseHasDerivAt_totalTwoQubitLift_terminalPauliGatePath
           (terminalPauliGatePath U t) :
           Matrix (Fin n → Bool) (Fin n → Bool) ℂ)) by
         funext t; exact htotal (terminalPauliGatePath U t)]
-  rw [show Complex.I • twoQubitLiftMatrix cone.mergePlan.terminal root
-      cone.mergePlan.terminal_ne_root
-      (boolTwoQubitPauli none (some 2) *
-        (U : Matrix (Bool × Bool) (Bool × Bool) ℂ)) =
-      Complex.I • (finitePauliMatrix
-        (Function.update (fun _ => none) root (some 2)) *
-        (totalTwoQubitLift (cone.mergePlan.terminal, root) U :
-          Matrix (Fin n → Bool) (Fin n → Bool) ℂ)) by rw [hroot]]
-  exact hlift
+  simpa only [hroot] using hlift
+
+/-- Coercing a finite word of register unitaries to matrices commutes with its
+reverse-chronological product. -/
+theorem List.map_coe_unitary_reverse_prod
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (word : List (Matrix.unitaryGroup I ℂ)) :
+    (List.map (fun U : Matrix.unitaryGroup I ℂ => (U : Matrix I I ℂ)) word).reverse.prod =
+      (word.reverse.prod : Matrix I I ℂ) := by
+  let coeHom : Matrix.unitaryGroup I ℂ →* Matrix I I ℂ :=
+    { toFun := fun U => (U : Matrix I I ℂ)
+      map_one' := rfl
+      map_mul' := fun _ _ => rfl }
+  change (List.map coeHom word).reverse.prod = coeHom word.reverse.prod
+  rw [← List.map_reverse]
+  exact (coeHom.map_list_prod word.reverse).symm
 
 end
 

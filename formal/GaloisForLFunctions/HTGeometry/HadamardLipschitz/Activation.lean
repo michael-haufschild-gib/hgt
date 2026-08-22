@@ -142,6 +142,39 @@ theorem hasDerivAt_squaredRelu (r : ℝ) : HasDerivAt squaredRelu (relu r) r := 
     rw [hz]
     exact h0.congr_of_eventuallyEq heq
 
+/-- **Remark 5.2.**  The squared ReLU is not of class `C²`: its derivative, the ReLU, is not
+differentiable at the origin.  Hence the `C^{1,1}` hypothesis of Theorem 4.1 is the right one. -/
+theorem not_differentiableAt_relu_zero : ¬ DifferentiableAt ℝ relu 0 := by
+  intro hdiff
+  have hc : HasDerivAt relu (deriv relu 0) 0 := hdiff.hasDerivAt
+  have hslope := hasDerivAt_iff_tendsto_slope.mp hc
+  have hpos : Tendsto (slope relu 0) (𝓝[>] (0:ℝ)) (𝓝 (deriv relu 0)) :=
+    hslope.mono_left
+      (nhdsWithin_mono _ fun x hx => Set.mem_compl_singleton_iff.mpr (ne_of_gt hx))
+  have hneg : Tendsto (slope relu 0) (𝓝[<] (0:ℝ)) (𝓝 (deriv relu 0)) :=
+    hslope.mono_left
+      (nhdsWithin_mono _ fun x hx => Set.mem_compl_singleton_iff.mpr (ne_of_lt hx))
+  have hone : Tendsto (slope relu 0) (𝓝[>] (0:ℝ)) (𝓝 1) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with x hx
+    have hx' : (0:ℝ) < x := hx
+    rw [slope_def_field, relu, relu, max_eq_left hx'.le, max_self, sub_zero]
+    exact (div_self (ne_of_gt hx')).symm
+  have hzero : Tendsto (slope relu 0) (𝓝[<] (0:ℝ)) (𝓝 0) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with x hx
+    have hx' : x < (0:ℝ) := hx
+    rw [slope_def_field, relu, relu, max_eq_right hx'.le, max_self, sub_zero]
+    simp
+  have h1 : deriv relu 0 = 1 := tendsto_nhds_unique hpos hone
+  have h0 : deriv relu 0 = 0 := tendsto_nhds_unique hneg hzero
+  rw [h1] at h0
+  exact one_ne_zero h0
+
+/-- The derivative of the squared ReLU is the ReLU. -/
+theorem deriv_squaredRelu : deriv squaredRelu = relu :=
+  funext fun r => (hasDerivAt_squaredRelu r).deriv
+
 /-! ## The resulting step-size bounds -/
 
 variable {X : Type*} [MetricSpace X] [NPCSpace X]

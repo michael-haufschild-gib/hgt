@@ -103,6 +103,29 @@ theorem cglProposition51_axialFrequencyTerm_eq_equalCharacterRowSum
   rw [cglProposition51_axialFrequencyTerm_eq_sum_rowTerm]
   exact cglProposition51_axialFilteredRowSum_eq_equalCharacterSum P w N m.val
 
+/-- Absolute convergence of the full punctured coefficient series on the
+third `S₁` ray.  This is the convergence input needed to reassemble the
+three disjoint rays into the literal source carrier. -/
+theorem cglProposition51_axialFrequencyTerm_norm_summable
+    {q R : ℕ} (P : CGLFibreSeparatedPacket q R)
+    (w : CGLRealSmoothBump) (N : CGLPositiveLength) (n : ℕ) :
+    Summable fun m : CGLProposition51PuncturedFrequency =>
+      ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
+        (cglLemma45FibreRows P) (cglProposition51AxialFrequencyVector m.val)‖ := by
+  have hrowNorm (u : CGLLemma45FibreEqualCharacterOffDiagonalTriple P) :
+      Summable fun m : CGLProposition51PuncturedFrequency =>
+        ‖cglProposition51AxialRowTerm w N (cglLemma45FibreModulus q) R
+          (cglLemma45FibreRows P) u.1 m.val‖ :=
+    cglProposition51_axialRowTerm_norm_summable P w N n u
+  have hsumNorm : Summable fun m : CGLProposition51PuncturedFrequency =>
+      ∑ u : CGLLemma45FibreEqualCharacterOffDiagonalTriple P,
+        ‖cglProposition51AxialRowTerm w N (cglLemma45FibreModulus q) R
+          (cglLemma45FibreRows P) u.1 m.val‖ := by
+    exact summable_sum fun u _ => hrowNorm u
+  refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun m => ?_) hsumNorm
+  rw [cglProposition51_axialFrequencyTerm_eq_equalCharacterRowSum P w N m]
+  exact norm_sum_le _ _
+
 /-- The absolute sum on one axial `S₁` ray is bounded by the finite sum of
 the certified equal-character row-tail budgets. -/
 theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_equalCharacterTailBudget

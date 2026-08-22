@@ -50,6 +50,25 @@ infrastructure.
 | §3.1 (continuation) | head/tail Mellin holomorphy, split at `t=1`, the two poles | `DaiYoshikawa/MellinHalfLine`, `MellinSplit`, `MellinHeadExpansion` | **stage 3** `differentiableAt_mellinHead`, `mellinHead_eq_regularized_add` |
 | §3.1 (`ζ'(0)`) | `ζ(0) = a₁−h`, `ζ'(0) = H(0)+T(0)−a₀+(a₁−h)γ`, and the bridge to (3.3) | `DaiYoshikawa/SpectralZetaDerivative`, `SpectralZetaTorsionBridge` | **stage 3** `deriv_zetaCont_zero_ofReal`, `gamma_mul_zetaCont_eq_mellin` |
 
+## Foundational theory being built (mathlib gaps, `HTGeometry/SpectralHeatKernel/`)
+
+| Layer | Content | Lean |
+|---|---|---|
+| Kernel | `K(t,x,y) = Σ e^{−tλ}φ(x)\overline{φ(y)}`; Hermitian; diagonal; pointwise Cauchy–Schwarz; trace formula; antitone diagonal | `SpectralHeatKernel/Basic` |
+| Semigroup | Chapman–Kolmogorov `∫K(s,x,z)K(t,z,y)dμ = K(s+t,x,y)` | `SpectralHeatKernel/Semigroup` |
+| Operator | `∫K(t,x,y)v(y)dμ = Σ e^{−tλ}⟪φ,v⟫φ(x)` | `SpectralHeatKernel/Operator` |
+| Min–max | infinite-dimensional Courant–Fischer upper bound (Prop 6.1's principle) + Parseval | `SpectralHeatKernel/MinMax` |
+| Flow | `e^{−tΔ}` as a contraction semigroup on the eigenbasis; `‖e^{−tΔ}v‖² = Σ e^{−2tλ}|c|²` | `SpectralHeatKernel/Flow` |
+| Energy | `λe^{−t₀λ} ≤ 1/(e t₀)`; the energy identity `d/dt Σe^{−2tλ}a = −2Σλe^{−2tλ}a` | `SpectralHeatKernel/Energy` |
+| Heat equation | `ΔK`; **Lemma 2.1 in kernel form**; `∂ₜK = −ΔK` | `SpectralHeatKernel/HeatEquation` |
+| Trial spaces | orthogonal ⟹ independent ⟹ `finrank = n`; Prop 6.1's certificate | `SpectralHeatKernel/TrialSpace` |
+| Nash | `f' ≤ −A f^{1+p}` on `(0,∞)`, `f>0` ⟹ `f(t) ≤ (Apt)^{−1/p}` | `NashDifferentialInequality` |
+
+Next: an `L¹`-contractive (Markov) layer, which is what turns Nash's inequality into
+Carlen–Kusuoka–Stroock ultracontractivity, then Grigor'yan's on-diagonal-to-Gaussian bound — the
+engine of Lemma 2.3.  Above that sits the geometric stack (Riemannian volume measure,
+Laplace–Beltrami, Hodge theory, elliptic regularity), none of which mathlib has.
+
 ## Out of reach (recorded, not faked)
 Analytic torsion `τ(M,E)` and its zeta-regularized definition; Quillen metrics and the
 Bismut–Gillet–Soulé anomaly formula; Bismut–Bost degeneration of Quillen metrics; determinant of

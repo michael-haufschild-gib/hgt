@@ -1,7 +1,7 @@
 # DQPT–RH paper: full Lean formalization of its mathematical content
 
 - **ID:** `dqpt-rh-paper-lean-formalization`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** ShiJie Wei, Yue Zhai, Quanfeng Lu, Wentao Yang, Pan Gao, Chao Wei, Junda Song,
   Franco Nori, Tao Xin, GuiLu Long, *The Riemann Hypothesis Emerges in Dynamical Quantum Phase
@@ -70,8 +70,9 @@ listed in Group 2 and is formalized.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven on paper (paper supplies the proofs; corrections recorded below)
-- [ ] 2 → 3  formalized: Lean theorems, `lake build` green, `#print axioms` clean
+- [x] 1 → 2  fully-proven on paper (paper supplies the proofs; corrections recorded below)
+- [x] 2 → 3  formalized: 19 Lean modules, all `lake build` green, all 62 capstones
+  `#print axioms`-clean (`propext, Classical.choice, Quot.sound` only)
 - [ ] 3 → 4  n/a (formalization of an external paper, not a new preprint)
 
 ## Corrections to the source found while formalizing
@@ -100,3 +101,59 @@ listed in Group 2 and is formalized.
   `RHTower.GammaVerticalRatioAsymptotic.gamma_vertical_ratio_norm_rpow_tendsto`,
   `HTGeometry.GammaVerticalModulus`, `RHTower.ZetaCarrier.zetaChi` as the load-bearing reusable
   assets.
+
+## Lean progress ledger (2026-08-22)
+
+All modules live in `formal/GaloisForLFunctions/RHTower/` and are wired into
+`GaloisForLFunctions/RHTower.lean`.  Each was checked with `lake env lean <file>` (clean, no
+warnings) and its olean built with `lake build <module>` where a later module imports it.
+
+| Module | Paper items | Status |
+|---|---|---|
+| `DQPTAltPartialSum` | A1 (1.1)–(1.8) | clean |
+| `DQPTTailNormal` | A1 (1.9)–(1.17) | clean |
+| `DQPTPartialSumRate` | A1 (1.18)–(1.21) | clean |
+| `DQPTPartitionRate` | A2 (2.1)–(2.7) | clean |
+| `DQPTFreeEnergy` | Methods (19); P3 (25)–(28) | clean |
+| `DQPTEtaBound` | A6 (6.3) | clean |
+| `DQPTEtaDeriv` | A6 (6.4)–(6.5) | clean |
+| `DQPTZetaDerivBound` | A6 (6.6)–(6.8) | clean |
+| `DQPTChiOrder` | A7 (7.1)–(7.14) | clean |
+| `DQPTObservables` | main text (2),(3),(4),(5); Methods (22) | clean |
+| `DQPTReflectedSlope` | 5-failed card (1),(2),(3) | clean |
+| `DQPTOracleNumerics` | A3 (3.6)–(3.12); A4 (4.22),(4.50),(4.54),(4.57),(4.64) | clean |
+| `DQPTAngleNumerics` | A4 (4.18),(4.19),(4.20) | clean |
+| `DQPTBernoulliBound` | A4 Cor 4.6, (4.33),(4.39) | clean |
+| `DQPTStateError` | A4 (4.13),(4.76),(4.86)–(4.91); A5 (5.8) | clean |
+| `DQPTAmplitudeSplit` | A4 (4.5),(4.6),(4.10)–(4.12),(4.84) | clean |
+
+| `DQPTEulerMaclaurin` | **new mathlib gap**: Euler–Maclaurin to arbitrary order | clean |
+| `DQPTEulerMaclaurinPartialSum` | A4 Prop 4.5 / P5 Prop 5.5, (4.28),(4.31),(4.34) | clean |
+| `DQPTProbeDensityMatrix` | Methods (20)–(21) | clean |
+
+All 19 modules are wired into `GaloisForLFunctions/RHTower.lean`.
+`scripts/formal_tools.py lint` reports no `sorry`/`admit`/`axiom`/`opaque`/`unsafe` in them and
+no unreachable DQPT module (the 16 remaining lint errors are pre-existing unwired modules owned by
+other agents, untouched by this card).
+
+## New mathlib gap closed
+
+`RHTower/DQPTEulerMaclaurin.lean` proves **Euler–Maclaurin summation to arbitrary order `2m+2`**
+with the Bernoulli-polynomial cell remainder, for any *derivative tower* `F : ℕ → ℝ → ℝ` on the
+interval (so no global smoothness hypothesis is needed).  Neither mathlib nor this corpus had it:
+`HTGeometry.EulerMaclaurinSecondOrder` only covers order two.  The module also proves
+`|B_{2k}(x)| ≤ |B_{2k}|` on `[0,1]` from mathlib's Fourier expansion of the periodised Bernoulli
+polynomials — the sharp input for every Euler–Maclaurin remainder bound.
+
+## Out of scope, restated
+
+The gate- and ancilla-count conclusions (A3 Lemma 3.1/3.2, A4 Thm 4.2/4.4/4.11, Prop 4.8/4.9,
+A5 Thm 5.1, Methods IV E; published Cor 4.2, Prop 5.7/5.8, Lemma 5.9) quantify over an
+unspecified circuit-cost model, cite unproved primitive costs, and state their conclusions as
+`Poly(...)` without naming the polynomial or its uniformity.  They have no determinate formal
+content.  Every mathematical step used inside their proofs is formalized above.
+
+## Log
+- 2026-08-22 — all determinate mathematics of the paper formalized in 19 Lean modules
+  (`RHTower/DQPT*.lean`), wired into the RHTower umbrella, every capstone `#print axioms`-clean.
+  Moved 1-in-progress → 3-formalized.

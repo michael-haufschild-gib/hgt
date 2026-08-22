@@ -557,3 +557,51 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
   (batches 15/17/18/19/20/21), and `ConnesMellinContinuation` (batch 13) propagates the resulting
   identity from `Re s > 1` to `Re s > 0`.
   All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 22 (**the paper source read back; §VII (41) correctly identified**).
+  * **CORRECTION to the ledger.**  The arXiv e-print was re-fetched
+    (`curl -sL https://arxiv.org/e-print/math/9811068 | gunzip > zeta.tex`) and §VII (38)-(49) read
+    verbatim.  Earlier entries described (41) as "the Besov–Fourier sup inequality".  It is not.
+    Connes' (41) is the **fractional-multiplier inequality**
+    `Sup_x |F(η)(x) · Sup_S |x_v|^α| ≤ c_α ∑_S ‖C_{α,v} * η‖₁`,
+    where `C_{α,v}` is the convolution operator (39)
+    `(C_{α,v}*η)(x) = ∫ ψ(|ε|)(η(x+ε) − η(x)) dε/|ε|^{1+α}`.
+    Its proof has three ingredients: `F(C*η) = F(C)·F(η)`; the growth `F(C_{α,v})(x) ≍ |x_v|^α`
+    (asserted, not proved, in the paper); and `sup|F(g)| ≤ ‖g‖₁`.
+  * `ConnesBesovSupNorm` (built, audited) — `connesBesovSeminorm`, `connes_besov_sup_bound`,
+    `connes_besov_le_schwartz_seminorms`: one weighted-`L¹` Besov quantity dominating
+    `sup_x |h^{(n)}(x)|` for *every* `n ≤ N` at once, finite by finitely many Schwartz seminorms of
+    the transform.  This is a genuine supporting estimate but is **not** (41); the module and its
+    docstrings were relabelled accordingly.
+  * `ConnesLevyKernelScaling` (built, audited) — the engine for the growth of `F(C_{α,v})`:
+    `connesLevyKernel`, its integrability on `Ioi 0` for `0 < α < 2`, `connesLevyConstant`,
+    **`connes_levyConstant_pos`** (`C_α > 0`, via `cos ≤ 0` on `(π/2, π)`), and
+    **`connes_levy_scaling`**: `∫_0^∞ (1 − cos(tε)) ε^{-1-α} dε = C_α t^α` for `t > 0` — with *no*
+    hypothesis on `α` (the change of variables is unconditional).
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 23 (**§VII (41) CLOSED at the archimedean place**).  Four modules, the
+  whole chain unconditional and `#print axioms`-clean:
+  * `ConnesLevyKernelScaling` (batch 22) — `∫_0^∞ (1 − cos(tε))ε^{-1-α}dε = C_α t^α`, `C_α > 0`.
+  * `ConnesFractionalSymbolGrowth` — `connesTruncatedLevy`, `connes_levy_truncation_defect_le`
+    (Connes' smooth cut costs only the fixed constant `2δ^{-α}/α`, uniformly in `t`), and
+    **`connes_truncatedLevy_lower_bound`**: `∫_0^∞ψ(ε)(1−cos(tε))ε^{-1-α}dε ≥ C_α t^α − 2δ^{-α}/α`.
+  * `ConnesFracConvSwap` — the operator (39) itself: `connesFracWeight`, `connesFracConv`,
+    the Schwartz quadratic-derivative decay `connes_schwartz_deriv_weight`, the mean-value bound
+    `connes_schwartz_diff_bound` (`‖η(y+ε)−η(y)‖ ≤ 4C(1+|y|)^{-2}|ε|` for `|ε| ≤ 1`, using that a
+    unit shift changes `1+|y|` by at most a factor two), the two-sided `|ε|^{-α}` unit-interval
+    integrability, and **`connes_fracConv_swap`**: against *any* bounded measurable weight the
+    order of the double integral of (39) may be exchanged (the majorant factorises, so Fubini
+    applies).
+  * `ConnesFracSymbolArch` — `connesFracSymbol`, its integrability, **`connes_fracSymbol_re`**
+    (the symbol is real: `Re m_α(x) = −2∫_0^∞ψ(s)(1−cos(2π|x|s))s^{-1-α}ds`, via
+    `integral_comp_abs`), and **`connes_fracSymbol_norm_lower`**:
+    `‖m_α(x)‖ ≥ 2C_α(2π|x|)^α − 2(2δ^{-α}/α)`.  *This is the step Connes states without proof*
+    ("the Fourier transform of `C_{α,v}` behaves like `|x_v|^α`").
+  * `ConnesBesovSupInequality` — `connes_fourier_translate_diff` (the first-difference symbol
+    `e^{2πiεx} − 1`, proved directly from translation invariance rather than via the corpus's
+    `HTGeometry.fourier_sub_translate`, to stay off a heavy import), the multiplier identity
+    **`connes_fourier_fracConv`**: `F(C_{α,v}*η) = m_α · F(η)`, and **§VII (41)**:
+    `(2C_α(2π|x|)^α − 2(2δ^{-α}/α))·‖F(η)(x)‖ ≤ ‖C_{α,v}*η‖₁` for every `x ≠ 0`, `0 < α < 1`.
+  B4's ledger line should now read: (41) DONE, (43)(44)(45)(46)(47)(48) DONE; **open: (42)**, the
+  assembly `‖ε_Λ η‖_{(1,α,v)} = O(Λ^{-N})`, and its transfer to `A_S`.

@@ -33,6 +33,8 @@ and the quantitative estimates (8) and (10).
 
 open scoped InnerProductSpace
 
+set_option maxSynthPendingDepth 3
+
 namespace GaloisForLFunctions.HTGeometry.HodgeEdgeCochain
 
 /-! ## Finite-dimensional bilinear maps -/
@@ -361,6 +363,16 @@ theorem norm_diagAnticommutatorInteraction_le (W : Submodule ℝ (EuclideanSpace
       _ = 2 * ‖J‖ * ‖a‖ * ‖b‖ := by ring
   rw [hcoe]
   linarith
+
+/-- **Estimate (8) in operator-norm form.**  The diagonal anticommutator interaction has
+operator norm at most `2‖J‖`; this is what turns the constant `8‖B‖` of §3.4 into the paper's
+`C_J = 16‖J‖`. -/
+theorem opNorm_diagAnticommutatorInteraction_le (W : Submodule ℝ (EuclideanSpace ℝ ι))
+    (J : EuclideanSpace ℝ ι →L[ℝ] EuclideanSpace ℝ ι) :
+    ‖projectedInteraction W (anticommutator (diagOp ι) J)‖ ≤ 2 * ‖J‖ :=
+  ContinuousLinearMap.opNorm_le_bound₂ _ (by positivity)
+    (norm_diagAnticommutatorInteraction_le W J)
+
 
 end Diagonal
 

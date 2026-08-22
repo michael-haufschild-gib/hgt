@@ -42,8 +42,8 @@ theorem dqptBlock_split (β : ℝ) (base M : ℕ) :
     Finset.sum_range_add]
   congr 1
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  congr 2
-  omega
+  have hidx : base + M + i = base + (M + i) := by omega
+  rw [hidx]
 
 /-- The block sum in the `S(a,b,β)` notation. -/
 theorem dqptBlock_eq_dqptS {β : ℝ} {base M : ℕ} (hM : 1 ≤ M) (hbase : 1 ≤ base) :
@@ -51,9 +51,6 @@ theorem dqptBlock_eq_dqptS {β : ℝ} {base M : ℕ} (hM : 1 ≤ M) (hbase : 1 �
   rw [dqptBlock, dqptS, ← Finset.Ico_add_one_right_eq_Icc, Finset.sum_Ico_eq_sum_range]
   have hlen : base + M - 1 + 1 - base = M := by omega
   rw [hlen]
-  refine Finset.sum_congr rfl (fun i _ => ?_)
-  congr 2
-  omega
 
 /-! ## The split angle -/
 
@@ -85,6 +82,7 @@ theorem dqptSplitAngle_cos_sq {S₀ S₁ : ℝ} (h₀ : 0 < S₀) (h₁ : 0 ≤ 
   have hs := dqptSplitAngle_sin_sq h₀ h₁
   have hval : S₀ / (S₀ + S₁) = 1 - S₁ / (S₀ + S₁) := by
     field_simp
+    ring
   rw [hval]
   linarith
 
@@ -120,11 +118,11 @@ theorem dqptSplitAngle_eq_arctan {S₀ S₁ : ℝ} (h₀ : 0 < S₀) (h₁ : 0 �
   have hx : Real.sqrt (S₁ / S₀) ^ 2 = S₁ / S₀ := Real.sq_sqrt (by positivity)
   rw [hx]
   have hone : (1 : ℝ) + S₁ / S₀ = (S₀ + S₁) / S₀ := by field_simp
-  rw [hone, Real.sqrt_div' _ (le_of_lt hsum)]
-  rw [Real.sqrt_div' _ h₁]
-  rw [div_div_div_cancel_right']
-  · rw [← Real.sqrt_div h₁]
-  all_goals positivity
+  rw [hone]
+  have hs0 : (0 : ℝ) < Real.sqrt S₀ := Real.sqrt_pos.mpr h₀
+  have hs1 : (0 : ℝ) < Real.sqrt (S₀ + S₁) := Real.sqrt_pos.mpr hsum
+  rw [Real.sqrt_div h₁, Real.sqrt_div (le_of_lt hsum), Real.sqrt_div h₁]
+  field_simp
 
 /-! ## Supplementary Note 4 (4.84): the post-selection success probability -/
 
@@ -141,12 +139,18 @@ theorem dqptPartition_le_of_le {β : ℝ} (hβ : 0 ≤ β) {N M : ℕ} (hN : 1 �
       ≤ ((M : ℝ) - (N : ℝ)) * (N : ℝ) ^ (-β) := by
     have hsub : dqptPartition β M - dqptPartition β N
         = ∑ n ∈ Finset.Ioc N M, (n : ℝ) ^ (-β) := by
-      rw [dqptPartition, dqptPartition, ← Finset.sum_Ioc_consecutive _ (by omega : 1 ≤ N + 1)
-        (by omega : N + 1 ≤ M + 1)]
-      · simp only [Finset.Ioc_add_one_right_eq_Icc]
-        ring_nf
-        rw [show Finset.Ioc N M = Finset.Ioc N M from rfl]
-        abel
+      have hsubset : Finset.Icc 1 N ⊆ Finset.Icc 1 M := by
+        intro a ha
+        rw [Finset.mem_Icc] at ha ⊢
+        omega
+      have hsdiff : Finset.Icc 1 M \ Finset.Icc 1 N = Finset.Ioc N M := by
+        ext a
+        simp only [Finset.mem_sdiff, Finset.mem_Icc, Finset.mem_Ioc]
+        omega
+      have hsum := Finset.sum_sdiff (f := fun n : ℕ => (n : ℝ) ^ (-β)) hsubset
+      rw [hsdiff] at hsum
+      rw [dqptPartition, dqptPartition]
+      linarith [hsum]
     rw [hsub]
     have hterm : ∀ n ∈ Finset.Ioc N M, (n : ℝ) ^ (-β) ≤ (N : ℝ) ^ (-β) := by
       intro n hn
@@ -159,10 +163,9 @@ theorem dqptPartition_le_of_le {β : ℝ} (hβ : 0 ≤ β) {N M : ℕ} (hN : 1 �
       _ = ((M - N : ℕ) : ℝ) * (N : ℝ) ^ (-β) := by rw [Finset.sum_const, hcard, nsmul_eq_mul]
       _ = ((M : ℝ) - (N : ℝ)) * (N : ℝ) ^ (-β) := by
           congr 1
-          have : ((M - N : ℕ) : ℝ) = (M : ℝ) - (N : ℝ) := by
-            have := Nat.cast_sub (α := ℝ) hNM
-            linarith [this]
-          exact this
+          have hc : ((M - N : ℕ) : ℝ) = (M : ℝ) - (N : ℝ) := by
+            exact_mod_cast Nat.cast_sub (R := ℝ) hNM
+          exact hc
   have hMN : (0 : ℝ) ≤ (M : ℝ) - (N : ℝ) := by
     have : (N : ℝ) ≤ (M : ℝ) := by exact_mod_cast hNM
     linarith

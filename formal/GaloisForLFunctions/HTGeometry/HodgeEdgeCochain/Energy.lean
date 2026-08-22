@@ -34,6 +34,8 @@ on a real inner-product phase space, with `Δ` a nonnegative self-adjoint dissip
 open Set intervalIntegral MeasureTheory
 open scoped InnerProductSpace
 
+set_option maxSynthPendingDepth 3
+
 namespace GaloisForLFunctions.HTGeometry.HodgeEdgeCochain
 
 section TwoField
@@ -196,6 +198,16 @@ theorem integral_dissipation_identity (hB : IsCancelling B) {u h : ℝ → E} {T
   rw [intervalIntegral.integral_const_mul, hsplit, hneg] at hint
   linarith
 
+/-- **§4.1 (bounded time-averaged dissipation).**  Since the energy is nonnegative, the integrated
+identity bounds the mean dissipation by the initial energy and the forcing work. -/
+theorem two_mul_integral_dissipation_le (hB : IsCancelling B) {u h : ℝ → E} {T : ℝ}
+    (hsol : IsSolutionOn A B nu eta f g u h (uIcc 0 T)) :
+    2 * ∫ t in (0 : ℝ)..T, dissipation A nu eta u h t
+      ≤ energy u h 0 + 2 * ∫ t in (0 : ℝ)..T, forcingPower f g u h t := by
+  have hid := integral_dissipation_identity hB hsol
+  have hnn : 0 ≤ energy u h T := by simp only [energy]; positivity
+  linarith
+
 end Estimates
 
 /-! ## Coercive long-time dynamics -/
@@ -216,19 +228,21 @@ theorem dissipation_nonneg (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 ≤
     (u h : ℝ → E) (t : ℝ) : 0 ≤ dissipation A nu eta u h t :=
   add_nonneg (mul_nonneg hnu (hA _)) (mul_nonneg heta (hA _))
 
-/-- Coercivity of `Δ` transfers to the two-field dissipation with the rate `β`. -/
-theorem decayRate_mul_energy_le_dissipation
-    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
-    (hlam : 0 ≤ lam) (u h : ℝ → E) (t : ℝ) :
+/-- Coercivity of `Δ` transfers to the two-field dissipation with the rate `β`.  The coercivity
+is only needed on a set `W` containing the trajectory; the paper's coercive case is `W = univ`
+and the harmonic-fibre case of §5 is `W = V₀`. -/
+theorem decayRate_mul_energy_le_dissipation {W : Set E}
+    (hcoe : ∀ v ∈ W, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+    (hlam : 0 ≤ lam) (u h : ℝ → E) (t : ℝ) (hu : u t ∈ W) (hh : h t ∈ W) :
     decayRate nu eta lam * energy u h t ≤ dissipation A nu eta u h t := by
   have h1 : min nu eta * (lam * ‖u t‖ ^ 2) ≤ nu * ⟪A (u t), u t⟫_ℝ := by
     have hmin : min nu eta ≤ nu := min_le_left _ _
     have hpos : (0 : ℝ) ≤ lam * ‖u t‖ ^ 2 := mul_nonneg hlam (sq_nonneg _)
-    nlinarith [hcoe (u t)]
+    nlinarith [hcoe (u t) hu]
   have h2 : min nu eta * (lam * ‖h t‖ ^ 2) ≤ eta * ⟪A (h t), h t⟫_ℝ := by
     have hmin : min nu eta ≤ eta := min_le_right _ _
     have hpos : (0 : ℝ) ≤ lam * ‖h t‖ ^ 2 := mul_nonneg hlam (sq_nonneg _)
-    nlinarith [hcoe (h t)]
+    nlinarith [hcoe (h t) hh]
   simp only [decayRate, energy, dissipation]
   nlinarith
 
@@ -253,22 +267,23 @@ theorem two_mul_forcingPower_le (hbeta : 0 < decayRate nu eta lam) (u h : ℝ �
   nlinarith [hfu, hgh, y1, y2]
 
 /-- **Proposition 2 (the forced scalar inequality (13)).** -/
-theorem energy_deriv_le_forced
-    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
-    (hlam : 0 < lam) (u h : ℝ → E) (t : ℝ) :
+theorem energy_deriv_le_forced {W : Set E}
+    (hcoe : ∀ v ∈ W, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+    (hlam : 0 < lam) (u h : ℝ → E) (t : ℝ) (hu : u t ∈ W) (hh : h t ∈ W) :
     2 * (-(dissipation A nu eta u h t) + forcingPower f g u h t)
       ≤ -(decayRate nu eta lam) * energy u h t
         + (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam := by
   have hbeta := decayRate_pos hnu heta hlam
-  have h1 := decayRate_mul_energy_le_dissipation hcoe hnu heta hlam.le u h t
+  have h1 := decayRate_mul_energy_le_dissipation hcoe hnu heta hlam.le u h t hu hh
   have h2 := two_mul_forcingPower_le (f := f) (g := g) hbeta u h t
   linarith
 
 /-- **Proposition 2, explicit envelope (14).** -/
-theorem energy_le_forced (hB : IsCancelling B)
-    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+theorem energy_le_forced (hB : IsCancelling B) {W : Set E}
+    (hcoe : ∀ v ∈ W, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
     (hlam : 0 < lam) {u h : ℝ → E} {T : ℝ}
-    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T)) :
+    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T))
+    (hmem : ∀ t ∈ Icc (0 : ℝ) T, u t ∈ W ∧ h t ∈ W) :
     ∀ t ∈ Icc (0 : ℝ) T, energy u h t
       ≤ energy u h 0 * Real.exp (-(decayRate nu eta lam) * t)
         + (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam ^ 2
@@ -283,7 +298,8 @@ theorem energy_le_forced (hB : IsCancelling B)
     (continuousOn_energy hB hsol)
     (fun t ht => hasDerivAt_energy hB (hsol t (Ico_subset_Icc_self ht)).1
       (hsol t (Ico_subset_Icc_self ht)).2)
-    (fun t _ => energy_deriv_le_forced hcoe hnu heta hlam u h t)
+    (fun t ht => energy_deriv_le_forced hcoe hnu heta hlam u h t
+      (hmem t (Ico_subset_Icc_self ht)).1 (hmem t (Ico_subset_Icc_self ht)).2)
   intro t ht
   have hb := hgb t ht
   rw [gronwallBound_of_K_ne_0 hne] at hb
@@ -293,10 +309,11 @@ theorem energy_le_forced (hB : IsCancelling B)
 
 /-- **Theorem 4 (unforced coercive decay).**  With zero forcing the origin attracts every
 trajectory at the exponential rate `2β`. -/
-theorem energy_le_unforced (hB : IsCancelling B)
-    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+theorem energy_le_unforced (hB : IsCancelling B) {W : Set E}
+    (hcoe : ∀ v ∈ W, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
     (hlam : 0 < lam) {u h : ℝ → E} {T : ℝ}
-    (hsol : IsSolutionOn A B nu eta (0 : E) (0 : E) u h (Icc 0 T)) :
+    (hsol : IsSolutionOn A B nu eta (0 : E) (0 : E) u h (Icc 0 T))
+    (hmem : ∀ t ∈ Icc (0 : ℝ) T, u t ∈ W ∧ h t ∈ W) :
     ∀ t ∈ Icc (0 : ℝ) T, energy u h t
       ≤ energy u h 0 * Real.exp (-(2 * decayRate nu eta lam) * t) := by
   have hbeta := decayRate_pos (nu := nu) (eta := eta) (lam := lam) hnu heta hlam
@@ -308,8 +325,9 @@ theorem energy_le_unforced (hB : IsCancelling B)
     (continuousOn_energy hB hsol)
     (fun t ht => hasDerivAt_energy hB (hsol t (Ico_subset_Icc_self ht)).1
       (hsol t (Ico_subset_Icc_self ht)).2)
-    (fun t _ => by
+    (fun t ht => by
       have h1 := decayRate_mul_energy_le_dissipation hcoe hnu heta hlam.le u h t
+        (hmem t (Ico_subset_Icc_self ht)).1 (hmem t (Ico_subset_Icc_self ht)).2
       rw [hzero t]
       linarith)
   intro t ht
@@ -318,10 +336,11 @@ theorem energy_le_unforced (hB : IsCancelling B)
 
 /-- **Theorem 3 (positively invariant absorbing ball).**  For `R > F/β` the ball `E ≤ R²` is
 positively invariant. -/
-theorem energy_le_sq_of_le_sq (hB : IsCancelling B)
-    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+theorem energy_le_sq_of_le_sq (hB : IsCancelling B) {W : Set E}
+    (hcoe : ∀ v ∈ W, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
     (hlam : 0 < lam) {u h : ℝ → E} {T R : ℝ}
     (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T))
+    (hmem : ∀ t ∈ Icc (0 : ℝ) T, u t ∈ W ∧ h t ∈ W)
     (hR : Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam < R)
     (h0 : energy u h 0 ≤ R ^ 2) :
     ∀ t ∈ Icc (0 : ℝ) T, energy u h t ≤ R ^ 2 := by
@@ -337,7 +356,7 @@ theorem energy_le_sq_of_le_sq (hB : IsCancelling B)
     rw [div_pow, hFsq] at hsq
     exact hsq
   intro t ht
-  have hbnd := energy_le_forced hB hcoe hnu heta hlam hsol t ht
+  have hbnd := energy_le_forced hB hcoe hnu heta hlam hsol hmem t ht
   have hexp : Real.exp (-(decayRate nu eta lam) * t) ≤ 1 := by
     rw [Real.exp_le_one_iff]
     have : 0 ≤ t := ht.1
@@ -373,7 +392,8 @@ theorem exists_absorbing_time
       linarith
     exact div_nonneg (Real.log_nonneg h1) hbeta.le
   · intro u h T hB hsol hcoe h0 t ht hT
-    have hbnd := energy_le_forced hB hcoe hnu heta hlam hsol t ht
+    have hbnd := energy_le_forced hB (W := Set.univ) (fun v _ => hcoe v) hnu heta hlam hsol
+      (fun _ _ => ⟨Set.mem_univ _, Set.mem_univ _⟩) t ht
     have hexp0 : 0 < Real.exp (-(decayRate nu eta lam) * t) := Real.exp_pos _
     have hexp1 : Real.exp (-(decayRate nu eta lam) * t) ≤ 1 := by
       rw [Real.exp_le_one_iff]
@@ -432,6 +452,41 @@ theorem energy_le_apriori (hB : IsCancelling B) (hA : ∀ v : E, 0 ≤ ⟪A v, v
   rw [gronwallBound_of_K_ne_0 (one_ne_zero)] at hb
   simpa using hb
 
+
+/-! ### The paper's whole-space forms -/
+
+/-- **Proposition 2 (14)** on a coercive phase space. -/
+theorem energy_le_forced_of_coercive (hB : IsCancelling B)
+    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+    (hlam : 0 < lam) {u h : ℝ → E} {T : ℝ}
+    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T)) :
+    ∀ t ∈ Icc (0 : ℝ) T, energy u h t
+      ≤ energy u h 0 * Real.exp (-(decayRate nu eta lam) * t)
+        + (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam ^ 2
+          * (1 - Real.exp (-(decayRate nu eta lam) * t)) :=
+  energy_le_forced hB (W := Set.univ) (fun v _ => hcoe v) hnu heta hlam hsol
+    (fun _ _ => ⟨Set.mem_univ _, Set.mem_univ _⟩)
+
+/-- **Theorem 4 (unforced coercive decay)** on a coercive phase space. -/
+theorem energy_le_unforced_of_coercive (hB : IsCancelling B)
+    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+    (hlam : 0 < lam) {u h : ℝ → E} {T : ℝ}
+    (hsol : IsSolutionOn A B nu eta (0 : E) (0 : E) u h (Icc 0 T)) :
+    ∀ t ∈ Icc (0 : ℝ) T, energy u h t
+      ≤ energy u h 0 * Real.exp (-(2 * decayRate nu eta lam) * t) :=
+  energy_le_unforced hB (W := Set.univ) (fun v _ => hcoe v) hnu heta hlam hsol
+    (fun _ _ => ⟨Set.mem_univ _, Set.mem_univ _⟩)
+
+/-- **Theorem 3 (positively invariant absorbing ball)** on a coercive phase space. -/
+theorem absorbing_ball_positively_invariant (hB : IsCancelling B)
+    (hcoe : ∀ v : E, lam * ‖v‖ ^ 2 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 < nu) (heta : 0 < eta)
+    (hlam : 0 < lam) {u h : ℝ → E} {T R : ℝ}
+    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T))
+    (hR : Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam < R)
+    (h0 : energy u h 0 ≤ R ^ 2) :
+    ∀ t ∈ Icc (0 : ℝ) T, energy u h t ≤ R ^ 2 :=
+  energy_le_sq_of_le_sq hB (W := Set.univ) (fun v _ => hcoe v) hnu heta hlam hsol
+    (fun _ _ => ⟨Set.mem_univ _, Set.mem_univ _⟩) hR h0
 
 end Coercive
 
@@ -581,7 +636,53 @@ theorem energy_diff_le (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 ≤ nu)
   have hb := hgb t ht
   rwa [gronwallBound_ε0] at hb
 
+/-- **§3.4 with any admissible constant.**  Any `C ≥ 8‖B‖` may be used in the continuous-dependence
+estimate (11). -/
+theorem energy_diff_le_const (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 ≤ nu) (heta : 0 ≤ eta)
+    {C : ℝ} (hC : 8 * ‖B‖ ≤ C) {u h ubar hbar : ℝ → E} {T R : ℝ} (hR0 : 0 ≤ R)
+    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T))
+    (hsol2 : IsSolutionOn A B nu eta f g ubar hbar (Icc 0 T))
+    (hbu : ∀ t ∈ Icc (0 : ℝ) T, ‖u t‖ ≤ R) (hbh : ∀ t ∈ Icc (0 : ℝ) T, ‖h t‖ ≤ R)
+    (hbu2 : ∀ t ∈ Icc (0 : ℝ) T, ‖ubar t‖ ≤ R) (hbh2 : ∀ t ∈ Icc (0 : ℝ) T, ‖hbar t‖ ≤ R) :
+    ∀ t ∈ Icc (0 : ℝ) T, ‖u t - ubar t‖ ^ 2 + ‖h t - hbar t‖ ^ 2
+      ≤ (‖u 0 - ubar 0‖ ^ 2 + ‖h 0 - hbar 0‖ ^ 2) * Real.exp (C * R * t) := by
+  intro t ht
+  have hbase := energy_diff_le hA hnu heta hsol hsol2 hbu hbh hbu2 hbh2 t ht
+  have hmono : 8 * ‖B‖ * R * t ≤ C * R * t := by
+    have h1 : (0 : ℝ) ≤ R * t := mul_nonneg hR0 ht.1
+    nlinarith
+  have hexp : Real.exp (8 * ‖B‖ * R * t) ≤ Real.exp (C * R * t) := Real.exp_le_exp.mpr hmono
+  have hD : (0 : ℝ) ≤ ‖u 0 - ubar 0‖ ^ 2 + ‖h 0 - hbar 0‖ ^ 2 := by positivity
+  nlinarith [hbase, hexp, hD]
+
 end ContinuousDependence
+
+/-! ## The explicit constant `C_J = 16‖J‖` of §3.4 -/
+
+section DiagConstant
+
+variable {ι : Type*} [Fintype ι] {W : Submodule ℝ (EuclideanSpace ℝ ι)}
+variable {A : ↥W →L[ℝ] ↥W} {J : EuclideanSpace ℝ ι →L[ℝ] EuclideanSpace ℝ ι}
+variable {nu eta : ℝ} {f g : ↥W}
+
+/-- **§3.4, the paper's constant.**  For the diagonal anticommutator realization of Proposition 1
+the continuous-dependence estimate (11) holds with `C_J = 16‖J‖`. -/
+theorem energy_diff_le_diagAnticommutator (hA : ∀ v : ↥W, 0 ≤ ⟪A v, v⟫_ℝ) (hnu : 0 ≤ nu)
+    (heta : 0 ≤ eta) {u h ubar hbar : ℝ → ↥W} {T R : ℝ} (hR0 : 0 ≤ R)
+    (hsol : IsSolutionOn A (projectedInteraction W (anticommutator (diagOp ι) J)) nu eta f g
+      u h (Icc 0 T))
+    (hsol2 : IsSolutionOn A (projectedInteraction W (anticommutator (diagOp ι) J)) nu eta f g
+      ubar hbar (Icc 0 T))
+    (hbu : ∀ t ∈ Icc (0 : ℝ) T, ‖u t‖ ≤ R) (hbh : ∀ t ∈ Icc (0 : ℝ) T, ‖h t‖ ≤ R)
+    (hbu2 : ∀ t ∈ Icc (0 : ℝ) T, ‖ubar t‖ ≤ R) (hbh2 : ∀ t ∈ Icc (0 : ℝ) T, ‖hbar t‖ ≤ R) :
+    ∀ t ∈ Icc (0 : ℝ) T, ‖u t - ubar t‖ ^ 2 + ‖h t - hbar t‖ ^ 2
+      ≤ (‖u 0 - ubar 0‖ ^ 2 + ‖h 0 - hbar 0‖ ^ 2) * Real.exp (16 * ‖J‖ * R * t) := by
+  refine energy_diff_le_const hA hnu heta ?_ hR0 hsol hsol2 hbu hbh hbu2 hbh2
+  have := opNorm_diagAnticommutatorInteraction_le W J
+  linarith
+
+end DiagConstant
+
 
 /-! ## The a priori bound for the rescaled system -/
 

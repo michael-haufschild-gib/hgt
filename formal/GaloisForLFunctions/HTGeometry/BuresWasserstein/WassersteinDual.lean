@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.BuresWasserstein.WassersteinBounds
+import GaloisForLFunctions.HTGeometry.BuresWasserstein.WassersteinNormBounds
 
 /-!
 # The dual Wasserstein mean
@@ -136,6 +136,77 @@ theorem IsDualWassersteinPoint.quasiArith_le_one (hw : ∀ i ∈ s, 0 ≤ w i)
     (hQu.isStrictlyPositive (le_trans zero_le_one hone)).ringInverse.nonneg
   have hmul := mul_self_le_of_le_smul_one hQnn zero_le_one (by simpa using hcmp)
   simpa using hmul
+
+/-! ### Homogeneity and the norm form (Corollary 6.14) -/
+
+/-- The dual equation is homogeneous. -/
+theorem isDualWassersteinPoint_smul {r : ℝ} (hr : 0 < r) (hX : IsStrictlyPositive X)
+    (hA : ∀ i ∈ s, IsStrictlyPositive (Av i)) :
+    IsDualWassersteinPoint s w (fun i => r • Av i) (r • X) ↔
+      IsDualWassersteinPoint s w Av X := by
+  have hpt : ∀ i ∈ s, gm (r • X) ((r • Av i)⁻¹ʳ) = gm X ((Av i)⁻¹ʳ) := by
+    intro i hi
+    rw [ringInverse_smul hr (hA i hi), gm_smul hr (inv_pos.mpr hr) hX (hA i hi).ringInverse,
+      show r * r⁻¹ = 1 by field_simp, Real.sqrt_one, one_smul]
+  unfold IsDualWassersteinPoint
+  constructor
+  · rintro ⟨-, h⟩
+    exact ⟨hX, by rw [← h]; exact (Finset.sum_congr rfl fun i hi => by rw [hpt i hi]).symm⟩
+  · rintro ⟨-, h⟩
+    exact ⟨hX.smul hr, by rw [← h]; exact Finset.sum_congr rfl fun i hi => by rw [hpt i hi]⟩
+
+/-- **Corollary 6.14**: `‖Q_{-1/2}(ω; 𝔸)‖ ≤ ‖D‖` for the dual Wasserstein mean `D`. -/
+theorem IsDualWassersteinPoint.norm_quasiArith_le (hw : ∀ i ∈ s, 0 ≤ w i)
+    (hA : ∀ i ∈ s, IsStrictlyPositive (Av i)) (h : IsDualWassersteinPoint s w Av X) :
+    ‖(∑ i ∈ s, w i • (CFC.sqrt (Av i))⁻¹ʳ)⁻¹ʳ * (∑ i ∈ s, w i • (CFC.sqrt (Av i))⁻¹ʳ)⁻¹ʳ‖
+      ≤ ‖X‖ := by
+  have hX : IsStrictlyPositive X := h.1
+  rcases eq_or_lt_of_le (norm_nonneg X) with hc | hc
+  · have hX0 : X = 0 := norm_eq_zero.mp hc.symm
+    have hsub : Subsingleton A := by
+      rcases subsingleton_or_nontrivial A with hsub | _
+      · exact hsub
+      · exact absurd (hX0 ▸ hX.isUnit) not_isUnit_zero
+    simp [Subsingleton.elim
+      ((∑ i ∈ s, w i • (CFC.sqrt (Av i))⁻¹ʳ)⁻¹ʳ * (∑ i ∈ s, w i • (CFC.sqrt (Av i))⁻¹ʳ)⁻¹ʳ) 0,
+      ← hc]
+  · set c := ‖X‖ with hcdef
+    have hr : (0 : ℝ) < c⁻¹ := inv_pos.mpr hc
+    have hsr : (0 : ℝ) < Real.sqrt c⁻¹ := Real.sqrt_pos.mpr hr
+    have hscaled : IsDualWassersteinPoint s w (fun i => c⁻¹ • Av i) (c⁻¹ • X) :=
+      (isDualWassersteinPoint_smul hr hX hA).mpr h
+    have hle : c⁻¹ • X ≤ (1 : A) := by
+      have h1 : c⁻¹ • X ≤ c⁻¹ • (c • (1 : A)) :=
+        smul_le_smul_of_nonneg_left (le_smul_one_norm hX.nonneg) hr.le
+      rwa [smul_smul, inv_mul_cancel₀ hc.ne', one_smul] at h1
+    have hone := hscaled.one_le_sqrtInvMean hw (fun i hi => (hA i hi).smul hr) hle
+    have hrw : ∑ i ∈ s, w i • (CFC.sqrt (c⁻¹ • Av i))⁻¹ʳ
+        = (Real.sqrt c⁻¹)⁻¹ • ∑ i ∈ s, w i • (CFC.sqrt (Av i))⁻¹ʳ := by
+      rw [Finset.smul_sum]
+      refine Finset.sum_congr rfl fun i hi => ?_
+      rw [cfcSqrt_smul hr.le (hA i hi).nonneg,
+        ringInverse_smul hsr ((hA i hi).sqrt _), smul_comm]
+    rw [hrw] at hone
+    have hQge : Real.sqrt c⁻¹ • (1 : A) ≤ ∑ i ∈ s, w i • (CFC.sqrt (Av i))⁻¹ʳ := by
+      have h2 := smul_le_smul_of_nonneg_left hone hsr.le
+      rwa [smul_smul, mul_inv_cancel₀ hsr.ne', one_smul] at h2
+    have hQpos : IsStrictlyPositive (∑ i ∈ s, w i • (CFC.sqrt (Av i))⁻¹ʳ) := by
+      refine (CStarAlgebra.isUnit_of_le _ hQge
+        (IsStrictlyPositive.smul hsr isStrictlyPositive_one)).isStrictlyPositive ?_
+      exact le_trans (smul_nonneg hsr.le zero_le_one) hQge
+    have hQinv : (∑ i ∈ s, w i • (CFC.sqrt (Av i))⁻¹ʳ)⁻¹ʳ ≤ (Real.sqrt c⁻¹)⁻¹ • (1 : A) := by
+      have hcmp := CStarAlgebra.ringInverse_le_ringInverse hQge
+        (IsStrictlyPositive.smul hsr isStrictlyPositive_one)
+      rwa [ringInverse_smul hsr (isStrictlyPositive_one (A := A)), Ring.inverse_one] at hcmp
+    have hsq := mul_self_le_of_le_smul_one hQpos.ringInverse.nonneg
+      (inv_pos.mpr hsr).le hQinv
+    have hnn : (0 : A) ≤ (∑ i ∈ s, w i • (CFC.sqrt (Av i))⁻¹ʳ)⁻¹ʳ
+        * (∑ i ∈ s, w i • (CFC.sqrt (Av i))⁻¹ʳ)⁻¹ʳ := by
+      nth_rewrite 1 [← hQpos.ringInverse.nonneg.isSelfAdjoint.star_eq]
+      exact star_mul_self_nonneg _
+    refine norm_le_of_le_smul_one hnn hc.le (hsq.trans (le_of_eq ?_))
+    congr 1
+    rw [Real.sqrt_inv, inv_inv, Real.mul_self_sqrt hc.le]
 
 end
 

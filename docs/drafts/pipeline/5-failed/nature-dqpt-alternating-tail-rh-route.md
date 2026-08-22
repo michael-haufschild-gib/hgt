@@ -215,3 +215,9 @@ prime first-trace essential-normal Bockstein, and full Gamma--co-Poisson--Sonin 
 - 2026-07-31 — Obtained article, supplementary information, and transparent peer-review record.
   Audited main construction, asymptotic proofs, quantum-complexity claim, external parents, and
   route-relevant HGT corpus.  Closed as an RH route; extracted reflected tail-slope survivor.
+- 2026-08-22 — the paper's mathematics is now Lean-closed; see
+  `docs/drafts/pipeline/3-formalized/dqpt-rh-paper-lean-formalization.md` and
+  `formal/GaloisForLFunctions/RHTower/DQPT*.lean`.  The survivor laws `(1)`–`(3)` of this card are
+  `RHTower.DQPT.dqpt_altTail_normal_tendsto`, `dqpt_reflected_ratio_bounds` and
+  `dqpt_reflected_rates_eq_iff`.  The no-go itself is unchanged: nothing here constrains the zeta
+  divisor, so the route stays closed as an RH proof route.

@@ -475,6 +475,18 @@ theorem gm_smul {r t : ℝ} (hr : 0 < r) (ht : 0 < t) (ha : IsStrictlyPositive a
           = r⁻¹ * (Real.sqrt (r * t) * Real.sqrt (r * t)) by ring, hrt]
         field_simp
 
+/-- Homogeneity in the left argument. -/
+theorem gm_smul_left {r : ℝ} (hr : 0 < r) (ha : IsStrictlyPositive a)
+    (hb : IsStrictlyPositive b) : gm (r • a) b = Real.sqrt r • gm a b := by
+  have h := gm_smul hr one_pos ha hb
+  rwa [one_smul, mul_one] at h
+
+/-- Homogeneity in the right argument. -/
+theorem gm_smul_right {t : ℝ} (ht : 0 < t) (ha : IsStrictlyPositive a)
+    (hb : IsStrictlyPositive b) : gm a (t • b) = Real.sqrt t • gm a b := by
+  have h := gm_smul one_pos ht ha hb
+  rwa [one_smul, one_mul] at h
+
 /-- Homogeneity in a single common scalar. -/
 theorem gm_smul_self {r : ℝ} (hr : 0 < r) (ha : IsStrictlyPositive a)
     (hb : IsStrictlyPositive b) : gm (r • a) (r • b) = r • gm a b := by
@@ -571,6 +583,25 @@ lemma sum_smul_conjugate {ι : Type*} {s : Finset ι} (w : ι → ℝ) (u : ι �
     ∑ i ∈ s, w i • (c * u i * d) = c * (∑ i ∈ s, w i • u i) * d := by
   rw [Finset.mul_sum, Finset.sum_mul]
   exact Finset.sum_congr rfl fun i _ => by rw [mul_smul_comm, smul_mul_assoc]
+
+/-! ### The near order -/
+
+/-- The **near order** `p ⪯ q ↔ 1 ≤ p⁻¹ # q`. -/
+def NearLE (p q : A) : Prop := 1 ≤ gm p⁻¹ʳ q
+
+@[inherit_doc] scoped infix:50 " ⪯ᴳ " => NearLE
+
+/-- Two-point form of joint operator concavity of the geometric mean. -/
+theorem gm_midpoint_concave {a₁ a₂ b₁ b₂ : A} (ha₁ : IsStrictlyPositive a₁)
+    (ha₂ : IsStrictlyPositive a₂) (hb₁ : IsStrictlyPositive b₁) (hb₂ : IsStrictlyPositive b₂) :
+    (2 : ℝ)⁻¹ • gm a₁ b₁ + (2 : ℝ)⁻¹ • gm a₂ b₂
+      ≤ gm ((2 : ℝ)⁻¹ • a₁ + (2 : ℝ)⁻¹ • a₂) ((2 : ℝ)⁻¹ • b₁ + (2 : ℝ)⁻¹ • b₂) := by
+  have h := gm_concave (s := (Finset.univ : Finset (Fin 2))) (w := fun _ => (2 : ℝ)⁻¹)
+    (f := ![a₁, a₂]) (g := ![b₁, b₂]) ⟨0, Finset.mem_univ 0⟩
+    (fun i _ => by norm_num)
+    (fun i _ => by fin_cases i <;> simpa using ‹_›)
+    (fun i _ => by fin_cases i <;> simpa using ‹_›)
+  simpa [Fin.sum_univ_two] using h
 
 end
 

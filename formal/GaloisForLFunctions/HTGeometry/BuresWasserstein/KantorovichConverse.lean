@@ -137,17 +137,18 @@ theorem arith_le_smul_gm {a b : A} (ha : IsStrictlyPositive a) (hb : IsStrictlyP
     have h1 : m₂ • a⁻¹ʳ ≤ a ^ (-(1/2) : ℝ) * b * a ^ (-(1/2) : ℝ) := by
       have := hPsa.conjugate_le_conjugate hb₁
       rwa [mul_smul_comm, smul_mul_assoc, mul_one, hainv] at this
-    refine le_trans (le_of_eq ?_) (le_trans ?_ h1)
-    · rw [div_eq_mul_inv, mul_smul]
-    · exact smul_le_smul_of_nonneg_left
-        (smul_one_le_ringInverse_of_le_smul_one ha hM₁ ha₂) hm₂.le
+    calc (m₂ / M₁) • (1 : A) = m₂ • (M₁⁻¹ • (1 : A)) := by rw [smul_smul, ← div_eq_mul_inv]
+      _ ≤ m₂ • a⁻¹ʳ := smul_le_smul_of_nonneg_left
+          (smul_one_le_ringInverse_of_le_smul_one ha hM₁ ha₂) hm₂.le
+      _ ≤ a ^ (-(1/2) : ℝ) * b * a ^ (-(1/2) : ℝ) := h1
   have hXd : a ^ (-(1/2) : ℝ) * b * a ^ (-(1/2) : ℝ) ≤ (M₂ / m₁) • (1 : A) := by
     have h1 : a ^ (-(1/2) : ℝ) * b * a ^ (-(1/2) : ℝ) ≤ M₂ • a⁻¹ʳ := by
       have := hPsa.conjugate_le_conjugate hb₂
       rwa [mul_smul_comm, smul_mul_assoc, mul_one, hainv] at this
-    refine le_trans h1 (le_trans ?_ (le_of_eq ?_))
-    · exact smul_le_smul_of_nonneg_left (ringInverse_le_of_smul_one_le hm₁ ha₁) hM₂.le
-    · rw [smul_smul, ← div_eq_mul_inv]
+    calc a ^ (-(1/2) : ℝ) * b * a ^ (-(1/2) : ℝ) ≤ M₂ • a⁻¹ʳ := h1
+      _ ≤ M₂ • (m₁⁻¹ • (1 : A)) := smul_le_smul_of_nonneg_left
+          (ringInverse_le_of_smul_one_le hm₁ ha₁) hM₂.le
+      _ = (M₂ / m₁) • (1 : A) := by rw [smul_smul, ← div_eq_mul_inv]
   -- the Kantorovich constant dominates both endpoints
   have hκc : (1 + m₂ / M₁) / 2 ≤ κ * Real.sqrt (m₂ / M₁) := by
     have hle : kantorovich (m₂ / M₁) ≤ κ := by

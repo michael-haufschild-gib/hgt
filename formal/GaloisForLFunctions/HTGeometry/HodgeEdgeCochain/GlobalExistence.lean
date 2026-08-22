@@ -425,9 +425,9 @@ theorem exists_isSolutionOn_Icc (hB : IsCancelling B) (hA : ∀ v : E, 0 ≤ ⟪
       exact this
     constructor
     · have := (ContinuousLinearMap.fst ℝ E E).hasFDerivAt.comp_hasDerivAt t hd
-      simpa [truncField, fullField] using this
+      simpa [truncField, fullField, Function.comp_def] using this
     · have := (ContinuousLinearMap.snd ℝ E E).hasFDerivAt.comp_hasDerivAt t hd
-      simpa [truncField, fullField] using this
+      simpa [truncField, fullField, Function.comp_def] using this
   -- the a priori energy bound
   have hE := energy_le_apriori_scaled hB hA hnu heta (fun t => cutoff_nonneg R ‖alpha t‖)
     (fun t => cutoff_le_one R ‖alpha t‖) hscaled
@@ -458,16 +458,166 @@ theorem exists_isSolutionOn_Icc (hB : IsCancelling B) (hA : ∀ v : E, 0 ≤ ⟪
       linarith
     have k1 : ‖(alpha t).1‖ ≤ R := by
       rw [hRdef]
-      exact (Real.le_sqrt (norm_nonneg _)).mpr h1
+      exact (Real.le_sqrt (norm_nonneg _) hrho0).mpr h1
     have k2 : ‖(alpha t).2‖ ≤ R := by
       rw [hRdef]
-      exact (Real.le_sqrt (norm_nonneg _)).mpr h2
+      exact (Real.le_sqrt (norm_nonneg _) hrho0).mpr h2
     rw [Prod.norm_def]
     exact max_le k1 k2
   intro t ht
   have hs := hscaled t ht
-  rw [hcut1 t ht, one_smul] at hs
+  simp only [hcut1 t ht, one_smul] at hs
   exact hs
+
+/-- The a priori radius controlling every solution with initial energy `E₀` on `[0,T]`. -/
+noncomputable def aprioriRadius (f g : E) (E0 T : ℝ) : ℝ :=
+  Real.sqrt (E0 * Real.exp T + (‖f‖ ^ 2 + ‖g‖ ^ 2) * (Real.exp T - 1))
+
+omit [FiniteDimensional ℝ E] in
+theorem norm_le_aprioriRadius (hB : IsCancelling B) (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ)
+    (hnu : 0 ≤ nu) (heta : 0 ≤ eta) {u h : ℝ → E} {T : ℝ} (hT : 0 ≤ T)
+    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T)) :
+    ∀ t ∈ Icc (0 : ℝ) T, ‖u t‖ ≤ aprioriRadius f g (energy u h 0) T ∧
+      ‖h t‖ ≤ aprioriRadius f g (energy u h 0) T := by
+  have hE := energy_le_apriori hB hA hnu heta hsol
+  intro t ht
+  have h1 := hE t ht
+  have h2 : Real.exp t ≤ Real.exp T := Real.exp_le_exp.mpr ht.2
+  have hE0 : (0 : ℝ) ≤ energy u h 0 := by simp only [energy]; positivity
+  have hFG : (0 : ℝ) ≤ ‖f‖ ^ 2 + ‖g‖ ^ 2 := by positivity
+  have hceil : energy u h t
+      ≤ energy u h 0 * Real.exp T + (‖f‖ ^ 2 + ‖g‖ ^ 2) * (Real.exp T - 1) := by
+    nlinarith
+  have hrad0 : (0 : ℝ) ≤ energy u h 0 * Real.exp T + (‖f‖ ^ 2 + ‖g‖ ^ 2) * (Real.exp T - 1) := by
+    have hexpT : (1 : ℝ) ≤ Real.exp T := Real.one_le_exp hT
+    have : (0 : ℝ) ≤ Real.exp T := le_trans zero_le_one hexpT
+    nlinarith
+  constructor
+  · refine (Real.le_sqrt (norm_nonneg _) hrad0).mpr ?_
+    have : (0 : ℝ) ≤ ‖h t‖ ^ 2 := by positivity
+    simp only [energy] at hceil ⊢
+    linarith
+  · refine (Real.le_sqrt (norm_nonneg _) hrad0).mpr ?_
+    have : (0 : ℝ) ≤ ‖u t‖ ^ 2 := by positivity
+    simp only [energy] at hceil ⊢
+    linarith
+
+omit [FiniteDimensional ℝ E] in
+/-- **Uniqueness.**  Two solutions with the same initial datum agree on `[0,T]`. -/
+theorem isSolutionOn_unique (hB : IsCancelling B) (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ)
+    (hnu : 0 ≤ nu) (heta : 0 ≤ eta) {u h ubar hbar : ℝ → E} {T : ℝ} (hT : 0 ≤ T)
+    (hsol : IsSolutionOn A B nu eta f g u h (Icc 0 T))
+    (hsol2 : IsSolutionOn A B nu eta f g ubar hbar (Icc 0 T))
+    (hu0 : u 0 = ubar 0) (hh0 : h 0 = hbar 0) :
+    EqOn u ubar (Icc 0 T) ∧ EqOn h hbar (Icc 0 T) := by
+  set R : ℝ := aprioriRadius f g (energy u h 0) T with hRdef
+  have hbnd := norm_le_aprioriRadius hB hA hnu heta hT hsol
+  have hE0 : energy ubar hbar 0 = energy u h 0 := by
+    simp only [energy, hu0, hh0]
+  have hbnd2 := norm_le_aprioriRadius hB hA hnu heta hT hsol2
+  rw [hE0] at hbnd2
+  have hkey := energy_diff_le hA hnu heta hsol hsol2
+    (fun t ht => (hbnd t ht).1) (fun t ht => (hbnd t ht).2)
+    (fun t ht => (hbnd2 t ht).1) (fun t ht => (hbnd2 t ht).2)
+  have hzero : ‖u 0 - ubar 0‖ ^ 2 + ‖h 0 - hbar 0‖ ^ 2 = 0 := by
+    rw [hu0, hh0]
+    simp
+  constructor
+  · intro t ht
+    have := hkey t ht
+    rw [hzero, zero_mul] at this
+    have h1 : (0 : ℝ) ≤ ‖h t - hbar t‖ ^ 2 := by positivity
+    have h2 : ‖u t - ubar t‖ ^ 2 ≤ 0 := by linarith
+    have h3 : ‖u t - ubar t‖ = 0 := by nlinarith [norm_nonneg (u t - ubar t)]
+    exact sub_eq_zero.mp (norm_eq_zero.mp h3)
+  · intro t ht
+    have := hkey t ht
+    rw [hzero, zero_mul] at this
+    have h1 : (0 : ℝ) ≤ ‖u t - ubar t‖ ^ 2 := by positivity
+    have h2 : ‖h t - hbar t‖ ^ 2 ≤ 0 := by linarith
+    have h3 : ‖h t - hbar t‖ = 0 := by nlinarith [norm_nonneg (h t - hbar t)]
+    exact sub_eq_zero.mp (norm_eq_zero.mp h3)
+
+/-- **Lemma 2 (global existence).**  For every initial datum the two-field system has a solution
+on all of `[0,∞)`.  Uniqueness is `isSolutionOn_unique`. -/
+theorem exists_isSolutionOn_Ici (hB : IsCancelling B) (hA : ∀ v : E, 0 ≤ ⟪A v, v⟫_ℝ)
+    (hnu : 0 ≤ nu) (heta : 0 ≤ eta) (u₀ h₀ : E) :
+    ∃ u h : ℝ → E, u 0 = u₀ ∧ h 0 = h₀ ∧ IsSolutionOn A B nu eta f g u h (Ici 0) := by
+  classical
+  have hex : ∀ n : ℕ, ∃ p : (ℝ → E) × (ℝ → E), p.1 0 = u₀ ∧ p.2 0 = h₀ ∧
+      IsSolutionOn A B nu eta f g p.1 p.2 (Icc 0 (n : ℝ)) := by
+    intro n
+    obtain ⟨a, b, h1, h2, h3⟩ := exists_isSolutionOn_Icc hB hA hnu heta u₀ h₀
+      (T := (n : ℝ)) (Nat.cast_nonneg n)
+    exact ⟨(a, b), h1, h2, h3⟩
+  choose sol hsolu0 hsolh0 hsolp using hex
+  have hagree : ∀ m n : ℕ, ∀ t ∈ Icc (0 : ℝ) (min (m : ℝ) (n : ℝ)),
+      (sol m).1 t = (sol n).1 t ∧ (sol m).2 t = (sol n).2 t := by
+    intro m n t ht
+    have hmin : (0 : ℝ) ≤ min (m : ℝ) (n : ℝ) :=
+      le_min (Nat.cast_nonneg m) (Nat.cast_nonneg n)
+    have hsm : IsSolutionOn A B nu eta f g (sol m).1 (sol m).2 (Icc 0 (min (m : ℝ) (n : ℝ))) :=
+      fun s hs => hsolp m s ⟨hs.1, le_trans hs.2 (min_le_left _ _)⟩
+    have hsn : IsSolutionOn A B nu eta f g (sol n).1 (sol n).2 (Icc 0 (min (m : ℝ) (n : ℝ))) :=
+      fun s hs => hsolp n s ⟨hs.1, le_trans hs.2 (min_le_right _ _)⟩
+    have huniq := isSolutionOn_unique hB hA hnu heta hmin hsm hsn
+      (by rw [hsolu0 m, hsolu0 n]) (by rw [hsolh0 m, hsolh0 n])
+    exact ⟨huniq.1 ht, huniq.2 ht⟩
+  -- the glued solution
+  set U : ℝ → E := fun t => (sol (⌊t⌋₊ + 2)).1 t with hU
+  set H : ℝ → E := fun t => (sol (⌊t⌋₊ + 2)).2 t with hH
+  have hfloor : ∀ t : ℝ, 0 ≤ t → t ≤ ((⌊t⌋₊ + 2 : ℕ) : ℝ) := by
+    intro t htt
+    have h1 : t < (⌊t⌋₊ : ℝ) + 1 := Nat.lt_floor_add_one t
+    push_cast
+    linarith
+  have heqU : ∀ n : ℕ, ∀ t ∈ Icc (0 : ℝ) (n : ℝ), U t = (sol n).1 t ∧ H t = (sol n).2 t := by
+    intro n t ht
+    have hmem : t ∈ Icc (0 : ℝ) (min ((⌊t⌋₊ + 2 : ℕ) : ℝ) (n : ℝ)) :=
+      ⟨ht.1, le_min (hfloor t ht.1) ht.2⟩
+    exact hagree (⌊t⌋₊ + 2) n t hmem
+  have hU0 : U 0 = u₀ := by
+    have : ⌊(0 : ℝ)⌋₊ = 0 := Nat.floor_zero
+    rw [hU]
+    simp only [this]
+    exact hsolu0 2
+  have hH0 : H 0 = h₀ := by
+    have : ⌊(0 : ℝ)⌋₊ = 0 := Nat.floor_zero
+    rw [hH]
+    simp only [this]
+    exact hsolh0 2
+  refine ⟨U, H, hU0, hH0, ?_⟩
+  intro t ht
+  have htt : (0 : ℝ) ≤ t := ht
+  set n : ℕ := ⌊t⌋₊ + 2 with hn
+  have htn : t ∈ Icc (0 : ℝ) (n : ℝ) := ⟨htt, hfloor t htt⟩
+  have hlt : t < (n : ℝ) := by
+    have h1 : t < (⌊t⌋₊ : ℝ) + 1 := Nat.lt_floor_add_one t
+    rw [hn]
+    push_cast
+    linarith
+  have hsolt := hsolp n t htn
+  have hUt : U t = (sol n).1 t := (heqU n t htn).1
+  have hHt : H t = (sol n).2 t := (heqU n t htn).2
+  -- `U` and `H` agree with the `n`-th solution near `t`
+  have hnbhd : ∃ s : Set ℝ, s ∈ nhds t ∧ ∀ r ∈ s, U r = (sol n).1 r ∧ H r = (sol n).2 r := by
+    rcases eq_or_lt_of_le htt with h0 | h0
+    · refine ⟨Iio 1, Iio_mem_nhds (by linarith), fun r hr => ?_⟩
+      have hfr : ⌊r⌋₊ = 0 := Nat.floor_eq_zero.mpr hr
+      have hn2 : n = 2 := by
+        rw [hn, ← h0]
+        simp
+      have hidx : ⌊r⌋₊ + 2 = n := by simp [hfr, hn2]
+      exact ⟨by rw [hU]; simp only [hidx], by rw [hH]; simp only [hidx]⟩
+    · refine ⟨Ioo 0 (n : ℝ), Ioo_mem_nhds h0 hlt, fun r hr => ?_⟩
+      exact heqU n r ⟨le_of_lt hr.1, le_of_lt hr.2⟩
+  obtain ⟨s, hs, hseq⟩ := hnbhd
+  have hUeq : U =ᶠ[nhds t] (sol n).1 :=
+    Filter.eventuallyEq_of_mem hs fun r hr => (hseq r hr).1
+  have hHeq : H =ᶠ[nhds t] (sol n).2 :=
+    Filter.eventuallyEq_of_mem hs fun r hr => (hseq r hr).2
+  rw [hUt, hHt]
+  exact ⟨hUeq.hasDerivAt_iff.mpr hsolt.1, hHeq.hasDerivAt_iff.mpr hsolt.2⟩
 
 end GlobalSolutions
 

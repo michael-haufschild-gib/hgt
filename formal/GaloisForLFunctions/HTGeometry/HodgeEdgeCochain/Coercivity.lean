@@ -216,6 +216,52 @@ theorem mem_harmonic_of_inner_eq_zero (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[�
   rw [harmonic_eq_inf]
   exact ⟨hd1, hv⟩
 
+/-! ### The divergence-free projector `P` -/
+
+/-- `P² = P`. -/
+theorem starProjection_divFree_idem (d0 : C0 →ₗ[ℝ] C1) (x : C1) :
+    (divFree d0).starProjection ((divFree d0).starProjection x)
+      = (divFree d0).starProjection x :=
+  Submodule.starProjection_eq_self_iff.mpr ((divFree d0).starProjection_apply_mem x)
+
+/-- `P* = P`. -/
+theorem inner_starProjection_divFree (d0 : C0 →ₗ[ℝ] C1) (x y : C1) :
+    ⟪(divFree d0).starProjection x, y⟫_ℝ = ⟪x, (divFree d0).starProjection y⟫_ℝ :=
+  Submodule.inner_starProjection_left_eq_right _ _ _
+
+/-- `d₀* P = 0`. -/
+theorem adjoint_starProjection_divFree (d0 : C0 →ₗ[ℝ] C1) (x : C1) :
+    LinearMap.adjoint d0 ((divFree d0).starProjection x) = 0 :=
+  (divFree d0).starProjection_apply_mem x
+
+/-- `Vᗮ` is exactly the gradient part `range d₀`. -/
+theorem orthogonal_divFree (d0 : C0 →ₗ[ℝ] C1) : (divFree d0)ᗮ = LinearMap.range d0 := by
+  rw [divFree_eq_orthogonal_range, Submodule.orthogonal_orthogonal]
+
+/-- **The normal-equation description of `P` (§2).**  This is the content of the Moore–Penrose
+formula `P = I − d₀ (d₀* d₀)† d₀*`: subtracting `d₀ y` for any solution `y` of the normal
+equations produces the divergence-free projection, and the pseudo-inverse is only there to pick
+one solution in the presence of a nontrivial nullspace. -/
+theorem starProjection_divFree_eq_sub (d0 : C0 →ₗ[ℝ] C1) (x : C1) {y : C0}
+    (hy : LinearMap.adjoint d0 (d0 y) = LinearMap.adjoint d0 x) :
+    (divFree d0).starProjection x = x - d0 y := by
+  refine Submodule.eq_starProjection_of_mem_orthogonal ?_ ?_
+  · show LinearMap.adjoint d0 (x - d0 y) = 0
+    rw [map_sub, hy, sub_self]
+  · have : x - (x - d0 y) = d0 y := by abel
+    rw [this, orthogonal_divFree]
+    exact ⟨y, rfl⟩
+
+/-- The normal equations are always solvable. -/
+theorem exists_normalEquation (d0 : C0 →ₗ[ℝ] C1) (x : C1) :
+    ∃ y : C0, LinearMap.adjoint d0 (d0 y) = LinearMap.adjoint d0 x := by
+  have hmem : x - (divFree d0).starProjection x ∈ LinearMap.range d0 := by
+    rw [← orthogonal_divFree]
+    exact Submodule.sub_starProjection_mem_orthogonal x
+  obtain ⟨y, hy⟩ := hmem
+  refine ⟨y, ?_⟩
+  rw [hy, map_sub, adjoint_starProjection_divFree, sub_zero]
+
 /-! ### Lemma 1: invariance of `V` and commutation with the projector -/
 
 /-- The degree-one Hodge Laplacian is self-adjoint. -/

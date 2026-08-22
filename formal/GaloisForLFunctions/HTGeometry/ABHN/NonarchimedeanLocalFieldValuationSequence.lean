@@ -5,6 +5,8 @@ Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.LocalValuationSequence
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteEtale
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCohomology
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldBrauer
 import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.FieldTheory.PrimitiveElement
 import Mathlib.FieldTheory.Separable
@@ -39,7 +41,7 @@ namespace GaloisForLFunctions.HTGeometry.ABHN
 
 open Polynomial
 open TensorProduct
-open scoped ValuativeRel WithZero WithZeroMulInt
+open scoped ValuativeRel WithZero WithZeroMulInt Valued
 
 attribute [local instance] Ideal.Quotient.field
 
@@ -57,6 +59,33 @@ universe u
     [Field F] [Algebra A F] [IsFractionRing A F]
     [ValuativeRel F] : TopologicalSpace F :=
   ValuativeRel.topologicalSpace F
+
+/-- A discrete valuation ring is the integer ring of the canonical valuation on its fraction
+field.  This identifies the integral model with the valuation ring that underlies the resulting
+local field. -/
+noncomputable def discreteValuationRingFractionFieldIntegerEquiv
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F] :
+    A ≃+* ((IsDiscreteValuationRing.maximalIdeal A).valuation F).integer :=
+  IsDiscreteValuationRing.equivValuationSubring
+
+/-- Passing from a discrete valuation ring to the integer ring of its fraction-field valuation
+preserves the residue field. -/
+noncomputable def discreteValuationRingFractionFieldResidueFieldEquiv
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F] :
+    IsLocalRing.ResidueField A ≃+*
+      IsLocalRing.ResidueField ((IsDiscreteValuationRing.maximalIdeal A).valuation F).integer :=
+  IsLocalRing.ResidueField.mapEquiv (discreteValuationRingFractionFieldIntegerEquiv A F)
+
+/-- Finiteness of the residue field passes from a discrete valuation ring to the canonical
+integer ring in its fraction field. -/
+theorem discreteValuationRingFractionFieldIntegerResidueField_finite
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F] [Finite (IsLocalRing.ResidueField A)] :
+    Finite (IsLocalRing.ResidueField ((IsDiscreteValuationRing.maximalIdeal A).valuation F).integer) :=
+  Finite.of_surjective (discreteValuationRingFractionFieldResidueFieldEquiv A F)
+    (discreteValuationRingFractionFieldResidueFieldEquiv A F).surjective
 
 /-- The canonical DVR fraction-field topology is valuative. -/
 theorem discreteValuationRingFractionField_isValuativeTopology
@@ -138,6 +167,224 @@ theorem discreteValuationRingFractionField_isNonarchimedeanLocalField_iff
       { toIsValuativeTopology := discreteValuationRingFractionField_isValuativeTopology A F
         toLocallyCompactSpace := h
         toIsNontrivial := discreteValuationRingFractionField_isNontrivial A F }
+
+/-- For a compatible discrete integral-valued valuation, the topology inherited by its valuation
+ring is the maximal-ideal adic topology.  Concretely, powers of the maximal ideal are valuation
+balls around zero, and these balls are cofinal among valuative neighborhoods. -/
+theorem valuationInteger_isAdic_of_discrete
+    (F : Type*) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsValuativeTopology F] (v : Valuation F ℤᵐ⁰) [v.Compatible]
+    [IsDiscreteValuationRing v.integer] :
+    IsAdic (IsLocalRing.maximalIdeal v.integer) := by
+  rw [isAdic_iff]
+  constructor
+  · intro n
+    obtain ⟨π, hπ⟩ := IsDiscreteValuationRing.exists_irreducible v.integer
+    have hπF : (π : F) ≠ 0 := fun h => hπ.ne_zero (Subtype.ext h)
+    rw [hπ.maximalIdeal_pow_eq_setOf_le_v_coe_pow]
+    change IsOpen (Subtype.val ⁻¹' {x : F | v x ≤ v (π : F) ^ n})
+    apply IsOpen.preimage continuous_subtype_val
+    have hrad : v.restrict ((π : F) ^ n) ≠ 0 := by
+      apply ne_of_gt
+      rw [v.restrict_pos_iff]
+      exact v.pos_iff.mpr (pow_ne_zero n hπF)
+    have hopen := v.isOpen_closedBall hrad
+    convert hopen using 1
+    ext x
+    change v x ≤ v (π : F) ^ n ↔ v.restrict x ≤ v.restrict ((π : F) ^ n)
+    rw [v.restrict_le_iff]
+    rw [map_pow]
+  · intro s hs
+    rw [mem_nhds_subtype] at hs
+    obtain ⟨t, ht, hts⟩ := hs
+    obtain ⟨γ, hγ⟩ := v.mem_nhds_iff.mp ht
+    obtain ⟨π, hπ⟩ := IsDiscreteValuationRing.exists_irreducible v.integer
+    have hπlt : v (π : F) < 1 := Valuation.integer.v_irreducible_lt_one hπ
+    obtain ⟨n, hn⟩ := exists_pow_lt₀ hπlt
+      (Units.map (MonoidWithZeroHom.ValueGroup₀.embedding (f := (.ofClass v))) γ)
+    refine ⟨n, ?_⟩
+    rw [hπ.maximalIdeal_pow_eq_setOf_le_v_coe_pow]
+    intro y hy
+    apply hts
+    apply hγ
+    have hy' : v.restrict (y : F) < γ := by
+      rw [v.restrict_lt_iff_lt_embedding]
+      exact lt_of_le_of_lt hy hn
+    simpa using hy'
+
+/-- Algebraic maximal-ideal completeness gives completeness of the valuation ring for the
+compatible valuative uniformity. -/
+theorem valuationInteger_completeSpace_of_isAdicComplete
+    (F : Type*) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsValuativeTopology F] (v : Valuation F ℤᵐ⁰) [v.Compatible]
+    [IsDiscreteValuationRing v.integer]
+    [IsAdicComplete (IsLocalRing.maximalIdeal v.integer) v.integer] :
+    letI : UniformSpace v.integer := IsTopologicalAddGroup.rightUniformSpace v.integer
+    letI : IsUniformAddGroup v.integer :=
+      isUniformAddGroup_of_addCommGroup (G := v.integer)
+    CompleteSpace v.integer := by
+  letI : UniformSpace v.integer := IsTopologicalAddGroup.rightUniformSpace v.integer
+  letI : IsUniformAddGroup v.integer :=
+    isUniformAddGroup_of_addCommGroup (G := v.integer)
+  have h : IsAdic (IsLocalRing.maximalIdeal v.integer) :=
+    valuationInteger_isAdic_of_discrete F v
+  exact (h.isAdicComplete_iff.mp inferInstance).1
+
+/-- A rank-one discrete valued field is complete when its valuation ring is algebraically
+maximal-ideal complete.  This transfers the integral adic-completeness input to the valued
+fraction field without adding a local-compactness assumption. -/
+theorem valuation_completeSpace_of_isAdicComplete
+    (F : Type*) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsValuativeTopology F] (v : Valuation F ℤᵐ⁰) [v.Compatible]
+    [v.IsRankOneDiscrete] [IsDiscreteValuationRing v.integer]
+    [IsAdicComplete (IsLocalRing.maximalIdeal v.integer) v.integer] :
+    letI : UniformSpace F := IsTopologicalAddGroup.rightUniformSpace F
+    letI : IsUniformAddGroup F := isUniformAddGroup_of_addCommGroup (G := F)
+    CompleteSpace F := by
+  letI : UniformSpace F := IsTopologicalAddGroup.rightUniformSpace F
+  letI : IsUniformAddGroup F := isUniformAddGroup_of_addCommGroup (G := F)
+  letI : Valued F ℤᵐ⁰ :=
+    { v := v
+      toUniformSpace := inferInstance
+      toIsUniformAddGroup := inferInstance
+      is_topological_valuation := fun s => v.mem_nhds_zero_iff s }
+  letI : v.RankOne := Valuation.IsRankOneDiscrete.rankOne v
+    (show (1 : NNReal) < 2 from one_lt_two)
+  let uO : UniformSpace v.integer := inferInstance
+  letI : UniformSpace v.integer := uO
+  letI : IsUniformAddGroup v.integer := inferInstance
+  have huO : IsTopologicalAddGroup.rightUniformSpace v.integer = uO :=
+    IsUniformAddGroup.rightUniformSpace_eq
+  have hcomplete : CompleteSpace v.integer := by
+    change @CompleteSpace v.integer uO
+    rw [← huO]
+    exact valuationInteger_completeSpace_of_isAdicComplete F v
+  rw [NormedField.completeSpace_iff_isComplete_closedBall]
+  rw [← Valued.toNormedField.setOf_mem_integer_eq_closedBall]
+  exact completeSpace_coe_iff_isComplete.mp hcomplete
+
+/-- Adic completeness transports across a ring equivalence from a local ring to a valuation
+ring, with their respective maximal ideals. -/
+theorem isAdicComplete_valuationInteger_of_ringEquiv
+    (A F : Type*) [CommRing A] [IsLocalRing A] [Field F]
+    (v : Valuation F ℤᵐ⁰) (e : A ≃+* v.integer)
+    [IsAdicComplete (IsLocalRing.maximalIdeal A) A] :
+    IsAdicComplete (IsLocalRing.maximalIdeal v.integer) v.integer := by
+  rw [← IsLocalRing.map_ringEquiv_maximalIdeal e]
+  exact (IsAdicComplete.congr_ringEquiv _ e).mpr inferInstance
+
+/-- The canonical fraction-field valuation of an adically complete DVR is complete for its
+valuative uniformity.  This is the analytic completion bridge from integral local algebra to a
+complete rank-one valued field. -/
+theorem discreteValuationRingFractionField_completeSpace_of_isAdicComplete
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F]
+    [IsAdicComplete (IsLocalRing.maximalIdeal A) A] :
+    letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+    letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+    letI : UniformSpace F := IsTopologicalAddGroup.rightUniformSpace F
+    letI : IsUniformAddGroup F := isUniformAddGroup_of_addCommGroup (G := F)
+    CompleteSpace F := by
+  letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+  letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+  letI : UniformSpace F := IsTopologicalAddGroup.rightUniformSpace F
+  letI : IsUniformAddGroup F := isUniformAddGroup_of_addCommGroup (G := F)
+  let v : Valuation F ℤᵐ⁰ := (IsDiscreteValuationRing.maximalIdeal A).valuation F
+  letI : v.Compatible := .ofValuation v
+  letI : v.IsRankOneDiscrete := by
+    change ((IsDiscreteValuationRing.maximalIdeal A).valuation F).IsRankOneDiscrete
+    infer_instance
+  letI : Nontrivial (MonoidWithZeroHom.valueGroup (.ofClass v)) := by
+    rw [Subgroup.nontrivial_iff_exists_ne_one]
+    exact ⟨Valuation.IsRankOneDiscrete.generator v,
+      Valuation.IsRankOneDiscrete.generator_mem_valueGroup v,
+      Valuation.IsRankOneDiscrete.generator_ne_one v⟩
+  letI : IsDiscreteValuationRing v.integer := by
+    change IsDiscreteValuationRing v.valuationSubring
+    infer_instance
+  let e : A ≃+* v.integer := IsDiscreteValuationRing.equivValuationSubring
+  letI : IsAdicComplete (IsLocalRing.maximalIdeal v.integer) v.integer :=
+    isAdicComplete_valuationInteger_of_ringEquiv A F v e
+  exact valuation_completeSpace_of_isAdicComplete F v
+
+/-- Finiteness of residue fields transports across a ring equivalence of local rings. -/
+theorem finite_residueField_of_ringEquiv
+    (A B : Type*) [CommRing A] [CommRing B] [IsLocalRing A] [IsLocalRing B]
+    (e : A ≃+* B) [Finite (IsLocalRing.ResidueField A)] :
+    Finite (IsLocalRing.ResidueField B) := by
+  let ebar := Ideal.quotientEquiv (IsLocalRing.maximalIdeal A)
+    (IsLocalRing.maximalIdeal B) e (IsLocalRing.map_ringEquiv_maximalIdeal e).symm
+  letI : Finite (A ⧸ IsLocalRing.maximalIdeal A) := by
+    change Finite (IsLocalRing.ResidueField A)
+    infer_instance
+  exact Finite.of_surjective ebar ebar.surjective
+
+/-- A DVR with finite residue field has locally compact canonical fraction field as soon as it is
+maximal-ideal adically complete.  This is the local-field analytic bridge required before a
+local invariant or reciprocity construction can be attached. -/
+theorem discreteValuationRingFractionField_locallyCompactSpace_of_isAdicComplete_of_finiteResidueField
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F]
+    [IsAdicComplete (IsLocalRing.maximalIdeal A) A]
+    [Finite (IsLocalRing.ResidueField A)] :
+    letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+    letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+    letI : UniformSpace F := IsTopologicalAddGroup.rightUniformSpace F
+    letI : IsUniformAddGroup F := isUniformAddGroup_of_addCommGroup (G := F)
+    LocallyCompactSpace F := by
+  letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+  letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+  letI : UniformSpace F := IsTopologicalAddGroup.rightUniformSpace F
+  letI : IsUniformAddGroup F := isUniformAddGroup_of_addCommGroup (G := F)
+  let v : Valuation F ℤᵐ⁰ := (IsDiscreteValuationRing.maximalIdeal A).valuation F
+  letI : v.Compatible := .ofValuation v
+  letI : v.IsRankOneDiscrete := by
+    change ((IsDiscreteValuationRing.maximalIdeal A).valuation F).IsRankOneDiscrete
+    infer_instance
+  letI : Nontrivial (MonoidWithZeroHom.valueGroup (.ofClass v)) := by
+    rw [Subgroup.nontrivial_iff_exists_ne_one]
+    exact ⟨Valuation.IsRankOneDiscrete.generator v,
+      Valuation.IsRankOneDiscrete.generator_mem_valueGroup v,
+      Valuation.IsRankOneDiscrete.generator_ne_one v⟩
+  letI : IsDiscreteValuationRing v.integer := by
+    change IsDiscreteValuationRing v.valuationSubring
+    infer_instance
+  let e : A ≃+* v.integer := IsDiscreteValuationRing.equivValuationSubring
+  letI : Finite (IsLocalRing.ResidueField v.integer) :=
+    finite_residueField_of_ringEquiv A v.integer e
+  letI : IsAdicComplete (IsLocalRing.maximalIdeal v.integer) v.integer :=
+    isAdicComplete_valuationInteger_of_ringEquiv A F v e
+  letI : Valued F ℤᵐ⁰ :=
+    { v := v
+      toUniformSpace := inferInstance
+      toIsUniformAddGroup := inferInstance
+      is_topological_valuation := fun s => v.mem_nhds_zero_iff s }
+  letI : v.RankOne := Valuation.IsRankOneDiscrete.rankOne v
+    (show (1 : NNReal) < 2 from one_lt_two)
+  letI : CompleteSpace F :=
+    discreteValuationRingFractionField_completeSpace_of_isAdicComplete A F
+  letI : ProperSpace F :=
+    Valued.integer.properSpace_iff_completeSpace_and_isDiscreteValuationRing_integer_and_finite_residueField.mpr
+      ⟨inferInstance, inferInstance, inferInstance⟩
+  infer_instance
+
+/-- A maximal-ideal adically complete DVR with finite residue field has a nonarchimedean local
+fraction field for its canonical discrete valuation topology. -/
+theorem discreteValuationRingFractionField_isNonarchimedeanLocalField_of_isAdicComplete_of_finiteResidueField
+    (A F : Type*) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [Field F] [Algebra A F] [IsFractionRing A F]
+    [IsAdicComplete (IsLocalRing.maximalIdeal A) A]
+    [Finite (IsLocalRing.ResidueField A)] :
+    letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+    letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+    IsNonarchimedeanLocalField F := by
+  letI : ValuativeRel F := discreteValuationRingFractionFieldValuativeRel A F
+  letI : TopologicalSpace F := discreteValuationRingFractionFieldTopology A F
+  letI : UniformSpace F := IsTopologicalAddGroup.rightUniformSpace F
+  letI : IsUniformAddGroup F := isUniformAddGroup_of_addCommGroup (G := F)
+  exact
+    (discreteValuationRingFractionField_isNonarchimedeanLocalField_iff A F).mpr
+      (discreteValuationRingFractionField_locallyCompactSpace_of_isAdicComplete_of_finiteResidueField A F)
 
 /-- The valuation of a nonarchimedean local field, normalized to values in `ℤᵐ⁰`. -/
 noncomputable def nonarchimedeanLocalFieldIntValuation
@@ -1059,6 +1306,36 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_finiteEtale
     nonarchimedeanLocalFieldAdjoinRoot_etale K f hf g hgmonic hfg hg
   infer_instance
 
+/-- The defining root of a finite unramified lift is simple already over the integral root
+algebra: the derivative of its defining polynomial is a unit.  This derives the concrete
+simple-root certificate from the finite-etale local algebra structure and will be used when
+lifting residue-field conjugates by Hensel's lemma. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_derivative_isUnit
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    IsUnit ((f.derivative.map (AdjoinRoot.of f)).eval (AdjoinRoot.root f)) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : Module.Finite 𝒪[K] (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : Algebra.Etale 𝒪[K] (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_etale K f hf g hgmonic hfg hg
+  have hfracirr :=
+    nonarchimedeanLocalFieldAdjoinRootFractionPolynomial_irreducible K f hf g hfg hg
+  have hfirr : Irreducible f :=
+    (Polynomial.Monic.irreducible_iff_irreducible_map_fraction_map hf).mpr hfracirr
+  have hunit := IsLocalRing.isUnit_aeval_derivative_minpoly_of_adjoin_eq_top
+    (IsAdjoinRoot.adjoin_root_eq_top (AdjoinRoot.isAdjoinRoot f))
+  have hminpoly : minpoly 𝒪[K] (AdjoinRoot.root f) = f := by
+    rw [← AdjoinRoot.isAdjoinRoot_root_eq_root]
+    exact IsAdjoinRootMonic.minpoly_eq (AdjoinRoot.isAdjoinRootMonic f hf) hfirr
+  rw [AdjoinRoot.isAdjoinRoot_root_eq_root, hminpoly] at hunit
+  simpa only [Polynomial.aeval_def, AdjoinRoot.algebraMap_eq, Polynomial.derivative_map,
+    ← Polynomial.eval_map] using hunit
+
 /-- The map from the base valuation ring to a monic irreducible lift is local.  Hence it induces
 the canonical extension map between their residue fields. -/
 theorem nonarchimedeanLocalFieldAdjoinRoot_isLocalHom
@@ -1397,6 +1674,46 @@ noncomputable def nonarchimedeanLocalFieldAdjoinRootFractionFieldValuationSubrin
     nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
   exact IsDiscreteValuationRing.equivValuationSubring
 
+/-- The integral root algebra is the integer ring of the canonical valuation on its fraction
+local field. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerEquiv
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    AdjoinRoot f ≃+* ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  exact discreteValuationRingFractionFieldIntegerEquiv (AdjoinRoot f) (FractionRing (AdjoinRoot f))
+
+/-- The residue field of the integral root algebra is canonically the residue field of the
+integer ring of its fraction local field. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootFractionFieldResidueFieldEquiv
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    IsLocalRing.ResidueField (AdjoinRoot f) ≃+*
+      IsLocalRing.ResidueField ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  exact discreteValuationRingFractionFieldResidueFieldEquiv
+    (AdjoinRoot f) (FractionRing (AdjoinRoot f))
+
 /-- The canonical valuation on the lifted fraction field is rank-one discrete. -/
 theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldValuation_isRankOneDiscrete
     (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
@@ -1432,6 +1749,85 @@ theorem nonarchimedeanLocalFieldAdjoinRootResidueField_finite
   letI : Finite (AdjoinRoot g) := Module.finite_of_finite 𝓀[K]
   let e := nonarchimedeanLocalFieldAdjoinRootResidueFieldEquivOfMapEq K f hf g hfg hg
   exact Finite.of_surjective e.symm e.symm.surjective
+
+/-- The canonical integer ring of every finite unramified fraction local field has finite
+residue field. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    Finite (IsLocalRing.ResidueField ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
+  exact discreteValuationRingFractionFieldIntegerResidueField_finite
+    (AdjoinRoot f) (FractionRing (AdjoinRoot f))
+
+/-- Every Brauer class over the canonical valuation residue field of a finite unramified
+fraction local field is split.  This transfers the finite-residue Brauer vanishing from the
+integral lift to the local field's own integer ring. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_brauerGroup_eq_split
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    ∀ x : BrauerGroup.{u, u}
+      (IsLocalRing.ResidueField ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer),
+      x = brauerSplitClass
+        (IsLocalRing.ResidueField ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+          (FractionRing (AdjoinRoot f))).integer) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Finite (IsLocalRing.ResidueField ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  intro x
+  exact finiteField_brauerGroup_eq_split _ x
+
+/-- The fraction field of a finite unramified root lift is itself a nonarchimedean local field
+for the canonical valuation coming from the lifted DVR.  This upgrades the preceding integral
+adic-completeness and finite-residue results to the actual local-field extension layer. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionField_isNonarchimedeanLocalField
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    letI : ValuativeRel (FractionRing (AdjoinRoot f)) :=
+      discreteValuationRingFractionFieldValuativeRel (AdjoinRoot f) (FractionRing (AdjoinRoot f))
+    letI : TopologicalSpace (FractionRing (AdjoinRoot f)) :=
+      discreteValuationRingFractionFieldTopology (AdjoinRoot f) (FractionRing (AdjoinRoot f))
+    IsNonarchimedeanLocalField (FractionRing (AdjoinRoot f)) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : IsAdicComplete (IsLocalRing.maximalIdeal (AdjoinRoot f)) (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isAdicComplete K f hf g hfg hg
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
+  exact discreteValuationRingFractionField_isNonarchimedeanLocalField_of_isAdicComplete_of_finiteResidueField
+    (AdjoinRoot f) (FractionRing (AdjoinRoot f))
 
 /-- The nonzero residue classes of a monic irreducible lift form a cyclic group.  A chosen
 generator is the finite residue-field counterpart of an unramified Frobenius datum. -/
@@ -1617,7 +2013,156 @@ theorem nonarchimedeanLocalFieldAdjoinRootResidueFrobenius_zpowers_eq_top
   obtain ⟨i, -, hσ⟩ :=
     nonarchimedeanLocalFieldAdjoinRootResidueFrobenius_exists_pow_eq K f hf g hgmonic hfg hg σ
   rw [← hσ]
-  exact Subgroup.pow_mem _ i
+  exact (Subgroup.zpowers _).pow_mem (by simp) i
+
+/-- For a `Type`-valued finite unramified lift, residue arithmetic Frobenius gives the full
+cyclic norm sequence: base units embed, the Frobenius coboundary has norm kernel, and the
+residue norm is surjective.  This is the finite unramified quotient of local norm reciprocity,
+before the separate passage from residue units to local-field units. -/
+theorem nonarchimedeanLocalFieldAdjoinRootResidueFrobenius_fullNormSequence
+    (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    Function.Injective (cyclicGaloisBaseUnitsMap (K := 𝓀[K])
+      (L := IsLocalRing.ResidueField (AdjoinRoot f))) ∧
+      Function.Exact (cyclicGaloisBaseUnitsMap (K := 𝓀[K])
+        (L := IsLocalRing.ResidueField (AdjoinRoot f)))
+        (cyclicGaloisAdditiveCoboundary
+          (nonarchimedeanLocalFieldAdjoinRootResidueFrobenius K f hf g hgmonic hfg hg)) ∧
+      Function.Exact (cyclicGaloisAdditiveCoboundary
+        (nonarchimedeanLocalFieldAdjoinRootResidueFrobenius K f hf g hgmonic hfg hg))
+        (cyclicGaloisAdditiveNormUnits 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))) ∧
+      Function.Surjective
+        (cyclicGaloisAdditiveNormUnits 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
+  apply finiteField_cyclicGaloisFullNormSequence
+  intro σ
+  rw [nonarchimedeanLocalFieldAdjoinRootResidueFrobenius_zpowers_eq_top K f hf g hgmonic hfg hg]
+  trivial
+
+/-- For a `Type`-valued finite unramified lift, degree-two Galois cohomology of residue-field
+units vanishes.  This is the cohomological finite-residue input to the local Brauer-invariant
+sequence; it does not claim the still-missing comparison with a local Brauer group. -/
+theorem nonarchimedeanLocalFieldAdjoinRootResidueField_H2_eq_zero
+    (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    ∀ z : groupCohomology
+      (Rep.ofAlgebraAutOnUnits 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))) 2, z = 0 := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
+  intro z
+  exact finiteField_H2_eq_zero z
+
+/-- The residue Brauer group of every finite unramified root lift is trivial: every residue
+Brauer class is split.  This is the zero residue term used before constructing local invariants
+for the fraction field. -/
+theorem nonarchimedeanLocalFieldAdjoinRootResidueField_brauerGroup_eq_split
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    ∀ x : BrauerGroup.{u, u} (IsLocalRing.ResidueField (AdjoinRoot f)),
+      x = brauerSplitClass (IsLocalRing.ResidueField (AdjoinRoot f)) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
+  intro x
+  exact finiteField_brauerGroup_eq_split _ x
+
+/-- Finite-level unramified reciprocity: the residue Galois group of the lifted extension is
+identified with the cyclic group of its residue degree, with arithmetic Frobenius as generator. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootResidueGaloisZModEquiv
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    Multiplicative (ZMod f.natDegree) ≃*
+      Gal(IsLocalRing.ResidueField (AdjoinRoot f) / 𝓀[K]) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
+  letI : Module.Finite 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    Module.Finite.of_finite
+  letI : Algebra.IsAlgebraic 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    Algebra.IsAlgebraic.of_finite 𝓀[K] _
+  let ζ := nonarchimedeanLocalFieldAdjoinRootResidueFrobenius K f hf g hgmonic hfg hg
+  have hζtop : Subgroup.zpowers ζ = ⊤ := by
+    simpa [ζ] using
+      (nonarchimedeanLocalFieldAdjoinRootResidueFrobenius_zpowers_eq_top K f hf g hgmonic hfg hg)
+  refine zmodMulEquivOfGenerator (g := ζ) ?_ ?_
+  · intro σ
+    rw [hζtop]
+    trivial
+  · exact nonarchimedeanLocalFieldAdjoinRootResidueField_natCard_algEquiv K f hf g hgmonic hfg hg
+
+/-- The finite-level reciprocity equivalence sends `1` to arithmetic residue Frobenius. -/
+theorem nonarchimedeanLocalFieldAdjoinRootResidueGaloisZModEquiv_apply_one
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    nonarchimedeanLocalFieldAdjoinRootResidueGaloisZModEquiv K f hf g hgmonic hfg hg
+        (Multiplicative.ofAdd (1 : ZMod f.natDegree)) =
+      nonarchimedeanLocalFieldAdjoinRootResidueFrobenius K f hf g hgmonic hfg hg := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  simp [nonarchimedeanLocalFieldAdjoinRootResidueGaloisZModEquiv]
 
 /-- The absolute Frobenius automorphism of the finite residue field of a monic irreducible lift.
 This is the residue-field automorphism which an arithmetic Frobenius lift must induce. -/
@@ -1696,6 +2241,32 @@ theorem nonarchimedeanLocalField_exists_finiteUnramifiedDVRLift_of_natDegree
     nonarchimedeanLocalField_exists_monic_residuePolynomial_lift K g hgmonic
   refine ⟨f, g, hf, hgmonic, hg, hfg, hdegree.trans hgdegree, ?_⟩
   exact nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+
+/-- Every positive degree occurs as the residue degree of a concrete nonarchimedean local field
+obtained from a finite unramified DVR lift.  This is the finite-level extension supply used
+before passing to an unramified reciprocity limit. -/
+theorem nonarchimedeanLocalField_exists_finiteUnramifiedLocalFieldLift_of_natDegree
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (n : ℕ) [NeZero n] :
+    ∃ (f : Polynomial 𝒪[K]) (g : Polynomial 𝓀[K]), ∃ hf : f.Monic, g.Monic ∧
+      ∃ hg : Irreducible g, ∃ hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g, f.natDegree = n ∧
+      letI : IsDomain (AdjoinRoot f) :=
+        nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+      ∃ hDVR : IsDiscreteValuationRing (AdjoinRoot f),
+        letI : IsDiscreteValuationRing (AdjoinRoot f) := hDVR
+        letI : ValuativeRel (FractionRing (AdjoinRoot f)) :=
+          discreteValuationRingFractionFieldValuativeRel (AdjoinRoot f) (FractionRing (AdjoinRoot f))
+        letI : TopologicalSpace (FractionRing (AdjoinRoot f)) :=
+          discreteValuationRingFractionFieldTopology (AdjoinRoot f) (FractionRing (AdjoinRoot f))
+        IsNonarchimedeanLocalField (FractionRing (AdjoinRoot f)) := by
+  obtain ⟨f, g, hf, hgmonic, hg, hfg, hdegree, hDVR⟩ :=
+    nonarchimedeanLocalField_exists_finiteUnramifiedDVRLift_of_natDegree K n
+  refine ⟨f, g, hf, hgmonic, hg, hfg, hdegree, hDVR, ?_⟩
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) := hDVR
+  exact nonarchimedeanLocalFieldAdjoinRootFractionField_isNonarchimedeanLocalField
+    K f hf g hgmonic hfg hg
 
 /-- Every monic residue polynomial admits a same-degree monic lift whose root algebra is finite
 and free over the valuation ring and whose reduction is the prescribed residue root algebra.
