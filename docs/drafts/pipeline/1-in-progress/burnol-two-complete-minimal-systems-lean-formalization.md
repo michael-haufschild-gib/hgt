@@ -299,3 +299,38 @@ already exists elsewhere in the tree (a collision breaks the area umbrella even 
   Twelve new `HTGeometry` modules (table above).  The proof avoids the area mean-value bound: the
   horizontal edges are killed along a sequence of heights extracted from Tonelli, and the
   `L²`-vs-`L¹` mismatch is repaired by the corpus's `CompactTestTransform` multiplier.
+- 2026-08-22 — **Mellin dictionary CLOSED**: `RHTower/MellinHardyBridge.lean`.  The substitution
+  `t = a e^x` (`integral_Ioi_expScale`, `integrableOn_Ioi_expScale`,
+  `quasiMeasurePreserving_expScale`, `quasiMeasurePreserving_logScale`) transports
+  `L²((a,∞); dt)` onto `L²((0,∞); dx)` through `logChart a f x = √a e^{x/2} f(a e^x)`, with
+  `integral_norm_sq_logChart` the isometry of masses, `logChartInv` the inverse chart, and
+  `mellinTail_eq_laplaceRay`:
+  `∫_a^∞ f(t)t^{-s}dt = a^{1/2-s} · 𝓛(logChart a f)(s − 1/2)`.
+  Both directions of Burnol's `A^s H²` description are then
+  `isHalfPlaneHardy_mellinTail` and `exists_tail_datum_of_isHalfPlaneHardy`.
+- 2026-08-22 — `HTGeometry/HalfPlaneHardyMul.lean`: the multiplier calculus for `H²` —
+  `isHalfPlaneHardy_mul_of_bounded` (bounded holomorphic multiplier) and
+  `isHalfPlaneHardy_mul_of_bounded_off_ball` (multiplier bounded only away from one point, with the
+  product bounded near it).  The second is exactly Burnol's mechanism for Prop. 4.2/4.3
+  (`s^l/(s-ρ)^l` bounded away from `ρ`, the product holomorphic at `ρ`).
+- 2026-08-22 — `HTGeometry/HalfPlaneHardyShift.lean`: the Cauchy kernel `(w+c)⁻¹` is the Laplace
+  transform of `e^{-cx}` (`laplaceRay_expRay`), hence lies in `H²` with mass `(2 Re c)⁻¹`
+  (`isHalfPlaneHardy_inv_shift`), is bounded by `(Re c)⁻¹` there, and multiplying by it preserves
+  `H²` (`isHalfPlaneHardy_mul_inv_shift` — Burnol's Lem. 4.4 mechanism).  Plus the linear algebra
+  `IsHalfPlaneHardy.congr`, `isHalfPlaneHardy_const_mul`, `isHalfPlaneHardy_add`.
+- 2026-08-22 — `RHTower/MellinHeadHardy.lean`: `∫_0^a t^{-s}dt = a^{1-s}/(1-s)`
+  (`integral_head_cpow`), the renormalising multiplier `(w-1/2)/(w+1/2)` is bounded by `3` on the
+  half-plane, and the renormalised Mellin transform of `c·1_{(0,a)} + g` splits as
+  `-c a^{1/2}/s + ((s-1)/s)·𝓛(logChart a g)(s-1/2)` (`renormalised_mellin_headTail`), which is a
+  Hardy function (`isHalfPlaneHardy_renormalisedHeadTail`).  This is Burnol's identification of
+  `ℂ·1_{(0,a)} + L²(a,∞)` with `s/(s−1)A^sH²`.
+- 2026-08-22 — `RHTower/ZetaHardyQuotient.lean`: `{t}/t ∈ L²(1,∞)` (`memLp_two_fractOverId`),
+  Abel summation in the Hardy chart `ζ(s)/s = 1/(s-1) − 𝓛(logChart 1 ({t}/t))(s−1/2)`
+  (`zeta_div_eq_laplaceRay`), and `(s−1)ζ(s)/s²` is a Hardy function
+  (`isHalfPlaneHardy_zetaCore`).  This is the analytic input of Prop. 4.2.
+
+### Prop. 4.2 — what is left
+`(s−1)ζ(s)/(s(s−ρ)^l) ∈ H²` still needs (i) `ζ(s)/(s−ρ)^l` holomorphic at `ρ` from the order of
+vanishing (mathlib `AnalyticAt.order`), (ii) `‖s^l/(s−ρ)^l‖ ≤ (1+‖ρ‖/δ)^l` off the ball, and
+(iii) boundedness of the product on a closed ball around `ρ`.  Then
+`HTGeometry/HalfPlaneHardyMul.isHalfPlaneHardy_mul_of_bounded_off_ball` finishes.

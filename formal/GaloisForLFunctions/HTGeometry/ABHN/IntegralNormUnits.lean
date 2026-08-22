@@ -32,6 +32,17 @@ theorem algebra_norm_baseChange_tmul_one
   rw [Algebra.norm_apply, ← Algebra.baseChange_lmul, LinearMap.det_baseChange,
     Algebra.norm_apply]
 
+/-- Trace commutes with scalar base change on a canonical tensor element.  This is the
+linear companion to `algebra_norm_baseChange_tmul_one`, used to linearize local norm maps on
+successive principal-unit layers. -/
+theorem algebra_trace_baseChange_tmul_one
+    (R : Type u) (B : Type v) (A : Type w) [CommRing R] [CommRing B] [CommRing A]
+    [Algebra R B] [Algebra R A] [Module.Free R B] [Module.Finite R B] (b : B) :
+    Algebra.trace A (TensorProduct R A B) ((1 : A) ⊗ₜ[R] b) =
+      algebraMap R A (Algebra.trace R B b) := by
+  rw [Algebra.trace_apply, ← Algebra.baseChange_lmul, LinearMap.trace_baseChange,
+    Algebra.trace_apply]
+
 /-- Scalar base change commutes with norm in a root algebra.  The target root algebra is the
 canonical base change of the defining polynomial.  Identifying this tensor fiber with a residue
 root algebra is the only additional step needed for residue-norm compatibility. -/
@@ -44,6 +55,17 @@ theorem adjoinRoot_norm_baseChange_tmul_one
       algebraMap R T (Algebra.norm R x) := by
   rw [Algebra.norm_eq_of_algEquiv (AdjoinRoot.tensorAlgEquiv p q h)]
   exact algebra_norm_baseChange_tmul_one R (AdjoinRoot p) T x
+
+/-- Scalar base change commutes with trace in a root algebra. -/
+theorem adjoinRoot_trace_baseChange_tmul_one
+    (R : Type u) (T : Type v) [CommRing R] [CommRing T] [Algebra R T]
+    (p : Polynomial R) (q : Polynomial (TensorProduct R T R))
+    (h : p.map Algebra.TensorProduct.includeRight.toRingHom = q)
+    [Module.Free R (AdjoinRoot p)] [Module.Finite R (AdjoinRoot p)] (x : AdjoinRoot p) :
+    Algebra.trace T (AdjoinRoot q) (AdjoinRoot.tensorAlgEquiv p q h ((1 : T) ⊗ₜ[R] x)) =
+      algebraMap R T (Algebra.trace R (AdjoinRoot p) x) := by
+  rw [Algebra.trace_eq_of_algEquiv (AdjoinRoot.tensorAlgEquiv p q h)]
+  exact algebra_trace_baseChange_tmul_one R (AdjoinRoot p) T x
 
 /-- The canonical scalar-extension equivalence from a root algebra to the root algebra of its
 coefficientwise scalar extension. -/
@@ -75,6 +97,20 @@ theorem adjoinRootScalarExtensionEquiv_norm_tmul_one
   rw [AlgEquiv.trans_apply, Algebra.norm_eq_of_algEquiv]
   exact adjoinRoot_norm_baseChange_tmul_one R T p _ rfl x
 
+/-- The scalar-extension root equivalence carries trace of a canonical tensor image to the
+scalar extension of the original trace. -/
+theorem adjoinRootScalarExtensionEquiv_trace_tmul_one
+    (R : Type u) (T : Type v) [CommRing R] [CommRing T] [Algebra R T]
+    (p : Polynomial R) [Module.Free R (AdjoinRoot p)] [Module.Finite R (AdjoinRoot p)]
+    (x : AdjoinRoot p) :
+    Algebra.trace T (AdjoinRoot (p.map (algebraMap R T)))
+      (adjoinRootScalarExtensionEquiv R T p ((1 : T) ⊗ₜ[R] x)) =
+      algebraMap R T (Algebra.trace R (AdjoinRoot p) x) := by
+  unfold adjoinRootScalarExtensionEquiv
+  dsimp only
+  rw [AlgEquiv.trans_apply, Algebra.trace_eq_of_algEquiv]
+  exact adjoinRoot_trace_baseChange_tmul_one R T p _ rfl x
+
 /-- The scalar-extension root equivalence, transported along a specified equality between the
 coefficientwise scalar extension and a target polynomial. -/
 noncomputable def adjoinRootScalarExtensionEquivOfMapEq
@@ -98,6 +134,20 @@ theorem adjoinRootScalarExtensionEquivOfMapEq_norm_tmul_one
   unfold adjoinRootScalarExtensionEquivOfMapEq
   rw [AlgEquiv.trans_apply, Algebra.norm_eq_of_algEquiv]
   exact adjoinRootScalarExtensionEquiv_norm_tmul_one R T p x
+
+/-- **Scalar-extension trace compatibility for root algebras.**  Taking `T` to be a residue
+field gives the trace map that controls the graded principal-unit norm obstruction. -/
+theorem adjoinRootScalarExtensionEquivOfMapEq_trace_tmul_one
+    (R : Type u) (T : Type v) [CommRing R] [CommRing T] [Algebra R T]
+    (p : Polynomial R) (q : Polynomial T)
+    (h : p.map (algebraMap R T) = q)
+    [Module.Free R (AdjoinRoot p)] [Module.Finite R (AdjoinRoot p)] (x : AdjoinRoot p) :
+    Algebra.trace T (AdjoinRoot q)
+      (adjoinRootScalarExtensionEquivOfMapEq R T p q h ((1 : T) ⊗ₜ[R] x)) =
+      algebraMap R T (Algebra.trace R (AdjoinRoot p) x) := by
+  unfold adjoinRootScalarExtensionEquivOfMapEq
+  rw [AlgEquiv.trans_apply, Algebra.trace_eq_of_algEquiv]
+  exact adjoinRootScalarExtensionEquiv_trace_tmul_one R T p x
 
 /-- The scalar-extension root equivalence sends the canonical tensor of the adjoined root to
 the adjoined root of the scalar-extended polynomial. -/

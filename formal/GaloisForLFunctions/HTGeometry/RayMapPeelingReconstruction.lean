@@ -68,6 +68,15 @@ theorem rayDerivative_logarithmic_rate (kappa : ℝ → ℝ) {C : ℝ} (hC : C �
     -(-kappa u * rayDerivative kappa C uref u) / rayDerivative kappa C uref u = kappa u := by
   field_simp [rayDerivative_ne_zero kappa hC uref u]
 
+/-- Equation `(11)`: a constant peeling field gives an exponential ray-map derivative. -/
+theorem rayDerivative_const (kappa C uref u : ℝ) :
+    rayDerivative (fun _ => kappa) C uref u =
+      C * Real.exp (-kappa * (u - uref)) := by
+  have hInt : (∫ _v in uref..u, kappa) = (u - uref) * kappa := by simp
+  rw [rayDerivative, hInt]
+  congr 2
+  ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

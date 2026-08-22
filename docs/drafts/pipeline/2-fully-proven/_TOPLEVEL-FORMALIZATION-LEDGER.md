@@ -390,3 +390,11 @@ Two devices did it, both reusable:
 
 Remaining on that card: only the downstream window assembly `(36)` into Theorem B's
 `half_mul_le_measureReal_hardWindow`, and Theorem D.
+
+## Theorem C of `arithmetic-static-local-hardness-recurrence-window-law` is Lean (2026-08-22)
+
+`TwoLocalWitness.exists_integer_twoLocal_hardWindow` (`HTGeometry/TwoLocalTheoremC`).  The card's
+Theorems A and B were already closed; what was missing was the *selection* and the interface.  Both
+are now built: `exists_integer_twoLocal_theoremC` (selection) and
+`exists_algebraic_spectrum_package` + `half_mul_le_measureReal_hardWindow_physical` (interface).
+Remaining on the card: `(38)`, the recurrence half, and Theorem D.

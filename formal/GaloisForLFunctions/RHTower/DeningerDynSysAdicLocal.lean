@@ -1,4 +1,5 @@
 import Mathlib.RingTheory.AdicCompletion.Algebra
+import Mathlib.RingTheory.Filtration
 import Mathlib.RingTheory.AdicCompletion.Completeness
 import Mathlib.RingTheory.AdicCompletion.LocalRing
 import Mathlib.RingTheory.LocalRing.Basic
@@ -88,5 +89,30 @@ theorem deningerPAdicCompletion_isLocalRing {R : Type*} [CommRing R] [IsLocalRin
     IsLocalRing (AdicCompletion (Ideal.span {p}) R) :=
   deningerAdicCompletion_isLocalRing _ ⟨{p}, by simp⟩
     (Ideal.span_le.mpr (by simpa using hp))
+
+/-- **Deninger, Proposition 14.3 (`t123`).**  On a Noetherian local domain the `I`-adic topology
+is separated for every proper ideal `I`: the canonical map to the `I`-adic completion is
+injective.  Applied to `I = (p)` this is the statement of the source that the `p`-adic topology on
+the local ring `𝒪_{closure {x}, y}` is separated. -/
+theorem deningerAdicCompletion_of_injective {R : Type*} [CommRing R] [IsNoetherianRing R]
+    [IsLocalRing R] [IsDomain R] (I : Ideal R) (hI : I ≠ ⊤) :
+    Function.Injective (AdicCompletion.of I R) := by
+  refine AdicCompletion.of_injective_iff.mpr ⟨fun x hx => ?_⟩
+  have hbot : ⨅ n : ℕ, I ^ n = ⊥ := Ideal.iInf_pow_eq_bot_of_isLocalRing I hI
+  have hmem : x ∈ ⨅ n : ℕ, I ^ n := by
+    refine Submodule.mem_iInf _ |>.2 fun n => ?_
+    have h := hx n
+    rw [SModEq.zero] at h
+    simpa using h
+  rw [hbot] at hmem
+  simpa using hmem
+
+/-- **Deninger, Proposition 14.3 (`t123`), `p`-adic case.** -/
+theorem deningerPAdicCompletion_of_injective {R : Type*} [CommRing R] [IsNoetherianRing R]
+    [IsLocalRing R] [IsDomain R] (p : R) (hp : p ∈ IsLocalRing.maximalIdeal R) :
+    Function.Injective (AdicCompletion.of (Ideal.span {p}) R) :=
+  deningerAdicCompletion_of_injective _ (fun h =>
+    (IsLocalRing.maximalIdeal.isMaximal R).ne_top
+      (top_le_iff.mp (h ▸ Ideal.span_le.mpr (by simpa using hp))))
 
 end RHTower

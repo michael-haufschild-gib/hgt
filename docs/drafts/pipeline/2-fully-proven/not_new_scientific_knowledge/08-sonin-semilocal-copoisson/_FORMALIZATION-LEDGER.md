@@ -293,3 +293,31 @@ The card's Lean content and where it goes.
 
 Unchecked gates `(21)`, finite two-prime compact curvature and prime-seam coherence are open
 research problems, not formalization gaps.
+
+## 2026-08-22: card 9 closed
+
+`semilocal-euler-kernel-chart-differentiability` → stage 3.  New modules:
+
+- `HTGeometry/BoundedBelowRangeProjection.lean` — self-adjoint + bounded below ⟹ invertible; the
+  Gram operator `A = Q M* M Q + (1−Q)`; the closed-range projection formula `P = M Q A⁻¹ Q M*` and
+  its identification with `starProjection` of `M(range Q)`.
+- `HTGeometry/RangeProjectionDeriv.lean` — `adjointRealCLM` (the adjoint as a continuous
+  **real**-linear map; it is conjugate-linear over ℂ), `hasDerivAt_adjoint`, and
+  `P'_0 = (1−Q) X Q + Q X* (1−Q)` at `M_0 = 1`.
+- `HTGeometry/RangeProjectionAnalytic.lean` — real analyticity of `t ↦ P_t` through
+  `analyticAt_inverse`.
+- `HTGeometry/InvariantMultiplierChart.lean` — `multiplierKernel`, the exact chart
+  `S(u N D⁻¹) = D S(u)`, and the Neumann lemma `map_one_sub_eq_of_norm_lt_one`.
+- `RHTower/HalfLineMultiplierChart.lean` — the Paley--Wiener half-line model
+  (`logHalflineLower/Upper`, translation invariance from
+  `logHalflineCutoff_mul_logTranslationCLM`), the Euler numerator/denominator multipliers and the
+  instantiated chart.
+- `RHTower/SemilocalEulerKernelChart.lean` — `M_t = 1 − (t/√p) U_p*` in the actual Sonin model, the
+  metric `M_t* M_t`, its tangent, the identification of the cross-boundary with
+  `positiveEulerDilationOperator`, analyticity, the projection derivative and the second
+  fundamental form.
+- `RHTower/LocalEulerHankelSingularLimit.lean` — the division-free identity
+  `(1 − e^{L(z+c−1)})·sinh(L(z−c)/2) = −e^{L(z−1/2)}(1 − e^{L(c−z)})·sinh(L(z+c−1)/2)` and the
+  degenerate limit `B → −p^{z−1/2}`.
+
+Remaining cards: 1, 5, 7, 11, 14, 16, 17.

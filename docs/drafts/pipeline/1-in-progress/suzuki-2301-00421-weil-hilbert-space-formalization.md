@@ -17,7 +17,7 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | TeX label | Paper | Statement | RH? | Lean status |
 |---|---|---|---|---|
 | `thm_1_1` | Thm 1.1 | `K(Θ_ξ) → H_W`, `F ↦ [F⁻¹F]`, is a Hilbert isomorphism with `‖E F‖²_{H(E)} = ‖F‖²_{K(Θ)} = π⟨ψ_F,ψ_F⟩_W` | yes | OPEN |
-| `prop_101` | Prop 1.2 | `𝔖_t ∈ L²(ℝ)` for every fixed `t ∈ ℝ` | no | OPEN |
+| `prop_101` | Prop 1.2 | `𝔖_t ∈ L²(ℝ)` for every fixed `t ∈ ℝ` | no | **CLOSED** `RHTower.memLp_suzukiFrakS` |
 | `prop_102` | Prop 1.3 | `𝒫̂_φ ∈ L²(ℝ)` for `φ ∈ C_c^∞(ℝ)` | no | OPEN |
 | `thm_1_2` | Thm 1.4 | RH ⟺ `‖𝒫̂_{Dψ}‖²_{L²} = π⟨ψ,ψ⟩_W` for all `ψ ∈ C_c^∞`; countably many `ψ` suffice | ⟺ | OPEN |
 | `cor_1_1` | Cor 1.5 | RH ⟺ `2‖ψ‖²_{L²} = ⟨ψ,ψ⟩_W` for all `ψ ∈ V°(0)` | ⟺ | OPEN |
@@ -114,23 +114,50 @@ The limit is taken along `suzukiVerticalFilter = atTop ⊓ 𝓟 {y | ∀ m, ¼ �
 `ψ(¼-y/2)` and of the Lerch block), where the total is regular but the individual blocks are not.
 The filter is proved non-trivial (`suzukiVerticalFilter_neBot`, cofinal sequence `y_k = 2k + 3/2`).
 
-### Prop 1.2 — plan and available corpus inputs
+### Prop 1.2 — EXECUTED (CLOSED), by a route that needs no Titchmarsh input
 
-Suzuki's proof needs `𝔖_t(z) ≪ |z|^{-1} log|z|` on the strip `|Im z| ≤ 1/2`, from Titchmarsh 9.6(A)
-and 9.2.  The corpus already owns both analytic inputs:
+Suzuki's proof uses Titchmarsh 9.6(A) (`ζ'/ζ` = sum over nearby zeros + `O(log T)`) and 9.2 (local
+zero count `O(log T)`) to get `𝔖_t(x) ≪_t log|x|/|x|`.  **Neither is needed.**  The whole singular
+part is killed by one elementary observation: on the real axis `A = XiC` and `A'` are *real*, so
+`E^♯ = A - iA'` has `|E^♯|² = A² + A'²` and therefore
 
-- `RHTower.Sieve.landau_logDeriv` — Landau's lemma in full generality: `logDeriv f` equals the sum of
-  `m_ρ/(z-ρ)` over the zeros in a half-radius disc, up to `16 log M / R`.  This is Titchmarsh 9.6(A).
-- `RHTower.xiRegionOrderSum_closedBall_le` — Jensen's inequality for `ξ`: the divisor mass of a disc
-  is bounded by the order-one envelope.  This is the local zero count `O(log T)` of Titchmarsh 9.2.
-- `HTGeometry.norm_digamma_vertical_le_log`, `HTGeometry.re_digamma_vertical_bound_uncond` — the
-  archimedean `O(log|z|)`.
+```text
+|A/E^♯| ≤ 1     and     |A'/E^♯| ≤ 1      everywhere on ℝ.
+```
 
-The blockwise estimates are then: polar `O(1/|x|)`; prime block `O_t(1/|x|)`; digamma block
-`O(log|x|/|x|)`; Lerch block `O(log|x|/|x|)` (from `‖suzukiLerchKernel‖ = O(log|x|/|x|)` split at
-`n ≈ |x|`); and the `ζ'/ζ` block, whose poles at the real Xi zeros are exactly cancelled by the zeros
-of `(1+Θ^♯)/2 = A/E^♯`.  Note `A/E^♯` stays bounded even at a multiple real zero, because
-`A ~ c(x-γ)^m` and `E^♯ = A - iA' ~ -icm(x-γ)^{m-1}`.
+Feeding the completed split `ζ'/ζ(1/2-ix) = i(A'/A)(x) - (log archFactor)'(1/2-ix)` into the
+`ζ'/ζ` block of eq. (1.6) and multiplying by `A/E^♯` turns its pole at every real Xi zero into the
+*bounded* quantity `iA'/E^♯` (`suzukiFrakS_ofReal_decomp`):
+
+```text
+𝔖_t = i(A/E^♯)·(polar + prime + kernels)
+    + i·expSlope·( i(A'/E^♯) - (A/E^♯)·(log archFactor)'(1/2-ix) ).
+```
+
+The remaining blocks decay because the Lerch kernel does.  With `A_n = n+1/4`, `B = |x|/2`, weighted
+AM–GM gives `|n + 1/4 - ix/2| ≥ A_n^{1/4}B^{3/4}`, hence
+
+```text
+‖suzukiLerchKernel t (1/4 - ix/2)‖ ≤ (|x|/2)^{-3/4} · ∑ₙ (n+1/4)^{-5/4}.
+```
+
+The exponent `3/4` is what makes the argument work: the naive Cauchy–Schwarz split gives only
+`|x|^{-1/2}`, which is *not* square integrable.  The same Gauss bridge turns `ψ(1/4-ix/2)` into
+`ψ(1/4) - (ix/2)·kernel`, so the archimedean logarithmic derivative on the critical line is bounded
+by `M + (|x|/4)‖kernel‖`, and the `2/|x|` half of the exponential-slope bound absorbs that product
+exactly.  The result is the master estimate
+
+```text
+‖𝔖_t(x)‖ ≤ C_t · (1 + |x|)^{-3/4}      for x ≠ 0 with XiC(x) ≠ 0,
+```
+
+and `(1+|x|)^{-3/2}` is integrable on `ℝ` (`integrable_one_add_norm`, `finrank ℝ ℝ = 1 < 3/2`).
+
+**Measurability** is the one non-obvious extra ingredient.  The printed formula for `𝔖_t` contains
+`ζ'/ζ`, whose measurability is not available off the shelf (nor is that of `Γ` or `ψ`).  It is
+avoided by `suzukiFrakSModel`: the same decomposition with the digamma traded for the Lerch kernel,
+built only from `XiC`, `deriv XiC`, exponentials and one convergent series.  It agrees with `𝔖_t`
+off the origin and the countable real Xi zero set (`XiC_zeroSet_countable`), which is null.
 
 ## Source defects found
 
@@ -151,6 +178,8 @@ of `(1+Θ^♯)/2 = A/E^♯`.  Note `A/E^♯` stays bounded even at a multiple re
 | `RHTower/SuzukiWeilZeroSeries.lean` | `suzukiPtZeroTerm` / `suzukiPtZeroSum` (eq. 3.2), summability, `‖P_t(z)‖ ≪_z e^{|t|/2}`, per-copy Laplace transform, and **`integral_suzukiPtZeroSum_laplace`**.  Also `XiC_neg` (evenness of the centered completed Xi source), which the corpus did not have. |
 | `RHTower/SuzukiWeilFrakP.lean` | `suzukiFrakP` (eq. 1.6) and `suzukiFrakPReg`; `suzukiScrewG_eq_screwFn`; `riemannZeta_half_ne_zero`; `logDeriv_riemannZeta_half : ζ'/ζ(1/2) = -screwLinearCoeff/2`; `continuousAt_logDeriv_riemannZeta_half`; **`tendsto_suzukiFrakP_zero`** (eq. 7.1). |
 | `RHTower/SuzukiWeilDigammaOffPoles.lean` | **`digamma_sub_quarter_eq_offPoles`** — Gauss's digamma difference series at *every* `w` off the poles of `Γ`, not just on `Re w > 0` (a mathlib and corpus gap); `summable_suzukiLerchDiffTerm_all` (hypothesis-free summability); `suzukiLerchDiff_zero_add_one` (the shift law `S(w+1) = S(w) - 1/w`); `suzukiLerchDiff_zero_five_quarters`; `norm_suzukiLerchKernel_le_of_one_le_re`. |
+| `RHTower/SuzukiWeilVerticalDecay.lean` | The Titchmarsh-free decay toolkit: reality of the centered Xi jet on ℝ, `norm_XiC_div_ESharp_le_one` and `norm_deriv_XiC_div_ESharp_le_one` (both quotients bounded by one), the `ζ'/ζ ↔ A'/A` bridge `logDeriv_riemannZeta_vertical_eq`, the `(|x|/2)^{-3/4}` Lerch-kernel bound, the weight `decayW x = (1+|x|)^{-3/4}` with its comparison lemmas, the exponential-slope bounds `min(|c|, 2/|x|)`, and `exists_norm_logDeriv_archFactor_vertical_le`. |
+| `RHTower/SuzukiWeilPropOneTwo.lean` | `suzukiThetaSharp`, **`suzukiFrakS`** (eq. 1.5), `suzukiFrakS_ofReal_decomp` (the pole-free five-block form), the blockwise bounds, **`exists_norm_suzukiFrakS_le`** (`‖𝔖_t(x)‖ ≤ C(1+|x|)^{-3/4}`), the measurable model `suzukiFrakSModel` with `measurable_suzukiFrakSModel`, and **`memLp_suzukiFrakS`** = Proposition 1.2. |
 | `RHTower/SuzukiWeilAppendixDerivative.lean` | `hasDerivAt_screwFn_atomFree` (the exact derivative of `g_ξ` off the prime-power atoms); `tendsto_logDeriv_riemannZeta_ofReal_atTop`; `suzukiVerticalLerchTerm` / `suzukiVerticalFilter` / `suzukiVerticalLerchBound` with the three-regime `y`-uniform dominant and `suzukiVerticalFilter_neBot`; `digamma_quarter_sub_logPi` (`screwLinearCoeff = ψ(1/4) - log π`); `suzukiFrakP_vertical_mul`; `suzukiVerticalEnergy_eq` (the five-block decomposition); the five block limits; and **`tendsto_suzukiFrakP_vertical`** = eq. (7.2). |
 
 All capstones audited: only `propext, Classical.choice, Quot.sound`.
@@ -225,6 +254,7 @@ supported in `[0,1]`, so `RHTower.ae_eq_zero_of_moments_eq_zero` (`ExpDecayFouri
 applies.  Continuity of both sides in `t` then upgrades a.e. to pointwise.
 
 ## Log
+- 2026-08-22 — **Proposition 1.2 CLOSED in Lean, unconditionally** (`memLp_suzukiFrakS`), by a route that uses *no* Titchmarsh zero-density or `ζ'/ζ` input: the two elementary quotient bounds `|A/E^♯| ≤ 1`, `|A'/E^♯| ≤ 1` on the real axis kill the poles, and a weighted-AM–GM bound gives the Lerch kernel the decay exponent `3/4` (the naive `1/2` would not be square integrable).  Also generalized the corpus's `suzukiFrakP_eq_reg` to `suzukiFrakP_eq_reg_of_re_pos` (hypothesis `‖z‖ < 1/2` weakened to `0 < Re(1/4 - iz/2)`, which the whole real axis satisfies).  All capstones axiom-clean.
 - 2026-08-22 — **eq. (7.2) CLOSED in Lean, unconditionally** (`tendsto_suzukiFrakP_vertical`), completing the whole unconditional appendix Theorem 7.1.  Required a new mathlib/corpus gap module: Gauss's digamma difference series off the poles.  Both new capstones axiom-clean.
 - 2026-08-22 — created; source inventoried statement by statement; corpus dictionary established.
 - 2026-08-22 — **Proposition 3.1 CLOSED in Lean, unconditionally** (`suzukiFrakP_eq_suzukiPtZeroSum`), by the Laplace-matching route: five-block Laplace transform of eq. (1.6), Laplace transform of the Xi-zero series, the corpus explicit formula as the bridge, Laplace determinacy through the exponential Fourier transform, and continuity in `t`.  All capstones axiom-clean.

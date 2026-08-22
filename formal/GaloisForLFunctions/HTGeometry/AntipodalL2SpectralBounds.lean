@@ -1,4 +1,4 @@
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
@@ -29,6 +29,40 @@ theorem inv_jacobian_le_inv_min {X : Type*}
   inv_anti₀ hJmin (hmin x)
 
 variable {X : Type*} [MeasurableSpace X]
+
+/-- Equation `(53)`, change-of-variables equality derived from the measure-level Jacobian law.
+The map condition says that pushforward by the involution has density `J⁻¹`, equivalent to the
+paper's pullback convention `A* dA = J dA`. -/
+theorem integral_sq_comp_eq_integral_invJacobian
+    (mu : Measure X) (A : X → X) (J xi : X → ℝ)
+    (hA : AEMeasurable A mu)
+    (hmap : Measure.map A mu = mu.withDensity (fun x => ENNReal.ofReal ((J x)⁻¹)))
+    (hJpos : ∀ x, 0 < J x) (hJmeas : Measurable fun x => (J x)⁻¹)
+    (hxi : StronglyMeasurable fun x => xi x ^ 2) :
+    (∫ x, (xi (A x)) ^ 2 ∂mu) = ∫ x, xi x ^ 2 * (J x)⁻¹ ∂mu := by
+  rw [← integral_map hA hxi.aestronglyMeasurable, hmap,
+    integral_withDensity_eq_integral_toReal_smul]
+  · apply integral_congr_ae
+    filter_upwards with x
+    simp [ENNReal.toReal_ofReal (inv_nonneg.mpr (hJpos x).le), smul_eq_mul, mul_comm]
+  · exact hJmeas.ennreal_ofReal
+  · filter_upwards with x
+    exact ENNReal.ofReal_lt_top
+
+/-- The inverse-Jacobian weighted square is integrable under the same uniform bound used in
+equation `(53)`. -/
+theorem integrable_sq_mul_invJacobian
+    (mu : Measure X) (J xi : X → ℝ) (Jmin : ℝ)
+    (hJpos : ∀ x, 0 < J x) (hJmeas : Measurable fun x => (J x)⁻¹)
+    (hxi : Integrable (fun x => xi x ^ 2) mu)
+    (hJbound : ∀ x, (J x)⁻¹ ≤ Jmin⁻¹) :
+    Integrable (fun x => xi x ^ 2 * (J x)⁻¹) mu := by
+  apply (hxi.const_mul Jmin⁻¹).mono'
+  · exact hxi.aestronglyMeasurable.mul hJmeas.aestronglyMeasurable
+  · filter_upwards with x
+    change |xi x ^ 2 * (J x)⁻¹| ≤ Jmin⁻¹ * xi x ^ 2
+    rw [abs_of_nonneg (mul_nonneg (sq_nonneg _) (inv_nonneg.mpr (hJpos x).le))]
+    simpa [mul_comm] using mul_le_mul_of_nonneg_left (hJbound x) (sq_nonneg (xi x))
 
 /-- Equation `(53)`: the Jacobian change-of-variables identity implies the squared L² distortion
 bound.  `hchange` is precisely the standard change-of-variables equality displayed in the paper. -/
@@ -62,6 +96,23 @@ theorem spatialL2Norm_comp_le
         ≤ Real.sqrt (Jmin⁻¹ * ∫ x, xi x ^ 2 ∂mu) := Real.sqrt_le_sqrt hs
     _ = Real.sqrt Jmin⁻¹ * Real.sqrt (∫ x, xi x ^ 2 ∂mu) := by
       rw [Real.sqrt_mul hinv]
+
+/-- End-to-end form of equations `(53)`--`(54)` from the measure-level Jacobian law, with no
+separately assumed change-of-variables or weighted-integrability equality. -/
+theorem spatialL2Norm_comp_le_of_map
+    (mu : Measure X) (A : X → X) (J : X → ℝ) (Jmin : ℝ) (xi : X → ℝ)
+    (hJmin : 0 < Jmin) (hmin : ∀ x, Jmin ≤ J x)
+    (hA : AEMeasurable A mu)
+    (hmap : Measure.map A mu = mu.withDensity (fun x => ENNReal.ofReal ((J x)⁻¹)))
+    (hJpos : ∀ x, 0 < J x) (hJmeas : Measurable fun x => (J x)⁻¹)
+    (hxiStrong : StronglyMeasurable fun x => xi x ^ 2)
+    (hxi : Integrable (fun x => xi x ^ 2) mu) :
+    spatialL2Norm mu (xi ∘ A) ≤ Real.sqrt Jmin⁻¹ * spatialL2Norm mu xi := by
+  have hJbound : ∀ x, (J x)⁻¹ ≤ Jmin⁻¹ :=
+    inv_jacobian_le_inv_min J hJmin hmin
+  exact spatialL2Norm_comp_le mu A J Jmin xi hJmin
+    (integral_sq_comp_eq_integral_invJacobian mu A J xi hA hmap hJpos hJmeas hxiStrong)
+    hxi (integrable_sq_mul_invJacobian mu J xi Jmin hJpos hJmeas hxi hJbound) hJbound
 
 /-- Pointwise inequality underlying equation `(56)`. -/
 theorem norm_sub_sq_le_two {E : Type*} [NormedAddCommGroup E] (x y : E) :

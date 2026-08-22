@@ -64,6 +64,12 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | §2 the big Witt functor, the sheaf `W(𝒪_X)`, and `W_rat(𝒪_X)` as a subpresheaf of it | `RHTower/DeningerDynSysBigWittSheaf.lean` | closed |
 | §1 functoriality of `W_rat` (`map_id`, `map_comp`) | `RHTower/DeningerDynSysWittFunctoriality.lean` | closed |
 | **Prop 1.3 (`t26n`) top row**: `κ^{Aut_{κ₀}κ} = κ₀^perf` and `W_rat(κ)^H = W_rat(κ₀^perf)` | `RHTower/DeningerDynSysPerfectClosureFixed.lean` | closed |
+| **Prop 14.3 (`t123`)** separatedness of the `I`-adic (and `p`-adic) topology on a Noetherian local domain | `RHTower/DeningerDynSysAdicLocal.lean` | closed |
+| **Prop 3.6 (`t37n`) mechanism**: a continuous character of a linearly topologized group into a group with no small subgroups has open kernel | `RHTower/DeningerDynSysNoSmallSubgroups.lean` | closed |
+| **Prop 1.3 (`t26n`) polynomial correspondence**: `(minpoly F x).map = (minpoly L x)^d` over any purely inseparable `L/F`, in particular over `κ₀^perf` | `RHTower/DeningerDynSysMinpolyPurelyInseparable.lean` | closed |
+| Prop 1.3 (`t26n`) normalization: reversal matches normalized with monic irreducibles; every monic irreducible is a minimal polynomial | `RHTower/DeningerDynSysNormalizedIrreducible.lean` | closed |
+| Prop 1.3 (`t26n`) free basis: normalized polynomials factor uniquely into normalized irreducibles | `RHTower/DeningerDynSysNormalizedFactorization.lean` | closed |
+| **Prop 1.3 (`t26n`) correspondence of normalized irreducibles**: `α.map = β^d` with `β` normalized irreducible over `κ₀^perf` | `RHTower/DeningerDynSysNormalizedCorrespondence.lean` | closed |
 
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -105,6 +111,32 @@ AIC-domain comparison.
   and the injectivity of `W_rat` on morphisms.
 * §§3, 13, 14 need the `S`-valued points of `W_rat(X)` as scheme-level infrastructure.
 * Claim 8.1 is an open conjecture in the source; Thm 8.2 is conditional on it in dimension ≥ 2.
+
+### Roadmap for the remaining results (next sessions)
+1. **Prop 1.3 lower isomorphism / Cor 1.5(1).**  The polynomial correspondence `α = α̃^d` is now
+   **closed** (`deningerMinpoly_map_eq_pow`, via `deningerPow_eq_expand`).  What is still needed:
+   (a) unique factorization of normalized polynomials — **closed**
+   (`deningerExists_normalized_factorization`, `deningerNormalized_factorization_unique`);
+   (b) the correspondence `α.map = β^d` — **closed**
+   (`deningerNormalizedIrreducible_map_eq_pow`).  What remains: (c) surjectivity of that
+   correspondence (every normalized irreducible over `κ₀^perf` arises), (d) that `d` is exactly the
+   inseparable degree `d_r` of the corpus's `deningerInsepSubring`, and (e) the identification of
+   `(ℤ̲κ/κ₀)^H` with the free abelian group on the normalized irreducibles of `κ₀[t]`.
+2. **Prop 3.6 / Cor 3.7.**  Build `lim_{N₀} M` along the `ν`-th power maps (a subgroup of
+   `N₀ → M` cut out by `x_{νμ}^μ = x_ν`, with the subspace topology), show `T = ker pr_1` embeds in
+   `∏_ν μ_ν(K)` with each `μ_ν(K)` finite hence discrete, so `T` is linearly topologized, and feed
+   `deningerIsOpen_ker_of_noSmallSubgroups`.  The last step needs the Frobenius operators `F_ν`,
+   which are isomorphisms on the limit.
+3. **Prop 2.1(b), (c).**  Fatou input is owned (`deningerRationalWittFatouIntersection_iff`); what
+   is missing is the scheme layer: integral scheme, function field `K = 𝒪_{X,η}`, injectivity of
+   `𝒪_X(U) → K`, and affine covers by Fatou rings.  `W(𝒪_X)` is now a sheaf
+   (`deningerBigWittPresheaf_isSheaf`), which is the ambient sheaf in (c).
+4. **Def 2.4 / Prop 2.4 (`t27xn`).**  Needs stalks of `W_rat(𝒪_X)` and the locality condition.
+5. **§§3, 5, 6, 7, 9–13, 15** are gated on the `S`-valued points of `W_rat(X)`.
+6. **§14 remainder.**  14.13 (`t1110`) is pure algebra (the tilting correspondence for
+   `p`-adically complete rings, via `PreTilt`/`fontaineTheta`); the rest needs the `𝒪`-valued
+   point spaces.
+7. **Claim 8.1 is open in the source**; Thm 8.2 stays conditional in dimension ≥ 2.
 
 ## Gates
 - [x] 0 → 1  in-progress

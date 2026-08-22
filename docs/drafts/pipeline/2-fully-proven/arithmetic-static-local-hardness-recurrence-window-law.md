@@ -1309,3 +1309,44 @@ observe `radianOrbit p (flowPhase ψ E t) = eigenCoords e (e^{-itH}Ω)` (both ar
 `√(p_j)·e^{i(ψ_j − t E_j)}`), transport the index along `ρ`, and use Parseval
 (`ClockPhaseEvolutionBridge.finiteComplexInner_eigenCoords`) to identify the orbit fidelity with the
 physical one — plus the circuit-dictionary count `(42)` and the numeric inequality `(43)`.
+
+## THEOREM C IS LEAN (2026-08-22, final entry of the session)
+
+`TwoLocalWitness.exists_integer_twoLocal_hardWindow` (`HTGeometry/TwoLocalTheoremC`), unconditional
+and axiom-clean, is Theorem C: the explicit traceless integer two-local Hamiltonian of
+`exists_integer_twoLocal_theoremC` — symmetric Galois group, cyclic `|0⟩^{⊗n}`, collision below
+`4(2/3)ⁿ` — together with the conclusion `(36)`: for every finite family of unit targets satisfying
+the replica budget `(22)`, every window of the arithmetic length `(4)` carries a set of times of
+measure at least `μ_ρ/2` times the window on which *no* target is `ε`-approximated.
+
+Taking the target family to be the outputs of all gate words of length at most `s_n` turns `(22)`
+into `(42)`–`(43)` and `(36)` into the card's displayed statement; the replica budget is stated with
+`Fintype.card C` rather than `h_r(Z)` because `finrank_range_le_card` bounds the replica span by the
+size of the family, which is exactly the card's `(42)`.
+
+### The three modules that closed it
+
+| Module | Content |
+|---|---|
+| `HTGeometry/IntegerMatrixAlgebraicSpectrum` | `isIntegral_of_isRoot_charpoly`, `isRoot_embedding`, `norm_embedding_le`, `exists_embedding_matching_roots`, **`spectralForm_ne_zero_of_ker_eq_constLine`** |
+| `HTGeometry/SpectralOrbitWindowBridge` | `spectralWeights`, `spectralPhases`, **`radianOrbit_spectral_eq_eigenCoords`**, `finitePureStateFidelity_radianOrbit_spectral`, and the reindexing lemmas |
+| `HTGeometry/TwoLocalHardWindowLaw` | **`exists_algebraic_spectrum_package`** (the spectrum of a traceless integer matrix with symmetric Galois group, in exactly the format Theorems A and B consume, including `Fintype.card (K →+* ℂ) = D!` via `Gal.card_of_separable` and `Embeddings.card`) and **`half_mul_le_measureReal_hardWindow_physical`** |
+
+Two engineering notes worth keeping:
+
+* the `Fintype.card (K →+* ℂ)` in Theorem B's window hypothesis must be discharged *inside* the
+  package, where `K` is the concrete splitting field; passing instance arguments to a `∀ K, …`
+  hypothesis and rewriting afterwards makes `isDefEq` unfold the embeddings `Fintype` instance and
+  diverge;
+* every application of the reindexing lemmas must have its function arguments given explicitly —
+  leaving `finitePureStateFidelity_reindex ρ _ _` to higher-order unification is what turned a
+  4-second file into a 70-second timeout.
+
+### What is left on this card
+
+Only `(38)` — the recurrence half of Theorem C, which is
+`ArithmeticWindowHardCell.half_mul_le_measureReal_recurrenceWindow` transported through the same
+package and the same bridge (the orbit-fidelity to physical-norm conversion is Parseval, since
+`eigenCoords` is a linear isometry) — and Theorem D, which reuses the *same* selection with the
+uniform Choi weights `p_j = 1/D` and the universal Choi phase-target entropy law in place of the
+replica budget.

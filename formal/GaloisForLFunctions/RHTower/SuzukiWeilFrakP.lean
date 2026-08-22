@@ -160,10 +160,11 @@ theorem re_quarter_sub {z : ℂ} (hz : ‖z‖ < 1 / 2) : 0 < ((1 : ℂ) / 4 - I
   have := abs_lt.mp (him.trans_lt hz)
   linarith [this.1]
 
-theorem suzukiFrakP_eq_reg (t : ℝ) {z : ℂ} (hz0 : z ≠ 0) (hz : ‖z‖ < 1 / 2) :
+theorem suzukiFrakP_eq_reg_of_re_pos (t : ℝ) {z : ℂ} (hz0 : z ≠ 0)
+    (hwre0 : 0 < ((1 : ℂ) / 4 - I * z / 2).re) :
     suzukiFrakP t z = suzukiFrakPReg t z := by
   set w : ℂ := 1 / 4 - I * z / 2 with hw
-  have hwre : 0 < w.re := re_quarter_sub hz
+  have hwre : 0 < w.re := hwre0
   have hIz : I * z ≠ 0 := mul_ne_zero Complex.I_ne_zero hz0
   have hquarter : (1 : ℂ) / 4 - w = I * z / 2 := by rw [hw]; ring
   have hA : Complex.digamma w - Complex.digamma (1 / 4) = -((I * z / 2) * suzukiLerchKernel 0 w) := by
@@ -181,6 +182,12 @@ theorem suzukiFrakP_eq_reg (t : ℝ) {z : ℂ} (hz0 : z ≠ 0) (hz : ‖z‖ < 1
     ring
   rw [e1, e2]
   ring
+
+/-- The pole-free rewriting on the small centered disc, where the archimedean argument
+`1/4 - iz/2` automatically has positive real part. -/
+theorem suzukiFrakP_eq_reg (t : ℝ) {z : ℂ} (hz0 : z ≠ 0) (hz : ‖z‖ < 1 / 2) :
+    suzukiFrakP t z = suzukiFrakPReg t z :=
+  suzukiFrakP_eq_reg_of_re_pos t hz0 (re_quarter_sub hz)
 
 end
 end RHTower

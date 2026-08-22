@@ -111,6 +111,66 @@ theorem occupationCollision_reindex (ρ : α ≃ β) (p : α → ℝ) :
     occupationCollision (fun k => p (ρ.symm k)) = occupationCollision p :=
   Fintype.sum_equiv ρ.symm _ _ (fun _ => rfl)
 
+/-- At time zero the radian orbit is the eigencoordinate vector. -/
+theorem radianOrbit_spectral_zero (e : α → α → ℂ) (Ω : α → ℂ) :
+    radianOrbit (spectralWeights e Ω) (spectralPhases e Ω) = eigenCoords e Ω := by
+  funext j
+  show ((Real.sqrt (spectralWeights e Ω j) : ℝ) : ℂ)
+      * Complex.exp (((spectralPhases e Ω j : ℝ)) * Complex.I) = eigenCoords e Ω j
+  have hsqrt : Real.sqrt (spectralWeights e Ω j) = ‖finiteComplexInner (e j) Ω‖ := by
+    rw [spectralWeights, Real.sqrt_sq (norm_nonneg _)]
+  rw [hsqrt, spectralPhases]
+  exact Complex.norm_mul_exp_arg_mul_I _
+
+/-! ### The eigencoordinate map is an isometry -/
+
+theorem eigenCoords_sub_smul (e : α → α → ℂ) (v w : α → ℂ) (c : ℂ) :
+    (fun j => eigenCoords e v j - c * eigenCoords e w j)
+      = eigenCoords e (fun x => v x - c * w x) := by
+  funext j
+  rw [eigenCoords, eigenCoords, eigenCoords, finiteComplexInner, finiteComplexInner,
+    finiteComplexInner, Finset.mul_sum, ← Finset.sum_sub_distrib]
+  exact Finset.sum_congr rfl fun x _ => by ring
+
+theorem sum_normSq_eigenCoords_eq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
+    (heb : IsOrthoEigenBasis H e lam) (v : α → ℂ) :
+    ∑ j, ‖eigenCoords e v j‖ ^ 2 = ∑ x, ‖v x‖ ^ 2 := by
+  have hpar := finiteComplexInner_eigenCoords heb v v
+  have hL : finiteComplexInner (eigenCoords e v) (eigenCoords e v)
+      = ((∑ j, ‖eigenCoords e v j‖ ^ 2 : ℝ) : ℂ) := by
+    rw [finiteComplexInner, Complex.ofReal_sum]
+    exact Finset.sum_congr rfl fun j _ => by
+      rw [Complex.sq_norm]
+      exact (Complex.normSq_eq_conj_mul_self).symm
+  have hR : finiteComplexInner v v = ((∑ x, ‖v x‖ ^ 2 : ℝ) : ℂ) := by
+    rw [finiteComplexInner, Complex.ofReal_sum]
+    exact Finset.sum_congr rfl fun x _ => by
+      rw [Complex.sq_norm]
+      exact (Complex.normSq_eq_conj_mul_self).symm
+  rw [hL, hR] at hpar
+  exact_mod_cast hpar
+
+/-- **The eigencoordinate map is an isometry.** -/
+theorem norm_toLp_eigenCoords {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
+    (heb : IsOrthoEigenBasis H e lam) (v : α → ℂ) :
+    ‖(WithLp.toLp 2 (eigenCoords e v) : EuclideanSpace ℂ α)‖
+      = ‖(WithLp.toLp 2 v : EuclideanSpace ℂ α)‖ := by
+  have h1 := sq_norm_toLp (eigenCoords e v)
+  have h2 := sq_norm_toLp v
+  have h3 := sum_normSq_eigenCoords_eq heb v
+  nlinarith [norm_nonneg (WithLp.toLp 2 (eigenCoords e v) : EuclideanSpace ℂ α),
+    norm_nonneg (WithLp.toLp 2 v : EuclideanSpace ℂ α)]
+
+theorem norm_toLp_reindex (ρ : α ≃ β) (v : α → ℂ) :
+    ‖(WithLp.toLp 2 (fun j => v (ρ.symm j)) : EuclideanSpace ℂ β)‖
+      = ‖(WithLp.toLp 2 v : EuclideanSpace ℂ α)‖ := by
+  have h1 := sq_norm_toLp (fun j => v (ρ.symm j))
+  have h2 := sq_norm_toLp v
+  have h3 : ∑ j, ‖v (ρ.symm j)‖ ^ 2 = ∑ x, ‖v x‖ ^ 2 :=
+    Fintype.sum_equiv ρ.symm (fun j => ‖v (ρ.symm j)‖ ^ 2) (fun x => ‖v x‖ ^ 2) (fun _ => rfl)
+  nlinarith [norm_nonneg (WithLp.toLp 2 (fun j => v (ρ.symm j)) : EuclideanSpace ℂ β),
+    norm_nonneg (WithLp.toLp 2 v : EuclideanSpace ℂ α)]
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -1,7 +1,7 @@
 # The semilocal Euler kernel is an exact analytic chart of the archimedean Sonin space
 
 - **ID:** `semilocal-euler-kernel-chart-differentiability`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized / not-new
 - **Type:** THEOREM (paper), `[VALUE RELATION]`, `[TOP-DOWN INTERFACE DISCHARGE]`
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** Connes--Consani, *Quasi-inner functions and local factors*;
@@ -284,6 +284,7 @@ scientific theorem.
 - [x] isolated-local-kernel singularity separated from completed semilocal regularity
 - [x] reduce continuous polarized connection compactness to cofinite prime-tangent pairs
 - [x] prove mixed derivatives of norm-analytic compact operator families are compact
+- [x] 2 -> 3: unconditional Lean formalization of every theorem proved on this card
 - [ ] zero-fibre annihilation of the tangential connection in `(21)`
 - [ ] finite two-prime compact curvature extraction
 - [ ] prime-seam coherence and RH
@@ -319,3 +320,36 @@ that cutoff/resolvent cyclic descent preserves `(24)` and that the completed pri
 combination has the required compact cancellation or lower floor.  Differentiating the flat
 primal--dual pairing cannot simply delete `(24)`, because it cancels against the dual connection
 before the orthogonal normal split.
+
+## Lean formalization
+
+All statements are unconditional and closed; every declaration below depends only on `propext`,
+`Classical.choice`, `Quot.sound`.
+
+| Paper item | Lean declaration | Module |
+|---|---|---|
+| `(1)` multiplier kernel `S(u) = {f ∈ H⁺ : u f ∈ H⁻}` | `multiplierKernel`, `mem_multiplierKernel` | `HTGeometry.InvariantMultiplierChart` |
+| `(4)` exact chart `S(u N D⁻¹) = D S(u)` | `multiplierKernel_deformed` | `HTGeometry.InvariantMultiplierChart` |
+| `(4)` bounded below by `‖D⁻¹‖⁻¹` | `norm_le_norm_inverse_mul_norm_apply` | `HTGeometry.InvariantMultiplierChart` |
+| `(5)` `H^∞` invertibility of `1 - t p^{-z}` from `|t| < √p` | `map_one_sub_eq_of_norm_lt_one`, `norm_smul_logTranslationCLM_lt_one`, `isUnit_halflineEulerDenominator`, `isUnit_halflineEulerNumerator` | `HTGeometry.InvariantMultiplierChart`, `RHTower.HalfLineMultiplierChart` |
+| `(5)`,`(6)`,`(7)` half-line Paley--Wiener realization of `H^±` and the Euler multipliers | `logHalflineLower`, `logHalflineUpper`, `logTranslationCLM_mem_logHalflineLower`, `logTranslationCLM_mem_logHalflineUpper`, `halflineEulerDenominator`, `halflineEulerNumerator`, `map_halflineEulerDenominator`, `map_halflineEulerNumerator` | `RHTower.HalfLineMultiplierChart` |
+| `(4)` in the actual half-line model | `multiplierKernel_halflineEuler`, `multiplierKernel_halflineEuler_translation` | `RHTower.HalfLineMultiplierChart` |
+| `(8)` Gram operator `A = Q M* M Q + (1−Q)` and its invertibility | `rangeProjectionGram`, `rangeProjectionGram_isSelfAdjoint`, `lower_bound_rangeProjectionGram`, `isUnit_rangeProjectionGram`, `isUnit_of_isSelfAdjoint_of_lower_bound` | `HTGeometry.BoundedBelowRangeProjection` |
+| `(8)` projection formula `P = M Q A⁻¹ Q M*` | `rangeProjection`, `rangeProjection_mul_self`, `rangeProjection_isIdempotentElem`, `rangeProjection_isSelfAdjoint`, `range_rangeProjection`, `starProjection_eq_rangeProjection` | `HTGeometry.BoundedBelowRangeProjection` |
+| operator-norm real analyticity of `t ↦ P_t` | `analyticAt_rangeProjectionGram`, `analyticAt_rangeProjection`, `AnalyticAt.adjoint` | `HTGeometry.RangeProjectionAnalytic` |
+| `(9)`,`(11)` `P'_0 = (1−Q) X Q + Q X* (1−Q)` | `hasDerivAt_rangeProjectionGram`, `hasDerivAt_rangeProjection`, `rangeProjectionGram_one`, `hasDerivAt_adjoint`, `adjointRealCLM` | `HTGeometry.RangeProjectionDeriv` |
+| `(3)` the deformed Euler multiplier `M_t = 1 − (t/√p) U_p*` | `semilocalEulerMultiplier`, `adjoint_semilocalEulerMultiplier` | `RHTower.SemilocalEulerKernelChart` |
+| `(5)` bounded below for `|t| < √p` | `norm_semilocalEulerMultiplier_apply_ge`, `isUnit_semilocalEulerGram` | `RHTower.SemilocalEulerKernelChart` |
+| `(8)` in the actual Sonin model | `semilocalEulerGram`, `semilocalEulerProjection`, `range_semilocalEulerChart`, `starProjection_eq_semilocalEulerProjection` | `RHTower.SemilocalEulerKernelChart` |
+| real analyticity in the actual model | `analyticAt_semilocalEulerMultiplier`, `analyticAt_semilocalEulerProjection` | `RHTower.SemilocalEulerKernelChart` |
+| `(9)`,`(11)` in the actual model | `semilocalEulerTangent`, `adjoint_semilocalEulerTangent`, `hasDerivAt_semilocalEulerProjection` | `RHTower.SemilocalEulerKernelChart` |
+| `(10)` second fundamental form `(1−Q) P'_0 Q = (1−Q) M'_0 Q` | `crossBoundary_semilocalEulerProjectionTangent` | `RHTower.SemilocalEulerKernelChart` |
+| `(12)`--`(14)` metric `M_t* M_t = (1 + t²/p) − (t/√p)(U_p + U_p⁻¹)` and its tangent | `adjoint_mul_semilocalEulerMultiplier`, `hasDerivAt_semilocalEulerMetric` | `RHTower.SemilocalEulerKernelChart` |
+| `(15)` the metric cross-boundary is the positive Euler Sonin corner | `crossBoundary_semilocalEulerMetricTangent`, `centralPositiveEulerCorner_eq_smul` | `RHTower.SemilocalEulerKernelChart`, `RHTower.SoninEulerCornerConcrete` |
+| `(16)` finite Euler combinations are Calkin-faithful | `finitePositiveEulerCorners_calkinIndependent` | `RHTower.FiniteEulerCalkinIndependence` |
+| `(17)`,`(18)` `ρ_{p,t} · B_{p,t} = −p^{z−1/2}` and the singular limit | `localEulerNumerator`, `localEulerDenominator`, `localEulerBlaschke`, `localEuler_blaschke_identity`, `localEulerBlaschke_eq`, `sinh_ne_zero_of_re_ne_zero`, `tendsto_localEulerBlaschke_atBot` | `RHTower.LocalEulerHankelSingularLimit` |
+| `(23)`,`(24)` connection source law | `primeLogSource_eq_neg_log_mul_connection`, `finitePlaceSource_eq_neg_sum_log_mul_connection` | `RHTower.SemilocalDualPairEulerConnection` |
+
+The remaining unchecked gates are the open source-side research problems `(21)`, the finite
+two-prime compact curvature extraction and prime-seam coherence; they are not formalization gaps.
+

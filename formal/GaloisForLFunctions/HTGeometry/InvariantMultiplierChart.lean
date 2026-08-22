@@ -35,8 +35,6 @@ def multiplierKernel (Hp Hm : Submodule ℂ H) (u : H →L[ℂ] H) : Submodule �
 theorem mem_multiplierKernel {Hp Hm : Submodule ℂ H} {u : H →L[ℂ] H} {f : H} :
     f ∈ multiplierKernel Hp Hm u ↔ f ∈ Hp ∧ u f ∈ Hm := Iff.rfl
 
-variable [CompleteSpace H]
-
 /-- **Exact chart of a multiplier kernel.**  `S(u N D⁻¹) = D S(u)`. -/
 theorem multiplierKernel_deformed (Hp Hm : Submodule ℂ H) (u D N : H →L[ℂ] H)
     (hD : IsUnit D) (hN : IsUnit N) (hDp : Submodule.map (D : H →ₗ[ℂ] H) Hp = Hp)
@@ -51,37 +49,37 @@ theorem multiplierKernel_deformed (Hp Hm : Submodule ℂ H) (u D N : H →L[ℂ]
     intro x
     have := congrArg (fun T : H →L[ℂ] H => T x) (Ring.inverse_mul_cancel D hD)
     simpa using this
+  have hNinv : ∀ x : H, Ring.inverse N (N x) = x := by
+    intro x
+    have := congrArg (fun T : H →L[ℂ] H => T x) (Ring.inverse_mul_cancel N hN)
+    simpa using this
   have hNinj : Function.Injective (N : H → H) := by
     intro x y hxy
-    have hx := congrArg (fun T : H →L[ℂ] H => T x) (Ring.inverse_mul_cancel N hN)
-    have hy := congrArg (fun T : H →L[ℂ] H => T y) (Ring.inverse_mul_cancel N hN)
-    simp only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply_eq_self] at hx hy
-    rw [← hx, ← hy, hxy]
+    rw [← hNinv x, ← hNinv y, hxy]
+  have hcommuted : ∀ y : H, u (N y) = N (u y) := fun y =>
+    congrArg (fun T : H →L[ℂ] H => T y) hcomm
+  have hval : ∀ x : H, (u * N * Ring.inverse D) x = N (u (Ring.inverse D x)) := fun x =>
+    hcommuted (Ring.inverse D x)
   apply le_antisymm
-  · rintro h ⟨hhp, hht⟩
-    refine ⟨Ring.inverse D h, ⟨?_, ?_⟩, hDinv h⟩
-    · obtain ⟨g, hg, hgD⟩ := hDp ▸ hhp
-      have : Ring.inverse D h = g := by rw [← hgD]; exact hinvD g
-      rw [this]; exact hg
-    · have hval : (u * N * Ring.inverse D) h = N (u (Ring.inverse D h)) := by
-        have : (u * N * Ring.inverse D) h = u (N (Ring.inverse D h)) := rfl
-        rw [this]
-        have := congrArg (fun T : H →L[ℂ] H => T (Ring.inverse D h)) hcomm
-        simpa using this
-      rw [hval] at hht
-      obtain ⟨z, hz, hzN⟩ := hNm ▸ hht
-      have : u (Ring.inverse D h) = z := hNinj (by rw [hzN])
-      rw [this]; exact hz
-  · rintro _ ⟨f, ⟨hfp, hfm⟩, rfl⟩
-    constructor
-    · exact hDp ▸ ⟨f, hfp, rfl⟩
-    · have hval : (u * N * Ring.inverse D) (D f) = N (u f) := by
-        have h1 : (u * N * Ring.inverse D) (D f) = u (N (Ring.inverse D (D f))) := rfl
-        rw [h1, hinvD f]
-        have := congrArg (fun T : H →L[ℂ] H => T f) hcomm
-        simpa using this
-      rw [hval]
-      exact hNm ▸ ⟨u f, hfm, rfl⟩
+  · intro h hh
+    obtain ⟨hhp, hht⟩ := mem_multiplierKernel.mp hh
+    rw [hval h] at hht
+    obtain ⟨g, hg, hgD⟩ := (Submodule.mem_map).mp (hDp ▸ hhp)
+    have hfg : Ring.inverse D h = g := by rw [← hgD]; exact hinvD g
+    obtain ⟨z, hz, hzN⟩ := (Submodule.mem_map).mp (hNm ▸ hht)
+    have huf : u (Ring.inverse D h) = z := (hNinj hzN).symm
+    refine (Submodule.mem_map).mpr ⟨Ring.inverse D h, mem_multiplierKernel.mpr ⟨?_, ?_⟩, hDinv h⟩
+    · rw [hfg]; exact hg
+    · rw [huf]; exact hz
+  · intro x hx
+    obtain ⟨f, hf, rfl⟩ := (Submodule.mem_map).mp hx
+    obtain ⟨hfp, hfm⟩ := mem_multiplierKernel.mp hf
+    refine mem_multiplierKernel.mpr ⟨hDp ▸ (Submodule.mem_map).mpr ⟨f, hfp, rfl⟩, ?_⟩
+    have : (u * N * Ring.inverse D) ((D : H →ₗ[ℂ] H) f) = N (u f) := by
+      have hDf : Ring.inverse D ((D : H →ₗ[ℂ] H) f) = f := hinvD f
+      rw [hval, hDf]
+    rw [this]
+    exact hNm ▸ (Submodule.mem_map).mpr ⟨u f, hfm, rfl⟩
 
 /-- The chart is bounded below by the reciprocal norm of the inverse multiplier. -/
 theorem norm_le_norm_inverse_mul_norm_apply {D : H →L[ℂ] H} (hD : IsUnit D) (f : H) :
@@ -112,13 +110,15 @@ theorem map_one_sub_eq_of_norm_lt_one {K : Submodule ℂ H} (hK : IsClosed (K : 
     exact ContinuousLinearMap.le_opNorm _ _
   have hunit : IsUnit (1 - T') := (Units.oneSub T' hT'norm).isUnit
   apply le_antisymm
-  · rintro _ ⟨x, hx, rfl⟩
-    have : (1 - T : H →L[ℂ] H) x = x - T x := by simp
-    rw [show ((1 - T : H →L[ℂ] H) : H →ₗ[ℂ] H) x = x - T x by simpa using this]
+  · intro y hy
+    obtain ⟨x, hx, rfl⟩ := (Submodule.mem_map).mp hy
+    have hval : ((1 - T : H →L[ℂ] H) : H →ₗ[ℂ] H) x = x - T x := by simp
+    rw [hval]
     exact K.sub_mem hx (hTK x hx)
   · intro y hy
     obtain ⟨u, hu⟩ := hunit
-    refine ⟨((u⁻¹ : (K →L[ℂ] K)ˣ) : K →L[ℂ] K) ⟨y, hy⟩, Submodule.coe_mem _, ?_⟩
+    refine (Submodule.mem_map).mpr
+      ⟨(((u⁻¹ : (K →L[ℂ] K)ˣ) : K →L[ℂ] K) ⟨y, hy⟩ : K), Submodule.coe_mem _, ?_⟩
     have hcancel : (1 - T') (((u⁻¹ : (K →L[ℂ] K)ˣ) : K →L[ℂ] K) ⟨y, hy⟩) = ⟨y, hy⟩ := by
       have : ((1 - T') * ((u⁻¹ : (K →L[ℂ] K)ˣ) : K →L[ℂ] K)) = 1 := by
         rw [← hu]; exact u.mul_inv

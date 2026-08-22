@@ -13,7 +13,7 @@
 | # | Card | Lean target | State |
 |---|---|---|---|
 | 1 | prime-square-mobius-fourier-complementary-record-law | §2–§6 finite Fourier / CRT | **DONE — promoted to 3-formalized** |
-| 2 | localized-half-density-mobius-curvature-semiprime-fibre-law | (3)–(4), (14)–(15), (18)–(20), (23) | TODO |
+| 2 | localized-half-density-mobius-curvature-semiprime-fibre-law | §1,(10),(11),(23) DONE; §3 fibre law + (14)–(16) OPEN | IN PROGRESS |
 | 3 | shifted-euler-error-floor-mobius-tail-coupling | Thm A (3), Thm B (8)–(9) | **DONE — promoted** |
 | 4 | friable-moment-ladder-finite-dim | Thm A, Thm B | TODO |
 | 5 | coupled-floor-mobius-complementary-shift-incidence-law | (8), (15), (18) | **DONE — promoted** |
@@ -131,8 +131,23 @@ representation (generalize `RHTower.primeLogZeta_eq_abel_integral`), (ii)
 (iii) uniform boundedness of the higher-Mertens error.  `k = 0` is already closed
 (`RHTower.tendsto_timeOnePrimeLaplace`).
 
-Next target: card 2 `localized-half-density-mobius-curvature-semiprime-fibre-law` — elementary and
-fully closable (finite second jet, endpoint deletion, product-fibre classification).
+9. `RHTower/LocalizedHalfDensityCurvature.lean` (card 2 §1, eq. (10), (11), (22)–(23))
+
+Card 2 landed so far: `logDerivation` + Leibniz rule, `logDerivation_moebius_mul_zeta` (2),
+`logDerivation_sq_moebius_mul_zeta` (2), `sum_divisors_moebius_twisted_sq` (3),
+`twisted_second_jet_eq_selfConv_iff` (4), `sum_divisors_moebius_half(_sq)` (7),
+`fibre_second_jet` (10), `triangularKernel` / `centredTriangularKernel` (11),
+`centredTriangularKernel_pos_iff` / `_eq_zero_iff` / `_neg_iff` (23).
+
+Card 2 remaining: §2's endpoint deletion `(14)`–`(15)` and the semiprime counterterm `(16)`
+(needs the complex germ `e_{iτ}` and the inverse law `(6)`), and §3's product-fibre
+classification `(17)`–`(21)` (use `HTGeometry.PrimeCollisionConvolution`:
+`primePower_pair_orientation`, `equalPrimePower_pair_unordered`,
+`arithmeticOfPrimePowerColumn_mul_apply_distinct_*`).
+
+Next after card 2: card 7 `baez-duarte-critical-mobius-beta-wavelet-law` (check
+`RHTower.MobiusCenteredMertensLimit` for the critical boundary `L²` input), then card 4, then the
+big analytic cards (9, 10, 11, 12, 13) and card 8 §5.
 
 More reusable bricks now available:
 - `RHTower.suzukiCoupledErrorReal_eq` — Theorem A at a real argument.
