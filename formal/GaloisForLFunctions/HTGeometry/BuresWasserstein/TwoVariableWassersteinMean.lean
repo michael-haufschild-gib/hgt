@@ -1,8 +1,3 @@
-/-
-Copyright (c) 2026 Michael Barenbaum. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Michael Barenbaum
--/
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
 import GaloisForLFunctions.HTGeometry.BuresWasserstein.WassersteinBounds
 
@@ -213,12 +208,6 @@ theorem wass2_symm (ha : IsStrictlyPositive a) (hb : IsStrictlyPositive b) :
         simp only [mul_assoc]
 
 /-! ### Uniqueness -/
-
-lemma ringInverse_rpow_half (ha : IsStrictlyPositive a) :
-    (a ^ (1/2 : ℝ))⁻¹ʳ = a ^ (-(1/2) : ℝ) := by
-  rw [← mul_one ((a ^ (1/2 : ℝ))⁻¹ʳ),
-    Ring.inverse_mul_eq_iff_eq_mul _ _ _ (ha.rpow a _).isUnit,
-    rpow_half_mul_rpow_neg_half ha]
 
 /-- **Uniqueness** in the two-variable Wasserstein equation. -/
 theorem wass2_unique (ha : IsStrictlyPositive a) (hb : IsStrictlyPositive b) {x : A}

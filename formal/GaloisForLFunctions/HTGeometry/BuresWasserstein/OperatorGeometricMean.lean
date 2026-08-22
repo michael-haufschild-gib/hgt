@@ -1,8 +1,3 @@
-/-
-Copyright (c) 2026 Michael Barenbaum. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Michael Barenbaum
--/
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.ConjSqrt
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Order
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs
@@ -435,6 +430,17 @@ lemma ringInverse_smul {r : ℝ} (hr : 0 < r) (ha : IsStrictlyPositive a) :
     smul_mul_smul_comm, Ring.mul_inverse_cancel _ ha.isUnit]
   field_simp
   simp
+
+lemma ringInverse_rpow_half (ha : IsStrictlyPositive a) :
+    (a ^ (1/2 : ℝ))⁻¹ʳ = a ^ (-(1/2) : ℝ) := by
+  rw [← mul_one ((a ^ (1/2 : ℝ))⁻¹ʳ),
+    Ring.inverse_mul_eq_iff_eq_mul _ _ _ (ha.rpow a _).isUnit,
+    rpow_half_mul_rpow_neg_half ha]
+
+lemma cfcSqrt_ringInverse (ha : IsStrictlyPositive a) :
+    CFC.sqrt a⁻¹ʳ = (CFC.sqrt a)⁻¹ʳ := by
+  refine CFC.sqrt_unique ?_ (ha.sqrt _).ringInverse.nonneg
+  rw [← Ring.inverse_mul (Or.inl (ha.sqrt _).isUnit), CFC.sqrt_mul_sqrt_self a ha.nonneg]
 
 lemma rpow_half_ringInverse (ha : IsStrictlyPositive a) :
     (a⁻¹ʳ) ^ (1/2 : ℝ) = a ^ (-(1/2) : ℝ) := by

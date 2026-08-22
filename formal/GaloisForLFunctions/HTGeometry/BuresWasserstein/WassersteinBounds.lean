@@ -1,8 +1,3 @@
-/-
-Copyright (c) 2026 Michael Barenbaum. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Michael Barenbaum
--/
 import GaloisForLFunctions.HTGeometry.BuresWasserstein.WassersteinEquation
 
 /-!
@@ -260,6 +255,30 @@ theorem IsWassersteinPoint.sqrtMean_ringInverse_le (hw : ∀ i ∈ s, 0 < w i)
   have hcmp := CStarAlgebra.ringInverse_le_ringInverse hone (isStrictlyPositive_one (A := A))
   rw [Ring.inverse_one] at hcmp
   exact hcmp.trans hge
+
+/-! ### Corollary 6.3: transport along a unital positive linear map -/
+
+variable {B : Type*} [CStarAlgebra B] [PartialOrder B]
+
+/-- Applying a unital positive linear map to the harmonic-type lower bound. -/
+theorem IsWassersteinPoint.map_two_sub_harm_le (Φ : A →ₗ[ℝ] B) (hmono : Monotone Φ)
+    (hunit : Φ 1 = 1) (hs : s.Nonempty) (hw : ∀ i ∈ s, 0 < w i) (hsum : ∑ i ∈ s, w i = 1)
+    (hA : ∀ i ∈ s, IsStrictlyPositive (Av i)) (h : IsWassersteinPoint s w Av X) :
+    (2 : ℝ) • (1 : B) - ∑ i ∈ s, w i • Φ ((Av i)⁻¹ʳ) ≤ Φ X := by
+  have hbase := h.two_sub_harm_le hs hw hsum hA
+  have := hmono hbase
+  rwa [map_sub, map_smul, hunit, map_sum, Finset.sum_congr rfl
+    (fun i _ => map_smul Φ (w i) ((Av i)⁻¹ʳ))] at this
+
+/-- Applying a unital positive linear map to the bound for the inverse. -/
+theorem IsWassersteinPoint.map_two_sub_arithMean_le_ringInverse (Φ : A →ₗ[ℝ] B)
+    (hmono : Monotone Φ) (hunit : Φ 1 = 1) (hw : ∀ i ∈ s, 0 ≤ w i) (hsum : ∑ i ∈ s, w i = 1)
+    (hA : ∀ i ∈ s, IsStrictlyPositive (Av i)) (h : IsWassersteinPoint s w Av X) :
+    (2 : ℝ) • (1 : B) - ∑ i ∈ s, w i • Φ (Av i) ≤ Φ (X⁻¹ʳ) := by
+  have hbase := h.two_sub_arithMean_le_ringInverse hw hsum hA
+  have := hmono hbase
+  rwa [map_sub, map_smul, hunit, map_sum, Finset.sum_congr rfl
+    (fun i _ => map_smul Φ (w i) (Av i))] at this
 
 end
 

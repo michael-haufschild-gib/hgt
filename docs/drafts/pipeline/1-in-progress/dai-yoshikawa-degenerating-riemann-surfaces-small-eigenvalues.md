@@ -47,6 +47,8 @@ infrastructure.
 | §3.1 (3.3) | heat-trace form of `log det'`, convergence, and the cancellation (3.19) | `DaiYoshikawa/RegularizedLogDeterminant` | **stage 3** `logTorsion_sub_logTorsion` |
 | §3.1 (ζ side) | `∫_0^∞ e^{−λt}t^{s−1}dt = Γ(s)λ^{−s}` and `Γ(s)ζ(s) = ∫_0^∞ Θ(t)t^{s−1}dt` | `DaiYoshikawa/SpectralZetaMellin`, `SpectralZetaMellinSum` | **stage 3** `gamma_mul_tsum_rpow_neg_heatTrace` |
 | Corollary 0.4 | comparable power scales have comparable logarithms | `DaiYoshikawa/ComparableLogScales` | **stage 3** `log_inv_le_and_le_of_rpow_bounds` |
+| §3.1 (continuation) | head/tail Mellin holomorphy, split at `t=1`, the two poles | `DaiYoshikawa/MellinHalfLine`, `MellinSplit`, `MellinHeadExpansion` | **stage 3** `differentiableAt_mellinHead`, `mellinHead_eq_regularized_add` |
+| §3.1 (`ζ'(0)`) | `ζ(0) = a₁−h`, `ζ'(0) = H(0)+T(0)−a₀+(a₁−h)γ`, and the bridge to (3.3) | `DaiYoshikawa/SpectralZetaDerivative`, `SpectralZetaTorsionBridge` | **stage 3** `deriv_zetaCont_zero_ofReal`, `gamma_mul_zetaCont_eq_mellin` |
 
 ## Out of reach (recorded, not faked)
 Analytic torsion `τ(M,E)` and its zeta-regularized definition; Quillen metrics and the
@@ -60,7 +62,7 @@ content is one of these are not restated as Lean hypotheses.
 ## Gates
 - [x] 0 → 1  in-progress
 - [ ] 1 → 2  paper proof of each extracted core
-- [x] 2 → 3  24 Lean modules green, wired into `GaloisForLFunctions.HTGeometry`; every extracted
+- [x] 2 → 3  30 Lean modules green, wired into `GaloisForLFunctions.HTGeometry`; every extracted
       item at stage 3; axiom audit clean
 - [ ] 3 → 4  n/a (external paper)
 
@@ -78,5 +80,15 @@ content is one of these are not restated as Lean hypotheses.
   zeta-regularized log-determinant with both convergence criteria and the cancellation (3.19); the
   scaled Gamma integral `∫_0^∞ e^{−λt}t^{s−1}dt = Γ(s)λ^{−s}` (a mathlib gap) and the Mellin
   representation `Γ(s)ζ(s) = ∫_0^∞ Θ(t)t^{s−1}dt`; Lemma 2.3's antitonicity/extension step; and
-  Corollary 0.4's logarithmic comparison.  Open frontier: the meromorphic continuation identifying
-  `ζ'(0)` with (3.3), and everything resting on Quillen metrics.
+  Corollary 0.4's logarithmic comparison.
+- 2026-08-22 — 29 modules.  The zeta-regularization chain is closed: the head and tail Mellin
+  integrals are holomorphic on `Re s > −1` and entire respectively; the Mellin transform splits at
+  `t = 1`; subtracting the two-term expansion produces exactly the poles `a₀/(s−1)` and `(a₁−h)/s`;
+  and the continued zeta has `ζ(0) = a₁−h`, `ζ'(0) = H(0)+T(0)−a₀+(a₁−h)γ`, which the bridge module
+  identifies with the two real integrals of (3.3).  The computation shows the constant term of the
+  paper's (3.3) is `−a₀+(a₁−h)γ`, not the printed `(a₀−h)γ`; nothing in the paper depends on it,
+  since only differences with identical `a₀,a₁,h` are used.  `gamma_mul_zetaCont_eq_mellin` closes
+  the loop: on `Re s > 1` the continued zeta satisfies `Γ(s)ζ(s) = ∫_0^∞ (Θ(t)−h)t^{s−1}dt`.
+  Open frontier: everything resting on
+  Quillen metrics, the Bismut–Gillet–Soulé anomaly formula, Bismut–Bost, semistable reduction, and
+  a manifold-level heat-kernel theory (Duhamel, parabolic maximum principle, parametrix).

@@ -512,3 +512,48 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
   `HTGeometry.ABHN.NonarchimedeanLocalFieldValuationSequence` (uniformizer, valuation, unit
   reduction), which is where that generalisation should start.
   All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 20 (**the local computations for an ARBITRARY non-archimedean local
+  field**).  The `ℚ_p`-specificity of batches 15/19 was not essential: every one of Connes' local
+  computations depends on the field only through the valuation/unit decomposition
+  `K^* ≅ π^ℤ × O^*` together with `vol(O^*) = 1`, i.e. only through the measure
+  `counting ⊗ (probability Haar on the units)`.  This batch proves them once on that abstract
+  shell space, so they hold for every non-archimedean local field simultaneously.
+  * `ConnesLocalShellAbstract` — `connesShellMeasure ν = count ⊗ ν` on `Multiplicative ℤ × U` for
+    an arbitrary probability space `U` of units; `connesShellRadial`;
+    `connes_shell_radial_integrable` and **`connes_shell_radial_integral`**
+    (`∫ radial = ∑'_m h m`); `connes_unitBallProfile_tsum`; **`connes_shell_unitBall_geometric`** —
+    **App I (25)/(26) over an arbitrary local field**, the unramified local factor
+    `(1 - Χ(π)q^{-s})^{-1}`; **`connes_shell_ramified_vanishes`** — **App I Lemma 1's ramified
+    case over an arbitrary local field**; and `connes_shell_transfer_integral`, the bridge that
+    carries all of these to any concrete multiplicative group whose Haar measure is the
+    push-forward of the shell measure (which is how each `ℚ_p` statement of the earlier batches
+    arises).
+  So App I Lemma 1's *local* content now holds for an arbitrary global field `k` and an arbitrary
+  `Χ_0`, ramified or not.  What is still tied to `ℚ` is only the *global* assembly — the
+  finite-stage product (batch 17) and the Euler-product limit (batch 18) are indexed by
+  `Nat.Primes` and use `riemannZeta_eulerProduct_hasProd`; generalising those means an
+  `L(Χ_0,s)`-Euler-product input for the global field in question, which is a statement about
+  `L`-functions rather than about Connes' argument.
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 21 (**App I Lemma 1's global assembly for an arbitrary global field,
+  and Lemma 3's unfolding step**).
+  * `ConnesGlobalTateAssembly` — `connesShellMeasure_sigmaFinite`, `connesShellStageIntegral`
+    (the Tate integral over a finite set of places), **`connesShellStageIntegral_eq`** (it is the
+    partial Euler product of the local factors) and **`connes_shell_stage_tendsto`** (the
+    finite-stage integrals converge to the infinite Euler product).  *Nothing in this module
+    mentions `ℚ`*: the places are an arbitrary index type, the local units arbitrary probability
+    spaces, the local data arbitrary with `‖w i‖ < 1`.  CORRECTION to batch 20's closing note:
+    the `L(Χ_0,s)` Euler product is not a missing mathlib theorem — it is Connes' *definition* of
+    `L(Χ_0,s)` (his displayed formula `L(Χ_0,s) = ∏_{v ∉ P}(1-Χ_{0,v}(π)q_v^{-s})^{-1}`), so it
+    enters correctly as the value of a `HasProd`, and the general-`k` assembly is complete.
+  * `ConnesLemma3Unfolding` — **`connes_periodization_pairing_unfold`**: against a weight
+    invariant under the group, `∫_X f·φ dμ = ∫_F (∑'_q f(q·x))·φ(x) dμ`.  With
+    `φ(x) = Χ_0(x)|x|^s` — invariant under `k^*` by the product formula — and
+    `E(f)(x) = |x|^{1/2}∑_q f(qx)`, this is exactly Lemma 3's left side rewritten as Lemma 1's
+    `Δ_s(f) = ∫_{A^*} f Χ_0 |x|^s d^*x`.
+  With this, **Appendix I Lemma 3 is assembled**: the unfolding here reduces it to Lemma 1
+  (batches 15/17/18/19/20/21), and `ConnesMellinContinuation` (batch 13) propagates the resulting
+  identity from `Re s > 1` to `Re s > 0`.
+  All `#print axioms` clean.

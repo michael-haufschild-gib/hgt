@@ -21,6 +21,7 @@ variable {X : Type*} [MetricSpace X] [NPCSpace X]
 def busemannStep (F : BusemannFlow X) (dφ : ℝ → ℝ) (lam β τ : ℝ) (x : X) : X :=
   F.flow (τ * (lam * dφ (lam * F.fn x + β))) x
 
+omit [NPCSpace X] in
 theorem busemannStep_eq_layer (F : BusemannFlow X) (dφ : ℝ → ℝ) (lam β τ : ℝ) (x : X) :
     busemannStep F dφ lam β τ x = layer F (fun r => τ * lam * dφ (lam * r + β)) x := by
   simp [busemannStep, layer, mul_assoc]

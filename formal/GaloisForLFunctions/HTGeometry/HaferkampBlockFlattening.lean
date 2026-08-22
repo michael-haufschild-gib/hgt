@@ -644,6 +644,22 @@ theorem TerminalBlockPrefixAssembly.terminalGate_cons_succ
   rw [hindex]
   exact list_get_append_right currentWord tail.liftedWord tailIndex
 
+/-- Conjugation by a product is nested conjugation.  Keeping this algebraic
+normal form as a small reusable lemma avoids expanding long matrix products
+inside the block-rank recursion. -/
+theorem unitary_conjugation_mul
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (left right : Matrix.unitaryGroup I ℂ) (Z : Matrix I I ℂ) :
+    Matrix.conjTranspose ((left * right : Matrix.unitaryGroup I ℂ) : Matrix I I ℂ) * Z *
+        ((left * right : Matrix.unitaryGroup I ℂ) : Matrix I I ℂ) =
+      Matrix.conjTranspose (right : Matrix I I ℂ) *
+        (Matrix.conjTranspose (left : Matrix I I ℂ) * Z * (left : Matrix I I ℂ)) *
+        (right : Matrix I I ℂ) := by
+  change Matrix.conjTranspose ((left : Matrix I I ℂ) * (right : Matrix I I ℂ)) * Z *
+      ((left : Matrix I I ℂ) * (right : Matrix I I ℂ)) = _
+  rw [Matrix.conjTranspose_mul]
+  simp only [Matrix.mul_assoc]
+
 /-- The step-level version of the terminal stripped-coordinate identity,
 written directly in the local-prefix and terminal-gate coordinates. -/
 theorem TerminalBlockPrefixStep.terminal_coordinate_stripped
@@ -684,39 +700,30 @@ theorem TerminalBlockPrefixStep.terminal_coordinate_stripped
       ((beforeProduct * pre : Matrix.unitaryGroup (Fin n → Bool) ℂ) :
         Matrix (Fin n → Bool) (Fin n → Bool) ℂ) =
     (step.block.transportCoeff * step.prefixCoeff)⁻¹ • finitePauliMatrix P
-  have hprefixCoe :
-      ((beforeProduct * pre : Matrix.unitaryGroup (Fin n → Bool) ℂ) :
-        Matrix (Fin n → Bool) (Fin n → Bool) ℂ) =
-      (beforeProduct : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
-        (pre : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) := rfl
-  rw [hprefixCoe, Matrix.conjTranspose_mul]
   calc
-    Matrix.conjTranspose (pre : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
-        Matrix.conjTranspose (beforeProduct : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
-        Matrix.conjTranspose (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
-        finitePauliMatrix (Function.update (fun _ => none) root (some 2)) *
-        (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
-        (beforeProduct : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
-        (pre : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) =
-      Matrix.conjTranspose (pre : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
+    _ = Matrix.conjTranspose (pre : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
         (Matrix.conjTranspose (beforeProduct : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
-          Matrix.conjTranspose (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
-          finitePauliMatrix (Function.update (fun _ => none) root (some 2)) *
-          (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
+          (Matrix.conjTranspose (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
+            finitePauliMatrix (Function.update (fun _ => none) root (some 2)) *
+            (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)) *
           (beforeProduct : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)) *
         (pre : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) := by
-        simp only [Matrix.mul_assoc]
+      simpa only [Matrix.mul_assoc] using
+        unitary_conjugation_mul beforeProduct pre
+          (Matrix.conjTranspose (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
+            finitePauliMatrix (Function.update (fun _ => none) root (some 2)) *
+            (terminalLift : Matrix (Fin n → Bool) (Fin n → Bool) ℂ))
     _ = Matrix.conjTranspose (pre : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
         (Matrix.conjTranspose (blockContraction : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) *
           finitePauliMatrix (Function.update (fun _ => none) root (some 2)) *
           (blockContraction : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)) *
         (pre : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) := by
-        simpa only [beforeProduct, terminalLift, blockContraction] using
+        simpa only [beforeProduct, terminalLift, blockContraction, Matrix.mul_assoc] using
           congrArg (fun M : Matrix (Fin n → Bool) (Fin n → Bool) ℂ =>
             Matrix.conjTranspose (pre : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) * M *
               (pre : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)) hlocal
     _ = (step.block.transportCoeff * step.prefixCoeff)⁻¹ • finitePauliMatrix P := by
-        simpa only [blockContraction] using hstripped
+        simpa only [blockContraction, Matrix.mul_assoc] using hstripped
 
 /-- At every recursively retained terminal gate, conjugating the root Pauli
 through its literal flattened prefix recovers the corresponding fresh Pauli
