@@ -56,28 +56,12 @@ theorem integrable_nearZeroKernel_mul_fourier {a : ℝ} (ha : 0 < a) (f : SoninL
     exact this.star
   exact h1.integrable_mul (Lp.memLp (fourierUnitary f))
 
-/-- **The pure `χ`-kernel identity.** -/
-theorem soninMellinExtension_eq_chi_pairing {a : ℝ} (ha : 0 < a) {f : SoninL2}
-    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs0 : 0 < s.re) (hs : s.re < 1 / 2) :
-    soninMellinExtension f a s
-      = ∫ u : ℝ, Complex.Gamma (1 - s) * chiKernel s u
-          * ((fourierUnitary f : SoninL2) : ℝ → ℂ) u := by
-  have hs1 : s.re < 1 := by linarith
+/-- The `χ`-kernel pairs integrably against the Fourier transform of a Sonine vector. -/
+theorem integrable_chiKernel_mul_fourier {a : ℝ} (ha : 0 < a) {f : SoninL2}
+    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs : s.re < 1 / 2) :
+    Integrable (fun u : ℝ => Complex.Gamma (1 - s) * chiKernel s u
+      * ((fourierUnitary f : SoninL2) : ℝ → ℂ) u) volume := by
   set g : ℝ → ℂ := ((fourierUnitary f : SoninL2) : ℝ → ℂ) with hg
-  set E : ℝ → ℂ := fun u => ∫ t in (0 : ℝ)..a, ((t : ℝ) : ℂ) ^ (-s)
-      * Complex.exp ((t * (2 * Real.pi * u) : ℝ) * Complex.I) with hE
-  have hEint : Integrable (fun u : ℝ => E u * g u) volume :=
-    integrable_nearZeroKernel_mul_fourier ha f hs
-  have hEzero : (∫ u : ℝ, E u * g u) = 0 :=
-    integral_nearZeroKernel_mul_fourier_eq_zero ha hf hs
-  have hker := soninMellinExtension_eq_kernel_pairing ha hf hs0 hs1
-  -- the χ-part is integrable because the kernel part and the correction part are
-  have hAeq : ∀ u : ℝ, Complex.Gamma (1 - s) * chiKernel s u * g u
-      = burnolKernel a s u * g u + E u * g u := by
-    intro u
-    rw [burnolKernel_eq]
-    ring
-  -- the χ-part is integrable
   set Cchi : ℝ := ‖Complex.Gamma (1 - s)‖ *
     (Real.exp (Real.pi * |s.im|) * (2 * Real.pi) ^ (s.re - 1)) with hCchi
   have hCchi0 : 0 ≤ Cchi := by
@@ -176,6 +160,30 @@ theorem soninMellinExtension_eq_chi_pairing {a : ℝ} (ha : 0 < a) {f : SoninL2}
       have hpt : powerTail a (s.re - 1) u = 0 := by rw [powerTail, if_neg hlt]
       rw [hg0, mul_zero, norm_zero, hpt]
       simp
+  exact hchiint
+
+/-- **The pure `χ`-kernel identity.** -/
+theorem soninMellinExtension_eq_chi_pairing {a : ℝ} (ha : 0 < a) {f : SoninL2}
+    (hf : f ∈ centralSoninCarrier a) {s : ℂ} (hs0 : 0 < s.re) (hs : s.re < 1 / 2) :
+    soninMellinExtension f a s
+      = ∫ u : ℝ, Complex.Gamma (1 - s) * chiKernel s u
+          * ((fourierUnitary f : SoninL2) : ℝ → ℂ) u := by
+  have hs1 : s.re < 1 := by linarith
+  set g : ℝ → ℂ := ((fourierUnitary f : SoninL2) : ℝ → ℂ) with hg
+  set E : ℝ → ℂ := fun u => ∫ t in (0 : ℝ)..a, ((t : ℝ) : ℂ) ^ (-s)
+      * Complex.exp ((t * (2 * Real.pi * u) : ℝ) * Complex.I) with hE
+  have hEint : Integrable (fun u : ℝ => E u * g u) volume :=
+    integrable_nearZeroKernel_mul_fourier ha f hs
+  have hEzero : (∫ u : ℝ, E u * g u) = 0 :=
+    integral_nearZeroKernel_mul_fourier_eq_zero ha hf hs
+  have hker := soninMellinExtension_eq_kernel_pairing ha hf hs0 hs1
+  -- the χ-part is integrable because the kernel part and the correction part are
+  have hAeq : ∀ u : ℝ, Complex.Gamma (1 - s) * chiKernel s u * g u
+      = burnolKernel a s u * g u + E u * g u := by
+    intro u
+    rw [burnolKernel_eq]
+    ring
+  have hchiint := integrable_chiKernel_mul_fourier ha hf hs
   have hburnolint : Integrable (fun u : ℝ => burnolKernel a s u * g u) volume := by
     have heq : (fun u : ℝ => burnolKernel a s u * g u)
         = fun u : ℝ => (Complex.Gamma (1 - s) * chiKernel s u * g u) - (E u * g u) := by

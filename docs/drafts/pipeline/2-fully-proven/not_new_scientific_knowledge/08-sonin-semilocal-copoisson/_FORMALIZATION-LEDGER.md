@@ -8,7 +8,7 @@ Rules in force: no added hypotheses standing for analytic inputs, no axioms, no 
 never full builds / umbrella builds (`lake env lean <file>` to check, `lake build <module>` only for
 the oleans an `#print axioms` scratch needs); search the corpus before building anything.
 
-## Card triage (17 cards) — 4 promoted, 13 remain
+## Card triage (17 cards) — 5 promoted, 12 remain
 
 | # | card | state | notes |
 |---|---|---|---|
@@ -17,7 +17,7 @@ the oleans an `#print axioms` scratch needs); search the corpus before building 
 | 3 | connes-semilocal-finite-part-orbital-source-class | **PROMOTED 2026-08-22** | `HTGeometry/QuantizedDifferentialCocycle.lean` + `RHTower/ConnesSemilocalOrbitalSourceClass.lean`; `(1)`–`(3)` stay literature (Connes) and are *not* assumed by any Lean statement |
 | 4 | finite-euler-connection-cauchy-phase-chambers | **PROMOTED 2026-08-22** | `RHTower/FiniteEulerConnectionCauchyPhaseChambers.lean`; the card's "Kronecker hitting theorem missing" note was stale |
 | 5 | prime-tail-copoisson-essential-boundary-bockstein | TODO | |
-| 6 | rectangular-semilocal-observer-tail-separation | TODO | |
+| 6 | rectangular-semilocal-observer-tail-separation | **PROMOTED 2026-08-22** | `RHTower/RectangularSemilocalObserverTailSeparation.lean` |
 | 7 | route-b-semilocal-sonin-interim-verdict | TODO | |
 | 8 | semilocal-dual-pair-euler-connection-source-law | TODO | |
 | 9 | semilocal-euler-kernel-chart-differentiability | TODO | |
@@ -184,10 +184,11 @@ Mathlib **does** provide, in `Mathlib/Analysis/InnerProductSpace/TensorProduct.l
 - `ContinuousLinearMap.completion` (`Mathlib/Topology/Algebra/LinearMapCompletion.lean`) to lift a
   bounded operator to the completion.
 
-The genuine **mathlib gap** is boundedness of `TensorProduct.map f g` for bounded `f, g`
-(only `mapIsometry` exists).  Route: `f ⊗ g = (f ⊗ 1) ∘ (1 ⊗ g)`, and `‖1 ⊗ g‖ ≤ ‖g‖` by writing
-`x = ∑ eᵢ ⊗ yᵢ` with `(eᵢ)` orthonormal (Gram–Schmidt on the finitely many left factors), giving
-`‖(1⊗g)x‖² = ∑‖g yᵢ‖² ≤ ‖g‖²‖x‖²`.
+**CORRECTION (same day): there is no mathlib gap.**  The same file already provides
+`TensorProduct.mapL (f : E →L[𝕜] F) (g : G →L[𝕜] H) : (E ⊗[𝕜] G) →L[𝕜] (F ⊗[𝕜] H)` with
+`TensorProduct.norm_mapL_le : ‖mapL f g‖ ≤ ‖f‖ * ‖g‖`, plus `rTensor`/`lTensor`,
+`Orthonormal.tmul`, `adjoint_mapL`, and the associativity/commutativity isometries.  (My first
+audit only read the first 314 of 748 lines.)
 
 Why the estimate cannot simply be stated on the incomplete `H ⊗[ℂ] H`: the corpus's
 `IsCompactOperator.norm_apply_tendsto_zero_of_bounded_weakly_null` needs weak nullity against
@@ -195,5 +196,6 @@ Why the estimate cannot simply be stated on the incomplete `H ⊗[ℂ] H`: the c
 weak nullity against the inner products of the space itself.  Working in the completion restores
 Riesz and closes the gap.
 
-Planned modules: `HTGeometry/TensorProductOperatorNorm.lean` (the mathlib gap) and
-`RHTower/SoninTwoParticlePrimeCoherence.lean` (the shell amplification + the estimate).
+Planned module: `RHTower/SoninTwoParticlePrimeCoherence.lean` — the shell amplification plus the
+estimate, carried out in `UniformSpace.Completion (evenSubspace ⊗[ℂ] evenSubspace)` so that Riesz
+is available and `IsCompactOperator` means what the card means.

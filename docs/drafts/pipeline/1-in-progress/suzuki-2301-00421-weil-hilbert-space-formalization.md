@@ -21,7 +21,7 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | `prop_102` | Prop 1.3 | `𝒫̂_φ ∈ L²(ℝ)` for `φ ∈ C_c^∞(ℝ)` | no | OPEN |
 | `thm_1_2` | Thm 1.4 | RH ⟺ `‖𝒫̂_{Dψ}‖²_{L²} = π⟨ψ,ψ⟩_W` for all `ψ ∈ C_c^∞`; countably many `ψ` suffice | ⟺ | OPEN |
 | `cor_1_1` | Cor 1.5 | RH ⟺ `2‖ψ‖²_{L²} = ⟨ψ,ψ⟩_W` for all `ψ ∈ V°(0)` | ⟺ | OPEN |
-| `prop_301` | Prop 3.1 | `𝔓_t(z) = P_t(z)` (prime--arch formula equals the Xi-zero series) | no | **IN PROGRESS** — zero-side Laplace transform CLOSED (`integral_suzukiPtZeroSum_laplace`); `𝔓`-side in progress |
+| `prop_301` | Prop 3.1 | `𝔓_t(z) = P_t(z)` (prime--arch formula equals the Xi-zero series) | no | **LAPLACE CORE CLOSED** (`integral_suzukiFrakP_laplace_eq_zeroSeries`); only the determinacy endgame + continuity remain |
 | `lem_301` | Lem 3.2 | `‖ψ‖₀ := π^{-1/2}‖𝒫̂_{Dψ}‖_{L²}` is a norm on `C_c^∞(ℝ)` | no | OPEN |
 | `prop_401` | Prop 4.1 | `{F_γ}` is an orthonormal basis of `K(Θ)`; `Θ'(γ)/2 = -i/m_γ`; `F_γ(γ)=1/√(m_γ π)`, `F_γ(γ')=0` | yes | OPEN (cited to Su23 Prop 3.2) |
 | `thm_4_1` | Thm 4.2 | `t ↦ π^{-1/2}𝔖_t` is a screw line of `g_ξ`: `π⁻¹⟨𝔖_t,𝔖_u⟩ = G_g(t,u)` | yes | OPEN |
@@ -85,6 +85,8 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | Module | Content |
 |---|---|
 | `RHTower/SuzukiWeilLerchBlock.lean` | `suzukiLerchDiff` / `suzukiLerchKernel` (the regularized `Φ(e^{-2t},1,w) - Φ(e^{-2t},1,1/4)` of eq. (1.6)), its factorization `= (1/4-w)·kernel`, `suzukiLerchKernel t (1/4) = 4e^{t/2}·screwLerchTail t`, the Gauss bridge `ψ(w)-ψ(1/4) = -suzukiLerchDiff 0 w`, and continuity of the kernel at `1/4`. |
+| `RHTower/SuzukiWeilFrakPLaplace.lean` | The five-block split of eq. (1.6) (`suzukiFrakPPolar/Zeta/Prime/Digamma/Lerch`), the prime-ray and Lerch-ray decompositions, all five Laplace transforms with their integrability, and **`integral_suzukiFrakP_laplace`**. |
+| `RHTower/SuzukiWeilPropThreeOne.lean` | `riemannZeta_ne_zero_of_XiC_ne_zero`, the two evaluations of `xiRelativeResolventTrace` in prime--archimedean terms, and **`integral_suzukiFrakP_laplace_eq_zeroSeries`** — the two Laplace transforms agree. |
 | `RHTower/SuzukiWeilZeroSeries.lean` | `suzukiPtZeroTerm` / `suzukiPtZeroSum` (eq. 3.2), summability, `‖P_t(z)‖ ≪_z e^{|t|/2}`, per-copy Laplace transform, and **`integral_suzukiPtZeroSum_laplace`**.  Also `XiC_neg` (evenness of the centered completed Xi source), which the corpus did not have. |
 | `RHTower/SuzukiWeilFrakP.lean` | `suzukiFrakP` (eq. 1.6) and `suzukiFrakPReg`; `suzukiScrewG_eq_screwFn`; `riemannZeta_half_ne_zero`; `logDeriv_riemannZeta_half : ζ'/ζ(1/2) = -screwLinearCoeff/2`; `continuousAt_logDeriv_riemannZeta_half`; **`tendsto_suzukiFrakP_zero`** (eq. 7.1). |
 
@@ -151,6 +153,26 @@ and their sum is `[ζ'/ζ(s_σ) + A(s_σ) - ζ'/ζ(s_z) - A(s_z)]/(σ(σ+iz))`, 
 `(T(-iσ)-T(-z))/(σ(iσ-z))` because `T(w) = I·(ζ'/ζ + A)(1/2+wI)` and `iσ - z = i(σ+iz)`.
 (The digamma+Lerch collapse uses the two partial fractions `1/((n+w)(n+a)) = (a-w)^{-1}[...]`,
 `a = 1/4+σ/2`, and the corpus's `digamma_sub_eq_tsum`.)
+
+### Remaining endgame for Prop 3.1 (exact plan)
+
+1. **Growth**: `‖P_t(z)‖ ≤ C_z (e^{|t|/2}+1)` is `norm_suzukiPtZeroSum_le` (done).  For `𝔓` combine the
+   five block bounds already proved (`norm_suzukiFrakPPrime_le`, `norm_suzukiLerchDiff_le`, and the
+   elementary polar/zeta/digamma blocks) into `‖𝔓_t(z)‖ ≤ C e^{ct}` for `t ≥ 0`.
+2. **Determinacy**: set `h t := 𝔓_t(z) - P_t(z)` and `g t := h t · e^{-σ₁ t} · 1_{Ioi 0}(t)` for a
+   fixed large `σ₁`.  Then `‖g‖ ≤ K e^{-ε|x|}` and, by the Laplace identity,
+   `expFourier g (iτ) = ∫_0^∞ h(t) e^{-(σ₁-τ)t} dt = 0` for all real `τ < σ₁ - σ₀`.
+   `expFourier g` is analytic on the strip `|Im w| < ε` (`analyticOnNhd_expFourier`), so vanishing on
+   the imaginary segment forces `expFourier g =ᶠ[𝓝 0] 0` by
+   `AnalyticAt.eventually_eq_zero_or_eventually_ne_zero`, and then the tail of
+   `RHTower.ae_eq_zero_of_moments_eq_zero` (`ExpDecayFourierAnalytic.lean`: `convex_imStrip`,
+   `AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero`,
+   `integrable_ae_eq_zero_of_fourier_eq_zero`) gives `g = 0` a.e., hence `h = 0` a.e. on `(0,∞)`.
+   *(The reusable generalization to extract: the same conclusion from `expFourier g =ᶠ[𝓝 0] 0`
+   instead of from vanishing moments.)*
+3. **Continuity** of both sides in `t` upgrades a.e. to pointwise: `P_t` by `continuous_tsum`-style
+   local uniform bounds; `𝔓_t` blockwise, the only nontrivial block being the prime one, which is
+   continuous because the entering ray `w_n φ(t - log n)` vanishes at its atom `t = log n`.
 
 Endgame: Laplace determinacy.  With `σ = m + N₀` and the substitution `u = e^{-t}` the vanishing of
 `∫_0^∞ (𝔓_t - P_t)e^{-σt}dt` becomes vanishing of all polynomial moments of a bounded function

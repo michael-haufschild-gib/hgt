@@ -1830,3 +1830,35 @@ analytic task to proving local-normal summability and an ℓ¹ majorant for thes
 source coefficients, then carrying the resulting finite packet through the subgroup-rank induction.
 The leaf source check and targeted build passed; all four new theorem axiom reports are
 `[propext, Classical.choice, Quot.sound]`.  The card remains Stage 1.
+
+### Lean progress (all mixed jets of literal damped Poincaré summands)
+
+`AbeMixedDampingPoincareTermJets.lean` upgrades the prior directional summand expansion to every
+ordered coordinate word and hence to every `multiIndexJetEvalCLM` packet jet.  For each lattice
+summand and each fixed mixed jet, the exact formula is a translated Abe exponential multiplier
+times a concrete source factor; that factor is proved to be a finite polynomial in the damping
+time.  The proof uses no analytic convergence premise, no abstract damping data, and no added
+geometric hypothesis.
+
+This is the complete **termwise all-order algebraic expansion** demanded by `DJS-3M`.  The remaining
+unformalized component is genuinely analytic/geometric: establish local-normal summability and an
+ℓ¹ majorant for these exact coefficient sources from Abe's concrete `Phi_2` convergence property,
+then formalize the source-preserving subgroup-rank induction.  Leaf source checking and the
+single-module target build passed; all eight new theorem axiom reports are
+`[propext, Classical.choice, Quot.sound]`.  The card remains Stage 1.
+
+### Lean progress (ℓ¹ jet coefficients from local normal convergence)
+
+`AbePoincareJetCoefficientSummability.lean` proves that any **actual** locally normally summable
+complete or complement Poincaré family has a summable norm family of coefficients at every fixed
+mixed jet.  The proof is short but material: the locally uniform finite-subset sum gives a `HasSum`
+after applying the continuous jet functional; scalar unconditional summability in `ℂ` yields the
+required ℓ¹ norm majorant.  Thus no separate majorant field is needed once the corresponding
+coefficient source has been shown locally normally summable.
+
+The explicit normal-convergence premise here is the already-defined mathematical property of the
+specific source family, not a hypothesis added to the public jet-ampleness theorem or a new
+interface.  The remaining open step is to derive that property for every concrete `Phi_2`
+coefficient source produced by the mixed-jet recursion, and to preserve those source presentations
+through the subgroup-rank induction.  Leaf source checking, targeted build, and both new theorem
+axiom reports passed with `[propext, Classical.choice, Quot.sound]`; the card remains Stage 1.

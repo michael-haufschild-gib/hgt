@@ -169,6 +169,125 @@ theorem card_sub_one_le_length_mul_orbit
     ring
   exact card_sub_one_le_length_mul_algebraicChange i₀ halg hrigidE l Ω hl (fun i => ⟨a i, ha i⟩) M hMdet hMz
 
+/-! ### The transcendence-degree form -/
+
+/-- **The transcendence-degree form of the algebraic change of coordinates.** -/
+theorem card_sub_one_le_trdeg_of_algebraicChange {E : ι → ℂ} (i₀ : ι)
+    (halg : ∀ i, IsAlgebraic ℚ (E i))
+    (hrigid : LinearMap.ker (SpectralExp.relationForm E)
+      = PermSubspace.constLine (K := ℚ) (ι := ι))
+    (w : ι → ℂ) (M : Matrix ι ι (↥algNum)) (hMdet : M.det ≠ 0)
+    (hMz : ∀ i, w i = ∑ j, algebraMap (↥algNum) ℂ (M i j) * Complex.exp (E j)) :
+    ((Fintype.card ι - 1 : ℕ) : Cardinal)
+      ≤ Algebra.trdeg (↥algNum) ↥(IntermediateField.adjoin (↥algNum) (Set.range w)) := by
+  classical
+  set z : ι → ℂ := fun j => Complex.exp (E j) with hz
+  have hwz : w = matrixLinearForms M z := funext hMz
+  have hadj : Algebra.adjoin (↥algNum) (Set.range w)
+      = Algebra.adjoin (↥algNum) (Set.range z) := by
+    rw [hwz]
+    exact adjoin_matrixLinearForms_eq_of_det_ne_zero M z hMdet
+  set A : IntermediateField (↥algNum) ℂ := IntermediateField.adjoin (↥algNum) (Set.range w)
+    with hA
+  have hzmem : ∀ j, z j ∈ A := by
+    intro j
+    have h1 : z j ∈ Algebra.adjoin (↥algNum) (Set.range w) := by
+      rw [hadj]
+      exact Algebra.subset_adjoin ⟨j, rfl⟩
+    have h2 : Algebra.adjoin (↥algNum) (Set.range w) ≤ A.toSubalgebra := by
+      refine Algebra.adjoin_le ?_
+      intro x hx
+      exact IntermediateField.subset_adjoin _ _ hx
+    exact h2 h1
+  have hindQ := SpectralExp.algebraicIndependent_exp_of_ker_eq_constLine halg hrigid i₀
+  have hindK : AlgebraicIndependent (↥algNum)
+      (fun j : {j : ι // j ≠ i₀} => Complex.exp (E j.1)) := hindQ.algebraicClosure
+  set y : {j : ι // j ≠ i₀} → A := fun j => ⟨z j.1, hzmem j.1⟩ with hy
+  have hcomp : (A.val : A →ₐ[↥algNum] ℂ) ∘ y
+      = fun j : {j : ι // j ≠ i₀} => Complex.exp (E j.1) := rfl
+  have hyind : AlgebraicIndependent (↥algNum) y :=
+    AlgebraicIndependent.of_comp (A.val : A →ₐ[↥algNum] ℂ) (by rw [hcomp]; exact hindK)
+  have hlow : (#{j : ι // j ≠ i₀} : Cardinal) ≤ Algebra.trdeg (↥algNum) ↥A :=
+    hyind.cardinalMk_le_trdeg
+  have hcard : (#{j : ι // j ≠ i₀} : Cardinal) = ((Fintype.card ι - 1 : ℕ) : Cardinal) := by
+    rw [Cardinal.mk_fintype]
+    congr 1
+    simp [Fintype.card_subtype_compl]
+  rw [hcard] at hlow
+  exact hlow
+
+/-- **The Schrödinger orbit at a nonzero algebraic time carries transcendence degree at least
+`D − 1`.** -/
+theorem card_sub_one_le_trdeg_orbit
+    {H : Matrix ι ι ℂ} {e : ι → ι → ℂ} {lam : ι → ℝ}
+    (heb : IsOrthoEigenBasis H e lam) (hlaminj : Function.Injective lam)
+    (hHalg : ∀ i j, IsAlgebraic ℚ (H i j))
+    (hlamalg : ∀ i, IsAlgebraic ℚ ((lam i : ℝ) : ℂ))
+    {Ω : ι → ℂ} (hΩrat : ∀ i, ∃ a : ℚ, Ω i = algebraMap ℚ ℂ a)
+    (hc : ∀ j, finiteComplexInner (e j) Ω ≠ 0)
+    {t : ℝ} (ht : t ≠ 0) (htalg : IsAlgebraic ℚ ((t : ℝ) : ℂ)) (i₀ : ι)
+    (hrigid : LinearMap.ker (SpectralExp.relationForm (fun i => ((lam i : ℝ) : ℂ)))
+      = PermSubspace.constLine (K := ℚ) (ι := ι)) :
+    ((Fintype.card ι - 1 : ℕ) : Cardinal)
+      ≤ Algebra.trdeg (↥algNum)
+          ↥(IntermediateField.adjoin (↥algNum) (Set.range (unitaryEvolution H t *ᵥ Ω))) := by
+  classical
+  choose a ha using hΩrat
+  set s : ℂ := -(Complex.I * ((t : ℝ) : ℂ)) with hs
+  set E : ι → ℂ := fun i => s * ((lam i : ℝ) : ℂ) with hE
+  have hsne : s ≠ 0 := by
+    rw [hs, neg_ne_zero]
+    refine mul_ne_zero Complex.I_ne_zero ?_
+    exact_mod_cast ht
+  have hI : IsAlgebraic ℚ Complex.I := by
+    refine ⟨Polynomial.X ^ 2 + 1, ?_, ?_⟩
+    · intro h0
+      have hco := congrArg (fun p : ℚ[X] => Polynomial.coeff p 2) h0
+      norm_num [Polynomial.coeff_one] at hco
+    · simp [Complex.I_sq]
+  have hsmem : s ∈ algNum :=
+    (algNum).neg_mem ((algNum).mul_mem (mem_algNum hI) (mem_algNum htalg))
+  have hEmem : ∀ i, E i ∈ algNum := fun i =>
+    (algNum).mul_mem hsmem (mem_algNum (hlamalg i))
+  have halg : ∀ i, IsAlgebraic ℚ (E i) := fun i => mem_algebraicClosure_iff.mp (hEmem i)
+  have hrigidE : LinearMap.ker (SpectralExp.relationForm E)
+      = PermSubspace.constLine (K := ℚ) (ι := ι) := by
+    rw [hE, SpectralExp.ker_relationForm_smul hsne]
+    exact hrigid
+  set HK : Matrix ι ι (↥algNum) := Matrix.of fun i j => ⟨H i j, mem_algNum (hHalg i j)⟩ with hHK
+  set lamK : ι → (↥algNum) := fun i => ⟨((lam i : ℝ) : ℂ), mem_algNum (hlamalg i)⟩ with hlamK
+  set ΩK : ι → (↥algNum) := fun i => algebraMap ℚ (↥algNum) (a i) with hΩK
+  have hHmap : HK.map (algebraMap (↥algNum) ℂ) = H := by
+    ext i j
+    rfl
+  have hlammap : ∀ i, algebraMap (↥algNum) ℂ (lamK i) = spectralNodes lam i := fun i => rfl
+  have hΩmap : ∀ i, algebraMap (↥algNum) ℂ (ΩK i) = Ω i := by
+    intro i
+    rw [hΩK, algebraMap_algNum, ← ha i]
+  set M : Matrix ι ι (↥algNum) := lagrangeStateMatrixOver HK lamK ΩK with hM
+  have hMmap : M.map (algebraMap (↥algNum) ℂ) = lagrangeStateMatrix H lam Ω :=
+    map_lagrangeStateMatrixOver HK lamK ΩK hHmap hlammap hΩmap
+  have hMdet : M.det ≠ 0 := by
+    intro h0
+    have hmapdet : algebraMap (↥algNum) ℂ M.det
+        = (lagrangeStateMatrix H lam Ω).det := by
+      rw [RingHom.map_det, RingHom.mapMatrix_apply, hMmap]
+    rw [h0, map_zero] at hmapdet
+    exact det_lagrangeStateMatrix_ne_zero heb hlaminj Ω hc hmapdet.symm
+  have hMz : ∀ i, (unitaryEvolution H t *ᵥ Ω) i
+      = ∑ j, algebraMap (↥algNum) ℂ (M i j) * Complex.exp (E j) := by
+    intro i
+    rw [unitaryEvolution_mulVec_apply_eq_sum_lagrange heb hlaminj Ω t i]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    have hentry : algebraMap (↥algNum) ℂ (M i j) = lagrangeStateMatrix H lam Ω i j := by
+      rw [← hMmap, Matrix.map_apply]
+    rw [hentry]
+    congr 1
+    rw [hE, hs]
+    ring
+  exact card_sub_one_le_trdeg_of_algebraicChange i₀ halg hrigidE
+    (unitaryEvolution H t *ᵥ Ω) M hMdet hMz
+
 end
 
 end AlgebraicOrbit

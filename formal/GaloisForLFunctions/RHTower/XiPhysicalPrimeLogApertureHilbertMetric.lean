@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiPhysicalPrimeLogApertureFusion
+import GaloisForLFunctions.HTGeometry.FiniteHilbertDispersion
 import Mathlib.MeasureTheory.Function.L2Space
 
 /-!
@@ -247,6 +248,19 @@ theorem xiPhysicalPrimeLogApertureHilbertDistance_sq_eq
     xiPhysicalPrimeLogApertureFusionKernel_diagonal,
     xiPhysicalPrimeLogApertureFusionKernel]
   ring
+
+/-- Exact finite oriented-aperture dispersion.  This is the physical specialization of the
+unconditional finite Hilbert variance identity. -/
+theorem xiPhysicalPrimeLogAperture_finite_weighted_dispersion
+    (P : Finset Nat.Primes) (w : Nat.Primes → ℝ) (A m k : ℝ) :
+    ‖∑ p ∈ P, w p • xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ 2 =
+      (∑ p ∈ P, w p) *
+        (∑ p ∈ P, w p * ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ 2) -
+          (1 / 2 : ℝ) * ∑ p ∈ P, ∑ q ∈ P,
+            w p * w q * ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p -
+              xiPhysicalPrimeLogCenteredApertureCarrier A m k q‖ ^ 2 :=
+  GaloisForLFunctions.HTGeometry.finite_weighted_hilbert_dispersion P w
+    (xiPhysicalPrimeLogCenteredApertureCarrier A m k)
 
 /-- Coherent weighted aperture carrier of a finite prime packet. -/
 def xiPhysicalPrimeLogAggregateApertureCarrier

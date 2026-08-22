@@ -12,7 +12,7 @@
 
 | # | Card | Lean target | State |
 |---|---|---|---|
-| 1 | prime-square-mobius-fourier-complementary-record-law | §2–§6 finite Fourier / CRT | IN PROGRESS |
+| 1 | prime-square-mobius-fourier-complementary-record-law | §2–§6 finite Fourier / CRT | §2–§5, §6 profinite DONE; §6 density (33)–(37) OPEN |
 | 2 | localized-half-density-mobius-curvature-semiprime-fibre-law | (3)–(4), (14)–(15), (18)–(20), (23) | TODO |
 | 3 | shifted-euler-error-floor-mobius-tail-coupling | Thm A (3), Thm B (8)–(9) | TODO |
 | 4 | friable-moment-ladder-finite-dim | Thm A, Thm B | TODO |
@@ -44,3 +44,53 @@
 ## Log
 
 - 2026-08-22 — ledger opened; all 13 cards read; corpus audit started.
+
+## Card 1 progress (2026-08-22)
+
+Landed Lean modules (both wired into `GaloisForLFunctions.RHTower`, both `lake build`-green,
+axiom audit = `[propext, Classical.choice, Quot.sound]` only):
+
+- `RHTower/PrimeSquareMobiusComplementaryRecord.lean` — §2–§5 of the card:
+  `countInner_strataVec` (strata Gram), `primeSquareFourier_unitVec` /
+  `primeSquareFourier_valOneVec'` (eq. 7), `compression_*` (eq. 8),
+  `primeSquareFourier_fourierFixedVec` / `countInner_recordVec_fourier_recordVec` /
+  `countInner_recordLeak_self` (eq. 9–11), `primeSquareOccupationVec_eq_recordVec` (14),
+  `primeSquareSourceInvolution_occupationVec` (16),
+  `primeSquareSourceInvolution_fourierFixedVec` / `_recordVec` (17),
+  `primeSquareMobiusVec_eq` + `primeRecordSigma_sq_add_tau_sq` (18),
+  `primeRecordSigma_eq_sech` / `primeRecordTau_eq_tanh` (19–21),
+  `primeSquareMobiusDFT_strata` + case values (22–24), `countInner_mobiusDFT_self` (25),
+  `primeSquare_zeroFrequency_factorization` (26), `primeSquare_zeroFrequency_share` (38),
+  `countInner_deformedMobius` / `countInner_deformedLine` (27–29),
+  capstone `primeSquare_complementary_record_law` (stated for `p.Prime`).
+- `RHTower/PrimeSquareMobiusSectorFracture.lean` — §6 profinite half:
+  `eulerClockNat_eq_moebius` (4), `sum_primeSquareLocalMobius(_sq)` (39),
+  `eulerClockCRT` (31), `sum_eulerClockProd_mul` / `eulerClockProd_gram` /
+  `eulerClockProd_gram_univ` (40), `eulerClockProd_normSq` (32),
+  `eulerClockProd_dist_sq` + `tendsto_sectorFracture` + `tendsto_sectorFracture_iterated` (41),
+  `tendsto_squarefreeSafeProduct` (42), `tendsto_primeRecordProduct_zero`.
+
+Remaining for card 1: the *density-side* fracture (33)–(37).  Route (no Davenport needed):
+
+1. `μ(n)·m_P(n) = μ(a)²·μ(b)` for `n = a·b`, `a` the `P`-part; so
+   `∑_{n≤X} μ(n) m_P(n) = ∑_{a ∣ R} N_R(X/a)` with `N_R(Y) = ∑_{b≤Y,(b,R)=1} μ(b)`.
+2. `N_R(Y) = ∑_{a R-smooth} M(Y/a)`; `∑_{a R-smooth} 1/a = ∏_{p∈P}(1-1/p)^{-1} < ∞`.
+3. `M(Y) = o(Y)` is **already owned**: `RHTower.Sieve.tendsto_abs_mertensM_div`
+   (and the sup form `RHTower.Sieve.tendsto_mertensSup_div`), in
+   `RHTower/Sieve/MoebiusMaximalWindow.lean`.
+4. `∑_{n≤X} μ(n)²/X → 6/π²`: see `RHTower/Sieve/SquarefreeWindowCount.lean`,
+   `RHTower/Sieve/SquarefreeDyadicDensity.lean` (`squarefreeDensity`).
+5. `∑_{n≤X} m_P(n)²/X → ∏(1-p^{-2})`: mean of a periodic function.
+
+## Key corpus assets found (reusable across the folder)
+
+- **`RHTower.Sieve.tendsto_abs_mertensM_div` — `M(N) = o(N)` (PNT in Mertens form).**
+- `RHTower.Sieve.tendsto_mertensSup_div` — the sup version.
+- `RHTower.tendsto_chebyshevPsiReal_div` — `ψ(x)/x → 1`.
+- `RHTower.tendsto_mertensPrimeProduct_mul_log` — Mertens' third theorem.
+- `RHTower.Sieve.tendsto_window_squarefree_density`, `squarefreeDensity`.
+- `RHTower.Sieve.SmoothRough` — `smoothPart_mul_roughPart` etc.
+- `GaloisForLFunctions/PNTPlus/` — vendored PNT (`WeakPNT'`, `chebyshev_asymptotic`,
+  `MediumPNT`, Wiener–Ikehara), `PNTPlus/BrunTitchmarsh.lean`.
+- mathlib: `EulerProduct.eulerProduct_completely_multiplicative`, `hasSum_zeta_two`,
+  `ZMod.prodEquivPi`, `Finset.prod_univ_sum`.

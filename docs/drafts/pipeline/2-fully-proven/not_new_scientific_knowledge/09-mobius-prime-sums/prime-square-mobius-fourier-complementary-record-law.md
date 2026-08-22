@@ -496,3 +496,38 @@ block unless a specialist audit shows otherwise.
 - [ ] land Meyer/Xi conormal in finite-order record
 - [ ] derive cofinal Möbius--Laplace energy bound
 - [ ] RH
+
+## Lean status (2026-08-22)
+
+Unconditional Lean modules (wired into `GaloisForLFunctions.RHTower`, `lake build`-green, axiom
+audit `[propext, Classical.choice, Quot.sound]`):
+
+- `formal/GaloisForLFunctions/RHTower/PrimeSquareMobiusComplementaryRecord.lean` — §2–§5.
+  `countInner_strataVec`; `primeSquareFourier_unitVec`, `primeSquareFourier_valOneVec'` `(7)`;
+  `compression_unit_unit`, `compression_valOne_unit`, `compression_unit_valOne`,
+  `compression_valOne_valOne` `(8)`; `primeSquareFourier_fourierFixedVec`,
+  `countInner_fourierFixedVec_fourier_recordVec`, `countInner_recordVec_fourier_recordVec`,
+  `countInner_recordLeak_self` `(9)`--`(11)`; `primeSquareOccupationVec_eq_recordVec` `(14)`;
+  `primeSquareSourceInvolution_occupationVec` `(16)`;
+  `primeSquareSourceInvolution_fourierFixedVec`, `primeSquareSourceInvolution_recordVec` `(17)`;
+  `primeSquareMobiusVec_eq`, `primeRecordSigma_sq_add_tau_sq` `(18)`;
+  `primeRecordSigma_eq_sech`, `primeRecordTau_eq_tanh` `(19)`--`(21)`;
+  `primeSquareMobiusDFT_strata` and its three case values `(22)`--`(24)`;
+  `countInner_mobiusDFT_self` `(25)`; `primeSquare_zeroFrequency_factorization` `(26)`;
+  `primeSquare_zeroFrequency_share` `(38)`; `countInner_deformedMobius`,
+  `countInner_deformedLine` `(27)`--`(29)`; capstone
+  `primeSquare_complementary_record_law` for `p.Prime`.
+- `formal/GaloisForLFunctions/RHTower/PrimeSquareMobiusSectorFracture.lean` — §6, profinite half.
+  `eulerClockNat_eq_moebius` `(4)`; `sum_primeSquareLocalMobius`,
+  `sum_primeSquareLocalMobius_sq` `(39)`; `eulerClockCRT` `(31)`;
+  `sum_eulerClockProd_mul`, `eulerClockProd_gram`, `eulerClockProd_gram_univ` `(40)`;
+  `eulerClockProd_normSq` `(32)`; `eulerClockProd_dist_sq`, `tendsto_sectorFracture`,
+  `tendsto_sectorFracture_iterated` `(41)`; `tendsto_squarefreeSafeProduct` `(42)`;
+  `tendsto_primeRecordProduct_zero`.
+
+Still to formalize: the *density* half `(33)`--`(37)`.  Davenport is **not** needed; the corpus
+already owns `M(N) = o(N)` as `RHTower.Sieve.tendsto_abs_mertensM_div`.  The remaining bricks are
+`μ·m_P = w_P ⍟ μ` with `w_P` the multiplicative `P`-smooth weight `2^{ω(d)}`, the summability
+`∑_d w_P(d)/d < ∞`, and the dominated-convergence transfer through
+`RHTower.Sieve.sum_Icc_convolution_apply`; plus `∑_{n≤X} μ(n)²/X → 6/π²` from
+`RHTower.Sieve.abs_window_squarefree_sub_le` and the inclusion–exclusion mean of `m_P²`.

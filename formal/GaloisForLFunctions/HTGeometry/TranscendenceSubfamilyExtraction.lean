@@ -18,12 +18,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Cardinal
 
-universe u
-
 /-- **A generating family contains an algebraically independent subfamily of any size below the
 transcendence degree of the field it generates.** -/
 theorem exists_algebraicIndependent_subfamily
-    {F E I : Type u} [Field F] [Field E] [Algebra F E] (w : I → E) {k : ℕ}
+    {F E I : Type} [Field F] [Field E] [Algebra F E] (w : I → E) {k : ℕ}
     (hk : (k : Cardinal) ≤ Algebra.trdeg F ↥(IntermediateField.adjoin F (Set.range w))) :
     ∃ σ : Fin k → I, AlgebraicIndependent F (fun l => w (σ l)) := by
   classical
@@ -32,29 +30,28 @@ theorem exists_algebraicIndependent_subfamily
     ⟨w i, IntermediateField.subset_adjoin F _ (Set.mem_range_self i)⟩ with hwA
   have hxTop : IntermediateField.adjoin F (Set.range wA) = ⊤ :=
     adjoin_range_lift_eq_top w w rfl
-  haveI : Algebra.IsAlgebraic (Algebra.adjoin F (Set.range wA)) (A : Type u) :=
+  haveI : Algebra.IsAlgebraic (Algebra.adjoin F (Set.range wA)) (A : Type) :=
     isAlgebraic_adjoin_of_intermediate_adjoin_eq_top wA hxTop
   obtain ⟨t, hts, ht⟩ :=
-    exists_isTranscendenceBasis_subset (R := F) (A := (A : Type u)) (Set.range wA)
-  have hcard : Cardinal.mk t = Algebra.trdeg F (A : Type u) := ht.cardinalMk_eq_trdeg
+    exists_isTranscendenceBasis_subset (R := F) (A := (A : Type)) (Set.range wA)
+  have hcard : Cardinal.mk t = Algebra.trdeg F (A : Type) := ht.cardinalMk_eq_trdeg
   have hle : Cardinal.mk (Fin k) ≤ Cardinal.mk t := by
     rw [Cardinal.mk_fin, hcard]
     exact hk
-  obtain ⟨e⟩ := Cardinal.le_def.mp hle
-  have hind : AlgebraicIndependent F (fun l : Fin k => ((e l : t) : (A : Type u))) :=
+  obtain ⟨e⟩ := (Cardinal.le_def (Fin k) t).mp hle
+  have hind : AlgebraicIndependent F (fun l : Fin k => ((e l : t) : (A : Type))) :=
     ht.1.comp e e.injective
-  have hmem : ∀ l : Fin k, ∃ i : I, wA i = ((e l : t) : (A : Type u)) := by
+  have hmem : ∀ l : Fin k, ∃ i : I, wA i = ((e l : t) : (A : Type)) := by
     intro l
     have := hts (e l).2
     obtain ⟨i, hi⟩ := this
     exact ⟨i, hi⟩
   choose σ hσ using hmem
   refine ⟨σ, ?_⟩
+  have heq : (fun l : Fin k => wA (σ l)) = (fun l : Fin k => ((e l : t) : (A : Type))) :=
+    funext hσ
   have hindσ : AlgebraicIndependent F (fun l : Fin k => wA (σ l)) := by
-    refine hind.congr ?_
-    funext l
-    exact hσ l
-  have hmap := hindσ.map' (f := (A.val : (A : Type u) →ₐ[F] E)) (Subtype.val_injective)
-  exact hmap
+    rw [heq]; exact hind
+  exact hindσ.map' (f := (A.val : (A : Type) →ₐ[F] E)) Subtype.val_injective
 
 end GaloisForLFunctions.HTGeometry

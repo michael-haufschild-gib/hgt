@@ -1,8 +1,8 @@
 # Rectangular semilocal observer continuity does not supply cofinal tail control
 
 - **ID:** `rectangular-semilocal-observer-tail-separation`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / COFINAL NO-GO WITH POSITIVE REDUCTION
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper) + THEOREM (Lean) / COFINAL NO-GO WITH POSITIVE REDUCTION
 - **Scientific status:** `[PAPER-PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
   `[PROOF-ARCHITECTURE CORRECTION] [NOT AN RH PROOF]`
 - **Parent:**
@@ -198,3 +198,40 @@ The scalar Gamma capacity/coherence law is already formalized in
 `(4)--(9)` are elementary support and trace-duality bridges, but formalizing them without the
 actual Connes integrated representation and the compensated defect `K_n` would add only wrappers.
 No new Lean file is warranted until the source-defined defect in `(16)` is constructed.
+
+## Lean formalization
+
+New module: `formal/GaloisForLFunctions/RHTower/RectangularSemilocalObserverTailSeparation.lean`.
+Unconditional; every declaration depends only on `propext`, `Classical.choice`, `Quot.sound`.
+The `Lean boundary` note above is superseded: the card's own theorems — coordinate stabilization,
+the observer bound, and above all the **separation** of §3 — are provable now and are not wrappers.
+
+| paper step | Lean declaration |
+|---|---|
+| von Mangoldt visibility: `Λ k ≠ 0 → minFac k ≤ k` | `RHTower.minFac_le_of_vonMangoldt_ne_zero` |
+| `(2)`: exact coordinate stabilization at every `n ≤ X` | `RHTower.vonMangoldt_primeCutoff_stabilizes` |
+| Schatten-1 is a right ideal | `RHTower.MemSchattenClass.one_comp_right` |
+| `(6)`: trace duality `\|Tr(K A)\| ≤ ‖K‖₁‖A‖` | `RHTower.norm_opTrace_comp_le_norm_mul_traceNorm` |
+| `(5)`–`(6)` with an explicit observer bound `‖A‖ ≤ 4L²` | `RHTower.norm_opTrace_comp_le_of_norm_le` |
+| `(8)`: `κ⁻ ≤ ‖K‖₁‖A‖ + c⁻` | `RHTower.negPart_le_traceNorm_add` |
+| `∑ (n+1)^{-q} < ∞` for `q > 1` | `RHTower.summable_rpow_neg_succ` |
+| `(9)`: all-`ε` subpower response ⟹ squared response summable against `n^{-1-ε}` | `RHTower.summable_sq_div_rpow_of_subpower` |
+| `(10)`: the triangular array `A_m, B_m, R_m` | `RHTower.separationTotal`, `RHTower.separationBulk`, `RHTower.separationDefect` |
+| `(11)`: `A_m = B_m + R_m`, `B_m ≥ 0` | `RHTower.separationTotal_eq`, `RHTower.separationBulk_nonneg` |
+| exact coordinate stabilization of the array | `RHTower.separationTotal_stabilizes` |
+| enlarging the cutoff adds only positive bulk | `RHTower.separationBulk_mono` |
+| finite Dirichlet energy at **every** exponent | `RHTower.summable_separationDefect` |
+| `(12)`: cofinal pointwise limit `R_m(n) → −2n^δ` | `RHTower.tendsto_separationDefect` |
+| `(12)`: divergence of the cofinal weighted mass for every `ε ≤ δ` | `RHTower.not_summable_separation_cofinal` |
+| **the separation theorem**: all four finite-level properties, and no tail estimate | `RHTower.rectangular_finite_positivity_not_imply_tail` |
+| `§4` `(13)`/`(15)`: the scalar Gamma capacity/coherence law | `RHTower.gammaConductorFiniteCapacity_of_quadratic_nonneg`, `RHTower.coherentCovarianceEnergy_lower_of_quadratic_nonneg`, `RHTower.not_summable_gammaConductorPrimeSchurCost` (corpus) |
+
+No statement carries a hypothesis standing in for an unproved fact.  Note that `0 ≤ δ` was dropped
+from the divergence statement: `ε ≤ δ` alone suffices.
+
+`scripts/formal_tools.py lint` → `formal lint passed`.
+
+What is **not** formalized, and is not a formalization debt: `(16)`, the construction of the
+source-defined coherent defect `K_n` and its subpower trace-norm growth.  The card states `(16)` as
+the remaining source theorem, not as a proved one; `(15a)` belongs to the child card
+`semilocal-one-prime-harmonic-moment-defect`.

@@ -256,8 +256,8 @@ theorem iterate_derivative_add (P Q : Polynomial ℂ) (n : ℕ) :
       rw [Function.iterate_succ_apply, Function.iterate_succ_apply, Function.iterate_succ_apply,
         map_add, ih]
 
-theorem exists_quartet_passport_polynomial {J : Type} [Fintype J] [DecidableEq J]
-    (a₀ : ℝ) (α : J → ℂ) (N : J → ℕ)
+theorem exists_quartet_passport_polynomial_of_base {J : Type} [Fintype J] [DecidableEq J]
+    (α : J → ℂ) (N : J → ℕ) (base : J → Polynomial ℂ)
     (hαre : ∀ j, (α j).re ≠ 0)
     (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
     ∃ B : Polynomial ℂ,
@@ -270,7 +270,6 @@ theorem exists_quartet_passport_polynomial {J : Type} [Fintype J] [DecidableEq J
   classical
   set w : J × Fin 4 → ℂ := fun i => quartetPoint (α i.1) i.2 with hwdef
   set m : J × Fin 4 → ℕ := fun i => N i.1 + 2 with hmdef
-  set base : J → Polynomial ℂ := fun j => quartetBasePoly a₀ (α j) (N j) with hbasedef
   set target : J × Fin 4 → Polynomial ℂ := fun i => quartetTarget (base i.1) i.2 with htargetdef
   set negIdx : (J × Fin 4) ≃ (J × Fin 4) := (Equiv.refl J).prodCongr neg4 with hnegdef
   set conjIdx : (J × Fin 4) ≃ (J × Fin 4) := (Equiv.refl J).prodCongr conj4 with hconjdef
@@ -351,8 +350,28 @@ theorem exists_quartet_passport_polynomial {J : Type} [Fintype J] [DecidableEq J
         = (Polynomial.derivative^[n] (base j)).eval (α j) := by
       have h := hjets₀ (j, (0 : Fin 4)) n hn
       simpa [hwdef, htargetdef, quartetPoint, quartetTarget] using h
-    rw [iterate_derivative_add, Polynomial.eval_add, hzero, add_zero, hbase, hbasedef]
-    exact quartetBasePoly_jets a₀ (α j) (N j) hn
+    rw [iterate_derivative_add, Polynomial.eval_add, hzero, add_zero]
+    exact hbase
+
+/-- The original linear-germ quartet passport theorem, recovered from the reusable arbitrary-base
+Hermite realization by choosing the local envelope-normalized linear target. -/
+theorem exists_quartet_passport_polynomial {J : Type} [Fintype J] [DecidableEq J]
+    (a₀ : ℝ) (α : J → ℂ) (N : J → ℕ)
+    (hαre : ∀ j, (α j).re ≠ 0)
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    ∃ B : Polynomial ℂ,
+      (∀ z : ℂ, B.eval (-z) = B.eval z) ∧
+      (∀ z : ℂ, B.eval ((starRingEnd ℂ) z) = (starRingEnd ℂ) (B.eval z)) ∧
+      (∀ y : ℝ, ∃ r : ℝ, 0 < r ∧ B.eval ((y : ℂ) * I) = (r : ℂ)) ∧
+      (∀ (j : J) (n : ℕ), n < N j + 2 →
+        (Polynomial.derivative^[n] B).eval (α j)
+          = iteratedDeriv n (fun z => (z - α j) / coshQuartetEnvelope a₀ z) (α j)) := by
+  obtain ⟨B, hBeven, hBreal, hBpos, hBjets⟩ :=
+    exists_quartet_passport_polynomial_of_base α N
+      (fun j => quartetBasePoly a₀ (α j) (N j)) hαre hinj
+  refine ⟨B, hBeven, hBreal, hBpos, ?_⟩
+  intro j n hn
+  exact (hBjets j n hn).trans (quartetBasePoly_jets a₀ (α j) (N j) hn)
 
 
 /-! ## The realization capstone -/
