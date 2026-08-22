@@ -22,6 +22,32 @@ noncomputable section
 
 variable {F : Type*} [Field F]
 
+/-- In every positive Milnor degree, global projective-line classes modulo constant-field classes
+are additively equivalent to complete residue profiles satisfying the single reciprocity relation.
+This is the all-degree Milnor Hasse sequence. -/
+noncomputable def rationalFunctionMilnorGlobalResidueQuotientEquiv
+    (n : ℕ) :
+    MilnorKDeg (RatFunc F) (n + 1) ⧸
+        AddMonoidHom.range (milnorKDegMap (ratFuncConstHom (F := F)) (n + 1)) ≃+
+      (milnorPolynomialGlobalSum (F := F) n).ker :=
+  milnorPolynomialGlobalResidueQuotientEquiv (F := F) n
+
+/-- In every positive Milnor degree, arbitrary finite residue data determine the unique infinity
+residue required by projective-line global reciprocity. -/
+noncomputable def rationalFunctionMilnorFiniteGlobalProfileEquiv
+    (n : ℕ) :
+    MilnorPolynomialTotalResidueTarget (F := F) n ≃+
+      (milnorPolynomialGlobalSum (F := F) n).ker :=
+  milnorPolynomialFiniteGlobalProfileEquiv (F := F) n
+
+/-- The all-degree finite-profile equivalence retains finite data and supplies the negative total
+norm as its forced infinity component. -/
+theorem rationalFunctionMilnorFiniteGlobalProfileEquiv_apply
+    (n : ℕ) (z : MilnorPolynomialTotalResidueTarget (F := F) n) :
+    (rationalFunctionMilnorFiniteGlobalProfileEquiv (F := F) n z).1 =
+      (z, -milnorPolynomialTotalNorm (F := F) n z) :=
+  milnorPolynomialFiniteGlobalProfileEquiv_apply (F := F) n z
+
 /-- Degree-one projective-line local-global equivalence: units modulo constants are the compatible
 finite-and-infinite residue profiles. -/
 noncomputable def rationalFunctionMilnorKOneGlobalResidueQuotientEquiv :

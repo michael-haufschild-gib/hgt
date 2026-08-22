@@ -64,4 +64,33 @@ theorem rationalFunction_linearMap_eq_iff_forall_place (F : Type u)
     exact (linearMap_eq_iff_baseChange_eq
       (L := rationalFunctionCompletion F .infinite) f g).mpr (h .infinite)
 
+/-- Equality of two fixed number-field linear maps is certified at one completed place. -/
+theorem numberField_linearMap_eq_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type v} {N : Type w}
+    [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N]
+    (f g : M →ₗ[K] N) :
+    f = g ↔ ∃ p : NumberFieldPlace K,
+      f.baseChange (completion K p) = g.baseChange (completion K p) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_eq_iff_baseChange_eq (L := completion K (witnessPlace K)) f g).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_eq_iff_baseChange_eq (L := completion K p) f g).mpr hp
+
+/-- Equality of two fixed `F(t)`-linear maps is certified at one completed place. -/
+theorem rationalFunction_linearMap_eq_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type v} {N : Type w}
+    [AddCommGroup M] [Module (RatFunc F) M] [AddCommGroup N] [Module (RatFunc F) N]
+    (f g : M →ₗ[RatFunc F] N) :
+    f = g ↔ ∃ p : RationalFunctionPlace F,
+      f.baseChange (rationalFunctionCompletion F p) =
+        g.baseChange (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_eq_iff_baseChange_eq (L := rationalFunctionCompletion F .infinite) f g).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_eq_iff_baseChange_eq (L := rationalFunctionCompletion F p) f g).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

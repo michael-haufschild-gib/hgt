@@ -78,6 +78,47 @@ theorem coefficients_eq_of_all_permuted_relations
   · exact hab ((algebraMap K L).injective (sub_eq_zero.mp hc)).symm
   · exact (fun hidx => hab (congrArg c hidx)) (hinj (sub_eq_zero.mp hx))
 
+/-- If every permutation of a weighted sum has one common value, then all
+coefficients coincide.  This affine form is stronger than the zero-relation
+version: it controls spectral actions with an arbitrary constant offset. -/
+theorem coefficients_eq_of_all_permuted_sums_eq
+    {I K L : Type*} [Fintype I] [DecidableEq I]
+    [Field K] [Field L] [Algebra K L]
+    (c : I → K) (x : I → L) (hinj : Function.Injective x)
+    (z : L)
+    (h : ∀ e : Equiv.Perm I,
+      ∑ i, algebraMap K L (c i) * x (e i) = z) :
+    ∀ a b, c a = c b := by
+  intro a b
+  by_contra hab
+  have h₀ := h (1 : Equiv.Perm I)
+  have h₀' :
+      (∑ i, algebraMap K L (c i) * x i) = z := by
+    simpa using h₀
+  have hs := h (Equiv.swap a b)
+  have hreindex :
+      (∑ i, algebraMap K L (c i) * x ((Equiv.swap a b) i)) =
+        ∑ i, algebraMap K L (c ((Equiv.swap a b) i)) * x i := by
+    symm
+    simpa [mul_comm] using
+      (Equiv.sum_comp (Equiv.swap a b)
+        (fun i => algebraMap K L (c i) * x ((Equiv.swap a b) i)))
+  rw [hreindex] at hs
+  have hd :
+      (∑ i, algebraMap K L (c ((Equiv.swap a b) i)) * x i) -
+          (∑ i, algebraMap K L (c i) * x i) = 0 := by
+    rw [hs, h₀', sub_self]
+  rw [weightedSum_swap_sub a b
+    (fun i => algebraMap K L (c i)) x] at hd
+  have hprod :
+      (algebraMap K L (c b) - algebraMap K L (c a)) *
+          (x a - x b) = 0 := by
+    linear_combination hd
+  rcases mul_eq_zero.mp hprod with hc | hx
+  · exact hab ((algebraMap K L).injective (sub_eq_zero.mp hc)).symm
+  · exact (fun hidx => hab (congrArg c hidx))
+      (hinj (sub_eq_zero.mp hx))
+
 /-- A relation among the centered generic roots has equal coefficients. -/
 theorem centeredRoot_coefficients_constant
     {K : Type*} [Field K] {d : ℕ} (c : Fin d → K)

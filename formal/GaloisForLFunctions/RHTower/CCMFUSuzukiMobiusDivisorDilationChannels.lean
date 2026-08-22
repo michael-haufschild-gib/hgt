@@ -663,4 +663,531 @@ theorem mobiusDivisorSquareRootAbelMoment_eq_divisorDefect_kernel
   intro d hd
   ring
 
+/-- A physical clipped block is the difference of consecutive capped dilation endpoints.  This
+form, unlike a complete/terminal case split, retains the moving boundary inside one telescope. -/
+theorem divisorDilationClippedAbelWeight_eq_endpointDiff
+    {M d q : ℕ} (hd : 1 ≤ d) (hq : 1 ≤ q)
+    (hqd : q * d ≤ M - 1) :
+    divisorDilationClippedAbelWeight M d q =
+      Real.sqrt (min M ((q + 1) * d) : ℕ) -
+        Real.sqrt (min M (q * d) : ℕ) := by
+  have hqdpos : 0 < q * d := Nat.mul_pos (by omega) (by omega)
+  have hM : 1 ≤ M := by omega
+  have hX : 1 ≤ (q + 1) * d := Nat.mul_pos (by omega) (by omega)
+  have hendpoint :
+      min (M - 1) ((q + 1) * d - 1) + 1 = min M ((q + 1) * d) := by
+    by_cases hMX : M ≤ (q + 1) * d
+    · rw [min_eq_left (by omega), min_eq_left hMX,
+        Nat.sub_add_cancel hM]
+    · have hXM : (q + 1) * d ≤ M := by omega
+      rw [min_eq_right (by omega), min_eq_right hXM,
+        Nat.sub_add_cancel hX]
+  have hlower : min M (q * d) = q * d := min_eq_right (by omega)
+  rw [divisorDilationClippedAbelWeight, hendpoint, hlower]
+
+/-- **Exact dilation-tail telescope.**  Summing every clipped quotient block from a moving lower
+edge reaches the literal endpoint `sqrt M`; complete blocks and the terminal block cancel at all
+internal boundaries. -/
+theorem sum_divisorDilationClippedAbelWeight_tail
+    {M n d : ℕ} (hn : 1 ≤ n) (hd : 1 ≤ d)
+    (hnd : n * d ≤ M - 1) :
+    (∑ q ∈ Finset.Icc n ((M - 1) / d),
+      divisorDilationClippedAbelWeight M d q) =
+      Real.sqrt M - Real.sqrt (n * d : ℕ) := by
+  let B := (M - 1) / d
+  have hnB : n ≤ B := by
+    dsimp [B]
+    exact (Nat.le_div_iff_mul_le (by omega : 0 < d)).2 hnd
+  have hpoint : ∀ q ∈ Finset.Icc n B,
+      divisorDilationClippedAbelWeight M d q =
+        Real.sqrt (min M ((q + 1) * d) : ℕ) -
+          Real.sqrt (min M (q * d) : ℕ) := by
+    intro q hqmem
+    have hqB := (Finset.mem_Icc.mp hqmem).2
+    have hqd : q * d ≤ M - 1 := by
+      simpa [Nat.mul_comm] using
+        (Nat.le_div_iff_mul_le (by omega : 0 < d)).mp hqB
+    exact divisorDilationClippedAbelWeight_eq_endpointDiff hd
+      (hn.trans (Finset.mem_Icc.mp hqmem).1) hqd
+  change (∑ q ∈ Finset.Icc n B,
+      divisorDilationClippedAbelWeight M d q) = _
+  calc
+    (∑ q ∈ Finset.Icc n B,
+        divisorDilationClippedAbelWeight M d q) =
+        ∑ q ∈ Finset.Icc n B,
+          (Real.sqrt (min M ((q + 1) * d) : ℕ) -
+            Real.sqrt (min M (q * d) : ℕ)) := by
+      apply Finset.sum_congr rfl
+      exact hpoint
+    _ = Real.sqrt (min M ((B + 1) * d) : ℕ) -
+          Real.sqrt (min M (n * d) : ℕ) := by
+      rw [← Finset.Ico_add_one_right_eq_Icc]
+      change (∑ q ∈ Finset.Ico n B.succ,
+          (Real.sqrt (min M (q.succ * d) : ℕ) -
+            Real.sqrt (min M (q * d) : ℕ))) = _
+      rw [Finset.sum_Ico_eq_sub _ (Nat.le_succ_of_le hnB)]
+      simp_rw [Finset.sum_range_sub
+        (fun q : ℕ => Real.sqrt (min M (q * d) : ℕ))]
+      ring
+    _ = Real.sqrt M - Real.sqrt (n * d : ℕ) := by
+      have htoplt : M - 1 < (B + 1) * d := by
+        dsimp [B]
+        rw [← Nat.div_lt_iff_lt_mul (by omega : 0 < d)]
+        omega
+      have htop : M ≤ (B + 1) * d := by omega
+      have hbottom : n * d ≤ M := hnd.trans (Nat.sub_le M 1)
+      rw [min_eq_left htop, min_eq_right hbottom]
+
+/-- Tail-restricted finite hyperbola Fubini law.  Both sides enumerate exactly the pairs
+`n ≤ q` and `d*q ≤ N`; no absolute-value majorant or rectangular padding is introduced. -/
+theorem sum_hyperbola_tail_swap_real
+    (N n : ℕ) (F : ℕ → ℕ → ℝ) (hn : 1 ≤ n) :
+    (∑ q ∈ Finset.Icc n N, ∑ d ∈ Finset.Icc 1 (N / q), F d q) =
+      ∑ d ∈ Finset.Icc 1 (N / n), ∑ q ∈ Finset.Icc n (N / d), F d q := by
+  let Q := Finset.Icc n N
+  let D := Finset.Icc 1 (N / n)
+  have hqfiber : ∀ q ∈ Q,
+      Finset.Icc 1 (N / q) = D.filter (fun d => d * q ≤ N) := by
+    intro q hqmem
+    have hq := Finset.mem_Icc.mp (by simpa only [Q] using hqmem)
+    ext d
+    simp only [Finset.mem_Icc, Finset.mem_filter, D]
+    constructor
+    · intro hdmem
+      have hdq : d * q ≤ N := by
+        simpa [Nat.mul_comm] using
+          (Nat.le_div_iff_mul_le (by omega : 0 < q)).mp hdmem.2
+      have hdn : d * n ≤ N :=
+        (Nat.mul_le_mul_left d hq.1).trans hdq
+      exact ⟨⟨hdmem.1,
+        (Nat.le_div_iff_mul_le (by omega : 0 < n)).2 hdn⟩, hdq⟩
+    · intro hdmem
+      exact ⟨hdmem.1.1,
+        (Nat.le_div_iff_mul_le (by omega : 0 < q)).2
+          (by simpa [Nat.mul_comm] using hdmem.2)⟩
+  have hdfiber : ∀ d ∈ D,
+      Finset.Icc n (N / d) = Q.filter (fun q => d * q ≤ N) := by
+    intro d hdmem
+    have hd := Finset.mem_Icc.mp (by simpa only [D] using hdmem)
+    ext q
+    simp only [Finset.mem_Icc, Finset.mem_filter, Q]
+    constructor
+    · intro hqmem
+      have hdq : d * q ≤ N := by
+        simpa [Nat.mul_comm] using
+          (Nat.le_div_iff_mul_le (by omega : 0 < d)).mp hqmem.2
+      exact ⟨⟨hqmem.1, hqmem.2.trans (Nat.div_le_self N d)⟩, hdq⟩
+    · intro hqmem
+      exact ⟨hqmem.1.1,
+        (Nat.le_div_iff_mul_le (by omega : 0 < d)).2
+          (by simpa [Nat.mul_comm] using hqmem.2)⟩
+  rw [show Finset.Icc n N = Q by rfl,
+    show Finset.Icc 1 (N / n) = D by rfl]
+  calc
+    (∑ q ∈ Q, ∑ d ∈ Finset.Icc 1 (N / q), F d q) =
+        ∑ q ∈ Q, ∑ d ∈ D, if d * q ≤ N then F d q else 0 := by
+      apply Finset.sum_congr rfl
+      intro q hq
+      rw [hqfiber q hq, Finset.sum_filter]
+    _ = ∑ d ∈ D, ∑ q ∈ Q, if d * q ≤ N then F d q else 0 := by
+      rw [Finset.sum_comm]
+    _ = ∑ d ∈ D, ∑ q ∈ Finset.Icc n (N / d), F d q := by
+      apply Finset.sum_congr rfl
+      intro d hd
+      rw [hdfiber d hd, Finset.sum_filter]
+
+/-- **Collapsed kernel-tail law.**  Every cofinal tail of the signed moving dilation kernel is one
+finite Möbius moment of the literal order-one Riesz profile.  The complete/terminal interface has
+disappeared by exact cancellation, not estimation. -/
+theorem sum_mobiusClippedAbelKernel_tail
+    {M n : ℕ} (hn : 1 ≤ n) :
+    (∑ q ∈ Finset.Icc n (M - 1), mobiusClippedAbelKernel M q) =
+      ∑ d ∈ Finset.Icc 1 ((M - 1) / n),
+        ((ArithmeticFunction.moebius d : ℤ) : ℝ) *
+          (Real.sqrt M - Real.sqrt (n * d : ℕ)) := by
+  rw [show (∑ q ∈ Finset.Icc n (M - 1), mobiusClippedAbelKernel M q) =
+      ∑ q ∈ Finset.Icc n (M - 1),
+        ∑ d ∈ Finset.Icc 1 ((M - 1) / q),
+          ((ArithmeticFunction.moebius d : ℤ) : ℝ) *
+            divisorDilationClippedAbelWeight M d q by rfl]
+  rw [sum_hyperbola_tail_swap_real (M - 1) n
+    (fun d q => ((ArithmeticFunction.moebius d : ℤ) : ℝ) *
+      divisorDilationClippedAbelWeight M d q) hn]
+  apply Finset.sum_congr rfl
+  intro d hdmem
+  have hd := Finset.mem_Icc.mp hdmem
+  have hnd : n * d ≤ M - 1 := by
+    simpa [Nat.mul_comm] using
+      (Nat.le_div_iff_mul_le (by omega : 0 < n)).mp hd.2
+  rw [← Finset.mul_sum,
+    sum_divisorDilationClippedAbelWeight_tail hn hd.1 hnd]
+
+/-- Capped order-one Riesz tail carried by the full signed Möbius dilation coordinate. -/
+def mobiusDilationRieszTail (M n : ℕ) : ℝ :=
+  ∑ d ∈ Finset.Icc 1 ((M - 1) / n),
+    ((ArithmeticFunction.moebius d : ℤ) : ℝ) *
+      (Real.sqrt M - Real.sqrt (n * d : ℕ))
+
+/-- Every cofinal kernel tail is exactly its Möbius--Riesz transport coefficient. -/
+theorem sum_mobiusClippedAbelKernel_tail_eq_rieszTail
+    (M : ℕ) {n : ℕ} (hn : 1 ≤ n) :
+    (∑ q ∈ Finset.Icc n (M - 1), mobiusClippedAbelKernel M q) =
+      mobiusDilationRieszTail M n := by
+  exact sum_mobiusClippedAbelKernel_tail hn
+
+/-- The transported coefficient vanishes at the escaped upper edge. -/
+theorem mobiusDilationRieszTail_boundary_zero (M : ℕ) :
+    mobiusDilationRieszTail M M = 0 := by
+  cases M <;> simp [mobiusDilationRieszTail]
+
+/-- **Two-coordinate conservation law.**  The signed clipped kernel is the discrete lower-edge
+gradient of one Möbius--Riesz tail.  Thus positive and negative FU regions, and complete and
+terminal dilation regions, are not independent estimates: they are adjacent fluxes of the same
+zero-boundary transported coefficient. -/
+theorem mobiusClippedAbelKernel_eq_rieszTailGradient
+    {M n : ℕ} (hn : 1 ≤ n) (hnM : n ≤ M - 1) :
+    mobiusClippedAbelKernel M n =
+      mobiusDilationRieszTail M n -
+        mobiusDilationRieszTail M (n + 1) := by
+  have hset : Finset.Icc n (M - 1) =
+      insert n (Finset.Icc (n + 1) (M - 1)) := by
+    ext q
+    simp only [Finset.mem_Icc, Finset.mem_insert]
+    omega
+  have hnnot : n ∉ Finset.Icc (n + 1) (M - 1) := by
+    simp
+  calc
+    mobiusClippedAbelKernel M n =
+        (∑ q ∈ Finset.Icc n (M - 1), mobiusClippedAbelKernel M q) -
+          ∑ q ∈ Finset.Icc (n + 1) (M - 1), mobiusClippedAbelKernel M q := by
+      rw [hset, Finset.sum_insert hnnot]
+      ring
+    _ = mobiusDilationRieszTail M n -
+          mobiusDilationRieszTail M (n + 1) := by
+      rw [sum_mobiusClippedAbelKernel_tail_eq_rieszTail M hn,
+        sum_mobiusClippedAbelKernel_tail_eq_rieszTail M (by omega)]
+
+/-- Literal local source whose prefix is the prime-free divisor defect: logarithmic factorial
+increment, minus divisor-count increment, plus the completed polar constant. -/
+def primeFreeDivisorIncrement (n : ℕ) : ℝ :=
+  Real.log n - (n.divisors.card : ℝ) +
+    2 * Real.eulerMascheroniConstant
+
+private theorem floorDivisorSum_eq_divisorCardSum (N : ℕ) :
+    (∑ d ∈ Finset.Icc 1 N, ((N / d : ℕ) : ℝ)) =
+      ∑ m ∈ Finset.Icc 1 N, (m.divisors.card : ℝ) := by
+  have hset : Finset.Ioc 0 N = Finset.Icc 1 N := by
+    ext n
+    simp only [Finset.mem_Ioc, Finset.mem_Icc]
+    omega
+  have h := ArithmeticFunction.sum_Ioc_sigma0_eq_sum_div N
+  rw [hset] at h
+  simp_rw [ArithmeticFunction.sigma_zero_apply] at h
+  exact_mod_cast h.symm
+
+/-- The prime-free divisor defect has the exact local increment `log n - tau(n) + 2 gamma`. -/
+theorem primeFreeDivisorDefect_sub_pred
+    {n : ℕ} (hn : 1 ≤ n) :
+    primeFreeDivisorDefect n - primeFreeDivisorDefect (n - 1) =
+      primeFreeDivisorIncrement n := by
+  have hset : Finset.Icc 1 n = insert n (Finset.Icc 1 (n - 1)) := by
+    ext m
+    simp only [Finset.mem_Icc, Finset.mem_insert]
+    omega
+  have hnnot : n ∉ Finset.Icc 1 (n - 1) := by
+    simp only [Finset.mem_Icc]
+    omega
+  have hcast : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
+    rw [Nat.cast_sub hn]
+    norm_num
+  rw [primeFreeDivisorDefect, primeFreeDivisorDefect,
+    floorDivisorSum_eq_divisorCardSum,
+    floorDivisorSum_eq_divisorCardSum, hset,
+    Finset.sum_insert hnnot, Finset.sum_insert hnnot,
+    primeFreeDivisorIncrement, hcast]
+  ring
+
+/-- Prefix reconstruction of the divisor defect from its literal local source. -/
+theorem sum_primeFreeDivisorIncrement
+    (N : ℕ) :
+    (∑ n ∈ Finset.Icc 1 N, primeFreeDivisorIncrement n) =
+      primeFreeDivisorDefect N := by
+  induction N with
+  | zero => simp [primeFreeDivisorDefect]
+  | succ N ih =>
+      rw [Finset.sum_Icc_succ_top (by omega : 1 ≤ N + 1), ih]
+      have hinc := primeFreeDivisorDefect_sub_pred
+        (n := N + 1) (by omega : 1 ≤ N + 1)
+      rw [show N + 1 - 1 = N by omega] at hinc
+      rw [← hinc]
+      ring
+
+/-- **Source-conserving Abel transport.**  Pairing the cumulative divisor defect with the signed
+clipped kernel is exactly pairing its local `log-tau+2gamma` source with the transported
+Möbius--Riesz tail.  The escaped coefficient is zero, so no boundary debt is added. -/
+theorem divisorDefect_kernel_eq_increment_rieszTail
+    (M : ℕ) :
+    (∑ q ∈ Finset.Icc 1 (M - 1),
+        primeFreeDivisorDefect q * mobiusClippedAbelKernel M q) =
+      ∑ n ∈ Finset.Icc 1 (M - 1),
+        primeFreeDivisorIncrement n * mobiusDilationRieszTail M n := by
+  by_cases hM : 1 ≤ M
+  · symm
+    calc
+      (∑ n ∈ Finset.Icc 1 (M - 1),
+          primeFreeDivisorIncrement n * mobiusDilationRieszTail M n) =
+          (∑ n ∈ Finset.Icc 1 (M - 1),
+            (∑ k ∈ Finset.Icc 1 n, primeFreeDivisorIncrement k) *
+              (mobiusDilationRieszTail M n -
+                mobiusDilationRieszTail M (n + 1))) +
+            (∑ k ∈ Finset.Icc 1 (M - 1), primeFreeDivisorIncrement k) *
+              mobiusDilationRieszTail M ((M - 1) + 1) := by
+        exact HTGeometry.sum_mul_eq_partial_mul_diff_ring
+          primeFreeDivisorIncrement (mobiusDilationRieszTail M) (M - 1)
+      _ = ∑ q ∈ Finset.Icc 1 (M - 1),
+          primeFreeDivisorDefect q * mobiusClippedAbelKernel M q := by
+        have hedge : M - 1 + 1 = M := Nat.sub_add_cancel hM
+        rw [hedge, mobiusDilationRieszTail_boundary_zero, mul_zero, add_zero]
+        apply Finset.sum_congr rfl
+        intro n hnmem
+        rw [sum_primeFreeDivisorIncrement]
+        rw [← mobiusClippedAbelKernel_eq_rieszTailGradient
+          (Finset.mem_Icc.mp hnmem).1 (Finset.mem_Icc.mp hnmem).2]
+  · have hM0 : M = 0 := by omega
+    subst M
+    simp
+
+/-- Arithmetic-function lift of the local prime-free divisor increment. -/
+def primeFreeDivisorIncrementAF : ArithmeticFunction ℝ :=
+  ArithmeticFunction.log -
+    (ArithmeticFunction.zeta : ArithmeticFunction ℝ) *
+      (ArithmeticFunction.zeta : ArithmeticFunction ℝ) +
+    (algebraMap ℝ (ArithmeticFunction ℝ)
+      (2 * Real.eulerMascheroniConstant)) *
+        (ArithmeticFunction.zeta : ArithmeticFunction ℝ)
+
+/-- **Global source cancellation before scalarization.**  Möbius inversion cancels one zeta factor
+of the divisor-count channel, converts the logarithmic channel to von Mangoldt, and transports the
+Gamma completion to the identity atom. -/
+theorem moebius_mul_primeFreeDivisorIncrementAF :
+    (ArithmeticFunction.moebius : ArithmeticFunction ℝ) *
+        primeFreeDivisorIncrementAF =
+      ArithmeticFunction.vonMangoldt -
+        (ArithmeticFunction.zeta : ArithmeticFunction ℝ) +
+        algebraMap ℝ (ArithmeticFunction ℝ)
+          (2 * Real.eulerMascheroniConstant) := by
+  let c : ArithmeticFunction ℝ :=
+    algebraMap ℝ (ArithmeticFunction ℝ) (2 * Real.eulerMascheroniConstant)
+  have hc : (ArithmeticFunction.moebius : ArithmeticFunction ℝ) * c *
+      (ArithmeticFunction.zeta : ArithmeticFunction ℝ) = c := by
+    calc
+      (ArithmeticFunction.moebius : ArithmeticFunction ℝ) * c *
+          (ArithmeticFunction.zeta : ArithmeticFunction ℝ) =
+          c * ((ArithmeticFunction.moebius : ArithmeticFunction ℝ) *
+            (ArithmeticFunction.zeta : ArithmeticFunction ℝ)) := by ac_rfl
+      _ = c := by rw [ArithmeticFunction.coe_moebius_mul_coe_zeta, mul_one]
+  rw [primeFreeDivisorIncrementAF, mul_add, mul_sub,
+    ArithmeticFunction.moebius_mul_log_eq_vonMangoldt,
+    ← mul_assoc, ArithmeticFunction.coe_moebius_mul_coe_zeta,
+    one_mul]
+  have hc' : (ArithmeticFunction.moebius : ArithmeticFunction ℝ) *
+      (algebraMap ℝ (ArithmeticFunction ℝ)
+        (2 * Real.eulerMascheroniConstant)) *
+        (ArithmeticFunction.zeta : ArithmeticFunction ℝ) =
+      algebraMap ℝ (ArithmeticFunction ℝ)
+        (2 * Real.eulerMascheroniConstant) := by
+    simpa only [c] using hc
+  rw [← mul_assoc, hc']
+
+/-- The arithmetic-function lift has the intended `log-tau+2gamma` coefficient off zero. -/
+theorem primeFreeDivisorIncrementAF_apply {n : ℕ} (hn : n ≠ 0) :
+    primeFreeDivisorIncrementAF n = primeFreeDivisorIncrement n := by
+  change (ArithmeticFunction.log -
+      (ArithmeticFunction.zeta : ArithmeticFunction ℝ) *
+        (ArithmeticFunction.zeta : ArithmeticFunction ℝ) +
+      (algebraMap ℝ (ArithmeticFunction ℝ)
+        (2 * Real.eulerMascheroniConstant)) *
+          (ArithmeticFunction.zeta : ArithmeticFunction ℝ)) n = _
+  rw [show (algebraMap ℝ (ArithmeticFunction ℝ)
+      (2 * Real.eulerMascheroniConstant)) *
+        (ArithmeticFunction.zeta : ArithmeticFunction ℝ) =
+      (2 * Real.eulerMascheroniConstant) •
+        (ArithmeticFunction.zeta : ArithmeticFunction ℝ) by
+      rw [Algebra.smul_def]]
+  change Real.log n -
+      ((ArithmeticFunction.zeta : ArithmeticFunction ℝ) *
+        (ArithmeticFunction.zeta : ArithmeticFunction ℝ)) n +
+      (2 * Real.eulerMascheroniConstant) *
+        (ArithmeticFunction.zeta : ArithmeticFunction ℝ) n = _
+  have hzz :
+      ((ArithmeticFunction.zeta : ArithmeticFunction ℝ) *
+        (ArithmeticFunction.zeta : ArithmeticFunction ℝ)) n =
+        (n.divisors.card : ℝ) := by
+    have hnat : ArithmeticFunction.zeta * ArithmeticFunction.zeta =
+        ArithmeticFunction.sigma 0 := by
+      nth_rewrite 2 [← ArithmeticFunction.pow_zero_eq_zeta]
+      exact ArithmeticFunction.zeta_mul_pow_eq_sigma
+    rw [← ArithmeticFunction.natCoe_mul, hnat,
+      ArithmeticFunction.natCoe_apply,
+      ArithmeticFunction.sigma_zero_apply]
+  rw [hzz, ArithmeticFunction.natCoe_apply,
+    ArithmeticFunction.zeta_apply_ne hn]
+  rw [primeFreeDivisorIncrement]
+  ring
+
+/-- Completed local prime--polar source, including the sole Gamma edge atom. -/
+def completedPrimePolarGammaAtom (n : ℕ) : ℝ :=
+  ArithmeticFunction.vonMangoldt n - 1 +
+    if n = 1 then 2 * Real.eulerMascheroniConstant else 0
+
+/-- **Coefficient-faithful prime--polar--Gamma collapse.**  At every positive product label, the
+full Möbius convolution of the prime-free local source is exactly `Lambda-1`, with the completion
+carried only by label `1`.  No positive/negative region or boundary coefficient is scalarized. -/
+theorem primeFreeDivisorIncrement_mobius_convolution_eq_atom
+    {n : ℕ} (hn : n ≠ 0) :
+    (∑ x ∈ n.divisorsAntidiagonal,
+      ((ArithmeticFunction.moebius x.1 : ℤ) : ℝ) *
+        primeFreeDivisorIncrement x.2) =
+      completedPrimePolarGammaAtom n := by
+  have hlhs :
+      (∑ x ∈ n.divisorsAntidiagonal,
+        ((ArithmeticFunction.moebius x.1 : ℤ) : ℝ) *
+          primeFreeDivisorIncrement x.2) =
+        ((ArithmeticFunction.moebius : ArithmeticFunction ℝ) *
+          primeFreeDivisorIncrementAF) n := by
+    rw [mul_apply]
+    apply Finset.sum_congr rfl
+    intro x hx
+    have hx2 : x.2 ≠ 0 := by
+      apply right_ne_zero_of_mul
+      rw [(Nat.mem_divisorsAntidiagonal.mp hx).1]
+      exact hn
+    rw [primeFreeDivisorIncrementAF_apply hx2]
+    rfl
+  have hconv := congrArg (fun f : ArithmeticFunction ℝ => f n)
+    moebius_mul_primeFreeDivisorIncrementAF
+  rw [hlhs, hconv]
+  change ArithmeticFunction.vonMangoldt n -
+      (ArithmeticFunction.zeta : ArithmeticFunction ℝ) n +
+      (algebraMap ℝ (ArithmeticFunction ℝ)
+        (2 * Real.eulerMascheroniConstant)) n = _
+  rw [ArithmeticFunction.natCoe_apply,
+    ArithmeticFunction.zeta_apply_ne hn]
+  rw [completedPrimePolarGammaAtom]
+  by_cases hn1 : n = 1
+  · subst n
+    simp [ArithmeticFunction.algebraMap_apply_one]
+  · rw [if_neg hn1]
+    have hAlg : (algebraMap ℝ (ArithmeticFunction ℝ)
+        (2 * Real.eulerMascheroniConstant)) n = 0 := by
+      rw [Algebra.algebraMap_eq_smul_one,
+        ArithmeticFunction.smul_map, ArithmeticFunction.one_apply,
+        if_neg hn1, smul_zero]
+    rw [hAlg]
+    ring
+
+private theorem sum_Icc_vonMangoldt_sub_one_eq_psiRemainder_dilation
+    (m : ℕ) :
+    ∑ k ∈ Finset.Icc 1 m,
+        (ArithmeticFunction.vonMangoldt k - 1) = psiRemainder m := by
+  rw [Finset.sum_sub_distrib, sum_Icc_vonMangoldt_eq_psi]
+  simp only [Finset.sum_const, Nat.card_Icc, nsmul_eq_mul, mul_one]
+  rw [psiRemainder, chebyshevPsi_eq_psi]
+  norm_num
+
+/-- The literal prime-minus-polar order-one Riesz window is the coherent half-order Abel action. -/
+theorem sum_vonMangoldt_sub_one_mul_sqrtGap_eq_coherentAbel
+    (M : ℕ) :
+    ∑ k ∈ Finset.Icc 1 (M - 1),
+        (ArithmeticFunction.vonMangoldt k - 1) *
+          (Real.sqrt M - Real.sqrt k) =
+      coherentSelbergSquareRootAbelMoment M := by
+  have h := HTGeometry.sum_mul_eq_partial_mul_diff
+    (fun k : ℕ => ArithmeticFunction.vonMangoldt k - 1)
+    (fun k : ℕ => Real.sqrt M - Real.sqrt k) (M - 1)
+  simp_rw [sum_Icc_vonMangoldt_sub_one_eq_psiRemainder_dilation] at h
+  rw [coherentSelbergSquareRootAbelMoment]
+  have htop : psiRemainder (M - 1) *
+      (Real.sqrt M - Real.sqrt (M - 1 + 1 : ℕ)) = 0 := by
+    cases M with
+    | zero => simp [psiRemainder, chebyshevPsi]
+    | succ M => simp
+  rw [htop, add_zero] at h
+  convert h using 1
+  apply Finset.sum_congr rfl
+  intro k hk
+  ring
+
+/-- **Completed prime--polar Riesz realization.**  The entire pre-scalar Möbius--divisor producer
+is one literal moving order-one Riesz window of `Lambda-1`, with the Gamma completion retained as
+the index-one atom. -/
+theorem sum_completedPrimePolarGammaAtom_mul_sqrtGap_eq_mobiusMoment
+    (M : ℕ) :
+    (∑ k ∈ Finset.Icc 1 (M - 1),
+      completedPrimePolarGammaAtom k *
+        (Real.sqrt M - Real.sqrt k)) =
+      mobiusDivisorSquareRootAbelMoment M := by
+  rcases lt_trichotomy M 1 with hM | hM | hM
+  · have hM0 : M = 0 := by omega
+    subst M
+    simp [mobiusDivisorSquareRootAbelMoment]
+  · have hM1 : M = 1 := by omega
+    subst M
+    simp [mobiusDivisorSquareRootAbelMoment]
+  · have hM2 : 2 ≤ M := by omega
+    have hgamma :
+        (∑ k ∈ Finset.Icc 1 (M - 1),
+          (if k = 1 then 2 * Real.eulerMascheroniConstant else 0) *
+            (Real.sqrt M - Real.sqrt k)) =
+          2 * Real.eulerMascheroniConstant * (Real.sqrt M - 1) := by
+      rw [Finset.sum_eq_single 1]
+      · simp
+      · intro b hb hbne
+        rw [if_neg hbne]
+        simp
+      · intro hnot
+        exact (hnot (Finset.mem_Icc.mpr ⟨by omega, by omega⟩)).elim
+    rw [show (∑ k ∈ Finset.Icc 1 (M - 1),
+        completedPrimePolarGammaAtom k *
+          (Real.sqrt M - Real.sqrt k)) =
+        (∑ k ∈ Finset.Icc 1 (M - 1),
+          (ArithmeticFunction.vonMangoldt k - 1) *
+            (Real.sqrt M - Real.sqrt k)) +
+        ∑ k ∈ Finset.Icc 1 (M - 1),
+          (if k = 1 then 2 * Real.eulerMascheroniConstant else 0) *
+            (Real.sqrt M - Real.sqrt k) by
+      rw [← Finset.sum_add_distrib]
+      apply Finset.sum_congr rfl
+      intro k hk
+      rw [completedPrimePolarGammaAtom]
+      ring]
+    rw [sum_vonMangoldt_sub_one_mul_sqrtGap_eq_coherentAbel,
+      hgamma,
+      mobiusDivisorSquareRootAbelMoment_eq_coherent_add_gammaBoundary
+        (by omega : 1 ≤ M)]
+
+/-- **Direct cancellation control law in source coordinates.**  The local prime-free source paired
+with the signed transported FU tail equals the actual completed von-Mangoldt--polar Riesz window.
+This is an equality before any estimate: Möbius signs, positive/negative reporter regions, polar
+subtraction, and the Gamma edge remain in one expression. -/
+theorem increment_rieszTail_eq_completedPrimePolarGamma_window
+    (M : ℕ) :
+    (∑ n ∈ Finset.Icc 1 (M - 1),
+        primeFreeDivisorIncrement n * mobiusDilationRieszTail M n) =
+      ∑ k ∈ Finset.Icc 1 (M - 1),
+        completedPrimePolarGammaAtom k *
+          (Real.sqrt M - Real.sqrt k) := by
+  calc
+    (∑ n ∈ Finset.Icc 1 (M - 1),
+        primeFreeDivisorIncrement n * mobiusDilationRieszTail M n) =
+        ∑ q ∈ Finset.Icc 1 (M - 1),
+          primeFreeDivisorDefect q * mobiusClippedAbelKernel M q :=
+      (divisorDefect_kernel_eq_increment_rieszTail M).symm
+    _ = mobiusDivisorSquareRootAbelMoment M :=
+      (mobiusDivisorSquareRootAbelMoment_eq_divisorDefect_kernel M).symm
+    _ = ∑ k ∈ Finset.Icc 1 (M - 1),
+        completedPrimePolarGammaAtom k *
+          (Real.sqrt M - Real.sqrt k) :=
+      (sum_completedPrimePolarGammaAtom_mul_sqrtGap_eq_mobiusMoment M).symm
+
 end RHTower

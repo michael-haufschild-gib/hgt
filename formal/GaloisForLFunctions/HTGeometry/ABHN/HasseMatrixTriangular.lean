@@ -58,4 +58,31 @@ theorem rationalFunctionMatrix_blockTriangular_iff_forall_place
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) M b).mpr
       (h RationalFunctionPlace.infinite)
 
+/-- Preservation of a fixed block flag by a number-field matrix can be certified at one
+completion. -/
+theorem numberFieldMatrix_blockTriangular_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    {ι : Type x} [LT ι] (M : Matrix n n K) (b : n → ι) :
+    M.BlockTriangular b ↔ ∃ p : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K p))).BlockTriangular b := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_blockTriangular_iff_map (L := completion K (witnessPlace K)) M b).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_blockTriangular_iff_map (L := completion K p) M b).mpr hp
+
+/-- Preservation of a fixed block flag by an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_blockTriangular_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    {ι : Type x} [LT ι] (M : Matrix n n (RatFunc F)) (b : n → ι) :
+    M.BlockTriangular b ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))).BlockTriangular b := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_blockTriangular_iff_map (L := rationalFunctionCompletion F .infinite) M b).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_blockTriangular_iff_map (L := rationalFunctionCompletion F p) M b).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

@@ -154,11 +154,10 @@ theorem realSelectedPairChartPoint_continuous
         p.2 • realSelectedLayerExchangeMatrix r s)
     fun_prop
 
-/-- A spectral relation holding on a real open neighbourhood of the
-uncoupled physical slice supplies every complex selected-layer witness
-needed by interaction-lift rigidity. -/
+/-- A spectral action equal to an arbitrary fixed target on a real open
+neighbourhood supplies the corresponding complex selected-layer witness. -/
 noncomputable def
-    LocalExtensionEigenbranchChart.realSelectedLayerWitness
+    LocalExtensionEigenbranchChart.realSelectedLayerConstantActionWitness
     {α ρ : Type*} [Fintype α] [Fintype ρ]
     [DecidableEq α] [DecidableEq ρ]
     [Nonempty α]
@@ -180,13 +179,14 @@ noncomputable def
       ∀ p ∈ V,
         realLocalExtensionParameter p ∈ C.U)
     (coefficient : α × ρ → ℂ)
+    (target : ℂ)
     (hrelation :
       ∀ p ∈ V,
         ∑ i, coefficient i *
-          C.branch i (realLocalExtensionParameter p) = 0)
+          C.branch i (realLocalExtensionParameter p) = target)
     {r s : ρ} (hrs : r ≠ s) :
-    SelectedLayerAnalyticRelationWitness
-      energy transition coefficient r s := by
+    SelectedLayerAnalyticConstantActionWitness
+      energy transition coefficient target r s := by
   let z₀R : ℝ := shift₀ r - shift₀ s
   let z₀ : ℂ := (z₀R : ℂ)
   let shiftC : ℂ → ρ → ℂ :=
@@ -464,7 +464,7 @@ noncomputable def
     analytic := ?_
     base := ?_
     root := ?_
-    relation := ?_
+    action := ?_
   }
   · intro z hz
     obtain ⟨x, hx, rfl⟩ := hz
@@ -524,8 +524,8 @@ noncomputable def
     obtain ⟨x, hx, rfl⟩ := hz
     let f : ℂ → ℂ :=
       fun g =>
-        ∑ i, coefficient i *
-          restrictedBranch (x : ℂ) i g
+        (∑ i, coefficient i *
+          restrictedBranch (x : ℂ) i g) - target
     have hpointCU :
         pointC (x : ℂ) 0 ∈ C.U := by
       have heq :
@@ -537,14 +537,16 @@ noncomputable def
       rw [← heq]
       exact hVU (pointR x 0) hx.1
     have hfAnalytic : AnalyticAt ℂ f 0 := by
-      apply Finset.analyticAt_fun_sum
-      intro i hi
-      exact analyticAt_const.mul
-        ((C.analyticOn_branch i
-          (pointC (x : ℂ) 0) hpointCU).fun_comp_of_eq
-          (selectedPairChartPoint_analyticAt_coupling
-            (fun u => (shift₀ u : ℂ)) r s (x : ℂ) 0)
-          rfl)
+      apply AnalyticAt.sub
+      · apply Finset.analyticAt_fun_sum
+        intro i hi
+        exact analyticAt_const.mul
+          ((C.analyticOn_branch i
+            (pointC (x : ℂ) 0) hpointCU).fun_comp_of_eq
+            (selectedPairChartPoint_analyticAt_coupling
+              (fun u => (shift₀ u : ℂ)) r s (x : ℂ) 0)
+            rfl)
+      · exact analyticAt_const
     have hrealCurve :
         ContinuousAt (fun g : ℝ => pointR x g) 0 := by
       have hpair :
@@ -567,10 +569,143 @@ noncomputable def
           (realSelectedPairChartPoint_complexification
             shift₀ r s x g)
       rw [heq] at hrel
-      exact hrel
-    exact
+      exact sub_eq_zero.mpr hrel
+    have hfzero :=
       AnalyticAt.eventuallyEq_zero_of_eventually_ofReal_eq_zero
         hfAnalytic hfReal
+    filter_upwards [hfzero] with g hg
+    exact sub_eq_zero.mp hg
+
+/-- A real zero relation is the target-zero specialization of the physical
+constant-action witness. -/
+noncomputable def
+    LocalExtensionEigenbranchChart.realSelectedLayerWitness
+    {α ρ : Type*} [Fintype α] [Fintype ρ]
+    [DecidableEq α] [DecidableEq ρ]
+    [Nonempty α]
+    (energy : α → ℝ) (shift₀ : ρ → ℝ)
+    (transition : Matrix α α ℂ)
+    (hsimple :
+      Function.Injective
+        (layeredEnergy
+          (fun a => (energy a : ℂ))
+          (fun r => (shift₀ r : ℂ))))
+    (C :
+      LocalExtensionEigenbranchChart
+        (fun a => (energy a : ℂ))
+        (fun r => (shift₀ r : ℂ)) transition)
+    (V : Set ((ρ → ℝ) × Matrix ρ ρ ℝ))
+    (hVopen : IsOpen V)
+    (hVcenter : (shift₀, 0) ∈ V)
+    (hVU :
+      ∀ p ∈ V,
+        realLocalExtensionParameter p ∈ C.U)
+    (coefficient : α × ρ → ℂ)
+    (hrelation :
+      ∀ p ∈ V,
+        ∑ i, coefficient i *
+          C.branch i (realLocalExtensionParameter p) = 0)
+    {r s : ρ} (hrs : r ≠ s) :
+    SelectedLayerAnalyticRelationWitness
+      energy transition coefficient r s := by
+  let W := C.realSelectedLayerConstantActionWitness
+    energy shift₀ transition hsimple V hVopen hVcenter hVU
+    coefficient 0 hrelation hrs
+  exact {
+    S := W.S
+    infinite := W.infinite
+    shift := W.shift
+    pairShift := W.pairShift
+    simple := W.simple
+    branch := W.branch
+    analytic := W.analytic
+    base := W.base
+    root := W.root
+    relation := W.action
+  }
+
+/-- **Physical constant-action rigidity for a local extension.**  On a
+real Hermitian chart with connected interaction lift, a spectral action can
+be constant only in the trace direction. -/
+theorem hermitianLocalExtension_constantAction_coefficients_constant
+    {α ρ : Type*} [Fintype α] [Fintype ρ]
+    [DecidableEq α] [DecidableEq ρ]
+    [Nonempty α]
+    (energy : α → ℝ) (hmax : MaximallyProjectiveEnergy energy)
+    (shift₀ : ρ → ℝ)
+    (transition : Matrix α α ℂ)
+    (hsimple :
+      Function.Injective
+        (layeredEnergy
+          (fun a => (energy a : ℂ))
+          (fun r => (shift₀ r : ℂ))))
+    (hlift :
+      (crossLayerLiftGraph
+        (transitionSupportGraph transition) ρ).Preconnected)
+    (C :
+      LocalExtensionEigenbranchChart
+        (fun a => (energy a : ℂ))
+        (fun r => (shift₀ r : ℂ)) transition)
+    (V : Set ((ρ → ℝ) × Matrix ρ ρ ℝ))
+    (hVopen : IsOpen V)
+    (hVcenter : (shift₀, 0) ∈ V)
+    (hVU :
+      ∀ p ∈ V,
+        realLocalExtensionParameter p ∈ C.U)
+    (coefficient : α × ρ → ℂ) (target : ℂ)
+    (haction :
+      ∀ p ∈ V,
+        ∑ i, coefficient i *
+          C.branch i (realLocalExtensionParameter p) = target) :
+    ∀ x y, coefficient x = coefficient y := by
+  exact selectedLayerAnalyticConstantAction_constant_of_preconnected
+    energy hmax transition coefficient target
+    (fun r s hrs =>
+      C.realSelectedLayerConstantActionWitness
+        energy shift₀ transition hsimple V hVopen hVcenter hVU
+        coefficient target haction hrs)
+    hlift
+
+/-- **Physical affine escape for one local extension.**  Every
+nonconstant spectral action escapes every prescribed value inside the same
+real Hermitian chart. -/
+theorem exists_hermitianLocalExtension_action_ne_target
+    {α ρ : Type*} [Fintype α] [Fintype ρ]
+    [DecidableEq α] [DecidableEq ρ]
+    [Nonempty α]
+    (energy : α → ℝ) (hmax : MaximallyProjectiveEnergy energy)
+    (shift₀ : ρ → ℝ)
+    (transition : Matrix α α ℂ)
+    (hsimple :
+      Function.Injective
+        (layeredEnergy
+          (fun a => (energy a : ℂ))
+          (fun r => (shift₀ r : ℂ))))
+    (hlift :
+      (crossLayerLiftGraph
+        (transitionSupportGraph transition) ρ).Preconnected)
+    (C :
+      LocalExtensionEigenbranchChart
+        (fun a => (energy a : ℂ))
+        (fun r => (shift₀ r : ℂ)) transition)
+    (V : Set ((ρ → ℝ) × Matrix ρ ρ ℝ))
+    (hVopen : IsOpen V)
+    (hVcenter : (shift₀, 0) ∈ V)
+    (hVU :
+      ∀ p ∈ V,
+        realLocalExtensionParameter p ∈ C.U)
+    (coefficient : α × ρ → ℂ)
+    (hcoefficient : ¬ ∀ x y, coefficient x = coefficient y)
+    (target : ℂ) :
+    ∃ p ∈ V,
+      ∑ i, coefficient i *
+        C.branch i (realLocalExtensionParameter p) ≠ target := by
+  by_contra hcon
+  push Not at hcon
+  exact hcoefficient
+    (hermitianLocalExtension_constantAction_coefficients_constant
+      energy hmax shift₀ transition hsimple hlift C V hVopen hVcenter hVU
+      coefficient target hcon)
 
 /-- **Physical one-step local relation erasure.** Under a Hermitian
 transition channel with connected interaction lift, every nonzero balanced

@@ -80,6 +80,101 @@ structure SelectedLayerAnalyticRelationWitness
       ∀ᶠ g in 𝓝 0,
         ∑ i, coefficient i * branch z i g = 0
 
+/-- Complete selected-pair analytic data for a spectral action equal to an
+arbitrary fixed target, rather than only a zero relation. -/
+structure SelectedLayerAnalyticConstantActionWitness
+    {α ρ : Type*} [Fintype α] [Fintype ρ]
+    [DecidableEq α] [DecidableEq ρ]
+    (energy : α → ℝ)
+    (transition : Matrix α α ℂ)
+    (coefficient : α × ρ → ℂ)
+    (target : ℂ) (r s : ρ) where
+  S : Set ℂ
+  infinite : S.Infinite
+  shift : ℂ → ρ → ℂ
+  pairShift :
+    ∀ z ∈ S, shift z r - shift z s = z
+  simple :
+    ∀ z ∈ S,
+      Function.Injective
+        (layeredEnergy
+          (fun a => (energy a : ℂ)) (shift z))
+  branch : ℂ → (α × ρ) → ℂ → ℂ
+  analytic :
+    ∀ z ∈ S, ∀ i, AnalyticAt ℂ (branch z i) 0
+  base :
+    ∀ z ∈ S, ∀ i,
+      branch z i 0 =
+        layeredEnergy
+          (fun a => (energy a : ℂ)) (shift z) i
+  root :
+    ∀ z ∈ S, ∀ i,
+      ∀ᶠ g in nhds 0,
+        matrixCharpolyRelation
+          (Matrix.diagonal
+              (layeredEnergy
+                (fun a => (energy a : ℂ)) (shift z)) +
+            g • selectedLayerCoupling transition r s,
+            branch z i g) = 0
+  action :
+    ∀ z ∈ S,
+      ∀ᶠ g in nhds 0,
+        ∑ i, coefficient i * branch z i g = target
+
+/-- **Constant-action interaction-lift kernel law.**  A locally constant
+spectral action is component-constant on the detected interaction lift,
+independently of the value of that constant. -/
+theorem selectedLayerAnalyticConstantAction_mem_componentConstant
+    {α ρ : Type*} [Fintype α] [Fintype ρ]
+    [DecidableEq α] [DecidableEq ρ] [Nonempty α]
+    (energy : α → ℝ) (hmax : MaximallyProjectiveEnergy energy)
+    (transition : Matrix α α ℂ)
+    (coefficient : α × ρ → ℂ) (target : ℂ)
+    (hwitness :
+      ∀ r s, r ≠ s →
+        SelectedLayerAnalyticConstantActionWitness
+          energy transition coefficient target r s) :
+    coefficient ∈
+      GaloisForLFunctions.componentConstant
+        (crossLayerLiftGraph
+          (transitionSupportGraph transition) ρ) ℂ := by
+  rw [← crossLayerEquality_iff_mem_componentConstant
+    (transitionSupportGraph transition)
+    (fun a r => coefficient (a, r))]
+  intro a b hab r s hrs
+  let W := hwitness r s hrs
+  exact crossLayer_eq_of_selectedLayerAnalyticBranchConstantAction
+    energy hmax transition coefficient hrs
+    W.S W.infinite W.shift W.pairShift W.simple
+    W.branch W.analytic W.base W.root target W.action
+    a b hab.1 hab.2
+
+/-- A connected interaction lift forces every locally constant spectral
+action to have one common coefficient. -/
+theorem selectedLayerAnalyticConstantAction_constant_of_preconnected
+    {α ρ : Type*} [Fintype α] [Fintype ρ]
+    [DecidableEq α] [DecidableEq ρ] [Nonempty α]
+    (energy : α → ℝ) (hmax : MaximallyProjectiveEnergy energy)
+    (transition : Matrix α α ℂ)
+    (coefficient : α × ρ → ℂ) (target : ℂ)
+    (hwitness :
+      ∀ r s, r ≠ s →
+        SelectedLayerAnalyticConstantActionWitness
+          energy transition coefficient target r s)
+    (hlift :
+      (crossLayerLiftGraph
+        (transitionSupportGraph transition) ρ).Preconnected) :
+    ∀ x y, coefficient x = coefficient y := by
+  have hcomponent :=
+    selectedLayerAnalyticConstantAction_mem_componentConstant
+      energy hmax transition coefficient target hwitness
+  intro x y
+  obtain ⟨walk⟩ := hlift x y
+  induction walk with
+  | nil => rfl
+  | cons hadj walk ih =>
+      exact (hcomponent _ _ hadj).trans ih
+
 /-- **Analytic interaction-lift kernel law.** If one coefficient packet is
 an analytic eigenvalue relation on every selected-pair restriction of a
 local extension family, then it is a component-constant zero-cochain on the

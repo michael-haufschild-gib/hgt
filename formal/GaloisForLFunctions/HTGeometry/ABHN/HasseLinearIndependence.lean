@@ -81,4 +81,32 @@ theorem rationalFunction_linearIndependent_iff_forall_place (F : Type u)
     exact (linearIndependent_one_tmul_iff
       (L := rationalFunctionCompletion F .infinite) v).mpr (h .infinite)
 
+/-- Linear independence of a fixed family over a number field is certified at any one completed
+place. -/
+theorem numberField_linearIndependent_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    {ι : Type x} (v : ι → M) :
+    LinearIndependent K v ↔ ∃ p : NumberFieldPlace K,
+      LinearIndependent (completion K p) (fun i ↦ (1 : completion K p) ⊗ₜ[K] v i) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearIndependent_one_tmul_iff (L := completion K (witnessPlace K)) v).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearIndependent_one_tmul_iff (L := completion K p) v).mpr hp
+
+/-- Linear independence of a fixed family over `F(t)` is certified at any one completed place. -/
+theorem rationalFunction_linearIndependent_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    {ι : Type x} (v : ι → M) :
+    LinearIndependent (RatFunc F) v ↔ ∃ p : RationalFunctionPlace F,
+      LinearIndependent (rationalFunctionCompletion F p)
+        (fun i ↦ (1 : rationalFunctionCompletion F p) ⊗ₜ[RatFunc F] v i) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearIndependent_one_tmul_iff (L := rationalFunctionCompletion F .infinite) v).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearIndependent_one_tmul_iff (L := rationalFunctionCompletion F p) v).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

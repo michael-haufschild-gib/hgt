@@ -397,10 +397,10 @@ theorem affineEigenbranch_secondDerivative_eq
     linear_combination hcoeff
   exact sub_eq_zero.mp ((mul_eq_zero.mp hfactor).resolve_left hPne)
 
-/-- A branchwise linear spectral relation annihilates the exact second-order
-interaction response.  This converts an analytic relation among actual
-eigenvalues into a finite rational identity in unperturbed gaps. -/
-theorem affineEigenbranch_linear_relation_secondOrder
+/-- A branchwise linear spectral action which is locally constant annihilates
+the exact second-order interaction response.  The constant may be arbitrary:
+only derivatives enter the response identity. -/
+theorem affineEigenbranch_constant_action_secondOrder
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (energy : ι → ℂ) (hinj : Function.Injective energy)
     (V : Matrix ι ι ℂ) (hVdiag : ∀ i, V i i = 0)
@@ -412,13 +412,14 @@ theorem affineEigenbranch_linear_relation_secondOrder
         ∀ᶠ g in 𝓝 0,
           matrixCharpolyRelation
             (Matrix.diagonal energy + g • V, branch i g) = 0)
+    (target : ℂ)
     (hrelation :
       ∀ᶠ g in 𝓝 0,
-        ∑ i, coefficient i * branch i g = 0) :
+        ∑ i, coefficient i * branch i g = target) :
     ∑ i, coefficient i *
         (∑ j ∈ Finset.univ.erase i,
           V i j * V j i / (energy i - energy j)) = 0 := by
-  let F : ℂ → ℂ := fun g => ∑ i, coefficient i * branch i g
+  let F : ℂ → ℂ := fun g => (∑ i, coefficient i * branch i g) - target
   let F₁ : ℂ → ℂ := fun g =>
     ∑ i, coefficient i * deriv (branch i) g
   have hbranchEventually :
@@ -433,14 +434,14 @@ theorem affineEigenbranch_linear_relation_secondOrder
     exact fun i => hg i (Finset.mem_univ i)
   have hderivF : deriv F =ᶠ[𝓝 0] F₁ := by
     filter_upwards [hbranchEventually] with g hg
-    have hF :
-        HasDerivAt F
+    have hFsum :
+        HasDerivAt (fun z => ∑ i, coefficient i * branch i z)
           (∑ i, coefficient i * deriv (branch i) g) g := by
       apply HasDerivAt.fun_sum
       intro i hi
       exact (hg i).differentiableAt.hasDerivAt.const_mul
         (coefficient i)
-    exact hF.deriv
+    exact (hFsum.sub_const target).deriv
   have hF₁deriv :
       HasDerivAt F₁
         (∑ i, coefficient i * deriv (deriv (branch i)) 0) 0 := by
@@ -450,7 +451,8 @@ theorem affineEigenbranch_linear_relation_secondOrder
       (coefficient i)
   have hFzero : F =ᶠ[𝓝 0] fun _ => 0 := by
     filter_upwards [hrelation] with g hg
-    simpa [F] using hg
+    simp only [F]
+    exact sub_eq_zero.mpr hg
   have hF₁zero : F₁ =ᶠ[𝓝 0] fun _ => 0 := by
     have hderivZero : deriv F =ᶠ[𝓝 0] fun _ => 0 := by
       simpa using hFzero.deriv
@@ -484,6 +486,29 @@ theorem affineEigenbranch_linear_relation_secondOrder
             ring
       _ = 0 := hsecondRelation
   exact (mul_eq_zero.mp htwice).resolve_left (by norm_num)
+
+/-- A zero-valued branchwise linear relation is the special case of an
+arbitrary locally constant spectral action. -/
+theorem affineEigenbranch_linear_relation_secondOrder
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (energy : ι → ℂ) (hinj : Function.Injective energy)
+    (V : Matrix ι ι ℂ) (hVdiag : ∀ i, V i i = 0)
+    (coefficient : ι → ℂ) (branch : ι → ℂ → ℂ)
+    (hbranch : ∀ i, AnalyticAt ℂ (branch i) 0)
+    (hbase : ∀ i, branch i 0 = energy i)
+    (hroot :
+      ∀ i,
+        ∀ᶠ g in nhds 0,
+          matrixCharpolyRelation
+            (Matrix.diagonal energy + g • V, branch i g) = 0)
+    (hrelation :
+      ∀ᶠ g in nhds 0,
+        ∑ i, coefficient i * branch i g = 0) :
+    ∑ i, coefficient i *
+        (∑ j ∈ Finset.univ.erase i,
+          V i j * V j i / (energy i - energy j)) = 0 := by
+  exact affineEigenbranch_constant_action_secondOrder energy hinj V hVdiag
+    coefficient branch hbranch hbase hroot 0 hrelation
 
 end
 

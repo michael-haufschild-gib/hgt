@@ -141,4 +141,88 @@ theorem rationalFunction_algebra_finitePresentation_iff_forall_place (F : Type u
     exact (algebra_finitePresentation_iff_tensorProduct_finitePresentation
       (L := rationalFunctionCompletion F .infinite)).mpr (h .infinite)
 
+/-- Finite generation of a number-field module can be certified at one completion. -/
+theorem numberField_module_finite_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M] :
+    Module.Finite K M ↔ ∃ p : NumberFieldPlace K,
+      Module.Finite (completion K p) (completion K p ⊗[K] M) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (module_finite_iff_tensorProduct_finite (L := completion K (witnessPlace K))).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (module_finite_iff_tensorProduct_finite (L := completion K p)).mpr hp
+
+/-- Finite generation of an `F(t)`-module can be certified at one completion. -/
+theorem rationalFunction_module_finite_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M] :
+    Module.Finite (RatFunc F) M ↔ ∃ p : RationalFunctionPlace F,
+      Module.Finite (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] M) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (module_finite_iff_tensorProduct_finite
+        (L := rationalFunctionCompletion F .infinite)).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (module_finite_iff_tensorProduct_finite
+      (L := rationalFunctionCompletion F p)).mpr hp
+
+/-- Finite type of a number-field algebra can be certified at one completion. -/
+theorem numberField_algebra_finiteType_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] :
+    Algebra.FiniteType K A ↔ ∃ p : NumberFieldPlace K,
+      Algebra.FiniteType (completion K p) (completion K p ⊗[K] A) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_finiteType_iff_tensorProduct_finiteType
+        (L := completion K (witnessPlace K))).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_finiteType_iff_tensorProduct_finiteType (L := completion K p)).mpr hp
+
+/-- Finite type of an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_algebra_finiteType_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] :
+    Algebra.FiniteType (RatFunc F) A ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.FiniteType (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] A) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_finiteType_iff_tensorProduct_finiteType
+        (L := rationalFunctionCompletion F .infinite)).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_finiteType_iff_tensorProduct_finiteType
+      (L := rationalFunctionCompletion F p)).mpr hp
+
+/-- Finite presentation of a number-field algebra can be certified at one completion. -/
+theorem numberField_algebra_finitePresentation_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] :
+    Algebra.FinitePresentation K A ↔ ∃ p : NumberFieldPlace K,
+      Algebra.FinitePresentation (completion K p) (completion K p ⊗[K] A) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_finitePresentation_iff_tensorProduct_finitePresentation
+        (L := completion K (witnessPlace K))).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_finitePresentation_iff_tensorProduct_finitePresentation
+      (L := completion K p)).mpr hp
+
+/-- Finite presentation of an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_algebra_finitePresentation_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] :
+    Algebra.FinitePresentation (RatFunc F) A ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.FinitePresentation (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] A) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_finitePresentation_iff_tensorProduct_finitePresentation
+        (L := rationalFunctionCompletion F .infinite)).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_finitePresentation_iff_tensorProduct_finitePresentation
+      (L := rationalFunctionCompletion F p)).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

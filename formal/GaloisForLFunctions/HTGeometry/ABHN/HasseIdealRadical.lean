@@ -55,4 +55,22 @@ theorem rationalFunction_ideal_isRadical_of_forall_place (F : Type u)
   exact ideal_isRadical_of_tensorProduct_map_isRadical
     (L := rationalFunctionCompletion F .infinite) I (h .infinite)
 
+/-- If an ideal becomes radical at one number-field completion, then it is radical globally. -/
+theorem numberField_ideal_isRadical_of_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] (I : Ideal A) :
+    (∃ p : NumberFieldPlace K,
+      (I.map (algebraMap A (completion K p ⊗[K] A))).IsRadical) → I.IsRadical := by
+  rintro ⟨p, hp⟩
+  exact ideal_isRadical_of_tensorProduct_map_isRadical (L := completion K p) I hp
+
+/-- If an ideal becomes radical at one `F(t)`-completion, then it is radical globally. -/
+theorem rationalFunction_ideal_isRadical_of_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] (I : Ideal A) :
+    (∃ p : RationalFunctionPlace F,
+      (I.map (algebraMap A
+        (rationalFunctionCompletion F p ⊗[RatFunc F] A))).IsRadical) → I.IsRadical := by
+  rintro ⟨p, hp⟩
+  exact ideal_isRadical_of_tensorProduct_map_isRadical
+    (L := rationalFunctionCompletion F p) I hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

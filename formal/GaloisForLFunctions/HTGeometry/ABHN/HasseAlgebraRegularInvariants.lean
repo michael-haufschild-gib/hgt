@@ -136,4 +136,93 @@ theorem rationalFunction_regularNorm_eq_zero_iff_forall_place
             (L := rationalFunctionCompletion F .infinite) A a).symm
       _ = 0 := h .infinite
 
+/-- Vanishing of regular trace over a number field can be certified at one completion. -/
+theorem numberField_regularTrace_eq_zero_iff_exists_place (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, w} K) (a : A.carrier) :
+    LinearMap.trace K A.carrier (LinearMap.mulLeft K a) = 0 ↔ ∃ p : NumberFieldPlace K,
+      LinearMap.trace (completion K p) (completion K p ⊗[K] A.carrier)
+        (LinearMap.mulLeft (completion K p) (numberFieldLocalScalarExtensionMap K p A a)) = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberField_regularTrace_eq_zero_iff_forall_place K A a).mp h (witnessPlace K)⟩
+  · rintro ⟨p, hp⟩
+    apply FaithfulSMul.algebraMap_injective K (completion K p)
+    calc
+      algebraMap K (completion K p)
+          (LinearMap.trace K A.carrier (LinearMap.mulLeft K a)) =
+          LinearMap.trace (completion K p) (completion K p ⊗[K] A.carrier)
+            (LinearMap.mulLeft (completion K p)
+              (numberFieldLocalScalarExtensionMap K p A a)) := by
+        simpa only [numberFieldLocalScalarExtensionMap] using
+          (scalarExtensionMap_regularTrace (L := completion K p) A a).symm
+      _ = algebraMap K (completion K p) 0 := by simpa using hp
+
+/-- Vanishing of regular norm over a number field can be certified at one completion. -/
+theorem numberField_regularNorm_eq_zero_iff_exists_place (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, w} K) (a : A.carrier) :
+    LinearMap.det (LinearMap.mulLeft K a) = 0 ↔ ∃ p : NumberFieldPlace K,
+      LinearMap.det (LinearMap.mulLeft (completion K p)
+        (numberFieldLocalScalarExtensionMap K p A a)) = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberField_regularNorm_eq_zero_iff_forall_place K A a).mp h (witnessPlace K)⟩
+  · rintro ⟨p, hp⟩
+    apply FaithfulSMul.algebraMap_injective K (completion K p)
+    calc
+      algebraMap K (completion K p) (LinearMap.det (LinearMap.mulLeft K a)) =
+          LinearMap.det (LinearMap.mulLeft (completion K p)
+            (numberFieldLocalScalarExtensionMap K p A a)) := by
+        simpa only [numberFieldLocalScalarExtensionMap] using
+          (scalarExtensionMap_regularNorm (L := completion K p) A a).symm
+      _ = algebraMap K (completion K p) 0 := by simpa using hp
+
+/-- Vanishing of regular trace over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_regularTrace_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F)) (a : A.carrier) :
+    LinearMap.trace (RatFunc F) A.carrier (LinearMap.mulLeft (RatFunc F) a) = 0 ↔
+      ∃ p : RationalFunctionPlace F,
+        LinearMap.trace (rationalFunctionCompletion F p)
+          (rationalFunctionCompletion F p ⊗[RatFunc F] A.carrier)
+            (LinearMap.mulLeft (rationalFunctionCompletion F p)
+              (rationalFunctionLocalScalarExtensionMap F p A a)) = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunction_regularTrace_eq_zero_iff_forall_place F A a).mp h .infinite⟩
+  · rintro ⟨p, hp⟩
+    apply FaithfulSMul.algebraMap_injective (RatFunc F) (rationalFunctionCompletion F p)
+    calc
+      algebraMap (RatFunc F) (rationalFunctionCompletion F p)
+          (LinearMap.trace (RatFunc F) A.carrier (LinearMap.mulLeft (RatFunc F) a)) =
+          LinearMap.trace (rationalFunctionCompletion F p)
+            (rationalFunctionCompletion F p ⊗[RatFunc F] A.carrier)
+              (LinearMap.mulLeft (rationalFunctionCompletion F p)
+                (rationalFunctionLocalScalarExtensionMap F p A a)) := by
+        simpa only [rationalFunctionLocalScalarExtensionMap] using
+          (scalarExtensionMap_regularTrace (L := rationalFunctionCompletion F p) A a).symm
+      _ = algebraMap (RatFunc F) (rationalFunctionCompletion F p) 0 := by simpa using hp
+
+/-- Vanishing of regular norm over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_regularNorm_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F)) (a : A.carrier) :
+    LinearMap.det (LinearMap.mulLeft (RatFunc F) a) = 0 ↔ ∃ p : RationalFunctionPlace F,
+      LinearMap.det (LinearMap.mulLeft (rationalFunctionCompletion F p)
+        (rationalFunctionLocalScalarExtensionMap F p A a)) = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunction_regularNorm_eq_zero_iff_forall_place F A a).mp h .infinite⟩
+  · rintro ⟨p, hp⟩
+    apply FaithfulSMul.algebraMap_injective (RatFunc F) (rationalFunctionCompletion F p)
+    calc
+      algebraMap (RatFunc F) (rationalFunctionCompletion F p)
+          (LinearMap.det (LinearMap.mulLeft (RatFunc F) a)) =
+          LinearMap.det (LinearMap.mulLeft (rationalFunctionCompletion F p)
+            (rationalFunctionLocalScalarExtensionMap F p A a)) := by
+        simpa only [rationalFunctionLocalScalarExtensionMap] using
+          (scalarExtensionMap_regularNorm (L := rationalFunctionCompletion F p) A a).symm
+      _ = algebraMap (RatFunc F) (rationalFunctionCompletion F p) 0 := by simpa using hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

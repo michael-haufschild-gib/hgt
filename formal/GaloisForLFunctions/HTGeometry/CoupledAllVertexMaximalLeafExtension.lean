@@ -37,6 +37,46 @@ theorem localExtensionSliceParameter_continuous
           (Fintype.equivFin (Sum ρ (ρ × ρ))
             (Sum.inr (r, s)))
 
+/-- The canonical coordinate decoder for the full real local-extension
+slice is real analytic. -/
+theorem localExtensionSliceParameter_analyticAt
+    {ρ : Type*} [Fintype ρ] [Nonempty ρ]
+    (p : Fin (localExtensionSliceParameterCount ρ) → ℝ) :
+    AnalyticAt ℝ
+      (localExtensionSliceParameter :
+        (Fin (localExtensionSliceParameterCount ρ) → ℝ) →
+          (ρ → ℝ) × Matrix ρ ρ ℝ) p := by
+  unfold localExtensionSliceParameter
+  apply AnalyticAt.prod
+  · apply AnalyticAt.pi
+    intro r
+    exact (ContinuousLinearMap.proj (R := ℝ)
+      (Fintype.equivFin (Sum ρ (ρ × ρ)) (Sum.inl r))).analyticAt p
+  · apply AnalyticAt.pi
+    intro r
+    apply AnalyticAt.pi
+    intro s
+    exact (ContinuousLinearMap.proj (R := ℝ)
+      (Fintype.equivFin (Sum ρ (ρ × ρ)) (Sum.inr (r, s)))).analyticAt p
+
+/-- The canonical coordinate encoder for the full real local-extension
+slice is continuous. -/
+theorem localExtensionSliceCoordinates_continuous
+    {ρ : Type*} [Fintype ρ] [Nonempty ρ] :
+    Continuous
+      (localExtensionSliceCoordinates :
+        ((ρ → ℝ) × Matrix ρ ρ ℝ) →
+          (Fin (localExtensionSliceParameterCount ρ) → ℝ)) := by
+  unfold localExtensionSliceCoordinates
+  apply continuous_pi
+  intro i
+  cases h : (Fintype.equivFin (Sum ρ (ρ × ρ))).symm i with
+  | inl r =>
+      exact (continuous_apply r).comp continuous_fst
+  | inr rs =>
+      exact (continuous_apply rs.2).comp
+        ((continuous_apply rs.1).comp continuous_snd)
+
 /-- Complexification and symmetrization of a real local-extension parameter
 is continuous for the product topologies used by the physical chart. -/
 theorem realLocalExtensionParameter_continuous

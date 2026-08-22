@@ -298,4 +298,94 @@ theorem rationalFunction_algHom_bijective_iff_forall_place (F : Type u)
     exact (algHom_bijective_iff_baseChange_bijective
       (L := rationalFunctionCompletion F .infinite) f).mpr (h .infinite)
 
+/-- Injectivity of an algebra homomorphism over a number field is detected at one completion. -/
+theorem numberField_algHom_injective_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type v} {B : Type w}
+    [Ring A] [Algebra K A] [Ring B] [Algebra K B] (f : A →ₐ[K] B) :
+    Function.Injective f ↔ ∃ p : NumberFieldPlace K,
+      Function.Injective (algHomBaseChange (L := completion K p) f) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algHom_injective_iff_baseChange_injective (L := completion K (witnessPlace K)) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algHom_injective_iff_baseChange_injective (L := completion K p) f).mpr hp
+
+/-- Surjectivity of an algebra homomorphism over a number field is detected at one completion. -/
+theorem numberField_algHom_surjective_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type v} {B : Type w}
+    [Ring A] [Algebra K A] [Ring B] [Algebra K B] (f : A →ₐ[K] B) :
+    Function.Surjective f ↔ ∃ p : NumberFieldPlace K,
+      Function.Surjective (algHomBaseChange (L := completion K p) f) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algHom_surjective_iff_baseChange_surjective (L := completion K (witnessPlace K)) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algHom_surjective_iff_baseChange_surjective (L := completion K p) f).mpr hp
+
+/-- Bijectivity of an algebra homomorphism over a number field is detected at one completion. -/
+theorem numberField_algHom_bijective_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type v} {B : Type w}
+    [Ring A] [Algebra K A] [Ring B] [Algebra K B] (f : A →ₐ[K] B) :
+    Function.Bijective f ↔ ∃ p : NumberFieldPlace K,
+      Function.Bijective (algHomBaseChange (L := completion K p) f) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algHom_bijective_iff_baseChange_bijective (L := completion K (witnessPlace K)) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algHom_bijective_iff_baseChange_bijective (L := completion K p) f).mpr hp
+
+/-- Injectivity of an algebra homomorphism over a rational function field is detected at one
+finite or infinite completion. -/
+theorem rationalFunction_algHom_injective_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type v} {B : Type w}
+    [Ring A] [Algebra (RatFunc F) A] [Ring B] [Algebra (RatFunc F) B]
+    (f : A →ₐ[RatFunc F] B) :
+    Function.Injective f ↔ ∃ p : RationalFunctionPlace F,
+      Function.Injective (algHomBaseChange (L := rationalFunctionCompletion F p) f) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algHom_injective_iff_baseChange_injective
+        (L := rationalFunctionCompletion F .infinite) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algHom_injective_iff_baseChange_injective
+      (L := rationalFunctionCompletion F p) f).mpr hp
+
+/-- Surjectivity of an algebra homomorphism over a rational function field is detected at one
+finite or infinite completion. -/
+theorem rationalFunction_algHom_surjective_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type v} {B : Type w}
+    [Ring A] [Algebra (RatFunc F) A] [Ring B] [Algebra (RatFunc F) B]
+    (f : A →ₐ[RatFunc F] B) :
+    Function.Surjective f ↔ ∃ p : RationalFunctionPlace F,
+      Function.Surjective (algHomBaseChange (L := rationalFunctionCompletion F p) f) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algHom_surjective_iff_baseChange_surjective
+        (L := rationalFunctionCompletion F .infinite) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algHom_surjective_iff_baseChange_surjective
+      (L := rationalFunctionCompletion F p) f).mpr hp
+
+/-- Bijectivity of an algebra homomorphism over a rational function field is detected at one
+finite or infinite completion. -/
+theorem rationalFunction_algHom_bijective_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type v} {B : Type w}
+    [Ring A] [Algebra (RatFunc F) A] [Ring B] [Algebra (RatFunc F) B]
+    (f : A →ₐ[RatFunc F] B) :
+    Function.Bijective f ↔ ∃ p : RationalFunctionPlace F,
+      Function.Bijective (algHomBaseChange (L := rationalFunctionCompletion F p) f) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algHom_bijective_iff_baseChange_bijective
+        (L := rationalFunctionCompletion F .infinite) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algHom_bijective_iff_baseChange_bijective
+      (L := rationalFunctionCompletion F p) f).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

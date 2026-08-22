@@ -62,4 +62,28 @@ theorem rationalFunction_ideal_fg_iff_forall_place (F : Type u)
     exact (ideal_fg_iff_tensorProduct_map_fg
       (L := rationalFunctionCompletion F .infinite) I).mpr (h .infinite)
 
+/-- Finite generation of a fixed ideal in a number-field algebra is certified at one completion. -/
+theorem numberField_ideal_fg_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] (I : Ideal A) :
+    I.FG ↔ ∃ p : NumberFieldPlace K,
+      (I.map (algebraMap A (completion K p ⊗[K] A))).FG := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (ideal_fg_iff_tensorProduct_map_fg (L := completion K (witnessPlace K)) I).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_fg_iff_tensorProduct_map_fg (L := completion K p) I).mpr hp
+
+/-- Finite generation of a fixed ideal in an `F(t)`-algebra is certified at one completion. -/
+theorem rationalFunction_ideal_fg_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] (I : Ideal A) :
+    I.FG ↔ ∃ p : RationalFunctionPlace F,
+      (I.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A))).FG := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (ideal_fg_iff_tensorProduct_map_fg (L := rationalFunctionCompletion F .infinite) I).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_fg_iff_tensorProduct_map_fg (L := rationalFunctionCompletion F p) I).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

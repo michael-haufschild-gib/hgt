@@ -46,4 +46,27 @@ theorem rationalFunctionMatrix_isSymm_iff_forall_place
     exact (matrix_isSymm_iff_map
       (L := rationalFunctionCompletion F .infinite) M).mpr (h .infinite)
 
+/-- Symmetry of a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_isSymm_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) (M : Matrix n n K) :
+    M.IsSymm ↔ ∃ p : NumberFieldPlace K, (M.map (algebraMap K (completion K p))).IsSymm := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_isSymm_iff_map (L := completion K (witnessPlace K)) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isSymm_iff_map (L := completion K p) M).mpr hp
+
+/-- Symmetry of an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_isSymm_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) (M : Matrix n n (RatFunc F)) :
+    M.IsSymm ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))).IsSymm := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_isSymm_iff_map (L := rationalFunctionCompletion F .infinite) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isSymm_iff_map (L := rationalFunctionCompletion F p) M).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

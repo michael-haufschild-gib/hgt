@@ -57,4 +57,32 @@ theorem rationalFunctionLocalScalarExtensionMap_isNilpotent_iff_forall_place
     exact (scalarExtensionMap_isNilpotent_iff
       (L := rationalFunctionCompletion F .infinite) A a).mpr (h .infinite)
 
+/-- Nilpotence in a number-field CSA is detected at one completion. -/
+theorem numberFieldLocalScalarExtensionMap_isNilpotent_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, v} K) (a : A.carrier) :
+    IsNilpotent a ↔ ∃ p : NumberFieldPlace K,
+      IsNilpotent (numberFieldLocalScalarExtensionMap K p A a) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_isNilpotent_iff
+        (L := completion K (witnessPlace K)) A a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_isNilpotent_iff (L := completion K p) A a).mpr hp
+
+/-- Nilpotence in a rational-function-field CSA is detected at one finite or infinite
+completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_isNilpotent_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, v} (RatFunc F)) (a : A.carrier) :
+    IsNilpotent a ↔ ∃ p : RationalFunctionPlace F,
+      IsNilpotent (rationalFunctionLocalScalarExtensionMap F p A a) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_isNilpotent_iff
+        (L := rationalFunctionCompletion F .infinite) A a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_isNilpotent_iff
+      (L := rationalFunctionCompletion F p) A a).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

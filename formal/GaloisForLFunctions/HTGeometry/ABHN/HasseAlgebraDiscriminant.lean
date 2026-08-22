@@ -182,4 +182,97 @@ theorem rationalFunction_algebra_trace_eq_iff_forall_place (F : Type u) [Field F
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) x c).mpr
       (h RationalFunctionPlace.infinite)
 
+/-- A prescribed discriminant of a number-field algebra can be certified at one completion. -/
+theorem numberField_algebra_discr_eq_iff_exists_place (K : Type u) [Field K] [NumberField K]
+    {B : Type w} [CommRing B] [Algebra K B] [Module.Free K B] [Module.Finite K B]
+    {ι : Type x} [Fintype ι] [DecidableEq ι] (e : Module.Basis ι K B) (c : K) :
+    Algebra.discr K e = c ↔ ∃ p : NumberFieldPlace K,
+      Algebra.discr (completion K p)
+        (e.baseChange (completion K p) : Module.Basis ι (completion K p) (completion K p ⊗[K] B)) =
+          algebraMap K (completion K p) c := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_discr_eq_iff_baseChange_eq (L := completion K (witnessPlace K)) e c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_discr_eq_iff_baseChange_eq (L := completion K p) e c).mpr hp
+
+/-- Discriminant nonvanishing of a number-field algebra can be certified at one completion. -/
+theorem numberField_algebra_discr_ne_zero_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {B : Type w} [CommRing B] [Algebra K B]
+    [Module.Free K B] [Module.Finite K B] {ι : Type x} [Fintype ι] [DecidableEq ι]
+    (e : Module.Basis ι K B) :
+    Algebra.discr K e ≠ 0 ↔ ∃ p : NumberFieldPlace K,
+      Algebra.discr (completion K p)
+        (e.baseChange (completion K p) : Module.Basis ι (completion K p) (completion K p ⊗[K] B)) ≠ 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_discr_ne_zero_iff_baseChange_ne_zero (L := completion K (witnessPlace K)) e).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_discr_ne_zero_iff_baseChange_ne_zero (L := completion K p) e).mpr hp
+
+/-- A prescribed discriminant over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_algebra_discr_eq_iff_exists_place (F : Type u) [Field F] [Finite F]
+    {B : Type w} [CommRing B] [Algebra (RatFunc F) B]
+    [Module.Free (RatFunc F) B] [Module.Finite (RatFunc F) B]
+    {ι : Type x} [Fintype ι] [DecidableEq ι] (e : Module.Basis ι (RatFunc F) B) (c : RatFunc F) :
+    Algebra.discr (RatFunc F) e = c ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.discr (rationalFunctionCompletion F p)
+        (e.baseChange (rationalFunctionCompletion F p) : Module.Basis ι (rationalFunctionCompletion F p)
+          (rationalFunctionCompletion F p ⊗[RatFunc F] B)) =
+            algebraMap (RatFunc F) (rationalFunctionCompletion F p) c := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_discr_eq_iff_baseChange_eq (L := rationalFunctionCompletion F .infinite) e c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_discr_eq_iff_baseChange_eq (L := rationalFunctionCompletion F p) e c).mpr hp
+
+/-- Discriminant nonvanishing over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_algebra_discr_ne_zero_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {B : Type w} [CommRing B] [Algebra (RatFunc F) B]
+    [Module.Free (RatFunc F) B] [Module.Finite (RatFunc F) B]
+    {ι : Type x} [Fintype ι] [DecidableEq ι] (e : Module.Basis ι (RatFunc F) B) :
+    Algebra.discr (RatFunc F) e ≠ 0 ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.discr (rationalFunctionCompletion F p)
+        (e.baseChange (rationalFunctionCompletion F p) : Module.Basis ι (rationalFunctionCompletion F p)
+          (rationalFunctionCompletion F p ⊗[RatFunc F] B)) ≠ 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_discr_ne_zero_iff_baseChange_ne_zero
+        (L := rationalFunctionCompletion F .infinite) e).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_discr_ne_zero_iff_baseChange_ne_zero (L := rationalFunctionCompletion F p) e).mpr hp
+
+/-- A prescribed trace of a number-field algebra element can be certified at one completion. -/
+theorem numberField_algebra_trace_eq_iff_exists_place (K : Type u) [Field K] [NumberField K]
+    {B : Type w} [CommRing B] [Algebra K B] [Module.Free K B] [Module.Finite K B]
+    (x : B) (c : K) :
+    Algebra.trace K B x = c ↔ ∃ p : NumberFieldPlace K,
+      Algebra.trace (completion K p) (completion K p ⊗[K] B) (1 ⊗ₜ[K] x) =
+        algebraMap K (completion K p) c := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_trace_eq_iff_baseChange_eq (L := completion K (witnessPlace K)) x c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_trace_eq_iff_baseChange_eq (L := completion K p) x c).mpr hp
+
+/-- A prescribed trace over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_algebra_trace_eq_iff_exists_place (F : Type u) [Field F] [Finite F]
+    {B : Type w} [CommRing B] [Algebra (RatFunc F) B]
+    [Module.Free (RatFunc F) B] [Module.Finite (RatFunc F) B]
+    (x : B) (c : RatFunc F) :
+    Algebra.trace (RatFunc F) B x = c ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.trace (rationalFunctionCompletion F p) (rationalFunctionCompletion F p ⊗[RatFunc F] B)
+        (1 ⊗ₜ[RatFunc F] x) = algebraMap (RatFunc F) (rationalFunctionCompletion F p) c := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_trace_eq_iff_baseChange_eq (L := rationalFunctionCompletion F .infinite) x c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_trace_eq_iff_baseChange_eq (L := rationalFunctionCompletion F p) x c).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

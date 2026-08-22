@@ -61,4 +61,32 @@ theorem rationalFunction_submodule_lt_iff_forall_place (F : Type u)
     exact (submodule_lt_iff_baseChange_lt (L := rationalFunctionCompletion F .infinite) P Q).mpr
       (h .infinite)
 
+/-- Strict containment of number-field submodules can be certified at one completion. -/
+theorem numberField_submodule_lt_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (P Q : Submodule K M) :
+    P < Q ↔ ∃ p : NumberFieldPlace K,
+      P.baseChange (completion K p) < Q.baseChange (completion K p) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (submodule_lt_iff_baseChange_lt (L := completion K (witnessPlace K)) P Q).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (submodule_lt_iff_baseChange_lt (L := completion K p) P Q).mpr hp
+
+/-- Strict containment of `F(t)`-submodules can be certified at one completion. -/
+theorem rationalFunction_submodule_lt_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (P Q : Submodule (RatFunc F) M) :
+    P < Q ↔ ∃ p : RationalFunctionPlace F,
+      P.baseChange (rationalFunctionCompletion F p) < Q.baseChange
+        (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (submodule_lt_iff_baseChange_lt
+        (L := rationalFunctionCompletion F .infinite) P Q).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (submodule_lt_iff_baseChange_lt (L := rationalFunctionCompletion F p) P Q).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

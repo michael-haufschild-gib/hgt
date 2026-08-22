@@ -75,4 +75,29 @@ theorem rationalFunction_subalgebra_eq_top_iff_forall_place (F : Type u)
     exact (subalgebra_eq_top_iff_baseChange_eq_top
       (L := rationalFunctionCompletion F .infinite) C).mpr (h .infinite)
 
+/-- Generation of a fixed number-field algebra by a subalgebra is certified at one completion. -/
+theorem numberField_subalgebra_eq_top_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [Ring A] [Algebra K A]
+    (C : Subalgebra K A) : C = ⊤ ↔
+      ∃ p : NumberFieldPlace K, C.baseChange (completion K p) = ⊤ := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (subalgebra_eq_top_iff_baseChange_eq_top (L := completion K (witnessPlace K)) C).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (subalgebra_eq_top_iff_baseChange_eq_top (L := completion K p) C).mpr hp
+
+/-- Generation of a fixed `F(t)`-algebra by a subalgebra is certified at one completion. -/
+theorem rationalFunction_subalgebra_eq_top_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [Ring A] [Algebra (RatFunc F) A]
+    (C : Subalgebra (RatFunc F) A) : C = ⊤ ↔
+      ∃ p : RationalFunctionPlace F, C.baseChange (rationalFunctionCompletion F p) = ⊤ := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (subalgebra_eq_top_iff_baseChange_eq_top
+        (L := rationalFunctionCompletion F .infinite) C).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (subalgebra_eq_top_iff_baseChange_eq_top (L := rationalFunctionCompletion F p) C).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

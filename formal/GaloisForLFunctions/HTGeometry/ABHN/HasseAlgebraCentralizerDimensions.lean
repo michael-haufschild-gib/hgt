@@ -95,4 +95,41 @@ theorem rationalFunctionLocalScalarExtensionMap_commutator_ker_finrank_eq_iff_fo
       .infinite]
     exact h .infinite
 
+/-- A prescribed centralizer dimension over a number field can be certified at one completion. -/
+theorem numberFieldLocalScalarExtensionMap_commutator_ker_finrank_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, w} K) (a : A.carrier) (d : ℕ) :
+    Module.finrank K (LinearMap.ker (LinearMap.mulLeft K a - LinearMap.mulRight K a)) = d ↔
+      ∃ p : NumberFieldPlace K,
+        Module.finrank (completion K p)
+          (LinearMap.ker (LinearMap.mulLeft (completion K p)
+            (numberFieldLocalScalarExtensionMap K p A a) - LinearMap.mulRight (completion K p)
+              (numberFieldLocalScalarExtensionMap K p A a))) = d := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberFieldLocalScalarExtensionMap_commutator_ker_finrank_completion K A a
+        (witnessPlace K)).trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (numberFieldLocalScalarExtensionMap_commutator_ker_finrank_completion K A a p).symm.trans hp
+
+/-- A prescribed centralizer dimension over `F(t)` can be certified at one completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_commutator_ker_finrank_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F))
+    (a : A.carrier) (d : ℕ) :
+    Module.finrank (RatFunc F)
+      (LinearMap.ker (LinearMap.mulLeft (RatFunc F) a - LinearMap.mulRight (RatFunc F) a)) = d ↔
+      ∃ p : RationalFunctionPlace F,
+        Module.finrank (rationalFunctionCompletion F p)
+          (LinearMap.ker (LinearMap.mulLeft (rationalFunctionCompletion F p)
+            (rationalFunctionLocalScalarExtensionMap F p A a) -
+              LinearMap.mulRight (rationalFunctionCompletion F p)
+                (rationalFunctionLocalScalarExtensionMap F p A a))) = d := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunctionLocalScalarExtensionMap_commutator_ker_finrank_completion F A a
+        .infinite).trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (rationalFunctionLocalScalarExtensionMap_commutator_ker_finrank_completion F A a p).symm.trans hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

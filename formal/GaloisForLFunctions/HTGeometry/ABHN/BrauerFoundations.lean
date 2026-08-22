@@ -2,6 +2,7 @@ import Mathlib.Algebra.BrauerGroup.Defs
 import Mathlib.Algebra.Central.Basic
 import Mathlib.Algebra.Central.Matrix
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.SimpleRing.Congr
 import Mathlib.RingTheory.SimpleRing.Matrix
 
 /-!
@@ -18,6 +19,24 @@ namespace GaloisForLFunctions.HTGeometry.ABHN
 open MulOpposite
 
 universe u v w
+
+/-- Centrality transports along an algebra equivalence, also when the two algebra carriers live
+in different universes. -/
+theorem isCentral_of_algEquiv {K : Type u} [CommSemiring K]
+    (D : Type v) [Semiring D] [Algebra K D] [Algebra.IsCentral K D]
+    (D' : Type w) [Semiring D'] [Algebra K D'] (e : D ≃ₐ[K] D') : Algebra.IsCentral K D' where
+  out x hx :=
+    have ⟨k, hk⟩ := (Algebra.IsCentral.out (K := K) (D := D))
+      ((MulEquivClass.apply_mem_center_iff e.symm).mpr hx)
+    ⟨k, by simpa [Algebra.ofId] using congr(e $hk)⟩
+
+/-- Transport a central simple algebra along an algebra equivalence. -/
+noncomputable def csaOfAlgEquiv {K : Type u} [Field K] (A : CSA.{u, v} K)
+    (B : Type w) [Ring B] [Algebra K B] (e : A.carrier ≃ₐ[K] B) : CSA.{u, w} K where
+  carrier := B
+  isCentral := isCentral_of_algEquiv A.carrier B e
+  isSimple := IsSimpleRing.of_ringEquiv e.toRingEquiv inferInstance
+  fin_dim := LinearEquiv.finiteDimensional e.toLinearEquiv
 
 /-- The split degree-one central simple algebra over a field. -/
 noncomputable def scalarCSA (K : Type u) [Field K] : CSA.{u, u} K where

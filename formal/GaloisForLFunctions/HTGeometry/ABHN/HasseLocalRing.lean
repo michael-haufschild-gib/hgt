@@ -50,4 +50,24 @@ theorem rationalFunction_isLocalRing_of_forall_place (F : Type u)
   exact isLocalRing_of_tensorProduct_isLocalRing
     (K := RatFunc F) (L := rationalFunctionCompletion F .infinite) (A := A)
 
+/-- If a scalar extension at one number-field completion is local, then the global algebra is
+local. -/
+theorem numberField_isLocalRing_of_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] :
+    (∃ p : NumberFieldPlace K, IsLocalRing (completion K p ⊗[K] A)) → IsLocalRing A := by
+  rintro ⟨p, hp⟩
+  letI : IsLocalRing (completion K p ⊗[K] A) := hp
+  exact isLocalRing_of_tensorProduct_isLocalRing
+    (K := K) (L := completion K p) (A := A)
+
+/-- If a scalar extension at one `F(t)`-completion is local, then the global algebra is local. -/
+theorem rationalFunction_isLocalRing_of_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] :
+    (∃ p : RationalFunctionPlace F,
+      IsLocalRing (rationalFunctionCompletion F p ⊗[RatFunc F] A)) → IsLocalRing A := by
+  rintro ⟨p, hp⟩
+  letI : IsLocalRing (rationalFunctionCompletion F p ⊗[RatFunc F] A) := hp
+  exact isLocalRing_of_tensorProduct_isLocalRing
+    (K := RatFunc F) (L := rationalFunctionCompletion F p) (A := A)
+
 end GaloisForLFunctions.HTGeometry.ABHN

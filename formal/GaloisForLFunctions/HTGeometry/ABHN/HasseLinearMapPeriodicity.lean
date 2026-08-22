@@ -120,4 +120,59 @@ theorem rationalFunction_linearMap_involutive_iff_forall_place (F : Type u)
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) f).mpr
       (h RationalFunctionPlace.infinite)
 
+/-- A prescribed finite order of a number-field endomorphism can be certified at one completion. -/
+theorem numberField_linearMap_pow_eq_id_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (f : M →ₗ[K] M) (n : ℕ) :
+    f ^ n = 1 ↔ ∃ p : NumberFieldPlace K, (f.baseChange (completion K p)) ^ n = 1 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_pow_eq_id_iff_baseChange (L := completion K (witnessPlace K)) f n).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_pow_eq_id_iff_baseChange (L := completion K p) f n).mpr hp
+
+/-- Involutivity of a number-field endomorphism can be certified at one completion. -/
+theorem numberField_linearMap_involutive_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (f : M →ₗ[K] M) :
+    Function.Involutive f ↔ ∃ p : NumberFieldPlace K,
+      Function.Involutive (f.baseChange (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_involutive_iff_baseChange (L := completion K (witnessPlace K)) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_involutive_iff_baseChange (L := completion K p) f).mpr hp
+
+/-- A prescribed finite order of an `F(t)`-endomorphism can be certified at one completion. -/
+theorem rationalFunction_linearMap_pow_eq_id_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (f : M →ₗ[RatFunc F] M) (n : ℕ) :
+    f ^ n = 1 ↔ ∃ p : RationalFunctionPlace F,
+      (f.baseChange (rationalFunctionCompletion F p)) ^ n = 1 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_pow_eq_id_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) f n).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_pow_eq_id_iff_baseChange
+      (L := rationalFunctionCompletion F p) f n).mpr hp
+
+/-- Involutivity of an `F(t)`-endomorphism can be certified at one completion. -/
+theorem rationalFunction_linearMap_involutive_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (f : M →ₗ[RatFunc F] M) :
+    Function.Involutive f ↔ ∃ p : RationalFunctionPlace F,
+      Function.Involutive (f.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_involutive_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_involutive_iff_baseChange
+      (L := rationalFunctionCompletion F p) f).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

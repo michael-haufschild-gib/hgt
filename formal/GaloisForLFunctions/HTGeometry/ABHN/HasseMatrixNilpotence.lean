@@ -136,4 +136,90 @@ theorem rationalFunctionMatrix_isNilpotent_iff_forall_place
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) M).mpr
       (h RationalFunctionPlace.infinite)
 
+/-- Vanishing of a prescribed power of a number-field matrix is detected at one completion. -/
+theorem numberFieldMatrix_pow_eq_zero_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) (d : ℕ) :
+    M ^ d = 0 ↔ ∃ p : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K p))) ^ d = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_pow_eq_zero_iff_map (L := completion K (witnessPlace K)) M d).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_pow_eq_zero_iff_map (L := completion K p) M d).mpr hp
+
+/-- Vanishing of a prescribed power of a rational-function-field matrix is detected at one finite
+or infinite completion. -/
+theorem rationalFunctionMatrix_pow_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) (d : ℕ) :
+    M ^ d = 0 ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) ^ d = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_pow_eq_zero_iff_map (L := rationalFunctionCompletion F .infinite) M d).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_pow_eq_zero_iff_map (L := rationalFunctionCompletion F p) M d).mpr hp
+
+/-- A prescribed unipotence exponent of a number-field matrix is detected at one completion. -/
+theorem numberFieldMatrix_sub_one_pow_eq_zero_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) (d : ℕ) :
+    (M - 1) ^ d = 0 ↔ ∃ p : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K p)) - 1) ^ d = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_sub_one_pow_eq_zero_iff_map
+        (L := completion K (witnessPlace K)) M d).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_sub_one_pow_eq_zero_iff_map (L := completion K p) M d).mpr hp
+
+/-- A prescribed unipotence exponent of a rational-function-field matrix is detected at one
+finite or infinite completion. -/
+theorem rationalFunctionMatrix_sub_one_pow_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) (d : ℕ) :
+    (M - 1) ^ d = 0 ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)) - 1) ^ d = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_sub_one_pow_eq_zero_iff_map
+        (L := rationalFunctionCompletion F .infinite) M d).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_sub_one_pow_eq_zero_iff_map
+      (L := rationalFunctionCompletion F p) M d).mpr hp
+
+/-- Nilpotence of a number-field matrix is detected at one completion. -/
+theorem numberFieldMatrix_isNilpotent_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) :
+    IsNilpotent M ↔ ∃ p : NumberFieldPlace K,
+      IsNilpotent (M.map (algebraMap K (completion K p))) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_isNilpotent_iff_map (L := completion K (witnessPlace K)) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isNilpotent_iff_map (L := completion K p) M).mpr hp
+
+/-- Nilpotence of a rational-function-field matrix is detected at one finite or infinite
+completion. -/
+theorem rationalFunctionMatrix_isNilpotent_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) :
+    IsNilpotent M ↔ ∃ p : RationalFunctionPlace F,
+      IsNilpotent (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_isNilpotent_iff_map
+        (L := rationalFunctionCompletion F .infinite) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isNilpotent_iff_map
+      (L := rationalFunctionCompletion F p) M).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

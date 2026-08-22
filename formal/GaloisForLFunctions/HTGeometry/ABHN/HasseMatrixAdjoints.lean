@@ -113,4 +113,71 @@ theorem rationalFunctionMatrix_isSelfAdjoint_iff_forall_place
     exact (matrix_isSelfAdjoint_iff_map
       (L := rationalFunctionCompletion F .infinite) J A).mpr (h .infinite)
 
+/-- A fixed adjoint-pair relation over a number field can be certified at one completion. -/
+theorem numberFieldMatrix_isAdjointPair_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] {m : Type w} {n : Type x} [Fintype m] [Fintype n]
+    (J : Matrix n n K) (J' : Matrix m m K) (A : Matrix m n K) (A' : Matrix n m K) :
+    Matrix.IsAdjointPair J J' A A' ↔ ∃ p : NumberFieldPlace K,
+      Matrix.IsAdjointPair (J.map (algebraMap K (completion K p)))
+        (J'.map (algebraMap K (completion K p))) (A.map (algebraMap K (completion K p)))
+        (A'.map (algebraMap K (completion K p))) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_isAdjointPair_iff_map
+        (L := completion K (witnessPlace K)) J J' A A').mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isAdjointPair_iff_map (L := completion K p) J J' A A').mpr hp
+
+/-- A fixed adjoint-pair relation over `F(t)` can be certified at one completion. -/
+theorem rationalFunctionMatrix_isAdjointPair_iff_exists_place
+    (F : Type u) [Field F] [Finite F] {m : Type w} {n : Type x} [Fintype m] [Fintype n]
+    (J : Matrix n n (RatFunc F)) (J' : Matrix m m (RatFunc F))
+    (A : Matrix m n (RatFunc F)) (A' : Matrix n m (RatFunc F)) :
+    Matrix.IsAdjointPair J J' A A' ↔ ∃ p : RationalFunctionPlace F,
+      Matrix.IsAdjointPair (J.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)))
+        (J'.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)))
+        (A.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)))
+        (A'.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_isAdjointPair_iff_map
+        (L := rationalFunctionCompletion F .infinite) J J' A A').mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isAdjointPair_iff_map
+      (L := rationalFunctionCompletion F p) J J' A A').mpr hp
+
+/-- Self-adjointness of a number-field matrix relative to a fixed form can be certified at one
+completion. -/
+theorem numberFieldMatrix_isSelfAdjoint_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n]
+    (J A : Matrix n n K) :
+    J.IsSelfAdjoint A ↔ ∃ p : NumberFieldPlace K,
+      (J.map (algebraMap K (completion K p))).IsSelfAdjoint
+        (A.map (algebraMap K (completion K p))) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_isSelfAdjoint_iff_map (L := completion K (witnessPlace K)) J A).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isSelfAdjoint_iff_map (L := completion K p) J A).mpr hp
+
+/-- Self-adjointness of an `F(t)`-matrix relative to a fixed form can be certified at one
+completion. -/
+theorem rationalFunctionMatrix_isSelfAdjoint_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n]
+    (J A : Matrix n n (RatFunc F)) :
+    J.IsSelfAdjoint A ↔ ∃ p : RationalFunctionPlace F,
+      (J.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))).IsSelfAdjoint
+        (A.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_isSelfAdjoint_iff_map
+        (L := rationalFunctionCompletion F .infinite) J A).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isSelfAdjoint_iff_map
+      (L := rationalFunctionCompletion F p) J A).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

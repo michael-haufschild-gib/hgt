@@ -1,5 +1,4 @@
 import GaloisForLFunctions.HTGeometry.HaferkampTerminalBlockEmbedding
-import GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw
 
 open scoped BigOperators ComplexConjugate Matrix
 
@@ -35,8 +34,23 @@ theorem terminalPauliPhaseMatrix_mem_specialUnitary (t : ℝ) :
     terminalPauliPhaseMatrix t ∈ Matrix.specialUnitaryGroup (Bool × Bool) ℂ := by
   rw [Matrix.mem_specialUnitaryGroup_iff]
   refine ⟨?_, terminalPauliPhaseMatrix_det t⟩
-  exact StaticLocalLaboratoryComplexityGrowthLaw.mem_unitaryGroup_diagonal_general
-    (terminalPauliPhaseEigenvalue t) (terminalPauliPhaseEigenvalue_norm t)
+  rw [terminalPauliPhaseMatrix, Matrix.mem_unitaryGroup_iff,
+    Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose,
+    Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+  congr 1
+  funext x
+  have hsq : Complex.normSq (terminalPauliPhaseEigenvalue t x) = 1 := by
+    have hnorm := terminalPauliPhaseEigenvalue_norm t x
+    have hnormsq : ‖terminalPauliPhaseEigenvalue t x‖ ^ 2 = 1 := by
+      rw [hnorm]
+      norm_num
+    rw [← Complex.normSq_eq_norm_sq] at hnormsq
+    exact hnormsq
+  have hmul : terminalPauliPhaseEigenvalue t x *
+      (starRingEnd ℂ) (terminalPauliPhaseEigenvalue t x) = 1 := by
+    rw [Complex.mul_conj, hsq]
+    norm_num
+  simpa [Pi.star_apply] using hmul
 
 /-- The local determinant-one phase as an actual `SU(4)` path. -/
 def terminalPauliPhase (t : ℝ) : Matrix.specialUnitaryGroup (Bool × Bool) ℂ :=

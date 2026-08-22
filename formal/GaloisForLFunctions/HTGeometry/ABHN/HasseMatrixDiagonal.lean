@@ -129,4 +129,79 @@ theorem rationalFunctionMatrix_hasOrthogonalCols_iff_forall_place
     exact (matrix_hasOrthogonalCols_iff_map
       (L := rationalFunctionCompletion F .infinite) M).mpr (h .infinite)
 
+/-- Diagonality of a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_isDiag_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) (M : Matrix n n K) :
+    M.IsDiag ↔ ∃ p : NumberFieldPlace K, (M.map (algebraMap K (completion K p))).IsDiag := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_isDiag_iff_map (L := completion K (witnessPlace K)) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isDiag_iff_map (L := completion K p) M).mpr hp
+
+/-- Diagonality of an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_isDiag_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) (M : Matrix n n (RatFunc F)) :
+    M.IsDiag ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))).IsDiag := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_isDiag_iff_map (L := rationalFunctionCompletion F .infinite) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isDiag_iff_map (L := rationalFunctionCompletion F p) M).mpr hp
+
+/-- Orthogonality of rows of a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_hasOrthogonalRows_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] {m : Type w} {n : Type x} [Fintype n]
+    (M : Matrix m n K) :
+    M.HasOrthogonalRows ↔ ∃ p : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K p))).HasOrthogonalRows := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_hasOrthogonalRows_iff_map (L := completion K (witnessPlace K)) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_hasOrthogonalRows_iff_map (L := completion K p) M).mpr hp
+
+/-- Orthogonality of rows of an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_hasOrthogonalRows_iff_exists_place
+    (F : Type u) [Field F] [Finite F] {m : Type w} {n : Type x} [Fintype n]
+    (M : Matrix m n (RatFunc F)) :
+    M.HasOrthogonalRows ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))).HasOrthogonalRows := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_hasOrthogonalRows_iff_map (L := rationalFunctionCompletion F .infinite) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_hasOrthogonalRows_iff_map (L := rationalFunctionCompletion F p) M).mpr hp
+
+/-- Orthogonality of columns of a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_hasOrthogonalCols_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] {m : Type w} {n : Type x} [Fintype m]
+    (M : Matrix m n K) :
+    M.HasOrthogonalCols ↔ ∃ p : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K p))).HasOrthogonalCols := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_hasOrthogonalCols_iff_map (L := completion K (witnessPlace K)) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_hasOrthogonalCols_iff_map (L := completion K p) M).mpr hp
+
+/-- Orthogonality of columns of an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_hasOrthogonalCols_iff_exists_place
+    (F : Type u) [Field F] [Finite F] {m : Type w} {n : Type x} [Fintype m]
+    (M : Matrix m n (RatFunc F)) :
+    M.HasOrthogonalCols ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))).HasOrthogonalCols := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_hasOrthogonalCols_iff_map (L := rationalFunctionCompletion F .infinite) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_hasOrthogonalCols_iff_map (L := rationalFunctionCompletion F p) M).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

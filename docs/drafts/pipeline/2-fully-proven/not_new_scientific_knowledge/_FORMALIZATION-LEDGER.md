@@ -1815,7 +1815,7 @@ Reusable pieces exported: `IsInvariantMetric`, `IsCommutantFactor`, `IsSectorSys
 `sectorFactor`, `mul_transport_eq`, `inv_mul_transport_eq`, `dotProduct_sector_term`,
 `metricField_eq_root_transport`, `metricField_transport_congr`.
 
-## `shifted-euler-quotient-finite-tangent-prime-support-filtration` — IN PROGRESS (not promoted)
+## `shifted-euler-quotient-finite-tangent-prime-support-filtration` — PROMOTED to stage 3
 
 New module `formal/GaloisForLFunctions/HTGeometry/ShiftedEulerTangentFiltration.lean`, wired into
 `GaloisForLFunctions.HTGeometry`, built, all declarations audited at
@@ -1844,15 +1844,552 @@ New module `formal/GaloisForLFunctions/HTGeometry/ShiftedEulerTangentFiltration.
 - `iteratedDeriv_reflectedQuotient_affine` — Theorem B `(8)`: for an affine logarithm, i.e. when
   every higher odd derivative vanishes, the `k`-th jet is the pure power `(-2 ∂_s log F)^k`.
 
-**Single residual before promotion:** the card also records the shorthand
-`∂_ω² c_ω(n)|_0 = 4 (Λ * Λ)(n)`.  The two explicit layer values are proved above, but the
-identification with the Dirichlet convolution `Λ * Λ` is not: the tree has no
-`vonMangoldt`-convolution layer (`(Λ*Λ)(p^a) = (a-1)(log p)^2`,
-`(Λ*Λ)(p^a q^b) = 2 log p log q`, zero otherwise).  That layer is the next step; the card stays
-at stage 2 until it lands.
+**Closed (2026-08-22).**  The last residual — the shorthand `∂_ω² c_ω(n)|_0 = 4 (Λ * Λ)(n)` —
+now has its own layer, `HTGeometry/VonMangoldtSelfConvolution.lean`, and the card's identity is
+`iteratedDeriv_two_shiftedEulerCoeff`.  The new module proves the whole self-convolution:
+`vonMangoldt_mul_self_eq_zero_of_three_le` (three distinct primes kill it),
+`vonMangoldt_mul_self_prime_pow` (`(Λ*Λ)(p^a) = (a-1)(log p)^2`) and
+`vonMangoldt_mul_self_of_card_eq_two` (`= 2 ∏_{p ∣ n} log p`).
+
+Two devices are worth copying.  (i) *Never enumerate the antidiagonal.*  A term `Λ d · Λ e` with
+`d·e = n` is nonzero only when both factors are prime powers, and `Nat.primeFactors_mul` then makes
+`n.primeFactors` a union of two singletons — so the whole support statement is
+`Finset.card_union_le`, with no divisor bookkeeping at all.  (ii) *Identify the two surviving
+pairs by factorization, not by divisor search.*  `block_eq_pow_factorization` shows that a divisor
+whose prime factors are `{p}` and whose cofactor misses `p` must be `p ^ n.factorization p`; the
+sum then collapses through `Finset.sum_subset` onto an explicit two-element `Finset`.  The
+prime-power case is `Nat.sum_divisors_prime_pow` followed by `Finset.sum_ite_mem` over
+`Finset.Ioo 0 a`, whose cardinality `a - 1` *is* the answer — no induction and no computation.
+
+Reusable pieces exported: `prod_primeFactors_pow_factorization`,
+`eq_pow_factorization_of_primeFactors_singleton`, `vonMangoldt_of_primeFactors_singleton`,
+`card_primeFactors_mul_le_two`, `block_eq_pow_factorization`.
 
 **Reusable pieces exported:** `exists_mul_of_apply_eq_zero` (simple-zero extraction via `dslope`
 and `Complex.differentiableOn_dslope` — the clean way to write `f = z · g` for an entire `f` with
 `f 0 = 0`), `iteratedDeriv_pow_mul` (top jet of an exact flat factor, `= m! · g 0`),
 `iteratedDeriv_fun_sub`, `iteratedDeriv_comp_const_add`, `iteratedDeriv_comp_const_sub`,
 `iteratedDeriv_cexp_const_mul`, `analyticAt_of_differentiable`.
+
+## `absolute-euler-paired-normalized-screw-current-identification` — PROMOTED to stage 3
+
+Sections §1, §2, §4 and §5 `(20)`–`(25)` are Lean-complete and wired into
+`GaloisForLFunctions.RHTower`.  New modules:
+
+- `RHTower/PairedContactAutocorrelation.lean` — §1.  `packetProfile_zero` `(3)`,
+  `packetAutocorrelationDeriv_zero` `(4)`, `packetAutocorrelationDeriv2_zero` `(5)`, plus the
+  derivative forms `deriv_packetAutocorrelation_zero`,
+  `deriv_deriv_packetAutocorrelation_zero` and `packetAutocorrelationDeriv_isBigO`
+  (`C_y'(h) = O(h)` at contact).  **Both contact laws are pure Cauchy-kernel symmetry**:
+  `two_mul_sum_plain` (swap `j ↔ k`) and `add_conj_sum_twisted` (conjugate *and* swap) show the
+  plain and the conjugate-twisted double sums `∑ rⱼ r_k w_k/(wⱼ+w_k)` have the same real part
+  `(∑ rⱼ)²/2`.  No estimate, no limiting argument.
+- `RHTower/ScrewTailPrimitive.lean` — §2.  `screwTailKernel` `(6)`, `screwTailPrimitive` `(8)`
+  (written logarithmically, with `screwTailPrimitive_eq_artanh_add_arctan` giving the card's
+  `artanh + arctan` form), `hasDerivAt_screwTailPrimitive` `(9)`,
+  `integral_Ioi_screwTailKernel` `(7)`, `screwContactConst` `(13)`, and
+  `integral_Ioi_screwTailPrimitive_mul_exp` `(14)`: `∫_0^∞ A_∞(h) e^{-3h/2} dh = log 2 + π/6`.
+- `RHTower/ScrewShiftFilterSource.lean` — §4/§5.  `two_cosh_sub_screwTailKernel` `(20)`
+  (`2cosh(t/2) - k_∞(t) = screwRegularKernel t`), `shiftedScrewDensity` and
+  `one_sub_exp_mul_screwRegularKernel` `(22)`–`(23)`, `shiftedScrewDensity_zero = -1` `(27)`,
+  `integral_Ioi_exp_neg_mul_shiftedScrewDensity` and `shiftedScrewLaplace_reindex` `(24)`.
+- `RHTower/ScrewShiftXiValueIdentity.lean` — `(25)`.  `shiftedScrewAtomCoeff`,
+  `shiftedScrewAtom_laplace` (the atomic transform *is* the filtered von Mangoldt `L`-series) and
+  `shiftedScrewSource_laplace_eq_xi_shift_defect`:
+  `L[K_shift](w) = logDeriv xi (1/2+w) - logDeriv xi (1/2+w+2)`.
+
+**Do not rebuild §1 from scratch.**  The corpus already owned `halfLineExpPacket`,
+`integral_im_mul_im_expPacket`, `nodePacket`, `packetAutocorrelation`, `autocorrCoeff`,
+`packetAutocorrelation_eq`, `packetProfileDeriv` and `hasDerivAt_packetAutocorrelation`
+(`HTGeometry/HalfLineExponentialPacketGram.lean`, `RHTower/PairedCauchyLaplaceIdentities.lean`,
+`RHTower/PacketAutocorrelationExplicit.lean`).  A first attempt duplicated all of it before the
+search turned them up.
+
+**Two mathlib gaps closed along the way.**  Mathlib has `Real.artanh` but no derivative lemma for
+it, and no `x·log x` continuity route through `(u³-1)log(1-u)`; both are handled inside
+`ScrewTailPrimitive.lean` — the tail primitive is written with `Real.log` so that
+`field_simp; ring` closes the derivative identity, and the moment primitive
+`screwMomentPrimitive` is *defined* in the form `(1/3)(u³-1)log(1-u) - …` whose value at `h = 0`
+is correct under Lean's `log 0 = 0` convention while continuity there is proved by the algebraic
+rewrite `(u³-1)log(1-u) = -(u²+u+1)·((1-u)log(1-u))` plus `Real.continuous_mul_log`.
+
+§3 is now Lean-complete as well, in `RHTower/PairedGaussTailCurrent.lean` (+ the auxiliary
+`RHTower/ScrewTailHalfMoment.lean`):
+
+- `gaussResolventQuadratic_eq` — **equation `(11)`**.  Two devices make it work.  (i) *The
+  compensator is an integral, not a constant*: `1/(2(m+1)) = ∫_0^∞ e^{-(2m+1/2)h} e^{-3h/2} dh`,
+  so each compensated Gauss term is the single integral `∫ e^{-(2m+1/2)h}·(e^{-3h/2}C_0 - C_y(h))`
+  (`gaussTerm_eq_integral`) — that is exactly why the card's bracket has the shape it has.
+  (ii) The interchange is `MeasureTheory.integral_tsum_of_summable_integral_norm`, whose
+  hypothesis needs only `|bracket(h)| ≤ M·h` (mean value on `Ici 0`) and
+  `∫_0^∞ h e^{-ch} dh = 1/c²`, giving the summable majorant `M/(2m+1/2)²`.  The pointwise sum is
+  the geometric series `∑_m e^{-(2m+1/2)h} = k_∞(h)`.
+- `gaussResolventQuadratic_eq_tailCurrent` — **equation `(12)`**, by one half-line integration by
+  parts on `Φ(h) = -A_∞(h)·bracket(h)`.  **The boundary term at the origin is where Lean's
+  `Real.log 0 = 0` convention does real work**: `screwTailPrimitive 0` is a finite junk value, so
+  `Φ 0 = 0` holds definitionally, and the genuine content — `A_∞(h)·bracket(h) → 0` — is proved
+  by the *sharp* contact bound `|bracket(h)| ≤ 2M(1-e^{-h/2})`
+  (`image_norm_le_of_norm_deriv_right_le_deriv_boundary`, not the constant-slope mean value
+  theorem) together with continuity of `h ↦ A_∞(h)(1-e^{-h/2})`, which is
+  `Real.continuous_mul_log` in disguise.  The same sharp bound makes both integrands dominated by
+  pure exponentials: `k_∞(h)(1-e^{-h/2}) = e^{-h/2}/((1+e^{-h/2})(1+e^{-h})) ≤ e^{-h/2}` is an
+  exact algebraic identity, and `∫_0^∞ A_∞(h)e^{-h/2}dh = log 2 + π/2` is a second explicit
+  antiderivative (`screwHalfMomentPrimitive`, built exactly like `screwMomentPrimitive`).
+- `screwCurrent` — **equation `(16)`** — and `paired_screwCurrent` — **equation `(18)`**:
+  `Q_pair(y) = -8 ∫_0^∞ J_Xi_screw(h) C_y'(h) dh`, using
+  `integral_Ioi_packetAutocorrelationDeriv` (`∫_0^∞ C_y' = -C_0`) to absorb `κ_∞`.
+  `screwContactConst_eq` checks the constant exactly:
+  `(log(8π)+γ)/2 + π/4 = (log π + γ)/2 + (3/2)log 2 + π/4`.
+
+§5 `(26)`–`(28)` closed in `RHTower/ShiftedScrewNegativeWitness.lean`.  **The whole 2-D
+convolution/dominated-convergence argument collapses to explicit algebra** once you notice that
+the card's witness `y_a(x) = e^{-ax} sin(ax)` *is* a one-node packet: `y_a = Im e^{-w x}` with
+`w = a(1-i)`, so the corpus's `packetAutocorrelation_eq` gives the closed form
+`C_y(h) = e^{-ah}(cos ah + sin ah)/(8a)` (`packetAutocorrelation_dampedNode`).  The convolution
+quadratic is then formalized in its autocorrelation form — the standard corpus shape of a Weil
+quadratic — so:
+
+- the regular half is three closed-form Laplace values `(2a+c)/(8a((a+c)²+a²))`
+  (`autocorrLaplace_dampedNode`), and `a²·2·L(c) = (2+c/a)/(4((1+c/a)²+1)) → 1/4` for **every**
+  `c`, so the three-exponential density gives `1/4 - 1/4 - 1/4 = -1/4`;
+- the atomic half is bounded termwise by `2^{2-a}/(4a) · Λ(m) m^{-5/2}` (`abs_atomTerm_le`, using
+  `m^{2-a} ≤ 2^{2-a}` for `m ≥ 2`, `a ≥ 2`), whose sum converges, so after the `a²` scaling it is
+  `O(a·2^{-a}) → 0`.
+
+No dominated convergence, no Fubini, no 2-D integral.  `tendsto_shiftedScrewQuadratic` is `(28)`
+and `eventually_shiftedScrewQuadratic_neg` is the card's negativity conclusion.
+
+The card is promoted; its remaining unchecked gates are the card's own open research (a
+contact-augmented positivity-compatible inversion of the even-shift filter, the screw-current
+dissipation, and RH), not formalization debt.
+
+## `ade-boundary-hinf-ht` — PROMOTED to stage 3
+
+The card's own proof route (Fatou boundary jets + F. & M. Riesz for the separant + Hille's uniform
+analytic existence radius) needs two theorems the corpus does not own: boundary values of an
+`H^∞` function, and the F. & M. Riesz / Lusin–Privalov nonvanishing of those boundary values.
+
+**The route can be shortened: the maximum modulus principle replaces both.**  The only use of
+Fatou + F.&M. Riesz in the card is to produce, arbitrarily close to `∂D`, one point where the
+separant evaluation `g := S(z, f, …, f^{(n)})` is bounded away from zero.  But `g` is analytic on
+`D` and `g ≢ 0` (step 2 of the card, by minimality + irreducibility), so pick any `z₀` with
+`g(z₀) ≠ 0`; for every `r ∈ (|z₀|, 1)` the maximum modulus principle on `{|z| ≤ r}` gives a point
+`z₁` with `|z₁| = r` and `|g(z₁)| ≥ |g(z₀)|`.  That is exactly the "good point" the continuation
+step needs, with a *uniform* lower bound `|g(z₀)|` — no boundary limits, no Nevanlinna class, no
+measure-theoretic a.e. statement.  Since the continuation only needs **one** regular boundary
+point, nothing is lost.
+
+Remaining genuine builds, in dependency order:
+
+1. **Uniform-radius analytic ODE existence** (mathlib gap; `Mathlib/Analysis/ODE/` is real-variable
+   Picard–Lindelöf only).  For `Φ` analytic and bounded by `M` on a polydisc of polyradius
+   `(ρ, ρ')` around `(z₁, w₁)`, the IVP `F' = Φ(z,F)`, `F(z₁) = w₁` has a solution analytic on
+   `B(z₁, δ)` with `δ = min(ρ, ρ'/M)/2`.  The point is that `δ` depends only on `(ρ, ρ', M)`, so a
+   single `δ` works at every good point.  Majorant/Picard iteration in the Banach space of
+   bounded analytic functions on a disk.
+2. **The algebraic branch.**  Either the holomorphic implicit function theorem at a point where
+   the separant is nonzero, or — preferably — carry the implicit equation `P(z,F,F_n) = 0` along
+   and never name `R`.
+3. **The differential-algebra step** `S ∘ f ≢ 0`: from a *minimal irreducible* annihilator,
+   `Res_{y^{(n)}}(P, S) ≢ 0` has order `≤ n-1` and would contradict minimality.  The corpus
+   already owns a separant/resultant layer (`HTGeometry/JointSeparant.lean`,
+   `DifferentialCharacteristicPseudoReduction.lean`, `RittBasisFinishingStep.lean`) — audit it
+   before building.
+4. Assembly: bounded jet ⟹ `F` bounded ⟹ the continuation disk at `z₁` crosses `∂D`.
+
+Corpus assets already available: `HTGeometry/PoissonFatou.lean` (`tendsto_poissonConv_ae`) if the
+Fatou route is ever wanted anyway; `HTGeometry/HardyDiskSpace.lean`, `HardyDiskMultiplier.lean`;
+`RHTower/SectorPrimeZeroUniqueness.lean` (Jensen/Blaschke for bounded analytic functions).
+
+**Analytic half landed (2026-08-22).**  Four new modules, all built and wired:
+
+- `HTGeometry/AnalyticODEExistence.lean` — **the mathlib gap**: local existence *and* uniqueness
+  for a holomorphic ODE `F' = Φ(·,F)` on a complex Banach space, with an existence radius
+  `δ` depending only on the polydisc data `(ρ, ρ', M, L)` and never on the base point.  Picard
+  iteration built on mathlib's `DifferentiableOn.isExactOn_ball` (primitives on a disk) with the
+  contraction estimate from `Convex.norm_image_sub_le_of_norm_hasDerivWithin_le`; the limit is
+  handled by `tendstoUniformlyOn_tsum` on the telescoping series and
+  `TendstoLocallyUniformlyOn.differentiableOn`/`.deriv`.  `ode_solution_unique` needs no Gronwall:
+  `‖F-G‖ ≤ (δL)^k · 2ρ'` by induction, then `δL < 1`.
+- `HTGeometry/MvPolynomialSmooth.lean` — `contDiff_mvPolynomial_eval`,
+  `differentiable_mvPolynomial_eval`, and the two uniform estimates
+  `exists_bound_mvPolynomial_eval` / `exists_lipschitz_mvPolynomial_eval` on closed balls.
+- `HTGeometry/BoundedJetNaturalBoundary.lean` — `odeJet` (the augmented jet
+  `(z, f, f', …, f⁽ⁿ⁾)`), the **autonomous** companion field `companionVec` (making `z` part of the
+  state removes all `z`-dependence from the vector field), the uniform bound/Lipschitz pair
+  `exists_bound_lipschitz_companionVec`, the max-modulus selector `exists_norm_ge_on_sphere`, and
+  the capstone `exists_analytic_continuation_of_bounded_jet`.
+
+Two design decisions worth reusing.  (i) *Autonomise*: carrying `z` as a state coordinate turns
+the companion system into `V' = Ψ(V)`, so the ODE theorem is applied with a `z`-independent field
+and the polydisc collapses to a single ball in state space.  (ii) *Differentiate the relation
+first*: `S·f⁽ⁿ⁺¹⁾ = N` with `N, S` polynomials avoids the algebraic branch `R` entirely — no
+holomorphic implicit function theorem is needed, and `Φ` is a rational map with polynomial
+numerator and denominator `S`.
+
+The final agreement `g = f` on the whole overlap uses the identity theorem
+(`AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq`) on the convex set
+`ball z₁ δ ∩ ball 0 1`; ODE uniqueness is only needed on the (possibly much smaller,
+`z₁`-dependent) ball where the jet stays inside the good state ball.
+
+**The differentiation step is also done** (`MvPolynomialSmooth.lean` gained the multivariate
+chain rule `hasDerivAt_mvPolynomial_eval_comp`, proved by `MvPolynomial.induction_on`):
+`jetSeparant`, `jetNumerator`, `jetShift`, `odeJetDeriv`, `hasDerivAt_odeJet_full` and
+`differentiated_relation` turn an annihilator `P` into the pair `(N, S)` the analytic theorem
+consumes, and `exists_analytic_continuation_of_annihilator` is the bridge lemma modulo one
+hypothesis: *the separant does not vanish identically along the jet.*
+
+**Closed.**  The separant step is `HTGeometry/MinimalAnnihilatorSeparant.lean`, and it does
+**not** need irreducibility, Gauss's lemma, resultants or Bezout.  Replace "minimal order +
+irreducible" by "minimal order, then minimal *leader degree*" — the standard Ritt/characteristic-set
+choice, and one that always exists (`exists_leaderMinimalAnnihilator`, by `Nat.find` on the
+achievable leader degrees).  Then `∂P/∂yₙ` is nonzero (characteristic zero,
+`mvPolynomial_pderiv_ne_zero_of_mem_vars_charZero`) and has strictly smaller leader degree
+(`mvPolynomial_degreeOf_pderiv_lt` — both already in the corpus), so minimality *directly* says it
+cannot annihilate the jet.  Capstones: `separant_ne_zero_of_leaderMinimal`,
+`exists_analytic_continuation_of_leaderMinimal`,
+`exists_analytic_continuation_of_minimal_order`.  The clean route is
+Bezout rather than resultants: `P` irreducible and `deg_{yₙ} S < deg_{yₙ} P` give
+`A·P + B·S = 1` over `K = ℂ(z)(y₀,…,y_{n-1})`; clearing denominators gives
+`D = A'·P + B'·S` with `D ≠ 0` of order `≤ n-1`, and `D` would vanish along `f`, contradicting
+minimality.  The corpus already owns a Ritt–Kolchin layer to audit first:
+`HTGeometry/ComponentFactorExclusion.lean` (`separant_notMem_of_oracle`,
+`not_dvd_of_lower_leaderDegree`, `mvPolynomialInitialAt_ne_zero`),
+`HTGeometry/JointSeparant.lean`, `DifferentialCharacteristicPseudoReduction.lean`,
+`RittBasisFinishingStep.lean`.
+
+(The Bezout route, no longer needed, would have needed: (i) the last-variable splitting
+`MvPolynomial (Fin (n+2)) ℂ ≃ (MvPolynomial (Fin (n+1)) ℂ)[Y]` — mathlib's
+`MvPolynomial.finSuccEquiv` splits the *first* variable, so either find/port a last-variable
+version or precompose with a `renameEquiv` permutation; (ii) Gauss's lemma
+(`Polynomial.IsPrimitive.irreducible_iff_irreducible_map_fraction_map`) to move irreducibility to
+`K[Y]`, `K = Frac(MvPolynomial (Fin (n+1)) ℂ)`; (iii) `deg S = deg P - 1 < deg P` and `S ≠ 0`
+(characteristic zero, leading coefficient `d · lead P`); (iv) Bezout in the PID `K[Y]` and
+clearing denominators to `A'·P + B'·S = D` with `0 ≠ D ∈ MvPolynomial (Fin (n+1)) ℂ`; (v)
+evaluating along the jet gives `D ∘ jet ≡ 0`, a nonzero annihilator of order `≤ n-1`,
+contradicting minimality.)
+
+## 4. analytic-background-saturation-maximal-ht — PROMOTED
+
+New Lean: `HTGeometry/AnalyticBackgroundSaturation.lean`, `HTGeometry/AnalyticBackgroundOuterCage.lean`.
+
+The card's own attack is what makes it cheap: grafting a fixed analytic background onto the
+positive-mass outer core is an *affine* map with identity derivative, so the residual-avoidance
+proof of the Herglotz full-translation parent applies verbatim.  In Lean this is not even an
+argument — `graftedFamily x ε u B t = perturbedOuterFamily x ε u 1 B t` by `rfl`, so
+`residual_not_familyDifferentiallyAlgebraicOn_perturbedOuterFamily` *is* the saturation theorem `(5)`
+once the analyticity of `B` is converted to `ContDiffAt`.  Do not rebuild transversality for
+background-grafting cards; look for the carrier-coefficient slot first.
+
+Reusable layers this card added:
+
+- **Compact-open translation paths without local compactness.**  `continuous_graftedOrbit`,
+  `continuous_shiftedBackground`: `ContinuousMap.curry` has *no* `LocallyCompactSpace` hypothesis
+  (only `ContinuousMap.continuous_curry` does), so a jointly continuous `ℝ × X → ℂ` gives a
+  continuous path `ℝ → C(X, ℂ)` for free.  This removed two hypotheses from the limiting-measure
+  theorem.  `UpperPlane` has no `LocallyCompactSpace` instance in the tree — do not reach for one.
+- **Sequential closure beats topological closure for orbit cards.**  `orbitSeqClosure_graftedOrbit`
+  proves the card's `(9)` *without* the relative-compactness hypothesis the paper needs, because the
+  bounded branch is closed by continuity of the translation path rather than by compactness.  The
+  splitting device is `tendsto_atTop_atTop` + `push Not` + `frequently_atTop` +
+  `extraction_of_frequently_atTop` + `IsCompact.tendsto_subseq` on `Icc (-M) M`.
+- **Uniformity transfer of limits.**  `Tendsto.congr_uniformity` (plus `tendsto_swap_uniformity`
+  for the other direction) is the right tool whenever two orbits are asymptotic in a uniformity:
+  it moves a limit from one to the other with no metric and no extraction.
+- **Outerness as shift-cyclicity.**  The corpus theorem `cyclicSubspace_hardyOf_eq_top`
+  (`HTGeometry/HardyDiskCyclic.lean`) is the operator form of "invertible bounded analytic ⟹ no
+  nonconstant inner factor".  To use it on the half plane, pull back by `cayleyToUpper`
+  (`HTGeometry/ParabolicOuterOrbitLimit.lean`) and build two `DiskMultiplier`s whose product is `1`.
+  `graftedMultiplier` / `graftedInvMultiplier` are the template.
+- **All powers for free.**  `not_familyDifferentiallyAlgebraicOn_pow` and
+  `not_familyDifferentiallyAlgebraicOn_translates_pow` (`HTGeometry/FamilyPowerGauge.lean`) already
+  discharge every "all-power corollary" paragraph; the only work is the `ContDiffAt` side condition.
+  `ShiftUniformPowerFreeness.lean` is the shift-uniform version.  Never re-derive the differential
+  transcendence degree argument.
+
+Trap: a `DiskMultiplier` field whose type does not mention an implicit function argument (here `x`)
+cannot infer it — make such arguments explicit in the bundled definition.
+
+## 5. analytic-family-countable-da-locus-realization — PROMOTED
+
+New Lean: `HTGeometry/SliceDerivativeJointHolomorphy.lean`,
+`HTGeometry/EntireFamilyDifferentialAlgebraicLocus.lean`,
+`HTGeometry/EntireSeriesJointHolomorphy.lean`,
+`HTGeometry/CountableDifferentialAlgebraicLocusRealization.lean`.
+
+This card looked like two classical Ostrowski theorems.  It is not.  Read this before any card whose
+proof cites Ostrowski 1920.
+
+**Theorem 13 (countable-or-everything) has a short proof and is now owned.**  Do not look for a
+Wronskian criterion — it is not needed and the corpus does not have one.  The chain is:
+an ADE of jet order `n` and exponent bound `d` is a linear relation among finitely many differential
+monomials; for an *entire* function that relation is decided by the values at any sequence
+accumulating at a point (identity theorem), so it is decided by square minors of the sample matrix;
+each minor of a jointly entire family is entire in the parameter; and a countable family of entire
+functions either has one identically zero at some complexity level (⟹ every fibre is DA) or
+contributes countable zero sets.  Sampling *values* rather than Taylor coefficients is the trick
+that avoids differentiating the monomials in the parameter.
+
+**Theorem 8 (no finite coefficient basis ⟹ HT) is NOT needed.**  The card's construction makes the
+coefficients algebraically independent because its frequencies `2πi·n!` are rationally *dependent*
+(forced by the required `1`-periodicity).  Composing with `w = e^{2πiz}` moves the periodicity into
+the substitution and frees the frequencies, so the corpus theorem
+`ExponentialCarrierHypertranscendence.not_differentiallyAlgebraicOn_cexpSeriesCarrier` (rationally
+independent frequencies + infinitely many nonzero amplitudes) applies directly, with
+`LogPrimeExponentialCarrier.rationallyIndependentSequence_logPrimeFrequency` supplying the
+frequencies.  The whole "algebraically independent `c_n` by a countable-algebraic-closure argument"
+paragraph evaporates.
+
+Reusable layers this card added:
+
+- **Several-variable holomorphy, the mathlib gap.**  `differentiable_param_iteratedDeriv`: for a
+  jointly entire `F : ℂ × ℂ → ℂ`, every `t ↦ ∂_z^j F(t, z)` is entire.  Mathlib has no
+  several-variable theory and `exact?` finds nothing; the route is the Cauchy formula for the *first*
+  derivative on a circle recentred at the base point (`circleIntegral_comp_add_left`), the corpus
+  lemma `CircleIntegralParamOpen.differentiableAt_circleIntegral_slice_open`, and induction.
+  `ContinuousMap.curry` is unrelated and does not help here.
+- **Cauchy estimate for the differential** on any complex normed space
+  (`norm_fderiv_le_of_forall_norm_le`), and **`differentiable_tsum_of_ball_bounds`**: a series of
+  entire functions is entire given ball-uniform bounds on the *values only*.  This is the tool to
+  reach for whenever `differentiable_tsum` fails because its global derivative bound is unavailable —
+  which is always, for series with unbounded growth.
+- **Bounded-complexity ADE certificates**: `differentiallyAlgebraic_iff_exists_jetRelation` and
+  `differentiallyAlgebraic_iff_forall_coordinateMinor_det_eq_zero`.  Any argument that has to range
+  over *all* algebraic differential equations should first pass through these, because they turn the
+  unbounded quantifier into a countable one.
+- The corpus already owned every DA/HT transfer this card needed:
+  `differentiallyAlgebraic_cexp_comp` (exp of DA is DA), `not_familyDifferentiallyAlgebraicOn_exp`
+  (exp of HT is HT, via `familyDifferentiallyAlgebraicOn_one_iff`),
+  `differentiallyAlgebraic_comp_exp` / `differentiallyAlgebraic_of_comp_exp` (both directions of the
+  `e^{az}` substitution), `differentiallyAlgebraic_finsetSum`, `differentiallyAlgebraic_const_mul_iff`,
+  `differentiallyAlgebraic_cexp_linear`.  Check these before building any DA closure lemma.
+
+Trap: a `Differentiable`/`AnalyticOnNhd` statement about a fibre `fun w => Φ (t, w)` of a `tsum`
+should be proved from the one-variable carrier lemma, never by composing the joint-differentiability
+theorem with `fun w => (t, w)` — the latter forces `whnf` through the `tsum` and times out.
+
+## 6. archimedean-meixner-root-seam-scale — PROMOTED
+
+New Lean: `RHTower/GammaMeixnerRootSeamScale.lean`.
+
+Almost entirely assembly.  The card names three classical inputs and the corpus already owned all
+three; the mistake to avoid is rebuilding any of them.
+
+- **Ramanujan's Gamma Fourier transform** `(2)` is
+  `RHTower/GammaEulerPhysicalConnector.lean`: `fourier_gammaCoshPower_apply`,
+  `integral_cexp_mul_gammaHeightDensity`, `integral_gammaHeightDensity_eq_one`,
+  `integrable_gammaHeightDensity`, `gammaHeightDensity_nonneg`.  Every positive Gamma shape, proved.
+- **The Gamma–Meixner prime weight** and its two-sided comparison `(10)` are
+  `RHTower/PrimeLaplaceGammaJetIncidence.lean`: `meixnerPrimeWeight`, `meixnerPrimeWeight_ge`,
+  `meixnerPrimeWeight_le`, `sqrt_meixnerPrimeWeight`.  Do **not** redefine `meixnerPrimeWeight` —
+  it already exists with exactly the card's definition.
+- **The damping-aperture threshold** is
+  `RHTower/PrimeSeamDampingAperture.lean`: `summable_weightedNatPrimeSeamCharge_norm_sq_iff`
+  (`Summable (p ↦ p^{-θ}‖C_p(ρ)‖²) ↔ Re ρ = 1/2 ∨ |2Re ρ - 1| < θ`), plus
+  `allPositivePrimeSeamDamping_iff_re_eq_half` and
+  `xiAllPositivePrimeSeamDamping_iff_riemannHypothesis`.
+- The RH bridge is `PrimeClockShaleDiagonal.riemannHypothesis_iff_xiZero_primeClockShale` together
+  with `summable_primeClockReflectionEnergy_iff`; the seam-vanishing bridge is
+  `HeatAperturePrimeSeamReflection.orbitwiseNatPrimeSeamCharge_eq_zero_iff_re_eq_half`.
+
+What actually had to be built:
+
+- the semigroup itself (`meixnerChar_add`, `meixnerChar_pow`) — trivial once stated;
+- the **literal density constant** `(1)`: `gammaHeightDensity (θ/2) (s/2) / 2` equals
+  `4^{θ/4}/(4π Γ(θ/2))·|Γ(θ/4+is/2)|²` exactly, and the change of variables `s = 2u` that turns the
+  corpus characteristic identity into the card's;
+- **Bochner positivity of the pointed kernel** — the only real work.  The pattern is worth reusing:
+  expand `∑_{j,k} conj(x_j) x_k φ(t_j - t_k)` by substituting the integral representation, pull the
+  two finite sums inside with `MeasureTheory.integral_finsetSum` (needs integrability of each
+  channel: `Integrable.mono'` against `‖ρ‖`, since `‖e^{i·}‖ = 1`), recognise the integrand as
+  `conj(v) v = normSq v` with `v(s) = ∑_k x_k e^{-i t_k s}` via `Finset.sum_mul_sum`, then
+  `integral_complex_ofReal` and `integral_nonneg`.  Feed the result to the corpus PSD-kernel algebra
+  (`isPSDKernel_of_forall_posSemidef`, `isPSDKernel_rankOne`, `IsPSDKernel.mul` = Schur product) —
+  never re-derive Schur.
+- the exact value `(9)` (the corpus had only the bounds), and the threshold transfer `(12)`, which
+  is a two-sided `Summable.of_nonneg_of_le` sandwich.
+
+Trap: `Matrix.PosSemidef` over `ℂ` needs `open scoped ComplexOrder`; without it the `PartialOrder ℂ`
+instance is missing and the error points at the wrong line.
+
+## 7. archimedean-prolate-jacobi-limit-circle-transition — DEFERRED (analytic build)
+
+Not assembly.  The card cites Pruckner's Theorem 2 (power-asymptotic Jacobi classification), which
+the corpus does not own and which is a research paper in its own right.  **Do not build Pruckner.**
+The card now carries a `## Lean route` section with the complete elementary computation that
+replaces it for this specific matrix: the frozen-coefficient discriminant is
+`(q_n² - 4ρ_{n-1}ρ_n)/ρ_n²`, exactly computable because `ρ_n²` is the explicit quartic, and the root
+product `ρ_{n-1}/ρ_n` telescopes.  For `λ>0` the discriminant is `-16πλ²/n < 0`, so the roots are a
+conjugate pair of modulus `√(ρ_{n-1}/ρ_n)` and `|u_n| ≍ 1/n` (limit circle); for `λ=0` it is
+`13/(4n²) > 0` and the exponents are `-1 ± √13/4` with `√13/4 > 1/2` (limit point).
+
+Remaining Lean work is items 1–3 of that section: explicit `O(n^{-2})` expansions, a transfer-matrix
+invariant-form argument for the elliptic case, and a Levinson/Riccati lower bound for the double-root
+case.  Items 4–5 are already corpus-owned (`JacobiDeficiencyRankTwoAmbiguity.lean`,
+`SemilocalProlateCriticalPotential.lean`).
+
+## 8. archimedean-wild-monodromy-tate-local — DEFERRED (missing theory, not missing effort)
+
+§1 (A5) is formalizable analysis: the Binet Borel transform `(1/2 - 1/t + 1/(e^t-1))/t` has simple
+poles exactly at `t = 2πik`, `k ≠ 0`, with residues `1/(2πik)` (removable at `t = 0`); the `E_1`
+Borel transform is `1/(1+ξ)` with a simple pole at `ξ = -1`; and `a_∞ = ½log 2π = -ζ'(0)`.  The
+corpus already owns the Binet/Lerch/Euler–Maclaurin layer, so this is a moderate build.
+
+§2 is not.  `dim gr^n Ext¹(ℚ, M⊗ℚ(n)) = h^n_irr(M)` needs exponential mixed Hodge structures,
+Carlson's Ext formula and the irregular Hodge filtration.  **Mathlib has no Hodge theory and no
+motives at all**, so this is a theory-construction project of a different order from every other
+card in this folder.  Do not start it as part of a card sweep; it needs its own programme.
+
+Rule of thumb this card establishes: separate "hard analysis the corpus can reach" from "a theory
+mathlib does not have".  The first is a build; the second is a programme.
+
+## 9. arithmetic-entire-heat-da-finite-spectrum — DEFERRED (Diophantine build)
+
+The analytic half is easy and should be built when the card is taken up: entire backward time forces
+`|a_n| ≤ M_A e^{-A n²}` for every `A > 0` (Cauchy estimate on `|w| = 1` for
+`h_A(w) = ∑ a_n e^{An²} w^n`), and a finite spectrum makes every fibre D-finite via
+`∏ (D_z - 2πin)`.  The DA-transfer step is corpus-owned (`differentiallyAlgebraic_of_comp_exp`,
+`differentiallyAlgebraic_comp_exp`, see card 5's ledger entry).
+
+The blocking input is arithmetic: **Popken's lower bound** `|a_n| ≥ α n^{-βn log n}` for the nonzero
+algebraic Taylor coefficients of a DA series, together with **Mahler's normalization** (an
+algebraic-coefficient DA series satisfies an ADE with algebraic coefficients).  This is Pólya–Popken
+denominator control + Maillet conjugate bounds + the algebraic norm — a Diophantine programme, not a
+lemma.  No weaker substitute exists: without denominator/height control there is no lower bound at
+all, and the card itself records that ordinary growth cannot replace it (Valiron's order-zero DA
+entire solution).
+
+Any lower bound of the form `exp(-o(n²))` would close the card; Popken's `exp(-Cn(log n)²)` is the
+only known one.
+
+## 10. asymptotic-flat-ht-invisibility — PROMOTED
+
+New Lean: `HTGeometry/ReciprocalGammaHypertranscendental.lean`,
+`HTGeometry/AsymptoticFlatHypertranscendentalInvisibility.lean`.
+
+Four reusable assets came out of this card; all four are the kind of thing the next Hölder-flavoured
+card will need.
+
+- **`hypertranscendental_invGamma`.**  The corpus's `hypertranscendental_gamma` is *not* directly
+  usable when the perturbation is `A/Γ`, because the corpus predicate demands the relation at every
+  point of `ℂ`, including `Γ`'s poles, where `iteratedDeriv` is junk.  The bridge is: invert the
+  relation on the right half plane (`differentiallyAlgebraicOn_inv`), propagate across the pole
+  complement (`differentiallyAlgebraicOn_mono_of_isPreconnected`, with preconnectedness from
+  `Set.Countable.isPathConnected_compl_of_one_lt_rank`), then multiply the relation polynomial by the
+  `Γ`-slot variable `X 1`.  That single factor covers **all** the poles at once, because `Γ` vanishes
+  there in mathlib's convention — a one-line trick that replaces an identity-theorem argument.
+  `DifferentialAlgebraicPropagation.lean` already had the analogous single-point device.
+- **`differentiallyAlgebraicOn_add` / `_sub`.**  The corpus had additive closure only at `univ`, but
+  the underlying jet bridge `differentialAlgebraicOver_analyticMeroElement_iff` is already domain
+  parametric; the domain versions are a 20-line copy.  Do not restrict a card to entire functions for
+  want of these.
+- **Numeric Hermite interpolation** (`exists_polynomial_iteratedDeriv_eval_eq`) on top of
+  `RHTower/FiniteHermiteCRT.lean` (which takes *polynomial* targets), via a Taylor target and
+  `Polynomial.iterate_derivative_X_sub_pow`.  Note ~100 HTGeometry modules already import RHTower, so
+  the layering permits this.
+- **`tendsto_pow_div_gamma`.**  Stirling is unnecessary for "`Γ` beats every power": iterate
+  `Γ(x) = (x-1)Γ(x-1)` down to `Γ ≥ 1` on `[2,∞)` and bound the descending product below by
+  `(x-k-1)^{k+1}`.  Much cheaper than any asymptotic expansion.
+
+Design note worth copying: the `e^{-z}` normalization never needs binomial inversion.  Interpolate
+`Q` against the jets of `e^{z}T` and use `iteratedDeriv_mul_jet_congr` (jet agreement is preserved by
+multiplication); `e^{-z}Q` then carries the jets of `T` by a single `funext`.
+
+## 11. asymptotic-scale-recession-ht — PROMOTED
+
+The card's central witness family is now Lean-proved:
+`HTGeometry/AsymptoticFlatHypertranscendentalInvisibility.hypertranscendental_invGamma_comp_const_mul_pow`
+— `1/Γ(c z^q)` is hypertranscendental for every `c ≠ 0`, `q ≥ 1`.  The proof is five lines: the
+corpus already owns monomial invariance of differential algebraicity
+(`HTGeometry.differentiallyAlgebraic_comp_const_mul_pow_iff`, which needs the *entire* function
+`1/Γ`, not the meromorphic `Γ`), and card 10 supplies `hypertranscendental_invGamma`.  Do not
+attempt an "algebraic composition closure" build for this: the monomial case is already there.
+
+What remains is the flatness ladder, and it is genuine analysis:
+
+1. inverse-power flatness of `A(x)/Γ(x^k)` — immediate from `tendsto_pow_div_gamma` composed with
+   `x ↦ x^k` (since `x ≤ x^k` for `x ≥ 1`);
+2. Gevrey flatness at `e^{-α x^m}` for `m ≤ k-1` — needs `Γ(x^k) ≥ (x^k/2)^{α x^m}`, obtainable from
+   `gamma_ge_pow` with the *variable* order `n = ⌈α x^m⌉` (the point being `n = o(x^k)`), roughly 80
+   lines of ceiling bookkeeping;
+3. the sharpness claim (`A/Γ(x^k)` is **not** flat at `z^{-z^k}`), which needs a Stirling *upper*
+   bound on `Γ`.
+
+Also note the card is not a single clean statement: it carries three later revisions (the Haiku gauge
+correction replacing `e^{-z}Q` by `exp(-z^{k+1})Q`, the Turing `exp_L` upgrade resting on the
+Ritt–Kolchin composition lemma, and the Wheeler `ψ∘exp_L` corollary).  Its own gate `1 → 2` is
+unchecked.  Decide the intended statement before formalizing the rest, and formalize the Haiku
+corrected version, since it is the one the card itself calls "safer".
+
+### 11 (continued) — closed
+
+The flatness ladder and the sharpness are now Lean-proved in
+`HTGeometry/AsymptoticScaleRecessionLadder.lean`, so the card is at stage 3.  The two `Γ` bounds are
+worth remembering because they replace Stirling in both directions and cost about twenty lines each:
+
+- **lower**: `Γ(y) ≥ (y/2)^N` for `N ≤ y/2`, `y ≥ 4` (`gamma_ge_half_pow`), from iterating
+  `Γ(y) = (y-1)Γ(y-1)`.  The trick that makes it strong enough for exponential gauges is to feed it a
+  **variable** exponent `N ≈ 3α x^m`: since `m < k` gives `N = o(x^k)`, the base `x^k/2` stays above
+  `e` and the bound reads `Γ(x^k) ≥ e^{3α x^m} x^{M+1}`.
+- **upper**: `Γ(y) ≤ (y+1)^{⌈y⌉}` (`gamma_le_pow_ceil`), from monotonicity on `[2,∞)`,
+  `Γ(n) = (n-1)!` and `Nat.factorial_le_pow`.  This gives the sharpness statement
+  `not_flatAtExpGauge_invGamma_pow_succ`: `1/Γ(x^k)` is **not** flat against `exp(-α x^{k+1})`.
+
+The formalised statement is the **Haiku-corrected** one (`exp(-z^{k+1}) Q` as the jet carrier).  The
+original `e^{-z}Q` is visible at every gauge deeper than `e^{-x}`, so it cannot be used once the
+observation quotient resolves exponential gauges — the card says this itself.
+
+## 12. locally-infinite-repaired-frequency-source-for-compact-markov — IN PROGRESS
+
+Fully within reach; the determinacy input the card calls "the same Carleman estimate" is already
+corpus-owned in a stronger and more usable form:
+`HTGeometry/HardyStieltjesDeterminacy.lean`'s **`measure_eq_of_hasStieltjesMoments_of_hardy`** (Lin's
+Hardy criterion: if one representing measure satisfies `Integrable (exp (c √x))` for some `c > 0`,
+every finite Stieltjes representing measure equals it).  Do **not** build Carleman: the explicit
+representing measure here satisfies Hardy's condition for any `c < 1/√R`, because `ν` lives on
+`[0,R]`.
+
+Landed: `HTGeometry/SqrtExponentialMoments.lean` — `∫_0^∞ a^n e^{-√a} da = 2(2n+1)!`, the base
+measure of the shifted factorial moment problem.  (Built on the corpus's existing
+`SquaredVariableSubstitution.lean`; that file already owns `image_sq_Ioi_zero`, `injOn_sq_Ioi_zero`
+and `integral_Ioi_comp_sq`, so the `a = t²` substitution must not be redone — it was, and had to be
+deleted.)
+
+Remaining, in order:
+
+1. Replace the card's 2-D pushforward by a **density**: `dλ₀(x) = (∫_y e^{-√(x/y)} dν(y) / 2) dx`.
+   Its `n`-th moment is `(2n+1)! S_{n+1}` by Tonelli plus the scaling `x = y a`, with no product
+   measure and no pushforward needed.
+2. Hardy's condition for `λ₀` with `c < 1/√R`, then `measure_eq_of_hasStieltjesMoments_of_hardy`
+   gives `x·μ = λ₀`.
+3. Local divergence: on `(0, δ)`, `x⁻¹ e^{-√(x/y)} ≥ x⁻¹ e^{-1}` for `x ≤ y`, and `∫_0^c dx/x = ∞`.
+
+---
+
+## #13 `locally-infinite-repaired-frequency-source-for-compact-markov` — CLOSED (stage 3)
+
+Capstone `HTGeometry.measure_Ioo_eq_top_of_shiftedFactorialMoments`, axiom-clean.
+
+Three modules: `SqrtExponentialMoments.lean` (`∫_0^∞ a^n e^{-√a} = 2(2n+1)!`),
+`ShiftedFactorialMomentDensity.lean` (the density `factorialMomentDensity ν x =
+(∫ e^{-√(x/y)} dν)/2` with its Fubini, finiteness and Hardy layers), and
+`RepairedFrequencyLocalDivergence.lean` (border lower bound, `x·μ` shift transfer,
+determinacy, capstone).
+
+Traps that cost time here:
+
+- The card's `λ₀` is a **2-D pushforward under `(a,y) ↦ a y`**. Mathlib has no change-of-variables
+  for that map. Replacing it by a density on `(0,∞)` and proving the moment identity by Tonelli
+  is strictly easier and gives the same measure.
+- `positivity` cannot see through a `def`; supply `mul_nonneg (by positivity) (h_nonneg …)`.
+- `IntegrableOn.congr_fun` wants `EqOn majorant actual`, i.e. the *reverse* of the natural reading.
+- The final divergence must **not** be phrased as an improper integral. Dyadic blocks
+  `A_j = (t/2^{j+1}, t/2^j)` with a per-block bound `ofReal c / 2 ≤ μ(A_j)` and
+  `ENNReal.exists_nat_mul_gt` replace `∫ dx/x = ∞` entirely.
+- `ENNReal.mul_le_mul_iff_left h0 htop` is the cancellation lemma (not `mul_le_mul_right`).
+- `ℝ≥0∞` notation needs `open scoped ENNReal`; write `ENNReal` if the module does not open it.
+
+Reusable: the shifted-measure transfer `integral_pow_shiftedMeasure` /
+`integrable_pow_shiftedMeasure` / `isFiniteMeasure_shiftedMeasure` works for **any** Stieltjes
+moment shift `dλ = x dμ`, and pairs directly with
+`HTGeometry.measure_eq_of_hasStieltjesMoments_of_hardy`.

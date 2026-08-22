@@ -1032,3 +1032,29 @@ The original plan for the split was:
 3. robust phase-cell transfer;
 4. quantitative-Hilbert specialization bridge; and
 5. circuit-window corollary.
+
+## Theorem C's selection: the exact missing theorem, and a route to it (2026-08-22)
+
+The "Formal status" note above is stale in one respect: **Hilbert irreducibility is now Lean-closed**
+(`HTGeometry.HilbertIrreducibility.hilbert_irreducibility`, and the Galois-preserving multivariate
+form `gal_card_of_specialisation`, both unconditional and axiom-clean).  What Theorem C's selection
+still lacks is that theorem's *hypothesis*: `Nat.card Gal = D!` for the generic two-local
+characteristic polynomial over `ℚ(Y)`.  The parent card `generic-two-local-spectral-monodromy` is
+fully formalized but concludes about **balanced integer** relations, from *topological* monodromy;
+"geometric monodromy ⟹ Galois group" is Riemann existence and is not formalized.
+
+An elementary route that avoids Riemann existence entirely -- single-transverse block
+decomposition, Kummer independence of the block discriminants over `ℚ(i)`, and transport to the
+full family by a field embedding `ℚ(i)(Y) ↪ Frac(F[[t]])` rather than a specialisation -- is
+written out in full in the sibling card
+`./algebraic-two-local-instant-exact-complexity.md`, section "§1's missing bridge".  The first
+brick is built: `HTGeometry/SquareInQuadraticExtension.lean`
+(`isSquare_or_isSquare_mul_of_isSquare_algebraMap`, `not_isSquare_algebraMap`), axiom-clean and
+wired.
+
+Note also that Castillo--Dietmann's *quantitative* Hilbert irreducibility is only needed for an
+explicit height bound on the selected coefficients; the card's Theorem C as stated needs only the
+*existence* of an integer two-local Pauli Hamiltonian with symmetric Galois group, cyclic initial
+state and small collision, which `gal_card_of_specialisation` supplies once its hypothesis is in
+place (its avoidance polynomial `g` absorbs the discriminant, the cyclicity determinant and the
+collision condition simultaneously).

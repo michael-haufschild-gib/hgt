@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62Poisson
 import GaloisForLFunctions.RHTower.ChenGuptaLiHtReciprocalAllOrder
 import GaloisForLFunctions.RHTower.DeningerPoissonMellin
+import GaloisForLFunctions.RHTower.ThueMorseMellinFlatness
 
 /-!
 # Chen--Gupta--Li Lemma 6.2: Mellin kernel on the initial line
@@ -11,8 +12,8 @@ Mellin--Fourier bridge identifies it with the zero-frequency value of `h_t`.
 This makes the paper's rapid-decay estimate a closed all-order theorem.
 -/
 
-open Complex MeasureTheory
-open scoped FourierTransform
+open Complex MeasureTheory Filter Set Asymptotics
+open scoped FourierTransform Topology
 
 noncomputable section
 
@@ -22,6 +23,45 @@ namespace RHTower
 def cglLemma62MellinTransform (w : CGLRealSmoothBump) (s : ℂ) : ℂ :=
   mellin (fun x : ℝ =>
     w.toCGLSmoothBump.value x * w.toCGLSmoothBump.value x) s
+
+/-- The compact CGL squared cutoff is Mellin-flat: it vanishes identically
+near both zero and infinity, so no Mellin half-plane restriction remains. -/
+theorem cglLemma62_squaredCutoff_isMellinFlat (w : CGLRealSmoothBump) :
+    IsMellinFlatKernel (fun x : ℝ =>
+      w.toCGLSmoothBump.value x * w.toCGLSmoothBump.value x) := by
+  let f : ℝ → ℂ := fun x =>
+    w.toCGLSmoothBump.value x * w.toCGLSmoothBump.value x
+  have hcont : Continuous f :=
+    w.toCGLSmoothBump.smooth.continuous.mul w.toCGLSmoothBump.smooth.continuous
+  have hloc : LocallyIntegrableOn f (Ioi 0) :=
+    hcont.locallyIntegrable.locallyIntegrableOn _
+  have htop : ∃ a : ℝ, 0 < a ∧ f =O[atTop]
+      (fun x : ℝ => Real.exp (-a * x)) := by
+    refine ⟨1, one_pos, ?_⟩
+    have heq : f =ᶠ[atTop] (fun _ => 0) := by
+      filter_upwards [eventually_gt_atTop (2 : ℝ)] with x hx
+      have hxnot : x ∉ Icc (1 : ℝ) 2 := fun hxI => not_lt_of_ge hxI.2 hx
+      simp only [f, w.toCGLSmoothBump.outside_support x hxnot, mul_zero]
+    exact heq.trans_isBigO (isBigO_zero _ _)
+  have hzero : SuperpolynomialDecayAtZero f := by
+    intro b
+    have heq : f =ᶠ[𝓝[>] (0 : ℝ)] (fun _ => 0) := by
+      have hlt : ∀ᶠ x : ℝ in 𝓝[>] (0 : ℝ), x < 1 :=
+        (eventually_lt_nhds zero_lt_one).filter_mono nhdsWithin_le_nhds
+      filter_upwards [hlt] with x hx
+      have hxnot : x ∉ Icc (1 : ℝ) 2 := fun hxI => not_lt_of_ge hxI.1 hx
+      simp only [f, w.toCGLSmoothBump.outside_support x hxnot, mul_zero]
+    exact heq.trans_isBigO (isBigO_zero _ _)
+  change IsMellinFlatKernel f
+  exact ⟨hloc, htop, hzero⟩
+
+/-- The source Mellin kernel is entire.  This closes its holomorphy input for
+every CGL contour rectangle, including the left half-plane. -/
+theorem cglLemma62_mellinTransform_analyticOnNhd (w : CGLRealSmoothBump) :
+    AnalyticOnNhd ℂ (cglLemma62MellinTransform w) univ := by
+  change AnalyticOnNhd ℂ (mellin (fun x : ℝ =>
+    w.toCGLSmoothBump.value x * w.toCGLSmoothBump.value x)) univ
+  exact (cglLemma62_squaredCutoff_isMellinFlat w).mellin_analyticOnNhd
 
 /-- The logarithmic Fourier profile for the Mellin kernel on `Re(s)=σ`. -/
 def cglLemma62LogMellinProfile (w : CGLRealSmoothBump) (σ u : ℝ) : ℂ :=
@@ -173,6 +213,39 @@ theorem cglLemma62_mellinTransform_verticalIntegrable
   show Integrable (fun y : ℝ => cglLemma62MellinTransform w ((σ : ℂ) + y * I))
   rw [hfun]
   exact hscale
+
+/-- Every polynomial moment of the Mellin kernel on a fixed vertical line is
+integrable.  This is the closed weighted-`L¹` input that absorbs CGL's cubic
+Dirichlet `L`-function envelope after contour displacement. -/
+theorem cglLemma62_mellinTransform_vertical_integrable_absPow_norm
+    (w : CGLRealSmoothBump) (σ : ℝ) (k : ℕ) :
+    Integrable (fun y : ℝ => |y| ^ k *
+      ‖cglLemma62MellinTransform w ((σ : ℂ) + (y : ℂ) * I)‖) := by
+  let S : SchwartzMap ℝ ℂ := cglLemma62LogMellinProfileSchwartz w σ
+  have hschwartz : Integrable (fun z : ℝ => ‖z‖ ^ k * ‖𝓕 (S : ℝ → ℂ) z‖) := by
+    have hcoe : 𝓕 (S : ℝ → ℂ) = ((𝓕 S : SchwartzMap ℝ ℂ) : ℝ → ℂ) :=
+      (SchwartzMap.fourier_coe _).symm
+    rw [hcoe]
+    exact (𝓕 S).integrable_pow_mul volume k
+  have hpi : (2 * Real.pi) ≠ 0 := by positivity
+  have hcomp := hschwartz.comp_mul_left' (R := (2 * Real.pi)⁻¹) (inv_ne_zero hpi)
+  refine (hcomp.const_mul ((2 * Real.pi) ^ k)).congr ?_
+  filter_upwards with y
+  rw [cglLemma62_mellinTransform_eq_fourier_logMellinProfile]
+  have hS : (S : ℝ → ℂ) = cglLemma62LogMellinProfile w σ := by
+    funext u
+    exact cglLemma62LogMellinProfileSchwartz_apply w σ u
+  rw [← hS]
+  change (2 * Real.pi) ^ k * (‖((2 * Real.pi)⁻¹) * y‖ ^ k *
+      ‖𝓕 (S : ℝ → ℂ) (((2 * Real.pi)⁻¹) * y)‖) =
+    |y| ^ k * ‖𝓕 (S : ℝ → ℂ) (y / (2 * Real.pi))‖
+  have hpipos : 0 < 2 * Real.pi := mul_pos (by norm_num) Real.pi_pos
+  have harg : (2 * Real.pi)⁻¹ * y = y / (2 * Real.pi) := by field_simp
+  rw [harg]
+  rw [norm_div]
+  simp only [Real.norm_eq_abs, abs_of_pos hpipos]
+  rw [div_pow]
+  field_simp [hpipos.ne']
 
 /-- The compact squared source cutoff has a convergent Mellin transform on
 the initial CGL inversion line `Re(s)=2`. -/

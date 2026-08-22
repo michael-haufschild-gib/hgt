@@ -67,4 +67,33 @@ theorem rationalFunction_ideal_mem_map_iff_forall_place (F : Type u)
     exact (ideal_mem_map_iff_tensorProduct
       (L := rationalFunctionCompletion F .infinite) I a).mpr (h .infinite)
 
+/-- A prescribed ideal congruence in a number-field algebra can be certified at one completion. -/
+theorem numberField_ideal_mem_map_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A]
+    (I : Ideal A) (a : A) :
+    a ∈ I ↔ ∃ p : NumberFieldPlace K,
+      algebraMap A (completion K p ⊗[K] A) a ∈
+        I.map (algebraMap A (completion K p ⊗[K] A)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (ideal_mem_map_iff_tensorProduct (L := completion K (witnessPlace K)) I a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_mem_map_iff_tensorProduct (L := completion K p) I a).mpr hp
+
+/-- A prescribed ideal congruence in an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_ideal_mem_map_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A]
+    (I : Ideal A) (a : A) :
+    a ∈ I ↔ ∃ p : RationalFunctionPlace F,
+      algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A) a ∈
+        I.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (ideal_mem_map_iff_tensorProduct
+        (L := rationalFunctionCompletion F .infinite) I a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_mem_map_iff_tensorProduct (L := rationalFunctionCompletion F p) I a).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

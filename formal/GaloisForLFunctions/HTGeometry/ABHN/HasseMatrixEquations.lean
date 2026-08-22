@@ -113,4 +113,90 @@ theorem rationalFunctionMatrix_mul_eq_iff_forall_place
     rw [Matrix.map_mul]
     exact congrFun (congrFun (h .infinite) i) j
 
+/-- A specified number-field linear system holds exactly when it holds at one completion. -/
+theorem numberFieldMatrix_mulVec_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K]
+    (ι : Type v) (κ : Type w) [Fintype κ]
+    (A : Matrix ι κ K) (x : κ → K) (b : ι → K) :
+    A.mulVec x = b ↔ ∃ v : NumberFieldPlace K,
+      (A.map (placeEmbedding K v)).mulVec (fun j => placeEmbedding K v (x j)) =
+        fun i => placeEmbedding K v (b i) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberFieldMatrix_mulVec_eq_iff_forall_place K ι κ A x b).mp h (witnessPlace K)⟩
+  · rintro ⟨v, hv⟩
+    funext i
+    apply (placeEmbedding K v).injective
+    change placeEmbedding K v (A.mulVec x i) = placeEmbedding K v (b i)
+    rw [(placeEmbedding K v).map_mulVec]
+    have hw := congrFun hv i
+    change (A.map (placeEmbedding K v)).mulVec ((placeEmbedding K v) ∘ x) i =
+      placeEmbedding K v (b i) at hw
+    exact hw
+
+/-- A specified `F(t)`-linear system holds exactly when it holds at one completion. -/
+theorem rationalFunctionMatrix_mulVec_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F]
+    (ι : Type v) (κ : Type w) [Fintype κ]
+    (A : Matrix ι κ (RatFunc F)) (x : κ → RatFunc F) (b : ι → RatFunc F) :
+    A.mulVec x = b ↔ ∃ v : RationalFunctionPlace F,
+      (A.map (rationalFunctionPlaceEmbedding F v)).mulVec
+          (fun j => rationalFunctionPlaceEmbedding F v (x j)) =
+        fun i => rationalFunctionPlaceEmbedding F v (b i) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunctionMatrix_mulVec_eq_iff_forall_place F ι κ A x b).mp h .infinite⟩
+  · rintro ⟨v, hv⟩
+    funext i
+    apply (rationalFunctionPlaceEmbedding F v).injective
+    change rationalFunctionPlaceEmbedding F v (A.mulVec x i) =
+      rationalFunctionPlaceEmbedding F v (b i)
+    rw [(rationalFunctionPlaceEmbedding F v).map_mulVec]
+    have hw := congrFun hv i
+    change (A.map (rationalFunctionPlaceEmbedding F v)).mulVec
+      ((rationalFunctionPlaceEmbedding F v) ∘ x) i =
+        rationalFunctionPlaceEmbedding F v (b i) at hw
+    exact hw
+
+/-- A specified number-field matrix factorization holds exactly when it holds at one completion. -/
+theorem numberFieldMatrix_mul_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K]
+    (ι : Type v) (κ : Type w) (o : Type z) [Fintype κ]
+    (A : Matrix ι κ K) (B : Matrix κ o K) (C : Matrix ι o K) :
+    A * B = C ↔ ∃ p : NumberFieldPlace K,
+      A.map (placeEmbedding K p) * B.map (placeEmbedding K p) = C.map (placeEmbedding K p) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberFieldMatrix_mul_eq_iff_forall_place K ι κ o A B C).mp h (witnessPlace K)⟩
+  · rintro ⟨p, hp⟩
+    ext i j
+    apply (placeEmbedding K p).injective
+    change (A * B).map (placeEmbedding K p) i j = C.map (placeEmbedding K p) i j
+    rw [Matrix.map_mul]
+    exact congrFun (congrFun hp i) j
+
+/-- A specified `F(t)`-matrix factorization holds exactly when it holds at one completion. -/
+theorem rationalFunctionMatrix_mul_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F]
+    (ι : Type v) (κ : Type w) (o : Type z) [Fintype κ]
+    (A : Matrix ι κ (RatFunc F)) (B : Matrix κ o (RatFunc F))
+    (C : Matrix ι o (RatFunc F)) :
+    A * B = C ↔ ∃ p : RationalFunctionPlace F,
+      A.map (rationalFunctionPlaceEmbedding F p) * B.map (rationalFunctionPlaceEmbedding F p) =
+        C.map (rationalFunctionPlaceEmbedding F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunctionMatrix_mul_eq_iff_forall_place F ι κ o A B C).mp h .infinite⟩
+  · rintro ⟨p, hp⟩
+    ext i j
+    apply (rationalFunctionPlaceEmbedding F p).injective
+    change (A * B).map (rationalFunctionPlaceEmbedding F p) i j =
+      C.map (rationalFunctionPlaceEmbedding F p) i j
+    rw [Matrix.map_mul]
+    exact congrFun (congrFun hp i) j
+
 end GaloisForLFunctions.HTGeometry.ABHN

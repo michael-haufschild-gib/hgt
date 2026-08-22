@@ -299,3 +299,32 @@ minimum spectral gap and not a raw pseudodeterminant.
     before integration; only genuinely transverse occupied image remains for
     coefficient-space anti-concentration.  Shell count may not scale with
     circuit-word count.
+
+## Conjecturing loop -- ordinary local-Pauli analytic observer, 2026-08-22
+
+19. `[LEAN-PROVED] [MODEL-SPECIFIC GAP CLOSED]`  For every qubit count `n`,
+    locality cutoff `q`, and nonzero laboratory time, the complete active
+    Pauli generator dictionary `x ↦ -itH(x)` is injective and admits a
+    continuous linear reporter.  The selected generator minor is exactly the
+    identity.  Hence the nonlinear exponential endpoint has one
+    target-independent Gaussian-null critical locus and zero-dimensional
+    regular exact fibres.  See
+    `../3-formalized/local-pauli-autonomous-observer-sublevel-law.md` and
+    `HTGeometry/LocalPauliAutonomousObserverLaw.lean`.
+20. `[LEAN-PROVED] [FIXED-CONFIDENCE ROBUSTIFICATION]`  A nonzero analytic
+    observer minor has Gaussian-null zero set; therefore for every positive
+    error budget there is a positive determinant threshold whose lower-tail
+    mass is smaller than that budget.  This supplies unconditional
+    fixed-system robustness, but no dimension-uniform or growing-replica rate.
+21. `[LEAN-PROVED] [LINEAR GAUSSIAN PLUMBING CLOSED]`  Rectangular observer
+    Gram determinant equals the sum of squared canonical active minors.  One
+    active block therefore controls the original full-coordinate Gaussian box
+    and sup-norm tubes after an exact measure-preserving active/inactive split.
+    The theorem is singular-safe and retains the sharp Cauchy--Binet factor.
+22. `[OPEN CORE, UNCHANGED IN KIND]`  Combine local gate-generation structure
+    with return-excised occupied-image incidence.  Required theorem is a
+    dimension-uniform growing-replica decay rate for the ordinary fixed-`q`
+    ensemble that survives the complete circuit Bellman recursion.  Items
+    19--21 close physical dictionary, exact-rank, fixed-confidence, and
+    coordinate-transport gaps; the static-orbit net no-go proves they cannot
+    alone establish Brown--Susskind growth.

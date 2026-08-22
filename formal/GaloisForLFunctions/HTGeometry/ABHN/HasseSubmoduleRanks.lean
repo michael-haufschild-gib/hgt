@@ -75,4 +75,31 @@ theorem rationalFunction_submodule_finrank_eq_iff_forall_place (F : Type u)
     rw [← rationalFunction_submodule_finrank_completion F P .infinite]
     exact h .infinite
 
+/-- A prescribed number-field submodule dimension can be certified at one completion. -/
+theorem numberField_submodule_finrank_eq_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (P : Submodule K M) (n : ℕ) :
+    Module.finrank K P = n ↔ ∃ p : NumberFieldPlace K,
+      Module.finrank (completion K p) (P.baseChange (completion K p)) = n := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberField_submodule_finrank_completion K P (witnessPlace K)).trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (numberField_submodule_finrank_completion K P p).symm.trans hp
+
+/-- A prescribed `F(t)`-submodule dimension can be certified at one completion. -/
+theorem rationalFunction_submodule_finrank_eq_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (P : Submodule (RatFunc F) M) (n : ℕ) :
+    Module.finrank (RatFunc F) P = n ↔ ∃ p : RationalFunctionPlace F,
+      Module.finrank (rationalFunctionCompletion F p)
+        (P.baseChange (rationalFunctionCompletion F p)) = n := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunction_submodule_finrank_completion F P .infinite).trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (rationalFunction_submodule_finrank_completion F P p).symm.trans hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

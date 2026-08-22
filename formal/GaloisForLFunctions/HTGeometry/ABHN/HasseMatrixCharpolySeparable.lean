@@ -51,4 +51,33 @@ theorem rationalFunctionMatrix_charpoly_separable_iff_forall_place
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) M).mpr
       (h RationalFunctionPlace.infinite)
 
+/-- Separability of a fixed number-field matrix characteristic polynomial is certified at one
+completed place. -/
+theorem numberFieldMatrix_charpoly_separable_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) :
+    M.charpoly.Separable ↔ ∃ p : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K p))).charpoly.Separable := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_charpoly_separable_iff_map (L := completion K (witnessPlace K)) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_charpoly_separable_iff_map (L := completion K p) M).mpr hp
+
+/-- Separability of a fixed `F(t)`-matrix characteristic polynomial is certified at one completed
+place. -/
+theorem rationalFunctionMatrix_charpoly_separable_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) :
+    M.charpoly.Separable ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))).charpoly.Separable := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_charpoly_separable_iff_map
+        (L := rationalFunctionCompletion F .infinite) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_charpoly_separable_iff_map (L := rationalFunctionCompletion F p) M).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

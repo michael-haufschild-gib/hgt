@@ -49,4 +49,26 @@ theorem rationalFunction_isReduced_of_forall_place (F : Type u)
   exact isReduced_of_tensorProduct_isReduced (K := RatFunc F)
     (L := rationalFunctionCompletion F .infinite)
 
+/-- If a scalar extension at one number-field completion is reduced, then the global algebra is
+reduced. -/
+theorem numberField_isReduced_of_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A]
+    (h : ∃ p : NumberFieldPlace K, IsReduced (completion K p ⊗[K] A)) :
+    IsReduced A := by
+  obtain ⟨p, hp⟩ := h
+  letI : IsReduced (completion K p ⊗[K] A) := hp
+  exact isReduced_of_tensorProduct_isReduced (K := K) (L := completion K p)
+
+/-- If a scalar extension at one `F(t)`-completion is reduced, then the global algebra is
+reduced. -/
+theorem rationalFunction_isReduced_of_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A]
+    (h : ∃ p : RationalFunctionPlace F,
+      IsReduced (rationalFunctionCompletion F p ⊗[RatFunc F] A)) :
+    IsReduced A := by
+  obtain ⟨p, hp⟩ := h
+  letI : IsReduced (rationalFunctionCompletion F p ⊗[RatFunc F] A) := hp
+  exact isReduced_of_tensorProduct_isReduced (K := RatFunc F)
+    (L := rationalFunctionCompletion F p)
+
 end GaloisForLFunctions.HTGeometry.ABHN

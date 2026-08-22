@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ParabolicFatouJetRealization
+import GaloisForLFunctions.HTGeometry.VonMangoldtSelfConvolution
 
 /-!
 # The shifted Euler quotient tangent filtration
@@ -364,6 +365,42 @@ theorem iteratedDeriv_two_shiftedEulerCoeff_primePow {p a : ℕ} (hp : p.Prime) 
     iteratedDeriv_cexp_const_mul]
   simp
   ring
+
+/-- **The two-prime layer.**  The second transverse derivative of the shifted Euler coefficient is
+four times the Dirichlet self-convolution of the von Mangoldt function.  Together with
+`iteratedDeriv_one_shiftedEulerCoeff` this identifies both low tangent layers of the shifted Euler
+quotient with the classical arithmetic convolutions. -/
+theorem iteratedDeriv_two_shiftedEulerCoeff (n : ℕ) :
+    iteratedDeriv 2 (shiftedEulerCoeff n) 0
+      = 4 * (((ArithmeticFunction.vonMangoldt * ArithmeticFunction.vonMangoldt) n : ℝ) : ℂ) := by
+  classical
+  rcases lt_trichotomy n.primeFactors.card 1 with hlt | heq1 | hgt
+  · have hempty : n.primeFactors = ∅ := Finset.card_eq_zero.mp (by omega)
+    have hc : shiftedEulerCoeff n = fun _ : ℂ => (1 : ℂ) :=
+      funext (shiftedEulerCoeff_of_primeFactors_empty hempty)
+    have hn : n = 0 ∨ n = 1 := Nat.primeFactors_eq_empty.mp hempty
+    have hzero : (ArithmeticFunction.vonMangoldt * ArithmeticFunction.vonMangoldt) n = 0 := by
+      rcases hn with rfl | rfl
+      · simp
+      · simp [ArithmeticFunction.mul_apply]
+    rw [hc, hzero]
+    simp [iteratedDeriv_succ]
+  · have hpp : IsPrimePow n := isPrimePow_iff_card_primeFactors_eq_one.mpr heq1
+    obtain ⟨p, k, hp, hk, rfl⟩ := (isPrimePow_nat_iff n).mp hpp
+    rw [iteratedDeriv_two_shiftedEulerCoeff_primePow hp hk,
+      vonMangoldt_mul_self_prime_pow hp hk]
+    push_cast
+    ring
+  · rcases eq_or_lt_of_le (Nat.succ_le_of_lt hgt) with heq2 | hgt2
+    · have hcard : n.primeFactors.card = 2 := heq2.symm
+      have hkey := iteratedDeriv_shiftedEulerCoeff_card n
+      rw [hcard] at hkey
+      rw [hkey, vonMangoldt_mul_self_of_card_eq_two hcard]
+      push_cast
+      ring
+    · rw [iteratedDeriv_shiftedEulerCoeff_eq_zero n (by omega),
+        vonMangoldt_mul_self_eq_zero_of_three_le (by omega)]
+      simp
 
 end
 

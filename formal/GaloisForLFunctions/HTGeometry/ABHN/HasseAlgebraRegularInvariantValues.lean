@@ -147,4 +147,104 @@ theorem rationalFunction_regularNorm_eq_iff_forall_place
     exact (scalarExtensionMap_regularNorm_eq_iff
       (L := rationalFunctionCompletion F .infinite) A a c).mpr (h .infinite)
 
+/-- A prescribed regular characteristic polynomial over a number field can be certified at one
+completion. -/
+theorem numberField_regularCharpoly_eq_iff_exists_place (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, w} K) (a : A.carrier) (p : Polynomial K) :
+    (LinearMap.mulLeft K a).charpoly = p ↔ ∃ v : NumberFieldPlace K,
+      (LinearMap.mulLeft (completion K v)
+        (numberFieldLocalScalarExtensionMap K v A a)).charpoly =
+          p.map (algebraMap K (completion K v)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_regularCharpoly_eq_iff
+        (L := completion K (witnessPlace K)) A a p).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (scalarExtensionMap_regularCharpoly_eq_iff (L := completion K v) A a p).mpr hv
+
+/-- A prescribed regular trace over a number field can be certified at one completion. -/
+theorem numberField_regularTrace_eq_iff_exists_place (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, w} K) (a : A.carrier) (c : K) :
+    LinearMap.trace K A.carrier (LinearMap.mulLeft K a) = c ↔ ∃ p : NumberFieldPlace K,
+      LinearMap.trace (completion K p) (completion K p ⊗[K] A.carrier)
+        (LinearMap.mulLeft (completion K p) (numberFieldLocalScalarExtensionMap K p A a)) =
+          algebraMap K (completion K p) c := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_regularTrace_eq_iff
+        (L := completion K (witnessPlace K)) A a c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_regularTrace_eq_iff (L := completion K p) A a c).mpr hp
+
+/-- A prescribed regular norm over a number field can be certified at one completion. -/
+theorem numberField_regularNorm_eq_iff_exists_place (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, w} K) (a : A.carrier) (c : K) :
+    LinearMap.det (LinearMap.mulLeft K a) = c ↔ ∃ p : NumberFieldPlace K,
+      LinearMap.det (LinearMap.mulLeft (completion K p)
+        (numberFieldLocalScalarExtensionMap K p A a)) = algebraMap K (completion K p) c := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_regularNorm_eq_iff
+        (L := completion K (witnessPlace K)) A a c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_regularNorm_eq_iff (L := completion K p) A a c).mpr hp
+
+/-- A prescribed regular characteristic polynomial over `F(t)` can be certified at one
+completion. -/
+theorem rationalFunction_regularCharpoly_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F))
+    (a : A.carrier) (p : Polynomial (RatFunc F)) :
+    (LinearMap.mulLeft (RatFunc F) a).charpoly = p ↔ ∃ v : RationalFunctionPlace F,
+      (LinearMap.mulLeft (rationalFunctionCompletion F v)
+        (rationalFunctionLocalScalarExtensionMap F v A a)).charpoly =
+          p.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_regularCharpoly_eq_iff
+        (L := rationalFunctionCompletion F .infinite) A a p).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (scalarExtensionMap_regularCharpoly_eq_iff
+      (L := rationalFunctionCompletion F v) A a p).mpr hv
+
+/-- A prescribed regular trace over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_regularTrace_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F))
+    (a : A.carrier) (c : RatFunc F) :
+    LinearMap.trace (RatFunc F) A.carrier (LinearMap.mulLeft (RatFunc F) a) = c ↔
+      ∃ p : RationalFunctionPlace F,
+        LinearMap.trace (rationalFunctionCompletion F p)
+          (rationalFunctionCompletion F p ⊗[RatFunc F] A.carrier)
+            (LinearMap.mulLeft (rationalFunctionCompletion F p)
+              (rationalFunctionLocalScalarExtensionMap F p A a)) =
+                algebraMap (RatFunc F) (rationalFunctionCompletion F p) c := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_regularTrace_eq_iff
+        (L := rationalFunctionCompletion F .infinite) A a c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_regularTrace_eq_iff
+      (L := rationalFunctionCompletion F p) A a c).mpr hp
+
+/-- A prescribed regular norm over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_regularNorm_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F))
+    (a : A.carrier) (c : RatFunc F) :
+    LinearMap.det (LinearMap.mulLeft (RatFunc F) a) = c ↔ ∃ p : RationalFunctionPlace F,
+      LinearMap.det (LinearMap.mulLeft (rationalFunctionCompletion F p)
+        (rationalFunctionLocalScalarExtensionMap F p A a)) =
+          algebraMap (RatFunc F) (rationalFunctionCompletion F p) c := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_regularNorm_eq_iff
+        (L := rationalFunctionCompletion F .infinite) A a c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_regularNorm_eq_iff
+      (L := rationalFunctionCompletion F p) A a c).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

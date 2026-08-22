@@ -1218,6 +1218,103 @@ theorem nonarchimedeanLocalFieldAdjoinRootFractionPolynomial_separable
   exact (Polynomial.separable_iff_derivative_ne_zero hg).mp
     (PerfectField.separable_of_irreducible hg) hgzero
 
+/-- The fraction field of an irreducible residue-polynomial lift is separable over the base
+local field. Every fraction is rational in the lifted root, while that root is annihilated by
+the separable fraction polynomial. This is the finite separable extension layer needed before
+one can address normality and lift the residue Frobenius to a local-field automorphism. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionField_isSeparable
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+      change Function.Injective <| AdjoinRoot.of f
+      exact AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+    letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+        (FractionRing (AdjoinRoot f))).mpr ?_
+      change Function.Injective <|
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+        (AdjoinRoot.of.injective_of_degree_ne_zero
+          (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+    letI : Algebra K (FractionRing (AdjoinRoot f)) := by
+      let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      have hg₀ : Function.Injective g₀ :=
+        (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+          (AdjoinRoot.of.injective_of_degree_ne_zero
+            (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+      exact RingHom.toAlgebra (IsFractionRing.lift hg₀)
+    Algebra.IsSeparable K (FractionRing (AdjoinRoot f)) := by
+  letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+    change Function.Injective <| AdjoinRoot.of f
+    exact AdjoinRoot.of.injective_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+      (FractionRing (AdjoinRoot f))).mpr ?_
+    change Function.Injective <|
+      (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+    exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+    (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+  have hg₀ : Function.Injective g₀ :=
+    (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  letI : Algebra K (FractionRing (AdjoinRoot f)) := RingHom.toAlgebra (IsFractionRing.lift hg₀)
+  let α : FractionRing (AdjoinRoot f) :=
+    algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f)) (AdjoinRoot.root f)
+  have hcomm : (algebraMap K (FractionRing (AdjoinRoot f))).comp (algebraMap 𝒪[K] K) =
+      (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+        (algebraMap 𝒪[K] (AdjoinRoot f)) := by
+    ext r
+    change IsFractionRing.lift hg₀ (algebraMap 𝒪[K] K r) = _
+    rw [IsFractionRing.lift_algebraMap]
+    rfl
+  have hmap (q : Polynomial 𝒪[K]) :
+      algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f)) (AdjoinRoot.mk f q) =
+        Polynomial.aeval α (q.map (algebraMap 𝒪[K] K)) := by
+    rw [← AdjoinRoot.aeval_eq q]
+    exact Polynomial.map_aeval_eq_aeval_map hcomm q (AdjoinRoot.root f)
+  have hroot : Polynomial.aeval α (f.map (algebraMap 𝒪[K] K)) = 0 := by
+    rw [← hmap f]
+    simp
+  have hαsep : IsSeparable K α := by
+    change (minpoly K α).Separable
+    exact (nonarchimedeanLocalFieldAdjoinRootFractionPolynomial_separable K f hf g hfg hg).of_dvd
+      (minpoly.dvd K α hroot)
+  let S : IntermediateField K (FractionRing (AdjoinRoot f)) := IntermediateField.adjoin K {α}
+  have hmem : ∀ b : AdjoinRoot f,
+      algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f)) b ∈ S := by
+    intro b
+    induction b using AdjoinRoot.induction_on with
+    | _ q =>
+      rw [IntermediateField.mem_adjoin_simple_iff]
+      refine ⟨q.map (algebraMap 𝒪[K] K), 1, ?_⟩
+      rw [hmap q]
+      simp
+  have hgen : S = ⊤ := by
+    rw [eq_top_iff]
+    intro z hz
+    obtain ⟨a, b, hb, hab⟩ := IsFractionRing.div_surjective (AdjoinRoot f) z
+    rw [← hab]
+    exact S.div_mem (hmem a) (hmem b)
+  letI : Algebra.IsSeparable K S :=
+    (IntermediateField.isSeparable_adjoin_simple_iff_isSeparable K
+      (FractionRing (AdjoinRoot f))).mpr hαsep
+  let e : S ≃ₐ[K] (FractionRing (AdjoinRoot f)) :=
+    (IntermediateField.equivOfEq hgen).trans IntermediateField.topEquiv
+  exact AlgEquiv.Algebra.isSeparable e
+
 /-- A monic lift of an irreducible residue polynomial has local root algebra.  Its unique
 maximal ideal is the extension of the maximal ideal of the valuation ring. -/
 theorem nonarchimedeanLocalFieldAdjoinRootIsLocalRing
@@ -1385,6 +1482,63 @@ theorem nonarchimedeanLocalFieldAdjoinRootResidueField_isGalois
     Finite.of_surjective e.symm e.symm.surjective
   infer_instance
 
+/-- The defining residue polynomial of an unramified root lift splits in the lifted residue
+field.  The root algebra identification transports its distinguished root, and normality of the
+finite residue extension supplies all conjugates. This is the residue-level input for lifting
+the complete Frobenius orbit by Hensel's lemma. -/
+theorem nonarchimedeanLocalFieldAdjoinRootResiduePolynomial_splits
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    (g.map (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)))).Splits := by
+  letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  let e := nonarchimedeanLocalFieldAdjoinRootResidueFieldEquivOfMapEq K f hf g hfg hg
+  let x : IsLocalRing.ResidueField (AdjoinRoot f) := e.symm (AdjoinRoot.root g)
+  have hcomm : algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) =
+      e.symm.toRingEquiv.toRingHom.comp (algebraMap 𝓀[K] (AdjoinRoot g)) := by
+    ext r
+    obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective r
+    change algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))
+      (IsLocalRing.residue 𝒪[K] a) =
+      e.symm (algebraMap 𝓀[K] (AdjoinRoot g) (IsLocalRing.residue 𝒪[K] a))
+    rw [IsLocalRing.ResidueField.algebraMap_residue]
+    change IsLocalRing.residue (AdjoinRoot f) (algebraMap 𝒪[K] (AdjoinRoot f) a) =
+      e.symm (algebraMap 𝓀[K] (AdjoinRoot g) (algebraMap 𝒪[K] 𝓀[K] a))
+    rw [← IsScalarTower.algebraMap_apply 𝒪[K] 𝓀[K] (AdjoinRoot g)]
+    change algebraMap (AdjoinRoot f) (IsLocalRing.ResidueField (AdjoinRoot f))
+      (algebraMap 𝒪[K] (AdjoinRoot f) a) =
+      e.symm (algebraMap 𝒪[K] (AdjoinRoot g) a)
+    rw [← IsScalarTower.algebraMap_apply 𝒪[K] (AdjoinRoot f)
+      (IsLocalRing.ResidueField (AdjoinRoot f))]
+    exact (e.symm.commutes a).symm
+  have hroot : Polynomial.aeval x g = 0 := by
+    change Polynomial.aeval (e.symm.toRingEquiv.toRingHom (AdjoinRoot.root g)) g = 0
+    have hcomm' : (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))).comp
+        (RingHom.id 𝓀[K]) =
+        e.symm.toRingEquiv.toRingHom.comp (algebraMap 𝓀[K] (AdjoinRoot g)) := by
+      simpa using hcomm
+    have h := Polynomial.map_aeval_eq_aeval_map hcomm' g (AdjoinRoot.root g)
+    simpa only [Polynomial.map_id, AdjoinRoot.aeval_eq, AdjoinRoot.mk_self, map_zero] using h.symm
+  have hminpoly : minpoly 𝓀[K] x = g := by
+    exact (minpoly.eq_of_irreducible_of_monic hg hroot hgmonic).symm
+  letI : IsGalois 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_isGalois K f hf g hgmonic hfg hg
+  letI : Normal 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) := IsGalois.to_normal
+  have hsplit : ((minpoly 𝓀[K] x).map
+      (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)))).Splits :=
+    Normal.splits' x
+  simpa only [hminpoly] using hsplit
+
 /-- The Galois group of the residue extension carried by a finite unramified root lift is
 cyclic.  Its distinguished generator is the residue arithmetic Frobenius. -/
 theorem nonarchimedeanLocalFieldAdjoinRootResidueField_isCyclic
@@ -1523,6 +1677,400 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_hensel_lift
   apply HenselianRing.is_henselian p hp a₀
   · exact Ideal.Quotient.eq_zero_iff_mem.mp hroot
   · exact Ne.isUnit hsimple
+
+/-- A monic polynomial over a domain splits when its separable reduction already splits and each
+reduced root has a lift with the same residue.  The finite root count makes the lifts distinct,
+so they exhaust the degree of the original polynomial. -/
+theorem polynomial_splits_of_split_reduction_and_root_lifts
+    {B R : Type*} [CommRing B] [IsDomain B] [Field R]
+    (φ : B →+* R) (p : Polynomial B) (hp : p.Monic)
+    (hsep : (p.map φ).Separable) (hsplit : (p.map φ).Splits)
+    (hlift : ∀ x : R, (p.map φ).IsRoot x →
+      ∃ a : B, p.IsRoot a ∧ φ a = x) : p.Splits := by
+  classical
+  let q : Polynomial R := p.map φ
+  let S : Finset R := q.roots.toFinset
+  have hp0 : p ≠ 0 := hp.ne_zero
+  have hq0 : q ≠ 0 := by
+    simpa only [q] using (hp.map φ).ne_zero
+  have hS_card : S.card = q.natDegree := by
+    calc
+      S.card = q.roots.card := by
+        dsimp only [S]
+        exact Multiset.toFinset_card_of_nodup (Polynomial.nodup_roots hsep)
+      _ = q.natDegree := Polynomial.splits_iff_card_roots.mp hsplit
+  have hq_natDegree : q.natDegree = p.natDegree := by
+    simpa only [q] using hp.natDegree_map φ
+  have hLifts : ∀ x : S, ∃ a : B, p.IsRoot a ∧ φ a = x := by
+    intro x
+    apply hlift x
+    apply (q.mem_roots hq0).mp
+    simpa only [S, Multiset.mem_toFinset] using x.property
+  choose F hFroot hFres using hLifts
+  let T : Finset B := S.attach.image F
+  have hF_injective : Function.Injective F := by
+    intro x y hxy
+    apply Subtype.ext
+    calc
+      (x : R) = φ (F x) := (hFres x).symm
+      _ = φ (F y) := congrArg φ hxy
+      _ = (y : R) := hFres y
+  have hT_card : T.card = S.card := by
+    dsimp only [T]
+    calc
+      (S.attach.image F).card = S.attach.card :=
+        Finset.card_image_of_injOn (fun x _ y _ hxy => hF_injective hxy)
+      _ = S.card := Finset.card_attach
+  have hTroots : ∀ a ∈ T, p.eval a = 0 := by
+    intro a ha
+    rcases Finset.mem_image.mp ha with ⟨x, -, rfl⟩
+    exact hFroot x
+  have hT_natDegree : T.card = p.natDegree :=
+    hT_card.trans (hS_card.trans hq_natDegree)
+  have hroots : p.roots = T.val :=
+    p.roots_eq_of_natDegree_le_card_of_ne_zero hTroots hT_natDegree.ge hp0
+  apply Polynomial.splits_iff_card_roots.mpr
+  rw [hroots]
+  change T.card = p.natDegree
+  exact hT_natDegree
+
+/-- A field generated by one root of a polynomial that already splits in it is normal.  This
+packages the splitting-field argument used to pass from integral root lifting to a normal
+fraction-field extension. -/
+theorem normal_of_splits_and_adjoin_root_eq_top
+    {K L : Type*} [Field K] [Field L] [Algebra K L]
+    (p : Polynomial K) (α : L)
+    (hp : (p.map (algebraMap K L)) ≠ 0)
+    (hroot : Polynomial.aeval α p = 0)
+    (hsplit : (p.map (algebraMap K L)).Splits)
+    (hgen : IntermediateField.adjoin K {α} = ⊤) : Normal K L := by
+  letI : Polynomial.IsSplittingField K L p := by
+    apply isSplittingField_iff_intermediateField.mpr
+    refine ⟨hsplit, ?_⟩
+    apply top_unique
+    rw [← hgen]
+    apply IntermediateField.adjoin_simple_le_iff.mpr
+    apply IntermediateField.subset_adjoin
+    apply Polynomial.mem_rootSet'.mpr
+    exact ⟨hp, hroot⟩
+  exact Normal.of_isSplittingField p
+
+/-- Every simple root of the defining residue polynomial in the lifted residue field has a
+root-lift in the unramified integral algebra. The reduction compatibility is explicit, so this
+turns each residue conjugate into a genuine conjugate root before the remaining root-counting
+step that proves fraction-field normality. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_liftResidueConjugate
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    ∀ x : IsLocalRing.ResidueField (AdjoinRoot f),
+      Polynomial.aeval x (g.map (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)))) = 0 →
+      ∃ a : AdjoinRoot f, (f.map (algebraMap 𝒪[K] (AdjoinRoot f))).IsRoot a ∧
+        IsLocalRing.residue (AdjoinRoot f) a = x := by
+  letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  let p : Polynomial (AdjoinRoot f) := f.map (algebraMap 𝒪[K] (AdjoinRoot f))
+  have hp : p.Monic := hf.map _
+  have hcoeff : (IsLocalRing.residue (AdjoinRoot f)).comp
+      (algebraMap 𝒪[K] (AdjoinRoot f)) =
+      (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))).comp
+        (IsLocalRing.residue 𝒪[K]) := by
+    ext a
+    change IsLocalRing.residue (AdjoinRoot f) (algebraMap 𝒪[K] (AdjoinRoot f) a) =
+      algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))
+        (IsLocalRing.residue 𝒪[K] a)
+    exact (IsLocalRing.ResidueField.algebraMap_residue a).symm
+  have hreduce : p.map (IsLocalRing.residue (AdjoinRoot f)) =
+      g.map (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))) := by
+    calc
+      p.map (IsLocalRing.residue (AdjoinRoot f)) =
+          f.map ((IsLocalRing.residue (AdjoinRoot f)).comp
+            (algebraMap 𝒪[K] (AdjoinRoot f))) := by
+        simp only [p, Polynomial.map_map]
+      _ = f.map ((algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))).comp
+          (IsLocalRing.residue 𝒪[K])) := by rw [hcoeff]
+      _ = (f.map (IsLocalRing.residue 𝒪[K])).map
+          (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))) := by
+        rw [Polynomial.map_map]
+      _ = g.map (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))) := by
+        change (f.map (Ideal.Quotient.mk 𝓂[K])).map _ = _
+        rw [hfg]
+        rfl
+  letI : PerfectField 𝓀[K] := inferInstance
+  have hgsep : g.Separable := PerfectField.separable_of_irreducible hg
+  intro x hx
+  obtain ⟨a₀, ha₀⟩ := IsLocalRing.residue_surjective x
+  have hroot' : Polynomial.aeval x (p.map (IsLocalRing.residue (AdjoinRoot f))) = 0 := by
+    rw [hreduce]
+    exact hx
+  have hsimple : Polynomial.aeval x ((g.map
+      (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)))).derivative) ≠ 0 :=
+    (Polynomial.separable_map _).mpr hgsep |>.aeval_derivative_ne_zero hx
+  have hsimple' : Polynomial.aeval x
+      ((p.map (IsLocalRing.residue (AdjoinRoot f))).derivative) ≠ 0 := by
+    rw [hreduce]
+    exact hsimple
+  have hroot : IsLocalRing.residue (AdjoinRoot f) (p.eval a₀) = 0 := by
+    rw [← ha₀] at hroot'
+    change (p.map (IsLocalRing.residue (AdjoinRoot f))).eval
+      (IsLocalRing.residue (AdjoinRoot f) a₀) = 0 at hroot'
+    rw [Polynomial.eval_map] at hroot'
+    have heval : IsLocalRing.residue (AdjoinRoot f) (p.eval a₀) =
+        Polynomial.eval₂ (IsLocalRing.residue (AdjoinRoot f))
+          (IsLocalRing.residue (AdjoinRoot f) a₀) p := by
+      exact Polynomial.hom_eval₂ p (RingHom.id (AdjoinRoot f))
+        (IsLocalRing.residue (AdjoinRoot f)) a₀
+    rw [heval]
+    exact hroot'
+  have hsimple₀ : IsLocalRing.residue (AdjoinRoot f)
+      (p.derivative.eval a₀) ≠ 0 := by
+    rw [← ha₀] at hsimple'
+    rw [Polynomial.derivative_map] at hsimple'
+    change (p.derivative.map (IsLocalRing.residue (AdjoinRoot f))).eval
+      (IsLocalRing.residue (AdjoinRoot f) a₀) ≠ 0 at hsimple'
+    rw [Polynomial.eval_map] at hsimple'
+    have heval : IsLocalRing.residue (AdjoinRoot f) (p.derivative.eval a₀) =
+        Polynomial.eval₂ (IsLocalRing.residue (AdjoinRoot f))
+          (IsLocalRing.residue (AdjoinRoot f) a₀) p.derivative := by
+      exact Polynomial.hom_eval₂ p.derivative (RingHom.id (AdjoinRoot f))
+        (IsLocalRing.residue (AdjoinRoot f)) a₀
+    rw [heval]
+    exact hsimple'
+  obtain ⟨a, ha, haa₀⟩ :=
+    nonarchimedeanLocalFieldAdjoinRoot_hensel_lift K f hf g hfg hg p hp a₀ hroot hsimple₀
+  refine ⟨a, ha, ?_⟩
+  exact (Ideal.Quotient.eq.mpr haa₀).trans ha₀
+
+/-- In a finite unramified root lift, the integral defining polynomial splits in the lifted
+integral algebra.  Each residue conjugate lifts by Hensel, and separability makes these lifts
+distinct; this is the integral precursor to normality of the fraction-field extension. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_definingPolynomial_splits
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    (f.map (algebraMap 𝒪[K] (AdjoinRoot f))).Splits := by
+  letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  let p : Polynomial (AdjoinRoot f) := f.map (algebraMap 𝒪[K] (AdjoinRoot f))
+  have hp : p.Monic := hf.map _
+  have hcoeff : (IsLocalRing.residue (AdjoinRoot f)).comp
+      (algebraMap 𝒪[K] (AdjoinRoot f)) =
+      (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))).comp
+        (IsLocalRing.residue 𝒪[K]) := by
+    ext a
+    change IsLocalRing.residue (AdjoinRoot f) (algebraMap 𝒪[K] (AdjoinRoot f) a) =
+      algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))
+        (IsLocalRing.residue 𝒪[K] a)
+    exact (IsLocalRing.ResidueField.algebraMap_residue a).symm
+  have hreduce : p.map (IsLocalRing.residue (AdjoinRoot f)) =
+      g.map (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))) := by
+    calc
+      p.map (IsLocalRing.residue (AdjoinRoot f)) =
+          f.map ((IsLocalRing.residue (AdjoinRoot f)).comp
+            (algebraMap 𝒪[K] (AdjoinRoot f))) := by
+        simp only [p, Polynomial.map_map]
+      _ = f.map ((algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))).comp
+          (IsLocalRing.residue 𝒪[K])) := by rw [hcoeff]
+      _ = (f.map (IsLocalRing.residue 𝒪[K])).map
+          (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))) := by
+        rw [Polynomial.map_map]
+      _ = g.map (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))) := by
+        change (f.map (Ideal.Quotient.mk 𝓂[K])).map _ = _
+        rw [hfg]
+        rfl
+  letI : PerfectField 𝓀[K] := inferInstance
+  have hgsep : g.Separable := PerfectField.separable_of_irreducible hg
+  apply polynomial_splits_of_split_reduction_and_root_lifts
+    (IsLocalRing.residue (AdjoinRoot f)) p hp
+  · rw [hreduce]
+    exact (Polynomial.separable_map _).mpr hgsep
+  · rw [hreduce]
+    exact nonarchimedeanLocalFieldAdjoinRootResiduePolynomial_splits K f hf g hgmonic hfg hg
+  · intro x hx
+    apply nonarchimedeanLocalFieldAdjoinRoot_liftResidueConjugate K f hf g hfg hg x
+    rw [← hreduce]
+    exact hx
+
+/-- The fraction field of a finite unramified root lift is normal over the base local field.
+The integral splitting theorem survives localization, and the localized distinguished root still
+generates the whole fraction field, so the extension is its splitting field. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionField_normal
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+      change Function.Injective <| AdjoinRoot.of f
+      exact AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+    letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+        (FractionRing (AdjoinRoot f))).mpr ?_
+      change Function.Injective <|
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+        (AdjoinRoot.of.injective_of_degree_ne_zero
+          (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+    letI : Algebra K (FractionRing (AdjoinRoot f)) := by
+      let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      have hg₀ : Function.Injective g₀ :=
+        (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+          (AdjoinRoot.of.injective_of_degree_ne_zero
+            (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+      exact RingHom.toAlgebra (IsFractionRing.lift hg₀)
+    Normal K (FractionRing (AdjoinRoot f)) := by
+  letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+    change Function.Injective <| AdjoinRoot.of f
+    exact AdjoinRoot.of.injective_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+      (FractionRing (AdjoinRoot f))).mpr ?_
+    change Function.Injective <|
+      (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+    exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+    (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+  have hg₀ : Function.Injective g₀ :=
+    (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  letI : Algebra K (FractionRing (AdjoinRoot f)) := RingHom.toAlgebra (IsFractionRing.lift hg₀)
+  let p : Polynomial (AdjoinRoot f) := f.map (algebraMap 𝒪[K] (AdjoinRoot f))
+  let q : Polynomial K := f.map (algebraMap 𝒪[K] K)
+  let α : FractionRing (AdjoinRoot f) :=
+    algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f)) (AdjoinRoot.root f)
+  have hcomm : (algebraMap K (FractionRing (AdjoinRoot f))).comp (algebraMap 𝒪[K] K) =
+      (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+        (algebraMap 𝒪[K] (AdjoinRoot f)) := by
+    ext r
+    change IsFractionRing.lift hg₀ (algebraMap 𝒪[K] K r) = _
+    rw [IsFractionRing.lift_algebraMap]
+    rfl
+  have hfracmap : q.map (algebraMap K (FractionRing (AdjoinRoot f))) =
+      p.map (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))) := by
+    calc
+      q.map (algebraMap K (FractionRing (AdjoinRoot f))) =
+          f.map ((algebraMap K (FractionRing (AdjoinRoot f))).comp (algebraMap 𝒪[K] K)) := by
+        simp only [q, Polynomial.map_map]
+      _ = f.map ((algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+          (algebraMap 𝒪[K] (AdjoinRoot f))) := by rw [hcomm]
+      _ = p.map (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))) := by
+        simp only [p, Polynomial.map_map]
+  have hintegral : p.Splits :=
+    nonarchimedeanLocalFieldAdjoinRoot_definingPolynomial_splits K f hf g hgmonic hfg hg
+  have hsplit : (q.map (algebraMap K (FractionRing (AdjoinRoot f)))).Splits := by
+    rw [hfracmap]
+    exact hintegral.map _
+  have hmap (r : Polynomial 𝒪[K]) :
+      algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f)) (AdjoinRoot.mk f r) =
+        Polynomial.aeval α (r.map (algebraMap 𝒪[K] K)) := by
+    rw [← AdjoinRoot.aeval_eq r]
+    exact Polynomial.map_aeval_eq_aeval_map hcomm r (AdjoinRoot.root f)
+  have hroot : Polynomial.aeval α q = 0 := by
+    rw [← hmap f]
+    simp
+  let S : IntermediateField K (FractionRing (AdjoinRoot f)) := IntermediateField.adjoin K {α}
+  have hmem : ∀ b : AdjoinRoot f,
+      algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f)) b ∈ S := by
+    intro b
+    induction b using AdjoinRoot.induction_on with
+    | _ r =>
+      rw [IntermediateField.mem_adjoin_simple_iff]
+      refine ⟨r.map (algebraMap 𝒪[K] K), 1, ?_⟩
+      rw [hmap r]
+      simp
+  have hgen : S = ⊤ := by
+    rw [eq_top_iff]
+    intro z hz
+    obtain ⟨a, b, hb, hab⟩ := IsFractionRing.div_surjective (AdjoinRoot f) z
+    rw [← hab]
+    exact S.div_mem (hmem a) (hmem b)
+  have hqmonic : q.Monic := hf.map _
+  exact normal_of_splits_and_adjoin_root_eq_top q α (hqmonic.map _).ne_zero hroot hsplit hgen
+
+/-- A finite unramified root lift gives a finite Galois extension of the base local field.  The
+separable and normal halves are proved independently above: residue separability controls the
+first, while lifted splitting and localization control the second. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionField_isGalois
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+      change Function.Injective <| AdjoinRoot.of f
+      exact AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+    letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+        (FractionRing (AdjoinRoot f))).mpr ?_
+      change Function.Injective <|
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+        (AdjoinRoot.of.injective_of_degree_ne_zero
+          (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+    letI : Algebra K (FractionRing (AdjoinRoot f)) := by
+      let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      have hg₀ : Function.Injective g₀ :=
+        (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+          (AdjoinRoot.of.injective_of_degree_ne_zero
+            (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+      exact RingHom.toAlgebra (IsFractionRing.lift hg₀)
+    IsGalois K (FractionRing (AdjoinRoot f)) := by
+  letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+    change Function.Injective <| AdjoinRoot.of f
+    exact AdjoinRoot.of.injective_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+      (FractionRing (AdjoinRoot f))).mpr ?_
+    change Function.Injective <|
+      (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+    exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+    (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+  have hg₀ : Function.Injective g₀ :=
+    (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  letI : Algebra K (FractionRing (AdjoinRoot f)) := RingHom.toAlgebra (IsFractionRing.lift hg₀)
+  letI : Algebra.IsSeparable K (FractionRing (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionField_isSeparable K f hf g hfg hg
+  letI : Normal K (FractionRing (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionField_normal K f hf g hgmonic hfg hg
+  exact IsGalois.mk
 
 /-- A monic irreducible lift has residue degree equal to the degree of its defining polynomial.
 Together with its DVR property, this is the unramified degree calculation at the integral level. -/
@@ -1714,6 +2262,120 @@ noncomputable def nonarchimedeanLocalFieldAdjoinRootFractionFieldResidueFieldEqu
   exact discreteValuationRingFractionFieldResidueFieldEquiv
     (AdjoinRoot f) (FractionRing (AdjoinRoot f))
 
+/-- The canonical residue field of a finite unramified fraction local field is made an algebra
+over the base residue field by transporting the integral residue extension along the canonical
+residue-field equivalence. -/
+@[reducible] noncomputable def
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    Algebra 𝓀[K] E := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  let e := nonarchimedeanLocalFieldAdjoinRootFractionFieldResidueFieldEquiv
+    K f hf g hgmonic hfg hg
+  exact RingHom.toAlgebra (e.toRingHom.comp
+    (algebraMap 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f))))
+
+/-- The integral and canonical residue fields of a finite unramified fraction local field are
+algebra-equivalent over the base residue field. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgEquiv
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    IsLocalRing.ResidueField (AdjoinRoot f) ≃ₐ[𝓀[K]] E := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Algebra 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  let e := nonarchimedeanLocalFieldAdjoinRootFractionFieldResidueFieldEquiv
+    K f hf g hgmonic hfg hg
+  exact AlgEquiv.ofRingEquiv (f := e) fun _ => rfl
+
+/-- The canonical valuation residue field of a finite unramified fraction local field is Galois
+over the base residue field. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_isGalois
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    IsGalois 𝓀[K] E := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Algebra 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  letI : IsGalois 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_isGalois K f hf g hgmonic hfg hg
+  exact IsGalois.of_algEquiv
+    (nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgEquiv
+      K f hf g hgmonic hfg hg)
+
 /-- The canonical valuation on the lifted fraction field is rank-one discrete. -/
 theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldValuation_isRankOneDiscrete
     (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
@@ -1750,6 +2412,33 @@ theorem nonarchimedeanLocalFieldAdjoinRootResidueField_finite
   let e := nonarchimedeanLocalFieldAdjoinRootResidueFieldEquivOfMapEq K f hf g hfg hg
   exact Finite.of_surjective e.symm e.symm.surjective
 
+/-- The residue field of a finite unramified root lift has cardinality `q^n`, where `q` is the
+cardinality of the base residue field and `n` is the degree of the lift. -/
+theorem nonarchimedeanLocalFieldAdjoinRootResidueField_natCard
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    Nat.card (IsLocalRing.ResidueField (AdjoinRoot f)) =
+      Nat.card 𝓀[K] ^ f.natDegree := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain (K := K) (f := f) (hf := hf) (g := g)
+      (hfg := hfg) (hg := hg)
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing (K := K) (f := f) (hf := hf) (g := g)
+      (hfg := hfg) (hg := hg)
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom (K := K) (f := f) (hf := hf) (g := g)
+      (hfg := hfg) (hg := hg)
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
+  letI : Module.Finite 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    Module.Finite.of_finite
+  rw [Module.natCard_eq_pow_finrank (K := 𝓀[K])]
+  rw [nonarchimedeanLocalFieldAdjoinRootResidueField_finrank K f hf g hgmonic hfg hg]
+
 /-- The canonical integer ring of every finite unramified fraction local field has finite
 residue field. -/
 theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
@@ -1771,6 +2460,676 @@ theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finit
     nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
   exact discreteValuationRingFractionFieldIntegerResidueField_finite
     (AdjoinRoot f) (FractionRing (AdjoinRoot f))
+
+/-- The canonical valuation residue extension of a finite unramified fraction local field has
+cyclic Galois group over the base residue field. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_isCyclic
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    IsCyclic Gal(E / 𝓀[K]) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Algebra 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  letI : Finite (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  letI : IsGalois 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_isGalois
+      K f hf g hgmonic hfg hg
+  infer_instance
+
+/-- The Galois group of the canonical valuation residue extension has exactly the unramified
+degree of the lifted root polynomial. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_natCard_algEquiv
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    Nat.card Gal(E / 𝓀[K]) = f.natDegree := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Algebra 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
+  letI : Module.Finite 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    Module.Finite.of_finite
+  letI : Finite (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  letI : Module.Finite 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    Module.Finite.of_finite
+  letI : IsGalois 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_isGalois
+      K f hf g hgmonic hfg hg
+  calc
+    Nat.card Gal(IsLocalRing.ResidueField
+        ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+          (FractionRing (AdjoinRoot f))).integer / 𝓀[K]) =
+        Module.finrank 𝓀[K] (IsLocalRing.ResidueField
+          ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+            (FractionRing (AdjoinRoot f))).integer) :=
+      IsGalois.card_aut_eq_finrank _ _
+    _ = Module.finrank 𝓀[K] (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+      (nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgEquiv
+        K f hf g hgmonic hfg hg).toLinearEquiv.finrank_eq.symm
+    _ = f.natDegree :=
+      nonarchimedeanLocalFieldAdjoinRootResidueField_finrank K f hf g hgmonic hfg hg
+
+/-- The canonical valuation residue extension of a finite unramified fraction local field has
+degree equal to the lifted root degree. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finrank
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    Module.finrank 𝓀[K] E = f.natDegree := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  let E := IsLocalRing.ResidueField
+    ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer
+  letI : Algebra 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  exact (nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgEquiv
+    K f hf g hgmonic hfg hg).toLinearEquiv.finrank_eq.symm.trans
+      (nonarchimedeanLocalFieldAdjoinRootResidueField_finrank K f hf g hgmonic hfg hg)
+
+/-- Arithmetic Frobenius on the canonical residue extension of a finite unramified local
+field. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    Gal(E / 𝓀[K]) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Algebra 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  letI : Finite (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  letI : Module.Finite 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    Module.Finite.of_finite
+  letI : Algebra.IsAlgebraic 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    Algebra.IsAlgebraic.of_finite 𝓀[K] _
+  letI := Fintype.ofFinite 𝓀[K]
+  exact FiniteField.frobeniusAlgEquivOfAlgebraic 𝓀[K]
+    (IsLocalRing.ResidueField ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer)
+
+/-- Arithmetic Frobenius acts by the base residue cardinality power. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius_apply
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    ∀ x : E,
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius
+        K f hf g hgmonic hfg hg x = x ^ Nat.card 𝓀[K] := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  let E := IsLocalRing.ResidueField
+    ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer
+  letI : Algebra 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  letI : Finite (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  letI : Module.Finite 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    Module.Finite.of_finite
+  letI : Algebra.IsAlgebraic 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    Algebra.IsAlgebraic.of_finite 𝓀[K] _
+  letI := Fintype.ofFinite 𝓀[K]
+  change ∀ x : E, (FiniteField.frobeniusAlgEquivOfAlgebraic 𝓀[K] E) x =
+    x ^ Nat.card 𝓀[K]
+  intro x
+  rw [FiniteField.frobeniusAlgEquivOfAlgebraic_apply]
+  rw [Fintype.card_eq_nat_card]
+
+/-- Arithmetic Frobenius has order equal to the unramified residue degree. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius_orderOf
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    orderOf (nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius
+      K f hf g hgmonic hfg hg) = f.natDegree := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Algebra 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  letI : Finite (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  letI : Module.Finite 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    Module.Finite.of_finite
+  letI : Algebra.IsAlgebraic 𝓀[K] (IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer) :=
+    Algebra.IsAlgebraic.of_finite 𝓀[K] _
+  letI := Fintype.ofFinite 𝓀[K]
+  change orderOf (FiniteField.frobeniusAlgEquivOfAlgebraic 𝓀[K]
+    (IsLocalRing.ResidueField ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer)) = f.natDegree
+  rw [FiniteField.orderOf_frobeniusAlgEquivOfAlgebraic]
+  exact nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finrank
+    K f hf g hgmonic hfg hg
+
+/-- Every residue automorphism is a bounded power of arithmetic Frobenius. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius_exists_pow_eq
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g)
+    (σ :
+      letI : IsDomain (AdjoinRoot f) :=
+        nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+      letI : IsLocalRing (AdjoinRoot f) :=
+        nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+      letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+        nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+      letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+        nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+      let E := IsLocalRing.ResidueField
+        ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+          (FractionRing (AdjoinRoot f))).integer
+      letI : Algebra 𝓀[K] E :=
+        nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+          K f hf g hgmonic hfg hg
+      Gal(E / 𝓀[K])) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    ∃ i < f.natDegree,
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius
+        K f hf g hgmonic hfg hg ^ i = σ := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  let E := IsLocalRing.ResidueField
+    ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer
+  letI : Algebra 𝓀[K] E :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  letI : Finite E :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  letI : Module.Finite 𝓀[K] E := Module.Finite.of_finite
+  letI : Algebra.IsAlgebraic 𝓀[K] E := Algebra.IsAlgebraic.of_finite 𝓀[K] _
+  letI := Fintype.ofFinite 𝓀[K]
+  obtain ⟨⟨i, hi⟩, hσ⟩ :=
+    (FiniteField.bijective_frobeniusAlgEquivOfAlgebraic_pow 𝓀[K] E).surjective σ
+  refine ⟨i, ?_, hσ⟩
+  rwa [nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finrank
+    K f hf g hgmonic hfg hg] at hi
+
+/-- Arithmetic Frobenius generates the canonical residue Galois group. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius_zpowers_eq_top
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    Subgroup.zpowers
+        (nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius
+          K f hf g hgmonic hfg hg) = ⊤ := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  let E := IsLocalRing.ResidueField
+    ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer
+  letI : Algebra 𝓀[K] E :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  apply le_antisymm le_top
+  intro σ _
+  obtain ⟨i, -, hσ⟩ :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius_exists_pow_eq
+      K f hf g hgmonic hfg hg σ
+  rw [← hσ]
+  exact (Subgroup.zpowers _).pow_mem (by simp) i
+
+/-- Finite unramified reciprocity on the canonical valuation residue extension: its Galois group
+is the cyclic group of the residue degree, generated by arithmetic Frobenius. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueGaloisZModEquiv
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    Multiplicative (ZMod f.natDegree) ≃* Gal(E / 𝓀[K]) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  let E := IsLocalRing.ResidueField
+    ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer
+  letI : Algebra 𝓀[K] E :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  letI : Finite E :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  letI : Module.Finite 𝓀[K] E := Module.Finite.of_finite
+  letI : Algebra.IsAlgebraic 𝓀[K] E := Algebra.IsAlgebraic.of_finite 𝓀[K] _
+  let ζ := nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius
+    K f hf g hgmonic hfg hg
+  have hζtop : Subgroup.zpowers ζ = ⊤ := by
+    simpa [ζ] using
+      (nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius_zpowers_eq_top
+        K f hf g hgmonic hfg hg)
+  refine zmodMulEquivOfGenerator (g := ζ) ?_ ?_
+  · intro σ
+    rw [hζtop]
+    trivial
+  · exact nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_natCard_algEquiv
+      K f hf g hgmonic hfg hg
+
+/-- Canonical finite unramified reciprocity sends `1 mod n` to arithmetic Frobenius. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueGaloisZModEquiv_apply_one
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueGaloisZModEquiv
+        K f hf g hgmonic hfg hg (Multiplicative.ofAdd (1 : ZMod f.natDegree)) =
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius
+        K f hf g hgmonic hfg hg := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  simp [nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueGaloisZModEquiv]
+
+/-- The canonical finite unramified residue extension satisfies the cyclic norm sequence.
+This is the residue-field quotient of local norm reciprocity. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius_fullNormSequence
+    (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Algebra 𝓀[K] E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+        K f hf g hgmonic hfg hg
+    Function.Injective (cyclicGaloisBaseUnitsMap (K := 𝓀[K]) (L := E)) ∧
+      Function.Exact (cyclicGaloisBaseUnitsMap (K := 𝓀[K]) (L := E))
+        (cyclicGaloisAdditiveCoboundary
+          (nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius
+            K f hf g hgmonic hfg hg)) ∧
+      Function.Exact (cyclicGaloisAdditiveCoboundary
+        (nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius
+          K f hf g hgmonic hfg hg))
+        (cyclicGaloisAdditiveNormUnits 𝓀[K] E) ∧
+      Function.Surjective (cyclicGaloisAdditiveNormUnits 𝓀[K] E) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  let E := IsLocalRing.ResidueField
+    ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer
+  letI : Algebra 𝓀[K] E :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueAlgebra
+      K f hf g hgmonic hfg hg
+  letI : Finite E :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  apply finiteField_cyclicGaloisFullNormSequence
+  intro σ
+  rw [nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueFrobenius_zpowers_eq_top
+    K f hf g hgmonic hfg hg]
+  trivial
+
+/-- The canonical valuation residue field of a finite unramified fraction local field has
+cardinality `q^n`, with `q` the base residue cardinality and `n` the extension degree. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_natCard
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Finite E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+        K f hf g hgmonic hfg hg
+    Nat.card E = Nat.card 𝓀[K] ^ f.natDegree := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  let e := nonarchimedeanLocalFieldAdjoinRootFractionFieldResidueFieldEquiv
+    K f hf g hgmonic hfg hg
+  exact (Nat.card_congr e.toEquiv).symm.trans
+    (nonarchimedeanLocalFieldAdjoinRootResidueField_natCard K f hf g hgmonic hfg hg)
+
+/-- Units of the canonical valuation residue field of a finite unramified fraction local field
+form a cyclic group.  This is the finite quotient used by unramified Frobenius and norms. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueUnitGroup_isCyclic
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Finite E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+        K f hf g hgmonic hfg hg
+    IsCyclic Eˣ := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  let E := IsLocalRing.ResidueField
+    ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer
+  letI : Finite E :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  infer_instance
+
+/-- The canonical valuation residue unit group of a finite unramified fraction local field has
+cardinality `q^n - 1`, with `q` the base residue cardinality and `n` the extension degree. -/
+theorem nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueUnitGroup_natCard
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    let E := IsLocalRing.ResidueField
+      ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+        (FractionRing (AdjoinRoot f))).integer
+    letI : Finite E :=
+      nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+        K f hf g hgmonic hfg hg
+    Nat.card Eˣ = Nat.card 𝓀[K] ^ f.natDegree - 1 := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  let E := IsLocalRing.ResidueField
+    ((IsDiscreteValuationRing.maximalIdeal (AdjoinRoot f)).valuation
+      (FractionRing (AdjoinRoot f))).integer
+  letI : Finite E :=
+    nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_finite
+      K f hf g hgmonic hfg hg
+  change Nat.card Eˣ = Nat.card 𝓀[K] ^ f.natDegree - 1
+  rw [Nat.card_units]
+  rw [nonarchimedeanLocalFieldAdjoinRootFractionFieldIntegerResidueField_natCard
+    K f hf g hgmonic hfg hg]
 
 /-- Every Brauer class over the canonical valuation residue field of a finite unramified
 fraction local field is split.  This transfers the finite-residue Brauer vanishing from the
@@ -2241,6 +3600,72 @@ theorem nonarchimedeanLocalField_exists_finiteUnramifiedDVRLift_of_natDegree
     nonarchimedeanLocalField_exists_monic_residuePolynomial_lift K g hgmonic
   refine ⟨f, g, hf, hgmonic, hg, hfg, hdegree.trans hgdegree, ?_⟩
   exact nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+
+/-- Every positive degree has a concrete unramified root presentation whose fraction field is
+Galois over the given nonarchimedean local field.  This upgrades the existing integral DVR-lift
+supply by the splitting and normality argument for the fraction field. -/
+theorem nonarchimedeanLocalField_exists_unramifiedGaloisLift_of_natDegree
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (n : ℕ) [NeZero n] :
+    ∃ (f : Polynomial 𝒪[K]) (g : Polynomial 𝓀[K]) (hf : f.Monic), g.Monic ∧
+      ∃ hg : Irreducible g, ∃ hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g, f.natDegree = n ∧
+      letI : IsDomain (AdjoinRoot f) :=
+        nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+      letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+        refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+        change Function.Injective <| AdjoinRoot.of f
+        exact AdjoinRoot.of.injective_of_degree_ne_zero
+          (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+      letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+        refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+          (FractionRing (AdjoinRoot f))).mpr ?_
+        change Function.Injective <|
+          (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+        exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+          (AdjoinRoot.of.injective_of_degree_ne_zero
+            (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+      letI : Algebra K (FractionRing (AdjoinRoot f)) := by
+        let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+          (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+        have hg₀ : Function.Injective g₀ :=
+          (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+            (AdjoinRoot.of.injective_of_degree_ne_zero
+              (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+        exact RingHom.toAlgebra (IsFractionRing.lift hg₀)
+      FiniteDimensional K (FractionRing (AdjoinRoot f)) ∧
+        IsGalois K (FractionRing (AdjoinRoot f)) ∧
+        Module.finrank K (FractionRing (AdjoinRoot f)) = n := by
+  obtain ⟨f, g, hf, hgmonic, hg, hfg, hdegree, hDVR⟩ :=
+    nonarchimedeanLocalField_exists_finiteUnramifiedDVRLift_of_natDegree K n
+  refine ⟨f, g, hf, hgmonic, hg, hfg, hdegree, ?_⟩
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+    change Function.Injective <| AdjoinRoot.of f
+    exact AdjoinRoot.of.injective_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+      (FractionRing (AdjoinRoot f))).mpr ?_
+    change Function.Injective <|
+      (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+    exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+    (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+  have hg₀ : Function.Injective g₀ :=
+    (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  letI : Algebra K (FractionRing (AdjoinRoot f)) := RingHom.toAlgebra (IsFractionRing.lift hg₀)
+  letI : FiniteDimensional K (FractionRing (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionField_finiteDimensionalOverBase K f hf g hfg hg
+  refine ⟨inferInstance, ?_, ?_⟩
+  · exact nonarchimedeanLocalFieldAdjoinRootFractionField_isGalois K f hf g hgmonic hfg hg
+  · exact (nonarchimedeanLocalFieldAdjoinRootFractionField_finrankOverBase K f hf g hfg hg).trans
+      hdegree
 
 /-- Every positive degree occurs as the residue degree of a concrete nonarchimedean local field
 obtained from a finite unramified DVR lift.  This is the finite-level extension supply used

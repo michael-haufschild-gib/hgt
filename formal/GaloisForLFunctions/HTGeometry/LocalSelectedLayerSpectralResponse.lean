@@ -155,7 +155,7 @@ theorem selectedLayerSecondOrderResponse_eq_residuePacket
 law.** An analytic spectral relation for every collision-free value of one
 selected layer difference forces coefficient equality across every
 nonzero transition product for that pair of local labels. -/
-theorem crossLayer_eq_of_selectedLayerAnalyticBranchRelation
+theorem crossLayer_eq_of_selectedLayerAnalyticBranchConstantAction
     {α ρ : Type*} [Fintype α] [Fintype ρ]
     [DecidableEq α] [DecidableEq ρ] [Nonempty α]
     (energy : α → ℝ) (hmax : MaximallyProjectiveEnergy energy)
@@ -188,10 +188,11 @@ theorem crossLayer_eq_of_selectedLayerAnalyticBranchRelation
                   (fun a => (energy a : ℂ)) (shift z)) +
               g • selectedLayerCoupling transition r s,
               branch z i g) = 0)
+    (target : ℂ)
     (hrelation :
       ∀ z ∈ S,
         ∀ᶠ g in 𝓝 0,
-          ∑ i, coefficient i * branch z i g = 0) :
+          ∑ i, coefficient i * branch z i g = target) :
     ∀ a b, a ≠ b →
       transition a b * transition b a ≠ 0 →
       coefficient (a, r) = coefficient (b, s) := by
@@ -219,19 +220,65 @@ theorem crossLayer_eq_of_selectedLayerAnalyticBranchRelation
     S hS hadmissible
   intro z hz
   have hresponse :=
-    affineEigenbranch_linear_relation_secondOrder
+    affineEigenbranch_constant_action_secondOrder
       (layeredEnergy
         (fun a => (energy a : ℂ)) (shift z))
       (hsimple z hz)
       (selectedLayerCoupling transition r s)
       (selectedLayerCoupling_diagonal_zero transition hrs)
       coefficient (branch z)
-      (hbranch z hz) (hbase z hz) (hroot z hz)
+      (hbranch z hz) (hbase z hz) (hroot z hz) target
       (hrelation z hz)
   rw [selectedLayerSecondOrderResponse_eq_residuePacket
     (hrs := hrs)] at hresponse
   rw [hpairShift z hz] at hresponse
   exact hresponse
+
+/-- The zero-relation law is the special case of a constant spectral
+action with target zero. -/
+theorem crossLayer_eq_of_selectedLayerAnalyticBranchRelation
+    {α ρ : Type*} [Fintype α] [Fintype ρ]
+    [DecidableEq α] [DecidableEq ρ] [Nonempty α]
+    (energy : α → ℝ) (hmax : MaximallyProjectiveEnergy energy)
+    (transition : Matrix α α ℂ)
+    (coefficient : α × ρ → ℂ)
+    {r s : ρ} (hrs : r ≠ s)
+    (S : Set ℂ) (hS : S.Infinite)
+    (shift : ℂ → ρ → ℂ)
+    (hpairShift :
+      ∀ z ∈ S, shift z r - shift z s = z)
+    (hsimple :
+      ∀ z ∈ S,
+        Function.Injective
+          (layeredEnergy
+            (fun a => (energy a : ℂ)) (shift z)))
+    (branch : ℂ → (α × ρ) → ℂ → ℂ)
+    (hbranch :
+      ∀ z ∈ S, ∀ i, AnalyticAt ℂ (branch z i) 0)
+    (hbase :
+      ∀ z ∈ S, ∀ i,
+        branch z i 0 =
+          layeredEnergy
+            (fun a => (energy a : ℂ)) (shift z) i)
+    (hroot :
+      ∀ z ∈ S, ∀ i,
+        ∀ᶠ g in nhds 0,
+          matrixCharpolyRelation
+            (Matrix.diagonal
+                (layeredEnergy
+                  (fun a => (energy a : ℂ)) (shift z)) +
+              g • selectedLayerCoupling transition r s,
+              branch z i g) = 0)
+    (hrelation :
+      ∀ z ∈ S,
+        ∀ᶠ g in nhds 0,
+          ∑ i, coefficient i * branch z i g = 0) :
+    ∀ a b, a ≠ b →
+      transition a b * transition b a ≠ 0 →
+      coefficient (a, r) = coefficient (b, s) := by
+  exact crossLayer_eq_of_selectedLayerAnalyticBranchConstantAction
+    energy hmax transition coefficient hrs S hS shift hpairShift hsimple
+    branch hbranch hbase hroot 0 hrelation
 
 end
 

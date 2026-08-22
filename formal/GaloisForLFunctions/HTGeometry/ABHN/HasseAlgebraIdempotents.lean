@@ -58,4 +58,32 @@ theorem rationalFunctionLocalScalarExtensionMap_isIdempotent_iff_forall_place
     exact (scalarExtensionMap_isIdempotent_iff
       (L := rationalFunctionCompletion F .infinite) A a).mpr (h .infinite)
 
+/-- Idempotence of a number-field CSA element is detected at one completion. -/
+theorem numberFieldLocalScalarExtensionMap_isIdempotent_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, v} K) (a : A.carrier) :
+    IsIdempotentElem a ↔ ∃ p : NumberFieldPlace K,
+      IsIdempotentElem (numberFieldLocalScalarExtensionMap K p A a) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_isIdempotent_iff
+        (L := completion K (witnessPlace K)) A a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_isIdempotent_iff (L := completion K p) A a).mpr hp
+
+/-- Idempotence of a rational-function-field CSA element is detected at one finite or infinite
+completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_isIdempotent_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, v} (RatFunc F)) (a : A.carrier) :
+    IsIdempotentElem a ↔ ∃ p : RationalFunctionPlace F,
+      IsIdempotentElem (rationalFunctionLocalScalarExtensionMap F p A a) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_isIdempotent_iff
+        (L := rationalFunctionCompletion F .infinite) A a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_isIdempotent_iff
+      (L := rationalFunctionCompletion F p) A a).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

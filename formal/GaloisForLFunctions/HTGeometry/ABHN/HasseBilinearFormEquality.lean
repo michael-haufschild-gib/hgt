@@ -60,4 +60,30 @@ theorem rationalFunction_bilinForm_eq_iff_forall_place (F : Type u)
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) B C).mpr
       (h RationalFunctionPlace.infinite)
 
+/-- Equality of number-field bilinear forms can be certified at one completion. -/
+theorem numberField_bilinForm_eq_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (B C : LinearMap.BilinForm K M) :
+    B = C ↔ ∃ p : NumberFieldPlace K, B.baseChange (completion K p) = C.baseChange (completion K p) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (bilinForm_eq_iff_baseChange_eq (L := completion K (witnessPlace K)) B C).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (bilinForm_eq_iff_baseChange_eq (L := completion K p) B C).mpr hp
+
+/-- Equality of `F(t)`-bilinear forms can be certified at one completion. -/
+theorem rationalFunction_bilinForm_eq_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (B C : LinearMap.BilinForm (RatFunc F) M) :
+    B = C ↔ ∃ p : RationalFunctionPlace F,
+      B.baseChange (rationalFunctionCompletion F p) = C.baseChange (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (bilinForm_eq_iff_baseChange_eq
+        (L := rationalFunctionCompletion F .infinite) B C).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (bilinForm_eq_iff_baseChange_eq (L := rationalFunctionCompletion F p) B C).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

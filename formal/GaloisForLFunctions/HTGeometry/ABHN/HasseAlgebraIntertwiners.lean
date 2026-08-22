@@ -156,4 +156,70 @@ theorem rationalFunctionLocalScalarExtensionMap_exists_nonzero_intertwiner_iff_f
     exact (scalarExtensionMap_exists_nonzero_intertwiner_iff
       (L := rationalFunctionCompletion F .infinite) A a b).mpr (h .infinite)
 
+/-- A fixed inhomogeneous intertwining equation over a number field is solvable exactly when it
+is solvable at one completed place. -/
+theorem numberFieldLocalScalarExtensionMap_exists_intertwining_defect_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, w} K) (a b c : A.carrier) :
+    (∃ x, a * x - x * b = c) ↔ ∃ p : NumberFieldPlace K, ∃ z,
+      numberFieldLocalScalarExtensionMap K p A a * z -
+        z * numberFieldLocalScalarExtensionMap K p A b =
+          numberFieldLocalScalarExtensionMap K p A c := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_exists_intertwining_defect_eq_iff
+        (L := completion K (witnessPlace K)) A a b c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_intertwining_defect_eq_iff
+      (L := completion K p) A a b c).mpr hp
+
+/-- A fixed homogeneous intertwining equation over a number field has a nonzero solution exactly
+when it does at one completed place. -/
+theorem numberFieldLocalScalarExtensionMap_exists_nonzero_intertwiner_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, w} K) (a b : A.carrier) :
+    (∃ x, x ≠ 0 ∧ a * x = x * b) ↔ ∃ p : NumberFieldPlace K, ∃ z, z ≠ 0 ∧
+      numberFieldLocalScalarExtensionMap K p A a * z =
+        z * numberFieldLocalScalarExtensionMap K p A b := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_exists_nonzero_intertwiner_iff
+        (L := completion K (witnessPlace K)) A a b).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_nonzero_intertwiner_iff
+      (L := completion K p) A a b).mpr hp
+
+/-- A fixed inhomogeneous intertwining equation over `F(t)` is solvable exactly when it is
+solvable at one completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_exists_intertwining_defect_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F)) (a b c : A.carrier) :
+    (∃ x, a * x - x * b = c) ↔ ∃ p : RationalFunctionPlace F, ∃ z,
+      rationalFunctionLocalScalarExtensionMap F p A a * z -
+        z * rationalFunctionLocalScalarExtensionMap F p A b =
+          rationalFunctionLocalScalarExtensionMap F p A c := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_exists_intertwining_defect_eq_iff
+        (L := rationalFunctionCompletion F .infinite) A a b c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_intertwining_defect_eq_iff
+      (L := rationalFunctionCompletion F p) A a b c).mpr hp
+
+/-- A fixed homogeneous intertwining equation over `F(t)` has a nonzero solution exactly when it
+does at one completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_exists_nonzero_intertwiner_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F)) (a b : A.carrier) :
+    (∃ x, x ≠ 0 ∧ a * x = x * b) ↔ ∃ p : RationalFunctionPlace F, ∃ z, z ≠ 0 ∧
+      rationalFunctionLocalScalarExtensionMap F p A a * z =
+        z * rationalFunctionLocalScalarExtensionMap F p A b := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_exists_nonzero_intertwiner_iff
+        (L := rationalFunctionCompletion F .infinite) A a b).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_nonzero_intertwiner_iff
+      (L := rationalFunctionCompletion F p) A a b).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

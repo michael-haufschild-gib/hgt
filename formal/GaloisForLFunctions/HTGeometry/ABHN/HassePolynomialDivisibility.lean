@@ -52,4 +52,32 @@ theorem rationalFunctionPolynomial_dvd_iff_forall_place_of_monic
     exact (polynomial_dvd_iff_map_of_monic
       (L := rationalFunctionCompletion F .infinite) p q hp).mpr (h .infinite)
 
+/-- A fixed monic polynomial divisibility relation over a number field can be certified at one
+completion. -/
+theorem numberFieldPolynomial_dvd_iff_exists_place_of_monic
+    (K : Type u) [Field K] [NumberField K] (p q : Polynomial K) (hp : p.Monic) :
+    p ∣ q ↔ ∃ v : NumberFieldPlace K,
+      p.map (algebraMap K (completion K v)) ∣ q.map (algebraMap K (completion K v)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (polynomial_dvd_iff_map_of_monic (L := completion K (witnessPlace K)) p q hp).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (polynomial_dvd_iff_map_of_monic (L := completion K v) p q hp).mpr hv
+
+/-- A fixed monic polynomial divisibility relation over `F(t)` can be certified at one
+completion. -/
+theorem rationalFunctionPolynomial_dvd_iff_exists_place_of_monic
+    (F : Type u) [Field F] [Finite F] (p q : Polynomial (RatFunc F)) (hp : p.Monic) :
+    p ∣ q ↔ ∃ v : RationalFunctionPlace F,
+      p.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v)) ∣
+        q.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (polynomial_dvd_iff_map_of_monic
+        (L := rationalFunctionCompletion F .infinite) p q hp).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (polynomial_dvd_iff_map_of_monic (L := rationalFunctionCompletion F v) p q hp).mpr hv
+
 end GaloisForLFunctions.HTGeometry.ABHN

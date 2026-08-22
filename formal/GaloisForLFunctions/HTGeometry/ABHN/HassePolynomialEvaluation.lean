@@ -42,4 +42,33 @@ theorem rationalFunctionPolynomial_eval_eq_zero_iff_forall_place
     rw [map_zero, ← Polynomial.eval₂_at_apply, ← Polynomial.eval_map]
     exact h .infinite
 
+/-- Vanishing of a polynomial at a fixed number-field element can be certified at one completion. -/
+theorem numberFieldPolynomial_eval_eq_zero_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (p : Polynomial K) (x : K) :
+    p.eval x = 0 ↔ ∃ v : NumberFieldPlace K,
+      (p.map (placeEmbedding K v)).eval (placeEmbedding K v x) = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberFieldPolynomial_eval_eq_zero_iff_forall_place K p x).mp h (witnessPlace K)⟩
+  · rintro ⟨v, hv⟩
+    apply (placeEmbedding K v).injective
+    rw [map_zero, ← Polynomial.eval₂_at_apply, ← Polynomial.eval_map]
+    exact hv
+
+/-- Vanishing of a polynomial at a fixed rational function can be certified at one completion. -/
+theorem rationalFunctionPolynomial_eval_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (p : Polynomial (RatFunc F)) (x : RatFunc F) :
+    p.eval x = 0 ↔ ∃ v : RationalFunctionPlace F,
+      (p.map (rationalFunctionPlaceEmbedding F v)).eval
+        (rationalFunctionPlaceEmbedding F v x) = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunctionPolynomial_eval_eq_zero_iff_forall_place F p x).mp h .infinite⟩
+  · rintro ⟨v, hv⟩
+    apply (rationalFunctionPlaceEmbedding F v).injective
+    rw [map_zero, ← Polynomial.eval₂_at_apply, ← Polynomial.eval_map]
+    exact hv
+
 end GaloisForLFunctions.HTGeometry.ABHN

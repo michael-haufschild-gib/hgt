@@ -5,6 +5,7 @@ Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.LocalFrobenius
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCyclicGaloisAlgebra
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldQuadraticCyclicBrauer
 
 /-!
 # Cyclic algebras at finite residue extensions
@@ -44,5 +45,13 @@ noncomputable def residueCyclicGaloisAlgebraCSA (a : Additive (A ⧸ P)ˣ) : CSA
 theorem residue_brauerClass_cyclicGaloisAlgebraCSA_eq_split (a : Additive (A ⧸ P)ˣ) :
     brauerClass (residueCyclicGaloisAlgebraCSA P Q a) = brauerSplitClass (A ⧸ P) :=
   finiteField_brauerClass_cyclicGaloisAlgebraCSA_eq_split (A ⧸ P) (B ⧸ Q) a
+
+/-- Every quadratic cyclic degree-two class at a finite residue extension selects the split
+Brauer class. -/
+theorem residue_quadraticCyclicGaloisH2BrauerMap_eq_split
+    (hdeg : Module.finrank (A ⧸ P) (B ⧸ Q) = 2)
+    (z : cyclicGaloisH2 (A ⧸ P) (B ⧸ Q)) :
+    quadraticCyclicGaloisH2BrauerMap (A ⧸ P) (B ⧸ Q) hdeg z = brauerSplitClass (A ⧸ P) :=
+  finiteField_quadraticCyclicGaloisH2BrauerMap_eq_split (A ⧸ P) (B ⧸ Q) hdeg z
 
 end GaloisForLFunctions.HTGeometry.ABHN

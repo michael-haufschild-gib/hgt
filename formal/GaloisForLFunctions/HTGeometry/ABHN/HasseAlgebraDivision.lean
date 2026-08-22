@@ -138,4 +138,66 @@ theorem rationalFunctionLocalScalarExtensionMap_exists_mulRight_eq_iff_forall_pl
     exact (scalarExtensionMap_exists_mulRight_eq_iff
       (L := rationalFunctionCompletion F .infinite) A a b).mpr (h .infinite)
 
+/-- A left-division equation in a number-field CSA is solvable exactly when it is solvable at one
+completion. -/
+theorem numberFieldLocalScalarExtensionMap_exists_mulLeft_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, w} K) (a b : A.carrier) :
+    (∃ x, a * x = b) ↔ ∃ p : NumberFieldPlace K, ∃ z,
+      numberFieldLocalScalarExtensionMap K p A a * z =
+        numberFieldLocalScalarExtensionMap K p A b := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_exists_mulLeft_eq_iff
+        (L := completion K (witnessPlace K)) A a b).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_mulLeft_eq_iff (L := completion K p) A a b).mpr hp
+
+/-- A right-division equation in a number-field CSA is solvable exactly when it is solvable at
+one completion. -/
+theorem numberFieldLocalScalarExtensionMap_exists_mulRight_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, w} K) (a b : A.carrier) :
+    (∃ x, x * a = b) ↔ ∃ p : NumberFieldPlace K, ∃ z,
+      z * numberFieldLocalScalarExtensionMap K p A a =
+        numberFieldLocalScalarExtensionMap K p A b := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_exists_mulRight_eq_iff
+        (L := completion K (witnessPlace K)) A a b).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_mulRight_eq_iff (L := completion K p) A a b).mpr hp
+
+/-- A left-division equation in a rational-function-field CSA is solvable exactly when it is
+solvable at one finite or infinite completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_exists_mulLeft_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F)) (a b : A.carrier) :
+    (∃ x, a * x = b) ↔ ∃ p : RationalFunctionPlace F, ∃ z,
+      rationalFunctionLocalScalarExtensionMap F p A a * z =
+        rationalFunctionLocalScalarExtensionMap F p A b := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_exists_mulLeft_eq_iff
+        (L := rationalFunctionCompletion F .infinite) A a b).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_mulLeft_eq_iff
+      (L := rationalFunctionCompletion F p) A a b).mpr hp
+
+/-- A right-division equation in a rational-function-field CSA is solvable exactly when it is
+solvable at one finite or infinite completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_exists_mulRight_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F)) (a b : A.carrier) :
+    (∃ x, x * a = b) ↔ ∃ p : RationalFunctionPlace F, ∃ z,
+      z * rationalFunctionLocalScalarExtensionMap F p A a =
+        rationalFunctionLocalScalarExtensionMap F p A b := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_exists_mulRight_eq_iff
+        (L := rationalFunctionCompletion F .infinite) A a b).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_mulRight_eq_iff
+      (L := rationalFunctionCompletion F p) A a b).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

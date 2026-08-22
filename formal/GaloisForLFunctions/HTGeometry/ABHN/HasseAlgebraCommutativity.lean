@@ -97,6 +97,32 @@ theorem rationalFunctionLocalScalarExtensionMap_mul_comm_iff_forall_place
     exact (tensorProduct_mul_comm_iff (K := RatFunc F)
       (L := rationalFunctionCompletion F .infinite) (A := A.carrier)).mpr (h .infinite)
 
+/-- A number-field CSA is commutative exactly when one completed scalar extension is. -/
+theorem numberFieldLocalScalarExtensionMap_mul_comm_iff_exists_place
+    (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, v} K) :
+    (∀ a b : A.carrier, a * b = b * a) ↔ ∃ p : NumberFieldPlace K,
+      ∀ x y : completion K p ⊗[K] A.carrier, x * y = y * x := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K, tensorProduct_mul_comm_of_mul_comm h⟩
+  · rintro ⟨p, hp⟩
+    exact (tensorProduct_mul_comm_iff (K := K) (L := completion K p)
+      (A := A.carrier)).mpr hp
+
+/-- A CSA over `F(t)` is commutative exactly when one completed scalar extension is. -/
+theorem rationalFunctionLocalScalarExtensionMap_mul_comm_iff_exists_place
+    (F : Type u) [Field F] [Finite F]
+    (A : CSA.{u, v} (RatFunc F)) :
+    (∀ a b : A.carrier, a * b = b * a) ↔ ∃ p : RationalFunctionPlace F,
+      ∀ x y : rationalFunctionCompletion F p ⊗[RatFunc F] A.carrier, x * y = y * x := by
+  constructor
+  · intro h
+    exact ⟨.infinite, tensorProduct_mul_comm_of_mul_comm h⟩
+  · rintro ⟨p, hp⟩
+    exact (tensorProduct_mul_comm_iff (K := RatFunc F)
+      (L := rationalFunctionCompletion F p) (A := A.carrier)).mpr hp
+
 /-- If every completed scalar extension of a same-universe number-field CSA is commutative, its
 Brauer class is split. This is a degree-one local--global criterion, not ABHN's criterion by
 local Brauer splitness: split matrix algebras of larger degree are noncommutative. -/

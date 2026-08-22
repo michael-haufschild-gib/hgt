@@ -37,6 +37,30 @@ Unblocked by the fixed-shell promotion: `stabilizer-seeded-static-local-double-e
 | 2026-08-21 | `cubic-phase-seeded-static-local-full-scale-plateau-law` | Theorem A, Theorem B `(8)`/`(9)` in both normalizations, Theorem C `(17)`/`(24)`, and both corollaries: `card_filter_phaseCollision_polyEval_gt_le`, `limsup_sphereLaw_cubicSeeded_le`, `exists_fixed_cubicSeed_sphereLaw_le`, `exists_fixed_cubicSeed_plateau_and_recurrence`, `card_monLe` — 4 new modules (`CubicSeedCollisionTail`, `CubicSeedPlateauLaw`, `CubicFixedSeedSelection`, `CubicSeedFullScalePlateau`), all axiom-clean, wired |
 | 2026-08-21 | `fixed-shell-angular-dephasing-static-local-plateau-law` | Theorems A/B/C on the card's own nearest-neighbour Pauli shell: `exists_shell_energy_witness_pauliChain`, `tendsto_integral_exp_sortedSpectralAction_zero_pauliChain`, `limsup_sphereLaw_chainCapture_le`, `eventually_sphereLaw_chainCapture_le` — 20 new modules, all axiom-clean, wired |
 
+| 2026-08-22 | `harmonic-matching-choi-laboratory-ramp` | the boxed shell theorem at the **sharp** radius `ε⋆ = √((1-2^{-1/2})/2)` (the corpus already had it at the rational `√(1/8)`): `harmonicMatching_twoGateCount_shell_lower_sharp`, the `⌈K/2⌉` complexity floor `ceil_half_le_choiTwoGateComplexity_harmonicMatchingEvolution`, the Duhamel tube `perturbed_harmonicMatching_twoGateCount_shell_lower_sharp` and the positive Gaussian mass `measure_ordinaryTwoLocalGaussianHarmonicChoiSharpRampEvent_pos` — 3 new modules (`SharpControlledPhaseChoiCutGap`, `HarmonicMatchingChoiSharpRamp`, `OrdinaryTwoLocalGaussianHarmonicChoiSharpRamp`), axiom-clean, wired.  The sharpening is the Gram largest eigenvalue `N(1+|cos(φ/2)|)`: `‖1+z‖ ≤ √2` on the closed left half-circle replaces the corpus's `3/2`, so the fidelity ceiling `7/8` becomes `(2+√2)/4` |
+
+## Kleinbock--Margulis extremality is no longer an import (2026-08-22)
+
+`local-chain-metric-recurrence-exponents` declared Kleinbock--Margulis extremality as an **imported
+theorem**.  It is now unconditional Lean in this repository:
+`KleinbockMargulis/TheoremA.lean` (`theoremA`, `theoremA_allOrders`, and the mathlib gap
+`summable_pow_sum`), `KleinbockMargulis/Transference.lean` (`vwma_of_vwa` — the pigeonhole half of
+Khintchine transference, which converts strong extremality into the *simultaneous* Diophantine
+exponent the first-return law needs), and `KleinbockMargulis/Extremal.lean`
+(`theoremA_simultaneous`, `theoremA_simultaneous_allOrders`, `measure_exists_dioph_exponent_eq_zero`).
+All axiom-clean and umbrella-wired.
+
+The residue on that card, and on its dependent `onset-recurrence-dimension-independence-law`
+(clause 5), is **Lemma 2 only**: nondegeneracy of the spectral manifold.  With `theoremA_allOrders`
+the requirement is exactly "the set where some nonzero `w` kills every positive-order derivative of
+the gap-ratio map is null", which for an analytic chart is *empty* once no nonzero real traceless
+constant-coefficient relation among the eigenbranches holds identically.  That statement is Lemma 2
+of `../3-formalized/nearest-neighbor-qudit-projective-spectral-maximality.md` (real constants, not
+rational); the corpus already owns the algebraic end of it
+(`SpectralMonodromyRelationRigidity.centeredRoot_linearRelation_iff_coefficients_constant`,
+`coefficients_eq_of_all_permuted_relations`) and the whole `LocalExtensionEigenbranchChart` stack.
+Homogeneity `E_i(λx) = λE_i(x)` removes the constant term for free.
+
 ## In progress
 
 **`capacitary-observer-sector-excision-law`** — 2026-08-21: Theorems G, H, I, `(11aa)`, `(11ab)`
@@ -184,11 +208,113 @@ convergent family, plus Markov, gives `(11az)`--`(11bb)`, instantiated unconditi
 nearest-neighbour Pauli chain (`AnnealedPortmanteauBound`, `AnnealedAccessibilityPlateau`);
 Theorem K is that bound plus the elementary hardening-cone containment.
 
+## The generic two-local Galois group is the shared blocker of three cards (2026-08-22)
+
+`algebraic-two-local-instant-exact-complexity` (§1) and
+`arithmetic-static-local-hardness-recurrence-window-law` (Theorem C's selection) both reduce, after
+the now-closed `HilbertIrreducibility.gal_card_of_specialisation`, to one theorem:
+
+> `Nat.card Gal = D !` for the generic two-local characteristic polynomial over `ℚ(Y)`.
+
+The parent card `generic-two-local-spectral-monodromy` is at stage 3 but its Lean conclusion is
+about **balanced integer** relations, obtained from *topological* monodromy.  "Geometric monodromy
+⟹ Galois group" is Riemann existence and is not formalized.  An elementary replacement -- the
+single-transverse block decomposition, Kummer independence of the block discriminants over `ℚ(i)`
+(`A_z² + u² = (A_z+iu)(A_z−iu)`, distinct degree-one irreducibles), and transport to the full family
+by a genuine *field embedding* `ℚ(i)(Y) ↪ Frac(F[[t]])` plus one-variable Hensel -- is written out
+on the algebraic-two-local card.  First brick built and wired:
+`HTGeometry/SquareInQuadraticExtension.lean`.
+
+`local-chain-metric-recurrence-exponents` and `onset-recurrence-dimension-independence-law` need the
+*analytic* sibling of the same phenomenon (real relation rigidity for the nearest-neighbour path
+family); see the local-chain card.  So four of the ten open cards are downstream of one construction
+in two flavours.
+
+## Infrastructure landed 2026-08-22 (18 new modules, all axiom-clean and umbrella-wired)
+
+**Kleinbock--Margulis** (4): `KleinbockMargulis/TheoremA` (`theoremA`, `theoremA_allOrders`,
+`summable_pow_sum`), `/Transference` (`vwma_of_vwa`), `/Extremal`, `/AnalyticNondegeneracy`
+(`exists_nondegAt_of_no_constant_combination`, `theoremA_analytic`).
+
+**Sharp Choi ramp** (3): `SharpControlledPhaseChoiCutGap`, `HarmonicMatchingChoiSharpRamp`,
+`OrdinaryTwoLocalGaussianHarmonicChoiSharpRamp` — the promoted card.
+
+**Toward the generic two-local Galois group** (5):
+
+* `SquareInQuadraticExtension` — one quadratic step creates one square class (`Algebra` language).
+* **`QuadraticTowerSquareClasses`** (~880 lines) — the multiquadratic Kummer machinery, which
+  mathlib does not have, in `Subfield L` language: `isSq_or_isSq_mul_of_span`,
+  `mem_closure_insert_iff`, `span_unique`, the tower and its square-class statement in both
+  structure and *partial-hypothesis* form (the latter is the one that breaks the circularity
+  between `span` and `notMem`), the concrete tower `radicalStage` / `independentTower`, the
+  conjugation `quadConj` / `quadConjEquiv` / `quadConjAlgEquiv`, and
+  **`exists_algEquiv_neg_index`** — every block flip is realized by an algebra automorphism.
+* `GalPermutationRealization` — `mem_range_galActionHom_of_algEquiv`,
+  `card_gal_eq_factorial_of_closure`: realizing a *generating* set of root permutations gives
+  `Nat.card p.Gal = D !`.
+* `SquarefreeNotSquareInFractionField` — `not_isSquare_algebraMap_of_squarefree`, the Kummer
+  independence criterion via UFD integral closedness.
+* `PowerSeriesSimpleRootLift` — simple-root Hensel lifting over `PowerSeries R` **with
+  uniqueness** (uniqueness is what makes the lift equivariant).
+* `BlockDiagonalCharpolyQuadratic` — `charpoly_blockDiagonal` (mathlib has only `det_blockDiagonal`)
+  and the symmetric `2 × 2` block's quadratic and discriminant.
+* `HypercubeSingleTransverseBlocks` — with a single transverse flip the hypercube Hamiltonian is
+  block-diagonal in the pairs `{x, x ⊕ e₀}` (`reindex_singleTransverseHam`) and its characteristic
+  polynomial is the explicit product of the block quadratics (`charpoly_singleTransverseHam`).
+* `SumOfTwoSquaresNotSquare` — the Kummer independence, which needs **no** multivariate
+  irreducibility: `∏_z ((X + c_z)² + w²)` splits into `2|S|` distinct linear factors over a field
+  containing `√(−1)`, so it is separable, squarefree and not a square in `K(X)`
+  (`not_isSquare_prod_sq_add_sq`).
+* `MonicDistinctRootFactorization` — a monic polynomial of degree `d` with `d` distinct roots over a
+  domain is the product of the linear factors (`eq_prod_X_sub_C_of_monic_of_injective_roots`).
+* `QuadraticRootFlip` — the residue side: the roots `(s_z ± ρ_z)/2`, their product form, and
+  **`map_quadRoot_of_flip`**: an automorphism negating exactly `ρ_{z₀}` acts as
+  `Equiv.swap (z₀, true) (z₀, false)`.
+* `PowerSeriesSimpleRootLift` (extended) — **`map_lift_eq`, `map_lift_eq_of_perm`**: uniqueness of
+  the Hensel lift makes it equivariant, so a residue permutation transports to the deformed roots.
+
+The route these serve, the three shortcuts that provably fail, and the root-labelling obstruction
+with its fix (put every root in the single ring `F[[u₁,…,u_n]]`, labelled by
+`r_x ≡ d_x mod (u)`, and run each site's analysis in the larger ring `F'_i[[u_{≠i}]]` that contains
+it) are written out on `algebraic-two-local-instant-exact-complexity.md`.
+
 ## Open (10)
 
 algebraic-two-local-instant-exact-complexity, all-replica-static-centralizer-planar-separation-law,
 arithmetic-static-local-hardness-recurrence-window-law,
 cusp-spectrum-radius-law,
 local-chain-metric-recurrence-exponents, onset-recurrence-dimension-independence-law,
+route-e-cofactor-amplified-e3-token-supply, route-e-forbidden-support-e3-stability,
+schanuel-defects-algebraic-coefficient-independent, schanuel-stage-two-defect-slope-normal-form
+
+## `local-chain-metric-recurrence-exponents` PROMOTED to stage 3 (2026-08-22)
+
+The card's boxed theorems `(3)` and the winding form of `(6)` are unconditional Lean theorems:
+`exists_quditPathChain_discreteRecurrenceExponent` and
+`exists_quditPathChain_windingRecurrenceExponent` (`HTGeometry/QuditPathChainRecurrenceExponent`).
+Sixteen new modules; the card carries the full table.  The three load-bearing pieces:
+
+1. **`(L2)` and `(L2')`** — a nonzero balanced real combination of the energies cannot vanish, nor
+   be constant, on any nonempty open set of parameters of a family whose spectra escape the
+   relation.  The obstruction is the labelling-orbit polynomial `∏_σ (∑_i c_i X_{σ i} - t)`, which
+   is symmetric, hence a polynomial in the characteristic coefficients, hence in the parameters.
+2. **The escape witness** — one local extension of a maximally projective base with a connected
+   nonbipartite interaction lift erases any prescribed constant relation.  For an open chain this is
+   available because the chain is one leaf extension of the chain one site shorter, attached at its
+   last site (`leafGraphExtension_comap_pathGraph`); for two sites the architecture is unrestricted
+   and a real diagonal witness suffices.
+3. **Lemma 1 as a limit** — `tendsto_log_firstHit_div_log`.  Its missing half was the divergence of
+   the first hit time, which follows from "not very well approximable" a second time: such a vector
+   has no positive integer multiple in the lattice.
+
+The remaining open card that depends on this one is `onset-recurrence-dimension-independence-law`
+(clause 5, exponent `(D−2)/2`), whose analytic input is now available.
+
+## Open (9)
+
+algebraic-two-local-instant-exact-complexity, all-replica-static-centralizer-planar-separation-law,
+arithmetic-static-local-hardness-recurrence-window-law,
+cusp-spectrum-radius-law,
+onset-recurrence-dimension-independence-law,
 route-e-cofactor-amplified-e3-token-supply, route-e-forbidden-support-e3-stability,
 schanuel-defects-algebraic-coefficient-independent, schanuel-stage-two-defect-slope-normal-form

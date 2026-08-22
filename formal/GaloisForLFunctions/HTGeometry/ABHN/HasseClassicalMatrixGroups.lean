@@ -159,4 +159,92 @@ theorem rationalFunctionMatrix_mem_symplecticGroup_iff_forall_place
     exact (matrix_mem_symplecticGroup_iff_map
       (L := rationalFunctionCompletion F .infinite) M).mpr (h .infinite)
 
+/-- Orthogonal-group membership of a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_mem_orthogonalGroup_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) :
+    M ∈ Matrix.orthogonalGroup n K ↔ ∃ p : NumberFieldPlace K,
+      M.map (algebraMap K (completion K p)) ∈ Matrix.orthogonalGroup n (completion K p) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_mem_orthogonalGroup_iff_map (L := completion K (witnessPlace K)) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_mem_orthogonalGroup_iff_map (L := completion K p) M).mpr hp
+
+/-- Orthogonal-group membership of an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_mem_orthogonalGroup_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) :
+    M ∈ Matrix.orthogonalGroup n (RatFunc F) ↔ ∃ p : RationalFunctionPlace F,
+      M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)) ∈
+        Matrix.orthogonalGroup n (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_mem_orthogonalGroup_iff_map
+        (L := rationalFunctionCompletion F .infinite) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_mem_orthogonalGroup_iff_map (L := rationalFunctionCompletion F p) M).mpr hp
+
+/-- Special-orthogonal membership of a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_mem_specialOrthogonalGroup_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) :
+    M ∈ Matrix.specialOrthogonalGroup n K ↔ ∃ p : NumberFieldPlace K,
+      M.map (algebraMap K (completion K p)) ∈ Matrix.specialOrthogonalGroup n (completion K p) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_mem_specialOrthogonalGroup_iff_map
+        (L := completion K (witnessPlace K)) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_mem_specialOrthogonalGroup_iff_map (L := completion K p) M).mpr hp
+
+/-- Special-orthogonal membership of an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_mem_specialOrthogonalGroup_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) :
+    M ∈ Matrix.specialOrthogonalGroup n (RatFunc F) ↔ ∃ p : RationalFunctionPlace F,
+      M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)) ∈
+        Matrix.specialOrthogonalGroup n (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_mem_specialOrthogonalGroup_iff_map
+        (L := rationalFunctionCompletion F .infinite) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_mem_specialOrthogonalGroup_iff_map
+      (L := rationalFunctionCompletion F p) M).mpr hp
+
+/-- Symplectic-group membership of a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_mem_symplecticGroup_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix (n ⊕ n) (n ⊕ n) K) :
+    M ∈ Matrix.symplecticGroup n K ↔ ∃ p : NumberFieldPlace K,
+      M.map (algebraMap K (completion K p)) ∈ Matrix.symplecticGroup n (completion K p) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_mem_symplecticGroup_iff_map
+        (L := completion K (witnessPlace K)) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_mem_symplecticGroup_iff_map (L := completion K p) M).mpr hp
+
+/-- Symplectic-group membership of an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_mem_symplecticGroup_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix (n ⊕ n) (n ⊕ n) (RatFunc F)) :
+    M ∈ Matrix.symplecticGroup n (RatFunc F) ↔ ∃ p : RationalFunctionPlace F,
+      M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)) ∈
+        Matrix.symplecticGroup n (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_mem_symplecticGroup_iff_map
+        (L := rationalFunctionCompletion F .infinite) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_mem_symplecticGroup_iff_map
+      (L := rationalFunctionCompletion F p) M).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

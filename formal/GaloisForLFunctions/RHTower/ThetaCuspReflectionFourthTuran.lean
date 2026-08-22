@@ -190,13 +190,13 @@ theorem iteratedDeriv_four_thetaCuspAtomLikelihoodRatio_eq
   exact (hasDerivAt_thetaCuspAtomLikelihoodRatioJetThree hn hx |>.congr_of_eventuallyEq
     heq).deriv
 
-private theorem thetaCuspMorseScale_eq_logConcavityScale_mul_sq
+theorem thetaCuspMorseScale_eq_logConcavityScale_mul_sq
     (n : ℕ) (x : ℝ) :
     thetaCuspMorseScale n x = thetaCuspLogConcavityScale x * (n : ℝ) ^ 2 := by
   unfold thetaCuspMorseScale thetaCuspLogConcavityScale
   ring
 
-private theorem scale_div_sub_sq_strictAnti
+theorem scale_div_sub_sq_strictAnti
     {A T : ℝ} (hA : 3 < A) (hAT : A < T) :
     T / (T - 3 / 2) ^ 2 < A / (A - 3 / 2) ^ 2 := by
   have hAden : 0 < A - 3 / 2 := by linarith
@@ -205,7 +205,7 @@ private theorem scale_div_sub_sq_strictAnti
   have hfactor : 0 < A * T - (3 / 2 : ℝ) ^ 2 := by nlinarith
   nlinarith [mul_pos (sub_pos.mpr hAT) hfactor]
 
-private theorem scale_div_sub_cube_strictAnti
+theorem scale_div_sub_cube_strictAnti
     {A T : ℝ} (hA : 3 < A) (hAT : A < T) :
     T / (T - 3 / 2) ^ 3 < A / (A - 3 / 2) ^ 3 := by
   have hAden : 0 < A - 3 / 2 := by linarith
@@ -226,7 +226,7 @@ private theorem scale_div_sub_cube_strictAnti
     _ < A / (A - 3 / 2) ^ 2 * (A - 3 / 2)⁻¹ :=
       mul_lt_mul_of_pos_left hinv (by positivity)
 
-private theorem scale_div_sub_four_strictAnti
+theorem scale_div_sub_four_strictAnti
     {A T : ℝ} (hA : 3 < A) (hAT : A < T) :
     T / (T - 3 / 2) ^ 4 < A / (A - 3 / 2) ^ 4 := by
   have hAden : 0 < A - 3 / 2 := by linarith
@@ -247,7 +247,7 @@ private theorem scale_div_sub_four_strictAnti
     _ < A / (A - 3 / 2) ^ 3 * (A - 3 / 2)⁻¹ :=
       mul_lt_mul_of_pos_left hinv (by positivity)
 
-private theorem scale_div_sub_sq_lt_four_thirds
+theorem scale_div_sub_sq_lt_four_thirds
     {A : ℝ} (hA : 3 < A) :
     A / (A - 3 / 2) ^ 2 < (4 / 3 : ℝ) := by
   have hden : 0 < (A - 3 / 2) ^ 2 := sq_pos_of_pos (by linarith)
@@ -256,7 +256,7 @@ private theorem scale_div_sub_sq_lt_four_thirds
     mul_pos (by linarith) (by linarith)
   nlinarith
 
-private theorem scale_div_sub_cube_lt_eight_ninths
+theorem scale_div_sub_cube_lt_eight_ninths
     {A : ℝ} (hA : 3 < A) :
     A / (A - 3 / 2) ^ 3 < (8 / 9 : ℝ) := by
   have hden : 0 < (A - 3 / 2) ^ 3 := pow_pos (by linarith) 3
@@ -268,7 +268,7 @@ private theorem scale_div_sub_cube_lt_eight_ninths
       (8 / 9) * y ^ 3 + 4 * y ^ 2 + 5 * y by dsimp [y]; ring]
   positivity
 
-private theorem scale_div_sub_four_lt_sixteen_twentysevenths
+theorem scale_div_sub_four_lt_sixteen_twentysevenths
     {A : ℝ} (hA : 3 < A) :
     A / (A - 3 / 2) ^ 4 < (16 / 27 : ℝ) := by
   have hden : 0 < (A - 3 / 2) ^ 4 := pow_pos (by linarith) 4
@@ -321,7 +321,7 @@ private theorem thetaCuspBornWittenLogFourthDerivative_eq_scaleProfile
   rw [thetaCuspBornWittenWeight_eq]
   field_simp [hweight.ne']; ring
 
-private theorem thetaCuspLikelihoodScaleFacts
+theorem thetaCuspLikelihoodScaleFacts
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 ≤ x) :
     let A := thetaCuspLogConcavityScale x
     let d := (n : ℝ) ^ 2 - 1

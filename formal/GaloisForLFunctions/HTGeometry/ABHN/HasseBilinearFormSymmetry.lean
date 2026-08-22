@@ -105,4 +105,61 @@ theorem rationalFunction_bilinForm_isSymm_iff_forall_place (F : Type u)
     exact (bilinForm_isSymm_iff_baseChange
       (L := rationalFunctionCompletion F .infinite) B).mpr (h .infinite)
 
+/-- A prescribed bilinear orthogonality equation over a number field can be certified at one
+completion. -/
+theorem numberField_bilinForm_apply_eq_zero_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (B : LinearMap.BilinForm K M) (x y : M) : B x y = 0 ↔ ∃ p : NumberFieldPlace K,
+      B.baseChange (completion K p) (1 ⊗ₜ[K] x) (1 ⊗ₜ[K] y) = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (bilinForm_apply_eq_zero_iff_baseChange_tmul
+        (L := completion K (witnessPlace K)) B x y).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (bilinForm_apply_eq_zero_iff_baseChange_tmul (L := completion K p) B x y).mpr hp
+
+/-- A prescribed bilinear orthogonality equation over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_bilinForm_apply_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (B : LinearMap.BilinForm (RatFunc F) M) (x y : M) : B x y = 0 ↔
+      ∃ p : RationalFunctionPlace F,
+        B.baseChange (rationalFunctionCompletion F p)
+          (1 ⊗ₜ[RatFunc F] x) (1 ⊗ₜ[RatFunc F] y) = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (bilinForm_apply_eq_zero_iff_baseChange_tmul
+        (L := rationalFunctionCompletion F .infinite) B x y).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (bilinForm_apply_eq_zero_iff_baseChange_tmul
+      (L := rationalFunctionCompletion F p) B x y).mpr hp
+
+/-- Symmetry of a number-field bilinear form can be certified at one completion. -/
+theorem numberField_bilinForm_isSymm_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (B : LinearMap.BilinForm K M) :
+    B.IsSymm ↔ ∃ p : NumberFieldPlace K, (B.baseChange (completion K p)).IsSymm := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (bilinForm_isSymm_iff_baseChange (L := completion K (witnessPlace K)) B).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (bilinForm_isSymm_iff_baseChange (L := completion K p) B).mpr hp
+
+/-- Symmetry of an `F(t)`-bilinear form can be certified at one completion. -/
+theorem rationalFunction_bilinForm_isSymm_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (B : LinearMap.BilinForm (RatFunc F) M) :
+    B.IsSymm ↔ ∃ p : RationalFunctionPlace F,
+      (B.baseChange (rationalFunctionCompletion F p)).IsSymm := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (bilinForm_isSymm_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) B).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (bilinForm_isSymm_iff_baseChange
+      (L := rationalFunctionCompletion F p) B).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

@@ -63,11 +63,11 @@ theorem numberFieldDiagonalTensorProjection_includeRight
       (Algebra.TensorProduct.includeRight a) = Algebra.TensorProduct.includeRight a := by
   simp [numberFieldDiagonalTensorProjection]
 
-/-- Simultaneous scalar extension of an Azumaya algebra to all number-field completions is
-injective on its global algebra elements. -/
-theorem numberFieldDiagonalScalarExtensionMap_injective
+/-- Simultaneous scalar extension to all number-field completions is injective on global algebra
+elements, without an Azumaya hypothesis. -/
+theorem numberFieldDiagonalTensor_includeRight_injective
     (K : Type u) [Field K] [NumberField K]
-    (A : Type v) [Ring A] [Algebra K A] [IsAzumaya K A] :
+    (A : Type v) [Ring A] [Algebra K A] :
     Function.Injective
       (Algebra.TensorProduct.includeRight : A →ₐ[K]
         ((w : NumberFieldPlace K) → completion K w) ⊗[K] A) := by
@@ -76,8 +76,18 @@ theorem numberFieldDiagonalScalarExtensionMap_injective
   have h := congrArg (numberFieldDiagonalTensorProjection K A w) hab
   change (Algebra.TensorProduct.includeRight : A →ₐ[K] completion K w ⊗[K] A) a =
     Algebra.TensorProduct.includeRight b at h
-  exact Algebra.TensorProduct.includeRight_injective
+  exact Algebra.TensorProduct.includeRight_injective (A := completion K w) (B := A)
     (FaithfulSMul.algebraMap_injective K (completion K w)) h
+
+/-- Simultaneous scalar extension of an Azumaya algebra to all number-field completions is
+injective on its global algebra elements. -/
+theorem numberFieldDiagonalScalarExtensionMap_injective
+    (K : Type u) [Field K] [NumberField K]
+    (A : Type v) [Ring A] [Algebra K A] [IsAzumaya K A] :
+    Function.Injective
+      (Algebra.TensorProduct.includeRight : A →ₐ[K]
+        ((w : NumberFieldPlace K) → completion K w) ⊗[K] A) := by
+  exact numberFieldDiagonalTensor_includeRight_injective K A
 
 /-- Simultaneous scalar extension along the number-field Hasse diagonal remains Azumaya. -/
 theorem numberFieldDiagonalScalarExtension_isAzumaya
@@ -110,11 +120,11 @@ theorem rationalFunctionDiagonalTensorProjection_includeRight
       (Algebra.TensorProduct.includeRight a) = Algebra.TensorProduct.includeRight a := by
   simp [rationalFunctionDiagonalTensorProjection]
 
-/-- Simultaneous scalar extension of an Azumaya algebra to all rational-function-field
-completions is injective on its global algebra elements. -/
-theorem rationalFunctionDiagonalScalarExtensionMap_injective
+/-- Simultaneous scalar extension to all `F(t)`-completions is injective on global algebra
+elements, without an Azumaya hypothesis. -/
+theorem rationalFunctionDiagonalTensor_includeRight_injective
     (F : Type u) [Field F] [Finite F]
-    (A : Type v) [Ring A] [Algebra (RatFunc F) A] [IsAzumaya (RatFunc F) A] :
+    (A : Type v) [Ring A] [Algebra (RatFunc F) A] :
     Function.Injective
       (Algebra.TensorProduct.includeRight : A →ₐ[RatFunc F]
         ((w : RationalFunctionPlace F) → rationalFunctionCompletion F w) ⊗[RatFunc F] A) := by
@@ -124,8 +134,19 @@ theorem rationalFunctionDiagonalScalarExtensionMap_injective
       rationalFunctionCompletion F .infinite ⊗[RatFunc F] A) a =
     Algebra.TensorProduct.includeRight b at h
   exact Algebra.TensorProduct.includeRight_injective
+    (A := rationalFunctionCompletion F .infinite) (B := A)
     (FaithfulSMul.algebraMap_injective (RatFunc F)
       (rationalFunctionCompletion F .infinite)) h
+
+/-- Simultaneous scalar extension of an Azumaya algebra to all rational-function-field
+completions is injective on its global algebra elements. -/
+theorem rationalFunctionDiagonalScalarExtensionMap_injective
+    (F : Type u) [Field F] [Finite F]
+    (A : Type v) [Ring A] [Algebra (RatFunc F) A] [IsAzumaya (RatFunc F) A] :
+    Function.Injective
+      (Algebra.TensorProduct.includeRight : A →ₐ[RatFunc F]
+        ((w : RationalFunctionPlace F) → rationalFunctionCompletion F w) ⊗[RatFunc F] A) := by
+  exact rationalFunctionDiagonalTensor_includeRight_injective F A
 
 /-- Simultaneous scalar extension along the rational-function-field Hasse diagonal remains
 Azumaya. -/

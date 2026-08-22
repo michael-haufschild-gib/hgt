@@ -55,4 +55,32 @@ theorem rationalFunction_isSimpleModule_iff_forall_place (F : Type u)
     exact (isSimpleModule_iff_tensorProduct_isSimpleModule
       (L := rationalFunctionCompletion F .infinite)).mpr (h .infinite)
 
+/-- Simplicity of a number-field vector space can be certified at one completion. -/
+theorem numberField_isSimpleModule_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M] :
+    IsSimpleModule K M ↔ ∃ p : NumberFieldPlace K,
+      IsSimpleModule (completion K p) (completion K p ⊗[K] M) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (isSimpleModule_iff_tensorProduct_isSimpleModule
+        (L := completion K (witnessPlace K))).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (isSimpleModule_iff_tensorProduct_isSimpleModule (L := completion K p)).mpr hp
+
+/-- Simplicity of an `F(t)`-vector space can be certified at one completion. -/
+theorem rationalFunction_isSimpleModule_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M] :
+    IsSimpleModule (RatFunc F) M ↔ ∃ p : RationalFunctionPlace F,
+      IsSimpleModule (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] M) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (isSimpleModule_iff_tensorProduct_isSimpleModule
+        (L := rationalFunctionCompletion F .infinite)).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (isSimpleModule_iff_tensorProduct_isSimpleModule
+      (L := rationalFunctionCompletion F p)).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

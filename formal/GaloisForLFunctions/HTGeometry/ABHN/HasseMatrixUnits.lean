@@ -52,4 +52,34 @@ theorem rationalFunctionMatrix_isUnit_iff_forall_place
     intro v
     exact ((Matrix.isUnit_iff_isUnit_det _).mp (h v)).ne_zero
 
+/-- Invertibility of a number-field matrix is detected at one completion. -/
+theorem numberFieldMatrix_isUnit_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) :
+    IsUnit M ↔ ∃ v : NumberFieldPlace K, IsUnit (M.map (placeEmbedding K v)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberFieldMatrix_isUnit_iff_forall_place K n M).mp h (witnessPlace K)⟩
+  · rintro ⟨v, hv⟩
+    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
+    exact (numberFieldMatrix_det_ne_zero_iff_exists_place K n M).mpr
+      ⟨v, ((Matrix.isUnit_iff_isUnit_det _).mp hv).ne_zero⟩
+
+/-- Invertibility of a rational-function-field matrix is detected at one finite or infinite
+completion. -/
+theorem rationalFunctionMatrix_isUnit_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) :
+    IsUnit M ↔ ∃ v : RationalFunctionPlace F,
+      IsUnit (M.map (rationalFunctionPlaceEmbedding F v)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunctionMatrix_isUnit_iff_forall_place F n M).mp h .infinite⟩
+  · rintro ⟨v, hv⟩
+    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
+    exact (rationalFunctionMatrix_det_ne_zero_iff_exists_place F n M).mpr
+      ⟨v, ((Matrix.isUnit_iff_isUnit_det _).mp hv).ne_zero⟩
+
 end GaloisForLFunctions.HTGeometry.ABHN

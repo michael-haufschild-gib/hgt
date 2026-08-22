@@ -143,4 +143,28 @@ theorem rationalFunctionMatrix_rank_eq_iff_forall_place (F : Type u) [Field F] [
         rationalFunctionMatrix_rank_completion F n M RationalFunctionPlace.infinite
       _ = r := h RationalFunctionPlace.infinite
 
+/-- A prescribed number-field matrix rank is detected at one completed place. -/
+theorem numberFieldMatrix_rank_eq_iff_exists_place (K : Type u) [Field K] [NumberField K]
+    (n : Type w) [Fintype n] [DecidableEq n] (M : Matrix n n K) (r : ℕ) :
+    M.rank = r ↔ ∃ p : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K p))).rank = r := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K, (numberFieldMatrix_rank_completion K n M (witnessPlace K)).symm.trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (numberFieldMatrix_rank_completion K n M p).trans hp
+
+/-- A prescribed rational-function-field matrix rank is detected at one finite or infinite
+completed place. -/
+theorem rationalFunctionMatrix_rank_eq_iff_exists_place (F : Type u) [Field F] [Finite F]
+    (n : Type w) [Fintype n] [DecidableEq n] (M : Matrix n n (RatFunc F)) (r : ℕ) :
+    M.rank = r ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))).rank = r := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunctionMatrix_rank_completion F n M .infinite).symm.trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (rationalFunctionMatrix_rank_completion F n M p).trans hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

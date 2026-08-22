@@ -53,4 +53,31 @@ theorem rationalFunctionPolynomial_isCoprime_iff_forall_place
     exact (polynomial_isCoprime_iff_map
       (L := rationalFunctionCompletion F .infinite) p q).mpr (h .infinite)
 
+/-- Coprimality of number-field polynomials can be certified at one completion. -/
+theorem numberFieldPolynomial_isCoprime_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (p q : Polynomial K) :
+    IsCoprime p q ↔ ∃ v : NumberFieldPlace K,
+      IsCoprime (p.map (algebraMap K (completion K v)))
+        (q.map (algebraMap K (completion K v))) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (polynomial_isCoprime_iff_map (L := completion K (witnessPlace K)) p q).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (polynomial_isCoprime_iff_map (L := completion K v) p q).mpr hv
+
+/-- Coprimality of `F(t)`-polynomials can be certified at one completion. -/
+theorem rationalFunctionPolynomial_isCoprime_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (p q : Polynomial (RatFunc F)) :
+    IsCoprime p q ↔ ∃ v : RationalFunctionPlace F,
+      IsCoprime (p.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v)))
+        (q.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v))) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (polynomial_isCoprime_iff_map
+        (L := rationalFunctionCompletion F .infinite) p q).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (polynomial_isCoprime_iff_map (L := rationalFunctionCompletion F v) p q).mpr hv
+
 end GaloisForLFunctions.HTGeometry.ABHN

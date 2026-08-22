@@ -129,7 +129,7 @@ theorem tensorProductEndAlgHom_surjective
 
 /-- The opposite of a tensor product is obtained by reversing its two factors. -/
 noncomputable def tensorProductOppositeAlgHom
-    {K A B : Type*} [Field K] [Ring A] [Ring B] [Algebra K A] [Algebra K B] :
+    {K A B : Type*} [CommRing K] [Ring A] [Ring B] [Algebra K A] [Algebra K B] :
     Bᵐᵒᵖ ⊗[K] Aᵐᵒᵖ →ₐ[K] (A ⊗[K] B)ᵐᵒᵖ :=
   Algebra.TensorProduct.lift
     (AlgHom.op (Algebra.TensorProduct.includeRight : B →ₐ[K] A ⊗[K] B))
@@ -143,7 +143,7 @@ noncomputable def tensorProductOppositeAlgHom
 
 /-- Formula for reversing a pure tensor into the opposite algebra. -/
 theorem tensorProductOppositeAlgHom_tmul
-    {K A B : Type*} [Field K] [Ring A] [Ring B] [Algebra K A] [Algebra K B]
+    {K A B : Type*} [CommRing K] [Ring A] [Ring B] [Algebra K A] [Algebra K B]
     (b : Bᵐᵒᵖ) (a : Aᵐᵒᵖ) :
     tensorProductOppositeAlgHom (K := K) (A := A) (B := B) (b ⊗ₜ[K] a) =
       MulOpposite.op (a.unop ⊗ₜ[K] b.unop) := by
@@ -154,7 +154,7 @@ theorem tensorProductOppositeAlgHom_tmul
 
 /-- The opposite-tensor map is surjective without any finite-dimensionality assumption. -/
 theorem tensorProductOppositeAlgHom_surjective
-    {K A B : Type*} [Field K] [Ring A] [Ring B] [Algebra K A] [Algebra K B] :
+    {K A B : Type*} [CommRing K] [Ring A] [Ring B] [Algebra K A] [Algebra K B] :
     Function.Surjective (tensorProductOppositeAlgHom (K := K) (A := A) (B := B)) := by
   intro x
   have h : ∀ z : A ⊗[K] B, ∃ y,
@@ -175,34 +175,30 @@ theorem tensorProductOppositeAlgHom_surjective
           (MulOpposite.op b) (MulOpposite.op a)
   simpa using h x.unop
 
-/-- Over a field, reversing factors identifies the opposite tensor product as an algebra
-equivalence. -/
+/-- Over a commutative ring, reversing factors identifies the opposite tensor product as an
+algebra equivalence. -/
 theorem tensorProductOppositeAlgHom_bijective
-    {K A B : Type*} [Field K] [Ring A] [Ring B] [Algebra K A] [Algebra K B]
-    [FiniteDimensional K A] [FiniteDimensional K B] :
-    Function.Bijective (tensorProductOppositeAlgHom (K := K) (A := A) (B := B)) := by
-  refine ⟨?_, tensorProductOppositeAlgHom_surjective⟩
-  change Function.Injective
-    (tensorProductOppositeAlgHom (K := K) (A := A) (B := B)).toLinearMap
-  apply (LinearMap.injective_iff_surjective_of_finrank_eq_finrank ?_).mpr
-    tensorProductOppositeAlgHom_surjective
-  calc
-    Module.finrank K (Bᵐᵒᵖ ⊗[K] Aᵐᵒᵖ) =
-        Module.finrank K Bᵐᵒᵖ * Module.finrank K Aᵐᵒᵖ := Module.finrank_tensorProduct
-    _ = Module.finrank K B * Module.finrank K Aᵐᵒᵖ := by
-      rw [← (MulOpposite.opLinearEquiv K (M := B)).finrank_eq]
-    _ = Module.finrank K B * Module.finrank K A := by
-      rw [← (MulOpposite.opLinearEquiv K (M := A)).finrank_eq]
-    _ = Module.finrank K A * Module.finrank K B := mul_comm _ _
-    _ = Module.finrank K (A ⊗[K] B) := Module.finrank_tensorProduct.symm
-    _ = Module.finrank K (A ⊗[K] B)ᵐᵒᵖ := by
-      exact (MulOpposite.opLinearEquiv K (M := A ⊗[K] B)).finrank_eq
+    {K A B : Type*} [CommRing K] [Ring A] [Ring B] [Algebra K A] [Algebra K B]
+    : Function.Bijective (tensorProductOppositeAlgHom (K := K) (A := A) (B := B)) := by
+  let eB := (MulOpposite.opLinearEquiv K (M := B)).symm
+  let eA := (MulOpposite.opLinearEquiv K (M := A)).symm
+  let eBA : Bᵐᵒᵖ ⊗[K] Aᵐᵒᵖ ≃ₗ[K] B ⊗[K] A :=
+    LinearEquiv.ofBijective (TensorProduct.map eB eA)
+      (TensorProduct.map_bijective eB.bijective eA.bijective)
+  let e := eBA.trans (TensorProduct.comm K B A) |>.trans
+    (MulOpposite.opLinearEquiv K (M := A ⊗[K] B))
+  have hmap : (tensorProductOppositeAlgHom (K := K) (A := A) (B := B)).toLinearMap =
+      e.toLinearMap := by
+    ext b a
+    simp [e, eBA, eB, eA, tensorProductOppositeAlgHom_tmul]
+  change Function.Bijective (tensorProductOppositeAlgHom (K := K) (A := A) (B := B)).toLinearMap
+  rw [hmap]
+  exact e.bijective
 
 /-- The algebra equivalence reversing the two factors inside an opposite tensor product. -/
 noncomputable def tensorProductOppositeAlgEquiv
-    {K A B : Type*} [Field K] [Ring A] [Ring B] [Algebra K A] [Algebra K B]
-    [FiniteDimensional K A] [FiniteDimensional K B] :
-    Bᵐᵒᵖ ⊗[K] Aᵐᵒᵖ ≃ₐ[K] (A ⊗[K] B)ᵐᵒᵖ :=
+    {K A B : Type*} [CommRing K] [Ring A] [Ring B] [Algebra K A] [Algebra K B]
+    : Bᵐᵒᵖ ⊗[K] Aᵐᵒᵖ ≃ₐ[K] (A ⊗[K] B)ᵐᵒᵖ :=
   AlgEquiv.ofBijective (tensorProductOppositeAlgHom (K := K) (A := A) (B := B))
     tensorProductOppositeAlgHom_bijective
 

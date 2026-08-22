@@ -259,12 +259,13 @@ theorem sum_shiftedBlockSplitRoot_eq (m d : Z → ℝ) (k : Fin 2 × Z → ℝ) 
           (fun z => k (0, z) - k (1, z)) (fun z => d z + q.1) q.2 :=
   sum_blockSplitRoot_eq m (fun z => d z + q.1) k q.2
 
-/-- **Branch-level block escape at a fixed base.**  For pairwise distinct positive block gaps, a
-character with one nonzero block difference is escaped arbitrarily close to the unsplit point: some
-small gap shift together with some small transverse coupling makes the character's relation among
-the analytic eigenvalue branches nonzero.  No genericity of the base is needed -- the shift direction
-alone already moves the reciprocal-gap weight off its finitely many zeros. -/
-theorem exists_shifted_split_branch_relation_ne_zero (m d : Z → ℝ) (hd : ∀ z, 0 < d z)
+/-- **Branch-level block escape from every constant.** For pairwise
+distinct positive block gaps, a character with one nonzero block
+difference cannot remain equal to any prescribed constant near the
+unsplit point. No genericity of the base is needed: a small gap shift
+makes the reciprocal-gap curvature nonzero, and a transverse coupling
+then changes the spectral action. -/
+theorem exists_shifted_split_branch_relation_ne_const (m d : Z → ℝ) (hd : ∀ z, 0 < d z)
     (hdinj : Function.Injective d)
     (hinj : Function.Injective fun p : Fin 2 × Z => ((blockEnergy m d p : ℝ) : ℂ))
     (branch : Fin 2 × Z → ℝ × ℝ → ℂ)
@@ -273,8 +274,9 @@ theorem exists_shifted_split_branch_relation_ne_zero (m d : Z → ℝ) (hd : ∀
     (hbranchRoot : ∀ p, ∀ᶠ q in 𝓝 ((0, 0) : ℝ × ℝ),
       matrixCharpolyRelation (shiftedBlockSplitMatrix m d q, branch p q) = 0)
     (k : Fin 2 × Z → ℝ) {z₀ : Z} (hk : k (0, z₀) - k (1, z₀) ≠ 0)
+    (target : ℝ)
     {W : Set (ℝ × ℝ)} (hW : W ∈ 𝓝 ((0, 0) : ℝ × ℝ)) :
-    ∃ q ∈ W, (∑ p : Fin 2 × Z, (k p : ℂ) * branch p q) ≠ 0 := by
+    ∃ q ∈ W, (∑ p : Fin 2 × Z, (k p : ℂ) * branch p q) ≠ (target : ℂ) := by
   classical
   have hfam : Filter.Tendsto (shiftedBlockSplitMatrix m d) (𝓝 ((0, 0) : ℝ × ℝ))
       (𝓝 (Matrix.diagonal fun p => ((blockEnergy m d p : ℝ) : ℂ))) := by
@@ -309,8 +311,10 @@ theorem exists_shifted_split_branch_relation_ne_zero (m d : Z → ℝ) (hd : ∀
     rw [hrewrite]
     exact hsumT
   obtain ⟨u, huW, hune⟩ :=
-    exists_ne_zero_blockSplitRelation (∑ z, (k (0, z) + k (1, z)) * m z)
-      (fun z => k (0, z) - k (1, z)) (fun z => d z + t) (fun z => ne_of_gt (hposT z)) hweight hW₂
+    exists_ne_const_blockSplitRelation
+      (∑ z, (k (0, z) + k (1, z)) * m z) target
+      (fun z => k (0, z) - k (1, z)) (fun z => d z + t)
+      (fun z => ne_of_gt (hposT z)) hweight hW₂
   have hqin := hsub (Set.mk_mem_prod htW huW)
   refine ⟨(t, u), hqin.1, ?_⟩
   have hsum : (∑ p : Fin 2 × Z, (k p : ℂ) * branch p (t, u))
@@ -320,7 +324,24 @@ theorem exists_shifted_split_branch_relation_ne_zero (m d : Z → ℝ) (hd : ∀
     rw [← hqin.2 p]
   rw [hsum, sum_shiftedBlockSplitRoot_eq]
   intro hcon
-  exact hune (Complex.ofReal_eq_zero.mp hcon)
+  exact hune (Complex.ofReal_injective hcon)
+
+/-- The zero-target form retained for relation-genericity arguments. -/
+theorem exists_shifted_split_branch_relation_ne_zero (m d : Z → ℝ) (hd : ∀ z, 0 < d z)
+    (hdinj : Function.Injective d)
+    (hinj : Function.Injective fun p : Fin 2 × Z => ((blockEnergy m d p : ℝ) : ℂ))
+    (branch : Fin 2 × Z → ℝ × ℝ → ℂ)
+    (hbranchC : ∀ p, ContinuousAt (branch p) (0, 0))
+    (hbranch0 : ∀ p, branch p (0, 0) = ((blockEnergy m d p : ℝ) : ℂ))
+    (hbranchRoot : ∀ p, ∀ᶠ q in 𝓝 ((0, 0) : ℝ × ℝ),
+      matrixCharpolyRelation (shiftedBlockSplitMatrix m d q, branch p q) = 0)
+    (k : Fin 2 × Z → ℝ) {z₀ : Z} (hk : k (0, z₀) - k (1, z₀) ≠ 0)
+    {W : Set (ℝ × ℝ)} (hW : W ∈ 𝓝 ((0, 0) : ℝ × ℝ)) :
+    ∃ q ∈ W, (∑ p : Fin 2 × Z, (k p : ℂ) * branch p q) ≠ 0 := by
+  simpa using
+    exists_shifted_split_branch_relation_ne_const
+      m d hd hdinj hinj branch hbranchC hbranch0 hbranchRoot
+      k hk 0 hW
 
 
 omit [Fintype Z] in

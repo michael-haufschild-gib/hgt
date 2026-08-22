@@ -204,4 +204,113 @@ theorem rationalFunctionMatrix_semiconjBy_iff_forall_place
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) A X Y).mpr
       (h RationalFunctionPlace.infinite)
 
+/-- A prescribed finite-order relation for a number-field matrix can be certified at one
+completion. -/
+theorem numberFieldMatrix_pow_eq_one_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) (d : ℕ) :
+    M ^ d = 1 ↔ ∃ p : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K p))) ^ d = 1 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_pow_eq_one_iff_map (L := completion K (witnessPlace K)) M d).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_pow_eq_one_iff_map (L := completion K p) M d).mpr hp
+
+/-- A prescribed finite-order relation for an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_pow_eq_one_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) (d : ℕ) :
+    M ^ d = 1 ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) ^ d = 1 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_pow_eq_one_iff_map (L := rationalFunctionCompletion F .infinite) M d).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_pow_eq_one_iff_map (L := rationalFunctionCompletion F p) M d).mpr hp
+
+/-- Idempotence of a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_isIdempotentElem_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) :
+    IsIdempotentElem M ↔ ∃ p : NumberFieldPlace K,
+      IsIdempotentElem (M.map (algebraMap K (completion K p))) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_isIdempotentElem_iff_map (L := completion K (witnessPlace K)) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isIdempotentElem_iff_map (L := completion K p) M).mpr hp
+
+/-- Idempotence of an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_isIdempotentElem_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) :
+    IsIdempotentElem M ↔ ∃ p : RationalFunctionPlace F,
+      IsIdempotentElem (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_isIdempotentElem_iff_map (L := rationalFunctionCompletion F .infinite) M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_isIdempotentElem_iff_map (L := rationalFunctionCompletion F p) M).mpr hp
+
+/-- Commutativity of two number-field matrices can be certified at one completion. -/
+theorem numberFieldMatrix_commute_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M N : Matrix n n K) :
+    Commute M N ↔ ∃ p : NumberFieldPlace K,
+      Commute (M.map (algebraMap K (completion K p))) (N.map (algebraMap K (completion K p))) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_commute_iff_map (L := completion K (witnessPlace K)) M N).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_commute_iff_map (L := completion K p) M N).mpr hp
+
+/-- Commutativity of two `F(t)`-matrices can be certified at one completion. -/
+theorem rationalFunctionMatrix_commute_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M N : Matrix n n (RatFunc F)) :
+    Commute M N ↔ ∃ p : RationalFunctionPlace F,
+      Commute (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)))
+        (N.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_commute_iff_map (L := rationalFunctionCompletion F .infinite) M N).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_commute_iff_map (L := rationalFunctionCompletion F p) M N).mpr hp
+
+/-- A specified semiconjugacy relation over a number field can be certified at one completion. -/
+theorem numberFieldMatrix_semiconjBy_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (A X Y : Matrix n n K) :
+    SemiconjBy A X Y ↔ ∃ p : NumberFieldPlace K,
+      SemiconjBy (A.map (algebraMap K (completion K p)))
+        (X.map (algebraMap K (completion K p))) (Y.map (algebraMap K (completion K p))) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_semiconjBy_iff_map (L := completion K (witnessPlace K)) A X Y).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_semiconjBy_iff_map (L := completion K p) A X Y).mpr hp
+
+/-- A specified semiconjugacy relation over `F(t)` can be certified at one completion. -/
+theorem rationalFunctionMatrix_semiconjBy_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (A X Y : Matrix n n (RatFunc F)) :
+    SemiconjBy A X Y ↔ ∃ p : RationalFunctionPlace F,
+      SemiconjBy (A.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)))
+        (X.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)))
+        (Y.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_semiconjBy_iff_map (L := rationalFunctionCompletion F .infinite) A X Y).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_semiconjBy_iff_map (L := rationalFunctionCompletion F p) A X Y).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

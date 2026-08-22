@@ -71,4 +71,32 @@ theorem rationalFunction_span_range_eq_top_iff_forall_place (F : Type u)
     exact (span_range_eq_top_iff_baseChange
       (L := rationalFunctionCompletion F .infinite) v).mpr (h .infinite)
 
+/-- Spanning by a fixed family over a number field is certified at any one completed place. -/
+theorem numberField_span_range_eq_top_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    {ι : Type x} (v : ι → M) :
+    Submodule.span K (Set.range v) = ⊤ ↔ ∃ p : NumberFieldPlace K,
+      Submodule.span (completion K p)
+        (Set.range fun i ↦ (1 : completion K p) ⊗ₜ[K] v i) = ⊤ := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (span_range_eq_top_iff_baseChange (L := completion K (witnessPlace K)) v).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (span_range_eq_top_iff_baseChange (L := completion K p) v).mpr hp
+
+/-- Spanning by a fixed family over `F(t)` is certified at any one completed place. -/
+theorem rationalFunction_span_range_eq_top_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    {ι : Type x} (v : ι → M) :
+    Submodule.span (RatFunc F) (Set.range v) = ⊤ ↔ ∃ p : RationalFunctionPlace F,
+      Submodule.span (rationalFunctionCompletion F p)
+        (Set.range fun i ↦ (1 : rationalFunctionCompletion F p) ⊗ₜ[RatFunc F] v i) = ⊤ := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (span_range_eq_top_iff_baseChange (L := rationalFunctionCompletion F .infinite) v).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (span_range_eq_top_iff_baseChange (L := rationalFunctionCompletion F p) v).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

@@ -155,4 +155,90 @@ theorem rationalFunction_linearMap_semiconjBy_iff_forall_place (F : Type u)
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) f g h).mpr
       (hfg RationalFunctionPlace.infinite)
 
+/-- Commutation of two fixed number-field endomorphisms is certified at one completed place. -/
+theorem numberField_linearMap_commute_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (f g : M →ₗ[K] M) :
+    Commute f g ↔ ∃ p : NumberFieldPlace K,
+      Commute (f.baseChange (completion K p)) (g.baseChange (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_commute_iff_baseChange (L := completion K (witnessPlace K)) f g).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_commute_iff_baseChange (L := completion K p) f g).mpr hp
+
+/-- Idempotence of a fixed number-field endomorphism is certified at one completed place. -/
+theorem numberField_linearMap_isIdempotentElem_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (f : M →ₗ[K] M) :
+    IsIdempotentElem f ↔ ∃ p : NumberFieldPlace K,
+      IsIdempotentElem (f.baseChange (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_isIdempotentElem_iff_baseChange (L := completion K (witnessPlace K)) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_isIdempotentElem_iff_baseChange (L := completion K p) f).mpr hp
+
+/-- A fixed semiconjugacy relation over a number field is certified at one completed place. -/
+theorem numberField_linearMap_semiconjBy_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (f g h : M →ₗ[K] M) :
+    SemiconjBy f g h ↔ ∃ p : NumberFieldPlace K,
+      SemiconjBy (f.baseChange (completion K p)) (g.baseChange (completion K p))
+        (h.baseChange (completion K p)) := by
+  constructor
+  · intro hfg
+    exact ⟨witnessPlace K,
+      (linearMap_semiconjBy_iff_baseChange (L := completion K (witnessPlace K)) f g h).mp hfg⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_semiconjBy_iff_baseChange (L := completion K p) f g h).mpr hp
+
+/-- Commutation of two fixed `F(t)`-endomorphisms is certified at one completed place. -/
+theorem rationalFunction_linearMap_commute_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (f g : M →ₗ[RatFunc F] M) :
+    Commute f g ↔ ∃ p : RationalFunctionPlace F,
+      Commute (f.baseChange (rationalFunctionCompletion F p))
+        (g.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_commute_iff_baseChange (L := rationalFunctionCompletion F .infinite) f g).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_commute_iff_baseChange (L := rationalFunctionCompletion F p) f g).mpr hp
+
+/-- Idempotence of a fixed `F(t)`-endomorphism is certified at one completed place. -/
+theorem rationalFunction_linearMap_isIdempotentElem_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (f : M →ₗ[RatFunc F] M) :
+    IsIdempotentElem f ↔ ∃ p : RationalFunctionPlace F,
+      IsIdempotentElem (f.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_isIdempotentElem_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_isIdempotentElem_iff_baseChange
+      (L := rationalFunctionCompletion F p) f).mpr hp
+
+/-- A fixed semiconjugacy relation over `F(t)` is certified at one completed place. -/
+theorem rationalFunction_linearMap_semiconjBy_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (f g h : M →ₗ[RatFunc F] M) :
+    SemiconjBy f g h ↔ ∃ p : RationalFunctionPlace F,
+      SemiconjBy (f.baseChange (rationalFunctionCompletion F p))
+        (g.baseChange (rationalFunctionCompletion F p))
+        (h.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro hfg
+    exact ⟨.infinite,
+      (linearMap_semiconjBy_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) f g h).mp hfg⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_semiconjBy_iff_baseChange
+      (L := rationalFunctionCompletion F p) f g h).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

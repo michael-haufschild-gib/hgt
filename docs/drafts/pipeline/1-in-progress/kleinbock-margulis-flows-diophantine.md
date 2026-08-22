@@ -140,3 +140,29 @@ paper's `C_{k,A₁,A₂} = k(k+1)((A₁/A₂)(k+1)(2k^k+1))^{1/k}`; only the dep
    puts `x` in the `j`-th null set, so `{x ∈ B | VWMA (f x)}` is null.
 5. Globalise with `MeasureTheory.measure_null_of_locally_null` applied to
    `{x ∈ U | VWMA (f x)} ∩ {nondegenerate points}`, plus the null set of degenerate points.
+- 2026-08-22 — **Theorem A complete** (`KleinbockMargulis/TheoremA.lean`).  The Borel--Cantelli
+  assembly followed the plan: `prop_2_3` at `ε = 2 e^{-c ∑ mᵢ}`, with the *global* geometric
+  majorant `volume (E_m) ≤ ofReal (B rᵏ) · volume B` (`B = (D+1)(2/ρ)^α`, `r = e^{-cα} < 1`)
+  covering the finitely many `m` where `ε > ρ` by the trivial bound, then
+  `MeasureTheory.ae_finite_setOf_mem` (no measurability hypothesis — it is stated for any
+  `OuterMeasureClass`), then `corollary_2_2` at rate `1/(j+1) ≤ γ`.  The mathlib gap
+  `∑_{m ∈ ℕⁿ} r^{∑ mᵢ} < ∞` is `summable_pow_sum`, proved by induction along
+  `Fin.consEquiv` and `Summable.mul_of_nonneg`.
+  Two forms are exported: `theoremA` (uniform nondegeneracy order `l`, null degenerate locus) and
+  `theoremA_allOrders` (only the *all-order* degenerate locus must be null — the form a spectral
+  family needs, since its nondegeneracy order is not uniform).
+- 2026-08-22 — **Khintchine transference, the half the recurrence exponents need**
+  (`KleinbockMargulis/Transference.lean`).  `VWA` (simultaneous `(1.2)`) is defined and
+  `vwma_of_vwa` proves `VWA y → VWMA y`, so strong extremality gives the *simultaneous*
+  Diophantine exponent `1/n`.  The proof is pure pigeonhole, not Minkowski: the index-`q`
+  sublattice `{a : q ∣ a·p}` meets the cube of side `⌊q^{1/n}⌋` by
+  `Fintype.exists_ne_map_eq_of_card_lt` on `(Fin n → Fin (Q+1)) → ZMod q`
+  (`exists_small_dvd_dotProd`); then `|a·y + b| = |a·δ|/q ≤ n q^{-1-ε}` and `Π₊(a) ≤ q`
+  (`exists_transfer_point`).  Infinitude of the resulting dual set is obtained by contradiction
+  against `Finset.inf'` of the distances `dist(a·y, ℤ)`, after splitting off the degenerate case
+  `∃ a ≠ 0, a·y ∈ ℤ` (where the multiples `k·a` are themselves an infinite witness).
+- 2026-08-22 — `KleinbockMargulis/Extremal.lean` packages the two:
+  `theoremA_simultaneous`, `theoremA_simultaneous_allOrders`, `finite_of_not_vwa`, and
+  `measure_exists_dioph_exponent_eq_zero`.  All three modules are axiom-clean
+  (`propext`, `Classical.choice`, `Quot.sound`) and wired into `GaloisForLFunctions.HTGeometry`.
+  Remaining: Theorem 5.3, Theorem B.

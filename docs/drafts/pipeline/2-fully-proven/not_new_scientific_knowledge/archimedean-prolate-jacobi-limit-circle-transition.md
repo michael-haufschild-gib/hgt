@@ -138,6 +138,69 @@ archimedean power expansion in the semilocal problem.
   alternative.  By `(3)`, the hard input is the high-degree behavior of the metaplectic anomaly
   second difference and the two adjacent Jacobi-radius increment energies.
 
+## Lean route (analytic build required; Pruckner is not needed)
+
+The Lean proof must not import Pruckner's Theorem 2.  For this specific Jacobi matrix the
+classification is decided by an elementary discriminant computation, carried out here so that the
+formalisation is a bookkeeping problem and not a research problem.
+
+Write the recurrence as `rho_(n-1) u_(n-1) + (q_n - z) u_n + rho_n u_(n+1) = 0` and freeze the
+coefficients: `t^2 + (q_n - z)/rho_n * t + rho_(n-1)/rho_n = 0`.  Two exact facts drive everything:
+
+- the product of the roots is `rho_(n-1)/rho_n`, which **telescopes**:
+  `prod_(k<=n) rho_(k-1)/rho_k = rho_(n_0-1)/rho_n asymp C/n^2`;
+- the discriminant is `(q_n^2 - 4 rho_(n-1) rho_n)/rho_n^2`, and the numerator is an exact
+  polynomial because `rho_n^2` is the explicit quartic `(1/16)(4n+1)(4n+2)(4n+3)(4n+4)`.
+
+**Even block, `lambda>0`.**  With `rho_n = 4n^2+5n+5/4+O(n^-2)` and
+`q_n = -8n^2+(16 pi lambda^2-2)n+O(1)`:
+
+```text
+rho_(n-1)+rho_n+q_n = 16 pi lambda^2 n + O(1),
+q_n/rho_n = -2 + (4 pi lambda^2+2)/n + O(n^-2),
+rho_(n-1)/rho_n = 1 - 2/n + O(n^-2),
+discriminant = -16 pi lambda^2/n + O(n^-2) < 0  for large n.
+```
+
+The roots are therefore a complex conjugate pair of modulus `sqrt(rho_(n-1)/rho_n)`, so every
+solution satisfies `|u_n| asymp C/n` and is square-summable: limit circle.
+
+**Even block, `lambda=0`.**  Now the `1/n` term of the discriminant vanishes and the exact
+polynomial identity is needed:
+
+```text
+q_n^2 - 4 rho_(n-1) rho_n = 52n^2 + 13n + O(1),
+discriminant = 13/(4n^2) + O(n^-3) > 0,
+t = 1 - 1/n +- (sqrt 13/4)/n.
+```
+
+Since `sqrt 13/4 = 0.9013... > 1/2`, the dominant solution grows like `n^(-1+sqrt 13/4)`, which is
+not square-summable: limit point.  (This is why the card's `beta = 2` boundary case falls on the
+limit-point side; the deciding constant is `sqrt 13/4`, not the transition parameter alone.)
+
+The odd block repeats the computation with `rho_n^- = 4n^2+9n+19/4+O(n^-2)` and
+`q_n^- = -8n^2+(16 pi lambda^2-10)n+O(1)`.
+
+**What still has to be built in Lean.**
+
+1. Exact expansions of `rho_n^+-` and `q_n^+-` with explicit `O(n^-2)` error bounds, from the
+   quartic under the square root.  Elementary but must be done with real inequalities, not `O`.
+2. A transfer-matrix ellipticity argument: an invariant positive quadratic form `Q_n` with
+   `Q_(n+1)(T_n v) = det(T_n) Q_n(v)` and uniformly bounded condition number, giving
+   `|v_n|^2 asymp (rho_(n_0-1)/rho_n)|v_(n_0)|^2`.  This is the only genuinely analytic step for
+   `lambda>0`.
+3. For `lambda=0`, a discrete Levinson/Riccati argument producing a solution of size
+   `n^(-1+sqrt 13/4 - epsilon)`, enough to break square-summability.
+4. Connection to the corpus deficiency layer:
+   `RHTower/JacobiDeficiencyRankTwoAmbiguity.lean` already owns `jacobiDeficiency`,
+   `rank_jacobiDeficiency_le_one`, `jacobiDeficiency_eq_bot_iff_conj` and `jacobi_deficiency_indices`
+   (the `(0,0)`/`(1,1)` alternative and additivity under direct sums).
+5. Equations `(2)`--`(3)` are already Lean-proved in
+   `RHTower/SemilocalProlateCriticalPotential.lean`
+   (`two_mul_routeJProlateSourceCriticalResidual`,
+   `two_mul_routeJProlateSourceCriticalResidual_eq_incrementDefect`,
+   `routeJProlateEven_criticalPotential_succ`).
+
 ## Novelty audit
 
 Pruckner's exceptional Jacobi classification is established literature.  The classical prolate

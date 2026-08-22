@@ -60,4 +60,33 @@ theorem rationalFunction_algebra_formallyUnramified_iff_forall_place (F : Type u
     exact (algebra_formallyUnramified_iff_tensorProduct_formallyUnramified
       (L := rationalFunctionCompletion F .infinite)).mpr (h .infinite)
 
+/-- Formal unramifiedness of a fixed number-field algebra is certified at one completion. -/
+theorem numberField_algebra_formallyUnramified_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] :
+    Algebra.FormallyUnramified K A ↔ ∃ p : NumberFieldPlace K,
+      Algebra.FormallyUnramified (completion K p) (completion K p ⊗[K] A) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_formallyUnramified_iff_tensorProduct_formallyUnramified
+        (L := completion K (witnessPlace K))).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_formallyUnramified_iff_tensorProduct_formallyUnramified
+      (L := completion K p)).mpr hp
+
+/-- Formal unramifiedness of a fixed `F(t)`-algebra is certified at one completion. -/
+theorem rationalFunction_algebra_formallyUnramified_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] :
+    Algebra.FormallyUnramified (RatFunc F) A ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.FormallyUnramified (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] A) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_formallyUnramified_iff_tensorProduct_formallyUnramified
+        (L := rationalFunctionCompletion F .infinite)).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_formallyUnramified_iff_tensorProduct_formallyUnramified
+      (L := rationalFunctionCompletion F p)).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

@@ -354,7 +354,7 @@ private theorem scale_pow_four_mul_exp_tail_le_pi_pow
       congr 2
       ring
 
-private theorem thetaCuspAtomLikelihoodRatio_le_dynamic
+theorem thetaCuspAtomLikelihoodRatio_le_dynamic
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     thetaCuspAtomLikelihoodRatio n x ≤
       2 * (n : ℝ) ^ 4 *
@@ -530,7 +530,7 @@ private theorem summable_thetaCuspHigherLikelihoodJetThree {x : ℝ} (hx : 0 < x
   exact Summable.of_norm_bounded hs fun k => by
     simpa only [Real.norm_eq_abs] using thetaCuspAtomLikelihoodRatioJetThree_majorant k hx
 
-private theorem summable_thetaCuspHigherLikelihoodJetFour {x : ℝ} (hx : 0 < x) :
+theorem summable_thetaCuspHigherLikelihoodJetFour {x : ℝ} (hx : 0 < x) :
     Summable (fun k : ℕ => thetaCuspAtomLikelihoodRatioJetFour (k + 2) x) := by
   have hs := (summable_thetaCuspReflectionJetTailWeight 4).mul_left
     (1200 * Real.pi ^ 4)

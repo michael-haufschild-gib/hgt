@@ -5025,3 +5025,319 @@ i.e. the Schur reduction is at most two-to-one.  Two routes are available, both 
 
 Everything else on this card — `(R)`, `(D-e)`, `(D-1)`, `(D-f)`, and the whole of §2's conormal
 apparatus — is now Lean-proved and unconditional.
+
+## Lean progress — the ramification dictionary at an ARBITRARY base field
+
+The card's `(D4)` — `∀ σ, ncard {τ | r τ = r σ} ≤ 2` — was traced to one missing piece: the identity
+`|Stab_I(σ)| = e(w / O_σ)` for the *intermediate* field `σ(F_src)`, not just for the observation
+field.  Everything else in the endgame follows from it (see the route recorded in
+`_FORMALIZATION-LEDGER.md`, together with the two dead ends that were checked and rejected: the
+different is uninformative about `e(w/Q₀)`, and pure orbit combinatorics of a faithful cyclic action
+with `Σ orbit ≤ 1 + t` does not force `t = 1` — `t = 20`, orbits `{8,10}` survives every count).
+
+Two modules landed, both `lake build`-green and `#print axioms = [propext, Classical.choice,
+Quot.sound]`.
+
+```text
+HTGeometry/TameInertiaOrderBound.lean
+    smul_pow_eq
+    residueRatioHom_pow_eq_one_of_smul_eq   a fixed `x = π^n·u` forces `ratio(g)^n = 1`
+    natCard_le_of_smul_eq_of_eq_pow_mul     ** |Γ| ≤ n **
+    natCard_le_addVal_of_smul_eq            ** |Γ| ≤ addVal W x for every fixed nonzero nonunit **
+
+HTGeometry/ValuationSubringInertiaDictionary.lean
+    smul_sub_mem_maximalIdeal_of_mem_inertiaSubgroup
+    toValuationSubring, centerPrime, centerPrime_isPrime, centerPrime_ne_bot
+    isUnit_toValuationSubring_of_notMem, inv_mem_of_notMem_centerPrime
+    mem_maximalIdeal_of_mul_eq
+    centerHeightOne
+    valuationSubringAtPrime_eq   ** W IS the localization of S at its centre **
+    mem_iff_exists_div           ** x ∈ W ↔ x = a/s with a s : S and s off the centre **
+    notMem_centerPrime_smul, smul_valuationSubring_eq, toDecomposition
+    smul_sub_mem_maximalIdeal
+    toDecomposition_mem_inertiaSubgroup, coe_mem_inertia_of_mem_inertiaSubgroup
+    inertia_eq_map               ** ideal inertia = valuation inertia, as subgroups of Gal(L/F) **
+    natCard_inertia_eq_natCard_inertiaSubgroup
+```
+
+**What the first module is for.**  It is the *cheap* half of `|I| = e`.  A tame action on a DVR has
+an injective ratio character `Γ → k^×` (`TameInertiaCyclic`); if `Γ` fixes an element of divisorial
+order `n`, the character lands in `μ_n`, and a field has at most `n` `n`-th roots of unity.  Applied
+to the image of a uniformizer of a `Γ`-fixed subfield this reads `|I_M| ≤ e(w/M)` with no ideal
+theory at all.  It also gives, for free, the fact the card needs in step 2: **a sheet fixed by the
+whole inertia group is unramified** — take `x = σ(π_{O_σ})`, which `I` fixes, and get
+`|I| ≤ e(w/O_σ) = |I|/e(O_σ/A)`, i.e. `e(O_σ/A) = 1`.
+
+**What the second module is for.**  It is the *expensive* half, and it is stated at an arbitrary
+base field `F` of the normal extension, which is exactly what the corpus's existing
+`CriticalSchurIntegralClosurePlace` + `CriticalSchurIdealInertiaTransport` pair is **not** — those
+are hard-wired to the observation field, so they cannot see `Stab_I(σ)`.
+
+Its engine is `mem_iff_exists_div`.  mathlib has
+`IsDedekindDomain.HeightOneSpectrum.valuationSubringAtPrime`, the localization of a Dedekind domain
+at a height-one prime, with `Ring.KrullDimLE 1` and `IsLocalization` instances already attached; a
+valuation subring of Krull dimension one below a *proper* valuation subring equals it
+(`ValuationSubring.eq_of_le_of_ne_top`).  So `W` is literally `S` localized at its centre, and
+membership in `W` is "a fraction with denominator off the centre".  With that, both inclusions
+become one-line computations:
+
+```text
+g • (a/s) = (g•a)/(g•s)                            and    g•s ∉ P because g•s − s ∈ P
+(g•a)s − a(g•s) = (g•a − a)s − a(g•s − s) ∈ P      with denominator (g•s)s off P
+```
+
+so ideal inertia stabilises `W` and kills residues; conversely a valuation-inertia element `g`
+sends every `x : S` to `g•x − x` whose image in `W` is in the maximal ideal, i.e. `g•x − x ∈ P`.
+The two subgroups of `Gal(L/F)` are therefore *equal*, not merely comparable — the corpus only had
+the injection, and only at the bottom field.
+
+**Effect on the card.**  Combined with mathlib's `Ideal.card_inertia_eq_ramificationIdxIn` this is
+`|W.inertiaSubgroup F| = e` for every `F` over which `L` is Galois.  The remaining work on `(D4)`
+is instantiation, not new mathematics:
+
+```text
+(1) O_σ := W.comap σ is a DVR                    valuationSubringComap_isDiscreteValuationRing
+                                                 (already in the tree)
+(2) |Stab_I(σ)| = |W.inertiaSubgroup (σ F_src)|  restriction of scalars, definitional
+(3) |I| = e(w/A), |Stab_I(σ)| = e(w/O_σ)         the two modules above + mathlib
+(4) orbit_σ = e(O_σ/A)                           Ideal.ramificationIdx_tower
+(5) O_σ = O_src for σ in the collision fibre     the Schur coordinate ring is a POLYNOMIAL ring,
+                                                 so every height-one localization is a DVR and the
+                                                 valuation ring is determined by the residues of
+                                                 the coordinates — which two colliding sheets share
+(6) e(O_src/A) = 2                               criticalSchur_source_ramificationIdx_eq_two
+(7) all orbits ≤ 2 ⟹ |I| ≤ 2                     CyclicCollisionOrderBound.natCard_le_two_of_isCyclic
+(8) |F| ≤ 1 + v_w(f'(θ)) = 2                     RootCongruenceValuationCount + monogenicity +
+                                                 criticalSchur_differentIdeal_not_le_sq
+```
+
+## Lean progress — `|inertia| = e` at an arbitrary base field is PROVED
+
+`HTGeometry/ValuationInertiaRamificationIndex.lean` (wired, built, axiom-clean)
+
+```text
+integralClosure_mem_of_base_mem
+    the integral closure of the base sits inside any valuation subring containing the base
+natCard_inertiaSubgroup_eq_ramificationIdxIn
+    ** Nat.card (W.inertiaSubgroup F) = ramificationIdxIn (maximalIdeal R) (integralClosure R L) **
+```
+
+for a discrete valuation ring `R` with fraction field `F`, a finite Galois `L/F`, and a valuation
+subring `W ⊆ L` containing `R`, not equal to `L`, and with at least one nonzero element of `R` a
+nonunit of `W`.  That last hypothesis is what makes `W` lie over the maximal ideal of `R` rather
+than over zero, and it is the only "nondegeneracy" input.
+
+This is the statement the card has been missing.  The corpus already had `|I| = e` **at the
+observation field** (`natCard_criticalSchurIdealInertiaGroup_eq_ramificationIdxIn`), but that
+development is hard-wired to `criticalObservationField`, so it says nothing about
+`Stab_I(σ) = W.inertiaSubgroup (σ F_src)`, which is the group whose order controls the orbit of a
+sheet.  The new statement is uniform in the base field, so it applies to every sheet at once.
+
+Two implementation traps, recorded:
+
+* the `Gal(L/F)`-action on `integralClosure R L` must be introduced with `letI`, not `haveI` —
+  `algebraMap_galRestrict_apply` is a statement about `galRestrict`, and only a `let`-bound instance
+  lets `g • x` unfold to it (see [[haveI-inferinstance-opaque-trap]]);
+* `Module.Flat R (integralClosure R L)` is found only after the torsion-free instance, which comes
+  from injectivity of `R → integralClosure R L` through `L`.
+
+**What remains for `(D4)`, exactly.**  With `|I_M| = e(w/M)` in hand for every intermediate `M`, the
+orbit of a sheet is `e(O_σ/A)` and everything reduces to arithmetic of `addVal W`, because
+
+```text
+addVal W (π_A) = e(O_σ/A) · addVal W (π_{O_σ})
+```
+
+is pure valuation additivity (a unit of `O_σ` is a unit of `W`).  The one remaining general lemma is
+therefore the numeric bridge
+
+```text
+ramificationIdxIn (maximalIdeal R) (integralClosure R L) = addVal W (algebraMap R L π_R)
+```
+
+whose proof is mathlib's `ramificationIdx_def` (`ramificationIdx = length (Sq ⧸ 𝔪_R Sq)`) plus
+`IsDiscreteValuationRing.length_quotient_pow_maximalIdeal` (`length (W ⧸ 𝔪_W^n) = n`), transported
+along the localization identification `Localization.AtPrime (centerPrime) ≃ W` that
+`valuationSubringAtPrime_eq` already provides.  After that the card's `(D4)` is instantiation only.
+
+## Lean progress — the orbit formula is now assembled from general theorems
+
+Two more pieces landed, both `lake build`-green and axiom-clean.
+
+```text
+HTGeometry/ValuationInertiaIntermediateField.lean
+    mem_inertiaSubgroup_iff        g is inertial ⟺ g•y − y ∈ 𝔪_W for every y : W
+    decompositionRestrict, coe_decompositionRestrict, decompositionRestrict_smul
+    mem_inertiaSubgroup_decompositionRestrict
+    natCard_inertiaSubgroup_intermediate
+        ** |W.inertiaSubgroup M| = #{ g inertial over F : g fixes M pointwise } **
+
+HTGeometry/ValuationInertiaRamificationIndex.lean   (extended)
+    liesOver_centerPrime           the centre lies over the prescribed maximal ideal
+    ramificationIdxIn_tower
+        ** ramificationIdxIn p T = Q.ramificationIdx A * ramificationIdxIn Q T **
+```
+
+The first rests on a single `rfl`: the pointwise action of `g : L ≃ₐ[M] L` on a valuation subring of
+`L`, and on `W` itself, is the action of `g.restrictScalars F`, because it only reads the underlying
+ring map.  So the stabiliser of a sheet `σ` inside the inertia group of the observation field *is*
+the inertia group of `σ(F_src)` — no comparison lemma, an equality of conditions.
+
+The second is the multiplicativity that the card needs, and it is stated with **no Galois hypothesis
+on the middle extension**.  That matters: `F_src/E` is precisely the non-normal step, so mathlib's
+`Ideal.ramificationIdxIn_mul_ramificationIdxIn` — which assumes `IsGaloisGroup` for the middle — is
+unusable and must not be reached for.  `Ideal.ramificationIdx_tower` between two applications of
+`ramificationIdxIn_eq_ramificationIdx` is the right instrument.
+
+**Consequence.**  For every sheet `σ`, writing `A` for the observation Schur DVR, `M_σ = σ(F_src)`,
+`B_σ` for the integral closure of `A` in `M_σ` and `Q_σ` for the prime of `B_σ` under `w`:
+
+```text
+|I|                      = ramificationIdxIn 𝔪_A  C          (ValuationInertiaRamificationIndex)
+|Stab_I(σ)| = |W.inertiaSubgroup M_σ| = ramificationIdxIn Q_σ C   (idem, + IntermediateField)
+|I|                      = e(Q_σ/𝔪_A) · |Stab_I(σ)|          (ramificationIdxIn_tower)
+```
+
+so **the `I`-orbit of a sheet has exactly `e(Q_σ/𝔪_A)` elements**, unconditionally.  Every step of
+`(D4)` above the concrete instantiation is now a theorem in the tree.  What is left is bookkeeping
+with the horizon's own objects: exhibit the instances (`B_σ` Dedekind, `IsIntegralClosure C B_σ L`,
+the two `hcent` conditions), identify `σ⁻¹(W)` with the source Schur valuation ring for a colliding
+sheet, and read `e = 2` off `criticalSchur_source_ramificationIdx_eq_two`.
+
+## Lean progress — the sheet stabiliser is an inertia group, and the orbit criterion
+
+```text
+HTGeometry/CyclicOrbitOrderBound.lean            (wired, built, axiom-clean)
+    sq_smul_eq_self_of_orbit_le_two
+    natCard_le_two_of_isCyclic_of_orbit
+        ** faithful + cyclic + every orbit of size ≤ 2  ⟹  |G| ≤ 2 **
+
+HTGeometry/CriticalSheetStabilizerInertia.lean   (wired, built, axiom-clean)
+    criticalNormalClosureAction_eq_self_iff   a sheet is fixed ⟺ its field range is fixed
+    criticalSchurInertiaGroup_eq              the corpus's inertia group IS the valuation one
+    criticalSchurInertiaAction_apply
+    natCard_sheetStabilizer_eq_natCard_inertiaSubgroup
+        ** |Stab_I(σ)| = |W.inertiaSubgroup (AlgHom.fieldRange σ)| **
+```
+
+`CyclicCollisionOrderBound` bounded the inertia group through the *fibres* of the reduction; the
+ramification dictionary delivers *orbits* instead, so the orbit form is what the endgame now needs.
+
+Two elaboration traps recorded, because they cost a rebuild each: the critical field stack times out
+the default instance budget (raise `synthInstance.maxHeartbeats`, `maxHeartbeats`,
+`maxSynthPendingDepth`), and the final step must **not** be a `rw` — computing the motive for
+`natCard_inertiaSubgroup_intermediate` exhausts the `isDefEq` budget, while `Eq.trans` against the
+same lemma costs nothing.
+
+**State of `(D4)`.**  Every general theorem the route needs is now in the tree:
+
+```text
+|Stab_I(σ)| = |W.inertiaSubgroup (fieldRange σ)|              DONE (this entry)
+|W.inertiaSubgroup F| = ramificationIdxIn p T, any base F     DONE
+ramificationIdxIn p T = e(Q/p) · ramificationIdxIn Q T        DONE
+faithful + cyclic + orbits ≤ 2 ⟹ |I| ≤ 2                      DONE (this entry)
+```
+
+What is left is the instantiation of the middle two on the horizon's own rings — the observation
+Schur DVR at the bottom and `integralClosure A (fieldRange σ)` in the middle — plus
+`σ⁻¹(W) = criticalSchurSourceValuationSubring` for a colliding sheet and the derivative count.
+
+## Lean progress — `|I| = e` is now an EQUALITY on the horizon's own rings
+
+```text
+HTGeometry/ValuationInertiaRamificationIndex.lean   (extended)
+    natCard_inertiaSubgroup_eq_ramificationIdx_mul
+        ** |W.inertiaSubgroup F| = e(Q/p) · |W.inertiaSubgroup M| **   — the orbit formula
+
+HTGeometry/CriticalSchurInertiaRamificationIndex.lean   (wired, built, axiom-clean)
+    ValuationSubring.ne_top_of_isDiscreteValuationRing
+    criticalSchurNormalBase_algebraMap_mem, criticalSchurNormalBase_centre
+    natCard_criticalSchurInertiaGroup_eq_ramificationIdxIn
+        ** Nat.card (criticalSchurInertiaGroup) = ramificationIdxIn 𝔪_A (normal integral closure) **
+```
+
+The last statement is new content, not a repackaging: the corpus previously owned only the
+*injection* (`criticalSchurIdealInertiaToInertia_injective` together with
+`natCard_criticalSchurIdealInertiaGroup_eq_ramificationIdxIn`), i.e. `e ≤ |I|`.  The orbit of a
+sheet is `|I|` divided by the order of its stabiliser, so both numbers have to be computed, not
+bounded, and the equality is what makes that possible.
+
+**Remaining for `(D4)`, in order.**
+
+```text
+(a) IsIntegralClosure T B_σ L for B_σ = integralClosure A (fieldRange σ)   transitivity of integrality
+(b) Q_σ := comap of 𝔪_W to B_σ; prime, nonzero, hence maximal              Dedekind
+(c) instantiate natCard_inertiaSubgroup_eq_ramificationIdx_mul at (E, A) and (fieldRange σ, B_σ)
+        ⟹ orbit_σ = e(Q_σ / 𝔪_A)
+(d) σ⁻¹(W) = criticalSchurSourceValuationSubring for a colliding sheet     polynomial-ring argument
+(e) e(Q_σ/𝔪_A) = 2                                    criticalSchur_source_ramificationIdx_eq_two
+(f) natCard_le_two_of_isCyclic_of_orbit                ⟹ |I| ≤ 2
+(g) the derivative count                               ⟹ |collisionSupport| ≤ 2
+```
+
+Nothing in (a)–(g) is research mathematics; it is the bookkeeping that the general theorems were
+built to make possible.
+
+## Lean progress — THE ORBIT FORMULA IS A THEOREM ON THE HORIZON
+
+```text
+HTGeometry/ValuationInertiaIntermediateBase.lean   (wired, built, axiom-clean)
+    intermediateBaseToTop, intermediateBase_mem, intermediateToW, intermediateCentre
+    mem_intermediateCentre_iff, liesOver_intermediateCentre, intermediateCentre_ne_bot
+    natCard_inertiaSubgroup_eq_intermediate_mul
+        ** |W.inertiaSubgroup F| = e(Q_M / p) · |W.inertiaSubgroup M| **, general
+
+HTGeometry/CriticalSheetOrbitRamification.lean     (wired, built, axiom-clean)
+    criticalNormalClosure_isGalois
+    charZero_residueField_of_ringHom, criticalIntermediateCentre_charZero
+    natCard_criticalSchurInertiaGroup_eq_intermediate_mul
+    natCard_criticalSchurInertiaGroup_eq_sheet_mul
+        ** |I| = e(Q_σ / 𝔪_A) · |Stab_I(σ)| **, for every geometric sheet σ
+```
+
+So **the `I`-orbit of a sheet has exactly `e(Q_σ / 𝔪_A)` elements**, where `Q_σ` is the place `σ`
+cuts out on the integral closure of the observation Schur DVR inside `AlgHom.fieldRange σ`.  This is
+the statement the card has been reaching for since the tame-inertia entry: a sheet is moved by
+inertia exactly when its place ramifies, and its orbit has as many members as the ramification index.
+
+Nothing in it assumes the source field is normal over the observation field — which is the whole
+point, and the reason `Ideal.ramificationIdxIn_mul_ramificationIdxIn` (which does assume it) had to
+be replaced by `Ideal.ramificationIdx_tower` between two applications of the dictionary.
+
+**Immediate consequence, free of further work.**  Inertia preserves the reduced fibre label
+(`criticalGeometricSheetToSchurReducedFibre_inertia_invariant`), so an orbit lies inside one fibre;
+hence a sheet outside the collision support is fixed by all of `I`, and therefore
+`e(Q_σ / 𝔪_A) = 1` for it.  Ramification of the horizon is *concentrated on the collision support*.
+
+**What is left, exactly.**
+
+```text
+(d) e(Q_σ / 𝔪_A) = 2 for a colliding sheet.  Route: σ⁻¹(W) has the same centre on the Schur
+    COORDINATE RING as the canonical sheet, because both reduce the coordinates to the same
+    residues; that ring is a polynomial ring, so its height-one localization is a DVR, and a
+    valuation ring containing a DVR with the same fraction field is that DVR.  Then
+    criticalSchur_source_ramificationIdx_eq_two.
+(e) natCard_le_two_of_isCyclic_of_orbit + isCyclic_of_tame  ⟹  |I| ≤ 2.
+(f) RootCongruenceValuationCount + monogenicity + criticalSchur_differentIdeal_not_le_sq
+    ⟹ |collisionSupport| ≤ 2, which is (D4).
+```
+
+## Lean progress — ramification is concentrated on the collision support
+
+```text
+HTGeometry/CriticalSheetUnramifiedOutsideCollision.lean   (wired, built, axiom-clean)
+    nat_eq_one_of_eq_mul_self
+    criticalSchurInertiaAction_eq_self_of_notMem_collisionSupport
+        ** a sheet outside the collision support is fixed by the whole Schur inertia group **
+    criticalSheetRamificationIdx_eq_one_of_notMem_collisionSupport
+        ** and therefore sits over an UNRAMIFIED place **
+```
+
+This is the first genuinely arithmetic consequence of the orbit formula, and it runs in the useful
+direction: the *geometric* statement that two sheets collide has become the *arithmetic* statement
+that a place ramifies.  Every ramified sheet is a colliding sheet, so bounding the collision support
+and bounding the total ramification are the same problem — which is what the different was always
+supposed to control, and what `criticalSchur_differentIdeal_not_le_sq` supplies at the Schur place.
+
+Ten modules landed for this card on 2026-08-22, every one `lake build`-green with
+`#print axioms = [propext, Classical.choice, Quot.sound]`.

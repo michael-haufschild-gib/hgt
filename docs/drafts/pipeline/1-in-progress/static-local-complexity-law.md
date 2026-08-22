@@ -6357,3 +6357,100 @@ receive a new title and an independent significance audit.
   shared-draw fixed-`q` Pauli commutator incidence map after return/centralizer stratification;
   current Pauli Casimir and Hall laws give rank/leakage but not determinant conditioning. Formal
   card: `../3-formalized/static-choi-centralizer-carrier-replica-law.md`.
+- 2026-08-22 -- Closed the missing physical spectral-recurrence layer for ordinary connected local
+  extensions.  Lean now constructs, on one open connected real parameter ball, the complete labeled
+  simple real-analytic spectrum of the finite local-extension slice and proves that every
+  nonconstant integer spectral action escapes every real target on that same ball.  After a finite
+  reindexing, Kleinbock--Margulis recurrence yields almost-everywhere optimal normalized projective
+  and physical-time first-return exponents for every extension with at least three total levels.
+  The all-to-all two-local `Fin (n+2)` specialization is unconditional for every `n`.  This closes
+  physical spectral recurrence, not return to the full polynomial-complexity circuit set.  Exact
+  Brown core remains the quenched, circuit-uniform lower tail for the centralizer-stratified
+  shared-draw fixed-`q` Pauli commutator-incidence pseudodeterminant, strong enough for the complete
+  approximate circuit union and the same laboratory-time growth draw.  Formal modules:
+  `HTGeometry.LocalExtensionPhysicalRecurrence`, `HTGeometry.TwoLocalPhysicalSpectralChart`.
+- 2026-08-22 -- Retired minimum-gap and active-minor pseudodeterminant as the fixed-target
+  anti-concentration invariant.  Lean now proves a weighted Gaussian stable-rank lower tail,
+  arbitrary covariance transport, arbitrary affine-centre survival, finite-target union, and a
+  trace-floor/per-mode-cap compiler.  For every nonidentity `n`-qubit Pauli target and every
+  fixed locality `q >= 2`, an explicit injective fan supplies exactly `n-1` distinct two-local
+  anticommuting coefficients.  Their commutator outputs occupy distinct Pauli channels with equal
+  nonzero norm.  Conditioning on every other Hamiltonian coefficient produces only arbitrary
+  affine drift, so the active Gaussian tube has the unconditional bound
+  `exp (-2 (gaussianIntervalActivationMass-theta)^2 (n-1))`.  A measure-preserving
+  fan/complement split then transports this bound to the complete ordinary fixed-`q` product-
+  Gaussian Pauli Hamiltonian ensemble; a finite target family costs exactly its cardinality.
+  No determinant, minimum spectral gap, omitted fibre sheet, or unbounded inactive-drift premise
+  remains.  This is a genuine fixed-Pauli quenched/full-ensemble advance, not Brown closure:
+  arbitrary shallow-circuit targets are not Pauli targets, and the current `n-1` exponent has not
+  been proved to dominate the complete circuit-net entropy or coupled across the Brown time grid.
+  Exact next core is an entropy-surviving circuit-target extraction/observer theorem: every
+  approximate polynomial circuit tube must force one member of a controlled family of Pauli
+  commutator tubes (or a stronger shared active incidence family) whose log-cardinality is below
+  the available stable-rank exponent.  Formal modules:
+  `HTGeometry.GaussianStableRankLowerTail`,
+  `HTGeometry.GaussianCovarianceStableRankLowerTail`,
+  `HTGeometry.GaussianAffineStableRankLowerTail`,
+  `HTGeometry.GaussianStableRankTraceCapCompiler`,
+  `HTGeometry.TwoLocalPauliAnticommutingFan`,
+  `HTGeometry.PauliCommutatorActiveFanLowerTail`,
+  `HTGeometry.PauliCommutatorFullEnsembleLowerTail`, and
+  `HTGeometry.PauliCommutatorFullEnsembleFiniteUnion`.
+- 2026-08-22 -- Strengthened the fixed-target Pauli frontier from an `n-1` fan to the full
+  support-resolved incidence polynomial.  For a nonzero Pauli target of weight `w`, an explicit
+  injected one/two-local family has cardinality `2w(3n-2w)`: two one-site odd axes per occupied
+  site, four odd/even directions per occupied pair, and six directions per occupied--empty pair.
+  Lean propagates this lower bound through total incidence mass, exact commutator covariance trace,
+  genuine Gram stable ratio, finite-target Gaussian anti-concentration, and same-draw fixed-time
+  return tubes.  Hence every nonprojective unitary target pays at least `(6n-4)` times normalized
+  trace deficit; extensively supported Pauli mass pays a quadratic charge.  Targeted Lean builds and
+  axiom audit pass with only standard foundational axioms.  Formal modules:
+  `HTGeometry.TwoLocalPauliEnhancedActiveIncidence`,
+  `HTGeometry.PauliUniformAnticommutingIncidenceMass`,
+  `HTGeometry.PauliCommutatorDirectionEnergyFloor`,
+  `HTGeometry.PauliCommutatorGramStableRankFloor`, and
+  `HTGeometry.PauliCommutatorReturnTubeLaw`.
+
+  `[PAPER-PROVED]` The injected polynomial is the exact incidence count, not only a lower bound.
+  Every anticommuting label of weight at most two has exactly one locally odd occupied target site.
+  If it has no second site it is one of the two one-site fan labels.  If its second site is occupied,
+  odd parity forces the second axis to match the target and gives one ordered active-pair label.  If
+  its second site is empty, its three possible axes split into the existing matching-axis label and
+  the two extra boundary labels.  These cases are disjoint and exhaust the filter, proving cardinal
+  equality `card = 2w(3n-2w)`.  Exact equality is the next Lean obligation because it establishes
+  sharpness: weight-one Pauli circuit targets attain `6n-4`, so any raw finite-union argument based
+  only on this incidence invariant has at most a linear worst-target exponent and cannot by itself
+  survive a superlinear circuit-net entropy.  Brown closure must therefore use replica/occupied-image
+  structure, not another fixed-target incidence lower bound.
+- 2026-08-22 -- `[PAPER-PROVED]` Exact incidence reveals entropy--incidence compensation for the
+  complete Pauli circuit dictionary.  The crude union `|C| exp(-c(6n-4))` is not the right sum:
+  weight-`w` Pauli targets occur with multiplicity `3^w binom(n,w)` and pay exact exponent
+  `c 2w(3n-2w)`.  Since `2w(3n-2w) >= 2wn`, their complete weighted union is bounded by
+  
+  `sum_{w=1}^n 3^w binom(n,w) exp(-2cnw) = (1+3 exp(-2cn))^n-1`.
+  
+  This decays on the fixed-error schedule despite the dictionary containing every one of the
+  `4^n-1` nonidentity Pauli targets.  The proof uses exact Pauli-basis coefficients, the shell count
+  `3^w binom(n,w)`, monotonicity of `exp`, and the binomial theorem.  It is same-draw and holds at
+  every fixed laboratory time after composing the commutator-to-return implication.  This closes
+  the entire discrete Pauli subdictionary, not the full continuous polynomial-depth circuit set.
+  Exact remaining core is an analogous entropy--incidence partition bound for circuit images (or an
+  occupied-image/replica replacement) coupled uniformly across the Brown time schedule.
+- 2026-08-22 -- Formalized exact incidence and its first entropy-surviving same-draw consequence.
+  Lean proves the exact identity
+  `#{Q : wt(Q) <= 2 | QP = -PQ} = 2 wt(P) (3n - 2 wt(P))`, the corresponding
+  exact total incidence and observer-Jacobian covariance-trace identities, and the complete
+  all-Pauli return-tube union bound
+  `(1 + 3 exp(-2 a n))^n - 1`.  This bound tends to zero along every chosen laboratory-time
+  schedule.  A further finite-grid theorem pays exactly grid cardinality, and the exponential
+  incidence reserve absorbs every `n^d`-point grid for every fixed `d`; hence one static draw
+  simultaneously avoids every nonidentity Pauli return tube at every sampled time with probability
+  tending to one.  Modules: `HTGeometry.TwoLocalPauliExactIncidence`,
+  `HTGeometry.PauliIncidenceEntropyCompensation`, and
+  `HTGeometry.PauliPolynomialGridReturnLaw`.  Targeted source checks, targeted module builds, and
+  axiom audit pass; dependencies are only `propext`, `Classical.choice`, and `Quot.sound`.
+  This closes discrete polynomial laboratory-time schedules for the complete Pauli dictionary.
+  It does not close continuous time, polynomial-depth continuous circuit images, first-return to
+  that full circuit set, or same-draw plateau onset.  Next theorem must combine an unconditional
+  Gaussian energy cap with deterministic time interpolation and then replace Pauli shell counting
+  by a circuit-image entropy--incidence/replica partition.

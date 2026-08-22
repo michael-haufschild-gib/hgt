@@ -135,4 +135,86 @@ theorem rationalFunction_ideal_isNilpotent_iff_forall_place (F : Type u)
     exact (ideal_isNilpotent_iff_tensorProduct
       (L := rationalFunctionCompletion F .infinite) I).mpr (h .infinite)
 
+/-- A fixed ideal-power relation in a number-field algebra can be certified at one completion. -/
+theorem numberField_ideal_pow_eq_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A]
+    (I J : Ideal A) (n : ℕ) :
+    I ^ n = J ↔ ∃ p : NumberFieldPlace K,
+      I.map (algebraMap A (completion K p ⊗[K] A)) ^ n =
+        J.map (algebraMap A (completion K p ⊗[K] A)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (ideal_pow_eq_iff_tensorProduct (L := completion K (witnessPlace K)) I J n).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_pow_eq_iff_tensorProduct (L := completion K p) I J n).mpr hp
+
+/-- A fixed ideal-power relation in an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_ideal_pow_eq_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A]
+    (I J : Ideal A) (n : ℕ) :
+    I ^ n = J ↔ ∃ p : RationalFunctionPlace F,
+      I.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A)) ^ n =
+        J.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (ideal_pow_eq_iff_tensorProduct
+        (L := rationalFunctionCompletion F .infinite) I J n).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_pow_eq_iff_tensorProduct (L := rationalFunctionCompletion F p) I J n).mpr hp
+
+/-- Idempotence of an ideal in a number-field algebra can be certified at one completion. -/
+theorem numberField_ideal_isIdempotentElem_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] (I : Ideal A) :
+    IsIdempotentElem I ↔ ∃ p : NumberFieldPlace K,
+      IsIdempotentElem (I.map (algebraMap A (completion K p ⊗[K] A))) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (ideal_isIdempotentElem_iff_tensorProduct
+        (L := completion K (witnessPlace K)) I).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_isIdempotentElem_iff_tensorProduct (L := completion K p) I).mpr hp
+
+/-- Idempotence of an ideal in an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_ideal_isIdempotentElem_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] (I : Ideal A) :
+    IsIdempotentElem I ↔ ∃ p : RationalFunctionPlace F,
+      IsIdempotentElem (I.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A))) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (ideal_isIdempotentElem_iff_tensorProduct
+        (L := rationalFunctionCompletion F .infinite) I).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_isIdempotentElem_iff_tensorProduct
+      (L := rationalFunctionCompletion F p) I).mpr hp
+
+/-- Nilpotence of an ideal in a number-field algebra can be certified at one completion. -/
+theorem numberField_ideal_isNilpotent_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] (I : Ideal A) :
+    IsNilpotent I ↔ ∃ p : NumberFieldPlace K,
+      IsNilpotent (I.map (algebraMap A (completion K p ⊗[K] A))) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (ideal_isNilpotent_iff_tensorProduct (L := completion K (witnessPlace K)) I).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_isNilpotent_iff_tensorProduct (L := completion K p) I).mpr hp
+
+/-- Nilpotence of an ideal in an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_ideal_isNilpotent_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] (I : Ideal A) :
+    IsNilpotent I ↔ ∃ p : RationalFunctionPlace F,
+      IsNilpotent (I.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A))) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (ideal_isNilpotent_iff_tensorProduct
+        (L := rationalFunctionCompletion F .infinite) I).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_isNilpotent_iff_tensorProduct
+      (L := rationalFunctionCompletion F p) I).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

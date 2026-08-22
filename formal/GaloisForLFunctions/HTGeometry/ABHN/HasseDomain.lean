@@ -47,4 +47,26 @@ theorem rationalFunction_isDomain_of_forall_place (F : Type u)
   exact isDomain_of_tensorProduct_isDomain (K := RatFunc F)
     (L := rationalFunctionCompletion F .infinite)
 
+/-- If a scalar extension at one number-field completion is a domain, then the global algebra is
+a domain. -/
+theorem numberField_isDomain_of_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A]
+    (h : ∃ p : NumberFieldPlace K, IsDomain (completion K p ⊗[K] A)) :
+    IsDomain A := by
+  obtain ⟨p, hp⟩ := h
+  letI : IsDomain (completion K p ⊗[K] A) := hp
+  exact isDomain_of_tensorProduct_isDomain (K := K) (L := completion K p)
+
+/-- If a scalar extension at one `F(t)`-completion is a domain, then the global algebra is a
+domain. -/
+theorem rationalFunction_isDomain_of_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A]
+    (h : ∃ p : RationalFunctionPlace F,
+      IsDomain (rationalFunctionCompletion F p ⊗[RatFunc F] A)) :
+    IsDomain A := by
+  obtain ⟨p, hp⟩ := h
+  letI : IsDomain (rationalFunctionCompletion F p ⊗[RatFunc F] A) := hp
+  exact isDomain_of_tensorProduct_isDomain (K := RatFunc F)
+    (L := rationalFunctionCompletion F p)
+
 end GaloisForLFunctions.HTGeometry.ABHN

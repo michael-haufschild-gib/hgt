@@ -1,0 +1,111 @@
+import GaloisForLFunctions.HTGeometry.DennisSteinFieldSymbolGeneration
+import GaloisForLFunctions.HTGeometry.DennisSteinFirstIndexIndependent
+
+/-!
+# Exact transport of Steinberg torus indices
+
+This is the missing local algebra in Milnor, Lemma 9.10. The triangle relation is exact in the
+presented Steinberg group:
+
+```text
+h_jk(u) = h_ik(u) h_ij(u)⁻¹.
+```
+
+Consequently opposite torus orientations cancel exactly. The other orientation convention used by
+the elementary-matrix image differs only by a single Steinberg symbol. These identities turn the
+later Weyl-to-torus reduction into a finite index-elimination problem, rather than an appeal to
+matrix-level equality modulo `K₂`.
+-/
+
+noncomputable section
+
+namespace GaloisForLFunctions.HTGeometry
+
+variable {R : Type*} [CommRing R] {n : Type*} [DecidableEq n] [Fintype n]
+
+omit [DecidableEq n] [Fintype n] in
+/-- **Milnor 9.10, triangle identity.** A torus at the edge `(j,k)` is the exact quotient of the
+two tori based at `i`. -/
+theorem steinbergTorus_triangle_exact {i j k : n} (hij : i ≠ j) (hjk : j ≠ k)
+    (hik : i ≠ k) (u : Rˣ) :
+    steinbergTorus hjk u = steinbergTorus hik u * (steinbergTorus hij u)⁻¹ := by
+  have hfirst : steinbergTorus hik u * steinbergWeyl hjk 1 * (steinbergTorus hik u)⁻¹
+      = steinbergWeyl hjk u := by
+    rw [steinbergWeyl]
+    calc steinbergTorus hik u
+          * (steinbergX hjk (1 : R) * steinbergX (Ne.symm hjk) (-1 : R)
+            * steinbergX hjk (1 : R))
+          * (steinbergTorus hik u)⁻¹
+        = (steinbergTorus hik u * steinbergX hjk (1 : R) * (steinbergTorus hik u)⁻¹)
+          * (steinbergTorus hik u * steinbergX (Ne.symm hjk) (-1 : R)
+            * (steinbergTorus hik u)⁻¹)
+          * (steinbergTorus hik u * steinbergX hjk (1 : R) * (steinbergTorus hik u)⁻¹) := by
+            group
+      _ = steinbergX hjk ((u : Rˣ) : R)
+          * steinbergX (Ne.symm hjk) (-(((u⁻¹ : Rˣ)) : R))
+          * steinbergX hjk ((u : Rˣ) : R) := by
+          rw [torus_ik_conj_jk hij hjk hik, torus_ik_conj_kj hij hjk hik]
+          simp
+      _ = steinbergWeyl hjk u := by rfl
+  have hneg : steinbergWeyl hjk (-1 : Rˣ) = (steinbergWeyl hjk (1 : Rˣ))⁻¹ := by
+    simpa using steinbergWeyl_neg hjk (1 : Rˣ)
+  have hpos : steinbergWeyl hjk (1 : Rˣ) = (steinbergWeyl hjk (-1 : Rˣ))⁻¹ := by
+    rw [hneg]
+    simp
+  have hconj := steinbergTorus_jk_neg_conj hij hik hjk u
+  have hlast : steinbergWeyl hjk (1 : Rˣ) * (steinbergTorus hik u)⁻¹
+      * steinbergWeyl hjk (-1 : Rˣ) = (steinbergTorus hij u)⁻¹ := by
+    calc steinbergWeyl hjk (1 : Rˣ) * (steinbergTorus hik u)⁻¹
+          * steinbergWeyl hjk (-1 : Rˣ)
+        = (steinbergWeyl hjk (-1 : Rˣ))⁻¹ * (steinbergTorus hik u)⁻¹
+          * steinbergWeyl hjk (-1 : Rˣ) := by rw [hpos]
+      _ = (steinbergWeyl hjk (-1 : Rˣ))⁻¹
+          * (steinbergWeyl hjk (-1 : Rˣ) * steinbergTorus hij u
+            * (steinbergWeyl hjk (-1 : Rˣ))⁻¹)⁻¹
+          * steinbergWeyl hjk (-1 : Rˣ) := by rw [hconj]
+      _ = (steinbergTorus hij u)⁻¹ := by group
+  calc steinbergTorus hjk u
+      = (steinbergTorus hik u * steinbergWeyl hjk (1 : Rˣ)
+          * (steinbergTorus hik u)⁻¹) * steinbergWeyl hjk (-1 : Rˣ) := by
+          rw [hfirst, steinbergTorus]
+      _ = steinbergTorus hik u
+          * (steinbergWeyl hjk (1 : Rˣ) * (steinbergTorus hik u)⁻¹
+            * steinbergWeyl hjk (-1 : Rˣ)) := by group
+      _ = steinbergTorus hik u * (steinbergTorus hij u)⁻¹ := by rw [hlast]
+
+omit [DecidableEq n] [Fintype n] in
+/-- **Milnor 9.10, reverse edge.** Opposite orientations at a fixed unit cancel on the nose. -/
+theorem steinbergTorus_reverse_mul {i j k : n} (hij : i ≠ j) (hjk : j ≠ k)
+    (hik : i ≠ k) (u : Rˣ) :
+    steinbergTorus hjk u * steinbergTorus (Ne.symm hjk) u = 1 := by
+  rw [steinbergTorus_triangle_exact hij hjk hik u,
+    steinbergTorus_triangle_exact (i := i) (j := k) (k := j) hik (Ne.symm hjk) hij u]
+  group
+
+/-- The elementary-matrix orientation convention has no residue beyond Steinberg symbols. -/
+theorem steinbergTorus_swap_mem_symbolSubgroup {i j k : n} (hij : i ≠ j)
+    (hjk : j ≠ k) (hik : i ≠ k) (u : Rˣ) :
+    steinbergTorus (Ne.symm hij) u⁻¹ * (steinbergTorus hij u)⁻¹
+      ∈ steinbergSymbolSubgroup R n := by
+  have hreverse := steinbergTorus_reverse_mul
+    (i := k) (j := j) (k := i) (Ne.symm hjk) (Ne.symm hij) (Ne.symm hik) u⁻¹
+  have horient : steinbergTorus (Ne.symm hij) u⁻¹ = (steinbergTorus hij u⁻¹)⁻¹ := by
+    calc steinbergTorus (Ne.symm hij) u⁻¹
+        = steinbergTorus (Ne.symm hij) u⁻¹ * steinbergTorus hij u⁻¹
+          * (steinbergTorus hij u⁻¹)⁻¹ := by group
+      _ = (steinbergTorus hij u⁻¹)⁻¹ := by rw [hreverse, one_mul]
+  rw [horient]
+  have hsymbol : (steinbergTorus hij u * steinbergTorus hij u⁻¹)⁻¹
+      ∈ steinbergSymbolSubgroup R n := by
+    rw [← steinbergSymbol_inv_left hij u]
+    exact steinbergSymbol_mem_symbolSubgroup hij u⁻¹ u
+  convert hsymbol using 1 ; group
+
+/-- The subgroup generated by Steinberg symbols is contained in the elementary-matrix kernel. -/
+theorem steinbergSymbolSubgroup_le_KTwo :
+    steinbergSymbolSubgroup R n ≤ KTwo R n := by
+  refine (Subgroup.closure_le _).2 ?_
+  rintro x ⟨i, j, hij, u, v, rfl⟩
+  exact steinbergSymbol_mem_KTwo hij u v
+
+end GaloisForLFunctions.HTGeometry

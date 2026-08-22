@@ -96,4 +96,39 @@ theorem rationalFunctionLocalScalarExtensionMap_polynomial_eval₂_eq_zero_iff_f
     exact (scalarExtensionMap_polynomial_eval₂_eq_zero_iff
       (L := rationalFunctionCompletion F .infinite) A p a).mpr (h .infinite)
 
+/-- A polynomial relation for an element of a number-field CSA is detected at one completion. -/
+theorem numberFieldLocalScalarExtensionMap_polynomial_eval₂_eq_zero_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, w} K)
+    (p : Polynomial K) (a : A.carrier) :
+    p.eval₂ (algebraMap K A.carrier) a = 0 ↔ ∃ v : NumberFieldPlace K,
+      (p.map (algebraMap K (completion K v))).eval₂
+        (algebraMap (completion K v) (completion K v ⊗[K] A.carrier))
+          (numberFieldLocalScalarExtensionMap K v A a) = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_polynomial_eval₂_eq_zero_iff
+        (L := completion K (witnessPlace K)) A p a).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (scalarExtensionMap_polynomial_eval₂_eq_zero_iff (L := completion K v) A p a).mpr hv
+
+/-- A polynomial relation for an element of a rational-function-field CSA is detected at one
+finite or infinite completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_polynomial_eval₂_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F))
+    (p : Polynomial (RatFunc F)) (a : A.carrier) :
+    p.eval₂ (algebraMap (RatFunc F) A.carrier) a = 0 ↔ ∃ v : RationalFunctionPlace F,
+      (p.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v))).eval₂
+        (algebraMap (rationalFunctionCompletion F v)
+          (rationalFunctionCompletion F v ⊗[RatFunc F] A.carrier))
+            (rationalFunctionLocalScalarExtensionMap F v A a) = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_polynomial_eval₂_eq_zero_iff
+        (L := rationalFunctionCompletion F .infinite) A p a).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (scalarExtensionMap_polynomial_eval₂_eq_zero_iff
+      (L := rationalFunctionCompletion F v) A p a).mpr hv
+
 end GaloisForLFunctions.HTGeometry.ABHN

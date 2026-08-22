@@ -158,4 +158,88 @@ theorem rationalFunctionMatrix_trace_eq_iff_forall_place
     exact (matrix_trace_eq_iff_map
       (L := rationalFunctionCompletion F .infinite) M c).mpr (h .infinite)
 
+/-- A prescribed characteristic polynomial of a number-field matrix can be certified at one
+completion. -/
+theorem numberFieldMatrix_charpoly_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) (p : Polynomial K) :
+    M.charpoly = p ↔ ∃ v : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K v))).charpoly =
+        p.map (algebraMap K (completion K v)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_charpoly_eq_iff_map (L := completion K (witnessPlace K)) M p).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (matrix_charpoly_eq_iff_map (L := completion K v) M p).mpr hv
+
+/-- A prescribed determinant of a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_det_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) (c : K) :
+    M.det = c ↔ ∃ v : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K v))).det = algebraMap K (completion K v) c := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_det_eq_iff_map (L := completion K (witnessPlace K)) M c).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (matrix_det_eq_iff_map (L := completion K v) M c).mpr hv
+
+/-- A prescribed trace of a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_trace_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n]
+    (M : Matrix n n K) (c : K) :
+    M.trace = c ↔ ∃ v : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K v))).trace = algebraMap K (completion K v) c := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_trace_eq_iff_map (L := completion K (witnessPlace K)) M c).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (matrix_trace_eq_iff_map (L := completion K v) M c).mpr hv
+
+/-- A prescribed characteristic polynomial of an `F(t)`-matrix can be certified at one
+completion. -/
+theorem rationalFunctionMatrix_charpoly_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) (p : Polynomial (RatFunc F)) :
+    M.charpoly = p ↔ ∃ v : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v))).charpoly =
+        p.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_charpoly_eq_iff_map (L := rationalFunctionCompletion F .infinite) M p).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (matrix_charpoly_eq_iff_map (L := rationalFunctionCompletion F v) M p).mpr hv
+
+/-- A prescribed determinant of an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_det_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (M : Matrix n n (RatFunc F)) (c : RatFunc F) :
+    M.det = c ↔ ∃ v : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v))).det =
+        algebraMap (RatFunc F) (rationalFunctionCompletion F v) c := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_det_eq_iff_map (L := rationalFunctionCompletion F .infinite) M c).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (matrix_det_eq_iff_map (L := rationalFunctionCompletion F v) M c).mpr hv
+
+/-- A prescribed trace of an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_trace_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n]
+    (M : Matrix n n (RatFunc F)) (c : RatFunc F) :
+    M.trace = c ↔ ∃ v : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v))).trace =
+        algebraMap (RatFunc F) (rationalFunctionCompletion F v) c := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_trace_eq_iff_map (L := rationalFunctionCompletion F .infinite) M c).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (matrix_trace_eq_iff_map (L := rationalFunctionCompletion F v) M c).mpr hv
+
 end GaloisForLFunctions.HTGeometry.ABHN

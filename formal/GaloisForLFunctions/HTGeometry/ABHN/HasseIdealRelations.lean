@@ -109,4 +109,56 @@ theorem rationalFunction_ideal_map_eq_iff_forall_place (F : Type u)
     exact (ideal_map_eq_iff_tensorProduct
       (L := rationalFunctionCompletion F .infinite) I J).mp (h .infinite)
 
+/-- Ideal containment in a number-field algebra can be certified at one completion. -/
+theorem numberField_ideal_map_le_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] (I J : Ideal A) :
+    I ≤ J ↔ ∃ p : NumberFieldPlace K,
+      I.map (algebraMap A (completion K p ⊗[K] A)) ≤
+        J.map (algebraMap A (completion K p ⊗[K] A)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (ideal_map_le_iff_tensorProduct (L := completion K (witnessPlace K)) I J).mpr h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_map_le_iff_tensorProduct (L := completion K p) I J).mp hp
+
+/-- Equality of ideals in a number-field algebra can be certified at one completion. -/
+theorem numberField_ideal_map_eq_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] (I J : Ideal A) :
+    I = J ↔ ∃ p : NumberFieldPlace K,
+      I.map (algebraMap A (completion K p ⊗[K] A)) =
+        J.map (algebraMap A (completion K p ⊗[K] A)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (ideal_map_eq_iff_tensorProduct (L := completion K (witnessPlace K)) I J).mpr h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_map_eq_iff_tensorProduct (L := completion K p) I J).mp hp
+
+/-- Ideal containment in an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_ideal_map_le_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] (I J : Ideal A) :
+    I ≤ J ↔ ∃ p : RationalFunctionPlace F,
+      I.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A)) ≤
+        J.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (ideal_map_le_iff_tensorProduct (L := rationalFunctionCompletion F .infinite) I J).mpr h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_map_le_iff_tensorProduct (L := rationalFunctionCompletion F p) I J).mp hp
+
+/-- Equality of ideals in an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_ideal_map_eq_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] (I J : Ideal A) :
+    I = J ↔ ∃ p : RationalFunctionPlace F,
+      I.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A)) =
+        J.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (ideal_map_eq_iff_tensorProduct (L := rationalFunctionCompletion F .infinite) I J).mpr h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_map_eq_iff_tensorProduct (L := rationalFunctionCompletion F p) I J).mp hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

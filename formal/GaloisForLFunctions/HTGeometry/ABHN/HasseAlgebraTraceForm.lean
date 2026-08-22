@@ -137,6 +137,71 @@ theorem rationalFunction_algebra_traceForm_nondegenerate_iff_forall_place
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) e).mpr
       (h RationalFunctionPlace.infinite)
 
+/-- A prescribed trace-pairing value over a number field can be certified at one completion. -/
+theorem numberField_algebra_traceForm_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] {B : Type w} [CommRing B] [Algebra K B]
+    [Module.Free K B] [Module.Finite K B] (x y : B) (c : K) :
+    Algebra.traceForm K B x y = c ↔ ∃ p : NumberFieldPlace K,
+      Algebra.traceForm (completion K p) (completion K p ⊗[K] B)
+        (1 ⊗ₜ[K] x) (1 ⊗ₜ[K] y) = algebraMap K (completion K p) c := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_traceForm_eq_iff_baseChange_eq
+        (L := completion K (witnessPlace K)) x y c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_traceForm_eq_iff_baseChange_eq (L := completion K p) x y c).mpr hp
+
+/-- A prescribed trace-pairing value over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_algebra_traceForm_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] {B : Type w} [CommRing B] [Algebra (RatFunc F) B]
+    [Module.Free (RatFunc F) B] [Module.Finite (RatFunc F) B] (x y : B) (c : RatFunc F) :
+    Algebra.traceForm (RatFunc F) B x y = c ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.traceForm (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] B)
+        (1 ⊗ₜ[RatFunc F] x) (1 ⊗ₜ[RatFunc F] y) =
+          algebraMap (RatFunc F) (rationalFunctionCompletion F p) c := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_traceForm_eq_iff_baseChange_eq
+        (L := rationalFunctionCompletion F .infinite) x y c).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_traceForm_eq_iff_baseChange_eq
+      (L := rationalFunctionCompletion F p) x y c).mpr hp
+
+/-- Nondegeneracy of a number-field trace pairing can be certified at one completion. -/
+theorem numberField_algebra_traceForm_nondegenerate_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] {B : Type w} [CommRing B] [Algebra K B]
+    [Module.Free K B] [Module.Finite K B] {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (e : Module.Basis ι K B) :
+    (Algebra.traceForm K B).Nondegenerate ↔ ∃ p : NumberFieldPlace K,
+      (Algebra.traceForm (completion K p) (completion K p ⊗[K] B)).Nondegenerate := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_traceForm_nondegenerate_iff_baseChange
+        (L := completion K (witnessPlace K)) e).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_traceForm_nondegenerate_iff_baseChange (L := completion K p) e).mpr hp
+
+/-- Nondegeneracy of a trace pairing over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_algebra_traceForm_nondegenerate_iff_exists_place
+    (F : Type u) [Field F] [Finite F] {B : Type w} [CommRing B] [Algebra (RatFunc F) B]
+    [Module.Free (RatFunc F) B] [Module.Finite (RatFunc F) B]
+    {ι : Type*} [Fintype ι] [DecidableEq ι] (e : Module.Basis ι (RatFunc F) B) :
+    (Algebra.traceForm (RatFunc F) B).Nondegenerate ↔ ∃ p : RationalFunctionPlace F,
+      (Algebra.traceForm (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] B)).Nondegenerate := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_traceForm_nondegenerate_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) e).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_traceForm_nondegenerate_iff_baseChange
+      (L := rationalFunctionCompletion F p) e).mpr hp
+
 /-- A finite free number-field algebra is reduced if its trace pairing is nondegenerate after
 every completed scalar extension. -/
 theorem numberField_algebra_isReduced_of_forall_place_traceForm_nondegenerate
@@ -161,5 +226,30 @@ theorem rationalFunction_algebra_isReduced_of_forall_place_traceForm_nondegenera
     IsReduced B := by
   exact GaloisForLFunctions.HTGeometry.isReduced_of_traceForm_nondegenerate (K := RatFunc F)
     ((rationalFunction_algebra_traceForm_nondegenerate_iff_forall_place F e).mpr h)
+
+/-- A finite free number-field algebra is reduced if its trace pairing is nondegenerate at one
+completed place. -/
+theorem numberField_algebra_isReduced_of_exists_place_traceForm_nondegenerate
+    (K : Type u) [Field K] [NumberField K] {B : Type w} [CommRing B] [Algebra K B]
+    [Module.Free K B] [Module.Finite K B] {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (e : Module.Basis ι K B)
+    (h : ∃ p : NumberFieldPlace K,
+      (Algebra.traceForm (completion K p) (completion K p ⊗[K] B)).Nondegenerate) :
+    IsReduced B := by
+  exact GaloisForLFunctions.HTGeometry.isReduced_of_traceForm_nondegenerate (K := K)
+    ((numberField_algebra_traceForm_nondegenerate_iff_exists_place K e).mpr h)
+
+/-- A finite free `F(t)`-algebra is reduced if its trace pairing is nondegenerate at one completed
+place. -/
+theorem rationalFunction_algebra_isReduced_of_exists_place_traceForm_nondegenerate
+    (F : Type u) [Field F] [Finite F] {B : Type w} [CommRing B] [Algebra (RatFunc F) B]
+    [Module.Free (RatFunc F) B] [Module.Finite (RatFunc F) B]
+    {ι : Type*} [Fintype ι] [DecidableEq ι] (e : Module.Basis ι (RatFunc F) B)
+    (h : ∃ p : RationalFunctionPlace F,
+      (Algebra.traceForm (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] B)).Nondegenerate) :
+    IsReduced B := by
+  exact GaloisForLFunctions.HTGeometry.isReduced_of_traceForm_nondegenerate (K := RatFunc F)
+    ((rationalFunction_algebra_traceForm_nondegenerate_iff_exists_place F e).mpr h)
 
 end GaloisForLFunctions.HTGeometry.ABHN

@@ -96,4 +96,39 @@ theorem rationalFunction_linearMap_generalizedEigenKernel_finrank_eq_iff_forall_
       F f a n .infinite]
     exact h .infinite
 
+/-- A prescribed generalized-eigenspace dimension over a number field can be certified at one
+completion. -/
+theorem numberField_linearMap_generalizedEigenKernel_finrank_eq_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (f : M →ₗ[K] M) (a : K) (n d : ℕ) :
+    Module.finrank K (LinearMap.ker ((f - a • LinearMap.id) ^ n)) = d ↔
+      ∃ p : NumberFieldPlace K,
+        Module.finrank (completion K p) (LinearMap.ker
+          ((f.baseChange (completion K p) - (algebraMap K (completion K p) a) • LinearMap.id) ^ n)) = d := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberField_linearMap_generalizedEigenKernel_finrank_completion
+        K f a n (witnessPlace K)).trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (numberField_linearMap_generalizedEigenKernel_finrank_completion K f a n p).symm.trans hp
+
+/-- A prescribed generalized-eigenspace dimension over `F(t)` can be certified at one
+completion. -/
+theorem rationalFunction_linearMap_generalizedEigenKernel_finrank_eq_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (f : M →ₗ[RatFunc F] M) (a : RatFunc F) (n d : ℕ) :
+    Module.finrank (RatFunc F) (LinearMap.ker ((f - a • LinearMap.id) ^ n)) = d ↔
+      ∃ p : RationalFunctionPlace F,
+        Module.finrank (rationalFunctionCompletion F p) (LinearMap.ker
+          ((f.baseChange (rationalFunctionCompletion F p) -
+            (algebraMap (RatFunc F) (rationalFunctionCompletion F p) a) • LinearMap.id) ^ n)) = d := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunction_linearMap_generalizedEigenKernel_finrank_completion
+        F f a n .infinite).trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (rationalFunction_linearMap_generalizedEigenKernel_finrank_completion F f a n p).symm.trans hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

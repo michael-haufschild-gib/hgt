@@ -78,4 +78,34 @@ theorem rationalFunctionLocalScalarExtensionMap_mem_baseChange_iff_forall_place
     exact (scalarExtensionMap_mem_baseChange_iff
       (K := RatFunc F) (L := rationalFunctionCompletion F .infinite) A P a).mpr (h .infinite)
 
+/-- A fixed linear constraint on a number-field CSA element can be certified at one completion. -/
+theorem numberFieldLocalScalarExtensionMap_mem_baseChange_iff_exists_place
+    (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, v} K) (P : Submodule K A.carrier) (a : A.carrier) :
+    a ∈ P ↔ ∃ p : NumberFieldPlace K,
+      numberFieldLocalScalarExtensionMap K p A a ∈ P.baseChange (completion K p) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_mem_baseChange_iff
+        (K := K) (L := completion K (witnessPlace K)) A P a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_mem_baseChange_iff (K := K) (L := completion K p) A P a).mpr hp
+
+/-- A fixed linear constraint on an `F(t)`-CSA element can be certified at one completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_mem_baseChange_iff_exists_place
+    (F : Type u) [Field F] [Finite F]
+    (A : CSA.{u, v} (RatFunc F)) (P : Submodule (RatFunc F) A.carrier) (a : A.carrier) :
+    a ∈ P ↔ ∃ p : RationalFunctionPlace F,
+      rationalFunctionLocalScalarExtensionMap F p A a ∈
+        P.baseChange (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_mem_baseChange_iff
+        (K := RatFunc F) (L := rationalFunctionCompletion F .infinite) A P a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_mem_baseChange_iff
+      (K := RatFunc F) (L := rationalFunctionCompletion F p) A P a).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

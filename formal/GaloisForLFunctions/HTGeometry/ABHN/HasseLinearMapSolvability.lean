@@ -66,4 +66,38 @@ theorem rationalFunction_linearMap_exists_preimage_iff_forall_place (F : Type u)
     exact (linearMap_exists_preimage_iff_baseChange
       (L := rationalFunctionCompletion F .infinite) f y).mpr (h .infinite)
 
+/-- A fixed linear equation over a number field is solvable exactly when it is solvable after
+base change to one completion. -/
+theorem numberField_linearMap_exists_preimage_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type v} {N : Type w}
+    [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N]
+    (f : M →ₗ[K] N) (y : N) :
+    (∃ x, f x = y) ↔ ∃ p : NumberFieldPlace K,
+      ∃ z, f.baseChange (completion K p) z = (1 : completion K p) ⊗ₜ[K] y := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_exists_preimage_iff_baseChange
+        (L := completion K (witnessPlace K)) f y).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_exists_preimage_iff_baseChange (L := completion K p) f y).mpr hp
+
+/-- A fixed linear equation over `F(t)` is solvable exactly when it is solvable after base change
+to one completion. -/
+theorem rationalFunction_linearMap_exists_preimage_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type v} {N : Type w}
+    [AddCommGroup M] [Module (RatFunc F) M] [AddCommGroup N] [Module (RatFunc F) N]
+    (f : M →ₗ[RatFunc F] N) (y : N) :
+    (∃ x, f x = y) ↔ ∃ p : RationalFunctionPlace F,
+      ∃ z, f.baseChange (rationalFunctionCompletion F p) z =
+        (1 : rationalFunctionCompletion F p) ⊗ₜ[RatFunc F] y := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_exists_preimage_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) f y).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_exists_preimage_iff_baseChange
+      (L := rationalFunctionCompletion F p) f y).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

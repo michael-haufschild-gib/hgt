@@ -66,4 +66,29 @@ theorem rationalFunction_module_finrank_eq_iff_forall_place (F : Type u) [Field 
     rw [← rationalFunction_module_finrank_completion F .infinite]
     exact h .infinite
 
+/-- A prescribed finrank of a number-field module can be certified at one completion. -/
+theorem numberField_module_finrank_eq_iff_exists_place (K : Type u) [Field K] [NumberField K]
+    {M : Type w} [AddCommGroup M] [Module K M] (n : ℕ) :
+    Module.finrank K M = n ↔ ∃ p : NumberFieldPlace K,
+      Module.finrank (completion K p) (completion K p ⊗[K] M) = n := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberField_module_finrank_completion K (witnessPlace K)).trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (numberField_module_finrank_completion K p).symm.trans hp
+
+/-- A prescribed finrank of an `F(t)`-module can be certified at one completion. -/
+theorem rationalFunction_module_finrank_eq_iff_exists_place (F : Type u) [Field F] [Finite F]
+    {M : Type w} [AddCommGroup M] [Module (RatFunc F) M] (n : ℕ) :
+    Module.finrank (RatFunc F) M = n ↔ ∃ p : RationalFunctionPlace F,
+      Module.finrank (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] M) = n := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunction_module_finrank_completion F .infinite).trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (rationalFunction_module_finrank_completion F p).symm.trans hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

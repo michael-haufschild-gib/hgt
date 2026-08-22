@@ -108,4 +108,68 @@ theorem rationalFunction_linearMap_eigenKernel_ne_bot_iff_forall_place (F : Type
     exact (linearMap_eigenKernel_ne_bot_iff_baseChange
       (L := rationalFunctionCompletion F .infinite) f a).mpr (h .infinite)
 
+/-- A number-field linear map has a nontrivial kernel exactly when one completed scalar
+extension does. -/
+theorem numberField_linearMap_ker_ne_bot_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N] (f : M →ₗ[K] N) :
+    LinearMap.ker f ≠ ⊥ ↔ ∃ p : NumberFieldPlace K,
+      LinearMap.ker (f.baseChange (completion K p)) ≠ ⊥ := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_ker_ne_bot_iff_baseChange (L := completion K (witnessPlace K)) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_ker_ne_bot_iff_baseChange (L := completion K p) f).mpr hp
+
+/-- An `F(t)`-linear map has a nontrivial kernel exactly when one completed scalar extension
+does. -/
+theorem rationalFunction_linearMap_ker_ne_bot_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module (RatFunc F) M] [AddCommGroup N] [Module (RatFunc F) N]
+    (f : M →ₗ[RatFunc F] N) :
+    LinearMap.ker f ≠ ⊥ ↔ ∃ p : RationalFunctionPlace F,
+      LinearMap.ker (f.baseChange (rationalFunctionCompletion F p)) ≠ ⊥ := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_ker_ne_bot_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_ker_ne_bot_iff_baseChange
+      (L := rationalFunctionCompletion F p) f).mpr hp
+
+/-- A specified scalar is an eigenvalue of a number-field endomorphism exactly when it is one at
+one completion. -/
+theorem numberField_linearMap_eigenKernel_ne_bot_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (f : M →ₗ[K] M) (a : K) :
+    LinearMap.ker (f - a • LinearMap.id) ≠ ⊥ ↔ ∃ p : NumberFieldPlace K,
+      LinearMap.ker (f.baseChange (completion K p) - (algebraMap K (completion K p) a) •
+        LinearMap.id) ≠ ⊥ := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_eigenKernel_ne_bot_iff_baseChange
+        (L := completion K (witnessPlace K)) f a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_eigenKernel_ne_bot_iff_baseChange (L := completion K p) f a).mpr hp
+
+/-- A specified scalar is an eigenvalue of an `F(t)`-endomorphism exactly when it is one at one
+completion. -/
+theorem rationalFunction_linearMap_eigenKernel_ne_bot_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (f : M →ₗ[RatFunc F] M) (a : RatFunc F) :
+    LinearMap.ker (f - a • LinearMap.id) ≠ ⊥ ↔ ∃ p : RationalFunctionPlace F,
+      LinearMap.ker (f.baseChange (rationalFunctionCompletion F p) -
+        (algebraMap (RatFunc F) (rationalFunctionCompletion F p) a) • LinearMap.id) ≠ ⊥ := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_eigenKernel_ne_bot_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) f a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_eigenKernel_ne_bot_iff_baseChange
+      (L := rationalFunctionCompletion F p) f a).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

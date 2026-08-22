@@ -52,4 +52,29 @@ theorem rationalFunctionPolynomial_separable_iff_forall_place
       (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) p).mpr
       (h RationalFunctionPlace.infinite)
 
+/-- Separability of a number-field polynomial can be certified at one completion. -/
+theorem numberFieldPolynomial_separable_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (p : Polynomial K) :
+    p.Separable ↔ ∃ v : NumberFieldPlace K,
+      (p.map (algebraMap K (completion K v))).Separable := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (polynomial_separable_iff_map (L := completion K (witnessPlace K)) p).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (polynomial_separable_iff_map (L := completion K v) p).mpr hv
+
+/-- Separability of an `F(t)`-polynomial can be certified at one completion. -/
+theorem rationalFunctionPolynomial_separable_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (p : Polynomial (RatFunc F)) :
+    p.Separable ↔ ∃ v : RationalFunctionPlace F,
+      (p.map (algebraMap (RatFunc F) (rationalFunctionCompletion F v))).Separable := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (polynomial_separable_iff_map
+        (L := rationalFunctionCompletion F .infinite) p).mp h⟩
+  · rintro ⟨v, hv⟩
+    exact (polynomial_separable_iff_map (L := rationalFunctionCompletion F v) p).mpr hv
+
 end GaloisForLFunctions.HTGeometry.ABHN

@@ -141,6 +141,7 @@ theorem re_hsInner_lyapunovSolution_lower {u y : E →L[ℂ] E} (hu : IsStrictly
 
 /-! ### The sharp coercivity bound -/
 
+omit [PartialOrder (E →L[ℂ] E)] [StarOrderedRing (E →L[ℂ] E)] in
 open ContinuousLinearMap in
 /-- `hsNorm` squares back to `hsNormSq`. -/
 lemma hsNorm_sq (T : E →L[ℂ] E) : (hsNorm T) ^ 2 = hsNormSq T :=
@@ -203,7 +204,7 @@ theorem hsNormSq_le_re_hsInner_lyapunovSolution {u y : E →L[ℂ] E} (hu : IsSt
     refine mul_le_mul_of_nonneg_right ?_ (hsNormSq_nonneg A)
     calc ‖(u ^ (-(1/2) : ℝ) : E →L[ℂ] E)‖ ^ 2 * ‖(u⁻¹ʳ : E →L[ℂ] E)‖ ^ 2
         ≤ (Real.sqrt β) ^ 2 * β ^ 2 := by
-          gcongr <;> exact norm_nonneg _
+          gcongr
       _ = β * (β * β) := by rw [sq, hsqβ]; ring
   have hbound2 : hsNormSq ((u⁻¹ʳ * u⁻¹ʳ) * y * u⁻¹ʳ : E →L[ℂ] E)
       ≤ (β * (β * β)) * hsNormSq B := by
@@ -212,7 +213,7 @@ theorem hsNormSq_le_re_hsInner_lyapunovSolution {u y : E →L[ℂ] E} (hu : IsSt
     refine mul_le_mul_of_nonneg_right ?_ (hsNormSq_nonneg B)
     calc ‖(u⁻¹ʳ : E →L[ℂ] E)‖ ^ 2 * ‖(u ^ (-(1/2) : ℝ) : E →L[ℂ] E)‖ ^ 2
         ≤ β ^ 2 * (Real.sqrt β) ^ 2 := by
-          gcongr <;> exact norm_nonneg _
+          gcongr
       _ = β * (β * β) := by rw [sq (Real.sqrt β), hsqβ]; ring
   have hHS1 : IsHilbertSchmidt (u⁻¹ʳ * y * (u⁻¹ʳ * u⁻¹ʳ) : E →L[ℂ] E) :=
     (hy.comp_left _).comp_right _

@@ -60,4 +60,31 @@ theorem rationalFunction_linearMap_isNilpotent_iff_forall_place (F : Type u)
     exact (linearMap_isNilpotent_iff_baseChange
       (L := rationalFunctionCompletion F .infinite) f).mpr (h .infinite)
 
+/-- Nilpotence of a number-field endomorphism can be certified at one completion. -/
+theorem numberField_linearMap_isNilpotent_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (f : M →ₗ[K] M) :
+    IsNilpotent f ↔ ∃ p : NumberFieldPlace K, IsNilpotent (f.baseChange (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_isNilpotent_iff_baseChange (L := completion K (witnessPlace K)) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_isNilpotent_iff_baseChange (L := completion K p) f).mpr hp
+
+/-- Nilpotence of an `F(t)`-endomorphism can be certified at one completion. -/
+theorem rationalFunction_linearMap_isNilpotent_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (f : M →ₗ[RatFunc F] M) :
+    IsNilpotent f ↔ ∃ p : RationalFunctionPlace F,
+      IsNilpotent (f.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_isNilpotent_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_isNilpotent_iff_baseChange
+      (L := rationalFunctionCompletion F p) f).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

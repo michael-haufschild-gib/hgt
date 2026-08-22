@@ -60,4 +60,36 @@ theorem rationalFunctionLinearMap_exact_iff_forall_place (F : Type u)
     exact (linearMap_exact_iff_baseChange_exact
       (L := rationalFunctionCompletion F .infinite) f g).mpr (h .infinite)
 
+/-- Exactness of a number-field linear complex can be certified at one completion. -/
+theorem numberFieldLinearMap_exact_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} {N : Type x} {P : Type y}
+    [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N]
+    [AddCommGroup P] [Module K P] (f : M →ₗ[K] N) (g : N →ₗ[K] P) :
+    Function.Exact f g ↔ ∃ p : NumberFieldPlace K,
+      Function.Exact (f.baseChange (completion K p)) (g.baseChange (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_exact_iff_baseChange_exact (L := completion K (witnessPlace K)) f g).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_exact_iff_baseChange_exact (L := completion K p) f g).mpr hp
+
+/-- Exactness of an `F(t)`-linear complex can be certified at one completion. -/
+theorem rationalFunctionLinearMap_exact_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} {N : Type x} {P : Type y}
+    [AddCommGroup M] [Module (RatFunc F) M] [AddCommGroup N] [Module (RatFunc F) N]
+    [AddCommGroup P] [Module (RatFunc F) P] (f : M →ₗ[RatFunc F] N)
+    (g : N →ₗ[RatFunc F] P) :
+    Function.Exact f g ↔ ∃ p : RationalFunctionPlace F,
+      Function.Exact (f.baseChange (rationalFunctionCompletion F p))
+        (g.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_exact_iff_baseChange_exact
+        (L := rationalFunctionCompletion F .infinite) f g).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_exact_iff_baseChange_exact
+      (L := rationalFunctionCompletion F p) f g).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

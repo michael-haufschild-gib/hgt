@@ -67,4 +67,50 @@ theorem rationalFunctionLocalScalarExtensionMap_mul_eq_iff_forall_place
         map_mul (rationalFunctionLocalScalarExtensionMap F .infinite A) a b
       _ = rationalFunctionLocalScalarExtensionMap F .infinite A c := h .infinite
 
+/-- A specified multiplication equation in a number-field CSA holds exactly when it holds at one
+completion. -/
+theorem numberFieldLocalScalarExtensionMap_mul_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, v} K) (a b c : A.carrier) :
+    a * b = c ↔ ∃ p : NumberFieldPlace K,
+      numberFieldLocalScalarExtensionMap K p A a *
+        numberFieldLocalScalarExtensionMap K p A b =
+          numberFieldLocalScalarExtensionMap K p A c := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberFieldLocalScalarExtensionMap_mul_eq_iff_forall_place K A a b c).mp h
+        (witnessPlace K)⟩
+  · rintro ⟨p, hp⟩
+    apply numberFieldLocalScalarExtensionMap_injective K p A
+    calc
+      numberFieldLocalScalarExtensionMap K p A (a * b) =
+          numberFieldLocalScalarExtensionMap K p A a *
+            numberFieldLocalScalarExtensionMap K p A b :=
+        map_mul (numberFieldLocalScalarExtensionMap K p A) a b
+      _ = numberFieldLocalScalarExtensionMap K p A c := hp
+
+/-- A specified multiplication equation in a rational-function-field CSA holds exactly when it
+holds at one finite or infinite completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_mul_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F]
+    (A : CSA.{u, v} (RatFunc F)) (a b c : A.carrier) :
+    a * b = c ↔ ∃ p : RationalFunctionPlace F,
+      rationalFunctionLocalScalarExtensionMap F p A a *
+        rationalFunctionLocalScalarExtensionMap F p A b =
+          rationalFunctionLocalScalarExtensionMap F p A c := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunctionLocalScalarExtensionMap_mul_eq_iff_forall_place F A a b c).mp h
+        .infinite⟩
+  · rintro ⟨p, hp⟩
+    apply rationalFunctionLocalScalarExtensionMap_injective F p A
+    calc
+      rationalFunctionLocalScalarExtensionMap F p A (a * b) =
+          rationalFunctionLocalScalarExtensionMap F p A a *
+            rationalFunctionLocalScalarExtensionMap F p A b :=
+        map_mul (rationalFunctionLocalScalarExtensionMap F p A) a b
+      _ = rationalFunctionLocalScalarExtensionMap F p A c := hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

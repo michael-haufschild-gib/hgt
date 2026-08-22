@@ -73,6 +73,18 @@ instance finiteSpecialUnitaryBorelSpace
     BorelSpace (Matrix.specialUnitaryGroup ι ℂ) :=
   ⟨rfl⟩
 
+/-- Finite special-unitary matrix groups inherit second countability from
+their finite-dimensional complex matrix ambient space. -/
+noncomputable instance finiteSpecialUnitarySecondCountableTopology
+    (ι : Type*) [Fintype ι] [DecidableEq ι] :
+    SecondCountableTopology (Matrix.specialUnitaryGroup ι ℂ) := by
+  letI : Finite ι := Fintype.finite inferInstance
+  letI : Countable ι := Finite.to_countable
+  letI : SecondCountableTopology (Matrix ι ι ℂ) := by
+    change SecondCountableTopology (ι → ι → ℂ)
+    infer_instance
+  exact Topology.IsInducing.subtypeVal.secondCountableTopology
+
 /-- Haar measure normalized on the entire finite special unitary group. -/
 def finiteSpecialUnitaryHaar
     (ι : Type*) [Fintype ι] [DecidableEq ι] :

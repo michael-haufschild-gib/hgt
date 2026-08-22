@@ -79,4 +79,67 @@ theorem rationalFunctionMvPolynomialSystem_eval_eq_zero_iff_forall_place
     exact (rationalFunctionMvPolynomial_eval_eq_zero_iff_forall_place F (P i) x).mpr
       (fun v => h v i)
 
+/-- A fixed number-field multivariable polynomial equation can be certified at one completion. -/
+theorem numberFieldMvPolynomial_eval_eq_zero_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] {σ : Type w}
+    (p : MvPolynomial σ K) (x : σ → K) :
+    MvPolynomial.eval x p = 0 ↔ ∃ v : NumberFieldPlace K,
+      MvPolynomial.eval (fun i => placeEmbedding K v (x i)) (p.map (placeEmbedding K v)) = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberFieldMvPolynomial_eval_eq_zero_iff_forall_place K p x).mp h (witnessPlace K)⟩
+  · rintro ⟨v, hv⟩
+    apply (placeEmbedding K v).injective
+    simp only [map_zero]
+    rw [MvPolynomial.map_eval]
+    exact hv
+
+/-- A fixed `F(t)`-multivariable polynomial equation can be certified at one completion. -/
+theorem rationalFunctionMvPolynomial_eval_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] {σ : Type w}
+    (p : MvPolynomial σ (RatFunc F)) (x : σ → RatFunc F) :
+    MvPolynomial.eval x p = 0 ↔ ∃ v : RationalFunctionPlace F,
+      MvPolynomial.eval (fun i => rationalFunctionPlaceEmbedding F v (x i))
+        (p.map (rationalFunctionPlaceEmbedding F v)) = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunctionMvPolynomial_eval_eq_zero_iff_forall_place F p x).mp h .infinite⟩
+  · rintro ⟨v, hv⟩
+    apply (rationalFunctionPlaceEmbedding F v).injective
+    simp only [map_zero]
+    rw [MvPolynomial.map_eval]
+    exact hv
+
+/-- A fixed number-field point solves a multivariable polynomial system exactly when it solves
+the system at one completion. -/
+theorem numberFieldMvPolynomialSystem_eval_eq_zero_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] {σ : Type w} {ι : Type*}
+    (P : ι → MvPolynomial σ K) (x : σ → K) :
+    (∀ i, MvPolynomial.eval x (P i) = 0) ↔ ∃ v : NumberFieldPlace K, ∀ i,
+      MvPolynomial.eval (fun j => placeEmbedding K v (x j))
+        (MvPolynomial.map (placeEmbedding K v) (P i)) = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberFieldMvPolynomialSystem_eval_eq_zero_iff_forall_place K P x).mp h (witnessPlace K)⟩
+  · rintro ⟨v, hv⟩ i
+    exact (numberFieldMvPolynomial_eval_eq_zero_iff_exists_place K (P i) x).mpr ⟨v, hv i⟩
+
+/-- A fixed `F(t)`-point solves a multivariable polynomial system exactly when it solves the
+system at one completion. -/
+theorem rationalFunctionMvPolynomialSystem_eval_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] {σ : Type w} {ι : Type*}
+    (P : ι → MvPolynomial σ (RatFunc F)) (x : σ → RatFunc F) :
+    (∀ i, MvPolynomial.eval x (P i) = 0) ↔ ∃ v : RationalFunctionPlace F, ∀ i,
+      MvPolynomial.eval (fun j => rationalFunctionPlaceEmbedding F v (x j))
+        (MvPolynomial.map (rationalFunctionPlaceEmbedding F v) (P i)) = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunctionMvPolynomialSystem_eval_eq_zero_iff_forall_place F P x).mp h .infinite⟩
+  · rintro ⟨v, hv⟩ i
+    exact (rationalFunctionMvPolynomial_eval_eq_zero_iff_exists_place F (P i) x).mpr ⟨v, hv i⟩
+
 end GaloisForLFunctions.HTGeometry.ABHN

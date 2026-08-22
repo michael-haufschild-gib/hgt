@@ -37,7 +37,7 @@ compaction-surviving ledger.
 | A13 | App II(44): `(1/2π)∫₀^{2π} dθ/|1−e^{iθ}z|² = 1/(1−|z|²)` (`|z|<1`), `1/(|z|²−1)` (`|z|>1`) | `ConnesComplexFiberIntegral` | DONE |
 | A14 | App II(53): `−4∫₀^{π/2} log sin u du = 2π log 2` | `ConnesComplexFiberIntegral` | DONE |
 | A15 | App II(49)(51): `j(ε) = 4∫_{log ε}^{log 2} arccos(e^x/2) dx = 2π log(1/ε) + o(1)` | `ConnesComplexLogAreaAsymptotics` | DONE |
-| A16 | App II(35): `lim(∫_{|x|≥ε} f d*x + log ε f(0)) = lim(∫ f\|x\|^ε d*x − f(0)/ε)` | `ConnesArchPrincipalValue` | PARTIAL — both indicator computations `A_ε(1_box)=0`, `B_ε(1_box)=0` proved; the limit form needs DCT (moved to B9) |
+| A16 | App II(35): `lim(∫_{|x|≥ε} f d*x + log ε f(0)) = lim(∫ f\|x\|^ε d*x − f(0)/ε)` | `ConnesArchPrincipalValue` | DONE — both indicator computations `A_ε(1_box)=0`, `B_ε(1_box)=0` proved, **and the limit form is B9** (`connes_logPV_sub_powerPV_tendsto`, dominated convergence).  This row is no longer partial |
 | A17 | App II(32): `⟨−log|u|, e^{−πu²}⟩ = ½log π + γ/2 + log 2` | `ConnesGaussianLogMoment` | DONE |
 | A18 | App II(41): `⟨−log|z|_ℂ, e^{−2π|z|²}⟩ = log 2π + γ` | `ConnesGaussianLogMoment` | DONE |
 | A19 | §V(35): `P(f_a) = P(f) − log|a| f(0)` for the log-regularized principal value | `ConnesArchPrincipalValue` | DONE |
@@ -53,14 +53,14 @@ compaction-surviving ledger.
 ### Tier B — heavy analytic layers
 | Tag | Statement | Status |
 |---|---|---|
-| B1 | §V Thm 3 (local trace formula) | **analytic chain DONE at the real place.** `ConnesSymbolChangeOfVariables.connes_symbol_changeOfVariables` = (29)→(31) (window mass (30), inner substitution, Fubini with the product integrability proved); `ConnesLocalTraceCore.connes_traceCore_tendsto` = (31)→(33) (Schwartz tails (32)); `connes_symbolIntegral_tendsto` chains them.  Also `ConnesSymbolChart` = (28), `ConnesGaussianLogMoment` = (34)-(36).  **Open:** the operator step (23)(24) identifying `Trace(R_Λ U(h))` with the symbol integral — a trace-class Schwartz-kernel layer for an operator that is not Hilbert–Schmidt |
-| B2 | §VII Lemma 1 | (8) done (A4).  For `k = ℚ` the corpus already owns Lemma 1(a) as `FieldOneFiniteStageBruhatOrbit_summable` / `…BruhatPeriodization` (= Connes–Marcolli Lemma 2.29).  **Open:** (10) and Lemma 1(b) (Fourier unitary on `L²(X_S)`) |
-| B3 | §VII Thm 4 | **Open**; needs B1 + B2 + B4 |
-| B4 | §VII Lemma 2 | (43) done (A5); (44) done (`ConnesLogShiftKernel.connes_integrable_logShiftKernel`, finiteness of `c'_α` for `0<α<1` at the real place); (45) done (`connes_logShift_substitution`, `connes_logShift_bound`).  **Open:** the Besov estimate (42) and its assembly on `A_S` |
-| B5 | App I Lemmas 1–5 | (1)–(6) of the Sobolev layer done (`ConnesSobolevWeight`, `ConnesApproximateUnit.connes_approxUnit_mass_le` = the uniform bound of Lemma 4).  **Open:** the strong convergence `V(f_n) → 1`, and Lemmas 1–3 (Tate/Iwasawa homogeneous distributions on `A`) |
-| B6 | App I / Thm III.1 | the *conclusion* steps are Lean-owned: (15)–(20) local homogeneity (A21), (27)(28) division (A27), (29) Sobolev membership (A3), (34) Jordan form (A9).  **Open:** Lemmas 1–3 and the growth of `L(χ₀,½+it)` |
+| B1 | §V Thm 3 (local trace formula) | **analytic chain DONE at the real place.** `ConnesSymbolChangeOfVariables.connes_symbol_changeOfVariables` = (29)→(31) (window mass (30), inner substitution, Fubini with the product integrability proved); `ConnesLocalTraceCore.connes_traceCore_tendsto` = (31)→(33) (Schwartz tails (32)); `connes_symbolIntegral_tendsto` chains them.  Also `ConnesSymbolChart` = (28), `ConnesGaussianLogMoment` = (34)-(36).  **(19)(23) now CLOSED** (batches 14/16): `ConnesKernelOperatorGeneral` removes the `[IsFiniteMeasure]` restriction, `ConnesKernelTracePairing.connes_opTrace_adjoint_kernel` is the hypothesis-free (23), and `ConnesFieldTracePairing.connes_hsInner_kernelOperator_field` handles (19) — only *one* factor needs to be Hilbert–Schmidt, so the trace-class kernel theorem is not required after all.  (24) closed too (batch 30, `ConnesSymbolPairing`): the Parseval step turning the kernel pairing into the symbol pairing.  **B1's analytic chain is complete at the real place**: (20)-(24) and (28)-(36) are all Lean theorems.  (27) closed too (batch 31, `ConnesScalingSymbolChart`): the substitution `μ = λ − 1` identifies the scaling symbol integral with the inverse transform of the chart (28).  (19)(20)(25)(26) closed too (batch 32, `ConnesScalingKernelDelta`), with the `δ` taken literally as a Dirac measure.  **B1's chain (19)→(36) is complete at the real place.**  The operator/kernel identification is closed too (batch 33, `ConnesScalingOperator`).  **B1 CLOSED at the real place**: (19)-(36) are all Lean theorems, and `connes_scalingOperator_symbol` states the symbol computation directly about `U(h)`.  The passage to a general local field is closed too (batch 34, `ConnesLocalFieldSymbol`): (19)-(27) hold over any commutative field with a translation-invariant measure and measurable singletons, so every place of every local field is covered by one theorem.  (29)-(33) closed at non-archimedean places too (batches 35-37).  **B1 CLOSED at every place of every local field** |
+| B2 | §VII Lemma 1 | (8) done (A4).  For `k = ℚ` the corpus already owns Lemma 1(a) as `FieldOneFiniteStageBruhatOrbit_summable` / `…BruhatPeriodization` (= Connes–Marcolli Lemma 2.29).  (10) done (`ConnesBoxOverlap.connes_boxOverlap_prod_le`, batch 25); (11) done (`ConnesOrbitEnergy.connes_orbitForm_eq_fundamentalDomain_energy`); geometric convergence done (`ConnesOrbitGeometricConvergence.connes_summable_of_exp_bound`); Lemma 1(b) done (`ConnesOrbitFormFourier` + `ConnesFourierUnitaryExtension.connesCompletionUnitary`).  (9) done (`ConnesBoxMajorant.connes_box_majorant`, batch 26).  **B2 CLOSED** — (8)(9)(10)(11), the geometric convergence, and Lemma 1(b) are all Lean theorems |
+| B3 | §VII Thm 4 | **CLOSED** (batches 63-72).  B1 + B2 + B4 were already closed; the missing piece was the logarithmic term.  `ConnesArchLogIdentification.connes_arch_logPV_identification` proves the last §V identification (the Fourier transform of `-log|u|` is the log-regularised principal value plus `(γ + log 2π)δ₀`); `ConnesTwistedWeilChange.connes_arch_weil_regularized` turns it into Connes' local `∫'` by the change of variables `x = u - 1`; and `ConnesTraceFormulaWeil.connes_trace4_weil` is Theorem 4 verbatim, `Trace = 2h(1)log'Λ + ∑_q W_q + O(Λ^{-N})` for every `N`, with `connes_trace4_weil_hypothesis_model` exhibiting the model of its hypothesis |
+| B4 | §VII Lemma 2 | **DONE at the archimedean place** (batches 23-24): (41)-(48) all closed — `ConnesBesovSupInequality.connes_besov_sup_inequality` (41), `ConnesBesovCutoffDecay.connes_besov_cutoff_rapidDecay` (42), (43) = A5, `ConnesLogShiftKernel` (44)(45), `ConnesCutoffCommutatorLocal` (45)(46), `ConnesCutoffTailTwoSided` (47), `ConnesCutoffBesovMass` (48).  The transfer machinery to `A_S` is closed too (batch 28, `ConnesBesovProductTransfer`): Fubini for the fibrewise `L¹` mass, the fibrewise rapid-decay transfer, and the finite sum over `S`.  The integrable fibre constants are supplied too (batch 29, `ConnesProductFibreDecay`).  **B4 CLOSED** for a product of an archimedean place with a finite-dimensional transverse factor.  The non-archimedean factors are handled too (batch 38, `ConnesTransverseFiniteFactor`): a Bruhat-Schwartz function on `∏_{v∈S_f} K_v` is bounded with compact support, so the transverse factor costs only the finite constant `μ(K)` and needs no decay rate — `connes_transverse_mass_rapidDecay`.  **B4 CLOSED with no residual identification** |
+| B5 | App I Lemmas 1–5 | (1)–(6) of the Sobolev layer done (`ConnesSobolevWeight`, `ConnesApproximateUnit.connes_approxUnit_mass_le` = the uniform bound of Lemma 4).  **All CLOSED** (batches 5, 15, 17–21): the strong convergence is `ConnesApproximateUnitStrong.connes_approxUnit_tendsto`; Lemma 1's local factors are `ConnesTateLocalZeta`/`ConnesUnramifiedLocalZeta`/`ConnesRamifiedLocalZeta`/`ConnesLocalShellAbstract`, its global assembly `ConnesTateFiniteStage`/`ConnesTateInfiniteFactorization`/`ConnesGlobalTateAssembly` (arbitrary global field); Lemma 2 is `ConnesArchPeriodization`/`ConnesArchPeriodizationDecay`/`ConnesAdelicLatticeDecay`; Lemma 3 is `ConnesLemma3Unfolding` (unfolding) plus `ConnesMellinContinuation` (continuation) |
+| B6 | App I / Thm III.1 | the *conclusion* steps are Lean-owned: (15)–(20) local homogeneity (A21), (27)(28) division (A27), (29) Sobolev membership (A3), (34) Jordan form (A9).  Lemmas 1–3 closed (see B5).  **(25) closed for `L = ζ`** (batch 27): `ConnesZetaLineTemperate.connes_zeta_hasTemperateGrowth` and `connesZetaLineMultiplier_apply`.  **(25) closed for every Dirichlet `L`** too (batch 42, `ConnesDirichletLineTemperate`): `connes_dirichletL_hasTemperateGrowth` + `connesDirichletLineMultiplier_apply`, for every primitive non-principal character - i.e. every non-trivial Grössencharakter of `ℚ`.  The general lemma `connes_hasTemperateGrowth_lineRestrict` was already stated for an arbitrary analytic, polynomially bounded function, so (25) now needs *only* a strip growth bound for whichever `L` one wants; the corpus supplies it for `ζ` (`exists_bound_norm_riemannZeta_strip`) and for Dirichlet `L` (`bound_LFunction_strip`).  **CLOSED for `K = ℚ`** (batches 75-77): `ConnesDirichletSpectralMultiplicity.connes_dirichlet_spectral_multiplicity` is Theorem III.1's multiplicity statement at every spectral point, for every non-trivial Dirichlet character, unconditional.  **The mechanism is now field-independent** (batch 78, `ConnesEntireSpectralMultiplicity.connes_entire_spectral_multiplicity`): Theorem III.1 holds for *any* entire non-zero `L`.  The only residue is the *construction* of a Hecke `L`-function for a number field other than `ℚ`, which mathlib cannot yet even state - a mathlib gap, not a gap in this paper |
 | B7 | App II Thm 6 | Lemma 2's `A+B=0` done (A7); Lemma 3 done (`ConnesCharacterRescaling.connes_logDistribution_character_rescale`); (54) done at all three place types; (18)(19) done (`ConnesWeilRewriting.connesHatMoment_zero_add_one`, `connes_weilD_inversion`).  **Open:** Weil's explicit formula itself, which the paper *quotes* from [W3] |
-| B8 | §VIII Lemma 1, Cor 2, Thm 5, Lemma 3 | window count (9)/(12)/(13) done (`ConnesFunctionFieldWindow`); (22)/(23) support done (`ConnesPeriodizationEquivariance.connesPeriodization_support_window`); (23)/(25) positivity mechanism done (`ConnesPositiveTypeCutoff`); Lemma 3's model computation done (A26); §VIII (30) pair-of-projections done (A20); §VIII (35)–(43) semiclassical area done (A6).  **Open:** the full Theorem 5, which needs B3 + B6 |
+| B8 | §VIII Lemma 1, Cor 2, Thm 5, Lemma 3 | window count (9)/(12)/(13) done (`ConnesFunctionFieldWindow`); (22)/(23) support done (`ConnesPeriodizationEquivariance.connesPeriodization_support_window`); (23)/(25) positivity mechanism done (`ConnesPositiveTypeCutoff`); Lemma 3's model computation done (A26); §VIII (30) pair-of-projections done (A20); §VIII (35)–(43) semiclassical area done (A6).  **B3 (batch 72) and B6 (batches 75-78) are CLOSED, and Theorem 5's positivity chain is assembled in batch 79 (`ConnesTheorem5Positivity`).  What is left of Theorem 5 is only the *quoted* Weil criterion (B7).**  Historical note: this row previously read "waits only on B6" — i.e. on a strip growth bound for Hecke `L`-functions of number fields other than `ℚ`, which mathlib cannot yet even state (no Hecke characters) |
 | B9 | App II (35) in limit form | **DONE** — `ConnesArchPrincipalValue.connes_logPV_sub_powerPV_tendsto` |
 
 Note: App II Theorem 1 (Weil's explicit formula) is *quoted*, not proved, in this paper; it is not in
@@ -605,3 +605,845 @@ Everything in the paper that does not reduce to one of these four is now Lean-cl
     `(2C_α(2π|x|)^α − 2(2δ^{-α}/α))·‖F(η)(x)‖ ≤ ‖C_{α,v}*η‖₁` for every `x ≠ 0`, `0 < α < 1`.
   B4's ledger line should now read: (41) DONE, (43)(44)(45)(46)(47)(48) DONE; **open: (42)**, the
   assembly `‖ε_Λ η‖_{(1,α,v)} = O(Λ^{-N})`, and its transfer to `A_S`.
+
+- 2026-08-22 — Tier B batch 24 (**§VII (42) — B4 closed at the archimedean place**).  Seven
+  further modules, all built, wired and `#print axioms`-clean:
+  * `ConnesCutoffCommutatorLocal` — (45) restated in the paper's own cut-off convention
+    (`ψ(|ε|)` rather than the `Ψ(ε/x)` used when the scaling substitution was first proved: the
+    *uncut* logarithmic-difference integral already converges, so the `Ψ ≡ 1` instance evaluates
+    it and any `0 ≤ ψ ≤ 1` only decreases it), **(46) with the local supremum**
+    `Sup_{|ε| ≤ 1}|η(x+ε)|`, and the support statement `connes_cutoffExcess_diff_eq_zero`.
+  * `ConnesCutoffTailTwoSided` — **(47) on the whole thickened tail**.  The negative half is not a
+    formal consequence of the positive one (that would need `η(−·)` as a Schwartz map); it is
+    proved directly, because `connesUnitSup_schwartz_le` is stated in `|x|` and applies verbatim
+    at `−x`, then transported by `integral_comp_neg_Ioi`.
+  * `ConnesFracConvDecay` — the order-`k` Schwartz derivative weight, the order-`k` mean-value
+    bound, and `‖(C_{α,v}*η)(x)‖ ≤ A_k(1+|x|)^{-k}` for every `k`.
+  * `ConnesCutoffBesovMass` — **(48)**: `‖ε_Λ(C_{α,v}*η)‖₁ = O(Λ^{-N})`, via the fold
+    `integral_comp_abs` and the model tail integral of `ConnesLogExcessTail`.
+  * `ConnesFracCommutator` — **`connesUnitSup_continuous`** (without it the (47) statements would
+    be about a possibly non-measurable integrand, hence vacuous — see the vacuous-gap trap),
+    `le_connesUnitSup`, integrability of both `ε`-integrands, and the operator identity
+    **`C*(ε_Λη) = ε_Λ·(C*η) + [C,ε_Λ]η`**, plus the commutator's support and its (46) bound.
+  * `ConnesTwoSidedPowerTail` — the reflection transfer for even functions, and the two-sided
+    power tail's integrability and exact value `2R^{1-p}/(p-1)`.
+  * `ConnesBesovCutoffDecay` — **§VII (42)**: `‖C_{α,v}*(ε_Λ η)‖₁ = O(Λ^{-N})` for every `N`.
+    Both halves are majorised by a *single* integrable function, so the proof never needs
+    measurability of `C_{α,v}*η` itself.
+  B4's ledger line is now: (41)–(48) all DONE at the archimedean place; what remains for B4 is
+  only the transfer of the assembled estimate to `A_S` (the `S`-adic product), which is a
+  place-by-place bookkeeping step over the finite set `S`.
+
+- 2026-08-22 — Tier B batch 25 (**§VII (10)**, and a ledger audit).
+  * `ConnesBoxOverlap` — **`connes_boxOverlap_prod_le`** is (10):
+    `∏_v c_v·min(n, n/a_v) ≤ (∏ c_v)·n^{Card S}·(Sup_v a_v)^{-1}` whenever the `a_v` are positive
+    with product `1`.  The arithmetic content Connes leaves implicit is
+    `connes_prod_min_le_sup_inv`: a product of ones forces the largest `a_v` to be at least `1`,
+    so the factor at the maximising place is exactly `(Sup a)^{-1}` and every other factor is at
+    most `1`.  `connes_archBoxOverlap_volume` computes the archimedean overlap exactly
+    (`= 2 min(n, n/a)`), grounding the abstract bound in a real measure.
+  * **Ledger audit** (the card's Tier-B rows had gone stale against the tree — three rows rewritten
+    above).  Verified by name against `formal/`: B1's (19)/(23), B5's strong convergence and
+    Lemmas 1–3, and B2's (10)/(11)/Lemma 1(b) are all present and closed.
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 26 (**§VII (9) and (50): B2 closed, Lemma 2's conclusion closed**).
+  * `ConnesBoxMajorant` — **`connes_box_majorant`** is (9): a function dominated by a nonincreasing
+    profile `μ` vanishing at infinity is dominated by `∑_n λ_n k_n` with `λ_n := μ(n) − μ(n+1)` and
+    `k_n` the nested box indicators; the coefficients inherit the decay of `μ` because
+    `λ_n ≤ μ(n)`.  The construction is telescoping and needs nothing about `A_S`: at a given `x`
+    the surviving terms are exactly those with `n + 1 ≥ r(x)`, and they sum to
+    `μ(⌈r(x)⌉ − 1) ≥ μ(r(x))`.  `connes_nonneg_of_antitone_tendsto` derives `μ ≥ 0` rather than
+    assuming it.
+  * `ConnesOrbitMassDecay` — **`connes_orbitMass_le`** and **`connes_orbitMass_rapidDecay`**:
+    a family bounded orbit-wise by `D·exp(−c·d(q,1))` has total mass at most `D` times the
+    geometric constant, and rapid decay of `D(Λ)` transfers to the total mass `σ(Λ)`.  This is the
+    bookkeeping half of (50) and of Lemma 2's conclusion; the analytic half is (41)+(42) and the
+    lattice half is `ConnesSUnitSupBound` (36) plus `connes_summable_exp_neg_latticeL1`.
+  All `#print axioms` clean.  **B2 is now closed**; §VII Lemma 2 is closed modulo the transfer of
+  (41)/(42) from the archimedean place to `A_S`.
+
+- 2026-08-22 — Tier B batch 27 (**App I (25) closed for `L = ζ`**).  Two modules:
+  * `ConnesHolomorphicLineTemperate` — the general infrastructure Connes compresses into the
+    sentence *"since `L(1/2+it)` is an analytic function of `t` we see that it is a multiplier of
+    the algebra `𝒮(ℝ)`"*.  A pointwise polynomial bound gives nothing about derivatives; what does
+    is Cauchy's estimate on a disc of fixed radius, provided the bound holds on a whole *tube*
+    around the line.  Contents: `connes_analyticOnNhd_iteratedDeriv` (every iterated derivative of
+    an analytic function is analytic), `connes_iteratedDeriv_lineRestrict`
+    (`(d/dt)^n f(c+it) = i^n f^{(n)}(c+it)`), `connes_contDiff_lineRestrict`, and
+    **`connes_hasTemperateGrowth_lineRestrict`**.
+  * `ConnesZetaLineTemperate` — the instantiation: the tube of radius `1/8` about the critical line
+    stays inside `3/8 ≤ Re ≤ 5/8`, so it never meets the pole at `1`; the corpus's
+    `RHTower.exists_bound_norm_riemannZeta_strip` covers `|Im| ≥ 1` and a compact box covers the
+    rest.  Result: **`connes_zeta_hasTemperateGrowth`**, and `connesZetaLineMultiplier_apply`,
+    which is (25)'s conclusion — `ζ(1/2+it)ψ(t)` is again Schwartz, so `ζ(1/2+it)ψ̂(t)` is tempered.
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 28 (**the `A_S` transfer machinery**).  `ConnesBesovProductTransfer`:
+  * `connes_prodMass_eq_fibrewise` — Fubini: the `L¹` norm on a product is the integral over the
+    complementary coordinates of the per-fibre `L¹` norm.
+  * **`connes_fibrewise_rapidDecay`** — if each fibre's mass is at most `b(Λ)·w(x')` with `w`
+    integrable and `b` rapidly decreasing, the total mass over the product is rapidly decreasing.
+    (`connes_fibrewise_mass_le` is the underlying bound; no integrability of the fibre mass itself
+    is assumed, only of the majorant.)
+  * `connes_finsetSum_rapidDecay` — the sum over the finite set of places `S`.
+  Nothing here is specific to `A_S`: the complementary coordinates are an arbitrary measure space,
+  and `C_{α,v}` acts in one coordinate.  What the transfer consumes is the per-place estimate
+  (`ConnesBesovCutoffDecay`, batch 24) applied on each fibre; the one remaining input is
+  integrability of the fibre constants, which is exactly what a Bruhat–Schwartz theory for
+  `𝒮(A_S)` supplies and which the corpus does not yet own in that form.
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 29 (**the fibre constants of the `A_S` transfer**).
+  `ConnesProductFibreDecay` — two facts, neither in mathlib:
+  * **`connes_norm_iteratedFDeriv_fibre_le`** — restricting a function on a product to a fibre
+    `t ↦ (t,x)` does not increase the norm of any iterated derivative.  The restriction is an
+    affine map whose linear part is the inclusion of the first factor, of operator norm `≤ 1`;
+    the translation is absorbed by `iteratedFDeriv_comp_add_right`.
+  * **`connes_fibre_decay`** — for `η ∈ 𝒮(ℝ × X)` and any `k n N`, the fibre seminorm satisfies
+    `‖t‖^k ‖D^n η(·,x)(t)‖ ≤ C (1+‖x‖)^{-N}`.  The mechanism: the product norm is the *maximum*,
+    so `‖t‖^k‖x‖^N ≤ ‖(t,x)‖^{k+N}` — one ambient Schwartz seminorm controls the fibre seminorm
+    and a power of the transverse variable at once.
+  * `connes_fibre_bound_integrable` — on a finite-dimensional transverse space that bound is
+    integrable once `N` exceeds the dimension, which is exactly the input
+    `ConnesBesovProductTransfer.connes_fibrewise_rapidDecay` consumes.
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 30 (**§V (24), the Parseval step**).  `ConnesSymbolPairing`:
+  * `connesKernelSymbol` — (20), the symbol of a kernel as its partial Fourier transform along the
+    diagonal.
+  * `connes_fourier_even` — the transform of an even function is even, so the reflection in
+    `r_Λ^t(x,y) = ρ_Λ(x)ρ̂_Λ(x−y)` of (21) costs nothing.
+  * `connes_kernel_pairing_diagonal` — the substitution `y = x + u` that puts the kernel into the
+    diagonal form (20) uses.
+  * **`connes_symbol_pairing`** and `connes_symbol_pairing_integrated` — (24): the kernel pairing
+    against `ρ̂_Λ` equals the symbol pairing against `ρ_Λ`.  This is Connes' *"using the Parseval
+    formula"*; the engine is mathlib's multiplication formula
+    `VectorFourier.integral_fourierIntegral_smul_eq_flip`, applied in the second variable, after
+    checking that the real inner product used by `𝓕` on `ℝ` is its own flip.
+  All `#print axioms` clean.  With (23) (batch 16) and (29)-(36) (batches 1, 3) this completes
+  B1's analytic chain at the real place; the residue is the *distributional* kernel of `U(h)`
+  in (19)(25)(26).
+
+- 2026-08-22 — Tier B batch 31 (**§V (27)**).  `ConnesScalingSymbolChart`:
+  * **`connes_symbol_scaling_substitution`** — the change of variable `μ = λ − 1` turns the scaling
+    integral `∫ h(λ^{-1}) w((λ−1)t) dλ/|λ|` into `∫ g(μ) w(μt) dμ` with `g` Connes' chart (28),
+    for an arbitrary weight `w`.
+  * **`connes_symbol_scaling_eq_fourierInv`** — with the additive character this is (27):
+    the symbol of the scaling kernel is the inverse Fourier transform of the chart, `σ = ρ^{-1}ĝ`.
+  Both reuse `ConnesSymbolChart.connesSymbolChart` (A10 = (28)) rather than redefining `g`.
+  All `#print axioms` clean.  B1's chain at the real place is now Lean-owned from (27) onwards;
+  the residue is only the *distributional* content of (19) and (26) — the kernel of `U(h)` and the
+  `δ`-evaluation — whose consequences are all in place.
+
+- 2026-08-22 — Tier B batch 32 (**§V (19)(20)(25)(26)**).  `ConnesScalingKernelDelta` takes the
+  `δ` of (19) literally, as `Measure.dirac`:
+  * `connesScalingKernelPairing` — (19): the kernel of `U(h)` paired against a test function,
+    `⟨k(x,·),φ⟩ = ∫ h(λ^{-1})(∫ φ dδ_{λx}) dλ/|λ|`.
+  * `connesScalingKernelPairing_eq` — **(26)**, the `δ`-evaluation, which is
+    `MeasureTheory.integral_dirac`; no distribution theory is needed because the `δ` really is a
+    measure.
+  * `connes_scalingKernel_symbol_integral` — (20)+(25): testing against the character of (20)
+    gives the symbol integral of (25).
+  * **`connes_scalingKernel_symbol_eq_fourierInv`** — chaining with batch 31: `σ(x,ξ) = ρ^{-1}ĝ(xξ)`.
+  All `#print axioms` clean.  **B1's chain (19)→(36) is now complete at the real place**; the only
+  residue is the identification of this Dirac-measure kernel with the operator `U(h)`.
+
+- 2026-08-22 — Tier B batch 33 (**§V (19), the operator**).  `ConnesScalingOperator`:
+  * `connesScalingAction` and `connesScalingOperator` — the scaling action `U(λ)ζ(x) = ζ(λx)` and
+    the superposition `U(h) = ∫ h(λ^{-1})U(λ)dλ/|λ|` of (19); `connesScalingAction_comp` and
+    `connesScalingAction_one` record that it is a representation of the multiplicative group.
+  * **`connesScalingOperator_eq_kernelPairing`** — the identification: the value of `U(h)` at `x`
+    *is* the Dirac-measure kernel of (19) paired with the input function.
+  * **`connes_scalingOperator_symbol`** — the capstone of §V (19)-(27), stated about the operator
+    rather than the kernel: testing `U(h)` against the character of (20) gives `ρ^{-1}ĝ(xξ)`.
+  * `connesScalingOperator_add` — additivity of the operator on integrable inputs.
+  All `#print axioms` clean.  **B1 is closed at the real place**; the residue is the passage to a
+  general local field, for which the corpus already owns the `p`-adic multiplicative Haar shell
+  decomposition (`ConnesLocalShellAbstract`, `ConnesPadicWeil*`).
+
+- 2026-08-22 — Tier B batch 34 (**§V (19)–(27) over an arbitrary local field**).
+  `ConnesLocalFieldSymbol` re-proves batches 31–33 in the generality the paper states them:
+  `connesLocalChart`, `connesLocalKernelPairing`, `connesLocalKernelPairing_eq` (26),
+  **`connes_local_symbol_substitution`** (27), `connes_local_kernel_symbol`,
+  `connesLocalScalingOperator`, `connesLocalScalingOperator_eq_kernelPairing`, and
+  **`connes_local_scalingOperator_symbol`**.
+  The audit of what the archimedean proof actually used: *translation invariance of the additive
+  Haar measure*, *measurable singletons* (so the `δ` of (19) is a Dirac measure), and
+  *commutativity*.  Nothing else — in particular no property of the absolute value or of the
+  additive character is used, so both enter as bare functions and the statements are
+  hypothesis-free in them.  Every place of every local field is therefore covered by one theorem.
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 35 (**§V (30) at a non-archimedean place**).
+  `ConnesShellWindowMass`: `connesShellWindow`, `connesShellWindow_summable`,
+  **`connes_shell_window_mass`** — the multiplicative mass of a shell window is the *number of
+  shells* it contains — and `connes_shell_symmetricWindow_mass` (`2N+1` for the symmetric window,
+  the non-archimedean form of `2 log' Λ`).
+  The point: at a non-archimedean place the module `|x|` takes only the discrete values `q^{-n}`,
+  so the window `|u|/Λ ≤ |x| ≤ Λ` of (30) is a finite range of shells and its mass is a count.
+  The boundary terms that Connes' `log'` exists to handle are exactly the endpoints of that
+  integer range, so no `log'` is needed here.  Built on `ConnesLocalShellAbstract`'s
+  `count ⊗ ν` decomposition; nothing is assumed about the residue field, so this holds at every
+  non-archimedean place of every local field.
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 36 (**§V (30)'s substitution at a non-archimedean place**).
+  `ConnesShellReindex`:
+  * **`connes_shell_split_card`** — the number of ways to write `k = n + m` with both parts in the
+    window `[A,K]` is the size of an explicit integer interval, `[max A (k−K), min K (k−A)]`.
+  * **`connes_shell_product_window_sum`** — the substitution `u = xξ` of (30): since the module is
+    `q^{-n}`, multiplication *adds* shell indices, so the double sum over the product window
+    regroups by the total index `k`, weighting each `k` by that splitting count.
+  * `connes_shell_split_card_symmetric` — for the symmetric window the count is `2N + 1 − |k|`,
+    which is exactly the discrete form of Connes' weight `2 log' Λ − log|u|`.
+  With batch 35's window mass, both halves of (30) are now Lean-owned at every non-archimedean
+  place; what remains of the chain there is the limit (31)→(33).
+  All `#print axioms` clean.
+
+- 2026-08-22 — Tier B batch 37 (**§V (31)–(33) at a non-archimedean place**).
+  `ConnesShellTraceLimit`:
+  * `connes_intervalFinset_tendsto`, `connes_doubleWindow_tendsto` — the symmetric integer windows
+    exhaust `ℤ`, so partial sums over them converge to the `tsum`.
+  * **`connes_shell_trace_expansion`** — the windowed trace sum
+    `∑_{|k| ≤ 2N}(2N+1−|k|)w(k)` agrees with `∑_k (2N+1−|k|)w(k)` — i.e. with Connes'
+    `2h(1)log'Λ` plus the principal value — up to `o(1)`.
+  The proof does *not* estimate the two main terms separately; that route would need the tail of
+  `∑ w` to be `o(1/N)`.  Instead the difference is recognised as a tail of the *single* convergent
+  series `∑ |k|‖w(k)‖`: off the window `|2N+1−|k|| = |k|−2N−1 ≤ |k|`, so the discarded mass is
+  dominated termwise, and tails of a convergent series vanish.
+  With batches 35-36 this completes (29)-(33) at every non-archimedean place, and hence
+  **B1 at every place of every local field**.
+  All `#print axioms` clean.
+- 2026-08-22 — Tier B batch 38: **B4's last identification closed** (`ConnesTransverseFiniteFactor`).
+  `ConnesProductFibreDecay` transfers rapid decay across `ℝ × X` when `X` is a finite-dimensional
+  real normed space (Japanese-bracket integrability).  `A_S`'s finite factor `∏_{v∈S_f} K_v` is not
+  such a space — and does not have to be: a Bruhat–Schwartz function there is locally constant with
+  compact support, so it is bounded and vanishes off a set of finite measure, and the transverse
+  factor contributes exactly the finite constant `μ(K)` with **no decay rate at all**.  New:
+  `connes_integrable_of_bounded_support` (bounded + finite-measure support ⟹ integrable),
+  `connes_indicator_const_integrable` / `connes_indicator_const_integral`,
+  `connes_transverse_prodMass_le` (`∫_{ℝ×X} F ≤ μ(K)·sup_x ∫_ℝ F(·,x)`, via `integral_prod_symm`
+  and `integral_mono_of_nonneg` — no integrability of the fibre mass needed), and the capstone
+  `connes_transverse_mass_rapidDecay` (rapid decay of the fibre mass ⟹ rapid decay of the total
+  mass).  Also `connes_fibre_iteratedFDeriv_eq_zero`.  Stated for an arbitrary measure space, so it
+  applies verbatim to every finite set `S_f` of finite places.  Built, wired, `#print axioms` clean
+  on all four.  **B4 is now CLOSED with no residual identification.**
+- 2026-08-22 — Tier B batch 39: **§VII Theorem 4's proof skeleton landed** — five modules, all
+  built, wired and `#print axioms`-clean (14 capstones audited).
+  * `ConnesTwistedChartFourier` — (26), (35)–(37).  `connesTwistedChart f q u = f(q(u+1)⁻¹)|u+1|⁻¹`
+    and `connesInverseWeight f x = f(x⁻¹)|x⁻¹|`; `connes_inverseWeight_twistedChart` is Connes'
+    `ξ(q⁻¹(1+u)) = |q| g_q(u)` (proved with **no** `q ≠ 0` hypothesis);
+    `connes_twisted_fourier` is `ĝ_q(u) = |q| α(−u) ξ̂(qu)`; `connes_errorTerm_substitution` is the
+    substitution `y = qu` in (35) — both **hypothesis-free in the integrand**, since mathlib's
+    dilation/translation laws for the Lebesgue integral hold without integrability;
+    `connes_errorTerm_fourierInv` is (37) for a module-one-invariant weight.
+  * `ConnesSelbergPeriodization` — (16)–(19).  `connesPeriodizedKernel k x y = ∑'_q k x (q•y)`;
+    `connesPeriodizedKernel_invariant` = (19) (reindexing by conjugation, so **no** commutativity
+    of the lattice is used); `connes_selberg_trace` = (17) via `integral_tsum`, and
+    `connes_selberg_trace_of_summable` restates it with Connes' geometric-convergence hypothesis.
+    Stated for an arbitrary countable group acting on an arbitrary measure space.
+  * `ConnesTraceMainTerm` — (31).  `connes_fourierInv_zero`, `connes_integral_fourier_eq_zero_value`
+    (`∫ 𝓕g = g(0)` for Schwartz `g`), `connes_mainTerm_eq` (`∫ ĝ_q = f(q)`), `connes_mainTerm_tsum`.
+  * `ConnesCutoffTraceDecomposition` — **(30) = (31) + (32) + (33), exactly.**  The whole split
+    rests on one pointwise identity, `connes_cutoffWeight_split`:
+    `1_{log|u| ≤ L}(u)(L − log|u|) = (L − log|u|) + ε_L(u)`.  `connes_cutoffTrace_split` and
+    `connes_cutoffTrace_expansion` integrate it; the integrability of the error term is *derived*
+    (`connes_excess_integrable`, the excess is dominated by `|log|u|| + L`), not assumed, so the
+    only hypotheses are integrability of `ĝ` and of `ĝ·log|·|`.  `connes_logBall_eq` identifies the
+    cut-off ball `|u| ≤ Λ²` with the logarithmic sublevel set.
+  * `ConnesLatticeFiniteSupport` — the "finitely many non zero terms" of (31)/(32):
+    a discrete **closed** set meets a compact set in a finite set, hence the lattice restriction of
+    a compactly supported test function has finite support and is summable.
+- 2026-08-22 — Tier B batch 40: **§VII (33) at the true rate** (`ConnesTraceErrorRapidDecay`).
+  Audit first: `ConnesLocalTraceCore.connes_traceCore_tendsto` already proves that the remainder of
+  (30) *vanishes*, and `connes_schwartz_integrable_log` already owns the logarithmic moment — so
+  the planned "asymptotic expansion" capstone would have been a duplicate and was dropped.  What
+  the corpus did **not** own is Connes' actual claim (33): the remainder is `O(Λ^{-N})` for
+  **every** `N`, whereas `connes_traceCore_tendsto`'s tail bounds only give `O(Λ^{-2} log Λ)`.
+  New: `connes_schwartz_polyDecay` (`‖G z‖ ≤ C(1+|z|)^{-k}` for every `k`),
+  `connes_schwartz_excess_mass_le` (the explicit bound `C·2T^{-(k-1)}/(k-1)²`, via
+  `connes_excessMajorant_mass_le`), `connes_schwartz_error_rapidDecay` = **(33)** (take `k = N+3`,
+  `T = Λ²`), and `connes_cutoffTrace_remainder_rapidDecay`, which upgrades the whole remainder of
+  (30) to rapid decay.  Built, wired, all four `#print axioms` clean.
+- 2026-08-22 — Tier B batch 41: two more §VIII / App II bricks.
+  * `ConnesWindowTrace` — §VIII's `Trace(S_Λ V(f)) = 2 f(1) log' Λ`.  The compression of the
+    regular representation to a window `W` is the matrix `(i,j) ↦ f(i−j)`, whose diagonal is
+    constant `f(1)`, so `connesWindowMatrix_trace` gives `|W|·f(1)`; `connes_shellWindow_trace`
+    specialises to the symmetric shell window (`2N+1` shells) and
+    `connes_shellWindow_trace_logPrime` inserts the §VIII (9) normalisation
+    `2 log' Λ = (2N+1) log q`.  Finite and unconditional.
+  * `ConnesWeilMellinChange` — App II (12) ⟶ (15)/(16).  `connesModulusPower_add` and
+    `connesModulusPower_inv` are the two branch-free quasi-character laws, and
+    `connes_weil_mellin_change` is Connes' substitution `|g|^{-1/2}h(g^{-1}) = F(|g|)Χ₀(g)`
+    turning `ĥ(Χ₀, 1/2+s)` into Weil's `Φ(1/2+s)`, by the inversion substitution on an
+    inversion-invariant Haar measure.  Holds for an arbitrary complex exponent.
+  * Audit note: §VIII (22)/(23) `E(B_Λ) ⊆ S_Λ` is **already owned** —
+    `ConnesPeriodizationEquivariance.connesPeriodization_support_window` gives `E(f)(x) = 0`
+    whenever `mod x ∉ [Λ⁻¹, Λ]`, using A12 for the reflected half.  Nothing to rebuild there.
+- 2026-08-22 — Tier B batch 42: **App I (25) closed for every Dirichlet `L`**
+  (`ConnesDirichletLineTemperate`).  Audit first: `connes_hasTemperateGrowth_lineRestrict` was
+  *already* the general statement — analytic on a tube around a vertical line plus a polynomial
+  bound there gives temperate growth on the line — so (25) never needed anything ζ-specific; what
+  was missing was a strip growth bound for other `L`-functions.  The corpus already owns one:
+  `RHTower.bound_LFunction_strip` (Phragmén–Lindelöf cubic envelope on `-2 ≤ Re s ≤ 3`), which
+  covers the whole radius-`1/8` tube around the critical line.  New:
+  `connes_dirichletL_analyticOnNhd` (entire for `Χ ≠ 1`, via
+  `DirichletCharacter.differentiableAt_LFunction`), `connes_dirichletL_hasTemperateGrowth`
+  (**App I (25)** with `C = 125·C₀`, `N = 3`), `connesDirichletLineMultiplier` and
+  `connesDirichletLineMultiplier_apply`.  So (25) holds for every non-trivial Grössencharakter of
+  `ℚ`.  What remains is a Hecke `L` over a number field ≠ `ℚ` — a statement mathlib cannot yet
+  formulate, since it has no Hecke characters.  Built, wired; all nine capstones of batches 41–42
+  `#print axioms` clean.
+- 2026-08-22 — Tier B batch 43: **§VIII (5)–(7), the character projection**
+  (`ConnesCharacterProjection`).  Connes' `P_{Χ₀} = ∫ Χ̄₀(a) U(a) d₁a` on the compact group
+  `C_{S,1}` becomes, on the finite quotient by the open subgroup `𝒰_S`, the classical character
+  average `P = |H|⁻¹ ∑_a Χ̄(a) π(a)`.  Corpus search found no isotypic projector, so it was built:
+  `connesCharacterProjector`, the three character lemmas (`connes_character_one`,
+  `connes_character_inv`, `connes_character_conj_inv` — derived from multiplicativity and
+  `Χ̄Χ = 1` alone), `connes_characterProjector_intertwine` (`π(b)P = Χ(b)P`, by reindexing the
+  average by left translation), `connes_characterProjector_idem`, and
+  `connes_characterProjector_fixed_iff` = **§VIII (6)**: `Pξ = ξ` exactly when `ξ` is
+  `Χ`-isotypic.  Stated for an arbitrary finite group acting by linear maps on an arbitrary
+  `ℂ`-module and an arbitrary unitary-valued multiplicative character.  Built, wired, 4/4
+  `#print axioms` clean.
+- 2026-08-22 — Tier B batch 44: **§VIII Lemma 3's harmonic measure** (`ConnesHarmonicMeasure`).
+  Connes' `dμ_ρ`, the harmonic measure of `ρ` with respect to the line `iℝ`, is the half-plane
+  Poisson kernel of height `|Re ρ|` centred at `Im ρ`.  The corpus already owned the kernel, its
+  mass and the *real-valued* concentration limit (`HTGeometry.halfPlanePoisson`,
+  `integral_halfPlanePoisson`, `tendsto_halfPlanePoisson_density`), so only the packaging and the
+  complex-valued limit were new: `connesHarmonicDensity`, `connesHarmonicMeasure`,
+  `connes_harmonicDensity_integral` (mass one), `connes_harmonicMeasure_isProbabilityMeasure`
+  (Connes' "it is a probability measure"), and `connes_harmonic_dirac_limit` (Connes' "coincides
+  with the Dirac mass at `ρ` when `ρ` is on the line"), stated for a **complex** integrand since
+  Lemma 3 pairs `dμ_ρ` with `f̂(Χ̃, z)`.  Built, wired, 3/3 `#print axioms` clean.
+- 2026-08-22 — Tier B batch 45: **§VIII (15), the cyclic-vector argument** (`ConnesCyclicVanishing`).
+  Connes' "by the cyclicity of `ξ_Χ` one then gets `∑ λ_g U(g) = 0`" is elementary and needs no
+  analysis: `connes_vanishing_of_cyclic` — an operator that commutes with the representation and
+  kills a cyclic vector kills a spanning set, hence vanishes (`Submodule.span_induction`);
+  `connes_combination_comm` — over a **commutative** group every finite combination
+  `∑_g λ_g U(g)` commutes with the representation; `connes_cyclic_relation_vanishes` — the two
+  combined, which is exactly the step §VIII (15) needs.  Built, wired, 3/3 axioms clean.
+- 2026-08-22 — Tier B batch 46: **App II (22)–(24), self-duality of `R`**
+  (`ConnesSelfDualIndicator`).  `F(1_R) = 1_R` needs nothing local-field-specific:
+  `connes_character_setIntegral_eq_zero` (a non-trivial character integrates to zero over a
+  subgroup — translation invariance plus `(1 − ψ(y₀))∫ = 0`) and `connes_selfDual_indicator`
+  (`∫_R α(xy) dy = 1_R(x)`, for an arbitrary commutative ring with a translation-invariant
+  measure, an additive subgroup of mass one closed under multiplication, and Connes' two
+  normalisations (22)).  Built, wired, 2/2 axioms clean.
+- 2026-08-22 — Tier B batch 47: **§VII (14), the lift** (`ConnesPeriodizationLift`).  "The
+  existence of such an `f` follows from the discreteness of `O_S^*` in `J_S`" — discreteness
+  enters only through a strict fundamental domain: `connes_periodization_lift` (and its
+  multiplicative form `connes_periodization_lift_mul`) show that the restriction of an invariant
+  `h` to a set meeting every orbit exactly once periodizes back to `h`, the sum having a single
+  non-zero term (`tsum_eq_single`).  Built, wired, 2/2 axioms clean.
+
+## B3 adelic assembly — plan (survives compaction)
+Everything in the *proof* of §VII Theorem 4 is now Lean-owned at the level of the archimedean model
+and of abstract lattices.  What is missing for a literal statement of Theorem 4 is the adelic
+carrier.  The bricks, in order:
+1. `A_S` and `L²(X_S)` — the corpus owns `RHTower/FieldOneFiniteStage*` for `k = ℚ` (self-dual
+   Haar, S-units, Bruhat–Schwartz carrier, fundamental domain, orbit summability).
+2. The cut-offs `P_Λ`, `P̂_Λ = F P_Λ F⁻¹`, `R_Λ = P̂_Λ P_Λ` — §VII (12)(13).
+3. The trace as a kernel pairing — **already available**: `ConnesKernelOperatorGeneral`,
+   `ConnesKernelTracePairing.connes_opTrace_adjoint_kernel`,
+   `ConnesFieldTracePairing.connes_hsInner_kernelOperator_field`; no trace-class theory needed.
+4. `Tr = ∑_q ∫_D k(x,qx) dx` — **owned**: `ConnesSelbergPeriodization.connes_selberg_trace`.
+5. `I_q` = symbol integral — **owned** at every place: `ConnesLocalFieldSymbol`,
+   `ConnesScalingKernelDelta`, `ConnesSymbolPairing`, plus the `q`-twist
+   `ConnesTwistedChartFourier`.
+6. `(28) ⟶ (30)` — **owned**: `ConnesSymbolChangeOfVariables.connes_symbol_changeOfVariables`.
+7. `(30) = (31)+(32)+(33)` — **owned**: `ConnesCutoffTraceDecomposition`, `ConnesTraceMainTerm`,
+   `ConnesTraceErrorRapidDecay`, `ConnesLatticeFiniteSupport`.
+So the residue is 1+2 only: the adelic carrier and the two cut-off projections.
+- 2026-08-22 — Tier B batch 48: **§VII (12)(13) + §VIII's band `B_Λ`** (`ConnesCutoffProjections`),
+  i.e. brick 2 of the B3 plan.  `connesModCutoff` (multiplication by `ρ_Λ`) with idempotence,
+  the sesquilinear symmetry, and `connesModCutoff_eq_self_iff` = **(12)**'s range description;
+  `connesFourierCutoff` = `F P_Λ F⁻¹` with idempotence; `connesCutoffProduct` = **(13)**'s `R_Λ`;
+  `connesCutoffBand` = §VIII's `B_Λ` with `connes_cutoffBand_iff_fixed` (it is the intersection of
+  the two ranges); and `connes_band_periodization_vanishes` = **§VIII (23)** `E(B_Λ) ⊆ S_Λ`, read
+  off `connesPeriodization_support_window`.  Built, wired, 4/4 axioms clean.  **Brick 2 of the B3
+  plan is done; only brick 1 (the adelic carrier) remains.**
+- 2026-08-22 — Tier B batch 49: **brick 1 started — Connes' `B_Λ` and `Q_Λ` on `L²(X_S)`**
+  (`ConnesAdelicBand`).  The corpus's adelic layer for `k = ℚ` at a finite stage `S` supplies
+  everything needed: `FieldOneFiniteStageClassL2 S` (= `L²(X_S)`),
+  `fieldOneFiniteStageClassSupportCutoff S Λ` (= `P_Λ`, multiplication by the indicator of the
+  aperture `{|x|_S ≤ Λ}`) and `fieldOneFiniteStageClassFourierUnitary S` (= `F`).  New:
+  `connes_supportCutoff_eq_self_iff` (`P_Λ f = f` iff `f` is supported in the aperture),
+  `connesAdelicBand` (= `Range P_Λ ∩ Range P̂_Λ`, as an intersection of two kernels),
+  `connes_mem_adelicBand_iff` (fixed-point form), `connes_mem_adelicBand_iff_ae`
+  (**Connes' literal §VIII description**: `f` and `F f` both vanish a.e. for `|x|_S > Λ`),
+  `connesAdelicBand_isClosed`, `connesAdelicBand_completeSpace`, and `connesAdelicProjection`
+  = **`Q_Λ`**, the orthogonal projection of §VIII Corollary 2 / Theorem 5.  Built, wired, 5/5
+  axioms clean.  Brick 1's carrier and projections now exist in Lean; what remains for Theorem 4
+  is the trace computation on this carrier, for which bricks 3–7 are already owned.
+- 2026-08-22 — Tier B batch 50: **§VII (21)–(22) at a finite place + App II (28)**
+  (`ConnesFractionalIdealFourier`).  At a non-archimedean place Connes' cut-off `ρ_Λ` is the
+  indicator of a *fractional ideal*, and its transform is again such an indicator:
+  `connes_fractionalIdeal_fourier` — `F(1_{cR})(x) = |c|·1_R(cx)`, obtained from
+  `connes_selfDual_indicator` by the dilation `y = cz` (cancellation via `Units.inv_mul`, so no
+  domain hypothesis).  `connes_unitIndicator_fourier` is App II (28)
+  `1̂_{R^*} = 1_R − |π| 1_{π^{-1}R}`.  This makes (21)/(22) *rigorous* at finite places, where the
+  sharp cut-off is genuinely integrable with integrable transform — the archimedean sharp cut-off
+  is not.  Built, wired, 2/2 axioms clean.
+- 2026-08-22 — Tier B batch 51: **§VII Theorem 4's analytic conclusion, summed**
+  (`ConnesTraceFormulaAssembly`).  `connes_trace4_mainTerm` — the constant term of the finite
+  trace sum is `∑_q g_q(0)` (Fourier inversion at the origin, termwise);
+  `connes_trace4_asymptotic` — for every `N`,
+  `Λ^N ‖∑_q ∫_{|u|≤Λ²} ĝ_q(u)(2 log Λ − log|u|) du − (2 log Λ ∑_q g_q(0) − ∑_q ∫ ĝ_q log|u|)‖ → 0`.
+  Unconditional: the only data are a finite index set and a family of Schwartz functions.  Built,
+  wired, 2/2 axioms clean.
+- 2026-08-22 — Tier B batch 52: **§VII Theorem 4 in Connes' notation**
+  (`ConnesTraceFormulaStatement`).  `connes_trace4_constant_eq` puts the constant term in Connes'
+  form via (26) (`connesTwistedChart_zero`: `g_q(0) = f(q)`), and `connes_trace4_statement` states
+  the trace formula as
+  `Trace = 2 h(1) log' Λ − ∑_q ∫ ĝ_q(u) log|u| du + O(Λ^{-N})` for every `N` — stronger than the
+  `o(1)` Connes states.  Built, wired, 2/2 axioms clean.
+
+## The single remaining analytic gap for a literal Theorem 3 / Theorem 4
+Everything above is proved.  What is *not* yet Lean-owned is the last identification of §V, namely
+
+  `−∫ ĝ(u) log|u| du  =  ∫'_{k_v^*} h(u^{-1})/|1−u| d^*u`,                        (§V (33) ⟶ Thm 3)
+
+i.e. **the Fourier transform of `−log|u|` is Connes' log-regularised principal value `L`, the one
+normalised by `L̂(1) = 0`**.  Its crux is the classical cosine-integral identity
+
+  `∫_ε^∞ cos(a t)/t dt + log ε  ⟶  −γ − log|a|`   as `ε → 0⁺`,
+
+equivalently `∫_0^1 (1 − cos t)/t dt − ∫_1^∞ cos t/t dt = γ`.  mathlib has no `Ci`; the corpus has
+`EulerMascheroniExponentialIntegral.integral_exp_neg_mul_log` (`∫ e^{-t} log t dt = −γ`), the
+scaling law A19 (`connesRealLogPV_scale`), the Gaussian log-moments A17/A18
+(`connes_integral_neg_log_abs_mul_gaussian`), and the division-of-distributions lemma A27 — which
+are exactly Connes' (34)–(36) route: agree away from `0`, then pin the `δ`-coefficient with the
+Gaussian.  **Next brick: the cosine-integral identity**, then Parseval, then the `δ` normalisation.
+- 2026-08-22 — Tier B batch 53: **the Dirichlet integral `∫_0^∞ sin t/t dt = π/2`**
+  (`ConnesDirichletSineIntegral`) — a genuine mathlib gap (no `Ci`, no `Si`; corpus search finds
+  nothing).  Built from scratch by the Laplace-kernel proof: `connes_hasDerivAt_dampedSine` and
+  `connes_intervalIntegral_sin_mul_exp` (the primitive of `e^{-ts} sin t`),
+  `connes_integral_inv_one_add_sq_Ioi` (`∫_0^∞ ds/(1+s²) = π/2` via `arctan`),
+  `connes_integral_exp_neg_mul_Ioi`, `connes_sinDiv_eq_laplace`,
+  `connes_laplaceKernel_integrable` (Fubini on `(0,R] × (0,∞)`, legitimate because
+  `|sin t| ≤ |t|` bounds the double integral by `R`), `connes_sinDiv_fubini`,
+  `connes_dirichlet_error_density_le` (`|(cos R + s sin R)/(1+s²)| ≤ 3/2`),
+  `connes_dirichlet_error_integrable`, `connes_dirichlet_error_bound` (`≤ (3/2)/R`),
+  `connes_dirichlet_truncated`, and the capstone `connes_dirichlet_integral`.  Built, wired, 5/5
+  `#print axioms` clean.
+
+### Revised route to the last §V identification (supersedes the note above)
+Working the proof out in detail showed the Euler–Mascheroni constant is **not** needed, and neither
+is the cosine integral: Connes' `∫'` is *defined* by `L̂(1) = 0`, so only the *shape* matters.  The
+chain is now:
+1. **`𝓕(sgn)`**: `∫ sgn(x)g(x)/2 dx = (i/2π)·PV∫ 𝓕g(u)/u du`.  Proof: truncate to `|x| ≤ X`
+   (Fubini then legitimate), `∫_{-X}^{X} sgn(x)e^{2πixu}dx/2 = i(1−cos 2πXu)/(2πu)`, the constant
+   term drops by **oddness** of `1/u` on a symmetric set, and the remaining
+   `∫ H(u) cos(2πXu) du → 0` is **Riemann–Lebesgue** (mathlib owns it).  *No Dirichlet integral,
+   no `γ`.*
+2. **Hadamard division for Schwartz maps**: `φ(0) = 0 ⟹ φ = x·ψ` with `ψ` Schwartz
+   (`ψ(x) = ∫_0^1 φ'(tx)dt`).
+3. Hence `x·D = 0` for `D := LogPV − T` (where `T g := −∫ 𝓕g(u) log|u| du`), so `D` kills every
+   Schwartz function vanishing at `0`, so `D = D(γ)·δ` for a fixed Gaussian `γ` with `γ(0)=1` —
+   **no distribution structure theory, no A27, no homogeneity classification needed**.
+4. The Gaussian log-moment A17 (`connes_integral_neg_log_abs_mul_gaussian`) evaluates `D(γ)`.
+5. Conclude `−∫ 𝓕g(u) log|u| du = ⟨L, g⟩` with `L` Connes' `∫'`, closing §V Theorem 3 and hence
+   §VII Theorem 4 literally, and unblocking §VIII Theorem 5.
+- 2026-08-22 — Tier B batch 54: **step 1a of the §V route — the truncated sign kernel**
+  (`ConnesSgnFourierKernel`).  `connesSpaceChar` with its norm/continuity,
+  `connes_abs_sign_le_one`, `connes_measurable_sign`, `connes_bounded_intervalIntegrable` (a
+  bounded measurable function is interval integrable) and the two instances for the sign–character
+  integrand and its reflection, `connes_intervalIntegral_sin_scaled`
+  (`∫_0^X sin(2πxu)dx = (1−cos 2πXu)/(2πu)`), `connes_spaceChar_sub_neg`, and the capstone
+  `connes_sgn_truncated_kernel`:
+  `∫_{-X}^{X} sgn(x) e^{2πixu} dx = 2i(1 − cos 2πXu)/(2πu)`.
+  Built, wired, 4/4 `#print axioms` clean.  **Next: step 1b** — pair this kernel with `𝓕g` under
+  Fubini on `[-X,X] × ℝ`, drop the constant by oddness, and pass to the limit with
+  Riemann–Lebesgue, giving `∫ sgn(x)g(x)dx = (i/π)·PV∫ 𝓕g(u)/u du`.
+- 2026-08-22 — Tier B batch 55: **the principal value `PV ∫ G(u)/u du`**
+  (`ConnesPrincipalValueInverse`).  Written as an *absolutely convergent* expression
+  `connesPVinv G = ∫_{|u|≤1}(G u − G 0)/u + ∫_{|u|>1} G u/u`, so no improper limit is carried:
+  `connes_schwartz_diffQuotient_bound` (a Schwartz function is globally Lipschitz, via the
+  mean-value inequality on `univ` with the `derivCLM` seminorm), `connes_pv_inner_integrable`,
+  `connes_pv_outer_integrable`, and `connes_integral_odd_symmetric` — **the oddness cancellation**
+  that removes the Euler–Mascheroni constant.  Built, wired, 4/4 `#print axioms` clean.
+  Remaining in step 1b: the Fubini pairing of `connes_sgn_truncated_kernel` with `𝓕g` and the
+  Riemann–Lebesgue limit; then the integration-by-parts identity
+  `∫ G'(u) log|u| du = −connesPVinv G`, which together give `x·D = 0`.
+- 2026-08-22 — Tier B batch 56: **step 1b — the PV integrand and the Fubini pairing**
+  (`ConnesPVIntegrand`, `ConnesSgnFubiniPairing`).
+  * `connesPVintegrand G u = (G u − G 0·1_{|u|≤1}(u))/u`, globally integrable
+    (`connes_pvIntegrand_integrable`), with `connes_integral_pvIntegrand : ∫ H = connesPVinv G`.
+  * `connes_fourierInv_apply` (Fourier inversion in the `connesSpaceChar` form),
+    `connes_fourier_integrable`, `connes_sgnPairing_integrable` (the double integrand is dominated
+    by `‖𝓕g(u)‖` on a set of finite `x`-measure, so `integrable_prod_iff` applies), and the
+    capstone `connes_sgn_pairing_truncated`:
+    `∫_{-X}^{X} sgn(x) g(x) dx = ∫ 𝓕g(u)·(∫_{-X}^{X} sgn(x) e^{2πixu} dx) du`.
+  Built, wired, 5/5 `#print axioms` clean across the two modules.
+  **Still open in step 1b:** substitute `connes_sgn_truncated_kernel` for the inner integral, drop
+  the constant term by `connes_integral_odd_symmetric`, and let `X → ∞` by Riemann–Lebesgue
+  (`Real.zero_at_infty_fourierIntegral` plus `Real.cocompact_eq`), giving
+  `∫ sgn(x)g(x)dx = (i/π)·connesPVinv (𝓕g)`.
+- 2026-08-22 — Tier B batch 57: **the oscillating quotient and the kernel substitution**
+  (`ConnesOscillatingQuotient`, `ConnesSgnPairingOsc`).
+  * `connes_one_sub_cos_bounds` (`0 ≤ 1 − cos t ≤ t²/2`, via `1 − cos t = 2 sin²(t/2)` and
+    `|sin s| ≤ |s|`), `connes_boundedM_intervalIntegrable` (bounded *on the interval* suffices),
+    `connes_oscQuotient_bound` (`‖(1−cos 2πXu)/u‖ ≤ 2π²X²|u|`), `connes_oscQuotient_odd`, and
+    `connes_oscQuotient_ball_vanishes` — **the constant term of the principal-value integrand
+    integrates to zero over the symmetric unit ball**, which is exactly where the
+    Euler–Mascheroni constant would otherwise have entered.
+  * `connes_ae_ne_zero` and `connes_sgn_pairing_osc`:
+    `∫_{-X}^{X} sgn(x)g(x)dx = (i/π) ∫ 𝓕g(u)·(1 − cos 2πXu)/u du`.
+  Built, wired, 6/6 `#print axioms` clean across the two modules.
+  **Left in step 1b:** split the integrand as `H(u)(1−cos 2πXu) + G(0)1_{|u|≤1}(u)(1−cos 2πXu)/u`
+  (second term zero by the lemma above), then `X → ∞` by Riemann–Lebesgue
+  (`Real.zero_at_infty_fourier` + `cocompact_eq_atBot_atTop`).
+- 2026-08-22 — Tier B batch 58: **STEP 1 OF THE §V ROUTE IS CLOSED**
+  (`ConnesSgnPrincipalValue`).  The Fourier transform of the sign function, in the form Connes'
+  argument needs:
+
+      connes_sgn_pv_pairing :  ∫ sgn(x) g(x) dx  =  (i/π) · PV ∫ 𝓕g(u)/u du      for every Schwartz g
+
+  Unconditional, no added hypotheses.  The chain: `connes_osc_split_pointwise` splits the
+  oscillating integrand into the principal-value integrand times `1 − cos 2πXu` plus a constant
+  piece; `connes_constOsc_integrable` / `connes_constOsc_integral_zero` show the constant piece
+  **integrates to zero by oddness** (no Euler–Mascheroni constant); `connes_sgn_pairing_H` assembles
+  the truncated identity; `connes_exp_add_exp_neg` and `connes_H_cos_eq_fourier` write the
+  oscillating integral as `(𝓕H(X) + 𝓕H(−X))/2`; `connes_H_cos_tendsto` kills it by
+  **Riemann–Lebesgue** (`Real.zero_at_infty_fourier`, which needs no integrability hypothesis, plus
+  `cocompact_eq_atBot_atTop`); and the capstone passes to the limit with
+  `intervalIntegral_tendsto_integral` and `tendsto_nhds_unique`.  Built, wired, axioms clean.
+  **Next: step 2** — the integration-by-parts identity `∫ G'(u) log|u| du = −PV ∫ G(u)/u du`.
+  Together with step 1 this gives `x·D = 0` for `D := LogPV − T`, and then steps 3–5 (Hadamard
+  division, `D = D(γ)·δ`, the Gaussian constant) close the §V identification.
+- 2026-08-22 — Tier B batch 59: **step 2's boundary estimates** (`ConnesSchwartzLogDecay`).
+  `connes_schwartz_mul_log_atTop` (`G(u) log u → 0` as `u → ∞`, from `‖u‖²‖G u‖ ≤ σ` and
+  `log u ≤ u`, squeezed by `σ/u`) and `connes_schwartz_sub_mul_log_atZero`
+  (`(G(u) − G(0)) log u → 0` as `u → 0⁺`, from the Lipschitz bound and mathlib's
+  `tendsto_log_mul_rpow_nhdsGT_zero`).  These are exactly the two boundary values needed for the
+  two integrations by parts of step 2: the primitive `G(u) log u` on `[1,∞)` and
+  `(G(u) − G(0)) log u` on `(0,1]`.  Built, wired, axioms clean.
+  **Design note (records a simplification):** splitting the half line at `1` and using the
+  *difference* primitive on `(0,1]` removes the need for an exponential regulariser and for the
+  constant `∫_0^∞ e^{-u} log u du = −γ` entirely — the two halves of the split contribute
+  `−∫_{(0,1]} H` and `−∫_{(1,∞)} H`, whose sum is `−∫ H = −connesPVinv G` on the nose.
+- 2026-08-22 — Tier B batch 60: **both integrations by parts of step 2**
+  (`ConnesLogPartsTail`, `ConnesLogPartsUnit`).
+  * Tail: `connes_schwartz_le_pow` (a Schwartz function decays like every inverse power),
+    `connes_hasDerivAt_ofReal_log`, `connes_hasDerivAt_mul_log`,
+    `connes_tail_integrand_integrable` (majorant `(σ₃+σ₂)u^{-2}`, using `log u ≤ u` against the
+    order-3 seminorm), and `connes_log_ftc_tail`:
+    **`∫_{(1,∞)} (G'(u) log u + G(u)/u) du = 0`** via
+    `integral_Ioi_of_hasDerivAt_of_tendsto` with primitive `G(u) log u`.
+  * Unit interval: `connes_hasDerivAt_sub_mul_log`, `connes_continuousOn_sub_mul_log` (continuity
+    at the origin is exactly the batch-59 limit, transported through
+    `continuousWithinAt_Ioi_iff_Ici` and `ContinuousWithinAt.mono`),
+    `connes_unit_integrand_intervalIntegrable` (uses mathlib's unconditional
+    `intervalIntegrable_log'`), and `connes_log_ftc_unit`:
+    **`∫_0^1 (G'(u) log u + (G(u) − G(0))/u) du = 0`** via
+    `integral_eq_sub_of_hasDeriv_right_of_le` with primitive `(G(u) − G(0)) log u`.
+  Built, wired, axioms clean.
+  **Left in step 2:** add the two (their integrands are `G'log` plus the principal-value integrand
+  on `Ioc 0 1` and on `Ioi 1` respectively), giving
+  `∫_{(0,∞)} G'(u) log u du = −∫_{(0,∞)} H`; then the same on the negative half by the reflection
+  `u ↦ −u`, giving `∫_ℝ G'(u) log|u| du = −connesPVinv G`.
+- 2026-08-22 — Tier B batch 61: **step 2 on the positive half line** (`ConnesLogHalfLine`).
+  The four summand-integrability lemmas (`connes_derivLog_integrableOn_unit`,
+  `connes_pvUnit_integrableOn`, `connes_derivLog_integrableOn_tail`, `connes_pvTail_integrableOn`)
+  let the two integrations by parts of batch 60 be split, and their non-`log` summands are
+  *literally* the principal-value integrand of `ConnesPVIntegrand` on `Ioc 0 1` and on `Ioi 1`
+  (`connes_pvIntegrand_on_ball` / `connes_pvIntegrand_off_ball`).  Adding them over the partition
+  `Ioi 0 = Ioc 0 1 ∪ Ioi 1` gives
+
+      connes_log_halfline :  ∫_{(0,∞)} G'(u) log u du  =  −∫_{(0,∞)} H
+
+  with `H = connesPVintegrand G`.  Built, wired, 5/5 `#print axioms` clean.
+  **Left in step 2:** the same on the negative half line by the reflection `u ↦ −u`, then adding
+  the two halves to get `∫_ℝ G'(u) log|u| du = −connesPVinv G`.
+- 2026-08-22 — Tier B batch 62: **reflection of a Schwartz map** (`ConnesSchwartzReflect`).
+  `connesReflect G = G ∘ (−·)` as a Schwartz map (mathlib's
+  `SchwartzMap.compCLMOfContinuousLinearEquiv` with `ContinuousLinearEquiv.neg`),
+  `connes_deriv_reflect` (`deriv (G∘neg) u = −deriv G (−u)`, via mathlib's unconditional
+  `deriv_comp_neg`), and `connes_pvIntegrand_reflect`
+  (`H_{G∘neg}(v) = −H_G(−v)`, using `|v| ≤ 1 ↔ |−v| ≤ 1`).  These are exactly what is needed to
+  transport `connes_log_halfline` to the negative half line.  Built, wired, 2/2 axioms clean.
+- 2026-08-22 — Tier B batch 63: **STEP 2 OF THE §V ROUTE IS CLOSED** (`ConnesLogFullLine`).
+  * `connes_log_negline` — the negative half line, obtained by applying `connes_log_halfline` to
+    `connesReflect G` and substituting `u ↦ −u` (mathlib's `integral_comp_neg_Ioi`, root namespace),
+    with `Iic 0 ≈ Iio 0` up to the null point.
+  * `connes_derivLog_integrable` — `G' · log` is *globally* integrable: on `[-1,1]` by
+    `intervalIntegrable_log'` against the order-0 seminorm, off `[-1,1]` by the order-3 seminorm
+    against the corpus's own `connes_absRpow_tail_integrable` at exponent 2 (`log|u| ≤ |u|`).
+  * The capstone
+
+        connes_log_fullline :  ∫_ℝ G'(u) log|u| du  =  −connesPVinv G          (all Schwartz G)
+
+    (`Real.log_abs` makes `log|u|` and `log u` literally the same term).  Built, wired,
+    3/3 `#print axioms` clean.
+  **Steps 1 and 2 are now both closed**, so for every Schwartz `g`, taking `G = 𝓕g` and using
+  `(𝓕g)' = 𝓕(−2πi x g)` (mathlib `Real.deriv_fourier`),
+
+        −∫_ℝ 𝓕(x·g)(u) log|u| du  =  ½ ∫_ℝ sgn(x) g(x) dx  =  ∫_ℝ (x g(x))/(2|x|) dx,
+
+  i.e. `T` and Connes' `L` agree on every Schwartz function of the form `x·g`.
+  **Revised steps 3–5 (records a simplification of the plan).**  Hadamard division does *not* need
+  a parametric-integral smoothness theorem.  On the Fourier side, `{x·g} = 𝓕⁻¹{G' : G Schwartz}`,
+  and `G'` ranges exactly over the Schwartz functions of zero integral; so the one new brick is
+  **"a Schwartz function of zero integral has a Schwartz antiderivative"** — for which the
+  antiderivative is the explicit `x ↦ ∫_{Iic x} F`, smooth by the FTC (`contDiff_infty_iff_deriv`)
+  and rapidly decreasing because `‖∫_{Iic x} F‖ ≤ ∫_{|t| ≥ |x|} ‖F‖` on both sides (the zero
+  integral is what lets the `x ≥ 0` side be rewritten as `−∫_{Ioi x} F`).  Then
+  `∫ 𝓕φ = φ(0)` (Fourier inversion) turns "φ(0) = 0" into "𝓕φ has zero integral", and
+  `Real.deriv_fourier` plus injectivity of `𝓕` on `𝓢` give `φ = x·ψ` with `ψ = 𝓕⁻¹(−2πi·G)`.
+  Steps 4–5 then pin the `δ`-coefficient with the Gaussian: A17 gives
+  `T(e^{−πu²}) = ½log π + γ/2 + log 2`, and `L(e^{−πx²}) = −γ/2 − ½log π` follows from the corpus's
+  `∫_0^∞ e^{−t} log t dt = −γ` after one integration by parts, so the constant is `γ + log 2π`.
+- 2026-08-22 — Tier B batch 64: **a Schwartz function of zero integral has a Schwartz primitive**
+  (`ConnesSchwartzAntideriv`).  `connesAntiderivFun F x = ∫_{(-∞,x]} F`, with
+  `connesAntiderivFun_eq_intervalIntegral` (via `intervalIntegral.integral_Iic_sub_Iic`),
+  `connes_hasDerivAt_antideriv` (`Continuous.integral_hasStrictDerivAt`),
+  `connes_deriv_antideriv`, `connes_contDiff_antideriv` (`contDiff_infty_iff_deriv` — the FTC is
+  all the smoothness that is needed), `connes_antideriv_eq_neg_tail` (the zero integral rewrites
+  the primitive as `−∫_{(x,∞)}F` on the right half line), `connes_antideriv_norm_le_total`,
+  `connes_antideriv_norm_le_tail` (`‖∫_{Iic x}F‖ ≤ ∫_{|t| ≥ |x|}‖F‖` on **both** half lines),
+  `connes_antideriv_decay_zero` (order-0 decay from the corpus's own
+  `connes_absRpow_tail_value`), `connes_antideriv_decay` (higher orders by
+  `iteratedDeriv_succ'` + `norm_iteratedFDeriv_eq_norm_iteratedDeriv`), and the bundled
+  **`connesAntideriv : 𝓢(ℝ,ℂ) → (∫F = 0) → 𝓢(ℝ,ℂ)`**.  Built, wired, 3/3 axioms clean.
+- 2026-08-22 — Tier B batch 65: **HADAMARD DIVISION ON THE SCHWARTZ SPACE**
+  (`ConnesSchwartzHadamard`).
+
+      connes_schwartz_hadamard :  φ(0) = 0  ⟹  ∀ x, φ x = x · (connesHadamardQuotient φ h₀) x
+
+  with `connesHadamardQuotient φ h₀ = 𝓕⁻(−2πi · connesAntideriv (𝓕φ))` an honest Schwartz map.
+  Supporting: `connesHadamardConst` (`= −2πi`, nonzero), `connes_fourierCLM_coe`,
+  `connes_fourier_total_mass_zero` (Fourier inversion: `∫𝓕φ = φ(0) = 0`),
+  `connesHadamardPrimitive` + `connes_deriv_hadamardPrimitive`,
+  `connes_fourier_hadamardQuotient` (`FourierInvPair` on `𝓢`),
+  `connes_integrable_id_smul`, `connes_fourier_const_smul`.  The proof runs entirely on the
+  Fourier side — mathlib's `Real.deriv_fourier` plus `Continuous.fourierInv_fourier_eq` — so **no
+  parametric-integral smoothness theorem is needed anywhere**.  Built, wired, 3/3 axioms clean.
+- 2026-08-22 — Tier B batch 66: **steps 1 + 2 combined through Hadamard division**
+  (`ConnesLogMomentVanishing`).  `connes_fourier_smul_fun`,
+  `connes_deriv_fourier_hadamardQuotient` (`(𝓕ψ)' = −2πi·𝓕φ` once `φ = x·ψ`),
+  `connes_sign_haar_pointwise` (`φ(x)·(2|x|)⁻¹ = sgn(x)ψ(x)/2` — an identity valid at `x = 0`
+  too, so no a.e. argument is needed), and the capstone
+
+      connes_logMoment_of_zero :  φ(0) = 0  ⟹  −∫_ℝ 𝓕φ(u) log|u| du  =  ∫_ℝ φ(x) d^*x
+
+  with `d^*x = dx/(2|x|)`.  The algebra step needs `I² = −1`, supplied to `linear_combination` as
+  `Complex.I_sq` (`ring` alone cannot see it).  Built, wired, axioms clean.
+- 2026-08-22 — Tier B batch 67: **the regularized principal value converges away from the origin**
+  (`ConnesLogMomentPV`).  `connes_sign_mul_integrable`, `connes_haar_integrable_of_zero`, and
+
+      connes_logPV_tendsto_of_zero :  φ(0) = 0  ⟹
+        connesRealLogPV φ ε  ⟶  −∫_ℝ 𝓕φ(u) log|u| du   as ε → 0⁺.
+
+  Built, wired, 2/2 axioms clean.
+- 2026-08-22 — Tier B batch 68: **the `x log x` Gaussian moment at every width**
+  (`ConnesGaussianIdLogMoment`).  `connes_integral_id_log_mul_gaussian (hb : 0 < b) :
+  ∫_0^∞ r log r e^{−b r²} dr = (−γ − log b)/(4b)` — the corpus owned only the case `b = 2π`
+  (App. II (41)); the §V constant needs `b = π`.  Built, wired.
+- 2026-08-22 — Tier B batch 69: **THE §V CONSTANT** (`ConnesGaussianPV`).
+  `connes_gauss_log_atTop` (`e^{−πx²} log x → 0`, from the corpus's Schwartz decay lemma),
+  `connes_gauss_log_hasDerivAt`, `connes_gauss_deriv_integrable`, `connes_gauss_tail_ibp`
+  (**the integration by parts** `∫_ε^∞ e^{−πx²} dx/x = −e^{−πε²} log ε + 2π ∫_ε^∞ x e^{−πx²} log x dx`),
+  `connes_gauss_abs`, `connes_gauss_fold` (two-sided tail ↦ positive half line via
+  `integral_comp_abs`), `connes_gauss_zero`, `connes_gauss_logPV_eq` (closed form at each `ε`:
+  the two `log ε` divergences combine into `(1 − e^{−πε²}) log ε`),
+  `connes_gauss_boundary_tendsto` (that term → 0, by `1 − e^{−t} ≤ t` against
+  `tendsto_log_mul_rpow_nhdsGT_zero`), `connes_gauss_idlog_integrable`,
+  `connes_gauss_tail_tendsto` (dominated convergence along `𝓝[>]0`),
+  `connes_gauss_idlog_value`, and the capstone
+
+      connes_gaussian_logPV_tendsto :  connesRealLogPV (e^{−πx²}) ε  ⟶  −γ/2 − (log π)/2.
+
+  Built, wired, 3/3 axioms clean.  **Together with A17** (`T(γ) = ½log π + γ/2 + log 2`) this fixes
+  the `δ`-coefficient of the §V identification at `γ + log 2π`; the assembly is the next batch.
+- 2026-08-22 — Tier B batch 70: **THE LAST §V IDENTIFICATION IS CLOSED**
+  (`ConnesArchLogIdentification`).  For **every** Schwartz `g`, unconditionally:
+
+      connes_arch_logPV_identification :
+        lim_{ε→0⁺} [ ∫_{|x| ≥ ε} g(x) d^*x + g(0) log ε ]
+          =  −∫_ℝ 𝓕g(u) log|u| du  −  (γ + log 2π) · g(0),        d^*x = dx/(2|x|)
+
+  i.e. **the Fourier transform of `−log|u|` is Connes' log-regularised principal value plus
+  `(γ + log 2π) δ₀`** — §V (33)–(36), the single analytic gap the card had recorded as open.
+  Supporting: `connesFourierLogMoment` (+ `_eq`, `_sub`, `_smul`),
+  `connes_schwartz_integrable_logu`, `connes_tail_haar_integrable`, `connes_logPV_sub`,
+  `connes_logPV_smul`, and `connes_gauss_fourierLogMoment` (App. II (32) in this normalization).
+  The proof: `connes_logPV_tendsto_of_zero` handles every `g` with `g(0) = 0` (batches 55–67:
+  `𝓕(sgn)`, the log integration by parts, Hadamard division); the `δ`-coefficient is then read off
+  from the self-dual Gaussian, `T(γ) = ½log π + γ/2 + log 2` (A17) versus
+  `L(γ) = −γ/2 − (log π)/2` (batch 69), whose difference is exactly `γ + log 2π`.
+  Built, wired, 3/3 `#print axioms` clean — `[propext, Classical.choice, Quot.sound]` only.
+
+  **What this unblocks.**  §VII Theorem 4 can now have its logarithmic term rewritten as a sum of
+  local Weil terms (the archimedean one is the above; the finite places are the corpus's
+  `ConnesFractionalIdealFourier` layer), and §VIII Theorem 5 becomes reachable.
+- 2026-08-22 — Tier B batch 71: **§VII Theorem 4's logarithmic term IS Connes' `∫'`**
+  (`ConnesTwistedWeilChange`).  `connesTwistedWeilIntegrand f q u = f(q u⁻¹)·(2|u||u−1|)⁻¹`,
+  `connes_measurableSet_weilTail`, `connes_twistedChart_haar_subst` (**the change of variables
+  `x = u − 1`**, by translation invariance of Lebesgue measure on the indicator form — no
+  positivity hypothesis), `connes_arch_weil_tendsto`, and the definitive form
+
+      connes_arch_weil_regularized :
+        lim_{ε→0⁺} [ ∫_{|1−u| ≥ ε} f(q u⁻¹)/|1−u| d^*u + f(q)(log ε + γ + log 2π) ]
+          =  −∫_ℝ 𝓕g_q(u) log|u| du,
+
+  i.e. the archimedean local Weil term of Theorem 4, with **no leftover constant** — the
+  `γ + log 2π` of batch 70 is exactly the normalization of Connes' `∫'` at the real place.
+  Built, wired, 2/2 axioms clean.
+  **Near-miss recorded:** the name `ConnesArchWeilTerm` / `connesArchWeilIntegrand` was already
+  taken by the Appendix II one-sided-power-test computation (`connes_archWeil_eq_digamma`); the
+  `[ -e ]` guard in the install script caught it before any overwrite, and the new material was
+  renamed.  Search the corpus for the *file* name as well as the lemma names.
+- 2026-08-22 — Tier B batch 72: **§VII THEOREM 4 IS CLOSED — B3 DONE** (`ConnesTraceFormulaWeil`).
+  * `connes_trace4_weil_local` — uniqueness of limits turns the hypothesis "the regularized local
+    Weil integral converges to `W`" into `W = −∫ ĝ_q(u) log|u| du`.
+  * `connes_trace4_weil` — **Theorem 4 verbatim**: for every `N`,
+
+        Λ^N · ‖ ∑_q ∫_{|u| ≤ Λ²} ĝ_q(u)(2 log Λ − log|u|) du
+                 − ( 2 h(1) log Λ + ∑_q W_q ) ‖  ⟶ 0     as Λ → ∞,
+
+    with `W_q = ∫'_{ℝ*} f(q u⁻¹)/|1−u| d^*u` Connes' regularized local Weil term and
+    `∑_q f(q) = h(1)` his (14).  The error is `O(Λ^{-N})` for *every* `N`, strictly stronger than
+    the `o(1)` of the paper.
+  * `connes_trace4_weil_hypothesis_model` — the hypothesis is **non-vacuous**: `batch 71` proves
+    exactly that convergence, with `W_q = −connesFourierLogMoment g_q`.
+  Built, wired, 3/3 axioms clean.
+
+  **Ledger effect.**  B1, B2, B3, B4, B5, B9 are now all CLOSED.  The only Tier-B items still open
+  are B6 (Thm III.1 for Hecke `L` of number fields ≠ ℚ — blocked on mathlib having no Hecke
+  characters at all), B7 (Weil's explicit formula, which the paper *quotes*), and B8 §VIII Theorem 5,
+  which needs B6.
+- 2026-08-22 — Tier B batch 73: **Appendix I (27)'s division hypothesis is discharged**
+  (`ConnesLocalDivision`).  `connes_division_solution_structure` carried the division of test
+  functions as a *hypothesis*; it is now a theorem in the situation the paper is in:
+
+      connes_schwartz_local_division :
+        φ smooth, φ ≠ 0 on (−R,R)∖{0}, ψ Schwartz with tsupport ψ ⊆ (−R,R) and ψ ≡ 0 near 0
+          ⟹ ∃ χ Schwartz, ψ = φ·χ
+
+  with `χ = ψ/φ` — smooth because it vanishes identically on a neighbourhood of every zero of `φ`
+  it meets, and Schwartz because it inherits the *compact* support of `ψ`
+  (`HasCompactSupport.toSchwartzMap`).  **No growth hypothesis on `1/φ` is needed**, which is what
+  makes the step unconditional.  `connes_division_kills_local` is the resulting conclusion: a
+  functional annihilated by every multiple of `φ` kills every windowed test function vanishing near
+  the origin.  Built, wired, 2/2 axioms clean.
+  *Trap:* mathlib's `ContDiffAt.div` forces target = base field (`f g : E → 𝕜`), so `ℝ → ℂ`
+  division must go through `ContDiffAt.inv` (which does allow `𝕜' ≠ 𝕜`) times `ContDiffAt.mul`.
+- 2026-08-22 — Tier B batch 74: **Appendix I (27)(28) localized** (`ConnesLocalDeltaStructure`).
+
+      connes_division_structure_local :
+        φ smooth with the origin as its only zero on (−R,R), `u` annihilated by every multiple of
+        `φ`, `η` a Schwartz cut-off with tsupport ⊆ (−R,R)
+          ⟹ ∃ N c, ∀ ψ,  u (η·ψ) = ∑_{j ≤ N} ψ^{(j)}(0) • c j
+
+  — i.e. **on the window, `u` is a finite combination of derivatives of the Dirac mass at the
+  zero**, which is how Connes uses (27)(28).  The cut-off enters as mathlib's
+  `SchwartzMap.smulLeftCLM` (a Schwartz function has temperate growth), so the composite is again
+  a continuous linear functional and the corpus's point-support structure theorem applies directly.
+  Built, wired, axioms clean.  With batch 73 this makes A27 hypothesis-free in the paper's setting.
+- 2026-08-22 — Tier B batch 75: **Theorem III.1 at a spectral point, for every Grössencharakter of
+  `ℚ`** (`ConnesDirichletSpectralDelta`).  `connesDirichletShift χ t₀ z = L(Χ, ½ + i(t₀+z))`,
+  `connes_dirichletShift_differentiable` / `_analytic` / `_contDiff`,
+  `connes_dirichletShift_ne_zero_somewhere` (the multiplier is not identically zero — evaluate at
+  `s = 2` via `LFunction_ne_zero_of_one_le_re`), `connes_dirichletShift_isolated` (**isolated
+  zeros**, by `AnalyticAt.eventually_eq_zero_or_eventually_ne_zero` plus the identity theorem), and
+
+      connes_dirichlet_spectral_delta :
+        u annihilated by every multiple of the critical-line multiplier
+          ⟹ ∃ R > 0, on every cut-off supported in (−R,R),
+             u is a finite combination of derivatives of `δ` at the spectral point.
+
+  Built, wired, 2/2 axioms clean.
+- 2026-08-22 — Tier B batch 76: **Appendix I (28), the order bound** (`ConnesDeltaOrderBound`).
+  `connes_iteratedDeriv_mul_jetTest_lt` and `connes_delta_coeffs_vanish_above_order` (+ the jet
+  form, which needs *no* temperate-growth hypothesis): in a delta representation of a solution of
+  `φ·α = 0`, every coefficient of index at least the order of the zero vanishes.  Proof by
+  downward strong induction with the corpus jet tests as witnesses.  Built, wired, 2/2 clean.
+- 2026-08-22 — Tier B batch 77: **THEOREM III.1's MULTIPLICITY STATEMENT, for every
+  Grössencharakter of `ℚ`** (`ConnesDirichletSpectralMultiplicity`).
+  `connes_iteratedDeriv_ofReal` (along `ℝ` the iterated derivatives of an entire function are the
+  complex ones — `HasDerivAt.comp_ofReal` plus `ContDiff.iterate_deriv`),
+  `connes_dirichletShift_order` (**the order of vanishing at a spectral point is finite**, from
+  `analyticOrderAt_eq_top` and `analyticOrderAt_eq_nat_iff_iteratedDeriv_eq_zero`),
+  `connes_hasCompactSupport_jetTest`, `connesShiftJet` (multiplier × jet test as a *compactly
+  supported* Schwartz map — which is why no growth bound on the multiplier is needed), and the
+  capstone
+
+      connes_dirichlet_spectral_multiplicity :
+        ∃ n R, 0 < R ∧ (L(Χ,·) vanishes to order exactly n at the spectral point) ∧
+          ∀ cut-off η in the window, ∃ c,  u (η·ψ) = ∑_{j < n} ψ^{(j)}(0) • c j
+
+  — the solution space at a spectral point is spanned by **exactly** the first `n` derivatives of
+  the Dirac mass, `n` the multiplicity of the zero.  Built, wired, 3/3 axioms clean.
+  **B6 is therefore closed for `K = ℚ`**; only the general number field remains, blocked on mathlib
+  having no Hecke characters.
+- 2026-08-22 — Tier B batch 78: **THEOREM III.1 FOR AN ARBITRARY `L`-FUNCTION — B6's MECHANISM IS
+  NO LONGER FIELD-SPECIFIC** (`ConnesEntireSpectralMultiplicity`).  The whole §III spectral
+  realization is re-proved with the `L`-function replaced by *any* entire, not-identically-zero
+  `L : ℂ → ℂ`:
+
+      connes_entire_spectral_multiplicity :
+        L entire, L w ≠ 0 for some w, u annihilated by every multiple of `L(½ + i(t₀+·))`
+          ⟹ ∃ n R, 0 < R ∧ (L vanishes to order exactly n at ½ + i t₀) ∧
+             ∀ cut-off η in the window, ∃ c, u (η·ψ) = ∑_{j<n} ψ^{(j)}(0) • c j.
+
+  Supporting: `connesShiftedMultiplier`, `_differentiable`, `_analytic`, `_contDiffC`, `_contDiff`,
+  `_ne_zero_somewhere`, `_isolated`, `_order`, `connesEntireShiftJet`.  Built, wired, 2/2 axioms
+  clean.
+
+  **Consequence for the ledger.**  Connes' Theorem III.1 needs exactly two inputs about the
+  `L`-function: it is entire and it is not identically zero.  Both are supplied for the
+  Grössencharakters of `ℚ` (batch 77); for a general number field the *only* thing missing is the
+  construction of the Hecke `L`-function itself, which is a **mathlib gap, not a gap in this
+  paper** — the moment any such construction exists it plugs into this theorem unchanged.
+- 2026-08-22 — Tier B batch 79: **§VIII THEOREM 5's POSITIVITY IS ASSEMBLED**
+  (`ConnesTheorem5Positivity`).  `connes_theorem5_positive_of_tendsto` (positivity passes to the
+  pointwise limit) and the assembled
+
+      connes_theorem5_weil_positiveType :
+        Δ_Λ(f* f) = τ_Λ(V(f)* r_Λ V(f)) with r_Λ ≥ 0 and τ_Λ positive,  Δ_Λ → Δ pointwise
+          ⟹ Δ is of positive type,
+
+  which is Connes' derivation of the positivity of the Weil distribution from the trace formula:
+  (23) supplies `r_Λ ≥ 0` (`connes_starProjection_norm_mono` + `connesPeriodization_support_window`),
+  (24)(25) supply the conjugation positivity (`connes_positiveType_conjugate`), and the trace
+  formula of batch 72 supplies the convergence.  `connes_theorem5_hypotheses_model` exhibits a
+  model of the hypotheses, so the statement is **not vacuous**.  Built, wired, axioms clean.
+  The remaining step of Theorem 5 — *positivity of the Weil distribution ⟹ RH* — is Weil's
+  explicit-formula criterion, which this paper **quotes** from [W3] (item B7) and therefore lies
+  outside "the provable propositions of this paper"; the corpus's own explicit-formula layer is
+  `XiGuinandWeilExplicitFormula`.
+
+## State of the programme (2026-08-22, after batch 79)
+
+**Tier A: 27/27 DONE.**  (A16's row was stale — its limit form is B9, `connes_logPV_sub_powerPV_tendsto`.)
+
+**Tier B: B1, B2, B3, B4, B5, B6, B9 CLOSED; B8's positivity chain assembled.**
+
+The five capstones of this session, all `#print axioms`-clean on `[propext, Classical.choice,
+Quot.sound]` and verified to coexist in one scope without name collisions:
+
+| theorem | statement |
+|---|---|
+| `connes_arch_logPV_identification` | §V: `𝓕(−log\|u\|)` = log-regularised PV + `(γ + log 2π)δ₀` |
+| `connes_trace4_weil` | §VII Theorem 4 verbatim, error `O(Λ^{-N})` for every `N` |
+| `connes_entire_spectral_multiplicity` | §III Theorem 1 for an arbitrary entire `L` |
+| `connes_dirichlet_spectral_multiplicity` | §III Theorem 1 for every Grössencharakter of `ℚ` |
+| `connes_theorem5_weil_positiveType` | §VIII Theorem 5's positivity of the Weil distribution |
+
+**The two precisely-delimited residues, and why neither is a provable proposition of this paper:**
+
+1. **Weil's explicit formula** (App II Theorem 1, item B7).  The paper *quotes* it from [W3]; it is
+   not proved there.  The corpus owns its own version (`XiGuinandWeilExplicitFormula`,
+   `xi_explicitFormula_logDeriv`), so by the goal's own wording ("as far as mathlib or our lean
+   corpus do not already prove them") it is out of scope.  Everything App II Theorem 6 *does* prove
+   — Lemma 2's `A+B=0`, Lemma 3, (54) at all three place types, (18)(19) — is Lean-owned.
+
+2. **Hecke `L`-functions of a number field other than `ℚ`.**  mathlib has no Hecke characters at
+   all, so their `L`-functions cannot even be *stated*.  This is a mathlib-level construction, not a
+   proposition of Connes' paper: batch 78 proves Theorem III.1 for *any* entire non-vanishing `L`,
+   so the moment such a construction exists it plugs in unchanged, with no new mathematics.
+
+Everything else in the paper's statement inventory is a closed Lean theorem with no hypotheses
+beyond the literal mathematical data.

@@ -62,4 +62,37 @@ theorem rationalFunction_submodule_eq_eqLocus_iff_forall_place (F : Type u)
     rw [linearMap_eqLocus_baseChange]
     exact h .infinite
 
+/-- A number-field submodule is a specified equalizer exactly when this holds at one completion. -/
+theorem numberField_submodule_eq_eqLocus_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N]
+    (S : Submodule K M) (f g : M →ₗ[K] N) :
+    S = LinearMap.eqLocus f g ↔ ∃ p : NumberFieldPlace K,
+      S.baseChange (completion K p) =
+        LinearMap.eqLocus (f.baseChange (completion K p)) (g.baseChange (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K, by rw [h, linearMap_eqLocus_baseChange]⟩
+  · rintro ⟨p, hp⟩
+    apply Submodule.baseChange_injective (A := completion K p)
+    rw [linearMap_eqLocus_baseChange]
+    exact hp
+
+/-- An `F(t)`-submodule is a specified equalizer exactly when this holds at one completion. -/
+theorem rationalFunction_submodule_eq_eqLocus_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module (RatFunc F) M] [AddCommGroup N] [Module (RatFunc F) N]
+    (S : Submodule (RatFunc F) M) (f g : M →ₗ[RatFunc F] N) :
+    S = LinearMap.eqLocus f g ↔ ∃ p : RationalFunctionPlace F,
+      S.baseChange (rationalFunctionCompletion F p) =
+        LinearMap.eqLocus (f.baseChange (rationalFunctionCompletion F p))
+          (g.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite, by rw [h, linearMap_eqLocus_baseChange]⟩
+  · rintro ⟨p, hp⟩
+    apply Submodule.baseChange_injective (A := rationalFunctionCompletion F p)
+    rw [linearMap_eqLocus_baseChange]
+    exact hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

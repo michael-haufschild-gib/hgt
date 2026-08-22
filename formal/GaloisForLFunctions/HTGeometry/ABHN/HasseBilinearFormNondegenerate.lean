@@ -119,4 +119,34 @@ theorem rationalFunction_bilinForm_nondegenerate_iff_forall_place (F : Type u)
     exact (bilinForm_nondegenerate_iff_baseChange
       (L := rationalFunctionCompletion F .infinite) B).mpr (h .infinite)
 
+/-- Nondegeneracy of a finite-dimensional number-field bilinear form can be certified at one
+completion. -/
+theorem numberField_bilinForm_nondegenerate_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    [FiniteDimensional K M] (B : LinearMap.BilinForm K M) :
+    B.Nondegenerate ↔ ∃ p : NumberFieldPlace K, (B.baseChange (completion K p)).Nondegenerate := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (bilinForm_nondegenerate_iff_baseChange
+        (L := completion K (witnessPlace K)) B).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (bilinForm_nondegenerate_iff_baseChange (L := completion K p) B).mpr hp
+
+/-- Nondegeneracy of a finite-dimensional `F(t)`-bilinear form can be certified at one
+completion. -/
+theorem rationalFunction_bilinForm_nondegenerate_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    [FiniteDimensional (RatFunc F) M] (B : LinearMap.BilinForm (RatFunc F) M) :
+    B.Nondegenerate ↔ ∃ p : RationalFunctionPlace F,
+      (B.baseChange (rationalFunctionCompletion F p)).Nondegenerate := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (bilinForm_nondegenerate_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) B).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (bilinForm_nondegenerate_iff_baseChange
+      (L := rationalFunctionCompletion F p) B).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

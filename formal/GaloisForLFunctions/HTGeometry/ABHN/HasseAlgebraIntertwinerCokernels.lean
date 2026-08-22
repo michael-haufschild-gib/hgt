@@ -100,4 +100,44 @@ theorem rationalFunctionLocalScalarExtensionMap_intertwiner_cokernel_finrank_eq_
       .infinite]
     exact h .infinite
 
+/-- A prescribed Sylvester-cokernel dimension over a number field can be certified at one
+completion. -/
+theorem numberFieldLocalScalarExtensionMap_intertwiner_cokernel_finrank_eq_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, w} K) (a b : A.carrier) (d : ℕ) :
+    Module.finrank K (A.carrier ⧸ LinearMap.range
+      (LinearMap.mulLeft K a - LinearMap.mulRight K b)) = d ↔
+      ∃ p : NumberFieldPlace K,
+        Module.finrank (completion K p) ((completion K p ⊗[K] A.carrier) ⧸ LinearMap.range
+          (LinearMap.mulLeft (completion K p) (numberFieldLocalScalarExtensionMap K p A a) -
+            LinearMap.mulRight (completion K p)
+              (numberFieldLocalScalarExtensionMap K p A b))) = d := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberFieldLocalScalarExtensionMap_intertwiner_cokernel_finrank_completion K A a b
+        (witnessPlace K)).trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (numberFieldLocalScalarExtensionMap_intertwiner_cokernel_finrank_completion K A a b p).symm.trans hp
+
+/-- A prescribed Sylvester-cokernel dimension over `F(t)` can be certified at one completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_intertwiner_cokernel_finrank_eq_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F))
+    (a b : A.carrier) (d : ℕ) :
+    Module.finrank (RatFunc F) (A.carrier ⧸ LinearMap.range
+      (LinearMap.mulLeft (RatFunc F) a - LinearMap.mulRight (RatFunc F) b)) = d ↔
+      ∃ p : RationalFunctionPlace F,
+        Module.finrank (rationalFunctionCompletion F p)
+          ((rationalFunctionCompletion F p ⊗[RatFunc F] A.carrier) ⧸ LinearMap.range
+            (LinearMap.mulLeft (rationalFunctionCompletion F p)
+              (rationalFunctionLocalScalarExtensionMap F p A a) -
+              LinearMap.mulRight (rationalFunctionCompletion F p)
+                (rationalFunctionLocalScalarExtensionMap F p A b))) = d := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunctionLocalScalarExtensionMap_intertwiner_cokernel_finrank_completion F A a b
+        .infinite).trans h⟩
+  · rintro ⟨p, hp⟩
+    exact (rationalFunctionLocalScalarExtensionMap_intertwiner_cokernel_finrank_completion F A a b p).symm.trans hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

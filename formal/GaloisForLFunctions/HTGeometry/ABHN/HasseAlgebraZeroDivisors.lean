@@ -97,4 +97,62 @@ theorem rationalFunction_exists_nonzero_mulRight_eq_zero_iff_forall_place
     exact (scalarExtensionMap_exists_nonzero_mulRight_eq_zero_iff
       (L := rationalFunctionCompletion F .infinite) A a).mpr (h .infinite)
 
+/-- A nonzero left annihilator of a number-field CSA element is detected at one completion. -/
+theorem numberField_exists_nonzero_mulLeft_eq_zero_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, w} K) (a : A.carrier) :
+    (∃ x, x ≠ 0 ∧ a * x = 0) ↔ ∃ p : NumberFieldPlace K, ∃ z, z ≠ 0 ∧
+      numberFieldLocalScalarExtensionMap K p A a * z = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_exists_nonzero_mulLeft_eq_zero_iff
+        (L := completion K (witnessPlace K)) A a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_nonzero_mulLeft_eq_zero_iff
+      (L := completion K p) A a).mpr hp
+
+/-- A nonzero right annihilator of a number-field CSA element is detected at one completion. -/
+theorem numberField_exists_nonzero_mulRight_eq_zero_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (A : CSA.{u, w} K) (a : A.carrier) :
+    (∃ x, x ≠ 0 ∧ x * a = 0) ↔ ∃ p : NumberFieldPlace K, ∃ z, z ≠ 0 ∧
+      z * numberFieldLocalScalarExtensionMap K p A a = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_exists_nonzero_mulRight_eq_zero_iff
+        (L := completion K (witnessPlace K)) A a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_nonzero_mulRight_eq_zero_iff
+      (L := completion K p) A a).mpr hp
+
+/-- A nonzero left annihilator of a rational-function-field CSA element is detected at one finite
+or infinite completion. -/
+theorem rationalFunction_exists_nonzero_mulLeft_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F)) (a : A.carrier) :
+    (∃ x, x ≠ 0 ∧ a * x = 0) ↔ ∃ p : RationalFunctionPlace F, ∃ z, z ≠ 0 ∧
+      rationalFunctionLocalScalarExtensionMap F p A a * z = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_exists_nonzero_mulLeft_eq_zero_iff
+        (L := rationalFunctionCompletion F .infinite) A a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_nonzero_mulLeft_eq_zero_iff
+      (L := rationalFunctionCompletion F p) A a).mpr hp
+
+/-- A nonzero right annihilator of a rational-function-field CSA element is detected at one
+finite or infinite completion. -/
+theorem rationalFunction_exists_nonzero_mulRight_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (A : CSA.{u, w} (RatFunc F)) (a : A.carrier) :
+    (∃ x, x ≠ 0 ∧ x * a = 0) ↔ ∃ p : RationalFunctionPlace F, ∃ z, z ≠ 0 ∧
+      z * rationalFunctionLocalScalarExtensionMap F p A a = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_exists_nonzero_mulRight_eq_zero_iff
+        (L := rationalFunctionCompletion F .infinite) A a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_exists_nonzero_mulRight_eq_zero_iff
+      (L := rationalFunctionCompletion F p) A a).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

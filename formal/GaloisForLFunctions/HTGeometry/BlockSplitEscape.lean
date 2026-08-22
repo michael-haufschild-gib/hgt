@@ -124,6 +124,25 @@ theorem exists_ne_zero_blockSplitRelation {ι : Type*} [Fintype ι] (c : ℝ) (�
   filter_upwards [hV] with u hu
   exact hcon u hu
 
+/-- **Escape from every constant.** A nonzero reciprocal-gap curvature
+prevents a block-split spectral action from agreeing locally with any
+constant value, not only with zero. -/
+theorem exists_ne_const_blockSplitRelation
+    {ι : Type*} [Fintype ι]
+    (c target : ℝ) (β d : ι → ℝ)
+    (hd : ∀ i, d i ≠ 0)
+    (hweight : ∑ i, β i * (1 / |d i|) ≠ 0)
+    {V : Set ℝ} (hV : V ∈ 𝓝 (0 : ℝ)) :
+    ∃ u ∈ V, blockSplitRelation c β d u ≠ target := by
+  obtain ⟨u, hu, hune⟩ :=
+    exists_ne_zero_blockSplitRelation
+      (c - target) β d hd hweight hV
+  refine ⟨u, hu, ?_⟩
+  intro heq
+  apply hune
+  simp only [blockSplitRelation] at heq ⊢
+  linarith
+
 end
 
 end GaloisForLFunctions.HTGeometry

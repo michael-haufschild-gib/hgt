@@ -178,4 +178,97 @@ theorem rationalFunctionLinearMap_bijective_iff_forall_place (F : Type u)
     exact (linearMap_bijective_iff_baseChange_bijective
       (L := rationalFunctionCompletion F .infinite) f).mpr (h .infinite)
 
+/-- Injectivity of a number-field linear map is detected at one completion. -/
+theorem numberFieldLinearMap_injective_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N] (f : M →ₗ[K] N) :
+    Function.Injective f ↔ ∃ p : NumberFieldPlace K,
+      Function.Injective (f.baseChange (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_injective_iff_baseChange_injective
+        (L := completion K (witnessPlace K)) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_injective_iff_baseChange_injective (L := completion K p) f).mpr hp
+
+/-- Surjectivity of a number-field linear map is detected at one completion. -/
+theorem numberFieldLinearMap_surjective_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N] (f : M →ₗ[K] N) :
+    Function.Surjective f ↔ ∃ p : NumberFieldPlace K,
+      Function.Surjective (f.baseChange (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_surjective_iff_baseChange_surjective
+        (L := completion K (witnessPlace K)) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_surjective_iff_baseChange_surjective (L := completion K p) f).mpr hp
+
+/-- Bijectivity of a number-field linear map is detected at one completion. -/
+theorem numberFieldLinearMap_bijective_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N] (f : M →ₗ[K] N) :
+    Function.Bijective f ↔ ∃ p : NumberFieldPlace K,
+      Function.Bijective (f.baseChange (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (linearMap_bijective_iff_baseChange_bijective
+        (L := completion K (witnessPlace K)) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_bijective_iff_baseChange_bijective (L := completion K p) f).mpr hp
+
+/-- Injectivity of a rational-function-field linear map is detected at one finite or infinite
+completion. -/
+theorem rationalFunctionLinearMap_injective_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module (RatFunc F) M] [AddCommGroup N] [Module (RatFunc F) N]
+    (f : M →ₗ[RatFunc F] N) :
+    Function.Injective f ↔ ∃ p : RationalFunctionPlace F,
+      Function.Injective (f.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_injective_iff_baseChange_injective
+        (L := rationalFunctionCompletion F .infinite) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_injective_iff_baseChange_injective
+      (L := rationalFunctionCompletion F p) f).mpr hp
+
+/-- Surjectivity of a rational-function-field linear map is detected at one finite or infinite
+completion. -/
+theorem rationalFunctionLinearMap_surjective_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module (RatFunc F) M] [AddCommGroup N] [Module (RatFunc F) N]
+    (f : M →ₗ[RatFunc F] N) :
+    Function.Surjective f ↔ ∃ p : RationalFunctionPlace F,
+      Function.Surjective (f.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_surjective_iff_baseChange_surjective
+        (L := rationalFunctionCompletion F .infinite) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_surjective_iff_baseChange_surjective
+      (L := rationalFunctionCompletion F p) f).mpr hp
+
+/-- Bijectivity of a rational-function-field linear map is detected at one finite or infinite
+completion. -/
+theorem rationalFunctionLinearMap_bijective_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module (RatFunc F) M] [AddCommGroup N] [Module (RatFunc F) N]
+    (f : M →ₗ[RatFunc F] N) :
+    Function.Bijective f ↔ ∃ p : RationalFunctionPlace F,
+      Function.Bijective (f.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (linearMap_bijective_iff_baseChange_bijective
+        (L := rationalFunctionCompletion F .infinite) f).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (linearMap_bijective_iff_baseChange_bijective
+      (L := rationalFunctionCompletion F p) f).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

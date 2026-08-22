@@ -65,4 +65,30 @@ theorem rationalFunction_subalgebra_lt_iff_forall_place (F : Type u)
     exact (subalgebra_lt_iff_baseChange_lt
       (L := rationalFunctionCompletion F .infinite) C D).mpr (h .infinite)
 
+/-- Strict containment of two fixed number-field subalgebras is certified at one completion. -/
+theorem numberField_subalgebra_lt_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [Ring A] [Algebra K A]
+    (C D : Subalgebra K A) : C < D ↔
+      ∃ p : NumberFieldPlace K, C.baseChange (completion K p) < D.baseChange (completion K p) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (subalgebra_lt_iff_baseChange_lt (L := completion K (witnessPlace K)) C D).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (subalgebra_lt_iff_baseChange_lt (L := completion K p) C D).mpr hp
+
+/-- Strict containment of two fixed `F(t)`-subalgebras is certified at one completion. -/
+theorem rationalFunction_subalgebra_lt_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [Ring A] [Algebra (RatFunc F) A]
+    (C D : Subalgebra (RatFunc F) A) : C < D ↔
+      ∃ p : RationalFunctionPlace F,
+        C.baseChange (rationalFunctionCompletion F p) <
+          D.baseChange (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (subalgebra_lt_iff_baseChange_lt (L := rationalFunctionCompletion F .infinite) C D).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (subalgebra_lt_iff_baseChange_lt (L := rationalFunctionCompletion F p) C D).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

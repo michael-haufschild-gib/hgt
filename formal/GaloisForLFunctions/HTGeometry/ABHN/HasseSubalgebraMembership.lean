@@ -130,4 +130,35 @@ theorem rationalFunctionLocalScalarExtensionMap_mem_subalgebraBaseChange_iff_for
     exact (scalarExtensionMap_mem_subalgebraBaseChange_iff
       (K := RatFunc F) (L := rationalFunctionCompletion F .infinite) A C a).mpr (h .infinite)
 
+/-- Membership of an element in a fixed number-field subalgebra is certified at one completion. -/
+theorem numberFieldLocalScalarExtensionMap_mem_subalgebraBaseChange_iff_exists_place
+    (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, v} K) (C : Subalgebra K A.carrier) (a : A.carrier) :
+    a ∈ C ↔ ∃ p : NumberFieldPlace K,
+      numberFieldLocalScalarExtensionMap K p A a ∈ C.baseChange (completion K p) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_mem_subalgebraBaseChange_iff
+        (K := K) (L := completion K (witnessPlace K)) A C a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_mem_subalgebraBaseChange_iff
+      (K := K) (L := completion K p) A C a).mpr hp
+
+/-- Membership of an element in a fixed `F(t)`-subalgebra is certified at one completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_mem_subalgebraBaseChange_iff_exists_place
+    (F : Type u) [Field F] [Finite F]
+    (A : CSA.{u, v} (RatFunc F)) (C : Subalgebra (RatFunc F) A.carrier) (a : A.carrier) :
+    a ∈ C ↔ ∃ p : RationalFunctionPlace F,
+      rationalFunctionLocalScalarExtensionMap F p A a ∈
+        C.baseChange (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_mem_subalgebraBaseChange_iff
+        (K := RatFunc F) (L := rationalFunctionCompletion F .infinite) A C a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_mem_subalgebraBaseChange_iff
+      (K := RatFunc F) (L := rationalFunctionCompletion F p) A C a).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

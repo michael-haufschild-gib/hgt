@@ -338,4 +338,155 @@ theorem rationalFunction_quadraticForm_not_anisotropic_of_forall_place (F : Type
   exact h (quadraticForm_anisotropic_of_baseChange Q (by
     simpa only [rationalFunctionQuadraticFormBaseChange] using hp))
 
+/-- Equality of fixed number-field quadratic forms can be certified at one completion. -/
+theorem numberField_quadraticForm_eq_iff_exists_place (K : Type u) [Field K] [NumberField K]
+    {M : Type w} [AddCommGroup M] [Module K M]
+    (Q₁ Q₂ : QuadraticForm K M) :
+    Q₁ = Q₂ ↔ ∃ p : NumberFieldPlace K,
+      numberFieldQuadraticFormBaseChange K Q₁ p = numberFieldQuadraticFormBaseChange K Q₂ p := by
+  letI : Invertible (2 : K) := invertibleOfNonzero two_ne_zero
+  constructor
+  · intro h
+    exact ⟨witnessPlace K, by simpa only [numberFieldQuadraticFormBaseChange] using
+      (quadraticForm_eq_iff_baseChange_eq (L := completion K (witnessPlace K)) Q₁ Q₂).mp h⟩
+  · rintro ⟨p, hp⟩
+    apply (quadraticForm_eq_iff_baseChange_eq (L := completion K p) Q₁ Q₂).mpr
+    simpa only [numberFieldQuadraticFormBaseChange] using hp
+
+/-- Equality of fixed `F(t)`-quadratic forms can be certified at one completion. -/
+theorem rationalFunction_quadraticForm_eq_iff_exists_place (F : Type u)
+    [Field F] [Finite F] [Invertible (2 : RatFunc F)]
+    {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (Q₁ Q₂ : QuadraticForm (RatFunc F) M) :
+    Q₁ = Q₂ ↔ ∃ p : RationalFunctionPlace F,
+      Q₁.baseChange (rationalFunctionCompletion F p) =
+        Q₂.baseChange (rationalFunctionCompletion F p) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (quadraticForm_eq_iff_baseChange_eq
+        (L := rationalFunctionCompletion F .infinite) Q₁ Q₂).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (quadraticForm_eq_iff_baseChange_eq
+      (L := rationalFunctionCompletion F p) Q₁ Q₂).mpr hp
+
+/-- Nondegeneracy of a finite-dimensional number-field quadratic form can be certified at one
+completion. -/
+theorem numberField_quadraticForm_nondegenerate_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    [FiniteDimensional K M] (Q : QuadraticForm K M) :
+    Q.Nondegenerate ↔ ∃ p : NumberFieldPlace K,
+      (numberFieldQuadraticFormBaseChange K Q p).Nondegenerate := by
+  letI : Invertible (2 : K) := invertibleOfNonzero two_ne_zero
+  constructor
+  · intro h
+    exact ⟨witnessPlace K, by simpa only [numberFieldQuadraticFormBaseChange] using
+      (quadraticForm_nondegenerate_iff_baseChange
+        (L := completion K (witnessPlace K)) Q).mp h⟩
+  · rintro ⟨p, hp⟩
+    apply (quadraticForm_nondegenerate_iff_baseChange (L := completion K p) Q).mpr
+    simpa only [numberFieldQuadraticFormBaseChange] using hp
+
+/-- Nondegeneracy of a finite-dimensional `F(t)`-quadratic form can be certified at one
+completion. -/
+theorem rationalFunction_quadraticForm_nondegenerate_iff_exists_place (F : Type u)
+    [Field F] [Finite F] [Invertible (2 : RatFunc F)] {M : Type w} [AddCommGroup M]
+    [Module (RatFunc F) M] [FiniteDimensional (RatFunc F) M] (Q : QuadraticForm (RatFunc F) M) :
+    Q.Nondegenerate ↔ ∃ p : RationalFunctionPlace F,
+      (rationalFunctionQuadraticFormBaseChange F Q p).Nondegenerate := by
+  constructor
+  · intro h
+    exact ⟨.infinite, by simpa only [rationalFunctionQuadraticFormBaseChange] using
+      (quadraticForm_nondegenerate_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) Q).mp h⟩
+  · rintro ⟨p, hp⟩
+    apply (quadraticForm_nondegenerate_iff_baseChange
+      (L := rationalFunctionCompletion F p) Q).mpr
+    simpa only [rationalFunctionQuadraticFormBaseChange] using hp
+
+/-- Vanishing of a fixed number-field quadratic-form value can be certified at one completion. -/
+theorem numberField_quadraticForm_apply_eq_zero_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (Q : QuadraticForm K M) (x : M) : Q x = 0 ↔ ∃ p : NumberFieldPlace K,
+      numberFieldQuadraticFormBaseChange K Q p (1 ⊗ₜ[K] x) = 0 := by
+  letI : Invertible (2 : K) := invertibleOfNonzero two_ne_zero
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberField_quadraticForm_apply_eq_zero_iff_forall_place K Q x).mp h (witnessPlace K)⟩
+  · rintro ⟨p, hp⟩
+    exact (quadraticForm_apply_eq_zero_iff_baseChange_tmul
+      (L := completion K p) Q x).mpr (by
+        simpa only [numberFieldQuadraticFormBaseChange] using hp)
+
+/-- Vanishing of a fixed `F(t)`-quadratic-form value can be certified at one completion. -/
+theorem rationalFunction_quadraticForm_apply_eq_zero_iff_exists_place
+    (F : Type u) [Field F] [Finite F] [Invertible (2 : RatFunc F)]
+    {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (Q : QuadraticForm (RatFunc F) M) (x : M) : Q x = 0 ↔ ∃ p : RationalFunctionPlace F,
+      rationalFunctionQuadraticFormBaseChange F Q p (1 ⊗ₜ[RatFunc F] x) = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunction_quadraticForm_apply_eq_zero_iff_forall_place F Q x).mp h .infinite⟩
+  · rintro ⟨p, hp⟩
+    exact (quadraticForm_apply_eq_zero_iff_baseChange_tmul
+      (L := rationalFunctionCompletion F p) Q x).mpr (by
+        simpa only [rationalFunctionQuadraticFormBaseChange] using hp)
+
+/-- A fixed nonzero isotropic vector over a number field can be certified at one completion. -/
+theorem numberField_quadraticForm_isotropicVector_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (Q : QuadraticForm K M) (x : M) : x ≠ 0 ∧ Q x = 0 ↔ ∃ p : NumberFieldPlace K,
+      (1 ⊗ₜ[K] x : completion K p ⊗[K] M) ≠ 0 ∧
+        numberFieldQuadraticFormBaseChange K Q p (1 ⊗ₜ[K] x) = 0 := by
+  letI : Invertible (2 : K) := invertibleOfNonzero two_ne_zero
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (numberField_quadraticForm_isotropicVector_iff_forall_place K Q x).mp h (witnessPlace K)⟩
+  · rintro ⟨p, hp⟩
+    exact (quadraticForm_isotropicVector_iff_baseChange_tmul
+      (L := completion K p) Q x).mpr (by
+        simpa only [numberFieldQuadraticFormBaseChange] using hp)
+
+/-- A fixed nonzero isotropic vector over `F(t)` can be certified at one completion. -/
+theorem rationalFunction_quadraticForm_isotropicVector_iff_exists_place
+    (F : Type u) [Field F] [Finite F] [Invertible (2 : RatFunc F)]
+    {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (Q : QuadraticForm (RatFunc F) M) (x : M) : x ≠ 0 ∧ Q x = 0 ↔
+      ∃ p : RationalFunctionPlace F,
+        (1 ⊗ₜ[RatFunc F] x : rationalFunctionCompletion F p ⊗[RatFunc F] M) ≠ 0 ∧
+          rationalFunctionQuadraticFormBaseChange F Q p (1 ⊗ₜ[RatFunc F] x) = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (rationalFunction_quadraticForm_isotropicVector_iff_forall_place F Q x).mp h .infinite⟩
+  · rintro ⟨p, hp⟩
+    exact (quadraticForm_isotropicVector_iff_baseChange_tmul
+      (L := rationalFunctionCompletion F p) Q x).mpr (by
+        simpa only [rationalFunctionQuadraticFormBaseChange] using hp)
+
+/-- Anisotropy of a number-field quadratic form descends from any one completed place. -/
+theorem numberField_quadraticForm_anisotropic_of_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (Q : QuadraticForm K M)
+    (h : ∃ p : NumberFieldPlace K, (numberFieldQuadraticFormBaseChange K Q p).Anisotropic) :
+    Q.Anisotropic := by
+  letI : Invertible (2 : K) := invertibleOfNonzero two_ne_zero
+  obtain ⟨p, hp⟩ := h
+  apply quadraticForm_anisotropic_of_baseChange (L := completion K p) Q
+  simpa only [numberFieldQuadraticFormBaseChange] using hp
+
+/-- Anisotropy of an `F(t)`-quadratic form descends from any one completed place. -/
+theorem rationalFunction_quadraticForm_anisotropic_of_exists_place (F : Type u)
+    [Field F] [Finite F] [Invertible (2 : RatFunc F)] {M : Type w} [AddCommGroup M]
+    [Module (RatFunc F) M] (Q : QuadraticForm (RatFunc F) M)
+    (h : ∃ p : RationalFunctionPlace F,
+      (rationalFunctionQuadraticFormBaseChange F Q p).Anisotropic) : Q.Anisotropic := by
+  obtain ⟨p, hp⟩ := h
+  apply quadraticForm_anisotropic_of_baseChange
+    (L := rationalFunctionCompletion F p) Q
+  simpa only [rationalFunctionQuadraticFormBaseChange] using hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

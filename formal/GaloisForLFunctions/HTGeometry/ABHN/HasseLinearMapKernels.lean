@@ -64,4 +64,33 @@ theorem rationalFunction_submodule_eq_ker_iff_forall_place (F : Type u)
     apply Submodule.baseChange_injective (A := rationalFunctionCompletion F .infinite)
     rw [h .infinite, linearMap_ker_baseChange]
 
+/-- A number-field submodule is a given kernel exactly when this holds at one completion. -/
+theorem numberField_submodule_eq_ker_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N]
+    (S : Submodule K M) (f : M →ₗ[K] N) :
+    S = LinearMap.ker f ↔ ∃ p : NumberFieldPlace K,
+      S.baseChange (completion K p) = LinearMap.ker (f.baseChange (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K, by rw [h, linearMap_ker_baseChange]⟩
+  · rintro ⟨p, hp⟩
+    apply Submodule.baseChange_injective (A := completion K p)
+    rw [hp, linearMap_ker_baseChange]
+
+/-- An `F(t)`-submodule is a given kernel exactly when this holds at one completion. -/
+theorem rationalFunction_submodule_eq_ker_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} {N : Type x}
+    [AddCommGroup M] [Module (RatFunc F) M] [AddCommGroup N] [Module (RatFunc F) N]
+    (S : Submodule (RatFunc F) M) (f : M →ₗ[RatFunc F] N) :
+    S = LinearMap.ker f ↔ ∃ p : RationalFunctionPlace F,
+      S.baseChange (rationalFunctionCompletion F p) =
+        LinearMap.ker (f.baseChange (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite, by rw [h, linearMap_ker_baseChange]⟩
+  · rintro ⟨p, hp⟩
+    apply Submodule.baseChange_injective (A := rationalFunctionCompletion F p)
+    rw [hp, linearMap_ker_baseChange]
+
 end GaloisForLFunctions.HTGeometry.ABHN

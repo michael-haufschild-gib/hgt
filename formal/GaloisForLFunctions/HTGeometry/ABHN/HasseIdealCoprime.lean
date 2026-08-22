@@ -74,4 +74,31 @@ theorem rationalFunction_ideal_isCoprime_iff_forall_place (F : Type u)
     exact (ideal_isCoprime_iff_tensorProduct
       (L := rationalFunctionCompletion F .infinite) I J).mpr (h .infinite)
 
+/-- Coprimality of fixed ideals in a number-field algebra is certified at one completion. -/
+theorem numberField_ideal_isCoprime_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] (I J : Ideal A) :
+    IsCoprime I J ↔ ∃ p : NumberFieldPlace K,
+      IsCoprime (I.map (algebraMap A (completion K p ⊗[K] A)))
+        (J.map (algebraMap A (completion K p ⊗[K] A))) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (ideal_isCoprime_iff_tensorProduct (L := completion K (witnessPlace K)) I J).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_isCoprime_iff_tensorProduct (L := completion K p) I J).mpr hp
+
+/-- Coprimality of fixed ideals in an `F(t)`-algebra is certified at one completion. -/
+theorem rationalFunction_ideal_isCoprime_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] (I J : Ideal A) :
+    IsCoprime I J ↔ ∃ p : RationalFunctionPlace F,
+      IsCoprime (I.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A)))
+        (J.map (algebraMap A (rationalFunctionCompletion F p ⊗[RatFunc F] A))) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (ideal_isCoprime_iff_tensorProduct
+        (L := rationalFunctionCompletion F .infinite) I J).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (ideal_isCoprime_iff_tensorProduct (L := rationalFunctionCompletion F p) I J).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

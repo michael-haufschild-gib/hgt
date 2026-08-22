@@ -59,4 +59,32 @@ theorem rationalFunction_module_isArtinian_iff_forall_place (F : Type u)
     exact (module_isArtinian_iff_tensorProduct_isArtinian
       (L := rationalFunctionCompletion F .infinite)).mpr (h .infinite)
 
+/-- The Artinian property of a number-field module can be certified at one completion. -/
+theorem numberField_module_isArtinian_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M] :
+    IsArtinian K M ↔ ∃ p : NumberFieldPlace K,
+      IsArtinian (completion K p) (completion K p ⊗[K] M) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (module_isArtinian_iff_tensorProduct_isArtinian
+        (L := completion K (witnessPlace K))).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (module_isArtinian_iff_tensorProduct_isArtinian (L := completion K p)).mpr hp
+
+/-- The Artinian property of an `F(t)`-module can be certified at one completion. -/
+theorem rationalFunction_module_isArtinian_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M] :
+    IsArtinian (RatFunc F) M ↔ ∃ p : RationalFunctionPlace F,
+      IsArtinian (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] M) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (module_isArtinian_iff_tensorProduct_isArtinian
+        (L := rationalFunctionCompletion F .infinite)).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (module_isArtinian_iff_tensorProduct_isArtinian
+      (L := rationalFunctionCompletion F p)).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

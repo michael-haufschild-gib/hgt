@@ -121,4 +121,73 @@ theorem rationalFunctionMatrix_infinitesimallyPreservesForm_iff_forall_place
     exact (matrix_infinitesimallyPreservesForm_iff_map
       (L := rationalFunctionCompletion F .infinite) J M).mpr (h .infinite)
 
+/-- Preservation of a fixed form by a number-field matrix can be certified at one completion. -/
+theorem numberFieldMatrix_preservesForm_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (J M : Matrix n n K) :
+    M.transpose * J * M = J ↔ ∃ p : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K p))).transpose *
+          (J.map (algebraMap K (completion K p))) *
+          M.map (algebraMap K (completion K p)) = J.map (algebraMap K (completion K p)) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_preservesForm_iff_map (L := completion K (witnessPlace K)) J M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_preservesForm_iff_map (L := completion K p) J M).mpr hp
+
+/-- Preservation of a fixed form by an `F(t)`-matrix can be certified at one completion. -/
+theorem rationalFunctionMatrix_preservesForm_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (J M : Matrix n n (RatFunc F)) :
+    M.transpose * J * M = J ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))).transpose *
+          (J.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) *
+          M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)) =
+            J.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_preservesForm_iff_map
+        (L := rationalFunctionCompletion F .infinite) J M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_preservesForm_iff_map (L := rationalFunctionCompletion F p) J M).mpr hp
+
+/-- Infinitesimal preservation of a fixed form by a number-field matrix can be certified at one
+completion. -/
+theorem numberFieldMatrix_infinitesimallyPreservesForm_iff_exists_place
+    (K : Type u) [Field K] [NumberField K] (n : Type w) [Fintype n] [DecidableEq n]
+    (J M : Matrix n n K) :
+    M.transpose * J + J * M = 0 ↔ ∃ p : NumberFieldPlace K,
+      (M.map (algebraMap K (completion K p))).transpose *
+          (J.map (algebraMap K (completion K p))) +
+          (J.map (algebraMap K (completion K p))) *
+            M.map (algebraMap K (completion K p)) = 0 := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (matrix_infinitesimallyPreservesForm_iff_map
+        (L := completion K (witnessPlace K)) J M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_infinitesimallyPreservesForm_iff_map (L := completion K p) J M).mpr hp
+
+/-- Infinitesimal preservation of a fixed form by an `F(t)`-matrix can be certified at one
+completion. -/
+theorem rationalFunctionMatrix_infinitesimallyPreservesForm_iff_exists_place
+    (F : Type u) [Field F] [Finite F] (n : Type w) [Fintype n] [DecidableEq n]
+    (J M : Matrix n n (RatFunc F)) :
+    M.transpose * J + J * M = 0 ↔ ∃ p : RationalFunctionPlace F,
+      (M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))).transpose *
+          (J.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) +
+          (J.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p))) *
+            M.map (algebraMap (RatFunc F) (rationalFunctionCompletion F p)) = 0 := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (matrix_infinitesimallyPreservesForm_iff_map
+        (L := rationalFunctionCompletion F .infinite) J M).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (matrix_infinitesimallyPreservesForm_iff_map
+      (L := rationalFunctionCompletion F p) J M).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

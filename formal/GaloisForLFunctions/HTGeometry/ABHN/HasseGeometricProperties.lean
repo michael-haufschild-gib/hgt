@@ -169,4 +169,116 @@ theorem rationalFunction_algebra_finiteEtale_iff_forall_place (F : Type u)
     exact (Algebra.finiteEtale_iff_tensorProduct
       (L := rationalFunctionCompletion F .infinite)).mpr (h .infinite)
 
+/-- Smoothness of a number-field algebra can be certified at one completion. -/
+theorem numberField_algebra_smooth_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] :
+    Algebra.Smooth K A ↔ ∃ p : NumberFieldPlace K,
+      Algebra.Smooth (completion K p) (completion K p ⊗[K] A) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_smooth_iff_tensorProduct_smooth
+        (L := completion K (witnessPlace K))).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_smooth_iff_tensorProduct_smooth (L := completion K p)).mpr hp
+
+/-- Smoothness of an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_algebra_smooth_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] :
+    Algebra.Smooth (RatFunc F) A ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.Smooth (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] A) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_smooth_iff_tensorProduct_smooth
+        (L := rationalFunctionCompletion F .infinite)).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_smooth_iff_tensorProduct_smooth
+      (L := rationalFunctionCompletion F p)).mpr hp
+
+/-- Unramifiedness of a number-field algebra can be certified at one completion. -/
+theorem numberField_algebra_unramified_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] :
+    Algebra.Unramified K A ↔ ∃ p : NumberFieldPlace K,
+      Algebra.Unramified (completion K p) (completion K p ⊗[K] A) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_unramified_iff_tensorProduct_unramified
+        (L := completion K (witnessPlace K))).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_unramified_iff_tensorProduct_unramified (L := completion K p)).mpr hp
+
+/-- Unramifiedness of an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_algebra_unramified_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] :
+    Algebra.Unramified (RatFunc F) A ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.Unramified (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] A) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_unramified_iff_tensorProduct_unramified
+        (L := rationalFunctionCompletion F .infinite)).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_unramified_iff_tensorProduct_unramified
+      (L := rationalFunctionCompletion F p)).mpr hp
+
+/-- Étaleness of a number-field algebra can be certified at one completion. -/
+theorem numberField_algebra_etale_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] :
+    Algebra.Etale K A ↔ ∃ p : NumberFieldPlace K,
+      Algebra.Etale (completion K p) (completion K p ⊗[K] A) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (algebra_etale_iff_tensorProduct_etale
+        (L := completion K (witnessPlace K))).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_etale_iff_tensorProduct_etale (L := completion K p)).mpr hp
+
+/-- Étaleness of an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_algebra_etale_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] :
+    Algebra.Etale (RatFunc F) A ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.Etale (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] A) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (algebra_etale_iff_tensorProduct_etale
+        (L := rationalFunctionCompletion F .infinite)).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (algebra_etale_iff_tensorProduct_etale
+      (L := rationalFunctionCompletion F p)).mpr hp
+
+/-- Finite étaleness of a number-field algebra can be certified at one completion. -/
+theorem numberField_algebra_finiteEtale_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {A : Type w} [CommRing A] [Algebra K A] :
+    Algebra.FiniteEtale K A ↔ ∃ p : NumberFieldPlace K,
+      Algebra.FiniteEtale (completion K p) (completion K p ⊗[K] A) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (Algebra.finiteEtale_iff_tensorProduct
+        (L := completion K (witnessPlace K))).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (Algebra.finiteEtale_iff_tensorProduct (L := completion K p)).mpr hp
+
+/-- Finite étaleness of an `F(t)`-algebra can be certified at one completion. -/
+theorem rationalFunction_algebra_finiteEtale_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {A : Type w} [CommRing A] [Algebra (RatFunc F) A] :
+    Algebra.FiniteEtale (RatFunc F) A ↔ ∃ p : RationalFunctionPlace F,
+      Algebra.FiniteEtale (rationalFunctionCompletion F p)
+        (rationalFunctionCompletion F p ⊗[RatFunc F] A) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (Algebra.finiteEtale_iff_tensorProduct
+        (L := rationalFunctionCompletion F .infinite)).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (Algebra.finiteEtale_iff_tensorProduct
+      (L := rationalFunctionCompletion F p)).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

@@ -83,4 +83,33 @@ theorem rationalFunctionLocalScalarExtensionMap_isUnit_iff_forall_place
     exact (scalarExtensionMap_isUnit_iff (L := rationalFunctionCompletion F .infinite) A a).mpr
       (h .infinite)
 
+/-- Invertibility of a number-field CSA element is detected at one completion. -/
+theorem numberFieldLocalScalarExtensionMap_isUnit_iff_exists_place
+    (K : Type u) [Field K] [NumberField K]
+    (A : CSA.{u, v} K) (a : A.carrier) :
+    IsUnit a ↔ ∃ p : NumberFieldPlace K,
+      IsUnit (numberFieldLocalScalarExtensionMap K p A a) := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (scalarExtensionMap_isUnit_iff (L := completion K (witnessPlace K)) A a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_isUnit_iff (L := completion K p) A a).mpr hp
+
+/-- Invertibility of a rational-function-field CSA element is detected at one finite or infinite
+completion. -/
+theorem rationalFunctionLocalScalarExtensionMap_isUnit_iff_exists_place
+    (F : Type u) [Field F] [Finite F]
+    (A : CSA.{u, v} (RatFunc F)) (a : A.carrier) :
+    IsUnit a ↔ ∃ p : RationalFunctionPlace F,
+      IsUnit (rationalFunctionLocalScalarExtensionMap F p A a) := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (scalarExtensionMap_isUnit_iff
+        (L := rationalFunctionCompletion F .infinite) A a).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (scalarExtensionMap_isUnit_iff
+      (L := rationalFunctionCompletion F p) A a).mpr hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

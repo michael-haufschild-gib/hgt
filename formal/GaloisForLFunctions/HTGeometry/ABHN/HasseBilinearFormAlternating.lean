@@ -162,4 +162,48 @@ theorem rationalFunction_bilinForm_isRefl_of_forall_place (F : Type u)
     (L := rationalFunctionCompletion F RationalFunctionPlace.infinite) B
     (h RationalFunctionPlace.infinite)
 
+/-- Alternation of a fixed bilinear form over a number field is certified at any one completed
+place. -/
+theorem numberField_bilinForm_isAlt_iff_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (B : LinearMap.BilinForm K M) :
+    B.IsAlt ↔ ∃ p : NumberFieldPlace K, (B.baseChange (completion K p)).IsAlt := by
+  constructor
+  · intro h
+    exact ⟨witnessPlace K,
+      (bilinForm_isAlt_iff_baseChange (L := completion K (witnessPlace K)) B).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (bilinForm_isAlt_iff_baseChange (L := completion K p) B).mpr hp
+
+/-- Alternation of a fixed bilinear form over `F(t)` is certified at any one completed place. -/
+theorem rationalFunction_bilinForm_isAlt_iff_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (B : LinearMap.BilinForm (RatFunc F) M) :
+    B.IsAlt ↔ ∃ p : RationalFunctionPlace F,
+      (B.baseChange (rationalFunctionCompletion F p)).IsAlt := by
+  constructor
+  · intro h
+    exact ⟨.infinite,
+      (bilinForm_isAlt_iff_baseChange
+        (L := rationalFunctionCompletion F .infinite) B).mp h⟩
+  · rintro ⟨p, hp⟩
+    exact (bilinForm_isAlt_iff_baseChange (L := rationalFunctionCompletion F p) B).mpr hp
+
+/-- Reflexivity of a fixed number-field bilinear form descends from any one completed place. -/
+theorem numberField_bilinForm_isRefl_of_exists_place (K : Type u)
+    [Field K] [NumberField K] {M : Type w} [AddCommGroup M] [Module K M]
+    (B : LinearMap.BilinForm K M)
+    (h : ∃ p : NumberFieldPlace K, (B.baseChange (completion K p)).IsRefl) : B.IsRefl := by
+  obtain ⟨p, hp⟩ := h
+  exact bilinForm_isRefl_of_baseChange (L := completion K p) B hp
+
+/-- Reflexivity of a fixed `F(t)`-bilinear form descends from any one completed place. -/
+theorem rationalFunction_bilinForm_isRefl_of_exists_place (F : Type u)
+    [Field F] [Finite F] {M : Type w} [AddCommGroup M] [Module (RatFunc F) M]
+    (B : LinearMap.BilinForm (RatFunc F) M)
+    (h : ∃ p : RationalFunctionPlace F,
+      (B.baseChange (rationalFunctionCompletion F p)).IsRefl) : B.IsRefl := by
+  obtain ⟨p, hp⟩ := h
+  exact bilinForm_isRefl_of_baseChange (L := rationalFunctionCompletion F p) B hp
+
 end GaloisForLFunctions.HTGeometry.ABHN

@@ -59,6 +59,128 @@ theorem
       (everyPermutation_has_exact_commonBase_twoLocalLoop
         m perm)
 
+/-- **Complex projective monodromy rigidity.** A complex spectral
+covector whose coefficients sum to zero cannot vanish after every
+realized closed two-local continuation unless the covector itself is
+zero.  Unlike the integer-character corollary below, this statement
+controls every affine direction in the projective spectrum. -/
+theorem
+    complexBalancedCoefficient_eq_zero_of_commonBaseTwoLocalMonodromyInvariant
+    (m : ℕ)
+    (coefficient : (Fin (m + 1) → Bool) → ℂ)
+    (hbalanced : ∑ x, coefficient x = 0)
+    (hinvariant :
+      CommonBaseTwoLocalMonodromyInvariantRelation m coefficient) :
+    coefficient = 0 := by
+  have hconstant : ∀ x y, coefficient x = coefficient y :=
+    coefficients_constant_of_commonBaseTwoLocalMonodromyInvariantRelation
+      m coefficient hinvariant
+  let x₀ : Fin (m + 1) → Bool := fun _ => false
+  have hsum :
+      (∑ x, coefficient x) =
+        (Fintype.card (Fin (m + 1) → Bool) : ℂ) * coefficient x₀ := by
+    calc
+      (∑ x, coefficient x) = ∑ _x, coefficient x₀ := by
+        apply Finset.sum_congr rfl
+        intro x _hx
+        exact hconstant x x₀
+      _ = (Fintype.card (Fin (m + 1) → Bool) : ℂ) * coefficient x₀ := by
+        simp
+  have hmul :
+      (Fintype.card (Fin (m + 1) → Bool) : ℂ) * coefficient x₀ = 0 := by
+    rw [← hsum]
+    exact hbalanced
+  have hcard :
+      (Fintype.card (Fin (m + 1) → Bool) : ℂ) ≠ 0 := by
+    exact_mod_cast
+      (Fintype.card_ne_zero :
+        Fintype.card (Fin (m + 1) → Bool) ≠ 0)
+  have hx₀ : coefficient x₀ = 0 :=
+    (mul_eq_zero.mp hmul).resolve_left hcard
+  funext x
+  rw [hconstant x x₀, hx₀]
+  rfl
+
+/-- A spectral action takes one value after every closed simple-spectrum
+continuation realized by the universal two-local family. -/
+def CommonBaseTwoLocalMonodromyInvariantAction
+    (m : ℕ)
+    (coefficient : (Fin (m + 1) → Bool) → ℂ) : Prop :=
+  ∃ z : ℂ, ∀ perm,
+    commonBaseTwoLocalRealizedPermutation m perm →
+      commonBaseTwoLocalSpectralRelation m coefficient perm = z
+
+/-- Full two-local monodromy forces every invariant spectral action to
+have constant coefficients. -/
+theorem
+    coefficients_constant_of_commonBaseTwoLocalMonodromyInvariantAction
+    (m : ℕ)
+    (coefficient : (Fin (m + 1) → Bool) → ℂ)
+    (haction :
+      CommonBaseTwoLocalMonodromyInvariantAction m coefficient) :
+    ∀ x y, coefficient x = coefficient y := by
+  obtain ⟨z, hz⟩ := haction
+  apply coefficients_eq_of_all_permuted_sums_eq
+    coefficient
+    (commonTwoLocalDiagonalRoot m)
+    (commonTwoLocalDiagonalRoot_injective m)
+    z
+  intro perm
+  simpa [commonBaseTwoLocalSpectralRelation] using
+    hz perm (everyPermutation_has_exact_commonBase_twoLocalLoop m perm)
+
+/-- **No hidden projective spectral action.** If a balanced complex
+spectral action has one common value after every realized closed two-local
+continuation, then its coefficient covector is zero. -/
+theorem
+    complexBalancedCoefficient_eq_zero_of_commonBaseTwoLocalMonodromyInvariantAction
+    (m : ℕ)
+    (coefficient : (Fin (m + 1) → Bool) → ℂ)
+    (hbalanced : ∑ x, coefficient x = 0)
+    (haction :
+      CommonBaseTwoLocalMonodromyInvariantAction m coefficient) :
+    coefficient = 0 := by
+  obtain ⟨z, hz⟩ := haction
+  apply complexBalancedCoefficient_eq_zero_of_commonBaseTwoLocalMonodromyInvariant
+    m coefficient hbalanced
+  intro perm hperm
+  have hconst :=
+    coefficients_constant_of_commonBaseTwoLocalMonodromyInvariantAction
+      m coefficient ⟨z, hz⟩
+  let x₀ : Fin (m + 1) → Bool := fun _ => false
+  have hsum :
+      commonBaseTwoLocalSpectralRelation m coefficient perm =
+        coefficient x₀ * ∑ x, commonTwoLocalDiagonalRoot m (perm x) := by
+    unfold commonBaseTwoLocalSpectralRelation
+    calc
+      (∑ x, coefficient x * commonTwoLocalDiagonalRoot m (perm x)) =
+          ∑ x, coefficient x₀ * commonTwoLocalDiagonalRoot m (perm x) := by
+            apply Finset.sum_congr rfl
+            intro x _hx
+            rw [hconst x x₀]
+      _ = coefficient x₀ * ∑ x, commonTwoLocalDiagonalRoot m (perm x) := by
+            rw [Finset.mul_sum]
+  have hx₀ : coefficient x₀ = 0 := by
+    have hcard :
+        (Fintype.card (Fin (m + 1) → Bool) : ℂ) ≠ 0 := by
+      exact_mod_cast
+        (Fintype.card_ne_zero :
+          Fintype.card (Fin (m + 1) → Bool) ≠ 0)
+    have hbal :
+        (Fintype.card (Fin (m + 1) → Bool) : ℂ) * coefficient x₀ = 0 := by
+      calc
+        (Fintype.card (Fin (m + 1) → Bool) : ℂ) * coefficient x₀ =
+            ∑ _x : (Fin (m + 1) → Bool), coefficient x₀ := by
+          symm
+          simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+        _ = ∑ x, coefficient x := by
+          apply Finset.sum_congr rfl
+          intro x _hx
+          exact (hconst x x₀).symm
+        _ = 0 := hbalanced
+    exact (mul_eq_zero.mp hbal).resolve_left hcard
+  rw [hsum, hx₀, zero_mul]
+
 /-- **No hidden projective resonance.**  A balanced integer character
 cannot vanish after every realized closed two-local continuation unless it
 is the zero character. -/
