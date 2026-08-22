@@ -8,14 +8,14 @@ Rules in force: no added hypotheses standing for analytic inputs, no axioms, no 
 never full builds / umbrella builds (`lake env lean <file>` to check, `lake build <module>` only for
 the oleans an `#print axioms` scratch needs); search the corpus before building anything.
 
-## Card triage (17 cards) — 2 promoted, 15 remain
+## Card triage (17 cards) — 4 promoted, 13 remain
 
 | # | card | state | notes |
 |---|---|---|---|
 | 1 | archimedean-prolate-jacobi-limit-circle-transition | TODO | needs discrete limit-circle theory; card's λ=0 exponents are wrong (see below) |
 | 2 | boolean-sonin-full-history-mate-fracture-law | **PROMOTED 2026-08-22** | `HTGeometry/BooleanSoninFullHistory.lean` |
-| 3 | connes-semilocal-finite-part-orbital-source-class | TODO | |
-| 4 | finite-euler-connection-cauchy-phase-chambers | TODO | |
+| 3 | connes-semilocal-finite-part-orbital-source-class | **PROMOTED 2026-08-22** | `HTGeometry/QuantizedDifferentialCocycle.lean` + `RHTower/ConnesSemilocalOrbitalSourceClass.lean`; `(1)`–`(3)` stay literature (Connes) and are *not* assumed by any Lean statement |
+| 4 | finite-euler-connection-cauchy-phase-chambers | **PROMOTED 2026-08-22** | `RHTower/FiniteEulerConnectionCauchyPhaseChambers.lean`; the card's "Kronecker hitting theorem missing" note was stale |
 | 5 | prime-tail-copoisson-essential-boundary-bockstein | TODO | |
 | 6 | rectangular-semilocal-observer-tail-separation | TODO | |
 | 7 | route-b-semilocal-sonin-interim-verdict | TODO | |
@@ -144,3 +144,56 @@ so `F` is bounded by discrete Gronwall for `N₀` large.  Then
 This is the continuum computation `(E/√p)' = p^{−3/2} p' (p v² − v'²)/2 = −p^{−3/2}p'(vv')'/2`
 transcribed to the lattice; no Bessel asymptotics, no Levinson/Harris–Lutz machinery, and no
 literature input are needed.  Planned module: `HTGeometry/DiscreteLiouvilleGreen.lean`.
+
+
+## Corpus findings that change the remaining plan (2026-08-22)
+
+- **Card 15's prime-coherence theorem is already Lean-closed**:
+  `RHTower.primePairDifferenceEnergyBounded_iff_constant` (`XiPrimeSeamPairEnergy.lean`), together
+  with the variance/Plücker identities in `XiPrimeSeamPairVariance.lean`.  What is left of card 15
+  is only the **tensor-square** Calkin lower bound `(1)`/`(2)`.
+- Mathlib **does** carry the Hilbert tensor product inner product (`TensorProduct.inner_tmul`,
+  and a `NormedAddCommGroup` instance on `H ⊗[ℂ] H`), but **not** an `InnerProductSpace` instance
+  on `UniformSpace.Completion (H ⊗[ℂ] H)`.  Planned workaround, faithful and completion-free:
+  state the estimate against every operator in the **norm closure of the finite-rank operators**
+  on `H ⊗[ℂ] H` (which is exactly the compacts of the completion), prove it for finite rank via
+  weak nullity, and extend by a `3ε` argument.
+- **Card 13** is nearly closed by corpus work: `SoninPrimeGramCompression.lean` has
+  `norm_finiteMatrixBilinear_le_norm_finitePrimeEvenDilationGram_sub_compact` and
+  `sqrt_half_finiteWeightedDifferenceEnergy_le_norm_primeGram_sub_compact`, i.e. `(8b)`–`(8e)`.
+  Its own remaining content is the algebraic exterior factorization `(3)`, which needs only
+  `TensorProduct.map` on the algebraic tensor product.
+- **Card 16** needs matrix inertia theory that the corpus does *not* have: Sylvester's law of
+  inertia and Haynsworth additivity (only `rankOneRepair_inertia_*` exists).  That is the single
+  blocking build for it.
+- **Card 12** part A is already Lean (`RHTower/CutoffCochain.lean`); part B needs the shell
+  noncompactness of `(1−P_λ)D_p P_λ` on `L²(ℝ_+^*, d*u)`.  The corpus has the additive-model
+  analogue `RHTower.evenCentralSoninDilationCorner_not_isCompactOperator`.
+
+## Card 15 / card 13 `(4)`–`(5)`: what the Hilbert tensor square needs (2026-08-22)
+
+Mathlib **does** provide, in `Mathlib/Analysis/InnerProductSpace/TensorProduct.lean` and
+`Mathlib/Analysis/InnerProductSpace/Completion.lean`:
+
+- `TensorProduct.instInner`, `TensorProduct.inner_tmul`, `TensorProduct.norm_tmul`,
+  `TensorProduct.instNormedAddCommGroup`, `TensorProduct.instInnerProductSpace`
+  (so `H ⊗[ℂ] H` is a *pre*-Hilbert space);
+- `UniformSpace.Completion.innerProductSpace` — the completion of a **seminormed** inner product
+  space is an inner product space (note: it is found only with `SeminormedAddCommGroup` in scope and
+  with `Mathlib.Analysis.InnerProductSpace.Completion` imported);
+- `ContinuousLinearMap.completion` (`Mathlib/Topology/Algebra/LinearMapCompletion.lean`) to lift a
+  bounded operator to the completion.
+
+The genuine **mathlib gap** is boundedness of `TensorProduct.map f g` for bounded `f, g`
+(only `mapIsometry` exists).  Route: `f ⊗ g = (f ⊗ 1) ∘ (1 ⊗ g)`, and `‖1 ⊗ g‖ ≤ ‖g‖` by writing
+`x = ∑ eᵢ ⊗ yᵢ` with `(eᵢ)` orthonormal (Gram–Schmidt on the finitely many left factors), giving
+`‖(1⊗g)x‖² = ∑‖g yᵢ‖² ≤ ‖g‖²‖x‖²`.
+
+Why the estimate cannot simply be stated on the incomplete `H ⊗[ℂ] H`: the corpus's
+`IsCompactOperator.norm_apply_tendsto_zero_of_bounded_weakly_null` needs weak nullity against
+**every** continuous functional, and on an incomplete inner-product space that does not follow from
+weak nullity against the inner products of the space itself.  Working in the completion restores
+Riesz and closes the gap.
+
+Planned modules: `HTGeometry/TensorProductOperatorNorm.lean` (the mathlib gap) and
+`RHTower/SoninTwoParticlePrimeCoherence.lean` (the shell amplification + the estimate).

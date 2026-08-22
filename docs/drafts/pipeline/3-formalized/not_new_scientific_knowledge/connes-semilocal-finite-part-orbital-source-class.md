@@ -1,8 +1,8 @@
 # The Connes semilocal finite part fixes the degree-one orbital source class
 
 - **ID:** `connes-semilocal-finite-part-orbital-source-class`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM / CORPUS SYNTHESIS (paper), `[BRIDGE]`, `[TOP-DOWN GAP REDUCTION]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper) + THEOREM (Lean, paper-algebra half), `[BRIDGE]`, `[TOP-DOWN GAP REDUCTION]`
 - **Scientific status:** `[PROVED FROM LITERATURE AND PAPER ALGEBRA]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE] [PROOF-CONTRIBUTING] [NOT AN RH PROOF]`
 - **Parents:** Connes's semilocal trace formula;
@@ -243,6 +243,7 @@ and its cutoff/resolvent relative graph are formalized together.
 - [x] exact prime-power orbital response extracted
 - [x] cyclic/factorization-independent representative identified
 - [x] bounded Hilbert--Schmidt scalarization excluded as the complete representative
+- [x] formalize the cocycle algebra and the response-quotient nonvanishing in Lean
 - [x] Burnol conductor graph available for the noncompact boundary channel
 - [x] exact aperture-by-aperture semilocal/classical Sonin isomorphism
 - [x] exact Euler connection source transport under `theta_S`
@@ -250,3 +251,39 @@ and its cutoff/resolvent relative graph are formalized together.
 - [ ] prove finite-part preservation `(12)`
 - [ ] prove completed contraction or uniform source lower floor
 - [ ] preserve aperture index and prove RH
+
+## Lean formalization
+
+New modules:
+`formal/GaloisForLFunctions/HTGeometry/QuantizedDifferentialCocycle.lean` and
+`formal/GaloisForLFunctions/RHTower/ConnesSemilocalOrbitalSourceClass.lean`.
+Unconditional; the cocycle layer needs only `propext`, and the arithmetic layer only
+`propext`, `Classical.choice`, `Quot.sound`.
+
+| paper step | Lean declaration |
+|---|---|
+| `(6)`: `δ(U) = [F, U]`, `ω(U) = U⁻¹δ(U)` | `HTGeometry.quantizedDelta`, `HTGeometry.quantizedOmega` |
+| Leibniz rule `δ(xy) = δ(x)y + xδ(y)` | `HTGeometry.quantizedDelta_mul` |
+| `(7)`: `ω(UV) = V⁻¹ω(U)V + ω(V)`, noncommuting units, no condition on `F` | `HTGeometry.quantizedOmega_mul` |
+| a test element commuting with every factor commutes with the ordered product | `HTGeometry.commute_units_listProd` |
+| `(8)`: cyclic-trace additivity over an ordered factorization | `HTGeometry.trace_quantizedOmega_listProd` |
+| `(5)`: `log p · p^{-m/2} = [p^{-m/2}/m]·[m log p]` | `RHTower.weilPrimePowerCoefficient_split` |
+| `(9)`: the orbital response `m log p` | `RHTower.orbitalLogResponse` |
+| the uniformly bounded responses form a submodule | `RHTower.boundedResponses` |
+| `(9)`: the orbital response is unbounded along the powers of `2` | `RHTower.orbitalLogResponse_not_mem_boundedResponses` |
+| `(10)`: the class is nonzero modulo bounded responses | `RHTower.orbitalLogResponse_class_ne_zero` |
+| the fixed projection-correction pairing has zero class | `RHTower.soninSemilocalGeometricTraceResponse_class_eq_zero` |
+| the same no-go in its original form | `RHTower.not_soninSemilocalFluxNormalization` (corpus) |
+
+The `Lean decision` above is superseded for the parts that are provable here: the cocycle algebra
+and the response-quotient nonvanishing are now theorems, not interfaces.
+
+**Literature input that remains outside Lean.**  Equations `(1)`–`(3)` — Connes's semilocal cutoff
+trace formula and the resulting finite part `FP_S(f) = ∑_{v∈S} W_v(f)` — are imported from
+[*The Scaling Hamiltonian*](https://arxiv.org/abs/1910.14368) and are **not** formalized.  Nothing
+in the Lean development above assumes them: the formalized statements are the paper-algebra half of
+the card (the cocycle, the coefficient split, and the quotient nonvanishing), each proved
+unconditionally.
+
+`scripts/formal_tools.py lint` → `formal lint passed` (for these modules; unrelated in-flight
+modules of other agents may be transiently unwired).

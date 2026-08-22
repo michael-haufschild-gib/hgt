@@ -1711,3 +1711,122 @@ check and targeted build passed; the new public theorem's axiom report is
 
 The remaining step is quantitative: derive a summable complement-translate majorant for these
 recursively generated coefficient sources from the concrete quasi-Abelian seed construction.
+
+### Lean progress (finite polynomial all-order jet factor)
+
+`AbeExponentialDampingJetPolynomial.lean` now proves unconditionally that the recursive factor
+left after any fixed number of directional derivatives of Abe's literal multiplier is a finite
+source-valued polynomial in the damping parameter.  The proof derives complex linearity of the
+entire-source directional derivative, expands the finite source polynomial, and uses a sum-type
+index to combine the degree-raised multiplication term with the differentiated coefficient term.
+It introduces no analytic, geometric, seed-growth, or summability assumption.
+
+The leaf source check and targeted module build passed.  The new public polynomiality theorem has
+axiom report `[propext, Classical.choice, Quot.sound]`.  This is only the finite algebraic part of
+DJS-3: the card still lacks a derivation from concrete quasi-Abelian/Poincare data of bounds and
+an ℓ¹ majorant for the resulting translated coefficient sources.  Hence this progress does not
+justify moving the card to Stage 3.
+
+### Lean progress (finite polynomial all-order damped-seed factor)
+
+The same module now proves the exact finite-polynomial statement for every all-order damped-seed
+jet factor, with arbitrary concrete seed as its degree-zero coefficient.  Combined with the prior
+factorization of the derivative of `exp(t * (Θ - 1)) · seed`, this isolates all damping-parameter
+dependence in finitely many explicit source coefficients at each fixed jet order.  The updated leaf
+source check and targeted build passed; this new theorem's axiom report is
+`[propext, Classical.choice, Quot.sound]`.
+
+This still does not control translated coefficient norms or establish the needed Poincare ℓ¹
+majorant from quasi-Abelian geometry, so Stage 3 remains unavailable.
+
+## Research checkpoint 2026-08-22 — `DJS-3M` derivative-stable convergence route
+
+**[LITERATURE]** The primary source is Abe, *Construction of automorphic forms for ample factors
+of quasi-Abelian varieties*, Kyushu J. Math. 57 (2003), 51–85,
+DOI `10.2206/kyushujm.57.51`.  Its Section 7 defines the convergence property of a seed `f` as
+compact convergence of the Poincare series for `f·phi` for every `phi` in Abe's subquadratic
+class `Phi_2`.  Proposition 8.2 constructs finite point separators from such a seed; Theorem 8.1
+uses a pointwise complement damping limit; Theorem 9.1 proves one tangent-direction separation.
+No all-order Artin-jet statement or derivative-stable tail majorant is stated there.
+
+**[CONJECTURE — DJS-3M]** In Abe's actual period-matrix coordinates, every fixed finite spatial
+jet of a damped Poincare summand admits a finite polynomial-exponential expansion whose coefficient
+Poincare series are locally normally summable.  More exactly, the coefficient sources are the
+finite products of the original `f·phi` with derivatives of the coordinate character `E`; they
+remain in the `Phi_2` convergence class, while the residual damping exponential is handled termwise
+by the normalized Tannery theorem already formalized here.
+
+**Hostile audit.** Convergence property alone does not imply DJS-3M: `exp(C·E)` need not itself
+belong to `Phi_2`, so treating the damped series as another undamped convergence-property series is
+circular.  The potential structural escape is that Abe's complement coordinate should satisfy the
+period-matrix identity `|E(gamma_w'')| = 1`.  If derived, this makes the literal damping multiplier
+bounded independently of the complement index on each fixed compact set for every fixed parameter,
+and `E^q·phi` remains in `Phi_2` for each finite `q`.  This defeats the circularity without a new
+public hypothesis.
+
+**[OPEN CORE]** Prove those two coordinate consequences directly from Abe's period matrix, then
+prove the resulting compact-normal coefficient expansion and preserve the `f·Phi_2` representation
+through the enlarged-packet induction.  This remains unproved; `DJS-3M` therefore has verdict
+`SURVIVES PRELIMINARY ATTACK`, not `[PAPER-PROVED]`.
+
+### `DJS-3M` primary-source refinement
+
+Abe's displayed toroidal period matrix has a real `R2` block, while
+`E(t)=exp(2π i t)`.  Thus the relevant complement coordinate shift is real and satisfies
+`|E(gamma_w'')|=1`; it need not equal one, so irrational shifts still give the already-proved
+no-uniform-gap obstruction.  This is the key distinction: it gives an index-uniform **modulus**
+bound for the damping multiplier on any fixed compact set, but never a uniform negative real-part
+bound along the damping ray.
+
+Consequently, for fixed damping parameter, the multiplier belongs to the same subquadratic
+translation-growth class `Phi_2`; finite products with `E^q` remain there.  The convergence property
+therefore normally sums every coefficient source.  Cauchy estimates on a slightly larger compact
+then give an ℓ¹ coefficient majorant for every fixed spatial derivative.  This is the viable
+mechanism behind DJS-3M and is compatible with small divisors.
+
+**[OPEN CORE, narrowed]** Write and audit the full structured subgroup-rank induction: its invariant
+must retain a `f·Phi_2` presentation while it realizes the prescribed finite local algebra; then
+formalize the concrete toroidal period-matrix model, the `Phi_2` closure and Cauchy-majorant bridge,
+and the tensor graded-Vandermonde block.  No analytic majorant is now to be assumed as a structure
+field.  The paper proof is not yet dependency-closed because this induction invariant and the
+coordinate-to-Lean translation have not yet been written in full.
+
+### Lean progress (real-period damping modulus bridge)
+
+`AbeRealCoordinateDamping.lean` now formalizes the exact elementary period-coordinate fact used by
+DJS-3M.  For `E(z)=exp(2π i z)`, every real translation multiplies `E` by a unit additive
+character and hence preserves its modulus.  The literal damping factor
+`exp(t * (E(z+r)-omega))` consequently has an explicit bound independent of the real shift `r`.
+This proves the modulus control supplied by Abe's real `R2` coordinate block while making no
+uniform negative-phase assertion.
+
+The leaf source check and targeted build passed; its new public bound has axiom report
+`[propext, Classical.choice, Quot.sound]`.  It is one concrete component of the missing `Phi_2`
+closure/normal-convergence bridge, not the all-order jet-ampleness theorem itself.
+
+### Lean progress (transverse graded Vandermonde block)
+
+`AbeTransverseGradedVandermonde.lean` now tensors the existing distinguished-coordinate graded
+Vandermonde matrix with an arbitrary finite transverse identity block.  It proves exact row-scale
+normalization and determinant nonvanishing whenever the original one-variable nodes are distinct
+and its scale is nonzero.  This is unconditional finite local linear algebra, suitable for the
+finite transverse packet required by the narrowed `DJS-3M` induction.
+
+The leaf source check and targeted build passed; both new theorem axiom reports are
+`[propext, Classical.choice, Quot.sound]`.  It does not provide the missing concrete `Phi_2`
+closure, Cauchy-majorant bridge, or subgroup-rank induction, so Stage 3 remains unavailable.
+
+### Lean progress (literal damped Poincaré-summand jets)
+
+`AbeDampedPoincareTermJetExpansion.lean` now proves the exact summand-level bridge needed by
+`DJS-3M`: periodizing a seed multiplied by Abe's exponential damping multiplier is identical to
+multiplying the undamped Poincaré summand by the exponential multiplier of the **translated**
+profile.  Every all-order directional jet is therefore that translated multiplier times an exact
+finite recursive source factor, and the source factor has a finite polynomial expansion in the
+damping parameter.
+
+This has no analytic premise and no replacement convergence interface.  It reduces the remaining
+analytic task to proving local-normal summability and an ℓ¹ majorant for these explicit translated
+source coefficients, then carrying the resulting finite packet through the subgroup-rank induction.
+The leaf source check and targeted build passed; all four new theorem axiom reports are
+`[propext, Classical.choice, Quot.sound]`.  The card remains Stage 1.

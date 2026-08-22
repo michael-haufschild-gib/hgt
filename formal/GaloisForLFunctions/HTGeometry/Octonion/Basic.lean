@@ -303,6 +303,15 @@ theorem mul_star_associates (x s : RealOctonion) :
   rw [mul_scalarEmbed, scalarEmbed_mul, smul_mul_assoc, mul_smul_comm,
     IsAlternative.mul_alternative_right]
 
+/-- Right division by a nonzero octonion is cancelled by multiplication on the right. -/
+theorem mul_inverse_mul (s y : RealOctonion) (hs : s ≠ 0) :
+    (y * inverse s) * s = y := by
+  have hn : normSq s ≠ 0 := mt (normSq_eq_zero s).mp hs
+  unfold inverse
+  rw [← mul_scalarEmbed_associates, mul_scalarEmbed, smul_mul_assoc, smul_mul_assoc,
+    mul_star_associates, star_mul_self_eq_scalarEmbed, mul_scalarEmbed,
+    smul_smul, inv_mul_cancel₀ hn, one_smul]
+
 theorem associator_smul_left (r : ℝ) (x y z : RealOctonion) :
     IsAlternative.associator (r • x) y z = r • IsAlternative.associator x y z := by
   unfold IsAlternative.associator

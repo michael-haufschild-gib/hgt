@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SuzukiTaCoalescingCovarianceTangent
-import GaloisForLFunctions.RHTower.SuzukiTaV2ProjectiveCharacteristic
+import GaloisForLFunctions.RHTower.SuzukiTaV2LivsicCharacteristic
 
 /-!
 # Actual Suzuki v2 finite-aperture defect jet

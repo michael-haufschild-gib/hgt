@@ -297,9 +297,10 @@ with declarations
 - `primeEulerUnitTangent_Schwarz_eq_FE_iff_heatAperturePrimeCoeff_eq`;
 - `primeEulerUnitTangent_two_Schwarz_eq_FE_iff_heatPrimeTwoCoeff_eq`.
 
-It is imported by `formal/GaloisForLFunctions/RHTower.lean`.  No Lean command was run because the
-active research boundary forbids computation; stage 3 promotion remains pending targeted
-verification.
+It is imported by `formal/GaloisForLFunctions/RHTower.lean`.  Targeted verification on 2026-08-22
+passed: `lake env lean GaloisForLFunctions/RHTower/HeatAperturePrimeSeamReflection.lean` and
+`lake build GaloisForLFunctions.RHTower.HeatAperturePrimeSeamReflection`.  Stage 3 promotion
+remains pending the source-core prime--Gamma positivity theorem.
 
 ## Gates
 
@@ -313,5 +314,5 @@ verification.
 - [x] actual tangent identified on paper with imaginary-slope trigamma reflection curvature
 - [x] source draft added and imported by the RHTower umbrella
 - [x] classified as a bridge rather than an independent RH producer
-- [ ] targeted Lean verification
+- [x] targeted Lean verification (2026-08-22; direct Lean and focused module build)
 - [ ] source-core prime--Gamma positivity

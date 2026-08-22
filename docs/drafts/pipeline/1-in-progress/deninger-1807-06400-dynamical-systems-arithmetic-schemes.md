@@ -50,6 +50,11 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | Def 9.5 (`t95n`) + its two stated facts | `HTGeometry/AlmostPathConnected.lean` | closed |
 | Thm 1.4 second assertion (`t27n`) for `ℤ A`, incl. the `(!)` finite-orbit step | `RHTower/DeningerDynSysMonoidRingAction.lean` | closed |
 | Thm 1.4 second assertion (`t27n`) for the actual `W_rat (A)` | `RHTower/DeningerDynSysWittRingAction.lean` | closed |
+| Prop 1.2(a) (`t21n`) for the actual `W_rat (A)`: `W_rat(A)^G = W_rat(A^G)` | `RHTower/DeningerDynSysWittRingDescent.lean` | closed |
+| §1 inseparability degree `d_r`, `d_{rs} ∣ d_r d_s`, the subring `ℤ̲κ/κ₀` | `RHTower/DeningerDynSysInseparableDegree.lean` | closed |
+| Cor 1.5(2) (`t28n`) key vanishing on inseparable atoms in characteristic `p` | `RHTower/DeningerDynSysInseparableVanishing.lean` | closed |
+| Prop 14.14(1) (`t1213`) locality of the adic completion, `p`-adic case, residue fields | `RHTower/DeningerDynSysAdicLocal.lean` | closed |
+| Lemma 4.3 (`t3`) structural half: divisibility of `Cˣ`, the extension property, the `μ(C)` retraction | `RHTower/DeningerDynSysDivisibleExtension.lean` | closed |
 
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -87,3 +92,6 @@ AIC-domain comparison.
 - 2026-08-22 — Theorem 1.4 (`t27n`) and Lemma 1.6(2)/Cor 1.7(1) closed: ten results.
 - 2026-08-22 — reduced monoid algebra representability and Definition 9.5 closed; 13 items in the
   ledger; `formal_tools.py lint` reports no error attributable to these modules.
+- 2026-08-22 — the ring-level `W_rat` blocker is resolved: Thm 1.4's second assertion and
+  Prop 1.2(a) now hold for `DeningerCanonicalRationalWittRing`.  The inseparability layer
+  (`d_r`, `ℤ̲κ/κ₀`, the char-`p` vanishing) is closed.  19 items in the ledger; all axiom-clean.

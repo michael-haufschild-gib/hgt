@@ -1,8 +1,8 @@
 # Finite Euler connection Cauchy phase chambers
 
 - **ID:** `finite-euler-connection-cauchy-phase-chambers`
-- **Stage:** 2-fully-proven / not-new
-- **Type:** THEOREM (paper), `[VALUE RELATION]`, `[POSITIVE COMPLETION OBLIGATION]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper) + THEOREM (Lean), `[VALUE RELATION]`, `[POSITIVE COMPLETION OBLIGATION]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `semilocal-dual-pair-euler-connection-source-law.md`;
   `../3-formalized/finite-blaschke-allpass-group-delay.md`;
@@ -183,10 +183,11 @@ is dense in the finite torus.  The product of the strict negative chambers in `(
 neighborhood of `(pi)_(p in S)`.  Choose `x_-` whose orbit lies in that neighborhood.  Then every
 summand in `(13)` is strictly negative, proving `(14)`. `QED`
 
-The arithmetic input of this proof is already formalized as
-`primeLogFrequency_ne_zero` in `HTGeometry/KroneckerFlow.lean`.  The current Lean corpus also
-contains the character-average engine in `RHTower/WeylEquidistribution.lean`, but not the required
-open-set hitting theorem for the finite prime torus.  No Lean theorem is claimed here.
+The arithmetic input of this proof is formalized as `primeLogFrequency_ne_zero` in
+`HTGeometry/KroneckerFlow.lean`, and the open-set hitting theorem for the finite prime torus is
+`GaloisForLFunctions.primeTorus_kronecker_dense` in `HTGeometry/PrimeTorusKroneckerDensity.lean`.
+`(14)` itself is now the Lean theorem
+`GaloisForLFunctions.RHTower.finiteEuler_simultaneous_sign_theorem`; see `## Lean formalization`.
 
 ## Positive completion obligation
 
@@ -268,7 +269,41 @@ explicit Poisson radial negative chamber by the completed remainder.
 - [x] exact phase threshold
 - [x] simultaneous positive and negative chambers for every finite nonempty packet
 - [x] exact completed-remainder compensation identity
-- [ ] formalize finite-torus open-set hitting from the existing character nonresonance
+- [x] formalize finite-torus open-set hitting from the existing character nonresonance
 - [x] formalize the generic and one-prime Poisson chamber theorem
 - [ ] prove the completed phase-locked compensation law
 - [ ] conclude RH
+
+## Lean formalization
+
+New module: `formal/GaloisForLFunctions/RHTower/FiniteEulerConnectionCauchyPhaseChambers.lean`.
+Unconditional; every declaration below depends only on `propext`, `Classical.choice`, `Quot.sound`.
+
+The card's open gate — *"formalize finite-torus open-set hitting from the existing character
+nonresonance"* — is closed.  The corpus had meanwhile grown
+`GaloisForLFunctions.primeTorus_kronecker_dense`
+(`HTGeometry/PrimeTorusKroneckerDensity.lean`), the exact Kronecker approximation theorem for the
+prime diagonal flow; the note *"the current Lean corpus … does not [contain] the required open-set
+hitting theorem"* is stale.
+
+| paper step | Lean declaration |
+|---|---|
+| `(7)`/`(7a)`: exact Poisson radial-difference law | `GaloisForLFunctions.RHTower.primeEulerOneSidedCauchyDiagonal_eq_poisson`, `…FEPairedCauchyDiagonal_eq_poisson` (corpus) |
+| `(10)`/`(11)`: the three exact phase chambers | `…_pos_iff`, `…_eq_zero_iff`, `…_neg_iff` (corpus) |
+| `(12)`: the two explicit witnesses at phase `0` and `π` | `…_pos_at_zero`, `…_neg_at_pi_div_log` (corpus) |
+| `(13)`: the finite-packet diagonals | `GaloisForLFunctions.RHTower.finiteEulerOneSidedCauchyDiagonal`, `…finiteEulerFEPairedCauchyDiagonal`, `…finiteEulerFEPairedCauchyDiagonal_eq` |
+| `‖e^{iθ}+1‖ < 1 → cos θ < −1/2` | `GaloisForLFunctions.RHTower.cos_lt_of_norm_exp_add_one_lt_one` |
+| `(15)`: simultaneous negative clock phase from Kronecker density | `GaloisForLFunctions.RHTower.exists_simultaneous_negative_cosine` |
+| `(14)`, positive half | `GaloisForLFunctions.RHTower.finiteEulerOneSidedCauchyDiagonal_pos_at_zero` |
+| `(14)`, negative half | `GaloisForLFunctions.RHTower.exists_finiteEulerOneSidedCauchyDiagonal_neg` |
+| `(14)`: both chambers, one-sided and FE-paired | `GaloisForLFunctions.RHTower.finiteEuler_simultaneous_sign_theorem` |
+| `(18)`: the strict compensation obligation on the negative chamber | `GaloisForLFunctions.RHTower.finiteEuler_remainder_pos_on_negative_chamber` |
+
+No statement carries a hypothesis standing in for an unproved fact; the only side conditions are
+`0 < y`, `y < 1/2`, primality, and nonemptiness of the packet.
+
+`scripts/formal_tools.py lint` → `formal lint passed`.
+
+What is **not** formalized, and is not a formalization debt: the phase-locked compensation law
+`(18)` for the *completed* remainder and the RH conclusion `(19)`.  The card states these as the
+missing theorems, not as proved ones.

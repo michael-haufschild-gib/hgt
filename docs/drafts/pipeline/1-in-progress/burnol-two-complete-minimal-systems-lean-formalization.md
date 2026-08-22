@@ -129,6 +129,43 @@ Do *not* attempt a boundary-value / edge-of-the-wedge argument.  Use this instea
 | B6 | Weierstrass: the truncations converge locally uniformly on `Re s > 0`; the limit is holomorphic there and equals `f̂` on `Re s > 1/2` | **DONE** `RHTower/SoninMellinHalfPlaneExtension.differentiableOn_soninMellinExtension` + `soninMellinExtension_eq_soninMellinIntegral` |
 | B7 | glue with the reflected brick across `0 < Re s < 1` | **IN PROGRESS.**  The analytic core is now built: `HTGeometry/PowerFourierGamma.tendsto_integral_powerOsc` gives `∫_0^∞ t^{-s}e^{itL}dt = Γ(1−s)(−iL)^{s−1}` for `0 < Re s < 1`, `L > 0` (Abel regularisation + the uniform damped tail bound `HTGeometry/DampedPowerOscillation`).  With it, Burnol's correction kernel `E_s = 𝓕(1_{|t|<a}|t|^{−s})` is band-supported, so `⟪E_s, 𝓕f⟫ = ⟪h_s, f⟫ = 0` for `f ∈ K_a` — that is the functional equation for `0 < Re s < 1/2`, and the identity theorem extends it to the strip.  Remaining: Needs: (i) `fourierUnitary` preserves `centralSoninCarrier a`; (ii) the pointwise functional equation `f̂(s) = χ(s)·(F₊f)^(1−s)` a.e. on the critical line, bridged from `CCMArchimedeanFourierMellinScattering`; (iii) the identity theorem on the strip `0 < Re s < 1`. |
 
+### B7 — the weld, fully reduced to a computation (FROZEN PLAN)
+
+`tendsto_integral_powerOsc_ne` (`HTGeometry/PowerFourierGamma`) is now available for **every**
+nonzero real frequency.  With it the weld is the following chain, with no L²-unitary normalisation
+bridge needed:
+
+1. `soninTruncMellin f a T s = ⟪W_{a,T}, f⟫ = ⟪𝓕W_{a,T}, g⟫` where `W_{a,T} = 1_{(a,T)}t^{-s̄}`
+   and `g = 𝓕f` — **done** (`SoninTruncatedMellinCauchy.inner_truncPowerVector_eq_truncMellin`
+   + `fourierUnitary.inner_map_map`).
+2. `conj(𝓕W_{a,T}(u)) = ∫_a^T e^{2πiut}t^{-s}dt` — conjugate of
+   `TruncatedPowerFourierBound.fourierIntegral_truncPower`.
+3. Pointwise in `u ≠ 0`, `∫_a^T e^{2πiut}t^{-s}dt → C_a(u,s) := Γ(1−s)(−(2πu)i)^{s−1} − E_a(u,s)`
+   with `E_a(u,s) = ∫_0^a e^{2πiut}t^{-s}dt` (absolutely convergent for `Re s < 1`).
+   The first term is `tendsto_integral_powerOsc_ne`.
+4. `|conj(𝓕W_{a,T}(u))| ≤ C(s,a)/|u|` uniformly in `T` — `norm_fourierIntegral_truncPower_le`.
+   Dominated convergence against `g ∈ L²(|u|>a)` (Cauchy–Schwarz makes `C/|u| · |g|` integrable)
+   gives `soninMellinExtension f a s = ∫ C_a(u,s) g(u) du`.
+   **DONE**: `RHTower/SoninKernelPairing.soninMellinExtension_eq_kernel_pairing`.
+5. `∫ E_a(u,s) g(u) du = ⟪h_s, f⟫ = ∫_0^a t^{-s} f(t) dt = 0` because `f` **vanishes** on `(0,a)`
+   (`h_s = 1_{(0,a)}t^{-s̄} ∈ L²` exactly when `Re s < 1/2`).
+   **DONE**: `RHTower/SoninNearZeroKernelVanishing.integral_nearZeroKernel_mul_fourier_eq_zero`
+   (with `HTGeometry/NearZeroTruncatedPower` supplying the `L¹`/`L²` facts at the origin).
+   Combining 4 and 5: **DONE** `RHTower/SoninPureChiKernel.soninMellinExtension_eq_chi_pairing`
+   — `f̂(s) = ∫ Γ(1−s)(−2πui)^{s−1} 𝓕f(u) du` on `0 < Re s < 1/2`.  Integrability of the
+   `χ`-part comes from `HTGeometry/PowerTailL2` (`1_{|u|>a}|u|^r ∈ L²` for `2r < −1`).
+6. By evenness of `g`, `Γ(1−s)∫(−(2πu)i)^{s−1}g(u)du = 2(2π)^{s−1}Γ(1−s)sin(πs/2) · ĝ(1−s)`,
+   and `Re(1−s) > 1/2` there, so `ĝ(1−s)` is the absolutely convergent integral.
+7. Hence `f̂(s) = c(s)·ĝ(1−s)` on `0 < Re s < 1/2` with `c(s) = 2(2π)^{s−1}Γ(1−s)sin(πs/2)`
+   **manifestly holomorphic on `Re s < 1`**.  Gluing `f̂` (holomorphic on `Re s > 0`) with
+   `c(s)·ĝ(1−s)` (holomorphic on `Re s < 1`) via the identity theorem gives **`f̂` entire** —
+   Theorem 2.1.  The identification `c = Γ_ℝ(1−s)/Γ_ℝ(s)` is *not needed for entirety*; it is only
+   needed to state the Γ-completed form, and then follows from mathlib's `riemannZeta_one_sub`
+   plus the corpus's `zetaChi_eq_pi_cpow_mul_gamma_ratio`.
+
+Prerequisite still open: `fourierUnitary` preserves `centralSoninCarrier a` (the corpus has the
+even-subspace version `SoninApertureFourierParityNoGo.evenFourierTransform_mem_evenCentralSoninCarrier`).
+
 ## Gates
 - [x] 0 → 1  in-progress
 - [ ] 1 → 2  fully-proven on paper (the paper itself supplies the proofs)

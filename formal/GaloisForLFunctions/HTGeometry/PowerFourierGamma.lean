@@ -21,7 +21,8 @@ Burnol's kernel `C_a(u, 1-s)` (arXiv:math/0203120, via his C. R. note [6]).
 
 * `integral_damped_Ioi` — the Abel-regularised evaluation.
 * `norm_integral_damped_tail_le` — the uniform tail bound.
-* `tendsto_integral_powerOsc` — the improper evaluation.
+* `tendsto_integral_powerOsc` — the improper evaluation for a positive frequency.
+* `tendsto_integral_powerOsc_ne` — the same for any nonzero real frequency.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -249,6 +250,76 @@ theorem tendsto_integral_powerOsc {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1) {L
   refine squeeze_zero' ?_ ?_ hzero
   · filter_upwards [eventually_gt_atTop (0 : ℝ)] with T _ using norm_nonneg _
   · filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT using hbound T hT
+
+/-- Conjugating a positive-real power flips the exponent. -/
+theorem conj_cpow_ofReal_base {t : ℝ} (ht : 0 < t) (w : ℂ) :
+    (starRingEnd ℂ) ((t : ℂ) ^ w) = (t : ℂ) ^ ((starRingEnd ℂ) w) := by
+  have harg : ((t : ℝ) : ℂ).arg ≠ Real.pi := by
+    rw [Complex.arg_ofReal_of_nonneg ht.le]
+    exact Ne.symm (ne_of_gt Real.pi_pos)
+  have h := Complex.conj_cpow ((t : ℝ) : ℂ) ((starRingEnd ℂ) w) harg
+  rw [Complex.conj_ofReal, Complex.conj_conj] at h
+  exact h.symm
+
+/-- **The Fourier–Mellin evaluation of a power, for any nonzero real frequency.** -/
+theorem tendsto_integral_powerOsc_ne {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1) {L : ℝ}
+    (hL : L ≠ 0) :
+    Tendsto (fun T : ℝ => ∫ t in (0 : ℝ)..T,
+        (t : ℂ) ^ (-s) * Complex.exp ((t * L : ℝ) * Complex.I)) atTop
+      (𝓝 (Complex.Gamma (1 - s) * (-((L : ℂ) * Complex.I)) ^ (s - 1))) := by
+  rcases lt_or_gt_of_ne hL with hneg | hpos
+  · have hs0' : 0 < ((starRingEnd ℂ) s).re := by rwa [Complex.conj_re]
+    have hs1' : ((starRingEnd ℂ) s).re < 1 := by rwa [Complex.conj_re]
+    have hL' : (0 : ℝ) < -L := by linarith
+    have hbase := tendsto_integral_powerOsc hs0' hs1' hL'
+    have hconj := (Complex.continuous_conj.tendsto _).comp hbase
+    have hw : (-((((-L : ℝ)) : ℂ) * Complex.I)) = ((L : ℝ) : ℂ) * Complex.I := by
+      push_cast
+      ring
+    have harg : (((L : ℝ) : ℂ) * Complex.I).arg ≠ Real.pi := by
+      have hval : ((L : ℝ) : ℂ) * Complex.I = ((|L| : ℝ) : ℂ) * (-Complex.I) := by
+        rw [abs_of_neg hneg]
+        push_cast
+        ring
+      rw [hval, Complex.arg_real_mul _ (abs_pos.2 hL), Complex.arg_neg_I]
+      intro h
+      have := Real.pi_pos
+      linarith
+    have hpt : (starRingEnd ℂ) (Complex.Gamma (1 - (starRingEnd ℂ) s)
+          * (-((((-L : ℝ)) : ℂ) * Complex.I)) ^ ((starRingEnd ℂ) s - 1))
+        = Complex.Gamma (1 - s) * (-((L : ℂ) * Complex.I)) ^ (s - 1) := by
+      rw [map_mul, hw]
+      congr 1
+      · rw [← Complex.Gamma_conj]
+        congr 1
+        simp
+      · have hcc := Complex.conj_cpow (((L : ℝ) : ℂ) * Complex.I) (s - 1) harg
+        have hconjLI : (starRingEnd ℂ) (((L : ℝ) : ℂ) * Complex.I)
+            = -((L : ℂ) * Complex.I) := by
+          rw [map_mul, Complex.conj_ofReal, Complex.conj_I]
+          ring
+        rw [hconjLI] at hcc
+        have hn : (starRingEnd ℂ) (s - 1) = (starRingEnd ℂ) s - 1 := by
+          rw [map_sub, map_one]
+        rw [hn] at hcc
+        exact hcc.symm
+    rw [← hpt]
+    refine Filter.Tendsto.congr' ?_ hconj
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with T hT
+    show (starRingEnd ℂ) (∫ t in (0 : ℝ)..T, ((t : ℂ) ^ (-(starRingEnd ℂ) s)
+        * Complex.exp ((t * (-L) : ℝ) * Complex.I)))
+      = ∫ t in (0 : ℝ)..T, (t : ℂ) ^ (-s) * Complex.exp ((t * L : ℝ) * Complex.I)
+    rw [intervalIntegral.integral_of_le hT, intervalIntegral.integral_of_le hT,
+      ← _root_.integral_conj]
+    refine setIntegral_congr_fun measurableSet_Ioc fun t ht => ?_
+    rw [map_mul, conj_cpow_ofReal_base ht.1, ← Complex.exp_conj]
+    congr 1
+    · congr 1
+      simp
+    · rw [map_mul, Complex.conj_ofReal, Complex.conj_I]
+      push_cast
+      ring
+  · exact tendsto_integral_powerOsc hs0 hs1 hpos
 
 end
 
