@@ -77,6 +77,12 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | §1 the rational Witt functor respects monomorphisms | `RHTower/DeningerDynSysWittFunctoriality.lean` | closed |
 | **Cor 13.5 (`t45`) algebraic core**: a) ⟺ a'), b) ⟺ b'), `Q⁻¹(0)` and `Q⁻¹(𝔪)` prime with `Q⁻¹(0) ⊆ Q⁻¹(𝔪)`, the factorization through `R/𝔭`, unit values outside `𝔮`, **the extension `Q_𝔮 : R_𝔮 → 𝒪`** and its two preimages `Q_𝔮⁻¹(0) = 𝔭R_𝔮`, `Q_𝔮⁻¹(𝔪) = 𝔮R_𝔮` | `RHTower/DeningerDynSysValuedPointsAffine.lean` | closed |
 
+| **Prop 1.3 (`t26n`) closed in full**: `W_rat(κ₀) → W_rat(κ₀^perf)` has image exactly the normalized fractions all of whose multiplicities are divisible by the descent degree, and the two rows of the diagram combined | `RHTower/DeningerDynSysWittPerfectDescent.lean` | closed |
+| **Prop 14.7(a) (`t125`)**: the perfection of a topological monoid, and density of `lim_{()^p} A` in `lim_{()^p} Â` | `RHTower/DeningerDynSysPerfectionDense.lean` | closed |
+| **Prop 14.7(b) (`t125`)**: every element of `lim_{()^p} S⁻¹A` is a quotient `y z⁻¹`; Prop 14.7 is now closed in full | `RHTower/DeningerDynSysPerfectionFraction.lean` | closed |
+| **§3 the space `X̂(C)`** of character points of a scheme, the Frobenius operators `F_ν`, their composition law, functoriality in `X`, and **Prop 4.2 last assertion** (`F_ν` injective over algebraically closed residue fields) | `RHTower/DeningerDynSysCharacterPoints.lean` | closed |
+| **Def 4.1 (`t41n`)** admissible class of characters, **Prop 4.2 (`t42n`)** invariance of `X̂(C)_E` under `F_ν` (forward and backward) and under scheme isomorphisms, **Cor 4.4 (`t4ka`)** surjectivity of `pr_X` | `RHTower/DeningerDynSysCharacterPoints.lean` | closed |
+
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
 ### Duplication audit (2026-08-22)

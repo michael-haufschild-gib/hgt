@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GammaVerticalStripDecay
+import GaloisForLFunctions.HTGeometry.WaveTraceSpectrum
 
 /-!
 # Sharp decay of `Γ` on an arbitrary vertical strip off the real axis
@@ -64,30 +65,9 @@ theorem exists_sharp_bound_norm_Gamma_strip (α β : ℝ) :
   rw [hz] at hle
   exact le_trans hle (hb (z.re + (k : ℝ)) z.im (by linarith) (by linarith) h3)
 
-/-- The sine is bounded by the exponential of the height. -/
-theorem norm_sin_le_exp_abs_im (z : ℂ) : ‖Complex.sin z‖ ≤ Real.exp |z.im| := by
-  have hsin : Complex.sin z = (Complex.exp (-z * Complex.I) - Complex.exp (z * Complex.I))
-      * Complex.I / 2 := rfl
-  have h1 : ‖Complex.exp (-z * Complex.I)‖ = Real.exp z.im := by
-    rw [Complex.norm_exp]
-    congr 1
-    simp
-  have h2 : ‖Complex.exp (z * Complex.I)‖ = Real.exp (-z.im) := by
-    rw [Complex.norm_exp]
-    congr 1
-    simp
-  rw [hsin, norm_div, norm_mul, Complex.norm_I, mul_one]
-  have hle : ‖Complex.exp (-z * Complex.I) - Complex.exp (z * Complex.I)‖
-      ≤ Real.exp z.im + Real.exp (-z.im) := by
-    refine le_trans (norm_sub_le _ _) ?_
-    rw [h1, h2]
-  have hcosh : Real.exp z.im + Real.exp (-z.im) ≤ 2 * Real.exp |z.im| := by
-    have hup : Real.exp z.im ≤ Real.exp |z.im| := Real.exp_le_exp.2 (le_abs_self _)
-    have hdown : Real.exp (-z.im) ≤ Real.exp |z.im| := Real.exp_le_exp.2 (neg_le_abs _)
-    linarith
-  have hnorm2 : ‖(2 : ℂ)‖ = 2 := by norm_num
-  rw [hnorm2]
-  linarith
+/-- The sine is bounded by the exponential of the height.  Corpus alias. -/
+theorem norm_sin_le_exp_abs_im (z : ℂ) : ‖Complex.sin z‖ ≤ Real.exp |z.im| :=
+  norm_csin_le_exp_abs_im z
 
 /-- **Sharp growth of `1/Γ` on an arbitrary vertical strip, off the real axis.** -/
 theorem exists_bound_norm_inv_Gamma_strip (α β : ℝ) :

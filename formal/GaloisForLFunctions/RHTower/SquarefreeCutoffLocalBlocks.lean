@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.InertiaScalingSwap
 import GaloisForLFunctions.HTGeometry.TensorFamilyInertia
+import GaloisForLFunctions.RHTower.SquarefreeShearKernelSignedTensor
 
 /-!
 # The local blocks of the squarefree cutoff jump
@@ -466,6 +467,166 @@ theorem localBalance_gramRaw (k : ℕ) :
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
+
+theorem localDensityBlock_apply (k : ℕ) (a b : Fin (k + 2)) :
+    localDensityBlock k a b
+      = (localScale k)⁻¹ * (if a = 0 then 1 else 0)
+        + (localScale k)⁻¹ * (if b = 0 then 1 else 0) - ((localScale k) ^ 2)⁻¹ := by
+  have hP := localScale_ne_zero k
+  rw [localDensityBlock, binaryJ_eq]
+  simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, star_localFrame, Fin.sum_univ_succ,
+    Fin.sum_univ_zero, add_zero]
+  rw [localFrame]
+  by_cases ha : a = 0 <;> by_cases hb : b = 0 <;>
+    simp [ha, hb] <;> field_simp <;> ring
+
+/-- The normalized density block is the arithmetic shear kernel of the parent card, divided by
+the square of the local scale. -/
+theorem localDensityBlock_eq_smul_shearKernel (k : ℕ) :
+    localDensityBlock k
+      = ((localScale k) ^ 2)⁻¹ • localShearKernel (localScale k) (0 : Fin (k + 2)) := by
+  have hP := localScale_ne_zero k
+  ext a b
+  rw [localDensityBlock_apply, Matrix.smul_apply, smul_eq_mul, localShearKernel]
+  field_simp
+
+/-- The real eigenvalues of the local occupancy block. -/
+def localOccupancyEigen (k : ℕ) (a : Fin (k + 2)) : ℝ :=
+  if a = 0 then (2 * realScale k - 1) / realScale k ^ 2 else -((realScale k) ^ 2)⁻¹
+
+theorem localOccupancyBlock_eq_diagonal (k : ℕ) :
+    localOccupancyBlock k = diagonal fun a => ((localOccupancyEigen k a : ℝ) : ℂ) := by
+  rw [localOccupancyBlock]
+  congr 1
+  funext a
+  rw [localOccupancyEigen, localScale_eq]
+  by_cases ha : a = 0 <;> simp [ha]
+
+theorem localOccupancyEigen_pos_zero (k : ℕ) : 0 < localOccupancyEigen k (0 : Fin (k + 2)) := by
+  rw [localOccupancyEigen, if_pos rfl, realScale]
+  have hk : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+  have h1 : 0 < 2 * ((k : ℝ) + 2) - 1 := by linarith
+  have h2 : 0 < ((k : ℝ) + 2) ^ 2 := by positivity
+  positivity
+
+theorem localOccupancyEigen_neg_of_ne (k : ℕ) {a : Fin (k + 2)} (ha : a ≠ 0) :
+    localOccupancyEigen k a < 0 := by
+  rw [localOccupancyEigen, if_neg ha, realScale]
+  have hk : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+  have h2 : 0 < ((k : ℝ) + 2) ^ 2 := by positivity
+  simp only [neg_lt_zero, inv_pos]
+  exact h2
+
+theorem localOccupancyEigen_ne_zero (k : ℕ) (a : Fin (k + 2)) : localOccupancyEigen k a ≠ 0 := by
+  by_cases ha : a = 0
+  · subst ha
+    exact (localOccupancyEigen_pos_zero k).ne'
+  · exact (localOccupancyEigen_neg_of_ne k ha).ne
+
+theorem card_pos_localOccupancyEigen (k : ℕ) :
+    ({a : Fin (k + 2) | 0 < localOccupancyEigen k a} : Finset (Fin (k + 2))).card = 1 := by
+  classical
+  have hset : ({a : Fin (k + 2) | 0 < localOccupancyEigen k a} : Finset (Fin (k + 2)))
+      = {(0 : Fin (k + 2))} := by
+    ext a
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+    constructor
+    · intro h
+      by_contra ha
+      exact absurd h (not_lt.mpr (localOccupancyEigen_neg_of_ne k ha).le)
+    · rintro rfl
+      exact localOccupancyEigen_pos_zero k
+  rw [hset, Finset.card_singleton]
+
+theorem card_neg_localOccupancyEigen (k : ℕ) :
+    ({a : Fin (k + 2) | localOccupancyEigen k a < 0} : Finset (Fin (k + 2))).card = k + 1 := by
+  classical
+  have hset : ({a : Fin (k + 2) | localOccupancyEigen k a < 0} : Finset (Fin (k + 2)))
+      = Finset.univ.erase (0 : Fin (k + 2)) := by
+    ext a
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_erase, and_true]
+    constructor
+    · intro h ha
+      subst ha
+      exact absurd h (not_lt.mpr (localOccupancyEigen_pos_zero k).le)
+    · intro ha
+      exact localOccupancyEigen_neg_of_ne k ha
+  rw [hset, Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ, Fintype.card_fin]
+  omega
+
+theorem isHermitian_localDensityBlock (k : ℕ) : (localDensityBlock k).IsHermitian := by
+  rw [localDensityBlock, Matrix.IsHermitian, Matrix.conjTranspose_mul, Matrix.conjTranspose_mul,
+    Matrix.conjTranspose_conjTranspose, isHermitian_binaryJ.eq, Matrix.mul_assoc]
+
+theorem trace_localOccupancyBlock (k : ℕ) :
+    Matrix.trace (localOccupancyBlock k) = (localScale k)⁻¹ := by
+  classical
+  have hP := localScale_ne_zero k
+  rw [localOccupancyBlock, Matrix.trace_diagonal,
+    ← Finset.add_sum_erase _ _ (Finset.mem_univ (0 : Fin (k + 2)))]
+  have hrest : (∑ a ∈ Finset.univ.erase (0 : Fin (k + 2)),
+      if a = 0 then (2 * localScale k - 1) / localScale k ^ 2 else -(localScale k ^ 2)⁻¹)
+      = ((k : ℂ) + 1) * (-(localScale k ^ 2)⁻¹) := by
+    rw [← sum_erase_const k (-(localScale k ^ 2)⁻¹)]
+    exact Finset.sum_congr rfl fun a ha => if_neg (Finset.ne_of_mem_erase ha)
+  have hk : ((k : ℂ) + 1) = localScale k - 1 := (localScale_sub_one k).symm
+  have hPinv : localScale k * (localScale k)⁻¹ = 1 := mul_inv_cancel₀ hP
+  rw [hrest, if_pos rfl, hk, div_eq_mul_inv, ← inv_pow]
+  linear_combination (localScale k)⁻¹ * hPinv
+
+theorem trace_localDensityBlock (k : ℕ) :
+    Matrix.trace (localDensityBlock k) = (localScale k)⁻¹ := by
+  classical
+  have hP := localScale_ne_zero k
+  rw [Matrix.trace]
+  simp only [Matrix.diag, localDensityBlock_apply]
+  rw [← Finset.add_sum_erase _ _ (Finset.mem_univ (0 : Fin (k + 2)))]
+  have hrest : (∑ a ∈ Finset.univ.erase (0 : Fin (k + 2)),
+      ((localScale k)⁻¹ * (if a = 0 then 1 else 0)
+        + (localScale k)⁻¹ * (if a = 0 then 1 else 0) - ((localScale k) ^ 2)⁻¹))
+      = ((k : ℂ) + 1) * (-((localScale k) ^ 2)⁻¹) := by
+    rw [← sum_erase_const k (-((localScale k) ^ 2)⁻¹)]
+    refine Finset.sum_congr rfl fun a ha => ?_
+    rw [if_neg (Finset.ne_of_mem_erase ha)]
+    ring
+  have hk : ((k : ℂ) + 1) = localScale k - 1 := (localScale_sub_one k).symm
+  have hPinv : localScale k * (localScale k)⁻¹ = 1 := mul_inv_cancel₀ hP
+  rw [hrest, if_pos rfl, hk, ← inv_pow]
+  linear_combination (-(localScale k)⁻¹) * hPinv
+
+/-- `(CJ5)`: the density block annihilates the local root-avoidance space. -/
+theorem localDensityBlock_mulVec_eq_zero (k : ℕ) (v : Fin (k + 2) → ℂ)
+    (h0 : v 0 = 0) (hsum : ∑ a, v a = 0) : localDensityBlock k *ᵥ v = 0 := by
+  funext a
+  rw [Matrix.mulVec, dotProduct]
+  simp only [localDensityBlock_apply, Pi.zero_apply]
+  have hexpand : ∀ b : Fin (k + 2),
+      ((localScale k)⁻¹ * (if a = 0 then 1 else 0)
+          + (localScale k)⁻¹ * (if b = 0 then 1 else 0) - ((localScale k) ^ 2)⁻¹) * v b
+        = ((localScale k)⁻¹ * (if a = 0 then 1 else 0) - ((localScale k) ^ 2)⁻¹) * v b
+          + (localScale k)⁻¹ * ((if b = 0 then 1 else 0) * v b) := by
+    intro b
+    ring
+  rw [Finset.sum_congr rfl fun b _ => hexpand b, Finset.sum_add_distrib, ← Finset.mul_sum,
+    hsum, mul_zero, ← Finset.mul_sum]
+  have hdelta : (∑ b : Fin (k + 2), (if b = 0 then (1 : ℂ) else 0) * v b) = v 0 := by
+    rw [Finset.sum_eq_single (0 : Fin (k + 2))]
+    · simp
+    · intro b _ hb
+      simp [hb]
+    · intro h
+      exact absurd (Finset.mem_univ _) h
+  rw [hdelta, h0, mul_zero, zero_add]
+
+/-- `(CJ5)`: the occupancy block is the scalar `−P⁻²` on the local root-avoidance space. -/
+theorem localOccupancyBlock_mulVec (k : ℕ) (v : Fin (k + 2) → ℂ) (h0 : v 0 = 0) :
+    localOccupancyBlock k *ᵥ v = (-((localScale k) ^ 2)⁻¹) • v := by
+  funext a
+  rw [localOccupancyBlock, Matrix.mulVec_diagonal, Pi.smul_apply, smul_eq_mul]
+  by_cases ha : a = 0
+  · subst ha
+    rw [if_pos rfl, h0, mul_zero, mul_zero]
+  · rw [if_neg ha]
 
 end
 

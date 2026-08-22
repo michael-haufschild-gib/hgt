@@ -12,6 +12,8 @@ holds, because the block matrix is congruent to `diag(A, C - Bᴴ A⁻¹ B)` thr
 triangular block matrix `[[1, A⁻¹B],[0,1]]`.
 -/
 
+attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
+
 namespace GaloisForLFunctions.HTGeometry
 
 open Matrix

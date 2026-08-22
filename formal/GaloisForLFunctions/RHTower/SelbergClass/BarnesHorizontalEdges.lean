@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergClass.BarnesFiniteRectangle
-import GaloisForLFunctions.HTGeometry.GammaVerticalStripDecay
+import GaloisForLFunctions.HTGeometry.GammaStripSharpDecay
 
 /-!
 # Horizontal-edge decay for the finite Barnes rectangle
@@ -20,48 +20,20 @@ namespace RHTower
 noncomputable section
 
 /-- Gamma has the same polynomial-exponential vertical bound on every compact
-real strip.  A finite recurrence shifts the strip into the positive half-plane,
-where `exists_bound_norm_Gamma_vertical_strip` applies. -/
+real strip.  Delegates to the `HTGeometry` layer, which owns the finite
+recurrence reducing the strip to the positive half-plane. -/
 theorem exists_bound_norm_Gamma_vertical_strip_arbitrary {a b : ℝ} :
     ∃ (C : ℝ) (N : ℕ), 0 ≤ C ∧ ∀ σ t : ℝ, a ≤ σ → σ ≤ b → 1 ≤ |t| →
       ‖Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖
         ≤ C * |t| ^ N * Real.exp (-(Real.pi * |t| / 2)) := by
-  let n : ℕ := ⌈1 - a⌉₊
-  have hna : 1 - a ≤ (n : ℝ) := by
-    dsimp [n]
-    exact Nat.le_ceil _
-  have hapos : 0 < a + n := by linarith
   obtain ⟨C, N, hC, hbound⟩ :=
-    GaloisForLFunctions.HTGeometry.exists_bound_norm_Gamma_vertical_strip hapos (b + n)
-  refine ⟨C, N, hC, ?_⟩
-  intro σ t hσa hσb ht
-  set z : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I
-  have hne : ∀ i : ℕ, i < n → z + (i : ℂ) ≠ 0 := by
-    intro i hi hzero
-    have him : (z + (i : ℂ)).im = t := by simp [z]
-    rw [hzero] at him
-    simp at him
-    rw [← him] at ht
-    norm_num at ht
-  have hprod := GaloisForLFunctions.HTGeometry.norm_Gamma_add_nat z n hne
-  have hfactor : 1 ≤ ∏ i ∈ Finset.range n, ‖z + (i : ℂ)‖ := by
-    apply Finset.one_le_prod
-    intro i hi
-    have him : (z + (i : ℂ)).im = t := by simp [z]
-    calc
-      1 ≤ |t| := ht
-      _ ≤ ‖z + (i : ℂ)‖ := by
-        rw [← him]
-        exact Complex.abs_im_le_norm _
-  have hle : ‖Complex.Gamma z‖ ≤ ‖Complex.Gamma (z + (n : ℂ))‖ := by
-    rw [hprod]
-    nlinarith [norm_nonneg (Complex.Gamma z)]
-  have hshift : z + (n : ℂ) = ((σ + n : ℝ) : ℂ) + (t : ℂ) * Complex.I := by
-    dsimp [z]
-    push_cast
-    ring
-  rw [hshift] at hle
-  exact hle.trans (hbound (σ + n) t (by linarith) (by linarith) ht)
+    GaloisForLFunctions.HTGeometry.exists_sharp_bound_norm_Gamma_strip a b
+  refine ⟨C, N, hC, fun σ t hσa hσb ht => ?_⟩
+  have hre : ((σ : ℂ) + (t : ℂ) * Complex.I).re = σ := by simp
+  have him : ((σ : ℂ) + (t : ℂ) * Complex.I).im = t := by simp
+  have hmain := hbound ((σ : ℂ) + (t : ℂ) * Complex.I)
+    (by rw [hre]; exact hσa) (by rw [hre]; exact hσb) (by rw [him]; exact ht)
+  rwa [him] at hmain
 
 /-- Uniform polynomial-exponential decay of the Barnes integrand across the
 horizontal segment of the finite rectangle.  The sign parameter simultaneously

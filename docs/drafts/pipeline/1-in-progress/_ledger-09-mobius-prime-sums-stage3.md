@@ -182,3 +182,24 @@ Reusable assets this card left behind:
 
 Remaining cards in this folder: 8 (`mertens-logarithmic-corona-differential-tower` §5, and the
 seven not yet opened).
+
+## Card 8 — mertens-logarithmic-corona-differential-tower — PROMOTED (stage 3)
+
+§5 closed.  New modules (both wired into `RHTower.lean`, `lake build`-green, axiom-clean):
+
+- `RHTower/PrimeLogPowZetaAbelPole.lean` (579 lines) — the elementary log-power integral
+  `∫_1^∞ t^{-δ-1}(log t)^m dt = m!/δ^{m+1}`, the graded Abel decomposition, and the capstone
+  `tendsto_gradedPrimeLogZeta : δ^{k+1} ∑_p (log p)^{k+1} p^{-1-δ} → k!`.
+- `RHTower/MertensGradedCoronaPolarTower.lean` — `(23)`–`(29)`: the time-one polar tower
+  `s^{k+1} F_k(s) → √2 k!`, the clock/derivative and translation/shift intertwiners, the
+  reflection parity.
+
+Also generalized in place (no duplication): `RHTower/PrimeLogZetaAbelPole.lean` now carries
+`isBigO_logAffine_pow_rpow`, `tendsto_rpow_neg_mul_logAffine_pow` and
+`weightedDirichlet_eq_abel_integral_pow` (partial sums may grow like any fixed power of `log`);
+the old `weightedDirichlet_eq_abel_integral` is now a one-line corollary at `m = 1`.
+
+Reusable: the log-power integral, the power-bounded Abel representation, and
+`measurable_weightPartialSum_floor`.
+
+Remaining cards in this folder: 7 (4, 7, 9, 10, 11, 12, 13).

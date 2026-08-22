@@ -513,6 +513,88 @@ theorem chebyshevXiQRealCurrent_firstReturn_lt_neg_secondReturn
     xiRealLogDeriv v / (q * (s - 1) ^ 2)
   exact lt_trans hfirst hsecond
 
+/-- The exterior current strictly dominates the magnitude of the reflected
+return current.  This is the complementary comparison to return-current
+domination and follows from the same global theta-source monotonicity. -/
+theorem chebyshevXiQRealCurrent_neg_secondReturn_lt_outer
+    {s : ℝ} (hs : 2 < s) :
+    -chebyshevXiQRealCurrent (1 / (1 - s)) <
+      chebyshevXiQRealCurrent s := by
+  have hs0 : s ≠ 0 := by linarith
+  have hs1 : s ≠ 1 := by linarith
+  let r : ℝ := s - 1 / 2
+  let v : ℝ := (s + 1) / (2 * (s - 1))
+  have hv : 0 < v := by
+    dsimp only [v]
+    exact div_pos (by linarith) (by nlinarith)
+  have hvr : v < r := by
+    dsimp only [v, r]
+    rw [div_lt_iff₀ (by nlinarith : 0 < 2 * (s - 1))]
+    nlinarith
+  have hL : xiRealLogDeriv v < xiRealLogDeriv r :=
+    strictMono_xiRealLogDeriv hvr
+  have hLv : 0 < xiRealLogDeriv v := xiRealLogDeriv_pos hv
+  let q : ℝ := chebyshevAnharmonicQPrimeReal s
+  have hq : 0 < q := chebyshevAnharmonicQPrimeReal_pos s
+  have hone : 1 < (s - 1) ^ 2 := by nlinarith
+  have hden : q < q * (s - 1) ^ 2 := by nlinarith
+  have hdenPos : 0 < q * (s - 1) ^ 2 := mul_pos hq (by nlinarith)
+  have hfirst : xiRealLogDeriv v / (q * (s - 1) ^ 2) <
+      xiRealLogDeriv v / q := by
+    rw [div_lt_div_iff₀ hdenPos hq]
+    exact mul_lt_mul_of_pos_left hden hLv
+  have hsecond : xiRealLogDeriv v / q < xiRealLogDeriv r / q :=
+    div_lt_div_of_pos_right hL hq
+  rw [chebyshevXiQRealCurrent_eq_centered,
+    chebyshevXiQRealCurrent_eq_centered,
+    chebyshevAnharmonicQPrimeReal_wTwo hs0 hs1]
+  have hargOuter : s - 1 / 2 = r := rfl
+  have hargReturn : 1 / (1 - s) - 1 / 2 = -v := by
+    dsimp only [v]
+    field_simp [hs1]
+    ring
+  rw [hargOuter, hargReturn, xiRealLogDeriv_neg]
+  have honeSub : (1 - s) ^ 2 = (s - 1) ^ 2 := by ring
+  rw [honeSub]
+  simp only [neg_div, neg_neg]
+  change xiRealLogDeriv v / (q * (s - 1) ^ 2) <
+    xiRealLogDeriv r / q
+  exact lt_trans hfirst hsecond
+
+/-- **Strict current chamber.**  The real moving-fibre Xi current lies in one
+ordered chamber: positive return, larger reflected-return magnitude, still
+larger exterior magnitude. -/
+theorem chebyshevXiQRealCurrent_strict_chamber {s : ℝ} (hs : 2 < s) :
+    0 < chebyshevXiQRealCurrent ((s - 1) / s) ∧
+      chebyshevXiQRealCurrent ((s - 1) / s) <
+        -chebyshevXiQRealCurrent (1 / (1 - s)) ∧
+      -chebyshevXiQRealCurrent (1 / (1 - s)) <
+        chebyshevXiQRealCurrent s := by
+  obtain ⟨hwlo, _, _, _⟩ := chebyshevAnharmonic_realOrbit_ranges hs
+  exact ⟨chebyshevXiQLogDeriv_ofReal_re_pos hwlo,
+    chebyshevXiQRealCurrent_firstReturn_lt_neg_secondReturn hs,
+    chebyshevXiQRealCurrent_neg_secondReturn_lt_outer hs⟩
+
+/-- The quotient-visible descended trace is strictly future-oriented on the
+entire real scan sheet. -/
+theorem chebyshevXiQRealTrace_pos {s : ℝ} (hs : 2 < s) :
+    0 < chebyshevXiQRealTrace s := by
+  obtain ⟨hb, _, hac⟩ := chebyshevXiQRealCurrent_strict_chamber hs
+  rw [chebyshevXiQRealTrace]
+  linarith
+
+/-- The invariant-coordinate logarithmic derivative of the cyclic Xi product
+has strictly positive real part on the exterior real scan ray.  Thus the real
+axis restriction of a positive-real/Herglotz descent criterion is
+unconditional; RH-bearing information must enter through transverse complex
+directions. -/
+theorem chebyshevXiCyclicOrbitProduct_qLogDeriv_re_pos
+    {s : ℝ} (hs : 2 < s) :
+    0 < (logDeriv chebyshevXiCyclicOrbitProduct (s : ℂ) /
+      chebyshevAnharmonicQPrime (s : ℂ)).re := by
+  rw [← chebyshevXiQRealTrace_eq_re_logDeriv_product hs]
+  exact chebyshevXiQRealTrace_pos hs
+
 /-- Three signed real currents whose reflected magnitude dominates the positive return current
 have Casimir strictly greater than twice squared visible trace. -/
 theorem real_threeBodyEnergy_gt_two_trace_sq_of_signs
@@ -547,6 +629,89 @@ theorem two_mul_chebyshevXiQRealTrace_sq_lt_orientationEnergy
   rw [chebyshevXiQOrientationEnergy_ofReal_eq_realEnergy,
     chebyshevXiQRealOrientationEnergy, chebyshevXiQRealTrace]
   exact h
+
+/-! ## Exact Lorentz mass-gap decomposition -/
+
+/-- Exact three-body factorization behind the sharp Casimir wall.  The first
+term is the squared positive return current; the second couples the reflected
+return-current gap to the sum of the exterior and positive-return currents. -/
+theorem real_threeBodyEnergy_sub_two_trace_sq_eq
+    (a b c : ℝ) :
+    (a - b) ^ 2 + (b - c) ^ 2 + (c - a) ^ 2 -
+        2 * (a + b + c) ^ 2 =
+      6 * (b ^ 2 + (-c - b) * (a + b)) := by
+  ring
+
+/-- Excess magnitude of the reflected return current over the positive return
+current. -/
+def chebyshevXiQRealReturnReflectionGap (s : ℝ) : ℝ :=
+  -chebyshevXiQRealCurrent (1 / (1 - s)) -
+    chebyshevXiQRealCurrent ((s - 1) / s)
+
+/-- Lorentz-type mass gap between the standard-sector Casimir and the sharp
+null wall `2 * trace²`. -/
+def chebyshevXiQRealLorentzMassGap (s : ℝ) : ℝ :=
+  chebyshevXiQOrientationEnergy (s : ℂ) -
+    2 * chebyshevXiQRealTrace s ^ 2
+
+/-- Reflected return-current domination is a strictly positive gap. -/
+theorem chebyshevXiQRealReturnReflectionGap_pos {s : ℝ} (hs : 2 < s) :
+    0 < chebyshevXiQRealReturnReflectionGap s := by
+  rw [chebyshevXiQRealReturnReflectionGap]
+  exact sub_pos.mpr
+    (chebyshevXiQRealCurrent_firstReturn_lt_neg_secondReturn hs)
+
+/-- **Two-channel mass decomposition.**  At every real scan point, the exact
+excess over the sharp Casimir wall is a return square plus a reflection-gap
+coupling. Both channels are strictly positive when `s > 2`. -/
+theorem chebyshevXiQRealLorentzMassGap_eq_positive_decomposition
+    (s : ℝ) :
+    chebyshevXiQRealLorentzMassGap s =
+      6 * (chebyshevXiQRealCurrent ((s - 1) / s) ^ 2 +
+        chebyshevXiQRealReturnReflectionGap s *
+          (chebyshevXiQRealCurrent s +
+            chebyshevXiQRealCurrent ((s - 1) / s))) := by
+  rw [chebyshevXiQRealLorentzMassGap,
+    chebyshevXiQOrientationEnergy_ofReal_eq_realEnergy,
+    chebyshevXiQRealOrientationEnergy, chebyshevXiQRealTrace,
+    chebyshevXiQRealReturnReflectionGap]
+  exact real_threeBodyEnergy_sub_two_trace_sq_eq _ _ _
+
+/-- The exact Lorentz mass gap is strictly positive at every finite point of
+the real scan sheet. -/
+theorem chebyshevXiQRealLorentzMassGap_pos {s : ℝ} (hs : 2 < s) :
+    0 < chebyshevXiQRealLorentzMassGap s := by
+  rw [chebyshevXiQRealLorentzMassGap_eq_positive_decomposition s]
+  obtain ⟨hwlo, _, _, _⟩ := chebyshevAnharmonic_realOrbit_ranges hs
+  have ha : 0 < chebyshevXiQRealCurrent s :=
+    chebyshevXiQLogDeriv_ofReal_re_pos (by linarith)
+  have hb : 0 < chebyshevXiQRealCurrent ((s - 1) / s) :=
+    chebyshevXiQLogDeriv_ofReal_re_pos hwlo
+  have hd : 0 < chebyshevXiQRealReturnReflectionGap s :=
+    chebyshevXiQRealReturnReflectionGap_pos hs
+  positivity
+
+/-- The strictly positive mass gap approaches the sharp null wall after
+normalization by the descended trace energy. -/
+theorem tendsto_chebyshevXiQ_normalizedLorentzMassGap :
+    Tendsto (fun s : ℝ =>
+      chebyshevXiQOrientationEnergy (s : ℂ) /
+          chebyshevXiQRealTrace s ^ 2 - 2) atTop (nhds 0) := by
+  have h := tendsto_chebyshevXiQOrientationEnergy_div_trace_sq.sub_const 2
+  norm_num at h ⊢
+  exact h
+
+/-- Equivalent intrinsic form: Lorentz mass gap divided by visible trace
+energy tends to zero along the exterior sheet. -/
+theorem tendsto_chebyshevXiQRealLorentzMassGap_div_trace_sq :
+    Tendsto (fun s : ℝ => chebyshevXiQRealLorentzMassGap s /
+      chebyshevXiQRealTrace s ^ 2) atTop (nhds 0) := by
+  refine tendsto_chebyshevXiQ_normalizedLorentzMassGap.congr' ?_
+  filter_upwards [eventually_gt_atTop (2 : ℝ)] with s hs
+  have htrace0 : chebyshevXiQRealTrace s ≠ 0 :=
+    ne_of_gt (chebyshevXiQRealTrace_pos hs)
+  rw [chebyshevXiQRealLorentzMassGap]
+  field_simp [htrace0]
 
 end
 

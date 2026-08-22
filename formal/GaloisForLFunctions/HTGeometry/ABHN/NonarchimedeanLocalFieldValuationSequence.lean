@@ -1019,6 +1019,49 @@ theorem nonarchimedeanLocalField_principalUnitFiltration_antitone
   rw [nonarchimedeanLocalField_mem_principalUnitFiltration_iff] at hu ⊢
   exact Ideal.pow_le_pow_right hmn hu
 
+/-- Two integral units agree modulo `𝔪ⁿ` exactly when their quotient belongs to `Uⁿ`. -/
+theorem nonarchimedeanLocalField_unit_div_mem_principalUnitFiltration_iff_sub_mem
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (n : ℕ)
+    (u v : (ValuativeRel.valuation K).integerˣ) :
+    u⁻¹ * v ∈ nonarchimedeanLocalFieldPrincipalUnitFiltration K n ↔
+      (v : (ValuativeRel.valuation K).integer) - (u : (ValuativeRel.valuation K).integer) ∈
+        (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n := by
+  rw [nonarchimedeanLocalField_mem_principalUnitFiltration_iff]
+  constructor
+  · intro huv
+    have hmul : (u : (ValuativeRel.valuation K).integer) *
+        (((u⁻¹ * v : (ValuativeRel.valuation K).integerˣ) :
+          (ValuativeRel.valuation K).integer) - 1) ∈
+        (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n :=
+      ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n).mul_mem_left _ huv
+    have hmul_eq : (u : (ValuativeRel.valuation K).integer) *
+        (((u⁻¹ * v : (ValuativeRel.valuation K).integerˣ) :
+          (ValuativeRel.valuation K).integer) - 1) =
+        (v : (ValuativeRel.valuation K).integer) - (u : (ValuativeRel.valuation K).integer) := by
+      change (u : (ValuativeRel.valuation K).integer) *
+          (((u⁻¹ : (ValuativeRel.valuation K).integerˣ) :
+            (ValuativeRel.valuation K).integer) *
+            (v : (ValuativeRel.valuation K).integer) - 1) =
+          (v : (ValuativeRel.valuation K).integer) - (u : (ValuativeRel.valuation K).integer)
+      rw [mul_sub, ← mul_assoc, Units.mul_inv, one_mul, mul_one]
+    rwa [hmul_eq] at hmul
+  · intro huv
+    have hmul : ((u⁻¹ : (ValuativeRel.valuation K).integerˣ) :
+        (ValuativeRel.valuation K).integer) *
+        ((v : (ValuativeRel.valuation K).integer) -
+          (u : (ValuativeRel.valuation K).integer)) ∈
+        (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n :=
+      ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n).mul_mem_left _ huv
+    convert hmul using 1
+    change ((u⁻¹ : (ValuativeRel.valuation K).integerˣ) :
+      (ValuativeRel.valuation K).integer) * (v : (ValuativeRel.valuation K).integer) - 1 =
+      ((u⁻¹ : (ValuativeRel.valuation K).integerˣ) :
+        (ValuativeRel.valuation K).integer) *
+        ((v : (ValuativeRel.valuation K).integer) -
+          (u : (ValuativeRel.valuation K).integer))
+    rw [mul_sub, Units.inv_mul]
+
 /-- Every element of the `n`th principal-unit filtration has a uniformizer-coordinate
 presentation `1 + bπⁿ`. -/
 theorem nonarchimedeanLocalField_principalUnitFiltration_uniformizer_factor

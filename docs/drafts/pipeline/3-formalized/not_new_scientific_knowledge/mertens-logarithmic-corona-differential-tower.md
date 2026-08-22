@@ -3,7 +3,7 @@
 - **ID:** `mertens-logarithmic-corona-differential-tower`
 - **Stage:** 2-fully-proven/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / SOURCE-OPERATOR EXTENSION / GRADED CORONA / RH BRIDGE
-- **Scientific status:** `[PROVED HERE] [NOT FORMALIZED] [BRIDGE]
+- **Scientific status:** `[PROVED HERE] [FORMALIZED] [BRIDGE]
   [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:**
   - `mertens-corona-shift-conormal.md`
@@ -386,19 +386,35 @@ its source-defined affine-support-faithful Gamma comparison.
 - `tendsto_gradedPrimeMean_gradedSourceDefect`, `mertensGradedCoronaTower` — equation `(31)` and
   the packaged tower.
 
-**Remaining Lean item: §5, the time-one differentiated polar tower `(23)`--`(29)`.**  The exact
-open brick is the graded prime-zeta Abel pole
+**§5 is now formalized.**  `formal/GaloisForLFunctions/RHTower/PrimeLogPowZetaAbelPole.lean` and
+`formal/GaloisForLFunctions/RHTower/MertensGradedCoronaPolarTower.lean`, both wired into
+`GaloisForLFunctions.RHTower`, `lake build`-green and axiom-audited to
+`[propext, Classical.choice, Quot.sound]`:
 
-```text
-lim_{s ↓ 0} s^{k+1} ∑_p (log p)^{k+1} p^{-1-s} = k!  .
-```
-
-Route (all inputs owned): Abel-represent the sum as `s ∫_1^∞ t^{-s-1} A_k(t) dt` with
-`A_k = RHTower.primeLogPowSum (k+1)` — generalize `RHTower.primeLogZeta_eq_abel_integral`;
-use `∫_1^∞ t^{-s-1}(log t)^{k+1} dt = (k+1)!/s^{k+2}` — generalize
-`RHTower.integral_rpow_mul_log_Ioi_one` by parts; and the uniform higher-Mertens error bound from
-`RHTower.tendsto_primeLogPowSum_sub`.  The `k = 0` instance is already closed as
-`RHTower.tendsto_timeOnePrimeLaplace` (card `mertens-corona-shift-conormal`).
+- `logPowMajorantConst`, `logAffine_pow_le_majorant`, `log_pow_le_majorant`,
+  `integrableOn_rpow_mul_log_pow_Ioi_one`, `integrableOn_rpow_mul_logAffine_pow_Ioi_one`,
+  `logPowRpowPrimitive`, `hasDerivAt_logPowRpowPrimitive`, `tendsto_logPowRpowPrimitive`,
+  `integral_rpow_mul_log_pow_Ioi_one` — the elementary logarithmic power integral
+  `∫_1^∞ t^{-δ-1}(log t)^m dt = m!/δ^{m+1}`, by the recursion `I_m = (m/δ) I_{m-1}`.
+- `weightedDirichlet_eq_abel_integral_pow` (in `PrimeLogZetaAbelPole.lean`, with the previous
+  logarithmically bounded version now a corollary) — the Abel representation of an arithmetic
+  Dirichlet series whose partial sums grow like any fixed power of `log`.
+- `gradedMertensError`, `tendsto_gradedMertensError`, `exists_gradedMertensError_bound`,
+  `exists_primeLogPowSum_bound`, `summable_primeLogPowWeight_rpow`,
+  `integrableOn_rpow_mul_gradedFloor`, `gradedPrimeLogZeta`,
+  `gradedPrimeLogZeta_eq_abel_integral`, `gradedAbelIntegral_eq`, `abs_gradedErrorIntegral_le` —
+  the graded Abel decomposition against the higher Mertens theorem.
+- `tendsto_gradedPrimeLogZeta` — **the graded prime-zeta Abel pole**
+  `lim_{δ ↓ 0} δ^{k+1} ∑_p (log p)^{k+1} p^{-1-δ} = k!`.
+- `abelWeighted_gradeSource`, `timeOnePrimeLaplace_gradeSource_eq`,
+  `summable_timeOneCorrection_primeLogPowWeight`, `abs_gradedTimeOneDefect_le` — equations
+  `(23)`--`(24)`, on top of the corpus factorization `RHTower.meixnerShape_factorization`.
+- `tendsto_gradedTimeOnePrimeLaplace` — equations `(25)`--`(27)`:
+  `lim_{s ↓ 0} s^{k+1} F_k(s) = √2 · k!`, no lower polar orders.
+- `hasDerivAt_timeOnePrimeLaplace_gradeSource` and `timeOnePrimeLaplace_gradeSource_shift` —
+  equation `(28)`: the logarithmic clock is minus the boundary derivative and a positive Euler
+  translation is a shift of `s`.
+- `principalPart_reflection` — equation `(29)`, the parity of the principal symbol.
 
 ## Gates
 
@@ -414,7 +430,7 @@ use `∫_1^∞ t^{-s-1}(log t)^{k+1} dt = (k+1)!/s^{k+2}` — generalize
 - [x] parent-theory and novelty gate run
 - [x] §1--§4 and §6 formalized unconditionally in Lean 4 (no wrapper shell: the higher Mertens
   theorem is a corpus theorem)
-- [ ] §5 formalized: the graded prime-zeta Abel pole `s^{k+1} ∑_p (log p)^{k+1} p^{-1-s} → k!`
+- [x] §5 formalized: the graded prime-zeta Abel pole `s^{k+1} ∑_p (log p)^{k+1} p^{-1-s} → k!`
 - [ ] construct the reflected singular completion
 - [ ] identify its full Gamma transgression
 - [ ] prove zero-orbit affine-support faithfulness

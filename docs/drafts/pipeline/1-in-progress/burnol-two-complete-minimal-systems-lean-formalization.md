@@ -36,14 +36,14 @@ completely-regular-growth theory.  These are the real gaps.
 | Prop 4.2 | `ζ(s)/(s−ρ)^l ∈ L̂₁` | | **TODO** |
 | Prop 4.3 | division by `(s−w)` stays in `L̂_a` / `K̂_a` | **corpus-owned for `L_a`**: `BurnolSoninDividedShift.burnolShift_mem_soninExtendedSpace`; `K_a` half **DONE**: `RHTower/MellinHardyClasses.IsMellinTailHardy.div_sub` | |
 | Lem 4.4 | `F ∈ K̂_a ⇒ F/s ∈ L̂_a` | **DONE**: `RHTower/MellinHardyClasses.IsMellinTailHardy.div_id` and `.div_one_sub` | |
-| Prop 4.5 | `dim(L_a/K_a) = 2` | **DONE (full-line model)**: `RHTower/SoninBandCodimensionTwo.finrank_soninBandComplement_eq_two`, from the abstract `HTGeometry/CodimensionTwoOrthogonalSum.finrank_inf_orthogonal_sub_sup_eq_two` + the `L_a` description `RHTower/SoninExtendedOrthogonalBand.mem_soninExtendedSpace_iff_orthogonal_meanZeroBand` | even-subspace restatement TODO (all pieces present: `A'`,`B'` are reflection-invariant so the 2-dim complement already lies in `evenSubspace`) |
+| Prop 4.5 | `dim(L_a/K_a) = 2` | **DONE, literal**: `RHTower/SoninExtendedCodimensionTwo.finrank_centralSoninExtendedCarrier_inf_orthogonal_carrier` (`finrank (L_a ⊓ K_aᗮ) = 2`), dualising `SoninBandCodimensionTwo.finrank_soninBandComplement_eq_two` | |
 | Prop 4.6 | `∪_{b>a}K_b` dense in `K_a` (same for `L`) — via the general lattice identity | **DONE**: `RHTower.topologicalClosure_iSup_centralSoninCarrier` (K) and `RHTower/SoninExtendedApertureChain.topologicalClosure_iSup_centralSoninExtendedCarrier` (L) | |
-| Prop 4.7 | `∪_{b>a}K_b ⊊ K_a`, also for Fourier-(skew-)invariant parts | | **TODO** |
+| Prop 4.7 | `∪_{b>a}K_b ⊊ K_a`, also for Fourier-(skew-)invariant parts | **DONE**: `RHTower/SoninApertureStrict.iSup_centralSoninCarrier_lt` and `RHTower/SoninApertureStrictEigen.iSup_centralSoninCarrier_inf_eigen_lt` (+ the `ε = ±1` corollaries) | |
 | Def 10 | L-Property | **DONE**: `RHTower/LPropertyStrips.HasLProperty` (+ `.add`, `.const_mul`) | |
 | Thm 4.8 | functions of `L̂_a` have the L-Property | | **TODO** |
 | Def 12 | `𝓛¹` (quick decrease in vertical strips) | **DONE**: `RHTower/LPropertyStrips.HasStripRapidDecrease` (+ `.add`, `.hasLProperty`) | |
 | Thm 4.9 | `𝓛¹` dense in `L¹` | | **TODO** |
-| Lem 4.10 | `𝓛¹` stable under `F₊` | **DONE** (modulo the classical `χ` strip bound as an input): `RHTower/LPropertyStrips.hasStripRapidDecrease_chi_mul_reflect`, from `.mul_stripPolyGrowth` and `.comp_one_sub` | |
+| Lem 4.10 | rapid-decrease class stable under `F₊` | **DONE, unconditional**: `RHTower/ZetaChiStripGrowth.hasStripRapidDecrease_zetaChi_mul_reflect`, from `LPropertyStrips.hasStripRapidDecrease_chi_mul_reflect` + `hasStripPolyGrowthOffReal_zetaChi` | |
 | Prop 5.1 | Titchmarsh IX.7: `|ζ(s)|⁻¹ < |s|^A` on `|Im s| = T_n`, `−1≤Re s≤2` | classical | **TODO** |
 | Thm 5.2 | residue series `Σ_ρ G(ρ)/ζ'(ρ) · ζ(Z)/(Z−ρ) = G(Z)` | | **TODO** |
 | Cor 5.3 | `ζ(s)/(s−ρ)^l` complete in `L̂₁` | | **TODO** |
@@ -379,9 +379,47 @@ order of vanishing of `ζ` at `ρ` (mathlib `natCast_le_analyticOrderAt` gives t
   so the corpus's `GaloisForLFunctions.HasStripPolyGrowth χ` is false while the off-real version is
   true.  `HasStripPolyGrowth.offReal` records the implication.
 
-### Remaining `χ` input for Lemma 4.10
-`HasStripPolyGrowthOffReal zetaChi` on an arbitrary strip.  The corpus owns pieces:
-`RHTower/ZetaChiVerticalGrowth.exists_bound_norm_zetaChi_vertical` (one fixed line,
-`σ ∈ [-1,1/2] \ {0}`) and `RHTower/TitchmarshZetaInputs.norm_zetaChi_le_negative_one_strip`
-(uniform on `-1 ≤ σ ≤ -1/2`, above ordinate 2).  A general strip needs the Gamma recurrence to
-step the abscissa, plus `HTGeometry/GammaVerticalStripDecay.exists_bound_norm_Gamma_vertical_strip`.
+### Prop. 4.5 and Prop. 4.7 - CLOSED (2026-08-23)
+
+**Prop. 4.5, literal form.**  `SoninBandCodimensionTwo` measured the drop between `A ⊔ B` and the
+sum of the two mean-zero halves.  Since `K_a = (A ⊔ B)ᗮ` and `L_a = (A' ⊔ B')ᗮ` with both sums
+closed, `L_a ⊓ K_aᗮ = (A ⊔ B) ⊓ (A' ⊔ B')ᗮ`, so the same number is the codimension of `K_a` in
+`L_a`.  Module `RHTower/SoninExtendedCodimensionTwo`.
+
+**Prop. 4.7.**  Two independent steps.
+
+*Strictness.*  `A_b ⊓ (A_a ⊔ B_a) = A_a`: split `g = u + v`, then `v = g - u ∈ A_b ⊓ B_a = ⊥`
+because a nonzero vector cannot be time-limited and band-limited at once (corpus
+`physicalForbidden_inf_fourierForbidden_eq_bot`, monotonicity of the frequency band supplying the
+unequal apertures).  The shell indicator of `[a,b]` lies in `A_b` and not in `A_a`, so
+`A_a ⊔ B_a < A_b ⊔ B_b` and, taking perpendiculars, `K_b < K_a`.
+
+*Baire.*  The apertures `a + 1/(n+1)` are cofinal, the carriers are a directed family, and each is
+closed; the corpus's `RelativeShellBaireWall.shellBaire_exists_stage` applied to the inclusion
+`K_a ↪ L²` produces a single stage `K_a ≤ K_{a + 1/(N+1)}`, contradicting strictness.  So the union
+is proper even though Prop. 4.6 makes it dense.
+
+*Eigen-parts.*  `𝓕` maps `A_c` into `B_c` and `B_c` into `A_c` (via `𝓕² = reflection`), so
+`S_c = A_c ⊔ B_c` and `K_c` are `𝓕`-stable and reflection-stable.  For `ε = ±1` and `g` the *even*
+shell indicator, `h = g + ε • 𝓕 g` is an `ε`-eigenvector in `S_b \ S_a` by the same splitting
+argument.  The eigen-projection `f ↦ (evenProjection f + ε • 𝓕 (evenProjection f))/2` keeps `K_a`
+invariant and does not change the pairing with `h`, which converts the obstruction into
+`K_b ⊓ E_ε < K_a ⊓ E_ε`; Baire then runs verbatim.  Module `RHTower/SoninApertureStrictEigen`.
+
+### `χ` input for Lemma 4.10 - CLOSED
+`RHTower/ZetaChiStripGrowth.hasStripPolyGrowthOffReal_zetaChi : HasStripPolyGrowthOffReal zetaChi`,
+on an arbitrary strip, above height two.  Proof: the modulus splits as
+`pi^(sigma-1/2) * norm (Gamma ((1-s)/2)) * norm (Gamma (s/2))^{-1}` (`norm_Gammaℝ_eq`), and then the
+sharp Gamma decay `C1*|tau/2|^N1*exp(-pi|tau|/4)` and the matching reciprocal growth
+`C2*|tau/2|^N2*exp(+pi|tau|/4)` cancel their exponentials, leaving a power of the height.
+Hence **Lemma 4.10 is unconditional**: `hasStripRapidDecrease_zetaChi_mul_reflect`.
+
+New supporting layer `HTGeometry/GammaStripSharpDecay`:
+`norm_Gamma_le_norm_Gamma_add_nat` (off-axis: every recurrence factor has modulus at least 1),
+`exists_sharp_bound_norm_Gamma_strip` (arbitrary strip, `C|tau|^N exp(-pi|tau|/2)`) and
+`exists_bound_norm_inv_Gamma_strip` (arbitrary strip, `C|tau|^N exp(+pi|tau|/2)`, via Euler
+reflection).  Deduplication pass:
+`RHTower/SelbergClass/BarnesHorizontalEdges.exists_bound_norm_Gamma_vertical_strip_arbitrary`
+already held the same content one layer up; its 38-line proof now delegates to the HTGeometry
+version, and `norm_sin_le_exp_abs_im` is an alias of the corpus's
+`HTGeometry.norm_csin_le_exp_abs_im`.

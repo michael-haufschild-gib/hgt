@@ -33,7 +33,7 @@ open Cardinal
 universe u v
 
 /-- A monoid-hom section of `Cˣ → Cˣ/μ(C)`, obtained from the retraction onto `μ(C)`. -/
-theorem deningerQuotientSection (C : Type*) [Field C] [IsAlgClosed C] :
+theorem deningerCharacterQuotientSection (C : Type*) [Field C] [IsAlgClosed C] :
     ∃ s : (Cˣ ⧸ CommGroup.torsion Cˣ) →* Cˣ,
       ∀ z, QuotientGroup.mk' (CommGroup.torsion Cˣ) (s z) = z := by
   obtain ⟨r, hr⟩ := deningerTorsion_retraction (C := Cˣ)
@@ -87,7 +87,7 @@ theorem deningerCharacterExtension_algClosed {k : Type u} [Field k] [IsAlgClosed
   let j : (kˣ ⧸ CommGroup.torsion kˣ) →* (Cˣ ⧸ CommGroup.torsion Cˣ) :=
     MonoidHom.toAdditive.symm j₀
   have hjinj : Function.Injective j := fun a b h => hj₀inj h
-  obtain ⟨sC, hsC⟩ := deningerQuotientSection C
+  obtain ⟨sC, hsC⟩ := deningerCharacterQuotientSection C
   obtain ⟨rk, hrk⟩ := deningerTorsion_retraction (C := kˣ)
   have himg : ∀ y : CommGroup.torsion kˣ, χμ y ∈ CommGroup.torsion Cˣ := by
     intro y

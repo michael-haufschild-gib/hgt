@@ -73,6 +73,22 @@ theorem anchoredGapRatioMap_sortedEnsembleSpectrum_const_mul {n : ℕ}
       = t * (sortedEnsembleSpectrum hP θ clock - sortedEnsembleSpectrum hP θ anchor) from by ring,
     mul_div_mul_left _ _ ht.ne']
 
+
+/-- Positive rescaling of the coefficients preserves simplicity of the spectrum. -/
+theorem mem_simpleEnsembleLocus_const_mul_iff (hP : ∀ a, (P a).IsHermitian) {t : ℝ} (ht : 0 < t)
+    (θ : Fin N → ℝ) :
+    (fun a => t * θ a) ∈ simpleEnsembleLocus hP ↔ θ ∈ simpleEnsembleLocus hP := by
+  have hiff : ∀ φ : Fin N → ℝ, φ ∈ simpleEnsembleLocus hP
+      ↔ Function.Injective (sortedEnsembleSpectrum hP φ) := by
+    intro φ
+    exact injective_iff_injective_sortedTuple _
+  rw [hiff, hiff, sortedEnsembleSpectrum_const_mul hP ht]
+  constructor
+  · intro h i j hij
+    exact h (by simpa using congrArg (fun z : ℝ => t * z) hij)
+  · intro h i j hij
+    exact h (mul_left_cancel₀ ht.ne' hij)
+
 end
 
 end GaloisForLFunctions.HTGeometry

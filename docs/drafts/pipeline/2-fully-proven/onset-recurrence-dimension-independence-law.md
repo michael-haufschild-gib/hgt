@@ -280,3 +280,39 @@ The card's own construction: the `O(n^3)`-preparable cubic-phase seed `χ_{n,L}`
 `J_{n,L}` and its measure bound `(3)`, and clauses 1, 3, 4, 6, 7, 8.  These are the complexity-side
 statements, not the recurrence-side ones, and they need the incubation and plateau apparatus rather
 than the spectral laws above.
+
+## Lean progress ledger (in progress)
+
+New modules landed in `formal/GaloisForLFunctions/HTGeometry/`, all `lake env lean`-clean with
+oleans built:
+
+| Module | Content |
+|---|---|
+| `SortedEnsembleSpectrumScaling.lean` | the increasing rearrangement of a Hermitian spectrum scales; the anchored gap ratios are radial; positive rescaling preserves simplicity |
+| `FidelityPhaseRadius.lean` | two-sided comparison of the fidelity deficit with the phase-lattice radius: `deficit ≤ 8π²r²` and `deficit < δ ⟹` every anchored gap phase is within `√δ/(2c)` of a turn |
+| `FidelityReturnTime.lean` | `fidelityReturnTime`; a winding return gives a fidelity return; a fidelity return gives a phase return; the deficit never vanishes at a positive time for a non-VWA ratio vector, hence is bounded below on compact positive intervals |
+| `FidelityReturnExponent.lean` | **`tendsto_log_fidelityReturnTime`** — the fidelity first-return exponent is exactly half the winding exponent, i.e. `(D−2)/2` |
+| `KleinbockMargulis/VwaMeasurable.lean` | the very well approximable vectors form a Borel set |
+| `SortedGapRatioGlobalExtremality.lean` | extremality of the sorted gap-ratio map on the *whole* simple locus (countable ball cover) |
+| `ChainPauliFinEscape.lean` | **`chainPauliFin_spectrumEscapesRealRelations`** — the numbered nearest-neighbour Pauli family escapes every constant real relation (from `exists_pauliChain_spanWitness` at rate `0`) |
+| `ChainVwaSphereNull.lean` | the very well approximable chain directions are shell-null, in coefficient and in patch coordinates |
+
+Together these give equation `(6)`: for a chain direction outside the (null) VWA set, with strictly
+positive eigenbasis overlaps, the first fidelity return after a positive cutoff has logarithmic
+exponent exactly `(D−2)/2`.
+
+### What still remains
+
+1. **Generic cyclicity of the seed.**  `tendsto_log_fidelityReturnTime` needs `0 < p_j` for every
+   level, i.e. the seed must be cyclic.  `exists_incubating_cubicSeed_compiled` does not deliver
+   this.  Route: the Krylov determinant `det[χ, Hχ, …, H^{D−1}χ]` is homogeneous of degree
+   `D(D−1)/2` in the coefficients, is nonzero at the lacunary one-site witness `∑ 3^i Z_i` (whose
+   eigenvectors are the computational basis states, on which the cubic seed has all amplitudes
+   nonzero), so its zero set is null and radial — the same `toSphere_eq_zero_of_scaleInvariant`
+   pattern as `chainBadSphere`.
+2. **Clause 7** — `finiteQLocalAutonomousTransferSignal_gt_haarBenchmark` applies once
+   `patchHamLM k ω ≠ 0` and `HasPauliWeightAtMost (Fin (k+3)) 2` are supplied, under the card's own
+   "sufficiently large `n`" finite-size inequality.
+3. **Assembly** — intersect the incubation good set with the two new conull sets and transport the
+   spectrum from `FiniteQubitConfiguration (Fin (k+3))` through `qubitConfigFin` and `finCongr` to
+   the `Fin (e+3)` shape the exponent theorem consumes.

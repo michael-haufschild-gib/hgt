@@ -2,13 +2,11 @@
 
 ## Scope, evidence, and status language
 
-This document states the current `HTGeometry`, `HilbertMetric`, and `RHTower` formal frontier. It
-maps architectures, theorem chains, open cores, and terminal mechanisms, not chronology or work log.
+This document states the current `HTGeometry`, `HilbertMetric`, and `RHTower` formal frontier. It maps architectures, theorem chains, open cores, and terminal mechanisms, not chronology or work log.
 
-**Formal-corpus cutoff:** 22 August 2026, commit `b4d8547491da18c97a0862ebbc641621dd2e1387`, plus declaration-index review of current working tree.
-Scientific status comes only from Lean declarations, dependencies, theorem docstrings, and explicit gap/no-go markers; cards and papers are not evidence.
-No build status is inferred here. Incomplete declarations are excluded; material uncommitted ones
-are labeled working-tree evidence.
+**Formal-corpus cutoff:** 22 August 2026, commit `91820662df1e3070fd9a48c708abba7fdcd9d400`, plus declaration-index review of current working tree.
+Scientific status comes only from Lean declarations, dependencies, theorem docstrings, and explicit gap/no-go markers; cards and papers are not evidence. No build status is inferred here.
+Incomplete declarations are excluded; material uncommitted ones are labeled working-tree evidence.
 
 Terms:
 
@@ -25,8 +23,7 @@ Terms:
 
 ## Executive map
 
-Formal corpus supports twenty-one live producer architectures, distinguished by first source premise rather than pairwise-independent receivers:
-`CCM-FU, C1, D2, E, F2, STC, CSB, G, G-CE, L, O, P, Q, CLG/TTF, SP-E, SCE, T1, T2, U, HC, SV2`.
+Formal corpus supports twenty-one live producer architectures, distinguished by first source premise rather than pairwise-independent receivers: `CCM-FU, C1, D2, E, F2, STC, CSB, G, G-CE, L, O, P, Q, CLG/TTF, SP-E, SCE, T1, T2, U, HC, SV2`.
 CLG/TTF is one architecture; T has distinct `T1` and `T2` branches. Seventeen corpus-born candidates remain: `TK, BSH, CFI, UEB, PSRC, PBM, SC, PPM, IRK, OPUC, HJ, BW, MSC, EWQ-V, PCS, SEC, BPC`.
 Finite Hilbert dispersion/fidelity recurrence, positive circle densities, abstract Deninger rational-Witt/valued-point geometry, localized half-density germ/curvature, and anharmonic moving-fibre Casimir lack an independent completed source-to-RH landing. R, IW, AP, scalar EWQ, DQPT, and fractional-part extraction are terminal. RH and its negation remain unproved.
 
@@ -1361,7 +1358,10 @@ flux. Universal theta flux order and universal observability order are therefore
 independent proof routes. `ThetaCuspTiltFluxHedenmalmWeld.lean` identifies the diagonal with the
 completed-Xi transverse current divided by `2a`, then with the pointed Hedenmalm split Krein value,
 and proves every one-node packet nonnegative for `a>=1/2`. Any negative RH-bearing packet must have
-at least two nodes. `ThetaSourceHorizontalFluxExtractor.lean` explains the generic scalar
+at least two nodes. `ThetaSourceGlobalStrictLogConvexity.lean` proves all real theta-tilt moments,
+positive definiteness of every finite moment Hankel matrix, positive tilted variance, and strict
+monotonicity of the centered Xi real logarithmic derivative. Scalar real-axis order is closed; it
+does not control moving complex cross-node packets. `ThetaSourceHorizontalFluxExtractor.lean` explains the generic scalar
 mechanism—an off-axis transform zero forces a negative diagonal somewhere between the imaginary
 axis and that zero—but does not locate the witness beyond the critical half-line.
 
@@ -1485,7 +1485,10 @@ equal throughout the certified right half-plane. `SuzukiWeilPropThreeOneDetermin
 `S_t in L2(R)` for every real `t`; `SuzukiWeilPropOneThree.lean` proves the same for compact-test
 transforms. `SuzukiWeilTransformRaySeries.lean` expands each conjugated transform as the summable
 Xi-zero ray series, and `SuzukiWeilDifferentialPairing.lean` gives its exact compact-test `D`
-pairing. `SuzukiWeilAppendixDerivative.lean` proves the corrected appendix
+pairing. `SuzukiWeilRaySeriesHolomorphy.lean` proves holomorphy off the Xi divisor; working-tree
+`SuzukiWeilRaySeriesIdentity.lean` promotes real-axis vanishing to vanishing on that complement.
+These settle analytic continuation, not fibre-residue extraction or signed amplitude order.
+`SuzukiWeilAppendixDerivative.lean` proves the corrected appendix
 vertical limit identifying `y P_t(-iy)` with the explicit screw derivative off prime-power atoms.
 Reporter measurability, square integrability, and vertical derivative landing are closed; no
 theorem derives SP-E's uniform signed amplitude bound.
@@ -2553,13 +2556,14 @@ continuation producer is absent.
   trace ceiling nor a pre-divisor orientation law; no route is added.
 - **ABHN infrastructure remains pre-route.** Cyclic/Brauer descent, Azumaya localization, continuous
   `H^2`, Milnor reciprocity, finite ramification, completed-place transport, and concrete unramified
-  integral norm/reduction are exact. Finite-residue Brauer observables are nevertheless zero while
+  integral norm/reduction, Teichmüller splitting, principal-unit filtration exactness, and norm
+  surjectivity on every positive graded quotient are exact. Finite-residue Brauer observables are nevertheless zero while
   the local Tate source is nonzero, so C1/L cannot factor through residue Brauer data alone. Missing
   items remain global restricted-product ABHN comparison and, decisively, coefficient-faithful
   occurrence on the completed prime--Gamma/Möbius source with an Xi landing. No route or candidate.
 - Several exact interfaces close local mechanics without creating producers.
   `PerronUniformFlankProducer.lean` derives flank mass/horizontal escape and proves that geometric flank radius `R` forces every nonzero Dirichlet coefficient index `n<=R`; absent its completed-source hypotheses, this is a T1/F2/U adapter.
-  `DeningerDynSysPointedMultiplicativeRoot.lean` classifies pointed `N`-th roots by triviality on `mu_N`, hence by cardinal divisibility in the algebraically closed finite-kernel case: IW/L algebra, not a producer. Deninger dynamics also formalize rational/big-Witt functors and sheaves, injective rational-to-big inclusion, full integrally-closed Galois descent, perfect-closure fixed points, free normalized irreducible factorization, purely inseparable correspondence with exponent equal to inseparability degree, and Corollary 13.5's quotient/localization laws for valued points. These close abstract Deninger geometry, but supply no completed Xi occurrence, C1 positive cutoff, or L singular source-to-physical comparison.
+  `DeningerDynSysPointedMultiplicativeRoot.lean` classifies pointed `N`-th roots by triviality on `mu_N`, hence by cardinal divisibility in the algebraically closed finite-kernel case: IW/L algebra, not a producer. Deninger dynamics also formalize reduced-monoid-algebra pointed maps, character extension, rational/big-Witt functors and sheaves, injective rational-to-big inclusion, integrally-closed Galois descent, perfect-closure fixed points, and normalized irreducible factorization with factorwise injectivity, surjectivity, and descent across purely inseparable correspondence, plus Corollary 13.5's valued-point quotient/localization laws. These close abstract Deninger geometry, but supply no completed Xi occurrence, C1 positive cutoff, or L singular source-to-physical comparison.
   Two-principal ABHN generic-fibre compatibility and adic-completion locality are exact; working-tree unramified integral norm/reduction and norm-surjectivity modulo principal units strengthen local algebra. Exact two-local rigid spectrum/complexity with finite exceptional circuit times, Octonion Schur/resolvent and pullback spectra, and quantized-cocycle trace additivity remain source-independent.
   `FiniteHilbertDispersion.lean` and `XiPhysicalPrimeLogApertureHilbertMetric.lean` identify every finite weighted aperture variance with pairwise squared distances; `PrimeArchShiftedCircleDensity.lean` gives strictly positive ordinary circle states through shift twelve; `ThetaCuspFinitePrimeParametricResolvent.lean` makes every finite-prime factor invertible on `Re(s)>0`. `GaussOnePrimeCriticalResidue.lean` realizes one exact prime-log weak-Schatten residue but does not identify it with full Connes--Consani defect. These close finite mechanics for G/CLG/F2/TK/C1, but none proves reflected Hankel orientation, cofinal tightness, an RH reader, or Route L's singular comparison. No route or candidate is added.
   `MonotoneDisjointInfiSup.lean`,
@@ -2582,9 +2586,17 @@ continuation producer is absent.
 - **Moving-fibre and localized curvature are pre-routes, not RH routes.**
   `AnharmonicChebyshev{OrientationCasimir,MovingFiber}.lean` proves scalar `q^2` descent glues two
   reflected triples and every holomorphic quadratic invariant is isotropic.
+  `AnharmonicChebyshevCubicDescentCriterion.lean` formalizes the Rouyea--Bourgeois literature
+  endpoint: `q(ρ)^2` is strictly negative real at every Xi zero iff RH. Exact fibre classification
+  plus the source-derived height gap removes the two spurious unit-circle branches; this is an RH
+  reader, not an independent producer.
   `AnharmonicChebyshevNoetherCasimir.lean` proves the actual real Xi three-sheet current has sign
-  `(+,+,-)` and strictly positive discarded Hermitian fibre energy. Thus scalar descent loses
-  information; surviving doubled sector has no source control or RH implication.
+  `(+,+,-)`, the strict magnitude chamber `0 < b < -c < a`, positive descended trace, and exact
+  Lorentz-type decomposition `E-2T²=6(b²+(-c-b)(a+b))>0`, with normalized mass gap tending to zero.
+  The q-logarithmic derivative of the cyclic Xi product is therefore positive on the complete
+  exterior real ray unconditionally. Thus scalar descent loses information, and real-ray
+  positive-real/Herglotz control cannot close RH; the live obligation is transverse complex
+  positivity, equivalently the completed Chebyshev trace bound. No route or candidate is added.
   `LocalizedHalfDensity{Germ,Curvature}.lean` gives the multiplicative epsilon-to-Lambda germ,
   finite exponential fibre modes, forced half-density, exact two-prime collision chambers, and
   prime-power Chebyshev fibres. It lacks completed aggregation and collision-quantum landing.
@@ -2594,12 +2606,16 @@ continuation producer is absent.
   `MertensGradedCoronaTower.lean` supplies every logarithmic grade: clock raises grade, conormal
   reads source, kills every positive translation and detects `I-S_h` with eigenvalue one. This is
   not AGC revival—the normed layer changes with grade—and still has no completed Xi landing or
-  critical-line selector. It remains an infinite source interface for G/P/MSC/BPC, not candidate.
+  critical-line selector. Working-tree `PrimeLogZetaAbelPole.lean` extends the exact Abel integral
+  to arithmetic partial sums of every fixed logarithmic-power growth; this is an analytic adapter,
+  not source order. The corona remains an infinite source interface for G/P/MSC/BPC, not candidate.
 - `HalfPlaneHardy.lean`, `HardyLineMass.lean`, `HardyLineIndependence.lean`,
   `MellinHardyBridge.lean`, `MellinHeadHardy.lean`, `ZetaHardyQuotient{,Pow}.lean`,
-  `MellinHardyClasses.lean`, and `LPropertyStrips.lean` supply Paley--Wiener mass and converse,
+  `MellinHardyClasses.lean`, `LPropertyStrips.lean`, `GammaStripSharpDecay.lean`, and working-tree
+  `ZetaChiStripGrowth.lean` supply Paley--Wiener mass and converse,
   Mellin charts, line independence, Burnol's Hardy/L classes, Lemma 4.4, Proposition 4.3,
-  Proposition 4.2's iterated zero division, and chi-reflection stability. They close analytic admissibility, not
+  Proposition 4.2's iterated zero division, actual chi-reflection stability, and sharp Gamma/inverse-Gamma
+  vertical-strip control. They close analytic admissibility, not
   arithmetic moment selection, ground control, or signed amplitude balance.
 - **DQPT is an exact classifier/landing, not an RH route.** Paired eta tail has sharp half-next-term normal form; zero partial-sum rate is `Re(s)*log 2`, but zero free energy is `log 2` for every strip zero. `DQPTChiOrder.lean` proves `|chi(beta+it)| = Theta(t^(1/2-beta))`, so the functional-equation multiplier records abscissa but does not select it. `DQPTReflectedSlope.lean` proves the exact first normal and equality of reflected raw rates exactly at `beta=1/2`; no declaration derives that equality upstream. `RiemannSourceDQPTMemoryLag.lean` inserts the canonical horizontal Gamma/co-Poisson parameter into a bounded Pauli memory-lag reporter whose zero locus is exactly the critical line, but it is defined on an Xi divisor fibre and universal annihilation is proved equivalent to RH. Exact observables, eta/zeta derivative bounds, and this coefficient-faithful physical receiver survive; no independent annihilation producer exists.
 - **Fractional-part/trigonometric extraction is terminal.** Lean proves exact fractional-part integral, four real/reflected strip-zero equations, and strip-local reflection multiplier. Unit-interval integration requires the first-primitive jump sum; deleting it diverges. Global zero-locus reflection fails at trivial zeros because archimedean factor vanishes. Correct identities supply no critical-line selector.
@@ -2926,11 +2942,17 @@ continuation producer is absent.
   `IsometricCongruenceInertia.lean`, and `TensorFamilyInertia.lean` make finite Hermitian inertia
   additive under Schur complementation, invariant under positive scaling, reindexing, block swap,
   and rectangular isometries, and computable for iterated Kronecker families.
-  `SquarefreeCutoffLocalBlocks.lean` supplies rank-one anchor/occupancy blocks, a binary-sign local
-  density frame, and a positive raw rotation radius. `FidelityPhaseRadius.lean`,
-  `SortedEnsembleSpectrumScaling.lean`, and working-tree `FidelityReturnTime.lean` identify finite
-  fidelity deficit with pairwise phase dispersion, compare it to the projective phase lattice, and
-  construct first return after a cutoff. No theorem assembles these finite objects into a completed
+  `SquarefreeCutoff{LocalBlocks,JumpInertia}.lean` supplies rank-one anchor/occupancy blocks, a
+  binary-sign density frame, positive raw rotation radius, and exact tensor signature--Gram
+  factorization of the finite cutoff jump. `FidelityPhaseRadius.lean`,
+  `SortedEnsembleSpectrumScaling.lean`, `FidelityReturnTime.lean`, and
+  `FidelityReturnExponent.lean` identify finite fidelity deficit with pairwise phase dispersion,
+  compare it to the projective phase lattice, construct first return after a cutoff, and compute
+  its logarithmic recurrence exponent under non-approximability. Working-tree
+  `ScaleCompleteDyadicActionLaw.lean` recovers every noncollision paired-replica action exactly once
+  across all dyadic scales and erases exact recurrences; working-tree
+  `StaticChoiScaleCompleteActionLaw.lean` identifies the traceless Choi total with the negative exact
+  recurrence sector. No theorem assembles these objects into a completed
   source, cofinal law, or Xi landing, so no route status changes.
 - Endpoint-complete finite Hamiltonian leaves, exponential-polynomial/determinant graph closure,
   Cassidy `sl2`, Burnside, torsor separation, and difference semi-invariant/Riccati reductions are

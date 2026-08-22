@@ -450,3 +450,29 @@ Also added to `HTGeometry/IsometricCongruenceInertia.lean`: `hermQuad_add`, `her
 7. Padding: for any unit vector `v : ρ → ℂ`, `C ((x,s), y) = 1 x y * v s` has `Cᴴ C = 1`, so
    `posIndex_isometric_congr` transfers the inertia and adds `card − q` to the null index.
    This is exactly `(CJ2)`'s `Q − q`.
+
+## 2026-08-23: card 16 closed
+
+`squarefree-cutoff-jump-root-avoidance-inertia` → stage 3.  New modules (all wired, all clean under
+`#print axioms`):
+
+- `HTGeometry/HaynsworthInertia.lean` — block-diagonal additivity + **Haynsworth inertia
+  additivity** (a genuine mathlib gap).
+- `HTGeometry/IsometricCongruenceInertia.lean` — rectangular isometric congruence and the
+  `hermQuad` positivity toolkit.
+- `HTGeometry/InertiaScalingSwap.lean` — positive rescaling, reindexing by a bijection, block
+  swap, `isPosDefOn_top_of_posIndex_eq_card`, `nullIndex_eq_zero_of_isUnit`, `nullIndex_neg`.
+- `HTGeometry/TensorFamilyInertia.lean` — `tensorFamily`/`tensorVec` algebra, tensor inertia,
+  trace, and the signed-count identity.
+- `RHTower/SquarefreeCutoffLocalBlocks.lean` — the three local blocks, the exact local Gram,
+  the balance matrix, the pencil/rotation/metric, the local traces and the local root avoidance.
+- `RHTower/SquarefreeCutoffJumpInertia.lean` — the global assembly: `(CJ1)`–`(CJ5)`, `(CJ16)`.
+
+Traps recorded: `field_simp` in this toolchain will **not** clear an inverse whose denominator is a
+polynomial in an atom even with the matching `≠ 0` hypothesis present; finish with
+`ring_nf` + `linear_combination c * (d * d⁻¹ = 1)`.  A rectangular matrix product whose factor has
+an **under-determined implicit type argument** silently picks `CStarMatrix`'s default `HMul`
+instance and every later `rw` fails; pin the argument (`crossingJ (ι := ι)`) — type ascriptions and
+`attribute [-instance]` do not help.
+
+Remaining cards: 1, 5, 7, 11, 14, 17.

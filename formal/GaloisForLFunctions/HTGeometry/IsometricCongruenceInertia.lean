@@ -8,6 +8,8 @@ If `C` is a rectangular matrix with `Cᴴ C = 1`, then the Hermitian form of `C 
 those of `X`; only the null index grows, by the codimension of the range of `C`.
 -/
 
+attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
+
 namespace GaloisForLFunctions.HTGeometry
 
 open Matrix
@@ -137,5 +139,15 @@ theorem isPosDefOn_top_smul_one_add_gram {c : ℝ} (hc : 0 < c) (A : Matrix m m 
     exact mul_pos hc (hermQuad_one_pos hx)
   have h2 := hermQuad_conjTranspose_mul_self_nonneg A x
   linarith
+
+omit [Fintype n] [DecidableEq n] [DecidableEq m] in
+theorem hermQuad_smul_vec (H : Matrix m m ℂ) (c : ℝ) (x : m → ℂ) :
+    hermQuad H ((c : ℂ) • x) = c ^ 2 * hermQuad H x := by
+  have hstar : star ((c : ℂ) • x) = (c : ℂ) • star x := by
+    funext i
+    simp [Pi.star_apply, RCLike.star_def, Complex.conj_ofReal]
+  simp only [hermQuad, Matrix.mulVec_smul, hstar, smul_dotProduct, dotProduct_smul, smul_eq_mul,
+    ← mul_assoc]
+  rw [show ((c : ℂ) * (c : ℂ)) = (((c ^ 2 : ℝ)) : ℂ) by push_cast; ring, Complex.re_ofReal_mul]
 
 end GaloisForLFunctions.HTGeometry

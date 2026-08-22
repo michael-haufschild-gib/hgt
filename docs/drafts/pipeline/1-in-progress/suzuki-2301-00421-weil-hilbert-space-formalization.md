@@ -198,6 +198,7 @@ off the origin and the countable real Xi zero set (`XiC_zeroSet_countable`), whi
 | `RHTower/SuzukiWeilTransformRaySeries.lean` | `suzukiPHatConj`, `suzukiPHat_ofReal_eq_conj`, `suzukiPHatRayTerm`, and **`suzukiPHatConj_eq_tsum`** = the multiplicity-exact form of Suzuki eq. (3.7).  Also `integral_suzukiPtZeroSum_mul` (the Fubini exchange). |
 | `RHTower/SuzukiWeilDifferentialPairing.lean` | `suzukiD` (eq. 1.8), `hasDerivAt_expSlopeKernel`, `deriv_eq_zero_of_supp`, `integral_eq_intervalIntegral_of_supp`, **`integral_expSlope_mul_deriv`** (integration by parts) and **`integral_expSlope_mul_conj_D`** = step 2 of the Lemma 3.2 route. |
 | `RHTower/SuzukiWeilRaySeriesHolomorphy.lean` | `exists_pos_dist_xiSpectralPoint`, `norm_raySeriesNumerator_le`, and **`differentiableAt_suzukiPHatRaySum`** = step 3a of the Lemma 3.2 route. |
+| `RHTower/SuzukiWeilRaySeriesIdentity.lean` | **`suzukiPHatRaySum_eq_zero_off_divisor`** = step 3b(i): the identity theorem carrying real-axis vanishing to the whole divisor complement. |
 | `RHTower/SuzukiWeilPropOneThree.lean` | `suzukiFrakSSharp`, **`suzukiPHat`** (eq. 1.7, built on `suzukiFrakSFull`), the pointwise bound `norm_suzukiPHat_ofReal_le`, and **`memLp_suzukiPHat_of_compactSupport`** = Proposition 1.3.  No Minkowski integral inequality is used: the master bound of Prop 1.2 is pointwise and its constant is monotone (`suzukiFrakSConst_mono`), so `‖∫‖ ≤ ∫‖·‖` suffices. |
 | `RHTower/SuzukiWeilAppendixDerivative.lean` | `hasDerivAt_screwFn_atomFree` (the exact derivative of `g_ξ` off the prime-power atoms); `tendsto_logDeriv_riemannZeta_ofReal_atTop`; `suzukiVerticalLerchTerm` / `suzukiVerticalFilter` / `suzukiVerticalLerchBound` with the three-regime `y`-uniform dominant and `suzukiVerticalFilter_neBot`; `digamma_quarter_sub_logPi` (`screwLinearCoeff = ψ(1/4) - log π`); `suzukiFrakP_vertical_mul`; `suzukiVerticalEnergy_eq` (the five-block decomposition); the five block limits; and **`tendsto_suzukiFrakP_vertical`** = eq. (7.2). |
 
@@ -300,7 +301,45 @@ the series being **absolutely** convergent (the extra `1/γ_q` is what makes it 
    `‖ray‖ ≤ 2M‖(γ_q(γ_q-z₀))⁻¹‖` with `summable_xiResolventProduct_norm`.  Companion:
    `exists_pos_dist_xiSpectralPoint`, `norm_raySeriesNumerator_le`.
 
-3b. **Residue extraction (remaining).**  `‖·‖₀ = 0` ⟹ the series vanishes a.e. on `ℝ` (because
+3b(i). **DONE** — `RHTower.suzukiPHatRaySum_eq_zero_off_divisor` (module
+   `SuzukiWeilRaySeriesIdentity`): vanishing at every admissible *real* point upgrades to vanishing
+   at every point off the divisor.  Uses `isPreconnected_XiC_ne_zero`, `isOpen_XiC_ne_zero` and
+   `AnalyticOnNhd.eqOn_zero_of_preconnected_of_frequently_eq_zero`, with the reals accumulating at
+   `0` (where `XiC 0 ≠ 0`).
+
+3b(ii). **Fibre residue — DO NOT BUILD, the corpus already owns it.**  A search on 2026-08-22
+   turned up, in `RHTower.XiCauchyTransformCompleteness`:
+
+   - `xiCauchyTransform (u : lp (fun _ : XiZeroCopy => ℂ) 2)` — the Cauchy transform of a
+     square-summable divisor vector;
+   - `differentiableOn_xiCauchyTransform` — holomorphic off the divisor (this overlaps the
+     `SuzukiWeilRaySeriesHolomorphy` module built here: the corpus version assumes an `ℓ²` vector,
+     the local one assumes `1/(|γ_q||z-γ_q|)`-summability; keep both, but note the relation);
+   - `xiCauchyTransform_eq_zero_of_re_eq_zero_on_ball` — completeness;
+   - **`xiWeilFiberSum_eq_zero_of_re_xiCauchyTransform_eq_zero_on_ball`** — *the multiplicity fibre
+     sums vanish*, i.e. exactly this step.
+
+   Also `RHTower.finite_xiSpectralPoint_fiber` already exists (`XiWeilPolarization.lean:242`); a
+   duplicate was written here and discarded.
+
+   **Remaining work for 3b(ii)** is therefore only the *bridge*, and its two fiddly points are
+   already settled:
+
+   - `xiCauchyTransform u z = ∑'_q conj(u q)·(γ_q - z)⁻¹`, whereas the ray sum is
+     `R z = ∑'_q b_q/(z - γ_q) = -∑'_q b_q·(γ_q - z)⁻¹`.  So take **`u q := conj (b_q)`**, giving
+     `xiCauchyTransform u = -R`.
+   - the corpus theorem only needs **`(xiCauchyTransform u z).re = 0` on one ball** inside the
+     regular set — far weaker than the full vanishing already proved by
+     `suzukiPHatRaySum_eq_zero_off_divisor`, so any ball inside `{XiC ≠ 0}` will do.
+
+   What is left: `Memℓp (fun q => conj (a_q/γ_q)) 2`, which is immediate from `|b_q| ≤ M/|γ_q|`
+   (`norm_raySeriesNumerator_le` plus `xiSpectralPoint_ne_zero`) and
+   `xiSpectralPoint_inv_sq_summable`.  Then
+   `xiWeilFiberSum_eq_zero_of_re_xiCauchyTransform_eq_zero_on_ball` gives
+   `xiWeilFiberSum u ρ = 0` for every `ρ`, i.e. `m_ρ · conj(F(-γ_ρ)) = 0`, hence `F(γ) = 0` for
+   every `γ ∈ Γ` (using that `Γ` is negation-symmetric, `xiSpectralPoint_reflect`).
+
+3b (original sketch, superseded above).  `‖·‖₀ = 0` ⟹ the series vanishes a.e. on `ℝ` (because
    `A(x)/E^♯(x) ≠ 0` off the countable real Xi zero set), and then
    `lim_{z→γ}(z-γ)·T(z) = m_γ a_γ/γ = 0`.  **The corpus already owns the analytic layer this needs**:
    `HTGeometry.HerglotzDiscreteSupportSeries.summableLocallyUniformlyOn_discreteHerglotzCauchy_off_poles`
@@ -327,6 +366,8 @@ the series being **absolutely** convergent (the extra `1/γ_q` is what makes it 
   and Prop 4.1 (`{F_γ}` an ONB of `K(Θ)`, cited to Su23 Prop 3.2).
 
 ## Log
+- 2026-08-22 — **Anti-duplication catch.**  `finite_xiSpectralPoint_fiber` and the whole fibre-residue step already exist in `RHTower.XiCauchyTransformCompleteness` / `XiWeilPolarization`.  Step 3b(ii) is a bridge to `xiWeilFiberSum_eq_zero_of_re_xiCauchyTransform_eq_zero_on_ball`, not a construction.  See the route section.
+- 2026-08-22 — Lemma 3.2 **step 3b(i) closed** (`suzukiPHatRaySum_eq_zero_off_divisor`).  Only the fiber residue 3b(ii) and the Su22 application (4) remain.
 - 2026-08-22 — Lemma 3.2 **step 3a closed** (`differentiableAt_suzukiPHatRaySum`): the ray series is holomorphic off the divisor, with the sharp `|z₀-γ_q|/2` dominant.  Remaining: 3b (identity theorem + fiber residue) and 4 (Su22 Lemma 2.1).
 - 2026-08-22 — Lemma 3.2 **step 2 closed** (`integral_expSlope_mul_conj_D`): the `D`-pairing collapses each ray to `F(-γ_q)/(z-γ_q)`.  Only the residue extraction (step 3) and the Su22 application (step 4) remain.
 - 2026-08-22 — **eq. (3.7) CLOSED** (`suzukiPHatConj_eq_tsum`): the transform expanded over the Xi divisor, multiplicity-exact and absolutely convergent.  This is step 1 of the Lemma 3.2 route.

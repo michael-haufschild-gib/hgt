@@ -487,10 +487,42 @@ private theorem locallyIntegrableOn_deriv_rpowNegP' (δ : ℝ) :
     LocallyIntegrableOn (deriv (rpowNegP δ)) (Ici (1 : ℝ)) :=
   locallyIntegrableOn_deriv_rpowNegP δ
 
-/-- **Abel representation of a logarithmically bounded arithmetic Dirichlet series.** -/
-theorem weightedDirichlet_eq_abel_integral {c : ℕ → ℝ} (hc0 : c 0 = 0)
-    (hcnn : ∀ n, 0 ≤ c n) {K : ℝ} (hK0 : 0 ≤ K)
-    (hbound : ∀ n : ℕ, weightPartialSum c n ≤ K * (Real.log n + 1))
+/-! ### The graded Abel representation -/
+
+/-- A logarithmic power is dominated by every positive power. -/
+theorem isBigO_logAffine_pow_rpow {r : ℝ} (hr : 0 < r) (K : ℝ) (m : ℕ) :
+    (fun t : ℝ => K * (Real.log t + 1) ^ m) =O[atTop] (fun t : ℝ => t ^ r) := by
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · simpa using isBigO_const_rpowP (C := K) hr
+  · have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
+    have hlt : (0 : ℝ) < r / (m : ℝ) := by positivity
+    have hbase : (fun t : ℝ => Real.log t + 1) =O[atTop] (fun t : ℝ => t ^ (r / (m : ℝ))) :=
+      ((isLittleO_log_rpow_atTop hlt).isBigO).add (isBigO_const_rpowP (C := (1 : ℝ)) hlt)
+    have hcollapse : (fun t : ℝ => (t ^ (r / (m : ℝ))) ^ m) =ᶠ[atTop] (fun t : ℝ => t ^ r) := by
+      filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+      rw [← Real.rpow_natCast (t ^ (r / (m : ℝ))) m, ← Real.rpow_mul ht.le]
+      congr 1
+      field_simp
+    exact ((hbase.pow m).congr' EventuallyEq.rfl hcollapse).const_mul_left K
+
+theorem tendsto_rpow_neg_mul_logAffine_pow {δ : ℝ} (hδ : 0 < δ) (K : ℝ) (m : ℕ) :
+    Tendsto (fun t : ℝ => t ^ (-δ) * (K * (Real.log t + 1) ^ m)) atTop (nhds 0) := by
+  have hO := (isBigO_refl (fun t : ℝ => t ^ (-δ)) atTop).mul
+    (isBigO_logAffine_pow_rpow (r := δ / 2) (by positivity) K m)
+  refine hO.trans_tendsto ?_
+  have hlim : Tendsto (fun t : ℝ => t ^ (-(δ / 2))) atTop (nhds 0) :=
+    tendsto_rpow_neg_atTop (by positivity)
+  refine hlim.congr' ?_
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+  rw [← Real.rpow_add ht]
+  congr 1
+  ring
+
+/-- **Abel representation of an arithmetic Dirichlet series with logarithmic-power growth.**
+The partial sums are allowed to grow like any fixed power of `log`. -/
+theorem weightedDirichlet_eq_abel_integral_pow {c : ℕ → ℝ} (hc0 : c 0 = 0)
+    (hcnn : ∀ n, 0 ≤ c n) {K : ℝ} (hK0 : 0 ≤ K) (m : ℕ)
+    (hbound : ∀ n : ℕ, weightPartialSum c n ≤ K * (Real.log n + 1) ^ m)
     {δ : ℝ} (hδ : 0 < δ) (hsum : Summable (fun n : ℕ => c n * ((n : ℝ)) ^ (-δ))) :
     (∑' n : ℕ, c n * ((n : ℝ)) ^ (-δ))
       = δ * ∫ t in Ioi (1 : ℝ), t ^ (-δ - 1) * weightPartialSum c ⌊t⌋₊ := by
@@ -503,15 +535,15 @@ theorem weightedDirichlet_eq_abel_integral {c : ℕ → ℝ} (hc0 : c 0 = 0)
     exact integrableOn_Ioi_rpow_of_lt (by linarith) one_pos
   have htend : Tendsto (fun n : ℕ => rpowNegP δ n * weightPartialSum c n) atTop (nhds 0) := by
     have hmajor : Tendsto
-        (fun n : ℕ => ((n : ℝ) ^ (-δ) * (K * (Real.log n + 1)))) atTop (nhds 0) :=
-      (tendsto_rpow_neg_mul_logAffine hδ K).comp tendsto_natCast_atTop_atTop
+        (fun n : ℕ => ((n : ℝ) ^ (-δ) * (K * (Real.log n + 1) ^ m))) atTop (nhds 0) :=
+      (tendsto_rpow_neg_mul_logAffine_pow hδ K m).comp tendsto_natCast_atTop_atTop
     refine squeeze_zero (fun n => ?_) (fun n => ?_) hmajor
     · exact mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) _) (hSnn n)
     · exact mul_le_mul_of_nonneg_left (hbound n) (Real.rpow_nonneg (Nat.cast_nonneg n) _)
   have hbigO : (fun t : ℝ => deriv (rpowNegP δ) t * weightPartialSum c ⌊t⌋₊) =O[atTop]
       (fun t : ℝ => t ^ (-1 - δ / 2)) := by
     have hb : (fun t : ℝ => deriv (rpowNegP δ) t * weightPartialSum c ⌊t⌋₊) =O[atTop]
-        (fun t : ℝ => t ^ (-δ - 1) * (K * (Real.log t + 1))) := by
+        (fun t : ℝ => t ^ (-δ - 1) * (K * (Real.log t + 1) ^ m)) := by
       refine IsBigO.of_bound δ ?_
       filter_upwards [eventually_ge_atTop (2 : ℝ)] with t ht
       have ht0 : (0 : ℝ) < t := by linarith
@@ -519,26 +551,26 @@ theorem weightedDirichlet_eq_abel_integral {c : ℕ → ℝ} (hc0 : c 0 = 0)
       have hfloorle : ((⌊t⌋₊ : ℕ) : ℝ) ≤ t := Nat.floor_le ht0.le
       have hfloorpos : (0 : ℝ) < ((⌊t⌋₊ : ℕ) : ℝ) := by exact_mod_cast Nat.zero_lt_of_lt hfloor1
       have hlogt : 0 ≤ Real.log t := Real.log_nonneg (by linarith)
-      have hAle : weightPartialSum c ⌊t⌋₊ ≤ K * (Real.log t + 1) := by
+      have hlogmono : Real.log ((⌊t⌋₊ : ℕ) : ℝ) ≤ Real.log t := Real.log_le_log hfloorpos hfloorle
+      have hlogfloor : 0 ≤ Real.log ((⌊t⌋₊ : ℕ) : ℝ) :=
+        Real.log_nonneg (by exact_mod_cast hfloor1)
+      have hAle : weightPartialSum c ⌊t⌋₊ ≤ K * (Real.log t + 1) ^ m := by
         refine (hbound ⌊t⌋₊).trans ?_
-        have : Real.log ((⌊t⌋₊ : ℕ) : ℝ) ≤ Real.log t := Real.log_le_log hfloorpos hfloorle
-        nlinarith
+        exact mul_le_mul_of_nonneg_left
+          (pow_le_pow_left₀ (by linarith) (by linarith) m) hK0
       have hpow : (0 : ℝ) < t ^ (-δ - 1) := Real.rpow_pos_of_pos ht0 _
-      have hlogD : (0 : ℝ) ≤ K * (Real.log t + 1) := by positivity
+      have hlogD : (0 : ℝ) ≤ K * (Real.log t + 1) ^ m :=
+        mul_nonneg hK0 (pow_nonneg (by linarith) m)
       rw [deriv_rpowNegP ht0, Real.norm_eq_abs, Real.norm_eq_abs,
         abs_of_nonneg (mul_nonneg hpow.le hlogD), abs_mul, abs_mul, abs_neg,
         abs_of_pos hδ, abs_of_nonneg hpow.le, abs_of_nonneg (hSnn _)]
       calc δ * t ^ (-δ - 1) * weightPartialSum c ⌊t⌋₊
-          ≤ δ * t ^ (-δ - 1) * (K * (Real.log t + 1)) :=
+          ≤ δ * t ^ (-δ - 1) * (K * (Real.log t + 1) ^ m) :=
             mul_le_mul_of_nonneg_left hAle (by positivity)
-        _ = δ * (t ^ (-δ - 1) * (K * (Real.log t + 1))) := by ring
+        _ = δ * (t ^ (-δ - 1) * (K * (Real.log t + 1) ^ m)) := by ring
     refine hb.trans ?_
-    have hlogO : (fun t : ℝ => K * (Real.log t + 1)) =O[atTop] (fun t : ℝ => t ^ (δ / 2)) := by
-      have h1 : (fun t : ℝ => Real.log t + 1) =O[atTop] (fun t : ℝ => t ^ (δ / 2)) :=
-        ((isLittleO_log_rpow_atTop (by positivity : (0 : ℝ) < δ / 2)).isBigO).add
-          (isBigO_const_rpowP (C := (1 : ℝ)) (by positivity))
-      exact h1.const_mul_left K
-    have hmul := (isBigO_refl (fun t : ℝ => t ^ (-δ - 1)) atTop).mul hlogO
+    have hmul := (isBigO_refl (fun t : ℝ => t ^ (-δ - 1)) atTop).mul
+      (isBigO_logAffine_pow_rpow (r := δ / 2) (by positivity) K m)
     refine hmul.trans (IsBigO.of_bound 1 ?_)
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
     rw [← Real.rpow_add ht, show -δ - 1 + δ / 2 = -1 - δ / 2 by ring, one_mul]
@@ -565,6 +597,16 @@ theorem weightedDirichlet_eq_abel_integral {c : ℕ → ℝ} (hc0 : c 0 = 0)
     ring
   rw [hval, hderiv]
   ring
+
+/-- **Abel representation of a logarithmically bounded arithmetic Dirichlet series.** -/
+theorem weightedDirichlet_eq_abel_integral {c : ℕ → ℝ} (hc0 : c 0 = 0)
+    (hcnn : ∀ n, 0 ≤ c n) {K : ℝ} (hK0 : 0 ≤ K)
+    (hbound : ∀ n : ℕ, weightPartialSum c n ≤ K * (Real.log n + 1))
+    {δ : ℝ} (hδ : 0 < δ) (hsum : Summable (fun n : ℕ => c n * ((n : ℝ)) ^ (-δ))) :
+    (∑' n : ℕ, c n * ((n : ℝ)) ^ (-δ))
+      = δ * ∫ t in Ioi (1 : ℝ), t ^ (-δ - 1) * weightPartialSum c ⌊t⌋₊ :=
+  weightedDirichlet_eq_abel_integral_pow hc0 hcnn hK0 1
+    (fun n => by rw [pow_one]; exact hbound n) hδ hsum
 
 /-- **Uniform Abelian bound for logarithmically bounded weights.** -/
 theorem mul_tsum_weightedDirichlet_le {c : ℕ → ℝ} (hc0 : c 0 = 0)

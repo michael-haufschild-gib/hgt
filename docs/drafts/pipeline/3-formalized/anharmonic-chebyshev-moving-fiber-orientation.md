@@ -267,6 +267,10 @@ Absence from search results is not proof of external novelty; publication label 
 
 `E_q(s) > 2 T_q(s)²` for every `s>2`.
 
+**Numerical pre-certification.** High-precision probes gave `E_q/T_q² ≈ 59.8` at `s=2.1`,
+`2.686` at `s=3`, and `2.003` at `s=10`. These supported the lower-wall conjecture but were not
+used in its proof.
+
 **Cross-corpus mechanism.** The missing comparison came from the theta-source/Laplace-transform
 lane, not from further anharmonic algebra. The abstract `ThetaSource` already supplies
 faster-than-every-exponential decay, and the literal theta-cusp source has global bilateral
@@ -314,6 +318,13 @@ C5 proves `E_q(s)/T_q(s)² → 2`; therefore constant `2` is globally valid and 
 sharp. This strengthens pointwise non-collapse and the cofinal law into a complete-sheet rigidity
 theorem.
 
+**Novelty audit `[NOVELTY UNVERIFIED]`.** The positive-kernel implication "log-Laplace curvature
+= tilted variance" is standard and is not claimed as new. Sondow--Dumitrescu prove a different
+horizontal-half-line monotonicity property of Xi modulus, and Dimitrov--Xu develop general
+Wronskian positivity for Laplace transforms. Targeted searches found no indexed statement of the
+anharmonic return-current domination or sharp global q-Casimir inequality. That absence is not a
+novelty proof; only the synthesis is a candidate new result.
+
 **Formal additions.** New module
 `formal/GaloisForLFunctions/RHTower/ThetaSourceGlobalStrictLogConvexity.lean` proves:
 
@@ -337,3 +348,94 @@ quantity. The exact order-20/order-21 RH tail remains unchanged.
 
 - 2026-08-22 — C6 proved on paper and in Lean by welding global theta-source variance to
   anharmonic Jacobian covariance.
+- 2026-08-22 — targeted builds and direct Lean checks pass for both C6 modules. Representative
+  axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`; scoped proof-debt scan
+  and `git diff --check` pass.
+- 2026-08-22 — full umbrella build is externally blocked by duplicate
+  `RHTower.deningerBigWittRingSeries` declarations in concurrent Deninger modules. Global formal
+  lint is externally blocked by four unreachable concurrent `HTGeometry` modules
+  (`FidelityPhaseRadius`, `FidelityReturnExponent`, `FidelityReturnTime`,
+  `SortedEnsembleSpectrumScaling`). Neither failure names or traverses C6 source as defective.
+
+## C7 — literature cubic-coordinate endpoint
+
+**Literature-first correction.** Rouyea--Bourgeois,
+[The Cubic Descent of the Riemann Xi Function](https://www.alphaxiv.org/abs/2608.riemann-xi-hankel-criterion),
+Lemma 2.7, already proves the exact reality locus
+
+`q(s) ∈ iℝ  ⇔  Re(s)=1/2 or |s|=1 or |1-s|=1`,
+
+and uses `|Im(s)|>1` to remove the two circle branches. The cubic-coordinate RH reader is therefore
+literature, not new research.
+
+**Result `[FORMALIZED FROM LITERATURE]`.** New module
+`formal/GaloisForLFunctions/RHTower/AnharmonicChebyshevCubicDescentCriterion.lean` proves:
+
+- `q` commutes with conjugation and is nonzero on every actual Xi-zero copy;
+- `q(ρ)²` is strictly negative real iff `Re(ρ)=1/2`;
+- `allXiZeroChebyshevQSquaresStrictlyNegative_iff_riemannHypothesis`.
+
+The reverse implication uses exact three-point fibre classification plus the independently
+source-derived Xi height gap. It does not assume a zero enumeration or RH.
+
+**Boundary.** This is an exact reader, not a producer. Proving that all descended zero nodes are
+negative is RH itself. The companion Chebyshev-trace paper reduces production to its explicit
+completed prime--archimedean bound; it states that this final bound remains open.
+
+## C8 — exact future-sheet mass gap and boundary-positivity no-go
+
+**Conjecture.** Reinterpret C6 as a Lorentz-type cone and ask whether strict separation admits an
+exact positive mass decomposition rather than only an inequality.
+
+For real `s>2`, write
+
+`a = D_q log xi(s)`, `b = D_q log xi(w(s))`, `c = D_q log xi(w²(s))`,
+
+and `d=-c-b`. The C6 proof gives `a>0`, `b>0`, `d>0`. Direct three-body algebra yields the stronger
+identity
+
+`E_q - 2T_q² = 6 (b² + d(a+b))`.                                      `(C8.1)`
+
+Both right-hand channels are strictly positive. A second theta-monotonicity comparison gives the
+full chamber
+
+`0 < b < -c < a`,                                                        `(C8.2)`
+
+so `T_q=a+b+c>0`. Thus `(T_q,E_q)` lies strictly on one future-oriented side of the cone
+`E=2T²` at every finite exterior scan point, while
+
+`(E_q-2T_q²)/T_q² → 0`.
+
+**Result `[PROVED HERE]`.** `AnharmonicChebyshevNoetherCasimir.lean` now proves `(C8.1)`, `(C8.2)`,
+strict positivity of the Lorentz mass gap, strict positivity of the descended trace, and normalized
+approach to the null wall.
+
+**Positive no-go survivor.** The invariant-coordinate logarithmic derivative of the cyclic Xi
+product has positive real part on the entire exterior real ray, unconditionally. Therefore the
+real-axis restriction of the cubic paper's positive-real/Herglotz programme cannot distinguish RH.
+Any successful completion must control transverse complex directions, equivalently the full disk or
+right-half-plane condition, not more real-ray monotonicity.
+
+**Higher principle.** Symmetry quotient readers create aliases: the fixed locus and compact
+same-fibre shells have identical scalar reality data. An independent radial/source gap can prune
+the compact aliases, but cannot generate the remaining fixed-locus condition. This
+`quotient + fibre classification + radial exclusion` principle explains both why the cubic reader is
+exact and why it is not a proof.
+
+**Novelty audit `[NOVELTY UNVERIFIED]`.** Targeted searches found the two 2026 cubic/Chebyshev
+papers but no indexed statement of `(C8.1)`, `(C8.2)`, the future-sheet interpretation, or the
+unconditional real-ray positive-log-derivative boundary. Search absence is not a novelty proof.
+
+**RH audit.** C7 and C8 do not prove or falsify RH. C7 is an exact restatement on actual Xi zeros.
+C8 proves the real boundary of a complex positive-real criterion automatically and therefore
+sharpens the remaining obligation: establish transverse complex positivity or the equivalent
+completed Chebyshev trace bound.
+
+## Log continuation IV
+
+- 2026-08-23 — corrected novelty attribution: cubic reality locus and negative-ray endpoint are
+  Rouyea--Bourgeois literature; formalized the exact Xi-zero/RH equivalence in Lean.
+- 2026-08-23 — C8 proved on paper and in Lean: exact positive two-channel mass gap, full strict
+  current chamber, future trace positivity, and normalized null-wall approach.
+- 2026-08-23 — direct Lean checks pass. Headline axiom audits report only `propext`,
+  `Classical.choice`, and `Quot.sound`.
