@@ -108,6 +108,64 @@ theorem exists_indicatorConstLp_eq_of_isAEBoolean_of_ae_zero_outside
     · exact (hzero hxΩ).symm
     · exact fun hxE => hxΩ hxE.1
 
+/-- Indicators of measurable subsets of a fixed finite aperture form a closed subset of `L²`. -/
+theorem isClosed_indicatorConstLp_one_of_subset
+    {X : Type*} [MeasurableSpace X] (μ : Measure X) (Ω : Set X)
+    (hΩ : MeasurableSet Ω) (hΩfin : μ Ω ≠ ⊤) :
+    IsClosed {u : Lp ℝ 2 μ | ∃ (E : Set X) (hE : MeasurableSet E) (hEfin : μ E ≠ ⊤),
+      E ⊆ Ω ∧ indicatorConstLp 2 hE hEfin (1 : ℝ) = u} := by
+  apply IsSeqClosed.isClosed
+  intro f g hf hfg
+  have hfbool : ∀ n, IsAEBoolean μ (f n) := by
+    intro n
+    rcases hf n with ⟨E, hE, hEfin, hEΩ, hfn⟩
+    rw [← hfn]
+    change ∀ᵐ x ∂μ, indicatorConstLp 2 hE hEfin (1 : ℝ) x = 0 ∨
+      indicatorConstLp 2 hE hEfin (1 : ℝ) x = 1
+    filter_upwards [indicatorConstLp_coeFn (p := 2) (hs := hE) (hμs := hEfin)
+      (c := (1 : ℝ))] with x hx
+    rw [hx]
+    by_cases hxE : x ∈ E
+    · exact Or.inr (Set.indicator_of_mem hxE)
+    · exact Or.inl (Set.indicator_of_notMem hxE)
+  have hfzero : ∀ n, IsAEZeroOutside μ Ω (f n) := by
+    intro n
+    rcases hf n with ⟨E, hE, hEfin, hEΩ, hfn⟩
+    rw [← hfn]
+    change ∀ᵐ x ∂μ, x ∉ Ω → indicatorConstLp 2 hE hEfin (1 : ℝ) x = 0
+    filter_upwards [indicatorConstLp_coeFn (p := 2) (hs := hE) (hμs := hEfin)
+      (c := (1 : ℝ))] with x hx hxΩ
+    rw [hx, Set.indicator_of_notMem]
+    exact fun hxE => hxΩ (hEΩ hxE)
+  exact exists_indicatorConstLp_eq_of_isAEBoolean_of_ae_zero_outside μ Ω hΩ hΩfin g
+    (isSeqClosed_isAEBoolean μ f g hfbool hfg)
+    (isSeqClosed_isAEZeroOutside μ Ω f g hfzero hfg)
+
+/-- Measures of arbitrary aperture subsets admit a convergent subsequence in the closed measure
+interval. -/
+theorem exists_subseq_tendsto_measureReal_of_subset
+    {X : Type*} [MeasurableSpace X] (μ : Measure X) (Ω : Set X) (E : ℕ → Set X)
+    (hEΩ : ∀ n, E n ⊆ Ω) :
+    ∃ a ∈ Set.Icc 0 (μ.real Ω), ∃ φ : ℕ → ℕ, StrictMono φ ∧
+      Tendsto (fun n => μ.real (E (φ n))) atTop (𝓝 a) := by
+  exact isCompact_Icc.tendsto_subseq fun n =>
+    ⟨measureReal_nonneg, MeasureTheory.measureReal_mono (hEΩ n)⟩
+
+/-- Along convergent subset measures, convergence of centered indicators reconstructs convergence
+of the corresponding uncentered indicators. -/
+theorem tendsto_indicatorConstLp_of_tendsto_centeredIndicatorOn_of_tendsto_measureReal
+    {X : Type*} [MeasurableSpace X] (μ : Measure X) (Ω : Set X) (E : ℕ → Set X)
+    (hΩ : MeasurableSet Ω) (hΩfin : μ Ω ≠ ⊤)
+    (hE : ∀ n, MeasurableSet (E n)) (hEfin : ∀ n, μ (E n) ≠ ⊤)
+    {g : Lp ℝ 2 μ} {a : ℝ}
+    (hcentered : Tendsto (fun n => centeredIndicatorOn μ Ω (E n) hΩ hΩfin
+      (hE n) (hEfin n)) atTop (𝓝 g))
+    (hmeasure : Tendsto (fun n => μ.real (E n)) atTop (𝓝 a)) :
+    Tendsto (fun n => indicatorConstLp 2 (hE n) (hEfin n) (1 : ℝ)) atTop
+      (𝓝 (g + (a / μ.real Ω) • indicatorConstLp 2 hΩ hΩfin (1 : ℝ))) := by
+  simpa only [centeredIndicatorOn, sub_add_cancel] using
+    hcentered.add (hmeasure.div_const (μ.real Ω)).smul_const
+
 /-- Exact Gram formula for centered indicators in a finite positive-measure aperture. -/
 theorem real_inner_centeredIndicatorOn
     {X : Type*} [MeasurableSpace X] (μ : Measure X) (Ω E F : Set X)

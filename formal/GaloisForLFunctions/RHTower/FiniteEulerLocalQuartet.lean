@@ -3,6 +3,7 @@ import Mathlib.Analysis.Normed.Algebra.Exponential
 import Mathlib.Analysis.SpecialFunctions.Exponential
 import Mathlib.Analysis.Complex.Exponential
 import GaloisForLFunctions.HTGeometry.KroneckerFlow
+import GaloisForLFunctions.RHTower.PrimeCpowAbsoluteAbscissa
 
 /-!
 # Finite Euler local quartets
@@ -56,6 +57,17 @@ theorem finiteEulerLocalFactor_eq_one_sub_natCast_cpow (p : Nat.Primes) (s : ℂ
     congr 2
     ring_nf
   · exact Nat.cast_ne_zero.mpr p.property.ne_zero
+
+/-- Finite Euler factor perturbations have the sharp prime absolute-abscissa boundary. -/
+theorem summable_norm_finiteEulerLocalFactor_sub_one_iff (s : ℂ) :
+    Summable (fun p : Nat.Primes => ‖finiteEulerLocalFactor p s - 1‖) ↔ 1 < s.re := by
+  have hnorm : (fun p : Nat.Primes => ‖finiteEulerLocalFactor p s - 1‖) =
+      fun p : Nat.Primes => ‖((p : ℕ) : ℂ) ^ (-s)‖ := by
+    funext p
+    rw [finiteEulerLocalFactor_eq_one_sub_natCast_cpow]
+    ring_nf
+    exact norm_neg _
+  rw [hnorm, summable_norm_primeCpow_neg_iff]
 
 /-- A local Euler quartet is invariant under `s ↦ 1 - s`. -/
 theorem finiteEulerLocalQuartet_reflection (p : ℕ) (s : ℂ) :

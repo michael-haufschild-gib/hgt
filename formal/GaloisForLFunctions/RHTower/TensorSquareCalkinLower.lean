@@ -247,6 +247,129 @@ theorem ShellDatum.inner_pairTest_pairSection_tendsto (d u : ι × ι → ℂ) :
   rw [← hval]
   exact hlim
 
+/-! ## The tensor-square Calkin lower bound -/
+
+/-- **Card `(1)`/`(2)`: the full weighted coefficient energy of a finite ordered pair section
+survives every compact perturbation of the Hilbert tensor square.** -/
+theorem ShellDatum.tensor_calkin_lower (d : ι × ι → ℂ)
+    (K : Completion (H ⊗[ℂ] H) →L[ℂ] Completion (H ⊗[ℂ] H)) (hK : IsCompactOperator K) :
+    Real.sqrt (∑ a : ι × ι, ‖d a‖ ^ 2) ≤ ‖(S.pairSection d).completion - K‖ := by
+  set E : ℝ := ∑ a : ι × ι, ‖d a‖ ^ 2 with hE
+  have hEnonneg : 0 ≤ E := Finset.sum_nonneg fun a _ => by positivity
+  rcases eq_or_lt_of_le hEnonneg with hE0 | hEpos
+  · rw [← hE0, Real.sqrt_zero]
+    exact norm_nonneg _
+  set R : ℝ := Real.sqrt E with hR
+  have hRpos : 0 < R := Real.sqrt_pos.mpr hEpos
+  have hRsq : R * R = E := Real.mul_self_sqrt hEnonneg
+  set u : ι × ι → ℂ := fun a => (starRingEnd ℂ) (d a) / (R : ℂ) with hu
+  have hRC : (R : ℂ) ≠ 0 := by exact_mod_cast hRpos.ne'
+  have husum : (∑ a : ι × ι, (starRingEnd ℂ) (u a) * u a) = 1 := by
+    have hterm : ∀ a : ι × ι, (starRingEnd ℂ) (u a) * u a
+        = ((‖d a‖ ^ 2 : ℝ) : ℂ) / ((R : ℂ) * (R : ℂ)) := by
+      intro a
+      rw [hu]
+      simp only [map_div₀, Complex.conj_conj, Complex.conj_ofReal]
+      rw [div_mul_div_comm]
+      congr 1
+      rw [Complex.mul_conj']
+      push_cast
+      ring
+    rw [Finset.sum_congr rfl fun a _ => hterm a, ← Finset.sum_div]
+    rw [show ((R : ℂ) * (R : ℂ)) = ((E : ℝ) : ℂ) by exact_mod_cast congrArg _ hRsq]
+    rw [← Complex.ofReal_sum]
+    rw [hE]
+    exact div_self (by exact_mod_cast hEpos.ne')
+  have hdusum : (∑ a : ι × ι, d a * u a) = ((R : ℝ) : ℂ) := by
+    have hterm : ∀ a : ι × ι, d a * u a = ((‖d a‖ ^ 2 : ℝ) : ℂ) / (R : ℂ) := by
+      intro a
+      rw [hu, mul_div_assoc']
+      congr 1
+      rw [Complex.mul_conj']
+      push_cast
+      ring
+    rw [Finset.sum_congr rfl fun a _ => hterm a, ← Finset.sum_div, ← Complex.ofReal_sum, ← hE]
+    rw [show ((E : ℝ) : ℂ) = ((R : ℂ) * (R : ℂ)) by exact_mod_cast (congrArg _ hRsq).symm]
+    field_simp
+  -- the two-particle sequences
+  have hsq : ∀ n, ((‖S.pairInput u n‖ ^ 2 : ℝ) : ℂ)
+      = inner ℂ (S.pairInput u n) (S.pairInput u n) := by
+    intro n
+    rw [inner_self_eq_norm_sq_to_K]
+    push_cast
+    ring
+  have hnormsq : Tendsto (fun n => ‖S.pairInput u n‖ ^ 2) atTop (𝓝 1) := by
+    have h := S.inner_pairInput_tendsto u
+    rw [husum] at h
+    have h2 : Tendsto (fun n => ((‖S.pairInput u n‖ ^ 2 : ℝ) : ℂ)) atTop (𝓝 (1 : ℂ)) := by
+      simpa [hsq] using h
+    have h3 := (Complex.continuous_re.tendsto (1 : ℂ)).comp h2
+    simpa using h3
+  have hnorm1 : Tendsto (fun n => ‖S.pairInput u n‖) atTop (𝓝 1) := by
+    have h := (Real.continuous_sqrt.tendsto (1 : ℝ)).comp hnormsq
+    simp only [Function.comp_def] at h
+    have hrw : ∀ n, Real.sqrt (‖S.pairInput u n‖ ^ 2) = ‖S.pairInput u n‖ := fun n =>
+      Real.sqrt_sq (norm_nonneg _)
+    simpa [hrw, Real.sqrt_one] using h
+  -- compact operator kills the weakly null lifted sequence
+  have hbound : ∀ n, ‖S.pairInput u n‖ ≤ ∑ b : ι × ι, ‖u b‖ := S.norm_pairInput_le u
+  have hCnonneg : (0 : ℝ) ≤ ∑ b : ι × ι, ‖u b‖ := Finset.sum_nonneg fun b _ => norm_nonneg _
+  have hcoebound : ∀ n, ‖((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H))‖
+      ≤ ∑ b : ι × ι, ‖u b‖ := by
+    intro n
+    rw [Completion.norm_coe]
+    exact hbound n
+  have hweak := fun l => HTGeometry.completion_weakly_tendsto_zero
+    (E := H ⊗[ℂ] H) (S.pairInput u) (∑ b : ι × ι, ‖u b‖) hCnonneg hbound
+    (S.weak_pairInput u) l
+  have hKzero : Tendsto
+      (fun n => ‖K ((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H))‖) atTop (𝓝 0) :=
+    IsCompactOperator.norm_apply_tendsto_zero_of_bounded_weakly_null K hK
+      (fun n => ((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H)))
+      (∑ b : ι × ι, ‖u b‖) hcoebound hweak
+  -- the pairing
+  set T : (H ⊗[ℂ] H) →L[ℂ] (H ⊗[ℂ] H) := S.pairSection d with hT
+  have hpair : ∀ n, inner ℂ ((S.pairTest n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H))
+        (T.completion ((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H)))
+      = inner ℂ (S.pairTest n) (T (S.pairInput u n)) := by
+    intro n
+    rw [ContinuousLinearMap.completion_apply_coe, Completion.inner_coe]
+  have hpairlim : Tendsto (fun n => ‖inner ℂ ((S.pairTest n : H ⊗[ℂ] H) :
+      Completion (H ⊗[ℂ] H)) (T.completion ((S.pairInput u n : H ⊗[ℂ] H) :
+        Completion (H ⊗[ℂ] H)))‖) atTop (𝓝 R) := by
+    have h := (S.inner_pairTest_pairSection_tendsto d u).norm
+    rw [hdusum] at h
+    simp only [hpair]
+    simpa [Complex.norm_real, Real.norm_of_nonneg hRpos.le] using h
+  -- the upper estimate
+  have hupper : ∀ n, ‖inner ℂ ((S.pairTest n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H))
+        (T.completion ((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H)))‖
+      ≤ ‖T.completion - K‖ * ‖S.pairInput u n‖
+        + ‖K ((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H))‖ := by
+    intro n
+    have hw : ‖((S.pairTest n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H))‖ = 1 := by
+      rw [Completion.norm_coe, S.norm_pairTest n]
+    have hx : ‖((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H))‖
+        = ‖S.pairInput u n‖ := Completion.norm_coe _
+    have hsplit : T.completion ((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H))
+        = (T.completion - K) ((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H))
+          + K ((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H)) := by
+      simp
+    rw [hsplit, inner_add_right]
+    refine (norm_add_le _ _).trans ?_
+    refine add_le_add ?_ ?_
+    · refine (norm_inner_le_norm _ _).trans ?_
+      rw [hw, one_mul]
+      refine ((T.completion - K).le_opNorm _).trans ?_
+      rw [hx]
+    · refine (norm_inner_le_norm _ _).trans ?_
+      rw [hw, one_mul]
+  have hrhs : Tendsto (fun n => ‖T.completion - K‖ * ‖S.pairInput u n‖
+      + ‖K ((S.pairInput u n : H ⊗[ℂ] H) : Completion (H ⊗[ℂ] H))‖) atTop
+      (𝓝 (‖T.completion - K‖ * 1 + 0)) := (hnorm1.const_mul _).add hKzero
+  have hfinal := le_of_tendsto_of_tendsto hpairlim hrhs (Eventually.of_forall hupper)
+  simpa using hfinal
+
 end ShellDatum
 
 end RHTower

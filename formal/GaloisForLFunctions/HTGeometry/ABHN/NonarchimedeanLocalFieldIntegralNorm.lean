@@ -118,40 +118,6 @@ theorem nonarchimedeanLocalFieldAdjoinRootReductionMap_surjective
     IsLocalRing.residue_surjective f g (by
       rw [nonarchimedeanLocalField_residuePolynomial_algebraMap_eq K f g hfg])
 
-/-- The concrete reduction map is the canonical scalar-fiber map used in the norm formula.
-Thus the fiberwise norm square is a norm/reduction square for actual residue classes. -/
-theorem nonarchimedeanLocalFieldAdjoinRootReductionMap_eq_residueFiber
-    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
-    [IsNonarchimedeanLocalField K]
-    (f : Polynomial (ValuativeRel.valuation K).integer)
-    (g : Polynomial (IsLocalRing.ResidueField (ValuativeRel.valuation K).integer))
-    (hfg : f.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal
-      (ValuativeRel.valuation K).integer)) = g) (x : AdjoinRoot f) :
-    nonarchimedeanLocalFieldAdjoinRootReductionMap K f g hfg x =
-      adjoinRootScalarExtensionEquivOfMapEq (ValuativeRel.valuation K).integer
-        (IsLocalRing.ResidueField (ValuativeRel.valuation K).integer) f g
-        (nonarchimedeanLocalField_residuePolynomial_algebraMap_eq K f g hfg)
-        ((1 : IsLocalRing.ResidueField (ValuativeRel.valuation K).integer) ⊗ₜ[
-          (ValuativeRel.valuation K).integer] x) := by
-  let e := adjoinRootScalarExtensionEquivOfMapEq (ValuativeRel.valuation K).integer
-    (IsLocalRing.ResidueField (ValuativeRel.valuation K).integer) f g
-    (nonarchimedeanLocalField_residuePolynomial_algebraMap_eq K f g hfg)
-  let ψ : AdjoinRoot f →ₐ[(ValuativeRel.valuation K).integer] AdjoinRoot g :=
-    e.toAlgHom.restrictScalars (ValuativeRel.valuation K).integer |>.comp
-      Algebra.TensorProduct.includeRight
-  change nonarchimedeanLocalFieldAdjoinRootReductionMap K f g hfg x = ψ x
-  have hmap : nonarchimedeanLocalFieldAdjoinRootReductionMap K f g hfg = ψ := by
-    apply AdjoinRoot.algHom_ext
-    change (AdjoinRoot.map _ _ _ _ (AdjoinRoot.root _)) = ψ (AdjoinRoot.root _)
-    rw [AdjoinRoot.map_root]
-    change AdjoinRoot.root g = e (1 ⊗ₜ[(ValuativeRel.valuation K).integer] AdjoinRoot.root f)
-    simp only [e, adjoinRootScalarExtensionEquivOfMapEq, adjoinRootScalarExtensionEquiv,
-      AlgEquiv.trans_apply, AdjoinRoot.tensorAlgEquiv_root]
-    change AdjoinRoot.root g = AdjoinRoot.algEquivOfEq _ _ _ _
-      (AdjoinRoot.map _ _ _ _ (AdjoinRoot.root _))
-    rw [AdjoinRoot.map_root, AdjoinRoot.algEquivOfEq_root]
-  exact DFunLike.congr_fun hmap x
-
 /-- The residue-fiber norm formula in the quotient-map presentation used by the existing finite
 unramified root-lift construction. -/
 theorem nonarchimedeanLocalFieldAdjoinRoot_residueFiberNorm_of_quotientMapEq
