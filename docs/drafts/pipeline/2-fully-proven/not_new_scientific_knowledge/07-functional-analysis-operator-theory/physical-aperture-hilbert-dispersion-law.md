@@ -370,3 +370,7 @@ audit of the Gram, distance, energy, and cross-floor theorems reports only `prop
 - 2026-07-19 -- Formalized the actual clipped-prime `L²` carrier and inherited Hilbert distance,
   identified its Gram with the physical fusion kernel, and proved the full fusion energy is a
   squared norm with cross-term floor `-D_diag <= C_cross`.
+- 2026-08-22 -- Added the generic finite-aperture centered-indicator package: `(AH2)`--`(AH6)`,
+  including the literal quotient infimum `(AH3)`, are kernel-closed.  Completeness work is
+  reduced to the remaining compact scalar-subsequence assembly; its Boolean-limit,
+  fixed-aperture-support, and measurable-indicator reconstruction infrastructure is in place.

@@ -21,6 +21,42 @@ theorem finiteEulerLocalFactor_eq_eulerLocalInverse (p : Nat.Primes) (s : ℂ) :
   rw [finiteEulerLocalFactor_eq_one_sub_natCast_cpow]
   rfl
 
+/-- The finite Euler factor is entire with the explicit prime-log exponential derivative. -/
+theorem hasDerivAt_finiteEulerLocalFactor (p : Nat.Primes) (s : ℂ) :
+    HasDerivAt (finiteEulerLocalFactor p)
+      ((Real.log p : ℂ) * Complex.exp (-s * (Real.log p : ℂ))) s := by
+  rw [finiteEulerLocalFactor_eq_eulerLocalInverse]
+  convert _root_.RHTower.hasDerivAt_eulerLocalInverse p.property.two_le s using 1
+  rw [_root_.RHTower.primePow_eq_exp p.property.two_le]
+
+/-- The ordinary derivative form of the finite Euler entire-factor identity. -/
+theorem deriv_finiteEulerLocalFactor (p : Nat.Primes) (s : ℂ) :
+    deriv (finiteEulerLocalFactor p) s =
+      (Real.log p : ℂ) * Complex.exp (-s * (Real.log p : ℂ)) :=
+  (hasDerivAt_finiteEulerLocalFactor p s).deriv
+
+/-- The exact derivative of the functional-equation-symmetric finite Euler quartet. -/
+theorem hasDerivAt_finiteEulerLocalQuartet (p : Nat.Primes) (s : ℂ) :
+    HasDerivAt (finiteEulerLocalQuartet p)
+      ((Real.log p : ℂ) * Complex.exp (-s * (Real.log p : ℂ)) *
+          finiteEulerLocalFactor p (1 - s) -
+        finiteEulerLocalFactor p s * (Real.log p : ℂ) *
+          Complex.exp (-(1 - s) * (Real.log p : ℂ))) s := by
+  have hfirst := hasDerivAt_finiteEulerLocalFactor p s
+  have hshift : HasDerivAt (fun z : ℂ => 1 - z) (-1) s := by
+    simpa using (hasDerivAt_const (x := s) (c := (1 : ℂ))).sub (hasDerivAt_id s)
+  have hsecond := (hasDerivAt_finiteEulerLocalFactor p (1 - s)).comp s hshift
+  convert hfirst.mul hsecond using 1 <;> simp [finiteEulerLocalQuartet] <;> ring
+
+/-- The ordinary derivative form of the finite Euler quartet identity. -/
+theorem deriv_finiteEulerLocalQuartet (p : Nat.Primes) (s : ℂ) :
+    deriv (finiteEulerLocalQuartet p) s =
+      (Real.log p : ℂ) * Complex.exp (-s * (Real.log p : ℂ)) *
+          finiteEulerLocalFactor p (1 - s) -
+        finiteEulerLocalFactor p s * (Real.log p : ℂ) *
+          Complex.exp (-(1 - s) * (Real.log p : ℂ)) :=
+  (hasDerivAt_finiteEulerLocalQuartet p s).deriv
+
 /-- The logarithmic connection of the Gamma-welded Euler factor is the exact prime source. -/
 theorem logDeriv_finiteEulerLocalFactor (p : Nat.Primes) (s : ℂ) :
     logDeriv (finiteEulerLocalFactor p) s = _root_.RHTower.primeLogSource p s := by

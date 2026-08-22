@@ -207,8 +207,8 @@ theorem ShellDatum.inner_pairTest_pairSection_tendsto (d u : ι × ι → ℂ) :
     Tendsto (fun n => inner ℂ (S.pairTest n) (S.pairSection d (S.pairInput u n))) atTop
       (𝓝 (∑ a : ι × ι, d a * u a)) := by
   have hexp : (fun n => inner ℂ (S.pairTest n) (S.pairSection d (S.pairInput u n)))
-      = fun n => ∑ a : ι × ι, ∑ b : ι × ι, d a * u b *
-          (inner ℂ (S.v n) (S.L a.1 (S.f b.1 n)) * inner ℂ (S.v n) (S.L a.2 (S.f b.2 n))) := by
+      = fun n => ∑ a : ι × ι, ∑ b : ι × ι, d b * u a *
+          (inner ℂ (S.v n) (S.L b.1 (S.f a.1 n)) * inner ℂ (S.v n) (S.L b.2 (S.f a.2 n))) := by
     funext n
     have hterm : ∀ a b : ι × ι,
         TensorProduct.mapL (d a • S.L a.1) (S.L a.2) ((u b • S.f b.1 n) ⊗ₜ[ℂ] S.f b.2 n)
@@ -216,29 +216,29 @@ theorem ShellDatum.inner_pairTest_pairSection_tendsto (d u : ι × ι → ℂ) :
       intro a b
       rw [TensorProduct.mapL_tmul]
       congr 1
-      rw [ContinuousLinearMap.smul_apply, map_smul]
+      rw [smul_apply, map_smul]
     simp only [ShellDatum.pairSection, ShellDatum.pairInput, ShellDatum.pairTest,
-      ContinuousLinearMap.sum_apply, map_sum, inner_sum, hterm, TensorProduct.inner_tmul,
+      sum_apply, map_sum, inner_sum, hterm, TensorProduct.inner_tmul,
       inner_smul_right]
     exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
   rw [hexp]
-  have hlim : Tendsto (fun n => ∑ a : ι × ι, ∑ b : ι × ι, d a * u b *
-        (inner ℂ (S.v n) (S.L a.1 (S.f b.1 n)) * inner ℂ (S.v n) (S.L a.2 (S.f b.2 n)))) atTop
-      (𝓝 (∑ a : ι × ι, ∑ b : ι × ι, d a * u b *
-        ((if b.1 = a.1 then (1 : ℂ) else 0) * (if b.2 = a.2 then (1 : ℂ) else 0)))) := by
+  have hlim : Tendsto (fun n => ∑ a : ι × ι, ∑ b : ι × ι, d b * u a *
+        (inner ℂ (S.v n) (S.L b.1 (S.f a.1 n)) * inner ℂ (S.v n) (S.L b.2 (S.f a.2 n)))) atTop
+      (𝓝 (∑ a : ι × ι, ∑ b : ι × ι, d b * u a *
+        ((if a.1 = b.1 then (1 : ℂ) else 0) * (if a.2 = b.2 then (1 : ℂ) else 0)))) := by
     refine tendsto_finsetSum _ fun a _ => tendsto_finsetSum _ fun b _ => ?_
-    exact ((S.inner_Lf b.1 a.1).mul (S.inner_Lf b.2 a.2)).const_mul _
-  have hval : (∑ a : ι × ι, ∑ b : ι × ι, d a * u b *
-        ((if b.1 = a.1 then (1 : ℂ) else 0) * (if b.2 = a.2 then (1 : ℂ) else 0)))
+    exact ((S.inner_Lf a.1 b.1).mul (S.inner_Lf a.2 b.2)).const_mul _
+  have hval : (∑ a : ι × ι, ∑ b : ι × ι, d b * u a *
+        ((if a.1 = b.1 then (1 : ℂ) else 0) * (if a.2 = b.2 then (1 : ℂ) else 0)))
       = ∑ a : ι × ι, d a * u a := by
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [Finset.sum_eq_single a]
     · simp
     · intro b _ hba
-      have hzero : ((if b.1 = a.1 then (1 : ℂ) else 0) * (if b.2 = a.2 then (1 : ℂ) else 0)) = 0 := by
-        by_cases h1 : b.1 = a.1
-        · by_cases h2 : b.2 = a.2
-          · exact absurd (Prod.ext_iff.mpr ⟨h1, h2⟩) hba
+      have hzero : ((if a.1 = b.1 then (1 : ℂ) else 0) * (if a.2 = b.2 then (1 : ℂ) else 0)) = 0 := by
+        by_cases h1 : a.1 = b.1
+        · by_cases h2 : a.2 = b.2
+          · exact absurd (Prod.ext_iff.mpr ⟨h1.symm, h2.symm⟩) hba
           · simp [h2]
         · simp [h1]
       rw [hzero, mul_zero]

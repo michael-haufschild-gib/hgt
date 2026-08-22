@@ -201,20 +201,6 @@ theorem norm_sub_sq_centeredIndicatorOn
   field_simp [hΩpos.ne']
   ring
 
-/-- Every centered indicator is orthogonal to the constant aperture direction. -/
-theorem real_inner_centeredIndicatorOn_indicatorOn_eq_zero
-    {X : Type*} [MeasurableSpace X] (μ : Measure X) (Ω E : Set X)
-    (hΩ : MeasurableSet Ω) (hΩfin : μ Ω ≠ ⊤)
-    (hE : MeasurableSet E) (hEfin : μ E ≠ ⊤)
-    (hEΩ : E ⊆ Ω) (hΩpos : 0 < μ.real Ω) :
-    inner ℝ (centeredIndicatorOn μ Ω E hΩ hΩfin hE hEfin)
-      (indicatorConstLp 2 hΩ hΩfin (1 : ℝ)) = 0 := by
-  simp only [centeredIndicatorOn, inner_sub_left, real_inner_smul_left,
-    MeasureTheory.L2.real_inner_indicatorConstLp_one_indicatorConstLp_one,
-    Set.inter_eq_left.mpr hEΩ, Set.inter_self]
-  field_simp [hΩpos.ne']
-  ring
-
 /-- A centered-indicator difference is orthogonal to its aperture's constant direction. -/
 theorem real_inner_centeredIndicatorOn_sub_indicatorOn_eq_zero
     {X : Type*} [MeasurableSpace X] (μ : Measure X) (Ω E F : Set X)
