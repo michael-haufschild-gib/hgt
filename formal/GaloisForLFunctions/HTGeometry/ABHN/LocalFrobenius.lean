@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCohomology
+import GaloisForLFunctions.HTGeometry.ABHN.ContinuousGaloisCohomology
 import Mathlib.FieldTheory.Finite.GaloisField
 import Mathlib.NumberTheory.RamificationInertia.Galois
 
@@ -168,6 +169,12 @@ the cohomological counterpart of the residue norm sequence and the zero residue 
 theorem residueH2_eq_zero
     (z : groupCohomology (Rep.ofAlgebraAutOnUnits (A ⧸ P) (B ⧸ Q)) 2) : z = 0 :=
   finiteField_H2_eq_zero z
+
+/-- Continuous degree-two unit cohomology at every finite residue extension is trivial.  This is
+the continuous-cohomology form of the residue term used by local reciprocity. -/
+theorem residueContinuousH2_eq_zero
+    (z : continuousGaloisUnitCohomology 2 (A ⧸ P) (B ⧸ Q)) : z = 0 :=
+  finiteField_continuousGaloisH2_eq_zero z
 
 /-- Degree-two unit Galois cohomology at a finite residue extension is trivial. -/
 theorem residueH2_subsingleton :

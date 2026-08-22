@@ -103,3 +103,99 @@ Lean-side gotchas found in this batch:
   as `haveI`s, never as global instances);
 * build `CharZero` of a residue field through an abstract lemma taking a ring hom from a char-zero
   field — the four-step composite inside the horizon's types exhausts the elaborator.
+
+## Fourth batch — `(D4)` rests on ONE statement
+
+Landed (all axiom-clean): `CyclicRepStabilizerBound`, `CriticalSchurInertiaCyclic`,
+`CriticalSchurInertiaOrderBound`, `CriticalSheetUnramifiedOutsideCollision`.
+
+Proved: the orbit formula, `isCyclic_criticalSchurInertiaGroup`, faithfulness, and
+`natCard_criticalSchurInertiaGroup_le_two_of_ramification` — **every sheet over a place of
+ramification index ≤ 2 implies |I| ≤ 2**.  Also: a sheet outside the collision support is fixed by
+inertia, hence unramified.
+
+**The one open statement is `∀ σ, e(Q_σ / 𝔪_A) ≤ 2`.**  Route, with the corpus inputs identified:
+
+1. the fibre coordinates of every sheet lie in `W` and their residues *are* the reduced fibre label
+   (`criticalGeometricSheetToSchurFibre`, `criticalGeometricSheetToSchurReducedFibre`);
+2. the marked coefficient has nonzero residue
+   (`reduced_criticalNormalClosureSchurRawTailIntegral_coeff_marked_ne_zero`), so the normalising
+   scale is a unit of `W` and the **Schur** coordinates
+   (`criticalSourceSchurCoordinates`, in the source valuation subring by
+   `criticalSourceSchurCoordinates_mem_sourceValuationSubring`) also land in `W` with residues
+   determined by the reduced fibre label;
+3. the Schur coordinates are algebraically independent
+   (`algebraicIndependent_criticalSourceSchurCoordinates`), so `criticalSchurSourceRing` is a
+   POLYNOMIAL ring and its height-one localization is a DVR
+   (`criticalSchurCoordinateValuationSubring_isDiscreteValuationRing`);
+4. hence two sheets with the same reduced label have the same centre there, and
+   `ValuationSubring.eq_of_le_of_ne_top` gives `σ⁻¹(W) = criticalSchurSourceValuationSubring`
+   (which is `criticalNormalClosureSchurValuationSubring_comap_source` for the canonical sheet);
+5. `criticalSchur_source_ramificationIdx_eq_two` then gives `e = 2`, and sheets outside the
+   collision support are already known unramified.
+
+## ELABORATION DISCIPLINE for this card (cost a dozen rebuilds)
+
+On the horizon's sheet/permutation/valuation types:
+* `rw` must compute a motive over those types and **times out at 20M heartbeats**; use `Eq.trans`,
+  `Eq.trans_le`, `congrArg` instead;
+* `MulAction.orbit` / `MulAction.stabilizer` in a *statement* are fatal; state the group theory
+  abstractly with a `Nat.card` inequality over a plain subtype and instantiate;
+* `show` / `change` on `criticalSchurInertiaAction` applications are fatal;
+* `Nat.card_pos` on a subgroup of the inertia group triggers a fatal instance search — derive
+  positivity from an equation instead;
+* raise `synthInstance.maxHeartbeats 3000000`, `maxHeartbeats 8000000`, `maxSynthPendingDepth 3`;
+* restate a corpus theorem under the *folded* name (`criticalSchurInertiaGroup`) by `exact`, once,
+  and work with the folded form thereafter.
+
+## Fifth batch — `RamificationIdxTransport`, and step (3) of the last chain
+
+`HTGeometry/RamificationIdxTransport.lean`: `ramificationIdx'_algEquiv` — the ramification index is
+invariant along an algebra equivalence (mathlib has only `ramificationIdx_smul`, one fixed ring).
+Proof is one line on the `sSup` definition of `ramificationIdx'`.
+
+**Key find for the last open statement.**  The normalisation by the scale is legitimate for *every*
+sheet without any integrality argument: `TruncatedCompatibilityFibre` proves
+`A.coeff 0 * B.coeff 0 = 1` for a point of the critical fibre **over an arbitrary commutative ring**,
+so applying it to the REDUCED fibre point shows the residue of the scale is a unit, hence the scale
+is a unit of `W`.  The Schur coordinates (raw coefficients over the scale, reversed reciprocal
+squares) therefore lie in `W` with residues fixed by the reduced fibre label — which is what makes
+the polynomial-ring/DVR argument run.
+
+Fifteen modules landed for this card on 2026-08-22.
+
+## Sixth batch — steps (3) and (4) of the last chain are CLOSED
+
+Landed: `CriticalSheetJetUnit`, `CriticalSheetScaleUnit`, `SubringPolynomialCoefficients`,
+`RamificationIdxTransport`.  Eighteen modules total on 2026-08-22, all axiom-clean.
+
+* `isUnit_criticalSheetScale` — σ(scale) is a UNIT of W for every sheet.  Comes from the fibre
+  equation `A.coeff 0 * B.coeff 0 = 1`, which the corpus proves only over a *field* and only as
+  `≠ 0`; the identity itself needs no field, so it holds in the valuation ring where the sheet's
+  fibre point lives.  **No integrality over the observation DVR is needed — and none exists.**
+* `finiteReciprocalSquarePositive_mem` — the Schur coordinates of a family lying in a `Subring` lie
+  in that subring.  Works because `truncatedReciprocalKernel N U = ∑_{j<N} (−(U−1))^j` has **no
+  division**.  The corpus's `PolynomialCoefficientsIn` is for an `IntermediateField` only.
+* `ramificationIdx'_algEquiv` — the ramification index travels along an algebra equivalence.
+
+### Exactly what remains, at the level of individual corpus lemmas
+
+(a) `σ(criticalSourceRaw j) ∈ W` for every sheet and every `j : Fin (m+n)`:
+    * `j < m`: it is a low coefficient — `criticalGeometricSheetToSchurFieldFibre_coefficients_mem`;
+    * `j ≥ m`: `criticalSourceRaw j = algebraMap E→F_src (criticalObservationRaw ⟨j−m⟩)`
+      (the computation is spelled out in `CriticalGeometricSheetFibre.lean` around line 429), so σ
+      fixes it and it lies in the observation Schur DVR — `criticalSchurObservationRawTailIntegral`.
+(b) hence `σ(criticalSourceNormalizedPositive j) ∈ W` (divide by the unit scale), hence every Schur
+    coordinate lands in the subring `W.comap σ` of `F_src` by `finiteReciprocalSquarePositive_mem`.
+(c) two sheets with the same reduced fibre label give the same residues on all raw coordinates,
+    hence on all Schur coordinates, hence the same centre on the Schur coordinate ring.
+(d) `criticalSourceSchurFieldEquiv_symm_coordinate` identifies that ring with the polynomial ring
+    `criticalSchurSourceRing`; its localization at the centre is
+    `criticalSchurSourceValuationSubring`, a DVR, so `ValuationSubring.eq_of_le_of_ne_top` gives
+    `σ⁻¹(W) = criticalSchurSourceValuationSubring` — for the canonical sheet this is
+    `criticalNormalClosureSchurValuationSubring_comap_source`.
+(e) `criticalSchur_source_ramificationIdx_eq_two` + `ramificationIdx'_algEquiv` + `ramificationIdx'_eq_ramificationIdx`.
+
+Note: `σ⁻¹(W) ⊇ criticalSchurSourceValuationSubring` is **false** for a general sheet (different
+sheets induce different places over the same base), so (c) genuinely needs the residue comparison —
+do not try to shortcut it.

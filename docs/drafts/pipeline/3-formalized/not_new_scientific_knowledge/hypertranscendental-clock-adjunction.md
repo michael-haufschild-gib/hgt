@@ -3,7 +3,8 @@
 - **ID:** `hypertranscendental-clock-adjunction`
 - **Stage:** 2-fully-proven
 - **Type:** GENERAL HT STRUCTURE / ORDER-THEORETIC CLOCK GEOMETRY
-- **Scientific status:** `[PAPER PROOF COMPLETE] [LEAN OPEN] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Stage:** 3-formalized
+- **Scientific status:** `[PAPER PROOF COMPLETE] [LEAN CLOSED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Finite differential prolongation and finite internal observability are adjoint
   operators on the lattice of observable subfields. A hypertranscendental jet tower is an exact
   orbit of this adjunction: prolongation adds, and internal-core erosion removes, precisely the same
@@ -151,7 +152,7 @@ finish with one direct check of the touched source file. No numerical computatio
 - [x] strong positive successor retained after the no-go
 - [x] counit-defect interval proved trivial on the exact HT orbit
 - [ ] exact primary-literature audit of the HT adjunction package
-- [ ] Lean formalization
+- [x] Lean formalization (see `## Lean formalization`)
 - [ ] comparison theorem for two genuinely different obstruction intervals
 - [ ] independent specialist novelty verdict
 
@@ -159,3 +160,60 @@ finish with one direct check of the touched source file. No numerical computatio
 
 - 2026-07-15 -- Isolated the prolongation/internal-core Galois connection and proved its semigroup
   laws and exact action on the hypertranscendental jet tower.
+
+## Lean formalization
+
+Module `formal/GaloisForLFunctions/HTGeometry/ClockProlongationAdjunction.lean`, wired into
+`HTGeometry.lean`.  Unconditional; axiom profile `[propext, Classical.choice, Quot.sound]` on every
+theorem below.  Setting: `[Field F] [Field E] [Differential F] [Differential E] [Algebra F E]
+[DifferentialAlgebra F E]`, so the ambient object is exactly an ordinary differential-field
+extension; the intermediate-field lattice is mathlib's `IntermediateField F E`.
+
+**Definitions** (card names in brackets)
+
+- `differentialCore C = {b ∈ C : b′ ∈ C}` — one tick of erosion, built as an `IntermediateField`
+  (the Leibniz rule closes it under products and `Derivation.leibniz_inv` under inverses).
+- `clockCore B r = differentialCore^[r] B` [`clockInternalCore B r`], with
+  `mem_clockCore_iff : b ∈ clockCore B r ↔ ∀ q ≤ r, differentialJet q b ∈ B`.
+- `clockProlongation A r = IntermediateField.adjoin F {y | ∃ q ≤ r, ∃ a ∈ A, y = differentialJet q a}`
+  [`clockProlongationField A r`].
+
+**The adjunction** — `clockProlongation_le_iff_le_clockCore`:
+
+```text
+clockProlongation A r ≤ B  ↔  A ≤ clockCore B r
+```
+
+packaged as `clockGaloisConnection r : GaloisConnection (clockProlongation · r) (clockCore · r)`,
+from which `le_clockCore_clockProlongation` (unit), `clockProlongation_clockCore_le` (counit),
+`clockProlongation_mono`, `clockCore_mono`,
+`clockCore_clockProlongation_clockCore` (closure-operator idempotence) and
+`clockProlongation_clockCore_clockProlongation` (interior-operator idempotence) follow.
+
+**Semigroup laws.**  `clockCore_add : clockCore B (s + r) = clockCore (clockCore B r) s` is the
+iterate law, `clockCore_clockCore_comm` its commuting form, and
+`clockProlongation_clockProlongation : clockProlongation (clockProlongation A s) r =
+clockProlongation A (s + r)`.  The card derives the prolongation law from uniqueness of left
+adjoints; in Lean the two-line antisymmetry argument through the adjunction is used instead
+(`GaloisConnection.compose` + `l_unique` triggers a `whnf` timeout on this lattice).
+
+**Exact hypertranscendental orbit.**  With `P_N = jetObservableField F x N`:
+
+- `clockProlongation_jetObservableField : 1 ≤ N → clockProlongation (P N) r = P (N + r)` —
+  **unconditional in `x`**; hypertranscendence is not needed for the prolongation half, only the
+  positivity of the cutoff (at `N = 0` the field is `⊥` and prolongation is trivial).
+- `clockCore_jetObservableField : HypertranscendentalOver F x → clockCore (P (N + r)) r = P N`
+  (from the corpus's `hypertranscendental_clock_erosion_iff`, `[CharZero E]`).
+- `clockCore_clockProlongation_jetObservableField` — the **unit is an equality** on the HT ray.
+- `clockProlongation_clockCore_jetObservableField` — the **counit is an equality**, so the
+  counit-defect interval `[J_r(C_r B), B]` is trivial on the free HT tower.
+- `differentialCore_jetObservableField : differentialCore (P (N + 1)) = P N` — the one-layer
+  boundary, i.e. the kernel of the clock symbol on `B = P_(N+1)` is exactly `P_N`.
+
+**Reusable assets.**  `differentialCore` and `clockCore` are the general finite-erosion operators on
+any differential-field extension, `clockProlongation` the general finite prolongation, and
+`clockGaloisConnection` makes mathlib's whole `GaloisConnection` API available for them.
+
+The remaining unticked gates on this card (primary-literature audit, obstruction-interval
+comparison theorem, specialist novelty verdict) are audit and successor items, not part of the
+stated theorem; the theorem itself is closed in Lean.

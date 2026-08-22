@@ -1,9 +1,9 @@
 # One positive factor on a torusless quasi-Abelian variety interpolates every finite jet packet
 
 - **ID:** `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`
-- **Stage:** 2-fully-proven
+- **Stage:** 1-in-progress
 - **Type:** THEOREM (paper) / INFINITE JET AMPLENESS
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [PARENT PROOF EXTENDED]`
+- **Scientific status:** `[PAPER-PROOF GAP IDENTIFIED] [NOVELTY UNVERIFIED] [PARENT PROOF EXTENDED]`
 - **Statement:** Every positive holomorphic line bundle on a torusless noncompact quasi-Abelian
   variety is jet ample of every finite order without taking tensor powers.
 
@@ -33,6 +33,62 @@ is surjective.
 
 Equivalently, one fixed positive automorphic factor interpolates arbitrary prescribed finite jets
 at arbitrary finite point packets.  No tensor power depending on the jet order is required.
+
+## Formalization audit 2026-08-22 — exact open core
+
+The prior Stage-2 label is not justified.  Abe's primary paper proves finite point separation
+(Theorem 8.1) and one tangent-direction separation (Theorem 9.1), but not the all-order packet
+theorem stated here.  The proposed lifting argument must additionally construct, at every
+subgroup-rank extension and for every enlarged finite jet packet, lower-automorphic seed columns
+which simultaneously have the prescribed packet jets, vanish to the prescribed finite orders at
+the relevant complement translates, remain locally normally summable after periodization, and have
+the normalized polynomial growth required uniformly along Abe's damping ray.
+
+This is not supplied by ordinary finite-jet surjectivity: that predicate provides an interpolant
+for each finite packet but no uniform normalized-growth estimate as the enlarged packet grows.
+The Lean corpus records the same missing object as the `mult` / `hnormal` / `hmaj` inputs of
+`abeDampingPacketDataOfMultiplier` and as the `seed` fields of `AbeDampingPacketData`; neither is
+derived from positivity or jet ampleness.  Therefore neither
+`AutomorphicFactor.IsAbePositiveTorusless` nor its restricted variant is an unconditional
+formalization of this card's public theorem.
+
+**[OPEN CORE]** Construct Abe's invariant damping multipliers (equivalently controlled
+lower-automorphic seed families) in his period-matrix coordinates with finite mixed-jet
+flatness and the required normal-convergence/majorant estimates.  Once that construction is
+dependency-closed on paper, its exact Lean theorem can close the subgroup-rank induction.
+
+The finite algebraic portion is now Lean-proved in
+`HTGeometry/QuasiAbelianJetAmpleFiniteVanishing`: lower all-order jet ampleness constructs the
+lower-automorphic seed columns with arbitrary prescribed packet jets and zero jets at every point
+of an arbitrary finite set of nonzero complement translates.  Its axiom report is exactly
+`[propext, Classical.choice, Quot.sound]`.  It discharges the `seed_jet` and finite-vanishing
+parts of the extension datum, but deliberately does not claim the missing normalized-growth bound.
+
+### Uniform-damping route falsified; positive survivor
+
+The prior growth-stability claim used a uniform constant `c > 0` with
+`Re(B·χ(γ)) ≤ -c|B|` over every nonzero complement term.  Abe's actual argument in §7--§9 of
+*Construction of automorphic forms for ample factors of quasi-Abelian varieties* proves only a
+strict inequality for each fixed complement term.  Uniformity is false in general: for an
+irrational real period `α`, the phases `exp(2π i n α)` approach `1` along nonzero `n`, so
+`sup_{n ≠ 0} Re(exp(2π i n α) - 1) = 0`.  No fixed negative gap can exist.
+
+**[FALSIFIED AS A ROUTE]** The advertised polynomial-times-`exp(-δB)` majorant over the whole
+complement lattice cannot be the general extension estimate.  Its Lean abstraction
+`AbeDampingPacketData.majorant` is stronger than Abe's cited argument and is not discharged by
+the card.
+
+**Positive survivor `[PAPER-PROVED]`:** every *finite* nonresonant complement subpacket has a
+strict uniform gap, hence all of its fixed finite jets decay exponentially after multiplication by
+the damping profile.  `DampedJetDecay` already formalizes the one-variable polynomial-times-
+exponential calculation.  This does not control the infinite tail.
+
+**Stronger replacement `[CONJECTURE]`:** replace the false global-gap lemma by a two-scale
+normal-family estimate: uniformly control a Gaussian tail independently of the damping parameter,
+then prove finite-jet decay on a parameter-dependent finite head with an envelope strong enough to
+justify passage to the full Poincaré sum.  The first exact open implication is a summable,
+derivative-stable domination theorem in Abe's period-matrix coordinates; it must be proved or
+refuted before returning this card to Stage 2.
 
 This sharply separates the noncompact torusless phase from compact Abelian varieties, where
 `H^0(X,L)` is finite-dimensional and one fixed `L` cannot interpolate jets of unbounded order.
@@ -65,7 +121,7 @@ ev_J:AF(alpha rho)->J.                                    (3)
 Fix monomial jet bases in the summands of (2).  It suffices to construct `dim J` automorphic forms
 whose evaluation matrix is invertible.
 
-## Growth stability lemma `[PROVED]`
+## Growth stability lemma `[PAPER-PROOF GAP]`
 
 Abe's admissible seed class consists of entire functions with subquadratic lattice growth.  It has
 the following properties for every fixed finite order `R`.
@@ -105,7 +161,7 @@ polynomial can be chosen after applying its inverse.
 Repeating this for every basis vector of (2) gives an identity jet-evaluation matrix.  Thus (3) is
 surjective in the base case.
 
-## Induction step `[PROVED]`
+## Induction step `[PAPER-PROOF GAP]`
 
 Assume finite-packet jet surjectivity for Abe's proper subgroup `H` of lower toroidal rank.  Inside
 this rank induction, run Abe's second induction on the number of packet points.  Suppose the full
@@ -158,7 +214,7 @@ surjectivity at the next subgroup rank.  Abe's final passage from the distinguis
 `Gamma` has the identical decomposition (5), so the same two-level induction completes the proof.
 `QED`
 
-## Residual complete orbit freedom `[PROVED]`
+## Residual complete orbit freedom `[CONDITIONAL ON ALL-ORDER JET AMPLENESS]`
 
 The section space `H^0(X,L)` with compact-open topology is a Frechet, hence Baire, space.  For a
 countable faithful translation subgroup `H subset X`, every proposed differential polynomial
@@ -181,7 +237,7 @@ product-space argument makes finitely many quotient carriers jointly free.
 Thus every active-faithful torusless quasi-Abelian facet palette supplies the analytic sources
 required by the full localized Stanley--Reisner realization theorem.
 
-## Consequence: the active quotient principle `[PROVED]`
+## Consequence: the active quotient principle `[CONDITIONAL ON ALL-ORDER JET AMPLENESS]`
 
 Let `X` be a noncompact quasi-Abelian group, `B(X)` its maximal compact complex subtorus, and `H`
 a finitely generated free subgroup.  Then

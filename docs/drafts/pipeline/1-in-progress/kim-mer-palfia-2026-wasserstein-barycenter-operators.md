@@ -1205,3 +1205,152 @@ functional, so `⟨∫F, Z⟩ = ∫⟨F, Z⟩` and the pointwise strong monotoni
 `0 = ⟨∫Ψ_A(X)dμ − ∫Ψ_A(Y)dμ, X−Y⟩ ≥ (κ − C‖X−Y‖/N)‖X−Y‖²_HS`  for every `N ≥ 1`.
 
 No refactor of the finite theory into integrals was needed; the one-point family carries it.
+
+## Batch: Theorem 5.1 — CLOSED (existence and uniqueness)
+
+`HTGeometry/HilbertSchmidtBochner.lean` (extended)
+- `SLSpace.mk`, `SLSpace.op_mk` — the constructor of `S²(ℋ)` from an operator with its two
+  proofs, which the module previously lacked.
+
+`HTGeometry/HilbertSchmidtBanachInvariant.lean` (wired, built, axioms clean)
+- `tendsto_of_hs_limit` — Hilbert–Schmidt convergence implies operator-norm convergence.
+- **`exists_fixedPoint_hs_invariant`** — Banach fixed point with **no prescribed ball**: a
+  `θ`-contraction preserving a class closed under Hilbert–Schmidt limits, whose members all
+  differ from a base point by a Hilbert–Schmidt operator, has a fixed point in the class.  It is
+  the ball version applied with the radius `(1−θ)⁻¹‖G X₀ − X₀‖_HS` read off from the first step,
+  which is what removes the "small defect" side condition of the continuation argument.
+
+`HTGeometry/BuresWasserstein/WassersteinMeasureField.lean` (wired, built, axioms clean)
+- `isSelfAdjoint_one_sub_gm`, `gm_ringInverse_Icc` — the pointwise self-adjointness and the
+  Loewner envelope `√α·X^{-1/2} ≤ A # X⁻¹ ≤ √β·X^{-1/2}`.
+- **`hsNorm_single_sub_le`** — the pointwise Lipschitz bound, the one-point instance of the
+  finite estimate.
+- `wassSL B X` — the pointwise field as an element of `S²(ℋ)`; `wassSL_op` identifies it with
+  `1 − B # X⁻¹` on the Loewner interval.
+- `integrable_one_sub_gm`, **`wassFieldMeasure_eq_op_integral`**, `isHilbertSchmidt_wassFieldMeasure`,
+  `isSelfAdjoint_wassFieldMeasure`, `wassFieldMeasure_sub_eq`.
+- **`neg_wassFieldMeasure_Icc'`** — the two-sided Loewner envelope of `−Φ_μ`, with the uniform
+  majorant supplied by the argument itself: the deviation from either envelope is at most
+  `(√β − √α)·X^{-1/2} ≤ (√β − √α)√(α⁻¹)·1`, which is exactly the hypothesis
+  `integral_mono_of_le` needs.
+- **`sub_smul_wassFieldMeasure_mem_Icc'`** — subtangentiality: `X − λΦ_μ(X) ∈ [α·1, β·1]` for
+  every `0 < λ ≤ 2α`.
+- **`hsNorm_wassFieldMeasure_sub_le`** — the field is `wassLipConst α β`-Lipschitz in `‖·‖_HS`.
+- **`re_hsInner_wassFieldMeasure_sub_lower`** — global strong monotonicity, telescoped along the
+  `N`-fold subdivision, integrated pointwise.
+- **`hsNormSq_gradientStepMeasure_sub_le`** — the explicit gradient step contracts with factor
+  `1 − 2t(κ − C‖X−Y‖/N) + t²L²`.
+
+`HTGeometry/BuresWasserstein/WassersteinMeasureExistence.lean` (wired, built, axioms clean)
+- `nonempty_of_isProbabilityMeasure`, `norm_le_of_Icc` (`‖X‖ ≤ β` on the interval).
+- **`exists_wassFieldMeasure_eq_zero`** — **Theorem 5.1, existence**.
+- **`existsUnique_wassFieldMeasure_eq_zero`** — **Theorem 5.1 in full**: for a probability
+  measure supported in `[α·1, β·1]` the equation `∫ Ψ_A(X) dμ(A) = 0` has exactly one solution
+  there.
+
+### The mechanism
+No Banach–Finsler renorming and no homotopy continuation are used.  On the interval the
+derivative of `Φ_μ` is positive definite in the Hilbert–Schmidt inner product, so the explicit
+gradient step `G X = X − tΦ_μ(X)` is the contraction:
+
+* subtangentiality (`sub_smul_wassFieldMeasure_mem_Icc'`) keeps `G` inside `[α·1, β·1]` for
+  `0 < t ≤ 2α`;
+* the interval is norm-bounded (`‖X − Y‖ ≤ 2β`), so choosing the subdivision `N` with
+  `C·2β/N ≤ κ/2` makes the second-order defect harmless **uniformly**, giving
+  `⟨Φ_μ(X) − Φ_μ(Y), X − Y⟩ ≥ (κ/2)‖X − Y‖²_HS` with `κ = α²/(2β³)`;
+* with `t ≤ κ/(2L²)` the step factor is `1 − tκ/2 < 1`, so `G` is a
+  `√(1 − tκ/2)`-contraction;
+* the class `{X : X* = X, α·1 ≤ X ≤ β·1, X − A_w ∈ S²}` is closed under Hilbert–Schmidt limits
+  (the Loewner order is closed and HS convergence implies norm convergence), so
+  `exists_fixedPoint_hs_invariant` applies with base point any `A_{w₀}`; a probability measure
+  forces `Ω` nonempty, so such a base point exists.
+
+Side condition: the theorem carries `Integrable (fun w => wassSL (A w) X) μ` for `X` in the
+interval — Bochner integrability of the integrand, the same kind of hypothesis mathlib's own
+`integral_add`/`integral_mono` carry.  It is not a mathematical assumption about the geometry:
+it is the statement that `Φ_μ` is defined.  In infinite dimensions it cannot be derived, since
+strong measurability of `w ↦ A_w` is not implied by anything else in the setting.
+
+## Batch: Theorem 5.3 — the whole deterministic engine, unconditional
+
+`HTGeometry/EtemadiWeightedAverage.lean` (wired, built, axioms clean) — external theorem, mathlib gap
+Etemadi's Theorem 1, in its deterministic (pathwise) form, which is what the a.s. statement rests on:
+- `partialSum`, `totalWeight`, `defect`, `totalVar`; `sum_mul_eq` (summation by parts),
+  `totalWeight_eq` (the same identity for the constant sequence `1`), **`key_identity`**
+  — subtracting the two replaces the partial sums `Sₙ` by the defects `Sₙ − x₀n`.
+- **`tendsto_weightedAverage`** — if `Sₙ/n → x₀` and the positive weights satisfy
+  `n wₙ ≤ K Wₙ`, `∑_{i<n}(i+1)|w_{i+1} − wᵢ| ≤ K Wₙ` and `Wₙ → ∞`, then
+  `Wₙ⁻¹ ∑ wᵢxᵢ → x₀`.  The boundary term is `(n wₙ/Wₙ)·δₙ` and the sum term splits at the index
+  where `δ` is already small; the head is a fixed constant divided by `Wₙ → ∞`.
+- `totalVar_eq_of_antitone` (`Vₙ = Wₙ − n wₙ`, a telescoping), `totalVar_le_of_antitone`,
+  `one_le_of_weight_cond`, **`tendsto_weightedAverage_of_antitone`** — for monotone weights the
+  second condition is automatic, exactly as the paper's remark says.
+
+`HTGeometry/BuresWasserstein/EtemadiRecursionLimit.lean` (wired, built, axioms clean)
+- `etemadiProd_succ_le` (`∏_{j≤n}(1−α/j) ≤ 1−α` from the first factor on), `totalWeight_etemadi`,
+  **`etemadi_weight_cond`** — the first Etemadi condition for the recursion's own weights, with
+  constant **one**: it reduces to `α ≤ 1 − ∏_{j≤n}(1−α/j)`.
+- **`tendsto_of_etemadiRecursion`** — `sₙ = (1−α/n)sₙ₋₁ + (α/n)bₙ₋₁` converges to the Cesàro
+  limit of `b`.  Lemma 5.2 turns the recursion into a weighted average, the weights are antitone,
+  and the initial datum contributes `s₀/(1+Wₙ) → 0`.
+
+`HTGeometry/BuresWasserstein/RobbinsMonroCesaro.lean` (wired, built, axioms clean)
+- **`tendsto_zero_of_robbins_cesaro`** — `d(n+1) ≤ (1−α/(n+1))d(n) + (n+1)⁻¹εₙ + C(n+1)⁻²`
+  with `εₙ` only **Cesàro-null** forces `d(n) → 0`.  The classical Robbins–Monro theorem the
+  corpus already had needs a square-summable error and does not apply; the comparison sequence is
+  the Etemadi recursion driven by `εₙ + C/(n+1)`, whose Cesàro means vanish.
+
+`HTGeometry/BuresWasserstein/WassersteinPerturbedDescent.lean` (wired, built, axioms clean)
+- **`tendsto_hsNorm_sub_of_perturbed_descent`** — perturbed gradient descent for `Φ_μ` with step
+  `λ/(n+1)` converges to the barycentre whenever the Cesàro means of the perturbation vanish.
+  The exact step contracts by `√(1 − tκ/2) ≤ 1 − tκ/4`, so the distance obeys exactly the
+  Cesàro–Robbins–Monro recursion.
+- **`tendsto_hsNorm_sub_of_empirical_descent`** — the same for the paper's iteration
+  `X_{n+1} = X_n − (λ/(n+1))Φ_{ν_{n+1}}(X_n)`, where each `ν_n` is a probability measure in the
+  same Loewner interval: subtangentiality for `ν_{n+1}` keeps the iterates in the interval, so no
+  invariance has to be assumed.
+
+### What Theorem 5.3 still needs
+Only the probabilistic input: that the empirical measures of an i.i.d. sample satisfy
+`n⁻¹ ∑_{i<n} ‖Φ_{ν_i}(X_i) − Φ_μ(X_i)‖_HS → 0` almost surely.  Through the Lipschitz bound in the
+first argument (`hsNorm_gm_sub_le_left`) this is `n⁻¹ ∑ W₁(ν_i, μ) → 0`, i.e. **Varadarajan's
+theorem** on a separable Banach space — a full empirical-process development that neither mathlib
+nor the corpus has.  Everything else in the proof of Theorem 5.3 is now Lean-closed and
+unconditional.
+
+## Batch: Corollary 6.4 (Lie–Trotter / log-Euclidean limit) — CLOSED
+
+`HTGeometry/BuresWasserstein/OperatorLogRpow.lean` (wired, built, axioms clean) — mathlib gap
+- `norm_le_norm_of_le` — `0 ≤ P ≤ Q ⟹ ‖P‖ ≤ ‖Q‖`, the device that turns a Loewner sandwich into
+  a norm estimate.
+- **`log_rpow_eq_smul`** — `log (a^y) = y·log a`, and **`log_ringInverse`** — `log (a⁻¹) = −log a`.
+  Both by composing the continuous functional calculus with `Real.log (x^y) = y log x`.
+- **`tendsto_rpow_sub_one_log`** — `p⁻¹(a^p − 1) → log a` as `p ↓ 0`, the operator form of
+  mathlib's `CFC.tendsto_cfc_rpow_sub_one_log`.
+
+`HTGeometry/BuresWasserstein/LieTrotterLogEuclidean.lean` (wired, built, axioms clean)
+- `abs_log_one_add_sub_le` — `|log(1+v) − v| ≤ 2v²` for `|v| ≤ ½`.
+- **`abs_rpow_sub_exp_le`** — the scalar comparison `|(1+pu)^{1/p} − eᵘ| ≤ 4e^C p C²`, uniform for
+  `|u| ≤ C`; no hypothesis on `C` is needed, it follows from `|u| ≤ C`.
+- `abs_sub_one_le_of_mem_spectrum`, **`norm_rpow_sub_exp_le`** — the same comparison for an
+  operator near the identity, obtained by running both sides through the functional calculus of
+  `T` and using the isometry `‖cfc f T‖ = sup_{σ(T)}|f|`.
+- `ringInverse_rpow` — `(a^p)⁻¹ = (a⁻¹)^p`.
+- **`tendsto_rpow_isWassersteinPoint_logEuclidean`** — **Corollary 6.4**:
+  `Ω(ω; A₁^p, …, A_m^p)^{1/p} → exp(∑ wᵢ log Aᵢ)` as `p ↓ 0`.
+
+### The mechanism
+No differentiation of the barycentre in `p` is used.  Theorem 6.2 sandwiches the barycentre of
+the powers,
+
+`2·1 − ∑ wᵢ Aᵢ^{−p} ≤ Ω(ω; 𝔸^p) ≤ ∑ wᵢ Aᵢ^p`,
+
+and after subtracting `1` and dividing by `p` both envelopes converge to `∑ wᵢ log Aᵢ` by the
+first-order expansion of the logarithm.  Since `0 ≤ M_p − L_p ≤ U_p − L_p`, the order sandwich
+becomes a norm estimate, so `Ω(ω; 𝔸^p) = 1 + p·M_p` with `M_p → ∑ wᵢ log Aᵢ`.  Both
+`Ω(ω;𝔸^p)^{1/p}` and `exp(M_p)` are functions of the *same* operator `1 + p·M_p` in the
+continuous functional calculus, so their distance is the sup over the spectrum of
+`|x^{1/p} − e^{(x−1)/p}|`, which the scalar comparison bounds by `O(p)`.
+
+The statement is unconditional: it does not assume that a barycentre exists in `ℙ` (Theorem 3.16,
+still blocked), it characterizes the limit of whatever solutions are given.

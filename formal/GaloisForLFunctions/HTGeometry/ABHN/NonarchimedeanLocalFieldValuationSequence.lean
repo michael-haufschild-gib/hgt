@@ -6,6 +6,7 @@ Authors: Michael Barenbaum
 import GaloisForLFunctions.HTGeometry.ABHN.LocalValuationSequence
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteEtale
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCohomology
+import GaloisForLFunctions.HTGeometry.ABHN.ContinuousGaloisCohomology
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldBrauer
 import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.FieldTheory.PrimitiveElement
@@ -3439,6 +3440,33 @@ theorem nonarchimedeanLocalFieldAdjoinRootResidueField_H2_eq_zero
     nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
   intro z
   exact finiteField_H2_eq_zero z
+
+/-- For a `Type`-valued finite unramified lift, continuous degree-two Galois cohomology of
+residue-field units vanishes.  This is the continuous finite-residue input to the local
+Brauer-invariant sequence; transporting it to the fraction field remains a separate theorem. -/
+theorem nonarchimedeanLocalFieldAdjoinRootResidueField_continuousH2_eq_zero
+    (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    ∀ z : continuousGaloisUnitCohomology 2 𝓀[K]
+      (IsLocalRing.ResidueField (AdjoinRoot f)), z = 0 := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : Finite (IsLocalRing.ResidueField (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootResidueField_finite K f hf g hgmonic hfg hg
+  intro z
+  exact finiteField_continuousGaloisH2_eq_zero z
 
 /-- The residue Brauer group of every finite unramified root lift is trivial: every residue
 Brauer class is split.  This is the zero residue term used before constructing local invariants

@@ -1,7 +1,7 @@
 # Characteristic-Zero Matroid Gaussian-Mimicry No-Go
 
 - **ID:** WCDMF-CHAR0-LINEAR
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / ROUTE-KILL / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Source:** `../../1-in-progress/wick-contracted-differential-matroid-field.md`
 - **Statement:** Every finite ordinary algebraic matroid extracted from complex QFT reporters, including every finite Wick-contracted interaction matroid, has the same independence pattern as a finite family of linear observables in a Gaussian theory; therefore the undecorated matroid cannot certify nonlinear quantum interaction.
@@ -81,9 +81,84 @@ The QFT route consequence is sharp and useful, but every load-bearing mathematic
 - [x] 1 → 2: characteristic-zero linearization, complex specialization, and Gaussian mimic proved
 - [x] anti-theatre gate: ordinary-matroid interaction selector killed
 - [x] positive successor identified: enriched directed decorated matroid field
-- [ ] 2 → 3: no Lean target until the characteristic-zero algebraic-to-linear parent theorem exists in the formal corpus
+- [x] 2 → 3: formalized; the characteristic-zero algebraic-to-linear parent theorem was already in
+  the corpus and the descent and Gaussian layers are now built (see `## Lean formalization`)
 - [ ] 3 → 4: not a standalone publication result
 
 ## Log
 
 - 2026-07-17 — proved and banked as a route-kill. The ordinary Wick-contracted matroid remains formal infrastructure, but all interaction claims must use its decorations and directed physical base.
+
+## Lean formalization
+
+Unconditional; axiom profile `[propext, Classical.choice, Quot.sound]` on every theorem named
+below.  Four modules, all wired into `HTGeometry.lean`.
+
+**Already owned by the corpus.**  `HTGeometry/KaehlerAlgebraicIndependence.lean` proves the card's
+Ingleton step in its Kähler form:
+`algebraicIndependent_iff_kaehlerD_linearIndependent : AlgebraicIndependent K x ↔
+LinearIndependent L (fun i ↦ D_{K,L} (x i))` for any characteristic-zero base field.  The
+row-matroid packaging (`linearFamilyMatroid`, `linearFamilyMatroid_indep_iff`) and
+`algebraicIndependent_linearFormPolynomial_iff_linearIndependent` are in
+`HTGeometry/DifferentialOperatorMatroid.lean`.  The card's Lean gate ("no target until the
+characteristic-zero algebraic-to-linear parent theorem exists in the corpus") was therefore already
+met; what was missing was the specialization to `ℂ` and the Gaussian layer.
+
+**New: `HTGeometry/LinearIndependenceMinorTransfer.lean`.**  The maximal-minor criterion, in both
+directions and for arbitrary finite index types over an arbitrary field:
+`exists_injective_det_submatrix_ne_zero` (independent rows ⟹ a nonsingular square column
+selection; proved by turning full row rank into surjectivity of `mulVecLin`, extracting a basis
+from the column family, and reading it back as a submatrix) and
+`linearIndependent_rows_of_det_submatrix_ne_zero`.  Consequence
+`linearIndependent_coords_map_iff`: **every** field homomorphism preserves *and reflects* linear
+independence of a finite family of finite coordinate vectors.  This is the general form of the
+corpus's `matrix_exists_submatrix_det_ne_zero_of_mulVec_surjective`, which was `ℂ`- and
+`Fin`-specific.
+
+**New: `HTGeometry/ComplexCoordinateDescent.lean`.**
+
+- `exists_kaehlerCoords` — a finite family `x : ι → L` in a field extension of `ℂ` has coordinates
+  `v : ι → Fin r → L` (a basis of the span of the differentials) with
+  `LinearIndependent L (v|J) ↔ AlgebraicIndependent ℂ (x|J)` for every finite subfamily.
+- `exists_complexCoords` — **the card's specialization step**, done by the Nullstellensatz rather
+  than by localization.  Let `P` be the kernel of `aeval v : MvPolynomial (ι × κ) ℂ → L`, a prime
+  ideal, and let `coordinateMinorPoly` be the determinant of a square column selection of the
+  *universal* coordinate matrix.  The product of those minors that do not vanish under `aeval v`
+  is not in `P`, so by `MvPolynomial.IsPrime.vanishingIdeal_zeroLocus` there is a point of the zero
+  locus of `P` at which that product is nonzero.  Evaluating the coordinates there gives
+  `w : ι → κ → ℂ` with exactly the same vanishing pattern of every minor, hence exactly the same
+  linear independence on every subfamily.
+
+**New: `HTGeometry/ComplexGaussianObservables.lean`.**  `complexGaussian κ` is Lebesgue measure on
+`κ → ℂ` weighted by `∏ⱼ e^{-‖gⱼ‖²}/π`.  It is nonzero (`complexGaussian_ne_zero`) and absolutely
+continuous, so `complexGaussian_submodule_eq_zero` gives it no mass on a proper complex subspace
+(via `Measure.addHaar_submodule` after `restrictScalars ℝ`).  Hence
+`ae_gaussian_linearCombination_eq_zero_iff`:
+
+```text
+(∀ᵐ g, ∑_{i∈J} aᵢ · ∑ⱼ wᵢⱼ gⱼ = 0)  ↔  ∑_{i∈J} aᵢ • wᵢ = 0.
+```
+
+**New: `HTGeometry/AlgebraicMatroidGaussianModel.lean`.**  `algebraicFamilyMatroid K x` with
+`algebraicFamilyMatroid_indep_iff`; `exists_complexModel` (statements 1–2 of the card, combined);
+and the capstone `exists_gaussianModel`:
+
+```text
+for every finite family x : ι → L in a field extension L of ℂ there are r and w : ι → Fin r → ℂ with
+  algebraicFamilyMatroid ℂ x = linearFamilyMatroid w,
+  linearFamilyMatroid w = algebraicFamilyMatroid ℂ (fun i ↦ linearFormPolynomial (w i)),
+  ∀ a J, ((∀ᵐ g ∂ complexGaussian (Fin r), ∑_{i∈J} aᵢ · gaussianObservable w i g = 0)
+            ↔ ∑_{i∈J} aᵢ • wᵢ = 0).
+```
+
+The second conjunct is definitional: the corpus's `linearFamilyMatroid` *is* the algebraic matroid
+of the homogeneous linear forms.
+
+**Minors.**  The card's remark that the conclusion applies to every finite minor needs no separate
+theorem: the Lean statement quantifies over an arbitrary finite family in an arbitrary field
+extension of `ℂ`, and restriction (a subfamily) and contraction (which replaces the coefficient
+field by a larger characteristic-zero extension of `ℂ`) both produce data of exactly that shape.
+
+**Not claimed.**  The Gaussian measure is defined by its standard density; that its total mass is
+`1` is the classical Gaussian integral and is not used anywhere in the argument, so it is not
+proved here.  Only nonvanishing and nondegeneracy are used, and both are proved.

@@ -399,3 +399,40 @@ positive results.
 - [ ] transferred logarithmic coefficients or divisor identified with completed theta source
 - [ ] locally uniform limit identified with `A`
 - [ ] RH capstone formalized
+
+## P-G105 first signed Fredholm jet (2026-08-22)
+
+- [LOCAL-RESEARCH] Corpus search established that the all-order local-uniform exponential wall
+  limit was already closed; the unstated source invariant was its first signed Fredholm jet.
+- [PAPER-PROVED] For the unit-exponential wall kernel
+  `K(a,b) = 8 (sqrt a)^3 (sqrt b)^3 / (a+b)^3`, the diagonal is one and the two-label
+  determinant is `1 - K(a,b)^2`.  The existing exact source integral
+  `∫ K(a,b)^2 d(Exp(1) × Exp(1)) = 16/35` therefore gives
+  `c_0 = 1`, `c_1 = 1`, and `c_2 = (1 - 16/35)/2 = 19/70`.
+  Hence the quadratic coefficient of the signed product `D(z)D(-z)` is the sharp source value
+  `2*c_2 - c_1^2 = -16/35`.
+- [LEAN-PROVED] `RoutePPrimitiveGammaJuliaStokesWallFirstJetInvariant.lean` proves the diagonal
+  and symmetry identities, all three coefficients, and
+  `routePPrimitiveGammaJuliaStokesWallSignedSquareQuadraticJet_exp`.  Its two-label proof uses
+  `measurePreserving_finTwoArrow` to transport the fixed quantile cube to the existing unit-square
+  coherence integral; no numeric approximation or fitted normalization is introduced.
+- [OPEN CORE] The remaining SP-E landing problem is now sharpened: a divisor identification with
+  the completed theta/Xi source must respect this forced quadratic jet (under a canonical
+  normalization), or exhibit a source-derived correction whose own first jet is formalized.  No
+  such identification or correction is asserted here.
+
+## P-G105 canonical-scale theta-jet no-go (2026-08-22)
+
+- [CONJECTURE] The fixed canonical SP-E wall scaling might land directly on the central completed
+  theta/Xi normalization.
+- [FALSIFIED] Direct quadratic-jet matching would require
+  `thetaCuspNormalizedEvenMoment 1 = 32/35`, because the normalized theta/Xi jet is
+  `-thetaCuspNormalizedEvenMoment 1 / 2` whereas the wall product jet is `-16/35`.
+  The independent corpus bound
+  `thetaCuspNormalizedEvenMoment 1 < 29/625 < 32/35` rules this out unconditionally.
+- [LEAN-PROVED] `RoutePPrimitiveGammaJuliaStokesWallThetaJetSeparation.lean` proves both the
+  rational theta bound at the required calibration and the complex jet inequality
+  `routePPrimitiveGammaJuliaStokesWallSignedSquareQuadraticJet_ne_thetaCanonical`.
+- [POSITIVE SURVIVOR] Any viable SP-E divisor landing must introduce an independently
+  source-derived scale law or correction whose quadratic jet is explicit.  An arbitrary target-fit
+  rescaling is excluded as a proof strategy; this no-go does not retire source-derived corrections.

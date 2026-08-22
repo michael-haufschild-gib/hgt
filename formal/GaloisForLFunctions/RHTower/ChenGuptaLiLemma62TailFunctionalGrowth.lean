@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62TailBounds
+import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62RootNumberNorm
 import GaloisForLFunctions.RHTower.GammaVerticalRatioUniform
 
 open Complex MeasureTheory Filter Set Asymptotics LSeries
@@ -383,7 +384,8 @@ theorem cglLemma62_primitiveFunctionalFactor_tail_high_factorized_bound
           (1 + |z.value.im|) ^ (2 * (d.value : ℝ) + 1 / 2) := by
   obtain ⟨Cg, hCg, hgamma⟩ :=
     cglGammaFactor_reflection_tail_high P.character d.value
-  let C : ℝ := ‖P.character.rootNumber‖ * Cg
+  have hroot := cglLemma62_primitive_rootNumber_norm_one P
+  let C : ℝ := Cg
   have hC : 0 ≤ C := by
     dsimp [C]
     positivity
@@ -401,22 +403,19 @@ theorem cglLemma62_primitiveFunctionalFactor_tail_high_factorized_bound
   have hfac := hgamma z.value z.real_eq z.high
   rw [norm_div] at hfac
   unfold cglLemma62PrimitiveFunctionalFactor
-  rw [norm_div, norm_mul, norm_mul, hqpow]
+  rw [norm_div, norm_mul, norm_mul, hqpow, hroot]
   calc
-    (P.modulus.value : ℝ) ^ (1 / 2 + 2 * (d.value : ℝ)) * ‖P.character.rootNumber‖ *
+    (P.modulus.value : ℝ) ^ (1 / 2 + 2 * (d.value : ℝ)) * 1 *
         ‖P.character⁻¹.gammaFactor (1 - z.value)‖ /
           ‖P.character.gammaFactor z.value‖ =
-        (P.modulus.value : ℝ) ^ (1 / 2 + 2 * (d.value : ℝ)) * ‖P.character.rootNumber‖ *
+        (P.modulus.value : ℝ) ^ (1 / 2 + 2 * (d.value : ℝ)) *
           (‖P.character⁻¹.gammaFactor (1 - z.value)‖ /
             ‖P.character.gammaFactor z.value‖) := by ring
-    _ ≤ (P.modulus.value : ℝ) ^ (1 / 2 + 2 * (d.value : ℝ)) * ‖P.character.rootNumber‖ *
+    _ ≤ (P.modulus.value : ℝ) ^ (1 / 2 + 2 * (d.value : ℝ)) *
           (Cg * (1 + |z.value.im|) ^ (2 * (d.value : ℝ) + 1 / 2)) := by
             gcongr
-    _ = (‖P.character.rootNumber‖ * Cg) *
-        (P.modulus.value : ℝ) ^ (1 / 2 + 2 * (d.value : ℝ)) *
-        (1 + |z.value.im|) ^ (2 * (d.value : ℝ) + 1 / 2) := by ring
     _ = C * (P.modulus.value : ℝ) ^ (1 / 2 + 2 * (d.value : ℝ)) *
-        (1 + |z.value.im|) ^ (2 * (d.value : ℝ) + 1 / 2) := by rfl
+        (1 + |z.value.im|) ^ (2 * (d.value : ℝ) + 1 / 2) := by ring
 
 end
 

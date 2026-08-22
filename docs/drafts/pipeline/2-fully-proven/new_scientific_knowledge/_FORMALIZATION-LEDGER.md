@@ -20,7 +20,6 @@ Folder held **11** cards on 2026-08-22 (the former `deninger/`, `other/` and
 | `route-e-coprime-square-root-mobius-product-sign-law` | Matomäki–Radziwiłł's bilinear all-interval theorem (only to push `h` below `√x`; the `h = √x` law is already unconditional) |
 | `route-e-growing-reciprocal-marker-low-breadth-transport` | Menon's 2026 short-interval Möbius mean square at `L/A ≍ X^{-1/2}` |
 | `route-e-reciprocal-marker-mobius-hall-law` | Menon's 2026 short-interval Möbius mean square at `L = exp((log Y)^β)` |
-| `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness` | `IsAbePositiveTorusless` — Abe's structure theory for positive line bundles on a torusless quasi-Abelian variety.  The analytic side is closed |
 | `universal-first-order-entire-cascade-unit-cost` | observability (`helim`) on a *general* cascade (Reduction III), where the derivative law is algebraic rather than polynomial |
 
 ## Working order

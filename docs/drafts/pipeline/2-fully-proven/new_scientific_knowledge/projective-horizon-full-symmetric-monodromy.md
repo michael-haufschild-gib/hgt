@@ -5341,3 +5341,207 @@ supposed to control, and what `criticalSchur_differentIdeal_not_le_sq` supplies 
 
 Ten modules landed for this card on 2026-08-22, every one `lake build`-green with
 `#print axioms = [propext, Classical.choice, Quot.sound]`.
+
+## Lean progress — the inertia order is bounded by the sheet ramification
+
+```text
+HTGeometry/CyclicRepStabilizerBound.lean          (wired, built, axiom-clean)
+    repStabilizer, mem_repStabilizer
+    natCard_le_two_of_isCyclic_of_stabilizer_card
+        ** |G| ≤ 2·#{g : ρ g x = x} for every x  ⟹  |G| ≤ 2 **
+
+HTGeometry/CriticalSchurInertiaCyclic.lean        (wired, built, axiom-clean)
+    criticalSchurInertia_faithfulSMul, criticalSchurUpperResidue_charZero
+    isCyclic_criticalSchurInertiaGroup            ** the Schur inertia group is CYCLIC **
+
+HTGeometry/CriticalSchurInertiaOrderBound.lean    (wired, built, axiom-clean)
+    natCard_criticalSchurInertiaGroup_eq_sheet_mul'
+    natCard_criticalSchurInertiaGroup_le_two_of_ramification
+        ** every sheet over a place of ramification index ≤ 2  ⟹  |I| ≤ 2 **
+```
+
+`TameInertiaCyclic.isCyclic_of_tame` had never been instantiated; it is now, on the horizon's own
+upper Schur place.
+
+**Elaboration discipline, recorded because it cost a dozen rebuilds.**  On the horizon's sheet and
+permutation types every `rw`, `show`, `change`, and every unfolding of `MulAction.stabilizer` or
+`MulAction.orbit`, exhausts the elaborator — a `rw` must compute a motive over those types, and
+`MulAction.compHom` plus `SetLike` membership is several unfolds deep.  The same statement phrased
+with `MulAction.orbit` does not elaborate at twenty million heartbeats; phrased as a cardinality
+inequality of naturals over a plain subtype it takes seconds.  So: **state every group-theoretic
+step abstractly, give its hypothesis as a `Nat.card` inequality over a plain subtype, and
+instantiate with `Eq.trans_le`, never `rw`.**
+
+**`(D4)` now rests on one statement.**
+
+```text
+∀ σ,  e(Q_σ / 𝔪_A) ≤ 2
+```
+
+Everything else is proved: the orbit formula, cyclicity, faithfulness, the order bound, and the fact
+that sheets outside the collision support are unramified.  For a sheet *inside* the collision
+support the route is `σ⁻¹(W) = criticalSchurSourceValuationSubring` — two sheets with the same
+reduced fibre label reduce every Schur coordinate to the same residue, so they have the same centre
+on the Schur coordinate ring, which is a polynomial ring, so that centre's localization is a DVR and
+`ValuationSubring.eq_of_le_of_ne_top` identifies the two valuation rings — followed by
+`criticalSchur_source_ramificationIdx_eq_two`.
+
+## Lean progress — the ramification index travels, and the last statement is now fully scoped
+
+```text
+HTGeometry/RamificationIdxTransport.lean          (wired, built, axiom-clean)
+    Ideal.map_le_map_iff_ringEquiv
+    ramificationIdx'_algEquiv      ** e(ψ P / p) = e(P / p) along an algebra equivalence **
+```
+
+mathlib has only `Ideal.ramificationIdx_smul`, for a group acting on one fixed ring; two sheets of a
+cover generate *different* subfields, so their places live on different integral closures and the
+comparison needs an equivalence, not an action.  The proof is immediate on the `sSup` definition of
+`ramificationIdx'` — `algebraMap R S₂ = ψ ∘ algebraMap R S₁`, so the two exponent sets coincide.
+(On the `Module.length` definition it would need a localization comparison instead;
+`ramificationIdx'_eq_ramificationIdx` converts afterwards.)
+
+### The last statement, `∀ σ, e(Q_σ / 𝔪_A) ≤ 2`, scoped to the end
+
+Sheets outside the collision support are already known unramified, so only colliding sheets remain,
+and for those the chain is now completely identified:
+
+```text
+(1) the low coefficients of every sheet lie in W       criticalGeometricSheetToSchurFieldFibre_coefficients_mem
+(2) their residues ARE the reduced fibre label          criticalGeometricSheetToSchurReducedFibre
+(3) the SCALE is a unit of W, and its residue is fixed by (2):
+        the fibre equation gives A.coeff 0 * B.coeff 0 = 1 over ANY commutative ring
+        (TruncatedCompatibilityFibre, "the jet is invertible at the origin"), so applying it to the
+        REDUCED fibre point makes the residue of the scale a unit
+(4) hence the Schur coordinates — the raw coefficients normalised by the scale, and the reversed
+        reciprocal squares — lie in W with residues fixed by the reduced label
+(5) the Schur coordinates are algebraically independent, so the Schur coordinate ring is a
+        POLYNOMIAL ring and its height-one localization is a DVR
+        (algebraicIndependent_criticalSourceSchurCoordinates,
+         criticalSchurCoordinateValuationSubring_isDiscreteValuationRing)
+(6) two colliding sheets therefore have the same centre there, and
+        ValuationSubring.eq_of_le_of_ne_top gives σ⁻¹(W) = criticalSchurSourceValuationSubring
+        (which is criticalNormalClosureSchurValuationSubring_comap_source for the canonical sheet)
+(7) criticalSchur_source_ramificationIdx_eq_two, moved along σ by ramificationIdx'_algEquiv
+```
+
+Step `(3)` is the find of this pass: the corpus already proves the constant terms of the jet and its
+reciprocal are inverse to each other *over an arbitrary commutative ring*, so the statement holds
+verbatim in the residue field, and no new integrality argument is needed to make the normalisation
+legitimate.  That was the step that looked like it needed the coordinates to be integral over the
+observation DVR, which they are not.
+
+## Lean progress — step (3) of the last chain is DONE: the scale is a unit at every sheet
+
+```text
+HTGeometry/CriticalSheetJetUnit.lean              (wired, built, axiom-clean)
+    criticalLowProduct_coeff_zero_mul     A.coeff 0 * B.coeff 0 = 1, over ANY commutative ring
+    isUnit_criticalLowProduct_coeff_zero  hence the constant term is a UNIT
+    isUnit_criticalSheetJetCoeffZero      for every sheet, in the upper Schur valuation ring
+
+HTGeometry/CriticalSheetScaleUnit.lean            (wired, built, axiom-clean)
+    coe_criticalSheetJetCoeffZero   the jet's zeroth coefficient IS the sheet's value on the scale
+    criticalSheetScale_mem
+    isUnit_criticalSheetScale       ** σ(scale) is a UNIT of W, for every geometric sheet σ **
+```
+
+The corpus's `coeff_zero_add_ne_zero_of_dvd` states this over a *field* and concludes only `≠ 0`.
+The identity behind it — `A(0)·B(0) = 1` — needs no field at all, so it holds in the valuation ring
+where the sheet's fibre point actually lives, and gives a **unit** rather than a nonzero element.
+That is the difference that matters: the Schur normalisation divides by the scale, and the division
+has to stay inside `W` for every sheet, not merely be defined in the fraction field.
+
+This was the step that looked as if it needed the Schur coordinates to be integral over the
+observation DVR — which they are not, and which no amount of work would have supplied.
+
+**Remaining for `∀ σ, e(Q_σ/𝔪_A) ≤ 2`:** steps `(4)`–`(7)` of the chain above — extend
+`isUnit_criticalSheetScale` from the scale to all the normalised Schur coordinates, read their
+residues off the reduced fibre label, identify the centre on the (polynomial) Schur coordinate ring,
+and transport `criticalSchur_source_ramificationIdx_eq_two` with `ramificationIdx'_algEquiv`.
+
+## Lean progress — step (4): the Schur coordinates stay inside the valuation ring
+
+```text
+HTGeometry/SubringPolynomialCoefficients.lean     (wired, built, axiom-clean)
+    PolyCoeffsIn  (+ .one .add .neg .sub .mul .pow .sum)
+    finiteUnitPolynomial_polyCoeffsIn
+    truncatedReciprocalKernel_polyCoeffsIn
+    finiteReciprocalPositive_mem, finiteUnitSquarePositive_mem
+    finiteReciprocalSquarePositive_mem
+        ** the Schur coordinates of a family lying in a subring lie in that subring **
+```
+
+The corpus carries `PolynomialCoefficientsIn` for an `IntermediateField` — that is what the
+*algebraic* statements about the Schur coordinates use.  The *arithmetic* statement needs the same
+closure over a `Subring`, because a valuation subring is not a field.
+
+What makes it work is that `truncatedReciprocalKernel N U = ∑_{j<N} (−(U−1))^j` involves **no
+division**: the reciprocal coordinates are integral polynomial expressions in the normalised jet.
+So once the scale is a unit of the valuation ring — which is `isUnit_criticalSheetScale`, proved
+from the fibre equation alone — every Schur coordinate of every sheet lands in the pullback of that
+valuation ring along the sheet, which is a subring of the source field.
+
+Steps `(3)` and `(4)` of the chain are now both closed.  What is left of
+`∀ σ, e(Q_σ/𝔪_A) ≤ 2` is `(6)`: two sheets with the same reduced fibre label have the same centre on
+the Schur coordinate ring, and `ValuationSubring.eq_of_le_of_ne_top` identifies their pullbacks with
+`criticalSchurSourceValuationSubring`; then `(7)` transports
+`criticalSchur_source_ramificationIdx_eq_two` by `ramificationIdx'_algEquiv`.
+
+## Lean progress — steps (a) and (b): every Schur coordinate of every sheet is integral
+
+```text
+HTGeometry/CriticalSheetSchurCoordinateIntegrality.lean   (wired, built, axiom-clean)
+    criticalSourceRaw_of_le          a raw coordinate above the depth is an observation coordinate
+    criticalSheetRaw_mem             ** every raw coordinate of every sheet lands in W **
+    criticalSheetPullbackSubring     the pullback of W along a sheet, a subring of the source field
+    criticalSourceNormalizedPositive_mem_pullback
+    criticalSourceSchurCoordinates_mem_pullback
+                                     ** and so does every Schur coordinate **
+```
+
+The corpus proves the Schur coordinates lie in the *source* Schur valuation subring, i.e. at the
+place of the canonical embedding.  A general sheet induces a *different* place on the source field,
+and the collision argument needs integrality at that one.  The raw coordinates split cleanly: below
+the depth they are the low coefficients of the sheet's fibre point
+(`criticalGeometricSheetToSchurFieldFibre_coefficients_mem`); above it they are **observation**
+coordinates, which a sheet fixes and which are integral at the observation Schur place
+(`criticalObservationRaw_mem_observationValuationSubring`).  The passage to the Schur coordinates is
+`finiteReciprocalSquarePositive_mem` together with `isUnit_criticalSheetScale`.
+
+**Recorded no-go.**  `σ⁻¹(W) ⊇ criticalSchurSourceValuationSubring` is FALSE for a general sheet —
+distinct sheets induce distinct places over the same base, which is exactly why only some sheets
+collide.  Integrality of the coordinates is what is true; identifying the places needs the residues.
+
+Steps `(3)`, `(4)`, `(a)`, `(b)` of the chain to `∀ σ, e(Q_σ/𝔪_A) ≤ 2` are closed.  What is left is
+`(c)` two sheets with the same reduced fibre label have equal residues on all Schur coordinates,
+hence the same centre; `(d)` the centre's localization is `criticalSchurSourceValuationSubring`, a
+DVR, so `ValuationSubring.eq_of_le_of_ne_top` identifies the pullbacks; `(e)` transport
+`criticalSchur_source_ramificationIdx_eq_two` by `ramificationIdx'_algEquiv`.
+
+## Lean progress — the Schur coordinate construction is natural, so residues transport
+
+```text
+HTGeometry/RingSchurCoordinates.lean              (wired, built, axiom-clean)
+    ringUnitPolynomial, ringTruncatedReciprocalKernel
+    ringReciprocalPositive, ringUnitSquarePositive, ringReciprocalSquarePositive
+    ringUnitPolynomial_eq, ringTruncatedReciprocalKernel_eq, ringReciprocalSquarePositive_eq
+        the ring versions are DEFINITIONALLY the corpus's field versions
+    ringUnitPolynomial_map, ringTruncatedReciprocalKernel_map,
+    ringReciprocalPositive_map, ringUnitSquarePositive_map,
+    ringReciprocalSquarePositive_map
+        ** f (coordinate of u) = coordinate of (f ∘ u), for EVERY ring hom f **
+```
+
+No step of the Schur construction divides — the unit polynomial is `1 + ∑ u_i X^{i+1}`, the
+truncated reciprocal kernel is `∑_{j<N} (−(U−1))^j`, the square is a square — so it lives over any
+commutative ring, definitionally agrees with the corpus's field version, and is natural.
+
+That naturality is exactly what step `(c)` needs, and it is inexpressible while the construction is
+stated only over a field: the map it has to be applied to is the **residue map of the upper Schur
+valuation ring**, a ring hom out of a ring that is not a field.  With it, two sheets whose fibre
+coefficients have equal residues have equal residues on every Schur coordinate.
+
+Remaining for `∀ σ, e(Q_σ/𝔪_A) ≤ 2`: assemble `(c)` from `ringReciprocalSquarePositive_map` applied
+to the residue map plus `criticalGeometricSheetToSchurReducedFibre`; then `(d)` the centre's
+localization is `criticalSchurSourceValuationSubring`, a DVR, so `ValuationSubring.eq_of_le_of_ne_top`
+identifies the pullbacks; then `(e)` `ramificationIdx'_algEquiv`.

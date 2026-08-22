@@ -347,3 +347,45 @@ Novelty status: `[NOVELTY UNVERIFIED]`. Corpus search found fixed-window Suzuki 
 reporter-level positive mixtures, but not this exact signed-window barycentre, explicit
 variation-adaptive cofinal clock, quantitative `O(H^-2)` landing, or exact uniformity equivalence for
 the actual finite connected producer.
+
+### C12 — quantitative Suzuki landing on matched coverage and completed transport
+
+The explicit adaptive Suzuki producer is now connected directly to both source-level hard
+coordinates isolated elsewhere in the Lean corpus. For `0 < b <= H` and `1 <= H`, Lean proves
+
+```text
+|A_adaptive(b,H) - (MatchedBlock(b,H) + CoverageSeam(b,H) - IncomingPolar(b,H))|
+  <= exp(1) / (2 H^2),
+```
+
+and
+
+```text
+|A_adaptive(b,H) - (CompletedQuantileTransport(b,H)
+    - LowerOutgoingCorrection(b,H) - IncomingPolar(b,H))|
+  <= exp(1) / (2 H^2).
+```
+
+Every displayed core keeps prime, polar, internal transport, and terminal transport contributions
+coupled before the absolute value. At canonical lower wall `b=1`, two exact frontier equivalences
+follow:
+
+```text
+UniformBound(A_adaptive) <-> UniformBound(CoverageSeam),
+UniformBound(A_adaptive) <-> UniformBound(CompletedQuantileTransport).
+```
+
+This closes the formerly implicit Suzuki-to-hard-current landing. It also kills a possible false
+pivot: a new finite-characteristic convergence or positivity theorem cannot bypass the arithmetic
+obstruction, because the actual adaptive finite Suzuki family is quantitatively asymptotic to, and
+uniformly equivalent to, the outgoing matched-coverage seam and completed oriented quantile current.
+
+Lean status: proved and wired in
+`GaloisForLFunctions/RHTower/CCMFUSuzukiHardCoreLanding.lean`. Direct source check and targeted
+`lake build GaloisForLFunctions.RHTower.CCMFUSuzukiHardCoreLanding` pass. Missing transitive oleans
+were built individually as encountered. Capstones have no axioms beyond `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+Novelty status: `[NOVELTY UNVERIFIED]`. Corpus search found separate equivalences from literal
+triangular windows to coverage/quantile currents and the new adaptive Suzuki-to-literal convergence,
+but no direct quantitative Suzuki-to-current landing or direct uniformity equivalences.

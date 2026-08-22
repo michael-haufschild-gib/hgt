@@ -6,6 +6,7 @@ Authors: Michael Barenbaum
 import GaloisForLFunctions.HTGeometry.ABHN.LocalFrobenius
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldCyclicGaloisAlgebra
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldQuadraticCyclicBrauer
+import GaloisForLFunctions.HTGeometry.ABHN.ContinuousQuadraticGaloisH2Brauer
 
 /-!
 # Cyclic algebras at finite residue extensions
@@ -53,5 +54,16 @@ theorem residue_quadraticCyclicGaloisH2BrauerMap_eq_split
     (z : cyclicGaloisH2 (A ⧸ P) (B ⧸ Q)) :
     quadraticCyclicGaloisH2BrauerMap (A ⧸ P) (B ⧸ Q) hdeg z = brauerSplitClass (A ⧸ P) :=
   finiteField_quadraticCyclicGaloisH2BrauerMap_eq_split (A ⧸ P) (B ⧸ Q) hdeg z
+
+/-- Every continuous quadratic cyclic degree-two class at a finite residue extension selects the
+split residue Brauer class.  This applies the finite continuous-to-ordinary cohomology comparison
+before the existing cyclic-algebra construction. -/
+theorem residue_finiteGaloisContinuousQuadraticCyclicGaloisH2BrauerMap_eq_split
+    (hdeg : Module.finrank (A ⧸ P) (B ⧸ Q) = 2)
+    (z : continuousGaloisUnitCohomology 2 (A ⧸ P) (B ⧸ Q)) :
+    finiteGaloisContinuousQuadraticCyclicGaloisH2BrauerMap (A ⧸ P) (B ⧸ Q) hdeg z =
+      brauerSplitClass (A ⧸ P) :=
+  finiteField_finiteGaloisContinuousQuadraticCyclicGaloisH2BrauerMap_eq_split
+    (A ⧸ P) (B ⧸ Q) hdeg z
 
 end GaloisForLFunctions.HTGeometry.ABHN

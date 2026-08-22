@@ -2393,3 +2393,181 @@ Reusable: the shifted-measure transfer `integral_pow_shiftedMeasure` /
 `integrable_pow_shiftedMeasure` / `isFiniteMeasure_shiftedMeasure` works for **any** Stieltjes
 moment shift `dλ = x dμ`, and pairs directly with
 `HTGeometry.measure_eq_of_hasStieltjesMoments_of_hardy`.
+
+---
+
+## #14 `hypertranscendental-clock-adjunction` — CLOSED (stage 3)
+
+Module `HTGeometry/ClockProlongationAdjunction.lean`; all capstones axiom-clean.
+
+This card was cheap because the corpus already owned `jetObservableField`,
+`hypertranscendental_clock_erosion_iff`, `differentialJet_mem_jetObservableField_add` and
+`jetObservableField_mono`.  Everything new was order theory over mathlib's `IntermediateField`.
+
+Traps:
+
+- `differentialCore C = {b ∈ C : b′ ∈ C}` must be built as an `IntermediateField` by the
+  anonymous-constructor pattern (`carrier`, `zero_mem'`, `one_mem'`, `add_mem'`, `mul_mem'`,
+  `inv_mem'`, `algebraMap_mem'`); `Derivation.leibniz` and `Derivation.leibniz_inv` close it.
+- `clockCore B r := differentialCore^[r] B` makes the erosion semigroup law a one-liner
+  (`Function.iterate_add_apply`).  Defining it by the explicit set `{b | ∀ q ≤ r, δ^q b ∈ B}`
+  would force a Leibniz formula for iterated derivations.
+- `GaloisConnection.compose` + `GaloisConnection.l_unique` **times out at `whnf`** on the
+  intermediate-field lattice.  Prove the prolongation semigroup law by `le_antisymm` through the
+  adjunction instead — four lines, instant.
+- `rw [ih]` fails for an induction hypothesis with an implicit binder; `simp only [ih]` works.
+- `IntermediateField.adjoin` memberships come back beta-unreduced
+  (`(fun n => differentialJet n x) n`); insert an explicit `change` before `rw`.
+- `omega` cannot see through `n ∈ Set.Iio N`; wrap the goal in `show N - 1 < N by omega`.
+
+Reusable: `differentialCore`, `clockCore`, `clockProlongation`, `clockGaloisConnection` are
+generic for any ordinary differential-field extension and bring mathlib's `GaloisConnection` API.
+
+---
+
+## #15 `quiet-flank-growth-support-radius` — CLOSED (stage 3)
+
+Module `RHTower/PerronUniformFlankProducer.lean`; capstone
+`coefficient_index_le_exact_flank_radius_of_quiet_uniform_flank`, axiom-clean.
+
+Almost everything was already in the tree: `QuietCrossingRigidity.lean` (smoothed Perron,
+`perronKink`), `VariablePerronKink.lean` (variable knots, `perronSecondDiffAt_integral`),
+`QuietFlankGrowth.lean` (ratio-test endgame), `PerronBoundaryCharge.lean` (Cauchy rectangle from
+boundary data only), `PerronCarrierFlankMass.lean` (coefficient-independent carrier interfaces,
+`perronEAt_left_flank_norm_le`, `perronEAt_strip_high_norm_le`).  The only missing link was the
+wrapper turning the card's two literal hypotheses into those interfaces.
+
+Method notes worth reusing:
+
+- The corpus normalization `HasPerronCarrierFlankMass F H` means mass `≤ (π/2)H(M)`.  A uniform
+  sup bound gives mass `≤ π·H(M)`, hence envelope `2H` — which is exactly the `2` in the card's
+  `|a_n/2| ≤ 2H(M)(n-1/2)^(1-M)`.  Check the normalization before choosing the envelope.
+- `HasPerronHorizontalEscapeAt` demands `1 ≤ T k` implicitly (the strip decay lemma needs
+  `1 ≤ |y|`).  Do **not** add a hypothesis: shift the exhaustion to `T(·+k₀)` inside the proof.
+- `Set.uIoc_of_le` first; then interval membership is a plain `Ioc` and both endpoint bounds are
+  projections.
+- `squeeze_zero'` (eventual form) is needed for `q k/(1+T k²) ≤ q k/(T k)²`, since `T k > 0` only
+  holds eventually.
+- `positivity` fails on `0 ≤ q k / (1 + T k ^ 2)` — the numerator's sign is a hypothesis, so pass
+  `div_nonneg` explicitly.
+
+---
+
+## #16 `characteristic-zero-matroid-gaussian-mimicry-no-go` — CLOSED (stage 3)
+
+Four modules: `LinearIndependenceMinorTransfer`, `ComplexCoordinateDescent`,
+`ComplexGaussianObservables`, `AlgebraicMatroidGaussianModel`.  Capstone
+`exists_gaussianModel`, axiom-clean.
+
+The card's own gate said "no Lean target until the characteristic-zero algebraic-to-linear parent
+theorem exists in the formal corpus" — **it already existed**
+(`algebraicIndependent_iff_kaehlerD_linearIndependent`).  Card gates that name a missing parent
+theorem must be re-checked against the tree before being believed; this is the third card in this
+sweep whose stated blocker was stale.
+
+Method notes worth reusing:
+
+- **Specialize a field-extension representation to `ℂ` with the Nullstellensatz, not with
+  localization.**  Take `P = ker (aeval v)` on `MvPolynomial (ι × κ) ℂ` (prime, since `L` is a
+  domain), form the product of the *universal* minor polynomials whose image is nonzero, and use
+  `MvPolynomial.IsPrime.vanishingIdeal_zeroLocus` to get a point of the zero locus where that
+  product survives.  No localized algebra, no Zariski's lemma, no transcendence basis, no
+  embedding of a finitely generated field into `ℂ`.
+- The maximal-minor criterion is **not** in mathlib in either direction for rectangular matrices.
+  Forward: `LinearIndependent.rank_matrix` → `Submodule.eq_top_of_finrank_eq` → columns span →
+  `exists_linearIndependent` → `Fintype.equivOfCardEq` → `Matrix.linearIndependent_rows_iff_isUnit`.
+- `RingHom.map_det` is stated with `RingHom.mapMatrix f M`, not `M.map f`; state the intermediate
+  `have` with `σ.mapMatrix` or the rewrite will not fire.
+- A `have h : ∀ {M' : Type*} …` inside a proof fixes one universe metavariable and then cannot be
+  applied at two different universes; write the two instances out.
+- `Set.toFinset` needs `Fintype ↥I`; `open scoped Classical` supplies it, and
+  `Equiv.subtypeEquivRight Set.mem_toFinset` transports `LinearIndependent`/`AlgebraicIndependent`
+  between the `Finset` and `Set` subtypes.
+- `Measure.addHaar_submodule` applies to a `ℂ`-submodule after `Submodule.restrictScalars ℝ`;
+  `restrictScalars … = ⊤ → … = ⊤` has no mathlib lemma, use `SetLike.ext'` on the carriers.
+
+---
+
+## Triage of the remaining tail (2026-08-22)
+
+After four closes this session the folder holds 219 cards.  Sampling across the whole folder shows
+the tail is **not** a set of small gaps: essentially every remaining card is blocked on one of a
+small number of classical theories that mathlib does not have.  The blockers, with the lanes they
+gate:
+
+1. **Nevanlinna theory beyond the First Main Theorem** — the lemma on the logarithmic derivative,
+   the Second Main Theorem, and their standard corollaries (ramification bound, Clunie's lemma,
+   Briot–Bouquet classification of entire solutions of autonomous first-order ADEs, Steinmetz
+   reduction, Pólya composition growth).  Mathlib has `Analysis/Complex/ValueDistribution/`
+   (proximity, log counting, characteristic, Cartan's identity, FMT) and `JensenFormula`, so the
+   foundation is present and the LLD is the first missing brick.
+   Gates at least: `drifting-periodic-primitive-ramification-exclusion`,
+   `entire-composition-hypertranscendence-or-law`,
+   `nonautonomous-cap-linear-order-two-shadow-rigidity`,
+   `exponential-tower-exact-differential-order` (its composition-depth half),
+   `asymptotically-exponential-algebraic-cascade-unit-cost`,
+   `arithmetic-entire-heat-da-finite-spectrum`, `entire-heat-multiplicative-da-order-three-floor`,
+   `smooth-stein-order-two-autonomous-ade-frequency-rank`, and most of the autonomous-ADE lane.
+   **This is the highest-leverage build in the folder.**
+
+2. **Reproducing-kernel Pontryagin/Krein space theory** — needed for the "kernels with κ negative
+   squares restrict without loss" theorem (`euler-pick-node-window-nonlocality` and the Pick /
+   de Branges / Krein cards).  The reduction is understood: the general case follows from the
+   κ = 0 case ("a Hermitian analytic kernel positive on a nonempty open subset is positive
+   everywhere"), via a Krein–Langer decomposition built from a maximal negative-definite subspace
+   plus the corpus's `KernelHilbert`.  The κ = 0 case needs a vector-valued analytic continuation
+   whose Cauchy estimates require **joint** continuity of the kernel; getting that from separate
+   analyticity is Hartogs' theorem.  Do not restate the theorem with joint continuity as a
+   hypothesis — build the continuation.
+
+3. **Runge's theorem** (and the Fréchet/Baire structure of `O(Ω)`) — gates
+   `da-ht-topological-interlacing-law`.  Everything else on that card is easy: the DA loci are
+   closed with empty interior because `f + δ/Γ` is HT for every `δ ≠ 0`
+   (`hypertranscendental_invGamma` and `differentiallyAlgebraicOn_sub`, both proved this session),
+   and comeagreness then follows from Baire.
+
+4. **Complex dynamics / potential theory** — equilibrium measure of a Julia set, Eremenko–van
+   Strien, Atela–Hu: the `bottcher-*` and `q62*` cards.
+
+5. **Effective Baker–Wüstholz** — `combination-mode-reducibility-baker-bridge` §1(ii) and the
+   pigeonhole no-go of §2.  The corpus owns qualitative Baker only.
+
+6. **Certified external computation** — `verified-height-one-zero-turing-extension` depends on an
+   Arb Turing-method zero count to height `3·10¹²`.  Formalizing it would be a verified
+   computation, which the session rules exclude; it is blocked by rule, not by mathematics.
+
+Cards whose *stated* Lean blocker turned out to be stale (the parent theorem was already in the
+tree): `characteristic-zero-matroid-gaussian-mimicry-no-go`, `quiet-flank-growth-support-radius`,
+`hypertranscendental-clock-adjunction`.  **Always re-check a card's declared blocker against
+`formal_tools.py research` before believing it.**
+
+### Correction to triage item 1 — the Nevanlinna stack is already largely built, and is owned
+
+`formal_tools.py research` on my own names missed it; searching for the *classical* names finds a
+large existing layer in namespace `GaloisForLFunctions.Nevanlinna` and in `HTGeometry`:
+
+- `BorelGrowthLemma.lean`, `BorelGrowthMonotone.lean`, `BorelGrowthExponent.lean`,
+  `MonotoneIncrementMeasure.lean` — **Borel's growth lemma is done**, in several forms (monotone,
+  scaled, `rpow`, logarithmic).  My independently written dyadic-band proof was a duplicate; the
+  guard `test -e` prevented overwriting the file.
+- `NevanlinnaEntireCharacteristic.lean`, `NevanlinnaCharacteristicLowerBound.lean`,
+  `NevanlinnaCoeffFun.lean`, `NevanlinnaRootEstimate.lean` — characteristic-function calculus for
+  entire functions (products, sums, powers, Wiman–Valiron form, algebraic-root estimate).
+- `PoissonJensenFormula.lean`, `LogDerivPoissonJensen.lean` — **Poisson–Jensen and its
+  differentiated form**, including `logDeriv_poissonJensen` and the Nevanlinna pointwise bound
+  `norm_logDeriv_le`.
+- `LogDerivativeFactor.lean`, `LogDerivativeProximity.lean` — the proximity of the logarithmic
+  derivative in terms of the zero data and the cofactor.
+- `SecondMainTheoremChain.lean` — **the second main theorem** `mul_characteristic_le_of_separated`,
+  with the logarithmic-derivative proximity terms left as terms, plus the pigeonhole corollary
+  `exists_logCounting_ge`.
+
+The one piece still missing is the final assembly `m(r, f'/(f−a)) = S(r,f)` (the estimate in terms
+of `T(r,f)` rather than of the maximum modulus of the cofactor).
+
+**Ownership.**  That build is being driven by
+`docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/universal-first-order-entire-cascade-unit-cost.md`,
+a different top-level folder.  Do not duplicate it from this folder.  When the `S(r,f)` assembly
+lands, the consumers listed in triage item 1 become reachable and should be revisited in this order:
+`drifting-periodic-primitive-ramification-exclusion` (needs only the ramification bound),
+then the composition/Clunie cards.

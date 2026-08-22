@@ -1,12 +1,35 @@
 # Active quasi-Abelian palettes classify finite full HT constraint geometry
 
 - **ID:** `active-quasi-abelian-palette-exact-ht-dimension-classification`
-- **Stage:** 3-formalized
+- **Stage:** 1-in-progress
 - **Type:** THEOREM (paper) / ACTION-RELATIVE HT DIMENSION CLASSIFICATION
-- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PAPER-PROOF GAP IDENTIFIED] [LEAN INTERFACES CONDITIONAL] [NOVELTY UNVERIFIED]`
 - **Statement:** The intrinsic analytic dimension of a finite full Stanley--Reisner HT constraint
   geometry is governed by quasi-Abelian facet quotients in which every structural facet lattice is
   faithful on the quotient by the maximal compact complex subtorus.
+
+## Formalization audit 2026-08-22 — load-bearing sufficiency remains open
+
+This card cannot be Stage 3.  Its sufficiency direction invokes the card
+`torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`, whose primary-source audit found
+only Abe's finite point-separation theorem (Theorem 8.1) and one tangent-direction theorem
+(Theorem 9.1), not all finite jet interpolation for one fixed factor.  The claimed extension has
+no dependency-closed paper proof.
+
+The current Lean declarations are conditional interfaces rather than an unconditional derivation
+from quasi-Abelian geometry: `ActiveQuasiAbelianFacetPresentation.positiveTower` is a supplied
+`AbePositiveFactorTower`, while
+`activeQuasiAbelianPaletteDimension_eq_fullHTEntireDimension` takes `extract` and `assemble` as
+explicit inputs.  Hence the existing Lean result proves a valid implication between supplied
+packages; it does not prove `htDim(Delta) = aqaDim(Delta)` unconditionally.
+
+The finite algebraic survivor needed by the eventual analytic proof is formalized in
+`formal/GaloisForLFunctions/HTGeometry/QuasiAbelianJetAmpleFiniteVanishing.lean`: lower
+fixed-factor jet ampleness produces seed columns preserving any prescribed finite jets and
+vanishing at every selected finite nonzero complement translate.  What remains is the genuine
+period-matrix Poincare-series construction and a derivative-stable, locally normal tail argument.
+The former uniform global exponential-gap route is false for irrational periodic phases, so it
+cannot discharge this card.
 
 ## Correction forced by the elliptic-shadow theorem
 
@@ -90,7 +113,7 @@ Every periodic pencil has no compact complex shadow in its active `C*` quotient,
 aqaDim(Delta)<=ppDim(Delta).                               (7)
 ```
 
-## Exact active-palette classification `[PROVED HERE]`
+## Exact active-palette classification `[PAPER-PROOF GAP]`
 
 For every finite essential simplicial complex,
 
@@ -105,7 +128,7 @@ peDim(Delta)<=qaDim(Delta)<=aqaDim(Delta)
                                =htDim(Delta)<=ppDim(Delta)<=ffsDim(Delta). (9)
 ```
 
-## Active-faithful necessity `[PROVED HERE]`
+## Active-faithful necessity `[PAPER-PROOF GAP]`
 
 The established facet separator extracts a meromorphic facet observable `G_A` whose integral
 facet orbit is completely differentially free.  Its full period quotient supplies `X_A`, exact
@@ -136,12 +159,12 @@ The kernel-to-injectivity implication is formalized as
 `activeQuotient_injective_of_fullOrbitFree_of_kernelCyclic_not` in
 `formal/GaloisForLFunctions/HTGeometry/FiniteShadowCapacity.lean`.
 
-## Active-faithful sufficiency `[PROVED HERE]`
+## Active-faithful sufficiency `[PAPER-PROOF GAP]`
 
 Let `Y_A=Act(X_A)`.  If (4) holds, the integral facet lattice acts faithfully on `Y_A`.  The needed
 analytic theorem now holds:
 
-> **Torusless all-order packet theorem `[PROVED HERE]`.** On every torusless noncompact
+> **Torusless all-order packet theorem `[OPEN CORE]`.** On every torusless noncompact
 > quasi-Abelian group satisfying the generalized Riemann relations, one fixed ample automorphic
 > factor has a Frechet section space whose evaluation map onto every finite jet packet is
 > surjective.
@@ -407,7 +430,7 @@ in dimension `qaDim(Delta)` has a facet whose period quotient carries a positive
 compact complex subtorus meeting the facet lattice.  Producing or excluding such a complex is the
 whole of the remaining separation question; nothing else is left in it.
 
-## Verification
+## Verification of conditional infrastructure
 
 - `lake env lean` passes on each new module;
 - `lake build` passes for `GaloisForLFunctions.HTGeometry.ActiveQuasiAbelianPaletteHierarchy`,
@@ -418,7 +441,7 @@ whole of the remaining separation question; nothing else is left in it.
 - all three new modules are imported by `GaloisForLFunctions.HTGeometry`;
 - `scripts/formal_tools.py lint` reports no proof debt and no unreachable module in this chain.
 
-## Remaining named inputs
+## Remaining named inputs and open core
 
 The exact dimension equality keeps two global geometric operations as explicit hypotheses,
 exactly as the sibling necessity card does: full-HT period extraction (`extract`) and the
@@ -428,7 +451,10 @@ positive Abe tower.
 
 ## Log
 
-- 2026-08-18 -- Lean formalization gate closed and card promoted to stage 3.  The falsification of
+- 2026-08-18 -- Superseded by the 2026-08-22 audit above.  Earlier promotion to Stage 3 relied on
+  a claimed all-order fixed-factor theorem and treated supplied positive towers and global
+  extraction/assembly operations as if they were derived geometry.
+- 2026-08-18 -- The falsification of
   the ambient-faithfulness conjecture, the concrete split elliptic witness, the split-model
   capacity spectrum, and the constructive inequality `qaDim <= aqaDim` are new; the separation
   gate is reduced to the existence of a minimal palette with a nontrivial compact facet shadow.

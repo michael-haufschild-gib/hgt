@@ -2213,3 +2213,112 @@ The site-`i` transpositions in the `d_x` labelling — already delivered by the 
 listed above (`HypercubeSingleTransverseBlocks`, `SumOfTwoSquaresNotSquare`, `QuadraticRootFlip`,
 `GalPermutationRealization`) — plus the deformation chain, plus `closure_hypercubeEdgeSwaps`.  No
 primitivity, no Jordan's theorem, no Riemann existence.
+
+### Bricks for the deformation route (2026-08-22, continued)
+
+Four more modules, all unconditional, axiom-clean and umbrella-wired.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| **mathlib gap**: splitting one variable off a multivariate power series ring, `A⟦u_S⟧ ≅ (A⟦u_{S∖{k}}⟧)⟦u_k⟧` | `optionCons`, `optionSplit`, `optionJoin`, `MvPowerSeries.optionEquivLeft`, `constantCoeff_optionSplit` | `MvPowerSeriesOptionSplit` |
+| a simple root is determined by its residue — no completeness, only the second-order Taylor factorisation | `isRoot_unique_of_residue`, `isRoot_unique_mvPowerSeries` | `ResidueRootUniqueness` |
+| one-variable deformation with a labelled root family, and its equivariance | `eval_derivative_ne_zero_of_separable`, `exists_powerSeriesRootFamily` | `PowerSeriesRootFamilyTransfer` |
+| **every block transposition is realized** by a base algebra automorphism of the multiquadratic splitting field | `exists_algEquiv_swap_quadRoot` | `BlockFlipRealization` |
+
+`MvPowerSeries.optionEquivLeft` is the piece that makes the labelling *order-independent*: whichever
+order the deformation variables are introduced in, the resulting root lies in the same multivariate
+power series ring, and `isRoot_unique_mvPowerSeries` says a root there is determined by its constant
+coefficient.  That is exactly the comparison the "CORRECTION" section above found missing.
+
+### Remaining on this route
+
+1. the branch convention: choose `ρ_z` with `u = 0` value `d(1z) − d(0z)`, so that
+   `quadRoot s ρ (z, b)` degenerates to `d(bz)` and the block transposition is the hypercube edge
+   swap at the chosen site, in the `d_x` labelling;
+2. the deformation of the remaining transverse couplings, one variable at a time, transporting each
+   block transposition by `exists_powerSeriesRootFamily`;
+3. the comparison of the resulting labellings inside `A⟦u_1,…,u_n⟧` via `optionEquivLeft` and
+   `isRoot_unique_mvPowerSeries`;
+4. `closure_hypercubeEdgeSwaps` and `card_gal_eq_factorial_of_closure`, then
+   `gal_card_of_specialisation`.
+
+### The labelling anchor is built (2026-08-22, later)
+
+Five more modules complete the infrastructure the deformation route needs; all unconditional,
+axiom-clean and umbrella-wired.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| a power series whose constant term is a nonzero square has a square root **with prescribed branch** — the choice that makes `quadRoot` degenerate to the right unperturbed level | `exists_powerSeries_sqrt_branch` | `PowerSeriesSqrtBranch` |
+| one-variable deformation over a **residue ring** rather than a field: the derivative at a root is the product of the differences, and its residue is nonzero exactly when the residues of the roots are distinct | `eval_derivative_prod_X_sub_C`, `exists_powerSeriesRootFamily_of_residue` | `ResidueRootFamilyTransfer` |
+| a transverse coupling in an **arbitrary** direction: relabelling moves the direction, so the block decomposition follows from the direction-zero case | `singleDirectionHam`, `cubeRelabel`, `reindex_singleDirectionHam`, `charpoly_singleDirectionHam` | `SingleDirectionTransverse` |
+| **every hypercube edge swap in the transverse direction is realized**, on the original labelling of the cube | `directionRoot`, `swap_boolToggle_mem_realizedPermSubgroup` | `DirectionEdgeSwaps` |
+| variable reindexing, the no-variable case, `MvPowerSeries σ A` is a domain, and **the canonical labelled root family**: a monic polynomial whose constant term splits with distinct roots splits over `A⟦u_σ⟧` with roots labelled by their constant coefficients | `mvRenameEquiv`, `mvPowerSeriesEmptyEquiv`, `isDomain_mvPowerSeries`, `eq_prod_X_sub_C_of_monic_of_injective_family`, `exists_mvPowerSeriesRootFamily` | `MvPowerSeriesRootFamily` |
+
+`exists_mvPowerSeriesRootFamily` is the anchor: it is proved by splitting off one variable at a time
+(`MvPowerSeries.optionEquivLeft`) and lifting with the residue-ring Hensel step, and
+`isRoot_unique_mvPowerSeries` says the result does not depend on the order.  Every deformation route
+must therefore produce the *same* labelled family, which is exactly what the earlier "CORRECTION"
+section found missing.
+
+### Remaining on this route
+
+1. the two-local family over a general commutative ring (the corpus's `hypercubeTwoLocalMatrix` is
+   `ℂ`-specific) and its degeneration to `singleDirectionHam` when the other transverse couplings
+   vanish;
+2. placing the direction-`i` picture inside `A⟦u_1,…,u_n⟧` — the square roots are power series in
+   `u_i` by `exists_powerSeries_sqrt_branch`, so the roots are, and `isRoot_unique_mvPowerSeries`
+   identifies them with the canonical family;
+3. `closure_hypercubeEdgeSwaps` with `card_gal_eq_factorial_of_rootFamily`, then
+   `gal_card_of_specialisation`.
+
+### Block splitting of the variable set (2026-08-22, later still)
+
+`MvPowerSeriesSumSplit` adds the mathlib gap the deformation actually needs:
+`MvPowerSeries.sumEquiv : A⟦u_{σ ⊕ τ}⟧ ≃+* (A⟦u_σ⟧)⟦u_τ⟧`, splitting the variables into the block
+kept in the base and the block deformed away, in one step rather than one variable at a time
+(`sumCons`, `sumSplit`, `sumJoin`, `constantCoeff_sumSplit`).  With it the direction-`i` picture —
+base `A(u_i)`, deformation `u_{≠i}` — sits inside the same ring as the canonical labelled family,
+which is what `isRoot_unique_mvPowerSeries` compares.
+
+### The Galois assembly is Lean-closed; what is left is the instantiation (2026-08-22, final entry of the session)
+
+Eight more modules.  All unconditional, axiom-clean, umbrella-wired.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| the two-local family over an arbitrary commutative ring, and **switching off every transverse coupling but one** | `transverseFamilyHam`, `transverseFamilyHam_eq_singleDirection`, `twoLocalDiagonal`, `twoLocalHam` | `TwoLocalGenericFamily` |
+| **a permutation realized in an auxiliary field descends to the field generated by the roots**; two labelled generating families with the same image are isomorphic; transport of a realized permutation | `exists_algEquiv_of_embedding`, `exists_algEquiv_of_matching_embeddings`, `realized_of_algEquiv_transport` | `SplittingFieldPermTransport` |
+| **hypercube edge swaps ⟹ symmetric Galois group**, and the generation lemma for an adjoined family | `card_gal_eq_factorial_of_cubeSwaps`, `adjoin_range_corestrict_eq_top` | `CubeSwapGaloisAssembly` |
+| descent along a base field extension (`ℚ(i)` back to `ℚ`) | `card_gal_eq_factorial_of_cubeSwaps_baseExtension` | `GalBaseDescent` |
+| the universal transverse family, its reduction at zero couplings, and **the canonical labelled root family** | `universalTransverseHam`, `universalCharpoly_residue`, `exists_canonicalRootFamily` | `TwoLocalCanonicalRoots` |
+| **Kummer independence in the form the block quadratics produce it**: no nonempty product of `δ_z² + 4u²` is a square in `A(u)` when the detunings are pairwise distinct and never opposite | `not_isSquare_prod_sq_add_four_sq` | `BlockDiscriminantIndependence` |
+| the canonical labelled family is **equivariant** | `map_mvRootFamily_of_perm` | `MvPowerSeriesRootFamily` |
+| block splitting of the variable set | `MvPowerSeries.sumEquiv` | `MvPowerSeriesSumSplit` |
+
+So the chain
+
+```text
+per-direction flip  →  edge swaps in the canonical labelling  →  closure_hypercubeEdgeSwaps
+   →  card_gal_eq_factorial_of_cubeSwaps  →  descent to ℚ  →  gal_card_of_specialisation
+```
+
+is Lean-complete **except for one link**: exhibiting, for each direction `i`, the auxiliary field and
+the embedding that `exists_algEquiv_of_embedding` consumes.  Concretely what remains is:
+
+1. `L_i := IntermediateField.adjoin (RatFunc A) (Set.range ρ)` inside `LaurentSeries A`, where
+   `ρ_z` is the power-series square root of `δ_z² + 4u²` with constant term `δ_z`
+   (`exists_powerSeries_sqrt_branch`).  Its flip comes from `exists_algEquiv_swap_quadRoot` with
+   `not_isSquare_prod_sq_add_four_sq` as the independence hypothesis.
+2. The three fraction fields and the ring maps between them:
+   `Ω₀ = Frac(A⟦u⟧)`, `Ω_i = Frac(A⟦u_{≠i}⟧ over L_i)`, and the comparison ring
+   `MvPowerSeries {j ≠ i} (LaurentSeries A)`, which receives both.  The identification of the two
+   root families there is `isRoot_unique_mvPowerSeries`, and their residues agree because both are
+   roots of the direction-`i` characteristic polynomial in `A⟦u_i⟧` with constant term `d x`
+   (`isRoot_unique_of_residue`).
+3. `E := adjoin K (range Θ)` inside `Ω₀`, `E_i := adjoin K (range Θ^{(i)})` inside `Ω_i`, matched by
+   `exists_algEquiv_of_matching_embeddings`; then `realized_of_algEquiv_transport` moves each flip to
+   `E`, and `card_gal_eq_factorial_of_cubeSwaps` finishes.
+
+This is fraction-field and algebra-tower plumbing, not new mathematics: every mathematical step in
+the route is already a theorem in the tree.

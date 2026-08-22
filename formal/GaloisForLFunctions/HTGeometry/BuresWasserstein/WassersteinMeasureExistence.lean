@@ -93,10 +93,10 @@ theorem exists_wassFieldMeasure_eq_zero [IsProbabilityMeasure μ] {Av : Ω → E
   have hθarg : (0 : ℝ) ≤ 1 - t * κ / 2 := by linarith
   have hθ0 : 0 ≤ θ := Real.sqrt_nonneg _
   have hθ1 : θ < 1 := by
-    rw [hθdef, show (1 : ℝ) = Real.sqrt 1 from (Real.sqrt_one).symm]
-    refine Real.sqrt_lt_sqrt hθarg ?_
-    rw [Real.sqrt_one]
-    nlinarith [htpos, hκpos]
+    have hlt : (1 : ℝ) - t * κ / 2 < 1 := by nlinarith [htpos, hκpos]
+    calc θ = Real.sqrt (1 - t * κ / 2) := hθdef
+      _ < Real.sqrt 1 := Real.sqrt_lt_sqrt hθarg hlt
+      _ = 1 := Real.sqrt_one
   have hθsq : θ ^ 2 = 1 - t * κ / 2 := Real.sq_sqrt hθarg
   -- the subdivision parameter that kills the second-order defect
   obtain ⟨N, hNge⟩ := exists_nat_ge (C * (2 * β) / (κ / 2) + 1)
@@ -141,8 +141,8 @@ theorem exists_wassFieldMeasure_eq_zero [IsProbabilityMeasure μ] {Av : Ω → E
       (hPpos X hX) hA hAα hAβ hX.2.1 hX.2.2.1 hopint
     refine ⟨hX.1.sub (IsSelfAdjoint.smul (star_trivial t) (hPfieldsa X hX)), hlo, hhi, ?_⟩
     intro w
-    have hid : G X - Av w = (X - Av w) - t • wassFieldMeasure μ Av X := by
-      rw [hGdef]; abel_nf
+    have hid : G X - Av w = (X - Av w) - t • wassFieldMeasure μ Av X :=
+      sub_right_comm _ _ _
     rw [hid]
     exact (hX.2.2.2 w).sub ((hPfieldHS X hX).real_smul t)
   have hPHS : ∀ X : E →L[ℂ] E, P X → IsHilbertSchmidt (X - Av w₀) := fun X hX => hX.2.2.2 w₀
@@ -169,8 +169,8 @@ theorem exists_wassFieldMeasure_eq_zero [IsProbabilityMeasure μ] {Av : Ω → E
       hPXY (hPint X hX) (hPint Y hY) (hPop X hX) (hPop Y hY) hNpos
     have hdefect : C * (‖X - Y‖ / (N : ℝ)) ≤ κ / 2 := by
       have hxy := hPnorm X Y hX hY
-      have h1 : ‖X - Y‖ / (N : ℝ) ≤ (2 * β) / (N : ℝ) :=
-        div_le_div_of_nonneg_right hxy hNR
+      have h1 : ‖X - Y‖ / (N : ℝ) ≤ (2 * β) / (N : ℝ) := by
+        gcongr
       have h2 : C * (‖X - Y‖ / (N : ℝ)) ≤ C * ((2 * β) / (N : ℝ)) :=
         mul_le_mul_of_nonneg_left h1 hCpos.le
       refine h2.trans ?_
@@ -187,7 +187,7 @@ theorem exists_wassFieldMeasure_eq_zero [IsProbabilityMeasure μ] {Av : Ω → E
     have h4 : hsNorm (G X - G Y) ^ 2 ≤ (θ * hsNorm (X - Y)) ^ 2 := by
       rw [sq_hsNorm, mul_pow, sq_hsNorm]
       exact hsq
-    exact le_of_pow_le_pow_left₀ two_ne_zero (by positivity) h4
+    exact le_of_pow_le_pow_left₀ two_ne_zero (mul_nonneg hθ0 (hsNorm_nonneg _)) h4
   -- the base point of the iteration
   have hP0 : P (Av w₀) :=
     ⟨(hA w₀).isSelfAdjoint, hAα w₀, hAβ w₀, fun w => hAHS w₀ w⟩
@@ -195,13 +195,50 @@ theorem exists_wassFieldMeasure_eq_zero [IsProbabilityMeasure μ] {Av : Ω → E
     exists_fixedPoint_hs_invariant (G := G) (X₀ := Av w₀) (θ := θ) (P := P)
       hθ0 hθ1 hP0 hPG hPHS hPclosed hcontr
   refine ⟨X, hXP.1, hXP.2.1, hXP.2.2.1, hXP.2.2.2, ?_⟩
-  have hzero : t • wassFieldMeasure μ Av X = 0 := by
-    have h : X - t • wassFieldMeasure μ Av X = X := hfix
-    have h2 : t • wassFieldMeasure μ Av X = X - X := by
-      rw [← h]; abel_nf
-    rw [h2, sub_self]
+  have hfix' : X - t • wassFieldMeasure μ Av X = X := hfix
+  have hzero : t • wassFieldMeasure μ Av X = 0 := sub_eq_self.mp hfix'
   have h3 := congrArg (fun z : E →L[ℂ] E => t⁻¹ • z) hzero
   simpa [inv_smul_smul₀ (ne_of_gt htpos)] using h3
+
+/-- **Theorem 5.1 (Kim–Mer–Pálfia).**  A probability measure supported in a Loewner interval has
+exactly one Wasserstein barycentre in that interval. -/
+theorem existsUnique_wassFieldMeasure_eq_zero [IsProbabilityMeasure μ] {Av : Ω → E →L[ℂ] E}
+    {α β : ℝ} (hα : 0 < α) (hαβ : α ≤ β)
+    (hA : ∀ w, IsStrictlyPositive (Av w))
+    (hAα : ∀ w, α • (1 : E →L[ℂ] E) ≤ Av w) (hAβ : ∀ w, Av w ≤ β • (1 : E →L[ℂ] E))
+    (hAHS : ∀ w w', IsHilbertSchmidt (Av w - Av w'))
+    (hint : ∀ X : E →L[ℂ] E, IsSelfAdjoint X → α • (1 : E →L[ℂ] E) ≤ X →
+      X ≤ β • (1 : E →L[ℂ] E) → (∀ w, IsHilbertSchmidt (X - Av w)) →
+      Integrable (fun w => wassSL (Av w) X) μ) :
+    ∃! X : E →L[ℂ] E, (IsSelfAdjoint X ∧ α • (1 : E →L[ℂ] E) ≤ X ∧ X ≤ β • (1 : E →L[ℂ] E)
+      ∧ (∀ w, IsHilbertSchmidt (X - Av w))) ∧ wassFieldMeasure μ Av X = 0 := by
+  have hβ : 0 < β := lt_of_lt_of_le hα hαβ
+  obtain ⟨w₀⟩ : Nonempty Ω := nonempty_of_isProbabilityMeasure (μ := μ)
+  obtain ⟨X, hXsa, hXα, hXβ, hXHS, hXzero⟩ :=
+    exists_wassFieldMeasure_eq_zero hα hαβ hA hAα hAβ hAHS hint
+  refine ⟨X, ⟨⟨hXsa, hXα, hXβ, hXHS⟩, hXzero⟩, ?_⟩
+  rintro Y ⟨⟨hYsa, hYα, hYβ, hYHS⟩, hYzero⟩
+  have hXpos : IsStrictlyPositive X := isStrictlyPositive_of_smul_one_le hα hXα
+  have hYpos : IsStrictlyPositive Y := isStrictlyPositive_of_smul_one_le hα hYα
+  have hopX : ∀ w, (wassSL (Av w) X).op = (1 : E →L[ℂ] E) - gm (Av w) X⁻¹ʳ := fun w =>
+    wassSL_op hα hβ (hA w) hXpos (hAα w) (hAβ w) hXβ (hXHS w)
+  have hopY : ∀ w, (wassSL (Av w) Y).op = (1 : E →L[ℂ] E) - gm (Av w) Y⁻¹ʳ := fun w =>
+    wassSL_op hα hβ (hA w) hYpos (hAα w) (hAβ w) hYβ (hYHS w)
+  have hFX : Integrable (fun w => wassSL (Av w) X) μ := hint X hXsa hXα hXβ hXHS
+  have hFY : Integrable (fun w => wassSL (Av w) Y) μ := hint Y hYsa hYα hYβ hYHS
+  have hPHS : IsHilbertSchmidt (Y - X) := by
+    have h := (hYHS w₀).sub (hXHS w₀)
+    rwa [show (Y - Av w₀) - (X - Av w₀) = Y - X by abel] at h
+  have hXint : ∫ w, wassSL (Av w) X ∂μ = 0 := by
+    refine SLSpace.ext ?_
+    rw [SLSpace.op_zero, ← wassFieldMeasure_eq_op_integral hFX hopX]
+    exact hXzero
+  have hYint : ∫ w, wassSL (Av w) Y ∂μ = 0 := by
+    refine SLSpace.ext ?_
+    rw [SLSpace.op_zero, ← wassFieldMeasure_eq_op_integral hFY hopY]
+    exact hYzero
+  exact eq_of_integral_wassField_eq_zero hα hβ hA hAα hAβ hYpos hXpos hYα hYβ hXα hXβ
+    hPHS hFY hFX hopY hopX hYint hXint
 
 end
 

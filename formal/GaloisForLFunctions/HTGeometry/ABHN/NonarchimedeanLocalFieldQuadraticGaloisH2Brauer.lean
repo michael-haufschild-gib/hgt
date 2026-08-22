@@ -5,6 +5,7 @@ Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanLocalFieldValuationSequence
 import GaloisForLFunctions.HTGeometry.ABHN.QuadraticCyclicGaloisH2Brauer
+import GaloisForLFunctions.HTGeometry.ABHN.ContinuousQuadraticGaloisH2Brauer
 
 /-!
 # Quadratic unramified local lifts and cyclic `H²` Brauer classes
@@ -295,6 +296,90 @@ theorem scalarExtensionBrauerMap_nonarchimedeanLocalFieldAdjoinRootFractionField
     (quadraticCyclicGaloisH2BrauerMap K (FractionRing (AdjoinRoot f)) hfinrank z) =
       brauerSplitClass (FractionRing (AdjoinRoot f))
   exact scalarExtensionBrauerMap_quadraticCyclicGaloisH2BrauerMap_eq_split
+    K (FractionRing (AdjoinRoot f)) hfinrank z
+
+/-- The defining fraction field splits every continuous quadratic cyclic degree-two class of a
+concrete unramified root lift.  This is the continuous-cohomology form of the local splitting
+statement; it does not identify the resulting Brauer classes with local invariant values. -/
+theorem scalarExtensionBrauerMap_nonarchimedeanLocalFieldAdjoinRootFractionField_continuousQuadraticCyclicGaloisH2BrauerMap_eq_split
+    (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g)
+    (hdegree : f.natDegree = 2) :
+    letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+      change Function.Injective <| AdjoinRoot.of f
+      exact AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+    letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+      refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+        (FractionRing (AdjoinRoot f))).mpr ?_
+      change Function.Injective <|
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+        (AdjoinRoot.of.injective_of_degree_ne_zero
+          (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+    letI : Algebra K (FractionRing (AdjoinRoot f)) := by
+      let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+        (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+      have hg₀ : Function.Injective g₀ :=
+        (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+          (AdjoinRoot.of.injective_of_degree_ne_zero
+            (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+      exact RingHom.toAlgebra (IsFractionRing.lift hg₀)
+    letI : FiniteDimensional K (FractionRing (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRootFractionField_finiteDimensionalOverBase K f hf g hfg hg
+    letI : IsGalois K (FractionRing (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRootFractionField_isGalois K f hf g hgmonic hfg hg
+    letI : IsCyclic Gal(FractionRing (AdjoinRoot f) / K) :=
+      nonarchimedeanLocalFieldAdjoinRootFractionField_isCyclic_of_natDegree_eq_two
+        K f hf g hgmonic hfg hg hdegree
+    let hfinrank : Module.finrank K (FractionRing (AdjoinRoot f)) = 2 :=
+      (nonarchimedeanLocalFieldAdjoinRootFractionField_finrankOverBase K f hf g hfg hg).trans hdegree
+    ∀ z : continuousGaloisUnitCohomology 2 K (FractionRing (AdjoinRoot f)),
+      scalarExtensionBrauerMap K (FractionRing (AdjoinRoot f))
+        (finiteGaloisContinuousQuadraticCyclicGaloisH2BrauerMap
+          K (FractionRing (AdjoinRoot f)) hfinrank z) =
+        brauerSplitClass (FractionRing (AdjoinRoot f)) := by
+  letI : IsDomain (AdjoinRoot f) := nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : FaithfulSMul 𝒪[K] (AdjoinRoot f) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K] (AdjoinRoot f)).mpr ?_
+    change Function.Injective <| AdjoinRoot.of f
+    exact AdjoinRoot.of.injective_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  letI : FaithfulSMul 𝒪[K] (FractionRing (AdjoinRoot f)) := by
+    refine (faithfulSMul_iff_algebraMap_injective 𝒪[K]
+      (FractionRing (AdjoinRoot f))).mpr ?_
+    change Function.Injective <|
+      (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+    exact (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  let g₀ : 𝒪[K] →+* FractionRing (AdjoinRoot f) :=
+    (algebraMap (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp (AdjoinRoot.of f)
+  have hg₀ : Function.Injective g₀ :=
+    (IsFractionRing.injective (AdjoinRoot f) (FractionRing (AdjoinRoot f))).comp
+      (AdjoinRoot.of.injective_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg))
+  letI : Algebra K (FractionRing (AdjoinRoot f)) := RingHom.toAlgebra (IsFractionRing.lift hg₀)
+  letI : FiniteDimensional K (FractionRing (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionField_finiteDimensionalOverBase K f hf g hfg hg
+  letI : IsGalois K (FractionRing (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionField_isGalois K f hf g hgmonic hfg hg
+  letI : IsCyclic Gal(FractionRing (AdjoinRoot f) / K) :=
+    nonarchimedeanLocalFieldAdjoinRootFractionField_isCyclic_of_natDegree_eq_two
+      K f hf g hgmonic hfg hg hdegree
+  let hfinrank : Module.finrank K (FractionRing (AdjoinRoot f)) = 2 :=
+    (nonarchimedeanLocalFieldAdjoinRootFractionField_finrankOverBase K f hf g hfg hg).trans hdegree
+  change ∀ z : continuousGaloisUnitCohomology 2 K (FractionRing (AdjoinRoot f)),
+    scalarExtensionBrauerMap K (FractionRing (AdjoinRoot f))
+      (finiteGaloisContinuousQuadraticCyclicGaloisH2BrauerMap
+        K (FractionRing (AdjoinRoot f)) hfinrank z) =
+      brauerSplitClass (FractionRing (AdjoinRoot f))
+  intro z
+  exact scalarExtensionBrauerMap_finiteGaloisContinuousQuadraticCyclicGaloisH2BrauerMap_eq_split
     K (FractionRing (AdjoinRoot f)) hfinrank z
 
 end GaloisForLFunctions.HTGeometry.ABHN

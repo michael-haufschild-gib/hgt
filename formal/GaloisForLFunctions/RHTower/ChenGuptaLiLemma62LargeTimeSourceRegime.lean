@@ -69,7 +69,7 @@ theorem cglLemma62_largeTime_truncationRadius_le_time
     S.base ^ (S.epsilon / 2) ≤ S.time := by
   have hpow : S.base ^ (S.epsilon / 2) ≤ S.base ^ S.epsilon := by
     apply Real.rpow_le_rpow_of_exponent_le S.base_one
-    linarith
+    linarith [S.epsilon_pos]
   exact hpow.trans S.source_height_lower
 
 /-- The literal CGL window and dyadic ordinate range give the source height

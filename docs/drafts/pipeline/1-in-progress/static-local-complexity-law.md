@@ -6454,3 +6454,47 @@ receive a new title and an independent significance audit.
   that full circuit set, or same-draw plateau onset.  Next theorem must combine an unconditional
   Gaussian energy cap with deterministic time interpolation and then replace Pauli shell counting
   by a circuit-image entropy--incidence/replica partition.
+- 2026-08-22 -- Closed continuous-time interpolation and exact endpoint-image/return-excision for the
+  two-local Pauli anti-concentration route.  A quenched coordinate box has probability tending to
+  one and gives the deterministic speed cap `||H|| <= 18 n^3`; the resulting `1/(648 n^6)` mesh
+  proves that one static Gaussian two-local draw avoids every nonidentity Pauli return tube on every
+  continuous window `[A_n,A_n+n^k]` with probability tending to one, for arbitrary fixed `k` and
+  arbitrary window origins.  For every finite circuit dictionary, Lean now proves the stronger
+  finite-window law
+
+  `P(return) <= P(energy-cap failure) + 649 n^(k+7) sum_V exp(-a I(V))`,
+
+  where the sum is over distinct occupied high-incidence unitary endpoints.  Duplicate circuit
+  descriptions cancel exactly: both fixed-time and continuous-window return events are unchanged by
+  quotienting to the endpoint image.  After normalized-trace return removal at deficit `delta`, the
+  sharp incidence floor gives the unconditional bound
+
+  `P(return-excised return) <= P(energy-cap failure)
+      + 649 n^(k+7) N_occ exp(-a (6n-4) delta)`.
+
+  Failed conjecture: circuit word length cannot lower-bound two-local incidence; arbitrarily long
+  words can cancel or remain supported on two qubits.  Therefore this fixed-copy exponent is only
+  linear in the worst surviving target and cannot dominate superlinear polynomial-depth circuit-net
+  entropy.  Exact remaining Brown core is not another fixed-target refinement: prove a growing-
+  replica, same-draw occupied-image incidence/coarea bound after centralizer return removal whose
+  exponent scales strongly enough to dominate the complete approximate circuit image and Brown time
+  grid.  This is still required for first return to the full polynomial-complexity circuit set and
+  the complete same-draw growth--plateau--recurrence law.  Formal modules:
+  `HTGeometry.TwoLocalPauliGaussianEnergyCap`,
+  `HTGeometry.PauliContinuousLaboratoryReturnLaw`,
+  `HTGeometry.PauliHighIncidenceCircuitContinuumLaw`, and
+  `HTGeometry.PauliReturnExcisedCircuitContinuumLaw`.  Targeted source checks/builds pass; axiom audit
+  reports only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-08-22 -- Proved the pure-replica Gaussian stable-rank barrier and retired source-side
+  "replica amplification" as a false Brown mechanism.  For every normalized pure-projector
+  boundary and every finite physical generator family, collective `r`-replica commutator weights
+  are exactly `r` times their one-copy values.  Since Gaussian stable ratio is degree-zero
+  homogeneous, every positive replica order has exactly the one-copy lower-tail exponent; that
+  exponent is universally at most the number of independent Hamiltonian generators.  Growing
+  replicas can still compress target fidelities and occupied-image geometry, but they cannot create
+  new independent same-draw Gaussian directions.  Positive survivor and revised exact core:
+  combine replica target compression with a global return-excised occupied-image coarea/sheet-mass
+  bound.  The missing gain must control which circuit endpoints and fibre sheets are actually
+  occupied by the static local-Hamiltonian map; it cannot come from rescaling the local Jacobian.
+  Formal module: `HTGeometry.PureReplicaGaussianStableRankBarrier`.  Targeted source check/build and
+  axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`.

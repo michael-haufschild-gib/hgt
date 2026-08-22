@@ -1,7 +1,7 @@
 # Quiet flank growth gives an exact arithmetic support bound
 
 - **ID:** quiet-flank-growth-support-radius
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[PROVED HERE]`
 - **Date:** 2026-07-10
 - **Source:** abstraction and correction of the Q-COC proposal in
@@ -189,15 +189,57 @@ The variable Perron source is formalized separately in `VariablePerronKink.lean`
 - `perronKinkAt_norm_le` exposes the `n-delta` left-edge scale;
 - the fixed kernel and regularization are recovered definitionally at `delta=1/2`.
 
-The more general boundary-only producer is now formalized in `PerronBoundaryCharge.lean`. A direct
-uniform-flank wrapper for `(F_M)` remains paper-only, but it is no longer the canonical interface:
-the boundary-charge theorem permits a different exhaustion at every depth and knot width.
+The more general boundary-only producer is formalized in `PerronBoundaryCharge.lean`, and the
+coefficient-independent carrier interfaces in `PerronCarrierFlankMass.lean`.  The direct
+uniform-flank wrapper for `(F_M)` is now formalized as well, in `PerronUniformFlankProducer.lean`
+(see `## Lean formalization`), so the card's hypotheses are consumed literally.
 
 ## Gates
 
 - [x] 0 -> 1: arbitrary flank envelope and exact surviving inequality isolated.
 - [x] 1 -> 2: contour proof and three endpoint checks complete.
-- [ ] 2 -> 3: numeric growth-to-support capstone formalized; generic analytic contour producer
-  remains to be factored from the conductor proof.
+- [x] 2 -> 3: numeric growth-to-support capstone formalized; the generic analytic contour producer
+  is now factored out (`PerronUniformFlankProducer.lean`, see `## Lean formalization`).
 - [ ] 3 -> 4: requires integration into a standalone cocycle-shape paper and an independent
   novelty audit.
+
+## Lean formalization
+
+Module `formal/GaloisForLFunctions/RHTower/PerronUniformFlankProducer.lean`, wired into
+`RHTower.lean`.  Unconditional; axiom profile `[propext, Classical.choice, Quot.sound]`.
+
+It closes the last gap in the chain by discharging the two carrier interfaces of
+`PerronCarrierFlankMass.lean` from the card's own hypotheses.
+
+**Left line.**  `hasPerronCarrierFlankMassAt_of_uniform_flank` — a uniform bound
+`‖F(-M+iy)‖ ≤ A` gives `HasPerronCarrierFlankMassAt F M (π A)`, because the coefficient-independent
+Cauchy weight integrates to exactly `π` (`integral_univ_inv_one_add_sq`).  With the corpus
+normalization `HasPerronCarrierFlankMass F H ↔ mass ≤ (π/2)·H(M)`, this gives
+`hasPerronCarrierFlankMass_of_uniform_flank : HasPerronCarrierFlankMass F (fun M => 2 * H M)`,
+i.e. exactly the factor `2` of the card's estimate `|a_n/2| ≤ 2 H(M)(n-1/2)^(1-M)`.
+
+**Horizontal edges.**  `hasPerronHorizontalEscapeAt_of_quiet_heights` — if the carrier is bounded
+by `Q k` across the whole width `-M ≤ x ≤ c` at heights `±T k` and `Q k/(1+T k²) → 0`, both
+horizontal edge integrals vanish.  The kernel input is the corpus's
+`perronEAt_strip_high_norm_le` (quadratic strip decay above unit height); the sequence is shifted
+to `T(·+k₀)` internally so that `1 ≤ T k` holds on the nose, which is why no extra hypothesis on
+the exhaustion is needed.
+
+**Assembly.**  `hasVariablePerronHorizontalEscape_of_quiet_uniform_flank` splits the width at
+`Re s = 1-c`: on `[-M, 1-c]` the flank envelope applies, on `[1-c, c]` the quiet bound does, so
+`Q k = H(M) + q k` works, and `c ≥ 1/2` is exactly what makes the two regions cover the width and
+forces `q k ≥ 0`.
+
+**Capstone** `coefficient_index_le_exact_flank_radius_of_quiet_uniform_flank`:
+
+```text
+c ≥ 1/2, F entire, F = L(a) on Re s ≥ c, a summable there, 1 ≤ n,
+T k → ∞,  ‖F(σ ± i T k)‖ ≤ q k on 1-c ≤ σ ≤ c,  q k / (T k)² → 0,
+‖F s‖ ≤ H M whenever -M ≤ Re s ≤ 1-c,  H M ≤ C R^M eventually,  0 ≤ R,
+a n ≠ 0
+⟹ (n : ℝ) ≤ R
+```
+
+which is the card's exact support conclusion (4).  No positivity hypothesis on `H` is needed: it
+follows from the flank bound itself.  The half-unit-free form comes for free because the corpus
+capstone already runs over all Perron knot widths `0 < δ < 1`.

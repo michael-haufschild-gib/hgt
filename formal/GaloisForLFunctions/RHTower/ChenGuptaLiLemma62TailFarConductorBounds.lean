@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62TailEulerSourceBounds
+import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62TailFunctionalGrowth
 
 /-!
 # Chen--Gupta--Li Lemma 6.2: conductor-sensitive far-left tail bound

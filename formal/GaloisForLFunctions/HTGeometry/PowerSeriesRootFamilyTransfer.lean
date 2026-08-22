@@ -36,14 +36,15 @@ theorem eval_derivative_ne_zero_of_separable {M : Type*} [Field M] {p : Polynomi
 splits with distinct roots `ρ`, then `G` has roots `y k ≡ ρ k` in `M⟦u⟧`, and every coefficientwise
 automorphism fixing `G` permutes the `y k` exactly as it permutes the `ρ k`. -/
 theorem exists_powerSeriesRootFamily
-    {M : Type*} [Field M] {D : ℕ} (G : Polynomial (PowerSeries M)) (ρ : Fin D → M)
+    {M : Type*} [Field M] {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (G : Polynomial (PowerSeries M)) (ρ : ι → M)
     (hinj : Function.Injective ρ)
     (hres : G.map (PowerSeries.constantCoeff (R := M))
       = ∏ k, (Polynomial.X - Polynomial.C (ρ k))) :
-    ∃ y : Fin D → PowerSeries M,
+    ∃ y : ι → PowerSeries M,
       (∀ k, G.IsRoot (y k)) ∧
       (∀ k, (PowerSeries.X : PowerSeries M) ∣ (y k - PowerSeries.C (ρ k))) ∧
-      ∀ (φ : M ≃+* M) (π : Equiv.Perm (Fin D)),
+      ∀ (φ : M ≃+* M) (π : Equiv.Perm ι),
         G.map (PowerSeries.map (φ : M →+* M)) = G → (∀ k, φ (ρ k) = ρ (π k)) →
         ∀ k, PowerSeries.map (φ : M →+* M) (y k) = y (π k) := by
   classical
@@ -81,7 +82,18 @@ theorem exists_powerSeriesRootFamily
     (existsUnique_isRoot_powerSeries_of_isUnit_deriv (hdu k) (hv k)).exists
   refine ⟨y, fun k => (hy k).1, fun k => (hy k).2, ?_⟩
   intro φ π hG hπ k
-  exact map_lift_eq_of_perm φ hG (fun k => (hy k).1) (fun k => (hy k).2) hdu hv π hπ k
+  have hmapC : PowerSeries.map (φ : M →+* M) (PowerSeries.C (ρ k))
+      = PowerSeries.C (ρ (π k)) := by
+    rw [PowerSeries.map_C]
+    congr 1
+    exact hπ k
+  refine map_lift_eq φ hG (y₀ := PowerSeries.C (ρ k)) ?_ ?_ (hy k).1 (hy k).2 (hy (π k)).1 ?_
+  · rw [hmapC]
+    exact hdu (π k)
+  · rw [hmapC]
+    exact hv (π k)
+  · rw [hmapC]
+    exact (hy (π k)).2
 
 end
 

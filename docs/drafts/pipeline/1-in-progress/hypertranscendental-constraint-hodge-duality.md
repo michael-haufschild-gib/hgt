@@ -376,7 +376,8 @@ htDim(Delta)=aqaDim(Delta),
 where `aqaDim` adds active-quotient faithfulness to the quasi-Abelian palette.  Necessity is proper
 compact-kernel nonconcentration; sufficiency is fixed-factor all-order jet interpolation on the
 active quotient.  See
-`../2-fully-proven/new_scientific_knowledge/active-quasi-abelian-palette-exact-ht-dimension-classification.md`.
+`active-quasi-abelian-palette-exact-ht-dimension-classification.md`, currently at Stage 1 because
+its all-order fixed-factor sufficiency theorem remains open.
 
 > **[CONJECTURE — SOURCE-SELECTED CONSTRAINT-SPECTRUM CLASSIFICATION]** A regular source-minimal
 > self-dual constrained HT germ has a canonical reduced or derived constraint spectrum together

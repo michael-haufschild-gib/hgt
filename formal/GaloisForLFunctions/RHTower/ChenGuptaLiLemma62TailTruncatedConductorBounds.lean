@@ -96,30 +96,32 @@ theorem cglLemma62_farTail_truncated_conductor_factorized_integral_bound
   rcases cglLemma62_farTail_high_conductor_factorized_point_bound w N B t M d with
     ⟨C, hC, hbound⟩
   refine ⟨C, hC, ?_⟩
-  let L : ℝ := (N.value : ℝ) ^ (-2 * (d.value : ℝ))
-  let Q : ℝ := (B.primitive.modulus.value : ℝ) ^ (1 / 2 + 2 * (d.value : ℝ))
-  let E := cglLemma62TailEulerConductorBudget B d
-  let D : ℝ := (M.value : ℝ) ^ (-2 * (d.value : ℝ)) / (2 * (d.value : ℝ))
-  have hL : 0 ≤ L := by
-    dsimp [L]
+  let lengthScale : ℝ := (N.value : ℝ) ^ (-2 * (d.value : ℝ))
+  let conductorScale : ℝ :=
+    (B.primitive.modulus.value : ℝ) ^ (1 / 2 + 2 * (d.value : ℝ))
+  let eulerScale := cglLemma62TailEulerConductorBudget B d
+  let tailScale : ℝ := (M.value : ℝ) ^ (-2 * (d.value : ℝ)) / (2 * (d.value : ℝ))
+  have hlengthScale : 0 ≤ lengthScale := by
+    dsimp [lengthScale]
     positivity
-  have hQ : 0 ≤ Q := by
-    dsimp [Q]
+  have hconductorScale : 0 ≤ conductorScale := by
+    dsimp [conductorScale]
     positivity
-  have hE : 0 ≤ E := by
+  have heulerScale : 0 ≤ eulerScale := by
     let z : CGLLemma62TailEulerPoint d := ⟨(-2 * (d.value : ℝ) : ℂ), by simp⟩
     exact le_trans (norm_nonneg _)
       (cglLemma62EulerCorrectionAt_far_conductorBudget_norm_le B d z)
-  have hD : 0 ≤ D := by
-    dsimp [D]
+  have htailScale : 0 ≤ tailScale := by
+    dsimp [tailScale]
     have hden : 0 < 2 * (d.value : ℝ) := by
       have : 0 < (d.value : ℝ) := by exact_mod_cast d.positive
       positivity
     positivity
-  have hscale : 0 ≤ C * L * Q * E * D := by positivity
+  have hscale : 0 ≤ C * lengthScale * conductorScale * eulerScale * tailScale := by
+    positivity
   have hpoint : ∀ v ∈ Set.uIoc (-U.radius) U.radius,
       ‖cglLemma62FarTailIntegrand w N B t M.value d v‖ ≤
-        C * L * Q * E * D * (1 + |t| + U.radius) ^
+        C * lengthScale * conductorScale * eulerScale * tailScale * (1 + |t| + U.radius) ^
           (2 * (d.value : ℝ) + 1 / 2) := by
     intro v hv
     have hhigh := cglLemma62_conductorTailWindow_high U hv
@@ -139,16 +141,17 @@ theorem cglLemma62_farTail_truncated_conductor_factorized_integral_bound
       · positivity
     have hsource := hbound v hhigh
     have hsource' : ‖cglLemma62FarTailIntegrand w N B t M.value d v‖ ≤
-        C * L * Q * E * D * (1 + |v - t|) ^ (2 * (d.value : ℝ) + 1 / 2) := by
-      simpa [L, Q, E, D] using hsource
+        C * lengthScale * conductorScale * eulerScale * tailScale *
+          (1 + |v - t|) ^ (2 * (d.value : ℝ) + 1 / 2) := by
+      simpa [lengthScale, conductorScale, eulerScale, tailScale] using hsource
     exact hsource'.trans (mul_le_mul_of_nonneg_left hpow hscale)
   calc
     ‖∫ v : ℝ in -U.radius..U.radius,
         cglLemma62FarTailIntegrand w N B t M.value d v‖ ≤
-        (C * L * Q * E * D * (1 + |t| + U.radius) ^
+        (C * lengthScale * conductorScale * eulerScale * tailScale * (1 + |t| + U.radius) ^
           (2 * (d.value : ℝ) + 1 / 2)) * |U.radius - (-U.radius)| :=
       intervalIntegral.norm_integral_le_of_norm_le_const hpoint
-    _ = C * L * Q * E * D * (1 + |t| + U.radius) ^
+    _ = C * lengthScale * conductorScale * eulerScale * tailScale * (1 + |t| + U.radius) ^
         (2 * (d.value : ℝ) + 1 / 2) * (2 * U.radius) := by
       have hwidth : |U.radius - (-U.radius)| = 2 * U.radius := by
         rw [show U.radius - (-U.radius) = 2 * U.radius by ring_nf,

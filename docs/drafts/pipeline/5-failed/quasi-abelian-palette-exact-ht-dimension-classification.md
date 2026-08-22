@@ -32,7 +32,7 @@ are isolated in
 
 The corrected classification must require the structural lattice to remain faithful after
 quotienting by the maximal compact complex subtorus.  That route continues in
-`../2-fully-proven/new_scientific_knowledge/active-quasi-abelian-palette-exact-ht-dimension-classification.md`.
+`../1-in-progress/active-quasi-abelian-palette-exact-ht-dimension-classification.md`.
 
 ## The gap this theorem would close
 
