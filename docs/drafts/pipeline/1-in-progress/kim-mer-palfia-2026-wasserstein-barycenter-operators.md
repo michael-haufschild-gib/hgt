@@ -106,3 +106,34 @@ Hence existence/uniqueness needs the paper's Fréchet-derivative + homotopy (or 
 ## Log
 - 2026-08-22 — created; paper downloaded; corpus + mathlib audit done.
 - 2026-08-22 — five modules landed (list above); no-go on the Thompson route recorded.
+
+### `TwoVariableWassersteinMean.lean` (complete two-variable theory)
+`wassParam` (`1 ∇_t (a⁻¹#b)`), `wass2` (`a ◇[t] b`), `gmInv_riccati`, `wassParam_isSelfAdjoint`,
+`commute_wassParam_gmInv`, `wassParam_isStrictlyPositive_of_mem_Icc`, `wass2_isStrictlyPositive`,
+`wass2_ringInverse`, `gm_left_wass2`, `gm_right_wass2`, **`wass2_solves`** (existence for the
+two-point Wasserstein equation), `conj_mul_self_mul_conj`, `wass2_eq_conj` (Bhatia–Jain–Lim closed
+form), `wass2_expansion`, **`wass2_symm`** (Lemma 6.10), **`wass2_unique`** (Theorem 6.11 —
+uniqueness for all real `t`), `conj_ringInverse_cancel`, `ringInverse_conj_cancel`,
+`wass2_conj_ringInverse`, **`wass2_le_of_conj_ringInverse_le`** (Theorem 6.9, Schur form),
+`NearLE` (`⪯ᴳ`), `two_le_add_ringInverse`, **`wass2_ringInverse_nearLE`** (Proposition 6.15).
+
+### `WassersteinNormBounds.lean`
+`norm_cfcSqrt_mul_self`, `norm_cfcSqrt`, `cfcSqrt_smul`, `le_smul_one_norm`,
+`norm_le_of_le_smul_one`, **`IsWassersteinPoint.norm_le`** and
+**`IsWassersteinPoint.norm_sqrtMean_le`** (Theorem 6.5, both halves).
+
+### `WassersteinDual.lean`
+`IsDualWassersteinPoint`, `isDualWassersteinPoint_iff`, `ringInverse_conj_rpow_half`,
+`rpow_half_mul_ringInverse_mul_rpow_half`, `isDualWassersteinPoint_iff_sqrtInv`,
+**`IsDualWassersteinPoint.one_le_sqrtInvMean`** and **`quasiArith_le_one`** (Theorem 6.13).
+
+### `WassersteinBounds.lean` (added)
+`IsWassersteinPoint.map_two_sub_harm_le`, `map_two_sub_arithMean_le_ringInverse` (Corollary 6.3).
+
+## Corpus assets found for the analytic core
+`formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtOperator.lean` already builds a full
+coordinate-free Hilbert–Schmidt layer that mathlib lacks: `ContinuousLinearMap.IsHilbertSchmidt`,
+`hsNormSq`, `hsNorm`, `hsInner` with the complete inner-product API (sesquilinearity,
+conjugate symmetry, positive definiteness, Cauchy–Schwarz, triangle inequality), the two-sided
+ideal property `IsHilbertSchmidt.comp_left/comp_right`, and `IsHilbertSchmidt.adjoint`.
+This is the layer Lemma 3.10/3.11 need.

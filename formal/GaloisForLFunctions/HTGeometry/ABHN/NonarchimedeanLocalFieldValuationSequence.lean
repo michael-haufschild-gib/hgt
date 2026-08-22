@@ -1590,6 +1590,35 @@ theorem nonarchimedeanLocalFieldAdjoinRootResidueFrobenius_exists_pow_eq
   refine ⟨i, ?_, hσ⟩
   rwa [nonarchimedeanLocalFieldAdjoinRootResidueField_finrank K f hf g hgmonic hfg hg] at hi
 
+/-- Relative residue Frobenius generates the whole Galois group of the finite residue extension.
+This packages the finite unramified quotient in the form used by arithmetic Frobenius and local
+reciprocity. -/
+theorem nonarchimedeanLocalFieldAdjoinRootResidueFrobenius_zpowers_eq_top
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (f : Polynomial 𝒪[K]) (hf : f.Monic)
+    (g : Polynomial 𝓀[K]) (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk 𝓂[K]) = g) (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    Subgroup.zpowers
+        (nonarchimedeanLocalFieldAdjoinRootResidueFrobenius K f hf g hgmonic hfg hg) = ⊤ := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap 𝒪[K] (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  apply le_antisymm le_top
+  intro σ _
+  obtain ⟨i, -, hσ⟩ :=
+    nonarchimedeanLocalFieldAdjoinRootResidueFrobenius_exists_pow_eq K f hf g hgmonic hfg hg σ
+  rw [← hσ]
+  exact Subgroup.pow_mem _ i
+
 /-- The absolute Frobenius automorphism of the finite residue field of a monic irreducible lift.
 This is the residue-field automorphism which an arithmetic Frobenius lift must induce. -/
 noncomputable def nonarchimedeanLocalFieldAdjoinRootResidueAbsoluteFrobenius

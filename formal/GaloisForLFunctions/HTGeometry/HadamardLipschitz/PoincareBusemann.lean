@@ -89,19 +89,19 @@ theorem hasGradientAt_poincareBusemann {ξ x : E} (hξ : ‖ξ‖ = 1) (hx : ‖
         - (1 - ‖x‖ ^ 2)⁻¹ • (-(2 • innerSL ℝ x)) := by
     ext y
     have hsymnorm : ‖ξ - x‖ = ‖x - ξ‖ := norm_sub_rev ξ x
-    have hxi : ⟪ξ - x, y⟫ = -⟪x - ξ, y⟫ := by
-      rw [show ξ - x = -(x - ξ) by abel, inner_neg_left]
+    have e1 : (innerSL ℝ (ξ - x)) (-y) = ⟪x - ξ, y⟫ := by
+      rw [innerSL_apply_apply, inner_neg_right, show ξ - x = -(x - ξ) by abel, inner_neg_left]
+      ring
     simp only [toDual_apply_apply, poincareBusemannEuclideanGrad, inner_add_left,
-      real_inner_smul_left, ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.coe_smul', Pi.smul_apply, ContinuousLinearMap.comp_apply,
-      ContinuousLinearMap.neg_apply, ContinuousLinearMap.id_apply, innerSL_apply,
-      ContinuousLinearMap.coe_id', id_eq, smul_eq_mul, inner_neg_right]
-    rw [hsymnorm, hxi]
+      real_inner_smul_left, sub_apply, smul_apply, ContinuousLinearMap.comp_apply,
+      neg_apply, ContinuousLinearMap.id_apply, smul_eq_mul, nsmul_eq_mul,
+      Nat.cast_ofNat, e1, innerSL_apply_apply, hsymnorm]
     field_simp
     ring
   rw [hD]
   exact hfinal
 
+omit [CompleteSpace E] in
 /-- The Riemannian gradient is the Euclidean one rescaled by the inverse squared conformal
 factor `δ_x^{-2} = (1-‖x‖²)²/4`. -/
 theorem poincareBusemannGrad_eq (ξ x : E) (hx : ‖x‖ < 1) (hxi : x ≠ ξ) :
