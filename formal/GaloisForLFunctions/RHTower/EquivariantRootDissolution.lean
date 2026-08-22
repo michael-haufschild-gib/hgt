@@ -587,14 +587,14 @@ theorem rh_iff_xi_equivariant_coherentTower_offline :
         ∀ k, ∀ s ∈ {s : ℂ | s.re ≠ 1 / 2}, mirrorRoot (S.level k) s = S.level k s := by
   constructor
   · intro hRH
-    obtain ⟨T⟩ := rh_iff_xi_coherentTower_rightHalf.mp hRH
+    obtain ⟨T⟩ := rh_iff_tower.mp hRH
     exact ⟨⟨fun k => mirrorGlue (T.level k),
         mirrorGlue_eq_xi T.level_zero,
         fun k => mirrorGlue_analyticOnNhd (T.analytic k),
         fun k => mirrorGlue_sq (T.sq k)⟩,
       fun k => mirrorGlue_equivariant (T.level k)⟩
   · rintro ⟨S, -⟩
-    refine rh_iff_xi_coherentTower_rightHalf.mpr ⟨⟨S.level, ?_, ?_, ?_⟩⟩
+    refine rh_iff_tower.mpr ⟨⟨S.level, ?_, ?_, ?_⟩⟩
     · exact fun s hs => S.level_zero s (ne_of_gt (mem_rightHalf.mp hs))
     · exact fun k => (S.analytic k).mono fun s hs => ne_of_gt (mem_rightHalf.mp hs)
     · exact fun k s hs => S.sq k s (ne_of_gt (mem_rightHalf.mp hs))

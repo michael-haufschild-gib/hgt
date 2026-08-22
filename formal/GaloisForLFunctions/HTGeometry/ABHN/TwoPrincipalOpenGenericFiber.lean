@@ -23,15 +23,39 @@ noncomputable section
 /-- The generic fiber of a two-principal scalar-extension model is the generic fiber of its
 original order. The hypotheses deliberately expose the compatible maps to the common field: a
 future local-completion comparison must prove exactly these tower compatibilities. -/
-theorem twoPrincipalOpen_scalarExtension_genericFiber_equiv
+noncomputable def twoPrincipalOpen_scalarExtension_genericFiber_equiv
     {R S U T K O : Type*}
     [CommRing R] [CommRing S] [CommRing U] [CommRing T] [CommRing K]
     [Algebra R S] [Algebra S U] [Algebra U T]
     [Algebra R K] [Algebra S K] [Algebra U K] [Algebra T K]
     [IsScalarTower R S K] [IsScalarTower S U K] [IsScalarTower U T K]
     [Ring O] [Algebra R O] :
-    K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O))) ≃ₐ[K] K ⊗[R] O :=
-  (AzumayaScalarExtension.cancelBaseChangeNoncommutative
+    letI : Semiring (S ⊗[R] O) :=
+      Algebra.TensorProduct.instSemiring (R := R) (A := S) (B := O)
+    letI : Semiring (U ⊗[S] (S ⊗[R] O)) :=
+      Algebra.TensorProduct.instSemiring (R := S) (A := U) (B := S ⊗[R] O)
+    letI : Semiring (T ⊗[U] (U ⊗[S] (S ⊗[R] O))) :=
+      Algebra.TensorProduct.instSemiring (R := U) (A := T) (B := U ⊗[S] (S ⊗[R] O))
+    letI : Semiring (K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O)))) :=
+      Algebra.TensorProduct.instSemiring (R := T) (A := K)
+        (B := T ⊗[U] (U ⊗[S] (S ⊗[R] O)))
+    letI : Algebra K (K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O)))) :=
+      Algebra.TensorProduct.leftAlgebra (R := T) (S := K) (A := K)
+        (B := T ⊗[U] (U ⊗[S] (S ⊗[R] O)))
+    K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O))) ≃ₐ[K] K ⊗[R] O := by
+  letI : Semiring (S ⊗[R] O) :=
+    Algebra.TensorProduct.instSemiring (R := R) (A := S) (B := O)
+  letI : Semiring (U ⊗[S] (S ⊗[R] O)) :=
+    Algebra.TensorProduct.instSemiring (R := S) (A := U) (B := S ⊗[R] O)
+  letI : Semiring (T ⊗[U] (U ⊗[S] (S ⊗[R] O))) :=
+    Algebra.TensorProduct.instSemiring (R := U) (A := T) (B := U ⊗[S] (S ⊗[R] O))
+  letI : Semiring (K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O)))) :=
+    Algebra.TensorProduct.instSemiring (R := T) (A := K)
+      (B := T ⊗[U] (U ⊗[S] (S ⊗[R] O)))
+  letI : Algebra K (K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O)))) :=
+    Algebra.TensorProduct.leftAlgebra (R := T) (S := K) (A := K)
+      (B := T ⊗[U] (U ⊗[S] (S ⊗[R] O)))
+  exact (AzumayaScalarExtension.cancelBaseChangeNoncommutative
     (R := U) (S := T) (A := U ⊗[S] (S ⊗[R] O)) (T := K)).trans
       ((AzumayaScalarExtension.cancelBaseChangeNoncommutative
         (R := S) (S := U) (A := S ⊗[R] O) (T := K)).trans
@@ -40,7 +64,7 @@ theorem twoPrincipalOpen_scalarExtension_genericFiber_equiv
 
 /-- A two-principal Azumaya model has the prescribed generic algebra whenever the original
 order does. This is the form consumed by a future local-place comparison. -/
-theorem twoPrincipalOpen_scalarExtension_genericFiber_equiv_of_base_equiv
+noncomputable def twoPrincipalOpen_scalarExtension_genericFiber_equiv_of_base_equiv
     {R S U T K O A : Type*}
     [CommRing R] [CommRing S] [CommRing U] [CommRing T] [CommRing K]
     [Algebra R S] [Algebra S U] [Algebra U T]
@@ -48,8 +72,32 @@ theorem twoPrincipalOpen_scalarExtension_genericFiber_equiv_of_base_equiv
     [IsScalarTower R S K] [IsScalarTower S U K] [IsScalarTower U T K]
     [Ring O] [Algebra R O] [Ring A] [Algebra K A]
     (e : K ⊗[R] O ≃ₐ[K] A) :
-    K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O))) ≃ₐ[K] A :=
-  (twoPrincipalOpen_scalarExtension_genericFiber_equiv
+    letI : Semiring (S ⊗[R] O) :=
+      Algebra.TensorProduct.instSemiring (R := R) (A := S) (B := O)
+    letI : Semiring (U ⊗[S] (S ⊗[R] O)) :=
+      Algebra.TensorProduct.instSemiring (R := S) (A := U) (B := S ⊗[R] O)
+    letI : Semiring (T ⊗[U] (U ⊗[S] (S ⊗[R] O))) :=
+      Algebra.TensorProduct.instSemiring (R := U) (A := T) (B := U ⊗[S] (S ⊗[R] O))
+    letI : Semiring (K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O)))) :=
+      Algebra.TensorProduct.instSemiring (R := T) (A := K)
+        (B := T ⊗[U] (U ⊗[S] (S ⊗[R] O)))
+    letI : Algebra K (K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O)))) :=
+      Algebra.TensorProduct.leftAlgebra (R := T) (S := K) (A := K)
+        (B := T ⊗[U] (U ⊗[S] (S ⊗[R] O)))
+    K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O))) ≃ₐ[K] A := by
+  letI : Semiring (S ⊗[R] O) :=
+    Algebra.TensorProduct.instSemiring (R := R) (A := S) (B := O)
+  letI : Semiring (U ⊗[S] (S ⊗[R] O)) :=
+    Algebra.TensorProduct.instSemiring (R := S) (A := U) (B := S ⊗[R] O)
+  letI : Semiring (T ⊗[U] (U ⊗[S] (S ⊗[R] O))) :=
+    Algebra.TensorProduct.instSemiring (R := U) (A := T) (B := U ⊗[S] (S ⊗[R] O))
+  letI : Semiring (K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O)))) :=
+    Algebra.TensorProduct.instSemiring (R := T) (A := K)
+      (B := T ⊗[U] (U ⊗[S] (S ⊗[R] O)))
+  letI : Algebra K (K ⊗[T] (T ⊗[U] (U ⊗[S] (S ⊗[R] O)))) :=
+    Algebra.TensorProduct.leftAlgebra (R := T) (S := K) (A := K)
+      (B := T ⊗[U] (U ⊗[S] (S ⊗[R] O)))
+  exact (twoPrincipalOpen_scalarExtension_genericFiber_equiv
     (R := R) (S := S) (U := U) (T := T) (K := K) (O := O)).trans e
 
 end

@@ -1649,3 +1649,17 @@ on the normalizer is needed, since `det(S·M) ≠ 0` already forces `det M ≠ 0
 `eventually_det_ne_zero_of_left_normalized_damping_matrix_expansion`.  It combines that row-graded
 determinant transfer with the normalized Tannery theorem.  Both declarations have the standard
 clean axiom report `[propext, Classical.choice, Quot.sound]`; targeted module builds passed.
+
+### Lean progress 2026-08-22 — exact local graded block
+
+`HTGeometry/AbeGradedVandermonde.lean` now contains the evaluation-matrix orientation of the
+local distinct-speed block.  `abeGradedJetMatrix` has jet orders as rows and damping speeds as
+columns; `abeGradedJetRowNormalizer_mul` proves exactly that multiplying the degree-`j` row by
+`B^(-j)` turns it into the unit-parameter Vandermonde matrix.  Thus distinct speeds give a
+nonzero leading local block after the correct row normalization.  Target build and `#print axioms`
+checks passed with only `[propext, Classical.choice, Quot.sound]`.
+
+This closes the local finite linear algebra of DJS-3.  The unsolved bridge is analytic and
+geometric: prove that Abe's invariant multiplier has this graded local block simultaneously with
+the normalized Poincaré expansion and coefficient summability required by the preceding transfer
+theorem.

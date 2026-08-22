@@ -21,7 +21,7 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | `prop_102` | Prop 1.3 | `𝒫̂_φ ∈ L²(ℝ)` for `φ ∈ C_c^∞(ℝ)` | no | OPEN |
 | `thm_1_2` | Thm 1.4 | RH ⟺ `‖𝒫̂_{Dψ}‖²_{L²} = π⟨ψ,ψ⟩_W` for all `ψ ∈ C_c^∞`; countably many `ψ` suffice | ⟺ | OPEN |
 | `cor_1_1` | Cor 1.5 | RH ⟺ `2‖ψ‖²_{L²} = ⟨ψ,ψ⟩_W` for all `ψ ∈ V°(0)` | ⟺ | OPEN |
-| `prop_301` | Prop 3.1 | `𝔓_t(z) = P_t(z)` (prime--arch formula equals the Xi-zero series) | no | OPEN |
+| `prop_301` | Prop 3.1 | `𝔓_t(z) = P_t(z)` (prime--arch formula equals the Xi-zero series) | no | **IN PROGRESS** — zero-side Laplace transform CLOSED (`integral_suzukiPtZeroSum_laplace`); `𝔓`-side in progress |
 | `lem_301` | Lem 3.2 | `‖ψ‖₀ := π^{-1/2}‖𝒫̂_{Dψ}‖_{L²}` is a norm on `C_c^∞(ℝ)` | no | OPEN |
 | `prop_401` | Prop 4.1 | `{F_γ}` is an orthonormal basis of `K(Θ)`; `Θ'(γ)/2 = -i/m_γ`; `F_γ(γ)=1/√(m_γ π)`, `F_γ(γ')=0` | yes | OPEN (cited to Su23 Prop 3.2) |
 | `thm_4_1` | Thm 4.2 | `t ↦ π^{-1/2}𝔖_t` is a screw line of `g_ξ`: `π⁻¹⟨𝔖_t,𝔖_u⟩ = G_g(t,u)` | yes | OPEN |
@@ -85,6 +85,7 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | Module | Content |
 |---|---|
 | `RHTower/SuzukiWeilLerchBlock.lean` | `suzukiLerchDiff` / `suzukiLerchKernel` (the regularized `Φ(e^{-2t},1,w) - Φ(e^{-2t},1,1/4)` of eq. (1.6)), its factorization `= (1/4-w)·kernel`, `suzukiLerchKernel t (1/4) = 4e^{t/2}·screwLerchTail t`, the Gauss bridge `ψ(w)-ψ(1/4) = -suzukiLerchDiff 0 w`, and continuity of the kernel at `1/4`. |
+| `RHTower/SuzukiWeilZeroSeries.lean` | `suzukiPtZeroTerm` / `suzukiPtZeroSum` (eq. 3.2), summability, `‖P_t(z)‖ ≪_z e^{|t|/2}`, per-copy Laplace transform, and **`integral_suzukiPtZeroSum_laplace`**.  Also `XiC_neg` (evenness of the centered completed Xi source), which the corpus did not have. |
 | `RHTower/SuzukiWeilFrakP.lean` | `suzukiFrakP` (eq. 1.6) and `suzukiFrakPReg`; `suzukiScrewG_eq_screwFn`; `riemannZeta_half_ne_zero`; `logDeriv_riemannZeta_half : ζ'/ζ(1/2) = -screwLinearCoeff/2`; `continuousAt_logDeriv_riemannZeta_half`; **`tendsto_suzukiFrakP_zero`** (eq. 7.1). |
 
 All capstones audited: only `propext, Classical.choice, Quot.sound`.
@@ -121,7 +122,43 @@ Lerch block has the uniform majorant `9 e^{-2nt}` and dominated convergence appl
 `|ψ(1/4-y/2)| = O(y log y)` gives `e^{-yt}·(ζ'/ζ)(1/2-y) → 0`.  The `-g_ξ'(t)` side is
 `hasDerivAt_screwFn_of_affine` fed by `screwPrimeSum_eq_checkpoint_affine`.
 
+## Proof route for Proposition 3.1 (chosen, partly executed)
+
+Suzuki proves (3.1) by applying Weil's explicit formula to the non-smooth, non-compactly-supported
+test function `φ_{z,t}`.  The corpus has no explicit formula for that class.  **Instead** we prove
+(3.1) by matching *Laplace transforms in `t`*, which reduces everything to the corpus's already-owned
+regularized-Cauchy explicit formula `xiRelativeResolventTrace = continuedPrimeArchSourceRelativeTrace`:
+
+```text
+∫_0^∞ P_t(z) e^{-σt} dt = (T(-iσ) - T(-z)) / (σ (iσ - z)),           σ > 1/2,     [DONE]
+∫_0^∞ 𝔓_t(z) e^{-σt} dt = same,                                                    [IN PROGRESS]
+```
+
+The `P`-side proof: termwise Laplace `1/(σ(γ-iσ)(γ-z))`, reindex the divisor by
+`xiZeroCopyReflectEquiv` (this is what moves both base points `-iσ`, `-z` into the corpus's
+admissible half-plane), then partial fractions.  The `𝔓`-side proof splits eq. (1.6) into five
+blocks (`suzukiFrakPPolar/Zeta/Prime/Digamma/Lerch`) whose Laplace transforms are, with
+`s_σ = 1/2+σ`, `s_z = 1/2-iz`, `A = logDeriv archFactor`:
+
+```text
+polar          →  [1/s_σ + 1/(s_σ-1) - 1/s_z - 1/(s_z-1)] / (σ(σ+iz))
+zeta           →  -(ζ'/ζ)(s_z) / (σ(σ+iz))
+prime          →  +(ζ'/ζ)(s_σ) / (σ(σ+iz))
+digamma+Lerch  →  [ψ(s_σ/2) - ψ(s_z/2)] / (2σ(σ+iz))
+```
+
+and their sum is `[ζ'/ζ(s_σ) + A(s_σ) - ζ'/ζ(s_z) - A(s_z)]/(σ(σ+iz))`, which is exactly
+`(T(-iσ)-T(-z))/(σ(iσ-z))` because `T(w) = I·(ζ'/ζ + A)(1/2+wI)` and `iσ - z = i(σ+iz)`.
+(The digamma+Lerch collapse uses the two partial fractions `1/((n+w)(n+a)) = (a-w)^{-1}[...]`,
+`a = 1/4+σ/2`, and the corpus's `digamma_sub_eq_tsum`.)
+
+Endgame: Laplace determinacy.  With `σ = m + N₀` and the substitution `u = e^{-t}` the vanishing of
+`∫_0^∞ (𝔓_t - P_t)e^{-σt}dt` becomes vanishing of all polynomial moments of a bounded function
+supported in `[0,1]`, so `RHTower.ae_eq_zero_of_moments_eq_zero` (`ExpDecayFourierAnalytic.lean`)
+applies.  Continuity of both sides in `t` then upgrades a.e. to pointwise.
+
 ## Log
 - 2026-08-22 — created; source inventoried statement by statement; corpus dictionary established.
+- 2026-08-22 — L3 started: the Xi-zero-series Laplace transform is closed; the five-block split of eq. (1.6) and the polar/zeta/digamma Laplace transforms are closed.
 - 2026-08-22 — L1 (Lerch block) and eq. (7.1) closed in Lean; two sign typos in the printed proof of
   (7.1) recorded; anti-duplication audit run and one duplicate (`suzukiGXi`) removed.

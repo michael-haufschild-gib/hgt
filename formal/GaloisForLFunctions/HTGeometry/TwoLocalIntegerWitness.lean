@@ -40,21 +40,35 @@ theorem exists_common_denominator {ι : Type*} [Fintype ι] (u : ι → ℚ) :
   rw [mul_comm ((u i).den : ℚ) (k : ℚ), mul_assoc, mul_comm ((u i).den : ℚ) (u i),
     Rat.mul_den_eq_num]
 
-theorem exists_integral_scaling (u : Fin (m + 1) → ℚ) :
+theorem exists_integral_scaling (c : ℚ) (u : Fin (m + 1) → ℚ) :
     ∃ N : ℕ, 0 < N ∧ ∀ x y : Fin (m + 1) → Bool, ∃ z : ℤ,
-      ((N : ℚ) • twoLocalHam 0 0 witnessCoupling u) x y = (z : ℚ) := by
+      ((N : ℚ) • twoLocalHam c 0 witnessCoupling u) x y = (z : ℚ) := by
   classical
-  obtain ⟨N, hN, hu⟩ := exists_common_denominator u
-  refine ⟨N, hN, fun x y => ?_⟩
+  obtain ⟨N₀, hN₀, hu₀⟩ := exists_common_denominator u
+  obtain ⟨zc, hzc⟩ : ∃ z : ℤ, ((c.den : ℚ)) * c = (z : ℚ) :=
+    ⟨c.num, by rw [mul_comm]; exact Rat.mul_den_eq_num c⟩
+  refine ⟨N₀ * c.den, Nat.mul_pos hN₀ c.pos, fun x y => ?_⟩
+  have hu : ∀ i, ∃ z : ℤ, ((N₀ * c.den : ℕ) : ℚ) * u i = (z : ℚ) := by
+    intro i
+    obtain ⟨z, hz⟩ := hu₀ i
+    refine ⟨c.den * z, ?_⟩
+    push_cast
+    rw [mul_comm (N₀ : ℚ) ((c.den : ℚ)), mul_assoc, hz]
+  have hc : ∃ z : ℤ, ((N₀ * c.den : ℕ) : ℚ) * c = (z : ℚ) := by
+    refine ⟨N₀ * zc, ?_⟩
+    push_cast
+    rw [mul_assoc, hzc]
+  set N : ℕ := N₀ * c.den with hNdef
   rw [Matrix.smul_apply, smul_eq_mul, twoLocalHam, transverseFamilyHam]
   by_cases hxy : x = y
   · rw [if_pos hxy]
-    refine ⟨N * (occZ x) ^ 2, ?_⟩
-    have hd : twoLocalDiagonal (0 : ℚ) 0 witnessCoupling x = ((occZ x : ℤ) : ℚ) ^ 2 := by
-      have := witnessDiagonal_eq (0 : ℚ) x
+    obtain ⟨zc', hzc'⟩ := hc
+    refine ⟨zc' + N * (occZ x) ^ 2, ?_⟩
+    have hd : twoLocalDiagonal c 0 witnessCoupling x = c + ((occZ x : ℤ) : ℚ) ^ 2 := by
+      have := witnessDiagonal_eq c x
       rw [witnessDiagonal] at this
-      rw [this, zero_add]
-    rw [hd]
+      rw [this]
+    rw [hd, mul_add, hzc']
     push_cast
     ring
   · rw [if_neg hxy, Finset.mul_sum]
@@ -67,22 +81,23 @@ theorem exists_integral_scaling (u : Fin (m + 1) → ℚ) :
     · rw [if_neg hi, if_neg hi, mul_zero]
 
 /-- **An integer two-local Hamiltonian with the full symmetric Galois group.** -/
-theorem exists_integer_twoLocal_symmetric_gal {g : MvPolynomial (Fin (m + 1)) ℚ} (hg : g ≠ 0) :
+theorem exists_integer_twoLocal_symmetric_gal (c : ℚ) {g : MvPolynomial (Fin (m + 1)) ℚ}
+    (hg : g ≠ 0) :
     ∃ (u : Fin (m + 1) → ℚ) (N : ℕ)
       (Hz : Matrix (Fin (m + 1) → Bool) (Fin (m + 1) → Bool) ℤ),
       MvPolynomial.eval u g ≠ 0 ∧ 0 < N ∧
-      Hz.map (Int.castRingHom ℚ) = (N : ℚ) • twoLocalHam 0 0 witnessCoupling u ∧
+      Hz.map (Int.castRingHom ℚ) = (N : ℚ) • twoLocalHam c 0 witnessCoupling u ∧
       Nat.card ((Hz.charpoly.map (Int.castRingHom ℚ))).Gal = (2 ^ (m + 1)).factorial ∧
       Irreducible (Hz.charpoly.map (Int.castRingHom ℚ)) ∧
       ∀ v : (Fin (m + 1) → Bool) → ℚ, v ≠ 0 →
         LinearIndependent ℚ (fun k : Fin (Fintype.card (Fin (m + 1) → Bool)) =>
           (Hz.map (Int.castRingHom ℚ)) ^ (k : ℕ) *ᵥ v) := by
   classical
-  obtain ⟨u, hu, hgal⟩ := exists_twoLocal_symmetric_gal (0 : ℚ) hg
-  obtain ⟨N, hN, hint⟩ := exists_integral_scaling u
+  obtain ⟨u, hu, hgal⟩ := exists_twoLocal_symmetric_gal c hg
+  obtain ⟨N, hN, hint⟩ := exists_integral_scaling c u
   choose zz hzz using hint
   have hA : (Matrix.of zz).map (Int.castRingHom ℚ)
-      = (N : ℚ) • twoLocalHam 0 0 witnessCoupling u := by
+      = (N : ℚ) • twoLocalHam c 0 witnessCoupling u := by
     ext x y
     rw [Matrix.map_apply]
     exact (hzz x y).symm
@@ -90,7 +105,7 @@ theorem exists_integer_twoLocal_symmetric_gal {g : MvPolynomial (Fin (m + 1)) �
     simp only [ne_eq, Nat.cast_eq_zero]
     omega
   have hcharmap : (Matrix.of zz).charpoly.map (Int.castRingHom ℚ)
-      = ((N : ℚ) • twoLocalHam 0 0 witnessCoupling u).charpoly := by
+      = ((N : ℚ) • twoLocalHam c 0 witnessCoupling u).charpoly := by
     rw [← Matrix.charpoly_map, ← hA]
   have hgal' : Nat.card ((Matrix.of zz).charpoly.map (Int.castRingHom ℚ)).Gal
       = (2 ^ (m + 1)).factorial := by

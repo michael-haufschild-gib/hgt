@@ -400,4 +400,37 @@ theorem deningerHom_restrict_eq_iff [Algebra.IsInvariant A B G] (ψ₁ ψ₂ : B
 
 end OrbitPolynomial
 
+/-! ## The case of the fixed subring `A = B ^ G` -/
+
+section FixedSubring
+
+variable {B : Type*} [CommRing B]
+variable {G : Type*} [Group G] [MulSemiringAction G B]
+variable [TopologicalSpace G] [CompactSpace G] [TotallyDisconnectedSpace G] [IsTopologicalGroup G]
+variable [TopologicalSpace B] [DiscreteTopology B] [ContinuousSMul G B]
+variable {C : Type*} [Field C]
+
+instance deningerFixedSubring_isInvariant :
+    Algebra.IsInvariant (FixedPoints.subring B G) B G :=
+  ⟨fun b hb => ⟨⟨b, hb⟩, rfl⟩⟩
+
+instance deningerFixedSubring_faithfulSMul :
+    FaithfulSMul (FixedPoints.subring B G) B :=
+  (faithfulSMul_iff_algebraMap_injective _ _).mpr Subtype.val_injective
+
+/-- **Deninger, Theorem 1.4 (`t27n`) for the fixed subring, surjectivity.** -/
+theorem deningerFixedSubring_restrict_surjective [IsAlgClosed C] :
+    Function.Surjective
+      (fun ψ : B →+* C => ψ.comp (algebraMap (FixedPoints.subring B G) B)) :=
+  deningerHom_restrict_surjective (A := FixedPoints.subring B G) (G := G)
+
+/-- **Deninger, Theorem 1.4 (`t27n`) for the fixed subring, injectivity modulo `G`.** -/
+theorem deningerFixedSubring_restrict_eq_iff (ψ₁ ψ₂ : B →+* C) :
+    ψ₁.comp (algebraMap (FixedPoints.subring B G) B)
+        = ψ₂.comp (algebraMap (FixedPoints.subring B G) B)
+      ↔ ∃ g : G, ∀ b : B, ψ₂ b = ψ₁ (g • b) :=
+  deningerHom_restrict_eq_iff (A := FixedPoints.subring B G) (G := G) ψ₁ ψ₂
+
+end FixedSubring
+
 end RHTower

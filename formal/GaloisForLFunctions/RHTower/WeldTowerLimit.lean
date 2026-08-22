@@ -21,7 +21,7 @@ The free-tower region has thus contracted from `Re s > 0` (every finite weld) to
 limit): the limit costs exactly the critical strip.  Reclaiming the last stretch — extending the tower from
 `Re s > 1` down across the strip to `Re s > 1/2` — is precisely the Riemann Hypothesis:
 
-* `rh_iff_xi_coherentTower_rightHalf` — RH holds **iff** `ξ` admits a coherent tower on `Re s > 1/2`.
+* `rh_iff_tower` — RH holds **iff** `ξ` admits a coherent tower on `Re s > 1/2`.
 
 This is exactly the edge where the free finite weld meets the conditional `ξ`: the tower is free through
 the wall unconditionally, and its continuation across the strip is RH.  Nothing propagates it across the
@@ -104,10 +104,9 @@ theorem xi_coherentTower_beyondWall : Nonempty (CoherentTower xi farHalf) :=
     two_mem_farHalf (fun z _ => xi_analyticOnNhd_univ z (Set.mem_univ z))
     (fun _ hz => xi_ne_zero_of_one_le_re (le_of_lt hz))
 
-/-- **Reclaiming the strip is RH.**  The Riemann Hypothesis holds **iff** `ξ` admits a coherent infinite
-Kummer tower on the full right half-plane `Re s > 1/2` — i.e. iff the free tower that survives past the
-wall extends across the critical strip.  Forward and back through
-`rh_iff_exists_roots_all_two_powers` and the coherent-tower/roots equivalence. -/
+/-- Deprecated exact alias; use `rh_iff_tower`.
+The surrounding weld theorems retain the unconditional `Re s > 1` survivor. -/
+@[deprecated rh_iff_tower (since := "2026-08-22")]
 theorem rh_iff_xi_coherentTower_rightHalf :
     RiemannHypothesis ↔ Nonempty (CoherentTower xi rightHalf) := by
   exact rh_iff_tower
@@ -129,7 +128,7 @@ theorem weld_tower_survives_to_wall_extends_iff_rh (k : ℕ) {P : Finset ℕ} (h
     ∧ Nonempty (CoherentTower xi farHalf)
     ∧ (RiemannHypothesis ↔ Nonempty (CoherentTower xi rightHalf)) :=
   ⟨completedLocalFactor_pow_root k hP, completedZeta_coherentTower_beyondWall,
-    xi_coherentTower_beyondWall, rh_iff_xi_coherentTower_rightHalf⟩
+    xi_coherentTower_beyondWall, rh_iff_tower⟩
 
 end
 
@@ -173,7 +172,7 @@ theorem xi_coherentTower_gt_one : Nonempty (CoherentTower xi {s : ℂ | (1 : ℝ
 /-- RH corollary (`σ = 1/2`): RH ⟺ `ξ` carries a coherent tower on `Re s > 1/2`. -/
 theorem rh_iff_xi_coherentTower_gt_half :
     RiemannHypothesis ↔ Nonempty (CoherentTower xi {s : ℂ | (1 / 2 : ℝ) < s.re}) := by
-  exact rh_iff_xi_coherentTower_rightHalf
+  exact rh_iff_tower
 
 end
 

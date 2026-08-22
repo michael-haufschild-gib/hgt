@@ -40,9 +40,9 @@ theorem localGlobal_two_exact_RH_classifiers
   exact ⟨reflectedLambert_sourceHankel_iff_RH,
     riemannHypothesis_iff_rectangular_logSample_weil_nonneg hL⟩
 
-/-- Mere eventual lower boundedness of one fixed-width global detector
-already carries the RH information which the continuous finite-factor
-local quotient cannot carry. -/
+/-- Deprecated exact alias; use
+`riemannHypothesis_iff_rectangular_logSample_weil_eventually_bddBelow`. -/
+@[deprecated riemannHypothesis_iff_rectangular_logSample_weil_eventually_bddBelow (since := "2026-08-22")]
 theorem localGlobal_fixedWidth_eventualLowerBound_iff_RH
     {L : ℝ} (hL : 0 < L) :
     RiemannHypothesis ↔
