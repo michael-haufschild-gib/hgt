@@ -72,7 +72,9 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Prop 1.3 (`t26n`) correspondence of normalized irreducibles**, both directions: `α.map = β^d` with `β` normalized irreducible over `κ₀^perf`, and every such `β` arises; a separable irreducible stays irreducible over a purely inseparable extension | `RHTower/DeningerDynSysNormalizedCorrespondence.lean` | closed |
 | **Prop 1.3 (`t26n`)**: the exponent `d` is `q^m` for the separable contraction `expand(q^m) g = minpoly` | `RHTower/DeningerDynSysInseparableExponent.lean` | closed |
 | **Prop 1.3 (`t26n`)**: that exponent **is** the degree of inseparability `d_x` of the corpus's `deningerInsepDegree` | `RHTower/DeningerDynSysInseparableIdentification.lean` | closed |
-| Prop 1.3 (`t26n`) free monoid: the normalized factorization is well defined and additive on products | `RHTower/DeningerDynSysNormalizedFactorization.lean` | closed |
+| Prop 1.3 (`t26n`) free monoid: the normalized factorization is well defined, additive on products and multiplicative on powers | `RHTower/DeningerDynSysNormalizedFactorization.lean` | closed |
+| **Prop 1.3 (`t26n`) factorization law**: a normalized irreducible over `κ₀` factors over `κ₀^perf` as one irreducible repeated `d` times, every such irreducible arises, **the correspondence is injective (hence bijective)**, and the **descent criterion**: a normalized polynomial over `κ₀^perf` descends to `κ₀` exactly when each multiplicity is a multiple of the corresponding `d` | `RHTower/DeningerDynSysCorrespondenceFactors.lean` | closed |
+| §1 the rational Witt functor respects monomorphisms | `RHTower/DeningerDynSysWittFunctoriality.lean` | closed |
 | **Cor 13.5 (`t45`) algebraic core**: a) ⟺ a'), b) ⟺ b'), `Q⁻¹(0)` and `Q⁻¹(𝔪)` prime with `Q⁻¹(0) ⊆ Q⁻¹(𝔪)`, the factorization through `R/𝔭`, unit values outside `𝔮`, **the extension `Q_𝔮 : R_𝔮 → 𝒪`** and its two preimages `Q_𝔮⁻¹(0) = 𝔭R_𝔮`, `Q_𝔮⁻¹(𝔪) = 𝔮R_𝔮` | `RHTower/DeningerDynSysValuedPointsAffine.lean` | closed |
 
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
@@ -125,10 +127,20 @@ AIC-domain comparison.
    (`deningerNormalizedIrreducible_map_eq_pow`, `deningerNormalizedIrreducible_exists_preimage`,
    both from the core `deningerNormalizedPair`).  (c) `d = q^m` and (d) `q^m = d_x`, the degree of
    inseparability, are **closed** (`deningerMinpoly_map_perfectClosure_eq_pow_expChar`,
-   `deningerMinpoly_map_perfectClosure_pow_insepDegree`).  The single remaining step of Prop 1.3 is
-   (e): the identification of `(ℤ̲κ/κ₀)^H` with the free abelian group on the normalized
-   irreducibles of `κ₀[t]`, i.e. assembling the closed correspondence and the closed unique
-   factorization into the isomorphism `(ℤ̲κ/κ₀)^H ≅ W_rat(κ₀)`.
+   `deningerMinpoly_map_perfectClosure_pow_insepDegree`).  The factorization law
+   (`deningerNormalizedFactors_map_irreducible`, `..._map_surjective`) now determines the image of
+   the normalized polynomials of `κ₀[t]` inside those of `κ₀^perf[t]` — exactly the products whose
+   multiplicities are divisible by the corresponding `d_β`, which is the condition defining
+   `ℤ̲κ/κ₀`.  The correspondence is now proved **bijective**
+   (`deningerNormalizedIrreducible_map_injective` and `..._exists_preimage`) and the descent
+   criterion `deningerNormalized_descends` characterises the image of the normalized polynomials.
+   The single remaining step of Prop 1.3 is (e): transporting that criterion through the corpus's
+   **localization model** of `W_rat` (`DeningerRationalWittLocalization`, via
+   `deningerRationalWittAdditive_exists_normalized_fraction`) and through `ω : ℤ̲κ ≅ W_rat(κ)` to
+   get the ring isomorphism `(ℤ̲κ/κ₀)^H ≅ W_rat(κ₀)`.  Injectivity is
+   `deningerCanonicalRationalWittMap_injective`; only surjectivity onto the invariants is at
+   issue, and it now reduces to applying `deningerNormalized_descends` to the numerator and
+   denominator of a normalized fraction.
 2. **Prop 3.6 / Cor 3.7.**  Build `lim_{N₀} M` along the `ν`-th power maps (a subgroup of
    `N₀ → M` cut out by `x_{νμ}^μ = x_ν`, with the subspace topology), show `T = ker pr_1` embeds in
    `∏_ν μ_ν(K)` with each `μ_ν(K)` finite hence discrete, so `T` is linearly topologized, and feed

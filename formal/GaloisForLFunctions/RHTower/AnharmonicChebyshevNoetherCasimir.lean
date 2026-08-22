@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.AnharmonicChebyshevMovingFiber
 import GaloisForLFunctions.RHTower.SuzukiCoalescingXiCayleyTarget
 import GaloisForLFunctions.RHTower.SuzukiV2CharacteristicTarget
+import GaloisForLFunctions.RHTower.ThetaSourceGlobalStrictLogConvexity
 
 /-!
 # Strict Xi information loss on a moving anharmonic fiber
@@ -443,6 +444,109 @@ theorem tendsto_chebyshevXiQOrientationEnergy_div_trace_sq :
       (chebyshevXiQRealTrace s / chebyshevXiQRealCurrent s) ^ 2 =
     chebyshevXiQOrientationEnergy (s : ℂ) / chebyshevXiQRealTrace s ^ 2
   field_simp [houter0, htrace0]
+
+/-! ## Global sharp Casimir separation from theta-source strict convexity -/
+
+/-- Real q-current written in the centered exponential-family coordinate. -/
+theorem chebyshevXiQRealCurrent_eq_centered (x : ℝ) :
+    chebyshevXiQRealCurrent x =
+      xiRealLogDeriv (x - 1 / 2) / chebyshevAnharmonicQPrimeReal x := by
+  rw [chebyshevXiQRealCurrent, chebyshevXiQLogDeriv_ofReal_re, xiRealLogDeriv]
+  have harg : (1 / 2 : ℂ) + (((x - 1 / 2 : ℝ)) : ℂ) = (x : ℂ) := by
+    push_cast
+    ring
+  rw [harg]
+
+/-- The reflected second return current has strictly larger magnitude than the first return
+current.  Strict theta-source variance controls the numerators, while anharmonic covariance
+strictly orders the quotient Jacobians. -/
+theorem chebyshevXiQRealCurrent_firstReturn_lt_neg_secondReturn
+    {s : ℝ} (hs : 2 < s) :
+    chebyshevXiQRealCurrent ((s - 1) / s) <
+      -chebyshevXiQRealCurrent (1 / (1 - s)) := by
+  have hs0 : s ≠ 0 := by linarith
+  have hs1 : s ≠ 1 := by linarith
+  let u : ℝ := (s - 2) / (2 * s)
+  let v : ℝ := (s + 1) / (2 * (s - 1))
+  have hu : 0 < u := by
+    dsimp only [u]
+    positivity
+  have huv : u < v := by
+    dsimp only [u, v]
+    rw [div_lt_div_iff₀ (by nlinarith : 0 < 2 * s)
+      (by nlinarith : 0 < 2 * (s - 1))]
+    nlinarith
+  have hAB : xiRealLogDeriv u < xiRealLogDeriv v :=
+    strictMono_xiRealLogDeriv huv
+  have hA : 0 < xiRealLogDeriv u := xiRealLogDeriv_pos hu
+  have hB : 0 < xiRealLogDeriv v := lt_trans hA hAB
+  let q : ℝ := chebyshevAnharmonicQPrimeReal s
+  have hq : 0 < q := chebyshevAnharmonicQPrimeReal_pos s
+  have hsq : (s - 1) ^ 2 < s ^ 2 := by nlinarith
+  have hD : q * (s - 1) ^ 2 < q * s ^ 2 :=
+    mul_lt_mul_of_pos_left hsq hq
+  have hD1 : 0 < q * s ^ 2 := mul_pos hq (sq_pos_of_pos (by linarith))
+  have hD2 : 0 < q * (s - 1) ^ 2 := mul_pos hq (sq_pos_of_pos (by linarith))
+  have hfirst : xiRealLogDeriv u / (q * s ^ 2) <
+      xiRealLogDeriv v / (q * s ^ 2) := div_lt_div_of_pos_right hAB hD1
+  have hsecond : xiRealLogDeriv v / (q * s ^ 2) <
+      xiRealLogDeriv v / (q * (s - 1) ^ 2) := by
+    rw [div_lt_div_iff₀ hD1 hD2]
+    exact mul_lt_mul_of_pos_left hD hB
+  rw [chebyshevXiQRealCurrent_eq_centered,
+    chebyshevXiQRealCurrent_eq_centered,
+    chebyshevAnharmonicQPrimeReal_w hs0 hs1,
+    chebyshevAnharmonicQPrimeReal_wTwo hs0 hs1]
+  have harg1 : (s - 1) / s - 1 / 2 = u := by
+    dsimp only [u]
+    field_simp [hs0]
+    ring
+  have harg2 : 1 / (1 - s) - 1 / 2 = -v := by
+    dsimp only [v]
+    field_simp [hs1]
+    ring
+  rw [harg1, harg2, xiRealLogDeriv_neg]
+  have honeSub : (1 - s) ^ 2 = (s - 1) ^ 2 := by ring
+  rw [honeSub]
+  simp only [neg_div, neg_neg]
+  change xiRealLogDeriv u / (q * s ^ 2) <
+    xiRealLogDeriv v / (q * (s - 1) ^ 2)
+  exact lt_trans hfirst hsecond
+
+/-- Three signed real currents whose reflected magnitude dominates the positive return current
+have Casimir strictly greater than twice squared visible trace. -/
+theorem real_threeBodyEnergy_gt_two_trace_sq_of_signs
+    {a b c : ℝ} (ha : 0 < a) (hb : 0 < b) (hbc : b < -c) :
+    2 * (a + b + c) ^ 2 <
+      (a - b) ^ 2 + (b - c) ^ 2 + (c - a) ^ 2 := by
+  have hab : 0 < a + b := add_pos ha hb
+  have hmul := mul_lt_mul_of_pos_right hbc hab
+  have hb2 : 0 < b ^ 2 := sq_pos_of_pos hb
+  nlinarith
+
+/-- **Global invisible/visible separation.**  On every real Chebyshev scan point `s > 2`, the
+actual Xi standard-sector Casimir is strictly greater than twice the squared descended trace. -/
+theorem two_mul_chebyshevXiQRealTrace_sq_lt_orientationEnergy
+    {s : ℝ} (hs : 2 < s) :
+    2 * chebyshevXiQRealTrace s ^ 2 <
+      chebyshevXiQOrientationEnergy (s : ℂ) := by
+  obtain ⟨hwlo, _, _, hw2hi⟩ := chebyshevAnharmonic_realOrbit_ranges hs
+  let a : ℝ := chebyshevXiQRealCurrent s
+  let b : ℝ := chebyshevXiQRealCurrent ((s - 1) / s)
+  let c : ℝ := chebyshevXiQRealCurrent (1 / (1 - s))
+  have ha : 0 < a := by
+    dsimp only [a, chebyshevXiQRealCurrent]
+    exact chebyshevXiQLogDeriv_ofReal_re_pos (by linarith)
+  have hb : 0 < b := by
+    dsimp only [b, chebyshevXiQRealCurrent]
+    exact chebyshevXiQLogDeriv_ofReal_re_pos hwlo
+  have hbc : b < -c := by
+    dsimp only [b, c]
+    exact chebyshevXiQRealCurrent_firstReturn_lt_neg_secondReturn hs
+  have h := real_threeBodyEnergy_gt_two_trace_sq_of_signs ha hb hbc
+  rw [chebyshevXiQOrientationEnergy_ofReal_eq_realEnergy,
+    chebyshevXiQRealOrientationEnergy, chebyshevXiQRealTrace]
+  exact h
 
 end
 

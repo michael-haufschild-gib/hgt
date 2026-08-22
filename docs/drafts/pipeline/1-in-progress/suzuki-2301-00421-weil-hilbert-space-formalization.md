@@ -196,6 +196,8 @@ off the origin and the countable real Xi zero set (`XiC_zeroSet_countable`), whi
 | `RHTower/SuzukiWeilPropOneTwo.lean` | `suzukiThetaSharp`, **`suzukiFrakS`** (eq. 1.5), `suzukiFrakS_ofReal_decomp` (the pole-free five-block form), the blockwise bounds, **`exists_norm_suzukiFrakS_le`** (`‖𝔖_t(x)‖ ≤ C(1+|x|)^{-3/4}`), the measurable model `suzukiFrakSModel` with `measurable_suzukiFrakSModel`, and **`memLp_suzukiFrakS`** = Proposition 1.2. |
 | `RHTower/SuzukiWeilFrakSZeroSeries.lean` | **`suzukiFrakSFull`** — `𝔖_t = i(1+Θ^♯)/2·P_t` for *every* real `t`, the object equations (3.6)–(3.8) actually use; agreement with `suzukiFrakS` for `t > 0` (Prop 3.1); the divisor-reflection identity `P_{-t}(z) = P_t(-z)` (`suzukiPtZeroSum_neg`, through `xiZeroCopyReflectEquiv`); `norm_suzukiFrakSFull_le` for all `t`; joint measurability in `(x,t)`; and `memLp_suzukiFrakSFull`. |
 | `RHTower/SuzukiWeilTransformRaySeries.lean` | `suzukiPHatConj`, `suzukiPHat_ofReal_eq_conj`, `suzukiPHatRayTerm`, and **`suzukiPHatConj_eq_tsum`** = the multiplicity-exact form of Suzuki eq. (3.7).  Also `integral_suzukiPtZeroSum_mul` (the Fubini exchange). |
+| `RHTower/SuzukiWeilDifferentialPairing.lean` | `suzukiD` (eq. 1.8), `hasDerivAt_expSlopeKernel`, `deriv_eq_zero_of_supp`, `integral_eq_intervalIntegral_of_supp`, **`integral_expSlope_mul_deriv`** (integration by parts) and **`integral_expSlope_mul_conj_D`** = step 2 of the Lemma 3.2 route. |
+| `RHTower/SuzukiWeilRaySeriesHolomorphy.lean` | `exists_pos_dist_xiSpectralPoint`, `norm_raySeriesNumerator_le`, and **`differentiableAt_suzukiPHatRaySum`** = step 3a of the Lemma 3.2 route. |
 | `RHTower/SuzukiWeilPropOneThree.lean` | `suzukiFrakSSharp`, **`suzukiPHat`** (eq. 1.7, built on `suzukiFrakSFull`), the pointwise bound `norm_suzukiPHat_ofReal_le`, and **`memLp_suzukiPHat_of_compactSupport`** = Proposition 1.3.  No Minkowski integral inequality is used: the master bound of Prop 1.2 is pointwise and its constant is monotone (`suzukiFrakSConst_mono`), so `‖∫‖ ≤ ∫‖·‖` suffices. |
 | `RHTower/SuzukiWeilAppendixDerivative.lean` | `hasDerivAt_screwFn_atomFree` (the exact derivative of `g_ξ` off the prime-power atoms); `tendsto_logDeriv_riemannZeta_ofReal_atTop`; `suzukiVerticalLerchTerm` / `suzukiVerticalFilter` / `suzukiVerticalLerchBound` with the three-regime `y`-uniform dominant and `suzukiVerticalFilter_neBot`; `digamma_quarter_sub_logPi` (`screwLinearCoeff = ψ(1/4) - log π`); `suzukiFrakP_vertical_mul`; `suzukiVerticalEnergy_eq` (the five-block decomposition); the five block limits; and **`tendsto_suzukiFrakP_vertical`** = eq. (7.2). |
 
@@ -285,10 +287,20 @@ the series being **absolutely** convergent (the extra `1/γ_q` is what makes it 
    `integral_tsum_of_summable_integral_norm`; the domination uses `|Im γ| < 1/2`
    (`norm_suzukiPtZeroExp_le`) so that the exponential factor is `≤ e^{T/2}+1` uniformly in `q` on
    the support of `φ`.  Companion: `suzukiPHat_ofReal_eq_conj`.
-2. **Integration by parts.** For `φ = Dψ = iψ'` and `η = conj∘ψ`, `a_q = γ_q·η̂(-γ_q)` with
-   `η̂(u) = ∫η(t)e^{iut}dt`.  (`intervalIntegral.integral_mul_deriv_eq_deriv_mul` on a window
-   containing the support, or `MeasureTheory.integral_deriv_mul_eq_...`.)
-3. **Residue extraction.**  `‖·‖₀ = 0` ⟹ the series vanishes a.e. on `ℝ` (because
+2. **DONE** — `RHTower.integral_expSlope_mul_conj_D` (module `SuzukiWeilDifferentialPairing`):
+   `∫(e^{-iwt}-1)conj((Dψ)(t))dt = w·∫e^{-iwt}conj(ψ(t))dt`, so `a_q = γ_q·(Fourier of conj ψ at
+   `-γ_q`) and the ray becomes `F(-γ_q)/(z-γ_q)`.  Engine: `integral_expSlope_mul_deriv`
+   (integration by parts on a window containing the support, transported back by
+   `setIntegral_eq_integral_of_forall_compl_eq_zero`); `deriv ψ` inherits the support bound
+   (`deriv_eq_zero_of_supp`).  Also `suzukiD` (eq. 1.8), `deriv_conj_comp`.
+3a. **DONE** — `RHTower.differentiableAt_suzukiPHatRaySum` (module `SuzukiWeilRaySeriesHolomorphy`):
+   the ray series is complex differentiable at every `z₀` with `XiC z₀ ≠ 0`.  The dominant is the
+   crux: a `1/dist(z₀,Γ)` bound gives only `∑ 1/|γ_q|` (divergent); shrinking to radius `r/2` with
+   `r ≤ |z₀-γ_q|` for *every* `q` gives `|w-γ_q| ≥ |z₀-γ_q|/2` uniformly, hence
+   `‖ray‖ ≤ 2M‖(γ_q(γ_q-z₀))⁻¹‖` with `summable_xiResolventProduct_norm`.  Companion:
+   `exists_pos_dist_xiSpectralPoint`, `norm_raySeriesNumerator_le`.
+
+3b. **Residue extraction (remaining).**  `‖·‖₀ = 0` ⟹ the series vanishes a.e. on `ℝ` (because
    `A(x)/E^♯(x) ≠ 0` off the countable real Xi zero set), and then
    `lim_{z→γ}(z-γ)·T(z) = m_γ a_γ/γ = 0`.  **The corpus already owns the analytic layer this needs**:
    `HTGeometry.HerglotzDiscreteSupportSeries.summableLocallyUniformlyOn_discreteHerglotzCauchy_off_poles`
@@ -315,6 +327,8 @@ the series being **absolutely** convergent (the extra `1/γ_q` is what makes it 
   and Prop 4.1 (`{F_γ}` an ONB of `K(Θ)`, cited to Su23 Prop 3.2).
 
 ## Log
+- 2026-08-22 — Lemma 3.2 **step 3a closed** (`differentiableAt_suzukiPHatRaySum`): the ray series is holomorphic off the divisor, with the sharp `|z₀-γ_q|/2` dominant.  Remaining: 3b (identity theorem + fiber residue) and 4 (Su22 Lemma 2.1).
+- 2026-08-22 — Lemma 3.2 **step 2 closed** (`integral_expSlope_mul_conj_D`): the `D`-pairing collapses each ray to `F(-γ_q)/(z-γ_q)`.  Only the residue extraction (step 3) and the Su22 application (step 4) remain.
 - 2026-08-22 — **eq. (3.7) CLOSED** (`suzukiPHatConj_eq_tsum`): the transform expanded over the Xi divisor, multiplicity-exact and absolutely convergent.  This is step 1 of the Lemma 3.2 route.
 - 2026-08-22 — **`suzukiFrakSFull` built** and Proposition 1.3 rebased on it, after discovering that the paper's even extension of `𝔖_t` to negative `t` contradicts (3.6)–(3.8): with it, `𝒫̂_{Dψ} ≡ 0` for every *even* `ψ`, so Lemma 3.2 and eq. (1.9) would be false.  Defect recorded under "Source defects found".
 - 2026-08-22 — **Proposition 1.3 CLOSED in Lean, unconditionally** (`memLp_suzukiPHat_of_compactSupport`, stated for merely continuous compactly supported `φ`).  Minkowski's integral inequality is not needed: the Prop 1.2 bound is pointwise with an explicit monotone constant, so `‖∫‖ ≤ ∫‖·‖` closes it.  The one real ingredient is joint measurability of the Prop 1.2 model in `(x,t)`.

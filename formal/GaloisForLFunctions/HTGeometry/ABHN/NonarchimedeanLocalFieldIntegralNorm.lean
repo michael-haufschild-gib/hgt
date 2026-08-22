@@ -943,6 +943,69 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_mem_principalUnitFiltration_iff
     (u : AdjoinRoot f) = 1 ↔ _
   exact Ideal.Quotient.mk_eq_one_iff_sub_mem _
 
+/-- Higher root principal-unit layers are nested. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_principalUnitFiltration_antitone
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K]
+    (f : Polynomial (ValuativeRel.valuation K).integer) (hf : f.Monic)
+    (g : Polynomial (IsLocalRing.ResidueField (ValuativeRel.valuation K).integer))
+    (hfg : f.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal
+      (ValuativeRel.valuation K).integer)) = g)
+    (hg : Irreducible g) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    Antitone (nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  intro m n hmn u hu
+  rw [nonarchimedeanLocalFieldAdjoinRoot_mem_principalUnitFiltration_iff] at hu ⊢
+  exact Ideal.pow_le_pow_right hmn hu
+
+/-- Two root units agree modulo the `n`th maximal-ideal power exactly when their quotient lies
+in the `n`th root principal-unit layer. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_unit_div_mem_principalUnitFiltration_iff_sub_mem
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K]
+    (f : Polynomial (ValuativeRel.valuation K).integer) (hf : f.Monic)
+    (g : Polynomial (IsLocalRing.ResidueField (ValuativeRel.valuation K).integer))
+    (hfg : f.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal
+      (ValuativeRel.valuation K).integer)) = g)
+    (hg : Irreducible g) (n : ℕ) (u v : (AdjoinRoot f)ˣ) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    u⁻¹ * v ∈ nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n ↔
+      (v : AdjoinRoot f) - (u : AdjoinRoot f) ∈ (IsLocalRing.maximalIdeal (AdjoinRoot f)) ^ n := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  rw [nonarchimedeanLocalFieldAdjoinRoot_mem_principalUnitFiltration_iff]
+  constructor
+  · intro huv
+    have hmul : (u : AdjoinRoot f) * (((u⁻¹ * v : (AdjoinRoot f)ˣ) : AdjoinRoot f) - 1) ∈
+        (IsLocalRing.maximalIdeal (AdjoinRoot f)) ^ n :=
+      ((IsLocalRing.maximalIdeal (AdjoinRoot f)) ^ n).mul_mem_left _ huv
+    convert hmul using 1
+    change (u : AdjoinRoot f) * (((u⁻¹ : (AdjoinRoot f)ˣ) : AdjoinRoot f) *
+      (v : AdjoinRoot f) - 1) = (v : AdjoinRoot f) - (u : AdjoinRoot f)
+    rw [mul_sub, mul_assoc, Units.mul_inv, one_mul, mul_one]
+  · intro huv
+    have hmul : ((u⁻¹ : (AdjoinRoot f)ˣ) : AdjoinRoot f) *
+        ((v : AdjoinRoot f) - (u : AdjoinRoot f)) ∈
+        (IsLocalRing.maximalIdeal (AdjoinRoot f)) ^ n :=
+      ((IsLocalRing.maximalIdeal (AdjoinRoot f)) ^ n).mul_mem_left _ huv
+    convert hmul using 1
+    change ((u⁻¹ : (AdjoinRoot f)ˣ) : AdjoinRoot f) * (v : AdjoinRoot f) - 1 =
+      ((u⁻¹ : (AdjoinRoot f)ˣ) : AdjoinRoot f) *
+        ((v : AdjoinRoot f) - (u : AdjoinRoot f))
+    rw [mul_sub, Units.inv_mul]
+
 /-- Every root `Uⁿ` element has a uniformizer-coordinate presentation `1 + πⁿx`, where `π`
 is a base uniformizer.  This is the filtration-level content of unramifiedness. -/
 theorem nonarchimedeanLocalFieldAdjoinRoot_principalUnitFiltration_uniformizer_factor
@@ -1165,6 +1228,188 @@ noncomputable def nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnits
     (nonarchimedeanLocalFieldPrincipalUnitGroup K)
     (nonarchimedeanLocalFieldAdjoinRoot_integralNorm_maps_principalUnitGroup
       K f hf g hgmonic hfg hg)
+
+/-- The integral norm preserves every positive principal-unit congruence layer in a finite
+unramified root lift. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_integralNormUnits_maps_principalUnitFiltration
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K]
+    (f : Polynomial (ValuativeRel.valuation K).integer) (hf : f.Monic)
+    (g : Polynomial (IsLocalRing.ResidueField (ValuativeRel.valuation K).integer))
+    (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal
+      (ValuativeRel.valuation K).integer)) = g)
+    (hg : Irreducible g)
+    (n : ℕ) (hn : 0 < n)
+    (v : nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap (ValuativeRel.valuation K).integer (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    letI : Module.Free (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.free_adjoinRoot
+    letI : Module.Finite (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.finite_adjoinRoot
+    letI : Module.IsTorsionFree (ValuativeRel.valuation K).integer (AdjoinRoot f) :=
+      AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+    nonarchimedeanLocalFieldAdjoinRootIntegralNormUnitsMul K f hf g hgmonic hfg hg v ∈
+      nonarchimedeanLocalFieldPrincipalUnitFiltration K n := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap (ValuativeRel.valuation K).integer (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Module.Free (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.free_adjoinRoot
+  letI : Module.Finite (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : Module.IsTorsionFree (ValuativeRel.valuation K).integer (AdjoinRoot f) :=
+    AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  obtain ⟨π, x, _, hπmem, hv⟩ :=
+    nonarchimedeanLocalFieldAdjoinRoot_principalUnitFiltration_uniformizer_factor
+      K f hf g hfg hg n v
+  have hπpow : π ^ n ∈ (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n :=
+    Ideal.pow_mem_pow hπmem n
+  have hnorm := nonarchimedeanLocalFieldAdjoinRoot_norm_one_add_smul_sub_mem_maximalIdeal_pow_succ
+    K f hf n hn (π ^ n) hπpow x
+  have herror : Algebra.norm (ValuativeRel.valuation K).integer (1 + π ^ n • x) -
+      (1 + Algebra.trace (ValuativeRel.valuation K).integer (AdjoinRoot f) x * π ^ n) ∈
+        (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n :=
+    Ideal.pow_le_pow_right (Nat.le_succ n) hnorm
+  have hlinear : Algebra.trace (ValuativeRel.valuation K).integer (AdjoinRoot f) x * π ^ n ∈
+      (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n :=
+    ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n).mul_mem_left _ hπpow
+  rw [nonarchimedeanLocalField_mem_principalUnitFiltration_iff]
+  change Algebra.intNorm (ValuativeRel.valuation K).integer (AdjoinRoot f)
+      ((v : nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n) :
+        (AdjoinRoot f)ˣ) - 1 ∈
+    (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n
+  rw [show (((v : nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n) :
+      (AdjoinRoot f)ˣ) : AdjoinRoot f) = 1 + π ^ n • x from hv]
+  rw [Algebra.intNorm_eq_norm]
+  have hrewrite : Algebra.norm (ValuativeRel.valuation K).integer (1 + π ^ n • x) - 1 =
+      (Algebra.norm (ValuativeRel.valuation K).integer (1 + π ^ n • x) -
+        (1 + Algebra.trace (ValuativeRel.valuation K).integer (AdjoinRoot f) x * π ^ n)) +
+        Algebra.trace (ValuativeRel.valuation K).integer (AdjoinRoot f) x * π ^ n := by
+    ring
+  rw [hrewrite]
+  exact ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n).add_mem herror hlinear
+
+/-- Integral norm restricted to the `n`th principal-unit congruence layers of a finite
+unramified root lift. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnitFiltration
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K]
+    (f : Polynomial (ValuativeRel.valuation K).integer) (hf : f.Monic)
+    (g : Polynomial (IsLocalRing.ResidueField (ValuativeRel.valuation K).integer))
+    (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal
+      (ValuativeRel.valuation K).integer)) = g)
+    (hg : Irreducible g)
+    (n : ℕ) (hn : 0 < n) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap (ValuativeRel.valuation K).integer (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    letI : Module.Free (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.free_adjoinRoot
+    letI : Module.Finite (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.finite_adjoinRoot
+    letI : Module.IsTorsionFree (ValuativeRel.valuation K).integer (AdjoinRoot f) :=
+      AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+    nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n →*
+      nonarchimedeanLocalFieldPrincipalUnitFiltration K n := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap (ValuativeRel.valuation K).integer (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Module.Free (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.free_adjoinRoot
+  letI : Module.Finite (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : Module.IsTorsionFree (ValuativeRel.valuation K).integer (AdjoinRoot f) :=
+    AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  exact ((nonarchimedeanLocalFieldAdjoinRootIntegralNormUnitsMul K f hf g hgmonic hfg hg).comp
+    (Subgroup.subtype (nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n))).codRestrict
+    (nonarchimedeanLocalFieldPrincipalUnitFiltration K n)
+    (nonarchimedeanLocalFieldAdjoinRoot_integralNormUnits_maps_principalUnitFiltration
+      K f hf g hgmonic hfg hg n hn)
+
+/-- The integral norm induced on the successive principal-unit quotients
+`U_Bⁿ / U_Bⁿ⁺¹ → U_Aⁿ / U_Aⁿ⁺¹`. -/
+noncomputable def nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnitGraded
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K]
+    (f : Polynomial (ValuativeRel.valuation K).integer) (hf : f.Monic)
+    (g : Polynomial (IsLocalRing.ResidueField (ValuativeRel.valuation K).integer))
+    (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal
+      (ValuativeRel.valuation K).integer)) = g)
+    (hg : Irreducible g)
+    (n : ℕ) (hn : 0 < n) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap (ValuativeRel.valuation K).integer (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    letI : Module.Free (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.free_adjoinRoot
+    letI : Module.Finite (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.finite_adjoinRoot
+    letI : Module.IsTorsionFree (ValuativeRel.valuation K).integer (AdjoinRoot f) :=
+      AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+    (nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n) ⧸
+      (nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg (n + 1)).subgroupOf
+        (nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n) →*
+      (nonarchimedeanLocalFieldPrincipalUnitFiltration K n) ⧸
+        (nonarchimedeanLocalFieldPrincipalUnitFiltration K (n + 1)).subgroupOf
+          (nonarchimedeanLocalFieldPrincipalUnitFiltration K n) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap (ValuativeRel.valuation K).integer (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Module.Free (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.free_adjoinRoot
+  letI : Module.Finite (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : Module.IsTorsionFree (ValuativeRel.valuation K).integer (AdjoinRoot f) :=
+    AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  apply QuotientGroup.map
+    ((nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg (n + 1)).subgroupOf
+      (nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n))
+    ((nonarchimedeanLocalFieldPrincipalUnitFiltration K (n + 1)).subgroupOf
+      (nonarchimedeanLocalFieldPrincipalUnitFiltration K n))
+    (nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnitFiltration
+      K f hf g hgmonic hfg hg n hn)
+  intro v hv
+  rw [Subgroup.mem_comap, Subgroup.mem_subgroupOf]
+  let v' : nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg (n + 1) :=
+    ⟨(v : nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n), hv⟩
+  simpa [nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnitFiltration] using
+    (nonarchimedeanLocalFieldAdjoinRoot_integralNormUnits_maps_principalUnitFiltration
+      K f hf g hgmonic hfg hg (n + 1) (Nat.succ_pos n) v')
 
 /-- **Principal-unit norm lifting modulo `𝔪²`.**  For every `a ∈ 𝔪` and coefficient `b`, a
 source principal unit has norm congruent to `1 + a b` modulo `𝔪²`.  Thus, after choosing a
@@ -1423,6 +1668,103 @@ theorem nonarchimedeanLocalFieldAdjoinRoot_integralNormUnits_filtration_exists_m
     (1 + b * π ^ n) ∈ (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1)
   rw [Algebra.intNorm_eq_norm]
   exact hx
+
+/-- The integral norm is surjective on every positive successive principal-unit quotient of a
+finite unramified root lift. -/
+theorem nonarchimedeanLocalFieldAdjoinRoot_integralNormPrincipalUnitGraded_surjective
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K]
+    (f : Polynomial (ValuativeRel.valuation K).integer) (hf : f.Monic)
+    (g : Polynomial (IsLocalRing.ResidueField (ValuativeRel.valuation K).integer))
+    (hgmonic : g.Monic)
+    (hfg : f.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal
+      (ValuativeRel.valuation K).integer)) = g)
+    (hg : Irreducible g)
+    (n : ℕ) (hn : 0 < n) :
+    letI : IsDomain (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+    letI : IsLocalRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+    letI : IsLocalHom (algebraMap (ValuativeRel.valuation K).integer (AdjoinRoot f)) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+    letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+      nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+    letI : Module.Free (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.free_adjoinRoot
+    letI : Module.Finite (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.finite_adjoinRoot
+    letI : Module.IsTorsionFree (ValuativeRel.valuation K).integer (AdjoinRoot f) :=
+      AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+        (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+        (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+    Function.Surjective
+      (nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnitGraded
+        K f hf g hgmonic hfg hg n hn) := by
+  letI : IsDomain (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDomain K f hf g hfg hg
+  letI : IsLocalRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRootIsLocalRing K f hf g hfg hg
+  letI : IsLocalHom (algebraMap (ValuativeRel.valuation K).integer (AdjoinRoot f)) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isLocalHom K f hf g hfg hg
+  letI : IsDiscreteValuationRing (AdjoinRoot f) :=
+    nonarchimedeanLocalFieldAdjoinRoot_isDiscreteValuationRing K f hf g hgmonic hfg hg
+  letI : Module.Free (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.free_adjoinRoot
+  letI : Module.Finite (ValuativeRel.valuation K).integer (AdjoinRoot f) := hf.finite_adjoinRoot
+  letI : Module.IsTorsionFree (ValuativeRel.valuation K).integer (AdjoinRoot f) :=
+    AdjoinRoot.noZeroSMulDivisors_of_prime_of_degree_ne_zero
+      (nonarchimedeanLocalFieldAdjoinRoot_isPrime K f hf g hfg hg)
+      (nonarchimedeanLocalFieldAdjoinRoot_degree_ne_zero K f hf g hfg hg)
+  intro q
+  obtain ⟨u, rfl⟩ := QuotientGroup.mk'_surjective
+    ((nonarchimedeanLocalFieldPrincipalUnitFiltration K (n + 1)).subgroupOf
+      (nonarchimedeanLocalFieldPrincipalUnitFiltration K n)) q
+  obtain ⟨v, hv⟩ :=
+    nonarchimedeanLocalFieldAdjoinRoot_integralNormUnits_filtration_exists_mod_maximalIdeal_pow_succ
+      K f hf g hgmonic hfg hg n hn u
+  let N := nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnitFiltration
+    K f hf g hgmonic hfg hg n hn v
+  have hq : Units.map (Ideal.Quotient.mk
+      ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))).toMonoidHom
+      (N : (ValuativeRel.valuation K).integerˣ) =
+      Units.map (Ideal.Quotient.mk
+        ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))).toMonoidHom
+        (u : (ValuativeRel.valuation K).integerˣ) := by
+    apply Units.ext
+    change Ideal.Quotient.mk
+      ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))
+        ((N : (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) =
+      Ideal.Quotient.mk
+        ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))
+          ((u : (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer)
+    simpa [N, nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnitFiltration] using hv
+  let z : nonarchimedeanLocalFieldPrincipalUnitFiltration K n := N⁻¹ * u
+  have hz : (z : (ValuativeRel.valuation K).integerˣ) ∈
+      nonarchimedeanLocalFieldPrincipalUnitFiltration K (n + 1) := by
+    change Units.map (Ideal.Quotient.mk
+      ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))).toMonoidHom
+        (z : (ValuativeRel.valuation K).integerˣ) = 1
+    change Units.map (Ideal.Quotient.mk
+      ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))).toMonoidHom
+        ((N : (ValuativeRel.valuation K).integerˣ)⁻¹ *
+          (u : (ValuativeRel.valuation K).integerˣ)) = 1
+    rw [map_mul, map_inv, hq, inv_mul_cancel]
+  refine ⟨QuotientGroup.mk'
+    ((nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg (n + 1)).subgroupOf
+      (nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n)) v, ?_⟩
+  rw [show nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnitGraded
+      K f hf g hgmonic hfg hg n hn =
+      QuotientGroup.map
+        ((nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg (n + 1)).subgroupOf
+          (nonarchimedeanLocalFieldAdjoinRootPrincipalUnitFiltration K f hf g hfg hg n))
+        ((nonarchimedeanLocalFieldPrincipalUnitFiltration K (n + 1)).subgroupOf
+          (nonarchimedeanLocalFieldPrincipalUnitFiltration K n))
+        (nonarchimedeanLocalFieldAdjoinRootIntegralNormPrincipalUnitFiltration
+          K f hf g hgmonic hfg hg n hn) _ from rfl,
+    QuotientGroup.map_mk']
+  apply (QuotientGroup.mk'_eq_mk'
+    ((nonarchimedeanLocalFieldPrincipalUnitFiltration K (n + 1)).subgroupOf
+      (nonarchimedeanLocalFieldPrincipalUnitFiltration K n))).mpr
+  refine ⟨z, Subgroup.mem_subgroupOf.mpr hz, ?_⟩
+  change N * (N⁻¹ * u) = u
+  group
 
 /-- **First principal-unit quotient norm surjectivity.**  Every base principal unit is congruent
 modulo `𝔪²` to the norm of a source principal unit.  Equivalently, the unramified local

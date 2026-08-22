@@ -90,4 +90,52 @@ theorem negIndex_isometric_congr {C : Matrix n m ℂ} (hC : Cᴴ * C = 1) (X : M
     rw [Matrix.mul_neg, Matrix.neg_mul]
   rw [hermNegIndex, hneg, posIndex_isometric_congr hC, hermNegIndex]
 
+omit [Fintype n] [DecidableEq n] [DecidableEq m] in
+theorem hermQuad_add (X Y : Matrix m m ℂ) (x : m → ℂ) :
+    hermQuad (X + Y) x = hermQuad X x + hermQuad Y x := by
+  simp only [hermQuad, Matrix.add_mulVec, dotProduct_add, Complex.add_re]
+
+omit [Fintype n] [DecidableEq n] in
+theorem hermQuad_one (x : m → ℂ) :
+    hermQuad (1 : Matrix m m ℂ) x = ∑ i, ‖x i‖ ^ 2 := by
+  simp only [hermQuad, Matrix.one_mulVec, dotProduct, Pi.star_apply, RCLike.star_def]
+  rw [Complex.re_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Complex.mul_re, Complex.sq_norm, Complex.normSq_apply]
+  simp only [Complex.conj_re, Complex.conj_im]
+  ring
+
+omit [Fintype n] [DecidableEq n] in
+theorem hermQuad_one_pos {x : m → ℂ} (hx : x ≠ 0) : 0 < hermQuad (1 : Matrix m m ℂ) x := by
+  rw [hermQuad_one]
+  obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hx (funext h)
+  refine Finset.sum_pos' (fun j _ => by positivity) ⟨i, Finset.mem_univ i, ?_⟩
+  have : 0 < ‖x i‖ := norm_pos_iff.mpr hi
+  positivity
+
+omit [Fintype n] [DecidableEq n] in
+theorem hermQuad_conjTranspose_mul_self_nonneg (A : Matrix m m ℂ) (x : m → ℂ) :
+    0 ≤ hermQuad (Aᴴ * A) x := by
+  have h : Aᴴ * A = Aᴴ * (1 : Matrix m m ℂ) * A := by rw [Matrix.mul_one]
+  rw [h, hermQuad_rect_conjugate, hermQuad_one]
+  positivity
+
+/-- A positive multiple of the identity plus a Gram square is positive definite. -/
+theorem isPosDefOn_top_smul_one_add_gram {c : ℝ} (hc : 0 < c) (A : Matrix m m ℂ) :
+    IsPosDefOn ((c : ℂ) • (1 : Matrix m m ℂ) + Aᴴ * A) ⊤ := by
+  intro x _ hx
+  rw [hermQuad_add]
+  have h1 : 0 < hermQuad ((c : ℂ) • (1 : Matrix m m ℂ)) x := by
+    have hq : hermQuad ((c : ℂ) • (1 : Matrix m m ℂ)) x = c * hermQuad (1 : Matrix m m ℂ) x := by
+      simp only [hermQuad, Matrix.smul_mulVec, dotProduct_smul, smul_eq_mul, Complex.mul_re,
+        Complex.ofReal_re, Complex.ofReal_im]
+      ring
+    rw [hq]
+    exact mul_pos hc (hermQuad_one_pos hx)
+  have h2 := hermQuad_conjTranspose_mul_self_nonneg A x
+  linarith
+
 end GaloisForLFunctions.HTGeometry

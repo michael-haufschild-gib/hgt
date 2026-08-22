@@ -154,3 +154,31 @@ More reusable bricks now available:
 - `RHTower.rightShift` / `lowerIncidence` / `upperIncidence` — half-line shift/projection calculus.
 - `RHTower.measurable_powerSumRemainder`, `RHTower.abs_floorIncidenceVector_le`.
 - `RHTower.sum_Icc_rpow_eq_remainder` — power sum ↔ `powerSumRemainder`.
+
+## Card 2 — localized-half-density-mobius-curvature-semiprime-fibre-law — PROMOTED (stage 3)
+
+Landed modules (both `lake build`-green, wired into `RHTower.lean`, axiom-clean):
+
+- `RHTower/LocalizedHalfDensityCurvature.lean` (1068 lines) — `(1)`–`(4)` jets, `(9)` pair sum,
+  `(10)` coefficient curvature `fibre_second_jet`, `(11)` + `(23)` kernel chambers,
+  `(17)`–`(20)` complete twisted product-fibre classification (three-prime vanishing, two-prime
+  cosine mode, prime-power Chebyshev `U_{k-2}`), `(22)` two-prime kernel value, `(24)` injectivity.
+- `RHTower/LocalizedHalfDensityGerm.lean` (779 lines) — `(5)` Euler product + link to
+  `suzukiCoeffAF`, `(6)` inverse law, `(7)` genuine boundary jets, `expModeSum` analytic layer,
+  `(8)` fibre, `(10)` as a genuine second derivative, `(12)`–`(15)` endpoint deletion, `(16)`
+  semiprime counterterm, `(21)` spectral reading.
+
+Reusable assets this card left behind:
+
+- `expModeSum` / `hasDerivAt_expModeSum` / `deriv_expModeSum` / `iteratedDeriv_two_expModeSum` /
+  `expModeSum_add_const_mul` / `iteratedDeriv_two_expModeSum_add_const_mul` — the finite
+  exponential mode jet: any finite `∑ a_j e^{i τ c_j}` has second derivative `-∑ a_j c_j²` at 0.
+- `primePow_pair_of_semiprimePower`, `sum_antidiagonal_two_prime` — the two-prime orientation
+  core of the divisor antidiagonal.
+- `symmetricExpSum` + `symmetricExpSum_recurrence` + `symmetricExpSum_eq_chebyshevU` — the
+  Chebyshev-`U` three-term recurrence for symmetric exponential sums.
+- `sum_divisors_moebius_cpow` — complex Euler product `∑_{d∣n} μ(d) d^{-σ} = ∏_{p∣n}(1-p^{-σ})`.
+- `natCast_cpow_eq_cexp`, `dirichletShift_zero`.
+
+Remaining cards in this folder: 8 (`mertens-logarithmic-corona-differential-tower` §5, and the
+seven not yet opened).

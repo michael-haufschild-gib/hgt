@@ -314,23 +314,48 @@ between fibres.
 
 ## 7. Lean status
 
-The unique-factorization core is already unconditional Lean code in
-`formal/GaloisForLFunctions/HTGeometry/PrimeCollisionConvolution.lean`:
+Every statement of this card is unconditional Lean 4, axiom-audited to
+`[propext, Classical.choice, Quot.sound]`, in
 
-- `primePower_pair_orientation`;
-- `equalPrimePower_pair_unordered`;
-- `arithmeticOfPrimePowerColumn_mul_apply_distinct_unequal`;
-- `arithmeticOfPrimePowerColumn_mul_apply_distinct_equal`.
+- `formal/GaloisForLFunctions/RHTower/LocalizedHalfDensityCurvature.lean`
+- `formal/GaloisForLFunctions/RHTower/LocalizedHalfDensityGerm.lean`
 
-The first half-density jet is already formalized as
-`hasDerivAt_suzukiShiftedCoefficient` in
+Map from the equations of this card to the Lean names (namespace `RHTower`):
+
+| Equation | Lean |
+|---|---|
+| `(2)`, `(3)` | `logDerivation_sq_moebius_mul_zeta`, `sum_divisors_moebius_twisted_sq` |
+| `(4)` | `twisted_second_jet_eq_selfConv_iff` |
+| `(5)` | `halfDensityCoeff`, `halfDensityCoeff_eq_prod`, `halfDensityCoeff_two_mul_ofReal` |
+| `(6)` | `halfDensityCoeff_mul_neg` |
+| `(7)` | `halfDensityCoeff_zero`, `deriv_halfDensityCoeff`, `iteratedDeriv_two_halfDensityCoeff` |
+| `(8)`, `(9)` | `halfDensityFibre`, `localizedVonMangoldtPair` |
+| `(10)` | `fibre_second_jet`, `halfDensityFibre_second_derivative` |
+| `(11)` | `triangularKernel`, `centredTriangularKernel` |
+| `(12)` | `halfDensityFibre_second_derivative_triangular` |
+| `(13)` | `halfDensityInteriorFibre` |
+| `(14)` | `halfDensityInteriorFibre_eq` |
+| `(15)` | `halfDensityInteriorFibre_second_derivative` |
+| `(16)` | `halfDensityCoeff_add_neg_semiprime` |
+| `(17)` | `twistedVonMangoldt`, `twistedFibre` |
+| `(18)` | `twistedFibre_eq_zero_of_three_le_card_primeFactors` |
+| `(19)` | `twistedFibre_two_prime` (with `primePow_pair_of_semiprimePower`) |
+| `(20)` | `twistedFibre_primePow`, `twistedFibre_primePow_chebyshevU` |
+| `(21)` | `localizedVonMangoldtPair_eq_integral` |
+| `(22)` | `localizedVonMangoldtPair_two_prime`, `localizedVonMangoldtPair_centredTriangular` |
+| `(23)` | `centredTriangularKernel_pos_iff` / `_eq_zero_iff` / `_neg_iff` and their two-prime forms `localizedVonMangoldtPair_centredTriangular_pos_iff` / `_eq_zero_iff` / `_neg_iff` |
+| `(24)` | `primeFactors_two_prime`, `two_prime_pair_injective` |
+
+The second jets are genuine second derivatives, not formal coefficient identities: every fibre is a
+finite exponential mode sum in the boundary parameter (`expModeSum`, `hasDerivAt_expModeSum`,
+`iteratedDeriv_two_expModeSum`), so its second derivative at zero is the second moment of its
+modes.
+
+The unique-factorization core is also available in the earlier form
+`primePower_pair_orientation` of
+`formal/GaloisForLFunctions/HTGeometry/PrimeCollisionConvolution.lean`, and the first half-density
+jet as `hasDerivAt_suzukiShiftedCoefficient` in
 `formal/GaloisForLFunctions/RHTower/SuzukiCoupledErrorCriticalDerivative.lean`.
-
-The exact new formalization target selected from this card is the finite second-jet and
-endpoint-deletion package `(3)`--`(4)` and `(14)`--`(15)`.  It requires no asymptotics and no RH
-hypothesis.  No new Lean file is claimed here: the shared one-process Lean slot was occupied when
-this paper proof was completed.  The associated no-go must remain marked as formally unclosed
-until that package receives an exact leaf build and axiom audit.
 
 ## Gates
 
@@ -341,5 +366,5 @@ until that package receives an exact leaf build and axiom audit.
 - [x] sharp interior semiprime sign chambers proved
 - [x] RH/circularity and parent-theory audits passed
 - [x] structural two-prime collision core located in existing verified Lean
-- [ ] localized second-jet/endpoint-deletion package formalized and axiom-audited
+- [x] localized second-jet/endpoint-deletion package formalized and axiom-audited
 - [ ] any cross-product source estimate stronger than the RH-equivalent covariance

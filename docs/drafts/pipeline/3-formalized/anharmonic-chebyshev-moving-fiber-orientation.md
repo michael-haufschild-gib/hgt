@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** Rouyea--Bourgeois (2026), Proposition 6.9 and Remark 6.10; new invariant-coordinate orientation analysis
-- **Statement:** Möbius recentering retains an exact finite moving anharmonic fiber. Its actual-Xi q-covariant standard sector is strictly nonzero on every real scan point, and its quotient-invisible Casimir has universal far-sheet ratio `2` to squared descended trace; every scalar holomorphic quadratic alternative is isotropic.
+- **Statement:** Möbius recentering retains an exact finite moving anharmonic fiber. Its actual-Xi q-covariant standard sector satisfies the sharp global separation `E_q(s) > 2T_q(s)²` for every real `s>2`, with ratio tending to `2` cofinally; every scalar holomorphic quadratic alternative is isotropic.
 
 ## Goal
 
@@ -260,3 +260,80 @@ Absence from search results is not proof of external novelty; publication label 
 - 2026-08-22 — C5 proved on paper and in Lean; no monotonicity assumption used.
 - 2026-08-22 — targeted web novelty search found source descent paper, no exact collision; novelty
   remains unverified rather than claimed.
+
+## C6 — global theta variance forces sharp Casimir separation
+
+**Conjecture.** The asymptotic ratio `2` is the sharp lower wall of the complete real scan sheet:
+
+`E_q(s) > 2 T_q(s)²` for every `s>2`.
+
+**Cross-corpus mechanism.** The missing comparison came from the theta-source/Laplace-transform
+lane, not from further anharmonic algebra. The abstract `ThetaSource` already supplies
+faster-than-every-exponential decay, and the literal theta-cusp source has global bilateral
+Laplace transform `xiCent`. The earlier real-tilt variance API was artificially restricted to
+`|a|<1`; the all-plane source interface removes that restriction.
+
+For every source moment
+
+`M_m(w) = ∫ x^m k(x)e^{wx} dx`,
+
+dominated differentiation gives `M_m'(w)=M_{m+1}(w)` on all of `ℂ`. At every real tilt `a`,
+the positive full-support tilted measure makes the order-two Hankel determinant strict:
+
+`M_0(a)M_2(a)-M_1(a)² > 0`.
+
+Thus its normalized mean `μ(a)=M_1(a)/M_0(a)` has derivative equal to a strictly positive
+variance. The global source weld identifies
+
+`μ(a) = xiRealLogDeriv(a)`,
+
+so the centered Xi logarithmic derivative is strictly increasing on all of `ℝ`. This statement
+is unconditional and concerns only the zero-free real axis.
+
+For `s>2`, put
+
+`u=(s-2)/(2s)`, `v=(s+1)/(2(s-1))`.
+
+Then `0<u<v`. Strict Xi log-derivative monotonicity orders the return numerators, while exact
+anharmonic covariance gives return denominators `q'(s)s²` and `q'(s)(s-1)²`. Since
+`(s-1)²<s²`, the negative reflected return current strictly dominates the positive return current:
+
+`0 < b(s) < -c(s)`.
+
+Writing exterior current as `a(s)>0`, elementary three-body algebra gives
+
+`E_q(s)-2T_q(s)² = -6(a b+b c+c a)`.
+
+The inequality `b<-c` implies `ab+bc+ca<0`, hence the conjectured strict lower wall.
+
+**Result `[PROVED HERE]`.** For every real `s>2`,
+
+`2 T_q(s)² < E_q(s)`.
+
+C5 proves `E_q(s)/T_q(s)² → 2`; therefore constant `2` is globally valid and asymptotically
+sharp. This strengthens pointwise non-collapse and the cofinal law into a complete-sheet rigidity
+theorem.
+
+**Formal additions.** New module
+`formal/GaloisForLFunctions/RHTower/ThetaSourceGlobalStrictLogConvexity.lean` proves:
+
+- all-order, whole-plane theta-source Laplace moment differentiation;
+- global strict Hankel determinants and tilted variance;
+- `thetaTiltMean_eq_xiRealLogDeriv`;
+- `strictMono_xiRealLogDeriv`.
+
+`formal/GaloisForLFunctions/RHTower/AnharmonicChebyshevNoetherCasimir.lean` proves:
+
+- strict reflected return-current domination;
+- the signed three-body energy lemma;
+- `two_mul_chebyshevXiQRealTrace_sq_lt_orientationEnergy`.
+
+**RH audit.** C6 does not prove or falsify RH. Positive theta-source variance is unconditional and
+blind to nonreal zero location; the resulting Casimir bound measures information loss under scalar
+descent but does not constrain the discarded standard sector by an RH-equivalent prime--Gamma
+quantity. The exact order-20/order-21 RH tail remains unchanged.
+
+## Log continuation III
+
+- 2026-08-22 — C6 proved on paper and in Lean by welding global theta-source variance to
+  anharmonic Jacobian covariance.

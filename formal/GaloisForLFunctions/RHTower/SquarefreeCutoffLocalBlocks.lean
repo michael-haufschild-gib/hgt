@@ -247,6 +247,11 @@ theorem binaryJ_mul_self : binaryJ * binaryJ = 1 := by
   funext j
   by_cases hj : j = 0 <;> simp [hj]
 
+theorem binaryJ_eq : binaryJ = !![1, 0; 0, -1] := by
+  rw [binaryJ]
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp
+
 theorem isUnit_binaryJ : IsUnit binaryJ :=
   ⟨⟨binaryJ, binaryJ, binaryJ_mul_self, binaryJ_mul_self⟩, rfl⟩
 
@@ -273,10 +278,10 @@ theorem localPencilRaw_eq (k : ℕ) :
     localPencilRaw k =
       !![localScale k ^ 2, -(localScale k * (localScale k - 1));
          localScale k * (localScale k - 1), localScale k * (localScale k - 1)] := by
-  rw [localPencilRaw, localGramRaw]
+  rw [localPencilRaw, localGramRaw, binaryJ_eq]
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [binaryJ, Matrix.mul_apply, Fin.sum_univ_succ]
+    simp [Matrix.mul_apply, Fin.sum_univ_succ]
 
 /-- The rotation part of the unscaled pencil. -/
 def localRotationRaw (k : ℕ) : Matrix (Fin 2) (Fin 2) ℂ :=
@@ -291,7 +296,7 @@ theorem localPencilRaw_eq_add (k : ℕ) :
       = localHalfTraceRaw k • (1 : Matrix (Fin 2) (Fin 2) ℂ) + localRotationRaw k := by
   rw [localPencilRaw_eq, localRotationRaw, localHalfTraceRaw]
   ext i j
-  fin_cases i <;> fin_cases j <;> simp [Matrix.one_apply] <;> ring
+  fin_cases i <;> fin_cases j <;> simp <;> ring
 
 /-- The squared rotation radius of the unscaled pencil. -/
 def localOmegaSqRaw (k : ℕ) : ℝ :=
@@ -316,7 +321,7 @@ theorem localRotationRaw_sq (k : ℕ) :
   rw [localOmegaSqRaw_cast, localRotationRaw]
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [Matrix.mul_apply, Fin.sum_univ_succ, Matrix.one_apply] <;> ring
+    simp [Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
 
 theorem conjTranspose_localRotationRaw (k : ℕ) :
     (localRotationRaw k)ᴴ =
@@ -325,7 +330,7 @@ theorem conjTranspose_localRotationRaw (k : ℕ) :
   rw [localRotationRaw]
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [Matrix.conjTranspose_apply, map_div₀, map_neg, map_mul, map_sub, conj_localScale]
+    simp [Matrix.conjTranspose_apply, conj_localScale]
 
 theorem conjTranspose_localRotationRaw_sq (k : ℕ) :
     (localRotationRaw k)ᴴ * (localRotationRaw k)ᴴ
@@ -333,7 +338,134 @@ theorem conjTranspose_localRotationRaw_sq (k : ℕ) :
   rw [localOmegaSqRaw_cast, conjTranspose_localRotationRaw]
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [Matrix.mul_apply, Fin.sum_univ_succ, Matrix.one_apply] <;> ring
+    simp [Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
+
+/-- The local metric `P₀ = ω̃²·1 + ÑᴴÑ`. -/
+def localMetric (k : ℕ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  ((localOmegaSqRaw k : ℝ) : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ)
+    + (localRotationRaw k)ᴴ * localRotationRaw k
+
+theorem isPosDefOn_localMetric (k : ℕ) : IsPosDefOn (localMetric k) ⊤ :=
+  isPosDefOn_top_smul_one_add_gram (localOmegaSqRaw_pos k) (localRotationRaw k)
+
+theorem isHermitian_localMetric (k : ℕ) : (localMetric k).IsHermitian := by
+  rw [localMetric, Matrix.IsHermitian, Matrix.conjTranspose_add, Matrix.conjTranspose_smul,
+    Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Matrix.conjTranspose_one]
+  congr 1
+  simp [Complex.conj_ofReal]
+
+theorem posIndex_localMetric (k : ℕ) : hermPosIndex (localMetric k) = 2 := by
+  have hlow : 2 ≤ hermPosIndex (localMetric k) := by
+    have h := finrank_le_posIndex (isPosDefOn_localMetric k)
+    simpa using h
+  have hhigh : hermPosIndex (localMetric k) ≤ 2 := by
+    have h := posIndex_add_negIndex_add_nullIndex (isHermitian_localMetric k)
+    simp only [Fintype.card_fin] at h
+    omega
+  omega
+
+theorem localMetric_eq (k : ℕ) :
+    localMetric k =
+      !![2 * (localScale k * (localScale k - 1)) ^ 2, -(localScale k ^ 2 * (localScale k - 1));
+         -(localScale k ^ 2 * (localScale k - 1)),
+           2 * (localScale k * (localScale k - 1)) ^ 2] := by
+  rw [localMetric, localOmegaSqRaw_cast, conjTranspose_localRotationRaw, localRotationRaw]
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp <;> ring
+
+/-- The multiplier of the local metric under the unscaled pencil. -/
+def localMetricScalar (k : ℕ) : ℝ :=
+  realScale k ^ 2 * (2 * realScale k - 1) * (realScale k - 1)
+
+theorem localMetricScalar_cast (k : ℕ) :
+    ((localMetricScalar k : ℝ) : ℂ)
+      = localScale k ^ 2 * (2 * localScale k - 1) * (localScale k - 1) := by
+  rw [localMetricScalar, localScale_eq]
+  push_cast
+  ring
+
+theorem conjTranspose_localPencilRaw (k : ℕ) :
+    (localPencilRaw k)ᴴ =
+      !![localScale k ^ 2, localScale k * (localScale k - 1);
+         -(localScale k * (localScale k - 1)), localScale k * (localScale k - 1)] := by
+  rw [localPencilRaw_eq]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.conjTranspose_apply, conj_localScale]
+
+/-- **The unscaled pencil scales the local metric.** -/
+theorem localPencilRaw_metric (k : ℕ) :
+    (localPencilRaw k)ᴴ * localMetric k * localPencilRaw k
+      = ((localMetricScalar k : ℝ) : ℂ) • localMetric k := by
+  rw [localMetricScalar_cast, localMetric_eq, conjTranspose_localPencilRaw, localPencilRaw_eq]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
+
+theorem two_realScale_sub_one_pos (k : ℕ) : 0 < 2 * realScale k - 1 := by
+  rw [realScale]
+  have hk : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+  linarith
+
+theorem two_realScale_sub_one_lt_metricScalar (k : ℕ) :
+    2 * realScale k - 1 < realScale k ^ 2 * (realScale k - 1) := by
+  rw [realScale]
+  have hk : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+  nlinarith [sq_nonneg ((k : ℝ) + 2), sq_nonneg ((k : ℝ) + 1)]
+
+/-- The local balance matrix, which anti-congrues both `J₀` and the raw Gram. -/
+def localBalance (k : ℕ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  !![-1, 2 * (localScale k - 1); -(2 * (localScale k - 1)), 1]
+
+/-- The positive factor produced by the balance congruence. -/
+def localBalanceFactor (k : ℕ) : ℝ := 4 * (realScale k - 1) ^ 2 - 1
+
+theorem localBalanceFactor_pos (k : ℕ) : 0 < localBalanceFactor k := by
+  rw [localBalanceFactor, realScale]
+  have hk : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+  nlinarith
+
+theorem localBalanceFactor_cast (k : ℕ) :
+    ((localBalanceFactor k : ℝ) : ℂ) = 4 * (localScale k - 1) ^ 2 - 1 := by
+  rw [localBalanceFactor, localScale_eq]
+  push_cast
+  ring
+
+theorem isUnit_localBalance (k : ℕ) : IsUnit (localBalance k) := by
+  rw [Matrix.isUnit_iff_isUnit_det, localBalance, Matrix.det_fin_two_of]
+  have hne : (-1 : ℂ) * 1 - 2 * (localScale k - 1) * -(2 * (localScale k - 1))
+      = ((localBalanceFactor k : ℝ) : ℂ) := by
+    rw [localBalanceFactor_cast]
+    ring
+  rw [hne]
+  refine (Ne.isUnit ?_)
+  simpa using (ne_of_gt (localBalanceFactor_pos k))
+
+theorem conjTranspose_localBalance (k : ℕ) :
+    (localBalance k)ᴴ =
+      !![-1, -(2 * (localScale k - 1)); 2 * (localScale k - 1), 1] := by
+  rw [localBalance]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.conjTranspose_apply, conj_localScale]
+
+/-- **The balance matrix anti-congrues the binary signature.** -/
+theorem localBalance_binaryJ (k : ℕ) :
+    (localBalance k)ᴴ * binaryJ * localBalance k
+      = -((localBalanceFactor k : ℝ) : ℂ) • binaryJ := by
+  rw [localBalanceFactor_cast, conjTranspose_localBalance, localBalance, binaryJ_eq]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
+
+/-- **The balance matrix anti-congrues the raw Gram.** -/
+theorem localBalance_gramRaw (k : ℕ) :
+    (localBalance k)ᴴ * localGramRaw k * localBalance k
+      = -((localBalanceFactor k : ℝ) : ℂ) • localGramRaw k := by
+  rw [localBalanceFactor_cast, conjTranspose_localBalance, localBalance, localGramRaw]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
 
 end
 

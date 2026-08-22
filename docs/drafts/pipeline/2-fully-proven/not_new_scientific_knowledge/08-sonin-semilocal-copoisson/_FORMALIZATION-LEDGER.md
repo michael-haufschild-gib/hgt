@@ -407,3 +407,46 @@ Still to write for card 16: `M = J₀ G` with `tr M = P`, `det M = P²(P−1)/(2
 `N = M − (P/2)1` with `N² = −ω² 1`, `ω² = P²(2P−3)/(4(2P−1)) > 0`; the metric `P₀ = 1 + ω⁻² NᴴN`
 with `NᴴP₀ + P₀N = 0` and `MᴴP₀M = det(M)·P₀`; the unscaled balance `L = !![−1, 2(P−1); −2(P−1), 1]`
 with `Lᴴ J₀ L = −(4(P−1)²−1) J₀` and `Lᴴ G L = −(4(P−1)²−1) G`; then the global assembly.
+
+### Card 16: local blocks module COMPLETE (2026-08-22)
+
+`formal/GaloisForLFunctions/RHTower/SquarefreeCutoffLocalBlocks.lean` builds and is wired.
+Contents: `localScale`/`realScale`, `localAnchorBlock`, `localOccupancyBlock`, `localColumn`
+(+`Cᴴ C = 1`, `C Cᴴ = A`), `localFrame`, `binaryJ` (+`binaryJ_eq : binaryJ = !![1,0;0,-1]`,
+`binaryJ_mul_self`, `isUnit_binaryJ`, `isHermitian_binaryJ`), `localDensityBlock = U J Uᴴ`,
+`frameGram_eq`, `localOccupancyInvDiag`, `inv_localOccupancyBlock`, `isUnit_localOccupancyBlock`,
+`localGram_eq` / `localGramRaw` / `localGram_eq_smul`, `localPencilRaw`(`= J₀ G̃`),
+`localRotationRaw` (`= !![P/2, −P(P−1); P(P−1), −P/2]`), `localOmegaSqRaw` (>0),
+`localRotationRaw_sq` (`Ñ² = −ω̃²`), `localMetric` (`= ω̃²·1 + ÑᴴÑ`, positive definite,
+`posIndex = 2`, explicit form `!![2b², −P²(P−1); −P²(P−1), 2b²]`), `localMetricScalar`
+(`= P²(2P−1)(P−1)`), `localPencilRaw_metric` (`M̃ᴴ P₀ M̃ = d̃ • P₀`),
+`two_realScale_sub_one_lt_metricScalar`, and `localBalance` / `localBalanceFactor` with
+`localBalance_binaryJ` and `localBalance_gramRaw`.
+
+Also added to `HTGeometry/IsometricCongruenceInertia.lean`: `hermQuad_add`, `hermQuad_one`,
+`hermQuad_one_pos`, `hermQuad_conjTranspose_mul_self_nonneg`, `isPosDefOn_top_smul_one_add_gram`.
+
+**Remaining: the global assembly** `RHTower/SquarefreeCutoffJumpInertia.lean`, over a nonempty
+`Fintype ι` with local dimensions `m i + 2`:
+
+1. `Δ := tensorFamily (localOccupancyBlock ∘ m)`, `T := tensorFamily (localDensityBlock ∘ m)`,
+   `V := tensorFamily (localFrame ∘ m)`, `J := tensorFamily (fun _ => binaryJ)`; `T = V J Vᴴ`.
+2. Haynsworth at the `−Δ` corner of `fromBlocks (−Δ) V Vᴴ (−J)` and, after `posIndex_swapBlocks`,
+   at the `−J` corner, using `(−J)⁻¹ = −J`; gives
+   `In(−J) + In(T − Δ) = In(−Δ) + In(−(J − G))`, `G = Vᴴ Δ⁻¹ V = tensorFamily (localGram ∘ m)`.
+3. `In(−J)`: `J` is diagonal with `±1` entries, so `(2^{r−1}, 2^{r−1}, 0)`.
+4. Balance: `L := tensorFamily (fun i => if i = i₀ then localBalance (m i) else 1)` gives
+   `Lᴴ (J − G) L = (−f) • (J − G)` with `f = localBalanceFactor (m i₀) > 0`, so
+   `pos(J − G) = neg(J − G)` by `posIndex_smul_pos`.
+5. Nonsingularity: `J − G = J (1 − JG)`, `JG = c⁻¹ • M̃` with `M̃ = tensorFamily (localPencilRaw ∘ m)`
+   and `c = ∏ (2P_i − 1)`.  If `(1 − JG) x = 0` then `M̃ x = c x`, and with
+   `P₀ = tensorFamily (localMetric ∘ m)` positive definite and `M̃ᴴ P₀ M̃ = d • P₀`,
+   `d = ∏ localMetricScalar (m i)`, one gets `(d − c²) hermQuad P₀ x = 0`; `d/c = ∏ P²(P−1) > c`
+   by `two_realScale_sub_one_lt_metricScalar`, so `x = 0`; then
+   `Matrix.exists_mulVec_eq_zero_iff` gives `det ≠ 0`.
+6. `In(Δ)` by `posIndex_tensorFamily` plus the sign-count identity
+   `∑_x ∏_i s_i(x_i) = ∏_i ∑_a s_i(a)` (`Finset.prod_univ_sum`), giving
+   `pos − neg = ∏(1 − (m_i+1)) = ∏(−m_i) = (−1)^r κ` and `pos + neg = q`.
+7. Padding: for any unit vector `v : ρ → ℂ`, `C ((x,s), y) = 1 x y * v s` has `Cᴴ C = 1`, so
+   `posIndex_isometric_congr` transfers the inertia and adds `card − q` to the null index.
+   This is exactly `(CJ2)`'s `Q − q`.

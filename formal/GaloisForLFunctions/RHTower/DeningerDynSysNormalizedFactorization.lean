@@ -121,59 +121,78 @@ theorem deningerExists_normalized_factorization' (p : Polynomial F) (hp : p.coef
       (∀ r ∈ S, r.coeff 0 = 1 ∧ Irreducible r) ∧ S.prod = p :=
   deningerExists_normalized_factorization p.natDegree p rfl hp
 
-/-- The multiset of normalized irreducible factors of a normalized polynomial. -/
-noncomputable def deningerNormalizedFactors (p : Polynomial F) (hp : p.coeff 0 = 1) :
-    Multiset (Polynomial F) :=
-  (deningerExists_normalized_factorization' p hp).choose
+open Classical in
+/-- The multiset of normalized irreducible factors of a normalized polynomial (and `0` on
+polynomials whose constant coefficient is not one). -/
+noncomputable def deningerNormalizedFactors (p : Polynomial F) : Multiset (Polynomial F) :=
+  if h : p.coeff 0 = 1 then (deningerExists_normalized_factorization' p h).choose else 0
 
-theorem deningerNormalizedFactors_spec (p : Polynomial F) (hp : p.coeff 0 = 1) :
-    (∀ r ∈ deningerNormalizedFactors p hp, r.coeff 0 = 1 ∧ Irreducible r) ∧
-      (deningerNormalizedFactors p hp).prod = p :=
-  (deningerExists_normalized_factorization' p hp).choose_spec
+theorem deningerNormalizedFactors_spec {p : Polynomial F} (hp : p.coeff 0 = 1) :
+    (∀ r ∈ deningerNormalizedFactors p, r.coeff 0 = 1 ∧ Irreducible r) ∧
+      (deningerNormalizedFactors p).prod = p := by
+  classical
+  rw [deningerNormalizedFactors, dif_pos hp]
+  exact (deningerExists_normalized_factorization' p hp).choose_spec
 
-@[simp] theorem deningerNormalizedFactors_prod (p : Polynomial F) (hp : p.coeff 0 = 1) :
-    (deningerNormalizedFactors p hp).prod = p :=
-  (deningerNormalizedFactors_spec p hp).2
+@[simp] theorem deningerNormalizedFactors_prod {p : Polynomial F} (hp : p.coeff 0 = 1) :
+    (deningerNormalizedFactors p).prod = p :=
+  (deningerNormalizedFactors_spec hp).2
 
 theorem deningerNormalizedFactors_mem {p : Polynomial F} (hp : p.coeff 0 = 1)
-    {r : Polynomial F} (hr : r ∈ deningerNormalizedFactors p hp) :
+    {r : Polynomial F} (hr : r ∈ deningerNormalizedFactors p) :
     r.coeff 0 = 1 ∧ Irreducible r :=
-  (deningerNormalizedFactors_spec p hp).1 r hr
+  (deningerNormalizedFactors_spec hp).1 r hr
 
 /-- The normalized factorization is determined by the polynomial. -/
 theorem deningerNormalizedFactors_eq {p : Polynomial F} (hp : p.coeff 0 = 1)
     {S : Multiset (Polynomial F)} (hS : ∀ r ∈ S, r.coeff 0 = 1 ∧ Irreducible r)
-    (hprod : S.prod = p) : S = deningerNormalizedFactors p hp :=
-  deningerNormalized_factorization_unique hS (deningerNormalizedFactors_spec p hp).1
-    (by rw [hprod, deningerNormalizedFactors_prod])
+    (hprod : S.prod = p) : S = deningerNormalizedFactors p :=
+  deningerNormalized_factorization_unique hS (deningerNormalizedFactors_spec hp).1
+    (by rw [hprod, deningerNormalizedFactors_prod hp])
 
 theorem deningerMul_coeff_zero {p q : Polynomial F} (hp : p.coeff 0 = 1) (hq : q.coeff 0 = 1) :
     (p * q).coeff 0 = 1 := by
   rw [Polynomial.mul_coeff_zero, hp, hq, one_mul]
 
+theorem deningerPow_coeff_zero {p : Polynomial F} (hp : p.coeff 0 = 1) (n : ℕ) :
+    (p ^ n).coeff 0 = 1 := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [pow_succ]
+      exact deningerMul_coeff_zero ih hp
+
 /-- **The monoid of normalized polynomials is free commutative on the normalized irreducibles.**
 Factorization is additive on products. -/
 theorem deningerNormalizedFactors_mul {p q : Polynomial F} (hp : p.coeff 0 = 1)
     (hq : q.coeff 0 = 1) :
-    deningerNormalizedFactors (p * q) (deningerMul_coeff_zero hp hq)
-      = deningerNormalizedFactors p hp + deningerNormalizedFactors q hq := by
+    deningerNormalizedFactors (p * q)
+      = deningerNormalizedFactors p + deningerNormalizedFactors q := by
   refine (deningerNormalizedFactors_eq (deningerMul_coeff_zero hp hq) ?_ ?_).symm
   · intro r hr
     rcases Multiset.mem_add.1 hr with h | h
     · exact deningerNormalizedFactors_mem hp h
     · exact deningerNormalizedFactors_mem hq h
-  · rw [Multiset.prod_add, deningerNormalizedFactors_prod, deningerNormalizedFactors_prod]
+  · rw [Multiset.prod_add, deningerNormalizedFactors_prod hp, deningerNormalizedFactors_prod hq]
 
 @[simp] theorem deningerNormalizedFactors_one :
-    deningerNormalizedFactors (1 : Polynomial F) (by simp) = 0 :=
+    deningerNormalizedFactors (1 : Polynomial F) = 0 :=
   (deningerNormalizedFactors_eq (by simp) (by simp) (by simp)).symm
 
 /-- An irreducible normalized polynomial has itself as its only factor. -/
 theorem deningerNormalizedFactors_irreducible {p : Polynomial F} (hp : p.coeff 0 = 1)
-    (hirr : Irreducible p) : deningerNormalizedFactors p hp = {p} :=
+    (hirr : Irreducible p) : deningerNormalizedFactors p = {p} :=
   (deningerNormalizedFactors_eq hp (by
     intro r hr
     rw [Multiset.mem_singleton] at hr
     exact hr ▸ ⟨hp, hirr⟩) (by simp)).symm
+
+theorem deningerNormalizedFactors_pow {p : Polynomial F} (hp : p.coeff 0 = 1) (n : ℕ) :
+    deningerNormalizedFactors (p ^ n) = n • deningerNormalizedFactors p := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [pow_succ, deningerNormalizedFactors_mul (deningerPow_coeff_zero hp n) hp, ih,
+        succ_nsmul]
 
 end RHTower
