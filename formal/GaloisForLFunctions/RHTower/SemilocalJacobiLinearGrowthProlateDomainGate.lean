@@ -574,4 +574,60 @@ theorem summable_inv_semilocalProlateOffDiagonal {n : ℕ} (p : Fin n → ℕ)
   · exact mul_pos (semilocalFinitePrimeJacobiCoefficient_pos p hprime _)
       (semilocalFinitePrimeJacobiCoefficient_pos p hprime _)
 
+/-- The card's closed form `a_n(∅) = √((2n+1)(2n+2))/2`. -/
+theorem semilocalArchimedeanJacobiCoefficient_eq_sqrt_div_two (k : ℕ) :
+    semilocalArchimedeanJacobiCoefficient k =
+      Real.sqrt ((2 * (k : ℝ) + 1) * (2 * (k : ℝ) + 2)) / 2 := by
+  rw [semilocalArchimedeanJacobiCoefficient, eq_div_iff (by norm_num : (2 : ℝ) ≠ 0),
+    ← Real.sqrt_mul_self (by norm_num : (0 : ℝ) ≤ 2), ← Real.sqrt_mul (by positivity)]
+  congr 1
+  ring
+
+/-- Quadratic upper growth of the semilocal Jacobi coefficients. -/
+theorem semilocalFinitePrimeJacobiCoefficient_upper {n : ℕ} (p : Fin n → ℕ)
+    (hprime : ∀ i, (p i).Prime) (k : ℕ) :
+    semilocalFinitePrimeJacobiCoefficient p k ≤
+      semilocalJacobiComparisonConstant p * ((k : ℝ) + 1) := by
+  have hKpos : 0 < semilocalJacobiComparisonConstant p :=
+    semilocalJacobiComparisonConstant_pos p hprime
+  have h1 := semilocalFinitePrimeJacobiCoefficient_le p hprime k
+  have h2 : semilocalArchimedeanJacobiCoefficient k ≤ (k : ℝ) + 1 := by
+    rw [semilocalArchimedeanJacobiCoefficient]
+    have hle : ((k : ℝ) + 1 / 2) * ((k : ℝ) + 1) ≤ ((k : ℝ) + 1) ^ 2 := by nlinarith
+    calc Real.sqrt (((k : ℝ) + 1 / 2) * ((k : ℝ) + 1))
+        ≤ Real.sqrt (((k : ℝ) + 1) ^ 2) := Real.sqrt_le_sqrt hle
+      _ = (k : ℝ) + 1 := Real.sqrt_sq (by positivity)
+  nlinarith
+
+theorem semilocalProlate_offDiagonal_upper {n : ℕ} (p : Fin n → ℕ)
+    (hprime : ∀ i, (p i).Prime) (k : ℕ) :
+    semilocalProlateEvenOffDiagonal p k ≤
+        semilocalJacobiComparisonConstant p ^ 2 * (2 * (k : ℝ) + 1) * (2 * (k : ℝ) + 2) ∧
+      semilocalProlateOddOffDiagonal p k ≤
+        semilocalJacobiComparisonConstant p ^ 2 * (2 * (k : ℝ) + 2) * (2 * (k : ℝ) + 3) := by
+  have hKpos : 0 < semilocalJacobiComparisonConstant p :=
+    semilocalJacobiComparisonConstant_pos p hprime
+  have hstep : ∀ m : ℕ, semilocalFinitePrimeJacobiCoefficient p m ≤
+      semilocalJacobiComparisonConstant p * ((m : ℝ) + 1) :=
+    semilocalFinitePrimeJacobiCoefficient_upper p hprime
+  have hpos : ∀ m : ℕ, 0 < semilocalFinitePrimeJacobiCoefficient p m :=
+    semilocalFinitePrimeJacobiCoefficient_pos p hprime
+  constructor
+  · have h0 := hstep (2 * k)
+    have h1 := hstep (2 * k + 1)
+    have hc0 : ((2 * k : ℕ) : ℝ) + 1 = 2 * (k : ℝ) + 1 := by push_cast; ring
+    have hc1 : ((2 * k + 1 : ℕ) : ℝ) + 1 = 2 * (k : ℝ) + 2 := by push_cast; ring
+    rw [hc0] at h0
+    rw [hc1] at h1
+    rw [semilocalProlateEvenOffDiagonal]
+    nlinarith [hpos (2 * k), hpos (2 * k + 1), (Nat.cast_nonneg k : (0:ℝ) ≤ (k : ℝ))]
+  · have h1 := hstep (2 * k + 1)
+    have h2 := hstep (2 * k + 2)
+    have hc1 : ((2 * k + 1 : ℕ) : ℝ) + 1 = 2 * (k : ℝ) + 2 := by push_cast; ring
+    have hc2 : ((2 * k + 2 : ℕ) : ℝ) + 1 = 2 * (k : ℝ) + 3 := by push_cast; ring
+    rw [hc1] at h1
+    rw [hc2] at h2
+    rw [semilocalProlateOddOffDiagonal]
+    nlinarith [hpos (2 * k + 1), hpos (2 * k + 2), (Nat.cast_nonneg k : (0:ℝ) ≤ (k : ℝ))]
+
 end RHTower
