@@ -109,7 +109,7 @@ multiple of a Hardy function away from it, is itself a Hardy function.** -/
 theorem isHalfPlaneHardy_of_bounded_off_ball {F g H : ℂ → ℂ} {M C B δ : ℝ} {w₀ : ℂ}
     (hF : IsHalfPlaneHardy F M) (hH : DifferentiableOn ℂ H {w : ℂ | 0 < w.re})
     (hC : 0 ≤ C) (hB : 0 ≤ B) (hδ : 0 ≤ δ)
-    (hHeq : ∀ w : ℂ, 0 < w.re → H w = F w * g w)
+    (hHeq : ∀ w : ℂ, 0 < w.re → δ ≤ ‖w - w₀‖ → H w = F w * g w)
     (hgb : ∀ w : ℂ, 0 < w.re → δ ≤ ‖w - w₀‖ → ‖g w‖ ≤ C)
     (hHB : ∀ w : ℂ, 0 < w.re → ‖w - w₀‖ < δ → ‖H w‖ ≤ B) :
     IsHalfPlaneHardy H (C ^ 2 * M + δ * B ^ 2) := by
@@ -143,7 +143,7 @@ theorem isHalfPlaneHardy_of_bounded_off_ball {F g H : ℂ → ℂ} {M C B δ : �
         have h0 : (0 : ℝ) ≤ (Icc lo hi).indicator (fun _ => (1 : ℝ)) ξ :=
           Set.indicator_nonneg (fun _ _ => zero_le_one) _
         positivity
-      rw [hHeq _ hre, norm_mul]
+      rw [hHeq _ hre hge, norm_mul]
       nlinarith [norm_nonneg (F (rayLine σ ξ))]
   have hsq : ∀ (σ : ℝ), 0 < σ → ∀ ξ : ℝ,
       ‖H (rayLine σ ξ)‖ ^ 2
@@ -163,7 +163,7 @@ theorem isHalfPlaneHardy_of_bounded_off_ball {F g H : ℂ → ℂ} {M C B δ : �
           Set.indicator_nonneg (fun _ _ => zero_le_one) _
         positivity
       have h1 : ‖H (rayLine σ ξ)‖ ^ 2 ≤ C ^ 2 * ‖F (rayLine σ ξ)‖ ^ 2 := by
-        rw [hHeq _ hre, norm_mul, mul_pow]
+        rw [hHeq _ hre hge, norm_mul, mul_pow]
         have h2 : ‖g (rayLine σ ξ)‖ ^ 2 ≤ C ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hbnd 2
         nlinarith [sq_nonneg ‖F (rayLine σ ξ)‖]
       linarith
@@ -231,7 +231,44 @@ theorem isHalfPlaneHardy_mul_of_bounded_off_ball {F g : ℂ → ℂ} {M C B δ :
     (hgb : ∀ w : ℂ, 0 < w.re → δ ≤ ‖w - w₀‖ → ‖g w‖ ≤ C)
     (hFB : ∀ w : ℂ, 0 < w.re → ‖w - w₀‖ < δ → ‖F w * g w‖ ≤ B) :
     IsHalfPlaneHardy (fun w => F w * g w) (C ^ 2 * M + δ * B ^ 2) :=
-  isHalfPlaneHardy_of_bounded_off_ball hF (hF.holo.mul hg) hC hB hδ (fun _ _ => rfl) hgb hFB
+  isHalfPlaneHardy_of_bounded_off_ball hF (hF.holo.mul hg) hC hB hδ (fun _ _ _ => rfl) hgb hFB
+
+/-- **Dividing a Hardy function by a zero of the required order.**  If `H` is holomorphic on the
+half-plane, continuous at `w₀`, and satisfies `H·(w - w₀)^l = F` away from `w₀`, then `H` is itself
+a Hardy function. -/
+theorem isHalfPlaneHardy_of_div_pow {F H : ℂ → ℂ} {M : ℝ} (hF : IsHalfPlaneHardy F M)
+    {w₀ : ℂ} {l : ℕ} (hH : DifferentiableOn ℂ H {w : ℂ | 0 < w.re})
+    (hcont : ContinuousAt H w₀)
+    (hHeq : ∀ w : ℂ, 0 < w.re → w ≠ w₀ → H w * (w - w₀) ^ l = F w) :
+    ∃ N : ℝ, IsHalfPlaneHardy H N := by
+  have hev : ∀ᶠ w in 𝓝 w₀, ‖H w‖ ≤ ‖H w₀‖ + 1 := by
+    have h : Filter.Tendsto (fun w : ℂ => ‖H w‖) (𝓝 w₀) (𝓝 ‖H w₀‖) := hcont.norm
+    exact (h.eventually (gt_mem_nhds (by linarith : ‖H w₀‖ < ‖H w₀‖ + 1))).mono
+      fun w hw => le_of_lt hw
+  obtain ⟨δ, hδ0, hδ⟩ := Metric.eventually_nhds_iff.1 hev
+  refine ⟨_, isHalfPlaneHardy_of_bounded_off_ball (g := fun w => (((w - w₀) ^ l))⁻¹)
+    (w₀ := w₀) hF hH (C := (δ ^ l)⁻¹) (B := ‖H w₀‖ + 1) (δ := δ) (by positivity)
+    (by positivity) hδ0.le ?_ ?_ ?_⟩
+  · intro w hw hge
+    have hne : w - w₀ ≠ 0 := by
+      intro h
+      rw [h, norm_zero] at hge
+      linarith
+    have hpow : (w - w₀) ^ l ≠ 0 := pow_ne_zero _ hne
+    have hwne : w ≠ w₀ := sub_ne_zero.1 hne
+    rw [← hHeq w hw hwne]
+    field_simp
+  · intro w _ hge
+    have hne : w - w₀ ≠ 0 := by
+      intro h
+      rw [h, norm_zero] at hge
+      linarith
+    rw [norm_inv, norm_pow]
+    refine inv_anti₀ (by positivity) ?_
+    exact pow_le_pow_left₀ hδ0.le hge l
+  · intro w _ hball
+    exact hδ (by simpa [dist_eq_norm] using hball)
+
 
 end
 

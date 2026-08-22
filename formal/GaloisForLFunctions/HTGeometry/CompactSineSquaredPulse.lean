@@ -119,6 +119,117 @@ theorem deriv_compactSineSquaredPulse_ae {tau : ℝ} (htau : 0 < tau) (a0 u0 : �
   filter_upwards [hstart, hend] with u hu0 hu1
   exact deriv_compactSineSquaredPulse_of_ne_endpoints htau a0 u0 u hu0 hu1
 
+/-- The compact pulse is differentiable with derivative zero at the initial gluing endpoint. -/
+theorem deriv_compactSineSquaredPulse_start {tau : ℝ} (htau : 0 < tau) (a0 u0 : ℝ) :
+    deriv (compactSineSquaredPulse a0 u0 tau) u0 = 0 := by
+  have hsineDiff : DifferentiableAt ℝ (sineSquaredPulse a0 u0 tau) u0 := by
+    unfold sineSquaredPulse
+    fun_prop
+  have hsine := hsineDiff.hasDerivAt
+  rw [congrFun (deriv_sineSquaredPulse a0 u0 htau.ne') u0] at hsine
+  have hvel : sineSquaredPulseVelocity a0 u0 tau u0 = 0 := by
+    simp [sineSquaredPulseVelocity]
+  rw [hvel] at hsine
+  have hleft : HasDerivWithinAt (compactSineSquaredPulse a0 u0 tau) 0 (Iic u0) u0 := by
+    apply (hasDerivAt_const u0 0).hasDerivWithinAt.congr
+    · intro x hx
+      by_cases hxu : x = u0
+      · subst x
+        simp [compactSineSquaredPulse]
+      · have hlt : x < u0 := lt_of_le_of_ne hx hxu
+        simp [compactSineSquaredPulse, not_le_of_gt hlt]
+    · simp [compactSineSquaredPulse]
+  have hright : HasDerivWithinAt (compactSineSquaredPulse a0 u0 tau) 0
+      (Icc u0 (u0 + tau)) u0 := by
+    apply hsine.hasDerivWithinAt.congr
+    · intro x hx
+      simp [compactSineSquaredPulse, hx]
+    · simp [compactSineSquaredPulse]
+  have hunion := hleft.union hright
+  have hsets : Iic u0 ∪ Icc u0 (u0 + tau) = Iic (u0 + tau) := by
+    ext x
+    simp only [mem_union, mem_Iic, mem_Icc]
+    constructor
+    · rintro (hx | hx)
+      · linarith
+      · exact hx.2
+    · intro hx
+      by_cases hxu : x ≤ u0
+      · exact Or.inl hxu
+      · exact Or.inr ⟨le_of_not_ge hxu, hx⟩
+  rw [hsets] at hunion
+  have hnhds : Iic (u0 + tau) ∈ nhds u0 :=
+    Filter.mem_of_superset (Iio_mem_nhds (by linarith)) Iio_subset_Iic_self
+  exact (hunion.hasDerivAt hnhds).deriv
+
+/-- The compact pulse is differentiable with derivative zero at the final gluing endpoint. -/
+theorem deriv_compactSineSquaredPulse_end {tau : ℝ} (htau : 0 < tau) (a0 u0 : ℝ) :
+    deriv (compactSineSquaredPulse a0 u0 tau) (u0 + tau) = 0 := by
+  have hsineDiff : DifferentiableAt ℝ (sineSquaredPulse a0 u0 tau) (u0 + tau) := by
+    unfold sineSquaredPulse
+    fun_prop
+  have hsine := hsineDiff.hasDerivAt
+  rw [congrFun (deriv_sineSquaredPulse a0 u0 htau.ne') (u0 + tau)] at hsine
+  have hvel : sineSquaredPulseVelocity a0 u0 tau (u0 + tau) = 0 := by
+    have harg : 2 * Real.pi * (u0 + tau - u0) / tau = 2 * Real.pi := by
+      field_simp
+      ring
+    rw [sineSquaredPulseVelocity, harg, Real.sin_two_pi]
+    ring
+  rw [hvel] at hsine
+  have hleft : HasDerivWithinAt (compactSineSquaredPulse a0 u0 tau) 0
+      (Icc u0 (u0 + tau)) (u0 + tau) := by
+    apply hsine.hasDerivWithinAt.congr
+    · intro x hx
+      simp [compactSineSquaredPulse, hx]
+    · exact compactSineSquaredPulse_of_mem ⟨by linarith, le_rfl⟩
+  have hright : HasDerivWithinAt (compactSineSquaredPulse a0 u0 tau) 0
+      (Ici (u0 + tau)) (u0 + tau) := by
+    apply (hasDerivAt_const (u0 + tau) 0).hasDerivWithinAt.congr
+    · intro x hx
+      by_cases hxe : x = u0 + tau
+      · subst x
+        rw [compactSineSquaredPulse_of_mem (by constructor <;> linarith),
+          sineSquaredPulse_end a0 u0 htau.ne']
+      · have hgt : u0 + tau < x := lt_of_le_of_ne hx (Ne.symm hxe)
+        simp [compactSineSquaredPulse, not_le_of_gt hgt]
+    · rw [compactSineSquaredPulse_of_mem (by constructor <;> linarith),
+        sineSquaredPulse_end a0 u0 htau.ne']
+  have hunion := hleft.union hright
+  have hsets : Icc u0 (u0 + tau) ∪ Ici (u0 + tau) = Ici u0 := by
+    ext x
+    simp only [mem_union, mem_Ici, mem_Icc]
+    constructor
+    · rintro (hx | hx)
+      · exact hx.1
+      · linarith
+    · intro hx
+      by_cases hxe : x ≤ u0 + tau
+      · exact Or.inl ⟨hx, hxe⟩
+      · exact Or.inr (le_of_not_ge hxe)
+  rw [hsets] at hunion
+  have hnhds : Ici u0 ∈ nhds (u0 + tau) :=
+    Filter.mem_of_superset (Ioi_mem_nhds (by linarith)) Ioi_subset_Ici_self
+  exact (hunion.hasDerivAt hnhds).deriv
+
+/-- Equation `(28)` globally, including both gluing endpoints. -/
+theorem deriv_compactSineSquaredPulse {tau : ℝ} (htau : 0 < tau) (a0 u0 : ℝ) :
+    deriv (compactSineSquaredPulse a0 u0 tau) =
+      compactSineSquaredPulseVelocity a0 u0 tau := by
+  funext u
+  by_cases hstart : u = u0
+  · subst u
+    rw [deriv_compactSineSquaredPulse_start htau]
+    simp [compactSineSquaredPulseVelocity, sineSquaredPulseVelocity]
+  · by_cases hend : u = u0 + tau
+    · subst u
+      rw [deriv_compactSineSquaredPulse_end htau]
+      have harg : 2 * Real.pi * (u0 + tau - u0) / tau = 2 * Real.pi := by
+        field_simp
+        ring
+      simp [compactSineSquaredPulseVelocity, sineSquaredPulseVelocity, harg]
+    · exact deriv_compactSineSquaredPulse_of_ne_endpoints htau a0 u0 u hstart hend
+
 @[simp] theorem sineSquaredPulse_start (a0 u0 tau : ℝ) :
     sineSquaredPulse a0 u0 tau u0 = 0 := by simp [sineSquaredPulse]
 

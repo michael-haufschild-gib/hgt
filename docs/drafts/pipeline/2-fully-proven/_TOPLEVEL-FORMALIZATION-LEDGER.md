@@ -398,3 +398,33 @@ Theorems A and B were already closed; what was missing was the *selection* and t
 are now built: `exists_integer_twoLocal_theoremC` (selection) and
 `exists_algebraic_spectrum_package` + `half_mul_le_measureReal_hardWindow_physical` (interface).
 Remaining on the card: `(38)`, the recurrence half, and Theorem D.
+
+## `arithmetic-static-local-hardness-recurrence-window-law` PROMOTED to stage 3 (2026-08-22)
+
+All four theorems are unconditional Lean theorems.  Theorems A and B were already closed; this
+session added the selection, the interface and Theorem D:
+
+* **selection** — `TwoLocalWitness.exists_integer_twoLocal_theoremC`: an explicit traceless integer
+  two-local Hamiltonian with `|Gal| = D!`, cyclic `|0⟩^{⊗n}`, and collision below `4(2/3)ⁿ`.  Two
+  new devices: *lacunary Hilbert irreducibility* (quantify the bound inside the induction so each
+  recursive call may use a bound depending on the coordinate just chosen) and the *Walsh frame*
+  (which turns a transverse-field Hamiltonian into the near-diagonal configuration the corpus's
+  `spectralCollision_le_of_near_diagonal` already handles).
+* **interface** — `exists_algebraic_spectrum_package` and
+  `half_mul_le_measureReal_hardWindow_physical` / `_recurrenceWindow_physical`: the spectrum of a
+  traceless integer matrix presented as algebraic integers of its splitting field with a
+  distinguished embedding, and the orbit fidelity identified with the physical one.
+* **`(36)`, `(38)`** — `TwoLocalWitness.exists_integer_twoLocal_hardWindow`.
+* **Theorem D** — `RHTower.exists_integer_twoLocal_choiAlternation`.  One lemma away: the corpus's
+  Choi alternation law needs only `MaximallyProjectiveEnergy`, which *is* the spectral rigidity.
+
+Castillo–Dietmann's quantitative Hilbert irreducibility, the card's declared external blocker, is
+not needed.
+
+## Open (6)
+
+all-replica-static-centralizer-planar-separation-law,
+cusp-spectrum-radius-law,
+onset-recurrence-dimension-independence-law,
+route-e-cofactor-amplified-e3-token-supply, route-e-forbidden-support-e3-stability,
+schanuel-defects-algebraic-coefficient-independent, schanuel-stage-two-defect-slope-normal-form

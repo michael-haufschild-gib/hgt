@@ -69,7 +69,7 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Prop 1.3 (`t26n`) polynomial correspondence**: `(minpoly F x).map = (minpoly L x)^d` over any purely inseparable `L/F`, in particular over `κ₀^perf` | `RHTower/DeningerDynSysMinpolyPurelyInseparable.lean` | closed |
 | Prop 1.3 (`t26n`) normalization: reversal matches normalized with monic irreducibles; every monic irreducible is a minimal polynomial | `RHTower/DeningerDynSysNormalizedIrreducible.lean` | closed |
 | Prop 1.3 (`t26n`) free basis: normalized polynomials factor uniquely into normalized irreducibles | `RHTower/DeningerDynSysNormalizedFactorization.lean` | closed |
-| **Prop 1.3 (`t26n`) correspondence of normalized irreducibles**: `α.map = β^d` with `β` normalized irreducible over `κ₀^perf` | `RHTower/DeningerDynSysNormalizedCorrespondence.lean` | closed |
+| **Prop 1.3 (`t26n`) correspondence of normalized irreducibles**, both directions: `α.map = β^d` with `β` normalized irreducible over `κ₀^perf`, and every such `β` arises | `RHTower/DeningerDynSysNormalizedCorrespondence.lean` | closed |
 
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -117,10 +117,10 @@ AIC-domain comparison.
    **closed** (`deningerMinpoly_map_eq_pow`, via `deningerPow_eq_expand`).  What is still needed:
    (a) unique factorization of normalized polynomials — **closed**
    (`deningerExists_normalized_factorization`, `deningerNormalized_factorization_unique`);
-   (b) the correspondence `α.map = β^d` — **closed**
-   (`deningerNormalizedIrreducible_map_eq_pow`).  What remains: (c) surjectivity of that
-   correspondence (every normalized irreducible over `κ₀^perf` arises), (d) that `d` is exactly the
-   inseparable degree `d_r` of the corpus's `deningerInsepSubring`, and (e) the identification of
+   (b) the correspondence `α.map = β^d` in **both directions** — **closed**
+   (`deningerNormalizedIrreducible_map_eq_pow`, `deningerNormalizedIrreducible_exists_preimage`,
+   both from the core `deningerNormalizedPair`).  What remains: (c) that `d` is exactly the
+   inseparable degree `d_r` of the corpus's `deningerInsepSubring`, and (d) the identification of
    `(ℤ̲κ/κ₀)^H` with the free abelian group on the normalized irreducibles of `κ₀[t]`.
 2. **Prop 3.6 / Cor 3.7.**  Build `lim_{N₀} M` along the `ν`-th power maps (a subgroup of
    `N₀ → M` cut out by `x_{νμ}^μ = x_ν`, with the subspace topology), show `T = ker pr_1` embeds in

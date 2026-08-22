@@ -223,22 +223,92 @@ open GaloisForLFunctions.RHTower
 
 /-! ## The master bound: `𝔖_t` decays like `(1+|x|)^{-3/4}` on the real axis -/
 
-theorem exists_norm_suzukiFrakS_le {t : ℝ} (ht : 0 ≤ t) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, x ≠ 0 → XiC (x : ℂ) ≠ 0 →
-      ‖suzukiFrakS t (x : ℂ)‖ ≤ C * decayW x := by
-  obtain ⟨K, hK0, hK⟩ := exists_norm_suzukiLerchKernel_le_decayW
-  obtain ⟨M, hM0, hM⟩ := exists_norm_logDeriv_archFactor_vertical_le
+/-- The explicit `t`-dependent constant in the master decay bound; it is nondecreasing on
+`t ≥ 0`, which is what Proposition 1.3 needs. -/
+def suzukiFrakSConst (t : ℝ) : ℝ :=
+  8 * Real.exp (t / 2) + 8
+    + (∑ n ∈ Finset.Icc 2 ⌊Real.exp t⌋₊, screwPrimeWeight n) * (2 * t + 4)
+    + suzukiKernelConst
+    + (2 * t + 4) * (1 + suzukiArchConst)
+
+theorem suzukiFrakSConst_nonneg {t : ℝ} (ht : 0 ≤ t) : 0 ≤ suzukiFrakSConst t := by
   have hP : (0 : ℝ) ≤ ∑ n ∈ Finset.Icc 2 ⌊Real.exp t⌋₊, screwPrimeWeight n :=
     Finset.sum_nonneg fun n _ => screwPrimeWeight_nonneg n
-  refine ⟨2 * ‖4 * ((Real.exp (t / 2) : ℂ) - 1)‖ + 2 * ‖4 * ((Real.exp (-(t / 2)) : ℂ) - 1)‖
+  have h2t : (0 : ℝ) ≤ 2 * t + 4 := by linarith
+  have hexp : (0 : ℝ) < Real.exp (t / 2) := Real.exp_pos _
+  rw [suzukiFrakSConst]
+  nlinarith [suzukiKernelConst_nonneg, suzukiArchConst_nonneg, hP, h2t, hexp]
+
+theorem suzukiFrakSConst_mono {t T : ℝ} (ht : 0 ≤ t) (htT : t ≤ T) :
+    suzukiFrakSConst t ≤ suzukiFrakSConst T := by
+  have hexp : Real.exp (t / 2) ≤ Real.exp (T / 2) := Real.exp_le_exp.mpr (by linarith)
+  have hfloor : ⌊Real.exp t⌋₊ ≤ ⌊Real.exp T⌋₊ :=
+    Nat.floor_le_floor (Real.exp_le_exp.mpr htT)
+  have hsub : Finset.Icc 2 ⌊Real.exp t⌋₊ ⊆ Finset.Icc 2 ⌊Real.exp T⌋₊ :=
+    Finset.Icc_subset_Icc_right hfloor
+  have hmass : (∑ n ∈ Finset.Icc 2 ⌊Real.exp t⌋₊, screwPrimeWeight n)
+      ≤ ∑ n ∈ Finset.Icc 2 ⌊Real.exp T⌋₊, screwPrimeWeight n :=
+    Finset.sum_le_sum_of_subset_of_nonneg hsub fun n _ _ => screwPrimeWeight_nonneg n
+  have hmassnn : (0 : ℝ) ≤ ∑ n ∈ Finset.Icc 2 ⌊Real.exp t⌋₊, screwPrimeWeight n :=
+    Finset.sum_nonneg fun n _ => screwPrimeWeight_nonneg n
+  have h2t : (0 : ℝ) ≤ 2 * t + 4 := by linarith
+  have h2T : 2 * t + 4 ≤ 2 * T + 4 := by linarith
+  rw [suzukiFrakSConst, suzukiFrakSConst]
+  have hprod : (∑ n ∈ Finset.Icc 2 ⌊Real.exp t⌋₊, screwPrimeWeight n) * (2 * t + 4)
+      ≤ (∑ n ∈ Finset.Icc 2 ⌊Real.exp T⌋₊, screwPrimeWeight n) * (2 * T + 4) := by
+    calc (∑ n ∈ Finset.Icc 2 ⌊Real.exp t⌋₊, screwPrimeWeight n) * (2 * t + 4)
+        ≤ (∑ n ∈ Finset.Icc 2 ⌊Real.exp T⌋₊, screwPrimeWeight n) * (2 * t + 4) :=
+          mul_le_mul_of_nonneg_right hmass h2t
+      _ ≤ (∑ n ∈ Finset.Icc 2 ⌊Real.exp T⌋₊, screwPrimeWeight n) * (2 * T + 4) := by
+          refine mul_le_mul_of_nonneg_left h2T ?_
+          exact le_trans hmassnn hmass
+  have hlast : (2 * t + 4) * (1 + suzukiArchConst) ≤ (2 * T + 4) * (1 + suzukiArchConst) :=
+    mul_le_mul_of_nonneg_right h2T (by linarith [suzukiArchConst_nonneg])
+  linarith [hexp, hprod, hlast]
+
+/-- **The master decay bound.**  `‖𝔖_t(x)‖ ≤ C(t)·(1+|x|)^{-3/4}` off the origin and the real Xi
+zeros, with an explicit `C(t)` nondecreasing in `t ≥ 0`. -/
+theorem norm_suzukiFrakS_le {t : ℝ} (ht : 0 ≤ t) {x : ℝ} (hx : x ≠ 0) (hXi : XiC (x : ℂ) ≠ 0) :
+    ‖suzukiFrakS t (x : ℂ)‖ ≤ suzukiFrakSConst t * decayW x := by
+  have hK := fun (s : ℝ) (hs : 0 ≤ s) (y : ℝ) => norm_suzukiLerchKernel_le_decayW hs y
+  have hK0 := suzukiKernelConst_nonneg
+  have hM := norm_logDeriv_archFactor_vertical_le
+  have hM0 := suzukiArchConst_nonneg
+  set K : ℝ := suzukiKernelConst with hKdef
+  set M : ℝ := suzukiArchConst with hMdef
+  have hP : (0 : ℝ) ≤ ∑ n ∈ Finset.Icc 2 ⌊Real.exp t⌋₊, screwPrimeWeight n :=
+    Finset.sum_nonneg fun n _ => screwPrimeWeight_nonneg n
+  have hconstle : 2 * ‖4 * ((Real.exp (t / 2) : ℂ) - 1)‖
+      + 2 * ‖4 * ((Real.exp (-(t / 2)) : ℂ) - 1)‖
       + (∑ n ∈ Finset.Icc 2 ⌊Real.exp t⌋₊, screwPrimeWeight n) * (2 * t + 4)
       + K / 4 + Real.exp (-(t / 2)) * K / 4
-      + (2 * t + 4) * (1 + M) + K / 2, ?_, ?_⟩
-  · have h2t : (0 : ℝ) ≤ 2 * t + 4 := by linarith
-    have hexp : (0 : ℝ) < Real.exp (-(t / 2)) := Real.exp_pos _
-    nlinarith [norm_nonneg (4 * ((Real.exp (t / 2) : ℂ) - 1)),
-      norm_nonneg (4 * ((Real.exp (-(t / 2)) : ℂ) - 1)), hK0, hM0, hP, h2t, hexp]
-  intro x hx hXi
+      + (2 * t + 4) * (1 + M) + K / 2 ≤ suzukiFrakSConst t := by
+    have e1 : ‖4 * ((Real.exp (t / 2) : ℂ) - 1)‖ = 4 * |Real.exp (t / 2) - 1| := by
+      rw [show (4 : ℂ) * ((Real.exp (t / 2) : ℂ) - 1)
+          = (((4 * (Real.exp (t / 2) - 1) : ℝ)) : ℂ) by push_cast; ring,
+        Complex.norm_real, Real.norm_eq_abs, abs_mul]
+      norm_num
+    have e2 : ‖4 * ((Real.exp (-(t / 2)) : ℂ) - 1)‖ = 4 * |Real.exp (-(t / 2)) - 1| := by
+      rw [show (4 : ℂ) * ((Real.exp (-(t / 2)) : ℂ) - 1)
+          = (((4 * (Real.exp (-(t / 2)) - 1) : ℝ)) : ℂ) by push_cast; ring,
+        Complex.norm_real, Real.norm_eq_abs, abs_mul]
+      norm_num
+    have h1 : |Real.exp (t / 2) - 1| ≤ Real.exp (t / 2) := by
+      rw [abs_of_nonneg (by nlinarith [Real.one_le_exp (by linarith : (0:ℝ) ≤ t / 2)])]
+      linarith
+    have h2 : |Real.exp (-(t / 2)) - 1| ≤ 1 := by
+      have hle : Real.exp (-(t / 2)) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+      have hpos : (0 : ℝ) < Real.exp (-(t / 2)) := Real.exp_pos _
+      rw [abs_of_nonpos (by linarith)]
+      linarith
+    have h3 : Real.exp (-(t / 2)) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+    have hpos3 : (0 : ℝ) < Real.exp (-(t / 2)) := Real.exp_pos _
+    have h4 : Real.exp (-(t / 2)) * K ≤ K := by
+      calc Real.exp (-(t / 2)) * K ≤ 1 * K := mul_le_mul_of_nonneg_right h3 hK0
+        _ = K := one_mul K
+    rw [e1, e2, suzukiFrakSConst, ← hKdef, ← hMdef]
+    linarith [h1, h2, h4]
+  refine le_trans ?_ (mul_le_mul_of_nonneg_right hconstle (decayW_pos x).le)
   have hwpos : (0 : ℝ) < decayW x := decayW_pos x
   have hxpos : (0 : ℝ) < |x| := abs_pos.mpr hx
   have hnorm4 : ‖(4 : ℂ)‖ = 4 := by norm_num
@@ -354,6 +424,11 @@ theorem exists_norm_suzukiFrakS_le {t : ℝ} (ht : 0 ≤ t) :
       - ((Real.exp (-(t / 2)) : ℝ) : ℂ)
         * suzukiLerchKernel t ((1 : ℂ) / 4 - I * (x : ℂ) / 2) / 4‖ := norm_nonneg _
   nlinarith [hsplit, hRbound, hQ, hRnn, hwpos]
+
+theorem exists_norm_suzukiFrakS_le {t : ℝ} (ht : 0 ≤ t) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, x ≠ 0 → XiC (x : ℂ) ≠ 0 →
+      ‖suzukiFrakS t (x : ℂ)‖ ≤ C * decayW x :=
+  ⟨suzukiFrakSConst t, suzukiFrakSConst_nonneg ht, fun x hx hXi => norm_suzukiFrakS_le ht hx hXi⟩
 
 end
 end RHTower

@@ -1,13 +1,12 @@
 # Arithmetic static-local hardness--recurrence window law
 
 - **ID:** `arithmetic-static-local-hardness-recurrence-window-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4 (unconditional, axiom-clean; 2026-08-22)
 - **Type:** effective quenched plateau-entry / recurrence-window theorem
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`
 - **Inputs:** `local-clifford-return-excised-phase-incidence-law`,
   `generic-two-local-spectral-monodromy`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY CANDIDATE]
-  [LEAN DEFERRED BY CORPUS REFACTOR]`
+- **Status:** `[LEAN-CLOSED] [FRONTIER ADVANCE] [NOVELTY CANDIDATE]`
 - **Date:** 2026-08-08
 
 ## Public sentence
@@ -1350,3 +1349,34 @@ package and the same bridge (the orbit-fidelity to physical-norm conversion is P
 `eigenCoords` is a linear isometry) — and Theorem D, which reuses the *same* selection with the
 uniform Choi weights `p_j = 1/D` and the universal Choi phase-target entropy law in place of the
 replica budget.
+
+## CARD CLOSED: A, B, C AND D ARE ALL LEAN (2026-08-22, final)
+
+| Card statement | Declaration |
+|---|---|
+| Theorem A, `(5)` | `ArithmeticWindowCapstone.half_mul_le_measureReal_cubeVisit_of_algebraic` |
+| Theorem B, `(24)` | `ArithmeticWindowHardCell.half_mul_le_measureReal_hardWindow` |
+| Theorem B, `(25)` | `ArithmeticWindowHardCell.half_mul_le_measureReal_recurrenceWindow` |
+| Theorem C, `(30)`–`(31)` (the selection) | `TwoLocalWitness.exists_integer_twoLocal_theoremC` |
+| Theorem C, `(36)` and `(38)` | **`TwoLocalWitness.exists_integer_twoLocal_hardWindow`** |
+| `(42)`–`(43)` | `replica_budget_of_small_collision` (on the corpus's own `factorial_mul_pow_le_two_pow_neg`, `card_mul_two_pow_le_rpow`, `finrank_replicaTargetSpan_le_card`) |
+| Theorem D, `(55)`/`(58)` | **`RHTower.exists_integer_twoLocal_choiAlternation`** |
+
+Theorem D turned out to be one lemma away: the corpus already owned
+`maximallyProjective_pureChoiComplexity_alternates_syndetically`, whose only hypothesis on the
+Hamiltonian is `MaximallyProjectiveEnergy` — and that is *exactly* the rigidity of the spectrum,
+`maximallyProjectiveEnergy_of_integer_matrix`.  A balanced integer relation among the eigenvalues is
+a rational relation whose coefficient vector must be constant, and balancedness forces the constant
+to vanish.
+
+`exists_integer_twoLocal_hardWindow` now also carries `MaximallyProjectiveEnergy hH.eigenvalues`, so
+the same witness serves Theorems C and D.
+
+Every one of these is unconditional and axiom-clean (`propext`, `Classical.choice`, `Quot.sound`);
+all modules are umbrella-wired and the formal lint gate reports nothing against them.
+
+### Card status
+
+Stage 3.  Nothing on this card is conditional on an unformalized classical theorem — in particular
+**Castillo–Dietmann's quantitative Hilbert irreducibility is no longer needed**: the lacunary form
+of the qualitative theorem does the work.
