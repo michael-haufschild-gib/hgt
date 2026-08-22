@@ -19,6 +19,22 @@ open Complex
 def finiteEulerGammaSlope (p : Nat.Primes) : ℂ :=
   Complex.I * (Real.log p : ℂ) / (2 * (Real.pi : ℂ))
 
+/-- The Euler--Gamma slope has no real component. -/
+theorem finiteEulerGammaSlope_re (p : Nat.Primes) :
+    (finiteEulerGammaSlope p).re = 0 := by
+  simp [finiteEulerGammaSlope, Complex.div_re]
+
+/-- Every prime produces a genuinely upper-imaginary Gamma slope. -/
+theorem finiteEulerGammaSlope_im_pos (p : Nat.Primes) :
+    0 < (finiteEulerGammaSlope p).im := by
+  rw [finiteEulerGammaSlope]
+  simp only [Complex.div_im, mul_re, mul_im, I_re, ofReal_re, I_im, ofReal_im,
+    zero_mul, one_mul, sub_zero, zero_pow, add_zero, mul_zero]
+  have hlog : 0 < Real.log (p : ℝ) :=
+    Real.log_pos (by
+      simpa using (Nat.cast_lt (α := ℝ)).mpr p.property.one_lt)
+  positivity
+
 /-- The reciprocal Gamma pair associated with one finite Euler factor. -/
 def finiteEulerGammaReciprocalPair (p : Nat.Primes) (s : ℂ) : ℂ :=
   (Complex.Gamma (finiteEulerGammaSlope p * s) *
@@ -87,6 +103,22 @@ theorem finiteEulerLocalFactor_eq_gammaReciprocalPair (p : Nat.Primes) (s : ℂ)
         finiteEulerGammaReciprocalPair p s := by
   simpa only [finiteEulerGammaReciprocalPair] using
     finiteEulerLocalFactor_eq_reciprocalGammaPair p s
+
+/-- The functional-equation-symmetric Euler quartet is a four-factor reciprocal-Gamma
+weld with a constant exponential gauge. -/
+theorem finiteEulerLocalQuartet_eq_gammaReciprocalQuartet
+    (p : Nat.Primes) (s : ℂ) :
+    finiteEulerLocalQuartet p s =
+      (-2 * Complex.I * (Real.pi : ℂ)) ^ 2 *
+        Complex.exp (-((Real.log p : ℂ) / 2)) *
+        (finiteEulerGammaReciprocalPair p s *
+          finiteEulerGammaReciprocalPair p (1 - s)) := by
+  rw [finiteEulerLocalQuartet,
+    finiteEulerLocalFactor_eq_gammaReciprocalPair p s,
+    finiteEulerLocalFactor_eq_gammaReciprocalPair p (1 - s)]
+  rw [← Complex.exp_add]
+  congr 2
+  ring
 
 /-- A finite semilocal Euler multiplier is the product of its reciprocal Gamma pairs with the
 combined cardinality and logarithmic-exponential gauge. -/

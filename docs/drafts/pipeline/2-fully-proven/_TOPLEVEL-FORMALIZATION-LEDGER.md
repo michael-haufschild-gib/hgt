@@ -351,3 +351,19 @@ cusp-spectrum-radius-law,
 onset-recurrence-dimension-independence-law,
 route-e-cofactor-amplified-e3-token-supply, route-e-forbidden-support-e3-stability,
 schanuel-defects-algebraic-coefficient-independent, schanuel-stage-two-defect-slope-normal-form
+
+## Hilbert irreducibility with an *unbounded* good set (2026-08-22)
+
+`HTGeometry/HilbertIrreducibility/LargeSpecialisation.lean` (new, axiom-clean, umbrella-wired):
+every statement of the corpus's Hilbert chain now has a form whose good specialisations are
+**larger than any prescribed bound**, up to and including
+`gal_card_of_specialisation_gt`.  The only mathematical change is `exists_int_not_root_gt` — a
+nonzero complex polynomial has a non-root integer above any bound — because the corpus's good
+rationals are `s₀ + 1/t` with `t` arbitrarily large, so pushing `s₀` up pushes the whole good set
+up.  Everything else carries the extra conjunct through the existing proofs verbatim.
+
+This is the tool that turns a Zariski-open avoidance condition into an **ordinary open** one: with
+the birational substitution `Y = r + 1/Z`, good points of the substituted family with `Z > N` are
+good points of the original inside `(r, r + 1/N)`.  It is what
+`arithmetic-static-local-hardness-recurrence-window-law` needs for Theorem C's collision bound, and
+it replaces the appeal to Castillo–Dietmann's *quantitative* Hilbert irreducibility on that card.

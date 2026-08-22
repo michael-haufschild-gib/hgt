@@ -1930,3 +1930,35 @@ The changed leaf source check and targeted build
 axiom reports are `[propext, Classical.choice, Quot.sound]`.  This still does not construct an
 Abe-convergent seed or prove that finite packet interpolation/vanishing preserves its convergence
 property, so the card remains Stage 1.
+
+### Lean progress (coefficient-source convergence closure)
+
+`AbeConvergenceProperty.lean` now applies the exact Section-7 convergence property directly to
+all fixed finite coefficient sources of the form `phi * E^n`, followed by Abe's literal
+real-coordinate damping multiplier.  It proves local normal convergence of the resulting
+Poincare family and absolute summability of every actual mixed-jet coefficient family.  This
+connects the finite `E^n` source-class closure to the existing ℓ¹ jet bridge without adding a new
+analytic interface or a uniform phase-gap assumption.
+
+The changed leaf source check and targeted build
+`lake build GaloisForLFunctions.HTGeometry.AbeConvergenceProperty` passed.  Its two new theorem
+axiom reports are `[propext, Classical.choice, Quot.sound]`.  The sole unresolved construction
+remains unchanged: construct a concrete Abe-convergent seed and show that the finite packet
+interpolation/vanishing operations used in each rank extension retain that property.  The card
+remains Stage 1.
+
+### Lean progress (exact `E^n` Poincare-source identities)
+
+`AbeRealCoordinatePhi2.lean` now proves the remaining concrete coordinate identities used by the
+coefficient route.  The derivative of `E` in any direction is exactly
+`(2π i·v_k)E`; translating `E` multiplies it by the corresponding constant character; and, for
+every finite `n`, periodizing `seed * E^n` is exactly the `n`th translated-character scalar times
+`E^n * poincareTerm seed`.  Thus the finite coordinate-character sources used by the fixed-jet
+expansion are no longer only class-level objects: their relation to the actual Poincare summands is
+Lean-closed term by term.
+
+The changed leaf source check and targeted build
+`lake build GaloisForLFunctions.HTGeometry.AbeRealCoordinatePhi2` passed.  The four new theorem
+axiom reports are `[propext, Classical.choice, Quot.sound]`.  This prepares, but does not replace,
+the missing concrete Abe-convergent seed construction and its preservation under packet
+interpolation/vanishing; the card remains Stage 1.

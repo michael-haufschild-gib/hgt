@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CircleRieszFischerFourier
+import GaloisForLFunctions.HTGeometry.CircleFourierDensityUniqueness
+import GaloisForLFunctions.HTGeometry.HarmonicLogEquidistribution
 import GaloisForLFunctions.HTGeometry.SzegoLowerBoundGeneral
 
 /-!
@@ -134,6 +136,153 @@ theorem integrable_symmetricCircleFourierDensity {a : ℕ → ℝ}
   filter_upwards with z
   exact norm_symmetricCircleFourierDensity_le ha z
 
+/-- The normalized Haar integral of every integer circle monomial. -/
+theorem integral_circleLebesgue_coe_zpow (k : ℤ) :
+    ∫ z : Circle, (z : ℂ) ^ k ∂circleLebesgue = if k = 0 then 1 else 0 := by
+  have hmeas : AEStronglyMeasurable (fun z : Circle => (z : ℂ) ^ k) circleLebesgue :=
+    (circleZMonomial_memLp circleLebesgue k).aestronglyMeasurable
+  rw [circleLebesgue] at hmeas ⊢
+  rw [integral_map
+    (AddCircle.homeomorphCircle (T := (1 : ℝ)) one_ne_zero).continuous.aemeasurable hmeas]
+  · have hEq : (fun x : AddCircle (1 : ℝ) =>
+        ((AddCircle.homeomorphCircle (T := (1 : ℝ)) one_ne_zero x : Circle) : ℂ) ^ k)
+        = fun x => fourier k x := by
+      funext x
+      rw [AddCircle.homeomorphCircle_apply, fourier_apply, AddCircle.toCircle_zsmul]
+      exact (Circle.coe_zpow x.toCircle k).symm
+    rw [hEq, GaloisForLFunctions.integral_fourier_unitCircleHaar]
+  
+/-- Every nonconstant multiplicative circle monomial has zero normalized Haar average. -/
+theorem integral_circleLebesgue_coe_pow_eq_zero (n : ℕ) (hn : n ≠ 0) :
+    ∫ z : Circle, (z : ℂ) ^ n ∂circleLebesgue = 0 := by
+  simpa [zpow_natCast, hn] using
+    integral_circleLebesgue_coe_zpow (n : ℤ)
+
+/-- Every positive real Fourier mode has zero normalized Haar average. -/
+theorem integral_circleLebesgue_re_coe_pow_succ_eq_zero (n : ℕ) :
+    ∫ z : Circle, ((z : ℂ) ^ (n + 1)).re ∂circleLebesgue = 0 := by
+  have hInt : Integrable (fun z : Circle => (z : ℂ) ^ (n + 1)) circleLebesgue := by
+    simpa only [zpow_natCast] using
+      (circleZMonomial_memLp circleLebesgue ((n + 1 : ℕ) : ℤ)).integrable (by norm_num)
+  change ∫ z : Circle, RCLike.re ((z : ℂ) ^ (n + 1)) ∂circleLebesgue = 0
+  rw [integral_re hInt,
+    integral_circleLebesgue_coe_pow_eq_zero (n + 1) (Nat.succ_ne_zero n)]
+  rfl
+
+/-- Orthogonality of a positive real Fourier mode against a nonnegative circle monomial. -/
+theorem integral_re_circle_pow_mul_circle_pow (n k : ℕ) (hn : n ≠ 0) :
+    (∫ z : Circle, (((z : ℂ) ^ n).re : ℂ) * (z : ℂ) ^ k ∂circleLebesgue) =
+      if n = k then (2 : ℂ)⁻¹ else 0 := by
+  have hPow : Integrable (fun z : Circle => (z : ℂ) ^ n) circleLebesgue := by
+    simpa only [zpow_natCast] using
+      (circleZMonomial_memLp circleLebesgue (n : ℤ)).integrable (by norm_num)
+  have hplus : ∫ z : Circle, (z : ℂ) ^ n * (z : ℂ) ^ (k : ℤ) ∂circleLebesgue = 0 := by
+    rw [show (fun z : Circle => (z : ℂ) ^ n * (z : ℂ) ^ (k : ℤ)) =
+        fun z : Circle => (z : ℂ) ^ ((n : ℤ) + k) by
+      funext z
+      rw [← zpow_natCast]
+      exact (zpow_add₀ (Circle.coe_ne_zero z) _ _).symm,
+      integral_circleLebesgue_coe_zpow]
+    have hsum : (n : ℤ) + k ≠ 0 := by omega
+    rw [if_neg hsum]
+  have hminus : ∫ z : Circle, (z : ℂ) ^ n * (z : ℂ) ^ (-(k : ℤ))
+      ∂circleLebesgue = if n = k then 1 else 0 := by
+    rw [show (fun z : Circle => (z : ℂ) ^ n * (z : ℂ) ^ (-(k : ℤ))) =
+        fun z : Circle => (z : ℂ) ^ ((n : ℤ) - k) by
+      funext z
+      rw [← zpow_natCast]
+      convert (zpow_add₀ (Circle.coe_ne_zero z) (n : ℤ) (-(k : ℤ))).symm using 1 <;> ring,
+      integral_circleLebesgue_coe_zpow]
+    simp only [Int.sub_eq_zero, Int.ofNat_inj]
+  calc
+    (∫ z : Circle, (((z : ℂ) ^ n).re : ℂ) * (z : ℂ) ^ k ∂circleLebesgue) =
+        (2 : ℂ)⁻¹ *
+          ((∫ z : Circle, (z : ℂ) ^ n * (z : ℂ) ^ (k : ℤ) ∂circleLebesgue) +
+            conj (∫ z : Circle, (z : ℂ) ^ n * (z : ℂ) ^ (-(k : ℤ)) ∂circleLebesgue)) := by
+      simpa only [zpow_natCast] using
+        integral_re_mul_circle_zpow circleLebesgue hPow (k : ℤ)
+    _ = if n = k then (2 : ℂ)⁻¹ else 0 := by
+      rw [hplus, hminus]
+      by_cases hnk : n = k <;> simp [hnk]
+
+/-- Each nonconstant summand of a symmetric Fourier density is integrable. -/
+theorem integrable_symmetricCircleFourierDensity_term (a : ℕ → ℝ) (n : ℕ) :
+    Integrable (fun z : Circle => a (n + 1) * ((z : ℂ) ^ (n + 1)).re) circleLebesgue := by
+  have hPow : Integrable (fun z : Circle => (z : ℂ) ^ (n + 1)) circleLebesgue := by
+    simpa only [zpow_natCast] using
+      (circleZMonomial_memLp circleLebesgue ((n + 1 : ℕ) : ℤ)).integrable (by norm_num)
+  have hRe : Integrable (fun z : Circle => ((z : ℂ) ^ (n + 1)).re) circleLebesgue := by
+    simpa using Complex.reCLM.toContinuousLinearMap.integrable_comp hPow
+  exact hRe.const_mul _
+
+/-- Absolute coefficient summability controls the sum of the `L¹` norms of the Fourier tail. -/
+theorem summable_integral_norm_symmetricCircleFourierDensity_terms {a : ℕ → ℝ}
+    (ha : Summable fun n : ℕ => |a (n + 1)|) :
+    Summable (fun n : ℕ =>
+      ∫ z : Circle, ‖a (n + 1) * ((z : ℂ) ^ (n + 1)).re‖ ∂circleLebesgue) := by
+  refine Summable.of_nonneg_of_le (fun n => integral_nonneg fun z => norm_nonneg _) ?_ ha
+  intro n
+  have hpoint : ∀ z : Circle,
+      ‖a (n + 1) * ((z : ℂ) ^ (n + 1)).re‖ ≤ |a (n + 1)| := by
+    intro z
+    rw [Real.norm_eq_abs, abs_mul]
+    calc |a (n + 1)| * |((z : ℂ) ^ (n + 1)).re|
+        ≤ |a (n + 1)| * ‖(z : ℂ) ^ (n + 1)‖ := by
+          gcongr
+          exact abs_re_le_norm _
+      _ = |a (n + 1)| := by
+        rw [norm_pow, Circle.norm_coe, one_pow, mul_one]
+  calc
+    ∫ z : Circle, ‖a (n + 1) * ((z : ℂ) ^ (n + 1)).re‖ ∂circleLebesgue
+        ≤ ∫ _ : Circle, |a (n + 1)| ∂circleLebesgue :=
+      integral_mono (integrable_symmetricCircleFourierDensity_term a n).norm
+        (integrable_const (μ := circleLebesgue) |a (n + 1)|) hpoint
+    _ = |a (n + 1)| := by simp
+
+/-- The nonconstant Fourier tail is integrable under absolute coefficient summability. -/
+theorem integrable_tsum_symmetricCircleFourierDensity_terms {a : ℕ → ℝ}
+    (ha : Summable fun n : ℕ => |a (n + 1)|) :
+    Integrable (fun z : Circle =>
+      ∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ (n + 1)).re) circleLebesgue := by
+  have hdens := integrable_symmetricCircleFourierDensity ha
+  have hhead : Integrable (fun _ : Circle => a 0) circleLebesgue :=
+    integrable_const (μ := circleLebesgue) _
+  have hdiff := hdens.sub hhead
+  change Integrable (fun z : Circle => symmetricCircleFourierDensity a z - a 0)
+    circleLebesgue at hdiff
+  have htwo : Integrable (fun z : Circle =>
+      2 * ∑' n : ℕ, a (n + 1) * ((z : ℂ) ^ (n + 1)).re) circleLebesgue := by
+    simpa only [symmetricCircleFourierDensity, add_sub_cancel_left] using hdiff
+  have hhalf := htwo.const_mul (1 / 2 : ℝ)
+  convert hhalf using 1
+  ext z
+  ring
+
+/-- The normalized Haar mass of a symmetric Fourier density is its constant coefficient. -/
+theorem integral_symmetricCircleFourierDensity {a : ℕ → ℝ}
+    (ha : Summable fun n : ℕ => |a (n + 1)|) :
+    ∫ z : Circle, symmetricCircleFourierDensity a z ∂circleLebesgue = a 0 := by
+  let f : ℕ → Circle → ℝ := fun n z => a (n + 1) * ((z : ℂ) ^ (n + 1)).re
+  have hterms : ∀ n, Integrable (f n) circleLebesgue := fun n =>
+    integrable_symmetricCircleFourierDensity_term a n
+  have hnorm : Summable (fun n => ∫ z : Circle, ‖f n z‖ ∂circleLebesgue) :=
+    summable_integral_norm_symmetricCircleFourierDensity_terms ha
+  have htail : Integrable (fun z : Circle => ∑' n : ℕ, f n z) circleLebesgue :=
+    integrable_tsum_symmetricCircleFourierDensity_terms ha
+  have hswap := (MeasureTheory.integral_tsum_of_summable_integral_norm hterms hnorm).symm
+  change ∫ z : Circle, a 0 + 2 * ∑' n : ℕ, f n z ∂circleLebesgue = a 0
+  rw [integral_add (integrable_const (μ := circleLebesgue) _) (htail.const_mul 2),
+    integral_const, probReal_univ, smul_eq_mul, one_mul, integral_const_mul, hswap]
+  have hzero : ∀ n : ℕ, ∫ z : Circle, f n z ∂circleLebesgue = 0 := by
+    intro n
+    simp only [f]
+    rw [integral_const_mul, integral_circleLebesgue_re_coe_pow_succ_eq_zero]
+    ring
+  rw [show (∑' n : ℕ, ∫ z : Circle, f n z ∂circleLebesgue) = 0 by
+    simp_rw [hzero]
+    exact tsum_zero]
+  ring
+
 /-- The finite circle measure having the symmetric Fourier density with respect to Haar. -/
 def symmetricCircleFourierDensityMeasure (a : ℕ → ℝ) : Measure Circle :=
   circleLebesgue.withDensity fun z => ENNReal.ofReal (symmetricCircleFourierDensity a z)
@@ -145,6 +294,31 @@ theorem symmetricCircleFourierDensityMeasure_finite {a : ℕ → ℝ}
   unfold symmetricCircleFourierDensityMeasure
   exact isFiniteMeasure_withDensity_ofReal
     (integrable_symmetricCircleFourierDensity ha).hasFiniteIntegral
+
+/-- A nonnegative symmetric density of constant coefficient one defines a circle probability
+measure. -/
+theorem isProbabilityMeasure_symmetricCircleFourierDensityMeasure {a : ℕ → ℝ}
+    (ha : Summable fun n : ℕ => |a (n + 1)|)
+    (hpos : ∀ z : Circle, 0 ≤ symmetricCircleFourierDensity a z)
+    (hhead : a 0 = 1) :
+    IsProbabilityMeasure (symmetricCircleFourierDensityMeasure a) := by
+  rw [isProbabilityMeasure_iff, symmetricCircleFourierDensityMeasure,
+    withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  have hmass := MeasureTheory.ofReal_integral_eq_lintegral_ofReal
+    (integrable_symmetricCircleFourierDensity ha) (Eventually.of_forall hpos)
+  rw [integral_symmetricCircleFourierDensity ha, hhead] at hmass
+  simpa using hmass.symm
+
+/-- A strict Fourier-tail gap and unit constant coefficient give an explicit circle probability
+carrier. -/
+theorem isProbabilityMeasure_symmetricCircleFourierDensityMeasure_of_tail_gap {a : ℕ → ℝ}
+    (ha : Summable fun n : ℕ => |a (n + 1)|)
+    (hgap : 2 * ∑' n : ℕ, |a (n + 1)| < a 0)
+    (hhead : a 0 = 1) :
+    IsProbabilityMeasure (symmetricCircleFourierDensityMeasure a) := by
+  apply isProbabilityMeasure_symmetricCircleFourierDensityMeasure ha _ hhead
+  intro z
+  exact (symmetricCircleFourierDensity_pos ha hgap z).le
 
 end
 

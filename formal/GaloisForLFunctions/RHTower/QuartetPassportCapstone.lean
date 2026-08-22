@@ -353,6 +353,62 @@ theorem exists_quartet_passport_polynomial_of_base {J : Type} [Fintype J] [Decid
     rw [iterate_derivative_add, Polynomial.eval_add, hzero, add_zero]
     exact hbase
 
+/-- The arbitrary-base interpolant together with every global quartet-realizer guard. -/
+theorem exists_quartet_passport_realizer_of_base {J : Type} [Fintype J] [DecidableEq J]
+    [Nonempty J] (a₀ : ℝ) (ha₀ : a₀ ≠ 0) (α : J → ℂ) (N : J → ℕ)
+    (base : J → Polynomial ℂ) (hbase0 : ∀ j, (base j).eval (α j) = 0)
+    (hαre : ∀ j, (α j).re ≠ 0)
+    (hinj : Function.Injective (fun i : J × Fin 4 => quartetPoint (α i.1) i.2)) :
+    ∃ B : Polynomial ℂ,
+      0 < B.degree ∧
+      (∀ z : ℂ, quartetRealizer a₀ B (-z) = quartetRealizer a₀ B z) ∧
+      (∀ z : ℂ, quartetRealizer a₀ B ((starRingEnd ℂ) z) =
+        (starRingEnd ℂ) (quartetRealizer a₀ B z)) ∧
+      (∀ y : ℝ, quartetRealizer a₀ B ((y : ℂ) * I) ≠ 0) ∧
+      (∀ h : ℂ, Function.Periodic (quartetRealizer a₀ B) h → h = 0) ∧
+      (∀ (j : J) (n : ℕ), n < N j + 2 →
+        iteratedDeriv n (quartetRealizer a₀ B) (α j) =
+          iteratedDeriv n (fun z => coshQuartetEnvelope a₀ z * (base j).eval z) (α j)) := by
+  classical
+  obtain ⟨B, hBeven, hBreal, hBpos, hBjets⟩ :=
+    exists_quartet_passport_polynomial_of_base α N base hαre hinj
+  have hjet : ∀ (j : J) (n : ℕ), n < N j + 2 →
+      iteratedDeriv n (quartetRealizer a₀ B) (α j) =
+        iteratedDeriv n (fun z => coshQuartetEnvelope a₀ z * (base j).eval z) (α j) := by
+    intro j n hn
+    change iteratedDeriv n (fun z => coshQuartetEnvelope a₀ z * B.eval z) (α j) = _
+    apply iteratedDeriv_mul_congr (coshQuartetEnvelope_analyticAt a₀ (α j))
+      ((Polynomial.differentiable B).analyticAt (α j))
+      ((Polynomial.differentiable (base j)).analyticAt (α j))
+    intro m hm
+    rw [GaloisForLFunctions.HTGeometry.iteratedDeriv_polynomial_eval,
+      GaloisForLFunctions.HTGeometry.iteratedDeriv_polynomial_eval]
+    exact hBjets j m (by omega)
+  obtain ⟨j₀⟩ := ‹Nonempty J›
+  have hB0 : B.eval (α j₀) = 0 := by
+    have h := hBjets j₀ 0 (by omega)
+    simpa [hbase0 j₀] using h
+  have hBne : B ≠ 0 := by
+    obtain ⟨r, hr, heq⟩ := hBpos 0
+    intro hzero
+    rw [hzero] at heq
+    simp at heq
+    exact (ne_of_gt hr) (Complex.ofReal_eq_zero.mp heq.symm)
+  have hdeg : 0 < B.degree := by
+    by_contra hcon
+    push Not at hcon
+    have hconst : B = Polynomial.C (B.coeff 0) := Polynomial.eq_C_of_degree_le_zero hcon
+    apply hBne
+    rw [hconst]
+    have : B.coeff 0 = 0 := by
+      rw [hconst] at hB0
+      simpa using hB0
+    rw [this, map_zero]
+  refine ⟨B, hdeg, quartetRealizer_neg hBeven, quartetRealizer_conj hBreal,
+    quartetRealizer_ne_zero_on_imaginaryAxis ha₀ hBpos, ?_, hjet⟩
+  intro h hper
+  exact (quartetRealizer_periodic_iff ha₀ hdeg h).mp hper
+
 /-- The original linear-germ quartet passport theorem, recovered from the reusable arbitrary-base
 Hermite realization by choosing the local envelope-normalized linear target. -/
 theorem exists_quartet_passport_polynomial {J : Type} [Fintype J] [DecidableEq J]

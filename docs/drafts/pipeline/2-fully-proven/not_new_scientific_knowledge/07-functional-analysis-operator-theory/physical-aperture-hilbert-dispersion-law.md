@@ -350,15 +350,16 @@ audit of the Gram, distance, energy, and cross-floor theorems reports only `prop
 - [x] formalize the centered-indicator carrier, true Hilbert distance, Gram identity, and full
       finite fusion-energy positivity
 - [x] connect the Hilbert metric to the concrete clipped-prime endpoint definitions
-- [x] formalize centered-indicator antipodes and the exact Gram, norm, and symmetric-difference
-      formulas `(AH2)`, `(AH4)`--`(AH6)` as `HTGeometry.CenteredIndicatorHilbert`, with the
-      physical-aperture carrier bridged to that generic construction
+- [x] formalize centered-indicator antipodes, quotient minimization, and the exact Gram, norm,
+      and symmetric-difference formulas `(AH2)`--`(AH6)` as
+      `HTGeometry.CenteredIndicatorHilbert`, with the physical-aperture carrier bridged to that
+      generic construction
 - [x] formalize the generic finite weighted-dispersion identity `(AH7)` as
       `HTGeometry.finite_weighted_hilbert_dispersion`, and its concrete physical-aperture
       specialization
 - [x] formalize generic conditional negative type and its equality classification for
       zero-total-weight finite packets
-- [ ] formalize the remaining generic quotient-distance `(AH3)` and completeness statements
+- [ ] formalize the remaining generic completeness statement
 - [ ] prove a genuinely new arithmetic upper bound on `Disp_M`
 
 ## Log

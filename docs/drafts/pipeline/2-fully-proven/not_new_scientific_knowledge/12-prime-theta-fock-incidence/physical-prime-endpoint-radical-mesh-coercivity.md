@@ -202,3 +202,16 @@ gates and must not be claimed until present in Lean.
 
 - 2026-07-18 — extracted after the one-sided FCRJ correction; paper proof completed without
   numerical computation or web search.
+
+## Lean progress log — 2026-08-22
+
+Corpus audit confirms that `RHTower/PhysicalPrimeEndpointMeshCoercivity.lean` already closes the
+generic finite-mesh batch requested by `(PE12)`--`(PE14)`: it proves the exact two-cell variance
+identity, the harmonic-mean jump lower bound with equality classification, sharpness of the
+one-half constant, finite-mesh coercivity, and strict positive energy from a nonzero jump.  It also
+contains the unique-factorization endpoint-weight separation lemma
+`physicalPrimeEndpointWeight_ne_of_distinct`.
+
+This is a real partial closure, but not `(PE9)`: clipped physical logarithmic endpoints, the
+noncancellation map from active packets to jumps, and the corrected-response identification remain
+unformalized.  The card stays at Stage 2.

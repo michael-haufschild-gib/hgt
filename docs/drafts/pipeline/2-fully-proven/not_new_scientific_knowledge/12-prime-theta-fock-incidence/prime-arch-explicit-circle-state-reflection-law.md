@@ -444,3 +444,19 @@ concrete `L^2` reflection carrier.
   domination on the remaining degree-at-least-two tail-dominant coefficient cone, from the
   prime--Gamma source without importing divisor orientation or an RH-equivalent representing
   measure
+
+## Lean progress log — 2026-08-22
+
+The missing summable Fourier-density layer is now formalized in
+`HTGeometry/SummableCircleFourierDensity.lean`.  It defines the literal positive-frequency density,
+proves absolute-tail bounds, integrability, exact Haar mass `a₀`, and a general probability-measure
+constructor from nonnegativity and unit mass.
+
+`RHTower/PrimeArchShiftedCircleDensity.lean` specializes this to the exact prime--Gamma source:
+for every shift `s ≤ 12`, `wₛ/mₛ` is an unconditional probability measure, with pointwise strict
+positivity inherited from the formal endpoint/sector tail bound.  In particular `s = 0` supplies
+the ordinary normalized circle carrier claimed in `(8)`.  The target leaf build and new capstone
+axiom audit passed with only standard Lean foundations.
+
+This does not yet formalize `(9)` Fourier-moment recovery, the concrete `L²(T, μ_Xi)` reflection
+operator, or the reflected Hankel equivalence.  The card remains at Stage 2.

@@ -180,6 +180,60 @@ Steps 6 and 7 are now closed as well:
 The prerequisite `fourierUnitary` preserves `centralSoninCarrier a` is closed:
 `RHTower/SoninCarrierFourierInvariance.fourierUnitary_mem_centralSoninCarrier`.
 
+## LAYER 4 — Hardy `H²` of a half-plane and Paley–Wiener (FROZEN PLAN)
+
+Neither mathlib nor the corpus has a Hardy space of a half-plane, a Laplace transform of `L²`, or
+Paley–Wiener.  §4 of the paper is entirely phrased in `H²`, `A^s H²`, `s/(s−1)A^s H²`, so this is
+the gateway layer for Prop. 4.1, 4.2, 4.3, Lem. 4.4, Thm. 4.8, and much of §6/§7.
+
+### Normalisation
+`w = σ + iy`, half-plane `Re w > 0`.  For `φ ∈ L²(0,∞)`,
+`𝓛φ(w) := ∫_0^∞ φ(x)e^{-wx}dx`.  With mathlib's `𝓕g(ξ)=∫g(x)e^{-2πixξ}dx`,
+`𝓛φ(σ+iy) = 𝓕(e^{-σ·}φ)(y/2π)`, so `∫_ℝ|𝓛φ(σ+iy)|²dy = 2π‖e^{-σ·}φ‖²`.
+Burnol's `H²` on `Re s > 1/2` with `|ds|/2π` is this after `s = 1/2 + w` and `t = e^x`:
+`f̂(s) = ∫_0^∞ f(t)t^{-s}dt`, `φ(x) = f(e^x)e^{x/2}`, `f` supported in `[1,∞) ⟺ φ` supported in
+`[0,∞)`; `‖φ‖_{L²(ℝ)} = ‖f‖_{L²(0,∞)}`.
+
+### PW-A (easy direction) — `HTGeometry/HalfLineLaplaceL2.lean`
+1. `laplaceL2 φ w` is absolutely convergent for `Re w > 0` (Cauchy–Schwarz, `‖e^{-σ·}‖_{L²(0,∞)} = (2σ)^{-1/2}`).
+2. Truncations `∫_0^T` are entire (`HTGeometry/HalfPlaneGapApproximation.differentiable_integral_kernel`);
+   the tail is `≤ ‖φ‖e^{-σT}/√(2σ)`, so convergence is locally uniform on `Re w > 0` and
+   `TendstoLocallyUniformlyOn.differentiableOn` gives holomorphy.
+3. `laplaceL2 φ (σ + y·I) = 𝓕(e^{-σ·}φ)(y/2π)` and `∫_ℝ‖·‖²dy = 2π∫_0^∞e^{-2σx}|φ|²dx ↑ 2π‖φ‖²`.
+
+### PW-B (hard direction) — the frozen chain
+Hypothesis: `F` holomorphic on `Re w > 0`, `F(σ+i·) ∈ L²` for each `σ>0` with
+`∫_ℝ‖F(σ+iy)‖²dy ≤ M`.
+1. **Test transform.**  For `θ : ℝ → ℝ` smooth with compact support put
+   `Θ(w) := ∫ θ(x)e^{wx}dx`.  `Θ` is entire; on a strip `c ≤ Re w ≤ d` it is bounded, and one
+   integration by parts gives `‖Θ(w)‖ ≤ C/‖w‖`, hence `Θ(c+i·) ∈ L²`.
+2. **Contour shift.**  `Φ := F·Θ` is holomorphic on `Re w>0` and `Φ(σ+i·) ∈ L¹`
+   (Cauchy–Schwarz).  Horizontal edges: with `g(T) := ∫_c^d‖F(σ+iT)‖²dσ ∈ L¹(ℝ)`, choose
+   `T_n → ∞` with `g(T_n)+g(-T_n) → 0`; then
+   `‖∫_c^d Φ(σ±iT_n)dσ‖ ≤ √(g(±T_n))·(∫_c^d‖Θ‖²dσ)^{1/2} → 0`.
+   A **sequence** version of `HTGeometry/VerticalStripContourShift.integral_vertical_line_eq_of_horizontal_tendsto`
+   is needed (the corpus version demands the full `atTop` filter).  Conclusion:
+   `J(σ) := ∫_ℝ Φ(σ+iy)dy` is independent of `σ > 0`.
+3. **Parseval bridge.**  With `h_σ := 𝓕⁻¹_{L²}(y ↦ F(σ+2πiy))` one has
+   `∫_ℝ h_σ(x)e^{σx}θ(x)dx = (1/2π)J(σ)`, using `∫ f g = ∫ 𝓕f(-ξ)𝓕g(ξ)dξ` for `f,g ∈ L²` and
+   `𝓕(e^{σ·}θ)(ξ) = Θ(σ − 2πiξ)`.
+4. **σ-independence.**  Hence `∫ θ·(e^{α·}h_α) = ∫ θ·(e^{β·}h_β)` for every smooth compactly
+   supported `θ`, and `mathlib`'s `ae_eq_of_integral_contDiff_smul_eq` gives
+   `e^{α·}h_α = e^{β·}h_β` a.e.  Put `φ := e^{1·}h_1`, so `h_σ = e^{-σ·}φ` for every `σ>0`.
+5. **Support and membership.**  `∫e^{-2σx}|φ|²dx = ‖h_σ‖² ≤ M/2π` for all `σ>0`;
+   `σ→∞` forces `φ = 0` a.e. on `(-∞,0)`, `σ→0` (monotone convergence) gives `φ ∈ L²(0,∞)` with
+   `2π‖φ‖² ≤ M`.
+6. **Conclusion.**  `F(σ+iy) = 𝓛φ(σ+iy)` a.e. on each line, and both sides are continuous, so
+   `F = 𝓛φ` on the whole half-plane.
+
+Consequence (free, and needed for Thm 4.8): `‖F(w)‖ ≤ ‖φ‖(2 Re w)^{-1/2}`, i.e. elements of `H²`
+are bounded on `Re w ≥ ε > 0`.
+
+### Then
+* `RHTower/MellinHardyBridge.lean` — transport to `f̂(s)=∫_0^∞f(t)t^{-s}dt`:
+  `L²(a,∞;dt) ≅ A^sH²` and `ℂ·1_{0<t<a} + L²(a,∞;dt) ≅ s/(s−1)·A^sH²`.
+* Prop. 4.1, 4.2, 4.3 (`K` half), Lem. 4.4, Thm. 4.8, Def. 12/Thm. 4.9/Lem. 4.10.
+
 ## Gates
 - [x] 0 → 1  in-progress
 - [ ] 1 → 2  fully-proven on paper (the paper itself supplies the proofs)

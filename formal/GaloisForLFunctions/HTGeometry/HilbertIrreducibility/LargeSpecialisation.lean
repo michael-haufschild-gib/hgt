@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.HilbertIrreducibility.Main
 import GaloisForLFunctions.HTGeometry.HilbertIrreducibility.Multivariate
 import GaloisForLFunctions.HTGeometry.HilbertIrreducibility.SeveralVariables
+import GaloisForLFunctions.HTGeometry.HilbertIrreducibility.GaloisSpecialization
 
 /-!
 # Hilbert irreducibility with an unbounded set of good specialisations
@@ -478,5 +479,54 @@ theorem hilbert_multivariate_gt (N : ℤ) {m : ℕ} {G : Polynomial (MvPolynomia
       Irreducible (G.map (MvPolynomial.eval y)) ∧
       (G.map (MvPolynomial.eval y)).natDegree = G.natDegree :=
   hilbert_several_gt N m G g hG hdeg hg
+
+/-! ### Galois-preserving specialisation, unbounded form -/
+
+theorem gal_card_of_specialisation_gt (N : ℤ) {m D : ℕ}
+    {f : Polynomial (MvPolynomial (Fin m) ℚ)} (hf : f.Monic) (hfdeg : f.natDegree = D)
+    (hsep : (f.map (algebraMap (MvPolynomial (Fin m) ℚ)
+        (FractionRing (MvPolynomial (Fin m) ℚ)))).Separable)
+    (hgal : Nat.card (f.map (algebraMap (MvPolynomial (Fin m) ℚ)
+        (FractionRing (MvPolynomial (Fin m) ℚ)))).Gal = D.factorial)
+    {g : MvPolynomial (Fin m) ℚ} (hg : g ≠ 0) :
+    ∃ y : Fin m → ℚ, (∀ i, ((N : ℤ) : ℚ) < y i) ∧ MvPolynomial.eval y g ≠ 0 ∧
+      Nat.card (f.map (MvPolynomial.eval y)).Gal = D.factorial := by
+  classical
+  have hFm : (f.map (algebraMap (MvPolynomial (Fin m) ℚ)
+      (FractionRing (MvPolynomial (Fin m) ℚ)))).Monic := hf.map _
+  have hFdeg : (f.map (algebraMap (MvPolynomial (Fin m) ℚ)
+      (FractionRing (MvPolynomial (Fin m) ℚ)))).natDegree = D := by
+    rw [hf.natDegree_map, hfdeg]
+  obtain ⟨k, hk⟩ := exists_irreducible_resolvent
+    ((algebraMap (MvPolynomial (Fin m) ℚ) (FractionRing (MvPolynomial (Fin m) ℚ))).comp
+      (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ)) hFm hsep hFdeg hgal
+  have hR0map : (resolvent k (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ) f).map
+      (algebraMap (MvPolynomial (Fin m) ℚ) (FractionRing (MvPolynomial (Fin m) ℚ)))
+      = resolvent k ((algebraMap (MvPolynomial (Fin m) ℚ)
+          (FractionRing (MvPolynomial (Fin m) ℚ))).comp
+        (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ))
+        (f.map (algebraMap (MvPolynomial (Fin m) ℚ)
+          (FractionRing (MvPolynomial (Fin m) ℚ)))) :=
+    resolvent_map k _ _ f
+  have hR0irr : Irreducible (resolvent k (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ) f) :=
+    Polynomial.Monic.irreducible_of_irreducible_map _ _
+      (monic_resolvent k (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ) f)
+      (by rw [hR0map]; exact hk)
+  have hR0deg : (resolvent k (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ) f).natDegree
+      = D.factorial := by
+    rw [natDegree_resolvent, Fintype.card_perm, Fintype.card_fin]
+  obtain ⟨y, hyN, hy1, hy2, -⟩ := hilbert_multivariate_gt N hR0irr
+    (by rw [hR0deg]; exact Nat.factorial_pos D) hg
+  refine ⟨y, hyN, hy1, ?_⟩
+  have hcomp : (MvPolynomial.eval y).comp (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ)
+      = RingHom.id ℚ := by
+    refine RingHom.ext fun q => ?_
+    simp
+  have hspec : (resolvent k (MvPolynomial.C : ℚ →+* MvPolynomial (Fin m) ℚ) f).map
+      (MvPolynomial.eval y) = resolvent k (RingHom.id ℚ) (f.map (MvPolynomial.eval y)) := by
+    rw [resolvent_map k _ (MvPolynomial.eval y) f, hcomp]
+  rw [hspec] at hy2
+  exact gal_card_of_irreducible_resolvent (RingHom.id ℚ) (hf.map _)
+    (by rw [hf.natDegree_map, hfdeg]) hy2
 
 end GaloisForLFunctions.HTGeometry.HilbertIrreducibility

@@ -73,6 +73,54 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 7. **L7 — RH-conditional main theorems** (Prop 4.1, Thm 4.2, Cor 4.3, Thm 4.4/4.5, Cor 4.6,
    Lem 5.1/5.3/5.4, Thm 5.5/5.6/5.7, Prop 5.8, Thm 1.1/1.4/1.5, §6).
 
+## Assessment of the two remaining unconditional items
+
+### Eq. (7.2) — plan
+
+`E(y) := y𝔓_t(-iy) - ψ(¼+y/2)/2 + ½log π`.  Substituting the reflection formula
+(`logDeriv_riemannZeta_add_reflect_off_poles`) and the Gauss bridge `ψ(w) = ψ(¼) - suzukiLerchDiff 0 w`
+regroups `E(y)` as
+
+```text
+  4y(e^{t/2}-1)/(1+2y) + 4y(e^{-t/2}-1)/(1-2y)                          → 2(e^{t/2}-e^{-t/2})
++ ∑_{n ≤ e^t} Λ(n)n^{-1/2}(e^{-y(t-log n)}-1)                           → -∑_{n ≤ e^t} Λ(n)n^{-1/2}
++ e^{-yt}[log π - ψ(¼+y/2)/2 - ψ(¼)/2 - ζ'/ζ(½+y)]                      → 0
++ ζ'/ζ(½+y) + ψ(¼)/2 - ½log π                                            → ψ(¼)/2 - ½log π
++ ½[e^{-yt}·suzukiLerchDiff 0 (¼-y/2) - e^{-t/2}·suzukiLerchDiff t (¼-y/2)]  → -screwLerchTail₁ t
+```
+
+The first four lines are elementary (they need only `ζ'/ζ(σ) → 0` as `σ → ∞` and a polynomial bound
+on `ψ` on the positive real axis).  The fifth is the only real work: its `n`-th term is
+
+```text
+(e^{-yt} - e^{-y_n t}) · 2y / ((y_n - y) y_n),    y_n = 2n + 1/2,
+```
+
+whose singular factor `(y_n - y)^{-1}` is cancelled by the vanishing of `e^{-yt} - e^{-y_n t}` at
+`y = y_n`.  A `y`-uniform summable dominant exists in three regimes (`y_n ≤ y/2`, `y/2 < y_n < 2y`,
+`y_n ≥ 2y`), giving dominated convergence for the series.  The limit must be taken along
+`atTop ⊓ 𝓟 {y | ∀ m, 1/4 ≤ |y - (1/2+2m)|}`, because the *printed* formula (1.6) is Lean-junk exactly
+at `y ∈ {1/2 + 2m}` (trivial zeros of `ζ(1/2-y)` and poles of `ψ(1/4-y/2)`), where the total is
+regular but the individual blocks are not.
+
+### Prop 1.2 — plan and available corpus inputs
+
+Suzuki's proof needs `𝔖_t(z) ≪ |z|^{-1} log|z|` on the strip `|Im z| ≤ 1/2`, from Titchmarsh 9.6(A)
+and 9.2.  The corpus already owns both analytic inputs:
+
+- `RHTower.Sieve.landau_logDeriv` — Landau's lemma in full generality: `logDeriv f` equals the sum of
+  `m_ρ/(z-ρ)` over the zeros in a half-radius disc, up to `16 log M / R`.  This is Titchmarsh 9.6(A).
+- `RHTower.xiRegionOrderSum_closedBall_le` — Jensen's inequality for `ξ`: the divisor mass of a disc
+  is bounded by the order-one envelope.  This is the local zero count `O(log T)` of Titchmarsh 9.2.
+- `HTGeometry.norm_digamma_vertical_le_log`, `HTGeometry.re_digamma_vertical_bound_uncond` — the
+  archimedean `O(log|z|)`.
+
+The blockwise estimates are then: polar `O(1/|x|)`; prime block `O_t(1/|x|)`; digamma block
+`O(log|x|/|x|)`; Lerch block `O(log|x|/|x|)` (from `‖suzukiLerchKernel‖ = O(log|x|/|x|)` split at
+`n ≈ |x|`); and the `ζ'/ζ` block, whose poles at the real Xi zeros are exactly cancelled by the zeros
+of `(1+Θ^♯)/2 = A/E^♯`.  Note `A/E^♯` stays bounded even at a multiple real zero, because
+`A ~ c(x-γ)^m` and `E^♯ = A - iA' ~ -icm(x-γ)^{m-1}`.
+
 ## Source defects found
 
 - Eq. (7.2)'s proof prints `(d/dt)(e^{-t/2}Φ(e^{-2t},2,¼)) = -2e^{-t/2}Φ(e^{-2t},2,¼)`.  The correct

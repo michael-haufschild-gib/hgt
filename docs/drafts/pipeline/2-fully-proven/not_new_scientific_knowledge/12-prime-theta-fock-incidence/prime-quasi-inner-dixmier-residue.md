@@ -359,3 +359,21 @@ Until the three unchecked items pass, the permitted label is
   J. London Math. Soc. 94 (2016); arXiv:1601.06428.
 - S. Lord, A. Sedaev, and F. Sukochev, *Dixmier traces as singular symmetric functionals and
   applications to measurable operators*, J. Funct. Anal. 224 (2005); arXiv:math/0501131.
+
+## Lean progress log — 2026-08-22
+
+Added `RHTower/GaussOnePrimeCriticalResidue.lean`, wired into the `RHTower` umbrella.  It proves
+the literal depth-one identity
+
+```text
+gaussChannelResidue 1 p = 2 (p-1)^4 / (p^2 log p),
+```
+
+and packages the existing explicit one-prime critical diagonal realization as a weak trace-ideal
+operator with that exact logarithmic residue.  The leaf build and capstone axiom audit passed with
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Scope is intentionally narrower than the card theorem: this is the explicit critical model and
+the existing weighted `G_full` diagonal calculation.  No Lean theorem currently identifies it with
+the full Connes--Consani defect `H_p`, proves the source trace-class perturbation, or gives the
+depth-one singular-value/Dixmier statement for that defect.  The card therefore remains at Stage 2.

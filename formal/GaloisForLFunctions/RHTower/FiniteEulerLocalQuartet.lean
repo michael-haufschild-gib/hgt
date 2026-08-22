@@ -2,6 +2,7 @@ import Mathlib.NumberTheory.SumPrimeReciprocals
 import Mathlib.Analysis.Normed.Algebra.Exponential
 import Mathlib.Analysis.SpecialFunctions.Exponential
 import Mathlib.Analysis.Complex.Exponential
+import GaloisForLFunctions.HTGeometry.KroneckerFlow
 
 /-!
 # Finite Euler local quartets
@@ -62,6 +63,129 @@ theorem finiteEulerLocalQuartet_reflection (p : ℕ) (s : ℂ) :
   unfold finiteEulerLocalQuartet
   ring_nf
 
+/-- The exact imaginary part of a finite Euler quartet at `σ + it`. -/
+theorem finiteEulerLocalQuartet_im (p : Nat.Primes) (sigma t : ℝ) :
+    (finiteEulerLocalQuartet p ((sigma : ℂ) + (t : ℂ) * Complex.I)).im =
+      (Real.exp (-sigma * Real.log p) - Real.exp ((sigma - 1) * Real.log p)) *
+        Real.sin (t * Real.log p) := by
+  have hfirst : Complex.exp (-((sigma : ℂ) + (t : ℂ) * Complex.I) * Real.log p) =
+      (Real.exp (-sigma * Real.log p) : ℂ) *
+        ((Real.cos (t * Real.log p) : ℂ) - (Real.sin (t * Real.log p) : ℂ) * Complex.I) := by
+    rw [show -((sigma : ℂ) + (t : ℂ) * Complex.I) * Real.log p =
+        ((-sigma * Real.log p : ℝ) : ℂ) +
+          ((-(t * Real.log p) : ℝ) : ℂ) * Complex.I by
+        push_cast
+        ring,
+      Complex.exp_add, ← Complex.ofReal_exp, Complex.exp_ofReal_mul_I,
+      Real.cos_neg, Real.sin_neg]
+    push_cast
+    ring
+  have hsecond : Complex.exp (-(1 - ((sigma : ℂ) + (t : ℂ) * Complex.I)) * Real.log p) =
+      (Real.exp ((sigma - 1) * Real.log p) : ℂ) *
+        ((Real.cos (t * Real.log p) : ℂ) + (Real.sin (t * Real.log p) : ℂ) * Complex.I) := by
+    rw [show -(1 - ((sigma : ℂ) + (t : ℂ) * Complex.I)) * Real.log p =
+        (((sigma - 1) * Real.log p : ℝ) : ℂ) +
+          ((t * Real.log p : ℝ) : ℂ) * Complex.I by
+        push_cast
+        ring,
+      Complex.exp_add, ← Complex.ofReal_exp, Complex.exp_ofReal_mul_I]
+  unfold finiteEulerLocalQuartet finiteEulerLocalFactor
+  rw [hfirst, hsecond]
+  simp only [Complex.add_re, Complex.add_im, Complex.mul_im, Complex.sub_re, Complex.sub_im,
+    Complex.one_re, Complex.one_im,
+    Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re,
+    Complex.I_im, mul_zero, mul_one, sub_zero, zero_mul, zero_sub]
+  ring
+
+/-- A real local Euler quartet is either on the critical line or at a resonant prime-log phase. -/
+theorem finiteEulerLocalQuartet_im_eq_zero_iff (p : Nat.Primes) (sigma t : ℝ) :
+    (finiteEulerLocalQuartet p ((sigma : ℂ) + (t : ℂ) * Complex.I)).im = 0 ↔
+      sigma = 1 / 2 ∨ Real.sin (t * Real.log p) = 0 := by
+  rw [finiteEulerLocalQuartet_im]
+  constructor
+  · intro h
+    rcases mul_eq_zero.mp h with hfactor | hsin
+    · left
+      have harg : -sigma * Real.log p = (sigma - 1) * Real.log p :=
+        Real.exp_injective (sub_eq_zero.mp hfactor)
+      have hlog : 0 < Real.log (p : ℝ) :=
+        Real.log_pos (by
+          simpa using (Nat.cast_lt (α := ℝ)).mpr p.property.one_lt)
+      have hmul : (2 * sigma - 1) * Real.log p = 0 := by
+        calc
+          (2 * sigma - 1) * Real.log p =
+              -((-sigma * Real.log p) - (sigma - 1) * Real.log p) := by ring
+          _ = 0 := by rw [harg]; ring
+      have hlinear : 2 * sigma - 1 = 0 :=
+        (mul_eq_zero.mp hmul).resolve_right (ne_of_gt hlog)
+      linarith
+    · exact Or.inr hsin
+  · rintro (hsigma | hsin)
+    · rw [hsigma]
+      ring_nf
+    · rw [hsin, mul_zero]
+
+/-- At nonzero height, simultaneous reality of quartets at two distinct primes
+forces the critical line. -/
+theorem finiteEulerLocalQuartet_two_prime_real_iff_criticalLine
+    (p q : Nat.Primes) (hpq : p ≠ q) (sigma t : ℝ) (ht : t ≠ 0) :
+    ((finiteEulerLocalQuartet p ((sigma : ℂ) + (t : ℂ) * Complex.I)).im = 0 ∧
+      (finiteEulerLocalQuartet q ((sigma : ℂ) + (t : ℂ) * Complex.I)).im = 0) ↔
+      sigma = 1 / 2 := by
+  constructor
+  · rintro ⟨hpim, hqim⟩
+    rcases (finiteEulerLocalQuartet_im_eq_zero_iff p sigma t).mp hpim with hline | hpzero
+    · exact hline
+    rcases (finiteEulerLocalQuartet_im_eq_zero_iff q sigma t).mp hqim with hline | hqzero
+    · exact hline
+    obtain ⟨k, hk⟩ := Real.sin_eq_zero_iff.mp hpzero
+    obtain ⟨l, hl⟩ := Real.sin_eq_zero_iff.mp hqzero
+    have hp_log_pos : 0 < Real.log (p : ℝ) :=
+      Real.log_pos (by
+        simpa using (Nat.cast_lt (α := ℝ)).mpr p.property.one_lt)
+    have hk_ne : k ≠ 0 := by
+      intro hkzero
+      have hzero : t * Real.log (p : ℝ) = 0 := by
+        rw [← hk, hkzero]
+        simp
+      exact (mul_ne_zero ht (ne_of_gt hp_log_pos)) hzero
+    let m : Nat.Primes →₀ ℤ := Finsupp.single p l + Finsupp.single q (-k)
+    have hcross : (l : ℝ) * (t * Real.log (p : ℝ)) =
+        (k : ℝ) * (t * Real.log (q : ℝ)) := by
+      rw [← hk, ← hl]
+      ring
+    have hrelation : (l : ℝ) * Real.log (p : ℝ) +
+        (-k : ℝ) * Real.log (q : ℝ) = 0 := by
+      apply (mul_left_cancel₀ ht)
+      rw [mul_zero]
+      calc
+        t * ((l : ℝ) * Real.log (p : ℝ) + (-k : ℝ) * Real.log (q : ℝ)) =
+            (l : ℝ) * (t * Real.log (p : ℝ)) -
+              (k : ℝ) * (t * Real.log (q : ℝ)) := by ring
+        _ = 0 := sub_eq_zero.mpr hcross
+    have hfrequency : GaloisForLFunctions.primeLogFrequency m = 0 := by
+      unfold GaloisForLFunctions.primeLogFrequency
+      dsimp [m]
+      rw [Finsupp.sum_add_index]
+      · rw [Finsupp.sum_single_index (by simp), Finsupp.sum_single_index (by simp)]
+        simpa using hrelation
+      · intro a ha
+        simp
+      · intro a ha b₁ b₂
+        push_cast
+        ring
+    have hmzero : m = 0 :=
+      (GaloisForLFunctions.primeLogFrequency_eq_zero_iff m).mp hfrequency
+    have hkzero : k = 0 := by
+      have hvalue := congrArg (fun f : Nat.Primes →₀ ℤ => f q) hmzero
+      simpa [m, hpq] using hvalue
+    exact (hk_ne hkzero).elim
+  · intro hline
+    subst sigma
+    constructor <;> apply (finiteEulerLocalQuartet_im_eq_zero_iff _ _ _).mpr
+    · exact Or.inl rfl
+    · exact Or.inl rfl
+
 /-- A prime Euler factor does not vanish on the critical line. -/
 theorem finiteEulerLocalFactor_criticalLine_ne_zero (p : Nat.Primes) (t : ℝ) :
     finiteEulerLocalFactor p (1 / 2 + (t : ℂ) * Complex.I) ≠ 0 := by
@@ -117,6 +241,31 @@ theorem finiteEulerLocalQuartet_criticalLine_re_pos (p : Nat.Primes) (t : ℝ) :
   simp only [ofReal_re]
   exact sq_pos_of_pos
     (norm_pos_iff.mpr (finiteEulerLocalFactor_criticalLine_ne_zero p t))
+
+/-- At nonzero height, two distinct local quartets are both strictly positive
+real numbers exactly on the critical line. -/
+theorem finiteEulerLocalQuartet_two_prime_positive_real_iff_criticalLine
+    (p q : Nat.Primes) (hpq : p ≠ q) (sigma t : ℝ) (ht : t ≠ 0) :
+    (((finiteEulerLocalQuartet p ((sigma : ℂ) + (t : ℂ) * Complex.I)).im = 0 ∧
+        0 < (finiteEulerLocalQuartet p ((sigma : ℂ) + (t : ℂ) * Complex.I)).re) ∧
+      ((finiteEulerLocalQuartet q ((sigma : ℂ) + (t : ℂ) * Complex.I)).im = 0 ∧
+        0 < (finiteEulerLocalQuartet q ((sigma : ℂ) + (t : ℂ) * Complex.I)).re)) ↔
+      sigma = 1 / 2 := by
+  constructor
+  · rintro ⟨⟨hpim, _⟩, ⟨hqim, _⟩⟩
+    exact (finiteEulerLocalQuartet_two_prime_real_iff_criticalLine p q hpq sigma t ht).mp
+      ⟨hpim, hqim⟩
+  · intro hline
+    subst sigma
+    constructor
+    · refine ⟨?_, ?_⟩
+      exact (finiteEulerLocalQuartet_im_eq_zero_iff p (1 / 2) t).mpr (Or.inl rfl)
+      convert finiteEulerLocalQuartet_criticalLine_re_pos p t using 1
+      norm_num
+    · refine ⟨?_, ?_⟩
+      exact (finiteEulerLocalQuartet_im_eq_zero_iff q (1 / 2) t).mpr (Or.inl rfl)
+      convert finiteEulerLocalQuartet_criticalLine_re_pos q t using 1
+      norm_num
 
 end GaloisForLFunctions.RHTower
 

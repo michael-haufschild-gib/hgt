@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaFirstMoment
 import GaloisForLFunctions.RHTower.SignedReflectionParity
+import GaloisForLFunctions.HTGeometry.PRecursiveDFinite
 import Mathlib.MeasureTheory.Function.L2Space
 
 open Complex Real MeasureTheory Set Filter Topology Polynomial
@@ -307,15 +308,8 @@ theorem iteratedDeriv_XiC_odd_zero {n : ℕ} (hn : Odd n) :
 theorem iteratedDeriv_id_mul_zero_succ
     (f : ℂ → ℂ) (n : ℕ) (hf : ContDiffAt ℂ (n + 1 : ℕ∞) f 0) :
     iteratedDeriv (n + 1) (fun z => z * f z) 0 =
-      (n + 1 : ℕ) * iteratedDeriv n f 0 := by
-  have hid : ContDiffAt ℂ (n + 1 : ℕ∞) (fun z : ℂ => z) 0 := by fun_prop
-  rw [show (fun z : ℂ => z * f z) = (fun z => z) * f by rfl,
-    iteratedDeriv_mul hid hf]
-  rw [Finset.sum_eq_single 1]
-  · simp [iteratedDeriv_fun_id_zero]
-  · intro b hb hb1
-    simp [iteratedDeriv_fun_id_zero, hb1]
-  · simp
+      (n + 1 : ℕ) * iteratedDeriv n f 0 :=
+  GaloisForLFunctions.HTGeometry.iteratedDeriv_id_mul_zero_succ_of_contDiffAt f n hf
 
 theorem normalizedPrimeArch_recurrence_one :
     iteratedDeriv 2 XiC 0 +

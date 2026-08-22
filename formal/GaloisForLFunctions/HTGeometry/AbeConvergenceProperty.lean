@@ -52,6 +52,37 @@ theorem HasAbeConvergenceProperty.summable_norm_abeRealCoordinateDampedSource_je
   exact HasAbeConvergenceProperty.normal_abeRealCoordinateDampedSource
     ψ f φ hf hφ k t hreal
 
+/-- Every fixed finite coordinate-character coefficient source, followed by literal real-coordinate
+damping, remains locally normally summable under Abe's convergence property. -/
+theorem HasAbeConvergenceProperty.normal_abeRealCoordinateDampedSource_mul_profile_pow
+    {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)} (ψ : AutomorphicFactor d Γ)
+    (f φ : MultivariateEntire d) (hf : HasAbeConvergenceProperty ψ f)
+    (hφ : IsAbePhi2 Γ φ) (k : Fin d) (t : ℂ)
+    (hreal : ∀ γ : Γ, ∃ r : ℝ, γ.1 k = (r : ℂ)) (n : ℕ) :
+    SummableLocallyUniformlyOn (fun γ =>
+      poincareTerm ψ (f * ((φ * abeRealCoordinateProfile d k ^ n) *
+        abeExponentialDampingMultiplier t (abeRealCoordinateProfile d k))) γ) Set.univ := by
+  apply hf
+  have hpower : IsAbePhi2 Γ (φ * abeRealCoordinateProfile d k ^ n) :=
+    hφ.mul_abeRealCoordinateProfile_pow φ k hreal n
+  exact IsAbePhi2.mul_abeExponentialDampingMultiplier_abeRealCoordinateProfile
+    (φ * abeRealCoordinateProfile d k ^ n) hpower k t hreal
+
+/-- Consequently the actual mixed-jet coefficients of every fixed finite coordinate-character
+source are absolutely summable. -/
+theorem HasAbeConvergenceProperty.summable_norm_abeRealCoordinateDampedSource_mul_profile_pow_jet
+    {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)} (ψ : AutomorphicFactor d Γ)
+    (f φ : MultivariateEntire d) (hf : HasAbeConvergenceProperty ψ f)
+    (hφ : IsAbePhi2 Γ φ) (k : Fin d) (t : ℂ)
+    (hreal : ∀ γ : Γ, ∃ r : ℝ, γ.1 k = (r : ℂ)) (n : ℕ)
+    (x : Fin d → ℂ) (a : Fin d →₀ ℕ) :
+    Summable (fun γ => ‖multiIndexJetEvalCLM x a
+      (poincareTermEntire ψ (f * ((φ * abeRealCoordinateProfile d k ^ n) *
+        abeExponentialDampingMultiplier t (abeRealCoordinateProfile d k))) γ)‖) := by
+  apply summable_norm_multiIndexJetEvalCLM_poincareTermEntire
+  exact HasAbeConvergenceProperty.normal_abeRealCoordinateDampedSource_mul_profile_pow
+    ψ f φ hf hφ k t hreal n
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -8,7 +8,7 @@ Rules in force: no added hypotheses standing for analytic inputs, no axioms, no 
 never full builds / umbrella builds (`lake env lean <file>` to check, `lake build <module>` only for
 the oleans an `#print axioms` scratch needs); search the corpus before building anything.
 
-## Card triage (17 cards) — 6 promoted, 11 remain
+## Card triage (17 cards) — 7 promoted, 10 remain
 
 | # | card | state | notes |
 |---|---|---|---|
@@ -23,7 +23,7 @@ the oleans an `#print axioms` scratch needs); search the corpus before building 
 | 9 | semilocal-euler-kernel-chart-differentiability | TODO | |
 | 10 | semilocal-jacobi-linear-growth-prolate-domain-gate | **PROMOTED 2026-08-22** | `HTGeometry/MonicOrthoExtremalComparison.lean` + `RHTower/SemilocalJacobiLinearGrowthProlateDomainGate.lean` |
 | 11 | sonin-burnol-conductor-cutoff-bounded-graph-law | TODO | |
-| 12 | sonin-place-transition-cutoff-dichotomy | TODO | |
+| 12 | sonin-place-transition-cutoff-dichotomy | **PROMOTED 2026-08-22** | `RHTower/SoninRawSupportCutoffCornerNoncompact.lean` closes part B |
 | 13 | sonin-prime-seam-exterior-factorization | PARTIAL | `HTGeometry/BilinearExteriorPairFactorization.lean` + `RHTower/SoninPrimeSeamExteriorFactorization.lean` give `(3)`, `(8a)`, `(8g)`; blocked only on card 15's tensor estimate `(4)`–`(5)` |
 | 14 | sonin-small-cutoff-ground-row-survival | TODO | |
 | 15 | sonin-two-particle-prime-coherence | TODO | |
@@ -198,7 +198,11 @@ Riesz and closes the gap.
 
 Planned module: `RHTower/SoninTwoParticlePrimeCoherence.lean` — the shell amplification plus the
 estimate, carried out in `UniformSpace.Completion (evenSubspace ⊗[ℂ] evenSubspace)` so that Riesz
-is available and `IsCompactOperator` means what the card means.
+is available and `IsCompactOperator` means what the card means.  The bridge that makes this work is
+now built: `HTGeometry/HilbertCompletionWeakNull.lean` proves
+`HTGeometry.completion_weakly_tendsto_zero` — a bounded sequence that is weakly null against the
+dense pre-Hilbert space is weakly null against **every** continuous functional on the completion,
+which is exactly the hypothesis shape the compact-operator criteria need.
 
 ## State after the 2026-08-22 session — 6 promoted, 11 remain
 

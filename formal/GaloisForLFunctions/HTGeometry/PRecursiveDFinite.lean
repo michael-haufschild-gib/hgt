@@ -318,6 +318,20 @@ private theorem iteratedDeriv_id_mul {h : ℂ → ℂ} (hh : Differentiable ℂ 
       push_cast
       ring
 
+/-- The local Leibniz reduction for a coordinate factor at the origin. -/
+theorem iteratedDeriv_id_mul_zero_succ_of_contDiffAt
+    (h : ℂ → ℂ) (n : ℕ) (hh : ContDiffAt ℂ (n + 1 : ℕ∞) h 0) :
+    iteratedDeriv (n + 1) (fun z => z * h z) 0 =
+      (n + 1 : ℕ) * iteratedDeriv n h 0 := by
+  have hid : ContDiffAt ℂ (n + 1 : ℕ∞) (fun z : ℂ => z) 0 := by fun_prop
+  rw [show (fun z : ℂ => z * h z) = (fun z => z) * h by rfl,
+    iteratedDeriv_mul hid hh]
+  rw [Finset.sum_eq_single 1]
+  · simp [iteratedDeriv_fun_id_zero]
+  · intro b hb hb1
+    simp [iteratedDeriv_fun_id_zero, hb1]
+  · simp
+
 theorem iteratedDeriv_id_mul_zero {h : ℂ → ℂ} (hh : Differentiable ℂ h) (n : ℕ) :
     iteratedDeriv (n + 1) (fun z : ℂ => z * h z) 0 = ((n : ℂ) + 1) * iteratedDeriv n h 0 := by
   rw [iteratedDeriv_id_mul hh n]

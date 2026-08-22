@@ -1170,3 +1170,49 @@ the *qualitative* theorem with an unbounded good set.
 9. Transfer of `S_D` from the corpus's sub-family to the full two-local Pauli family through the
    *easy* direction of specialisation on the resolvent.
 10. Theorem D, which reuses the selected Hamiltonian and is otherwise elementary.
+
+### Items 1–6 are DONE (2026-08-22, same session)
+
+`formal/GaloisForLFunctions/HTGeometry/HilbertIrreducibility/LargeSpecialisation.lean` (new,
+umbrella-wired, axiom-clean, olean built):
+
+| Item | Declaration |
+|---|---|
+| 1 | `exists_int_not_root_gt` |
+| 2 | `exists_regular_int_gt`, `exists_regular_int_family_gt` |
+| 3 | `infinite_gt_of_thin_bad` |
+| 4 | `hilbert_irreducibility_int_gt`, `hilbert_irreducibility_gt`, `hilbert_irreducibility_int_family_gt`, `hilbert_irreducibility_family_gt` |
+| 5 | `exists_infinite_specialisation_gt`, `hilbert_several_gt` |
+| 6 | `hilbert_multivariate_gt`, **`gal_card_of_specialisation_gt`** |
+
+```text
+gal_card_of_specialisation_gt (N : ℤ) {m D : ℕ} {f : Polynomial (MvPolynomial (Fin m) ℚ)}
+    (hf : f.Monic) (hfdeg : f.natDegree = D) (hsep : …) (hgal : … = D.factorial)
+    {g : MvPolynomial (Fin m) ℚ} (hg : g ≠ 0) :
+  ∃ y : Fin m → ℚ, (∀ i, ((N : ℤ) : ℚ) < y i) ∧ MvPolynomial.eval y g ≠ 0 ∧
+    Nat.card (f.map (MvPolynomial.eval y)).Gal = D.factorial
+```
+
+So the Galois-preserving specialisation may now be demanded **arbitrarily large in every
+coordinate**, on top of avoiding any prescribed nonzero polynomial.  Items 3–6 were obtained by
+carrying the extra conjunct `s₀ < b` through the existing proofs verbatim; the only mathematical
+change is item 1.
+
+### What item 7 has to build, precisely
+
+Largeness alone is *not* enough for `(31)`: with all `u_i > N` but arbitrary ratios the transverse
+part can be degenerate (`u = (N,…,N)` gives `∑_i u_i X_i = N ∑_i X_i`, whose eigenvectors inside a
+Hamming sector can overlap `Ω` by as much as `√(C(n,k))·2^{-n/2}`, so the collision is only
+`O(1/√n)`).  The box is therefore genuinely needed, and it is obtained from item 6 by the
+substitution `Y_i = r_i + 1/Z_i`:
+
+1. the ring isomorphism `Frac(ℚ[Y]) ≅ Frac(ℚ[Z])`, `Y_i ↦ r_i + 1/Z_i`, an involution with inverse
+   `Z_i ↦ (Y_i − r_i)⁻¹`, built by `IsFractionRing.lift` of `MvPolynomial.aeval` in both
+   directions and `RingEquiv.ofHomInv`;
+2. clearing denominators *monically* by the root-scaling trick: with `M` the largest `Z`-pole order
+   among the coefficients `c_k(Y)` of `f`, the polynomial
+   `f̃(X) := Z^{MD}·f(r + 1/Z, X/Z^M)` has coefficients `Z^{Mk}c_k(r+1/Z) ∈ ℚ[Z]` and is monic;
+3. the Galois group is unchanged, by the isomorphism in 1 and by
+   `CharpolyScaleGalois.card_gal_comp_scale` for the root scaling in 2;
+4. applying `gal_card_of_specialisation_gt` with `N > 2/(b_i − a_i)` then puts
+   `Y_i = r_i + 1/z_i ∈ (r_i, r_i + 1/N)` inside the box.

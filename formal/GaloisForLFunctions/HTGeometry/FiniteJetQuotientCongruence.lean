@@ -78,37 +78,56 @@ def simpleZeroResidueFlux (u : ℂ → ℂ) (x : ℂ) : ℂ :=
 theorem simpleZeroResidueFlux_jet_congr {u v : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
     (hu : ContDiffOn ℂ (⊤ : ℕ∞) u U) (hv : ContDiffOn ℂ (⊤ : ℕ∞) v U)
     (hune : ∀ w ∈ U, u w ≠ 0) (hvne : ∀ w ∈ U, v w ≠ 0) (h0 : (0 : ℂ) ∈ U)
-    {K : ℕ} (hjet : ∀ j ≤ K + 1, iteratedDeriv j u 0 = iteratedDeriv j v 0) :
+    {K : ℕ} (hjet : ∀ j ≤ K, iteratedDeriv j u 0 = iteratedDeriv j v 0) :
     ∀ k ≤ K, iteratedDeriv k (simpleZeroResidueFlux u) 0 =
       iteratedDeriv k (simpleZeroResidueFlux v) 0 := by
-  have huAt : ContDiffAt ℂ (⊤ : ℕ∞) u 0 := hu.contDiffAt (hU.mem_nhds h0)
-  have hvAt : ContDiffAt ℂ (⊤ : ℕ∞) v 0 := hv.contDiffAt (hU.mem_nhds h0)
-  have huDeriv : ContDiffAt ℂ (⊤ : ℕ∞) (deriv u) 0 :=
-    huAt.derivWithin (m := (⊤ : ℕ∞)) (by simp)
-  have hvDeriv : ContDiffAt ℂ (⊤ : ℕ∞) (deriv v) 0 :=
-    hvAt.derivWithin (m := (⊤ : ℕ∞)) (by simp)
-  have huq : ContDiffAt ℂ (⊤ : ℕ∞) (fun x => deriv u x / u x) 0 :=
-    huDeriv.div huAt (hune 0 h0)
-  have hvq : ContDiffAt ℂ (⊤ : ℕ∞) (fun x => deriv v x / v x) 0 :=
-    hvDeriv.div hvAt (hvne 0 h0)
-  have hquot : ∀ k ≤ K, iteratedDeriv k (fun x => deriv u x / u x) 0 =
-      iteratedDeriv k (fun x => deriv v x / v x) 0 :=
-    iteratedDeriv_div_jet_congr hU hu hv hune hvne h0 hjet
-  have hprod : ∀ k ≤ K, iteratedDeriv k (fun x => x * (deriv u x / u x)) 0 =
-      iteratedDeriv k (fun x => x * (deriv v x / v x)) 0 := by
-    intro k hk
-    exact iteratedDeriv_mul_jet_congr huq hvq contDiffAt_id hquot hk
-  have hprodu : ContDiffAt ℂ (⊤ : ℕ∞) (fun x => x * (deriv u x / u x)) 0 :=
-    contDiffAt_id.mul huq
-  have hprodv : ContDiffAt ℂ (⊤ : ℕ∞) (fun x => x * (deriv v x / v x)) 0 :=
-    contDiffAt_id.mul hvq
   intro k hk
-  change iteratedDeriv k ((fun _ : ℂ => -1) - fun x => x * (deriv u x / u x)) 0 =
-    iteratedDeriv k ((fun _ : ℂ => -1) - fun x => x * (deriv v x / v x)) 0
-  rw [iteratedDeriv_sub (contDiffAt_const.of_le (by exact_mod_cast le_top))
-      (hprodu.of_le (by exact_mod_cast le_top)),
-    iteratedDeriv_sub (contDiffAt_const.of_le (by exact_mod_cast le_top))
-      (hprodv.of_le (by exact_mod_cast le_top)), hprod k hk]
+  cases k with
+  | zero => simp [simpleZeroResidueFlux]
+  | succ n =>
+      have huAt : ContDiffAt ℂ (⊤ : ℕ∞) u 0 := hu.contDiffAt (hU.mem_nhds h0)
+      have hvAt : ContDiffAt ℂ (⊤ : ℕ∞) v 0 := hv.contDiffAt (hU.mem_nhds h0)
+      have huDeriv : ContDiffAt ℂ (⊤ : ℕ∞) (deriv u) 0 :=
+        huAt.derivWithin (m := (⊤ : ℕ∞)) (by simp)
+      have hvDeriv : ContDiffAt ℂ (⊤ : ℕ∞) (deriv v) 0 :=
+        hvAt.derivWithin (m := (⊤ : ℕ∞)) (by simp)
+      have huq : ContDiffAt ℂ (⊤ : ℕ∞) (fun x => deriv u x / u x) 0 :=
+        huDeriv.div huAt (hune 0 h0)
+      have hvq : ContDiffAt ℂ (⊤ : ℕ∞) (fun x => deriv v x / v x) 0 :=
+        hvDeriv.div hvAt (hvne 0 h0)
+      have hprodu : ContDiffAt ℂ (⊤ : ℕ∞) (fun x => x * (deriv u x / u x)) 0 :=
+        contDiffAt_id.mul huq
+      have hprodv : ContDiffAt ℂ (⊤ : ℕ∞) (fun x => x * (deriv v x / v x)) 0 :=
+        contDiffAt_id.mul hvq
+      have hquot : ∀ l ≤ n, iteratedDeriv l (fun x => deriv u x / u x) 0 =
+          iteratedDeriv l (fun x => deriv v x / v x) 0 :=
+        iteratedDeriv_div_jet_congr hU hu hv hune hvne h0 (K := n)
+          (fun j hj => hjet j (by omega))
+      change iteratedDeriv (n + 1) ((fun _ : ℂ => -1) - fun x => x * (deriv u x / u x)) 0 =
+        iteratedDeriv (n + 1) ((fun _ : ℂ => -1) - fun x => x * (deriv v x / v x)) 0
+      rw [iteratedDeriv_sub (contDiffAt_const.of_le (by exact_mod_cast le_top))
+          (hprodu.of_le (by exact_mod_cast le_top)),
+        iteratedDeriv_sub (contDiffAt_const.of_le (by exact_mod_cast le_top))
+          (hprodv.of_le (by exact_mod_cast le_top)),
+        iteratedDeriv_id_mul_zero_succ_of_contDiffAt _ n
+          (huq.of_le (by exact_mod_cast le_top)),
+        iteratedDeriv_id_mul_zero_succ_of_contDiffAt _ n
+          (hvq.of_le (by exact_mod_cast le_top)), hquot n le_rfl]
+
+/-- Agreement of simple-zero germs through depth `K + 1` fixes their residue-filled fluxes
+through depth `K`. -/
+theorem simpleZeroResidueFlux_jet_congr_of_factor_jet {u v : ℂ → ℂ} {U : Set ℂ}
+    (huDiff : Differentiable ℂ u) (hvDiff : Differentiable ℂ v) (hU : IsOpen U)
+    (hu : ContDiffOn ℂ (⊤ : ℕ∞) u U) (hv : ContDiffOn ℂ (⊤ : ℕ∞) v U)
+    (hune : ∀ w ∈ U, u w ≠ 0) (hvne : ∀ w ∈ U, v w ≠ 0) (h0 : (0 : ℂ) ∈ U)
+    {K : ℕ} (hjet : ∀ j ≤ K + 1, iteratedDeriv j (fun z => z * u z) 0 =
+      iteratedDeriv j (fun z => z * v z) 0) :
+    ∀ k ≤ K, iteratedDeriv k (simpleZeroResidueFlux u) 0 =
+      iteratedDeriv k (simpleZeroResidueFlux v) 0 := by
+  have hunit : ∀ j ≤ K, iteratedDeriv j u 0 = iteratedDeriv j v 0 :=
+    simpleZero_unit_jet_congr huDiff hvDiff (K := K)
+      (fun j hj => hjet j (by omega))
+  exact simpleZeroResidueFlux_jet_congr hU hu hv hune hvne h0 (K := K) hunit
 
 end
 

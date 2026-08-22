@@ -99,6 +99,21 @@ theorem adjoinRootScalarExtensionEquivOfMapEq_norm_tmul_one
   rw [AlgEquiv.trans_apply, Algebra.norm_eq_of_algEquiv]
   exact adjoinRootScalarExtensionEquiv_norm_tmul_one R T p x
 
+/-- A coefficientwise map of root algebras is surjective whenever its coefficient map is.
+This supplies the lifting step from a residue root algebra back to an integral root model. -/
+theorem adjoinRoot_map_surjective_of_surjective
+    (R : Type u) (S : Type v) [CommRing R] [CommRing S]
+    (φ : R →+* S) (hφ : Function.Surjective φ)
+    (p : Polynomial R) (q : Polynomial S)
+    (h : q ∣ p.map φ) : Function.Surjective (AdjoinRoot.map φ p q h) := by
+  intro y
+  obtain ⟨r, rfl⟩ := AdjoinRoot.mk_surjective y
+  obtain ⟨s, hs⟩ := Polynomial.map_surjective φ hφ r
+  refine ⟨AdjoinRoot.mk p s, ?_⟩
+  rw [← hs, AdjoinRoot.map, AdjoinRoot.lift_mk,
+    ← AdjoinRoot.aeval_eq, Polynomial.aeval_def, AdjoinRoot.algebraMap_eq,
+    ← Polynomial.eval₂_map]
+
 /-- The integral norm restricted to units of a finite integral extension. -/
 noncomputable def integralNormUnits
     (A : Type u) (B : Type v) [CommRing A] [CommRing B] [Algebra A B]

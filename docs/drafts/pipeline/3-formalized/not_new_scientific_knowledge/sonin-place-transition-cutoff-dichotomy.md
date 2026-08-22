@@ -1,7 +1,7 @@
 # Sonin place-transition cutoff dichotomy
 
 - **ID:** sonin-place-transition-cutoff-dichotomy
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) + THEOREM (Lean, structural core)
 - **Grade:** BRIDGE (substrate, shortcut-closing); not C5
 - **Source:** Connes--Consani--Moscovici, *Zeta zeros and prolate wave operators*,
@@ -212,8 +212,8 @@ native-seam route is retired.
 
 - [x] 0 -> 1: the two canonical source readings and the finite-presentation gap are explicit.
 - [x] 1 -> 2: natural-transition vanishing and raw-corner noncompactness are proved.
-- [ ] 2 -> 3: the structural naturality theorem is formalized; the analytic `L^2` noncompactness proof
-      remains paper-only.
+- [x] 2 -> 3: the structural naturality theorem and the analytic `L^2` noncompactness of the raw
+      support-cutoff corner are both formalized (see `## Lean formalization`).
 - [ ] 3 -> 4: requires the trace-ideal prolate defect or a publication-level route-closure note.
 
 ## The flat place transition has a nonflat logarithmic-position connection
@@ -232,3 +232,42 @@ connection defect for logarithmic position, with the finite von Mangoldt coeffic
 positively selects the source-bearing successor to the cutoff-flat transition: compress or
 resolvent-dress `(D1)` together with the Burnol conductor.  It does not revive the raw support
 corner or the finite Fitting shortcut retired above.
+
+## Lean formalization
+
+Part A was already Lean.  Part B — the analytic `L²` noncompactness that this card recorded as
+*"paper-only"* — is now Lean as well, in the new module
+`formal/GaloisForLFunctions/RHTower/SoninRawSupportCutoffCornerNoncompact.lean`.
+Unconditional; every declaration depends only on `propext`, `Classical.choice`, `Quot.sound`.
+
+**Coordinate.**  The card states B in the multiplicative model `L²(ℝ_+^*, d*u)` with
+`(D_p f)(u) = f(u/p)` and `P_λ` the indicator of `(0, λ]`.  The Lean statement is the same operator
+in the logarithmic coordinate `u = e^x`, where the corpus already owns the carrier (`SoninL2`), the
+half-line cutoff (`logHalflineCutoff`), and the translation (`logTranslationCLM`): `D_p` becomes
+translation by `-log p` and `P_λ` becomes `logHalflineCutoff (log λ)`.  The two models are unitarily
+equivalent through `logEvenUnitary`, and the card's own companion sets the same objects up this way.
+
+| paper step | Lean declaration |
+|---|---|
+| A: transported cutoffs are intertwined and the cross-boundary vanishes | `RHTower.transitionBoundary_eq_zero_of_intertwines`, `RHTower.operatorNaturalityDefect`, `RHTower.transitionBoundary_operatorNaturalityDefect`, `RHTower.canonicalTransition_intertwines_transportedCutoff`, `RHTower.transportedCutoff_idempotent`, `RHTower.canonicalTransition_boundary_eq_zero` (corpus) |
+| B: the swept window's disjoint shell cells | `RHTower.rawCutoffCell`, `RHTower.rawCutoffVector`, `RHTower.rawCutoffVector_orthonormal` |
+| B: each cell is fixed by the cutoff | `RHTower.logHalflineCutoff_rawCutoffVector` |
+| B: each translated cell is annihilated by the cutoff | `RHTower.logHalflineCutoff_sub_rawCutoffVector` |
+| B: the raw support-cutoff corner | `RHTower.logRawCutoffCorner`, `RHTower.logRawCutoffCorner_apply` |
+| B: the corner is isometric on the shell family | `RHTower.logRawCutoffCorner_rawCutoffVector`, `RHTower.norm_logRawCutoffCorner_rawCutoffVector` |
+| **B: the raw corner is noncompact** | `RHTower.logRawCutoffCorner_not_isCompactOperator` |
+| B: `(1−P)T_p P = −p^{-1/2}(1−P)D_p P` | `RHTower.logPlaceAdditionCorner_eq_smul` |
+| **B: hence the place-addition corner is noncompact** | `RHTower.logPlaceAdditionCorner_not_isCompactOperator` |
+
+Because it is not compact it is a fortiori not Hilbert–Schmidt, not trace class, and not of finite
+rank, which is exactly the card's conclusion: the raw corner defines no finite polynomial Fitting
+class.
+
+No statement carries a hypothesis standing in for an unproved fact; the side conditions are
+`0 < log p` (i.e. `p > 1`) and `p^{-1/2} ≠ 0`.
+
+`scripts/formal_tools.py lint` → `formal lint passed`.
+
+What is **not** formalized, and is not a formalization debt: C is a source check about the cited
+paper, and D's `[OPEN CORE]` items (a closed realization of `W_{λ,S}`, domain-compatible Sonin
+idempotents, a Schatten class for the corner) are open research, as the card itself records.

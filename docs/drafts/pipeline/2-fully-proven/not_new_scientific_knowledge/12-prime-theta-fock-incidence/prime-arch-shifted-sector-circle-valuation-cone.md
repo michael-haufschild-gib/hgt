@@ -407,3 +407,22 @@ Targeted leaf builds and axiom checks passed; both capstones depend only on Lean
 coercivity, and finite-measure portion of the `2 -> 3` gate.  It does **not** close probability
 normalization, Fourier-moment recovery, the weighted `L²` reflection carrier, or the residual
 Sonin comparison; the card remains at Stage 2.
+
+## Lean progress log — 2026-08-22 (normalization correction)
+
+The shared density was corrected to the literal positive-frequency series
+`a₀ + 2 Σ_{n≥0} a_(n+1) Re(z^(n+1))`; its first tail term is therefore the `z¹` Fourier
+mode, as required by the card.  The prior `z⁰` indexing would have changed the mass and was not
+retained.
+
+`SummableCircleFourierDensity.lean` now proves that every positive Fourier mode has zero normalized
+Haar mean, that the symmetric density has total mass exactly `a₀`, and that a nonnegative
+unit-head density is a probability measure.  The Xi specialization adds
+`primeArchShiftCircleProbabilityMeasure` and
+`isProbabilityMeasure_primeArchShiftCircleProbabilityMeasure_of_le_twelve`: for every `s ≤ 12`,
+the exact density `wₛ/mₛ` is an unconditional probability measure.  Its positivity is the already
+proved strict tail gap, and normalization is proved by Haar integration, not assumed.
+
+Targeted build `GaloisForLFunctions.RHTower.PrimeArchShiftedCircleDensity` and the new capstone
+axiom audit passed.  The remaining stage-3 blockers are Fourier-moment recovery for this measure,
+the concrete weighted `L²` reflection carrier, and the residual Sonin comparison.

@@ -32,6 +32,11 @@ def primeArchShiftCircleDensityMeasure (s : ℕ) : Measure Circle :=
   GaloisForLFunctions.HTGeometry.symmetricCircleFourierDensityMeasure
     (primeArchShiftMoment s)
 
+/-- The normalized shifted source density from the circle-state construction. -/
+def primeArchShiftCircleProbabilityMeasure (s : ℕ) : Measure Circle :=
+  GaloisForLFunctions.HTGeometry.circleLebesgue.withDensity fun z => ENNReal.ofReal
+    (primeArchShiftCircleDensity s z / normalizedPrimeArchMoment s)
+
 /-- Every shifted source density measure is finite. -/
 theorem primeArchShiftCircleDensityMeasure_finite (s : ℕ) :
     IsFiniteMeasure (primeArchShiftCircleDensityMeasure s) := by
@@ -130,6 +135,56 @@ theorem primeArchShiftCircleDensity_pos_of_le_twelve
       exact two_tsum_abs_primeArchShiftMoment_tail_lt_head_twelve
   exact GaloisForLFunctions.HTGeometry.symmetricCircleFourierDensity_pos
     (summable_abs_primeArchShiftMoment_tail s) hgap z
+
+/-- Through shift twelve, the normalized source density defines an unconditional circle probability
+carrier.  This is ordinary unitary positivity only; it contains no reflected Hankel assertion. -/
+theorem isProbabilityMeasure_primeArchShiftCircleProbabilityMeasure_of_le_twelve
+    (s : ℕ) (hs : s ≤ 12) :
+    IsProbabilityMeasure (primeArchShiftCircleProbabilityMeasure s) := by
+  have hM : 0 < normalizedPrimeArchMoment s :=
+    normalizedPrimeArchMoment_pos_of_le_twelve s hs
+  have hDensity : Integrable (primeArchShiftCircleDensity s)
+      GaloisForLFunctions.HTGeometry.circleLebesgue := by
+    change Integrable
+      (GaloisForLFunctions.HTGeometry.symmetricCircleFourierDensity
+        (primeArchShiftMoment s)) GaloisForLFunctions.HTGeometry.circleLebesgue
+    exact GaloisForLFunctions.HTGeometry.integrable_symmetricCircleFourierDensity
+      (summable_abs_primeArchShiftMoment_tail s)
+  have hNormalized : Integrable (fun z : Circle =>
+      primeArchShiftCircleDensity s z / normalizedPrimeArchMoment s)
+      GaloisForLFunctions.HTGeometry.circleLebesgue := by
+    rw [show (fun z : Circle => primeArchShiftCircleDensity s z /
+        normalizedPrimeArchMoment s) =
+        fun z => (normalizedPrimeArchMoment s)⁻¹ * primeArchShiftCircleDensity s z by
+      funext z
+      rw [div_eq_inv_mul]]
+    exact hDensity.const_mul _
+  have hnonneg : ∀ z : Circle,
+      0 ≤ primeArchShiftCircleDensity s z / normalizedPrimeArchMoment s := by
+    intro z
+    exact div_nonneg (primeArchShiftCircleDensity_pos_of_le_twelve s hs z).le hM.le
+  rw [isProbabilityMeasure_iff, primeArchShiftCircleProbabilityMeasure,
+    withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  have hmass : ∫ z : Circle,
+      primeArchShiftCircleDensity s z / normalizedPrimeArchMoment s
+        ∂GaloisForLFunctions.HTGeometry.circleLebesgue = 1 := by
+    rw [show (fun z : Circle => primeArchShiftCircleDensity s z /
+        normalizedPrimeArchMoment s) =
+        fun z => (normalizedPrimeArchMoment s)⁻¹ * primeArchShiftCircleDensity s z by
+      funext z
+      rw [div_eq_inv_mul], integral_const_mul]
+    change (normalizedPrimeArchMoment s)⁻¹ *
+      (∫ z : Circle,
+        GaloisForLFunctions.HTGeometry.symmetricCircleFourierDensity
+          (primeArchShiftMoment s) z ∂GaloisForLFunctions.HTGeometry.circleLebesgue) = 1
+    rw [GaloisForLFunctions.HTGeometry.integral_symmetricCircleFourierDensity
+      (summable_abs_primeArchShiftMoment_tail s)]
+    simp only [primeArchShiftMoment, Nat.add_zero]
+    field_simp [hM.ne']
+  have hlintegral := MeasureTheory.ofReal_integral_eq_lintegral_ofReal
+    hNormalized (Filter.Eventually.of_forall hnonneg)
+  rw [hmass] at hlintegral
+  simpa using hlintegral.symm
 
 end
 
