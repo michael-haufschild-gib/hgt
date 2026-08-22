@@ -104,13 +104,6 @@ theorem xi_coherentTower_beyondWall : Nonempty (CoherentTower xi farHalf) :=
     two_mem_farHalf (fun z _ => xi_analyticOnNhd_univ z (Set.mem_univ z))
     (fun _ hz => xi_ne_zero_of_one_le_re (le_of_lt hz))
 
-/-- Deprecated exact alias; use `rh_iff_tower`.
-The surrounding weld theorems retain the unconditional `Re s > 1` survivor. -/
-@[deprecated rh_iff_tower (since := "2026-08-22")]
-theorem rh_iff_xi_coherentTower_rightHalf :
-    RiemannHypothesis ↔ Nonempty (CoherentTower xi rightHalf) := by
-  exact rh_iff_tower
-
 /-- **The survival dichotomy, packaged.**  For every `k` and every finite prime atlas `P`:
 
 * the finite completed weld `archimedeanFactor · eulerPartial P` has a free `2^k`-th root on `Re s > 0`

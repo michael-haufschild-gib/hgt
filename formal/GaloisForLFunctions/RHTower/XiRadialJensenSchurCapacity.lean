@@ -156,13 +156,6 @@ theorem xiReciprocalHermitianMass_sub_curvature :
   have h := xiGlobalReflectionDefectEnergy_eq_mass_sub_source
   linarith
 
-/-- Deprecated exact alias; use
-`xiReciprocalHermitianMass_eq_primeArchCentralCurvature_iff_rh`. -/
-@[deprecated xiReciprocalHermitianMass_eq_primeArchCentralCurvature_iff_rh (since := "2026-08-22")]
-theorem xiReciprocalHermitianMass_eq_curvature_iff_rh :
-    xiReciprocalHermitianMass = primeArchCentralCurvature ↔ RiemannHypothesis :=
-  xiReciprocalHermitianMass_eq_primeArchCentralCurvature_iff_rh
-
 end
 
 end RHTower

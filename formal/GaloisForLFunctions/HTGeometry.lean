@@ -2479,6 +2479,7 @@ import GaloisForLFunctions.HTGeometry.DSSDeterminant
 import GaloisForLFunctions.HTGeometry.DSSOrbitEdgeOrthogonality
 import GaloisForLFunctions.HTGeometry.DVRDifferentRamificationBound
 import GaloisForLFunctions.HTGeometry.DVRFiniteSpan
+import GaloisForLFunctions.HTGeometry.DampedPowerOscillation
 import GaloisForLFunctions.HTGeometry.DampedJetDecay
 import GaloisForLFunctions.HTGeometry.DampingMultiplier
 import GaloisForLFunctions.HTGeometry.DarbouxMonotoneCell
@@ -8147,6 +8148,7 @@ import GaloisForLFunctions.HTGeometry.QuaternionicGraphEndpointFlatness
 import GaloisForLFunctions.HTGeometry.QuaternionicWeakSpacetimeFracture
 import GaloisForLFunctions.HTGeometry.Octonion.Basic
 import GaloisForLFunctions.HTGeometry.Octonion.Coordinate
+import GaloisForLFunctions.HTGeometry.Octonion.ScalarDeterminant
 import GaloisForLFunctions.HTGeometry.Octonion.ComplexSlice
 import GaloisForLFunctions.HTGeometry.Octonion.ResolventIdentity
 import GaloisForLFunctions.HTGeometry.Octonion.Artin

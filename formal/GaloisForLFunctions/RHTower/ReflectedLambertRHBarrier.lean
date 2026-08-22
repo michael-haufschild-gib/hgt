@@ -189,11 +189,4 @@ theorem no_continuous_frequencyInvariant_traceHankel_classifier
   exact (remoteEvenPerturbation_not_traceHankel
     (f := fun _ : ℂ ↦ 0) analyticAt_const 0) hpositiveG
 
-/-- Deprecated exact alias; use
-`primeArchSourceTraceHankelIntNonnegative_iff_riemannHypothesis`. -/
-@[deprecated primeArchSourceTraceHankelIntNonnegative_iff_riemannHypothesis (since := "2026-08-22")]
-theorem reflectedLambert_sourceHankel_iff_RH :
-    PrimeArchSourceTraceHankelIntNonnegative ↔ RiemannHypothesis :=
-  primeArchSourceTraceHankelIntNonnegative_iff_riemannHypothesis
-
 end RHTower

@@ -1674,3 +1674,16 @@ theorem.
 This is an exact input to the proposed distinct-speed packet construction.  It does **not** yet
 supply the required all-order jet expansion, seed estimates, or global finite-jet interpolation;
 therefore it provides no basis for advancing this card from Stage 1.
+
+### Lean progress (unconditional multiplier jet transport)
+
+The exact Abe multiplier now has a closed directional derivative identity and an all-order finite-jet
+vanishing equivalence: multiplication by `exp(t * (Θ - 1))` neither creates nor erases vanishing
+jets of any prescribed finite order.  This uses the multiplier's explicit inverse at `-t`, not a
+nonvanishing hypothesis.  The changed leaf module
+`GaloisForLFunctions.HTGeometry.AbeExponentialDampingMultiplier` passed its targeted build; the two
+new declarations passed `#print axioms` with only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This closes one genuine all-order local transport component.  It does not establish the card's
+missing global Poincare jet expansion or all-order interpolation theorem, so Stage 3 is still not
+justified.

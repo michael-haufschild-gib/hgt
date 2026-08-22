@@ -98,16 +98,6 @@ theorem mellinAnnihilated_bdGen {I : Type*} (θ : I → ℝ) (hθ : ∀ i, 0 < �
     rw [h, Complex.zero_re] at hρ
     linarith
 
-/-- Deprecated exact specialization; use
-`riemannHypothesis_of_bdTarget_mem_closedSpan_family`. -/
-@[deprecated riemannHypothesis_of_bdTarget_mem_closedSpan_family (since := "2026-08-22")]
-theorem riemannHypothesis_of_bdTarget_mem_closedSpan_template {I : Type*} (θ : I → ℝ)
-    (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1)
-    (h : bdTarget ∈
-      (Submodule.span ℂ (Set.range (fun i : I => bdGen (θ i)))).topologicalClosure) :
-    RiemannHypothesis :=
-  riemannHypothesis_of_bdTarget_mem_closedSpan_family θ hθ h
-
 end RHTower
 
 end

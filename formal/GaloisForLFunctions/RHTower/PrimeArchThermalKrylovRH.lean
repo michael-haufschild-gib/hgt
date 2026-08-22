@@ -229,20 +229,6 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_squaredTransitionLiouvillian
     intensity energy hintensity]
   exact_mod_cast (hmom n).symm
 
-/-- Deprecated exact alias; use `riemannHypothesis_of_primeArchThermalEvenGapMoments`.
-The squared-transition construction remains available through its source-side
-nonnegativity theorem. -/
-@[deprecated riemannHypothesis_of_primeArchThermalEvenGapMoments (since := "2026-08-22")]
-theorem riemannHypothesis_of_primeArchSquaredTransitionLiouvillian
-    {α : Type*} [Fintype α]
-    (intensity : α → α → ℝ) (energy : α → ℝ)
-    (hintensity : ∀ a b, 0 ≤ intensity a b)
-    (hmom : ∀ n, normalizedPrimeArchMoment n =
-      HTGeometry.thermalEvenGapMoment intensity energy n) :
-    RiemannHypothesis :=
-  riemannHypothesis_of_primeArchThermalEvenGapMoments
-    intensity energy hintensity hmom
-
 /-- Pointwise convergence of growing finite thermal Krylov systems to the normalized source
 moments discharges the source trace-Hankel hypothesis. -/
 theorem primeArchSourceTraceHankelIntNonnegative_of_finiteThermalKrylov_tendsto

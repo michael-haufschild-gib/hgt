@@ -40,17 +40,4 @@ theorem localGlobal_two_exact_RH_classifiers
   exact ⟨primeArchSourceTraceHankelIntNonnegative_iff_riemannHypothesis,
     riemannHypothesis_iff_rectangular_logSample_weil_nonneg hL⟩
 
-/-- Deprecated exact alias; use
-`riemannHypothesis_iff_rectangular_logSample_weil_eventually_bddBelow`. -/
-@[deprecated riemannHypothesis_iff_rectangular_logSample_weil_eventually_bddBelow (since := "2026-08-22")]
-theorem localGlobal_fixedWidth_eventualLowerBound_iff_RH
-    {L : ℝ} (hL : 0 < L) :
-    RiemannHypothesis ↔
-      ∃ B : ℝ, ∃ N0 : ℕ, ∀ n : ℕ, N0 ≤ n →
-        L ≤ Real.log n / 2 →
-        B ≤ (xiWeilPolarization
-          (xiRectangularTwoEdgeTransform L (Real.log n / 2))
-          (xiRectangularTwoEdgeTransform L (Real.log n / 2))).re :=
-  riemannHypothesis_iff_rectangular_logSample_weil_eventually_bddBelow hL
-
 end RHTower

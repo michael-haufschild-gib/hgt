@@ -515,4 +515,170 @@ theorem sq_sub_inv_sq_rpow_eq_zero_iff {r : ℝ} (hr : 0 < r) (hr1 : r ≠ 1) (s
 
 end DilationCharacter
 
+/-! ## The mate-curvature quotient class -/
+
+section Curvature
+
+variable {H0 H1 : Type*} [NormedAddCommGroup H0]
+  [NormedAddCommGroup H1] [InnerProductSpace ℂ H1]
+
+/-- **Mate curvature modulo the boundary ideal.**  If the two adjoint lifts differ from the
+algebraic inverse lifts by multiples of one boundary multiplier `Λ`, then the normalized mate
+difference is the character curvature `‖λ‖² − ‖λ‖⁻²` on `‖y₁‖²` plus a `Λ`-multiple. -/
+theorem mateCurvature_eq_character_add_ideal {lam Lam : ℂ}
+    {y0 : H0} {y1 dp dm ep em : H1}
+    (hplus : inner ℂ y1 dp =
+      lam * ((‖y0‖ ^ 2 : ℝ) : ℂ) - Lam * inner ℂ y1 ep
+        - (starRingEnd ℂ) lam⁻¹ * ((‖y1‖ ^ 2 : ℝ) : ℂ))
+    (hminus : inner ℂ y1 dm =
+      lam⁻¹ * ((‖y0‖ ^ 2 : ℝ) : ℂ) - Lam * inner ℂ y1 em
+        - (starRingEnd ℂ) lam * ((‖y1‖ ^ 2 : ℝ) : ℂ)) :
+    lam⁻¹ * inner ℂ y1 dp - lam * inner ℂ y1 dm =
+      (((‖lam‖ ^ 2 : ℝ) : ℂ) - (((‖lam‖ ^ 2)⁻¹ : ℝ) : ℂ)) * ((‖y1‖ ^ 2 : ℝ) : ℂ)
+        + Lam * (lam * inner ℂ y1 em - lam⁻¹ * inner ℂ y1 ep) := by
+  have hmul : lam * (starRingEnd ℂ) lam = ((‖lam‖ ^ 2 : ℝ) : ℂ) := by
+    rw [mul_comm, Complex.conj_mul']
+    push_cast
+    ring
+  have hmulinv : lam⁻¹ * (starRingEnd ℂ) lam⁻¹ = (((‖lam‖ ^ 2)⁻¹ : ℝ) : ℂ) := by
+    rw [mul_comm, Complex.conj_mul', norm_inv]
+    push_cast
+    ring
+  rw [hplus, hminus]
+  linear_combination ((‖y1‖ ^ 2 : ℝ) : ℂ) * hmul - ((‖y1‖ ^ 2 : ℝ) : ℂ) * hmulinv
+
+/-- **At an annihilator character the class is exactly the curvature.**  Vanishing of the mate
+curvature on a nonzero ray with `Λ = 0` forces the unitary locus. -/
+theorem norm_eq_one_of_mateCurvature_eq_zero {lam : ℂ} (hlam : lam ≠ 0)
+    {y0 : H0} {y1 dp dm ep em : H1}
+    (hplus : inner ℂ y1 dp =
+      lam * ((‖y0‖ ^ 2 : ℝ) : ℂ) - (0 : ℂ) * inner ℂ y1 ep
+        - (starRingEnd ℂ) lam⁻¹ * ((‖y1‖ ^ 2 : ℝ) : ℂ))
+    (hminus : inner ℂ y1 dm =
+      lam⁻¹ * ((‖y0‖ ^ 2 : ℝ) : ℂ) - (0 : ℂ) * inner ℂ y1 em
+        - (starRingEnd ℂ) lam * ((‖y1‖ ^ 2 : ℝ) : ℂ))
+    (hy1 : y1 ≠ 0)
+    (hzero : lam⁻¹ * inner ℂ y1 dp - lam * inner ℂ y1 dm = 0) :
+    ‖lam‖ = 1 := by
+  have hkey := mateCurvature_eq_character_add_ideal (Lam := (0 : ℂ)) hplus hminus
+  rw [hzero] at hkey
+  have hy1pos : (0 : ℝ) < ‖y1‖ ^ 2 := by positivity
+  have hne : ((‖y1‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
+    simpa [Complex.ofReal_ne_zero] using hy1pos.ne'
+  have hprod : (((‖lam‖ ^ 2 : ℝ) : ℂ) - (((‖lam‖ ^ 2)⁻¹ : ℝ) : ℂ)) *
+      ((‖y1‖ ^ 2 : ℝ) : ℂ) = 0 := by
+    have := hkey.symm
+    simpa using this
+  have hcur : ((‖lam‖ ^ 2 : ℝ) : ℂ) - (((‖lam‖ ^ 2)⁻¹ : ℝ) : ℂ) = 0 :=
+    (mul_eq_zero.mp hprod).resolve_right hne
+  have hlampos : (0 : ℝ) < ‖lam‖ := norm_pos_iff.mpr hlam
+  have hpos2 : (0 : ℝ) < ‖lam‖ ^ 2 := by positivity
+  have hreal : ‖lam‖ ^ 2 - (‖lam‖ ^ 2)⁻¹ = 0 := by
+    rw [← Complex.ofReal_sub] at hcur
+    exact Complex.ofReal_eq_zero.mp hcur
+  have heq : ‖lam‖ ^ 2 = (‖lam‖ ^ 2)⁻¹ := by linarith
+  have hsq : ‖lam‖ ^ 2 * ‖lam‖ ^ 2 = 1 := by
+    calc ‖lam‖ ^ 2 * ‖lam‖ ^ 2 = (‖lam‖ ^ 2)⁻¹ * ‖lam‖ ^ 2 := by rw [← heq]
+      _ = 1 := inv_mul_cancel₀ hpos2.ne'
+  have h1 : ‖lam‖ ^ 2 = 1 := by nlinarith
+  nlinarith
+
+end Curvature
+
+/-! ## Riemann boundary specialization of the two laws -/
+
+section RiemannSpecialization
+
+variable {H : ℕ → Type*} [∀ j, NormedAddCommGroup (H j)] [∀ j, InnerProductSpace ℂ (H j)]
+variable {r : ℝ} {rho : ℂ}
+
+/-- `(22b)`: the normalized full-history energy of the boundary section is a power of
+`cosh(2(Re ρ − 1/2) log r)`. -/
+theorem ReciprocalContractionSection.historyEnergy_y_dilationCharacter
+    (S : ReciprocalContractionSection H (dilationCharacter r rho)) (hr : 0 < r) (N : ℕ) :
+    S.historyEnergy N (S.y N) =
+      (2 * Real.cosh ((2 * rho.re - 1) * Real.log r)) ^ N * ‖S.y 0‖ ^ 2 := by
+  rw [S.historyEnergy_y (dilationCharacter_ne_zero hr rho) N, norm_dilationCharacter hr]
+  congr 2
+  have h := avg_sq_add_inv_sq_rpow (r := r) hr rho.re
+  rw [inv_pow]
+  linarith [h]
+
+variable [∀ j, CompleteSpace (H j)]
+
+/-- `(22d)`: every off-line boundary point produces a persistent macroscopic mate fracture at every
+aperture, with the explicit hyperbolic-sine size. -/
+theorem ReciprocalContractionSection.mate_fracture_dilationCharacter
+    (S : ReciprocalContractionSection H (dilationCharacter r rho)) (hr : 0 < r) (j : ℕ) :
+    2 * |Real.sinh ((2 * rho.re - 1) * Real.log r)| * ‖S.y j‖ ≤
+      max ‖S.mateDefect true j‖ ‖S.mateDefect false j‖ := by
+  have hfrac := S.mate_fracture (dilationCharacter_ne_zero hr rho) j
+  rw [norm_dilationCharacter hr, sq_sub_inv_sq_rpow hr rho.re, abs_mul,
+    abs_of_nonneg (by norm_num : (0:ℝ) ≤ 2)] at hfrac
+  exact hfrac
+
+/-- `(22e)`: the aperture-free radial mate curvature is `2 sinh(2(Re ρ − 1/2) log r)`. -/
+theorem ReciprocalContractionSection.mate_difference_dilationCharacter
+    (S : ReciprocalContractionSection H (dilationCharacter r rho)) (hr : 0 < r) (j : ℕ) :
+    (dilationCharacter r rho)⁻¹ * S.mateCoeff true j -
+        dilationCharacter r rho * S.mateCoeff false j =
+      ((2 * Real.sinh ((2 * rho.re - 1) * Real.log r) : ℝ) : ℂ) := by
+  rw [S.mate_difference (dilationCharacter_ne_zero hr rho) j, ← Complex.ofReal_sub,
+    norm_dilationCharacter hr, sq_sub_inv_sq_rpow hr rho.re]
+
+end RiemannSpecialization
+
+/-! ## Non-vacuity: the abstract data has off-unitary models -/
+
+section Model
+
+/-- A one-dimensional reciprocal contraction section with character `c ≥ 1`.  The plus map is the
+identity and the minus map is multiplication by `c⁻²`; both are contractions, and the distinguished
+ray `y j = c^j` grows exactly at the character rate. -/
+noncomputable def scalarReciprocalSection {c : ℝ} (hc : 1 ≤ c) :
+    ReciprocalContractionSection (fun _ : ℕ => ℂ) ((c : ℝ) : ℂ) where
+  T := fun b _ =>
+    if b then ContinuousLinearMap.id ℂ ℂ
+    else ((((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹) • ContinuousLinearMap.id ℂ ℂ)
+  contract := by
+    have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
+    intro b j x
+    cases b with
+    | true => simp
+    | false =>
+        simp only [if_neg (by simp : ¬ (false = true))]
+        rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply, norm_smul]
+        have hnorm : ‖(((c : ℝ) : ℂ)⁻¹ * ((c : ℝ) : ℂ)⁻¹)‖ = (c ⁻¹) * (c ⁻¹) := by
+          rw [norm_mul, norm_inv, norm_inv, Complex.norm_real, Real.norm_of_nonneg hc0.le]
+        rw [hnorm]
+        have h1 : c⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hc
+        have h2 : (0 : ℝ) < c⁻¹ := inv_pos.mpr hc0
+        nlinarith [norm_nonneg x]
+  y := fun j => (((c : ℝ) : ℂ)) ^ j
+  y_ne := by
+    have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
+    intro j
+    exact pow_ne_zero _ (by simpa [Complex.ofReal_ne_zero] using hc0.ne')
+  T_true := by
+    intro j
+    simp [pow_succ, mul_comm]
+  T_false := by
+    have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
+    have hne : ((c : ℝ) : ℂ) ≠ 0 := by simpa [Complex.ofReal_ne_zero] using hc0.ne'
+    intro j
+    simp only [if_neg (by simp : ¬ (false = true)), ContinuousLinearMap.smul_apply,
+      ContinuousLinearMap.id_apply, smul_eq_mul, map_inv₀, Complex.conj_ofReal]
+    field_simp
+    ring
+
+/-- **The structure is inhabited strictly off the unitary locus**, so the full-history energy law
+and the mate-fracture law are not vacuous. -/
+theorem exists_reciprocalContractionSection_norm_ne_one :
+    ∃ (lam : ℂ) (_ : ReciprocalContractionSection (fun _ : ℕ => ℂ) lam), ‖lam‖ ≠ 1 :=
+  ⟨((2 : ℝ) : ℂ), scalarReciprocalSection (by norm_num : (1 : ℝ) ≤ 2), by
+    rw [Complex.norm_real, Real.norm_of_nonneg (by norm_num : (0:ℝ) ≤ 2)]
+    norm_num⟩
+
+end Model
+
 end HTGeometry
