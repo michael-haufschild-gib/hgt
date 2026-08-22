@@ -11,7 +11,7 @@
   `multiplicative-wold-gamma-anomaly-purity-rh.md`;
   `unit-exponential-wold-calderon-suspension.md`;
   `../2-fully-proven/new_scientific_knowledge/prime-occupation-polarized-gamma-phase-survival.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/bv-prime-window-polar-coefficient-decimation-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/bv-prime-window-polar-coefficient-decimation-law.md`;
   `deninger-enhanced-adiabatic-milnor-calderon-vanishing-cycle.md`.
 - **Statement:** The unused adjacent BV dilation step has exact off-multiple Laurent factor
   `1-r^(-1)`.  For `r=p` this equals the unit Wold fundamental-cell mass.  Their finite-prime

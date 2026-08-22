@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean)
 - **Status:** `[FULLY-LEAN-PROVED] [REDISCOVERED] [BRIDGE]`
 - **Paper parent:**
-  `../../2-fully-proven/not_new_scientific_knowledge/balanced-causal-fracture-torsor-classification.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/balanced-causal-fracture-torsor-classification.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.ColorGramNullFusion`
 - **Statement:** Two one-row \(3\times2\) complex event roots have null Gram records. If their
   alternating determinant is nonzero, the sum of their Gram records is positive definite and

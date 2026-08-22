@@ -218,7 +218,7 @@ additional relation distinguishing the horizontal position of the missing zeroth
 preserving the complete tail `(15)`.
 
 The exact reflection interface is now isolated in
-`../../2-fully-proven/not_new_scientific_knowledge/heat-aperture-prime-seam-reflection-collapse.md`.
+`../../2-fully-proven/not_new_scientific_knowledge/13-constraint-carrier-calculus/heat-aperture-prime-seam-reflection-collapse.md`.
 For every prime `p`, the FE--Schwarz difference of the recovered coefficient is precisely
 `C_p(rho)/log p`, where `C_p` is the canonical prime seam.  Hence reflection equality of the
 whole prime tail is equivalent to equality of its `p=2` member and to `Re(rho)=1/2`.  This removes

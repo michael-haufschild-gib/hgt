@@ -530,7 +530,7 @@ perturbation or of the determinant-line no-crossing law, not the search boundary
 The July top-down audit closes two construction nodes that were previously conflated.  The
 Connes--Consani--Moscovici theorem identifies every finite semilocal Sonin space with the classical
 space at the same aperture.  The companion paper theorem
-`../2-fully-proven/not_new_scientific_knowledge/semilocal-dual-pair-euler-connection-source-law.md`
+`../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/semilocal-dual-pair-euler-connection-source-law.md`
 then differentiates the explicit place multiplier and obtains
 
 ```text
@@ -688,7 +688,7 @@ the complementary coefficient family.
 - [OPEN] Prove these beta-wavelet values have critical decay directly from the Möbius/Euler source,
   without the full weighted `L2` tower, an RH-equivalent Mertens estimate, the explicit zero
   formula, or the active theta-current/rectangular-Weil subpower route.  See
-  `../2-fully-proven/not_new_scientific_knowledge/baez-duarte-critical-mobius-beta-wavelet-law.md`.
+  `../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/baez-duarte-critical-mobius-beta-wavelet-law.md`.
 
 ## 2026-07-15 positive-paired real-boundary Loewner weld
 
@@ -832,7 +832,7 @@ the complementary coefficient family.
   right-half nontrivial pole spectrum directly from the moving-prime source.  This would force the
   common charge to vanish and imply RH.  The value relation is closed; the source contraction is
   not.  See
-  `../2-fully-proven/not_new_scientific_knowledge/bv-prime-window-laurent-orientation-polarization.md`.
+  `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/bv-prime-window-laurent-orientation-polarization.md`.
 
 ## 2026-07-15 BV prime-window coefficient decimation and scale-zero boundary contraction
 
@@ -859,7 +859,7 @@ the complementary coefficient family.
   shifted Gram at cutoff `X` is the Gram over indices not divisible by `r^2`.  The missing theorem
   is a source-pure boundary limit preserving that positivity while making Laurent evaluation
   continuous.  This is distinct from the active subpower coefficient route.  See
-  `../2-fully-proven/not_new_scientific_knowledge/bv-prime-window-polar-coefficient-decimation-law.md`
+  `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/bv-prime-window-polar-coefficient-decimation-law.md`
   and `bv-prime-window-decimation-boundary-contraction-rh.md`.
 
 ## 2026-07-15 holomorphic Schwarz polarization for OPUC terminals
@@ -999,7 +999,7 @@ the complementary coefficient family.
 - [OPEN] Derive the finite value Gram bounds from a completed Euler--Gamma identity or relative
   trace.  See
   `../2-fully-proven/not_new_scientific_knowledge/archimedean-meixner-root-seam-scale.md` and
-  `../2-fully-proven/not_new_scientific_knowledge/meixner-root-prime-laplace-value-frame.md`.
+  `../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/meixner-root-prime-laplace-value-frame.md`.
 
 ## 2026-07-15 one-scalar Gamma-shape Landau continuation
 
@@ -1091,7 +1091,7 @@ the complementary coefficient family.
 - [OPEN] Prove the paired one-seam window inequalities for orders one and two.  This closes the
   theta degree-one block, after which the independent degree-at-least-two cone or leading
   determinant tail from size three remains.  See
-  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`
+  `../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`
   and `theta-cusp-one-seam-turan-window-balance.md`.
 
 ## 2026-07-15 continuous residual half-density chart
@@ -1108,7 +1108,7 @@ the complementary coefficient family.
   `tau_1<=tau_2<2/3<log 2`, so the seam and both live peaks lie in the first residual cell.
 - [OPEN] Convert these residual budgets into the paired order-one lower/order-two upper window
   balances.  See
-  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-continuous-half-density-residual-tail-chart.md`
+  `../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/theta-cusp-continuous-half-density-residual-tail-chart.md`
   and `theta-cusp-one-seam-turan-window-balance.md`.
 
 ## 2026-07-18 — missing chain row added (Fable lane audit)

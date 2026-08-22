@@ -436,7 +436,7 @@ strictly positive even logarithmic moment to the zero jet.  Hence primitive-dila
 finite-negative-index repair, and positive diagonal completion cannot supply the source.
 
 Full dependency-closed proof and parent-theory audit:
-`../2-fully-proven/not_new_scientific_knowledge/visible-coprime-zero-jet-indefiniteness-law.md`.
+`../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/visible-coprime-zero-jet-indefiniteness-law.md`.
 Classification: `[REDISCOVERED PARENTS] [BRIDGE] [PAPER-PROVED POSITIVITY NO-GO] [NOT RH]`.
 
 Surviving source requirement is sharper: cancellation must be non-GCD-stationary and must occur

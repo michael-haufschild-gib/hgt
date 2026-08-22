@@ -283,7 +283,7 @@ Independent fresh-context hostile referee confirmed T1/T2/T3 bodies; four statem
 applied (T1 pairs-multiset equivalence + category-(b) corollary scope restriction with
 reflection counterexample; T2 zero-freeness scope + rectifiability; T3 step domains + exact
 Gohberg--Sigal citation). Support card moved to
-`2-fully-proven/not_new_scientific_knowledge/fixed-window-weyl-rigidity-abelian-descent-collapse.md`.
+`2-fully-proven/not_new_scientific_knowledge/13-constraint-carrier-calculus/fixed-window-weyl-rigidity-abelian-descent-collapse.md`.
 Scope note for this card's kill-conditions: category (b) (conjugate-linear) forces a REFLECTION
 symmetry rather than divisibility — still unsuppliable by a source theorem, so kill-condition 1
 stands in all categories, with (b) via reflection rather than AP rotation.

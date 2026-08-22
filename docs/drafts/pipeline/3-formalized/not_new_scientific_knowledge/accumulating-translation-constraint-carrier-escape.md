@@ -7,8 +7,8 @@
   [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/SchwartzTranslation.lean`
 - **Parents:**
-  - `../../2-fully-proven/not_new_scientific_knowledge/ht-exact-da-translation-stabilizer.md`
-  - `../../2-fully-proven/not_new_scientific_knowledge/mertens-logarithmic-corona-differential-tower.md`
+  - `../../2-fully-proven/not_new_scientific_knowledge/03-ht-translation-projective-geometry/ht-exact-da-translation-stabilizer.md`
+  - `../../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/mertens-logarithmic-corona-differential-tower.md`
 - **Statement:** If translation defects of an analytic source at nonzero steps accumulating at zero
   all lie in one fixed closed linear carrier, then the infinitesimal derivative lies in that
   carrier.  Consequently an entire hypertranscendental function may have dense or accumulating DA

@@ -10,9 +10,9 @@
   forced composite of `K_1` and `K_2`.  Do not attack `(8)` and `(9)` separately before testing
   that weaker exact balance.
 - **Parent:**
-  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`
+  `../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`
 - **Value-chart input:**
-  `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-continuous-half-density-residual-tail-chart.md`
+  `../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/theta-cusp-continuous-half-density-residual-tail-chart.md`
 - **Statement:** The first two positive crossing windows of the canonical first theta atom have the
   required opposite signed balances against its unique regular-curvature seam.  Equivalently, the
   exact reflected first-atom gates close without a numerical enclosure.

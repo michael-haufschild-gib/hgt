@@ -5,7 +5,7 @@
 - **Type:** THEOREM / PROBABILITY FOUNDATION / LARGE-DEVIATION INPUT
 - **Scientific status:** `[FORMALIZED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Feeds:**
-  `../../2-fully-proven/not_new_scientific_knowledge/regular-variation-weighted-steinhaus-ldp.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/regular-variation-weighted-steinhaus-ldp.md`
 
 ## Theorem surface
 

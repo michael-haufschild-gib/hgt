@@ -37,7 +37,7 @@ This would make the derivative-shadow signature a complete composition-cost inva
 - `[PROVED]` For the primitive Gaussian input, `f(w)=w exp(w)` has `lambda_f(g)=0`; breaking autonomy restores the primitive state.
 - `[PROVED]` Local-germ inverses destroy the claim, so global entireness is essential rather than decorative.
 - `[BRIDGE]` Newton-corner observability gives broad nonautonomous subclasses with zero defect.
-- `[PROVED]` If `g` is a minimal solution of a linear order-two equation `g''=qg'+pg` with `p!=0`, then every genuinely nonautonomous first-order entire outer has `lambda_f(g)=0`. The proof is separated in `2-fully-proven/not_new_scientific_knowledge/nonautonomous-cap-linear-order-two-shadow-rigidity.md`.
+- `[PROVED]` If `g` is a minimal solution of a linear order-two equation `g''=qg'+pg` with `p!=0`, then every genuinely nonautonomous first-order entire outer has `lambda_f(g)=0`. The proof is separated in `2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/nonautonomous-cap-linear-order-two-shadow-rigidity.md`.
 
 ## Attack
 
@@ -69,7 +69,7 @@ The tempting conclusion is that `xi` is constant, forcing `f'(g)` to depend only
 
 `R_g-u(vR_v-R)=v^2(u^2-u_g-Au_h)`, `u=A_g/A`.
 
-The proof and the complete separable solution are recorded in `2-fully-proven/not_new_scientific_knowledge/order-two-shadow-matching-normal-form.md`.
+The proof and the complete separable solution are recorded in `2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/order-two-shadow-matching-normal-form.md`.
 
 If `A(g,h)=alpha(g)beta(h)`, every matched inner equation has the form
 
@@ -95,7 +95,7 @@ The open core in this separable stratum is the global entire factorization
 
 Equivalently, can a primitive-defect-one primitive of a first-order entire DA function have a totally ramified finite value?
 
-`[PROVED]` Not when `w` is autonomous. Writing `w=L(exp(az))`, a primitive-defect-one primitive has nonzero drift under the period `2 pi i/a`. One totally ramified value would then generate infinitely many, contradicting Nevanlinna. The proof is separated in `2-fully-proven/not_new_scientific_knowledge/drifting-periodic-primitive-ramification-exclusion.md`.
+`[PROVED]` Not when `w` is autonomous. Writing `w=L(exp(az))`, a primitive-defect-one primitive has nonzero drift under the period `2 pi i/a`. One totally ramified value would then generate infinitely many, contradicting Nevanlinna. The proof is separated in `2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/drifting-periodic-primitive-ramification-exclusion.md`.
 
 `[PROVED]` No rational outer-factor exception survives when a primitive `W` has nonzero polynomial shift drift. The divided difference of `P(g_T)-P(g)` and Hadamard theory force the inner factor into an algebraic extension of a one-hyperexponential first-order field; a unique-pole substitution handles rational outers. This covers every `w=L(exp(cz))+P(z)` and is separated in `3-formalized/not_new_scientific_knowledge/polynomial-drift-rational-outer-factor-rigidity.md`.
 

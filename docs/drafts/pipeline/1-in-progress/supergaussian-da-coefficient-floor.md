@@ -69,13 +69,13 @@ If every `a_n` is algebraic, Popken's lower bound gives constants `alpha,beta>0`
 
 `|a_n| >= alpha n^(-beta n log n)`.
 
-This is incompatible with `(SG)` unless only finitely many coefficients are nonzero. The complete proof is recorded in `2-fully-proven/not_new_scientific_knowledge/arithmetic-entire-heat-da-finite-spectrum.md`.
+This is incompatible with `(SG)` unless only finitely many coefficients are nonzero. The complete proof is recorded in `2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/arithmetic-entire-heat-da-finite-spectrum.md`.
 
 ### Differential order at most two `[PROVED] [BRIDGE]`
 
 If a transcendental entire function satisfies an ADE of differential order at most two over `C(z)`, the Valiron-Zimogljad-Strelitz theorem gives positive ordinary order. Condition `(QL0)` gives ordinary order zero. Hence `(SG)` forces polynomiality for every DA function of minimal differential order at most two, without any arithmetic hypothesis.
 
-The complete heat consequence is recorded in `2-fully-proven/not_new_scientific_knowledge/entire-heat-multiplicative-da-order-three-floor.md`.
+The complete heat consequence is recorded in `2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/entire-heat-multiplicative-da-order-three-floor.md`.
 
 ### D-finite functions of arbitrary linear order `[PROVED] [BRIDGE]`
 
@@ -89,7 +89,7 @@ This contradicts `(SG)`. Hence every D-finite series satisfying `(SG)` is a poly
 
 Condition `(SG)` forces active maximum-term indices with logarithmic-radius plateau widths tending to infinity. At the midpoint of those plateaux, every fixed finite jet of `f` is exponentially close, uniformly on the circle, to the jet of the single central Taylor monomial.
 
-Consequently, the top-degree/minimal-weight face of every autonomous ADE for `f` has zero rational-normal-curve principal symbol. The complete proof is recorded in `2-fully-proven/not_new_scientific_knowledge/supergaussian-wide-newton-plateau-monomialization.md`.
+Consequently, the top-degree/minimal-weight face of every autonomous ADE for `f` has zero rational-normal-curve principal symbol. The complete proof is recorded in `2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/supergaussian-wide-newton-plateau-monomialization.md`.
 
 ### Finite secant detection `[PROVED] [BRIDGE]`
 
@@ -101,7 +101,7 @@ The direct confluent-Vandermonde proof is recorded in `3-formalized/not_new_scie
 
 Every admissible infinite Taylor-modulus profile has an HT phase realization. In particular, `exp(z)` and an HT entire function can have coefficient moduli `1/n!` term by term, hence identical maximum-term functions, logarithmic Newton envelopes, active indices, transition radii, plateau widths, order, and type.
 
-The proof combines algebraically independent phases with Ostrowski's finite-basis theorem and is recorded in `2-fully-proven/not_new_scientific_knowledge/fixed-taylor-modulus-newton-geometry-ht-blindness.md`. Thus Newton geometry can organize an ADE attack but can never replace the exact complex coefficient identities of the assumed ADE.
+The proof combines algebraically independent phases with Ostrowski's finite-basis theorem and is recorded in `2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/fixed-taylor-modulus-newton-geometry-ht-blindness.md`. Thus Newton geometry can organize an ADE attack but can never replace the exact complex coefficient identities of the assumed ADE.
 
 ### Log-superlacunary full-support magnitudes `[PROVED HERE] [NOVELTY AUDIT]`
 

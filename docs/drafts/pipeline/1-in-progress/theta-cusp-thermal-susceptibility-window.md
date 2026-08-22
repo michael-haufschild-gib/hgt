@@ -712,9 +712,9 @@ odd-moment determinant, and the antisymmetric half-density reflection gives the 
 budget of all those odd moments.  The regular curvature changes sign exactly once, while its two
 order-specific crossing windows are positive and strictly unimodal.  The residue is therefore two
 opposite inequalities for one signed seam paired against two explicit windows.  See
-`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`.
+`../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`.
 This replaces the vague request for separate Ward/score estimates by one one-dimensional
 source comparison, tracked in `theta-cusp-one-seam-turan-window-balance.md`; the independent
 higher-degree Hankel tail remains open.  The continuous cutoff constraints feeding that comparison
 are proved in
-`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-continuous-half-density-residual-tail-chart.md`.
+`../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/theta-cusp-continuous-half-density-residual-tail-chart.md`.

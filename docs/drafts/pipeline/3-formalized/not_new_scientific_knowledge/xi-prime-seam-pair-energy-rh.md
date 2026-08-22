@@ -5,7 +5,7 @@
 - **Type:** THEOREM, `[FORMALIZATION]`, `[BRIDGE]`
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Paper parent:**
-  `../../2-fully-proven/not_new_scientific_knowledge/sonin-two-particle-prime-coherence.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/sonin-two-particle-prime-coherence.md`
 - **Endpoint parent:** `xi-prime-seam-coherence-collapse.md`
 - **Value-relation continuation:** `xi-prime-seam-pair-variance.md`
 - **Asymptotic continuation:** `xi-prime-seam-pair-asymptotics.md`

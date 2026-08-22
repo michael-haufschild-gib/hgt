@@ -7,7 +7,7 @@
   `[POSITIVE RESIDUE: NONREGULAR SCALAR-IDENTITY QUANTUM SLICE IS THE EXACT OPEN SURFACE]`
 - **Parents:**
   - `../2-fully-proven/needs-audit/projective-wigner-smith-nonabelian-ht-separation.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/diagonal-projective-ht-local-qft.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/06-integrable-qft-yang-baxter/diagonal-projective-ht-local-qft.md`
 - **Failed inference:** A proposed classification corollary says that every analytic regular
   difference-form `4 x 4` **quantum** Yang--Baxter family has differentially algebraic projective
   field.  The failed step inferred from this that an operator-algebraic factorizing two-state

@@ -60,7 +60,7 @@ Therefore:
 
 ## Use
 
-The separate bridge theorem `2-fully-proven/not_new_scientific_knowledge/autonomous-cap-derivative-shadow-law.md` proves that an autonomous first-order entire cap acts exactly on the first step of this staircase: it adds one outer state and removes the inner primitive defect from the rank count.
+The separate bridge theorem `2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/autonomous-cap-derivative-shadow-law.md` proves that an autonomous first-order entire cap acts exactly on the first step of this staircase: it adds one outer state and removes the inner primitive defect from the rank count.
 
 The distinction matters because a scalar label such as `ord_DA(u)` records only the total finite height. It cannot distinguish a primitive additive state from a state already algebraically visible in the derivative shadow.
 

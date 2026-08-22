@@ -7,7 +7,7 @@
 - **Parents:**
   - `prime-first-trace-exponential-flat-graph-fracture.md`;
   - `../prime-valuation-reflection-type-conservation-law.md`;
-  - `../../2-fully-proven/not_new_scientific_knowledge/source-linear-essential-superselection-no-sewing.md`.
+  - `../../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/source-linear-essential-superselection-no-sewing.md`.
 
 ## Discovery
 

@@ -7,7 +7,7 @@
 - **Lean file:**
   `formal/GaloisForLFunctions/RHTower/OrbitSensitiveContinuationCharge.lean`
 - **Paper card:**
-  `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/orbit-sensitive-continuation-horizontal-charge-norm-law.md`
+  `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/13-constraint-carrier-calculus/orbit-sensitive-continuation-horizontal-charge-norm-law.md`
 - **Statement:** A simple pole at horizontal depth `a` has bounded energy on any fixed line above
   it, but its crossed-residue energy is proportional to `1/a`. Hence no finite uniform fixed-line
   energy bound controls every crossing depth, and any bounded residue graph must pay an explicit

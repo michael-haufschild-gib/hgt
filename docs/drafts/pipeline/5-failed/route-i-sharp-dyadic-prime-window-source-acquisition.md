@@ -75,7 +75,7 @@ At `alpha=0`, `SharpUpper(0,N)` is definitionally
 `DyadicWeightedPrimeWindowSubpowerUpper N`.
 
 Paper proof:
-`../2-fully-proven/not_new_scientific_knowledge/sharp-dyadic-prime-window-zero-width-collision.md`.
+`../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/sharp-dyadic-prime-window-zero-width-collision.md`.
 Lean module:
 `formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
 

@@ -9,7 +9,7 @@
 - **Computation used:** no
 - **Parents:**
   `../2-fully-proven/new_scientific_knowledge/prime-occupation-polarized-gamma-phase-survival.md`,
-  `../2-fully-proven/not_new_scientific_knowledge/bv-prime-window-polar-coefficient-decimation-law.md`,
+  `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/bv-prime-window-polar-coefficient-decimation-law.md`,
   `../2-fully-proven/not_new_scientific_knowledge/burnol-copoisson-berezin-diagonal-reflection-law.md`,
   `../3-formalized/hypertranscendental-minimal-polarized-critical-completion-architecture.md`,
   `../3-formalized/source-producer-integral-realization-minimality.md`.

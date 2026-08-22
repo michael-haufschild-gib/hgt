@@ -10,7 +10,7 @@
 ## Conjecture
 
 With the exact overlap correlation energy `C_M` from
-`../2-fully-proven/not_new_scientific_knowledge/square-aperture-von-mangoldt-correlation-energy.md`,
+`../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/square-aperture-von-mangoldt-correlation-energy.md`,
 
 ```text
 for every delta>0, C_M = O_delta(M^(1+delta)).
@@ -42,7 +42,7 @@ inserted into Route I's exact Abel identity gives
 Consequently RH implies `C_M=O(M log(M)^4)`, hence the displayed all-subpower estimate. The
 existing Lean theorem proves the converse. Thus the conjecture is paper-equivalent to RH and does
 not supply an independent arithmetic producer. Paper certificate:
-`../2-fully-proven/not_new_scientific_knowledge/square-aperture-von-mangoldt-correlation-energy.md`.
+`../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/square-aperture-von-mangoldt-correlation-energy.md`.
 
 ## Why the independent-producer interpretation fails
 

@@ -104,10 +104,10 @@ adjunction on that same nonzero class.
   it does not constrain \(\operatorname{Re}\rho\).
 - `../2-fully-proven/not_new_scientific_knowledge/determinant-line-trivialization-zero-divisor-blindness.md`
   proves that determinant-line topology alone does not control a divisor.
-- `../2-fully-proven/not_new_scientific_knowledge/thermodynamic-divisor-charge-finite-ancestor-or-boundary-index.md`
+- `../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/thermodynamic-divisor-charge-finite-ancestor-or-boundary-index.md`
   shows that a genuine infinite charge must be a finite ancestor or a nonliftable boundary
   index; neither condition makes its real regulator integral.
-- `../2-fully-proven/not_new_scientific_knowledge/source-linear-essential-superselection-no-sewing.md`
+- `../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/source-linear-essential-superselection-no-sewing.md`
   identifies the live category: a relative source anomaly before closed boundary descent.
 
 ## Lean decision

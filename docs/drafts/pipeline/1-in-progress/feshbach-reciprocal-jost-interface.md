@@ -276,7 +276,7 @@ falsifiable source problem rather than an unspecified request for a geometric co
 ## Positive output repair
 
 The separate proved bridge
-`../2-fully-proven/not_new_scientific_knowledge/reciprocal-q-ladder-kallen-lehmann-field.md`
+`../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/reciprocal-q-ladder-kallen-lehmann-field.md`
 pushes the canonical negative bound-state counting measure through `(17d)`.  The resulting
 positive polynomially bounded Kallen--Lehmann measure defines a local generalized free Wightman
 field, and its Euclidean two-point function is HT.  This repairs positivity at the output-QFT

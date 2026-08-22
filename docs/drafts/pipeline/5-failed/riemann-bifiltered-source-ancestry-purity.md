@@ -7,7 +7,7 @@
 - **No positivity premise:** Native coefficient positivity, positive forms, orientation signs, and
   positive generalized-prime models are falsifiers, not inputs.
 - **Concrete parents:**
-  - `../2-fully-proven/not_new_scientific_knowledge/source-face-observation-cohomology-transmutation.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/05-algebraic-geometry-cohomology/source-face-observation-cohomology-transmutation.md`;
   - `../3-formalized/normal-crossing-derived-critical-base-change-defect.md`;
   - `polarized-critical-rees-corona-transgression-rh.md`;
   - `../4-publication-ready/source-horizon-riemann-divisor/main.tex`;

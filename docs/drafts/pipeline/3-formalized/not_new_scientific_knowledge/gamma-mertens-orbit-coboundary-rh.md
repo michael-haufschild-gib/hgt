@@ -11,8 +11,8 @@
   - `../../1-in-progress/gamma-opposite-variance-weyl-seam.md`
   - `../../2-fully-proven/needs-audit/gamma-dihedral-orbifold-bulk-mirror-anomaly.md`
   - `../not_new_scientific_knowledge/xi-rational-quartet-gauge-countermodel.md`
-  - `../../2-fully-proven/not_new_scientific_knowledge/mertens-corona-shift-conormal.md`
-  - `../../2-fully-proven/not_new_scientific_knowledge/mertens-logarithmic-corona-differential-tower.md`
+  - `../../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/mertens-corona-shift-conormal.md`
+  - `../../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/mertens-logarithmic-corona-differential-tower.md`
   - `formal/GaloisForLFunctions/RHTower/XiShiftPrimeExposure.lean`
   - `formal/GaloisForLFunctions/HTGeometry/PrincipalPartDifferentialOperator.lean`
 - **Statement:** A Xi zero lies on the critical line if its reflected Mertens simple-pole doublet,

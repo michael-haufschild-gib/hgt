@@ -8,9 +8,9 @@
 - **Scope:** the standard regular `O(N)` identity-zero adjacent-braid scattering family,
   `N>=3`; no RH and no distinguished scalar special-function input
 - **Parent:**
-  `../2-fully-proven/not_new_scientific_knowledge/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`
+  `../2-fully-proven/not_new_scientific_knowledge/06-integrable-qft-yang-baxter/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`
 - **Real-frame theorem:**
-  `../2-fully-proven/not_new_scientific_knowledge/collision-regular-relative-yang-baxter-chamber-frame.md`
+  `../2-fully-proven/not_new_scientific_knowledge/06-integrable-qft-yang-baxter/collision-regular-relative-yang-baxter-chamber-frame.md`
 - **Statement:** On the Alazzawi--Lechner particle tubes, the standard `O(N)` braid cocycle has
   exact holomorphic frames `J_n` satisfying
 

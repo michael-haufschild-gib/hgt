@@ -2091,7 +2091,7 @@ finite-aperture mate defects \(D_j^\pm\) satisfying
 \tag{18}
 \]
 See
-`../2-fully-proven/not_new_scientific_knowledge/boolean-sonin-full-history-mate-fracture-law.md`.
+`../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/boolean-sonin-full-history-mate-fracture-law.md`.
 This does not construct the EPG cobar mate.  It replaces the unspecified finite Boolean/Wold
 coupling by a literal object.  On the conormal line, the normalized difference of the two mate
 coefficients is exactly

@@ -11,7 +11,7 @@
   - `../3-formalized/gamma-capacity-current-transgression.md`
 - **RH inputs:**
   - `suzuki-coupled-error-boundary-energy-attack.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/infinitesimal-euler-leakage-cauchy-energy-threshold.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/infinitesimal-euler-leakage-cauchy-energy-threshold.md`
 - **Statement:** The generic proposal to construct, before reading the Xi divisor, a source-framed conservative
   colligation tower for the exact finite Euler--Gamma source.  Its distinguished comparison
   contractions must send a canonical input of limiting squared norm `4` strongly to the

@@ -7,12 +7,12 @@ Use this as the quick map before opening large proof files.
 
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 11954 | 131486 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
-| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 11149 | 111299 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 12194 | 133316 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 11545 | 114786 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 58 | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 74 | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 383 | 5403 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
-| `hilbert_metric` | `GaloisForLFunctions.HilbertMetric` | 59 | 1151 | `gaussianCorrectedDeterminant_mul_sq_le`, `gaussianDistanceMatrix_det_mul_sq_le` |
+| `hilbert_metric` | `GaloisForLFunctions.HilbertMetric` | 61 | 1157 | `gaussianCorrectedDeterminant_mul_sq_le`, `gaussianDistanceMatrix_det_mul_sq_le` |
 | `selberg_class` | `GaloisForLFunctions.SelbergClass` | 24 | 172 | `SelbergClass.differentiable_dampedMultipleStandardTwist` |
 | `quantum_alg` | `GaloisForLFunctions.QuantumAlg` | 232 | 8971 | `QuantumAlg.Factoring.ShorStyle.main_factorization`, `QuantumAlg.Factoring.EkeraHastadStyle.main_factorization`, `QuantumAlg.GroverSearch.main_success_probability`, `QuantumAlg.DeutschJozsa.main` |
 
@@ -38,8 +38,8 @@ Use this as the quick map before opening large proof files.
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 11448 | `formal/GaloisForLFunctions/RHTower.lean` |
-| 10531 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 11654 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 10918 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |

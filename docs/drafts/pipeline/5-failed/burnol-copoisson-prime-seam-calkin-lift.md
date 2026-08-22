@@ -219,7 +219,7 @@ prime limit, zero enumeration, or limiting measure is needed at this stage.
   orientation commutator;
 - `formal/GaloisForLFunctions/RHTower/XiPrimeSeamCalkinGram.lean` and
   `XiPrimeSeamCoherenceCollapse.lean`: exact Calkin consumer and RH endgame;
-- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/sonin-prime-seam-exterior-factorization.md`:
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/sonin-prime-seam-exterior-factorization.md`:
   existing operator-side open core;
 - `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm-bv-muntz-graph-domain-extension.md`:
   existing global Muntz graph-domain/zero-radical bridge.

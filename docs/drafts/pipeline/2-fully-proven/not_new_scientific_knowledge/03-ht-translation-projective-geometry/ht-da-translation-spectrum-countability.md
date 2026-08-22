@@ -124,7 +124,7 @@ is DA. Thus `MultStab_DA(G) subset Stab_DA(L)`, which is countable.
 
 The proved Carroll--Ostrowski bridge in
 
-`../2-fully-proven/not_new_scientific_knowledge/ht-exact-da-translation-stabilizer.md`
+`../2-fully-proven/not_new_scientific_knowledge/03-ht-translation-projective-geometry/ht-exact-da-translation-stabilizer.md`
 
 realizes `Stab_DA(F)=Q` for an entire HT function. Therefore countability, if correct, is sharp even among dense nonclosed subgroups. The new content cannot be the existence of dense examples; it must be the universal exclusion of uncountable spectra and the bounded-complexity escape mechanism.
 

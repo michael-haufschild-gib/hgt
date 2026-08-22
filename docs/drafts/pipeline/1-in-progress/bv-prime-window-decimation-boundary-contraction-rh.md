@@ -5,8 +5,8 @@
 - **Type:** `[CONJECTURE]`, TOP-DOWN RH ROUTE, SOURCE GRAM CONSTRUCTION
 - **Scientific status:** `[OPEN] [NON-CIRCULAR TARGET ISOLATED] [NOT AN RH PROOF]`
 - **Parents:**
-  `../2-fully-proven/not_new_scientific_knowledge/bv-prime-window-polar-coefficient-decimation-law.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/bv-prime-window-laurent-orientation-polarization.md`
+  `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/bv-prime-window-polar-coefficient-decimation-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/bv-prime-window-laurent-orientation-polarization.md`
 - **Statement:** A source-defined positive scale-zero completion of the integer-dilation orbit of
   one fixed sharp BV prime window, on which square-index decimation is contractive and every
   uncensored Laurent functional is continuous, proves RH.

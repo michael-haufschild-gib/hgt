@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean)
 - **Scientific status:** `[FORMALIZED BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Paper theorem:**
-  `../../2-fully-proven/not_new_scientific_knowledge/projective-horizon-hankel-secant-stratification.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/03-ht-translation-projective-geometry/projective-horizon-hankel-secant-stratification.md`
 - **Lean module:** `formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonHankelSecant.lean`
 
 ## Formalized claim

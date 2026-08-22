@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / QFT SPECTRAL INFRASTRUCTURE
 - **Source:**
-  `../../2-fully-proven/not_new_scientific_knowledge/ultrametric-one-loop-resolvent-hypertranscendence.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/ultrametric-one-loop-resolvent-hypertranscendence.md`
 - **Scientific status:** `[PROVED HERE] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For every integer branching parameter `p >= 2` and resolvent order `m >= 2`,
   the two-shell boundary coefficients determine a unique formal susceptibility through the exact

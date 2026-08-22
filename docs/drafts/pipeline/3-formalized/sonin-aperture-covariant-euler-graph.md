@@ -72,7 +72,7 @@ remain separate:
 
 The theorem removes only the repeated prime-by-prime Sonin support-domain assumption.  A later
 paper theorem,
-`../2-fully-proven/not_new_scientific_knowledge/sonin-burnol-conductor-cutoff-bounded-graph-law.md`,
+`../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/sonin-burnol-conductor-cutoff-bounded-graph-law.md`,
 discharges interface 1 at paper level: reflection through Burnol's conductor converts the
 logarithmic-position anomaly to a bounded BMO Hankel commutator, and the exact two-projection
 resolvent dresses it through the Sonin projection.  This has not yet been formalized in Lean.

@@ -16,14 +16,14 @@
   - `../2-fully-proven/mobius-critical-fisher-tangent-hilbert-lift.md`
   - `../2-fully-proven/mobius-causal-fisher-connection-flatness.md`
   - `../2-fully-proven/gamma-damped-mobius-clock-critical-amplification.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/coupled-floor-mobius-complementary-shift-incidence-law.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/coupled-floor-mobius-complementary-shift-incidence-law.md`
   - `../2-fully-proven/not_new_scientific_knowledge/mobius-signed-channel-coisometry-incidence-law.md`
 - **Proved completion inputs:**
   - `../3-formalized/not_new_scientific_knowledge/sonin-log-coordinate-mellin-scattering-carrier.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/sonin-burnol-conductor-cutoff-bounded-graph-law.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/semilocal-dual-pair-euler-connection-source-law.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/sonin-burnol-conductor-cutoff-bounded-graph-law.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/semilocal-dual-pair-euler-connection-source-law.md`
 - **RH consumer:**
-  - `../2-fully-proven/not_new_scientific_knowledge/euler-pole-four-unit-anti-causal-budget-law.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/euler-pole-four-unit-anti-causal-budget-law.md`
 - **Statement:** Complete the explicit four-unit Mobius divisor-incidence curvature by the actual
   Gamma/Sonin boundary primitive and construct its canonical relative readout.  If that readout is
   nonexpansive and equals the pole-to-divisor seam `ell_E`, then `||ell_E||_2^2<=4` and RH follows.

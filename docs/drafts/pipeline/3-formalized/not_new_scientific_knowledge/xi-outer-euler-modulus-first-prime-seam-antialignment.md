@@ -208,7 +208,7 @@ same common charge.
 - `formal/GaloisForLFunctions/RHTower/XiHurwitzAnchorPrimeTwoOrientationEnergy.lean`
 - `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/xi-hurwitz-common-charge-orientation-energy-identification.md`
 - `docs/drafts/pipeline/5-failed/orbitwise-source-divisor-seam-obstruction.md`
-- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/euler-region-pointwise-schur-gap-nonlocal-index-law.md`
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/euler-region-pointwise-schur-gap-nonlocal-index-law.md`
 
 ## Literature status
 

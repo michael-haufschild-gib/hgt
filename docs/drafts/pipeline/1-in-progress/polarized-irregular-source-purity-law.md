@@ -622,7 +622,7 @@ The preceding final sentence remains too permissive if “relation” means a cl
 \(C(\mathbb T^{\mathbb P})\)-submodule of the reflected direct-sum sectors.  Such a relation is
 automatically reducing.  Disjointness makes its projection block diagonal, so it splits into
 uncoupled source and target parts.  The theorem is recorded in
-`../2-fully-proven/not_new_scientific_knowledge/source-linear-essential-superselection-no-sewing.md`.
+`../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/source-linear-essential-superselection-no-sewing.md`.
 
 Thus the source escape is narrower:
 

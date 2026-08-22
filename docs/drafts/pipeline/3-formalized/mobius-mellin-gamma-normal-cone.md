@@ -8,7 +8,7 @@
 - **Parents:**
   - `../2-fully-proven/squarefree-euler-modular-corona-curvature-colligation.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/mobius-squarefree-reciprocal-projective-transfer.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/projective-reciprocal-horizon-ward-seam.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/03-ht-translation-projective-geometry/projective-reciprocal-horizon-ward-seam.md`;
   - `hypertranscendental-controlled-cohomology-and-bornological-shape.md`;
   - `new_scientific_knowledge/projective-horizon-reversal-self-legendre-tower.md`.
 

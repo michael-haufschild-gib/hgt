@@ -7,7 +7,7 @@
 - **Parent:**
   `prime-gamma-signed-eulerian-curvature-plucker-lift.md`
 - **Source inputs:**
-  - `../../2-fully-proven/not_new_scientific_knowledge/prime-sieve-boolean-first-trace-connection-curvature.md`;
+  - `../../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/prime-sieve-boolean-first-trace-connection-curvature.md`;
   - `../not_new_scientific_knowledge/prime-sieve-boolean-first-trace-curvature-ideal-law.md`;
   - `formal/GaloisForLFunctions/HTGeometry/PrimeSieveDensityTelescope.lean`;
   - `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailMomentLogConvex.lean`.

@@ -6,11 +6,11 @@
 - **Scientific status:** `[OPEN] [SURVIVES ONLY IN COHERENT/GROWING-CHANNEL FORM]`
   `[NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parents:** `../../../reports/rh-proof-shape-1707.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/connes-semilocal-finite-part-orbital-source-class.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/sonin-burnol-conductor-cutoff-bounded-graph-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/connes-semilocal-finite-part-orbital-source-class.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/sonin-burnol-conductor-cutoff-bounded-graph-law.md`;
   `../2-fully-proven/not_new_scientific_knowledge/critical-euler-position-commutator-carrier-law.md`;
   `../2-fully-proven/not_new_scientific_knowledge/ccm-sonin-three-grade-relative-carrier-law.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/rectangular-semilocal-observer-tail-separation.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/rectangular-semilocal-observer-tail-separation.md`;
   `../2-fully-proven/needs-audit/semilocal-one-prime-harmonic-moment-defect.md`
 - **Statement:** `[CONJECTURE]` Extend the positive semilocal Sonin trace to the sharp rectangular
   autocorrelation and identify its Connes--Sonin comparison defect with the cyclic relative trace of

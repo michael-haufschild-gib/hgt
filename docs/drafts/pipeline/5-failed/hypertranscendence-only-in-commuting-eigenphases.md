@@ -64,7 +64,7 @@ exact flatness
 ```
 
 The first statement is the direct parent-theory bridge
-`../2-fully-proven/not_new_scientific_knowledge/scalar-cdd-invariance-of-intertwiner-property.md`. The second remains
+`../2-fully-proven/not_new_scientific_knowledge/06-integrable-qft-yang-baxter/scalar-cdd-invariance-of-intertwiner-property.md`. The second remains
 the construction target. The third is existing corpus mathematics and must not be advertised as
 a new QFT no-go.
 

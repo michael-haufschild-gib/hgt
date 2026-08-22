@@ -85,7 +85,7 @@ T_a positive compact.                                      (7)
 ```
 
 The complete paper proof is in
-`../2-fully-proven/not_new_scientific_knowledge/critical-prime-exponential-fock-compact-incidence.md`.
+`../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/critical-prime-exponential-fock-compact-incidence.md`.
 
 The trace-class endpoint is already excluded without any kernel asymptotic:
 

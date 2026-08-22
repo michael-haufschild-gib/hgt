@@ -11,7 +11,7 @@
   - `prime-aperture-stokes-action-law.md`
   - `../2-fully-proven/new_scientific_knowledge/ccm-critical-mellin-aperture-resolvent-law.md`
   - `../4-publication-ready/arithmetic-julia-normal-cone/main.tex`
-  - `../2-fully-proven/not_new_scientific_knowledge/euler-region-pointwise-schur-gap-nonlocal-index-law.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/euler-region-pointwise-schur-gap-nonlocal-index-law.md`
 - **Statement:** The nested prime-aperture boundary layer has an explicit positive residue Pick
   kernel.  Every fixed aperture action has Fourier blind frequencies, but continuous aperture
   averaging removes them.  The unit exponential law gives a uniformly coercive residue metric

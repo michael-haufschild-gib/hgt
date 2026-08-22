@@ -78,7 +78,7 @@ nonvanishing.  The audio value law composes those two declarations into the miss
 certificate.
 
 The same Poisson value now has a separate RH-facing use in
-`../2-fully-proven/not_new_scientific_knowledge/finite-euler-connection-cauchy-phase-chambers.md`:
+`../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/finite-euler-connection-cauchy-phase-chambers.md`:
 the FE-paired finite Euler Cauchy diagonal is the difference of the group-delay kernels at the two
 reflected radii `p^(-1/2+y)` and `p^(-1/2-y)`.  Positivity of each kernel survives, while their
 radial difference has a sharp orientation chamber.  This is a value relation, not a claim that

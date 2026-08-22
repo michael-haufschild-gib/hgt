@@ -3,7 +3,7 @@
 - **ID:** `universal-typed-event-network-fixed-carrier-no-go`
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / UNIVERSAL REPRESENTATION / PHYSICAL NO-GO
-- **Paper proof:** `../2-fully-proven/not_new_scientific_knowledge/universal-typed-event-network-fixed-carrier-no-go.md`
+- **Paper proof:** `../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/universal-typed-event-network-fixed-carrier-no-go.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.EventNetworkFixedCarrier`
 - **Scientific status:** `[FORMALIZED] [REDISCOVERED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 

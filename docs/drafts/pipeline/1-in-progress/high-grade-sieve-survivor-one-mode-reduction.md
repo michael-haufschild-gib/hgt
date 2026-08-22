@@ -473,7 +473,7 @@ If `|E_M|<=epsilon_M`, then `FCRJ_M>=-epsilon_M` unconditionally.  For every bud
 Thus the negative half of `AC25` was never open.  Only near-saturation of the response from below,
 equivalently the small upper bound on `||X+Y||^2`, remains at RH strength.  The full proof,
 quantitative constants, equality classification, and novelty verdict are recorded in
-`2-fully-proven/not_new_scientific_knowledge/fcrj-corrected-response-saturation-law.md`.
+`2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/fcrj-corrected-response-saturation-law.md`.
 
 For the actual clipped ordinary-prime source, the equality case is sharper: the endpoint carrier
 vanishes exactly when the active-prime packet is empty.  Hence every nonempty finite aperture has
@@ -484,7 +484,7 @@ strict response deficit, with the sharp local floor
 ```
 
 at each endpoint.  See
-`2-fully-proven/not_new_scientific_knowledge/physical-prime-endpoint-radical-mesh-coercivity.md`.
+`2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/physical-prime-endpoint-radical-mesh-coercivity.md`.
 This is a source-specific positive survivor, not an RH-scale upper estimate.
 
 ### Universal coprime plateau rigidity

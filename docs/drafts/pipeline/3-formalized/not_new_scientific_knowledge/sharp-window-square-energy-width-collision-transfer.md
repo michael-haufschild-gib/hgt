@@ -96,8 +96,8 @@ formal proof of generalized von Koch or RH.
 
 Paper proofs:
 
-- `../../2-fully-proven/not_new_scientific_knowledge/sharp-dyadic-prime-window-zero-width-collision.md`
-- `../../2-fully-proven/not_new_scientific_knowledge/square-aperture-positive-excess-zero-width-collision.md`
+- `../../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/sharp-dyadic-prime-window-zero-width-collision.md`
+- `../../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/square-aperture-positive-excess-zero-width-collision.md`
 
 ## Gates
 

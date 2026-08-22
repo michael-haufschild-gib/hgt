@@ -235,7 +235,7 @@ Xi(c-u), Xi(c+u),
 the local intersection multiplicity at a same-ordinate zero pair `(rho,sigma)` is
 `m_rho m_sigma`.  Twice the positive-real-`u` intersection mass is exactly `O_I`.  The complete
 proof is in
-`../2-fully-proven/not_new_scientific_knowledge/euler-shift-pair-incidence-resultant.md`.
+`../2-fully-proven/not_new_scientific_knowledge/13-constraint-carrier-calculus/euler-shift-pair-incidence-resultant.md`.
 
 This construction also proves why the reduced shifted quotient is not the charge carrier.  At an
 exceptional shift it cancels `min(m_rho,m_sigma)`, while the resultant carries the product
@@ -272,7 +272,7 @@ Euler--Gamma--theta source that the positive-real-shift mass of this canonical c
 is all of the remaining scientific content.
 The full route verdict is `../../../reports/rhtower_route_c_verdict_1107.md`.
 The paper-level pipeline verdict is
-`../2-fully-proven/not_new_scientific_knowledge/route-c-horizontal-charge-interim-verdict.md`.
+`../2-fully-proven/not_new_scientific_knowledge/13-constraint-carrier-calculus/route-c-horizontal-charge-interim-verdict.md`.
 
 ## Reopening move: infinitesimal leakage rather than bare continuity
 
@@ -294,7 +294,7 @@ trace(T_A)=sum_j m_j/a_j,
 ```
 
 The proof and the unique power-scaling classification are in
-`../2-fully-proven/not_new_scientific_knowledge/infinitesimal-hardy-leakage-horizontal-layer-resolvent.md`.
+`../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/infinitesimal-hardy-leakage-horizontal-layer-resolvent.md`.
 For zeta, every right-hand displacement satisfies `0<a_j<1/2`, so one layer already forces
 `||T_A||>2`.  The bare leakage tends to zero, but its first-order coefficient retains and amplifies
 the off-line channel.
@@ -381,7 +381,7 @@ E_off>=2 sum_j m_j^2/a_j.
 
 Since every zeta displacement has `0<a_j<1/2`, one off-line zero forces `E_off>4`.  The complete
 proof is in
-`../2-fully-proven/not_new_scientific_knowledge/infinitesimal-euler-leakage-cauchy-energy-threshold.md`.
+`../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/infinitesimal-euler-leakage-cauchy-energy-threshold.md`.
 This removes the oscillatory-cancellation objection to a global first-order detector.
 
 `[PARENT-THEORY ATTACK]` The Cauchy Gram calculation is standard exponential-sum theory.  Suzuki's
@@ -439,7 +439,7 @@ partial_omega^2 c_omega(n)|_0=4 (Lambda*Lambda)(n).
 
 Thus `C_E` is the Schur defect between the one-prime von-Mangoldt tangent and the two-prime
 Dirichlet-convolution tangent.  The full proof is in
-`../2-fully-proven/not_new_scientific_knowledge/infinitesimal-euler-leakage-cauchy-energy-threshold.md`.
+`../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/infinitesimal-euler-leakage-cauchy-energy-threshold.md`.
 
 `[PROVED NO-GO]` Toeplitz contractivity does not bound the corner.  In the one-layer model,
 `C_E(0,0)=2m^2/a`, which is unbounded as `a->0`, while every `T_omega` remains a contraction.  Corner
@@ -676,7 +676,7 @@ R_omega(Y)=sum_(m<=Y)m^omega-Y^(1+omega)/(1+omega).
 ```
 
 Each piece is only `O_omega(X^(1-omega))` under absolute values.  The proof is in
-`../2-fully-proven/not_new_scientific_knowledge/shifted-euler-error-floor-mobius-tail-coupling.md`.
+`../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/shifted-euler-error-floor-mobius-tail-coupling.md`.
 
 `[ROUTE CONSEQUENCE]` Separate floor-error bounds, separate Möbius-tail bounds, and their triangle
 inequality cannot control Suzuki's signed error transform.  A pointwise

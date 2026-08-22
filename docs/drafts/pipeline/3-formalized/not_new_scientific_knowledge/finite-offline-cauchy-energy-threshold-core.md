@@ -7,7 +7,7 @@
 - **Lean files:** `formal/GaloisForLFunctions/RHTower/FiniteOfflineCauchyEnergy.lean`;
   `formal/GaloisForLFunctions/RHTower/FiniteOfflineCauchyL2.lean`
 - **Paper card:**
-  `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/infinitesimal-euler-leakage-cauchy-energy-threshold.md`
+  `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/infinitesimal-euler-leakage-cauchy-energy-threshold.md`
 - **Statement:** For every nonempty finite packet with multiplicities at least one and horizontal
   displacements `0<a_j<1/2`, its real Cauchy-resolvent Gram energy is strictly greater than four
   times the packet cardinality; all cross terms are nonnegative and the diagonal already supplies

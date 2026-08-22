@@ -6355,7 +6355,7 @@ R_M>=D_M-O_(A,rho)(log(M)^b/M),                         (AC28)
 or to the small upper bound on `||P_M||^2`.  This corrects the orientation of the open core but
 does not weaken its RH-equivalent strength.  The dependency-closed theorem and novelty verdict
 are recorded in
-`2-fully-proven/not_new_scientific_knowledge/fcrj-corrected-response-saturation-law.md`.
+`2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/fcrj-corrected-response-saturation-law.md`.
 
 `[MONGE/TOTAL POSITIVITY RETIRED]` The centered full-cell Brownian kernel is inverse-Monge and has
 nonnegative ordered `2x2` minors exactly in the long-aperture chamber `c>=A/2`.  Nevertheless an

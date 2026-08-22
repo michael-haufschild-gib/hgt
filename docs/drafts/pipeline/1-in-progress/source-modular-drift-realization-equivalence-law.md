@@ -1879,7 +1879,7 @@ Euler--Gamma/Poisson totalization and conservative Xi conormal base change.
 ### All-degree finite closure and exact cofinal fracture
 
 The later theorem
-`../2-fully-proven/not_new_scientific_knowledge/finite-boolean-hochschild-diagonal-cofinal-fracture.md`
+`../2-fully-proven/not_new_scientific_knowledge/05-algebraic-geometry-cohomology/finite-boolean-hochschild-diagonal-cofinal-fracture.md`
 removes the unspecified finite higher-homotopy clause.  For
 \(A_P=C(\{\pm1\}^P)\), the separability diagonal
 \[
@@ -1899,7 +1899,7 @@ bidual is still finite-Rees and, by the arbitrary-dimensional flat-radical theor
 the actual Wold irregular/half-normal fracture.
 
 The later theorem
-`../2-fully-proven/not_new_scientific_knowledge/wold-boolean-diagonal-renormalization-mismatch.md`
+`../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/wold-boolean-diagonal-renormalization-mismatch.md`
 also kills scalar essential renormalization.  In the infinite Boolean prime cube, \(D_P\) is the
 indicator that the two coordinates agree on \(P\).  Its unique nonzero finite-measure
 normalization is \(2^{|P|}\), of saturated accelerated type.  Every scalar family with
@@ -1928,7 +1928,7 @@ and after Xi boundary specialization.
 ### Exact essential action of exponent-depth reporting
 
 The later theorem
-`../2-fully-proven/not_new_scientific_knowledge/wold-depth-xi-essential-amplification-law.md`
+`../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/wold-depth-xi-essential-amplification-law.md`
 removes the phrase “essential singularity” as an unspecified escape.  The step
 \(M\mapsto M+1\) adds the Wold maximum shell
 \[

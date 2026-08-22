@@ -928,7 +928,7 @@ Im rho_(N_0+2) =
 Thus the dyadic endpoint lies rigorously between them.  The source and output are
 `computations/2026-07-11-route-d-turing-height-extension-arb.c` and the adjacent `.txt`; the complete
 paper-level proof is banked in
-`2-fully-proven/not_new_scientific_knowledge/verified-height-one-zero-turing-extension.md`.
+`2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/verified-height-one-zero-turing-extension.md`.
 
 ### Corrected Route D verdict
 
@@ -1068,4 +1068,4 @@ completed-source theorem that is not another interface to count, winding, or mar
 No claim from this closure passes the NOVEL x SIGNIFICANT gate.  Accordingly there is no Route D
 card in `2-fully-proven/new_scientific_knowledge` and no Route D promotion to
 `3-formalized/new_scientific_knowledge`.  The computational result remains correctly banked as
-`2-fully-proven/not_new_scientific_knowledge/verified-height-one-zero-turing-extension.md`.
+`2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/verified-height-one-zero-turing-extension.md`.

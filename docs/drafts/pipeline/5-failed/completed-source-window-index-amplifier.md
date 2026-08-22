@@ -267,7 +267,7 @@ The apparent `0/0` at a reflected zeta zero is removable in the total meromorphi
 multiplication operator is the identity, every off-diagonal Hardy corner is zero, and every ordinary
 Fredholm index is zero.  The complete proof, including the absence of a nonempty open absolute-product
 domain, is banked in
-`../2-fully-proven/not_new_scientific_knowledge/completed-local-ratio-all-place-collapse.md`.
+`../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/completed-local-ratio-all-place-collapse.md`.
 
 Consequences:
 
@@ -360,7 +360,7 @@ The canonical prime-shift residue functional is not a counterexample.  Its graph
 when RH holds; on RH it is zero, and off RH it has no closed extension.  It therefore cannot serve as
 an unconditional unbounded Fredholm, spectral-triple, or `KK` cycle.  Full proof:
 
-`../2-fully-proven/not_new_scientific_knowledge/marcinkiewicz-tail-residue-yoneda-splitting.md`.
+`../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/marcinkiewicz-tail-residue-yoneda-splitting.md`.
 
 This closes the first precise realization of the proposed secondary anomaly.  In particular, a live
 closed source operator cannot extend the canonical scalar residue graph on its whole algebraic domain:
@@ -411,7 +411,7 @@ not the count in a selected ordinate interval.
 An exact analytic pointwise cutoff is also impossible on the connected source domain by the identity
 theorem; a nonanalytic cutoff destroys the kernel theorem.  Full proof:
 
-`../2-fully-proven/not_new_scientific_knowledge/euler-pick-node-window-nonlocality.md`.
+`../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/euler-pick-node-window-nonlocality.md`.
 
 The surviving exact operation is a Riesz projection of a source-selected closed model operator (or an
 equivalent modified symbol).  Constructing that operator, proving its contour resolvent lies in the
@@ -423,7 +423,7 @@ height-excisive source theorem.
 The last surviving formulation was a source-selected closed family with a reflection-odd Riesz
 projection on the post-certificate window.  The complete analytic-Fredholm audit is banked in
 
-`../2-fully-proven/not_new_scientific_knowledge/window-riesz-gap-target-equivalence.md`.
+`../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/window-riesz-gap-target-equivalence.md`.
 
 For any determinant-compatible family whose characteristic multiplicity is the free-orbit count,
 all of the following are equivalent:

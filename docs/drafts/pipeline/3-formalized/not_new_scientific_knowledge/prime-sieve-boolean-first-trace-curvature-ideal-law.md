@@ -5,7 +5,7 @@
 - **Type:** UNIVERSAL ALGEBRAIC CONNECTION-CURVATURE THEOREM
 - **Scientific status:** `[LEAN-PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 - **Paper parent:**
-  `../../2-fully-proven/not_new_scientific_knowledge/prime-sieve-boolean-first-trace-connection-curvature.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/prime-sieve-boolean-first-trace-connection-curvature.md`
 - **Formal module:**
   `formal/GaloisForLFunctions/RHTower/PrimeSieveBooleanFirstTraceConnection.lean`
 

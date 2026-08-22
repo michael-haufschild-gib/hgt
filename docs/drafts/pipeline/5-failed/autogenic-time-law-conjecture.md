@@ -251,7 +251,7 @@ The conjecture's C1 was not an open core. It contradicted an unconditional theor
 corpus:
 
 - paper theorem:
-  `../2-fully-proven/not_new_scientific_knowledge/universal-typed-event-network-fixed-carrier-no-go.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/universal-typed-event-network-fixed-carrier-no-go.md`;
 - formal theorem:
   `formal/GaloisForLFunctions/HTGeometry/EventNetworkFixedCarrier.lean`.
 

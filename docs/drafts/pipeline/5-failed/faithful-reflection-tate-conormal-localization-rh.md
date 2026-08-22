@@ -8,7 +8,7 @@
 - **Parents:**
   - `../3-formalized/gamma-dihedral-orbifold-bulk-mirror-anomaly.md`;
   - `../3-formalized/clock-compass-noncommutative-tomography.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/source-face-observation-cohomology-transmutation.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/05-algebraic-geometry-cohomology/source-face-observation-cohomology-transmutation.md`;
   - `../2-fully-proven/prime-winning-cech-divisor-resolution.md`;
   - `source-localization-modular-defect-conservation-law.md`;
   - `polarized-critical-rees-corona-transgression-rh.md`.

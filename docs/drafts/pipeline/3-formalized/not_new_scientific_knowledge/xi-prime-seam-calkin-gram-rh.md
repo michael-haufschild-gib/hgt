@@ -9,7 +9,7 @@
 - **Operator parents:** `sonin-prime-quadratic-calkin-matrix-injectivity.md`;
   `finite-prime-sonin-gram-matrix-injectivity.md`
 - **Paper continuation:**
-  `../../2-fully-proven/not_new_scientific_knowledge/sonin-two-particle-prime-coherence.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/sonin-two-particle-prime-coherence.md`
 
 ## Statement
 

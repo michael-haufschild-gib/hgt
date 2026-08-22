@@ -6,7 +6,7 @@
 - **Parent:** the Selberg half-density audit `(ER13)`--`(ER21)` in
   `../1-in-progress/critical-multiplicative-compensated-cancellation-rh.md`
 - **Positive survivor:**
-  `../2-fully-proven/not_new_scientific_knowledge/localized-half-density-mobius-curvature-semiprime-fibre-law.md`
+  `../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/localized-half-density-mobius-curvature-semiprime-fibre-law.md`
 - **Statement:** Neither the real Möbius boundary germ, its imaginary half-density continuation,
   nor regrouping the triangular fixed-ratio kernel by product `R=mn` supplies an estimate stronger
   than the known RH-equivalent covariance.  Exact all-grade cancellation removes the centring on

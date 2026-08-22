@@ -2555,7 +2555,7 @@ pointwise spectrum back to `XiZeroHalfPlaneBound alpha`. The one-sided square-ap
 the same collision, with abscissa `1+4*xiRightTransverseSup` off the critical line. Thus Route I's
 pointwise and coefficient-nonlocal endpoints are exact C2 width coordinates, not independent
 source mechanisms. Paper/Lean certificates:
-`../2-fully-proven/not_new_scientific_knowledge/sharp-dyadic-prime-window-zero-width-collision.md`
+`../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/sharp-dyadic-prime-window-zero-width-collision.md`
 and `RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
 
 ### Route J — arithmetic Julia coherent-energy mechanism [RETIRED — NEGATIVE CLOSURE]

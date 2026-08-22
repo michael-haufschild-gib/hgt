@@ -53,7 +53,7 @@ It does not continue that sign through the critical strip.  The paper-level theo
 right side is hypertranscendental uses Ostrowski/Reich/Nagoshi theory for Dirichlet series,
 which is not present in Lean.  Therefore this card does not claim a Lean proof that `xi`,
 `xi'/xi`, or the filtered series is hypertranscendental.  That theorem remains in
-`2-fully-proven/not_new_scientific_knowledge/completed-logderiv-augmentation-filter-exposure.md`
+`2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/completed-logderiv-augmentation-filter-exposure.md`
 until its complete unconditional statement is formalized.
 
 ## Verification

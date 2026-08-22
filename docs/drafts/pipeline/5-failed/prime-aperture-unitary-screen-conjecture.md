@@ -70,7 +70,7 @@ canonical wall category whose defect support is forced to stay on that wall.
 ## The superselection screen
 
 The paper theorem
-[prime-poisson-superselection-screen.md](../2-fully-proven/not_new_scientific_knowledge/prime-poisson-superselection-screen.md)
+[prime-poisson-superselection-screen.md](../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/prime-poisson-superselection-screen.md)
 constructs the missing boundary state without postulating a wall Hilbert vector.  The Bohr spectral
 measure of the normalized full density is the product of one-prime Poisson measures
 
@@ -616,7 +616,7 @@ rejects nonunitarily shifted self-dual Euler products before any zero is inspect
 - The product-Poisson spectral measures, their normal-to-singular boundary, the exact reflected
   measure-class seam, and pairwise singularity of distinct critical heights are `[PROVED; BRIDGE]`
   in
-  [prime-poisson-superselection-screen.md](../2-fully-proven/not_new_scientific_knowledge/prime-poisson-superselection-screen.md).
+  [prime-poisson-superselection-screen.md](../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/prime-poisson-superselection-screen.md).
   They construct the screen and remove the ambient-Haar point-sampling problem, but they do not
   construct the completed defect observable.
 - Bounded continuous observables of the prime screen have uniformly almost-periodic height

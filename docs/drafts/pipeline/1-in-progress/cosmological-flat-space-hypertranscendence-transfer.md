@@ -96,7 +96,7 @@ None is currently proved.  Merely inserting `(1)` as a desired residue would be 
 
 ## Companion operational de Sitter realization
 
-`../2-fully-proven/not_new_scientific_knowledge/de-sitter-ultrametric-detailed-balance-hypertranscendence.md`
+`../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/de-sitter-ultrametric-detailed-balance-hypertranscendence.md`
 gives an exact, source-natural cosmological realization in a different observable class.  A
 stationary multilevel detector with the ultrametric Neumann-to-Dirichlet gap spectrum has a
 hypertranscendental trace of Bunch--Davies excitation/de-excitation ratios.  This closes the weak

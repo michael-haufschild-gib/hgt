@@ -72,7 +72,7 @@ log(p)[c_p(1-rho)-c_p(conj rho)]=C_p(rho).
 
 Thus equality of the entire reflected heat prime tail is equivalent to equality of its scale-two
 member.  See
-`../../2-fully-proven/not_new_scientific_knowledge/heat-aperture-prime-seam-reflection-collapse.md`.
+`../../2-fully-proven/not_new_scientific_knowledge/13-constraint-carrier-calculus/heat-aperture-prime-seam-reflection-collapse.md`.
 The same card proves the sharper actual-connection identity
 
 ```text

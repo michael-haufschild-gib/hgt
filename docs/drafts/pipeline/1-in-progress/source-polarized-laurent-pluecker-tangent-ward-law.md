@@ -15,7 +15,7 @@
 - **RH realization parents:**
   - `../2-fully-proven/squarefree-euler-modular-corona-curvature-colligation.md`;
   - `../2-fully-proven/squarefree-fixed-current-right-half-ward-localization.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/projective-reciprocal-horizon-ward-seam.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/03-ht-translation-projective-geometry/projective-reciprocal-horizon-ward-seam.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/mobius-squarefree-reciprocal-projective-transfer.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/anti-causal-cauchy-trace-unique-phase-noncancellation.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/prime-support-ht-horizon-hodge-cofactor-law.md`;

@@ -230,7 +230,7 @@ Thus the missing eight real directions in the four-dimensional Gram quotient for
 \(SU(3)\)-torsor rather than arbitrary padding.
 
 The paper theorem and full compact-Hermitian family audit are recorded in
-`../2-fully-proven/not_new_scientific_knowledge/balanced-causal-fracture-torsor-classification.md`.
+`../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/balanced-causal-fracture-torsor-classification.md`.
 The ingredients are classical polar, Stiefel, Cartan, and cone mathematics. The theorem does not
 derive the physical source axioms. In particular, using strict Lorentz causality to select the
 Lorentz cone would be circular unless strict elementary future is first derived from

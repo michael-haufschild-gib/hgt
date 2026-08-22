@@ -5,7 +5,7 @@
 - **Type:** CONJECTURAL SOURCE ESTIMATE / EXACT PROVED REDUCTION
 - **Source:** `claude-zeta23-rank-trace-audit.md`;
   `../2-fully-proven/not_new_scientific_knowledge/horizontal-entry-charge-transfer.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/euler-shift-pair-incidence-resultant.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/13-constraint-carrier-calculus/euler-shift-pair-incidence-resultant.md`;
   `../3-formalized/not_new_scientific_knowledge/finite-offline-cauchy-energy-threshold-core.md`;
   `../2-fully-proven/not_new_scientific_knowledge/critical-logderivative-euler-safe-depoissonized-weil-stationarity.md`;
   external Zeta-23 paper and Lean artifact

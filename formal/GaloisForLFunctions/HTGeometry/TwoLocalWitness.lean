@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.TwoLocalRationalSpecialisation
 import GaloisForLFunctions.HTGeometry.BalancedTernaryKrylovCyclicity
+import GaloisForLFunctions.HTGeometry.SymmetricGaloisCyclicity
 
 /-!
 # An explicit rational two-local witness with symmetric Galois group
@@ -18,7 +19,7 @@ the explicit two-local family satisfies every hypothesis of the Galois computati
   characteristic polynomial has the full symmetric Galois group.**
 -/
 
-open Polynomial
+open Polynomial Matrix
 open scoped BigOperators
 
 namespace GaloisForLFunctions.HTGeometry
@@ -213,6 +214,32 @@ theorem exists_twoLocal_symmetric_gal (c : ℚ) {g : MvPolynomial (Fin (m + 1)) 
     (detuning_witnessDiagonal_injective c) (detuning_witnessDiagonal_ne_neg c) hg
   refine ⟨y, hy, ?_⟩
   rwa [map_universalCharpoly_eval] at hgal
+
+
+/-- **The explicit witness, with irreducible characteristic polynomial and every nonzero rational
+vector cyclic.**  Irreducibility follows from the symmetric Galois group, and cyclicity of an
+arbitrary nonzero vector from irreducibility — so no separate nonvanishing witness for the
+cyclicity determinant is needed. -/
+theorem exists_twoLocal_symmetric_gal_cyclic (c : ℚ) {g : MvPolynomial (Fin (m + 1)) ℚ}
+    (hg : g ≠ 0) :
+    ∃ u : Fin (m + 1) → ℚ, MvPolynomial.eval u g ≠ 0 ∧
+      Nat.card ((twoLocalHam c 0 witnessCoupling u).charpoly).Gal = (2 ^ (m + 1)).factorial ∧
+      Irreducible ((twoLocalHam c 0 witnessCoupling u).charpoly) ∧
+      ∀ v : (Fin (m + 1) → Bool) → ℚ, v ≠ 0 →
+        LinearIndependent ℚ (fun k : Fin (Fintype.card (Fin (m + 1) → Bool)) =>
+          (twoLocalHam c 0 witnessCoupling u) ^ (k : ℕ) *ᵥ v) := by
+  classical
+  obtain ⟨u, hu, hgal⟩ := exists_twoLocal_symmetric_gal c hg
+  have hdegcard : ((twoLocalHam c 0 witnessCoupling u).charpoly).natDegree = 2 ^ (m + 1) := by
+    rw [Matrix.charpoly_natDegree_eq_dim]
+    simp
+  have hirr : Irreducible ((twoLocalHam c 0 witnessCoupling u).charpoly) := by
+    refine irreducible_of_card_gal_eq_factorial
+      ((twoLocalHam c 0 witnessCoupling u).charpoly_monic).ne_zero ?_ ?_
+    · rw [hdegcard]
+      exact Nat.one_le_two_pow
+    · rw [hgal, hdegcard]
+  exact ⟨u, hu, hgal, hirr, fun v hv => linearIndependent_krylov_of_irreducible _ hirr hv⟩
 
 end TwoLocalWitness
 

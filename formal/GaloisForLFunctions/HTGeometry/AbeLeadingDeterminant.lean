@@ -35,4 +35,26 @@ theorem eventually_det_ne_zero_of_tendsto_smul_matrix
   apply hB
   rw [Matrix.det_smul, hzero, mul_zero]
 
+/-- **Graded determinant transfer.**  A degree-dependent row normalization is
+often required: multiplying the `j`-th jet row by its own inverse power of the
+damping parameter can converge to an invertible leading matrix even though no
+single scalar normalization of all entries can.  Invertibility of the
+normalized product forces invertibility of the original matrix. -/
+theorem eventually_det_ne_zero_of_tendsto_left_mul_matrix
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (S M : ℝ → Matrix ι ι ℂ) (A : Matrix ι ι ℂ)
+    (hM : Tendsto (fun B ↦ S B * M B) atTop (nhds A))
+    (hA : A.det ≠ 0) :
+    ∀ᶠ B in atTop, (M B).det ≠ 0 := by
+  have hdet : Tendsto (fun B ↦ (S B * M B).det) atTop (nhds A.det) := by
+    change Tendsto ((fun X : Matrix ι ι ℂ ↦ X.det) ∘ fun B ↦ S B * M B)
+      atTop (nhds A.det)
+    simpa [Function.comp_def] using
+      continuous_id.matrix_det.continuousAt.tendsto.comp hM
+  have hnormalized : ∀ᶠ B in atTop, (S B * M B).det ≠ 0 :=
+    hdet.eventually (eventually_ne_nhds hA)
+  filter_upwards [hnormalized] with B hB hzero
+  apply hB
+  rw [Matrix.det_mul, hzero, mul_zero]
+
 end GaloisForLFunctions.HTGeometry

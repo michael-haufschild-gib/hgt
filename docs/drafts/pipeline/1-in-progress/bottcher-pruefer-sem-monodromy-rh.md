@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** `[CONJECTURE]`, `[RH ROUTE]`, `[FRINGE LARGE DETOUR]`
 - **Consumer:** `../3-formalized/not_new_scientific_knowledge/bottcher-pruefer-xi-multiplicity-character.md`
-- **Böttcher source:** `../2-fully-proven/not_new_scientific_knowledge/bottcher-exact-pruefer-monodromy.md`
+- **Böttcher source:** `../2-fully-proven/not_new_scientific_knowledge/01-bottcher-complex-dynamics/bottcher-exact-pruefer-monodromy.md`
 - **Xi source:** `../3-formalized/not_new_scientific_knowledge/completed-sem-contour-boundary-identification.md`
 
 ## Claim

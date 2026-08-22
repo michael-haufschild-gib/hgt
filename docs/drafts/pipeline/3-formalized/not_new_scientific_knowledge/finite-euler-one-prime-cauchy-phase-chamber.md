@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized / not-new
 - **Type:** THEOREM, `[VALUE RELATION]`, `[BRIDGE]`, `[POSITIVE COMPLETION OBLIGATION]`
 - **Scientific status:** `[LEAN-VERIFIED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Parent:** `../../2-fully-proven/not_new_scientific_knowledge/finite-euler-connection-cauchy-phase-chambers.md`
+- **Parent:** `../../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/finite-euler-connection-cauchy-phase-chambers.md`
 - **Formal modules:**
   `formal/GaloisForLFunctions/HTGeometry/PoissonRadialChamber.lean`;
   `formal/GaloisForLFunctions/RHTower/PrimeEulerCauchyPhaseChamber.lean`

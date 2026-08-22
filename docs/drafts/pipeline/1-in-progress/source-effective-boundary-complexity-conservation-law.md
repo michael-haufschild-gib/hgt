@@ -15,7 +15,7 @@
   - `zeta-source-effectivity-arithmetic-equivalence-principle.md`;
   - `prime-valuation-hellinger-rees-reflection-fracture.md`;
   - `../2-fully-proven/new_scientific_knowledge/projective-prime-weyl-leakage-fock-normal-cone.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/poisson-euler-sobolev-natural-cone-bipolarity.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/poisson-euler-sobolev-natural-cone-bipolarity.md`;
   - `../2-fully-proven/prime-sieve-wold-gamma-bv-relative-character.md`;
   - `../2-fully-proven/prime-valuation-conditioning-normalization-amplification-no-go.md`.
 
@@ -861,7 +861,7 @@ retuning the source modular action.  The invariant which survives both correctio
 action of the fixed ordinary-prime cylinder algebra.
 
 The theorem in
-`../2-fully-proven/not_new_scientific_knowledge/source-linear-essential-superselection-no-sewing.md`
+`../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/source-linear-essential-superselection-no-sewing.md`
 proves that reflected off-line product-Poisson representations are disjoint and hence admit no
 nonzero closed densely defined source-linear intertwiner, regardless of essential norm growth.
 The polar partial isometry would be a bounded intertwiner and must vanish.

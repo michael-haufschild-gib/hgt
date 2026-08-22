@@ -44,6 +44,11 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | Prop 14.7(c) (`t125`) perfection surjects along a quotient | `RHTower/DeningerDynSysPerfectionLocal.lean` | closed |
 | Prop 14.14(2) (`t1213`) locality of the tilt | `RHTower/DeningerDynSysPerfectionLocal.lean` | closed |
 
+| Thm 1.4 (`t27n`) = Kucharczyk–Scholze Lemma 4.9 | `RHTower/DeningerDynSysInvariantPoints.lean` | closed |
+| Lemma 1.6(2) (`t212n`), Cor 1.7(1) (`t213n`) | `RHTower/DeningerDynSysValuedPoints.lean` | closed |
+| §1 `Hom(ℤ̲A, R) ≅ (A →*₀ R)` | `RHTower/DeningerDynSysReducedMonoidAlgebra.lean` | closed |
+| Def 9.5 (`t95n`) + its two stated facts | `HTGeometry/AlmostPathConnected.lean` | closed |
+
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
 ### Duplication audit (2026-08-22)
@@ -77,3 +82,6 @@ AIC-domain comparison.
 - 2026-08-22 — created; paper source downloaded, 78-result inventory extracted.
 - 2026-08-22 — five results closed in Lean (see Ledger); duplication audit recorded.
 - 2026-08-22 — eight results closed; axiom audit clean; next target is Theorem 1.4 (`t27n`).
+- 2026-08-22 — Theorem 1.4 (`t27n`) and Lemma 1.6(2)/Cor 1.7(1) closed: ten results.
+- 2026-08-22 — reduced monoid algebra representability and Definition 9.5 closed; 13 items in the
+  ledger; `formal_tools.py lint` reports no error attributable to these modules.

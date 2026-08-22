@@ -524,10 +524,10 @@ The regular curvature changes sign exactly once.  Each `G_m` is its pairing with
 strictly unimodal crossing window `K_m`, whose unique peak is
 `sqrt(M_(2*m+2)/M_(2*m))`.  Thus the open core is no longer two unrelated incomplete-Gamma
 enclosures.  It is the paired one-seam window estimate `(G_1 lower, G_2 upper)` recorded in
-`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`.
+`../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`.
 The exact remaining research interface is
 `theta-cusp-one-seam-turan-window-balance.md`.  No generic log-concavity argument supplies both
 directions.  Its continuous value-chart input is
-`../2-fully-proven/not_new_scientific_knowledge/theta-cusp-continuous-half-density-residual-tail-chart.md`:
+`../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/theta-cusp-continuous-half-density-residual-tail-chart.md`:
 both tilted residual transforms are elementary at every cutoff, and the unique regular-curvature
 seam occurs before `log 2`.

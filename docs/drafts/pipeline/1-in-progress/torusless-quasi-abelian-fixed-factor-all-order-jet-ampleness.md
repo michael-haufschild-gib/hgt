@@ -1573,3 +1573,79 @@ was source-checked, target-built with
 `lake build GaloisForLFunctions.HTGeometry.AbeLeadingDeterminant`, and wired
 into the HTGeometry umbrella.  It is unconditional infrastructure; it does not
 supply the still-open normalized Poincare convergence itself.
+
+## Lean progress 2026-08-22 — normalized Tannery core for DJS-3
+
+`HTGeometry/AbeNormalizedDampingTannery.lean` now proves the exact analytic tail statement needed
+by the distinct-damping-speed determinant route.  For a summable complex coefficient family
+`c_i`, arbitrary strictly positive phases `a_i` (with **no uniform lower bound**), and degrees
+`e_i ≤ D`, it defines
+
+```text
+B^(-(D-e_i)) exp(-a_i B) c_i
+```
+
+and proves its `tsum` tends to zero as `B → +∞`.  The proof is Tannery, but its dominator is
+important: for `B ≥ 1`, the normalized scalar has norm at most `1`, so `‖c_i‖` itself is a
+summable parameter-independent majorant.  This survives Liouville small divisors; only
+pointwise positivity of each phase is used for termwise decay.
+
+The module also proves that this scalar is exactly the degree-`D` normalization
+
+```text
+B^(-D) · B^(e_i) exp(-a_i B),
+```
+
+when `e_i ≤ D`.  Its two public theorems
+`tendsto_tsum_normalizedDampingTerm_zero` and
+`normalizedDampingTerm_eq_parameter_normalization` are axiom-clean apart from Lean's standard
+`[propext, Classical.choice, Quot.sound]`; target build passed:
+
+```text
+lake build GaloisForLFunctions.HTGeometry.AbeNormalizedDampingTannery
+```
+
+This closes the previously missing **Tannery consequence** of a finite degree expansion.  It does
+not assert such an expansion as a field or hypothesis of the card.  The remaining open core is
+still to derive, from Abe's concrete invariant multiplier and `Φ₂` seed estimates, the actual
+finite polynomial-in-`B` jet expansion whose coefficients have this summable majorant, and then to
+construct the graded target/transverse seed matrix with nonzero Vandermonde leading determinant.
+
+### Correction to DJS-2
+
+The earlier DJS-2 spectral-peak discussion only isolates a possible maximal distribution order.
+Without a quantitative accumulation law it does **not** justify recursive extraction of lower
+orders or of a constant term.  DJS-3 is the active route: its finite distinct-speed Vandermonde
+leading block is nonzero at top degree, and whole-determinant normalization makes every complement
+tail subject to the proved normalized Tannery theorem above.
+
+## Lean progress 2026-08-22 — finite graded determinant transfer
+
+`HTGeometry/AbeNormalizedDampingDeterminant.lean` now composes the two closed DJS-3 analytic
+pieces.  Its theorem
+`eventually_det_ne_zero_of_normalized_damping_matrix_expansion` takes an **actual entrywise
+identity** for a finite evaluation matrix after whole-matrix normalization, namely an invertible
+leading matrix plus a `tsum` of the normalized polynomial-exponential terms, and concludes that
+the original matrix determinant is eventually nonzero.  It uses only strict termwise phase
+positivity and entrywise ℓ¹ coefficient summability, not a global damping gap.
+
+This is deliberately a transfer theorem, not a replacement structure field: a completed
+quasi-Abelian construction must prove its displayed normalized matrix identity from the explicit
+Abe multiplier and its Poincaré series.  The target module build passed and its axiom report is
+exactly `[propext, Classical.choice, Quot.sound]`.
+
+### Correction 2026-08-22 — normalization is row graded
+
+A single scalar normalization of the entire packet matrix is generally wrong for DJS-3: jet rows
+have different top powers of the damping parameter.  The correct operation is left multiplication
+by a finite row-normalization matrix whose diagonal entries are the corresponding inverse powers.
+
+`HTGeometry/AbeLeadingDeterminant.lean` now proves
+`eventually_det_ne_zero_of_tendsto_left_mul_matrix`: if a left-normalized matrix tends to an
+invertible matrix, then the original matrices are eventually invertible.  No invertibility premise
+on the normalizer is needed, since `det(S·M) ≠ 0` already forces `det M ≠ 0`.
+
+`HTGeometry/AbeNormalizedDampingDeterminant.lean` now exposes the exact DJS-3 form,
+`eventually_det_ne_zero_of_left_normalized_damping_matrix_expansion`.  It combines that row-graded
+determinant transfer with the normalized Tannery theorem.  Both declarations have the standard
+clean axiom report `[propext, Classical.choice, Quot.sound]`; targeted module builds passed.

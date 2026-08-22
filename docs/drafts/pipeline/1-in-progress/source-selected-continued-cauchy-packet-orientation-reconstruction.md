@@ -64,7 +64,7 @@ already proves that universal condition equivalent to RH.
 
 ### Finite-place sign boundary
 
-`../2-fully-proven/not_new_scientific_knowledge/finite-euler-connection-cauchy-phase-chambers.md`
+`../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/finite-euler-connection-cauchy-phase-chambers.md`
 proves that the FE-paired finite Euler connection cannot itself supply the independent sign in
 `(5)`.  Its rank-one diagonal is an exact radial difference of disk Poisson kernels, and every
 finite nonempty prime packet has simultaneous positive and negative phase chambers.  The positive

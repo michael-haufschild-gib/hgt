@@ -5,7 +5,7 @@
 - **Type:** `[BRIDGE] [EXACT IDENTITY / FORWARD RH IMPLICATION]`
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Paper proof:**
-  `../../2-fully-proven/not_new_scientific_knowledge/square-aperture-von-mangoldt-correlation-energy.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/square-aperture-von-mangoldt-correlation-energy.md`
 
 ## Module
 

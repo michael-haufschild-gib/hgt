@@ -6,7 +6,7 @@
 - **Scientific status:** `[REFUTED] [EXACT MAIN-TERM CANCELLATION] [NO RH CONSEQUENCE]`
 - **Source:** Tatenda Kubalalika, *The Riemann Hypothesis is False*, 2026 preprint;
   `../2-fully-proven/needs-audit/kubalalika-parity-corrected-main-term-cancellation.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/kubalalika-parity-weighted-near-diagonal-tail.md`
+  `../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/kubalalika-parity-weighted-near-diagonal-tail.md`
 - **Statement:** The proposed proof that the supremum `Theta` of the real parts of nontrivial zeta
   zeros equals `1` fails: the source omits a parity condition, and restoring it makes the two linear
   main terms cancel exactly.

@@ -14,7 +14,7 @@
   `../3-formalized/not_new_scientific_knowledge/von-mangoldt-gamma-all-depth-oriented-anomaly.md`;
   `../3-formalized/not_new_scientific_knowledge/von-mangoldt-gamma-all-depth-cauchy-gram.md`;
   `../2-fully-proven/not_new_scientific_knowledge/ccm-gamma-damped-cauchy-frame-trace-law.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/prime-arch-explicit-circle-state-reflection-law.md`.
+  `../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/prime-arch-explicit-circle-state-reflection-law.md`.
 - **Statement:** `[CONJECTURE]` The normalized prime--Gamma moment germ is the cyclic resolvent of
   a positive reflection-sewn decimation-defect operator constructed from resolved prime channels,
   the Gamma cyclic source, and the finite BV square-decimation identity before continuation.

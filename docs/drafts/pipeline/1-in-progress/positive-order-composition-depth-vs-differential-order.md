@@ -103,7 +103,7 @@ In particular, for every `n>=1`,
 
 Thus every affine-exponential covering layer costs exactly one unit of minimal algebraic-differential order throughout a nontrivial parameter family. In particular, the candidate inequality, if true, is sharp in every order.
 
-The affine parameter-family proof is separated in `2-fully-proven/needs-audit/exponential-tower-exact-differential-order.md`. The stronger bridge theorem in `2-fully-proven/not_new_scientific_knowledge/asymptotically-exponential-algebraic-cascade-unit-cost.md` uses the Briot--Bouquet classification and Clunie growth separation to cover every transcendental entire autonomous order-one DA function. Reinhart's Schanuel-function minimal-order theorem removes the scientific-novelty claim for that class. The lemmas below record the normalized tower core.
+The affine parameter-family proof is separated in `2-fully-proven/needs-audit/exponential-tower-exact-differential-order.md`. The stronger bridge theorem in `2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/asymptotically-exponential-algebraic-cascade-unit-cost.md` uses the Briot--Bouquet classification and Clunie growth separation to cover every transcendental entire autonomous order-one DA function. Reinhart's Schanuel-function minimal-order theorem removes the scientific-novelty claim for that class. The lemmas below record the normalized tower core.
 
 ### Algebraic-independence lemma
 
@@ -197,7 +197,7 @@ The completed xi function has finite order, so Polya already forces any nontrivi
 
 ## Next move
 
-Audit the terminal-linear Bell induction for the complete nonautonomous first-order theorem. For higher-order inner functions, scalar additivity is now falsified by the Gaussian primitive: `ord_DA(exp o G)=2` although `ord_DA(exp)+ord_DA(G)=3`. The derivative-shadow bridge is recorded in `2-fully-proven/not_new_scientific_knowledge/autonomous-cap-derivative-shadow-law.md`; the new open residue is derivative-shadow recovery for nonautonomous entire caps. The unrestricted depth inequality remains blocked by the absence of a general order-`n` growth ceiling.
+Audit the terminal-linear Bell induction for the complete nonautonomous first-order theorem. For higher-order inner functions, scalar additivity is now falsified by the Gaussian primitive: `ord_DA(exp o G)=2` although `ord_DA(exp)+ord_DA(G)=3`. The derivative-shadow bridge is recorded in `2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/autonomous-cap-derivative-shadow-law.md`; the new open residue is derivative-shadow recovery for nonautonomous entire caps. The unrestricted depth inequality remains blocked by the absence of a general order-`n` growth ceiling.
 
 ## Gates
 

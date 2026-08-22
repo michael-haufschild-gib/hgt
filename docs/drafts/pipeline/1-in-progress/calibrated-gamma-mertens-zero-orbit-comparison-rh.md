@@ -15,11 +15,11 @@
   - `hypertranscendental-mackey-corona-field.md`
   - `../3-formalized/not_new_scientific_knowledge/canonical-digamma-source-selection.md`
 - **RH parents:**
-  - `../2-fully-proven/not_new_scientific_knowledge/time-one-gamma-jet-fock-rh-criterion.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/time-one-gamma-jet-fock-rh-criterion.md`
   - `../2-fully-proven/not_new_scientific_knowledge/prime-laplace-gamma-jet-incidence-phase-transition.md`
   - `../2-fully-proven/not_new_scientific_knowledge/prime-laplace-gamma-clock-descent-anomaly.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/mertens-corona-shift-conormal.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/mertens-logarithmic-corona-differential-tower.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/mertens-corona-shift-conormal.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/mertens-logarithmic-corona-differential-tower.md`
   - `../3-formalized/not_new_scientific_knowledge/gamma-mertens-orbit-coboundary-rh.md`
   - `../2-fully-proven/new_scientific_knowledge/weighted-euler-tangent-global-graph-decoupling.md`
 - **Statement:** Construct a source-defined comparison from the completed Euler anti-reflection

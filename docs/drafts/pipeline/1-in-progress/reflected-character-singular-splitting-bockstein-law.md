@@ -6,10 +6,10 @@
 - **Parents:**
   - `../3-formalized/new_scientific_knowledge/prime-first-trace-essential-normal-bockstein.md`;
   - `../2-fully-proven/new_scientific_knowledge/gamma-copoisson-sonin-full-quotient-flatness-syzygy.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/source-linear-essential-superselection-no-sewing.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/source-linear-essential-superselection-no-sewing.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/prime-log-action-condensation-normal-cone-law.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/finite-boolean-hochschild-diagonal-cofinal-fracture.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/wold-boolean-diagonal-renormalization-mismatch.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/05-algebraic-geometry-cohomology/finite-boolean-hochschild-diagonal-cofinal-fracture.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/wold-boolean-diagonal-renormalization-mismatch.md`;
   - `../5-failed/burnol-copoisson-prime-seam-calkin-lift.md`.
 - **Statement:** Distinct characters of a commutative source algebra admit no nonzero internal
   derived morphism in any degree.  Relative Hochschild-one splitting is its degree-one shadow.

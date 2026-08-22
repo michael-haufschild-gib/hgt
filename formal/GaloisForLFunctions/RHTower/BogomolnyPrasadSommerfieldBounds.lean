@@ -99,6 +99,8 @@ theorem xiWardGreenCayleyBPSDefect_nonneg (T : ℝ) :
 theorem xiThermalOrientationEnergy_bpsBound :
     0 ≤ xiThermalOrientationEnergy := xiThermalOrientationEnergy_nonneg
 
+/-- Deprecated exact alias; use `xiThermalOrientationEnergy_eq_zero_iff_rh`. -/
+@[deprecated xiThermalOrientationEnergy_eq_zero_iff_rh (since := "2026-08-22")]
 theorem xiThermalOrientationEnergy_bpsSaturation_iff :
     xiThermalOrientationEnergy = 0 ↔ RiemannHypothesis :=
   xiThermalOrientationEnergy_eq_zero_iff_rh
@@ -108,6 +110,8 @@ theorem xiThermalSquareReflectionDefectEnergy_bpsBound :
   rw [xiThermalSquareReflectionDefectEnergy_eq_four_mul_orientationEnergy]
   exact mul_nonneg (by norm_num) xiThermalOrientationEnergy_nonneg
 
+/-- Deprecated exact alias; use `xiThermalSquareReflectionDefectEnergy_eq_zero_iff_rh`. -/
+@[deprecated xiThermalSquareReflectionDefectEnergy_eq_zero_iff_rh (since := "2026-08-22")]
 theorem xiThermalSquareReflectionDefectEnergy_bpsSaturation_iff :
     xiThermalSquareReflectionDefectEnergy = 0 ↔ RiemannHypothesis :=
   xiThermalSquareReflectionDefectEnergy_eq_zero_iff_rh
@@ -115,6 +119,8 @@ theorem xiThermalSquareReflectionDefectEnergy_bpsSaturation_iff :
 theorem thetaXiNormalizedRootFluxEnergy_bpsBound :
     0 ≤ thetaXiNormalizedRootFluxEnergy := thetaXiNormalizedRootFluxEnergy_nonneg
 
+/-- Deprecated exact alias; use `thetaXiNormalizedRootFluxEnergy_eq_zero_iff_riemannHypothesis`. -/
+@[deprecated thetaXiNormalizedRootFluxEnergy_eq_zero_iff_riemannHypothesis (since := "2026-08-22")]
 theorem thetaXiNormalizedRootFluxEnergy_bpsSaturation_iff :
     thetaXiNormalizedRootFluxEnergy = 0 ↔ RiemannHypothesis :=
   thetaXiNormalizedRootFluxEnergy_eq_zero_iff_riemannHypothesis
@@ -123,6 +129,8 @@ theorem thetaXiNormalizedRankTwoBoundaryFluxEnergy_bpsBound :
     0 ≤ thetaXiNormalizedRankTwoBoundaryFluxEnergy :=
   thetaXiNormalizedRankTwoBoundaryFluxEnergy_nonneg
 
+/-- Deprecated exact alias; use `thetaXiNormalizedRankTwoBoundaryFluxEnergy_eq_zero_iff_riemannHypothesis`. -/
+@[deprecated thetaXiNormalizedRankTwoBoundaryFluxEnergy_eq_zero_iff_riemannHypothesis (since := "2026-08-22")]
 theorem thetaXiNormalizedRankTwoBoundaryFluxEnergy_bpsSaturation_iff :
     thetaXiNormalizedRankTwoBoundaryFluxEnergy = 0 ↔ RiemannHypothesis :=
   thetaXiNormalizedRankTwoBoundaryFluxEnergy_eq_zero_iff_riemannHypothesis
@@ -132,6 +140,8 @@ theorem thetaXiNormalizedRankTwoBoundaryFluxEnergy_bpsSaturation_iff :
 theorem xiGlobalReflectionDefectEnergy_bpsBound :
     0 ≤ xiGlobalReflectionDefectEnergy := xiGlobalReflectionDefectEnergy_nonneg
 
+/-- Deprecated exact alias; use `xiGlobalReflectionDefectEnergy_eq_zero_iff_rh`. -/
+@[deprecated xiGlobalReflectionDefectEnergy_eq_zero_iff_rh (since := "2026-08-22")]
 theorem xiGlobalReflectionDefectEnergy_bpsSaturation_iff :
     xiGlobalReflectionDefectEnergy = 0 ↔ RiemannHypothesis :=
   xiGlobalReflectionDefectEnergy_eq_zero_iff_rh
@@ -139,6 +149,8 @@ theorem xiGlobalReflectionDefectEnergy_bpsSaturation_iff :
 theorem xiEndpointReflectionDefectEnergy_bpsBound :
     0 ≤ xiEndpointReflectionDefectEnergy := xiEndpointReflectionDefectEnergy_nonneg
 
+/-- Deprecated exact alias; use `xiEndpointReflectionDefectEnergy_eq_zero_iff_rh`. -/
+@[deprecated xiEndpointReflectionDefectEnergy_eq_zero_iff_rh (since := "2026-08-22")]
 theorem xiEndpointReflectionDefectEnergy_bpsSaturation_iff :
     xiEndpointReflectionDefectEnergy = 0 ↔ RiemannHypothesis :=
   xiEndpointReflectionDefectEnergy_eq_zero_iff_rh
@@ -184,6 +196,8 @@ theorem xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy_bpsBound :
       xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy := by
   rw [xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy_eq_four_mul_transverseCharge]
 
+/-- Deprecated exact alias; use `xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy_eq_zero_iff_riemannHypothesis`. -/
+@[deprecated xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy_eq_zero_iff_riemannHypothesis (since := "2026-08-22")]
 theorem xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy_bpsSaturation_iff :
     xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy = 0 ↔ RiemannHypothesis :=
   xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy_eq_zero_iff_riemannHypothesis
@@ -193,6 +207,8 @@ theorem intrinsicCassiniJetResidual_bpsBound :
       (iteratedDeriv 63 (logDeriv xiSquaredSeamCassiniSource) 0).re /
         ((63 : ℕ).factorial : ℝ) := intrinsicCassiniJetResidual_nonneg
 
+/-- Deprecated exact alias; use `intrinsicCassiniJetResidual_eq_zero_iff_riemannHypothesis`. -/
+@[deprecated intrinsicCassiniJetResidual_eq_zero_iff_riemannHypothesis (since := "2026-08-22")]
 theorem intrinsicCassiniJetResidual_bpsSaturation_iff :
     4096 * xiSquaredSeamCassiniPowerSixtyFourJensenIntegral.toReal +
         (iteratedDeriv 63 (logDeriv xiSquaredSeamCassiniSource) 0).re /

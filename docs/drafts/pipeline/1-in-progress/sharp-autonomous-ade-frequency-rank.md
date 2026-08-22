@@ -41,7 +41,7 @@ chart by the real dimension of a complex `n`-manifold. Claim `(1)` asserts that 
 minimal set of the holomorphic flow is forced to be totally real in the dimension-theoretic sense.
 
 The order-one case is now proved in the stronger periodic form in
-`../2-fully-proven/not_new_scientific_knowledge/first-order-autonomous-algebraic-ap-periodicity.md`:
+`../2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/first-order-autonomous-algebraic-ap-periodicity.md`:
 normalizing the curve `P(f,f')=0` embeds the whole Bohr hull into a Riemann surface; the
 Cartwright--O'Brien phase-cube argument excludes two independent frequencies, and the theorem that
 non-circular solenoids do not embed in surfaces excludes a noncyclic rank-one frequency group.
@@ -55,7 +55,7 @@ counterexample cannot be an ordinary analytic quasiperiodic torus. It must explo
 rough transverse phase, a non-Lie protorus, or wild singular-chart gluing.
 
 For order two, the smooth global realization attack is also closed in
-`../2-fully-proven/not_new_scientific_knowledge/smooth-stein-order-two-autonomous-ade-frequency-rank.md`.
+`../2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions/smooth-stein-order-two-autonomous-ade-frequency-rank.md`.
 A compact smooth minimal three-hull in a Stein complex surface is either Levi-flat, contradicting
 the strictly plurisubharmonic maximum principle, or contact, in which case its holomorphic flow is
 a Reeb flow and Taubes forces a periodic orbit. A smooth four-hull is open by invariance of domain

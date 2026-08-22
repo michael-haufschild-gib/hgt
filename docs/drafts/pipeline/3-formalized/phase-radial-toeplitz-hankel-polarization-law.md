@@ -82,7 +82,7 @@ it identifies why the prime phase orbit cannot substitute for it.
 ## Exact Xi circle-state consumer
 
 The paper theorem
-`../2-fully-proven/not_new_scientific_knowledge/prime-arch-explicit-circle-state-reflection-law.md`
+`../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/prime-arch-explicit-circle-state-reflection-law.md`
 constructs an unconditional analytic probability measure `mu_Xi` on the circle and takes
 
 ```text

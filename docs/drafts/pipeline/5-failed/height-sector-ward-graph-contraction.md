@@ -8,8 +8,8 @@
 - **Parents:**
   - `mobius-incidence-curvature-gamma-sonin-pole-divisor-transfer-rh.md`
   - `xi-source-completion-polarization-architecture.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/prime-poisson-superselection-screen.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/euler-pole-four-unit-anti-causal-budget-law.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/prime-poisson-superselection-screen.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/euler-pole-four-unit-anti-causal-budget-law.md`
 
 ## Retirement verdict
 

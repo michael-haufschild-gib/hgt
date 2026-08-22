@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Classification:** `[FORMALIZED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Paper theorem:** `../../2-fully-proven/not_new_scientific_knowledge/projective-horizon-catalan-observation-matroid.md`
+- **Paper theorem:** `../../2-fully-proven/not_new_scientific_knowledge/03-ht-translation-projective-geometry/projective-horizon-catalan-observation-matroid.md`
 - **Lean module:** `formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonObservationMatroid.lean`
 
 ## Certified theorem surface

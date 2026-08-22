@@ -63,7 +63,7 @@ is the positive failure law associated with the bounded-tail no-go.
 ## Certified specialization
 
 The paper-proven external certificate in
-`../../2-fully-proven/not_new_scientific_knowledge/verified-height-one-zero-turing-extension.md`
+`../../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/verified-height-one-zero-turing-extension.md`
 has
 
 ```text

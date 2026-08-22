@@ -79,7 +79,7 @@ systems. Recent work makes KSGNS an idempotent functor on fixed-source categorie
 positive correspondences.
 
 The exact positive survivor and proof are recorded in
-`../2-fully-proven/not_new_scientific_knowledge/centered-ksgns-covariance-pythagoras.md`.
+`../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/centered-ksgns-covariance-pythagoras.md`.
 
 ### Relentless-interrogation answer
 

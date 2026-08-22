@@ -126,7 +126,7 @@ The semilocal logarithmic-position connection does not use the derivative-at-one
 log(p)[p^(-m sigma)-p^(-m(1-sigma))],  m>=2.              (9)
 ```
 
-`../../2-fully-proven/not_new_scientific_knowledge/semilocal-dual-pair-euler-connection-source-law.md`
+`../../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/semilocal-dual-pair-euler-connection-source-law.md`
 proves on paper that the same Calkin-rigidity argument applies: the coefficients are absolutely
 summable, the scales are strictly increasing, and the grade-two coefficient is nonzero exactly
 when `sigma!=1/2`.  Hence the coefficient-one connection tail is also an orientation-faithful

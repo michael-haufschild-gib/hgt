@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean)
 - **Status:** `[FULLY-LEAN-PROVED] [CLASSICAL] [BRIDGE]`
 - **Paper parent:**
-  `../../2-fully-proven/not_new_scientific_knowledge/balanced-causal-fracture-torsor-classification.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/balanced-causal-fracture-torsor-classification.md`
 - **Physics parent:**
   `../../1-in-progress/forbidden-transition-causalization-universal-law.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.PrimitivePairInteriorDimension`

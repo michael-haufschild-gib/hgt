@@ -195,7 +195,7 @@ horizontalDisplacement_sq_mul_log_two_pow_four_le_degreeOneEulerFEFirstCoefficie
 
 ## Connection-value companion
 
-`../../2-fully-proven/not_new_scientific_knowledge/semilocal-dual-pair-euler-connection-source-law.md`
+`../../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/semilocal-dual-pair-euler-connection-source-law.md`
 separates the Euler **value** required by the semilocal logarithmic-position connection from the
 Euler-parameter tangent studied here.  For the same scalar family `(1)`,
 

@@ -7,7 +7,7 @@
 - **Lean:**
   `formal/GaloisForLFunctions/RHTower/BVPrimeWindowDilationOrientation.lean`
 - **Parent:**
-  `../../2-fully-proven/not_new_scientific_knowledge/bv-prime-window-laurent-orientation-polarization.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/bv-prime-window-laurent-orientation-polarization.md`
 
 ## Statement
 

@@ -7,7 +7,7 @@
   `[POSITIVE RESIDUE: GENUINE THREE-BODY PARTIAL TWIST OR CORRECTION REQUIRED]`
 - **Scope:** the regular `O(N)` sigma-model matrix for `N>=3`; no RH and no scalar HT input
 - **Parent:**
-  `../2-fully-proven/not_new_scientific_knowledge/unitary-pair-twist-hardy-exponential-bound.md`
+  `../2-fully-proven/not_new_scientific_knowledge/06-integrable-qft-yang-baxter/unitary-pair-twist-hardy-exponential-bound.md`
 - **Failed conjecture:** The normalized Alazzawi two-particle half-phase can be copied once for
   every particle pair, in a fixed or reduced word, to produce the all-particle relative
   intertwiner.
@@ -179,7 +179,7 @@ The proof eliminates:
    two-body Brauer factor satisfying the required `n=2` equation.
 
 It does **not** eliminate the Alazzawi--Lechner all-particle intertwiner itself.  In fact,
-`../2-fully-proven/not_new_scientific_knowledge/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`
+`../2-fully-proven/not_new_scientific_knowledge/06-integrable-qft-yang-baxter/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`
 now proves abstractly that a holomorphic invertible frame exists for every fixed particle number.
 A surviving quantitatively controlled construction may use:
 

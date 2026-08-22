@@ -9,7 +9,7 @@
   - `hypertranscendental-polarization-fibration.md`
   - `hypertranscendental-constraint-sheaf-reconstruction-duality.md`
   - `../2-fully-proven/not_new_scientific_knowledge/polarization-transport-component-collapse.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/fixed-analytic-dimension-arbitrary-source-coherence.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/03-ht-translation-projective-geometry/fixed-analytic-dimension-arbitrary-source-coherence.md`
 
 ## Medalist displacement
 

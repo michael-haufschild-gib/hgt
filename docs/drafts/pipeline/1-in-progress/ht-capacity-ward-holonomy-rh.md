@@ -18,7 +18,7 @@
 - **Zeta inputs:**
   - `../2-fully-proven/squarefree-euler-modular-corona-curvature-colligation.md`;
   - `../2-fully-proven/squarefree-fixed-current-right-half-ward-localization.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/infinitesimal-euler-leakage-cauchy-energy-threshold.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/infinitesimal-euler-leakage-cauchy-energy-threshold.md`;
   - `../3-formalized/not_new_scientific_knowledge/ccm-complex-polar-prime-mellin-colligation.md`.
 
 ## The conjecture
@@ -79,7 +79,7 @@ P_anti d log(-X_sq^(-2))=ell_E.                           (0a)
 ```
 
 This is proved in
-`../2-fully-proven/not_new_scientific_knowledge/projective-reciprocal-horizon-ward-seam.md`, with
+`../2-fully-proven/not_new_scientific_knowledge/03-ht-translation-projective-geometry/projective-reciprocal-horizon-ward-seam.md`, with
 the differential-field core in `RHTower/ProjectiveHorizonWardSeam.lean`.  Therefore the open step
 is no longer to guess which HT topological class maps to the Ward current.  It is to construct the
 source-rigged boundary trace of the escaping Pluecker tangent and prove that harmonic projection

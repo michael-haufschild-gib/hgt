@@ -8,7 +8,7 @@
   `formal/GaloisForLFunctions/RHTower/VonMangoldtGammaAllDepthCauchy.lean`.
 - **Parents:**
   `von-mangoldt-gamma-all-depth-oriented-anomaly.md`;
-  `../../2-fully-proven/not_new_scientific_knowledge/von-mangoldt-gamma-clock-descent-anomaly.md`;
+  `../../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/von-mangoldt-gamma-clock-descent-anomaly.md`;
   `../../1-in-progress/prime-gamma-reflection-decimation-defect-resolvent-rh.md`.
 - **Statement:** The full finite von Mangoldt--Gamma descent anomaly admits a source-defined
   positive Cauchy Gram simultaneously over all resolved source atoms and all Gamma-jet

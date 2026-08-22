@@ -420,7 +420,7 @@ two-face prediction `(R4+)`--`(R4-)`.  It does not yet prove a presentation-inde
 character-line duality for an arbitrary HT family.  The theta construction and node-slope law are
 classical Tate/generalized-Jacobian parents; the candidate-new task is their functorial coupling to
 the HT characteristic module and DA filtration.  The complete bridge proof is recorded in
-`../2-fully-proven/not_new_scientific_knowledge/tate-theta-divisor-to-winding-transgression.md`.
+`../2-fully-proven/not_new_scientific_knowledge/05-algebraic-geometry-cohomology/tate-theta-divisor-to-winding-transgression.md`.
 
 ## `[CONJECTURE -- DIFFERENTIAL CHARACTERISTIC RESOLUTION FIELD]`
 
@@ -568,7 +568,7 @@ term is the lower normal-crossing hypersurface module, while its degree-one term
 kernel of the map from that hypersurface module to the lower critical module.  Thus the born
 class is the entire correction from specialization-after-criticalization to
 criticalization-after-specialization.  The formulas and proof are recorded in
-`../2-fully-proven/not_new_scientific_knowledge/source-face-observation-cohomology-transmutation.md`.
+`../2-fully-proven/not_new_scientific_knowledge/05-algebraic-geometry-cohomology/source-face-observation-cohomology-transmutation.md`.
 
 The algebra in `(B11)`--`(B13)` is classical and is a bridge, not new scientific knowledge.  The
 candidate-new theorem is now sharply smaller and harder:
@@ -681,7 +681,7 @@ K(xi) -> K(p xi),       degree 1: identity,       degree 0: multiplication by p 
 
 commutes because `p xi=p xi`; after restriction to `xi=0`, its degree-one map remains the
 identity.  The theta factorization and this algebraic chain map are recorded in
-`../2-fully-proven/not_new_scientific_knowledge/tate-theta-koszul-barnes-localization-transmutation.md`.
+`../2-fully-proven/not_new_scientific_knowledge/05-algebraic-geometry-cohomology/tate-theta-koszul-barnes-localization-transmutation.md`.
 
 Attacking the composition exposes a decisive type error.  The nodal coordinate `x` in `(B22)` is
 a meromorphic gauge vector.  The Barnes factor is the source operator

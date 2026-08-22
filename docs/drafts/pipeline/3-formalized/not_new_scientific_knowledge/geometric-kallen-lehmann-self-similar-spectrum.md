@@ -6,7 +6,7 @@
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/GeometricKallenLehmannResponse.lean`
 - **Parent paper theorem:**
-  `../../2-fully-proven/not_new_scientific_knowledge/q-geometric-generalized-free-field-hypertranscendence.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/q-geometric-generalized-free-field-hypertranscendence.md`
 - **Statement:** A positive geometric atomic mass-squared spectrum has the exact moment law
   `(1-a)/(1-a b^n)`, satisfies a static source-rescaling constraint, has every finite moment Hankel
   determinant strictly positive, and escapes every fixed finite spectral-width model.

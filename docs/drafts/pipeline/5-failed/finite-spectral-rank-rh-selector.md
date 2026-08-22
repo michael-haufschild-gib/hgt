@@ -46,7 +46,7 @@ nu_F=(Im)_* Div(F)                                          (3)
 
 be the complete zero-ordinate counting measure, including multiplicity. The proved transverse
 relocation pair in
-`../2-fully-proven/not_new_scientific_knowledge/positive-density-transverse-divisor-relocation-law.md`
+`../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/positive-density-transverse-divisor-relocation-law.md`
 has all of the following simultaneously:
 
 ```text

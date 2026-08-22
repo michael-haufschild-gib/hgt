@@ -89,7 +89,7 @@ additive Euler translations tau_(log p)
 ```
 
 An ordinary Fourier edge bundle cannot substitute for this graph.  The paper theorem
-`../../2-fully-proven/not_new_scientific_knowledge/sonin-burnol-conductor-cutoff-bounded-graph-law.md`
+`../../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/sonin-burnol-conductor-cutoff-bounded-graph-law.md`
 now closes the common-domain part of this problem.  Writing
 `H_infinity=M_t+J_log M_t J_log`, it proves
 

@@ -7,7 +7,7 @@
 - **Computation used:** no
 - **RH used:** no
 - **Parents:** `prime-gamma-reflection-decimation-defect-resolvent-rh.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/bv-prime-window-polar-coefficient-decimation-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/bv-prime-window-polar-coefficient-decimation-law.md`;
   `formal/GaloisForLFunctions/RHTower/PrimeMellinJetDiagonalEnergyNoGo.lean`;
   `formal/GaloisForLFunctions/RHTower/GammaConductorSchurCapacity.lean`.
 

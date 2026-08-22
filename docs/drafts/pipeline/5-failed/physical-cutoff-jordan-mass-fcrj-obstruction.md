@@ -86,7 +86,7 @@ Thus `R_M<=D_M+E_M`, with equality exactly when `P_M=0`.  Once `|E_M|` is placed
 existing error budget, the negative half of the absolute `AC25` target is unconditional; only the
 reverse response inequality remains.  The dependency-closed paper proof and sharp quantitative
 reduction are recorded in
-`2-fully-proven/not_new_scientific_knowledge/fcrj-corrected-response-saturation-law.md`.
+`2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/fcrj-corrected-response-saturation-law.md`.
 This is a corpus-new frontier correction but an immediate Hilbert-square consequence, so it is
 honestly classified as a bridge rather than new scientific knowledge.
 

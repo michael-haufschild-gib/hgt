@@ -16,7 +16,7 @@
   - `deninger-derived-stratum-kummer-arithmetic-coefficient.md`;
   - `hypertranscendental-source-fracture-hypercube.md`;
   - `hypertranscendental-source-face-vanishing-cycle-conservation.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/source-face-observation-cohomology-transmutation.md`.
+  - `../2-fully-proven/not_new_scientific_knowledge/05-algebraic-geometry-cohomology/source-face-observation-cohomology-transmutation.md`.
 - **Statement:** positivity and functional-equation reflection impose two
   different laws on the negative prime-angle half of one character.  Positivity
   makes it the adjoint/conjugate of the positive half; reflection makes it the

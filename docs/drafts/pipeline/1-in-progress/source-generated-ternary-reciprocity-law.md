@@ -605,7 +605,7 @@ orthogonally inside \(E_\Phi\otimes E_\Psi\); its Pythagorean Gram identity is e
 Order-unit normalization gives `(TR15)`.
 
 The complete paper proof and literature boundary are recorded in
-`../2-fully-proven/not_new_scientific_knowledge/centered-ksgns-covariance-pythagoras.md`.
+`../2-fully-proven/not_new_scientific_knowledge/07-functional-analysis-operator-theory/centered-ksgns-covariance-pythagoras.md`.
 Paschke dilation, GNS subproduct systems, the Quesadilla semi-category, KSGNS composition, and
 the June 2026 fixed-source functoriality theorem show that neither canonicity nor functorial
 completion of a supplied positive passage is new.

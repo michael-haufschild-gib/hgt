@@ -6,7 +6,7 @@
 - **Scientific status:** `[PROVED] [FORMALIZED] [BRIDGE] [PARENT-DERIVED]`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/UltrametricThermalTruncation.lean`
 - **Paper application:**
-  `../../2-fully-proven/not_new_scientific_knowledge/de-sitter-ultrametric-detailed-balance-hypertranscendence.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/de-sitter-ultrametric-detailed-balance-hypertranscendence.md`
 - **Statement:** The failure of an `N`-shell ultrametric thermal prefix to obey the infinite
   Mahler constraint is exactly the negative of its next omitted shell.
 

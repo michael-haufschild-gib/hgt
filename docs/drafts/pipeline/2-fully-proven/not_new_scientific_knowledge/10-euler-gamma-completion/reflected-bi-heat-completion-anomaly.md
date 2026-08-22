@@ -212,7 +212,7 @@ which is RH.  The inner metric forces the kinematic self-dual clock, but it does
 defects to occupy that clock slice.
 
 The archimedean reality selector has been separated and formalized in Lean as
-[`reflected-digamma-anomaly-reality-selector.md`](../../3-formalized/not_new_scientific_knowledge/reflected-digamma-anomaly-reality-selector.md).
+[`reflected-digamma-anomaly-reality-selector.md`](../../../3-formalized/not_new_scientific_knowledge/reflected-digamma-anomaly-reality-selector.md).
 For nonzero height, the imaginary part of the anomaly in `(7)` vanishes exactly when
 `Re(z)=1/2`.  This strengthens the kinematic selector but does not create a theorem requiring a
 hypothetical off-line zero's finite-part pairing to be real.

@@ -3,14 +3,14 @@
 - **ID:** `suzuki-coupled-error-boundary-energy-attack`
 - **Stage:** 1-in-progress
 - **Type:** `[CONJECTURE; RH-BEARING DIRECT HILBERT--POLYA ATTACK]`
-- **Source:** `../2-fully-proven/not_new_scientific_knowledge/infinitesimal-euler-leakage-cauchy-energy-threshold.md`;
+- **Source:** `../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/infinitesimal-euler-leakage-cauchy-energy-threshold.md`;
   `../2-fully-proven/not_new_scientific_knowledge/suzuki-tail-is-exact-summatory-error-transform.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/shifted-euler-error-floor-mobius-tail-coupling.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/euler-pole-four-unit-anti-causal-budget-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/shifted-euler-error-floor-mobius-tail-coupling.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/euler-pole-four-unit-anti-causal-budget-law.md`;
   `../2-fully-proven/not_new_scientific_knowledge/mobius-channel-critical-mass-escape-law.md`;
   `../2-fully-proven/not_new_scientific_knowledge/mobius-critical-exponential-boundary-layer-law.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/coupled-floor-mobius-complementary-shift-incidence-law.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/finite-euler-exact-differential-order-aperture-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/coupled-floor-mobius-complementary-shift-incidence-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/finite-euler-exact-differential-order-aperture-law.md`;
   `../2-fully-proven/not_new_scientific_knowledge/mobius-prime-aperture-differential-order-profile.md`;
   `../2-fully-proven/not_new_scientific_knowledge/da-gauge-ht-divisor-blindness.md`;
   `../2-fully-proven/not_new_scientific_knowledge/mobius-signed-channel-coisometry-incidence-law.md`

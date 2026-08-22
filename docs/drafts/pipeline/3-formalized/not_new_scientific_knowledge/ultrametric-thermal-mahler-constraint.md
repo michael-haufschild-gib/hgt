@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / PHYSICAL-SPECTRAL ALGEBRAIC CORE
 - **Scientific status:** `[PROVED] [FORMALIZED] [BRIDGE] [PARENT-DERIVED]`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/UltrametricThermalMahler.lean`
-- **Paper theorem:** `../../2-fully-proven/not_new_scientific_knowledge/ultrametric-thermal-mahler-hypertranscendence.md`
+- **Paper theorem:** `../../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/ultrametric-thermal-mahler-hypertranscendence.md`
 - **Statement:** The formal reduced heat trace of the exact ultrametric shell spectrum is the
   unique solution of a finite-boundary-defect Mahler constraint.
 

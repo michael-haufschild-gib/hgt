@@ -85,7 +85,7 @@ mass/frequency completion within this collider class.
 
 The exact one-sided ultrametric boundary spectrum now supplies a source-derived geometric tower
 inside a field Hessian; see
-`../2-fully-proven/not_new_scientific_knowledge/ultrametric-one-loop-resolvent-hypertranscendence.md`.
+`../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/ultrametric-one-loop-resolvent-hypertranscendence.md`.
 For each Euclidean de Sitter harmonic, the first finite one-loop mass susceptibility is an HT
 `q`-difference germ.  This closes the **field-internal tower** problem for a Gaussian, mode-resolved
 effective-action reporter.

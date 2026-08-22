@@ -251,7 +251,7 @@ M_{q+1,q}(\mathbb C)_{\rm reg}
 \]
 Balance alone still leaves every \(q\ge2\). Strict elementary future selects \(q=2\), but only if
 that condition is derived from the source rather than copied from known Lorentz causality. See
-`../2-fully-proven/not_new_scientific_knowledge/balanced-causal-fracture-torsor-classification.md`.
+`../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/balanced-causal-fracture-torsor-classification.md`.
 
 ## Hostile alternatives
 

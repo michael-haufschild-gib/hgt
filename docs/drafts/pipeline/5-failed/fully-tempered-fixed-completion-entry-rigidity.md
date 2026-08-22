@@ -3,7 +3,7 @@
 - **ID:** fully-tempered-fixed-completion-entry-rigidity
 - **Stage:** 5-failed
 - **Type:** `[RETIRED: REDUCES TO KNOWN OPEN RIGIDITY; CONNECTED-SET FORM OVERSTATED]`
-- **Source:** `../2-fully-proven/not_new_scientific_knowledge/symmetric-shift-entry-temperedness-boundary.md`
+- **Source:** `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/symmetric-shift-entry-temperedness-boundary.md`
 
 ## Terminal verdict
 

@@ -71,7 +71,7 @@ Hilbert direct sum. The completely-positive corner construction gives the analog
 statement for normal quantum operations.
 
 Paper theorem:
-`../2-fully-proven/not_new_scientific_knowledge/universal-typed-event-network-fixed-carrier-no-go.md`.
+`../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/universal-typed-event-network-fixed-carrier-no-go.md`.
 
 Formal source:
 `GaloisForLFunctions.HTGeometry.EventNetworkFixedCarrier`.

@@ -93,7 +93,7 @@ Professor/DeWitt): is that large-values control a **parent** method (Halász/Mon
 
 ## Cross-references
 - `../../1-in-progress/finite-free-convolution-flow.md` — the carrier (this lemma is its general-`t` positivity engine).
-- `../../2-fully-proven/not_new_scientific_knowledge/c5-jensen-prime-kernel.md` — Professor's kernel (supplies `D_d`, `D_d'` at the `c_m`).
+- `../../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/c5-jensen-prime-kernel.md` — Professor's kernel (supplies `D_d`, `D_d'` at the `c_m`).
 - `c5-jensen-perturbation-ivt-sign-transfer.md` — the earlier split certificate for the IVT/sign-transfer infrastructure.
 
 ## Notes / risk

@@ -6,7 +6,7 @@
 - **Scientific status:** `[FORMALIZED] [UNCONDITIONAL] [DIAGONAL CPTP-CHANNEL SECTOR]`
   `[DOES NOT FORMALIZE COMPLETE POSITIVITY OR EXTERNAL HT CLASSIFICATION]`
 - **Paper theorem:**
-  `../2-fully-proven/not_new_scientific_knowledge/gadc-tree-population-rg-clock-hypertranscendence.md`
+  `../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/gadc-tree-population-rg-clock-hypertranscendence.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/HTGeometry/GADCTreePopulationRG.lean`
 

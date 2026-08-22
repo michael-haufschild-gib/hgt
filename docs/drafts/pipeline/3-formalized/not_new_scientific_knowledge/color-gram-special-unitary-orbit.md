@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean)
 - **Status:** `[FULLY-LEAN-PROVED] [CLASSICAL] [BRIDGE]`
 - **Paper parent:**
-  `../../2-fully-proven/not_new_scientific_knowledge/balanced-causal-fracture-torsor-classification.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/balanced-causal-fracture-torsor-classification.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.ColorGramSpecialUnitaryOrbit`
 - **Statement:** If \(X\in M_{3,2}(\mathbb C)\) has positive-definite Gram matrix, then
   \(X^\dagger X=Y^\dagger Y\) exactly when \(Y=UX\) for a unique \(U\in SU(3)\).

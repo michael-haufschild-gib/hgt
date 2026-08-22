@@ -14,7 +14,7 @@
   - `constraint-curvature-integration-stack.md`
 - **RH parents:**
   - `../2-fully-proven/not_new_scientific_knowledge/archimedean-meixner-root-seam-scale.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/meixner-root-prime-laplace-value-frame.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/meixner-root-prime-laplace-value-frame.md`
   - `../2-fully-proven/not_new_scientific_knowledge/xi-global-meixner-shape-landau-rh.md`
   - `../2-fully-proven/not_new_scientific_knowledge/xi-reciprocal-translation-prime-seam-norm-law.md`
   - `../2-fully-proven/not_new_scientific_knowledge/xi-gamma-shape-completely-monotone-rh.md`
@@ -23,9 +23,9 @@
   - `../2-fully-proven/not_new_scientific_knowledge/local-euler-valuation-lorentz-log-colligation.md`
   - `../2-fully-proven/not_new_scientific_knowledge/gamma-factorial-fock-polarization-boundary-charge.md`
   - `../2-fully-proven/not_new_scientific_knowledge/prime-laplace-gamma-jet-incidence-phase-transition.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/time-one-gamma-jet-fock-rh-criterion.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/time-one-gamma-jet-fock-rh-criterion.md`
   - `../2-fully-proven/not_new_scientific_knowledge/prime-laplace-gamma-clock-descent-anomaly.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/mertens-corona-shift-conormal.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/mertens-corona-shift-conormal.md`
 - **Statement:** Realize the global Xi prime-seam series as the cofinal reflected
   star-Kadison trace of the source-derived Gamma--Meixner clock-curvature field.  If this trace is
   a locally bounded holomorphic family for every positive Gamma shape, then Landau's theorem

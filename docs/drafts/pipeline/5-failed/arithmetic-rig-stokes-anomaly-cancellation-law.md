@@ -9,7 +9,7 @@
   - `riemann-failure-nerve-cobar-antipode-purity-law.md`;
   - `arithmetic-stokes-bockstein-universality-law.md`;
   - `../2-fully-proven/new_scientific_knowledge/gamma/gamma-copoisson-sonin-full-quotient-flatness-syzygy.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/prime-tail-copoisson-essential-boundary-bockstein.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/prime-tail-copoisson-essential-boundary-bockstein.md`;
   - `../3-formalized/new_scientific_knowledge/sonin/sonin-principal-shell-cyclic-trace.md`;
   - `../3-formalized/new_scientific_knowledge/prime-first-trace-essential-normal-bockstein.md`;
   - `../3-formalized/new_scientific_knowledge/prime-residue-valuation-interaction-superselection-law.md`.

@@ -5,7 +5,7 @@
 - **Type:** EXACT SOURCE RENORMALIZATION / TWO-PRIME CURVATURE LAW
 - **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
-  - `../2-fully-proven/not_new_scientific_knowledge/finite-boolean-hochschild-diagonal-cofinal-fracture.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/05-algebraic-geometry-cohomology/finite-boolean-hochschild-diagonal-cofinal-fracture.md`;
   - `../2-fully-proven/prime-sieve-wold-gamma-bv-relative-character.md`;
   - `../3-formalized/new_scientific_knowledge/prime-first-trace-essential-normal-bockstein.md`.
 

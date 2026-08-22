@@ -543,7 +543,7 @@ S(U(3)\times U(2))
 the exact global Standard Model gauge group.
 
 Relevant paper theorem:
-`../2-fully-proven/not_new_scientific_knowledge/balanced-causal-fracture-torsor-classification.md`.
+`../2-fully-proven/not_new_scientific_knowledge/04-rg-stochastic-quantum-fields/balanced-causal-fracture-torsor-classification.md`.
 Relevant unconditional Lean modules include
 `ColorGramMinkowskiCone.lean`, `ColorGramMinkowskiOrbit.lean`,
 `ColorGramSpecialUnitaryOrbit.lean`, and `PrimitivePairInteriorDimension.lean`.

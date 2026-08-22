@@ -64,7 +64,7 @@ the orthogonality pattern (#137/#148: prime/multiplicative ⟂ RH; the archimede
 
 ## Cross-references
 - `../../0-backlog/compute-omega-h2-gl.md` (#27) — **G15 = its Koszul face**; the RH content (`ω=0`) lives there.
-- `universal-prime-side-orthogonality.md` (#148), `../../2-fully-proven/not_new_scientific_knowledge/orthogonality-meta-theorem.md` (#137) —
+- `universal-prime-side-orthogonality.md` (#148), `../../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/orthogonality-meta-theorem.md` (#137) —
   the multiplicative wing is RH-blind / archimedean-content-free (same pattern).
 - `additive-koszul-cocycle-skeleton.md`, `../../../door/bucket-ledger-footholds.md` (`eh_koszul_duality`)
   — the proven finite/multiplicative acyclicity.

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean), `[TOP-DOWN GAP REDUCTION]`, `[NOT AN RH PROOF]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent:**
-  `../../2-fully-proven/not_new_scientific_knowledge/sonin-prime-seam-exterior-factorization.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/sonin-prime-seam-exterior-factorization.md`
 - **Statement:** Canonically phase-rotating one self-adjoint projection tangent converts the
   symmetric mixed-curvature identity into the antisymmetric normal Gram exactly; compactness of
   only the base-compressed mixed derivative therefore forces compactness of the orientation

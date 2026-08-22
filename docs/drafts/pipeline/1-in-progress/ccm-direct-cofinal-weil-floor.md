@@ -1959,7 +1959,7 @@ target: converge to `T_0` while preserving the contraction bound. See
 ## Canonical finite-part source class
 
 The paper theorem
-`../2-fully-proven/not_new_scientific_knowledge/connes-semilocal-finite-part-orbital-source-class.md`
+`../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/connes-semilocal-finite-part-orbital-source-class.md`
 removes the normalization ambiguity in the degree-one branch.  Connes's semilocal cutoff formula
 already supplies the canonical finite-part prime--Gamma source and its exact `log(p^m)` response;
 the quantized-differential class is additive modulo conjugation coboundaries.  The live theorem is

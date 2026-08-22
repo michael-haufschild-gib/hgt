@@ -7,7 +7,7 @@
 - **Lean:**
   `formal/GaloisForLFunctions/RHTower/VonMangoldtGammaOrientedAnomaly.lean`.
 - **Parents:**
-  `../../2-fully-proven/not_new_scientific_knowledge/von-mangoldt-gamma-clock-descent-anomaly.md`;
+  `../../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/von-mangoldt-gamma-clock-descent-anomaly.md`;
   `../../1-in-progress/prime-gamma-reflection-decimation-defect-resolvent-rh.md`.
 - **Statement:** Every positive resolved von Mangoldt atom has a strict common alternating
   orientation in every output coordinate of the finite Gamma-clock descent anomaly at every

@@ -8,7 +8,7 @@
   `[PARENT EQUIVARIANT DEVISSAGE / TOEPLITZ INDEX] [GLOBAL HT COMPARISON OPEN]`
   `[NOT AN RH RESULT]`
 - **Parents:**
-  - `../2-fully-proven/not_new_scientific_knowledge/tate-theta-koszul-barnes-localization-transmutation.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/05-algebraic-geometry-cohomology/tate-theta-koszul-barnes-localization-transmutation.md`
   - `../2-fully-proven/not_new_scientific_knowledge/nodal-charge-character-fan-realization.md`
   - `../3-formalized/tate-clock-unilateral-boundary-defect.md`
 - **Live successor:**

@@ -7,7 +7,7 @@
 - **Parent:** `../../1-in-progress/prime-gamma-signed-permutation-eulerian-rh.md`
 - **Inputs:**
   - `prime-gamma-descent-top-fiber-curvature-obstruction.md`;
-  - `../../2-fully-proven/not_new_scientific_knowledge/prime-sieve-boolean-first-trace-connection-curvature.md`;
+  - `../../2-fully-proven/not_new_scientific_knowledge/12-prime-theta-fock-incidence/prime-sieve-boolean-first-trace-connection-curvature.md`;
   - `../new_scientific_knowledge/deninger/deninger-euler-gamma-mobius-connection-transgression.md`.
 - **Lean:**
   `formal/GaloisForLFunctions/RHTower/PrimeGammaSignedEulerianCurvaturePluckerLift.lean`

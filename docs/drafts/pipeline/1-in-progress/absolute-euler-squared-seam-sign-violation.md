@@ -5,7 +5,7 @@
 - **Type:** CONJECTURE / RH-disproof source target
 - **Scientific status:** `[CONJECTURE] [OPEN CORE] [NOVELTY UNVERIFIED]`
 - **Source:** `../2-fully-proven/not_new_scientific_knowledge/seam-log-derivative-weld-identity.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/seam-log-markov-pick-rh-equivalence.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/seam-log-markov-pick-rh-equivalence.md`;
   `../3-formalized/not_new_scientific_knowledge/completed-prime-gamma-moment-far-right-asymptotic.md`
 - **Statement:** For `w > 1/2`, set
   `F(w)=xiLogDeriv(1/2+w)/w`. There exist `n >= 1` and `w > 1/2` for which

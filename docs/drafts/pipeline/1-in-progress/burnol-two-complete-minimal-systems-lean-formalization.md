@@ -26,7 +26,7 @@ completely-regular-growth theory.  These are the real gaps.
 | (5) | Müntz formula | ζ(s)∫φ tˢ⁻¹ = ∫(modified Poisson sum)tˢ⁻¹ | **TODO** |
 | (6) | Müntz applied to g(1/t)/t | co-Poisson Mellin | **TODO** |
 | (7) | `F₊(f)^(s) = χ(s) f^(1-s)`; χ = ζ(s)/ζ(1−s) | Mellin diagonalization | **TODO** (needs Mellin unitary) |
-| Thm 2.1 | de Branges: `M(f)` entire on `K_a`, evaluations continuous | | **TODO** |
+| Thm 2.1 | de Branges: `M(f)` entire on `K_a`, evaluations continuous | analytic half **DONE** (continuation to `Re s > 0`, `SoninMellinHalfPlaneExtension`); weld = brick B7 | |
 | Prop 2.2 | `M(f)` meromorphic (poles ⊂ {0,1}) on `L_a`; `M(F₊f)(s)=M(f)(1−s)` | | **TODO** |
 | Def 3,4 | `Y_a` (zero span), co-Poisson subspace `P_a` | | corpus (`burnolCoPoissonSourceSpace`) |
 | Thm 3.1 | `Y^a_{ρ,k}` minimal iff a ≤ 1, complete iff a ≥ 1; `Y_a^⊥ = P_a` (a<1) | capstone | **TODO** |
@@ -123,11 +123,11 @@ Do *not* attempt a boundary-value / edge-of-the-wedge argument.  Use this instea
 |---|---|---|
 | B1 | `s ↦ ∫_a^b φ(t)t^{-s}dt` entire for `0 < a ≤ b`, `φ ∈ L¹(a,b)` | **DONE** `HTGeometry/TruncatedMellinEntire.differentiable_truncatedMellin` |
 | B2 | Parseval `⟪h, f⟫ = ⟪𝓕h, 𝓕f⟫` (mathlib `inner_map_map`) plus the `L¹∩L²` agreement of the unitary `L²` Fourier transform with the Fourier integral | **corpus-owned**: `RHTower/L2FourierIntegralBridge.l2_fourier_coeFn_eq_l1_fourier_of_integrable` |
-| B3 | `K_{a,T}(s)(u) = F(1_{a<|t|<T}|t|^{-s})(u) = 2∫_a^T cos(2πtu)t^{-s}dt` (even-function form of B4's `oscPowerIntegral`) | TODO |
+| B3 | `𝓕(1_{(T,T')}t^{-s})(u) = ∫_T^{T'}e^{-2πiut}t^{-s}dt` | **DONE** `HTGeometry/TruncatedPowerFourierBound.fourierIntegral_truncPower` |
 | B4 | integration by parts: `‖∫_a^T e^{ilt}t^{-s}dt‖ ≤ (2a^{-σ} + ‖s‖a^{-σ}/σ)/|l|` **uniformly in `T`** | **DONE** `HTGeometry/OscillatoryPowerIntegral.norm_oscPowerIntegral_le` |
-| B5 | `‖K_{a,T}(s) − K_{a,∞}(s)‖_{L²(|u|>a)} ≤ C(s,a)·T^{-Re s}` → locally uniform convergence | TODO |
-| B6 | Weierstrass: locally uniform limit of entire functions is holomorphic (mathlib `TendstoLocallyUniformlyOn.differentiableOn`) | mathlib |
-| B7 | glue with the reflected brick across `0 < Re s < 1` using the corpus scattering identity | TODO |
+| B5 | Cauchy estimate `‖∫_T^{T'} t^{-s}f(t)dt‖ ≤ T^{-σ}·((2+‖s‖/σ)/2π)·N(a)·‖f‖` | **DONE** `RHTower/SoninTruncatedMellinCauchy.norm_truncMellin_le` (+ tail kernel `HTGeometry/InvAbsTailL2`) |
+| B6 | Weierstrass: the truncations converge locally uniformly on `Re s > 0`; the limit is holomorphic there and equals `f̂` on `Re s > 1/2` | **DONE** `RHTower/SoninMellinHalfPlaneExtension.differentiableOn_soninMellinExtension` + `soninMellinExtension_eq_soninMellinIntegral` |
+| B7 | glue with the reflected brick across `0 < Re s < 1` using the corpus scattering identity | **TODO — the only remaining brick.** Needs: (i) `fourierUnitary` preserves `centralSoninCarrier a`; (ii) the pointwise functional equation `f̂(s) = χ(s)·(F₊f)^(1−s)` a.e. on the critical line, bridged from `CCMArchimedeanFourierMellinScattering`; (iii) the identity theorem on the strip `0 < Re s < 1`. |
 
 ## Gates
 - [x] 0 → 1  in-progress

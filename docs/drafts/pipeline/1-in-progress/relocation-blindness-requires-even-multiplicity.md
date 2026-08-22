@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper, elementary) + SCOPE CORRECTION
 - **Scientific status:** `[PAPER-PROVED]` `[SCOPE CORRECTION TO AN EXISTING NO-GO]` `[NOT AN RH PROOF]`
 - **Corrects the scope of:**
-  `2-fully-proven/not_new_scientific_knowledge/positive-density-transverse-divisor-relocation-law.md`
+  `2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/positive-density-transverse-divisor-relocation-law.md`
 - **Statement:** Any relocation of a functional-equation- and Schwarz-symmetric divisor from the
   critical line to a transverse position, preserving the ordinate counting measure exactly, must
   move zeros of **even** multiplicity. Consequently the blindness demonstrated by the relocation

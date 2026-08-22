@@ -298,7 +298,7 @@ upper half-plane. Multiplication by log position changes the residue weight by
 ```
 
 and its Laplace transform is exactly `-zeta'(1+s)/zeta(1+s)` on `Re s>0`. The complete proof is in
-`../2-fully-proven/not_new_scientific_knowledge/euler-log-prime-power-herglotz-half-weight-law.md`.
+`../2-fully-proven/not_new_scientific_knowledge/10-euler-gamma-completion/euler-log-prime-power-herglotz-half-weight-law.md`.
 
 `[PROVED IN LEAN]` The positive carrier cannot be transported toward the critical line by an
 exponential weight. For every `b>0`,
@@ -663,7 +663,7 @@ the required identity is `[log|x|,U_p]=-log(p)U_p`.
 After the exact even logarithmic unitary sends dilations to translations, the original Sonin
 Fourier transform becomes an involutive translation-reversing scattering operator `J_log`, not the
 ordinary Fourier transform used in the edge formula.  The paper theorem
-`../2-fully-proven/not_new_scientific_knowledge/sonin-burnol-conductor-cutoff-bounded-graph-law.md`
+`../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/sonin-burnol-conductor-cutoff-bounded-graph-law.md`
 then proves
 
 ```text
@@ -820,7 +820,7 @@ determinant-limit, or finite-section transfer theorem remains outside Lean.
 
 ## Connes finite-part correction to the open core
 
-`../2-fully-proven/not_new_scientific_knowledge/connes-semilocal-finite-part-orbital-source-class.md`
+`../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/connes-semilocal-finite-part-orbital-source-class.md`
 shows that the logarithmic source functional itself is not open.  The proved semilocal cutoff
 formula defines the canonical finite part `FP_S=sum_v W_v`, and its quantized-differential class
 has the exact prime-power orbital response `log(p^m)`.  The current distinguished-Sonin problem is
@@ -849,7 +849,7 @@ connection into the principal--relative decomposition, not carrier existence or 
 The finite-place carrier comparison and its degree-one source are both explicit.  Theorem 4.6 of
 Connes--Consani--Moscovici gives an aperture-by-aperture isomorphism `theta_S` from the classical to
 the semilocal Sonin space, and
-`../2-fully-proven/not_new_scientific_knowledge/semilocal-dual-pair-euler-connection-source-law.md`
+`../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/semilocal-dual-pair-euler-connection-source-law.md`
 proves on the common logarithmic-position core that
 
 ```text
@@ -864,7 +864,7 @@ conductor, followed by a cutoff-uniform completed lower floor.  The existing bou
 projection-correction trace is excluded from this role by its proved uniform response bound.
 
 The finite connection also cannot be assigned a positive Cauchy sign before completion.
-`../2-fully-proven/not_new_scientific_knowledge/finite-euler-connection-cauchy-phase-chambers.md`
+`../2-fully-proven/not_new_scientific_knowledge/08-sonin-semilocal-copoisson/finite-euler-connection-cauchy-phase-chambers.md`
 proves that its FE completion is an exact Poisson radial difference, while its literal one-sided
 contribution to the completed divided difference is exactly half that value.  Both have both phase
 signs for every finite nonempty aperture.  Therefore the desired cyclic descent must preserve the

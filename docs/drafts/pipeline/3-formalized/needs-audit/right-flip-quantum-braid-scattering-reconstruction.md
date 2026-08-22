@@ -145,7 +145,7 @@ wedge-locality axiom is needed: `(5)` and `(6)` are the same condition under the
 The remaining construction problem is the all-particle identity-zero intertwiner with uniform
 `exp(O(n))` Hardy norm and central inverse-norm bounds.  Ordinary fixed-particle holomorphic
 frames exist by
-`../../2-fully-proven/not_new_scientific_knowledge/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`;
+`../../2-fully-proven/not_new_scientific_knowledge/06-integrable-qft-yang-baxter/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`;
 the unresolved gate is quantitative, not a convention problem.
 
 ## Anti-theatre attacks

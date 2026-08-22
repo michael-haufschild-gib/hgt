@@ -10,14 +10,14 @@
   - `../2-fully-proven/mobius-causal-fisher-connection-flatness.md`
   - `../3-formalized/infinite-mobius-critical-boundary-layer-product.md`
   - `../3-formalized/not_new_scientific_knowledge/mobius-critical-fisher-stein-contact-law.md`
-  - `../2-fully-proven/not_new_scientific_knowledge/coupled-floor-mobius-complementary-shift-incidence-law.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/09-mobius-prime-sums/coupled-floor-mobius-complementary-shift-incidence-law.md`
   - `../2-fully-proven/not_new_scientific_knowledge/mobius-signed-channel-coisometry-incidence-law.md`
 - **Proved HT inputs:**
   - `../3-formalized/opposite-variance-seam-conservation.md`
   - `../3-formalized/gamma-capacity-current-transgression.md`
   - `source-rigged-clock-domain.md`
 - **RH consumer:**
-  - `../2-fully-proven/not_new_scientific_knowledge/euler-pole-four-unit-anti-causal-budget-law.md`
+  - `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/euler-pole-four-unit-anti-causal-budget-law.md`
 - **Statement:** Lift the concrete four-unit Fisher tangent of the squarefree-Mobius source through
   the exact complementary floor/tail incidence, the Gamma completion, and the Sonin cutoff.  If
   that source lift converges nonexpansively to the anti-causal Xi seam, the existing four-unit
