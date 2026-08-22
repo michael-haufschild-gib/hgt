@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Barenbaum
 -/
 import GaloisForLFunctions.HTGeometry.ABHN.AzumayaFiniteResidueFiber
+import GaloisForLFunctions.HTGeometry.ABHN.BrauerFieldEquiv
 import GaloisForLFunctions.RHTower.CCMRationalFiniteAdeleHaar
 import Mathlib.NumberTheory.Padics.RingHoms
 
@@ -27,6 +28,12 @@ open GaloisForLFunctions.HTGeometry.ABHN
 
 noncomputable section
 
+/-- The rational prime indexing a height-one prime of `ℤ` is prime.  Making this canonical fact
+available lets the corresponding `p`-adic field occur directly in local transport types. -/
+instance ccmRationalLocalPrimeFact (v : HeightOneSpectrum ℤ) :
+    Fact (Nat.Prime (Rat.HeightOneSpectrum.primesEquiv v)) :=
+  ⟨(Rat.HeightOneSpectrum.primesEquiv v).property⟩
+
 /-- The residue field of the rational local factor at `v` is canonically the prime field indexed
 by `v`. This identifies the finite `q_v` residue layer of the Connes--Tate local factor with the
 actual arithmetic field `𝔽_p`. -/
@@ -41,6 +48,27 @@ noncomputable def ccmRationalLocalResidueFieldEquivZMod
     (Rat.HeightOneSpectrum.adicCompletionIntegers.padicIntEquiv v).toRingEquiv
   exact (IsLocalRing.ResidueField.mapEquiv e).trans
     (PadicInt.residueField (p := Rat.HeightOneSpectrum.primesEquiv v))
+
+/-- The Brauer group of a local factor in the actual rational finite-adele source is identified
+with the Brauer group of its standard `p`-adic presentation. This is the field-level transport
+needed before a future local invariant can be compared with the `p`-adic Tate integral. -/
+noncomputable def ccmRationalLocalBrauerGroupAddEquivPadic
+    (v : HeightOneSpectrum ℤ) :
+    BrauerGroup (CCMRationalLocalField v) ≃+
+      BrauerGroup ℚ_[Rat.HeightOneSpectrum.primesEquiv v] :=
+  brauerGroupAddEquivOfRingEquiv
+    (Rat.HeightOneSpectrum.adicCompletion.padicEquiv v).toRingEquiv
+
+/-- On Brauer classes, the rational-local-to-`p`-adic transport is scalar extension through the
+canonical completion equivalence. -/
+theorem ccmRationalLocalBrauerGroupAddEquivPadic_apply
+    (v : HeightOneSpectrum ℤ) (x : BrauerGroup (CCMRationalLocalField v)) :
+    ccmRationalLocalBrauerGroupAddEquivPadic v x =
+      @scalarExtensionBrauerMap (CCMRationalLocalField v)
+        ℚ_[Rat.HeightOneSpectrum.primesEquiv v] _ _
+        (Rat.HeightOneSpectrum.adicCompletion.padicEquiv v).toRingEquiv.toRingHom.toAlgebra x :=
+  brauerGroupAddEquivOfRingEquiv_apply
+    (Rat.HeightOneSpectrum.adicCompletion.padicEquiv v).toRingEquiv x
 
 /-- Every local integer ring in the rational finite-adele factorization has finite residue field.
 The proof transports the standard `ℤₚ` residue field along Mathlib's canonical local-ring

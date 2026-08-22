@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.NonautonomousDeckClosure
 import GaloisForLFunctions.HTGeometry.DifferentialIndependentFieldUniversality
 import GaloisForLFunctions.HTGeometry.KolchinExchangeGaugeObstruction
 import GaloisForLFunctions.HTGeometry.DifferentialKolchinClosure
+import GaloisForLFunctions.HTGeometry.ABHN.BrauerFieldEquiv
 
 /-!
 # Differential horizon interfaces
@@ -18,6 +19,8 @@ an explicit hypothesis of the corresponding unconditional result.
 open scoped Differential
 
 namespace GaloisForLFunctions.HTGeometry
+
+universe u
 
 noncomputable section
 
@@ -220,6 +223,41 @@ def differentialQuotientFreeAlgEquiv
       differentialAdjoin C (Set.range y) :=
   GaloisForLFunctions.differentialIndependentAdjoinAlgEquiv
     x y hx hy
+
+/-- Equal-rank freely generated Manin horizons have canonically equivalent Brauer groups.
+This transports a future Brauer class along the established horizon no-hair equivalence; it does
+not equip the differential fields with global-field places or a local invariant. -/
+noncomputable def differentialQuotientFreeBrauerGroupAddEquiv
+    {C L₁ L₂ ι : Type u}
+    [Field C] [Field L₁] [Field L₂]
+    [Algebra C L₁] [Algebra C L₂]
+    [Differential L₁] [Differential L₂]
+    (x : ι → L₁) (y : ι → L₂)
+    (hx : DifferentialIndependent C x)
+    (hy : DifferentialIndependent C y) :
+    BrauerGroup (differentialAdjoin C (Set.range x)) ≃+
+      BrauerGroup (differentialAdjoin C (Set.range y)) :=
+  GaloisForLFunctions.HTGeometry.ABHN.brauerGroupAddEquivOfRingEquiv
+    (differentialQuotientFreeAlgEquiv x y hx hy).toRingEquiv
+
+/-- The Manin-horizon Brauer transport is scalar extension through the canonical free-horizon
+field equivalence. -/
+theorem differentialQuotientFreeBrauerGroupAddEquiv_apply
+    {C L₁ L₂ ι : Type u}
+    [Field C] [Field L₁] [Field L₂]
+    [Algebra C L₁] [Algebra C L₂]
+    [Differential L₁] [Differential L₂]
+    (x : ι → L₁) (y : ι → L₂)
+    (hx : DifferentialIndependent C x)
+    (hy : DifferentialIndependent C y)
+    (z : BrauerGroup (differentialAdjoin C (Set.range x))) :
+    differentialQuotientFreeBrauerGroupAddEquiv x y hx hy z =
+      @GaloisForLFunctions.HTGeometry.ABHN.scalarExtensionBrauerMap
+        (differentialAdjoin C (Set.range x))
+        (differentialAdjoin C (Set.range y)) _ _
+        (differentialQuotientFreeAlgEquiv x y hx hy).toRingEquiv.toRingHom.toAlgebra z :=
+  GaloisForLFunctions.HTGeometry.ABHN.brauerGroupAddEquivOfRingEquiv_apply
+    (differentialQuotientFreeAlgEquiv x y hx hy).toRingEquiv z
 
 @[simp]
 theorem differentialQuotientFreeAlgEquiv_jet

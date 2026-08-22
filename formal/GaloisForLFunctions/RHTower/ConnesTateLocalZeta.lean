@@ -117,6 +117,22 @@ theorem connes_padic_tate_local_zeta {s : ℂ} (hs : 0 < s.re) :
     rw [hcongr, tsum_geometric_of_norm_lt_one hz]
   rw [hzero, hpos, add_zero]
 
+/-- The actual local Tate zeta integral is nonzero throughout the open right half-plane.
+This separates the nonzero Euler-factor source term from the zero invariant of a finite residue
+Brauer group; any Brauer-theoretic source comparison must therefore retain ramified or boundary
+data rather than factor only through the residue Brauer class. -/
+theorem connes_padic_tate_local_zeta_ne_zero {s : ℂ} (hs : 0 < s.re) :
+    ∫ a : ℚ_[p]ˣ, Set.indicator {b : ℚ_[p]ˣ | ‖(b : ℚ_[p])‖ ≤ 1}
+        (fun b : ℚ_[p]ˣ => ((‖(b : ℚ_[p])‖ : ℝ) : ℂ) ^ s) a
+      ∂fieldOnePadicMultiplicativeHaar p ≠ 0 := by
+  rw [connes_padic_tate_local_zeta p hs]
+  apply inv_ne_zero
+  apply sub_ne_zero.mpr
+  intro h
+  have hnorm : ‖(p : ℂ) ^ (-s)‖ < 1 := connes_padic_norm_cpow_neg_lt_one p hs
+  rw [← h, norm_one] at hnorm
+  exact (lt_irrefl 1 hnorm)
+
 /-- **Appendix I Lemma 1 for `k = ℚ`, `Χ_0 = 1`.**  The product over the finite places of the
 local Tate zeta integrals over the unit balls is the Riemann zeta function. -/
 theorem connes_tate_local_zeta_tprod {s : ℂ} (hs : 1 < s.re) :

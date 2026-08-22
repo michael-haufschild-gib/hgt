@@ -1,7 +1,7 @@
 # Artin two-generator associativity for alternative algebras
 
 - **ID:** `artin-two-generator-associativity-alternative-algebras`
-- **Stage:** `2-fully-proven/not_new_scientific_knowledge`
+- **Stage:** `3-formalized/not_new_scientific_knowledge`
 - **Type:** infrastructure theorem
 - **Source:** R. D. Schafer, *An Introduction to Nonassociative Algebras*, Theorem 3.1, pp. 29--30.
 - **Needed by:** arXiv:2605.07183 Lemma 8.4 equation (8.6), then all slice-plane and power-associative results.
@@ -39,5 +39,12 @@ where each final associator has smaller total degree.  If exactly one of `q,r` h
 - [x] Corpus and Mathlib duplication audit
 - [x] Source proof extracted and reduced to existing alternative identities
 - [x] Reciprocal Moufang / associator identities (3.7)--(3.8) formalized
-- [ ] Word induction and generated-subalgebra theorem
-- [ ] Lemma 8.4 equation (8.6) instantiated and audited
+- [x] Word-level strong induction theorem
+- [x] Real-linear generated-subalgebra closure and associativity lift
+- [x] Lemma 8.4 equation (8.6) instantiated and audited
+
+## Formalization result
+
+`HTGeometry/Octonion/Artin.lean` proves `ArtinWord.all_words_associate` by the stated strong induction.  `HTGeometry/Octonion/GeneratedSubalgebra.lean` takes the real span of bracketed words and scalar elements, proves its product closure, and lifts vanishing of the associator over three nested span inductions.  The resulting theorem `associator_eq_zero_of_mem_generatedSubmodule` has no premises beyond its universal variables and membership in the definitionally specified generated carrier.  It yields the correction-free form of paper Lemma 8.4 on that carrier.
+
+Targeted source checks and targeted builds pass; `#print axioms` for the closure, associativity, and (8.6) theorems reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.

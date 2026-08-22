@@ -31,30 +31,33 @@ theorem standardHermitianForm_isHermitian (d : ℕ) :
     simp [standardHermitianForm, Finset.mul_sum, Pi.smul_apply, mul_assoc]
   symm := by
     intro x y
-    rw [standardHermitianForm, standardHermitianForm, map_sum]
+    rw [standardHermitianForm, standardHermitianForm, star_sum]
     apply Finset.sum_congr rfl
     intro i hi
     rw [star_mul, star_star]
-    ring
 
 /-- The standard Hermitian form is positive semidefinite. -/
 theorem standardHermitianForm_nonneg (d : ℕ) (x : Fin d → ℂ) :
     0 ≤ (standardHermitianForm d x x).re := by
   rw [standardHermitianForm]
+  change 0 ≤ Complex.reCLM (∑ i, x i * star (x i))
   rw [map_sum]
   apply Finset.sum_nonneg
   intro i hi
   rw [Complex.star_def, Complex.mul_conj]
-  positivity
+  change 0 ≤ Complex.normSq (x i)
+  exact Complex.normSq_nonneg _
 
 /-- The standard form has real values on pairs of integer-lattice vectors. -/
 theorem standardHermitianForm_integerCast_im (d : ℕ)
     (k l : Fin d → ℤ) :
     (standardHermitianForm d (integerCastVector k) (integerCastVector l)).im = 0 := by
-  rw [standardHermitianForm, map_sum]
+  rw [standardHermitianForm]
+  change Complex.imCLM (∑ i, integerCastVector k i * star (integerCastVector l i)) = 0
+  rw [map_sum]
   apply Finset.sum_eq_zero
   intro i hi
-  simp [integerCastVector, Complex.star_def]
+  simp [integerCastVector]
 
 /-- Trivial semicharacter for the standard integer lattice. -/
 def standardSemicharacter (d : ℕ) : (Fin d → ℂ) → ℂ := fun _ => 1

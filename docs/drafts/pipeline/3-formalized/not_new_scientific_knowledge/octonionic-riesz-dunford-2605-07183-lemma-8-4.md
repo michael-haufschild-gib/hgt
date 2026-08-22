@@ -31,7 +31,7 @@ The last equality uses left alternativity `q(qx) = (q^2)x`,
 
 ## Lean target
 
-`GaloisForLFunctions.HTGeometry.Octonion.Basic` defines the concrete real Cayley--Dickson octonions, using the division-algebra sign (the doubled unit squares to `-1`).  `GaloisForLFunctions.HTGeometry.Octonion.ResolventIdentity` proves the exact all-`x` equation as `quadratic_leftAction_eq_resolvent_factorization`.  The generated-subalgebra restriction (8.6) remains a separate target because it needs a dependency-closed formalization of Artin's two-generator associativity theorem.
+`GaloisForLFunctions.HTGeometry.Octonion.Basic` defines the concrete real Cayley--Dickson octonions, using the division-algebra sign (the doubled unit squares to `-1`).  `GaloisForLFunctions.HTGeometry.Octonion.ResolventIdentity` proves the exact all-`x` equation as `quadratic_leftAction_eq_resolvent_factorization`.  `GaloisForLFunctions.HTGeometry.Octonion.GeneratedSubalgebra` formalizes Artin's word induction, takes its real linear span, proves multiplicative closure and vanishing of every associator there, and derives (8.6) as `uncorrected_resolvent_factorization_of_mem_generatedSubmodule` and its subtype-operator form.
 
 ## Gates
 
@@ -40,11 +40,14 @@ The last equality uses left alternativity `q(qx) = (q^2)x`,
 - [x] Concrete octonion algebra and conjugation API
 - [x] Exact pointwise identity in Lean
 - [x] Operator/extensional identity
-- [ ] Generated-subalgebra corollary (8.6)
-- [ ] Targeted Lean, axiom, lint, and umbrella audits
+- [x] Generated-subalgebra corollary (8.6)
+- [x] Targeted Lean and axiom audits
+- [x] Finished modules wired into `GaloisForLFunctions.HTGeometry`
+- [x] Lint audit: no Octonion finding; repository still has unrelated pre-existing unreachable-module failures
 
 ## Log
 
 - 2026-08-22 — Created directly in Stage 2 after source, corpus, mathlib, and proof audits.  Exact first Lean target has no assumptions beyond universal variables.
 - 2026-08-22 — Formalized pointwise (8.5) in `HTGeometry/Octonion/ResolventIdentity.lean`; targeted `lake env lean` and `lake build GaloisForLFunctions.HTGeometry.Octonion.ResolventIdentity` pass.  `#print axioms` reports only Lean core axioms (`propext`, `Classical.choice`, `Quot.sound`), with no project-added axiom.  Both finished modules are imported by `GaloisForLFunctions.HTGeometry`.  Repository lint reaches unrelated pre-existing unreachable-module and generated-document errors; it reports no issue in these modules.
 - 2026-08-22 — Added the exact function-extensional form, `quadratic_leftAction_eq_resolvent_factorization_operator`; its proof is `funext` over the closed pointwise theorem.
+- 2026-08-22 — Formalized the full Artin lift and (8.6) in `HTGeometry/Octonion/GeneratedSubalgebra.lean`.  Targeted `lake env lean` and `lake build GaloisForLFunctions.HTGeometry.Octonion.GeneratedSubalgebra` pass.  Axiom audit of the carrier associativity, closure, and both (8.6) forms reports only `propext`, `Classical.choice`, and `Quot.sound`.  The module is wired into the HTGeometry umbrella without building that umbrella.
