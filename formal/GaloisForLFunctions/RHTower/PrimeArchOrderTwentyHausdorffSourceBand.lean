@@ -37,7 +37,7 @@ private theorem re_twentieth_pow_mul_pow_nonneg_of_opposite_phase
   let y : ℝ := (r : ℝ) * w.arg
   have hxcoarse : |x| ≤ (200 / 121 : ℝ) := by
     calc
-      |x| = 20 * |z.arg| := by simp only [x, abs_mul, abs_ofNat]
+      |x| = 20 * |z.arg| := by norm_num [x]
       _ ≤ 20 * (10 / 121 : ℝ) := mul_le_mul_of_nonneg_left hzarg (by norm_num)
       _ = 200 / 121 := by ring
   have hxpi : |x| < Real.pi := by
@@ -46,11 +46,14 @@ private theorem re_twentieth_pow_mul_pow_nonneg_of_opposite_phase
     apply pow_pos
     exact norm_pos_iff.mpr (fun hz => by simpa [hz] using hzre.ne')
   have hpolar : (z ^ 20).re = ‖z‖ ^ 20 * Real.cos x := by
-    simpa only [x, Nat.cast_ofNat, pow_zero, norm_one, mul_one, zero_mul, add_zero,
-      mul_one] using pow_mul_pow_re_eq_norm_cos z 1 20 0
+    have h := pow_mul_pow_re_eq_norm_cos z 1 20 0
+    norm_num [x] at h ⊢
+    exact h
   have hcosx : 0 < Real.cos x := by
     rw [hpolar] at hzpow
-    exact pos_of_mul_pos_left hzpow hnorm.le
+    rcases (mul_pos_iff.mp hzpow) with h | h
+    · exact h.2
+    · exact False.elim (not_lt_of_ge hnorm.le h.1)
   have hx : |x| < Real.pi / 2 := by
     rw [abs_lt]
     constructor
@@ -88,7 +91,11 @@ private theorem re_twentieth_pow_mul_pow_nonneg_of_opposite_phase
       have hwim0 : w.im ≤ 0 := by rw [hwim]; linarith
       have hwarg0 : w.arg ≤ 0 := by
         rw [arg_eq_arctan_of_re_pos hwre]
-        exact Real.arctan_nonpos.mpr (div_nonpos_of_nonpos_of_nonneg hwim0 hwre.le)
+        have hratio : 0 ≤ -(w.im / w.re) := by
+          exact neg_nonneg.mpr (div_nonpos_of_nonpos_of_nonneg hwim0 hwre.le)
+        have h := Real.arctan_nonneg.mpr hratio
+        rw [Real.arctan_neg] at h
+        linarith
       have hx0 : 0 ≤ x := mul_nonneg (by norm_num) hzarg0
       have hy0 : y ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hr0 hwarg0
       constructor
@@ -97,7 +104,11 @@ private theorem re_twentieth_pow_mul_pow_nonneg_of_opposite_phase
     · have hzim0 : z.im ≤ 0 := le_of_not_ge hzim
       have hzarg0 : z.arg ≤ 0 := by
         rw [arg_eq_arctan_of_re_pos hzre]
-        exact Real.arctan_nonpos.mpr (div_nonpos_of_nonpos_of_nonneg hzim0 hzre.le)
+        have hratio : 0 ≤ -(z.im / z.re) := by
+          exact neg_nonneg.mpr (div_nonpos_of_nonpos_of_nonneg hzim0 hzre.le)
+        have h := Real.arctan_nonneg.mpr hratio
+        rw [Real.arctan_neg] at h
+        linarith
       have hwim0 : 0 ≤ w.im := by rw [hwim]; linarith
       have hwarg0 : 0 ≤ w.arg := Complex.arg_nonneg_iff.mpr hwim0
       have hx0 : x ≤ 0 := mul_nonpos_of_nonneg_of_nonpos (by norm_num) hzarg0
@@ -174,8 +185,8 @@ theorem re_xiCentral_scaledBasis_orderTwentyRectangle_nonneg
         xiZeroCopyReciprocalSquare q) ^ r).re := by
   rcases lt_or_eq_of_le hk with hk' | rfl
   · exact re_xiCentral_scaledBasis_extendedRectangle_nonneg q k r (by omega) hr
-  · norm_num
-    exact re_xiCentral_scaledBasis_orderTwentyRow_nonneg q r hr
+  · simpa only [Nat.reduceAdd] using
+      re_xiCentral_scaledBasis_orderTwentyRow_nonneg q r hr
 
 /-- The `20 × 58` endpoint Hausdorff rectangle is unconditionally nonnegative. -/
 theorem scaledPrimeArchEndpointHausdorffDifference_orderTwentyRectangle_nonnegative
@@ -188,6 +199,34 @@ theorem scaledPrimeArchEndpointHausdorffDifference_orderTwentyRectangle_nonnegat
   apply tsum_nonneg
   intro q
   exact re_xiCentral_scaledBasis_orderTwentyRectangle_nonneg q k r hk hr
+
+/-- Remaining endpoint carrier after discharging the complete order-twenty row. -/
+def PrimeArchEndpointOrderTwentyHausdorffTailNonnegative : Prop :=
+  ∀ k r : ℕ, 19 < k ∨ 57 < r →
+    0 ≤ scaledHausdorffMomentDifference primeArchEndpointHausdorffRadius
+      normalizedPrimeArchMoment k r
+
+/-- The former extended tail is exactly the smaller tail beyond the order-twenty row. -/
+theorem primeArchEndpointExtendedHausdorffTailNonnegative_iff_orderTwentyTailNonnegative :
+    PrimeArchEndpointExtendedHausdorffTailNonnegative ↔
+      PrimeArchEndpointOrderTwentyHausdorffTailNonnegative := by
+  constructor
+  · intro hold k r htail
+    exact hold k r (by omega)
+  · intro hnew k r htail
+    by_cases hk : k ≤ 19
+    · by_cases hr : r ≤ 57
+      · exact
+          scaledPrimeArchEndpointHausdorffDifference_orderTwentyRectangle_nonnegative
+            k r hk hr
+      · exact hnew k r (Or.inr (by omega))
+    · exact hnew k r (Or.inl (by omega))
+
+/-- The reduced order-twenty endpoint tail remains precisely equivalent to RH. -/
+theorem primeArchEndpointOrderTwentyHausdorffTailNonnegative_iff_riemannHypothesis :
+    PrimeArchEndpointOrderTwentyHausdorffTailNonnegative ↔ RiemannHypothesis :=
+  primeArchEndpointExtendedHausdorffTailNonnegative_iff_orderTwentyTailNonnegative.symm.trans
+    primeArchEndpointExtendedHausdorffTailNonnegative_iff_riemannHypothesis
 
 /-- The enlarged rectangle contains exactly 1160 indexed inequalities. -/
 theorem primeArchEndpointOrderTwentyHausdorffRectangle_cardinality :

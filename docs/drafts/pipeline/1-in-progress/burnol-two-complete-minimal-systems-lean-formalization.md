@@ -194,6 +194,27 @@ Burnol's `H²` on `Re s > 1/2` with `|ds|/2π` is this after `s = 1/2 + w` and `
 `f̂(s) = ∫_0^∞ f(t)t^{-s}dt`, `φ(x) = f(e^x)e^{x/2}`, `f` supported in `[1,∞) ⟺ φ` supported in
 `[0,∞)`; `‖φ‖_{L²(ℝ)} = ‖f‖_{L²(0,∞)}`.
 
+### STATUS: LAYER 4 CORE IS CLOSED (2026-08-22), axiom-clean
+
+| Brick | Module | Contents |
+|---|---|---|
+| exponential ray kernel | `HTGeometry/ExpRayL2` | `expRay`, its modulus, ray integrability, `∫_T^∞ e^{-2σx}dx` |
+| `𝓛` and its holomorphy | `HTGeometry/HalfLineLaplaceL2` | `laplaceRay`, entire truncations, tail bound, `differentiableOn_laplaceRay`, `norm_laplaceRay_le` |
+| line = Fourier | `HTGeometry/HalfLineLaplaceFourier` | `rayLine`, `rayDamp`, `fourierIntegral_rayDamp`, `coeFn_fourierTransform_rayDamp`, `memLp_two_laplaceRay_line`, `integral_norm_sq_laplaceRay_line` |
+| the class + PW-A | `HTGeometry/HalfPlaneHardy` | `IsHalfPlaneHardy`, `isHalfPlaneHardy_laplaceRay`, `tendsto_integral_norm_sq_laplaceRay_line` |
+| line rescaling | `HTGeometry/LineScalingL2` | `memLp_two_comp_const_mul`, `integral_norm_sq_comp_const_mul` |
+| L¹∩L² Fourier bridge | `HTGeometry/L2FourierIntegralBridge` | moved out of `RHTower` (which now delegates) |
+| test multiplier | `HTGeometry/ExpTestTransform` | `expTestTransform = testTransform ψ (-(i w))`, quadratic decay on strips, `memLp_two_expTestTransform_line` |
+| sequence contour shift | `HTGeometry/VerticalStripContourShiftSeq` | the corpus contour shift along a sequence of heights |
+| strip mass | `HTGeometry/HardyLineMass` | `memLp_two_hardyLine`, `stripMass`, `stripClamp`, Tonelli finiteness, `exists_seq_stripMass_tendsto_zero` |
+| line independence | `HTGeometry/HardyLineIndependence` | `integral_hardyMulTest_line_indep` |
+| the datum | `HTGeometry/HardyDatum` | `hardyPreimage`, `testSchwartz`, `integral_schwartz_mul_fourier`, `hardyPreimage_weight_ae_eq` |
+| **PW-B** | `HTGeometry/PaleyWienerHalfPlane` | `hardyDatum`, `hardyDatum_ae_zero_of_neg`, `memLp_two_hardyDatum`, **`isHalfPlaneHardy_eq_laplaceRay`** |
+
+Still open in LAYER 4: the exact isometry constant on the `w = σ + iy` parametrisation
+(`∫_ℝ‖F(σ+iy)‖²dy = 2π‖φ‖²`, i.e. Burnol's `|ds|/2π`), and the Mellin bridge
+`RHTower/MellinHardyBridge` (`L²(a,∞;dt) ≅ A^sH²`, `ℂ·1_{0<t<a}+L²(a,∞) ≅ s/(s−1)A^sH²`).
+
 ### PW-A (easy direction) — `HTGeometry/HalfLineLaplaceL2.lean`
 1. `laplaceL2 φ w` is absolutely convergent for `Re w > 0` (Cauchy–Schwarz, `‖e^{-σ·}‖_{L²(0,∞)} = (2σ)^{-1/2}`).
 2. Truncations `∫_0^T` are entire (`HTGeometry/HalfPlaneGapApproximation.differentiable_integral_kernel`);
@@ -273,3 +294,8 @@ already exists elsewhere in the tree (a collision breaks the area umbrella even 
   `DampedPowerOscillation`, `OscillatoryPowerIntegral`, `TruncatedPowerFourierBound`,
   `TruncatedPowerFourierLimit`, `NearZeroTruncatedPower`, `PowerTailL2`, `InvAbsTailL2`,
   `TruncatedMellinEntire`.
+- 2026-08-22 — **LAYER 4 core CLOSED**: Paley–Wiener for the Hardy space of the right half-plane,
+  both directions, axiom-clean (`HTGeometry/PaleyWienerHalfPlane.isHalfPlaneHardy_eq_laplaceRay`).
+  Twelve new `HTGeometry` modules (table above).  The proof avoids the area mean-value bound: the
+  horizontal edges are killed along a sequence of heights extracted from Tonelli, and the
+  `L²`-vs-`L¹` mismatch is repaired by the corpus's `CompactTestTransform` multiplier.

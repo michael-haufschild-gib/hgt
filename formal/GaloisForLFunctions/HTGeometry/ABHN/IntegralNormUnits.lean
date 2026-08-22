@@ -142,6 +142,36 @@ theorem adjoinRoot_map_surjective_of_surjective
     ← AdjoinRoot.aeval_eq, Polynomial.aeval_def, AdjoinRoot.algebraMap_eq,
     ← Polynomial.eval₂_map]
 
+/-- Surjectivity can be assembled in two stages: surjectivity on a quotient and surjectivity on
+the corresponding kernel.  The local norm application takes these quotients to be residue-unit
+groups and these kernels to principal units. -/
+theorem monoidHom_surjective_of_surjective_mod_kernel
+    (G : Type u) (H : Type v) (QG : Type w) (QH : Type max u v w)
+    [Group G] [Group H] [Group QG] [Group QH]
+    (f : G →* H) (reductionG : G →* QG) (reductionH : H →* QH)
+    (reducedMap : QG →* QH)
+    (hcomm : reductionH.comp f = reducedMap.comp reductionG)
+    (hG : Function.Surjective reductionG) (hred : Function.Surjective reducedMap)
+    (hker : ∀ h : H, reductionH h = 1 →
+      ∃ g : G, reductionG g = 1 ∧ f g = h) :
+    Function.Surjective f := by
+  intro h
+  obtain ⟨q, hq⟩ := hred (reductionH h)
+  obtain ⟨g0, hg0⟩ := hG q
+  have hcomm_apply (g : G) : reductionH (f g) = reducedMap (reductionG g) :=
+    DFunLike.congr_fun hcomm g
+  have hred_eq : reductionH (f g0) = reductionH h := by
+    rw [hcomm_apply, hg0, hq]
+  let d : H := h * (f g0)⁻¹
+  have hd : reductionH d = 1 := by
+    change reductionH (h * (f g0)⁻¹) = 1
+    rw [map_mul, map_inv, hred_eq, mul_inv_cancel]
+  obtain ⟨g1, hg1, hfg1⟩ := hker d hd
+  refine ⟨g1 * g0, ?_⟩
+  rw [map_mul, hfg1]
+  change h * (f g0)⁻¹ * f g0 = h
+  group
+
 /-- The integral norm restricted to units of a finite integral extension. -/
 noncomputable def integralNormUnits
     (A : Type u) (B : Type v) [CommRing A] [CommRing B] [Algebra A B]

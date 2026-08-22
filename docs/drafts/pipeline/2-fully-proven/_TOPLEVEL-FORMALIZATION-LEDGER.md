@@ -367,3 +367,26 @@ the birational substitution `Y = r + 1/Z`, good points of the substituted family
 good points of the original inside `(r, r + 1/N)`.  It is what
 `arithmetic-static-local-hardness-recurrence-window-law` needs for Theorem C's collision bound, and
 it replaces the appeal to Castillo–Dietmann's *quantitative* Hilbert irreducibility on that card.
+
+## Theorem C's selection is Lean (2026-08-22)
+
+`arithmetic-static-local-hardness-recurrence-window-law`'s selection clause — an explicit traceless
+*integer* two-local Hamiltonian with symmetric Galois group, cyclic all-zero product state and
+spectral collision below `4(2/3)ⁿ` — is `TwoLocalWitness.exists_integer_twoLocal_theoremC`
+(`HTGeometry/TwoLocalTheoremCWitness`), unconditional and axiom-clean.
+
+Two devices did it, both reusable:
+
+1. **Lacunary Hilbert irreducibility.**  Quantifying the lower bound *inside* the induction of
+   `hilbert_several` lets each recursive call use a bound depending on the coordinate already
+   chosen; `gal_card_of_specialisation_lacunary` therefore returns a specialisation with every
+   coordinate above any prescribed bound *and* tripling from each coordinate to every later one.
+   This converts an inequality side condition into something Hilbert irreducibility can deliver,
+   with no birational substitution and no quantitative (Castillo–Dietmann) input.
+2. **The Walsh frame.**  `HypercubeWalshDiagonalisation` diagonalises the transverse flips of the
+   Boolean hypercube; a transverse-field Hamiltonian becomes near-diagonal with the separated
+   diagonal `∑_i ± u_i`, and `|0⟩^{⊗n}` becomes the flat superposition — exactly the hypothesis of
+   the corpus's `spectralCollision_le_of_near_diagonal`.  No eigenvector perturbation theory.
+
+Remaining on that card: only the downstream window assembly `(36)` into Theorem B's
+`half_mul_le_measureReal_hardWindow`, and Theorem D.

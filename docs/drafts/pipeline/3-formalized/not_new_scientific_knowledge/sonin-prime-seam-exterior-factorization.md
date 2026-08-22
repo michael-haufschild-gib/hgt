@@ -1,15 +1,17 @@
 # The ordered Sonin prime-pair seam is one exterior tensor
 
 - **ID:** `sonin-prime-seam-exterior-factorization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[VALUE RELATION]`, `[TOP-DOWN OPERATOR SIMPLIFICATION]`
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `sonin-two-particle-prime-coherence.md`;
   `xi-prime-seam-pair-asymptotics.md`
-- **Lean status:** the one-particle Euler corners, the arithmetic normalized-energy endpoint, and
-  the full finite zero-diagonal Gram-matrix compression modulo compacts are formalized.  Its exact
-  reciprocal-prime weighted-difference specialization proves `(8d)`--`(8e)` in Lean and removes
-  the Hilbert tensor product from the route.
+- **Lean status:** complete.  The exterior factorization `(3)`, the tensor-square Calkin lower
+  estimate `(4)`--`(5)`, the Calkin-distance endpoint `(7)`--`(8)`, the one-particle Gram
+  replacement `(8a)`--`(8g)`, the pairwise essential-norm dichotomy `(10)`--`(11)`, the trace-class
+  residual covariance `(20)`--`(21)` and the phase-polarized reduction `(22)` are all Lean-proved
+  unconditionally.  The remaining unchecked gates are source-side research problems, not
+  formalization gaps.
 
 ## Statement
 
@@ -380,6 +382,7 @@ finite `F`, not this cofinal first-Euler Gram coboundary.
 - [x] finite bounded operator transfer of the scalar seam coefficients
 - [x] cofinite Euler-tangent-pair compactness propagates to the complete analytic source fibre
 - [x] finite compact semilocal families have compact iterated mixed derivatives
+- [x] 2 -> 3: unconditional Lean formalization of every theorem proved on this card
 - [ ] alternatively, finite completed-source Calkin extraction `(12)` for every prime pair
 - [ ] prove Xi-zero-fibre annihilation of the semilocal tangential connection
 - [ ] prove the remaining compact normal-curvature identity `(13)`
@@ -447,3 +450,34 @@ the full two-parameter curvature reader is not.  What remains in this card is to
 exact Sonin cutoff/resolvent descent of the contracted connection has the required Xi-zero-fibre
 compact antisymmetric normal curvature.  The pure Hilbert--Schmidt projection-correction pairing
 cannot substitute for `(23)`; its uniformly bounded response is the wrong grade.
+
+## Lean formalization
+
+All statements are unconditional and closed; every declaration below depends only on `propext`,
+`Classical.choice`, `Quot.sound`.
+
+| Paper item | Lean declaration | Module |
+|---|---|---|
+| exterior identity for an arbitrary bilinear map | `sum_sub_smul_bilinear`, `sum_sub_smul_bilinear_finset` | `HTGeometry.BilinearExteriorPairFactorization`, `HTGeometry.HilbertExteriorPairFactorization` |
+| `mapL` as a bilinear map of operator spaces | `mapLBilinear`, `mapLBilinear_apply` | `HTGeometry.HilbertExteriorPairFactorization` |
+| exterior factorization for Hilbert tensor operators | `sum_sub_smul_mapL` | `HTGeometry.HilbertExteriorPairFactorization` |
+| `(1)` the two one-particle sections `A_F(a)`, `B_F` | `evenSoninWeightedSection`, `evenSoninUniversalSection` | `RHTower.SoninPrimeSeamExteriorCalkin` |
+| `(2)`,`(3)` `W_F(a) = A_F(a) ⊗ B_F − B_F ⊗ A_F(a)` | `soninPrimePairSection`, `soninPrimePairSection_eq_exterior` | `RHTower.SoninTwoParticlePrimeCoherence`, `RHTower.SoninPrimeSeamExteriorCalkin` |
+| `(2)`,`(3)` on the raw Sonin carrier and for the Gram coboundary | `soninOrderedPairSection_eq_exterior`, `soninPrimeGramCoboundary_eq_exterior` | `RHTower.SoninPrimeSeamExteriorFactorization` |
+| `(4)`,`(5)` tensor-square Calkin lower estimate for the exterior seam | `sqrt_primePairDifferenceEnergy_le_norm_exterior_sub_compact`, `sqrt_primePairDifferenceEnergy_le_essentialNorm_soninPrimePairSection` | `RHTower.SoninPrimeSeamExteriorCalkin` |
+| uniform Calkin bound `⟹` all-prime coherence | `sonin_exterior_calkin_bounded_imp_constant` | `RHTower.SoninPrimeSeamExteriorCalkin` |
+| `(6)` canonical Xi seam potentials | `orbitwiseNatPrimeSeamCharge` | `RHTower.XiPrimeSeamCoherenceCollapse` |
+| `(7)` Calkin distance `D_F^∧(ρ)` | `xiSeamExteriorCalkinDistance` | `RHTower.SoninPrimeSeamExteriorCalkin` |
+| `(8)` `D_F^∧ = o(√M_F) ⟹ E_F/M_F → 0 ⟹ Re ρ = 1/2` | `primePairDifferenceEnergy_div_mass_le_sq_calkinDistance_div_sqrt_mass`, `re_eq_half_of_xiSeamExteriorCalkinDistance_submass` | `RHTower.SoninPrimeSeamExteriorCalkin` |
+| `(8)` on every Xi divisor fibre `⟹` RH | `riemannHypothesis_of_xiSeamExteriorCalkinSubmass` | `RHTower.SoninPrimeSeamExteriorCalkin` |
+| `(8a)`--`(8c)` one-particle Gram compression without cardinality loss | `sqrt_half_finitePrimeDifferenceEnergy_le_norm_primeGram_sub_compact` and the finite matrix-vector estimates | `RHTower.SoninPrimeGramCompression` |
+| `(8d)`--`(8e)` reciprocal-prime specialization | `sqrt_half_finitePrimeDifferenceEnergy_le_norm_primeGram_sub_compact` | `RHTower.SoninPrimeGramCompression` |
+| `(8g)` source factorization of the Gram coboundary | `soninPrimeGramCoboundary_eq_exterior`, `soninPrimeGramCoboundary_eq_coefficient` | `RHTower.SoninPrimeSeamExteriorFactorization` |
+| `(10)`,`(11)` pairwise essential norm and compactness dichotomy | `norm_div_le_norm_xiSeamCoboundaryCorner_sub_compact`, `essentialNorm_archimedeanPrimeEulerQuadraticCorner_natPrime` | `RHTower.XiPrimeSeamSparseEdgeCalkin`, `RHTower.SoninEulerEssentialNorm` |
+| `(20)`,`(21)` trace-class residual antisymmetric covariance | `soninAllPrimeColumnOperator_isHilbertSchmidt`, `soninPrimePowerCrossOverlap_isHilbertSchmidt` | `RHTower.SoninCoupledPrimeResidual` |
+| `(22)` phase-polarized reduction | `phasePolarized_normalSkewGram_isCompact`, `finiteArchimedeanEulerOrientationGram_isCompact_of_re_im_boundarySkew` | `RHTower.SemilocalProjectionPhasePolarization`, `RHTower.SemilocalEulerPhasePolarization` |
+| `(23)` explicit connection source | `primeLogSource_eq_neg_log_mul_connection`, `finitePlaceSource_eq_neg_sum_log_mul_connection` | `RHTower.SemilocalDualPairEulerConnection` |
+
+The unchecked gates below the formalization line are open source-side research problems: they ask
+for an operator *upper* estimate that no card on this route claims to have proved.
+

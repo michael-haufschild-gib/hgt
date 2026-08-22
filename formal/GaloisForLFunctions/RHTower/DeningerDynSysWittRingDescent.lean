@@ -141,10 +141,18 @@ theorem deningerPolyGaloisDescent (horb : ∀ a : A, (MulAction.orbit G a).Finit
 
 open scoped DeningerWittRing
 
-/-- **Deninger, Proposition 1.2(a) (`t21n`), for the rational Witt ring.**  If all orbits of `G`
-on `A` are finite, every `G`-invariant rational Witt vector over `A` comes from a rational Witt
-vector over the fixed subring: `W_rat (A) ^ G = W_rat (A ^ G)`. -/
-theorem deningerWittRing_galoisDescent (horb : ∀ a : A, (MulAction.orbit G a).Finite)
+/-- **Galois descent for the rational Witt ring from polynomial descent.**  Any descent statement
+for `G`-invariant normalized fractions of polynomials lifts to the rational Witt ring: a
+`G`-invariant rational Witt vector over `A` then comes from a rational Witt vector over the fixed
+subring. -/
+theorem deningerWittRing_galoisDescent_of_polyDescent
+    (hdesc : ∀ P Q : Polynomial A, P.coeff 0 = 1 → Q.coeff 0 = 1 →
+      Q ∈ nonZeroDivisors (Polynomial A) →
+      (∀ σ : G, deningerPolyAct σ P * Q = deningerPolyAct σ Q * P) →
+      ∃ α β : Polynomial A,
+        (∀ (σ : G) (n : ℕ), σ • α.coeff n = α.coeff n) ∧
+        (∀ (σ : G) (n : ℕ), σ • β.coeff n = β.coeff n) ∧
+        α.coeff 0 = 1 ∧ β.coeff 0 = 1 ∧ α * Q = P * β)
     (w : DeningerCanonicalRationalWittRing A) (hw : ∀ σ : G, σ • w = w) :
     ∃ w₀ : DeningerCanonicalRationalWittRing (FixedPoints.subring A G),
       deningerCanonicalRationalWittMap
@@ -211,7 +219,7 @@ theorem deningerWittRing_galoisDescent (horb : ∀ a : A, (MulAction.orbit G a).
       _ = algebraMap (Polynomial A) (DeningerRationalWittLocalization A) (deningerPolyAct σ Q)
           * algebraMap (Polynomial A) (DeningerRationalWittLocalization A) P := by rw [hspec]
   obtain ⟨α, β, hα, hβ, hα0, hβ0, hαβ⟩ :=
-    deningerPolyGaloisDescent horb P Q hP0 hQ0 (hden hQmem) hcross
+    hdesc P Q hP0 hQ0 (hden hQmem) hcross
   -- descend the invariant fraction to the fixed subring
   obtain ⟨α₀, hα₀⟩ := deningerPolyLift (B := B) α (fun n => ⟨⟨α.coeff n, fun σ => hα σ n⟩, rfl⟩)
   obtain ⟨β₀, hβ₀⟩ := deningerPolyLift (B := B) β (fun n => ⟨⟨β.coeff n, fun σ => hβ σ n⟩, rfl⟩)
@@ -279,5 +287,16 @@ theorem deningerWittRing_galoisDescent (horb : ∀ a : A, (MulAction.orbit G a).
           * (((u.1 : (DeningerRationalWittLocalization A)ˣ)
               : DeningerRationalWittLocalization A)
             * algebraMap (Polynomial A) (DeningerRationalWittLocalization A) β) := by ring
+
+/-- **Deninger, Proposition 1.2(a) (`t21n`), for the rational Witt ring.**  If all orbits of `G`
+on `A` are finite, every `G`-invariant rational Witt vector over `A` comes from a rational Witt
+vector over the fixed subring: `W_rat (A) ^ G = W_rat (A ^ G)`. -/
+theorem deningerWittRing_galoisDescent (horb : ∀ a : A, (MulAction.orbit G a).Finite)
+    (w : DeningerCanonicalRationalWittRing A) (hw : ∀ σ : G, σ • w = w) :
+    ∃ w₀ : DeningerCanonicalRationalWittRing (FixedPoints.subring A G),
+      deningerCanonicalRationalWittMap
+        (algebraMap (FixedPoints.subring A G) A) w₀ = w :=
+  deningerWittRing_galoisDescent_of_polyDescent
+    (fun P Q hP0 hQ0 hQreg hcross => deningerPolyGaloisDescent horb P Q hP0 hQ0 hQreg hcross) w hw
 
 end RHTower

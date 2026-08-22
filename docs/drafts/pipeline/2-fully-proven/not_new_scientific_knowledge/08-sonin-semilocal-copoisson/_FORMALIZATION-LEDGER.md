@@ -240,3 +240,56 @@ New modules built this session (all wired, all `#print axioms`-clean, `formal li
 | 15 sonin-two-particle-prime-coherence | the tensor-square Calkin estimate; mathlib supplies everything needed (`TensorProduct.mapL`, `norm_mapL_le`, `UniformSpace.Completion.innerProductSpace`, `ContinuousLinearMap.completion`) — what remains is lifting the corpus shell data to the tensor square |
 | 16 squarefree-cutoff-jump-root-avoidance | Sylvester's law of inertia and Haynsworth additivity — neither in mathlib nor the corpus |
 | 17 transported-prolate-relative-resolvent-corner | Connes–Moscovici prolate spectral theory (uniqueness of the cutoff-commuting self-adjoint extension) and Ramis–Richard-Jung–Thomann order-`1/2` determinants |
+
+## 2026-08-22 (continued): cards 15 and 13 closed
+
+**Card 15 `sonin-two-particle-prime-coherence` → stage 3.**
+`RHTower/TensorSquareCalkinLower.lean` (abstract `ShellDatum` + `tensor_calkin_lower`),
+`HTGeometry/HilbertCompletionWeakNull.lean` (weak nullity transported to the completion) and
+`RHTower/SoninTwoParticlePrimeCoherence.lean` (`soninShellDatum`, `sonin_tensor_calkin_lower`,
+`sonin_euler_tensor_calkin_lower`, `soninPrimePairSection`,
+`sqrt_primePairDifferenceEnergy_le_norm_soninPrimePairSection_sub_compact`,
+`sonin_prime_pair_calkin_bounded_imp_constant`).  Shell parameters are chosen inside the proofs by
+`exists_finiteScale_gramSeparatingInteriorShell`, so every statement is unconditional.
+
+Typeclass notes for anyone touching `evenSubspace ⊗[ℂ] evenSubspace`: the module needs
+`set_option maxHeartbeats 2000000`, `synthInstance.maxSize 2000`,
+`synthInstance.maxHeartbeats 4000000`, plus the three explicit instances
+`evenSoninTensorUniformContinuousConstSMul` (a genuine `SMul` diamond between
+`TensorProduct.instSMul` and `DistribMulAction.toDistribSMul.toSMul`),
+`evenSoninTensorCompletionNormedAddCommGroup` and `evenSoninTensorCompletionNormedSpace`.  The last
+two come from the `@[reducible] noncomputable def` helpers in `TensorSquareCalkinLower.lean`;
+plain `theorem`s there fail with "type of theorem is not a proposition" and an unmarked `def`
+fails with "definition of class type must be marked reducible".
+
+**Card 13 `sonin-prime-seam-exterior-factorization` → stage 3.**
+`HTGeometry/HilbertExteriorPairFactorization.lean` (`mapLBilinear`,
+`sum_sub_smul_bilinear_finset`, `sum_sub_smul_mapL`) and
+`RHTower/SoninPrimeSeamExteriorCalkin.lean` (`evenSoninWeightedSection`,
+`evenSoninUniversalSection`, `soninPrimePairSection_eq_exterior`,
+`sqrt_primePairDifferenceEnergy_le_norm_exterior_sub_compact`,
+`sonin_exterior_calkin_bounded_imp_constant`, `xiSeamExteriorCalkinDistance`,
+`re_eq_half_of_xiSeamExteriorCalkinDistance_submass`,
+`riemannHypothesis_of_xiSeamExteriorCalkinSubmass`).
+
+Remaining cards: 1, 5, 7, 9, 11, 14, 16, 17.
+
+## Card 9 `semilocal-euler-kernel-chart-differentiability`: build plan (2026-08-22)
+
+The card's Lean content and where it goes.
+
+| Item | Content | Module | State |
+|---|---|---|---|
+| `(8)` | closed-range projection formula `P = M Q A⁻¹ Q M*`, `A = Q M* M Q + (1−Q)` | `HTGeometry/BoundedBelowRangeProjection.lean` | DONE (`isUnit_rangeProjectionGram`, `rangeProjection_mul_self`, `rangeProjection_isIdempotentElem`, `rangeProjection_isSelfAdjoint`, `range_rangeProjection`, `starProjection_eq_rangeProjection`) |
+| analyticity | `t ↦ P_t` operator-norm real analytic | `HTGeometry/RangeProjectionAnalytic.lean` | TODO — `analyticAt_inverse` (mathlib) composed with the polynomial `A_t`; needs the ℝ-linear continuous `adjoint` |
+| `(9)`,`(11)` | `P'_0 = (1−Q) X Q + Q X* (1−Q)` at `M_0 = 1` | `HTGeometry/RangeProjectionDeriv.lean` | TODO — product rule + `hasFDerivAt_ring_inverse` |
+| `(4)` | `S(u_t) = D_t S(u_∞)`, bounded isomorphism | `HTGeometry/InvariantMultiplierChart.lean` | TODO — purely algebraic: `S(u) = {f ∈ Hp : u f ∈ Hm}`, `D` invertible with `D(Hp) = Hp`, `N` invertible with `N(Hm) = Hm`, `u_t = u N D⁻¹` |
+| `(5)` | `|t_p| < √p ⟹ D_t, D_t⁻¹ ∈ H^∞` | same | TODO — Neumann series: `‖cT‖ < 1`, `T` leaves the closed subspace invariant ⟹ `1 − cT` invertible and both it and its inverse preserve the subspace |
+| `(10)`,`(12)`--`(15)` | metric tangent is the positive Euler Sonin corner | `RHTower/SemilocalEulerKernelChart.lean` | TODO — in the corpus physical model `M_t = 1 − t p^{−1/2} U_p*` is affine in `t`, so `M_t* M_t` is a quadratic polynomial and `∂_t|_0 = −p^{−1/2}(U_p + U_p^{−1})`; cross-boundary is `centralPositiveEulerCorner_eq_smul` |
+| `(16)` | finite Euler combination is Calkin-faithful | `finitePositiveEulerCorners_calkinIndependent` | already in the corpus |
+| `(17)`,`(18)` | `ρ_{p,t} B_{p,t} = −p^{z−1/2}`, singular limit of the local Hankel kernel | `RHTower/LocalEulerHankelSingularLimit.lean` | TODO — elementary `sinh` algebra |
+| `(19)`,`(23)`,`(24)` | connection source law | `RHTower/SemilocalDualPairEulerConnection` | already done (card 8) |
+| cofinite reader rigidity, compact mixed derivatives | | `cofinite-euler-connection-reader-rigidity` (stage 3) | already done |
+
+Unchecked gates `(21)`, finite two-prime compact curvature and prime-seam coherence are open
+research problems, not formalization gaps.

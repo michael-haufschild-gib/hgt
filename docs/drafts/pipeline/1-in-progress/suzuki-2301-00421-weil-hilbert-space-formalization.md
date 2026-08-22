@@ -38,7 +38,7 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 | `thm_5_3` | Thm 5.7 | `E·F(V(t))` is a de Branges subspace of `H(E)` for all `t ≥ 0`, isomorphic to `H_W(t)` | yes | OPEN |
 | `prop_5_1` | Prop 5.8 | RH ⟺ (1) `‖ψ‖² = ½⟨ψ,ψ⟩_W` on `V(0)` and (2) the peaked-test condition | ⟺ | OPEN |
 | §6 | — | `(H_W, A_{W,π/2})` is a Hilbert--Pólya space; eigenvalue multiplicity one | yes | OPEN |
-| §7 (unnumbered) | Thm 7.1 | UNCONDITIONAL: `𝔓_t(0) = -g_ξ(t)` and `lim_{y→∞}[y𝔓_t(-iy) - ½ψ(¼+y/2) + ½log π] = -g_ξ'(t)` for `t ≠ log n` | no | **(7.1) CLOSED** `RHTower.tendsto_suzukiFrakP_zero`; (7.2) open |
+| §7 (unnumbered) | Thm 7.1 | UNCONDITIONAL: `𝔓_t(0) = -g_ξ(t)` and `lim_{y→∞}[y𝔓_t(-iy) - ½ψ(¼+y/2) + ½log π] = -g_ξ'(t)` for `t ≠ log n` | no | **CLOSED** `RHTower.tendsto_suzukiFrakP_zero` (7.1) + `RHTower.tendsto_suzukiFrakP_vertical` (7.2) |
 | `thm_4` | — | inside `\comment{...}` in the source: NOT a paper statement.  Excluded. | — | N/A |
 
 ## Corpus dictionary (checked with `scripts/formal_tools.py research`)
@@ -75,33 +75,44 @@ hypothesis (never a new hypothesis added by us); everything else is unconditiona
 
 ## Assessment of the two remaining unconditional items
 
-### Eq. (7.2) — plan
+### Eq. (7.2) — EXECUTED (CLOSED)
 
 `E(y) := y𝔓_t(-iy) - ψ(¼+y/2)/2 + ½log π`.  Substituting the reflection formula
-(`logDeriv_riemannZeta_add_reflect_off_poles`) and the Gauss bridge `ψ(w) = ψ(¼) - suzukiLerchDiff 0 w`
-regroups `E(y)` as
+(`logDeriv_riemannZeta_add_reflect_of_one_lt_re` at `s = ½+y`) and the *off-poles* Gauss bridge
+`ψ(w) = ψ(¼) - suzukiLerchDiff 0 w` regroups `E(y)` into exactly five blocks
+(`suzukiVerticalEnergy_eq`), all singular parts cancelling:
 
 ```text
-  4y(e^{t/2}-1)/(1+2y) + 4y(e^{-t/2}-1)/(1-2y)                          → 2(e^{t/2}-e^{-t/2})
-+ ∑_{n ≤ e^t} Λ(n)n^{-1/2}(e^{-y(t-log n)}-1)                           → -∑_{n ≤ e^t} Λ(n)n^{-1/2}
-+ e^{-yt}[log π - ψ(¼+y/2)/2 - ψ(¼)/2 - ζ'/ζ(½+y)]                      → 0
-+ ζ'/ζ(½+y) + ψ(¼)/2 - ½log π                                            → ψ(¼)/2 - ½log π
+  4y(e^{t/2}-1)/(1+2y) + 4y(e^{-t/2}-1)/(1-2y)                          → 2e^{t/2} - 2e^{-t/2}
++ e^{-yt}[log π - ½ψ(¼+y/2) - ζ'/ζ(½+y) - ½ψ(¼)]                       → 0
++ ∑_{n ≤ e^t} Λ(n)n^{-1/2}(e^{-y(t-log n)}-1)                           → -suzukiCheckpointMass ⌊e^t⌋
++ ½ψ(¼) - ½log π + ζ'/ζ(½+y)                                            → screwLinearCoeff/2
 + ½[e^{-yt}·suzukiLerchDiff 0 (¼-y/2) - e^{-t/2}·suzukiLerchDiff t (¼-y/2)]  → -screwLerchTail₁ t
 ```
 
-The first four lines are elementary (they need only `ζ'/ζ(σ) → 0` as `σ → ∞` and a polynomial bound
-on `ψ` on the positive real axis).  The fifth is the only real work: its `n`-th term is
+and the sum of the five limits is `-g_ξ'(t)` exactly, via `digamma_quarter_sub_logPi`
+(`screwLinearCoeff = ψ(¼) - log π`, from reflection at `s = ½`) and `hasDerivAt_screwFn_atomFree`.
 
-```text
-(e^{-yt} - e^{-y_n t}) · 2y / ((y_n - y) y_n),    y_n = 2n + 1/2,
-```
+Three pieces of genuinely new mathematics were needed.
 
-whose singular factor `(y_n - y)^{-1}` is cancelled by the vanishing of `e^{-yt} - e^{-y_n t}` at
-`y = y_n`.  A `y`-uniform summable dominant exists in three regimes (`y_n ≤ y/2`, `y/2 < y_n < 2y`,
-`y_n ≥ 2y`), giving dominated convergence for the series.  The limit must be taken along
-`atTop ⊓ 𝓟 {y | ∀ m, 1/4 ≤ |y - (1/2+2m)|}`, because the *printed* formula (1.6) is Lean-junk exactly
-at `y ∈ {1/2 + 2m}` (trivial zeros of `ζ(1/2-y)` and poles of `ψ(1/4-y/2)`), where the total is
-regular but the individual blocks are not.
+1. **The Gauss digamma series off the poles** (`SuzukiWeilDigammaOffPoles.lean`).  The corpus's
+   `digamma_sub_eq_tsum` and mathlib both stop at `Re w > 0`; the appendix limit needs `ψ(¼-y/2)`
+   arbitrarily far to the *left*.  The extension is by a shift law: `suzukiLerchDiff 0 (w+1)
+   = suzukiLerchDiff 0 w - w⁻¹` mirrors `ψ(w+1) = ψ(w) + w⁻¹`, so the defect
+   `ψ(w) - ψ(¼) + S(w)` is `1`-periodic and vanishes off the poles because it vanishes on the
+   half-plane.  A by-product: `summable_suzukiLerchDiffTerm_all` — the series is summable at *every*
+   `w`, with no hypothesis at all.
+2. **The `y`-uniform dominant** for the fifth block.  Its `n`-th term is
+   `(e^{-yt} - e^{-y_n t})·2y/(y_n(y_n-y))`, `y_n = 2n+½`; the apparent pole at `y = y_n` is killed
+   by the numerator.  `norm_suzukiVerticalLerchTerm_le` gives the three-regime dominant
+   (`y_n ≤ y/2`, `y/2 < y_n < 2y`, `y_n ≥ 2y`), so `tendsto_tsum_of_dominated_convergence` applies.
+3. **`ζ'/ζ(σ) → 0` on the real ray** (`tendsto_logDeriv_riemannZeta_ofReal_atTop`), by comparing the
+   Dirichlet series of `Λ` at `σ` with its value at `2`.
+
+The limit is taken along `suzukiVerticalFilter = atTop ⊓ 𝓟 {y | ∀ m, ¼ ≤ |y - (2m+½)|}`, because the
+*printed* formula (1.6) is Lean junk exactly at `y ∈ {½ + 2m}` (trivial zeros of `ζ(½-y)`, poles of
+`ψ(¼-y/2)` and of the Lerch block), where the total is regular but the individual blocks are not.
+The filter is proved non-trivial (`suzukiVerticalFilter_neBot`, cofinal sequence `y_k = 2k + 3/2`).
 
 ### Prop 1.2 — plan and available corpus inputs
 
@@ -139,6 +150,8 @@ of `(1+Θ^♯)/2 = A/E^♯`.  Note `A/E^♯` stays bounded even at a multiple re
 | `RHTower/SuzukiWeilPropThreeOne.lean` | `riemannZeta_ne_zero_of_XiC_ne_zero`, the two evaluations of `xiRelativeResolventTrace` in prime--archimedean terms, and **`integral_suzukiFrakP_laplace_eq_zeroSeries`** — the two Laplace transforms agree. |
 | `RHTower/SuzukiWeilZeroSeries.lean` | `suzukiPtZeroTerm` / `suzukiPtZeroSum` (eq. 3.2), summability, `‖P_t(z)‖ ≪_z e^{|t|/2}`, per-copy Laplace transform, and **`integral_suzukiPtZeroSum_laplace`**.  Also `XiC_neg` (evenness of the centered completed Xi source), which the corpus did not have. |
 | `RHTower/SuzukiWeilFrakP.lean` | `suzukiFrakP` (eq. 1.6) and `suzukiFrakPReg`; `suzukiScrewG_eq_screwFn`; `riemannZeta_half_ne_zero`; `logDeriv_riemannZeta_half : ζ'/ζ(1/2) = -screwLinearCoeff/2`; `continuousAt_logDeriv_riemannZeta_half`; **`tendsto_suzukiFrakP_zero`** (eq. 7.1). |
+| `RHTower/SuzukiWeilDigammaOffPoles.lean` | **`digamma_sub_quarter_eq_offPoles`** — Gauss's digamma difference series at *every* `w` off the poles of `Γ`, not just on `Re w > 0` (a mathlib and corpus gap); `summable_suzukiLerchDiffTerm_all` (hypothesis-free summability); `suzukiLerchDiff_zero_add_one` (the shift law `S(w+1) = S(w) - 1/w`); `suzukiLerchDiff_zero_five_quarters`; `norm_suzukiLerchKernel_le_of_one_le_re`. |
+| `RHTower/SuzukiWeilAppendixDerivative.lean` | `hasDerivAt_screwFn_atomFree` (the exact derivative of `g_ξ` off the prime-power atoms); `tendsto_logDeriv_riemannZeta_ofReal_atTop`; `suzukiVerticalLerchTerm` / `suzukiVerticalFilter` / `suzukiVerticalLerchBound` with the three-regime `y`-uniform dominant and `suzukiVerticalFilter_neBot`; `digamma_quarter_sub_logPi` (`screwLinearCoeff = ψ(1/4) - log π`); `suzukiFrakP_vertical_mul`; `suzukiVerticalEnergy_eq` (the five-block decomposition); the five block limits; and **`tendsto_suzukiFrakP_vertical`** = eq. (7.2). |
 
 All capstones audited: only `propext, Classical.choice, Quot.sound`.
 
@@ -155,24 +168,6 @@ Checked with `scripts/formal_tools.py research` before and after writing:
   do not re-derive it.
 - `𝔓_t`, `𝔖_t`, `P_t`, and the complex-parameter Lerch difference are genuinely absent from the corpus
   (confirmed by grep for `frakP`/`𝔓` and by the standing parity card).
-
-## Open core of eq. (7.2)
-
-The printed limit is over a function whose *printed formula* has removable poles at
-`y ∈ {1/2 + 2m : m ∈ ℕ}` (trivial zeros of `ζ(1/2-y)` and poles of `ψ(1/4-y/2)` and of the Lerch
-block).  Away from them the Lean expression is the true value; at them it is Lean junk.  Reflection
-(`logDeriv_riemannZeta_add_reflect_off_poles`) plus the Gauss bridge reduces the whole singular part
-to the single object
-
-```text
-W_t(y) = e^{-yt} (ζ'/ζ)(1/2-y) - (1/2) e^{-t/2} suzukiLerchDiff t (1/4-y/2)   →   -screwLerchTail₁ t,
-```
-
-whose two poles cancel exactly (residues `-e^{-y_m t}/(y-y_m)` and `+e^{-y_m t}/(y-y_m)`).  Plan:
-state the limit along `atTop ⊓ 𝓟 {y | ∀ m, 1/4 ≤ |y - (1/2+2m)|}` (cofinal, non-vacuous), where the
-Lerch block has the uniform majorant `9 e^{-2nt}` and dominated convergence applies, and where
-`|ψ(1/4-y/2)| = O(y log y)` gives `e^{-yt}·(ζ'/ζ)(1/2-y) → 0`.  The `-g_ξ'(t)` side is
-`hasDerivAt_screwFn_of_affine` fed by `screwPrimeSum_eq_checkpoint_affine`.
 
 ## Proof route for Proposition 3.1 (chosen, partly executed)
 
@@ -230,6 +225,7 @@ supported in `[0,1]`, so `RHTower.ae_eq_zero_of_moments_eq_zero` (`ExpDecayFouri
 applies.  Continuity of both sides in `t` then upgrades a.e. to pointwise.
 
 ## Log
+- 2026-08-22 — **eq. (7.2) CLOSED in Lean, unconditionally** (`tendsto_suzukiFrakP_vertical`), completing the whole unconditional appendix Theorem 7.1.  Required a new mathlib/corpus gap module: Gauss's digamma difference series off the poles.  Both new capstones axiom-clean.
 - 2026-08-22 — created; source inventoried statement by statement; corpus dictionary established.
 - 2026-08-22 — **Proposition 3.1 CLOSED in Lean, unconditionally** (`suzukiFrakP_eq_suzukiPtZeroSum`), by the Laplace-matching route: five-block Laplace transform of eq. (1.6), Laplace transform of the Xi-zero series, the corpus explicit formula as the bridge, Laplace determinacy through the exponential Fourier transform, and continuity in `t`.  All capstones axiom-clean.
 - 2026-08-22 — L3 started: the Xi-zero-series Laplace transform is closed; the five-block split of eq. (1.6) and the polar/zeta/digamma Laplace transforms are closed.

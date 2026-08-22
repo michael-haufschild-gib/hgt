@@ -206,6 +206,40 @@ One-dimensional quotients, bounded diagonal shifts, Abel limits, and residue ext
 classical.  This is a project bridge and is not claimed as new scientific knowledge.  Candidate
 new content begins with the full source-operator extension and its framed Gamma transgression.
 
+## Lean status (2026-08-22)
+
+Two new unconditional modules, wired into `GaloisForLFunctions.RHTower`, `lake build`-green,
+axiom audit `[propext, Classical.choice, Quot.sound]`:
+
+`formal/GaloisForLFunctions/RHTower/MertensCoronaShiftConormal.lean`
+- `MemActualEulerSpace`, `memMarcinkiewiczLogLayer_of_actual` — equations `(2)`, `(3)`.
+- `primeUnitTranslation`, `sum_primeUnitTranslation_dyadic_block_le`,
+  `memCriticalSummableLayer_primeUnitTranslation`,
+  `memVanishingTailLayer_primeUnitTranslation` — equations `(7)`, `(17)`--`(18)`: every positive
+  Euler translation of a Marcinkiewicz field has absolutely summable prime-log mass.
+- `memVanishingTailLayer_primeUnitTranslation_unit` — equation `(8)`.
+- `tendsto_mertensPrimeMean_primeUnitTranslation_zero` — equation `(9)`, `q_M ∘ S_h = 0`.
+- `tendsto_mertensPrimeMean_sourceDefect` — equation `(10)`, `q_M ∘ (I − S_h) = q_M`.
+- `abs_le_of_marcinkiewiczLogQuotient_le` — equation `(6)`, continuity of the conormal.
+- `mertensCoronaShiftConormal` — the packaged rank-one law.
+- `tendsto_gammaShapeAbelFunctional_actual` — equation `(13)` on the whole actual space.
+- `coronaPolarGermJet`, `hasDerivAt_coronaPolarGermJet`, `coronaPolarGermJet_ne_zero` —
+  equations `(17)`--`(18)` and the nonvanishing in `(21)`.
+
+`formal/GaloisForLFunctions/RHTower/MertensCoronaTimeOneResidue.lean`
+- `timeOnePrimeLaplace`, `timeOnePrimeLaplace_eq`, `abs_timeOne_sub_abel_le`,
+  **`tendsto_timeOnePrimeLaplace`** — equations `(14)`--`(15)`:
+  `lim_{s↓0} s·M_{1,b}(s) = √2·q_M(b)`.
+- `gammaClockCurvature_coronaPolarGermJet`,
+  `gammaClockCurvature_coronaPolarGermJet_ne_zero` — equation `(19)` and `(21)`, obtained by
+  instantiating the corpus curvature law
+  `GaloisForLFunctions.HTGeometry.gammaClockCurvature_eq_outerProduct` at the polar-germ jet.
+
+Reused corpus modules (no duplication): `RHTower.WeightedEulerCoefficientSpaces` (the layers
+`M_log`, `M_0`, `T_1` and `unitField_not_memVanishingTailLayer`), `RHTower.MertensPrimeMeanReader`
+(the conormal `q_M` and its uniqueness), `RHTower.GammaMeixnerAbelCoronaProbe` (equations
+`(11)`--`(12)`), `HTGeometry.GammaPeriodicConstraintCorona` (the Gamma clock curvature).
+
 ## Gates
 
 - [x] actual-source quotient line isolated
@@ -215,6 +249,7 @@ new content begins with the full source-operator extension and its framed Gamma 
 - [x] time-one boundary residue identified
 - [x] tail-faithful rank-one Gamma transgression identified on the polar quotient
 - [x] product-topology no-go given an explicit positive source object
+- [x] every proved equation `(4)`--`(21)` formalized unconditionally in Lean 4
 - [ ] extend to the completed Euler--Gamma source operator algebra
 - [ ] lift the polar transgression to the full framed source comparison
 - [ ] prove calibrated zero-orbit affine-support preservation

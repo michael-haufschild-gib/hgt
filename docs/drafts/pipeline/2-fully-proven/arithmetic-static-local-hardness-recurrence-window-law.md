@@ -1216,3 +1216,96 @@ substitution `Y_i = r_i + 1/Z_i`:
    `CharpolyScaleGalois.card_gal_comp_scale` for the root scaling in 2;
 4. applying `gal_card_of_specialisation_gt` with `N > 2/(b_i − a_i)` then puts
    `Y_i = r_i + 1/z_i ∈ (r_i, r_i + 1/N)` inside the box.
+
+## THEOREM C'S SELECTION IS LEAN (2026-08-22, later)
+
+The collision clause `(31)` needed neither the Möbius/box layer nor the Gaussian ensemble.  Two
+observations replaced them:
+
+1. **The Hilbert recursion can carry a per-coordinate bound.**  Quantifying the lower bound `N`
+   *inside* the induction of `hilbert_several` lets the recursive call use a bound depending on the
+   coordinate already chosen.  Choosing `N' = max N ⌈3c⌉` at each step yields
+   `HilbertIrreducibility.hilbert_multivariate_lacunary` and
+   `HilbertIrreducibility.gal_card_of_specialisation_lacunary`:
+
+   ```text
+   ∃ y : Fin m → ℚ, (∀ i, (N : ℚ) < y i) ∧ (∀ i j, (i:ℕ) < (j:ℕ) → 3 * y i < y j) ∧
+     MvPolynomial.eval y g ≠ 0 ∧ Nat.card (f.map (MvPolynomial.eval y)).Gal = D !
+   ```
+
+   So the specialisation may be demanded **lacunary**: every coordinate above any prescribed bound
+   *and* growing by a factor three from each coordinate to every later one.  No birational
+   substitution, no fraction-field automorphism, no quantitative Hilbert irreducibility.
+
+2. **The collision bound is already in the corpus, one Walsh rotation away.**
+   `NearDiagonalOverlapFlatness.spectralCollision_le_of_near_diagonal` bounds the collision of a
+   constant-modulus seed against a near-diagonal Hamiltonian with separated diagonal.  In the Walsh
+   frame the transverse family `D + ∑_i u_i T_i` is exactly that: the Walsh matrix diagonalises the
+   transverse flips with eigenvalues `(-1)^{x_i}`, the diagonal becomes the rotated `D`, and
+   `|0⟩^{⊗n}` becomes the flat superposition of modulus `2^{-n/2}`.  A lacunary `u` makes the
+   transverse energies `∑_i ± u_i` separated by at least `u_0`, so the bound is
+   `(2^{-n/2} + 2‖D‖/u_0)²`, which is below `4(2/3)^n` once `u_0` is large — and `u_0 > N` is
+   exactly what item 1 delivers.
+
+### The new modules
+
+| Module | Content |
+|---|---|
+| `HTGeometry/HilbertIrreducibility/LargeSpecialisation` | the whole `gt` chain (`exists_int_not_root_gt` … `gal_card_of_specialisation_gt`) **and** the lacunary chain (`hilbert_several_lacunary`, `hilbert_multivariate_lacunary`, `gal_card_of_specialisation_lacunary`) |
+| `HTGeometry/HypercubeWalshDiagonalisation` | `cubeSign`, `walshMatrix`, `sum_cubeSign_mul`, `walshMatrix_mul_self`, `norm_walshMatrix`, `transverseOnly`, `transverseFamilyHam_eq_diagonal_add`, `transverseEnergy`, **`transverseOnly_mul_walsh`**, and the lacunary separation `abs_signed_lacunary_sum_ge`, **`transverseEnergy_separated`** |
+| `HTGeometry/HypercubeTransverseCollisionBound` | `zeroState`, `walsh_conjTranspose_mulVec_zeroState`, `conj_walsh_transverseFamilyHam`, **`spectralCollision_transverseFamilyHam_le`** |
+| `HTGeometry/TwoLocalLacunaryWitness` | `exists_rational_specialisation_lacunary`, `exists_twoLocal_lacunary_gal`, `lacExtend`, **`exists_twoLocal_lacunary_smallCollision`** |
+| `HTGeometry/TwoLocalTheoremCWitness` | `isOrthoEigenBasis_realSmul`, `spectralCollision_realSmul_eq`, `injective_eigenvalues_of_irreducible`, **`exists_integer_twoLocal_theoremC`** |
+
+```text
+TwoLocalWitness.exists_integer_twoLocal_theoremC (m : ℕ) :
+  ∃ (u : Fin (m+1) → ℚ) (Nn : ℕ) (Hz : Matrix (Fin (m+1) → Bool) (Fin (m+1) → Bool) ℤ)
+    (hH : (Hz.map (Int.castRingHom ℂ)).IsHermitian),
+    0 < Nn ∧ Hz.trace = 0 ∧
+    Hz.map (Int.castRingHom ℚ) = (Nn:ℚ) • twoLocalHam (witnessConstant m) 0 witnessCoupling u ∧
+    Nat.card (Hz.charpoly.map (Int.castRingHom ℚ)).Gal = (2^(m+1))! ∧
+    Irreducible (Hz.charpoly.map (Int.castRingHom ℚ)) ∧
+    Function.Injective hH.eigenvalues ∧
+    (∀ j, finiteComplexInner (hermitianEigenBasis _ hH j) (Walsh.zeroState (m+1)) ≠ 0) ∧
+    spectralCollision (hermitianEigenBasis _ hH) (Walsh.zeroState (m+1)) < 4 * (2/3 : ℝ)^(m+1)
+```
+
+That is `(30)`, `(31)` and Theorem C's clauses 1 and 2, at an explicit *integer* traceless two-local
+Hamiltonian, unconditionally and axiom-clean.
+
+### What is left on this card
+
+Only the *downstream* half of Theorem C, `(36)`: feeding the selection into Theorem B's
+`ArithmeticWindowHardCell.half_mul_le_measureReal_hardWindow`.  That interface wants the spectrum
+presented as algebraic integers of a number field with a distinguished embedding:
+
+* `K := (Hz.charpoly.map (Int.castRingHom ℚ)).SplittingField` and `Ealg : Fin D → 𝓞 K` the roots
+  (algebraic integers because the characteristic polynomial of an integer matrix is monic integral);
+* `σ₀ : K →+* ℂ` any embedding, with `σ₀ (Ealg j) = eigenvalue j` after relabelling — the same
+  `IsAlgClosed.lift` + root-set relabelling device as `ker_relationForm_eq_constLine_of_gal`;
+* `hR`: every conjugate of an eigenvalue is again a root of the same characteristic polynomial,
+  hence an eigenvalue of a Hermitian matrix, hence bounded by `‖Hz‖`;
+* `hindep`: no nonzero integer relation among the anchored gaps — this is exactly the rigidity
+  `ker (relationForm E) = constLine` already proved (`ker_relationForm_eq_constLine_of_gal`);
+* `(42)`/`(43)`: the circuit-dictionary count `h_r(Z) ≤ M^{s+1} ≤ 2^{r/4}` and the numeric
+  inequality `r!(16C/a₀²)^r < 2^{-r}` from `C < 4(2/3)^n` and `r = ⌊(a₀²/128)(3/2)^n⌋`.
+
+Theorem D then reuses the same selection.
+
+### The number-field interface for `(36)` is built (2026-08-22, later still)
+
+`HTGeometry/IntegerMatrixAlgebraicSpectrum.lean` (new, axiom-clean, umbrella-wired) supplies every
+piece Theorem B's statement needs to receive the witness:
+
+| Theorem B hypothesis | Declaration |
+|---|---|
+| `Ealg : Fin (d+1) → 𝓞 K` — the spectrum as algebraic integers | `isIntegral_of_isRoot_charpoly` (a root of the monic integral characteristic polynomial is integral over `ℤ`) |
+| `σ₀ : K →+* ℂ` and the labelling `σ₀ (Ealg (ρ i)) = E i` | `exists_embedding_matching_roots` (`IsAlgClosed.lift` plus the root-set relabelling; `RingHom.ext_rat` identifies `τ ∘ algebraMap ℚ K` with `algebraMap ℚ ℂ`) |
+| `hR : ∀ τ i, ‖τ (Ealg i)‖ ≤ R` | `norm_embedding_le` (every conjugate is again a complex root, hence one of the eigenvalues) |
+| `hindep : ∀ m ≠ 0, spectralForm Ealg m ≠ 0` | **`spectralForm_ne_zero_of_ker_eq_constLine`** — this is exactly the rigidity `ker (ratRelationForm γ) = constLine` already proved: an integer relation among the anchored gaps is a rational relation whose coefficient vector must be constant, and the constant is forced to zero by `-(d·c) = c` |
+
+What is left for `(36)` is plumbing, not mathematics: define `p j = |⟨e_j,Ω⟩|²` and `ψ j = arg⟨e_j,Ω⟩`,
+observe `radianOrbit p (flowPhase ψ E t) = eigenCoords e (e^{-itH}Ω)` (both are
+`√(p_j)·e^{i(ψ_j − t E_j)}`), transport the index along `ρ`, and use Parseval
+(`ClockPhaseEvolutionBridge.finiteComplexInner_eigenCoords`) to identify the orbit fidelity with the
+physical one — plus the circuit-dictionary count `(42)` and the numeric inequality `(43)`.

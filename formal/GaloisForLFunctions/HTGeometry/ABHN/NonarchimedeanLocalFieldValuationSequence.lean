@@ -873,6 +873,274 @@ noncomputable def nonarchimedeanLocalFieldUnitsModPrincipalUnitsEquivResidueUnit
   QuotientGroup.quotientKerEquivOfSurjective (nonarchimedeanLocalFieldReductionUnits K)
     (nonarchimedeanLocalFieldReductionUnits_surjective K)
 
+/-- A unit is principal exactly when its displacement from `1` belongs to the maximal ideal.
+This is the concrete ideal presentation used when Hensel lifting attacks the remaining
+principal-unit norm problem. -/
+theorem nonarchimedeanLocalField_mem_principalUnitGroup_iff
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (u : (ValuativeRel.valuation K).integerˣ) :
+    u ∈ nonarchimedeanLocalFieldPrincipalUnitGroup K ↔
+      (u : (ValuativeRel.valuation K).integer) - 1 ∈
+        IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer := by
+  change nonarchimedeanLocalFieldReductionUnits K u = 1 ↔
+    (u : (ValuativeRel.valuation K).integer) - 1 ∈
+      IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer
+  constructor
+  · intro hu
+    have hu' := congrArg Units.val hu
+    change Ideal.Quotient.mk (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer)
+      (u : (ValuativeRel.valuation K).integer) = 1 at hu'
+    exact Ideal.Quotient.mk_eq_one_iff_sub_mem _ |>.mp hu'
+  · intro hu
+    apply Units.ext
+    change Ideal.Quotient.mk (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer)
+      (u : (ValuativeRel.valuation K).integer) = 1
+    exact Ideal.Quotient.mk_eq_one_iff_sub_mem _ |>.mpr hu
+
+/-- The principal unit represented by `1 + x` for a maximal-ideal element `x`. -/
+noncomputable def nonarchimedeanLocalFieldPrincipalUnitOfMem
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K]
+    (x : {x : (ValuativeRel.valuation K).integer // x ∈
+      IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer}) :
+    nonarchimedeanLocalFieldPrincipalUnitGroup K := by
+  have hxnonunits : -(x : (ValuativeRel.valuation K).integer) ∈
+      nonunits (ValuativeRel.valuation K).integer := by
+    rw [← IsLocalRing.mem_maximalIdeal]
+    exact (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer).neg_mem x.2
+  have hunit : IsUnit (1 + (x : (ValuativeRel.valuation K).integer)) := by
+    simpa using IsLocalRing.isUnit_one_sub_self_of_mem_nonunits
+      (-(x : (ValuativeRel.valuation K).integer)) hxnonunits
+  refine ⟨hunit.unit, ?_⟩
+  apply (nonarchimedeanLocalField_mem_principalUnitGroup_iff K hunit.unit).mpr
+  change (1 + (x : (ValuativeRel.valuation K).integer)) - 1 ∈
+    IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer
+  rw [add_sub_cancel_left]
+  exact x.2
+
+/-- Principal units are canonically the maximal ideal through `u ↦ u - 1` and `x ↦ 1 + x`.
+The transport is an equivalence of types; multiplication on principal units corresponds to the
+nonlinear law `(x, y) ↦ x + y + xy` on the ideal. -/
+noncomputable def nonarchimedeanLocalFieldPrincipalUnitEquivMaximalIdeal
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] :
+    nonarchimedeanLocalFieldPrincipalUnitGroup K ≃
+      {x : (ValuativeRel.valuation K).integer // x ∈
+        IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer} where
+  toFun u := ⟨((u : (ValuativeRel.valuation K).integerˣ) :
+      (ValuativeRel.valuation K).integer) - 1,
+    (nonarchimedeanLocalField_mem_principalUnitGroup_iff K u).mp u.2⟩
+  invFun := nonarchimedeanLocalFieldPrincipalUnitOfMem K
+  left_inv u := by
+    apply Subtype.ext
+    apply Units.ext
+    change 1 + (((u : (ValuativeRel.valuation K).integerˣ) :
+      (ValuativeRel.valuation K).integer) - 1) =
+        ((u : (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer)
+    abel
+  right_inv x := by
+    apply Subtype.ext
+    change (((nonarchimedeanLocalFieldPrincipalUnitOfMem K x :
+      nonarchimedeanLocalFieldPrincipalUnitGroup K) :
+        (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1 = x.1
+    simp only [nonarchimedeanLocalFieldPrincipalUnitOfMem, IsUnit.unit_spec]
+    abel
+
+/-- The `n`th principal-unit congruence subgroup: units congruent to `1` modulo `𝔪ⁿ`. -/
+noncomputable def nonarchimedeanLocalFieldPrincipalUnitFiltration
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (n : ℕ) :
+    Subgroup (ValuativeRel.valuation K).integerˣ :=
+  (Units.map (Ideal.Quotient.mk
+    ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n)).toMonoidHom).ker
+
+/-- Membership in `Uⁿ` is the concrete congruence `u - 1 ∈ 𝔪ⁿ`. -/
+theorem nonarchimedeanLocalField_mem_principalUnitFiltration_iff
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (n : ℕ) (u : (ValuativeRel.valuation K).integerˣ) :
+    u ∈ nonarchimedeanLocalFieldPrincipalUnitFiltration K n ↔
+      (u : (ValuativeRel.valuation K).integer) - 1 ∈
+        (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n := by
+  simp only [nonarchimedeanLocalFieldPrincipalUnitFiltration, MonoidHom.mem_ker, Units.ext_iff]
+  change Ideal.Quotient.mk
+    ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ n)
+      (u : (ValuativeRel.valuation K).integer) = 1 ↔ _
+  exact Ideal.Quotient.mk_eq_one_iff_sub_mem _
+
+/-- The first congruence subgroup is the principal-unit group. -/
+theorem nonarchimedeanLocalField_principalUnitFiltration_one
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] :
+    nonarchimedeanLocalFieldPrincipalUnitFiltration K 1 =
+      nonarchimedeanLocalFieldPrincipalUnitGroup K := by
+  ext u
+  rw [nonarchimedeanLocalField_mem_principalUnitFiltration_iff,
+    nonarchimedeanLocalField_mem_principalUnitGroup_iff]
+  simp
+
+/-- Higher congruence subgroups are nested: `Uⁿ⁺¹ ≤ Uⁿ`. -/
+theorem nonarchimedeanLocalField_principalUnitFiltration_antitone
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] :
+    Antitone (nonarchimedeanLocalFieldPrincipalUnitFiltration K) := by
+  intro m n hmn u hu
+  rw [nonarchimedeanLocalField_mem_principalUnitFiltration_iff] at hu ⊢
+  exact Ideal.pow_le_pow_right hmn hu
+
+/-- The first-order additive coordinate on `Uⁿ`: `u` is sent to `u - 1` modulo `𝔪ⁿ⁺¹`.
+For `n > 0`, quadratic terms land in `𝔪ⁿ⁺¹`, so this is a multiplicative homomorphism into the
+additive quotient (written with `Multiplicative`). -/
+noncomputable def nonarchimedeanLocalFieldPrincipalUnitLinearization
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (n : ℕ) (hn : 0 < n) :
+    nonarchimedeanLocalFieldPrincipalUnitFiltration K n →*
+      Multiplicative ((ValuativeRel.valuation K).integer ⧸
+        (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1)) where
+  toFun u := Multiplicative.ofAdd (Ideal.Quotient.mk
+    ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))
+      (((u : (ValuativeRel.valuation K).integerˣ) :
+        (ValuativeRel.valuation K).integer) - 1))
+  map_one' := by
+    apply Multiplicative.toAdd.injective
+    change Ideal.Quotient.mk
+      ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1)) (1 - 1) = 0
+    simp
+  map_mul' u v := by
+    apply Multiplicative.toAdd.injective
+    change Ideal.Quotient.mk
+      ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))
+        ((((u * v : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+          (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1) =
+      Ideal.Quotient.mk
+        ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))
+        ((((u : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+          (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1) +
+      Ideal.Quotient.mk
+        ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))
+        ((((v : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+          (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1)
+    let I : Ideal (ValuativeRel.valuation K).integer :=
+      IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer
+    have hu : (((u : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+        (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1 ∈ I ^ n :=
+      (nonarchimedeanLocalField_mem_principalUnitFiltration_iff K n u).mp u.2
+    have hv : (((v : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+        (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1 ∈ I ^ n :=
+      (nonarchimedeanLocalField_mem_principalUnitFiltration_iff K n v).mp v.2
+    have hprod : ((((u : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+        (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1) *
+        ((((v : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+          (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1) ∈
+          I ^ (n + n) := by
+      simpa [pow_add] using Ideal.mul_mem_mul hu hv
+    have h1n : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr (Nat.ne_of_gt hn)
+    have hpow : I ^ (n + n) ≤ I ^ (n + 1) :=
+      Ideal.pow_le_pow_right (Nat.add_le_add_left h1n n)
+    have hzero : Ideal.Quotient.mk (I ^ (n + 1))
+        (((((u : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+          (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1) *
+          ((((v : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+            (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1)) = 0 :=
+      Ideal.Quotient.eq_zero_iff_mem.mpr (hpow hprod)
+    let q := Ideal.Quotient.mk (I ^ (n + 1))
+    let a : (ValuativeRel.valuation K).integer :=
+      ((u : (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer)
+    let b : (ValuativeRel.valuation K).integer :=
+      ((v : (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer)
+    change q
+        ((((u * v : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+          (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1) =
+      q ((((u : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+        (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1) +
+      q ((((v : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+        (ValuativeRel.valuation K).integerˣ) : (ValuativeRel.valuation K).integer) - 1)
+    change q (a * b - 1) = q (a - 1) + q (b - 1)
+    change q ((a - 1) * (b - 1)) = 0 at hzero
+    calc
+      q (a * b - 1) = q ((a - 1) + (b - 1) + (a - 1) * (b - 1)) := by
+        congr 1
+        ring
+      _ = q (a - 1) + q (b - 1) + q ((a - 1) * (b - 1)) := by
+        rw [map_add, map_add]
+      _ = q (a - 1) + q (b - 1) := by
+        change _ + _ + Ideal.Quotient.mk (I ^ (n + 1)) _ = _ + _
+        rw [hzero, add_zero]
+
+/-- The linearization kernel is exactly the next principal-unit congruence subgroup. -/
+theorem nonarchimedeanLocalField_mem_principalUnitLinearization_ker_iff
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (n : ℕ) (hn : 0 < n)
+    (u : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+    u ∈ (nonarchimedeanLocalFieldPrincipalUnitLinearization K n hn).ker ↔
+      (u : (ValuativeRel.valuation K).integerˣ) ∈
+        nonarchimedeanLocalFieldPrincipalUnitFiltration K (n + 1) := by
+  change nonarchimedeanLocalFieldPrincipalUnitLinearization K n hn u = 1 ↔ _
+  rw [nonarchimedeanLocalField_mem_principalUnitFiltration_iff]
+  constructor
+  · intro hu
+    have hu' := congrArg Multiplicative.toAdd hu
+    change Ideal.Quotient.mk
+      ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))
+      (((u : (ValuativeRel.valuation K).integerˣ) :
+        (ValuativeRel.valuation K).integer) - 1) = 0 at hu'
+    exact Ideal.Quotient.eq_zero_iff_mem.mp hu'
+  · intro hu
+    apply Multiplicative.toAdd.injective
+    change Ideal.Quotient.mk
+      ((IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1))
+      (((u : (ValuativeRel.valuation K).integerˣ) :
+        (ValuativeRel.valuation K).integer) - 1) = 0
+    exact Ideal.Quotient.eq_zero_iff_mem.mpr hu
+
+/-- Additive presentation of first-order principal-unit linearization. -/
+noncomputable def nonarchimedeanLocalFieldPrincipalUnitLinearizationAdd
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (n : ℕ) (hn : 0 < n) :
+    Additive (nonarchimedeanLocalFieldPrincipalUnitFiltration K n) →+
+      (ValuativeRel.valuation K).integer ⧸
+        (IsLocalRing.maximalIdeal (ValuativeRel.valuation K).integer) ^ (n + 1) :=
+  (nonarchimedeanLocalFieldPrincipalUnitLinearization K n hn).toAdditive
+
+/-- Successive principal-unit congruence groups are exact under first-order linearization. -/
+theorem nonarchimedeanLocalFieldPrincipalUnitLinearization_exact
+    (K : Type u) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] (n : ℕ) (hn : 0 < n) :
+    Function.Exact
+      (Subgroup.inclusion
+        (nonarchimedeanLocalField_principalUnitFiltration_antitone K (Nat.le_succ n))).toAdditive
+      (nonarchimedeanLocalFieldPrincipalUnitLinearizationAdd K n hn) := by
+  intro u
+  change (nonarchimedeanLocalFieldPrincipalUnitLinearization K n hn u.toMul = 1) ↔
+    ∃ v, (Subgroup.inclusion
+      (nonarchimedeanLocalField_principalUnitFiltration_antitone K (Nat.le_succ n))).toAdditive v = u
+  constructor
+  · intro hu
+    have huKer : u.toMul ∈
+        (nonarchimedeanLocalFieldPrincipalUnitLinearization K n hn).ker := hu
+    have hu' : ((u.toMul : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+        (ValuativeRel.valuation K).integerˣ) ∈
+        nonarchimedeanLocalFieldPrincipalUnitFiltration K (n + 1) :=
+      (nonarchimedeanLocalField_mem_principalUnitLinearization_ker_iff K n hn u.toMul).mp huKer
+    exact ⟨Additive.ofMul ⟨((u.toMul : nonarchimedeanLocalFieldPrincipalUnitFiltration K n) :
+      (ValuativeRel.valuation K).integerˣ), hu'⟩, rfl⟩
+  · rintro ⟨v, hv⟩
+    have hker : (Subgroup.inclusion
+        (nonarchimedeanLocalField_principalUnitFiltration_antitone K (Nat.le_succ n))) v.toMul ∈
+        (nonarchimedeanLocalFieldPrincipalUnitLinearization K n hn).ker :=
+      (nonarchimedeanLocalField_mem_principalUnitLinearization_ker_iff K n hn
+        ((Subgroup.inclusion
+          (nonarchimedeanLocalField_principalUnitFiltration_antitone K (Nat.le_succ n))) v.toMul)).mpr
+          v.toMul.2
+    change nonarchimedeanLocalFieldPrincipalUnitLinearization K n hn
+      ((Subgroup.inclusion
+        (nonarchimedeanLocalField_principalUnitFiltration_antitone K (Nat.le_succ n))) v.toMul) = 1 at hker
+    have hv' : (Subgroup.inclusion
+        (nonarchimedeanLocalField_principalUnitFiltration_antitone K (Nat.le_succ n))) v.toMul =
+        u.toMul := by
+      simpa using congrArg Additive.toMul hv
+    rw [hv'] at hker
+    exact hker
+
 /-- Every monic residue-field polynomial has a monic lift to the valuation ring of the same
 degree.  This supplies the defining polynomials used to construct candidate unramified
 extensions from finite residue-field extensions. -/

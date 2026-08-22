@@ -40,7 +40,8 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | Lemma 4.6 (`t46n`) `N`-th roots of pointed multiplicative maps, incl. the value of `N'` | `RHTower/DeningerDynSysPointedMultiplicativeRoot.lean` | closed |
 | Lemma 5.3 (`t5`) Frobenius-twist quotient | `RHTower/DeningerDynSysFrobeniusTwistQuotient.lean` | closed |
 | Prop 7.7 (`t87`) compact-orbit quotient metric | `HTGeometry/CompactOrbitQuotientMetric.lean` | closed |
-| Prop 1.2(b) (`t21n`) field case of Galois descent | `RHTower/DeningerDynSysWittGaloisField.lean` | closed (integrally-closed-domain case still open) |
+| Prop 1.2(b) (`t21n`) field case of Galois descent | `RHTower/DeningerDynSysWittGaloisField.lean` | closed |
+| **Prop 1.2(b) (`t21n`) integrally closed domain case** — Prop 1.2 is now closed in full | `RHTower/DeningerDynSysWittGaloisIntegrallyClosed.lean` | closed |
 | Prop 14.7(c) (`t125`) perfection surjects along a quotient | `RHTower/DeningerDynSysPerfectionLocal.lean` | closed |
 | Prop 14.14(2) (`t1213`) locality of the tilt | `RHTower/DeningerDynSysPerfectionLocal.lean` | closed |
 
@@ -59,6 +60,10 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | Lemma 4.3 (`t3`) dimension input: `#C ≤ dim_ℚ (C^×/μ(C))`, both characteristics; Euclid for monic irreducible polynomials | `RHTower/DeningerDynSysMultiplicativeRank.lean` | closed |
 | **Lemma 4.3 (`t3`)** itself, for an arbitrary field `k`, plus the injective-character assertion in equal characteristic | `RHTower/DeningerDynSysCharacterExtension.lean` | closed |
 | Lemma 4.3 (`t3`) last assertion, mixed characteristic, via `μ_{p'}(C) ≅ (𝒪/𝔪)^×`; Lemma 4.3 is now closed in full | `RHTower/DeningerDynSysRootsOfUnityReduction.lean` | closed |
+| **Prop 2.1(a) (`t22n`)** both halves, the functor `W_rat : CommRingCat ⥤ CommRingCat`, and **Def 2.2/2.3 (`t23n`)** the rational Witt space | `RHTower/DeningerDynSysRationalWittPresheaf.lean` | closed |
+| §2 the big Witt functor, the sheaf `W(𝒪_X)`, and `W_rat(𝒪_X)` as a subpresheaf of it | `RHTower/DeningerDynSysBigWittSheaf.lean` | closed |
+| §1 functoriality of `W_rat` (`map_id`, `map_comp`) | `RHTower/DeningerDynSysWittFunctoriality.lean` | closed |
+| **Prop 1.3 (`t26n`) top row**: `κ^{Aut_{κ₀}κ} = κ₀^perf` and `W_rat(κ)^H = W_rat(κ₀^perf)` | `RHTower/DeningerDynSysPerfectClosureFixed.lean` | closed |
 
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -73,6 +78,10 @@ partially: Prop 1.1 (a) and (b) are covered by
 AIC-domain comparison.
 
 ### Known heavy sub-projects (not yet started)
+* Prop 1.3's top row is closed; what remains of Prop 1.3 is the lower isomorphism
+  `(ℤ̲κ/κ₀)^H ≅ W_rat(κ₀)`, i.e. the bijection between normalized irreducible polynomials over
+  `κ₀` and over `κ₀^perf` (`α = α̃^d`; the source writes `α(t) = α̃(t^d)`, the same statement
+  after the Frobenius twist), plus unique factorization of normalized polynomials.
 * Lemma 4.3 (`t3`) is closed **in full**, including the final "in particular" in both the
   equal-characteristic and the mixed-characteristic case.  Its dimension input `#C ≤ dim_ℚ (C^× / μ(C))` was proved by
   exhibiting a countably infinite multiplicatively independent family (rational primes in
@@ -88,8 +97,13 @@ AIC-domain comparison.
   `Ideal.Quotient.stabilizerHom_surjective_of_profinite`.  Remaining work: extend a hom
   `A^H → C` along the integral extension (lying over + `IsAlgClosed.lift`), and turn the two
   transitivity statements into transitivity of `H` on `Hom (A, C)`.
-* §§2, 3, 13, 14 need the ringed space `W_rat(X)` and its `S`-valued points as scheme-level
-  infrastructure.
+* §2 is under way: the functor `W_rat`, the presheaf `U ↦ W_rat(𝒪_X(U))`, its separatedness
+  (Prop 2.1(a), both halves, via `Presheaf.isLocallyInjective_iff_injective_of_separated`), and
+  the ringed space `W_rat(X)` of Def 2.2/2.3 are closed.  What remains in §2 is Prop 2.1(b), (c)
+  — which need the Fatou intersection `W_rat(K) ∩ W(A) = W_rat(A)` together with integral schemes
+  and their function fields — and Def 2.4/Prop 2.4 (`t27xn`), the locality condition on morphisms
+  and the injectivity of `W_rat` on morphisms.
+* §§3, 13, 14 need the `S`-valued points of `W_rat(X)` as scheme-level infrastructure.
 * Claim 8.1 is an open conjecture in the source; Thm 8.2 is conditional on it in dimension ≥ 2.
 
 ## Gates
@@ -104,6 +118,16 @@ AIC-domain comparison.
 - 2026-08-22 — Theorem 1.4 (`t27n`) and Lemma 1.6(2)/Cor 1.7(1) closed: ten results.
 - 2026-08-22 — reduced monoid algebra representability and Definition 9.5 closed; 13 items in the
   ledger; `formal_tools.py lint` reports no error attributable to these modules.
+- 2026-08-22 — **Prop 1.2 closed in full**: the integrally closed domain case of 1.2(b) is proved
+  by the source's argument (fraction-field action, coprime invariant presentation, reversal to
+  monic, `IsIntegrallyClosed.eq_map_mul_C_of_dvd`), in series, polynomial and ring form.  The
+  ring-level descent was refactored to be parametric in the polynomial descent so both cases share
+  it.  The big Witt sheaf `W(𝒪_X)` and the subpresheaf embedding are closed.  28 items in the
+  ledger; all axiom-clean.
+- 2026-08-22 — **§2 opened and Prop 2.1(a) closed**: `W_rat` is now a functor on `CommRingCat`,
+  the presheaf `U ↦ W_rat(𝒪_X(U))` is separated (concretely and site-theoretically), its sections
+  inject into the sheafification, and the rational Witt space of Def 2.3 is a `SheafedSpace`.
+  25 items in the ledger; all axiom-clean.
 - 2026-08-22 — Lemma 4.3 closed **in full**: the mixed-characteristic embedding of roots of
   unity is proved by reduction to the residue field of the algebraic integers.  New reusable
   mathlib-gap results: the residue field of `integralClosure ℤ C` at a maximal ideal is

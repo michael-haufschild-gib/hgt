@@ -58,13 +58,14 @@ theorem deningerCrossRelation_poly {A : Type*} [CommRing A] [MulSemiringAction G
 /-- **Deninger, Proposition 1.2(b) (`t21n`), field case.**  For a group acting on a field `K` by
 field automorphisms, every `G`-invariant rational Witt vector over `K` has a normalized
 presentation with `G`-invariant coefficients. -/
-theorem deningerRationalSeries_galoisDescent_field (F : PowerSeries K)
+theorem deningerRationalSeries_galoisDescent_field_coprime (F : PowerSeries K)
     (hF : ∀ (σ : G) (n : ℕ), σ • PowerSeries.coeff n F = PowerSeries.coeff n F)
     (hrat : DeningerIsRationalSeries F) :
     ∃ α β : Polynomial K,
       (∀ (σ : G) (n : ℕ), σ • α.coeff n = α.coeff n) ∧
       (∀ (σ : G) (n : ℕ), σ • β.coeff n = β.coeff n) ∧
-      α.coeff 0 = 1 ∧ β.coeff 0 = 1 ∧ (β : PowerSeries K) * F = (α : PowerSeries K) := by
+      α.coeff 0 = 1 ∧ β.coeff 0 = 1 ∧ (β : PowerSeries K) * F = (α : PowerSeries K) ∧
+      IsCoprime α β := by
   classical
   obtain ⟨P, Q, hP0, hQ0, hPQ⟩ := hrat
   have hQne : Q ≠ 0 := by
@@ -168,12 +169,27 @@ theorem deningerRationalSeries_galoisDescent_field (F : PowerSeries K)
     rw [hnum σ] at hcross
     have h2 : Q₂ * P₂ = deningerPolyAct σ Q₂ * P₂ := by rw [mul_comm Q₂ P₂]; exact hcross
     exact (mul_right_cancel₀ hP2ne h2).symm
-  refine ⟨P₂, Q₂, ?_, ?_, hP20, hQ20, hPQ2⟩
+  refine ⟨P₂, Q₂, ?_, ?_, hP20, hQ20, hPQ2,
+    ⟨Polynomial.C c⁻¹ * a, Polynomial.C c⁻¹ * b, hab2⟩⟩
   · intro σ n
     have h : (deningerPolyAct σ P₂).coeff n = P₂.coeff n := by rw [hnum σ]
     rwa [deningerPolyAct_coeff] at h
   · intro σ n
     have h : (deningerPolyAct σ Q₂).coeff n = Q₂.coeff n := by rw [hden σ]
     rwa [deningerPolyAct_coeff] at h
+
+/-- **Deninger, Proposition 1.2(b) (`t21n`), field case.**  For a group acting on a field `K` by
+field automorphisms, every `G`-invariant rational Witt vector over `K` has a normalized
+presentation with `G`-invariant coefficients:  `W_rat (K ^ G) = W_rat (K) ^ G`. -/
+theorem deningerRationalSeries_galoisDescent_field (F : PowerSeries K)
+    (hF : ∀ (σ : G) (n : ℕ), σ • PowerSeries.coeff n F = PowerSeries.coeff n F)
+    (hrat : DeningerIsRationalSeries F) :
+    ∃ α β : Polynomial K,
+      (∀ (σ : G) (n : ℕ), σ • α.coeff n = α.coeff n) ∧
+      (∀ (σ : G) (n : ℕ), σ • β.coeff n = β.coeff n) ∧
+      α.coeff 0 = 1 ∧ β.coeff 0 = 1 ∧ (β : PowerSeries K) * F = (α : PowerSeries K) := by
+  obtain ⟨α, β, hα, hβ, hα0, hβ0, hαβ, -⟩ :=
+    deningerRationalSeries_galoisDescent_field_coprime F hF hrat
+  exact ⟨α, β, hα, hβ, hα0, hβ0, hαβ⟩
 
 end RHTower

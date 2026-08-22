@@ -355,6 +355,51 @@ assembled from these parents.  It is therefore `[BRIDGE] [NOT NEW SCIENTIFIC KNO
 candidate-new and RH-significant content begins only with the reflected singular completion and
 its source-defined affine-support-faithful Gamma comparison.
 
+## Lean status (2026-08-22)
+
+`formal/GaloisForLFunctions/RHTower/MertensGradedCoronaTower.lean`, wired into
+`GaloisForLFunctions.RHTower`, `lake build`-green:
+
+- `gradedMarcinkiewiczQuotient`, `MemGradedMarcinkiewiczLayer`, `MemGradedVanishingTailLayer`,
+  `gradeSource`, `logClock` — equations `(1)`--`(3)`, `(11)`, with
+  `memGradedMarcinkiewiczLayer_zero` / `memGradedVanishingTailLayer_zero` identifying the grade-0
+  spaces with the corpus `M_log`, `M_0`.
+- `primeLogMass_gradeSource`, `tendsto_gradedMarcinkiewiczQuotient_gradeSource`,
+  `memGradedMarcinkiewiczLayer_gradeSource`,
+  `tendsto_gradedMarcinkiewiczQuotient_gradeSource_tail`,
+  `not_memGradedVanishingTailLayer_gradeSource` — equations `(4)`, `(7)`, from the corpus higher
+  Mertens theorem `RHTower.tendsto_primeLogPowSum_sub`.
+- `gradedPrimeMean`, `abs_gradedPrimeMean_le`,
+  `tendsto_gradedPrimeMean_zero_of_gradedVanishingTail`,
+  `tendsto_gradedPrimeMean_gradeSource`,
+  `tendsto_gradedPrimeMean_of_gradedVanishingTail` — equations `(8)`--`(10)`.
+- `gradedMarcinkiewiczQuotient_logClock_le`, `memGradedMarcinkiewiczLayer_logClock`,
+  `memGradedVanishingTailLayer_logClock`, `logClock_gradeSource`,
+  `tendsto_gradedPrimeMean_logClock` — equations `(12)`--`(15)`.
+- `sum_primeUnitTranslation_graded_block_le`,
+  `memCriticalSummableLayer_primeUnitTranslation_graded`,
+  `memGradedVanishingTailLayer_primeUnitTranslation`,
+  `tendsto_gradedPrimeMean_primeUnitTranslation_zero`,
+  `memGradedVanishingTailLayer_logClock_iterate`,
+  `tendsto_gradedPrimeMean_logClock_iterate_primeUnitTranslation` — equations `(16)`--`(20)`.
+- `logClock_iterate_gradeSource` — equation `(21)`.
+- `tendsto_gradedPrimeMean_gradedSourceDefect`, `mertensGradedCoronaTower` — equation `(31)` and
+  the packaged tower.
+
+**Remaining Lean item: §5, the time-one differentiated polar tower `(23)`--`(29)`.**  The exact
+open brick is the graded prime-zeta Abel pole
+
+```text
+lim_{s ↓ 0} s^{k+1} ∑_p (log p)^{k+1} p^{-1-s} = k!  .
+```
+
+Route (all inputs owned): Abel-represent the sum as `s ∫_1^∞ t^{-s-1} A_k(t) dt` with
+`A_k = RHTower.primeLogPowSum (k+1)` — generalize `RHTower.primeLogZeta_eq_abel_integral`;
+use `∫_1^∞ t^{-s-1}(log t)^{k+1} dt = (k+1)!/s^{k+2}` — generalize
+`RHTower.integral_rpow_mul_log_Ioi_one` by parts; and the uniform higher-Mertens error bound from
+`RHTower.tendsto_primeLogPowSum_sub`.  The `k = 0` instance is already closed as
+`RHTower.tendsto_timeOnePrimeLaplace` (card `mertens-corona-shift-conormal`).
+
 ## Gates
 
 - [x] exact graded source spaces constructed
@@ -367,7 +412,9 @@ its source-defined affine-support-faithful Gamma comparison.
 - [x] actual completed-Xi even-shift augmentation symbol identified
 - [x] every no-go given a nontrivial positive successor
 - [x] parent-theory and novelty gate run
-- [ ] formalize a theorem only if the analytic/PNT statement can be included without a wrapper shell
+- [x] §1--§4 and §6 formalized unconditionally in Lean 4 (no wrapper shell: the higher Mertens
+  theorem is a corpus theorem)
+- [ ] §5 formalized: the graded prime-zeta Abel pole `s^{k+1} ∑_p (log p)^{k+1} p^{-1-s} → k!`
 - [ ] construct the reflected singular completion
 - [ ] identify its full Gamma transgression
 - [ ] prove zero-orbit affine-support faithfulness

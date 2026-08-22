@@ -17,9 +17,9 @@
 | 3 | shifted-euler-error-floor-mobius-tail-coupling | Thm A (3), Thm B (8)–(9) | **DONE — promoted** |
 | 4 | friable-moment-ladder-finite-dim | Thm A, Thm B | TODO |
 | 5 | coupled-floor-mobius-complementary-shift-incidence-law | (8), (15), (18) | **DONE — promoted** |
-| 6 | mertens-corona-shift-conormal | (5),(9),(10),(13),(15),(19) | TODO |
+| 6 | mertens-corona-shift-conormal | (5),(9),(10),(13),(15),(19) | **DONE — promoted** |
 | 7 | baez-duarte-critical-mobius-beta-wavelet-law | (1)–(2),(5),(8)–(10),(7c)–(7f),(14c) | TODO |
-| 8 | mertens-logarithmic-corona-differential-tower | (4),(7),(10),(13)–(15),(19)–(21),(27)–(29),(31) | TODO |
+| 8 | mertens-logarithmic-corona-differential-tower | §1–§4,§6 DONE; §5 polar tower OPEN | IN PROGRESS |
 | 9 | kubalalika-unweighted-near-diagonal-tail | (1)–(5) incl. van der Corput | TODO |
 | 10 | square-aperture-von-mangoldt-correlation-energy | reverse implication (Schoenfeld) | TODO |
 | 11 | regular-variation-weighted-steinhaus-ldp | Gärtner–Ellis LDP + endpoints | TODO |
@@ -103,11 +103,36 @@ Card 1 is COMPLETE (3 modules, promoted 2026-08-22).  The density half used this
 
 ## Landed modules (running list)
 
+0. STATUS 2026-08-22: cards 1, 3, 5, 6 promoted to `3-formalized`; 9 remain.
+
 1. `RHTower/PrimeSquareMobiusComplementaryRecord.lean` (card 1 §2–§5)
 2. `RHTower/PrimeSquareMobiusSectorFracture.lean` (card 1 §6 profinite)
 3. `RHTower/PrimeSquareMobiusDensityFracture.lean` (card 1 §6 density)
 4. `RHTower/ShiftedEulerFloorMobiusTailCoupling.lean` (card 3)
 5. `RHTower/CoupledFloorMobiusShiftIncidence.lean` (card 5)
+6. `RHTower/MertensCoronaShiftConormal.lean` (card 6 core)
+7. `RHTower/MertensCoronaTimeOneResidue.lean` (card 6 residue + transgression)
+
+Additional reusable bricks:
+- `RHTower.primeUnitTranslation` + `memCriticalSummableLayer_primeUnitTranslation` — **every
+  positive Euler translation of a logarithmic Marcinkiewicz field is absolutely summable**
+  (dyadic-block proof; generalizes verbatim to the graded spaces of card 8).
+- `RHTower.timeOneCorrection`, `abelShapeFactor`, `abelWeighted`, `abs_timeOne_sub_abel_le`.
+- `RHTower.coronaPolarGermJet` + `hasDerivAt_coronaPolarGermJet`.
+- corpus: `RHTower.GammaMeixnerAbelCoronaProbe` (the whole Abel probe),
+  `HTGeometry.gammaClockCurvature_eq_outerProduct`.
+
+8. `RHTower/MertensGradedCoronaTower.lean` (card 8 §1–§4, §6)
+
+**Card 8's single open Lean item** (deliberately sequenced, not abandoned): the graded prime-zeta
+Abel pole `lim_{s↓0} s^{k+1} ∑_p (log p)^{k+1} p^{-1-s} = k!`.  Needs (i) the general-`k` Abel
+representation (generalize `RHTower.primeLogZeta_eq_abel_integral`), (ii)
+`∫_1^∞ t^{-s-1}(log t)^m dt = m!/s^{m+1}` (generalize `RHTower.integral_rpow_mul_log_Ioi_one`),
+(iii) uniform boundedness of the higher-Mertens error.  `k = 0` is already closed
+(`RHTower.tendsto_timeOnePrimeLaplace`).
+
+Next target: card 2 `localized-half-density-mobius-curvature-semiprime-fibre-law` — elementary and
+fully closable (finite second jet, endpoint deletion, product-fibre classification).
 
 More reusable bricks now available:
 - `RHTower.suzukiCoupledErrorReal_eq` — Theorem A at a real argument.

@@ -1,7 +1,7 @@
 # Two-particle Sonin boundary energy forces prime coherence
 
 - **ID:** `sonin-two-particle-prime-coherence`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper) / POLARIZED PRIME RIGIDITY
 - **Date:** 2026-07-10
 - **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE; NOVELTY UNVERIFIED]` -- the
@@ -329,7 +329,7 @@ certificate.
 - [x] 1 -> 2: complete paper proof including compact perturbations and the all-prime consequence
 - [x] arithmetic finite pair-energy bound `->` prime coherence `->` RH endpoint formalized in
   `XiPrimeSeamPairEnergy.lean`
-- [ ] 2 -> 3: formalize the actual Hilbert tensor-product Calkin estimate in Lean
+- [x] 2 -> 3: formalize the actual Hilbert tensor-product Calkin estimate in Lean
 - [ ] 3 -> 4: independent priority audit and construction of a genuine polarization-potential map
 
 ## Log
@@ -361,3 +361,26 @@ for every Xi divisor point rho, eventually in n,
 This trades the complete-pair route's global uniform norm bound and reciprocal-prime amplification
 for exact modulo-compact cancellation along a sparse cofinal skeleton.  It does not assume the
 coefficient vanishes; that cancellation must still be derived from a prime--Gamma value relation.
+
+## Lean formalization
+
+All statements are unconditional and closed; the shell parameters of the common-shell construction
+are chosen inside the proofs by `exists_finiteScale_gramSeparatingInteriorShell`.
+
+| Paper item | Lean declaration | Module |
+|---|---|---|
+| abstract shell datum for a tensor-square Calkin bound | `ShellDatum` | `RHTower.TensorSquareCalkinLower` |
+| pair input `x_n = ∑ u_α f_{α,n}` and test `w_n = v_n ⊗ v_n`, `(4)`,`(5)`,`(6)` | `ShellDatum.pairInput`, `pairTest`, `inner_pairTest_map`, `norm_pairInput_le`, `inner_pairInput_tendsto`, `weak_pairInput`, `inner_pairTest_pairSection_tendsto` | `RHTower.TensorSquareCalkinLower` |
+| abstract tensor Calkin lower bound | `ShellDatum.tensor_calkin_lower` | `RHTower.TensorSquareCalkinLower` |
+| weak nullity transported to the Hilbert completion | `completion_weakly_tendsto_zero` | `HTGeometry.HilbertCompletionWeakNull` |
+| the actual even Sonin shell datum | `soninShellDatum` | `RHTower.SoninTwoParticlePrimeCoherence` |
+| `(2)` unnormalized tensor-square estimate | `sonin_tensor_calkin_lower` | `RHTower.SoninTwoParticlePrimeCoherence` |
+| `(1)` Euler-normalized estimate with weights `1/(r_i r_j)` | `sonin_euler_tensor_calkin_lower` | `RHTower.SoninTwoParticlePrimeCoherence` |
+| `C_r = -r^{-1/2} L_r` on the even carrier | `evenPositiveEulerSoninCorner` | `RHTower.SoninTwoParticlePrimeCoherence` |
+| `(7)` finite ordered prime coboundary section `T_F(a)` | `soninPrimePairSection` | `RHTower.SoninTwoParticlePrimeCoherence` |
+| `(9)` Calkin bound `⟹` reciprocal-prime pair energy bound | `primePairDifferenceEnergy_le_of_calkin_le` | `RHTower.SoninTwoParticlePrimeCoherence` |
+| `(8) ⟹` all-prime coherence | `sonin_prime_pair_calkin_bounded_imp_constant` | `RHTower.SoninTwoParticlePrimeCoherence` |
+| infinite reciprocal-prime mass forces constancy | `primePairDifference_eq_of_energyBounded`, `primePairDifferenceEnergyBounded_iff_constant` | `RHTower.XiPrimeSeamPairEnergy` |
+
+Axiom audit: every declaration above depends only on `propext`, `Classical.choice`, `Quot.sound`.
+

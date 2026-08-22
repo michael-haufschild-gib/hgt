@@ -192,6 +192,120 @@ theorem sonin_euler_tensor_calkin_lower (a : ℝ) (ha : 0 < a) (r : Fin n → �
   rw [hop, ← Finset.sum_congr rfl fun α _ => hnormsq α]
   exact sonin_tensor_calkin_lower a ha r hr hinj dd K hK
 
+/-- Every prime exceeds one as a real scale. -/
+theorem one_lt_prime_real (p : Nat.Primes) : (1 : ℝ) < (p : ℝ) := by
+  exact_mod_cast p.prop.one_lt
+
+/-- The positive Euler-normalized even Sonin corner `C_r = -r^{-1/2} L_r`. -/
+def evenPositiveEulerSoninCorner (t r : ℝ) (hr : 1 < r) : evenSubspace →L[ℂ] evenSubspace :=
+  (-((Real.sqrt r : ℂ))⁻¹) • evenCentralSoninDilationCorner t r hr
+
+/-- `(7)`: the finite ordered prime coboundary section
+`T_F(u) = ∑_{p,q ∈ F} (u_p − u_q) (C_p ⊗ C_q)` on the completed even Sonin tensor square. -/
+def soninPrimePairSection (t : ℝ) (u : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
+    Completion (evenSubspace ⊗[ℂ] evenSubspace) →L[ℂ]
+      Completion (evenSubspace ⊗[ℂ] evenSubspace) :=
+  (∑ p ∈ s, ∑ q ∈ s, TensorProduct.mapL
+    ((u p - u q) • evenPositiveEulerSoninCorner t (p : ℝ) (one_lt_prime_real p))
+    (evenPositiveEulerSoninCorner t (q : ℝ) (one_lt_prime_real q))).completion
+
+/-- Reindexing a double sum over a finite prime set through the canonical enumeration of the set. -/
+theorem sum_fin_card_eq_sum_prime_pairs {M : Type*} [AddCommMonoid M]
+    (s : Finset Nat.Primes) (f : Nat.Primes → Nat.Primes → M) :
+    (∑ α : Fin s.card × Fin s.card,
+        f ((s.equivFin.symm α.1 : {x // x ∈ s}) : Nat.Primes)
+          ((s.equivFin.symm α.2 : {x // x ∈ s}) : Nat.Primes)) =
+      ∑ p ∈ s, ∑ q ∈ s, f p q := by
+  classical
+  rw [Fintype.sum_prod_type]
+  have hinner : ∀ x : Nat.Primes,
+      (∑ j : Fin s.card, f x ((s.equivFin.symm j : {y // y ∈ s}) : Nat.Primes)) =
+        ∑ q ∈ s, f x q := by
+    intro x
+    rw [Equiv.sum_comp s.equivFin.symm (fun y : {y // y ∈ s} => f x (y : Nat.Primes)),
+      Finset.univ_eq_attach, Finset.sum_attach s (fun q => f x q)]
+  simp_rw [hinner]
+  rw [Equiv.sum_comp s.equivFin.symm
+      (fun y : {y // y ∈ s} => ∑ q ∈ s, f (y : Nat.Primes) q),
+    Finset.univ_eq_attach, Finset.sum_attach s (fun p => ∑ q ∈ s, f p q)]
+
+/-- `(4)`--`(5)`: the reciprocal-prime pair energy of a prime potential is dominated by the Calkin
+norm of its finite ordered prime pair section. -/
+theorem sqrt_primePairDifferenceEnergy_le_norm_soninPrimePairSection_sub_compact
+    (t : ℝ) (ht : 0 < t) (u : Nat.Primes → ℂ) (s : Finset Nat.Primes)
+    (K : Completion (evenSubspace ⊗[ℂ] evenSubspace) →L[ℂ]
+      Completion (evenSubspace ⊗[ℂ] evenSubspace)) (hK : IsCompactOperator K) :
+    Real.sqrt (primePairDifferenceEnergy u s) ≤ ‖soninPrimePairSection t u s - K‖ := by
+  classical
+  set e : Fin s.card ≃ {x // x ∈ s} := s.equivFin.symm with he
+  set r : Fin s.card → ℝ := fun i => (((e i : {x // x ∈ s}) : Nat.Primes) : ℝ) with hrdef
+  have hr : ∀ i, 1 < r i := fun i => one_lt_prime_real _
+  have hinj : Function.Injective r := by
+    intro i j hij
+    have hreal : (((e i : {x // x ∈ s}) : Nat.Primes) : ℝ)
+        = (((e j : {x // x ∈ s}) : Nat.Primes) : ℝ) := hij
+    have hnat : (((e i : {x // x ∈ s}) : Nat.Primes) : ℕ)
+        = (((e j : {x // x ∈ s}) : Nat.Primes) : ℕ) := by
+      exact_mod_cast hreal
+    exact e.injective (Subtype.ext (Subtype.ext hnat))
+  set b : Fin s.card × Fin s.card → ℂ := fun α =>
+    u ((e α.1 : {x // x ∈ s}) : Nat.Primes) - u ((e α.2 : {x // x ∈ s}) : Nat.Primes) with hbdef
+  have hop : soninPrimePairSection t u s =
+      (∑ α : Fin s.card × Fin s.card, TensorProduct.mapL
+        ((b α * (-((Real.sqrt (r α.1) : ℂ))⁻¹)) •
+          evenCentralSoninDilationCorner t (r α.1) (hr α.1))
+        ((-((Real.sqrt (r α.2) : ℂ))⁻¹) •
+          evenCentralSoninDilationCorner t (r α.2) (hr α.2))).completion := by
+    rw [soninPrimePairSection]
+    congr 1
+    rw [← sum_fin_card_eq_sum_prime_pairs s (fun p q => TensorProduct.mapL
+      ((u p - u q) • evenPositiveEulerSoninCorner t (p : ℝ) (one_lt_prime_real p))
+      (evenPositiveEulerSoninCorner t (q : ℝ) (one_lt_prime_real q)))]
+    refine Finset.sum_congr rfl fun α _ => ?_
+    rw [evenPositiveEulerSoninCorner, evenPositiveEulerSoninCorner, smul_smul]
+  have henergy : primePairDifferenceEnergy u s =
+      ∑ α : Fin s.card × Fin s.card, ‖b α‖ ^ 2 / (r α.1 * r α.2) := by
+    rw [sum_fin_card_eq_sum_prime_pairs s
+      (fun p q => ‖u p - u q‖ ^ 2 / ((p : ℝ) * (q : ℝ)))]
+    rw [primePairDifferenceEnergy]
+    refine Finset.sum_congr rfl fun p _ => ?_
+    rw [primePairDifferenceRow, Finset.sum_div]
+    refine Finset.sum_congr rfl fun q _ => ?_
+    rw [div_div, mul_comm ((q : ℝ)) ((p : ℝ))]
+  have hkey := sonin_euler_tensor_calkin_lower t ht r hr hinj b K hK
+  rw [← hop] at hkey
+  rw [← henergy] at hkey
+  exact hkey
+
+/-- `(9)`: one Calkin bound on a finite ordered prime pair section bounds the reciprocal-prime
+pair energy of the potential on that set. -/
+theorem primePairDifferenceEnergy_le_of_calkin_le (t : ℝ) (ht : 0 < t) (u : Nat.Primes → ℂ)
+    (B : ℝ) (s : Finset Nat.Primes)
+    (K : Completion (evenSubspace ⊗[ℂ] evenSubspace) →L[ℂ]
+      Completion (evenSubspace ⊗[ℂ] evenSubspace)) (hK : IsCompactOperator K)
+    (hle : ‖soninPrimePairSection t u s - K‖ ≤ B) :
+    primePairDifferenceEnergy u s ≤ B ^ 2 := by
+  have hkey :=
+    sqrt_primePairDifferenceEnergy_le_norm_soninPrimePairSection_sub_compact t ht u s K hK
+  have hE0 : 0 ≤ primePairDifferenceEnergy u s := primePairDifferenceEnergy_nonneg u s
+  have hsq := Real.sq_sqrt hE0
+  have hnn := Real.sqrt_nonneg (primePairDifferenceEnergy u s)
+  nlinarith [hkey.trans hle]
+
+/-- **Card prime-coherence theorem `(8) ⟹` constancy.**  If the finite ordered prime coboundary
+sections of a prime potential are uniformly bounded modulo compact operators on the even Sonin
+tensor square, then the potential is constant. -/
+theorem sonin_prime_pair_calkin_bounded_imp_constant (t : ℝ) (ht : 0 < t) (u : Nat.Primes → ℂ)
+    (hbdd : ∃ B : ℝ, ∀ s : Finset Nat.Primes,
+      ∃ K : Completion (evenSubspace ⊗[ℂ] evenSubspace) →L[ℂ]
+        Completion (evenSubspace ⊗[ℂ] evenSubspace),
+        IsCompactOperator K ∧ ‖soninPrimePairSection t u s - K‖ ≤ B) :
+    ∃ c : ℂ, ∀ p, u p = c := by
+  obtain ⟨B, hB⟩ := hbdd
+  refine (primePairDifferenceEnergyBounded_iff_constant u).mp ⟨B ^ 2, fun s => ?_⟩
+  obtain ⟨K, hK, hle⟩ := hB s
+  exact primePairDifferenceEnergy_le_of_calkin_le t ht u B s K hK hle
+
 end
 
 end RHTower
