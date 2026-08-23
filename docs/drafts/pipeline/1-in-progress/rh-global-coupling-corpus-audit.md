@@ -856,7 +856,7 @@ created when separately removable nuisance slopes are forced to share one gauge
 (`SharedGaugeQuotientFusion`). No declaration found packages them as a source-defined strip cover
 with a proved minimal family of producer obligations.
 
-`[CONJECTURE]` **Shared-gauge reflection descent atlas.** Let `s` range over the open critical strip
+`[PROVED]` **Shared-gauge reflection descent atlas.** Let `s` range over the open critical strip
 away from the critical line and put `delta(s) = Re s - 1/2`. Use the actual complete positive
 Riemann-resolution packets `V(s)` and `V(R s)`, where `R s = 1 - conjugate s`. A candidate observer
 is fixed on the whole strip and supplies two local gauge rates `g+`, `g-`, source observations and
@@ -916,4 +916,24 @@ asserted by the atlas theorem.
 
 ## Formalization log
 
-No Lean file created. No theorem frozen. No computation run.
+- Formalized in
+  `formal/GaloisForLFunctions/RHTower/CompleteResolutionSharedGaugeReflectionAtlas.lean`.
+- The candidate structure contains only four functions: one source observer, one transport, and two
+  strip-wide local gauge fields. It contains no law field, Xi-zero datum, RH premise, or proof
+  parameter.
+- `completeResolution_sharedGaugeReflection_failure_cover` proves the literal three-set union is
+  the full `CompleteResolutionOffLineStrip`.
+- `completeResolution_sharedGaugeReflection_sevenFailure_at` expands local failure into source
+  erasure, absolute-norm failure, and character-intertwining failure in each orientation, plus
+  overlap gauge splitting.
+- `completeResolution_sharedGaugeReflection_atlas_minimal` proves all three two-obligation faces
+  are inhabited by explicit models built from the actual complete-resolution packet norm and
+  identity transport. Thus weakness/complementarity is formal, not prose.
+- Scratch theorem, exact leaf, and emitted leaf `.olean` passed under `lake env lean`. Separate
+  `#print axioms` checks report only Lean/mathlib's standard `propext`, `Classical.choice`, and
+  `Quot.sound`; no project axiom was added.
+- Module is imported by `GaloisForLFunctions.RHTower`. No umbrella or full project build was run.
+- `scripts/formal_tools.py lint` no longer reports this module as unreachable. Global lint remains
+  nonzero only because the concurrent unrelated leaves `CayleyChebyshevSource` and
+  `CesaroSignRecurrence` are not yet wired into the RHTower umbrella; they were not modified.
+- No numerical or divisor computation was run. No Lean process from this work remains active.

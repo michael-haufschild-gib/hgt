@@ -103,12 +103,17 @@ theorem primitiveHawkingKreinCayley_preserves_signedHermitian
 theorem hasDerivAt_primitiveHawkingKreinCayleyPair_zero :
     HasDerivAt primitiveHawkingKreinCayleyPair 2 0 := by
   change HasDerivAt (fun lambda : ℝ => 2 * lambda / (1 - lambda ^ 2)) 2 0
-  convert
-    ((hasDerivAt_const (x := (0 : ℝ)) (c := (2 : ℝ))).mul
-      (hasDerivAt_id (𝕜 := ℝ) 0)).div
-        (((hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub
-          ((hasDerivAt_id (𝕜 := ℝ) 0).pow 2))) (by norm_num) using 1 <;>
-    norm_num
+  have hn := (hasDerivAt_id (𝕜 := ℝ) 0).const_mul (2 : ℝ)
+  have hd := (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub
+    ((hasDerivAt_id (𝕜 := ℝ) 0).pow 2)
+  have hq := hn.div hd (by norm_num)
+  have hfun : (fun x : ℝ => 2 * x / (1 - x ^ 2)) =
+      (fun y => 2 * id y) / ((fun _ : ℝ => 1) - id ^ 2) := by
+    funext x
+    rfl
+  rw [hfun]
+  norm_num at hq
+  exact hq
 
 /-! ## Two-cell source-to-terminal cascade -/
 
@@ -164,8 +169,8 @@ theorem primitiveHawkingKreinCayleyCascadeTerminal_source_eq
       ((4 * lambda ^ 2 / (1 - lambda ^ 2) ^ 2 : ℝ) : ℂ) := by
   rw [primitiveHawkingKreinCayleyCascadeTerminal_source_eq_pair_sq,
     primitiveHawkingKreinCayleyPair]
+  norm_cast
   rw [div_pow]
-  push_cast
   ring
 
 /-- Every nonzero real disk coordinate mixes source into the terminal mode. -/
@@ -182,14 +187,16 @@ theorem hasDerivAt_primitiveHawkingKreinCayleyCascadeTerminal_source_zero :
     HasDerivAt
       (fun lambda : ℝ =>
         primitiveHawkingKreinCayleyPair lambda ^ 2) 0 0 := by
-  change HasDerivAt
-    (fun lambda : ℝ => (2 * lambda / (1 - lambda ^ 2)) ^ 2) 0 0
-  convert
-    (((hasDerivAt_const (x := (0 : ℝ)) (c := (2 : ℝ))).mul
-      (hasDerivAt_id (𝕜 := ℝ) 0)).div
-        (((hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub
-          ((hasDerivAt_id (𝕜 := ℝ) 0).pow 2))) (by norm_num)).pow 2 using 1 <;>
-    norm_num
+  have hmul := hasDerivAt_primitiveHawkingKreinCayleyPair_zero.mul
+    hasDerivAt_primitiveHawkingKreinCayleyPair_zero
+  have hfun :
+      (fun lambda : ℝ => primitiveHawkingKreinCayleyPair lambda ^ 2) =
+        primitiveHawkingKreinCayleyPair * primitiveHawkingKreinCayleyPair := by
+    funext lambda
+    simp [pow_two]
+  rw [hfun]
+  norm_num [primitiveHawkingKreinCayleyPair] at hmul
+  exact hmul
 
 /-! ## Exact Hawking KMS dressing of the terminal transition -/
 

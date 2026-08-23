@@ -43,8 +43,8 @@ noncomputable def singleSiteFDNLSDefocusing : ℝ → Fin 3 → ℂ :=
 
 theorem singleSiteFDNLSDefocusing_solves :
     IsLatticeNLSSolution 0 (-1) (quasiRieszKernel 1) singleSiteFDNLSDefocusing := by
-  exact (quasiRiesz_stagger_solution_iff (C := 0) (σ := -1) singleSiteFDNLS).2
-    singleSiteFDNLS_solves
+  apply (quasiRiesz_stagger_solution_iff (C := 0) (σ := -1) singleSiteFDNLS).2
+  simpa using singleSiteFDNLS_solves
 
 theorem singleSiteFDNLSDefocusing_conserved (t₁ t₂ : ℝ) :
     latticePower (singleSiteFDNLSDefocusing t₁) = latticePower (singleSiteFDNLSDefocusing t₂)

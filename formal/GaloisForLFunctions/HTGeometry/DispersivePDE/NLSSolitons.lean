@@ -214,7 +214,10 @@ theorem solitonA_schrodinger (x : ℝ) :
     solitonA2 x + 2 * solitonQ x * solitonA x = solitonA x := by
   rw [solitonA2]
   have hsq : solitonA x ^ 2 = solitonQ x := solitonA_sq x
-  nlinarith
+  calc
+    solitonA x - 2 * solitonA x ^ 3 + 2 * solitonQ x * solitonA x =
+        solitonA x + 2 * solitonA x * (solitonQ x - solitonA x ^ 2) := by ring
+    _ = solitonA x := by rw [hsq]; ring
 
 theorem nlsBrightSoliton_center_norm (t : ℝ) : ‖nlsBrightSoliton t 0‖ = 1 := by
   rw [norm_nlsBrightSoliton]
