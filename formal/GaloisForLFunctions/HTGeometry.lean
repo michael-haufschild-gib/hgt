@@ -348,6 +348,7 @@ import GaloisForLFunctions.HTGeometry.ABHN.ConcreteLocalHensel
 import GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanLocalFieldMilnorResidue
 import GaloisForLFunctions.HTGeometry.ABHN.TameMilnorInvariant
 import GaloisForLFunctions.HTGeometry.ABHN.RatModIntTorsion
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteTorsionInvariantSum
 import GaloisForLFunctions.HTGeometry.ABHN.ConcreteTameMilnorInvariant
 import GaloisForLFunctions.HTGeometry.ABHN.FractionFieldDenominators
 import GaloisForLFunctions.HTGeometry.ABHN.CSAFractionFieldOrder

@@ -257,17 +257,16 @@ def squaredEulerReciprocalConjugateNodes
 private theorem half_conj_add_eq_ofReal_re (z : ℂ) :
     (1 / 2 : ℂ) * (star z + z) = (z.re : ℂ) := by
   apply Complex.ext
-  · simp [Complex.mul_re, Complex.mul_im]
+  · simp [Complex.mul_re]
     ring
-  · simp [Complex.mul_re, Complex.mul_im]
+  · simp [Complex.mul_im]
 
 private theorem I_half_mul_conj_sub_eq_ofReal_im (z : ℂ) :
     (Complex.I / 2) * (star z - z) = (z.im : ℂ) := by
   apply Complex.ext
-  · simp [Complex.mul_re, Complex.mul_im]
+  · simp [Complex.mul_re]
     ring
-  · simp [Complex.mul_re, Complex.mul_im]
-    ring
+  · simp [Complex.mul_im]
 
 /-- Distinct nonzero reciprocal atoms and conjugates make the combined real/imaginary power
 features linearly independent at order `2k`.  This is the signed-Vandermonde interpolation core. -/

@@ -619,14 +619,109 @@ theorem exists_soninEvaluatorJet {a : ℝ} (ha : 0 < a) (k : ℕ) :
         have hcomp := hslope.comp hstep
         rw [iteratedDeriv_succ]
         refine hcomp.congr fun n => ?_
-        show slope g w (w + ((h n : ℝ) : ℂ)) = _
-        rw [slope_def_field, hΛn n f, hΛ0 f]
-        show (g (w + ((h n : ℝ) : ℂ)) - g w) / ((w + ((h n : ℝ) : ℂ)) - w) = _
-        rw [hGdef]
-        simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply, smul_eq_mul,
-          hΛn n f, hΛ0 f]
-        rw [show (w + ((h n : ℝ) : ℂ)) - w = ((h n : ℝ) : ℂ) from by ring]
-        rw [div_eq_inv_mul]
+        show slope g w (w + ((h n : ℝ) : ℂ)) = (G n) f
+        rw [slope_def_field]
+        simp only [hGdef, ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply,
+          smul_eq_mul, hΛn n f, hΛ0 f]
+        rw [show (w + ((h n : ℝ) : ℂ)) - w = ((h n : ℝ) : ℂ) from by ring, div_eq_inv_mul]
+      exact ⟨continuousLinearMapOfTendsto _ hlim, fun f => rfl⟩
+
+/-! ## Jets of a multiplied transform -/
+
+theorem analyticOnNhd_iteratedDeriv_mul {a : ℝ} (ha : 0 < a) {U : Set ℂ}
+    (hUsub : U ⊆ {z : ℂ | 0 < z.re ∧ z.re < 1}) {h : ℂ → ℂ} (hh : AnalyticOnNhd ℂ h U)
+    {f : SoninL2} (hmem : f ∈ centralSoninExtendedCarrier a) (hev : f ∈ evenSubspace) (k : ℕ) :
+    AnalyticOnNhd ℂ (iteratedDeriv k (fun s : ℂ => soninEval a f s * h s)) U := by
+  induction k with
+  | zero =>
+      intro z hz
+      have hz' := hUsub hz
+      simpa using (soninEval_analyticAt ha hmem hev hz'.1 hz'.2).mul (hh z hz)
+  | succ k ih =>
+      rw [iteratedDeriv_succ]
+      exact ih.deriv
+
+/-- **The jet evaluators of a multiplied transform.**  For any multiplier analytic on an open
+subset `U` of the strip, `f ↦ (M(f)·h)^{(k)}(w)` is a bounded functional at every `w ∈ U`. -/
+theorem exists_soninEvaluatorJetMul {a : ℝ} (ha : 0 < a) {U : Set ℂ} (hU : IsOpen U)
+    (hUsub : U ⊆ {z : ℂ | 0 < z.re ∧ z.re < 1}) {h : ℂ → ℂ} (hh : AnalyticOnNhd ℂ h U) (k : ℕ) :
+    ∀ {w : ℂ}, w ∈ U →
+      ∃ Λ : soninEvenExtended a →L[ℂ] ℂ,
+        ∀ f : soninEvenExtended a,
+          Λ f = iteratedDeriv k (fun s : ℂ => soninEval a ((f : SoninL2)) s * h s) w := by
+  induction k with
+  | zero =>
+      intro w hw
+      obtain ⟨hw0, hw1⟩ := hUsub hw
+      obtain ⟨Λ, hΛ⟩ := exists_soninEvaluator ha hw0 hw1
+      refine ⟨h w • Λ, fun f => ?_⟩
+      show h w * Λ f = _
+      rw [hΛ f]
+      simp [mul_comm]
+  | succ k ih =>
+      intro w hw
+      classical
+      obtain ⟨ε, hε0, hball⟩ := Metric.isOpen_iff.1 hU w hw
+      set hs : ℕ → ℝ := fun n => ε / ((n : ℝ) + 2) with hsdef
+      have hpos : ∀ n : ℕ, 0 < hs n := by
+        intro n
+        rw [hsdef]
+        exact div_pos hε0 (by positivity)
+      have hlt : ∀ n : ℕ, hs n < ε := by
+        intro n
+        rw [hsdef, div_lt_iff₀ (by positivity)]
+        have h2 : (1 : ℝ) < (n : ℝ) + 2 := by
+          have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+          linarith
+        nlinarith
+      have hmemU : ∀ n : ℕ, w + ((hs n : ℝ) : ℂ) ∈ U := by
+        intro n
+        refine hball ?_
+        rw [Metric.mem_ball, dist_eq_norm]
+        have : w + ((hs n : ℝ) : ℂ) - w = ((hs n : ℝ) : ℂ) := by ring
+        rw [this, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hpos n)]
+        exact hlt n
+      choose Λn hΛn using fun n : ℕ => ih (hmemU n)
+      obtain ⟨Λ0, hΛ0⟩ := ih hw
+      set G : ℕ → (soninEvenExtended a →L[ℂ] ℂ) :=
+        fun n => (((hs n : ℝ) : ℂ))⁻¹ • (Λn n - Λ0) with hGdef
+      have hzero : ∀ n : ℕ, ((hs n : ℝ) : ℂ) ≠ 0 := by
+        intro n
+        exact_mod_cast ne_of_gt (hpos n)
+      have hlim : Filter.Tendsto (fun n : ℕ => ((G n : soninEvenExtended a →L[ℂ] ℂ) :
+          soninEvenExtended a → ℂ)) Filter.atTop
+          (𝓝 (fun f : soninEvenExtended a =>
+            iteratedDeriv (k + 1) (fun s : ℂ => soninEval a ((f : SoninL2)) s * h s) w)) := by
+        refine tendsto_pi_nhds.2 fun f => ?_
+        set g : ℂ → ℂ :=
+          iteratedDeriv k (fun s : ℂ => soninEval a ((f : SoninL2)) s * h s) with hg
+        have hana : AnalyticAt ℂ g w :=
+          analyticOnNhd_iteratedDeriv_mul ha hUsub hh f.property.1 f.property.2 k w hw
+        have hderiv : HasDerivAt g (deriv g w) w := hana.differentiableAt.hasDerivAt
+        have hslope := hasDerivAt_iff_tendsto_slope.1 hderiv
+        have hstep : Filter.Tendsto (fun n : ℕ => w + ((hs n : ℝ) : ℂ))
+            Filter.atTop (𝓝[≠] w) := by
+          refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+          · have hr : Filter.Tendsto (fun n : ℕ => ((hs n : ℝ) : ℂ)) Filter.atTop (𝓝 0) := by
+              have hreal : Filter.Tendsto hs Filter.atTop (𝓝 0) := by
+                rw [hsdef]
+                refine tendsto_const_nhds.div_atTop ?_
+                exact tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
+              exact (Complex.continuous_ofReal.tendsto 0).comp hreal
+            have := tendsto_const_nhds (x := w) (f := Filter.atTop (α := ℕ)) |>.add hr
+            simpa using this
+          · filter_upwards with n
+            simp only [Set.mem_compl_iff, Set.mem_singleton_iff]
+            intro hcon
+            exact hzero n (by linear_combination hcon)
+        have hcomp := hslope.comp hstep
+        rw [iteratedDeriv_succ]
+        refine hcomp.congr fun n => ?_
+        show slope g w (w + ((hs n : ℝ) : ℂ)) = (G n) f
+        rw [slope_def_field]
+        simp only [hGdef, ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply,
+          smul_eq_mul, hΛn n f, hΛ0 f]
+        rw [show (w + ((hs n : ℝ) : ℂ)) - w = ((hs n : ℝ) : ℂ) from by ring, div_eq_inv_mul]
       exact ⟨continuousLinearMapOfTendsto _ hlim, fun f => rfl⟩
 
 end

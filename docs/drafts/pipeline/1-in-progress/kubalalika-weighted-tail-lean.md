@@ -339,3 +339,28 @@ assumes.  Card 12 now stands at 32 Lean modules, all axiom-clean.
 Combined with `effective_short_range` (which puts both members of a contributing pair inside an
 interval of length `≍ M/D`), the curvature scale of an off-diagonal correlation on the block
 `[D, 2D)` is `Y = T|Δ| ≍ T r h D²/M²`, exactly the scale the exponent budget uses.
+
+## The `h`-organisation of the off-diagonal total (2026-08-23)
+
+Searches: "off diagonal pair sum grouped by gap h at most two values", "Nat.dist fiber count pairs
+gap".  The corpus's `Sieve/OffDiagonalSwap.sum_erase_swap` is stated for `Fin N` with `univ`; the
+type-II energy is indexed by an arbitrary `Finset`, so the `Finset` form is new.
+
+- `GapGroupedPairSum.lean` — `card_filter_dist_le_two`: at most two elements realise a given gap
+  (they are `m₁ + h` and `m₁ − h`); `sum_row_gap_le`: one row of the off-diagonal sum of a
+  gap-only weight is `≤ 2Σ_{h≤H}G(h)`, by `Finset.sum_fiberwise_of_maps_to` along `m₂ ↦ dist m₁ m₂`;
+  `sum_offdiag_gap_le`: the whole sum is `≤ 2|S|Σ_{h≤H}G(h)`.
+- `GapWeightedPairSum.lean` — `sum_erase_eq_sum_ite_finset`, `sum_erase_swap_finset`, and
+  **`sum_offdiag_weighted_le`**:
+  ```
+  Σ_{m₁}Σ_{m₂≠m₁} |b(m₁)||b(m₂)|·G(dist) ≤ (Σ_m |b(m)|²)·(2Σ_{h≤H}G(h)).
+  ```
+  The weights are decoupled by `|b₁||b₂| ≤ (|b₁|²+|b₂|²)/2`; the second half is handled by swapping
+  the order of summation and `Nat.dist_comm`.
+
+This is the step the exponent budget calls the `h`-sum.  The three gap sums it feeds are all
+already available: `Σ_{h≤H}√h ≤ H^{3/2}` (trivial), `Σ_{h≤H}h^{-1/2} ≤ 2√H`
+(`RHTower/SqrtTelescopeSums.sum_inv_sqrt_le`), and `Σ_{h≤H}h^{-1} ≤ 1 + log H`
+(`invSum` / `harmonicSum_le_one_add_log`).
+
+Card 12: 37 modules.

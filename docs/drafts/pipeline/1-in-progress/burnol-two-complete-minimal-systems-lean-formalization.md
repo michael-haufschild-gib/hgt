@@ -1260,5 +1260,24 @@ Landed so far (all axiom-clean):
 * `soninMellinIntegral_split`, `norm_soninMellinIntegral_le` — the head/tail split and the explicit
   bound `|M(f)(w)| ≤ C(a,w)·‖f‖` on `1/2 < Re w < 1`.
 
-Next: package it as a `→L[ℂ] ℂ`, extend across the critical line by Banach–Steinhaus and to the left
-by the functional equation, differentiate for the jets, take Riesz vectors, and prove Theorem 3.3.
+### The evaluator layer is CLOSED (2026-08-23)
+
+* `soninEval a f w` — the continued Mellin transform of `f ∈ L_a` with the aperture constants read
+  off the vector itself (`soninBandConst`, `soninFourierBandConst`), analytic on the open strip.
+* `soninEvaluatorRight` — the bounded functional for `1/2 < Re w < 1`, from the explicit head/tail
+  bound `norm_soninMellinIntegral_le`.
+* `exists_soninEvaluator_mid` — **the critical line**, by Banach–Steinhaus: the functionals at
+  `w + δ/(n+2)` are bounded and converge pointwise (analyticity of `soninEval a f`), so
+  `continuousLinearMapOfTendsto` hands over boundedness of the limit.  This is where the
+  `(2 Re w − 1)^{-1/2}` estimate dies and where the corpus had stopped.
+* `soninEval_reflect`, `soninFourierCLM`, `exists_soninEvaluator` — the left half by the functional
+  equation `χ(1−w)·M(f)(w) = M(F₊f)(1−w)`, so the evaluator is bounded at **every** point of the
+  open critical strip.  This is Burnol's Theorem 2.1 continuity statement in the extended space.
+* `analyticOnNhd_iteratedDeriv_soninEval`, `exists_soninEvaluatorJet` — **all jet orders**, by the
+  same Banach–Steinhaus trick applied to the difference quotients of the previous jet.
+
+Next: the biorthogonal dual family.  The right functional for Theorem 3.3 is not the bare jet but
+the Laurent coefficient of `M(f)/ζ` at `ρ`: writing `ζ(s) = (s−ρ)^m u(s)`, the coefficient of
+`(s−ρ)^{-l}` is the `(m−l)`-th Taylor coefficient of `M(f)·h` with `h = (s−ρ)^m/ζ`, a *finite*
+combination of the jet functionals — and on the witnesses `M(v_{ρ,l'})·h = (s−ρ)^{m−l'}` exactly, so
+the pairing is `δ_{l,l'}` on the nose.

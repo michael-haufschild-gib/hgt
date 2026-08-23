@@ -4,7 +4,7 @@
 
 This document states the current `HTGeometry`, `HilbertMetric`, and `RHTower` formal frontier. It maps architectures, theorem chains, open cores, and terminal mechanisms, not chronology or work log.
 
-**Formal-corpus cutoff:** 23 August 2026, 10:08:25 CEST, commit `c89af2175755d4c0850322e4b5c9f228960e4959`, plus declaration-index review of the working tree at that time.
+**Formal-corpus cutoff:** 23 August 2026, 10:42:19 CEST, commit `7799a2a79de28ccc48cccfe6faea7c5e58f76393`, plus declaration-index review of the working tree at that time.
 Scientific status comes only from Lean declarations, dependencies, theorem docstrings, and explicit gap/no-go markers; cards and papers are not evidence. No build status is inferred here.
 Incomplete declarations are excluded; material uncommitted ones are labeled working-tree evidence.
 
@@ -35,7 +35,7 @@ Finite Hilbert dispersion/fidelity recurrence, positive circle densities, abstra
 | D2 | continued prime--arch trace -> one-sided anti-Herglotz/finite ceiling -> RH | Source control of sole positive-frequency tail by a reflected signed/non-dominating law; canonical directed passive limits are impossible. |
 | E | squarefree Wold source -> two-sign half-power marker supply -> exact integer-pair incidence -> unit-load Hall transport with moving flux -> RH | Build one Ramaré-supported relation joining proved marker supply to relation-specific subinterval Hall, unit load, co-moving flux, and Gibbs cost. The literal von-Mangoldt block has an exact Vaughan decomposition into two Type-I and one Type-II convolution sums, with unconditional finite fibre, curvature, correlation, and energy bounds; this unsigned reduction does not define or orient E's relation. |
 | NB/BD | fractional-part dilation source -> discrete Nyman--Beurling spans -> vanishing Báez--Duarte distance -> RH | Construct explicit source-selected finite approximants whose discrete distances tend to zero. Exact `L2` carrier, Gram/detector calculus, off-line quantitative floor, Möbius coefficient series, beta-wavelet and fixed Gibbs-channel realizations are closed. Unconditional coefficient decay is only `k^(-1/2)`; the full weighted-Mertens tower yielding critical decay is RH-equivalent and no theorem converts present coefficient bounds into distance convergence. |
-| F2 | all-prime principal-relative Sonin residual -> positive trace-class energy -> one intrinsic Hankel moment curve -> continued prime--Gamma moment germ -> RH | Prove one source-derived cofinal aperture section, positive aperture barycenter, or equivalent all-moment weld. Burnol's two-sided converse and exact aperture completeness/minimality phase are formal, so analytic Sonine admissibility is no longer open; no theorem identifies carrier powers with prime--Gamma moments. |
+| F2 | all-prime principal-relative Sonin residual -> positive trace-class energy -> one intrinsic Hankel moment curve -> continued prime--Gamma moment germ -> RH | Prove one source-derived cofinal aperture section, positive aperture barycenter, or equivalent all-moment weld. Burnol's actual-`K_a` completeness/minimality phase, coefficient-faithful `L_a -> K_b` descent, functional equation, and bounded evaluation through the closed right half of the strip are formal; working-tree declarations extend boundedness to every open-strip jet. No theorem identifies carrier powers with prime--Gamma moments. |
 | STC | finite Euler/Sonin chart -> two one-particle all-prime sections -> decomposable exterior prime-pair seam -> Calkin sub-root growth -> prime-potential coherence -> RH | Prove from the literal pre-divisor prime--Gamma/Sonin source that the canonical exterior seam has essential norm `o(sqrt(sum_{p in F} 1/p))` cofinally on finite prime packets. The exterior factorization, compact-resistant lower bound, coherence theorem, and global RH endpoint are exact; the sub-root producer is not. |
 | CSB | one coupled all-prime Sonin channel -> positive master effect -> normalized Renyi/Hausdorff moment law -> cofinal Bernstein packet comparison with prime--Gamma endpoint -> RH | Find cofinal degrees/apertures with bounded source/target Bernstein discrepancy. The unconditional endpoint cone contains the full `23 x 58` rectangle; its universal residual tail is RH-equivalent. Order 24 reduces to an explicit low-critical-zero competition, not a cofinal producer. |
 | G | Suzuki/Mobius/Gamma source -> marked pre-scalar or signed-channel carrier -> exact Ward landing -> wall orientation -> RH | Independently prove eventual four-unit Ward scalar control on canonical prime-log samples, or an equivalent signed order. Their detection-cover condition is discharged internally, but the resulting scalar/matrix tail laws are exactly RH, not producers. |
@@ -62,16 +62,17 @@ required positivity, boundedness, passivity, flatness, collision exclusion, or g
 Most live routes have complete receivers and incomplete constitutive source laws.
 
 The candidate surface contains `LI` through its exact paired Li receiver, but lacks its pre-divisor
-coefficient landing and positivity producer. Burnol's aperture-minimal zero-jet witnesses and
+coefficient landing and positivity producer. Burnol's actual-`K_a` minimality witnesses and
 Suzuki's unconditional divisor evaluations expose a plausible
 F2-to-SP-E/SV2 comparison interface, but no theorem maps the extended Sonine witness system into
 the literal `V(0)` form or the cofinal Suzuki characteristic. The Vaughan chain reaches the
 von-Mangoldt source but loses the signed relation/current required by E and T1. Prime-tail and
 Deninger sheaf advances improve F2/L/PBM and L/C1 connectors without producing the missing
 all-moment weld, singular physical landing, or positive global cutoff. Squared-Euler response
-locates the first off-critical local failure
-exactly at three positive nodes, but universal full-kernel anti-Löwner positivity is equivalent to
-RH; it is a CLG/Q/HC aggregation classifier rather than a separate producer architecture.
+locates the first off-critical local failure at three positive nodes, classifies first-jet packet
+masking by a Lorentz charge/interference balance, and detects every distinct finite packet at
+sufficient jet order. Universal full-kernel anti-Löwner positivity is nevertheless equivalent to
+RH; the unresolved step is source-side infinite/cofinal aggregation, not another local receiver.
 
 The main shared frontiers are: source-faithful multi-node order (`CLG/TTF`, `C1`, `Q`, `W2C`);
 singular source-to-physical comparison (`L`, `R`); whole-ground-space control (`O`); cofinal
@@ -628,6 +629,19 @@ diagram: complete and minimal at one, incomplete but minimal below one, and comp
 above one. These results close the Sonine completeness/minimality/admissibility side; none selects an
 aperture or identifies powers of the positive Sonin carrier with completed prime--Gamma moments.
 The all-power source weld remains open.
+
+`SoninCarrierFromExtended.lean` supplies the coefficient-faithful descent from the extended space:
+for `0 < b < a`, two explicit dilation shifts send an even `L_a` vector to `K_b`, kill both aperture
+constants, and preserve every meromorphic order in `0 < Re(w) < 1`. `BurnolSonineMinimality.lean`
+uses this descent to prove actual-`K_a` minimality and noncompleteness below aperture one;
+`BurnolTheoremThreeTwo.lean` packages the complete actual-`K_a` threshold, including finite-omission
+nonminimality above one. `SoninStripEvaluator.lean` realizes the continued Mellin evaluation as a
+bounded functional for `1/2 < Re(w) < 1` and, by Banach--Steinhaus, on
+`1/2 <= Re(w) < 1`, and proves its Fourier reflection law. Working-tree extensions construct a
+bounded evaluator at every point of `0 < Re(w) < 1` and every iterated jet there. These theorems
+remove the extended-space/actual-carrier, critical-line evaluation, and evaluator-continuity gaps.
+They do not select an aperture, identify a source moment curve, or prove the all-moment arithmetic
+weld.
 
 `BurnolEvaluatorSystemZ.lean` extends the last statement from the zeta multiset to every
 open-critical-strip multiset: noncompleteness of the full evaluator system implies minimality, with
@@ -2133,6 +2147,14 @@ blow up with its integer residue. A viable continuation must therefore be signed
 distributional, or otherwise allow these forced boundary poles; it cannot be absolute at the
 critical edge.
 
+`Sieve/PairGapScale.lean` gives exact lower and upper comparison between reciprocal-offset gap and
+ordinary pair gap on a bounded shell. This closes local scale conversion only; production of the
+inverse-log defect by actual ordered-prime shells remains open. Working-tree
+`Sieve/GapGroupedPairSum.lean` reduces every nonnegative gap-only off-diagonal pair sum to a
+one-dimensional gap sum with factor `2*|S|`. Working-tree `Sieve/GapWeightedPairSum.lean` gives
+the weighted form: coefficient energy times twice the one-dimensional gap sum. Both are unsigned
+and do not produce the defect.
+
 **Open core.** Prove from the ordered-prime source, without choosing a zero:
 
 1. prove actual ordered-prime shells supply the inverse-log adjacent-defect lower bound and explicit
@@ -2852,10 +2874,57 @@ candidate.
 
 - **Source-independent toolkits do not form RH producers.** Finite representation/circuit, Bures--Wasserstein/Hadamard, Hodge, ABHN, BZ/Kerr--Newman, and degeneration modules prove substantial exact mathematics but no completed arithmetic occurrence. The BZ/Xi residue intersection is only the zero coefficient, and the flat Kerr--Newman wave landing merely restates an existing prime-tail boundedness criterion equivalent to RH. These are adapters, negative classifiers, or receivers; none adds a route or candidate.
 - **Finite analytic adapters.** `TwoLocalContinuousCircuitFixedErrorHardEpochLaw.lean`, `NearestNeighborContinuousCircuitSameDrawHardIntervalLaw.lean`, `ContinuousCircuitChoiRandomizationLaw.lean`, `MaximallyProjectivePhysicalRandomizedCircuitHardIntervalLaw.lean`, and `NearestNeighborRandomizedCircuitSameDrawHardIntervalLaw.lean` prove generic exponential continuous-circuit hardness, make projective/physical exclusion robust against every finite randomized mixture independently of support size, and realize growth plus randomized hard intervals for one draw from the same nearest-neighbour ensemble. None has an arithmetic occurrence. The Chebyshev/dyadic/square-window modules either assume RH or make their target exactly RH. The Sieve convolution chain gives exact fibre and correlation machinery, Vaughan's three-block identity, effective-range/off-diagonal bounds, and a literal finite von-Mangoldt block bound in `Sieve/VonMangoldtBlockEstimate.lean`. It remains unsigned and supplies neither E's relation/Hall/co-moving flux nor T1's signed short-current recombination.
-- `PrimeTailCoPoissonBoundary.lean` identifies every compact prime-tail interval seed with a reflected half-density Burnol cell and proves its Mellin and dilation-character laws. `PrimeTailBoundaryAsymptotic.lean` evaluates the scalar source tail for `Re(z)>1`, with explicit error and asymptotic `sum_{n>y} Lambda(n)/(log n)n^(-z) ~ y^(1-z)/((z-1)log y)`. `PrimeTailHalfWeightWall.lean` proves the exact wall `IntegrableOn ((x^alpha * ||G_z(x)||)^2) (0,1) <-> 1/2 <= alpha`, including the critical weight, while the unweighted current is not integrable. `PrimeVacuumCurrent.lean` constructs the continuous logarithmic vacuum, proves its tail and Abel side vanish at infinity, and gives exact Abel and window identities parallel to the arithmetic tail. Working-tree `PrimeVacuumErrorTransfer.lean` gives the exact arithmetic-minus-vacuum identity: divided-log count error is one boundary Chebyshev error, one fixed low term, and the `1/(t log^2 t)` transform of `psi(t)-t`. These close scalar right-half-plane, vacuum-subtraction, and endpoint profile mechanics, not the whole co-Poisson current or coefficient-faithful divisor landing. They strengthen F2/L/PBM without adding a route.
+- **Prime tail and logarithmic vacuum.** `PrimeTailCoPoissonBoundary.lean` identifies every compact
+  prime-tail interval seed with a reflected half-density Burnol cell and proves its Mellin and
+  dilation-character laws. `PrimeTailBoundaryAsymptotic.lean` evaluates the scalar source tail for
+  `Re(z)>1`, with explicit error and asymptotic
+  `sum_{n>y} Lambda(n)/(log n)n^(-z) ~ y^(1-z)/((z-1)log y)`.
+  `PrimeTailHalfWeightWall.lean` proves the exact wall
+  `IntegrableOn ((x^alpha * ||G_z(x)||)^2) (0,1) <-> 1/2 <= alpha`, including the critical
+  weight, while the unweighted current is not integrable. `PrimeVacuumCurrent.lean` constructs the
+  continuous logarithmic vacuum and its exact Abel/window identities.
+
+  `PrimeVacuumErrorTransfer.lean` expresses divided-log count error as one boundary Chebyshev
+  error, one fixed low term, and the `1/(t log^2 t)` transform of `psi(t)-t`, and transfers the
+  quantitative PNT envelope to this difference. `PrimeVacuumFlatRemainder.lean` gives the exact
+  arithmetic-minus-vacuum Abel remainder, its PNT bound, and all-orders flatness of the
+  boundary-current remainder relative to the vacuum. `PrimeVacuumExponentialIntegral.lean`
+  supplies the exponential-integral primitive. Working-tree `PrimeVacuumMellin.lean` identifies
+  the two cut regimes and differentiates an explicit primitive for the proposed divided-difference
+  Mellin identity, but contains no integrated capstone. The proved result remains scalar and
+  confined to `Re(z)>1`. A whole co-Poisson current, critical-strip continuation, and
+  coefficient-faithful divisor landing are absent; this is F2/L/PBM infrastructure.
 - **Ward--Krein local charge.** `XiWardCubicPositiveShiftArithmeticCovariance.lean` gives G/HC/CLG exact source provenance and divisor transgression. `XiWardKreinTransverseMassShell.lean` gives each strict-right conjugate pair positive Ward tangent and exact Krein quanta `-8/3` and `2/3`; canonical summable weighting is the RH-equivalent Ward index. `XiEndpointFourthTraceDefectContraction.lean` and `XiEndpointSchwarzPairTraceDecay.lean` give explicit defect contraction and exponentially decaying trace towers. `XiFirstTraceKreinDeterminantUniversality.lean` identifies first-trace anomaly, normalized transverse determinant, and reflection charge. `XiReflectionChargeTruePrimeFiniteCountertermEscape.lean` proves every nonzero such charge escapes every finite stationary true-prime Green counterterm. Local charge and quantitative tails are exact; finite subtraction cannot supply G/HC/CLG's missing pre-divisor orientation.
-- `XiSquaredEulerAntiLownerHankelEndpoint.lean` identifies the complete squared-Euler response on the positive ray with `logDeriv xiCent`, converts Audenaert derivatives into exact resolvent moments, and packages PSD of every finite anti-Löwner matrix on positive injective configurations. `AntiLownerCollisionBridge.lean` and `HigherLoewnerCollisionConfluence.lean` close every collision order; the endpoint module closes both reflection-parity jet towers and resolvent-Hankel reconstruction and proves `XiSquaredEulerAntiLownerProducer <-> RH`. `XiSquaredEulerRayTwoPointPositivity.lean` gives the sharp local arity law: every off-critical Xi squared-zero orbit is harmless at two nodes but has negative determinant on every three ordered positive nodes. Universal anti-Löwner PSD remains an exact CLG/Q/HC receiver/classifier; global aggregation can mask one orbit's cubic, so this is not an independent producer or another route.
-- **Abstract Deninger dynamics.** Locality, tilt-local morphisms, rational-Witt scheme/stalk faithfulness, Galois-invariant rational-Witt identification, twisted-norm torsion, and valued-point classification are exact. `DeningerDynSysRhoFrobenius.lean` proves the torsion-kernel power extension and exact characteristic-zero/positive-characteristic cardinal scaling. `DeningerDynSysCor31Separable.lean` extends character-orbit classification to separably closed coefficients. `DeningerDynSysTwoPointGamma.lean`, `DeningerDynSysTwoPointSheafMap.lean`, and `DeningerDynSysTwoPointStalks.lean` recover both prescribed specialization maps; `DeningerDynSysWittStalkIso.lean` and `DeningerDynSysProp131.lean` assemble the actual rational-Witt-scheme morphism. `DeningerDynSysProp35Affine.lean` proves affine valued-point surjectivity and identifies fibres as group orbits; `DeningerDynSysProp35Global.lean` globalizes the surjectivity half under affine-local lifting. `OrbitQuotientComposition.lean` closes normal-subgroup orbit-quotient composition and its slice/fibre refinements. `TorsionUnitsField.lean` shows a field with torsion unit group has positive characteristic and is algebraic over its prime field. Missing interfaces are completed Xi occurrence, L's singular source-to-physical comparison, and C1's positive cutoff.
+- **Squared-Euler anti-Löwner/Krein receiver.** `XiSquaredEulerAntiLownerHankelEndpoint.lean`
+  identifies the complete positive-ray response with `logDeriv xiCent`, converts Audenaert
+  derivatives into resolvent moments, closes both reflection-parity jet towers and every collision
+  order, and proves `XiSquaredEulerAntiLownerProducer <-> RH`.
+  `XiSquaredEulerRayTwoPointPositivity.lean` gives the sharp single-orbit arity law: every
+  off-critical squared-zero orbit is positive at two nodes and has negative determinant at every
+  three ordered positive nodes. `XiSquaredEulerLorentzKreinMasking.lean` identifies the first
+  reversed-Löwner jet determinant with Lorentz mass squared; an off-critical orbit is spacelike,
+  while a finite packet is PSD exactly when cross-orbit interference pays its full transverse-charge
+  debt. Its all-order signed-Vandermonde factorization exposes, for `k` distinct reciprocal
+  orbit/conjugate nodes at order `2k`, a negative-definite subspace of exact dimension `k`.
+  Finite-packet negativity is therefore not the missing local theorem. Universal source-side
+  positivity and control of infinite/cofinal aggregation remain the CLG/Q/HC producer problem;
+  the completed kernel itself is a divisor-built RH-equivalent receiver.
+- **Abstract Deninger dynamics.** Locality, tilt-local morphisms, rational-Witt scheme/stalk
+  faithfulness, Galois-invariant rational-Witt identification, twisted-norm torsion, and valued-point
+  classification are exact. `DeningerDynSysColimFraction.lean` constructs the multiplicative
+  positive-rational Frobenius action on the colimit. `DeningerDynSysIsotropyCondition.lean`,
+  `DeningerDynSysColimIsotropy.lean`, and `DeningerDynSysTwistedNorm.lean` identify fixed points with
+  character-power equality, express twisted isotropy by the twisted-norm kernel, prove trivial
+  isotropy for finite-kernel characters over algebraically closed residue fields, and recover the
+  Galois power exponent. `DeningerDynSysRhoFrobenius.lean` and
+  `DeningerDynSysCor31Separable.lean` give torsion-kernel power extension, exact characteristic
+  scaling, and separably closed character-orbit classification. Two-point, Witt-stalk,
+  Proposition 1.31, Proposition 3.5, and orbit-quotient modules construct the prescribed
+  specialization maps, rational-Witt morphism, affine-local valued-point surjectivity, and fibre
+  orbits; `DeningerDynSysAKLBPoints.lean` supplies the direct affine restriction/fibre statement.
+  `TorsionUnitsField.lean` classifies fields with torsion unit group. Missing interfaces
+  are a completed Xi occurrence, L's singular source-to-physical comparison, and C1's positive
+  cutoff.
 - **ABHN infrastructure remains pre-route.** Cyclic/Brauer descent, Azumaya localization, continuous `H^2`, finite ramification, local invariants, completed-place transport, Hilbert 90, norm quotients, and unramified integral norm/reduction are exact. Lean proves local--global unit, division, and annihilator criteria over number and global function fields, faithful rational continuous `H^2` invariants, completion invariance, exact residue-degree torsion image, and one-place/all-place detection of ordinary and generalized left-regular eigenspace/intertwiner dimensions. `CyclicGaloisH2BrauerInverse.lean` extends cohomological-negation/Brauer-inversion compatibility to every finite cyclic degree; `CyclicGaloisH2BrauerInverseRelations.lean` puts inverse pairs in the exact relation subgroup. The cubic specialization is exact, but `CyclicBrauerParityObstruction.lean` proves every additive `ZMod 2` receiver annihilates cubic cyclic invariants. No module supplies a completed prime--Gamma/Möbius Xi occurrence, global source invariant, or critical-line reader. ABHN adds neither route nor candidate.
 - **Exact local interfaces.** `PerronUniformFlankProducer.lean` is a T1/F2/U adapter; `DeningerDynSysPointedMultiplicativeRoot.lean` is IW/L algebra; `DeningerDynSysCor15Injective.lean` strengthens injectivity. None supplies a completed Xi occurrence, C1 positive cutoff, or L singular source-to-physical comparison. Finite Hilbert dispersion, positive shifted circle states, finite-prime parametric resolvents, and one exact prime-log weak-Schatten residue close finite mechanics but not reflected orientation or cofinal tightness. Burnol's Sonine chain has the exact analytic aperture phase diagram stated in F2, removing analytic admissibility from that frontier but supplying neither its all-moment arithmetic weld nor C1's positive cutoff. Suzuki's Lerch bridge and complete `V(0)` equivalence are receivers, not O/SV2 ground or limit selection. Euler--Riesz dilation, memory-lag curvature, and compact orbit quotient modules contain no completed arithmetic producer.
 - **Moving-fibre and localized curvature.** `AnharmonicChebyshev{OrientationCasimir,MovingFiber}.lean` proves scalar `q^2` descent glues two reflected triples and every holomorphic quadratic invariant is isotropic. `AnharmonicChebyshevCubicDescentCriterion.lean` formalizes the criterion that `q(ρ)^2` is strictly negative real at every Xi zero iff RH. Exact fibre classification plus the source-derived height gap removes the two spurious unit-circle branches; this is an RH receiver, not an independent producer. `AnharmonicChebyshevNoetherCasimir.lean` proves the actual real Xi three-sheet current has sign `(+,+,-)`, the strict magnitude chamber `0 < b < -c < a`, positive descended trace, and exact Lorentz-type decomposition `E-2T²=6(b²+(-c-b)(a+b))>0`, with normalized mass gap tending to zero. The q-logarithmic derivative of the cyclic Xi product is positive on the complete exterior real ray unconditionally. Scalar descent loses information, so the missing interface is transverse complex positivity, equivalently the completed Chebyshev trace bound. `LocalizedHalfDensity{Germ,Curvature}.lean` gives the multiplicative epsilon-to-Lambda germ, finite exponential fibre modes, forced half-density, exact two-prime collision chambers, and prime-power Chebyshev fibres; completed aggregation and collision-quantum landing are absent.
@@ -2880,7 +2949,22 @@ candidate.
 - `HTGeometry/CriticalTraceSpace.lean` identifies exact diagonal trace topology for regularized period multiplier: weight `||m||^-1` makes incidence an isometry, and any weight making multiplier a topological isomorphism is boundedly equivalent to it. Magnitude is absorbed while unimodular phase survives. This is useful topology for L/PCS/PBM boundary descent, but it supplies no arithmetic boundedness, monodromy cancellation, or Xi reader by itself. `AnalyticDividedDifference.lean` proves critically normalized translation defects are controlled by derivative size, converge to derivative as period shrinks, and satisfy iterated collar bounds; `PeriodRescalingAutomorphism.lean` shows invertible period rescaling preserves the Stanley--Reisner constraint ideal. These close local rescaling calculus, not global source law.
 - **Hodge, Super-Poincare, and BPS packaging.** `FacetHodgeMonomialBlock.lean` proves every surviving monomial block of a finite facet family has Hodge operator equal to positive facet multiplicity. Super-Poincare and BPS modules package reflection, differentiation, cofinal prolongation, Deninger inversion/Hodge, Gamma--Stokes, chiral blocks, holonomy, spectral gaps, and literal Xi energies into exact paired first-order decompositions. `SuperPoincareProjectionPhase.lean` and `SuperPoincareProjectionFamily.lean` give a concrete Pauli projection, differentiable oblique-idempotent shear, nilpotent normal corner, and exact BRST Hodge--Dirac/Hamiltonian. `SuperPoincareCochain.lean` packages the Deninger total differential and parity as a closed `D=1,N=2` split; `SuperPoincareQ8OddClifford.lean` constructs a nontrivial arithmetic quaternionic `N=2` algebra on the odd central sector. `xiRadialJensenBPSSaturation_iff_rh` and `wardGreenProjectionBPSSaturation_iff_rh` identify RH with BPS saturation for two receivers, exposing a common positive defect without forcing saturation. Generic block factorization can package any ring factorization into a closed chiral sector. `XiReciprocalCliffordSquare.lean` makes bare reciprocal-Xi Clifford splitting equivalent to RH. The missing interfaces are a semilocal source law and singular landing, not supersymmetric packaging.
 - `HTGeometry/Sl2ElementaryFactorization.lean` reduces every determinant-one two-by-two matrix to four elementary unipotents. `Sl2CocycleUpperEntry.lean` then proves a derivation-like cocycle's regular lower-left entry vanishes on the upper unipotent subgroup over an algebraically closed characteristic-zero field. This is both projective adapter and rigidity firewall for U/Q/UEB/HJ: a viable cocycle invariant must be singular, global, or boundary-valued, not a regular one-entry certificate.
-- `RandomEulerObservableAbscissa.lean` proves almost-sure convergence of the Steinhaus Euler observable exactly for `sigma>1/2` and almost-sure divergence for `sigma<=1/2`. `SteinhausIntervalBridge.lean` and `SteinhausBesselIdentity.lean` identify the phase-circle Laplace transform with its interval integral and `I_0`, with sharp cumulant envelopes; working-tree `SteinhausSubgaussian.lean` adds centering and the Hoeffding quadratic upper bound. `SteinhausWeightProfile.lean`, `SteinhausCumulantLower.lean`, `SteinhausRateFunction.lean`, and `SteinhausProfileLogIntegral.lean` construct the regular-variation profile, finite cumulant, finite monotone Legendre rate below `q=1`, exact logarithmic profile moment, logarithmic cumulant deficit, and rate divergence at `q=1`. `ZetaRealSignature.lean`, `ZetaFisherMetric.lean`, `ZetaFisherHorizon.lean`/`ZetaFisherVariance.lean` identify the same critical wall. These are exact, infinite, nonphysical source geometries, but wall location and phase-free large-deviation order do not couple an off-line Xi zero to a signed divisor law. They remain pre-routes, not a new candidate.
+- **Steinhaus critical-wall geometry.** `RandomEulerObservableAbscissa.lean` proves almost-sure
+  convergence of the Euler observable exactly for `sigma>1/2` and almost-sure divergence for
+  `sigma<=1/2`. The interval/Bessel, weight-profile, cumulant, and rate modules give the exact
+  phase-circle Laplace law, sharp quadratic envelope, finite regular-variation cumulant, positive
+  strictly increasing convex Legendre rate below `q=1`, exact profile moments, logarithmic
+  cumulant deficit, and rate divergence at `q=1`. `SteinhausCumulantTaylor.lean`,
+  `SteinhausSecondMoments.lean`, and `SteinhausSubcritical.lean` identify the circle variance,
+  second derivative, and for `alpha<1/2` the exact small-tilt cumulant coefficient
+  `(1-alpha)^2/(4*(1-2*alpha))`. `SteinhausCumulantPositive.lean`,
+  `SteinhausCumulantSlope.lean`, `SteinhausSubcriticalRate.lean`,
+  `SteinhausSubcriticalUpper.lean`, and `SteinhausSubcriticalLimit.lean` give strict cumulant
+  positivity, monotone slope, matching quadratic rate bounds, and the exact limit
+  `I_alpha(q)/q^2 -> (1-2*alpha)/(1-alpha)^2` for `0<=alpha<1/2`. `ZetaRealSignature.lean`, `ZetaFisherMetric.lean`,
+  `ZetaFisherHorizon.lean`, and `ZetaFisherVariance.lean` identify the same critical wall.
+  This is exact infinite nonphysical phase-free source geometry. It has no law coupling an
+  off-line Xi zero to a signed divisor orientation, so it is pre-route infrastructure.
 - `PrimeHigherMertensRate.lean`, `PrimeEndpointJet*.lean`, and `PrimeBoundaryWickExpansion.lean` give all algebraic endpoint-jet coefficients with exponentially small prime-number-theorem remainder. They close perturbative prime-boundary expansion used by G/MSC/PBM. PBM's escape theorem shows exact limitation: a fixed endpoint chart sees these jets while zero-generated monodromy runs to infinity. More jet orders cannot recover that charge.
 - `XiSuperchargeHarnackDefect.lean` computes finite conjugation-closed Xi-packet defect as one half number of nonreal members and proves universal zero defect exactly RH. This is an exact divisor recorder formed after packet is selected, not source occurrence or producer. It does not create a route and cannot replace HC's upstream absolute charge estimate.
 - `HalfLineExponentialGram.lean` gives exact half-line exponential Gram matrix `1/(lambda+mu)`, Cauchy determinant, and linear independence at distinct positive rates. `HalfLineExponentialDistance.lean` strengthens this to exact Gram--Schmidt squared distance as a finite Blaschke-product ratio; `HalfLineExponentialCoDistance.lean` gives exact distance of each selected exponential from span of every other rate in a finite prefix. `HalfLineExponentialReader.lean` and `HalfLineExponentialResidualLimit.lean` pass to closed span, construct unique canonical biorthogonal readers, and identify reader norm with reciprocal limiting co-distance. The arithmetic specialization is exact: for physical theta rates `lambda_n=pi(n+1)^2`, punctured sine/sinh products give
