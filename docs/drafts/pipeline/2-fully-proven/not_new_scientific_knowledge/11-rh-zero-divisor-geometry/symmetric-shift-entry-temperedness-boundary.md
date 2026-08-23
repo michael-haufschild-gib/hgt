@@ -226,3 +226,11 @@ Finally, the zero-shift endpoint is now exact in Lean:
 `symmetricShiftProduct F 0 s = F s^2`, hence its zero set is precisely the
 original carrier zero set. This proves the stated re-entry at `a = 0` and the
 new endpoint declarations likewise have only standard Lean foundations.
+
+## Lean status update (2026-08-23): local Euler slope boundary
+
+`formal/GaloisForLFunctions/RHTower/SymmetricShiftEulerSlopes.lean` now formalizes the exact local algebra for a unitary reciprocal root at every prime, with primality and unit modulus represented in the data rather than as unproved assumptions.  Its shifted pair has norms `p^(-a)` and `p^a`, logarithmic modulus slopes exactly `-a` and `a`, maximal absolute slope exactly `|a|`, and is locally tempered if and only if `a = 0`.  Thus the source-target equality in the paper, transverse zero displacement = largest local modulus slope = `|a|`, is now a closed Lean theorem when combined with the zero-pair location theorem in `SymmetricShiftFunctionalEquation.lean`.
+
+The leaf is imported by `GaloisForLFunctions/RHTower.lean`, direct-checked with `lake env lean`, and exact-target-built with `lake build GaloisForLFunctions.RHTower.SymmetricShiftEulerSlopes`.  The four new declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+This is not yet an actual completed Euler-product realization of the shifted Xi/Dirichlet family, nor the global Euler-discrepancy abscissa proof.  Those remaining analytic constructions still prevent moving the complete card to stage 3.

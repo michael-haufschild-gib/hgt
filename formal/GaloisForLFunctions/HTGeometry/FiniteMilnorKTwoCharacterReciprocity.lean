@@ -6,6 +6,7 @@ Authors: Michael Barenbaum
 import GaloisForLFunctions.HTGeometry.MilnorPolynomialCharacterReciprocity
 import GaloisForLFunctions.HTGeometry.ABHN.RatModIntCircleCharacter
 import GaloisForLFunctions.HTGeometry.ABHN.TameMilnorInvariant
+import GaloisForLFunctions.HTGeometry.ABHN.FiniteFieldMilnorHasse
 
 /-!
 # Canonical finite-field character form of projective-line `K₂` reciprocity
@@ -77,6 +78,25 @@ theorem milnorPolynomialKTwo_finiteCharacter_product_eq_one_iff_residueInfty_eq_
       (finiteMilnorKOneStdAddChar F) y
     rw [hinfty, (finiteMilnorKOneStdAddChar F).map_zero_eq_one, mul_one] at hproduct
     exact hproduct
+
+/-- **Finite-field character Hasse realization for `K₂ᴹ(F(t))`.** Every prescribed finite
+residue profile has a unique global realization after adjoining its forced infinity residue, and
+the canonical phases of that full profile multiply to one. -/
+theorem finiteField_milnorKTwo_existsUnique_with_finiteResidues_character_product
+    (z : MilnorPolynomialTotalResidueTarget (F := F) 1) :
+    ∃! y : MilnorKDeg (RatFunc F) 2,
+      milnorPolynomialAllResidue (F := F) 1 y =
+        (z, -milnorPolynomialTotalNorm (F := F) 1 z) ∧
+      (milnorPolynomialTotalResidue (F := F) 1 y).prod
+          (fun q x ↦ finiteMilnorKOneStdAddChar F (milnorNormAt q 1 x)) *
+        finiteMilnorKOneStdAddChar F (milnorResidueInfty 1 y) = 1 := by
+  obtain ⟨y, hy, hyuniq⟩ :=
+    ABHN.finiteField_rationalFunctionMilnorKTwo_existsUnique_with_finiteResidues (F := F) z
+  refine ⟨y, ⟨hy, ?_⟩, ?_⟩
+  · exact milnorPolynomialTotalResidue_character_product_one (F := F) 1
+      (finiteMilnorKOneStdAddChar F) y
+  · intro y hy'
+    exact hyuniq y hy'.1
 
 end
 

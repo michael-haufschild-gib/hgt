@@ -1,7 +1,7 @@
 # Augmentation-filter exposure for completed logarithmic derivatives
 
 - **ID:** `completed-logderiv-augmentation-filter-exposure`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) — `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For the Riemann xi function, let `T f(s)=f(s+2)`.  For every
   `0 != P in C[X]`, the function `P(T)(xi'/xi)` is hypertranscendental over `C(s)`.
@@ -182,8 +182,12 @@ live.
   checked
 - [x] novelty gate: failed under the routine-parent test; classified as a bridge
 - [x] 1 -> 2: complete unconditional paper proof and exact parent audit
-- [ ] 2 -> 3: requires the complete unconditional law in Lean, including an analytic
-  Ostrowski/Reich theorem; formalizing only the shift identity is insufficient
+- [x] 2 -> 3: complete unconditional law formalized in
+  `RHTower/XiEvenShiftLogDerivFreeness.lean`.  It represents `P(T)(xi'/xi)` in the exact rotated
+  upper-end meromorphic field, reduces it to the existing all finite differential-translation
+  freeness theorem, and proves hypertranscendence over the genuine rational coordinate field for
+  every `P ≠ 0`.  Target build and axiom audit use only `propext`, `Classical.choice`, and
+  `Quot.sound`.
 
 ## Sources
 
@@ -208,3 +212,8 @@ live.
   would contradict the already proved exposure theorem for the nonzero augmentation polynomial
   `(X-1)P(X)`.  Thus every nonzero finite shift polynomial of `xi'/xi` is HT, and the full even
   translate orbit is linearly independent modulo DA.
+- 2026-08-23 (Codex) — closed in Lean by
+  `RHTower/XiEvenShiftLogDerivFreeness.lean`.  The new theorem
+  `xiEvenShiftLogDerivFilter_hypertranscendentalOver` is the card's exact constant-coefficient
+  `P(T)` assertion, derived from the already formalized actual Xi upper-end carrier and its full
+  finite differential-translation orbit freeness.  The card moves to stage 3.

@@ -37,11 +37,11 @@ def zetaShiftCore : ℂ → ℂ := fun w => (w - 1 / 2) * riemannZeta (w + 1 / 2
 /-- The analytic representative of the zeta Hardy core. -/
 def zetaShiftCoreNF : ℂ → ℂ := toMeromorphicNFOn zetaShiftCore Set.univ
 
-theorem meromorphicAt_zetaComp (w : ℂ) :
+theorem meromorphicAt_zetaHalfShift (w : ℂ) :
     MeromorphicAt (fun z : ℂ => riemannZeta (z + 1 / 2)) w :=
   meromorphicAt_comp_add.mpr (meromorphicAt_riemannZeta_everywhere (w + 1 / 2))
 
-theorem analyticAt_zetaComp {w : ℂ} (hw : w ≠ 1 / 2) :
+theorem analyticAt_zetaHalfShift {w : ℂ} (hw : w ≠ 1 / 2) :
     AnalyticAt ℂ (fun z : ℂ => riemannZeta (z + 1 / 2)) w := by
   have hne : w + 1 / 2 ≠ 1 := by
     intro h
@@ -57,7 +57,7 @@ theorem meromorphicAt_zetaShiftCore (w : ℂ) : MeromorphicAt zetaShiftCore w :=
     rw [zetaShiftCore, Pi.div_apply]
   rw [hfun]
   refine MeromorphicAt.div ?_ ?_
-  · exact ((analyticAt_id.sub analyticAt_const).meromorphicAt).mul (meromorphicAt_zetaComp w)
+  · exact ((analyticAt_id.sub analyticAt_const).meromorphicAt).mul (meromorphicAt_zetaHalfShift w)
   · exact ((analyticAt_id.add analyticAt_const).pow 2).meromorphicAt
 
 theorem halfShift_pow_ne_zero {w : ℂ} (hw : w ≠ -(1 / 2)) : ((w : ℂ) + 1 / 2) ^ 2 ≠ 0 := by
@@ -70,7 +70,7 @@ theorem analyticAt_zetaShiftCore {w : ℂ} (h1 : w ≠ 1 / 2) (h2 : w ≠ -(1 / 
   have hfun : zetaShiftCore
       = fun z : ℂ => (z - 1 / 2) * riemannZeta (z + 1 / 2) / (z + 1 / 2) ^ 2 := rfl
   rw [hfun]
-  exact (((analyticAt_id.sub analyticAt_const).mul (analyticAt_zetaComp h1)).div
+  exact (((analyticAt_id.sub analyticAt_const).mul (analyticAt_zetaHalfShift h1)).div
     ((analyticAt_id.add analyticAt_const).pow 2) (halfShift_pow_ne_zero h2))
 
 theorem meromorphicOn_zetaShiftCore : MeromorphicOn zetaShiftCore Set.univ :=
@@ -97,7 +97,7 @@ theorem meromorphicOrderAt_zetaShiftCore_half :
   have hmsub : MeromorphicAt (fun z : ℂ => z - 1 / 2) (1 / 2 : ℂ) :=
     (analyticAt_id.sub analyticAt_const).meromorphicAt
   have hmzeta : MeromorphicAt (fun z : ℂ => riemannZeta (z + 1 / 2)) (1 / 2 : ℂ) :=
-    meromorphicAt_zetaComp _
+    meromorphicAt_zetaHalfShift _
   have hmden : MeromorphicAt (fun z : ℂ => (z + 1 / 2) ^ 2) (1 / 2 : ℂ) :=
     ((analyticAt_id.add analyticAt_const).pow 2).meromorphicAt
   have hnumfun : (fun z : ℂ => (z - 1 / 2) * riemannZeta (z + 1 / 2))

@@ -67,14 +67,14 @@ do not add hypotheses. always use our custom search tool check first what the le
 be efficient with lean. clean up after yourself. do not run large rebuilds. do not run umbrella builds. do only check axioms for what you have created - no need to constantly check stuff we have already checked.
 
 
+
+to create new knowledge use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+
 optimize lean code. only build what is necessary. you can yourself only start 1 build procress at a time. be mindful that you are not the only agent working on the lean codebase right now.
 
-use heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+note: our research is in several places ahead of literature and your training data, let the lean corpus guide you. do not assume, because your assumptions are based on your outdated training data, not our actual research.
 
-
-check the corpus using our search tool for leads. our research is in several places ahead of literature, let the corpus guide you.
-
-
+do not touch git. for searching in our lean corpus use the search tool for it. pull in ideas wide from our lean corpus and arxiv, do not just search for direct solutions but indirect and vaguely related topics to get inspiration and new ideas for a solution of a problem.
 
 ## goal theorems gpt
 
@@ -184,19 +184,19 @@ https://arxiv.org/pdf/2607.24830
 
 ## Formalize
 
-Formalize and prove fully, unconditional and closed in our lean corpus the proofs for all lemmas and theorems and provable propositions as far as mathlib or our lean corpus not already proof them from this paper: https://arxiv.org/pdf/math/0203120
+Formalize and prove fully, unconditional and closed in our lean corpus the proofs for all lemmas and theorems and provable propositions as far as mathlib or our lean corpus not already proof them from this paper: https://arxiv.org/pdf/2608.19244
 
 Skip everything already present in our corpus or mathlib.
 Any missing infrastructure you build no matter the effort.
 
-lean rules:
+Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
 2. Always build in the foreground, 1 process per single agent.
 3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
 4. No computations.
-5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
-6. make sure you don't leave stale lean processes running - clean up after yourself.
-7. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+7. make sure you don't leave stale lean processes running - clean up after yourself.
 
 Non-negotiable working mode rules:
 1. If it cannot be done in a single session -> Does not matter. Do it!

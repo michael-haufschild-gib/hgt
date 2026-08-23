@@ -213,3 +213,11 @@ module proof and its axiom audit close using only `propext`,
 `Classical.choice`, and `Quot.sound`; it is wired into the RHTower umbrella.
 The quotient/Hahn–Banach/residue-graph claims remain open, so this card stays
 at stage 2.
+
+`PrimeShiftMarcinkiewiczTrichotomy.lean` packages the exact unconditional
+classification as
+`MemMarcinkiewiczLogLayer (absField (primeShiftCharacter z)) ↔ 1/2 ≤ Re z`
+and
+`MemVanishingTailLayer (absField (primeShiftCharacter z)) ↔ 1/2 < Re z`.
+Both target builds and the combined axiom audit pass with only the standard
+Lean axioms.

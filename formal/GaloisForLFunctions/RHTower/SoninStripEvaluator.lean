@@ -97,7 +97,7 @@ theorem integral_norm_le_sqrt_measure {a : ℝ} (ha : 0 < a) (f : SoninL2) :
   have hsq : (∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ ^ 2) ≤ ‖f‖ ^ 2 :=
     integral_norm_sq_le_norm_sq f (centralInterval a)
   have hone : Integrable (fun _ : ℝ => ((1 : ℝ)) ^ 2) (volume.restrict (centralInterval a)) := by
-    simpa using (integrable_const (1 : ℝ) (μ := volume.restrict (centralInterval a)))
+    simp
   have hcs : (∫ t in centralInterval a, (1 : ℝ) * ‖(f : ℝ → ℂ) t‖) ^ 2
       ≤ (∫ _t in centralInterval a, ((1 : ℝ)) ^ 2)
         * ∫ t in centralInterval a, ‖(f : ℝ → ℂ) t‖ ^ 2 :=
@@ -443,7 +443,7 @@ theorem exists_soninEvaluator_mid {a : ℝ} (ha : 0 < a) {w : ℂ} (hw1 : 1 / 2 
 
 /-! ## Left of the critical line, by the functional equation -/
 
-theorem fourierUnitary_mem_soninEvenExtended {a : ℝ} (ha : 0 < a) {f : SoninL2}
+theorem fourierUnitary_mem_soninEvenExtended {a : ℝ} (_ha : 0 < a) {f : SoninL2}
     (hf : f ∈ soninEvenExtended a) : fourierUnitary f ∈ soninEvenExtended a := by
   obtain ⟨hmem, hev⟩ := hf
   refine ⟨?_, fourierUnitary_mem_evenSubspace hev⟩
@@ -621,7 +621,7 @@ theorem exists_soninEvaluatorJet {a : ℝ} (ha : 0 < a) (k : ℕ) :
         refine hcomp.congr fun n => ?_
         show slope g w (w + ((h n : ℝ) : ℂ)) = (G n) f
         rw [slope_def_field]
-        simp only [hGdef, ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply,
+        simp only [hGdef, smul_apply, sub_apply,
           smul_eq_mul, hΛn n f, hΛ0 f]
         rw [show (w + ((h n : ℝ) : ℂ)) - w = ((h n : ℝ) : ℂ) from by ring, div_eq_inv_mul]
       exact ⟨continuousLinearMapOfTendsto _ hlim, fun f => rfl⟩
@@ -722,7 +722,7 @@ theorem exists_soninEvaluatorJetMul {a : ℝ} (ha : 0 < a) {U : Set ℂ} (hU : I
         refine hcomp.congr fun n => ?_
         show slope g w (w + ((hs n : ℝ) : ℂ)) = (G n) f
         rw [slope_def_field]
-        simp only [hGdef, ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply,
+        simp only [hGdef, smul_apply, sub_apply,
           smul_eq_mul, hΛn n f, hΛ0 f]
         rw [show (w + ((hs n : ℝ) : ℂ)) - w = ((hs n : ℝ) : ℂ) from by ring, div_eq_inv_mul]
       exact ⟨continuousLinearMapOfTendsto _ hlim, fun f => rfl⟩

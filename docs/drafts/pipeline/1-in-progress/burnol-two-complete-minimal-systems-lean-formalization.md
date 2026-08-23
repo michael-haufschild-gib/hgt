@@ -1396,3 +1396,37 @@ Reusable modules built (all compile, wired, no `sorry`):
 3. `headTailVector_mem_centralSoninExtendedCarrier` with `c₁ = c₂ = 0`, then
    `mem_centralSoninCarrier_of_ae_zero` to land in `K₁`.
 4. The order computation on the strip and the `IsMinimalEvaluatorSystem`-style conclusion.
+
+## Session close — state of the tree
+
+Everything below is built, wired into `GaloisForLFunctions.RHTower` / `GaloisForLFunctions.HTGeometry`,
+free of warnings, globally collision-scanned, and audited: every capstone depends only on
+`[propext, Classical.choice, Quot.sound]`.  `scripts/formal_tools.py lint --check-generated` is clean
+and the three generated indexes are regenerated.
+
+Closed this session:
+* **Theorem 3.3, minimality half** — `RHTower.burnol_theorem_three_three_minimal`.
+* **Proposition 6.5, completeness half** — `RHTower.eq_zero_of_zeta_dvd_twoPoint`
+  (every aperture `a ≥ 1`, with `ρ₁ = ρ₂` allowed).
+
+Landed toward **Proposition 6.5's minimality half** (the remaining half):
+* `RHTower.exists_isHalfPlaneHardy_listDiv` — divide a Hardy function by a list of its zeros,
+  absorbing `j ≤ |L|` factors of `w + 1/2`.
+* `RHTower.exists_isHalfPlaneHardy_zetaTriple` — the Hardy function behind
+  `s(s−1)ζ(s)/((s−ρ₁)(s−ρ₂)(s−ρ)^l)`.
+* `RHTower.soninTripleNF`, `analyticAt_soninTripleNF`, `exists_tail_soninTripleNF` — the analytic
+  representative on the strip and its pure-tail datum at aperture one (head constant `0`).
+* `RHTower.soninTripleNF_reflect` — `χ(s)·(that)(1−s) = (−1)^l·(same at the mirror zeros)`.
+
+The only steps left for 6.5's minimality half are mechanical assembly:
+1. feed `soninTripleNF` to `headTailVector_mem_centralSoninExtendedCarrier` with `c₁ = c₂ = 0`
+   (the two tail data are `exists_tail_soninTripleNF` and its mirror, composed with
+   `soninTripleNF_reflect`), then `mem_centralSoninCarrier_of_ae_zero` to land in `K₁`;
+2. transport the strip orders of `soninTripleNF` (already computed by
+   `meromorphicOrderAt_soninTriple`) to `extendedMellinContinuation 1 0 0 V` by the identity
+   theorem on the connected strip, exactly as `exists_extendedSonin_zetaDivPow` does;
+3. state the conclusion in the `IsMinimalEvaluatorSystem` shape of `BurnolEvaluatorSystemZ`.
+
+Remaining paper items: Proposition 6.5's minimality half (as above); Theorem 5.2's `L²`-in-`Z` half,
+hence Corollary 5.3 and Theorem 3.3's completeness half; Theorems 7.7–7.10 (Levin's
+completely-regular-growth theory).

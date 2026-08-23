@@ -225,3 +225,8 @@ exact failure boundary.
   identity. Targeted source check, module build, and axiom audit pass with only `propext`,
   `Classical.choice`, and `Quot.sound`. The full Herglotz sum and its Laplace transform remain
   unformalized; this card stays at stage 2.
+- 2026-08-23 (Codex) — `EulerLogPrimePowerHerglotzSupport.lean` identifies the support point
+  exactly with `log(p^(k+1))`, proves support injectivity by unique factorization, and proves
+  local finiteness on every left-bounded real interval. Its targeted build and new-theorem axiom
+  audit use only `propext`, `Classical.choice`, and `Quot.sound`. The weighted infinite-series
+  convergence and transform identities remain open in Lean; this card stays at stage 2.

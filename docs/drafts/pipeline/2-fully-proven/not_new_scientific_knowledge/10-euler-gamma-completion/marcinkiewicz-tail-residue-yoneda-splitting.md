@@ -164,3 +164,14 @@ the target into the symbol unless an independent source construction proves it.
 One-dimensional pullbacks of Banach quotients split after choosing a lift, scalar pushouts split by
 Hahn--Banach, and closedness is required for unbounded Fredholm theory.  The theorem is a direct
 functional-analytic audit of the project interface and is not new scientific knowledge.
+
+## Lean status — 2026-08-23
+
+`HTGeometry/ConstraintRelativity/UnitQuotientPullbackSplitting.lean` now formalizes the exact
+reusable pullback fact: for every normed quotient and every actual lift `e`, the scalar-line
+pullback of `[e]` has a canonical bounded section `c ↦ (c • e, c)`.  Its target build and axiom
+audit use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This does **not** instantiate the card's `M_log / M_0`: the existing prime-tail corpus supplies
+membership predicates, not a closed normed/Banach Marcinkiewicz quotient.  The pushout and
+Yoneda conclusions therefore remain unformalized, and this card stays at stage 2.

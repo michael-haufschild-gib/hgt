@@ -308,3 +308,25 @@ This is a substantial closure of `(4)`, `(8)`, `(10)`, and `(12)` at the
 support level. Exact analytic-order/multiplicity pushforward, order-one and
 hypertranscendence of the complete products, and their differential-translation
 field identity remain necessary before stage 3.
+
+`formal/GaloisForLFunctions/RHTower/ReflectedGammaQuartetMultiplicity.lean`
+now formalizes local analytic-order accounting for the same carrier. Product
+orders are exactly additive; every nonzero-displacement Cosh lattice zero is a
+simple full-carrier zero; every undisplaced Cosh lattice zero has order two;
+and the full undisplaced order is exactly the common Gamma order plus two.
+Thus possible central Gamma/Cosh coincidences are accounted for rather than
+excluded by an extra assumption. The leaf is wired into `RHTower.lean`,
+direct-checked, target-built as
+`GaloisForLFunctions.RHTower.ReflectedGammaQuartetMultiplicity`, and all five
+new declarations audit only to `propext`, `Classical.choice`, and `Quot.sound`.
+
+A global finite-height pushforward equality of analytic-order divisors, the
+order-one and hypertranscendence statements for the products, and the
+DA-base translation-field equality remain before stage 3.
+
+## 2026-08-23 Lean formalization: uncentered carrier
+
+`formal/GaloisForLFunctions/RHTower/TransverseRelocationCarrier.lean` now transports the constructed reflected-Gamma/Cosh family from centered coordinate `z` to the card's stated `s` coordinate.  It proves, without added assumptions, that the family is entire, satisfies the exact functional equation
+`F (1 - s) = F s`, satisfies Schwarz reflection, has every zero of the undisplaced member on `Re s = 1/2`, creates an off-critical zero from every Cosh zero when displacement is nonzero, and preserves complete zero-ordinate support across displacements.  The leaf is imported by `GaloisForLFunctions/RHTower.lean` and was checked by direct source elaboration and the exact leaf build `lake build GaloisForLFunctions.RHTower.TransverseRelocationCarrier`.  Axiom audit of all six declarations reports only `[propext, Classical.choice, Quot.sound]`.
+
+This closes the paper's functional-equation/critical-line coordinate translation for the explicit witness family.  It does **not** yet prove the card's global finite-height pushforward equality of analytic-order divisors, product order-one/hypertranscendence, or DA-base translation-field claims; card remains stage 2.
