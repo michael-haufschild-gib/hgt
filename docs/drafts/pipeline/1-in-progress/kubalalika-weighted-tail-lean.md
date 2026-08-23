@@ -563,3 +563,28 @@ are now available:
 ```
 
 Card 12: 48 modules.
+
+## The parity reduction (2026-08-23)
+
+Search "parity restriction von Mangoldt sum odd removal correction log" — the corpus owns
+`sum_vonMangoldt_even_le` (used) and, separately, `DilatedVonMangoldtSignLimit.sum_Ioc_not_odd_vonMangoldt_le_log`
+(the same fact over `Ioc`).
+
+`ParityReduction.lean`:
+
+- `norm_sum_even_le` — the even part of a weighted von Mangoldt block sum is at most `log B`,
+  since `Λ` is supported on prime powers and the even ones are the powers of two;
+- **`norm_sum_odd_le`** — hence the parity-restricted sum differs from the unrestricted one by at
+  most `log B`:
+  ```
+  ‖Σ_{m ∈ [A,B), m odd} Λ(m)e(F(m))‖ ≤ ‖Σ_{m ∈ [A,B)} Λ(m)e(F(m))‖ + log B.
+  ```
+
+This is the card's parity reduction, and it discharges two of its gates ("odd-`r` restriction
+reduced to the unrestricted prime sum plus powers of two" and "even-`r` contribution reduced
+entirely to powers of two") at the level of a single block.
+
+(Trap, twice now: `Ico A B ⊆ Icc 1 B` fails at `m = 0`; `Finset.sum_erase` on the `Λ(0) = 0` term
+is the fix.)
+
+Card 12: 49 modules.

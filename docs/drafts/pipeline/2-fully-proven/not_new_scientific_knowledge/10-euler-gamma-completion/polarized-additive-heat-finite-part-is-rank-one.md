@@ -181,4 +181,18 @@ and supplies no critical-line localization.
 - [x] full constant-order two-parameter expansion proved
 - [x] finite part identified with the rank-one zeta-value Gram
 - [x] dense Weil-factorization use excluded
-- [ ] no Lean formalization planned before polylogarithm boundary asymptotics enter the API
+- [x] finite rank-one zeta-value Gram algebra formalized in
+      `formal/GaloisForLFunctions/RHTower/PolarizedAdditiveHeatFinitePart.lean`
+- [ ] formalize the additive-heat/polylogarithm boundary expansion that identifies the finite part
+
+## Lean status
+
+On 2026-08-23, `PolarizedAdditiveHeatFinitePart.lean` proved the exact finite
+complex outer-product Gram identity and its `riemannZeta` specialization:
+the double polarization is the squared norm of the one scalar zeta-value
+functional. Targeted source check, module build, and axiom audit pass with
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This is deliberately conditional only in the mathematical dependency sense:
+it formalizes the finite algebra *after* the heat finite-part identity, not
+that missing analytic identity itself. The card remains in stage 2.

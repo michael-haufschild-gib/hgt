@@ -130,4 +130,55 @@ theorem finsuppRatModIntNTorsionStdAddChar_pow_eq_one
   rw [hf]
   exact (finsuppRatModIntNTorsionStdAddChar ι n hn).map_zero_eq_one
 
+/-- Every finite `ℚ/ℤ` invariant profile lifts, with one common nonzero denominator, to a
+finite torsion profile. -/
+theorem finsupp_exists_finite_level_lift
+    {ι : Type u} (x : ι →₀ RatModInt) :
+    ∃ n : ℕ, n ≠ 0 ∧ ∃ y : ι →₀ ratModIntNTorsion n,
+      ∀ i, (y i : RatModInt) = x i := by
+  classical
+  obtain ⟨n, hn, hxn⟩ := finsupp_exists_nonzero_common_ratModIntTorsion x
+  let y : ι →₀ ratModIntNTorsion n :=
+    Finsupp.mk x.support (fun i ↦ ⟨x i, hxn i⟩) (by
+      intro i
+      constructor
+      · intro hi hzero
+        have hval := congrArg Subtype.val hzero
+        change x i = 0 at hval
+        exact (Finsupp.mem_support_iff.mp hi) hval
+      · intro hi
+        apply Finsupp.mem_support_iff.mpr
+        intro hzero
+        apply hi
+        exact Subtype.ext hzero)
+  refine ⟨n, hn, y, ?_⟩
+  intro i
+  simp [y]
+
+/-- Every finite-support reciprocal `ℚ/ℤ` profile has a finite torsion realization whose local
+standard character values multiply to one.  This is the denominator-uniform finite target of
+global reciprocity; no local Brauer or class-field-theory comparison is asserted. -/
+theorem finsupp_reciprocity_exists_finite_level_product_character
+    {ι : Type u} (x : ι →₀ RatModInt)
+    (hx : x.sum (fun _ q ↦ q) = 0) :
+    ∃ n : ℕ, ∃ hn : n ≠ 0, ∃ y : ι →₀ ratModIntNTorsion n,
+      (∀ i, (y i : RatModInt) = x i) ∧
+      y.prod (fun _ q ↦ ratModIntNTorsionStdAddChar n hn q) = 1 := by
+  obtain ⟨n, hn, y, hy⟩ := finsupp_exists_finite_level_lift x
+  refine ⟨n, hn, y, hy, ?_⟩
+  rw [finsuppRatModIntNTorsionStdAddChar_product_eq_one_iff_sum_eq_zero]
+  apply Subtype.ext
+  unfold finsuppRatModIntNTorsionSumAddHom
+  change ((y.sum (fun _ (q : ratModIntNTorsion n) ↦ q) : ratModIntNTorsion n) : RatModInt) = 0
+  let hsub : ratModIntNTorsion n →+ RatModInt := (ratModIntNTorsion n).subtype
+  have hsub_zero : hsub 0 = 0 := hsub.map_zero
+  have hyval : Finsupp.mapRange hsub hsub_zero y = x := by
+    ext i
+    simp [hsub, hy i]
+  change hsub (y.sum fun _ q ↦ q) = 0
+  rw [map_finsuppSum hsub y (fun _ q ↦ q)]
+  rw [← Finsupp.sum_mapRange_index (f := hsub) (hf := hsub_zero) (g := y) (h := fun _ q ↦ q)
+    (by intro _; rfl), hyval]
+  exact hx
+
 end GaloisForLFunctions.HTGeometry.ABHN

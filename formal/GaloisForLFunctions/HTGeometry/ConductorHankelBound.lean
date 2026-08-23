@@ -146,28 +146,60 @@ theorem integral_resolventHankel {r : ℝ} (hr : 0 < r) :
 
 /-! ## The bilinear form -/
 
+theorem measurable_conductorHankelTransform {F : ℝ → ℝ≥0∞} (hF : Measurable F) :
+    Measurable fun u : ℝ =>
+      ∫⁻ v in Ioi (0:ℝ), ENNReal.ofReal (conductorHankelKernel (u + v)) * F v := by
+  refine Measurable.lintegral_prod_right' (f := fun p : ℝ × ℝ =>
+    ENNReal.ofReal (conductorHankelKernel (p.1 + p.2)) * F p.2) ?_
+  refine Measurable.mul ?_ (hF.comp measurable_snd)
+  refine ENNReal.measurable_ofReal.comp ?_
+  refine Measurable.div ?_ (measurable_fst.add measurable_snd)
+  exact measurable_const.mul (Real.measurable_exp.comp
+    (measurable_const.mul (measurable_fst.add measurable_snd)))
+
 /-- **The conductor Hankel form is bounded.**  Cauchy–Schwarz against the operator bound. -/
 theorem lintegral_conductorHankel_form_le {F G : ℝ → ℝ≥0∞}
     (hF : Measurable F) (hG : Measurable G) :
     (∫⁻ u in Ioi (0:ℝ),
         G u * ∫⁻ v in Ioi (0:ℝ), ENNReal.ofReal (conductorHankelKernel (u + v)) * F v)
       ≤ ENNReal.ofReal (2 * Real.pi ^ 2)
-        * (∫⁻ u in Ioi (0:ℝ), G u ^ 2) ^ ((1 : ℝ) / 2)
-        * (∫⁻ v in Ioi (0:ℝ), F v ^ 2) ^ ((1 : ℝ) / 2) := by
-  have hTmeas : Measurable fun u : ℝ =>
-      ∫⁻ v in Ioi (0:ℝ), ENNReal.ofReal (conductorHankelKernel (u + v)) * F v := by
-    refine Measurable.lintegral_prod_right' (f := fun p : ℝ × ℝ =>
-      ENNReal.ofReal (conductorHankelKernel (p.1 + p.2)) * F p.2) ?_
-    refine Measurable.mul ?_ (hF.comp measurable_snd)
-    refine ENNReal.measurable_ofReal.comp ?_
-    exact (measurable_const.mul ((Real.measurable_exp.comp
-      (measurable_const.mul (measurable_fst.add measurable_snd))))).div
-        (measurable_fst.add measurable_snd)
-  have hcs := ENNReal.lintegral_mul_le_Lp_mul_Lq (volume.restrict (Ioi (0:ℝ)))
-    (Real.isConjExponent_iff.mpr (by norm_num : (1:ℝ) < 2) |>.symm ▸
-      (⟨by norm_num, by norm_num⟩ : (2:ℝ).HolderConjugate 2))
-    hG.aemeasurable hTmeas.aemeasurable
-  sorry
+        * ((∫⁻ u in Ioi (0:ℝ), G u ^ 2) ^ ((1 : ℝ) / 2)
+          * (∫⁻ v in Ioi (0:ℝ), F v ^ 2) ^ ((1 : ℝ) / 2)) := by
+  set T : ℝ → ℝ≥0∞ := fun u =>
+    ∫⁻ v in Ioi (0:ℝ), ENNReal.ofReal (conductorHankelKernel (u + v)) * F v with hT
+  have hTmeas : Measurable T := measurable_conductorHankelTransform hF
+  have hcs : (∫⁻ u in Ioi (0:ℝ), G u * T u)
+      ≤ (∫⁻ u in Ioi (0:ℝ), G u ^ (2:ℝ)) ^ ((1:ℝ)/2)
+        * (∫⁻ u in Ioi (0:ℝ), T u ^ (2:ℝ)) ^ ((1:ℝ)/2) := by
+    have := ENNReal.lintegral_mul_le_Lp_mul_Lq (volume.restrict (Ioi (0:ℝ)))
+      Real.HolderConjugate.two_two hG.aemeasurable hTmeas.aemeasurable
+    simpa [Pi.mul_apply] using this
+  have hrw2 : ∀ x : ℝ≥0∞, x ^ (2:ℝ) = x ^ (2:ℕ) := fun x => ENNReal.rpow_two x
+  simp only [hrw2] at hcs
+  have hTsq : (∫⁻ u in Ioi (0:ℝ), T u ^ (2:ℕ))
+      ≤ ENNReal.ofReal (4 * Real.pi ^ 4) * ∫⁻ v in Ioi (0:ℝ), F v ^ (2:ℕ) :=
+    lintegral_conductorHankel_sq_le hF
+  have hpow : ((∫⁻ u in Ioi (0:ℝ), T u ^ (2:ℕ)) ^ ((1:ℝ)/2))
+      ≤ ENNReal.ofReal (2 * Real.pi ^ 2)
+        * (∫⁻ v in Ioi (0:ℝ), F v ^ (2:ℕ)) ^ ((1:ℝ)/2) := by
+    refine le_trans (ENNReal.rpow_le_rpow hTsq (by norm_num)) ?_
+    rw [ENNReal.mul_rpow_of_nonneg _ _ (by norm_num : (0:ℝ) ≤ (1:ℝ)/2)]
+    refine mul_le_mul' ?_ le_rfl
+    have heq : ENNReal.ofReal (4 * Real.pi ^ 4) = ENNReal.ofReal (2 * Real.pi ^ 2) ^ (2:ℕ) := by
+      rw [← ENNReal.ofReal_pow (by positivity)]
+      congr 1
+      ring
+    rw [heq, ← ENNReal.rpow_natCast (ENNReal.ofReal (2 * Real.pi ^ 2)) 2, ← ENNReal.rpow_mul]
+    norm_num
+  calc (∫⁻ u in Ioi (0:ℝ), G u * T u)
+      ≤ (∫⁻ u in Ioi (0:ℝ), G u ^ (2:ℕ)) ^ ((1:ℝ)/2)
+        * (∫⁻ u in Ioi (0:ℝ), T u ^ (2:ℕ)) ^ ((1:ℝ)/2) := hcs
+    _ ≤ (∫⁻ u in Ioi (0:ℝ), G u ^ (2:ℕ)) ^ ((1:ℝ)/2)
+        * (ENNReal.ofReal (2 * Real.pi ^ 2)
+          * (∫⁻ v in Ioi (0:ℝ), F v ^ (2:ℕ)) ^ ((1:ℝ)/2)) := mul_le_mul' le_rfl hpow
+    _ = ENNReal.ofReal (2 * Real.pi ^ 2)
+        * ((∫⁻ u in Ioi (0:ℝ), G u ^ (2:ℕ)) ^ ((1:ℝ)/2)
+          * (∫⁻ v in Ioi (0:ℝ), F v ^ (2:ℕ)) ^ ((1:ℝ)/2)) := by ring
 
 end
 

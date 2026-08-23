@@ -4142,6 +4142,7 @@ import GaloisForLFunctions.RHTower.Sieve.BlockLongEnergy
 import GaloisForLFunctions.RHTower.Sieve.BlockEnergyBound
 import GaloisForLFunctions.RHTower.Sieve.BlockCountAssembly
 import GaloisForLFunctions.RHTower.Sieve.SubCriticalPowerSum
+import GaloisForLFunctions.RHTower.Sieve.ParityReduction
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients
@@ -5596,6 +5597,7 @@ import GaloisForLFunctions.RHTower.PolarPrimeAperturePoissonConservationUniversa
 import GaloisForLFunctions.RHTower.PolarPrimeChannelContinuation
 import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
 import GaloisForLFunctions.RHTower.PolarPrimeRegularity
+import GaloisForLFunctions.RHTower.PolarizedAdditiveHeatFinitePart
 import GaloisForLFunctions.RHTower.PolarizedExactnessHorizonSourceSpecialization
 import GaloisForLFunctions.RHTower.PoleBudgetUvarovNoGo
 import GaloisForLFunctions.RHTower.PoleFormDiagonalization
