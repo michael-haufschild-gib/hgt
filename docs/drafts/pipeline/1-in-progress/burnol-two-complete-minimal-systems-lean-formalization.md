@@ -1321,3 +1321,44 @@ The functional is literally Burnol's "triangular linear combination of the evalu
    `θ(σ) → 0` because the rational factor tends to `1`.  Minimality half needs `K₁` realisations of
    `s(s−1)ζ(s)/((s−ρ₁)(s−ρ₂)(s−ρ)^l)`.
 3. Theorems 7.7–7.10 (Levin completely-regular growth).
+
+## Session log — Proposition 6.5, completeness half CLOSED
+
+New modules (built, wired, dupcheck-clean, axioms `[propext, Classical.choice, Quot.sound]`):
+
+* `RHTower/SoninCarrierMellinOrder.lean` — the two order improvements that hold on `K_a` but not on
+  `L_a`: `one_le_meromorphicOrderAt_extendedMellinContinuation_zero` (the transform *vanishes* at
+  `s = 0`, because the left numerator is `(1−s)·χ(s)·s·T(1−s)` and `χ(0) = 0`) and
+  `zero_le_meromorphicOrderAt_extendedMellinContinuation_one` (no pole at `s = 1`, because the
+  residue is the physical aperture constant).  Also `burnolChiFactor_zero`,
+  `analyticAt_burnolChiFactor_zero`, `two_le_analyticOrderAt_extendedMellinNumerator_zero`.
+* `RHTower/TwoPointShiftFactor.lean` — `twoPointShift ρ₁ ρ₂ = (s−ρ₁)(s−ρ₂)/(s(s−1))`, its order
+  decomposition, and `exists_bound_twoPointShift`: it is bounded on `‖s‖ ≥ 1, ‖s−1‖ ≥ 1`, which is
+  exactly the region containing the boundary of every rectangle `[−1,2] × [−T,T]` with `T ≥ 1`.
+* `RHTower/BurnolTwoPointCompleteness.lean` — `soninTwoPointMellin`, the order bookkeeping
+  (`meromorphicOrderAt_riemannZeta_le_soninTwoPointMellin`,
+  `zero_le_meromorphicOrderAt_burnolQuotient_soninTwoPointMellin`), the three boundary estimates
+  (`exists_bound_twoPointNF_right/left/horizontal`), `exists_polyGrowth_twoPointNF`, and
+  **`eq_zero_of_zeta_dvd_twoPoint`** — Proposition 6.5's completeness half, for every aperture
+  `a ≥ 1`, with `ρ₁ = ρ₂` allowed (Burnol's second case, a zero of multiplicity ≥ 2).
+
+The divisibility hypothesis is stated as
+`order ζ ρ ≤ order (M f) ρ + order ((s−ρ₁)(s−ρ₂)) ρ`, which is exactly "orthogonal to the shortened
+evaluator list": one unit of slack at `ρ₁` and at `ρ₂`, none anywhere else.
+
+### Route settled for Proposition 6.5's minimality half
+Realise `G_{ρ,l}(s) = s(s−1)ζ(s)/((s−ρ₁)(s−ρ₂)(s−ρ)^l)` in `K̂₁`.  In the half-plane variable
+`s = w + 1/2` this is `(w+1/2)³·zetaHardyCore(w)/((w−w₁)(w−w₂)(w−w₀)^l)`, `w₁ = ρ₁ − 1/2` etc.
+Build it in three steps, each of which splits one factor of `w + 1/2` against one divisor:
+
+* `B₁ = (w+1/2)·zetaHardyCore/(w−w₁) = zetaHardyCore + ρ₁·(zetaHardyCore/(w−w₁))`;
+* `B₂ = (w+1/2)·B₁/(w−w₂) = B₁ + ρ₂·(B₁/(w−w₂))` — needs `ord B₁ (w₂) ≥ 1`, which is
+  `m_{ρ₂} − [ρ₁ = ρ₂] ≥ 1`, i.e. exactly Burnol's `m_ρ ≥ 2` in the coincident case;
+* `K = (w+1/2)·B₂/(w−w₀)^l = B₂/(w−w₀)^{l−1} + ρ·(B₂/(w−w₀)^l)` — needs
+  `l ≤ m_ρ − #{i : ρ_i = ρ}`, i.e. "the remaining multiplicities".
+
+Each division uses `exists_isHalfPlaneHardy_div_pow` (no `Re w₀ > 0` hypothesis) after replacing the
+existential quotient by the concrete normal form `divShiftNF`, so that the next step has an honest
+`AnalyticAt`.  Then `isMellinTailHardy_iff` gives the pure tail datum (head constant `0`), and
+`headTailVector_mem_centralSoninExtendedCarrier` with `c₁ = c₂ = 0` plus
+`mem_centralSoninCarrier_of_ae_zero` lands the vector in `K₁`.

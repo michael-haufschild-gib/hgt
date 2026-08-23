@@ -275,6 +275,10 @@ path alone.
 - [x] Euler unit field identified as the nonnormal radial boundary
 - [x] squarefree-current specialization stated
 - [x] formalize the finite observation/anomaly/Bianchi package in Lean
-- [ ] formalize the coherent cone orientation and integral-remainder formula
+- [x] finite coherent-cone orientation formalized in
+      `RHTower/VonMangoldtGammaFiniteApertureOrientation.lean` and
+      `RHTower/VonMangoldtGammaPointedWardReconstruction.lean`
+- [x] finite Beta-integral remainder identity formalized in
+      `RHTower/VonMangoldtGammaFactorialBetaReflection.lean`
 - [ ] construct the source-rigged affine characteristic transform
 - [ ] prove its Gauss--Ward factorization and pass to the Euler boundary

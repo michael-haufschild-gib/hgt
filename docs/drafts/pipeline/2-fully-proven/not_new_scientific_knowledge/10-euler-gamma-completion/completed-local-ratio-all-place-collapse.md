@@ -158,6 +158,17 @@ and the resulting endpoint failures of absolute convergence. Its targeted
 source check, module build, and axiom audit pass with only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
+The same module now proves the exact off-line quarter-point identity
+`rho_p(1/4)-1=p^(-1/4)+p^(-1/2)` and derives non-summability of its norm
+deviations from the prime-power abscissa theorem. This is a certified
+interior obstruction, but it is not yet the required arbitrary complex
+off-critical-line asymptotic.
+
+By reflection it now also proves the exact `s=3/4` formula and a uniform
+`p^(-1/4)/3` lower bound for its norm deviation, hence the corresponding
+prime-series non-summability. The all-open-domain theorem still requires a
+uniform arbitrary-point comparison.
+
 The no-open-domain absolute-convergence theorem for the ordinary infinite
 finite-place product, and the formal Hardy-compression/Fredholm consequences,
 are not yet formalized. The card therefore remains in stage 2.

@@ -190,3 +190,39 @@ and anti-theatre gates.
 
 - 2026-07-10 -- explicit symmetric-shift family and source-target slope identity proved; novelty
   audit open.
+
+## Lean status update (2026-08-23)
+
+`formal/GaloisForLFunctions/RHTower/SymmetricShiftFunctionalEquation.lean` now
+formalizes the exact algebraic functional-equation/divisor-motion seam of the
+symmetric-shift construction: a Schwarz line-reflection equation is preserved
+with root number `epsilon^2`; every zero produces both shifted zeros; and a
+critical-line zero gives a line-reflected pair with real parts `1/2 + a` and
+`1/2 - a`. The leaf is wired into `RHTower.lean`, direct-checked with
+`lake env lean`, and target-built with
+`lake build GaloisForLFunctions.RHTower.SymmetricShiftFunctionalEquation`.
+All four newly introduced theorem declarations audit only to Lean's standard
+`propext`, `Classical.choice`, and `Quot.sound` foundations.
+
+This closes only the carrier-independent functional-equation and zero-motion
+part. It does not yet construct the completed Euler family, prove its local
+reciprocal-root slope and partial-Ramanujan boundary, or formalize the global
+Euler-discrepancy topology. The card therefore remains at stage 2.
+
+The same leaf now includes the concrete closed specialization
+`xi_symmetricShiftProduct_lineReflect`: the symmetric product of the project's
+completed `xi` satisfies the line-reflection identity directly from the banked
+`xi_one_sub` and `xi_conj` theorems, with no functional-equation premise left
+on that specialization. Its axiom audit has the same standard Lean-only result.
+
+The leaf also now proves the exact nonzero-shift entry statement for the
+completed `xi`: every critical-line zero yields two zeros of the shifted product,
+both off the critical line, at real parts `1/2 ± a`; they are reflection partners.
+The two added declarations were target-built and audit only to standard Lean
+foundations. This still does not supply the Euler/local-slope and global-topology
+parts required for a stage-3 card move.
+
+Finally, the zero-shift endpoint is now exact in Lean:
+`symmetricShiftProduct F 0 s = F s^2`, hence its zero set is precisely the
+original carrier zero set. This proves the stated re-entry at `a = 0` and the
+new endpoint declarations likewise have only standard Lean foundations.

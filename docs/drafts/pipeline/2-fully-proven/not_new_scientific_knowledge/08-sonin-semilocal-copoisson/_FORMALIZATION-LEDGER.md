@@ -1149,3 +1149,81 @@ of causal/anticausal functions with the Hankel form of `conductorKernelBase`, us
 `lintegral_conductorHankel_form_le`.  Every other ingredient — the symbol split, the superposition,
 the kernel, the interchange, the form bound, translation covariance, and the algebraic identities
 `(2)`, `(5)`, `(6)`, `(7)`, `(8)` — is now Lean.
+
+### Card 11: the bounded conductor form
+
+`HTGeometry/ConductorHankelForm.lean` (axiom-clean, wired)
+
+| item | declaration |
+|---|---|
+| the causal exponential evaluated | `causalFourierExponential_eval`, `causalFourierExponential_eval_nonpos` |
+| reflecting the half line | `setIntegral_Iio_neg` |
+| **difference kernel becomes sum kernel** | **`hankel_substitution`**, **`hankel_substitution_eval`** |
+| the kernel in the causal normalization | `conductorKernelPi`, `conductorKernelPi_le` |
+| **the rate integral** `∫_0^∞ π e^{-π(λ+2)r} dλ = e^{-2πr}/r` | **`integral_lam_rankOnePi`** |
+| the Hankel form bound with the Hilbert constant | `lintegral_conductorPi_form_le` |
+| **the bounded complex conductor form** | **`enorm_conductorForm_le`** |
+
+`HTGeometry/ConductorHankelBound.lean` gained the general statement
+
+| item | declaration |
+|---|---|
+| Schur's test for **any** kernel under the Carleman kernel | **`lintegral_dominatedHankel_sq_le`** |
+| its bilinear form, constant `π` | **`lintegral_dominatedHankel_form_le`** |
+
+`enorm_conductorForm_le` bounds the sesquilinear pairing of an anticausal source against a causal
+reader through the conductor kernel by `π` times the two `L²` norms, with no integrability
+hypotheses at all: `enorm_integral_le_lintegral_enorm` is unconditional, so the passage from the
+complex double integral to the nonnegative one is free.
+
+**The single remaining link.**  Plancherel in the form
+`∫ 𝓕F(ξ) conj(𝓕ψ(ξ)) dξ = ∫ F conj ψ`, to turn the symbol pairing
+`∫ h_∞ · 𝓕φ · conj(𝓕ψ)` into the causal pair form.  Route: mathlib's
+`VectorFourier.integral_bilin_fourierIntegral_eq_flip` (the multiplication formula for integrable
+functions) with `h = conj ∘ 𝓕ψ`, whose transform is `conj ψ` by Fourier inversion.  Then the chain
+is: `conductorAnalyticTwo_eq_fourier_superposition` → `fourier_mul_convolution_eq_of_integrable`
+(corpus) → Plancherel → `hankel_substitution_eval` → `integral_lam_rankOnePi` →
+`enorm_conductorForm_le`.
+
+## FOLDER COMPLETE — 17/17 cards at stage 3
+
+Card 11 closed with `RHTower/SoninBurnolConductorBounded.lean` and
+`HTGeometry/ConductorPlancherelPairing.lean`:
+
+| item | declaration |
+|---|---|
+| the Plancherel pairing on the line | `sesq_fourier_pairing`, **`plancherel_pairing`** |
+| the resolvent pairing is a causal pair form | **`resolvent_pairing_eq_causalPair`** |
+| restricting to the causal core | `convolution_eq_setIntegral_Ioi`, `convolution_eq_setIntegral_shift`, `setIntegral_shift_eq_hankel` |
+| **the resolvent pairing is a Hankel form** | **`resolvent_pairing_eq_hankelForm`** |
+| **the superposed pairing is bounded** | **`enorm_lam_resolvent_pairing_le`** |
+| half-line orthogonality kills the constant part | **`fourier_pairing_eq_zero`** |
+| **the bounded conductor commutator** | **`enorm_conductorPairing_le`** |
+
+The Plancherel pairing was built from mathlib's
+`VectorFourier.integral_sesq_fourierIntegral_eq_neg_flip` plus Fourier inversion; mathlib has the
+`Lp`-level `inner_fourier_eq` but no explicit-integral pairing, and the sesquilinear duality route
+needs only integrability, not `Lp` membership.
+
+The boundedness itself needs **no integrability hypotheses at all**: `enorm_integral_le_lintegral_enorm`
+is unconditional, so the passage from the complex double integral to the nonnegative one is free,
+and the rate interchange is Tonelli.
+
+### The two shortcuts this folder found
+
+1. **Card 5, `(20i)`** — the transfer of the quantitative prime number theorem to the log-divided
+   counting function needs no Stieltjes integration by parts.  Writing
+   `1/log n = 1/log X + ∫_n^X dt/(t log² t)` turns both counting functions into integrals of one
+   kernel against `psi` respectively the identity, by a finite sum–integral interchange.
+2. **Card 11** — the Coifman–Rochberg–Weiss commutator theorem is not needed.  The symbol is
+   analytic up to a bounded error, the analytic part is a superposition of causal resolvents, and
+   the resulting Fourier-side Hankel kernel `e^{-2πr}/r` sits under the Carleman kernel, where the
+   corpus already owns Schur's test with the sharp constant `π`.
+
+### Corpus assets that removed planned builds
+
+`RHTower/EulerMascheroniGaussKernel` (`(20e)`), `RHTower/EulerFisherPoincareBoundary` (`(20f)`),
+`HTGeometry/CarlemanSchurWeight` and `HTGeometry/CarlemanOperatorBound` (the whole Hilbert
+inequality), `HTGeometry/CausalFourierBridge` (the Fourier convolution theorem and the one-sided
+exponential), and `RHTower/ChebyshevPsiErrorInputs` (PNT with error).  Searching first with
+`scripts/formal_tools.py research` saved five separate multi-hundred-line builds.

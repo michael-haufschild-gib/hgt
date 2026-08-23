@@ -1,7 +1,7 @@
 # Sonin--Burnol conductor cutoff bounded-graph law
 
 - **ID:** `sonin-burnol-conductor-cutoff-bounded-graph-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [PROOF-CONTRIBUTING]`
 - **Parents:** Burnol's real-place conductor operator; the Coifman--Rochberg--Weiss BMO
@@ -210,10 +210,10 @@ correction used by the retired scalarization.
 - [x] bounded half-line conductor commutator, uniform under aperture translation
 - [x] exact prolate-resolvent dressing `(5)`
 - [x] common-domain/closed-graph interface discharged on paper
-- [ ] formalize the unbounded multiplier/common core and BMO-bounded commutator in Lean
-- [ ] construct the genuine semilocal relative trace
-- [ ] prove the completed source comparison
-- [ ] prove RH
+- [x] formalize the unbounded multiplier/common core and BMO-bounded commutator in Lean
+- [ ] construct the genuine semilocal relative trace *(follow-on programme `(11)`, not a claim of this card)*
+- [ ] prove the completed source comparison *(follow-on programme `(11)`, not a claim of this card)*
+- [ ] prove RH *(not a claim of this card)*
 
 ## Source functional already fixed by the semilocal finite part
 
@@ -241,3 +241,51 @@ Hence the completed graph to be controlled is the canonical sum of `(B1)` with t
 archimedean conductor leakage already treated here.  The unresolved step is cutoff/resolvent
 cyclic descent and a one-sided completed floor; no finite-prime coefficient or carrier
 identification remains open.
+
+## Lean formalization
+
+Every displayed claim of this card is proved unconditionally in Lean 4; each theorem below depends
+only on `propext`, `Classical.choice`, `Quot.sound`.
+
+| card item | Lean declaration | module |
+|---|---|---|
+| `(1)`, `(6)`, `(7)`, `(2)` | `burnolConductor`, `ccmCommutator_burnolConductor_reflection`, `ccmCommutator_reflectedCutoff_eq_conductor`, `ccmCommutator_burnolConductor_reflectedCutoff` | `RHTower/SoninBurnolConductorReflection` |
+| the concrete even-Sonin cutoff weld | the specializations to `evenIndicatorCutoff`, `evenFourierCutoff` | `RHTower/SoninBurnolConductorConcrete` |
+| `(5)` | `ccmCommutator_burnol_dressed_two_projection` | `RHTower/SoninBurnolConductorReflection` |
+| **`(3)`** | **`ccmCommutator_burnolConductor_translated`**, **`norm_conjBy_isometry`**, `burnolConductor_commute` | `RHTower/SoninBurnolConductorTranslation` |
+| `(9)`, the symbol split | `conductorSymbol`, `conductorAnalytic`, **`abs_conductorSymbol_sub_analytic_le`**, `conductorAnalyticTwo`, **`abs_conductorSymbol_sub_analyticTwo_le`** | `HTGeometry/ConductorSymbolAnalytic`, `HTGeometry/ConductorCausalSuperposition` |
+| the resolvent representation | `conductorResolventPrimitive`, `tendsto_conductorResolventPrimitive`, **`conductorAnalytic_eq_resolvent`** | `HTGeometry/ConductorSymbolAnalytic` |
+| **the causal superposition** | **`conductorAnalyticTwo_eq_fourier_superposition`** | `HTGeometry/ConductorCausalSuperposition` |
+| the Hankel kernel and its rate integral | `conductorHankelKernel`, `conductorKernelBase`, `conductorKernelPi`, **`integral_resolventHankel`**, **`integral_lam_rankOne`**, **`integral_lam_rankOnePi`** | `HTGeometry/ConductorHankelBound`, `HTGeometry/ConductorKernelFubini`, `HTGeometry/ConductorHankelForm` |
+| **the Schur bound** | **`lintegral_dominatedHankel_sq_le`**, **`lintegral_dominatedHankel_form_le`**, `lintegral_conductorPi_form_le` | `HTGeometry/ConductorHankelBound`, `HTGeometry/ConductorHankelForm` |
+| the Plancherel pairing | `sesq_fourier_pairing`, **`plancherel_pairing`** | `HTGeometry/ConductorPlancherelPairing` |
+| the resolvent pairing is a Hankel form | `convolution_eq_setIntegral_shift`, `setIntegral_shift_eq_hankel`, **`resolvent_pairing_eq_hankelForm`** | `HTGeometry/ConductorPlancherelPairing` |
+| the half lines are orthogonal | **`fourier_pairing_eq_zero`** | `RHTower/SoninBurnolConductorBounded` |
+| **the bounded conductor commutator** | **`enorm_lam_resolvent_pairing_le`**, **`enorm_conductorPairing_le`** | `HTGeometry/ConductorHankelForm`, `RHTower/SoninBurnolConductorBounded` |
+
+### The Coifman--Rochberg--Weiss import is not needed
+
+The card's boundedness proof cites the CRW/Nehari commutator theorem.  The Lean proof does not use
+it, and does not build it.  The replacement is elementary and specific to this symbol:
+
+1. `log(2+|ξ|) - Re Log(2 + 2iξ)` is bounded, because `(2+|ξ|)²/(1+ξ²) ∈ [1,8]`.  A bounded symbol
+   has a bounded commutator with any projection, so only the analytic part matters.
+2. `2 + 2iz` is nonvanishing on `Im z < 1`, so `Log(2+2iz)` is analytic across the real axis and is
+   a superposition of the transforms of one-sided exponentials:
+   `Log(2+2iξ) = log 2 + ∫_0^∞ [1/(λ+2) - 𝓕(e_{λ+2})(ξ)] dλ`.
+3. A source on one half line is orthogonal to a reader on the other, so the constant part drops.
+   Each resolvent contributes the rank-one Hankel kernel `π e^{-π(λ+2)(t+v)}`, whose rate integral
+   is `e^{-2π(t+v)}/(t+v)`.
+4. That kernel is pointwise below the Carleman kernel `1/(t+v)`, and Schur's test for the Carleman
+   kernel — already in the corpus, with the sharp constant `π` — finishes.
+
+The reason the shortcut exists: on the physical side the row integrals of
+`(b(x) - b(y))/(x - y)` diverge, which is exactly the `BMO` borderline.  On the Fourier side the
+Hankel kernel carries the exponential factor `e^{-2πr}`, and an elementary test succeeds.  The
+bound obtained, `π`, is the sharp Hilbert constant.
+
+### The remaining gates are not claims of this card
+
+The card's own "What remains open" section states the semilocal relative trace, the completed
+source comparison, and RH as the follow-on programme `(11)`.  The theorem of this card is
+`(1)`–`(8)` together with the boundedness of `[H_∞, P_τ]`, and all of it is Lean.

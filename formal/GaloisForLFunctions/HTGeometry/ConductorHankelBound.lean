@@ -201,6 +201,66 @@ theorem lintegral_conductorHankel_form_le {F G : ℝ → ℝ≥0∞}
         * ((∫⁻ u in Ioi (0:ℝ), G u ^ (2:ℕ)) ^ ((1:ℝ)/2)
           * (∫⁻ v in Ioi (0:ℝ), F v ^ (2:ℕ)) ^ ((1:ℝ)/2)) := by ring
 
+/-! ## An arbitrary kernel dominated by the Carleman kernel -/
+
+/-- **Schur's test for any kernel under the Carleman kernel.** -/
+theorem lintegral_dominatedHankel_sq_le {k : ℝ → ℝ}
+    (hk : ∀ r : ℝ, 0 < r → k r ≤ 1 / r) {F : ℝ → ℝ≥0∞} (hF : Measurable F) :
+    (∫⁻ s in Ioi (0:ℝ), (∫⁻ t in Ioi (0:ℝ), ENNReal.ofReal (k (s + t)) * F t) ^ 2)
+      ≤ ENNReal.ofReal (Real.pi ^ 2) * ∫⁻ t in Ioi (0:ℝ), F t ^ 2 := by
+  refine le_trans (setLIntegral_mono' measurableSet_Ioi (fun s hs => ?_))
+    (lintegral_carleman_sq_le hF)
+  have hs0 : (0 : ℝ) < s := hs
+  refine pow_le_pow_left' ?_ 2
+  refine setLIntegral_mono' measurableSet_Ioi (fun t ht => ?_)
+  have ht0 : (0 : ℝ) < t := ht
+  exact mul_le_mul' (ENNReal.ofReal_le_ofReal (hk _ (by linarith))) le_rfl
+
+/-- The bilinear form of any kernel under the Carleman kernel is bounded with constant `π`. -/
+theorem lintegral_dominatedHankel_form_le {k : ℝ → ℝ} (hkm : Measurable k)
+    (hk : ∀ r : ℝ, 0 < r → k r ≤ 1 / r) {F G : ℝ → ℝ≥0∞}
+    (hF : Measurable F) (hG : Measurable G) :
+    (∫⁻ u in Ioi (0:ℝ), G u * ∫⁻ v in Ioi (0:ℝ), ENNReal.ofReal (k (u + v)) * F v)
+      ≤ ENNReal.ofReal Real.pi
+        * ((∫⁻ u in Ioi (0:ℝ), G u ^ 2) ^ ((1 : ℝ) / 2)
+          * (∫⁻ v in Ioi (0:ℝ), F v ^ 2) ^ ((1 : ℝ) / 2)) := by
+  set T : ℝ → ℝ≥0∞ := fun u =>
+    ∫⁻ v in Ioi (0:ℝ), ENNReal.ofReal (k (u + v)) * F v with hT
+  have hTmeas : Measurable T := by
+    refine Measurable.lintegral_prod_right' (f := fun p : ℝ × ℝ =>
+      ENNReal.ofReal (k (p.1 + p.2)) * F p.2) ?_
+    exact (ENNReal.measurable_ofReal.comp
+      (hkm.comp (measurable_fst.add measurable_snd))).mul (hF.comp measurable_snd)
+  have hcs : (∫⁻ u in Ioi (0:ℝ), G u * T u)
+      ≤ (∫⁻ u in Ioi (0:ℝ), G u ^ (2:ℝ)) ^ ((1:ℝ)/2)
+        * (∫⁻ u in Ioi (0:ℝ), T u ^ (2:ℝ)) ^ ((1:ℝ)/2) := by
+    have := ENNReal.lintegral_mul_le_Lp_mul_Lq (volume.restrict (Ioi (0:ℝ)))
+      Real.HolderConjugate.two_two hG.aemeasurable hTmeas.aemeasurable
+    simpa [Pi.mul_apply] using this
+  have hrw2 : ∀ x : ℝ≥0∞, x ^ (2:ℝ) = x ^ (2:ℕ) := fun x => ENNReal.rpow_two x
+  simp only [hrw2] at hcs
+  have hTsq : (∫⁻ u in Ioi (0:ℝ), T u ^ (2:ℕ))
+      ≤ ENNReal.ofReal (Real.pi ^ 2) * ∫⁻ v in Ioi (0:ℝ), F v ^ (2:ℕ) :=
+    lintegral_dominatedHankel_sq_le hk hF
+  have hpow : ((∫⁻ u in Ioi (0:ℝ), T u ^ (2:ℕ)) ^ ((1:ℝ)/2))
+      ≤ ENNReal.ofReal Real.pi * (∫⁻ v in Ioi (0:ℝ), F v ^ (2:ℕ)) ^ ((1:ℝ)/2) := by
+    refine le_trans (ENNReal.rpow_le_rpow hTsq (by norm_num)) ?_
+    rw [ENNReal.mul_rpow_of_nonneg _ _ (by norm_num : (0:ℝ) ≤ (1:ℝ)/2)]
+    refine mul_le_mul' ?_ le_rfl
+    have heq : ENNReal.ofReal (Real.pi ^ 2) = ENNReal.ofReal Real.pi ^ (2:ℕ) := by
+      rw [← ENNReal.ofReal_pow Real.pi_pos.le]
+    rw [heq, ← ENNReal.rpow_natCast (ENNReal.ofReal Real.pi) 2, ← ENNReal.rpow_mul]
+    norm_num
+  calc (∫⁻ u in Ioi (0:ℝ), G u * T u)
+      ≤ (∫⁻ u in Ioi (0:ℝ), G u ^ (2:ℕ)) ^ ((1:ℝ)/2)
+        * (∫⁻ u in Ioi (0:ℝ), T u ^ (2:ℕ)) ^ ((1:ℝ)/2) := hcs
+    _ ≤ (∫⁻ u in Ioi (0:ℝ), G u ^ (2:ℕ)) ^ ((1:ℝ)/2)
+        * (ENNReal.ofReal Real.pi
+          * (∫⁻ v in Ioi (0:ℝ), F v ^ (2:ℕ)) ^ ((1:ℝ)/2)) := mul_le_mul' le_rfl hpow
+    _ = ENNReal.ofReal Real.pi
+        * ((∫⁻ u in Ioi (0:ℝ), G u ^ (2:ℕ)) ^ ((1:ℝ)/2)
+          * (∫⁻ v in Ioi (0:ℝ), F v ^ (2:ℕ)) ^ ((1:ℝ)/2)) := by ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

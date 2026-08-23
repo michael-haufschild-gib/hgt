@@ -246,6 +246,26 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 
 | **Cor 3.2**, the fibre statement: two characters of `κ(Q)ˣ` induce the same homomorphism of `W_rat(κ(P))` iff they differ by an element of the stabilizer of `Q` in `G`; together with surjectivity of `Spec B → Spec A` on primes and transitivity of `G` on each fibre | `RHTower/DeningerDynSysCor32.lean` | closed |
 
+| **Cor 3.3**: for a closed normal subgroup `N ⊴ G`, restriction `Hom(B^N , C) → Hom(B^G , C)` is surjective and its fibres are the orbits of `G ⧸ N` — Deninger's `G₁ = Aut_{K₀}(K₁)`.  Surjectivity uses only Theorem 1.4 for `G`; the fibres come from extending both homomorphisms to `B` (Theorem 1.4 for the profinite subgroup `N`) and comparing there | `RHTower/DeningerDynSysCor33.lean` | closed |
+
+| **Supplement 13.7**: equation (149) `q = P_{y₀}⁻¹(𝔪)`, uniqueness of `P̃_y`, and `p ⊆ q` (that is `y ∈ closure {x}`) | `RHTower/DeningerDynSysSupplement137.lean` | closed |
+
+| **Extension of a pointed multiplicative map to the fraction field** (mathlib gap): a multiplicative map from a domain into a field vanishing only at zero extends uniquely by `a / b ↦ Q a / Q b`; this is the factorisation `P : κ(x) → C` of Proposition 13.8 | `HTGeometry/MultiplicativeFractionLift.lean` | closed |
+
+| **Prop 14.15**, the residue-field clauses of (1) and (2): the `p`-adic completion, the reduction mod `p` and the tilt all have the residue field of `A`.  For the tilt this needs surjectivity of `Perfection.coeff` under a surjective `p`-th power map — a mathlib gap, proved by iterating a section | `RHTower/DeningerDynSysProp1415.lean` | closed |
+
+| **Prop 9.1, the splitting**: a retraction of a subgroup inclusion splits a commutative group as `M × ker r`, hence splits the character group; for a divisible group this applies to the torsion subgroup, and for the units of an algebraically closed field it is Deninger's decomposition of `Hom(κ(x)ˣ , Cˣ)` | `HTGeometry/RetractionSplitting.lean`, `RHTower/DeningerDynSysDivisibleExtension.lean` | closed |
+
+| **Lemma 11.1**: functions supported on a subgroup are closed under convolution — for `r` outside the subgroup the integrand `s ↦ f(s) g(s⁻¹ r)` vanishes identically | `RHTower/DeningerDynSysConvolutionSubgroup.lean` | closed |
+
+| **Prop 13.8**, the factorisation: a pointed multiplicative map constant on the cosets of its zero set extends, after transport into a field, to the residue field `κ(x)` of the prime it cuts out | `RHTower/DeningerDynSysProp138.lean` | closed |
+
+| **Thm 10.2, the topological core**: a continuous map from an irreducible space to a Hausdorff space is constant; a locally constant map with preconnected fibres descends along a quotient map onto an irreducible base and is therefore constant; and restriction to a dense subspace is injective on continuous maps | `HTGeometry/IrreducibleConstant.lean` | closed |
+
+| **Thm 7.10, the set-theoretic core**: if every orbit contains exactly one point of a subset, that subset maps bijectively onto the orbit space | `HTGeometry/OrbitRepresentative.lean` | closed |
+
+| **Remark after Thm 15.1**: a ring homomorphism from a local ring with only the two primes `0` and `𝔪`, into a domain, is either injective or factors through the residue field | `RHTower/DeningerDynSysRankOneHom.lean` | closed |
+
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
 ### Duplication audit (2026-08-22)
@@ -401,6 +421,35 @@ AIC-domain comparison.
   a mathlib gap; (b) Corollary 3.1 at that pair of residue fields; (c) the profinite (23) to turn
   the resulting `κ(x₀)`-automorphism of `κ(x)` into an element of the stabilizer.  Surjectivity on
   points is lying over, and transitivity on each fibre is mathlib's profinite invariant theory.
+- 2026-08-23 — **§3 finished; §13.3 and §14 advanced.**  Corollary 3.3 is closed in the
+  invariant-extension form: for a closed normal subgroup the restriction `Hom(B^N , C) →
+  Hom(B^G , C)` is surjective with fibres the `G ⧸ N`-orbits.  The proof is Deninger's own, and
+  needs no quotient-group topology: extend both homomorphisms to `B` using Theorem 1.4 for the
+  profinite subgroup `N`, then compare the extensions with Theorem 1.4 for `G`.
+  Supplement 13.7 is closed at the ring level — (149), uniqueness of `P̃_y`, and `y ∈ closure {x}` —
+  together with the general extension of a pointed multiplicative map to the fraction field, which
+  is the factorisation `P : κ(x) → C` that Proposition 13.8 needs.
+  Proposition 14.15's residue-field clauses are closed; the new ingredient is that
+  `Perfection.coeff` is surjective when the `p`-th power map is, which mathlib does not have.
+- 2026-08-23 — **§9, §11 and §13 opened further.**  Proposition 9.1's splitting is closed in
+  general form: a retraction of a subgroup inclusion splits a commutative group as `M × ker r`,
+  and therefore splits its character group, with the inverse the product of the two restrictions.
+  Applied to the torsion subgroup of a divisible group — the corpus already owns the retraction —
+  this is Deninger's decomposition of `Hom(κ(x)ˣ , Cˣ)`; the units of an algebraically closed
+  field are covered.  Lemma 11.1's core is closed: functions supported on a subgroup are closed
+  under convolution, because for `r` outside the subgroup the integrand vanishes identically, so
+  no measure theory beyond `integral_zero` is involved.  Proposition 13.8's factorisation through
+  `κ(x)` is closed by combining the corpus's quotient lift with the new fraction-field extension.
+- 2026-08-23 — **§10, §7 and §15 opened.**  Theorem 10.2's whole topological argument is now
+  Lean-closed in abstract form: a continuous map from an irreducible space to a Hausdorff space is
+  constant (its range is irreducible, and an irreducible subset of a Hausdorff space is a
+  subsingleton); a locally constant map is constant on preconnected fibres, hence descends along a
+  quotient map, and the descended map is continuous and therefore constant when the base is
+  irreducible; restriction to a dense subspace is injective on continuous maps, which is the
+  injectivity of `H⁰(X) → H⁰(X_η)`.  What remains of Theorem 10.2 is the *input* that the base is
+  irreducible, which is Proposition 10.3 (adelic).
+  Theorem 7.10's set-theoretic core — a set meeting every orbit exactly once maps bijectively onto
+  the orbit space — is closed.  So is the Remark after Theorem 15.1.
 - 2026-08-23 — **Prop 14.13's correspondence `χ = ♯ ∘ χ♭` is built and shown injective**: the
   zeroth coefficient of `χ♭ x` is the reduction of `(χ♭ x)^♯` modulo `p`
   (`PreTilt.mk_untilt_eq_coeff_zero`), and `Perfection.hom_ext` says a homomorphism into a

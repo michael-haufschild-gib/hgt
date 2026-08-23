@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MaximallyProjectivePhysicalCircuitHardIntervalLaw
+import GaloisForLFunctions.HTGeometry.AutonomousTemporalFramePotentialObstructionLaw
 import GaloisForLFunctions.RHTower.PairQubitProjectiveSeedWeakTwoLocalSameDrawLaw
 import GaloisForLFunctions.RHTower.NearestNeighborPolynomialCircuitSameDrawLaw
 import GaloisForLFunctions.RHTower.NearestNeighborPolynomialCircuitPermanentHaarSeparationLaw
@@ -150,5 +151,69 @@ theorem eventually_exists_nearestNeighborPath_sameDraw_growth_continuousCircuitH
   have hnonHaar : NearestNeighborPathPermanentLocalityHaarSeparation L p :=
     nearestNeighborPath_permanentLocalityHaarSeparation hLpos hp.1 hsep
   exact ⟨p, hgrowth, hend, hfirstReturn, hhard, hnonHaar⟩
+
+/-- The energy list of the same autonomous nearest-neighbour Hamiltonian,
+transported to the projective Choi coordinate system. -/
+def nearestNeighborPathAutonomousEnergy (L : ℕ)
+    (p : Fin (nearestNeighborPathLocalParameterCount L) → ℝ) :
+    Fin (nearestNeighborPathProjectiveDimension L + 1) → ℝ :=
+  let e : (Fin (L * 2) → Bool) ≃
+      Fin (nearestNeighborPathProjectiveDimension L + 1) :=
+    (pairQubitPathConfigurationEquiv L).symm.trans
+      (nearestNeighborPathConfigChoiEquiv L)
+  fun i => (pairQubitProjectivePauliSeed_isHermitian L p).eigenvalues (e.symm i)
+
+/-- Every replica frame-potential limit of one autonomous nearest-neighbour
+Hamiltonian obeys the universal permutation-collision floor. -/
+theorem nearestNeighborPath_autonomousTemporalFramePotential_floor
+    (L : ℕ) (p : Fin (nearestNeighborPathLocalParameterCount L) → ℝ) (m : ℕ) :
+    replicaPairCount (nearestNeighborPathProjectiveDimension L + 1) m ≤
+      autonomousTemporalFramePotentialLimit
+        (nearestNeighborPathAutonomousEnergy L p) m :=
+  replicaPairCount_le_autonomousTemporalFramePotentialLimit
+    (nearestNeighborPathAutonomousEnergy L p) m
+
+/-- **Same-draw exponential hardness with an autonomous Haar obstruction.**
+For every sufficiently large path, one ordinary static nearest-neighbour
+Hamiltonian simultaneously has syndetic positive-width intervals of
+exponential continuous-circuit hardness, remains distinguishable from Haar by
+one fixed two-query local protocol at every time, and obeys the all-replica
+autonomous temporal frame-potential floor. -/
+theorem eventually_exists_nearestNeighborPath_sameDraw_exponentialHardness_autonomousHaarObstruction :
+    ∀ᶠ L : ℕ in atTop,
+      ∃ p : Fin (nearestNeighborPathLocalParameterCount L) → ℝ,
+        (∃ ε : ℝ, 0 < ε ∧ ∃ W : ℝ, 0 < W ∧ ∃ gap : ℝ, 0 ≤ gap ∧
+          ∀ a : ℝ, ∃ u ∈ Set.Icc a (a + gap),
+            ∀ t ∈ Set.Icc u (u + W),
+              ∀ C : TwoQubitCircuit (L * 2),
+                C.gateCount ≤ nearestNeighborPathProjectiveDimension L / 32 →
+                  ε ≤ ‖unitaryEvolution (pairQubitProjectivePauliSeed L p) t -
+                    (C.eval : Matrix (Fin (L * 2) → Bool)
+                      (Fin (L * 2) → Bool) ℂ)‖) ∧
+        NearestNeighborPathPermanentLocalityHaarSeparation L p ∧
+        (∀ m : ℕ,
+          replicaPairCount (nearestNeighborPathProjectiveDimension L + 1) m ≤
+            autonomousTemporalFramePotentialLimit
+              (nearestNeighborPathAutonomousEnergy L p) m) ∧
+        (∀ m : ℕ, 1 ≤ m →
+          m ≤ nearestNeighborPathProjectiveDimension L + 1 →
+          (Nat.factorial m : ℝ) <
+            autonomousTemporalFramePotentialLimit
+              (nearestNeighborPathAutonomousEnergy L p) m) := by
+  filter_upwards
+    [eventually_exists_nearestNeighborPath_sameDraw_growth_continuousCircuitHardIntervals,
+      Filter.eventually_ge_atTop 1] with L hL hLpos
+  rcases hL with ⟨p, hp⟩
+  rcases hp.2.2.2 with ⟨hhard, hsep⟩
+  have hdim : 2 ≤ nearestNeighborPathProjectiveDimension L + 1 := by
+    rw [nearestNeighborPathProjectiveDimension_add_one]
+    have : 4 ≤ 4 ^ L := by
+      simpa using Nat.pow_le_pow_right (by norm_num : 0 < 4) hLpos
+    omega
+  exact ⟨p, hhard, hsep,
+    fun m => nearestNeighborPath_autonomousTemporalFramePotential_floor L p m,
+    fun m hm hmD =>
+      factorial_lt_autonomousTemporalFramePotentialLimit_of_stableRange
+        hdim hm hmD (nearestNeighborPathAutonomousEnergy L p)⟩
 
 end RHTower

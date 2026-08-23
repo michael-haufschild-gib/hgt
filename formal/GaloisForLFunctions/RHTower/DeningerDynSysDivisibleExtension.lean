@@ -2,6 +2,7 @@ import Mathlib.GroupTheory.Divisible
 import Mathlib.Algebra.Category.Grp.Injective
 import Mathlib.GroupTheory.Torsion
 import Mathlib.FieldTheory.IsAlgClosed.Basic
+import GaloisForLFunctions.HTGeometry.RetractionSplitting
 
 /-!
 # Extension of characters into a divisible group
@@ -81,5 +82,37 @@ theorem deningerTorsion_retraction {C : Type*} [CommGroup C] [RootableBy C ℕ] 
   refine ⟨r, fun x => ?_⟩
   have := congrArg (fun h : (CommGroup.torsion C) →* (CommGroup.torsion C) => h x) hr
   exact this
+
+end RHTower
+
+namespace RHTower
+
+open HTGeometry
+
+/-- **Deninger, Proposition 9.1.**  For a divisible commutative group, a retraction of the
+inclusion of the torsion subgroup splits the character group into the characters of the torsion
+subgroup and the characters of the kernel of the retraction. -/
+def deningerCharSplitEquiv {C : Type*} [CommGroup C] {T : Type*} [CommGroup T]
+    (r : C →* CommGroup.torsion C) (hr : ∀ x : CommGroup.torsion C, r (x : C) = x) :
+    (C →* T) ≃ ((CommGroup.torsion C) →* T) × ((MonoidHom.ker r) →* T) :=
+  homRetractionEquiv (CommGroup.torsion C).subtype r hr T
+
+/-- **Deninger, Proposition 9.1.**  Such a splitting exists for every divisible commutative
+group. -/
+theorem deningerCharSplit_exists {C : Type*} [CommGroup C] [RootableBy C ℕ] (T : Type*)
+    [CommGroup T] :
+    ∃ (r : C →* CommGroup.torsion C) (_ : ∀ x : CommGroup.torsion C, r (x : C) = x),
+      Nonempty ((C →* T) ≃ ((CommGroup.torsion C) →* T) × ((MonoidHom.ker r) →* T)) := by
+  obtain ⟨r, hr⟩ := deningerTorsion_retraction (C := C)
+  exact ⟨r, hr, ⟨deningerCharSplitEquiv r hr⟩⟩
+
+/-- **Deninger, Proposition 9.1** for the units of an algebraically closed field: the characters
+of `κ (x)ˣ` split into the characters of `μ (κ (x))` and the characters of a complement. -/
+theorem deningerUnitsCharSplit_exists (k : Type*) [Field k] [IsAlgClosed k] (T : Type*)
+    [CommGroup T] :
+    ∃ (r : kˣ →* CommGroup.torsion kˣ) (_ : ∀ x : CommGroup.torsion kˣ, r (x : kˣ) = x),
+      Nonempty ((kˣ →* T) ≃ ((CommGroup.torsion kˣ) →* T) × ((MonoidHom.ker r) →* T)) := by
+  letI := deningerUnitsRootableBy (C := k)
+  exact deningerCharSplit_exists T
 
 end RHTower

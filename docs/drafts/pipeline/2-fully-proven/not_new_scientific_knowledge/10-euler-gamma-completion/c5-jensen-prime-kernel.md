@@ -138,8 +138,10 @@ A rigorous check (using the kernel) of Wheeler's PSD-resonance conjecture (`fini
   `logZetaPrimeCoeff_prime` and `logZetaPrimeCoeff_primePower` in
   `formal/GaloisForLFunctions/RHTower/C5JensenPrimeKernel.lean` prove
   `Λ(p)/log(p)·p^{-1/2}=p^{-1/2}` and `Λ(p^k)/log(p^k)·(p^k)^{-1/2}=p^{-k/2}/k`.
-  Remaining targets: the Leibniz first-order expansion, the `B_i` definition, and the explicit-formula /
-  Jensen-section regularization infrastructure.
+  `C5JensenKernelAlgebra.lean` additionally proves the exact finite Leibniz collection, the
+  single-frequency degree bound, and zero-order elimination. Remaining targets: the analytic
+  connection to completed Xi jets, simple-root perturbation, and explicit-formula/Jensen-section
+  regularization infrastructure.
 - [ ] 3 → 4  publication-ready.
 
 ## Notes / risk
