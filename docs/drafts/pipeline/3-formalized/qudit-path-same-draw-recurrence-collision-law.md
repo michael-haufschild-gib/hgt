@@ -1,10 +1,10 @@
 # Same-Hamiltonian qudit-path recurrence--collision law
 
 - **ID:** `qudit-path-same-draw-recurrence-collision-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** theorem / local many-body quantum recurrence
 - **Date:** 2026-08-23
-- **Status:** `[PAPER-PROVED]`
+- **Status:** `[LEAN-PROVED] [BRIDGE]`
 
 ## Exact claim
 
@@ -74,9 +74,21 @@ the permutation collision floor and long-time survival-moment floor for every
 strictly positive weight and every replica order. Finally, because (Dge4),
 maximal projectivity rules out a nonzero exact anchored projective return.
 
-No paper-proof obligation remains. The only new formal object required is the
-capstone conjunction, plus a reusable parameterwise-witness genericity bridge
-if the existing genericity API does not expose it directly.
+No paper-proof obligation remains. Formalization realizes both the capstone
+conjunction and its reusable parameterwise-witness genericity bridge.
+
+## Lean closure
+
+- `volume_notMaximallyProjective_eq_zero_of_spectrumEscapesRealRelations`
+  proves generic maximality from relation-by-relation escape in one exact
+  coefficient family.
+- `exists_quditPath_everyChart_sameDraw_recurrenceCollisionLaw` proves the
+  six-clause conjunction above for arbitrary `n,q >= 2`.
+- Direct file elaboration passed.
+- Named target build passed; no umbrella target was built.
+- `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+- New module contains no `sorry`, `admit`, custom `axiom`, `opaque`, or
+  `unsafe` declaration.
 
 ## Scope
 
