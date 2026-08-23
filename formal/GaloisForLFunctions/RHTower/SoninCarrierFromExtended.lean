@@ -216,11 +216,11 @@ theorem cpow_ofReal_ne_of_re_ne {r : ℝ} (hr1 : 1 < r) {s : ℂ} {t : ℝ} (hst
     (Real.rpow_lt_rpow_left_iff hr1).mpr hpq
   exact hst (hs.injective hnorm)
 
-theorem ofReal_sqrt_eq_cpow {r : ℝ} (hr : 0 < r) :
+theorem ofReal_sqrt_eq_cpow_half {r : ℝ} (hr : 0 < r) :
     ((Real.sqrt r : ℝ) : ℂ) = ((r : ℝ) : ℂ) ^ (((1 / 2 : ℝ) : ℝ) : ℂ) := by
   rw [Real.sqrt_eq_rpow, ← Complex.ofReal_cpow hr.le]
 
-theorem ofReal_sqrt_inv_eq_cpow {r : ℝ} (hr : 0 < r) :
+theorem ofReal_sqrt_inv_eq_cpow_neg_half {r : ℝ} (hr : 0 < r) :
     ((Real.sqrt r⁻¹ : ℝ) : ℂ) = ((r : ℝ) : ℂ) ^ (((-(1 / 2) : ℝ) : ℝ) : ℂ) := by
   have hinv : Real.sqrt r⁻¹ = r ^ (-(1 / 2) : ℝ) := by
     rw [Real.sqrt_eq_rpow, ← Real.rpow_neg_one r, ← Real.rpow_mul hr.le]
@@ -309,7 +309,7 @@ theorem exists_soninCarrier_of_extended {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (h
   have hmult1 : ∀ s : ℂ, s.re < 1 → ((r : ℝ) : ℂ) ^ (s - 1 / 2) - lam₁ ≠ 0 := by
     intro s hs hzero
     have heq : ((r : ℝ) : ℂ) ^ (s - 1 / 2) = ((r : ℝ) : ℂ) ^ (((1 / 2 : ℝ) : ℝ) : ℂ) := by
-      rw [← ofReal_sqrt_eq_cpow hr0, ← hlam₁]
+      rw [← ofReal_sqrt_eq_cpow_half hr0, ← hlam₁]
       linear_combination hzero
     refine cpow_ofReal_ne_of_re_ne hr1 (t := (1 / 2 : ℝ)) ?_ heq
     have hre : (s - 1 / 2 : ℂ).re = s.re - 1 / 2 := by
@@ -321,7 +321,7 @@ theorem exists_soninCarrier_of_extended {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (h
   have hmult2 : ∀ s : ℂ, 0 < s.re → ((r : ℝ) : ℂ) ^ (s - 1 / 2) - lam₂ ≠ 0 := by
     intro s hs hzero
     have heq : ((r : ℝ) : ℂ) ^ (s - 1 / 2) = ((r : ℝ) : ℂ) ^ (((-(1 / 2) : ℝ) : ℝ) : ℂ) := by
-      rw [← ofReal_sqrt_inv_eq_cpow hr0, ← hlam₂]
+      rw [← ofReal_sqrt_inv_eq_cpow_neg_half hr0, ← hlam₂]
       linear_combination hzero
     refine cpow_ofReal_ne_of_re_ne hr1 (t := (-(1 / 2) : ℝ)) ?_ heq
     have hre : (s - 1 / 2 : ℂ).re = s.re - 1 / 2 := by

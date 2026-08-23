@@ -327,3 +327,15 @@ BLOCK length rather than to `L`:
 
 At `A ≍ M`, `B ≍ 2M`, `P ≍ D`, `Q ≍ 2D` this is `≍ 1.5·M/D`, exactly the count the exponent budget
 assumes.  Card 12 now stands at 32 Lean modules, all axiom-clean.
+
+## The pair gap scale (2026-08-23)
+
+`RHTower/Sieve/PairGapScale.lean` — the algebra the `h`-sum runs on:
+
+- **`abs_inv_diff : |r/m₁ − r/m₂| = r·|m₂ − m₁|/(m₁m₂)`**;
+- `le_abs_inv_diff` / `abs_inv_diff_le` — two-sided versions when the pair is confined to
+  `[M₀, M₁]`, giving `r h/M₁² ≤ |Δ| ≤ r h/M₀²` with `h = |m₂ − m₁|`.
+
+Combined with `effective_short_range` (which puts both members of a contributing pair inside an
+interval of length `≍ M/D`), the curvature scale of an off-diagonal correlation on the block
+`[D, 2D)` is `Y = T|Δ| ≍ T r h D²/M²`, exactly the scale the exponent budget uses.

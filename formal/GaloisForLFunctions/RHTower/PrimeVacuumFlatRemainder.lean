@@ -172,19 +172,18 @@ theorem norm_primeRemainderTail_le {z : ℂ} (hz : 1 < z.re) {C c y : ℝ} (hc :
       linarith
     have hpowrw : u ^ (-z - 1).re = u ^ (-z.re - 1) := by
       congr 1
-      simp
-    rw [hpowrw]
     have hstep : u ^ (-z.re - 1) * |primeTailCount u - logIntegralCount u
         - (primeTailCount y - logIntegralCount y)|
         ≤ u ^ (-z.re - 1) * (C * (u * E) + C * (y * E)) :=
       mul_le_mul_of_nonneg_left hbd (Real.rpow_pos_of_pos hu0 _).le
+    rw [hpowrw]
     refine hstep.trans ?_
     have hsplit : u ^ (-z.re - 1) * u = u ^ (-z.re) := by
-      rw [← Real.rpow_neg_one u, ← Real.rpow_add hu0] at *
       rw [show u ^ (-z.re - 1) * u = u ^ (-z.re - 1) * u ^ (1 : ℝ) by rw [Real.rpow_one],
         ← Real.rpow_add hu0]
       congr 1
       ring
+    refine le_of_eq ?_
     calc u ^ (-z.re - 1) * (C * (u * E) + C * (y * E))
         = C * E * ((u ^ (-z.re - 1) * u) + y * u ^ (-z.re - 1)) := by ring
       _ = C * E * (u ^ (-z.re) + y * u ^ (-z.re - 1)) := by rw [hsplit]
@@ -203,21 +202,80 @@ theorem norm_primeRemainderTail_le {z : ℂ} (hz : 1 < z.re) {C c y : ℝ} (hc :
       MeasureTheory.integral_const_mul,
       integral_Ioi_rpow_of_lt (by linarith : -z.re < -1) hy0,
       integral_Ioi_rpow_of_lt (by linarith : -z.re - 1 < -1) hy0]
-    congr 2
-    · rw [show -z.re + 1 = 1 - z.re by ring, show z.re - 1 = -(1 - z.re) by ring, div_neg, neg_div]
-    · congr 1
-      rw [show -z.re - 1 + 1 = -z.re by ring, show z.re = -(-z.re) by ring, div_neg, neg_div]
+    have h1 : -y ^ (-z.re + 1) / (-z.re + 1) = y ^ (1 - z.re) / (z.re - 1) := by
+      rw [show -z.re + 1 = -(z.re - 1) by ring, show (1 : ℝ) - z.re = -(z.re - 1) by ring]
+      exact neg_div_neg_eq _ _
+    have h2 : -y ^ (-z.re - 1 + 1) / (-z.re - 1 + 1) = y ^ (-z.re) / z.re := by
+      rw [show -z.re - 1 + 1 = -z.re by ring]
+      exact neg_div_neg_eq _ _
+    rw [h1, h2]
   have hyid : y * (y ^ (-z.re) / z.re) = y ^ (1 - z.re) / z.re := by
     rw [show (1 : ℝ) - z.re = -z.re + 1 by ring, Real.rpow_add hy0, Real.rpow_one]
     ring
   rw [primeRemainderTail_eq hz hy, norm_mul]
   refine le_trans (mul_le_mul_of_nonneg_left hnorm (norm_nonneg z)) ?_
   rw [hval, hyid]
-  have hrw : C * E * (y ^ (1 - z.re) / (z.re - 1) + y ^ (1 - z.re) / z.re)
-      = C * (1 / (z.re - 1) + 1 / z.re) * (y ^ (1 - z.re) * E) := by
-    field_simp
+  refine le_of_eq ?_
+  have hne1 : z.re - 1 ≠ 0 := by intro h; linarith [h]
+  have hne2 : z.re ≠ 0 := ne_of_gt hz0
+  field_simp
+
+/-! ## Changing the cut -/
+
+theorem norm_primeVacuumTail_sub {z : ℂ} (hz : 1 < z.re) {a b : ℝ}
+    (ha : Real.exp 1 ≤ a) (hab : a ≤ b) :
+    ‖primeVacuumTail z a - primeVacuumTail z b‖ ≤ (b - a) * a ^ (-z.re) := by
+  have ha1 : (1 : ℝ) < a := lt_of_lt_of_le one_lt_exp_one ha
+  have ha0 : (0 : ℝ) < a := by linarith
+  have hloga : (1 : ℝ) ≤ Real.log a := by
+    have : Real.log (Real.exp 1) ≤ Real.log a := Real.log_le_log (Real.exp_pos 1) ha
+    simpa using this
+  have hint : IntegrableOn (logPowerTail z 1) (Ioi a) volume := integrableOn_logPowerTail ha1 hz
+  have hdiff : primeVacuumTail z a - primeVacuumTail z b
+      = ∫ t in Ioc a b, logPowerTail z 1 t := by
+    rw [primeVacuumTail, primeVacuumTail, integral_Ioi_eq_sub hab hint,
+      intervalIntegral.integral_of_le hab]
     ring
-  rw [hrw]
+  rw [hdiff]
+  have hmaj : IntegrableOn (fun _ : ℝ => a ^ (-z.re)) (Ioc a b) volume := by
+    refine integrableOn_const ?_ ?_
+    · exact ne_of_lt (lt_of_le_of_lt (measure_mono Ioc_subset_Icc_self)
+        (by simp [Real.volume_Icc]))
+    · simp only [enorm_eq_nnnorm]
+      exact ENNReal.coe_ne_top
+  have hbound : ‖∫ t in Ioc a b, logPowerTail z 1 t‖ ≤ ∫ _t in Ioc a b, a ^ (-z.re) := by
+    refine norm_integral_le_of_norm_le hmaj ?_
+    filter_upwards [self_mem_ae_restrict measurableSet_Ioc] with t ht
+    have ht1 : (1 : ℝ) < t := lt_trans ha1 ht.1
+    have hlogt : (1 : ℝ) ≤ Real.log t :=
+      le_trans hloga (Real.log_le_log ha0 ht.1.le)
+    rw [norm_logPowerTail ht1, pow_one]
+    have h1 : t ^ (-z.re) ≤ a ^ (-z.re) :=
+      Real.rpow_le_rpow_of_nonpos ha0 ht.1.le (by linarith)
+    have h2 : t ^ (-z.re) / Real.log t ≤ t ^ (-z.re) := by
+      rw [div_le_iff₀ (by linarith)]
+      nlinarith [Real.rpow_pos_of_pos (lt_trans ha0 ht.1) (-z.re)]
+    linarith
+  refine hbound.trans ?_
+  rw [MeasureTheory.setIntegral_const]
+  have hvol : (volume.real (Ioc a b)) • (a ^ (-z.re)) = (b - a) * a ^ (-z.re) := by
+    simp [MeasureTheory.measureReal_def, Real.volume_Ioc,
+      ENNReal.toReal_ofReal (by linarith : (0:ℝ) ≤ b - a)]
+  rw [hvol]
+
+/-! ## The remainder current -/
+
+/-- **Card equation (20h).**  The arithmetic remainder relative to the continuous vacuum. -/
+def primeRemainderCurrent (z : ℂ) (x : ℝ) : ℂ :=
+  primeTailCurrent z x - primeVacuumCurrent z x
+
+theorem primeRemainderCurrent_eq {z : ℂ} {x : ℝ} (hx : 0 < x) (hx1 : x ≤ 1) :
+    primeRemainderCurrent z x
+      = (x : ℂ) ^ (-z)
+        * (primeTailSum z (ceilCut x) - primeVacuumTail z (max (Real.exp 1) x⁻¹)) := by
+  rw [primeRemainderCurrent, primeTailCurrent_eq_primeTailSum hx hx1, primeVacuumCurrent,
+    show ((⌈x⁻¹⌉₊ : ℕ) : ℝ) - 1 / 2 = ceilCut x from rfl]
+  ring
 
 end
 

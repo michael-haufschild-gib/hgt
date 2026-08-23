@@ -174,6 +174,7 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 | **Thm 5.2, the exponent step**: two exponents agreeing on the units of an algebraically closed field are equal (the units are infinite, the `d`-th roots of unity finite); with a trivial twisted norm and `σ = ( )^c` this gives `ν = ν' c`, Deninger's `q = p^a` | `HTGeometry/AlgClosedPowerExponent.lean`, `RHTower/DeningerDynSysTwistedNorm.lean` | closed |
 | **Thm 5.2, equation (48)**: the isotropy condition `F_ν (x, P) = F_{ν'} (x, P ∘ σ)` on character points is exactly `range (twisted norm) ≤ ker P` | `RHTower/DeningerDynSysIsotropyCondition.lean`, `RHTower/DeningerDynSysTwistedNorm.lean` | closed |
 | **Thm 5.2, the local computation**: for an algebraically closed `κ`, a `c`-th power automorphism `σ` and a character `P` with finite kernel, the isotropy condition forces `ν = ν' c` — Deninger's `q = p^a` | `RHTower/DeningerDynSysTwistedNorm.lean` | closed |
+| **§3 / §5, the `Q^{>0}_0`-action on `X̌ (C)`**: every `F_ν` with `ν ∈ N₀` is a bijection of the colimit, so `F_{ν/ν'} = F_ν ∘ F_{ν'}^{-1}` is defined; it depends only on the rational `ν/ν'`, is multiplicative, is the identity for `ν = ν'`, and fixes a point exactly when `F_ν` and `F_{ν'}` agree on it | `RHTower/DeningerDynSysColimFraction.lean` | closed |
 | **Cor 3.3, formal content**: for a normal subgroup `N ≤ G` acting on a set, `G` acts on the `N`-orbit space and `(S / N) / G = S / G` — Deninger's iterated descent `W_rat(X₁)(C)/G₁ = W_rat(X₀)(C)` | `HTGeometry/OrbitQuotientComposition.lean` | closed |
 | **Prop 1.1(b) in ring form over a domain**: `ω : ℤ[A ∖ 0] ≃+* W_rat(A)` for an integrally closed domain with algebraically closed fraction field, and the consequence `Hom_ring(W_rat(A), R) ≃ (A →*₀ R)` used for the `𝒪`-valued points | `RHTower/DeningerDynSysOmegaDomainRing.lean` | closed |
 | **Prop 1.1(b) (`t21nn`) in ring form**: `ω : ℤ[κˣ] ≃+* W_rat(κ)` for `κ` algebraically closed — the additive comparison is multiplicative because both sides are biadditive and `[a]⊙[b] = [ab]` | `RHTower/DeningerDynSysOmegaRing.lean` | closed |
@@ -993,4 +994,15 @@ Nothing in v4 is untracked by the ledger: the only apparent omission, Prop 1.4, 
   `X̌ (C)` with its bijective Frobenius operators is already in the corpus
   (`DeningerDynSysCharacterColimit`), and the isotropy condition there unwinds to precisely the
   identity now proved.
+  Axiom audit: `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-23 — **The `Q^{>0}_0`-action on the colimit `X̌ (C)` is built.**  The corpus already had
+  the colimit with `F_ν` bijective for `ν ∈ N₀`; `deningerColimFrac` is `F_ν ∘ F_{ν'}^{-1}`, and
+  the four laws are proved: `deningerColimFrac_congr` (it depends only on `ν / ν'`),
+  `deningerColimFrac_trans` (multiplicativity), `deningerColimFrac_self` (the identity), and
+  `deningerColimFrac_eq_self_iff` — `F_q` fixes a point exactly when `F_ν` and `F_{ν'}` agree on
+  it, which is the form Deninger uses to open the proof of Theorem 5.2.
+  Every proof goes the same way: apply the injective `F_{ν' μ'}` to both sides and push the
+  Frobenius operators past each other with `deningerColimFrobenius_commute`, which is new here
+  along with `deningerColimFrobenius_comp` and `F_1 = id`.
   Axiom audit: `[propext, Classical.choice, Quot.sound]`.

@@ -618,19 +618,45 @@ theorem two_mul_squaredEulerPacketReversedLoewnerJetDet_eq_cross_sum
     2 * squaredEulerPacketReversedLoewnerJetDet S t c X =
       ∑ i ∈ S, ∑ j ∈ S,
         squaredEulerOrbitReversedLoewnerCross (t i) (c i) (t j) (c j) X := by
+  let A02 := ∑ i ∈ S, ∑ j ∈ S,
+    squaredEulerOrbitReversedLoewnerMoment0 (t i) (c i) X *
+      squaredEulerOrbitReversedLoewnerMoment2 (t j) (c j) X
+  let A20 := ∑ i ∈ S, ∑ j ∈ S,
+    squaredEulerOrbitReversedLoewnerMoment0 (t j) (c j) X *
+      squaredEulerOrbitReversedLoewnerMoment2 (t i) (c i) X
+  let A11 := ∑ i ∈ S, ∑ j ∈ S,
+    squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X *
+      squaredEulerOrbitReversedLoewnerMoment1 (t j) (c j) X
+  have hswap : A02 = A20 := by
+    dsimp only [A02, A20]
+    rw [Finset.sum_comm]
   unfold squaredEulerPacketReversedLoewnerJetDet
     squaredEulerOrbitReversedLoewnerCross
   rw [show (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X) ^ 2 =
       (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X) *
         (∑ j ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t j) (c j) X) by ring]
   simp_rw [Finset.sum_mul, Finset.mul_sum]
-  rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
-  apply Finset.sum_congr rfl
-  intro i hi
-  rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
-  apply Finset.sum_congr rfl
-  intro j hj
-  ring
+  change 2 * (A02 - A11) = _
+  calc
+    2 * (A02 - A11) = A02 + A20 - 2 * A11 := by rw [← hswap]; ring
+    _ = ∑ i ∈ S, ∑ j ∈ S,
+        (squaredEulerOrbitReversedLoewnerMoment0 (t i) (c i) X *
+            squaredEulerOrbitReversedLoewnerMoment2 (t j) (c j) X +
+          squaredEulerOrbitReversedLoewnerMoment0 (t j) (c j) X *
+            squaredEulerOrbitReversedLoewnerMoment2 (t i) (c i) X -
+          2 * squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X *
+            squaredEulerOrbitReversedLoewnerMoment1 (t j) (c j) X) := by
+      dsimp only [A02, A20, A11]
+      rw [Finset.mul_sum]
+      simp_rw [Finset.mul_sum]
+      rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro j hj
+      ring
+    _ = _ := rfl
 
 /-- The full ordered interaction sum splits exactly into self interactions and distinct-orbit
 interference. -/

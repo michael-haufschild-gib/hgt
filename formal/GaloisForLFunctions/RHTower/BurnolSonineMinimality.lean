@@ -90,14 +90,11 @@ theorem exists_nonzero_soninCarrier_zeta_dvd {a : ℝ} (ha : 0 < a) (ha1 : a < 1
   obtain ⟨V, hVev, hVK, hVfour, hVphys, hordeq⟩ :=
     exists_soninCarrier_of_extended ha'0 ha haa' hev hmem hc hd
   have hVne : V ≠ 0 := by
-    refine ne_zero_of_order_ne_top ha hVev hVfour hVphys (ρ := ((3 / 4 : ℝ) : ℂ)) ?_ ?_ ?_
-    · simp
-      norm_num
-    · simp
-      norm_num
-    · rw [hordeq ((3 / 4 : ℝ) : ℂ) (by simp; norm_num) (by simp; norm_num)]
-      exact meromorphicOrderAt_extendedMellin_ne_top ha'0 hev hc hd hvne
-        (by simp; norm_num) (by simp; norm_num)
+    have hz1 : (0 : ℝ) < (((3 / 4 : ℝ) : ℂ)).re := by simp
+    have hz2 : (((3 / 4 : ℝ) : ℂ)).re < 1 := by simp; norm_num
+    refine ne_zero_of_order_ne_top ha hVev hVfour hVphys hz1 hz2 ?_
+    rw [hordeq ((3 / 4 : ℝ) : ℂ) hz1 hz2]
+    exact meromorphicOrderAt_extendedMellin_ne_top ha'0 hev hc hd hvne hz1 hz2
   refine ⟨V, hVne, hVev, hVK, hVfour, hVphys, ?_⟩
   intro ρ hζ hρ0 hρ1
   rw [hordeq ρ hρ0 hρ1]

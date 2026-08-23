@@ -214,3 +214,17 @@ theorem is now completely Lean-proved**: `I_α` is continuous and strictly incre
 
 Card 11: 9 modules.  Remaining: parts `4` (the small-`q` trichotomy), `5` (the high-coherence
 expansion), `S8` (the LDP and Gärtner--Ellis), `S9` (prime Karamata).
+
+## The two second moments (2026-08-23)
+
+`RHTower/SteinhausSecondMoments.lean`:
+
+- **`integral_steinhausProjection_sq : ∫ proj² dHaar = 1/2`** — the variance of the circle
+  projection, via the bridge and `∫₀^{2π} cos² = π`;
+- **`integral_weightProfile_sq : ∫₀¹ w_α² = (1−α)²/(1−2α)`** for `α < 1/2` — finite exactly below
+  the critical index, and the constant of the card's first regime:
+  `I_α(q) ∼ [(1−2α)/(1−α)²]q²` is `q²/(4A)` with `A = (1/4)∫w_α²`.
+
+Card 11: 10 modules.  The remaining input for part `4`'s sub-critical regime is
+`log I₀(x)/x² → 1/4`, i.e. the second-order Taylor coefficient of the cumulant at the origin,
+which is `Var/2` with `Var = 1/2` now available.
