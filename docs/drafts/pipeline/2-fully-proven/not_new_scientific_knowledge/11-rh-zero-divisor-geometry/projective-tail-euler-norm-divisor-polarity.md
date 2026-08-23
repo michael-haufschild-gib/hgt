@@ -194,3 +194,39 @@ retained as a precise bridge between two existing theorem surfaces.
 - [x] primary-literature and parent-theory audit completed
 - [x] novelty gate failed: Seip's Helson identity already contains the norm and polarity mechanism
 - [ ] 2 -> 3: optional full analytic formalization; not a novelty priority
+
+## Lean status update (2026-08-23): meromorphic norm-pair polarity
+
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicNormPairPolarity.lean` now closes the reusable local-divisor mechanism in `(5)`--`(6)`.  A `MeromorphicNormPairAt w` carries two meromorphic sheets, their product norm, local nontriviality, and the exact product identity as data.  Its closed theorem proves
+
+```text
+ord_w(left) + ord_w(right) = ord_w(norm).
+```
+
+The unit-norm-divisor refinement `MeromorphicNormPairUnitAt w` carries `ord_w(norm)=0` and proves unconditionally
+
+```text
+ord_w(right) = -ord_w(left).
+```
+
+The leaf reuses the corpus's proved meromorphic product-order theorem, is wired into `GaloisForLFunctions/HTGeometry.lean`, direct-checked, and exact-target-built with `lake build GaloisForLFunctions.HTGeometry.MeromorphicNormPairPolarity`.  Both theorem declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+This formalizes divisor polarity for every analytically realized norm pair.  The card remains at stage 2 until the infinite Euler-product norm identity, its concrete zeta-sheet instantiation, and completed reflection-center descent are formalized.
+
+## Lean status update (2026-08-23): completed norm center descent
+
+`formal/GaloisForLFunctions/RHTower/ProjectiveEulerNormReflection.lean` now closes `(8)` on the actual completed Riemann zeta function.  With
+
+```text
+projectiveEulerCompletedNorm(s) = completedRiemannZeta(2*s),
+```
+
+mathlib's proved functional equation gives the unconditional identity
+
+```text
+projectiveEulerCompletedNorm(1/2-s) = projectiveEulerCompletedNorm(s).
+```
+
+The same leaf proves algebraically that the associated anti-holomorphic reflection `s ↦ 1/2-conj(s)` fixes exactly `Re(s)=1/4`.  It is umbrella-wired, direct-checked, and exact-target-built with `lake build GaloisForLFunctions.RHTower.ProjectiveEulerNormReflection`; both declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+Completed reflection-center descent is therefore Lean-complete.  Remaining stage-3 blockers are the infinite signed Euler-product norm law and the concrete same/opposite-sheet analytic gauge correspondence needed to instantiate the generic polarity theorem.

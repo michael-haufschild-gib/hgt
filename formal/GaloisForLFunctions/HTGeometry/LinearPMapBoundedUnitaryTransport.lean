@@ -139,7 +139,93 @@ theorem LinearPMap.IsClosed.unitaryConjugate {K : Type*} [NormedAddCommGroup K]
   exact hT.preimage
     ((U.continuous.comp continuous_fst).prodMk (U.continuous.comp continuous_snd))
 
+variable {E K : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+  [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+
+/-- The pulled-back domain of a densely defined operator remains dense under unitary transport. -/
+theorem dense_unitaryConjugateLinearPMap_domain (U : E ≃ₗᵢ[ℂ] K)
+    {T : K →ₗ.[ℂ] K} (hT : Dense (T.domain : Set K)) :
+    Dense ((unitaryConjugateLinearPMap U T).domain : Set E) := by
+  have hpre : Dense (U ⁻¹' (T.domain : Set K)) :=
+    hT.preimage U.toHomeomorph.isOpenMap
+  exact hpre
+
+/-- Unitary conjugation preserves formal self-adjointness on the exact pulled-back domain. -/
+theorem LinearPMap.IsFormalAdjoint.unitaryConjugate (U : E ≃ₗᵢ[ℂ] K)
+    {T : K →ₗ.[ℂ] K} (hT : T.IsFormalAdjoint T) :
+    (unitaryConjugateLinearPMap U T).IsFormalAdjoint
+      (unitaryConjugateLinearPMap U T) := by
+  intro f g
+  let fT : T.domain := unitaryConjugateDomainMap U T f
+  let gT : T.domain := unitaryConjugateDomainMap U T g
+  have hfT : (fT : K) = U (f : E) := rfl
+  have hgT : (gT : K) = U (g : E) := rfl
+  calc
+    inner ℂ (unitaryConjugateLinearPMap U T f) (g : E) =
+        inner ℂ (U (unitaryConjugateLinearPMap U T f)) (U (g : E)) :=
+      (U.inner_map_map _ _).symm
+    _ = inner ℂ (T fT) (gT : K) := by
+      rw [unitaryConjugateLinearPMap_apply, LinearIsometryEquiv.apply_symm_apply, hgT]
+    _ = inner ℂ (fT : K) (T gT) := hT fT gT
+    _ = inner ℂ (f : E) (unitaryConjugateLinearPMap U T g) := by
+      rw [← U.inner_map_map]
+      rw [unitaryConjugateLinearPMap_apply, LinearIsometryEquiv.apply_symm_apply, hfT]
+
+/-- Self-adjointness is invariant under unitary conjugation of a partial linear operator. -/
+theorem IsSelfAdjoint.unitaryConjugate [CompleteSpace E] [CompleteSpace K]
+    (U : E ≃ₗᵢ[ℂ] K) {T : K →ₗ.[ℂ] K} (hT : IsSelfAdjoint T) :
+    IsSelfAdjoint (unitaryConjugateLinearPMap U T) := by
+  let S := unitaryConjugateLinearPMap U T
+  have hTdense : Dense (T.domain : Set K) := hT.dense_domain
+  have hSdense : Dense (S.domain : Set E) :=
+    dense_unitaryConjugateLinearPMap_domain U hTdense
+  have hTformal : T.IsFormalAdjoint T := by
+    have ha := LinearPMap.adjoint_isFormalAdjoint hTdense
+    rw [LinearPMap.isSelfAdjoint_def.mp hT] at ha
+    exact ha
+  have hSformal : S.IsFormalAdjoint S :=
+    LinearPMap.IsFormalAdjoint.unitaryConjugate U hTformal
+  rw [LinearPMap.isSelfAdjoint_def]
+  apply le_antisymm
+  · refine ⟨?_, ?_⟩
+    · intro y hy
+      let yAdj : S†.domain := ⟨y, hy⟩
+      have hUyAdj : U y ∈ T†.domain := by
+        apply LinearPMap.mem_adjoint_domain_of_exists
+        refine ⟨U (S† yAdj), ?_⟩
+        intro z
+        let zS : S.domain := ⟨U.symm (z : K), by
+          change U (U.symm (z : K)) ∈ T.domain
+          simpa only [LinearIsometryEquiv.apply_symm_apply] using z.property⟩
+        calc
+          inner ℂ (U (S† yAdj)) (z : K) =
+              inner ℂ (U (S† yAdj)) (U (zS : E)) := by
+            rw [show U (zS : E) = (z : K) by
+              simp only [zS, LinearIsometryEquiv.apply_symm_apply]]
+          _ = inner ℂ (S† yAdj) (zS : E) := U.inner_map_map _ _
+          _ = inner ℂ (y : E) (S zS) :=
+            LinearPMap.adjoint_isFormalAdjoint hSdense yAdj zS
+          _ = inner ℂ (U y) (T z) := by
+            have hzT : unitaryConjugateDomainMap U T zS = z := by
+              apply Subtype.ext
+              simp only [unitaryConjugateDomainMap, LinearMap.coe_mk, AddHom.coe_mk,
+                zS, LinearIsometryEquiv.apply_symm_apply]
+            calc
+              inner ℂ (y : E) (S zS) = inner ℂ (U y) (U (S zS)) :=
+                (U.inner_map_map _ _).symm
+              _ = inner ℂ (U y) (T z) := by
+                simp only [S, unitaryConjugateLinearPMap_apply,
+                  LinearIsometryEquiv.apply_symm_apply]
+                rw [hzT]
+      have hUyT : U y ∈ T.domain := by
+        rw [← LinearPMap.isSelfAdjoint_def.mp hT]
+        exact hUyAdj
+      exact hUyT
+    · intro x y hxy
+      exact LinearPMap.adjoint_apply_eq hSdense x (fun v => by
+        rw [hSformal y v, hxy])
+  · exact hSformal.le_adjoint hSdense
+
 end
 
 end GaloisForLFunctions.HTGeometry
-

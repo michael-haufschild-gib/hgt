@@ -24,6 +24,17 @@ exact modes created when the Euler-contour is transported to the critical bounda
 - [ ] 2 -> 3 formalized: Lean theorem and axiom check
 - [ ] 3 -> 4 publication-ready: infinite-divisor topology and external novelty review
 
+### Lean status
+
+- [x] Exact shifted-xi numerator and denominator at the spectral pole `z_rho`.
+- [x] Chain-rule identity
+  `d/dz xi(1/2+omega-iz)|_(z=z_rho) = -i xi'(rho)`.
+- [x] Punctured-neighborhood residue limit and explicit contour coefficient `(7)` for every
+  certified simple xi zero and positive shift, in
+  `RHTower/ShiftedXiResidueMode.lean`.
+- [x] Exact leaf build and axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
+- [ ] Finite-pole contour transport, higher-order Laurent blocks, and exact rank `sum_j m_j`.
+
 ## Setup
 
 Fix `omega>0` and put
@@ -227,3 +238,5 @@ scientific knowledge.
 
 - 2026-07-10 -- finite-divisor residue-mode formula and explicit simple-zero coefficient proved;
   scientific novelty audit open.
+- 2026-08-23 -- equation `(7)` and its underlying simple-pole residue limit formalized and audited;
+  finite-pole contour transport and multiplicity/rank blocks remain before stage 3.

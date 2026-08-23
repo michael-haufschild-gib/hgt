@@ -1,7 +1,7 @@
 # Finite Completed-Flux Passport Surjectivity
 
 - **ID:** `finite-completed-flux-passport-surjectivity`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / POSITIVE FINITE-PASSPORT CLASSIFICATION
 - **Date:** 2026-07-11
 - **Scientific status:** `[NOVELTY UNVERIFIED]`.  The local logarithmic integration and Hermite
@@ -213,10 +213,12 @@ another finite passport condition.
   germs is realized by one real-even, Schwarz-real polynomial that stays strictly positive real on
   the full imaginary axis and preserves every prescribed jet.  This is the reusable equivariant
   CRT-plus-repair interface for finite passport Taylor targets.
-- `[OPEN FORMAL INTERFACE]` Transfer each prescribed completed-flux passport to the corresponding
-  envelope-normalized finite local germ, prove preservation of its normalized logarithmic-derivative
-  jet, then assemble the existing exact-growth and period-classification components into the single
-  arbitrary finite-passport capstone.
+- `[FORMALIZATION]` `FiniteCompletedFluxPassportStripSurjectivity.lean` is the single
+  strip-coordinate capstone. It realizes every finite graded-real Taylor passport, every arbitrary
+  transverse next coefficient, all quartet simple zeros, FE, Schwarz reality, zero-free real axis,
+  aperiodicity, and explicit exact-order-one upper/lower bounds. Supporting reusable interfaces are
+  `AffineFluxTaylorCoeff.lean`, `FiniteCompletedFluxPassportPartnerSurjectivity.lean`, and
+  `QuartetPassportStripGuards.lean`.
 
 ## Gates
 
@@ -224,8 +226,29 @@ another finite passport condition.
   are explicit.
 - [x] 1 -> 2: the coordinate conversion, symmetry-assigned unit jets, degree-bounded CRT,
   positivity repair, exact separator, exact order, and aperiodicity have complete proofs above.
-- [ ] independent audit of the coordinate conversion and the global period argument.
-- [ ] 2 -> 3: the passport map, degree-controlled equivariant CRT, packet polynomial, global
+- [x] independent formal audit of the coordinate conversion and the global period argument.
+- [x] 2 -> 3: the passport map, degree-controlled equivariant CRT, packet polynomial, global
   positivity domination, cosh-envelope realizability, and the product period classification are
   formalized, together with exact entire order one; assemble the single global capstone.
 - [ ] complete the literature and parent-theory audit before any scientific-novelty promotion.
+
+## 2026-08-23 Stage 2 -> 3 formalization audit
+
+- [x] `RHTower.exists_strip_quartet_passport_flux_realizer_of_graded_passport` formalizes the full
+  positive theorem in strip coordinates, including arbitrary admissible finite passports and an
+  arbitrary separator outside the graded-real line.
+- [x] `RHTower.exists_quartet_passport_flux_realizer_of_full_finite_jet_passport` proves every
+  centered quartet point is a simple zero and gives the exact four-slot even/Schwarz jet law.
+- [x] `GaloisForLFunctions.HTGeometry.fluxGermTaylorCoeff_comp_affine` proves the exact affine
+  Taylor-coefficient scaling used in the paper's `z=-i(s-1/2)` conversion.
+- [x] `RHTower.quartetRealizerStrip_exact_order_one_bounds_of_centered` transports the global
+  exponential-type upper bound and positive lower ray to strip coordinates.
+- [x] Targeted checks passed with `lake env lean` on every modified/new leaf and
+  `lake build GaloisForLFunctions.RHTower.FiniteCompletedFluxPassportStripSurjectivity`.
+- [x] `#print axioms` for all new infrastructure and both capstones reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- [x] Modules are wired into `GaloisForLFunctions.HTGeometry` and
+  `GaloisForLFunctions.RHTower`; no umbrella build was run.
+
+No Lean proof obligation remains. Literature/parent-theory novelty classification remains a
+publication gate and does not block stage 3 formalized status.

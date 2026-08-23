@@ -1,8 +1,8 @@
 # Heat-aperture prime tail / seam reflection collapse
 
 - **ID:** `heat-aperture-prime-seam-reflection-collapse`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean source drafted and wired, verification deferred
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean 4)
 - **Scientific status:** `[PROVED HERE] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** The FE--Schwarz difference of every prime coefficient in the canonical
   heat-aperture Euler-log tail is exactly the corresponding canonical prime seam divided by the
@@ -269,7 +269,7 @@ present claim is therefore classified as a project bridge, not as new scientific
 
 ## Lean surface
 
-The unverified source draft is
+The verified source is
 
 ```text
 formal/GaloisForLFunctions/RHTower/HeatAperturePrimeSeamReflection.lean
@@ -295,12 +295,18 @@ with declarations
 - `degreeOneEulerLocalFlux_spectralDeriv_Schwarz_eq_FE_iff_re_eq_half`;
 - `primeEulerUnitTangent_Schwarz_eq_FE_iff_degreeOneEulerLocalFlux_Schwarz_eq_FE`;
 - `primeEulerUnitTangent_Schwarz_eq_FE_iff_heatAperturePrimeCoeff_eq`;
-- `primeEulerUnitTangent_two_Schwarz_eq_FE_iff_heatPrimeTwoCoeff_eq`.
+- `primeEulerUnitTangent_two_Schwarz_eq_FE_iff_heatPrimeTwoCoeff_eq`;
+- `koebeRational_inv`;
+- `koebeRational_eq_iff`;
+- `koebeRational_injectiveOn_unitDisk`;
+- `primeEulerUnitTangent_eq_log_mul_koebeRational`;
+- `primeEulerUnitTangent_eq_trigammaReflection`.
 
-It is imported by `formal/GaloisForLFunctions/RHTower.lean`.  Targeted verification on 2026-08-22
+It is imported by `formal/GaloisForLFunctions/RHTower.lean`.  Targeted verification on 2026-08-23
 passed: `lake env lean GaloisForLFunctions/RHTower/HeatAperturePrimeSeamReflection.lean` and
 `lake build GaloisForLFunctions.RHTower.HeatAperturePrimeSeamReflection`.  Stage 3 promotion
-remains pending the source-core prime--Gamma positivity theorem.
+is complete.  The source-core prime--Gamma positivity theorem remains a separate downstream
+research producer and is not an assumption of any theorem on this card.
 
 ## Gates
 
@@ -315,4 +321,23 @@ remains pending the source-core prime--Gamma positivity theorem.
 - [x] source draft added and imported by the RHTower umbrella
 - [x] classified as a bridge rather than an independent RH producer
 - [x] targeted Lean verification (2026-08-22; direct Lean and focused module build)
-- [ ] source-core prime--Gamma positivity
+- [x] Koebe reciprocal collision classification and open-unit-disk injectivity formalized
+- [x] imaginary-slope trigamma-reflection weld formalized
+- [ ] downstream source-core prime--Gamma positivity (separate research gate; not part of this
+      card's proved bridge theorem)
+
+## 2026-08-23 Stage 2 -> 3 formalization audit
+
+- [x] Every unconditional identity, equivalence, and rigidity statement proved on this card has a
+  named Lean declaration in `HeatAperturePrimeSeamReflection.lean`.
+- [x] The paper-only Koebe discussion is closed by the exact collision theorem
+  `koebeRational_eq_iff` and its unit-disk corollary `koebeRational_injectiveOn_unitDisk`.
+- [x] Equation `(6m)` is closed by
+  `primeEulerUnitTangent_eq_trigammaReflection`, using the existing unconditional
+  `RHTower.trigamma_reflection` theorem and an exact hyperbolic-sine/Euler-character identity.
+- [x] Direct Lean check and focused module build pass on the current toolchain.
+- [x] Headline and newly added declarations have only `propext`, `Classical.choice`, and
+  `Quot.sound` under `#print axioms`.
+- [x] Module remains wired into `GaloisForLFunctions.RHTower`; no umbrella build was run.
+
+No Lean proof obligation remains on this card.

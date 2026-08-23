@@ -1,8 +1,8 @@
 # The Euler logarithm has a canonical prime-power Herglotz carrier with a sharp half-weight wall
 
 - **ID:** `euler-log-prime-power-herglotz-half-weight-law`
-- **Stage:** 2-fully-proven / not-new
-- **Type:** THEOREM (paper), `[BRIDGE]`
+- **Stage:** 3-formalized / not-new
+- **Type:** THEOREM (Lean), `[BRIDGE]`
 - **Source:** `PrimeLogHerglotz.lean`, `critical-euler-position-commutator-carrier-law.md`,
   and the Euler product for zeta
 - **Statement:** The exact Euler-logarithm coefficients define a canonically renormalized positive
@@ -209,12 +209,26 @@ exact failure boundary.
   every finite prime-log cancellation order
 - [x] exact positive prime-power atom/time/residue algebra formalized in
       `formal/GaloisForLFunctions/RHTower/EulerLogPrimePowerHerglotz.lean`
-- [ ] formalize the full normalized prime-power carrier in Lean; the positive-transport wall is
-  formalized at all finite orders as
+- [x] full normalized prime-power carrier formalized in Lean: exact support and local finiteness,
+  Nevanlinna integrability, locally uniform convergence and holomorphy off the pole set, strict
+  upper-half-plane positivity, exact simple residues, exact complex Laplace transform, and exact
+  log-position derivative; the positive-transport wall is formalized at all finite orders as
   `not_summable_primeLogHerglotzTransportMassOrder_of_pos`
 - [ ] construct the marked Gamma-sewn covariance/relative trace across the half-weight wall
 - [ ] identify the resulting finite-degree Gram blocks with the Xi reciprocal moments
 - [ ] RH
+
+The three unchecked items are downstream sewing and RH-program tasks explicitly excluded by this
+carrier theorem's statement and consequence; they are not stage-3 gates for the theorem proved here.
+
+## Verification
+
+- `lake env lean GaloisForLFunctions/RHTower/EulerLogPrimePowerHerglotzPoles.lean` -- pass
+- `lake build GaloisForLFunctions.RHTower.EulerLogPrimePowerHerglotzPoles` -- pass
+- `lake env lean GaloisForLFunctions/RHTower/EulerLogPrimePowerLaplace.lean` -- pass
+- `lake build GaloisForLFunctions.RHTower.EulerLogPrimePowerLaplace` -- pass
+- new carrier, pole, transform, and derivative theorem axioms:
+  `[propext, Classical.choice, Quot.sound]`
 
 ## Log
 
@@ -239,3 +253,10 @@ exact failure boundary.
   formal integrability/upper-half-plane Herglotz portion, but the exact complex Laplace and
   logarithmic-derivative transforms still need a public reindexing bridge to the canonical Euler
   logarithm; card remains stage 2.
+- 2026-08-23 (Codex) — `EulerLogPrimePowerLaplace.lean` proves absolute convergence and the exact
+  complex identity with `canonicalEulerLogZeta`, identifies the log-position Laplace current with
+  `zetaLogDeriv`, and proves the derivative identity. `EulerLogPrimePowerHerglotzPoles.lean` proves
+  locally uniform convergence and holomorphy on the full pole complement and an exact simple pole
+  of residue `-a_(p,k)` at every support point. Both focused targets build; all new final theorems
+  use only `propext`, `Classical.choice`, and `Quot.sound`. Together with the already formalized
+  finite-order positive-transport wall, every carrier-theorem gate is closed; moved to stage 3.

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.HeatApertureEchoTomography
 import GaloisForLFunctions.RHTower.EulerUnitTangent
 import GaloisForLFunctions.RHTower.XiPrimeSeamCoherenceCollapse
+import GaloisForLFunctions.HTGeometry.PolygammaReflection
 
 /-!
 # The reflected heat-aperture prime tail is the canonical prime seam
@@ -469,6 +470,181 @@ theorem primeEulerUnitTangent_two_Schwarz_eq_FE_iff_heatPrimeTwoCoeff_eq
         heatAperturePrimePowerCoeff ((starRingEnd ℂ) rho) 2 := by
   rw [primeEulerUnitTangent_two_Schwarz_eq_FE_iff_re_eq_half hstrip,
     heatAperturePrimeTwoCoeff_FE_eq_Schwarz_iff_re_eq_half]
+
+/-! ## Koebe and trigamma coordinates of the actual Euler tangent -/
+
+/-- The rational Koebe coordinate used by one actual Euler character. -/
+def koebeRational (q : ℂ) : ℂ := q / (1 - q) ^ 2
+
+/-- The Koebe coordinate is invariant under reciprocal reflection. -/
+theorem koebeRational_inv {q : ℂ} (hq : q ≠ 0) :
+    koebeRational q⁻¹ = koebeRational q := by
+  by_cases hqone : q = 1
+  · subst q
+    simp [koebeRational]
+  · have hqden : 1 - q ≠ 0 := sub_ne_zero.mpr (Ne.symm hqone)
+    unfold koebeRational
+    field_simp [hq, hqden]
+    ring
+
+/-- Exact Koebe collision classification away from the pole: two values agree precisely for
+equal or reciprocal arguments. -/
+theorem koebeRational_eq_iff {q r : ℂ} (hq : q ≠ 1) (hr : r ≠ 1) :
+    koebeRational q = koebeRational r ↔ q = r ∨ q * r = 1 := by
+  have hqden : 1 - q ≠ 0 := sub_ne_zero.mpr (Ne.symm hq)
+  have hrden : 1 - r ≠ 0 := sub_ne_zero.mpr (Ne.symm hr)
+  constructor
+  · intro h
+    unfold koebeRational at h
+    field_simp [hqden, hrden] at h
+    have hfactor : (q - r) * (1 - q * r) = 0 := by
+      calc
+        (q - r) * (1 - q * r) = q * (1 - r) ^ 2 - r * (1 - q) ^ 2 := by ring
+        _ = 0 := by rw [h]; ring
+    rcases mul_eq_zero.mp hfactor with hqr | hprod
+    · exact Or.inl (sub_eq_zero.mp hqr)
+    · exact Or.inr (sub_eq_zero.mp hprod).symm
+  · rintro (rfl | hprod)
+    · rfl
+    · unfold koebeRational
+      field_simp [hqden, hrden]
+      have hdifference : q * (1 - r) ^ 2 - r * (1 - q) ^ 2 = 0 := by
+        calc
+          q * (1 - r) ^ 2 - r * (1 - q) ^ 2 = (q - r) * (1 - q * r) := by ring
+          _ = 0 := by rw [hprod]; ring
+      exact (sub_eq_zero.mp hdifference).trans (mul_comm _ _)
+
+/-- The reciprocal branch is excluded inside the open unit disk, so the Koebe coordinate is
+injective there. -/
+theorem koebeRational_injectiveOn_unitDisk {q r : ℂ}
+    (hqnorm : ‖q‖ < 1) (hrnorm : ‖r‖ < 1) :
+    koebeRational q = koebeRational r ↔ q = r := by
+  have hq : q ≠ 1 := by
+    intro h
+    rw [h, norm_one] at hqnorm
+    exact (lt_irrefl 1) hqnorm
+  have hr : r ≠ 1 := by
+    intro h
+    rw [h, norm_one] at hrnorm
+    exact (lt_irrefl 1) hrnorm
+  rw [koebeRational_eq_iff hq hr]
+  constructor
+  · rintro (h | hprod)
+    · exact h
+    · have hnorm : ‖q * r‖ < 1 := by
+        rw [norm_mul]
+        nlinarith [norm_nonneg q, norm_nonneg r]
+      rw [hprod, norm_one] at hnorm
+      exact (lt_irrefl 1 hnorm).elim
+  · exact Or.inl
+
+/-- The actual Euler tangent is the logarithmic prime weight times the Koebe coordinate. -/
+theorem primeEulerUnitTangent_eq_log_mul_koebeRational (p : ℕ) (s : ℂ) :
+    RHTower.primeEulerUnitTangent p s =
+      (Real.log p : ℂ) * koebeRational ((p : ℂ) ^ (-s)) := by
+  unfold RHTower.primeEulerUnitTangent koebeRational
+  ring
+
+/-- Canonical imaginary-slope Gamma coordinate of a prime Euler factor. -/
+def primeEulerGammaCoordinate (p : ℕ) (s : ℂ) : ℂ :=
+  Complex.I * (Real.log p : ℂ) * s / (2 * (Real.pi : ℂ))
+
+private theorem exp_neg_two_mul_div_one_sub_sq_eq_inv_four_sinh_sq
+    (x : ℂ) (hden : 1 - Complex.exp (-2 * x) ≠ 0) :
+    Complex.exp (-2 * x) / (1 - Complex.exp (-2 * x)) ^ 2 =
+      1 / (4 * Complex.sinh x ^ 2) := by
+  have hpow : Complex.exp (-2 * x) = Complex.exp (-x) ^ 2 := by
+    rw [pow_two, ← Complex.exp_add]
+    congr 1
+    ring
+  have hpos : Complex.exp x = (Complex.exp (-x))⁻¹ := by
+    simpa using Complex.exp_neg (-x)
+  have hE0 : Complex.exp (-x) ≠ 0 := Complex.exp_ne_zero _
+  have hden' : 1 - Complex.exp (-x) ^ 2 ≠ 0 := by
+    rwa [hpow] at hden
+  rw [hpow, Complex.sinh, hpos]
+  field_simp [hE0, hden']
+  ring
+
+/-- **Euler tangent/trigamma-reflection weld.**  On the open Euler half-plane, the actual
+Euler-point tangent is exactly the imaginary-slope trigamma-reflection curvature. -/
+theorem primeEulerUnitTangent_eq_trigammaReflection
+    {p : ℕ} (hp : p.Prime) {s : ℂ} (hs : 0 < s.re) :
+    RHTower.primeEulerUnitTangent p s =
+      -(Real.log p : ℂ) / (4 * (Real.pi : ℂ) ^ 2) *
+        (deriv Complex.digamma (primeEulerGammaCoordinate p s) +
+          deriv Complex.digamma (1 - primeEulerGammaCoordinate p s)) := by
+  let L : ℂ := (Real.log p : ℂ)
+  let x : ℂ := L * s / 2
+  let u : ℂ := primeEulerGammaCoordinate p s
+  have hlogpos : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
+  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  have huim : 0 < u.im := by
+    have hueq : (2 * (Real.pi : ℂ)) * u = Complex.I * L * s := by
+      dsimp only [u, primeEulerGammaCoordinate]
+      field_simp [hpi]
+      ring
+    have him := congrArg Complex.im hueq
+    have hLre : L.re = Real.log p := rfl
+    have hLim : L.im = 0 := rfl
+    have him' : 2 * Real.pi * u.im = Real.log p * s.re := by
+      simp only [Complex.mul_im, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+        Complex.I_re, Complex.I_im, hLre, hLim, zero_mul, one_mul] at him
+      norm_num at him
+      exact him
+    nlinarith [Real.pi_pos]
+  have hunot : ∀ m : ℤ, u ≠ (m : ℂ) := by
+    intro m hm
+    have him := congrArg Complex.im hm
+    have hmim : ((m : ℂ)).im = 0 := by simp
+    rw [hmim] at him
+    linarith
+  have href := RHTower.trigamma_reflection hunot
+  have harg : (Real.pi : ℂ) * u = x * Complex.I := by
+    dsimp only [u, x, primeEulerGammaCoordinate, L]
+    field_simp [hpi]
+  rw [harg, Complex.sin_mul_I] at href
+  have hq : (p : ℂ) ^ (-s) = Complex.exp (-2 * x) := by
+    rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hp.ne_zero)]
+    rw [← Complex.natCast_log]
+    dsimp only [x, L]
+    congr 1
+    ring
+  have hden : 1 - Complex.exp (-2 * x) ≠ 0 := by
+    rw [← hq]
+    exact RHTower.one_sub_prime_cpow_neg_ne_zero hp.two_le hs
+  have hexpsinh := exp_neg_two_mul_div_one_sub_sq_eq_inv_four_sinh_sq x hden
+  have hsinh : Complex.sinh x ≠ 0 := by
+    intro hzero
+    have htwo := Complex.two_sinh x
+    rw [hzero, mul_zero] at htwo
+    have hexpeq : Complex.exp x = Complex.exp (-x) := sub_eq_zero.mp htwo.symm
+    have hpow : Complex.exp (-2 * x) = Complex.exp (-x) ^ 2 := by
+      rw [pow_two, ← Complex.exp_add]
+      congr 1
+      ring
+    apply hden
+    rw [hpow]
+    apply sub_eq_zero.mpr
+    symm
+    calc
+      Complex.exp (-x) ^ 2 = Complex.exp x * Complex.exp (-x) := by
+        rw [pow_two, hexpeq]
+      _ = Complex.exp (x + -x) := by rw [Complex.exp_add]
+      _ = 1 := by simp
+  unfold RHTower.primeEulerUnitTangent
+  rw [hq, href]
+  calc
+    (Real.log p : ℂ) * Complex.exp (-2 * x) /
+        (1 - Complex.exp (-2 * x)) ^ 2 =
+        (Real.log p : ℂ) *
+          (Complex.exp (-2 * x) / (1 - Complex.exp (-2 * x)) ^ 2) := by ring
+    _ = (Real.log p : ℂ) * (1 / (4 * Complex.sinh x ^ 2)) := by rw [hexpsinh]
+    _ = -(Real.log p : ℂ) / (4 * (Real.pi : ℂ) ^ 2) *
+        ((Real.pi : ℂ) ^ 2 / (Complex.sinh x * Complex.I) ^ 2) := by
+      field_simp [hsinh, hpi]
+      rw [Complex.I_sq]
+      ring
 
 end
 

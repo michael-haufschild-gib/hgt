@@ -1,8 +1,8 @@
 # Gaussian radial all-late hardness transfer law
 
 - **ID:** gaussian-radial-all-late-hardness-transfer
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean)
 - **Source:** static-local-complexity-law.md · O4 fixed-time transfer
 - **Statement:** A radial static-Hamiltonian ensemble inherits every asymptotic fixed-shell
   capture upper bound at every sufficiently late laboratory time, not merely along an unbounded
@@ -19,7 +19,7 @@ positive Gaussian radius is itself a random clock and removes that subsequence l
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem, targeted source check/build, axiom audit
+- [x] 2 → 3  formalized: Lean theorem, targeted source check/build, axiom audit
 - [ ] 3 → 4  publication-ready: integrated only after Brown first-onset closure
 
 ## Theorem
@@ -109,7 +109,18 @@ Brown schedule.  Equivalently, prove finite-scale dephasing/undistortion for the
 shell; asymptotic occupation plus radial mixing cannot exclude an arbitrarily long initial
 transient.
 
+## Lean formalization
+
+Formalized in
+`formal/GaloisForLFunctions/HTGeometry/GaussianRadialAllLateHardnessTransferLaw.lean`.
+The module proves the full-filter dilation theorem, Gaussian angular/product/radius
+normalization, and the chi-radius specialization.  Targeted source check and module build pass.
+`#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound` for every exported
+theorem.
+
 ## Log
 
 - 2026-08-23 — Conjecture C1 (`Gaussian radius is an internal clock`) proved by reverse Fatou.
 - 2026-08-23 — Hostile audit retained theorem but rejected it as Brown first-onset closure.
+- 2026-08-23 — Formalized and wired into `GaloisForLFunctions.HTGeometry`; targeted build and
+  axiom audit passed.

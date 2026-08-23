@@ -409,3 +409,19 @@ If `W(a,b) != 0`, both `d(a)` and `d(b)` are strictly positive.  The proof takes
 The leaf is umbrella-wired, direct-checked, and exact-target-built with `lake build GaloisForLFunctions.RHTower.PositiveDiagonalCompletionEdge`.  Both public declarations audit only to `[propext, Classical.choice, Quot.sound]`.
 
 The card remains at stage 2 pending `(V18)`, the infinite derivative/strict-positivity statement `(V20)`--`(V21)`, and the visible-addition/mixed-zero-jet analytic laws.
+
+## Lean status update (2026-08-23): positive Dirichlet completion jets
+
+`formal/GaloisForLFunctions/RHTower/PositiveDiagonalCompletionDirichletJet.lean` supplies the dependency-closed analytic core of `(V20)`--`(V21)`.  It first proves the reusable identity that the `(p,q)` mixed derivative of `F(s+t)` is `F^(p+q)(s+t)`.  It then packages a nonnegative Dirichlet coefficient family, convergence at an abscissa `sigma0`, and one strictly positive coefficient at some `n>1` as data.  For that data it proves:
+
+```text
+C(sigma0) > 0,
+C^(2m)(sigma0+h) = sum_n d_n*(log n)^(2m)*n^(-(sigma0+h)) > 0  for h>0,
+partial_s^m partial_t^m C(s+t) at t=conj(s)
+  = sum_n d_n*(log n)^(2m)*n^(-2 Re(s)) > 0
+  whenever sigma0 < 2 Re(s).
+```
+
+All convergence and positivity requirements are fields of the data object, so theorem declarations add no premises.  The leaf is umbrella-wired, direct-checked, and exact-target-built with `lake build GaloisForLFunctions.RHTower.PositiveDiagonalCompletionDirichletJet`.  Its nine public theorem declarations audit only to `[propext, Classical.choice, Quot.sound]`.
+
+Lean also makes an important boundary distinction explicit: convergence of `sum d_n/n` alone does not imply convergence of `sum d_n*(log n)^(2m)/n`.  Thus the exact critical-line derivative in `(V21)` requires either convergence at an abscissa left of `1` (already covered by this leaf) or an analytic-continuation input from which Landau's theorem derives that margin.  The card remains at stage 2 until that boundary bridge, `(V18)`, and the earlier visible-addition/mixed-zero-jet laws are closed.

@@ -1,8 +1,8 @@
 # Finite Euler multipliers are imaginary-slope Gamma-reflection welds
 
 - **ID:** `finite-euler-imaginary-gamma-reflection-weld`
-- **Stage:** 2-fully-proven / not-new
-- **Type:** THEOREM (paper), `[VALUE RELATION]`, `[REFLECTION]`, `[CONSTRAINT]`
+- **Stage:** 3-formalized / not-new
+- **Type:** THEOREM (Lean), `[VALUE RELATION]`, `[REFLECTION]`, `[CONSTRAINT]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** Euler's Gamma reflection formula;
   `semilocal-dual-pair-euler-connection-source-law.md`;
@@ -238,11 +238,14 @@ complement required by the boundary theorem.
 packaging, the exact one-prime Gamma factorization, and its finite semilocal product and quartet
 forms. `RHTower/FiniteEulerLocalQuartet.lean` formalizes the two-prime reality/positive-real
 selector, while `RHTower/FiniteEulerGammaConnection.lean` supplies the exact finite derivative
-identities. Their targeted checks and axiom audits use only `propext`, `Classical.choice`, and
-`Quot.sound`.
+identities. `RHTower/FiniteEulerGammaDifferentialWeld.lean` supplies the direct digamma-reflection,
+hyperbolic-cotangent, and quartet logarithmic-derivative identities. The exact tangent/trigamma
+identity is already formalized as `primeEulerUnitTangent_eq_trigammaReflection`. Targeted checks and
+axiom audits use only `propext`, `Classical.choice`, and `Quot.sound`.
 
-The remaining implication `(15)` is not discharged: no independent unconditional source theorem
-has yet forced the two selected local values real on arbitrary Xi fibres. The card remains stage 2.
+No independent unconditional source theorem yet forces the two selected local values real on
+arbitrary Xi fibres. That premise is equation `(16)`, explicitly outside this finite weld theorem;
+it does not block stage-3 formalization of equations `(3)`--`(15)`.
 
 ## Literature
 
@@ -258,10 +261,28 @@ has yet forced the two selected local values real on arbitrary Xi fibres. The ca
 - [x] finite semilocal multiplier factorization
 - [x] exact digamma-reflection connection value
 - [x] exact spectral-curvature/actual-tangent identity
-- [x] exact actual-tangent/trigamma-reflection identity on paper
+- [x] exact actual-tangent/trigamma-reflection identity formalized as
+      `primeEulerUnitTangent_eq_trigammaReflection`
 - [x] FE-symmetric Gamma quartet and logarithmic derivative
 - [x] critical-line positive-real chamber
 - [x] two-prime reality selector away from height zero
 - [x] formalize the Gamma-reflection factorization and finite two-prime selector
 - [ ] find an independent source theorem forcing the two selected values real on Xi fibres
 - [ ] conclude RH
+
+The two unchecked items are the separate RH-facing premise and its consumer, not claims of this
+finite Euler--Gamma weld theorem.
+
+## Verification
+
+- `lake env lean GaloisForLFunctions/RHTower/FiniteEulerGammaDifferentialWeld.lean` -- pass
+- `lake build GaloisForLFunctions.RHTower.FiniteEulerGammaDifferentialWeld` -- pass
+- new differential-weld theorem axioms: `[propext, Classical.choice, Quot.sound]`
+
+## Log
+
+- 2026-08-23 (Codex) — reused the existing reciprocal-Gamma, trigamma, and two-prime-selector
+  corpus rather than duplicating them. Added the missing direct digamma anomaly, coth form, and
+  quartet log-derivative bridge in `FiniteEulerGammaDifferentialWeld.lean`; focused source check,
+  target build, and axiom audit pass. Every theorem asserted in `(3)`--`(15)` is now formalized;
+  moved to stage 3.
