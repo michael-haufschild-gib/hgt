@@ -2445,6 +2445,7 @@ import GaloisForLFunctions.RHTower.DeningerDynSysCor15Injective
 import GaloisForLFunctions.RHTower.DeningerDynSysProp14Invariants
 import GaloisForLFunctions.RHTower.DeningerDynSysCor31
 import GaloisForLFunctions.RHTower.DeningerDynSysCor31Separable
+import GaloisForLFunctions.RHTower.DeningerDynSysCor32
 import GaloisForLFunctions.RHTower.DeningerDynSysDescentDegreeAtom
 import GaloisForLFunctions.RHTower.DeningerEdgeCocycle
 import GaloisForLFunctions.RHTower.DeningerEndpointCodimension
@@ -4140,6 +4141,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaskedSymmetry
 import GaloisForLFunctions.RHTower.Sieve.BlockLongEnergy
 import GaloisForLFunctions.RHTower.Sieve.BlockEnergyBound
 import GaloisForLFunctions.RHTower.Sieve.BlockCountAssembly
+import GaloisForLFunctions.RHTower.Sieve.SubCriticalPowerSum
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtParityCorrection
 import GaloisForLFunctions.RHTower.FriableCoefficientSurjectivity
 import GaloisForLFunctions.RHTower.FriableEdgeCoefficients

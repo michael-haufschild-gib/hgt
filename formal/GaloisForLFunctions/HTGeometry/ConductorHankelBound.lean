@@ -144,6 +144,31 @@ theorem integral_resolventHankel {r : ℝ} (hr : 0 < r) :
   field_simp
   ring
 
+/-! ## The bilinear form -/
+
+/-- **The conductor Hankel form is bounded.**  Cauchy–Schwarz against the operator bound. -/
+theorem lintegral_conductorHankel_form_le {F G : ℝ → ℝ≥0∞}
+    (hF : Measurable F) (hG : Measurable G) :
+    (∫⁻ u in Ioi (0:ℝ),
+        G u * ∫⁻ v in Ioi (0:ℝ), ENNReal.ofReal (conductorHankelKernel (u + v)) * F v)
+      ≤ ENNReal.ofReal (2 * Real.pi ^ 2)
+        * (∫⁻ u in Ioi (0:ℝ), G u ^ 2) ^ ((1 : ℝ) / 2)
+        * (∫⁻ v in Ioi (0:ℝ), F v ^ 2) ^ ((1 : ℝ) / 2) := by
+  have hTmeas : Measurable fun u : ℝ =>
+      ∫⁻ v in Ioi (0:ℝ), ENNReal.ofReal (conductorHankelKernel (u + v)) * F v := by
+    refine Measurable.lintegral_prod_right' (f := fun p : ℝ × ℝ =>
+      ENNReal.ofReal (conductorHankelKernel (p.1 + p.2)) * F p.2) ?_
+    refine Measurable.mul ?_ (hF.comp measurable_snd)
+    refine ENNReal.measurable_ofReal.comp ?_
+    exact (measurable_const.mul ((Real.measurable_exp.comp
+      (measurable_const.mul (measurable_fst.add measurable_snd))))).div
+        (measurable_fst.add measurable_snd)
+  have hcs := ENNReal.lintegral_mul_le_Lp_mul_Lq (volume.restrict (Ioi (0:ℝ)))
+    (Real.isConjExponent_iff.mpr (by norm_num : (1:ℝ) < 2) |>.symm ▸
+      (⟨by norm_num, by norm_num⟩ : (2:ℝ).HolderConjugate 2))
+    hG.aemeasurable hTmeas.aemeasurable
+  sorry
+
 end
 
 end GaloisForLFunctions.HTGeometry

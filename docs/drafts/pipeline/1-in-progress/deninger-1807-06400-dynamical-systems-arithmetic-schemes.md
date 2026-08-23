@@ -240,6 +240,12 @@ and the relation to the Fargues–Fontaine curve) into the corpus as closed Lean
 
 | **(23) = Bourbaki V §2 no 3 Prop 6, for a profinite group** (mathlib gap): the stabilizer of a prime `Q` of `B` surjects onto `Aut(κ(Q)/κ(P))`.  Mathlib has this only for the quotients `(B ⧸ Q)/(A ⧸ P)` in the profinite case, and for the residue fields only when `G` is finite.  Route: the orbit polynomial has invariant coefficients, so a `K`-automorphism of `L` permutes the orbit and therefore restricts to `B ⧸ Q` | `RHTower/DeningerDynSysStabilizerResidueField.lean` | closed |
 
+| **Monic-root closed rings** (mathlib gap): the integral closure of a ring in an algebraically closed field has a root of every monic polynomial of positive degree; the property passes to quotients; and the fraction field of a monic-root closed domain is algebraically closed, by scaling the roots by a common denominator | `HTGeometry/MonicRootClosed.lean` | closed |
+
+| **§3, `κ(x)` is an algebraic closure of `κ(x₀)`**: the residue-field extension of an integral extension is algebraic, the residue fields of a monic-root closed ring are algebraically closed, hence `IsAlgClosure κ(x₀) κ(x)` for the integral closure in an algebraically closed field — exactly the hypothesis of Corollary 3.1 | `RHTower/DeningerDynSysResidueAlgClosure.lean` | closed |
+
+| **Cor 3.2**, the fibre statement: two characters of `κ(Q)ˣ` induce the same homomorphism of `W_rat(κ(P))` iff they differ by an element of the stabilizer of `Q` in `G`; together with surjectivity of `Spec B → Spec A` on primes and transitivity of `G` on each fibre | `RHTower/DeningerDynSysCor32.lean` | closed |
+
 Axiom audit: every capstone above depends only on `propext`, `Classical.choice`, `Quot.sound`.
 
 ### Duplication audit (2026-08-22)
@@ -387,6 +393,14 @@ AIC-domain comparison.
   proved from the orbit polynomial: its coefficients are `G`-invariant, hence lie in `A`, hence are
   fixed, so the automorphism permutes the roots, which are exactly the images of the `G`-orbit.
   This is the input Deninger quotes from Bourbaki for Corollaries 3.1–3.3.
+- 2026-08-23 — **Corollary 3.2 assembled.**  Its three ingredients are now all unconditional in the
+  invariant-extension setting: (a) the residue field at a prime of the integral closure in an
+  algebraically closed field is an *algebraic closure* of the residue field below — proved through
+  a new general layer, `IsMonicRootClosed`, whose three lemmas (integral closures have it, it
+  passes to quotients, and a monic-root closed domain has algebraically closed fraction field) are
+  a mathlib gap; (b) Corollary 3.1 at that pair of residue fields; (c) the profinite (23) to turn
+  the resulting `κ(x₀)`-automorphism of `κ(x)` into an element of the stabilizer.  Surjectivity on
+  points is lying over, and transitivity on each fibre is mathlib's profinite invariant theory.
 - 2026-08-23 — **Prop 14.13's correspondence `χ = ♯ ∘ χ♭` is built and shown injective**: the
   zeroth coefficient of `χ♭ x` is the reduction of `(χ♭ x)^♯` modulo `p`
   (`PreTilt.mk_untilt_eq_coeff_zero`), and `Perfection.hom_ext` says a homomorphism into a

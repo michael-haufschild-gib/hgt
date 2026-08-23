@@ -5,7 +5,9 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
+| Kind | Location | Context | Text |
+|---|---|---|---|
+| proof-debt | `formal/GaloisForLFunctions/HTGeometry/ConductorHankelBound.lean:170` | `theorem lintegral_conductorHankel_form_le` | `sorry` |
 
 ## Large Files
 
@@ -13,8 +15,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 11994 | `formal/GaloisForLFunctions/RHTower.lean` |
-| 11091 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 12329 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 11223 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
 | 6343 | `formal/GaloisForLFunctions/HTGeometry/ABHN/NonarchimedeanLocalFieldValuationSequence.lean` |

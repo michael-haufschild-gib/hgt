@@ -233,13 +233,27 @@ theorem conductorAnalytic_eq_resolvent (ξ : ℝ) :
   have hint : IntegrableOn
       (fun lam : ℝ => 1 / ((lam : ℂ) + 2) - 1 / ((lam : ℂ) + 2 + Complex.I * ξ))
       (Set.Ioi 0) volume := by
-    have hmajor : IntegrableOn (fun lam : ℝ => |ξ| * ((lam + 2) ^ (-2 : ℝ)))
+    have hmajor : IntegrableOn (fun lam : ℝ => |ξ| * ((lam + 2) ^ 2)⁻¹)
         (Set.Ioi (0:ℝ)) volume := by
-      have hb : IntegrableOn (fun lam : ℝ => (lam + 2) ^ (-2 : ℝ)) (Set.Ioi (0:ℝ)) volume := by
-        have h := integrableOn_Ioi_rpow_of_lt (a := (-2 : ℝ)) (by norm_num) (by norm_num : (0:ℝ) < 2)
-        have hmap := (MeasureTheory.integrableOn_Ioi_comp_add_right_iff
-          (f := fun u : ℝ => u ^ (-2 : ℝ)) (a := (0:ℝ)) (c := (2:ℝ))).mpr (by simpa using h)
-        exact hmap
+      have hb : IntegrableOn (fun lam : ℝ => ((lam + 2) ^ 2)⁻¹) (Set.Ioi (0:ℝ)) volume := by
+        refine integrableOn_Ioi_deriv_of_nonneg (g := fun m : ℝ => -(m + 2)⁻¹) (l := 0)
+          ?_ ?_ ?_ ?_
+        · refine ContinuousAt.continuousWithinAt ?_
+          exact ((continuousAt_id.add continuousAt_const).inv₀ (by norm_num)).neg
+        · intro m hm
+          have hm2 : (m : ℝ) + 2 ≠ 0 := by
+            have : (0 : ℝ) < m := hm
+            linarith
+          have h := ((hasDerivAt_id m).add_const (2 : ℝ)).inv hm2
+          have h2 := h.neg
+          refine h2.congr_deriv ?_
+          simp only [id_eq]
+          field_simp
+        · intro m hm
+          positivity
+        · have hd : Tendsto (fun m : ℝ => (m + 2)⁻¹) atTop (𝓝 0) :=
+            tendsto_inv_atTop_zero.comp (tendsto_atTop_add_const_right atTop (2:ℝ) tendsto_id)
+          simpa using hd.neg
       exact hb.const_mul _
     refine Integrable.mono' hmajor ?_ ?_
     · refine (Measurable.sub ?_ ?_).aestronglyMeasurable.restrict
@@ -270,12 +284,18 @@ theorem conductorAnalytic_eq_resolvent (ξ : ℝ) :
         calc lam + 2 = ((lam : ℂ) + 2 + Complex.I * ξ).re := hre.symm
           _ ≤ _ := Complex.re_le_norm _
       rw [hn1, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
-      have hpow : ((lam + 2) ^ (-2 : ℝ)) = 1 / (lam + 2) ^ 2 := by
-        rw [Real.rpow_neg hl2.le, show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
-        field_simp
-      rw [hpow, mul_one_div,
-        div_le_div_iff₀ (by positivity) (by positivity)]
-      nlinarith [abs_nonneg ξ, hn2, hl2]
+      rw [div_le_iff₀ (by positivity)]
+      have hstep : (lam + 2) * (lam + 2) ≤ (lam + 2) * ‖(lam : ℂ) + 2 + Complex.I * ξ‖ :=
+        mul_le_mul_of_nonneg_left hn2 hl2.le
+      have hmul : |ξ| * ((lam + 2) * (lam + 2))
+          ≤ |ξ| * ((lam + 2) * ‖(lam : ℂ) + 2 + Complex.I * ξ‖) :=
+        mul_le_mul_of_nonneg_left hstep (abs_nonneg ξ)
+      have hinv : (0 : ℝ) < ((lam + 2) ^ 2)⁻¹ := by positivity
+      calc |ξ| = |ξ| * ((lam + 2) * (lam + 2)) * ((lam + 2) ^ 2)⁻¹ := by
+            field_simp
+        _ ≤ |ξ| * ((lam + 2) * ‖(lam : ℂ) + 2 + Complex.I * ξ‖) * ((lam + 2) ^ 2)⁻¹ :=
+            mul_le_mul_of_nonneg_right hmul hinv.le
+        _ = |ξ| * ((lam + 2) ^ 2)⁻¹ * ((lam + 2) * ‖(lam : ℂ) + 2 + Complex.I * ξ‖) := by ring
   have hval := integral_Ioi_of_hasDerivAt_of_tendsto
     (f := conductorResolventPrimitive ξ)
     (f' := fun lam : ℝ => 1 / ((lam : ℂ) + 2) - 1 / ((lam : ℂ) + 2 + Complex.I * ξ))

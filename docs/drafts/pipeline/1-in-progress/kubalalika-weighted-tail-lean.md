@@ -544,3 +544,22 @@ Card 12: 46 modules.
 
 Card 12: 47 modules.  The remaining outer summation is the one over `r`, and the remaining choice
 is `U = V = W`.
+
+## The `r`-summation kernels (2026-08-23)
+
+Search "sum of r to the power minus c over interval bound exponent less than one" found nothing;
+the corpus owns only the SUPER-critical tail (`sum_rpow_neg_tail_le`, `c > 1`).
+
+`SubCriticalPowerSum.lean`:
+
+- `rpow_neg_step_le` — one unit step of the integral comparison, `((n+1))^{-c} ≤ ∫_n^{n+1}t^{-c}`,
+  from `integral_rpow` and the antitonicity of `t ↦ t^{-c}`;
+- **`sum_rpow_neg_subcritical_le : Σ_{r ≤ N} r^{-c} ≤ N^{1-c}/(1-c) + 1`** for `0 < c < 1`.
+
+With the corpus's `sum_rpow_neg_tail_le` for `c > 1`, both kinds of `r`-sum in the exponent budget
+are now available:
+```
+Σ_r r^{-9/10} ≪ (T^{3/4})^{1/10},   Σ_{r ≥ R} r^{-5/4} ≪ R^{-1/4},   Σ_{r ≥ R} r^{-3/2} ≪ R^{-1/2}.
+```
+
+Card 12: 48 modules.
