@@ -186,3 +186,20 @@ construction of `S_E` in `(9)`.
 - [x] singular-ADE capacity floor attached to finite-prime realizations
 - [ ] source-defined contraction `(9)` constructed
 - [ ] unconditional Lean formalization of the analytic transfer
+
+## Lean status update (2026-08-23)
+
+`RHTower/EulerPoleFourUnitCompletedWall.lean` now formalizes, without hypotheses, the exact
+four-unit incoming norm together with the completed Suzuki-wall criterion
+
+```text
+(forall N, ||completedWall(-i,N+2)||_2^2 <= ||eulerPoleBoundaryProfile||_2^2) <-> RH.
+```
+
+It also formalizes the equivalent off-RH finite-aperture budget violation and packages the exact
+incoming norm `4` with this completed-wall nonexpansiveness law.  Exact leaf build and axiom audit
+pass; the new theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This closes the canonical completed-wall reformulation, but not the card's stronger construction
+target `(9)`: no source-defined cofinal `L²` contraction `S_E` has yet been constructed.  The card
+therefore remains at stage 2.

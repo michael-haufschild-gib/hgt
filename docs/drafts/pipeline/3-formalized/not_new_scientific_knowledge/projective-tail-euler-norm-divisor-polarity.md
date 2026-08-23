@@ -1,7 +1,7 @@
 # Projective-tail Euler norm and divisor-polarity law
 
 - **ID:** `projective-tail-euler-norm-divisor-polarity`
-- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Stage:** 3-formalized / not new scientific knowledge
 - **Type:** THEOREM / HT--EULER STRUCTURAL BRIDGE
 - **Scientific status:** `[PROVED] [PARENT-THEORY COLLISION] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** The global-sign direction collapsed by the signed prime-zeta differential field
@@ -193,7 +193,7 @@ retained as a precise bridge between two existing theorem surfaces.
 - [x] formal core connected to the existing projective tail theorem
 - [x] primary-literature and parent-theory audit completed
 - [x] novelty gate failed: Seip's Helson identity already contains the norm and polarity mechanism
-- [ ] 2 -> 3: optional full analytic formalization; not a novelty priority
+- [x] 2 -> 3: full analytic formalization completed
 
 ## Lean status update (2026-08-23): meromorphic norm-pair polarity
 
@@ -229,4 +229,41 @@ projectiveEulerCompletedNorm(1/2-s) = projectiveEulerCompletedNorm(s).
 
 The same leaf proves algebraically that the associated anti-holomorphic reflection `s ↦ 1/2-conj(s)` fixes exactly `Re(s)=1/4`.  It is umbrella-wired, direct-checked, and exact-target-built with `lake build GaloisForLFunctions.RHTower.ProjectiveEulerNormReflection`; both declarations audit only to `[propext, Classical.choice, Quot.sound]`.
 
-Completed reflection-center descent is therefore Lean-complete.  Remaining stage-3 blockers are the infinite signed Euler-product norm law and the concrete same/opposite-sheet analytic gauge correspondence needed to instantiate the generic polarity theorem.
+Completed reflection-center descent was therefore Lean-complete; the final analytic closure below
+discharges the two blockers recorded at that checkpoint.
+
+## Lean status update (2026-08-23): full analytic closure
+
+`formal/GaloisForLFunctions/HTGeometry/HelsonOppositeEulerNorm.lean` proves the infinite
+cyclotomic norm law for every unimodular square-one phase on `Re(s) > 1`, and identifies the
+canonical negative sheet with `ζ(2s)/ζ(s)`.  No simplicity assumption is used.
+
+`formal/GaloisForLFunctions/HTGeometry/HelsonFiniteEulerGauge.lean` realizes every finite phase
+change by the existing holomorphic nonvanishing gauge `finiteEulerGaugeRatio`.  It proves both the
+same-sheet quotient identity and the finite-defect opposite-sheet norm identity.
+
+`formal/GaloisForLFunctions/RHTower/ProjectiveEulerAnalyticGauge.lean` attaches canonical
+square-one Helson phases to Boolean prime orientations and proves the exact equivalence
+
+```text
+projective tail dependence
+  iff same-sheet analytic finite gauge
+   or opposite-sheet analytic norm complementarity.
+```
+
+`formal/GaloisForLFunctions/RHTower/ProjectiveEulerCanonicalPolarity.lean` identifies the
+all-negative Dirichlet series with the canonical negative sheet and proves, for every zeta zero
+`ρ` with `Re(ρ) ≥ 1/2`,
+
+```text
+ord_ρ(ζ(2s)/ζ(s)) = -ord_ρ(ζ(s)) < 0.
+```
+
+Thus the pole has exactly the zeta zero's multiplicity, including critical-line zeros and without a
+simple-zero hypothesis.  Together with `MeromorphicNormPairPolarity.lean`,
+`PrimeEulerOrientationNorm.lean`, and `ProjectiveEulerNormReflection.lean`, every proved statement
+on this card is now formalized.
+
+All four new leaves were direct-checked with `lake env lean`; exact leaf targets were built, imports
+were wired into `HTGeometry.lean` and `RHTower.lean` without umbrella builds, and every new theorem
+audits only to `[propext, Classical.choice, Quot.sound]`.

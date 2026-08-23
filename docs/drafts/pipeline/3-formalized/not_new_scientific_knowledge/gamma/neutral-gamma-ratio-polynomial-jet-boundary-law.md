@@ -352,9 +352,12 @@ phase capacity.
 - Tricomi--Erdelyi and later work give the complete asymptotic expansion of
   `Gamma(z+a)/Gamma(z+b)`; equation `(5)` is classical.
 - Discrete shift residues and the Adamczewski--Dreyfus--Hardouin theorem supply the HT bridge.
-- Preliminary searches for Gamma ratios, logarithmic phases, vertical translation limits,
-  projective boundaries, and polynomial jet activation did not locate `(4)`, `(10a)`--`(10k)`, or
-  `(14)` as a boundary-carrier theorem.
+- Full parent/priority audit refreshed 2026-08-23 across classical Gamma-ratio asymptotics,
+  product-ratio expansions, shift hypertranscendence, meromorphic shift-equation classifications,
+  almost-periodic function algebras, logarithmic phases, vertical translation limits, projective
+  boundaries, and polynomial jet activation. It did not locate `(4)`, `(10a)`--`(10k)`, or `(14)`
+  as a boundary-carrier theorem. This is a literature-search conclusion, not a priority claim beyond
+  the searched corpus.
 - The exact conversion of phase-vanishing multiplicity into polynomial jet degree is a short
   consequence of the classical ratio expansion and Taylor factorization. It is scientifically
   useful because it falsifies the former neutral boundary conjecture, but it does not pass the
@@ -364,16 +367,38 @@ phase capacity.
 Primary adjacent sources:
 
 - F. G. Tricomi and A. Erdel'yi, *The asymptotic expansion of a ratio of gamma functions*, Pacific
-  J. Math. 1 (1951), 133--142.
-- B. Adamczewski, T. Dreyfus, C. Hardouin, *Hypertranscendence and linear difference equations*,
+  J. Math. 1 (1951), 133--142; see also [DLMF §5.11(iii)](https://dlmf.nist.gov/5.11#iii).
+- W. Bühring, [*Asymptotic expansions for ratios of products of gamma
+  functions*](https://arxiv.org/abs/math/0206200), Int. J. Math. Math. Sci. 2003, 1167--1171.
+- B. Adamczewski, T. Dreyfus, C. Hardouin,
+  [*Hypertranscendence and linear difference equations*](https://arxiv.org/abs/1910.01874),
   J. Amer. Math. Soc. 34 (2021), 475--503, DOI `10.1090/jams/960`.
+- T. Dreyfus, [*Hypertranscendence and linear difference equations, the exponential
+  case*](https://arxiv.org/abs/2212.00388), J. Algebra 686 (2026), 775--792.
 
 ## 12. Lean status
 
-The current tree has the elementary prime-log rank floor and a logarithmic-phase oscillatory
-integral bound, but no complex Gamma-ratio asymptotic expansion, locally uniform projective-limit
-framework, or differential-hypertranscendence infrastructure. No wrapper would formalize `(4)` or
-`(10)`. Stage 3 requires the complete unconditional theorem in Lean.
+Complete unconditional Lean formalization:
+
+- module: `GaloisForLFunctions.HTGeometry.NeutralGammaRatioPolynomialJetBoundary`;
+- exact quantitative global first-jet theorem, frozen phase/height sequence, and compact-open frozen
+  polynomial root-multiplicity law;
+- arbitrary escaping-sequence compact phase extraction, exact `|lambda|+mu=1` normalization,
+  nonzero affine compact-open blow-up, and arbitrary polynomial multiplicity law;
+- finite tuples with zero-coordinate support, exact minimum order, derivative coefficients,
+  nonzero constant projective vector, and common affine power;
+- rational neutral-Gamma coefficient class constant functional-projective boundary, recurrence to a
+  nonzero autonomous ADE, finite Bohr-hull rank, and inherited rank bound for every continuous
+  carrier observable;
+- meromorphic carrier hypertranscendence and exact all-degree polynomial carrier law;
+- umbrella import wired; targeted `lake env lean` and targeted `lake build` passed warning-free;
+- new capstone axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`; no
+  `sorry`, `admit`, declared `axiom`, `opaque`, or `unsafe` declaration occurs in the module.
+
+Global `scripts/formal_tools.py lint` was also run. The new module is reachable and clean; the global
+run remains red only on three unrelated concurrently owned modules missing their umbrella imports:
+`ArbitraryFamilyPowerQuotientResidue`, `DifferentialAdjoinCoordinateScale`, and
+`DifferentialAdjoinFiniteSupport`.
 
 ## Gates
 
@@ -385,5 +410,5 @@ framework, or differential-hypertranscendence infrastructure. No wrapper would f
 - [x] HT of the carrier proved
 - [x] smallest and degenerate cases attacked
 - [x] internal proof audit and arbitrary-sequence attack passed
-- [ ] full parent-literature and priority audit
-- [ ] complete unconditional Lean formalization
+- [x] full parent-literature and priority audit
+- [x] complete unconditional Lean formalization

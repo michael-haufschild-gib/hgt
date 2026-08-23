@@ -1,7 +1,7 @@
 # Seam-Log Markov-Pick RH Equivalence
 
 - **ID:** seam-log-markov-pick-rh-equivalence
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / analytic source-gate normalization
 - **Source:** `seam-log-hankel-rh-equivalence.md`;
   `source-aware-q0-alone-reciprocal-positivity.md`
@@ -125,8 +125,8 @@ measure is positive exactly in the RH case.
 - [x] 0 -> 1 in-progress: analytic source gate isolated.
 - [x] 1 -> 2 fully-proven: Markov-transform equivalence proved from the seam-log
   coefficient dictionary and source-aware `Q_0`.
-- [ ] 2 -> 3 formalized: would require formal wrappers for the logarithmic coefficient
-  dictionary and basic moment/Markov transform positivity.
+- [x] 2 -> 3 formalized: literal logarithmic coefficient dictionary, compact positive Markov
+  representation, full Hankel equivalence, and canonical representing measure are closed in Lean.
 
 ## Log
 
@@ -242,3 +242,38 @@ endpoint, or an unstated finite-part regularization. If the proof remains in the
 positive repaired-frequency model, source data must select this locally infinite
 border behavior without using Markov positivity as an input. Otherwise the proof
 has to move to the completed boundary/index object.
+
+## Lean formalization (2026-08-23)
+
+`formal/GaloisForLFunctions/RHTower/CanonicalXiSeamLogEquivalence.lean` defines the card's literal
+generating function
+
+```text
+canonicalXiSeamLogGeneratingFunction(z) = 2 * L'(-z)
+```
+
+for the normalized unrotated seam logarithm `L`.  It proves local equality with the independently
+constructed completed prime--archimedean moment germ and, in every degree, the exact Taylor law
+
+```text
+G_src^(n)(0) = n! * T_(n+1)^src.
+```
+
+The proposition `CanonicalXiSeamLogCompactMarkovRepresentation` quantifies a finite positive
+Borel measure carried almost everywhere by `[0,B]`, with `B>0`, whose compact Markov transform
+agrees with `G_src` near zero.  Lean proves the closed equivalences
+
+```text
+CanonicalXiSeamLogCompactMarkovRepresentation <-> RiemannHypothesis
+CanonicalXiSeamLogCompactMarkovRepresentation
+  <-> CanonicalXiSeamLogTraceHankelNonnegative.
+```
+
+Under RH, the explicit witness is `primeArchXiCompactMomentMeasure`, the already formalized
+canonical weighted reciprocal-divisor measure; its finiteness and `[0,1]` support are part of the
+constructed witness.  Thus conditions 1--3 on this card, including the named measure, are all
+formalized without a positivity premise or added axiom.
+
+The leaf was checked with `lake env lean`, exact-target-built, and wired into `RHTower.lean`
+without building that umbrella.  Every new theorem audits only to
+`[propext, Classical.choice, Quot.sound]`.

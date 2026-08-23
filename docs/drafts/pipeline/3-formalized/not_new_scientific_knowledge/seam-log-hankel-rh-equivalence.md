@@ -1,7 +1,7 @@
 # Seam-Log Hankel RH Equivalence
 
 - **ID:** seam-log-hankel-rh-equivalence
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / route normalization
 - **Source:** `fe-orbit-quotient-half-trace-moments.md`;
   `source-aware-q0-alone-reciprocal-positivity.md`;
@@ -102,8 +102,8 @@ recorded in `hd3-li-gauge-shift.md` and related gauge-extraction notes.
 
 - [x] 0 -> 1 in-progress: seam-log source coordinate isolated.
 - [x] 1 -> 2 fully-proven: exact formula plus source-aware `Q_0` theorem combined.
-- [ ] 2 -> 3 formalized: depends on formal wrappers for the quotient-log coefficient
-  formula and the source-aware reciprocal positivity theorem.
+- [x] 2 -> 3 formalized: canonical quotient-log coefficient formula and full real-polynomial
+  source-aware reciprocal positivity equivalence are closed in Lean.
 
 ## Log
 
@@ -147,3 +147,43 @@ Thus the missing source theorem for the canonical seam-log tower cannot stop at 
 ## 2026-06-24 triangular coordinate recodings do not soften the wall
 
 `triangular-seam-coordinates-function-complete.md` generalizes the all-order seam-log warning. Any full coordinate system that recursively reconstructs the seam-log coefficients, including continued-fraction, Jacobi, cumulant, Hankel-ratio, or Pade-style coordinates on their invertible loci, is function-complete. The source theorem must therefore force Stieltjes/Markov positivity in that coordinate from Euler/Gamma/FE data; the coordinate change itself is not progress across the wall.
+
+## Lean formalization (2026-08-23)
+
+`formal/GaloisForLFunctions/RHTower/CanonicalXiSeamLogEquivalence.lean` formalizes the literal
+objects on this card.  The unrotated quotient
+
+```text
+canonicalXiSeamQuotient(z) = xiSquaredSeamEntireQuotient(-z)
+```
+
+is entire, is pointwise unique among square quotients, and satisfies
+
+```text
+canonicalXiSeamQuotient(w^2) = xi(1/2+w).
+```
+
+Its normalized principal logarithm `canonicalXiSeamLog` is analytic at zero.  For
+`ell_k = seamLogCoeff canonicalXiSeamLog k`, Lean defines the literal card normalization
+
+```text
+canonicalXiSeamLogMoment(k) = -2*k*(-1)^k*ell_k
+```
+
+and proves for every `n`
+
+```text
+canonicalXiSeamLogMoment(n+1) = normalizedPrimeArchMoment(n).
+```
+
+The finite form `canonicalXiSeamLogTraceHankel` pairs coefficients of `p^2` with these moments,
+so it is the polynomial double sum `sum_{i,j} c_i c_j T_(i+j+1)^src`.  Lean proves its exact
+equality with `xiCentralTraceHankel` and the closed unconditional capstone
+
+```text
+CanonicalXiSeamLogTraceHankelNonnegative <-> RiemannHypothesis.
+```
+
+The quantifier is over every real polynomial; no finite-degree or integer-coefficient reduction
+is used.  The leaf was checked with `lake env lean`, exact-target-built, and umbrella-wired without
+an umbrella build.  Every new theorem audits only to `[propext, Classical.choice, Quot.sound]`.

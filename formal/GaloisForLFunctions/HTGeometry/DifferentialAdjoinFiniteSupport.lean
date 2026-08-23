@@ -56,6 +56,29 @@ theorem mem_differentialAdjoin_range_exists_finset
     · exact (differentialAdjoin_mono (F := F)
         (Set.image_mono (by intro i hi; simp [hi]))) ht
 
+/-- A derivation-preserving algebra homomorphism carries a differential adjunction exactly to the
+differential adjunction of the image, allowing distinct source and target fields. -/
+theorem map_differentialAdjoin_algHom
+    {A B : Type*} [Field A] [Field B] [Algebra F A] [Algebra F B]
+    [Differential A] [Differential B]
+    (φ : A →ₐ[F] B) (hφ : ∀ x : A, φ x′ = (φ x)′) (s : Set A) :
+    IntermediateField.map φ (differentialAdjoin F s) =
+      differentialAdjoin F (φ '' s) := by
+  have hjet : ∀ (n : ℕ) (x : A), φ (differentialJet n x) = differentialJet n (φ x) := by
+    intro n x
+    induction n with
+    | zero => simp only [differentialJet_zero]
+    | succ n ih => rw [differentialJet_succ, differentialJet_succ, hφ, ih]
+  rw [differentialAdjoin, differentialAdjoin, IntermediateField.adjoin_map]
+  congr 1
+  ext z
+  constructor
+  · rintro ⟨w, ⟨x, hx, n, rfl⟩, rfl⟩
+    exact ⟨φ x, ⟨x, hx, rfl⟩, n, (hjet n x).symm⟩
+  · rintro ⟨w, ⟨x, hx, rfl⟩, n, rfl⟩
+    exact ⟨differentialJet n x, ⟨x, hx, n, rfl⟩,
+      hjet n x⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

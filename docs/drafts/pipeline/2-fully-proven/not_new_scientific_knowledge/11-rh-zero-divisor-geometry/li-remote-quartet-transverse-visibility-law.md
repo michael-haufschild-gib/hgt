@@ -387,3 +387,25 @@ not justify stage 3.
   a negative total coefficient by order `O((T^2/a) log(T^2/a))`.
 - 2026-07-11 -- Voros comparison source-killed scientific novelty; retained as a precise Li-route
   bridge.
+
+## Lean status update (2026-08-23)
+
+`formal/GaloisForLFunctions/RHTower/LiRemoteQuartetProfile.lean` now formalizes the complete exact
+finite-profile layer.  It proves the Cartesian Möbius-coordinate identity `(2)`, the squared radial
+identity underlying `(3)`, positivity of the logarithmic radial coordinate, and
+`exp(2 ell)=|q|²`.  For every polar coordinate `q=exp(ell+i theta)` it then proves the literal
+symmetry-complete Li identity `(8)`, the nonnegative unitarized shadow `(9)`, exact transverse
+difference `(10)`, uniform prefix estimate `(11)`, lower bound `(12)`, and strict negativity under
+exact phase alignment.
+
+`formal/GaloisForLFunctions/RHTower/LiRemoteQuartetAsymptotics.lean` now closes the full coordinate
+asymptotics `(5)` for arbitrary filters, cofinal height families, and varying displacements in
+`(0,1/2)`: `ell*T²/a -> 1`, `theta*T -> 1`, and `ell/theta -> 0`.  It also formalizes convergence
+modulo `2*pi` and proves the universal two-scale limit `(27)`--`(28)`.
+
+Both exact leaf targets build successfully and every new theorem audits to only `propext`,
+`Classical.choice`, and `Quot.sound`.  Remaining stage-3 gates are the reflected-Gamma carrier's
+divisor-summed two-sided linear Li bounds `(20)`--`(24)`, the same-differential-translation-field
+assembly `(16)`--`(17)`, the constructive phase-alignment selection `(29)`--`(33)`, and final
+total-coefficient domination `(34)`--`(37)`.  No hypothesis wrapper has been introduced; card
+remains at stage 2.

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiPrincipalContour
 import GaloisForLFunctions.RHTower.ChenGuptaLiMollifierBound
+import GaloisForLFunctions.RHTower.LaplaceTransformMomentDerivative
 import GaloisForLFunctions.HTGeometry.GammaVerticalStripDecay
 import GaloisForLFunctions.HTGeometry.PolyExpDecayLimit
 
@@ -165,6 +166,119 @@ theorem cglPrincipalRegularizedMellinFactor_large_forces_bounded_ordinate
   by_contra hnot
   have hTz : T ≤ |z.point.im| := le_of_not_gt hnot
   exact (not_lt_of_ge hlarge) (hsmall z hTz)
+
+/-- **CGL Section 12.1, logarithmic principal head.**  The principal residue is
+uniformly smaller than a fixed positive threshold once the ordinate exceeds a
+logarithmic function of the detector length.  Both constants are independent
+of the modulus and of the certified zero.
+
+The proof is non-asymptotic: split the Gamma exponential into two equal
+halves, absorb the polynomial factor by `t^N exp (-δ t) ≤ N! / δ^N`, and use
+the second half to pay the factor `X + 1`. -/
+theorem exists_cglPrincipalRegularizedMellinFactor_logarithmic_head
+    {η : ℝ} (hη : 0 < η) :
+    ∃ A K : ℝ, 0 < A ∧ 1 ≤ K ∧ ∀ (X q : ℕ)
+      (z : CGLPrincipalCriticalStripLZero q),
+      1 + A * Real.log (K * ((X : ℝ) + 1)) ≤ |z.point.im| →
+      ‖cglPrincipalRegularizedMellinFactor X q z (cglPrincipalPole z)‖ < η := by
+  obtain ⟨C, N, hC, hbound⟩ :=
+    cglPrincipalRegularizedMellinFactor_at_principalPole_norm_le_polyExp
+  let δ : ℝ := Real.pi / 4
+  let D : ℝ := C * (N.factorial : ℝ) / δ ^ N
+  let K : ℝ := D / η + 1
+  have hδ : 0 < δ := by
+    dsimp [δ]
+    positivity
+  have hD : 0 ≤ D := by
+    dsimp [D]
+    positivity
+  have hK : 1 ≤ K := by
+    dsimp [K]
+    have hratio : 0 ≤ D / η := div_nonneg hD hη.le
+    linarith
+  have hKpos : 0 < K := lt_of_lt_of_le zero_lt_one hK
+  refine ⟨δ⁻¹, K, inv_pos.mpr hδ, hK, ?_⟩
+  intro X q z ht
+  let t : ℝ := |z.point.im|
+  have hX : 0 < (X : ℝ) + 1 := by positivity
+  have harg : 0 < K * ((X : ℝ) + 1) := mul_pos hKpos hX
+  have ht1 : 1 ≤ t := by
+    have hlog : 0 ≤ Real.log (K * ((X : ℝ) + 1)) :=
+      Real.log_nonneg (by nlinarith [hK])
+    have hA : 0 ≤ δ⁻¹ := (inv_pos.mpr hδ).le
+    dsimp [t]
+    nlinarith [mul_nonneg hA hlog]
+  have hraw := hbound X q z ht1
+  have hraw' :
+      ‖cglPrincipalRegularizedMellinFactor X q z (cglPrincipalPole z)‖ ≤
+        ((X : ℝ) + 1) *
+          (C * t ^ N * Real.exp (-(Real.pi * t / 2))) := by
+    simpa only [Nat.cast_add, Nat.cast_one, t] using hraw
+  have hpow := GaloisForLFunctions.RHTower.pow_mul_exp_neg_le
+    (δ := δ) (u := t) hδ (by positivity : 0 ≤ t) N
+  have hsplit : Real.exp (-(Real.pi * t / 2)) =
+      Real.exp (-δ * t) * Real.exp (-δ * t) := by
+    rw [← Real.exp_add]
+    congr 1
+    dsimp [δ]
+    ring
+  have hpoly : C * t ^ N * Real.exp (-(Real.pi * t / 2)) ≤
+      D * Real.exp (-δ * t) := by
+    rw [hsplit]
+    dsimp [D]
+    calc
+      C * t ^ N * (Real.exp (-δ * t) * Real.exp (-δ * t)) =
+          C * (t ^ N * Real.exp (-δ * t)) * Real.exp (-δ * t) := by ring
+      _ ≤ C * ((N.factorial : ℝ) / δ ^ N) * Real.exp (-δ * t) := by
+        gcongr
+      _ = (C * (N.factorial : ℝ) / δ ^ N) * Real.exp (-δ * t) := by ring
+  have hlog_le : Real.log (K * ((X : ℝ) + 1)) ≤ δ * t := by
+    have hsmall : δ⁻¹ * Real.log (K * ((X : ℝ) + 1)) ≤ t := by
+      change 1 + δ⁻¹ * Real.log (K * ((X : ℝ) + 1)) ≤ t at ht
+      linarith
+    have hmul := mul_le_mul_of_nonneg_left hsmall hδ.le
+    calc
+      Real.log (K * ((X : ℝ) + 1)) =
+          δ * (δ⁻¹ * Real.log (K * ((X : ℝ) + 1))) := by
+            field_simp
+      _ ≤ δ * t := hmul
+  have hexp : Real.exp (-δ * t) ≤ (K * ((X : ℝ) + 1))⁻¹ := by
+    calc
+      Real.exp (-δ * t) ≤ Real.exp (-Real.log (K * ((X : ℝ) + 1))) :=
+        Real.exp_le_exp.mpr (by linarith)
+      _ = (K * ((X : ℝ) + 1))⁻¹ := by
+        rw [Real.exp_neg, Real.exp_log harg]
+  have hmajor : ((X : ℝ) + 1) *
+        (C * t ^ N * Real.exp (-(Real.pi * t / 2))) ≤ D / K := by
+    calc
+      ((X : ℝ) + 1) * (C * t ^ N * Real.exp (-(Real.pi * t / 2))) ≤
+          ((X : ℝ) + 1) * (D * Real.exp (-δ * t)) := by gcongr
+      _ ≤ ((X : ℝ) + 1) * (D * (K * ((X : ℝ) + 1))⁻¹) := by gcongr
+      _ = D / K := by
+        field_simp
+  have hDK : D / K < η := by
+    rw [div_lt_iff₀ hKpos]
+    dsimp [K]
+    field_simp [hη.ne']
+    nlinarith
+  exact (hraw'.trans hmajor).trans_lt hDK
+
+/-- Large principal residues therefore lie in one logarithmic ordinate head,
+with constants uniform in the modulus and the detector length. -/
+theorem cglPrincipalRegularizedMellinFactor_large_forces_logarithmic_ordinate
+    {η : ℝ} (hη : 0 < η) :
+    ∃ A K : ℝ, 0 < A ∧ 1 ≤ K ∧ ∀ (X q : ℕ)
+      (z : CGLPrincipalCriticalStripLZero q),
+      η ≤ ‖cglPrincipalRegularizedMellinFactor X q z (cglPrincipalPole z)‖ →
+      |z.point.im| < 1 + A * Real.log (K * ((X : ℝ) + 1)) := by
+  obtain ⟨A, K, hA, hK, hsmall⟩ :=
+    exists_cglPrincipalRegularizedMellinFactor_logarithmic_head hη
+  refine ⟨A, K, hA, hK, ?_⟩
+  intro X q z hlarge
+  by_contra hnot
+  have ht : 1 + A * Real.log (K * ((X : ℝ) + 1)) ≤ |z.point.im| :=
+    le_of_not_gt hnot
+  exact (not_lt_of_ge hlarge) (hsmall X q z ht)
 
 end
 

@@ -1,0 +1,11 @@
+Created `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingModularCharacteristicScatteringEndpoint.lean`.
+
+Main source-faithful seam: causal rotation `A_c(z)=thetaCuspHawkingDeembeddedPairAmplitude(-i z)` of actual deembedded Davies–Fulling Born amplitude equals `bilateralLaplace thetaCuspTiltSource z`. On physical shell `z=-a+iω`, it equals `XiC(ω+ia)`. Proved nonvanishing of this same amplitude iff the exact unitary Hawking KMS two-port has nonzero unit-coupling exchange, and iff its repeated-scattering sector mixes.
+
+Finite coherent modular packets built from `A_c(w_j+a)` equal literal `tiltWindow`; packet energy equals `tiltCorrelation`. Characteristic fields `generator ± t*packet` equal existing `contractionPlus/Minus`. Exact balance: `E_in-E_out = 2t Re(sum c_j conj(c_l) sourceBezoutian(w_j,w_l))`. Single-shell output/input is canonical nonperturbative characteristic Cayley coefficient. This is a mathematically canonical completion, not proof nonlinear mirror dynamics selects it.
+
+Proved `RiemannHypothesis ↔ ThetaCuspHawkingModularCharacteristicContractive`. Exact RH-complete criterion, not proof of contractivity. All packets supported on at most two exterior real shells are unconditionally contractive. Under ¬RH a noncontractive witness must use complex shells or at least three real shells.
+
+Research conclusion: genuine Hawking backbone is coherent cross-shell anomalous amplitude after causal rotation/modular translation. Particle number, sectorwise KMS positivity, local QEI, and generic Cayley/unitarity do not force required sign. Remaining producer: nonlinear dynamical selection of canonical completion, or theta-source-specific complete multi-shell correlation-angle law forcing all tilted sectors to mix with coherent sign.
+
+Integrated import into `RHTower.lean`; endpoint row in `docs/reports/endpoints.md`. Direct module compile passed. All 26 new declarations audit to `[propext, Classical.choice, Quot.sound]`. Formal lint sees module reachable but fails only on unrelated pre-existing unreachable `ChenGuptaLiPrincipalZeroCount` and `FESchwarzPrimeCoronaHorizontalGradeCollapse`. No git. All scratch removed; no task Lean processes left.

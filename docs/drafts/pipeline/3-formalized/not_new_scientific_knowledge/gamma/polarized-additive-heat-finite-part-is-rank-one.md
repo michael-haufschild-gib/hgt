@@ -1,7 +1,7 @@
 # The polarized additive-heat finite part is the rank-one zeta-value Gram
 
 - **ID:** `polarized-additive-heat-finite-part-is-rank-one`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); Route-B heat gate
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `additive-heat-aperture-zeta-zero-echo.md`
@@ -183,16 +183,34 @@ and supplies no critical-line localization.
 - [x] dense Weil-factorization use excluded
 - [x] finite rank-one zeta-value Gram algebra formalized in
       `formal/GaloisForLFunctions/RHTower/PolarizedAdditiveHeatFinitePart.lean`
-- [ ] formalize the additive-heat/polylogarithm boundary expansion that identifies the finite part
+- [x] additive-heat/polylogarithm boundary expansion and finite-part identification formalized in
+      `formal/GaloisForLFunctions/RHTower/PolarizedAdditiveHeatBoundary.lean`
 
 ## Lean status
 
-On 2026-08-23, `PolarizedAdditiveHeatFinitePart.lean` proved the exact finite
-complex outer-product Gram identity and its `riemannZeta` specialization:
-the double polarization is the squared norm of the one scalar zeta-value
-functional. Targeted source check, module build, and axiom audit pass with
-only `propext`, `Classical.choice`, and `Quot.sound`.
+On 2026-08-23, `PolarizedAdditiveHeatBoundary.lean` closed the analytic gate
+unconditionally. It proves:
 
-This is deliberately conditional only in the mathematical dependency sense:
-it formalizes the finite algebra *after* the heat finite-part identity, not
-that missing analytic identity itself. The card remains in stage 2.
+- absolute summability of the literal two-parameter additive-heat double
+  series and equality with the Fourier heat pairing;
+- finite-superposition positivity for every positive aperture;
+- the cross-Jonquière principal expansion with an explicit
+  `O(|theta|^Re(s)+|theta|^Re(w)+|theta|)` error and its integrated `o(1)` law;
+- the full closed four-channel polyhomogeneous expansion with exactly the
+  displayed `L(s,w)` and
+  `C(s)=(1/2) pi^((s-1)/2) Gamma((1-s)/2)` coefficients;
+- the premise-free strip-valued finite-part theorem
+  `polarizedHeatFinitePart_rankOneKernel`; and
+- the premise-free finite-family limit
+  `tendsto_finite_polarizedHeatFinitePart_rankOne`, whose value is the squared
+  norm of the single zeta-value functional.
+
+`PolarizedAdditiveHeatFinitePart.lean` supplies the final finite outer-product
+Gram identity. The new boundary module is wired into
+`GaloisForLFunctions.RHTower`. Exact source check and targeted module build
+pass. Axiom audits of the new summability, double-series, coefficient,
+boundary-expansion, finite-part, finite-family, and positivity capstones report
+only `propext`, `Classical.choice`, and `Quot.sound`. Global lint confirms the
+new module is reachable and contains no forbidden declarations; its run was
+nonzero only because four unrelated concurrently added modules were not yet
+wired into their theorem-area umbrellas.
